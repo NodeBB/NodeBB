@@ -2,7 +2,6 @@
 	"none": "Your forum does not have any topics with tags yet.",
 	"bg-color": "Background Color",
 	"text-color": "Text Color",
-	"create-modify": "Create & Modify Tags",
 	"description": "Select tags by clicking or dragging, use <code>CTRL</code> to select multiple tags.",
 	"create": "Create Tag",
 	"modify": "Modify Tags",
@@ -14,5 +13,6 @@
 
 	"alerts.editing": "Editing tag(s)",
 	"alerts.confirm-delete": "Do you want to delete the selected tags?",
-	"alerts.update-success": "Tag Updated!"
+	"alerts.update-success": "Tag Updated!",
+	"reset-colors": "Reset colors"
 }

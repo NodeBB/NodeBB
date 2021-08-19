@@ -26,10 +26,14 @@ postsController.redirectToPost = async function (req, res, next) {
 	}
 
 	const qs = querystring.stringify(req.query);
-	helpers.redirect(res, qs ? path + '?' + qs : path);
+	helpers.redirect(res, qs ? `${path}?${qs}` : path);
 };
 
 postsController.getRecentPosts = async function (req, res) {
-	const data = await posts.getRecentPosts(req.uid, 0, 19, req.params.term);
+	const page = parseInt(req.query.page, 10) || 1;
+	const postsPerPage = 20;
+	const start = Math.max(0, (page - 1) * postsPerPage);
+	const stop = start + postsPerPage - 1;
+	const data = await posts.getRecentPosts(req.uid, start, stop, req.params.term);
 	res.json(data);
 };

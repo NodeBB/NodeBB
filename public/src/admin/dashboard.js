@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/dashboard', ['semver', 'Chart', 'translator', 'benchpress'], function (semver, Chart, translator, Benchpress) {
+define('admin/dashboard', ['Chart', 'translator', 'benchpress'], function (Chart, translator, Benchpress) {
 	var	Admin = {};
 	var	intervals = {
 		rooms: false,
@@ -330,8 +330,6 @@ define('admin/dashboard', ['semver', 'Chart', 'translator', 'benchpress'], funct
 				}
 				until = until.getTime();
 				updateTrafficGraph($(this).attr('data-units'), until, amount);
-				$('[data-action="updateGraph"]').removeClass('active');
-				$(this).addClass('active');
 
 				require(['translator'], function (translator) {
 					translator.translate('[[admin/dashboard:page-views-custom]]', function (translated) {
@@ -343,7 +341,7 @@ define('admin/dashboard', ['semver', 'Chart', 'translator', 'benchpress'], funct
 			$('[data-action="updateGraph"][data-units="custom"]').on('click', function () {
 				var targetEl = $(this);
 
-				Benchpress.parse('admin/partials/pageviews-range-select', {}, function (html) {
+				Benchpress.render('admin/partials/pageviews-range-select', {}).then(function (html) {
 					var modal = bootbox.dialog({
 						title: '[[admin/dashboard:page-views-custom]]',
 						message: html,
@@ -373,8 +371,6 @@ define('admin/dashboard', ['semver', 'Chart', 'translator', 'benchpress'], funct
 						if (!formData.startRange && !formData.endRange) {
 							// No range? Assume last 30 days
 							updateTrafficGraph('days');
-							$('[data-action="updateGraph"]').removeClass('active');
-							$('[data-action="updateGraph"][data-units="days"]').addClass('active');
 							return;
 						} else if (!validRegexp.test(formData.startRange) || !validRegexp.test(formData.endRange)) {
 							// Invalid Input
@@ -388,8 +384,6 @@ define('admin/dashboard', ['semver', 'Chart', 'translator', 'benchpress'], funct
 						var amount = (until - new Date(formData.startRange).getTime()) / (1000 * 60 * 60 * 24);
 
 						updateTrafficGraph('days', until, amount);
-						$('[data-action="updateGraph"]').removeClass('active');
-						targetEl.addClass('active');
 
 						// Update "custom range" label
 						targetEl.attr('data-startRange', formData.startRange);
@@ -500,10 +494,14 @@ define('admin/dashboard', ['semver', 'Chart', 'translator', 'benchpress'], funct
 
 	function updateTopicsGraph(topics) {
 		if (!topics.length) {
-			topics = [{
-				title: '[[admin/dashboard:no-users-browsing]]',
-				count: 1,
-			}];
+			translator.translate('[[admin/dashboard:no-users-browsing]]', function (translated) {
+				topics = [{
+					title: translated,
+					count: 1,
+				}];
+				updateTopicsGraph(topics);
+			});
+			return;
 		}
 
 		graphs.topics.data.labels = [];
@@ -519,19 +517,17 @@ define('admin/dashboard', ['semver', 'Chart', 'translator', 'benchpress'], funct
 		});
 
 		function buildTopicsLegend() {
-			var legend = $('#topics-legend').html('');
 			var html = '';
 			topics.forEach(function (t, i) {
-				var	label = t.count === '0' ?
-					t.title :
-					'<a title="' + t.title + '"href="' + config.relative_path + '/topic/' + t.tid + '" target="_blank"> ' + t.title + '</a>';
+				var link = t.tid ? '<a title="' + t.title + '"href="' + config.relative_path + '/topic/' + t.tid + '" target="_blank"> ' + t.title + '</a>' : t.title;
+				var	label = t.count === '0' ? t.title : link;
 
 				html += '<li>' +
 					'<div style="background-color: ' + topicColors[i] + ';"></div>' +
 					'<span> (' + t.count + ') ' + label + '</span>' +
 					'</li>';
 			});
-			legend.translateHtml(html);
+			$('#topics-legend').translateHtml(html);
 		}
 
 		buildTopicsLegend();

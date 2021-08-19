@@ -1,6 +1,6 @@
 {
-	"notifications": "Notifications",
-	"welcome-notification": "Welcome Notification",
-	"welcome-notification-link": "Welcome Notification Link",
-	"welcome-notification-uid": "Welcome Notification User (UID)"
+	"notifications": "Thông báo",
+	"welcome-notification": "Thông Báo Chào Mừng",
+	"welcome-notification-link": "Liên Kết Thông Báo Chào Mừng",
+	"welcome-notification-uid": "Thông Báo Chào Mừng Người Dùng (UID)"
 }

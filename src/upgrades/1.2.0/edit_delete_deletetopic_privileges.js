@@ -1,41 +1,41 @@
 'use strict';
 
 
-var async = require('async');
-var winston = require('winston');
-var db = require('../../database');
+const async = require('async');
+const winston = require('winston');
+const db = require('../../database');
 
 module.exports = {
 	name: 'Granting edit/delete/delete topic on existing categories',
 	timestamp: Date.UTC(2016, 7, 7),
 	method: function (callback) {
-		var groupsAPI = require('../../groups');
-		var privilegesAPI = require('../../privileges');
+		const groupsAPI = require('../../groups');
+		const privilegesAPI = require('../../privileges');
 
-		db.getSortedSetRange('categories:cid', 0, -1, function (err, cids) {
+		db.getSortedSetRange('categories:cid', 0, -1, (err, cids) => {
 			if (err) {
 				return callback(err);
 			}
 
-			async.eachSeries(cids, function (cid, next) {
-				privilegesAPI.categories.list(cid, function (err, data) {
+			async.eachSeries(cids, (cid, next) => {
+				privilegesAPI.categories.list(cid, (err, data) => {
 					if (err) {
 						return next(err);
 					}
 
-					var groups = data.groups;
-					var users = data.users;
+					const { groups } = data;
+					const { users } = data;
 
 					async.waterfall([
 						function (next) {
-							async.eachSeries(groups, function (group, next) {
+							async.eachSeries(groups, (group, next) => {
 								if (group.privileges['groups:topics:reply']) {
 									return async.parallel([
-										async.apply(groupsAPI.join, 'cid:' + cid + ':privileges:groups:posts:edit', group.name),
-										async.apply(groupsAPI.join, 'cid:' + cid + ':privileges:groups:posts:delete', group.name),
-									], function (err) {
+										async.apply(groupsAPI.join, `cid:${cid}:privileges:groups:posts:edit`, group.name),
+										async.apply(groupsAPI.join, `cid:${cid}:privileges:groups:posts:delete`, group.name),
+									], (err) => {
 										if (!err) {
-											winston.verbose('cid:' + cid + ':privileges:groups:posts:edit, cid:' + cid + ':privileges:groups:posts:delete granted to gid: ' + group.name);
+											winston.verbose(`cid:${cid}:privileges:groups:posts:edit, cid:${cid}:privileges:groups:posts:delete granted to gid: ${group.name}`);
 										}
 
 										return next(err);
@@ -46,11 +46,11 @@ module.exports = {
 							}, next);
 						},
 						function (next) {
-							async.eachSeries(groups, function (group, next) {
+							async.eachSeries(groups, (group, next) => {
 								if (group.privileges['groups:topics:create']) {
-									return groupsAPI.join('cid:' + cid + ':privileges:groups:topics:delete', group.name, function (err) {
+									return groupsAPI.join(`cid:${cid}:privileges:groups:topics:delete`, group.name, (err) => {
 										if (!err) {
-											winston.verbose('cid:' + cid + ':privileges:groups:topics:delete granted to gid: ' + group.name);
+											winston.verbose(`cid:${cid}:privileges:groups:topics:delete granted to gid: ${group.name}`);
 										}
 
 										return next(err);
@@ -61,14 +61,14 @@ module.exports = {
 							}, next);
 						},
 						function (next) {
-							async.eachSeries(users, function (user, next) {
+							async.eachSeries(users, (user, next) => {
 								if (user.privileges['topics:reply']) {
 									return async.parallel([
-										async.apply(groupsAPI.join, 'cid:' + cid + ':privileges:posts:edit', user.uid),
-										async.apply(groupsAPI.join, 'cid:' + cid + ':privileges:posts:delete', user.uid),
-									], function (err) {
+										async.apply(groupsAPI.join, `cid:${cid}:privileges:posts:edit`, user.uid),
+										async.apply(groupsAPI.join, `cid:${cid}:privileges:posts:delete`, user.uid),
+									], (err) => {
 										if (!err) {
-											winston.verbose('cid:' + cid + ':privileges:posts:edit, cid:' + cid + ':privileges:posts:delete granted to uid: ' + user.uid);
+											winston.verbose(`cid:${cid}:privileges:posts:edit, cid:${cid}:privileges:posts:delete granted to uid: ${user.uid}`);
 										}
 
 										return next(err);
@@ -79,11 +79,11 @@ module.exports = {
 							}, next);
 						},
 						function (next) {
-							async.eachSeries(users, function (user, next) {
+							async.eachSeries(users, (user, next) => {
 								if (user.privileges['topics:create']) {
-									return groupsAPI.join('cid:' + cid + ':privileges:topics:delete', user.uid, function (err) {
+									return groupsAPI.join(`cid:${cid}:privileges:topics:delete`, user.uid, (err) => {
 										if (!err) {
-											winston.verbose('cid:' + cid + ':privileges:topics:delete granted to uid: ' + user.uid);
+											winston.verbose(`cid:${cid}:privileges:topics:delete granted to uid: ${user.uid}`);
 										}
 
 										return next(err);
@@ -93,9 +93,9 @@ module.exports = {
 								next(null);
 							}, next);
 						},
-					], function (err) {
+					], (err) => {
 						if (!err) {
-							winston.verbose('-- cid ' + cid + ' upgraded');
+							winston.verbose(`-- cid ${cid} upgraded`);
 						}
 
 						next(err);

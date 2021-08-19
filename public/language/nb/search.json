@@ -30,11 +30,11 @@
     "one-year": "Ett år",
     "sort-by": "Sorter etter",
     "last-reply-time": "Sise svartid",
-    "topic-title": "Emne-tittel",
+    "topic-title": "Tråd-tittel",
     "topic-votes": "Topic votes",
     "number-of-replies": "Antall svar",
     "number-of-views": "Antall visninger",
-    "topic-start-date": "Starttid for emne",
+    "topic-start-date": "Starttid for tråd",
     "username": "Brukernavn",
     "category": "Kategori",
     "descending": "I synkende rekkefølge",
@@ -44,5 +44,6 @@
     "search-preferences-saved": "Søkeinnstillinger lagret",
     "search-preferences-cleared": "Søkeinnstillinger tømt",
     "show-results-as": "Vis resultater som",
-    "see-more-results": "See more results (%1)"
+    "see-more-results": "See more results (%1)",
+    "search-in-category": "Search in \"%1\""
 }

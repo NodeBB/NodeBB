@@ -6,7 +6,7 @@
 	"headers": "Başlıklar",
 	"headers.allow-from": "NodeBB'yi bir iFrame'e yerleştirmek için ALLOW-FROM'u ayarla",
 	"headers.csp-frame-ancestors": "NodeBB'yi bir iFrame'e yerleştirmek için Content-Security-Policy frame-ancestors başlığını ayarla",
-	"headers.csp-frame-ancestors-help": "'none', 'self'(default) or list of URIs to allow.",
+	"headers.csp-frame-ancestors-help": "\"yok\", \"iç\" (varsayılan) veya izin verilecek URI'lerin listesi.",
 	"headers.powered-by": "NodeBB tarafından gönderilen \"Powered By\" başlığını özelleştirin",
 	"headers.acao": "Erişim-Kontrolü-Kaynak-İzni",
 	"headers.acao-regex": "Erişim-Kontrolü-Kaynak-İzni Düzenli İfade",
@@ -34,7 +34,10 @@
 	"sockets.default-placeholder": "Varsayılan: %1",
 	"sockets.delay": "Yeniden Bağlanma Gecikmesi",
 
-	"analytics.settings": "Analytics Settings",
-	"analytics.max-cache": "Analytics Cache Max Value",
-	"analytics.max-cache-help": "On high-traffic installs, the cache could be exhausted continuously if there are more concurrent active users than the Max Cache value. (Restart required)"
+	"analytics.settings": "Analitik Ayarlar",
+	"analytics.max-cache": "Analitik Önbellek Maksimum Değeri",
+	"analytics.max-cache-help": "Yüksek trafikli zamanlarda, Maksimum Önbellek değerinden daha fazla eşzamanlı etkin kullanıcı varsa önbellek sürekli olarak tüketilebilir. (Yeniden başlatmak gerekir)",
+	"compression.settings": "Sıkıştırma Ayarları",
+	"compression.enable": "Sıkıştırmayı Aktifleştir",
+	"compression.help": "Bu ayar gzip sıkıştırmasını etkinleştirir. Üretimdeki yüksek trafiğe sahip bir web sitesi için sıkıştırmayı uygulamaya koymanın en iyi yolu ters proxy düzeyinden uygulamaktır. Test amacıyla buradan etkinleştirebilirsiniz."
 }

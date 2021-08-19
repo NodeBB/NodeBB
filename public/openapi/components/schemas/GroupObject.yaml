@@ -14,6 +14,9 @@ GroupFullObject:
     userTitle:
       type: number
       description: Label text for the user badge
+    userTitleEscaped:
+      type: number
+      description: Same as userTitle but with translation tokens escaped, used to display raw userTitle in group management
     userTitleEnabled:
       type: number
     description:
@@ -42,6 +45,13 @@ GroupFullObject:
     textColor:
       type: string
       description: A six-character hexadecimal colour code
+    memberPostCids:
+      type: string
+    memberPostCidsArray:
+      type: array
+      items:
+        type: number
+        example: [1, 2, 3]
     icon:
       type: string
       description: A FontAwesome icon string
@@ -77,7 +87,7 @@ GroupFullObject:
   nullable: true
 GroupDataObject:
   type: object
-  description: The response from an internal call to `Groups.getGroupData(<groupname>, [])` with **explicitly** no fields passed in
+  description: The response from an internal call to `Groups.getGroupsFields(<groupname>, [])` with **explicitly** no fields passed in
   properties:
     name:
       type: string
@@ -91,6 +101,9 @@ GroupDataObject:
     userTitle:
       type: number
       description: Label text for the user badge
+    userTitleEscaped:
+      type: number
+      description: Same as userTitle but with translation tokens escaped, used to display raw userTitle in group management
     userTitleEnabled:
       type: number
     description:
@@ -131,3 +144,10 @@ GroupDataObject:
       description: "`createtime` rendered as an ISO 8601 format"
     cover:position:
       type: string
+    memberPostCids:
+      type: string
+    memberPostCidsArray:
+      type: array
+      items:
+        type: number
+        example: [1, 2, 3]

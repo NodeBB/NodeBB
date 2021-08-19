@@ -6,6 +6,7 @@
 	"assignee": "ผู้ได้รับมอบหมาย",
 	"update": "อัพเดท",
 	"updated": "ได้รับการอัพเดท",
+	"resolved": "Resolved",
 	"target-purged": "เนื้อหาที่ธงนี้อ้างถึงถูกลบออกและไม่มีอยู่ในระบบอีกต่อไป",
 
 	"graph-label": "Daily Flags",
@@ -26,6 +27,7 @@
 	"filter-cid-all": "ทุกหมวดหมู่",
 	"apply-filters": "ใช้งานฟิลเตอร์",
 	"more-filters": "More Filters",
+	"fewer-filters": "Fewer Filters",
 
 	"quick-actions": "Quick Actions",
 	"flagged-user": "ผู้ใช้ที่ถูกปักธง",
@@ -67,7 +69,7 @@
 	"sort-upvotes": "Most upvotes",
 	"sort-replies": "Most replies",
 
-	"modal-title": "รายงานเนื้อหาไม่เหมาะสม",
+	"modal-title": "Report Content",
 	"modal-body": "กรุณาระเหตุผลสำหรับการปักธง %1 %2 สำหรับการรีวิว หรือไม่ก็ใช้หนึ่งในปุ่มกดรายงานด่วนถ้าเป็นไปได้",
 	"modal-reason-spam": "สแปม",
 	"modal-reason-offensive": "น่ารังเกียจ",
@@ -75,11 +77,9 @@
 	"modal-reason-custom": "เหตุผลว่าทำไมถึงรายงานเนื้อหานี้...",
 	"modal-submit": "ส่งรายงาน",
 	"modal-submit-success": "เนื้อหาถูกรายงานตามความเหมาะสมแล้ว",
-	"modal-submit-confirm": "ยืนยันการส่ง",
-	"modal-submit-confirm-text": "คุณมีเหตุผลแบบกำหนดเองที่ระบุอยู่แล้ว คุณแน่ใจหรือไม่ว่าต้องการส่งข้อมูลผ่านรายงานด่วน",
-	"modal-submit-confirm-text-help": "การส่งรายงานด่วนจะเขียนทับเหตุผลที่กำหนดเองใดๆ ที่กำหนดไว้",
 
 	"bulk-actions": "Bulk Actions",
 	"bulk-resolve": "Resolve Flag(s)",
-	"bulk-success": "%1 flags updated"
+	"bulk-success": "%1 flags updated",
+	"flagged-timeago-readable": "Flagged <span class=\"timeago\" title=\"%1\"></span> (%2)"
 }

@@ -1,0 +1,167 @@
+get:
+  tags:
+    - admin
+  summary: Get flag data
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  title:
+                    type: string
+                  allCategoriesUrl:
+                    type: string
+                  selectedCategory:
+                    type: object
+                    properties:
+                      icon:
+                        type: string
+                      name:
+                        type: string
+                      bgColor:
+                        type: string
+                    nullable: true
+                  selectedCids:
+                    type: array
+                    items:
+                      type: number
+                  posts:
+                    type: array
+                    items:
+                      allOf:
+                        - type: object
+                          properties:
+                            id:
+                              type: string
+                            uid:
+                              type: number
+                              description: A user identifier
+                            type:
+                              type: string
+                            data:
+                              type: object
+                              properties:
+                                title:
+                                  type: string
+                                content:
+                                  type: string
+                                thumb:
+                                  type: string
+                                cid:
+                                  oneOf:
+                                    - type: number
+                                    - type: string
+                                tags:
+                                  type: array
+                                  items: {}
+                                uid:
+                                  type: number
+                                  description: A user identifier
+                                req:
+                                  type: object
+                                  properties:
+                                    uid:
+                                      type: number
+                                      description: A user identifier
+                                    ip:
+                                      type: string
+                                    host:
+                                      type: string
+                                    protocol:
+                                      type: string
+                                    secure:
+                                      type: boolean
+                                    url:
+                                      type: string
+                                    path:
+                                      type: string
+                                    headers:
+                                      type: object
+                                      properties:
+                                        x-real-ip:
+                                          type: string
+                                        x-forwarded-for:
+                                          type: string
+                                        x-forwarded-proto:
+                                          type: string
+                                        host:
+                                          type: string
+                                        x-nginx-proxy:
+                                          type: string
+                                        connection:
+                                          type: string
+                                        accept:
+                                          type: string
+                                        user-agent:
+                                          type: string
+                                        sec-fetch-site:
+                                          type: string
+                                        sec-fetch-mode:
+                                          type: string
+                                        referer:
+                                          type: string
+                                        accept-encoding:
+                                          type: string
+                                        accept-language:
+                                          type: string
+                                        cookie:
+                                          type: string
+                                timestamp:
+                                  type: number
+                                fromQueue:
+                                  type: boolean
+                                timestampISO:
+                                  type: string
+                                  description: An ISO 8601 formatted date string (complementing `timestamp`)
+                                rawContent:
+                                  type: string
+                                tid:
+                                  type: number
+                                  description: A topic identifier
+                                toPid:
+                                  nullable: true
+                            user:
+                              type: object
+                              properties:
+                                username:
+                                  type: string
+                                  description: A friendly name for a given user account
+                                userslug:
+                                  type: string
+                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                    removed, etc.)
+                                picture:
+                                  nullable: true
+                                  type: string
+                                uid:
+                                  type: number
+                                  description: A user identifier
+                                icon:text:
+                                  type: string
+                                  description: A single-letter representation of a username. This is used in the
+                                    auto-generated icon given to users without
+                                    an avatar
+                                icon:bgColor:
+                                  type: string
+                                  description: A six-character hexadecimal colour code assigned to the user. This
+                                    value is used in conjunction with
+                                    `icon:text` for the user's auto-generated
+                                    icon
+                                  example: "#f44336"
+                            topic:
+                              type: object
+                              properties:
+                                cid:
+                                  type: number
+                                title:
+                                  type: string
+                                titleRaw:
+                                  type: string
+                        - $ref: ../components/schemas/CategoryObject.yaml#/CategoryObject
+              - $ref: ../components/schemas/Pagination.yaml#/Pagination
+              - $ref: ../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../components/schemas/CommonProps.yaml#/CommonProps

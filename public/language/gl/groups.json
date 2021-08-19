@@ -35,6 +35,7 @@
     "details.member_count": "Conta de Membros",
     "details.creation_date": "Data de Creación",
     "details.description": "Descripción",
+    "details.member-post-cids": "Category IDs to display posts from",
     "details.badge_preview": "Vista Previa da Insignia",
     "details.change_icon": "Cambiar Icona",
     "details.change_label_colour": "Change Label Colour",

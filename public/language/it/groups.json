@@ -35,6 +35,7 @@
     "details.member_count": "Numero Membri",
     "details.creation_date": "Data Creazione",
     "details.description": "Descrizione",
+    "details.member-post-cids": "ID categoria da cui visualizzare i post",
     "details.badge_preview": "Anteprima Badge",
     "details.change_icon": "Cambia Icona",
     "details.change_label_colour": "Cambia colore etichetta",

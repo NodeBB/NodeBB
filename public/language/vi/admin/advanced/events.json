@@ -1,12 +1,12 @@
 {
-	"events": "Events",
-	"no-events": "There are no events",
-	"control-panel": "Events Control Panel",
-	"delete-events": "Delete Events",
-	"filters": "Filters",
-	"filters-apply": "Apply Filters",
-	"filter-type": "Event Type",
-	"filter-start": "Start Date",
-	"filter-end": "End Date",
-	"filter-perPage": "Per Page"
+	"events": "Sự kiện",
+	"no-events": "Không có sự kiện",
+	"control-panel": "Bảng Điều Khiển Sự Kiện",
+	"delete-events": "Xóa Sự Kiện",
+	"filters": "Bộ lọc",
+	"filters-apply": "Áp Dụng Bộ Lọc",
+	"filter-type": "Loại Sự Kiện",
+	"filter-start": "Ngày Bắt Đầu",
+	"filter-end": "Ngày Kết Thúc",
+	"filter-perPage": "Mỗi Trang"
 }

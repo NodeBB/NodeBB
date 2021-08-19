@@ -1,0 +1,25 @@
+delete:
+  tags:
+    - posts
+  summary: delete a post diff
+  description: This operation deletes a post diff from its history.
+  parameters:
+    - in: path
+      name: pid
+      schema:
+        type: string
+      required: true
+      description: a valid post id
+      example: 2
+    - in: path
+      name: timestamp
+      schema:
+        type: number
+      required: true
+      description: a valid UNIX timestamp
+      example: 1611850000000
+  responses:
+    '200':
+      description: Post diff successfully deleted
+      content:
+        $ref: ../diffs.yaml#/get/responses/200/content

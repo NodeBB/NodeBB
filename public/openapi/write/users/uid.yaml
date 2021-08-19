@@ -1,0 +1,131 @@
+head:
+  tags:
+    - users
+  summary: check if a user exists
+  parameters:
+    - in: path
+      name: uid
+      schema:
+        type: integer
+      required: true
+      description: uid of the user to check
+      example: 3
+  responses:
+    '200':
+      description: user found
+    '404':
+      description: user not found
+get:
+  tags:
+    - users
+  summary: get a single user account
+  parameters:
+    - in: path
+      name: uid
+      schema:
+        type: integer
+      required: true
+      description: uid of the user to check
+      example: 3
+  responses:
+    '200':
+      description: successfully retrieved user profile
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../components/schemas/UserObj.yaml#/UserObj
+delete:
+  tags:
+    - users
+  summary: delete a single user account
+  parameters:
+    - in: path
+      name: uid
+      schema:
+        type: integer
+      required: true
+      description: uid of the user to delete
+      example: 3
+  responses:
+    '200':
+      description: user account deleted
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+put:
+  tags:
+    - users
+  summary: update a user account
+  parameters:
+    - in: path
+      name: uid
+      schema:
+        type: integer
+      required: true
+      description: uid of the user to update
+      example: 1
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            fullname:
+              type: string
+              example: Mr. Dragon Fruit Jr.
+            website:
+              type: string
+              example: 'https://example.org'
+            location:
+              type: string
+              example: 'Toronto, Canada'
+            groupTitle:
+              type: string
+              example: '["administrators","Staff"]'
+            birthday:
+              type: string
+              description: A birthdate given in an ISO format parseable by the Date object
+              example: 03/27/2020
+            signature:
+              type: string
+              example: |
+                This is an example signature
+                It can span multiple lines.
+            aboutme:
+              type: string
+              example: |
+                This is a paragraph all about how my life got twist-turned upside-down
+                and I'd like to take a minute and sit right here,
+                to tell you all about how I because the administrator of NodeBB
+  responses:
+    '200':
+      description: user profile updated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../components/schemas/UserObj.yaml#/UserObj
+    '401':
+      $ref: ../../components/responses/401.yaml#/401
+    '403':
+      $ref: ../../components/responses/403.yaml#/403
+    '426':
+      $ref: ../../components/responses/426.yaml#/426
+    '500':
+      $ref: ../../components/responses/500.yaml#/500

@@ -84,6 +84,7 @@
     "remove_cover_picture_confirm": "カバー写真を削除してもよろしいですか？",
     "crop_picture": "画像を切り抜く",
     "upload_cropped_picture": "切り抜いてアップロード",
+    "avatar-background-colour": "Avatar background colour",
     "settings": "設定",
     "show_email": "メールアドレスを表示",
     "show_fullname": "フルネームで表示",
@@ -123,6 +124,7 @@
     "open_links_in_new_tab": "外部リンクを新しいタブで開く",
     "enable_topic_searching": "スレッド内検索を有効にする",
     "topic_search_help": "有効にしたら、インースレッドの検索はブラウザの既定機能を無視して、スクリーンに示したよりスレッド内からの全部を検索します",
+    "update_url_with_post_index": "Update url with post index while browsing topics",
     "scroll_to_my_post": "返信を投稿した後、新しい投稿を表示する",
     "follow_topics_you_reply_to": "あなたが返信したスレッドをウォッチする",
     "follow_topics_you_create": "あなたが作成したスレッドをウォッチする",
@@ -134,7 +136,7 @@
     "homepage": "ホームページ",
     "homepage_description": "フォーラムのホームに指定するページを選んで下さい。デフォルトのホームページを使用する場合は’None’を選んで下さい。",
     "custom_route": "カスタムホームページルート",
-    "custom_route_help": "ここにルート名を入れます。手前にスラッシュを入れないようにして下さい。(例：\"recent\"、\"popular\"など)",
+    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "シングルサインオンサービス",
     "sso.associated": "関連付けられています",
     "sso.not-associated": "ここを押して、関連付けられています",
@@ -178,5 +180,8 @@
     "consent.export_uploads": "アップデートしたコンテンツをエクスポート(.zip)",
     "consent.export-uploads-success": "Exporting uploads, you will get a notification when it is complete.",
     "consent.export_posts": "投稿をエクスポート (.csv)",
-    "consent.export-posts-success": "Exporting posts, you will get a notification when it is complete."
+    "consent.export-posts-success": "Exporting posts, you will get a notification when it is complete.",
+    "emailUpdate.intro": "Please enter your email address below. This forum uses your email address for scheduled digest and notifications, as well as for account recovery in the event of a lost password.",
+    "emailUpdate.optional": "<strong>This field is optional</strong>. You are not obligated to provide your email address, but without a validated email, you will not be able to recover your account.",
+    "emailUpdate.change-instructions": "A confirmation email will be sent to the entered email address with a unique link. Accessing that link will confirm your ownership of the email address and it will become active on your account. At any time, you are able to update your email on file from within your account page."
 }

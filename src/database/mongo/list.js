@@ -1,18 +1,17 @@
 'use strict';
 
 module.exports = function (module) {
-	var helpers = require('./helpers');
+	const helpers = require('./helpers');
 
 	module.listPrepend = async function (key, value) {
 		if (!key) {
 			return;
 		}
-
-		value = helpers.valueToString(value);
-
+		value = Array.isArray(value) ? value : [value];
+		value.reverse();
 		const exists = await module.isObjectField(key, 'array');
 		if (exists) {
-			await module.client.collection('objects').updateOne({ _key: key }, { $push: { array: { $each: [value], $position: 0 } } }, { upsert: true, w: 1 });
+			await listPush(key, value, { $position: 0 });
 		} else {
 			await module.listAppend(key, value);
 		}
@@ -22,9 +21,25 @@ module.exports = function (module) {
 		if (!key) {
 			return;
 		}
-		value = helpers.valueToString(value);
-		await module.client.collection('objects').updateOne({ _key: key }, { $push: { array: value } }, { upsert: true, w: 1 });
+		value = Array.isArray(value) ? value : [value];
+		await listPush(key, value);
 	};
+
+	async function listPush(key, values, position) {
+		values = values.map(helpers.valueToString);
+		await module.client.collection('objects').updateOne({
+			_key: key,
+		}, {
+			$push: {
+				array: {
+					$each: values,
+					...(position || {}),
+				},
+			},
+		}, {
+			upsert: true,
+		});
+	}
 
 	module.listRemoveLast = async function (key) {
 		if (!key) {

@@ -1,16 +1,15 @@
 'use strict';
 
-const _ = require('lodash');
-
 const db = require('../database');
 const topics = require('../topics');
 const plugins = require('../plugins');
 const meta = require('../meta');
+const privileges = require('../privileges');
 const user = require('../user');
 
 module.exports = function (Categories) {
 	Categories.getCategoryTopics = async function (data) {
-		let results = await plugins.fireHook('filter:category.topics.prepare', data);
+		let results = await plugins.hooks.fire('filter:category.topics.prepare', data);
 		const tids = await Categories.getTopicIds(results);
 		let topicsData = await topics.getTopicsByTids(tids, data.uid);
 		topicsData = await user.blocks.filter(data.uid, topicsData);
@@ -20,12 +19,12 @@ module.exports = function (Categories) {
 		}
 		topics.calculateTopicIndices(topicsData, data.start);
 
-		results = await plugins.fireHook('filter:category.topics.get', { cid: data.cid, topics: topicsData, uid: data.uid });
+		results = await plugins.hooks.fire('filter:category.topics.get', { cid: data.cid, topics: topicsData, uid: data.uid });
 		return { topics: results.topics, nextStart: data.stop + 1 };
 	};
 
 	Categories.getTopicIds = async function (data) {
-		const dataForPinned = _.cloneDeep(data);
+		const dataForPinned = { ...data };
 		dataForPinned.start = 0;
 		dataForPinned.stop = -1;
 
@@ -45,8 +44,8 @@ module.exports = function (Categories) {
 			return pinnedTidsOnPage;
 		}
 
-		if (plugins.hasListeners('filter:categories.getTopicIds')) {
-			const result = await plugins.fireHook('filter:categories.getTopicIds', {
+		if (plugins.hooks.hasListeners('filter:categories.getTopicIds')) {
+			const result = await plugins.hooks.fire('filter:categories.getTopicIds', {
 				tids: [],
 				data: data,
 				pinnedTids: pinnedTidsOnPage,
@@ -57,7 +56,7 @@ module.exports = function (Categories) {
 			return result && result.tids;
 		}
 
-		let start = data.start;
+		let { start } = data;
 		if (start > 0 && totalPinnedCount) {
 			start -= totalPinnedCount - pinnedCountOnPage;
 		}
@@ -76,8 +75,8 @@ module.exports = function (Categories) {
 	};
 
 	Categories.getTopicCount = async function (data) {
-		if (plugins.hasListeners('filter:categories.getTopicCount')) {
-			const result = await plugins.fireHook('filter:categories.getTopicCount', {
+		if (plugins.hooks.hasListeners('filter:categories.getTopicCount')) {
+			const result = await plugins.hooks.fire('filter:categories.getTopicCount', {
 				topicCount: data.category.topic_count,
 				data: data,
 			});
@@ -93,28 +92,29 @@ module.exports = function (Categories) {
 	};
 
 	Categories.buildTopicsSortedSet = async function (data) {
-		const cid = data.cid;
-		let set = 'cid:' + cid + ':tids';
+		const { cid } = data;
+		let set = `cid:${cid}:tids`;
 		const sort = data.sort || (data.settings && data.settings.categoryTopicSort) || meta.config.categoryTopicSort || 'newest_to_oldest';
 
 		if (sort === 'most_posts') {
-			set = 'cid:' + cid + ':tids:posts';
+			set = `cid:${cid}:tids:posts`;
 		} else if (sort === 'most_votes') {
-			set = 'cid:' + cid + ':tids:votes';
-		}
-
-		if (data.targetUid) {
-			set = 'cid:' + cid + ':uid:' + data.targetUid + ':tids';
+			set = `cid:${cid}:tids:votes`;
 		}
 
 		if (data.tag) {
 			if (Array.isArray(data.tag)) {
-				set = [set].concat(data.tag.map(tag => 'tag:' + tag + ':topics'));
+				set = [set].concat(data.tag.map(tag => `tag:${tag}:topics`));
 			} else {
-				set = [set, 'tag:' + data.tag + ':topics'];
+				set = [set, `tag:${data.tag}:topics`];
 			}
 		}
-		const result = await plugins.fireHook('filter:categories.buildTopicsSortedSet', {
+
+		if (data.targetUid) {
+			set = (Array.isArray(set) ? set : [set]).concat([`cid:${cid}:uid:${data.targetUid}:tids`]);
+		}
+
+		const result = await plugins.hooks.fire('filter:categories.buildTopicsSortedSet', {
 			set: set,
 			data: data,
 		});
@@ -124,7 +124,7 @@ module.exports = function (Categories) {
 	Categories.getSortedSetRangeDirection = async function (sort) {
 		sort = sort || 'newest_to_oldest';
 		const direction = sort === 'newest_to_oldest' || sort === 'most_posts' || sort === 'most_votes' ? 'highest-to-lowest' : 'lowest-to-highest';
-		const result = await plugins.fireHook('filter:categories.getSortedSetRangeDirection', {
+		const result = await plugins.hooks.fire('filter:categories.getSortedSetRangeDirection', {
 			sort: sort,
 			direction: direction,
 		});
@@ -132,29 +132,37 @@ module.exports = function (Categories) {
 	};
 
 	Categories.getAllTopicIds = async function (cid, start, stop) {
-		return await db.getSortedSetRange(['cid:' + cid + ':tids:pinned', 'cid:' + cid + ':tids'], start, stop);
+		return await db.getSortedSetRange([`cid:${cid}:tids:pinned`, `cid:${cid}:tids`], start, stop);
 	};
 
 	Categories.getPinnedTids = async function (data) {
-		if (plugins.hasListeners('filter:categories.getPinnedTids')) {
-			const result = await plugins.fireHook('filter:categories.getPinnedTids', {
+		if (plugins.hooks.hasListeners('filter:categories.getPinnedTids')) {
+			const result = await plugins.hooks.fire('filter:categories.getPinnedTids', {
 				pinnedTids: [],
 				data: data,
 			});
 			return result && result.pinnedTids;
 		}
+		const [allPinnedTids, canSchedule] = await Promise.all([
+			db.getSortedSetRevRange(`cid:${data.cid}:tids:pinned`, data.start, data.stop),
+			privileges.categories.can('topics:schedule', data.cid, data.uid),
+		]);
+		const pinnedTids = canSchedule ? allPinnedTids : await filterScheduledTids(allPinnedTids);
 
-		return await db.getSortedSetRevRange('cid:' + data.cid + ':tids:pinned', data.start, data.stop);
+		return await topics.tools.checkPinExpiry(pinnedTids);
 	};
 
 	Categories.modifyTopicsByPrivilege = function (topics, privileges) {
-		if (!Array.isArray(topics) || !topics.length || privileges.isAdminOrMod) {
+		if (!Array.isArray(topics) || !topics.length || privileges.view_deleted) {
 			return;
 		}
 
-		topics.forEach(function (topic) {
-			if (topic.deleted && !topic.isOwner) {
+		topics.forEach((topic) => {
+			if (!topic.scheduled && topic.deleted && !topic.isOwner) {
 				topic.title = '[[topic:topic_is_deleted]]';
+				if (topic.hasOwnProperty('titleRaw')) {
+					topics.titleRaw = '[[topic:topic_is_deleted]]';
+				}
 				topic.slug = topic.tid;
 				topic.teaser = null;
 				topic.noAnchor = true;
@@ -168,13 +176,19 @@ module.exports = function (Categories) {
 			return;
 		}
 		const promises = [
-			db.sortedSetAdd('cid:' + cid + ':pids', postData.timestamp, postData.pid),
-			db.incrObjectField('category:' + cid, 'post_count'),
+			db.sortedSetAdd(`cid:${cid}:pids`, postData.timestamp, postData.pid),
+			db.incrObjectField(`category:${cid}`, 'post_count'),
 		];
 		if (!pinned) {
-			promises.push(db.sortedSetIncrBy('cid:' + cid + ':tids:posts', 1, postData.tid));
+			promises.push(db.sortedSetIncrBy(`cid:${cid}:tids:posts`, 1, postData.tid));
 		}
 		await Promise.all(promises);
 		await Categories.updateRecentTidForCid(cid);
 	};
+
+	async function filterScheduledTids(tids) {
+		const scores = await db.sortedSetScores('topics:scheduled', tids);
+		const now = Date.now();
+		return tids.filter((tid, index) => tid && (!scores[index] || scores[index] <= now));
+	}
 };

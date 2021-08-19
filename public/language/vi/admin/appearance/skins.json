@@ -4,6 +4,6 @@
 	"select-skin": "Chọn giao diện",
 	"current-skin": "Giao diện hiện tại",
 	"skin-updated": "Đã cập nhật giao diện",
-	"applied-success": "1% giao diện đã được sử dụng thành công",
+	"applied-success": "%1 giao diện đã được sử dụng thành công",
 	"revert-success": "Đã trả giao diện về màu cơ bản"
 }

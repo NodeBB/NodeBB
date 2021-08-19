@@ -2,6 +2,8 @@
 
 const winston = require('winston');
 const mime = require('mime');
+const path = require('path');
+const nconf = require('nconf');
 
 const db = require('../database');
 const file = require('../file');
@@ -11,12 +13,16 @@ const plugins = require('../plugins');
 
 module.exports = function (User) {
 	User.getAllowedProfileImageExtensions = function () {
-		return User.getAllowedImageTypes().map(type => mime.getExtension(type));
+		const exts = User.getAllowedImageTypes().map(type => mime.getExtension(type));
+		if (exts.includes('jpeg')) {
+			exts.push('jpg');
+		}
+		return exts;
 	};
 
 	User.getAllowedImageTypes = function () {
 		const allowedTypes = ['image/png', 'image/jpeg', 'image/bmp'];
-		if (plugins.hasListeners('filter:image.isFileTypeAllowed')) {
+		if (plugins.hooks.hasListeners('filter:image.isFileTypeAllowed')) {
 			allowedTypes.push('image/gif');
 		}
 		return allowedTypes;
@@ -25,7 +31,7 @@ module.exports = function (User) {
 	User.updateCoverPosition = async function (uid, position) {
 		// Reject anything that isn't two percentages
 		if (!/^[\d.]+%\s[\d.]+%$/.test(position)) {
-			winston.warn('[user/updateCoverPosition] Invalid position received: ' + position);
+			winston.warn(`[user/updateCoverPosition] Invalid position received: ${position}`);
 			throw new Error('[[error:invalid-data]]');
 		}
 
@@ -48,9 +54,10 @@ module.exports = function (User) {
 			picture.path = await image.writeImageDataToTempFile(data.imageData);
 
 			const extension = file.typeToExtension(image.mimeFromBase64(data.imageData));
-			const filename = data.uid + '-profilecover' + extension;
+			const filename = `${data.uid}-profilecover-${Date.now()}${extension}`;
 			const uploadData = await image.uploadImage(filename, 'profile', picture);
 
+			await deleteCurrentPicture(data.uid, 'cover:url');
 			await User.setUserField(data.uid, 'cover:url', uploadData.url);
 
 			if (data.position) {
@@ -73,7 +80,7 @@ module.exports = function (User) {
 		}
 
 		if (userPhoto.size > meta.config.maximumProfileImageSize * 1024) {
-			throw new Error('[[error:file-too-big, ' + meta.config.maximumProfileImageSize + ']]');
+			throw new Error(`[[error:file-too-big, ${meta.config.maximumProfileImageSize}]]`);
 		}
 
 		if (!userPhoto.type || !User.getAllowedImageTypes().includes(userPhoto.type)) {
@@ -100,10 +107,12 @@ module.exports = function (User) {
 			name: 'profileAvatar',
 		});
 
-		await User.setUserFields(data.uid, {
+		await deleteCurrentPicture(data.uid, 'uploadedpicture');
+		await User.updateProfile(data.callerUid, {
+			uid: data.uid,
 			uploadedpicture: uploadedImage.url,
 			picture: uploadedImage.url,
-		});
+		}, ['uploadedpicture', 'picture']);
 		return uploadedImage;
 	};
 
@@ -138,15 +147,31 @@ module.exports = function (User) {
 			const filename = generateProfileImageFilename(data.uid, extension);
 			const uploadedImage = await image.uploadImage(filename, 'profile', picture);
 
-			await User.setUserFields(data.uid, {
+			await deleteCurrentPicture(data.uid, 'uploadedpicture');
+			await User.updateProfile(data.callerUid, {
+				uid: data.uid,
 				uploadedpicture: uploadedImage.url,
 				picture: uploadedImage.url,
-			});
+			}, ['uploadedpicture', 'picture']);
 			return uploadedImage;
 		} finally {
 			await file.delete(picture.path);
 		}
 	};
+
+	async function deleteCurrentPicture(uid, field) {
+		if (meta.config['profile:keepAllUserImages']) {
+			return;
+		}
+		await deletePicture(uid, field);
+	}
+
+	async function deletePicture(uid, field) {
+		const uploadPath = await getPicturePath(uid, field);
+		if (uploadPath) {
+			await file.delete(uploadPath);
+		}
+	}
 
 	function validateUpload(data, maxSize, allowedTypes) {
 		if (!data.imageData) {
@@ -154,7 +179,7 @@ module.exports = function (User) {
 		}
 		const size = image.sizeFromBase64(data.imageData);
 		if (size > maxSize * 1024) {
-			throw new Error('[[error:file-too-big, ' + maxSize + ']]');
+			throw new Error(`[[error:file-too-big, ${maxSize}]]`);
 		}
 
 		const type = image.mimeFromBase64(data.imageData);
@@ -174,12 +199,40 @@ module.exports = function (User) {
 	}
 
 	function generateProfileImageFilename(uid, extension) {
-		const keepAllVersions = meta.config['profile:keepAllUserImages'] === 1;
 		const convertToPNG = meta.config['profile:convertProfileImageToPNG'] === 1;
-		return uid + '-profileavatar' + (keepAllVersions ? '-' + Date.now() : '') + (convertToPNG ? '.png' : extension);
+		return `${uid}-profileavatar-${Date.now()}${convertToPNG ? '.png' : extension}`;
 	}
 
 	User.removeCoverPicture = async function (data) {
-		await db.deleteObjectFields('user:' + data.uid, ['cover:url', 'cover:position']);
+		await deletePicture(data.uid, 'cover:url');
+		await db.deleteObjectFields(`user:${data.uid}`, ['cover:url', 'cover:position']);
 	};
+
+	User.removeProfileImage = async function (uid) {
+		const userData = await User.getUserFields(uid, ['uploadedpicture', 'picture']);
+		await deletePicture(uid, 'uploadedpicture');
+		await User.setUserFields(uid, {
+			uploadedpicture: '',
+			// if current picture is uploaded picture, reset to user icon
+			picture: userData.uploadedpicture === userData.picture ? '' : userData.picture,
+		});
+		return userData;
+	};
+
+	User.getLocalCoverPath = async function (uid) {
+		return getPicturePath(uid, 'cover:url');
+	};
+
+	User.getLocalAvatarPath = async function (uid) {
+		return getPicturePath(uid, 'uploadedpicture');
+	};
+
+	async function getPicturePath(uid, field) {
+		const value = await User.getUserField(uid, field);
+		if (!value || !value.startsWith(`${nconf.get('relative_path')}/assets/uploads/profile/`)) {
+			return false;
+		}
+		const filename = value.split('/').pop();
+		return path.join(nconf.get('upload_path'), 'profile', filename);
+	}
 };

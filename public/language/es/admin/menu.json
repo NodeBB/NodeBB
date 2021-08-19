@@ -1,5 +1,9 @@
 {
-	"dashboard": "Dashboard",
+	"section-dashboard": "Dashboards",
+	"dashboard/overview": "Overview",
+	"dashboard/logins": "Logins",
+	"dashboard/users": "Users",
+	"dashboard/topics": "Topics",
 	"section-general": "General",
 
 	"section-manage": "Administrar",
@@ -31,6 +35,7 @@
 	"settings/pagination": "Paginación",
 	"settings/tags": "Etiquetas",
 	"settings/notifications": "Notificaciones",
+	"settings/api": "API Access",
 	"settings/sounds": "Sounds",
 	"settings/social": "Social",
 	"settings/cookies": "Cookies",

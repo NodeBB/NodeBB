@@ -8,5 +8,6 @@
     "failed_login_attempt": "登入失敗",
     "login_successful": "您已成功登入！",
     "dont_have_account": "沒有帳戶？",
-    "logged-out-due-to-inactivity": "由於長時間沒有活動，您的帳戶已被管理員從後台登出"
+    "logged-out-due-to-inactivity": "由於長時間沒有活動，您的帳戶已被管理員從後台登出",
+    "caps-lock-enabled": "Caps Lock is enabled"
 }

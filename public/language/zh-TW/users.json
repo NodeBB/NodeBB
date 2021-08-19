@@ -11,6 +11,7 @@
     "online-only": "只看在線",
     "invite": "邀請註冊",
     "prompt-email": "郵件：",
+    "groups-to-join": "Groups to be joined when invite is accepted:",
     "invitation-email-sent": "已發送邀請給 %1",
     "user_list": "使用者列表",
     "recent_topics": "最新主題",

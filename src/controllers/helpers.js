@@ -1,24 +1,28 @@
 'use strict';
 
+const colors = require('colors/safe');
 const nconf = require('nconf');
 const validator = require('validator');
 const querystring = require('querystring');
 const _ = require('lodash');
 
+const translator = require('../translator');
 const user = require('../user');
 const privileges = require('../privileges');
 const categories = require('../categories');
 const plugins = require('../plugins');
 const meta = require('../meta');
-const middleware = require('../middleware');
 
 const helpers = module.exports;
+
+const relative_path = nconf.get('relative_path');
+const url = nconf.get('url');
 
 helpers.noScriptErrors = async function (req, res, error, httpStatus) {
 	if (req.body.noscript !== 'true') {
 		return res.status(httpStatus).send(error);
 	}
-
+	const middleware = require('../middleware');
 	const httpStatusString = httpStatus.toString();
 	await middleware.buildHeaderAsync(req, res);
 	res.status(httpStatus).render(httpStatusString, {
@@ -26,7 +30,7 @@ helpers.noScriptErrors = async function (req, res, error, httpStatus) {
 		loggedIn: req.loggedIn,
 		error: error,
 		returnLink: true,
-		title: '[[global:' + httpStatusString + '.title]]',
+		title: `[[global:${httpStatusString}.title]]`,
 	});
 };
 
@@ -37,25 +41,25 @@ helpers.terms = {
 };
 
 helpers.buildQueryString = function (query, key, value) {
-	const queryObj = _.clone(query);
+	const queryObj = { ...query };
 	if (value) {
 		queryObj[key] = value;
 	} else {
 		delete queryObj[key];
 	}
 	delete queryObj._;
-	return Object.keys(queryObj).length ? '?' + querystring.stringify(queryObj) : '';
+	return Object.keys(queryObj).length ? `?${querystring.stringify(queryObj)}` : '';
 };
 
 helpers.addLinkTags = function (params) {
 	params.res.locals.linkTags = params.res.locals.linkTags || [];
 	params.res.locals.linkTags.push({
 		rel: 'canonical',
-		href: nconf.get('url') + '/' + params.url,
+		href: `${url}/${params.url}`,
 	});
 
-	params.tags.forEach(function (rel) {
-		rel.href = nconf.get('url') + '/' + params.url + rel.href;
+	params.tags.forEach((rel) => {
+		rel.href = `${url}/${params.url}${rel.href}`;
 		params.res.locals.linkTags.push(rel);
 	});
 };
@@ -113,45 +117,55 @@ helpers.buildTerms = function (url, term, query) {
 };
 
 helpers.notAllowed = async function (req, res, error) {
-	const data = await plugins.fireHook('filter:helpers.notAllowed', {
-		req: req,
-		res: res,
-		error: error,
-	});
+	({ error } = await plugins.hooks.fire('filter:helpers.notAllowed', { req, res, error }));
 
 	if (req.loggedIn || req.uid === -1) {
 		if (res.locals.isAPI) {
-			res.status(403).json({
-				path: req.path.replace(/^\/api/, ''),
-				loggedIn: req.loggedIn,
-				error: data.error,
-				title: '[[global:403.title]]',
-			});
+			helpers.formatApiResponse(403, res, error);
 		} else {
+			const middleware = require('../middleware');
 			await middleware.buildHeaderAsync(req, res);
 			res.status(403).render('403', {
 				path: req.path,
 				loggedIn: req.loggedIn,
-				error: data.error,
+				error,
 				title: '[[global:403.title]]',
 			});
 		}
 	} else if (res.locals.isAPI) {
 		req.session.returnTo = req.url.replace(/^\/api/, '');
-		res.status(401).json('not-authorized');
+		helpers.formatApiResponse(401, res, error);
 	} else {
 		req.session.returnTo = req.url;
-		res.redirect(nconf.get('relative_path') + '/login');
+		res.redirect(`${relative_path}/login${req.path.startsWith('/admin') ? '?local=1' : ''}`);
 	}
 };
 
 helpers.redirect = function (res, url, permanent) {
+	// this is used by sso plugins to redirect to the auth route
+	// { external: '/auth/sso' } or { external: 'https://domain/auth/sso' }
+	if (url.hasOwnProperty('external')) {
+		const redirectUrl = encodeURI(prependRelativePath(url.external));
+		if (res.locals.isAPI) {
+			res.set('X-Redirect', redirectUrl).status(200).json({ external: redirectUrl });
+		} else {
+			res.redirect(permanent ? 308 : 307, redirectUrl);
+		}
+		return;
+	}
+
 	if (res.locals.isAPI) {
-		res.set('X-Redirect', encodeURI(url)).status(200).json(url);
+		url = encodeURI(url);
+		res.set('X-Redirect', url).status(200).json(url);
 	} else {
-		res.redirect(permanent ? 308 : 307, nconf.get('relative_path') + encodeURI(url));
+		res.redirect(permanent ? 308 : 307, encodeURI(prependRelativePath(url)));
 	}
 };
+
+function prependRelativePath(url) {
+	return url.startsWith('http://') || url.startsWith('https://') ?
+		url : relative_path + url;
+}
 
 helpers.buildCategoryBreadcrumbs = async function (cid) {
 	const breadcrumbs = [];
@@ -162,7 +176,7 @@ helpers.buildCategoryBreadcrumbs = async function (cid) {
 		if (!data.disabled && !data.isSection) {
 			breadcrumbs.unshift({
 				text: String(data.name),
-				url: nconf.get('relative_path') + '/category/' + data.slug,
+				url: `${relative_path}/category/${data.slug}`,
 				cid: cid,
 			});
 		}
@@ -171,13 +185,13 @@ helpers.buildCategoryBreadcrumbs = async function (cid) {
 	if (meta.config.homePageRoute && meta.config.homePageRoute !== 'categories') {
 		breadcrumbs.unshift({
 			text: '[[global:header.categories]]',
-			url: nconf.get('relative_path') + '/categories',
+			url: `${relative_path}/categories`,
 		});
 	}
 
 	breadcrumbs.unshift({
 		text: '[[global:home]]',
-		url: nconf.get('relative_path') + '/',
+		url: `${relative_path}/`,
 	});
 
 	return breadcrumbs;
@@ -187,14 +201,14 @@ helpers.buildBreadcrumbs = function (crumbs) {
 	const breadcrumbs = [
 		{
 			text: '[[global:home]]',
-			url: nconf.get('relative_path') + '/',
+			url: `${relative_path}/`,
 		},
 	];
 
-	crumbs.forEach(function (crumb) {
+	crumbs.forEach((crumb) => {
 		if (crumb) {
 			if (crumb.url) {
-				crumb.url = nconf.get('relative_path') + crumb.url;
+				crumb.url = relative_path + crumb.url;
 			}
 			breadcrumbs.push(crumb);
 		}
@@ -214,51 +228,29 @@ helpers.buildTitle = function (pageTitle) {
 
 helpers.getCategories = async function (set, uid, privilege, selectedCid) {
 	const cids = await categories.getCidsByPrivilege(set, uid, privilege);
-	return await getCategoryData(cids, uid, selectedCid);
+	return await getCategoryData(cids, uid, selectedCid, privilege);
 };
 
-helpers.getCategoriesByStates = async function (uid, selectedCid, states) {
+helpers.getCategoriesByStates = async function (uid, selectedCid, states, privilege = 'topics:read') {
 	const cids = await categories.getAllCidsFromSet('categories:cid');
-	return await getCategoryData(cids, uid, selectedCid, states);
+	return await getCategoryData(cids, uid, selectedCid, states, privilege);
 };
 
-async function getCategoryData(cids, uid, selectedCid, states) {
+async function getCategoryData(cids, uid, selectedCid, states, privilege) {
 	if (selectedCid && !Array.isArray(selectedCid)) {
 		selectedCid = [selectedCid];
 	}
 	selectedCid = selectedCid && selectedCid.map(String);
-	states = states || [categories.watchStates.watching, categories.watchStates.notwatching];
 
-	const [allowed, watchState, categoryData, isAdmin] = await Promise.all([
-		privileges.categories.isUserAllowedTo('topics:read', cids, uid),
-		categories.getWatchState(cids, uid),
-		categories.getCategoriesData(cids),
-		user.isAdministrator(uid),
-	]);
-
-	categories.getTree(categoryData);
-
-	const cidToAllowed = _.zipObject(cids, allowed.map(allowed => isAdmin || allowed));
-	const cidToCategory = _.zipObject(cids, categoryData);
-	const cidToWatchState = _.zipObject(cids, watchState);
-
-	const visibleCategories = categoryData.filter(function (c) {
-		const hasVisibleChildren = checkVisibleChildren(c, cidToAllowed, cidToWatchState, states);
-		const isCategoryVisible = c && cidToAllowed[c.cid] && !c.link && !c.disabled && states.includes(cidToWatchState[c.cid]);
-		const shouldBeRemoved = !hasVisibleChildren && !isCategoryVisible;
-
-		if (shouldBeRemoved && c && c.parent && c.parent.cid && cidToCategory[c.parent.cid]) {
-			cidToCategory[c.parent.cid].children = cidToCategory[c.parent.cid].children.filter(child => child.cid !== c.cid);
-		}
-
-		return c && !shouldBeRemoved;
+	const visibleCategories = await helpers.getVisibleCategories({
+		cids, uid, states, privilege, showLinks: false,
 	});
 
-	const categoriesData = categories.buildForSelectCategories(visibleCategories);
+	const categoriesData = categories.buildForSelectCategories(visibleCategories, ['disabledClass']);
 
 	let selectedCategory = [];
 	const selectedCids = [];
-	categoriesData.forEach(function (category) {
+	categoriesData.forEach((category) => {
 		category.selected = selectedCid ? selectedCid.includes(String(category.cid)) : false;
 		if (category.selected) {
 			selectedCategory.push(category);
@@ -276,7 +268,7 @@ async function getCategoryData(cids, uid, selectedCid, states) {
 	} else if (selectedCategory.length === 1) {
 		selectedCategory = selectedCategory[0];
 	} else {
-		selectedCategory = undefined;
+		selectedCategory = null;
 	}
 
 	return {
@@ -286,26 +278,116 @@ async function getCategoryData(cids, uid, selectedCid, states) {
 	};
 }
 
+helpers.getVisibleCategories = async function (params) {
+	const { cids, uid, privilege } = params;
+	const states = params.states || [categories.watchStates.watching, categories.watchStates.notwatching];
+	const showLinks = !!params.showLinks;
+
+	let [allowed, watchState, categoriesData, isAdmin, isModerator] = await Promise.all([
+		privileges.categories.isUserAllowedTo(privilege, cids, uid),
+		categories.getWatchState(cids, uid),
+		categories.getCategoriesData(cids),
+		user.isAdministrator(uid),
+		user.isModerator(uid, cids),
+	]);
+
+	const filtered = await plugins.hooks.fire('filter:helpers.getVisibleCategories', {
+		uid: uid,
+		allowed: allowed,
+		watchState: watchState,
+		categoriesData: categoriesData,
+		isModerator: isModerator,
+		isAdmin: isAdmin,
+	});
+	({ allowed, watchState, categoriesData, isModerator, isAdmin } = filtered);
+
+	categories.getTree(categoriesData, params.parentCid);
+
+	const cidToAllowed = _.zipObject(cids, allowed.map((allowed, i) => isAdmin || isModerator[i] || allowed));
+	const cidToCategory = _.zipObject(cids, categoriesData);
+	const cidToWatchState = _.zipObject(cids, watchState);
+
+	return categoriesData.filter((c) => {
+		if (!c) {
+			return false;
+		}
+		const hasVisibleChildren = checkVisibleChildren(c, cidToAllowed, cidToWatchState, states);
+		const isCategoryVisible = (
+			cidToAllowed[c.cid] &&
+			(showLinks || !c.link) &&
+			!c.disabled &&
+			states.includes(cidToWatchState[c.cid])
+		);
+		const shouldBeRemoved = !hasVisibleChildren && !isCategoryVisible;
+		const shouldBeDisaplayedAsDisabled = hasVisibleChildren && !isCategoryVisible;
+
+		if (shouldBeDisaplayedAsDisabled) {
+			c.disabledClass = true;
+		}
+
+		if (shouldBeRemoved && c.parent && c.parent.cid && cidToCategory[c.parent.cid]) {
+			cidToCategory[c.parent.cid].children = cidToCategory[c.parent.cid].children.filter(child => child.cid !== c.cid);
+		}
+
+		return !shouldBeRemoved;
+	});
+};
+
+helpers.getSelectedCategory = async function (cid) {
+	if (cid && !Array.isArray(cid)) {
+		cid = [cid];
+	}
+	cid = cid && cid.map(cid => parseInt(cid, 10));
+	let selectedCategories = await categories.getCategoriesData(cid);
+
+	if (selectedCategories.length > 1) {
+		selectedCategories = {
+			icon: 'fa-plus',
+			name: '[[unread:multiple-categories-selected]]',
+			bgColor: '#ddd',
+		};
+	} else if (selectedCategories.length === 1) {
+		selectedCategories = selectedCategories[0];
+	} else {
+		selectedCategories = null;
+	}
+	return {
+		selectedCids: cid || [],
+		selectedCategory: selectedCategories,
+	};
+};
+
+helpers.trimChildren = function (category) {
+	if (Array.isArray(category.children)) {
+		category.children = category.children.slice(0, category.subCategoriesPerPage);
+		category.children.forEach((child) => {
+			child.children = undefined;
+		});
+	}
+};
+
+helpers.setCategoryTeaser = function (category) {
+	if (Array.isArray(category.posts) && category.posts.length && category.posts[0]) {
+		category.teaser = {
+			url: `${nconf.get('relative_path')}/post/${category.posts[0].pid}`,
+			timestampISO: category.posts[0].timestampISO,
+			pid: category.posts[0].pid,
+			topic: category.posts[0].topic,
+		};
+	}
+};
+
 function checkVisibleChildren(c, cidToAllowed, cidToWatchState, states) {
 	if (!c || !Array.isArray(c.children)) {
 		return false;
 	}
-	return c.children.some(c => c && !c.disabled && (
-		(cidToAllowed[c.cid] && states.includes(cidToWatchState[c.cid])) || checkVisibleChildren(c, cidToAllowed, cidToWatchState, states)
+	return c.children.some(c => !c.disabled && (
+		(cidToAllowed[c.cid] && states.includes(cidToWatchState[c.cid])) ||
+		checkVisibleChildren(c, cidToAllowed, cidToWatchState, states)
 	));
 }
 
 helpers.getHomePageRoutes = async function (uid) {
-	let cids = await categories.getAllCidsFromSet('categories:cid');
-	cids = await privileges.categories.filterCids('find', cids, uid);
-	const categoryData = await categories.getCategoriesFields(cids, ['name', 'slug']);
-
-	const categoryRoutes = categoryData.map(function (category) {
-		return {
-			route: 'category/' + category.slug,
-			name: 'Category: ' + category.name,
-		};
-	});
 	const routes = [
 		{
 			route: 'categories',
@@ -327,14 +409,137 @@ helpers.getHomePageRoutes = async function (uid) {
 			route: 'popular',
 			name: 'Popular',
 		},
-	].concat(categoryRoutes, [
 		{
 			route: 'custom',
 			name: 'Custom',
 		},
-	]);
-	const data = await plugins.fireHook('filter:homepage.get', { routes: routes });
+	];
+	const data = await plugins.hooks.fire('filter:homepage.get', {
+		uid: uid,
+		routes: routes,
+	});
 	return data.routes;
+};
+
+helpers.formatApiResponse = async (statusCode, res, payload) => {
+	if (res.req.method === 'HEAD') {
+		return res.sendStatus(statusCode);
+	}
+
+	if (String(statusCode).startsWith('2')) {
+		res.status(statusCode).json({
+			status: {
+				code: 'ok',
+				message: 'OK',
+			},
+			response: payload || {},
+		});
+	} else if (payload instanceof Error) {
+		const { message } = payload;
+		const response = {};
+
+		// Update status code based on some common error codes
+		switch (payload.message) {
+			case '[[error:user-banned]]':
+				Object.assign(response, await generateBannedResponse(res));
+				// intentional fall through
+
+			case '[[error:no-privileges]]':
+				statusCode = 403;
+				break;
+
+			case '[[error:invalid-uid]]':
+				statusCode = 401;
+				break;
+		}
+
+		const returnPayload = await helpers.generateError(statusCode, message);
+		returnPayload.response = response;
+
+		if (global.env === 'development') {
+			returnPayload.stack = payload.stack;
+			process.stdout.write(`[${colors.yellow('api')}] Exception caught, error with stack trace follows:\n`);
+			process.stdout.write(payload.stack);
+		}
+		res.status(statusCode).json(returnPayload);
+	} else if (!payload) {
+		// Non-2xx statusCode, generate predefined error
+		const returnPayload = await helpers.generateError(statusCode);
+		res.status(statusCode).json(returnPayload);
+	}
+};
+
+async function generateBannedResponse(res) {
+	const response = {};
+	const [reason, expiry] = await Promise.all([
+		user.bans.getReason(res.req.uid),
+		user.getUserField(res.req.uid, 'banned:expire'),
+	]);
+
+	response.reason = reason;
+	if (expiry) {
+		Object.assign(response, {
+			expiry,
+			expiryISO: new Date(expiry).toISOString(),
+			expiryLocaleString: new Date(expiry).toLocaleString(),
+		});
+	}
+
+	return response;
+}
+
+helpers.generateError = async (statusCode, message) => {
+	if (message && message.startsWith('[[')) {
+		message = await translator.translate(message);
+	}
+
+	const payload = {
+		status: {
+			code: 'internal-server-error',
+			message: message || await translator.translate(`[[error:api.${statusCode}]]`),
+		},
+		response: {},
+	};
+
+	switch (statusCode) {
+		case 400:
+			payload.status.code = 'bad-request';
+			break;
+
+		case 401:
+			payload.status.code = 'not-authorised';
+			break;
+
+		case 403:
+			payload.status.code = 'forbidden';
+			break;
+
+		case 404:
+			payload.status.code = 'not-found';
+			break;
+
+		case 426:
+			payload.status.code = 'upgrade-required';
+			break;
+
+		case 429:
+			payload.status.code = 'too-many-requests';
+			break;
+
+		case 500:
+			payload.status.code = 'internal-server-error';
+			break;
+
+		case 501:
+			payload.status.code = 'not-implemented';
+			break;
+
+		case 503:
+			payload.status.code = 'service-unavailable';
+			break;
+	}
+
+	return payload;
 };
 
 require('../promisify')(helpers);

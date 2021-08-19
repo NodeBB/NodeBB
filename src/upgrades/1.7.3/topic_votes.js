@@ -1,56 +1,56 @@
 'use strict';
 
-var async = require('async');
-var batch = require('../../batch');
-var db = require('../../database');
+const async = require('async');
+const batch = require('../../batch');
+const db = require('../../database');
 
 module.exports = {
 	name: 'Add votes to topics',
 	timestamp: Date.UTC(2017, 11, 8),
 	method: function (callback) {
-		var progress = this.progress;
+		const { progress } = this;
 
-		batch.processSortedSet('topics:tid', function (tids, next) {
-			async.eachLimit(tids, 500, function (tid, _next) {
+		batch.processSortedSet('topics:tid', (tids, next) => {
+			async.eachLimit(tids, 500, (tid, _next) => {
 				progress.incr();
-				var topicData;
+				let topicData;
 				async.waterfall([
 					function (next) {
-						db.getObjectFields('topic:' + tid, ['mainPid', 'cid', 'pinned'], next);
+						db.getObjectFields(`topic:${tid}`, ['mainPid', 'cid', 'pinned'], next);
 					},
 					function (_topicData, next) {
 						topicData = _topicData;
 						if (!topicData.mainPid || !topicData.cid) {
 							return _next();
 						}
-						db.getObject('post:' + topicData.mainPid, next);
+						db.getObject(`post:${topicData.mainPid}`, next);
 					},
 					function (postData, next) {
 						if (!postData) {
 							return _next();
 						}
-						var upvotes = parseInt(postData.upvotes, 10) || 0;
-						var downvotes = parseInt(postData.downvotes, 10) || 0;
-						var data = {
+						const upvotes = parseInt(postData.upvotes, 10) || 0;
+						const downvotes = parseInt(postData.downvotes, 10) || 0;
+						const data = {
 							upvotes: upvotes,
 							downvotes: downvotes,
 						};
-						var votes = upvotes - downvotes;
+						const votes = upvotes - downvotes;
 						async.parallel([
 							function (next) {
-								db.setObject('topic:' + tid, data, next);
+								db.setObject(`topic:${tid}`, data, next);
 							},
 							function (next) {
 								db.sortedSetAdd('topics:votes', votes, tid, next);
 							},
 							function (next) {
 								if (parseInt(topicData.pinned, 10) !== 1) {
-									db.sortedSetAdd('cid:' + topicData.cid + ':tids:votes', votes, tid, next);
+									db.sortedSetAdd(`cid:${topicData.cid}:tids:votes`, votes, tid, next);
 								} else {
 									next();
 								}
 							},
-						], function (err) {
+						], (err) => {
 							next(err);
 						});
 					},

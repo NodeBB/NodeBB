@@ -4,13 +4,6 @@
 	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/user:authentication]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<form role="form">
-			<div class="checkbox">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="requireEmailConfirmation">
-					<span class="mdl-switch__label"><strong>[[admin/settings/user:require-email-confirmation]]</strong></span>
-				</label>
-			</div>
-
 			<div class="form-group form-inline">
 				<label for="emailConfirmInterval">[[admin/settings/user:email-confirm-interval]]</label>
 				<input class="form-control" data-field="emailConfirmInterval" type="number" id="emailConfirmInterval" placeholder="Default: 10"
@@ -75,6 +68,12 @@
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="hideEmail">
 					<span class="mdl-switch__label"><strong>[[admin/settings/user:hide-email]]</strong></span>
+				</label>
+			</div>
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="showFullnameAsDisplayName">
+					<span class="mdl-switch__label"><strong>[[admin/settings/user:show-fullname-as-displayname]]</strong></span>
 				</label>
 			</div>
 		</form>
@@ -187,6 +186,19 @@
 				</p>
 			</div>
 			<div class="form-group">
+				<label>[[admin/settings/user:registration-queue-auto-approve-time]]</label>
+				<input type="number" class="form-control" data-field="autoApproveTime" placeholder="0">
+				<p class="help-block">
+					[[admin/settings/user:registration-queue-auto-approve-time-help]]
+				</p>
+			</div>
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="showAverageApprovalTime">
+					<span class="mdl-switch__label"><strong>[[admin/settings/user:registration-queue-show-average-time]]</strong></span>
+				</label>
+			</div>
+			<div class="form-group">
 				<label>[[admin/settings/user:max-invites]]</label>
 				<input type="number" class="form-control" data-field="maximumInvites" placeholder="0">
 				<p class="help-block">
@@ -283,6 +295,13 @@
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="topicSearchEnabled">
 					<span class="mdl-switch__label"><strong>[[admin/settings/user:topic-search]]</strong></span>
+				</label>
+			</div>
+
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="updateUrlWithPostIndex">
+					<span class="mdl-switch__label"><strong>[[admin/settings/user:update-url-with-post-index]]</strong></span>
 				</label>
 			</div>
 

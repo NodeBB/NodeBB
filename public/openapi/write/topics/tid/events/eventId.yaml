@@ -1,0 +1,33 @@
+delete:
+  tags:
+    - topics
+  summary: Delete a topic event
+  description: This operation deletes a single topic event from the topic
+  parameters:
+    - in: path
+      name: tid
+      schema:
+        type: string
+      required: true
+      description: a valid topic id
+      example: 1
+    - in: path
+      name: eventId
+      schema:
+        type: string
+      required: true
+      description: a valid topic event id
+      example: 1
+  responses:
+    '200':
+      description: Topic event successfully deleted
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}

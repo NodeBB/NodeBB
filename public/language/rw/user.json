@@ -84,6 +84,7 @@
     "remove_cover_picture_confirm": "Are you sure you want to remove the cover picture?",
     "crop_picture": "Crop picture",
     "upload_cropped_picture": "Crop and upload",
+    "avatar-background-colour": "Avatar background colour",
     "settings": "Itunganya",
     "show_email": "Hagaragazwe Email Yanjye",
     "show_fullname": "Hagaragazwe Izina Ryuzuye Ryanjye",
@@ -123,6 +124,7 @@
     "open_links_in_new_tab": "Fungurira imirongo ijya hanze mu idirishya rishya",
     "enable_topic_searching": "Emerera Ugushakira mu Kiganiro",
     "topic_search_help": "Nibyemerwa, ugushakira mu kiganiro bizajya biba ari byo bikorwa maze bitume umuntu abasha gushakira mu kiganiro hose aho gushakira kuri paji igaragarira amaso, imbere yawe gusa",
+    "update_url_with_post_index": "Update url with post index while browsing topics",
     "scroll_to_my_post": "Nyuma yo gushyiraho igisubizo, hagaragare icyashyizweho gishya",
     "follow_topics_you_reply_to": "Watch topics that you reply to",
     "follow_topics_you_create": "Watch topics you create",
@@ -134,7 +136,7 @@
     "homepage": "Paji y'Imbere",
     "homepage_description": "Hitamo paji yo kugaragaza imbere cyangwa ntuyihitemo kugirango hakoreshwe paji uru rubuga rwagennye",
     "custom_route": "Umurongo Wundi wa Paji y'Imbere",
-    "custom_route_help": "Shyiramo izina ry'inzira, utiriwe ushyiraho akarongo (ni ukuvuga ni nko kwandika gusa \"ibiheruka\" cyangwa \"ibikunzwe\")",
+    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "Kwinjiramo ukoreshe serivisi za SSO",
     "sso.associated": "Bisanishijwe na",
     "sso.not-associated": "Click here to associate with",
@@ -178,5 +180,8 @@
     "consent.export_uploads": "Export Uploaded Content (.zip)",
     "consent.export-uploads-success": "Exporting uploads, you will get a notification when it is complete.",
     "consent.export_posts": "Export Posts (.csv)",
-    "consent.export-posts-success": "Exporting posts, you will get a notification when it is complete."
+    "consent.export-posts-success": "Exporting posts, you will get a notification when it is complete.",
+    "emailUpdate.intro": "Please enter your email address below. This forum uses your email address for scheduled digest and notifications, as well as for account recovery in the event of a lost password.",
+    "emailUpdate.optional": "<strong>This field is optional</strong>. You are not obligated to provide your email address, but without a validated email, you will not be able to recover your account.",
+    "emailUpdate.change-instructions": "A confirmation email will be sent to the entered email address with a unique link. Accessing that link will confirm your ownership of the email address and it will become active on your account. At any time, you are able to update your email on file from within your account page."
 }

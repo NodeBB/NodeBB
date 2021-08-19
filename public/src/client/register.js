@@ -1,13 +1,14 @@
 'use strict';
 
 
-define('forum/register', ['translator', 'zxcvbn'], function (translator, zxcvbn) {
+define('forum/register', [
+	'translator', 'zxcvbn', 'slugify', 'api', 'forum/login', 'jquery-form',
+], function (translator, zxcvbn, slugify, api, Login) {
 	var Register = {};
 	var validationError = false;
 	var successIcon = '';
 
 	Register.init = function () {
-		var email = $('#email');
 		var username = $('#username');
 		var password = $('#password');
 		var password_confirm = $('#password-confirm');
@@ -15,24 +16,16 @@ define('forum/register', ['translator', 'zxcvbn'], function (translator, zxcvbn)
 
 		handleLanguageOverride();
 
-		$('#referrer').val(app.previousUrl);
 		$('#content #noscript').val('false');
 
-		email.on('blur', function () {
-			if (email.val().length) {
-				validateEmail(email.val());
-			}
-		});
-
 		var query = utils.params();
-		if (query.email && query.token) {
-			email.val(decodeURIComponent(query.email));
+		if (query.token) {
 			$('#token').val(query.token);
 		}
 
 		// Update the "others can mention you via" text
 		username.on('keyup', function () {
-			$('#yourUsername').text(this.value.length > 0 ? utils.slugify(this.value) : 'username');
+			$('#yourUsername').text(this.value.length > 0 ? slugify(this.value) : 'username');
 		});
 
 		username.on('blur', function () {
@@ -57,11 +50,11 @@ define('forum/register', ['translator', 'zxcvbn'], function (translator, zxcvbn)
 			validationError = false;
 			validatePassword(password.val(), password_confirm.val());
 			validatePasswordConfirm(password.val(), password_confirm.val());
-
-			validateEmail(email.val(), function () {
-				validateUsername(username.val(), callback);
-			});
+			validateUsername(username.val(), callback);
 		}
+
+		// Guard against caps lock
+		Login.capsLockCheck(document.querySelector('#password'), document.querySelector('#caps-lock-warning'));
 
 		register.on('click', function (e) {
 			var registerBtn = $(this);
@@ -84,10 +77,10 @@ define('forum/register', ['translator', 'zxcvbn'], function (translator, zxcvbn)
 						if (!data) {
 							return;
 						}
-						if (data.referrer) {
-							var pathname = utils.urlToLocation(data.referrer).pathname;
+						if (data.next) {
+							var pathname = utils.urlToLocation(data.next).pathname;
 
-							var params = utils.params({ url: data.referrer });
+							var params = utils.params({ url: data.next });
 							params.registered = true;
 							var qs = decodeURIComponent($.param(params));
 
@@ -115,59 +108,29 @@ define('forum/register', ['translator', 'zxcvbn'], function (translator, zxcvbn)
 		});
 
 		// Set initial focus
-		$('#email').focus();
+		$('#username').focus();
 	};
-
-	function validateEmail(email, callback) {
-		callback = callback || function () {};
-		var email_notify = $('#email-notify');
-
-		if (!utils.isEmailValid(email)) {
-			showError(email_notify, '[[error:invalid-email]]');
-			return callback();
-		}
-
-		socket.emit('user.emailExists', {
-			email: email,
-		}, function (err, exists) {
-			if (err) {
-				app.alertError(err.message);
-				return callback();
-			}
-
-			if (exists) {
-				showError(email_notify, '[[error:email-taken]]');
-			} else {
-				showSuccess(email_notify, successIcon);
-			}
-
-			callback();
-		});
-	}
 
 	function validateUsername(username, callback) {
 		callback = callback || function () {};
 
 		var username_notify = $('#username-notify');
-
-		if (username.length < ajaxify.data.minimumUsernameLength) {
+		var userslug = slugify(username);
+		if (username.length < ajaxify.data.minimumUsernameLength || userslug.length < ajaxify.data.minimumUsernameLength) {
 			showError(username_notify, '[[error:username-too-short]]');
 		} else if (username.length > ajaxify.data.maximumUsernameLength) {
 			showError(username_notify, '[[error:username-too-long]]');
-		} else if (!utils.isUserNameValid(username) || !utils.slugify(username)) {
+		} else if (!utils.isUserNameValid(username) || !userslug) {
 			showError(username_notify, '[[error:invalid-username]]');
 		} else {
-			socket.emit('user.exists', {
-				username: username,
-			}, function (err, exists) {
-				if (err) {
-					return app.alertError(err.message);
-				}
-
-				if (exists) {
-					showError(username_notify, '[[error:username-taken]]');
-				} else {
+			Promise.allSettled([
+				api.head(`/users/bySlug/${username}`, {}),
+				api.head(`/groups/${username}`, {}),
+			]).then((results) => {
+				if (results.every(obj => obj.status === 'rejected')) {
 					showSuccess(username_notify, successIcon);
+				} else {
+					showError(username_notify, '[[error:username-taken]]');
 				}
 
 				callback();
@@ -188,8 +151,6 @@ define('forum/register', ['translator', 'zxcvbn'], function (translator, zxcvbn)
 			showError(password_notify, '[[user:change_password_error]]');
 		} else if (password === $('#username').val()) {
 			showError(password_notify, '[[user:password_same_as_username]]');
-		} else if (password === $('#email').val()) {
-			showError(password_notify, '[[user:password_same_as_email]]');
 		} else if (passwordStrength.score < ajaxify.data.minimumPasswordStrength) {
 			showError(password_notify, '[[user:weak_password]]');
 		} else {

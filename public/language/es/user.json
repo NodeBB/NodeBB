@@ -84,6 +84,7 @@
     "remove_cover_picture_confirm": "¿ Estás seguro de borrar la imágen de portada ?",
     "crop_picture": "Recortar imágen",
     "upload_cropped_picture": "Recortar y subir",
+    "avatar-background-colour": "Avatar background colour",
     "settings": "Opciones",
     "show_email": "Mostrar mi correo electrónico",
     "show_fullname": "Mostrar mi nombre completo",
@@ -123,6 +124,7 @@
     "open_links_in_new_tab": "Abrir los enlaces externos en una nueva pestaña",
     "enable_topic_searching": "Activar la búsqueda \"dentro del tema\"",
     "topic_search_help": "Si está activada, la búsqueda 'dentro del tema' al usar el buscador de la barra de navegación automáticamente buscaras solo en el tema actual.",
+    "update_url_with_post_index": "Update url with post index while browsing topics",
     "scroll_to_my_post": "Luego de enviar una respuesta, mostrar el nuevo mensaje",
     "follow_topics_you_reply_to": "Seguir temas a los que respondes",
     "follow_topics_you_create": "Seguir temas creados por ti",
@@ -134,7 +136,7 @@
     "homepage": "Página de inicio",
     "homepage_description": "Seleccione una página para su uso habitual como la página principal del foro o 'Ninguno' para utilizar la página de inicio.",
     "custom_route": "Pagina de inicio personalizada",
-    "custom_route_help": "Introduzca un nombre de ruta aquí, sin ninguna barra anterior (por ejemplo, \"reciente\", o \"popular\")",
+    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "Servicios de Inicio de sesión Único",
     "sso.associated": "Asociado con",
     "sso.not-associated": "Da clic aquí para asociarse con",
@@ -178,5 +180,8 @@
     "consent.export_uploads": "Exportar Contenido Subido (.zip)",
     "consent.export-uploads-success": "Exporting uploads, you will get a notification when it is complete.",
     "consent.export_posts": "Exportar Entradas y Respuestas (.csv)",
-    "consent.export-posts-success": "Exporting posts, you will get a notification when it is complete."
+    "consent.export-posts-success": "Exporting posts, you will get a notification when it is complete.",
+    "emailUpdate.intro": "Please enter your email address below. This forum uses your email address for scheduled digest and notifications, as well as for account recovery in the event of a lost password.",
+    "emailUpdate.optional": "<strong>This field is optional</strong>. You are not obligated to provide your email address, but without a validated email, you will not be able to recover your account.",
+    "emailUpdate.change-instructions": "A confirmation email will be sent to the entered email address with a unique link. Accessing that link will confirm your ownership of the email address and it will become active on your account. At any time, you are able to update your email on file from within your account page."
 }

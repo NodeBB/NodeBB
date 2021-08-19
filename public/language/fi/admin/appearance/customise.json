@@ -1,16 +1,16 @@
 {
-	"custom-css": "Custom CSS/LESS",
-	"custom-css.description": "Enter your own CSS/LESS declarations here, which will be applied after all other styles.",
-	"custom-css.enable": "Enable Custom CSS/LESS",
+	"custom-css": "Kustomoi CSS/LESS -tiedostoja",
+	"custom-css.description": "Syötä haluamasi CSS/LESS -määritykset tähän. Nämä määritykset menevät kaikkien muiden tyylimäärittelyjen edelle.",
+	"custom-css.enable": "Salli CSS/LESS -kustomoinnit",
 
-	"custom-js": "Custom Javascript",
-	"custom-js.description": "Enter your own javascript here. It will be executed after the page is loaded completely.",
-	"custom-js.enable": "Enable Custom Javascript",
+	"custom-js": "Kustomoi Javascriptiä",
+	"custom-js.description": "Syötä Javascript-sisältö tähän. Se suoritetaan, kun sivu on latautunut valmiiksi.",
+	"custom-js.enable": "Salli Javascript-kustomoinnit",
 
-	"custom-header": "Custom Header",
-	"custom-header.description": "Enter custom HTML here (ex. Meta Tags, etc.), which will be appended to the <code>&lt;head&gt;</code> section of your forum's markup. Script tags are allowed, but are discouraged, as the <a href=\"#custom-js\" data-toggle=\"tab\">Custom Javascript</a> tab is available.",
-	"custom-header.enable": "Enable Custom Header",
+	"custom-header": "Kustomoi ylätunnistetta",
+	"custom-header.description": "Syötä ylätunnisteeseen eli <code>&lt;head&gt;</code>-osioon tulevat HTML-määrittelyt tähän (esim. meta-tagit ym.). Myös script-tagien käyttö on mahdollista, mutta ei suositeltavaa, sillä <a href=\"#custom-js\" data-toggle=\"tab\">Kustomoi Javascriptiä</a>-välilehti on saatavilla.",
+	"custom-header.enable": "Salli ylätunnisteen kustomointi",
 
-	"custom-css.livereload": "Enable Live Reload",
-	"custom-css.livereload.description": "Enable this to force all sessions on every device under your account to refresh whenever you click save"
+	"custom-css.livereload": "Salli sivun päivitys livenä",
+	"custom-css.livereload.description": "Salli tämä, jos haluat mahdollistaa kaikkien tililläsi olevien laitteiden istuntojen päivittymisen, kun tallennat tekemäsi muutokset."
 }

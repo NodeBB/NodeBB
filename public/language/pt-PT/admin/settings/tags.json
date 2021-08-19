@@ -1,6 +1,8 @@
 {
     "tag": "Definições das Etiquetas",
     "link-to-manage": "Gerir Etiquetas",
+    "system-tags": "System Tags",
+    "system-tags-help": "Only privileged users will be able to use these tags.",
     "min-per-topic": "Mínimo de Etiquetas por Tópico",
     "max-per-topic": "Máximo de Etiquetas por Tópico",
     "min-length": "Comprimento Mínimo da Etiqueta",

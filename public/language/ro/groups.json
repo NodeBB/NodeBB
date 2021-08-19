@@ -35,6 +35,7 @@
     "details.member_count": "Număr de membrii",
     "details.creation_date": "Data creării",
     "details.description": "Descriere",
+    "details.member-post-cids": "Category IDs to display posts from",
     "details.badge_preview": "Previzualizarea insignei",
     "details.change_icon": "Schimbă icoana",
     "details.change_label_colour": "Change Label Colour",

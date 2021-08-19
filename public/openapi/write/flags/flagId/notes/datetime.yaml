@@ -1,0 +1,34 @@
+delete:
+  tags:
+    - flags
+  summary: delete a flag note
+  description: This operation deletes a shared note for a given flag. It is only available to privileged users (that is, moderators, global moderators, and administrators).
+  parameters:
+    - in: path
+      name: flagId
+      schema:
+        type: number
+      required: true
+      description: a valid flag id
+      example: 1
+    - in: path
+      name: datetime
+      schema:
+        type: number
+      required: true
+      description: A valid UNIX timestamp
+      example: 1626446956652
+  responses:
+    '200':
+      description: Flag note deleted
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                allOf:
+                  - $ref: ../../../../components/schemas/FlagObject.yaml#/FlagNotesObject
+                  - $ref: ../../../../components/schemas/FlagObject.yaml#/FlagHistoryObject

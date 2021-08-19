@@ -2,9 +2,9 @@
 	"crawlability-settings": "크롤링 설정",
 	"robots-txt": "사용자 지정 Robots.txt <small>기본값을 쓰시려면 비워두세요</small>",
 	"sitemap-feed-settings": "사이트맵 & 피드 관리",
-	"disable-rss-feeds": "RSS Feeds 비활성화",
+	"disable-rss-feeds": "RSS 피드 비활성화",
 	"disable-sitemap-xml": "Sitemap.xml 비활성화",
-	"sitemap-topics": "사이트맵에 표시할 토픽 수",
-	"clear-sitemap-cache": "사이트맵 캐쉬 삭제",
+	"sitemap-topics": "사이트맵에 표시할 화제 수",
+	"clear-sitemap-cache": "사이트맵 캐시 삭제",
 	"view-sitemap": "사이트맵"
 }

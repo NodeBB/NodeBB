@@ -84,6 +84,7 @@
     "remove_cover_picture_confirm": "Weet u zeker dat u de cover foto wilt verwijderen?",
     "crop_picture": "Foto bijsnijden",
     "upload_cropped_picture": "Bijsnijden en uploaden",
+    "avatar-background-colour": "Achtergrondkeur van avatar",
     "settings": "Instellingen",
     "show_email": "E-mailadres weergeven",
     "show_fullname": "Laat mijn volledige naam zien",
@@ -111,7 +112,7 @@
     "posts_per_page": "Berichten per pagina",
     "max_items_per_page": "Maximaal %1",
     "acp_language": "Taal van Admin Pagina",
-    "notifications": "Notifications",
+    "notifications": "Notificaties",
     "upvote-notif-freq": "Notificatie frequentie voor Upvotes",
     "upvote-notif-freq.all": "Alle Upvotes",
     "upvote-notif-freq.first": "Eerst per bericht",
@@ -123,6 +124,7 @@
     "open_links_in_new_tab": "Open uitgaande links naar een externe site in een nieuw tabblad",
     "enable_topic_searching": "Inschakelen mogelijkheid op onderwerp te kunnen zoeken",
     "topic_search_help": "Wanneer ingeschakeld zal de standaard zoekfunctie, met een aangepaste methode voor onderwerpen, overschreven worden",
+    "update_url_with_post_index": "Werk url bij met de index van het bericht tijdens het browsen van onderwerpen",
     "scroll_to_my_post": "Toon het nieuwe bericht na het plaatsen van een antwoord",
     "follow_topics_you_reply_to": "Ontvang meldingen van berichten waar je op hebt gereageerd",
     "follow_topics_you_create": "Ontvang meldingen van berichten die je hebt gemaakt",
@@ -134,7 +136,7 @@
     "homepage": "Startpagina",
     "homepage_description": "Selecteer een pagina om te gebruiken als startpagina, of selecteer geen om de standaard pagina te gebruiken.",
     "custom_route": "Aangepaste startpagina route",
-    "custom_route_help": "Voer een route naam hier, zonder enige voorafgaande schuine streep (zoals, \"recente\" of \"populaire\")",
+    "custom_route_help": "Geef hier een routenaam op, zonder voorgevoegde slash (b.v. \"recent\" of \"category/2/general-discussion\")",
     "sso.title": "Single Sign-on Services",
     "sso.associated": "Geassocieerd met",
     "sso.not-associated": "Klik hier om geassocieerd te worden met",
@@ -178,5 +180,8 @@
     "consent.export_uploads": "Exporteer geuploade inhoud (.zip)",
     "consent.export-uploads-success": "Uploads worden geëxporteerd. Je zult een notificatie krijgen als dit is voltooid.",
     "consent.export_posts": "Exporteer berichten (.csv)",
-    "consent.export-posts-success": "Berichten worden geëxporteerd. Je zult een notificatie krijgen als dit is voltooid."
+    "consent.export-posts-success": "Berichten worden geëxporteerd. Je zult een notificatie krijgen als dit is voltooid.",
+    "emailUpdate.intro": "Please enter your email address below. This forum uses your email address for scheduled digest and notifications, as well as for account recovery in the event of a lost password.",
+    "emailUpdate.optional": "<strong>This field is optional</strong>. You are not obligated to provide your email address, but without a validated email, you will not be able to recover your account.",
+    "emailUpdate.change-instructions": "A confirmation email will be sent to the entered email address with a unique link. Accessing that link will confirm your ownership of the email address and it will become active on your account. At any time, you are able to update your email on file from within your account page."
 }

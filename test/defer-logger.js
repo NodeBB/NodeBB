@@ -1,9 +1,9 @@
 'use strict';
 
-var winston = require('winston');
-var Transport = require('winston-transport');
+const winston = require('winston');
+const Transport = require('winston-transport');
 
-var winstonLogged = [];
+const winstonLogged = [];
 
 class DeferLogger extends Transport {
 	constructor(opts) {
@@ -21,17 +21,17 @@ class DeferLogger extends Transport {
 	}
 }
 
-before(function () {
+before(() => {
 	// defer winston logs until the end
 	winston.clear();
 
 	winston.add(new DeferLogger({ logged: winstonLogged }));
 });
 
-after(function () {
+after(() => {
 	console.log('\n\n');
 
-	winstonLogged.forEach(function (args) {
-		console.log(args[0] + ' ' + args[1]);
+	winstonLogged.forEach((args) => {
+		console.log(`${args[0]} ${args[1]}`);
 	});
 });

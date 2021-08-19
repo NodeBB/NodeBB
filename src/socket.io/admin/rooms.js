@@ -15,32 +15,34 @@ const SocketRooms = module.exports;
 SocketRooms.stats = stats;
 SocketRooms.totals = totals;
 
-pubsub.on('sync:stats:start', function () {
+pubsub.on('sync:stats:start', () => {
 	const stats = SocketRooms.getLocalStats();
-	pubsub.publish('sync:stats:end', { stats: stats, id: os.hostname() + ':' + nconf.get('port') });
+	pubsub.publish('sync:stats:end', {
+		stats: stats,
+		id: `${os.hostname()}:${nconf.get('port')}`,
+	});
 });
 
-pubsub.on('sync:stats:end', function (data) {
+pubsub.on('sync:stats:end', (data) => {
 	stats[data.id] = data.stats;
 });
 
-pubsub.on('sync:stats:guests', function (eventId) {
-	var io = require('../index').server;
-	var roomClients = io.sockets.adapter.rooms;
-	var guestCount = roomClients.online_guests ? roomClients.online_guests.length : 0;
+pubsub.on('sync:stats:guests', (eventId) => {
+	const Sockets = require('../index');
+	const guestCount = Sockets.getCountInRoom('online_guests');
 	pubsub.publish(eventId, guestCount);
 });
 
 SocketRooms.getTotalGuestCount = function (callback) {
-	var count = 0;
-	var eventId = 'sync:stats:guests:end:' + utils.generateUUID();
-	pubsub.on(eventId, function (guestCount) {
+	let count = 0;
+	const eventId = `sync:stats:guests:end:${utils.generateUUID()}`;
+	pubsub.on(eventId, (guestCount) => {
 		count += guestCount;
 	});
 
 	pubsub.publish('sync:stats:guests', eventId);
 
-	setTimeout(function () {
+	setTimeout(() => {
 		pubsub.removeAllListeners(eventId);
 		callback(null, count);
 	}, 100);
@@ -62,35 +64,33 @@ SocketRooms.getAll = async function () {
 		category: 0,
 	};
 
-	for (var instance in stats) {
-		if (stats.hasOwnProperty(instance)) {
-			totals.onlineGuestCount += stats[instance].onlineGuestCount;
-			totals.onlineRegisteredCount += stats[instance].onlineRegisteredCount;
-			totals.socketCount += stats[instance].socketCount;
-			totals.users.categories += stats[instance].users.categories;
-			totals.users.recent += stats[instance].users.recent;
-			totals.users.unread += stats[instance].users.unread;
-			totals.users.topics += stats[instance].users.topics;
-			totals.users.category += stats[instance].users.category;
+	for (const instance of Object.values(stats)) {
+		totals.onlineGuestCount += instance.onlineGuestCount;
+		totals.onlineRegisteredCount += instance.onlineRegisteredCount;
+		totals.socketCount += instance.socketCount;
+		totals.users.categories += instance.users.categories;
+		totals.users.recent += instance.users.recent;
+		totals.users.unread += instance.users.unread;
+		totals.users.topics += instance.users.topics;
+		totals.users.category += instance.users.category;
 
-			stats[instance].topics.forEach(function (topic) {
-				totals.topics[topic.tid] = totals.topics[topic.tid] || { count: 0, tid: topic.tid };
-				totals.topics[topic.tid].count += topic.count;
-			});
-		}
+		instance.topics.forEach((topic) => {
+			totals.topics[topic.tid] = totals.topics[topic.tid] || { count: 0, tid: topic.tid };
+			totals.topics[topic.tid].count += topic.count;
+		});
 	}
 
-	var topTenTopics = [];
-	Object.keys(totals.topics).forEach(function (tid) {
+	let topTenTopics = [];
+	Object.keys(totals.topics).forEach((tid) => {
 		topTenTopics.push({ tid: tid, count: totals.topics[tid].count || 0 });
 	});
 
 	topTenTopics = topTenTopics.sort((a, b) => b.count - a.count).slice(0, 10);
 
-	var topTenTids = topTenTopics.map(topic => topic.tid);
+	const topTenTids = topTenTopics.map(topic => topic.tid);
 
 	const titles = await topics.getTopicsFields(topTenTids, ['title']);
-	totals.topTenTopics = topTenTopics.map(function (topic, index) {
+	totals.topTenTopics = topTenTopics.map((topic, index) => {
 		topic.title = titles[index].title;
 		return topic;
 	});
@@ -98,11 +98,11 @@ SocketRooms.getAll = async function () {
 };
 
 SocketRooms.getOnlineUserCount = function (io) {
-	var count = 0;
+	let count = 0;
 
 	if (io) {
-		for (var key in io.sockets.adapter.rooms) {
-			if (io.sockets.adapter.rooms.hasOwnProperty(key) && key.startsWith('uid_')) {
+		for (const [key] of io.sockets.adapter.rooms) {
+			if (key.startsWith('uid_')) {
 				count += 1;
 			}
 		}
@@ -112,9 +112,10 @@ SocketRooms.getOnlineUserCount = function (io) {
 };
 
 SocketRooms.getLocalStats = function () {
-	var io = require('../index').server;
+	const Sockets = require('../index');
+	const io = Sockets.server;
 
-	var socketData = {
+	const socketData = {
 		onlineGuestCount: 0,
 		onlineRegisteredCount: 0,
 		socketCount: 0,
@@ -128,27 +129,24 @@ SocketRooms.getLocalStats = function () {
 		topics: {},
 	};
 
-	if (io) {
-		var roomClients = io.sockets.adapter.rooms;
-		socketData.onlineGuestCount = roomClients.online_guests ? roomClients.online_guests.length : 0;
+	if (io && io.sockets) {
+		socketData.onlineGuestCount = Sockets.getCountInRoom('online_guests');
 		socketData.onlineRegisteredCount = SocketRooms.getOnlineUserCount(io);
-		socketData.socketCount = Object.keys(io.sockets.sockets).length;
-		socketData.users.categories = roomClients.categories ? roomClients.categories.length : 0;
-		socketData.users.recent = roomClients.recent_topics ? roomClients.recent_topics.length : 0;
-		socketData.users.unread = roomClients.unread_topics ? roomClients.unread_topics.length : 0;
+		socketData.socketCount = io.sockets.sockets.size;
+		socketData.users.categories = Sockets.getCountInRoom('categories');
+		socketData.users.recent = Sockets.getCountInRoom('recent_topics');
+		socketData.users.unread = Sockets.getCountInRoom('unread_topics');
 
-		var topTenTopics = [];
-		var tid;
+		let topTenTopics = [];
+		let tid;
 
-		for (var room in roomClients) {
-			if (roomClients.hasOwnProperty(room)) {
-				tid = room.match(/^topic_(\d+)/);
-				if (tid) {
-					socketData.users.topics += roomClients[room].length;
-					topTenTopics.push({ tid: tid[1], count: roomClients[room].length });
-				} else if (room.match(/^category/)) {
-					socketData.users.category += roomClients[room].length;
-				}
+		for (const [room, clients] of io.sockets.adapter.rooms) {
+			tid = room.match(/^topic_(\d+)/);
+			if (tid) {
+				socketData.users.topics += clients.size;
+				topTenTopics.push({ tid: tid[1], count: clients.size });
+			} else if (room.match(/^category/)) {
+				socketData.users.category += clients.size;
 			}
 		}
 

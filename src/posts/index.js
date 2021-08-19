@@ -28,10 +28,9 @@ require('./diffs')(Posts);
 require('./uploads')(Posts);
 
 Posts.exists = async function (pids) {
-	const isArray = Array.isArray(pids);
-	pids = isArray ? pids : [pids];
-	const exists = await db.exists(pids.map(pid => 'post:' + pid));
-	return isArray ? exists : exists[0];
+	return await db.exists(
+		Array.isArray(pids) ? pids.map(pid => `post:${pid}`) : `post:${pids}`
+	);
 };
 
 Posts.getPidsFromSet = async function (set, start, stop, reverse) {
@@ -48,7 +47,7 @@ Posts.getPostsByPids = async function (pids, uid) {
 	let posts = await Posts.getPostsData(pids);
 	posts = await Promise.all(posts.map(p => Posts.parsePost(p)));
 	posts = await user.blocks.filter(uid, posts);
-	const data = await plugins.fireHook('filter:post.getPosts', { posts: posts, uid: uid });
+	const data = await plugins.hooks.fire('filter:post.getPosts', { posts: posts, uid: uid });
 	if (!data || !Array.isArray(data.posts)) {
 		return [];
 	}
@@ -63,7 +62,7 @@ Posts.getPostSummariesFromSet = async function (set, uid, start, stop) {
 };
 
 Posts.getPidIndex = async function (pid, tid, topicPostSort) {
-	const set = topicPostSort === 'most_votes' ? 'tid:' + tid + ':posts:votes' : 'tid:' + tid + ':posts';
+	const set = topicPostSort === 'most_votes' ? `tid:${tid}:posts:votes` : `tid:${tid}:posts`;
 	const reverse = topicPostSort === 'newest_to_oldest' || topicPostSort === 'most_votes';
 	const index = await db[reverse ? 'sortedSetRevRank' : 'sortedSetRank'](set, pid);
 	if (!utils.isNumber(index)) {
@@ -79,7 +78,7 @@ Posts.getPostIndices = async function (posts, uid) {
 	const settings = await user.getSettings(uid);
 
 	const byVotes = settings.topicPostSort === 'most_votes';
-	let sets = posts.map(p => (byVotes ? 'tid:' + p.tid + ':posts:votes' : 'tid:' + p.tid + ':posts'));
+	let sets = posts.map(p => (byVotes ? `tid:${p.tid}:posts:votes` : `tid:${p.tid}:posts`));
 	const reverse = settings.topicPostSort === 'newest_to_oldest' || settings.topicPostSort === 'most_votes';
 
 	const uniqueSets = _.uniq(sets);

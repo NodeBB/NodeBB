@@ -294,11 +294,13 @@
 
 	var utils = {
 		generateUUID: function () {
+			/* eslint-disable no-bitwise */
 			return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
 				var r = Math.random() * 16 | 0;
 				var v = c === 'x' ? r : ((r & 0x3) | 0x8);
 				return v.toString(16);
 			});
+			/* eslint-enable no-bitwise */
 		},
 		// https://github.com/substack/node-ent/blob/master/index.js
 		decodeHTMLEntities: function (html) {
@@ -324,39 +326,8 @@
 		},
 		// https://github.com/jprichardson/string.js/blob/master/lib/string.js
 		stripHTMLTags: function (str, tags) {
-			var pattern = (tags || ['']).map(function (tag) {
-				return utils.escapeRegexChars(tag);
-			}).join('|');
+			var pattern = (tags || ['']).join('|');
 			return String(str).replace(new RegExp('<(\\/)?(' + (pattern || '[^\\s>]+') + ')(\\s+[^<>]*?)?\\s*(\\/)?>', 'gi'), '');
-		},
-
-		invalidUnicodeChars: XRegExp('[^\\p{L}\\s\\d\\-_]', 'g'),
-		invalidLatinChars: /[^\w\s\d\-_]/g,
-		trimRegex: /^\s+|\s+$/g,
-		collapseWhitespace: /\s+/g,
-		collapseDash: /-+/g,
-		trimTrailingDash: /-$/g,
-		trimLeadingDash: /^-/g,
-		isLatin: /^[\w\d\s.,\-@]+$/,
-		languageKeyRegex: /\[\[[\w]+:.+\]\]/,
-
-		// http://dense13.com/blog/2009/05/03/converting-string-to-slug-javascript/
-		slugify: function (str, preserveCase) {
-			if (!str) {
-				return '';
-			}
-			str = String(str).replace(utils.trimRegex, '');
-			if (utils.isLatin.test(str)) {
-				str = str.replace(utils.invalidLatinChars, '-');
-			} else {
-				str = XRegExp.replace(str, utils.invalidUnicodeChars, '-');
-			}
-			str = !preserveCase ? str.toLocaleLowerCase() : str;
-			str = str.replace(utils.collapseWhitespace, '-');
-			str = str.replace(utils.collapseDash, '-');
-			str = str.replace(utils.trimTrailingDash, '');
-			str = str.replace(utils.trimLeadingDash, '');
-			return str;
 		},
 
 		cleanUpTag: function (tag, maxLength) {
@@ -397,6 +368,7 @@
 			return !isNaN(parseFloat(n)) && isFinite(n);
 		},
 
+		languageKeyRegex: /\[\[[\w]+:.+\]\]/,
 		hasLanguageKey: function (input) {
 			return utils.languageKeyRegex.test(input);
 		},
@@ -497,7 +469,9 @@
 
 		makeNumbersHumanReadable: function (elements) {
 			elements.each(function () {
-				$(this).html(utils.makeNumberHumanReadable($(this).attr('title')));
+				$(this)
+					.html(utils.makeNumberHumanReadable($(this).attr('title')))
+					.removeClass('hidden');
 			});
 		},
 
@@ -516,7 +490,9 @@
 
 		addCommasToNumbers: function (elements) {
 			elements.each(function (index, element) {
-				$(element).html(utils.addCommas($(element).html()));
+				$(element)
+					.html(utils.addCommas($(element).html()))
+					.removeClass('hidden');
 			});
 		},
 
@@ -623,7 +599,7 @@
 		},
 
 		getDaysArray: function (from, amount) {
-			var currentDay = new Date(from || Date.now()).getTime();
+			var currentDay = new Date(parseInt(from, 10) || Date.now()).getTime();
 			var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 			var labels = [];
 			var tmpDate;
@@ -674,7 +650,10 @@
 			params.forEach(function (param) {
 				var val = param.split('=');
 				var key = decodeURI(val[0]);
-				var value = options.disableToType || options.skipToType[key] ? decodeURI(val[1]) : utils.toType(decodeURI(val[1]));
+				var value = (
+					options.disableToType ||
+					options.skipToType[key] ? decodeURI(val[1]) : utils.toType(decodeURI(val[1]))
+				);
 
 				if (key) {
 					if (key.substr(-2, 2) === '[]') {
@@ -760,8 +739,11 @@
 		isInternalURI: function (targetLocation, referenceLocation, relative_path) {
 			return targetLocation.host === '' ||	// Relative paths are always internal links
 				(
-					targetLocation.host === referenceLocation.host && targetLocation.protocol === referenceLocation.protocol &&	// Otherwise need to check if protocol and host match
-					(relative_path.length > 0 ? targetLocation.pathname.indexOf(relative_path) === 0 : true)	// Subfolder installs need this additional check
+					targetLocation.host === referenceLocation.host &&
+					// Otherwise need to check if protocol and host match
+					targetLocation.protocol === referenceLocation.protocol &&
+					// Subfolder installs need this additional check
+					(relative_path.length > 0 ? targetLocation.pathname.indexOf(relative_path) === 0 : true)
 				);
 		},
 
@@ -790,28 +772,6 @@
 			};
 		},
 	};
-
-	/* eslint "no-extend-native": "off" */
-	if (typeof String.prototype.startsWith !== 'function') {
-		String.prototype.startsWith = function (prefix) {
-			if (this.length < prefix.length) {
-				return false;
-			}
-			return this.slice(0, prefix.length) === prefix;
-		};
-	}
-
-	if (typeof String.prototype.endsWith !== 'function') {
-		String.prototype.endsWith = function (suffix) {
-			if (this.length < suffix.length) {
-				return false;
-			}
-			if (suffix.length === 0) {
-				return true;
-			}
-			return this.slice(-suffix.length) === suffix;
-		};
-	}
 
 	return utils;
 }));

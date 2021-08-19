@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts'], function (navigator, components, posts) {
+define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts', 'hooks'], function (navigator, components, posts, hooks) {
 	var Replies = {};
 
 	Replies.init = function (button) {
@@ -43,7 +43,7 @@ define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts'], 
 
 					repliesEl.slideDown('fast');
 					posts.onNewPostsAddedToDom(html);
-					$(window).trigger('action:posts.loaded', { posts: data });
+					hooks.fire('action:posts.loaded', { posts: data });
 				});
 			});
 		} else if (close.is(':not(.hidden)')) {
@@ -66,7 +66,11 @@ define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts'], 
 		app.parseAndTranslate('topic', 'posts', data, function (html) {
 			var replies = $('[component="post"][data-pid="' + post.toPid + '"] [component="post/replies"]').first();
 			if (replies.length) {
-				replies.append(html);
+				if (config.topicPostSort === 'newest_to_oldest') {
+					replies.prepend(html);
+				} else {
+					replies.append(html);
+				}
 				posts.onNewPostsAddedToDom(html);
 			}
 		});
@@ -93,7 +97,7 @@ define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts'], 
 
 		if (!avatars.find('[data-uid="' + post.uid + '"]').length && count < 7) {
 			app.parseAndTranslate('topic', 'posts', { posts: [{ replies: { users: [post.user] } }] }, function (html) {
-				avatars.prepend(html.find('[component="post/reply-count/avatars"] [component="user/picture"]'));
+				avatars.prepend(html.find('[component="post/reply-count/avatars"] [component="avatar/picture"]'));
 			});
 		}
 

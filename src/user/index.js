@@ -16,6 +16,7 @@ User.email = require('./email');
 User.notifications = require('./notifications');
 User.reset = require('./reset');
 User.digest = require('./digest');
+User.interstitials = require('./interstitials');
 
 require('./data')(User);
 require('./auth')(User);
@@ -40,8 +41,12 @@ require('./online')(User);
 require('./blocks')(User);
 require('./uploads')(User);
 
-User.exists = async function (uid) {
-	return await db.isSortedSetMember('users:joindate', uid);
+User.exists = async function (uids) {
+	return await (
+		Array.isArray(uids) ?
+			db.isSortedSetMembers('users:joindate', uids) :
+			db.isSortedSetMember('users:joindate', uids)
+	);
 };
 
 User.existsBySlug = async function (userslug) {
@@ -64,10 +69,10 @@ User.getUsersFromSet = async function (set, uid, start, stop) {
 };
 
 User.getUsersWithFields = async function (uids, fields, uid) {
-	let results = await plugins.fireHook('filter:users.addFields', { fields: fields });
+	let results = await plugins.hooks.fire('filter:users.addFields', { fields: fields });
 	results.fields = _.uniq(results.fields);
 	const userData = await User.getUsersFields(uids, results.fields);
-	results = await plugins.fireHook('filter:userlist.get', { users: userData, uid: uid });
+	results = await plugins.hooks.fire('filter:userlist.get', { users: userData, uid: uid });
 	return results.users;
 };
 
@@ -155,6 +160,9 @@ User.getPrivileges = async function (uid) {
 };
 
 User.isPrivileged = async function (uid) {
+	if (!(parseInt(uid, 10) > 0)) {
+		return false;
+	}
 	const results = await User.getPrivileges(uid);
 	return results ? (results.isAdmin || results.isGlobalModerator || results.isModeratorOfAnyCategory) : false;
 };
@@ -191,7 +199,7 @@ async function isSelfOrMethod(callerUid, uid, method) {
 
 User.getAdminsandGlobalMods = async function () {
 	const results = await groups.getMembersOfGroups(['administrators', 'Global Moderators']);
-	return await User.getUsersData(_.union.apply(_, results));
+	return await User.getUsersData(_.union(...results));
 };
 
 User.getAdminsandGlobalModsandModerators = async function () {
@@ -200,7 +208,7 @@ User.getAdminsandGlobalModsandModerators = async function () {
 		groups.getMembers('Global Moderators', 0, -1),
 		User.getModeratorUids(),
 	]);
-	return await User.getUsersData(_.union.apply(_, results));
+	return await User.getUsersData(_.union(...results));
 };
 
 User.getModeratorUids = async function () {
@@ -219,80 +227,12 @@ User.getModeratedCids = async function (uid) {
 };
 
 User.addInterstitials = function (callback) {
-	plugins.registerHook('core', {
+	plugins.hooks.register('core', {
 		hook: 'filter:register.interstitial',
 		method: [
-			// GDPR information collection/processing consent + email consent
-			async function (data) {
-				if (!meta.config.gdpr_enabled || (data.userData && data.userData.gdpr_consent)) {
-					return data;
-				}
-				if (!data.userData) {
-					throw new Error('[[error:invalid-data]]');
-				}
-
-				if (data.userData.uid) {
-					const consented = await db.getObjectField('user:' + data.userData.uid, 'gdpr_consent');
-					if (parseInt(consented, 10)) {
-						return data;
-					}
-				}
-
-				data.interstitials.push({
-					template: 'partials/gdpr_consent',
-					data: {
-						digestFrequency: meta.config.dailyDigestFreq,
-						digestEnabled: meta.config.dailyDigestFreq !== 'off',
-					},
-					callback: function (userData, formData, next) {
-						if (formData.gdpr_agree_data === 'on' && formData.gdpr_agree_email === 'on') {
-							userData.gdpr_consent = true;
-						}
-
-						next(userData.gdpr_consent ? null : new Error('[[register:gdpr_consent_denied]]'));
-					},
-				});
-				return data;
-			},
-
-			// Forum Terms of Use
-			async function (data) {
-				if (!data.userData) {
-					throw new Error('[[error:invalid-data]]');
-				}
-				if (!meta.config.termsOfUse || data.userData.acceptTos) {
-					// no ToS or ToS accepted, nothing to do
-					return data;
-				}
-
-				if (data.userData.uid) {
-					const accepted = await db.getObjectField('user:' + data.userData.uid, 'acceptTos');
-					if (parseInt(accepted, 10)) {
-						return data;
-					}
-				}
-
-				const termsOfUse = await plugins.fireHook('filter:parse.post', {
-					postData: {
-						content: meta.config.termsOfUse || '',
-					},
-				});
-
-				data.interstitials.push({
-					template: 'partials/acceptTos',
-					data: {
-						termsOfUse: termsOfUse.postData.content,
-					},
-					callback: function (userData, formData, next) {
-						if (formData['agree-terms'] === 'on') {
-							userData.acceptTos = true;
-						}
-
-						next(userData.acceptTos ? null : new Error('[[register:terms_of_use_error]]'));
-					},
-				});
-				return data;
-			},
+			User.interstitials.email,	// Email address (for password reset + digest)
+			User.interstitials.gdpr,	// GDPR information collection/processing consent + email consent
+			User.interstitials.tou,		// Forum Terms of Use
 		],
 	});
 

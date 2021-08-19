@@ -4,11 +4,13 @@ const validator = require('validator');
 
 const db = require('../database');
 const meta = require('../meta');
+const plugins = require('../plugins');
+const utils = require('../utils');
 
 const intFields = [
 	'cid', 'parentCid', 'disabled', 'isSection', 'order',
 	'topic_count', 'post_count', 'numRecentReplies',
-	'minTags', 'maxTags',
+	'minTags', 'maxTags', 'postQueue', 'subCategoriesPerPage',
 ];
 
 module.exports = function (Categories) {
@@ -17,10 +19,16 @@ module.exports = function (Categories) {
 			return [];
 		}
 
-		const keys = cids.map(cid => 'category:' + cid);
-		const categories = await (fields.length ? db.getObjectsFields(keys, fields) : db.getObjects(keys));
-		categories.forEach(category => modifyCategory(category, fields));
-		return categories;
+		const keys = cids.map(cid => `category:${cid}`);
+		const categories = await db.getObjects(keys, fields);
+		const result = await plugins.hooks.fire('filter:category.getFields', {
+			cids: cids,
+			categories: categories,
+			fields: fields,
+			keys: keys,
+		});
+		result.categories.forEach(category => modifyCategory(category, fields));
+		return result.categories;
 	};
 
 	Categories.getCategoryData = async function (cid) {
@@ -48,20 +56,21 @@ module.exports = function (Categories) {
 	};
 
 	Categories.setCategoryField = async function (cid, field, value) {
-		await db.setObjectField('category:' + cid, field, value);
+		await db.setObjectField(`category:${cid}`, field, value);
 	};
 
 	Categories.incrementCategoryFieldBy = async function (cid, field, value) {
-		await db.incrObjectFieldBy('category:' + cid, field, value);
+		await db.incrObjectFieldBy(`category:${cid}`, field, value);
 	};
 };
 
-function defaultMinMaxTags(category, fields, fieldName, defaultField) {
+function defaultIntField(category, fields, fieldName, defaultField) {
 	if (!fields.length || fields.includes(fieldName)) {
 		const useDefault = !category.hasOwnProperty(fieldName) ||
 			category[fieldName] === null ||
 			category[fieldName] === '' ||
-			!parseInt(category[fieldName], 10);
+			!utils.isNumber(category[fieldName]);
+
 		category[fieldName] = useDefault ? meta.config[defaultField] : category[fieldName];
 	}
 }
@@ -71,8 +80,9 @@ function modifyCategory(category, fields) {
 		return;
 	}
 
-	defaultMinMaxTags(category, fields, 'minTags', 'minimumTagsPerTopic');
-	defaultMinMaxTags(category, fields, 'maxTags', 'maximumTagsPerTopic');
+	defaultIntField(category, fields, 'minTags', 'minimumTagsPerTopic');
+	defaultIntField(category, fields, 'maxTags', 'maximumTagsPerTopic');
+	defaultIntField(category, fields, 'postQueue', 'postQueue');
 
 	db.parseIntFields(category, intFields, fields);
 

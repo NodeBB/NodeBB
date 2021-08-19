@@ -6,6 +6,7 @@
 	"assignee": "Dodijeljeni",
 	"update": "Nadogradnja",
 	"updated": "Nadograđeno",
+	"resolved": "Resolved",
 	"target-purged": "Sadržaj koji je označen zastavom je odbačen i više nije dostupan.",
 
 	"graph-label": "Daily Flags",
@@ -26,6 +27,7 @@
 	"filter-cid-all": "Sve kategorije",
 	"apply-filters": "Primjeni filtere",
 	"more-filters": "More Filters",
+	"fewer-filters": "Fewer Filters",
 
 	"quick-actions": "Quick Actions",
 	"flagged-user": "Označeni korisnici",
@@ -67,7 +69,7 @@
 	"sort-upvotes": "Most upvotes",
 	"sort-replies": "Most replies",
 
-	"modal-title": "Prijavi neprimjereni sadržaj",
+	"modal-title": "Report Content",
 	"modal-body": "Navedite razlog označavanja zastavom %1 %2 .U suprotnom koristite jedan od dugmića za brzo prijavljivanje.",
 	"modal-reason-spam": "Spam",
 	"modal-reason-offensive": "Uvredljivo",
@@ -75,11 +77,9 @@
 	"modal-reason-custom": "Razlog prijavljivanja ovog sadržaja",
 	"modal-submit": "Podnesi izvještaj",
 	"modal-submit-success": "Ovaj sadržaj je označen zastavom u svrhu moderiranja,",
-	"modal-submit-confirm": "Confirm Submission",
-	"modal-submit-confirm-text": "You have a custom reason specified already. Are you sure you wish to submit via quick-report?",
-	"modal-submit-confirm-text-help": "Submitting a quick report will overwrite any custom reasons defined.",
 
 	"bulk-actions": "Bulk Actions",
 	"bulk-resolve": "Resolve Flag(s)",
-	"bulk-success": "%1 flags updated"
+	"bulk-success": "%1 flags updated",
+	"flagged-timeago-readable": "Flagged <span class=\"timeago\" title=\"%1\"></span> (%2)"
 }

@@ -1,22 +1,23 @@
 'use strict';
 
 
-define('forum/account/posts', ['forum/account/header', 'forum/infinitescroll'], function (header, infinitescroll) {
+define('forum/account/posts', ['forum/account/header', 'forum/infinitescroll', 'hooks'], function (header, infinitescroll, hooks) {
 	var AccountPosts = {};
-	var method;
+
 	var template;
+	var page = 1;
 
 	AccountPosts.init = function () {
 		header.init();
 
 		$('[component="post/content"] img:not(.not-responsive)').addClass('img-responsive');
 
-		AccountPosts.handleInfiniteScroll('posts.loadMoreUserPosts', 'account/posts');
+		AccountPosts.handleInfiniteScroll('account/posts');
 	};
 
-	AccountPosts.handleInfiniteScroll = function (_method, _template) {
-		method = _method;
+	AccountPosts.handleInfiniteScroll = function (_template) {
 		template = _template;
+		page = ajaxify.data.pagination.currentPage;
 		if (!config.usePagination) {
 			infinitescroll.init(loadMore);
 		}
@@ -26,17 +27,16 @@ define('forum/account/posts', ['forum/account/header', 'forum/infinitescroll'], 
 		if (direction < 0) {
 			return;
 		}
+		var params = utils.params();
+		page += 1;
+		params.page = page;
 
-		infinitescroll.loadMore(method, {
-			uid: ajaxify.data.theirid,
-			after: $('[component="posts"]').attr('data-nextstart'),
-		}, function (data, done) {
+		infinitescroll.loadMoreXhr(params, function (data, done) {
 			if (data.posts && data.posts.length) {
 				onPostsLoaded(data.posts, done);
 			} else {
 				done();
 			}
-			$('[component="posts"]').attr('data-nextstart', data.nextStart);
 		});
 	}
 
@@ -47,6 +47,7 @@ define('forum/account/posts', ['forum/account/header', 'forum/infinitescroll'], 
 			html.find('.timeago').timeago();
 			app.createUserTooltips();
 			utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
+			hooks.fire('action:posts.loaded', { posts: posts });
 			callback();
 		});
 	}

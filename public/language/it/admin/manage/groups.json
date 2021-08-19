@@ -8,7 +8,7 @@
 	"hidden": "Nascosto",
 	"private": "Privato",
 	"edit": "Modifica",
-	"delete": "Elimina",
+	"delete": "Cancella",
 	"privileges": "Privilegi",
 	"download-csv": "CSV",
 	"search-placeholder": "Cerca",
@@ -17,7 +17,7 @@
 	"create-button": "Crea",
 
 	"alerts.create-failure": "<strong>Uh-Oh</strong><p>C'è stato un problema nel creare il tuo gruppo. Riprova più tardi!</p>",
-	"alerts.confirm-delete": "Sei sicuro di voler cancellare questo gruppo?",
+	"alerts.confirm-delete": "Sei sicuro di voler eliminare questo gruppo?",
 
 	"edit.name": "Nome",
 	"edit.description": "Descrizione",

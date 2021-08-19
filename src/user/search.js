@@ -10,6 +10,21 @@ const groups = require('../groups');
 const utils = require('../utils');
 
 module.exports = function (User) {
+	const filterFnMap = {
+		online: user => user.status !== 'offline' && (Date.now() - user.lastonline < 300000),
+		flagged: user => parseInt(user.flags, 10) > 0,
+		verified: user => !!user['email:confirmed'],
+		unverified: user => !user['email:confirmed'],
+	};
+
+	const filterFieldMap = {
+		online: ['status', 'lastonline'],
+		flagged: ['flags'],
+		verified: ['email:confirmed'],
+		unverified: ['email:confirmed'],
+	};
+
+
 	User.search = async function (data) {
 		const query = data.query || '';
 		const searchBy = data.searchBy || 'username';
@@ -30,7 +45,7 @@ module.exports = function (User) {
 		}
 
 		uids = await filterAndSortUids(uids, data);
-		const result = await plugins.fireHook('filter:users.search', { uids: uids, uid: uid });
+		const result = await plugins.hooks.fire('filter:users.search', { uids: uids, uid: uid });
 		uids = result.uids;
 
 		const searchResult = {
@@ -62,28 +77,26 @@ module.exports = function (User) {
 		const resultsPerPage = meta.config.userSearchResultsPerPage;
 		hardCap = hardCap || resultsPerPage * 10;
 
-		const data = await db.getSortedSetRangeByLex(searchBy + ':sorted', min, max, 0, hardCap);
+		const data = await db.getSortedSetRangeByLex(`${searchBy}:sorted`, min, max, 0, hardCap);
 		const uids = data.map(data => data.split(':').pop());
 		return uids;
 	}
 
 	async function filterAndSortUids(uids, data) {
 		uids = uids.filter(uid => parseInt(uid, 10));
-
+		let filters = data.filters || [];
+		filters = Array.isArray(filters) ? filters : [data.filters];
 		const fields = [];
 
 		if (data.sortBy) {
 			fields.push(data.sortBy);
 		}
-		if (data.onlineOnly) {
-			fields.push('status', 'lastonline');
-		}
-		if (data.bannedOnly || data.notBanned) {
-			fields.push('banned');
-		}
-		if (data.flaggedOnly) {
-			fields.push('flags');
-		}
+
+		filters.forEach((filter) => {
+			if (filterFieldMap[filter]) {
+				fields.push(...filterFieldMap[filter]);
+			}
+		});
 
 		if (data.groupName) {
 			const isMembers = await groups.isMembers(uids, data.groupName);
@@ -94,44 +107,44 @@ module.exports = function (User) {
 			return uids;
 		}
 
+		if (filters.includes('banned') || filters.includes('notbanned')) {
+			const isMembersOfBanned = await groups.isMembers(uids, groups.BANNED_USERS);
+			const checkBanned = filters.includes('banned');
+			uids = uids.filter((uid, index) => (checkBanned ? isMembersOfBanned[index] : !isMembersOfBanned[index]));
+		}
+
 		fields.push('uid');
 		let userData = await User.getUsersFields(uids, fields);
-		if (data.onlineOnly) {
-			userData = userData.filter(user => user.status !== 'offline' && (Date.now() - user.lastonline < 300000));
-		}
 
-		if (data.bannedOnly) {
-			userData = userData.filter(user => user.banned);
-		}
-
-		if (data.notBanned) {
-			userData = userData.filter(user => !user.banned);
-		}
-
-		if (data.flaggedOnly) {
-			userData = userData.filter(user => parseInt(user.flags, 10) > 0);
-		}
+		filters.forEach((filter) => {
+			if (filterFnMap[filter]) {
+				userData = userData.filter(filterFnMap[filter]);
+			}
+		});
 
 		if (data.sortBy) {
-			sortUsers(userData, data.sortBy);
+			sortUsers(userData, data.sortBy, data.sortDirection);
 		}
 
 		return userData.map(user => user.uid);
 	}
 
-	function sortUsers(userData, sortBy) {
+	function sortUsers(userData, sortBy, sortDirection) {
 		if (!userData || !userData.length) {
 			return;
 		}
+		sortDirection = sortDirection || 'desc';
+		const direction = sortDirection === 'desc' ? 1 : -1;
+
 		const isNumeric = utils.isNumber(userData[0][sortBy]);
 		if (isNumeric) {
-			userData.sort((u1, u2) => u2[sortBy] - u1[sortBy]);
+			userData.sort((u1, u2) => direction * (u2[sortBy] - u1[sortBy]));
 		} else {
-			userData.sort(function (u1, u2) {
+			userData.sort((u1, u2) => {
 				if (u1[sortBy] < u2[sortBy]) {
-					return -1;
+					return direction * -1;
 				} else if (u1[sortBy] > u2[sortBy]) {
-					return 1;
+					return direction * 1;
 				}
 				return 0;
 			});
@@ -139,7 +152,7 @@ module.exports = function (User) {
 	}
 
 	async function searchByIP(ip) {
-		const ipKeys = await db.scan({ match: 'ip:' + ip + '*' });
+		const ipKeys = await db.scan({ match: `ip:${ip}*` });
 		const uids = await db.getSortedSetRevRange(ipKeys, 0, -1);
 		return _.uniq(uids);
 	}

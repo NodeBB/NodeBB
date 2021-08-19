@@ -95,7 +95,9 @@ module.exports = function (module) {
 			const batch = require('../../batch');
 			const batchSize = Math.ceil(key.length / Math.ceil(key.length / 100));
 			await batch.processArray(key, async currentBatch => batches.push(currentBatch), { batch: batchSize });
-			const batchData = await Promise.all(batches.map(batch => doQuery({ $in: batch }, { _id: 0, _key: 0 }, 0, stop + 1)));
+			const batchData = await Promise.all(batches.map(
+				batch => doQuery({ $in: batch }, { _id: 0, _key: 0 }, 0, stop + 1)
+			));
 			result = dbHelpers.mergeBatch(batchData, 0, stop, sort);
 			if (start > 0) {
 				result = result.slice(start, stop !== -1 ? stop + 1 : undefined);
@@ -143,7 +145,7 @@ module.exports = function (module) {
 			return;
 		}
 
-		var query = { _key: key };
+		const query = { _key: key };
 		if (min !== '-inf') {
 			query.score = { $gte: min };
 		}
@@ -226,8 +228,8 @@ module.exports = function (module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return [];
 		}
-		var data = new Array(values.length);
-		for (var i = 0; i < values.length; i += 1) {
+		const data = new Array(values.length);
+		for (let i = 0; i < values.length; i += 1) {
 			data[i] = { key: keys[i], value: values[i] };
 		}
 		const promises = data.map(item => method(item.key, item.value));
@@ -247,7 +249,7 @@ module.exports = function (module) {
 			return [await getSortedSetRank(reverse, key, values[0])];
 		}
 		const sortedSet = await module[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](key, 0, -1);
-		return values.map(function (value) {
+		return values.map((value) => {
 			if (!value) {
 				return null;
 			}
@@ -271,8 +273,8 @@ module.exports = function (module) {
 		}
 		value = helpers.valueToString(value);
 		const result = await module.client.collection('objects').find({ _key: { $in: keys }, value: value }, { projection: { _id: 0, value: 0 } }).toArray();
-		var map = {};
-		result.forEach(function (item) {
+		const map = {};
+		result.forEach((item) => {
 			if (item) {
 				map[item._key] = item;
 			}
@@ -291,8 +293,8 @@ module.exports = function (module) {
 		values = values.map(helpers.valueToString);
 		const result = await module.client.collection('objects').find({ _key: key, value: { $in: values } }, { projection: { _id: 0, _key: 0 } }).toArray();
 
-		var valueToScore = {};
-		result.forEach(function (item) {
+		const valueToScore = {};
+		result.forEach((item) => {
 			if (item) {
 				valueToScore[item.value] = item.score;
 			}
@@ -328,8 +330,8 @@ module.exports = function (module) {
 			projection: { _id: 0, value: 1 },
 		}).toArray();
 
-		var isMember = {};
-		results.forEach(function (item) {
+		const isMember = {};
+		results.forEach((item) => {
 			if (item) {
 				isMember[item.value] = true;
 			}
@@ -349,8 +351,8 @@ module.exports = function (module) {
 			projection: { _id: 0, _key: 1, value: 1 },
 		}).toArray();
 
-		var isMember = {};
-		results.forEach(function (item) {
+		const isMember = {};
+		results.forEach((item) => {
 			if (item) {
 				isMember[item._key] = true;
 			}
@@ -381,7 +383,7 @@ module.exports = function (module) {
 			return [data.map(item => item.value)];
 		}
 		const sets = {};
-		data.forEach(function (item) {
+		data.forEach((item) => {
 			sets[item._key] = sets[item._key] || [];
 			sets[item._key].push(item.value);
 		});
@@ -393,12 +395,20 @@ module.exports = function (module) {
 		if (!key) {
 			return;
 		}
-		var data = {};
+		const data = {};
 		value = helpers.valueToString(value);
 		data.score = parseFloat(increment);
 
 		try {
-			const result = await module.client.collection('objects').findOneAndUpdate({ _key: key, value: value }, { $inc: data }, { returnOriginal: false, upsert: true });
+			const result = await module.client.collection('objects').findOneAndUpdate({
+				_key: key,
+				value: value,
+			}, {
+				$inc: data,
+			}, {
+				returnDocument: 'after',
+				upsert: true,
+			});
 			return result && result.value ? result.value.score : null;
 		} catch (err) {
 			// if there is duplicate key error retry the upsert
@@ -426,7 +436,7 @@ module.exports = function (module) {
 	};
 
 	async function sortedSetLex(key, min, max, sort, start, count) {
-		var query = { _key: key };
+		const query = { _key: key };
 		start = start !== undefined ? start : 0;
 		count = count !== undefined ? count : 0;
 		buildLexQuery(query, min, max);
@@ -441,7 +451,7 @@ module.exports = function (module) {
 	}
 
 	module.sortedSetRemoveRangeByLex = async function (key, min, max) {
-		var query = { _key: key };
+		const query = { _key: key };
 		buildLexQuery(query, min, max);
 
 		await module.client.collection('objects').deleteMany(query);
@@ -499,14 +509,14 @@ module.exports = function (module) {
 	};
 
 	module.processSortedSet = async function (setKey, processFn, options) {
-		var done = false;
-		var ids = [];
-		var project = { _id: 0, _key: 0 };
+		let done = false;
+		const ids = [];
+		const project = { _id: 0, _key: 0 };
 
 		if (!options.withScores) {
 			project.score = 0;
 		}
-		var cursor = await module.client.collection('objects').find({ _key: setKey }, { projection: project })
+		const cursor = await module.client.collection('objects').find({ _key: setKey }, { projection: project })
 			.sort({ score: 1 })
 			.batchSize(options.batch);
 

@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/categories', ['components'], function (components) {
+define('forum/categories', ['components', 'categorySelector', 'hooks'], function (components, categorySelector, hooks) {
 	var	categories = {};
 
 	$(window).on('action:ajaxify.start', function (ev, data) {
@@ -15,6 +15,12 @@ define('forum/categories', ['components'], function (components) {
 
 		socket.removeListener('event:new_post', categories.onNewPost);
 		socket.on('event:new_post', categories.onNewPost);
+		categorySelector.init($('[component="category-selector"]'), {
+			privilege: 'find',
+			onSelect: function (category) {
+				ajaxify.go('/category/' + category.cid);
+			},
+		});
 
 		$('.category-header').tooltip({
 			placement: 'bottom',
@@ -57,7 +63,7 @@ define('forum/categories', ['components'], function (components) {
 				recentPosts.last().remove();
 			}
 
-			$(window).trigger('action:posts.loaded', { posts: [post] });
+			hooks.fire('action:posts.loaded', { posts: [post] });
 		});
 	}
 

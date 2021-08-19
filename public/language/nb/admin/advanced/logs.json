@@ -1,7 +1,7 @@
 {
-	"logs": "Logs",
-	"control-panel": "Logs Control Panel",
-	"reload": "Reload Logs",
-	"clear": "Clear Logs",
-	"clear-success": "Logs Cleared!"
+	"logs": "Logger",
+	"control-panel": "Kontrollpanel for logg",
+	"reload": "Last inn logg på nytt",
+	"clear": "Tøm logg",
+	"clear-success": "Logg er tømt!"
 }

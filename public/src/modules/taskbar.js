@@ -1,13 +1,13 @@
 'use strict';
 
 
-define('taskbar', ['benchpress', 'translator'], function (Benchpress, translator) {
+define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, translator, hooks) {
 	var taskbar = {};
 
 	taskbar.init = function () {
 		var self = this;
 
-		Benchpress.parse('modules/taskbar', {}, function (html) {
+		Benchpress.render('modules/taskbar', {}).then(function (html) {
 			self.taskbar = $(html);
 			self.tasklist = self.taskbar.find('ul');
 			$(document.body).append(self.taskbar);
@@ -89,7 +89,7 @@ define('taskbar', ['benchpress', 'translator'], function (Benchpress, translator
 			element: element,
 		};
 
-		$(window).trigger('filter:taskbar.push', data);
+		hooks.fire('filter:taskbar.push', data);
 
 		if (!element.length && data.module) {
 			createTaskbarItem(data, callback);
@@ -116,7 +116,7 @@ define('taskbar', ['benchpress', 'translator'], function (Benchpress, translator
 		btnEl.toggleClass('new', state);
 
 		if (!silent) {
-			$(window).trigger('action:taskbar.toggleNew', uuid);
+			hooks.fire('action:taskbar.toggleNew', uuid);
 		}
 	};
 
@@ -156,7 +156,7 @@ define('taskbar', ['benchpress', 'translator'], function (Benchpress, translator
 				.addClass(data.options.className)
 				.html('<a href="#"' + (data.options.image ? ' style="background-image: url(\'' + data.options.image + '\'); background-size: cover;"' : '') + '>' +
 					(data.options.icon ? '<i class="fa ' + data.options.icon + '"></i> ' : '') +
-					'<span component="taskbar/title">' + title + '</span>' +
+					'<span aria-label="' + title + '" component="taskbar/title">' + title + '</span>' +
 					'</a>')
 				.attr({
 					title: title,
@@ -175,7 +175,7 @@ define('taskbar', ['benchpress', 'translator'], function (Benchpress, translator
 			data.element = taskbarEl;
 
 			taskbarEl.data(data);
-			$(window).trigger('action:taskbar.pushed', data);
+			hooks.fire('action:taskbar.pushed', data);
 			callback(taskbarEl);
 		});
 	}
@@ -189,7 +189,7 @@ define('taskbar', ['benchpress', 'translator'], function (Benchpress, translator
 				element.find('i').attr('class', 'fa fa-' + value);
 				break;
 			case 'image':
-				element.find('a').css('background-image', 'url("' + value + '")');
+				element.find('a').css('background-image', value ? 'url("' + value + '")' : '');
 				break;
 			case 'background-color':
 				element.find('a').css('background-color', value);
@@ -210,11 +210,6 @@ define('taskbar', ['benchpress', 'translator'], function (Benchpress, translator
 		});
 
 		element.data(data);
-	};
-
-	taskbar.updateTitle = function (module, uuid, newTitle) {
-		console.warn('[taskbar] .updateTitle() is deprecated, use .update() instead');
-		taskbar.tasklist.find('[data-module="' + module + '"][data-uuid="' + uuid + '"] [component="taskbar/title"]').text(newTitle);
 	};
 
 	return taskbar;

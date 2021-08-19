@@ -1,5 +1,9 @@
 {
-	"dashboard": "Painel de Controlo",
+	"section-dashboard": "Dashboards",
+	"dashboard/overview": "Overview",
+	"dashboard/logins": "Logins",
+	"dashboard/users": "Users",
+	"dashboard/topics": "Topics",
 	"section-general": "Geral",
 
 	"section-manage": "Gerir",
@@ -31,6 +35,7 @@
 	"settings/pagination": "Paginação",
 	"settings/tags": "Marcadores",
 	"settings/notifications": "Notificações",
+	"settings/api": "API Access",
 	"settings/sounds": "Sons",
 	"settings/social": "Social",
 	"settings/cookies": "Cookies",

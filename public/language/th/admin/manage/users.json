@@ -1,6 +1,6 @@
 {
 	"users": "ผู้ใช้",
-	"edit": "แก้ไข",
+	"edit": "Actions",
 	"make-admin": "ทำให้เป็นแอดมิน",
 	"remove-admin": "ยกเลิกการเป็นแอดมิน",
 	"validate-email": "ยืนยันอีเมล",
@@ -20,16 +20,10 @@
 	"add-group": "Add Group",
 	"invite": "เชิญ",
 	"new": "ผู้ใช้งานใหม่",
-
-	"pills.latest": "ผู้ใช้งานคนล่าสุด",
+	"filter-by": "Filter by",
 	"pills.unvalidated": "ยังไม่ได้ยืนยัน",
-	"pills.no-posts": "ไม่มีกระทู้",
-	"pills.top-posters": "ผู้ที่โพสกระทู้มากที่สุด",
-	"pills.top-rep": "ชื่อเสียงมากที่สุด",
-	"pills.inactive": "ไม่มีการใช้งาน",
-	"pills.flagged": "ได้รับการติดตาม",
+	"pills.validated": "Validated",
 	"pills.banned": "แบน",
-	"pills.search": "ค้นหาผู้ใช้งาน",
 
 	"50-per-page": "50 per page",
 	"100-per-page": "100 per page",
@@ -53,6 +47,7 @@
 	"users.uid": "uid",
 	"users.username": "ชื่อผู้ใช้",
 	"users.email": "อีเมล",
+	"users.ip": "IP",
 	"users.postcount": "จำนวนกระทู้",
 	"users.reputation": "ชื่อเสียง",
 	"users.flags": "ติดตาม",
@@ -108,5 +103,7 @@
 
 	"alerts.prompt-email": "Emails: ",
 	"alerts.email-sent-to": "อีเมลคำเชิญถูกส่งไปที่ %1",
-	"alerts.x-users-found": "%1 user(s) found, (%2 seconds)"
+	"alerts.x-users-found": "%1 user(s) found, (%2 seconds)",
+	"export-users-started": "Exporting users as csv, this might take a while. You will receive a notification when it is complete.",
+	"export-users-completed": "Users exported as csv, click here to download."
 }

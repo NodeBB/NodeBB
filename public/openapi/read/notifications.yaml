@@ -1,0 +1,112 @@
+get:
+  tags:
+    - notifications
+  summary: Get notifications
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  notifications:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        bodyShort:
+                          type: string
+                        path:
+                          type: string
+                        nid:
+                          type: string
+                        from:
+                          type: number
+                        importance:
+                          type: number
+                        datetime:
+                          type: number
+                        datetimeISO:
+                          type: string
+                        user:
+                          type: object
+                          properties:
+                            username:
+                              type: string
+                              description: A friendly name for a given user account
+                            displayname:
+                              type: string
+                              description: This is either username or fullname depending on forum and user settings
+                            userslug:
+                              type: string
+                              description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                removed, etc.)
+                            picture:
+                              type: string
+                              nullable: true
+                            uid:
+                              type: number
+                              description: A user identifier
+                            icon:text:
+                              type: string
+                              description: A single-letter representation of a username. This is used in the
+                                auto-generated icon given to users without
+                                an avatar
+                            icon:bgColor:
+                              type: string
+                              description: A six-character hexadecimal colour code assigned to the user. This
+                                value is used in conjunction with
+                                `icon:text` for the user's auto-generated
+                                icon
+                              example: "#f44336"
+                        image:
+                          type: string
+                          nullable: true
+                        read:
+                          type: boolean
+                        readClass:
+                          type: string
+                  filters:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: {}
+                  regularFilters:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        filter:
+                          type: string
+                        selected:
+                          type: boolean
+                      required:
+                        - name
+                        - filter
+                  moderatorFilters:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        filter:
+                          type: string
+                  selectedFilter:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      filter:
+                        type: string
+                      selected:
+                        type: boolean
+                  title:
+                    type: string
+              - $ref: ../components/schemas/Pagination.yaml#/Pagination
+              - $ref: ../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../components/schemas/CommonProps.yaml#/CommonProps

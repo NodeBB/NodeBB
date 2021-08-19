@@ -18,5 +18,6 @@
     "watching.message": "Seuraat nyt päivityksiä tästä kategoriasta ja kaikista alikategorioista",
     "notwatching.message": "Et seuraa päivityksiää tästä kategoriasta tai alikategorioista",
     "ignoring.message": "Ohitat kaikki päivitykset tästä kategoriasta ja kaikista alikategorioista",
-    "watched-categories": "Seuratut kategoriat"
+    "watched-categories": "Seuratut kategoriat",
+    "x-more-categories": "%1 more categories"
 }

@@ -48,32 +48,32 @@ module.exports = function (User) {
 			return User.blocks._cache.get(parseInt(uid, 10));
 		}
 
-		let blocked = await db.getSortedSetRange('uid:' + uid + ':blocked_uids', 0, -1);
+		let blocked = await db.getSortedSetRange(`uid:${uid}:blocked_uids`, 0, -1);
 		blocked = blocked.map(uid => parseInt(uid, 10)).filter(Boolean);
 		User.blocks._cache.set(parseInt(uid, 10), blocked);
 		return blocked;
 	};
 
-	pubsub.on('user:blocks:cache:del', function (uid) {
+	pubsub.on('user:blocks:cache:del', (uid) => {
 		User.blocks._cache.del(uid);
 	});
 
 	User.blocks.add = async function (targetUid, uid) {
 		await User.blocks.applyChecks('block', targetUid, uid);
-		await db.sortedSetAdd('uid:' + uid + ':blocked_uids', Date.now(), targetUid);
+		await db.sortedSetAdd(`uid:${uid}:blocked_uids`, Date.now(), targetUid);
 		await User.incrementUserFieldBy(uid, 'blocksCount', 1);
 		User.blocks._cache.del(parseInt(uid, 10));
 		pubsub.publish('user:blocks:cache:del', parseInt(uid, 10));
-		plugins.fireHook('action:user.blocks.add', { uid: uid, targetUid: targetUid });
+		plugins.hooks.fire('action:user.blocks.add', { uid: uid, targetUid: targetUid });
 	};
 
 	User.blocks.remove = async function (targetUid, uid) {
 		await User.blocks.applyChecks('unblock', targetUid, uid);
-		await db.sortedSetRemove('uid:' + uid + ':blocked_uids', targetUid);
+		await db.sortedSetRemove(`uid:${uid}:blocked_uids`, targetUid);
 		await User.decrementUserFieldBy(uid, 'blocksCount', 1);
 		User.blocks._cache.del(parseInt(uid, 10));
 		pubsub.publish('user:blocks:cache:del', parseInt(uid, 10));
-		plugins.fireHook('action:user.blocks.remove', { uid: uid, targetUid: targetUid });
+		plugins.hooks.fire('action:user.blocks.remove', { uid: uid, targetUid: targetUid });
 	};
 
 	User.blocks.applyChecks = async function (type, targetUid, uid) {
@@ -81,12 +81,12 @@ module.exports = function (User) {
 		const isBlock = type === 'block';
 		const is = await User.blocks.is(targetUid, uid);
 		if (is === isBlock) {
-			throw new Error('[[error:already-' + (isBlock ? 'blocked' : 'unblocked') + ']]');
+			throw new Error(`[[error:already-${isBlock ? 'blocked' : 'unblocked'}]]`);
 		}
 	};
 
 	User.blocks.filterUids = async function (targetUid, uids) {
-		return await async.filter(uids, async function (uid) {
+		return await async.filter(uids, async (uid) => {
 			const isBlocked = await User.blocks.is(targetUid, uid);
 			return !isBlocked;
 		});
@@ -100,14 +100,7 @@ module.exports = function (User) {
 			property = 'uid';
 		}
 
-		if (!Array.isArray(set) || !set.length || !set.every((item) => {
-			if (!item) {
-				return false;
-			}
-
-			const check = item.hasOwnProperty(property) ? item[property] : item;
-			return ['number', 'string'].includes(typeof check);
-		})) {
+		if (!Array.isArray(set) || !set.length) {
 			return set;
 		}
 
@@ -115,10 +108,8 @@ module.exports = function (User) {
 		const blocked_uids = await User.blocks.list(uid);
 		const blockedSet = new Set(blocked_uids);
 
-		set = set.filter(function (item) {
-			return !blockedSet.has(parseInt(isPlain ? item : item[property], 10));
-		});
-		const data = await plugins.fireHook('filter:user.blocks.filter', { set: set, property: property, uid: uid, blockedSet: blockedSet });
+		set = set.filter(item => !blockedSet.has(parseInt(isPlain ? item : (item && item[property]), 10)));
+		const data = await plugins.hooks.fire('filter:user.blocks.filter', { set: set, property: property, uid: uid, blockedSet: blockedSet });
 
 		return data.set;
 	};

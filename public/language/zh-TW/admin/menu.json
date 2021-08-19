@@ -1,5 +1,9 @@
 {
-	"dashboard": "儀表板",
+	"section-dashboard": "Dashboards",
+	"dashboard/overview": "Overview",
+	"dashboard/logins": "Logins",
+	"dashboard/users": "Users",
+	"dashboard/topics": "Topics",
 	"section-general": "基本",
 
 	"section-manage": "管理",
@@ -31,6 +35,7 @@
 	"settings/pagination": "分頁",
 	"settings/tags": "標籤",
 	"settings/notifications": "通知",
+	"settings/api": "API Access",
 	"settings/sounds": "聲音",
 	"settings/social": "社交",
 	"settings/cookies": "Cookies",
@@ -38,7 +43,7 @@
 	"settings/sockets": "網路接口",
 	"settings/advanced": "進階",
 
-	"settings.page-title": "1% 設置",
+	"settings.page-title": "%1 設置",
 
 	"section-appearance": "外觀",
 	"appearance/themes": "佈景主題",

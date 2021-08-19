@@ -9,10 +9,10 @@ const connection = module.exports;
 
 connection.getConnectionString = function (mongo) {
 	mongo = mongo || nconf.get('mongo');
-	var usernamePassword = '';
-	var uri = mongo.uri || '';
+	let usernamePassword = '';
+	const uri = mongo.uri || '';
 	if (mongo.username && mongo.password) {
-		usernamePassword = nconf.get('mongo:username') + ':' + encodeURIComponent(nconf.get('mongo:password')) + '@';
+		usernamePassword = `${nconf.get('mongo:username')}:${encodeURIComponent(nconf.get('mongo:password'))}@`;
 	} else if (!uri.includes('@') || !uri.slice(uri.indexOf('://') + 3, uri.indexOf('@'))) {
 		winston.warn('You have no mongo username/password setup!');
 	}
@@ -30,20 +30,20 @@ connection.getConnectionString = function (mongo) {
 		mongo.database = 'nodebb';
 	}
 
-	var hosts = mongo.host.split(',');
-	var ports = mongo.port.toString().split(',');
-	var servers = [];
+	const hosts = mongo.host.split(',');
+	const ports = mongo.port.toString().split(',');
+	const servers = [];
 
-	for (var i = 0; i < hosts.length; i += 1) {
-		servers.push(hosts[i] + ':' + ports[i]);
+	for (let i = 0; i < hosts.length; i += 1) {
+		servers.push(`${hosts[i]}:${ports[i]}`);
 	}
 
-	return uri || 'mongodb://' + usernamePassword + servers.join() + '/' + mongo.database;
+	return uri || `mongodb://${usernamePassword}${servers.join()}/${mongo.database}`;
 };
 
 connection.getConnectionOptions = function (mongo) {
 	mongo = mongo || nconf.get('mongo');
-	var connOptions = {
+	const connOptions = {
 		poolSize: 10,
 		connectTimeoutMS: 90000,
 		useNewUrlParser: true,

@@ -7,18 +7,18 @@ module.exports = {
 	name: 'Clean up post hash data',
 	timestamp: Date.UTC(2019, 9, 7),
 	method: async function () {
-		const progress = this.progress;
+		const { progress } = this;
 		await cleanPost(progress);
 		await cleanTopic(progress);
 	},
 };
 
 async function cleanPost(progress) {
-	await batch.processSortedSet('posts:pid', async function (pids) {
+	await batch.processSortedSet('posts:pid', async (pids) => {
 		progress.incr(pids.length);
 
-		const postData = await db.getObjects(pids.map(pid => 'post:' + pid));
-		await Promise.all(postData.map(async function (post) {
+		const postData = await db.getObjects(pids.map(pid => `post:${pid}`));
+		await Promise.all(postData.map(async (post) => {
 			if (!post) {
 				return;
 			}
@@ -46,7 +46,7 @@ async function cleanPost(progress) {
 			});
 
 			if (fieldsToDelete.length) {
-				await db.deleteObjectFields('post:' + post.pid, fieldsToDelete);
+				await db.deleteObjectFields(`post:${post.pid}`, fieldsToDelete);
 			}
 		}));
 	}, {
@@ -56,10 +56,10 @@ async function cleanPost(progress) {
 }
 
 async function cleanTopic(progress) {
-	await batch.processSortedSet('topics:tid', async function (tids) {
+	await batch.processSortedSet('topics:tid', async (tids) => {
 		progress.incr(tids.length);
-		const topicData = await db.getObjects(tids.map(tid => 'topic:' + tid));
-		await Promise.all(topicData.map(async function (topic) {
+		const topicData = await db.getObjects(tids.map(tid => `topic:${tid}`));
+		await Promise.all(topicData.map(async (topic) => {
 			if (!topic) {
 				return;
 			}
@@ -85,7 +85,7 @@ async function cleanTopic(progress) {
 			});
 
 			if (fieldsToDelete.length) {
-				await db.deleteObjectFields('topic:' + topic.tid, fieldsToDelete);
+				await db.deleteObjectFields(`topic:${topic.tid}`, fieldsToDelete);
 			}
 		}));
 	}, {

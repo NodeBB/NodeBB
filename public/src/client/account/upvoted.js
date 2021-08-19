@@ -9,7 +9,7 @@ define('forum/account/upvoted', ['forum/account/header', 'forum/account/posts'],
 
 		$('[component="post/content"] img:not(.not-responsive)').addClass('img-responsive');
 
-		posts.handleInfiniteScroll('posts.loadMoreUpVotedPosts', 'account/upvoted');
+		posts.handleInfiniteScroll('account/upvoted');
 	};
 
 	return Upvoted;

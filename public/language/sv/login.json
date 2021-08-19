@@ -8,5 +8,6 @@
     "failed_login_attempt": "Misslyckad inloggning",
     "login_successful": "Du är nu inloggad!",
     "dont_have_account": "Har du inget konto?",
-    "logged-out-due-to-inactivity": "Du har loggats ut från Admin Kontrollpanelen på grund av inaktivitet"
+    "logged-out-due-to-inactivity": "Du har loggats ut från Admin Kontrollpanelen på grund av inaktivitet",
+    "caps-lock-enabled": "Caps Lock is enabled"
 }

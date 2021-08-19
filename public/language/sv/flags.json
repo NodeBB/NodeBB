@@ -6,6 +6,7 @@
 	"assignee": "Tilldelad",
 	"update": "Uppdatera",
 	"updated": "Uppdatering",
+	"resolved": "Resolved",
 	"target-purged": "Innehållet denna flagga refererar till har rensats bort och är inte längre tillgängligt.",
 
 	"graph-label": "Dagliga flaggningar",
@@ -26,6 +27,7 @@
 	"filter-cid-all": "Alla kategorier",
 	"apply-filters": "Applicera filter",
 	"more-filters": "More Filters",
+	"fewer-filters": "Fewer Filters",
 
 	"quick-actions": "Quick Actions",
 	"flagged-user": "Flaggad användare",
@@ -67,7 +69,7 @@
 	"sort-upvotes": "Most upvotes",
 	"sort-replies": "Most replies",
 
-	"modal-title": "Rapportera opassande innehåll",
+	"modal-title": "Report Content",
 	"modal-body": "Vänligen ange anledningen till att du flaggar %1 %2 för granskning. Alternativt, använd en av snabbrapporteringsknapparna.",
 	"modal-reason-spam": "Spam",
 	"modal-reason-offensive": "Kränkande",
@@ -75,11 +77,9 @@
 	"modal-reason-custom": "Anledning för rapportering av detta innehåll...",
 	"modal-submit": "Skicka in rapport",
 	"modal-submit-success": "Innehållet har flaggats för moderering.",
-	"modal-submit-confirm": "Bekräfta inskickning",
-	"modal-submit-confirm-text": "Du har redan en specifik anledning vald. Vill du verkligen skicka in en snabbrapport?",
-	"modal-submit-confirm-text-help": "Om du skickar in en snabbrapport så förlorar du de specifika motivationer du angivit.",
 
 	"bulk-actions": "Bulk Actions",
 	"bulk-resolve": "Resolve Flag(s)",
-	"bulk-success": "%1 flags updated"
+	"bulk-success": "%1 flags updated",
+	"flagged-timeago-readable": "Flagged <span class=\"timeago\" title=\"%1\"></span> (%2)"
 }

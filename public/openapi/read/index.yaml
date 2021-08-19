@@ -1,0 +1,208 @@
+get:
+  tags:
+    - home
+  description: >
+    This route is used to populate the homepage of NodeBB. It is the main
+    access point of the forum, and shows a list of categories for navigation
+    purposes.
+  summary: Get forum index data
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  title:
+                    type: string
+                    description: The page title
+                  selectCategoryLabel:
+                    type: string
+                    description: Label to use for the category selector
+                  categories:
+                    description: A collection of category data objects
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: ../components/schemas/CategoryObject.yaml#/CategoryObject
+                        - type: object
+                          properties:
+                            tagWhitelist:
+                              type: array
+                              items:
+                                type: string
+                            unread-class:
+                              type: string
+                            children:
+                              type: array
+                              items:
+                                allOf:
+                                  - $ref: ../components/schemas/CategoryObject.yaml#/CategoryObject
+                                  - type: object
+                                    properties:
+                                      tagWhitelist:
+                                        type: array
+                                        items:
+                                          type: string
+                                      unread-class:
+                                        type: string
+                                      children:
+                                        type: array
+                                        items:
+                                          $ref: ../components/schemas/CategoryObject.yaml#/CategoryObject
+                                      parent:
+                                        allOf:
+                                          - $ref: ../components/schemas/CategoryObject.yaml#/CategoryObject
+                                          - type: object
+                                            properties:
+                                              tagWhitelist:
+                                                type: array
+                                                items:
+                                                  type: string
+                                              unread-class:
+                                                type: string
+                                      posts:
+                                        type: array
+                                        items:
+                                          type: object
+                                          properties:
+                                            pid:
+                                              type: number
+                                            timestamp:
+                                              type: number
+                                            content:
+                                              type: string
+                                            timestampISO:
+                                              type: string
+                                              description: An ISO 8601 formatted date string (complementing `timestamp`)
+                                            user:
+                                              type: object
+                                              properties:
+                                                uid:
+                                                  type: number
+                                                  description: A user identifier
+                                                username:
+                                                  type: string
+                                                  description: A friendly name for a given user account
+                                                displayname:
+                                                  type: string
+                                                  description: This is either username or fullname depending on forum and user settings
+                                                userslug:
+                                                  type: string
+                                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                                    removed, etc.)
+                                                picture:
+                                                  nullable: true
+                                                  type: string
+                                                icon:text:
+                                                  type: string
+                                                  description: A single-letter representation of a username. This is used in the
+                                                    auto-generated icon given to
+                                                    users without an avatar
+                                                icon:bgColor:
+                                                  type: string
+                                                  description: A six-character hexadecimal colour code assigned to the user. This
+                                                    value is used in conjunction
+                                                    with `icon:text` for the user's
+                                                    auto-generated icon
+                                                  example: "#f44336"
+                                            index:
+                                              type: number
+                                            cid:
+                                              type: number
+                                              description: A category identifier
+                                            parentCid:
+                                              type: number
+                                              description: The category identifier for the category that is the immediate
+                                                ancestor of the current category
+                                            topic:
+                                              type: object
+                                              properties:
+                                                slug:
+                                                  type: string
+                                                title:
+                                                  type: string
+                                      imageClass:
+                                        type: string
+                                      timesClicked:
+                                        type: number
+                            posts:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  pid:
+                                    type: number
+                                  timestamp:
+                                    type: number
+                                  content:
+                                    type: string
+                                  timestampISO:
+                                    type: string
+                                    description: An ISO 8601 formatted date string (complementing `timestamp`)
+                                  user:
+                                    type: object
+                                    properties:
+                                      uid:
+                                        type: number
+                                        description: A user identifier
+                                      username:
+                                        type: string
+                                        description: A friendly name for a given user account
+                                      displayname:
+                                        type: string
+                                        description: This is either username or fullname depending on forum and user settings
+                                      userslug:
+                                        type: string
+                                        description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                          removed, etc.)
+                                      picture:
+                                        nullable: true
+                                        type: string
+                                      icon:text:
+                                        type: string
+                                        description: A single-letter representation of a username. This is used in the
+                                          auto-generated icon given to users
+                                          without an avatar
+                                      icon:bgColor:
+                                        type: string
+                                        description: A six-character hexadecimal colour code assigned to the user. This
+                                          value is used in conjunction with
+                                          `icon:text` for the user's
+                                          auto-generated icon
+                                        example: "#f44336"
+                                  index:
+                                    type: number
+                                  cid:
+                                    type: number
+                                    description: A category identifier
+                                  topic:
+                                    type: object
+                                    properties:
+                                      slug:
+                                        type: string
+                                      title:
+                                        type: string
+                            teaser:
+                              type: object
+                              properties:
+                                url:
+                                  type: string
+                                timestampISO:
+                                  type: string
+                                  description: An ISO 8601 formatted date string (complementing `timestamp`)
+                                pid:
+                                  type: number
+                                topic:
+                                  type: object
+                                  properties:
+                                    slug:
+                                      type: string
+                                    title:
+                                      type: string
+                            imageClass:
+                              type: string
+              - $ref: ../components/schemas/Pagination.yaml#/Pagination
+              - $ref: ../components/schemas/CommonProps.yaml#/CommonProps

@@ -1,21 +1,21 @@
 {
-	"you-are-on": "You are on <strong>%1:%2</strong>",
+	"you-are-on": "Bạn đang trên <strong>%1:%2</strong>",
 	"ip": "IP <strong>%1</strong>",
-	"nodes-responded": "%1 nodes responded within %2ms!",
-	"host": "host",
-	"primary": "primary / run jobs",
+	"nodes-responded": "%1 nút đã phản hồi trong %2ms!",
+	"host": "máy chủ",
+	"primary": "công việc chính/điều hành",
 	"pid": "pid",
 	"nodejs": "nodejs",
-	"online": "online",
+	"online": "trực tuyến",
 	"git": "git",
-	"memory": "memory",
-	"load": "system load",
-	"cpu-usage": "cpu usage",
-	"uptime": "uptime",
+	"memory": "bộ nhớ",
+	"load": "tải hệ thống",
+	"cpu-usage": "sử dụng cpu",
+	"uptime": "thời gian hoạt động",
 
-	"registered": "Registered",
+	"registered": "Đã đăng ký",
 	"sockets": "Sockets",
-	"guests": "Guests",
+	"guests": "Khách",
 
-	"info": "Info"
+	"info": "Thông tin"
 }

@@ -1,0 +1,109 @@
+get:
+  tags:
+    - groups
+  summary: Get user groups
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  groups:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        description:
+                          type: string
+                        hidden:
+                          type: number
+                        system:
+                          type: number
+                        userTitle:
+                          type: string
+                        userTitleEscaped:
+                          type: string
+                        icon:
+                          type: string
+                        labelColor:
+                          type: string
+                        createtime:
+                          type: number
+                        slug:
+                          type: string
+                        memberCount:
+                          type: number
+                        private:
+                          type: number
+                        userTitleEnabled:
+                          type: number
+                        disableJoinRequests:
+                          type: number
+                        disableLeave:
+                          type: number
+                        nameEncoded:
+                          type: string
+                        displayName:
+                          type: string
+                        textColor:
+                          type: string
+                        createtimeISO:
+                          type: string
+                        cover:thumb:url:
+                          type: string
+                        cover:url:
+                          type: string
+                        cover:position:
+                          type: string
+                        memberPostCids:
+                          type: string
+                        memberPostCidsArray:
+                          type: array
+                          items:
+                            type: number
+                            example: [1, 2, 3]
+                        members:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              uid:
+                                type: number
+                                description: A user identifier
+                              username:
+                                type: string
+                                description: A friendly name for a given user account
+                              picture:
+                                nullable: true
+                                type: string
+                              userslug:
+                                type: string
+                                description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                  removed, etc.)
+                              icon:text:
+                                type: string
+                                description: A single-letter representation of a username. This is used in the
+                                  auto-generated icon given to users without
+                                  an avatar
+                              icon:bgColor:
+                                type: string
+                                description: A six-character hexadecimal colour code assigned to the user. This
+                                  value is used in conjunction with
+                                  `icon:text` for the user's auto-generated
+                                  icon
+                                example: "#f44336"
+                        truncated:
+                          type: boolean
+                  allowGroupCreation:
+                    type: boolean
+                  nextStart:
+                    type: number
+                  title:
+                    type: string
+              - $ref: ../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../components/schemas/CommonProps.yaml#/CommonProps

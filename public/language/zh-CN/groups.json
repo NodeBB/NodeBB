@@ -35,6 +35,7 @@
     "details.member_count": "群组成员数",
     "details.creation_date": "创建时间",
     "details.description": "描述",
+    "details.member-post-cids": "Category IDs to display posts from",
     "details.badge_preview": "徽章预览",
     "details.change_icon": "更改图标",
     "details.change_label_colour": "更改标签颜色",

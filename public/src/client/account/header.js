@@ -8,7 +8,8 @@ define('forum/account/header', [
 	'translator',
 	'benchpress',
 	'accounts/delete',
-], function (coverPhoto, pictureCropper, components, translator, Benchpress, AccountsDelete) {
+	'api',
+], function (coverPhoto, pictureCropper, components, translator, Benchpress, AccountsDelete, api) {
 	var AccountHeader = {};
 	var isAdminOrSelfOrGlobalMod;
 
@@ -115,24 +116,22 @@ define('forum/account/header', [
 	}
 
 	function toggleFollow(type) {
-		socket.emit('user.' + type, {
-			uid: ajaxify.data.uid,
-		}, function (err) {
+		api[type === 'follow' ? 'put' : 'del']('/users/' + ajaxify.data.uid + '/follow', undefined, function (err) {
 			if (err) {
-				return app.alertError(err.message);
+				return app.alertError(err);
 			}
-
 			components.get('account/follow').toggleClass('hide', type === 'follow');
 			components.get('account/unfollow').toggleClass('hide', type === 'unfollow');
 			app.alertSuccess('[[global:alert.' + type + ', ' + ajaxify.data.username + ']]');
 		});
+
 		return false;
 	}
 
 	function banAccount(theirid, onSuccess) {
 		theirid = theirid || ajaxify.data.theirid;
 
-		Benchpress.parse('admin/partials/temporary-ban', {}, function (html) {
+		Benchpress.render('admin/partials/temporary-ban', {}).then(function (html) {
 			bootbox.dialog({
 				className: 'ban-modal',
 				title: '[[user:ban_account]]',
@@ -151,23 +150,20 @@ define('forum/account/header', [
 								return data;
 							}, {});
 
-							var until = formData.length > 0 ? (Date.now() + (formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1))) : 0;
+							var until = formData.length > 0 ? (
+								Date.now() + (formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1))
+							) : 0;
 
-							socket.emit('user.banUsers', {
-								uids: [theirid],
+							api.put('/users/' + theirid + '/ban', {
 								until: until,
 								reason: formData.reason || '',
-							}, function (err) {
-								if (err) {
-									return app.alertError(err.message);
-								}
-
+							}).then(() => {
 								if (typeof onSuccess === 'function') {
 									return onSuccess();
 								}
 
 								ajaxify.refresh();
-							});
+							}).catch(app.alertError);
 						},
 					},
 				},
@@ -176,12 +172,9 @@ define('forum/account/header', [
 	}
 
 	function unbanAccount() {
-		socket.emit('user.unbanUsers', [ajaxify.data.theirid], function (err) {
-			if (err) {
-				return app.alertError(err.message);
-			}
+		api.del('/users/' + ajaxify.data.theirid + '/ban').then(() => {
 			ajaxify.refresh();
-		});
+		}).catch(app.alertError);
 	}
 
 	function flagAccount() {

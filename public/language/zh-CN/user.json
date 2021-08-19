@@ -84,6 +84,7 @@
     "remove_cover_picture_confirm": "您确定要移除封面图片吗？",
     "crop_picture": "剪裁图片",
     "upload_cropped_picture": "剪裁并上传",
+    "avatar-background-colour": "头像背景颜色",
     "settings": "设置",
     "show_email": "显示我的电子邮箱",
     "show_fullname": "显示我的全名",
@@ -111,7 +112,7 @@
     "posts_per_page": "每页帖子数",
     "max_items_per_page": "最大值 %1",
     "acp_language": "管理员页面语言",
-    "notifications": "Notifications",
+    "notifications": "通知",
     "upvote-notif-freq": "帖子被顶的通知频率",
     "upvote-notif-freq.all": "每一次被顶都通知我",
     "upvote-notif-freq.first": "首次顶贴",
@@ -123,6 +124,7 @@
     "open_links_in_new_tab": "在新标签打开外部链接",
     "enable_topic_searching": "启用主题内搜索",
     "topic_search_help": "如果启用此项，主题内搜索会替代浏览器默认的页面搜索，您将可以在整个主题内搜索，而不仅仅只搜索页面上展现的内容。",
+    "update_url_with_post_index": "浏览主题是更新链接和索引",
     "scroll_to_my_post": "在提交回复之后显示新回复",
     "follow_topics_you_reply_to": "关注您回复过的主题",
     "follow_topics_you_create": "关注您创建的主题",
@@ -134,7 +136,7 @@
     "homepage": "首页",
     "homepage_description": "选择一个页面作为论坛的首页，否则设置为 ‘空’ 使用默认首页。",
     "custom_route": "自定义首页路由",
-    "custom_route_help": "输入路由名称，前面不需要斜杠 ( 例如, \"recent\" 或 \"popular\" )",
+    "custom_route_help": "输入路由名称，前面不需要斜杠 ( 例如, \"recent\" 或 \"category/2/general-discussion\" )",
     "sso.title": "单点登录服务",
     "sso.associated": "已关联到",
     "sso.not-associated": "点击这里来关联",
@@ -178,5 +180,8 @@
     "consent.export_uploads": "导出上传文件 (.zip)",
     "consent.export-uploads-success": "上传导出完成后，您将会收到一条通知。",
     "consent.export_posts": "导出帖子 (.csv)",
-    "consent.export-posts-success": "帖子导出完成后，您将会收到一条通知。"
+    "consent.export-posts-success": "帖子导出完成后，您将会收到一条通知。",
+    "emailUpdate.intro": "Please enter your email address below. This forum uses your email address for scheduled digest and notifications, as well as for account recovery in the event of a lost password.",
+    "emailUpdate.optional": "<strong>This field is optional</strong>. You are not obligated to provide your email address, but without a validated email, you will not be able to recover your account.",
+    "emailUpdate.change-instructions": "A confirmation email will be sent to the entered email address with a unique link. Accessing that link will confirm your ownership of the email address and it will become active on your account. At any time, you are able to update your email on file from within your account page."
 }

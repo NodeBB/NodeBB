@@ -1,0 +1,109 @@
+get:
+  tags:
+    - topics
+  summary: Get recent topics
+  description: Returns a list of topics sorted by timestamp.
+  responses:
+    "200":
+      description: An array of topic objects sorted by timestamp.
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  nextStart:
+                    type: number
+                  topicCount:
+                    type: number
+                  topics:
+                    type: array
+                    items:
+                      $ref: ../components/schemas/TopicObject.yaml#/TopicObject
+                  tids:
+                    type: array
+                    items:
+                      type: number
+                  canPost:
+                    type: boolean
+                  showSelect:
+                    type: boolean
+                  showTopicTools:
+                    type: boolean
+                  allCategoriesUrl:
+                    type: string
+                  selectedCategory:
+                    type: object
+                    properties:
+                      icon:
+                        type: string
+                      name:
+                        type: string
+                      bgColor:
+                        type: string
+                    nullable: true
+                  selectedCids:
+                    type: array
+                    items:
+                      type: number
+                  feeds:disableRSS:
+                    type: number
+                  rssFeedUrl:
+                    type: string
+                  title:
+                    type: string
+                  filters:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        url:
+                          type: string
+                        selected:
+                          type: boolean
+                        filter:
+                          type: string
+                        icon:
+                          type: string
+                  selectedFilter:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      url:
+                        type: string
+                      selected:
+                        type: boolean
+                      filter:
+                        type: string
+                      icon:
+                        type: string
+                  terms:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        url:
+                          type: string
+                        selected:
+                          type: boolean
+                        term:
+                          type: string
+                  selectedTerm:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      url:
+                        type: string
+                      selected:
+                        type: boolean
+                      term:
+                        type: string
+              - $ref: ../components/schemas/Pagination.yaml#/Pagination
+              - $ref: ../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../components/schemas/CommonProps.yaml#/CommonProps

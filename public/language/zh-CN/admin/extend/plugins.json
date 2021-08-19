@@ -1,5 +1,5 @@
 {
-	"trending": "Trending",
+	"trending": "趋势",
 	"installed": "已安装",
 	"active": "已启用",
 	"inactive": "未启用",
@@ -39,7 +39,7 @@
 	"alert.upgraded": "插件已升级",
 	"alert.installed": "插件已安装",
 	"alert.uninstalled": "插件已卸载",
-	"alert.activate-success": "请 部署 & 重启 NodeBB 来完全激活此插件",
+	"alert.activate-success": "请重新编译和启动NodeBB以激活此插件",
 	"alert.deactivate-success": "插件停用成功",
 	"alert.upgrade-success": "请部署并重启您的 NodeBB 来完成更新此插件。",
 	"alert.install-success": "插件安装成功，请启用插件。",

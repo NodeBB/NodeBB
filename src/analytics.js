@@ -14,6 +14,8 @@ const meta = require('./meta');
 
 const Analytics = module.exports;
 
+const secret = nconf.get('secret');
+
 const counters = {};
 
 let pageViews = 0;
@@ -31,17 +33,17 @@ Analytics.init = async function () {
 		maxAge: 0,
 	});
 
-	new cronJob('*/10 * * * * *', function () {
+	new cronJob('*/10 * * * * *', (() => {
 		Analytics.writeData();
-	}, null, true);
+	}), null, true);
 };
 
 Analytics.increment = function (keys, callback) {
 	keys = Array.isArray(keys) ? keys : [keys];
 
-	plugins.fireHook('action:analytics.increment', { keys: keys });
+	plugins.hooks.fire('action:analytics.increment', { keys: keys });
 
-	keys.forEach(function (key) {
+	keys.forEach((key) => {
 		counters[key] = counters[key] || 0;
 		counters[key] += 1;
 	});
@@ -64,10 +66,10 @@ Analytics.pageView = async function (payload) {
 
 	if (payload.ip) {
 		// Retrieve hash or calculate if not present
-		let hash = ipCache.get(payload.ip + nconf.get('secret'));
+		let hash = ipCache.get(payload.ip + secret);
 		if (!hash) {
-			hash = crypto.createHash('sha1').update(payload.ip + nconf.get('secret')).digest('hex');
-			ipCache.set(payload.ip + nconf.get('secret'), hash);
+			hash = crypto.createHash('sha1').update(payload.ip + secret).digest('hex');
+			ipCache.set(payload.ip + secret, hash);
 		}
 
 		const score = await db.sortedSetScore('ip:recent', hash);
@@ -126,18 +128,14 @@ Analytics.writeData = async function () {
 		uniqueIPCount = 0;
 	}
 
-	if (Object.keys(counters).length > 0) {
-		for (const key in counters) {
-			if (counters.hasOwnProperty(key)) {
-				dbQueue.push(db.sortedSetIncrBy('analytics:' + key, counters[key], today.getTime()));
-				delete counters[key];
-			}
-		}
+	for (const [key, value] of Object.entries(counters)) {
+		dbQueue.push(db.sortedSetIncrBy(`analytics:${key}`, value, today.getTime()));
+		delete counters[key];
 	}
 	try {
 		await Promise.all(dbQueue);
 	} catch (err) {
-		winston.error('[analytics] Encountered error while writing analytics to data store', err.stack);
+		winston.error(`[analytics] Encountered error while writing analytics to data store\n${err.stack}`);
 		throw err;
 	}
 };
@@ -145,7 +143,7 @@ Analytics.writeData = async function () {
 Analytics.getHourlyStatsForSet = async function (set, hour, numHours) {
 	// Guard against accidental ommission of `analytics:` prefix
 	if (!set.startsWith('analytics:')) {
-		set = 'analytics:' + set;
+		set = `analytics:${set}`;
 	}
 
 	const terms = {};
@@ -161,14 +159,14 @@ Analytics.getHourlyStatsForSet = async function (set, hour, numHours) {
 
 	const counts = await db.sortedSetScores(set, hoursArr);
 
-	hoursArr.forEach(function (term, index) {
+	hoursArr.forEach((term, index) => {
 		terms[term] = parseInt(counts[index], 10) || 0;
 	});
 
 	const termsArr = [];
 
 	hoursArr.reverse();
-	hoursArr.forEach(function (hour) {
+	hoursArr.forEach((hour) => {
 		termsArr.push(terms[hour]);
 	});
 
@@ -178,17 +176,22 @@ Analytics.getHourlyStatsForSet = async function (set, hour, numHours) {
 Analytics.getDailyStatsForSet = async function (set, day, numDays) {
 	// Guard against accidental ommission of `analytics:` prefix
 	if (!set.startsWith('analytics:')) {
-		set = 'analytics:' + set;
+		set = `analytics:${set}`;
 	}
 
 	const daysArr = [];
 	day = new Date(day);
-	day.setDate(day.getDate() + 1);	// set the date to tomorrow, because getHourlyStatsForSet steps *backwards* 24 hours to sum up the values
+	// set the date to tomorrow, because getHourlyStatsForSet steps *backwards* 24 hours to sum up the values
+	day.setDate(day.getDate() + 1);
 	day.setHours(0, 0, 0, 0);
 
 	while (numDays > 0) {
 		/* eslint-disable no-await-in-loop */
-		const dayData = await Analytics.getHourlyStatsForSet(set, day.getTime() - (1000 * 60 * 60 * 24 * (numDays - 1)), 24);
+		const dayData = await Analytics.getHourlyStatsForSet(
+			set,
+			day.getTime() - (1000 * 60 * 60 * 24 * (numDays - 1)),
+			24
+		);
 		daysArr.push(dayData.reduce((cur, next) => cur + next));
 		numDays -= 1;
 	}
@@ -216,10 +219,10 @@ Analytics.getSummary = async function () {
 
 Analytics.getCategoryAnalytics = async function (cid) {
 	return await utils.promiseParallel({
-		'pageviews:hourly': Analytics.getHourlyStatsForSet('analytics:pageviews:byCid:' + cid, Date.now(), 24),
-		'pageviews:daily': Analytics.getDailyStatsForSet('analytics:pageviews:byCid:' + cid, Date.now(), 30),
-		'topics:daily': Analytics.getDailyStatsForSet('analytics:topics:byCid:' + cid, Date.now(), 7),
-		'posts:daily': Analytics.getDailyStatsForSet('analytics:posts:byCid:' + cid, Date.now(), 7),
+		'pageviews:hourly': Analytics.getHourlyStatsForSet(`analytics:pageviews:byCid:${cid}`, Date.now(), 24),
+		'pageviews:daily': Analytics.getDailyStatsForSet(`analytics:pageviews:byCid:${cid}`, Date.now(), 30),
+		'topics:daily': Analytics.getDailyStatsForSet(`analytics:topics:byCid:${cid}`, Date.now(), 7),
+		'posts:daily': Analytics.getDailyStatsForSet(`analytics:posts:byCid:${cid}`, Date.now(), 7),
 	});
 };
 

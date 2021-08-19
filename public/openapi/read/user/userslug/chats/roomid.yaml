@@ -1,0 +1,314 @@
+get:
+  tags:
+    - users
+  summary: Get chat room
+  parameters:
+    - name: userslug
+      in: path
+      required: true
+      schema:
+        type: string
+      example: admin
+    - name: roomid
+      in: path
+      required: true
+      schema:
+        type: string
+      example: 1
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  owner:
+                    type: number
+                  roomId:
+                    type: number
+                  roomName:
+                    type: string
+                  messages:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        content:
+                          type: string
+                        timestamp:
+                          type: number
+                        fromuid:
+                          type: number
+                        roomId:
+                          type: string
+                        deleted:
+                          type: boolean
+                        system:
+                          type: boolean
+                        edited:
+                          type: number
+                        timestampISO:
+                          type: string
+                          description: An ISO 8601 formatted date string (complementing `timestamp`)
+                        editedISO:
+                          type: string
+                        messageId:
+                          type: number
+                        fromUser:
+                          type: object
+                          properties:
+                            uid:
+                              type: number
+                              description: A user identifier
+                            username:
+                              type: string
+                              description: A friendly name for a given user account
+                            displayname:
+                              type: string
+                              description: This is either username or fullname depending on forum and user settings
+                            userslug:
+                              type: string
+                              description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                removed, etc.)
+                            picture:
+                              type: string
+                              nullable: true
+                            status:
+                              type: string
+                            banned:
+                              type: boolean
+                            icon:text:
+                              type: string
+                              description: A single-letter representation of a username. This is used in the
+                                auto-generated icon given to users without
+                                an avatar
+                            icon:bgColor:
+                              type: string
+                              description: A six-character hexadecimal colour code assigned to the user. This
+                                value is used in conjunction with
+                                `icon:text` for the user's auto-generated
+                                icon
+                              example: "#f44336"
+                            banned_until_readable:
+                              type: string
+                            deleted:
+                              type: boolean
+                        self:
+                          type: number
+                        newSet:
+                          type: boolean
+                        index:
+                          type: number
+                        cleanedContent:
+                          type: string
+                        isOwner:
+                          type: boolean
+                  isOwner:
+                    type: boolean
+                  users:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        uid:
+                          type: number
+                          description: A user identifier
+                        username:
+                          type: string
+                          description: A friendly name for a given user account
+                        displayname:
+                          type: string
+                          description: This is either username or fullname depending on forum and user settings
+                        picture:
+                          type: string
+                          nullable: true
+                        status:
+                          type: string
+                        icon:text:
+                          type: string
+                          description: A single-letter representation of a username. This is used in the
+                            auto-generated icon given to users without an
+                            avatar
+                        icon:bgColor:
+                          type: string
+                          description: A six-character hexadecimal colour code assigned to the user. This
+                            value is used in conjunction with `icon:text`
+                            for the user's auto-generated icon
+                          example: "#f44336"
+                        isOwner:
+                          type: boolean
+                  canReply:
+                    type: boolean
+                  groupChat:
+                    type: boolean
+                  usernames:
+                    type: string
+                  maximumUsersInChatRoom:
+                    type: number
+                  maximumChatMessageLength:
+                    type: number
+                  showUserInput:
+                    type: boolean
+                  isAdminOrGlobalMod:
+                    type: boolean
+                  rooms:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        owner:
+                          oneOf:
+                            - type: number
+                            - type: string
+                        roomId:
+                          type: number
+                        roomName:
+                          type: string
+                        users:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              uid:
+                                type: number
+                                description: A user identifier
+                              username:
+                                type: string
+                                description: A friendly name for a given user account
+                              displayname:
+                                type: string
+                                description: This is either username or fullname depending on forum and user settings
+                              userslug:
+                                type: string
+                                description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                  removed, etc.)
+                              picture:
+                                nullable: true
+                                type: string
+                              status:
+                                type: string
+                              lastonline:
+                                type: number
+                              icon:text:
+                                type: string
+                                description: A single-letter representation of a username. This is used in the
+                                  auto-generated icon given to users without
+                                  an avatar
+                              icon:bgColor:
+                                type: string
+                                description: A six-character hexadecimal colour code assigned to the user. This
+                                  value is used in conjunction with
+                                  `icon:text` for the user's auto-generated
+                                  icon
+                                example: "#f44336"
+                              lastonlineISO:
+                                type: string
+                        groupChat:
+                          type: boolean
+                        unread:
+                          type: boolean
+                        teaser:
+                          type: object
+                          properties:
+                            fromuid:
+                              type: number
+                            content:
+                              type: string
+                            timestamp:
+                              type: number
+                            timestampISO:
+                              type: string
+                              description: An ISO 8601 formatted date string (complementing `timestamp`)
+                            user:
+                              type: object
+                              properties:
+                                uid:
+                                  type: number
+                                  description: A user identifier
+                                username:
+                                  type: string
+                                  description: A friendly name for a given user account
+                                displayname:
+                                  type: string
+                                  description: This is either username or fullname depending on forum and user settings
+                                userslug:
+                                  type: string
+                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                    removed, etc.)
+                                picture:
+                                  nullable: true
+                                  type: string
+                                status:
+                                  type: string
+                                lastonline:
+                                  type: number
+                                icon:text:
+                                  type: string
+                                  description: A single-letter representation of a username. This is used in the
+                                    auto-generated icon given to users
+                                    without an avatar
+                                icon:bgColor:
+                                  type: string
+                                  description: A six-character hexadecimal colour code assigned to the user. This
+                                    value is used in conjunction with
+                                    `icon:text` for the user's
+                                    auto-generated icon
+                                  example: "#f44336"
+                                lastonlineISO:
+                                  type: string
+                          nullable: true
+                        lastUser:
+                          type: object
+                          properties:
+                            uid:
+                              type: number
+                              description: A user identifier
+                            username:
+                              type: string
+                              description: A friendly name for a given user account
+                            displayname:
+                              type: string
+                              description: This is either username or fullname depending on forum and user settings
+                            userslug:
+                              type: string
+                              description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                removed, etc.)
+                            picture:
+                              nullable: true
+                              type: string
+                            status:
+                              type: string
+                            lastonline:
+                              type: number
+                            icon:text:
+                              type: string
+                              description: A single-letter representation of a username. This is used in the
+                                auto-generated icon given to users without
+                                an avatar
+                            icon:bgColor:
+                              type: string
+                              description: A six-character hexadecimal colour code assigned to the user. This
+                                value is used in conjunction with
+                                `icon:text` for the user's auto-generated
+                                icon
+                              example: "#f44336"
+                            lastonlineISO:
+                              type: string
+                        usernames:
+                          type: string
+                  nextStart:
+                    type: number
+                  title:
+                    type: string
+                  uid:
+                    type: number
+                    description: A user identifier
+                  userslug:
+                    type: string
+                    description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                      removed, etc.)
+                  canViewInfo:
+                    type: boolean
+              - $ref: ../../../../components/schemas/CommonProps.yaml#/CommonProps

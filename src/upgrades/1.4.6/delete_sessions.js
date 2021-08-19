@@ -1,30 +1,30 @@
 'use strict';
 
-var async = require('async');
+const async = require('async');
 
 const nconf = require('nconf');
-var db = require('../../database');
-var batch = require('../../batch');
+const db = require('../../database');
+const batch = require('../../batch');
 
 module.exports = {
 	name: 'Delete accidentally long-lived sessions',
 	timestamp: Date.UTC(2017, 3, 16),
 	method: function (callback) {
-		var configJSON;
+		let configJSON;
 		try {
 			configJSON = require('../../../config.json') || { [process.env.database]: true };
 		} catch (err) {
 			configJSON = { [process.env.database]: true };
 		}
 
-		var isRedisSessionStore = configJSON.hasOwnProperty('redis');
-		var progress = this.progress;
+		const isRedisSessionStore = configJSON.hasOwnProperty('redis');
+		const { progress } = this;
 
 		async.waterfall([
 			function (next) {
 				if (isRedisSessionStore) {
-					var connection = require('../../database/redis/connection');
-					var client;
+					const connection = require('../../database/redis/connection');
+					let client;
 					async.waterfall([
 						function (next) {
 							connection.connect(nconf.get('redis'), next);
@@ -36,9 +36,9 @@ module.exports = {
 						function (sessionKeys, next) {
 							progress.total = sessionKeys.length;
 
-							batch.processArray(sessionKeys, function (keys, next) {
-								var multi = client.multi();
-								keys.forEach(function (key) {
+							batch.processArray(sessionKeys, (keys, next) => {
+								const multi = client.multi();
+								keys.forEach((key) => {
 									progress.incr();
 									multi.del(key);
 								});
@@ -47,11 +47,11 @@ module.exports = {
 								batch: 1000,
 							}, next);
 						},
-					], function (err) {
+					], (err) => {
 						next(err);
 					});
 				} else if (db.client && db.client.collection) {
-					db.client.collection('sessions').deleteMany({}, {}, function (err) {
+					db.client.collection('sessions').deleteMany({}, {}, (err) => {
 						next(err);
 					});
 				} else {

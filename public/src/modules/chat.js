@@ -3,7 +3,9 @@
 define('chat', [
 	'components',
 	'taskbar',
-], function (components, taskbar) {
+	'translator',
+	'hooks',
+], function (components, taskbar, translator, hooks) {
 	var module = {};
 	var newMessage = false;
 
@@ -20,27 +22,33 @@ define('chat', [
 				return room.teaser;
 			});
 
-			app.parseAndTranslate('partials/chats/dropdown', { rooms: rooms }, function (html) {
-				chatsListEl.find('*').not('.navigation-link').remove();
-				chatsListEl.prepend(html);
-				app.createUserTooltips(chatsListEl, 'right');
-				chatsListEl.off('click').on('click', '[data-roomid]', function (ev) {
-					if ($(ev.target).parents('.user-link').length) {
-						return;
-					}
-					var roomId = $(this).attr('data-roomid');
-					if (!ajaxify.currentPage.match(/^chats\//)) {
-						app.openChat(roomId);
-					} else {
-						ajaxify.go('user/' + app.user.userslug + '/chats/' + roomId);
-					}
-				});
-
-				$('[component="chats/mark-all-read"]').off('click').on('click', function () {
-					socket.emit('modules.chats.markAllRead', function (err) {
-						if (err) {
-							return app.alertError(err);
+			translator.toggleTimeagoShorthand(function () {
+				for (var i = 0; i < rooms.length; i += 1) {
+					rooms[i].teaser.timeago = $.timeago(new Date(parseInt(rooms[i].teaser.timestamp, 10)));
+				}
+				translator.toggleTimeagoShorthand();
+				app.parseAndTranslate('partials/chats/dropdown', { rooms: rooms }, function (html) {
+					chatsListEl.find('*').not('.navigation-link').remove();
+					chatsListEl.prepend(html);
+					app.createUserTooltips(chatsListEl, 'right');
+					chatsListEl.off('click').on('click', '[data-roomid]', function (ev) {
+						if ($(ev.target).parents('.user-link').length) {
+							return;
 						}
+						var roomId = $(this).attr('data-roomid');
+						if (!ajaxify.currentPage.match(/^chats\//)) {
+							app.openChat(roomId);
+						} else {
+							ajaxify.go('user/' + app.user.userslug + '/chats/' + roomId);
+						}
+					});
+
+					$('[component="chats/mark-all-read"]').off('click').on('click', function () {
+						socket.emit('modules.chats.markAllRead', function (err) {
+							if (err) {
+								return app.alertError(err);
+							}
+						});
 					});
 				});
 			});
@@ -116,7 +124,7 @@ define('chat', [
 		taskbar.update('chat', modal.attr('data-uuid'), {
 			title: newTitle,
 		});
-		$(window).trigger('action:chat.renamed', Object.assign(data, {
+		hooks.fire('action:chat.renamed', Object.assign(data, {
 			modal: modal,
 		}));
 	};
@@ -242,7 +250,7 @@ define('chat', [
 					isSelf: data.isSelf,
 				}, function () {
 					taskbar.toggleNew(chatModal.attr('data-uuid'), !data.isSelf);
-					$(window).trigger('action:chat.loaded', chatModal);
+					hooks.fire('action:chat.loaded', chatModal);
 
 					if (typeof callback === 'function') {
 						callback(chatModal);
@@ -268,7 +276,7 @@ define('chat', [
 			module.disableMobileBehaviour(chatModal);
 		}
 
-		$(window).trigger('action:chat.closed', {
+		hooks.fire('action:chat.closed', {
 			uuid: uuid,
 			modal: chatModal,
 		});
@@ -345,7 +353,7 @@ define('chat', [
 		taskbar.minimize('chat', uuid);
 		clearInterval(chatModal.attr('intervalId'));
 		chatModal.attr('intervalId', 0);
-		$(window).trigger('action:chat.minimized', {
+		hooks.fire('action:chat.minimized', {
 			uuid: uuid,
 			modal: chatModal,
 		});

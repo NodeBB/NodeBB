@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function (module) {
-	var helpers = require('./helpers');
+	const helpers = require('./helpers');
 
 	module.setAdd = async function (key, value) {
 		if (!Array.isArray(value)) {
@@ -29,14 +29,17 @@ module.exports = function (module) {
 		if (!Array.isArray(key)) {
 			key = [key];
 		}
+		if (!value.length) {
+			return;
+		}
 
-		var batch = module.client.batch();
+		const batch = module.client.batch();
 		key.forEach(k => batch.srem(String(k), value));
 		await helpers.execBatch(batch);
 	};
 
 	module.setsRemove = async function (keys, value) {
-		var batch = module.client.batch();
+		const batch = module.client.batch();
 		keys.forEach(k => batch.srem(String(k), value));
 		await helpers.execBatch(batch);
 	};

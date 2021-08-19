@@ -4,12 +4,12 @@
 	"route": "Útvonal:",
 	"tooltip": "Elemleírás:",
 	"text": "Szöveg:",
-	"text-class": "Szövegosztály: <small>nem kötelező</small>",
-	"class": "Class: <small>optional</small>",
-	"id": "ID: <small>nem kötelező</small>",
+	"text-class": "CSS osztály: <small>nem kötelező</small>",
+	"class": "Osztály: <small>nem kötelező</small>",
+	"id": "HTML azonosító: <small>nem kötelező</small>",
 
 	"properties": "Tulajdonságok:",
-	"groups": "Groups:",
+	"groups": "Csoportok:",
 	"open-new-window": "Megnyitás új ablakban",
 
 	"btn.delete": "Törlés",

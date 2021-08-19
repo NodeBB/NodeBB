@@ -39,7 +39,7 @@
 	"alert.upgraded": "อัพเกรดปลั๊กอินแล้ว",
 	"alert.installed": "ติดตั้งปลั๊กอินแล้ว",
 	"alert.uninstalled": "ถอนการติดตั้งปลั๊กอินแล้ว",
-	"alert.activate-success": "โปรดรีสตาร์ท NodeBB ของคุณเพื่อเปิดการทำงานของธีมนี้",
+	"alert.activate-success": "Please rebuild and restart your NodeBB to fully activate this plugin",
 	"alert.deactivate-success": "ปิดการใช้งานปลั๊กอินนี้แล้ว",
 	"alert.upgrade-success": "Please rebuild and restart your NodeBB to fully upgrade this plugin.",
 	"alert.install-success": "ติดตั้งปลั๊กอินแล้ว โปรดเปิดใช้งานปลั๊กอิน",

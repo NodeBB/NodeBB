@@ -7,7 +7,7 @@ const meta = require('../meta');
 const user = require('../user');
 
 function adminHomePageRoute() {
-	return (meta.config.homePageRoute || meta.config.homePageCustom || '').replace(/^\/+/, '') || 'categories';
+	return ((meta.config.homePageRoute === 'custom' ? meta.config.homePageCustom : meta.config.homePageRoute) || 'categories').replace(/^\//, '');
 }
 
 async function getUserHomeRoute(uid) {
@@ -37,9 +37,9 @@ async function rewrite(req, res, next) {
 		return next(err);
 	}
 
-	const pathname = parsedUrl.pathname;
-	const hook = 'action:homepage.get:' + pathname;
-	if (!plugins.hasListeners(hook)) {
+	const { pathname } = parsedUrl;
+	const hook = `action:homepage.get:${pathname}`;
+	if (!plugins.hooks.hasListeners(hook)) {
 		req.url = req.path + (!req.path.endsWith('/') ? '/' : '') + pathname;
 	} else {
 		res.locals.homePageRoute = pathname;
@@ -52,9 +52,9 @@ async function rewrite(req, res, next) {
 exports.rewrite = rewrite;
 
 function pluginHook(req, res, next) {
-	var hook = 'action:homepage.get:' + res.locals.homePageRoute;
+	const hook = `action:homepage.get:${res.locals.homePageRoute}`;
 
-	plugins.fireHook(hook, {
+	plugins.hooks.fire(hook, {
 		req: req,
 		res: res,
 		next: next,

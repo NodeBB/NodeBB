@@ -8,5 +8,6 @@
 	"consent.blank-localised-default": "留空以便使用 NodeBB 本地默认值",
 	"settings": "设置",
 	"cookie-domain": "Session cookie 域名",
+	"max-user-sessions": "每个用户的最大活跃会话数",
 	"blank-default": "留空以保持默认"
 }

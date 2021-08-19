@@ -1,0 +1,16 @@
+{
+	"tokens": "Mã truy cập",
+	"settings": "Cài đặt",
+	"lead-text": "Từ trang này, bạn có thể cấu hình quyền truy cập vào API Viết trong NodeBB.",
+	"intro": "Mặc định, API Viết xác thực người dùng dựa trên cookie phiên của họ, nhưng NodeBB cũng hỗ trợ xác thực Bearer thông qua mã truy cập được tạo qua trang này.",
+	"docs": "Nhấp vào đây để truy cập thông số kỹ thuật API đầy đủ",
+
+	"require-https": "Chỉ yêu cầu sử dụng API qua HTTPS",
+	"require-https-caveat": "<strong>Ghi chú</strong>: Một số cài đặt liên quan đến bộ cân bằng tải có thể ủy quyền các yêu cầu của họ tới NodeBB bằng HTTP, trong trường hợp đó tùy chọn này vẫn bị vô hiệu hóa.",
+
+	"uid": "ID Người Dùng",
+	"uid-help-text": "Ghi rõ ID người dùng liên kết với mã truy cập. Nếu ID người dùng là <code>0</code>, nó sẽ là môt mã truy cập <em>cao cấp</em>, có thể giả định danh tính của những người dùng khác dựa trên tham số <code>_uid</code>",
+	"description": "Mô tả",
+	"no-description": "Không có mô tả cụ thể.",
+	"token-on-save": "Mã truy cập sẽ được tạo sau khi biểu mẫu được lưu"
+}

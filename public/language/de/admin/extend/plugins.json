@@ -39,7 +39,7 @@
 	"alert.upgraded": "Plugin aktualisiert",
 	"alert.installed": "Plugin installiert",
 	"alert.uninstalled": "Plugin deinstalliert",
-	"alert.activate-success": "Bitte starte NodeBB neu, um dieses Plugin vollständig zu aktivieren",
+	"alert.activate-success": "Please rebuild and restart your NodeBB to fully activate this plugin",
 	"alert.deactivate-success": "Plugin erfolgreich deaktiviert",
 	"alert.upgrade-success": "Bitte Starte dein NodeBB neu um dieses Plugin völlständig zu upgraden.",
 	"alert.install-success": "Plugin erfolgreich installiert. Bitte aktiviere das Plugin",

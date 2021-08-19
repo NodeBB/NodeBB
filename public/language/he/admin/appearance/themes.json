@@ -1,11 +1,11 @@
 {
-    "checking-for-installed": "Checking for installed themes...",
+    "checking-for-installed": "בודק ערכות נושא מותקנות...",
     "homepage": "דף הבית",
-    "select-theme": "Select Theme",
-    "current-theme": "Current Theme",
-    "no-themes": "No installed themes found",
-    "revert-confirm": "Are you sure you wish to restore the default NodeBB theme?",
-    "theme-changed": "Theme Changed",
-    "revert-success": "You have successfully reverted your NodeBB back to it's default theme.",
-    "restart-to-activate": "Please rebuild and restart your NodeBB to fully activate this theme."
+    "select-theme": "בחר ערכת נושא",
+    "current-theme": "ערכת נושא נוכחית",
+    "no-themes": "לא נמצאו ערכות נושא מותקנות",
+    "revert-confirm": "האם  אתה בטוח שאתה רוצה לשחזר את ערכת הנושא הרגילה של NodeBB?",
+    "theme-changed": "ערכת הנושא שונתה",
+    "revert-success": "החזרת בהצלחה את הפורום שלך לערכת הנושא ברירת המחדל.",
+    "restart-to-activate": "אנא בצע בנייה והפעלה מחדש כדי להחיל את ערכת הנושא הזו."
 }

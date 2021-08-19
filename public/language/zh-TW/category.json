@@ -18,5 +18,6 @@
     "watching.message": "您關注了此版面和全部子版面的動態。",
     "notwatching.message": "您未關注了此版面和全部子版面的動態。",
     "ignoring.message": "您忽略了此版面和全部子版面的動態。",
-    "watched-categories": "已關注的版面"
+    "watched-categories": "已關注的版面",
+    "x-more-categories": "%1 more categories"
 }

@@ -60,10 +60,21 @@
     "composer.zen_mode": "Režim Zen",
     "composer.select_category": "Vyberte kategóriu",
     "composer.textarea.placeholder": "Enter your post content here, drag and drop images",
+    "composer.schedule-for": "Schedule topic for",
+    "composer.schedule-date": "Date",
+    "composer.schedule-time": "Time",
+    "composer.cancel-scheduling": "Cancel Scheduling",
+    "composer.set-schedule-date": "Set Date",
     "bootbox.ok": "OK",
     "bootbox.cancel": "Zrušiť",
     "bootbox.confirm": "Potvrdiť",
     "cover.dragging_title": "Pozícia profilovej fotografie",
     "cover.dragging_message": "Presuňte profilovú fotografiu do požadovanej pozície a kliknite na „Uložiť\"",
-    "cover.saved": "Profilová fotografia a pozícia boli uložené"
+    "cover.saved": "Profilová fotografia a pozícia boli uložené",
+    "thumbs.modal.title": "Manage topic thumbnails",
+    "thumbs.modal.no-thumbs": "No thumbnails found.",
+    "thumbs.modal.resize-note": "<strong>Note</strong>: This forum is configured to resize topic thumbnails down to a maximum width of %1px",
+    "thumbs.modal.add": "Add thumbnail",
+    "thumbs.modal.remove": "Remove thumbnail",
+    "thumbs.modal.confirm-remove": "Are you sure you want to remove this thumbnail?"
 }

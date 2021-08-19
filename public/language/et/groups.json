@@ -35,6 +35,7 @@
     "details.member_count": "Liikmete arv",
     "details.creation_date": "Algatamise kuupäev",
     "details.description": "Kirjeldus",
+    "details.member-post-cids": "Category IDs to display posts from",
     "details.badge_preview": "Embleemi eelvaade",
     "details.change_icon": "Vaheta ikooni",
     "details.change_label_colour": "Change Label Colour",

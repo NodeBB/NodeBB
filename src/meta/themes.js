@@ -10,11 +10,10 @@ const file = require('../file');
 const db = require('../database');
 const Meta = require('./index');
 const events = require('../events');
-const utils = require('../../public/src/utils');
+const utils = require('../utils');
+const { themeNamePattern } = require('../constants');
 
 const Themes = module.exports;
-
-const themeNamePattern = /^(@.*?\/)?nodebb-theme-.*$/;
 
 Themes.get = async () => {
 	const themePath = nconf.get('themes_path');
@@ -26,16 +25,23 @@ Themes.get = async () => {
 	themes = _.flatten(themes).filter(Boolean);
 	themes = await Promise.all(themes.map(async (theme) => {
 		const config = path.join(themePath, theme, 'theme.json');
+		const pack = path.join(themePath, theme, 'package.json');
 		try {
-			const file = await fs.promises.readFile(config, 'utf8');
-			const configObj = JSON.parse(file);
+			const [configFile, packageFile] = await Promise.all([
+				fs.promises.readFile(config, 'utf8'),
+				fs.promises.readFile(pack, 'utf8'),
+			]);
+			const configObj = JSON.parse(configFile);
+			const packageObj = JSON.parse(packageFile);
+
+			configObj.id = packageObj.name;
 
 			// Minor adjustments for API output
 			configObj.type = 'local';
 			if (configObj.screenshot) {
-				configObj.screenshot_url = nconf.get('relative_path') + '/css/previews/' + encodeURIComponent(configObj.id);
+				configObj.screenshot_url = `${nconf.get('relative_path')}/css/previews/${encodeURIComponent(configObj.id)}`;
 			} else {
-				configObj.screenshot_url = nconf.get('relative_path') + '/assets/images/themes/default.png';
+				configObj.screenshot_url = `${nconf.get('relative_path')}/assets/images/themes/default.png`;
 			}
 
 			return configObj;
@@ -44,7 +50,7 @@ Themes.get = async () => {
 				return false;
 			}
 
-			winston.error('[themes] Unable to parse theme.json ' + theme);
+			winston.error(`[themes] Unable to parse theme.json ${theme}`);
 			return false;
 		}
 	}));
@@ -133,15 +139,13 @@ Themes.setupPaths = async () => {
 		currentThemeId: Meta.configs.get('theme:id'),
 	});
 
-	var themeId = data.currentThemeId || 'nodebb-theme-persona';
+	const themeId = data.currentThemeId || 'nodebb-theme-persona';
 
 	if (process.env.NODE_ENV === 'development') {
-		winston.info('[themes] Using theme ' + themeId);
+		winston.info(`[themes] Using theme ${themeId}`);
 	}
 
-	var themeObj = data.themesData.find(function (themeObj) {
-		return themeObj.id === themeId;
-	});
+	const themeObj = data.themesData.find(themeObj => themeObj.id === themeId);
 
 	if (!themeObj) {
 		throw new Error('[[error:theme-not-found]]');
@@ -152,8 +156,8 @@ Themes.setupPaths = async () => {
 
 Themes.setPath = function (themeObj) {
 	// Theme's templates path
-	var themePath = nconf.get('base_templates_path');
-	var fallback = path.join(nconf.get('themes_path'), themeObj.id, 'templates');
+	let themePath = nconf.get('base_templates_path');
+	const fallback = path.join(nconf.get('themes_path'), themeObj.id, 'templates');
 
 	if (themeObj.templates) {
 		themePath = path.join(nconf.get('themes_path'), themeObj.id, themeObj.templates);

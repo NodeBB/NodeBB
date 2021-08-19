@@ -13,6 +13,7 @@ notificationsController.get = async function (req, res, next) {
 		{ name: '[[global:topics]]', filter: 'new-topic' },
 		{ name: '[[notifications:replies]]', filter: 'new-reply' },
 		{ name: '[[notifications:chat]]', filter: 'new-chat' },
+		{ name: '[[notifications:group-chat]]', filter: 'new-group-chat' },
 		{ name: '[[notifications:follows]]', filter: 'follow' },
 		{ name: '[[notifications:upvote]]', filter: 'upvote' },
 	];
@@ -30,7 +31,7 @@ notificationsController.get = async function (req, res, next) {
 	const stop = start + itemsPerPage - 1;
 
 	const [filters, isPrivileged] = await Promise.all([
-		plugins.fireHook('filter:notifications.addFilters', {
+		plugins.hooks.fire('filter:notifications.addFilters', {
 			regularFilters: regularFilters,
 			moderatorFilters: moderatorFilters,
 			uid: req.uid,
@@ -44,18 +45,19 @@ notificationsController.get = async function (req, res, next) {
 			{ separator: true },
 		]).concat(filters.moderatorFilters);
 	}
-	const selectedFilter = allFilters.find(function (filterData) {
+	const selectedFilter = allFilters.find((filterData) => {
 		filterData.selected = filterData.filter === filter;
 		return filterData.selected;
 	});
 	if (!selectedFilter) {
 		return next();
 	}
-	let nids = await user.notifications.getAll(req.uid, selectedFilter.filter);
-	const pageCount = Math.max(1, Math.ceil(nids.length / itemsPerPage));
-	nids = nids.slice(start, stop + 1);
 
-	const notifications = await user.notifications.getNotifications(nids, req.uid);
+	const nids = await user.notifications.getAll(req.uid, selectedFilter.filter);
+	let notifications = await user.notifications.getNotifications(nids, req.uid);
+
+	const pageCount = Math.max(1, Math.ceil(notifications.length / itemsPerPage));
+	notifications = notifications.slice(start, stop + 1);
 
 	res.render('notifications', {
 		notifications: notifications,

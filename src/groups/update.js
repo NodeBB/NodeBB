@@ -2,8 +2,9 @@
 
 const winston = require('winston');
 
+const categories = require('../categories');
 const plugins = require('../plugins');
-const utils = require('../utils');
+const slugify = require('../slugify');
 const db = require('../database');
 const user = require('../user');
 const batch = require('../batch');
@@ -13,16 +14,23 @@ const cache = require('../cache');
 
 module.exports = function (Groups) {
 	Groups.update = async function (groupName, values) {
-		const exists = await db.exists('group:' + groupName);
+		const exists = await db.exists(`group:${groupName}`);
 		if (!exists) {
 			throw new Error('[[error:no-group]]');
 		}
 
-		const result = await plugins.fireHook('filter:group.update', {
+		({ values } = await plugins.hooks.fire('filter:group.update', {
 			groupName: groupName,
 			values: values,
+		}));
+
+		// Cast some values as bool (if not boolean already)
+		// 'true' and '1' = true, everything else false
+		['userTitleEnabled', 'private', 'hidden', 'disableJoinRequests', 'disableLeave'].forEach((prop) => {
+			if (values.hasOwnProperty(prop) && typeof values[prop] !== 'boolean') {
+				values[prop] = values[prop] === 'true' || parseInt(values[prop], 10) === 1;
+			}
 		});
-		values = result.values;
 
 		const payload = {
 			description: values.description || '',
@@ -66,10 +74,17 @@ module.exports = function (Groups) {
 		if (values.hasOwnProperty('hidden')) {
 			await updateVisibility(groupName, values.hidden);
 		}
-		await db.setObject('group:' + groupName, payload);
+
+		if (values.hasOwnProperty('memberPostCids')) {
+			const validCids = await categories.getCidsByPrivilege('categories:cid', groupName, 'topics:read');
+			const cidsArray = values.memberPostCids.split(',').map(cid => parseInt(cid.trim(), 10)).filter(Boolean);
+			payload.memberPostCids = cidsArray.filter(cid => validCids.includes(cid)).join(',') || '';
+		}
+
+		await db.setObject(`group:${groupName}`, payload);
 		await Groups.renameGroup(groupName, values.name);
 
-		plugins.fireHook('action:group.update', {
+		plugins.hooks.fire('action:group.update', {
 			name: groupName,
 			values: values,
 		});
@@ -80,15 +95,15 @@ module.exports = function (Groups) {
 			await db.sortedSetRemoveBulk([
 				['groups:visible:createtime', groupName],
 				['groups:visible:memberCount', groupName],
-				['groups:visible:name', groupName.toLowerCase() + ':' + groupName],
+				['groups:visible:name', `${groupName.toLowerCase()}:${groupName}`],
 			]);
 			return;
 		}
-		const groupData = await db.getObjectFields('group:' + groupName, ['createtime', 'memberCount']);
+		const groupData = await db.getObjectFields(`group:${groupName}`, ['createtime', 'memberCount']);
 		await db.sortedSetAddBulk([
 			['groups:visible:createtime', groupData.createtime, groupName],
 			['groups:visible:memberCount', groupData.memberCount, groupName],
-			['groups:visible:name', 0, groupName.toLowerCase() + ':' + groupName],
+			['groups:visible:name', 0, `${groupName.toLowerCase()}:${groupName}`],
 		]);
 	}
 
@@ -103,7 +118,7 @@ module.exports = function (Groups) {
 	async function showHide(groupName, hidden) {
 		hidden = hidden === 'hidden';
 		await Promise.all([
-			db.setObjectField('group:' + groupName, 'hidden', hidden ? 1 : 0),
+			db.setObjectField(`group:${groupName}`, 'hidden', hidden ? 1 : 0),
 			updateVisibility(groupName, hidden),
 		]);
 	}
@@ -114,26 +129,26 @@ module.exports = function (Groups) {
 		if (!currentlyPrivate || currentlyPrivate === isPrivate) {
 			return;
 		}
-		const pendingUids = await db.getSetMembers('group:' + groupName + ':pending');
+		const pendingUids = await db.getSetMembers(`group:${groupName}:pending`);
 		if (!pendingUids.length) {
 			return;
 		}
 
-		winston.verbose('[groups.update] Group is now public, automatically adding ' + pendingUids.length + ' new members, who were pending prior.');
+		winston.verbose(`[groups.update] Group is now public, automatically adding ${pendingUids.length} new members, who were pending prior.`);
 
 		for (const uid of pendingUids) {
 			/* eslint-disable no-await-in-loop */
 			await Groups.join(groupName, uid);
 		}
-		await db.delete('group:' + groupName + ':pending');
+		await db.delete(`group:${groupName}:pending`);
 	}
 
 	async function checkNameChange(currentName, newName) {
 		if (Groups.isPrivilegeGroup(newName)) {
 			throw new Error('[[error:invalid-group-name]]');
 		}
-		const currentSlug = utils.slugify(currentName);
-		const newSlug = utils.slugify(newName);
+		const currentSlug = slugify(currentName);
+		const newSlug = slugify(newName);
 		if (currentName === newName || currentSlug === newSlug) {
 			return;
 		}
@@ -160,7 +175,7 @@ module.exports = function (Groups) {
 		if (oldName === newName || !newName || String(newName).length === 0) {
 			return;
 		}
-		const group = await db.getObject('group:' + oldName);
+		const group = await db.getObject(`group:${oldName}`);
 		if (!group) {
 			return;
 		}
@@ -174,38 +189,38 @@ module.exports = function (Groups) {
 		await updateNavigationItems(oldName, newName);
 		await updateWidgets(oldName, newName);
 		await updateConfig(oldName, newName);
-		await db.setObject('group:' + oldName, { name: newName, slug: utils.slugify(newName) });
+		await db.setObject(`group:${oldName}`, { name: newName, slug: slugify(newName) });
 		await db.deleteObjectField('groupslug:groupname', group.slug);
-		await db.setObjectField('groupslug:groupname', utils.slugify(newName), newName);
+		await db.setObjectField('groupslug:groupname', slugify(newName), newName);
 
 		const allGroups = await db.getSortedSetRange('groups:createtime', 0, -1);
-		const keys = allGroups.map(group => 'group:' + group + ':members');
+		const keys = allGroups.map(group => `group:${group}:members`);
 		await renameGroupsMember(keys, oldName, newName);
 		cache.del(keys);
 
-		await db.rename('group:' + oldName, 'group:' + newName);
-		await db.rename('group:' + oldName + ':members', 'group:' + newName + ':members');
-		await db.rename('group:' + oldName + ':owners', 'group:' + newName + ':owners');
-		await db.rename('group:' + oldName + ':pending', 'group:' + newName + ':pending');
-		await db.rename('group:' + oldName + ':invited', 'group:' + newName + ':invited');
-		await db.rename('group:' + oldName + ':member:pids', 'group:' + newName + ':member:pids');
+		await db.rename(`group:${oldName}`, `group:${newName}`);
+		await db.rename(`group:${oldName}:members`, `group:${newName}:members`);
+		await db.rename(`group:${oldName}:owners`, `group:${newName}:owners`);
+		await db.rename(`group:${oldName}:pending`, `group:${newName}:pending`);
+		await db.rename(`group:${oldName}:invited`, `group:${newName}:invited`);
+		await db.rename(`group:${oldName}:member:pids`, `group:${newName}:member:pids`);
 
 		await renameGroupsMember(['groups:createtime', 'groups:visible:createtime', 'groups:visible:memberCount'], oldName, newName);
-		await renameGroupsMember(['groups:visible:name'], oldName.toLowerCase() + ':' + oldName, newName.toLowerCase() + ':' + newName);
+		await renameGroupsMember(['groups:visible:name'], `${oldName.toLowerCase()}:${oldName}`, `${newName.toLowerCase()}:${newName}`);
 
-		plugins.fireHook('action:group.rename', {
+		plugins.hooks.fire('action:group.rename', {
 			old: oldName,
 			new: newName,
 		});
-		Groups.resetCache();
+		Groups.cache.reset();
 	};
 
 	async function updateMemberGroupTitles(oldName, newName) {
-		await batch.processSortedSet('group:' + oldName + ':members', async function (uids) {
+		await batch.processSortedSet(`group:${oldName}:members`, async (uids) => {
 			let usersData = await user.getUsersData(uids);
 			usersData = usersData.filter(userData => userData && userData.groupTitleArray.includes(oldName));
 
-			usersData.forEach(function (userData) {
+			usersData.forEach((userData) => {
 				userData.newTitleArray = userData.groupTitleArray.map(oldTitle => (oldTitle === oldName ? newName : oldTitle));
 			});
 
@@ -227,12 +242,12 @@ module.exports = function (Groups) {
 	async function updateNavigationItems(oldName, newName) {
 		const navigation = require('../navigation/admin');
 		const navItems = await navigation.get();
-		navItems.forEach(function (navItem) {
+		navItems.forEach((navItem) => {
 			if (navItem && Array.isArray(navItem.groups) && navItem.groups.includes(oldName)) {
 				navItem.groups.splice(navItem.groups.indexOf(oldName), 1, newName);
 			}
 		});
-
+		navigation.unescapeFields(navItems);
 		await navigation.save(navItems);
 	}
 
@@ -242,9 +257,9 @@ module.exports = function (Groups) {
 
 		const data = await admin.get();
 
-		data.areas.forEach(function (area) {
+		data.areas.forEach((area) => {
 			area.widgets = area.data;
-			area.widgets.forEach(function (widget) {
+			area.widgets.forEach((widget) => {
 				if (widget && widget.data && Array.isArray(widget.data.groups) && widget.data.groups.includes(oldName)) {
 					widget.data.groups.splice(widget.data.groups.indexOf(oldName), 1, newName);
 				}

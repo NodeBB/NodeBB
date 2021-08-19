@@ -5,8 +5,8 @@
 	"votes-are-public": "Tous les votes sont publics",
 	"thresholds": "Seuils d'activité",
 	"min-rep-downvote": "Réputation minimum pour les votes négatifs",
-	"downvotes-per-day": "Votes négatif par jour (0 vote illimités)",
-	"downvotes-per-user-per-day": "Votes négatif pour un utilisateur par jour (0 vote illimités)",
+	"downvotes-per-day": "Votes négatif par jour (0 = illimités)",
+	"downvotes-per-user-per-day": "Votes négatif pour un utilisateur par jour (0 = illimités)",
 	"min-rep-flag": "Réputation minimum pour signaler un message",
 	"min-rep-website": "Réputation minimum pour ajouter \"Site internet\" au profil utilisateur",
 	"min-rep-aboutme": "Réputation minimum pour ajouter \"À propos\" au profil utilisateur",
@@ -16,5 +16,7 @@
 
 	"flags": "Paramètres de signalement",
 	"flags.limit-per-target": "Nombre maximum de fois qu'un élément peut être signalé",
-	"flags.limit-per-target-placeholder": "Défaut: 0"
+	"flags.limit-per-target-placeholder": "Défaut: 0",
+	"flags.limit-per-target-help": "Lorsqu'un message ou un utilisateur a été signalé plusieurs fois, chaque indicateur supplémentaire est considéré comme un \"rapport\". et ajouté au signalement d'origine. Définissez cette option sur un nombre autre que zéro pour limiter le nombre de rapports qu'un signalement peut admettre.",
+	"flags.auto-resolve-on-ban": "Résoudre automatiquement tous les tickets d'un utilisateur lorsqu'il est banni"
 }

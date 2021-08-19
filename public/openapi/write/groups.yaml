@@ -1,0 +1,58 @@
+post:
+  tags:
+    - groups
+  summary: create a new group
+  description: This operation creates a new group
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+              example: 'My Test Group'
+            timestamp:
+              type: number
+            disableJoinRequests:
+              type: number
+              enum: [0, 1]
+            disableLeave:
+              type: number
+              enum: [0, 1]
+            hidden:
+              type: number
+              enum: [0, 1]
+              example: 1
+            ownerUid:
+              type: number
+            private:
+              type: number
+              enum: [0, 1]
+            description:
+              type: string
+            userTitleEnabled:
+              type: number
+              enum: [0, 1]
+            createtime:
+              type: number
+            memberPostCids:
+              type: array
+              items:
+                type: number
+                example: [1, 2, 3]
+          required:
+            - name
+  responses:
+    '200':
+      description: group successfully created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../components/schemas/GroupObject.yaml#/GroupDataObject

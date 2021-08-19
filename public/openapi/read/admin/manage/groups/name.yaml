@@ -1,0 +1,40 @@
+get:
+  tags:
+    - admin
+  summary: Get user group details
+  parameters:
+    - name: name
+      in: path
+      required: true
+      schema:
+        type: string
+      example: administrators
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  group:
+                    $ref: ../../../../components/schemas/GroupObject.yaml#/GroupFullObject
+                  groupNames:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        encodedName:
+                          type: string
+                        displayName:
+                          type: string
+                        selected:
+                          type: boolean
+                  allowPrivateGroups:
+                    type: number
+                  maximumGroupNameLength:
+                    type: number
+                  maximumGroupTitleLength:
+                    type: number
+              - $ref: ../../../../components/schemas/CommonProps.yaml#/CommonProps

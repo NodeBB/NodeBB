@@ -7,6 +7,11 @@ socket = window.socket;
 (function () {
 	var reconnecting = false;
 
+	var hooks;
+	require(['hooks'], function (_hooks) {
+		hooks = _hooks;
+	});
+
 	var ioParams = {
 		reconnectionAttempts: config.maxReconnectionAttempts,
 		reconnectionDelay: config.reconnectionDelay,
@@ -39,29 +44,48 @@ socket = window.socket;
 		addHandlers();
 	}
 
+	window.app.reconnect = () => {
+		if (socket.connected) {
+			return;
+		}
+
+		var reconnectEl = $('#reconnect');
+		$('#reconnect-alert')
+			.removeClass('alert-danger pointer')
+			.addClass('alert-warning')
+			.find('p')
+			.translateText(`[[global:reconnecting-message, ${config.siteTitle}]]`);
+
+		reconnectEl.html('<i class="fa fa-spinner fa-spin"></i>');
+		socket.connect();
+	};
+
 	function addHandlers() {
 		socket.on('connect', onConnect);
 
-		socket.on('reconnecting', function () {
-			// Wait 2s before firing
-			setTimeout(function () {
-				if (socket.disconnected) {
-					onReconnecting();
-				}
-			}, 2000);
-		});
-
 		socket.on('disconnect', onDisconnect);
 
-		socket.on('reconnect_failed', function () {
-			// Wait ten times the reconnection delay and then start over
-			setTimeout(socket.connect.bind(socket), parseInt(config.reconnectionDelay, 10) * 10);
+		socket.io.on('reconnect_failed', function () {
+			var reconnectEl = $('#reconnect');
+			reconnectEl.html('<i class="fa fa-plug text-danger"></i>');
+
+			$('#reconnect-alert')
+				.removeClass('alert-warning')
+				.addClass('alert-danger pointer')
+				.find('p')
+				.translateText('[[error:socket-reconnect-failed]]')
+				.one('click', app.reconnect);
+
+			$(window).one('focus', app.reconnect);
 		});
 
 		socket.on('checkSession', function (uid) {
 			if (parseInt(uid, 10) !== parseInt(app.user.uid, 10)) {
-				app.handleInvalidSession();
+				app.handleSessionMismatch();
 			}
+		});
+		socket.on('event:invalid_session', () => {
+			app.handleInvalidSession();
 		});
 
 		socket.on('setHostname', function (hostname) {
@@ -69,8 +93,15 @@ socket = window.socket;
 		});
 
 		socket.on('event:banned', onEventBanned);
+		socket.on('event:unbanned', onEventUnbanned);
+		socket.on('event:logout', function () {
+			app.logout();
+		});
 		socket.on('event:alert', function (params) {
 			app.alert(params);
+		});
+		socket.on('event:deprecated_call', function (data) {
+			console.warn('[socket.io] ', data.eventName, 'is now deprecated in favour of', data.replacement);
 		});
 
 		socket.removeAllListeners('event:nodebb.ready');
@@ -98,8 +129,7 @@ socket = window.socket;
 
 	function onConnect() {
 		if (!reconnecting) {
-			app.showMessages();
-			$(window).trigger('action:connected');
+			hooks.fire('action:connected');
 		}
 
 		if (reconnecting) {
@@ -107,15 +137,15 @@ socket = window.socket;
 			var reconnectAlert = $('#reconnect-alert');
 
 			reconnectEl.tooltip('destroy');
-			reconnectEl.html('<i class="fa fa-check"></i>');
-			reconnectAlert.fadeOut(500);
+			reconnectEl.html('<i class="fa fa-check text-success"></i>');
+			reconnectAlert.addClass('hide');
 			reconnecting = false;
 
 			reJoinCurrentRoom();
 
 			socket.emit('meta.reconnected');
 
-			$(window).trigger('action:reconnected');
+			hooks.fire('action:reconnected');
 
 			setTimeout(function () {
 				reconnectEl.removeClass('active').addClass('hide');
@@ -164,7 +194,7 @@ socket = window.socket;
 
 		if (!reconnectEl.hasClass('active')) {
 			reconnectEl.html('<i class="fa fa-spinner fa-spin"></i>');
-			reconnectAlert.fadeIn(500).removeClass('hide');
+			reconnectAlert.removeClass('hide');
 		}
 
 		reconnectEl.addClass('active').removeClass('hide').tooltip({
@@ -173,15 +203,32 @@ socket = window.socket;
 	}
 
 	function onDisconnect() {
-		$(window).trigger('action:disconnected');
+		setTimeout(function () {
+			if (socket.disconnected) {
+				onReconnecting();
+			}
+		}, 2000);
+
+		hooks.fire('action:disconnected');
 	}
 
 	function onEventBanned(data) {
-		var message = data.until ? '[[error:user-banned-reason-until, ' + $.timeago(data.until) + ', ' + data.reason + ']]' : '[[error:user-banned-reason, ' + data.reason + ']]';
+		var message = data.until ? '[[error:user-banned-reason-until, ' + utils.toISOString(data.until) + ', ' + data.reason + ']]' : '[[error:user-banned-reason, ' + data.reason + ']]';
 
 		bootbox.alert({
 			title: '[[error:user-banned]]',
 			message: message,
+			closeButton: false,
+			callback: function () {
+				window.location.href = config.relative_path + '/';
+			},
+		});
+	}
+
+	function onEventUnbanned() {
+		bootbox.alert({
+			title: '[[global:alert.unbanned]]',
+			message: '[[global:alert.unbanned.message]]',
 			closeButton: false,
 			callback: function () {
 				window.location.href = config.relative_path + '/';

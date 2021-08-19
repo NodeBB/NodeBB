@@ -1,0 +1,392 @@
+get:
+  tags:
+    - topics
+  summary: Get topic data
+  parameters:
+    - name: topic_id
+      in: path
+      required: true
+      schema:
+        type: string
+      example: 1
+    - name: slug
+      description: This parameter is not required. If omitted, the request will be automatically redirected with the proper topic slug.
+      in: path
+      required: true
+      schema:
+        type: string
+      example: test-topic
+    - name: post_index
+      description: This parameter is not required. If omitted, the request will presume that you want the first post. The API response is largely unaffected by this parameter, it is used client-side (to send the user to the requested post), and changes the meta/link tags in the server-side generated HTML.
+      in: path
+      required: true
+      schema:
+        type: string
+      example: 1
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../components/schemas/TopicObject.yaml#/TopicObjectSlim
+              - type: object
+                properties:
+                  title:
+                    type: string
+                  slug:
+                    type: string
+                  teaserPid:
+                    type: number
+                    nullable: true
+                  titleRaw:
+                    type: string
+                  tags:
+                    type: array
+                    items:
+                      $ref: ../../components/schemas/TagObject.yaml#/TagObject
+                  posts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        pid:
+                          type: number
+                        uid:
+                          type: number
+                          description: A user identifier
+                        tid:
+                          type: number
+                          description: A topic identifier
+                        content:
+                          type: string
+                        timestamp:
+                          type: number
+                        votes:
+                          type: number
+                        deleted:
+                          type: number
+                        upvotes:
+                          type: number
+                        downvotes:
+                          type: number
+                        bookmarks:
+                          type: number
+                        deleterUid:
+                          type: number
+                        edited:
+                          type: number
+                        timestampISO:
+                          type: string
+                          description: An ISO 8601 formatted date string (complementing `timestamp`)
+                        editedISO:
+                          type: string
+                        index:
+                          type: number
+                        user:
+                          type: object
+                          properties:
+                            uid:
+                              type: number
+                              description: A user identifier
+                            username:
+                              type: string
+                              description: A friendly name for a given user account
+                            displayname:
+                              type: string
+                              description: This is either username or fullname depending on forum and user settings
+                            userslug:
+                              type: string
+                              description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                removed, etc.)
+                            reputation:
+                              type: number
+                            postcount:
+                              type: number
+                            topiccount:
+                              type: number
+                            picture:
+                              type: string
+                              nullable: true
+                            signature:
+                              type: string
+                            banned:
+                              type: number
+                            banned:expire:
+                              type: number
+                            status:
+                              type: string
+                            lastonline:
+                              type: number
+                            groupTitle:
+                              nullable: true
+                              type: string
+                            groupTitleArray:
+                              type: array
+                              items:
+                                type: string
+                            icon:text:
+                              type: string
+                              description: A single-letter representation of a username. This is used in the
+                                auto-generated icon given to users without
+                                an avatar
+                            icon:bgColor:
+                              type: string
+                              description: A six-character hexadecimal colour code assigned to the user. This
+                                value is used in conjunction with
+                                `icon:text` for the user's auto-generated
+                                icon
+                              example: "#f44336"
+                            lastonlineISO:
+                              type: string
+                            banned_until:
+                              type: number
+                            banned_until_readable:
+                              type: string
+                            selectedGroups:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  name:
+                                    type: string
+                                  slug:
+                                    type: string
+                                  labelColor:
+                                    type: string
+                                  textColor:
+                                    type: string
+                                  icon:
+                                    type: string
+                                  userTitle:
+                                    type: string
+                            custom_profile_info:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  content:
+                                    type: string
+                                    description: HTML that is injected into `topic.tpl` of themes that support custom profile info
+                        editor:
+                          nullable: true
+                        bookmarked:
+                          type: boolean
+                        upvoted:
+                          type: boolean
+                        downvoted:
+                          type: boolean
+                        replies:
+                          type: object
+                          properties:
+                            hasMore:
+                              type: boolean
+                            users:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  username:
+                                    type: string
+                                    description: A friendly name for a given user account
+                                  userslug:
+                                    type: string
+                                    description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                      removed, etc.)
+                                  picture:
+                                    type: string
+                                  uid:
+                                    type: number
+                                    description: A user identifier
+                                  icon:text:
+                                    type: string
+                                    description: A single-letter representation of a username. This is used in the
+                                      auto-generated icon given to users without
+                                      an avatar
+                                  icon:bgColor:
+                                    type: string
+                                    description: A six-character hexadecimal colour code assigned to the user. This
+                                      value is used in conjunction with
+                                      `icon:text` for the user's auto-generated
+                                      icon
+                                    example: "#f44336"
+                                  administrator:
+                                    type: boolean
+                            text:
+                              type: string
+                            count:
+                              type: number
+                        selfPost:
+                          type: boolean
+                        topicOwnerPost:
+                          type: boolean
+                        display_edit_tools:
+                          type: boolean
+                        display_delete_tools:
+                          type: boolean
+                        display_moderator_tools:
+                          type: boolean
+                        display_move_tools:
+                          type: boolean
+                        display_post_menu:
+                          type: boolean
+                        flagId:
+                          type: number
+                          description: The flag identifier, if this particular post has been flagged before
+                  events:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                        id:
+                          type: number
+                        timestamp:
+                          type: number
+                        timestampISO:
+                          type: string
+                  category:
+                    $ref: ../../components/schemas/CategoryObject.yaml#/CategoryObject
+                  tagWhitelist:
+                    type: array
+                    items:
+                      type: string
+                  minTags:
+                    type: number
+                  maxTags:
+                    type: number
+                  thread_tools:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        class:
+                          type: string
+                        title:
+                          type: string
+                        icon:
+                          type: string
+                  isFollowing:
+                    type: boolean
+                  isNotFollowing:
+                    type: boolean
+                  isIgnoring:
+                    type: boolean
+                  bookmark:
+                    nullable: true
+                  postSharing:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                        class:
+                          type: string
+                        activated:
+                          type: boolean
+                  deleter:
+                    nullable: true
+                  merger:
+                    nullable: true
+                  related:
+                    type: array
+                    items:
+                      $ref: ../../components/schemas/TopicObject.yaml#/TopicObject
+                  unreplied:
+                    type: boolean
+                  icons:
+                    type: array
+                    items:
+                      type: string
+                      description: HTML that is rendered by the theme
+                  privileges:
+                    type: object
+                    properties:
+                      topics:reply:
+                        type: boolean
+                      topics:read:
+                        type: boolean
+                      topics:tag:
+                        type: boolean
+                      topics:delete:
+                        type: boolean
+                      posts:edit:
+                        type: boolean
+                      posts:history:
+                        type: boolean
+                      posts:delete:
+                        type: boolean
+                      posts:view_deleted:
+                        type: boolean
+                      read:
+                        type: boolean
+                      purge:
+                        type: boolean
+                      view_thread_tools:
+                        type: boolean
+                      editable:
+                        type: boolean
+                      deletable:
+                        type: boolean
+                      view_deleted:
+                        type: boolean
+                      view_scheduled:
+                        type: boolean
+                      isAdminOrMod:
+                        type: boolean
+                      disabled:
+                        type: number
+                      tid:
+                        type: string
+                      uid:
+                        type: number
+                        description: A user identifier
+                  topicStaleDays:
+                    type: number
+                  reputation:disabled:
+                    type: number
+                  downvote:disabled:
+                    type: number
+                  feeds:disableRSS:
+                    type: number
+                  bookmarkThreshold:
+                    type: number
+                  necroThreshold:
+                    type: number
+                  postEditDuration:
+                    type: number
+                  postDeleteDuration:
+                    type: number
+                  scrollToMyPost:
+                    type: boolean
+                  updateUrlWithPostIndex:
+                    type: boolean
+                  allowMultipleBadges:
+                    type: boolean
+                  privateUploads:
+                    type: boolean
+                  rssFeedUrl:
+                    type: string
+                  postIndex:
+                    type: number
+                  loggedInUser:
+                    $ref: ../../components/schemas/UserObject.yaml#/UserObject
+              - type: object
+                description: Optional properties that may or may not be present (except for `tid`, which is always present, and is only here as a hack to pass validation)
+                properties:
+                  tid:
+                    type: number
+                    description: A topic identifier
+                  thumb:
+                    type: string
+                    description: An uploaded topic thumbnail
+                required:
+                  - tid
+              - $ref: ../../components/schemas/Pagination.yaml#/Pagination
+              - $ref: ../../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../../components/schemas/CommonProps.yaml#/CommonProps

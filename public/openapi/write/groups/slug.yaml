@@ -1,0 +1,80 @@
+head:
+  tags:
+    - groups
+  summary: check if a group exists
+  parameters:
+    - in: path
+      name: slug
+      schema:
+        type: string
+      required: true
+      description: group slug (that also acts as its identifier) to check
+      example: my-test-group
+  responses:
+    '200':
+      description: group found
+    '404':
+      description: group not found
+put:
+  tags:
+    - groups
+  summary: update group data
+  parameters:
+    - in: path
+      name: slug
+      schema:
+        type: string
+      required: true
+      description: slug of the group you wish to update
+      example: my-test-group
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            icon:
+              type: string
+              example: fa-times
+          additionalProperties:
+            description: An object of group properties you wish to update
+            example:
+  responses:
+    '200':
+      description: group successfully updated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../components/schemas/GroupObject.yaml#/GroupDataObject
+delete:
+  tags:
+    - groups
+  summary: Delete an existing group
+  description: This operation deletes an existing group, all members within this group will cease to be members after the group is deleted.
+  parameters:
+    - in: path
+      name: slug
+      schema:
+        type: string
+      required: true
+      description: slug of the group you wish to delete
+      example: my-test-group
+  responses:
+    '200':
+      description: group successfully deleted
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}

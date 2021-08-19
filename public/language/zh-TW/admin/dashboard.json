@@ -2,6 +2,7 @@
 	"forum-traffic": "論壇流量",
 	"page-views": "頁面瀏覽量",
 	"unique-visitors": "不重複訪客",
+	"logins": "登入",
 	"new-users": "新使用者",
 	"posts": "貼文",
 	"topics": "主題",
@@ -29,6 +30,7 @@
 	"upgrade-available": "<p>新的版本 (v%1) 已經發布。建議您 <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">升級 NodeBB</a>。</p>",
 	"prerelease-upgrade-available": "<p>這是一個已經過期的預發佈版本的 NodeBB，新的版本 (v%1) 已經發布。建議您 <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">升級 NodeBB</a>。</p>",
 	"prerelease-warning": "<p>正在使用<strong>測試版</strong> NodeBB。可能會出現意外的 Bug。<i class=\"fa fa-exclamation-triangle\"></i></p>",
+	"fallback-emailer-not-found": "Fallback emailer not found!",
 	"running-in-development": "<span>論壇正處於開發模式，這可能使其暴露於潛在的危險之中；請聯繫您的系統管理員。</span>",
 	"latest-lookup-failed": "<p>無法找到 NodeBB 的最新可用版本</p>",
 
@@ -75,5 +77,12 @@
 	"graphs.registered-users": "已註冊使用者",
 	"graphs.anonymous-users": "匿名使用者",
 	"last-restarted-by": "上次重啟管理員/時間",
-	"no-users-browsing": "沒有使用者正在瀏覽"
+	"no-users-browsing": "沒有使用者正在瀏覽",
+
+	"back-to-dashboard": "回到儀表板",
+	"details.no-users": "沒有使用者有在選定的時間內註冊",
+	"details.no-topics": "沒有新增的主題在選定的時間內",
+	"details.no-logins": "No logins have been recorded within the selected timeframe",
+	"details.logins-static": "NodeBB only saves session data for %1 days, and so this table below will only show the most recently active sessions",
+	"details.logins-login-time": "登入時間"
 }

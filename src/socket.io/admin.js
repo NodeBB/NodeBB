@@ -41,28 +41,30 @@ SocketAdmin.before = async function (socket, method) {
 	}
 
 	// Check admin privileges mapping (if not in mapping, deny access)
-	const privilege = privileges.admin.socketMap[method];
-	if (privilege && await privileges.admin.can(privilege, socket.uid)) {
+	const privilegeSet = privileges.admin.socketMap.hasOwnProperty(method) ? privileges.admin.socketMap[method].split(';') : [];
+	const hasPrivilege = (await Promise.all(privilegeSet.map(
+		async privilege => privileges.admin.can(privilege, socket.uid)
+	))).some(Boolean);
+	if (privilegeSet.length && hasPrivilege) {
 		return;
 	}
 
-	winston.warn('[socket.io] Call to admin method ( ' + method + ' ) blocked (accessed by uid ' + socket.uid + ')');
+	winston.warn(`[socket.io] Call to admin method ( ${method} ) blocked (accessed by uid ${socket.uid})`);
 	throw new Error('[[error:no-privileges]]');
 };
 
-SocketAdmin.restart = function (socket, data, callback) {
-	logRestart(socket);
+SocketAdmin.restart = async function (socket) {
+	await logRestart(socket);
 	meta.restart();
-	callback();
 };
 
-function logRestart(socket) {
-	events.log({
+async function logRestart(socket) {
+	await events.log({
 		type: 'restart',
 		uid: socket.uid,
 		ip: socket.ip,
 	});
-	db.setObject('lastrestart', {
+	await db.setObject('lastrestart', {
 		uid: socket.uid,
 		ip: socket.ip,
 		timestamp: Date.now(),
@@ -77,7 +79,7 @@ SocketAdmin.reload = async function (socket) {
 		ip: socket.ip,
 	});
 
-	logRestart(socket);
+	await logRestart(socket);
 	meta.restart();
 };
 
@@ -105,8 +107,17 @@ SocketAdmin.deleteAllSessions = function (socket, data, callback) {
 };
 
 SocketAdmin.reloadAllSessions = function (socket, data, callback) {
-	websockets.in('uid_' + socket.uid).emit('event:livereload');
+	websockets.in(`uid_${socket.uid}`).emit('event:livereload');
 	callback();
+};
+
+SocketAdmin.getServerTime = function (socket, data, callback) {
+	const now = new Date();
+
+	callback(null, {
+		timestamp: now.getTime(),
+		offset: now.getTimezoneOffset(),
+	});
 };
 
 require('../promisify')(SocketAdmin);

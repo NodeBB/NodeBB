@@ -9,6 +9,7 @@ const winston = require('winston');
 
 const db = require('./database');
 const file = require('./file');
+const { paths } = require('./constants');
 
 /*
  * Need to write an upgrade script for NodeBB? Cool.
@@ -25,7 +26,7 @@ Upgrade.getAll = async function () {
 	let files = await file.walk(path.join(__dirname, './upgrades'));
 
 	// Sort the upgrade scripts based on version
-	files = files.filter(file => path.basename(file) !== 'TEMPLATE').sort(function (a, b) {
+	files = files.filter(file => path.basename(file) !== 'TEMPLATE').sort((a, b) => {
 		const versionA = path.dirname(a).split(path.sep).pop();
 		const versionB = path.dirname(b).split(path.sep).pop();
 		const semverCompare = semver.compare(versionA, versionB);
@@ -50,7 +51,7 @@ Upgrade.getAll = async function () {
 		}
 	});
 	if (dupes.length) {
-		winston.error('Found duplicate upgrade scripts\n' + dupes);
+		winston.error(`Found duplicate upgrade scripts\n${dupes}`);
 		throw new Error('[[error:duplicate-upgrade-scripts]]');
 	}
 
@@ -61,16 +62,16 @@ Upgrade.appendPluginScripts = async function (files) {
 	// Find all active plugins
 	const plugins = await db.getSortedSetRange('plugins:active', 0, -1);
 	plugins.forEach((plugin) => {
-		const configPath = path.join(__dirname, '../node_modules', plugin, 'plugin.json');
+		const configPath = path.join(paths.nodeModules, plugin, 'plugin.json');
 		try {
 			const pluginConfig = require(configPath);
 			if (pluginConfig.hasOwnProperty('upgrades') && Array.isArray(pluginConfig.upgrades)) {
-				pluginConfig.upgrades.forEach(function (script) {
+				pluginConfig.upgrades.forEach((script) => {
 					files.push(path.join(path.dirname(configPath), script));
 				});
 			}
 		} catch (e) {
-			winston.warn('[upgrade/appendPluginScripts] Unable to read plugin.json for plugin `' + plugin + '`. Skipping.');
+			winston.warn(`[upgrade/appendPluginScripts] Unable to read plugin.json for plugin \`${plugin}\`. Skipping.`);
 		}
 	});
 	return files;
@@ -95,7 +96,7 @@ Upgrade.run = async function () {
 	]);
 
 	let skipped = 0;
-	const queue = available.filter(function (cur) {
+	const queue = available.filter((cur) => {
 		const upgradeRan = completed.includes(path.basename(cur, '.js'));
 		if (upgradeRan) {
 			skipped += 1;
@@ -128,13 +129,14 @@ Upgrade.process = async function (files, skipCount) {
 		const version = path.dirname(file).split('/').pop();
 		const progress = {
 			current: 0,
+			counter: 0,
 			total: 0,
 			incr: Upgrade.incrementProgress,
 			script: scriptExport,
 			date: date,
 		};
 
-		process.stdout.write('  → '.white + String('[' + [date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/') + '] ').gray + String(scriptExport.name).reset + '...');
+		process.stdout.write(`${'  → '.white + String(`[${[date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/')}] `).gray + String(scriptExport.name).reset}...`);
 
 		// For backwards compatibility, cross-reference with schemaDate (if found). If a script's date is older, skip it
 		if ((!schemaDate && !schemaLogCount) || (scriptExport.timestamp <= schemaDate && semver.lt(version, '1.5.0'))) {
@@ -151,6 +153,7 @@ Upgrade.process = async function (files, skipCount) {
 		}
 
 		// Do the upgrade...
+		const upgradeStart = Date.now();
 		try {
 			await scriptExport.method.bind({
 				progress: progress,
@@ -159,8 +162,8 @@ Upgrade.process = async function (files, skipCount) {
 			console.error('Error occurred');
 			throw err;
 		}
-
-		process.stdout.write(' OK\n'.green);
+		const upgradeDuration = ((Date.now() - upgradeStart) / 1000).toFixed(2);
+		process.stdout.write(` OK (${upgradeDuration} seconds)\n`.green);
 
 		// Record success in schemaLog
 		await db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'));
@@ -176,20 +179,22 @@ Upgrade.incrementProgress = function (value) {
 	}
 
 	this.current += value || 1;
+	this.counter += value || 1;
+	const step = (this.total ? Math.floor(this.total / 100) : 100);
 
-	// Redraw the progress bar every 100 units
-	if (this.current % (this.total ? Math.floor(this.total / 100) : 100) === 0 || this.current === this.total) {
-		var percentage = 0;
-		var filled = 0;
-		var unfilled = 15;
+	if (this.counter > step || this.current >= this.total) {
+		this.counter -= step;
+		let percentage = 0;
+		let filled = 0;
+		let unfilled = 15;
 		if (this.total) {
-			percentage = Math.floor((this.current / this.total) * 100) + '%';
+			percentage = `${Math.floor((this.current / this.total) * 100)}%`;
 			filled = Math.floor((this.current / this.total) * 15);
 			unfilled = Math.max(0, 15 - filled);
 		}
 
 		readline.cursorTo(process.stdout, 0);
-		process.stdout.write('    [' + (filled ? new Array(filled).join('#') : '') + new Array(unfilled).join(' ') + '] (' + this.current + '/' + (this.total || '??') + ') ' + percentage + ' ');
+		process.stdout.write(`    [${filled ? new Array(filled).join('#') : ''}${new Array(unfilled).join(' ')}] (${this.current}/${this.total || '??'}) ${percentage} `);
 	}
 };
 

@@ -36,7 +36,11 @@ Flags.init = async function () {
 		if (!Array.isArray(value)) {
 			sets.push(prefix + value);
 		} else if (value.length) {
-			value.forEach(x => orSets.push(prefix + x));
+			if (value.length === 1) {
+				sets.push(prefix + value[0]);
+			} else {
+				orSets.push(value.map(x => prefix + x));
+			}
 		}
 	}
 
@@ -65,7 +69,11 @@ Flags.init = async function () {
 			quick: function (sets, orSets, key, uid) {
 				switch (key) {
 					case 'mine':
-						sets.push('flags:byAssignee:' + uid);
+						sets.push(`flags:byAssignee:${uid}`);
+						break;
+
+					case 'unresolved':
+						prepareSets(sets, orSets, 'flags:byState:', ['open', 'wip']);
 						break;
 				}
 			},
@@ -76,17 +84,17 @@ Flags.init = async function () {
 	};
 
 	try {
-		const data = await plugins.fireHook('filter:flags.getFilters', hookData);
+		const data = await plugins.hooks.fire('filter:flags.getFilters', hookData);
 		Flags._filters = data.filters;
 	} catch (err) {
-		winston.error('[flags/init] Could not retrieve filters', err.stack);
+		winston.error(`[flags/init] Could not retrieve filters\n${err.stack}`);
 		Flags._filters = {};
 	}
 };
 
 Flags.get = async function (flagId) {
 	const [base, history, notes, reports] = await Promise.all([
-		db.getObject('flag:' + flagId),
+		db.getObject(`flag:${flagId}`),
 		Flags.getHistory(flagId),
 		Flags.getNotes(flagId),
 		Flags.getReports(flagId),
@@ -94,28 +102,31 @@ Flags.get = async function (flagId) {
 	if (!base) {
 		return;
 	}
-
 	const flagObj = {
 		state: 'open',
 		assignee: null,
 		...base,
 		datetimeISO: utils.toISOString(base.datetime),
-		target_readable: base.type.charAt(0).toUpperCase() + base.type.slice(1) + ' ' + base.targetId,
+		target_readable: `${base.type.charAt(0).toUpperCase() + base.type.slice(1)} ${base.targetId}`,
 		target: await Flags.getTarget(base.type, base.targetId, 0),
 		history: history,
 		notes: notes,
 		reports: reports,
 	};
 
-	const data = await plugins.fireHook('filter:flags.get', {
+	const data = await plugins.hooks.fire('filter:flags.get', {
 		flag: flagObj,
 	});
 	return data.flag;
 };
 
-Flags.list = async function (data) {
-	const filters = data.filters || {};
+Flags.getCount = async function ({ uid, filters, query }) {
+	filters = filters || {};
+	const flagIds = await Flags.getFlagIdsWithFilters({ filters, uid, query });
+	return flagIds.length;
+};
 
+Flags.getFlagIdsWithFilters = async function ({ filters, uid, query }) {
 	let sets = [];
 	const orSets = [];
 
@@ -123,13 +134,11 @@ Flags.list = async function (data) {
 	filters.page = filters.hasOwnProperty('page') ? Math.abs(parseInt(filters.page, 10) || 1) : 1;
 	filters.perPage = filters.hasOwnProperty('perPage') ? Math.abs(parseInt(filters.perPage, 10) || 20) : 20;
 
-	for (var type in filters) {
-		if (filters.hasOwnProperty(type)) {
-			if (Flags._filters.hasOwnProperty(type)) {
-				Flags._filters[type](sets, orSets, filters[type], data.uid);
-			} else {
-				winston.warn('[flags/list] No flag filter type found: ' + type);
-			}
+	for (const type of Object.keys(filters)) {
+		if (Flags._filters.hasOwnProperty(type)) {
+			Flags._filters[type](sets, orSets, filters[type], uid);
+		} else {
+			winston.warn(`[flags/list] No flag filter type found: ${type}`);
 		}
 	}
 	sets = (sets.length || orSets.length) ? sets : ['flags:datetime'];	// No filter default
@@ -142,7 +151,12 @@ Flags.list = async function (data) {
 	}
 
 	if (orSets.length) {
-		const _flagIds = await db.getSortedSetRevUnion({ sets: orSets, start: 0, stop: -1, aggregate: 'MAX' });
+		let _flagIds = await Promise.all(orSets.map(async orSet => await db.getSortedSetRevUnion({ sets: orSet, start: 0, stop: -1, aggregate: 'MAX' })));
+
+		// Each individual orSet is ANDed together to construct the final list of flagIds
+		_flagIds = _.intersection(..._flagIds);
+
+		// Merge with flagIds returned by sets
 		if (sets.length) {
 			// If flag ids are already present, return a subset of flags that are in both sets
 			flagIds = _.intersection(flagIds, _flagIds);
@@ -152,6 +166,22 @@ Flags.list = async function (data) {
 		}
 	}
 
+	const result = await plugins.hooks.fire('filter:flags.getFlagIdsWithFilters', {
+		filters,
+		uid,
+		query,
+		flagIds,
+	});
+	return result.flagIds;
+};
+
+Flags.list = async function (data) {
+	const filters = data.filters || {};
+	let flagIds = await Flags.getFlagIdsWithFilters({
+		filters,
+		uid: data.uid,
+		query: data.query,
+	});
 	flagIds = await Flags.sort(flagIds, data.sort);
 
 	// Create subset for parsing based on page number (n=20)
@@ -162,7 +192,7 @@ Flags.list = async function (data) {
 	const reportCounts = await db.sortedSetsCard(flagIds.map(flagId => `flag:${flagId}:reports`));
 
 	const flags = await Promise.all(flagIds.map(async (flagId, idx) => {
-		let flagObj = await db.getObject('flag:' + flagId);
+		let flagObj = await db.getObject(`flag:${flagId}`);
 		flagObj = {
 			state: 'open',
 			assignee: null,
@@ -172,12 +202,12 @@ Flags.list = async function (data) {
 		flagObj.labelClass = Flags._constants.state_class[flagObj.state];
 
 		return Object.assign(flagObj, {
-			target_readable: flagObj.type.charAt(0).toUpperCase() + flagObj.type.slice(1) + ' ' + flagObj.targetId,
+			target_readable: `${flagObj.type.charAt(0).toUpperCase() + flagObj.type.slice(1)} ${flagObj.targetId}`,
 			datetimeISO: utils.toISOString(flagObj.datetime),
 		});
 	}));
 
-	const payload = await plugins.fireHook('filter:flags.list', {
+	const payload = await plugins.hooks.fire('filter:flags.list', {
 		flags: flags,
 		page: filters.page,
 		uid: data.uid,
@@ -209,9 +239,7 @@ Flags.sort = async function (flagIds, sort) {
 			const mapped = heat.map((el, i) => ({
 				index: i, heat: el,
 			}));
-			mapped.sort(function (a, b) {
-				return b.heat - a.heat;
-			});
+			mapped.sort((a, b) => b.heat - a.heat);
 			flagIds = mapped.map(obj => flagIds[obj.index]);
 			break;
 		}
@@ -251,12 +279,24 @@ Flags.validate = async function (payload) {
 		throw new Error('[[error:user-banned]]');
 	}
 
+	// Disallow flagging of profiles/content of privileged users
+	const [targetPrivileged, reporterPrivileged] = await Promise.all([
+		user.isPrivileged(target.uid),
+		user.isPrivileged(reporter.uid),
+	]);
+	if (targetPrivileged && !reporterPrivileged) {
+		throw new Error('[[error:cant-flag-privileged]]');
+	}
+
 	if (payload.type === 'post') {
 		const editable = await privileges.posts.canEdit(payload.id, payload.uid);
 		if (!editable.flag && !meta.config['reputation:disabled'] && reporter.reputation < meta.config['min:rep:flag']) {
 			throw new Error('[[error:not-enough-reputation-to-flag]]');
 		}
 	} else if (payload.type === 'user') {
+		if (parseInt(payload.id, 10) === parseInt(payload.uid, 10)) {
+			throw new Error('[[error:cant-flag-self]]');
+		}
 		const editable = await privileges.users.canEdit(payload.uid, payload.id);
 		if (!editable && !meta.config['reputation:disabled'] && reporter.reputation < meta.config['min:rep:flag']) {
 			throw new Error('[[error:not-enough-reputation-to-flag]]');
@@ -267,13 +307,18 @@ Flags.validate = async function (payload) {
 };
 
 Flags.getNotes = async function (flagId) {
-	let notes = await db.getSortedSetRevRangeWithScores('flag:' + flagId + ':notes', 0, -1);
+	let notes = await db.getSortedSetRevRangeWithScores(`flag:${flagId}:notes`, 0, -1);
 	notes = await modifyNotes(notes);
 	return notes;
 };
 
 Flags.getNote = async function (flagId, datetime) {
-	let notes = await db.getSortedSetRangeByScoreWithScores('flag:' + flagId + ':notes', 0, 1, datetime, datetime);
+	datetime = parseInt(datetime, 10);
+	if (isNaN(datetime)) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
+	let notes = await db.getSortedSetRangeByScoreWithScores(`flag:${flagId}:notes`, 0, 1, datetime, datetime);
 	if (!notes.length) {
 		throw new Error('[[error:invalid-data]]');
 	}
@@ -302,7 +347,7 @@ Flags.getFlagIdByTarget = async function (type, id) {
 
 async function modifyNotes(notes) {
 	const uids = [];
-	notes = notes.map(function (note) {
+	notes = notes.map((note) => {
 		const noteObj = JSON.parse(note.value);
 		uids.push(noteObj[0]);
 		return {
@@ -313,7 +358,7 @@ async function modifyNotes(notes) {
 		};
 	});
 	const userData = await user.getUsersFields(uids, ['username', 'userslug', 'picture']);
-	return notes.map(function (note, idx) {
+	return notes.map((note, idx) => {
 		note.user = userData[idx];
 		note.content = validator.escape(note.content);
 		return note;
@@ -321,12 +366,17 @@ async function modifyNotes(notes) {
 }
 
 Flags.deleteNote = async function (flagId, datetime) {
-	const note = await db.getSortedSetRangeByScore('flag:' + flagId + ':notes', 0, 1, datetime, datetime);
+	datetime = parseInt(datetime, 10);
+	if (isNaN(datetime)) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
+	const note = await db.getSortedSetRangeByScore(`flag:${flagId}:notes`, 0, 1, datetime, datetime);
 	if (!note.length) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	await db.sortedSetRemove('flag:' + flagId + ':notes', note[0]);
+	await db.sortedSetRemove(`flag:${flagId}:notes`, note[0]);
 };
 
 Flags.create = async function (type, id, uid, reason, timestamp) {
@@ -367,7 +417,7 @@ Flags.create = async function (type, id, uid, reason, timestamp) {
 	const batched = [];
 
 	batched.push(
-		db.setObject('flag:' + flagId, {
+		db.setObject(`flag:${flagId}`, {
 			flagId: flagId,
 			type: type,
 			targetId: id,
@@ -376,26 +426,26 @@ Flags.create = async function (type, id, uid, reason, timestamp) {
 		}),
 		Flags.addReport(flagId, type, id, uid, reason, timestamp),
 		db.sortedSetAdd('flags:datetime', timestamp, flagId), // by time, the default
-		db.sortedSetAdd('flags:byType:' + type, timestamp, flagId),	// by flag type
+		db.sortedSetAdd(`flags:byType:${type}`, timestamp, flagId),	// by flag type
 		db.sortedSetIncrBy('flags:byTarget', 1, [type, id].join(':')),	// by flag target (score is count)
 		analytics.increment('flags') // some fancy analytics
 	);
 
 	if (targetUid) {
-		batched.push(db.sortedSetAdd('flags:byTargetUid:' + targetUid, timestamp, flagId)); // by target uid
+		batched.push(db.sortedSetAdd(`flags:byTargetUid:${targetUid}`, timestamp, flagId)); // by target uid
 	}
 
 	if (targetCid) {
-		batched.push(db.sortedSetAdd('flags:byCid:' + targetCid, timestamp, flagId)); // by target cid
+		batched.push(db.sortedSetAdd(`flags:byCid:${targetCid}`, timestamp, flagId)); // by target cid
 	}
 
 	if (type === 'post') {
 		batched.push(
-			db.sortedSetAdd('flags:byPid:' + id, timestamp, flagId),	// by target pid
+			db.sortedSetAdd(`flags:byPid:${id}`, timestamp, flagId),	// by target pid
 			posts.setPostField(id, 'flagId', flagId)
 		);
 
-		if (targetUid) {
+		if (targetUid && parseInt(targetUid, 10) !== parseInt(uid, 10)) {
 			batched.push(user.incrementUserFlagsBy(targetUid, 1));
 		}
 	} else if (type === 'user') {
@@ -406,18 +456,21 @@ Flags.create = async function (type, id, uid, reason, timestamp) {
 	await Promise.all(batched);
 
 	if (doHistoryAppend) {
-		Flags.update(flagId, uid, { state: 'open' });
+		await Flags.update(flagId, uid, { state: 'open' });
 	}
 
-	return await Flags.get(flagId);
+	const flagObj = await Flags.get(flagId);
+
+	plugins.hooks.fire('action:flags.create', { flag: flagObj });
+	return flagObj;
 };
 
 Flags.getReports = async function (flagId) {
 	const payload = await db.getSortedSetRevRangeWithScores(`flag:${flagId}:reports`, 0, -1);
-	const [reports, uids] = payload.reduce(function (memo, cur) {
+	const [reports, uids] = payload.reduce((memo, cur) => {
 		const value = cur.value.split(';');
 		memo[1].push(value.shift());
-		cur.value = value.join(';');
+		cur.value = validator.escape(String(value.join(';')));
 		memo[0].push(cur);
 
 		return memo;
@@ -440,6 +493,8 @@ Flags.addReport = async function (flagId, type, id, uid, reason, timestamp) {
 
 		['flags:hash', flagId, [type, id, uid].join(':')],
 	]);
+
+	plugins.hooks.fire('action:flags.addReport', { flagId, type, id, uid, reason, timestamp });
 };
 
 Flags.exists = async function (type, id, uid) {
@@ -516,7 +571,7 @@ Flags.getTargetCid = async function (type, id) {
 };
 
 Flags.update = async function (flagId, uid, changeset) {
-	const current = await db.getObjectFields('flag:' + flagId, ['uid', 'state', 'assignee', 'type', 'targetId']);
+	const current = await db.getObjectFields(`flag:${flagId}`, ['uid', 'state', 'assignee', 'type', 'targetId']);
 	if (!current.type) {
 		return;
 	}
@@ -527,10 +582,10 @@ Flags.update = async function (flagId, uid, changeset) {
 		}
 		const notifObj = await notifications.create({
 			type: 'my-flags',
-			bodyShort: '[[notifications:flag_assigned_to_you, ' + flagId + ']]',
+			bodyShort: `[[notifications:flag_assigned_to_you, ${flagId}]]`,
 			bodyLong: '',
-			path: '/flags/' + flagId,
-			nid: 'flags:assign:' + flagId + ':uid:' + assigneeId,
+			path: `/flags/${flagId}`,
+			nid: `flags:assign:${flagId}:uid:${assigneeId}`,
 			from: uid,
 		});
 		await notifications.push(notifObj, [assigneeId]);
@@ -550,28 +605,28 @@ Flags.update = async function (flagId, uid, changeset) {
 
 	// Retrieve existing flag data to compare for history-saving/reference purposes
 	const tasks = [];
-	for (var prop in changeset) {
-		if (changeset.hasOwnProperty(prop)) {
-			if (current[prop] === changeset[prop]) {
+	for (const prop of Object.keys(changeset)) {
+		if (current[prop] === changeset[prop]) {
+			delete changeset[prop];
+		} else if (prop === 'state') {
+			if (!Flags._constants.states.includes(changeset[prop])) {
 				delete changeset[prop];
-			} else if (prop === 'state') {
-				if (!Flags._constants.states.includes(changeset[prop])) {
-					delete changeset[prop];
-				} else {
-					tasks.push(db.sortedSetAdd('flags:byState:' + changeset[prop], now, flagId));
-					tasks.push(db.sortedSetRemove('flags:byState:' + current[prop], flagId));
-					if (changeset[prop] === 'resolved' || changeset[prop] === 'rejected') {
-						tasks.push(notifications.rescind('flag:' + current.type + ':' + current.targetId));
-					}
+			} else {
+				tasks.push(db.sortedSetAdd(`flags:byState:${changeset[prop]}`, now, flagId));
+				tasks.push(db.sortedSetRemove(`flags:byState:${current[prop]}`, flagId));
+				if (changeset[prop] === 'resolved' || changeset[prop] === 'rejected') {
+					tasks.push(notifications.rescind(`flag:${current.type}:${current.targetId}`));
 				}
-			} else if (prop === 'assignee') {
-				/* eslint-disable-next-line */
-				if (!await isAssignable(parseInt(changeset[prop], 10))) {
-					delete changeset[prop];
-				} else {
-					tasks.push(db.sortedSetAdd('flags:byAssignee:' + changeset[prop], now, flagId));
-					tasks.push(notifyAssignee(changeset[prop]));
-				}
+			}
+		} else if (prop === 'assignee') {
+			if (changeset[prop] === '') {
+				tasks.push(db.sortedSetRemove(`flags:byAssignee:${changeset[prop]}`, flagId));
+			/* eslint-disable-next-line */
+			} else if (!await isAssignable(parseInt(changeset[prop], 10))) {
+				delete changeset[prop];
+			} else {
+				tasks.push(db.sortedSetAdd(`flags:byAssignee:${changeset[prop]}`, now, flagId));
+				tasks.push(notifyAssignee(changeset[prop]));
 			}
 		}
 	}
@@ -580,11 +635,11 @@ Flags.update = async function (flagId, uid, changeset) {
 		return;
 	}
 
-	tasks.push(db.setObject('flag:' + flagId, changeset));
+	tasks.push(db.setObject(`flag:${flagId}`, changeset));
 	tasks.push(Flags.appendHistory(flagId, uid, changeset));
 	await Promise.all(tasks);
 
-	plugins.fireHook('action:flags.update', { flagId: flagId, changeset: changeset, uid: uid });
+	plugins.hooks.fire('action:flags.update', { flagId: flagId, changeset: changeset, uid: uid });
 };
 
 Flags.resolveFlag = async function (type, id, uid) {
@@ -595,26 +650,28 @@ Flags.resolveFlag = async function (type, id, uid) {
 };
 
 Flags.resolveUserPostFlags = async function (uid, callerUid) {
-	await batch.processSortedSet('uid:' + uid + ':posts', async function (pids) {
-		let postData = await posts.getPostsFields(pids, ['pid', 'flagId']);
-		postData = postData.filter(p => p && p.flagId);
-		for (const postObj of postData) {
-			if (parseInt(postObj.flagId, 10)) {
-				// eslint-disable-next-line no-await-in-loop
-				await Flags.update(postObj.flagId, callerUid, { state: 'resolved' });
+	if (meta.config['flags:autoResolveOnBan']) {
+		await batch.processSortedSet(`uid:${uid}:posts`, async (pids) => {
+			let postData = await posts.getPostsFields(pids, ['pid', 'flagId']);
+			postData = postData.filter(p => p && p.flagId);
+			for (const postObj of postData) {
+				if (parseInt(postObj.flagId, 10)) {
+					// eslint-disable-next-line no-await-in-loop
+					await Flags.update(postObj.flagId, callerUid, { state: 'resolved' });
+				}
 			}
-		}
-	}, {
-		batch: 500,
-	});
+		}, {
+			batch: 500,
+		});
+	}
 };
 
 Flags.getHistory = async function (flagId) {
 	const uids = [];
-	let history = await db.getSortedSetRevRangeWithScores('flag:' + flagId + ':history', 0, -1);
-	const targetUid = await db.getObjectField('flag:' + flagId, 'targetUid');
+	let history = await db.getSortedSetRevRangeWithScores(`flag:${flagId}:history`, 0, -1);
+	const targetUid = await db.getObjectField(`flag:${flagId}`, 'targetUid');
 
-	history = history.map(function (entry) {
+	history = history.map((entry) => {
 		entry.value = JSON.parse(entry.value);
 
 		uids.push(entry.value[0]);
@@ -622,7 +679,7 @@ Flags.getHistory = async function (flagId) {
 		// Deserialise changeset
 		const changeset = entry.value[1];
 		if (changeset.hasOwnProperty('state')) {
-			changeset.state = changeset.state === undefined ? '' : '[[flags:state-' + changeset.state + ']]';
+			changeset.state = changeset.state === undefined ? '' : `[[flags:state-${changeset.state}]]`;
 		}
 
 		return {
@@ -650,17 +707,24 @@ Flags.appendHistory = async function (flagId, uid, changeset) {
 	const datetime = changeset.datetime || Date.now();
 	delete changeset.datetime;
 	const payload = JSON.stringify([uid, changeset, datetime]);
-	await db.sortedSetAdd('flag:' + flagId + ':history', datetime, payload);
+	await db.sortedSetAdd(`flag:${flagId}:history`, datetime, payload);
 };
 
 Flags.appendNote = async function (flagId, uid, note, datetime) {
 	if (datetime) {
-		await Flags.deleteNote(flagId, datetime);
+		try {
+			await Flags.deleteNote(flagId, datetime);
+		} catch (e) {
+			// Do not throw if note doesn't exist
+			if (!e.message === '[[error:invalid-data]]') {
+				throw e;
+			}
+		}
 	}
 	datetime = datetime || Date.now();
 
 	const payload = JSON.stringify([uid, note]);
-	await db.sortedSetAdd('flag:' + flagId + ':notes', datetime, payload);
+	await db.sortedSetAdd(`flag:${flagId}:notes`, datetime, payload);
 	await Flags.appendHistory(flagId, uid, {
 		notes: null,
 		datetime: datetime,
@@ -685,39 +749,42 @@ Flags.notify = async function (flagObj, uid) {
 
 		notifObj = await notifications.create({
 			type: 'new-post-flag',
-			bodyShort: '[[notifications:user_flagged_post_in, ' + flagObj.reports[flagObj.reports.length - 1].reporter.username + ', ' + titleEscaped + ']]',
-			bodyLong: flagObj.description,
+			bodyShort: `[[notifications:user_flagged_post_in, ${flagObj.reports[flagObj.reports.length - 1].reporter.username}, ${titleEscaped}]]`,
+			bodyLong: await plugins.hooks.fire('filter:parse.raw', String(flagObj.description || '')),
 			pid: flagObj.targetId,
-			path: '/flags/' + flagObj.flagId,
-			nid: 'flag:post:' + flagObj.targetId,
+			path: `/flags/${flagObj.flagId}`,
+			nid: `flag:post:${flagObj.targetId}`,
 			from: uid,
-			mergeId: 'notifications:user_flagged_post_in|' + flagObj.targetId,
+			mergeId: `notifications:user_flagged_post_in|${flagObj.targetId}`,
 			topicTitle: title,
 		});
 		uids = uids.concat(modUids[0]);
 	} else if (flagObj.type === 'user') {
 		notifObj = await notifications.create({
 			type: 'new-user-flag',
-			bodyShort: '[[notifications:user_flagged_user, ' + flagObj.reports[flagObj.reports.length - 1].reporter.username + ', ' + flagObj.target.username + ']]',
-			bodyLong: flagObj.description,
-			path: '/flags/' + flagObj.flagId,
-			nid: 'flag:user:' + flagObj.targetId,
+			bodyShort: `[[notifications:user_flagged_user, ${flagObj.reports[flagObj.reports.length - 1].reporter.username}, ${flagObj.target.username}]]`,
+			bodyLong: await plugins.hooks.fire('filter:parse.raw', String(flagObj.description || '')),
+			path: `/flags/${flagObj.flagId}`,
+			nid: `flag:user:${flagObj.targetId}`,
 			from: uid,
-			mergeId: 'notifications:user_flagged_user|' + flagObj.targetId,
+			mergeId: `notifications:user_flagged_user|${flagObj.targetId}`,
 		});
 	} else {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	plugins.fireHook('action:flags.create', {
+	plugins.hooks.fire('action:flags.notify', {
 		flag: flagObj,
+		notification: notifObj,
+		from: uid,
+		to: uids,
 	});
 	uids = uids.filter(_uid => parseInt(_uid, 10) !== parseInt(uid, 10));
 	await notifications.push(notifObj, uids);
 };
 
 async function mergeBanHistory(history, targetUid, uids) {
-	let recentBans = await db.getSortedSetRevRange('uid:' + targetUid + ':bans:timestamp', 0, 19);
+	let recentBans = await db.getSortedSetRevRange(`uid:${targetUid}:bans:timestamp`, 0, 19);
 	recentBans = await db.getObjects(recentBans);
 
 	return history.concat(recentBans.reduce((memo, cur) => {
@@ -745,8 +812,8 @@ async function mergeBanHistory(history, targetUid, uids) {
 }
 
 async function mergeUsernameEmailChanges(history, targetUid, uids) {
-	const usernameChanges = await user.getHistory('user:' + targetUid + ':usernames');
-	const emailChanges = await user.getHistory('user:' + targetUid + ':emails');
+	const usernameChanges = await user.getHistory(`user:${targetUid}:usernames`);
+	const emailChanges = await user.getHistory(`user:${targetUid}:emails`);
 
 	return history.concat(usernameChanges.reduce((memo, changeObj) => {
 		uids.push(targetUid);

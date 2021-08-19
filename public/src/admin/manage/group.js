@@ -1,14 +1,14 @@
 'use strict';
 
-
 define('admin/manage/group', [
 	'forum/groups/memberlist',
 	'iconSelect',
-	'admin/modules/colorpicker',
 	'translator',
 	'categorySelector',
 	'groupSearch',
-], function (memberList, iconSelect, colorpicker, translator, categorySelector, groupSearch) {
+	'slugify',
+	'api',
+], function (memberList, iconSelect, translator, categorySelector, groupSearch, slugify, api) {
 	var Groups = {};
 
 	Groups.init = function () {
@@ -27,19 +27,19 @@ define('admin/manage/group', [
 
 		memberList.init('admin/manage/group');
 
-		changeGroupUserTitle.keyup(function () {
-			groupLabelPreviewText.text(changeGroupUserTitle.val());
+		changeGroupUserTitle.on('keyup', function () {
+			groupLabelPreviewText.translateText(changeGroupUserTitle.val());
 		});
 
-		changeGroupLabelColor.keyup(function () {
-			groupLabelPreview.css('background', changeGroupLabelColor.val() || '#000000');
+		changeGroupLabelColor.on('keyup input', function () {
+			groupLabelPreview.css('background-color', changeGroupLabelColor.val() || '#000000');
 		});
 
-		changeGroupTextColor.keyup(function () {
+		changeGroupTextColor.on('keyup input', function () {
 			groupLabelPreview.css('color', changeGroupTextColor.val() || '#ffffff');
 		});
 
-		setupGroupMembersMenu(groupName);
+		setupGroupMembersMenu();
 
 		$('#group-icon, #group-icon-label').on('click', function () {
 			var currentIcon = groupIcon.attr('value');
@@ -57,19 +57,24 @@ define('admin/manage/group', [
 			});
 		});
 
-		categorySelector.init($('[component="category-selector"]'), function (selectedCategory) {
-			navigateToCategory(selectedCategory.cid);
+		categorySelector.init($('.edit-privileges-selector [component="category-selector"]'), {
+			onSelect: function (selectedCategory) {
+				navigateToCategory(selectedCategory.cid);
+			},
+			showLinks: true,
+		});
+
+		var cidSelector = categorySelector.init($('.member-post-cids-selector [component="category-selector"]'), {
+			onSelect: function (selectedCategory) {
+				var cids = ($('#memberPostCids').val() || '').split(',').map(cid => parseInt(cid, 10));
+				cids.push(selectedCategory.cid);
+				cids = cids.filter((cid, index, array) => array.indexOf(cid) === index);
+				$('#memberPostCids').val(cids.join(','));
+				cidSelector.selectCategory(0);
+			},
 		});
 
 		groupSearch.init($('[component="group-selector"]'));
-
-		colorpicker.enable(changeGroupLabelColor, function (hsb, hex) {
-			groupLabelPreview.css('background-color', '#' + hex);
-		});
-
-		colorpicker.enable(changeGroupTextColor, function (hsb, hex) {
-			groupLabelPreview.css('color', '#' + hex);
-		});
 
 		$('form [data-property]').on('change', function () {
 			app.flags = app.flags || {};
@@ -77,26 +82,20 @@ define('admin/manage/group', [
 		});
 
 		$('#save').on('click', function () {
-			socket.emit('admin.groups.update', {
-				groupName: groupName,
-				values: {
-					name: $('#change-group-name').val(),
-					userTitle: changeGroupUserTitle.val(),
-					description: $('#change-group-desc').val(),
-					icon: groupIcon.attr('value'),
-					labelColor: changeGroupLabelColor.val(),
-					textColor: changeGroupTextColor.val(),
-					userTitleEnabled: $('#group-userTitleEnabled').is(':checked'),
-					private: $('#group-private').is(':checked'),
-					hidden: $('#group-hidden').is(':checked'),
-					disableJoinRequests: $('#group-disableJoinRequests').is(':checked'),
-					disableLeave: $('#group-disableLeave').is(':checked'),
-				},
-			}, function (err) {
-				if (err) {
-					return app.alertError(err.message);
-				}
-
+			api.put(`/groups/${slugify(groupName)}`, {
+				name: $('#change-group-name').val(),
+				userTitle: changeGroupUserTitle.val(),
+				description: $('#change-group-desc').val(),
+				icon: groupIcon.attr('value'),
+				labelColor: changeGroupLabelColor.val(),
+				textColor: changeGroupTextColor.val(),
+				userTitleEnabled: $('#group-userTitleEnabled').is(':checked'),
+				private: $('#group-private').is(':checked'),
+				hidden: $('#group-hidden').is(':checked'),
+				memberPostCids: $('#memberPostCids').val(),
+				disableJoinRequests: $('#group-disableJoinRequests').is(':checked'),
+				disableLeave: $('#group-disableLeave').is(':checked'),
+			}).then(() => {
 				var newName = $('#change-group-name').val();
 
 				// If the group name changed, change url
@@ -105,12 +104,12 @@ define('admin/manage/group', [
 				}
 
 				app.alertSuccess('[[admin/manage/groups:edit.save-success]]');
-			});
+			}).catch(app.alertError);
 			return false;
 		});
 	};
 
-	function setupGroupMembersMenu(groupName) {
+	function setupGroupMembersMenu() {
 		$('[component="groups/members"]').on('click', '[data-action]', function () {
 			var btnEl = $(this);
 			var userRow = btnEl.parents('[data-uid]');
@@ -121,15 +120,9 @@ define('admin/manage/group', [
 
 			switch (action) {
 				case 'toggleOwnership':
-					socket.emit('groups.' + (isOwner ? 'rescind' : 'grant'), {
-						toUid: uid,
-						groupName: groupName,
-					}, function (err) {
-						if (err) {
-							return app.alertError(err.message);
-						}
+					api[isOwner ? 'del' : 'put'](`/groups/${ajaxify.data.group.slug}/ownership/${uid}`, {}).then(() => {
 						ownerFlagEl.toggleClass('invisible');
-					});
+					}).catch(app.alertError);
 					break;
 
 				case 'kick':
@@ -137,15 +130,9 @@ define('admin/manage/group', [
 						if (!confirm) {
 							return;
 						}
-						socket.emit('admin.groups.leave', {
-							uid: uid,
-							groupName: groupName,
-						}, function (err) {
-							if (err) {
-								return app.alertError(err.message);
-							}
+						api.del('/groups/' + ajaxify.data.group.slug + '/membership/' + uid).then(() => {
 							userRow.slideUp().remove();
-						});
+						}).catch(app.alertError);
 					});
 					break;
 				default:

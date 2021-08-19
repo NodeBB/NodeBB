@@ -1,20 +1,20 @@
 'use strict';
 
-var async = require('async');
-var db = require('../../database');
+const async = require('async');
+const db = require('../../database');
 
 
 module.exports = {
 	name: 'Update global and user language keys',
 	timestamp: Date.UTC(2016, 10, 22),
 	method: function (callback) {
-		var user = require('../../user');
-		var meta = require('../../meta');
-		var batch = require('../../batch');
-		var newLanguage;
+		const user = require('../../user');
+		const meta = require('../../meta');
+		const batch = require('../../batch');
+		let newLanguage;
 		async.parallel([
 			function (next) {
-				meta.configs.get('defaultLang', function (err, defaultLang) {
+				meta.configs.get('defaultLang', (err, defaultLang) => {
 					if (err) {
 						return next(err);
 					}
@@ -32,10 +32,10 @@ module.exports = {
 				});
 			},
 			function (next) {
-				batch.processSortedSet('users:joindate', function (ids, next) {
-					async.each(ids, function (uid, next) {
+				batch.processSortedSet('users:joindate', (ids, next) => {
+					async.each(ids, (uid, next) => {
 						async.waterfall([
-							async.apply(db.getObjectField, 'user:' + uid + ':settings', 'userLang'),
+							async.apply(db.getObjectField, `user:${uid}:settings`, 'userLang'),
 							function (language, next) {
 								if (!language) {
 									return setImmediate(next);

@@ -2,6 +2,7 @@
 	"forum-traffic": "Foruma datplūsma",
 	"page-views": "Lapu skatījumi",
 	"unique-visitors": "Unikālie apmeklētāji",
+	"logins": "Logins",
 	"new-users": "New Users",
 	"posts": "Raksti",
 	"topics": "Temati",
@@ -29,6 +30,7 @@
 	"upgrade-available": "<p>Ir izlaista jauna versija (v%1). Apsvērt <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">NodeBB atjaunināšanu</a>.</p>",
 	"prerelease-upgrade-available": "<p>Šī ir novecojusies pirmizlaides NodeBB versija. Jauna versija (v%1) ir bijusi izlaista. Apsvērt <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">NodeBB atjaunināšanu</a>.</p>",
 	"prerelease-warning": "<p>Ši ir <strong>pirmizlaides</strong> NodeBB versija. Neparedzētas kļūdas var rasties. <i class=\"fa fa-exclamation-triangle\"></i></p>",
+	"fallback-emailer-not-found": "Fallback emailer not found!",
 	"running-in-development": "<span>NodeBB darbojas attīstītāju režīmā. NodeBB var būt neaizsargāts pret iespējamiem uzbrukumiem; lūdzu, sazināties ar sistēmas administratoru.</span>",
 	"latest-lookup-failed": "<p>Neizdevās atrast jaunāko pieejamo NodeBB versiju</p>",
 
@@ -75,5 +77,12 @@
 	"graphs.registered-users": "Reģistrētie lietotāji",
 	"graphs.anonymous-users": "Anonīmie lietotāji",
 	"last-restarted-by": "Pēdējoreiz restartējis",
-	"no-users-browsing": "Nav pārlūkojošo lietotāju"
+	"no-users-browsing": "Nav pārlūkojošo lietotāju",
+
+	"back-to-dashboard": "Back to Dashboard",
+	"details.no-users": "No users have joined within the selected timeframe",
+	"details.no-topics": "No topics have been posted within the selected timeframe",
+	"details.no-logins": "No logins have been recorded within the selected timeframe",
+	"details.logins-static": "NodeBB only saves session data for %1 days, and so this table below will only show the most recently active sessions",
+	"details.logins-login-time": "Login Time"
 }

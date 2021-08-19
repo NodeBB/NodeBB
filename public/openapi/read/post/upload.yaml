@@ -1,0 +1,25 @@
+post:
+  tags:
+    - posts
+  summary: Upload a file to a specific post
+  description: Provided by NodeBB core and used mainly by the composer, this route allows you to upload an image or file to a post.
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  images:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        url:
+                          type: string

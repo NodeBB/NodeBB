@@ -1,0 +1,64 @@
+get:
+  tags:
+    - admin
+  summary: Get administrative dashboard
+  responses:
+    "200":
+      description: A JSON object containing dashboard data
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  version:
+                    type: string
+                  lookupFailed:
+                    type: boolean
+                  latestVersion:
+                    type: string
+                    nullable: true
+                  upgradeAvailable:
+                    type: boolean
+                    nullable: true
+                  currentPrerelease:
+                    type: boolean
+                  notices:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        done:
+                          type: boolean
+                        doneText:
+                          type: string
+                        notDoneText:
+                          type: string
+                        tooltip:
+                          type: string
+                        link:
+                          type: string
+                      required:
+                        - done
+                  canRestart:
+                    type: boolean
+                  lastrestart:
+                    nullable: true
+                    type: object
+                    properties:
+                      uid:
+                        type: number
+                        description: A user identifier
+                      ip:
+                        type: string
+                      timestamp:
+                        type: number
+                      user:
+                        $ref: ../../components/schemas/UserObject.yaml#/UserObject
+                      timestampISO:
+                        type: string
+                        description: An ISO 8601 formatted date string (complementing `timestamp`)
+                  showSystemControls:
+                    type: boolean
+              - $ref: ../../components/schemas/admin/dashboard.yaml#/Stats
+              - $ref: ../../components/schemas/CommonProps.yaml#/CommonProps

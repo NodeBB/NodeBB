@@ -1,0 +1,21 @@
+get:
+  tags:
+    - authentication
+  summary: Verify an email address
+  responses:
+    "200":
+      description: Email address verified, or confirmation code was incorrect
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  title:
+                    type: string
+                  error:
+                    type: string
+                    description: Translation key for client-side localisation
+                required:
+                  - title
+              - $ref: ../../components/schemas/CommonProps.yaml#/CommonProps

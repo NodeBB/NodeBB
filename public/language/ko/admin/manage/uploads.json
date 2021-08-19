@@ -1,9 +1,9 @@
 {
     "upload-file": "파일 업로드",
     "filename": "파일명",
-    "usage": "Post Usage",
-    "orphaned": "Orphaned",
+    "usage": "등록된 글",
+    "orphaned": "미등록",
     "size/filecount": "크기 / 파일 수",
-    "confirm-delete": "이 파일을 정말로 삭제 하시겠습니까?",
+    "confirm-delete": "이 파일을 정말로 삭제하시겠습니까?",
     "filecount": "%1 파일"
 }

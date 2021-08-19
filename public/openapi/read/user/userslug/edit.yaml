@@ -1,0 +1,66 @@
+get:
+  tags:
+    - users
+  summary: Get user profile for editing
+  parameters:
+    - name: userslug
+      in: path
+      required: true
+      schema:
+        type: string
+      example: admin
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../../components/schemas/UserObject.yaml#/UserObjectFull
+              - type: object
+                properties:
+                  maximumSignatureLength:
+                    type: number
+                  maximumAboutMeLength:
+                    type: number
+                  maximumProfileImageSize:
+                    type: number
+                  allowProfilePicture:
+                    type: boolean
+                  allowCoverPicture:
+                    type: boolean
+                  allowProfileImageUploads:
+                    type: number
+                  allowedProfileImageExtensions:
+                    type: string
+                  allowMultipleBadges:
+                    type: boolean
+                  allowAccountDelete:
+                    type: boolean
+                  allowWebsite:
+                    type: boolean
+                  allowAboutMe:
+                    type: boolean
+                  allowSignature:
+                    type: boolean
+                  profileImageDimension:
+                    type: number
+                  defaultAvatar:
+                    type: string
+                  groupSelectSize:
+                    type: number
+                  title:
+                    type: string
+                  editButtons:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        link:
+                          type: string
+                          description: A relative path to the page linked to
+                        text:
+                          type: string
+                          description: Button label
+              - $ref: ../../../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

@@ -18,9 +18,15 @@
     "agree_to_terms_of_use": "Kullanım Şartlarını Kabul Ediyorum",
     "terms_of_use_error": "Kullanım Şartlarını Kabul Etmeniz Gerekiyor",
     "registration-added-to-queue": "Kayıt olma isteğiniz kabul listesine eklenmiştir. Yönetici tarafından kabul edildiğinizde e-posta alacaksınız.",
-    "interstitial.intro": "Hesabınızı yaratmadan önce bazı ekstra bilgiler gerekiyor.",
-    "interstitial.errors-found": "Kaydınız tamamlanamadı:",
+    "registration-queue-average-time": "Üyelik onayı için bekleyeceğiniz ortalama süre: %1 saat %2 dakika.",
+    "registration-queue-auto-approve-time": "Forum üyeliğiniz %1 saat içerisinde tamamen aktifleştirilecektir. ",
+    "interstitial.intro": "We'd like some additional information in order to update your account&hellip;",
+    "interstitial.intro-new": "We'd like some additional information before we can create your account&hellip;",
+    "interstitial.errors-found": "Please review the entered information:",
     "gdpr_agree_data": "Bu web sitesinde kişisel bilgilerimin toplanmasını ve işlenmesini kabul ediyorum.",
     "gdpr_agree_email": "Bu web sitesinden özet ve bildirim e-postası almaya izin veriyorum.",
-    "gdpr_consent_denied": "Bilgilerinizi toplamak/işlemek ve size e-posta göndermek için bu siteye onay vermelisiniz."
+    "gdpr_consent_denied": "Bilgilerinizi toplamak/işlemek ve size e-posta göndermek için bu siteye onay vermelisiniz.",
+    "invite.error-admin-only": "Direkt üye kaydı devre dışı bırakıldı. Lütfen daha fazla bilgi için bir yöneticiye ulaşın.",
+    "invite.error-invite-only": "Direkt üye kaydı devre dışı bırakıldı. Bu foruma erişebilmek için bir üye tarafından davet edilmelisiniz. ",
+    "invite.error-invalid-data": "Girilen üyelik bilgileri kayıtlarda bulunamadı. Lütfen daha fazla bilgi için bir yöneticiye ulaşın."
 }

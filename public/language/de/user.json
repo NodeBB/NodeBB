@@ -84,6 +84,7 @@
     "remove_cover_picture_confirm": "Bist du sicher, dass du dein Titelbild entfernen möchtest?",
     "crop_picture": "Bild zuschneiden",
     "upload_cropped_picture": "Zuschneiden und Hochladen",
+    "avatar-background-colour": "Avatar background colour",
     "settings": "Einstellungen",
     "show_email": "Zeige meine E-Mail Adresse an.",
     "show_fullname": "Zeige meinen kompletten Namen an",
@@ -123,6 +124,7 @@
     "open_links_in_new_tab": "Ausgehende Links in neuem Tab öffnen",
     "enable_topic_searching": "Suchen innerhalb von Themen aktivieren",
     "topic_search_help": "Wenn aktiviert, ersetzt die im-Thema-Suche die Standardsuche des Browsers. Dadurch kannst du im ganzen Thema suchen, nicht nur im sichtbaren Abschnitt.",
+    "update_url_with_post_index": "Update url with post index while browsing topics",
     "scroll_to_my_post": "Zeige eigene Antwort nach dem Erstellen im Thema an",
     "follow_topics_you_reply_to": "Themen folgen, in denen du geantwortet hast",
     "follow_topics_you_create": "Themen folgen, die du erstellst",
@@ -134,7 +136,7 @@
     "homepage": "Startseite",
     "homepage_description": "Wähle eine Seite die als Forumstartseite benutzt werden soll aus oder 'Keine' um die Standardstartseite zu verwenden.",
     "custom_route": "Eigener Startseitenpfad",
-    "custom_route_help": "Gib hier einen Pfadnamen ohne vorangehenden Schrägstrich ein (z.B. \"recent\" oder \"popular\")",
+    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "Single Sign-on Dienste",
     "sso.associated": "Verbunden mit",
     "sso.not-associated": "Verbinde dich mit",
@@ -178,5 +180,8 @@
     "consent.export_uploads": "Hochgeladene Dateien exportieren (.zip)",
     "consent.export-uploads-success": "Uploads werden exportiert, du bekommst eine Benachrichtigung sobald der Vorgang abgeschlossen ist.",
     "consent.export_posts": "Beiträge exportieren (.csv)",
-    "consent.export-posts-success": "Beiträge werden exportiert, du bekommst eine Benachrichtigung sobald der Vorgang abgeschlossen ist."
+    "consent.export-posts-success": "Beiträge werden exportiert, du bekommst eine Benachrichtigung sobald der Vorgang abgeschlossen ist.",
+    "emailUpdate.intro": "Please enter your email address below. This forum uses your email address for scheduled digest and notifications, as well as for account recovery in the event of a lost password.",
+    "emailUpdate.optional": "<strong>This field is optional</strong>. You are not obligated to provide your email address, but without a validated email, you will not be able to recover your account.",
+    "emailUpdate.change-instructions": "A confirmation email will be sent to the entered email address with a unique link. Accessing that link will confirm your ownership of the email address and it will become active on your account. At any time, you are able to update your email on file from within your account page."
 }

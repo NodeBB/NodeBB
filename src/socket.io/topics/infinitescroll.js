@@ -1,7 +1,6 @@
 'use strict';
 
 const topics = require('../../topics');
-const categories = require('../../categories');
 const privileges = require('../../privileges');
 const meta = require('../../meta');
 const utils = require('../../utils');
@@ -15,18 +14,21 @@ module.exports = function (SocketTopics) {
 
 		const [userPrivileges, topicData] = await Promise.all([
 			privileges.topics.get(data.tid, socket.uid),
-			topics.getTopicFields(data.tid, ['postcount', 'deleted']),
+			topics.getTopicFields(data.tid, ['postcount', 'deleted', 'scheduled', 'uid']),
 		]);
 
-		if (!userPrivileges['topics:read'] || (topicData.deleted && !userPrivileges.view_deleted)) {
+		if (!userPrivileges['topics:read'] || !privileges.topics.canViewDeletedScheduled(topicData, userPrivileges)) {
 			throw new Error('[[error:no-privileges]]');
 		}
 
-		const set = data.topicPostSort === 'most_votes' ? 'tid:' + data.tid + ':posts:votes' : 'tid:' + data.tid + ':posts';
+		const set = data.topicPostSort === 'most_votes' ? `tid:${data.tid}:posts:votes` : `tid:${data.tid}:posts`;
 		const reverse = data.topicPostSort === 'newest_to_oldest' || data.topicPostSort === 'most_votes';
 		let start = Math.max(0, parseInt(data.after, 10));
 
-		const infScrollPostsPerPage = Math.max(0, Math.min(meta.config.postsPerPage || 20, parseInt(data.count, 10) || meta.config.postsPerPage || 20));
+		const infScrollPostsPerPage = Math.max(0, Math.min(
+			meta.config.postsPerPage || 20,
+			parseInt(data.count, 10) || meta.config.postsPerPage || 20
+		));
 
 		if (data.direction === -1) {
 			start -= (infScrollPostsPerPage + 1);
@@ -76,6 +78,7 @@ module.exports = function (SocketTopics) {
 			return await topics.getUnreadTopics(params);
 		}
 		params.cids = data.cid;
+		params.tags = data.tags;
 		params.sort = data.sort;
 		params.term = data.term;
 		return await topics.getSortedTopics(params);
@@ -89,14 +92,11 @@ module.exports = function (SocketTopics) {
 		return await topics.getTopicsFromSet(data.set, socket.uid, start, stop);
 	};
 
-	SocketTopics.loadMoreUserTopics = async function (socket, data) {
-		const cids = await categories.getCidsByPrivilege('categories:cid', socket.uid, 'topics:read');
-		data.set = cids.map(c => 'cid:' + c + ':uid:' + data.uid + ':tids');
-		return await SocketTopics.loadMoreFromSet(socket, data);
-	};
-
 	function calculateStartStop(data) {
-		const itemsPerPage = Math.min(meta.config.topicsPerPage || 20, parseInt(data.count, 10) || meta.config.topicsPerPage || 20);
+		const itemsPerPage = Math.min(
+			meta.config.topicsPerPage || 20,
+			parseInt(data.count, 10) || meta.config.topicsPerPage || 20
+		);
 		let start = Math.max(0, parseInt(data.after, 10));
 		if (data.direction === -1) {
 			start -= itemsPerPage;

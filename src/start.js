@@ -31,12 +31,15 @@ start.start = async function () {
 		await db.initSessionStore();
 
 		const webserver = require('./webserver');
-		require('./socket.io').init(webserver.server);
+		const sockets = require('./socket.io');
+		await sockets.init(webserver.server);
 
 		if (nconf.get('runJobs')) {
 			require('./notifications').startJobs();
 			require('./user').startJobs();
 			require('./plugins').startJobs();
+			require('./topics').scheduled.startJobs();
+			await db.delete('locks');
 		}
 
 		await webserver.listen();
@@ -83,8 +86,8 @@ function printStartupInfo() {
 	if (nconf.get('isPrimary')) {
 		winston.info('Initializing NodeBB v%s %s', nconf.get('version'), nconf.get('url'));
 
-		const host = nconf.get(nconf.get('database') + ':host');
-		const storeLocation = host ? 'at ' + host + (!host.includes('/') ? ':' + nconf.get(nconf.get('database') + ':port') : '') : '';
+		const host = nconf.get(`${nconf.get('database')}:host`);
+		const storeLocation = host ? `at ${host}${!host.includes('/') ? `:${nconf.get(`${nconf.get('database')}:port`)}` : ''}` : '';
 
 		winston.verbose('* using %s store %s', nconf.get('database'), storeLocation);
 		winston.verbose('* using themes stored in: %s', nconf.get('themes_path'));
@@ -95,13 +98,13 @@ function addProcessHandlers() {
 	process.on('SIGTERM', shutdown);
 	process.on('SIGINT', shutdown);
 	process.on('SIGHUP', restart);
-	process.on('uncaughtException', function (err) {
+	process.on('uncaughtException', (err) => {
 		winston.error(err.stack);
 
 		require('./meta').js.killMinifier();
 		shutdown(1);
 	});
-	process.on('message', function (msg) {
+	process.on('message', (msg) => {
 		if (msg && msg.compiling === 'tpl') {
 			const benchpressjs = require('benchpressjs');
 			benchpressjs.flush();

@@ -35,6 +35,7 @@
     "details.member_count": "Medlemsantal",
     "details.creation_date": "Skapardatum",
     "details.description": "Beskrivning",
+    "details.member-post-cids": "Category IDs to display posts from",
     "details.badge_preview": "Förhandsgranskning av märke",
     "details.change_icon": "Byt ikon",
     "details.change_label_colour": "Ändra etikettfärg",

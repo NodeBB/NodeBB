@@ -6,6 +6,7 @@
 	"assignee": "Asignado",
 	"update": "Actualizar",
 	"updated": "Actualizado",
+	"resolved": "Resolved",
 	"target-purged": "El contenido al que se refiere este indicador ha sido purgado y ya no está disponible.",
 
 	"graph-label": "Daily Flags",
@@ -26,6 +27,7 @@
 	"filter-cid-all": "Todas las categorias",
 	"apply-filters": "Aplicar filtros",
 	"more-filters": "More Filters",
+	"fewer-filters": "Fewer Filters",
 
 	"quick-actions": "Quick Actions",
 	"flagged-user": "Usuario marcado",
@@ -67,7 +69,7 @@
 	"sort-upvotes": "Most upvotes",
 	"sort-replies": "Most replies",
 
-	"modal-title": "Reportar contenido inapropiado",
+	"modal-title": "Report Content",
 	"modal-body": "Por favor especifica tu razón para marcar %1 %2 para revisar. Alternativamente, usa una de los botones  de reporte rápido si corresponde.",
 	"modal-reason-spam": "Correo no deseado",
 	"modal-reason-offensive": "Ofensivo",
@@ -75,11 +77,9 @@
 	"modal-reason-custom": "Razón para reportar este contenido...",
 	"modal-submit": "Enviar reporte",
 	"modal-submit-success": "El contenido se ha reportado para moderación.",
-	"modal-submit-confirm": "Confirmar envío",
-	"modal-submit-confirm-text": "Ya tienes una razón personalizada. ¿Estás seguro/a de que deseas enviar mediante reporte rápido?",
-	"modal-submit-confirm-text-help": "Enviar un reporte rápido sobreescribirá cualquier razón personalizada definida.",
 
 	"bulk-actions": "Bulk Actions",
 	"bulk-resolve": "Resolve Flag(s)",
-	"bulk-success": "%1 flags updated"
+	"bulk-success": "%1 flags updated",
+	"flagged-timeago-readable": "Flagged <span class=\"timeago\" title=\"%1\"></span> (%2)"
 }

@@ -2,23 +2,23 @@
 
 const winston = require('winston');
 
-const groups = require('../../groups');
-const user = require('../../user');
 const categories = require('../../categories');
-const privileges = require('../../privileges');
 const plugins = require('../../plugins');
-const events = require('../../events');
+const api = require('../../api');
+const sockets = require('..');
 
 const Categories = module.exports;
 
 Categories.create = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'POST /api/v3/categories');
+
 	if (!data) {
 		throw new Error('[[error:invalid-data]]');
 	}
-
-	return await categories.create(data);
+	return await api.categories.create(socket, data);
 };
 
+// DEPRECATED: @1.14.3, remove in version >=1.16
 Categories.getAll = async function () {
 	winston.warn('[deprecated] admin.categories.getAll deprecated, data is returned in the api route');
 	const cids = await categories.getAllCidsFromSet('categories:cid');
@@ -27,7 +27,7 @@ Categories.getAll = async function () {
 		'color', 'bgColor', 'backgroundImage', 'imageClass',
 	];
 	const categoriesData = await categories.getCategoriesFields(cids, fields);
-	const result = await plugins.fireHook('filter:admin.categories.get', { categories: categoriesData, fields: fields });
+	const result = await plugins.hooks.fire('filter:admin.categories.get', { categories: categoriesData, fields: fields });
 	return categories.getTree(result.categories, 0);
 };
 
@@ -36,60 +36,36 @@ Categories.getNames = async function () {
 };
 
 Categories.purge = async function (socket, cid) {
-	const name = await categories.getCategoryField(cid, 'name');
-	await categories.purge(cid, socket.uid);
-	await events.log({
-		type: 'category-purge',
-		uid: socket.uid,
-		ip: socket.ip,
-		cid: cid,
-		name: name,
-	});
+	sockets.warnDeprecated(socket, 'DELETE /api/v3/categories/:cid');
+
+	await api.categories.delete(socket, { cid: cid });
 };
 
 Categories.update = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'PUT /api/v3/categories/:cid');
+
 	if (!data) {
 		throw new Error('[[error:invalid-data]]');
 	}
-
-	return await categories.update(data);
+	return await api.categories.update(socket, data);
 };
 
 Categories.setPrivilege = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'PUT /api/v3/categories/:cid/privileges/:privilege');
+
 	if (!data) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	const [userExists, groupExists] = await Promise.all([
-		user.exists(data.member),
-		groups.exists(data.member),
-	]);
-
-	if (!userExists && !groupExists) {
-		throw new Error('[[error:no-user-or-group]]');
-	}
-
-	await privileges.categories[data.set ? 'give' : 'rescind'](
-		Array.isArray(data.privilege) ? data.privilege : [data.privilege], data.cid, data.member
-	);
-
-	await events.log({
-		uid: socket.uid,
-		type: 'privilege-change',
-		ip: socket.ip,
-		privilege: data.privilege.toString(),
-		cid: data.cid,
-		action: data.set ? 'grant' : 'rescind',
-		target: data.member,
-	});
+	return await api.categories.setPrivilege(socket, data);
 };
 
 Categories.getPrivilegeSettings = async function (socket, cid) {
-	if (cid === 'admin') {
-		return await privileges.admin.list(socket.uid);
-	} else if (!parseInt(cid, 10)) {
-		return await privileges.global.list();
+	sockets.warnDeprecated(socket, 'GET /api/v3/categories/:cid/privileges');
+
+	if (!isFinite(cid) && cid !== 'admin') {
+		throw new Error('[[error:invalid-data]]');
 	}
-	return await privileges.categories.list(cid);
+	return await api.categories.getPrivileges(socket, cid);
 };
 
 Categories.copyPrivilegesToChildren = async function (socket, data) {

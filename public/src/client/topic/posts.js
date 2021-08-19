@@ -9,19 +9,25 @@ define('forum/topic/posts', [
 	'navigator',
 	'components',
 	'translator',
-], function (pagination, infinitescroll, postTools, images, navigator, components, translator) {
+	'hooks',
+], function (pagination, infinitescroll, postTools, images, navigator, components, translator, hooks) {
 	var Posts = { };
 
 	Posts.onNewPost = function (data) {
-		if (!data || !data.posts || !data.posts.length || parseInt(data.posts[0].tid, 10) !== parseInt(ajaxify.data.tid, 10)) {
+		if (
+			!data ||
+			!data.posts ||
+			!data.posts.length ||
+			parseInt(data.posts[0].tid, 10) !== parseInt(ajaxify.data.tid, 10)
+		) {
 			return;
 		}
 
 		data.loggedIn = !!app.user.uid;
 		data.privileges = ajaxify.data.privileges;
 
-		// prevent timeago in future by setting timestamp to 1 sec behind now
-		data.posts[0].timestamp = Date.now() - 1000;
+		// if not a scheduled topic, prevent timeago in future by setting timestamp to 1 sec behind now
+		data.posts[0].timestamp = data.posts[0].topic.scheduled ? data.posts[0].timestamp : Date.now() - 1000;
 		data.posts[0].timestampISO = utils.toISOString(data.posts[0].timestamp);
 
 		Posts.modifyPostsByPrivileges(data.posts);
@@ -47,11 +53,16 @@ define('forum/topic/posts', [
 	Posts.modifyPostsByPrivileges = function (posts) {
 		posts.forEach(function (post) {
 			post.selfPost = !!app.user.uid && parseInt(post.uid, 10) === parseInt(app.user.uid, 10);
+			post.topicOwnerPost = parseInt(post.uid, 10) === parseInt(ajaxify.data.uid, 10);
+
 			post.display_edit_tools = (ajaxify.data.privileges['posts:edit'] && post.selfPost) || ajaxify.data.privileges.isAdminOrMod;
 			post.display_delete_tools = (ajaxify.data.privileges['posts:delete'] && post.selfPost) || ajaxify.data.privileges.isAdminOrMod;
 			post.display_moderator_tools = post.display_edit_tools || post.display_delete_tools;
 			post.display_move_tools = ajaxify.data.privileges.isAdminOrMod;
-			post.display_post_menu = ajaxify.data.privileges.isAdminOrMod || (post.selfPost && !ajaxify.data.locked) || ((app.user.uid || ajaxify.data.postSharing.length) && !post.deleted);
+			post.display_post_menu = ajaxify.data.privileges.isAdminOrMod ||
+				(post.selfPost && !ajaxify.data.locked && !post.deleted) ||
+				(post.selfPost && post.deleted && parseInt(post.deleterUid, 10) === parseInt(app.user.uid, 10)) ||
+				((app.user.uid || ajaxify.data.postSharing.length) && !post.deleted);
 		});
 	};
 
@@ -83,11 +94,13 @@ define('forum/topic/posts', [
 		ajaxify.data.pagination.pageCount = Math.max(1, Math.ceil(posts[0].topic.postcount / config.postsPerPage));
 		var direction = config.topicPostSort === 'oldest_to_newest' || config.topicPostSort === 'most_votes' ? 1 : -1;
 
-		var isPostVisible = (ajaxify.data.pagination.currentPage === ajaxify.data.pagination.pageCount && direction === 1) ||
-							(ajaxify.data.pagination.currentPage === 1 && direction === -1);
+		var isPostVisible = (
+			ajaxify.data.pagination.currentPage === ajaxify.data.pagination.pageCount &&
+			direction === 1
+		) || (ajaxify.data.pagination.currentPage === 1 && direction === -1);
 
 		if (isPostVisible) {
-			createNewPosts(data, components.get('post').not('[data-index=0]'), direction, scrollToPost);
+			createNewPosts(data, components.get('post').not('[data-index=0]'), direction, false, scrollToPost);
 		} else if (ajaxify.data.scrollToMyPost && parseInt(posts[0].uid, 10) === parseInt(app.user.uid, 10)) {
 			// https://github.com/NodeBB/NodeBB/issues/5004#issuecomment-247157441
 			setTimeout(function () {
@@ -107,7 +120,7 @@ define('forum/topic/posts', [
 	}
 
 	function onNewPostInfiniteScroll(data) {
-		var direction = config.topicPostSort === 'oldest_to_newest' || config.topicPostSort === 'most_votes' ? 1 : -1;
+		var direction = (config.topicPostSort === 'oldest_to_newest' || config.topicPostSort === 'most_votes') ? 1 : -1;
 
 		var isPreviousPostAdded = $('[component="post"][data-index="' + (data.posts[0].index - 1) + '"]').length;
 		if (!isPreviousPostAdded && (!data.posts[0].selfPost || !ajaxify.data.scrollToMyPost)) {
@@ -118,7 +131,7 @@ define('forum/topic/posts', [
 			return ajaxify.go('post/' + data.posts[0].pid);
 		}
 
-		createNewPosts(data, components.get('post').not('[data-index=0]'), direction, function (html) {
+		createNewPosts(data, components.get('post').not('[data-index=0]'), direction, false, function (html) {
 			if (html) {
 				html.addClass('new');
 			}
@@ -132,7 +145,7 @@ define('forum/topic/posts', [
 		}
 	}
 
-	function createNewPosts(data, repliesSelector, direction, callback) {
+	function createNewPosts(data, repliesSelector, direction, userScrolled, callback) {
 		callback = callback || function () {};
 		if (!data || (data.posts && !data.posts.length)) {
 			return callback();
@@ -187,11 +200,9 @@ define('forum/topic/posts', [
 			before = repliesSelector.first();
 		}
 
-		data.slug = ajaxify.data.slug;
+		hooks.fire('action:posts.loading', { posts: data.posts, after: after, before: before });
 
-		$(window).trigger('action:posts.loading', { posts: data.posts, after: after, before: before });
-
-		app.parseAndTranslate('topic', 'posts', data, function (html) {
+		app.parseAndTranslate('topic', 'posts', Object.assign({}, ajaxify.data, data), function (html) {
 			html = html.filter(function () {
 				var pid = $(this).attr('data-pid');
 				return pid && $('[component="post"][data-pid="' + pid + '"]').length === 0;
@@ -207,14 +218,16 @@ define('forum/topic/posts', [
 				html.insertBefore(before);
 
 				// Now restore the relative position the user was on prior to new post insertion
-				$(window).scrollTop(scrollTop + ($(document).height() - height));
+				if (userScrolled || scrollTop > 0) {
+					$(window).scrollTop(scrollTop + ($(document).height() - height));
+				}
 			} else {
 				components.get('topic').append(html);
 			}
 
 			infinitescroll.removeExtra($('[component="post"]'), direction, Math.max(20, config.postsPerPage * 2));
 
-			$(window).trigger('action:posts.loaded', { posts: data.posts });
+			hooks.fire('action:posts.loaded', { posts: data.posts });
 
 			Posts.onNewPostsAddedToDom(html);
 
@@ -251,7 +264,7 @@ define('forum/topic/posts', [
 			indicatorEl.fadeOut();
 
 			if (data && data.posts && data.posts.length) {
-				createNewPosts(data, replies, direction, done);
+				createNewPosts(data, replies, direction, true, done);
 			} else {
 				navigator.update();
 				done();
@@ -266,17 +279,69 @@ define('forum/topic/posts', [
 		posts.find('[component="post/content"] img:not(.not-responsive)').addClass('img-responsive');
 		Posts.addBlockquoteEllipses(posts);
 		hidePostToolsForDeletedPosts(posts);
-		addNecroPostMessage();
+		addNecroPostMessage(Posts.addTopicEvents);
 	};
 
-	function addNecroPostMessage() {
-		var necroThreshold = ajaxify.data.necroThreshold * 24 * 60 * 60 * 1000;
-		if (!necroThreshold || (config.topicPostSort !== 'newest_to_oldest' && config.topicPostSort !== 'oldest_to_newest')) {
+	Posts.addTopicEvents = function (events) {
+		events = events || ajaxify.data.events;
+		if (!events || !Array.isArray(events)) {
 			return;
 		}
 
-		$('[component="post"]').each(function () {
-			var post = $(this);
+		if (config.topicPostSort !== 'newest_to_oldest' && config.topicPostSort !== 'oldest_to_newest') {
+			return;
+		}
+
+		// Filter out events already in DOM
+		const eventIdsInDOM = Array.from(document.querySelectorAll('[component="topic/event"]')).map(el => parseInt(el.getAttribute('data-topic-event-id'), 10));
+		events = events.filter(event => !eventIdsInDOM.includes(event.id));
+
+		let postTimestamps = ajaxify.data.posts.map(post => post.timestamp);
+
+		const reverse = config.topicPostSort === 'newest_to_oldest';
+		events = events.slice(0);
+		if (reverse) {
+			events.reverse();
+			postTimestamps = postTimestamps.slice(1);	// OP is always at top, so exclude from calculations
+		}
+
+		Promise.all(events.map((event) => {
+			const beforeIdx = postTimestamps.findIndex(
+				timestamp => (reverse ? (timestamp < event.timestamp) : (timestamp > event.timestamp))
+			);
+			let postEl;
+			if (beforeIdx > -1) {
+				postEl = document.querySelector(`[component="post"][data-pid="${ajaxify.data.posts[beforeIdx + (reverse ? 1 : 0)].pid}"]`);
+			}
+
+			return new Promise((resolve) => {
+				event.isAdminOrMod = ajaxify.data.privileges.isAdminOrMod;
+				app.parseAndTranslate('partials/topic/event', event, function (html) {
+					html = html.get(0);
+
+					if (postEl) {
+						document.querySelector('[component="topic"]').insertBefore(html, postEl);
+					} else {
+						document.querySelector('[component="topic"]').append(html);
+					}
+
+					resolve();
+				});
+			});
+		})).then(() => {
+			$('[component="topic/event"] .timeago').timeago();
+		});
+	};
+
+	function addNecroPostMessage(callback) {
+		var necroThreshold = ajaxify.data.necroThreshold * 24 * 60 * 60 * 1000;
+		if (!necroThreshold || (config.topicPostSort !== 'newest_to_oldest' && config.topicPostSort !== 'oldest_to_newest')) {
+			return callback && callback();
+		}
+
+		var postEls = $('[component="post"]').toArray();
+		Promise.all(postEls.map(function (post) {
+			post = $(post);
 			var prev = post.prev('[component="post"]');
 			if (post.is(':has(.necro-post)') || !prev.length) {
 				return;
@@ -286,26 +351,35 @@ define('forum/topic/posts', [
 			}
 
 			var diff = post.attr('data-timestamp') - prev.attr('data-timestamp');
-			if (Math.abs(diff) >= necroThreshold) {
-				var suffixAgo = $.timeago.settings.strings.suffixAgo;
-				var prefixAgo = $.timeago.settings.strings.prefixAgo;
-				var suffixFromNow = $.timeago.settings.strings.suffixFromNow;
-				var prefixFromNow = $.timeago.settings.strings.prefixFromNow;
+			return new Promise(function (resolve) {
+				if (Math.abs(diff) >= necroThreshold) {
+					var suffixAgo = $.timeago.settings.strings.suffixAgo;
+					var prefixAgo = $.timeago.settings.strings.prefixAgo;
+					var suffixFromNow = $.timeago.settings.strings.suffixFromNow;
+					var prefixFromNow = $.timeago.settings.strings.prefixFromNow;
 
-				$.timeago.settings.strings.suffixAgo = '';
-				$.timeago.settings.strings.prefixAgo = '';
-				$.timeago.settings.strings.suffixFromNow = '';
-				$.timeago.settings.strings.prefixFromNow = '';
+					$.timeago.settings.strings.suffixAgo = '';
+					$.timeago.settings.strings.prefixAgo = '';
+					$.timeago.settings.strings.suffixFromNow = '';
+					$.timeago.settings.strings.prefixFromNow = '';
 
-				var translationText = (diff > 0 ? '[[topic:timeago_later,' : '[[topic:timeago_earlier,') + $.timeago.inWords(diff) + ']]';
+					var translationText = (diff > 0 ? '[[topic:timeago_later,' : '[[topic:timeago_earlier,') + $.timeago.inWords(diff) + ']]';
 
-				$.timeago.settings.strings.suffixAgo = suffixAgo;
-				$.timeago.settings.strings.prefixAgo = prefixAgo;
-				$.timeago.settings.strings.suffixFromNow = suffixFromNow;
-				$.timeago.settings.strings.prefixFromNow = prefixFromNow;
-				app.parseAndTranslate('partials/topic/necro-post', { text: translationText }, function (html) {
-					html.insertBefore(post);
-				});
+					$.timeago.settings.strings.suffixAgo = suffixAgo;
+					$.timeago.settings.strings.prefixAgo = prefixAgo;
+					$.timeago.settings.strings.suffixFromNow = suffixFromNow;
+					$.timeago.settings.strings.prefixFromNow = prefixFromNow;
+					app.parseAndTranslate('partials/topic/necro-post', { text: translationText }, function (html) {
+						html.insertBefore(post);
+						resolve();
+					});
+				} else {
+					resolve();
+				}
+			});
+		})).then(function () {
+			if (typeof callback === 'function') {
+				callback();
 			}
 		});
 	}

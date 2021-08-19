@@ -1,0 +1,243 @@
+get:
+  tags:
+    - topics
+  summary: Get unread topics
+  description: Returns a list of the current user's unread topics, sorted by the
+    last post's timestamp.
+  responses:
+    "200":
+      description: An array of unread topic objects sorted by the last post's timestamp.
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  showSelect:
+                    type: boolean
+                  showTopicTools:
+                    type: boolean
+                  nextStart:
+                    type: number
+                  topics:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: ../components/schemas/TopicObject.yaml#/TopicObjectSlim
+                        - type: object
+                          properties:
+                            title:
+                              type: string
+                            slug:
+                              type: string
+                            teaserPid:
+                              type: number
+                              nullable: true
+                            titleRaw:
+                              type: string
+                            category:
+                              type: object
+                              properties:
+                                cid:
+                                  type: number
+                                  description: A category identifier
+                                name:
+                                  type: string
+                                slug:
+                                  type: string
+                                icon:
+                                  type: string
+                                backgroundImage:
+                                  nullable: true
+                                imageClass:
+                                  nullable: true
+                                  type: string
+                                bgColor:
+                                  type: string
+                                color:
+                                  type: string
+                                disabled:
+                                  type: number
+                            user:
+                              type: object
+                              properties:
+                                uid:
+                                  type: number
+                                  description: A user identifier
+                                username:
+                                  type: string
+                                  description: A friendly name for a given user account
+                                displayname:
+                                  type: string
+                                  description: This is either username or fullname depending on forum and user settings
+                                fullname:
+                                  type: string
+                                userslug:
+                                  type: string
+                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                    removed, etc.)
+                                reputation:
+                                  type: number
+                                postcount:
+                                  type: number
+                                picture:
+                                  nullable: true
+                                  type: string
+                                signature:
+                                  nullable: true
+                                  type: string
+                                banned:
+                                  type: number
+                                status:
+                                  type: string
+                                icon:text:
+                                  type: string
+                                  description: A single-letter representation of a username. This is used in the
+                                    auto-generated icon given to users without
+                                    an avatar
+                                icon:bgColor:
+                                  type: string
+                                  description: A six-character hexadecimal colour code assigned to the user. This
+                                    value is used in conjunction with
+                                    `icon:text` for the user's auto-generated
+                                    icon
+                                  example: "#f44336"
+                                banned_until_readable:
+                                  type: string
+                              required:
+                                - uid
+                                - username
+                                - userslug
+                                - reputation
+                                - postcount
+                                - picture
+                                - signature
+                                - banned
+                                - status
+                                - icon:text
+                                - icon:bgColor
+                                - banned_until_readable
+                            teaser:
+                              type: object
+                              nullable: true
+                              properties:
+                                pid:
+                                  type: number
+                                uid:
+                                  type: number
+                                  description: A user identifier
+                                timestamp:
+                                  type: number
+                                tid:
+                                  type: number
+                                  description: A topic identifier
+                                content:
+                                  type: string
+                                timestampISO:
+                                  type: string
+                                  description: An ISO 8601 formatted date string (complementing `timestamp`)
+                                user:
+                                  type: object
+                                  properties:
+                                    uid:
+                                      type: number
+                                      description: A user identifier
+                                    username:
+                                      type: string
+                                      description: A friendly name for a given user account
+                                    userslug:
+                                      type: string
+                                      description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                        removed, etc.)
+                                    picture:
+                                      nullable: true
+                                      type: string
+                                    icon:text:
+                                      type: string
+                                      description: A single-letter representation of a username. This is used in the
+                                        auto-generated icon given to users
+                                        without an avatar
+                                    icon:bgColor:
+                                      type: string
+                                      description: A six-character hexadecimal colour code assigned to the user. This
+                                        value is used in conjunction with
+                                        `icon:text` for the user's
+                                        auto-generated icon
+                                      example: "#f44336"
+                                index:
+                                  type: number
+                            tags:
+                              type: array
+                              items:
+                                $ref: ../components/schemas/TagObject.yaml#/TagObject
+                            isOwner:
+                              type: boolean
+                            ignored:
+                              type: boolean
+                            unread:
+                              type: boolean
+                            bookmark:
+                              nullable: true
+                            unreplied:
+                              type: boolean
+                            icons:
+                              type: array
+                              items:
+                                type: string
+                            index:
+                              type: number
+                  topicCount:
+                    type: number
+                  title:
+                    type: string
+                  pageCount:
+                    type: number
+                  allCategoriesUrl:
+                    type: string
+                  selectedCategory:
+                    type: object
+                    properties:
+                      icon:
+                        type: string
+                      name:
+                        type: string
+                      bgColor:
+                        type: string
+                    nullable: true
+                  selectCategoryLabel:
+                    type: string
+                  selectedCids:
+                    type: array
+                    items:
+                      type: number
+                  filters:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        url:
+                          type: string
+                        selected:
+                          type: boolean
+                        filter:
+                          type: string
+                        icon:
+                          type: string
+                  selectedFilter:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      url:
+                        type: string
+                      selected:
+                        type: boolean
+                      filter:
+                        type: string
+                      icon:
+                        type: string
+              - $ref: ../components/schemas/Pagination.yaml#/Pagination
+              - $ref: ../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../components/schemas/CommonProps.yaml#/CommonProps

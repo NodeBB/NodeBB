@@ -18,9 +18,15 @@
     "agree_to_terms_of_use": "Zgadzam się na powyższe warunki",
     "terms_of_use_error": "Musisz zaakceptować warunki korzystania z serwisu",
     "registration-added-to-queue": "Twoja rejestracja została dodana do kolejki oczekujących na akceptację. Otrzymasz e-mail, kiedy zostanie zatwierdzona przez administratora.",
-    "interstitial.intro": "Do utworzenia Twojego konta potrzebne są dodatkowe informacje.",
-    "interstitial.errors-found": "Nie mogliśmy ukończyć procesu rejestracji:",
+    "registration-queue-average-time": "Our average time for approving memberships is %1 hours %2 minutes.",
+    "registration-queue-auto-approve-time": "Your membership to this forum will be fully activated in up to %1 hours.",
+    "interstitial.intro": "We'd like some additional information in order to update your account&hellip;",
+    "interstitial.intro-new": "We'd like some additional information before we can create your account&hellip;",
+    "interstitial.errors-found": "Please review the entered information:",
     "gdpr_agree_data": "Wyrażam zgodę na zbieranie i przetwarzanie moich danych przez tę stronę.",
     "gdpr_agree_email": "Wyrażam zgodę na otrzymywanie e-maili z podsumowaniami i powiadomieniami od tej strony.",
-    "gdpr_consent_denied": "Musisz wyrazić zgodę na zbieranie/przetwarzanie Twoich danych przez tę stronę oraz na otrzymywanie e-maili."
+    "gdpr_consent_denied": "Musisz wyrazić zgodę na zbieranie/przetwarzanie Twoich danych przez tę stronę oraz na otrzymywanie e-maili.",
+    "invite.error-admin-only": "Direct user registration has been disabled. Please contact an administrator for more details.",
+    "invite.error-invite-only": "Direct user registration has been disabled. You must be invited by an existing user in order to access this forum.",
+    "invite.error-invalid-data": "The registration data received does not correspond to our records. Please contact an administrator for more details"
 }

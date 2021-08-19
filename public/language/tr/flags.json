@@ -6,6 +6,7 @@
 	"assignee": "Vekil",
 	"update": "Güncelle",
 	"updated": "Güncellendi",
+	"resolved": "Çözüldü",
 	"target-purged": "Şikayet edilen içerik temizlendi ve artık mevcut değil.",
 
 	"graph-label": "Günlük Şikayetler",
@@ -26,6 +27,7 @@
 	"filter-cid-all": "Tüm kategoriler",
 	"apply-filters": "Filtreleri Onayla",
 	"more-filters": "Daha Fazla Filtre",
+	"fewer-filters": "Daha az filtre",
 
 	"quick-actions": "Hızlı Eylemler",
 	"flagged-user": "Şikayet Edilen Kullanıcı",
@@ -67,7 +69,7 @@
 	"sort-upvotes": "En çok artılanan",
 	"sort-replies": "En çok cevap verilen",
 
-	"modal-title": "Uygunsuz İçeriği Rapor Et",
+	"modal-title": "İçeriği Şikayet Et",
 	"modal-body": "%1 %2 için şikayet nedenini belirtiniz. Alternatif olarak hızlı rapor butonlarından birini kullanabilirsiniz.",
 	"modal-reason-spam": "Gereksiz",
 	"modal-reason-offensive": "Saldırgan",
@@ -75,11 +77,9 @@
 	"modal-reason-custom": "Bir içeriği bildirme nedeni...",
 	"modal-submit": "Raporu Gönder",
 	"modal-submit-success": "İçerik, denetlemesi için şikayet edildi.",
-	"modal-submit-confirm": "Gönderimi Onayla",
-	"modal-submit-confirm-text": "Zaten belirtilen özel bir sebebin var. Hızlı raporla göndermek istediğinizden emin misin?",
-	"modal-submit-confirm-text-help": "Hızlı bir rapor göndermek tanımlanan özel nedenlerin üzerine yazacaktır.",
 
 	"bulk-actions": "Toplu Aksiyonlar",
 	"bulk-resolve": "Şikayetleri Çözümle",
-	"bulk-success": "%1 şikayet güncellendi"
+	"bulk-success": "%1 şikayet güncellendi",
+	"flagged-timeago-readable": "Bayraklandı <span class=\"timeago\" title=\"%1\"></span> (%2)"
 }

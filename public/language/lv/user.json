@@ -84,6 +84,7 @@
     "remove_cover_picture_confirm": "Vai tiešām vēlies noņemt galvenes bildi?",
     "crop_picture": "Apgriezt bildi",
     "upload_cropped_picture": "Apgriezt un augšupielādēt",
+    "avatar-background-colour": "Avatar background colour",
     "settings": "Iestatījumi",
     "show_email": "Atklāt savu e-pasta adresi",
     "show_fullname": "Atklāt savu vārdu un uzvārdu",
@@ -123,6 +124,7 @@
     "open_links_in_new_tab": "Atvērt izejošās saites jaunā cilnē",
     "enable_topic_searching": "Iespējot meklēšanu tematu saturā",
     "topic_search_help": "Ja ir iespējots, meklēšana tematos ignorē pārlūka noklusējuma lapu meklēšanas uzvedību un meklē visā tematā, ne tikai tā temata daļā, kas tiek rādīta ekrānā",
+    "update_url_with_post_index": "Update url with post index while browsing topics",
     "scroll_to_my_post": "Rādīt jauno rakstu pēc publicēšanas",
     "follow_topics_you_reply_to": "Novērot tematus, kuros esi rakstījis(-jusi)",
     "follow_topics_you_create": "Novērot tematus, kurus esi izveidojis(-jusi)",
@@ -134,7 +136,7 @@
     "homepage": "Sākumlapa",
     "homepage_description": "Izvēlies lapu, kuru izmantot kā foruma sākumlapu vai \"Nav\", lai izmantotu noklusējuma sākumlapu.",
     "custom_route": "Pielāgotais sākumlapas ceļš",
-    "custom_route_help": "Ievadīt ceļu bez sākotnējās slīpsvītras (piemēram, \"recent\" vai \"popular\").",
+    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "Vienotās ielogošanās pakalpojumi",
     "sso.associated": "Saistīts ar",
     "sso.not-associated": "Sasaistīt ar",
@@ -178,5 +180,8 @@
     "consent.export_uploads": "Eksportēt augšupielādēto saturu (.zip)",
     "consent.export-uploads-success": "Exporting uploads, you will get a notification when it is complete.",
     "consent.export_posts": "Eksportēt rakstus (.csv)",
-    "consent.export-posts-success": "Exporting posts, you will get a notification when it is complete."
+    "consent.export-posts-success": "Exporting posts, you will get a notification when it is complete.",
+    "emailUpdate.intro": "Please enter your email address below. This forum uses your email address for scheduled digest and notifications, as well as for account recovery in the event of a lost password.",
+    "emailUpdate.optional": "<strong>This field is optional</strong>. You are not obligated to provide your email address, but without a validated email, you will not be able to recover your account.",
+    "emailUpdate.change-instructions": "A confirmation email will be sent to the entered email address with a unique link. Accessing that link will confirm your ownership of the email address and it will become active on your account. At any time, you are able to update your email on file from within your account page."
 }

@@ -1,8 +1,8 @@
 {
-	"home-page": "Kezdőlap",
+	"home-page": "Főoldal",
 	"description": "Válaszd ki milyen oldal jelenjen meg, amikor a felhasználók fórumod gyökér URL címéhez navigálnak.",
-	"home-page-route": "Kezdőlap útvonala",
+	"home-page-route": "Főoldal útvonala",
 	"custom-route": "Egyéni útvonal",
-	"allow-user-home-pages": "Felhasználói kezdőlapok engedélyezése",
-	"home-page-title": "A kezdőlap címe (alapértelmezés \"Kezdőlap\")"
+	"allow-user-home-pages": "Felhasználói főoldalak engedélyezése",
+	"home-page-title": "A főoldal címe (alapértelmezés \"Kezdőlap\")"
 }

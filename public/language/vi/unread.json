@@ -1,6 +1,6 @@
 {
     "title": "Chưa đọc",
-    "no_unread_topics": "Không có chủ đề chưa được đọc",
+    "no_unread_topics": "Không có chủ đề chưa đọc.",
     "load_more": "Tải thêm",
     "mark_as_read": "Đánh dấu đã đọc",
     "selected": "Đã chọn",
@@ -8,8 +8,8 @@
     "all_categories": "Tất cả chuyên mục",
     "topics_marked_as_read.success": "Chủ đề được đánh dấu đã đọc",
     "all-topics": "Toàn bộ chủ đề",
-    "new-topics": "Các chủ đề mới",
-    "watched-topics": "Các chủ đề đuợc quan tâm",
-    "unreplied-topics": "Chủ đề chưa có phản hồi nào",
+    "new-topics": "Chủ đề mới",
+    "watched-topics": "Chủ đề đã xem",
+    "unreplied-topics": "Chủ Đề Chưa Có Trả Lời ",
     "multiple-categories-selected": "Chọn nhiều cùng lúc"
 }

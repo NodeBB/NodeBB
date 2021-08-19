@@ -34,6 +34,8 @@
 	"timestamp.cut-off-help": "Datumi &amp; vreme će biti pokazano na relativan način (npr. \"pre 3 sata\" / \"pre 5 dana\"), i lokalizovano na različite\n\t\t\t\t\tjezike. Posle određenog vremena, ovaj tekst može biti promenjen na lokalizovani datum\n\t\t\t\t\t(npr. 5 Nov 2016 15:30).<br /><em>(Uobičajeno: <code>30</code>, ili jedan mesec). Postavi na 0 da uvek prikaže datume, ostavi prazno da uvek prikaže relativno vreme.</em>",
 	"timestamp.necro-threshold": "Necro Threshold (in days)",
 	"timestamp.necro-threshold-help": "A message will be shown between posts if the time between them is longer than the necro threshold. (Default: <code>7</code>, or one week). Set to 0 to disable.</em>",
+	"timestamp.topic-views-interval": "Increment topic views interval (in minutes)",
+	"timestamp.topic-views-interval-help": "Topic views will only increment once every X minutes as defined by this setting.",
 	"teaser": "Post zadirkivač",
 	"teaser.last-post": "Poslednji &ndashč Pokazuje poslednji post, uključujući originalni post, ako nema odgovora",
 	"teaser.last-reply": "Poslednji &ndashč Pokaži najnoviji odgovor, ili ako \"Nema odgovora\" placeholder ako nema odgovora",

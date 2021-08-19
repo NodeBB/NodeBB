@@ -4,7 +4,6 @@
 
 const winston = require('winston');
 const nconf = require('nconf');
-const session = require('express-session');
 const semver = require('semver');
 const prompt = require('prompt');
 const utils = require('../utils');
@@ -66,11 +65,11 @@ mongoModule.init = async function () {
 };
 
 mongoModule.createSessionStore = async function (options) {
-	const client = await connection.connect(options);
+	const MongoStore = require('connect-mongo');
 	const meta = require('../meta');
-	const sessionStore = require('connect-mongo')(session);
-	const store = new sessionStore({
-		client: client,
+
+	const store = MongoStore.create({
+		clientPromise: connection.connect(options),
 		ttl: meta.getSessionTTLSeconds(),
 	});
 
@@ -110,34 +109,47 @@ mongoModule.info = async function (db) {
 		db = client.db();
 	}
 	mongoModule.client = mongoModule.client || db;
+	let serverStatusError = '';
+
+	async function getServerStatus() {
+		try {
+			return await db.command({ serverStatus: 1 });
+		} catch (err) {
+			serverStatusError = err.message;
+			// Override mongo error with more human-readable error
+			if (err.name === 'MongoError' && err.codeName === 'Unauthorized') {
+				serverStatusError = '[[admin/advanced/database:mongo.unauthorized]]';
+			}
+			winston.error(err.stack);
+		}
+	}
 
 	let [serverStatus, stats, listCollections] = await Promise.all([
-		db.command({ serverStatus: 1 }),
+		getServerStatus(),
 		db.command({ dbStats: 1 }),
 		getCollectionStats(db),
 	]);
 	stats = stats || {};
 	serverStatus = serverStatus || {};
+	stats.serverStatusError = serverStatusError;
 	const scale = 1024 * 1024 * 1024;
 
-	listCollections = listCollections.map(function (collectionInfo) {
-		return {
-			name: collectionInfo.ns,
-			count: collectionInfo.count,
-			size: collectionInfo.size,
-			avgObjSize: collectionInfo.avgObjSize,
-			storageSize: collectionInfo.storageSize,
-			totalIndexSize: collectionInfo.totalIndexSize,
-			indexSizes: collectionInfo.indexSizes,
-		};
-	});
+	listCollections = listCollections.map(collectionInfo => ({
+		name: collectionInfo.ns,
+		count: collectionInfo.count,
+		size: collectionInfo.size,
+		avgObjSize: collectionInfo.avgObjSize,
+		storageSize: collectionInfo.storageSize,
+		totalIndexSize: collectionInfo.totalIndexSize,
+		indexSizes: collectionInfo.indexSizes,
+	}));
 
-	stats.mem = serverStatus.mem || {};
+	stats.mem = serverStatus.mem || { resident: 0, virtual: 0, mapped: 0 };
 	stats.mem.resident = (stats.mem.resident / 1024).toFixed(3);
 	stats.mem.virtual = (stats.mem.virtual / 1024).toFixed(3);
 	stats.mem.mapped = (stats.mem.mapped / 1024).toFixed(3);
 	stats.collectionData = listCollections;
-	stats.network = serverStatus.network || {};
+	stats.network = serverStatus.network || { bytesIn: 0, bytesOut: 0, numRequests: 0 };
 	stats.network.bytesIn = (stats.network.bytesIn / scale).toFixed(3);
 	stats.network.bytesOut = (stats.network.bytesOut / scale).toFixed(3);
 	stats.network.numRequests = utils.addCommas(stats.network.numRequests);
@@ -164,11 +176,6 @@ async function getCollectionStats(db) {
 mongoModule.close = function (callback) {
 	callback = callback || function () {};
 	client.close(err => callback(err));
-};
-
-mongoModule.socketAdapter = function () {
-	const mongoAdapter = require('@nodebb/socket.io-adapter-mongo');
-	return mongoAdapter(connection.getConnectionString(), connection.getConnectionOptions());
 };
 
 require('./mongo/main')(mongoModule);

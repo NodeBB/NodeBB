@@ -11,7 +11,7 @@
 	"list.ip-spam": "Frequency: %1 Appears: %2",
 
 	"invitations": "הזמנות",
-	"invitations.description": "Below is a complete list of invitations sent. Use ctrl-f to search through the list by email or username. <br><br>The username will be displayed to the right of the emails for users who have redeemed their invitations.",
+	"invitations.description": "להלן רשימה של הזמנות שנשלחו. השתמש ב- Ctrl+F כדי לחפש בתוך הרשימה על פי אימייל או שם משתמש. <br><br>שם המשתמש יוצג בצד ימין של האימייל למשתמשים שממשו את הזמנתם.",
 	"invitations.inviter-username": "משתמש מזמין",
 	"invitations.invitee-email": "מייל מוזמן",
 	"invitations.invitee-username": "משתמש מוזמן (אם נרשם)",

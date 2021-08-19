@@ -1,6 +1,6 @@
 'use strict';
 
-define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'benchpress', 'forum/account/header', 'accounts/delete'], function (FlagsList, components, translator, Benchpress, AccountHeader, AccountsDelete) {
+define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'benchpress', 'forum/account/header', 'accounts/delete', 'api'], function (FlagsList, components, translator, Benchpress, AccountHeader, AccountsDelete, api) {
 	var Detail = {};
 
 	Detail.init = function () {
@@ -18,34 +18,43 @@ define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'b
 					$('#assignee').val(app.user.uid);
 					// falls through
 
-				case 'update':
-					socket.emit('flags.update', {
-						flagId: ajaxify.data.flagId,
-						data: $('#attributes').serializeArray(),
-					}, function (err, history) {
-						if (err) {
-							return app.alertError(err.message);
-						}
+				case 'update': {
+					const data = $('#attributes').serializeArray().reduce((memo, cur) => {
+						memo[cur.name] = cur.value;
+						return memo;
+					}, {});
+
+					api.put(`/flags/${ajaxify.data.flagId}`, data).then((history) => {
 						app.alertSuccess('[[flags:updated]]');
 						Detail.reloadHistory(history);
-					});
+					}).catch(app.alertError);
 					break;
+				}
 
 				case 'appendNote':
-					socket.emit('flags.appendNote', {
-						flagId: ajaxify.data.flagId,
+					// socket.emit('flags.appendNote', {
+					api.post(`/flags/${ajaxify.data.flagId}/notes`, {
 						note: noteEl.value,
-						datetime: noteEl.getAttribute('data-datetime'),
-					}, function (err, payload) {
-						if (err) {
-							return app.alertError(err.message);
-						}
+						datetime: parseInt(noteEl.getAttribute('data-datetime'), 10),
+					}).then((payload) => {
 						app.alertSuccess('[[flags:note-added]]');
 						Detail.reloadNotes(payload.notes);
 						Detail.reloadHistory(payload.history);
 
-						noteEl.setAttribute('data-action', 'appendNote');
 						noteEl.removeAttribute('data-datetime');
+					}).catch(app.alertError);
+					break;
+
+				case 'delete-note':
+					var datetime = parseInt(this.closest('[data-datetime]').getAttribute('data-datetime'), 10);
+					bootbox.confirm('[[flags:delete-note-confirm]]', function (ok) {
+						if (ok) {
+							api.delete(`/flags/${ajaxify.data.flagId}/notes/${datetime}`, {}).then((payload) => {
+								app.alertSuccess('[[flags:note-deleted]]');
+								Detail.reloadNotes(payload.notes);
+								Detail.reloadHistory(payload.history);
+							}).catch(app.alertError);
+						}
 					});
 					break;
 
@@ -79,26 +88,6 @@ define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'b
 
 				case 'restore-post':
 					postAction('restore', ajaxify.data.target.pid, ajaxify.data.target.tid);
-					break;
-
-				case 'delete-note':
-					var datetime = this.closest('[data-datetime]').getAttribute('data-datetime');
-					bootbox.confirm('[[flags:delete-note-confirm]]', function (ok) {
-						if (ok) {
-							socket.emit('flags.deleteNote', {
-								flagId: ajaxify.data.flagId,
-								datetime: datetime,
-							}, function (err, payload) {
-								if (err) {
-									return app.alertError(err.message);
-								}
-
-								app.alertSuccess('[[flags:note-deleted]]');
-								Detail.reloadNotes(payload.notes);
-								Detail.reloadHistory(payload.history);
-							});
-						}
-					});
 					break;
 
 				case 'prepare-edit':
@@ -144,9 +133,9 @@ define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'b
 
 	Detail.reloadNotes = function (notes) {
 		ajaxify.data.notes = notes;
-		Benchpress.parse('flags/detail', 'notes', {
+		Benchpress.render('flags/detail', {
 			notes: notes,
-		}, function (html) {
+		}, 'notes').then(function (html) {
 			var wrapperEl = components.get('flag/notes');
 			wrapperEl.empty();
 			wrapperEl.html(html);
@@ -156,15 +145,13 @@ define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'b
 	};
 
 	Detail.reloadHistory = function (history) {
-		Benchpress.parse('flags/detail', 'history', {
+		app.parseAndTranslate('flags/detail', 'history', {
 			history: history,
 		}, function (html) {
-			translator.translate(html, function (translated) {
-				var wrapperEl = components.get('flag/history');
-				wrapperEl.empty();
-				wrapperEl.html(translated);
-				wrapperEl.find('span.timeago').timeago();
-			});
+			var wrapperEl = components.get('flag/history');
+			wrapperEl.empty();
+			wrapperEl.html(html);
+			wrapperEl.find('span.timeago').timeago();
 		});
 	};
 

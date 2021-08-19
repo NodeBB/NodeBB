@@ -1,6 +1,10 @@
 'use strict';
 
-define('forum/account/blocks', ['forum/account/header'], function (header) {
+define('forum/account/blocks', [
+	'forum/account/header',
+	'api',
+	'hooks',
+], function (header, api, hooks) {
 	var Blocks = {};
 
 	Blocks.init = function () {
@@ -9,9 +13,10 @@ define('forum/account/blocks', ['forum/account/header'], function (header) {
 		$('#user-search').on('keyup', function () {
 			var username = this.value;
 
-			socket.emit('user.search', {
+			api.get('/api/users', {
 				query: username,
 				searchBy: 'username',
+				paginate: false,
 			}, function (err, data) {
 				if (err) {
 					return app.alertError(err.message);
@@ -50,7 +55,7 @@ define('forum/account/blocks', ['forum/account/header'], function (header) {
 					$('#users-container').html(html);
 					$('#users-container').siblings('div.alert')[html.length ? 'hide' : 'show']();
 				});
-				$(window).trigger('action:user.blocks.toggle', { data: payload });
+				hooks.fire('action:user.blocks.toggle', { data: payload });
 			})
 			.fail(function () {
 				ajaxify.go(ajaxify.currentPage);

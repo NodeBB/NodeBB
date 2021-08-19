@@ -1,6 +1,6 @@
 {
 	"users": "Lietotāji",
-	"edit": "Rediģēt",
+	"edit": "Actions",
 	"make-admin": "Apstiprināt kā administratoru",
 	"remove-admin": "Noņemt administratora tiesības",
 	"validate-email": "Apstiprināt e-pasta adresi",
@@ -20,16 +20,10 @@
 	"add-group": "Add Group",
 	"invite": "Uzaicināt",
 	"new": "Izveidot jaunu lietotāju",
-
-	"pills.latest": "Jaunākie",
+	"filter-by": "Filter by",
 	"pills.unvalidated": "Neapstiprinātie",
-	"pills.no-posts": "Nav rakstu",
-	"pills.top-posters": "Visvairāk rakstu",
-	"pills.top-rep": "Visvairāk ranga punktu",
-	"pills.inactive": "Neaktīvie",
-	"pills.flagged": "Visvairāk atzīmēto",
+	"pills.validated": "Validated",
 	"pills.banned": "Bloķētie",
-	"pills.search": "Meklēt lietotājos",
 
 	"50-per-page": "50 per page",
 	"100-per-page": "100 per page",
@@ -53,6 +47,7 @@
 	"users.uid": "uid",
 	"users.username": "lietotājvārds",
 	"users.email": "e-pasta adrese",
+	"users.ip": "IP",
 	"users.postcount": "raksti",
 	"users.reputation": "ranga punkti",
 	"users.flags": "atzīmes",
@@ -108,5 +103,7 @@
 
 	"alerts.prompt-email": "E-pasta adreses:",
 	"alerts.email-sent-to": "Ielūguma e-pasts ir nosūtīts %1",
-	"alerts.x-users-found": "%1 user(s) found, (%2 seconds)"
+	"alerts.x-users-found": "%1 user(s) found, (%2 seconds)",
+	"export-users-started": "Exporting users as csv, this might take a while. You will receive a notification when it is complete.",
+	"export-users-completed": "Users exported as csv, click here to download."
 }

@@ -39,7 +39,7 @@
 	"alert.upgraded": "プラグインはアップグレードされました",
 	"alert.installed": "プラグインはインストールされました",
 	"alert.uninstalled": "プラグインはアンインストールされました",
-	"alert.activate-success": "このプラグインを完全にアクティブするためにNodeBBを再起動してください",
+	"alert.activate-success": "Please rebuild and restart your NodeBB to fully activate this plugin",
 	"alert.deactivate-success": "プラグインは正常に非アクティブ化されました",
 	"alert.upgrade-success": "Please rebuild and restart your NodeBB to fully upgrade this plugin.",
 	"alert.install-success": "プラグインは正常にインストールされました。プラグインをアクティブにしてください",

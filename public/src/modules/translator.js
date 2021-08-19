@@ -2,7 +2,21 @@
 
 (function (factory) {
 	function loadClient(language, namespace) {
-		return Promise.resolve(jQuery.getJSON([config.assetBaseUrl, 'language', language, namespace].join('/') + '.json?' + config['cache-buster']));
+		return new Promise(function (resolve, reject) {
+			jQuery.getJSON([config.assetBaseUrl, 'language', language, namespace].join('/') + '.json?' + config['cache-buster'], function (data) {
+				const payload = {
+					language: language,
+					namespace: namespace,
+					data: data,
+				};
+				require(['hooks'], function (hooks) {
+					hooks.fire('action:translator.loadClient', payload);
+					resolve(payload.promise ? Promise.resolve(payload.promise) : data);
+				});
+			}).fail(function (jqxhr, textStatus, error) {
+				reject(new Error(textStatus + ', ' + error));
+			});
+		});
 	}
 	var warn = function () { console.warn.apply(console, arguments); };
 	if (typeof define === 'function' && define.amd) {
@@ -22,19 +36,7 @@
 				};
 			}
 
-			function loadServer(language, namespace) {
-				return new Promise(function (resolve, reject) {
-					languages.get(language, namespace, function (err, data) {
-						if (err) {
-							reject(err);
-						} else {
-							resolve(data);
-						}
-					});
-				});
-			}
-
-			module.exports = factory(require('../utils'), loadServer, warn);
+			module.exports = factory(require('../utils'), languages.get, warn);
 		}());
 	}
 }(function (utils, load, warn) {
@@ -298,6 +300,9 @@
 					var out = translated;
 					translatedArgs.forEach(function (arg, i) {
 						var escaped = arg.replace(/%(?=\d)/g, '&#37;').replace(/\\,/g, '&#44;');
+						// fix double escaped translation keys, see https://github.com/NodeBB/NodeBB/issues/9206
+						escaped = escaped.replace(/&amp;lsqb;/g, '&lsqb;')
+							.replace(/&amp;rsqb;/g, '&rsqb;');
 						out = out.replace(new RegExp('%' + (i + 1), 'g'), escaped);
 					});
 					return out;
@@ -317,13 +322,35 @@
 				warn('[translator] Parameter `namespace` is ' + namespace + (namespace === '' ? '(empty string)' : ''));
 				translation = Promise.resolve({});
 			} else {
-				this.translations[namespace] = this.translations[namespace] || this.load(this.lang, namespace).catch(function () { return {}; });
+				this.translations[namespace] = this.translations[namespace] ||
+					this.load(this.lang, namespace).catch(function () { return {}; });
 				translation = this.translations[namespace];
 			}
 
 			if (key) {
 				return translation.then(function (x) {
-					return x[key];
+					if (typeof x[key] === 'string') return x[key];
+					const keyParts = key.split('.');
+					for (let i = 0; i <= keyParts.length; i++) {
+						if (i === keyParts.length) {
+							// default to trying to find key with the same name as parent or equal to empty string
+							return x[keyParts[i - 1]] !== undefined ? x[keyParts[i - 1]] : x[''];
+						}
+						switch (typeof x[keyParts[i]]) {
+							case 'object':
+								x = x[keyParts[i]];
+								break;
+							case 'string':
+								if (i === keyParts.length - 1) {
+									return x[keyParts[i]];
+								}
+
+								return false;
+
+							default:
+								return false;
+						}
+					}
 				});
 			}
 			return translation;
@@ -493,7 +520,10 @@
 		 * @returns {string}
 		 */
 		Translator.unescape = function unescape(text) {
-			return typeof text === 'string' ? text.replace(/&lsqb;|\\\[/g, '[').replace(/&rsqb;|\\\]/g, ']') : text;
+			return typeof text === 'string' ?
+				text.replace(/&lsqb;/g, '[').replace(/\\\[/g, '[')
+					.replace(/&rsqb;/g, ']').replace(/\\\]/g, ']') :
+				text;
 		};
 
 		/**
@@ -532,6 +562,18 @@
 				Translator.cache[code].translations = {};
 			});
 		},
+
+		flushNamespace: function (namespace) {
+			Object.keys(Translator.cache).forEach(function (code) {
+				if (Translator.cache[code] &&
+					Translator.cache[code].translations &&
+					Translator.cache[code].translations[namespace]
+				) {
+					Translator.cache[code].translations[namespace] = null;
+				}
+			});
+		},
+
 
 		/**
 		 * Legacy translator function for backwards compatibility
@@ -605,7 +647,7 @@
 				}
 
 				var originalSettings = assign({}, jQuery.timeago.settings.strings);
-				jQuery.getScript(config.assetBaseUrl + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '-short.js').done(function () {
+				adaptor.switchTimeagoLanguage(languageCode + '-short', function () {
 					adaptor.timeagoShort = assign({}, jQuery.timeago.settings.strings);
 					jQuery.timeago.settings.strings = assign({}, originalSettings);
 					toggle();
@@ -615,12 +657,16 @@
 			}
 		},
 
-		switchTimeagoLanguage: function switchTimeagoLanguage(callback) {
+		switchTimeagoLanguage: function switchTimeagoLanguage(langCode, callback) {
 			// Delete the cached shorthand strings if present
 			delete adaptor.timeagoShort;
 
-			var languageCode = utils.userLangToTimeagoCode(config.userLang);
-			jQuery.getScript(config.assetBaseUrl + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '.js').done(callback);
+			var stringsModule = 'timeago/locales/jquery.timeago.' + langCode;
+			// without undef, requirejs won't load the strings a second time
+			require.undef(stringsModule);
+			require([stringsModule], function () {
+				callback();
+			});
 		},
 
 		prepareDOM: function prepareDOM() {

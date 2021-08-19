@@ -1,19 +1,19 @@
 {
-	"lead": "Cấu hình danh sách IP bị chặn tại đây.",
-	"description": "Occasionally, a user account ban is not enough of a deterrant. Other times, restricting access to the forum to a specific IP or a range of IPs is the best way to protect a forum. In these scenarios, you can add troublesome IP addresses or entire CIDR blocks to this blacklist, and they will be prevented from logging in to or registering a new account.",
-	"active-rules": "Active Rules",
-	"validate": "Xác thực danh sách chặn",
-	"apply": "Chấp nhận danh sách chặn",
-	"hints": "Syntax Hints",
-	"hint-1": "Define a single IP addresses per line. You can add IP blocks as long as they follow the CIDR format (e.g. <code>192.168.100.0/22</code>).",
-	"hint-2": "Bạn có thể thêm bình luận bằng cách bắt đầu dòng với ký tự <code>#</code>.",
+	"lead": "Cấu hình Danh sách đen IP tại đây.",
+	"description": "Đôi khi, việc cấm người dùng không hiệu quả. Giới hạn IP cụ thể hoặc một loạt các IP truy cập vào diễn đàn là cách khác tốt hơn để bảo vệ diễn đàn. Với cách này, bạn có thể thêm địa chỉ IP rắc rối hoặc toàn bộ khối CIDR vào danh sách đen này và chúng sẽ bị ngăn đăng nhập hoặc đăng ký tài khoản mới.",
+	"active-rules": "Quy Tắc Hoạt Động",
+	"validate": "Xác Thực Danh Sách Đen",
+	"apply": "Áp Sụng Danh Sách Đen",
+	"hints": "Gợi Ý Cú Pháp",
+	"hint-1": "Xác định một địa chỉ IP trên mỗi dòng. Bạn có thể thêm các khối IP miễn là chúng tuân theo định dạng CIDR (VD: <code>192.168.100.0/22</code>).",
+	"hint-2": "Bạn có thể thêm bình luận bằng các dòng bắt đầu với ký tự <code>#</code>.",
 
-	"validate.x-valid": "<strong>%1</strong> out of <strong>%2</strong> rule(s) valid.",
-	"validate.x-invalid": "The following <strong>%1</strong> rules are invalid:",
+	"validate.x-valid": "<strong>%1</strong> trên <strong>%2</strong> quy tắc hợp lệ.",
+	"validate.x-invalid": "<strong>%1</strong> quy tắc sau không hợp lệ:",
 
-	"alerts.applied-success": "Danh sách chặn đã được chấp nhận.",
+	"alerts.applied-success": "Đã Áp Dụng Danh Sách Đen",
 
-	"analytics.blacklist-hourly": "<strong>Figure 1</strong> &ndash; Blacklist hits per hour",
-	"analytics.blacklist-daily": "<strong>Figure 2</strong> &ndash; Blacklist hits per day",
+	"analytics.blacklist-hourly": "<strong>Hình 1</strong> &ndash; Danh sách đen truy cập mỗi giờ",
+	"analytics.blacklist-daily": "<strong>Hình 2</strong> &ndash; Danh sách đen truy cập mỗi ngày",
 	"ip-banned": "IP bị chặn"
 }

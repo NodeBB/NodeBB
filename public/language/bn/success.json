@@ -1,7 +1,7 @@
 {
     "success": "সফল হয়েছে",
     "topic-post": "আপনি সফলভাবে পোষ্ট করেছেন। ",
-    "post-queued": "Your post is queued for approval.",
+    "post-queued": "Your post is queued for approval. You will get a notification when it is accepted or rejected.",
     "authentication-successful": "অথেন্টিকেশন সফল হয়েছে",
     "settings-saved": "সেটিংস সেভ করা হয়েছে। "
 }

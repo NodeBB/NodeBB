@@ -6,6 +6,7 @@ const nconf = require('nconf');
 const db = require('../database');
 const plugins = require('../plugins');
 const utils = require('../utils');
+const translator = require('../translator');
 
 const intFields = [
 	'createtime', 'memberCount', 'hidden', 'system', 'private',
@@ -18,24 +19,24 @@ module.exports = function (Groups) {
 			return [];
 		}
 
-		const ephemeralIdx = groupNames.reduce(function (memo, cur, idx) {
+		const ephemeralIdx = groupNames.reduce((memo, cur, idx) => {
 			if (Groups.ephemeralGroups.includes(cur)) {
 				memo.push(idx);
 			}
 			return memo;
 		}, []);
 
-		const keys = groupNames.map(groupName => 'group:' + groupName);
-		const groupData = await (fields.length ? db.getObjectsFields(keys, fields) : db.getObjects(keys));
+		const keys = groupNames.map(groupName => `group:${groupName}`);
+		const groupData = await db.getObjects(keys, fields);
 		if (ephemeralIdx.length) {
-			ephemeralIdx.forEach(function (idx) {
+			ephemeralIdx.forEach((idx) => {
 				groupData[idx] = Groups.getEphemeralGroup(groupNames[idx]);
 			});
 		}
 
 		groupData.forEach(group => modifyGroup(group, fields));
 
-		const results = await plugins.fireHook('filter:groups.get', { groups: groupData });
+		const results = await plugins.hooks.fire('filter:groups.get', { groups: groupData });
 		return results.groups;
 	};
 
@@ -59,8 +60,8 @@ module.exports = function (Groups) {
 	};
 
 	Groups.setGroupField = async function (groupName, field, value) {
-		await db.setObjectField('group:' + groupName, field, value);
-		plugins.fireHook('action:group.set', { field: field, value: value, type: 'set' });
+		await db.setObjectField(`group:${groupName}`, field, value);
+		plugins.hooks.fire('action:group.set', { field: field, value: value, type: 'set' });
 	};
 };
 
@@ -75,6 +76,8 @@ function modifyGroup(group, fields) {
 		group.icon = validator.escape(String(group.icon || ''));
 		group.createtimeISO = utils.toISOString(group.createtime);
 		group.private = ([null, undefined].includes(group.private)) ? 1 : group.private;
+		group.memberPostCids = group.memberPostCids || '';
+		group.memberPostCidsArray = group.memberPostCids.split(',').map(cid => parseInt(cid, 10)).filter(Boolean);
 
 		group['cover:thumb:url'] = group['cover:thumb:url'] || group['cover:url'];
 
@@ -100,5 +103,6 @@ function escapeGroupData(group) {
 		group.displayName = validator.escape(String(group.name));
 		group.description = validator.escape(String(group.description || ''));
 		group.userTitle = validator.escape(String(group.userTitle || ''));
+		group.userTitleEscaped = translator.escape(group.userTitle);
 	}
 }

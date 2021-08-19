@@ -18,7 +18,7 @@ const accountHelpers = require('./helpers');
 const settingsController = module.exports;
 
 settingsController.get = async function (req, res, next) {
-	const userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid);
+	const userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, req.query);
 	if (!userData) {
 		return next();
 	}
@@ -33,7 +33,7 @@ settingsController.get = async function (req, res, next) {
 		userData.acpLanguages = _.cloneDeep(languagesData);
 	}
 
-	const data = await plugins.fireHook('filter:user.customSettings', {
+	const data = await plugins.hooks.fire('filter:user.customSettings', {
 		settings: settings,
 		customSettings: [],
 		uid: req.uid,
@@ -76,16 +76,16 @@ settingsController.get = async function (req, res, next) {
 		{ name: 'Yeti', value: 'yeti' },
 	];
 
-	userData.bootswatchSkinOptions.forEach(function (skin) {
+	userData.bootswatchSkinOptions.forEach((skin) => {
 		skin.selected = skin.value === userData.settings.bootswatchSkin;
 	});
 
-	userData.languages.forEach(function (language) {
+	userData.languages.forEach((language) => {
 		language.selected = language.code === userData.settings.userLang;
 	});
 
 	if (userData.isAdmin && userData.isSelf) {
-		userData.acpLanguages.forEach(function (language) {
+		userData.acpLanguages.forEach((language) => {
 			language.selected = language.code === userData.settings.acpLang;
 		});
 	}
@@ -99,7 +99,9 @@ settingsController.get = async function (req, res, next) {
 		'disabled',
 	];
 
-	userData.upvoteNotifFreq = notifFreqOptions.map(name => ({ name: name, selected: name === userData.settings.upvoteNotifFreq }));
+	userData.upvoteNotifFreq = notifFreqOptions.map(
+		name => ({ name: name, selected: name === userData.settings.upvoteNotifFreq })
+	);
 
 	userData.categoryWatchState = { [userData.settings.categoryWatchState]: true };
 
@@ -110,19 +112,19 @@ settingsController.get = async function (req, res, next) {
 	userData.hideFullname = meta.config.hideFullname || 0;
 	userData.hideEmail = meta.config.hideEmail || 0;
 
-	userData.inTopicSearchAvailable = plugins.hasListeners('filter:topic.search');
+	userData.inTopicSearchAvailable = plugins.hooks.hasListeners('filter:topic.search');
 
 	userData.maxTopicsPerPage = meta.config.maxTopicsPerPage;
 	userData.maxPostsPerPage = meta.config.maxPostsPerPage;
 
 	userData.title = '[[pages:account/settings]]';
-	userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: '[[user:settings]]' }]);
+	userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: `/user/${userData.userslug}` }, { text: '[[user:settings]]' }]);
 
 	res.render('account/settings', userData);
 };
 
 const unsubscribable = ['digest', 'notification'];
-const jwtVerifyAsync = util.promisify(function (token, callback) {
+const jwtVerifyAsync = util.promisify((token, callback) => {
 	jwt.verify(token, nconf.get('secret'), (err, payload) => callback(err, payload));
 });
 const doUnsubscribe = async (payload) => {
@@ -132,8 +134,8 @@ const doUnsubscribe = async (payload) => {
 			user.updateDigestSetting(payload.uid, 'off'),
 		]);
 	} else if (payload.template === 'notification') {
-		const current = await db.getObjectField('user:' + payload.uid + ':settings', 'notificationType_' + payload.type);
-		await user.setSetting(payload.uid, 'notificationType_' + payload.type, (current === 'notificationemail' ? 'notification' : 'none'));
+		const current = await db.getObjectField(`user:${payload.uid}:settings`, `notificationType_${payload.type}`);
+		await user.setSetting(payload.uid, `notificationType_${payload.type}`, (current === 'notificationemail' ? 'notification' : 'none'));
 	}
 	return true;
 };
@@ -173,7 +175,7 @@ settingsController.unsubscribePost = async function (req, res) {
 		await doUnsubscribe(payload);
 		res.sendStatus(200);
 	} catch (err) {
-		winston.error('[settings/unsubscribe] One-click unsubscribe failed with error: ' + err.message);
+		winston.error(`[settings/unsubscribe] One-click unsubscribe failed with error: ${err.message}`);
 		res.sendStatus(500);
 	}
 };
@@ -191,7 +193,7 @@ async function getNotificationSettings(userData) {
 	if (privileges.isAdmin || privileges.isGlobalMod) {
 		privilegedTypes.push('notificationType_new-user-flag');
 	}
-	const results = await plugins.fireHook('filter:user.notificationTypes', {
+	const results = await plugins.hooks.fire('filter:user.notificationTypes', {
 		types: notifications.baseTypes.slice(),
 		privilegedTypes: privilegedTypes,
 	});
@@ -200,7 +202,7 @@ async function getNotificationSettings(userData) {
 		const setting = userData.settings[type];
 		return {
 			name: type,
-			label: '[[notifications:' + type + ']]',
+			label: `[[notifications:${type}]]`,
 			none: setting === 'none',
 			notification: setting === 'notification',
 			email: setting === 'email',
@@ -219,9 +221,9 @@ async function getHomePageRoutes(userData) {
 	let routes = await helpers.getHomePageRoutes(userData.uid);
 
 	// Set selected for each route
-	var customIdx;
-	var hasSelected = false;
-	routes = routes.map(function (route, idx) {
+	let customIdx;
+	let hasSelected = false;
+	routes = routes.map((route, idx) => {
 		if (route.route === userData.settings.homePageRoute) {
 			route.selected = true;
 			hasSelected = true;

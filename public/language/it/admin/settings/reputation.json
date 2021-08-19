@@ -16,5 +16,7 @@
 
 	"flags": "Impostazioni segnalazioni",
 	"flags.limit-per-target": "Numero massimo di volte che qualcosa può essere segnalato",
-	"flags.limit-per-target-placeholder": "Predefinito: 0"
+	"flags.limit-per-target-placeholder": "Predefinito: 0",
+	"flags.limit-per-target-help": "Quando un post o un utente viene segnalato più volte, ogni segnalazione aggiuntiva è considerata una &quot;report&quot; e aggiunto alla segnalazione originale. Imposta questa opzione su un numero diverso da zero per limitare il numero di rapporti che un elemento può ricevere.",
+	"flags.auto-resolve-on-ban": "Risolvi automaticamente tutti i ticket di un utente quando vengono bannati"
 }

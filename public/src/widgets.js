@@ -48,6 +48,8 @@
 			}
 		});
 
-		$(window).trigger('action:widgets.loaded', {});
+		require(['hooks'], function (hooks) {
+			hooks.fire('action:widgets.loaded', {});
+		});
 	};
 }(ajaxify || {}));

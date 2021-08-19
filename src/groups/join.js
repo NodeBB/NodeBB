@@ -39,23 +39,24 @@ module.exports = function (Groups) {
 		await createNonExistingGroups(groupsToCreate);
 
 		const promises = [
-			db.sortedSetsAdd(groupsToJoin.map(groupName => 'group:' + groupName + ':members'), Date.now(), uid),
-			db.incrObjectField(groupsToJoin.map(groupName => 'group:' + groupName), 'memberCount'),
+			db.sortedSetsAdd(groupsToJoin.map(groupName => `group:${groupName}:members`), Date.now(), uid),
+			db.incrObjectField(groupsToJoin.map(groupName => `group:${groupName}`), 'memberCount'),
 		];
 		if (isAdmin) {
-			promises.push(db.setsAdd(groupsToJoin.map(groupName => 'group:' + groupName + ':owners'), uid));
+			promises.push(db.setsAdd(groupsToJoin.map(groupName => `group:${groupName}:owners`), uid));
 		}
 
 		await Promise.all(promises);
 
 		Groups.clearCache(uid, groupsToJoin);
-		cache.del(groupsToJoin.map(name => 'group:' + name + ':members'));
+		cache.del(groupsToJoin.map(name => `group:${name}:members`));
 
 		const groupData = await Groups.getGroupsFields(groupsToJoin, ['name', 'hidden', 'memberCount']);
 		const visibleGroups = groupData.filter(groupData => groupData && !groupData.hidden);
 
 		if (visibleGroups.length) {
-			await db.sortedSetAdd('groups:visible:memberCount',
+			await db.sortedSetAdd(
+				'groups:visible:memberCount',
 				visibleGroups.map(groupData => groupData.memberCount),
 				visibleGroups.map(groupData => groupData.name)
 			);
@@ -63,7 +64,7 @@ module.exports = function (Groups) {
 
 		await setGroupTitleIfNotSet(groupsToJoin, uid);
 
-		plugins.fireHook('action:group.join', {
+		plugins.hooks.fire('action:group.join', {
 			groupNames: groupsToJoin,
 			uid: uid,
 		});
@@ -74,7 +75,7 @@ module.exports = function (Groups) {
 			return;
 		}
 
-		await async.eachSeries(groupsToCreate, async function (groupName) {
+		await async.eachSeries(groupsToCreate, async (groupName) => {
 			try {
 				await Groups.create({
 					name: groupName,
@@ -82,7 +83,7 @@ module.exports = function (Groups) {
 				});
 			} catch (err) {
 				if (err && err.message !== '[[error:group-already-exists]]') {
-					winston.error('[groups.join] Could not create new hidden group', err.stack);
+					winston.error(`[groups.join] Could not create new hidden group (${groupName})\n${err.stack}`);
 					throw err;
 				}
 			}
@@ -90,12 +91,15 @@ module.exports = function (Groups) {
 	}
 
 	async function setGroupTitleIfNotSet(groupNames, uid) {
-		groupNames = groupNames.filter(groupName => groupName !== 'registered-users' && !Groups.isPrivilegeGroup(groupName));
+		const ignore = ['registered-users', 'verified-users', 'unverified-users', Groups.BANNED_USERS];
+		groupNames = groupNames.filter(
+			groupName => !ignore.includes(groupName) && !Groups.isPrivilegeGroup(groupName)
+		);
 		if (!groupNames.length) {
 			return;
 		}
 
-		const currentTitle = await db.getObjectField('user:' + uid, 'groupTitle');
+		const currentTitle = await db.getObjectField(`user:${uid}`, 'groupTitle');
 		if (currentTitle || currentTitle === '') {
 			return;
 		}

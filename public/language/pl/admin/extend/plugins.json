@@ -1,5 +1,5 @@
 {
-	"trending": "Trending",
+	"trending": "O trendzie",
 	"installed": "Zainstalowane",
 	"active": "Aktywne",
 	"inactive": "Nieaktywne",
@@ -39,7 +39,7 @@
 	"alert.upgraded": "Wtyczka zaktualizowana",
 	"alert.installed": "Wtyczka zainstalowana",
 	"alert.uninstalled": "Wtyczka odinstalowana",
-	"alert.activate-success": "Zrestartuj NodeBB, by w pełni aktywować tę wtyczkę",
+	"alert.activate-success": "Please rebuild and restart your NodeBB to fully activate this plugin",
 	"alert.deactivate-success": "Wtyczka została dezaktywowana",
 	"alert.upgrade-success": "Przebuduj i zrestartuj NodeBB, by w pełni zaktualizować tę wtyczkę.",
 	"alert.install-success": "Wtyczka została zainstalowana, teraz należy ją aktywować.",

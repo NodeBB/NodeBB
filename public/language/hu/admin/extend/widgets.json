@@ -1,12 +1,12 @@
 {
 	"available": "Elérhető modulok",
 	"explanation": "Válassz egy modult a legördülő menüből, majd húzd rá az egyik sablon modul területére a bal oldalon.",
-	"none-installed": "No widgets found! Activate the widget essentials plugin in the <a href=\"%1\">plugins</a> control panel.",
+	"none-installed": "Nincs elérhető modul! Aktiváld a widget essentials beépülőt a <a href=\"%1\">beépülők</a> oldalon.",
 	"clone-from": "Modul klónozása innen",
 	"containers.available": "Elérhető tárolók",
 	"containers.explanation": "Húzd rá az alábbiakat bármely aktív modulra",
 	"containers.none": "Nincs",
-	"container.well": "Akna",
+	"container.well": "Well",
 	"container.jumbotron": "Jumbotron",
 	"container.panel": "Panel",
 	"container.panel-header": "Panel fejléc",
@@ -20,11 +20,11 @@
 
 	"error.select-clone": "Kérlek válassz oldalt a klónozáshoz",
 
-	"title": "Title",
-	"title.placeholder": "Title (only shown on some containers)",
-	"container": "Container",
-	"container.placeholder": "Drag and drop a container or enter HTML here.",
-	"show-to-groups": "Show to groups",
-	"hide-from-groups": "Hide from groups",
-	"hide-on-mobile": "Hide on mobile"
+	"title": "Cím",
+	"title.placeholder": "Cím (csak némely konténeren jelenik meg)",
+	"container": "Konténer",
+	"container.placeholder": "Húzz ide egy konténert vagy adj meg HTML-t.",
+	"show-to-groups": "Megjelenítés csoportoknak",
+	"hide-from-groups": "Elrejtés csoportoknak",
+	"hide-on-mobile": "Elrejtés mobilon"
 }

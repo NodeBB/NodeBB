@@ -1,0 +1,42 @@
+get:
+  tags:
+    - admin
+  summary: Get category settings
+  parameters:
+    - name: category_id
+      in: path
+      required: true
+      schema:
+        type: string
+      example: 1
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  category:
+                    allOf:
+                      - $ref: ../../../../components/schemas/CategoryObject.yaml#/CategoryObject
+                      - type: object
+                        properties:
+                          tagWhitelist:
+                            type: array
+                            items:
+                              type: string
+                          unread-class:
+                            type: string
+                          parent:
+                            $ref: ../../../../components/schemas/CategoryObject.yaml#/CategoryObject
+                  selectedCategory:
+                    $ref: ../../../../components/schemas/CategoryObject.yaml#/CategoryObject
+                  customClasses:
+                    type: array
+                    items:
+                      type: string
+                  postQueueEnabled:
+                    type: boolean
+              - $ref: ../../../../components/schemas/CommonProps.yaml#/CommonProps

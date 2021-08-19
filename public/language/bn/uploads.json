@@ -1,9 +1,9 @@
 {
-    "uploading-file": "Uploading the file...",
-    "select-file-to-upload": "Select a file to upload!",
-    "upload-success": "File uploaded successfully!",
-    "maximum-file-size": "Maximum %1 kb",
-    "no-uploads-found": "No uploads found",
-    "public-uploads-info": "Uploads are public, all visitors can see them.",
-    "private-uploads-info": "Uploads are private, only logged in users can see them."
+    "uploading-file": "ফাইল পাঠানো হচ্ছে...",
+    "select-file-to-upload": "পাঠানোর জন্য নথি নির্বাচন",
+    "upload-success": "সফলভাবে ফাইল দেওয়া হয়েছে!",
+    "maximum-file-size": "সর্বোচ্চ %1 কিবিট",
+    "no-uploads-found": "কোনো আপলোড নেই",
+    "public-uploads-info": "সব আপলোড গণ দৃশ্যমান, সব দর্শক তা দেখতে পারবে।",
+    "private-uploads-info": "সব আপলোড ব্যক্তিগত, কেবল প্রবেশরত ব্যবহারকারী তা দেখতে পারবে।"
 }

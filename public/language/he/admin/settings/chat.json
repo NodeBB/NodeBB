@@ -1,12 +1,12 @@
 {
-	"chat-settings": "Chat Settings",
-	"disable": "Disable chat",
-	"disable-editing": "Disable chat message editing/deletion",
-	"disable-editing-help": "Administrators and global moderators are exempt from this restriction",
-	"max-length": "Maximum length of chat messages",
-	"max-room-size": "Maximum number of users in chat rooms",
-	"delay": "Time between chat messages in milliseconds",
-	"notification-delay": "Notification delay for chat messages. (0 for no delay)",
-	"restrictions.seconds-edit-after": "Number of seconds a chat message will remain editable. (0 disabled)",
-	"restrictions.seconds-delete-after": "Number of seconds a chat message will remain deletable. (0 disabled)"
+	"chat-settings": "הגדרות צ'אט",
+	"disable": "השבת צ'אט",
+	"disable-editing": "השבת עריכה/מחיקה של הודעות צ'אט",
+	"disable-editing-help": "מנהלים ומודרטורים גולבליים אינם נכללים בהגבלה זו",
+	"max-length": "אורך מקסימלי של הודעת צ'אט",
+	"max-room-size": "מספר המשתמשים המרבי בחדרי צ'אט",
+	"delay": "זמן המתנה בין הודעות צ'אט - באלפיות שניה",
+	"notification-delay": "עיכוב התראות להודעות צ'אט. (0 ללא עיכוב)",
+	"restrictions.seconds-edit-after": "מספר השניות בה ניתן לערוך הודעת צ'אט מרגע פרסומו (כתבו 0 להפוך ללא זמין)",
+	"restrictions.seconds-delete-after": "מספר השניות בה ניתן למחוק הודעת צ'אט מרגע פרסומו (כתבו 0 להפוך ללא זמין)"
 }

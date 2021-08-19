@@ -8,7 +8,7 @@ module.exports = function (module) {
 
 	module.emptydb = async function () {
 		await module.client.collection('objects').deleteMany({});
-		module.objectCache.resetObjectCache();
+		module.objectCache.reset();
 	};
 
 	module.exists = async function (key) {
@@ -22,7 +22,7 @@ module.exports = function (module) {
 			}, { _id: 0, _key: 1 }).toArray();
 
 			const map = {};
-			data.forEach(function (item) {
+			data.forEach((item) => {
 				map[item._key] = true;
 			});
 
@@ -47,7 +47,7 @@ module.exports = function (module) {
 			return;
 		}
 		await module.client.collection('objects').deleteMany({ _key: key });
-		module.objectCache.delObjectCache(key);
+		module.objectCache.del(key);
 	};
 
 	module.deleteAll = async function (keys) {
@@ -55,7 +55,7 @@ module.exports = function (module) {
 			return;
 		}
 		await module.client.collection('objects').deleteMany({ _key: { $in: keys } });
-		module.objectCache.delObjectCache(keys);
+		module.objectCache.del(keys);
 	};
 
 	module.get = async function (key) {
@@ -66,7 +66,7 @@ module.exports = function (module) {
 		const objectData = await module.client.collection('objects').findOne({ _key: key }, { projection: { _id: 0 } });
 
 		// fallback to old field name 'value' for backwards compatibility #6340
-		var value = null;
+		let value = null;
 		if (objectData) {
 			if (objectData.hasOwnProperty('data')) {
 				value = objectData.data;
@@ -90,13 +90,18 @@ module.exports = function (module) {
 		}
 		const result = await module.client.collection('objects').findOneAndUpdate({
 			_key: key,
-		}, { $inc: { data: 1 } }, { returnOriginal: false, upsert: true });
+		}, {
+			$inc: { data: 1 },
+		}, {
+			returnDocument: 'after',
+			upsert: true,
+		});
 		return result && result.value ? result.value.data : null;
 	};
 
 	module.rename = async function (oldKey, newKey) {
 		await module.client.collection('objects').updateMany({ _key: oldKey }, { $set: { _key: newKey } });
-		module.objectCache.delObjectCache([oldKey, newKey]);
+		module.objectCache.del([oldKey, newKey]);
 	};
 
 	module.type = async function (key) {
@@ -105,7 +110,7 @@ module.exports = function (module) {
 			return null;
 		}
 		delete data.expireAt;
-		var keys = Object.keys(data);
+		const keys = Object.keys(data);
 		if (keys.length === 4 && data.hasOwnProperty('_key') && data.hasOwnProperty('score') && data.hasOwnProperty('value')) {
 			return 'zset';
 		} else if (keys.length === 3 && data.hasOwnProperty('_key') && data.hasOwnProperty('members')) {

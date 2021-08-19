@@ -1,6 +1,6 @@
 {
 	"users": "Users",
-	"edit": "Edit",
+	"edit": "Actions",
 	"make-admin": "Make Admin",
 	"remove-admin": "Remove Admin",
 	"validate-email": "Validate Email",
@@ -20,16 +20,10 @@
 	"add-group": "Add Group",
 	"invite": "Invite",
 	"new": "New User",
-
-	"pills.latest": "Latest Users",
+	"filter-by": "Filter by",
 	"pills.unvalidated": "Not Validated",
-	"pills.no-posts": "No Posts",
-	"pills.top-posters": "Top Posters",
-	"pills.top-rep": "Most Reputation",
-	"pills.inactive": "Inactive",
-	"pills.flagged": "Most Flagged",
+	"pills.validated": "Validated",
 	"pills.banned": "Banned",
-	"pills.search": "User Search",
 
 	"50-per-page": "50 per page",
 	"100-per-page": "100 per page",
@@ -53,6 +47,7 @@
 	"users.uid": "uid",
 	"users.username": "username",
 	"users.email": "email",
+	"users.ip": "IP",
 	"users.postcount": "postcount",
 	"users.reputation": "reputation",
 	"users.flags": "flags",
@@ -66,11 +61,11 @@
 	"create.password": "Password",
 	"create.password-confirm": "Confirm Password",
 
-	"temp-ban.length": "Ban Length",
-	"temp-ban.reason": "Reason <span class=\"text-muted\">(Optional)</span>",
-	"temp-ban.hours": "Hours",
-	"temp-ban.days": "Days",
-	"temp-ban.explanation": "Enter the length of time for the ban. Note that a time of 0 will be a considered a permanent ban.",
+	"temp-ban.length": "میزان مدت اخراج",
+	"temp-ban.reason": "علت <span class=\"text-muted\">(اختیاری)</span>",
+	"temp-ban.hours": "ساعت",
+	"temp-ban.days": "روز",
+	"temp-ban.explanation": "میزان مدت زمان اخراج را وارد کنید. توجه داشته باشید که مقدار 0 به عنوان اخراج مادام العمر در نظر گرفته خواهد شد.",
 
 	"alerts.confirm-ban": "Do you really want to ban this user <strong>permanently</strong>?",
 	"alerts.confirm-ban-multi": "Do you really want to ban these users <strong>permanently</strong>?",
@@ -108,5 +103,7 @@
 
 	"alerts.prompt-email": "Emails: ",
 	"alerts.email-sent-to": "An invitation email has been sent to %1",
-	"alerts.x-users-found": "%1 user(s) found, (%2 seconds)"
+	"alerts.x-users-found": "%1 user(s) found, (%2 seconds)",
+	"export-users-started": "Exporting users as csv, this might take a while. You will receive a notification when it is complete.",
+	"export-users-completed": "Users exported as csv, click here to download."
 }

@@ -1,10 +1,12 @@
 {
 	"pagination": "Seitennummerierungs Einstellungen",
 	"enable": "Themen in Seiten einteilen anstatt endlos zu scrollen",
+	"posts": "Post Pagination",
 	"topics": "Themen Seitennummerierung",
 	"posts-per-page": "Beiträge pro Seite",
 	"max-posts-per-page": "Maximale Anzahl von Beiträgen pro Seite",
 	"categories": "Kategorie Seitennummerierung",
 	"topics-per-page": "Themen pro Seite",
-	"max-topics-per-page": "Maximale Anzahl von Themen pro Seite"
+	"max-topics-per-page": "Maximale Anzahl von Themen pro Seite",
+	"categories-per-page": "Categories per page"
 }

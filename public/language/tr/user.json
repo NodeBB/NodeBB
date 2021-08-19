@@ -84,6 +84,7 @@
     "remove_cover_picture_confirm": "Kapak görselini silmek istediğinize emin misiniz?",
     "crop_picture": "Görsel Kırp",
     "upload_cropped_picture": "Kırp ve yükle",
+    "avatar-background-colour": "Avatar arkaplan rengi",
     "settings": "Ayarlar",
     "show_email": "E-postamı göster",
     "show_fullname": "Tam ismimi göster",
@@ -123,6 +124,7 @@
     "open_links_in_new_tab": "Dışarı giden bağlantıları yeni sekmede aç",
     "enable_topic_searching": "Konu içi aramayı aktive et",
     "topic_search_help": "Aktive edilirse, konu içi arama tarayıcının normal arama davranışını değiştirerek tüm konuyu aramanızı sağlar",
+    "update_url_with_post_index": "Sayfayı okurken URL bağlantısındaki ileti numarasını güncelle",
     "scroll_to_my_post": "Cevap yazdıktan sonra yeni iletiyi göster",
     "follow_topics_you_reply_to": "Cevap verdiğim başlıkları takip et",
     "follow_topics_you_create": "Oluşturduğum başlıkları takip et",
@@ -134,7 +136,7 @@
     "homepage": "Anasayfa",
     "homepage_description": "Anasayfa olarak kullanacağınız sayfayı seçin veya \"Hiçbiri\" diyerek varsayılan sayfayı kullanın.",
     "custom_route": "Özel anasayfa yolu",
-    "custom_route_help": "Herhangi bir eğik çizgi olmadan, burada bir yol adını girin (örneğin \"yeniler\" veya \"popüler\")",
+    "custom_route_help": "Herhangi bir eğik çizgi olmadan, burada bir yol adını girin (örneğin \"yeniler\" , \"popüler\" veya \"category/2/general-discussion\")",
     "sso.title": "Tek tuşla giriş uygulamaları",
     "sso.associated": "Birleştirilmiş",
     "sso.not-associated": "Birleştirmek için buraya tıklayın",
@@ -178,5 +180,8 @@
     "consent.export_uploads": "Karşıya Yüklenmiş İçeriği Dışarı Aktar (.zip)",
     "consent.export-uploads-success": "Yüklemeler aktarılmak üzere hazırlanıyor, işlem tamamlandığında bildirim alacaksınız!",
     "consent.export_posts": "Gönderileri Dışa Aktar (.csv)",
-    "consent.export-posts-success": "İletiler aktarılmak üzere hazırlanıyor, işlem tamamlandığında bildirim alacaksınız!"
+    "consent.export-posts-success": "İletiler aktarılmak üzere hazırlanıyor, işlem tamamlandığında bildirim alacaksınız!",
+    "emailUpdate.intro": "Please enter your email address below. This forum uses your email address for scheduled digest and notifications, as well as for account recovery in the event of a lost password.",
+    "emailUpdate.optional": "<strong>This field is optional</strong>. You are not obligated to provide your email address, but without a validated email, you will not be able to recover your account.",
+    "emailUpdate.change-instructions": "A confirmation email will be sent to the entered email address with a unique link. Accessing that link will confirm your ownership of the email address and it will become active on your account. At any time, you are able to update your email on file from within your account page."
 }

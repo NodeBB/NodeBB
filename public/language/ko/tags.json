@@ -1,8 +1,8 @@
 {
     "no_tag_topics": "이 태그가 달린 게시물이 없습니다.",
     "tags": "태그 목록",
-    "enter_tags_here": "%1 에서 %2 자 안에서 태그를 입력하세요.",
+    "enter_tags_here": "%1에서 %2자 안으로 태그를 입력하세요.",
     "enter_tags_here_short": "태그 입력...",
     "no_tags": "아직 태그가 달리지 않았습니다.",
-    "select_tags": "Select Tags"
+    "select_tags": "태그 선택"
 }

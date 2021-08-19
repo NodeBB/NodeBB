@@ -1,6 +1,5 @@
 'use strict';
 
-const _ = require('lodash');
 const winston = require('winston');
 const validator = require('validator');
 const cronJob = require('cron').CronJob;
@@ -12,13 +11,13 @@ const Errors = module.exports;
 
 let counters = {};
 
-new cronJob('0 * * * * *', function () {
+new cronJob('0 * * * * *', (() => {
 	Errors.writeData();
-}, null, true);
+}), null, true);
 
 Errors.writeData = async function () {
 	try {
-		const _counters = _.clone(counters);
+		const _counters = { ...counters };
 		counters = {};
 		const keys = Object.keys(_counters);
 		if (!keys.length) {
@@ -46,7 +45,7 @@ Errors.log404 = function (route) {
 
 Errors.get = async function (escape) {
 	const data = await db.getSortedSetRevRangeWithScores('errors:404', 0, 199);
-	data.forEach(function (nfObject) {
+	data.forEach((nfObject) => {
 		nfObject.value = escape ? validator.escape(String(nfObject.value || '')) : nfObject.value;
 	});
 	return data;

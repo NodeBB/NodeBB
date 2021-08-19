@@ -1,35 +1,33 @@
 
 'use strict';
 
-var async = require('async');
-var _ = require('lodash');
+const async = require('async');
+const _ = require('lodash');
 
-var db = require('../database');
-var meta = require('../meta');
-var user = require('../user');
-var posts = require('../posts');
-var plugins = require('../plugins');
-var utils = require('../utils');
+const db = require('../database');
+const meta = require('../meta');
+const user = require('../user');
+const posts = require('../posts');
+const plugins = require('../plugins');
+const utils = require('../utils');
 
 module.exports = function (Topics) {
-	var stripTeaserTags = utils.stripTags.concat(['img']);
-
 	Topics.getTeasers = async function (topics, options) {
 		if (!Array.isArray(topics) || !topics.length) {
 			return [];
 		}
 		let uid = options;
-		let teaserPost = meta.config.teaserPost;
+		let { teaserPost } = meta.config;
 		if (typeof options === 'object') {
 			uid = options.uid;
 			teaserPost = options.teaserPost || meta.config.teaserPost;
 		}
 
-		var counts = [];
-		var teaserPids = [];
-		var tidToPost = {};
+		const counts = [];
+		const teaserPids = [];
+		const tidToPost = {};
 
-		topics.forEach(function (topic) {
+		topics.forEach((topic) => {
 			counts.push(topic && topic.postcount);
 			if (topic) {
 				if (topic.teaserPid === 'null') {
@@ -45,20 +43,24 @@ module.exports = function (Topics) {
 			}
 		});
 
-		let postData = await posts.getPostsFields(teaserPids, ['pid', 'uid', 'timestamp', 'tid', 'content']);
-		postData = postData.filter(post => post && post.pid);
+		const [allPostData, callerSettings] = await Promise.all([
+			posts.getPostsFields(teaserPids, ['pid', 'uid', 'timestamp', 'tid', 'content']),
+			user.getSettings(uid),
+		]);
+		let postData = allPostData.filter(post => post && post.pid);
 		postData = await handleBlocks(uid, postData);
 		postData = postData.filter(Boolean);
 		const uids = _.uniq(postData.map(post => post.uid));
-
+		const sortNewToOld = callerSettings.topicPostSort === 'newest_to_oldest';
 		const usersData = await user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture']);
 
-		var users = {};
-		usersData.forEach(function (user) {
+		const users = {};
+		usersData.forEach((user) => {
 			users[user.uid] = user;
 		});
-		postData.forEach(function (post) {
-			// If the post author isn't represented in the retrieved users' data, then it means they were deleted, assume guest.
+		postData.forEach((post) => {
+			// If the post author isn't represented in the retrieved users' data,
+			// then it means they were deleted, assume guest.
 			if (!users.hasOwnProperty(post.uid)) {
 				post.uid = 0;
 			}
@@ -69,22 +71,39 @@ module.exports = function (Topics) {
 		});
 		await Promise.all(postData.map(p => posts.parsePost(p)));
 
-		var teasers = topics.map(function (topic, index) {
+		const { tags } = await plugins.hooks.fire('filter:teasers.configureStripTags', { tags: utils.stripTags.concat(['img']) });
+
+		const teasers = topics.map((topic, index) => {
 			if (!topic) {
 				return null;
 			}
 			if (tidToPost[topic.tid]) {
-				tidToPost[topic.tid].index = meta.config.teaserPost === 'first' ? 1 : counts[index];
+				tidToPost[topic.tid].index = calcTeaserIndex(teaserPost, counts[index], sortNewToOld);
 				if (tidToPost[topic.tid].content) {
-					tidToPost[topic.tid].content = utils.stripHTMLTags(tidToPost[topic.tid].content, stripTeaserTags);
+					tidToPost[topic.tid].content = utils.stripHTMLTags(replaceImgWithAltText(tidToPost[topic.tid].content), tags);
 				}
 			}
 			return tidToPost[topic.tid];
 		});
 
-		const result = await plugins.fireHook('filter:teasers.get', { teasers: teasers, uid: uid });
+		const result = await plugins.hooks.fire('filter:teasers.get', { teasers: teasers, uid: uid });
 		return result.teasers;
 	};
+
+	function calcTeaserIndex(teaserPost, postCountInTopic, sortNewToOld) {
+		if (teaserPost === 'first') {
+			return 1;
+		}
+
+		if (sortNewToOld) {
+			return Math.min(2, postCountInTopic);
+		}
+		return postCountInTopic;
+	}
+
+	function replaceImgWithAltText(str) {
+		return String(str).replace(/<img .*?alt="(.*?)"[^>]*>/gi, '$1');
+	}
 
 	async function handleBlocks(uid, teasers) {
 		const blockedUids = await user.blocks.list(uid);
@@ -92,7 +111,7 @@ module.exports = function (Topics) {
 			return teasers;
 		}
 
-		return await async.mapSeries(teasers, async function (postData) {
+		return await async.mapSeries(teasers, async (postData) => {
 			if (blockedUids.includes(parseInt(postData.uid, 10))) {
 				return await getPreviousNonBlockedPost(postData, blockedUids);
 			}
@@ -116,7 +135,7 @@ module.exports = function (Topics) {
 
 		do {
 			/* eslint-disable no-await-in-loop */
-			let pids = await db.getSortedSetRevRange('tid:' + postData.tid + ':posts', start, stop);
+			let pids = await db.getSortedSetRevRange(`tid:${postData.tid}:posts`, start, stop);
 			if (!pids.length) {
 				checkedAllReplies = true;
 				const mainPid = await Topics.getTopicField(postData.tid, 'mainPid');

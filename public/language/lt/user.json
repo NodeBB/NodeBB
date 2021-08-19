@@ -84,6 +84,7 @@
     "remove_cover_picture_confirm": "Are you sure you want to remove the cover picture?",
     "crop_picture": "Apkarpyti paveikslėlį",
     "upload_cropped_picture": "Apkarpyti ir įkelti",
+    "avatar-background-colour": "Avatar background colour",
     "settings": "Nustatymai",
     "show_email": "Rodyti mano el. paštą viešai",
     "show_fullname": "Rodyti mano vardą ir pavardę",
@@ -123,6 +124,7 @@
     "open_links_in_new_tab": "Atidaryti išeinančias nuorodas naujam skirtuke",
     "enable_topic_searching": "Įjungti Temų Ieškojimą ",
     "topic_search_help": "Jeigu įjungtas, temų ieškojimas, nepaisys naršyklės puslapio ieškojimo, ir pradės ieškoti tik toje temoje kuri bus rodoma ekrane",
+    "update_url_with_post_index": "Update url with post index while browsing topics",
     "scroll_to_my_post": "Po parašyto atsakymo, rodyti naują pranešimą",
     "follow_topics_you_reply_to": "Peržiūrėti temas, kuriose Jūs atsakėte",
     "follow_topics_you_create": "Peržiūrėti temas, kurias Jūs sukūrėte",
@@ -134,7 +136,7 @@
     "homepage": "Pagrindinis puslapis",
     "homepage_description": "Pasirinkite puslapį kaip savo pagrindinį, arba pasirinkite \"Joks\" norėdami naudoti standartinį pagrindinį puslapį.",
     "custom_route": "Pagrindinio puslapio vieta",
-    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\", or \"popular\")",
+    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "Single Sign-on Services",
     "sso.associated": "Associated with",
     "sso.not-associated": "Click here to associate with",
@@ -178,5 +180,8 @@
     "consent.export_uploads": "Export Uploaded Content (.zip)",
     "consent.export-uploads-success": "Exporting uploads, you will get a notification when it is complete.",
     "consent.export_posts": "Export Posts (.csv)",
-    "consent.export-posts-success": "Exporting posts, you will get a notification when it is complete."
+    "consent.export-posts-success": "Exporting posts, you will get a notification when it is complete.",
+    "emailUpdate.intro": "Please enter your email address below. This forum uses your email address for scheduled digest and notifications, as well as for account recovery in the event of a lost password.",
+    "emailUpdate.optional": "<strong>This field is optional</strong>. You are not obligated to provide your email address, but without a validated email, you will not be able to recover your account.",
+    "emailUpdate.change-instructions": "A confirmation email will be sent to the entered email address with a unique link. Accessing that link will confirm your ownership of the email address and it will become active on your account. At any time, you are able to update your email on file from within your account page."
 }

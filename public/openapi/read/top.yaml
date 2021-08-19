@@ -1,0 +1,122 @@
+get:
+  tags:
+    - topics
+  summary: Get top topics
+  description: Returns a list of topics sorted by most upvotes.
+  responses:
+    "200":
+      description: An array of topic objects sorted by most upvotes.
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  nextStart:
+                    type: number
+                  topicCount:
+                    type: number
+                  topics:
+                    type: array
+                    items:
+                      $ref: ../components/schemas/TopicObject.yaml#/TopicObject
+                  tids:
+                    type: array
+                    items:
+                      type: number
+                  canPost:
+                    type: boolean
+                  showSelect:
+                    type: boolean
+                  showTopicTools:
+                    type: boolean
+                  allCategoriesUrl:
+                    type: string
+                  selectedCategory:
+                    type: object
+                    properties:
+                      cid:
+                        type: number
+                        description: A category identifier
+                      name:
+                        type: string
+                      level:
+                        type: string
+                      icon:
+                        type: string
+                      parentCid:
+                        type: number
+                        description: The category identifier for the category that is the immediate
+                          ancestor of the current category
+                      color:
+                        type: string
+                      bgColor:
+                        type: string
+                      selected:
+                        type: boolean
+                    nullable: true
+                  selectedCids:
+                    type: array
+                    items:
+                      type: number
+                  feeds:disableRSS:
+                    type: number
+                  rssFeedUrl:
+                    type: string
+                  title:
+                    type: string
+                  filters:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        url:
+                          type: string
+                        selected:
+                          type: boolean
+                        filter:
+                          type: string
+                        icon:
+                          type: string
+                  selectedFilter:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      url:
+                        type: string
+                      selected:
+                        type: boolean
+                      filter:
+                        type: string
+                      icon:
+                        type: string
+                  terms:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        url:
+                          type: string
+                        selected:
+                          type: boolean
+                        term:
+                          type: string
+                  selectedTerm:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      url:
+                        type: string
+                      selected:
+                        type: boolean
+                      term:
+                        type: string
+              - $ref: ../components/schemas/Pagination.yaml#/Pagination
+              - $ref: ../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../components/schemas/CommonProps.yaml#/CommonProps

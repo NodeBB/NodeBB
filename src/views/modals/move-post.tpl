@@ -3,6 +3,10 @@
 		<h3 class="panel-title">[[topic:thread_tools.move-posts]]</h3>
 	</div>
 	<div class="panel-body">
+		<div>
+			<label for="topicId">[[topic:topic-id]]</label>
+			<input id="topicId" type="text" class="form-control"><br/>
+		</div>
 		<p>
     		<strong><span id="pids"></span></strong>
         </p>

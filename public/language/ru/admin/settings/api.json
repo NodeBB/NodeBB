@@ -1,0 +1,16 @@
+{
+	"tokens": "Токены",
+	"settings": "Настройки",
+	"lead-text": "From this page you can configure access to the Write API in NodeBB.",
+	"intro": "By default, the Write API authenticates users based on their session cookie, but NodeBB also supports Bearer authentication via tokens generated via this page.",
+	"docs": "Click here to access the full API specification",
+
+	"require-https": "Require API usage via HTTPS only",
+	"require-https-caveat": "<strong>Note</strong>: Some installations involving load balancers may proxy their requests to NodeBB using HTTP, in which case this option should remain disabled.",
+
+	"uid": "ID пользователя",
+	"uid-help-text": "Укажите идентификатор пользователя, который нужно связать с этим токеном. Если идентификатор пользователя равен <code>0</code>, он будет считаться <em>главным</em> токеном, который может предполагать идентичность других пользователей на основе параметра <code>_uid</code>.",
+	"description": "Описание",
+	"no-description": "Описания нет.",
+	"token-on-save": "Токен будет сгенерирован после сохранения формы"
+}

@@ -84,6 +84,7 @@
     "remove_cover_picture_confirm": "هل تريد بالتأكيد إزالة صورة الغلاف؟",
     "crop_picture": "إقتصاص الصورة",
     "upload_cropped_picture": "إقتصاص ورفع",
+    "avatar-background-colour": "Avatar background colour",
     "settings": "خيارات",
     "show_email": "أظهر بريدي الإلكتروني",
     "show_fullname": "أظهر اسمي الكامل",
@@ -123,6 +124,7 @@
     "open_links_in_new_tab": "فتح الروابط الخارجية في نافدة جديدة",
     "enable_topic_searching": "تفعيل خاصية البحث داخل المواضيع",
     "topic_search_help": "إذا قمت بتفعيل ميزة البحث في-الموضوع،  سيتم تجاوز الخيار الافتراضي للمتصفح مما يؤدي للبحث بكامل الموضوع بدلا عن البحث في الجزء الظاهر في الشاشة.",
+    "update_url_with_post_index": "Update url with post index while browsing topics",
     "scroll_to_my_post": "بعد اضافة رد على المشاركة, قم بإظهار المشاركة",
     "follow_topics_you_reply_to": "متابعة المواضيع التي تقوم بالرد عليها",
     "follow_topics_you_create": "متابعة المواضيع التي تقوم بإنشائها",
@@ -134,7 +136,7 @@
     "homepage": "الصفحة الرئيسية",
     "homepage_description": "حدد صفحة لاستخدامها كصفحة رئيسية للمنتدى أو \"لا شيء\" لاستخدام الصفحة الرئيسية الافتراضية.",
     "custom_route": "مسار الصفحة الرئيسية المخصصة",
-    "custom_route_help": "أدخل اسم مسار هنا، بدون أي شرطة مائلة (على سبيل المثال \"حديثة\" أو \"شائعة\")",
+    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "خدمات تسجيل الدخول الموحد",
     "sso.associated": "مرتبط مع",
     "sso.not-associated": "انقر هنا لربط مع",
@@ -178,5 +180,8 @@
     "consent.export_uploads": "Export Uploaded Content (.zip)",
     "consent.export-uploads-success": "Exporting uploads, you will get a notification when it is complete.",
     "consent.export_posts": "Export Posts (.csv)",
-    "consent.export-posts-success": "Exporting posts, you will get a notification when it is complete."
+    "consent.export-posts-success": "Exporting posts, you will get a notification when it is complete.",
+    "emailUpdate.intro": "Please enter your email address below. This forum uses your email address for scheduled digest and notifications, as well as for account recovery in the event of a lost password.",
+    "emailUpdate.optional": "<strong>This field is optional</strong>. You are not obligated to provide your email address, but without a validated email, you will not be able to recover your account.",
+    "emailUpdate.change-instructions": "A confirmation email will be sent to the entered email address with a unique link. Accessing that link will confirm your ownership of the email address and it will become active on your account. At any time, you are able to update your email on file from within your account page."
 }

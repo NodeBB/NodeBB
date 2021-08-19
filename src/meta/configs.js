@@ -8,9 +8,11 @@ const util = require('util');
 
 const db = require('../database');
 const pubsub = require('../pubsub');
+const plugins = require('../plugins');
+const utils = require('../utils');
 const Meta = require('./index');
 const cacheBuster = require('./cacheBuster');
-const defaults = require('../../install/data/defaults');
+const defaults = require('../../install/data/defaults.json');
 
 const Configs = module.exports;
 
@@ -19,7 +21,7 @@ Meta.config = {};
 // called after data is loaded from db
 function deserialize(config) {
 	const deserialized = {};
-	Object.keys(config).forEach(function (key) {
+	Object.keys(config).forEach((key) => {
 		const defaultType = typeof defaults[key];
 		const type = typeof config[key];
 		const number = parseFloat(config[key]);
@@ -57,7 +59,7 @@ function deserialize(config) {
 // called before data is saved to db
 function serialize(config) {
 	const serialized = {};
-	Object.keys(config).forEach(function (key) {
+	Object.keys(config).forEach((key) => {
 		const defaultType = typeof defaults[key];
 		const type = typeof config[key];
 		const number = parseFloat(config[key]);
@@ -89,7 +91,7 @@ Configs.serialize = serialize;
 Configs.init = async function () {
 	const config = await Configs.list();
 	const buster = await cacheBuster.read();
-	config['cache-buster'] = 'v=' + (buster || Date.now());
+	config['cache-buster'] = `v=${buster || Date.now()}`;
 	Meta.config = config;
 };
 
@@ -147,6 +149,46 @@ Configs.remove = async function (field) {
 	await db.deleteObjectField('config', field);
 };
 
+Configs.registerHooks = () => {
+	plugins.hooks.register('core', {
+		hook: 'filter:settings.set',
+		method: async ({ plugin, settings, quiet }) => {
+			if (plugin === 'core.api' && Array.isArray(settings.tokens)) {
+				// Generate tokens if not present already
+				settings.tokens.forEach((set) => {
+					if (set.token === '') {
+						set.token = utils.generateUUID();
+					}
+
+					if (isNaN(parseInt(set.uid, 10))) {
+						set.uid = 0;
+					}
+				});
+			}
+
+			return { plugin, settings, quiet };
+		},
+	});
+
+	plugins.hooks.register('core', {
+		hook: 'filter:settings.get',
+		method: async ({ plugin, values }) => {
+			if (plugin === 'core.api' && Array.isArray(values.tokens)) {
+				values.tokens = values.tokens.map((tokenObj) => {
+					tokenObj.uid = parseInt(tokenObj.uid, 10);
+					if (tokenObj.timestamp) {
+						tokenObj.timestampISO = new Date(parseInt(tokenObj.timestamp, 10)).toISOString();
+					}
+
+					return tokenObj;
+				});
+			}
+
+			return { plugin, values };
+		},
+	});
+};
+
 Configs.cookie = {
 	get: () => {
 		const cookie = {};
@@ -159,7 +201,7 @@ Configs.cookie = {
 			cookie.secure = true;
 		}
 
-		var relativePath = nconf.get('relative_path');
+		const relativePath = nconf.get('relative_path');
 		if (relativePath !== '') {
 			cookie.path = relativePath;
 		}
@@ -248,7 +290,7 @@ function updateLocalConfig(config) {
 	Object.assign(Meta.config, config);
 }
 
-pubsub.on('config:update', function onConfigReceived(config) {
+pubsub.on('config:update', (config) => {
 	if (typeof config === 'object' && Meta.config) {
 		updateLocalConfig(config);
 	}

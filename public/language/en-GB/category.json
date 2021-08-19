@@ -23,5 +23,6 @@
 	"notwatching.message": "You are not watching updates from this category and all subcategories",
 	"ignoring.message": "You are now ignoring updates from this category and all subcategories",
 
-	"watched-categories": "Watched categories"
+	"watched-categories": "Watched categories",
+	"x-more-categories": "%1 more categories"
 }

@@ -1,27 +1,34 @@
 'use strict';
 
-var winston = require('winston');
-var express = require('express');
-var bodyParser = require('body-parser');
-var fs = require('fs');
-var path = require('path');
-var childProcess = require('child_process');
-var less = require('less');
-var async = require('async');
-var uglify = require('uglify-es');
-var nconf = require('nconf');
-var Benchpress = require('benchpressjs');
+const winston = require('winston');
+const express = require('express');
+const bodyParser = require('body-parser');
+const fs = require('fs');
+const path = require('path');
+const childProcess = require('child_process');
+const less = require('less');
+const util = require('util');
 
-var app = express();
-var server;
+const lessRenderAsync = util.promisify(
+	(style, opts, cb) => less.render(String(style), opts, cb)
+);
+const uglify = require('uglify-es');
+const nconf = require('nconf');
 
-var formats = [
+const Benchpress = require('benchpressjs');
+const mkdirp = require('mkdirp');
+const { paths } = require('../src/constants');
+
+const app = express();
+let server;
+
+const formats = [
 	winston.format.colorize(),
 ];
 
 const timestampFormat = winston.format((info) => {
-	var dateString = new Date().toISOString() + ' [' + global.process.pid + ']';
-	info.level = dateString + ' - ' + info.level;
+	const dateString = `${new Date().toISOString()} [${global.process.pid}]`;
+	info.level = `${dateString} - ${info.level}`;
 	return info;
 });
 formats.push(timestampFormat());
@@ -42,55 +49,57 @@ winston.configure({
 	],
 });
 
-var web = module.exports;
+const web = module.exports;
 
-var scripts = [
+const scripts = [
 	'node_modules/jquery/dist/jquery.js',
-	'public/vendor/xregexp/xregexp.js',
-	'public/vendor/xregexp/unicode/unicode-base.js',
+	'node_modules/xregexp/xregexp-all.js',
+	'public/src/modules/slugify.js',
 	'public/src/utils.js',
 	'public/src/installer/install.js',
 	'node_modules/zxcvbn/dist/zxcvbn.js',
 ];
 
-var installing = false;
-var success = false;
-var error = false;
-var launchUrl;
+let installing = false;
+let success = false;
+let error = false;
+let launchUrl;
 
-web.install = function (port) {
+const viewsDir = path.join(paths.baseDir, 'build/public/templates');
+
+web.install = async function (port) {
 	port = port || 4567;
-	winston.info('Launching web installer on port ' + port);
+	winston.info(`Launching web installer on port ${port}`);
 
 	app.use(express.static('public', {}));
-	app.engine('tpl', function (filepath, options, callback) {
-		async.waterfall([
-			function (next) {
-				fs.readFile(filepath, 'utf-8', next);
-			},
-			function (buffer, next) {
-				Benchpress.compileParse(buffer.toString(), options, next);
-			},
-		], callback);
+	app.engine('tpl', (filepath, options, callback) => {
+		filepath = filepath.replace(/\.tpl$/, '.js');
+
+		Benchpress.__express(filepath, options, callback);
 	});
 	app.set('view engine', 'tpl');
-	app.set('views', path.join(__dirname, '../src/views'));
+	app.set('views', viewsDir);
 	app.use(bodyParser.urlencoded({
 		extended: true,
 	}));
-
-	async.parallel([compileLess, compileJS, copyCSS, loadDefaults], function (err) {
-		if (err) {
-			winston.error(err.stack);
-		}
+	try {
+		await Promise.all([
+			compileTemplate(),
+			compileLess(),
+			compileJS(),
+			copyCSS(),
+			loadDefaults(),
+		]);
 		setupRoutes();
 		launchExpress(port);
-	});
+	} catch (err) {
+		winston.error(err.stack);
+	}
 };
 
 
 function launchExpress(port) {
-	server = app.listen(port, function () {
+	server = app.listen(port, () => {
 		winston.info('Web installer listening on http://%s:%s', '0.0.0.0', port);
 	});
 }
@@ -108,11 +117,9 @@ function ping(req, res) {
 }
 
 function welcome(req, res) {
-	var dbs = ['redis', 'mongo', 'postgres'];
-	var databases = dbs.map(function (databaseName) {
-		var questions = require('../src/database/' + databaseName).questions.filter(function (question) {
-			return question && !question.hideOnWebInstall;
-		});
+	const dbs = ['redis', 'mongo', 'postgres'];
+	const databases = dbs.map((databaseName) => {
+		const questions = require(`../src/database/${databaseName}`).questions.filter(question => question && !question.hideOnWebInstall);
 
 		return {
 			name: databaseName,
@@ -120,10 +127,10 @@ function welcome(req, res) {
 		};
 	});
 
-	var defaults = require('./data/defaults');
+	const defaults = require('./data/defaults.json');
 
 	res.render('install/index', {
-		url: nconf.get('url') || (req.protocol + '://' + req.get('host')),
+		url: nconf.get('url') || (`${req.protocol}://${req.get('host')}`),
 		launchUrl: launchUrl,
 		skipGeneralSetup: !!nconf.get('url'),
 		databases: databases,
@@ -143,23 +150,23 @@ function install(req, res) {
 	}
 	req.setTimeout(0);
 	installing = true;
-	var setupEnvVars = nconf.get();
-	for (var i in req.body) {
-		if (req.body.hasOwnProperty(i) && !process.env.hasOwnProperty(i)) {
-			setupEnvVars[i.replace(':', '__')] = req.body[i];
+	const setupEnvVars = nconf.get();
+	for (const [key, value] of Object.entries(req.body)) {
+		if (!process.env.hasOwnProperty(key)) {
+			setupEnvVars[key.replace(':', '__')] = value;
 		}
 	}
 
 	// Flatten any objects in setupEnvVars
 	const pushToRoot = function (parentKey, key) {
-		setupEnvVars[parentKey + '__' + key] = setupEnvVars[parentKey][key];
+		setupEnvVars[`${parentKey}__${key}`] = setupEnvVars[parentKey][key];
 	};
-	for (var j in setupEnvVars) {
-		if (setupEnvVars.hasOwnProperty(j) && typeof setupEnvVars[j] === 'object' && setupEnvVars[j] !== null && !Array.isArray(setupEnvVars[j])) {
-			Object.keys(setupEnvVars[j]).forEach(pushToRoot.bind(null, j));
-			delete setupEnvVars[j];
-		} else if (Array.isArray(setupEnvVars[j])) {
-			setupEnvVars[j] = JSON.stringify(setupEnvVars[j]);
+	for (const [parentKey, value] of Object.entries(setupEnvVars)) {
+		if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+			Object.keys(value).forEach(key => pushToRoot(parentKey, key));
+			delete setupEnvVars[parentKey];
+		} else if (Array.isArray(value)) {
+			setupEnvVars[parentKey] = JSON.stringify(value);
 		}
 	}
 
@@ -167,11 +174,11 @@ function install(req, res) {
 	winston.info(setupEnvVars);
 	launchUrl = setupEnvVars.url;
 
-	var child = require('child_process').fork('app', ['--setup'], {
+	const child = require('child_process').fork('app', ['--setup'], {
 		env: setupEnvVars,
 	});
 
-	child.on('close', function (data) {
+	child.on('close', (data) => {
 		installing = false;
 		success = data === 0;
 		error = data !== 0;
@@ -180,120 +187,116 @@ function install(req, res) {
 	});
 }
 
-function launch(req, res) {
-	res.json({});
-	server.close();
-	req.setTimeout(0);
-	var child;
+async function launch(req, res) {
+	try {
+		res.json({});
+		server.close();
+		req.setTimeout(0);
+		let child;
 
-	if (!nconf.get('launchCmd')) {
-		child = childProcess.spawn('node', ['loader.js'], {
-			detached: true,
-			stdio: ['ignore', 'ignore', 'ignore'],
-		});
+		if (!nconf.get('launchCmd')) {
+			child = childProcess.spawn('node', ['loader.js'], {
+				detached: true,
+				stdio: ['ignore', 'ignore', 'ignore'],
+			});
 
-		console.log('\nStarting NodeBB');
-		console.log('    "./nodebb stop" to stop the NodeBB server');
-		console.log('    "./nodebb log" to view server output');
-		console.log('    "./nodebb restart" to restart NodeBB');
-	} else {
-		// Use launchCmd instead, if specified
-		child = childProcess.exec(nconf.get('launchCmd'), {
-			detached: true,
-			stdio: ['ignore', 'ignore', 'ignore'],
-		});
-	}
-
-	var filesToDelete = [
-		'installer.css',
-		'installer.min.js',
-		'bootstrap.min.css',
-	];
-
-	async.each(filesToDelete, function (filename, next) {
-		fs.unlink(path.join(__dirname, '../public', filename), next);
-	}, function (err) {
-		if (err) {
-			winston.warn('Unable to remove installer files');
+			console.log('\nStarting NodeBB');
+			console.log('    "./nodebb stop" to stop the NodeBB server');
+			console.log('    "./nodebb log" to view server output');
+			console.log('    "./nodebb restart" to restart NodeBB');
+		} else {
+			// Use launchCmd instead, if specified
+			child = childProcess.exec(nconf.get('launchCmd'), {
+				detached: true,
+				stdio: ['ignore', 'ignore', 'ignore'],
+			});
 		}
 
+		const filesToDelete = [
+			'installer.css',
+			'installer.min.js',
+			'bootstrap.min.css',
+		];
+		await Promise.all(
+			filesToDelete.map(
+				filename => fs.promises.unlink(path.join(__dirname, '../public', filename))
+			)
+		);
 		child.unref();
 		process.exit(0);
+	} catch (err) {
+		winston.error(err.stack);
+		throw err;
+	}
+}
+
+// this is necessary because otherwise the compiled templates won't be available on a clean install
+async function compileTemplate() {
+	const sourceFile = path.join(__dirname, '../src/views/install/index.tpl');
+	const destTpl = path.join(viewsDir, 'install/index.tpl');
+	const destJs = path.join(viewsDir, 'install/index.js');
+
+	const source = await fs.promises.readFile(sourceFile, 'utf8');
+
+	const [compiled] = await Promise.all([
+		Benchpress.precompile(source, { filename: 'install/index.tpl' }),
+		mkdirp(path.dirname(destJs)),
+	]);
+
+	await Promise.all([
+		fs.promises.writeFile(destJs, compiled),
+		fs.promises.writeFile(destTpl, source),
+	]);
+}
+
+async function compileLess() {
+	try {
+		const installSrc = path.join(__dirname, '../public/less/install.less');
+		const style = await fs.promises.readFile(installSrc);
+		const css = await lessRenderAsync(style, { filename: path.resolve(installSrc) });
+		await fs.promises.writeFile(path.join(__dirname, '../public/installer.css'), css.css);
+	} catch (err) {
+		winston.error(`Unable to compile LESS: \n${err.stack}`);
+		throw err;
+	}
+}
+
+async function compileJS() {
+	let code = '';
+
+	for (const srcPath of scripts) {
+		// eslint-disable-next-line no-await-in-loop
+		const buffer = await fs.promises.readFile(path.join(__dirname, '..', srcPath));
+		code += buffer.toString();
+	}
+	const minified = uglify.minify(code, {
+		compress: false,
 	});
+	if (!minified.code) {
+		throw new Error('[[error:failed-to-minify]]');
+	}
+	await fs.promises.writeFile(path.join(__dirname, '../public/installer.min.js'), minified.code);
 }
 
-function compileLess(callback) {
-	var installSrc = path.join(__dirname, '../public/less/install.less');
-	fs.readFile(installSrc, function (err, style) {
-		if (err) {
-			return winston.error('Unable to read LESS install file: ', err.stack);
-		}
-
-		less.render(style.toString(), {
-			filename: path.resolve(installSrc),
-		}, function (err, css) {
-			if (err) {
-				return winston.error('Unable to compile LESS: ', err.stack);
-			}
-
-			fs.writeFile(path.join(__dirname, '../public/installer.css'), css.css, callback);
-		});
-	});
+async function copyCSS() {
+	const src = await fs.promises.readFile(
+		path.join(__dirname, '../node_modules/bootstrap/dist/css/bootstrap.min.css'), 'utf8'
+	);
+	await fs.promises.writeFile(path.join(__dirname, '../public/bootstrap.min.css'), src);
 }
 
-function compileJS(callback) {
-	var code = '';
-	async.eachSeries(scripts, function (srcPath, next) {
-		fs.readFile(path.join(__dirname, '..', srcPath), function (err, buffer) {
-			if (err) {
-				return next(err);
-			}
-
-			code += buffer.toString();
-			next();
-		});
-	}, function (err) {
-		if (err) {
-			return callback(err);
+async function loadDefaults() {
+	const setupDefaultsPath = path.join(__dirname, '../setup.json');
+	try {
+		await fs.promises.access(setupDefaultsPath, fs.constants.F_OK + fs.constants.R_OK);
+	} catch (err) {
+		// setup.json not found or inaccessible, proceed with no defaults
+		if (err.code !== 'ENOENT') {
+			throw err;
 		}
-		try {
-			var minified = uglify.minify(code, {
-				compress: false,
-			});
-			if (!minified.code) {
-				return callback(new Error('[[error:failed-to-minify]]'));
-			}
-			fs.writeFile(path.join(__dirname, '../public/installer.min.js'), minified.code, callback);
-		} catch (e) {
-			callback(e);
-		}
-	});
-}
-
-function copyCSS(next) {
-	async.waterfall([
-		function (next) {
-			fs.readFile(path.join(__dirname, '../node_modules/bootstrap/dist/css/bootstrap.min.css'), 'utf8', next);
-		},
-		function (src, next) {
-			fs.writeFile(path.join(__dirname, '../public/bootstrap.min.css'), src, next);
-		},
-	], next);
-}
-
-function loadDefaults(next) {
-	var setupDefaultsPath = path.join(__dirname, '../setup.json');
-	fs.access(setupDefaultsPath, fs.constants.F_OK | fs.constants.R_OK, function (err) {
-		if (err) {
-			// setup.json not found or inaccessible, proceed with no defaults
-			return setImmediate(next);
-		}
-
-		winston.info('[installer] Found setup.json, populating default values');
-		nconf.file({
-			file: setupDefaultsPath,
-		});
-
-		next();
+	}
+	winston.info('[installer] Found setup.json, populating default values');
+	nconf.file({
+		file: setupDefaultsPath,
 	});
 }

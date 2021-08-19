@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('settings', function () {
+define('settings', ['hooks'], function (hooks) {
 	var DEFAULT_PLUGINS = [
 		'settings/checkbox',
 		'settings/number',
@@ -470,7 +470,9 @@ define('settings', function () {
 		},
 		load: function (hash, formEl, callback) {
 			callback = callback || function () {};
-			socket.emit('admin.settings.get', {
+			var call = formEl.attr('data-socket-get');
+
+			socket.emit(call || 'admin.settings.get', {
 				hash: hash,
 			}, function (err, values) {
 				if (err) {
@@ -489,7 +491,7 @@ define('settings', function () {
 				});
 
 				// Save loaded settings into ajaxify.data for use client-side
-				ajaxify.data.settings = values;
+				ajaxify.data[call ? hash : 'settings'] = values;
 
 				helper.whenReady(function () {
 					$(formEl).find('[data-sorted-list]').each(function (idx, el) {
@@ -501,7 +503,7 @@ define('settings', function () {
 				$(formEl).find('input[type="checkbox"]').each(function () {
 					$(this).parents('.mdl-switch').toggleClass('is-checked', $(this).is(':checked'));
 				});
-				$(window).trigger('action:admin.settingsLoaded');
+				hooks.fire('action:admin.settingsLoaded');
 
 				// Handle unsaved changes
 				$(formEl).on('change', 'input, select, textarea', function () {
@@ -531,11 +533,14 @@ define('settings', function () {
 				helper.whenReady(function () {
 					var list = formEl.find('[data-sorted-list]');
 					if (list.length) {
-						getHook(list, 'set').call(Settings, list, values);
+						list.each((idx, item) => {
+							getHook(item, 'set').call(Settings, $(item), values);
+						});
 					}
 				});
 
-				socket.emit('admin.settings.set', {
+				var call = formEl.attr('data-socket-set');
+				socket.emit(call || 'admin.settings.set', {
 					hash: hash,
 					values: values,
 				}, function (err) {
@@ -543,7 +548,7 @@ define('settings', function () {
 					app.flags._unsaved = false;
 
 					// Also save to local ajaxify.data
-					ajaxify.data.settings = values;
+					ajaxify.data[call ? hash : 'settings'] = values;
 
 					if (typeof callback === 'function') {
 						callback(err);

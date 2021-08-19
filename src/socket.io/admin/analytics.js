@@ -2,6 +2,7 @@
 
 const async = require('async');
 const analytics = require('../../analytics');
+
 const Analytics = module.exports;
 
 Analytics.get = function (socket, data, callback) {
@@ -38,9 +39,10 @@ Analytics.get = function (socket, data, callback) {
 			summary: function (next) {
 				analytics.getSummary(next);
 			},
-		}, function (err, data) {
-			data.pastDay = data.pageviews.reduce(function (a, b) { return parseInt(a, 10) + parseInt(b, 10); });
-			data.pageviews[data.pageviews.length - 1] = parseInt(data.pageviews[data.pageviews.length - 1], 10) + analytics.getUnwrittenPageviews();
+		}, (err, data) => {
+			data.pastDay = data.pageviews.reduce((a, b) => parseInt(a, 10) + parseInt(b, 10));
+			const last = data.pageviews.length - 1;
+			data.pageviews[last] = parseInt(data.pageviews[last], 10) + analytics.getUnwrittenPageviews();
 			callback(err, data);
 		});
 	}

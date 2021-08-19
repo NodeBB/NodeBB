@@ -84,6 +84,7 @@
     "remove_cover_picture_confirm": "Are you sure you want to remove the cover picture?",
     "crop_picture": "Crop picture",
     "upload_cropped_picture": "Crop and upload",
+    "avatar-background-colour": "Avatar background colour",
     "settings": "Seaded",
     "show_email": "Näita minu emaili",
     "show_fullname": "Näita minu täisnime",
@@ -123,6 +124,7 @@
     "open_links_in_new_tab": "Ava väljaminevad lingid uues aknas",
     "enable_topic_searching": "Võimalda teemasisene otsing",
     "topic_search_help": "Kui see on sisse lükatud, siis teemasisene otsing võtab üle brauseri tavapärase otsingu ning võimaldab otsida ainult ekraanile mahtuva teema asemel terve teema ulatuses.",
+    "update_url_with_post_index": "Update url with post index while browsing topics",
     "scroll_to_my_post": "Pärast vastuse postitamist, näita uut postitust",
     "follow_topics_you_reply_to": "Jälgi teemasid, millele vastad",
     "follow_topics_you_create": "Jälgi teemasid, mille lood",
@@ -134,7 +136,7 @@
     "homepage": "Avaleht",
     "homepage_description": "Valige leht, mida kasutada foorumi esilehena või 'None', et kasutada vaikimisi esilehte.",
     "custom_route": "Kohandatud Esilehe Teekond",
-    "custom_route_help": "Sisestage tee nimi siia, ilma eelnevate kaldkriipsudeta (nt. \"recent\", või \"popular\")",
+    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "Ühekordse sisselogimisega teenused",
     "sso.associated": "Seotud koos",
     "sso.not-associated": "Kliki siia, et siduda koos",
@@ -178,5 +180,8 @@
     "consent.export_uploads": "Export Uploaded Content (.zip)",
     "consent.export-uploads-success": "Exporting uploads, you will get a notification when it is complete.",
     "consent.export_posts": "Export Posts (.csv)",
-    "consent.export-posts-success": "Exporting posts, you will get a notification when it is complete."
+    "consent.export-posts-success": "Exporting posts, you will get a notification when it is complete.",
+    "emailUpdate.intro": "Please enter your email address below. This forum uses your email address for scheduled digest and notifications, as well as for account recovery in the event of a lost password.",
+    "emailUpdate.optional": "<strong>This field is optional</strong>. You are not obligated to provide your email address, but without a validated email, you will not be able to recover your account.",
+    "emailUpdate.change-instructions": "A confirmation email will be sent to the entered email address with a unique link. Accessing that link will confirm your ownership of the email address and it will become active on your account. At any time, you are able to update your email on file from within your account page."
 }

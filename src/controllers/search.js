@@ -15,7 +15,7 @@ const helpers = require('./helpers');
 const searchController = module.exports;
 
 searchController.search = async function (req, res, next) {
-	if (!plugins.hasListeners('filter:search.query')) {
+	if (!plugins.hooks.hasListeners('filter:search.query')) {
 		return next();
 	}
 	const page = Math.max(1, parseInt(req.query.page, 10)) || 1;
@@ -27,9 +27,10 @@ searchController.search = async function (req, res, next) {
 		'search:content': privileges.global.can('search:content', req.uid),
 		'search:tags': privileges.global.can('search:tags', req.uid),
 	});
-	req.query.in = req.query.in || 'posts';
+	req.query.in = req.query.in || meta.config.searchDefaultIn || 'titlesposts';
 	const allowed = (req.query.in === 'users' && userPrivileges['search:users']) ||
 					(req.query.in === 'tags' && userPrivileges['search:tags']) ||
+					(req.query.in === 'categories') ||
 					(['titles', 'titlesposts', 'posts'].includes(req.query.in) && userPrivileges['search:content']);
 
 	if (!allowed) {
@@ -77,8 +78,9 @@ searchController.search = async function (req, res, next) {
 		return res.json(searchData);
 	}
 
-	searchData.categories = categoriesData;
-	searchData.categoriesCount = Math.max(10, Math.min(20, categoriesData.length));
+	searchData.allCategories = categoriesData;
+	searchData.allCategoriesCount = Math.max(10, Math.min(20, categoriesData.length));
+
 	searchData.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[global:search]]' }]);
 	searchData.expandSearch = !req.query.term;
 
@@ -87,6 +89,7 @@ searchController.search = async function (req, res, next) {
 	searchData.title = '[[global:header.search]]';
 
 	searchData.searchDefaultSortBy = meta.config.searchDefaultSortBy || '';
+	searchData.searchDefaultIn = meta.config.searchDefaultIn || 'titlesposts';
 	searchData.privileges = userPrivileges;
 
 	res.render('search', searchData);

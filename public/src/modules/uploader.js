@@ -1,12 +1,12 @@
 'use strict';
 
 
-define('uploader', ['translator', 'benchpress'], function (translator, Benchpress) {
+define('uploader', ['jquery-form'], function () {
 	var module = {};
 
 	module.show = function (data, callback) {
 		var fileSize = data.hasOwnProperty('fileSize') && data.fileSize !== undefined ? parseInt(data.fileSize, 10) : false;
-		parseModal({
+		app.parseAndTranslate('partials/modals/upload_file_modal', {
 			showHelp: data.hasOwnProperty('showHelp') && data.showHelp !== undefined ? data.showHelp : true,
 			fileSize: fileSize,
 			title: data.title || '[[global:upload_file]]',
@@ -14,8 +14,6 @@ define('uploader', ['translator', 'benchpress'], function (translator, Benchpres
 			button: data.button || '[[global:upload]]',
 			accept: data.accept ? data.accept.replace(/,/g, '&#44; ') : '',
 		}, function (uploadModal) {
-			uploadModal = $(uploadModal);
-
 			uploadModal.modal('show');
 			uploadModal.on('hidden.bs.modal', function () {
 				uploadModal.remove();
@@ -67,7 +65,9 @@ define('uploader', ['translator', 'benchpress'], function (translator, Benchpres
 	}
 
 	module.ajaxSubmit = function (uploadModal, callback) {
-		uploadModal.find('#uploadForm').ajaxSubmit({
+		const uploadForm = uploadModal.find('#uploadForm');
+		const v3 = uploadForm.attr('action').startsWith(config.relative_path + '/api/v3/');
+		uploadForm.ajaxSubmit({
 			headers: {
 				'x-csrf-token': config.csrf_token,
 			},
@@ -80,6 +80,17 @@ define('uploader', ['translator', 'benchpress'], function (translator, Benchpres
 			},
 			success: function (response) {
 				response = maybeParse(response);
+
+				// Appropriately handle v3 API responses
+				if (v3) {
+					if (response.status.code === 'ok') {
+						response = response.response.images;
+					} else {
+						response = {
+							error: response.status.code,
+						};
+					}
+				}
 
 				if (response.error) {
 					return showAlert(uploadModal, 'error', response.error);
@@ -95,12 +106,6 @@ define('uploader', ['translator', 'benchpress'], function (translator, Benchpres
 			},
 		});
 	};
-
-	function parseModal(tplVals, callback) {
-		Benchpress.parse('partials/modals/upload_file_modal', tplVals, function (html) {
-			translator.translate(html, callback);
-		});
-	}
 
 	function maybeParse(response) {
 		if (typeof response === 'string') {

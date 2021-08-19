@@ -2,11 +2,11 @@
 	"events": "Events",
 	"no-events": "Er zijn geen events",
 	"control-panel": "Events Controlepaneel",
-	"delete-events": "Delete Events",
+	"delete-events": "Verwijder eventen",
 	"filters": "Filters",
 	"filters-apply": "Apply Filters",
 	"filter-type": "Event Type",
-	"filter-start": "Start Date",
-	"filter-end": "End Date",
-	"filter-perPage": "Per Page"
+	"filter-start": "Start datum",
+	"filter-end": "Eind datum",
+	"filter-perPage": "Per pagina"
 }

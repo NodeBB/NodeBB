@@ -1,5 +1,7 @@
 {
-	"handles": "游客用户名",
+	"settings": "设置",
 	"handles.enabled": "允许游客用户名",
-	"handles.enabled-help": "这个选项将允许游客使用一个额外的输入框来设置发帖时的用户名，如果被禁用，仅会统一显示为“游客”"
+	"handles.enabled-help": "这个选项将允许游客使用一个额外的输入框来设置发帖时的用户名，如果被禁用，仅会统一显示为“游客”",
+	"topic-views.enabled": "将来自游客的浏览记入帖子的浏览数",
+	"reply-notifications.enabled": "允许游客生成回帖通知"
 }

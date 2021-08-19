@@ -2,7 +2,6 @@
 	"none": "O teu fórum ainda não tem nenhum tópico com marcadores.",
 	"bg-color": "Cor de Fundo",
 	"text-color": "Cor do Texto",
-	"create-modify": "Criar e Modificar Marcadores",
 	"description": "Seleciona as etiquetas clicando ou arrastando, usa <code> CTRL</code> para selecionar múltiplas etiquetas.",
 	"create": "Criar Marcador",
 	"modify": "Modificar Marcadores",
@@ -14,5 +13,6 @@
 
 	"alerts.editing": "Editar etiqueta(s)",
 	"alerts.confirm-delete": "Queres mesmo apagar os marcadores selecionados?",
-	"alerts.update-success": "Etiqueta Atualizada!"
+	"alerts.update-success": "Etiqueta Atualizada!",
+	"reset-colors": "Reset colors"
 }

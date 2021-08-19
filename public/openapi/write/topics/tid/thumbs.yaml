@@ -1,0 +1,160 @@
+get:
+  tags:
+    - topics
+  summary: get topic thumbnails
+  description: This operation retrieves a topic's uploaded thumbnails
+  parameters:
+    - in: path
+      name: tid
+      schema:
+        type: string
+      required: true
+      description: a valid topic id
+      example: 1
+  responses:
+    '200':
+      description: Thumbnails successfully retrieved
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: array
+                description: A list of the topic thumbnails that still remain
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    url:
+                      type: string
+                      description: Path to a topic thumbnail
+post:
+  tags:
+    - topics
+  summary: add topic thumbnail
+  description: This operation adds a thumbnail to an existing topic or a draft (via a composer `uuid`)
+  parameters:
+    - in: path
+      name: tid
+      schema:
+        type: string
+      required: true
+      description: a valid topic id
+      example: 1
+  requestBody:
+    content:
+      multipart/form-data:
+        schema:
+          type: object
+          properties:
+            files:
+              type: array
+              items:
+                type: string
+                format: binary
+  responses:
+    '200':
+      description: Thumbnail successfully added
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                url:
+                  type: string
+                path:
+                  type: string
+                name:
+                  type: string
+put:
+  tags:
+    - topics
+  summary: migrate topic thumbnail
+  description: This operation migrates a thumbnails from a topic or draft, to another tid or draft.
+  parameters:
+    - in: path
+      name: tid
+      schema:
+        type: string
+      required: true
+      description: a valid topic id or draft uuid
+      example: 1
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            tid:
+              type: string
+              description: a valid topic id or draft uuid
+              example: '1'
+  responses:
+    '200':
+      description: Topic thumbnails migrated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}
+delete:
+  tags:
+    - topics
+  summary: remove topic thumbnail
+  description: This operation removes a topic thumbnail.
+  parameters:
+    - in: path
+      name: tid
+      schema:
+        type: string
+      required: true
+      description: a valid topic id
+      example: 1
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            path:
+              type: string
+              description: Relative path to the topic thumbnail
+              example: files/test.png
+  responses:
+    '200':
+      description: Topic thumbnail removed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: array
+                description: A list of the topic thumbnails that still remain
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    url:
+                      type: string
+                      description: Path to a topic thumbnail

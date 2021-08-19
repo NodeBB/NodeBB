@@ -1,28 +1,28 @@
 'use strict';
 
-var SMTPServer = require('smtp-server').SMTPServer;
-var assert = require('assert');
-var fs = require('fs');
-var path = require('path');
+const { SMTPServer } = require('smtp-server');
+const assert = require('assert');
+const fs = require('fs');
+const path = require('path');
 
-var db = require('./mocks/databasemock');
-var Plugins = require('../src/plugins');
-var Emailer = require('../src/emailer');
-var Meta = require('../src/meta');
+const db = require('./mocks/databasemock');
+const Plugins = require('../src/plugins');
+const Emailer = require('../src/emailer');
+const Meta = require('../src/meta');
 
-describe('emailer', function () {
-	var onMail = function (address, session, callback) { callback(); };
-	var onTo = function (address, session, callback) { callback(); };
+describe('emailer', () => {
+	let onMail = function (address, session, callback) { callback(); };
+	let onTo = function (address, session, callback) { callback(); };
 
-	var template = 'test';
-	var email = 'test@example.org';
-	var language = 'en-GB';
-	var params = {
+	const template = 'test';
+	const email = 'test@example.org';
+	const language = 'en-GB';
+	const params = {
 		subject: 'Welcome to NodeBB',
 	};
 
-	before(function (done) {
-		var server = new SMTPServer({
+	before((done) => {
+		const server = new SMTPServer({
 			allowInsecureAuth: true,
 			onAuth: function (auth, session, callback) {
 				callback(null, {
@@ -37,7 +37,7 @@ describe('emailer', function () {
 			},
 		});
 
-		server.on('error', function (err) {
+		server.on('error', (err) => {
 			throw err;
 		});
 		server.listen(4000, done);
@@ -45,43 +45,43 @@ describe('emailer', function () {
 
 	// TODO: test sendmail here at some point
 
-	it('plugin hook should work', function (done) {
-		var error = new Error();
+	it('plugin hook should work', (done) => {
+		const error = new Error();
 
-		Plugins.registerHook('emailer-test', {
+		Plugins.hooks.register('emailer-test', {
 			hook: 'filter:email.send',
 			method: function (data, next) {
 				assert(data);
 				assert.equal(data.to, email);
-				assert.equal(data.subject, '[NodeBB] ' + params.subject);
+				assert.equal(data.subject, `[NodeBB] ${params.subject}`);
 
 				next(error);
 			},
 		});
 
-		Emailer.sendToEmail(template, email, language, params, function (err) {
+		Emailer.sendToEmail(template, email, language, params, (err) => {
 			assert.equal(err, error);
 
-			Plugins.unregisterHook('emailer-test', 'filter:email.send');
+			Plugins.hooks.unregister('emailer-test', 'filter:email.send');
 			done();
 		});
 	});
 
-	it('should build custom template on config change', function (done) {
-		var text = 'a random string of text';
+	it('should build custom template on config change', (done) => {
+		const text = 'a random string of text';
 
 		// make sure it's not already set
-		Emailer.renderAndTranslate('test', {}, 'en-GB', function (err, output) {
+		Emailer.renderAndTranslate('test', {}, 'en-GB', (err, output) => {
 			assert.ifError(err);
 
 			assert.notEqual(output, text);
 
-			Meta.configs.set('email:custom:test', text, function (err) {
+			Meta.configs.set('email:custom:test', text, (err) => {
 				assert.ifError(err);
 
 				// wait for pubsub stuff
-				setTimeout(function () {
-					Emailer.renderAndTranslate('test', {}, 'en-GB', function (err, output) {
+				setTimeout(() => {
+					Emailer.renderAndTranslate('test', {}, 'en-GB', (err, output) => {
 						assert.ifError(err);
 
 						assert.equal(output, text);
@@ -92,9 +92,9 @@ describe('emailer', function () {
 		});
 	});
 
-	it('should send via SMTP', function (done) {
-		var from = 'admin@example.org';
-		var username = 'another@example.com';
+	it('should send via SMTP', (done) => {
+		const from = 'admin@example.org';
+		const username = 'another@example.com';
 
 		onMail = function (address, session, callback) {
 			assert.equal(address.address, from);
@@ -119,21 +119,21 @@ describe('emailer', function () {
 			'email:smtpTransport:host': 'localhost',
 			'email:smtpTransport:security': 'NONE',
 			'email:from': from,
-		}, function (err) {
+		}, (err) => {
 			assert.ifError(err);
 
 			// delay so emailer has a chance to update after config changes
-			setTimeout(function () {
+			setTimeout(() => {
 				assert.equal(Emailer.fallbackTransport, Emailer.transports.smtp);
 
-				Emailer.sendToEmail(template, email, language, params, function (err) {
+				Emailer.sendToEmail(template, email, language, params, (err) => {
 					assert.ifError(err);
 				});
 			}, 200);
 		});
 	});
 
-	after(function (done) {
+	after((done) => {
 		fs.unlinkSync(path.join(__dirname, '../build/public/templates/emails/test.js'));
 		Meta.configs.setMultiple({
 			'email:smtpTransport:enabled': '0',

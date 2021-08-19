@@ -1,10 +1,12 @@
 {
-    "tag": "Tag Settings",
-    "link-to-manage": "Manage Tags",
-    "min-per-topic": "Minimum Tags per Topic",
-    "max-per-topic": "Maximum Tags per Topic",
-    "min-length": "Minimum Tag Length",
-    "max-length": "Maximum Tag Length",
-    "related-topics": "Related Topics",
-    "max-related-topics": "Maximum related topics to display (if supported by theme)"
+    "tag": "Cài Đặt Thẻ",
+    "link-to-manage": "Quản Lý Thẻ",
+    "system-tags": "Thẻ Hệ Thống",
+    "system-tags-help": "Chỉ người dùng đặc quyền mới có thể dùng thẻ này.",
+    "min-per-topic": "Số Thẻ Ít Nhất Mỗi Chủ Đề",
+    "max-per-topic": "Số Thẻ Tối Đa Mỗi Chủ Đề",
+    "min-length": "Độ Dài Thẻ Tối Thiểu",
+    "max-length": "Độ Dài Thẻ Tối Đa",
+    "related-topics": "Chủ Đề Liên Quan",
+    "max-related-topics": "Số chủ đề liên quan tối đa để hiển thị (nếu giao diện hỗ trợ)"
 }

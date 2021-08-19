@@ -6,6 +6,7 @@
 	"assignee": "Encargado",
 	"update": "Actualizar",
 	"updated": "Actualizado",
+	"resolved": "Resolved",
 	"target-purged": "O contido marcado foi purgado e xa non está dispoñible",
 
 	"graph-label": "Daily Flags",
@@ -26,6 +27,7 @@
 	"filter-cid-all": "Tódalas categorías",
 	"apply-filters": "Aplicar filtros",
 	"more-filters": "More Filters",
+	"fewer-filters": "Fewer Filters",
 
 	"quick-actions": "Quick Actions",
 	"flagged-user": "Usuario marcado",
@@ -67,7 +69,7 @@
 	"sort-upvotes": "Most upvotes",
 	"sort-replies": "Most replies",
 
-	"modal-title": "Reportar Contido Inapropiado",
+	"modal-title": "Report Content",
 	"modal-body": "Por favor, especifique o seu motivo para marcar %1 %2 para revisión. Alternativamente, empregue un dos botóns de reporte rápido se fose pertinente.",
 	"modal-reason-spam": "Spam",
 	"modal-reason-offensive": "Ofensivo",
@@ -75,11 +77,9 @@
 	"modal-reason-custom": "Motivo para reportar este contido...",
 	"modal-submit": "Enviar Reporte",
 	"modal-submit-success": "Contido marcado para moderación",
-	"modal-submit-confirm": "Confirm Submission",
-	"modal-submit-confirm-text": "You have a custom reason specified already. Are you sure you wish to submit via quick-report?",
-	"modal-submit-confirm-text-help": "Submitting a quick report will overwrite any custom reasons defined.",
 
 	"bulk-actions": "Bulk Actions",
 	"bulk-resolve": "Resolve Flag(s)",
-	"bulk-success": "%1 flags updated"
+	"bulk-success": "%1 flags updated",
+	"flagged-timeago-readable": "Flagged <span class=\"timeago\" title=\"%1\"></span> (%2)"
 }

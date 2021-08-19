@@ -1,0 +1,107 @@
+get:
+  tags:
+    - admin
+  summary: Get administrators and moderators
+  responses:
+    "200":
+      description: "A JSON object containing administrators and moderators globally and per-category"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  admins:
+                    $ref: ../../../components/schemas/GroupObject.yaml#/GroupFullObject
+                  globalMods:
+                    $ref: ../../../components/schemas/GroupObject.yaml#/GroupFullObject
+                  categoryMods:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        cid:
+                          type: number
+                          description: A category identifier assigned upon category creation (this value cannot be changed)
+                        name:
+                          type: string
+                          description: The category's name/title
+                        description:
+                          type: string
+                          description: A variable-length description of the category (usually displayed underneath the category name)
+                        descriptionParsed:
+                          type: string
+                          description: A variable-length description of the category (usually displayed underneath the category name). Unlike `description`, this value here will have been run through any parsers installed on the forum (e.g. Markdown)
+                        icon:
+                          type: string
+                          description: A FontAwesome icon string
+                          example: fa-comments-o
+                        bgColor:
+                          type: string
+                          description: Theme-related, a six-character hexadecimal string representing the background colour of the category
+                        color:
+                          type: string
+                          description: Theme-related, a six-character hexadecimal string representing the foreground/text colour of the category
+                        slug:
+                          type: string
+                          description: An URL-safe variant of the category title. This value is automatically generated.
+                          readOnly: true
+                        parentCid:
+                          type: number
+                          description: The category identifier for the category that is the immediate ancestor of the current category
+                        topic_count:
+                          type: number
+                          description: The number of topics in the category
+                        post_count:
+                          type: number
+                          description: The number of posts in the category
+                        disabled:
+                          type: number
+                          description: Whether or not this category is disabled.
+                        order:
+                          type: number
+                          description: A number representing the category's place in the hierarchy
+                        link:
+                          type: string
+                          description: If set, attempting to access the forum will go to this external link instead (theme-specific)
+                        numRecentReplies:
+                          type: number
+                          description: The number of posts to render in the API response (this is mostly used at the theme level)
+                        class:
+                          type: string
+                          description: Values that are appended to the `class` attribute of the category's parent/root element
+                        imageClass:
+                          type: string
+                          enum: [auto, cover, contain]
+                          description: The `background-position` of the category background image, if one is set
+                        isSection:
+                          type: number
+                        minTags:
+                          type: number
+                          description: Minimum tags per topic in this category
+                        maxTags:
+                          type: number
+                          description: Maximum tags per topic in this category
+                        postQueue:
+                          type: number
+                        totalPostCount:
+                          type: number
+                          description: The number of posts in the category
+                        totalTopicCount:
+                          type: number
+                          description: The number of topics in the category
+                        subCategoriesPerPage:
+                          type: number
+                          description: The number of subcategories to display on the categories and category page
+                        moderators:
+                          type: array
+                          items:
+                            $ref: ../../../components/schemas/UserObject.yaml#/UserObjectSlim
+                  selectedCategory:
+                    $ref: ../../../components/schemas/CategoryObject.yaml#/CategoryObject
+                  allPrivileges:
+                    type: array
+                    items:
+                      type: string
+                      description: A simple array containing user privilege names (used client-side when giving mod privilege)
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

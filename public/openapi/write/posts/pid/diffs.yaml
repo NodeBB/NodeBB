@@ -1,0 +1,43 @@
+get:
+  tags:
+    - posts
+  summary: get post edit history
+  description: This operation retrieves a post's edit history
+  parameters:
+    - in: path
+      name: pid
+      schema:
+        type: string
+      required: true
+      description: a valid post id
+      example: 2
+  responses:
+    '200':
+      description: Post history successfully retrieved.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  timestamps:
+                    type: array
+                    items:
+                      type: string
+                  revisions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        timestamp:
+                          type: string
+                        username:
+                          type: string
+                  editable:
+                    type: boolean
+                  deletable:
+                    type: boolean

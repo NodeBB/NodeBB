@@ -1,12 +1,13 @@
 {
 	"eu-consent": "EU Consent",
-	"consent.enabled": "Enabled",
-	"consent.message": "Notification message",
+	"consent.enabled": "מופעל",
+	"consent.message": "התראות",
 	"consent.acceptance": "Acceptance message",
 	"consent.link-text": "Policy Link Text",
 	"consent.link-url": "Policy Link URL",
 	"consent.blank-localised-default": "Leave blank to use NodeBB localised defaults",
-	"settings": "Settings",
+	"settings": "הגדרות",
 	"cookie-domain": "Session cookie domain",
-	"blank-default": "Leave blank for default"
+	"max-user-sessions": "Max active sessions per user",
+	"blank-default": "השאר ריק לברירת המחדל"
 }

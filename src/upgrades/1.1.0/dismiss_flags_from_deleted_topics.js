@@ -1,19 +1,19 @@
 'use strict';
 
 
-var async = require('async');
-var winston = require('winston');
-var db = require('../../database');
+const async = require('async');
+const winston = require('winston');
+const db = require('../../database');
 
 module.exports = {
 	name: 'Dismiss flags from deleted topics',
 	timestamp: Date.UTC(2016, 3, 29),
 	method: function (callback) {
-		var posts = require('../../posts');
-		var topics = require('../../topics');
+		const posts = require('../../posts');
+		const topics = require('../../topics');
 
-		var pids;
-		var tids;
+		let pids;
+		let tids;
 
 		async.waterfall([
 			async.apply(db.getSortedSetRange, 'posts:flagged', 0, -1),
@@ -22,18 +22,14 @@ module.exports = {
 				posts.getPostsFields(pids, ['tid'], next);
 			},
 			function (_tids, next) {
-				tids = _tids.map(function (a) {
-					return a.tid;
-				});
+				tids = _tids.map(a => a.tid);
 
 				topics.getTopicsFields(tids, ['deleted'], next);
 			},
 			function (state, next) {
-				var toDismiss = state.map(function (a, idx) {
-					return parseInt(a.deleted, 10) === 1 ? pids[idx] : null;
-				}).filter(Boolean);
+				const toDismiss = state.map((a, idx) => (parseInt(a.deleted, 10) === 1 ? pids[idx] : null)).filter(Boolean);
 
-				winston.verbose('[2016/04/29] ' + toDismiss.length + ' dismissable flags found');
+				winston.verbose(`[2016/04/29] ${toDismiss.length} dismissable flags found`);
 				async.each(toDismiss, dismissFlag, next);
 			},
 		], callback);
@@ -45,7 +41,7 @@ module.exports = {
 function dismissFlag(pid, callback) {
 	async.waterfall([
 		function (next) {
-			db.getObjectFields('post:' + pid, ['pid', 'uid', 'flags'], next);
+			db.getObjectFields(`post:${pid}`, ['pid', 'uid', 'flags'], next);
 		},
 		function (postData, next) {
 			if (!postData.pid) {
@@ -57,7 +53,7 @@ function dismissFlag(pid, callback) {
 						if (parseInt(postData.flags, 10) > 0) {
 							async.parallel([
 								async.apply(db.sortedSetIncrBy, 'users:flags', -postData.flags, postData.uid),
-								async.apply(db.incrObjectFieldBy, 'user:' + postData.uid, 'flags', -postData.flags),
+								async.apply(db.incrObjectFieldBy, `user:${postData.uid}`, 'flags', -postData.flags),
 							], next);
 						} else {
 							next();
@@ -70,32 +66,32 @@ function dismissFlag(pid, callback) {
 					db.sortedSetsRemove([
 						'posts:flagged',
 						'posts:flags:count',
-						'uid:' + postData.uid + ':flag:pids',
+						`uid:${postData.uid}:flag:pids`,
 					], pid, next);
 				},
 				function (next) {
 					async.series([
 						function (next) {
-							db.getSortedSetRange('pid:' + pid + ':flag:uids', 0, -1, function (err, uids) {
+							db.getSortedSetRange(`pid:${pid}:flag:uids`, 0, -1, (err, uids) => {
 								if (err) {
 									return next(err);
 								}
 
-								async.each(uids, function (uid, next) {
-									var nid = 'post_flag:' + pid + ':uid:' + uid;
+								async.each(uids, (uid, next) => {
+									const nid = `post_flag:${pid}:uid:${uid}`;
 									async.parallel([
-										async.apply(db.delete, 'notifications:' + nid),
-										async.apply(db.sortedSetRemove, 'notifications', 'post_flag:' + pid + ':uid:' + uid),
+										async.apply(db.delete, `notifications:${nid}`),
+										async.apply(db.sortedSetRemove, 'notifications', `post_flag:${pid}:uid:${uid}`),
 									], next);
 								}, next);
 							});
 						},
-						async.apply(db.delete, 'pid:' + pid + ':flag:uids'),
+						async.apply(db.delete, `pid:${pid}:flag:uids`),
 					], next);
 				},
-				async.apply(db.deleteObjectField, 'post:' + pid, 'flags'),
-				async.apply(db.delete, 'pid:' + pid + ':flag:uid:reason'),
-				async.apply(db.deleteObjectFields, 'post:' + pid, ['flag:state', 'flag:assignee', 'flag:notes', 'flag:history']),
+				async.apply(db.deleteObjectField, `post:${pid}`, 'flags'),
+				async.apply(db.delete, `pid:${pid}:flag:uid:reason`),
+				async.apply(db.deleteObjectFields, `post:${pid}`, ['flag:state', 'flag:assignee', 'flag:notes', 'flag:history']),
 			], next);
 		},
 		function (results, next) {

@@ -1,0 +1,104 @@
+get:
+  tags:
+    - categories
+  summary: Get a single category
+  description: This route retrieves a single category's data, along with its children and the topics created inside of the category.
+  parameters:
+    - name: category_id
+      in: path
+      required: true
+      schema:
+        type: string
+      example: 1
+    - name: slug
+      description: This parameter is not required. If omitted, the request will be automatically redirected with the proper category slug.
+      in: path
+      required: true
+      schema:
+        type: string
+      example: test
+    - name: topic_index
+      description: This parameter is not required. If omitted, the request will presume that you want the first post. The API response is largely unaffected by this parameter, it is used client-side (to send the user to the requested post), and changes the meta/link tags in the server-side generated HTML.
+      in: path
+      required: true
+      schema:
+        type: string
+      example: 1
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../components/schemas/CategoryObject.yaml#/CategoryObject
+              - type: object
+                properties:
+                  tagWhitelist:
+                    type: array
+                    items:
+                      type: string
+                  unread-class:
+                    type: string
+                  children:
+                    type: array
+                    items:
+                      $ref: ../../components/schemas/CategoryObject.yaml#/CategoryObject
+                  topics:
+                    type: array
+                    items:
+                      $ref: ../../components/schemas/TopicObject.yaml#/TopicObject
+                  nextStart:
+                    type: number
+                  isWatched:
+                    type: boolean
+                  isNotWatched:
+                    type: boolean
+                  isIgnored:
+                    type: boolean
+                  title:
+                    type: string
+                  selectCategoryLabel:
+                    type: string
+                    description: Label to use for the category selector
+                  privileges:
+                    type: object
+                    properties:
+                      topics:create:
+                        type: boolean
+                      topics:read:
+                        type: boolean
+                      topics:tag:
+                        type: boolean
+                      topics:schedule:
+                        type: boolean
+                      read:
+                        type: boolean
+                      posts:view_deleted:
+                        type: boolean
+                      cid:
+                        type: string
+                      uid:
+                        type: number
+                        description: A user identifier
+                      editable:
+                        type: boolean
+                      view_deleted:
+                        type: boolean
+                      isAdminOrMod:
+                        type: boolean
+                  showSelect:
+                    type: boolean
+                  showTopicTools:
+                    type: boolean
+                  topicIndex:
+                    type: number
+                  rssFeedUrl:
+                    type: string
+                  feeds:disableRSS:
+                    type: number
+                  reputation:disabled:
+                    type: number
+              - $ref: ../../components/schemas/Pagination.yaml#/Pagination
+              - $ref: ../../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../../components/schemas/CommonProps.yaml#/CommonProps

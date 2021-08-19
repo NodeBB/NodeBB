@@ -11,7 +11,9 @@ const meta = require('../../meta');
 const analytics = require('../../analytics');
 const plugins = require('../../plugins');
 const user = require('../../user');
+const topics = require('../../topics');
 const utils = require('../../utils');
+const emailer = require('../../emailer');
 
 const dashboardController = module.exports;
 
@@ -47,13 +49,20 @@ async function getNotices() {
 			notDoneText: '[[admin/dashboard:restart-required]]',
 		},
 		{
-			done: plugins.hasListeners('filter:search.query'),
+			done: plugins.hooks.hasListeners('filter:search.query'),
 			doneText: '[[admin/dashboard:search-plugin-installed]]',
 			notDoneText: '[[admin/dashboard:search-plugin-not-installed]]',
 			tooltip: '[[admin/dashboard:search-plugin-tooltip]]',
 			link: '/admin/extend/plugins',
 		},
 	];
+
+	if (emailer.fallbackNotFound) {
+		notices.push({
+			done: false,
+			notDoneText: '[[admin/dashboard:fallback-emailer-not-found]]',
+		});
+	}
 
 	if (global.env !== 'production') {
 		notices.push({
@@ -62,14 +71,14 @@ async function getNotices() {
 		});
 	}
 
-	return await plugins.fireHook('filter:admin.notices', notices);
+	return await plugins.hooks.fire('filter:admin.notices', notices);
 }
 
 async function getLatestVersion() {
 	try {
 		return await versions.getLatestVersion();
 	} catch (err) {
-		winston.error('[acp] Failed to fetch latest version', err.stack);
+		winston.error(`[acp] Failed to fetch latest version\n${err.stack}`);
 	}
 	return null;
 }
@@ -94,7 +103,7 @@ dashboardController.getAnalytics = async (req, res, next) => {
 	}
 
 	const method = req.query.units === 'days' ? analytics.getDailyStatsForSet : analytics.getHourlyStatsForSet;
-	let payload = await Promise.all(sets.map(set => method('analytics:' + set, until, count)));
+	let payload = await Promise.all(sets.map(set => method(`analytics:${set}`, until, count)));
 	payload = _.zipObject(sets, payload);
 
 	res.json({
@@ -115,16 +124,31 @@ async function getStats() {
 		return cachedStats;
 	}
 
-	const results = await Promise.all([
+	let results = await Promise.all([
 		getStatsForSet('ip:recent', 'uniqueIPCount'),
+		getStatsFromAnalytics('logins', 'loginCount'),
 		getStatsForSet('users:joindate', 'userCount'),
 		getStatsForSet('posts:pid', 'postCount'),
 		getStatsForSet('topics:tid', 'topicCount'),
 	]);
 	results[0].name = '[[admin/dashboard:unique-visitors]]';
-	results[1].name = '[[admin/dashboard:new-users]]';
-	results[2].name = '[[admin/dashboard:posts]]';
-	results[3].name = '[[admin/dashboard:topics]]';
+
+	results[1].name = '[[admin/dashboard:logins]]';
+	results[1].href = `${nconf.get('relative_path')}/admin/dashboard/logins`;
+
+	results[2].name = '[[admin/dashboard:new-users]]';
+	results[2].href = `${nconf.get('relative_path')}/admin/dashboard/users`;
+
+	results[3].name = '[[admin/dashboard:posts]]';
+
+	results[4].name = '[[admin/dashboard:topics]]';
+	results[4].href = `${nconf.get('relative_path')}/admin/dashboard/topics`;
+
+	({ results } = await plugins.hooks.fire('filter:admin.getStats', {
+		results,
+		helpers: { getStatsForSet, getStatsFromAnalytics },
+	}));
+
 	cache.set('admin:stats', results, 600000);
 	return results;
 }
@@ -147,6 +171,29 @@ async function getStatsForSet(set, field) {
 		alltime: getGlobalField(field),
 	});
 
+	return calculateDeltas(results);
+}
+
+async function getStatsFromAnalytics(set, field) {
+	const today = new Date();
+	today.setHours(0, 0, 0, 0);
+
+	const data = await analytics.getDailyStatsForSet(`analytics:${set}`, today, 60);
+	const sum = arr => arr.reduce((memo, cur) => memo + cur, 0);
+	const results = {
+		yesterday: sum(data.slice(-2)),
+		today: data.slice(-1)[0],
+		lastweek: sum(data.slice(-14)),
+		thisweek: sum(data.slice(-7)),
+		lastmonth: sum(data.slice(0)),	// entire set
+		thismonth: sum(data.slice(-30)),
+		alltime: await getGlobalField(field),
+	};
+
+	return calculateDeltas(results);
+}
+
+function calculateDeltas(results) {
 	function textClass(num) {
 		if (num > 0) {
 			return 'text-success';
@@ -190,3 +237,93 @@ async function getLastRestart() {
 	lastrestart.timestampISO = utils.toISOString(lastrestart.timestamp);
 	return lastrestart;
 }
+
+dashboardController.getLogins = async (req, res) => {
+	let stats = await getStats();
+	stats = stats.filter(stat => stat.name === '[[admin/dashboard:logins]]').map(({ ...stat }) => {
+		delete stat.href;
+		return stat;
+	});
+	const summary = {
+		day: stats[0].today,
+		week: stats[0].thisweek,
+		month: stats[0].thismonth,
+	};
+
+	// List recent sessions
+	const start = Date.now() - (1000 * 60 * 60 * 24 * meta.config.loginDays);
+	const uids = await db.getSortedSetRangeByScore('users:online', 0, 500, start, Date.now());
+	const usersData = await user.getUsersData(uids);
+	let sessions = await Promise.all(uids.map(async (uid) => {
+		const sessions = await user.auth.getSessions(uid);
+		sessions.forEach((session) => {
+			session.user = usersData[uids.indexOf(uid)];
+		});
+
+		return sessions;
+	}));
+	sessions = _.flatten(sessions).sort((a, b) => b.datetime - a.datetime);
+
+	res.render('admin/dashboard/logins', {
+		set: 'logins',
+		query: req.query,
+		stats,
+		summary,
+		sessions,
+		loginDays: meta.config.loginDays,
+	});
+};
+
+dashboardController.getUsers = async (req, res) => {
+	let stats = await getStats();
+	stats = stats.filter(stat => stat.name === '[[admin/dashboard:new-users]]').map(({ ...stat }) => {
+		delete stat.href;
+		return stat;
+	});
+	const summary = {
+		day: stats[0].today,
+		week: stats[0].thisweek,
+		month: stats[0].thismonth,
+	};
+
+	// List of users registered within time frame
+	const end = parseInt(req.query.until, 10) || Date.now();
+	const start = end - (1000 * 60 * 60 * (req.query.units === 'days' ? 24 : 1) * (req.query.count || (req.query.units === 'days' ? 30 : 24)));
+	const uids = await db.getSortedSetRangeByScore('users:joindate', 0, 500, start, end);
+	const users = await user.getUsersData(uids);
+
+	res.render('admin/dashboard/users', {
+		set: 'registrations',
+		query: req.query,
+		stats,
+		summary,
+		users,
+	});
+};
+
+dashboardController.getTopics = async (req, res) => {
+	let stats = await getStats();
+	stats = stats.filter(stat => stat.name === '[[admin/dashboard:topics]]').map(({ ...stat }) => {
+		delete stat.href;
+		return stat;
+	});
+	const summary = {
+		day: stats[0].today,
+		week: stats[0].thisweek,
+		month: stats[0].thismonth,
+	};
+
+	// List of topics created within time frame
+	const end = parseInt(req.query.until, 10) || Date.now();
+	const start = end - (1000 * 60 * 60 * (req.query.units === 'days' ? 24 : 1) * (req.query.count || (req.query.units === 'days' ? 30 : 24)));
+	const tids = await db.getSortedSetRangeByScore('topics:tid', 0, 500, start, end);
+	const topicData = await topics.getTopicsByTids(tids);
+
+	res.render('admin/dashboard/topics', {
+		set: 'topics',
+		query: req.query,
+		stats,
+		summary,
+		topics: topicData,
+	});
+};

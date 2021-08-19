@@ -1,5 +1,5 @@
 {
-	"you-are-on": "You are on <strong>%1:%2</strong>",
+	"you-are-on": "현재 <strong>%1:%2</strong>",
 	"ip": "IP <strong>%1</strong>",
 	"nodes-responded": "%1 노드가 %2ms 내로 응답했습니다.",
 	"host": "호스트",
@@ -11,11 +11,11 @@
 	"memory": "메모리",
 	"load": "시스템 로드",
 	"cpu-usage": "cpu 사용량",
-	"uptime": "Uptime",
+	"uptime": "업타임",
 
 	"registered": "등록됨",
-	"sockets": "Sockets",
-	"guests": "미가입 사용자",
+	"sockets": "소켓",
+	"guests": "비회원",
 
 	"info": "정보"
 }

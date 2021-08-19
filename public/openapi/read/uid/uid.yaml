@@ -1,0 +1,19 @@
+get:
+  tags:
+    - shorthand
+  summary: Access a user's profile pages
+  description: >-
+    This particular shorthand is useful if you are looking to redirect to a user's profile (or other associated pages), but do not know or want to retrieve their userslug,
+    which is part of the canonical url.
+
+    For example, to go to `uid` 15's list of topics made, you can navigate to `/api/uid/15/topics`, which will send you to the appropriate canonical URL for that user's topics.
+  parameters:
+    - name: uid*
+      in: path
+      required: true
+      schema:
+        type: string
+      example: 1
+  responses:
+    "200":
+      description: "Canonical URL of user profile page"

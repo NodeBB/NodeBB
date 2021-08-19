@@ -1,0 +1,25 @@
+delete:
+  tags:
+    - users
+  summary: delete a single user account (preserve content)
+  description: This route deletes a single user's account, but preserves the content (posts, bookmarks, etc.)
+  parameters:
+    - in: path
+      name: uid
+      schema:
+        type: integer
+      required: true
+      description: uid of the user to delete
+      example: 7
+  responses:
+    '200':
+      description: user account deleted
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object

@@ -6,6 +6,7 @@
 	"assignee": "Assegnatario",
 	"update": "Aggiorna",
 	"updated": "Aggiornato",
+	"resolved": "Risolto",
 	"target-purged": "Il contenuto di questa segnalazione è stato eliminato e non è più disponibile.",
 
 	"graph-label": "Segnalazioni Giornaliere",
@@ -13,7 +14,7 @@
 	"filter-active": "Ci sono uno o più filtri attivi in questa lista di segnalazioni",
 	"filter-reset": "Rimuovi Filtri",
 	"filters": "Opzioni Filtri",
-	"filter-reporterId": "Segnalatore UID",
+	"filter-reporterId": "UID segnalatore",
 	"filter-targetUid": "UID segnalato",
 	"filter-type": "Tipo Segnalazione",
 	"filter-type-all": "Tutto il Contenuto",
@@ -26,6 +27,7 @@
 	"filter-cid-all": "Tutte le categorie",
 	"apply-filters": "Applica Filtri",
 	"more-filters": "Altri filtri",
+	"fewer-filters": "Meno filtri",
 
 	"quick-actions": "Azioni rapide",
 	"flagged-user": "Utente Segnalato",
@@ -67,7 +69,7 @@
 	"sort-upvotes": "Più voti positivi",
 	"sort-replies": "Più risposte",
 
-	"modal-title": "Segnala Contenuto Inappropriato",
+	"modal-title": "Segnala il contenuto",
 	"modal-body": "Specifica il motivo per cui contrassegni %1 %2 per la revisione. In alternativa, utilizza uno dei pulsanti di segnalazione rapida, se applicabile.",
 	"modal-reason-spam": "Spam",
 	"modal-reason-offensive": "Offensivo",
@@ -75,11 +77,9 @@
 	"modal-reason-custom": "Motivo per cui segnali questo contenuto...",
 	"modal-submit": "Invia segnalazione",
 	"modal-submit-success": "Il contenuto è stato segnalato per la moderazione.",
-	"modal-submit-confirm": "Conferma richiesta",
-	"modal-submit-confirm-text": "Hai già specificato un motivo personalizzato. Sei sicuro di voler inviare una segnalazione rapida?",
-	"modal-submit-confirm-text-help": "L'invio di una segnalazione rapida sovrascrive qualsiasi motivo personalizzato definito.",
 
 	"bulk-actions": "Azioni in blocco",
-	"bulk-resolve": "Risoluzione segnalazione(i)",
-	"bulk-success": "%1 segnalazioni aggiornate"
+	"bulk-resolve": "Risolvi segnalazione(i)",
+	"bulk-success": "%1 segnalazioni aggiornate",
+	"flagged-timeago-readable": "Segnalato <span class=\"timeago\" title=\"%1\"></span> (%2)"
 }

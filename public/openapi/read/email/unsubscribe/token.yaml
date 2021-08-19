@@ -1,0 +1,60 @@
+get:
+  tags:
+    - emails
+  summary: Unsubscribe user from email type (user variant)
+  parameters:
+    - name: token
+      in: path
+      required: true
+      schema:
+        type: string
+      example: testToken
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  payload:
+                    type: object
+                    properties:
+                      uid:
+                        type: number
+                      template:
+                        type: string
+                        description: The type of email template to unsubscribe from.
+                        enum:
+                          - digest
+                          - notification
+                      type:
+                        type: string
+                        description: Only used if `template` is `notification`, signifies the type of notification to unsubscribe from.
+                        nullable: true
+                      iat:
+                        type: number
+                        description: Reflection of the token's "issued at" claim
+                    required:
+                      - uid
+                      - template
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps
+    "500":
+      description: "Server-side error (likely token verification failure)"
+post:
+  tags:
+    - emails
+  summary: Unsubscribe user from email type (auto variant)
+  parameters:
+    - name: token
+      in: path
+      required: true
+      schema:
+        type: string
+      example: testToken
+  responses:
+    "200":
+      description: "Successfully unsubscribed"
+    "500":
+      description: "Server-side error (likely token verification failure)"

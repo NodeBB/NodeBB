@@ -1,6 +1,5 @@
 'use strict';
 
-const _ = require('lodash');
 const validator = require('validator');
 
 const plugins = require('../plugins');
@@ -10,13 +9,13 @@ const pubsub = require('../pubsub');
 const admin = module.exports;
 let cache = null;
 
-pubsub.on('admin:navigation:save', function () {
+pubsub.on('admin:navigation:save', () => {
 	cache = null;
 });
 
 admin.save = async function (data) {
 	const order = Object.keys(data);
-	const items = data.map(function (item, index) {
+	const items = data.map((item, index) => {
 		item.order = order[index];
 		return JSON.stringify(item);
 	});
@@ -35,33 +34,43 @@ admin.getAdmin = async function () {
 	return { enabled: enabled, available: available };
 };
 
+const fieldsToEscape = ['iconClass', 'class', 'route', 'id', 'text', 'textClass', 'title'];
+
+admin.escapeFields = navItems => toggleEscape(navItems, true);
+admin.unescapeFields = navItems => toggleEscape(navItems, false);
+
+function toggleEscape(navItems, flag) {
+	navItems.forEach((item) => {
+		if (item) {
+			fieldsToEscape.forEach((field) => {
+				if (item.hasOwnProperty(field)) {
+					item[field] = validator[flag ? 'escape' : 'unescape'](String(item[field]));
+				}
+			});
+		}
+	});
+}
+
 admin.get = async function () {
 	if (cache) {
-		return _.cloneDeep(cache);
+		return cache.map(item => ({ ...item }));
 	}
 	const data = await db.getSortedSetRange('navigation:enabled', 0, -1);
-	const escapeFields = ['iconClass', 'class', 'route', 'id', 'text', 'textClass', 'title'];
-	cache = data.map(function (item) {
+	cache = data.map((item) => {
 		item = JSON.parse(item);
-
-		escapeFields.forEach((field) => {
-			if (item.hasOwnProperty(field)) {
-				item[field] = validator.escape(String(item[field]));
-			}
-		});
-
 		item.groups = item.groups || [];
 		if (item.groups && !Array.isArray(item.groups)) {
 			item.groups = [item.groups];
 		}
 		return item;
 	});
+	admin.escapeFields(cache);
 
-	return _.cloneDeep(cache);
+	return cache.map(item => ({ ...item }));
 };
 
 async function getAvailable() {
-	const core = require('../../install/data/navigation.json').map(function (item) {
+	const core = require('../../install/data/navigation.json').map((item) => {
 		item.core = true;
 		item.id = item.id || '';
 		item.properties = item.properties || { targetBlank: false };
@@ -69,7 +78,7 @@ async function getAvailable() {
 		return item;
 	});
 
-	return await plugins.fireHook('filter:navigation.available', core);
+	return await plugins.hooks.fire('filter:navigation.available', core);
 }
 
 require('../promisify')(admin);

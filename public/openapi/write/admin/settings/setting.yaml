@@ -1,0 +1,37 @@
+put:
+  tags:
+    - admin
+  summary: update configuration setting
+  description: This operation updates a configuration setting in the backend. The calling user must have the `admin:settings` privilege (or be a superadmin) in order for this call to proceed.
+  parameters:
+    - in: path
+      name: setting
+      schema:
+        type: string
+      required: true
+      description: backend id of the setting to update
+      example: maximumRelatedTopics
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            value:
+              type: string
+              description: the value of the new setting
+              example: 2
+  responses:
+    '200':
+      description: Admin setting updated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}

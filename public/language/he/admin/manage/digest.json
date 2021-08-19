@@ -1,21 +1,21 @@
 {
-	"lead": "A listing of digest delivery stats and times is displayed below.",
-	"disclaimer": "Please be advised that email delivery is not guaranteed, due to the nature of email technology. Many variables factor into whether an email sent to the recipient server is ultimately delivered into the user's inbox, including server reputation, blacklisted IP addresses, and whether DKIM/SPF/DMARC is configured.",
-	"disclaimer-continued": "A successful delivery means the message was sent successfully by NodeBB and acknowledged by the recipient server. It does not mean the email landed in the inbox. For best results, we recommend using a third-party email delivery service such as <a href=\"https://sendgrid.com/why-sendgrid/\">SendGrid</a>.",
+	"lead": "רשימה של נתונים סטטיסטיים וזמנים של מסירת תקציר מוצג להלן.",
+	"disclaimer": "לידיעתך, לא ניתן להבטיח משלוח דוא\"ל, בשל אופייה של טכנולוגיית הדוא\"ל. משתנים רבים גורמים לשאלה האם דוא\"ל שנשלח לשרת הנמען מועבר בסופו של דבר לתיבת הדואר הנכנס של המשתמש, כולל מוניטין של שרת, כתובות IP ברשימה השחורה והאם מוגדר DKIM / SPF / DMARC.",
+	"disclaimer-continued": "שליחה מוצלחת אומר שההודעה נשלחה בהצלחה מNodeBB והוכר על ידי שרת הלקוח. זה לא אומר שהאימייל הגיע לתיבה שלו. לקבלת התוצאות הטובות ביותר אנו ממליצים להשתמש בשירות שליחת אימייל צד-שלישי כמו <a href=\"https://sendgrid.com/why-sendgrid/\">SendGrid</a>.",
 
-	"user": "User",
-	"subscription": "Subscription Type",
-	"last-delivery": "Last successful delivery",
-	"default": "System default",
-	"default-help": "<em>System default</em> means the user has not explicitly overridden the global forum setting for digests, which is currently: &quot;<strong>%1</strong>&quot;",
-	"resend": "Resend Digest",
-	"resend-all-confirm": "Are you sure you wish to manually execute this digest run?",
-	"resent-single": "Manual digest resend completed",
-	"resent-day": "Daily digest resent",
-	"resent-week": "Weekly digest resent",
-	"resent-month": "Monthly digest resent",
-	"null": "<em>Never</em>",
-	"manual-run": "Manual digest run:",
+	"user": "משתמש",
+	"subscription": "סוג מנוי",
+	"last-delivery": "שליחה מוצלחת אחרונה",
+	"default": "ברירת מחדל של המערכת",
+	"default-help": "<em>ברירת מחדל של המערכת</em> אומר שהמשתמש לא עקף במפורש את הגדרות הפורום הכלליים לתקצירים , שהם כעת: &quot;<strong>%1</strong>&quot;",
+	"resend": "שלח תקציר מחדש",
+	"resend-all-confirm": "האם אתה בטוח שברצונך לבצע באופן ידני הפעלת תקציר זו?",
+	"resent-single": "שליחת התקציר מחדש באופן ידני בוצע בהצלחה",
+	"resent-day": "תקציר יומי נשלח",
+	"resent-week": "תקציר שבועי נשלח",
+	"resent-month": "תקציר חודשי נשלח",
+	"null": "<em>אף פעם</em>",
+	"manual-run": "הפעל תקציר ידני",
 
-	"no-delivery-data": "No delivery data found"
+	"no-delivery-data": "לא נמצאו נתוני שליחה"
 }

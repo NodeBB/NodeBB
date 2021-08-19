@@ -2,6 +2,7 @@
 	"forum-traffic": "Provoz fóra",
 	"page-views": "Zobrazení stránky",
 	"unique-visitors": "Jedineční návštěvníci",
+	"logins": "Logins",
 	"new-users": "Nový uživatelé",
 	"posts": "Příspěvky",
 	"topics": "Témata",
@@ -29,6 +30,7 @@
 	"upgrade-available": "<p>Nová verze (v%1) byla zveřejněna. Zvažte <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">aktualizaci vašeho NodeBB</a>.</p>",
 	"prerelease-upgrade-available": "<p>Toto je zastaralá testovací verze NodeBB. Nová verze (v%1) byla zveřejněna. Zvažte <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">aktualizaci vaší verze NodeBB</a>.</p>",
 	"prerelease-warning": "<p>Toto je <strong>zkušební</strong> verze NodeBB. Mohou se vyskytnout různé chyby.<i class=\"fa fa-exclamation-triangle\"></i></p>",
+	"fallback-emailer-not-found": "Fallback emailer not found!",
 	"running-in-development": "<span>Fórum běží ve vývojářském režimu a může být potencionálně zranitelné . Kontaktujte správce systému.</span>",
 	"latest-lookup-failed": "<p>Náhled na poslední dostupnou verzi NodeBB</p>",
 
@@ -75,5 +77,12 @@
 	"graphs.registered-users": "Registrovaní uživatelé",
 	"graphs.anonymous-users": "Anonymní uživatelé",
 	"last-restarted-by": "Poslední restart od",
-	"no-users-browsing": "Nikdo si nic neprohlíží"
+	"no-users-browsing": "Nikdo si nic neprohlíží",
+
+	"back-to-dashboard": "Back to Dashboard",
+	"details.no-users": "No users have joined within the selected timeframe",
+	"details.no-topics": "No topics have been posted within the selected timeframe",
+	"details.no-logins": "No logins have been recorded within the selected timeframe",
+	"details.logins-static": "NodeBB only saves session data for %1 days, and so this table below will only show the most recently active sessions",
+	"details.logins-login-time": "Login Time"
 }

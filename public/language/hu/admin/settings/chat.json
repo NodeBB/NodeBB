@@ -1,12 +1,12 @@
 {
-	"chat-settings": "Chat beállítások",
-	"disable": "Chat letiltása",
-	"disable-editing": "Chat üzenetek szerkesztésének/törlésének letiltása",
+	"chat-settings": "Csevegési beállítások",
+	"disable": "Csevegés letiltása",
+	"disable-editing": "Csevegési üzenetek szerkesztésének/törlésének letiltása",
 	"disable-editing-help": "Az adminisztrátorok és globális moderátorok kivételnek számítanak ezen korlátozás alól",
-	"max-length": "Chat üzenetek maximális hossza",
-	"max-room-size": "A chat szobákban lévő felhasználók maximális száma",
-	"delay": "Chat üzenetek közötti idő ezredmásodpercben",
-	"notification-delay": "Notification delay for chat messages. (0 for no delay)",
-	"restrictions.seconds-edit-after": "Number of seconds a chat message will remain editable. (0 disabled)",
-	"restrictions.seconds-delete-after": "Number of seconds a chat message will remain deletable. (0 disabled)"
+	"max-length": "Csevegési üzenetek maximális hossza",
+	"max-room-size": "A csevegési szobákban lévő felhasználók maximális száma",
+	"delay": "Csevegési üzenetek közötti idő ezredmásodpercben",
+	"notification-delay": "Értesítési késleltetés csevegési üzenetekhez. (0: nincs késleltetés)",
+	"restrictions.seconds-edit-after": "Hány másodpercig marad szerkeszthető egy üzenet az elküldése után. (0: nincs korlátozás)",
+	"restrictions.seconds-delete-after": "Hány másodpercig marad törölhető egy üzenet az elküldése után. (0: nincs korlátozás)"
 }

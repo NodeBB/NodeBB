@@ -1,0 +1,31 @@
+delete:
+  tags:
+    - files
+  summary: delete uploaded file
+  description: This operation deletes a file uploaded to NodeBB
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            path:
+              type: string
+              description: Path to the file (relative to the configured `upload_path`)
+              example: files/test.txt
+          required:
+            - path
+  responses:
+    '200':
+      description: File deleted
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}

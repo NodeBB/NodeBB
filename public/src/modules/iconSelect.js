@@ -19,7 +19,7 @@ define('iconSelect', ['benchpress'], function (Benchpress) {
 			}
 		}
 
-		Benchpress.parse('partials/fontawesome', {}, function (html) {
+		Benchpress.render('partials/fontawesome', {}).then(function (html) {
 			html = $(html);
 			html.find('.fa-icons').prepend($('<i class="fa fa-nbb-none"></i>'));
 
@@ -48,11 +48,16 @@ define('iconSelect', ['benchpress'], function (Benchpress) {
 							var iconClass = $('.bootbox .selected').attr('class');
 							var categoryIconClass = $('<div></div>').addClass(iconClass).removeClass('fa').removeClass('selected')
 								.attr('class');
+							var searchElVal = picker.find('input').val();
 
 							if (categoryIconClass) {
 								el.attr('class', 'fa ' + (doubleSize ? 'fa-2x ' : '') + categoryIconClass);
 								el.val(categoryIconClass);
 								el.attr('value', categoryIconClass);
+							} else if (searchElVal) {
+								el.attr('class', searchElVal);
+								el.val(searchElVal);
+								el.attr('value', searchElVal);
 							}
 
 							onModified(el);

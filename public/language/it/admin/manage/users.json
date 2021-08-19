@@ -1,6 +1,6 @@
 {
 	"users": "Utenti",
-	"edit": "Modifica",
+	"edit": "Azioni",
 	"make-admin": "Crea Amministratore",
 	"remove-admin": "Rimuovi Amministratore",
 	"validate-email": "Valida Email",
@@ -20,16 +20,10 @@
 	"add-group": "Aggiungi Gruppo",
 	"invite": "Invito",
 	"new": "Nuovo utente",
-
-	"pills.latest": "Ultimo utente",
+	"filter-by": "Filtra per",
 	"pills.unvalidated": "Non Validato",
-	"pills.no-posts": "Nessun Post",
-	"pills.top-posters": "Utenti più attivi",
-	"pills.top-rep": "Con più reputazione",
-	"pills.inactive": "Inattivo",
-	"pills.flagged": "I più segnalati",
+	"pills.validated": "Convalidato",
 	"pills.banned": "Bannato",
-	"pills.search": "Ricerca Utente",
 
 	"50-per-page": "50 per pagina",
 	"100-per-page": "100 per pagina",
@@ -53,6 +47,7 @@
 	"users.uid": "id utente",
 	"users.username": "username",
 	"users.email": "email",
+	"users.ip": "IP",
 	"users.postcount": "numero di post",
 	"users.reputation": "reputazione",
 	"users.flags": "segnalazioni",
@@ -108,5 +103,7 @@
 
 	"alerts.prompt-email": "Emails:",
 	"alerts.email-sent-to": "Un invito è stato inviato tramite mail a %1",
-	"alerts.x-users-found": "%1 utente(i) trovato(i), (%2 secondi)"
+	"alerts.x-users-found": "%1 utente(i) trovato(i), (%2 secondi)",
+	"export-users-started": "L'esportazione di utenti come csv potrebbe richiedere del tempo. Riceverai una notifica al termine.",
+	"export-users-completed": "Utenti esportati come csv, clicca qui per scaricare."
 }

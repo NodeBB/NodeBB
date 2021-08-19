@@ -18,9 +18,15 @@
     "agree_to_terms_of_use": "আমি নিয়মাবলী মেনে চলতে সম্মতি জানালাম",
     "terms_of_use_error": "আপনাকে অবশ্যই ব্যাবহার নীতিমালায় সম্মত হতে হবে।",
     "registration-added-to-queue": "আপনার নিবন্ধনটি এ্যাপ্লুভাল তালিকায় যুক্ত হয়েছে। একজন এডমিনিস্ট্রেটর কর্তৃক নিবন্ধন গৃহীত হলে আপনি একটি মেইল পাবেন। ",
-    "interstitial.intro": "আপনার একাউন্ট তৈরীর পূর্বে আমাদের আরো কিছু বাড়তি তথ্য জানা প্রয়োজন।",
-    "interstitial.errors-found": "আপনার নিবন্ধনটি সম্পূর্ণ করা সম্ভব হয় নি।",
+    "registration-queue-average-time": "Our average time for approving memberships is %1 hours %2 minutes.",
+    "registration-queue-auto-approve-time": "Your membership to this forum will be fully activated in up to %1 hours.",
+    "interstitial.intro": "We'd like some additional information in order to update your account&hellip;",
+    "interstitial.intro-new": "We'd like some additional information before we can create your account&hellip;",
+    "interstitial.errors-found": "Please review the entered information:",
     "gdpr_agree_data": "I consent to the collection and processing of my personal information on this website.",
     "gdpr_agree_email": "I consent to receive digest and notification emails from this website.",
-    "gdpr_consent_denied": "You must give consent to this site to collect/process your information, and to send you emails."
+    "gdpr_consent_denied": "You must give consent to this site to collect/process your information, and to send you emails.",
+    "invite.error-admin-only": "Direct user registration has been disabled. Please contact an administrator for more details.",
+    "invite.error-invite-only": "Direct user registration has been disabled. You must be invited by an existing user in order to access this forum.",
+    "invite.error-invalid-data": "The registration data received does not correspond to our records. Please contact an administrator for more details"
 }

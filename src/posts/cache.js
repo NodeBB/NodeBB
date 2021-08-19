@@ -1,14 +1,12 @@
 'use strict';
 
-var LRU = require('lru-cache');
-var meta = require('../meta');
+const cacheCreate = require('../cacheCreate');
+const meta = require('../meta');
 
-var cache = new LRU({
+module.exports = cacheCreate({
+	name: 'post',
 	max: meta.config.postCacheSize,
 	length: function (n) { return n.length; },
 	maxAge: 0,
+	enabled: global.env === 'production',
 });
-cache.hits = 0;
-cache.misses = 0;
-
-module.exports = cache;

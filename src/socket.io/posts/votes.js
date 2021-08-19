@@ -5,7 +5,9 @@ const user = require('../../user');
 const posts = require('../../posts');
 const privileges = require('../../privileges');
 const meta = require('../../meta');
-const helpers = require('./helpers');
+const api = require('../../api');
+
+const sockets = require('..');
 
 module.exports = function (SocketPosts) {
 	SocketPosts.getVoters = async function (socket, data) {
@@ -18,8 +20,8 @@ module.exports = function (SocketPosts) {
 			throw new Error('[[error:no-privileges]]');
 		}
 		const [upvoteUids, downvoteUids] = await Promise.all([
-			db.getSetMembers('pid:' + data.pid + ':upvote'),
-			showDownvotes ? db.getSetMembers('pid:' + data.pid + ':downvote') : [],
+			db.getSetMembers(`pid:${data.pid}:upvote`),
+			showDownvotes ? db.getSetMembers(`pid:${data.pid}:downvote`) : [],
 		]);
 
 		const [upvoters, downvoters] = await Promise.all([
@@ -45,7 +47,7 @@ module.exports = function (SocketPosts) {
 			return [];
 		}
 
-		const result = await Promise.all(data.map(async function (uids) {
+		const result = await Promise.all(data.map(async (uids) => {
 			let otherCount = 0;
 			if (uids.length > 6) {
 				otherCount = uids.length - 5;
@@ -61,14 +63,17 @@ module.exports = function (SocketPosts) {
 	};
 
 	SocketPosts.upvote = async function (socket, data) {
-		return await helpers.postCommand(socket, 'upvote', 'voted', 'notifications:upvoted_your_post_in', data);
+		sockets.warnDeprecated(socket, 'PUT /api/v3/posts/:pid/vote');
+		return await api.posts.upvote(socket, data);
 	};
 
 	SocketPosts.downvote = async function (socket, data) {
-		return await helpers.postCommand(socket, 'downvote', 'voted', '', data);
+		sockets.warnDeprecated(socket, 'PUT /api/v3/posts/:pid/vote');
+		return await api.posts.downvote(socket, data);
 	};
 
 	SocketPosts.unvote = async function (socket, data) {
-		return await helpers.postCommand(socket, 'unvote', 'voted', '', data);
+		sockets.warnDeprecated(socket, 'DELETE /api/v3/posts/:pid/vote');
+		return await api.posts.unvote(socket, data);
 	};
 };

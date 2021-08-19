@@ -3,14 +3,12 @@
 const winston = require('winston');
 const _ = require('lodash');
 const Benchpress = require('benchpressjs');
-const util = require('util');
 
 const plugins = require('../plugins');
 const groups = require('../groups');
 const translator = require('../translator');
 const db = require('../database');
 const apiController = require('../controllers/api');
-const loadConfigAsync = util.promisify(apiController.loadConfig);
 const meta = require('../meta');
 
 const widgets = module.exports;
@@ -27,7 +25,7 @@ widgets.render = async function (uid, options) {
 	const widgetData = await Promise.all(locations.map(location => renderLocation(location, data, uid, options)));
 
 	const returnData = {};
-	locations.forEach(function (location, i) {
+	locations.forEach((location, i) => {
 		if (Array.isArray(widgetData[i]) && widgetData[i].length) {
 			returnData[location] = widgetData[i].filter(Boolean);
 		}
@@ -52,19 +50,19 @@ async function renderWidget(widget, uid, options) {
 		return;
 	}
 
-	const isVisible = await checkVisibility(widget, uid);
+	const isVisible = await widgets.checkVisibility(widget.data, uid);
 	if (!isVisible) {
 		return;
 	}
 
 	let config = options.res.locals.config || {};
 	if (options.res.locals.isAPI) {
-		config = await loadConfigAsync(options.req);
+		config = await apiController.loadConfig(options.req);
 	}
 
 	const userLang = config.userLang || meta.config.defaultLang || 'en-GB';
 	const templateData = _.assign({ }, options.templateData, { config: config });
-	const data = await plugins.fireHook('filter:widget.render:' + widget.widget, {
+	const data = await plugins.hooks.fire(`filter:widget.render:${widget.widget}`, {
 		uid: uid,
 		area: options,
 		templateData: templateData,
@@ -76,12 +74,8 @@ async function renderWidget(widget, uid, options) {
 	if (!data) {
 		return;
 	}
-	let html = data;
-	if (typeof html !== 'string') {
-		html = data.html;
-	} else {
-		winston.warn('[widgets.render] passing a string is deprecated!, filter:widget.render:' + widget.widget + '. Please set hookData.html in your plugin.');
-	}
+
+	let { html } = data;
 
 	if (widget.data.container && widget.data.container.match('{body}')) {
 		html = await Benchpress.compileRender(widget.data.container, {
@@ -91,43 +85,43 @@ async function renderWidget(widget, uid, options) {
 		});
 	}
 
-	if (html !== undefined) {
+	if (html) {
 		html = await translator.translate(html, userLang);
 	}
 
-	return { html: html };
+	return { html };
 }
 
-async function checkVisibility(widget, uid) {
+widgets.checkVisibility = async function (data, uid) {
 	let isVisible = true;
 	let isHidden = false;
-	if (widget.data.groups.length) {
-		isVisible = await groups.isMemberOfAny(uid, widget.data.groups);
+	if (data.groups.length) {
+		isVisible = await groups.isMemberOfAny(uid, data.groups);
 	}
-	if (widget.data.groupsHideFrom.length) {
-		isHidden = await groups.isMemberOfAny(uid, widget.data.groupsHideFrom);
+	if (data.groupsHideFrom.length) {
+		isHidden = await groups.isMemberOfAny(uid, data.groupsHideFrom);
 	}
 	return isVisible && !isHidden;
-}
+};
 
 widgets.getWidgetDataForTemplates = async function (templates) {
-	const keys = templates.map(tpl => 'widgets:' + tpl);
+	const keys = templates.map(tpl => `widgets:${tpl}`);
 	const data = await db.getObjects(keys);
 
 	const returnData = {};
 
-	templates.forEach(function (template, index) {
+	templates.forEach((template, index) => {
 		returnData[template] = returnData[template] || {};
 
 		const templateWidgetData = data[index] || {};
 		const locations = Object.keys(templateWidgetData);
 
-		locations.forEach(function (location) {
+		locations.forEach((location) => {
 			if (templateWidgetData && templateWidgetData[location]) {
 				try {
 					returnData[template][location] = parseWidgetData(templateWidgetData[location]);
 				} catch (err) {
-					winston.error('can not parse widget data. template:  ' + template + ' location: ' + location);
+					winston.error(`can not parse widget data. template:  ${template} location: ${location}`);
 					returnData[template][location] = [];
 				}
 			} else {
@@ -140,7 +134,7 @@ widgets.getWidgetDataForTemplates = async function (templates) {
 };
 
 widgets.getArea = async function (template, location) {
-	const result = await db.getObjectField('widgets:' + template, location);
+	const result = await db.getObjectField(`widgets:${template}`, location);
 	if (!result) {
 		return [];
 	}
@@ -149,7 +143,7 @@ widgets.getArea = async function (template, location) {
 
 function parseWidgetData(data) {
 	const widgets = JSON.parse(data);
-	widgets.forEach(function (widget) {
+	widgets.forEach((widget) => {
 		if (widget) {
 			widget.data.groups = widget.data.groups || [];
 			if (widget.data.groups && !Array.isArray(widget.data.groups)) {
@@ -170,7 +164,7 @@ widgets.setArea = async function (area) {
 		throw new Error('Missing location and template data');
 	}
 
-	await db.setObjectField('widgets:' + area.template, area.location, JSON.stringify(area.widgets));
+	await db.setObjectField(`widgets:${area.template}`, area.location, JSON.stringify(area.widgets));
 };
 
 widgets.reset = async function () {
@@ -181,7 +175,7 @@ widgets.reset = async function () {
 	];
 
 	const [areas, drafts] = await Promise.all([
-		plugins.fireHook('filter:widgets.getAreas', defaultAreas),
+		plugins.hooks.fire('filter:widgets.getAreas', defaultAreas),
 		widgets.getArea('global', 'drafts'),
 	]);
 
@@ -202,14 +196,9 @@ widgets.reset = async function () {
 };
 
 widgets.resetTemplate = async function (template) {
-	let toBeDrafted = [];
-	const area = await db.getObject('widgets:' + template + '.tpl');
-	for (var location in area) {
-		if (area.hasOwnProperty(location)) {
-			toBeDrafted = toBeDrafted.concat(JSON.parse(area[location]));
-		}
-	}
-	await db.delete('widgets:' + template + '.tpl');
+	const area = await db.getObject(`widgets:${template}.tpl`);
+	const toBeDrafted = _.flatMap(Object.values(area), value => JSON.parse(value));
+	await db.delete(`widgets:${template}.tpl`);
 	let draftWidgets = await db.getObjectField('widgets:global', 'drafts');
 	draftWidgets = JSON.parse(draftWidgets).concat(toBeDrafted);
 	await db.setObjectField('widgets:global', 'drafts', JSON.stringify(draftWidgets));

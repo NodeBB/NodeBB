@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/account/settings', ['forum/account/header', 'components', 'translator'], function (header, components, translator) {
+define('forum/account/settings', ['forum/account/header', 'components', 'translator', 'api'], function (header, components, translator, api) {
 	var	AccountSettings = {};
 
 	// If page skin is changed but not saved, switch the skin back
@@ -53,12 +53,11 @@ define('forum/account/settings', ['forum/account/header', 'components', 'transla
 			}
 
 			switch (input.attr('type')) {
-				case 'text':
-				case 'textarea':
-					settings[setting] = input.val();
-					break;
 				case 'checkbox':
 					settings[setting] = input.is(':checked') ? 1 : 0;
+					break;
+				default:
+					settings[setting] = input.val();
 					break;
 			}
 		});
@@ -67,11 +66,7 @@ define('forum/account/settings', ['forum/account/header', 'components', 'transla
 	}
 
 	function saveSettings(settings) {
-		socket.emit('user.saveSettings', { uid: ajaxify.data.theirid, settings: settings }, function (err, newSettings) {
-			if (err) {
-				return app.alertError(err.message);
-			}
-
+		api.put(`/users/${ajaxify.data.uid}/settings`, { settings }).then((newSettings) => {
 			app.alertSuccess('[[success:settings-saved]]');
 			var languageChanged = false;
 			for (var key in newSettings) {
@@ -91,7 +86,8 @@ define('forum/account/settings', ['forum/account/header', 'components', 'transla
 					htmlEl.attr('data-dir', translated);
 					htmlEl.css('direction', translated);
 				});
-				$.getScript(config.relative_path + '/assets/vendor/jquery/timeago/locales/jquery.timeago.' + utils.userLangToTimeagoCode(config.userLang) + '.js', function () {
+
+				translator.switchTimeagoLanguage(utils.userLangToTimeagoCode(config.userLang), function () {
 					overrides.overrideTimeago();
 					ajaxify.refresh();
 				});

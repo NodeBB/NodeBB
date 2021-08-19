@@ -17,7 +17,7 @@
 	"mongo.file-size": "Taille de fichier",
 	"mongo.resident-memory": "Mémoire résidente",
 	"mongo.virtual-memory": "Mémoire virtuelle",
-	"mongo.mapped-memory": "Configuration de mémoire",
+	"mongo.mapped-memory": "Mémoire mappée",
 	"mongo.bytes-in": "Données entrées",
 	"mongo.bytes-out": "Données sorties",
 	"mongo.num-requests": "Nombre de requêtes",

@@ -1,26 +1,22 @@
 'use strict';
 
-var meta = require('./meta');
-var pubsub = require('./pubsub');
+const meta = require('./meta');
+const pubsub = require('./pubsub');
 
 function expandObjBy(obj1, obj2) {
-	var key;
-	var val1;
-	var val2;
-	var xorValIsArray;
-	var changed = false;
-	for (key in obj2) {
-		if (obj2.hasOwnProperty(key)) {
-			val2 = obj2[key];
-			val1 = obj1[key];
-			xorValIsArray = Array.isArray(val1) ^ Array.isArray(val2);
-			if (xorValIsArray || !obj1.hasOwnProperty(key) || typeof val2 !== typeof val1) {
-				obj1[key] = val2;
+	let changed = false;
+	if (!obj1 || !obj2) {
+		return changed;
+	}
+	for (const [key, val2] of Object.entries(obj2)) {
+		const val1 = obj1[key];
+		const xorIsArray = Array.isArray(val1) !== Array.isArray(val2);
+		if (xorIsArray || !obj1.hasOwnProperty(key) || typeof val2 !== typeof val1) {
+			obj1[key] = val2;
+			changed = true;
+		} else if (typeof val2 === 'object' && !Array.isArray(val2)) {
+			if (expandObjBy(val1, val2)) {
 				changed = true;
-			} else if (typeof val2 === 'object' && !Array.isArray(val2)) {
-				if (expandObjBy(val1, val2)) {
-					changed = true;
-				}
 			}
 		}
 	}
@@ -28,16 +24,11 @@ function expandObjBy(obj1, obj2) {
 }
 
 function trim(obj1, obj2) {
-	var key;
-	var val1;
-	for (key in obj1) {
-		if (obj1.hasOwnProperty(key)) {
-			val1 = obj1[key];
-			if (!obj2.hasOwnProperty(key)) {
-				delete obj1[key];
-			} else if (typeof val1 === 'object' && !Array.isArray(val1)) {
-				trim(val1, obj2[key]);
-			}
+	for (const [key, val1] of Object.entries(obj1)) {
+		if (!obj2.hasOwnProperty(key)) {
+			delete obj1[key];
+		} else if (typeof val1 === 'object' && !Array.isArray(val1)) {
+			trim(val1, obj2[key]);
 		}
 	}
 }
@@ -69,7 +60,7 @@ function Settings(hash, version, defCfg, callback, forceUpdate, reset) {
 	this.hash = hash;
 	this.version = version || this.version;
 	this.defCfg = defCfg;
-	var self = this;
+	const self = this;
 
 	if (reset) {
 		this.reset(callback);
@@ -78,7 +69,7 @@ function Settings(hash, version, defCfg, callback, forceUpdate, reset) {
 			this.checkStructure(callback, forceUpdate);
 		});
 	}
-	pubsub.on('action:settings.set.' + hash, function (data) {
+	pubsub.on(`action:settings.set.${hash}`, (data) => {
 		try {
 			self.cfg._ = JSON.parse(data._);
 		} catch (err) {}
@@ -95,8 +86,8 @@ Settings.prototype.version = '0.0.0';
  @param callback Gets called when done.
  */
 Settings.prototype.sync = function (callback) {
-	var _this = this;
-	meta.settings.get(this.hash, function (err, settings) {
+	const _this = this;
+	meta.settings.get(this.hash, (err, settings) => {
 		try {
 			if (settings._) {
 				settings._ = JSON.parse(settings._);
@@ -119,14 +110,14 @@ Settings.prototype.sync = function (callback) {
  @param callback Gets called when done.
  */
 Settings.prototype.persist = function (callback) {
-	var conf = this.cfg._;
-	var _this = this;
+	let conf = this.cfg._;
+	const _this = this;
 	if (typeof conf === 'object') {
 		conf = JSON.stringify(conf);
 	}
-	meta.settings.set(this.hash, this.createWrapper(this.cfg.v, conf), function () {
+	meta.settings.set(this.hash, this.createWrapper(this.cfg.v, conf), (...args) => {
 		if (typeof callback === 'function') {
-			callback.apply(_this, arguments || []);
+			callback.apply(_this, args || []);
 		}
 	});
 	return this;
@@ -139,10 +130,10 @@ Settings.prototype.persist = function (callback) {
  @returns Object The setting to be used.
  */
 Settings.prototype.get = function (key, def) {
-	var obj = this.cfg._;
-	var parts = (key || '').split('.');
-	var part;
-	for (var i = 0; i < parts.length; i += 1) {
+	let obj = this.cfg._;
+	const parts = (key || '').split('.');
+	let part;
+	for (let i = 0; i < parts.length; i += 1) {
 		part = parts[i];
 		if (part && obj != null) {
 			obj = obj[part];
@@ -151,7 +142,7 @@ Settings.prototype.get = function (key, def) {
 	if (obj === undefined) {
 		if (def === undefined) {
 			def = this.defCfg;
-			for (var j = 0; j < parts.length; j += 1) {
+			for (let j = 0; j < parts.length; j += 1) {
 				part = parts[j];
 				if (part && def != null) {
 					def = def[part];
@@ -196,16 +187,16 @@ Settings.prototype.createDefaultWrapper = function () {
  @param val The value to set.
  */
 Settings.prototype.set = function (key, val) {
-	var part;
-	var obj;
-	var parts;
+	let part;
+	let obj;
+	let parts;
 	this.cfg.v = this.version;
 	if (val == null || !key) {
 		this.cfg._ = val || key;
 	} else {
 		obj = this.cfg._;
 		parts = key.split('.');
-		for (var i = 0, _len = parts.length - 1; i < _len; i += 1) {
+		for (let i = 0, _len = parts.length - 1; i < _len; i += 1) {
 			part = parts[i];
 			if (part) {
 				if (!obj.hasOwnProperty(part)) {

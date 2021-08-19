@@ -4,7 +4,7 @@
         "description": "Announcements regarding our community",
         "descriptionParsed": "<p>Announcements regarding our community</p>\n",
         "bgColor": "#fda34b",
-        "color": "#fff",
+        "color": "#ffffff",
         "icon" : "fa-bullhorn",
         "order": 1
     },
@@ -13,7 +13,7 @@
         "description": "A place to talk about whatever you want",
         "descriptionParsed": "<p>A place to talk about whatever you want</p>\n",
         "bgColor": "#59b3d0",
-        "color": "#fff",
+        "color": "#ffffff",
         "icon" : "fa-comments-o",
         "order": 2
     },
@@ -22,7 +22,7 @@
         "description": "Blog posts from individual members",
         "descriptionParsed": "<p>Blog posts from individual members</p>\n",
         "bgColor": "#86ba4b",
-        "color": "#fff",
+        "color": "#ffffff",
         "icon" : "fa-newspaper-o",
         "order": 4
     },
@@ -31,7 +31,7 @@
         "description": "Got a question? Ask away!",
         "descriptionParsed": "<p>Got a question? Ask away!</p>\n",
         "bgColor": "#e95c5a",
-        "color": "#fff",
+        "color": "#ffffff",
         "icon" : "fa-question",
         "order": 3
     }

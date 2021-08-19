@@ -1,5 +1,9 @@
 {
-	"dashboard": "Pulpit menedżerski",
+	"section-dashboard": "Dashboards",
+	"dashboard/overview": "Overview",
+	"dashboard/logins": "Logins",
+	"dashboard/users": "Users",
+	"dashboard/topics": "Topics",
 	"section-general": "Ogólne",
 
 	"section-manage": "Zarządzanie",
@@ -31,6 +35,7 @@
 	"settings/pagination": "Paginacja",
 	"settings/tags": "Tagi",
 	"settings/notifications": "Powiadomienia",
+	"settings/api": "Dostęp do API",
 	"settings/sounds": "Dźwięki",
 	"settings/social": "Społecznościowe",
 	"settings/cookies": "Ciasteczka",
@@ -70,7 +75,7 @@
 	"logout": "Wyloguj się",
 	"view-forum": "Zobacz forum",
 
-	"search.placeholder": "Press &quot;/&quot; to search for settings",
+	"search.placeholder": "Naciśnij &quot;/&quot; aby wyszukać ustawienia",
 	"search.no-results": "Brak wyników...",
 	"search.search-forum": "Szukaj w forum <strong></strong>",
 	"search.keep-typing": "Wpisz więcej, aby zobaczyć wyniki ...",

@@ -1,7 +1,7 @@
 {
-	"lead": "여기에 IP 차단 목록을 구성하십시오.",
-	"description": "가끔씩 사용자 계정 차단만으로는 부족할 수 있습니다. 그럴 경우에는 특정 IP 또는 IP 범위로 접근을 차단하는 것이 포럼을 보호하는 가장 좋은 방법입니다. 문제가 되는 IP 주소들이나 CIDR 블록 전체를 블랙리스트에 추가하면 로그인하거나 새 계정을 등록할 수 없습니다.",
-	"active-rules": "사용 중인 룰",
+	"lead": "여기에 IP 차단 목록을 구성하세요.",
+	"description": "가끔 사용자 계정 차단으로는 부족할 때가 있습니다. 그럴 경우에는 특정 IP 또는 IP 범위로 접근을 차단하는 것이 포럼을 보호하는 가장 좋은 방법입니다. 문제가 되는 IP 주소들이나 CIDR 블록 전체를 블랙리스트에 추가하면 로그인하거나 새 계정을 등록할 수 없습니다.",
+	"active-rules": "사용 중인 규칙",
 	"validate": "블랙리스트 확인",
 	"apply": "블랙리스트 적용",
 	"hints": "구문 힌트",
@@ -13,7 +13,7 @@
 
 	"alerts.applied-success": "블랙리스트 적용됨",
 
-	"analytics.blacklist-hourly": "<strong>Figure 1</strong> &ndash; Blacklist hits per hour",
-	"analytics.blacklist-daily": "<strong>Figure 2</strong> &ndash; Blacklist hits per day",
+	"analytics.blacklist-hourly": "<strong>그래프 1</strong> &ndash; 시간 당 블랙리스트 방문 횟수",
+	"analytics.blacklist-daily": "<strong>그래프 2</strong> &ndash; 일간 블랙리스트 방문 횟수",
 	"ip-banned": "IP 차단됨"
 }

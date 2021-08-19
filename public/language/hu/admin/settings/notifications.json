@@ -1,6 +1,6 @@
 {
-	"notifications": "Notifications",
-	"welcome-notification": "Welcome Notification",
-	"welcome-notification-link": "Welcome Notification Link",
-	"welcome-notification-uid": "Welcome Notification User (UID)"
+	"notifications": "Értesítések",
+	"welcome-notification": "Üdvözlő értesítés",
+	"welcome-notification-link": "Üdvözlő értesítés linkje",
+	"welcome-notification-uid": "Felhasználói üdvözlő értesítés (UID)"
 }

@@ -12,11 +12,11 @@ consentController.get = async function (req, res, next) {
 		return next();
 	}
 
-	const userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid);
+	const userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, req.query);
 	if (!userData) {
 		return next();
 	}
-	const consented = await db.getObjectField('user:' + userData.uid, 'gdpr_consent');
+	const consented = await db.getObjectField(`user:${userData.uid}`, 'gdpr_consent');
 	userData.gdpr_consent = parseInt(consented, 10) === 1;
 	userData.digest = {
 		frequency: meta.config.dailyDigestFreq || 'off',
@@ -24,7 +24,7 @@ consentController.get = async function (req, res, next) {
 	};
 
 	userData.title = '[[user:consent.title]]';
-	userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: '[[user:consent.title]]' }]);
+	userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: `/user/${userData.userslug}` }, { text: '[[user:consent.title]]' }]);
 
 	res.render('account/consent', userData);
 };

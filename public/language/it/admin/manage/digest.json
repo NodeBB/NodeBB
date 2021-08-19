@@ -1,5 +1,5 @@
 {
-	"lead": "Di seguito viene visualizzato un elenco di statistiche e tempi di consegna del digest.",
+	"lead": "Di seguito sarà visualizzato un elenco di statistiche e tempi di consegna del riepilogo.",
 	"disclaimer": "Si informa che la consegna della posta non è garantita a causa della natura della tecnologia di posta elettronica. Molte variabili determinano se una e-mail inviata al server del destinatario viene infine recapitata nella posta in arrivo dell'utente, inclusa la reputazione del server, gli indirizzi IP nella lista nera e se DKIM/SPF/DMARC è configurato.",
 	"disclaimer-continued": "Una consegna corretta indica che il messaggio è stato inviato correttamente da NodeBB e riconosciuto dal server destinatario. Non significa che l'email è arrivata nella posta in arrivo. Per risultati ottimali, si consiglia di utilizzare un servizio di consegna e-mail di terze parti come <a href=\"https://sendgrid.com/why-sendgrid/\">SendGrid</a>.",
 
@@ -7,15 +7,15 @@
 	"subscription": "Tipo di Abbonamento",
 	"last-delivery": "Ultima consegna riuscita",
 	"default": "Sistema predefinito",
-	"default-help": "<em>Sistema predefinito</em> significa che l'utente non ha esplicitamente sovrascritto l'impostazione del forum globale per i digest, che attualmente è: & quot;<strong>%1</strong>&quot;",
-	"resend": "Rinvia Digest",
+	"default-help": "<em>Sistema predefinito</em> significa che l'utente non ha esplicitamente sovrascritto l'impostazione del forum globale per i riepiloghi, che attualmente è: & quot;<strong>%1</strong>&quot;",
+	"resend": "Rinvia riepilogo",
 	"resend-all-confirm": "Sei sicuro di voler eseguire manualmente questa esecuzione del riepilogo?",
-	"resent-single": "Invio del digest manuale completato",
-	"resent-day": "Rinvio digest giornaliero",
-	"resent-week": "Rinvio del digest settimanale",
-	"resent-month": "Rinvio del digest mensile",
+	"resent-single": "Invio del riepilogo manuale completato",
+	"resent-day": "Rinvio riepilogo giornaliero",
+	"resent-week": "Rinvio del riepilogo settimanale",
+	"resent-month": "Rinvio del riepilogo mensile",
 	"null": "<em>Mai</em>",
-	"manual-run": "Esecuzione digest manuale:",
+	"manual-run": "Esecuzione riepilogo manuale:",
 
 	"no-delivery-data": "Nessun dato di consegna trovato"
 }

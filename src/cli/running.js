@@ -1,17 +1,17 @@
 'use strict';
 
-var fs = require('fs');
-var childProcess = require('child_process');
+const fs = require('fs');
+const childProcess = require('child_process');
 
-var fork = require('../meta/debugFork');
-var paths = require('./paths');
+const fork = require('../meta/debugFork');
+const { paths } = require('../constants');
 
-var dirname = paths.baseDir;
+const cwd = paths.baseDir;
 
 function getRunningPid(callback) {
 	fs.readFile(paths.pidfile, {
 		encoding: 'utf-8',
-	}, function (err, pid) {
+	}, (err, pid) => {
 		if (err) {
 			return callback(err);
 		}
@@ -32,36 +32,36 @@ function start(options) {
 		process.env.NODE_ENV = 'development';
 		fork(paths.loader, ['--no-daemon', '--no-silent'], {
 			env: process.env,
-			cwd: dirname,
 			stdio: 'inherit',
+			cwd,
 		});
 		return;
 	}
 	if (options.log) {
-		console.log('\n' + [
+		console.log(`\n${[
 			'Starting NodeBB with logging output'.bold,
 			'Hit '.red + 'Ctrl-C '.bold + 'to exit'.red,
 			'The NodeBB process will continue to run in the background',
-			'Use "' + './nodebb stop'.yellow + '" to stop the NodeBB server',
-		].join('\n'));
+			`Use "${'./nodebb stop'.yellow}" to stop the NodeBB server`,
+		].join('\n')}`);
 	} else if (!options.silent) {
-		console.log('\n' + [
+		console.log(`\n${[
 			'Starting NodeBB'.bold,
-			'  "' + './nodebb stop'.yellow + '" to stop the NodeBB server',
-			'  "' + './nodebb log'.yellow + '" to view server output',
-			'  "' + './nodebb help'.yellow + '" for more commands\n'.reset,
-		].join('\n'));
+			`  "${'./nodebb stop'.yellow}" to stop the NodeBB server`,
+			`  "${'./nodebb log'.yellow}" to view server output`,
+			`  "${'./nodebb help'.yellow}${'" for more commands\n'.reset}`,
+		].join('\n')}`);
 	}
 
 	// Spawn a new NodeBB process
-	var child = fork(paths.loader, process.argv.slice(3), {
+	const child = fork(paths.loader, process.argv.slice(3), {
 		env: process.env,
-		cwd: dirname,
+		cwd,
 	});
 	if (options.log) {
 		childProcess.spawn('tail', ['-F', './logs/output.log'], {
-			cwd: dirname,
 			stdio: 'inherit',
+			cwd,
 		});
 	}
 
@@ -69,7 +69,7 @@ function start(options) {
 }
 
 function stop() {
-	getRunningPid(function (err, pid) {
+	getRunningPid((err, pid) => {
 		if (!err) {
 			process.kill(pid, 'SIGTERM');
 			console.log('Stopping NodeBB. Goodbye!');
@@ -80,7 +80,7 @@ function stop() {
 }
 
 function restart(options) {
-	getRunningPid(function (err, pid) {
+	getRunningPid((err, pid) => {
 		if (!err) {
 			console.log('\nRestarting NodeBB'.bold);
 			process.kill(pid, 'SIGTERM');
@@ -94,17 +94,17 @@ function restart(options) {
 }
 
 function status() {
-	getRunningPid(function (err, pid) {
+	getRunningPid((err, pid) => {
 		if (!err) {
-			console.log('\n' + [
-				'NodeBB Running '.bold + ('(pid ' + pid.toString() + ')').cyan,
-				'\t"' + './nodebb stop'.yellow + '" to stop the NodeBB server',
-				'\t"' + './nodebb log'.yellow + '" to view server output',
-				'\t"' + './nodebb restart'.yellow + '" to restart NodeBB\n',
-			].join('\n'));
+			console.log(`\n${[
+				'NodeBB Running '.bold + (`(pid ${pid.toString()})`).cyan,
+				`\t"${'./nodebb stop'.yellow}" to stop the NodeBB server`,
+				`\t"${'./nodebb log'.yellow}" to view server output`,
+				`\t"${'./nodebb restart'.yellow}" to restart NodeBB\n`,
+			].join('\n')}`);
 		} else {
 			console.log('\nNodeBB is not running'.bold);
-			console.log('\t"' + './nodebb start'.yellow + '" to launch the NodeBB server\n'.reset);
+			console.log(`\t"${'./nodebb start'.yellow}${'" to launch the NodeBB server\n'.reset}`);
 		}
 	});
 }
@@ -112,8 +112,8 @@ function status() {
 function log() {
 	console.log('\nHit '.red + 'Ctrl-C '.bold + 'to exit\n'.red + '\n'.reset);
 	childProcess.spawn('tail', ['-F', './logs/output.log'], {
-		cwd: dirname,
 		stdio: 'inherit',
+		cwd,
 	});
 }
 

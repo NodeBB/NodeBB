@@ -22,6 +22,7 @@ define('admin/settings/email', ['ace/ace', 'admin/settings'], function (ace) {
 		$('button[data-action="email.test"]').off('click').on('click', function () {
 			socket.emit('admin.email.test', { template: $('#test-email').val() }, function (err) {
 				if (err) {
+					console.error(err.message);
 					return app.alertError(err.message);
 				}
 				app.alertSuccess('Test Email Sent');
@@ -82,7 +83,7 @@ define('admin/settings/email', ['ace/ace', 'admin/settings'], function (ace) {
 			hour = 0;
 		}
 
-		socket.emit('meta.getServerTime', {}, function (err, now) {
+		socket.emit('admin.getServerTime', {}, function (err, now) {
 			if (err) {
 				return app.alertError(err.message);
 			}

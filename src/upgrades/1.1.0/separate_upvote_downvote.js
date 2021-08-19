@@ -1,35 +1,35 @@
 'use strict';
 
 
-var async = require('async');
-var winston = require('winston');
-var db = require('../../database');
+const async = require('async');
+const winston = require('winston');
+const db = require('../../database');
 
 module.exports = {
 	name: 'Store upvotes/downvotes separately',
 	timestamp: Date.UTC(2016, 5, 13),
 	method: function (callback) {
-		var batch = require('../../batch');
-		var posts = require('../../posts');
-		var count = 0;
-		var progress = this.progress;
+		const batch = require('../../batch');
+		const posts = require('../../posts');
+		let count = 0;
+		const { progress } = this;
 
-		batch.processSortedSet('posts:pid', function (pids, next) {
-			winston.verbose('upgraded ' + count + ' posts');
+		batch.processSortedSet('posts:pid', (pids, next) => {
+			winston.verbose(`upgraded ${count} posts`);
 			count += pids.length;
-			async.each(pids, function (pid, next) {
+			async.each(pids, (pid, next) => {
 				async.parallel({
 					upvotes: function (next) {
-						db.setCount('pid:' + pid + ':upvote', next);
+						db.setCount(`pid:${pid}:upvote`, next);
 					},
 					downvotes: function (next) {
-						db.setCount('pid:' + pid + ':downvote', next);
+						db.setCount(`pid:${pid}:downvote`, next);
 					},
-				}, function (err, results) {
+				}, (err, results) => {
 					if (err) {
 						return next(err);
 					}
-					var data = {};
+					const data = {};
 
 					if (parseInt(results.upvotes, 10) > 0) {
 						data.upvotes = results.upvotes;

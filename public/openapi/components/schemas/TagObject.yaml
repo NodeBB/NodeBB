@@ -1,0 +1,19 @@
+TagObject:
+  type: object
+  properties:
+    value:
+      type: string
+      description: The tag name
+    score:
+      type: number
+      description: The number of topics containing this tag
+    valueEscaped:
+      type: string
+    color:
+      type: string
+      description: Six-character hexadecimal string (with `#` prepended)
+      example: "#ff0000"
+    bgColor:
+      type: string
+      description: Six-character hexadecimal string (with `#` prepended)
+      example: "#ff0000"

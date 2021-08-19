@@ -35,6 +35,7 @@
     "details.member_count": "عدد اﻷعضاء",
     "details.creation_date": "تاريخ الإنشاء",
     "details.description": "الوصف",
+    "details.member-post-cids": "Category IDs to display posts from",
     "details.badge_preview": "معاينة الوسام",
     "details.change_icon": "تغيير الأيقونة",
     "details.change_label_colour": "Change Label Colour",

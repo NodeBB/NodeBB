@@ -1,27 +1,33 @@
 
 'use strict';
 
+const _ = require('lodash');
 const async = require('async');
 const validator = require('validator');
+const winston = require('winston');
 
 const utils = require('../utils');
+const slugify = require('../slugify');
 const meta = require('../meta');
 const db = require('../database');
 const groups = require('../groups');
 const plugins = require('../plugins');
 
 module.exports = function (User) {
-	User.updateProfile = async function (uid, data) {
+	User.updateProfile = async function (uid, data, extraFields) {
 		let fields = [
 			'username', 'email', 'fullname', 'website', 'location',
 			'groupTitle', 'birthday', 'signature', 'aboutme',
 		];
+		if (Array.isArray(extraFields)) {
+			fields = _.uniq(fields.concat(extraFields));
+		}
 		if (!data.uid) {
 			throw new Error('[[error:invalid-update-uid]]');
 		}
 		const updateUid = data.uid;
 
-		const result = await plugins.fireHook('filter:user.updateProfile', {
+		const result = await plugins.hooks.fire('filter:user.updateProfile', {
 			uid: uid,
 			data: data,
 			fields: fields,
@@ -33,7 +39,7 @@ module.exports = function (User) {
 
 		const oldData = await User.getUserFields(updateUid, fields);
 
-		await async.each(fields, async function (field) {
+		await async.each(fields, async (field) => {
 			if (!(data[field] !== undefined && typeof data[field] === 'string')) {
 				return;
 			}
@@ -51,7 +57,7 @@ module.exports = function (User) {
 			await User.setUserField(updateUid, field, data[field]);
 		});
 
-		plugins.fireHook('action:user.updateProfile', {
+		plugins.hooks.fire('action:user.updateProfile', {
 			uid: uid,
 			data: data,
 			fields: fields,
@@ -100,9 +106,13 @@ module.exports = function (User) {
 			return;
 		}
 		data.username = data.username.trim();
-		const userData = await User.getUserFields(uid, ['username', 'userslug']);
-		if (userData.username === data.username) {
-			return;
+
+		let userData;
+		if (uid) {
+			userData = await User.getUserFields(uid, ['username', 'userslug']);
+			if (userData.username === data.username) {
+				return;
+			}
 		}
 
 		if (data.username.length < meta.config.minimumUsernameLength) {
@@ -113,19 +123,28 @@ module.exports = function (User) {
 			throw new Error('[[error:username-too-long]]');
 		}
 
-		const userslug = utils.slugify(data.username);
+		const userslug = slugify(data.username);
 		if (!utils.isUserNameValid(data.username) || !userslug) {
 			throw new Error('[[error:invalid-username]]');
 		}
 
-		if (userslug === userData.userslug) {
+		if (uid && userslug === userData.userslug) {
 			return;
 		}
 		const exists = await User.existsBySlug(userslug);
 		if (exists) {
 			throw new Error('[[error:username-taken]]');
 		}
+
+		const { error } = await plugins.hooks.fire('filter:username.check', {
+			username: data.username,
+			error: undefined,
+		});
+		if (error) {
+			throw error;
+		}
 	}
+	User.checkUsername = async username => isUsernameAvailable({ username });
 
 	async function isWebsiteValid(callerUid, data) {
 		if (!data.website) {
@@ -142,7 +161,7 @@ module.exports = function (User) {
 			return;
 		}
 		if (data.aboutme !== undefined && data.aboutme.length > meta.config.maximumAboutMeLength) {
-			throw new Error('[[error:about-me-too-long, ' + meta.config.maximumAboutMeLength + ']]');
+			throw new Error(`[[error:about-me-too-long, ${meta.config.maximumAboutMeLength}]]`);
 		}
 
 		await User.checkMinReputation(callerUid, data.uid, 'min:rep:aboutme');
@@ -153,7 +172,7 @@ module.exports = function (User) {
 			return;
 		}
 		if (data.signature !== undefined && data.signature.length > meta.config.maximumSignatureLength) {
-			throw new Error('[[error:signature-too-long, ' + meta.config.maximumSignatureLength + ']]');
+			throw new Error(`[[error:signature-too-long, ${meta.config.maximumSignatureLength}]]`);
 		}
 		await User.checkMinReputation(callerUid, data.uid, 'min:rep:signature');
 	}
@@ -213,7 +232,7 @@ module.exports = function (User) {
 		}
 		const reputation = await User.getUserField(uid, 'reputation');
 		if (reputation < meta.config[setting]) {
-			throw new Error('[[error:not-enough-reputation-' + setting.replace(/:/g, '-') + ']]');
+			throw new Error(`[[error:not-enough-reputation-${setting.replace(/:/g, '-')}]]`);
 		}
 	};
 
@@ -224,27 +243,11 @@ module.exports = function (User) {
 			return;
 		}
 
-		await db.sortedSetRemove('email:uid', oldEmail.toLowerCase());
-		await db.sortedSetRemove('email:sorted', oldEmail.toLowerCase() + ':' + uid);
-		await User.auth.revokeAllSessions(uid);
-
-		await Promise.all([
-			db.sortedSetAddBulk([
-				['email:uid', uid, newEmail.toLowerCase()],
-				['email:sorted', 0, newEmail.toLowerCase() + ':' + uid],
-				['user:' + uid + ':emails', Date.now(), newEmail + ':' + Date.now()],
-				['users:notvalidated', Date.now(), uid],
-			]),
-			User.setUserFields(uid, { email: newEmail, 'email:confirmed': 0 }),
-			User.reset.cleanByUid(uid),
-		]);
-
-		if (meta.config.requireEmailConfirmation && newEmail) {
+		if (newEmail) {
 			await User.email.sendValidationEmail(uid, {
 				email: newEmail,
-				subject: '[[email:email.verify-your-email.subject]]',
-				template: 'verify_email',
-			});
+				force: 1,
+			}).catch(err => winston.error(`[user.create] Validation email failed to send\n[emailer.send] ${err.stack}`));
 		}
 	}
 
@@ -256,25 +259,25 @@ module.exports = function (User) {
 		if (userData.username === newUsername) {
 			return;
 		}
-		const newUserslug = utils.slugify(newUsername);
+		const newUserslug = slugify(newUsername);
 		const now = Date.now();
 		await Promise.all([
 			updateUidMapping('username', uid, newUsername, userData.username),
 			updateUidMapping('userslug', uid, newUserslug, userData.userslug),
-			db.sortedSetAdd('user:' + uid + ':usernames', now, newUsername + ':' + now),
+			db.sortedSetAdd(`user:${uid}:usernames`, now, `${newUsername}:${now}`),
 		]);
-		await db.sortedSetRemove('username:sorted', userData.username.toLowerCase() + ':' + uid);
-		await db.sortedSetAdd('username:sorted', 0, newUsername.toLowerCase() + ':' + uid);
+		await db.sortedSetRemove('username:sorted', `${userData.username.toLowerCase()}:${uid}`);
+		await db.sortedSetAdd('username:sorted', 0, `${newUsername.toLowerCase()}:${uid}`);
 	}
 
 	async function updateUidMapping(field, uid, value, oldValue) {
 		if (value === oldValue) {
 			return;
 		}
-		await db.sortedSetRemove(field + ':uid', oldValue);
+		await db.sortedSetRemove(`${field}:uid`, oldValue);
 		await User.setUserField(uid, field, value);
 		if (value) {
-			await db.sortedSetAdd(field + ':uid', uid, value);
+			await db.sortedSetAdd(`${field}:uid`, uid, value);
 		}
 	}
 
@@ -283,10 +286,10 @@ module.exports = function (User) {
 		await updateUidMapping('fullname', uid, newFullname, fullname);
 		if (newFullname !== fullname) {
 			if (fullname) {
-				await db.sortedSetRemove('fullname:sorted', fullname.toLowerCase() + ':' + uid);
+				await db.sortedSetRemove('fullname:sorted', `${fullname.toLowerCase()}:${uid}`);
 			}
 			if (newFullname) {
-				await db.sortedSetAdd('fullname:sorted', 0, newFullname.toLowerCase() + ':' + uid);
+				await db.sortedSetAdd('fullname:sorted', 0, `${newFullname.toLowerCase()}:${uid}`);
 			}
 		}
 	}
@@ -322,12 +325,14 @@ module.exports = function (User) {
 		await Promise.all([
 			User.setUserFields(data.uid, {
 				password: hashedPassword,
+				'password:shaWrapped': 1,
 				rss_token: utils.generateUUID(),
 			}),
+			User.reset.cleanByUid(data.uid),
 			User.reset.updateExpiry(data.uid),
 			User.auth.revokeAllSessions(data.uid),
 		]);
 
-		plugins.fireHook('action:password.change', { uid: uid, targetUid: data.uid });
+		plugins.hooks.fire('action:password.change', { uid: uid, targetUid: data.uid });
 	};
 };

@@ -6,6 +6,7 @@
 	"assignee": "Oflagowany",
 	"update": "Zaktualizuj",
 	"updated": "Zaaktualizowano",
+	"resolved": "Resolved",
 	"target-purged": "Treści, do których odnosi się ta flaga, zostały usunięte i nie są już dostępne.",
 
 	"graph-label": "Codzienne flagi",
@@ -26,6 +27,7 @@
 	"filter-cid-all": "Wszystkie kategorie",
 	"apply-filters": "Zastosuj filtry",
 	"more-filters": "Więcej filtrów",
+	"fewer-filters": "Fewer Filters",
 
 	"quick-actions": "Szybkie Akcje",
 	"flagged-user": "Oflagowany użytkownik",
@@ -67,7 +69,7 @@
 	"sort-upvotes": "Most upvotes",
 	"sort-replies": "Most replies",
 
-	"modal-title": "Zgłoś niewłaściwe treści",
+	"modal-title": "Report Content",
 	"modal-body": "Wskaż powód oflagowania i zgłoszenia %1 %2 do oceny. Jeśli to możliwe, użyj jednego z przycisków szybkiego zgłoszenia.",
 	"modal-reason-spam": "Spam",
 	"modal-reason-offensive": "Treści obraźliwe",
@@ -75,11 +77,9 @@
 	"modal-reason-custom": "Powód zgłaszania treści",
 	"modal-submit": "Wyślij zgłoszenie",
 	"modal-submit-success": "Treści zostały oflagowane i zgłoszone do moderacji.",
-	"modal-submit-confirm": "Potwierdź wysłanie",
-	"modal-submit-confirm-text": "Wskazałeś już własny powód. Czy na pewno chcesz skorzystać z szybkiego zgłoszenia?",
-	"modal-submit-confirm-text-help": "Wysłanie szybkiego zgłoszenia spowoduje nadpisanie wszelkich własnych powodów",
 
 	"bulk-actions": "Bulk Actions",
 	"bulk-resolve": "Oznacz flagi jako rozwiązane",
-	"bulk-success": "Zaktualizowano %1 flag"
+	"bulk-success": "Zaktualizowano %1 flag",
+	"flagged-timeago-readable": "Flagged <span class=\"timeago\" title=\"%1\"></span> (%2)"
 }

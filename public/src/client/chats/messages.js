@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/chats/messages', ['components', 'translator', 'benchpress'], function (components, translator, Benchpress) {
+define('forum/chats/messages', ['components', 'translator', 'benchpress', 'hooks'], function (components, translator, Benchpress, hooks) {
 	var messages = {};
 
 	messages.sendMessage = function (roomId, inputEl) {
@@ -15,7 +15,7 @@ define('forum/chats/messages', ['components', 'translator', 'benchpress'], funct
 		inputEl.val('');
 		inputEl.removeAttr('data-mid');
 		messages.updateRemainingLength(inputEl.parent());
-		$(window).trigger('action:chat.sent', {
+		hooks.fire('action:chat.sent', {
 			roomId: roomId,
 			message: msg,
 			mid: mid,
@@ -62,7 +62,7 @@ define('forum/chats/messages', ['components', 'translator', 'benchpress'], funct
 		var element = parent.find('[component="chat/input"]');
 		parent.find('[component="chat/message/length"]').text(element.val().length);
 		parent.find('[component="chat/message/remaining"]').text(config.maximumChatMessageLength - element.val().length);
-		$(window).trigger('action:chat.updateRemainingLength', {
+		hooks.fire('action:chat.updateRemainingLength', {
 			parent: parent,
 		});
 	};
@@ -90,7 +90,7 @@ define('forum/chats/messages', ['components', 'translator', 'benchpress'], funct
 			messages.scrollToBottom(chatContentEl);
 		}
 
-		$(window).trigger('action:chat.received', {
+		hooks.fire('action:chat.received', {
 			messageEl: newMessage,
 		});
 	}
@@ -102,13 +102,13 @@ define('forum/chats/messages', ['components', 'translator', 'benchpress'], funct
 		}
 
 		if (Array.isArray(data)) {
-			Benchpress.parse('partials/chats/message' + (Array.isArray(data) ? 's' : ''), {
+			Benchpress.render('partials/chats/message' + (Array.isArray(data) ? 's' : ''), {
 				messages: data,
-			}, done);
+			}).then(done);
 		} else {
-			Benchpress.parse('partials/chats/' + (data.system ? 'system-message' : 'message'), {
+			Benchpress.render('partials/chats/' + (data.system ? 'system-message' : 'message'), {
 				messages: data,
-			}, done);
+			}).then(done);
 		}
 	};
 
@@ -149,7 +149,7 @@ define('forum/chats/messages', ['components', 'translator', 'benchpress'], funct
 				inputEl.attr('data-mid', messageId).addClass('editing');
 				inputEl.val(raw).focus();
 
-				$(window).trigger('action:chat.prepEdit', {
+				hooks.fire('action:chat.prepEdit', {
 					inputEl: inputEl,
 					messageId: messageId,
 					roomId: roomId,

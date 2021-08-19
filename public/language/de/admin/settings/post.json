@@ -34,6 +34,8 @@
 	"timestamp.cut-off-help": "Tage &amp; Zeiten werden relativ angezeigt (z.B. \"vor 3 Stunden\" / \"vor 5 Tagen\"), und in viele Sprachen übersetzt. Nach einem bestimmten Zeitpunkt, kann dieses Text durch das übersetzte Datum selbst ersetzt werden (z.B. 5 Nov 2016 15:30).<br><em>(Standard: <code>30</code>, oder ein Monat). Auf 0 setzen um immer Daten anzuzeigen, leer lassung um immer relative Zeiten anzuzeigen.</em>",
 	"timestamp.necro-threshold": "Necro Threshold (in days)",
 	"timestamp.necro-threshold-help": "A message will be shown between posts if the time between them is longer than the necro threshold. (Default: <code>7</code>, or one week). Set to 0 to disable.</em>",
+	"timestamp.topic-views-interval": "Increment topic views interval (in minutes)",
+	"timestamp.topic-views-interval-help": "Topic views will only increment once every X minutes as defined by this setting.",
 	"teaser": "Teaser-Beitrag",
 	"teaser.last-post": "Letzter - Den neuesten Beitrag anzeigen, den originalen Beitrag innbegriffen, wenn es keine Antworten gibt",
 	"teaser.last-reply": "Letzter - Den neuesten Beitrag oder einen \"Keine Antworten\" Platzhalter, wenn es keine Antworten gibt anzeigen",

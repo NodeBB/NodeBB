@@ -18,5 +18,6 @@
     "watching.message": "Du beobachtest jetzt Aktualisierungen aus dieser Kategorie und allen Unterkategorien",
     "notwatching.message": "Du beobachtest jetzt keine Aktualisierungen aus dieser Kategorie und allen Unterkategorien",
     "ignoring.message": "Du ignorierst jetzt Aktualisierungen aus dieser Kategorie und allen Unterkategorien",
-    "watched-categories": "Beobachtete Kategorien"
+    "watched-categories": "Beobachtete Kategorien",
+    "x-more-categories": "%1 more categories"
 }

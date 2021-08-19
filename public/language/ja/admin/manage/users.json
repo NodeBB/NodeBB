@@ -1,6 +1,6 @@
 {
 	"users": "ユーザー",
-	"edit": "編集",
+	"edit": "Actions",
 	"make-admin": "管理者にする",
 	"remove-admin": "管理者を削除",
 	"validate-email": "電子メールの",
@@ -20,16 +20,10 @@
 	"add-group": "Add Group",
 	"invite": "招待",
 	"new": "新しいユーザー",
-
-	"pills.latest": "新しいユーザー",
+	"filter-by": "Filter by",
 	"pills.unvalidated": "検証されていない",
-	"pills.no-posts": "投稿がありません",
-	"pills.top-posters": "最も投稿したユーザー",
-	"pills.top-rep": "最も評価されたユーザー",
-	"pills.inactive": "非アクティブ",
-	"pills.flagged": "最もフラグが付けられたもの",
+	"pills.validated": "Validated",
 	"pills.banned": "BANされた",
-	"pills.search": "ユーザーを検索",
 
 	"50-per-page": "1ページあたり50 件",
 	"100-per-page": "1ページあたり100 件",
@@ -53,6 +47,7 @@
 	"users.uid": "ユーザーID",
 	"users.username": "ユーザー名",
 	"users.email": "メール",
+	"users.ip": "IP",
 	"users.postcount": "投稿カウント",
 	"users.reputation": "評価",
 	"users.flags": "フラグ",
@@ -108,5 +103,7 @@
 
 	"alerts.prompt-email": "メール:",
 	"alerts.email-sent-to": "招待メールが%1に送られました。",
-	"alerts.x-users-found": "%1 user(s) found, (%2 seconds)"
+	"alerts.x-users-found": "%1 user(s) found, (%2 seconds)",
+	"export-users-started": "Exporting users as csv, this might take a while. You will receive a notification when it is complete.",
+	"export-users-completed": "Users exported as csv, click here to download."
 }

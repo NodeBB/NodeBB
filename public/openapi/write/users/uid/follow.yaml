@@ -1,0 +1,48 @@
+put:
+  tags:
+    - users
+  summary: follow a user
+  parameters:
+    - in: path
+      name: uid
+      schema:
+        type: integer
+      required: true
+      description: uid of the user to follow
+      example: 2
+  responses:
+    '200':
+      description: successfully followed user
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+delete:
+  tags:
+    - users
+  summary: unfollows a user
+  parameters:
+    - in: path
+      name: uid
+      schema:
+        type: integer
+      required: true
+      description: uid of the user to unfollow
+      example: 2
+  responses:
+    '200':
+      description: successfully unfollowed user
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object

@@ -1,0 +1,25 @@
+get:
+  tags:
+    - posts
+  summary: Get recent posts
+  parameters:
+    - name: term
+      in: path
+      required: true
+      schema:
+        type: string
+      example: day
+      description: term is used to limit the returned posts to a specific term. Valid values are day, week, month. If you don't pass it in all posts will be returned.
+    - name: page
+      in: query
+      required: false
+      schema:
+        type: number
+      example: page=1
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: ../../../components/schemas/PostsObject.yaml#/PostsObject

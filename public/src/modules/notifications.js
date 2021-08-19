@@ -1,10 +1,28 @@
 'use strict';
 
 
-define('notifications', ['translator', 'components', 'navigator', 'benchpress'], function (translator, components, navigator, Benchpress) {
+define('notifications', [
+	'translator',
+	'components',
+	'navigator',
+	'benchpress',
+	'tinycon',
+	'hooks',
+], function (translator, components, navigator, Benchpress, Tinycon, hooks) {
 	var Notifications = {};
 
 	var unreadNotifs = {};
+
+	const _addShortTimeagoString = ({ notifications: notifs }) => new Promise((resolve) => {
+		translator.toggleTimeagoShorthand(function () {
+			for (var i = 0; i < notifs.length; i += 1) {
+				notifs[i].timeago = $.timeago(new Date(parseInt(notifs[i].datetime, 10)));
+			}
+			translator.toggleTimeagoShorthand();
+			resolve({ notifications: notifs });
+		});
+	});
+	hooks.on('filter:notifications.load', _addShortTimeagoString);
 
 	Notifications.loadNotifications = function (notifList) {
 		socket.emit('notifications.get', null, function (err, data) {
@@ -16,13 +34,9 @@ define('notifications', ['translator', 'components', 'navigator', 'benchpress'],
 				return parseInt(a.datetime, 10) > parseInt(b.datetime, 10) ? -1 : 1;
 			});
 
-			translator.toggleTimeagoShorthand(function () {
-				for (var i = 0; i < notifs.length; i += 1) {
-					notifs[i].timeago = $.timeago(new Date(parseInt(notifs[i].datetime, 10)));
-				}
-				translator.toggleTimeagoShorthand();
-				Benchpress.parse('partials/notifications_list', { notifications: notifs }, function (html) {
-					notifList.translateHtml(html);
+			hooks.fire('filter:notifications.load', { notifications: notifs }).then(({ notifications }) => {
+				app.parseAndTranslate('partials/notifications_list', { notifications }, function (html) {
+					notifList.html(html);
 					notifList.off('click').on('click', '[data-nid]', function (ev) {
 						var notifEl = $(this);
 						if (scrollToPostIndexIfOnPage(notifEl)) {
@@ -48,6 +62,11 @@ define('notifications', ['translator', 'components', 'navigator', 'benchpress'],
 							liEl.toggleClass('unread');
 						});
 						return false;
+					});
+
+					hooks.fire('action:notifications.loaded', {
+						notifications: notifs,
+						list: notifList,
 					});
 				});
 			});
@@ -115,7 +134,7 @@ define('notifications', ['translator', 'components', 'navigator', 'benchpress'],
 			count: count,
 			updateFavicon: true,
 		};
-		$(window).trigger('action:notification.updateCount', payload);
+		hooks.fire('action:notification.updateCount', payload);
 
 		if (payload.updateFavicon) {
 			Tinycon.setBubble(count > 99 ? '99+' : count);

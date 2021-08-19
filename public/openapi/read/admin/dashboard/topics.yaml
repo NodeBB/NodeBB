@@ -1,0 +1,34 @@
+get:
+  tags:
+    - admin
+  summary: Get detailed user registration analytics
+  responses:
+    "200":
+      description: A JSON object containing more detailed analytics related to user registrations.
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  set:
+                    type: string
+                    description: The analytics set that is being queried
+                  query:
+                    additionalProperties:
+                      description: An object containing the query string parameters, if any
+                  summary:
+                    type: object
+                    properties:
+                      day:
+                        type: number
+                      week:
+                        type: number
+                      month:
+                        type: number
+                  topics:
+                    type: array
+                    items:
+                      $ref: ../../../components/schemas/TopicObject.yaml#/TopicObject
+              - $ref: ../../../components/schemas/admin/dashboard.yaml#/Stats
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

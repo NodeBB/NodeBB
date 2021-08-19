@@ -1,0 +1,139 @@
+get:
+  tags:
+    - users
+  summary: Get user's settings
+  parameters:
+    - name: userslug
+      in: path
+      required: true
+      schema:
+        type: string
+      example: admin
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../../components/schemas/UserObject.yaml#/UserObjectFull
+              - type: object
+                properties:
+                  settings:
+                    $ref: ../../../components/schemas/SettingsObj.yaml#/Settings
+                  languages:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        code:
+                          type: string
+                        dir:
+                          type: string
+                        selected:
+                          type: boolean
+                  acpLanguages:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        code:
+                          type: string
+                        dir:
+                          type: string
+                        selected:
+                          type: boolean
+                  customSettings:
+                    type: array
+                    items:
+                      type: object
+                      properties: {}
+                      additionalProperties: {}
+                  homePageRoutes:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        route:
+                          type: string
+                        name:
+                          type: string
+                        selected:
+                          type: boolean
+                  notificationSettings:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        label:
+                          type: string
+                        none:
+                          type: boolean
+                        notification:
+                          type: boolean
+                        email:
+                          type: boolean
+                        notificationemail:
+                          type: boolean
+                  disableEmailSubscriptions:
+                    type: number
+                  dailyDigestFreqOptions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        value:
+                          type: string
+                        name:
+                          type: string
+                        selected:
+                          type: boolean
+                  bootswatchSkinOptions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        value:
+                          type: string
+                        selected:
+                          type: boolean
+                  upvoteNotifFreq:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        selected:
+                          type: boolean
+                  categoryWatchState:
+                    type: object
+                    properties:
+                      watching:
+                        type: boolean
+                  disableCustomUserSkins:
+                    type: number
+                  allowUserHomePage:
+                    type: number
+                  hideFullname:
+                    type: number
+                  hideEmail:
+                    type: number
+                  inTopicSearchAvailable:
+                    type: boolean
+                  maxTopicsPerPage:
+                    type: number
+                  maxPostsPerPage:
+                    type: number
+                  title:
+                    type: string
+              - $ref: ../../../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

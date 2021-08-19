@@ -66,7 +66,7 @@ module.exports = function (SocketTopics) {
 			}
 			await topics.markAsUnreadForAll(tid);
 			await topics.updateRecent(tid, now);
-			await db.sortedSetAdd('cid:' + topicData.cid + ':tids:lastposttime', now, tid);
+			await db.sortedSetAdd(`cid:${topicData.cid}:tids:lastposttime`, now, tid);
 			await topics.setTopicField(tid, 'lastposttime', now);
 		}));
 		topics.pushUnreadCount(socket.uid);

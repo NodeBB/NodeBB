@@ -1,0 +1,58 @@
+get:
+  tags:
+    - authentication
+  summary: Log in a user
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  loginFormEntry:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        label:
+                          type: string
+                          description: A label for the added block
+                        html:
+                          type: string
+                          description: HTML to render on the login page
+                        styleName:
+                          type: string
+                          description: Custom identifier (value is added to `input[id]` and `label[for]`)
+                  alternate_logins:
+                    type: boolean
+                  authentication:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        url:
+                          type: string
+                        callbackURL:
+                          type: string
+                        icon:
+                          type: string
+                        scope:
+                          type: string
+                        prompt:
+                          type: string
+                  allowRegistration:
+                    type: boolean
+                  allowLoginWith:
+                    type: string
+                  title:
+                    type: string
+                  allowPasswordReset:
+                    type: boolean
+                  allowLocalLogin:
+                    type: boolean
+              - $ref: ../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../components/schemas/CommonProps.yaml#/CommonProps

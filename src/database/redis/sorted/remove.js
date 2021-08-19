@@ -2,7 +2,7 @@
 'use strict';
 
 module.exports = function (module) {
-	var helpers = require('../helpers');
+	const helpers = require('../helpers');
 
 	module.sortedSetRemove = async function (key, value) {
 		if (!key) {
@@ -30,7 +30,7 @@ module.exports = function (module) {
 	};
 
 	module.sortedSetsRemoveRangeByScore = async function (keys, min, max) {
-		var batch = module.client.batch();
+		const batch = module.client.batch();
 		keys.forEach(k => batch.zremrangebyscore(k, min, max));
 		await helpers.execBatch(batch);
 	};

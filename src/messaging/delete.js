@@ -10,7 +10,7 @@ module.exports = function (Messaging) {
 		const field = state ? 'deleted' : 'restored';
 		const { deleted, roomId } = await Messaging.getMessageFields(mid, ['deleted', 'roomId']);
 		if (deleted === state) {
-			throw new Error('[[error:chat-' + field + '-already]]');
+			throw new Error(`[[error:chat-${field}-already]]`);
 		}
 
 		await Messaging.setMessageField(mid, 'deleted', state);
@@ -20,12 +20,12 @@ module.exports = function (Messaging) {
 			Messaging.getMessagesData([mid], uid, roomId, true),
 		]);
 
-		uids.forEach(function (_uid) {
+		uids.forEach((_uid) => {
 			if (parseInt(_uid, 10) !== parseInt(uid, 10)) {
 				if (state === 1) {
-					sockets.in('uid_' + _uid).emit('event:chats.delete', mid);
+					sockets.in(`uid_${_uid}`).emit('event:chats.delete', mid);
 				} else if (state === 0) {
-					sockets.in('uid_' + _uid).emit('event:chats.restore', messages[0]);
+					sockets.in(`uid_${_uid}`).emit('event:chats.restore', messages[0]);
 				}
 			}
 		});

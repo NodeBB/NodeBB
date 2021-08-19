@@ -5,18 +5,15 @@
 		max-width: 100% !important;
 	}
 
-	#analytics-panel .panel-heading i {
+	#analytics-panel .panel-heading > div {
 		&.fa-expand {
 			display: none;
 		}
 
-		&.fa-terminal::after {
-			content: 'JSON';
-			font-family: @font-family-sans-serif;
-			font-weight: 600;
-			color: @gray-dark;
-			padding-left: .5em;
-		}
+		font-family: @font-family-sans-serif;
+		font-weight: 600;
+		color: @gray-dark;
+		padding-left: .5em;
 
 		padding: .75em;
 		background-color: @gray-lighter;

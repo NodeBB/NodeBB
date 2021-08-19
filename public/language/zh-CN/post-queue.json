@@ -1,3 +1,4 @@
+
 {
 	"post-queue": "发布队列",
 	"description": "发布队列中暂无新帖。启用此特性，请前往设置&rarr;发布&rarr;发布队列，然后启用发布队列。",
@@ -7,5 +8,11 @@
 	"content": "内容",
 	"posted": "发布",
 	"reply-to": "回复\"%1\"",
-	"content-editable": "发帖前，您可以点击内容进行编辑。"
+	"content-editable": "点击内容开始编辑",
+	"category-editable": "点击版块开始编辑",
+	"title-editable": "点击标题开始编辑",
+	"reply": "回复",
+	"topic": "主题",
+	"accept": "接受",
+	"reject": "拒绝"
 }

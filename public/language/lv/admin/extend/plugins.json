@@ -39,7 +39,7 @@
 	"alert.upgraded": "Spraudnis uzlabots",
 	"alert.installed": "Spraudnis instalēts",
 	"alert.uninstalled": "Spraudnis atinstalēts",
-	"alert.activate-success": "Lūdzu, pārstartēt NodeBB, lai pilnībā atjauninātu spraudni.",
+	"alert.activate-success": "Please rebuild and restart your NodeBB to fully activate this plugin",
 	"alert.deactivate-success": "Spraudnis veiksmīgi deaktivizēts",
 	"alert.upgrade-success": "Lūdzu, pārkompilēt un pārstartēt NodeBB, lai pilnībā uzlabot spraudni.",
 	"alert.install-success": "Spraudnis veiksmīgi instalēts, lūdzu, to aktivizēt.",

@@ -2,6 +2,7 @@
 	"forum-traffic": "Forum Trafiği",
 	"page-views": "Sayfa Gösterim Sayısı",
 	"unique-visitors": "Tekil Ziyaretçiler",
+	"logins": "Girişler",
 	"new-users": "Yeni Kullanıcılar",
 	"posts": "İletiler",
 	"topics": "Başlıklar",
@@ -29,6 +30,7 @@
 	"upgrade-available": "<p>Yeni bir sürüm (v% 1) yayımlandı. <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">NodeBB yükseltmeyi</a> göz önünde bulundurun</p>",
 	"prerelease-upgrade-available": "<p>Bu, NodeBB'nin eski bir sürümü. Yeni bir sürüm (v% 1) yayımlandı. <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">NodeBB’nizi yükseltmeyi </a>düşünün.</p>",
 	"prerelease-warning": "<p>Bu, NodeBB'nin bir <strong>önsürüm</strong> versiyonudur. İstenmeyen hatalar oluşabilir. <i class=\"fa fa-exclamation-triangle\"></i></p>",
+	"fallback-emailer-not-found": "\"Fallback emailer\" bulunamadı!",
 	"running-in-development": "<span>Forum, geliştirici modunda çalışıyor. Forum, potansiyel güvenlik açıklarına açık olabilir; lütfen sistem yöneticinize başvurun.</span>",
 	"latest-lookup-failed": "<p>En güncel kullanılabilecek NodeBB sürümü görüntülenemedi</p>",
 
@@ -75,5 +77,12 @@
 	"graphs.registered-users": "Kayıtlı Kullanıcılar",
 	"graphs.anonymous-users": "Anonim Kullanıcılar",
 	"last-restarted-by": "Son yeniden başlatma bilgisi",
-	"no-users-browsing": "İnceleyen kullanıcı yok"
+	"no-users-browsing": "İnceleyen kullanıcı yok",
+
+	"back-to-dashboard": "Yönetim Paneline geri dön",
+	"details.no-users": "Seçilen zaman aralığında herhangi bir kullanıcı üye olmadı.",
+	"details.no-topics": "Seçilen zaman aralığında herhangi bir başlık oluşturulmadı. ",
+	"details.no-logins": "Seçilen zaman aralığında herhangi bir giriş yapılmadı.",
+	"details.logins-static": "NodeBB oturum kayıtlarını sadece %1 gün tutar, o nedenle aşağıdaki tablo sadece en yakın aktif oturumları listeler",
+	"details.logins-login-time": "Giriş zamanı"
 }

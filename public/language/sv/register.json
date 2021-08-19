@@ -18,9 +18,15 @@
     "agree_to_terms_of_use": "Jag godkänner användarvillkoren",
     "terms_of_use_error": "Du måste godkänna användarvillkoren",
     "registration-added-to-queue": "Din registrering har lagts till i kön. Du kommer att få ett mail när den accepteras av en administratör.",
-    "interstitial.intro": "Vi behöver ytterligare information innan vi kan skapa ditt konto.",
-    "interstitial.errors-found": "Vi kunde inte slutföra din registrering:",
+    "registration-queue-average-time": "Snittiden för att godkänna medlemskap är %1 timmar %2 minuter.",
+    "registration-queue-auto-approve-time": "Ditt medlemskap på forumet kommer godkännas om upp till %1 timmar.",
+    "interstitial.intro": "We'd like some additional information in order to update your account&hellip;",
+    "interstitial.intro-new": "We'd like some additional information before we can create your account&hellip;",
+    "interstitial.errors-found": "Please review the entered information:",
     "gdpr_agree_data": "Jag ger detta forum mitt medgivande att samla in och behandla min personliga information.",
     "gdpr_agree_email": "Jag går med på att få sammanfattningar och notiser från detta forum via e-post.",
-    "gdpr_consent_denied": "Du måste ge ditt medgivande för att detta forum ska kunna samla in och behandla din information, samt skicka dig e-post."
+    "gdpr_consent_denied": "Du måste ge ditt medgivande för att detta forum ska kunna samla in och behandla din information, samt skicka dig e-post.",
+    "invite.error-admin-only": "Direkt användarregistrering har avaktiverats. Vänligen kontakta en administratör för mer information.",
+    "invite.error-invite-only": "Direkt användarregistrering har avaktiverats. Du måste bli inbjuden av en existerande användare för att få tillgång till forumet.",
+    "invite.error-invalid-data": "Erhållen registreringsdata stämmer inte överens med våra uppgifter. Vänligen kontakta en administratör för mer information."
 }

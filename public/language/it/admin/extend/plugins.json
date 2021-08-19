@@ -1,5 +1,5 @@
 {
-	"trending": "Trending",
+	"trending": "Di tendenza",
 	"installed": "Installato",
 	"active": "Attivo",
 	"inactive": "Inattivo",
@@ -39,7 +39,7 @@
 	"alert.upgraded": "Plugin aggiornato",
 	"alert.installed": "Plugin installato",
 	"alert.uninstalled": "Plugin disinstallato",
-	"alert.activate-success": "Si prega di riavviare il vostro NodeBB per attivare completamente questo plugin",
+	"alert.activate-success": "Ricostruisci e riavvia NodeBB per attivare completamente questo plugin",
 	"alert.deactivate-success": "Plugin disattivato con successo",
 	"alert.upgrade-success": "Per favore, riorganizza e riavvia il tuo NodeBB per aggiornare completamente questo plugin.",
 	"alert.install-success": "Plugin installato correttamente, per favore attiva il plugin.",

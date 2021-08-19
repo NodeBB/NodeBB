@@ -7,15 +7,15 @@ module.exports = {
 	name: 'Clean flag byCid zsets',
 	timestamp: Date.UTC(2019, 8, 24),
 	method: async function () {
-		const progress = this.progress;
+		const { progress } = this;
 
-		await batch.processSortedSet('flags:datetime', async function (flagIds) {
+		await batch.processSortedSet('flags:datetime', async (flagIds) => {
 			progress.incr(flagIds.length);
-			const flagData = await db.getObjects(flagIds.map(id => 'flag:' + id));
+			const flagData = await db.getObjects(flagIds.map(id => `flag:${id}`));
 			const bulkRemove = [];
 			for (const flagObj of flagData) {
 				if (flagObj && flagObj.type === 'user' && flagObj.targetId && flagObj.flagId) {
-					bulkRemove.push(['flags:byCid:' + flagObj.targetId, flagObj.flagId]);
+					bulkRemove.push([`flags:byCid:${flagObj.targetId}`, flagObj.flagId]);
 				}
 			}
 

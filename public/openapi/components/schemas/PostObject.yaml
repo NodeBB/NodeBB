@@ -1,0 +1,142 @@
+PostObject:
+  description: A single post in the array returned from `Posts.getPostSummaryByPids`
+  type: object
+  properties:
+    pid:
+      type: number
+    tid:
+      type: number
+      description: A topic identifier
+    content:
+      type: string
+    uid:
+      type: number
+      description: A user identifier
+    timestamp:
+      type: number
+    deleted:
+      type: boolean
+    upvotes:
+      type: number
+    downvotes:
+      type: number
+    votes:
+      type: number
+    timestampISO:
+      type: string
+      description: An ISO 8601 formatted date string (complementing `timestamp`)
+    user:
+      type: object
+      properties:
+        uid:
+          type: number
+          description: A user identifier
+        username:
+          type: string
+          description: A friendly name for a given user account
+        displayname:
+          type: string
+          description: This is either username or fullname depending on forum and user settings
+        userslug:
+          type: string
+          description: An URL-safe variant of the username (i.e. lower-cased, spaces
+            removed, etc.)
+        picture:
+          type: string
+          nullable: true
+        status:
+          type: string
+        icon:text:
+          type: string
+          description: A single-letter representation of a username. This is used in the
+            auto-generated icon given to users without
+            an avatar
+        icon:bgColor:
+          type: string
+          description: A six-character hexadecimal colour code assigned to the user. This
+            value is used in conjunction with
+            `icon:text` for the user's auto-generated
+            icon
+          example: "#f44336"
+    topic:
+      type: object
+      properties:
+        uid:
+          type: number
+          description: A user identifier
+        tid:
+          type: number
+          description: A topic identifier
+        title:
+          type: string
+        cid:
+          type: number
+          description: A category identifier
+        slug:
+          type: string
+        deleted:
+          type: number
+        scheduled:
+          type: number
+        timestamp:
+          type: number
+        timestampISO:
+          type: string
+          description: An ISO 8601 formatted date string (complementing `timestamp`)
+        postcount:
+          type: number
+        mainPid:
+          type: number
+          description: The post id of the first post in this topic (also called the
+            "original post")
+        teaserPid:
+          type: number
+          description: The post id of the teaser (the most recent post, depending on settings)
+          nullable: true
+        titleRaw:
+          type: string
+        oldTitle:
+          type: string
+        isMainPost:
+          type: boolean
+        renamed:
+          type: boolean
+        tags:
+          type: array
+          items:
+            $ref: ../../components/schemas/TagObject.yaml#/TagObject
+      required:
+        - uid
+        - tid
+        - cid
+        - title
+        - slug
+    category:
+      type: object
+      properties:
+        cid:
+          type: number
+          description: A category identifier
+        name:
+          type: string
+        icon:
+          type: string
+        slug:
+          type: string
+        parentCid:
+          type: number
+          description: The category identifier for the category that is the immediate
+            ancestor of the current category
+        bgColor:
+          type: string
+        color:
+          type: string
+        backgroundImage:
+          nullable: true
+        imageClass:
+          nullable: true
+          type: string
+    isMainPost:
+      type: boolean
+    replies:
+      type: number

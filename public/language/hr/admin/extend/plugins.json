@@ -39,7 +39,7 @@
 	"alert.upgraded": "Dodatak nadograđen",
 	"alert.installed": "Dodatak instaliran",
 	"alert.uninstalled": "Dodatak deinstaliran",
-	"alert.activate-success": "Pokrenite NodeBB za aktivaciju dodataka",
+	"alert.activate-success": "Please rebuild and restart your NodeBB to fully activate this plugin",
 	"alert.deactivate-success": "Dodatak uspjepno deaktiviran",
 	"alert.upgrade-success": "Please rebuild and restart your NodeBB to fully upgrade this plugin.",
 	"alert.install-success": "Dodatak instaliran, aktivirajte ga.",

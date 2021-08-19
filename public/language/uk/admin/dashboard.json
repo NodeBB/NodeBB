@@ -2,6 +2,7 @@
 	"forum-traffic": "Трафік форуму",
 	"page-views": "Перегляди сторінок",
 	"unique-visitors": "Унікальні відвідувачі",
+	"logins": "Logins",
 	"new-users": "New Users",
 	"posts": "Пости",
 	"topics": "Теми",
@@ -29,6 +30,7 @@
 	"upgrade-available": "<p>Було випущено нову версію (v%1). Подумайте про <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">оновлення вашого NodeBB</a>.</p>",
 	"prerelease-upgrade-available": "<p>Це застаріла до-релізна версія NodeBB. Було випущено нову версію (v%1). Подумайте про <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">оновлення вашого NodeBB</a>.</p>",
 	"prerelease-warning": "<p>Це <strong>пре-релізна</strong> версія NodeBB. Можуть виникати неочікувані помилки. <i class=\"fa fa-exclamation-triangle\"></i></p>",
+	"fallback-emailer-not-found": "Fallback emailer not found!",
 	"running-in-development": "Форум працює в режимі розробки. Форум потенційно може бути незахищеним, будь-ласка повідомте вашого системного адміністратора.",
 	"latest-lookup-failed": "<p>Помилка при спробі перевірки останньої версії NodeBB</p>",
 
@@ -75,5 +77,12 @@
 	"graphs.registered-users": "Зареєстровані користувачі",
 	"graphs.anonymous-users": "Анонімні користувачі",
 	"last-restarted-by": "Останнє перезавантаження",
-	"no-users-browsing": "Немає користувачів онлайн"
+	"no-users-browsing": "Немає користувачів онлайн",
+
+	"back-to-dashboard": "Back to Dashboard",
+	"details.no-users": "No users have joined within the selected timeframe",
+	"details.no-topics": "No topics have been posted within the selected timeframe",
+	"details.no-logins": "No logins have been recorded within the selected timeframe",
+	"details.logins-static": "NodeBB only saves session data for %1 days, and so this table below will only show the most recently active sessions",
+	"details.logins-login-time": "Login Time"
 }

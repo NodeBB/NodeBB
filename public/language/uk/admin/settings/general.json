@@ -35,10 +35,16 @@
 	"maskable-icon.help": "Recommended size and format: 512x512, PNG format only. If no maskable icon is specified, NodeBB will fall back to the Touch Icon.",
 	"outgoing-links": "Зовнішні посилання",
 	"outgoing-links.warning-page": "Використовувати сторінку попередження про зовнішній перехід",
-	"search-default-sort-by": "Типовий порядок результатів пошуку",
+	"search": "Search",
+	"search-default-in": "Search In",
+	"search-default-in-quick": "Quick Search In",
+	"search-default-sort-by": "Sort by",
 	"outgoing-links.whitelist": "Безпечні домени для пропуску сторінки попередження",
 	"site-colors": "Site Color Metadata",
 	"theme-color": "Theme Color",
 	"background-color": "Background Color",
-	"background-color-help": "Color used for splash screen background when website is installed as a PWA"
+	"background-color-help": "Color used for splash screen background when website is installed as a PWA",
+	"undo-timeout": "Undo Timeout",
+	"undo-timeout-help": "Some operations such as moving topics will allow for the moderator to undo their action within a certain timeframe. Set to 0 to disable undo completely.",
+	"topic-tools": "Topic Tools"
 }

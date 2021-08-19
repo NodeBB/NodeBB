@@ -35,6 +35,7 @@
     "details.member_count": "メンバー数",
     "details.creation_date": "作成日",
     "details.description": "説明",
+    "details.member-post-cids": "Category IDs to display posts from",
     "details.badge_preview": "バッジプレビュー",
     "details.change_icon": "アイコンを変更",
     "details.change_label_colour": "Change Label Colour",

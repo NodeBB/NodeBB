@@ -35,6 +35,7 @@
     "details.member_count": "تعداد اعضا",
     "details.creation_date": "زمان ساخته شدن",
     "details.description": "توضیحات",
+    "details.member-post-cids": "Category IDs to display posts from",
     "details.badge_preview": "پیش نمایشِ نشان",
     "details.change_icon": "تغییر آیکن",
     "details.change_label_colour": "Change Label Colour",
@@ -58,6 +59,6 @@
     "new-group.group_name": "نام گروه:",
     "upload-group-cover": "آپلود کاور گروه",
     "bulk-invite-instructions": "برای دعوت به این گروه فهرستی از نام‌کاربری که با کاما جدا کنید را وارد کنید",
-    "bulk-invite": "میزان دعوت",
+    "bulk-invite": "دعوت گروهی",
     "remove_group_cover_confirm": "آیا شما مطمئن هستید که می خواهید عکس کاور را حذف کنید؟"
 }

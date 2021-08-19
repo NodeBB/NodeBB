@@ -2,6 +2,7 @@
 	"forum-traffic": "Traffico Forum",
 	"page-views": "Pagine viste",
 	"unique-visitors": "Visitatori Unici",
+	"logins": "Accessi",
 	"new-users": "Nuovi utenti",
 	"posts": "Post",
 	"topics": "Discussioni",
@@ -29,6 +30,7 @@
 	"upgrade-available": "<p>È stata rilasciata una nuova versione (v%1). Considera <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">di aggiornare il tuo NodeBB</a>.</p>",
 	"prerelease-upgrade-available": "<p>Questa è una versione pre-release sorpassata di NodeBB. È stata rilasciata una nuova versione (v%1). Considerare <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">di aggiornare il tuo NodeBB</a>.</p>",
 	"prerelease-warning": "<p>Questa è una versione <strong>pre-release</strong> di NodeBB. Possono verificarsi bug non intenzionali. <i class=\"fa fa-exclamation-triangle\"></i></p>",
+	"fallback-emailer-not-found": "Email di recupero non trovata!",
 	"running-in-development": "<span>Forum è in esecuzione in modalità sviluppo. Il forum potrebbe essere aperto a potenziali vulnerabilità; si prega di contattare il proprio amministratore di sistema.</span>",
 	"latest-lookup-failed": "<p>Ricerca dell'ultima versione disponibile di NodeBB non riuscita</p>",
 
@@ -75,5 +77,12 @@
 	"graphs.registered-users": "Utenti Registrati",
 	"graphs.anonymous-users": "Utenti Anonimi",
 	"last-restarted-by": "Ultimo riavvio di",
-	"no-users-browsing": "Nessun utente sta navigando"
+	"no-users-browsing": "Nessun utente sta navigando",
+
+	"back-to-dashboard": "Torna alla dashboard",
+	"details.no-users": "Nessun utente si è iscritto nell'arco di tempo selezionato",
+	"details.no-topics": "Nessuna discussione è stata postata nell'arco di tempo selezionato",
+	"details.no-logins": "Non sono stati registrati accessi nell'arco di tempo selezionato",
+	"details.logins-static": "NodeBB salva solo i dati di sessione per %1 giorni, quindi la tabella qui sotto mostrerà solo le sessioni attive più recenti",
+	"details.logins-login-time": "Tempo di accesso"
 }

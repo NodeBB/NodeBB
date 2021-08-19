@@ -2,6 +2,7 @@
 
 const meta = require('../../meta');
 const events = require('../../events');
+
 const Settings = module.exports;
 
 Settings.get = function (socket, data, callback) {

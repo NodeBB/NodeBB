@@ -8,5 +8,6 @@
     "failed_login_attempt": "Error al iniciar sesión",
     "login_successful": "¡Identificado satisfactoriamente!",
     "dont_have_account": "¿Aún no tienes cuenta?",
-    "logged-out-due-to-inactivity": "Debido a la inactividad has sido deslogueado del Panel de Control de Administradores"
+    "logged-out-due-to-inactivity": "Debido a la inactividad has sido deslogueado del Panel de Control de Administradores",
+    "caps-lock-enabled": "Caps Lock is enabled"
 }

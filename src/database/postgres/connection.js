@@ -21,7 +21,7 @@ connection.getConnectionOptions = function (postgres) {
 		postgres.database = 'nodebb';
 	}
 
-	var connOptions = {
+	const connOptions = {
 		host: postgres.host,
 		port: postgres.port,
 		user: postgres.username,
@@ -33,14 +33,12 @@ connection.getConnectionOptions = function (postgres) {
 	return _.merge(connOptions, postgres.options || {});
 };
 
-connection.connect = function (options, callback) {
-	const Pool = require('pg').Pool;
-
+connection.connect = async function (options) {
+	const { Pool } = require('pg');
 	const connOptions = connection.getConnectionOptions(options);
-
 	const db = new Pool(connOptions);
-
-	db.connect(function (err) {
-		callback(err, db);
-	});
+	await db.connect();
+	return db;
 };
+
+require('../../promisify')(connection);

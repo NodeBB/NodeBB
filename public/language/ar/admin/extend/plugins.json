@@ -39,7 +39,7 @@
 	"alert.upgraded": "الإضافة مرقاة",
 	"alert.installed": "الإضافة منصبة",
 	"alert.uninstalled": "تم إلغاء تنصيب الإضافة",
-	"alert.activate-success": "يرجى إعادة تشغيل NodeBB لتنشيط الإضافة بشكل بالكامل",
+	"alert.activate-success": "Please rebuild and restart your NodeBB to fully activate this plugin",
 	"alert.deactivate-success": "تم تعطيل الإضافة بنجاح",
 	"alert.upgrade-success": "Please rebuild and restart your NodeBB to fully upgrade this plugin.",
 	"alert.install-success": "تم تثبيت الإضافة بنجاح، يرجى تفعيلها.",

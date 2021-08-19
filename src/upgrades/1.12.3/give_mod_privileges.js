@@ -1,15 +1,15 @@
 'use strict';
 
-var async = require('async');
-var privileges = require('../../privileges');
-var groups = require('../../groups');
-var db = require('../../database');
+const async = require('async');
+const privileges = require('../../privileges');
+const groups = require('../../groups');
+const db = require('../../database');
 
 module.exports = {
 	name: 'Give mods explicit privileges',
 	timestamp: Date.UTC(2019, 4, 28),
 	method: function (callback) {
-		var defaultPrivileges = [
+		const defaultPrivileges = [
 			'find',
 			'read',
 			'topics:read',
@@ -48,7 +48,7 @@ module.exports = {
 				db.getSortedSetRevRange('categories:cid', 0, -1, next);
 			},
 			function (cids, next) {
-				async.eachSeries(cids, function (cid, next) {
+				async.eachSeries(cids, (cid, next) => {
 					async.waterfall([
 						function (next) {
 							givePrivsToModerators(cid, '', next);
@@ -57,7 +57,7 @@ module.exports = {
 							givePrivsToModerators(cid, 'groups:', next);
 						},
 						function (next) {
-							privileges.categories.give(modPrivileges.map(p => 'groups:' + p), cid, ['Global Moderators'], next);
+							privileges.categories.give(modPrivileges.map(p => `groups:${p}`), cid, ['Global Moderators'], next);
 						},
 					], next);
 				}, next);
@@ -68,16 +68,14 @@ module.exports = {
 		], callback);
 
 		function givePrivsToModerators(cid, groupPrefix, callback) {
-			const privGroups = modPrivileges.map(function (priv) {
-				return 'cid:' + cid + ':privileges:' + groupPrefix + priv;
-			});
+			const privGroups = modPrivileges.map(priv => `cid:${cid}:privileges:${groupPrefix}${priv}`);
 
 			async.waterfall([
 				function (next) {
-					db.getSortedSetRevRange('group:cid:' + cid + ':privileges:' + groupPrefix + 'moderate:members', 0, -1, next);
+					db.getSortedSetRevRange(`group:cid:${cid}:privileges:${groupPrefix}moderate:members`, 0, -1, next);
 				},
 				function (members, next) {
-					async.eachSeries(members, function (member, next) {
+					async.eachSeries(members, (member, next) => {
 						groups.join(privGroups, member, next);
 					}, next);
 				},

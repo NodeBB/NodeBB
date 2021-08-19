@@ -1,16 +1,15 @@
 'use strict';
 
-define('navigator', ['forum/pagination', 'components'], function (pagination, components) {
+define('navigator', ['forum/pagination', 'components', 'hooks'], function (pagination, components, hooks) {
 	var navigator = {};
-	var index = 1;
+	var index = 0;
 	var count = 0;
 	var navigatorUpdateTimeoutId;
 
-	var touchTooltipEl;
-	var touchIntervalId;
+	var renderPostIntervalId;
 	var touchX;
 	var touchY;
-	var touchIndex;
+	var renderPostIndex;
 	var isNavigating = false;
 	var firstMove = true;
 
@@ -20,13 +19,18 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 	var paginationTextEl = paginationBlockEl.find('.pagination-text');
 	var paginationBlockMeterEl = paginationBlockEl.find('meter');
 	var paginationBlockProgressEl = paginationBlockEl.find('.progress-bar');
+	var thumb;
+	var thumbText;
+	var thumbIcon;
+	var thumbIconHeight;
+	var thumbIconHalfHeight;
 
 	$(window).on('action:ajaxify.start', function () {
 		$(window).off('keydown', onKeyDown);
 	});
 
 	navigator.init = function (selector, count, toTop, toBottom, callback) {
-		index = 1;
+		index = 0;
 		navigator.selector = selector;
 		navigator.callback = callback;
 		navigator.toTop = toTop || function () {};
@@ -36,6 +40,13 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 		paginationTextEl = paginationBlockEl.find('.pagination-text');
 		paginationBlockMeterEl = paginationBlockEl.find('meter');
 		paginationBlockProgressEl = paginationBlockEl.find('.progress-bar');
+
+		thumbIcon = $('.scroller-thumb-icon');
+		thumbIconHeight = thumbIcon.height();
+		thumbIconHalfHeight = thumbIconHeight / 2;
+		thumb = $('.scroller-thumb');
+		thumbText = thumb.find('.thumb-text');
+
 
 		$(window).off('scroll', navigator.delayedUpdate).on('scroll', navigator.delayedUpdate);
 
@@ -69,48 +80,9 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 			}
 		});
 
-		$('.pagination-block.visible-xs').on('touchstart', function (e) {
-			touchTooltipEl = $('.navigator-thumb');
-			touchX = Math.min($(window).width(), Math.max(0, e.touches[0].clientX));
-			touchY = Math.min($(window).height(), Math.max(0, e.touches[0].clientY));
-			firstMove = true;
-		}).on('touchmove', function (e) {
-			var windowWidth = $(window).width();
-			var windowHeight = $(window).height();
-			var deltaX = Math.abs(touchX - Math.min(windowWidth, Math.max(0, e.touches[0].clientX)));
-			var deltaY = Math.abs(touchY - Math.min(windowHeight, Math.max(0, e.touches[0].clientY)));
-			touchX = Math.min(windowWidth, Math.max(0, e.touches[0].clientX));
-			touchY = Math.min(windowHeight, Math.max(0, e.touches[0].clientY));
-			if (deltaX >= deltaY && firstMove) {
-				isNavigating = true;
-				touchIntervalId = setInterval(updateTooltip, 100);
-			}
-			if (isNavigating) {
-				e.preventDefault();
-				e.stopPropagation();
-				var percent = touchX / windowWidth;
-				index = Math.max(1, Math.ceil(count * percent));
-				index = index > count ? count : index;
-				if (firstMove) {
-					updateTooltip(function () {
-						touchTooltipEl.removeClass('hidden');
-					});
-				}
-				navigator.updateTextAndProgressBar();
-			}
-			firstMove = false;
-		}).on('touchend', function () {
-			if (touchIntervalId) {
-				clearInterval(touchIntervalId);
-				touchIntervalId = 0;
-			}
-
-			if (isNavigating) {
-				touchTooltipEl.addClass('hidden');
-				navigator.scrollToIndex(index - 1, true, 0);
-				isNavigating = false;
-			}
-		});
+		if (ajaxify.data.template.topic) {
+			handleScrollNav();
+		}
 
 		handleKeys();
 
@@ -118,27 +90,176 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 		navigator.update(0);
 	};
 
-	function updateTooltip(callback) {
-		callback = callback || function () {};
-		if (touchIndex === index) {
+	function clampTop(newTop) {
+		var parent = thumb.parent();
+		var parentOffset = parent.offset();
+		if (newTop < parentOffset.top) {
+			newTop = parentOffset.top;
+		} else if (newTop > parentOffset.top + parent.height() - thumbIconHeight) {
+			newTop = parentOffset.top + parent.height() - thumbIconHeight;
+		}
+		return newTop;
+	}
+
+	function setThumbToIndex(index) {
+		if (!thumb.length || thumb.is(':hidden')) {
 			return;
 		}
-		touchIndex = index;
-		touchTooltipEl.css({ left: Math.min($(window).width() - touchTooltipEl.outerWidth(), Math.max(touchX - (touchTooltipEl.outerWidth() / 2), 0)) });
+		var parent = thumb.parent();
+		var parentOffset = parent.offset();
+		var percent = (index - 1) / ajaxify.data.postcount;
+		if (index === count) {
+			percent = 1;
+		}
+		var newTop = clampTop(parentOffset.top + ((parent.height() - thumbIconHeight) * percent));
 
-		socket.emit('posts.getTimestampByIndex', { tid: ajaxify.data.tid, index: index - 1 }, function (err, timestamp) {
+		var offset = { top: newTop, left: thumb.offset().left };
+		thumb.offset(offset);
+		thumbText.text(index + '/' + ajaxify.data.postcount);
+		renderPost(index);
+	}
+
+	function handleScrollNav() {
+		if (!thumb.length) {
+			return;
+		}
+
+		var parent = thumb.parent();
+		parent.on('click', function (ev) {
+			if ($(ev.target).hasClass('scroller-container')) {
+				var index = calculateIndexFromY(ev.pageY);
+				navigator.scrollToIndex(index - 1, true, 0);
+				return false;
+			}
+		});
+
+		function calculateIndexFromY(y) {
+			var newTop = clampTop(y - thumbIconHalfHeight);
+			var parentOffset = parent.offset();
+			var percent = (newTop - parentOffset.top) / (parent.height() - thumbIconHeight);
+			index = Math.max(1, Math.ceil(ajaxify.data.postcount * percent));
+			return index > ajaxify.data.postcount ? ajaxify.data.count : index;
+		}
+
+		var mouseDragging = false;
+		hooks.on('action:ajaxify.end', function () {
+			renderPostIndex = null;
+		});
+		$('.pagination-block .dropdown-menu').parent().on('shown.bs.dropdown', function () {
+			setThumbToIndex(index);
+		});
+
+		thumb.on('mousedown', function () {
+			mouseDragging = true;
+			$(window).on('mousemove', mousemove);
+			firstMove = true;
+		});
+
+		function mouseup() {
+			$(window).off('mousemove', mousemove);
+			if (mouseDragging) {
+				navigator.scrollToIndex(index - 1, true, 0);
+				paginationBlockEl.find('[data-toggle="dropdown"]').trigger('click');
+			}
+			clearRenderInterval();
+			mouseDragging = false;
+			firstMove = false;
+		}
+
+		function mousemove(ev) {
+			var newTop = clampTop(ev.pageY - thumbIconHalfHeight);
+			thumb.offset({ top: newTop, left: thumb.offset().left });
+			var index = calculateIndexFromY(ev.pageY);
+			navigator.updateTextAndProgressBar();
+			thumbText.text(index + '/' + ajaxify.data.postcount);
+			if (firstMove) {
+				delayedRenderPost();
+			}
+			firstMove = false;
+			ev.stopPropagation();
+			return false;
+		}
+
+		function delayedRenderPost() {
+			clearRenderInterval();
+			renderPostIntervalId = setInterval(function () {
+				renderPost(index);
+			}, 250);
+		}
+
+		$(window).off('mousemove', mousemove);
+		$(window).off('mouseup', mouseup).on('mouseup', mouseup);
+
+		thumb.on('touchstart', function (ev) {
+			isNavigating = true;
+			touchX = Math.min($(window).width(), Math.max(0, ev.touches[0].clientX));
+			touchY = Math.min($(window).height(), Math.max(0, ev.touches[0].clientY));
+			firstMove = true;
+		});
+
+		thumb.on('touchmove', function (ev) {
+			var windowWidth = $(window).width();
+			var windowHeight = $(window).height();
+			var deltaX = Math.abs(touchX - Math.min(windowWidth, Math.max(0, ev.touches[0].clientX)));
+			var deltaY = Math.abs(touchY - Math.min(windowHeight, Math.max(0, ev.touches[0].clientY)));
+			touchX = Math.min(windowWidth, Math.max(0, ev.touches[0].clientX));
+			touchY = Math.min(windowHeight, Math.max(0, ev.touches[0].clientY));
+
+			if (deltaY >= deltaX && firstMove) {
+				isNavigating = true;
+				delayedRenderPost();
+			}
+
+			if (isNavigating && ev.cancelable) {
+				ev.preventDefault();
+				ev.stopPropagation();
+				var newTop = clampTop(touchY + $(window).scrollTop() - thumbIconHalfHeight);
+				thumb.offset({ top: newTop, left: thumb.offset().left });
+				var index = calculateIndexFromY(touchY + $(window).scrollTop());
+				navigator.updateTextAndProgressBar();
+				thumbText.text(index + '/' + ajaxify.data.postcount);
+				if (firstMove) {
+					renderPost(index);
+				}
+			}
+			firstMove = false;
+		});
+
+		thumb.on('touchend', function () {
+			clearRenderInterval();
+			if (isNavigating) {
+				navigator.scrollToIndex(index - 1, true, 0);
+				isNavigating = false;
+				paginationBlockEl.find('[data-toggle="dropdown"]').trigger('click');
+			}
+		});
+	}
+
+	function clearRenderInterval() {
+		if (renderPostIntervalId) {
+			clearInterval(renderPostIntervalId);
+			renderPostIntervalId = 0;
+		}
+	}
+
+	function renderPost(index, callback) {
+		callback = callback || function () {};
+		if (renderPostIndex === index || paginationBlockEl.find('.post-content').is(':hidden')) {
+			return;
+		}
+		renderPostIndex = index;
+
+		socket.emit('posts.getPostSummaryByIndex', { tid: ajaxify.data.tid, index: index - 1 }, function (err, postData) {
 			if (err) {
 				return app.alertError(err.message);
 			}
+			app.parseAndTranslate('partials/topic/navigation-post', { post: postData }, function (html) {
+				paginationBlockEl
+					.find('.post-content')
+					.html(html)
+					.find('.timeago').timeago();
+			});
 
-			var date = new Date(timestamp);
-			var ds = date.toLocaleString(config.userLang, { month: 'long' });
-			touchTooltipEl.find('.text').translateText('[[global:pagination.out_of, ' + index + ', ' + count + ']]');
-			if (timestamp > Date.now() - (30 * 24 * 60 * 60 * 1000)) {
-				touchTooltipEl.find('.time').text(ds + ' ' + date.getDate());
-			} else {
-				touchTooltipEl.find('.time').text(ds + ' ' + date.getFullYear());
-			}
 			callback();
 		});
 	}
@@ -171,7 +292,11 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 	}
 
 	navigator.setCount = function (value) {
-		count = parseInt(value, 10);
+		value = parseInt(value, 10);
+		if (value === count) {
+			return;
+		}
+		count = value;
 		navigator.updateTextAndProgressBar();
 	};
 
@@ -213,10 +338,10 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 			a spot where a user is expecting to begin reading.
 		*/
 		threshold = typeof threshold === 'number' ? threshold : undefined;
-
+		var newIndex = index;
 		var els = $(navigator.selector);
 		if (els.length) {
-			index = parseInt(els.first().attr('data-index'), 10) + 1;
+			newIndex = parseInt(els.first().attr('data-index'), 10) + 1;
 		}
 
 		var scrollTop = $(window).scrollTop();
@@ -225,15 +350,16 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 		var middleOfViewport = scrollTop + (windowHeight / 2);
 		var previousDistance = Number.MAX_VALUE;
 		els.each(function () {
-			var elIndex = parseInt($(this).attr('data-index'), 10);
+			var $this = $(this);
+			var elIndex = parseInt($this.attr('data-index'), 10);
 			if (elIndex >= 0) {
-				var distanceToMiddle = Math.abs(middleOfViewport - $(this).offset().top);
+				var distanceToMiddle = Math.abs(middleOfViewport - ($this.offset().top + ($this.outerHeight(true) / 2)));
 				if (distanceToMiddle > previousDistance) {
 					return false;
 				}
 
 				if (distanceToMiddle < previousDistance) {
-					index = elIndex + 1;
+					newIndex = elIndex + 1;
 					previousDistance = distanceToMiddle;
 				}
 			}
@@ -243,13 +369,13 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 		var nearBottom = scrollTop + windowHeight > documentHeight - 100 && parseInt(els.last().attr('data-index'), 10) === count - 1;
 
 		if (atTop) {
-			index = 1;
+			newIndex = 1;
 		} else if (nearBottom) {
-			index = count;
+			newIndex = count;
 		}
 
 		// If a threshold is undefined, try to determine one based on new index
-		if (threshold === undefined && ajaxify.data.template.topic === true) {
+		if (threshold === undefined && ajaxify.data.template.topic) {
 			if (atTop) {
 				threshold = 0;
 			} else {
@@ -262,10 +388,15 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 		}
 
 		if (typeof navigator.callback === 'function') {
-			navigator.callback(index, count, threshold);
+			navigator.callback(newIndex, count, threshold);
 		}
 
-		navigator.updateTextAndProgressBar();
+		if (newIndex !== index) {
+			index = newIndex;
+			navigator.updateTextAndProgressBar();
+			setThumbToIndex(index);
+		}
+
 		toggle(!!count);
 	};
 
@@ -386,24 +517,29 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 			navigator.scrollActive = false;
 			return;
 		}
-		var postHeight = scrollTo.height();
+
+		var postHeight = scrollTo.outerHeight(true);
+		var navbarHeight = components.get('navbar').outerHeight(true);
+		var topicHeaderHeight = $('.topic-header').outerHeight(true) || 0;
 		var viewportHeight = $(window).height();
-		var navbarHeight = components.get('navbar').height();
 
 		// Temporarily disable navigator update on scroll
-		$(window).off('scroll', navigator.update);
+		$(window).off('scroll', navigator.delayedUpdate);
 
 		duration = duration !== undefined ? duration : 400;
 		navigator.scrollActive = true;
 		var done = false;
 
 		function animateScroll() {
+			function reenableScroll() {
+				// Re-enable onScroll behaviour
+				$(window).on('scroll', navigator.delayedUpdate);
+				var scrollToRect = scrollTo.get(0).getBoundingClientRect();
+				navigator.update(scrollToRect.top);
+			}
 			function onAnimateComplete() {
 				if (done) {
-					// Re-enable onScroll behaviour
-					$(window).on('scroll', navigator.update);
-					var scrollToRect = scrollTo.get(0).getBoundingClientRect();
-					navigator.update(scrollToRect.top);
+					reenableScroll();
 					return;
 				}
 				done = true;
@@ -415,14 +551,17 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 			}
 
 			var scrollTop = 0;
-			if (postHeight < viewportHeight) {
-				scrollTop = (scrollTo.offset().top - (viewportHeight / 2) + (postHeight / 2));
+			if (postHeight < viewportHeight - navbarHeight - topicHeaderHeight) {
+				scrollTop = scrollTo.offset().top - (viewportHeight / 2) + (postHeight / 2);
 			} else {
-				scrollTop = scrollTo.offset().top - navbarHeight;
+				scrollTop = scrollTo.offset().top - navbarHeight - topicHeaderHeight;
 			}
+
 			if (duration === 0) {
 				$(window).scrollTop(scrollTop);
-				return onAnimateComplete();
+				onAnimateComplete();
+				reenableScroll();
+				return;
 			}
 			$('html, body').animate({
 				scrollTop: scrollTop + 'px',
@@ -431,6 +570,7 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 
 		function highlightPost() {
 			if (highlight) {
+				$('[component="post"],[component="category/topic"]').removeClass('highlight');
 				scrollTo.addClass('highlight');
 				setTimeout(function () {
 					scrollTo.removeClass('highlight');
@@ -443,3 +583,4 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 
 	return navigator;
 });
+

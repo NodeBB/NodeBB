@@ -1,21 +1,21 @@
 {
-	"lead": "A listing of digest delivery stats and times is displayed below.",
-	"disclaimer": "Please be advised that email delivery is not guaranteed, due to the nature of email technology. Many variables factor into whether an email sent to the recipient server is ultimately delivered into the user's inbox, including server reputation, blacklisted IP addresses, and whether DKIM/SPF/DMARC is configured.",
-	"disclaimer-continued": "A successful delivery means the message was sent successfully by NodeBB and acknowledged by the recipient server. It does not mean the email landed in the inbox. For best results, we recommend using a third-party email delivery service such as <a href=\"https://sendgrid.com/why-sendgrid/\">SendGrid</a>.",
+	"lead": "Uma lista de estatísticas e tempos de entrega de resumo é exibida abaixo.",
+	"disclaimer": "Informamos que a entrega de e-mail não é garantida, devido à natureza da tecnologia de e-mail. Muitos fatores variáveis ​​determinam se um e-mail enviado ao servidor do destinatário é entregue na caixa de entrada do usuário, incluindo reputação do servidor, endereços IP na lista negra e se DKIM/SPF/DMARC está configurado.",
+	"disclaimer-continued": "Uma entrega bem-sucedida significa que a mensagem foi enviada com sucesso pelo NodeBB e confirmada pelo servidor do destinatário. Isso não significa que o e-mail foi parar na caixa de entrada. Para obter melhores resultados, recomendamos o uso de um serviço de entrega de e-mail de terceiros, como o <a href=\"https://sendgrid.com/why-sendgrid/\">SendGrid</a>.",
 
-	"user": "User",
-	"subscription": "Subscription Type",
-	"last-delivery": "Last successful delivery",
-	"default": "System default",
-	"default-help": "<em>System default</em> means the user has not explicitly overridden the global forum setting for digests, which is currently: &quot;<strong>%1</strong>&quot;",
-	"resend": "Resend Digest",
-	"resend-all-confirm": "Are you sure you wish to manually execute this digest run?",
-	"resent-single": "Manual digest resend completed",
-	"resent-day": "Daily digest resent",
-	"resent-week": "Weekly digest resent",
-	"resent-month": "Monthly digest resent",
-	"null": "<em>Never</em>",
-	"manual-run": "Manual digest run:",
+	"user": "Usuário",
+	"subscription": "Tipo de Inscrição",
+	"last-delivery": "Última entrega bem sucedida",
+	"default": "Padrão do sistema",
+	"default-help": "<em>Padrão do sistema</em> significa que o usuário não substituiu explicitamente a configuração global do fórum para resumos, a qual atualmente é: \"<strong>%1</strong>\"",
+	"resend": "Reenviar Resumo",
+	"resend-all-confirm": "Tem certeza de que deseja executar manualmente esta execução de resumo?",
+	"resent-single": "Reenvio manual de resumos concluído",
+	"resent-day": "Resumo diário reenviado",
+	"resent-week": "Resumo semanal reenviado",
+	"resent-month": "Resumo mensal reenviado",
+	"null": "<em>Nunca</em>",
+	"manual-run": "Execução de resumo manual:",
 
-	"no-delivery-data": "No delivery data found"
+	"no-delivery-data": "Nenhum dado de entrega encontrado"
 }

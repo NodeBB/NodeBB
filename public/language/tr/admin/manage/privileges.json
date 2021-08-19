@@ -4,11 +4,13 @@
 	"group-privileges": "Grup Ayrıcalıkları",
 	"user-privileges": "Kullanıcı Ayrıcalıkları",
 	"edit-privileges": "Ayrıcalıkları Düzenle",
+  	"select-clear-all": "Hepsini Seç/Temizle",
 	"chat": "Sohbet",
 	"upload-images": "Resim Yükle",
 	"upload-files": "Dosya Yükle",
 	"signature": "İmza",
 	"ban": "Ban",
+	"invite": "Davet et",
 	"search-content": "İçerik Arama",
 	"search-users": "Kullanıcıları Ara",
 	"search-tags": "Etiketleri Ara",
@@ -23,6 +25,7 @@
 	"access-topics": "Başlıklara Eriş",
 	"create-topics": "Başlık Oluştur",
 	"reply-to-topics": "Başlığı Cevapla",
+	"schedule-topics": "Schedule Topics",
 	"tag-topics": "Başlığı etiketle",
 	"edit-posts": "İletiyi düzenle",
 	"view-edit-history": "Düzenleme Geçmişini Görüntüle",
@@ -37,9 +40,13 @@
 	"admin-categories": "Kategoriler",
 	"admin-privileges": "Ayrıcalıklar",
 	"admin-users": "Kullanıcılar",
+	"admin-admins-mods": "Yöneticiler &amp; Modlar",
+	"admin-groups": "Gruplar",
+	"admin-tags": "Etiketler",
 	"admin-settings": "Ayarlar",
 
 	"alert.confirm-moderate": "<strong>Bu gruba yönetim ayrıcalıkları vermek istediğinize emin misiniz?</strong> Bu grup genele açık olduğundan her kullanıcı gruba katılabilir. ",
+	"alert.confirm-admins-mods": "<strong>Bu gruba &quot;Admins &amp; Mods&quot; ayrıcalıkları vermek istediğinize emin misiniz?</strong> Bu ayrıcalığa sahip kullanıcılar başka kullanıcıların ayrıcalıklarını belirleyebilirler, <em> örneğin super administrator</em> veya değiştirebilirler.",
 	"alert.confirm-save": "Lütfen ayrıcalıkları kaydetme isteğinizi onaylayınız",
 	"alert.saved": "Ayrıcalık değişiklikleri kaydedildi ve uygulandı",
 	"alert.confirm-discard": "Ayrıcalık değişikliklerini iptal etmek istediğinize emin misiniz?",
@@ -48,5 +55,6 @@
 	"alert.confirm-copyToAllGroup": "Bu grup ayrıcalıklarını <strong>tüm kategoriler</strong> için uygulamaya emin misiniz?",
 	"alert.confirm-copyToChildren": "Bu ayrıcalıkları <strong>tüm alt (aşağı) kategoriler</strong> için uygulamaya emin misiniz?",
 	"alert.confirm-copyToChildrenGroup": "Bu grup ayrıcalıklarını <strong>tüm alt (aşağı) kategoriler</strong> uygulamaya emin misiniz?",
-	"alert.no-undo": "<em>Bu işlem geri alınamaz.</em>"
+	"alert.no-undo": "<em>Bu işlem geri alınamaz.</em>",
+	"alert.admin-warning": "Yöneticiler dolaylı olarak tüm ayrıcalıklara sahiptirler"
 }

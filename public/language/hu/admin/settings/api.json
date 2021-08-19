@@ -1,0 +1,16 @@
+{
+	"tokens": "Tokenek",
+	"settings": "Beállítások",
+	"lead-text": "Ezen az oldalon beállíthatod a NodeBB Write API-jának hozzáférését.",
+	"intro": "Alapértelmezetten a Write API a felhasználókat a munkamenet sütijükön keresztül authentikálja, azonban a NodeBB támogatja a Bearer authentikációt tokeneken keresztül, amiket ezen az oldalon generálhatsz.",
+	"docs": "Kattints ide a teljes API specifikáció megtekintéséhez",
+
+	"require-https": "API használat korlátozása HTTPS protokollra",
+	"require-https-caveat": "<strong>Megjegyzés</strong>: Némely telepítések terherléselosztás miatt a kéréseket a NodeBB felé HTTP-n keresztül továbbítják. Ilyen esetekben ezt a beállítást nem szabad bekapcsolni.",
+
+	"uid": "Felhasználó azonosító",
+	"uid-help-text": "Adj meg egy felhasználó azonosítót, hogy társítsd ehhez a tokenhez. Ha a felhasználó azonosító 0, akkor <em>mester</em> tokenként lesz kezelve, ami bármelyik felhasználó identitását képes felvenni a <code>_uid</code> paraméter alapján",
+	"description": "Leírás",
+	"no-description": "Nincs leírás megadva.",
+	"token-on-save": "A token az űrlap mentésekor generálódik"
+}

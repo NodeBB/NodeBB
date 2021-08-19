@@ -1,0 +1,123 @@
+UserObj:
+  properties:
+    uid:
+      type: number
+      example: 1
+    username:
+      type: string
+      example: Dragon Fruit
+    userslug:
+      type: string
+      example: dragon-fruit
+    email:
+      type: string
+      example: dragonfruit@example.org
+    'email:confirmed':
+      type: number
+      example: 1
+    joindate:
+      type: number
+      example: 1585337827953
+    lastonline:
+      type: number
+      example: 1585337827953
+    picture:
+      type: string
+      example: 'https://images.unsplash.com/photo-1560070094-e1f2ddec4337?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=256&h=256&q=80'
+    fullname:
+      type: string
+      example: Mr. Dragon Fruit Jr.
+    displayname:
+      type: string
+      description: This is either username or fullname depending on forum and user settings
+      example: Dragon Fruit
+    location:
+      type: string
+      example: 'Toronto, Canada'
+    birthday:
+      type: string
+      description: A birthdate given in an ISO format parseable by the Date object
+      example: 03/27/2020
+    website:
+      type: string
+      example: 'https://example.org'
+    aboutme:
+      type: string
+      example: |
+        This is a paragraph all about how my life got twist-turned upside-down
+        and I'd like to take a minute and sit right here,
+        to tell you all about how I because the administrator of NodeBB
+    signature:
+      type: string
+      example: |
+        This is an example signature
+        It can span multiple lines.
+    uploadedpicture:
+      type: string
+      example: /assets/profile/1-profileimg.png
+      description: 'In almost all cases, defer to "picture" instead. Use this if you need to specifically reference the picture uploaded to the forum.'
+    profileviews:
+      type: number
+      example: 1000
+    reputation:
+      type: number
+      example: 100
+    postcount:
+      type: number
+      example: 1000
+    topiccount:
+      type: number
+      example: 50
+    lastposttime:
+      type: number
+      example: 1585337827953
+    banned:
+      type: number
+      example: 0
+    'banned:expire':
+      type: number
+      example: 1585337827953
+    status:
+      type: string
+      example: online
+    flags:
+      type: number
+      example: 0
+    followercount:
+      type: number
+      example: 2
+    followingcount:
+      type: number
+      example: 5
+    'cover:url':
+      type: string
+      example: /assets/profile/1-cover.png
+    'cover:position':
+      type: string
+      example: 50.0301% 19.2464%
+    groupTitle:
+      type: string
+      example: '["administrators","Staff"]'
+    groupTitleArray:
+      type: array
+      example:
+        - administrators
+        - Staff
+    'icon:text':
+      type: string
+      example: D
+    'icon:bgColor':
+      type: string
+      example: '#9c27b0'
+    joindateISO:
+      type: string
+      example: '2020-03-27T20:30:36.590Z'
+    lastonlineISO:
+      type: string
+      example: '2020-03-27T20:30:36.590Z'
+    banned_until:
+      type: number
+      example: 0
+    banned_until_readable:
+      type: string
+      example: Not Banned

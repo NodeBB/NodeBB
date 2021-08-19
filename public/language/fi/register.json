@@ -18,9 +18,15 @@
     "agree_to_terms_of_use": "Hyväksyn käyttöehdot",
     "terms_of_use_error": "Sinun täytyy hyväksyä sopimusehdot",
     "registration-added-to-queue": "Rekisteröintisi on lisätty listalle odottamaan hyväksyntää. Saat ilmoituksen sähköpostiisi, kun ylläpitäjä on hyväksynyt rekisteröitymisesin.",
-    "interstitial.intro": "Sivusto vaatii lisätietoja ennenkuin voi luoda tunnuksen.",
-    "interstitial.errors-found": "Rekisteröitymisesi keskeytyi",
+    "registration-queue-average-time": "Our average time for approving memberships is %1 hours %2 minutes.",
+    "registration-queue-auto-approve-time": "Your membership to this forum will be fully activated in up to %1 hours.",
+    "interstitial.intro": "We'd like some additional information in order to update your account&hellip;",
+    "interstitial.intro-new": "We'd like some additional information before we can create your account&hellip;",
+    "interstitial.errors-found": "Please review the entered information:",
     "gdpr_agree_data": "Annan hyväksyntäni henkilökohtaisten tietojen keräämiseen ja prosessointiin tälle verkkosivulle.",
     "gdpr_agree_email": "Haluan vastaanottaa viestikoosteita ja ilmoituksia tältä verkkosivulta",
-    "gdpr_consent_denied": "Sinun täytyy antaa suostumus sivustolle, jotta se voi kerätä ja tallentaa tietosi ja lähettää sinulle tarvittaessa sähköpostia."
+    "gdpr_consent_denied": "Sinun täytyy antaa suostumus sivustolle, jotta se voi kerätä ja tallentaa tietosi ja lähettää sinulle tarvittaessa sähköpostia.",
+    "invite.error-admin-only": "Direct user registration has been disabled. Please contact an administrator for more details.",
+    "invite.error-invite-only": "Direct user registration has been disabled. You must be invited by an existing user in order to access this forum.",
+    "invite.error-invalid-data": "The registration data received does not correspond to our records. Please contact an administrator for more details"
 }

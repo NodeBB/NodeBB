@@ -1,7 +1,11 @@
 'use strict';
 
 
-define('admin/extend/plugins', ['jqueryui', 'translator', 'benchpress'], function (jqueryui, translator, Benchpress) {
+define('admin/extend/plugins', [
+	'translator',
+	'benchpress',
+	'jquery-ui/widgets/sortable',
+], function (translator, Benchpress) {
 	var Plugins = {};
 	Plugins.init = function () {
 		var pluginsList = $('.plugins');
@@ -15,7 +19,8 @@ define('admin/extend/plugins', ['jqueryui', 'translator', 'benchpress'], functio
 			return;
 		}
 
-		$('#plugin-search').val('');
+		const searchInputEl = document.querySelector('#plugin-search');
+		searchInputEl.value = '';
 
 		pluginsList.on('click', 'button[data-action="toggleActive"]', function () {
 			var pluginEl = $(this).parents('li');
@@ -58,7 +63,7 @@ define('admin/extend/plugins', ['jqueryui', 'translator', 'benchpress'], functio
 			}
 
 			if (pluginData.license && pluginData.active !== true) {
-				Benchpress.parse('admin/partials/plugins/license', pluginData, function (html) {
+				Benchpress.render('admin/partials/plugins/license', pluginData).then(function (html) {
 					bootbox.dialog({
 						title: '[[admin/extend/plugins:license.title]]',
 						message: html,
@@ -128,8 +133,9 @@ define('admin/extend/plugins', ['jqueryui', 'translator', 'benchpress'], functio
 					return bootbox.alert('[[admin/extend/plugins:alert.package-manager-unreachable]]');
 				}
 
-				require(['semver'], function (semver) {
-					if (payload.version !== 'latest' && semver.gt(payload.version, parent.find('.currentVersion').text())) {
+				require(['compare-versions'], function (compareVersions) {
+					var currentVersion = parent.find('.currentVersion').text();
+					if (payload.version !== 'latest' && compareVersions.compare(payload.version, currentVersion, '>')) {
 						upgrade(pluginID, btn, payload.version);
 					} else if (payload.version === 'latest') {
 						confirmInstall(pluginID, function () {
@@ -142,7 +148,7 @@ define('admin/extend/plugins', ['jqueryui', 'translator', 'benchpress'], functio
 			});
 		});
 
-		$('#plugin-search').on('input propertychange', function () {
+		$(searchInputEl).on('input propertychange', function () {
 			var term = $(this).val();
 			$('.plugins li').each(function () {
 				var pluginId = $(this).attr('data-plugin-id');
@@ -221,6 +227,7 @@ define('admin/extend/plugins', ['jqueryui', 'translator', 'benchpress'], functio
 
 		populateUpgradeablePlugins();
 		populateActivePlugins();
+		searchInputEl.focus();
 	};
 
 	function confirmInstall(pluginID, callback) {

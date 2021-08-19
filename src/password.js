@@ -1,15 +1,17 @@
 'use strict';
 
 const path = require('path');
-const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 const util = require('util');
+
+const bcrypt = require('bcryptjs');
 
 const fork = require('./meta/debugFork');
 
 function forkChild(message, callback) {
 	const child = fork(path.join(__dirname, 'password'));
 
-	child.on('message', function (msg) {
+	child.on('message', (msg) => {
 		callback(msg.err ? new Error(msg.err) : null, msg.result);
 	});
 
@@ -19,11 +21,17 @@ function forkChild(message, callback) {
 const forkChildAsync = util.promisify(forkChild);
 
 exports.hash = async function (rounds, password) {
+	password = crypto.createHash('sha512').update(password).digest('hex');
 	return await forkChildAsync({ type: 'hash', rounds: rounds, password: password });
 };
 
-exports.compare = async function (password, hash) {
+exports.compare = async function (password, hash, shaWrapped) {
 	const fakeHash = await getFakeHash();
+
+	if (shaWrapped) {
+		password = crypto.createHash('sha512').update(password).digest('hex');
+	}
+
 	return await forkChildAsync({ type: 'compare', password: password, hash: hash || fakeHash });
 };
 
@@ -37,7 +45,7 @@ async function getFakeHash() {
 }
 
 // child process
-process.on('message', function (msg) {
+process.on('message', (msg) => {
 	if (msg.type === 'hash') {
 		tryMethod(hashPassword, msg);
 	} else if (msg.type === 'compare') {

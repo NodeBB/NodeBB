@@ -1,32 +1,32 @@
 'use strict';
 
 
-var	assert = require('assert');
-var async = require('async');
-var request = require('request');
-var nconf = require('nconf');
+const	assert = require('assert');
+const async = require('async');
+const request = require('request');
+const nconf = require('nconf');
 
-var db = require('./mocks/databasemock');
-var topics = require('../src/topics');
-var categories = require('../src/categories');
-var user = require('../src/user');
-var search = require('../src/search');
-var privileges = require('../src/privileges');
+const db = require('./mocks/databasemock');
+const topics = require('../src/topics');
+const categories = require('../src/categories');
+const user = require('../src/user');
+const search = require('../src/search');
+const privileges = require('../src/privileges');
 
-describe('Search', function () {
-	var phoebeUid;
-	var gingerUid;
+describe('Search', () => {
+	let phoebeUid;
+	let gingerUid;
 
-	var topic1Data;
-	var topic2Data;
-	var post1Data;
-	var post2Data;
-	var post3Data;
-	var cid1;
-	var cid2;
-	var cid3;
+	let topic1Data;
+	let topic2Data;
+	let post1Data;
+	let post2Data;
+	let post3Data;
+	let cid1;
+	let cid2;
+	let cid3;
 
-	before(function (done) {
+	before((done) => {
 		async.waterfall([
 			function (next) {
 				async.series({
@@ -104,15 +104,15 @@ describe('Search', function () {
 		], done);
 	});
 
-	it('should search term in titles and posts', function (done) {
-		var meta = require('../src/meta');
-		var qs = '/api/search?term=cucumber&in=titlesposts&categories[]=' + cid1 + '&by=phoebe&replies=1&repliesFilter=atleast&sortBy=timestamp&sortDirection=desc&showAs=posts';
-		privileges.global.give(['groups:search:content'], 'guests', function (err) {
+	it('should search term in titles and posts', (done) => {
+		const meta = require('../src/meta');
+		const qs = `/api/search?term=cucumber&in=titlesposts&categories[]=${cid1}&by=phoebe&replies=1&repliesFilter=atleast&sortBy=timestamp&sortDirection=desc&showAs=posts`;
+		privileges.global.give(['groups:search:content'], 'guests', (err) => {
 			assert.ifError(err);
 			request({
 				url: nconf.get('url') + qs,
 				json: true,
-			}, function (err, response, body) {
+			}, (err, response, body) => {
 				assert.ifError(err);
 				assert(body);
 				assert.equal(body.matchCount, 1);
@@ -125,11 +125,11 @@ describe('Search', function () {
 		});
 	});
 
-	it('should search for a user', function (done) {
+	it('should search for a user', (done) => {
 		search.search({
 			query: 'gin',
 			searchIn: 'users',
-		}, function (err, data) {
+		}, (err, data) => {
 			assert.ifError(err);
 			assert(data);
 			assert.equal(data.matchCount, 1);
@@ -140,11 +140,11 @@ describe('Search', function () {
 		});
 	});
 
-	it('should search for a tag', function (done) {
+	it('should search for a tag', (done) => {
 		search.search({
 			query: 'plug',
 			searchIn: 'tags',
-		}, function (err, data) {
+		}, (err, data) => {
 			assert.ifError(err);
 			assert(data);
 			assert.equal(data.matchCount, 1);
@@ -155,43 +155,68 @@ describe('Search', function () {
 		});
 	});
 
-	it('should fail if searchIn is wrong', function (done) {
+	it('should search for a category', async () => {
+		await categories.create({
+			name: 'foo category',
+			description: 'Test category created by testing script',
+		});
+		await categories.create({
+			name: 'baz category',
+			description: 'Test category created by testing script',
+		});
+		const result = await search.search({
+			query: 'baz',
+			searchIn: 'categories',
+		});
+		assert.strictEqual(result.matchCount, 1);
+		assert.strictEqual(result.categories[0].name, 'baz category');
+	});
+
+	it('should search for categories', async () => {
+		const socketCategories = require('../src/socket.io/categories');
+		let data = await socketCategories.categorySearch({ uid: phoebeUid }, { query: 'baz', parentCid: 0 });
+		assert.strictEqual(data[0].name, 'baz category');
+		data = await socketCategories.categorySearch({ uid: phoebeUid }, { query: '', parentCid: 0 });
+		assert.strictEqual(data.length, 5);
+	});
+
+	it('should fail if searchIn is wrong', (done) => {
 		search.search({
 			query: 'plug',
 			searchIn: 'invalidfilter',
-		}, function (err) {
+		}, (err) => {
 			assert.equal(err.message, '[[error:unknown-search-filter]]');
 			done();
 		});
 	});
 
-	it('should search with tags filter', function (done) {
+	it('should search with tags filter', (done) => {
 		search.search({
 			query: 'mongodb',
 			searchIn: 'titles',
 			hasTags: ['nodebb', 'javascript'],
-		}, function (err, data) {
+		}, (err, data) => {
 			assert.ifError(err);
 			assert.equal(data.posts[0].tid, topic2Data.tid);
 			done();
 		});
 	});
 
-	it('should not crash if tags is not an array', function (done) {
+	it('should not crash if tags is not an array', (done) => {
 		search.search({
 			query: 'mongodb',
 			searchIn: 'titles',
 			hasTags: 'nodebb,javascript',
-		}, function (err, data) {
+		}, (err, data) => {
 			assert.ifError(err);
 			done();
 		});
 	});
 
-	it('should not find anything', function (done) {
+	it('should not find anything', (done) => {
 		search.search({
 			query: 'xxxxxxxxxxxxxx',
-		}, function (err, data) {
+		}, (err, data) => {
 			assert.ifError(err);
 			assert(Array.isArray(data.posts));
 			assert(!data.matchCount);
@@ -199,7 +224,7 @@ describe('Search', function () {
 		});
 	});
 
-	it('should search child categories', function (done) {
+	it('should search child categories', (done) => {
 		async.waterfall([
 			function (next) {
 				topics.post({
@@ -228,14 +253,14 @@ describe('Search', function () {
 		], done);
 	});
 
-	it('should return json search data with no categories', function (done) {
-		var qs = '/api/search?term=cucumber&in=titlesposts&searchOnly=1';
-		privileges.global.give(['groups:search:content'], 'guests', function (err) {
+	it('should return json search data with no categories', (done) => {
+		const qs = '/api/search?term=cucumber&in=titlesposts&searchOnly=1';
+		privileges.global.give(['groups:search:content'], 'guests', (err) => {
 			assert.ifError(err);
 			request({
 				url: nconf.get('url') + qs,
 				json: true,
-			}, function (err, response, body) {
+			}, (err, response, body) => {
 				assert.ifError(err);
 				assert(body);
 				assert(body.hasOwnProperty('matchCount'));

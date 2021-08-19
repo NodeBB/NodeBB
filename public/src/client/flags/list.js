@@ -1,12 +1,28 @@
 'use strict';
 
-define('forum/flags/list', ['components', 'Chart'], function (components, Chart) {
+define('forum/flags/list', ['components', 'Chart', 'categoryFilter', 'autocomplete', 'api'], function (components, Chart, categoryFilter, autocomplete, api) {
 	var Flags = {};
+
+	var selectedCids;
 
 	Flags.init = function () {
 		Flags.enableFilterForm();
 		Flags.enableCheckboxes();
 		Flags.handleBulkActions();
+
+		selectedCids = [];
+		if (ajaxify.data.filters.hasOwnProperty('cid')) {
+			selectedCids = Array.isArray(ajaxify.data.filters.cid) ?
+				ajaxify.data.filters.cid : [ajaxify.data.filters.cid];
+		}
+
+		categoryFilter.init($('[component="category/dropdown"]'), {
+			privilege: 'moderate',
+			selectedCids: selectedCids,
+			onHidden: function (data) {
+				selectedCids = data.selectedCids;
+			},
+		});
 
 		components.get('flags/list')
 			.on('click', '[data-flag-id]', function (e) {
@@ -18,28 +34,43 @@ define('forum/flags/list', ['components', 'Chart'], function (components, Chart)
 				ajaxify.go('flags/' + flagId);
 			});
 
-		var graphWrapper = $('#flags-daily-wrapper');
-		var graphFooter = graphWrapper.siblings('.panel-footer');
 		$('#flags-daily-wrapper').one('shown.bs.collapse', function () {
 			Flags.handleGraphs();
 		});
-		graphFooter.on('click', graphWrapper.collapse.bind(graphWrapper, 'toggle'));
+
+		autocomplete.user($('#filter-assignee, #filter-targetUid, #filter-reporterId'), (ev, ui) => {
+			setTimeout(() => { ev.target.value = ui.item.user.uid; });
+		});
 	};
 
 	Flags.enableFilterForm = function () {
-		var filtersEl = components.get('flags/filters');
+		const $filtersEl = components.get('flags/filters');
 
 		// Parse ajaxify data to set form values to reflect current filters
-		for (var filter in ajaxify.data.filters) {
+		for (const filter in ajaxify.data.filters) {
 			if (ajaxify.data.filters.hasOwnProperty(filter)) {
-				filtersEl.find('[name="' + filter + '"]').val(ajaxify.data.filters[filter]);
+				$filtersEl.find('[name="' + filter + '"]').val(ajaxify.data.filters[filter]);
 			}
 		}
-		filtersEl.find('[name="sort"]').val(ajaxify.data.sort);
+		$filtersEl.find('[name="sort"]').val(ajaxify.data.sort);
 
 		document.getElementById('apply-filters').addEventListener('click', function () {
-			var payload = filtersEl.serializeArray();
+			const payload = $filtersEl.serializeArray();
+			// cid is special comes from categoryFilter module
+			selectedCids.forEach(function (cid) {
+				payload.push({ name: 'cid', value: cid });
+			});
+
 			ajaxify.go('flags?' + (payload.length ? $.param(payload) : 'reset=1'));
+		});
+
+		$filtersEl.find('button[data-target="#more-filters"]').click((ev) => {
+			const textVariant = ev.target.getAttribute('data-text-variant');
+			if (!textVariant) {
+				return;
+			}
+			ev.target.setAttribute('data-text-variant', ev.target.textContent);
+			ev.target.firstChild.textContent = textVariant;
 		});
 	};
 
@@ -118,26 +149,14 @@ define('forum/flags/list', ['components', 'Chart'], function (components, Chart)
 
 						switch (action) {
 							case 'bulk-assign':
-								socket.emit('flags.update', {
-									flagId: flagId,
-									data: [
-										{
-											name: 'assignee',
-											value: app.user.uid,
-										},
-									],
+								api.put(`/flags/${flagId}`, {
+									assignee: app.user.uid,
 								}, handler);
 								break;
 
 							case 'bulk-mark-resolved':
-								socket.emit('flags.update', {
-									flagId: flagId,
-									data: [
-										{
-											name: 'state',
-											value: 'resolved',
-										},
-									],
+								api.put(`/flags/${flagId}`, {
+									state: 'resolved',
 								}, handler);
 								break;
 						}
@@ -153,6 +172,7 @@ define('forum/flags/list', ['components', 'Chart'], function (components, Chart)
 					});
 					if (fulfilled) {
 						app.alertSuccess('[[flags:bulk-success, ' + fulfilled + ']]');
+						ajaxify.refresh();
 					}
 
 					errors.forEach(function (res) {

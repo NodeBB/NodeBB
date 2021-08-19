@@ -24,9 +24,7 @@ sitemapController.getCategories = function (req, res, next) {
 };
 
 sitemapController.getTopicPage = function (req, res, next) {
-	sendSitemap(async function () {
-		return await sitemap.getTopicPage(parseInt(req.params[0], 10));
-	}, res, next);
+	sendSitemap(async () => await sitemap.getTopicPage(parseInt(req.params[0], 10)), res, next);
 };
 
 async function sendSitemap(method, res, callback) {

@@ -4,11 +4,13 @@
 	"group-privileges": "群组权限",
 	"user-privileges": "用户权限",
 	"edit-privileges": "编辑权限",
+  	"select-clear-all": "选择/清除 全部",
 	"chat": "对话",
 	"upload-images": "上传图片",
 	"upload-files": "上传文件",
 	"signature": "签名档",
 	"ban": "封禁",
+	"invite": "邀请",
 	"search-content": "搜索内容",
 	"search-users": "搜索用户",
 	"search-tags": "搜索话题",
@@ -23,6 +25,7 @@
 	"access-topics": "访问主题",
 	"create-topics": "创建主题",
 	"reply-to-topics": "回复主题",
+	"schedule-topics": "Schedule Topics",
 	"tag-topics": "添加话题",
 	"edit-posts": "修改回复",
 	"view-edit-history": "查看变更历史",
@@ -37,9 +40,13 @@
 	"admin-categories": "版块",
 	"admin-privileges": "权限",
 	"admin-users": "用户",
+	"admin-admins-mods": "Admins &amp; Mods",
+	"admin-groups": "群组",
+	"admin-tags": "话题",
 	"admin-settings": "设置",
 
 	"alert.confirm-moderate": "<strong>您确定要将审核权限授予此用户组吗？</strong>此用户组是公开的，任何用户都可以随意加入。",
+	"alert.confirm-admins-mods": "<strong>Are you sure you wish to grant the &quot;Admins &amp; Mods&quot; privilege to this user/group?</strong> Users with this privilege are able to promote and demote other users into privileged positions, <em>including super administrator</em>",
 	"alert.confirm-save": "请验证您保存这些权限的目的",
 	"alert.saved": "权限修改已保存并应用",
 	"alert.confirm-discard": "您确定要取消权限修改吗？",
@@ -48,5 +55,6 @@
 	"alert.confirm-copyToAllGroup": "您确定要将此用户组权限应用于<strong>所有类别</strong>吗？",
 	"alert.confirm-copyToChildren": "您确定要将此权限应用于<strong>所有子类别</strong>吗？",
 	"alert.confirm-copyToChildrenGroup": "您确定要将此用户组权限应用于<strong>所有子类别</strong>吗？",
-	"alert.no-undo": "此操作无法撤消。"
+	"alert.no-undo": "此操作无法撤消。",
+	"alert.admin-warning": "管理员隐性获得全部权限"
 }

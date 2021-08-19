@@ -25,22 +25,17 @@ Config.setMultiple = async function (socket, data) {
 	const changes = {};
 	const newData = meta.configs.serialize(data);
 	const oldData = meta.configs.serialize(meta.config);
-	Object.keys(newData).forEach(function (key) {
+	Object.keys(newData).forEach((key) => {
 		if (newData[key] !== oldData[key]) {
 			changes[key] = newData[key];
-			changes[key + '_old'] = meta.config[key];
+			changes[`${key}_old`] = meta.config[key];
 		}
 	});
 	await meta.configs.setMultiple(data);
-	for (const field in data) {
-		if (data.hasOwnProperty(field)) {
-			const setting = {
-				key: field,
-				value: data[field],
-			};
-			plugins.fireHook('action:config.set', setting);
-			logger.monitorConfig({ io: index.server }, setting);
-		}
+	for (const [key, value] of Object.entries(data)) {
+		const setting = { key, value };
+		plugins.hooks.fire('action:config.set', setting);
+		logger.monitorConfig({ io: index.server }, setting);
 	}
 	if (Object.keys(changes).length) {
 		changes.type = 'config-change';

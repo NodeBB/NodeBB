@@ -20,7 +20,7 @@ module.exports = function (Posts) {
 		options.parse = options.hasOwnProperty('parse') ? options.parse : true;
 		options.extraFields = options.hasOwnProperty('extraFields') ? options.extraFields : [];
 
-		const fields = ['pid', 'tid', 'content', 'uid', 'timestamp', 'deleted', 'upvotes', 'downvotes', 'replies'].concat(options.extraFields);
+		const fields = ['pid', 'tid', 'content', 'uid', 'timestamp', 'deleted', 'upvotes', 'downvotes', 'replies', 'handle'].concat(options.extraFields);
 
 		let posts = await Posts.getPostsFields(pids, fields);
 		posts = posts.filter(Boolean);
@@ -38,12 +38,15 @@ module.exports = function (Posts) {
 		const tidToTopic = toObject('tid', topicsAndCategories.topics);
 		const cidToCategory = toObject('cid', topicsAndCategories.categories);
 
-		posts.forEach(function (post) {
-			// If the post author isn't represented in the retrieved users' data, then it means they were deleted, assume guest.
+		posts.forEach((post) => {
+			// If the post author isn't represented in the retrieved users' data,
+			// then it means they were deleted, assume guest.
 			if (!uidToUser.hasOwnProperty(post.uid)) {
 				post.uid = 0;
 			}
 			post.user = uidToUser[post.uid];
+			Posts.overrideGuestHandle(post, post.handle);
+			post.handle = undefined;
 			post.topic = tidToTopic[post.tid];
 			post.category = post.topic && cidToCategory[post.topic.cid];
 			post.isMainPost = post.topic && post.pid === post.topic.mainPid;
@@ -54,12 +57,12 @@ module.exports = function (Posts) {
 		posts = posts.filter(post => tidToTopic[post.tid]);
 
 		posts = await parsePosts(posts, options);
-		const result = await plugins.fireHook('filter:post.getPostSummaryByPids', { posts: posts, uid: uid });
+		const result = await plugins.hooks.fire('filter:post.getPostSummaryByPids', { posts: posts, uid: uid });
 		return result.posts;
 	};
 
 	async function parsePosts(posts, options) {
-		async function parse(post) {
+		return await Promise.all(posts.map(async (post) => {
 			if (!post.content || !options.parse) {
 				post.content = post.content ? validator.escape(String(post.content)) : post.content;
 				return post;
@@ -69,20 +72,19 @@ module.exports = function (Posts) {
 				post.content = stripTags(post.content);
 			}
 			return post;
-		}
-		return await Promise.all(posts.map(p => parse(p)));
+		}));
 	}
 
 	async function getTopicAndCategories(tids) {
-		const topicsData = await topics.getTopicsFields(tids, ['uid', 'tid', 'title', 'cid', 'slug', 'deleted', 'postcount', 'mainPid', 'teaserPid']);
+		const topicsData = await topics.getTopicsFields(tids, ['uid', 'tid', 'title', 'cid', 'slug', 'deleted', 'scheduled', 'postcount', 'mainPid', 'teaserPid']);
 		const cids = _.uniq(topicsData.map(topic => topic && topic.cid));
 		const categoriesData = await categories.getCategoriesFields(cids, ['cid', 'name', 'icon', 'slug', 'parentCid', 'bgColor', 'color', 'backgroundImage', 'imageClass']);
 		return { topics: topicsData, categories: categoriesData };
 	}
 
 	function toObject(key, data) {
-		var obj = {};
-		for (var i = 0; i < data.length; i += 1) {
+		const obj = {};
+		for (let i = 0; i < data.length; i += 1) {
 			obj[data[i][key]] = data[i];
 		}
 		return obj;

@@ -22,28 +22,27 @@ pluginsController.get = async function (req, res) {
 		memo[cur.label] = cur.value;
 		return memo;
 	}, {});
-	const trendingPlugins = all.filter(plugin => plugin && Object.keys(trendingScores).includes(plugin.id)).sort((a, b) => trendingScores[b.id] - trendingScores[a.id]).map((plugin) => {
-		plugin.downloads = trendingScores[plugin.id];
-		return plugin;
-	});
+	const trendingPlugins = all
+		.filter(plugin => plugin && Object.keys(trendingScores).includes(plugin.id))
+		.sort((a, b) => trendingScores[b.id] - trendingScores[a.id])
+		.map((plugin) => {
+			plugin.downloads = trendingScores[plugin.id];
+			return plugin;
+		});
 
 	res.render('admin/extend/plugins', {
 		installed: installedPlugins,
 		installedCount: installedPlugins.length,
 		activeCount: activePlugins.length,
 		inactiveCount: Math.max(0, installedPlugins.length - activePlugins.length),
-		upgradeCount: compatible.reduce(function (count, current) {
+		upgradeCount: compatible.reduce((count, current) => {
 			if (current.installed && current.outdated) {
 				count += 1;
 			}
 			return count;
 		}, 0),
-		download: compatible.filter(function (plugin) {
-			return !plugin.installed;
-		}),
-		incompatible: all.filter(function (plugin) {
-			return !compatiblePkgNames.includes(plugin.name);
-		}),
+		download: compatible.filter(plugin => !plugin.installed),
+		incompatible: all.filter(plugin => !compatiblePkgNames.includes(plugin.name)),
 		trending: trendingPlugins,
 		submitPluginUsage: meta.config.submitPluginUsage,
 		version: nconf.get('version'),

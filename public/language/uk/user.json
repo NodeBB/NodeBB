@@ -84,6 +84,7 @@
     "remove_cover_picture_confirm": "Ви точно бажаєте видалити обкладинку?",
     "crop_picture": "Обрізати зображення",
     "upload_cropped_picture": "Обрізати та завантажити",
+    "avatar-background-colour": "Avatar background colour",
     "settings": "Налаштування",
     "show_email": "Показувати мою пошту",
     "show_fullname": "Показувати повне ім'я",
@@ -123,6 +124,7 @@
     "open_links_in_new_tab": "Відкривати зовнішні посилання у новій вкладці",
     "enable_topic_searching": "Увімкнути пошук у темах",
     "topic_search_help": "Будучи увімкненою, ця функція перевизначає вбудований пошук браузера і дозволяє шукати по всій темі, а не лише по змісту, що показаний на екрані.",
+    "update_url_with_post_index": "Update url with post index while browsing topics",
     "scroll_to_my_post": "Після відправки відповіді, показувати новий пост",
     "follow_topics_you_reply_to": "Підписуватися на теми в котрих ви відповідаєте",
     "follow_topics_you_create": "Підписуватися на теми які ви створюєте",
@@ -134,7 +136,7 @@
     "homepage": "Домашня сторінка",
     "homepage_description": "Вкажіть сторінку в якості першої сторінки форуму або \"None\", для використання сторінки за замовчуванням.",
     "custom_route": "Шлях першої сторінки",
-    "custom_route_help": "Уведіть тут шлях, без слешу попереду (наприклад \"recent\" або \"popular\")",
+    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "Сервіси єдиного входу",
     "sso.associated": "Зв'язані з",
     "sso.not-associated": "Натисніть тут, щоб зв'язати з",
@@ -178,5 +180,8 @@
     "consent.export_uploads": "Експортувати Завантажений Контент (.zip)",
     "consent.export-uploads-success": "Exporting uploads, you will get a notification when it is complete.",
     "consent.export_posts": "Експортувати Пости (.csv)",
-    "consent.export-posts-success": "Exporting posts, you will get a notification when it is complete."
+    "consent.export-posts-success": "Exporting posts, you will get a notification when it is complete.",
+    "emailUpdate.intro": "Please enter your email address below. This forum uses your email address for scheduled digest and notifications, as well as for account recovery in the event of a lost password.",
+    "emailUpdate.optional": "<strong>This field is optional</strong>. You are not obligated to provide your email address, but without a validated email, you will not be able to recover your account.",
+    "emailUpdate.change-instructions": "A confirmation email will be sent to the entered email address with a unique link. Accessing that link will confirm your ownership of the email address and it will become active on your account. At any time, you are able to update your email on file from within your account page."
 }

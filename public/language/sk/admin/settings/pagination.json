@@ -1,10 +1,12 @@
 {
 	"pagination": "Nastavenia stránkovania",
 	"enable": "Stránkovať témy a príspevky namiesto použitia nekonečného posúvania.",
+	"posts": "Post Pagination",
 	"topics": "Stránkovanie tém",
 	"posts-per-page": "Príspevkov na stránku",
 	"max-posts-per-page": "Maximálne množstvo príspevkov na stránku",
 	"categories": "Stránkovanie kategórií",
 	"topics-per-page": "Tém na stránku",
-	"max-topics-per-page": "Maximálne množstvo tém na stránku"
+	"max-topics-per-page": "Maximálne množstvo tém na stránku",
+	"categories-per-page": "Categories per page"
 }

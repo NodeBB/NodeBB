@@ -4,9 +4,12 @@ const categories = require('../categories');
 const privileges = require('../privileges');
 const user = require('../user');
 const topics = require('../topics');
-const apiController = require('../controllers/api');
+const api = require('../api');
+const sockets = require('.');
 
 const SocketCategories = module.exports;
+
+require('./categories/search')(SocketCategories);
 
 SocketCategories.getRecentReplies = async function (socket, cid) {
 	return await categories.getRecentReplies(cid, socket.uid, 4);
@@ -71,7 +74,7 @@ SocketCategories.loadMore = async function (socket, data) {
 		tag: data.query.tag,
 		targetUid: targetUid,
 	});
-	categories.modifyTopicsByPrivilege(data.topics, userPrivileges);
+	categories.modifyTopicsByPrivilege(result.topics, userPrivileges);
 
 	result.privileges = userPrivileges;
 	result.template = {
@@ -105,7 +108,7 @@ SocketCategories.setWatchState = async function (socket, data) {
 	if (!data || !data.cid || !data.state) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	return await ignoreOrWatch(async function (uid, cids) {
+	return await ignoreOrWatch(async (uid, cids) => {
 		await user.setCategoryWatchState(uid, cids, categories.watchStates[data.state]);
 	}, socket, data);
 };
@@ -147,7 +150,26 @@ SocketCategories.isModerator = async function (socket, cid) {
 };
 
 SocketCategories.getCategory = async function (socket, cid) {
-	return await apiController.getCategoryData(cid, socket.uid);
+	sockets.warnDeprecated(socket, 'GET /api/v3/categories/:cid');
+	return await api.categories.get(socket, { cid });
+	// return await apiController.getCategoryData(cid, socket.uid);
+};
+
+SocketCategories.loadMoreSubCategories = async function (socket, data) {
+	if (!data || !data.cid || !(parseInt(data.start, 10) > 0)) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	const allowed = await privileges.categories.can('read', data.cid, socket.uid);
+	if (!allowed) {
+		throw new Error('[[error:no-privileges]]');
+	}
+	const category = await categories.getCategoryData(data.cid);
+	await categories.getChildrenTree(category, socket.uid);
+	const allCategories = [];
+	categories.flattenCategories(allCategories, category.children);
+	await categories.getRecentTopicReplies(allCategories, socket.uid);
+	const start = parseInt(data.start, 10);
+	return category.children.slice(start, start + category.subCategoriesPerPage);
 };
 
 require('../promisify')(SocketCategories);

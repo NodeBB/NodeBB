@@ -1,15 +1,15 @@
 {
-	"custom-css": "Custom CSS/LESS",
-	"custom-css.description": "Enter your own CSS/LESS declarations here, which will be applied after all other styles.",
-	"custom-css.enable": "Enable Custom CSS/LESS",
+	"custom-css": "Tùy Chỉnh CSS/LESS",
+	"custom-css.description": "Nhập các khai báo CSS / LESS của bạn tại đây, nó sẽ được áp dụng sau tất cả các kiểu khác.",
+	"custom-css.enable": "Bật Tùy Chỉnh CSS/LESS",
 
 	"custom-js": "Javascript tùy chỉnh",
 	"custom-js.description": "Nhập javascript của riêng bạn ở đây. Nó sẽ được thực hiện sau khi trang được tải hoàn toàn.",
 	"custom-js.enable": "Bật Javascript tùy chỉnh",
 
-	"custom-header": "Custom Header",
-	"custom-header.description": "Enter custom HTML here (ex. Meta Tags, etc.), which will be appended to the <code>&lt;head&gt;</code> section of your forum's markup. Script tags are allowed, but are discouraged, as the <a href=\"#custom-js\" data-toggle=\"tab\">Custom Javascript</a> tab is available.",
-	"custom-header.enable": "Enable Custom Header",
+	"custom-header": "Tùy Chỉnh Phần Đầu Trang",
+	"custom-header.description": "Nhập HTML tùy chỉnh tại đây (VD: Thẻ Meta, v.v...), sẽ được thêm vào phần <code>&lt;head&gt;</code>. Thẻ Script được phép, nhưng không được khuyến khích, vì phần <a href=\"#custom-js\" data-toggle=\"tab\">Tùy Chỉnh Javascript</a> đã có sẵn.",
+	"custom-header.enable": "Bật Tùy Chỉnh Phần Đầu Trang",
 
 	"custom-css.livereload": "Bật tải lại trực tiếp",
 	"custom-css.livereload.description": "Bật điều này để buộc tất cả các phiên trên mọi thiết bị trong tài khoản của bạn phải làm mới bất cứ khi nào bạn nhấp vào lưu"

@@ -1,0 +1,77 @@
+get:
+  tags:
+    - search
+  summary: Get search results
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  posts:
+                    $ref: ../components/schemas/PostsObject.yaml#/PostsObject
+                  matchCount:
+                    type: number
+                  pageCount:
+                    type: number
+                  time:
+                    type: string
+                  multiplePages:
+                    type: boolean
+                  search_query:
+                    type: string
+                  term:
+                    type: string
+                  allCategories:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        value:
+                          oneOf:
+                            - type: string
+                            - type: number
+                        text:
+                          type: string
+                  allCategoriesCount:
+                    type: number
+                  expandSearch:
+                    type: boolean
+                  showAsPosts:
+                    type: boolean
+                  showAsTopics:
+                    type: boolean
+                  title:
+                    type: string
+                  searchDefaultSortBy:
+                    type: string
+                  privileges:
+                    type: object
+                    properties:
+                      search:users:
+                        type: boolean
+                      search:content:
+                        type: boolean
+                      search:tags:
+                        type: boolean
+                required:
+                  - posts
+                  - matchCount
+                  - pageCount
+                  - time
+                  - multiplePages
+                  - search_query
+                  - allCategories
+                  - allCategoriesCount
+                  - expandSearch
+                  - showAsPosts
+                  - showAsTopics
+                  - title
+                  - searchDefaultSortBy
+                  - permissions
+              - $ref: ../components/schemas/Pagination.yaml#/Pagination
+              - $ref: ../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../components/schemas/CommonProps.yaml#/CommonProps

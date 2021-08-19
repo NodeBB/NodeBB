@@ -2,6 +2,7 @@
 	"forum-traffic": "Трафик на форума",
 	"page-views": "Преглеждания на страниците",
 	"unique-visitors": "Уникални посетители",
+	"logins": "Вписвания",
 	"new-users": "Нови потребители",
 	"posts": "Публикации",
 	"topics": "Теми",
@@ -29,6 +30,7 @@
 	"upgrade-available": "<p>Има нова версия (версия %1). Ако имате възможност, <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">обновете NodeBB</a>.</p>",
 	"prerelease-upgrade-available": "<p>Това е остаряла предварителна версия на NodeBB. Има нова версия (версия %1). Ако имате възможност, <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">обновете NodeBB</a>.</p>",
 	"prerelease-warning": "<p>Това е версия за <strong>предварителен преглед</strong> на NodeBB. Възможно е да има неочаквани неизправности. <i class=\"fa fa-exclamation-triangle\"></i></p>",
+	"fallback-emailer-not-found": "Не е намерен резервен изпращач на е-поща",
 	"running-in-development": "<span>Форумът работи в режим за разработчици, така че може да бъде уязвим. Моля, свържете се със системния си администратор.</span>",
 	"latest-lookup-failed": "<p>Не може да бъде извършена проверка за последната налична версия на NodeBB</p>",
 
@@ -75,5 +77,12 @@
 	"graphs.registered-users": "Регистрирани потребители",
 	"graphs.anonymous-users": "Анонимни потребители",
 	"last-restarted-by": "Последно рестартиране от",
-	"no-users-browsing": "Няма разглеждащи потребители"
+	"no-users-browsing": "Няма разглеждащи потребители",
+
+	"back-to-dashboard": "Назад към таблото",
+	"details.no-users": "В избрания период не са се регистрирали нови потребители",
+	"details.no-topics": "В избрания период не са публикувани нови теми",
+	"details.no-logins": "В избрания период не са отчетени вписвания",
+	"details.logins-static": "NodeBB запазва данни за сесията в продължение на %1 дни, така че в следната таблица могат да се видят само последните активни сесии",
+	"details.logins-login-time": "Време на вписване"
 }

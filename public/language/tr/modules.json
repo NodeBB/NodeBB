@@ -60,10 +60,21 @@
     "composer.zen_mode": "Tam ekran modu",
     "composer.select_category": "Bir kategori seç",
     "composer.textarea.placeholder": "İletinizi buraya giriniz, görselleri sürükleyip bırakabilirsiniz",
+    "composer.schedule-for": "Konuyu Zamanla",
+    "composer.schedule-date": "Tarih",
+    "composer.schedule-time": "Zaman",
+    "composer.cancel-scheduling": "Zamanlamayı iptal et",
+    "composer.set-schedule-date": "Tarihi ayarla",
     "bootbox.ok": "Kabul",
     "bootbox.cancel": "İptal",
     "bootbox.confirm": "Onayla",
     "cover.dragging_title": "Kapak Görseli Konumlandırma",
     "cover.dragging_message": "Kapak görselini istediğin pozisyona getir ve kaydet",
-    "cover.saved": "Kapak görseli ve pozisyonu kaydedildi"
+    "cover.saved": "Kapak görseli ve pozisyonu kaydedildi",
+    "thumbs.modal.title": "Başlık simgelerini yönet",
+    "thumbs.modal.no-thumbs": "Başlık simgesi bulunamadı.",
+    "thumbs.modal.resize-note": "<strong>Not</strong>: Forum ayarları başlık simgelerini maksimum %1px genişliğe yeniden ölçülendirecektir. ",
+    "thumbs.modal.add": "Başlığa simge ekle",
+    "thumbs.modal.remove": "Başlığın simgesini sil",
+    "thumbs.modal.confirm-remove": "Bu başlık simgesini kaldırmak istediğinizden emin misiniz?"
 }

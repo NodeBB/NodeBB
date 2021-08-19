@@ -31,11 +31,11 @@ module.exports = function (Posts) {
 			return await filterPidsBySingleCid(pids, cid);
 		}
 		const pidsArr = await Promise.all(cid.map(c => Posts.filterPidsByCid(pids, c)));
-		return _.union.apply(_, pidsArr);
+		return _.union(...pidsArr);
 	};
 
 	async function filterPidsBySingleCid(pids, cid) {
-		const isMembers = await db.isSortedSetMembers('cid:' + parseInt(cid, 10) + ':pids', pids);
+		const isMembers = await db.isSortedSetMembers(`cid:${parseInt(cid, 10)}:pids`, pids);
 		return pids.filter((pid, index) => pid && isMembers[index]);
 	}
 };

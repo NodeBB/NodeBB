@@ -1,0 +1,46 @@
+get:
+  tags:
+    - flags
+  summary: /api/flags/{flagId}
+  parameters:
+    - name: flagId
+      in: path
+      required: true
+      schema:
+        type: string
+      example: 1
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../components/schemas/FlagObject.yaml#/FlagObject
+              - type: object
+                properties:
+                  type_path:
+                    type: string
+                  assignees:
+                    type: array
+                    items:
+                      $ref: ../../components/schemas/UserObject.yaml#/UserObject
+                  type_bool:
+                    type: object
+                    properties:
+                      post:
+                        type: boolean
+                      user:
+                        type: boolean
+                      empty:
+                        type: boolean
+                  title:
+                    type: string
+                  privileges:
+                    type: object
+                    properties: {}
+                    additionalProperties:
+                      description: "A list of global and admin privileges, and whether the calling user has (or has inherited) them"
+                      type: boolean
+              - $ref: ../../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../../components/schemas/CommonProps.yaml#/CommonProps

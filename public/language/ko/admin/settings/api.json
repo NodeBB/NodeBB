@@ -1,0 +1,16 @@
+{
+	"tokens": "토큰",
+	"settings": "설정",
+	"lead-text": "이 설정 화면에서 NodeBB에 Write API의 연결을 설정할 수 있습니다.",
+	"intro": "기본적으로 Write API는 세션 쿠키를 기반으로 사용자를 인증하지만 NodeBB는 이 페이지를 통해 생성된 토큰을 통해 Bearer 인증도 지원합니다.",
+	"docs": "여기를 클릭해서 자세한 API 설정 방법 확인",
+
+	"require-https": "API 사용을 HTTPS 접속으로만 허용",
+	"require-https-caveat": "<strong>참고</strong>: Load balancer와 관련된 일부 설치에서는 HTTP를 사용하여 요청을 NodeBB에 프록시하므로 이 옵션을 사용하지 않도록 설정해야 합니다.",
+
+	"uid": "User ID",
+	"uid-help-text": "이 토큰과 연결할 User ID를 지정하세요. User ID가 <code>0</code>일 경우 <em>master</em> 토큰으로 간주되어 다른 사용자의 정보를 <code>_uid</code> 패러미터를 통해 알 수 있게 됩니다.",
+	"description": "설명",
+	"no-description": "설명 없음",
+	"token-on-save": "현재 설정 저장 후 토큰 생성"
+}

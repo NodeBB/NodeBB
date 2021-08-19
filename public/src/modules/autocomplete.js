@@ -2,7 +2,7 @@
 'use strict';
 
 
-define('autocomplete', function () {
+define('autocomplete', ['api'], function (api) {
 	var module = {};
 
 	module.user = function (input, params, onselect) {
@@ -10,7 +10,7 @@ define('autocomplete', function () {
 			onselect = params;
 			params = {};
 		}
-
+		params = params || {};
 		app.loadJQueryUI(function () {
 			input.autocomplete({
 				delay: 200,
@@ -21,10 +21,9 @@ define('autocomplete', function () {
 					handleOnSelect(input, onselect, event, ui);
 				},
 				source: function (request, response) {
-					params.query = params.query || request.term;
-					params.paginate = params.paginate || false;
+					params.query = request.term;
 
-					socket.emit('user.search', params, function (err, result) {
+					api.get('/api/users', params, function (err, result) {
 						if (err) {
 							return app.alertError(err.message);
 						}
@@ -42,6 +41,7 @@ define('autocomplete', function () {
 										username: user.username,
 										userslug: user.userslug,
 										picture: user.picture,
+										banned: user.banned,
 										'icon:text': user['icon:text'],
 										'icon:bgColor': user['icon:bgColor'],
 									},
@@ -49,6 +49,7 @@ define('autocomplete', function () {
 							});
 							response(names);
 						}
+
 						$('.ui-autocomplete a').attr('data-ajaxify', 'false');
 					});
 				},

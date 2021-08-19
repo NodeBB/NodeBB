@@ -1,6 +1,6 @@
 {
-	"notifications": "Notifications",
-	"welcome-notification": "Welcome Notification",
-	"welcome-notification-link": "Welcome Notification Link",
-	"welcome-notification-uid": "Welcome Notification User (UID)"
+	"notifications": "התראות",
+	"welcome-notification": "הודעת ברוכים הבאים",
+	"welcome-notification-link": "קישור הודעת ברוכים הבאים",
+	"welcome-notification-uid": "הודעת ברוכים הבאים למשתמש (UID)"
 }

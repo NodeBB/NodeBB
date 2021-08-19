@@ -1,11 +1,11 @@
 {
-    "results_matching": "%1 kết quả(s) trùng với \"%2\", (%3 giây)",
+    "results_matching": "%1 kết quả khớp với \"%2\", (%3 giây)",
     "no-matches": "Không tìm thấy kết quả phù hợp",
     "advanced-search": "Tìm kiếm nâng cao",
     "in": "Trong",
-    "titles": "Các tựa đề",
-    "titles-posts": "Tựa đề và Bài viết",
-    "match-words": "Từ ghép",
+    "titles": "Tiêu đề",
+    "titles-posts": "Tiêu Đề và Bài Viết",
+    "match-words": "Khớp các từ",
     "all": "Tất cả",
     "any": "Bất kì",
     "posted-by": "Đăng bởi",
@@ -16,7 +16,7 @@
     "at-least": "Tối thiểu",
     "at-most": "Tối đa",
     "relevance": "Mức độ liên quan",
-    "post-time": "Thời điểm đăng bài",
+    "post-time": "Thời gian đăng bài",
     "votes": "Phiếu bầu",
     "newer-than": "Mới hơn",
     "older-than": "Cũ hơn",
@@ -30,7 +30,7 @@
     "one-year": "Một năm",
     "sort-by": "Sắp xếp theo",
     "last-reply-time": "Thời điểm trả lời lần cuối",
-    "topic-title": "Tựa đề chủ đề",
+    "topic-title": "Tiêu đề chủ đề",
     "topic-votes": "Phiếu bầu chủ đề",
     "number-of-replies": "Số lượt trả lời",
     "number-of-views": "Số lượt xem",
@@ -44,5 +44,6 @@
     "search-preferences-saved": "Tìm kiếm tuỳ chọn đã lưu",
     "search-preferences-cleared": "Tìm kiếm tuỳ chọn đã xoá",
     "show-results-as": "Hiện thị kết quả theo",
-    "see-more-results": "Xem thêm kết quả (%1)"
+    "see-more-results": "Xem thêm kết quả (%1)",
+    "search-in-category": "Tìm kiếm ở \"%1\""
 }

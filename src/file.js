@@ -8,7 +8,7 @@ const mkdirp = require('mkdirp');
 const mime = require('mime');
 const graceful = require('graceful-fs');
 
-const utils = require('./utils');
+const slugify = require('./slugify');
 
 graceful.gracefulify(fs);
 
@@ -18,18 +18,18 @@ file.saveFileToLocal = async function (filename, folder, tempPath) {
 	/*
 	 * remarkable doesn't allow spaces in hyperlinks, once that's fixed, remove this.
 	 */
-	filename = filename.split('.').map(name => utils.slugify(name)).join('.');
+	filename = filename.split('.').map(name => slugify(name)).join('.');
 
 	const uploadPath = path.join(nconf.get('upload_path'), folder, filename);
 	if (!uploadPath.startsWith(nconf.get('upload_path'))) {
 		throw new Error('[[error:invalid-path]]');
 	}
 
-	winston.verbose('Saving file ' + filename + ' to : ' + uploadPath);
+	winston.verbose(`Saving file ${filename} to : ${uploadPath}`);
 	await mkdirp(path.dirname(uploadPath));
 	await fs.promises.copyFile(tempPath, uploadPath);
 	return {
-		url: '/assets/uploads/' + (folder ? folder + '/' : '') + filename,
+		url: `/assets/uploads/${folder ? `${folder}/` : ''}${filename}`,
 		path: uploadPath,
 	};
 };
@@ -60,10 +60,10 @@ file.allowedExtensions = function () {
 		return [];
 	}
 	allowedExtensions = allowedExtensions.split(',');
-	allowedExtensions = allowedExtensions.filter(Boolean).map(function (extension) {
+	allowedExtensions = allowedExtensions.filter(Boolean).map((extension) => {
 		extension = extension.trim();
 		if (!extension.startsWith('.')) {
-			extension = '.' + extension;
+			extension = `.${extension}`;
 		}
 		return extension.toLowerCase();
 	});
@@ -135,7 +135,7 @@ file.linkDirs = async function linkDirs(sourceDir, destDir, relative) {
 file.typeToExtension = function (type) {
 	let extension = '';
 	if (type) {
-		extension = '.' + mime.getExtension(type);
+		extension = `.${mime.getExtension(type)}`;
 	}
 	return extension;
 };

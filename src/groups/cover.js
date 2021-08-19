@@ -2,6 +2,8 @@
 
 const path = require('path');
 
+const nconf = require('nconf');
+
 const db = require('../database');
 const image = require('../image');
 const file = require('../file');
@@ -31,20 +33,20 @@ module.exports = function (Groups) {
 				tempPath = await image.writeImageDataToTempFile(data.imageData);
 			}
 
-			const filename = 'groupCover-' + data.groupName + path.extname(tempPath);
+			const filename = `groupCover-${data.groupName}${path.extname(tempPath)}`;
 			const uploadData = await image.uploadImage(filename, 'files', {
 				path: tempPath,
 				uid: uid,
 				name: 'groupCover',
 			});
-			const url = uploadData.url;
+			const { url } = uploadData;
 			await Groups.setGroupField(data.groupName, 'cover:url', url);
 
 			await image.resizeImage({
 				path: tempPath,
 				width: 358,
 			});
-			const thumbUploadData = await image.uploadImage('groupCoverThumb-' + data.groupName + path.extname(tempPath), 'files', {
+			const thumbUploadData = await image.uploadImage(`groupCoverThumb-${data.groupName}${path.extname(tempPath)}`, 'files', {
 				path: tempPath,
 				uid: uid,
 				name: 'groupCover',
@@ -62,6 +64,17 @@ module.exports = function (Groups) {
 	};
 
 	Groups.removeCover = async function (data) {
-		await db.deleteObjectFields('group:' + data.groupName, ['cover:url', 'cover:thumb:url', 'cover:position']);
+		const fields = ['cover:url', 'cover:thumb:url'];
+		const values = await Groups.getGroupFields(data.groupName, fields);
+		await Promise.all(fields.map((field) => {
+			if (!values[field] || !values[field].startsWith(`${nconf.get('relative_path')}/assets/uploads/files/`)) {
+				return;
+			}
+			const filename = values[field].split('/').pop();
+			const filePath = path.join(nconf.get('upload_path'), 'files', filename);
+			return file.delete(filePath);
+		}));
+
+		await db.deleteObjectFields(`group:${data.groupName}`, ['cover:url', 'cover:thumb:url', 'cover:position']);
 	};
 };

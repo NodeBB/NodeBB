@@ -60,10 +60,21 @@
     "composer.zen_mode": "Mode Zen",
     "composer.select_category": "Sélectionnez une catégorie",
     "composer.textarea.placeholder": "Saisissez le contenu de votre message ici, faites glisser et déposez les images",
+    "composer.schedule-for": "Planifier le sujet pour",
+    "composer.schedule-date": "Date",
+    "composer.schedule-time": "Heure",
+    "composer.cancel-scheduling": "Annuler la planification",
+    "composer.set-schedule-date": "Régler la date",
     "bootbox.ok": "OK",
     "bootbox.cancel": "Annuler",
     "bootbox.confirm": "Confirmer",
     "cover.dragging_title": "Positionnement de la photo de couverture",
     "cover.dragging_message": "Déplacez la photo de couverture à la position désiré et cliquez sur \"Enregistrer\"",
-    "cover.saved": "Photo de couverture et position sauvegardé. "
+    "cover.saved": "Photo de couverture et position sauvegardé. ",
+    "thumbs.modal.title": "Gérer les vignettes des sujets",
+    "thumbs.modal.no-thumbs": "Aucune vignette trouvée.",
+    "thumbs.modal.resize-note": "<strong>Remarque</strong>: ce forum est configuré pour redimensionner les vignettes des sujets jusqu'à une largeur maximale de %1px",
+    "thumbs.modal.add": "Ajouter une vignette",
+    "thumbs.modal.remove": "Supprimer une vignette",
+    "thumbs.modal.confirm-remove": "Voulez-vous vraiment supprimer cette vignette ?"
 }

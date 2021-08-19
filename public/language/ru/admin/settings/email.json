@@ -4,7 +4,7 @@
 	"address-help": "Этот адрес получатели писем увидят в полях «От кого» и «Ответить».",
 	"from": "От кого",
 	"from-help": "Имя отправителя письма (или название форума).",
-	
+
 	"smtp-transport": "Сервис SMTP",
 	"smtp-transport.enabled": "Использовать сторонний сервис для рассылки писем",
 	"smtp-transport-help": "Выберите один из популярных сервисов или укажите свой почтовый сервер.",
@@ -22,8 +22,8 @@
 	"smtp-transport.username": "Имя пользователя",
 	"smtp-transport.username-help": "<b>Для Gmail</b> нужно указать полный адрес электронной почты, особенно если вы используете Google Apps.",
 	"smtp-transport.password": "Пароль",
-	"smtp-transport.pool": "Enable pooled connections",
-	"smtp-transport.pool-help": "Pooling connections prevents NodeBB from creating a new connection for every email. This option only applies if SMTP Transport is enabled.",
+	"smtp-transport.pool": "Включить объединенные подключения",
+	"smtp-transport.pool-help": "Объединение соединений не позволяет NodeBB создавать новое соединение для каждой электронной почты. Этот параметр применяется только в том случае, если включен транспортный протокол SMTP.",
 
 	"template": "Шаблоны писем",
 	"template.select": "Выберите шаблон письма",
@@ -35,5 +35,8 @@
 	"subscriptions": "Новостные рассылки",
 	"subscriptions.disable": "Отключить новостные рассылки",
 	"subscriptions.hour": "Час отправки",
-	"subscriptions.hour-help": "Введите число, соответствующее номеру часа (например, <code>0</code> для полуночи, <code>17</code> для 17:00). Имейте в виду, что время определяется по часовому поясу сервера.<br /> Текущее время сервера: <span id=\"serverTime\"></span><br /> Следующая рассылка запланирована на  <span id=\"nextDigestTime\"></span>"
+	"subscriptions.hour-help": "Введите число, соответствующее номеру часа (например, <code>0</code> для полуночи, <code>17</code> для 17:00). Имейте в виду, что время определяется по часовому поясу сервера.<br /> Текущее время сервера: <span id=\"serverTime\"></span><br /> Следующая рассылка запланирована на  <span id=\"nextDigestTime\"></span>",
+	"notifications.remove-images": "Удалить изображения из уведомлений по электронной почте",
+	"include-unverified-emails": "Send emails to recipients who have not explicitly confirmed their emails",
+	"include-unverified-warning": "By default, users with emails associated with their account have already been verified, but there are situations where this is not the case (e.g. SSO logins, grandfathered users, etc). <strong>Enable this setting at your own risk</strong> &ndash; sending emails to unverified addresses may be a violation of regional anti-spam laws."
 }

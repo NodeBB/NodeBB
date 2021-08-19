@@ -1,18 +1,18 @@
 {
-	"none": "בפורום שלך אין עדיין נושאים עם תגים.\n",
-	"bg-color": "צבע רקע\n",
-	"text-color": "צבע טקסט\n",
-	"create-modify": "צור ושנה תגים",
-	"description": "Select tags by clicking or dragging, use <code>CTRL</code> to select multiple tags.",
+	"none": "בפורום שלך אין עדיין נושאים עם תגים.",
+	"bg-color": "צבע רקע",
+	"text-color": "צבע טקסט",
+	"description": "בחר תגיות על ידי לחיצה או גרירה, השתמש ב- <code>CTRL</code> כדי לבחור תגיות מרובות.",
 	"create": "צור תג",
 	"modify": "שנה תג",
 	"rename": "שנה שם של תג",
 	"delete": "מחק תגים שנבחרו",
 	"search": "חפש תג...",
-	"settings": "Tags Settings",
+	"settings": "הגדרות תגית",
 	"name": "שם תג",
 
-	"alerts.editing": "Editing tag(s)",
+	"alerts.editing": "ערוך תגי(ו)ת",
 	"alerts.confirm-delete": "האם תרצה למחוק את התגים שנבחרו?",
-	"alerts.update-success": "תג עודכן!"
+	"alerts.update-success": "תג עודכן!",
+	"reset-colors": "אפס צבעים"
 }

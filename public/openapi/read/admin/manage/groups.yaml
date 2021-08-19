@@ -1,0 +1,101 @@
+get:
+  tags:
+    - admin
+  summary: Get user groups
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  groups:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        description:
+                          type: string
+                        deleted:
+                          oneOf:
+                            - type: number
+                            - type: string
+                        hidden:
+                          type: number
+                        system:
+                          type: number
+                        userTitle:
+                          type: string
+                        userTitleEscaped:
+                          type: string
+                        icon:
+                          type: string
+                        labelColor:
+                          type: string
+                        slug:
+                          type: string
+                        createtime:
+                          type: number
+                        memberCount:
+                          type: number
+                        private:
+                          type: number
+                        cover:url:
+                          type: string
+                        cover:position:
+                          type: string
+                        userTitleEnabled:
+                          type: number
+                        disableJoinRequests:
+                          type: number
+                        disableLeave:
+                          type: number
+                        nameEncoded:
+                          type: string
+                        displayName:
+                          type: string
+                        textColor:
+                          type: string
+                        createtimeISO:
+                          type: string
+                        cover:thumb:url:
+                          type: string
+                        ownerUid:
+                          type: number
+                        memberPostCids:
+                          type: string
+                        memberPostCidsArray:
+                          type: array
+                          items:
+                            type: number
+                            example: [1, 2, 3]
+                      required:
+                        - name
+                        - description
+                        - hidden
+                        - system
+                        - userTitle
+                        - icon
+                        - labelColor
+                        - slug
+                        - createtime
+                        - memberCount
+                        - private
+                        - cover:url
+                        - cover:position
+                        - userTitleEnabled
+                        - disableJoinRequests
+                        - disableLeave
+                        - nameEncoded
+                        - displayName
+                        - textColor
+                        - createtimeISO
+                        - cover:thumb:url
+                  yourid:
+                    type: number
+              - $ref: ../../../components/schemas/Pagination.yaml#/Pagination
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

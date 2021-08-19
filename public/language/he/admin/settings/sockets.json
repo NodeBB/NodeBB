@@ -1,6 +1,6 @@
 {
-    "reconnection": "Reconnection Settings",
-    "max-attempts": "Max Reconnection Attempts",
-    "default-placeholder": "Default: %1",
-    "delay": "Reconnection Delay"
+    "reconnection": "הגדרות חיבור מחדש",
+    "max-attempts": "ניסיון חיבור מחדש מרבי",
+    "default-placeholder": "ברירת מחדל: %1",
+    "delay": "עיכוב חיבור מחדש"
 }

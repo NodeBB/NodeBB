@@ -1,9 +1,9 @@
 {
     "uploading-file": "파일 업로드 중...",
-    "select-file-to-upload": "업로드할 파일을 선택해 주세요!",
+    "select-file-to-upload": "업로드할 파일을 선택해주세요!",
     "upload-success": "파일이 성공적으로 업로드 되었습니다!",
     "maximum-file-size": "최대 %1 kb",
-    "no-uploads-found": "업로드한 파일이 없습니다",
+    "no-uploads-found": "업로드한 파일 없음",
     "public-uploads-info": "업로드는 공개되어 모든 방문자가 볼 수 있습니다.",
-    "private-uploads-info": "업로드는 비공개이며 로그인 한 사용자 만 볼 수 있습니다."
+    "private-uploads-info": "업로드는 비공개이며 로그인한 사용자만 볼 수 있습니다."
 }

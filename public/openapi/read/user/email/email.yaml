@@ -1,0 +1,21 @@
+get:
+  tags:
+    - users
+  summary: Get user by email
+  description: |
+    This route retrieves a user's public profile data. If the calling user is the same as the profile, then it will also return data the user elected to hide (e.g. email/fullname).
+    Additionally, this route will only return data if the calling user is an admin or global moderator, or if the end user has elected to make their email public. Otherwise, it will simply return a `404 Not Found`.
+  parameters:
+    - name: email
+      in: path
+      required: true
+      schema:
+        type: string
+      example: 'test@example.org'
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: ../../../components/schemas/UserObject.yaml#/UserObject

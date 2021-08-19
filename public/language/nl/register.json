@@ -18,9 +18,15 @@
     "agree_to_terms_of_use": "Ik ga akkoord met de gebruiksvoorwaarden",
     "terms_of_use_error": "Je moet akkoord gaan met de service voorwaarden.",
     "registration-added-to-queue": "Het registratieverzoek is toegevoegd aan de wachtrij. Een bericht wordt naar het opgegeven emailadres gestuurd wanneer de registratie is goedgekeurd.",
-    "interstitial.intro": "Je hebben meer informatie van je nodig voordat we je account kunnen aanmaken.",
-    "interstitial.errors-found": "Je konden jouw registratie niet afronden.",
+    "registration-queue-average-time": "Onze gemiddelde tijd om lidmaatschappen goed te keuren is %1 uur %2 minuten.",
+    "registration-queue-auto-approve-time": "Je lidmaatschap op dit forum zal volledig worden geactiveerd binnen maximaal %1 uur.",
+    "interstitial.intro": "We'd like some additional information in order to update your account&hellip;",
+    "interstitial.intro-new": "We'd like some additional information before we can create your account&hellip;",
+    "interstitial.errors-found": "Please review the entered information:",
     "gdpr_agree_data": "Ik geef toestemming voor het verzamelen en verwerken van mijn persoonlijke informatie op deze website.",
     "gdpr_agree_email": "Ik geef toestemming voor het verzenden van samenvattingen en notificaties per e-mail van deze website.",
-    "gdpr_consent_denied": "Deze website heeft uw toestemming nodig voor het verzamelen en verwerken van uw gegevens, en voor het verzenden van e-mails."
+    "gdpr_consent_denied": "Deze website heeft uw toestemming nodig voor het verzamelen en verwerken van uw gegevens, en voor het verzenden van e-mails.",
+    "invite.error-admin-only": "Directe gebruikersregistratie is uitgeschakeld. Neem contact op met de beheerder voor meer details.",
+    "invite.error-invite-only": "Directe gebruikersregistratie is uitgeschakeld. Je moet uitgenodigd worden door een bestaande gebruiker om dit forum te kunnen gebruiken.",
+    "invite.error-invalid-data": "De ontvangen registratiegegevens corresponderen niet met onze gegevens. Neem contact op met de beheerder voor meer details."
 }

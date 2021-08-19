@@ -1,0 +1,57 @@
+get:
+  tags:
+    - authentication
+  summary: Register a new user
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  register_window:spansize:
+                    type: string
+                  alternate_logins:
+                    type: boolean
+                  authentication:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        url:
+                          type: string
+                        callbackURL:
+                          type: string
+                        icon:
+                          type: string
+                        scope:
+                          type: string
+                        prompt:
+                          type: string
+                  minimumUsernameLength:
+                    type: number
+                  maximumUsernameLength:
+                    type: number
+                  minimumPasswordLength:
+                    type: number
+                  minimumPasswordStrength:
+                    type: number
+                  regFormEntry:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        label:
+                          type: string
+                        html:
+                          type: string
+                        styleName:
+                          type: string
+                  title:
+                    type: string
+              - $ref: ../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../components/schemas/CommonProps.yaml#/CommonProps

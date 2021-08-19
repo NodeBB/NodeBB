@@ -12,14 +12,6 @@ Tags.create = async function (socket, data) {
 	await topics.createEmptyTag(data.tag);
 };
 
-Tags.update = async function (socket, data) {
-	if (!Array.isArray(data)) {
-		throw new Error('[[error:invalid-data]]');
-	}
-
-	await topics.updateTags(data);
-};
-
 Tags.rename = async function (socket, data) {
 	if (!Array.isArray(data)) {
 		throw new Error('[[error:invalid-data]]');

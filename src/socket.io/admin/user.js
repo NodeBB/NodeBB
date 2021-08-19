@@ -4,13 +4,12 @@ const async = require('async');
 const winston = require('winston');
 
 const db = require('../../database');
+const api = require('../../api');
 const groups = require('../../groups');
 const user = require('../../user');
 const events = require('../../events');
-const meta = require('../../meta');
-const plugins = require('../../plugins');
 const translator = require('../../translator');
-const flags = require('../../flags');
+const sockets = require('..');
 
 const User = module.exports;
 
@@ -18,12 +17,10 @@ User.makeAdmins = async function (socket, uids) {
 	if (!Array.isArray(uids)) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	const userData = await user.getUsersFields(uids, ['banned']);
-	userData.forEach((userData) => {
-		if (userData && userData.banned) {
-			throw new Error('[[error:cant-make-banned-users-admin]]');
-		}
-	});
+	const isMembersOfBanned = await groups.isMembers(uids, groups.BANNED_USERS);
+	if (isMembersOfBanned.includes(true)) {
+		throw new Error('[[error:cant-make-banned-users-admin]]');
+	}
 	for (const uid of uids) {
 		/* eslint-disable no-await-in-loop */
 		await groups.join('administrators', uid);
@@ -57,10 +54,8 @@ User.removeAdmins = async function (socket, uids) {
 };
 
 User.createUser = async function (socket, userData) {
-	if (!userData) {
-		throw new Error('[[error:invalid-data]]');
-	}
-	return await user.create(userData);
+	sockets.warnDeprecated(socket, 'POST /api/v3/users');
+	return await api.users.create(socket, userData);
 };
 
 User.resetLockouts = async function (socket, uids) {
@@ -75,9 +70,9 @@ User.validateEmail = async function (socket, uids) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	uids = uids.filter(uid => parseInt(uid, 10));
-	await db.setObjectField(uids.map(uid => 'user:' + uid), 'email:confirmed', 1);
-	await db.sortedSetRemove('users:notvalidated', uids);
+	for (const uid of uids) {
+		await user.email.confirmByUid(uid);
+	}
 };
 
 User.sendValidationEmail = async function (socket, uids) {
@@ -85,13 +80,22 @@ User.sendValidationEmail = async function (socket, uids) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	if (!meta.config.requireEmailConfirmation) {
-		throw new Error('[[error:email-confirmations-are-disabled]]');
-	}
+	const failed = [];
+	let errorLogged = false;
+	await async.eachLimit(uids, 50, async (uid) => {
+		await user.email.sendValidationEmail(uid, { force: true }).catch((err) => {
+			if (!errorLogged) {
+				winston.error(`[user.create] Validation email failed to send\n[emailer.send] ${err.stack}`);
+				errorLogged = true;
+			}
 
-	await async.eachLimit(uids, 50, async function (uid) {
-		await user.email.sendValidationEmail(uid, { force: true });
+			failed.push(uid);
+		});
 	});
+
+	if (failed.length) {
+		throw Error(`Email sending failed for the following uids, check server logs for more info: ${failed.join(',')}`);
+	}
 };
 
 User.sendPasswordResetEmail = async function (socket, uids) {
@@ -101,10 +105,10 @@ User.sendPasswordResetEmail = async function (socket, uids) {
 
 	uids = uids.filter(uid => parseInt(uid, 10));
 
-	await Promise.all(uids.map(async function (uid) {
+	await Promise.all(uids.map(async (uid) => {
 		const userData = await user.getUserFields(uid, ['email', 'username']);
 		if (!userData.email) {
-			throw new Error('[[error:user-doesnt-have-email, ' + userData.username + ']]');
+			throw new Error(`[[error:user-doesnt-have-email, ${userData.username}]]`);
 		}
 		await user.reset.send(userData.email);
 	}));
@@ -117,91 +121,28 @@ User.forcePasswordReset = async function (socket, uids) {
 
 	uids = uids.filter(uid => parseInt(uid, 10));
 
-	await db.setObjectField(uids.map(uid => 'user:' + uid), 'passwordExpiry', Date.now());
+	await db.setObjectField(uids.map(uid => `user:${uid}`), 'passwordExpiry', Date.now());
 	await user.auth.revokeAllSessions(uids);
+	uids.forEach(uid => sockets.in(`uid_${uid}`).emit('event:logout'));
 };
 
 User.deleteUsers = async function (socket, uids) {
-	await canDeleteUids(uids);
-	deleteUsers(socket, uids, async function (uid) {
-		return await user.deleteAccount(uid);
-	});
+	sockets.warnDeprecated(socket, 'DELETE /api/v3/users/:uid/account');
+	await Promise.all(uids.map(async (uid) => {
+		await api.users.deleteAccount(socket, { uid });
+	}));
 };
 
 User.deleteUsersContent = async function (socket, uids) {
-	await canDeleteUids(uids);
+	sockets.warnDeprecated(socket, 'DELETE /api/v3/users/:uid/content');
 	await Promise.all(uids.map(async (uid) => {
-		await user.deleteContent(socket.uid, uid);
+		await api.users.deleteContent(socket, { uid });
 	}));
 };
 
 User.deleteUsersAndContent = async function (socket, uids) {
-	await canDeleteUids(uids);
-	deleteUsers(socket, uids, async function (uid) {
-		return await user.delete(socket.uid, uid);
-	});
-};
-
-async function canDeleteUids(uids) {
-	if (!Array.isArray(uids)) {
-		throw new Error('[[error:invalid-data]]');
-	}
-	const isMembers = await groups.isMembers(uids, 'administrators');
-	if (isMembers.includes(true)) {
-		throw new Error('[[error:cant-delete-other-admins]]');
-	}
-}
-
-async function deleteUsers(socket, uids, method) {
-	async function doDelete(uid) {
-		await flags.resolveFlag('user', uid, socket.uid);
-		const userData = await method(uid);
-		await events.log({
-			type: 'user-delete',
-			uid: socket.uid,
-			targetUid: uid,
-			ip: socket.ip,
-			username: userData.username,
-			email: userData.email,
-		});
-		plugins.fireHook('action:user.delete', {
-			callerUid: socket.uid,
-			uid: uid,
-			ip: socket.ip,
-			user: userData,
-		});
-	}
-	try {
-		await Promise.all(uids.map(uid => doDelete(uid)));
-	} catch (err) {
-		winston.error(err.stack);
-	}
-}
-
-User.search = async function (socket, data) {
-	// TODO: deprecate
-	const searchData = await user.search({
-		query: data.query,
-		searchBy: data.searchBy,
-		uid: socket.uid,
-	});
-
-	if (!searchData.users.length) {
-		return searchData;
-	}
-
-	const uids = searchData.users.map(user => user && user.uid);
-	const userInfo = await user.getUsersFields(uids, ['email', 'flags', 'lastonline', 'joindate']);
-
-	searchData.users.forEach(function (user, index) {
-		if (user && userInfo[index]) {
-			user.email = userInfo[index].email;
-			user.flags = userInfo[index].flags || 0;
-			user.lastonlineISO = userInfo[index].lastonlineISO;
-			user.joindateISO = userInfo[index].joindateISO;
-		}
-	});
-	return searchData;
+	sockets.warnDeprecated(socket, 'DELETE /api/v3/users or DELETE /api/v3/users/:uid');
+	await api.users.deleteMany(socket, { uids });
 };
 
 User.restartJobs = async function () {
@@ -220,4 +161,28 @@ User.loadGroups = async function (socket, uids) {
 		});
 	});
 	return { users: userData };
+};
+
+User.exportUsersCSV = async function (socket) {
+	await events.log({
+		type: 'exportUsersCSV',
+		uid: socket.uid,
+		ip: socket.ip,
+	});
+	setTimeout(async () => {
+		try {
+			await user.exportUsersCSV();
+			socket.emit('event:export-users-csv');
+			const notifications = require('../../notifications');
+			const n = await notifications.create({
+				bodyShort: '[[notifications:users-csv-exported]]',
+				path: '/api/admin/users/csv',
+				nid: 'users:csv:export',
+				from: socket.uid,
+			});
+			await notifications.push(n, [socket.uid]);
+		} catch (err) {
+			winston.error(err);
+		}
+	}, 0);
 };

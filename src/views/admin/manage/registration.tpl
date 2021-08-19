@@ -24,7 +24,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<!-- BEGIN users -->
+						{{{ each users }}}
 						<tr data-username="{users.usernameEscaped}">
 							<td>
 								<!-- IF users.usernameSpam -->
@@ -55,7 +55,7 @@
 								<!-- ENDIF users.spamChecked -->
 								<!-- ENDIF users.ipSpam -->
 								{users.ip}
-								<!-- BEGIN users.ipMatch -->
+								{{{ each users.ipMatch }}}
 								<br>
 								<!-- IF users.ipMatch.picture -->
 								<img src="{users.ipMatch.picture}" class="user-img"/>
@@ -63,29 +63,29 @@
 								<div class="user-img avatar avatar-sm" style="background-color: {users.ipMatch.icon:bgColor};">{users.ipMatch.icon:text}</div>
 								<!-- ENDIF users.ipMatch.picture -->
 								<a href="{config.relative_path}/uid/{users.ipMatch.uid}">{users.ipMatch.username}</a>
-								<!-- END users.ipMatch -->
+								{{{ end }}}
 							</td>
 							<td class="hidden-xs">
 								<span class="timeago" title="{users.timestampISO}"></span>
 							</td>
 
-							<!-- BEGIN users.customRows -->
+							{{{ each users.customRows }}}
 							<td class="hidden-xs">{users.customRows.value}</td>
-							<!-- END users.customRows -->
+							{{{ end }}}
 
 							<td>
 								<div class="btn-group pull-right">
 									<button class="btn btn-success btn-xs" data-action="accept"><i class="fa fa-check"></i></button>
 									<button class="btn btn-danger btn-xs" data-action="delete"><i class="fa fa-times"></i></button>
-									<!-- BEGIN users.customActions -->
+									{{{ each users.customActions }}}
 									<button id="{users.customActions.id}" title="{users.customActions.title}" class="btn btn-xs {users.customActions.class}">
 										<i class="fa {users.customActions.icon}"></i>
 									</button>
-									<!-- END users.customActions -->
+									{{{ end }}}
 								</div>
 							</td>
 						</tr>
-						<!-- END users -->
+						{{{ end }}}
 					</tbody>
 				</table>
 			</div>
@@ -110,8 +110,8 @@
 						</tr>
 					</thead>
 					<tbody>
-						<!-- BEGIN invites -->
-						<!-- BEGIN invites.invitations -->
+						{{{ each invites }}}
+						{{{ each invites.invitations }}}
 						<tr data-invitation-mail="{invites.invitations.email}"
 								data-invited-by="{invites.username}">
 							<td class ="invited-by"><!-- IF @first -->{invites.username}<!-- ENDIF @first --></td>
@@ -122,8 +122,8 @@
 								</div>
 							</td>
 						</tr>
-						<!-- END invites.invitations -->
-						<!-- END invites -->
+						{{{ end }}}
+						{{{ end }}}
 					</tbody>
 				</table>
 			</div>

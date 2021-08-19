@@ -1,0 +1,76 @@
+get:
+  tags:
+    - flags
+  summary: Get flags list
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  flags:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        state:
+                          type: string
+                        heat:
+                          type: number
+                          description: The number of reports that make up this flag
+                        flagId:
+                          type: number
+                        type:
+                          type: string
+                        targetId:
+                          oneOf:
+                            - type: string
+                            - type: number
+                        targetUid:
+                          type: number
+                        datetime:
+                          type: number
+                        labelClass:
+                          type: string
+                        target_readable:
+                          type: string
+                        datetimeISO:
+                          type: string
+                        assignee:
+                          type: string
+                          nullable: true
+                  analytics:
+                    type: array
+                    items:
+                      type: number
+                  hasFilter:
+                    type: boolean
+                  filters:
+                    type: object
+                    properties:
+                      page:
+                        type: number
+                      perPage:
+                        type: number
+                  expanded:
+                    type: boolean
+                  sort:
+                    type: string
+                  title:
+                    type: string
+                  selectedCategory:
+                    type: object
+                    properties:
+                      icon:
+                        type: string
+                      name:
+                        type: string
+                      bgColor:
+                        type: string
+                    nullable: true
+              - $ref: ../components/schemas/Pagination.yaml#/Pagination
+              - $ref: ../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
+              - $ref: ../components/schemas/CommonProps.yaml#/CommonProps

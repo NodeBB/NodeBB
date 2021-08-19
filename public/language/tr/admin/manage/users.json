@@ -1,6 +1,6 @@
 {
 	"users": "Kullanıcılar",
-	"edit": "Düzenle",
+	"edit": "Actions",
 	"make-admin": "Yönetici Yap",
 	"remove-admin": "Yöneticiliği Sil",
 	"validate-email": "E-postayı Doğrula",
@@ -20,16 +20,10 @@
 	"add-group": "Grup ekle",
 	"invite": "Davet et",
 	"new": "Yeni Kullanıcı",
-
-	"pills.latest": "En Yeni Kullanıcılar",
+	"filter-by": "Filtreleme",
 	"pills.unvalidated": "Onaylanmamış",
-	"pills.no-posts": "İleti Yok",
-	"pills.top-posters": "En Çok Gönderim Yapanlar",
-	"pills.top-rep": "En Saygın",
-	"pills.inactive": "Etkin değil",
-	"pills.flagged": "En Çok İşaretlenenler",
+	"pills.validated": "Onaylandı",
 	"pills.banned": "Yasaklandı",
-	"pills.search": "Kullanıcı Ara",
 
 	"50-per-page": "Sayfa başına 50",
 	"100-per-page": "Sayfa başına 100",
@@ -53,6 +47,7 @@
 	"users.uid": "benzersiz id",
 	"users.username": "kullanıcı adı",
 	"users.email": "e-posta",
+	"users.ip": "IP",
 	"users.postcount": "ileti sayısı",
 	"users.reputation": "itibar",
 	"users.flags": "bayraklar",
@@ -108,5 +103,7 @@
 
 	"alerts.prompt-email": "Eposta:",
 	"alerts.email-sent-to": "%1'e bir davet e-postası gönderildi",
-	"alerts.x-users-found": "%1 kullanıcı bulundu, (%2 saniye)"
+	"alerts.x-users-found": "%1 kullanıcı bulundu, (%2 saniye)",
+	"export-users-started": "Kullanıcılar csv olarak aktarılmak üzere hazırlanıyor, bu işlem zaman alabilir. İşlem tamamlandığında bildirim alacaksınız!",
+	"export-users-completed": "Kullanıcılar csv olarak hazırlandı, indirmek için tıklayınız"
 }

@@ -1,7 +1,7 @@
 'use strict';
 
-var async = require('async');
-var db = require('../../database');
+const async = require('async');
+const db = require('../../database');
 
 module.exports = {
 	name: 'Add default settings for notification delivery types',
@@ -12,8 +12,8 @@ module.exports = {
 				db.getObject('config', next);
 			},
 			function (config, next) {
-				var postNotifications = parseInt(config.sendPostNotifications, 10) === 1 ? 'notification' : 'none';
-				var chatNotifications = parseInt(config.sendChatNotifications, 10) === 1 ? 'notification' : 'none';
+				const postNotifications = parseInt(config.sendPostNotifications, 10) === 1 ? 'notification' : 'none';
+				const chatNotifications = parseInt(config.sendChatNotifications, 10) === 1 ? 'notification' : 'none';
 				db.setObject('config', {
 					notificationType_upvote: config.notificationType_upvote || 'notification',
 					'notificationType_new-topic': config['notificationType_new-topic'] || 'notification',

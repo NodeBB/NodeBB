@@ -8,7 +8,7 @@ const cache = require('../cache');
 
 module.exports = function (Groups) {
 	Groups.getMembers = async function (groupName, start, stop) {
-		return await db.getSortedSetRevRange('group:' + groupName + ':members', start, stop);
+		return await db.getSortedSetRevRange(`group:${groupName}:members`, start, stop);
 	};
 
 	Groups.getMemberUsers = async function (groupNames, start, stop) {
@@ -20,7 +20,7 @@ module.exports = function (Groups) {
 	};
 
 	Groups.getMembersOfGroups = async function (groupNames) {
-		return await db.getSortedSetsMembers(groupNames.map(name => 'group:' + name + ':members'));
+		return await db.getSortedSetsMembers(groupNames.map(name => `group:${name}:members`));
 	};
 
 	Groups.isMember = async function (uid, groupName) {
@@ -28,14 +28,12 @@ module.exports = function (Groups) {
 			return false;
 		}
 
-		const cacheKey = uid + ':' + groupName;
+		const cacheKey = `${uid}:${groupName}`;
 		let isMember = Groups.cache.get(cacheKey);
 		if (isMember !== undefined) {
-			Groups.cache.hits += 1;
 			return isMember;
 		}
-		Groups.cache.misses += 1;
-		isMember = await db.isSortedSetMember('group:' + groupName + ':members', uid);
+		isMember = await db.isSortedSetMember(`group:${groupName}:members`, uid);
 		Groups.cache.set(cacheKey, isMember);
 		return isMember;
 	};
@@ -53,15 +51,15 @@ module.exports = function (Groups) {
 		const nonCachedUids = uids.filter(uid => filterNonCached(cachedData, uid, groupName));
 
 		if (!nonCachedUids.length) {
-			return uids.map(uid => cachedData[uid + ':' + groupName]);
+			return uids.map(uid => cachedData[`${uid}:${groupName}`]);
 		}
 
-		const isMembers = await db.isSortedSetMembers('group:' + groupName + ':members', nonCachedUids);
-		nonCachedUids.forEach(function (uid, index) {
-			cachedData[uid + ':' + groupName] = isMembers[index];
-			Groups.cache.set(uid + ':' + groupName, isMembers[index]);
+		const isMembers = await db.isSortedSetMembers(`group:${groupName}:members`, nonCachedUids);
+		nonCachedUids.forEach((uid, index) => {
+			cachedData[`${uid}:${groupName}`] = isMembers[index];
+			Groups.cache.set(`${uid}:${groupName}`, isMembers[index]);
 		});
-		return uids.map(uid => cachedData[uid + ':' + groupName]);
+		return uids.map(uid => cachedData[`${uid}:${groupName}`]);
 	};
 
 	Groups.isMemberOfGroups = async function (uid, groups) {
@@ -72,26 +70,23 @@ module.exports = function (Groups) {
 		const nonCachedGroups = groups.filter(groupName => filterNonCached(cachedData, uid, groupName));
 
 		if (!nonCachedGroups.length) {
-			return groups.map(groupName => cachedData[uid + ':' + groupName]);
+			return groups.map(groupName => cachedData[`${uid}:${groupName}`]);
 		}
-		const nonCachedGroupsMemberSets = nonCachedGroups.map(groupName => 'group:' + groupName + ':members');
+		const nonCachedGroupsMemberSets = nonCachedGroups.map(groupName => `group:${groupName}:members`);
 		const isMembers = await db.isMemberOfSortedSets(nonCachedGroupsMemberSets, uid);
-		nonCachedGroups.forEach(function (groupName, index) {
-			cachedData[uid + ':' + groupName] = isMembers[index];
-			Groups.cache.set(uid + ':' + groupName, isMembers[index]);
+		nonCachedGroups.forEach((groupName, index) => {
+			cachedData[`${uid}:${groupName}`] = isMembers[index];
+			Groups.cache.set(`${uid}:${groupName}`, isMembers[index]);
 		});
 
-		return groups.map(groupName => cachedData[uid + ':' + groupName]);
+		return groups.map(groupName => cachedData[`${uid}:${groupName}`]);
 	};
 
 	function filterNonCached(cachedData, uid, groupName) {
-		const isMember = Groups.cache.get(uid + ':' + groupName);
+		const isMember = Groups.cache.get(`${uid}:${groupName}`);
 		const isInCache = isMember !== undefined;
 		if (isInCache) {
-			Groups.cache.hits += 1;
-			cachedData[uid + ':' + groupName] = isMember;
-		} else {
-			Groups.cache.misses += 1;
+			cachedData[`${uid}:${groupName}`] = isMember;
 		}
 		return !isInCache;
 	}
@@ -105,7 +100,7 @@ module.exports = function (Groups) {
 	};
 
 	Groups.getMemberCount = async function (groupName) {
-		const count = await db.getObjectField('group:' + groupName, 'memberCount');
+		const count = await db.getObjectField(`group:${groupName}`, 'memberCount');
 		return parseInt(count, 10);
 	};
 
@@ -129,9 +124,7 @@ module.exports = function (Groups) {
 		const isMembers = await Groups.isMemberOfGroups(uid, uniqueGroups);
 		const isGroupMember = _.zipObject(uniqueGroups, isMembers);
 
-		return members.map(function (groupNames) {
-			return !!groupNames.find(name => isGroupMember[name]);
-		});
+		return members.map(groupNames => !!groupNames.find(name => isGroupMember[name]));
 	};
 
 	Groups.isMembersOfGroupList = async function (uids, groupListKey) {
@@ -144,8 +137,8 @@ module.exports = function (Groups) {
 		}
 		const isGroupMembers = await Promise.all(groupNames.map(name => Groups.isMembers(uids, name)));
 
-		isGroupMembers.forEach(function (isMembers) {
-			results.forEach(function (isMember, index) {
+		isGroupMembers.forEach((isMembers) => {
+			results.forEach((isMember, index) => {
 				if (!isMember && isMembers[index]) {
 					results[index] = true;
 				}
@@ -159,8 +152,8 @@ module.exports = function (Groups) {
 		keys = isArray ? keys : [keys];
 
 		const cachedData = {};
-		const nonCachedKeys = keys.filter(function (groupName) {
-			const groupMembers = cache.get('group:' + groupName + ':members');
+		const nonCachedKeys = keys.filter((groupName) => {
+			const groupMembers = cache.get(`group:${groupName}:members`);
 			const isInCache = groupMembers !== undefined;
 			if (isInCache) {
 				cachedData[groupName] = groupMembers;
@@ -171,11 +164,11 @@ module.exports = function (Groups) {
 		if (!nonCachedKeys.length) {
 			return isArray ? keys.map(groupName => cachedData[groupName]) : cachedData[keys[0]];
 		}
-		const groupMembers = await db.getSortedSetsMembers(nonCachedKeys.map(name => 'group:' + name + ':members'));
+		const groupMembers = await db.getSortedSetsMembers(nonCachedKeys.map(name => `group:${name}:members`));
 
-		nonCachedKeys.forEach(function (groupName, index) {
+		nonCachedKeys.forEach((groupName, index) => {
 			cachedData[groupName] = groupMembers[index];
-			cache.set('group:' + groupName + ':members', groupMembers[index]);
+			cache.set(`group:${groupName}:members`, groupMembers[index]);
 		});
 		return isArray ? keys.map(groupName => cachedData[groupName]) : cachedData[keys[0]];
 	}

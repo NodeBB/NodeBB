@@ -2,6 +2,7 @@
 	"forum-traffic": "תעבורת הפורום",
 	"page-views": "צפיות בדפים",
 	"unique-visitors": "מבקרים ייחודיים",
+	"logins": "כניסות",
 	"new-users": "משתמשים חדשים",
 	"posts": "פוסטים חדשים",
 	"topics": "נושאים חדשים",
@@ -24,11 +25,12 @@
 
 	"updates": "עדכונים",
 	"running-version": "הפורום מעודכן ל<strong>גרסה <span id=\"version\">%1</span></strong>",
-	"keep-updated": "תוודא תמיד שהפורום שלך עדכני, בכדי שעדכוני אבטחה ותיקוני באגים יהיו מעודכנים.",
+	"keep-updated": "לעדכוני אבטחה מעודכנים ותיקוני באגים, וודא שהפורום שלך עדכני לגרסה האחרונה.",
 	"up-to-date": "<p>אתה <strong>מעודכן<i class=\"fa fa-check\"></i></strong></p>",
-	"upgrade-available": "<p>גרסה חדשה (v%1) שוחרר. שקול  <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">האם לעדכן את הפורום שלך</a>.</p>",
+	"upgrade-available": "<p>גרסה חדשה (v%1) שוחררה. שקול  <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">האם לעדכן את הפורום שלך</a>.</p>",
 	"prerelease-upgrade-available": "<p>זוהי גירסת קדם-הפצה מיושנת של NodeBB. גרסה חדשה (v%1) שוחרר. שקול <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">האם לעדכן את ה-NodeBB שלך</a>.</p>",
 	"prerelease-warning": "<p>זוהי <strong>גירסת קדם-הפצה</strong> של NodeBB. באגים בלתי צפויים עלולים להתרחש. <i class=\"fa fa-exclamation-triangle\"></i> </p>",
+	"fallback-emailer-not-found": "Fallback emailer not found!",
 	"running-in-development": "<span>הפורום פועל במצב פיתוח. הפורום עשוי להיות חשוף לפגיעות פוטנציאליות; פנה אל מנהל המערכת שלך.</span>",
 	"latest-lookup-failed": "<p>נכשל בבדיקת זמינות גרסה חדשה של הפורום</p>",
 
@@ -75,5 +77,12 @@
 	"graphs.registered-users": "משתמשים רשומים",
 	"graphs.anonymous-users": "אורחים",
 	"last-restarted-by": "אותחל לארונה על ידי",
-	"no-users-browsing": "אין גולשים"
+	"no-users-browsing": "אין גולשים",
+
+	"back-to-dashboard": "חזרה ללוח מחוונים",
+	"details.no-users": "אין משתמש שהצטרף במסגרת הזמן שנבחרה",
+	"details.no-topics": "לא פורסמו נושאים במסגרת הזמן שנבחרה",
+	"details.no-logins": "לא נרשמו כניסות במסגרת הזמן שנבחרה",
+	"details.logins-static": "NodeBB שומר נתוני הפעלה עבור %1 ימים בלבד, ולכן טבלה זו תציג רק את הכניסות הפעילות האחרונות",
+	"details.logins-login-time": "זמן כניסה"
 }

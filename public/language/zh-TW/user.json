@@ -84,6 +84,7 @@
     "remove_cover_picture_confirm": "您確定要移除封面圖片嗎？",
     "crop_picture": "剪裁圖片",
     "upload_cropped_picture": "剪裁併上傳",
+    "avatar-background-colour": "Avatar background colour",
     "settings": "設定",
     "show_email": "顯示我的電子信箱",
     "show_fullname": "顯示我的全名",
@@ -123,6 +124,7 @@
     "open_links_in_new_tab": "在新頁籤打開外部連結",
     "enable_topic_searching": "啟用主題內搜索",
     "topic_search_help": "如果啟用此項，主題內搜索會替代瀏覽器預設的頁面搜索，您將可以在整個主題內搜索，而不僅僅只搜索頁面上展現的內容。",
+    "update_url_with_post_index": "Update url with post index while browsing topics",
     "scroll_to_my_post": "在提交回覆之後顯示新回覆",
     "follow_topics_you_reply_to": "關注您回覆過的主題",
     "follow_topics_you_create": "關注您建立的主題",
@@ -134,7 +136,7 @@
     "homepage": "首頁",
     "homepage_description": "選擇一個頁面作為論壇的首頁，否則設置為 ‘空’ 使用預設首頁。",
     "custom_route": "自訂首頁路徑",
-    "custom_route_help": "輸入路由名稱，前面不需要斜線 ( 例如, \"recent\" 或 \"popular\" )",
+    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\" or \"category/2/general-discussion\")",
     "sso.title": "單一簽入服務",
     "sso.associated": "已關聯到",
     "sso.not-associated": "點擊這裡來關聯",
@@ -178,5 +180,8 @@
     "consent.export_uploads": "導出上傳檔案 (.zip)",
     "consent.export-uploads-success": "Exporting uploads, you will get a notification when it is complete.",
     "consent.export_posts": "導出貼文 (.csv)",
-    "consent.export-posts-success": "Exporting posts, you will get a notification when it is complete."
+    "consent.export-posts-success": "Exporting posts, you will get a notification when it is complete.",
+    "emailUpdate.intro": "Please enter your email address below. This forum uses your email address for scheduled digest and notifications, as well as for account recovery in the event of a lost password.",
+    "emailUpdate.optional": "<strong>This field is optional</strong>. You are not obligated to provide your email address, but without a validated email, you will not be able to recover your account.",
+    "emailUpdate.change-instructions": "A confirmation email will be sent to the entered email address with a unique link. Accessing that link will confirm your ownership of the email address and it will become active on your account. At any time, you are able to update your email on file from within your account page."
 }

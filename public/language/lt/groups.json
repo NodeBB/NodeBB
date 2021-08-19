@@ -35,6 +35,7 @@
     "details.member_count": "Narių skaičiuotuvas",
     "details.creation_date": "Sukūrimo Data",
     "details.description": "Aprašymas",
+    "details.member-post-cids": "Category IDs to display posts from",
     "details.badge_preview": "Ženklelio Peržiūra",
     "details.change_icon": "Pakeisti paveikslėlį",
     "details.change_label_colour": "Change Label Colour",

@@ -101,6 +101,23 @@
 					[[admin/settings/uploads:allowed-file-extensions-help]]
 				</p>
 			</div>
+
+			<div class="form-group">
+				<label for="uploadRateLimitThreshold">[[admin/settings/uploads:upload-limit-threshold]]</label>
+				<div class="row">
+					<div class="col-xs-2">
+						<input type="text" class="form-control" data-field="uploadRateLimitThreshold" />
+					</div>
+					<div class="col-xs-2">
+						<select class="form-control" data-field="uploadRateLimitCooldown">
+							<option value="60">[[admin/settings/uploads:upload-limit-threshold-per-minute, 1]]</option>
+							<option value="300">[[admin/settings/uploads:upload-limit-threshold-per-minutes, 5]]</option>
+							<option value="900">[[admin/settings/uploads:upload-limit-threshold-per-minutes, 15]]</option>
+							<option value="3600">[[admin/settings/uploads:upload-limit-threshold-per-minutes, 60]]</option>
+						</select>
+					</div>
+				</div>
+			</div>
 		</form>
 	</div>
 

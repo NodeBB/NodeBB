@@ -14,7 +14,7 @@ const questions = {
 };
 
 module.exports = async function (config) {
-	winston.info('\nNow configuring ' + config.database + ' database:');
+	winston.info(`\nNow configuring ${config.database} database:`);
 	const databaseConfig = await getDatabaseConfig(config);
 	return saveDatabaseConfig(config, databaseConfig);
 };
@@ -40,7 +40,7 @@ async function getDatabaseConfig(config) {
 		}
 		return await promptGet(questions.postgres);
 	}
-	throw new Error('unknown database : ' + config.database);
+	throw new Error(`unknown database : ${config.database}`);
 }
 
 function saveDatabaseConfig(config, databaseConfig) {
@@ -79,11 +79,11 @@ function saveDatabaseConfig(config, databaseConfig) {
 			ssl: databaseConfig['postgres:ssl'],
 		};
 	} else {
-		throw new Error('unknown database : ' + config.database);
+		throw new Error(`unknown database : ${config.database}`);
 	}
 
 	const allQuestions = questions.redis.concat(questions.mongo).concat(questions.postgres);
-	for (var x = 0; x < allQuestions.length; x += 1) {
+	for (let x = 0; x < allQuestions.length; x += 1) {
 		delete config[allQuestions[x].name];
 	}
 

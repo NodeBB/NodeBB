@@ -2,7 +2,6 @@
 	"none": "Vaše fórum neobsahuje žádné témata se značkami.",
 	"bg-color": "Barva pozadí",
 	"text-color": "Barva textu",
-	"create-modify": "Vytvořit a upravit značky",
 	"description": "Pro výběr více značek, vyberte značky kliknutím nebo přetažením, za použití klávesy <code>CTRL</code>.",
 	"create": "Vytvořit značku",
 	"modify": "Upravit značky",
@@ -14,5 +13,6 @@
 
 	"alerts.editing": "Upravení značky(ek)",
 	"alerts.confirm-delete": "Chcete odstranit vybranou značku?",
-	"alerts.update-success": "Značka aktualizována."
+	"alerts.update-success": "Značka aktualizována.",
+	"reset-colors": "Reset colors"
 }

@@ -1,5 +1,9 @@
 {
-	"dashboard": "仪表盘",
+	"section-dashboard": "仪表盘",
+	"dashboard/overview": "概览",
+	"dashboard/logins": "登录",
+	"dashboard/users": "用户",
+	"dashboard/topics": "主题",
 	"section-general": "基本",
 
 	"section-manage": "管理",
@@ -31,6 +35,7 @@
 	"settings/pagination": "分页",
 	"settings/tags": "话题",
 	"settings/notifications": "通知",
+	"settings/api": "API Access",
 	"settings/sounds": "铃声",
 	"settings/social": "社交",
 	"settings/cookies": "Cookies",
@@ -38,7 +43,7 @@
 	"settings/sockets": "套接字",
 	"settings/advanced": "高级",
 
-	"settings.page-title": "1% 设置",
+	"settings.page-title": "%1 设置",
 
 	"section-appearance": "界面",
 	"appearance/themes": "主题",
@@ -70,7 +75,7 @@
 	"logout": "登出",
 	"view-forum": "查看论坛",
 
-	"search.placeholder": "Press &quot;/&quot; to search for settings",
+	"search.placeholder": "按下&quot;/&quot;以设置搜索",
 	"search.no-results": "没有可用结果…",
 	"search.search-forum": "搜索论坛为<strong></strong>",
 	"search.keep-typing": "输入更多以查看结果...",

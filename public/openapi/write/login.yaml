@@ -1,0 +1,30 @@
+post:
+  tags:
+    - utilities
+  summary: verify login credentials
+  description: |
+    This route accepts a username/password or email/password pair (dependent on forum settings), returning a standard user object if credentials are validated successfully.
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            username:
+              type: string
+              example: admin
+            password:
+              type: string
+              example: '123456'
+  responses:
+    '200':
+      description: credentials successfully validated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../components/schemas/UserObject.yaml#/UserObjectSlim

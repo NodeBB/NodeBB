@@ -1,6 +1,8 @@
 {
     "tag": "Postavke oznaka",
     "link-to-manage": "Manage Tags",
+    "system-tags": "System Tags",
+    "system-tags-help": "Only privileged users will be able to use these tags.",
     "min-per-topic": "Najmanje oznaka za temu",
     "max-per-topic": "Maksimalno oznaka po temi",
     "min-length": "Minimalna dužina oznake",

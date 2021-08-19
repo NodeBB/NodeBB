@@ -1,6 +1,5 @@
 'use strict';
 
-const path = require('path');
 const semver = require('semver');
 const async = require('async');
 const winston = require('winston');
@@ -8,11 +7,12 @@ const nconf = require('nconf');
 const _ = require('lodash');
 
 const meta = require('../meta');
+const { themeNamePattern } = require('../constants');
 
 module.exports = function (Plugins) {
 	async function registerPluginAssets(pluginData, fields) {
 		function add(dest, arr) {
-			dest.push.apply(dest, arr || []);
+			dest.push(...(arr || []));
 		}
 
 		const handlers = {
@@ -42,9 +42,9 @@ module.exports = function (Plugins) {
 			},
 		};
 
-		var methods = {};
+		let methods = {};
 		if (Array.isArray(fields)) {
-			fields.forEach(function (field) {
+			fields.forEach((field) => {
 				methods[field] = handlers[field];
 			});
 		} else {
@@ -98,12 +98,10 @@ module.exports = function (Plugins) {
 			}
 		});
 
-		winston.verbose('[plugins] loading the following fields from plugin data: ' + fields.join(', '));
+		winston.verbose(`[plugins] loading the following fields from plugin data: ${fields.join(', ')}`);
 		const plugins = await Plugins.data.getActive();
 		await Promise.all(plugins.map(p => registerPluginAssets(p, fields)));
 	};
-
-	const themeNamePattern = /(@.*?\/)?nodebb-theme-.*$/;
 
 	Plugins.loadPlugin = async function (pluginPath) {
 		let pluginData;
@@ -125,7 +123,7 @@ module.exports = function (Plugins) {
 			await registerPluginAssets(pluginData);
 		} catch (err) {
 			winston.error(err.stack);
-			winston.verbose('[plugins] Could not load plugin : ' + pluginData.id);
+			winston.verbose(`[plugins] Could not load plugin : ${pluginData.id}`);
 			return;
 		}
 
@@ -136,7 +134,7 @@ module.exports = function (Plugins) {
 			});
 		}
 
-		winston.verbose('[plugins] Loaded plugin: ' + pluginData.id);
+		winston.verbose(`[plugins] Loaded plugin: ${pluginData.id}`);
 	};
 
 	function checkVersion(pluginData) {
@@ -156,22 +154,16 @@ module.exports = function (Plugins) {
 	}
 
 	function registerHooks(pluginData) {
-		if (!pluginData.library) {
-			return;
-		}
-
-		const libraryPath = path.join(pluginData.path, pluginData.library);
-
 		try {
 			if (!Plugins.libraries[pluginData.id]) {
-				Plugins.requireLibrary(pluginData.id, libraryPath);
+				Plugins.requireLibrary(pluginData);
 			}
 
 			if (Array.isArray(pluginData.hooks)) {
-				pluginData.hooks.forEach(hook => Plugins.registerHook(pluginData.id, hook));
+				pluginData.hooks.forEach(hook => Plugins.hooks.register(pluginData.id, hook));
 			}
 		} catch (err) {
-			winston.warn('[plugins] Unable to parse library for: ' + pluginData.id);
+			winston.warn(`[plugins] Unable to load library for: ${pluginData.id}`);
 			throw err;
 		}
 	}

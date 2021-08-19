@@ -1,0 +1,148 @@
+get:
+  tags:
+    - home
+  summary: Get forum settings
+  description: This route retrieves forum settings and user-specific settings for client-side options on the forum.
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              relative_path:
+                type: string
+              upload_url:
+                type: string
+              assetBaseUrl:
+                type: string
+              siteTitle:
+                type: string
+              browserTitle:
+                type: string
+              titleLayout:
+                type: string
+              showSiteTitle:
+                type: boolean
+              maintenanceMode:
+                type: boolean
+              minimumTitleLength:
+                type: number
+              maximumTitleLength:
+                type: number
+              minimumPostLength:
+                type: number
+              maximumPostLength:
+                type: number
+              minimumTagsPerTopic:
+                type: number
+              maximumTagsPerTopic:
+                type: number
+              minimumTagLength:
+                type: number
+              undoTimeout:
+                type: number
+              maximumTagLength:
+                type: number
+              useOutgoingLinksPage:
+                type: boolean
+              allowGuestHandles:
+                type: boolean
+              allowTopicsThumbnail:
+                type: boolean
+              usePagination:
+                type: boolean
+              disableChat:
+                type: boolean
+              disableChatMessageEditing:
+                type: boolean
+              maximumChatMessageLength:
+                type: number
+              socketioTransports:
+                type: array
+                items:
+                  type: string
+              socketioOrigins:
+                type: string
+              websocketAddress:
+                type: string
+              maxReconnectionAttempts:
+                type: number
+              reconnectionDelay:
+                type: number
+              topicsPerPage:
+                type: number
+              postsPerPage:
+                type: number
+              maximumFileSize:
+                type: number
+              theme:id:
+                type: string
+              theme:src:
+                type: string
+              defaultLang:
+                type: string
+              userLang:
+                type: string
+              loggedIn:
+                type: boolean
+              uid:
+                type: number
+                description: A user identifier
+              cache-buster:
+                type: string
+              topicPostSort:
+                type: string
+              categoryTopicSort:
+                type: string
+              csrf_token:
+                type: string
+              searchEnabled:
+                type: boolean
+              bootswatchSkin:
+                type: string
+              enablePostHistory:
+                type: boolean
+              timeagoCutoff:
+                type: number
+              timeagoCodes:
+                type: array
+                items:
+                  type: string
+              cookies:
+                type: object
+                properties:
+                  enabled:
+                    type: boolean
+                  message:
+                    type: string
+                  dismiss:
+                    type: string
+                  link:
+                    type: string
+                  link_url:
+                    type: string
+              thumbs:
+                type: object
+                properties:
+                  size:
+                    type: number
+              acpLang:
+                type: string
+              openOutgoingLinksInNewTab:
+                type: boolean
+              topicSearchEnabled:
+                type: boolean
+              hideSubCategories:
+                type: boolean
+              hideCategoryLastPost:
+                type: boolean
+              enableQuickReply:
+                type: boolean
+              iconBackgrounds:
+                type: array
+                items:
+                  type: string
+                  description: A valid CSS colour code
+                  example: '#fff'

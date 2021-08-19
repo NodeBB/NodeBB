@@ -1,12 +1,12 @@
 'use strict';
 
-var async = require('async');
+const async = require('async');
 
 module.exports = {
 	name: 'Creating Global moderators group',
 	timestamp: Date.UTC(2016, 0, 23),
 	method: function (callback) {
-		var groups = require('../../groups');
+		const groups = require('../../groups');
 		async.waterfall([
 			function (next) {
 				groups.exists('Global Moderators', next);

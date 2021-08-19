@@ -1,49 +1,49 @@
 
 'use strict';
 
-var async = require('async');
+const async = require('async');
 
-var db = require('../database');
-var user = require('../user');
+const db = require('../database');
+const user = require('../user');
 
 module.exports = function (Topics) {
 	Topics.getUserBookmark = async function (tid, uid) {
 		if (parseInt(uid, 10) <= 0) {
 			return null;
 		}
-		return await db.sortedSetScore('tid:' + tid + ':bookmarks', uid);
+		return await db.sortedSetScore(`tid:${tid}:bookmarks`, uid);
 	};
 
 	Topics.getUserBookmarks = async function (tids, uid) {
 		if (parseInt(uid, 10) <= 0) {
 			return tids.map(() => null);
 		}
-		return await db.sortedSetsScore(tids.map(tid => 'tid:' + tid + ':bookmarks'), uid);
+		return await db.sortedSetsScore(tids.map(tid => `tid:${tid}:bookmarks`), uid);
 	};
 
 	Topics.setUserBookmark = async function (tid, uid, index) {
-		await db.sortedSetAdd('tid:' + tid + ':bookmarks', index, uid);
+		await db.sortedSetAdd(`tid:${tid}:bookmarks`, index, uid);
 	};
 
 	Topics.getTopicBookmarks = async function (tid) {
-		return await db.getSortedSetRangeWithScores('tid:' + tid + ':bookmarks', 0, -1);
+		return await db.getSortedSetRangeWithScores(`tid:${tid}:bookmarks`, 0, -1);
 	};
 
 	Topics.updateTopicBookmarks = async function (tid, pids) {
 		const maxIndex = await Topics.getPostCount(tid);
-		const indices = await db.sortedSetRanks('tid:' + tid + ':posts', pids);
+		const indices = await db.sortedSetRanks(`tid:${tid}:posts`, pids);
 		const postIndices = indices.map(i => (i === null ? 0 : i + 1));
-		const minIndex = Math.min.apply(Math, postIndices);
+		const minIndex = Math.min(...postIndices);
 
 		const bookmarks = await Topics.getTopicBookmarks(tid);
 
-		var uidData = bookmarks.map(b => ({ uid: b.value, bookmark: parseInt(b.score, 10) }))
+		const uidData = bookmarks.map(b => ({ uid: b.value, bookmark: parseInt(b.score, 10) }))
 			.filter(data => data.bookmark >= minIndex);
 
-		await async.eachLimit(uidData, 50, async function (data) {
-			var bookmark = Math.min(data.bookmark, maxIndex);
+		await async.eachLimit(uidData, 50, async (data) => {
+			let bookmark = Math.min(data.bookmark, maxIndex);
 
-			postIndices.forEach(function (i) {
+			postIndices.forEach((i) => {
 				if (i < data.bookmark) {
 					bookmark -= 1;
 				}

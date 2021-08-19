@@ -1,5 +1,9 @@
 'use strict';
 
+const winston = require('winston');
+const validator = require('validator');
+const slugify = require('../slugify');
+
 const helpers = module.exports;
 
 helpers.try = function (middleware) {
@@ -19,4 +23,41 @@ helpers.try = function (middleware) {
 			next(err);
 		}
 	};
+};
+
+helpers.buildBodyClass = function (req, res, templateData = {}) {
+	const clean = req.path.replace(/^\/api/, '').replace(/^\/|\/$/g, '');
+	const parts = clean.split('/').slice(0, 3);
+	parts.forEach((p, index) => {
+		try {
+			p = slugify(decodeURIComponent(p));
+		} catch (err) {
+			winston.error(err.stack);
+			p = '';
+		}
+		p = validator.escape(String(p));
+		parts[index] = index ? `${parts[0]}-${p}` : `page-${p || 'home'}`;
+	});
+
+	if (templateData.template && templateData.template.topic) {
+		parts.push(`page-topic-category-${templateData.category.cid}`);
+		parts.push(`page-topic-category-${slugify(templateData.category.name)}`);
+	}
+
+	if (Array.isArray(templateData.breadcrumbs)) {
+		templateData.breadcrumbs.forEach((crumb) => {
+			if (crumb && crumb.hasOwnProperty('cid')) {
+				parts.push(`parent-category-${crumb.cid}`);
+			}
+		});
+	}
+
+	parts.push(`page-status-${res.statusCode}`);
+
+	if (req.loggedIn) {
+		parts.push('user-loggedin');
+	} else {
+		parts.push('user-guest');
+	}
+	return parts.join(' ');
 };

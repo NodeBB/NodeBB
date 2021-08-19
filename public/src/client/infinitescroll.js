@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/infinitescroll', function () {
+define('forum/infinitescroll', ['hooks'], function (hooks) {
 	var scroll = {};
 	var callback;
 	var previousScrollTop = 0;
@@ -10,15 +10,20 @@ define('forum/infinitescroll', function () {
 	var scrollTimeout = 0;
 
 	scroll.init = function (el, cb) {
+		const $body = $('body');
 		if (typeof el === 'function') {
 			callback = el;
-			container = $('body');
+			container = $body;
 		} else {
 			callback = cb;
-			container = el || $('body');
+			container = el || $body;
 		}
 		previousScrollTop = $(window).scrollTop();
 		$(window).off('scroll', startScrollTimeout).on('scroll', startScrollTimeout);
+
+		if ($body.height() <= $(window).height()) {
+			callback(1);
+		}
 	};
 
 	function startScrollTimeout() {
@@ -65,7 +70,7 @@ define('forum/infinitescroll', function () {
 		loadingMore = true;
 
 		var hookData = { method: method, data: data };
-		$(window).trigger('action:infinitescroll.loadmore', hookData);
+		hooks.fire('action:infinitescroll.loadmore', hookData);
 
 		socket.emit(hookData.method, hookData.data, function (err, data) {
 			if (err) {
@@ -75,6 +80,25 @@ define('forum/infinitescroll', function () {
 			callback(data, function () {
 				loadingMore = false;
 			});
+		});
+	};
+
+	scroll.loadMoreXhr = function (data, callback) {
+		if (loadingMore) {
+			return;
+		}
+		loadingMore = true;
+		var url = config.relative_path + '/api' + location.pathname.replace(new RegExp('^' + config.relative_path), '');
+		var hookData = { url: url, data: data };
+		hooks.fire('action:infinitescroll.loadmore.xhr', hookData);
+
+		$.get(url, data, function (data) {
+			callback(data, function () {
+				loadingMore = false;
+			});
+		}).fail(function (jqXHR) {
+			loadingMore = false;
+			app.alertError(String(jqXHR.responseJSON || jqXHR.statusText));
 		});
 	};
 

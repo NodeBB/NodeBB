@@ -1,6 +1,6 @@
 {
-	"queue": "Várósor",
-	"description": "There are no users in the registration queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
+	"queue": "Várólista",
+	"description": "Nincs felhasználó a regisztrációs várólistán. <br> A funkció engedélyezéséhez menj a <a href=\"%1\">Beállítások &rarr; Felhasználók &rarr; Felhasználó regisztráció</a> menüpontba és a <strong>Regisztráció típusa</strong> lehetőségnél válaszd az  \"Adminisztrátori jóváhagyás\"-t.",
 
 	"list.name": "Név",
 	"list.email": "Email",
@@ -11,7 +11,7 @@
 	"list.ip-spam": "Gyakoriság: %1 Megjelenik: %2",
 
 	"invitations": "Meghívások",
-	"invitations.description": "Below is a complete list of invitations sent. Use ctrl-f to search through the list by email or username. <br><br>The username will be displayed to the right of the emails for users who have redeemed their invitations.",
+	"invitations.description": "Alább a teljes lista a kiküldött meghívókról. Használd a ctrl-f billentyűkombinációt hogy keress az email címek és felhasználónevek között. <br><br>Az email címek mellett látható felhasználónév azoknál jelenik meg, akik már felhasználták a meghívójukat.",
 	"invitations.inviter-username": "Meghívó felhasználóneve",
 	"invitations.invitee-email": "Meghívott email címe",
 	"invitations.invitee-username": "Meghívott felhasználóneve (ha regisztrált)",

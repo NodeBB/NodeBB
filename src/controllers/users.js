@@ -7,6 +7,7 @@ const db = require('../database');
 const pagination = require('../pagination');
 const privileges = require('../privileges');
 const helpers = require('./helpers');
+const api = require('../api');
 
 const usersController = module.exports;
 
@@ -21,7 +22,7 @@ usersController.index = async function (req, res, next) {
 		flagged: usersController.getFlaggedUsers,
 	};
 
-	if (req.query.term) {
+	if (req.query.query) {
 		await usersController.search(req, res, next);
 	} else if (sectionToController[section]) {
 		await sectionToController[section](req, res, next);
@@ -31,31 +32,12 @@ usersController.index = async function (req, res, next) {
 };
 
 usersController.search = async function (req, res) {
-	const [allowed, isPrivileged] = await Promise.all([
-		privileges.global.can('search:users', req.uid),
-		user.isPrivileged(req.uid),
-	]);
+	const searchData = await api.users.search(req, req.query);
 
-	if (!allowed || ((req.query.searchBy === 'ip' || req.query.searchBy === 'email' || req.query.bannedOnly === 'true' || req.query.flaggedOnly === 'true') && !isPrivileged)) {
-		throw new Error('[[error:no-privileges]]');
-	}
-	const [searchData, isAdminOrGlobalMod] = await Promise.all([
-		user.search({
-			query: req.query.term,
-			searchBy: req.query.searchBy || 'username',
-			page: req.query.page || 1,
-			sortBy: req.query.sortBy || 'joindate',
-			onlineOnly: req.query.onlineOnly === 'true',
-			bannedOnly: req.query.bannedOnly === 'true',
-			flaggedOnly: req.query.flaggedOnly === 'true',
-		}),
-		user.isAdminOrGlobalMod(req.uid),
-	]);
 	const section = req.query.section || 'joindate';
 
-	searchData.isAdminOrGlobalMod = isAdminOrGlobalMod;
 	searchData.pagination = pagination.create(req.query.page, searchData.pageCount, req.query);
-	searchData['section_' + section] = true;
+	searchData[`section_${section}`] = true;
 	searchData.displayUserSearch = true;
 	await render(req, res, searchData);
 };
@@ -68,7 +50,7 @@ usersController.getOnlineUsers = async function (req, res) {
 
 	let hiddenCount = 0;
 	if (!userData.isAdminOrGlobalMod) {
-		userData.users = userData.users.filter(function (user) {
+		userData.users = userData.users.filter((user) => {
 			if (user && user.status === 'offline') {
 				hiddenCount += 1;
 			}
@@ -114,7 +96,7 @@ async function renderIfAdminOrGlobalMod(set, req, res) {
 
 usersController.renderUsersPage = async function (set, req, res) {
 	const userData = await usersController.getUsers(set, req.uid, req.query);
-	render(req, res, userData);
+	await render(req, res, userData);
 };
 
 usersController.getUsers = async function (set, uid, query) {
@@ -159,7 +141,7 @@ usersController.getUsers = async function (set, uid, query) {
 		isAdmin: isAdmin,
 		isGlobalMod: isGlobalMod,
 		displayUserSearch: canSearch,
-		['section_' + (query.section || 'joindate')]: true,
+		[`section_${query.section || 'joindate'}`]: true,
 	};
 };
 
@@ -183,16 +165,21 @@ usersController.getUsersAndCount = async function (set, uid, start, stop) {
 };
 
 async function render(req, res, data) {
-	const registrationType = meta.config.registrationType;
+	const { registrationType } = meta.config;
 
 	data.maximumInvites = meta.config.maximumInvites;
 	data.inviteOnly = registrationType === 'invite-only' || registrationType === 'admin-invite-only';
 	data.adminInviteOnly = registrationType === 'admin-invite-only';
 	data.invites = await user.getInvitesNumber(req.uid);
-	data.showInviteButton = req.loggedIn && (
-		(registrationType === 'invite-only' && (data.isAdmin || !data.maximumInvites || data.invites < data.maximumInvites)) ||
-		(registrationType === 'admin-invite-only' && data.isAdmin)
-	);
+
+	data.showInviteButton = false;
+	if (data.adminInviteOnly) {
+		data.showInviteButton = await privileges.users.isAdministrator(req.uid);
+	} else if (req.loggedIn) {
+		const canInvite = await privileges.users.hasInvitePrivilege(req.uid);
+		data.showInviteButton = canInvite && (!data.maximumInvites || data.invites < data.maximumInvites);
+	}
+
 	data['reputation:disabled'] = meta.config['reputation:disabled'];
 
 	res.append('X-Total-Count', data.userCount);

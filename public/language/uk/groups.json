@@ -35,6 +35,7 @@
     "details.member_count": "Кількість учасників",
     "details.creation_date": "Дата створення",
     "details.description": "Опис",
+    "details.member-post-cids": "Category IDs to display posts from",
     "details.badge_preview": "Попередній перегляд бейджа",
     "details.change_icon": "Змінити іконку",
     "details.change_label_colour": "Змінити колір позначки",

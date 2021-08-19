@@ -35,6 +35,7 @@
     "details.member_count": "จำนวนสมาชิก",
     "details.creation_date": "สร้างวันที่",
     "details.description": "คำอธิบาย",
+    "details.member-post-cids": "Category IDs to display posts from",
     "details.badge_preview": "สัญลักษณ์พรีวิว",
     "details.change_icon": "เปลี่ยนไอคอน",
     "details.change_label_colour": "Change Label Colour",

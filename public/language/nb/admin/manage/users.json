@@ -1,6 +1,6 @@
 {
 	"users": "Users",
-	"edit": "Edit",
+	"edit": "Actions",
 	"make-admin": "Make Admin",
 	"remove-admin": "Remove Admin",
 	"validate-email": "Validate Email",
@@ -20,16 +20,10 @@
 	"add-group": "Add Group",
 	"invite": "Invite",
 	"new": "New User",
-
-	"pills.latest": "Latest Users",
+	"filter-by": "Filter by",
 	"pills.unvalidated": "Not Validated",
-	"pills.no-posts": "No Posts",
-	"pills.top-posters": "Top Posters",
-	"pills.top-rep": "Most Reputation",
-	"pills.inactive": "Inactive",
-	"pills.flagged": "Most Flagged",
+	"pills.validated": "Validated",
 	"pills.banned": "Banned",
-	"pills.search": "User Search",
 
 	"50-per-page": "50 per page",
 	"100-per-page": "100 per page",
@@ -53,6 +47,7 @@
 	"users.uid": "uid",
 	"users.username": "username",
 	"users.email": "email",
+	"users.ip": "IP",
 	"users.postcount": "postcount",
 	"users.reputation": "reputation",
 	"users.flags": "flags",
@@ -94,7 +89,7 @@
 	"alerts.validate-email-success": "Emails validated",
 	"alerts.validate-force-password-reset-success": "User(s) passwords have been reset and their existing sessions have been revoked.",
 	"alerts.password-reset-confirm": "Do you want to send password reset email(s) to these user(s)?",
-	"alerts.confirm-delete": "<strong>Warning!</strong><p>Do you really want to delete <strong>user(s)</strong>?</p><p>This action is not reversible! Only the user account will be deleted, their posts and topics will remain.</p>",
+	"alerts.confirm-delete": "<strong>Advarsel!</strong><p> Vil du virkelig slette <strong>bruker(e)</strong>?</p><p>Denne handlingen kan ikke angres! Kun brukerkontoen vil bli slettet, deres innlegg og tråder påvirkes ikke.</p>",
 	"alerts.delete-success": "User(s) Deleted!",
 	"alerts.confirm-delete-content": "<strong>Warning!</strong><p>Do you really want to delete these user(s) <strong>content</strong>?</p><p>This action is not reversible! The users' accounts will remain, but their posts and topics will be deleted.</p>",
 	"alerts.delete-content-success": "User(s) Content Deleted!",
@@ -108,5 +103,7 @@
 
 	"alerts.prompt-email": "Emails: ",
 	"alerts.email-sent-to": "An invitation email has been sent to %1",
-	"alerts.x-users-found": "%1 user(s) found, (%2 seconds)"
+	"alerts.x-users-found": "%1 user(s) found, (%2 seconds)",
+	"export-users-started": "Exporting users as csv, this might take a while. You will receive a notification when it is complete.",
+	"export-users-completed": "Users exported as csv, click here to download."
 }

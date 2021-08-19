@@ -1,12 +1,13 @@
 {
-	"eu-consent": "EU Consent",
-	"consent.enabled": "Enabled",
-	"consent.message": "Notification message",
-	"consent.acceptance": "Acceptance message",
-	"consent.link-text": "Policy Link Text",
-	"consent.link-url": "Policy Link URL",
-	"consent.blank-localised-default": "Leave blank to use NodeBB localised defaults",
-	"settings": "Settings",
-	"cookie-domain": "Session cookie domain",
-	"blank-default": "Leave blank for default"
+	"eu-consent": "Tuân thủ EU",
+	"consent.enabled": "Đã bật",
+	"consent.message": "Tin nhắn thông báo",
+	"consent.acceptance": "Tin nhắn chấp nhận",
+	"consent.link-text": "Văn Bản Liên Kết Điều Khoản",
+	"consent.link-url": "Liên Kết URL Điều Khoản",
+	"consent.blank-localised-default": "Để trống để sử dụng mặc định bản địa hóa NodeBB",
+	"settings": "Cài đặt",
+	"cookie-domain": "Tên miền phiên cookie",
+	"max-user-sessions": "Số phiên hoạt động tối đa cho mỗi người dùng",
+	"blank-default": "Để trống mặc định"
 }
