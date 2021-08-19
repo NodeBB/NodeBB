@@ -27,7 +27,7 @@ searchController.search = async function (req, res, next) {
 		'search:content': privileges.global.can('search:content', req.uid),
 		'search:tags': privileges.global.can('search:tags', req.uid),
 	});
-	req.query.in = req.query.in || 'posts';
+	req.query.in = req.query.in || meta.config.searchDefaultIn || 'titlesposts';
 	const allowed = (req.query.in === 'users' && userPrivileges['search:users']) ||
 					(req.query.in === 'tags' && userPrivileges['search:tags']) ||
 					(req.query.in === 'categories') ||
@@ -89,6 +89,7 @@ searchController.search = async function (req, res, next) {
 	searchData.title = '[[global:header.search]]';
 
 	searchData.searchDefaultSortBy = meta.config.searchDefaultSortBy || '';
+	searchData.searchDefaultIn = meta.config.searchDefaultIn || 'titlesposts';
 	searchData.privileges = userPrivileges;
 
 	res.render('search', searchData);

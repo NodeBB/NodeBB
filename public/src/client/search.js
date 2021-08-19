@@ -81,7 +81,7 @@ define('forum/search', [
 			if (ajaxify.data.term) {
 				$('#search-input').val(ajaxify.data.term);
 			}
-			formData.in = formData.in || 'posts';
+			formData.in = formData.in || ajaxify.data.searchDefaultIn;
 			$('#search-in').val(formData.in);
 			updateFormItemVisiblity(formData.in);
 

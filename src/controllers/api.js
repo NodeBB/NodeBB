@@ -64,6 +64,7 @@ apiController.loadConfig = async function (req) {
 		categoryTopicSort: meta.config.categoryTopicSort || 'newest_to_oldest',
 		csrf_token: req.uid >= 0 && req.csrfToken && req.csrfToken(),
 		searchEnabled: plugins.hooks.hasListeners('filter:search.query'),
+		searchDefaultInQuick: meta.config.searchDefaultInQuick || 'titles',
 		bootswatchSkin: meta.config.bootswatchSkin || '',
 		enablePostHistory: meta.config.enablePostHistory === 1,
 		timeagoCutoff: meta.config.timeagoCutoff !== '' ? Math.max(0, parseInt(meta.config.timeagoCutoff, 10)) : meta.config.timeagoCutoff,

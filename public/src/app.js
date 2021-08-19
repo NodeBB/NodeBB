@@ -483,7 +483,7 @@ app.cacheBuster = null;
 			return;
 		}
 		/* eslint-disable-next-line */
-		var searchOptions = Object.assign({ in: 'titles' }, options.searchOptions);
+		var searchOptions = Object.assign({ in: config.searchDefaultInQuick || 'titles' }, options.searchOptions);
 		var quickSearchResults = options.searchElements.resultEl;
 		var inputEl = options.searchElements.inputEl;
 		var searchTimeoutId = 0;
@@ -608,7 +608,7 @@ app.cacheBuster = null;
 	};
 
 	app.handleSearch = function (searchOptions) {
-		searchOptions = searchOptions || { in: 'titles' };
+		searchOptions = searchOptions || { in: config.searchDefaultInQuick || 'titles' };
 		var searchButton = $('#search-button');
 		var searchFields = $('#search-fields');
 		var searchInput = $('#search-fields input');
