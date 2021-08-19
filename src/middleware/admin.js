@@ -140,8 +140,8 @@ middleware.checkPrivileges = helpers.try(async (req, res, next) => {
 	const disabled = meta.config.adminReloginDuration === 0;
 	if (disabled || (loginTime && parseInt(loginTime, 10) > Date.now() - adminReloginDuration)) {
 		const timeLeft = parseInt(loginTime, 10) - (Date.now() - adminReloginDuration);
-		if (req.session.meta && timeLeft < Math.min(300000, adminReloginDuration)) {
-			req.session.meta.datetime += Math.min(300000, adminReloginDuration);
+		if (req.session.meta && timeLeft < Math.min(60000, adminReloginDuration)) {
+			req.session.meta.datetime += Math.min(60000, adminReloginDuration);
 		}
 
 		return next();
