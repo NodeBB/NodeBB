@@ -1,7 +1,7 @@
 {
 	"available": "Verfügbare Widgets",
 	"explanation": "Widget vom Dropdown-Menu auswählen und anschließend links in den Widget-Bereich einer Vorlage ziehen.",
-	"none-installed": "No widgets found! Activate the widget essentials plugin in the <a href=\"%1\">plugins</a> control panel.",
+	"none-installed": "Keine Widgets gefunden! Aktivieren Sie das Widget Essentials Plugin im <a href=\"%1\">Plugin-Kontrollzentrum</a>.",
 	"clone-from": "Klone Widget von",
 	"containers.available": "Verfügbare Container",
 	"containers.explanation": "Auf ein beliebiges aktives Widget ziehen",
@@ -20,11 +20,11 @@
 
 	"error.select-clone": "Bitte wähle eine Seite aus von der geklont werden soll",
 
-	"title": "Title",
-	"title.placeholder": "Title (only shown on some containers)",
+	"title": "Titel",
+	"title.placeholder": "Titel (nur in bestimmten Bereichen zusehen)",
 	"container": "Container",
-	"container.placeholder": "Drag and drop a container or enter HTML here.",
-	"show-to-groups": "Show to groups",
-	"hide-from-groups": "Hide from groups",
-	"hide-on-mobile": "Hide on mobile"
+	"container.placeholder": "Ziehen Sie einen Container per Drag & Drop oder geben Sie hier HTML ein.",
+	"show-to-groups": "Für Gruppen anzeigen",
+	"hide-from-groups": "Für Gruppen verbergen",
+	"hide-on-mobile": "Auf Mobile verbergen"
 }
