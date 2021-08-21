@@ -181,7 +181,7 @@
     "consent.export-uploads-success": "Exportation des envois, vous recevrez une notification lorsqu'elle sera terminée.",
     "consent.export_posts": "Exporter vos messages (.csv)",
     "consent.export-posts-success": "Exportation des messages, vous recevrez une notification lorsqu'elle sera terminée.",
-    "emailUpdate.intro": "Please enter your email address below. This forum uses your email address for scheduled digest and notifications, as well as for account recovery in the event of a lost password.",
-    "emailUpdate.optional": "<strong>This field is optional</strong>. You are not obligated to provide your email address, but without a validated email, you will not be able to recover your account.",
-    "emailUpdate.change-instructions": "A confirmation email will be sent to the entered email address with a unique link. Accessing that link will confirm your ownership of the email address and it will become active on your account. At any time, you are able to update your email on file from within your account page."
+    "emailUpdate.intro": "Veuillez renseigner votre adresse mails. Ce forum utilise votre adresse mail pour suivre l'activité et les notifications programmés, ainsi que pour la récupération de compte en cas de perte de mot de passe.",
+    "emailUpdate.optional": "<strong>Ce champ est facultatif</strong>. Vous n'êtes pas obligé de fournir votre adresse mail, mais sans mail validé, vous ne pourrez pas récupérer votre compte.",
+    "emailUpdate.change-instructions": "Un mail de confirmation sera envoyé à l'adresse mail saisie avec un lien unique. L'accès à ce lien confirmera votre propriété de mail et elle deviendra active sur votre compte. À tout moment, vous pouvez mettre à jour votre mail enregistré depuis la page de votre compte."
 }
