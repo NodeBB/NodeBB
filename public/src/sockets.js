@@ -7,11 +7,6 @@ socket = window.socket;
 (function () {
 	var reconnecting = false;
 
-	var hooks;
-	require(['hooks'], function (_hooks) {
-		hooks = _hooks;
-	});
-
 	var ioParams = {
 		reconnectionAttempts: config.maxReconnectionAttempts,
 		reconnectionDelay: config.reconnectionDelay,
@@ -40,9 +35,13 @@ socket = window.socket;
 		});
 	};
 
-	if (parseInt(app.user.uid, 10) >= 0) {
-		addHandlers();
-	}
+	var hooks;
+	require(['hooks'], function (_hooks) {
+		hooks = _hooks;
+		if (parseInt(app.user.uid, 10) >= 0) {
+			addHandlers();
+		}
+	});
 
 	window.app.reconnect = () => {
 		if (socket.connected) {
