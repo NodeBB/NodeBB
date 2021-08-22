@@ -21,7 +21,7 @@ module.exports = function (module) {
 			key.forEach(k => batch.zrem(k, value));
 			await helpers.execBatch(batch);
 		} else {
-			await module.client.async.zrem(key, value);
+			await module.client.zrem(key, value);
 		}
 	};
 

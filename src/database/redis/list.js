@@ -5,45 +5,45 @@ module.exports = function (module) {
 		if (!key) {
 			return;
 		}
-		await module.client.async.lpush(key, value);
+		await module.client.lpush(key, value);
 	};
 
 	module.listAppend = async function (key, value) {
 		if (!key) {
 			return;
 		}
-		await module.client.async.rpush(key, value);
+		await module.client.rpush(key, value);
 	};
 
 	module.listRemoveLast = async function (key) {
 		if (!key) {
 			return;
 		}
-		return await module.client.async.rpop(key);
+		return await module.client.rpop(key);
 	};
 
 	module.listRemoveAll = async function (key, value) {
 		if (!key) {
 			return;
 		}
-		await module.client.async.lrem(key, 0, value);
+		await module.client.lrem(key, 0, value);
 	};
 
 	module.listTrim = async function (key, start, stop) {
 		if (!key) {
 			return;
 		}
-		await module.client.async.ltrim(key, start, stop);
+		await module.client.ltrim(key, start, stop);
 	};
 
 	module.getListRange = async function (key, start, stop) {
 		if (!key) {
 			return;
 		}
-		return await module.client.async.lrange(key, start, stop);
+		return await module.client.lrange(key, start, stop);
 	};
 
 	module.listLength = async function (key) {
-		return await module.client.async.llen(key);
+		return await module.client.llen(key);
 	};
 };
