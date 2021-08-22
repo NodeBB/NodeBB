@@ -14,7 +14,7 @@ module.exports = function (module) {
 		if (!utils.isNumber(score)) {
 			throw new Error(`[[error:invalid-score, ${score}]]`);
 		}
-		await module.client.async.zadd(key, score, String(value));
+		await module.client.zadd(key, score, String(value));
 	};
 
 	async function sortedSetAddMulti(key, scores, values) {
@@ -34,7 +34,7 @@ module.exports = function (module) {
 		for (let i = 0; i < scores.length; i += 1) {
 			args.push(scores[i], String(values[i]));
 		}
-		await module.client.async.zadd(args);
+		await module.client.zadd(args);
 	}
 
 	module.sortedSetsAdd = async function (keys, scores, value) {

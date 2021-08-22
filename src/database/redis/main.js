@@ -4,7 +4,7 @@ module.exports = function (module) {
 	const helpers = require('./helpers');
 
 	module.flushdb = async function () {
-		await module.client.async.send_command('flushdb', []);
+		await module.client.send_command('flushdb', []);
 	};
 
 	module.emptydb = async function () {
@@ -19,7 +19,7 @@ module.exports = function (module) {
 			const data = await helpers.execBatch(batch);
 			return data.map(exists => exists === 1);
 		}
-		const exists = await module.client.async.exists(key);
+		const exists = await module.client.exists(key);
 		return exists === 1;
 	};
 
@@ -29,7 +29,7 @@ module.exports = function (module) {
 		const seen = {};
 		do {
 			/* eslint-disable no-await-in-loop */
-			const res = await module.client.async.scan(cursor, 'MATCH', params.match, 'COUNT', 10000);
+			const res = await module.client.scan(cursor, 'MATCH', params.match, 'COUNT', 10000);
 			cursor = res[0];
 			const values = res[1].filter((value) => {
 				const isSeen = !!seen[value];
@@ -44,7 +44,7 @@ module.exports = function (module) {
 	};
 
 	module.delete = async function (key) {
-		await module.client.async.del(key);
+		await module.client.del(key);
 		module.objectCache.del(key);
 	};
 
@@ -52,25 +52,25 @@ module.exports = function (module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return;
 		}
-		await module.client.async.del(keys);
+		await module.client.del(keys);
 		module.objectCache.del(keys);
 	};
 
 	module.get = async function (key) {
-		return await module.client.async.get(key);
+		return await module.client.get(key);
 	};
 
 	module.set = async function (key, value) {
-		await module.client.async.set(key, value);
+		await module.client.set(key, value);
 	};
 
 	module.increment = async function (key) {
-		return await module.client.async.incr(key);
+		return await module.client.incr(key);
 	};
 
 	module.rename = async function (oldKey, newKey) {
 		try {
-			await module.client.async.rename(oldKey, newKey);
+			await module.client.rename(oldKey, newKey);
 		} catch (err) {
 			if (err && err.message !== 'ERR no such key') {
 				throw err;
@@ -81,31 +81,31 @@ module.exports = function (module) {
 	};
 
 	module.type = async function (key) {
-		const type = await module.client.async.type(key);
+		const type = await module.client.type(key);
 		return type !== 'none' ? type : null;
 	};
 
 	module.expire = async function (key, seconds) {
-		await module.client.async.expire(key, seconds);
+		await module.client.expire(key, seconds);
 	};
 
 	module.expireAt = async function (key, timestamp) {
-		await module.client.async.expireat(key, timestamp);
+		await module.client.expireat(key, timestamp);
 	};
 
 	module.pexpire = async function (key, ms) {
-		await module.client.async.pexpire(key, ms);
+		await module.client.pexpire(key, ms);
 	};
 
 	module.pexpireAt = async function (key, timestamp) {
-		await module.client.async.pexpireat(key, timestamp);
+		await module.client.pexpireat(key, timestamp);
 	};
 
 	module.ttl = async function (key) {
-		return await module.client.async.ttl(key);
+		return await module.client.ttl(key);
 	};
 
 	module.pttl = async function (key) {
-		return await module.client.async.pttl(key);
+		return await module.client.pttl(key);
 	};
 };
