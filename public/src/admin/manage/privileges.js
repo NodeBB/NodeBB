@@ -12,6 +12,7 @@ define('admin/manage/privileges', [
 	var Privileges = {};
 
 	var cid;
+	// number of columns to skip in category privilege tables
 	const SKIP_PRIV_COLS = 3;
 
 	Privileges.init = function () {
@@ -102,34 +103,34 @@ define('admin/manage/privileges', [
 			}
 		});
 
-		const privTableCon = $('.privilege-table-container');
-		privTableCon.on('click', '[data-action="search.user"]', Privileges.addUserToPrivilegeTable);
-		privTableCon.on('click', '[data-action="search.group"]', Privileges.addGroupToPrivilegeTable);
-		privTableCon.on('click', '[data-action="copyToChildren"]', function () {
+		const $privTableCon = $('.privilege-table-container');
+		$privTableCon.on('click', '[data-action="search.user"]', Privileges.addUserToPrivilegeTable);
+		$privTableCon.on('click', '[data-action="search.group"]', Privileges.addGroupToPrivilegeTable);
+		$privTableCon.on('click', '[data-action="copyToChildren"]', function () {
 			throwConfirmModal('copyToChildren', Privileges.copyPrivilegesToChildren.bind(null, cid, ''));
 		});
-		privTableCon.on('click', '[data-action="copyToChildrenGroup"]', function () {
+		$privTableCon.on('click', '[data-action="copyToChildrenGroup"]', function () {
 			var groupName = $(this).parents('[data-group-name]').attr('data-group-name');
 			throwConfirmModal('copyToChildrenGroup', Privileges.copyPrivilegesToChildren.bind(null, cid, groupName));
 		});
 
-		privTableCon.on('click', '[data-action="copyPrivilegesFrom"]', function () {
+		$privTableCon.on('click', '[data-action="copyPrivilegesFrom"]', function () {
 			Privileges.copyPrivilegesFromCategory(cid, '');
 		});
-		privTableCon.on('click', '[data-action="copyPrivilegesFromGroup"]', function () {
+		$privTableCon.on('click', '[data-action="copyPrivilegesFromGroup"]', function () {
 			var groupName = $(this).parents('[data-group-name]').attr('data-group-name');
 			Privileges.copyPrivilegesFromCategory(cid, groupName);
 		});
 
-		privTableCon.on('click', '[data-action="copyToAll"]', function () {
+		$privTableCon.on('click', '[data-action="copyToAll"]', function () {
 			throwConfirmModal('copyToAll', Privileges.copyPrivilegesToAllCategories.bind(null, cid, ''));
 		});
-		privTableCon.on('click', '[data-action="copyToAllGroup"]', function () {
+		$privTableCon.on('click', '[data-action="copyToAllGroup"]', function () {
 			var groupName = $(this).parents('[data-group-name]').attr('data-group-name');
 			throwConfirmModal('copyToAllGroup', Privileges.copyPrivilegesToAllCategories.bind(null, cid, groupName));
 		});
 
-		privTableCon.on('click', '.privilege-filters > button', filterPrivileges);
+		$privTableCon.on('click', '.privilege-filters > button', filterPrivileges);
 
 		mousetrap.bind('ctrl+s', function (ev) {
 			throwConfirmModal('save', Privileges.commit);
@@ -137,7 +138,10 @@ define('admin/manage/privileges', [
 		});
 
 		function throwConfirmModal(method, onConfirm) {
-			bootbox.confirm('[[admin/manage/privileges:alert.confirm-' + method + ']]<br /><br />[[admin/manage/privileges:alert.no-undo]]', function (ok) {
+			const currentPrivFilter = document.querySelector('.privilege-filters .btn-warning');
+			const filterText = currentPrivFilter ? currentPrivFilter.textContent.toLocaleLowerCase() : '';
+			const privilegeSubset = filterText.indexOf('privileges') > -1 ? filterText : `${filterText} privileges`.trim();
+			bootbox.confirm(`[[admin/manage/privileges:alert.confirm-${method}, ${privilegeSubset}]]<br /><br />[[admin/manage/privileges:alert.no-undo]]`, function (ok) {
 				if (ok) {
 					onConfirm.call();
 				}
@@ -185,7 +189,9 @@ define('admin/manage/privileges', [
 				$('.privilege-table-container').html(html);
 				Privileges.exposeAssumedPrivileges();
 				document.querySelectorAll('.privilege-filters').forEach((con, i) => {
-					const idx = btnIndices[i] === undefined ? 2 : btnIndices[i]; // Three buttons, placed in reverse order
+					// Three buttons, placed in reverse order
+					const lastIdx = $('.privilege-filters').first().find('button').length - 1;
+					const idx = btnIndices[i] === undefined ? lastIdx : btnIndices[i];
 					con.querySelectorAll('button')[idx].click();
 				});
 
