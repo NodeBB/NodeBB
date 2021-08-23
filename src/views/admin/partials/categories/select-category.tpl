@@ -20,3 +20,6 @@
 		</div>
 	</div>
 </form>
+{{{ if message }}}
+<div>{message}</div>
+{{{ end }}}

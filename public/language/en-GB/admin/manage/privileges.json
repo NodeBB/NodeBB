@@ -56,5 +56,8 @@
 	"alert.confirm-copyToChildren": "Are you sure you wish to apply this set of <strong>%1</strong> to <strong>all descendant (child) categories</strong>?",
 	"alert.confirm-copyToChildrenGroup": "Are you sure you wish to apply this group's set of <strong>%1</strong> to <strong>all descendant (child) categories</strong>?",
 	"alert.no-undo": "<em>This action cannot be undone.</em>",
-	"alert.admin-warning": "Administrators implicitly get all privileges"
+	"alert.admin-warning": "Administrators implicitly get all privileges",
+  	"alert.copyPrivilegesFrom-title": "Select a category to copy from",
+  	"alert.copyPrivilegesFrom-warning": "This will copy <strong>%1</strong> from the selected category.",
+  	"alert.copyPrivilegesFromGroup-warning": "This will copy this group's set of <strong>%1</strong> from the selected category."
 }

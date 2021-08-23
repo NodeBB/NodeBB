@@ -138,9 +138,7 @@ define('admin/manage/privileges', [
 		});
 
 		function throwConfirmModal(method, onConfirm) {
-			const currentPrivFilter = document.querySelector('.privilege-filters .btn-warning');
-			const filterText = currentPrivFilter ? currentPrivFilter.textContent.toLocaleLowerCase() : '';
-			const privilegeSubset = filterText.indexOf('privileges') > -1 ? filterText : `${filterText} privileges`.trim();
+			const privilegeSubset = getPrivilegeSubset();
 			bootbox.confirm(`[[admin/manage/privileges:alert.confirm-${method}, ${privilegeSubset}]]<br /><br />[[admin/manage/privileges:alert.no-undo]]`, function (ok) {
 				if (ok) {
 					onConfirm.call();
@@ -280,7 +278,14 @@ define('admin/manage/privileges', [
 	};
 
 	Privileges.copyPrivilegesFromCategory = function (cid, group) {
+		const privilegeSubset = getPrivilegeSubset();
+		const message = '<br>' +
+			(group ? `[[admin/manage/privileges:alert.copyPrivilegesFromGroup-warning, ${privilegeSubset}]]` :
+				`[[admin/manage/privileges:alert.copyPrivilegesFrom-warning, ${privilegeSubset}]]`) +
+			'<br><br>[[admin/manage/privileges:alert.no-undo]]';
 		categorySelector.modal({
+			title: '[[admin/manage/privileges:alert.copyPrivilegesFrom-title]]',
+			message,
 			localCategories: [],
 			showLinks: true,
 			onSubmit: function (selectedCategory) {
@@ -460,6 +465,12 @@ define('admin/manage/privileges', [
 		indices[0] -= SKIP_PRIV_COLS;
 		indices[1] = indices[1] - SKIP_PRIV_COLS + 1;
 		return indices;
+	}
+
+	function getPrivilegeSubset() {
+		const currentPrivFilter = document.querySelector('.privilege-filters .btn-warning');
+		const filterText = currentPrivFilter ? currentPrivFilter.textContent.toLocaleLowerCase() : '';
+		return filterText.indexOf('privileges') > -1 ? filterText : `${filterText} privileges`.trim();
 	}
 
 	return Privileges;
