@@ -100,7 +100,8 @@ define('forum/topic/posts', [
 		) || (ajaxify.data.pagination.currentPage === 1 && direction === -1);
 
 		if (isPostVisible) {
-			createNewPosts(data, components.get('post').not('[data-index=0]'), direction, false, scrollToPost);
+			var repliesSelector = $('[component="post"]:not([data-index=0]), [component="topic/event"]');
+			createNewPosts(data, repliesSelector, direction, false, scrollToPost);
 		} else if (ajaxify.data.scrollToMyPost && parseInt(posts[0].uid, 10) === parseInt(app.user.uid, 10)) {
 			// https://github.com/NodeBB/NodeBB/issues/5004#issuecomment-247157441
 			setTimeout(function () {
@@ -130,8 +131,8 @@ define('forum/topic/posts', [
 		if (!isPreviousPostAdded && data.posts[0].selfPost) {
 			return ajaxify.go('post/' + data.posts[0].pid);
 		}
-
-		createNewPosts(data, components.get('post').not('[data-index=0]'), direction, false, function (html) {
+		var repliesSelector = $('[component="post"]:not([data-index=0]), [component="topic/event"]');
+		createNewPosts(data, repliesSelector, direction, false, function (html) {
 			if (html) {
 				html.addClass('new');
 			}
@@ -264,7 +265,8 @@ define('forum/topic/posts', [
 			indicatorEl.fadeOut();
 
 			if (data && data.posts && data.posts.length) {
-				createNewPosts(data, replies, direction, true, done);
+				var repliesSelector = $('[component="post"]:not([data-index=0]):not(.new), [component="topic/event"]');
+				createNewPosts(data, repliesSelector, direction, true, done);
 			} else {
 				navigator.update();
 				done();
