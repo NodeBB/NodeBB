@@ -213,13 +213,13 @@
 	function renderTopicEvents(index) {
 		const start = this.posts[index].timestamp;
 		const end = this.posts[index + 1] ? this.posts[index + 1].timestamp : Date.now();
-		const events = this.events.filter((event) => event.timestamp >= start && event.timestamp < end);
+		const events = this.events.filter(event => event.timestamp >= start && event.timestamp < end);
 		if (!events.length) {
-			return html;
+			return '';
 		}
 
 		return renderEvents.call(this, events);
-	};
+	}
 
 	function renderEvents(events) {
 		return events.reduce((html, event) => {
@@ -234,7 +234,7 @@
 
 			if (event.user) {
 				if (!event.user.system) {
-					html += `<span><a href="${relative_path}/user/${event.user.userslug}">${buildAvatar(event.user, "xs", true)}&nbsp;${event.user.username}</a></span>&nbsp;`;
+					html += `<span><a href="${relative_path}/user/${event.user.userslug}">${buildAvatar(event.user, 'xs', true)}&nbsp;${event.user.username}</a></span>&nbsp;`;
 				} else {
 					html += `<span class="timeline-text">[[global:system-user]]</span>&nbsp;`;
 				}
@@ -243,7 +243,7 @@
 			html += `<span class="timeago timeline-text" title="${event.timestampISO}"></span>`;
 
 			if (this.privileges.isAdminOrMod) {
-				html += `&nbsp;<span component="topic/event/delete" data-topic-event-id="{id}" class="timeline-text pointer" title="[[topic:delete-event]]"><i class="fa fa-trash"></i></span>`
+				html += `&nbsp;<span component="topic/event/delete" data-topic-event-id="{id}" class="timeline-text pointer" title="[[topic:delete-event]]"><i class="fa fa-trash"></i></span>`;
 			}
 
 			return html;
