@@ -23,7 +23,7 @@ Data.getPluginPaths = async function () {
 			winston.warn(`[plugins] "${plugins[i]}" is active but not installed.`);
 		}
 	});
-	return plugins.filter((p, i) => exists[i]);
+	return pluginPaths.filter((p, i) => exists[i]);
 };
 
 Data.loadPluginInfo = async function (pluginPath) {
