@@ -13,11 +13,16 @@ const Data = module.exports;
 const basePath = path.join(__dirname, '../../');
 
 Data.getPluginPaths = async function () {
-	let plugins = await db.getSortedSetRange('plugins:active', 0, -1);
-	plugins = plugins.filter(plugin => plugin && typeof plugin === 'string')
+	const plugins = await db.getSortedSetRange('plugins:active', 0, -1);
+	const pluginPaths = plugins.filter(plugin => plugin && typeof plugin === 'string')
 		.map(plugin => path.join(paths.nodeModules, plugin));
 
-	const exists = await Promise.all(plugins.map(p => file.exists(p)));
+	const exists = await Promise.all(pluginPaths.map(file.exists));
+	exists.forEach((exists, i) => {
+		if (!exists) {
+			winston.warn(`[plugins] "${plugins[i]}" is active but not installed.`);
+		}
+	});
 	return plugins.filter((p, i) => exists[i]);
 };
 
