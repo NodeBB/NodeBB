@@ -61,7 +61,7 @@ define('forum/topic/threadTools', [
 						})
 						.catch(app.alertError);
 				}
-			})
+			});
 		});
 
 		// todo: should also use topicCommand, but no write api call exists for this yet
