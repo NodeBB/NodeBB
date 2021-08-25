@@ -243,7 +243,7 @@
 			html += `<span class="timeago timeline-text" title="${event.timestampISO}"></span>`;
 
 			if (this.privileges.isAdminOrMod) {
-				html += `&nbsp;<span component="topic/event/delete" data-topic-event-id="{id}" class="timeline-text pointer" title="[[topic:delete-event]]"><i class="fa fa-trash"></i></span>`;
+				html += `&nbsp;<span component="topic/event/delete" data-topic-event-id="${event.id}" class="timeline-text pointer" title="[[topic:delete-event]]"><i class="fa fa-trash"></i></span>`;
 			}
 
 			return html;
