@@ -64,7 +64,7 @@
         "html-to-text": "8.0.0",
         "ipaddr.js": "^2.0.0",
         "jquery": "3.6.0",
-        "jquery-deserialize": "2.0.0-rc1",
+        "jquery-deserialize": "2.0.0",
         "jquery-form": "4.3.0",
         "jquery-serializeobject": "1.0.0",
         "jquery-ui": "1.12.1",
