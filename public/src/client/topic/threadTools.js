@@ -53,12 +53,15 @@ define('forum/topic/threadTools', [
 		topicContainer.on('click', '[component="topic/event/delete"]', function () {
 			const eventId = $(this).attr('data-topic-event-id');
 			const eventEl = $(this).parents('[component="topic/event"]');
-			api.del(`/topics/${tid}/events/${eventId}`, {})
-				.then(function () {
-					eventEl.remove();
-				})
-				.catch(app.alertError);
-			return false;
+			bootbox.confirm('[[topic:delete-event-confirm]]', (ok) => {
+				if (ok) {
+					api.del(`/topics/${tid}/events/${eventId}`, {})
+						.then(function () {
+							eventEl.remove();
+						})
+						.catch(app.alertError);
+				}
+			})
 		});
 
 		// todo: should also use topicCommand, but no write api call exists for this yet
