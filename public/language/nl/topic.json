@@ -21,6 +21,7 @@
     "edit": "Aanpassen",
     "delete": "Verwijderen",
     "delete-event": "Delete Event",
+    "delete-event-confirm": "Are you sure you want to delete this event?",
     "purge": "Opschonen",
     "restore": "Herstellen",
     "move": "Verplaatsen",

@@ -21,6 +21,7 @@
     "edit": "সম্পাদণা",
     "delete": "মুছে ফেলুন",
     "delete-event": "Delete Event",
+    "delete-event-confirm": "Are you sure you want to delete this event?",
     "purge": "পার্জ",
     "restore": "পুনরূদ্ধার",
     "move": "সরানো",

@@ -21,6 +21,7 @@
     "edit": "编辑",
     "delete": "删除",
     "delete-event": "Delete Event",
+    "delete-event-confirm": "Are you sure you want to delete this event?",
     "purge": "清除",
     "restore": "恢复",
     "move": "移动",

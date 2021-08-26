@@ -21,6 +21,7 @@
     "edit": "Chỉnh sửa",
     "delete": "Xóa",
     "delete-event": "Xóa Sự Kiện",
+    "delete-event-confirm": "Are you sure you want to delete this event?",
     "purge": "Xóa hẳn",
     "restore": "Khôi phục",
     "move": "Chuyển đi",

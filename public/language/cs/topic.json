@@ -21,6 +21,7 @@
     "edit": "Upravit",
     "delete": "Odstranit",
     "delete-event": "Delete Event",
+    "delete-event-confirm": "Are you sure you want to delete this event?",
     "purge": "Vypráznit",
     "restore": "Obnovit",
     "move": "Přesunout",

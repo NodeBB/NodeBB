@@ -21,6 +21,7 @@
     "edit": "Rediģēt",
     "delete": "Izdzēst",
     "delete-event": "Delete Event",
+    "delete-event-confirm": "Are you sure you want to delete this event?",
     "purge": "Iztīrīt",
     "restore": "Atjaunot",
     "move": "Pārvietot",

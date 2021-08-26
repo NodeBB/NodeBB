@@ -21,6 +21,7 @@
     "edit": "Редагувати",
     "delete": "Видалити",
     "delete-event": "Delete Event",
+    "delete-event-confirm": "Are you sure you want to delete this event?",
     "purge": "Стерти",
     "restore": "Відновити",
     "move": "Перемістити",

@@ -21,6 +21,7 @@
     "edit": "Edit",
     "delete": "Delete",
     "delete-event": "Delete Event",
+    "delete-event-confirm": "Are you sure you want to delete this event?",
     "purge": "Purge",
     "restore": "Restore",
     "move": "Move",
