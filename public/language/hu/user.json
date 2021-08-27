@@ -98,6 +98,7 @@
     "has_no_follower": "Ezt a felhasználót nem követi senki :(",
     "follows_no_one": "Ez a felhasználó nem követ senkit :(",
     "has_no_posts": "A felhasználó még nem szólt hozzá semmihez.",
+    "has_no_best_posts": "This user does not have any upvoted posts yet.",
     "has_no_topics": "A felhasználó még nem szólt hozzá egyik témakörhöz sem.",
     "has_no_watched_topics": "A felhasználó még nem nézett meg egy témakört sem.",
     "has_no_ignored_topics": "A felhasználó még nem mellőzött témakört.",

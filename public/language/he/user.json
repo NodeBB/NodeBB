@@ -98,6 +98,7 @@
     "has_no_follower": "למשתמש זה אין עוקבים :(",
     "follows_no_one": "משתמש זה אינו עוקב אחרי אחרים :(",
     "has_no_posts": "המשתמש טרם יצר פוסטים כלשהם.",
+    "has_no_best_posts": "This user does not have any upvoted posts yet.",
     "has_no_topics": "המשתמש טרם יצר נושאים כלשהם.",
     "has_no_watched_topics": "המשתמש טרם צפה בנושאים כלשהם.",
     "has_no_ignored_topics": "המשתמש הזה טרם התעלם מנושאים.",

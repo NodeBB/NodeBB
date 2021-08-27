@@ -98,6 +98,7 @@
     "has_no_follower": "Questo utente non è seguito da nessuno :(",
     "follows_no_one": "Questo utente non segue nessuno :(",
     "has_no_posts": "Questo utente non ha ancora scritto niente.",
+    "has_no_best_posts": "This user does not have any upvoted posts yet.",
     "has_no_topics": "Questo utente non ha ancora avviato discussioni.",
     "has_no_watched_topics": "Questo utente non sta seguendo discussioni.",
     "has_no_ignored_topics": "Questo utente non sta ignorando discussioni.",
