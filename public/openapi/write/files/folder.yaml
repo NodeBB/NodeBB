@@ -14,7 +14,7 @@ put:
             path:
               type: string
               description: Path to the file (relative to the configured `upload_path`)
-              example: files/test.txt
+              example: /files
             folderName:
               type: string
               description: New folder name
@@ -31,7 +31,7 @@ put:
             type: object
             properties:
               status:
-                $ref: ../components/schemas/Status.yaml#/Status
+                $ref: ../../components/schemas/Status.yaml#/Status
               response:
                 type: object
                 properties: {}

@@ -144,3 +144,5 @@ paths:
     $ref: 'write/admin/analytics/set.yaml'
   /files/:
     $ref: 'write/files.yaml'
+  /files/folder:
+    $ref: 'write/files/folder.yaml'
