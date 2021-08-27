@@ -14,6 +14,7 @@ const user = require('../user');
 const groups = require('../groups');
 const topics = require('../topics');
 const posts = require('../posts');
+const slugify = require('../slugify');
 
 const helpers = require('./helpers');
 const controllerHelpers = require('../controllers/helpers');
@@ -83,6 +84,23 @@ Assert.path = helpers.try(async (req, res, next) => {
 	if (!await file.exists(pathToFile)) {
 		return controllerHelpers.formatApiResponse(404, res, new Error('[[error:invalid-path]]'));
 	}
+
+	next();
+});
+
+Assert.folderName = helpers.try(async (req, res, next) => {
+	const folderName = slugify(path.basename(req.body.folderName.trim()));
+	const folderPath = path.join(res.locals.cleanedPath, folderName);
+
+	// slugify removes invalid characters, folderName may become empty
+	if (!folderName) {
+		return controllerHelpers.formatApiResponse(403, res, new Error('[[error:invalid-path]]'));
+	}
+	if (await file.exists(folderPath)) {
+		return controllerHelpers.formatApiResponse(404, res, new Error('[[error:folder-exists]]'));
+	}
+
+	res.locals.folderPath = folderPath;
 
 	next();
 });
