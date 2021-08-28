@@ -176,5 +176,6 @@
     "timeago_later": "%1",
     "timeago_earlier": "il y a %1",
     "first-post": "Premier message",
-    "last-post": "Dernier message"
+    "last-post": "Dernier message",
+    "post-quick-reply": "Post quick reply"
 }

@@ -176,5 +176,6 @@
     "timeago_later": "%1 이후",
     "timeago_earlier": "%1 이전",
     "first-post": "첫 포스트",
-    "last-post": "마지막 포스트"
+    "last-post": "마지막 포스트",
+    "post-quick-reply": "Post quick reply"
 }

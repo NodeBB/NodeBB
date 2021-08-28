@@ -176,5 +176,6 @@
     "timeago_later": "через %1",
     "timeago_earlier": "на %1 раньше",
     "first-post": "Первое сообщение",
-    "last-post": "Последнее сообщение"
+    "last-post": "Последнее сообщение",
+    "post-quick-reply": "Post quick reply"
 }
