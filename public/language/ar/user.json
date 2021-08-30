@@ -98,6 +98,7 @@
     "has_no_follower": "هذا المستخدم ليس لديه أية متابعين :(",
     "follows_no_one": "هذا المستخدم لا يتابع أحد :(",
     "has_no_posts": "هذا المستخدم لم يشارك حتى الآن.",
+    "has_no_best_posts": "This user does not have any upvoted posts yet.",
     "has_no_topics": "هذا المستخدم لم يكتب أي موضوع حتى الآن.",
     "has_no_watched_topics": "هذا المستخدم لم يقم بمراقبة اية مواضيع حتى الآن.",
     "has_no_ignored_topics": "هذا المستخدم لم يقم بتجاهل اية مواضيع حتى الآن.",

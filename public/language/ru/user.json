@@ -98,6 +98,7 @@
     "has_no_follower": "На этого пользователя никто не подписан :(",
     "follows_no_one": "Этот пользователь ни на кого не подписан :(",
     "has_no_posts": "Этот пользователь ещё ничего не написал.",
+    "has_no_best_posts": "This user does not have any upvoted posts yet.",
     "has_no_topics": "Этот пользователь ещё не создал ни одной темы.",
     "has_no_watched_topics": "Этот пользователь не отслеживает ни одной темы.",
     "has_no_ignored_topics": "Этот пользователь не игнорирует ни одну тему.",

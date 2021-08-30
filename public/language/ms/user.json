@@ -98,6 +98,7 @@
     "has_no_follower": "Pengguna ini tiada pengikut :(",
     "follows_no_one": "Pengguna ini tidak mengikuti sesiapa :(",
     "has_no_posts": "Pengguna ini belum menulis sebarang kiriman lagi.",
+    "has_no_best_posts": "This user does not have any upvoted posts yet.",
     "has_no_topics": "Pengguna ini belum menulis sebarang topik lagi.",
     "has_no_watched_topics": "Pengguna ini belum melanggan sebarang topik lagi.",
     "has_no_ignored_topics": "This user hasn't ignored any topics yet.",

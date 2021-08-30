@@ -98,6 +98,7 @@
     "has_no_follower": "此使用者還沒有追隨者 :(",
     "follows_no_one": "此使用者尚未追隨任何人 :(",
     "has_no_posts": "此使用者從未發文。",
+    "has_no_best_posts": "This user does not have any upvoted posts yet.",
     "has_no_topics": "此使用者還未發佈任何主題。",
     "has_no_watched_topics": "此使用者還未關注任何主題。",
     "has_no_ignored_topics": "此使用者尚未忽略任何主題。",

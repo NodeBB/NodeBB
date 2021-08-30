@@ -98,6 +98,7 @@
     "has_no_follower": "Uporabniku nihče ne sledi :(",
     "follows_no_one": "Uporabnik nikomur ne sledi :(",
     "has_no_posts": "Uporabnik še ni nič objavil.",
+    "has_no_best_posts": "This user does not have any upvoted posts yet.",
     "has_no_topics": "Uporabnik še ni objavil nobene teme.",
     "has_no_watched_topics": "Uporabnik še ne spremlja nobene teme.",
     "has_no_ignored_topics": "This user hasn't ignored any topics yet.",

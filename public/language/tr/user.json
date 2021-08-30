@@ -98,6 +98,7 @@
     "has_no_follower": "Bu kullanıcının hiç takipçisi yok :(",
     "follows_no_one": "Bu kullanıcı kimseyi takip etmiyor :(",
     "has_no_posts": "Bu kullanıcı henüz herhangi bir ileti yazmamış :(",
+    "has_no_best_posts": "This user does not have any upvoted posts yet.",
     "has_no_topics": "Bu kullanıcı henüz hiçbir başlık açmamış :(",
     "has_no_watched_topics": "Bu kullanıcı henüz hiçbir başlığı takip etmiyor :(",
     "has_no_ignored_topics": "Bu kullanıcı henüz hiçbir başlığı yok saymamış.",
