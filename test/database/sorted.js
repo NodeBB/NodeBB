@@ -334,7 +334,7 @@ describe('Sorted Set methods', () => {
 		});
 
 		it('should work with big arrays (length > 100) ', async function () {
-			this.timeout(50000);
+			this.timeout(100000);
 			const keys = [];
 			for (let i = 0; i < 400; i++) {
 				/* eslint-disable no-await-in-loop */
