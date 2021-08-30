@@ -73,7 +73,8 @@ function onConnection(socket) {
 	onConnect(socket);
 	socket.onAny((event, ...args) => {
 		const payload = { data: [event].concat(args) };
-		onMessage(socket, payload);
+		const als = require('../als');
+		als.run({ uid: socket.uid }, onMessage, socket, payload);
 	});
 
 	socket.on('disconnect', () => {
