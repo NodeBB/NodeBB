@@ -61,9 +61,9 @@ define('categorySelector', [
 		options = options || {};
 		options.onSelect = options.onSelect || function () {};
 		options.onSubmit = options.onSubmit || function () {};
-		app.parseAndTranslate('admin/partials/categories/select-category', {}, function (html) {
+		app.parseAndTranslate('admin/partials/categories/select-category', { message: options.message }, function (html) {
 			var modal = bootbox.dialog({
-				title: '[[modules:composer.select_category]]',
+				title: options.title || '[[modules:composer.select_category]]',
 				message: html,
 				buttons: {
 					save: {
