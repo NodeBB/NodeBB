@@ -171,6 +171,10 @@ function setupExpressApp(app) {
 	app.use(middleware.addHeaders);
 	app.use(middleware.processRender);
 	auth.initialize(app, middleware);
+	const als = require('./als');
+	app.use((req, res, next) => {
+		als.run({ uid: req.uid }, next);
+	});
 	app.use(middleware.autoLocale);	// must be added after auth middlewares are added
 
 	const toobusy = require('toobusy-js');
