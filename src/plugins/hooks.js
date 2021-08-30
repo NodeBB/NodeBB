@@ -96,7 +96,7 @@ Hooks.fire = async function (hook, params) {
 		winston.warn(`[plugins] Unknown hookType: ${hookType}, hook : ${hook}`);
 		return;
 	}
-	if (params && typeof params === 'object') {
+	if (params && typeof params === 'object' && !params.hasOwnProperty('caller')) {
 		const als = require('../als');
 		params.caller = als.getStore();
 	}
