@@ -51,10 +51,13 @@
 	"alert.saved": "Alterações de privilégio salvas e aplicadas",
 	"alert.confirm-discard": "Você tem certeza que quer descartar suas mudanças nos privilégios?",
 	"alert.discarded": "Mudanças de privilégio descartadas",
-	"alert.confirm-copyToAll": "Tem certeza de que deseja aplicar este conjunto de privilégios a <strong>todas as categorias</strong>?",
-	"alert.confirm-copyToAllGroup": "Tem certeza de que deseja aplicar o conjunto de privilégios deste grupo a <strong>todas as categorias</strong>?",
-	"alert.confirm-copyToChildren": "Tem certeza de que deseja aplicar este conjunto de privilégios a <strong>todas as categorias descendentes (filhos)</strong>?",
-	"alert.confirm-copyToChildrenGroup": "Tem certeza de que deseja aplicar o conjunto de privilégios deste grupo a <strong>todas as categorias descendentes (filhos)</strong>?",
+	"alert.confirm-copyToAll": "Are you sure you wish to apply this set of <strong>%1</strong> to <strong>all categories</strong>?",
+	"alert.confirm-copyToAllGroup": "Are you sure you wish to apply this group's set of <strong>%1</strong> to <strong>all categories</strong>?",
+	"alert.confirm-copyToChildren": "Are you sure you wish to apply this set of <strong>%1</strong> to <strong>all descendant (child) categories</strong>?",
+	"alert.confirm-copyToChildrenGroup": "Are you sure you wish to apply this group's set of <strong>%1</strong> to <strong>all descendant (child) categories</strong>?",
 	"alert.no-undo": "<em>Esta ação não pode ser desfeita.</em>",
-	"alert.admin-warning": "Os administradores obtêm implicitamente todos os privilégios"
+	"alert.admin-warning": "Os administradores obtêm implicitamente todos os privilégios",
+  	"alert.copyPrivilegesFrom-title": "Select a category to copy from",
+  	"alert.copyPrivilegesFrom-warning": "This will copy <strong>%1</strong> from the selected category.",
+  	"alert.copyPrivilegesFromGroup-warning": "This will copy this group's set of <strong>%1</strong> from the selected category."
 }
