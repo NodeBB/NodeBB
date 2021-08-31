@@ -66,7 +66,7 @@ module.exports = function (Plugins) {
 		}
 		meta.reloadRequired = true;
 		const hook = isActive ? 'deactivate' : 'activate';
-		Plugins.hooks.fire(`action:plugin.${isActive}`, { id: id });
+		Plugins.hooks.fire(`action:plugin.${hook}`, { id: id });
 		return { id: id, active: !isActive };
 	};
 
