@@ -183,4 +183,20 @@ helpers.invite = async function (body, uid, jar, csrf_token) {
 	return { res, body };
 };
 
+helpers.createFolder = function (path, folderName, jar, csrf_token) {
+	return requestAsync.put(`${nconf.get('url')}/api/v3/files/folder`, {
+		jar,
+		body: {
+			path,
+			folderName,
+		},
+		json: true,
+		headers: {
+			'x-csrf-token': csrf_token,
+		},
+		simple: false,
+		resolveWithFullResponse: true,
+	});
+};
+
 require('../../src/promisify')(helpers);

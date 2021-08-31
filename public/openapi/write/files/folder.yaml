@@ -1,7 +1,6 @@
 put:
   tags:
     - files
-    - folder
   summary: create a new folder
   description: This operation creates a new folder inside upload path
   requestBody:

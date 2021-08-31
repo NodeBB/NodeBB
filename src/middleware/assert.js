@@ -97,7 +97,7 @@ Assert.folderName = helpers.try(async (req, res, next) => {
 		return controllerHelpers.formatApiResponse(403, res, new Error('[[error:invalid-path]]'));
 	}
 	if (await file.exists(folderPath)) {
-		return controllerHelpers.formatApiResponse(404, res, new Error('[[error:folder-exists]]'));
+		return controllerHelpers.formatApiResponse(403, res, new Error('[[error:folder-exists]]'));
 	}
 
 	res.locals.folderPath = folderPath;
