@@ -506,7 +506,7 @@ describe('Upload Controllers', () => {
 			});
 		});
 
-		describe('ACP uploads screen', function () {
+		describe('ACP uploads screen', () => {
 			it('should create a folder', async () => {
 				const res = await helpers.createFolder('', 'myfolder', jar, csrf_token);
 				assert.strictEqual(res.statusCode, 200);
