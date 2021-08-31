@@ -1,7 +1,6 @@
 'use strict';
 
-
-define('admin/manage/uploads', ['uploader', 'api'], function (uploader, api) {
+define('admin/manage/uploads', ['api', 'bootbox', 'uploader'], function (api, bootbox, uploader) {
 	var Uploads = {};
 
 	Uploads.init = function () {
@@ -26,6 +25,21 @@ define('admin/manage/uploads', ['uploader', 'api'], function (uploader, api) {
 					path: file.attr('data-path'),
 				}).then(() => {
 					file.remove();
+				}).catch(app.alertError);
+			});
+		});
+
+		$('#new-folder').on('click', async function () {
+			bootbox.prompt('[[admin/manage/uploads:name-new-folder]]', (newFolderName) => {
+				if (!newFolderName || !newFolderName.trim()) {
+					return;
+				}
+
+				api.put('/files/folder', {
+					path: ajaxify.data.currentFolder,
+					folderName: newFolderName,
+				}).then(() => {
+					ajaxify.refresh();
 				}).catch(app.alertError);
 			});
 		});
