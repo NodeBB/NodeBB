@@ -516,36 +516,27 @@ describe('Upload Controllers', () => {
 			it('should fail to create a folder if it already exists', async () => {
 				const res = await helpers.createFolder('', 'myfolder', jar, csrf_token);
 				assert.strictEqual(res.statusCode, 403);
-				assert.deepStrictEqual(res.body, {
-					status: {
-						code: 'forbidden',
-						message: 'Folder exists',
-					},
-					response: {},
+				assert.deepStrictEqual(res.body.status, {
+					code: 'forbidden',
+					message: 'Folder exists',
 				});
 			});
 
 			it('should fail to create a folder as a non-admin', async () => {
 				const res = await helpers.createFolder('', 'hisfolder', regularJar, regular_csrf_token);
 				assert.strictEqual(res.statusCode, 403);
-				assert.deepStrictEqual(res.body, {
-					status: {
-						code: 'forbidden',
-						message: 'You are not authorised to make this call',
-					},
-					response: {},
+				assert.deepStrictEqual(res.body.status, {
+					code: 'forbidden',
+					message: 'You are not authorised to make this call',
 				});
 			});
 
 			it('should fail to create a folder in wrong directory', async () => {
 				const res = await helpers.createFolder('../traversing', 'unexpectedfolder', jar, csrf_token);
 				assert.strictEqual(res.statusCode, 403);
-				assert.deepStrictEqual(res.body, {
-					status: {
-						code: 'forbidden',
-						message: 'Invalid path',
-					},
-					response: {},
+				assert.deepStrictEqual(res.body.status, {
+					code: 'forbidden',
+					message: 'Invalid path',
 				});
 			});
 
@@ -570,12 +561,9 @@ describe('Upload Controllers', () => {
 					resolveWithFullResponse: true,
 				});
 				assert.strictEqual(res.statusCode, 403);
-				assert.deepStrictEqual(res.body, {
-					status: {
-						code: 'forbidden',
-						message: 'You are not authorised to make this call',
-					},
-					response: {},
+				assert.deepStrictEqual(res.body.status, {
+					code: 'forbidden',
+					message: 'You are not authorised to make this call',
 				});
 			});
 		});
