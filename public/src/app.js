@@ -774,6 +774,7 @@ app.cacheBuster = null;
 				app.removeAlert('email_confirm');
 				ajaxify.go('user/' + app.user.userslug + '/edit/email');
 			};
+			app.alert(msg);
 		} else if (!app.user['email:confirmed'] && !app.user.isEmailConfirmSent) {
 			msg.message = err ? err.message : '[[error:email-not-confirmed]]';
 			msg.clickfn = function () {
@@ -785,11 +786,11 @@ app.cacheBuster = null;
 					app.alertSuccess('[[notifications:email-confirm-sent]]');
 				});
 			};
+			app.alert(msg);
 		} else if (!app.user['email:confirmed'] && app.user.isEmailConfirmSent) {
 			msg.message = '[[error:email-not-confirmed-email-sent]]';
+			app.alert(msg);
 		}
-
-		app.alert(msg);
 	};
 
 	app.parseAndTranslate = function (template, blockName, data, callback) {
