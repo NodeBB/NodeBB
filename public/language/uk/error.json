@@ -25,6 +25,8 @@
     "invalid-event": "Invalid event: %1",
     "local-login-disabled": "Локальний логін вимкнений для акаунтів, які не мають відповідних прав.",
     "csrf-invalid": "Нам не вдалося вас пустити, ймовірно, через прострочену сесію. Будь ласка, спробуйте ще раз",
+    "invalid-path": "Invalid path",
+    "folder-exists": "Folder exists",
     "invalid-pagination-value": "Невірне значення сторінки, має бути щонайменше %1 та щонайбільше %2",
     "username-taken": "Це ім'я зайняте",
     "email-taken": "Ця електронна пошта зайнята",

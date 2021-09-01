@@ -25,6 +25,8 @@
     "invalid-event": "Evento non valido: %1",
     "local-login-disabled": "Il sistema di accesso locale è stato disabilitato per gli account senza privilegi.",
     "csrf-invalid": "Non siamo riusciti a farti accedere, probabilmente perché la sessione è scaduta. Per favore riprova.",
+    "invalid-path": "Invalid path",
+    "folder-exists": "Folder exists",
     "invalid-pagination-value": "Valore di impaginazione non valido, deve essere almeno %1 ed al massimo %2",
     "username-taken": "Nome utente già esistente",
     "email-taken": "Email già esistente",

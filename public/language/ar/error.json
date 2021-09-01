@@ -25,6 +25,8 @@
     "invalid-event": "Invalid event: %1",
     "local-login-disabled": "Local login system has been disabled for non-privileged accounts.",
     "csrf-invalid": "لم تتمكن من تسجيل الدخول. هنالك أحتمال ان جلستك انتهت. رجاءًا حاول مرة اخرى.",
+    "invalid-path": "Invalid path",
+    "folder-exists": "Folder exists",
     "invalid-pagination-value": "رقم الصفحة غير صحيح ، يجب أن يكون بين %1 و %2 .",
     "username-taken": "اسم المستخدم مأخوذ",
     "email-taken": "البريد الالكتروني مأخوذ",

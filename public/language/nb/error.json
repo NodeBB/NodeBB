@@ -25,6 +25,8 @@
     "invalid-event": "Ugyldig hendelse: %1",
     "local-login-disabled": "Lokalt innloggingssystem har blitt deaktivert for ikke-privelegerte brukere",
     "csrf-invalid": "Vi kunne ikke logge deg inn, sannsynligvis på grunn av en utgått sesjon. Vennligst prøv igjen",
+    "invalid-path": "Invalid path",
+    "folder-exists": "Folder exists",
     "invalid-pagination-value": "Ugyldig sidetall, må være minst %1 og maks %2",
     "username-taken": "Brukernavn opptatt",
     "email-taken": "E-post opptatt",

@@ -25,6 +25,8 @@
     "invalid-event": "Invalid event: %1",
     "local-login-disabled": "System lokalnego logowania został wyłączony dla kont bez uprawnień.",
     "csrf-invalid": "Logowanie nie powiodło się, zapewne na skutek wygaśnięcia sesji. Spróbuj ponownie.",
+    "invalid-path": "Invalid path",
+    "folder-exists": "Folder exists",
     "invalid-pagination-value": "Błędna wartość paginacji, zakres od %1 do %2",
     "username-taken": "Login zajęty",
     "email-taken": "Email zajęty",

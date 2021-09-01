@@ -25,6 +25,8 @@
     "invalid-event": "Invalid event: %1",
     "local-login-disabled": "Local login system has been disabled for non-privileged accounts.",
     "csrf-invalid": "Nismo Vas uspjeli prijaviti, najvjerovatnije zbog istekle sesije. Molimo pokušajte ponovno",
+    "invalid-path": "Invalid path",
+    "folder-exists": "Folder exists",
     "invalid-pagination-value": "Netočno numeriranje stranica, mora biti %1 ili %2",
     "username-taken": "Korisničko ime je zauzeto",
     "email-taken": "Email je zauzet",

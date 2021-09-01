@@ -25,6 +25,8 @@
     "invalid-event": "Invalid event: %1",
     "local-login-disabled": "已停用非管理帳戶的本地登入。",
     "csrf-invalid": "可能是由於會話過期，登入失敗。請重試。",
+    "invalid-path": "Invalid path",
+    "folder-exists": "Folder exists",
     "invalid-pagination-value": "無效的分頁數，必須介於 %1 和 %2 之間",
     "username-taken": "此使用者名已被使用",
     "email-taken": "此電子信箱已被使用",

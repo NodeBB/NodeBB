@@ -25,6 +25,8 @@
     "invalid-event": "Invalid event: %1",
     "local-login-disabled": "Systém prihlásenia pre miestne účty bol zablokovaný pre neoprávnené účty.",
     "csrf-invalid": "Nie sme schopný Vás znova prihlásiť, pravdepodobne kvôli uplynutiu relácie. Zopakujte to neskôr prosím.",
+    "invalid-path": "Invalid path",
+    "folder-exists": "Folder exists",
     "invalid-pagination-value": "Neplatná stránkovania hodnota, musí byť najmenej %1 a najviac %2",
     "username-taken": "Užívateľské meno je už obsadené",
     "email-taken": "Tento e-mail je už obsadený",

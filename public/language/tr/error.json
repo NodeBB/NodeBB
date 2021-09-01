@@ -25,6 +25,8 @@
     "invalid-event": "Geçersiz Aktivite: %1",
     "local-login-disabled": "Ayrıcalıklı-olmayan hesaplar için yerel giriş sistemi devre dışı bırakıldı.",
     "csrf-invalid": "Büyük olasılıkla süresi dolmuş oturum nedeniyle girişinizi geçersiz kıldık. Lütfen tekrar deneyiniz.",
+    "invalid-path": "Invalid path",
+    "folder-exists": "Folder exists",
     "invalid-pagination-value": "Geçersiz sayfa numarası girdiniz, en az %1 ve en fazla %2 olabilir",
     "username-taken": "Kullanıcı İsmi Alınmış",
     "email-taken": "E-posta Alınmış",

@@ -25,6 +25,8 @@
     "invalid-event": "Invalid event: %1",
     "local-login-disabled": "Local login system has been disabled for non-privileged accounts.",
     "csrf-invalid": "Me ei saanud Sind sisse logida, võimalik, et tänu aegunud sessioonile, palun proovi uuesti",
+    "invalid-path": "Invalid path",
+    "folder-exists": "Folder exists",
     "invalid-pagination-value": "Väär lehekülje numeratsioon, peab olema vähemalt %1 ja kõige rohkem %2",
     "username-taken": "Kasutajanimi on juba võetud",
     "email-taken": "Email on võetud",

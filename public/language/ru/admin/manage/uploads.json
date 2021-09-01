@@ -5,5 +5,7 @@
     "orphaned": "Отделенный",
     "size/filecount": "Размер / Файлов",
     "confirm-delete": "Вы действительно хотите удалить этот файл?",
-    "filecount": "%1 файлов"
+    "filecount": "%1 файлов",
+    "new-folder": "New Folder",
+    "name-new-folder": "Enter a name for new the folder"
 }

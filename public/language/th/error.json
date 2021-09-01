@@ -25,6 +25,8 @@
     "invalid-event": "Invalid event: %1",
     "local-login-disabled": "Local login system has been disabled for non-privileged accounts.",
     "csrf-invalid": "เราไม่สามารถนำท่านเข้าสู่ระบบได้ เหมือนกับว่าเซสชั่นหมดอายุแล้ว กรุณาลองใหม่อีกครั้ง",
+    "invalid-path": "Invalid path",
+    "folder-exists": "Folder exists",
     "invalid-pagination-value": "หมายเลขหน้าไม่ถูกต้อง จำเป็นต้องเป็นตัวเลขอย่างน้อย  %1  และอย่างมาก %2",
     "username-taken": "ชื่อผู้ใช้นี้มีการใช้แล้ว",
     "email-taken": "อีเมลนี้มีการใช้แล้ว",

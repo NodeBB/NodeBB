@@ -25,6 +25,8 @@
     "invalid-event": "Invalid event: %1",
     "local-login-disabled": "Lokala inloggningssystem har stängts av för icke-privilegierade konton.",
     "csrf-invalid": "Det gick inte att logga in dig, sannolikt på grund av en utgången session. Var god försök igen",
+    "invalid-path": "Invalid path",
+    "folder-exists": "Folder exists",
     "invalid-pagination-value": "Ogiltigt värde för siduppdelning. Värdet måste vara mellan %1 och %2",
     "username-taken": "Användarnamn upptaget",
     "email-taken": "Epostadress upptagen",

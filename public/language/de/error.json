@@ -25,6 +25,8 @@
     "invalid-event": "Invalid event: %1",
     "local-login-disabled": "Lokales Login System wurde für nicht-priviligierte Konten deaktiviert.",
     "csrf-invalid": "Dein Login war nicht erfolgreich da wahrscheinlich deine Sitzung abgelaufen ist. Bitte versuche es noch einmal",
+    "invalid-path": "Invalid path",
+    "folder-exists": "Folder exists",
     "invalid-pagination-value": "Ungültige Seitennummerierung, muss mindestens %1 und maximal %2 sein",
     "username-taken": "Der Benutzername ist bereits vergeben",
     "email-taken": "Die E-Mail-Adresse ist bereits vergeben",

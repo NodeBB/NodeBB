@@ -25,6 +25,8 @@
     "invalid-event": "Invalid event: %1",
     "local-login-disabled": "Systém přihlášení pro místní účty byl zakázán pro neoprávněné účty.",
     "csrf-invalid": "Není možné vás přihlásit, díky vypršení relace. Zkuste to prosím znovu.",
+    "invalid-path": "Invalid path",
+    "folder-exists": "Folder exists",
     "invalid-pagination-value": "Neplatná hodnota stránkování, musí být alespoň %1 a nejvýše %2",
     "username-taken": "Uživatelské jméno je již použito",
     "email-taken": "Tento e-mail je již použit",

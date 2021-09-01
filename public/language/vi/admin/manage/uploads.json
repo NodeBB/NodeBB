@@ -5,5 +5,7 @@
     "orphaned": "Đơn độc",
     "size/filecount": "Kích cỡ/ Số lượng tệp",
     "confirm-delete": "Bạn có chắc muốn xóa tệp này không?",
-    "filecount": "%1 tệp"
+    "filecount": "%1 tệp",
+    "new-folder": "New Folder",
+    "name-new-folder": "Enter a name for new the folder"
 }

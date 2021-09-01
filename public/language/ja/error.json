@@ -25,6 +25,8 @@
     "invalid-event": "Invalid event: %1",
     "local-login-disabled": "ローカルログインシステムは、非特権アカウントに対して無効になっています",
     "csrf-invalid": "セッションの期限切れと思われるため、私達はあなたのログイン状態を確認できませんでした。もう一度お試しください。",
+    "invalid-path": "Invalid path",
+    "folder-exists": "Folder exists",
     "invalid-pagination-value": "無効なページネーション値です。%1 から%2の値でなければありません。",
     "username-taken": "ユーザー名は既に使われています",
     "email-taken": "メールアドレスは既に使われています",

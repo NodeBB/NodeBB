@@ -25,6 +25,8 @@
     "invalid-event": "Événement non valide: %1",
     "local-login-disabled": "Le système de connexion local a été désactivé pour les comptes sans privilèges.",
     "csrf-invalid": "Nous ne pouvons pas vous connectez, probablement car votre session a expiré. Merci de réessayer.",
+    "invalid-path": "Invalid path",
+    "folder-exists": "Folder exists",
     "invalid-pagination-value": "Valeur de pagination invalide. Celle-ci doit être comprise entre %1 et %2.",
     "username-taken": "Nom d’utilisateur déjà utilisé",
     "email-taken": "Email déjà utilisé",

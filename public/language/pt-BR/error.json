@@ -25,6 +25,8 @@
     "invalid-event": "Evento inválido: %1",
     "local-login-disabled": "O sistema de login local foi desativado para contas sem privilégios.",
     "csrf-invalid": "Não foi possível realizar o seu login, provavelmente porque a sua sessão expirou. Por favor, tente novamente.",
+    "invalid-path": "Invalid path",
+    "folder-exists": "Folder exists",
     "invalid-pagination-value": "Valor de paginação inválido, precisa ser no mínimo %1 e no máximo %2",
     "username-taken": "Nome de usuário já existe",
     "email-taken": "Email já cadastrado",

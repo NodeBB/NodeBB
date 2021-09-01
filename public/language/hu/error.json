@@ -25,6 +25,8 @@
     "invalid-event": "Érvénytelen esemény: %1",
     "local-login-disabled": "A helyi bejelentkezés letiltva fel nem hatalmazott felhasználóknál.",
     "csrf-invalid": "Sikertelen bejelentkezés, feltételezhetően lejárt a munkamenet. Próbálkozz újra!",
+    "invalid-path": "Invalid path",
+    "folder-exists": "Folder exists",
     "invalid-pagination-value": "Érvénytelen lapozási érték, legalább %1 kell lennie és legfeljebb %2 -nak/nek",
     "username-taken": "Foglalt felhasználónév",
     "email-taken": "Foglalt e-mail",

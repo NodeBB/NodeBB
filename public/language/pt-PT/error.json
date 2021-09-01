@@ -25,6 +25,8 @@
     "invalid-event": "Invalid event: %1",
     "local-login-disabled": "Local login system has been disabled for non-privileged accounts.",
     "csrf-invalid": "Não conseguimos iniciar a tua sessão, provavelmente devido a uma sessão que já expirou. Por favor, tenta novamente",
+    "invalid-path": "Invalid path",
+    "folder-exists": "Folder exists",
     "invalid-pagination-value": "Valor de paginação errado, deve ser no mínimo %1 e no máximo %2",
     "username-taken": "Nome de utilizar já utilizado",
     "email-taken": "E-mail já utilizado",

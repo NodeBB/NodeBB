@@ -25,6 +25,8 @@
     "invalid-event": "Invalid event: %1",
     "local-login-disabled": "Local login system has been disabled for non-privileged accounts.",
     "csrf-invalid": "Non fomos capaces de entrar, probablemente porque a que a sesión expirou. Por favor, téntao de novo",
+    "invalid-path": "Invalid path",
+    "folder-exists": "Folder exists",
     "invalid-pagination-value": "Valor de paxinación incorreto, ten que estar entre %1 e %2",
     "username-taken": "Nome de usuario en uso",
     "email-taken": "Enderezo electrónico en uso",
