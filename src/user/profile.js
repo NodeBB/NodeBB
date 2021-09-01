@@ -17,7 +17,7 @@ module.exports = function (User) {
 	User.updateProfile = async function (uid, data, extraFields) {
 		let fields = [
 			'username', 'email', 'fullname', 'website', 'location',
-			'groupTitle', 'birthday', 'signature', 'aboutme',
+			'groupTitle', 'birthday', 'signature', 'aboutme', 'picture'
 		];
 		if (Array.isArray(extraFields)) {
 			fields = _.uniq(fields.concat(extraFields));
@@ -76,6 +76,7 @@ module.exports = function (User) {
 		await isWebsiteValid(callerUid, data);
 		await isAboutMeValid(callerUid, data);
 		await isSignatureValid(callerUid, data);
+		await isPictureValid(callerUid, data);
 		isFullnameValid(data);
 		isLocationValid(data);
 		isBirthdayValid(data);
@@ -175,6 +176,16 @@ module.exports = function (User) {
 			throw new Error(`[[error:signature-too-long, ${meta.config.maximumSignatureLength}]]`);
 		}
 		await User.checkMinReputation(callerUid, data.uid, 'min:rep:signature');
+	}
+
+	async function isPictureValid(callerUid, data) {
+		if (!data.picture) {
+			return;
+		}
+		if (data.picture.length > 255) {
+			throw new Error('[[error:invalid-picture]]');
+		}
+		await User.checkMinReputation(callerUid, data.uid, 'min:rep:profile-picture');
 	}
 
 	function isFullnameValid(data) {

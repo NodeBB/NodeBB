@@ -109,6 +109,10 @@ put:
                 This is a paragraph all about how my life got twist-turned upside-down
                 and I'd like to take a minute and sit right here,
                 to tell you all about how I because the administrator of NodeBB
+            picture:
+              type: string
+              description: A URL pointing to a picture to be used as the user's avatar. Maximum length is 255 characters.
+              example: https://images.unsplash.com/photo-1560070094-e1f2ddec4337?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=256&h=256&q=80
   responses:
     '200':
       description: user profile updated
