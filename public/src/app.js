@@ -97,7 +97,6 @@ app.cacheBuster = null;
 		});
 
 		createHeaderTooltips();
-		app.showEmailConfirmWarning();
 		app.showCookieWarning();
 		registerServiceWorker();
 
@@ -740,7 +739,24 @@ app.cacheBuster = null;
 	app.showEmailConfirmWarning = async (err) => {
 		const storage = await app.require('storage');
 
-		if (!app.user.uid || parseInt(storage.getItem('email-confirm-dismiss'), 10) === 1) {
+		let showModal = false;
+		switch (ajaxify.data.template.name) {
+			case 'recent': {
+				showModal = !ajaxify.data.canPost;
+				break;
+			}
+
+			case 'category': {
+				showModal = !ajaxify.data.privileges['topics:create'];
+				break;
+			}
+
+			case 'topic': {
+				showModal = !ajaxify.data.privileges['topics:reply'];
+			}
+		}
+
+		if (!showModal || !app.user.uid || parseInt(storage.getItem('email-confirm-dismiss'), 10) === 1) {
 			return;
 		}
 		var msg = {
@@ -758,7 +774,6 @@ app.cacheBuster = null;
 				app.removeAlert('email_confirm');
 				ajaxify.go('user/' + app.user.userslug + '/edit/email');
 			};
-			app.alert(msg);
 		} else if (!app.user['email:confirmed'] && !app.user.isEmailConfirmSent) {
 			msg.message = err ? err.message : '[[error:email-not-confirmed]]';
 			msg.clickfn = function () {
@@ -770,12 +785,11 @@ app.cacheBuster = null;
 					app.alertSuccess('[[notifications:email-confirm-sent]]');
 				});
 			};
-
-			app.alert(msg);
 		} else if (!app.user['email:confirmed'] && app.user.isEmailConfirmSent) {
 			msg.message = '[[error:email-not-confirmed-email-sent]]';
-			app.alert(msg);
 		}
+
+		app.alert(msg);
 	};
 
 	app.parseAndTranslate = function (template, blockName, data, callback) {
