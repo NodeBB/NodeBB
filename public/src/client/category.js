@@ -48,6 +48,8 @@ define('forum/category', [
 			},
 		});
 
+		app.showEmailConfirmWarning();
+
 		hooks.fire('action:topics.loaded', { topics: ajaxify.data.topics });
 		hooks.fire('action:category.loaded', { cid: ajaxify.data.cid });
 	};
