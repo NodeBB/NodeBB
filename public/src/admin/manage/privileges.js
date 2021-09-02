@@ -42,6 +42,7 @@ define('admin/manage/privileges', [
 		$('.privilege-table-container').on('change', 'input[type="checkbox"]:not(.checkbox-helper)', function () {
 			const checkboxEl = $(this);
 			const wrapperEl = checkboxEl.parent();
+			const columnNo = wrapperEl.index() + 1;
 			const privilege = wrapperEl.attr('data-privilege');
 			const state = checkboxEl.prop('checked');
 			const rowEl = checkboxEl.parents('tr');
@@ -49,6 +50,7 @@ define('admin/manage/privileges', [
 			const isPrivate = parseInt(rowEl.attr('data-private') || 0, 10);
 			const isGroup = rowEl.attr('data-group-name') !== undefined;
 			const isBanned = (isGroup && rowEl.attr('data-group-name') === 'banned-users') || rowEl.attr('data-banned') !== undefined;
+			const sourceGroupName = isBanned ? 'banned-users' : 'registered-users';
 			const delta = checkboxEl.prop('checked') === (wrapperEl.attr('data-value') === 'true') ? null : state;
 
 			if (member) {
@@ -56,7 +58,7 @@ define('admin/manage/privileges', [
 					bootbox.confirm('[[admin/manage/privileges:alert.confirm-moderate]]', function (confirm) {
 						if (confirm) {
 							wrapperEl.attr('data-delta', delta);
-							Privileges.exposeAssumedPrivileges(isBanned);
+							Privileges.exposeSingleAssumedPriv(columnNo, sourceGroupName);
 						} else {
 							checkboxEl.prop('checked', !checkboxEl.prop('checked'));
 						}
@@ -65,14 +67,14 @@ define('admin/manage/privileges', [
 					bootbox.confirm('[[admin/manage/privileges:alert.confirm-admins-mods]]', function (confirm) {
 						if (confirm) {
 							wrapperEl.attr('data-delta', delta);
-							Privileges.exposeAssumedPrivileges();
+							Privileges.exposeSingleAssumedPriv(columnNo, sourceGroupName);
 						} else {
 							checkboxEl.prop('checked', !checkboxEl.prop('checked'));
 						}
 					});
 				} else {
 					wrapperEl.attr('data-delta', delta);
-					Privileges.exposeAssumedPrivileges(isBanned);
+					Privileges.exposeSingleAssumedPriv(columnNo, sourceGroupName);
 				}
 				checkboxRowSelector.updateState(checkboxEl);
 			} else {
@@ -198,7 +200,7 @@ define('admin/manage/privileges', [
 		}).catch(app.alertError);
 	};
 
-	Privileges.exposeAssumedPrivileges = function (isBanned) {
+	Privileges.exposeAssumedPrivileges = function () {
 		/*
 			If registered-users has a privilege enabled, then all users and groups of that privilege
 			should be assumed to have that privilege as well, even if not set in the db, so reflect
@@ -206,19 +208,28 @@ define('admin/manage/privileges', [
 		*/
 
 		// As such, individual banned users inherits privileges from banned-users group
-		// Running this block only when needed
-		if (isBanned === undefined || isBanned === true) {
-			const getBannedUsersInputSelector = (privs, i) => `.privilege-table tr[data-banned] td[data-privilege="${privs[i]}"] input`;
-			const bannedUsersPrivs = getPrivilegesFromRow('banned-users');
-			applyPrivileges(bannedUsersPrivs, getBannedUsersInputSelector);
-			if (isBanned === true) {
-				return;
-			}
-		}
+		const getBannedUsersInputSelector = (privs, i) => `.privilege-table tr[data-banned] td[data-privilege="${privs[i]}"] input`;
+		const bannedUsersPrivs = getPrivilegesFromRow('banned-users');
+		applyPrivileges(bannedUsersPrivs, getBannedUsersInputSelector);
 
+		// For rest that inherits from registered-users
 		const getRegisteredUsersInputSelector = (privs, i) => `.privilege-table tr[data-group-name]:not([data-group-name="registered-users"],[data-group-name="banned-users"],[data-group-name="guests"],[data-group-name="spiders"]) td[data-privilege="${privs[i]}"] input, .privilege-table tr[data-uid]:not([data-banned]) td[data-privilege="${privs[i]}"] input`;
 		const registeredUsersPrivs = getPrivilegesFromRow('registered-users');
 		applyPrivileges(registeredUsersPrivs, getRegisteredUsersInputSelector);
+	};
+
+	Privileges.exposeSingleAssumedPriv = function (columnNo, sourceGroupName) {
+		let inputSelectorFn;
+		switch (sourceGroupName) {
+			case 'banned-users':
+				inputSelectorFn = () => `.privilege-table tr[data-banned] td[data-privilege]:nth-child(${columnNo}) input`;
+				break;
+			default:
+				inputSelectorFn = () => `.privilege-table tr[data-group-name]:not([data-group-name="registered-users"],[data-group-name="banned-users"],[data-group-name="guests"],[data-group-name="spiders"]) td[data-privilege]:nth-child(${columnNo}) input, .privilege-table tr[data-uid]:not([data-banned]) td[data-privilege]:nth-child(${columnNo}) input`;
+		}
+
+		const sourceChecked = getPrivilegeFromColumn(sourceGroupName, columnNo);
+		applyPrivilegesToColumn(inputSelectorFn, sourceChecked);
 	};
 
 	Privileges.setPrivilege = (member, privilege, state) => api[state ? 'put' : 'delete'](`/categories/${isNaN(cid) ? 0 : cid}/privileges/${privilege}`, { member });
@@ -334,6 +345,10 @@ define('admin/manage/privileges', [
 		})).filter(Boolean);
 	}
 
+	function getPrivilegeFromColumn(sourceGroupName, columnNo) {
+		return $(`.privilege-table tr[data-group-name="${sourceGroupName}"] td:nth-child(${columnNo}) input[type="checkbox"]`)[0].checked;
+	}
+
 	function applyPrivileges(privs, inputSelectorFn) {
 		for (let x = 0, numPrivs = privs.length; x < numPrivs; x += 1) {
 			const inputs = $(inputSelectorFn(privs, x));
@@ -343,6 +358,13 @@ define('admin/manage/privileges', [
 				}
 			});
 		}
+	}
+
+	function applyPrivilegesToColumn(inputSelectorFn, sourceChecked) {
+		const $inputs = $(inputSelectorFn());
+		$inputs.each((idx, el) => {
+			el.indeterminate = el.checked ? false : sourceChecked;
+		});
 	}
 
 	function hightlightRowByDataAttr(attrName, attrValue) {
