@@ -40,43 +40,43 @@ define('admin/manage/privileges', [
 
 	Privileges.setupPrivilegeTable = function () {
 		$('.privilege-table-container').on('change', 'input[type="checkbox"]:not(.checkbox-helper)', function () {
-			const checkboxEl = $(this);
-			const wrapperEl = checkboxEl.parent();
-			const columnNo = wrapperEl.index() + 1;
-			const privilege = wrapperEl.attr('data-privilege');
-			const state = checkboxEl.prop('checked');
-			const rowEl = checkboxEl.parents('tr');
-			const member = rowEl.attr('data-group-name') || rowEl.attr('data-uid');
-			const isPrivate = parseInt(rowEl.attr('data-private') || 0, 10);
-			const isGroup = rowEl.attr('data-group-name') !== undefined;
-			const isBanned = (isGroup && rowEl.attr('data-group-name') === 'banned-users') || rowEl.attr('data-banned') !== undefined;
+			const $checkboxEl = $(this);
+			const $wrapperEl = $checkboxEl.parent();
+			const columnNo = $wrapperEl.index() + 1;
+			const privilege = $wrapperEl.attr('data-privilege');
+			const state = $checkboxEl.prop('checked');
+			const $rowEl = $checkboxEl.parents('tr');
+			const member = $rowEl.attr('data-group-name') || $rowEl.attr('data-uid');
+			const isPrivate = parseInt($rowEl.attr('data-private') || 0, 10);
+			const isGroup = $rowEl.attr('data-group-name') !== undefined;
+			const isBanned = (isGroup && $rowEl.attr('data-group-name') === 'banned-users') || $rowEl.attr('data-banned') !== undefined;
 			const sourceGroupName = isBanned ? 'banned-users' : 'registered-users';
-			const delta = checkboxEl.prop('checked') === (wrapperEl.attr('data-value') === 'true') ? null : state;
+			const delta = $checkboxEl.prop('checked') === ($wrapperEl.attr('data-value') === 'true') ? null : state;
 
 			if (member) {
 				if (isGroup && privilege === 'groups:moderate' && !isPrivate && state) {
 					bootbox.confirm('[[admin/manage/privileges:alert.confirm-moderate]]', function (confirm) {
 						if (confirm) {
-							wrapperEl.attr('data-delta', delta);
+							$wrapperEl.attr('data-delta', delta);
 							Privileges.exposeSingleAssumedPriv(columnNo, sourceGroupName);
 						} else {
-							checkboxEl.prop('checked', !checkboxEl.prop('checked'));
+							$checkboxEl.prop('checked', !$checkboxEl.prop('checked'));
 						}
 					});
 				} else if (privilege.endsWith('admin:admins-mods') && state) {
 					bootbox.confirm('[[admin/manage/privileges:alert.confirm-admins-mods]]', function (confirm) {
 						if (confirm) {
-							wrapperEl.attr('data-delta', delta);
+							$wrapperEl.attr('data-delta', delta);
 							Privileges.exposeSingleAssumedPriv(columnNo, sourceGroupName);
 						} else {
-							checkboxEl.prop('checked', !checkboxEl.prop('checked'));
+							$checkboxEl.prop('checked', !$checkboxEl.prop('checked'));
 						}
 					});
 				} else {
-					wrapperEl.attr('data-delta', delta);
+					$wrapperEl.attr('data-delta', delta);
 					Privileges.exposeSingleAssumedPriv(columnNo, sourceGroupName);
 				}
-				checkboxRowSelector.updateState(checkboxEl);
+				checkboxRowSelector.updateState($checkboxEl);
 			} else {
 				app.alertError('[[error:invalid-data]]');
 			}
@@ -369,12 +369,12 @@ define('admin/manage/privileges', [
 
 	function hightlightRowByDataAttr(attrName, attrValue) {
 		if (attrValue) {
-			const el = $('[' + attrName + ']').filter(function () {
+			const $el = $('[' + attrName + ']').filter(function () {
 				return $(this).attr(attrName) === String(attrValue);
 			});
 
-			if (el.length) {
-				el.addClass('selected');
+			if ($el.length) {
+				$el.addClass('selected');
 				return true;
 			}
 		}
