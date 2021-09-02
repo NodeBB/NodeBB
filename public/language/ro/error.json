@@ -32,7 +32,7 @@
     "email-taken": "Adresa de email este deja folostă",
     "email-nochange": "The email entered is the same as the email already on file.",
     "email-invited": "Email was already invited",
-    "email-not-confirmed": "You are unable to post until your email is confirmed, please click here to confirm your email.",
+    "email-not-confirmed": "Posting in some categories or topics is enabled once your email is confirmed, please click here to send a confirmation email.",
     "email-not-confirmed-chat": "Nu vei putea trimite mesaje daca email-ul tau nu e confirmat, click aici sa il confirmi.",
     "email-not-confirmed-email-sent": "Your email has not been confirmed yet, please check your inbox for the confirmation email. You won't be able to post or chat until your email is confirmed.",
     "no-email-to-confirm": "Your account does not have an email set. An email is necessary for account recovery. Please click here to enter an email.",

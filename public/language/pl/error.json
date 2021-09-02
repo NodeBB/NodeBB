@@ -32,7 +32,7 @@
     "email-taken": "Email zajęty",
     "email-nochange": "The email entered is the same as the email already on file.",
     "email-invited": "Email was already invited",
-    "email-not-confirmed": "Nie możesz opublikować, dopóki Twój adres e-mail nie zostanie potwierdzony, kliknij tutaj, aby potwierdzić swój adres e-mail.",
+    "email-not-confirmed": "Posting in some categories or topics is enabled once your email is confirmed, please click here to send a confirmation email.",
     "email-not-confirmed-chat": "Nie możesz prowadzić rozmów, dopóki twój email nie zostanie potwierdzony. Kliknij tutaj, aby potwierdzić swój email.",
     "email-not-confirmed-email-sent": "Twój e-mail nie został jeszcze potwierdzony, sprawdź swoją skrzynkę pocztową, aby znaleźć e-mail z potwierdzeniem. Nie będziesz mógł dodawać postów ani czatować, dopóki Twój adres e-mail nie zostanie potwierdzony.",
     "no-email-to-confirm": "Your account does not have an email set. An email is necessary for account recovery. Please click here to enter an email.",

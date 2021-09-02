@@ -32,7 +32,7 @@
     "email-taken": "Foglalt e-mail",
     "email-nochange": "The email entered is the same as the email already on file.",
     "email-invited": "Ez az email cím már meg lett hívva",
-    "email-not-confirmed": "Nem tehetsz közzé bejegyzést amíg nem erősíted meg az emailcímed, kattints ide az emailcím megerősítéséhez!",
+    "email-not-confirmed": "Posting in some categories or topics is enabled once your email is confirmed, please click here to send a confirmation email.",
     "email-not-confirmed-chat": "Nem küldhetsz üzenetet amíg nem erősíted meg az email címed, kattints ide az email cím megerősítéséhez!",
     "email-not-confirmed-email-sent": "Az email címed még nem lett megerősítve, kérlek ellenőrizd az email fiókodba érkező leveleket. Amíg nincs az email címed megerősítve addig nem tudsz üzeneteket küldeni valamint bejegyzést közzé tenni.",
     "no-email-to-confirm": "Your account does not have an email set. An email is necessary for account recovery. Please click here to enter an email.",

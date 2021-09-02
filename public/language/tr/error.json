@@ -32,7 +32,7 @@
     "email-taken": "E-posta Alınmış",
     "email-nochange": "The email entered is the same as the email already on file.",
     "email-invited": "E-posta halihazırda davet edilmiş",
-    "email-not-confirmed": "E-posta adresiniz onaylanmadan ileti gönderemezsiniz, onay e-postası için buraya tıklayınız!",
+    "email-not-confirmed": "Posting in some categories or topics is enabled once your email is confirmed, please click here to send a confirmation email.",
     "email-not-confirmed-chat": "E-postanız onaylanana kadar sohbet edemezsiniz, onaylamak için lütfen buraya tıklayın.",
     "email-not-confirmed-email-sent": "E-posta adresiniz henüz onaylanmamış, lütfen onay e-postası için gelen kutunuzu kontrol ediniz. E-posta adresinizi onaylayana kadar foruma ileti gönderemeyeceksiniz veya sohbet edemeyeceksiniz!",
     "no-email-to-confirm": "Your account does not have an email set. An email is necessary for account recovery. Please click here to enter an email.",

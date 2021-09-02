@@ -6,6 +6,6 @@
     "size/filecount": "Kích cỡ/ Số lượng tệp",
     "confirm-delete": "Bạn có chắc muốn xóa tệp này không?",
     "filecount": "%1 tệp",
-    "new-folder": "New Folder",
-    "name-new-folder": "Enter a name for new the folder"
+    "new-folder": "Thư mục mới",
+    "name-new-folder": "Nhập tên cho thư mục mới"
 }

@@ -32,7 +32,7 @@
     "email-taken": "此電子信箱已被使用",
     "email-nochange": "The email entered is the same as the email already on file.",
     "email-invited": "Email was already invited",
-    "email-not-confirmed": "在您的電子信箱被確認前，您不能貼文。",
+    "email-not-confirmed": "Posting in some categories or topics is enabled once your email is confirmed, please click here to send a confirmation email.",
     "email-not-confirmed-chat": "您的電子信箱尚未確認，無法聊天，請點擊這裡確認您的電子信箱。",
     "email-not-confirmed-email-sent": "您的電子信箱尚未確認，請檢查您的收件匣。在電子信箱被確認前您不能貼文和聊天。",
     "no-email-to-confirm": "Your account does not have an email set. An email is necessary for account recovery. Please click here to enter an email.",

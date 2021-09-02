@@ -32,7 +32,7 @@
     "email-taken": "Email já cadastrado",
     "email-nochange": "The email entered is the same as the email already on file.",
     "email-invited": "O email já foi convidado",
-    "email-not-confirmed": "Você não poderá postar até que seu e-mail seja confirmado, clique aqui para confirmar seu e-mail.",
+    "email-not-confirmed": "Posting in some categories or topics is enabled once your email is confirmed, please click here to send a confirmation email.",
     "email-not-confirmed-chat": "Você não está habilitado a conversar até que seu email seja confirmado, por favor clique aqui para confirmar seu email.",
     "email-not-confirmed-email-sent": "Seu e-mail ainda não foi confirmado, verifique sua caixa de entrada para o e-mail de confirmação. Você não poderá postar ou usar o chat até que seu e-mail seja confirmado.",
     "no-email-to-confirm": "Sua conta não tem um email definido. Um email é necessário para recuperação de conta. Clique aqui para definir um email.",

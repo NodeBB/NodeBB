@@ -32,7 +32,7 @@
     "email-taken": "Ця електронна пошта зайнята",
     "email-nochange": "The email entered is the same as the email already on file.",
     "email-invited": "Email was already invited",
-    "email-not-confirmed": "Ви не зможете постити до підтвердження вашої електронної адреси, будь-ласка натисніть тут щоб підтвердити свій емейл.",
+    "email-not-confirmed": "Posting in some categories or topics is enabled once your email is confirmed, please click here to send a confirmation email.",
     "email-not-confirmed-chat": "Ви не можете користуватися чатом поки ваша електронна пошта не буде підтверджена, натисніть тут, щоб це зробити.",
     "email-not-confirmed-email-sent": "Ваша електронна адреса ще не була підтверджена, будь-ласка перевірте свою поштову скриньку. Ви не зможете постити або чатитись до того як ваш емейл підтверджено.",
     "no-email-to-confirm": "Your account does not have an email set. An email is necessary for account recovery. Please click here to enter an email.",
