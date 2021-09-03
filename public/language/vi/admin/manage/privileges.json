@@ -58,6 +58,6 @@
 	"alert.no-undo": "<em>Hành động này không thể hoàn tác.</em>",
 	"alert.admin-warning": "Quản trị viên ngầm có tất cả các đặc quyền",
   	"alert.copyPrivilegesFrom-title": "Chọn một danh mục để sao chép từ",
-  	"alert.copyPrivilegesFrom-warning": "This will copy <strong>%1</strong> from the selected category.",
+  	"alert.copyPrivilegesFrom-warning": "Điều này sẽ sao chép <strong>%1</strong> từ danh mục đã chọn.",
   	"alert.copyPrivilegesFromGroup-warning": "This will copy this group's set of <strong>%1</strong> from the selected category."
 }
