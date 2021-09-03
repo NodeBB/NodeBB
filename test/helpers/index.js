@@ -10,6 +10,16 @@ const utils = require('../../public/src/utils');
 
 const helpers = module.exports;
 
+helpers.getCsrfToken = async (jar) => {
+	const { csrf_token: token } = await requestAsync({
+		url: `${nconf.get('url')}/api/config`,
+		json: true,
+		jar,
+	});
+
+	return token;
+};
+
 helpers.loginUser = function (username, password, callback) {
 	const jar = request.jar();
 

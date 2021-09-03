@@ -5,6 +5,7 @@ const async = require('async');
 const fs = require('fs');
 const path = require('path');
 const nconf = require('nconf');
+const validator = require('validator');
 const request = require('request');
 const requestAsync = require('request-promise-native');
 const jwt = require('jsonwebtoken');
@@ -1068,6 +1069,28 @@ describe('User', () => {
 					done();
 				});
 			});
+		});
+
+		it('should let you set an external image', async () => {
+			const token = await helpers.getCsrfToken(jar);
+			const body = await requestAsync(`${nconf.get('url')}/api/v3/users/${uid}/picture`, {
+				jar,
+				method: 'put',
+				json: true,
+				headers: {
+					'x-csrf-token': token,
+				},
+				body: {
+					type: 'external',
+					url: 'https://example.org/picture.jpg',
+				},
+			});
+
+			assert(body && body.status && body.response);
+			assert.strictEqual(body.status.code, 'ok');
+
+			const picture = await User.getUserField(uid, 'picture');
+			assert.strictEqual(picture, validator.escape('https://example.org/picture.jpg'));
 		});
 
 		it('should fail to change user picture with invalid data', (done) => {
