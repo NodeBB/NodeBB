@@ -82,7 +82,7 @@ module.exports = function (middleware) {
 		return !res.headersSent;
 	}
 
-	// TODO: Remove in v1.18.0
+	// TODO: Remove in v1.19.0
 	middleware.authenticate = helpers.try(async (req, res, next) => {
 		winston.warn(`[middleware] middleware.authenticate has been deprecated, page and API routes are now automatically authenticated via setup(Page|API)Route. Use middleware.authenticateRequest (if not using route helper) and middleware.ensureLoggedIn instead. (request path: ${req.path})`);
 		if (!await authenticate(req, res)) {
@@ -101,7 +101,7 @@ module.exports = function (middleware) {
 		next();
 	});
 
-	// TODO: Remove in v1.18.0
+	// TODO: Remove in v1.19.0
 	middleware.authenticateOrGuest = (req, res, next) => {
 		winston.warn(`[middleware] middleware.authenticateOrGuest has been renamed, use middleware.authenticateRequest instead. (request path: ${req.path})`);
 		middleware.authenticateRequest(req, res, next);
