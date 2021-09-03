@@ -8,6 +8,10 @@ const api = require('../../api');
 
 module.exports = function (SocketUser) {
 	SocketUser.changePicture = async function (socket, data) {
+		if (!socket.uid) {
+			throw new Error('[[error:invalid-uid]]');
+		}
+
 		websockets.warnDeprecated(socket, 'PUT /api/v3/users/:uid/picture');
 		await api.users.changePicture(socket, data);
 	};
