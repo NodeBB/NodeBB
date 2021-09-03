@@ -227,14 +227,9 @@ usersAPI.unban = async function (caller, data) {
 async function isPrivilegedOrSelfAndPasswordMatch(caller, data) {
 	const { uid } = caller;
 	const isSelf = parseInt(uid, 10) === parseInt(data.uid, 10);
+	const canEdit = await privileges.users.canEdit(uid, data.uid);
 
-	const [isAdmin, isTargetAdmin, isGlobalMod] = await Promise.all([
-		user.isAdministrator(uid),
-		user.isAdministrator(data.uid),
-		user.isGlobalModerator(uid),
-	]);
-
-	if ((isTargetAdmin && !isAdmin) || (!isSelf && !(isAdmin || isGlobalMod))) {
+	if (!canEdit) {
 		throw new Error('[[error:no-privileges]]');
 	}
 	const [hasPassword, passwordMatch] = await Promise.all([
