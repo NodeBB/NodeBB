@@ -5,5 +5,7 @@
     "orphaned": "Sahipsiz",
     "size/filecount": "Boyut / Dosya sayısı",
     "confirm-delete": "Bu dosyayı silmek istediğinden emin misin?",
-    "filecount": "%1 dosya"
+    "filecount": "%1 dosya",
+    "new-folder": "New Folder",
+    "name-new-folder": "Enter a name for new the folder"
 }

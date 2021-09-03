@@ -5,5 +5,7 @@
     "orphaned": "Huérfano",
     "size/filecount": "Tamaño / Recuento de archivos",
     "confirm-delete": "¿Realmente quieres borrar este archivo?",
-    "filecount": "%1 archivos"
+    "filecount": "%1 archivos",
+    "new-folder": "New Folder",
+    "name-new-folder": "Enter a name for new the folder"
 }

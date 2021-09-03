@@ -21,6 +21,7 @@
     "edit": "Szerkesztés",
     "delete": "Törlés",
     "delete-event": "Delete Event",
+    "delete-event-confirm": "Are you sure you want to delete this event?",
     "purge": "Végleges törlés",
     "restore": "Visszaállítás",
     "move": "Áthelyezés",
@@ -175,5 +176,6 @@
     "timeago_later": "%1 később",
     "timeago_earlier": "%1 korábban",
     "first-post": "Első bejegyzés",
-    "last-post": "Utolsó bejegyzés"
+    "last-post": "Utolsó bejegyzés",
+    "post-quick-reply": "Post quick reply"
 }

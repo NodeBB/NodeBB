@@ -65,7 +65,8 @@ module.exports = function (Plugins) {
 			await db.sortedSetAdd('plugins:active', count, id);
 		}
 		meta.reloadRequired = true;
-		Plugins.hooks.fire(isActive ? 'action:plugin.deactivate' : 'action:plugin.activate', { id: id });
+		const hook = isActive ? 'deactivate' : 'activate';
+		Plugins.hooks.fire(`action:plugin.${hook}`, { id: id });
 		return { id: id, active: !isActive };
 	};
 

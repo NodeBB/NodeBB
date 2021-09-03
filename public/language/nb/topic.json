@@ -21,6 +21,7 @@
     "edit": "Endre",
     "delete": "Slett",
     "delete-event": "Delete Event",
+    "delete-event-confirm": "Are you sure you want to delete this event?",
     "purge": "Rensk",
     "restore": "Gjenopprett",
     "move": "Flytt",
@@ -175,5 +176,6 @@
     "timeago_later": "%1 senere",
     "timeago_earlier": "%1 tidligere",
     "first-post": "Første innlegg",
-    "last-post": "Seneste innlegg"
+    "last-post": "Seneste innlegg",
+    "post-quick-reply": "Post quick reply"
 }

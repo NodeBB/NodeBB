@@ -353,7 +353,7 @@ define('forum/topic/postTools', [
 				return app.alertError(err);
 			}
 			var type = method === 'put' ? 'bookmark' : 'unbookmark';
-			hooks.fire('action:post.' + type, { pid: pid });
+			hooks.fire(`action:post.${type}`, { pid: pid });
 		});
 		return false;
 	}

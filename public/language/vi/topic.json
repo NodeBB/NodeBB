@@ -21,6 +21,7 @@
     "edit": "Chỉnh sửa",
     "delete": "Xóa",
     "delete-event": "Xóa Sự Kiện",
+    "delete-event-confirm": "Bạn có chắc muốn xóa sự kiện này không?",
     "purge": "Xóa hẳn",
     "restore": "Khôi phục",
     "move": "Chuyển đi",
@@ -175,5 +176,6 @@
     "timeago_later": "%1 sau",
     "timeago_earlier": "%1 trước đó",
     "first-post": "Bài viết đầu tiên",
-    "last-post": "Bài viết cuối cùng"
+    "last-post": "Bài viết cuối cùng",
+    "post-quick-reply": "Đăng trả lời nhanh"
 }

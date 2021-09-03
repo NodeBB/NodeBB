@@ -21,6 +21,7 @@
     "edit": "Éditer",
     "delete": "Supprimer",
     "delete-event": "Supprimer l'événement",
+    "delete-event-confirm": "Voulez-vous vraiment supprimer cet événement ?",
     "purge": "Supprimer définitivement",
     "restore": "Restaurer",
     "move": "Déplacer",
@@ -175,5 +176,6 @@
     "timeago_later": "%1",
     "timeago_earlier": "il y a %1",
     "first-post": "Premier message",
-    "last-post": "Dernier message"
+    "last-post": "Dernier message",
+    "post-quick-reply": "Réponse rapide"
 }

@@ -21,6 +21,7 @@
     "edit": "Ändra",
     "delete": "Ta bort",
     "delete-event": "Delete Event",
+    "delete-event-confirm": "Are you sure you want to delete this event?",
     "purge": "Rensa",
     "restore": "Återställ",
     "move": "Flytta",
@@ -175,5 +176,6 @@
     "timeago_later": "%1 senare",
     "timeago_earlier": "%1 tidigare",
     "first-post": "First post",
-    "last-post": "Last post"
+    "last-post": "Last post",
+    "post-quick-reply": "Post quick reply"
 }

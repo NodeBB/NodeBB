@@ -51,10 +51,13 @@
 	"alert.saved": "Änderungen an Rechten gespeichert und angewendet",
 	"alert.confirm-discard": "Bist du sicher, dass du die Änderungen an den Rechten verwerfen möchtest?",
 	"alert.discarded": "Änderungen an Rechten verworfen",
-	"alert.confirm-copyToAll": "Bist Du sicher, dass Du diese Rechte auf <strong>alle Kategorien</strong> anwenden möchtest?",
-	"alert.confirm-copyToAllGroup": "Bist Du sicher, dass Du die Rechte dieser Gruppe auf <strong>alle Kategorien</strong> anwenden möchtest?",
-	"alert.confirm-copyToChildren": "Bist Du sicher, dass Du diese Rechte auf <strong>alle Unterkategorien</strong> anwenden möchtest?",
-	"alert.confirm-copyToChildrenGroup": "Bist Du sicher, dass Du die Rechte dieser Gruppe auf <strong>alle Unterkategorien</strong> anwenden möchtest?",
+	"alert.confirm-copyToAll": "Are you sure you wish to apply this set of <strong>%1</strong> to <strong>all categories</strong>?",
+	"alert.confirm-copyToAllGroup": "Are you sure you wish to apply this group's set of <strong>%1</strong> to <strong>all categories</strong>?",
+	"alert.confirm-copyToChildren": "Are you sure you wish to apply this set of <strong>%1</strong> to <strong>all descendant (child) categories</strong>?",
+	"alert.confirm-copyToChildrenGroup": "Are you sure you wish to apply this group's set of <strong>%1</strong> to <strong>all descendant (child) categories</strong>?",
 	"alert.no-undo": "<em>Dieser Vorgang kann nicht rückgängig gemacht werden.</em>",
-	"alert.admin-warning": "Administratoren erhalten implizit alle Berechtigungen"
+	"alert.admin-warning": "Administratoren erhalten implizit alle Berechtigungen",
+  	"alert.copyPrivilegesFrom-title": "Select a category to copy from",
+  	"alert.copyPrivilegesFrom-warning": "This will copy <strong>%1</strong> from the selected category.",
+  	"alert.copyPrivilegesFromGroup-warning": "This will copy this group's set of <strong>%1</strong> from the selected category."
 }

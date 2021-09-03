@@ -98,6 +98,7 @@
     "has_no_follower": "Người dùng này không có ai theo dõi :(",
     "follows_no_one": "Người dùng này không theo dõi ai :(",
     "has_no_posts": "Thành viên này chưa đăng bài viết nào cả.",
+    "has_no_best_posts": "Người dùng này chưa có bất kỳ bài đăng nào được ủng hộ.",
     "has_no_topics": "Thành viên này chưa đăng chủ đề nào cả.",
     "has_no_watched_topics": "Người dùng này chưa xem bất kỳ chủ đề nào.",
     "has_no_ignored_topics": "Người dùng này chưa bỏ qua bất cứ chủ đề nào.",

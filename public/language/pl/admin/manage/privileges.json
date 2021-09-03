@@ -51,10 +51,13 @@
 	"alert.saved": "Zapisano i zastosowano zmiany w uprawnieniach",
 	"alert.confirm-discard": "Czy na pewno chcesz odrzucić wprowadzone zmiany w uprawnieniach?",
 	"alert.discarded": "Odrzucono zmiany w uprawnieniach",
-	"alert.confirm-copyToAll": "Czy na pewno chcesz zastosować ten zbiór uprawnień dla <strong>wszystkich kategorii</strong>?",
-	"alert.confirm-copyToAllGroup": "Czy na pewno chcesz zastosować zbiór uprawnień tej grupy dla <strong>wszystkich kategorii</strong>?",
-	"alert.confirm-copyToChildren": "Czy na pewno chcesz zastosować ten zbiór uprawnień dla <strong>wszystkich podkategorii</strong>?",
-	"alert.confirm-copyToChildrenGroup": "Czy na pewno chcesz zastosować zbiór uprawnień tej grupy dla <strong>wszystkich podkategorii</strong>?",
+	"alert.confirm-copyToAll": "Are you sure you wish to apply this set of <strong>%1</strong> to <strong>all categories</strong>?",
+	"alert.confirm-copyToAllGroup": "Are you sure you wish to apply this group's set of <strong>%1</strong> to <strong>all categories</strong>?",
+	"alert.confirm-copyToChildren": "Are you sure you wish to apply this set of <strong>%1</strong> to <strong>all descendant (child) categories</strong>?",
+	"alert.confirm-copyToChildrenGroup": "Are you sure you wish to apply this group's set of <strong>%1</strong> to <strong>all descendant (child) categories</strong>?",
 	"alert.no-undo": "<em>Tej czynności nie można cofnąć.</em>",
-	"alert.admin-warning": "Administratorzy domyślnie otrzymują wszelkie uprawnienia"
+	"alert.admin-warning": "Administratorzy domyślnie otrzymują wszelkie uprawnienia",
+  	"alert.copyPrivilegesFrom-title": "Select a category to copy from",
+  	"alert.copyPrivilegesFrom-warning": "This will copy <strong>%1</strong> from the selected category.",
+  	"alert.copyPrivilegesFromGroup-warning": "This will copy this group's set of <strong>%1</strong> from the selected category."
 }

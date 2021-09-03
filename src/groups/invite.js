@@ -82,8 +82,8 @@ module.exports = function (Groups) {
 
 		const set = type === 'invite' ? `group:${groupName}:invited` : `group:${groupName}:pending`;
 		await db.setAdd(set, uids);
-		const hookName = type === 'invite' ? 'action:group.inviteMember' : 'action:group.requestMembership';
-		plugins.hooks.fire(hookName, {
+		const hookName = type === 'invite' ? 'inviteMember' : 'requestMembership';
+		plugins.hooks.fire(`action:group.${hookName}`, {
 			groupName: groupName,
 			uids: uids,
 		});

@@ -74,6 +74,7 @@ define('forum/topic', [
 		$(window).on('scroll', updateTopicTitle);
 
 		handleTopicSearch();
+		app.showEmailConfirmWarning();
 
 		hooks.fire('action:topic.loaded', ajaxify.data);
 	};

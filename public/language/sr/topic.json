@@ -21,6 +21,7 @@
     "edit": "Уреди",
     "delete": "Избриши",
     "delete-event": "Delete Event",
+    "delete-event-confirm": "Are you sure you want to delete this event?",
     "purge": "Очисти",
     "restore": "Обнови",
     "move": "Премести",
@@ -175,5 +176,6 @@
     "timeago_later": "%1 касније",
     "timeago_earlier": "%1 раније",
     "first-post": "Прва порука",
-    "last-post": "Последња порука"
+    "last-post": "Последња порука",
+    "post-quick-reply": "Post quick reply"
 }

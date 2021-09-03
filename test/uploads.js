@@ -1,10 +1,11 @@
 'use strict';
 
 const async = require('async');
-const	assert = require('assert');
+const assert = require('assert');
 const nconf = require('nconf');
 const path = require('path');
 const request = require('request');
+const requestAsync = require('request-promise-native');
 
 const db = require('./mocks/databasemock');
 const categories = require('../src/categories');
@@ -372,14 +373,28 @@ describe('Upload Controllers', () => {
 	describe('admin uploads', () => {
 		let jar;
 		let csrf_token;
+		let regularJar;
+		let regular_csrf_token;
 
 		before((done) => {
-			helpers.loginUser('admin', 'barbar', (err, _jar, _csrf_token) => {
-				assert.ifError(err);
-				jar = _jar;
-				csrf_token = _csrf_token;
-				done();
-			});
+			async.parallel([
+				function (next) {
+					helpers.loginUser('admin', 'barbar', (err, _jar, _csrf_token) => {
+						assert.ifError(err);
+						jar = _jar;
+						csrf_token = _csrf_token;
+						next();
+					});
+				},
+				function (next) {
+					helpers.loginUser('regular', 'zugzug', (err, _jar, _csrf_token) => {
+						assert.ifError(err);
+						regularJar = _jar;
+						regular_csrf_token = _csrf_token;
+						next();
+					});
+				},
+			], done);
 		});
 
 		it('should upload site logo', (done) => {
@@ -488,6 +503,68 @@ describe('Upload Controllers', () => {
 				assert.equal(res.statusCode, 500);
 				assert.strictEqual(body.error, '[[error:invalid-path]]');
 				done();
+			});
+		});
+
+		describe('ACP uploads screen', () => {
+			it('should create a folder', async () => {
+				const res = await helpers.createFolder('', 'myfolder', jar, csrf_token);
+				assert.strictEqual(res.statusCode, 200);
+				assert(file.existsSync(path.join(nconf.get('upload_path'), 'myfolder')));
+			});
+
+			it('should fail to create a folder if it already exists', async () => {
+				const res = await helpers.createFolder('', 'myfolder', jar, csrf_token);
+				assert.strictEqual(res.statusCode, 403);
+				assert.deepStrictEqual(res.body.status, {
+					code: 'forbidden',
+					message: 'Folder exists',
+				});
+			});
+
+			it('should fail to create a folder as a non-admin', async () => {
+				const res = await helpers.createFolder('', 'hisfolder', regularJar, regular_csrf_token);
+				assert.strictEqual(res.statusCode, 403);
+				assert.deepStrictEqual(res.body.status, {
+					code: 'forbidden',
+					message: 'You are not authorised to make this call',
+				});
+			});
+
+			it('should fail to create a folder in wrong directory', async () => {
+				const res = await helpers.createFolder('../traversing', 'unexpectedfolder', jar, csrf_token);
+				assert.strictEqual(res.statusCode, 403);
+				assert.deepStrictEqual(res.body.status, {
+					code: 'forbidden',
+					message: 'Invalid path',
+				});
+			});
+
+			it('should use basename of given folderName to create new folder', async () => {
+				const res = await helpers.createFolder('/myfolder', '../another folder', jar, csrf_token);
+				assert.strictEqual(res.statusCode, 200);
+				const slugifiedName = 'another-folder';
+				assert(file.existsSync(path.join(nconf.get('upload_path'), 'myfolder', slugifiedName)));
+			});
+
+			it('should fail to delete a file as a non-admin', async () => {
+				const res = await requestAsync.delete(`${nconf.get('url')}/api/v3/files`, {
+					body: {
+						path: '/system/test.png',
+					},
+					jar: regularJar,
+					json: true,
+					headers: {
+						'x-csrf-token': regular_csrf_token,
+					},
+					simple: false,
+					resolveWithFullResponse: true,
+				});
+				assert.strictEqual(res.statusCode, 403);
+				assert.deepStrictEqual(res.body.status, {
+					code: 'forbidden',
+					message: 'You are not authorised to make this call',
+				});
 			});
 		});
 	});

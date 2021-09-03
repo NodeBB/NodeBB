@@ -5,5 +5,7 @@
     "orphaned": "未使用",
     "size/filecount": "大小/文件数",
     "confirm-delete": "您确定要删除此文件吗？",
-    "filecount": "%1 文件"
+    "filecount": "%1 文件",
+    "new-folder": "New Folder",
+    "name-new-folder": "Enter a name for new the folder"
 }
