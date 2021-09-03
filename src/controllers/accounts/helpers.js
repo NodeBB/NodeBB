@@ -43,13 +43,13 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 
 	userData.emailClass = 'hide';
 
-	if (!isAdmin && !isGlobalModerator && !isSelf && (!userSettings.showemail || meta.config.hideEmail)) {
+	if (!results.canEdit && (!userSettings.showemail || meta.config.hideEmail)) {
 		userData.email = '';
 	} else if (!userSettings.showemail) {
 		userData.emailClass = '';
 	}
 
-	if (!isAdmin && !isGlobalModerator && !isSelf && (!userSettings.showfullname || meta.config.hideFullname)) {
+	if (!results.canEdit && (!userSettings.showfullname || meta.config.hideFullname)) {
 		userData.fullname = '';
 	}
 
