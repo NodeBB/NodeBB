@@ -49,6 +49,8 @@ privsGlobal.userPrivilegeList = [
 
 privsGlobal.groupPrivilegeList = privsGlobal.userPrivilegeList.map(privilege => `groups:${privilege}`);
 
+privsGlobal.privilegeList = privsGlobal.userPrivilegeList.concat(privsGlobal.groupPrivilegeList);
+
 privsGlobal.list = async function () {
 	async function getLabels() {
 		return await utils.promiseParallel({
