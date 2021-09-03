@@ -200,7 +200,7 @@ authenticationController.registerComplete = function (req, res, next) {
 				return winston.warn('[register] Interstitial callbacks processed with no errors, but one or more interstitials remain. This is likely an issue with one of the interstitials not properly handling a null case or invalid value.');
 			}
 
-			done();
+			done(null, data);
 		} else {
 			// Update user hash, clear registration data in session
 			const payload = req.session.registration;
