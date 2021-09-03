@@ -79,6 +79,12 @@ define('admin/extend/plugins', [
 								callback: toggleActivate,
 							},
 						},
+						onShown: function () {
+							const saveEl = this.querySelector('button.btn-primary');
+							if (saveEl) {
+								saveEl.focus();
+							}
+						},
 					});
 				});
 			} else {
