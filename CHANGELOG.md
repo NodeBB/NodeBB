@@ -1,3 +1,47 @@
+#### v1.18.1 (2021-09-03)
+
+##### Chores
+
+*  found some hooks that don't play well docgen (ae793b4a)
+*  incrementing version number - v1.18.0 (1e436ae7)
+*  update changelog for v1.18.0 (2fd9c095)
+* **deps:**  update dependency mocha to v9.1.1 (64bac178)
+
+##### New Features
+
+*  create folders in ACP uploads #9638 (#9750) (3df79683)
+*  column based view on wide priv. tables (#9699) (61f02f17)
+*  als (#9749) (e59d3575)
+*  add quick reply key (e9314842)
+*  add new lang key for no best posts (6e73d8c9)
+
+##### Bug Fixes
+
+* **deps:**
+  *  update dependency autoprefixer to v10.3.4 (67b932f4)
+  *  update dependency nodebb-theme-persona to v11.2.4 (fe18e100)
+  *  update dependency mongodb to v3.7.0 (31a35d7f)
+  *  update socket.io packages to v4.2.0 (f2028d70)
+  *  update dependency ioredis to v4.27.9 (6052eb16)
+  *  update dependency mongodb to v3.6.12 (#9761) (5fa982c1)
+  *  update dependency nodebb-plugin-composer-default to v7.0.2 (33d51201)
+  *  update dependency nodebb-theme-slick to v1.4.12 (1b416d7e)
+  *  update dependency nodebb-theme-slick to v1.4.11 (65b32fa1)
+  *  update dependency nodebb-theme-persona to v11.2.3 (6ce321e4)
+  *  update dependency autoprefixer to v10.3.3 (91ba7cdf)
+  *  update dependency nodebb-theme-slick to v1.4.9 (d80b378f)
+  *  update dependency jquery-deserialize to v2.0.0 (#9744) (7f9451ce)
+*  determine indeterminate checkboxes (760ea9df)
+*  move app.alert back into the conditionals (ca9bae3a)
+*  only show email confirmation warning toast on pages that it applies (1bd1cc74)
+*  updated email confirm warning to be more positive (2d1380dd)
+*  automated tests are a good thing to have (6afeac37)
+
+##### Refactors
+
+*  consistent jquery element var naming (fc0e655e)
+*  var to const (1272da65)
+
 #### v1.18.0 (2021-08-25)
 
 ##### Breaking Changes
