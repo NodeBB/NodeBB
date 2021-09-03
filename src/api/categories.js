@@ -70,15 +70,19 @@ categoriesAPI.setPrivilege = async (caller, data) => {
 	if (!privs.length) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	let privMethod = privileges.categories[type];
 	if (parseInt(data.cid, 10) === 0) {
-		if (privs[0].startsWith('admin:')) {
-			privMethod = privileges.admin[type];
-		} else {
-			privMethod = privileges.global[type];
+		const adminPrivs = privs.filter(priv => privileges.admin.privilegeList.includes(priv));
+		const globalPrivs = privs.filter(priv => privileges.global.privilegeList.includes(priv));
+		if (adminPrivs.length) {
+			await privileges.admin[type](adminPrivs, data.member);
 		}
+		if (globalPrivs.length) {
+			await privileges.global[type](globalPrivs, data.member);
+		}
+	} else {
+		const categoryPrivs = privs.filter(priv => privileges.categories.privilegeList.includes(priv));
+		await privileges.categories[type](categoryPrivs, data.cid, data.member);
 	}
-	await privMethod(privs, data.cid, data.member);
 
 	await events.log({
 		uid: caller.uid,
