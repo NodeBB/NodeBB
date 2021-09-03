@@ -65,10 +65,20 @@ categoriesAPI.setPrivilege = async (caller, data) => {
 	if (!userExists && !groupExists) {
 		throw new Error('[[error:no-user-or-group]]');
 	}
-
-	await privileges.categories[data.set ? 'give' : 'rescind'](
-		Array.isArray(data.privilege) ? data.privilege : [data.privilege], data.cid, data.member
-	);
+	const privs = Array.isArray(data.privilege) ? data.privilege : [data.privilege];
+	const type = data.set ? 'give' : 'rescind';
+	if (!privs.length) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	let privMethod = privileges.categories[type];
+	if (parseInt(data.cid, 10) === 0) {
+		if (privs[0].startsWith('admin:')) {
+			privMethod = privileges.admin[type];
+		} else {
+			privMethod = privileges.global[type];
+		}
+	}
+	await privMethod(privs, data.cid, data.member);
 
 	await events.log({
 		uid: caller.uid,
