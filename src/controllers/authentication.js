@@ -138,16 +138,14 @@ async function addToApprovalQueue(req, userData) {
 	return { message: message };
 }
 
-authenticationController.registerComplete = function (req, res, next) {
-	// For the interstitials that respond, execute the callback with the form body
-	plugins.hooks.fire('filter:register.interstitial', {
-		req,
-		userData: req.session.registration,
-		interstitials: [],
-	}, async (err, data) => {
-		if (err) {
-			return next(err);
-		}
+authenticationController.registerComplete = async function (req, res) {
+	try {
+		// For the interstitials that respond, execute the callback with the form body
+		const data = await plugins.hooks.fire('filter:register.interstitial', {
+			req,
+			userData: req.session.registration,
+			interstitials: [],
+		});
 
 		const callbacks = data.interstitials.reduce((memo, cur) => {
 			if (cur.hasOwnProperty('callback') && typeof cur.callback === 'function') {
@@ -165,13 +163,10 @@ authenticationController.registerComplete = function (req, res, next) {
 			return memo;
 		}, []);
 
-		const done = function (err, data) {
+		const done = function (data) {
 			delete req.session.registration;
-			if (err) {
-				return res.redirect(`${nconf.get('relative_path')}/?register=${encodeURIComponent(err.message)}`);
-			}
 
-			if (!err && data && data.message) {
+			if (data && data.message) {
 				return res.redirect(`${nconf.get('relative_path')}/?register=${encodeURIComponent(data.message)}`);
 			}
 
@@ -199,8 +194,7 @@ authenticationController.registerComplete = function (req, res, next) {
 			if (!data) {
 				return winston.warn('[register] Interstitial callbacks processed with no errors, but one or more interstitials remain. This is likely an issue with one of the interstitials not properly handling a null case or invalid value.');
 			}
-
-			done(null, data);
+			done(data);
 		} else {
 			// Update user hash, clear registration data in session
 			const payload = req.session.registration;
@@ -217,7 +211,10 @@ authenticationController.registerComplete = function (req, res, next) {
 			await user.setUserFields(uid, payload);
 			done();
 		}
-	});
+	} catch (err) {
+		delete req.session.registration;
+		res.redirect(`${nconf.get('relative_path')}/?register=${encodeURIComponent(err.message)}`);
+	}
 };
 
 authenticationController.registerAbort = function (req, res) {
