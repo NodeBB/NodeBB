@@ -341,3 +341,44 @@ usersAPI.search = async function (caller, data) {
 		filters: filters,
 	});
 };
+
+usersAPI.changePicture = async (caller, data) => {
+	if (!data) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
+	const { type, url } = data;
+	let picture = '';
+
+	await user.checkMinReputation(caller.uid, data.uid, 'min:rep:profile-picture');
+	const canEdit = await privileges.users.canEdit(caller.uid, data.uid);
+	if (!canEdit) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	if (type === 'default') {
+		picture = '';
+	} else if (type === 'uploaded') {
+		picture = await user.getUserField(data.uid, 'uploadedpicture');
+	} else if (type === 'external' && url) {
+		picture = validator.escape(url);
+	} else {
+		const returnData = await plugins.hooks.fire('filter:user.getPicture', {
+			uid: caller.uid,
+			type: type,
+			picture: undefined,
+		});
+		picture = returnData && returnData.picture;
+	}
+
+	const validBackgrounds = await user.getIconBackgrounds(caller.uid);
+	if (!validBackgrounds.includes(data.bgColor)) {
+		data.bgColor = validBackgrounds[0];
+	}
+
+	await user.updateProfile(caller.uid, {
+		uid: data.uid,
+		picture: picture,
+		'icon:bgColor': data.bgColor,
+	}, ['picture', 'icon:bgColor']);
+};

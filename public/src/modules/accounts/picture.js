@@ -2,7 +2,8 @@
 
 define('accounts/picture', [
 	'pictureCropper',
-], (pictureCropper) => {
+	'api',
+], (pictureCropper, api) => {
 	const Picture = {};
 
 	Picture.openChangeModal = () => {
@@ -89,14 +90,10 @@ define('accounts/picture', [
 					var type = modal.find('.list-group-item.active').attr('data-type');
 					const iconBgColor = document.querySelector('.modal.picture-switcher input[type="radio"]:checked').value || 'transparent';
 
-					changeUserPicture(type, iconBgColor, function (err) {
-						if (err) {
-							return app.alertError(err.message);
-						}
-
+					changeUserPicture(type, iconBgColor).then(() => {
 						Picture.updateHeader(type === 'default' ? '' : modal.find('.list-group-item.active img').attr('src'), iconBgColor);
 						ajaxify.refresh();
-					});
+					}).catch(app.alertError);
 				}
 
 				function onCloseModal() {
@@ -212,12 +209,8 @@ define('accounts/picture', [
 		});
 	}
 
-	function changeUserPicture(type, bgColor, callback) {
-		socket.emit('user.changePicture', {
-			type,
-			bgColor,
-			uid: ajaxify.data.theirid,
-		}, callback);
+	function changeUserPicture(type, bgColor) {
+		return api.put(`/users/${ajaxify.data.theirid}/picture`, { type, bgColor });
 	}
 
 	return Picture;

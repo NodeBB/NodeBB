@@ -22,6 +22,7 @@ function authenticatedRoutes() {
 	setupApiRoute(router, 'get', '/:uid', [...middlewares, middleware.assert.user], controllers.write.users.get);
 	setupApiRoute(router, 'put', '/:uid', [...middlewares, middleware.assert.user], controllers.write.users.update);
 	setupApiRoute(router, 'delete', '/:uid', [...middlewares, middleware.assert.user], controllers.write.users.delete);
+	setupApiRoute(router, 'put', '/:uid/picture', [...middlewares, middleware.assert.user], controllers.write.users.changePicture);
 	setupApiRoute(router, 'delete', '/:uid/content', [...middlewares, middleware.assert.user], controllers.write.users.deleteContent);
 	setupApiRoute(router, 'delete', '/:uid/account', [...middlewares, middleware.assert.user], controllers.write.users.deleteAccount);
 
