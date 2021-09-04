@@ -72,13 +72,46 @@ describe('Hash methods', () => {
 			});
 		});
 
-		it('should set multiple keys to different okjects', async () => {
+		it('should set multiple keys to different objects', async () => {
 			const keys = ['bulkKey1', 'bulkKey2'];
 			const data = [{ foo: '1' }, { baz: 'baz' }];
 
 			await db.setObjectBulk(keys, data);
 			const result = await db.getObjects(keys);
 			assert.deepStrictEqual(result, data);
+		});
+
+		it('should not error if object is empty', async () => {
+			const keys = ['bulkKey3', 'bulkKey4'];
+			const data = [{ foo: '1' }, { }];
+
+			await db.setObjectBulk(keys, data);
+			const result = await db.getObjects(keys);
+			assert.deepStrictEqual(result, [{ foo: '1' }, null]);
+		});
+
+		it('should not error if object is empty', async () => {
+			const keys = ['bulkKey5'];
+			const data = [{ }];
+
+			await db.setObjectBulk(keys, data);
+			const result = await db.getObjects(keys);
+			assert.deepStrictEqual(result, [null]);
+		});
+
+		it('should not error if object is empty', async () => {
+			const keys = ['bulkKey6', 'bulkKey7'];
+			const data = {};
+
+			await db.setObject(keys, data);
+			const result = await db.getObjects(keys);
+			assert.deepStrictEqual(result, [null, null]);
+		});
+
+		it('should not error if object is empty', async () => {
+			await db.setObject('emptykey', {});
+			const result = await db.getObject('emptykey');
+			assert.deepStrictEqual(result, null);
 		});
 	});
 

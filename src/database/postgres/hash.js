@@ -11,7 +11,9 @@ module.exports = function (module) {
 		if (data.hasOwnProperty('')) {
 			delete data[''];
 		}
-
+		if (!Object.keys(data).length) {
+			return;
+		}
 		await module.transaction(async (client) => {
 			const dataString = JSON.stringify(data);
 			async function setOne(key) {
