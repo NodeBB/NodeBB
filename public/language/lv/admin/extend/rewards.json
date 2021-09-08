@@ -8,8 +8,6 @@
 	"delete": "Izdzēst",
 	"enable": "Iespējot",
 	"disable": "Atspējot",
-	"control-panel": "Balvu vadības panelis",
-	"new-reward": "Jauna balva",
 
 	"alert.delete-success": "Veiksmīgi izdzēsta balva",
 	"alert.no-inputs-found": "Nederīga balva - nav ievažu!",

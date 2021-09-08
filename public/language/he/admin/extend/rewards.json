@@ -8,8 +8,6 @@
 	"delete": "מחק",
 	"enable": "הפעל",
 	"disable": "השבת",
-	"control-panel": "בקרת תגמולים",
-	"new-reward": "תגמול חדש",
 
 	"alert.delete-success": "תגמול נמחק בהצלחה",
 	"alert.no-inputs-found": "תגמול לא חוקי - לא נמצא מידע!",
