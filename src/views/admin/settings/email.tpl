@@ -28,6 +28,14 @@
 			</div>
 
 			<div class="checkbox">
+				<label for="requireEmailAddress" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" id="requireEmailAddress" data-field="requireEmailAddress" name="requireEmailAddress" />
+					<span class="mdl-switch__label">[[admin/settings/email:require-email-address]]</span>
+				</label>
+			</div>
+			<p class="help-block">[[admin/settings/email:require-email-address-warning]]</p>
+
+			<div class="checkbox">
 				<label for="includeUnverifiedEmails" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" id="includeUnverifiedEmails" data-field="includeUnverifiedEmails" name="includeUnverifiedEmails" />
 					<span class="mdl-switch__label">[[admin/settings/email:include-unverified-emails]]</span>
