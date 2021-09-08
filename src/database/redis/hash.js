@@ -41,7 +41,11 @@ module.exports = function (module) {
 			return;
 		}
 		const batch = module.client.batch();
-		keys.forEach((k, i) => batch.hmset(k, data[i]));
+		keys.forEach((k, i) => {
+			if (Object.keys(data[i]).length) {
+				batch.hmset(k, data[i]);
+			}
+		});
 		await helpers.execBatch(batch);
 		cache.del(keys);
 	};

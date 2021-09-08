@@ -6,6 +6,7 @@ const api = require('../../api');
 const user = require('../../user');
 const events = require('../../events');
 const notifications = require('../../notifications');
+const privileges = require('../../privileges');
 const db = require('../../database');
 const plugins = require('../../plugins');
 const sockets = require('..');
@@ -31,10 +32,10 @@ module.exports = function (SocketUser) {
 	};
 
 	SocketUser.uploadCroppedPicture = async function (socket, data) {
-		if (!socket.uid) {
+		if (!socket.uid || !(await privileges.users.canEdit(socket.uid, data.uid))) {
 			throw new Error('[[error:no-privileges]]');
 		}
-		await user.isAdminOrGlobalModOrSelf(socket.uid, data.uid);
+
 		await user.checkMinReputation(socket.uid, data.uid, 'min:rep:profile-picture');
 		data.callerUid = socket.uid;
 		return await user.uploadCroppedPicture(data);

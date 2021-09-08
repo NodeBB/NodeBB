@@ -51,10 +51,13 @@
 	"alert.saved": "Changements de privilèges enregistrés et appliqués",
 	"alert.confirm-discard": "Êtes-vous sûr de vouloir annuler vos modifications de privilèges ?",
 	"alert.discarded": "Modifications de privilèges annulés",
-	"alert.confirm-copyToAll": "Voulez-vous vraiment appliquer ce jeu de privilèges à <strong>toutes les catégories</strong> ?",
-	"alert.confirm-copyToAllGroup": "Voulez-vous vraiment appliquer le jeu de privilèges de ce groupe à <strong>toutes les catégories</strong> ?",
-	"alert.confirm-copyToChildren": "Voulez-vous vraiment appliquer ces privilèges à <strong>toutes les catégories incluses (enfants)</strong> ?",
-	"alert.confirm-copyToChildrenGroup": "Voulez-vous vraiment appliquer le jeu de privilèges de ce groupe à <strong>toutes les catégories incluses (enfants)</strong> ?",
+	"alert.confirm-copyToAll": "Are you sure you wish to apply this set of <strong>%1</strong> to <strong>all categories</strong>?",
+	"alert.confirm-copyToAllGroup": "Are you sure you wish to apply this group's set of <strong>%1</strong> to <strong>all categories</strong>?",
+	"alert.confirm-copyToChildren": "Are you sure you wish to apply this set of <strong>%1</strong> to <strong>all descendant (child) categories</strong>?",
+	"alert.confirm-copyToChildrenGroup": "Are you sure you wish to apply this group's set of <strong>%1</strong> to <strong>all descendant (child) categories</strong>?",
 	"alert.no-undo": "<em>Cette action ne peut pas être annulée.</em>",
-	"alert.admin-warning": "Les administrateurs obtiennent implicitement tous les privilèges"
+	"alert.admin-warning": "Les administrateurs obtiennent implicitement tous les privilèges",
+  	"alert.copyPrivilegesFrom-title": "Select a category to copy from",
+  	"alert.copyPrivilegesFrom-warning": "This will copy <strong>%1</strong> from the selected category.",
+  	"alert.copyPrivilegesFromGroup-warning": "This will copy this group's set of <strong>%1</strong> from the selected category."
 }

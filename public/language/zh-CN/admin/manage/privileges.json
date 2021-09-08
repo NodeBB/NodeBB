@@ -51,10 +51,13 @@
 	"alert.saved": "权限修改已保存并应用",
 	"alert.confirm-discard": "您确定要取消权限修改吗？",
 	"alert.discarded": "权限修改已被丢弃",
-	"alert.confirm-copyToAll": "您确定要将此权限应用于<strong>所有类别</strong>吗？",
-	"alert.confirm-copyToAllGroup": "您确定要将此用户组权限应用于<strong>所有类别</strong>吗？",
-	"alert.confirm-copyToChildren": "您确定要将此权限应用于<strong>所有子类别</strong>吗？",
-	"alert.confirm-copyToChildrenGroup": "您确定要将此用户组权限应用于<strong>所有子类别</strong>吗？",
+	"alert.confirm-copyToAll": "Are you sure you wish to apply this set of <strong>%1</strong> to <strong>all categories</strong>?",
+	"alert.confirm-copyToAllGroup": "Are you sure you wish to apply this group's set of <strong>%1</strong> to <strong>all categories</strong>?",
+	"alert.confirm-copyToChildren": "Are you sure you wish to apply this set of <strong>%1</strong> to <strong>all descendant (child) categories</strong>?",
+	"alert.confirm-copyToChildrenGroup": "Are you sure you wish to apply this group's set of <strong>%1</strong> to <strong>all descendant (child) categories</strong>?",
 	"alert.no-undo": "此操作无法撤消。",
-	"alert.admin-warning": "管理员隐性获得全部权限"
+	"alert.admin-warning": "管理员隐性获得全部权限",
+  	"alert.copyPrivilegesFrom-title": "Select a category to copy from",
+  	"alert.copyPrivilegesFrom-warning": "This will copy <strong>%1</strong> from the selected category.",
+  	"alert.copyPrivilegesFromGroup-warning": "This will copy this group's set of <strong>%1</strong> from the selected category."
 }

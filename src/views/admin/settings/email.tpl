@@ -28,6 +28,14 @@
 			</div>
 
 			<div class="checkbox">
+				<label for="requireEmailAddress" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" id="requireEmailAddress" data-field="requireEmailAddress" name="requireEmailAddress" />
+					<span class="mdl-switch__label">[[admin/settings/email:require-email-address]]</span>
+				</label>
+			</div>
+			<p class="help-block">[[admin/settings/email:require-email-address-warning]]</p>
+
+			<div class="checkbox">
 				<label for="includeUnverifiedEmails" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" id="includeUnverifiedEmails" data-field="includeUnverifiedEmails" name="includeUnverifiedEmails" />
 					<span class="mdl-switch__label">[[admin/settings/email:include-unverified-emails]]</span>
@@ -122,14 +130,14 @@
 			</div>
 			<div class="form-group">
 				<label for="email:smtpTransport:user"><strong>[[admin/settings/email:smtp-transport.username]]</strong></label>
-				<input type="text" class="form-control input-lg" data-field="email:smtpTransport:user" placeholder="admin@example.org" />
+				<input type="text" class="form-control input-lg" data-field="email:smtpTransport:user" placeholder="admin@example.org" autocomplete="off" />
 				<p class="help-block">
 					[[admin/settings/email:smtp-transport.username-help]]
 				</p>
 			</div>
 			<div class="form-group">
 				<label for="email:smtpTransport:pass"><strong>[[admin/settings/email:smtp-transport.password]]</strong></label>
-				<input type="password" class="form-control input-lg" data-field="email:smtpTransport:pass" />
+				<input type="password" class="form-control input-lg" data-field="email:smtpTransport:pass" autocomplete="off" />
 			</div>
 		</form>
 	</div>

@@ -5,5 +5,7 @@
     "orphaned": "Verwaist",
     "size/filecount": "Größe / Dateianzahl",
     "confirm-delete": "Bist du sicher, dass du diese Datei löschen willst?",
-    "filecount": "%1 Dateien"
+    "filecount": "%1 Dateien",
+    "new-folder": "New Folder",
+    "name-new-folder": "Enter a name for new the folder"
 }

@@ -8,8 +8,6 @@
 	"delete": "Xóa",
 	"enable": "Bật",
 	"disable": "Tắt",
-	"control-panel": "Kiểm Soát Phần Thưởng",
-	"new-reward": "Phần Thưởng Mới",
 
 	"alert.delete-success": "Đã xóa thành công phần thưởng",
 	"alert.no-inputs-found": "Phần thưởng không hợp lệ - không tìm thấy đầu vào!",

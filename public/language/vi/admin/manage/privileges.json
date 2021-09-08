@@ -51,10 +51,13 @@
 	"alert.saved": "Đã lưu và áp dụng các thay đổi đặc quyền ",
 	"alert.confirm-discard": "Bạn có chắc chắn muốn hủy các thay đổi đặc quyền của mình không?",
 	"alert.discarded": "Thay đổi đặc quyền bị hủy",
-	"alert.confirm-copyToAll": "Bạn có chắc chắn muốn áp dụng bộ đặc quyền này cho <strong>tất cả chuyên mục</strong>?",
-	"alert.confirm-copyToAllGroup": "Bạn có chắc muốn áp dụng các quyền của nhóm này cho <strong>tất cả chuyên mục</strong>?",
-	"alert.confirm-copyToChildren": "Bạn có chắc chắn muốn áp dụng bộ đặc quyền này cho <strong>tất cả danh mục con</strong>?",
-	"alert.confirm-copyToChildrenGroup": "Bạn có chắc chắn muốn áp dụng bộ đặc quyền của nhóm này cho <strong>tất cả chuyên mục con</strong>?",
+	"alert.confirm-copyToAll": "Bạn có chắc muốn áp dụng cài đặt <strong>%1</strong> cho <strong>tất cả danh mục</strong>?",
+	"alert.confirm-copyToAllGroup": "Are you sure you wish to apply this group's set of <strong>%1</strong> to <strong>all categories</strong>?",
+	"alert.confirm-copyToChildren": "Are you sure you wish to apply this set of <strong>%1</strong> to <strong>all descendant (child) categories</strong>?",
+	"alert.confirm-copyToChildrenGroup": "Bạn có chắc muốn áp dụng cài đặt <strong>%1</strong> của nhóm này cho <strong>tất cả danh mục con</strong>?",
 	"alert.no-undo": "<em>Hành động này không thể hoàn tác.</em>",
-	"alert.admin-warning": "Quản trị viên ngầm có tất cả các đặc quyền"
+	"alert.admin-warning": "Quản trị viên ngầm có tất cả các đặc quyền",
+  	"alert.copyPrivilegesFrom-title": "Chọn một danh mục để sao chép từ",
+  	"alert.copyPrivilegesFrom-warning": "Điều này sẽ sao chép <strong>%1</strong> từ danh mục đã chọn.",
+  	"alert.copyPrivilegesFromGroup-warning": "Thao tác này sẽ sao chép cài đặt <strong>%1</strong> của nhóm này từ danh mục đã chọn."
 }

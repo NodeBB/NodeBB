@@ -8,8 +8,6 @@
 	"delete": "削除",
 	"enable": "有効",
 	"disable": "無効",
-	"control-panel": "報酬コントロール",
-	"new-reward": "新しい報酬",
 
 	"alert.delete-success": "報酬を削除しました",
 	"alert.no-inputs-found": "違法報酬 - 入力が見つかりません！",

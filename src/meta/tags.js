@@ -66,6 +66,7 @@ Tags.parse = async (req, data, meta, link) => {
 	}, {
 		rel: 'manifest',
 		href: `${relative_path}/manifest.webmanifest`,
+		crossorigin: `use-credentials`,
 	}];
 
 	if (plugins.hooks.hasListeners('filter:search.query')) {

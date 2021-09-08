@@ -10,6 +10,16 @@ const utils = require('../../public/src/utils');
 
 const helpers = module.exports;
 
+helpers.getCsrfToken = async (jar) => {
+	const { csrf_token: token } = await requestAsync({
+		url: `${nconf.get('url')}/api/config`,
+		json: true,
+		jar,
+	});
+
+	return token;
+};
+
 helpers.loginUser = function (username, password, callback) {
 	const jar = request.jar();
 
@@ -181,6 +191,22 @@ helpers.invite = async function (body, uid, jar, csrf_token) {
 
 	res.body = JSON.parse(res.body);
 	return { res, body };
+};
+
+helpers.createFolder = function (path, folderName, jar, csrf_token) {
+	return requestAsync.put(`${nconf.get('url')}/api/v3/files/folder`, {
+		jar,
+		body: {
+			path,
+			folderName,
+		},
+		json: true,
+		headers: {
+			'x-csrf-token': csrf_token,
+		},
+		simple: false,
+		resolveWithFullResponse: true,
+	});
 };
 
 require('../../src/promisify')(helpers);

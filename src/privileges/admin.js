@@ -35,6 +35,8 @@ privsAdmin.userPrivilegeList = [
 
 privsAdmin.groupPrivilegeList = privsAdmin.userPrivilegeList.map(privilege => `groups:${privilege}`);
 
+privsAdmin.privilegeList = privsAdmin.userPrivilegeList.concat(privsAdmin.groupPrivilegeList);
+
 // Mapping for a page route (via direct match or regexp) to a privilege
 privsAdmin.routeMap = {
 	dashboard: 'admin:dashboard',
