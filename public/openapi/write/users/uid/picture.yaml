@@ -1,0 +1,43 @@
+put:
+  tags:
+    - users
+  summary: update user picture or icon background colour
+  parameters:
+    - in: path
+      name: uid
+      schema:
+        type: integer
+      required: true
+      description: uid of the user
+      example: 1
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            type:
+              type: string
+              description: The source of the picture
+              enum: ['default', 'uploaded', 'external']
+              example: default
+            url:
+              type: string
+              description: Only used for `external` type, specifies the source of the external image to use as avatar
+              example: ''
+            bgColor:
+              type: string
+              description: A hexadecimal colour representation
+              example: '#ff0000'
+  responses:
+    '200':
+      description: successfully updated user picture
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object

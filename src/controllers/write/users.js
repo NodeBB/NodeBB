@@ -76,6 +76,11 @@ Users.deleteMany = async (req, res) => {
 	helpers.formatApiResponse(200, res);
 };
 
+Users.changePicture = async (req, res) => {
+	await api.users.changePicture(req, { ...req.body, uid: req.params.uid });
+	helpers.formatApiResponse(200, res);
+};
+
 Users.updateSettings = async (req, res) => {
 	const settings = await api.users.updateSettings(req, { ...req.body, uid: req.params.uid });
 	helpers.formatApiResponse(200, res, settings);

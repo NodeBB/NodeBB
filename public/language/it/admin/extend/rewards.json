@@ -8,8 +8,6 @@
 	"delete": "Elimina",
 	"enable": "Abilita",
 	"disable": "Disabilita",
-	"control-panel": "Controllo dei premi",
-	"new-reward": "Nuovo premio",
 
 	"alert.delete-success": "Premi eliminati con successo",
 	"alert.no-inputs-found": "Premio illegale - immissioni non trovate!",

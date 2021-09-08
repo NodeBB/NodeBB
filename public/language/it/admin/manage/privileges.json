@@ -51,13 +51,13 @@
 	"alert.saved": "Modifiche ai privilegi salvate e applicate",
 	"alert.confirm-discard": "Sei sicuro di voler annullare le modifiche ai privilegi?",
 	"alert.discarded": "Modifiche ai privilegi ignorate",
-	"alert.confirm-copyToAll": "Are you sure you wish to apply this set of <strong>%1</strong> to <strong>all categories</strong>?",
-	"alert.confirm-copyToAllGroup": "Are you sure you wish to apply this group's set of <strong>%1</strong> to <strong>all categories</strong>?",
-	"alert.confirm-copyToChildren": "Are you sure you wish to apply this set of <strong>%1</strong> to <strong>all descendant (child) categories</strong>?",
-	"alert.confirm-copyToChildrenGroup": "Are you sure you wish to apply this group's set of <strong>%1</strong> to <strong>all descendant (child) categories</strong>?",
+	"alert.confirm-copyToAll": "Sei sicuro di voler applicare questa serie di <strong>%1</strong> a <strong>tutte le categorie</strong>?",
+	"alert.confirm-copyToAllGroup": "Sei sicuro di voler applicare questa serie di <strong>%1</strong> del gruppo a <strong>tutte le categorie</strong>?",
+	"alert.confirm-copyToChildren": "Sei sicuro di voler applicare questa serie di <strong>%1</strong> a <strong>tutte le categorie discendenti (figli)</strong>?",
+	"alert.confirm-copyToChildrenGroup": "Sei sicuro di voler applicare questa serie di <strong>%1</strong> del questo gruppo a <strong>tutte le categorie discendenti (figli)</strong>?",
 	"alert.no-undo": "<em>Questa azione non può essere annullata.</em>",
 	"alert.admin-warning": "Gli amministratori ottengono implicitamente tutti i privilegi",
-  	"alert.copyPrivilegesFrom-title": "Select a category to copy from",
-  	"alert.copyPrivilegesFrom-warning": "This will copy <strong>%1</strong> from the selected category.",
-  	"alert.copyPrivilegesFromGroup-warning": "This will copy this group's set of <strong>%1</strong> from the selected category."
+  	"alert.copyPrivilegesFrom-title": "Seleziona una categoria da cui copiare",
+  	"alert.copyPrivilegesFrom-warning": "Questo copierà <strong>1%</strong> dalla categoria selezionata.",
+  	"alert.copyPrivilegesFromGroup-warning": "Questo copierà la serie di <strong>%1</strong> da questo gruppo dalla categoria selezionata."
 }

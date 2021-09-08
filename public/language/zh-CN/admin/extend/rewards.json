@@ -8,8 +8,6 @@
 	"delete": "删除",
 	"enable": "启用",
 	"disable": "禁用",
-	"control-panel": "奖励控制",
-	"new-reward": "新奖励",
 
 	"alert.delete-success": "已成功删除奖励",
 	"alert.no-inputs-found": "非法奖励 － 输入为空！",

@@ -8,8 +8,6 @@
 	"delete": "Deletar",
 	"enable": "Ativar",
 	"disable": "Desativar",
-	"control-panel": "Controle de Recompensas",
-	"new-reward": "Nova Recompensa",
 
 	"alert.delete-success": "Recompensa excluída com sucesso",
 	"alert.no-inputs-found": "Recompensa ilegal - nenhuma entrada encontrada!",

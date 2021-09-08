@@ -8,8 +8,6 @@
 	"delete": "刪除",
 	"enable": "啟用",
 	"disable": "禁用",
-	"control-panel": "獎勵控制",
-	"new-reward": "新獎勵",
 
 	"alert.delete-success": "已成功刪除獎勵",
 	"alert.no-inputs-found": "非法獎勵 － 輸入為空！",

@@ -8,8 +8,6 @@
 	"delete": "Odstrániť",
 	"enable": "Povoliť",
 	"disable": "Zakázať",
-	"control-panel": "Kontrola odmien",
-	"new-reward": "Nová odmena",
 
 	"alert.delete-success": "Odmena bola úspešne vymazaná",
 	"alert.no-inputs-found": "Nepovolená odmena - nebol nájdený žiadny záznam.",

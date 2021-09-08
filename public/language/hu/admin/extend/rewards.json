@@ -8,8 +8,6 @@
 	"delete": "Törlés",
 	"enable": "Engedélyezés",
 	"disable": "Tiltás",
-	"control-panel": "Jutalom vezérlés",
-	"new-reward": "Új jutalom",
 
 	"alert.delete-success": "Jutalom sikeresen törölve",
 	"alert.no-inputs-found": "Helytelen jutalom - nem található bevitel!",

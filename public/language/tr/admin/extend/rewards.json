@@ -8,8 +8,6 @@
 	"delete": "Sil",
 	"enable": "Etkinleştir",
 	"disable": "Etkinsizleştir",
-	"control-panel": "Ödül Kontrol Paneli",
-	"new-reward": "Yeni Ödül Ekle",
 
 	"alert.delete-success": "Ödül başarıyla silindi",
 	"alert.no-inputs-found": "Usulsüz ödül - girdi bulunamadı!",

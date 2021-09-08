@@ -14,6 +14,9 @@ module.exports = function (module) {
 		}
 
 		const writeData = helpers.serializeData(data);
+		if (!Object.keys(writeData).length) {
+			return;
+		}
 		try {
 			if (isArray) {
 				const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
@@ -39,9 +42,18 @@ module.exports = function (module) {
 
 		const writeData = data.map(helpers.serializeData);
 		try {
-			const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
-			keys.forEach((key, i) => bulk.find({ _key: key }).upsert().updateOne({ $set: writeData[i] }));
-			await bulk.execute();
+			let bulk;
+			keys.forEach((key, i) => {
+				if (Object.keys(writeData[i]).length) {
+					if (!bulk) {
+						bulk = module.client.collection('objects').initializeUnorderedBulkOp();
+					}
+					bulk.find({ _key: key }).upsert().updateOne({ $set: writeData[i] });
+				}
+			});
+			if (bulk) {
+				await bulk.execute();
+			}
 		} catch (err) {
 			if (err && err.message.startsWith('E11000 duplicate key error')) {
 				return await module.setObjectBulk(keys, data);

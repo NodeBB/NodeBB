@@ -2,8 +2,10 @@
 	<div class="panel-heading">
 		[[admin/dashboard:forum-traffic]]
 		<div class="pull-right">
-			<a id="view-as-json" href="{config.relative_path}/api/v3/admin/analytics/{set}?type=hourly"><i class="fa fa-terminal"></i></a>
-			<i class="fa fa-expand"></i>
+			<a href="#"><i class="fa fa-fw fa-expand"></i></a>
+		</div>
+		<div class="pull-right">
+			<a target="_blank" id="view-as-json" href="{config.relative_path}/api/v3/admin/analytics/{set}?type=hourly"><i class="fa fa-fw fa-terminal"></i></a>
 		</div>
 	</div>
 	<div class="panel-body">
