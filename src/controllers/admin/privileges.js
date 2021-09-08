@@ -44,8 +44,9 @@ privilegesController.get = async function (req, res) {
 	res.render('admin/manage/privileges', {
 		privileges: privilegesData,
 		categories: categoriesData,
-		selectedCategory: selectedCategory,
-		cid: cid,
-		group: group,
+		selectedCategory,
+		cid,
+		group,
+		isAdminPriv,
 	});
 };

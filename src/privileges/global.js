@@ -16,8 +16,8 @@ privsGlobal.privilegeLabels = [
 	{ name: '[[admin/manage/privileges:upload-images]]' },
 	{ name: '[[admin/manage/privileges:upload-files]]' },
 	{ name: '[[admin/manage/privileges:signature]]' },
-	{ name: '[[admin/manage/privileges:ban]]' },
 	{ name: '[[admin/manage/privileges:invite]]' },
+	{ name: '[[admin/manage/privileges:allow-group-creation]]' },
 	{ name: '[[admin/manage/privileges:search-content]]' },
 	{ name: '[[admin/manage/privileges:search-users]]' },
 	{ name: '[[admin/manage/privileges:search-tags]]' },
@@ -25,7 +25,7 @@ privsGlobal.privilegeLabels = [
 	{ name: '[[admin/manage/privileges:view-tags]]' },
 	{ name: '[[admin/manage/privileges:view-groups]]' },
 	{ name: '[[admin/manage/privileges:allow-local-login]]' },
-	{ name: '[[admin/manage/privileges:allow-group-creation]]' },
+	{ name: '[[admin/manage/privileges:ban]]' },
 	{ name: '[[admin/manage/privileges:view-users-info]]' },
 ];
 
@@ -34,8 +34,8 @@ privsGlobal.userPrivilegeList = [
 	'upload:post:image',
 	'upload:post:file',
 	'signature',
-	'ban',
 	'invite',
+	'group:create',
 	'search:content',
 	'search:users',
 	'search:tags',
@@ -43,7 +43,7 @@ privsGlobal.userPrivilegeList = [
 	'view:tags',
 	'view:groups',
 	'local:login',
-	'group:create',
+	'ban',
 	'view:users:info',
 ];
 
