@@ -1,9 +1,0 @@
-{
-    "uploading-file": "正在上傳檔案...",
-    "select-file-to-upload": "請選擇需要上傳的檔案！",
-    "upload-success": "檔案上傳成功！",
-    "maximum-file-size": "最大 %1 kb",
-    "no-uploads-found": "沒有找到上傳檔案",
-    "public-uploads-info": "上傳公開的檔案，所有訪客均可查看。",
-    "private-uploads-info": "上傳私有的檔案，僅登入使用者可見。"
-}

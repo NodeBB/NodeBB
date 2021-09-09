@@ -1,7 +1,0 @@
-{
-	"alert.confirm-rebuild-and-restart": "NodeBBを再構築して再起動してもよろしいですか？",
-	"alert.confirm-restart": "NodeBBを本当に再起動しますか？",
-
-	"acp-title": "%1| NodeBB管理画面",
-	"settings-header-contents": "コンテンツ"
-}

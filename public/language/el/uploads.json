@@ -1,9 +1,0 @@
-{
-    "uploading-file": "Το αρχείο ανεβαίνει...",
-    "select-file-to-upload": "Επίλεξε αρχείο για ανέβασμα!",
-    "upload-success": "Το αρχείο ανέβηκε επιτυχώς!",
-    "maximum-file-size": "Μέγιστο %1 kb",
-    "no-uploads-found": "No uploads found",
-    "public-uploads-info": "Uploads are public, all visitors can see them.",
-    "private-uploads-info": "Uploads are private, only logged in users can see them."
-}

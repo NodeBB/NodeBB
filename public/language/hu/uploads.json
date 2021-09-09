@@ -1,9 +1,0 @@
-{
-    "uploading-file": "Fájl feltöltése...",
-    "select-file-to-upload": "Válassz feltöltendő fájlt!",
-    "upload-success": "Fájl feltöltése sikeres!",
-    "maximum-file-size": "Maximum %1 kb",
-    "no-uploads-found": "Nem találhatók feltöltések",
-    "public-uploads-info": "A feltöltések nyilvánosak, minden látogató megtekintheti őket.",
-    "private-uploads-info": "A feltöltések privátak, csak a bejelentkezett felhasználók tekinthetik meg őket."
-}

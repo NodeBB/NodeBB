@@ -1,9 +1,0 @@
-{
-	"loading": "正在加載配色...",
-	"homepage": "首頁",
-	"select-skin": "選擇配色",
-	"current-skin": "當前配色",
-	"skin-updated": "配色已更新",
-	"applied-success": "%1 配色已成功套用",
-	"revert-success": "配色已恢復到基礎顏色"
-}

@@ -1,7 +1,0 @@
-{
-	"settings": "Ayarlar",
-	"handles.enabled": "Misafir üyelere izin ver",
-	"handles.enabled-help": "Bu seçenek, misafirlerin yaptıkları her gönderiyle ilişkilendirebilecekleri bir isim alanı sunar. Devre dışı bırakılırsa, gönderenin ismi basitçe \"Misafir\" olarak adlandırılacaktır.",
-	"topic-views.enabled": "Ziyaretçilerin konu bakış sayısını arttırmasına izin ver",
-	"reply-notifications.enabled": "Ziyaretçilerin cevap bildirimleri oluşturmasına izin ver"
-}

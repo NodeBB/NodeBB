@@ -1,7 +1,0 @@
-{
-	"settings": "Settings",
-	"handles.enabled": "Permitir manejo de visitantes",
-	"handles.enabled-help": "Esta opción expone un nuevo campo que permite a los invitados escoger un nombre para asociarse con cada entrada/respuesta que hagan. Si está desactivado, se les llamará simplemente \"Invitado\".",
-	"topic-views.enabled": "Allow guests to increase topic view counts",
-	"reply-notifications.enabled": "Allow guests to generate reply notifications"
-}

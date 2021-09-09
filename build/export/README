@@ -1,5 +1,0 @@
-This directory contains archives of user uploads that are prepared on-demand
-when a user wants to retrieve a copy of their uploaded content.
-
-You can delete the files in here at will. They will just be regenerated if
-requested again.

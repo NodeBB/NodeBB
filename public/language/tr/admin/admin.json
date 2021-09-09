@@ -1,7 +1,0 @@
-{
-	"alert.confirm-rebuild-and-restart": "NodeBB'yi sıfırlamak ve yeniden başlatmak istediğinizden emin misiniz?",
-	"alert.confirm-restart": "NodeBB'yi yeniden başlatmak istediğinize emin misiniz?",
-
-	"acp-title": "%1 | NodeBB Yönetici Kontrol Paneli",
-	"settings-header-contents": "İçerikler"
-}

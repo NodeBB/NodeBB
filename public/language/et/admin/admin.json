@@ -1,7 +1,0 @@
-{
-	"alert.confirm-rebuild-and-restart": "Are you sure you wish to rebuild and restart NodeBB?",
-	"alert.confirm-restart": "Oled kindel, et soovid taaslaadida NodeBB?",
-
-	"acp-title": "%1 | NodeBB Administraatori kontrollpaneel",
-	"settings-header-contents": "Sisu"
-}

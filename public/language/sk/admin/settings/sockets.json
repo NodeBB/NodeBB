@@ -1,6 +1,0 @@
-{
-    "reconnection": "Nastavenia opätovného pripojenia",
-    "max-attempts": "Maximálny počet pokusov o znovu pripojenie",
-    "default-placeholder": "Predvolené: %1",
-    "delay": "Časové oneskorenie pre znovu pripojenie"
-}

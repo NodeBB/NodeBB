@@ -1,9 +1,0 @@
-{
-    "uploading-file": "Lade Datei hoch...",
-    "select-file-to-upload": "Wähle eine Datei zum Hochladen aus!",
-    "upload-success": "Datei erfolgreich hochgeladen!",
-    "maximum-file-size": "Maximal %1 kb",
-    "no-uploads-found": "Keine Uploads gefunden",
-    "public-uploads-info": "Uploads sind öffentlich, alle Besucher können diese sehen.",
-    "private-uploads-info": "Uploads sind privat, nur eingeloggte Benutzer können diese sehen."
-}

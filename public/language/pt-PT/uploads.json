@@ -1,9 +1,0 @@
-{
-    "uploading-file": "Carregando o ficheiro...",
-    "select-file-to-upload": "Seleciona um ficheiro para carregar!",
-    "upload-success": "Ficheiro enviado com sucesso!",
-    "maximum-file-size": "Máximo de %1 kb",
-    "no-uploads-found": "Não foram encontrados carregamentos",
-    "public-uploads-info": "Os carregamentos estão públicos, todos os visitantes os podem ver.",
-    "private-uploads-info": "Os carregamentos estão privados, apenas utilizadores com sessão iniciada os vão conseguir ver."
-}

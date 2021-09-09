@@ -1,9 +1,0 @@
-{
-	"loading": "Cargando Temas...",
-	"homepage": "Pagina Principal",
-	"select-skin": "Selecciona el Tema",
-	"current-skin": "Tema Actual",
-	"skin-updated": "Tema Actualizado",
-	"applied-success": "El tema %1 se aplicó correctamente",
-	"revert-success": "El tema revierte los colores base"
-}

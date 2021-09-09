@@ -1,9 +1,0 @@
-{
-    "uploading-file": "Nahrávanie súboru...",
-    "select-file-to-upload": "Vyberte súbor, ktorý chcete nahrať.",
-    "upload-success": "Súbor bol úspešne nahraný!",
-    "maximum-file-size": "Maximálne %1 kb",
-    "no-uploads-found": "Neboli nájdené žiadne nahrávania",
-    "public-uploads-info": "Nahrávania sú verejné, všetci návštevnici ich môžu vidieť.",
-    "private-uploads-info": "Nahrávania sú súkromné, iba prihlásený používatelia ich môžu vidieť."
-}

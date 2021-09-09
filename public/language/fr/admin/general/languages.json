@@ -1,6 +1,0 @@
-{
-	"language-settings": "Réglages linguistiques",
-	"description": "La langue par défaut détermine les réglages pour tous les utilisateurs qui visitent votre forum. <br />Les utilisateurs peuvent ensuite modifier la langue par défaut sur leur page de réglages.",
-	"default-language": "Langue par défaut",
-	"auto-detect": "Détection automatique de la langue pour les invités"
-}

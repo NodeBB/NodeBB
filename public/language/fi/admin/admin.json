@@ -1,7 +1,0 @@
-{
-	"alert.confirm-rebuild-and-restart": "Haluatko varmasti uudelleenrakentaa ja uudelleenkäynnistää NodeBB:n?",
-	"alert.confirm-restart": "Haluatko varmasti uudelleenkäynnistää NodeBB:n?",
-
-	"acp-title": "%1 | NodeBB admin hallintapaneeli",
-	"settings-header-contents": "Sisältö"
-}

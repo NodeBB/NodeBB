@@ -1,9 +1,0 @@
-{
-    "uploading-file": "Dosya yükleniyor...",
-    "select-file-to-upload": "Bir dosya seç!",
-    "upload-success": "Dosya yüklenmesi tamamlandı!",
-    "maximum-file-size": "Maksimum %1 kb",
-    "no-uploads-found": "Hiçbir yükleme bulunamadı",
-    "public-uploads-info": "Yüklemeler herkese açık, tüm ziyaretçiler onları görebilir.",
-    "private-uploads-info": "Yüklemeler gizlidir, sadece giriş yapan kullanıcılar görebilir."
-}
