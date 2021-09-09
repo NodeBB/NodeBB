@@ -1,7 +1,0 @@
-{
-	"alert.confirm-rebuild-and-restart": "Adakah anda ingin membina dan memulakan semula NodeBB",
-	"alert.confirm-restart": "Adakan anda ingin memulakan semula NodeBB",
-
-	"acp-title": "%1 | Panel Kawalan dan Kendalian NodeBB",
-	"settings-header-contents": "Isi"
-}

@@ -1,7 +1,0 @@
-{
-	"alert.confirm-rebuild-and-restart": "您確定要部署並重啟 NodeBB 嗎？",
-	"alert.confirm-restart": "您確定要重啟 NodeBB 嗎？",
-
-	"acp-title": "%1 | NodeBB 管理控制台",
-	"settings-header-contents": "内容"
-}

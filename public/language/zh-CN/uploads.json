@@ -1,9 +1,0 @@
-{
-    "uploading-file": "正在上传文件...",
-    "select-file-to-upload": "请选择需要上传的文件！",
-    "upload-success": "文件上传成功！",
-    "maximum-file-size": "最大 %1 kb",
-    "no-uploads-found": "没有找到上传文件",
-    "public-uploads-info": "上传公开的文件，所有访客均可查看。",
-    "private-uploads-info": "上传私有的文件，仅登陆用户可见。"
-}

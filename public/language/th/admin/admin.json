@@ -1,7 +1,0 @@
-{
-	"alert.confirm-rebuild-and-restart": "Are you sure you wish to rebuild and restart NodeBB?",
-	"alert.confirm-restart": "คุณต้องการเริ่มการทำงาน NodeBB ใหม่หรือไม่?",
-
-	"acp-title": "%1 | แผงควบคุมของผู้ดูแลระบบ",
-	"settings-header-contents": "เนื้อหา"
-}

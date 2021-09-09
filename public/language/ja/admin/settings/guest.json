@@ -1,7 +1,0 @@
-{
-	"settings": "Settings",
-	"handles.enabled": "ゲストハンドルを有効にする",
-	"handles.enabled-help": "このオプションでは新しい投稿が表示される時に、ゲストは自分が投稿する各投稿に関連付ける名前を選択できます。無効にすると、単に「ゲスト」と呼ばれます。",
-	"topic-views.enabled": "Allow guests to increase topic view counts",
-	"reply-notifications.enabled": "Allow guests to generate reply notifications"
-}

@@ -1,5 +1,0 @@
-PostsObject:
-  description: One of the objects in the array returned from `Posts.getPostSummaryByPids`
-  type: array
-  items:
-    $ref: ./PostObject.yaml#/PostObject

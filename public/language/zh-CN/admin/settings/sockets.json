@@ -1,6 +1,0 @@
-{
-    "reconnection": "重新连接设置",
-    "max-attempts": "最大重新连接尝试",
-    "default-placeholder": "默认：%1",
-    "delay": "重连等待时间"
-}

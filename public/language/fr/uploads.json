@@ -1,9 +1,0 @@
-{
-    "uploading-file": "Envoi d'un fichier…",
-    "select-file-to-upload": "Sélectionnez un ficher à envoyer",
-    "upload-success": "Fichier envoyé",
-    "maximum-file-size": "%1 Ko maximum",
-    "no-uploads-found": "Aucun fichiers envoyés",
-    "public-uploads-info": "Les téléchargements sont publics, tous les visiteurs peuvent les voir.",
-    "private-uploads-info": "Les envois sont privés, seuls les utilisateurs connectés peuvent les voir."
-}

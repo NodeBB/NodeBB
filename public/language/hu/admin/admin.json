@@ -1,7 +1,0 @@
-{
-	"alert.confirm-rebuild-and-restart": "Biztosan újra kívánod építeni majd újraindítod a NodeBB-t?",
-	"alert.confirm-restart": "Biztosan újra szeretnéd indítani a NodeBB-t?",
-
-	"acp-title": "%1 | NodeBB Adminisztrációs vezérlőpult",
-	"settings-header-contents": "Tartalmak"
-}

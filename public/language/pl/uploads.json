@@ -1,9 +1,0 @@
-{
-    "uploading-file": "Wysyłanie pliku...",
-    "select-file-to-upload": "Zaznacz plik do wysłania!",
-    "upload-success": "Plik został wysłany!",
-    "maximum-file-size": "Maksymalnie %1 kb",
-    "no-uploads-found": "Nie znaleziono przesłanych plików",
-    "public-uploads-info": "Przesłane pliki są ogólnodostępne, a zatem widoczne dla wszystkich gości.",
-    "private-uploads-info": "Przesłane pliki są prywatne, a zatem widoczne tylko dla zalogowanych użytkowników."
-}

@@ -1,6 +1,0 @@
-'401':
-  description: Not Authorized
-  content:
-    application/json:
-      schema:
-        $ref: ../../components/schemas/Error.yaml#/Error

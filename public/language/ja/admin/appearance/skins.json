@@ -1,9 +1,0 @@
-{
-	"loading": "スキンを読み込んでいます...",
-	"homepage": "ホームページ",
-	"select-skin": "スキン選択",
-	"current-skin": "現在のスキン",
-	"skin-updated": "スキンがアップデートされました",
-	"applied-success": "スキン %1 が正常に適用されました",
-	"revert-success": "スキンがベースカラーに戻りました"
-}

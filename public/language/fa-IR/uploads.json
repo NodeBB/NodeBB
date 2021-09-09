@@ -1,9 +1,0 @@
-{
-    "uploading-file": "در حال بارگذاری فایل...",
-    "select-file-to-upload": "فایل مورد نظر را برای بارگذاری انتخاب کنید!",
-    "upload-success": "فایل با موفقیت بارگذاری شد!",
-    "maximum-file-size": "حداکثر %1 کیلوبایت",
-    "no-uploads-found": "No uploads found",
-    "public-uploads-info": "Uploads are public, all visitors can see them.",
-    "private-uploads-info": "Uploads are private, only logged in users can see them."
-}

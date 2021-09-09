@@ -1,7 +1,0 @@
-{
-	"alert.confirm-rebuild-and-restart": "آیا شما مطمئن هستید که شما می خواهید NodeBB را بازسازی و مجدداً راه اندازی کنید؟",
-	"alert.confirm-restart": "آیا از راه اندازی مجدد نود‌بی‌بی مطمئن هستید؟",
-
-	"acp-title": "%1 | کنترل پنل مدیر کل نود‌بی‌بی",
-	"settings-header-contents": "محتوا"
-}

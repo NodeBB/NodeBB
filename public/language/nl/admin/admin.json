@@ -1,7 +1,0 @@
-{
-	"alert.confirm-rebuild-and-restart": "Weet u zeker dat u de NodeBB bestanden wilt hergenereren en NodeBB opnieuw wilt opstarten?",
-	"alert.confirm-restart": "Weet u zeker dat u NodeBB opnieuw wilt opstarten?",
-
-	"acp-title": "%1 | NodeBB Administrator Controlepaneel",
-	"settings-header-contents": "Inhoud"
-}

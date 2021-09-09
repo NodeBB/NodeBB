@@ -1,6 +1,0 @@
-'426':
-  description: Upgrade Required
-  content:
-    application/json:
-      schema:
-        $ref: ../../components/schemas/Error.yaml#/Error
