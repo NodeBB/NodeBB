@@ -3,6 +3,8 @@ name: Run Docker
 # Controls when the workflow will run
 on:
   push:
+    branches:
+      - 'master'
     tags:
       - 'v*' 
   workflow_dispatch:
