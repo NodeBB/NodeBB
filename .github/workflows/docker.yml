@@ -1,5 +1,3 @@
-# This is a basic workflow to help you get started with Actions
-
 name: Run Docker
 
 # Controls when the workflow will run
@@ -16,27 +14,36 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - name: Inject slug/short variables
-        uses: rlespinasse/github-slug-action@v3.x
+
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
+          
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: nodebb/docker
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,
+            type=raw,value=latest
+
       - name: Login to Docker Hub
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+          
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
+
       - name: Build and push Docker images
-        # You may pin to the exact commit or the version.
-        # uses: docker/build-push-action@1bc1040caef9e604eb543693ba89b5bf4fc80935
-        uses: docker/build-push-action@v2.7.0
+        uses: docker/build-push-action@v2
         with:
-          image: ${{ secrets.DOCKERHUB_USERNAME }}/nodebb
-          platforms: linux/amd64,linux/arm64/v8,linux/arm/v7
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64/v8
           push: true
-          # List of tags
-          tags: ${{ env.GITHUB_REF_SLUG }},${{ env.GITHUB_BASE_REF_SLUG }},${{ env.GITHUB_SHA_SHORT }}
+          tags: ${{ steps.meta.outputs.tags }}
