@@ -138,6 +138,6 @@ privsGlobal.userPrivileges = async function (uid) {
 };
 
 privsGlobal.groupPrivileges = async function (groupName) {
-	const groupPrivilegeList = await privsGlobal.groupPrivilegeList();
+	const groupPrivilegeList = await privsGlobal.getGroupPrivilegeList();
 	return await helpers.userOrGroupPrivileges(0, groupName, groupPrivilegeList);
 };
