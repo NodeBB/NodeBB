@@ -37,6 +37,16 @@ privsAdmin.groupPrivilegeList = privsAdmin.userPrivilegeList.map(privilege => `g
 
 privsAdmin.privilegeList = privsAdmin.userPrivilegeList.concat(privsAdmin.groupPrivilegeList);
 
+privsAdmin.getUserPrivilegeList = async () => await plugins.hooks.fire('filter:privileges.admin.list', privsAdmin.userPrivilegeList.slice());
+privsAdmin.getGroupPrivilegeList = async () => await plugins.hooks.fire('filter:privileges.admin.groups.list', privsAdmin.groupPrivilegeList.slice());
+privsAdmin.getPrivilegeList = async () => {
+	const [user, group] = await Promise.all([
+		privsAdmin.getUserPrivilegeList(),
+		privsAdmin.getGroupPrivilegeList(),
+	]);
+	return user.concat(group);
+};
+
 // Mapping for a page route (via direct match or regexp) to a privilege
 privsAdmin.routeMap = {
 	dashboard: 'admin:dashboard',
@@ -159,13 +169,14 @@ privsAdmin.list = async function (uid) {
 };
 
 privsAdmin.get = async function (uid) {
+	const userPrivilegeList = await privsAdmin.getUserPrivilegeList();
 	const [userPrivileges, isAdministrator] = await Promise.all([
-		helpers.isAllowedTo(privsAdmin.userPrivilegeList, uid, 0),
+		helpers.isAllowedTo(userPrivilegeList, uid, 0),
 		user.isAdministrator(uid),
 	]);
 
 	const combined = userPrivileges.map(allowed => allowed || isAdministrator);
-	const privData = _.zipObject(privsAdmin.userPrivilegeList, combined);
+	const privData = _.zipObject(userPrivilegeList, combined);
 
 	privData.superadmin = isAdministrator;
 	return await plugins.hooks.fire('filter:privileges.admin.get', privData);
@@ -200,9 +211,11 @@ privsAdmin.rescind = async function (privileges, groupName) {
 };
 
 privsAdmin.userPrivileges = async function (uid) {
-	return await helpers.userOrGroupPrivileges(0, uid, privsAdmin.userPrivilegeList);
+	const userPrivilegeList = await privsAdmin.getUserPrivilegeList();
+	return await helpers.userOrGroupPrivileges(0, uid, userPrivilegeList);
 };
 
 privsAdmin.groupPrivileges = async function (groupName) {
-	return await helpers.userOrGroupPrivileges(0, groupName, privsAdmin.groupPrivilegeList);
+	const groupPrivilegeList = await privsAdmin.getGroupPrivilegeList();
+	return await helpers.userOrGroupPrivileges(0, groupName, groupPrivilegeList);
 };
