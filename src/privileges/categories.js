@@ -54,6 +54,16 @@ privsCategories.groupPrivilegeList = privsCategories.userPrivilegeList.map(privi
 
 privsCategories.privilegeList = privsCategories.userPrivilegeList.concat(privsCategories.groupPrivilegeList);
 
+privsCategories.getUserPrivilegeList = async () => await plugins.hooks.fire('filter:privileges.list', privsCategories.userPrivilegeList.slice());
+privsCategories.getGroupPrivilegeList = async () => await plugins.hooks.fire('filter:privileges.groups.list', privsCategories.groupPrivilegeList.slice());
+privsCategories.getPrivilegeList = async () => {
+	const [user, group] = await Promise.all([
+		privsCategories.getUserPrivilegeList(),
+		privsCategories.getGroupPrivilegeList(),
+	]);
+	return user.concat(group);
+};
+
 // Method used in admin/category controller to show all users/groups with privs in that given cid
 privsCategories.list = async function (cid) {
 	const labels = await utils.promiseParallel({
@@ -210,9 +220,11 @@ privsCategories.canMoveAllTopics = async function (currentCid, targetCid, uid) {
 };
 
 privsCategories.userPrivileges = async function (cid, uid) {
-	return await helpers.userOrGroupPrivileges(cid, uid, privsCategories.userPrivilegeList);
+	const userPrivilegeList = await privsCategories.getUserPrivilegeList();
+	return await helpers.userOrGroupPrivileges(cid, uid, userPrivilegeList);
 };
 
 privsCategories.groupPrivileges = async function (cid, groupName) {
-	return await helpers.userOrGroupPrivileges(cid, groupName, privsCategories.groupPrivilegeList);
+	const groupPrivilegeList = await privsCategories.getGroupPrivilegeList();
+	return await helpers.userOrGroupPrivileges(cid, groupName, groupPrivilegeList);
 };

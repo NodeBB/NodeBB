@@ -19,10 +19,11 @@ AdminsMods.get = async function (req, res, next) {
 	if (!selectedCategory) {
 		return next();
 	}
-	const [admins, globalMods, moderators] = await Promise.all([
+	const [admins, globalMods, moderators, categoryPrivList] = await Promise.all([
 		groups.get('administrators', { uid: req.uid }),
 		groups.get('Global Moderators', { uid: req.uid }),
 		getModeratorsOfCategories(selectedCategory),
+		privileges.categories.getUserPrivilegeList(),
 	]);
 
 	res.render('admin/manage/admins-mods', {
@@ -30,7 +31,7 @@ AdminsMods.get = async function (req, res, next) {
 		globalMods: globalMods,
 		categoryMods: [moderators],
 		selectedCategory: selectedCategory,
-		allPrivileges: privileges.categories.userPrivilegeList,
+		allPrivileges: categoryPrivList,
 	});
 };
 

@@ -203,9 +203,10 @@ module.exports = function (Categories) {
 		group = group || '';
 		let privsToCopy;
 		if (group) {
-			privsToCopy = privileges.categories.groupPrivilegeList.slice(...filter);
+			const groupPrivilegeList = await privileges.categories.getGroupPrivilegeList();
+			privsToCopy = groupPrivilegeList.slice(...filter);
 		} else {
-			const privs = privileges.categories.privilegeList.slice();
+			const privs = await privileges.categories.getPrivilegeList();
 			const halfIdx = privs.length / 2;
 			privsToCopy = privs.slice(0, halfIdx).slice(...filter).concat(privs.slice(halfIdx).slice(...filter));
 		}
