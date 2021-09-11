@@ -284,11 +284,11 @@ define('forum/category/tools', [
 			var topicListEl = $('[component="category"]').filter(function (i, e) {
 				return !$(e).parents('[widget-area],[data-widget-area]').length;
 			});
-			var baseIndex = parseInt(topicListEl.find('[component="category/topic"].pinned').first().attr('data-index'), 10);
 			topicListEl.sortable({
 				handle: '[component="topic/pinned"]',
 				items: '[component="category/topic"].pinned',
 				update: function (ev, ui) {
+					var baseIndex = parseInt(topicListEl.find('[component="category/topic"].pinned').first().attr('data-index'), 10);
 					socket.emit('topics.orderPinnedTopics', {
 						tid: ui.item.attr('data-tid'),
 						order: baseIndex + ui.item.index() - 1,
