@@ -33,7 +33,7 @@ exports.processSortedSet = async function (setKey, process, options) {
 	options.doneIf = typeof options.doneIf === 'function' ? options.doneIf : function () {};
 
 	let start = 0;
-	let stop = options.batch;
+	let stop = options.batch - 1;
 
 	if (process && process.constructor && process.constructor.name !== 'AsyncFunction') {
 		process = util.promisify(process);
