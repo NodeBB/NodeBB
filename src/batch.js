@@ -47,8 +47,8 @@ exports.processSortedSet = async function (setKey, process, options) {
 		}
 		await process(ids);
 
-		start += utils.isNumber(options.alwaysStartAt) ? options.alwaysStartAt : options.batch + 1;
-		stop = start + options.batch;
+		start += utils.isNumber(options.alwaysStartAt) ? options.alwaysStartAt : options.batch;
+		stop = start + options.batch - 1;
 
 		if (options.interval) {
 			await sleep(options.interval);
