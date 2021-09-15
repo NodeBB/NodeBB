@@ -59,7 +59,7 @@ postsAPI.edit = async function (caller, data) {
 		throw new Error(`[[error:content-too-long, ${meta.config.maximumPostLength}]]`);
 	}
 
-	data.uid = caller.uid;
+	data.uid = data.uid || caller.uid;
 	data.req = apiHelpers.buildReqObject(caller);
 	data.timestamp = parseInt(data.timestamp, 10) || Date.now();
 
