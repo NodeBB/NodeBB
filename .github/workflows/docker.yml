@@ -5,8 +5,9 @@ on:
   push:
     branches:
       - 'master'
+      - 'v*.x'
     tags:
-      - 'v*' 
+      - 'v*'
   workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -18,7 +19,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-          
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
 
@@ -30,7 +31,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-          
+
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v3
