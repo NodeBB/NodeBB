@@ -776,7 +776,7 @@ async function mergeBanHistory(history, targetUid, uids) {
 			meta: [
 				{
 					key: '[[user:banned]]',
-					value: cur.reason,
+					value: validator.escape(String(cur.reason)),
 					labelClass: 'danger',
 				},
 				{
