@@ -164,7 +164,7 @@ Tags.parse = async (req, data, meta, link) => {
 		return tag;
 	});
 
-	addSiteOGImage(meta);
+	await addSiteOGImage(meta);
 
 	addIfNotExists(meta, 'property', 'og:title', Meta.config.title || 'NodeBB');
 	const ogUrl = url + (req.originalUrl !== '/' ? stripRelativePath(req.originalUrl) : '');
@@ -211,49 +211,59 @@ function stripRelativePath(url) {
 	return url;
 }
 
-function addSiteOGImage(meta) {
+async function addSiteOGImage(meta) {
 	const key = Meta.config['og:image'] ? 'og:image' : 'brand:logo';
 	let ogImage = stripRelativePath(Meta.config[key] || '');
 	if (ogImage && !ogImage.startsWith('http')) {
 		ogImage = url + ogImage;
 	}
 
-	if (ogImage) {
-		meta.push({
-			property: 'og:image',
-			content: ogImage,
-			noEscape: true,
-		}, {
-			property: 'og:image:url',
-			content: ogImage,
-			noEscape: true,
-		});
+	const { images } = await plugins.hooks.fire('filter:meta.addSiteOGImage', {
+		images: [{
+			url: ogImage || `${url}/assets/images/logo@3x.png`,
+			width: ogImage ? Meta.config[`${key}:width`] : 963,
+			height: ogImage ? Meta.config[`${key}:height`] : 225,
+		}],
+	});
 
-		if (Meta.config[`${key}:width`] && Meta.config[`${key}:height`]) {
-			meta.push({
-				property: 'og:image:width',
-				content: String(Meta.config[`${key}:width`]),
-			}, {
-				property: 'og:image:height',
-				content: String(Meta.config[`${key}:height`]),
-			});
+	const properties = ['url', 'secure_url', 'type', 'width', 'height', 'alt'];
+	images.forEach((image) => {
+		for (const property of properties) {
+			if (image.hasOwnProperty(property)) {
+				switch (property) {
+					case 'url': {
+						meta.push({
+							property: 'og:image',
+							content: image.url,
+							noEscape: true,
+						}, {
+							property: 'og:image:url',
+							content: image.url,
+							noEscape: true,
+						});
+						break;
+					}
+
+					case 'secure_url': {
+						meta.push({
+							property: `og:${property}`,
+							content: image[property],
+							noEscape: true,
+						});
+						break;
+					}
+
+					case 'type':
+					case 'alt':
+					case 'width':
+					case 'height': {
+						meta.push({
+							property: `og:image:${property}`,
+							content: String(image[property]),
+						});
+					}
+				}
+			}
 		}
-	} else {
-		// Push fallback logo
-		meta.push({
-			property: 'og:image',
-			content: `${url}/assets/images/logo@3x.png`,
-			noEscape: true,
-		}, {
-			property: 'og:image:url',
-			content: `${url}/assets/images/logo@3x.png`,
-			noEscape: true,
-		}, {
-			property: 'og:image:width',
-			content: '963',
-		}, {
-			property: 'og:image:height',
-			content: '225',
-		});
-	}
+	});
 }
