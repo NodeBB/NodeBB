@@ -43,8 +43,8 @@ module.exports = function (User) {
 		}
 		const keys = usernames.filter(Boolean).map(username => `registration:queue:name:${username}`);
 		const data = await db.getObjectsFields(keys, ['email']);
-		const emails = data.map(data => data && data.email);
-		if (emails.includes(userData.email)) {
+		const emails = data.map(data => data && data.email).filter(Boolean);
+		if (userData.email && emails.includes(userData.email)) {
 			throw new Error('[[error:email-taken]]');
 		}
 	}
