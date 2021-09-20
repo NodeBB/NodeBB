@@ -122,7 +122,8 @@ helpers.notAllowed = async function (req, res, error) {
 
 	if (req.loggedIn || req.uid === -1) {
 		if (res.locals.isAPI) {
-			if (req.originalUrl.startsWith('/api/v3')) {
+			const cleanedUrl = req.originalUrl.replace(new RegExp(`^${relative_path}`), '');
+			if (cleanedUrl.startsWith('/api/v3')) {
 				helpers.formatApiResponse(403, res, error);
 			} else {
 				res.status(403).json({
