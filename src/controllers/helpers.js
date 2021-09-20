@@ -12,6 +12,7 @@ const privileges = require('../privileges');
 const categories = require('../categories');
 const plugins = require('../plugins');
 const meta = require('../meta');
+const middlewareHelpers = require('../middleware/helpers');
 
 const helpers = module.exports;
 
@@ -121,7 +122,17 @@ helpers.notAllowed = async function (req, res, error) {
 
 	if (req.loggedIn || req.uid === -1) {
 		if (res.locals.isAPI) {
-			helpers.formatApiResponse(403, res, error);
+			if (req.path.startsWith('/api/v3')) {
+				helpers.formatApiResponse(403, res, error);
+			} else {
+				res.status(403).json({
+					path: req.path.replace(/^\/api/, ''),
+					loggedIn: req.loggedIn,
+					error: error,
+					title: '[[global:403.title]]',
+					bodyClass: middlewareHelpers.buildBodyClass(req, res),
+				});
+			}
 		} else {
 			const middleware = require('../middleware');
 			await middleware.buildHeaderAsync(req, res);
