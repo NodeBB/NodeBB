@@ -38,6 +38,7 @@ privsTopics.get = async function (tid, uid) {
 	return await plugins.hooks.fire('filter:privileges.topics.get', {
 		'topics:reply': (privData['topics:reply'] && ((!topicData.locked && mayReply) || isModerator)) || isAdministrator,
 		'topics:read': privData['topics:read'] || isAdministrator,
+		'topics:schedule': privData['topics:schedule'] || isAdministrator,
 		'topics:tag': privData['topics:tag'] || isAdministrator,
 		'topics:delete': (privData['topics:delete'] && (isOwner || isModerator)) || isAdministrator,
 		'posts:edit': (privData['posts:edit'] && (!topicData.locked || isModerator)) || isAdministrator,
