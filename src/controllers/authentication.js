@@ -14,7 +14,6 @@ const user = require('../user');
 const plugins = require('../plugins');
 const utils = require('../utils');
 const slugify = require('../slugify');
-const translator = require('../translator');
 const helpers = require('./helpers');
 const privileges = require('../privileges');
 const sockets = require('../socket.io');
