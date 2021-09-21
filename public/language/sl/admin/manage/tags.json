@@ -1,18 +1,18 @@
 {
-	"none": "Your forum does not have any topics with tags yet.",
-	"bg-color": "Background Colour",
-	"text-color": "Text Colour",
+	"none": "Na vašem forumu še ni nobene teme z oznakami.",
+	"bg-color": "Barva ozadja",
+	"text-color": "Barva besedila",
 	"description": "Select tags by clicking or dragging, use <code>CTRL</code> to select multiple tags.",
-	"create": "Create Tag",
-	"modify": "Modify Tags",
-	"rename": "Rename Tags",
-	"delete": "Delete Selected Tags",
-	"search": "Search for tags...",
-	"settings": "Tags Settings",
-	"name": "Tag Name",
+	"create": "Ustvari oznako",
+	"modify": "Spremeni oznake",
+	"rename": "Preimenuj oznake",
+	"delete": "Izbriši izbrane oznake",
+	"search": "Iskanje oznak...",
+	"settings": "Nastavitve oznak",
+	"name": "Ime oznake",
 
-	"alerts.editing": "Editing tag(s)",
-	"alerts.confirm-delete": "Do you want to delete the selected tags?",
-	"alerts.update-success": "Tag Updated!",
-	"reset-colors": "Reset colors"
+	"alerts.editing": "Urejanje oznak(e)",
+	"alerts.confirm-delete": "Ali želite izbrisati izbrane oznake?",
+	"alerts.update-success": "Oznaka je posodobljena!",
+	"reset-colors": "Ponastavi barve"
 }

@@ -1,13 +1,13 @@
 {
-	"eu-consent": "EU Consent",
-	"consent.enabled": "Enabled",
+	"eu-consent": "EU soglasje",
+	"consent.enabled": "Omogočeno",
 	"consent.message": "Notification message",
 	"consent.acceptance": "Acceptance message",
 	"consent.link-text": "Policy Link Text",
 	"consent.link-url": "Policy Link URL",
 	"consent.blank-localised-default": "Leave blank to use NodeBB localised defaults",
-	"settings": "Settings",
+	"settings": "Nastavitve",
 	"cookie-domain": "Session cookie domain",
-	"max-user-sessions": "Max active sessions per user",
-	"blank-default": "Leave blank for default"
+	"max-user-sessions": "Največ aktivnih sej na uporabnika",
+	"blank-default": "Za privzeto pusti prazno"
 }

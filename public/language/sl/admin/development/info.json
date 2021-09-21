@@ -1,21 +1,21 @@
 {
 	"you-are-on": "You are on <strong>%1:%2</strong>",
 	"ip": "IP <strong>%1</strong>",
-	"nodes-responded": "%1 nodes responded within %2ms!",
-	"host": "host",
+	"nodes-responded": "%1 vozlišč se je odzvalo v %2ms!",
+	"host": "gostitelj",
 	"primary": "primary / run jobs",
 	"pid": "pid",
 	"nodejs": "nodejs",
-	"online": "online",
+	"online": "na spletu",
 	"git": "git",
-	"memory": "memory",
-	"load": "system load",
-	"cpu-usage": "cpu usage",
-	"uptime": "uptime",
+	"memory": "spomin",
+	"load": "obremenitev sistema",
+	"cpu-usage": "uporaba procesorja",
+	"uptime": "čas delovanja",
 
-	"registered": "Registered",
-	"sockets": "Sockets",
-	"guests": "Guests",
+	"registered": "Registrirani",
+	"sockets": "Vtičnice",
+	"guests": "Gostje",
 
 	"info": "Info"
 }

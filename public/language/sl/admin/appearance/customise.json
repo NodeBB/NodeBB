@@ -1,16 +1,16 @@
 {
-	"custom-css": "Custom CSS/LESS",
+	"custom-css": "CSS/LESS po meri",
 	"custom-css.description": "Enter your own CSS/LESS declarations here, which will be applied after all other styles.",
-	"custom-css.enable": "Enable Custom CSS/LESS",
+	"custom-css.enable": "Omogoči CSS/LESS po meri",
 
-	"custom-js": "Custom Javascript",
-	"custom-js.description": "Enter your own javascript here. It will be executed after the page is loaded completely.",
-	"custom-js.enable": "Enable Custom Javascript",
+	"custom-js": "Javascript po meri",
+	"custom-js.description": "Tukaj vnesite svoj javascript. Izveden bo, ko se stran popolnoma naloži.",
+	"custom-js.enable": "Omogoči Javascript po meri",
 
-	"custom-header": "Custom Header",
-	"custom-header.description": "Enter custom HTML here (ex. Meta Tags, etc.), which will be appended to the <code>&lt;head&gt;</code> section of your forum's markup. Script tags are allowed, but are discouraged, as the <a href=\"#custom-js\" data-toggle=\"tab\">Custom Javascript</a> tab is available.",
-	"custom-header.enable": "Enable Custom Header",
+	"custom-header": "Glava po meri",
+	"custom-header.description": "Tukaj vnesite HTML po meri (npr. meta oznake itd.), ki bo dodan v <code>& lt; head & gt;</code> razdelek oznak vašega foruma. Oznake skript so dovoljene, vendar niso priporočljive, saj je na voljo zavihek Javascript po meri.",
+	"custom-header.enable": "Omogoči glavo po meri",
 
 	"custom-css.livereload": "Enable Live Reload",
-	"custom-css.livereload.description": "Enable this to force all sessions on every device under your account to refresh whenever you click save"
+	"custom-css.livereload.description": "Omogočite to, da se vse seje na vsaki napravi v vašem računu osvežijo, ko kliknete shrani"
 }

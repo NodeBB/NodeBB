@@ -3,7 +3,7 @@
 	"maintenance-mode.help": "When the forum is in maintenance mode, all requests will be redirected to a static holding page. Administrators are exempt from this redirection, and are able to access the site normally.",
 	"maintenance-mode.status": "Maintenance Mode Status Code",
 	"maintenance-mode.message": "Maintenance Message",
-	"headers": "Headers",
+	"headers": "Glave",
 	"headers.allow-from": "Set ALLOW-FROM to Place NodeBB in an iFrame",
 	"headers.csp-frame-ancestors": "Set Content-Security-Policy frame-ancestors header to Place NodeBB in an iFrame",
 	"headers.csp-frame-ancestors-help": "'none', 'self'(default) or list of URIs to allow.",
