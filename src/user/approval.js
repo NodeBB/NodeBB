@@ -80,8 +80,8 @@ module.exports = function (User) {
 			template: 'registration_accepted',
 			uid: uid,
 		}).catch(err => winston.error(`[emailer.send] ${err.stack}`));
-		const total = await db.incrObjectField('registration:queue:approval:times', 'totalTime', Math.floor((Date.now() - creation_time) / 60000));
-		const counter = await db.incrObjectField('registration:queue:approval:times', 'counter', 1);
+		const total = await db.incrObjectFieldBy('registration:queue:approval:times', 'totalTime', Math.floor((Date.now() - creation_time) / 60000));
+		const counter = await db.incrObjectField('registration:queue:approval:times', 'counter');
 		await db.setObjectField('registration:queue:approval:times', 'average', total / counter);
 		return uid;
 	};
