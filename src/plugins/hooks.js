@@ -96,9 +96,11 @@ Hooks.fire = async function (hook, params) {
 		winston.warn(`[plugins] Unknown hookType: ${hookType}, hook : ${hook}`);
 		return;
 	}
+	let deleteCaller = false;
 	if (params && typeof params === 'object' && !params.hasOwnProperty('caller')) {
 		const als = require('../als');
 		params.caller = als.getStore();
+		deleteCaller = true;
 	}
 	const result = await hookTypeToMethod[hookType](hook, hookList, params);
 
@@ -107,6 +109,9 @@ Hooks.fire = async function (hook, params) {
 		Hooks.fire('action:plugins.firehook', payload);
 	}
 	if (result !== undefined) {
+		if (deleteCaller) {
+			delete result.caller;
+		}
 		return result;
 	}
 };
