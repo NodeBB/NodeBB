@@ -21,7 +21,10 @@ const url = nconf.get('url');
 
 helpers.noScriptErrors = async function (req, res, error, httpStatus) {
 	if (req.body.noscript !== 'true') {
-		return res.status(httpStatus).send(error);
+		if (typeof error === 'string') {
+			return res.status(httpStatus).send(error);
+		}
+		return res.status(httpStatus).json(error);
 	}
 	const middleware = require('../middleware');
 	const httpStatusString = httpStatus.toString();
