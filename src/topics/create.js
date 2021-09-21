@@ -77,6 +77,7 @@ module.exports = function (Topics) {
 
 	Topics.post = async function (data) {
 		data = await plugins.hooks.fire('filter:topic.post', data);
+		const { uid } = data;
 
 		data.title = String(data.title).trim();
 		data.tags = data.tags || [];
