@@ -487,7 +487,15 @@ describe('authentication', () => {
 				loginUser(bannedUser.username, bannedUser.pw, (err, res, body) => {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 403);
-					assert.equal(body, '[[error:user-banned-reason, spammer]]');
+					delete body.timestamp;
+					assert.deepStrictEqual(body, {
+						banned_until: 0,
+						banned_until_readable: '',
+						expiry: 0,
+						expiry_readable: '',
+						reason: 'spammer',
+						uid: 6,
+					});
 					user.bans.unban(bannedUser.uid, (err) => {
 						assert.ifError(err);
 						const expiry = Date.now() + 10000;
@@ -496,7 +504,8 @@ describe('authentication', () => {
 							loginUser(bannedUser.username, bannedUser.pw, (err, res, body) => {
 								assert.ifError(err);
 								assert.equal(res.statusCode, 403);
-								assert.equal(body, `[[error:user-banned-reason-until, ${utils.toISOString(expiry)}, No reason given.]]`);
+								assert(body.banned_until);
+								assert(body.reason, '[[user:info.banned-no-reason]]');
 								done();
 							});
 						});
