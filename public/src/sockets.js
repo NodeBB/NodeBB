@@ -208,15 +208,20 @@ socket = window.socket;
 	}
 
 	function onEventBanned(data) {
-		var message = data.until ? '[[error:user-banned-reason-until, ' + utils.toISOString(data.until) + ', ' + data.reason + ']]' : '[[error:user-banned-reason, ' + data.reason + ']]';
-
-		bootbox.alert({
-			title: '[[error:user-banned]]',
-			message: message,
-			closeButton: false,
-			callback: function () {
-				window.location.href = config.relative_path + '/';
-			},
+		require(['translator'], function (translator) {
+			var message = data.until ?
+				translator.compile('error:user-banned-reason-until', (new Date(data.until).toLocaleString()), data.reason) :
+				'[[error:user-banned-reason, ' + data.reason + ']]';
+			translator.translate(message, function (message) {
+				bootbox.alert({
+					title: '[[error:user-banned]]',
+					message: message,
+					closeButton: false,
+					callback: function () {
+						window.location.href = config.relative_path + '/';
+					},
+				});
+			});
 		});
 	}
 
