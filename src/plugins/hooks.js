@@ -109,7 +109,7 @@ Hooks.fire = async function (hook, params) {
 		Hooks.fire('action:plugins.firehook', payload);
 	}
 	if (result !== undefined) {
-		if (deleteCaller) {
+		if (deleteCaller && result && result.caller) {
 			delete result.caller;
 		}
 		return result;
