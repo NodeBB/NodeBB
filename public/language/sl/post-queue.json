@@ -1,18 +1,18 @@
 
 {
-	"post-queue": "Post Queue",
+	"post-queue": "Čakalna vrsta objav",
 	"description": "There are no posts in the post queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
-	"user": "User",
-	"category": "Category",
-	"title": "Title",
-	"content": "Content",
+	"user": "Uporabnik",
+	"category": "Kategorija",
+	"title": "Naslov",
+	"content": "Vsebina",
 	"posted": "Posted",
-	"reply-to": "Reply to \"%1\"",
-	"content-editable": "Click on content to edit",
-	"category-editable": "Click on category to edit",
-	"title-editable": "Click on title to edit",
-	"reply": "Reply",
-	"topic": "Topic",
-	"accept": "Accept",
-	"reject": "Reject"
+	"reply-to": "Odgovor na %1",
+	"content-editable": "Za urejanje kliknite na vsebino",
+	"category-editable": "Za urejanje kliknite na kategorijo",
+	"title-editable": "Za urejanje kliknite na naslov",
+	"reply": "Odgovori",
+	"topic": "Tema",
+	"accept": "Sprejmi",
+	"reject": "Zavrni"
 }

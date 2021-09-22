@@ -1,14 +1,14 @@
 {
 	"figure-x": "Figure %1",
 	"error-events-per-day": "<code>%1</code> dogodkov na dan",
-	"error.404": "404 Not Found",
-	"error.503": "503 Service Unavailable",
-	"manage-error-log": "Manage Error Log",
-	"export-error-log": "Export Error Log (CSV)",
-	"clear-error-log": "Clear Error Log",
-	"route": "Route",
-	"count": "Count",
-	"no-routes-not-found": "Hooray! No 404 errors!",
-	"clear404-confirm": "Are you sure you wish to clear the 404 error logs?",
-	"clear404-success": "\"404 Not Found\" errors cleared"
+	"error.404": "4040 ni najdeno",
+	"error.503": "503 storitev ni na voljo",
+	"manage-error-log": "Upravljaj dnevnik napak",
+	"export-error-log": "Izvozi dnevnik napak (CSV)",
+	"clear-error-log": "Počisti dnevnik napak",
+	"route": "Pot",
+	"count": "Število",
+	"no-routes-not-found": "Hura! Ni napak 404! ",
+	"clear404-confirm": "Ste prepričani, da želite izbrisati dnevnik napak 404?",
+	"clear404-success": "Napake \"404 ni najdeno\" so počiščene"
 }

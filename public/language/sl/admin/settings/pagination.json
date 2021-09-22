@@ -1,12 +1,12 @@
 {
-	"pagination": "Pagination Settings",
-	"enable": "Paginate topics and posts instead of using infinite scroll.",
-	"posts": "Post Pagination",
-	"topics": "Topic Pagination",
-	"posts-per-page": "Posts per Page",
-	"max-posts-per-page": "Maximum posts per page",
-	"categories": "Category Pagination",
-	"topics-per-page": "Topics per Page",
-	"max-topics-per-page": "Maximum topics per page",
-	"categories-per-page": "Categories per page"
+	"pagination": "Nastavitve številčenja",
+	"enable": "Namesto neskončnega drsenja uporabite številčenje tem in objav.",
+	"posts": "Številčenje objav",
+	"topics": "Številčenje tem",
+	"posts-per-page": "Objav na stran",
+	"max-posts-per-page": "Največ objav na stran",
+	"categories": "Številčenje kategorij",
+	"topics-per-page": "Tem na stran",
+	"max-topics-per-page": "Največ tem na stran",
+	"categories-per-page": "Kategorij na stran"
 }
