@@ -14,7 +14,6 @@ const user = require('../user');
 const plugins = require('../plugins');
 const utils = require('../utils');
 const slugify = require('../slugify');
-const translator = require('../translator');
 const helpers = require('./helpers');
 const privileges = require('../privileges');
 const sockets = require('../socket.io');
@@ -273,7 +272,7 @@ function continueLogin(strategy, req, res, next) {
 	passport.authenticate(strategy, async (err, userData, info) => {
 		if (err) {
 			plugins.hooks.fire('action:login.continue', { req, strategy, userData, error: err });
-			return helpers.noScriptErrors(req, res, err.message, 403);
+			return helpers.noScriptErrors(req, res, err.data || err.message, 403);
 		}
 
 		if (!userData) {
@@ -433,8 +432,7 @@ authenticationController.localLogin = async function (req, username, password, n
 		userData.isAdminOrGlobalMod = isAdminOrGlobalMod;
 
 		if (!canLoginIfBanned) {
-			const banMesage = await getBanInfo(uid);
-			return next(new Error(banMesage));
+			return next(await getBanError(uid));
 		}
 
 		// Doing this after the ban check, because user's privileges might change after a ban expires
@@ -493,19 +491,19 @@ authenticationController.logout = async function (req, res, next) {
 	}
 };
 
-async function getBanInfo(uid) {
+async function getBanError(uid) {
 	try {
 		const banInfo = await user.getLatestBanInfo(uid);
 
 		if (!banInfo.reason) {
-			banInfo.reason = await translator.translate('[[user:info.banned-no-reason]]');
+			banInfo.reason = '[[user:info.banned-no-reason]]';
 		}
-		return banInfo.banned_until ?
-			`[[error:user-banned-reason-until, ${banInfo.banned_until_readable}, ${banInfo.reason}]]` :
-			`[[error:user-banned-reason, ${banInfo.reason}]]`;
+		const err = new Error(banInfo.reason);
+		err.data = banInfo;
+		return err;
 	} catch (err) {
 		if (err.message === 'no-ban-info') {
-			return '[[error:user-banned]]';
+			return new Error('[[error:user-banned]]');
 		}
 		throw err;
 	}

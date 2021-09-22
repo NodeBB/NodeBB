@@ -148,7 +148,7 @@ module.exports = function (User) {
 				settings[notificationType] = data[notificationType];
 			}
 		});
-		const result = await plugins.hooks.fire('filter:user.saveSettings', { settings: settings, data: data });
+		const result = await plugins.hooks.fire('filter:user.saveSettings', { uid: uid, settings: settings, data: data });
 		await db.setObject(`user:${uid}:settings`, result.settings);
 		await User.updateDigestSetting(uid, data.dailyDigestFreq);
 		return await User.getSettings(uid);

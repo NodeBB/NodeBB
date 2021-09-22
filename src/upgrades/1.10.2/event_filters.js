@@ -1,6 +1,7 @@
+/* eslint-disable no-await-in-loop */
+
 'use strict';
 
-const async = require('async');
 const db = require('../../database');
 
 const batch = require('../../batch');
@@ -8,39 +9,29 @@ const batch = require('../../batch');
 module.exports = {
 	name: 'add filters to events',
 	timestamp: Date.UTC(2018, 9, 4),
-	method: function (callback) {
+	method: async function () {
 		const { progress } = this;
 
-		batch.processSortedSet('events:time', (eids, next) => {
-			async.eachSeries(eids, (eid, next) => {
+		await batch.processSortedSet('events:time', async (eids) => {
+			for (const eid of eids) {
 				progress.incr();
 
-				db.getObject(`event:${eid}`, (err, eventData) => {
-					if (err) {
-						return next(err);
-					}
-					if (!eventData) {
-						return db.sortedSetRemove('events:time', eid, next);
-					}
-					// privilege events we're missing type field
-					if (!eventData.type && eventData.privilege) {
-						eventData.type = 'privilege-change';
-						async.waterfall([
-							function (next) {
-								db.setObjectField(`event:${eid}`, 'type', 'privilege-change', next);
-							},
-							function (next) {
-								db.sortedSetAdd(`events:time:${eventData.type}`, eventData.timestamp, eid, next);
-							},
-						], next);
-						return;
-					}
-
-					db.sortedSetAdd(`events:time:${eventData.type || ''}`, eventData.timestamp, eid, next);
-				});
-			}, next);
+				const eventData = await db.getObject(`event:${eid}`);
+				if (!eventData) {
+					await db.sortedSetRemove('events:time', eid);
+					return;
+				}
+				// privilege events we're missing type field
+				if (!eventData.type && eventData.privilege) {
+					eventData.type = 'privilege-change';
+					await db.setObjectField(`event:${eid}`, 'type', 'privilege-change');
+					await db.sortedSetAdd(`events:time:${eventData.type}`, eventData.timestamp, eid);
+					return;
+				}
+				await db.sortedSetAdd(`events:time:${eventData.type || ''}`, eventData.timestamp, eid);
+			}
 		}, {
 			progress: this.progress,
-		}, callback);
+		});
 	},
 };

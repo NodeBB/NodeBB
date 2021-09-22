@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/login', ['hooks', 'jquery-form'], function (hooks) {
+define('forum/login', ['hooks', 'translator', 'jquery-form'], function (hooks, translator) {
 	var	Login = {
 		_capsState: false,
 	};
@@ -44,17 +44,22 @@ define('forum/login', ['hooks', 'jquery-form'], function (hooks) {
 						window.location.href = pathname + '?' + qs;
 					},
 					error: function (data) {
+						var message = data.responseText;
+						var errInfo = data.responseJSON;
 						if (data.status === 403 && data.responseText === 'Forbidden') {
 							window.location.href = config.relative_path + '/login?error=csrf-invalid';
-						} else {
-							errorEl.find('p').translateText(data.responseText);
-							errorEl.show();
-							submitEl.removeClass('disabled');
+						} else if (errInfo && errInfo.hasOwnProperty('banned_until')) {
+							message = errInfo.banned_until ?
+								translator.compile('error:user-banned-reason-until', (new Date(errInfo.banned_until).toLocaleString()), errInfo.reason) :
+								'[[error:user-banned-reason, ' + errInfo.reason + ']]';
+						}
+						errorEl.find('p').translateText(message);
+						errorEl.show();
+						submitEl.removeClass('disabled');
 
-							// Select the entire password if that field has focus
-							if ($('#password:focus').length) {
-								$('#password').select();
-							}
+						// Select the entire password if that field has focus
+						if ($('#password:focus').length) {
+							$('#password').select();
 						}
 					},
 				});

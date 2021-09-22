@@ -21,7 +21,7 @@ define('forum/account/info', ['forum/account/header', 'components', 'forum/accou
 				app.alertSuccess('[[user:info.moderation-note.success]]');
 				var timestamp = Date.now();
 				var data = [{
-					note: note,
+					note: utils.escapeHTML(note),
 					user: app.user,
 					timestamp: timestamp,
 					timestampISO: utils.toISOString(timestamp),

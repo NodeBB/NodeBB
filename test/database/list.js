@@ -188,6 +188,15 @@ describe('List methods', () => {
 				done();
 			});
 		});
+
+		it('should remove multiple elements from list', async () => {
+			await db.listAppend('multiRemoveList', ['a', 'b', 'c', 'd', 'e']);
+			const initial = await db.getListRange('multiRemoveList', 0, -1);
+			assert.deepStrictEqual(initial, ['a', 'b', 'c', 'd', 'e']);
+			await db.listRemoveAll('multiRemoveList', ['b', 'd']);
+			const values = await db.getListRange('multiRemoveList', 0, -1);
+			assert.deepStrictEqual(values, ['a', 'c', 'e']);
+		});
 	});
 
 	describe('listTrim()', () => {

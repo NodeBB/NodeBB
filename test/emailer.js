@@ -87,7 +87,7 @@ describe('emailer', () => {
 						assert.equal(output, text);
 						done();
 					});
-				}, 500);
+				}, 2000);
 			});
 		});
 	});

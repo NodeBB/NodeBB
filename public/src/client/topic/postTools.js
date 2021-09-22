@@ -399,7 +399,12 @@ define('forum/topic/postTools', [
 		postAction('purge', getData(button, 'data-pid'));
 	}
 
-	function postAction(action, pid) {
+	async function postAction(action, pid) {
+		({ action } = await hooks.fire(`static:post.${action}`, { action, pid }));
+		if (!action) {
+			return;
+		}
+
 		bootbox.confirm('[[topic:post_' + action + '_confirm]]', function (confirm) {
 			if (!confirm) {
 				return;

@@ -12,6 +12,7 @@ const privileges = require('../privileges');
 const categories = require('../categories');
 const plugins = require('../plugins');
 const meta = require('../meta');
+const middlewareHelpers = require('../middleware/helpers');
 
 const helpers = module.exports;
 
@@ -20,7 +21,10 @@ const url = nconf.get('url');
 
 helpers.noScriptErrors = async function (req, res, error, httpStatus) {
 	if (req.body.noscript !== 'true') {
-		return res.status(httpStatus).send(error);
+		if (typeof error === 'string') {
+			return res.status(httpStatus).send(error);
+		}
+		return res.status(httpStatus).json(error);
 	}
 	const middleware = require('../middleware');
 	const httpStatusString = httpStatus.toString();
@@ -121,7 +125,17 @@ helpers.notAllowed = async function (req, res, error) {
 
 	if (req.loggedIn || req.uid === -1) {
 		if (res.locals.isAPI) {
-			helpers.formatApiResponse(403, res, error);
+			if (req.originalUrl.startsWith(`${relative_path}/api/v3`)) {
+				helpers.formatApiResponse(403, res, error);
+			} else {
+				res.status(403).json({
+					path: req.path.replace(/^\/api/, ''),
+					loggedIn: req.loggedIn,
+					error: error,
+					title: '[[global:403.title]]',
+					bodyClass: middlewareHelpers.buildBodyClass(req, res),
+				});
+			}
 		} else {
 			const middleware = require('../middleware');
 			await middleware.buildHeaderAsync(req, res);

@@ -1,9 +1,9 @@
 {
-	"loading": "Loading Skins...",
-	"homepage": "Homepage",
-	"select-skin": "Select Skin",
-	"current-skin": "Current Skin",
-	"skin-updated": "Skin Updated",
-	"applied-success": "%1 skin was succesfully applied",
-	"revert-success": "Skin reverted to base colours"
+	"loading": "Nalagam preobleke...",
+	"homepage": "Domača stran",
+	"select-skin": "Izberi preobleko",
+	"current-skin": "Trenutna preobleka",
+	"skin-updated": "Preobleka je posodobljena",
+	"applied-success": "%1 preobleke je bilo uspešno uveljavljene",
+	"revert-success": "Preobleka je povrnjena v osnovne barve"
 }

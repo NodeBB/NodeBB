@@ -1,16 +1,13 @@
 'use strict';
 
-const async = require('async');
 const db = require('../../database');
 
 
 module.exports = {
 	name: 'Adding theme to active plugins sorted set',
 	timestamp: Date.UTC(2015, 11, 23),
-	method: function (callback) {
-		async.waterfall([
-			async.apply(db.getObjectField, 'config', 'theme:id'),
-			async.apply(db.sortedSetAdd, 'plugins:active', 0),
-		], callback);
+	method: async function () {
+		const themeId = await db.getObjectField('config', 'theme:id');
+		await db.sortedSetAdd('plugins:active', 0, themeId);
 	},
 };

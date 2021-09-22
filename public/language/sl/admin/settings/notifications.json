@@ -1,6 +1,6 @@
 {
-	"notifications": "Notifications",
-	"welcome-notification": "Welcome Notification",
-	"welcome-notification-link": "Welcome Notification Link",
-	"welcome-notification-uid": "Welcome Notification User (UID)"
+	"notifications": "Obvestila",
+	"welcome-notification": "Obvestilo o dobrodošlici",
+	"welcome-notification-link": "Povezava do obvestila o dobrodošlici",
+	"welcome-notification-uid": "Obvestilo o dobrodošlici za uporabnika (UID)"
 }

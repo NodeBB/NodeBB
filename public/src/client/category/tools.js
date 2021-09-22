@@ -275,11 +275,7 @@ define('forum/category/tools', [
 		if (!ajaxify.data.topics || !ajaxify.data.template.category) {
 			return;
 		}
-		var numPinned = ajaxify.data.topics.reduce(function (memo, topic) {
-			memo = topic.pinned ? memo += 1 : memo;
-			return memo;
-		}, 0);
-
+		var numPinned = ajaxify.data.topics.filter(topic => topic.pinned).length;
 		if ((!app.user.isAdmin && !app.user.isMod) || numPinned < 2) {
 			return;
 		}
@@ -291,15 +287,12 @@ define('forum/category/tools', [
 			topicListEl.sortable({
 				handle: '[component="topic/pinned"]',
 				items: '[component="category/topic"].pinned',
-				update: function () {
-					var data = [];
-
-					var pinnedTopics = topicListEl.find('[component="category/topic"].pinned');
-					pinnedTopics.each(function (index, element) {
-						data.push({ tid: $(element).attr('data-tid'), order: pinnedTopics.length - index - 1 });
-					});
-
-					socket.emit('topics.orderPinnedTopics', data, function (err) {
+				update: function (ev, ui) {
+					var baseIndex = parseInt(topicListEl.find('[component="category/topic"].pinned').first().attr('data-index'), 10);
+					socket.emit('topics.orderPinnedTopics', {
+						tid: ui.item.attr('data-tid'),
+						order: baseIndex + ui.item.index() - 1,
+					}, function (err) {
 						if (err) {
 							return app.alertError(err.message);
 						}

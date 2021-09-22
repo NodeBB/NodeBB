@@ -1,6 +1,6 @@
 {
-    "reconnection": "Reconnection Settings",
-    "max-attempts": "Max Reconnection Attempts",
-    "default-placeholder": "Default: %1",
-    "delay": "Reconnection Delay"
+    "reconnection": "Nastavitve vzpostavitve ponovne povezave",
+    "max-attempts": "Največ poskusov vzpostavitve ponovne povezave",
+    "default-placeholder": "Privzeto: %1",
+    "delay": "Zamuda pri vzpostavitvi ponovne povezave"
 }

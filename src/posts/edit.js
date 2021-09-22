@@ -53,8 +53,8 @@ module.exports = function (Posts) {
 		]);
 
 		await Posts.setPostFields(data.pid, result.post);
-
-		if (meta.config.enablePostHistory === 1) {
+		const contentChanged = data.content !== oldContent;
+		if (meta.config.enablePostHistory === 1 && contentChanged) {
 			await Posts.diffs.save({
 				pid: data.pid,
 				uid: data.uid,
@@ -72,7 +72,7 @@ module.exports = function (Posts) {
 		returnPostData.cid = topic.cid;
 		returnPostData.topic = topic;
 		returnPostData.editedISO = utils.toISOString(editPostData.edited);
-		returnPostData.changed = oldContent !== data.content;
+		returnPostData.changed = contentChanged;
 
 		await topics.notifyFollowers(returnPostData, data.uid, {
 			type: 'post-edit',

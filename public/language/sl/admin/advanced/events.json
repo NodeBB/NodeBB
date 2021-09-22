@@ -1,12 +1,12 @@
 {
-	"events": "Events",
-	"no-events": "There are no events",
-	"control-panel": "Events Control Panel",
-	"delete-events": "Delete Events",
-	"filters": "Filters",
-	"filters-apply": "Apply Filters",
-	"filter-type": "Event Type",
-	"filter-start": "Start Date",
-	"filter-end": "End Date",
-	"filter-perPage": "Per Page"
+	"events": "Dogodki",
+	"no-events": "Ni dogodkov",
+	"control-panel": "Nadzorna plošča za dogodke",
+	"delete-events": "Izbriši dogodke",
+	"filters": "Filtri",
+	"filters-apply": "Uveljavi filtre",
+	"filter-type": "Tip dogodka",
+	"filter-start": "Začetni datum",
+	"filter-end": "Končni datum",
+	"filter-perPage": "Na stran"
 }

@@ -879,14 +879,14 @@ describe('Topic\'s', () => {
 		});
 
 		it('should error with unprivileged user', (done) => {
-			socketTopics.orderPinnedTopics({ uid: 0 }, [{ tid: tid1 }, { tid: tid2 }], (err) => {
+			socketTopics.orderPinnedTopics({ uid: 0 }, { tid: tid1, order: 1 }, (err) => {
 				assert.equal(err.message, '[[error:no-privileges]]');
 				done();
 			});
 		});
 
 		it('should not do anything if topics are not pinned', (done) => {
-			socketTopics.orderPinnedTopics({ uid: adminUid }, [{ tid: tid3 }], (err) => {
+			socketTopics.orderPinnedTopics({ uid: adminUid }, { tid: tid3, order: 1 }, (err) => {
 				assert.ifError(err);
 				db.isSortedSetMember(`cid:${topic.categoryId}:tids:pinned`, tid3, (err, isMember) => {
 					assert.ifError(err);
@@ -901,7 +901,7 @@ describe('Topic\'s', () => {
 				assert.ifError(err);
 				assert.equal(pinnedTids[0], tid2);
 				assert.equal(pinnedTids[1], tid1);
-				socketTopics.orderPinnedTopics({ uid: adminUid }, [{ tid: tid1, order: 1 }, { tid: tid2, order: 0 }], (err) => {
+				socketTopics.orderPinnedTopics({ uid: adminUid }, { tid: tid1, order: 0 }, (err) => {
 					assert.ifError(err);
 					db.getSortedSetRevRange(`cid:${topic.categoryId}:tids:pinned`, 0, -1, (err, pinnedTids) => {
 						assert.ifError(err);

@@ -14,7 +14,6 @@ Email.test = async function (socket, data) {
 		...(data.payload || {}),
 		subject: '[[email:test-email.subject]]',
 	};
-	let template;
 
 	switch (data.template) {
 		case 'digest':
@@ -34,15 +33,11 @@ Email.test = async function (socket, data) {
 			break;
 
 		case 'verify-email':
-			template = 'verify-email';
-			// falls through
-
 		case 'welcome':
 			await userEmail.sendValidationEmail(socket.uid, {
 				force: 1,
-				email: 'test@example.org',
-				template: template || 'welcome',
-				subject: !template ? `[[email:welcome-to, ${meta.config.title || meta.config.browserTitle || 'NodeBB'}]]` : undefined,
+				template: data.template,
+				subject: data.template === 'welcome' ? `[[email:welcome-to, ${meta.config.title || meta.config.browserTitle || 'NodeBB'}]]` : undefined,
 			});
 			break;
 

@@ -57,9 +57,15 @@ Interstitials.email = async (data) => {
 						// User attempting to edit another user's email -- not allowed
 						throw new Error('[[error:no-privileges]]');
 					}
-				} else if (current) {
-					// User explicitly clearing their email
-					await user.email.remove(userData.uid, data.req.session.id);
+				} else {
+					if (meta.config.requireEmailAddress) {
+						throw new Error('[[error:invalid-email]]');
+					}
+
+					if (current) {
+						// User explicitly clearing their email
+						await user.email.remove(userData.uid, data.req.session.id);
+					}
 				}
 			} else {
 				// New registrants have the confirm email sent from user.create()

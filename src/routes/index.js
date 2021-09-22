@@ -60,7 +60,12 @@ _mounts.topic = (app, name, middleware, controllers) => {
 };
 
 _mounts.post = (app, name, middleware, controllers) => {
-	const middlewares = [middleware.maintenanceMode, middleware.registrationComplete, middleware.pluginHooks];
+	const middlewares = [
+		middleware.maintenanceMode,
+		middleware.authenticateRequest,
+		middleware.registrationComplete,
+		middleware.pluginHooks,
+	];
 	app.get(`/${name}/:pid`, middleware.busyCheck, middlewares, controllers.posts.redirectToPost);
 	app.get(`/api/${name}/:pid`, middlewares, controllers.posts.redirectToPost);
 };

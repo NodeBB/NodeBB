@@ -1,3 +1,46 @@
+#### v1.18.2 (2021-09-08)
+
+##### Chores
+
+* **deps:**  update commitlint monorepo to v13 (87ba768f)
+*  incrementing version number - v1.18.1 (f8f80e4f)
+*  update changelog for v1.18.1 (0713475d)
+
+##### New Features
+
+*  a slightly less ugly rewards panel (bf0c02a7)
+
+##### Bug Fixes
+
+*  dashboard graph controls (a7855c4c)
+*  #9767 ACP change group icon fix (580a016b)
+*  #9781 (#9782) (0ce4b87d)
+*  replace logic in isPrivilegedOrSelfAndPasswordMatch to use privileges.users.canEdit (856ba78a)
+*  handle missing uid in deprecated socket call (cdaea611)
+*  use privileges.users.canEdit for image upload priv check (e33e046f)
+*  errors from registerComplete (a48bbdbf)
+*  simplify logic for fullname and email blanking in user retrieval (getUserDataByUserSlug) (60de0844)
+*  lint (1e2bda13)
+*  manifest error (488f0978)
+*  #9772, regression from https://github.com/NodeBB/NodeBB/commit/70a04bc10577e90e28d66a647d38cafc3307a285 (72710b80)
+*  push back some deprecations, remove deprecated stuff scheduled for v1.18.0 (dd4e66e2)
+*  deprecate userData.showHidden as it is functionally equivalent to userData.canEdit (4ac701d7)
+*  focus on save button on plugin activation (46e5e17d)
+*  #9773, fire hooks properly for priv changes (#9774) (6869920e)
+* **deps:**
+  *  update dependency sharp to v0.29.1 (ac6cd02f)
+  *  update dependency nodebb-plugin-dbsearch to v5.0.3 (338f90fc)
+  *  update dependency nodebb-theme-vanilla to v12.1.3 (0b3ea5ad)
+  *  update dependency nodebb-theme-persona to v11.2.5 (57e54d55)
+
+##### Refactors
+
+*  deprecate picture update socket call, new API routes for picture update (0a41741b)
+
+##### Tests
+
+*  added test for external image via new change picture API (8cbad61e)
+
 #### v1.18.1 (2021-09-03)
 
 ##### Chores

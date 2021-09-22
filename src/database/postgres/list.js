@@ -94,7 +94,11 @@ RETURNING A."array"[array_length(A."array", 1)] v`,
 		if (!key) {
 			return;
 		}
-
+		// TODO: remove all values with one query
+		if (Array.isArray(value)) {
+			await Promise.all(value.map(v => module.listRemoveAll(key, v)));
+			return;
+		}
 		await module.pool.query({
 			name: 'listRemoveAll',
 			text: `

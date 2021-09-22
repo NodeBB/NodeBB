@@ -1,6 +1,7 @@
+/* eslint-disable no-await-in-loop */
+
 'use strict';
 
-const async = require('async');
 const privileges = require('../../privileges');
 const groups = require('../../groups');
 const db = require('../../database');
@@ -8,7 +9,7 @@ const db = require('../../database');
 module.exports = {
 	name: 'Give mods explicit privileges',
 	timestamp: Date.UTC(2019, 4, 28),
-	method: function (callback) {
+	method: async function () {
 		const defaultPrivileges = [
 			'find',
 			'read',
@@ -43,43 +44,20 @@ module.exports = {
 			'groups:local:login',
 		];
 
-		async.waterfall([
-			function (next) {
-				db.getSortedSetRevRange('categories:cid', 0, -1, next);
-			},
-			function (cids, next) {
-				async.eachSeries(cids, (cid, next) => {
-					async.waterfall([
-						function (next) {
-							givePrivsToModerators(cid, '', next);
-						},
-						function (next) {
-							givePrivsToModerators(cid, 'groups:', next);
-						},
-						function (next) {
-							privileges.categories.give(modPrivileges.map(p => `groups:${p}`), cid, ['Global Moderators'], next);
-						},
-					], next);
-				}, next);
-			},
-			function (next) {
-				privileges.global.give(globalModPrivs, 'Global Moderators', next);
-			},
-		], callback);
+		const cids = await db.getSortedSetRevRange('categories:cid', 0, -1);
+		for (const cid of cids) {
+			await givePrivsToModerators(cid, '');
+			await givePrivsToModerators(cid, 'groups:');
+			await privileges.categories.give(modPrivileges.map(p => `groups:${p}`), cid, ['Global Moderators']);
+		}
+		await privileges.global.give(globalModPrivs, 'Global Moderators');
 
-		function givePrivsToModerators(cid, groupPrefix, callback) {
+		async function givePrivsToModerators(cid, groupPrefix) {
 			const privGroups = modPrivileges.map(priv => `cid:${cid}:privileges:${groupPrefix}${priv}`);
-
-			async.waterfall([
-				function (next) {
-					db.getSortedSetRevRange(`group:cid:${cid}:privileges:${groupPrefix}moderate:members`, 0, -1, next);
-				},
-				function (members, next) {
-					async.eachSeries(members, (member, next) => {
-						groups.join(privGroups, member, next);
-					}, next);
-				},
-			], callback);
+			const members = await db.getSortedSetRevRange(`group:cid:${cid}:privileges:${groupPrefix}moderate:members`, 0, -1);
+			for (const member of members) {
+				await groups.join(privGroups, member);
+			}
 		}
 	},
 };
