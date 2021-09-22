@@ -1,3 +1,78 @@
+#### v1.18.3 (2021-09-22)
+
+##### Chores
+
+* **deps:**  update docker/build-push-action action to v2.7.0 (ee027719)
+*  incrementing version number - v1.18.2 (0a56158b)
+*  update changelog for v1.18.2 (27e9282a)
+
+##### New Features
+
+*  move filter:topic.post hook to top of method (f194809f)
+*  add client-side static hook to fire immediately before any topic action (hint: delete `action` to stop default behaviour) (66eaae44)
+*  allow removing multiple items from list (397835a0)
+*  add uid to filter:user.saveSettings (7f48edc0)
+*  headers for global privs #9717 (#9762) (84ff1152)
+*  add ACP option to require email address on new registration (006fc700)
+
+##### Bug Fixes
+
+* **deps:**
+  *  update dependency nodebb-plugin-composer-default to v7.0.7 (98554294)
+  *  update dependency postcss to v8.3.7 (6ebe707c)
+  *  update dependency autoprefixer to v10.3.5 (25687441)
+  *  update dependency nodebb-plugin-composer-default to v7.0.6 (#9815) (c18678ce)
+  *  update dependency nodebb-theme-persona to v11.2.8 (#9816) (39d73d0c)
+  *  update dependency connect-mongo to v4.6.0 (8e886c85)
+  *  update dependency nodebb-plugin-composer-default to v7.0.4 (8af54255)
+  *  update dependency mongodb to v3.7.1 (9049dcd7)
+  *  update dependency nodebb-theme-persona to v11.2.6 (506035b5)
+  *  update dependency nodebb-theme-slick to v1.4.13 (787306a6)
+  *  update dependency nodebb-plugin-composer-default to v7.0.3 (732b59c2)
+*  fixed element shifting in ACP menu that's been bothering me for 5-ish years (31975a62)
+*  #9822, use correct username/pwd (30f38771)
+*  remove unused translator (2add84a5)
+*  ban info test (07859f7e)
+*  #9819, show same time info for ban (9f0e55ad)
+*  show local time for ban (7a2f0ae1)
+*  crash (c437b336)
+*  remove caller from payload after hooks is done (15f9aaa6)
+*  bad uid reference (ce8ea6ea)
+*  update Topics.post and Topics.reply so that plugins can modify uid (or redirect a reply to a different topic) (7777812e)
+*  #9818, fix totalTime calculation (c4fc7bf9)
+*  missing microdata in category data (1ed62aa8)
+*  #9812, add topics:schedule (c0a52924)
+*  for subfolders (31a6d4b3)
+*  req.path doesn't have full url (0236ea86)
+*  escape moderation note before adding to dom (75ebe786)
+*  #9811, send bodyClass on 403 (40c9fca9)
+*  also launch docker workflow on release branches (944a7985)
+*  xss on flags page via ban reason (ba3582b8)
+*  up timeout for psql tests (896ff215)
+*  redis batch (0c4b875e)
+*  redis processing batch+1 items every iteration (3261edcc)
+*  #9560, don't save post diffs if content didn't change (8b576a37)
+*  #9790, get baseIndex on update for infinitescroll (6a55c027)
+*  #9790, fix sorting of more than one page of pinned topics (2657804c)
+*  privileges added by plugins (#9802) (3ecbb624)
+*  #9800, don't send all welcome test emails to test@example.org @julianlam (71ed50b9)
+*  docker - remove sha tag (b06e8dba)
+*  Return QEMU back, remove platforms definition (52eace4b)
+*  Docker workflow tweaks (#9792) (e7f4cde4)
+*  browsers autocompleting smtp fields when they should not (34afb747)
+
+##### Refactors
+
+*  no regex (18252fb9)
+*  remove async.waterfall (58ac55c1)
+*  remove async.waterfall (222dccaf)
+*  remove async.waterfall (f35a0f43)
+*  allow plugins to replace og:image, or specify additional og:image (819917da)
+
+##### Code Style Changes
+
+*  give me an A! :100: (0b4d7d1f)
+
 #### v1.18.2 (2021-09-08)
 
 ##### Chores
