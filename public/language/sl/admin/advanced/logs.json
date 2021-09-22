@@ -1,7 +1,7 @@
 {
-	"logs": "Logs",
-	"control-panel": "Logs Control Panel",
-	"reload": "Reload Logs",
-	"clear": "Clear Logs",
-	"clear-success": "Logs Cleared!"
+	"logs": "Dnevniki",
+	"control-panel": "Nadzorna plošča dnevnikov",
+	"reload": "Ponovno naloži dnevnike",
+	"clear": "Počisti dnevnike",
+	"clear-success": "Dnevniki so počiščeni!"
 }

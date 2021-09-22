@@ -1,6 +1,6 @@
 {
 	"queue": "Čakalna vrsta",
-	"description": "V čakalni vrsti za registracijo ni nobenega uporabnika.<br>Da omogočite to funkcionalnost, pojdite na <a href=\"%1\">Nastavitve &rarr; Uporabnik &rarr; Registracija Uporabnika</a> in nastavitev <strong> Tip registracije</strong>v \"Admin Odobravanje\".",
+	"description": "V čakalni vrsti registracij ni nobenega uporabnika.<br>Da omogočite to funkcionalnost, pojdite na <a href=\"%1\">Nastavitve &rarr; Uporabnik &rarr; Registracija Uporabnika</a> in nastavitev <strong> Tip registracije</strong>v \"Admin Odobravanje\".",
 
 	"list.name": "Ime",
 	"list.email": "E-pošta",
