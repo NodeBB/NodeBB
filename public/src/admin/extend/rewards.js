@@ -167,11 +167,17 @@ define('admin/extend/rewards', [], function () {
 			activeRewards.push(data);
 		});
 
-		socket.emit('admin.rewards.save', activeRewards, function (err) {
+		socket.emit('admin.rewards.save', activeRewards, function (err, result) {
 			if (err) {
 				app.alertError(err.message);
 			} else {
 				app.alertSuccess('[[admin/extend/rewards:alert.save-success]]');
+				// newly added rewards are missing data-id, update to prevent rewards getting duplicated
+				$('#active li').each(function (index) {
+					if (!$(this).attr('data-id')) {
+						$(this).attr('data-id', result[index].id);
+					}
+				});
 			}
 		});
 	}
