@@ -1,22 +1,14 @@
 'use strict';
 
-const async = require('async');
 const db = require('../../database');
-
 
 module.exports = {
 	name: 'Revising minimum password strength to 1 (from 0)',
 	timestamp: Date.UTC(2018, 1, 21),
-	method: function (callback) {
-		async.waterfall([
-			async.apply(db.getObjectField.bind(db), 'config', 'minimumPasswordStrength'),
-			function (strength, next) {
-				if (!strength) {
-					return db.setObjectField('config', 'minimumPasswordStrength', 1, next);
-				}
-
-				setImmediate(next);
-			},
-		], callback);
+	method: async function () {
+		const strength = await db.getObjectField('config', 'minimumPasswordStrength');
+		if (!strength) {
+			await db.setObjectField('config', 'minimumPasswordStrength', 1);
+		}
 	},
 };

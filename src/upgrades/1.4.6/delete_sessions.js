@@ -1,7 +1,5 @@
 'use strict';
 
-const async = require('async');
-
 const nconf = require('nconf');
 const db = require('../../database');
 const batch = require('../../batch');
@@ -9,7 +7,7 @@ const batch = require('../../batch');
 module.exports = {
 	name: 'Delete accidentally long-lived sessions',
 	timestamp: Date.UTC(2017, 3, 16),
-	method: function (callback) {
+	method: async function () {
 		let configJSON;
 		try {
 			configJSON = require('../../../config.json') || { [process.env.database]: true };
@@ -20,44 +18,24 @@ module.exports = {
 		const isRedisSessionStore = configJSON.hasOwnProperty('redis');
 		const { progress } = this;
 
-		async.waterfall([
-			function (next) {
-				if (isRedisSessionStore) {
-					const connection = require('../../database/redis/connection');
-					let client;
-					async.waterfall([
-						function (next) {
-							connection.connect(nconf.get('redis'), next);
-						},
-						function (_client, next) {
-							client = _client;
-							client.keys('sess:*', next);
-						},
-						function (sessionKeys, next) {
-							progress.total = sessionKeys.length;
+		if (isRedisSessionStore) {
+			const connection = require('../../database/redis/connection');
+			const client = await connection.connect(nconf.get('redis'));
+			const sessionKeys = await client.keys('sess:*');
+			progress.total = sessionKeys.length;
 
-							batch.processArray(sessionKeys, (keys, next) => {
-								const multi = client.multi();
-								keys.forEach((key) => {
-									progress.incr();
-									multi.del(key);
-								});
-								multi.exec(next);
-							}, {
-								batch: 1000,
-							}, next);
-						},
-					], (err) => {
-						next(err);
-					});
-				} else if (db.client && db.client.collection) {
-					db.client.collection('sessions').deleteMany({}, {}, (err) => {
-						next(err);
-					});
-				} else {
-					next();
-				}
-			},
-		], callback);
+			await batch.processArray(sessionKeys, async (keys) => {
+				const multi = client.multi();
+				keys.forEach((key) => {
+					progress.incr();
+					multi.del(key);
+				});
+				await multi.exec();
+			}, {
+				batch: 1000,
+			});
+		} else if (db.client && db.client.collection) {
+			await db.client.collection('sessions').deleteMany({}, {});
+		}
 	},
 };
