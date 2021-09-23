@@ -56,6 +56,9 @@
 	"composer.show-help": "Show \"Help\" tab",
 	"composer.enable-plugin-help": "Allow plugins to add content to the help tab",
 	"composer.custom-help": "Custom Help Text",
+	"linkback": "Linkback",
+	"linkback.enabled": "Enable topic linkbacks",
+	"linkback.help": "If a post references another topic, a linkback (or &quot;reverse link&quot;) to the post will be inserted into the referenced topic.",
 	"ip-tracking": "IP Tracking",
 	"ip-tracking.each-post": "Track IP Address for each post",
 	"enable-post-history": "Enable Post History"

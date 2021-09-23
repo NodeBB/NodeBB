@@ -53,6 +53,10 @@ Events._types = {
 		text: '[[topic:queued-by]]',
 		href: '/post-queue',
 	},
+	linkback: {
+		icon: 'fa-link',
+		text: '[[topic:linkback]]',
+	}
 };
 
 Events.init = async () => {
