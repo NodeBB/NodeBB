@@ -62,17 +62,17 @@
 
 	"user-presence": "Prisotnost uporabnikov",
 	"on-categories": "On categories list",
-	"reading-posts": "Reading posts",
-	"browsing-topics": "Browsing topics",
+	"reading-posts": "Branje objav",
+	"browsing-topics": "Brskanje po temah",
 	"recent": "Nedavno",
 	"unread": "Neprebrano",
 
-	"high-presence-topics": "High Presence Topics",
+	"high-presence-topics": "Teme z visoko prisotnostjo",
 
 	"graphs.page-views": "Ogledov strani",
-	"graphs.page-views-registered": "Page Views Registered",
-	"graphs.page-views-guest": "Page Views Guest",
-	"graphs.page-views-bot": "Page Views Bot",
+	"graphs.page-views-registered": "Ogledov strani-registrirani",
+	"graphs.page-views-guest": "Ogledov strani-gosti",
+	"graphs.page-views-bot": "Ogledov strani-robot",
 	"graphs.unique-visitors": "Edinstveni obiskovalci",
 	"graphs.registered-users": "Registrirani uporabniki",
 	"graphs.anonymous-users": "Anonimni uporabniki",
