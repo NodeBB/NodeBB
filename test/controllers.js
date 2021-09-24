@@ -413,7 +413,7 @@ describe('Controllers', () => {
 			});
 
 			assert.strictEqual(res.statusCode, 302);
-			assert.strictEqual(res.headers.location, '/');
+			assert.strictEqual(res.headers.location, `${nconf.get('relative_path')}/`);
 		});
 	});
 
