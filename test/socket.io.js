@@ -547,6 +547,22 @@ describe('socket.io', () => {
 		});
 	});
 
+	it('should not error when resending digests', async () => {
+		await socketAdmin.digest.resend({ uid: adminUid }, { action: 'resend-day', uid: adminUid });
+		await socketAdmin.digest.resend({ uid: adminUid }, { action: 'resend-day' });
+	});
+
+	it('should error with invalid interval', async () => {
+		const oldValue = meta.config.dailyDigestFreq;
+		meta.config.dailyDigestFreq = 'off';
+		try {
+			await socketAdmin.digest.resend({ uid: adminUid }, { action: 'resend-' });
+		} catch (err) {
+			assert.strictEqual(err.message, '[[error:digest-not-enabled]]');
+		}
+		meta.config.dailyDigestFreq = oldValue;
+	});
+
 	it('should get logs', (done) => {
 		const fs = require('fs');
 		const path = require('path');
@@ -705,5 +721,32 @@ describe('socket.io', () => {
 				done();
 			});
 		});
+	});
+
+	it('should clear caches', async () => {
+		await socketAdmin.cache.clear({ uid: adminUid }, { name: 'post' });
+		await socketAdmin.cache.clear({ uid: adminUid }, { name: 'object' });
+		await socketAdmin.cache.clear({ uid: adminUid }, { name: 'group' });
+		await socketAdmin.cache.clear({ uid: adminUid }, { name: 'local' });
+	});
+
+	it('should toggle caches', async () => {
+		const caches = {
+			post: require('../src/posts/cache'),
+			object: require('../src/database').objectCache,
+			group: require('../src/groups').cache,
+			local: require('../src/cache'),
+		};
+
+		await socketAdmin.cache.toggle({ uid: adminUid }, { name: 'post', enabled: !caches.post.enabled });
+		await socketAdmin.cache.toggle({ uid: adminUid }, { name: 'object', enabled: !caches.object.enabled });
+		await socketAdmin.cache.toggle({ uid: adminUid }, { name: 'group', enabled: !caches.group.enabled });
+		await socketAdmin.cache.toggle({ uid: adminUid }, { name: 'local', enabled: !caches.local.enabled });
+
+		// call again to return back to original state
+		await socketAdmin.cache.toggle({ uid: adminUid }, { name: 'post', enabled: !caches.post.enabled });
+		await socketAdmin.cache.toggle({ uid: adminUid }, { name: 'object', enabled: !caches.object.enabled });
+		await socketAdmin.cache.toggle({ uid: adminUid }, { name: 'group', enabled: !caches.group.enabled });
+		await socketAdmin.cache.toggle({ uid: adminUid }, { name: 'local', enabled: !caches.local.enabled });
 	});
 });
