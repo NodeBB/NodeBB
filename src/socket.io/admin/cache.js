@@ -2,11 +2,13 @@
 
 const SocketCache = module.exports;
 
+const db = require('../../database');
+
 SocketCache.clear = async function (socket, data) {
 	if (data.name === 'post') {
 		require('../../posts/cache').reset();
-	} else if (data.name === 'object') {
-		require('../../database').objectCache.reset();
+	} else if (data.name === 'object' && db.objectCache) {
+		db.objectCache.reset();
 	} else if (data.name === 'group') {
 		require('../../groups').cache.reset();
 	} else if (data.name === 'local') {
@@ -17,7 +19,7 @@ SocketCache.clear = async function (socket, data) {
 SocketCache.toggle = async function (socket, data) {
 	const caches = {
 		post: require('../../posts/cache'),
-		object: require('../../database').objectCache,
+		object: db.objectCache,
 		group: require('../../groups').cache,
 		local: require('../../cache'),
 	};
