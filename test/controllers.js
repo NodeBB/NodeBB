@@ -343,6 +343,81 @@ describe('Controllers', () => {
 		});
 	});
 
+	describe('registration interstitials', () => {
+		let jar;
+		let token;
+
+		it('email interstitial should still apply if empty email entered and requireEmailAddress is enabled', async () => {
+			meta.config.requireEmailAddress = 1;
+
+			jar = await helpers.registerUser({
+				username: 'testEmailReg',
+				password: 'asdasd',
+			});
+			token = await helpers.getCsrfToken(jar);
+
+			console.log('making request');
+			let res = await requestAsync(`${nconf.get('url')}/register/complete`, {
+				method: 'post',
+				jar,
+				json: true,
+				followRedirect: false,
+				simple: false,
+				resolveWithFullResponse: true,
+				headers: {
+					'x-csrf-token': token,
+				},
+				form: {
+					email: '',
+				},
+			});
+
+			assert.strictEqual(res.headers.location, '/register/complete');
+
+			res = await requestAsync(`${nconf.get('url')}/api/register/complete`, {
+				jar,
+				json: true,
+				resolveWithFullResponse: true,
+			});
+
+			assert(res.body.errors.includes('[[error:invalid-email]]'));
+		});
+
+		it('gdpr interstitial should still apply if email requirement is disabled', async () => {
+			meta.config.requireEmailAddress = 0;
+
+			const res = await requestAsync(`${nconf.get('url')}/api/register/complete`, {
+				jar,
+				json: true,
+				resolveWithFullResponse: true,
+			});
+
+			assert(!res.body.errors.includes('[[error:invalid-email]]'));
+			assert(!res.body.errors.includes('[[error:gdpr_consent_denied]]'));
+		});
+
+		it('registration should succeed once gdpr prompts are agreed to', async () => {
+			const res = await requestAsync(`${nconf.get('url')}/register/complete`, {
+				method: 'post',
+				jar,
+				json: true,
+				followRedirect: false,
+				simple: false,
+				resolveWithFullResponse: true,
+				headers: {
+					'x-csrf-token': token,
+				},
+				form: {
+					gdpr_agree_data: 'on',
+					gdpr_agree_email: 'on',
+				},
+			});
+
+			assert.strictEqual(res.statusCode, 302);
+			assert.strictEqual(res.headers.location, '/');
+		});
+	});
+
 	it('should load /robots.txt', (done) => {
 		request(`${nconf.get('url')}/robots.txt`, (err, res, body) => {
 			assert.ifError(err);
