@@ -302,16 +302,6 @@ describe('Controllers', () => {
 	});
 
 	it('should load /register/complete', (done) => {
-		function hookMethod(data, next) {
-			data.interstitials.push({ template: 'topic.tpl', data: {} });
-			next(null, data);
-		}
-
-		plugins.hooks.register('myTestPlugin', {
-			hook: 'filter:register.interstitial',
-			method: hookMethod,
-		});
-
 		const data = {
 			username: 'interstitial',
 			password: '123456',
@@ -347,7 +337,6 @@ describe('Controllers', () => {
 					assert(body.sections);
 					assert(body.errors);
 					assert(body.title);
-					plugins.hooks.unregister('myTestPlugin', 'filter:register.interstitial', hookMethod);
 					done();
 				});
 			});
