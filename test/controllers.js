@@ -372,7 +372,7 @@ describe('Controllers', () => {
 				},
 			});
 
-			assert.strictEqual(res.headers.location, '/register/complete');
+			assert.strictEqual(res.headers.location, `${nconf.get('relative_path')}/register/complete`);
 
 			res = await requestAsync(`${nconf.get('url')}/api/register/complete`, {
 				jar,
