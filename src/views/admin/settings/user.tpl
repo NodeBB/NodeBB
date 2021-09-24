@@ -198,6 +198,15 @@
 					<span class="mdl-switch__label"><strong>[[admin/settings/user:registration-queue-show-average-time]]</strong></span>
 				</label>
 			</div>
+
+			<div class="checkbox">
+				<label for="requireEmailAddress" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" id="requireEmailAddress" data-field="requireEmailAddress" name="requireEmailAddress" />
+					<span class="mdl-switch__label">[[admin/settings/email:require-email-address]]</span>
+				</label>
+			</div>
+			<p class="help-block">[[admin/settings/email:require-email-address-warning]]</p>
+
 			<div class="form-group">
 				<label>[[admin/settings/user:max-invites]]</label>
 				<input type="number" class="form-control" data-field="maximumInvites" placeholder="0">
