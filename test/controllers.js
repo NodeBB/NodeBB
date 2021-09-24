@@ -356,7 +356,6 @@ describe('Controllers', () => {
 			});
 			token = await helpers.getCsrfToken(jar);
 
-			console.log('making request');
 			let res = await requestAsync(`${nconf.get('url')}/register/complete`, {
 				method: 'post',
 				jar,
