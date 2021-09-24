@@ -3,6 +3,7 @@
 
 const _ = require('lodash');
 const validator = require('validator');
+const nconf = require('nconf');
 
 const db = require('../database');
 const user = require('../user');
@@ -10,6 +11,8 @@ const posts = require('../posts');
 const meta = require('../meta');
 const plugins = require('../plugins');
 const utils = require('../../public/src/utils');
+
+const backlinkRegex = new RegExp(`(?:${nconf.get('url').replace('/', '\\/')}|\b|\\s)(\\/topic\\/\\d+)(?:\\/\\w+)?`);
 
 module.exports = function (Topics) {
 	Topics.onNewPostMade = async function (postData) {
@@ -288,4 +291,9 @@ module.exports = function (Topics) {
 
 		return returnData;
 	}
+
+	Topics.syncBacklinks = async (postData) => {
+		// Scan post content for topic links
+		console.log(postData.content);
+	};
 };
