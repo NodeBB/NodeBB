@@ -739,13 +739,17 @@ describe('socket.io', () => {
 		};
 
 		await socketAdmin.cache.toggle({ uid: adminUid }, { name: 'post', enabled: !caches.post.enabled });
-		await socketAdmin.cache.toggle({ uid: adminUid }, { name: 'object', enabled: !caches.object.enabled });
+		if (caches.object) {
+			await socketAdmin.cache.toggle({ uid: adminUid }, { name: 'object', enabled: !caches.object.enabled });
+		}
 		await socketAdmin.cache.toggle({ uid: adminUid }, { name: 'group', enabled: !caches.group.enabled });
 		await socketAdmin.cache.toggle({ uid: adminUid }, { name: 'local', enabled: !caches.local.enabled });
 
 		// call again to return back to original state
 		await socketAdmin.cache.toggle({ uid: adminUid }, { name: 'post', enabled: !caches.post.enabled });
-		await socketAdmin.cache.toggle({ uid: adminUid }, { name: 'object', enabled: !caches.object.enabled });
+		if (caches.object) {
+			await socketAdmin.cache.toggle({ uid: adminUid }, { name: 'object', enabled: !caches.object.enabled });
+		}
 		await socketAdmin.cache.toggle({ uid: adminUid }, { name: 'group', enabled: !caches.group.enabled });
 		await socketAdmin.cache.toggle({ uid: adminUid }, { name: 'local', enabled: !caches.local.enabled });
 	});
