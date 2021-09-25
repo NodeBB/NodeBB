@@ -754,7 +754,23 @@ describe('Admin Controllers', () => {
 				await privileges.admin.give([privileges.admin.routeMap[route]], uid);
 				res = await makeRequest(`${nconf.get('url')}/api/admin/${route}`);
 				assert.strictEqual(res.statusCode, 200);
+
+				await privileges.admin.rescind([privileges.admin.routeMap[route]], uid);
 			}
+
+			for (const route of Object.keys(privileges.admin.routeMap)) {
+				/* eslint-disable no-await-in-loop */
+				await privileges.admin.rescind([privileges.admin.routeMap[route]], uid);
+				let res = await makeRequest(`${nconf.get('url')}/api/admin`);
+				assert.strictEqual(res.statusCode, 403);
+
+				await privileges.admin.give([privileges.admin.routeMap[route]], uid);
+				res = await makeRequest(`${nconf.get('url')}/api/admin`);
+				assert.strictEqual(res.statusCode, 200);
+
+				await privileges.admin.rescind([privileges.admin.routeMap[route]], uid);
+			}
+
 		});
 	});
 });
