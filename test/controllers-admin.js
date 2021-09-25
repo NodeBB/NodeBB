@@ -1,7 +1,7 @@
 'use strict';
 
 const async = require('async');
-const	assert = require('assert');
+const assert = require('assert');
 const nconf = require('nconf');
 const request = require('request');
 
@@ -717,6 +717,44 @@ describe('Admin Controllers', () => {
 				plugins.hooks.unregister('somePlugin', 'filter:config.get', onConfigGet);
 				done();
 			});
+		});
+	});
+
+	describe('admin page privileges', () => {
+		let userJar;
+		let uid;
+		const privileges = require('../src/privileges');
+		before((done) => {
+			user.create({ username: 'regularjoe', password: 'barbar' }, (err, _uid) => {
+				assert.ifError(err);
+				uid = _uid;
+				helpers.loginUser('regularjoe', 'barbar', (err, _jar) => {
+					assert.ifError(err);
+					userJar = _jar;
+					done();
+				});
+			});
+		});
+
+		it('should allow normal user access to admin pages', async () => {
+			function makeRequest(url) {
+				return new Promise((resolve, reject) => {
+					request(url, { jar: userJar, json: true }, (err, res, body) => {
+						if (err) reject(err);
+						else resolve(res);
+					});
+				});
+			}
+			for (const route of Object.keys(privileges.admin.routeMap)) {
+				/* eslint-disable no-await-in-loop */
+				await privileges.admin.rescind([privileges.admin.routeMap[route]], uid);
+				let res = await makeRequest(`${nconf.get('url')}/api/admin/${route}`);
+				assert.strictEqual(res.statusCode, 403);
+
+				await privileges.admin.give([privileges.admin.routeMap[route]], uid);
+				res = await makeRequest(`${nconf.get('url')}/api/admin/${route}`);
+				assert.strictEqual(res.statusCode, 200);
+			}
 		});
 	});
 });
