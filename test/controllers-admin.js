@@ -770,7 +770,6 @@ describe('Admin Controllers', () => {
 
 				await privileges.admin.rescind([privileges.admin.routeMap[route]], uid);
 			}
-
 		});
 	});
 });
