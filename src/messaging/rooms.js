@@ -69,22 +69,27 @@ module.exports = function (Messaging) {
 
 	Messaging.getUserCountInRoom = async roomId => db.sortedSetCard(`chat:room:${roomId}:uids`);
 
-	Messaging.isRoomOwner = async (uid, roomId) => {
-		const owner = await db.getObjectField(`chat:room:${roomId}`, 'owner');
-		return parseInt(uid, 10) === parseInt(owner, 10);
+	Messaging.isRoomOwner = async (uid, roomId, knownOwner) => {
+		const owner = (knownOwner == null) ? await db.getObjectField(`chat:room:${roomId}`, 'owner') : knownOwner;
+		const isOwner = parseInt(uid, 10) === parseInt(owner, 10);
+
+		const payload = await plugins.hooks.fire('filter:messaging.isRoomOwner', { uid, roomId, owner, isOwner });
+		return payload.isOwner;
 	};
 
 	Messaging.addUsersToRoom = async function (uid, uids, roomId) {
-		const now = Date.now();
-		const timestamps = uids.map(() => now);
 		const inRoom = await Messaging.isUserInRoom(uid, roomId);
-		if (!inRoom) {
+		const payload = await plugins.hooks.fire('filter:messaging.addUsersToRoom', { uid, uids, roomId, inRoom });
+
+		if (!payload.inRoom) {
 			throw new Error('[[error:cant-add-users-to-chat-room]]');
 		}
 
-		await db.sortedSetAdd(`chat:room:${roomId}:uids`, timestamps, uids);
-		await updateGroupChatField([roomId]);
-		await Promise.all(uids.map(uid => Messaging.addSystemMessage('user-join', uid, roomId)));
+		const now = Date.now();
+		const timestamps = payload.uids.map(() => now);
+		await db.sortedSetAdd(`chat:room:${payload.roomId}:uids`, timestamps, payload.uids);
+		await updateGroupChatField([payload.roomId]);
+		await Promise.all(payload.uids.map(uid => Messaging.addSystemMessage('user-join', uid, payload.roomId)));
 	};
 
 	Messaging.removeUsersFromRoom = async (uid, uids, roomId) => {
@@ -92,15 +97,16 @@ module.exports = function (Messaging) {
 			Messaging.isRoomOwner(uid, roomId),
 			Messaging.getUserCountInRoom(roomId),
 		]);
+		const payload = await plugins.hooks.fire('filter:messaging.removeUsersFromRoom', { uid, uids, roomId, isOwner, userCount });
 
-		if (!isOwner) {
+		if (!payload.isOwner) {
 			throw new Error('[[error:cant-remove-users-from-chat-room]]');
 		}
-		if (userCount === 2) {
+		if (payload.userCount === 2) {
 			throw new Error('[[error:cant-remove-last-user]]');
 		}
 
-		await Messaging.leaveRoom(uids, roomId);
+		await Messaging.leaveRoom(payload.uids, payload.roomId);
 	};
 
 	Messaging.isGroupChat = async function (roomId) {
@@ -170,10 +176,10 @@ module.exports = function (Messaging) {
 			db.getObjectField(`chat:room:${roomId}`, 'owner'),
 		]);
 
-		return users.map((user) => {
-			user.isOwner = parseInt(user.uid, 10) === parseInt(ownerId, 10);
+		return Promise.all(users.map(async (user) => {
+			user.isOwner = await Messaging.isRoomOwner(user.uid, roomId, ownerId);
 			return user;
-		});
+		}));
 	};
 
 	Messaging.renameRoom = async function (uid, roomId, newName) {
@@ -220,7 +226,7 @@ module.exports = function (Messaging) {
 			return null;
 		}
 
-		const [roomData, canReply, users, messages, isAdminOrGlobalMod] = await Promise.all([
+		const [room, canReply, users, messages, isAdminOrGlobalMod] = await Promise.all([
 			Messaging.getRoomData(data.roomId),
 			Messaging.canReply(data.roomId, uid),
 			Messaging.getUsersInRoom(data.roomId, 0, -1),
@@ -233,9 +239,8 @@ module.exports = function (Messaging) {
 			user.isAdminOrGlobalMod(uid),
 		]);
 
-		const room = roomData;
 		room.messages = messages;
-		room.isOwner = parseInt(room.owner, 10) === parseInt(uid, 10);
+		room.isOwner = await Messaging.isRoomOwner(uid, room.roomId, room.owner);
 		room.users = users.filter(user => user && parseInt(user.uid, 10) && parseInt(user.uid, 10) !== parseInt(uid, 10));
 		room.canReply = canReply;
 		room.groupChat = room.hasOwnProperty('groupChat') ? room.groupChat : users.length > 2;
@@ -245,6 +250,7 @@ module.exports = function (Messaging) {
 		room.showUserInput = !room.maximumUsersInChatRoom || room.maximumUsersInChatRoom > 2;
 		room.isAdminOrGlobalMod = isAdminOrGlobalMod;
 
-		return room;
+		const payload = await plugins.hooks.fire('filter:messaging.loadRoom', { uid, data, room });
+		return payload.room;
 	};
 };
