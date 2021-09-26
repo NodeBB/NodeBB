@@ -220,7 +220,7 @@ authenticationController.registerAbort = function (req, res) {
 	if (req.uid) {
 		// Clear interstitial data and continue on...
 		delete req.session.registration;
-		res.redirect(nconf.get('relative_path') + req.session.returnTo);
+		res.redirect(nconf.get('relative_path') + (req.session.returnTo || '/'));
 	} else {
 		// End the session and redirect to home
 		req.session.destroy(() => {
