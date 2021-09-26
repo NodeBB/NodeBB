@@ -196,11 +196,11 @@ describe('Upload Controllers', () => {
 		});
 
 		it('should fail to upload image to post if image dimensions are too big', (done) => {
-			helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/toobig.jpg'), {}, jar, csrf_token, (err, res, body) => {
+			helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/toobig.png'), {}, jar, csrf_token, (err, res, body) => {
 				assert.ifError(err);
 				assert.strictEqual(res.statusCode, 500);
 				assert(body && body.status && body.status.message);
-				assert.strictEqual(body.status.message, 'Input image exceeds pixel limit');
+				assert.strictEqual(body.status.message, 'Image dimensions are too big');
 				done();
 			});
 		});
