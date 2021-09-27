@@ -15,6 +15,7 @@ Additional functionality is enabled through the use of third-party plugins.
 * [Help translate NodeBB](https://www.transifex.com/projects/p/nodebb/)
 * [NodeBB Blog](http://blog.nodebb.org)
 * [Premium Hosting for NodeBB](http://www.nodebb.org/ "NodeBB")
+* Unofficial IRC community &ndash; channel `#nodebb` on Libera.chat
 * [Follow us on Twitter](http://www.twitter.com/NodeBB/ "NodeBB Twitter")
 * [Like us on Facebook](http://www.facebook.com/NodeBB/ "NodeBB Facebook")
 
