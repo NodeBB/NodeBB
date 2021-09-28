@@ -208,12 +208,13 @@ module.exports = function (Topics) {
 	};
 
 	Topics.increaseViewCount = async function (tid) {
-		incrementFieldAndUpdateSortedSet(tid, 'viewcount', 1, 'topics:views');
+		const cid = await Topics.getTopicField(tid, 'cid');
+		incrementFieldAndUpdateSortedSet(tid, 'viewcount', 1, ['topics:views', `cid:${cid}:tids:views`]);
 	};
 
 	async function incrementFieldAndUpdateSortedSet(tid, field, by, set) {
 		const value = await db.incrObjectFieldBy(`topic:${tid}`, field, by);
-		await db.sortedSetAdd(set, value, tid);
+		await db[Array.isArray(set) ? 'sortedSetsAdd' : 'sortedSetAdd'](set, value, tid);
 	}
 
 	Topics.getTitleByPid = async function (pid) {

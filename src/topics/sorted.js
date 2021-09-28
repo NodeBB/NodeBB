@@ -118,6 +118,7 @@ module.exports = function (Topics) {
 			old: sortOld,
 			posts: sortPopular,
 			votes: sortVotes,
+			views: sortViews,
 		};
 		const sortFn = sortMap[params.sort] || sortRecent;
 
@@ -153,6 +154,10 @@ module.exports = function (Topics) {
 		if (a.postcount !== b.postcount) {
 			return b.postcount - a.postcount;
 		}
+		return b.viewcount - a.viewcount;
+	}
+
+	function sortViews(a, b) {
 		return b.viewcount - a.viewcount;
 	}
 
