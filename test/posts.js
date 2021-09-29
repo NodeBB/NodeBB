@@ -1460,7 +1460,7 @@ describe('Post\'s', () => {
 			it('should create a backlink if it detects a topic link in a post', async () => {
 				const count = await topics.syncBacklinks({
 					pid: 2,
-					content: 'This is a link to [topic 1](http://localhost:4567/topic/1/abcdef)',
+					content: `This is a link to [topic 1](${nconf.get('url')}/topic/1/abcdef)`,
 				});
 				const events = await topics.events.get(1, 1);
 				const backlinks = await db.getSortedSetMembers('pid:2:backlinks');
