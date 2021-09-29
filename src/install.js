@@ -47,7 +47,6 @@ questions.optional = [
 ];
 
 function checkSetupEnv() {
-	// let setupVal = install.values; // at this point this one is undefined?
 	let envNbbRe = /NBB_(?!DB_).*/
 	let envNbbDbRe = /NBB_DB_.*/
 	let envopts = {
@@ -77,12 +76,10 @@ function checkSetupEnv() {
 		} // else { console.log(`No match for env var ${v}`)}
 	});
 
-	setupVal['admin:password:confirm'] = setupVal['admin:password']
-
 	console.log(setupVal)
 
 	if (setupVal && typeof setupVal === 'object') {
-		if (setupVal['admin:username'] && setupVal['admin:password'] && setupVal['admin:password:confirm'] && setupVal['admin:email']) {
+		if (setupVal['admin:username'] && setupVal['admin:password'] && setupVal['admin:email']) {
 			install.values = setupVal;
 		} else {
 			winston.error('Required values are missing for automated setup:');
