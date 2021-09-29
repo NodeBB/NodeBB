@@ -22,4 +22,4 @@ ENV NODE_ENV=production \
 
 EXPOSE 4567
 
-CMD node ./nodebb build; [[ -n "${SETUP}" ]] && ./nodebb setup; node ./nodebb start
+CMD node ./nodebb build; [[ -n "${SETUP}" ]] && node ./nodebb setup; node ./nodebb start

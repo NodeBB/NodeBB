@@ -92,9 +92,9 @@ function checkSetupEnv() {
 			if (!setupVal['admin:password']) {
 				winston.error('  admin:password');
 			}
-			if (!setupVal['admin:password:confirm']) {
-				winston.error('  admin:password:confirm');
-			}
+			// if (!setupVal['admin:password:confirm']) {
+			// 	winston.error('  admin:password:confirm');
+			// }
 			if (!setupVal['admin:email']) {
 				winston.error('  admin:email');
 			}
