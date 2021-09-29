@@ -1501,7 +1501,7 @@ describe('Post\'s', () => {
 				assert(events);
 				assert.strictEqual(events.length, 1);
 				assert.strictEqual(events[0].type, 'backlink');
-				assert.strictEqual(events[0].uid, '1');
+				assert.strictEqual(parseInt(events[0].uid, 10), 1);
 				assert.strictEqual(events[0].href, `/post/${topic.postData.pid}`);
 			});
 
