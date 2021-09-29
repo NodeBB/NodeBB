@@ -304,10 +304,7 @@ module.exports = function (Topics) {
 		}
 
 		const { pid, uid, tid } = postData;
-		let add = [];
-		await Promise.all(matches.map(async (match) => {
-			add.push(match[1]);
-		}));
+		let add = matches.map(match => match[1]);
 
 		const now = Date.now();
 		const topicsExist = await Topics.exists(add);
