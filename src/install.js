@@ -9,6 +9,7 @@ const nconf = require('nconf');
 const _ = require('lodash');
 
 const utils = require('./utils');
+const { WSAEHOSTDOWN } = require('constants');
 
 const install = module.exports;
 const questions = {};
@@ -47,6 +48,7 @@ questions.optional = [
 ];
 
 function checkSetupEnv() {
+	winston.message("checking env vars for setup info...");
 	let envNbbRe = /NBB_(?!DB_).*/
 	let envNbbDbRe = /NBB_DB_.*/
 	let envopts = {
@@ -77,6 +79,7 @@ function checkSetupEnv() {
 	});
 
 	console.log(setupVal)
+	winston.message(`setupVal: ${setupVal}`);
 
 	if (setupVal && typeof setupVal === 'object') {
 		if (setupVal['admin:username'] && setupVal['admin:password'] && setupVal['admin:email']) {
