@@ -228,7 +228,7 @@
 					<i class="fa ${event.icon || 'fa-circle'}"></i>
 				</div>
 				<span class="timeline-text">
-					${event.href ? `<a href="${relative_path}${event.href}>${event.text}</a>` : event.text}&nbsp;
+					${event.href ? `<a href="${relative_path}${event.href}">${event.text}</a>` : event.text}&nbsp;
 				</span>
 			`;
 

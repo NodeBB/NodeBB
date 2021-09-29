@@ -3,6 +3,7 @@
 
 const _ = require('lodash');
 const validator = require('validator');
+const nconf = require('nconf');
 
 const db = require('../database');
 const user = require('../user');
@@ -10,6 +11,8 @@ const posts = require('../posts');
 const meta = require('../meta');
 const plugins = require('../plugins');
 const utils = require('../../public/src/utils');
+
+const backlinkRegex = new RegExp(`(?:${nconf.get('url').replace('/', '\\/')}|\b|\\s)\\/topic\\/(\\d+)(?:\\/\\w+)?`, 'g');
 
 module.exports = function (Topics) {
 	Topics.onNewPostMade = async function (postData) {
@@ -288,4 +291,40 @@ module.exports = function (Topics) {
 
 		return returnData;
 	}
+
+	Topics.syncBacklinks = async (postData) => {
+		if (!postData) {
+			throw new Error('[[error:invalid-data]]');
+		}
+
+		// Scan post content for topic links
+		const matches = [...postData.content.matchAll(backlinkRegex)];
+		if (!matches) {
+			return 0;
+		}
+
+		const { pid, uid, tid } = postData;
+		let add = matches.map(match => match[1]);
+
+		const now = Date.now();
+		const topicsExist = await Topics.exists(add);
+		const current = (await db.getSortedSetMembers(`pid:${pid}:backlinks`)).map(tid => parseInt(tid, 10));
+		const remove = current.filter(tid => !add.includes(tid));
+		add = add.filter((_tid, idx) => topicsExist[idx] && !current.includes(_tid) && tid !== parseInt(_tid, 10));
+
+		// Remove old backlinks
+		await db.sortedSetRemove(`pid:${pid}:backlinks`, remove);
+
+		// Add new backlinks
+		await db.sortedSetAdd(`pid:${pid}:backlinks`, add.map(Number.bind(null, now)), add);
+		await Promise.all(add.map(async (tid) => {
+			await Topics.events.log(tid, {
+				uid,
+				type: 'backlink',
+				href: `/post/${pid}`,
+			});
+		}));
+
+		return add.length + (current - remove);
+	};
 };

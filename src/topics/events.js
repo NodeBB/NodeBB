@@ -2,6 +2,7 @@
 
 const _ = require('lodash');
 const db = require('../database');
+const meta = require('../meta');
 const user = require('../user');
 const posts = require('../posts');
 const categories = require('../categories');
@@ -52,6 +53,10 @@ Events._types = {
 		icon: 'fa-history',
 		text: '[[topic:queued-by]]',
 		href: '/post-queue',
+	},
+	backlink: {
+		icon: 'fa-link',
+		text: '[[topic:backlink]]',
 	},
 };
 
@@ -114,6 +119,11 @@ async function modifyEvent({ tid, uid, eventIds, timestamps, events }) {
 		getUserInfo(events.map(event => event.uid).filter(Boolean)),
 		getCategoryInfo(events.map(event => event.fromCid).filter(Boolean)),
 	]);
+
+	// Remove backlink events if backlinks are disabled
+	if (meta.config.topicBacklinks !== 1) {
+		events = events.filter(event => event.type !== 'backlink');
+	}
 
 	// Remove events whose types no longer exist (e.g. plugin uninstalled)
 	events = events.filter(event => Events._types.hasOwnProperty(event.type));
