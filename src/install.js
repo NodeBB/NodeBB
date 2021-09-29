@@ -78,6 +78,8 @@ function checkSetupEnv() {
 		} // else { console.log(`No match for env var ${v}`)}
 	});
 
+	setupVal['admin:password:confirm'] = setupVal['admin:password'];
+
 	console.log(setupVal)
 	winston.info(`setupVal: ${setupVal}`);
 
@@ -92,9 +94,9 @@ function checkSetupEnv() {
 			if (!setupVal['admin:password']) {
 				winston.error('  admin:password');
 			}
-			// if (!setupVal['admin:password:confirm']) {
-			// 	winston.error('  admin:password:confirm');
-			// }
+			if (!setupVal['admin:password:confirm']) {
+				winston.error('  admin:password:confirm');
+			}
 			if (!setupVal['admin:email']) {
 				winston.error('  admin:email');
 			}
