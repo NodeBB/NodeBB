@@ -46,6 +46,68 @@ questions.optional = [
 	},
 ];
 
+function checkSetupEnv() {
+	// let setupVal = install.values; // at this point this one is undefined?
+	let envNbbRe = /NBB_(?!DB_).*/
+	let envNbbDbRe = /NBB_DB_.*/
+	let envopts = {
+		"NBB_URL": "url",
+		"NBB_PORT": "port",
+		"NBB_SECRET": "secret", // only a "cookie" for web setup???
+		"NBB_ADMIN_USERNAME": "admin:username",
+		"NBB_ADMIN_PASSWORD": "admin:password",
+		"NBB_ADMIN_EMAIL": "admin:email",
+		"NBB_DATABASE": "database",
+		"NBB_DB_HOST": "host",
+		"NBB_DB_PORT": "port",
+		"NBB_DB_USER": "username",
+		"NBB_DB_PASSWORD": "password",
+		"NBB_DB_NAME": "database",
+		"NBB_DB_SSL": "ssl",
+	};
+
+	let evars = nconf.env().get();
+	var setupVal = Object()
+
+	Object.keys(evars).map(v => {
+		if (v.match(envNbbRe)) {
+			setupVal[envopts[v]] = evars[v]
+		} else if (v.match(envNbbDbRe)) {
+			setupVal[`${evars['NBB_DB']}:${envopts[v]}`] = evars[v]
+		} // else { console.log(`No match for env var ${v}`)}
+	});
+
+	setupVal['admin:password:confirm'] = setupVal['admin:password']
+
+	console.log(setupVal)
+
+	if (setupVal && typeof setupVal === 'object') {
+		if (setupVal['admin:username'] && setupVal['admin:password'] && setupVal['admin:password:confirm'] && setupVal['admin:email']) {
+			install.values = setupVal;
+		} else {
+			winston.error('Required values are missing for automated setup:');
+			if (!setupVal['admin:username']) {
+				winston.error('  admin:username');
+			}
+			if (!setupVal['admin:password']) {
+				winston.error('  admin:password');
+			}
+			if (!setupVal['admin:password:confirm']) {
+				winston.error('  admin:password:confirm');
+			}
+			if (!setupVal['admin:email']) {
+				winston.error('  admin:email');
+			}
+
+			process.exit();
+		}
+	} else if (nconf.get('database')) {
+		install.values = install.values || {};
+		install.values.database = nconf.get('database');
+	}
+}
+
+
 function checkSetupFlag() {
 	let setupVal = install.values;
 
@@ -492,6 +554,7 @@ async function checkUpgrade() {
 
 install.setup = async function () {
 	try {
+		checkSetupEnv()
 		checkSetupFlag();
 		checkCIFlag();
 		await setupConfig();
