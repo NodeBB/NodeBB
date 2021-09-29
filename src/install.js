@@ -57,7 +57,7 @@ function checkSetupEnv() {
 		"NBB_ADMIN_USERNAME": "admin:username",
 		"NBB_ADMIN_PASSWORD": "admin:password",
 		"NBB_ADMIN_EMAIL": "admin:email",
-		"NBB_DATABASE": "database",
+		"NBB_DB": "database",
 		"NBB_DB_HOST": "host",
 		"NBB_DB_PORT": "port",
 		"NBB_DB_USER": "username",
