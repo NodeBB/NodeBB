@@ -56,6 +56,9 @@
 	"composer.show-help": "\"Segítség\" panel megjelenítése",
 	"composer.enable-plugin-help": "Beépülők hozzáadhassanak saját tartalmaz a segítség panelhoz",
 	"composer.custom-help": "Egyedi szöveg a segítségnél",
+	"backlinks": "Backlinks",
+	"backlinks.enabled": "Enable topic backlinks",
+	"backlinks.help": "If a post references another topic, a link back to the post will be inserted into the referenced topic at that point in time.",
 	"ip-tracking": "IP nyomonkövetés",
 	"ip-tracking.each-post": "IP cím követése minden hozzászólásnál",
 	"enable-post-history": "Hozzászólás történetiség engedélyezése"

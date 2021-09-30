@@ -56,6 +56,9 @@
 	"composer.show-help": "Rādīt \"palīdzība\" cilni",
 	"composer.enable-plugin-help": "Atļaut spraudņiem pievienot saturu palīdzības cilnei",
 	"composer.custom-help": "Pielāgotais palīdzības teksts",
+	"backlinks": "Backlinks",
+	"backlinks.enabled": "Enable topic backlinks",
+	"backlinks.help": "If a post references another topic, a link back to the post will be inserted into the referenced topic at that point in time.",
 	"ip-tracking": "IP adrešu pierakstīšana",
 	"ip-tracking.each-post": "Pierakstīt katra raksta IP adresi",
 	"enable-post-history": "Iespējot rakstu vēsturi"

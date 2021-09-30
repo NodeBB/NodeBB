@@ -56,6 +56,9 @@
 	"composer.show-help": "הצג כרטיסיית \"עזרה\"",
 	"composer.enable-plugin-help": "אפשר לתוסיפים להוסיף תוכן ללשונית עזרה",
 	"composer.custom-help": "טקסט עזרה מותאם אישית",
+	"backlinks": "Backlinks",
+	"backlinks.enabled": "Enable topic backlinks",
+	"backlinks.help": "If a post references another topic, a link back to the post will be inserted into the referenced topic at that point in time.",
 	"ip-tracking": "IP מעקב",
 	"ip-tracking.each-post": "מעקב אחר כתובת IP על כל הודעה",
 	"enable-post-history": "הפוך היסטוריית פוסטים לזמינה"

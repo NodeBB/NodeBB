@@ -56,6 +56,9 @@
 	"composer.show-help": "Zobraziť záložku „Nápoveda”",
 	"composer.enable-plugin-help": "Povoliť zásuvné moduly pre pridanie obsahu do záložky nápovedy",
 	"composer.custom-help": "Používateľský text nápovedy",
+	"backlinks": "Backlinks",
+	"backlinks.enabled": "Enable topic backlinks",
+	"backlinks.help": "If a post references another topic, a link back to the post will be inserted into the referenced topic at that point in time.",
 	"ip-tracking": "Sledovanie IP adresy",
 	"ip-tracking.each-post": "Sledovať IP adresu pri každom príspevku",
 	"enable-post-history": "Povoliť históriu príspevkov"

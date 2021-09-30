@@ -56,6 +56,9 @@
 	"composer.show-help": "Prikaži zavihek \"Pomoč\"",
 	"composer.enable-plugin-help": "Dovoli vtičnikom dodajanje vsebine na zavihek za pomoč",
 	"composer.custom-help": "Besedilo pomoči po meri",
+	"backlinks": "Backlinks",
+	"backlinks.enabled": "Enable topic backlinks",
+	"backlinks.help": "If a post references another topic, a link back to the post will be inserted into the referenced topic at that point in time.",
 	"ip-tracking": "IP sledenje",
 	"ip-tracking.each-post": "Sledi IP naslov za vsako objavo",
 	"enable-post-history": "Omogoči zgodovino objav"

@@ -56,6 +56,9 @@
 	"composer.show-help": "Hiển thị tab \"Trợ giúp\"",
 	"composer.enable-plugin-help": "Cho phép các plugin thêm nội dung vào tab trợ giúp",
 	"composer.custom-help": "Văn Bản Trợ Giúp Tùy Chỉnh",
+	"backlinks": "Backlinks",
+	"backlinks.enabled": "Enable topic backlinks",
+	"backlinks.help": "If a post references another topic, a link back to the post will be inserted into the referenced topic at that point in time.",
 	"ip-tracking": "Theo dõi IP",
 	"ip-tracking.each-post": "Theo dõi Địa chỉ IP mỗi bài đăng",
 	"enable-post-history": "Bật Lịch Sử Bài Đăng"

@@ -56,6 +56,9 @@
 	"composer.show-help": "\"도움말\" 탭 표시",
 	"composer.enable-plugin-help": "플러그인의 도움말 탭 내용 추가 허용",
 	"composer.custom-help": "사용자 정의 \"도움말\" 텍스트",
+	"backlinks": "Backlinks",
+	"backlinks.enabled": "Enable topic backlinks",
+	"backlinks.help": "If a post references another topic, a link back to the post will be inserted into the referenced topic at that point in time.",
 	"ip-tracking": "IP 추적",
 	"ip-tracking.each-post": "모든 포스트 IP 추적",
 	"enable-post-history": "게시글 편집 기록 활성화"

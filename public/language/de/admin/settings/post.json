@@ -56,6 +56,9 @@
 	"composer.show-help": "\"Hilfe\"-Tab anzeigen",
 	"composer.enable-plugin-help": "Plugins erlauben Inhalte dem \"Help\"-Tab hinzuzufügen",
 	"composer.custom-help": "Benutzerdefinierter Hilfe-Text",
+	"backlinks": "Backlinks",
+	"backlinks.enabled": "Enable topic backlinks",
+	"backlinks.help": "If a post references another topic, a link back to the post will be inserted into the referenced topic at that point in time.",
 	"ip-tracking": "IP-Verfolgung",
 	"ip-tracking.each-post": "IP-Adresse für jeden Beitrag speichern",
 	"enable-post-history": "Aktiviere Beitrags-Änderungsgeschichte"

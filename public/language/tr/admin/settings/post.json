@@ -56,6 +56,9 @@
 	"composer.show-help": "\"Yardım\" sekmesini göster",
 	"composer.enable-plugin-help": "Eklentilerin yardım sekmesine içerik eklemesine izin ver",
 	"composer.custom-help": "Özel Yardım Metni",
+	"backlinks": "Backlinks",
+	"backlinks.enabled": "Enable topic backlinks",
+	"backlinks.help": "If a post references another topic, a link back to the post will be inserted into the referenced topic at that point in time.",
 	"ip-tracking": "IP İzleme",
 	"ip-tracking.each-post": "Her ileti için IP Adresini takip et",
 	"enable-post-history": "Gönderi Geçmişini Etkinleştir"
