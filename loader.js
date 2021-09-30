@@ -226,7 +226,7 @@ fs.open(path.join(__dirname, 'config.json'), 'r', function (err) {
 				cwd: process.cwd(),
 			});
 
-			fs.writeFileSync(pidFilePath, process.pid);
+			fs.writeFileSync(pidFilePath, parseInt(process.pid, 10).toString());
 		}
 
 		async.series([
