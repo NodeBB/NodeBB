@@ -80,8 +80,8 @@ function checkSetupEnv() {
 
 	setupVal['admin:password:confirm'] = setupVal['admin:password'];
 
-	console.log(setupVal)
-	winston.info(`setupVal: ${setupVal}`);
+	// console.log(setupVal)
+	// winston.info(`setupVal: ${setupVal}`);
 
 	if (setupVal && typeof setupVal === 'object') {
 		if (setupVal['admin:username'] && setupVal['admin:password'] && setupVal['admin:email']) {
