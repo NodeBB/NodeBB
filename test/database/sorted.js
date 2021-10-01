@@ -1119,6 +1119,29 @@ describe('Sorted Set methods', () => {
 			const members = await db.getSortedSetsMembers(['bulkRemove1', 'bulkRemove2']);
 			assert.deepStrictEqual(members, [[], []]);
 		});
+
+		it('should not remove wrong elements in bulk remove', async () => {
+			await db.sortedSetAddBulk([
+				['bulkRemove4', 1, 'value1'],
+				['bulkRemove4', 2, 'value2'],
+				['bulkRemove4', 3, 'value4'],
+				['bulkRemove5', 1, 'value1'],
+				['bulkRemove5', 2, 'value2'],
+				['bulkRemove5', 3, 'value3'],
+			]);
+			await db.sortedSetRemoveBulk([
+				['bulkRemove4', 'value1'],
+				['bulkRemove4', 'value3'],
+				['bulkRemove5', 'value1'],
+				['bulkRemove5', 'value4'],
+			]);
+			const members = await Promise.all([
+				db.getSortedSetRange('bulkRemove4', 0, -1),
+				db.getSortedSetRange('bulkRemove5', 0, -1),
+			]);
+			assert.deepStrictEqual(members[0], ['value2', 'value4']);
+			assert.deepStrictEqual(members[1], ['value2', 'value3']);
+		});
 	});
 
 	describe('sortedSetsRemove()', () => {
