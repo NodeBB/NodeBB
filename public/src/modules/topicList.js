@@ -11,13 +11,6 @@ define('topicList', [
 	var TopicList = {};
 	var templateName = '';
 
-	var tplToSort = {
-		recent: 'recent',
-		unread: 'unread',
-		popular: 'posts',
-		top: 'votes',
-	};
-
 	var newTopicCount = 0;
 	var newPostCount = 0;
 
@@ -197,21 +190,15 @@ define('topicList', [
 		});
 	};
 
+	function calculateNextPage(after, direction) {
+		return Math.floor(after / config.topicsPerPage) + (direction > 0 ? 1 : 0);
+	}
+
 	function loadTopicsAfter(after, direction, callback) {
 		callback = callback || function () {};
 		var query = utils.params();
-		infinitescroll.loadMore('topics.loadMoreSortedTopics', {
-			after: after,
-			direction: direction,
-			sort: tplToSort[templateName],
-			count: config.topicsPerPage,
-			cid: query.cid,
-			tags: query.tags,
-			query: query,
-			term: ajaxify.data.selectedTerm && ajaxify.data.selectedTerm.term,
-			filter: ajaxify.data.selectedFilter.filter,
-			set: topicListEl.attr('data-set') ? topicListEl.attr('data-set') : 'topics:recent',
-		}, callback);
+		query.page = calculateNextPage(after, direction);
+		infinitescroll.loadMoreXhr(query, callback);
 	}
 
 	function filterTopicsOnDom(topics) {

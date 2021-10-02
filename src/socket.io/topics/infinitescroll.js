@@ -1,5 +1,7 @@
 'use strict';
 
+const winston = require('winston');
+
 const topics = require('../../topics');
 const privileges = require('../../privileges');
 const meta = require('../../meta');
@@ -62,6 +64,7 @@ module.exports = function (SocketTopics) {
 	};
 
 	SocketTopics.loadMoreSortedTopics = async function (socket, data) {
+		winston.warn('[deprecated] use infinitescroll.loadMoreXhr'); // TODO: remove in 1.19.0
 		if (!data || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0) {
 			throw new Error('[[error:invalid-data]]');
 		}
@@ -85,6 +88,7 @@ module.exports = function (SocketTopics) {
 	};
 
 	SocketTopics.loadMoreFromSet = async function (socket, data) {
+		winston.warn('[deprecated] use infinitescroll.loadMoreXhr'); // TODO: remove in 1.19.0
 		if (!data || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0 || !data.set) {
 			throw new Error('[[error:invalid-data]]');
 		}
