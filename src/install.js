@@ -75,35 +75,31 @@ function checkSetupEnv() {
 			setupVal[envopts[v]] = evars[v]
 		} else if (v.match(envNbbDbRe)) {
 			setupVal[`${evars['NBB_DB']}:${envopts[v]}`] = evars[v]
-		} // else { console.log(`No match for env var ${v}`)}
+		}
 	});
 
 	setupVal['admin:password:confirm'] = setupVal['admin:password'];
-
-	// console.log(setupVal)
-	// winston.info(`setupVal: ${setupVal}`);
-
-	if (setupVal && typeof setupVal === 'object') {
-		if (setupVal['admin:username'] && setupVal['admin:password'] && setupVal['admin:email']) {
-			install.values = setupVal;
-		} else {
-			winston.error('Required values are missing for automated setup:');
-			if (!setupVal['admin:username']) {
-				winston.error('  admin:username');
-			}
-			if (!setupVal['admin:password']) {
-				winston.error('  admin:password');
-			}
-			if (!setupVal['admin:password:confirm']) {
-				winston.error('  admin:password:confirm');
-			}
-			if (!setupVal['admin:email']) {
-				winston.error('  admin:email');
-			}
-
-			process.exit();
+	
+	if (setupVal['admin:username'] && setupVal['admin:password'] && setupVal['admin:email']) {
+		install.values = setupVal;
+	} else {
+		winston.error('Required values are missing for automated setup:');
+		if (!setupVal['admin:username']) {
+			winston.error('  admin:username');
 		}
-	} else if (nconf.get('database')) {
+		if (!setupVal['admin:password']) {
+			winston.error('  admin:password');
+		}
+		if (!setupVal['admin:password:confirm']) {
+			winston.error('  admin:password:confirm');
+		}
+		if (!setupVal['admin:email']) {
+			winston.error('  admin:email');
+		}
+
+		process.exit();
+	}
+	if (nconf.get('database')) {
 		install.values = install.values || {};
 		install.values.database = nconf.get('database');
 	}
