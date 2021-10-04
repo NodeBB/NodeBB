@@ -485,7 +485,6 @@ app.cacheBuster = null;
 		var searchOptions = Object.assign({ in: config.searchDefaultInQuick || 'titles' }, options.searchOptions);
 		var quickSearchResults = options.searchElements.resultEl;
 		var inputEl = options.searchElements.inputEl;
-		var searchTimeoutId = 0;
 		var oldValue = inputEl.val();
 		var filterCategoryEl = quickSearchResults.find('.filter-category');
 
@@ -556,27 +555,21 @@ app.cacheBuster = null;
 			doSearch();
 		});
 
-		inputEl.off('keyup').on('keyup', function () {
-			if (searchTimeoutId) {
-				clearTimeout(searchTimeoutId);
-				searchTimeoutId = 0;
-			}
-			searchTimeoutId = setTimeout(function () {
-				if (inputEl.val().length < 3) {
-					quickSearchResults.addClass('hidden');
-					oldValue = inputEl.val();
-					return;
-				}
-				if (inputEl.val() === oldValue) {
-					return;
-				}
+		inputEl.off('keyup').on('keyup', utils.debounce(function () {
+			if (inputEl.val().length < 3) {
+				quickSearchResults.addClass('hidden');
 				oldValue = inputEl.val();
-				if (!inputEl.is(':focus')) {
-					return quickSearchResults.addClass('hidden');
-				}
-				doSearch();
-			}, 250);
-		});
+				return;
+			}
+			if (inputEl.val() === oldValue) {
+				return;
+			}
+			oldValue = inputEl.val();
+			if (!inputEl.is(':focus')) {
+				return quickSearchResults.addClass('hidden');
+			}
+			doSearch();
+		}, 250));
 
 		var mousedownOnResults = false;
 		quickSearchResults.on('mousedown', function () {

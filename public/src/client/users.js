@@ -6,15 +6,7 @@ define('forum/users', [
 ], function (translator, Benchpress, api, AccountInvite) {
 	var	Users = {};
 
-	var searchTimeoutID = 0;
 	var searchResultCount = 0;
-
-	$(window).on('action:ajaxify.start', function () {
-		if (searchTimeoutID) {
-			clearTimeout(searchTimeoutID);
-			searchTimeoutID = 0;
-		}
-	});
 
 	Users.init = function () {
 		app.enterRoom('user_list');
@@ -33,23 +25,14 @@ define('forum/users', [
 
 	Users.handleSearch = function (params) {
 		searchResultCount = params && params.resultCount;
-		searchTimeoutID = 0;
-
-		$('#search-user').on('keyup', function () {
-			if (searchTimeoutID) {
-				clearTimeout(searchTimeoutID);
-				searchTimeoutID = 0;
-			}
-
-			searchTimeoutID = setTimeout(doSearch, 250);
-		});
-
-		$('.search select, .search input[type="checkbox"]').on('change', function () {
-			doSearch();
-		});
+		$('#search-user').on('keyup', utils.debounce(doSearch, 250));
+		$('.search select, .search input[type="checkbox"]').on('change', doSearch);
 	};
 
 	function doSearch() {
+		if (!ajaxify.data.template.users) {
+			return;
+		}
 		$('[component="user/search/icon"]').removeClass('fa-search').addClass('fa-spinner fa-spin');
 		var username = $('#search-user').val();
 		var activeSection = getActiveSection();

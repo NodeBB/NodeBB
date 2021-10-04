@@ -30,6 +30,7 @@ define('forum/chats', [
 
 		Chats.addEventListeners();
 		Chats.resizeMainWindow();
+		Chats.setActive();
 
 		if (env === 'md' || env === 'lg') {
 			Chats.addHotkeys();
@@ -452,7 +453,7 @@ define('forum/chats', [
 	};
 
 	Chats.addGlobalEventListeners = function () {
-		$(window).on('resize', Chats.resizeMainWindow);
+		$(window).on('resize', utils.throttle(Chats.resizeMainWindow, 100));
 		$(window).on('mousemove keypress click', function () {
 			if (newMessage && ajaxify.data.roomId) {
 				socket.emit('modules.chats.markRead', ajaxify.data.roomId);
@@ -514,8 +515,6 @@ define('forum/chats', [
 		}
 
 		$('.chats-full').height(viewportHeight - fromTop - 1);
-
-		Chats.setActive();
 	};
 
 	Chats.setActive = function () {

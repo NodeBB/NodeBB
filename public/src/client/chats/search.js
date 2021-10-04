@@ -5,16 +5,7 @@ define('forum/chats/search', ['components', 'api'], function (components, api) {
 	var search = {};
 
 	search.init = function () {
-		var timeoutId = 0;
-
-		components.get('chat/search').on('keyup', function () {
-			if (timeoutId) {
-				clearTimeout(timeoutId);
-				timeoutId = 0;
-			}
-
-			timeoutId = setTimeout(doSearch, 250);
-		});
+		components.get('chat/search').on('keyup', utils.debounce(doSearch, 250));
 	};
 
 	function doSearch() {
