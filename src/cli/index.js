@@ -253,6 +253,10 @@ resetCommand
 		});
 	});
 
+// user
+program
+	.addCommand(require('./user')());
+
 // upgrades
 program
 	.command('upgrade [scripts...]')

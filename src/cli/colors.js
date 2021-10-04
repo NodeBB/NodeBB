@@ -8,17 +8,13 @@ const { Command, Help } = require('commander');
 
 const colors = [
 	// depth = 0, top-level command
-	{
-		command: 'yellow',
-		option: 'cyan',
-		arg: 'magenta',
-	},
+	{ command: 'yellow', option: 'cyan', arg: 'magenta' },
 	// depth = 1, second-level commands
-	{
-		command: 'green',
-		option: 'blue',
-		arg: 'red',
-	},
+	{ command: 'green', option: 'blue', arg: 'red' },
+	// depth = 2, third-level commands
+	{ command: 'yellow', option: 'cyan', arg: 'magenta' },
+	// depth = 3 fourth-level commands
+	{ command: 'green', option: 'blue', arg: 'red' },
 ];
 
 function humanReadableArgName(arg) {
