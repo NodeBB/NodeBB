@@ -2,5 +2,6 @@
 	"notifications": "Уведомления",
 	"welcome-notification": "Приветственное уведомление",
 	"welcome-notification-link": "Ссылка в уведомлении",
-	"welcome-notification-uid": "UID отправителя"
+	"welcome-notification-uid": "UID отправителя",
+	"post-queue-notification-uid": "Post Queue User (UID)"
 }

@@ -2,5 +2,6 @@
 	"notifications": "Notificações",
 	"welcome-notification": "Notificação de Boas-vindas",
 	"welcome-notification-link": "Link da Notificação de Boas-vindas",
-	"welcome-notification-uid": "Notificação de boas-vindas ao utilizador (UID)"
+	"welcome-notification-uid": "Notificação de boas-vindas ao utilizador (UID)",
+	"post-queue-notification-uid": "Post Queue User (UID)"
 }

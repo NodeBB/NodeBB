@@ -2,5 +2,6 @@
 	"notifications": "Thông báo",
 	"welcome-notification": "Thông Báo Chào Mừng",
 	"welcome-notification-link": "Liên Kết Thông Báo Chào Mừng",
-	"welcome-notification-uid": "Thông Báo Chào Mừng Người Dùng (UID)"
+	"welcome-notification-uid": "Thông Báo Chào Mừng Người Dùng (UID)",
+	"post-queue-notification-uid": "Post Queue User (UID)"
 }

@@ -2,5 +2,6 @@
 	"notifications": "Értesítések",
 	"welcome-notification": "Üdvözlő értesítés",
 	"welcome-notification-link": "Üdvözlő értesítés linkje",
-	"welcome-notification-uid": "Felhasználói üdvözlő értesítés (UID)"
+	"welcome-notification-uid": "Felhasználói üdvözlő értesítés (UID)",
+	"post-queue-notification-uid": "Post Queue User (UID)"
 }

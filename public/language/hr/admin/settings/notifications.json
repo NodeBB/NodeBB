@@ -2,5 +2,6 @@
 	"notifications": "Obavijesti",
 	"welcome-notification": "Obavijest dobrodošlice",
 	"welcome-notification-link": "Poveznica objave dobrodošlice",
-	"welcome-notification-uid": "Welcome Notification User (UID)"
+	"welcome-notification-uid": "Welcome Notification User (UID)",
+	"post-queue-notification-uid": "Post Queue User (UID)"
 }
