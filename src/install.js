@@ -9,7 +9,6 @@ const nconf = require('nconf');
 const _ = require('lodash');
 
 const utils = require('./utils');
-const { WSAEHOSTDOWN } = require('constants');
 
 const install = module.exports;
 const questions = {};
@@ -48,33 +47,34 @@ questions.optional = [
 ];
 
 function checkSetupEnv() {
-	winston.info("checking env vars for setup info...");
-	let envNbbRe = /NBB_(?!DB_).*/
-	let envNbbDbRe = /NBB_DB_.*/
-	let envopts = {
-		"NBB_URL": "url",
-		"NBB_PORT": "port",
-		"NBB_SECRET": "secret", // only a "cookie" for web setup???
-		"NBB_ADMIN_USERNAME": "admin:username",
-		"NBB_ADMIN_PASSWORD": "admin:password",
-		"NBB_ADMIN_EMAIL": "admin:email",
-		"NBB_DB": "database",
-		"NBB_DB_HOST": "host",
-		"NBB_DB_PORT": "port",
-		"NBB_DB_USER": "username",
-		"NBB_DB_PASSWORD": "password",
-		"NBB_DB_NAME": "database",
-		"NBB_DB_SSL": "ssl",
-	};
+	var setupVal = Object();
+	const envNbbRe = /NODEBB_(?!DB_).*/
+	const envNbbDbRe = /NODEBB_DB_.*/
+	const evars = nconf.env().get(); // fills evars dict with all env vars
 
-	let evars = nconf.env().get();
-	var setupVal = Object()
+	winston.info('checking env vars for setup info...');
+
+	let envopts = {
+		NODEBB_URL: 'url',
+		NODEBB_PORT: 'port',
+		NODEBB_SECRET: 'secret', // only a "cookie" for web setup???
+		NODEBB_ADMIN_USERNAME: 'admin:username',
+		NODEBB_ADMIN_PASSWORD: 'admin:password',
+		NODEBB_ADMIN_EMAIL: 'admin:email',
+		NODEBB_DB: 'database',
+		NODEBB_DB_HOST: 'host',
+		NODEBB_DB_PORT: 'port',
+		NODEBB_DB_USER: 'username',
+		NODEBB_DB_PASSWORD: 'password',
+		NODEBB_DB_NAME: 'database',
+		NODEBB_DB_SSL: 'ssl',
+	};
 
 	Object.keys(evars).map(v => {
 		if (v.match(envNbbRe)) {
 			setupVal[envopts[v]] = evars[v]
 		} else if (v.match(envNbbDbRe)) {
-			setupVal[`${evars['NBB_DB']}:${envopts[v]}`] = evars[v]
+			setupVal[`${evars[NODEBB_DB]}:${envopts[v]}`] = evars[v]
 		}
 	});
 
