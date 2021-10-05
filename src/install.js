@@ -48,13 +48,11 @@ questions.optional = [
 
 function checkSetupEnv() {
 	const setupVal = {};
-	const envNbbRe = /NODEBB_(?!DB_).*/;
-	const envNbbDbRe = /NODEBB_DB_.*/;
-	const evars = nconf.env().get(); // fills evars dict with all env vars
+	const envVars = process.env; // fills envVars dict with all env vars
 
 	winston.info('checking env vars for setup info...');
 
-	const envopts = {
+	const envConfMap = {
 		NODEBB_URL: 'url',
 		NODEBB_PORT: 'port',
 		NODEBB_SECRET: 'secret', // only a "cookie" for web setup???
@@ -70,11 +68,11 @@ function checkSetupEnv() {
 		NODEBB_DB_SSL: 'ssl',
 	};
 
-	Object.entries(evars).forEach((kv) => {
-		if (kv[0].match(envNbbRe)) {
-			setupVal[envopts[kv[0]]] = kv[1];
-		} else if (kv[0].match(envNbbDbRe)) {
-			setupVal[`${evars.NODEBB_DB}:${envopts[kv[0]]}`] = kv[1];
+	Object.entries(envVars).forEach(([evName, evValue]) => {
+		if (evName.startsWith('NODEBB_DB_')) {
+			setupVal[`${envVars.NODEBB_DB}:${envConfMap[evName]}`] = evValue;
+		} else if (evName.startsWith('NODEBB_')) {
+			setupVal[envConfMap[evName]] = evValue;
 		}
 	});
 
