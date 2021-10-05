@@ -47,14 +47,14 @@ questions.optional = [
 ];
 
 function checkSetupEnv() {
-	var setupVal = Object();
-	const envNbbRe = /NODEBB_(?!DB_).*/
-	const envNbbDbRe = /NODEBB_DB_.*/
+	const setupVal = Object();
+	const envNbbRe = /NODEBB_(?!DB_).*/;
+	const envNbbDbRe = /NODEBB_DB_.*/;
 	const evars = nconf.env().get(); // fills evars dict with all env vars
 
 	winston.info('checking env vars for setup info...');
 
-	let envopts = {
+	const envopts = {
 		NODEBB_URL: 'url',
 		NODEBB_PORT: 'port',
 		NODEBB_SECRET: 'secret', // only a "cookie" for web setup???
@@ -70,16 +70,16 @@ function checkSetupEnv() {
 		NODEBB_DB_SSL: 'ssl',
 	};
 
-	Object.keys(evars).map(v => {
+	Object.keys(evars).forEach((v) => {
 		if (v.match(envNbbRe)) {
-			setupVal[envopts[v]] = evars[v]
+			setupVal[envopts[v]] = evars[v];
 		} else if (v.match(envNbbDbRe)) {
-			setupVal[`${evars[NODEBB_DB]}:${envopts[v]}`] = evars[v]
+			setupVal[`${evars.NODEBB_DB}:${envopts[v]}`] = evars[v];
 		}
 	});
 
 	setupVal['admin:password:confirm'] = setupVal['admin:password'];
-	
+
 	if (setupVal['admin:username'] && setupVal['admin:password'] && setupVal['admin:email']) {
 		install.values = setupVal;
 	} else {
@@ -552,7 +552,7 @@ async function checkUpgrade() {
 
 install.setup = async function () {
 	try {
-		checkSetupEnv()
+		checkSetupEnv();
 		checkSetupFlag();
 		checkCIFlag();
 		await setupConfig();
