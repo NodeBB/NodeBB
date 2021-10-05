@@ -28,6 +28,7 @@ module.exports = {
 				topicsWithTags.map(t => `topic:${t.tid}`),
 				topicsWithTags.map(t => ({ tags: t.tags.join(',') }))
 			);
+			await db.deleteAll(tids.map(tid => `topic:${tid}:tags`));
 			progress.incr(tids.length);
 		}, {
 			batch: 500,
