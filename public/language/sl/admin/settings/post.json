@@ -51,7 +51,7 @@
 	"signature.no-links": "Onemogoči povezave v podpisih",
 	"signature.no-images": "Onemogoči slike v podpisih",
 	"signature.max-length": "Največja dolžina podpisa",
-	"composer": "Composer Settings",
+	"composer": "Nastavitve sestavljalnika",
 	"composer-help": "The following settings govern the functionality and/or appearance of the post composer shown\n\t\t\t\tto users when they create new topics, or reply to existing topics.",
 	"composer.show-help": "Prikaži zavihek \"Pomoč\"",
 	"composer.enable-plugin-help": "Dovoli vtičnikom dodajanje vsebine na zavihek za pomoč",
