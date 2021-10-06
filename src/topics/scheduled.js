@@ -54,6 +54,7 @@ Scheduled.pin = async function (tid, topicData) {
 			`cid:${topicData.cid}:tids`,
 			`cid:${topicData.cid}:tids:posts`,
 			`cid:${topicData.cid}:tids:votes`,
+			`cid:${topicData.cid}:tids:views`,
 		], tid),
 	]);
 };
@@ -80,6 +81,7 @@ function unpin(tid, topicData) {
 			[`cid:${topicData.cid}:tids`, topicData.lastposttime, tid],
 			[`cid:${topicData.cid}:tids:posts`, topicData.postcount, tid],
 			[`cid:${topicData.cid}:tids:votes`, parseInt(topicData.votes, 10) || 0, tid],
+			[`cid:${topicData.cid}:tids:views`, topicData.viewcount, tid],
 		]),
 	];
 }

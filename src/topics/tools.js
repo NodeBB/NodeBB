@@ -173,6 +173,7 @@ module.exports = function (Topics) {
 				`cid:${topicData.cid}:tids`,
 				`cid:${topicData.cid}:tids:posts`,
 				`cid:${topicData.cid}:tids:votes`,
+				`cid:${topicData.cid}:tids:views`,
 			], tid));
 		} else {
 			promises.push(db.sortedSetRemove(`cid:${topicData.cid}:tids:pinned`, tid));
@@ -181,6 +182,7 @@ module.exports = function (Topics) {
 				[`cid:${topicData.cid}:tids`, topicData.lastposttime, tid],
 				[`cid:${topicData.cid}:tids:posts`, topicData.postcount, tid],
 				[`cid:${topicData.cid}:tids:votes`, parseInt(topicData.votes, 10) || 0, tid],
+				[`cid:${topicData.cid}:tids:views`, topicData.viewcount, tid],
 			]));
 			topicData.pinExpiry = undefined;
 			topicData.pinExpiryISO = undefined;
@@ -243,6 +245,7 @@ module.exports = function (Topics) {
 			`cid:${topicData.cid}:tids:pinned`,
 			`cid:${topicData.cid}:tids:posts`,
 			`cid:${topicData.cid}:tids:votes`,
+			`cid:${topicData.cid}:tids:views`,
 			`cid:${topicData.cid}:tids:lastposttime`,
 			`cid:${topicData.cid}:recent_tids`,
 			`cid:${topicData.cid}:uid:${topicData.uid}:tids`,
@@ -263,6 +266,7 @@ module.exports = function (Topics) {
 			bulk.push([`cid:${cid}:tids`, topicData.lastposttime, tid]);
 			bulk.push([`cid:${cid}:tids:posts`, topicData.postcount, tid]);
 			bulk.push([`cid:${cid}:tids:votes`, votes, tid]);
+			bulk.push([`cid:${cid}:tids:views`, topicData.viewcount, tid]);
 		}
 		await db.sortedSetAddBulk(bulk);
 

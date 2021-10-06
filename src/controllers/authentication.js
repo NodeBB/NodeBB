@@ -128,7 +128,7 @@ async function addToApprovalQueue(req, userData) {
 	if (meta.config.showAverageApprovalTime) {
 		const average_time = await db.getObjectField('registration:queue:approval:times', 'average');
 		if (average_time > 0) {
-			message += ` [[register:registration-queue-average-time, ${Math.floor(average_time / 60)}, ${average_time % 60}]]`;
+			message += ` [[register:registration-queue-average-time, ${Math.floor(average_time / 60)}, ${Math.floor(average_time % 60)}]]`;
 		}
 	}
 	if (meta.config.autoApproveTime > 0) {
@@ -164,15 +164,15 @@ authenticationController.registerComplete = async function (req, res) {
 
 		const done = function (data) {
 			delete req.session.registration;
-
+			const relative_path = nconf.get('relative_path');
 			if (data && data.message) {
-				return res.redirect(`${nconf.get('relative_path')}/?register=${encodeURIComponent(data.message)}`);
+				return res.redirect(`${relative_path}/?register=${encodeURIComponent(data.message)}`);
 			}
 
 			if (req.session.returnTo) {
-				res.redirect(nconf.get('relative_path') + req.session.returnTo);
+				res.redirect(relative_path + req.session.returnTo.replace(new RegExp(`^${relative_path}`), ''));
 			} else {
-				res.redirect(`${nconf.get('relative_path')}/`);
+				res.redirect(`${relative_path}/`);
 			}
 		};
 
@@ -220,7 +220,7 @@ authenticationController.registerAbort = function (req, res) {
 	if (req.uid) {
 		// Clear interstitial data and continue on...
 		delete req.session.registration;
-		res.redirect(nconf.get('relative_path') + req.session.returnTo);
+		res.redirect(nconf.get('relative_path') + (req.session.returnTo || '/'));
 	} else {
 		// End the session and redirect to home
 		req.session.destroy(() => {

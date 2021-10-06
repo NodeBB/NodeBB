@@ -39,6 +39,7 @@ define('forum/login', ['hooks', 'translator', 'jquery-form'], function (hooks, t
 						var pathname = utils.urlToLocation(data.next).pathname;
 						var params = utils.params({ url: data.next });
 						params.loggedin = true;
+						delete params.register; // clear register message incase it exists
 						var qs = decodeURIComponent($.param(params));
 
 						window.location.href = pathname + '?' + qs;

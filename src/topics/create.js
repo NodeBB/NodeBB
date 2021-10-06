@@ -60,6 +60,7 @@ module.exports = function (Topics) {
 				'topics:views', 'topics:posts', 'topics:votes',
 				`cid:${topicData.cid}:tids:votes`,
 				`cid:${topicData.cid}:tids:posts`,
+				`cid:${topicData.cid}:tids:views`,
 			], 0, topicData.tid),
 			user.addTopicIdToUser(topicData.uid, topicData.tid, timestamp),
 			db.incrObjectField(`category:${topicData.cid}`, 'topic_count'),
@@ -217,6 +218,7 @@ module.exports = function (Topics) {
 			posts.getUserInfoForPosts([postData.uid], uid),
 			Topics.getTopicFields(tid, ['tid', 'uid', 'title', 'slug', 'cid', 'postcount', 'mainPid', 'scheduled']),
 			Topics.addParentPosts([postData]),
+			Topics.syncBacklinks(postData),
 			posts.parsePost(postData),
 		]);
 

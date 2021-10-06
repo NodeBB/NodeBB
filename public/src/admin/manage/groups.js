@@ -7,8 +7,6 @@ define('admin/manage/groups', [
 ], function (categorySelector, slugify, api) {
 	var	Groups = {};
 
-	var intervalId = 0;
-
 	Groups.init = function () {
 		var	createModal = $('#create-modal');
 		var createGroupName = $('#create-group-name');
@@ -114,13 +112,7 @@ define('admin/manage/groups', [
 			});
 		}
 
-		queryEl.on('keyup', function () {
-			if (intervalId) {
-				clearTimeout(intervalId);
-				intervalId = 0;
-			}
-			intervalId = setTimeout(doSearch, 200);
-		});
+		queryEl.on('keyup', utils.debounce(doSearch, 200));
 	}
 
 

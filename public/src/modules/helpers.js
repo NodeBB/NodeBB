@@ -70,10 +70,10 @@
 	}
 
 	function buildLinkTag(tag) {
-		const attributes = ['link', 'rel', 'as', 'type', 'href', 'sizes', 'title'];
-		const [link, rel, as, type, href, sizes, title] = attributes.map(attr => (tag[attr] ? `${attr}="${tag[attr]}" ` : ''));
+		const attributes = ['link', 'rel', 'as', 'type', 'href', 'sizes', 'title', 'crossorigin'];
+		const [link, rel, as, type, href, sizes, title, crossorigin] = attributes.map(attr => (tag[attr] ? `${attr}="${tag[attr]}" ` : ''));
 
-		return '<link ' + link + rel + as + type + sizes + title + href + '/>\n\t';
+		return '<link ' + link + rel + as + type + sizes + title + href + crossorigin + '/>\n\t';
 	}
 
 	function stringify(obj) {
@@ -228,7 +228,7 @@
 					<i class="fa ${event.icon || 'fa-circle'}"></i>
 				</div>
 				<span class="timeline-text">
-					${event.href ? `<a href="${relative_path}${event.href}>${event.text}</a>` : event.text}&nbsp;
+					${event.href ? `<a href="${relative_path}${event.href}">${event.text}</a>` : event.text}&nbsp;
 				</span>
 			`;
 

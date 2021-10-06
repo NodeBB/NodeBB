@@ -24,6 +24,7 @@ rewards.save = async function (data) {
 
 	await Promise.all(data.map(data => save(data)));
 	await saveConditions(data);
+	return data;
 };
 
 rewards.delete = async function (data) {

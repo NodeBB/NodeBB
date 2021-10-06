@@ -56,6 +56,9 @@
 	"composer.show-help": "Mostrar separador \"Ajuda\"",
 	"composer.enable-plugin-help": "Permitir aos plugins adicionarem conteúdo ao separador de ajuda",
 	"composer.custom-help": "Texto de ajuda personalizado",
+	"backlinks": "Backlinks",
+	"backlinks.enabled": "Enable topic backlinks",
+	"backlinks.help": "If a post references another topic, a link back to the post will be inserted into the referenced topic at that point in time.",
 	"ip-tracking": "IP Tracking",
 	"ip-tracking.each-post": "Track IP Address for each post",
 	"enable-post-history": "Ativar histórico de publicações"

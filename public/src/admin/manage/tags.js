@@ -6,7 +6,6 @@ define('admin/manage/tags', [
 	'admin/modules/selectable',
 ], function (infinitescroll, selectable) {
 	var	Tags = {};
-	var timeoutId = 0;
 
 	Tags.init = function () {
 		selectable.enable('.tag-management', '.tag-row');
@@ -53,32 +52,23 @@ define('admin/manage/tags', [
 	}
 
 	function handleSearch() {
-		$('#tag-search').on('input propertychange', function () {
-			if (timeoutId) {
-				clearTimeout(timeoutId);
-				timeoutId = 0;
-			}
+		$('#tag-search').on('input propertychange', utils.debounce(function () {
+			socket.emit('topics.searchAndLoadTags', {
+				query: $('#tag-search').val(),
+			}, function (err, result) {
+				if (err) {
+					return app.alertError(err.message);
+				}
 
-			timeoutId = setTimeout(function () {
-				socket.emit('topics.searchAndLoadTags', {
-					query: $('#tag-search').val(),
-				}, function (err, result) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-
-					app.parseAndTranslate('admin/manage/tags', 'tags', {
-						tags: result.tags,
-					}, function (html) {
-						$('.tag-list').html(html);
-						utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
-						timeoutId = 0;
-
-						selectable.enable('.tag-management', '.tag-row');
-					});
+				app.parseAndTranslate('admin/manage/tags', 'tags', {
+					tags: result.tags,
+				}, function (html) {
+					$('.tag-list').html(html);
+					utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
+					selectable.enable('.tag-management', '.tag-row');
 				});
-			}, 250);
-		});
+			});
+		}, 250));
 	}
 
 	function handleRename() {

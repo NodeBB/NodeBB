@@ -90,6 +90,13 @@ describe('Hash methods', () => {
 			assert.deepStrictEqual(result, [{ foo: '1' }, null]);
 		});
 
+		it('should update existing object on second call', async () => {
+			await db.setObjectBulk(['bulkKey3.5'], [{ foo: '1' }]);
+			await db.setObjectBulk(['bulkKey3.5'], [{ baz: '2' }]);
+			const result = await db.getObject('bulkKey3.5');
+			assert.deepStrictEqual(result, { foo: '1', baz: '2' });
+		});
+
 		it('should not error if object is empty', async () => {
 			const keys = ['bulkKey5'];
 			const data = [{ }];

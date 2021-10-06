@@ -56,6 +56,9 @@
 	"composer.show-help": "显示“帮助”选项卡",
 	"composer.enable-plugin-help": "允许插件添加内容到帮助选项卡",
 	"composer.custom-help": "自定义帮助文本",
+	"backlinks": "Backlinks",
+	"backlinks.enabled": "Enable topic backlinks",
+	"backlinks.help": "If a post references another topic, a link back to the post will be inserted into the referenced topic at that point in time.",
 	"ip-tracking": "IP 跟踪",
 	"ip-tracking.each-post": "跟踪每个帖子的 IP 地址",
 	"enable-post-history": "启用回复历史"

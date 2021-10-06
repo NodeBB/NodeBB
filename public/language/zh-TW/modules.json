@@ -54,7 +54,7 @@
     "composer.formatting.strikethrough": "刪除線",
     "composer.formatting.code": "程式碼",
     "composer.formatting.link": "連結",
-    "composer.formatting.picture": "圖片",
+    "composer.formatting.picture": "Image Link",
     "composer.upload-picture": "上傳圖片",
     "composer.upload-file": "上傳檔案",
     "composer.zen_mode": "無干擾模式",

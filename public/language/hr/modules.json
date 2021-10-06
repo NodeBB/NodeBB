@@ -54,7 +54,7 @@
     "composer.formatting.strikethrough": "Precrtano",
     "composer.formatting.code": "Code",
     "composer.formatting.link": "Poveznica",
-    "composer.formatting.picture": "Slika",
+    "composer.formatting.picture": "Image Link",
     "composer.upload-picture": "Učitaj sliku",
     "composer.upload-file": "Učitaj datoteku",
     "composer.zen_mode": "Zen",

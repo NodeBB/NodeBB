@@ -1,9 +1,9 @@
 {
 	"available": "Razpoložljivi pripomočki",
 	"explanation": "V spustnem meniju izberite pripomoček in ga povlecite in spustite v območje gradnikov predloge na levi.",
-	"none-installed": "No widgets found! Activate the widget essentials plugin in the <a href=\"%1\">plugins</a> control panel.",
+	"none-installed": "Pripomočki niso najdeni! Aktivirajte vtičnik za osnove pripomočkov na nadzorni plošči<a href=\"%1\">vtičnikov</a>.",
 	"clone-from": "Klonirajte pripomočke iz",
-	"containers.available": "Available Containers",
+	"containers.available": "Razpoložljivi vsebniki",
 	"containers.explanation": "Povlecite in spustite na kateri koli aktivni gradnik",
 	"containers.none": "Brez",
 	"container.well": "Well",
@@ -21,10 +21,10 @@
 	"error.select-clone": "Izberite stran, s katere želite klonirati",
 
 	"title": "Naslov",
-	"title.placeholder": "Title (only shown on some containers)",
-	"container": "Container",
+	"title.placeholder": "Naslov (vidno le v nekaterih vsebnikih)",
+	"container": "Vsebnik",
 	"container.placeholder": "Drag and drop a container or enter HTML here.",
-	"show-to-groups": "Show to groups",
-	"hide-from-groups": "Hide from groups",
+	"show-to-groups": "Prikaži skupinam",
+	"hide-from-groups": "Skrij skupinam",
 	"hide-on-mobile": "Hide on mobile"
 }

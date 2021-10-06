@@ -56,6 +56,9 @@
 	"composer.show-help": "Afficher l'onglet \"Aide\"",
 	"composer.enable-plugin-help": "Autoriser les plugins à modifier l'onglet d'aide",
 	"composer.custom-help": "Message d'aide personnalisé",
+	"backlinks": "Backlinks",
+	"backlinks.enabled": "Activer les backlinks de sujet",
+	"backlinks.help": "Si un message fait référence à un autre sujet, un lien vers le message sera inséré dans le sujet référencé.",
 	"ip-tracking": "Suivi d'IP",
 	"ip-tracking.each-post": "Suivre l'adresse IP pour chaque message",
 	"enable-post-history": "Activer l'historique des publications"

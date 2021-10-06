@@ -1,10 +1,10 @@
 {
-    "administrators": "Administrators",
-    "global-moderators": "Global Moderators",
-    "no-global-moderators": "No Global Moderators",
-    "moderators-of-category": "%1 Moderators",
-    "no-moderators": "No Moderators",
-    "add-administrator": "Add Administrator",
-    "add-global-moderator": "Add Global Moderator",
-    "add-moderator": "Add Moderator"
+    "administrators": "Skrbnik",
+    "global-moderators": "Globalni moderatorji",
+    "no-global-moderators": "Ni globalnih moderatorjev",
+    "moderators-of-category": "%1 moderator(jev)",
+    "no-moderators": "Ni moderatorjev",
+    "add-administrator": "Dodaj skrbnika",
+    "add-global-moderator": "Dodaj globalnega moderatorja",
+    "add-moderator": "Dodaj moderatorja"
 }

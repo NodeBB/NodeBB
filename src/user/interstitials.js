@@ -68,6 +68,10 @@ Interstitials.email = async (data) => {
 					}
 				}
 			} else {
+				if (meta.config.requireEmailAddress && !(formData.email && formData.email.length)) {
+					throw new Error('[[error:invalid-email]]');
+				}
+
 				// New registrants have the confirm email sent from user.create()
 				userData.email = formData.email;
 			}

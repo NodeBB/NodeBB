@@ -44,10 +44,9 @@ connection.getConnectionString = function (mongo) {
 connection.getConnectionOptions = function (mongo) {
 	mongo = mongo || nconf.get('mongo');
 	const connOptions = {
-		poolSize: 10,
+		maxPoolSize: 10,
+		minPoolSize: 3,
 		connectTimeoutMS: 90000,
-		useNewUrlParser: true,
-		useUnifiedTopology: true,
 	};
 
 	return _.merge(connOptions, mongo.options || {});

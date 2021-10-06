@@ -2,5 +2,6 @@
 	"notifications": "通知",
 	"welcome-notification": "ウェルカム通知",
 	"welcome-notification-link": "ウェルカム通知のリンク",
-	"welcome-notification-uid": "Welcome Notification User (UID)"
+	"welcome-notification-uid": "Welcome Notification User (UID)",
+	"post-queue-notification-uid": "Post Queue User (UID)"
 }

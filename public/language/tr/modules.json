@@ -54,7 +54,7 @@
     "composer.formatting.strikethrough": "Üstüçizili",
     "composer.formatting.code": "Kod",
     "composer.formatting.link": "Bağlantı",
-    "composer.formatting.picture": "Görsel",
+    "composer.formatting.picture": "Image Link",
     "composer.upload-picture": "Görsel Yükle",
     "composer.upload-file": "Dosya Yükle",
     "composer.zen_mode": "Tam ekran modu",

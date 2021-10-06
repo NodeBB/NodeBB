@@ -54,7 +54,7 @@
     "composer.formatting.strikethrough": "ขีดเส้นใต้",
     "composer.formatting.code": "Code",
     "composer.formatting.link": "ลิ้งค์",
-    "composer.formatting.picture": "รูปภาพ",
+    "composer.formatting.picture": "Image Link",
     "composer.upload-picture": "อัพโหลดรูปภาพ",
     "composer.upload-file": "อัพโหลดไฟล์",
     "composer.zen_mode": "เซ็นโหมด",

@@ -105,7 +105,7 @@ module.exports = function (User) {
 			throw new Error('[[error:no-user]]');
 		}
 
-		await plugins.hooks.fire('static:user.delete', { uid: uid });
+		await plugins.hooks.fire('static:user.delete', { uid: uid, userData: userData });
 		await deleteVotes(uid);
 		await deleteChats(uid);
 		await User.auth.revokeAllSessions(uid);

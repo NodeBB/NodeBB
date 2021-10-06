@@ -54,7 +54,7 @@
     "composer.formatting.strikethrough": "Svītrotā rakstā",
     "composer.formatting.code": "Koda gabals",
     "composer.formatting.link": "Saite",
-    "composer.formatting.picture": "Bilde",
+    "composer.formatting.picture": "Image Link",
     "composer.upload-picture": "Augšupielādēt bildi",
     "composer.upload-file": "Augšupielādēt failu",
     "composer.zen_mode": "Zen režīms",

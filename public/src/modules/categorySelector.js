@@ -30,7 +30,7 @@ define('categorySelector', [
 			selector.selectCategory(categoryEl.attr('data-cid'));
 			onSelect(selector.selectedCategory);
 		});
-
+		const defaultSelectHtml = selector.el.find('[component="category-selector-selected"]').html();
 		selector.selectCategory = function (cid) {
 			var categoryEl = selector.el.find('[data-cid="' + cid + '"]');
 			selector.selectedCategory = {
@@ -43,8 +43,8 @@ define('categorySelector', [
 					categoryEl.find('[component="category-markup"]').html()
 				);
 			} else {
-				selector.el.find('[component="category-selector-selected"]').translateHtml(
-					options.selectCategoryLabel || '[[topic:thread_tools.select_category]]'
+				selector.el.find('[component="category-selector-selected"]').html(
+					defaultSelectHtml
 				);
 			}
 		};

@@ -412,7 +412,6 @@ define('admin/manage/users', [
 	};
 
 	function handleSearch() {
-		var timeoutId = 0;
 		function doSearch() {
 			$('.fa-spinner').removeClass('hidden');
 			loadSearchPage({
@@ -421,16 +420,8 @@ define('admin/manage/users', [
 				page: 1,
 			});
 		}
-		$('#user-search').on('keyup', function () {
-			if (timeoutId !== 0) {
-				clearTimeout(timeoutId);
-				timeoutId = 0;
-			}
-			timeoutId = setTimeout(doSearch, 250);
-		});
-		$('#user-search-by').on('change', function () {
-			doSearch();
-		});
+		$('#user-search').on('keyup', utils.debounce(doSearch, 250));
+		$('#user-search-by').on('change', doSearch);
 	}
 
 	function loadSearchPage(query) {

@@ -54,7 +54,7 @@
     "composer.formatting.strikethrough": "Закреслений",
     "composer.formatting.code": "Код",
     "composer.formatting.link": "Посилання",
-    "composer.formatting.picture": "Зображення",
+    "composer.formatting.picture": "Image Link",
     "composer.upload-picture": "Завантажити зображення",
     "composer.upload-file": "Завантажити файл",
     "composer.zen_mode": "Режим Дзен",
