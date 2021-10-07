@@ -223,7 +223,7 @@ ajaxify = window.ajaxify || {};
 	}
 
 	function updateTags() {
-		var metaWhitelist = ['title', 'description', /og:.+/, /article:.+/].map(function (val) {
+		var metaWhitelist = ['title', 'description', /og:.+/, /article:.+/, 'robots'].map(function (val) {
 			return new RegExp(val);
 		});
 		var linkWhitelist = ['canonical', 'alternate', 'up'];

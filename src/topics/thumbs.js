@@ -64,7 +64,8 @@ async function getThumbs(set) {
 	if (cached !== undefined) {
 		return cached.slice();
 	}
-	const thumbs = await db.getSortedSetRange(set, 0, -1);
+	let thumbs = await db.getSortedSetRange(set, 0, -1);
+	thumbs = thumbs.map(t => validator.escape(String(t)));
 	cache.set(set, thumbs);
 	return thumbs.slice();
 }
