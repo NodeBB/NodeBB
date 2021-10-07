@@ -1,6 +1,6 @@
 'use strict';
 
-
+// TODO: no longer used remove in 1.19.0
 define('admin/modules/colorpicker', function () {
 	var colorpicker = {};
 

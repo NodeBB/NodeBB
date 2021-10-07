@@ -1,14 +1,9 @@
 'use strict';
 
-
-define('admin/settings/cookies', [
-	'admin/modules/colorpicker',
-], function (colorpicker) {
+define('admin/settings/cookies', function () {
 	var Module = {};
 
 	Module.init = function () {
-		colorpicker.enable($('[data-colorpicker="1"]'));
-
 		$('#delete-all-sessions').on('click', function () {
 			socket.emit('admin.deleteAllSessions', function (err) {
 				if (err) {
