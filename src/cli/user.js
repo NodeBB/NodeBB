@@ -36,7 +36,7 @@ module.exports = () => {
 		.description('Delete user(s) and/or their content')
 		.arguments('<uids...>')
 		.addOption(
-			new Option('-c, --content [operation]', 'Delete user content ([purge]), leave content ([account]), or delete content only ([content])')
+			new Option('-t, --type [operation]', 'Delete user content ([purge]), leave content ([account]), or delete content only ([content])')
 				.choices(['purge', 'account', 'content']).default('purge')
 		)
 		.action((...args) => execute(userCommands.deleteUser, args));
@@ -234,7 +234,7 @@ ${pwGenerated ? ` Generated password: ${password}` : ''}`);
 		}
 	}
 
-	async function deleteUser(uids, { content }) {
+	async function deleteUser(uids, { type }) {
 		uids = argParsers.intArrayParse(uids, 'uids');
 
 		const userExists = await user.exists(uids);
@@ -245,7 +245,7 @@ ${pwGenerated ? ` Generated password: ${password}` : ''}`);
 		await db.initSessionStore();
 		const adminUid = await getAdminUidOrFail();
 
-		switch (content) {
+		switch (type) {
 			case 'purge':
 				await Promise.all(uids.map(uid => user.delete(adminUid, uid)));
 				winston.info(`[userCmd/delete] User(s) with their content has been deleted.`);
