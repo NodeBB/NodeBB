@@ -54,7 +54,7 @@
     "composer.formatting.strikethrough": "취소선",
     "composer.formatting.code": "코드",
     "composer.formatting.link": "링크",
-    "composer.formatting.picture": "Image Link",
+    "composer.formatting.picture": "이미지 링크",
     "composer.upload-picture": "이미지 업로드",
     "composer.upload-file": "파일 업로드",
     "composer.zen_mode": "전체화면",
