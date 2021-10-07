@@ -737,6 +737,7 @@ describe('Admin Controllers', () => {
 		});
 
 		it('should allow normal user access to admin pages', async () => {
+			this.timeout(50000);
 			function makeRequest(url) {
 				return new Promise((resolve, reject) => {
 					request(url, { jar: userJar, json: true }, (err, res, body) => {
