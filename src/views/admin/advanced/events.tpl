@@ -38,7 +38,7 @@
 				<form role="form" id="filters">
 					<div class="form-group">
 						<label for="type">[[admin/advanced/events:filter-type]]</label>
-						<select class="form-control" id="type" name="type" class="form-control">
+						<select id="type" name="type" class="form-control">
 							<!-- BEGIN types -->
 							<option value="{types.value}" <!-- IF types.selected -->selected<!-- ENDIF types.selected -->>{types.name}</option>
 							<!-- END types -->
