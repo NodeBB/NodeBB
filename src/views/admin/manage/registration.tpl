@@ -58,7 +58,7 @@
 								{{{ each users.ipMatch }}}
 								<br>
 								<!-- IF users.ipMatch.picture -->
-								<img src="{users.ipMatch.picture}" class="user-img"/>
+								<img src="{users.ipMatch.picture}" class="user-img" alt="" />
 								<!-- ELSE -->
 								<div class="user-img avatar avatar-sm" style="background-color: {users.ipMatch.icon:bgColor};">{users.ipMatch.icon:text}</div>
 								<!-- ENDIF users.ipMatch.picture -->

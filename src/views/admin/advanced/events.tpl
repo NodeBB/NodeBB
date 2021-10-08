@@ -15,7 +15,7 @@
 					<!-- IF events.ip --><span class="label label-default">{events.ip}</span><!-- END -->
 					<a href="{config.relative_path}/user/{events.user.userslug}" target="_blank">
 						<!-- IF events.user.picture -->
-						<img class="avatar avatar-xs" src="{events.user.picture}" />
+						<img class="avatar avatar-xs" src="{events.user.picture}" alt="" />
 						<!-- ELSE -->
 						<div class="avatar avatar-xs" style="background-color: {events.user.icon:bgColor};">{events.user.icon:text}</div>
 						<!-- ENDIF events.user.picture -->
