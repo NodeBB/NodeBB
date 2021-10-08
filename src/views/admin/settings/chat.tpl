@@ -24,34 +24,34 @@
 		</div>
 
 		<div class="form-group">
-			<label>[[admin/settings/chat:restrictions.seconds-edit-after]]</label>
-			<input type="text" class="form-control" value="0" data-field="chatEditDuration">
+			<label for="chatEditDuration">[[admin/settings/chat:restrictions.seconds-edit-after]]</label>
+			<input id="chatEditDuration" type="text" class="form-control" value="0" data-field="chatEditDuration">
 		</div>
 
 		<div class="form-group">
-			<label>[[admin/settings/chat:restrictions.seconds-delete-after]]</label>
-			<input type="text" class="form-control" value="0" data-field="chatDeleteDuration">
+			<label for="chatDeleteDuration">[[admin/settings/chat:restrictions.seconds-delete-after]]</label>
+			<input id="chatDeleteDuration" type="text" class="form-control" value="0" data-field="chatDeleteDuration">
 		</div>
 
 		<div class="form-group">
-			<label>[[admin/settings/chat:max-length]]</label>
-			<input type="text" class="form-control" value="1000" data-field="maximumChatMessageLength">
+			<label for="maximumChatMessageLength">[[admin/settings/chat:max-length]]</label>
+			<input id="maximumChatMessageLength" type="text" class="form-control" value="1000" data-field="maximumChatMessageLength">
 		</div>
 
 		<div class="form-group">
-			<label>[[admin/settings/chat:max-room-size]]</label>
-			<input type="text" class="form-control" value="0" data-field="maximumUsersInChatRoom">
+			<label for="maximumUsersInChatRoom">[[admin/settings/chat:max-room-size]]</label>
+			<input id="maximumUsersInChatRoom" type="text" class="form-control" value="0" data-field="maximumUsersInChatRoom">
 		</div>
 
 
 		<div class="form-group">
-			<label>[[admin/settings/chat:delay]]</label>
-			<input type="text" class="form-control" value="200" data-field="chatMessageDelay">
+			<label for="chatMessageDelay">[[admin/settings/chat:delay]]</label>
+			<input id="chatMessageDelay" type="text" class="form-control" value="200" data-field="chatMessageDelay">
 		</div>
 
 		<div class="form-group">
-			<label>[[admin/settings/chat:notification-delay]]</label>
-			<input type="text" class="form-control" value="60" data-field="notificationSendDelay">
+			<label for="notificationSendDelay">[[admin/settings/chat:notification-delay]]</label>
+			<input id="notificationSendDelay" type="text" class="form-control" value="60" data-field="notificationSendDelay">
 		</div>
 	</div>
 </div>
