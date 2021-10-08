@@ -6,8 +6,8 @@
 	</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
-			<label>[[admin/settings/general:title]]</label>
-			<input class="form-control" type="text" placeholder="[[admin/settings/general:title.name]]" data-field="title" />
+			<label for="site-title">[[admin/settings/general:title]]</label>
+			<input id="site-title" class="form-control" type="text" placeholder="[[admin/settings/general:title.name]]" data-field="title" />
 			<label for="title:short">[[admin/settings/general:title.short]]</label>
 			<input id="title:short" type="text" class="form-control" placeholder="[[admin/settings/general:title.short-placeholder]]" data-field="title:short" />
 			<label for="title:url">[[admin/settings/general:title.url]]</label>
@@ -23,23 +23,23 @@
 				</label>
 			</div>
 
-			<label>[[admin/settings/general:browser-title]]</label>
-			<input class="form-control" type="text" placeholder="[[admin/settings/general:browser-title]]" data-field="browserTitle" />
+			<label for="browserTitle">[[admin/settings/general:browser-title]]</label>
+			<input id="browserTitle" class="form-control" type="text" placeholder="[[admin/settings/general:browser-title]]" data-field="browserTitle" />
 			<p class="help-block">
 				[[admin/settings/general:browser-title-help]]
 			</p>
 
-			<label>[[admin/settings/general:title-layout]]</label>
-			<input class="form-control" type="text" placeholder="[[admin/settings/general:title-layout]]" data-field="titleLayout" />
+			<label for="titleLayout">[[admin/settings/general:title-layout]]</label>
+			<input id="titleLayout" class="form-control" type="text" placeholder="[[admin/settings/general:title-layout]]" data-field="titleLayout" />
 			<p class="help-block">
 				[[admin/settings/general:title-layout-help]]
 			</p>
 
-			<label>[[admin/settings/general:description]]</label>
-			<input type="text" class="form-control" placeholder="[[admin/settings/general:description.placeholder]]" data-field="description" /><br />
+			<label for="description">[[admin/settings/general:description]]</label>
+			<input id="description" type="text" class="form-control" placeholder="[[admin/settings/general:description.placeholder]]" data-field="description" /><br />
 
-			<label>[[admin/settings/general:keywords]]</label><br />
-			<input type="text" class="form-control" placeholder="[[admin/settings/general:keywords-placeholder]]" data-field="keywords" data-field-type="tagsinput" /><br />
+			<label for="keywords">[[admin/settings/general:keywords]]</label><br />
+			<input id="keywords" type="text" class="form-control" placeholder="[[admin/settings/general:keywords-placeholder]]" data-field="keywords" data-field-type="tagsinput" /><br />
 		</form>
 	</div>
 </div>
@@ -139,8 +139,8 @@
 	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/general:search]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<div class="form-group">
-			<label>[[admin/settings/general:search-default-in]]</label>
-			<select class="form-control" data-field="searchDefaultIn">
+			<label for="searchDefaultIn">[[admin/settings/general:search-default-in]]</label>
+			<select id="searchDefaultIn" class="form-control" data-field="searchDefaultIn">
 				<option value="titlesposts">[[search:titles-posts]]</option>
 				<option value="titles">[[search:titles]]</option>
 				<option value="posts">[[global:posts]]</option>
@@ -150,15 +150,15 @@
 			</select>
 		</div>
 		<div class="form-group">
-			<label>[[admin/settings/general:search-default-in-quick]]</label>
-			<select class="form-control" data-field="searchDefaultInQuick">
+			<label for="searchDefaultInQuick">[[admin/settings/general:search-default-in-quick]]</label>
+			<select id="searchDefaultInQuick" class="form-control" data-field="searchDefaultInQuick">
 				<option value="titlesposts">[[search:titles-posts]]</option>
 				<option value="titles">[[search:titles]]</option>
 				<option value="posts">[[global:posts]]</option>
 			</select>
 		</div>
 		<div class="form-group">
-			<label>[[admin/settings/general:search-default-sort-by]]</label>
+			<label for="post-sort-by">[[admin/settings/general:search-default-sort-by]]</label>
 			<select id="post-sort-by" class="form-control" data-field="searchDefaultSortBy">
 				<option value="relevance">[[search:relevance]]</option>
 				<option value="timestamp">[[search:post-time]]</option>
@@ -199,11 +199,11 @@
 	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/general:site-colors]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
-			<label>[[admin/settings/general:theme-color]]</label>
-			<input type="text" class="form-control" placeholder="#ffffff" data-field="themeColor" />
+			<label for="themeColor">[[admin/settings/general:theme-color]]</label>
+			<input id="themeColor" type="text" class="form-control" placeholder="#ffffff" data-field="themeColor" />
 
-			<label>[[admin/settings/general:background-color]]</label>
-			<input type="text" class="form-control" placeholder="#ffffff" data-field="backgroundColor" />
+			<label for="backgroundColor">[[admin/settings/general:background-color]]</label>
+			<input id="backgroundColor" type="text" class="form-control" placeholder="#ffffff" data-field="backgroundColor" />
 			<p class="help-block">
 				[[admin/settings/general:background-color-help]]
 			</p>
@@ -215,8 +215,8 @@
 	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/general:topic-tools]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
-			<label>[[admin/settings/general:undo-timeout]]</label>
-			<input type="text" class="form-control" placeholder="10000" data-field="undoTimeout" />
+			<label for="undoTimeout">[[admin/settings/general:undo-timeout]]</label>
+			<input id="undoTimeout" type="text" class="form-control" placeholder="10000" data-field="undoTimeout" />
 			<p class="help-block">
 				[[admin/settings/general:undo-timeout-help]]
 			</p>

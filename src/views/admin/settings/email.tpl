@@ -146,7 +146,7 @@
 <div class="row">
 	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/email:template]]</div>
 	<div class="col-sm-10 col-xs-12">
-		<label>[[admin/settings/email:template.select]]</label><br />
+		<label for="email-editor-selector">[[admin/settings/email:template.select]]</label><br />
 		<select id="email-editor-selector" class="form-control">
 			<!-- BEGIN emails -->
 			<option value="{emails.path}">{emails.path}</option>
@@ -164,7 +164,7 @@
 	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/email:testing]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<div class="form-group">
-			<label>[[admin/settings/email:testing.select]]</label>
+			<label for="test-email">[[admin/settings/email:testing.select]]</label>
 			<select id="test-email" class="form-control">
 				<!-- BEGIN sendable -->
 				<option value="{@value}">{@value}</option>

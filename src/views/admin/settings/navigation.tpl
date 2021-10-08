@@ -32,43 +32,43 @@
 
 						<div class="col-sm-3">
 							<div class="form-group">
-								<label>[[admin/settings/navigation:route]]</label>
-								<input class="form-control" type="text" name="route" value="{enabled.route}" />
+								<label for="nav:route">[[admin/settings/navigation:route]]</label>
+								<input id="nav:route" class="form-control" type="text" name="route" value="{enabled.route}" />
 							</div>
 						</div>
 
 						<div class="col-sm-4">
 							<div class="form-group">
-								<label>[[admin/settings/navigation:class]]</label>
-								<input class="form-control" type="text" name="class" value="{enabled.class}" />
+								<label for="nav:class">[[admin/settings/navigation:class]]</label>
+								<input id="nav:class" class="form-control" type="text" name="class" value="{enabled.class}" />
 							</div>
 						</div>
 
 						<div class="col-sm-4">
 							<div class="form-group">
-								<label>[[admin/settings/navigation:id]]</label>
-								<input class="form-control" type="text" name="id" value="{enabled.id}" />
+								<label for="nav:id">[[admin/settings/navigation:id]]</label>
+								<input id="nav:id" class="form-control" type="text" name="id" value="{enabled.id}" />
 							</div>
 						</div>
 					</div>
 					<div class="row">
 						<div class="col-sm-4">
 							<div class="form-group">
-								<label>[[admin/settings/navigation:text]]</label>
-								<input class="form-control unescape" type="text" name="text" value="{enabled.text}" />
+								<label for="nav:text">[[admin/settings/navigation:text]]</label>
+								<input id="nav:text" class="form-control unescape" type="text" name="text" value="{enabled.text}" />
 							</div>
 						</div>
 						<div class="col-sm-4">
 							<div class="form-group">
-								<label>[[admin/settings/navigation:text-class]]</label>
-								<input class="form-control" type="text" name="textClass" value="{enabled.textClass}" />
+								<label for="nav:text-class">[[admin/settings/navigation:text-class]]</label>
+								<input id="nav:text-class" class="form-control" type="text" name="textClass" value="{enabled.textClass}" />
 							</div>
 						</div>
 
 						<div class="col-sm-4">
 							<div class="form-group">
-								<label>[[admin/settings/navigation:tooltip]]</label>
-								<input class="form-control unescape" type="text" name="title" value="{enabled.title}" />
+								<label for="nav:tooltip">[[admin/settings/navigation:tooltip]]</label>
+								<input id="nav:tooltip" class="form-control unescape" type="text" name="title" value="{enabled.title}" />
 							</div>
 						</div>
 					</div>

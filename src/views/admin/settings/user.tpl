@@ -12,8 +12,8 @@
 			</div>
 
 			<div class="form-group">
-				<label>[[admin/settings/user:allow-login-with]]</label>
-				<select class="form-control" data-field="allowLoginWith">
+				<label for="allowLoginWith">[[admin/settings/user:allow-login-with]]</label>
+				<select id="allowLoginWith" class="form-control" data-field="allowLoginWith">
 					<option value="username-email">[[admin/settings/user:allow-login-with.username-email]]</option>
 					<option value="username">[[admin/settings/user:allow-login-with.username]]</option>
 					<option value="email">[[admin/settings/user:allow-login-with.email]]</option>
@@ -117,8 +117,8 @@
 				<input id="lockoutDuration" type="text" class="form-control" data-field="lockoutDuration" placeholder="60" />
 			</div>
 			<div class="form-group">
-				<label>[[admin/settings/user:password-expiry-days]]</label>
-				<input type="text" class="form-control" data-field="passwordExpiryDays" placeholder="0" />
+				<label for="passwordExpiryDays">[[admin/settings/user:password-expiry-days]]</label>
+				<input id="passwordExpiryDays" type="text" class="form-control" data-field="passwordExpiryDays" placeholder="0" />
 			</div>
 		</form>
 	</div>
@@ -133,14 +133,14 @@
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group">
-						<label>[[admin/settings/user:session-time-days]]</label>
-						<input type="text" class="form-control" data-field="loginDays" placeholder="[[admin/settings/user:session-time-days]]" />
+						<label for="loginDays">[[admin/settings/user:session-time-days]]</label>
+						<input id="loginDays" type="text" class="form-control" data-field="loginDays" placeholder="[[admin/settings/user:session-time-days]]" />
 					</div>
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group">
-						<label>[[admin/settings/user:session-time-seconds]]</label>
-						<input type="text" class="form-control" data-field="loginSeconds" placeholder="[[admin/settings/user:session-time-seconds]]" />
+						<label for="loginSeconds">[[admin/settings/user:session-time-seconds]]</label>
+						<input id="loginSeconds" type="text" class="form-control" data-field="loginSeconds" placeholder="[[admin/settings/user:session-time-seconds]]" />
 					</div>
 				</div>
 				<div class="col-xs-12">
@@ -150,8 +150,8 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<label>[[admin/settings/user:online-cutoff]]</label>
-				<input type="text" class="form-control" data-field="onlineCutoff">
+				<label for="onlineCutoff">[[admin/settings/user:online-cutoff]]</label>
+				<input id="onlineCutoff" type="text" class="form-control" data-field="onlineCutoff">
 				<p class="help-block">[[admin/settings/user:online-cutoff-help]]</p>
 			</div>
 		</form>
@@ -163,8 +163,8 @@
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="form-group">
-				<label>[[admin/settings/user:registration-type]]</label>
-				<select class="form-control" data-field="registrationType">
+				<label for="registrationType">[[admin/settings/user:registration-type]]</label>
+				<select id="registrationType" class="form-control" data-field="registrationType">
 					<option value="normal">[[admin/settings/user:registration-type.normal]]</option>
 					<option value="invite-only">[[admin/settings/user:registration-type.invite-only]]</option>
 					<option value="admin-invite-only">[[admin/settings/user:registration-type.admin-invite-only]]</option>
@@ -175,8 +175,8 @@
 				</p>
 			</div>
 			<div class="form-group">
-				<label>[[admin/settings/user:registration-approval-type]]</label>
-				<select class="form-control" data-field="registrationApprovalType">
+				<label for="registrationApprovalType">[[admin/settings/user:registration-approval-type]]</label>
+				<select id="registrationApprovalType" class="form-control" data-field="registrationApprovalType">
 					<option value="normal">[[admin/settings/user:registration-type.normal]]</option>
 					<option value="admin-approval">[[admin/settings/user:registration-type.admin-approval]]</option>
 					<option value="admin-approval-ip">[[admin/settings/user:registration-type.admin-approval-ip]]</option>
@@ -186,8 +186,8 @@
 				</p>
 			</div>
 			<div class="form-group">
-				<label>[[admin/settings/user:registration-queue-auto-approve-time]]</label>
-				<input type="number" class="form-control" data-field="autoApproveTime" placeholder="0">
+				<label for="autoApproveTime">[[admin/settings/user:registration-queue-auto-approve-time]]</label>
+				<input id="autoApproveTime" type="number" class="form-control" data-field="autoApproveTime" placeholder="0">
 				<p class="help-block">
 					[[admin/settings/user:registration-queue-auto-approve-time-help]]
 				</p>
@@ -208,34 +208,34 @@
 			<p class="help-block">[[admin/settings/email:require-email-address-warning]]</p>
 
 			<div class="form-group">
-				<label>[[admin/settings/user:max-invites]]</label>
-				<input type="number" class="form-control" data-field="maximumInvites" placeholder="0">
+				<label for="maximumInvites">[[admin/settings/user:max-invites]]</label>
+				<input id="maximumInvites" type="number" class="form-control" data-field="maximumInvites" placeholder="0">
 				<p class="help-block">
 					[[admin/settings/user:max-invites-help]]
 				</p>
 			</div>
 			<div class="form-group">
-				<label>[[admin/settings/user:invite-expiration]]</label>
-				<input type="number" class="form-control" data-field="inviteExpiration" placeholder="7">
+				<label for="inviteExpiration">[[admin/settings/user:invite-expiration]]</label>
+				<input id="inviteExpiration" type="number" class="form-control" data-field="inviteExpiration" placeholder="7">
 				<p class="help-block">
 					[[admin/settings/user:invite-expiration-help]]
 				</p>
 			</div>
 			<div class="form-group">
-				<label>[[admin/settings/user:min-username-length]]</label>
-				<input type="text" class="form-control" value="2" data-field="minimumUsernameLength">
+				<label for="minimumUsernameLength">[[admin/settings/user:min-username-length]]</label>
+				<input id="minimumUsernameLength" type="text" class="form-control" value="2" data-field="minimumUsernameLength">
 			</div>
 			<div class="form-group">
-				<label>[[admin/settings/user:max-username-length]]</label>
-				<input type="text" class="form-control" value="16" data-field="maximumUsernameLength">
+				<label for="maximumUsernameLength">[[admin/settings/user:max-username-length]]</label>
+				<input id="maximumUsernameLength" type="text" class="form-control" value="16" data-field="maximumUsernameLength">
 			</div>
 			<div class="form-group">
-				<label>[[admin/settings/user:min-password-length]]</label>
-				<input type="text" class="form-control" value="6" data-field="minimumPasswordLength">
+				<label for="minimumPasswordLength">[[admin/settings/user:min-password-length]]</label>
+				<input id="minimumPasswordLength" type="text" class="form-control" value="6" data-field="minimumPasswordLength">
 			</div>
 			<div class="form-group">
-				<label>[[admin/settings/user:min-password-strength]]</label>
-				<select class="form-control" data-field="minimumPasswordStrength">
+				<label for="minimumPasswordStrength">[[admin/settings/user:min-password-strength]]</label>
+				<select id="minimumPasswordStrength" class="form-control" data-field="minimumPasswordStrength">
 					<option value="0">0 - too guessable: risky password</option>
 					<option value="1">1 - very guessable</option>
 					<option value="2">2 - somewhat guessable</option>
@@ -244,12 +244,12 @@
 				</select>
 			</div>
 			<div class="form-group">
-				<label>[[admin/settings/user:max-about-me-length]]</label>
-				<input type="text" class="form-control" value="500" data-field="maximumAboutMeLength">
+				<label for="maximumAboutMeLength">[[admin/settings/user:max-about-me-length]]</label>
+				<input id="maximumAboutMeLength" type="text" class="form-control" value="500" data-field="maximumAboutMeLength">
 			</div>
 			<div class="form-group">
-				<label>[[admin/settings/user:terms-of-use]]</label>
-				<textarea class="form-control" data-field="termsOfUse"></textarea>
+				<label for="termsOfUse">[[admin/settings/user:terms-of-use]]</label>
+				<textarea id="termsOfUse" class="form-control" data-field="termsOfUse"></textarea>
 			</div>
 		</form>
 	</div>
@@ -260,8 +260,8 @@
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="form-group">
-				<label>[[admin/settings/user:user-search-results-per-page]]</label>
-				<input type="text" class="form-control" value="24" data-field="userSearchResultsPerPage">
+				<label for="userSearchResultsPerPage">[[admin/settings/user:user-search-results-per-page]]</label>
+				<input id="userSearchResultsPerPage" type="text" class="form-control" value="24" data-field="userSearchResultsPerPage">
 			</div>
 
 		</form>
@@ -315,8 +315,8 @@
 			</div>
 
 			<div class="form-group">
-				<label>[[admin/settings/user:digest-freq]]</label>
-				<select class="form-control" data-field="dailyDigestFreq">
+				<label for="dailyDigestFreq">[[admin/settings/user:digest-freq]]</label>
+				<select id="dailyDigestFreq" class="form-control" data-field="dailyDigestFreq">
 					<option value="off">[[admin/settings/user:digest-freq.off]]</option>
 					<option value="day">[[admin/settings/user:digest-freq.daily]]</option>
 					<option value="week">[[admin/settings/user:digest-freq.weekly]]</option>
@@ -339,8 +339,8 @@
 			</div>
 
 			<div class="form-group">
-				<label>[[admin/settings/user:categoryWatchState]]</label>
-				<select class="form-control" data-field="categoryWatchState">
+				<label for="categoryWatchState">[[admin/settings/user:categoryWatchState]]</label>
+				<select id="categoryWatchState" class="form-control" data-field="categoryWatchState">
 					<option value="watching">[[admin/settings/user:categoryWatchState.watching]]</option>
 					<option value="notwatching">[[admin/settings/user:categoryWatchState.notwatching]]</option>
 					<option value="ignoring">[[admin/settings/user:categoryWatchState.ignoring]]</option>
