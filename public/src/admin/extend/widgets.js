@@ -2,11 +2,12 @@
 
 
 define('admin/extend/widgets', [
+	'bootbox',
 	'jquery-ui/widgets/sortable',
 	'jquery-ui/widgets/draggable',
 	'jquery-ui/widgets/droppable',
 	'jquery-ui/widgets/datepicker',
-], function () {
+], function (bootbox) {
 	var Widgets = {};
 
 	Widgets.init = function () {

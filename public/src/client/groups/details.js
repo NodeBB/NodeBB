@@ -10,6 +10,7 @@ define('forum/groups/details', [
 	'api',
 	'slugify',
 	'categorySelector',
+	'bootbox',
 ], function (
 	memberList,
 	iconSelect,
@@ -19,7 +20,8 @@ define('forum/groups/details', [
 	translator,
 	api,
 	slugify,
-	categorySelector
+	categorySelector,
+	bootbox
 ) {
 	var Details = {};
 	var groupName;

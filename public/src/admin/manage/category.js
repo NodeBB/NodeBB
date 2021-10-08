@@ -6,7 +6,8 @@ define('admin/manage/category', [
 	'categorySelector',
 	'benchpress',
 	'api',
-], function (uploader, iconSelect, categorySelector, Benchpress, api) {
+	'bootbox',
+], function (uploader, iconSelect, categorySelector, Benchpress, api, bootbox) {
 	var	Category = {};
 	var updateHash = {};
 

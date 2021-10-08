@@ -11,7 +11,8 @@ define('forum/chats', [
 	'benchpress',
 	'composer/autocomplete',
 	'hooks',
-], function (components, translator, mousetrap, recentChats, search, messages, Benchpress, autocomplete, hooks) {
+	'bootbox',
+], function (components, translator, mousetrap, recentChats, search, messages, Benchpress, autocomplete, hooks, bootbox) {
 	var Chats = {
 		initialised: false,
 	};

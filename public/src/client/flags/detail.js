@@ -1,6 +1,6 @@
 'use strict';
 
-define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'benchpress', 'forum/account/header', 'accounts/delete', 'api'], function (FlagsList, components, translator, Benchpress, AccountHeader, AccountsDelete, api) {
+define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'benchpress', 'forum/account/header', 'accounts/delete', 'api', 'bootbox'], function (FlagsList, components, translator, Benchpress, AccountHeader, AccountsDelete, api, bootbox) {
 	var Detail = {};
 
 	Detail.init = function () {

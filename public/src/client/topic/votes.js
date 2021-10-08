@@ -2,8 +2,8 @@
 
 
 define('forum/topic/votes', [
-	'components', 'translator', 'benchpress', 'api', 'hooks',
-], function (components, translator, Benchpress, api, hooks) {
+	'components', 'translator', 'benchpress', 'api', 'hooks', 'bootbox',
+], function (components, translator, Benchpress, api, hooks, bootbox) {
 	var Votes = {};
 
 	Votes.addVoteHandler = function () {

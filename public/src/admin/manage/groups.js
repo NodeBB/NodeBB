@@ -4,7 +4,8 @@ define('admin/manage/groups', [
 	'categorySelector',
 	'slugify',
 	'api',
-], function (categorySelector, slugify, api) {
+	'bootbox',
+], function (categorySelector, slugify, api, bootbox) {
 	var	Groups = {};
 
 	Groups.init = function () {

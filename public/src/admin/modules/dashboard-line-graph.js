@@ -1,6 +1,6 @@
 'use strict';
 
-define('admin/modules/dashboard-line-graph', ['Chart', 'translator', 'benchpress', 'api', 'hooks'], function (Chart, translator, Benchpress, api, hooks) {
+define('admin/modules/dashboard-line-graph', ['Chart', 'translator', 'benchpress', 'api', 'hooks', 'bootbox'], function (Chart, translator, Benchpress, api, hooks, bootbox) {
 	const Graph = {
 		_current: null,
 	};

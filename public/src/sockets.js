@@ -212,7 +212,7 @@ socket = window.socket;
 	}
 
 	function onEventBanned(data) {
-		require(['translator'], function (translator) {
+		require(['bootbox', 'translator'], function (bootbox, translator) {
 			var message = data.until ?
 				translator.compile('error:user-banned-reason-until', (new Date(data.until).toLocaleString()), data.reason) :
 				'[[error:user-banned-reason, ' + data.reason + ']]';

@@ -8,7 +8,8 @@ define('forum/topic/threadTools', [
 	'forum/topic/posts',
 	'api',
 	'hooks',
-], function (components, translator, handleBack, posts, api, hooks) {
+	'bootbox',
+], function (components, translator, handleBack, posts, api, hooks, bootbox) {
 	var ThreadTools = {};
 
 	ThreadTools.init = function (tid, topicContainer) {

@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/pagination', function () {
+define('forum/pagination', ['bootbox'], function (bootbox) {
 	var pagination = {};
 
 	pagination.init = function () {

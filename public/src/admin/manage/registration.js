@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/manage/registration', function () {
+define('admin/manage/registration', ['bootbox'], function (bootbox) {
 	var Registration = {};
 
 	Registration.init = function () {
