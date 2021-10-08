@@ -52,7 +52,7 @@
 			<div class="input-group">
 				<input id="logoUrl" type="text" class="form-control" placeholder="[[admin/settings/general:logo.image-placeholder]]" data-field="brand:logo" />
 				<span class="input-group-btn">
-					<input data-action="upload" data-target="logoUrl" data-route="{config.relative_path}/api/admin/uploadlogo" type="button" class="btn btn-default" value="[[admin/settings/general:logo.upload]]"></input>
+					<input data-action="upload" data-target="logoUrl" data-route="{config.relative_path}/api/admin/uploadlogo" type="button" class="btn btn-default" value="[[admin/settings/general:logo.upload]]" />
 					<button data-action="removeLogo" type="button" class="btn btn-default btn-danger"><i class="fa fa-times"></i></button>
 				</span>
 			</div>
@@ -75,7 +75,7 @@
 			<div class="input-group">
 				<input id="og_image" type="text" class="form-control" placeholder="" data-field="og:image" />
 				<span class="input-group-btn">
-					<input data-action="upload" data-target="og_image" data-route="{config.relative_path}/api/admin/uploadOgImage" type="button" class="btn btn-default" value="[[admin/settings/general:logo.upload]]"></input>
+					<input data-action="upload" data-target="og_image" data-route="{config.relative_path}/api/admin/uploadOgImage" type="button" class="btn btn-default" value="[[admin/settings/general:logo.upload]]" />
 					<button data-action="removeOgImage" type="button" class="btn btn-default btn-danger"><i class="fa fa-times"></i></button>
 				</span>
 			</div>
@@ -92,7 +92,7 @@
 			<div class="input-group">
 				<input id="faviconUrl" type="text" class="form-control" placeholder="favicon.ico" data-field="brand:favicon" data-action="upload" data-target="faviconUrl" data-route="{config.relative_path}/api/admin/uploadfavicon" readonly />
 				<span class="input-group-btn">
-					<input data-action="upload" data-target="faviconUrl" data-route="{config.relative_path}/api/admin/uploadfavicon" data-help="0" type="button" class="btn btn-default" value="[[admin/settings/general:favicon.upload]]"></input>
+					<input data-action="upload" data-target="faviconUrl" data-route="{config.relative_path}/api/admin/uploadfavicon" data-help="0" type="button" class="btn btn-default" value="[[admin/settings/general:favicon.upload]]" />
 					<button data-action="removeFavicon" type="button" class="btn btn-default btn-danger"><i class="fa fa-times"></i></button>
 				</span>
 			</div>
@@ -110,7 +110,7 @@
 			<div class="input-group">
 				<input id="touchIconUrl" type="text" class="form-control" data-field="brand:touchIcon" data-action="upload" data-target="touchIconUrl" data-route="{config.relative_path}/api/admin/uploadTouchIcon" readonly />
 				<span class="input-group-btn">
-					<input data-action="upload" data-target="touchIconUrl" data-route="{config.relative_path}/api/admin/uploadTouchIcon" type="button" class="btn btn-default" value="[[admin/settings/general:touch-icon.upload]]"></input>
+					<input data-action="upload" data-target="touchIconUrl" data-route="{config.relative_path}/api/admin/uploadTouchIcon" type="button" class="btn btn-default" value="[[admin/settings/general:touch-icon.upload]]" />
 					<button data-action="removeTouchIcon" type="button" class="btn btn-default btn-danger"><i class="fa fa-times"></i></button>
 				</span>
 			</div>
@@ -124,7 +124,7 @@
 			<div class="input-group">
 				<input id="maskableIconUrl" type="text" class="form-control" data-field="brand:maskableIcon" data-action="upload" data-target="maskableIconUrl" data-route="{config.relative_path}/api/admin/uploadMaskableIcon" readonly />
 				<span class="input-group-btn">
-					<input data-action="upload" data-target="maskableIconUrl" data-route="{config.relative_path}/api/admin/uploadMaskableIcon" type="button" class="btn btn-default" value="[[admin/settings/general:touch-icon.upload]]"></input>
+					<input data-action="upload" data-target="maskableIconUrl" data-route="{config.relative_path}/api/admin/uploadMaskableIcon" type="button" class="btn btn-default" value="[[admin/settings/general:touch-icon.upload]]" />
 					<button data-action="removeMaskableIcon" type="button" class="btn btn-default btn-danger"><i class="fa fa-times"></i></button>
 				</span>
 			</div>
