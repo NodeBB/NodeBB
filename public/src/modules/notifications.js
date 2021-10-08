@@ -139,6 +139,10 @@ define('notifications', [
 		if (payload.updateFavicon) {
 			Tinycon.setBubble(count > 99 ? '99+' : count);
 		}
+
+		if (navigator.setAppBadge) {	// feature detection
+			navigator.setAppBadge(count);
+		}
 	};
 
 	Notifications.markAllRead = function () {
