@@ -120,7 +120,7 @@
 		</div>
 
 		<div class="form-group">
-			<label for="touchIconUrl">[[admin/settings/general:maskable-icon]]</label>
+			<label for="maskableIconUrl">[[admin/settings/general:maskable-icon]]</label>
 			<div class="input-group">
 				<input id="maskableIconUrl" type="text" class="form-control" data-field="brand:maskableIcon" data-action="upload" data-target="maskableIconUrl" data-route="{config.relative_path}/api/admin/uploadMaskableIcon" readonly />
 				<span class="input-group-btn">
