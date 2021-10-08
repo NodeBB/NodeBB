@@ -22,7 +22,7 @@
 
 			<div class="form-group">
 				<label for="privateUploadsExtensions">[[admin/settings/uploads:private-extensions]]</label>
-				<input type="text" class="form-control" value="" data-field="privateUploadsExtensions" placeholder="">
+				<input id="privateUploadsExtensions" type="text" class="form-control" value="" data-field="privateUploadsExtensions" placeholder="">
 				<p class="help-block">
 					[[admin/settings/uploads:private-uploads-extensions-help]]
 				</p>
@@ -32,7 +32,7 @@
 				<div class="col-xs-6">
 					<div class="form-group">
 						<label for="resizeImageWidthThreshold">[[admin/settings/uploads:resize-image-width-threshold]]</label>
-						<input type="text" class="form-control" value="2000" data-field="resizeImageWidthThreshold" placeholder="2000">
+						<input id="resizeImageWidthThreshold" type="text" class="form-control" value="2000" data-field="resizeImageWidthThreshold" placeholder="2000">
 						<p class="help-block">
 							[[admin/settings/uploads:resize-image-width-threshold-help]]
 						</p>
@@ -42,7 +42,7 @@
 				<div class="col-xs-6">
 					<div class="form-group">
 						<label for="resizeImageWidth">[[admin/settings/uploads:resize-image-width]]</label>
-						<input type="text" class="form-control" value="760" data-field="resizeImageWidth" placeholder="760">
+						<input id="resizeImageWidth" type="text" class="form-control" value="760" data-field="resizeImageWidth" placeholder="760">
 						<p class="help-block">
 							[[admin/settings/uploads:resize-image-width-help]]
 						</p>
@@ -52,7 +52,7 @@
 
 			<div class="form-group">
 				<label for="resizeImageQuality">[[admin/settings/uploads:resize-image-quality]]</label>
-				<input type="text" class="form-control" value="60" data-field="resizeImageQuality" placeholder="60">
+				<input id="resizeImageQuality" type="text" class="form-control" value="60" data-field="resizeImageQuality" placeholder="60">
 				<p class="help-block">
 					[[admin/settings/uploads:resize-image-quality-help]]
 				</p>
@@ -60,7 +60,7 @@
 
 			<div class="form-group">
 				<label for="maximumFileSize">[[admin/settings/uploads:max-file-size]]</label>
-				<input type="text" class="form-control" value="2048" data-field="maximumFileSize">
+				<input id="maximumFileSize" type="text" class="form-control" value="2048" data-field="maximumFileSize">
 				<p class="help-block">
 					[[admin/settings/uploads:max-file-size-help]]
 				</p>
@@ -68,7 +68,7 @@
 
 			<div class="form-group">
 				<label for="rejectImageWidth">[[admin/settings/uploads:reject-image-width]]</label>
-				<input type="text" class="form-control" value="5000" data-field="rejectImageWidth" placeholder="5000">
+				<input id="rejectImageWidth" type="text" class="form-control" value="5000" data-field="rejectImageWidth" placeholder="5000">
 				<p class="help-block">
 					[[admin/settings/uploads:reject-image-width-help]]
 				</p>
@@ -76,7 +76,7 @@
 
 			<div class="form-group">
 				<label for="rejectImageHeight">[[admin/settings/uploads:reject-image-height]]</label>
-				<input type="text" class="form-control" value="5000" data-field="rejectImageHeight" placeholder="5000">
+				<input id="rejectImageHeight" type="text" class="form-control" value="5000" data-field="rejectImageHeight" placeholder="5000">
 				<p class="help-block">
 					[[admin/settings/uploads:reject-image-height-help]]
 				</p>
@@ -91,12 +91,12 @@
 
 			<div class="form-group">
 				<label for="topicThumbSize">[[admin/settings/uploads:topic-thumb-size]]</label>
-				<input type="text" class="form-control" value="120" data-field="topicThumbSize">
+				<input id="topicThumbSize" type="text" class="form-control" value="120" data-field="topicThumbSize">
 			</div>
 
 			<div class="form-group">
 				<label for="allowedFileExtensions">[[admin/settings/uploads:allowed-file-extensions]]</label>
-				<input type="text" class="form-control" value="" data-field="allowedFileExtensions" data-field-type="tagsinput" />
+				<input id="allowedFileExtensions" type="text" class="form-control" value="" data-field="allowedFileExtensions" data-field-type="tagsinput" />
 				<p class="help-block">
 					[[admin/settings/uploads:allowed-file-extensions-help]]
 				</p>
@@ -104,7 +104,7 @@
 
 			<div class="form-group">
 				<label for="uploadRateLimitThreshold">[[admin/settings/uploads:upload-limit-threshold]]</label>
-				<div class="row">
+				<div id="uploadRateLimitThreshold" class="row">
 					<div class="col-xs-2">
 						<input type="text" class="form-control" data-field="uploadRateLimitThreshold" />
 					</div>
@@ -162,16 +162,16 @@
 			</div>
 
 			<div class="form-group">
-				<label>[[admin/settings/uploads:max-profile-image-size]]</label>
-				<input type="text" class="form-control" placeholder="Maximum size of uploaded user images in kibibytes" data-field="maximumProfileImageSize" />
+				<label for="maximumProfileImageSize">[[admin/settings/uploads:max-profile-image-size]]</label>
+				<input id="maximumProfileImageSize" type="text" class="form-control" placeholder="Maximum size of uploaded user images in kibibytes" data-field="maximumProfileImageSize" />
 				<p class="help-block">
 					[[admin/settings/uploads:max-profile-image-size-help]]
 				</p>
 			</div>
 
 			<div class="form-group">
-				<label>[[admin/settings/uploads:max-cover-image-size]]</label>
-				<input type="text" class="form-control" placeholder="Maximum size of uploaded cover images in kibibytes" data-field="maximumCoverImageSize" />
+				<label for="maximumCoverImageSize">[[admin/settings/uploads:max-cover-image-size]]</label>
+				<input id="maximumCoverImageSize" type="text" class="form-control" placeholder="Maximum size of uploaded cover images in kibibytes" data-field="maximumCoverImageSize" />
 				<p class="help-block">
 					[[admin/settings/uploads:max-cover-image-size-help]]
 				</p>

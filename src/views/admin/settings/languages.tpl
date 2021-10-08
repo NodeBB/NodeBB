@@ -9,7 +9,7 @@
 
 		<form class="row">
 			<div class="form-group col-sm-6">
-				<label for="defaultLang">[[admin/settings/languages:default-language]]</label>
+				<label for="language">[[admin/settings/languages:default-language]]</label>
 				<select id="language" data-field="defaultLang" class="form-control">
 					<!-- BEGIN languages -->
 					<option value="{languages.code}" <!-- IF languages.selected -->selected<!-- ENDIF languages.selected -->>{languages.name} ({languages.code})</option>

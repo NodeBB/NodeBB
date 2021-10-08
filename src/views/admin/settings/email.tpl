@@ -130,14 +130,14 @@
 			</div>
 			<div class="form-group">
 				<label for="email:smtpTransport:user"><strong>[[admin/settings/email:smtp-transport.username]]</strong></label>
-				<input type="text" class="form-control input-lg" data-field="email:smtpTransport:user" placeholder="admin@example.org" autocomplete="off" />
+				<input id="email:smtpTransport:user" type="text" class="form-control input-lg" data-field="email:smtpTransport:user" placeholder="admin@example.org" autocomplete="off" />
 				<p class="help-block">
 					[[admin/settings/email:smtp-transport.username-help]]
 				</p>
 			</div>
 			<div class="form-group">
 				<label for="email:smtpTransport:pass"><strong>[[admin/settings/email:smtp-transport.password]]</strong></label>
-				<input type="password" class="form-control input-lg" data-field="email:smtpTransport:pass" autocomplete="off" />
+				<input id="email:smtpTransport:pass" type="password" class="form-control input-lg" data-field="email:smtpTransport:pass" autocomplete="off" />
 			</div>
 		</form>
 	</div>
