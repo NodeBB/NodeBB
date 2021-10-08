@@ -20,12 +20,14 @@
 		}
 
 		logoutTimer = setTimeout(function () {
-			bootbox.alert({
-				closeButton: false,
-				message: logoutMessage,
-				callback: function () {
-					window.location.reload();
-				},
+			require(['bootbox'], function (bootbox) {
+				bootbox.alert({
+					closeButton: false,
+					message: logoutMessage,
+					callback: function () {
+						window.location.reload();
+					},
+				});
 			});
 		}, 3600000);
 	}
@@ -141,22 +143,26 @@
 
 	function setupRestartLinks() {
 		$('.rebuild-and-restart').off('click').on('click', function () {
-			bootbox.confirm('[[admin/admin:alert.confirm-rebuild-and-restart]]', function (confirm) {
-				if (confirm) {
-					require(['admin/modules/instance'], function (instance) {
-						instance.rebuildAndRestart();
-					});
-				}
+			require(['bootbox'], function (bootbox) {
+				bootbox.confirm('[[admin/admin:alert.confirm-rebuild-and-restart]]', function (confirm) {
+					if (confirm) {
+						require(['admin/modules/instance'], function (instance) {
+							instance.rebuildAndRestart();
+						});
+					}
+				});
 			});
 		});
 
 		$('.restart').off('click').on('click', function () {
-			bootbox.confirm('[[admin/admin:alert.confirm-restart]]', function (confirm) {
-				if (confirm) {
-					require(['admin/modules/instance'], function (instance) {
-						instance.restart();
-					});
-				}
+			require(['bootbox'], function (bootbox) {
+				bootbox.confirm('[[admin/admin:alert.confirm-restart]]', function (confirm) {
+					if (confirm) {
+						require(['admin/modules/instance'], function (instance) {
+							instance.restart();
+						});
+					}
+				});
 			});
 		});
 	}

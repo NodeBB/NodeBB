@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('iconSelect', ['benchpress'], function (Benchpress) {
+define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 	var iconSelect = {};
 
 	iconSelect.init = function (el, onModified) {

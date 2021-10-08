@@ -217,13 +217,15 @@ app.cacheBuster = null;
 	app.handleInvalidSession = function () {
 		socket.disconnect();
 		app.logout(false);
-		bootbox.alert({
-			title: '[[error:invalid-session]]',
-			message: '[[error:invalid-session-text]]',
-			closeButton: false,
-			callback: function () {
-				window.location.reload();
-			},
+		require(['bootbox'], function (bootbox) {
+			bootbox.alert({
+				title: '[[error:invalid-session]]',
+				message: '[[error:invalid-session-text]]',
+				closeButton: false,
+				callback: function () {
+					window.location.reload();
+				},
+			});
 		});
 	};
 
@@ -233,13 +235,15 @@ app.cacheBuster = null;
 		}
 
 		socket.disconnect();
-		bootbox.alert({
-			title: '[[error:session-mismatch]]',
-			message: '[[error:session-mismatch-text]]',
-			closeButton: false,
-			callback: function () {
-				window.location.reload();
-			},
+		require(['bootbox'], function (bootbox) {
+			bootbox.alert({
+				title: '[[error:session-mismatch]]',
+				message: '[[error:session-mismatch-text]]',
+				closeButton: false,
+				callback: function () {
+					window.location.reload();
+				},
+			});
 		});
 	};
 
@@ -434,10 +438,12 @@ app.cacheBuster = null;
 			if (!isDnD) {
 				return createChat();
 			}
-			bootbox.confirm('[[modules:chat.confirm-chat-with-dnd-user]]', function (ok) {
-				if (ok) {
-					createChat();
-				}
+			require(['bootbox'], function (bootbox) {
+				bootbox.confirm('[[modules:chat.confirm-chat-with-dnd-user]]', function (ok) {
+					if (ok) {
+						createChat();
+					}
+				});
 			});
 		});
 	};

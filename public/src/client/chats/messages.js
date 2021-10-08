@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/chats/messages', ['components', 'translator', 'benchpress', 'hooks'], function (components, translator, Benchpress, hooks) {
+define('forum/chats/messages', ['components', 'translator', 'benchpress', 'hooks', 'bootbox'], function (components, translator, Benchpress, hooks, bootbox) {
 	var messages = {};
 
 	messages.sendMessage = function (roomId, inputEl) {

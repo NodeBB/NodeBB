@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/appearance/themes', ['translator'], function (translator) {
+define('admin/appearance/themes', ['bootbox', 'translator'], function (bootbox, translator) {
 	var Themes = {};
 
 	Themes.init = function () {

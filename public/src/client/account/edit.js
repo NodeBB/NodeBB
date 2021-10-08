@@ -6,7 +6,8 @@ define('forum/account/edit', [
 	'translator',
 	'api',
 	'hooks',
-], function (header, picture, translator, api, hooks) {
+	'bootbox',
+], function (header, picture, translator, api, hooks, bootbox) {
 	var AccountEdit = {};
 
 	AccountEdit.init = function () {

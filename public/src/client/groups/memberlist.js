@@ -1,6 +1,6 @@
 'use strict';
 
-define('forum/groups/memberlist', ['api'], function (api) {
+define('forum/groups/memberlist', ['api', 'bootbox'], function (api, bootbox) {
 	var MemberList = {};
 	var searchInterval;
 	var groupName;

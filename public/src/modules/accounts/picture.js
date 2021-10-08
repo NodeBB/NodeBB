@@ -3,7 +3,8 @@
 define('accounts/picture', [
 	'pictureCropper',
 	'api',
-], (pictureCropper, api) => {
+	'bootbox',
+], (pictureCropper, api, bootbox) => {
 	const Picture = {};
 
 	Picture.openChangeModal = () => {

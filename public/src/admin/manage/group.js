@@ -8,7 +8,8 @@ define('admin/manage/group', [
 	'groupSearch',
 	'slugify',
 	'api',
-], function (memberList, iconSelect, translator, categorySelector, groupSearch, slugify, api) {
+	'bootbox',
+], function (memberList, iconSelect, translator, categorySelector, groupSearch, slugify, api, bootbox) {
 	var Groups = {};
 
 	Groups.init = function () {

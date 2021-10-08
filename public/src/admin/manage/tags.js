@@ -2,9 +2,10 @@
 
 
 define('admin/manage/tags', [
+	'bootbox',
 	'forum/infinitescroll',
 	'admin/modules/selectable',
-], function (infinitescroll, selectable) {
+], function (bootbox, infinitescroll, selectable) {
 	var	Tags = {};
 
 	Tags.init = function () {

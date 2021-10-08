@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/dashboard', ['Chart', 'translator', 'benchpress'], function (Chart, translator, Benchpress) {
+define('admin/dashboard', ['Chart', 'translator', 'benchpress', 'bootbox'], function (Chart, translator, Benchpress, bootbox) {
 	var	Admin = {};
 	var	intervals = {
 		rooms: false,

@@ -2,9 +2,10 @@
 
 define('settings/sorted-list', [
 	'benchpress',
+	'bootbox',
 	'hooks',
 	'jquery-ui/widgets/sortable',
-], function (benchpress, hooks) {
+], function (benchpress, bootbox, hooks) {
 	var SortedList;
 	var Settings;
 

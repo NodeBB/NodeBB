@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/manage/digest', function () {
+define('admin/manage/digest', ['bootbox'], function (bootbox) {
 	var Digest = {};
 
 	Digest.init = function () {

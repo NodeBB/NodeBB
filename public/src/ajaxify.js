@@ -545,11 +545,13 @@ $(document).ready(function () {
 					return;
 				}
 
-				bootbox.confirm('[[global:unsaved-changes]]', function (navigate) {
-					if (navigate) {
-						app.flags._unsaved = false;
-						process.call(_self);
-					}
+				require(['bootbox'], function (bootbox) {
+					bootbox.confirm('[[global:unsaved-changes]]', function (navigate) {
+						if (navigate) {
+							app.flags._unsaved = false;
+							process.call(_self);
+						}
+					});
 				});
 				return e.preventDefault();
 			}

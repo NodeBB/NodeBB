@@ -2,8 +2,8 @@
 
 
 define('forum/register', [
-	'translator', 'zxcvbn', 'slugify', 'api', 'forum/login', 'jquery-form',
-], function (translator, zxcvbn, slugify, api, Login) {
+	'translator', 'zxcvbn', 'slugify', 'api', 'bootbox', 'forum/login', 'jquery-form',
+], function (translator, zxcvbn, slugify, api, bootbox, Login) {
 	var Register = {};
 	var validationError = false;
 	var successIcon = '';

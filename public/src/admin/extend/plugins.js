@@ -4,8 +4,9 @@
 define('admin/extend/plugins', [
 	'translator',
 	'benchpress',
+	'bootbox',
 	'jquery-ui/widgets/sortable',
-], function (translator, Benchpress) {
+], function (translator, Benchpress, bootbox) {
 	var Plugins = {};
 	Plugins.init = function () {
 		var pluginsList = $('.plugins');

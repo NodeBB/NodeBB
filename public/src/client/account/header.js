@@ -9,7 +9,8 @@ define('forum/account/header', [
 	'benchpress',
 	'accounts/delete',
 	'api',
-], function (coverPhoto, pictureCropper, components, translator, Benchpress, AccountsDelete, api) {
+	'bootbox',
+], function (coverPhoto, pictureCropper, components, translator, Benchpress, AccountsDelete, api, bootbox) {
 	var AccountHeader = {};
 	var isAdminOrSelfOrGlobalMod;
 
