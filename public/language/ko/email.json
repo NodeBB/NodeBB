@@ -7,7 +7,7 @@
     "greeting_with_name": "안녕하세요 %1님",
     "email.verify-your-email.subject": "사용자의 이메일을 인증해주세요.",
     "email.verify.text1": "이메일 주소 변경 또는 확인을 요청했습니다.",
-    "email.verify.text2": "For security purposes, we only change or confirm the email address on file once its ownership has been confirmed via email. <strong>If you did not request this, no action is required on your part.</strong>",
+    "email.verify.text2": "보안을 위해 이메일이 인증되어야만 변경이 가능합니다. <strong>요청을 하지 않은 경우 사용자 측에서 수행할 작업이 없습니다.</strong>",
     "email.verify.text3": "이 전자 메일 주소를 확인하면 현재 전자 메일 주소를 %1로 바꿉니다.",
     "welcome.text1": "%1님 가입해주셔서 감사합니다.",
     "welcome.text2": "계정을 활성화하려면 등록한 메일 주소의 인증이 필요합니다.",

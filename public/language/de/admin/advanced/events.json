@@ -3,6 +3,7 @@
 	"no-events": "Es gibt keine Ereignisse",
 	"control-panel": "Ereignis-Steuerung",
 	"delete-events": "Ereignisse löschen",
+	"confirm-delete-all-events": "Are you sure you want to delete all logged events?",
 	"filters": "Filter",
 	"filters-apply": "Filter anwenden",
 	"filter-type": "Ereignistyp",

@@ -3,6 +3,7 @@
 	"no-events": "Brak zdarzeń",
 	"control-panel": "Panel zdarzeń",
 	"delete-events": "Usuń zdarzenia",
+	"confirm-delete-all-events": "Are you sure you want to delete all logged events?",
 	"filters": "Filtry",
 	"filters-apply": "Zatwierdź filtry",
 	"filter-type": "Typ zdarzenia",

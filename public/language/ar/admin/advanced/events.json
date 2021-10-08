@@ -3,6 +3,7 @@
 	"no-events": "لا توجد أحداث",
 	"control-panel": "لوحة تحكم الأحداث",
 	"delete-events": "حذف الاحداث",
+	"confirm-delete-all-events": "Are you sure you want to delete all logged events?",
 	"filters": "تصفية",
 	"filters-apply": "تطبيق التصفية",
 	"filter-type": "نوع الحدث",

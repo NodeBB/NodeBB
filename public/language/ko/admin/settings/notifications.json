@@ -3,5 +3,5 @@
 	"welcome-notification": "환영 알림",
 	"welcome-notification-link": "환영 알림 링크",
 	"welcome-notification-uid": "환영 알림 사용자 (UID)",
-	"post-queue-notification-uid": "Post Queue User (UID)"
+	"post-queue-notification-uid": "게시 대기 중인 사용자 (UID)"
 }

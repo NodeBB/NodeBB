@@ -3,6 +3,7 @@
 	"no-events": "Nem voltak események",
 	"control-panel": "Esemény vezérlőpult",
 	"delete-events": "Események törlése",
+	"confirm-delete-all-events": "Are you sure you want to delete all logged events?",
 	"filters": "Szűrők",
 	"filters-apply": "Szűrők érvényesítése",
 	"filter-type": "Esemény típus",
