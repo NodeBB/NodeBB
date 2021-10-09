@@ -230,13 +230,15 @@ socket = window.socket;
 	}
 
 	function onEventUnbanned() {
-		bootbox.alert({
-			title: '[[global:alert.unbanned]]',
-			message: '[[global:alert.unbanned.message]]',
-			closeButton: false,
-			callback: function () {
-				window.location.href = config.relative_path + '/';
-			},
+		require(['bootbox'], function (bootbox) {
+			bootbox.alert({
+				title: '[[global:alert.unbanned]]',
+				message: '[[global:alert.unbanned.message]]',
+				closeButton: false,
+				callback: function () {
+					window.location.href = config.relative_path + '/';
+				},
+			});
 		});
 	}
 
