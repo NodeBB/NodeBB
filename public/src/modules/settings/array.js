@@ -1,8 +1,8 @@
 'use strict';
 
 define('settings/array', function () {
-	var SettingsArray;
-	var helper = null;
+	let SettingsArray;
+	let helper = null;
 
 	/**
 	 Creates a new button that removes itself and the given elements on click.
@@ -11,7 +11,7 @@ define('settings/array', function () {
 	 @returns JQuery The created remove-button.
 	 */
 	function createRemoveButton(elements) {
-		var rm = $(helper.createElement('button', {
+		const rm = $(helper.createElement('button', {
 			class: 'btn btn-xs btn-primary remove',
 			title: 'Remove Item',
 		}, '-'));
@@ -41,14 +41,14 @@ define('settings/array', function () {
 	 */
 	function addArrayChildElement(field, key, attributes, value, separator, insertCb) {
 		attributes = helper.deepClone(attributes);
-		var type = attributes['data-type'] || attributes.type || 'text';
-		var element = $(helper.createElementOfType(type, attributes.tagName, attributes));
+		const type = attributes['data-type'] || attributes.type || 'text';
+		const element = $(helper.createElementOfType(type, attributes.tagName, attributes));
 		element.attr('data-parent', '_' + key);
 		delete attributes['data-type'];
 		delete attributes.tagName;
-		for (var name in attributes) {
+		for (const name in attributes) {
 			if (attributes.hasOwnProperty(name)) {
-				var val = attributes[name];
+				const val = attributes[name];
 				if (name.search('data-') === 0) {
 					element.data(name.substring(5), val);
 				} else if (name.search('prop-') === 0) {
@@ -74,9 +74,9 @@ define('settings/array', function () {
 	 @param separator The separator to forward to {@link addArrayChildElement}.
 	 */
 	function addAddButton(element, key, attributes, separator) {
-		var addSpace = $(document.createTextNode(' '));
-		var newValue = element.data('new') || '';
-		var add = $(helper.createElement('button', {
+		const addSpace = $(document.createTextNode(' '));
+		const newValue = element.data('new') || '';
+		const add = $(helper.createElement('button', {
 			class: 'btn btn-sm btn-primary add',
 			title: 'Expand Array',
 		}, '+'));
@@ -100,9 +100,9 @@ define('settings/array', function () {
 			return helper.createElement(tagName || 'div');
 		},
 		set: function (element, value) {
-			var attributes = element.data('attributes');
-			var key = element.data('key') || element.data('parent');
-			var separator = element.data('split') || ', ';
+			let attributes = element.data('attributes');
+			const key = element.data('key') || element.data('parent');
+			let separator = element.data('split') || ', ';
 			separator = (function () {
 				try {
 					return $(separator);
@@ -117,7 +117,7 @@ define('settings/array', function () {
 			if (!(value instanceof Array)) {
 				value = [];
 			}
-			for (var i = 0; i < value.length; i += 1) {
+			for (let i = 0; i < value.length; i += 1) {
 				addArrayChildElement(element, key, attributes, value[i], separator.clone(), function (el) {
 					element.append(el);
 				});
@@ -125,13 +125,13 @@ define('settings/array', function () {
 			addAddButton(element, key, attributes, separator);
 		},
 		get: function (element, trim, empty) {
-			var key = element.data('key') || element.data('parent');
-			var children = $('[data-parent="_' + key + '"]', element);
-			var values = [];
+			const key = element.data('key') || element.data('parent');
+			const children = $('[data-parent="_' + key + '"]', element);
+			const values = [];
 			children.each(function (i, child) {
 				child = $(child);
-				var val = helper.readValue(child);
-				var empty = helper.isTrue(child.data('empty'));
+				const val = helper.readValue(child);
+				const empty = helper.isTrue(child.data('empty'));
 				if (empty || (val !== undefined && (val == null || val.length !== 0))) {
 					return values.push(val);
 				}

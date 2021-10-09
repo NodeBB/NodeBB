@@ -1,7 +1,7 @@
 'use strict';
 
 define('accounts/delete', ['api', 'bootbox'], function (api, bootbox) {
-	var Delete = {};
+	const Delete = {};
 
 	Delete.account = function (uid, callback) {
 		executeAction(

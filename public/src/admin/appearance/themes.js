@@ -2,18 +2,18 @@
 
 
 define('admin/appearance/themes', ['bootbox', 'translator'], function (bootbox, translator) {
-	var Themes = {};
+	const Themes = {};
 
 	Themes.init = function () {
 		$('#installed_themes').on('click', function (e) {
-			var target = $(e.target);
-			var action = target.attr('data-action');
+			const target = $(e.target);
+			const action = target.attr('data-action');
 
 			if (action && action === 'use') {
-				var parentEl = target.parents('[data-theme]');
-				var themeType = parentEl.attr('data-type');
-				var cssSrc = parentEl.attr('data-css');
-				var themeId = parentEl.attr('data-theme');
+				const parentEl = target.parents('[data-theme]');
+				const themeType = parentEl.attr('data-type');
+				const cssSrc = parentEl.attr('data-css');
+				const themeId = parentEl.attr('data-theme');
 
 				socket.emit('admin.themes.set', {
 					type: themeType,
@@ -70,7 +70,7 @@ define('admin/appearance/themes', ['bootbox', 'translator'], function (bootbox, 
 				return app.alertError(err.message);
 			}
 
-			var instListEl = $('#installed_themes');
+			const instListEl = $('#installed_themes');
 
 			if (!themes.length) {
 				instListEl.append($('<li/ >').addClass('no-themes').translateHtml('[[admin/appearance/themes:no-themes]]'));
@@ -88,8 +88,8 @@ define('admin/appearance/themes', ['bootbox', 'translator'], function (bootbox, 
 	function highlightSelectedTheme(themeId) {
 		translator.translate('[[admin/appearance/themes:select-theme]]  ||  [[admin/appearance/themes:current-theme]]', function (text) {
 			text = text.split('  ||  ');
-			var select = text[0];
-			var current = text[1];
+			const select = text[0];
+			const current = text[1];
 
 			$('[data-theme]')
 				.removeClass('selected')

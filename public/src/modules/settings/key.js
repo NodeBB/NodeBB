@@ -1,11 +1,11 @@
 'use strict';
 
 define('settings/key', function () {
-	var SettingsKey;
-	var helper = null;
-	var lastKey = null;
-	var oldKey = null;
-	var keyMap = Object.freeze({
+	let SettingsKey;
+	let helper = null;
+	let lastKey = null;
+	let oldKey = null;
+	const keyMap = Object.freeze({
 		0: '',
 		8: 'Backspace',
 		9: 'Tab',
@@ -42,13 +42,13 @@ define('settings/key', function () {
 	 @returns Key | null The Key-Object the focused element should be set to.
 	 */
 	function getKey(event) {
-		var anyModChange = (
+		const anyModChange = (
 			event.ctrlKey !== lastKey.c ||
 			event.altKey !== lastKey.a ||
 			event.shiftKey !== lastKey.s ||
 			event.metaKey !== lastKey.m
 		);
-		var modChange = (
+		const modChange = (
 			event.ctrlKey +
 			event.altKey +
 			event.shiftKey +
@@ -58,7 +58,7 @@ define('settings/key', function () {
 			lastKey.s -
 			lastKey.m
 		);
-		var key = new Key();
+		const key = new Key();
 		key.c = event.ctrlKey;
 		key.a = event.altKey;
 		key.s = event.shiftKey;
@@ -104,7 +104,7 @@ define('settings/key', function () {
 	 @returns String The string to identify the given key-object the given way.
 	 */
 	function getKeyString(key, human, short, separator) {
-		var str = '';
+		let str = '';
 		if (!(key instanceof Key)) {
 			return str;
 		}
@@ -130,7 +130,7 @@ define('settings/key', function () {
 			str += (short ? 'M' : 'Meta') + separator;
 		}
 
-		var out;
+		let out;
 		if (human) {
 			out = key.char;
 		} else if (key.code) {
@@ -149,11 +149,11 @@ define('settings/key', function () {
 		if (str instanceof Key) {
 			return str;
 		}
-		var key = new Key();
-		var sep = /([^CtrlAShifMea#\d]+)(?:#|\d)/.exec(str);
-		var parts = sep != null ? str.split(sep[1]) : [str];
-		for (var i = 0; i < parts.length; i += 1) {
-			var part = parts[i];
+		const key = new Key();
+		const sep = /([^CtrlAShifMea#\d]+)(?:#|\d)/.exec(str);
+		const parts = sep != null ? str.split(sep[1]) : [str];
+		for (let i = 0; i < parts.length; i += 1) {
+			const part = parts[i];
 			switch (part) {
 				case 'C':
 				case 'Ctrl':
@@ -172,7 +172,7 @@ define('settings/key', function () {
 					key.m = true;
 					break;
 				default:
-					var num = /\d+/.exec(part);
+					const num = /\d+/.exec(part);
 					if (num != null) {
 						key.code = num[0];
 					}
@@ -185,7 +185,7 @@ define('settings/key', function () {
 	function handleEvent(element, event) {
 		event = event || window.event;
 		event.which = event.which || event.keyCode || event.key;
-		var key = getKey(event);
+		const key = getKey(event);
 		if (key != null) {
 			SettingsKey.set(element, key);
 		}
@@ -210,7 +210,7 @@ define('settings/key', function () {
 			return element;
 		},
 		set: function (element, value) {
-			var key = getKeyFromString(value || '');
+			const key = getKeyFromString(value || '');
 			element.data('keyData', key);
 			if (key.code) {
 				element.removeClass('alert-danger');
@@ -220,9 +220,9 @@ define('settings/key', function () {
 			element.val(getKeyString(key, true, false, ' + '));
 		},
 		get: function (element, trim, empty) {
-			var key = element.data('keyData');
-			var separator = element.data('split') || element.data('separator') || '+';
-			var short = !helper.isFalse(element.data('short'));
+			const key = element.data('keyData');
+			const separator = element.data('split') || element.data('separator') || '+';
+			const short = !helper.isFalse(element.data('short'));
 			if (trim) {
 				if (empty || (key != null && key.char)) {
 					return getKeyString(key, false, short, separator);

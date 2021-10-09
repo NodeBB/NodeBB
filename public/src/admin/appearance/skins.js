@@ -2,7 +2,7 @@
 
 
 define('admin/appearance/skins', ['translator'], function (translator) {
-	var Skins = {};
+	const Skins = {};
 
 	Skins.init = function () {
 		// Populate skins from Bootswatch API
@@ -12,19 +12,19 @@ define('admin/appearance/skins', ['translator'], function (translator) {
 		}).done(Skins.render);
 
 		$('#skins').on('click', function (e) {
-			var target = $(e.target);
+			let target = $(e.target);
 
 			if (!target.attr('data-action')) {
 				target = target.parents('[data-action]');
 			}
 
-			var action = target.attr('data-action');
+			const action = target.attr('data-action');
 
 			if (action && action === 'use') {
-				var parentEl = target.parents('[data-theme]');
-				var themeType = parentEl.attr('data-type');
-				var cssSrc = parentEl.attr('data-css');
-				var themeId = parentEl.attr('data-theme');
+				const parentEl = target.parents('[data-theme]');
+				const themeType = parentEl.attr('data-type');
+				const cssSrc = parentEl.attr('data-css');
+				const themeId = parentEl.attr('data-theme');
 
 
 				socket.emit('admin.themes.set', {
@@ -50,7 +50,7 @@ define('admin/appearance/skins', ['translator'], function (translator) {
 	};
 
 	Skins.render = function (bootswatch) {
-		var themeContainer = $('#bootstrap_themes');
+		const themeContainer = $('#bootstrap_themes');
 
 		app.parseAndTranslate('admin/partials/theme_list', {
 			themes: bootswatch.themes.map(function (theme) {
@@ -70,7 +70,7 @@ define('admin/appearance/skins', ['translator'], function (translator) {
 			themeContainer.html(html);
 
 			if (config['theme:src']) {
-				var skin = config['theme:src']
+				const skin = config['theme:src']
 					.match(/latest\/(\S+)\/bootstrap.min.css/)[1]
 					.replace(/(^|\s)([a-z])/g, function (m, p1, p2) { return p1 + p2.toUpperCase(); });
 
@@ -82,8 +82,8 @@ define('admin/appearance/skins', ['translator'], function (translator) {
 	function highlightSelectedTheme(themeId) {
 		translator.translate('[[admin/appearance/skins:select-skin]]  ||  [[admin/appearance/skins:current-skin]]', function (text) {
 			text = text.split('  ||  ');
-			var select = text[0];
-			var current = text[1];
+			const select = text[0];
+			const current = text[1];
 
 			$('[data-theme]')
 				.removeClass('selected')

@@ -1,7 +1,7 @@
 'use strict';
 
 define('forum/top', ['topicList'], function (topicList) {
-	var	Top = {};
+	const	Top = {};
 
 	Top.init = function () {
 		app.enterRoom('top_topics');

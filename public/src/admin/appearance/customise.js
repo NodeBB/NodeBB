@@ -1,7 +1,7 @@
 'use strict';
 
 define('admin/appearance/customise', ['admin/settings', 'ace/ace'], function (Settings, ace) {
-	var Customise = {};
+	const Customise = {};
 
 	Customise.init = function () {
 		Settings.prepare(function () {
@@ -9,9 +9,9 @@ define('admin/appearance/customise', ['admin/settings', 'ace/ace'], function (Se
 			$('#customJS').text($('#customJS-holder').val());
 			$('#customHTML').text($('#customHTML-holder').val());
 
-			var customCSS = ace.edit('customCSS');
-			var customJS = ace.edit('customJS');
-			var customHTML = ace.edit('customHTML');
+			const customCSS = ace.edit('customCSS');
+			const customJS = ace.edit('customJS');
+			const customHTML = ace.edit('customHTML');
 
 			customCSS.setTheme('ace/theme/twilight');
 			customCSS.getSession().setMode('ace/mode/less');

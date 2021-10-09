@@ -9,7 +9,7 @@ define('forum/category', [
 	'categorySelector',
 	'hooks',
 ], function (infinitescroll, share, navigator, topicList, sort, categorySelector, hooks) {
-	var Category = {};
+	const Category = {};
 
 	$(window).on('action:ajaxify.start', function (ev, data) {
 		if (!String(data.url).startsWith('category/')) {
@@ -18,7 +18,7 @@ define('forum/category', [
 	});
 
 	Category.init = function () {
-		var	cid = ajaxify.data.cid;
+		const	cid = ajaxify.data.cid;
 
 		app.enterRoom('category_' + cid);
 
@@ -55,7 +55,7 @@ define('forum/category', [
 	};
 
 	function handleScrollToTopicIndex() {
-		var topicIndex = ajaxify.data.topicIndex;
+		let topicIndex = ajaxify.data.topicIndex;
 		if (topicIndex && utils.isNumber(topicIndex)) {
 			topicIndex = Math.max(0, parseInt(topicIndex, 10));
 			if (topicIndex && window.location.search.indexOf('page=') === -1) {
@@ -66,8 +66,8 @@ define('forum/category', [
 
 	function handleIgnoreWatch(cid) {
 		$('[component="category/watching"], [component="category/ignoring"], [component="category/notwatching"]').on('click', function () {
-			var $this = $(this);
-			var state = $this.attr('data-state');
+			const $this = $(this);
+			const state = $this.attr('data-state');
 
 			socket.emit('categories.setWatchState', { cid: cid, state: state }, function (err) {
 				if (err) {
@@ -90,7 +90,7 @@ define('forum/category', [
 
 	function handleLoadMoreSubcategories() {
 		$('[component="category/load-more-subcategories"]').on('click', function () {
-			var btn = $(this);
+			const btn = $(this);
 			socket.emit('categories.loadMoreSubCategories', {
 				cid: ajaxify.data.cid,
 				start: ajaxify.data.nextSubCategoryStart,
@@ -138,7 +138,7 @@ define('forum/category', [
 		callback = callback || function () {};
 
 		hooks.fire('action:category.loading');
-		var params = utils.params();
+		const params = utils.params();
 		infinitescroll.loadMore('categories.loadMore', {
 			cid: ajaxify.data.cid,
 			after: after,

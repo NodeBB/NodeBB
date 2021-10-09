@@ -11,8 +11,8 @@ define('forum/account/header', [
 	'api',
 	'bootbox',
 ], function (coverPhoto, pictureCropper, components, translator, Benchpress, AccountsDelete, api, bootbox) {
-	var AccountHeader = {};
-	var isAdminOrSelfOrGlobalMod;
+	const AccountHeader = {};
+	let isAdminOrSelfOrGlobalMod;
 
 	AccountHeader.init = function () {
 		isAdminOrSelfOrGlobalMod = ajaxify.data.isAdmin || ajaxify.data.isSelf || ajaxify.data.isGlobalModerator;
@@ -78,7 +78,7 @@ define('forum/account/header', [
 
 	function selectActivePill() {
 		$('.account-sub-links li').removeClass('active').each(function () {
-			var href = $(this).find('a').attr('href');
+			const href = $(this).find('a').attr('href');
 
 			if (decodeURIComponent(href) === decodeURIComponent(window.location.pathname)) {
 				$(this).addClass('active');
@@ -146,12 +146,12 @@ define('forum/account/header', [
 					submit: {
 						label: '[[user:ban_account]]',
 						callback: function () {
-							var formData = $('.ban-modal form').serializeArray().reduce(function (data, cur) {
+							const formData = $('.ban-modal form').serializeArray().reduce(function (data, cur) {
 								data[cur.name] = cur.value;
 								return data;
 							}, {});
 
-							var until = formData.length > 0 ? (
+							const until = formData.length > 0 ? (
 								Date.now() + (formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1))
 							) : 0;
 
@@ -188,7 +188,7 @@ define('forum/account/header', [
 	}
 
 	function toggleBlockAccount() {
-		var targetEl = this;
+		const targetEl = this;
 		socket.emit('user.toggleBlock', {
 			blockeeUid: ajaxify.data.uid,
 			blockerUid: app.user.uid,

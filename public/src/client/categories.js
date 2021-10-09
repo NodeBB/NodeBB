@@ -2,7 +2,7 @@
 
 
 define('forum/categories', ['components', 'categorySelector', 'hooks'], function (components, categorySelector, hooks) {
-	var	categories = {};
+	const	categories = {};
 
 	$(window).on('action:ajaxify.start', function (ev, data) {
 		if (ajaxify.currentPage !== data.url) {
@@ -34,8 +34,8 @@ define('forum/categories', ['components', 'categorySelector', 'hooks'], function
 	};
 
 	function renderNewPost(cid, post) {
-		var category = components.get('categories/category', 'cid', cid);
-		var numRecentReplies = category.attr('data-numRecentReplies');
+		const category = components.get('categories/category', 'cid', cid);
+		const numRecentReplies = category.attr('data-numRecentReplies');
 		if (!numRecentReplies || !parseInt(numRecentReplies, 10)) {
 			return;
 		}
@@ -43,7 +43,7 @@ define('forum/categories', ['components', 'categorySelector', 'hooks'], function
 			return;
 		}
 
-		var recentPosts = category.find('[component="category/posts"]');
+		const recentPosts = category.find('[component="category/posts"]');
 
 		app.parseAndTranslate('partials/categories/lastpost', 'posts', { posts: [post] }, function (html) {
 			html.find('.post-content img:not(.not-responsive)').addClass('img-responsive');

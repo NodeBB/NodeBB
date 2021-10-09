@@ -6,7 +6,7 @@ define('admin/manage/tags', [
 	'forum/infinitescroll',
 	'admin/modules/selectable',
 ], function (bootbox, infinitescroll, selectable) {
-	var	Tags = {};
+	const	Tags = {};
 
 	Tags.init = function () {
 		selectable.enable('.tag-management', '.tag-row');
@@ -18,9 +18,9 @@ define('admin/manage/tags', [
 	};
 
 	function handleCreate() {
-		var createModal = $('#create-modal');
-		var createTagName = $('#create-tag-name');
-		var createModalGo = $('#create-modal-go');
+		const createModal = $('#create-modal');
+		const createTagName = $('#create-tag-name');
+		const createModalGo = $('#create-modal-go');
 
 		createModal.on('keypress', function (e) {
 			if (e.keyCode === 13) {
@@ -74,12 +74,12 @@ define('admin/manage/tags', [
 
 	function handleRename() {
 		$('#rename').on('click', function () {
-			var tagsToModify = $('.tag-row.ui-selected');
+			const tagsToModify = $('.tag-row.ui-selected');
 			if (!tagsToModify.length) {
 				return;
 			}
 
-			var modal = bootbox.dialog({
+			const modal = bootbox.dialog({
 				title: '[[admin/manage/tags:alerts.editing]]',
 				message: $('.rename-modal').html(),
 				buttons: {
@@ -87,7 +87,7 @@ define('admin/manage/tags', [
 						label: 'Save',
 						className: 'btn-primary save',
 						callback: function () {
-							var data = [];
+							const data = [];
 							tagsToModify.each(function (idx, tag) {
 								tag = $(tag);
 								data.push({
@@ -112,7 +112,7 @@ define('admin/manage/tags', [
 
 	function handleDeleteSelected() {
 		$('#deleteSelected').on('click', function () {
-			var tagsToDelete = $('.tag-row.ui-selected');
+			const tagsToDelete = $('.tag-row.ui-selected');
 			if (!tagsToDelete.length) {
 				return;
 			}
@@ -121,7 +121,7 @@ define('admin/manage/tags', [
 				if (!confirm) {
 					return;
 				}
-				var tags = [];
+				const tags = [];
 				tagsToDelete.each(function (index, el) {
 					tags.push($(el).attr('data-tag'));
 				});

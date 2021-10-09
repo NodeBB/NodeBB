@@ -4,7 +4,7 @@
 define('forum/topic/votes', [
 	'components', 'translator', 'benchpress', 'api', 'hooks', 'bootbox',
 ], function (components, translator, Benchpress, api, hooks, bootbox) {
-	var Votes = {};
+	const Votes = {};
 
 	Votes.addVoteHandler = function () {
 		components.get('topic').on('mouseenter', '[data-pid] [component="post/vote-count"]', loadDataAndCreateTooltip);
@@ -13,10 +13,10 @@ define('forum/topic/votes', [
 	function loadDataAndCreateTooltip(e) {
 		e.stopPropagation();
 
-		var $this = $(this);
-		var el = $this.parent();
+		const $this = $(this);
+		const el = $this.parent();
 		el.find('.tooltip').css('display', 'none');
-		var pid = el.parents('[data-pid]').attr('data-pid');
+		const pid = el.parents('[data-pid]').attr('data-pid');
 
 		socket.emit('posts.getUpvoters', [pid], function (err, data) {
 			if (err) {
@@ -35,7 +35,7 @@ define('forum/topic/votes', [
 			el.attr('title', title).tooltip('fixTitle').tooltip('show');
 			el.parent().find('.tooltip').css('display', '');
 		}
-		var usernames = data.usernames
+		let usernames = data.usernames
 			.filter(name => name !== '[[global:former_user]]');
 		if (!usernames.length) {
 			return;
@@ -54,11 +54,11 @@ define('forum/topic/votes', [
 
 
 	Votes.toggleVote = function (button, className, delta) {
-		var post = button.closest('[data-pid]');
-		var currentState = post.find(className).length;
+		const post = button.closest('[data-pid]');
+		const currentState = post.find(className).length;
 
 		const method = currentState ? 'del' : 'put';
-		var pid = post.attr('data-pid');
+		const pid = post.attr('data-pid');
 		api[method](`/posts/${pid}/vote`, {
 			delta: delta,
 		}, function (err) {
@@ -92,7 +92,7 @@ define('forum/topic/votes', [
 			}
 
 			app.parseAndTranslate('partials/modals/votes_modal', data, function (html) {
-				var dialog = bootbox.dialog({
+				const dialog = bootbox.dialog({
 					title: '[[global:voters]]',
 					message: html,
 					className: 'vote-modal',

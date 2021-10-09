@@ -2,11 +2,11 @@
 
 
 define('admin/settings/social', [], function () {
-	var social = {};
+	const social = {};
 
 	social.init = function () {
 		$('#save').on('click', function () {
-			var networks = [];
+			const networks = [];
 			$('#postSharingNetworks input[type="checkbox"]').each(function () {
 				if ($(this).prop('checked')) {
 					networks.push($(this).attr('id'));

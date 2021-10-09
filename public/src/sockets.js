@@ -5,9 +5,9 @@ app = window.app || {};
 socket = window.socket;
 
 (function () {
-	var reconnecting = false;
+	let reconnecting = false;
 
-	var ioParams = {
+	const ioParams = {
 		reconnectionAttempts: config.maxReconnectionAttempts,
 		reconnectionDelay: config.reconnectionDelay,
 		transports: config.socketioTransports,
@@ -16,7 +16,7 @@ socket = window.socket;
 
 	socket = io(config.websocketAddress, ioParams);
 
-	var oEmit = socket.emit;
+	const oEmit = socket.emit;
 	socket.emit = function (event, data, callback) {
 		if (typeof data === 'function') {
 			callback = data;
@@ -35,7 +35,7 @@ socket = window.socket;
 		});
 	};
 
-	var hooks;
+	let hooks;
 	require(['hooks'], function (_hooks) {
 		hooks = _hooks;
 		if (parseInt(app.user.uid, 10) >= 0) {
@@ -48,7 +48,7 @@ socket = window.socket;
 			return;
 		}
 
-		var reconnectEl = $('#reconnect');
+		const reconnectEl = $('#reconnect');
 		$('#reconnect-alert')
 			.removeClass('alert-danger pointer')
 			.addClass('alert-warning')
@@ -65,7 +65,7 @@ socket = window.socket;
 		socket.on('disconnect', onDisconnect);
 
 		socket.io.on('reconnect_failed', function () {
-			var reconnectEl = $('#reconnect');
+			const reconnectEl = $('#reconnect');
 			reconnectEl.html('<i class="fa fa-plug text-danger"></i>');
 
 			$('#reconnect-alert')
@@ -132,8 +132,8 @@ socket = window.socket;
 		}
 
 		if (reconnecting) {
-			var reconnectEl = $('#reconnect');
-			var reconnectAlert = $('#reconnect-alert');
+			const reconnectEl = $('#reconnect');
+			const reconnectAlert = $('#reconnect-alert');
 
 			reconnectEl.tooltip('destroy');
 			reconnectEl.html('<i class="fa fa-check text-success"></i>');
@@ -153,8 +153,8 @@ socket = window.socket;
 	}
 
 	function reJoinCurrentRoom() {
-		var	url_parts = window.location.pathname.slice(config.relative_path.length).split('/').slice(1);
-		var room;
+		const	url_parts = window.location.pathname.slice(config.relative_path.length).split('/').slice(1);
+		let room;
 
 		switch (url_parts[0]) {
 			case 'user':
@@ -188,8 +188,8 @@ socket = window.socket;
 
 	function onReconnecting() {
 		reconnecting = true;
-		var reconnectEl = $('#reconnect');
-		var reconnectAlert = $('#reconnect-alert');
+		const reconnectEl = $('#reconnect');
+		const reconnectAlert = $('#reconnect-alert');
 
 		if (!reconnectEl.hasClass('active')) {
 			reconnectEl.html('<i class="fa fa-spinner fa-spin"></i>');
@@ -213,7 +213,7 @@ socket = window.socket;
 
 	function onEventBanned(data) {
 		require(['bootbox', 'translator'], function (bootbox, translator) {
-			var message = data.until ?
+			const message = data.until ?
 				translator.compile('error:user-banned-reason-until', (new Date(data.until).toLocaleString()), data.reason) :
 				'[[error:user-banned-reason, ' + data.reason + ']]';
 			translator.translate(message, function (message) {

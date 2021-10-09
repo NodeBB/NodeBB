@@ -1,10 +1,10 @@
 'use strict';
 
 define('pictureCropper', ['cropper'], function (Cropper) {
-	var module = {};
+	const module = {};
 
 	module.show = function (data, callback) {
-		var fileSize = data.hasOwnProperty('fileSize') && data.fileSize !== undefined ? parseInt(data.fileSize, 10) : false;
+		const fileSize = data.hasOwnProperty('fileSize') && data.fileSize !== undefined ? parseInt(data.fileSize, 10) : false;
 		app.parseAndTranslate('partials/modals/upload_file_modal', {
 			showHelp: data.hasOwnProperty('showHelp') && data.showHelp !== undefined ? data.showHelp : true,
 			fileSize: fileSize,
@@ -18,7 +18,7 @@ define('pictureCropper', ['cropper'], function (Cropper) {
 				uploadModal.remove();
 			});
 
-			var uploadForm = uploadModal.find('#uploadForm');
+			const uploadForm = uploadModal.find('#uploadForm');
 			if (data.route) {
 				uploadForm.attr('action', data.route);
 			}
@@ -42,11 +42,11 @@ define('pictureCropper', ['cropper'], function (Cropper) {
 			}).modal('show');
 
 			// Set cropper image max-height based on viewport
-			var cropBoxHeight = parseInt($(window).height() / 2, 10);
-			var img = document.getElementById('cropped-image');
+			const cropBoxHeight = parseInt($(window).height() / 2, 10);
+			const img = document.getElementById('cropped-image');
 			$(img).css('max-height', cropBoxHeight);
 
-			var cropperTool = new Cropper(img, {
+			let cropperTool = new Cropper(img, {
 				aspectRatio: data.aspectRatio,
 				autoCropArea: 1,
 				viewMode: 1,
@@ -71,8 +71,8 @@ define('pictureCropper', ['cropper'], function (Cropper) {
 					}
 
 					if (data.restrictImageDimension) {
-						var origDimension = (img.width < img.height) ? img.width : img.height;
-						var dimension = (origDimension > data.imageDimension) ? data.imageDimension : origDimension;
+						const origDimension = (img.width < img.height) ? img.width : img.height;
+						const dimension = (origDimension > data.imageDimension) ? data.imageDimension : origDimension;
 						cropperTool.setCropBoxData({
 							width: dimension,
 							height: dimension,
@@ -80,13 +80,13 @@ define('pictureCropper', ['cropper'], function (Cropper) {
 					}
 
 					cropperModal.find('.rotate').on('click', function () {
-						var degrees = this.getAttribute('data-degrees');
+						const degrees = this.getAttribute('data-degrees');
 						cropperTool.rotate(degrees);
 					});
 
 					cropperModal.find('.flip').on('click', function () {
-						var option = this.getAttribute('data-option');
-						var method = this.getAttribute('data-method');
+						const option = this.getAttribute('data-option');
+						const method = this.getAttribute('data-method');
 						if (method === 'scaleX') {
 							cropperTool.scaleX(option);
 						} else {
@@ -101,7 +101,7 @@ define('pictureCropper', ['cropper'], function (Cropper) {
 
 					cropperModal.find('.crop-btn').on('click', function () {
 						$(this).addClass('disabled');
-						var imageData = checkCORS(cropperTool, data);
+						const imageData = checkCORS(cropperTool, data);
 						if (!imageData) {
 							return;
 						}
@@ -144,15 +144,15 @@ define('pictureCropper', ['cropper'], function (Cropper) {
 	};
 
 	function socketUpload(params, callback) {
-		var socketData = {};
+		const socketData = {};
 		socketData[params.data.paramName] = params.data.paramValue;
 		socketData.method = params.data.socketMethod;
 		socketData.size = params.imageData.length;
 		socketData.progress = 0;
 
-		var chunkSize = 100000;
+		const chunkSize = 100000;
 		function doUpload() {
-			var chunk = params.imageData.slice(socketData.progress, socketData.progress + chunkSize);
+			const chunk = params.imageData.slice(socketData.progress, socketData.progress + chunkSize);
 			socket.emit('uploads.upload', {
 				chunk: chunk,
 				params: socketData,
@@ -174,13 +174,13 @@ define('pictureCropper', ['cropper'], function (Cropper) {
 	}
 
 	function checkCORS(cropperTool, data) {
-		var imageData;
+		let imageData;
 		try {
 			imageData = data.imageType ?
 				cropperTool.getCroppedCanvas().toDataURL(data.imageType) :
 				cropperTool.getCroppedCanvas().toDataURL();
 		} catch (err) {
-			var corsErrors = [
+			const corsErrors = [
 				'The operation is insecure.',
 				'Failed to execute \'toDataURL\' on \'HTMLCanvasElement\': Tainted canvases may not be exported.',
 			];
@@ -201,13 +201,13 @@ define('pictureCropper', ['cropper'], function (Cropper) {
 			}
 			data.uploadModal.find('#alert-' + type).translateText(message).removeClass('hide');
 		}
-		var fileInput = data.uploadModal.find('#fileInput');
+		const fileInput = data.uploadModal.find('#fileInput');
 		if (!fileInput.val()) {
 			return showAlert('error', '[[uploads:select-file-to-upload]]');
 		}
 
-		var file = fileInput[0].files[0];
-		var fileSize = data.hasOwnProperty('fileSize') && data.fileSize !== undefined ? parseInt(data.fileSize, 10) : false;
+		const file = fileInput[0].files[0];
+		const fileSize = data.hasOwnProperty('fileSize') && data.fileSize !== undefined ? parseInt(data.fileSize, 10) : false;
 		if (fileSize && file.size > fileSize * 1024) {
 			return showAlert('error', '[[error:file-too-big, ' + fileSize + ']]');
 		}
@@ -219,9 +219,9 @@ define('pictureCropper', ['cropper'], function (Cropper) {
 			return;
 		}
 
-		var reader = new FileReader();
+		const reader = new FileReader();
 		reader.addEventListener('load', function () {
-			var imageUrl = reader.result;
+			const imageUrl = reader.result;
 
 			data.uploadModal.modal('hide');
 

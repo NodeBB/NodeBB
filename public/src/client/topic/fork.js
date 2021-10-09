@@ -2,10 +2,10 @@
 
 
 define('forum/topic/fork', ['components', 'postSelect'], function (components, postSelect) {
-	var Fork = {};
-	var forkModal;
-	var forkCommit;
-	var fromTid;
+	const Fork = {};
+	let forkModal;
+	let forkCommit;
+	let fromTid;
 
 	Fork.init = function () {
 		fromTid = ajaxify.data.tid;

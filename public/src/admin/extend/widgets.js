@@ -8,13 +8,13 @@ define('admin/extend/widgets', [
 	'jquery-ui/widgets/droppable',
 	'jquery-ui/widgets/datepicker',
 ], function (bootbox) {
-	var Widgets = {};
+	const Widgets = {};
 
 	Widgets.init = function () {
 		$('#widgets .nav-pills .dropdown-menu a').on('click', function (ev) {
-			var $this = $(this);
+			const $this = $(this);
 			$('#widgets .tab-pane').removeClass('active');
-			var templateName = $this.attr('data-template');
+			const templateName = $this.attr('data-template');
 			$('#widgets .tab-pane[data-template="' + templateName + '"]').addClass('active');
 			$('#widgets .selected-template').text(templateName);
 			$('#widgets .nav-pills .dropdown').trigger('click');
@@ -47,7 +47,7 @@ define('admin/extend/widgets', [
 		$('#widgets .available-containers .containers > [data-container-html]')
 			.draggable({
 				helper: function (e) {
-					var target = $(e.target);
+					let target = $(e.target);
 					target = target.attr('data-container-html') ? target : target.parents('[data-container-html]');
 
 					return target.clone().addClass('block').width(target.width()).css('opacity', '0.5');
@@ -65,7 +65,7 @@ define('admin/extend/widgets', [
 			},
 			connectWith: 'div',
 		}).on('click', '.delete-widget', function () {
-			var panel = $(this).parents('.widget-panel');
+			const panel = $(this).parents('.widget-panel');
 
 			bootbox.confirm('[[admin/extend/widgets:alert.confirm-delete]]', function (confirm) {
 				if (confirm) {
@@ -81,20 +81,20 @@ define('admin/extend/widgets', [
 		$('#save').on('click', saveWidgets);
 
 		function saveWidgets() {
-			var saveData = [];
+			const saveData = [];
 			$('#widgets [data-template][data-location]').each(function (i, el) {
 				el = $(el);
 
-				var template = el.attr('data-template');
-				var location = el.attr('data-location');
-				var area = el.children('.widget-area');
-				var widgets = [];
+				const template = el.attr('data-template');
+				const location = el.attr('data-location');
+				const area = el.children('.widget-area');
+				const widgets = [];
 
 				area.find('.widget-panel[data-widget]').each(function () {
-					var widgetData = {};
-					var data = $(this).find('form').serializeArray();
+					const widgetData = {};
+					const data = $(this).find('form').serializeArray();
 
-					for (var d in data) {
+					for (const d in data) {
 						if (data.hasOwnProperty(d)) {
 							if (data[d].name) {
 								if (widgetData[data[d].name]) {
@@ -140,10 +140,10 @@ define('admin/extend/widgets', [
 		}
 
 		$('.color-selector').on('click', '.btn', function () {
-			var btn = $(this);
-			var selector = btn.parents('.color-selector');
-			var container = selector.parents('[data-container-html]');
-			var classList = [];
+			const btn = $(this);
+			const selector = btn.parents('.color-selector');
+			const container = selector.parents('[data-container-html]');
+			const classList = [];
 
 			selector.children().each(function () {
 				classList.push($(this).attr('data-class'));
@@ -159,7 +159,7 @@ define('admin/extend/widgets', [
 	}
 
 	function createDatePicker(el) {
-		var currentYear = new Date().getFullYear();
+		const currentYear = new Date().getFullYear();
 		el.find('.date-selector').datepicker({
 			changeMonth: true,
 			changeYear: true,
@@ -173,7 +173,7 @@ define('admin/extend/widgets', [
 				.droppable({
 					accept: '[data-container-html]',
 					drop: function (event, ui) {
-						var el = $(this);
+						const el = $(this);
 
 						el.find('.panel-body .container-html').val(ui.draggable.attr('data-container-html'));
 						el.find('.panel-body').removeClass('hidden');
@@ -190,13 +190,13 @@ define('admin/extend/widgets', [
 	function loadWidgetData() {
 		function populateWidget(widget, data) {
 			if (data.title) {
-				var title = widget.find('.panel-heading strong');
+				const title = widget.find('.panel-heading strong');
 				title.text(title.text() + ' - ' + data.title);
 			}
 
 			widget.find('input, textarea, select').each(function () {
-				var input = $(this);
-				var value = data[input.attr('name')];
+				const input = $(this);
+				const value = data[input.attr('name')];
 
 				if (input.attr('type') === 'checkbox') {
 					input.prop('checked', !!value).trigger('change');
@@ -209,17 +209,17 @@ define('admin/extend/widgets', [
 		}
 
 		$.get(config.relative_path + '/api/admin/extend/widgets', function (data) {
-			var areas = data.areas;
+			const areas = data.areas;
 
-			for (var i = 0; i < areas.length; i += 1) {
-				var area = areas[i];
-				var widgetArea = $('#widgets .area[data-template="' + area.template + '"][data-location="' + area.location + '"]').find('.widget-area');
+			for (let i = 0; i < areas.length; i += 1) {
+				const area = areas[i];
+				const widgetArea = $('#widgets .area[data-template="' + area.template + '"][data-location="' + area.location + '"]').find('.widget-area');
 
 				widgetArea.html('');
 
-				for (var k = 0; k < area.data.length; k += 1) {
-					var widgetData = area.data[k];
-					var widgetEl = $('.available-widgets [data-widget="' + widgetData.widget + '"]').clone(true).removeClass('hide');
+				for (let k = 0; k < area.data.length; k += 1) {
+					const widgetData = area.data[k];
+					const widgetEl = $('.available-widgets [data-widget="' + widgetData.widget + '"]').clone(true).removeClass('hide');
 
 					widgetArea.append(populateWidget(widgetEl, widgetData.data));
 					appendToggle(widgetEl);
@@ -232,44 +232,44 @@ define('admin/extend/widgets', [
 	}
 
 	function setupCloneButton() {
-		var clone = $('[component="clone"]');
-		var cloneBtn = $('[component="clone/button"]');
+		const clone = $('[component="clone"]');
+		const cloneBtn = $('[component="clone/button"]');
 
 		clone.find('.dropdown-menu li').on('click', function () {
-			var template = $(this).find('a').text();
+			const template = $(this).find('a').text();
 			cloneBtn.translateHtml('[[admin/extend/widgets:clone-from]] <strong>' + template + '</strong>');
 			cloneBtn.attr('data-template', template);
 		});
 
 		cloneBtn.on('click', function () {
-			var template = cloneBtn.attr('data-template');
+			const template = cloneBtn.attr('data-template');
 			if (!template) {
 				return app.alertError('[[admin/extend/widgets:error.select-clone]]');
 			}
 
-			var currentTemplate = $('#active-widgets .active.tab-pane[data-template] .area');
-			var templateToClone = $('#active-widgets .tab-pane[data-template="' + template + '"] .area');
+			const currentTemplate = $('#active-widgets .active.tab-pane[data-template] .area');
+			const templateToClone = $('#active-widgets .tab-pane[data-template="' + template + '"] .area');
 
-			var currentAreas = currentTemplate.map(function () {
+			const currentAreas = currentTemplate.map(function () {
 				return $(this).attr('data-location');
 			}).get();
 
-			var areasToClone = templateToClone.map(function () {
-				var location = $(this).attr('data-location');
+			const areasToClone = templateToClone.map(function () {
+				const location = $(this).attr('data-location');
 				return currentAreas.indexOf(location) !== -1 ? location : undefined;
 			}).get().filter(function (i) { return i; });
 
 			function clone(location) {
 				$('#active-widgets .tab-pane[data-template="' + template + '"] [data-location="' + location + '"]').each(function () {
 					$(this).find('[data-widget]').each(function () {
-						var widget = $(this).clone(true);
+						const widget = $(this).clone(true);
 						$('#active-widgets .active.tab-pane[data-template]:not([data-template="global"]) [data-location="' + location + '"] .widget-area').append(widget);
 					});
 				});
 			}
 
-			for (var i = 0, ii = areasToClone.length; i < ii; i++) {
-				var location = areasToClone[i];
+			for (let i = 0, ii = areasToClone.length; i < ii; i++) {
+				const location = areasToClone[i];
 				clone(location);
 			}
 

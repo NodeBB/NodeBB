@@ -6,8 +6,8 @@ define('settings/sorted-list', [
 	'hooks',
 	'jquery-ui/widgets/sortable',
 ], function (benchpress, bootbox, hooks) {
-	var SortedList;
-	var Settings;
+	let SortedList;
+	let Settings;
 
 
 	SortedList = {
@@ -16,40 +16,40 @@ define('settings/sorted-list', [
 			Settings = this;
 		},
 		set: function ($container, values) {
-			var key = $container.attr('data-sorted-list');
+			const key = $container.attr('data-sorted-list');
 
 			values[key] = [];
 			$container.find('[data-type="item"]').each(function (idx, item) {
-				var itemUUID = $(item).attr('data-sorted-list-uuid');
+				const itemUUID = $(item).attr('data-sorted-list-uuid');
 
-				var formData = Settings.helper.serializeForm($('[data-sorted-list-object="' + key + '"][data-sorted-list-uuid="' + itemUUID + '"]'));
+				const formData = Settings.helper.serializeForm($('[data-sorted-list-object="' + key + '"][data-sorted-list-uuid="' + itemUUID + '"]'));
 				stripTags(formData);
 				values[key].push(formData);
 			});
 		},
 		get: function ($container, hash) {
-			var $list = $container.find('[data-type="list"]');
-			var key = $container.attr('data-sorted-list');
-			var formTpl = $container.attr('data-form-template');
+			const $list = $container.find('[data-type="list"]');
+			const key = $container.attr('data-sorted-list');
+			const formTpl = $container.attr('data-form-template');
 
 			benchpress.render(formTpl, {}).then(function (formHtml) {
-				var addBtn = $('[data-sorted-list="' + key + '"] [data-type="add"]');
+				const addBtn = $('[data-sorted-list="' + key + '"] [data-type="add"]');
 
 				addBtn.on('click', function () {
-					var modal = bootbox.confirm(formHtml, function (save) {
+					const modal = bootbox.confirm(formHtml, function (save) {
 						if (save) {
 							SortedList.addItem(modal.find('form').children(), $container);
 						}
 					});
 				});
 
-				var call = $container.parents('form').attr('data-socket-get');
-				var list = ajaxify.data[call ? hash : 'settings'][key];
+				const call = $container.parents('form').attr('data-socket-get');
+				const list = ajaxify.data[call ? hash : 'settings'][key];
 
 				if (Array.isArray(list) && typeof list[0] !== 'string') {
 					list.forEach(function (item) {
-						var itemUUID = utils.generateUUID();
-						var form = $(formHtml).deserialize(item);
+						const itemUUID = utils.generateUUID();
+						const form = $(formHtml).deserialize(item);
 						form.attr('data-sorted-list-uuid', itemUUID);
 						form.attr('data-sorted-list-object', key);
 						$('#content').append(form.hide());
@@ -77,36 +77,36 @@ define('settings/sorted-list', [
 	};
 
 	function setupRemoveButton($container, itemUUID) {
-		var removeBtn = $container.find('[data-sorted-list-uuid="' + itemUUID + '"] [data-type="remove"]');
+		const removeBtn = $container.find('[data-sorted-list-uuid="' + itemUUID + '"] [data-type="remove"]');
 		removeBtn.on('click', function () {
 			$('[data-sorted-list-uuid="' + itemUUID + '"]').remove();
 		});
 	}
 
 	function setupEditButton($container, itemUUID) {
-		var $list = $container.find('[data-type="list"]');
-		var key = $container.attr('data-sorted-list');
-		var itemTpl = $container.attr('data-item-template');
-		var editBtn = $('[data-sorted-list-uuid="' + itemUUID + '"] [data-type="edit"]');
+		const $list = $container.find('[data-type="list"]');
+		const key = $container.attr('data-sorted-list');
+		const itemTpl = $container.attr('data-item-template');
+		const editBtn = $('[data-sorted-list-uuid="' + itemUUID + '"] [data-type="edit"]');
 
 		editBtn.on('click', function () {
-			var form = $('[data-sorted-list-uuid="' + itemUUID + '"][data-sorted-list-object="' + key + '"]').clone(true).show();
+			const form = $('[data-sorted-list-uuid="' + itemUUID + '"][data-sorted-list-object="' + key + '"]').clone(true).show();
 
-			var modal = bootbox.confirm(form, function (save) {
+			const modal = bootbox.confirm(form, function (save) {
 				if (save) {
-					var form = $('<form class="" data-sorted-list-uuid="' + itemUUID + '" data-sorted-list-object="' + key + '"></form>');
+					const form = $('<form class="" data-sorted-list-uuid="' + itemUUID + '" data-sorted-list-object="' + key + '"></form>');
 					form.append(modal.find('form').children());
 
 					$('#content').find('[data-sorted-list-uuid="' + itemUUID + '"][data-sorted-list-object="' + key + '"]').remove();
 					$('#content').append(form.hide());
 
 
-					var data = Settings.helper.serializeForm(form);
+					const data = Settings.helper.serializeForm(form);
 					stripTags(data);
 
 					app.parseAndTranslate(itemTpl, data, function (itemHtml) {
 						itemHtml = $(itemHtml);
-						var oldItem = $list.find('[data-sorted-list-uuid="' + itemUUID + '"]');
+						const oldItem = $list.find('[data-sorted-list-uuid="' + itemUUID + '"]');
 						oldItem.after(itemHtml);
 						oldItem.remove();
 						itemHtml.attr('data-sorted-list-uuid', itemUUID);
@@ -120,8 +120,8 @@ define('settings/sorted-list', [
 	}
 
 	function parse($container, itemUUID, data) {
-		var $list = $container.find('[data-type="list"]');
-		var itemTpl = $container.attr('data-item-template');
+		const $list = $container.find('[data-type="list"]');
+		const itemTpl = $container.attr('data-item-template');
 
 		stripTags(data);
 

@@ -2,28 +2,28 @@
 
 
 define('admin/dashboard', ['Chart', 'translator', 'benchpress', 'bootbox'], function (Chart, translator, Benchpress, bootbox) {
-	var	Admin = {};
-	var	intervals = {
+	const	Admin = {};
+	const	intervals = {
 		rooms: false,
 		graphs: false,
 	};
-	var	isMobile = false;
-	var	graphData = {
+	let isMobile = false;
+	const	graphData = {
 		rooms: {},
 		traffic: {},
 	};
-	var	currentGraph = {
+	const	currentGraph = {
 		units: 'hours',
 		until: undefined,
 	};
 
-	var DEFAULTS = {
+	const DEFAULTS = {
 		roomInterval: 10000,
 		graphInterval: 15000,
 		realtimeInterval: 1500,
 	};
 
-	var	usedTopicColors = [];
+	const	usedTopicColors = [];
 
 	$(window).on('action:ajaxify.start', function () {
 		clearInterval(intervals.rooms);
@@ -62,7 +62,7 @@ define('admin/dashboard', ['Chart', 'translator', 'benchpress', 'bootbox'], func
 
 		graphData.rooms = data;
 
-		var html = '<div class="text-center pull-left">' +
+		const html = '<div class="text-center pull-left">' +
 						'<span class="formatted-number">' + data.onlineRegisteredCount + '</span>' +
 						'<div class="stat">[[admin/dashboard:active-users.users]]</div>' +
 					'</div>' +
@@ -86,38 +86,38 @@ define('admin/dashboard', ['Chart', 'translator', 'benchpress', 'bootbox'], func
 		$('#active-users').translateHtml(html);
 	};
 
-	var graphs = {
+	const graphs = {
 		traffic: null,
 		registered: null,
 		presence: null,
 		topics: null,
 	};
 
-	var topicColors = ['#bf616a', '#5B90BF', '#d08770', '#ebcb8b', '#a3be8c', '#96b5b4', '#8fa1b3', '#b48ead', '#ab7967', '#46BFBD'];
+	const topicColors = ['#bf616a', '#5B90BF', '#d08770', '#ebcb8b', '#a3be8c', '#96b5b4', '#8fa1b3', '#b48ead', '#ab7967', '#46BFBD'];
 
 	/* eslint-disable */
 	// from chartjs.org
 	function lighten(col, amt) {
-		var usePound = false;
+		let usePound = false;
 
 		if (col[0] === '#') {
 			col = col.slice(1);
 			usePound = true;
 		}
 
-		var num = parseInt(col, 16);
+		const num = parseInt(col, 16);
 
-		var r = (num >> 16) + amt;
+		let r = (num >> 16) + amt;
 
 		if (r > 255) r = 255;
 		else if (r < 0) r = 0;
 
-		var b = ((num >> 8) & 0x00FF) + amt;
+		let b = ((num >> 8) & 0x00FF) + amt;
 
 		if (b > 255) b = 255;
 		else if (b < 0) b = 0;
 
-		var g = (num & 0x0000FF) + amt;
+		let g = (num & 0x0000FF) + amt;
 
 		if (g > 255) g = 255;
 		else if (g < 0) g = 0;
@@ -128,21 +128,21 @@ define('admin/dashboard', ['Chart', 'translator', 'benchpress', 'bootbox'], func
 
 	function setupGraphs(callback) {
 		callback = callback || function () {};
-		var trafficCanvas = document.getElementById('analytics-traffic');
-		var registeredCanvas = document.getElementById('analytics-registered');
-		var presenceCanvas = document.getElementById('analytics-presence');
-		var topicsCanvas = document.getElementById('analytics-topics');
-		var trafficCtx = trafficCanvas.getContext('2d');
-		var registeredCtx = registeredCanvas.getContext('2d');
-		var presenceCtx = presenceCanvas.getContext('2d');
-		var topicsCtx = topicsCanvas.getContext('2d');
-		var trafficLabels = utils.getHoursArray();
+		const trafficCanvas = document.getElementById('analytics-traffic');
+		const registeredCanvas = document.getElementById('analytics-registered');
+		const presenceCanvas = document.getElementById('analytics-presence');
+		const topicsCanvas = document.getElementById('analytics-topics');
+		const trafficCtx = trafficCanvas.getContext('2d');
+		const registeredCtx = registeredCanvas.getContext('2d');
+		const presenceCtx = presenceCanvas.getContext('2d');
+		const topicsCtx = topicsCanvas.getContext('2d');
+		const trafficLabels = utils.getHoursArray();
 
 		if (isMobile) {
 			Chart.defaults.global.tooltips.enabled = false;
 		}
 
-		var t = translator.Translator.create();
+		const t = translator.Translator.create();
 		Promise.all([
 			t.translateKey('admin/dashboard:graphs.page-views', []),
 			t.translateKey('admin/dashboard:graphs.page-views-registered', []),
@@ -157,7 +157,7 @@ define('admin/dashboard', ['Chart', 'translator', 'benchpress', 'bootbox'], func
 			t.translateKey('admin/dashboard:recent', []),
 			t.translateKey('admin/dashboard:unread', []),
 		]).then(function (translations) {
-			var data = {
+			const data = {
 				labels: trafficLabels,
 				datasets: [
 					{
@@ -323,8 +323,8 @@ define('admin/dashboard', ['Chart', 'translator', 'benchpress', 'bootbox'], func
 			adjustPieCharts();
 
 			$('[data-action="updateGraph"]:not([data-units="custom"])').on('click', function () {
-				var until = new Date();
-				var amount = $(this).attr('data-amount');
+				let until = new Date();
+				const amount = $(this).attr('data-amount');
 				if ($(this).attr('data-units') === 'days') {
 					until.setHours(0, 0, 0, 0);
 				}
@@ -339,10 +339,10 @@ define('admin/dashboard', ['Chart', 'translator', 'benchpress', 'bootbox'], func
 			});
 
 			$('[data-action="updateGraph"][data-units="custom"]').on('click', function () {
-				var targetEl = $(this);
+				const targetEl = $(this);
 
 				Benchpress.render('admin/partials/pageviews-range-select', {}).then(function (html) {
-					var modal = bootbox.dialog({
+					const modal = bootbox.dialog({
 						title: '[[admin/dashboard:page-views-custom]]',
 						message: html,
 						buttons: {
@@ -353,10 +353,10 @@ define('admin/dashboard', ['Chart', 'translator', 'benchpress', 'bootbox'], func
 							},
 						},
 					}).on('shown.bs.modal', function () {
-						var date = new Date();
-						var today = date.toISOString().substr(0, 10);
+						const date = new Date();
+						const today = date.toISOString().substr(0, 10);
 						date.setDate(date.getDate() - 1);
-						var yesterday = date.toISOString().substr(0, 10);
+						const yesterday = date.toISOString().substr(0, 10);
 
 						modal.find('#startRange').val(targetEl.attr('data-startRange') || yesterday);
 						modal.find('#endRange').val(targetEl.attr('data-endRange') || today);
@@ -364,8 +364,8 @@ define('admin/dashboard', ['Chart', 'translator', 'benchpress', 'bootbox'], func
 
 					function submit() {
 						// NEED TO ADD VALIDATION HERE FOR YYYY-MM-DD
-						var formData = modal.find('form').serializeObject();
-						var validRegexp = /\d{4}-\d{2}-\d{2}/;
+						const formData = modal.find('form').serializeObject();
+						const validRegexp = /\d{4}-\d{2}-\d{2}/;
 
 						// Input validation
 						if (!formData.startRange && !formData.endRange) {
@@ -378,10 +378,10 @@ define('admin/dashboard', ['Chart', 'translator', 'benchpress', 'bootbox'], func
 							return false;
 						}
 
-						var until = new Date(formData.endRange);
+						let until = new Date(formData.endRange);
 						until.setDate(until.getDate() + 1);
 						until = until.getTime();
-						var amount = (until - new Date(formData.startRange).getTime()) / (1000 * 60 * 60 * 24);
+						const amount = (until - new Date(formData.startRange).getTime()) / (1000 * 60 * 60 * 24);
 
 						updateTrafficGraph('days', until, amount);
 
@@ -401,7 +401,7 @@ define('admin/dashboard', ['Chart', 'translator', 'benchpress', 'bootbox'], func
 
 	function adjustPieCharts() {
 		$('.pie-chart.legend-up').each(function () {
-			var $this = $(this);
+			const $this = $(this);
 
 			if ($this.width() < 320) {
 				$this.addClass('compact');
@@ -459,8 +459,8 @@ define('admin/dashboard', ['Chart', 'translator', 'benchpress', 'bootbox'], func
 			currentGraph.amount = amount;
 
 			// Update the View as JSON button url
-			var apiEl = $('#view-as-json');
-			var newHref = $.param({
+			const apiEl = $('#view-as-json');
+			const newHref = $.param({
 				units: units || 'hours',
 				until: until,
 				count: amount,
@@ -517,10 +517,10 @@ define('admin/dashboard', ['Chart', 'translator', 'benchpress', 'bootbox'], func
 		});
 
 		function buildTopicsLegend() {
-			var html = '';
+			let html = '';
 			topics.forEach(function (t, i) {
-				var link = t.tid ? '<a title="' + t.title + '"href="' + config.relative_path + '/topic/' + t.tid + '" target="_blank"> ' + t.title + '</a>' : t.title;
-				var	label = t.count === '0' ? t.title : link;
+				const link = t.tid ? '<a title="' + t.title + '"href="' + config.relative_path + '/topic/' + t.tid + '" target="_blank"> ' + t.title + '</a>' : t.title;
+				const	label = t.count === '0' ? t.title : link;
 
 				html += '<li>' +
 					'<div style="background-color: ' + topicColors[i] + ';"></div>' +
@@ -536,7 +536,7 @@ define('admin/dashboard', ['Chart', 'translator', 'benchpress', 'bootbox'], func
 
 	function setupRealtimeButton() {
 		$('#toggle-realtime .fa').on('click', function () {
-			var $this = $(this);
+			const $this = $(this);
 			if ($this.hasClass('fa-toggle-on')) {
 				$this.removeClass('fa-toggle-on').addClass('fa-toggle-off');
 				$this.parent().find('strong').html('OFF');
@@ -565,11 +565,11 @@ define('admin/dashboard', ['Chart', 'translator', 'benchpress', 'bootbox'], func
 	}
 
 	function setupFullscreen() {
-		var container = document.getElementById('analytics-panel');
-		var $container = $(container);
-		var btn = $container.find('.fa-expand');
-		var fsMethod;
-		var exitMethod;
+		const container = document.getElementById('analytics-panel');
+		const $container = $(container);
+		const btn = $container.find('.fa-expand');
+		let fsMethod;
+		let exitMethod;
 
 		if (container.requestFullscreen) {
 			fsMethod = 'requestFullscreen';

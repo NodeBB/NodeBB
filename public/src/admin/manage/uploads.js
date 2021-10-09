@@ -1,7 +1,7 @@
 'use strict';
 
 define('admin/manage/uploads', ['api', 'bootbox', 'uploader'], function (api, bootbox, uploader) {
-	var Uploads = {};
+	const Uploads = {};
 
 	Uploads.init = function () {
 		$('#upload').on('click', function () {
@@ -15,7 +15,7 @@ define('admin/manage/uploads', ['api', 'bootbox', 'uploader'], function (api, bo
 		});
 
 		$('.delete').on('click', function () {
-			var file = $(this).parents('[data-path]');
+			const file = $(this).parents('[data-path]');
 			bootbox.confirm('[[admin/manage/uploads:confirm-delete]]', function (ok) {
 				if (!ok) {
 					return;

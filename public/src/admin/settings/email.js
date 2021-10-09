@@ -2,8 +2,8 @@
 
 
 define('admin/settings/email', ['ace/ace', 'admin/settings'], function (ace) {
-	var module = {};
-	var emailEditor;
+	const module = {};
+	let emailEditor;
 
 	module.init = function () {
 		configureEmailTester();
@@ -40,14 +40,14 @@ define('admin/settings/email', ['ace/ace', 'admin/settings'], function (ace) {
 		emailEditor.getSession().setMode('ace/mode/html');
 
 		emailEditor.on('change', function () {
-			var emailPath = $('#email-editor-selector').val();
-			var original;
+			const emailPath = $('#email-editor-selector').val();
+			let original;
 			ajaxify.data.emails.forEach(function (email) {
 				if (email.path === emailPath) {
 					original = email.original;
 				}
 			});
-			var newEmail = emailEditor.getValue();
+			const newEmail = emailEditor.getValue();
 			$('#email-editor-holder').val(newEmail !== original ? newEmail : '');
 		});
 
@@ -75,7 +75,7 @@ define('admin/settings/email', ['ace/ace', 'admin/settings'], function (ace) {
 	}
 
 	function handleDigestHourChange() {
-		var hour = parseInt($('#digestHour').val(), 10);
+		let hour = parseInt($('#digestHour').val(), 10);
 
 		if (isNaN(hour)) {
 			hour = 17;
@@ -88,8 +88,8 @@ define('admin/settings/email', ['ace/ace', 'admin/settings'], function (ace) {
 				return app.alertError(err.message);
 			}
 
-			var date = new Date(now.timestamp);
-			var offset = (new Date().getTimezoneOffset() - now.offset) / 60;
+			const date = new Date(now.timestamp);
+			const offset = (new Date().getTimezoneOffset() - now.offset) / 60;
 			date.setHours(date.getHours() + offset);
 
 			$('#serverTime').text(date.toLocaleTimeString());
@@ -106,7 +106,7 @@ define('admin/settings/email', ['ace/ace', 'admin/settings'], function (ace) {
 	}
 
 	function handleSmtpServiceChange() {
-		var isCustom = $('[id="email:smtpTransport:service"]').val() === 'nodebb-custom-smtp';
+		const isCustom = $('[id="email:smtpTransport:service"]').val() === 'nodebb-custom-smtp';
 		$('[id="email:smtpTransport:custom-service"]')[isCustom ? 'slideDown' : 'slideUp'](isCustom);
 	}
 

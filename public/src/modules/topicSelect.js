@@ -2,10 +2,10 @@
 
 
 define('topicSelect', ['components'], function (components) {
-	var TopicSelect = {};
-	var lastSelected;
+	const TopicSelect = {};
+	let lastSelected;
 
-	var topicsContainer;
+	let topicsContainer;
 
 	TopicSelect.init = function (onSelect) {
 		topicsContainer = $('[component="category"]');
@@ -14,7 +14,7 @@ define('topicSelect', ['components'], function (components) {
 		});
 
 		topicsContainer.on('click', '[component="topic/select"]', function (ev) {
-			var select = $(this);
+			const select = $(this);
 
 			if (ev.shiftKey) {
 				selectRange($(this).parents('[component="category/topic"]').attr('data-tid'));
@@ -22,7 +22,7 @@ define('topicSelect', ['components'], function (components) {
 				return false;
 			}
 
-			var isSelected = select.parents('[data-tid]').hasClass('selected');
+			const isSelected = select.parents('[data-tid]').hasClass('selected');
 			toggleSelect(select, !isSelected);
 			lastSelected = select;
 			if (typeof onSelect === 'function') {
@@ -38,7 +38,7 @@ define('topicSelect', ['components'], function (components) {
 	}
 
 	TopicSelect.getSelectedTids = function () {
-		var tids = [];
+		const tids = [];
 		if (!topicsContainer) {
 			return tids;
 		}
@@ -60,22 +60,22 @@ define('topicSelect', ['components'], function (components) {
 			lastSelected = $('[component="category/topic"]').first().find('[component="topic/select"]');
 		}
 
-		var isClickedSelected = components.get('category/topic', 'tid', clickedTid).hasClass('selected');
+		const isClickedSelected = components.get('category/topic', 'tid', clickedTid).hasClass('selected');
 
-		var clickedIndex = getIndex(clickedTid);
-		var lastIndex = getIndex(lastSelected.parents('[component="category/topic"]').attr('data-tid'));
+		const clickedIndex = getIndex(clickedTid);
+		const lastIndex = getIndex(lastSelected.parents('[component="category/topic"]').attr('data-tid'));
 		selectIndexRange(clickedIndex, lastIndex, !isClickedSelected);
 	}
 
 	function selectIndexRange(start, end, isSelected) {
 		if (start > end) {
-			var tmp = start;
+			const tmp = start;
 			start = end;
 			end = tmp;
 		}
 
-		for (var i = start; i <= end; i += 1) {
-			var topic = $('[component="category/topic"]').eq(i);
+		for (let i = start; i <= end; i += 1) {
+			const topic = $('[component="category/topic"]').eq(i);
 			toggleSelect(topic.find('[component="topic/select"]'), isSelected);
 		}
 	}

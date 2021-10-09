@@ -10,15 +10,15 @@ app.flags = {};
 app.cacheBuster = null;
 
 (function () {
-	var appLoaded = false;
-	var params = utils.params();
-	var showWelcomeMessage = !!params.loggedin;
-	var registerMessage = params.register;
-	var isTouchDevice = utils.isTouchDevice();
+	let appLoaded = false;
+	const params = utils.params();
+	let showWelcomeMessage = !!params.loggedin;
+	let registerMessage = params.register;
+	const isTouchDevice = utils.isTouchDevice();
 
 	app.cacheBuster = config['cache-buster'];
 
-	var hooks;
+	let hooks;
 	require(['hooks'], function (_hooks) {
 		hooks = _hooks;
 	});
@@ -46,10 +46,10 @@ app.cacheBuster = null;
 		 * e.g. New Topic/Reply, post tools
 		 */
 		if (document.body) {
-			var earlyQueue = [];	// once we can ES6, use Set instead
-			var earlyClick = function (ev) {
-				var btnEl = ev.target.closest('button');
-				var anchorEl = ev.target.closest('a');
+			let earlyQueue = [];	// once we can ES6, use Set instead
+			const earlyClick = function (ev) {
+				let btnEl = ev.target.closest('button');
+				const anchorEl = ev.target.closest('a');
 				if (!btnEl && anchorEl && (anchorEl.getAttribute('data-ajaxify') === 'false' || anchorEl.href === '#')) {
 					btnEl = anchorEl;
 				}
@@ -250,7 +250,7 @@ app.cacheBuster = null;
 	app.enterRoom = function (room, callback) {
 		callback = callback || function () { };
 		if (socket && app.user.uid && app.currentRoom !== room) {
-			var previousRoom = app.currentRoom;
+			const previousRoom = app.currentRoom;
 			app.currentRoom = room;
 			socket.emit('meta.rooms.enter', {
 				enter: room,
@@ -269,7 +269,7 @@ app.cacheBuster = null;
 		if (!socket || config.maintenanceMode) {
 			return;
 		}
-		var previousRoom = app.currentRoom;
+		const previousRoom = app.currentRoom;
 		app.currentRoom = '';
 		socket.emit('meta.rooms.leaveCurrent', function (err) {
 			if (err) {
@@ -329,7 +329,7 @@ app.cacheBuster = null;
 	};
 
 	app.showMessages = function () {
-		var messages = {
+		const messages = {
 			login: {
 				format: 'alert',
 				title: '[[global:welcome_back]] ' + app.user.username + '!',
@@ -456,7 +456,7 @@ app.cacheBuster = null;
 	};
 
 	function createHeaderTooltips() {
-		var env = utils.findBootstrapEnvironment();
+		const env = utils.findBootstrapEnvironment();
 		if (env === 'xs' || env === 'sm' || isTouchDevice) {
 			return;
 		}
@@ -488,17 +488,17 @@ app.cacheBuster = null;
 			return;
 		}
 		/* eslint-disable-next-line */
-		var searchOptions = Object.assign({ in: config.searchDefaultInQuick || 'titles' }, options.searchOptions);
-		var quickSearchResults = options.searchElements.resultEl;
-		var inputEl = options.searchElements.inputEl;
-		var oldValue = inputEl.val();
-		var filterCategoryEl = quickSearchResults.find('.filter-category');
+		const searchOptions = Object.assign({ in: config.searchDefaultInQuick || 'titles' }, options.searchOptions);
+		const quickSearchResults = options.searchElements.resultEl;
+		const inputEl = options.searchElements.inputEl;
+		let oldValue = inputEl.val();
+		const filterCategoryEl = quickSearchResults.find('.filter-category');
 
 		function updateCategoryFilterName() {
 			if (ajaxify.data.template.category) {
 				require(['translator'], function (translator) {
 					translator.translate('[[search:search-in-category, ' + ajaxify.data.name + ']]', function (translated) {
-						var name = $('<div></div>').html(translated).text();
+						const name = $('<div></div>').html(translated).text();
 						filterCategoryEl.find('.name').text(name);
 					});
 				});
@@ -530,8 +530,8 @@ app.cacheBuster = null;
 						return quickSearchResults.addClass('hidden').find('.quick-search-results-container').html('');
 					}
 					data.posts.forEach(function (p) {
-						var text = $('<div>' + p.content + '</div>').text();
-						var start = Math.max(0, text.toLowerCase().indexOf(inputEl.val().toLowerCase()) - 40);
+						const text = $('<div>' + p.content + '</div>').text();
+						const start = Math.max(0, text.toLowerCase().indexOf(inputEl.val().toLowerCase()) - 40);
 						p.snippet = utils.escapeHTML((start > 0 ? '...' : '') +
 							text.slice(start, start + 80) +
 							(text.length - start > 80 ? '...' : ''));
@@ -543,7 +543,7 @@ app.cacheBuster = null;
 						quickSearchResults.toggleClass('hidden', !html.length || !inputEl.is(':focus'))
 							.find('.quick-search-results-container')
 							.html(html.length ? html : '');
-						var highlightEls = quickSearchResults.find(
+						const highlightEls = quickSearchResults.find(
 							'.quick-search-results .quick-search-title, .quick-search-results .snippet'
 						);
 						search.highlightMatches(options.searchOptions.term, highlightEls);
@@ -577,7 +577,7 @@ app.cacheBuster = null;
 			doSearch();
 		}, 250));
 
-		var mousedownOnResults = false;
+		let mousedownOnResults = false;
 		quickSearchResults.on('mousedown', function () {
 			$(window).one('mouseup', function () {
 				quickSearchResults.addClass('hidden');
@@ -607,10 +607,10 @@ app.cacheBuster = null;
 
 	app.handleSearch = function (searchOptions) {
 		searchOptions = searchOptions || { in: config.searchDefaultInQuick || 'titles' };
-		var searchButton = $('#search-button');
-		var searchFields = $('#search-fields');
-		var searchInput = $('#search-fields input');
-		var quickSearchContainer = $('#quick-search-container');
+		const searchButton = $('#search-button');
+		const searchFields = $('#search-fields');
+		const searchInput = $('#search-fields input');
+		const quickSearchContainer = $('#quick-search-container');
 
 		$('#search-form .advanced-search-link').off('mousedown').on('mousedown', function () {
 			ajaxify.go('/search');
@@ -622,7 +622,7 @@ app.cacheBuster = null;
 		searchInput.off('blur').on('blur', dismissSearch);
 		searchInput.off('focus');
 
-		var searchElements = {
+		const searchElements = {
 			inputEl: searchInput,
 			resultEl: quickSearchContainer,
 		};
@@ -657,9 +657,9 @@ app.cacheBuster = null;
 		});
 
 		$('#search-form').off('submit').on('submit', function () {
-			var input = $(this).find('input');
+			const input = $(this).find('input');
 			require(['search'], function (search) {
-				var data = search.getSearchPreferences();
+				const data = search.getSearchPreferences();
 				data.term = input.val();
 				hooks.fire('action:search.submit', {
 					searchOptions: data,
@@ -681,7 +681,7 @@ app.cacheBuster = null;
 
 	function handleStatusChange() {
 		$('[component="header/usercontrol"] [data-status]').off('click').on('click', function (e) {
-			var status = $(this).attr('data-status');
+			const status = $(this).attr('data-status');
 			socket.emit('user.setStatus', status, function (err) {
 				if (err) {
 					return app.alertError(err.message);
@@ -758,7 +758,7 @@ app.cacheBuster = null;
 		if (!showModal || !app.user.uid || parseInt(storage.getItem('email-confirm-dismiss'), 10) === 1) {
 			return;
 		}
-		var msg = {
+		const msg = {
 			alert_id: 'email_confirm',
 			type: 'warning',
 			timeout: 0,
@@ -837,8 +837,8 @@ app.cacheBuster = null;
 				$(document.body).append(html);
 				$(document.body).addClass('cookie-consent-open');
 
-				var warningEl = $('.cookie-consent');
-				var dismissEl = warningEl.find('button');
+				const warningEl = $('.cookie-consent');
+				const dismissEl = warningEl.find('button');
 				dismissEl.on('click', function () {
 					// Save consent cookie and remove warning element
 					storage.setItem('cookieconsent', '1');

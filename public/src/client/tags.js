@@ -2,7 +2,7 @@
 
 
 define('forum/tags', ['forum/infinitescroll'], function (infinitescroll) {
-	var Tags = {};
+	const Tags = {};
 
 	Tags.init = function () {
 		app.enterRoom('tags');

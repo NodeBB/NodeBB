@@ -2,11 +2,11 @@
 
 // TODO: no longer used remove in 1.19.0
 define('admin/modules/colorpicker', function () {
-	var colorpicker = {};
+	const colorpicker = {};
 
 	colorpicker.enable = function (inputEl, callback) {
 		(inputEl instanceof jQuery ? inputEl : $(inputEl)).each(function () {
-			var $this = $(this);
+			const $this = $(this);
 
 			$this.ColorPicker({
 				color: $this.val() || '#000',
