@@ -13,9 +13,11 @@ define('settings', ['hooks'], function (hooks) {
 		'settings/sorted-list',
 	];
 
+	// eslint-disable-next-line prefer-const
 	let Settings;
 	let onReady = [];
 	let waitingJobs = 0;
+	// eslint-disable-next-line prefer-const
 	let helper;
 
 	/**
@@ -24,23 +26,22 @@ define('settings', ['hooks'], function (hooks) {
 	 @param name The name of the hook.
 	 */
 	function getHook(type, name) {
-		let hook;
-		let plugin;
 		if (typeof type !== 'string') {
 			type = $(type);
 			type = type.data('type') || type.attr('type') || type.prop('tagName');
 		}
-		plugin = Settings.plugins[type.toLowerCase()];
+		const plugin = Settings.plugins[type.toLowerCase()];
 		if (plugin == null) {
 			return;
 		}
-		hook = plugin[name];
+		const hook = plugin[name];
 		if (typeof hook === 'function') {
 			return hook;
 		}
 		return null;
 	}
 
+	// eslint-disable-next-line prefer-const
 	helper = {
 		/**
 		 @returns Object A deep clone of the given object.
@@ -341,7 +342,7 @@ define('settings', ['hooks'], function (hooks) {
 		},
 	};
 
-
+	// eslint-disable-next-line prefer-const
 	Settings = {
 		helper: helper,
 		plugins: {},

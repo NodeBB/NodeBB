@@ -2,9 +2,8 @@
 
 define('settings/checkbox', function () {
 	let Settings = null;
-	let SettingsCheckbox;
 
-	SettingsCheckbox = {
+	const SettingsCheckbox = {
 		types: ['checkbox'],
 		use: function () {
 			Settings = this;

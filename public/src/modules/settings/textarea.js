@@ -2,9 +2,8 @@
 
 define('settings/textarea', function () {
 	let Settings = null;
-	let SettingsArea;
 
-	SettingsArea = {
+	const SettingsArea = {
 		types: ['textarea'],
 		use: function () {
 			Settings = this;

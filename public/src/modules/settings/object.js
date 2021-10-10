@@ -1,7 +1,6 @@
 'use strict';
 
 define('settings/object', function () {
-	let SettingsObject;
 	let helper = null;
 
 	/**
@@ -17,13 +16,11 @@ define('settings/object', function () {
 	function addObjectPropertyElement(field, key, attributes, prop, value, separator, insertCb) {
 		const prepend = attributes['data-prepend'];
 		const append = attributes['data-append'];
-		let type;
-		let element;
 		delete attributes['data-prepend'];
 		delete attributes['data-append'];
 		attributes = helper.deepClone(attributes);
-		type = attributes['data-type'] || attributes.type || 'text';
-		element = $(helper.createElementOfType(type, attributes.tagName, attributes));
+		const type = attributes['data-type'] || attributes.type || 'text';
+		const element = $(helper.createElementOfType(type, attributes.tagName, attributes));
 		element.attr('data-parent', '_' + key);
 		element.attr('data-prop', prop);
 		delete attributes['data-type'];
@@ -53,7 +50,7 @@ define('settings/object', function () {
 		}
 	}
 
-	SettingsObject = {
+	const SettingsObject = {
 		types: ['object'],
 		use: function () {
 			helper = this.helper;

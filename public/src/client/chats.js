@@ -174,11 +174,11 @@ define('forum/chats', [
 			const action = this.getAttribute('data-action');
 
 			switch (action) {
-				case 'edit':
+				case 'edit': {
 					const inputEl = $('[data-roomid="' + roomId + '"] [component="chat/input"]');
 					messages.prepEdit(inputEl, messageId, roomId);
 					break;
-
+				}
 				case 'delete':
 					messages.delete(messageId, roomId);
 					break;

@@ -1,7 +1,6 @@
 'use strict';
 
 define('settings/key', function () {
-	let SettingsKey;
 	let helper = null;
 	let lastKey = null;
 	let oldKey = null;
@@ -171,28 +170,20 @@ define('settings/key', function () {
 				case 'Meta':
 					key.m = true;
 					break;
-				default:
+				default: {
 					const num = /\d+/.exec(part);
 					if (num != null) {
 						key.code = num[0];
 					}
 					key.char = convertKeyCodeToChar(key.code);
+				}
 			}
 		}
 		return key;
 	}
 
-	function handleEvent(element, event) {
-		event = event || window.event;
-		event.which = event.which || event.keyCode || event.key;
-		const key = getKey(event);
-		if (key != null) {
-			SettingsKey.set(element, key);
-		}
-	}
 
-
-	SettingsKey = {
+	const SettingsKey = {
 		types: ['key'],
 		use: function () {
 			helper = this.helper;
@@ -232,6 +223,15 @@ define('settings/key', function () {
 			}
 		},
 	};
+
+	function handleEvent(element, event) {
+		event = event || window.event;
+		event.which = event.which || event.keyCode || event.key;
+		const key = getKey(event);
+		if (key != null) {
+			SettingsKey.set(element, key);
+		}
+	}
 
 	return SettingsKey;
 });

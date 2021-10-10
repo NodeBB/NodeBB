@@ -45,7 +45,7 @@ define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'b
 					}).catch(app.alertError);
 					break;
 
-				case 'delete-note':
+				case 'delete-note': {
 					const datetime = parseInt(this.closest('[data-datetime]').getAttribute('data-datetime'), 10);
 					bootbox.confirm('[[flags:delete-note-confirm]]', function (ok) {
 						if (ok) {
@@ -57,7 +57,7 @@ define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'b
 						}
 					});
 					break;
-
+				}
 				case 'chat':
 					app.newChat(uid);
 					break;
@@ -90,7 +90,7 @@ define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'b
 					postAction('restore', ajaxify.data.target.pid, ajaxify.data.target.tid);
 					break;
 
-				case 'prepare-edit':
+				case 'prepare-edit': {
 					const selectedNoteEl = this.closest('[data-index]');
 					const index = selectedNoteEl.getAttribute('data-index');
 					const textareaEl = document.getElementById('note');
@@ -106,6 +106,7 @@ define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'b
 					selectedNoteEl.classList.add('editing');
 					textareaEl.focus();
 					break;
+				}
 			}
 		});
 	};

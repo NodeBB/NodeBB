@@ -2,7 +2,6 @@
 
 define('settings/select', function () {
 	let Settings = null;
-	let SettingsSelect;
 
 	function addOptions(element, options) {
 		for (let i = 0; i < options.length; i += 1) {
@@ -14,7 +13,7 @@ define('settings/select', function () {
 	}
 
 
-	SettingsSelect = {
+	const SettingsSelect = {
 		types: ['select'],
 		use: function () {
 			Settings = this;

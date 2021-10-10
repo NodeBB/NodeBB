@@ -6,11 +6,10 @@ define('settings/sorted-list', [
 	'hooks',
 	'jquery-ui/widgets/sortable',
 ], function (benchpress, bootbox, hooks) {
-	let SortedList;
 	let Settings;
 
 
-	SortedList = {
+	const SortedList = {
 		types: ['sorted-list'],
 		use: function () {
 			Settings = this;
