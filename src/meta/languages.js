@@ -99,7 +99,12 @@ async function buildNamespaceLanguage(lang, namespace, plugins) {
 }
 
 async function addPlugin(translations, pluginData, lang, namespace) {
-	const pluginLanguages = path.join(paths.nodeModules, pluginData.id, pluginData.languages);
+	// if plugin doesn't have this namespace no need to continue
+	if (pluginData.languageData && !pluginData.languageData.namespaces.includes(namespace)) {
+		return;
+	}
+
+	const pathToPluginLanguageFolder = path.join(paths.nodeModules, pluginData.id, pluginData.languages);
 	const defaultLang = pluginData.defaultLang || 'en-GB';
 
 	// for each plugin, fallback in this order:
@@ -116,7 +121,7 @@ async function addPlugin(translations, pluginData, lang, namespace) {
 
 	for (const language of langs) {
 		/* eslint-disable no-await-in-loop */
-		await assignFileToTranslations(translations, path.join(pluginLanguages, language, `${namespace}.json`));
+		await assignFileToTranslations(translations, path.join(pathToPluginLanguageFolder, language, `${namespace}.json`));
 	}
 }
 
