@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const winston = require('winston');
+const _ = require('lodash');
 
 const db = require('../database');
 const file = require('../file');
@@ -245,9 +246,8 @@ Data.getLanguageData = async function getLanguageData(pluginData) {
 		languages.push(language);
 		namespaces.push(namespace);
 	});
-
 	return {
-		languages,
-		namespaces,
+		languages: _.uniq(languages),
+		namespaces: _.uniq(namespaces),
 	};
 };
