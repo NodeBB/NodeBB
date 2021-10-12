@@ -3,13 +3,13 @@
 define('forum/account/edit/username', [
 	'forum/account/header', 'api', 'slugify',
 ], function (header, api, slugify) {
-	var AccountEditUsername = {};
+	const AccountEditUsername = {};
 
 	AccountEditUsername.init = function () {
 		header.init();
 
 		$('#submitBtn').on('click', function updateUsername() {
-			var userData = {
+			const userData = {
 				uid: $('#inputUID').val(),
 				username: $('#inputNewUsername').val(),
 				password: $('#inputCurrentPassword').val(),
@@ -23,11 +23,11 @@ define('forum/account/edit/username', [
 				return app.alertError('[[user:username_same_as_password]]');
 			}
 
-			var btn = $(this);
+			const btn = $(this);
 			btn.addClass('disabled').find('i').removeClass('hide');
 
 			api.put('/users/' + userData.uid, userData).then((response) => {
-				var userslug = slugify(userData.username);
+				const userslug = slugify(userData.username);
 				if (userData.username && userslug && parseInt(userData.uid, 10) === parseInt(app.user.uid, 10)) {
 					$('[component="header/profilelink"]').attr('href', config.relative_path + '/user/' + userslug);
 					$('[component="header/profilelink/edit"]').attr('href', config.relative_path + '/user/' + userslug + '/edit');

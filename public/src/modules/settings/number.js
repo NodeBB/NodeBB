@@ -4,7 +4,7 @@ define('settings/number', function () {
 	return {
 		types: ['number'],
 		get: function (element, trim, empty) {
-			var value = element.val();
+			const value = element.val();
 			if (!empty) {
 				if (value) {
 					return +value;

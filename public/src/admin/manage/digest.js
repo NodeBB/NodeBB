@@ -2,15 +2,15 @@
 
 
 define('admin/manage/digest', ['bootbox'], function (bootbox) {
-	var Digest = {};
+	const Digest = {};
 
 	Digest.init = function () {
 		$('table').on('click', '[data-action]', function () {
-			var action = this.getAttribute('data-action');
-			var uid = this.getAttribute('data-uid');
+			const action = this.getAttribute('data-action');
+			const uid = this.getAttribute('data-uid');
 
 			if (action.startsWith('resend-')) {
-				var interval = action.slice(7);
+				const interval = action.slice(7);
 				bootbox.confirm('[[admin/manage/digest:resend-all-confirm]]', function (ok) {
 					if (ok) {
 						Digest.send(action, undefined, function (err) {

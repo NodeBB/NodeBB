@@ -16,7 +16,7 @@ define('accounts/picture', [
 			}
 
 			// boolean to signify whether an uploaded picture is present in the pictures list
-			var uploaded = pictures.reduce(function (memo, cur) {
+			const uploaded = pictures.reduce(function (memo, cur) {
 				return memo || cur.type === 'uploaded';
 			}, false);
 
@@ -35,7 +35,7 @@ define('accounts/picture', [
 					'icon:bgColor': ajaxify.data['icon:bgColor'],
 				},
 			}, function (html) {
-				var modal = bootbox.dialog({
+				const modal = bootbox.dialog({
 					className: 'picture-switcher',
 					title: '[[user:change_picture]]',
 					message: html,
@@ -88,7 +88,7 @@ define('accounts/picture', [
 				}
 
 				function saveSelection() {
-					var type = modal.find('.list-group-item.active').attr('data-type');
+					const type = modal.find('.list-group-item.active').attr('data-type');
 					const iconBgColor = document.querySelector('.modal.picture-switcher input[type="radio"]:checked').value || 'transparent';
 
 					changeUserPicture(type, iconBgColor).then(() => {
@@ -174,7 +174,7 @@ define('accounts/picture', [
 				uploadModal.modal('show');
 
 				uploadModal.find('.upload-btn').on('click', function () {
-					var url = uploadModal.find('#uploadFromUrl').val();
+					const url = uploadModal.find('#uploadFromUrl').val();
 					if (!url) {
 						return false;
 					}

@@ -6,13 +6,13 @@ define('admin/manage/groups', [
 	'api',
 	'bootbox',
 ], function (categorySelector, slugify, api, bootbox) {
-	var	Groups = {};
+	const	Groups = {};
 
 	Groups.init = function () {
-		var	createModal = $('#create-modal');
-		var createGroupName = $('#create-group-name');
-		var createModalGo = $('#create-modal-go');
-		var createModalError = $('#create-modal-error');
+		const	createModal = $('#create-modal');
+		const createGroupName = $('#create-group-name');
+		const createModalGo = $('#create-modal-go');
+		const createModalError = $('#create-modal-error');
 
 		handleSearch();
 
@@ -30,7 +30,7 @@ define('admin/manage/groups', [
 		});
 
 		createModalGo.on('click', function () {
-			var submitObj = {
+			const submitObj = {
 				name: createGroupName.val(),
 				description: $('#create-group-desc').val(),
 				private: $('#create-group-private').is(':checked') ? 1 : 0,
@@ -53,9 +53,9 @@ define('admin/manage/groups', [
 		});
 
 		$('.groups-list').on('click', '[data-action]', function () {
-			var el = $(this);
-			var action = el.attr('data-action');
-			var groupName = el.parents('tr[data-groupname]').attr('data-groupname');
+			const el = $(this);
+			const action = el.attr('data-action');
+			const groupName = el.parents('tr[data-groupname]').attr('data-groupname');
 
 			switch (action) {
 				case 'delete':
@@ -73,7 +73,7 @@ define('admin/manage/groups', [
 
 	function enableCategorySelectors() {
 		$('.groups-list [component="category-selector"]').each(function () {
-			var nameEncoded = $(this).parents('[data-name-encoded]').attr('data-name-encoded');
+			const nameEncoded = $(this).parents('[data-name-encoded]').attr('data-name-encoded');
 			categorySelector.init($(this), {
 				onSelect: function (selectedCategory) {
 					ajaxify.go('admin/manage/privileges/' + selectedCategory.cid + '?group=' + nameEncoded);
@@ -84,14 +84,14 @@ define('admin/manage/groups', [
 	}
 
 	function handleSearch() {
-		var queryEl = $('#group-search');
+		const queryEl = $('#group-search');
 
 		function doSearch() {
 			if (!queryEl.val()) {
 				return ajaxify.refresh();
 			}
 			$('.pagination').addClass('hide');
-			var groupsEl = $('.groups-list');
+			const groupsEl = $('.groups-list');
 			socket.emit('groups.search', {
 				query: queryEl.val(),
 				options: {

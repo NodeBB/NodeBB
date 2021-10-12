@@ -1,7 +1,7 @@
 'use strict';
 
 define('admin/settings/cookies', function () {
-	var Module = {};
+	const Module = {};
 
 	Module.init = function () {
 		$('#delete-all-sessions').on('click', function () {

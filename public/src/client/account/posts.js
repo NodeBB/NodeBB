@@ -2,10 +2,10 @@
 
 
 define('forum/account/posts', ['forum/account/header', 'forum/infinitescroll', 'hooks'], function (header, infinitescroll, hooks) {
-	var AccountPosts = {};
+	const AccountPosts = {};
 
-	var template;
-	var page = 1;
+	let template;
+	let page = 1;
 
 	AccountPosts.init = function () {
 		header.init();
@@ -27,7 +27,7 @@ define('forum/account/posts', ['forum/account/header', 'forum/infinitescroll', '
 		if (direction < 0) {
 			return;
 		}
-		var params = utils.params();
+		const params = utils.params();
 		page += 1;
 		params.page = page;
 

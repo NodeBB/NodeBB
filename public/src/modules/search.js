@@ -2,20 +2,20 @@
 
 
 define('search', ['navigator', 'translator', 'storage', 'hooks'], function (nav, translator, storage, hooks) {
-	var Search = {
+	const Search = {
 		current: {},
 	};
 
 	Search.query = function (data, callback) {
 		// Detect if a tid was specified
-		var topicSearch = data.term.match(/^in:topic-([\d]+) /);
+		const topicSearch = data.term.match(/^in:topic-([\d]+) /);
 		callback = callback || function () {};
 		if (!topicSearch) {
 			ajaxify.go('search?' + createQueryString(data));
 			callback();
 		} else {
-			var cleanedTerm = data.term.replace(topicSearch[0], '');
-			var tid = topicSearch[1];
+			const cleanedTerm = data.term.replace(topicSearch[0], '');
+			const tid = topicSearch[1];
 
 			if (cleanedTerm.length > 0) {
 				Search.queryTopic(tid, cleanedTerm, callback);
@@ -24,9 +24,9 @@ define('search', ['navigator', 'translator', 'storage', 'hooks'], function (nav,
 	};
 
 	Search.api = function (data, callback) {
-		var apiURL = config.relative_path + '/api/search?' + createQueryString(data);
+		const apiURL = config.relative_path + '/api/search?' + createQueryString(data);
 		data.searchOnly = undefined;
-		var searchURL = config.relative_path + '/search?' + createQueryString(data);
+		const searchURL = config.relative_path + '/search?' + createQueryString(data);
 		$.get(apiURL, function (result) {
 			result.url = searchURL;
 			callback(result);
@@ -34,16 +34,16 @@ define('search', ['navigator', 'translator', 'storage', 'hooks'], function (nav,
 	};
 
 	function createQueryString(data) {
-		var searchIn = data.in || 'titles';
-		var postedBy = data.by || '';
-		var term = data.term.replace(/^[ ?#]*/, '');
+		const searchIn = data.in || 'titles';
+		const postedBy = data.by || '';
+		let term = data.term.replace(/^[ ?#]*/, '');
 		try {
 			term = encodeURIComponent(term);
 		} catch (e) {
 			return app.alertError('[[error:invalid-search-term]]');
 		}
 
-		var query = {
+		const query = {
 			term: term,
 			in: searchIn,
 		};
@@ -111,14 +111,14 @@ define('search', ['navigator', 'translator', 'storage', 'hooks'], function (nav,
 			return;
 		}
 		searchQuery = utils.escapeHTML(searchQuery.replace(/^"/, '').replace(/"$/, '').trim());
-		var regexStr = searchQuery.split(' ')
+		const regexStr = searchQuery.split(' ')
 			.map(function (word) { return utils.escapeRegexChars(word); })
 			.join('|');
-		var regex = new RegExp('(' + regexStr + ')', 'gi');
+		const regex = new RegExp('(' + regexStr + ')', 'gi');
 
 		els.each(function () {
-			var result = $(this);
-			var nested = [];
+			const result = $(this);
+			const nested = [];
 
 			result.find('*').each(function () {
 				$(this).after('<!-- ' + nested.length + ' -->');
@@ -186,7 +186,7 @@ define('search', ['navigator', 'translator', 'storage', 'hooks'], function (nav,
 	};
 
 	Search.topicDOM.update = function (index) {
-		var topicSearchEl = $('.topic-search');
+		const topicSearchEl = $('.topic-search');
 		Search.current.index = index;
 
 		Search.topicDOM.start();
@@ -194,7 +194,7 @@ define('search', ['navigator', 'translator', 'storage', 'hooks'], function (nav,
 		if (Search.current.results.length > 0) {
 			topicSearchEl.find('.count').html((index + 1) + ' / ' + Search.current.results.length);
 			topicSearchEl.find('.prev, .next').removeAttr('disabled');
-			var data = {
+			const data = {
 				pid: Search.current.results[index],
 				tid: Search.current.tid,
 				topicPostSort: config.topicPostSort,

@@ -2,10 +2,10 @@
 
 
 define('forum/ip-blacklist', ['Chart', 'benchpress', 'bootbox'], function (Chart, Benchpress, bootbox) {
-	var Blacklist = {};
+	const Blacklist = {};
 
 	Blacklist.init = function () {
-		var blacklist = $('#blacklist-rules');
+		const blacklist = $('#blacklist-rules');
 
 		blacklist.on('keyup', function () {
 			$('#blacklist-rules-holder').val(blacklist.val());
@@ -42,12 +42,12 @@ define('forum/ip-blacklist', ['Chart', 'benchpress', 'bootbox'], function (Chart
 	};
 
 	Blacklist.setupAnalytics = function () {
-		var hourlyCanvas = document.getElementById('blacklist:hourly');
-		var	dailyCanvas = document.getElementById('blacklist:daily');
-		var	hourlyLabels = utils.getHoursArray().map(function (text, idx) {
+		const hourlyCanvas = document.getElementById('blacklist:hourly');
+		const	dailyCanvas = document.getElementById('blacklist:daily');
+		const	hourlyLabels = utils.getHoursArray().map(function (text, idx) {
 			return idx % 3 ? '' : text;
 		});
-		var	dailyLabels = utils.getDaysArray().slice(-7).map(function (text, idx) {
+		const	dailyLabels = utils.getDaysArray().slice(-7).map(function (text, idx) {
 			return idx % 3 ? '' : text;
 		});
 
@@ -55,7 +55,7 @@ define('forum/ip-blacklist', ['Chart', 'benchpress', 'bootbox'], function (Chart
 			Chart.defaults.global.tooltips.enabled = false;
 		}
 
-		var data = {
+		const data = {
 			'blacklist:hourly': {
 				labels: hourlyLabels,
 				datasets: [

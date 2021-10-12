@@ -1,8 +1,8 @@
 'use strict';
 
 (function () {
-	var logoutTimer = 0;
-	var logoutMessage;
+	let logoutTimer = 0;
+	let logoutMessage;
 	function startLogoutTimer() {
 		if (app.config.adminReloginDuration <= 0) {
 			return;
@@ -94,11 +94,11 @@
 			}
 
 			url = [config.relative_path, url].join('/');
-			var fallback;
+			let fallback;
 
 			$('#main-menu li').removeClass('active');
 			$('#main-menu a').removeClass('active').filter('[href="' + url + '"]').each(function () {
-				var menu = $(this);
+				const menu = $(this);
 				if (menu.parent().attr('data-link')) {
 					return;
 				}
@@ -109,13 +109,13 @@
 				fallback = menu.text();
 			});
 
-			var mainTitle;
-			var pageTitle;
+			let mainTitle;
+			let pageTitle;
 			if (/admin\/plugins\//.test(url)) {
 				mainTitle = fallback;
 				pageTitle = '[[admin/menu:section-plugins]] > ' + mainTitle;
 			} else {
-				var matches = url.match(/admin\/(.+?)\/(.+?)$/);
+				const matches = url.match(/admin\/(.+?)\/(.+?)$/);
 				if (matches) {
 					mainTitle = '[[admin/menu:' + matches[1] + '/' + matches[2] + ']]';
 					pageTitle = '[[admin/menu:section-' +
@@ -169,9 +169,9 @@
 
 	function configureSlidemenu() {
 		require(['slideout'], function (Slideout) {
-			var env = utils.findBootstrapEnvironment();
+			let env = utils.findBootstrapEnvironment();
 
-			var slideout = new Slideout({
+			const slideout = new Slideout({
 				panel: document.getElementById('panel'),
 				menu: document.getElementById('menu'),
 				padding: 256,

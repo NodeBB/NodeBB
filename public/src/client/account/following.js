@@ -2,7 +2,7 @@
 
 
 define('forum/account/following', ['forum/account/header'], function (header) {
-	var	Following = {};
+	const	Following = {};
 
 	Following.init = function () {
 		header.init();

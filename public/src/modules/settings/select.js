@@ -1,33 +1,32 @@
 'use strict';
 
 define('settings/select', function () {
-	var Settings = null;
-	var SettingsSelect;
+	let Settings = null;
 
 	function addOptions(element, options) {
-		for (var i = 0; i < options.length; i += 1) {
-			var optionData = options[i];
-			var value = optionData.text || optionData.value;
+		for (let i = 0; i < options.length; i += 1) {
+			const optionData = options[i];
+			const value = optionData.text || optionData.value;
 			delete optionData.text;
 			element.append($(Settings.helper.createElement('option', optionData)).text(value));
 		}
 	}
 
 
-	SettingsSelect = {
+	const SettingsSelect = {
 		types: ['select'],
 		use: function () {
 			Settings = this;
 		},
 		create: function (ignore, ignored, data) {
-			var element = $(Settings.helper.createElement('select'));
+			const element = $(Settings.helper.createElement('select'));
 			// prevent data-options from being attached to DOM
 			addOptions(element, data['data-options']);
 			delete data['data-options'];
 			return element;
 		},
 		init: function (element) {
-			var options = element.data('options');
+			const options = element.data('options');
 			if (options != null) {
 				addOptions(element, options);
 			}
@@ -36,7 +35,7 @@ define('settings/select', function () {
 			element.val(value || '');
 		},
 		get: function (element, ignored, empty) {
-			var value = element.val();
+			const value = element.val();
 			if (empty || value) {
 				return value;
 			}

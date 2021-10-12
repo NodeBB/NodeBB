@@ -2,17 +2,17 @@
 
 
 define('forum/reset_code', ['zxcvbn'], function (zxcvbn) {
-	var ResetCode = {};
+	const ResetCode = {};
 
 	ResetCode.init = function () {
-		var reset_code = ajaxify.data.code;
+		const reset_code = ajaxify.data.code;
 
-		var resetEl = $('#reset');
-		var password = $('#password');
-		var repeat = $('#repeat');
+		const resetEl = $('#reset');
+		const password = $('#password');
+		const repeat = $('#repeat');
 
 		resetEl.on('click', function () {
-			var strength = zxcvbn(password.val());
+			const strength = zxcvbn(password.val());
 			if (password.val().length < ajaxify.data.minimumPasswordLength) {
 				$('#notice').removeClass('hidden');
 				$('#notice strong').translateText('[[reset_password:password_too_short]]');

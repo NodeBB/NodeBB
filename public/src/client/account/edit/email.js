@@ -1,14 +1,14 @@
 'use strict';
 
 define('forum/account/edit/email', ['forum/account/header', 'api'], function (header, api) {
-	var AccountEditEmail = {};
+	const AccountEditEmail = {};
 
 	AccountEditEmail.init = function () {
 		header.init();
 
 		$('#submitBtn').on('click', function () {
-			var curPasswordEl = $('#inputCurrentPassword');
-			var userData = {
+			const curPasswordEl = $('#inputCurrentPassword');
+			const userData = {
 				uid: $('#inputUID').val(),
 				email: $('#inputNewEmail').val(),
 				password: curPasswordEl.val(),
@@ -23,7 +23,7 @@ define('forum/account/edit/email', ['forum/account/header', 'api'], function (he
 				return app.alertError('[[user:email_same_as_password]]');
 			}
 
-			var btn = $(this);
+			const btn = $(this);
 			btn.addClass('disabled').find('i').removeClass('hide');
 
 			api.put('/users/' + userData.uid, userData).then((res) => {

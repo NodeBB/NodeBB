@@ -1,9 +1,9 @@
 'use strict';
 
 define('forum/flags/list', ['components', 'Chart', 'categoryFilter', 'autocomplete', 'api'], function (components, Chart, categoryFilter, autocomplete, api) {
-	var Flags = {};
+	const Flags = {};
 
-	var selectedCids;
+	let selectedCids;
 
 	Flags.init = function () {
 		Flags.enableFilterForm();
@@ -30,7 +30,7 @@ define('forum/flags/list', ['components', 'Chart', 'categoryFilter', 'autocomple
 					return;
 				}
 
-				var flagId = this.getAttribute('data-flag-id');
+				const flagId = this.getAttribute('data-flag-id');
 				ajaxify.go('flags/' + flagId);
 			});
 
@@ -75,13 +75,13 @@ define('forum/flags/list', ['components', 'Chart', 'categoryFilter', 'autocomple
 	};
 
 	Flags.enableCheckboxes = function () {
-		var flagsList = document.querySelector('[component="flags/list"]');
-		var checkboxes = flagsList.querySelectorAll('[data-flag-id] input[type="checkbox"]');
-		var bulkEl = document.querySelector('[component="flags/bulk-actions"] button');
-		var lastClicked;
+		const flagsList = document.querySelector('[component="flags/list"]');
+		const checkboxes = flagsList.querySelectorAll('[data-flag-id] input[type="checkbox"]');
+		const bulkEl = document.querySelector('[component="flags/bulk-actions"] button');
+		let lastClicked;
 
 		document.querySelector('[data-action="toggle-all"]').addEventListener('click', function () {
-			var state = this.checked;
+			const state = this.checked;
 
 			checkboxes.forEach(function (el) {
 				el.checked = state;
@@ -90,15 +90,15 @@ define('forum/flags/list', ['components', 'Chart', 'categoryFilter', 'autocomple
 		});
 
 		flagsList.addEventListener('click', function (e) {
-			var subselector = e.target.closest('input[type="checkbox"]');
+			const subselector = e.target.closest('input[type="checkbox"]');
 			if (subselector) {
 				// Stop checkbox clicks from going into the flag details
 				e.stopImmediatePropagation();
 
 				if (lastClicked && e.shiftKey && lastClicked !== subselector) {
 					// Select all the checkboxes in between
-					var state = subselector.checked;
-					var started = false;
+					const state = subselector.checked;
+					let started = false;
 
 					checkboxes.forEach(function (el) {
 						if ([subselector, lastClicked].some(function (ref) {
@@ -130,16 +130,16 @@ define('forum/flags/list', ['components', 'Chart', 'categoryFilter', 'autocomple
 
 	Flags.handleBulkActions = function () {
 		document.querySelector('[component="flags/bulk-actions"]').addEventListener('click', function (e) {
-			var subselector = e.target.closest('[data-action]');
+			const subselector = e.target.closest('[data-action]');
 			if (subselector) {
-				var action = subselector.getAttribute('data-action');
-				var flagIds = Flags.getSelected();
-				var promises = [];
+				const action = subselector.getAttribute('data-action');
+				const flagIds = Flags.getSelected();
+				const promises = [];
 
 				// TODO: this can be better done with flagIds.map to return promises
 				flagIds.forEach(function (flagId) {
 					promises.push(new Promise(function (resolve, reject) {
-						var handler = function (err) {
+						const handler = function (err) {
 							if (err) {
 								reject(err);
 							}
@@ -164,10 +164,10 @@ define('forum/flags/list', ['components', 'Chart', 'categoryFilter', 'autocomple
 				});
 
 				Promise.allSettled(promises).then(function (results) {
-					var fulfilled = results.filter(function (res) {
+					const fulfilled = results.filter(function (res) {
 						return res.status === 'fulfilled';
 					}).length;
-					var errors = results.filter(function (res) {
+					const errors = results.filter(function (res) {
 						return res.status === 'rejected';
 					});
 					if (fulfilled) {
@@ -184,8 +184,8 @@ define('forum/flags/list', ['components', 'Chart', 'categoryFilter', 'autocomple
 	};
 
 	Flags.getSelected = function () {
-		var checkboxes = document.querySelectorAll('[component="flags/list"] [data-flag-id] input[type="checkbox"]');
-		var payload = [];
+		const checkboxes = document.querySelectorAll('[component="flags/list"] [data-flag-id] input[type="checkbox"]');
+		const payload = [];
 		checkboxes.forEach(function (el) {
 			if (el.checked) {
 				payload.push(el.closest('[data-flag-id]').getAttribute('data-flag-id'));
@@ -196,15 +196,15 @@ define('forum/flags/list', ['components', 'Chart', 'categoryFilter', 'autocomple
 	};
 
 	Flags.handleGraphs = function () {
-		var dailyCanvas = document.getElementById('flags:daily');
-		var dailyLabels = utils.getDaysArray().map(function (text, idx) {
+		const dailyCanvas = document.getElementById('flags:daily');
+		const dailyLabels = utils.getDaysArray().map(function (text, idx) {
 			return idx % 3 ? '' : text;
 		});
 
 		if (utils.isMobile()) {
 			Chart.defaults.global.tooltips.enabled = false;
 		}
-		var data = {
+		const data = {
 			'flags:daily': {
 				labels: dailyLabels,
 				datasets: [

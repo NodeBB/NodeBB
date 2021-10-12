@@ -4,21 +4,21 @@
 define('forum/register', [
 	'translator', 'zxcvbn', 'slugify', 'api', 'bootbox', 'forum/login', 'jquery-form',
 ], function (translator, zxcvbn, slugify, api, bootbox, Login) {
-	var Register = {};
-	var validationError = false;
-	var successIcon = '';
+	const Register = {};
+	let validationError = false;
+	const successIcon = '';
 
 	Register.init = function () {
-		var username = $('#username');
-		var password = $('#password');
-		var password_confirm = $('#password-confirm');
-		var register = $('#register');
+		const username = $('#username');
+		const password = $('#password');
+		const password_confirm = $('#password-confirm');
+		const register = $('#register');
 
 		handleLanguageOverride();
 
 		$('#content #noscript').val('false');
 
-		var query = utils.params();
+		const query = utils.params();
 		if (query.token) {
 			$('#token').val(query.token);
 		}
@@ -57,8 +57,8 @@ define('forum/register', [
 		Login.capsLockCheck(document.querySelector('#password'), document.querySelector('#caps-lock-warning'));
 
 		register.on('click', function (e) {
-			var registerBtn = $(this);
-			var errorEl = $('#register-error-notify');
+			const registerBtn = $(this);
+			const errorEl = $('#register-error-notify');
 			errorEl.addClass('hidden');
 			e.preventDefault();
 			validateForm(function () {
@@ -78,11 +78,11 @@ define('forum/register', [
 							return;
 						}
 						if (data.next) {
-							var pathname = utils.urlToLocation(data.next).pathname;
+							const pathname = utils.urlToLocation(data.next).pathname;
 
-							var params = utils.params({ url: data.next });
+							const params = utils.params({ url: data.next });
 							params.registered = true;
-							var qs = decodeURIComponent($.param(params));
+							const qs = decodeURIComponent($.param(params));
 
 							window.location.href = pathname + '?' + qs;
 						} else if (data.message) {
@@ -114,8 +114,8 @@ define('forum/register', [
 	function validateUsername(username, callback) {
 		callback = callback || function () {};
 
-		var username_notify = $('#username-notify');
-		var userslug = slugify(username);
+		const username_notify = $('#username-notify');
+		const userslug = slugify(username);
 		if (username.length < ajaxify.data.minimumUsernameLength || userslug.length < ajaxify.data.minimumUsernameLength) {
 			showError(username_notify, '[[error:username-too-short]]');
 		} else if (username.length > ajaxify.data.maximumUsernameLength) {
@@ -139,9 +139,9 @@ define('forum/register', [
 	}
 
 	function validatePassword(password, password_confirm) {
-		var password_notify = $('#password-notify');
-		var password_confirm_notify = $('#password-confirm-notify');
-		var passwordStrength = zxcvbn(password);
+		const password_notify = $('#password-notify');
+		const password_confirm_notify = $('#password-confirm-notify');
+		const passwordStrength = zxcvbn(password);
 
 		if (password.length < ajaxify.data.minimumPasswordLength) {
 			showError(password_notify, '[[reset_password:password_too_short]]');
@@ -163,8 +163,8 @@ define('forum/register', [
 	}
 
 	function validatePasswordConfirm(password, password_confirm) {
-		var password_notify = $('#password-notify');
-		var password_confirm_notify = $('#password-confirm-notify');
+		const password_notify = $('#password-notify');
+		const password_confirm_notify = $('#password-confirm-notify');
 
 		if (!password || password_notify.hasClass('alert-error')) {
 			return;
@@ -200,8 +200,8 @@ define('forum/register', [
 
 	function handleLanguageOverride() {
 		if (!app.user.uid && config.defaultLang !== config.userLang) {
-			var formEl = $('[component="register/local"]');
-			var langEl = $('<input type="hidden" name="userLang" value="' + config.userLang + '" />');
+			const formEl = $('[component="register/local"]');
+			const langEl = $('<input type="hidden" name="userLang" value="' + config.userLang + '" />');
 
 			formEl.append(langEl);
 		}

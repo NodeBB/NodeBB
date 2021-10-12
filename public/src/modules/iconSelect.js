@@ -2,12 +2,12 @@
 
 
 define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
-	var iconSelect = {};
+	const iconSelect = {};
 
 	iconSelect.init = function (el, onModified) {
 		onModified = onModified || function () {};
-		var doubleSize = el.hasClass('fa-2x');
-		var selected = el.attr('class').replace('fa-2x', '').replace('fa', '').replace(/\s+/g, '');
+		const doubleSize = el.hasClass('fa-2x');
+		let selected = el.attr('class').replace('fa-2x', '').replace('fa', '').replace(/\s+/g, '');
 
 		$('#icons .selected').removeClass('selected');
 
@@ -23,7 +23,7 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 			html = $(html);
 			html.find('.fa-icons').prepend($('<i class="fa fa-nbb-none"></i>'));
 
-			var picker = bootbox.dialog({
+			const picker = bootbox.dialog({
 				onEscape: true,
 				backdrop: true,
 				show: false,
@@ -45,10 +45,10 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 						label: 'Select',
 						className: 'btn-primary',
 						callback: function () {
-							var iconClass = $('.bootbox .selected').attr('class');
-							var categoryIconClass = $('<div></div>').addClass(iconClass).removeClass('fa').removeClass('selected')
+							const iconClass = $('.bootbox .selected').attr('class');
+							const categoryIconClass = $('<div></div>').addClass(iconClass).removeClass('fa').removeClass('selected')
 								.attr('class');
-							var searchElVal = picker.find('input').val();
+							const searchElVal = picker.find('input').val();
 
 							if (categoryIconClass) {
 								el.attr('class', 'fa ' + (doubleSize ? 'fa-2x ' : '') + categoryIconClass);
@@ -67,8 +67,8 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 			});
 
 			picker.on('show.bs.modal', function () {
-				var modalEl = $(this);
-				var searchEl = modalEl.find('input');
+				const modalEl = $(this);
+				const searchEl = modalEl.find('input');
 
 				if (selected) {
 					modalEl.find('.' + selected).addClass('selected');
@@ -77,10 +77,10 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 			}).modal('show');
 
 			picker.on('shown.bs.modal', function () {
-				var modalEl = $(this);
-				var searchEl = modalEl.find('input');
-				var icons = modalEl.find('.fa-icons i');
-				var submitEl = modalEl.find('button.btn-primary');
+				const modalEl = $(this);
+				const searchEl = modalEl.find('input');
+				const icons = modalEl.find('.fa-icons i');
+				const submitEl = modalEl.find('button.btn-primary');
 
 				function changeSelection(newSelection) {
 					modalEl.find('i.selected').removeClass('selected');

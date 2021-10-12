@@ -6,8 +6,8 @@ define('handleBack', [
 	'navigator',
 	'forum/pagination',
 ], function (components, storage, navigator, pagination) {
-	var handleBack = {};
-	var loadTopicsMethod;
+	const handleBack = {};
+	let loadTopicsMethod;
 
 	handleBack.init = function (_loadTopicsMethod) {
 		loadTopicsMethod = _loadTopicsMethod;
@@ -19,8 +19,8 @@ define('handleBack', [
 
 	function saveClickedIndex() {
 		$('[component="category"]').on('click', '[component="topic/header"]', function () {
-			var clickedIndex = $(this).parents('[data-index]').attr('data-index');
-			var windowScrollTop = $(window).scrollTop();
+			const clickedIndex = $(this).parents('[data-index]').attr('data-index');
+			const windowScrollTop = $(window).scrollTop();
 			$('[component="category/topic"]').each(function (index, el) {
 				if ($(el).offset().top - windowScrollTop > 0) {
 					storage.setItem('category:bookmark', $(el).attr('data-index'));
@@ -33,15 +33,15 @@ define('handleBack', [
 	}
 
 	function onBackClicked(isMarkedUnread) {
-		var highlightUnread = isMarkedUnread && ajaxify.data.template.unread;
+		const highlightUnread = isMarkedUnread && ajaxify.data.template.unread;
 		if (
 			ajaxify.data.template.category ||
 			ajaxify.data.template.recent ||
 			ajaxify.data.template.popular ||
 			highlightUnread
 		) {
-			var bookmarkIndex = storage.getItem('category:bookmark');
-			var clickedIndex = storage.getItem('category:bookmark:clicked');
+			let bookmarkIndex = storage.getItem('category:bookmark');
+			let clickedIndex = storage.getItem('category:bookmark:clicked');
 
 			storage.removeItem('category:bookmark');
 			storage.removeItem('category:bookmark:clicked');
@@ -53,7 +53,7 @@ define('handleBack', [
 			clickedIndex = Math.max(0, parseInt(clickedIndex, 10) || 0);
 
 			if (config.usePagination) {
-				var page = Math.ceil((parseInt(bookmarkIndex, 10) + 1) / config.topicsPerPage);
+				const page = Math.ceil((parseInt(bookmarkIndex, 10) + 1) / config.topicsPerPage);
 				if (parseInt(page, 10) !== ajaxify.data.pagination.currentPage) {
 					pagination.loadPage(page, function () {
 						handleBack.scrollToTopic(bookmarkIndex, clickedIndex);
@@ -76,7 +76,7 @@ define('handleBack', [
 	}
 
 	handleBack.highlightTopic = function (topicIndex) {
-		var highlight = components.get('category/topic', 'index', topicIndex);
+		const highlight = components.get('category/topic', 'index', topicIndex);
 
 		if (highlight.length && !highlight.hasClass('highlight')) {
 			highlight.addClass('highlight');
@@ -91,10 +91,10 @@ define('handleBack', [
 			return;
 		}
 
-		var scrollTo = components.get('category/topic', 'index', bookmarkIndex);
+		const scrollTo = components.get('category/topic', 'index', bookmarkIndex);
 
 		if (scrollTo.length) {
-			var offset = storage.getItem('category:bookmark:offset');
+			const offset = storage.getItem('category:bookmark:offset');
 			storage.removeItem('category:bookmark:offset');
 			$(window).scrollTop(scrollTo.offset().top - offset);
 			handleBack.highlightTopic(clickedIndex);

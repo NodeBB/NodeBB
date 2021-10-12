@@ -2,7 +2,7 @@
 
 
 define('admin/advanced/errors', ['bootbox', 'Chart'], function (bootbox, Chart) {
-	var Errors = {};
+	const Errors = {};
 
 	Errors.init = function () {
 		Errors.setupCharts();
@@ -26,9 +26,9 @@ define('admin/advanced/errors', ['bootbox', 'Chart'], function (bootbox, Chart) 
 	};
 
 	Errors.setupCharts = function () {
-		var notFoundCanvas = document.getElementById('not-found');
-		var tooBusyCanvas = document.getElementById('toobusy');
-		var dailyLabels = utils.getDaysArray();
+		const notFoundCanvas = document.getElementById('not-found');
+		const tooBusyCanvas = document.getElementById('toobusy');
+		let dailyLabels = utils.getDaysArray();
 
 		dailyLabels = dailyLabels.slice(-7);
 
@@ -36,7 +36,7 @@ define('admin/advanced/errors', ['bootbox', 'Chart'], function (bootbox, Chart) 
 			Chart.defaults.global.tooltips.enabled = false;
 		}
 
-		var data = {
+		const data = {
 			'not-found': {
 				labels: dailyLabels,
 				datasets: [
