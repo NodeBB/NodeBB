@@ -66,7 +66,7 @@ exports.handleErrors = function handleErrors(err, req, res, next) { // eslint-di
 			return helpers.formatApiResponse(status, res, err);
 		}
 
-		winston.error(`${req.path}\n${err.stack}`);
+		winston.error(`${req.originalUrl}\n${err.stack}`);
 		res.status(status || 500);
 		const data = {
 			path: validator.escape(path),
