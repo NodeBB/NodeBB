@@ -47,6 +47,7 @@
 	"users.uid": "uid",
 	"users.username": "uporabniško ime",
 	"users.email": "e-poštni naslov",
+	"users.no-email": "(no email)",
 	"users.ip": "IP",
 	"users.postcount": "postcount",
 	"users.reputation": "ugled",

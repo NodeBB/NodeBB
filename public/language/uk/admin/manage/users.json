@@ -47,6 +47,7 @@
 	"users.uid": "uid",
 	"users.username": "ім'я",
 	"users.email": "email",
+	"users.no-email": "(no email)",
 	"users.ip": "IP",
 	"users.postcount": "постів",
 	"users.reputation": "репутація",
