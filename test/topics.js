@@ -2867,7 +2867,6 @@ describe('Topics\'s', async () => {
 
 	before(async () => {
 		files = await file.walk(path.resolve(__dirname, './topics'));
-		console.log(files);
 	});
 
 	it('subfolder tests', () => {
