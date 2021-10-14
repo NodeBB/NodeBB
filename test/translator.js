@@ -1,5 +1,6 @@
 'use strict';
 
+// For tests relating to Transifex configuration, check i18n.js
 
 const assert = require('assert');
 const shim = require('../public/src/modules/translator');
