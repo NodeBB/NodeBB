@@ -47,6 +47,7 @@
 	"users.uid": "uid",
 	"users.username": "jméno",
 	"users.email": "e-mail",
+	"users.no-email": "(no email)",
 	"users.ip": "IP",
 	"users.postcount": "počet příspěvků",
 	"users.reputation": "reputace",
