@@ -1,8 +1,0 @@
-{
-	"home-page": "Page d'accueil",
-	"description": "Choisissez la page affichée lorsque les utilisateurs naviguent à la racine de votre forum.",
-	"home-page-route": "Route de la page d'accueil",
-	"custom-route": "Route personnalisée",
-	"allow-user-home-pages": "Permettre aux utilisateurs de choisir une page d'accueil personnalisée",
-	"home-page-title": "Titre de la page d'accueil (par défaut \"Accueil\")"
-}
