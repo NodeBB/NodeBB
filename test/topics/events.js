@@ -2,12 +2,12 @@
 
 const assert = require('assert');
 
-const db = require('./mocks/databasemock');
+const db = require('../mocks/databasemock');
 
-const plugins = require('../src/plugins');
-const categories = require('../src/categories');
-const topics = require('../src/topics');
-const user = require('../src/user');
+const plugins = require('../../src/plugins');
+const categories = require('../../src/categories');
+const topics = require('../../src/topics');
+const user = require('../../src/user');
 
 describe('Topic Events', () => {
 	let fooUid;
