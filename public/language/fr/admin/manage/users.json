@@ -47,7 +47,7 @@
 	"users.uid": "uid",
 	"users.username": "nom d'utilisateur",
 	"users.email": "e-mail",
-	"users.no-email": "(no email)",
+	"users.no-email": "(pas e-mail)",
 	"users.ip": "IP",
 	"users.postcount": "nombre de sujets",
 	"users.reputation": "réputation",

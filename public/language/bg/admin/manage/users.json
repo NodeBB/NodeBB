@@ -47,7 +47,7 @@
 	"users.uid": "потр. ид.",
 	"users.username": "потребителско име",
 	"users.email": "е-поща",
-	"users.no-email": "(no email)",
+	"users.no-email": "(няма е-поща)",
 	"users.ip": "IP адрес",
 	"users.postcount": "брой публикации",
 	"users.reputation": "репутация",
