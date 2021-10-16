@@ -39,10 +39,12 @@ module.exports = function (module) {
 			}
 		}
 		values = values.map(helpers.valueToString);
-		await module.transaction(async () => {
-			const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
+		await module.transaction(async (session) => {
+			const bulk = module.client.collection('objects').initializeUnorderedBulkOp({ session });
 			for (let i = 0; i < scores.length; i += 1) {
-				bulk.find({ _key: key, value: values[i] }).upsert().updateOne({ $set: { score: parseFloat(scores[i]) } });
+				bulk.find({ _key: key, value: values[i] }).upsert().updateOne(
+					{ $set: { score: parseFloat(scores[i]) } },
+				);
 			}
 			await bulk.execute();
 		});
@@ -63,8 +65,8 @@ module.exports = function (module) {
 		}
 
 		value = helpers.valueToString(value);
-		await module.transaction(async () => {
-			const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
+		await module.transaction(async (session) => {
+			const bulk = module.client.collection('objects').initializeUnorderedBulkOp({ session });
 			for (let i = 0; i < keys.length; i += 1) {
 				bulk
 					.find({ _key: keys[i], value: value })
@@ -79,8 +81,8 @@ module.exports = function (module) {
 		if (!Array.isArray(data) || !data.length) {
 			return;
 		}
-		await module.transaction(async () => {
-			const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
+		await module.transaction(async (session) => {
+			const bulk = module.client.collection('objects').initializeUnorderedBulkOp({ session });
 			data.forEach((item) => {
 				if (!utils.isNumber(item[1])) {
 					throw new Error(`[[error:invalid-score, ${item[1]}]]`);

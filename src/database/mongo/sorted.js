@@ -453,8 +453,8 @@ module.exports = function (module) {
 	module.sortedSetRemoveRangeByLex = async function (key, min, max) {
 		const query = { _key: key };
 		buildLexQuery(query, min, max);
-		await module.transaction(async () => {
-			await module.client.collection('objects').deleteMany(query);
+		await module.transaction(async (session) => {
+			await module.client.collection('objects').deleteMany(query, { session });
 		});
 	};
 

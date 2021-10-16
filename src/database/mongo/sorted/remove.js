@@ -17,11 +17,11 @@ module.exports = function (module) {
 		} else {
 			value = helpers.valueToString(value);
 		}
-		await module.transaction(async () => {
+		await module.transaction(async (session) => {
 			await module.client.collection('objects').deleteMany({
 				_key: Array.isArray(key) ? { $in: key } : key,
 				value: isValueArray ? { $in: value } : value,
-			});
+			}, { session });
 		});
 	};
 
@@ -30,8 +30,8 @@ module.exports = function (module) {
 			return;
 		}
 		value = helpers.valueToString(value);
-		await module.transaction(async () => {
-			await module.client.collection('objects').deleteMany({ _key: { $in: keys }, value: value });
+		await module.transaction(async (session) => {
+			await module.client.collection('objects').deleteMany({ _key: { $in: keys }, value: value }, { session });
 		});
 	};
 
@@ -50,8 +50,8 @@ module.exports = function (module) {
 			query.score = query.score || {};
 			query.score.$lte = parseFloat(max);
 		}
-		await module.transaction(async () => {
-			await module.client.collection('objects').deleteMany(query);
+		await module.transaction(async (session) => {
+			await module.client.collection('objects').deleteMany(query, { session });
 		});
 	};
 
@@ -59,8 +59,8 @@ module.exports = function (module) {
 		if (!Array.isArray(data) || !data.length) {
 			return;
 		}
-		await module.transaction(async () => {
-			const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
+		await module.transaction(async (session) => {
+			const bulk = module.client.collection('objects').initializeUnorderedBulkOp({ session });
 			data.forEach(item => bulk.find({ _key: item[0], value: String(item[1]) }).delete());
 			await bulk.execute();
 		});

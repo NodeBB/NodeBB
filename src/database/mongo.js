@@ -61,6 +61,7 @@ mongoModule.questions = [
 
 mongoModule.init = async function () {
 	client = await connection.connect(nconf.get('mongo'));
+	mongoModule.mongoClient = client;
 	mongoModule.client = client.db();
 };
 

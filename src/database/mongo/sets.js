@@ -34,8 +34,8 @@ module.exports = function (module) {
 		}
 
 		value = value.map(v => helpers.valueToString(v));
-		await module.transaction(async () => {
-			const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
+		await module.transaction(async (session) => {
+			const bulk = module.client.collection('objects').initializeUnorderedBulkOp({ session });
 
 			for (let i = 0; i < keys.length; i += 1) {
 				bulk.find({ _key: keys[i] }).upsert().updateOne({
@@ -63,8 +63,8 @@ module.exports = function (module) {
 		}
 
 		value = value.map(v => helpers.valueToString(v));
-		await module.transaction(async () => {
-			await module.client.collection('objects').updateMany({ _key: Array.isArray(key) ? { $in: key } : key }, { $pullAll: { members: value } });
+		await module.transaction(async (session) => {
+			await module.client.collection('objects').updateMany({ _key: Array.isArray(key) ? { $in: key } : key }, { $pullAll: { members: value } }, { session });
 		});
 	};
 
@@ -73,8 +73,8 @@ module.exports = function (module) {
 			return;
 		}
 		value = helpers.valueToString(value);
-		await module.transaction(async () => {
-			await module.client.collection('objects').updateMany({ _key: { $in: keys } }, { $pull: { members: value } });
+		await module.transaction(async (session) => {
+			await module.client.collection('objects').updateMany({ _key: { $in: keys } }, { $pull: { members: value } }, { session });
 		});
 	};
 
