@@ -7,15 +7,17 @@ module.exports = function (module) {
 	};
 
 	module.emptydb = async function () {
-		await module.client.collection('objects').deleteMany({});
-		module.objectCache.reset();
+		await module.transaction(async () => {
+			await module.client.collection('objects').deleteMany({});
+			module.objectCache.reset();
+		});
 	};
 
 	module.exists = async function (key) {
 		if (!key) {
 			return;
 		}
-
+		
 		if (Array.isArray(key)) {
 			const data = await module.client.collection('objects').find({
 				_key: { $in: key },
@@ -46,16 +48,20 @@ module.exports = function (module) {
 		if (!key) {
 			return;
 		}
-		await module.client.collection('objects').deleteMany({ _key: key });
-		module.objectCache.del(key);
+		await module.transaction(async () => {
+			await module.client.collection('objects').deleteMany({ _key: key });
+			module.objectCache.del(key);
+		});
 	};
 
 	module.deleteAll = async function (keys) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return;
 		}
-		await module.client.collection('objects').deleteMany({ _key: { $in: keys } });
-		module.objectCache.del(keys);
+		await module.transaction(async () => {
+			await module.client.collection('objects').deleteMany({ _key: { $in: keys } });
+			module.objectCache.del(keys);
+		});
 	};
 
 	module.get = async function (key) {

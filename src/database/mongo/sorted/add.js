@@ -39,12 +39,13 @@ module.exports = function (module) {
 			}
 		}
 		values = values.map(helpers.valueToString);
-
-		const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
-		for (let i = 0; i < scores.length; i += 1) {
-			bulk.find({ _key: key, value: values[i] }).upsert().updateOne({ $set: { score: parseFloat(scores[i]) } });
-		}
-		await bulk.execute();
+		await module.transaction(async () => {
+			const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
+			for (let i = 0; i < scores.length; i += 1) {
+				bulk.find({ _key: key, value: values[i] }).upsert().updateOne({ $set: { score: parseFloat(scores[i]) } });
+			}
+			await bulk.execute();
+		});
 	}
 
 	module.sortedSetsAdd = async function (keys, scores, value) {
@@ -62,28 +63,31 @@ module.exports = function (module) {
 		}
 
 		value = helpers.valueToString(value);
-
+		await module.transaction(async () => {
 		const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
-		for (let i = 0; i < keys.length; i += 1) {
-			bulk
-				.find({ _key: keys[i], value: value })
-				.upsert()
-				.updateOne({ $set: { score: parseFloat(isArrayOfScores ? scores[i] : scores) } });
-		}
-		await bulk.execute();
+			for (let i = 0; i < keys.length; i += 1) {
+				bulk
+					.find({ _key: keys[i], value: value })
+					.upsert()
+					.updateOne({ $set: { score: parseFloat(isArrayOfScores ? scores[i] : scores) } });
+			}
+			await bulk.execute();
+		});
 	};
 
 	module.sortedSetAddBulk = async function (data) {
 		if (!Array.isArray(data) || !data.length) {
 			return;
 		}
+		await module.transaction(async () => {
 		const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
-		data.forEach((item) => {
-			if (!utils.isNumber(item[1])) {
-				throw new Error(`[[error:invalid-score, ${item[1]}]]`);
-			}
-			bulk.find({ _key: item[0], value: String(item[2]) }).upsert().updateOne({ $set: { score: parseFloat(item[1]) } });
+			data.forEach((item) => {
+				if (!utils.isNumber(item[1])) {
+					throw new Error(`[[error:invalid-score, ${item[1]}]]`);
+				}
+				bulk.find({ _key: item[0], value: String(item[2]) }).upsert().updateOne({ $set: { score: parseFloat(item[1]) } });
+			});
+			await bulk.execute();
 		});
-		await bulk.execute();
 	};
 };

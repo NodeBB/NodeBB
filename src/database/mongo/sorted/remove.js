@@ -17,10 +17,11 @@ module.exports = function (module) {
 		} else {
 			value = helpers.valueToString(value);
 		}
-
-		await module.client.collection('objects').deleteMany({
-			_key: Array.isArray(key) ? { $in: key } : key,
-			value: isValueArray ? { $in: value } : value,
+		await module.transaction(async () => {
+			await module.client.collection('objects').deleteMany({
+				_key: Array.isArray(key) ? { $in: key } : key,
+				value: isValueArray ? { $in: value } : value,
+			});
 		});
 	};
 
@@ -29,8 +30,9 @@ module.exports = function (module) {
 			return;
 		}
 		value = helpers.valueToString(value);
-
-		await module.client.collection('objects').deleteMany({ _key: { $in: keys }, value: value });
+		await module.transaction(async () => {
+			await module.client.collection('objects').deleteMany({ _key: { $in: keys }, value: value });
+		});
 	};
 
 	module.sortedSetsRemoveRangeByScore = async function (keys, min, max) {
@@ -48,16 +50,19 @@ module.exports = function (module) {
 			query.score = query.score || {};
 			query.score.$lte = parseFloat(max);
 		}
-
-		await module.client.collection('objects').deleteMany(query);
+		await module.transaction(async () => {
+			await module.client.collection('objects').deleteMany(query);
+		});
 	};
 
 	module.sortedSetRemoveBulk = async function (data) {
 		if (!Array.isArray(data) || !data.length) {
 			return;
 		}
-		const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
-		data.forEach(item => bulk.find({ _key: item[0], value: String(item[1]) }).delete());
-		await bulk.execute();
+		await module.transaction(async () => {
+			const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
+			data.forEach(item => bulk.find({ _key: item[0], value: String(item[1]) }).delete());
+			await bulk.execute();
+		});
 	};
 };
