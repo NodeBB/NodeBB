@@ -17,7 +17,7 @@ module.exports = function (module) {
 		if (!key) {
 			return;
 		}
-		
+
 		if (Array.isArray(key)) {
 			const data = await module.client.collection('objects').find({
 				_key: { $in: key },

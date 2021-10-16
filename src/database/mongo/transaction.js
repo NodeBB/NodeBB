@@ -6,9 +6,8 @@ module.exports = function (module) {
 		const session = module.client.startSession();
 		try {
 			return await session.withTransaction(perform);
+		} finally {
+			await session.endSession();
 		}
-		finally {
-			await session.endSession()
-		}	
 	};
 };
