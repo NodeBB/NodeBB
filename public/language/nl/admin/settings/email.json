@@ -6,7 +6,7 @@
 	"from-help": "De from naam om te tonen in de e-mail.",
 
 	"smtp-transport": "SMTP Transport",
-	"smtp-transport.enabled": "Gebruik een externe mail server om mails te verzenden",
+	"smtp-transport.enabled": "Enable SMTP Transport",
 	"smtp-transport-help": "Je kunt een bekende dienst uit de lijst selecteren of vul een aangepaste dienst in.",
 	"smtp-transport.service": "Selecteer een dienst",
 	"smtp-transport.service-custom": "Custom Service",

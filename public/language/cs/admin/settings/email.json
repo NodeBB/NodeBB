@@ -6,7 +6,7 @@
 	"from-help": "Zobrazené jméno v e-mailu v – Od",
 
 	"smtp-transport": "Přenos SMTP",
-	"smtp-transport.enabled": "Pro odesílání e-mailů použít externí e-mailový server ",
+	"smtp-transport.enabled": "Enable SMTP Transport",
 	"smtp-transport-help": "Ze seznamu můžete vybrat známé služby nebo zadat vlastní.",
 	"smtp-transport.service": "Vyberte službu",
 	"smtp-transport.service-custom": "Uživatelský služba",

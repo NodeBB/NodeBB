@@ -6,7 +6,7 @@
 	"from-help": "Името на изпращача, което да бъде показано в е-писмото.",
 
 	"smtp-transport": "Транспорт чрез SMTP",
-	"smtp-transport.enabled": "Използване на външен сървър за е-поща за изпращане на е-писма",
+	"smtp-transport.enabled": "Включване на транспорта чрез SMTP",
 	"smtp-transport-help": "Можете да изберете от списък от познати услуги, или да въведете такава ръчно.",
 	"smtp-transport.service": "Изберете услуга",
 	"smtp-transport.service-custom": "Персонализирана услуга",

@@ -6,7 +6,7 @@
 	"from-help": "用于邮件中显示的发送者",
 
 	"smtp-transport": "SMTP 通信",
-	"smtp-transport.enabled": "使用一个外部电子邮箱系统来发送邮件",
+	"smtp-transport.enabled": "Enable SMTP Transport",
 	"smtp-transport-help": "您可以从列表中选取一个已知的服务或自定义。",
 	"smtp-transport.service": "选择服务",
 	"smtp-transport.service-custom": "自定义",

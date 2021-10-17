@@ -6,7 +6,7 @@
 	"from-help": "Nazwa „Od” widoczna w e-mailach",
 
 	"smtp-transport": "Transport SMTP",
-	"smtp-transport.enabled": "Używaj zewnętrznego serwera e-mail do wysyłania e-maili.",
+	"smtp-transport.enabled": "Enable SMTP Transport",
 	"smtp-transport-help": "Możesz wybrać z listy dobrze znanych usług lub wskazać usługę niestandardową.",
 	"smtp-transport.service": "Wybierz usługę",
 	"smtp-transport.service-custom": "Usługa niestandardowa",

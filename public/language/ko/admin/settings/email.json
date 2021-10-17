@@ -6,7 +6,7 @@
 	"from-help": "이메일에 표시할 발신자 이름",
 
 	"smtp-transport": "SMTP Transport",
-	"smtp-transport.enabled": "외부 이메일 서버를 통해 메일 발송",
+	"smtp-transport.enabled": "Enable SMTP Transport",
 	"smtp-transport-help": "자주 사용되는 서비스 목록 중에 하나를 선택하거나 직접 입력할 수 있습니다.",
 	"smtp-transport.service": "서비스 선택",
 	"smtp-transport.service-custom": "직접 입력",

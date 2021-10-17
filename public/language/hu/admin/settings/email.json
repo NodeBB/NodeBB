@@ -6,7 +6,7 @@
 	"from-help": "Az emailben megjelenített feladói név.",
 
 	"smtp-transport": "SMTP beállítások",
-	"smtp-transport.enabled": "Külső email szerver használata email-ek küldéséhez",
+	"smtp-transport.enabled": "Enable SMTP Transport",
 	"smtp-transport-help": "Válogathatsz a jól ismert szolgáltatások listájából vagy megadhatsz sajátot.",
 	"smtp-transport.service": "Válassz egy szolgáltatást",
 	"smtp-transport.service-custom": "Egyedi szolgáltatás",

@@ -6,7 +6,7 @@
 	"from-help": "The from name to display in the email.",
 
 	"smtp-transport": "SMTP Transport",
-	"smtp-transport.enabled": "Use an external email server to send emails",
+	"smtp-transport.enabled": "Enable SMTP Transport",
 	"smtp-transport-help": "You can select from a list of well-known services or enter a custom one.",
 	"smtp-transport.service": "Selecione um serviço",
 	"smtp-transport.service-custom": "Serviço Personalizado",
