@@ -230,18 +230,16 @@ module.exports = function (module) {
 		increment[field] = value;
 
 		if (Array.isArray(key)) {
-			const res = await module.transaction(async (session) => {
+			await module.transaction(async (session) => {
 				const bulk = module.client.collection('objects').initializeUnorderedBulkOp({ session });
 				key.forEach((key) => {
 					bulk.find({ _key: key }).upsert().update({ $inc: increment });
 				});
 				await bulk.execute();
-
-				const result = await module.getObjectsFields(key, [field]);
-				return result.map(data => data && data[field]);
 			});
+			const result = await module.getObjectsFields(key, [field]);
 			cache.del(key);
-			return res;
+			return result.map(data => data && data[field]);
 		}
 
 		const result = await module.client.collection('objects').findOneAndUpdate({
