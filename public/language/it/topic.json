@@ -139,6 +139,7 @@
     "composer.handle_placeholder": "Inserisci qui il tuo nome/nome utente ospite",
     "composer.discard": "Annulla",
     "composer.submit": "Invia",
+    "composer.additional-options": "Additional Options",
     "composer.schedule": "Pianifica",
     "composer.replying_to": "Rispondendo a %1",
     "composer.new_topic": "Nuova Discussione",

@@ -139,6 +139,7 @@
     "composer.handle_placeholder": "Adj meg egy nevet/kezelőt",
     "composer.discard": "Elvet",
     "composer.submit": "Küldés",
+    "composer.additional-options": "Additional Options",
     "composer.schedule": "Időzítés",
     "composer.replying_to": "Válasz erre: %1",
     "composer.new_topic": "Új témakör",
