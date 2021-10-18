@@ -139,6 +139,7 @@
     "composer.handle_placeholder": "Voer je naam/pseudoniem hier in",
     "composer.discard": "Annuleren",
     "composer.submit": "Verzenden",
+    "composer.additional-options": "Additional Options",
     "composer.schedule": "Schedule",
     "composer.replying_to": "Reactie op %1",
     "composer.new_topic": "Nieuw onderwerp",

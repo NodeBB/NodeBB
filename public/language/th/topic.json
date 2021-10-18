@@ -139,6 +139,7 @@
     "composer.handle_placeholder": "Enter your name/handle here",
     "composer.discard": "ยกเลิก",
     "composer.submit": "ส่ง",
+    "composer.additional-options": "Additional Options",
     "composer.schedule": "Schedule",
     "composer.replying_to": "ตอบไปยัง  %1",
     "composer.new_topic": "กระทู้ใหม่",

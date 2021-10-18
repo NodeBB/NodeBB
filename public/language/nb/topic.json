@@ -139,6 +139,7 @@
     "composer.handle_placeholder": "Skriv inn navnet ditt / signatur her",
     "composer.discard": "Forkast",
     "composer.submit": "Send",
+    "composer.additional-options": "Additional Options",
     "composer.schedule": "Timeplan",
     "composer.replying_to": "Svarer i %1",
     "composer.new_topic": "Ny tråd",

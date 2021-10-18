@@ -139,6 +139,7 @@
     "composer.handle_placeholder": "이름을 입력하세요.",
     "composer.discard": "취소",
     "composer.submit": "등록",
+    "composer.additional-options": "Additional Options",
     "composer.schedule": "예약",
     "composer.replying_to": "'%1'에 대한 답글",
     "composer.new_topic": "새 화제 생성",

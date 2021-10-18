@@ -139,6 +139,7 @@
     "composer.handle_placeholder": "Enter your name/handle here",
     "composer.discard": "Πέταγμα",
     "composer.submit": "Υποβολή",
+    "composer.additional-options": "Additional Options",
     "composer.schedule": "Schedule",
     "composer.replying_to": "Απάντηση στο %1",
     "composer.new_topic": "Νέο Θέμα",
