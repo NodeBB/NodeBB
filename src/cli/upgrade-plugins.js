@@ -7,7 +7,6 @@ const semver = require('semver');
 const fs = require('fs');
 const path = require('path');
 const nconf = require('nconf');
-const util = require('util');
 
 const { paths, pluginNamePattern } = require('../constants');
 
@@ -138,9 +137,8 @@ async function upgradePlugins() {
 		prompt.message = '';
 		prompt.delimiter = '';
 
-		const promptGet = util.promisify((schema, callback) => prompt.get(schema, callback));
 		prompt.start();
-		const result = await promptGet({
+		const result = await prompt.get({
 			name: 'upgrade',
 			description: '\nProceed with upgrade (y|n)?'.reset,
 			type: 'string',
