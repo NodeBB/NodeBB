@@ -141,17 +141,11 @@ const doUnsubscribe = async (payload) => {
 };
 
 settingsController.unsubscribe = async (req, res) => {
-	let payload;
 	try {
-		payload = await jwtVerifyAsync(req.params.token);
+		const payload = await jwtVerifyAsync(req.params.token);
 		if (!payload || !unsubscribable.includes(payload.template)) {
 			return;
 		}
-	} catch (err) {
-		throw new Error(err);
-	}
-
-	try {
 		await doUnsubscribe(payload);
 		res.render('unsubscribe', {
 			payload: payload,
