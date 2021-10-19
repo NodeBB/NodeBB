@@ -11,7 +11,6 @@ module.exports = function (User) {
 	User.startJobs = function () {
 		winston.verbose('[user/jobs] (Re-)starting jobs...');
 
-		let started = 0;
 		let { digestHour } = meta.config;
 
 		// Fix digest hour if invalid
