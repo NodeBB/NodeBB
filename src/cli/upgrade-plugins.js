@@ -90,8 +90,8 @@ async function getSuggestedModules(nbbVersion, toCheck) {
 async function checkPlugins() {
 	process.stdout.write('Checking installed plugins and themes for updates... ');
 	const [plugins, nbbVersion] = await Promise.all([
-		getInstalledPlugins,
-		getCurrentVersion,
+		getInstalledPlugins(),
+		getCurrentVersion(),
 	]);
 
 	const toCheck = Object.keys(plugins);
