@@ -2,7 +2,7 @@
 
 const winston = require('winston');
 const cronJob = require('cron').CronJob;
-
+const db = require('../database');
 const meta = require('../meta');
 
 const jobs = {};
@@ -25,6 +25,7 @@ module.exports = function (User) {
 
 		startDigestJob('digest.daily', `0 ${digestHour} * * *`, 'day');
 		startDigestJob('digest.weekly', `0 ${digestHour} * * 0`, 'week');
+		startDigestJob('digest.biweekly', `0 ${digestHour} * * 0`, 'week');
 		startDigestJob('digest.monthly', `0 ${digestHour} 1 * *`, 'month');
 		started += 3;
 
@@ -36,9 +37,16 @@ module.exports = function (User) {
 	};
 
 	function startDigestJob(name, cronString, term) {
-		jobs[name] = new cronJob(cronString, (() => {
+		jobs[name] = new cronJob(cronString, (async () => {
 			winston.verbose(`[user/jobs] Digest job (${name}) started.`);
-			User.digest.execute({ interval: term });
+			if (name === 'digest.biweekly') {
+				const counter = await db.increment('biweeklydigestcounter');
+				if (counter % 2) {
+					User.digest.execute({ interval: term });
+				}
+			} else {
+				User.digest.execute({ interval: term });
+			}
 		}), null, true);
 		winston.verbose(`[user/jobs] Starting job (${name})`);
 	}

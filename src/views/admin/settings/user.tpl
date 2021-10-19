@@ -320,6 +320,7 @@
 					<option value="off">[[admin/settings/user:digest-freq.off]]</option>
 					<option value="day">[[admin/settings/user:digest-freq.daily]]</option>
 					<option value="week">[[admin/settings/user:digest-freq.weekly]]</option>
+					<option value="biweek">[[admin/settings/user:digest-freq.biweekly]]</option>
 					<option value="month">[[admin/settings/user:digest-freq.monthly]]</option>
 				</select>
 			</div>
