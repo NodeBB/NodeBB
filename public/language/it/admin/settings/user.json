@@ -71,6 +71,7 @@
 	"digest-freq.off": "Spento",
 	"digest-freq.daily": "Quotidiano",
 	"digest-freq.weekly": "Settimanale",
+	"digest-freq.biweekly": "Bi-Weekly",
 	"digest-freq.monthly": "Mensile",
 	"email-chat-notifs": "Manda una email se arriva un nuovo messaggio di chat e non sono online",
 	"email-post-notif": "Manda una email quando ci sono nuove risposte a discussioni a cui sono iscritto",

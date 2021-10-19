@@ -13,6 +13,7 @@
 	"resent-single": "Manuális összefoglaló küldés sikeres",
 	"resent-day": "Napi összefoglaló újraküldés sikeres",
 	"resent-week": "Heti összefoglaló újraküldés sikeres",
+	"resent-biweek": "Bi-Weekly digest resent",
 	"resent-month": "Havi összefoglaló újraküldés sikeres",
 	"null": "<em>Soha</em>",
 	"manual-run": "Manuális összefoglaló futtatás:",

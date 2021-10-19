@@ -3,7 +3,7 @@
 	"no-events": "אין ארועים",
 	"control-panel": "בקרת ארועים\n ",
 	"delete-events": "מחיקת ארועים",
-	"confirm-delete-all-events": "Are you sure you want to delete all logged events?",
+	"confirm-delete-all-events": "האם אתה בטוח שאתה רוצה למחוק את כל האירועים שנרשמו?",
 	"filters": "מסננים",
 	"filters-apply": "החל מסננים",
 	"filter-type": "סוג אירוע",

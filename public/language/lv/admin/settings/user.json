@@ -71,6 +71,7 @@
 	"digest-freq.off": "Nav",
 	"digest-freq.daily": "Ik dienu",
 	"digest-freq.weekly": "Ik nedēļu",
+	"digest-freq.biweekly": "Bi-Weekly",
 	"digest-freq.monthly": "Ik mēnesi",
 	"email-chat-notifs": "Sūtīt e-pastu, ja ierodas jauna saruna un es neesmu tiešsaistē",
 	"email-post-notif": "Sūtīt e-pastu, kad kāds raksta tematā, kuru esmu abonējis",

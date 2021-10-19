@@ -71,6 +71,7 @@
 	"digest-freq.off": "Isključi",
 	"digest-freq.daily": "Dnevno",
 	"digest-freq.weekly": "Tjedno",
+	"digest-freq.biweekly": "Bi-Weekly",
 	"digest-freq.monthly": "Mjesečno",
 	"email-chat-notifs": "Pošalji email ukoliko stigne nova poruka dok nisam na mreži",
 	"email-post-notif": "Pošalji email pri odgovoru u teme na koje pratim",

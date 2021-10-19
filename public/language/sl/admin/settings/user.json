@@ -71,6 +71,7 @@
 	"digest-freq.off": "Off",
 	"digest-freq.daily": "Dnevno",
 	"digest-freq.weekly": "Tedensko",
+	"digest-freq.biweekly": "Bi-Weekly",
 	"digest-freq.monthly": "Mesečno",
 	"email-chat-notifs": "Send an email if a new chat message arrives and I am not online",
 	"email-post-notif": "Send an email when replies are made to topics I am subscribed to",
