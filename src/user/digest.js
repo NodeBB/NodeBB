@@ -38,6 +38,7 @@ Digest.execute = async function (payload) {
 		winston.info(`[user/jobs] Digest (${payload.interval}) complete.`);
 	} catch (err) {
 		winston.error(`[user/jobs] Could not send digests (${payload.interval})\n${err.stack}`);
+		throw err;
 	}
 };
 
