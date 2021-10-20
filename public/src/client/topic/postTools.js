@@ -84,6 +84,8 @@ define('forum/topic/postTools', [
 	function addPostHandlers(tid) {
 		const postContainer = components.get('topic');
 
+		handleSelectionTooltip();
+
 		postContainer.on('click', '[component="post/quote"]', function () {
 			onQuoteClicked($(this), tid);
 		});
@@ -459,6 +461,62 @@ define('forum/topic/postTools', [
 		});
 
 		warning.modal();
+	}
+
+	function handleSelectionTooltip() {
+		async function updateTooltip() {
+			let selectionTooltip = $('[component="selection/tooltip"]');
+			selectionTooltip.addClass('hidden');
+			const selection = window.getSelection();
+			if (selection.focusNode && selection.type === 'Range' && ajaxify.data.template.topic) {
+				const focusNode = $(selection.focusNode);
+				const anchorNode = $(selection.anchorNode);
+				const firstPid = anchorNode.parents('[data-pid]').attr('data-pid');
+				const lastPid = focusNode.parents('[data-pid]').attr('data-pid');
+				if (firstPid !== lastPid || !focusNode.parents('[component="post/content"]').length || !anchorNode.parents('[component="post/content"]').length) {
+					return;
+				}
+				const postEl = focusNode.parents('[data-pid]');
+				const selectionRange = selection.getRangeAt(0);
+				if (!postEl.length || selectionRange.collapsed) {
+					return;
+				}
+				const rects = selectionRange.getClientRects();
+				const lastRect = rects[rects.length - 1];
+
+				if (!selectionTooltip.length) {
+					selectionTooltip = await app.parseAndTranslate('partials/topic/selection-tooltip', ajaxify.data);
+					selectionTooltip.appendTo('body');
+				}
+				selectionTooltip.off('click').on('click', '[component="selection/tooltip/quote"]', function () {
+					selectionTooltip.addClass('hidden');
+					onQuoteClicked(postEl.find('[component="post/quote"]'), ajaxify.data.tid);
+				});
+				selectionTooltip.removeClass('hidden');
+				$(window).one('action:ajaxify.start', function () {
+					selectionTooltip.remove();
+				});
+				const tooltipWidth = selectionTooltip.outerWidth(true);
+				selectionTooltip.css({
+					top: lastRect.bottom + $(window).scrollTop(),
+					left: tooltipWidth > lastRect.width ? lastRect.left : lastRect.left + lastRect.width - tooltipWidth,
+				});
+			}
+		}
+
+		const postContainer = components.get('topic');
+
+		hooks.onPage('action:posts.loaded', function () {
+			setTimeout(updateTooltip, 0);
+		});
+		$(document).off('selectionchange', hideTooltip).on('selectionchange', hideTooltip);
+		postContainer.on('mouseup', updateTooltip);
+	}
+
+	function hideTooltip() {
+		if (ajaxify.data.template.topic) {
+			$('[component="selection/tooltip"]').addClass('hidden');
+		}
 	}
 
 	return PostTools;
