@@ -16,15 +16,8 @@ let loginStrategies = [];
 const Auth = module.exports;
 
 Auth.initialize = function (app, middleware) {
-	const passportInitMiddleware = passport.initialize();
-	app.use((req, res, next) => {
-		passportInitMiddleware(req, res, next);
-	});
-	const passportSessionMiddleware = passport.session();
-	app.use((req, res, next) => {
-		passportSessionMiddleware(req, res, next);
-	});
-
+	app.use(passport.initialize());
+	app.use(passport.session());
 	app.use((req, res, next) => {
 		Auth.setAuthVars(req, res);
 		next();
