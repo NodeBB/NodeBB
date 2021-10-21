@@ -15,9 +15,14 @@ post:
             username:
               type: string
               example: admin
+              required: true
             password:
               type: string
               example: '123456'
+              required: true
+            session:
+              type: number
+              example: 1
   responses:
     '200':
       description: credentials successfully validated

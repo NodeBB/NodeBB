@@ -23,7 +23,7 @@ Utilities.ping.post = (req, res) => {
 
 Utilities.login = (req, res) => {
 	res.locals.continueLogin = async (strategy, req, res) => {
-		const { username, password } = req.body;
+		const { username, password, session } = req.body;
 
 		const userslug = slugify(username);
 		const uid = await user.getUidByUserslug(userslug);
@@ -37,8 +37,13 @@ Utilities.login = (req, res) => {
 		}
 
 		if (ok) {
-			const userData = await user.getUsers([uid], uid);
-			helpers.formatApiResponse(200, res, userData.pop());
+			const userData = (await user.getUsers([uid], uid)).pop();
+
+			if (parseInt(session, 10) === 1) {
+				await authenticationController.doLogin(req, userData.uid);
+			}
+
+			helpers.formatApiResponse(200, res, userData);
 		} else {
 			helpers.formatApiResponse(403, res);
 		}
