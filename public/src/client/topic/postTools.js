@@ -486,7 +486,7 @@ define('forum/topic/postTools', [
 
 				if (!selectionTooltip.length) {
 					selectionTooltip = await app.parseAndTranslate('partials/topic/selection-tooltip', ajaxify.data);
-					selectionTooltip.appendTo('body');
+					selectionTooltip.addClass('hidden').appendTo('body');
 				}
 				selectionTooltip.off('click').on('click', '[component="selection/tooltip/quote"]', function () {
 					selectionTooltip.addClass('hidden');
@@ -509,14 +509,10 @@ define('forum/topic/postTools', [
 		hooks.onPage('action:posts.loaded', function () {
 			setTimeout(updateTooltip, 0);
 		});
-		$(document).off('selectionchange', hideTooltip).on('selectionchange', hideTooltip);
-		postContainer.on('mouseup', updateTooltip);
-	}
 
-	function hideTooltip() {
-		if (ajaxify.data.template.topic) {
-			$('[component="selection/tooltip"]').addClass('hidden');
-		}
+		postContainer.on('mouseup', function () {
+			setTimeout(updateTooltip, 0);
+		});
 	}
 
 	return PostTools;
