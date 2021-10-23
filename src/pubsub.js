@@ -47,6 +47,8 @@ function get() {
 		pubsub = singleHost;
 	} else if (nconf.get('redis')) {
 		pubsub = require('./database/redis/pubsub');
+	} else if (nconf.get('mongo')) {
+		pubsub = require('./database/mongo/pubsub');
 	} else {
 		throw new Error('[[error:redis-required-for-pubsub]]');
 	}
