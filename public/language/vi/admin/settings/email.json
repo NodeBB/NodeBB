@@ -6,7 +6,7 @@
 	"from-help": "Tên người gửi hiển thị trong email.",
 
 	"smtp-transport": "Truyền Tải SMTP",
-	"smtp-transport.enabled": "Enable SMTP Transport",
+	"smtp-transport.enabled": "Bật truyền tải SMTP",
 	"smtp-transport-help": "Bạn có thể chọn từ danh sách các dịch vụ nổi bật hoặc nhập một dịch vụ tùy chỉnh.",
 	"smtp-transport.service": "Chọn một dịch vụ",
 	"smtp-transport.service-custom": "Tùy chỉnh dịch vụ ",
