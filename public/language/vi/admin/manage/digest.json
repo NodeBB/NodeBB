@@ -13,7 +13,7 @@
 	"resent-single": "Đã hoàn tất gửi lại thông báo thủ công",
 	"resent-day": "Đã gửi lại thông báo hàng ngày",
 	"resent-week": "Đã gửi lại thông báo hàng tuần",
-	"resent-biweek": "Bi-Weekly digest resent",
+	"resent-biweek": "Gửi lại thông báo hai tuần một lần",
 	"resent-month": "Đã gửi lại thông báo hàng tháng",
 	"null": "<em>Không</em>",
 	"manual-run": "Chạy thông báo thủ công:",
