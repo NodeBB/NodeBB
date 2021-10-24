@@ -464,11 +464,26 @@ define('forum/topic/postTools', [
 	}
 
 	function handleSelectionTooltip() {
-		async function updateTooltip() {
+		hooks.onPage('action:posts.loaded', delayedTooltip);
+
+		$(document).off('mouseup', delayedTooltip).on('mouseup', delayedTooltip);
+		$(document).off('selectionchange', selectionChange).on('selectionchange', selectionChange);
+	}
+
+	let selectionEmpty = true;
+	function selectionChange() {
+		selectionEmpty = window.getSelection().toString() === '';
+		if (selectionEmpty) {
+			$('[component="selection/tooltip"]').addClass('hidden');
+		}
+	}
+
+	function delayedTooltip() {
+		setTimeout(async function () {
 			let selectionTooltip = $('[component="selection/tooltip"]');
 			selectionTooltip.addClass('hidden');
 			const selection = window.getSelection();
-			if (selection.focusNode && selection.type === 'Range' && ajaxify.data.template.topic) {
+			if (selection.focusNode && selection.type === 'Range' && ajaxify.data.template.topic && !selectionEmpty) {
 				const focusNode = $(selection.focusNode);
 				const anchorNode = $(selection.anchorNode);
 				const firstPid = anchorNode.parents('[data-pid]').attr('data-pid');
@@ -495,6 +510,7 @@ define('forum/topic/postTools', [
 				selectionTooltip.removeClass('hidden');
 				$(window).one('action:ajaxify.start', function () {
 					selectionTooltip.remove();
+					$(document).off('selectionchange', selectionChange);
 				});
 				const tooltipWidth = selectionTooltip.outerWidth(true);
 				selectionTooltip.css({
@@ -502,17 +518,7 @@ define('forum/topic/postTools', [
 					left: tooltipWidth > lastRect.width ? lastRect.left : lastRect.left + lastRect.width - tooltipWidth,
 				});
 			}
-		}
-
-		const postContainer = components.get('topic');
-
-		hooks.onPage('action:posts.loaded', function () {
-			setTimeout(updateTooltip, 0);
-		});
-
-		postContainer.on('mouseup', function () {
-			setTimeout(updateTooltip, 0);
-		});
+		}, 0);
 	}
 
 	return PostTools;
