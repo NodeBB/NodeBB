@@ -83,6 +83,7 @@
 	"back-to-dashboard": "Vissza a vezérlőpultra",
 	"details.no-users": "Nem csatlakozott egy felhasználó sem a kiválasztott időszakban",
 	"details.no-topics": "Nem voltak új témakörök a kiválasztott időszakban",
+	"details.no-searches": "No searches have been made yet",
 	"details.no-logins": "Nem volt bejelentkezés a kiválasztott időszakban",
 	"details.logins-static": "A NodeBB csak %1 napig menti a munkamenet adatokat és az alábbi táblázat csak a legutóbbi aktív munkameneteket tartalmazza",
 	"details.logins-login-time": "Bejelentkezés ideje"

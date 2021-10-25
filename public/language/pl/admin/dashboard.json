@@ -83,6 +83,7 @@
 	"back-to-dashboard": "Powrót do Dashboardu",
 	"details.no-users": "Żaden użytkownik nie dołączył w wybranym okresie",
 	"details.no-topics": "Żadne tematy nie zostały opublikowane w wybranym okresie",
+	"details.no-searches": "No searches have been made yet",
 	"details.no-logins": "Żadne logi nie zostały zapisane w wybranym okresie",
 	"details.logins-static": "NodeBB zapisuje dane sesji tylko na %1 dzień, dlatego tabela poniżej zawierać będzie tylko ostatnią aktywną sesję",
 	"details.logins-login-time": "Czas logowania"

@@ -83,6 +83,7 @@
 	"back-to-dashboard": "Takaisin ohjausnäkymään",
 	"details.no-users": "Ei liittyneitä käyttäjiä valitulla aikavälillä.",
 	"details.no-topics": "Ei luotuja aiheita valitulla aikavälillä.",
+	"details.no-searches": "No searches have been made yet",
 	"details.no-logins": "Ei sisäänkirjautumisia valitulla aikavälillä.",
 	"details.logins-static": "NodeBB tallettaa istuntotiedot vain %1 päivän ajaksi, joten tämä kuvaaja näyttää vain viimeisimpänä aktiivisena olleet istunnot.",
 	"details.logins-login-time": "Sisäänkirjautumisaika"

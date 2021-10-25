@@ -83,6 +83,7 @@
 	"back-to-dashboard": "De volta ao Painel",
 	"details.no-users": "Nenhum usuário ingressou dentro do período de tempo selecionado",
 	"details.no-topics": "Nenhum tópico foi postado dentro do período de tempo selecionado",
+	"details.no-searches": "No searches have been made yet",
 	"details.no-logins": "Nenhum login foi registrado dentro do período de tempo selecionado",
 	"details.logins-static": "O NodeBB só salva os dados da sessão por %1 dias, então esta tabela abaixo mostrará apenas as sessões ativas mais recentemente",
 	"details.logins-login-time": "Hora de Login"

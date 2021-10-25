@@ -83,6 +83,7 @@
 	"back-to-dashboard": "Назад към таблото",
 	"details.no-users": "В избрания период не са се регистрирали нови потребители",
 	"details.no-topics": "В избрания период не са публикувани нови теми",
+	"details.no-searches": "No searches have been made yet",
 	"details.no-logins": "В избрания период не са отчетени вписвания",
 	"details.logins-static": "NodeBB запазва данни за сесията в продължение на %1 дни, така че в следната таблица могат да се видят само последните активни сесии",
 	"details.logins-login-time": "Време на вписване"
