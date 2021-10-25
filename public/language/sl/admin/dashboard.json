@@ -56,8 +56,8 @@
 	"active-users.total": "Skupaj",
 	"active-users.connections": "Povezave",
 
-	"anonymous-registered-users": "Anonimni : Registrirani uporabniki",
-	"anonymous": "Anonimni",
+	"guest-registered-users": "Guest vs Registered Users",
+	"guest": "Guest",
 	"registered": "Registrirani",
 
 	"user-presence": "Prisotnost uporabnikov",
@@ -68,6 +68,7 @@
 	"unread": "Neprebrano",
 
 	"high-presence-topics": "Teme z visoko prisotnostjo",
+	"popular-searches": "Popular Searches",
 
 	"graphs.page-views": "Ogledov strani",
 	"graphs.page-views-registered": "Ogledov strani-registrirani",
@@ -75,7 +76,7 @@
 	"graphs.page-views-bot": "Ogledov strani-robot",
 	"graphs.unique-visitors": "Edinstveni obiskovalci",
 	"graphs.registered-users": "Registrirani uporabniki",
-	"graphs.anonymous-users": "Anonimni uporabniki",
+	"graphs.guest-users": "Guest Users",
 	"last-restarted-by": "Nazadnje ponovno zagnal(a)",
 	"no-users-browsing": "Ne brska noben uporabnik",
 

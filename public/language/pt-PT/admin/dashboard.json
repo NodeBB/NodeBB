@@ -56,8 +56,8 @@
 	"active-users.total": "Total",
 	"active-users.connections": "Conexões",
 
-	"anonymous-registered-users": "Utilizadores Anónimos vs Registados",
-	"anonymous": "Anónimos",
+	"guest-registered-users": "Guest vs Registered Users",
+	"guest": "Guest",
 	"registered": "Registados",
 
 	"user-presence": "Presença dos Utilizadores",
@@ -68,6 +68,7 @@
 	"unread": "Não lidos",
 
 	"high-presence-topics": " Alta Presença em Tópicos",
+	"popular-searches": "Popular Searches",
 
 	"graphs.page-views": "Visualizações de páginas",
 	"graphs.page-views-registered": "Visualizações de páginas por utilizadores registados",
@@ -75,7 +76,7 @@
 	"graphs.page-views-bot": "Visualizações de páginas por bots",
 	"graphs.unique-visitors": "Visitantes únicos",
 	"graphs.registered-users": "Utilizadores Registados",
-	"graphs.anonymous-users": "Utilizadores Anónimos",
+	"graphs.guest-users": "Guest Users",
 	"last-restarted-by": "Última vez reiniciado por",
 	"no-users-browsing": "No users browsing",
 

@@ -56,8 +56,8 @@
 	"active-users.total": "Всего",
 	"active-users.connections": "Соединений",
 
-	"anonymous-registered-users": "Анонимные / Авторизованные",
-	"anonymous": "Анонимные",
+	"guest-registered-users": "Guest vs Registered Users",
+	"guest": "Guest",
 	"registered": "Авторизованные",
 
 	"user-presence": "Присутствие",
@@ -68,6 +68,7 @@
 	"unread": "Просм. непрочитанные",
 
 	"high-presence-topics": "Популярные темы",
+	"popular-searches": "Popular Searches",
 
 	"graphs.page-views": "Просмотры",
 	"graphs.page-views-registered": "Просм. авторизованными",
@@ -75,7 +76,7 @@
 	"graphs.page-views-bot": "Просмотров ботами",
 	"graphs.unique-visitors": "Уникальных посетителей",
 	"graphs.registered-users": "Авторизованных пользователей",
-	"graphs.anonymous-users": "Анонимных пользователей",
+	"graphs.guest-users": "Guest Users",
 	"last-restarted-by": "Последний перезапуск:",
 	"no-users-browsing": "Просмотров нет",
 

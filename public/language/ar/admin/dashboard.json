@@ -56,8 +56,8 @@
 	"active-users.total": "المجموع",
 	"active-users.connections": "Connections",
 
-	"anonymous-registered-users": "المجهولين مقابل المستخدمين المسجلين",
-	"anonymous": "مجهول",
+	"guest-registered-users": "Guest vs Registered Users",
+	"guest": "Guest",
 	"registered": "مسجل",
 
 	"user-presence": "تواجد المستخدمين",
@@ -68,6 +68,7 @@
 	"unread": "غير مقروء",
 
 	"high-presence-topics": "مواضيع ذات حضور قوي",
+	"popular-searches": "Popular Searches",
 
 	"graphs.page-views": "مشاهدات الصفحة",
 	"graphs.page-views-registered": "Page Views Registered",
@@ -75,7 +76,7 @@
 	"graphs.page-views-bot": "Page Views Bot",
 	"graphs.unique-visitors": "زوار فريدين",
 	"graphs.registered-users": "مستخدمين مسجلين",
-	"graphs.anonymous-users": "مستخدمين مجهولين",
+	"graphs.guest-users": "Guest Users",
 	"last-restarted-by": "Last restarted by",
 	"no-users-browsing": "No users browsing",
 

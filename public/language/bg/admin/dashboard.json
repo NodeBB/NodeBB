@@ -56,8 +56,8 @@
 	"active-users.total": "Общо",
 	"active-users.connections": "Връзки",
 
-	"anonymous-registered-users": "Анонимни към регистрирани потребители",
-	"anonymous": "Анонимни",
+	"guest-registered-users": "Guest vs Registered Users",
+	"guest": "Guest",
 	"registered": "Регистрирани",
 
 	"user-presence": "Присъствие на потребителите ",
@@ -68,6 +68,7 @@
 	"unread": "Непрочетени",
 
 	"high-presence-topics": "Теми с най-голяма присъственост",
+	"popular-searches": "Popular Searches",
 
 	"graphs.page-views": "Преглеждания на страниците",
 	"graphs.page-views-registered": "Преглеждания на страниците от регистрирани потребители",
@@ -75,7 +76,7 @@
 	"graphs.page-views-bot": "Преглеждания на страниците от ботове",
 	"graphs.unique-visitors": "Уникални посетители",
 	"graphs.registered-users": "Регистрирани потребители",
-	"graphs.anonymous-users": "Анонимни потребители",
+	"graphs.guest-users": "Guest Users",
 	"last-restarted-by": "Последно рестартиране от",
 	"no-users-browsing": "Няма разглеждащи потребители",
 

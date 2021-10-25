@@ -56,8 +56,8 @@
 	"active-users.total": "Kokonaisuudessaan",
 	"active-users.connections": "Yhteyttä",
 
-	"anonymous-registered-users": "Anonyymit vs. Rekisteröityneet käyttäjät",
-	"anonymous": "Anonyymiä",
+	"guest-registered-users": "Guest vs Registered Users",
+	"guest": "Guest",
 	"registered": "Rekisteröitynyttä",
 
 	"user-presence": "Käyttäjien sijainti",
@@ -68,6 +68,7 @@
 	"unread": "Lukemattomat",
 
 	"high-presence-topics": "Aiheet, joissa on eniten käyttäjiä paikalla",
+	"popular-searches": "Popular Searches",
 
 	"graphs.page-views": "Sivulataukset",
 	"graphs.page-views-registered": "Rekisteröityneiden käyttäjien sivulatausta",
@@ -75,7 +76,7 @@
 	"graphs.page-views-bot": "Bottien sivulatausta",
 	"graphs.unique-visitors": "Uniikkia vierailijaa",
 	"graphs.registered-users": "Rekisteröitynyttä käyttäjää",
-	"graphs.anonymous-users": "Anonyymiä käyttäjää",
+	"graphs.guest-users": "Guest Users",
 	"last-restarted-by": "Viimeksi uudelleenkäynnistetty",
 	"no-users-browsing": "Ei käyttäjiä selaamassa",
 

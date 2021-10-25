@@ -56,8 +56,8 @@
 	"active-users.total": "Tổng",
 	"active-users.connections": "Kết nối",
 
-	"anonymous-registered-users": "Người Dùng Ẩn Danh và Đã Đăng Ký",
-	"anonymous": "Ẩn Danh",
+	"guest-registered-users": "Guest vs Registered Users",
+	"guest": "Guest",
 	"registered": "Đã đăng ký",
 
 	"user-presence": "Người Dùng Có Mặt",
@@ -68,6 +68,7 @@
 	"unread": "Chưa đọc",
 
 	"high-presence-topics": "Chủ Đề Hiện Diện Cao",
+	"popular-searches": "Popular Searches",
 
 	"graphs.page-views": "Xem Trang",
 	"graphs.page-views-registered": "Đã Đăng Ký Xem Trang",
@@ -75,7 +76,7 @@
 	"graphs.page-views-bot": "Bot Xem Trang",
 	"graphs.unique-visitors": "Khách Truy Cập Duy Nhất",
 	"graphs.registered-users": "Thành Viên Chính Thức",
-	"graphs.anonymous-users": "Người Dùng Ẩn Danh",
+	"graphs.guest-users": "Guest Users",
 	"last-restarted-by": "Khởi động lại lần cuối bởi",
 	"no-users-browsing": "Người không xem bài",
 

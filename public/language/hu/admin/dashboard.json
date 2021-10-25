@@ -56,8 +56,8 @@
 	"active-users.total": "Összesen",
 	"active-users.connections": "Kapcsolatok",
 
-	"anonymous-registered-users": "Névtelen vs regisztrált felhasználók",
-	"anonymous": "Névtelen",
+	"guest-registered-users": "Guest vs Registered Users",
+	"guest": "Guest",
 	"registered": "Regisztrált",
 
 	"user-presence": "Felhasználói jelenlét",
@@ -68,6 +68,7 @@
 	"unread": "Olvasatlan",
 
 	"high-presence-topics": "Témakörök nagy jelenléttel",
+	"popular-searches": "Popular Searches",
 
 	"graphs.page-views": "Oldal megtekintések",
 	"graphs.page-views-registered": "Regisztrált látogatások",
@@ -75,7 +76,7 @@
 	"graphs.page-views-bot": "Bot látogatások",
 	"graphs.unique-visitors": "Egyedi látogatók",
 	"graphs.registered-users": "Regisztrált felhasználók",
-	"graphs.anonymous-users": "Névtelen felhasználók",
+	"graphs.guest-users": "Guest Users",
 	"last-restarted-by": "Utoljára újraindította:",
 	"no-users-browsing": "Jelenleg nem böngész senki",
 

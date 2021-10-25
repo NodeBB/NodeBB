@@ -56,8 +56,8 @@
 	"active-users.total": "Genel Toplam",
 	"active-users.connections": "Bağlantılar",
 
-	"anonymous-registered-users": "Anonim vs Kayıtlı Kullanıcılar",
-	"anonymous": "Anonim",
+	"guest-registered-users": "Guest vs Registered Users",
+	"guest": "Guest",
 	"registered": "Kayıtlı",
 
 	"user-presence": "Kullanıcı Durumları",
@@ -68,6 +68,7 @@
 	"unread": "Okunmamış Konular Sayfasında",
 
 	"high-presence-topics": "Öne Çıkan Başlıklar",
+	"popular-searches": "Popular Searches",
 
 	"graphs.page-views": "Sayfa Gösterimi",
 	"graphs.page-views-registered": "Kayıtlı Kullanıcıların Sayfa Gösterimi",
@@ -75,7 +76,7 @@
 	"graphs.page-views-bot": "Bot Sayfa Gösterimi",
 	"graphs.unique-visitors": "Benzersiz Ziyaretçiler",
 	"graphs.registered-users": "Kayıtlı Kullanıcılar",
-	"graphs.anonymous-users": "Anonim Kullanıcılar",
+	"graphs.guest-users": "Guest Users",
 	"last-restarted-by": "Son yeniden başlatma bilgisi",
 	"no-users-browsing": "İnceleyen kullanıcı yok",
 
