@@ -83,6 +83,7 @@
 	"back-to-dashboard": "대시보드로 돌아가기",
 	"details.no-users": "설정한 기간에 가입한 사용자 없음",
 	"details.no-topics": "설정한 기간에 생성된 화제 없음",
+	"details.no-searches": "No searches have been made yet",
 	"details.no-logins": "설정한 기간에 로그인 기록 없음",
 	"details.logins-static": "NodeBB는 세션 정보를 %1일 동안만 저장합니다. 따라서 아래의 표는 최근 활성화된 세션 정보만을 표시합니다.",
 	"details.logins-login-time": "로그인 시점"

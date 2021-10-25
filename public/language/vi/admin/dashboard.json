@@ -83,6 +83,7 @@
 	"back-to-dashboard": "Quay lại Bảng điều khiển",
 	"details.no-users": "Không có người dùng nào tham gia trong khung thời gian đã chọn",
 	"details.no-topics": "Không có chủ đề nào được đăng trong khung thời gian đã chọn",
+	"details.no-searches": "No searches have been made yet",
 	"details.no-logins": "Không có thông tin đăng nhập nào được ghi lại trong khung thời gian đã chọn",
 	"details.logins-static": "NodeBB chỉ lưu dữ liệu phiên trong %1 ngày và do đó, bảng này bên dưới sẽ chỉ hiển thị các phiên hoạt động gần đây nhất",
 	"details.logins-login-time": "Thời gian đăng nhập"

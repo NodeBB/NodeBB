@@ -83,6 +83,7 @@
 	"back-to-dashboard": "Torna alla dashboard",
 	"details.no-users": "Nessun utente si è iscritto nell'arco di tempo selezionato",
 	"details.no-topics": "Nessuna discussione è stata postata nell'arco di tempo selezionato",
+	"details.no-searches": "No searches have been made yet",
 	"details.no-logins": "Non sono stati registrati accessi nell'arco di tempo selezionato",
 	"details.logins-static": "NodeBB salva solo i dati di sessione per %1 giorni, quindi la tabella qui sotto mostrerà solo le sessioni attive più recenti",
 	"details.logins-login-time": "Tempo di accesso"

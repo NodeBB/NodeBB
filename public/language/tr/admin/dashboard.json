@@ -83,6 +83,7 @@
 	"back-to-dashboard": "Yönetim Paneline geri dön",
 	"details.no-users": "Seçilen zaman aralığında herhangi bir kullanıcı üye olmadı.",
 	"details.no-topics": "Seçilen zaman aralığında herhangi bir başlık oluşturulmadı. ",
+	"details.no-searches": "No searches have been made yet",
 	"details.no-logins": "Seçilen zaman aralığında herhangi bir giriş yapılmadı.",
 	"details.logins-static": "NodeBB oturum kayıtlarını sadece %1 gün tutar, o nedenle aşağıdaki tablo sadece en yakın aktif oturumları listeler",
 	"details.logins-login-time": "Giriş zamanı"

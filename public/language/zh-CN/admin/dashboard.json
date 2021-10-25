@@ -83,6 +83,7 @@
 	"back-to-dashboard": "返回控制面板",
 	"details.no-users": "选定的时间内没有用户加入",
 	"details.no-topics": "选定的时间内没有发布主题",
+	"details.no-searches": "No searches have been made yet",
 	"details.no-logins": "选定的时间内没有登录记录",
 	"details.logins-static": "NodeBB只保留%1天登录数据，下列表格显示最近活动的登录。",
 	"details.logins-login-time": "登录时间"

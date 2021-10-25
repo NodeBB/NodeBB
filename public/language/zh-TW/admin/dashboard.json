@@ -83,6 +83,7 @@
 	"back-to-dashboard": "回到儀表板",
 	"details.no-users": "沒有使用者有在選定的時間內註冊",
 	"details.no-topics": "沒有新增的主題在選定的時間內",
+	"details.no-searches": "No searches have been made yet",
 	"details.no-logins": "No logins have been recorded within the selected timeframe",
 	"details.logins-static": "NodeBB only saves session data for %1 days, and so this table below will only show the most recently active sessions",
 	"details.logins-login-time": "登入時間"
