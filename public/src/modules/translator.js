@@ -27,8 +27,6 @@
 	} else if (typeof module === 'object' && module.exports) {
 		// Node
 		(function () {
-			const languages = require('../../../src/languages');
-
 			if (global.env === 'development') {
 				const winston = require('winston');
 				warn = function (a) {
@@ -36,7 +34,10 @@
 				};
 			}
 
-			module.exports = factory(require('../utils'), languages.get, warn);
+			module.exports = factory(require('../utils'), function (lang, namespace) {
+				const languages = require('../../../src/languages');
+				return languages.get(lang, namespace);
+			}, warn);
 		}());
 	}
 }(function (utils, load, warn) {
