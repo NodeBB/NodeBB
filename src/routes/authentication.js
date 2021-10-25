@@ -51,13 +51,9 @@ Auth.getLoginStrategies = function () {
 };
 
 Auth.verifyToken = async function (token, done) {
-	let { tokens = [] } = await meta.settings.get('core.api');
-	tokens = tokens.reduce((memo, cur) => {
-		memo[cur.token] = cur.uid;
-		return memo;
-	}, {});
-
-	const uid = tokens[token];
+	const { tokens = [] } = await meta.settings.get('core.api');
+	const tokenObj = tokens.find(t => t.token === token);
+	const uid = tokenObj ? tokenObj.uid : undefined;
 
 	if (uid !== undefined) {
 		if (parseInt(uid, 10) > 0) {
