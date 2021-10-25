@@ -150,7 +150,7 @@ define('admin/dashboard', ['Chart', 'translator', 'benchpress', 'bootbox'], func
 			t.translateKey('admin/dashboard:graphs.page-views-bot', []),
 			t.translateKey('admin/dashboard:graphs.unique-visitors', []),
 			t.translateKey('admin/dashboard:graphs.registered-users', []),
-			t.translateKey('admin/dashboard:graphs.anonymous-users', []),
+			t.translateKey('admin/dashboard:graphs.guest-users', []),
 			t.translateKey('admin/dashboard:on-categories', []),
 			t.translateKey('admin/dashboard:reading-posts', []),
 			t.translateKey('admin/dashboard:browsing-topics', []),
@@ -469,11 +469,11 @@ define('admin/dashboard', ['Chart', 'translator', 'benchpress', 'bootbox'], func
 		});
 	}
 
-	function updateRegisteredGraph(registered, anonymous) {
+	function updateRegisteredGraph(registered, guest) {
 		$('#analytics-legend .registered').parent().find('.count').text(registered);
-		$('#analytics-legend .anonymous').parent().find('.count').text(anonymous);
+		$('#analytics-legend .guest').parent().find('.count').text(guest);
 		graphs.registered.data.datasets[0].data[0] = registered;
-		graphs.registered.data.datasets[0].data[1] = anonymous;
+		graphs.registered.data.datasets[0].data[1] = guest;
 		graphs.registered.update();
 	}
 

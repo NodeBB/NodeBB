@@ -89,7 +89,9 @@ exports.handleErrors = async function handleErrors(err, req, res, next) { // esl
 		}
 	} catch (_err) {
 		winston.error(`${req.originalUrl}\n${_err.stack}`);
-		res.status(500).send(_err.message);
+		if (!res.headersSent) {
+			res.status(500).send(_err.message);
+		}
 	}
 };
 
