@@ -3,6 +3,7 @@
 
 const validator = require('validator');
 
+const db = require('../database');
 const meta = require('../meta');
 const plugins = require('../plugins');
 const search = require('../search');
@@ -66,7 +67,7 @@ searchController.search = async function (req, res, next) {
 
 	const [searchData, categoriesData] = await Promise.all([
 		search.search(data),
-		recordSearch(data);
+		recordSearch(data),
 		buildCategories(req.uid, searchOnly),
 	]);
 
