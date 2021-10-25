@@ -56,8 +56,8 @@
 	"active-users.total": "Celkovo",
 	"active-users.connections": "Pripojenia",
 
-	"anonymous-registered-users": "Anonymný vs zaregistrovaný používatelia",
-	"anonymous": "Anonymné",
+	"guest-registered-users": "Guest vs Registered Users",
+	"guest": "Guest",
 	"registered": "Zaregistrovaný",
 
 	"user-presence": "Výskyt používateľa",
@@ -68,6 +68,7 @@
 	"unread": "Neprečitané",
 
 	"high-presence-topics": "Témy s vysokou účasťou",
+	"popular-searches": "Popular Searches",
 
 	"graphs.page-views": "Zobrazenia stránok",
 	"graphs.page-views-registered": "Page Views Registered",
@@ -75,7 +76,7 @@
 	"graphs.page-views-bot": "Page Views Bot",
 	"graphs.unique-visitors": "Unikátny navštevníci",
 	"graphs.registered-users": "Zarestrovaný užívatelia",
-	"graphs.anonymous-users": "Neznámy užívatelia",
+	"graphs.guest-users": "Guest Users",
 	"last-restarted-by": "Posledná obnova od",
 	"no-users-browsing": "Žiadni používatelia neprehliadajú",
 

@@ -56,8 +56,8 @@
 	"active-users.total": "総合",
 	"active-users.connections": "接続",
 
-	"anonymous-registered-users": "匿名 vs 登録ユーザー",
-	"anonymous": "匿名",
+	"guest-registered-users": "Guest vs Registered Users",
+	"guest": "Guest",
 	"registered": "登録数",
 
 	"user-presence": "ユーザープレゼンス",
@@ -68,6 +68,7 @@
 	"unread": "未読",
 
 	"high-presence-topics": "ハイプレゼンススレッド",
+	"popular-searches": "Popular Searches",
 
 	"graphs.page-views": "ページビュー",
 	"graphs.page-views-registered": "ページビュー登録済み",
@@ -75,7 +76,7 @@
 	"graphs.page-views-bot": "ページビューBot",
 	"graphs.unique-visitors": "ユニークな訪問者",
 	"graphs.registered-users": "登録したユーザー",
-	"graphs.anonymous-users": "匿名ユーザー",
+	"graphs.guest-users": "Guest Users",
 	"last-restarted-by": "最後に再起動された順",
 	"no-users-browsing": "閲覧中のユーザーなし",
 

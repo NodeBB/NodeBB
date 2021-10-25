@@ -56,8 +56,8 @@
 	"active-users.total": "全部",
 	"active-users.connections": "连接",
 
-	"anonymous-registered-users": "匿名 vs 注册用户",
-	"anonymous": "匿名",
+	"guest-registered-users": "Guest vs Registered Users",
+	"guest": "Guest",
 	"registered": "已注册",
 
 	"user-presence": "用户光临",
@@ -68,6 +68,7 @@
 	"unread": "未读",
 
 	"high-presence-topics": "热门话题",
+	"popular-searches": "Popular Searches",
 
 	"graphs.page-views": "页面浏览量",
 	"graphs.page-views-registered": "注册用户页面浏览量",
@@ -75,7 +76,7 @@
 	"graphs.page-views-bot": "爬虫页面浏览量",
 	"graphs.unique-visitors": "单一访客",
 	"graphs.registered-users": "已注册用户",
-	"graphs.anonymous-users": "匿名用户",
+	"graphs.guest-users": "Guest Users",
 	"last-restarted-by": "上次重启管理员/时间",
 	"no-users-browsing": "没有用户正在浏览",
 

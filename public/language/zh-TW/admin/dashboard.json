@@ -56,8 +56,8 @@
 	"active-users.total": "全部",
 	"active-users.connections": "連線",
 
-	"anonymous-registered-users": "匿名 vs 註冊使用者",
-	"anonymous": "匿名",
+	"guest-registered-users": "Guest vs Registered Users",
+	"guest": "Guest",
 	"registered": "已註冊",
 
 	"user-presence": "使用者光臨",
@@ -68,6 +68,7 @@
 	"unread": "未讀",
 
 	"high-presence-topics": "熱門主題",
+	"popular-searches": "Popular Searches",
 
 	"graphs.page-views": "頁面瀏覽量",
 	"graphs.page-views-registered": "註冊使用者頁面瀏覽量",
@@ -75,7 +76,7 @@
 	"graphs.page-views-bot": "爬蟲頁面瀏覽量",
 	"graphs.unique-visitors": "不重複訪客",
 	"graphs.registered-users": "已註冊使用者",
-	"graphs.anonymous-users": "匿名使用者",
+	"graphs.guest-users": "Guest Users",
 	"last-restarted-by": "上次重啟管理員/時間",
 	"no-users-browsing": "沒有使用者正在瀏覽",
 

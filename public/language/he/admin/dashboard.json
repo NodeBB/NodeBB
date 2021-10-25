@@ -56,8 +56,8 @@
 	"active-users.total": "סך הכל",
 	"active-users.connections": "חיבורים",
 
-	"anonymous-registered-users": "משתמשים רשומים ואורחים",
-	"anonymous": "אורחים",
+	"guest-registered-users": "Guest vs Registered Users",
+	"guest": "Guest",
 	"registered": "רשומים",
 
 	"user-presence": "נוכחות משתמשים",
@@ -68,6 +68,7 @@
 	"unread": "לא נקראו",
 
 	"high-presence-topics": "פוסטים עם הכי הרבה נוכחות",
+	"popular-searches": "Popular Searches",
 
 	"graphs.page-views": "צפיות בדפים",
 	"graphs.page-views-registered": "צפיות בדפים-רשומים",
@@ -75,7 +76,7 @@
 	"graphs.page-views-bot": "צפיות בדפים-בוטים",
 	"graphs.unique-visitors": "מבקרים ייחודיים",
 	"graphs.registered-users": "משתמשים רשומים",
-	"graphs.anonymous-users": "אורחים",
+	"graphs.guest-users": "Guest Users",
 	"last-restarted-by": "אותחל לארונה על ידי",
 	"no-users-browsing": "אין גולשים",
 

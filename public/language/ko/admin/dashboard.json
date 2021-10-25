@@ -56,8 +56,8 @@
 	"active-users.total": "총",
 	"active-users.connections": "연결",
 
-	"anonymous-registered-users": "익명 vs 가입한 사용자",
-	"anonymous": "익명",
+	"guest-registered-users": "Guest vs Registered Users",
+	"guest": "Guest",
 	"registered": "가입한 사용자",
 
 	"user-presence": "사용자 활동",
@@ -68,6 +68,7 @@
 	"unread": "읽지 않음",
 
 	"high-presence-topics": "활동량이 많은 화제",
+	"popular-searches": "Popular Searches",
 
 	"graphs.page-views": "페이지 뷰",
 	"graphs.page-views-registered": "가입한 사용자의 페이지 뷰",
@@ -75,7 +76,7 @@
 	"graphs.page-views-bot": "봇의 페이지 뷰",
 	"graphs.unique-visitors": "고유 방문자",
 	"graphs.registered-users": "등록된 사용자",
-	"graphs.anonymous-users": "익명 사용자",
+	"graphs.guest-users": "Guest Users",
 	"last-restarted-by": "최근 재시작 시점",
 	"no-users-browsing": "보고있는 사용자 없음",
 
