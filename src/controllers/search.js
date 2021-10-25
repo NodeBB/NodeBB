@@ -67,8 +67,8 @@ searchController.search = async function (req, res, next) {
 
 	const [searchData, categoriesData] = await Promise.all([
 		search.search(data),
-		recordSearch(data),
 		buildCategories(req.uid, searchOnly),
+		recordSearch(data),
 	]);
 
 	searchData.pagination = pagination.create(page, searchData.pageCount, req.query);
