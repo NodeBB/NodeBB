@@ -45,7 +45,6 @@ async function searchInContent(data) {
 
 	async function doSearch(type, searchIn) {
 		if (searchIn.includes(data.searchIn)) {
-			await recordSearch(data.query);
 			return await plugins.hooks.fire('filter:search.query', {
 				index: type,
 				content: data.query,
@@ -93,13 +92,6 @@ async function searchInContent(data) {
 	await plugins.hooks.fire('filter:search.contentGetResult', { result: returnData, data: data });
 	delete metadata.pids;
 	return Object.assign(returnData, metadata);
-}
-
-async function recordSearch(query) {
-	const cleanedQuery = String(query).trim().toLowerCase().substr(0, 255);
-	if (cleanedQuery.length > 2) {
-		await db.sortedSetIncrBy('searches:all', 1, cleanedQuery);
-	}
 }
 
 async function filterAndSort(pids, data) {

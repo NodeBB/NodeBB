@@ -66,6 +66,7 @@ searchController.search = async function (req, res, next) {
 
 	const [searchData, categoriesData] = await Promise.all([
 		search.search(data),
+		recordSearch(data);
 		buildCategories(req.uid, searchOnly),
 	]);
 
@@ -94,6 +95,14 @@ searchController.search = async function (req, res, next) {
 
 	res.render('search', searchData);
 };
+
+async function recordSearch(data) {
+	const { query, searchIn } = data;
+	const cleanedQuery = String(query).trim().toLowerCase().substr(0, 255);
+	if (['titles', 'titlesposts', 'posts'].includes(searchIn) && cleanedQuery.length > 2) {
+		await db.sortedSetIncrBy('searches:all', 1, cleanedQuery);
+	}
+}
 
 async function buildCategories(uid, searchOnly) {
 	if (searchOnly) {
