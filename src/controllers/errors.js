@@ -49,6 +49,9 @@ exports.handleErrors = async function handleErrors(err, req, res, next) { // esl
 		},
 	};
 	const defaultHandler = async function () {
+		if (res.headersSent) {
+			return;
+		}
 		// Display NodeBB error page
 		const status = parseInt(err.status, 10);
 		if ((status === 302 || status === 308) && err.path) {
