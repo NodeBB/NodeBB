@@ -575,7 +575,7 @@ app.cacheBuster = null;
 				return quickSearchResults.addClass('hidden');
 			}
 			doSearch();
-		}, 250));
+		}, 500));
 
 		let mousedownOnResults = false;
 		quickSearchResults.on('mousedown', function () {
