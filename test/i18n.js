@@ -15,7 +15,7 @@ describe('i18n', () => {
 
 	before(async () => {
 		folders = await fs.promises.readdir(path.resolve(__dirname, '../public/language'));
-		folders.shift();	// remove README.md from list of folders to check
+		folders = folders.filter(f => f !== 'README.md');
 	});
 
 	it('should contain folders named after the language code', async () => {
