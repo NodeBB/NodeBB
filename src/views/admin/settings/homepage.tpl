@@ -6,16 +6,16 @@
 		</p>
 		<form class="row">
 			<div class="col-sm-12">
-				<label>[[admin/settings/homepage:home-page-route]]</label>
-				<select class="form-control" data-field="homePageRoute">
+				<label for="homePageRoute">[[admin/settings/homepage:home-page-route]]</label>
+				<select id="homePageRoute" class="form-control" data-field="homePageRoute">
 					<!-- BEGIN routes -->
 					<option value="{routes.route}">{routes.name}</option>
 					<!-- END routes -->
 				</select>
 				<div id="homePageCustom" style="display: none;">
 					<br>
-					<label>[[admin/settings/homepage:custom-route]]</label>
-					<input type="text" class="form-control" data-field="homePageCustom"/>
+					<label for="homePageCustomInput">[[admin/settings/homepage:custom-route]]</label>
+					<input id="homePageCustomInput" type="text" class="form-control" data-field="homePageCustom"/>
 					<p class="help-block">[[user:custom_route_help]]</p>
 				</div>
 				<br>
@@ -26,8 +26,8 @@
 					</label>
 				</div>
 				<br>
-				<label>[[admin/settings/homepage:home-page-title]]</label>
-				<input class="form-control" type="text" data-field="homePageTitle" placeholder="[[pages:home]]">
+				<label for="homePageTitle">[[admin/settings/homepage:home-page-title]]</label>
+				<input id="homePageTitle" class="form-control" type="text" data-field="homePageTitle" placeholder="[[pages:home]]">
 			</div>
 		</form>
 	</div>

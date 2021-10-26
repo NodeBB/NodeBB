@@ -6,7 +6,7 @@
 	"from-help": "Le nom de l’expéditeur à afficher dans l'e-mail",
 
 	"smtp-transport": "Protocole SMTP",
-	"smtp-transport.enabled": "Utiliser un server extérieur pour envoyer les emails",
+	"smtp-transport.enabled": "Enable SMTP Transport",
 	"smtp-transport-help": "Vous pouvez sélectionner depuis une liste de services ou entrer un service personnalisé.",
 	"smtp-transport.service": "Sélectionner un service",
 	"smtp-transport.service-custom": "Service personnalisé",

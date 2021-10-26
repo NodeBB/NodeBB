@@ -6,7 +6,7 @@
 	"from-help": "Der Name des Absenders, welcher in der E-Mail angezeigt werden soll.",
 
 	"smtp-transport": "SMTP Konfiguration",
-	"smtp-transport.enabled": "Benutze einen externen Email-Server",
+	"smtp-transport.enabled": "Enable SMTP Transport",
 	"smtp-transport-help": "Du kannst aus einer Liste bekannter Email-Provider auswählen, oder einen benutzerdefinierten eingeben.",
 	"smtp-transport.service": "Wähle einen Provider",
 	"smtp-transport.service-custom": "Benutzerdefiniert...",

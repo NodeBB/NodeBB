@@ -63,6 +63,7 @@ module.exports = function (Plugins) {
 		if (results.languageData) {
 			Plugins.languageData.languages = _.union(Plugins.languageData.languages, results.languageData.languages);
 			Plugins.languageData.namespaces = _.union(Plugins.languageData.namespaces, results.languageData.namespaces);
+			pluginData.languageData = results.languageData;
 		}
 		Plugins.pluginsData[pluginData.id] = pluginData;
 	}

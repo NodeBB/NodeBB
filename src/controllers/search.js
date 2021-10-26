@@ -3,6 +3,7 @@
 
 const validator = require('validator');
 
+const db = require('../database');
 const meta = require('../meta');
 const plugins = require('../plugins');
 const search = require('../search');
@@ -67,6 +68,7 @@ searchController.search = async function (req, res, next) {
 	const [searchData, categoriesData] = await Promise.all([
 		search.search(data),
 		buildCategories(req.uid, searchOnly),
+		recordSearch(data),
 	]);
 
 	searchData.pagination = pagination.create(page, searchData.pageCount, req.query);
@@ -94,6 +96,16 @@ searchController.search = async function (req, res, next) {
 
 	res.render('search', searchData);
 };
+
+async function recordSearch(data) {
+	const { query, searchIn } = data;
+	if (query) {
+		const cleanedQuery = String(query).trim().toLowerCase().substr(0, 255);
+		if (['titles', 'titlesposts', 'posts'].includes(searchIn) && cleanedQuery.length > 2) {
+			await db.sortedSetIncrBy('searches:all', 1, cleanedQuery);
+		}
+	}
+}
 
 async function buildCategories(uid, searchOnly) {
 	if (searchOnly) {

@@ -71,6 +71,7 @@
 	"digest-freq.off": "Ніколи",
 	"digest-freq.daily": "Щоденно",
 	"digest-freq.weekly": "Щотижнево",
+	"digest-freq.biweekly": "Bi-Weekly",
 	"digest-freq.monthly": "Щомісячно",
 	"email-chat-notifs": "Надсилати листа, коли я не в мережі, якщо приходить чат повідомлення",
 	"email-post-notif": "Надсилати листа, коли в темах на які я підписаний з'являються відповіді",

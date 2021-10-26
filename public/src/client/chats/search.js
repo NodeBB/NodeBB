@@ -2,23 +2,14 @@
 
 
 define('forum/chats/search', ['components', 'api'], function (components, api) {
-	var search = {};
+	const search = {};
 
 	search.init = function () {
-		var timeoutId = 0;
-
-		components.get('chat/search').on('keyup', function () {
-			if (timeoutId) {
-				clearTimeout(timeoutId);
-				timeoutId = 0;
-			}
-
-			timeoutId = setTimeout(doSearch, 250);
-		});
+		components.get('chat/search').on('keyup', utils.debounce(doSearch, 250));
 	};
 
 	function doSearch() {
-		var username = components.get('chat/search').val();
+		const username = components.get('chat/search').val();
 		if (!username) {
 			return $('[component="chat/search/list"]').empty();
 		}
@@ -32,7 +23,7 @@ define('forum/chats/search', ['components', 'api'], function (components, api) {
 	}
 
 	function displayResults(data) {
-		var chatsListEl = $('[component="chat/search/list"]');
+		const chatsListEl = $('[component="chat/search/list"]');
 		chatsListEl.empty();
 
 		data.users = data.users.filter(function (user) {
@@ -44,7 +35,7 @@ define('forum/chats/search', ['components', 'api'], function (components, api) {
 		}
 
 		data.users.forEach(function (userObj) {
-			var chatEl = displayUser(chatsListEl, userObj);
+			const chatEl = displayUser(chatsListEl, userObj);
 			onUserClick(chatEl, userObj);
 		});
 
@@ -59,7 +50,7 @@ define('forum/chats/search', ['components', 'api'], function (components, api) {
 				'<i class="fa fa-circle status ' + userObj.status + '"></i> ' + userObj.username;
 		}
 
-		var chatEl = $('<li component="chat/search/user"></li>')
+		const chatEl = $('<li component="chat/search/user"></li>')
 			.attr('data-uid', userObj.uid)
 			.appendTo(chatsListEl);
 

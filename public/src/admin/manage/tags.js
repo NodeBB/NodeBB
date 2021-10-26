@@ -2,11 +2,11 @@
 
 
 define('admin/manage/tags', [
+	'bootbox',
 	'forum/infinitescroll',
 	'admin/modules/selectable',
-], function (infinitescroll, selectable) {
-	var	Tags = {};
-	var timeoutId = 0;
+], function (bootbox, infinitescroll, selectable) {
+	const	Tags = {};
 
 	Tags.init = function () {
 		selectable.enable('.tag-management', '.tag-row');
@@ -18,9 +18,9 @@ define('admin/manage/tags', [
 	};
 
 	function handleCreate() {
-		var createModal = $('#create-modal');
-		var createTagName = $('#create-tag-name');
-		var createModalGo = $('#create-modal-go');
+		const createModal = $('#create-modal');
+		const createTagName = $('#create-tag-name');
+		const createModalGo = $('#create-modal-go');
 
 		createModal.on('keypress', function (e) {
 			if (e.keyCode === 13) {
@@ -53,42 +53,33 @@ define('admin/manage/tags', [
 	}
 
 	function handleSearch() {
-		$('#tag-search').on('input propertychange', function () {
-			if (timeoutId) {
-				clearTimeout(timeoutId);
-				timeoutId = 0;
-			}
+		$('#tag-search').on('input propertychange', utils.debounce(function () {
+			socket.emit('topics.searchAndLoadTags', {
+				query: $('#tag-search').val(),
+			}, function (err, result) {
+				if (err) {
+					return app.alertError(err.message);
+				}
 
-			timeoutId = setTimeout(function () {
-				socket.emit('topics.searchAndLoadTags', {
-					query: $('#tag-search').val(),
-				}, function (err, result) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-
-					app.parseAndTranslate('admin/manage/tags', 'tags', {
-						tags: result.tags,
-					}, function (html) {
-						$('.tag-list').html(html);
-						utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
-						timeoutId = 0;
-
-						selectable.enable('.tag-management', '.tag-row');
-					});
+				app.parseAndTranslate('admin/manage/tags', 'tags', {
+					tags: result.tags,
+				}, function (html) {
+					$('.tag-list').html(html);
+					utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
+					selectable.enable('.tag-management', '.tag-row');
 				});
-			}, 250);
-		});
+			});
+		}, 250));
 	}
 
 	function handleRename() {
 		$('#rename').on('click', function () {
-			var tagsToModify = $('.tag-row.ui-selected');
+			const tagsToModify = $('.tag-row.ui-selected');
 			if (!tagsToModify.length) {
 				return;
 			}
 
-			var modal = bootbox.dialog({
+			const modal = bootbox.dialog({
 				title: '[[admin/manage/tags:alerts.editing]]',
 				message: $('.rename-modal').html(),
 				buttons: {
@@ -96,7 +87,7 @@ define('admin/manage/tags', [
 						label: 'Save',
 						className: 'btn-primary save',
 						callback: function () {
-							var data = [];
+							const data = [];
 							tagsToModify.each(function (idx, tag) {
 								tag = $(tag);
 								data.push({
@@ -121,7 +112,7 @@ define('admin/manage/tags', [
 
 	function handleDeleteSelected() {
 		$('#deleteSelected').on('click', function () {
-			var tagsToDelete = $('.tag-row.ui-selected');
+			const tagsToDelete = $('.tag-row.ui-selected');
 			if (!tagsToDelete.length) {
 				return;
 			}
@@ -130,7 +121,7 @@ define('admin/manage/tags', [
 				if (!confirm) {
 					return;
 				}
-				var tags = [];
+				const tags = [];
 				tagsToDelete.each(function (index, el) {
 					tags.push($(el).attr('data-tag'));
 				});

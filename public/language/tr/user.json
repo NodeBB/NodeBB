@@ -94,6 +94,7 @@
     "digest_off": "Kapalı",
     "digest_daily": "Günlük",
     "digest_weekly": "Haftalık",
+    "digest_biweekly": "Bi-Weekly",
     "digest_monthly": "Aylık",
     "has_no_follower": "Bu kullanıcının hiç takipçisi yok :(",
     "follows_no_one": "Bu kullanıcı kimseyi takip etmiyor :(",

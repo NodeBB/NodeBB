@@ -71,6 +71,7 @@
 	"digest-freq.off": "Отключена",
 	"digest-freq.daily": "Ежедневная",
 	"digest-freq.weekly": "Еженедельная",
+	"digest-freq.biweekly": "Bi-Weekly",
 	"digest-freq.monthly": "Ежемесячная",
 	"email-chat-notifs": "Уведомить по электронной почте, если пришло новое сообщение в чат, а я не в сети",
 	"email-post-notif": "Уведомить по электронной почте, если в отслеживаемой теме появилось новое сообщение",

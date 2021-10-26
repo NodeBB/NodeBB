@@ -1,26 +1,26 @@
 'use strict';
 
 define('categorySearch', function () {
-	var categorySearch = {};
+	const categorySearch = {};
 
 	categorySearch.init = function (el, options) {
-		var categoriesList = null;
+		let categoriesList = null;
 		options = options || {};
 		options.privilege = options.privilege || 'topics:read';
 		options.states = options.states || ['watching', 'notwatching', 'ignoring'];
 
-		var localCategories = [];
+		let localCategories = [];
 		if (Array.isArray(options.localCategories)) {
 			localCategories = options.localCategories.map(c => ({ ...c }));
 		}
 		options.selectedCids = options.selectedCids || ajaxify.data.selectedCids || [];
 
-		var searchEl = el.find('[component="category-selector-search"]');
+		const searchEl = el.find('[component="category-selector-search"]');
 		if (!searchEl.length) {
 			return;
 		}
 
-		var toggleVisibility = searchEl.parent('[component="category/dropdown"]').length > 0 ||
+		const toggleVisibility = searchEl.parent('[component="category/dropdown"]').length > 0 ||
 			searchEl.parent('[component="category-selector"]').length > 0;
 
 		el.on('show.bs.dropdown', function () {
@@ -30,7 +30,7 @@ define('categorySearch', function () {
 			}
 
 			function doSearch() {
-				var val = searchEl.find('input').val();
+				const val = searchEl.find('input').val();
 				if (val.length > 1 || (!val && !categoriesList)) {
 					loadList(val, function (categories) {
 						categoriesList = categoriesList || categories;

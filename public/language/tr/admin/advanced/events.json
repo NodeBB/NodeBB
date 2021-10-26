@@ -3,6 +3,7 @@
 	"no-events": "Aktivite yok",
 	"control-panel": "Aktivite Kontrol Paneli",
 	"delete-events": "Aktiviteyi Sil",
+	"confirm-delete-all-events": "Are you sure you want to delete all logged events?",
 	"filters": "Filtreler",
 	"filters-apply": "Filtreleri Uygula",
 	"filter-type": "Aktivite türü",

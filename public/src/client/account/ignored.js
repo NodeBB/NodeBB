@@ -1,7 +1,7 @@
 'use strict';
 
 define('forum/account/ignored', ['forum/account/header', 'forum/account/topics'], function (header, topics) {
-	var AccountIgnored = {};
+	const AccountIgnored = {};
 
 	AccountIgnored.init = function () {
 		header.init();

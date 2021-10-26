@@ -94,6 +94,7 @@
     "digest_off": "Slukket",
     "digest_daily": "Daglig",
     "digest_weekly": "Ugentlig",
+    "digest_biweekly": "Bi-Weekly",
     "digest_monthly": "Månedlig",
     "has_no_follower": "Denne bruger har ingen følgere :(",
     "follows_no_one": "Denne bruger følger ikke nogen :(",

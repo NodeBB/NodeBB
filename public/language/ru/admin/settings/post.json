@@ -56,6 +56,9 @@
 	"composer.show-help": "Показывать вкладку с подсказками",
 	"composer.enable-plugin-help": "Разрешить плагинам добавлять подсказки на вкладку",
 	"composer.custom-help": "Пользовательский текст для вкладки с подсказками",
+	"backlinks": "Backlinks",
+	"backlinks.enabled": "Enable topic backlinks",
+	"backlinks.help": "If a post references another topic, a link back to the post will be inserted into the referenced topic at that point in time.",
 	"ip-tracking": "Отслеживание IP",
 	"ip-tracking.each-post": "Отслеживать IP для каждого сообщения",
 	"enable-post-history": "Включить историю правок"

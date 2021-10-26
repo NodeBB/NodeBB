@@ -54,7 +54,7 @@
     "composer.formatting.strikethrough": "Przekreślenie",
     "composer.formatting.code": "Kod",
     "composer.formatting.link": "Odnośnik",
-    "composer.formatting.picture": "Obraz",
+    "composer.formatting.picture": "Image Link",
     "composer.upload-picture": "Wyślij obraz",
     "composer.upload-file": "Wyślij plik",
     "composer.zen_mode": "Tryb Zen",

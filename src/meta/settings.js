@@ -93,7 +93,9 @@ Settings.set = async function (hash, values, quiet) {
 	});
 
 	pubsub.publish(`action:settings.set.${hash}`, values);
-	Meta.reloadRequired = !quiet;
+	if (!Meta.reloadRequired && !quiet) {
+		Meta.reloadRequired = true;
+	}
 };
 
 Settings.setOne = async function (hash, field, value) {

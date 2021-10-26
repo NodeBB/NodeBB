@@ -4,7 +4,7 @@
 	<!-- BEGIN admins.members -->
 		<div class="user-card pull-left" data-uid="{admins.members.uid}">
 			<!-- IF admins.members.picture -->
-			<img class="avatar avatar-sm" src="{admins.members.picture}" />
+			<img class="avatar avatar-sm" src="{admins.members.picture}" alt="" />
 			<!-- ELSE -->
 			<div class="avatar avatar-sm" style="background-color: {admins.members.icon:bgColor};">{admins.members.icon:text}</div>
 			<!-- ENDIF admins.members.picture -->
@@ -22,7 +22,7 @@
 	<!-- BEGIN globalMods.members -->
 		<div class="user-card pull-left" data-uid="{globalMods.members.uid}">
 			<!-- IF globalMods.members.picture -->
-			<img class="avatar avatar-sm" src="{globalMods.members.picture}" />
+			<img class="avatar avatar-sm" src="{globalMods.members.picture}" alt="" />
 			<!-- ELSE -->
 			<div class="avatar avatar-sm" style="background-color: {globalMods.members.icon:bgColor};">{globalMods.members.icon:text}</div>
 			<!-- ENDIF globalMods.members.picture -->
@@ -47,7 +47,7 @@
 		{{{ each categoryMods.moderators }}}
 			<div class="user-card pull-left" data-uid="{categoryMods.moderators.uid}">
 				{{{ if  categoryMods.moderators.picture }}}
-				<img class="avatar avatar-sm" src="{categoryMods.moderators.picture}" />
+				<img class="avatar avatar-sm" src="{categoryMods.moderators.picture}" alt="" />
 				{{{ else }}}
 				<div class="avatar avatar-sm" style="background-color: {categoryMods.moderators.icon:bgColor};">{categoryMods.moderators.icon:text}</div>
 				{{{ end }}}

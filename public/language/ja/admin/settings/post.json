@@ -56,6 +56,9 @@
 	"composer.show-help": "「ヘルプ」タグを表示",
 	"composer.enable-plugin-help": "プラグインがヘルプタブにコンテンツを追加できるようにする",
 	"composer.custom-help": "カスタムヘルプテキスト",
+	"backlinks": "Backlinks",
+	"backlinks.enabled": "Enable topic backlinks",
+	"backlinks.help": "If a post references another topic, a link back to the post will be inserted into the referenced topic at that point in time.",
 	"ip-tracking": "IPトラッキング",
 	"ip-tracking.each-post": "各投稿のトラックIPアドレス",
 	"enable-post-history": "Enable Post History"

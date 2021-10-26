@@ -2,14 +2,14 @@
 
 
 define('forum/login', ['hooks', 'translator', 'jquery-form'], function (hooks, translator) {
-	var	Login = {
+	const	Login = {
 		_capsState: false,
 	};
 
 	Login.init = function () {
-		var errorEl = $('#login-error-notify');
-		var submitEl = $('#login');
-		var formEl = $('#login-form');
+		const errorEl = $('#login-error-notify');
+		const submitEl = $('#login');
+		const formEl = $('#login-form');
 
 		submitEl.on('click', function (e) {
 			e.preventDefault();
@@ -36,16 +36,17 @@ define('forum/login', ['hooks', 'translator', 'jquery-form'], function (hooks, t
 					},
 					success: function (data) {
 						hooks.fire('action:app.loggedIn', data);
-						var pathname = utils.urlToLocation(data.next).pathname;
-						var params = utils.params({ url: data.next });
+						const pathname = utils.urlToLocation(data.next).pathname;
+						const params = utils.params({ url: data.next });
 						params.loggedin = true;
-						var qs = decodeURIComponent($.param(params));
+						delete params.register; // clear register message incase it exists
+						const qs = decodeURIComponent($.param(params));
 
 						window.location.href = pathname + '?' + qs;
 					},
 					error: function (data) {
-						var message = data.responseText;
-						var errInfo = data.responseJSON;
+						let message = data.responseText;
+						const errInfo = data.responseJSON;
 						if (data.status === 403 && data.responseText === 'Forbidden') {
 							window.location.href = config.relative_path + '/login?error=csrf-invalid';
 						} else if (errInfo && errInfo.hasOwnProperty('banned_until')) {

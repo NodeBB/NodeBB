@@ -79,6 +79,7 @@ module.exports = function (Posts) {
 			bodyShort: translator.compile('notifications:user_edited_post', editor.username, topic.title),
 			nid: `edit_post:${data.pid}:uid:${data.uid}`,
 		});
+		await topics.syncBacklinks(returnPostData);
 
 		plugins.hooks.fire('action:post.edit', { post: _.clone(returnPostData), data: data, uid: data.uid });
 

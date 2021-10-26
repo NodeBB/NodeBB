@@ -2,12 +2,12 @@
 
 
 define('forum/notifications', ['components'], function (components) {
-	var Notifications = {};
+	const Notifications = {};
 
 	Notifications.init = function () {
-		var listEl = $('.notifications-list');
+		const listEl = $('.notifications-list');
 		listEl.on('click', '[component="notifications/item/link"]', function () {
-			var nid = $(this).parents('[data-nid]').attr('data-nid');
+			const nid = $(this).parents('[data-nid]').attr('data-nid');
 			socket.emit('notifications.markRead', nid, function (err) {
 				if (err) {
 					return app.alertError(err);

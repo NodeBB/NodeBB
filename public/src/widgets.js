@@ -8,16 +8,16 @@
 			return;
 		}
 
-		var locations = Object.keys(ajaxify.data.widgets);
+		const locations = Object.keys(ajaxify.data.widgets);
 
 		locations.forEach(function (location) {
-			var area = $('#content [widget-area="' + location + '"],#content [data-widget-area="' + location + '"]').eq(0);
+			let area = $('#content [widget-area="' + location + '"],#content [data-widget-area="' + location + '"]').eq(0);
 			if (area.length) {
 				return;
 			}
 
-			var widgetsAtLocation = ajaxify.data.widgets[location] || [];
-			var html = '';
+			const widgetsAtLocation = ajaxify.data.widgets[location] || [];
+			let html = '';
 
 			widgetsAtLocation.forEach(function (widget) {
 				html += widget.html;

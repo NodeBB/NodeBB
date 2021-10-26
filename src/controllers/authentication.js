@@ -128,7 +128,7 @@ async function addToApprovalQueue(req, userData) {
 	if (meta.config.showAverageApprovalTime) {
 		const average_time = await db.getObjectField('registration:queue:approval:times', 'average');
 		if (average_time > 0) {
-			message += ` [[register:registration-queue-average-time, ${Math.floor(average_time / 60)}, ${average_time % 60}]]`;
+			message += ` [[register:registration-queue-average-time, ${Math.floor(average_time / 60)}, ${Math.floor(average_time % 60)}]]`;
 		}
 	}
 	if (meta.config.autoApproveTime > 0) {
@@ -259,7 +259,7 @@ authenticationController.login = async (req, res, next) => {
 			}
 		}
 		if (isEmailLogin || isUsernameLogin) {
-			(res.locals.continueLogin || continueLogin)(strategy, req, res, next);
+			continueLogin(strategy, req, res, next);
 		} else {
 			errorHandler(req, res, `[[error:wrong-login-type-${loginWith}]]`, 400);
 		}
@@ -303,9 +303,7 @@ function continueLogin(strategy, req, res, next) {
 			req.session.passwordExpired = true;
 
 			const code = await user.reset.generate(userData.uid);
-			res.status(200).send({
-				next: `${nconf.get('relative_path')}/reset/${code}`,
-			});
+			(res.locals.redirectAfterLogin || redirectAfterLogin)(req, res, `${nconf.get('relative_path')}/reset/${code}`);
 		} else {
 			delete req.query.lang;
 			await authenticationController.doLogin(req, userData.uid);
@@ -319,15 +317,19 @@ function continueLogin(strategy, req, res, next) {
 				destination = `${nconf.get('relative_path')}/`;
 			}
 
-			if (req.body.noscript === 'true') {
-				res.redirect(`${destination}?loggedin`);
-			} else {
-				res.status(200).send({
-					next: destination,
-				});
-			}
+			(res.locals.redirectAfterLogin || redirectAfterLogin)(req, res, destination);
 		}
 	})(req, res, next);
+}
+
+function redirectAfterLogin(req, res, destination) {
+	if (req.body.noscript === 'true') {
+		res.redirect(`${destination}?loggedin`);
+	} else {
+		res.status(200).send({
+			next: destination,
+		});
+	}
 }
 
 authenticationController.doLogin = async function (req, uid) {

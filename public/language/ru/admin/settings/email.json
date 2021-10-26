@@ -6,7 +6,7 @@
 	"from-help": "Имя отправителя письма (или название форума).",
 
 	"smtp-transport": "Сервис SMTP",
-	"smtp-transport.enabled": "Использовать сторонний сервис для рассылки писем",
+	"smtp-transport.enabled": "Enable SMTP Transport",
 	"smtp-transport-help": "Выберите один из популярных сервисов или укажите свой почтовый сервер.",
 	"smtp-transport.service": "Выберите сервис",
 	"smtp-transport.service-custom": "Другой сервис",

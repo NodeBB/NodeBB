@@ -71,6 +71,7 @@
 	"digest-freq.off": "Aus",
 	"digest-freq.daily": "Täglich",
 	"digest-freq.weekly": "Wöchentlich",
+	"digest-freq.biweekly": "Bi-Weekly",
 	"digest-freq.monthly": "Monatlich",
 	"email-chat-notifs": "Sende eine E-Mail, wenn eine neue Chat-Nachricht eingeht und ich nicht online bin",
 	"email-post-notif": "Sende eine E-Mail wenn auf Themen die ich abonniert habe geantwortet wird",

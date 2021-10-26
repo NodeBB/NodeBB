@@ -54,7 +54,7 @@
     "composer.formatting.strikethrough": "خط خورده",
     "composer.formatting.code": "کد",
     "composer.formatting.link": "پیوند",
-    "composer.formatting.picture": "عکس",
+    "composer.formatting.picture": "Image Link",
     "composer.upload-picture": "بارگذاری عکس",
     "composer.upload-file": "بارگذاری فایل",
     "composer.zen_mode": "حالت ذن",

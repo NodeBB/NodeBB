@@ -78,6 +78,8 @@ paths:
     $ref: 'read/admin/dashboard/users.yaml'
   /api/admin/dashboard/topics:
     $ref: 'read/admin/dashboard/topics.yaml'
+  /api/admin/dashboard/searches:
+    $ref: 'read/admin/dashboard/searches.yaml'
   "/api/admin/settings/{term}":
     $ref: 'read/admin/settings/term.yaml'
   /api/admin/settings/languages:

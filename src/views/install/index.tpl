@@ -42,8 +42,8 @@
 
 				<div class="row input-row">
 					<div class="col-sm-7 col-xs-12 input-field">
-						<label for="url">Web Address (URL)</label>
-						<input type="text" class="form-control" name="url" value="<!-- IF url -->{url}<!-- ENDIF url -->" placeholder="http://localhost:4567" />
+						<label for="install:url">Web Address (URL)</label>
+						<input id="install:url" type="text" class="form-control" name="url" value="<!-- IF url -->{url}<!-- ENDIF url -->" placeholder="http://localhost:4567" />
 					</div>
 					<div class="col-sm-5 help-text" data-help="This is the address that resolves to your NodeBB forum. If no port is specified, <code>4567</code> will be used."></div>
 				</div>
@@ -58,28 +58,28 @@
 				<div class="row input-row">
 					<div class="col-sm-7 col-xs-12 input-field">
 						<label for="admin:username">Username</label>
-						<input type="text" class="form-control" name="admin:username" value="<!-- IF admin:username -->{admin:username}<!-- ENDIF admin:username -->" placeholder="Username" />
+						<input id="admin:username" type="text" class="form-control" name="admin:username" value="<!-- IF admin:username -->{admin:username}<!-- ENDIF admin:username -->" placeholder="Username" />
 					</div>
 					<div class="col-sm-5 help-text" data-help="Enter an <strong>alphanumeric username</strong>. Spaces between words are allowed. You can always change your username later on your profile page."></div>
 				</div>
 				<div class="row input-row">
 					<div class="col-sm-7 col-xs-12 input-field">
 						<label for="admin:email">Email Address</label>
-						<input type="text" class="form-control" name="admin:email" value="<!-- IF admin:email -->{admin:email}<!-- ENDIF admin:email -->" placeholder="Email Address" />
+						<input id="admin:email" type="text" class="form-control" name="admin:email" value="<!-- IF admin:email -->{admin:email}<!-- ENDIF admin:email -->" placeholder="Email Address" />
 					</div>
 					<div class="col-sm-5 help-text" data-help="Please enter your email address."></div>
 				</div>
 				<div class="row input-row">
 					<div class="col-sm-7 col-xs-12 input-field">
 						<label for="admin:password">Password</label>
-						<input type="password" class="form-control" name="admin:password" value="<!-- IF admin:password -->{admin:password}<!-- ENDIF admin:password -->" placeholder="Password" data-minimum-strength="{minimumPasswordStrength}" data-minimum-length="{minimumPasswordLength}" />
+						<input id="admin:password" type="password" class="form-control" name="admin:password" value="<!-- IF admin:password -->{admin:password}<!-- ENDIF admin:password -->" placeholder="Password" data-minimum-strength="{minimumPasswordStrength}" data-minimum-length="{minimumPasswordLength}" />
 					</div>
 					<div class="col-sm-5 help-text" data-help="Use a combination of numbers, symbols, and different cases. You can change the strictness of password creation in the Admin Control Panel. Minimum {minimumPasswordLength} characters."></div>
 				</div>
 				<div class="row input-row">
 					<div class="col-sm-7 col-xs-12 input-field">
 						<label for="admin:passwordConfirm">Confirm Password</label>
-						<input type="password" class="form-control" name="admin:passwordConfirm" value="<!-- IF admin:passwordConfirm -->{admin:passwordConfirm}<!-- ENDIF admin:passwordConfirm -->" placeholder="Confirm Password" />
+						<input id="admin:passwordConfirm" type="password" class="form-control" name="admin:passwordConfirm" value="<!-- IF admin:passwordConfirm -->{admin:passwordConfirm}<!-- ENDIF admin:passwordConfirm -->" placeholder="Confirm Password" />
 					</div>
 					<div class="col-sm-5 help-text" data-help="Please confirm your password."></div>
 				</div>
@@ -98,8 +98,8 @@
 
 				<div class="row input-row">
 					<div class="col-sm-7 col-xs-12 input-field">
-						<label for="database">Database Type</label>
-						<select class="form-control" name="database">
+						<label for="install:database">Database Type</label>
+						<select id="install:database" class="form-control" name="database">
 							<option value="redis">Redis</option>
 							<option value="mongo">MongoDB</option>
 							<option value="postgres">PostgreSQL</option>
@@ -140,7 +140,7 @@
 				<div class="row input-row">
 					<div class="col-sm-7 col-xs-12 input-field">
 						<label for="{databases.questions.name}">{databases.questions.description}</label>
-						<input type="<!-- IF hidden -->password<!-- ELSE -->text<!-- ENDIF hidden -->" class="form-control" name="{databases.questions.name}" placeholder="{databases.questions.default}" value="{databases.questions.default}" />
+						<input id="{databases.questions.name}" type="<!-- IF hidden -->password<!-- ELSE -->text<!-- ENDIF hidden -->" class="form-control" name="{databases.questions.name}" placeholder="{databases.questions.default}" value="{databases.questions.default}" />
 					</div>
 				</div>
 			{{{ end }}}

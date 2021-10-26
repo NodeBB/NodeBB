@@ -71,6 +71,7 @@
 	"digest-freq.off": "Vypnuto",
 	"digest-freq.daily": "Denně",
 	"digest-freq.weekly": "Týdně",
+	"digest-freq.biweekly": "Bi-Weekly",
 	"digest-freq.monthly": "Měsíčně",
 	"email-chat-notifs": "Nejsem-li online zaslat e-mail, dorazí-li nová zpráva z chatu",
 	"email-post-notif": "Zaslat e-mail, objeví-li se odpovědi v tématu, který sleduji",

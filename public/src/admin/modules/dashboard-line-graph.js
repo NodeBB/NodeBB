@@ -1,6 +1,6 @@
 'use strict';
 
-define('admin/modules/dashboard-line-graph', ['Chart', 'translator', 'benchpress', 'api', 'hooks'], function (Chart, translator, Benchpress, api, hooks) {
+define('admin/modules/dashboard-line-graph', ['Chart', 'translator', 'benchpress', 'api', 'hooks', 'bootbox'], function (Chart, translator, Benchpress, api, hooks, bootbox) {
 	const Graph = {
 		_current: null,
 	};
@@ -18,7 +18,7 @@ define('admin/modules/dashboard-line-graph', ['Chart', 'translator', 'benchpress
 
 		Graph.handleUpdateControls({ set });
 
-		var t = translator.Translator.create();
+		const t = translator.Translator.create();
 		return new Promise((resolve) => {
 			t.translateKey(`admin/menu:${ajaxify.data.template.name.replace('admin/', '')}`, []).then((key) => {
 				const data = {
@@ -81,8 +81,8 @@ define('admin/modules/dashboard-line-graph', ['Chart', 'translator', 'benchpress
 
 	Graph.handleUpdateControls = ({ set }) => {
 		$('[data-action="updateGraph"]:not([data-units="custom"])').on('click', function () {
-			var until = new Date();
-			var amount = $(this).attr('data-amount');
+			let until = new Date();
+			const amount = $(this).attr('data-amount');
 			if ($(this).attr('data-units') === 'days') {
 				until.setHours(0, 0, 0, 0);
 			}
@@ -97,10 +97,10 @@ define('admin/modules/dashboard-line-graph', ['Chart', 'translator', 'benchpress
 		});
 
 		$('[data-action="updateGraph"][data-units="custom"]').on('click', function () {
-			var targetEl = $(this);
+			const targetEl = $(this);
 
 			Benchpress.render('admin/partials/pageviews-range-select', {}).then(function (html) {
-				var modal = bootbox.dialog({
+				const modal = bootbox.dialog({
 					title: '[[admin/dashboard:page-views-custom]]',
 					message: html,
 					buttons: {
@@ -111,10 +111,10 @@ define('admin/modules/dashboard-line-graph', ['Chart', 'translator', 'benchpress
 						},
 					},
 				}).on('shown.bs.modal', function () {
-					var date = new Date();
-					var today = date.toISOString().substr(0, 10);
+					const date = new Date();
+					const today = date.toISOString().substr(0, 10);
 					date.setDate(date.getDate() - 1);
-					var yesterday = date.toISOString().substr(0, 10);
+					const yesterday = date.toISOString().substr(0, 10);
 
 					modal.find('#startRange').val(targetEl.attr('data-startRange') || yesterday);
 					modal.find('#endRange').val(targetEl.attr('data-endRange') || today);
@@ -122,8 +122,8 @@ define('admin/modules/dashboard-line-graph', ['Chart', 'translator', 'benchpress
 
 				function submit() {
 					// NEED TO ADD VALIDATION HERE FOR YYYY-MM-DD
-					var formData = modal.find('form').serializeObject();
-					var validRegexp = /\d{4}-\d{2}-\d{2}/;
+					const formData = modal.find('form').serializeObject();
+					const validRegexp = /\d{4}-\d{2}-\d{2}/;
 
 					// Input validation
 					if (!formData.startRange && !formData.endRange) {
@@ -136,10 +136,10 @@ define('admin/modules/dashboard-line-graph', ['Chart', 'translator', 'benchpress
 						return false;
 					}
 
-					var until = new Date(formData.endRange);
+					let until = new Date(formData.endRange);
 					until.setDate(until.getDate() + 1);
 					until = until.getTime();
-					var amount = (until - new Date(formData.startRange).getTime()) / (1000 * 60 * 60 * 24);
+					const amount = (until - new Date(formData.startRange).getTime()) / (1000 * 60 * 60 * 24);
 
 					Graph.update(set, 'days', until, amount);
 
@@ -175,8 +175,8 @@ define('admin/modules/dashboard-line-graph', ['Chart', 'translator', 'benchpress
 				Graph._current.update();
 
 				// Update address bar and "View as JSON" button url
-				var apiEl = $('#view-as-json');
-				var newHref = $.param({
+				const apiEl = $('#view-as-json');
+				const newHref = $.param({
 					units: units || 'hours',
 					until: until,
 					count: amount,

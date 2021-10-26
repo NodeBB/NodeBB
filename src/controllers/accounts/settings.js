@@ -53,6 +53,7 @@ settingsController.get = async function (req, res, next) {
 		{ value: 'off', name: '[[user:digest_off]]', selected: userData.settings.dailyDigestFreq === 'off' },
 		{ value: 'day', name: '[[user:digest_daily]]', selected: userData.settings.dailyDigestFreq === 'day' },
 		{ value: 'week', name: '[[user:digest_weekly]]', selected: userData.settings.dailyDigestFreq === 'week' },
+		{ value: 'biweek', name: '[[user:digest_biweekly]]', selected: userData.settings.dailyDigestFreq === 'biweek' },
 		{ value: 'month', name: '[[user:digest_monthly]]', selected: userData.settings.dailyDigestFreq === 'month' },
 	];
 
@@ -141,17 +142,11 @@ const doUnsubscribe = async (payload) => {
 };
 
 settingsController.unsubscribe = async (req, res) => {
-	let payload;
 	try {
-		payload = await jwtVerifyAsync(req.params.token);
+		const payload = await jwtVerifyAsync(req.params.token);
 		if (!payload || !unsubscribable.includes(payload.template)) {
 			return;
 		}
-	} catch (err) {
-		throw new Error(err);
-	}
-
-	try {
 		await doUnsubscribe(payload);
 		res.render('unsubscribe', {
 			payload: payload,

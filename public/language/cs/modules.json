@@ -54,7 +54,7 @@
     "composer.formatting.strikethrough": "Přeškrtnutí",
     "composer.formatting.code": "Kód",
     "composer.formatting.link": "Odkaz",
-    "composer.formatting.picture": "Obrázek",
+    "composer.formatting.picture": "Image Link",
     "composer.upload-picture": "Nahrát obrázek",
     "composer.upload-file": "Nahrát soubor",
     "composer.zen_mode": "Režim Zem",

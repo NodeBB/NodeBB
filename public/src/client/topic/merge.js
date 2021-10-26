@@ -2,11 +2,11 @@
 
 
 define('forum/topic/merge', function () {
-	var Merge = {};
-	var modal;
-	var mergeBtn;
+	const Merge = {};
+	let modal;
+	let mergeBtn;
 
-	var selectedTids = {};
+	let selectedTids = {};
 
 	Merge.init = function (callback) {
 		callback = callback || function () {};
@@ -56,7 +56,7 @@ define('forum/topic/merge', function () {
 			if (err) {
 				return app.alertError(err);
 			}
-			var title = topicData ? topicData.title : 'No title';
+			const title = topicData ? topicData.title : 'No title';
 			if (selectedTids[tid]) {
 				delete selectedTids[tid];
 			} else {
@@ -72,7 +72,7 @@ define('forum/topic/merge', function () {
 		if (!modal) {
 			return;
 		}
-		var tid = $(this).parents('[component="category/topic"]').attr('data-tid');
+		const tid = $(this).parents('[component="category/topic"]').attr('data-tid');
 		Merge.addTopic(tid);
 
 		ev.preventDefault();
@@ -82,8 +82,8 @@ define('forum/topic/merge', function () {
 
 	function mergeTopics(btn) {
 		btn.attr('disabled', true);
-		var tids = Object.keys(selectedTids);
-		var options = {};
+		const tids = Object.keys(selectedTids);
+		const options = {};
 		if (modal.find('.merge-main-topic-radio').is(':checked')) {
 			options.mainTid = modal.find('.merge-main-topic-select').val();
 		} else if (modal.find('.merge-new-title-radio').is(':checked')) {
@@ -104,12 +104,12 @@ define('forum/topic/merge', function () {
 		if (!modal) {
 			return;
 		}
-		var tids = Object.keys(selectedTids);
+		const tids = Object.keys(selectedTids);
 		tids.sort(function (a, b) {
 			return a - b;
 		});
 
-		var topics = tids.map(function (tid) {
+		const topics = tids.map(function (tid) {
 			return { tid: tid, title: selectedTids[tid] };
 		});
 

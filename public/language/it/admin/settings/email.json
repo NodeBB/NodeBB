@@ -6,7 +6,7 @@
 	"from-help": "Il nome da visualizzare nell'email.",
 
 	"smtp-transport": "Trasporto SMTP",
-	"smtp-transport.enabled": "Utilizza un server di posta elettronica esterno per inviare le email",
+	"smtp-transport.enabled": "Enable SMTP Transport",
 	"smtp-transport-help": "Puoi selezionare da un elenco di servizi noti o inserirne uno personalizzato.",
 	"smtp-transport.service": "Seleziona un servizio",
 	"smtp-transport.service-custom": "Servizio personalizzato",

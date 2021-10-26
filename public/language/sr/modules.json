@@ -54,7 +54,7 @@
     "composer.formatting.strikethrough": "Прецртано",
     "composer.formatting.code": "Код",
     "composer.formatting.link": "Веза",
-    "composer.formatting.picture": "Слика",
+    "composer.formatting.picture": "Image Link",
     "composer.upload-picture": "Отпреми слику",
     "composer.upload-file": "Отпреми датотеку",
     "composer.zen_mode": "Цео екран",

@@ -4,7 +4,7 @@
 define('forum/post-queue', [
 	'categoryFilter', 'categorySelector', 'api',
 ], function (categoryFilter, categorySelector, api) {
-	var PostQueue = {};
+	const PostQueue = {};
 
 	PostQueue.init = function () {
 		$('[data-toggle="tooltip"]').tooltip();
@@ -14,10 +14,10 @@ define('forum/post-queue', [
 		});
 
 		$('.posts-list').on('click', '[data-action]', function () {
-			var parent = $(this).parents('[data-id]');
-			var action = $(this).attr('data-action');
-			var id = parent.attr('data-id');
-			var listContainer = parent.get(0).parentNode;
+			const parent = $(this).parents('[data-id]');
+			const action = $(this).attr('data-action');
+			const id = parent.attr('data-id');
+			const listContainer = parent.get(0).parentNode;
 
 			if (!['accept', 'reject'].some(function (valid) {
 				return action === valid;
@@ -42,8 +42,8 @@ define('forum/post-queue', [
 		handleContentEdit('.topic-title', '.topic-title-editable', 'input');
 
 		$('.posts-list').on('click', '.topic-category[data-editable]', function () {
-			var $this = $(this);
-			var id = $this.parents('[data-id]').attr('data-id');
+			const $this = $(this);
+			const id = $this.parents('[data-id]').attr('data-id');
 			categorySelector.modal({
 				onSubmit: function (selectedCategory) {
 					Promise.all([
@@ -53,7 +53,7 @@ define('forum/post-queue', [
 							cid: selectedCategory.cid,
 						}),
 					]).then(function (result) {
-						var category = result[0];
+						const category = result[0];
 						app.parseAndTranslate('post-queue', 'posts', {
 							posts: [{
 								category: category,
@@ -79,8 +79,8 @@ define('forum/post-queue', [
 
 	function handleContentEdit(displayClass, editableClass, inputSelector) {
 		$('.posts-list').on('click', displayClass, function () {
-			var el = $(this);
-			var inputEl = el.parent().find(editableClass);
+			const el = $(this);
+			const inputEl = el.parent().find(editableClass);
 			if (inputEl.length) {
 				el.addClass('hidden');
 				inputEl.removeClass('hidden').find(inputSelector).focus();
@@ -88,10 +88,10 @@ define('forum/post-queue', [
 		});
 
 		$('.posts-list').on('blur', editableClass + ' ' + inputSelector, function () {
-			var textarea = $(this);
-			var preview = textarea.parent().parent().find(displayClass);
-			var id = textarea.parents('[data-id]').attr('data-id');
-			var titleEdit = displayClass === '.topic-title';
+			const textarea = $(this);
+			const preview = textarea.parent().parent().find(displayClass);
+			const id = textarea.parents('[data-id]').attr('data-id');
+			const titleEdit = displayClass === '.topic-title';
 
 			socket.emit('posts.editQueuedContent', {
 				id: id,

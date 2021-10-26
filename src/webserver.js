@@ -148,15 +148,8 @@ function setupExpressApp(app) {
 	configureBodyParser(app);
 
 	app.use(cookieParser(nconf.get('secret')));
-	const userAgentMiddleware = useragent.express();
-	app.use((req, res, next) => {
-		userAgentMiddleware(req, res, next);
-	});
-	const spiderDetectorMiddleware = detector.middleware();
-	app.use((req, res, next) => {
-		spiderDetectorMiddleware(req, res, next);
-	});
-
+	app.use(useragent.express());
+	app.use(detector.middleware());
 	app.use(session({
 		store: db.sessionStore,
 		secret: nconf.get('secret'),

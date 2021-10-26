@@ -44,6 +44,7 @@
 				[[admin/manage/digest:manual-run]]
 				<button class="btn btn-xs btn-default" data-action="resend-day">[[admin/settings/user:digest-freq.daily]]</button>
 				<button class="btn btn-xs btn-default" data-action="resend-week">[[admin/settings/user:digest-freq.weekly]]</button>
+				<button class="btn btn-xs btn-default" data-action="resend-biweek">[[admin/settings/user:digest-freq.biweekly]]</button>
 				<button class="btn btn-xs btn-default" data-action="resend-month">[[admin/settings/user:digest-freq.monthly]]</button>
 			</td>
 		</tr>

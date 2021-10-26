@@ -54,7 +54,7 @@
     "composer.formatting.strikethrough": "Läbitõmmatud",
     "composer.formatting.code": "Code",
     "composer.formatting.link": "Link",
-    "composer.formatting.picture": "Pilt",
+    "composer.formatting.picture": "Image Link",
     "composer.upload-picture": "Lae pilt üles",
     "composer.upload-file": "Lae fail üles",
     "composer.zen_mode": "Zen Mode",

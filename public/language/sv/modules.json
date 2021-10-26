@@ -54,7 +54,7 @@
     "composer.formatting.strikethrough": "Genomstrykning",
     "composer.formatting.code": "Kod",
     "composer.formatting.link": "Länk",
-    "composer.formatting.picture": "Bild",
+    "composer.formatting.picture": "Image Link",
     "composer.upload-picture": "Ladda upp bild",
     "composer.upload-file": "Ladda upp fil",
     "composer.zen_mode": "Zen Mode",

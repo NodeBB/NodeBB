@@ -1,11 +1,11 @@
 'use strict';
 
 define('forum/header/chat', ['components'], function (components) {
-	var chat = {};
+	const chat = {};
 
 	chat.prepareDOM = function () {
-		var chatsToggleEl = components.get('chat/dropdown');
-		var chatsListEl = components.get('chat/list');
+		const chatsToggleEl = components.get('chat/dropdown');
+		const chatsListEl = components.get('chat/list');
 
 		chatsToggleEl.on('click', function () {
 			if (chatsToggleEl.parent().hasClass('open')) {

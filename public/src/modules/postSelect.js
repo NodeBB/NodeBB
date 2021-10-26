@@ -2,12 +2,12 @@
 
 
 define('postSelect', ['components'], function (components) {
-	var PostSelect = {};
-	var onSelect;
+	const PostSelect = {};
+	let onSelect;
 
 	PostSelect.pids = [];
 
-	var allowMainPostSelect = false;
+	let allowMainPostSelect = false;
 
 	PostSelect.init = function (_onSelect, options) {
 		PostSelect.pids.length = 0;
@@ -20,8 +20,8 @@ define('postSelect', ['components'], function (components) {
 
 	function onPostClicked(ev) {
 		ev.stopPropagation();
-		var pidClicked = $(this).attr('data-pid');
-		var postEls = $('[component="topic"] [data-pid="' + pidClicked + '"]');
+		const pidClicked = $(this).attr('data-pid');
+		const postEls = $('[component="topic"] [data-pid="' + pidClicked + '"]');
 		if (!allowMainPostSelect && parseInt($(this).attr('data-index'), 10) === 0) {
 			return;
 		}
@@ -39,7 +39,7 @@ define('postSelect', ['components'], function (components) {
 
 	PostSelect.togglePostSelection = function (postEls, pid) {
 		if (pid) {
-			var index = PostSelect.pids.indexOf(pid);
+			const index = PostSelect.pids.indexOf(pid);
 			if (index === -1) {
 				PostSelect.pids.push(pid);
 				postEls.toggleClass('bg-success', true);

@@ -6,7 +6,7 @@
 	"from-help": "Ім'я відправника, що буде показано в електронних листах",
 
 	"smtp-transport": "Протокол SMTP",
-	"smtp-transport.enabled": "Використовувати зовнішній поштовий сервер для відправлення повідомлень",
+	"smtp-transport.enabled": "Enable SMTP Transport",
 	"smtp-transport-help": "Ви можете обрати поштовий сервіс зі списку або використати ваш власний сервіс.",
 	"smtp-transport.service": "Оберіть сервіс",
 	"smtp-transport.service-custom": "Власний Сервіс",

@@ -218,6 +218,7 @@ module.exports = function (Topics) {
 			posts.getUserInfoForPosts([postData.uid], uid),
 			Topics.getTopicFields(tid, ['tid', 'uid', 'title', 'slug', 'cid', 'postcount', 'mainPid', 'scheduled']),
 			Topics.addParentPosts([postData]),
+			Topics.syncBacklinks(postData),
 			posts.parsePost(postData),
 		]);
 

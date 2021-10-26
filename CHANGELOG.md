@@ -1,3 +1,79 @@
+#### v1.18.4 (2021-10-06)
+
+##### Chores
+
+*  up persona (f4e62fb1)
+*  incrementing version number - v1.18.3 (57358743)
+*  update changelog for v1.18.3 (f066ddb8)
+* **deps:**
+  *  update dependency lint-staged to v11.2.0 (840b49b9)
+  *  update commitlint monorepo to v13.2.0 (aa370310)
+  *  update dependency mocha to v9.1.2 (6385b88e)
+
+##### Documentation Changes
+
+*  added link to unofficial IRC channel (c5a48b44)
+
+##### New Features
+
+*  use unread icon in mobile (27e53b42)
+*  cli user management commands (#9848) (d1ff3d62)
+*  #9855, allow uid for post queue notifications (5aea6c6a)
+*  add userData to static:user.delete (f24b630e)
+*  closes #9845, sort by views (6399b428)
+*  duplicate `requireEmailAddress` settings block to Settings > User (a9645475)
+*  mongodb driver 4.x (#9832) (07adb49e)
+*  a useless hover effect because raisins (1a61ffc5)
+
+##### Bug Fixes
+
+* **deps:**
+  *  update dependency mongodb to v4.1.3 (b4fc2773)
+  *  update dependency postcss to v8.3.9 (9455e5b2)
+  *  update dependency autoprefixer to v10.3.7 (78895d05)
+  *  update dependency nodebb-plugin-composer-default to v7.0.8 (9215c7d1)
+  *  update dependency ioredis to v4.27.10 (4694382c)
+  *  update dependency nodebb-theme-persona to v11.2.9 (346e0890)
+  *  update dependency autoprefixer to v10.3.6 (058fdca4)
+  *  update dependency yargs to v17.2.1 (d50dd801)
+  *  update dependency postcss to v8.3.8 (193c92e3)
+  *  update dependency passport to ^0.5.0 (daea8a86)
+  *  update dependency connect-pg-simple to v7 (#9785) (054f3da6)
+  *  update dependency yargs to v17.2.0 (c78309b5)
+*  #9866, fire vote hooks after reputation changes (#9867) (8ad9a103)
+*  #9865, don't display register messages after login (96f5312d)
+*  dont show decimails on auto approva minutes (a0df3890)
+*  #9864 (e954ca10)
+*  delete old topic tags (a70c69fa)
+*  switch inf. scroll to xhr (#9854) (4404e819)
+*  #9828, max-width (40915105)
+*  handle undefined returnTo on registerAbort (ac1b9692)
+*  lint (ff850b24)
+*  psql tests (123354ca)
+*  psql test (f8d4ec6c)
+*  possible test fix for subfolder redirect (3605ac81)
+*  missing relative path in test (4eacfef0)
+*  #9834, missing null email check on new registrations, added tests (58e0a366)
+*  crossorigin not showing up on manifest link tag (0faa4937)
+*  #9827, fix reward duplication (89af00d1)
+
+##### Performance Improvements
+
+*  convert promise.all to single query (#9851) (ea04aede)
+
+##### Refactors
+
+*  use utils.debounce (a7668a7f)
+*  remove async.waterfall from remaining upgrade scripts (6b34065f)
+
+##### Tests
+
+*  dashboard (4f8647a5)
+*  add tests for admin privileges (9fe9ab08)
+*  add missing tests (34798325)
+*  remove debug log (8cb47548)
+*  no need to create fake interstitial as NodeBB comes with some by default (cb69934a)
+
 #### v1.18.3 (2021-09-22)
 
 ##### Chores

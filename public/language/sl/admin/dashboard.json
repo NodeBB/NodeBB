@@ -56,8 +56,8 @@
 	"active-users.total": "Skupaj",
 	"active-users.connections": "Povezave",
 
-	"anonymous-registered-users": "Anonimni : Registrirani uporabniki",
-	"anonymous": "Anonimni",
+	"guest-registered-users": "Guest vs Registered Users",
+	"guest": "Guest",
 	"registered": "Registrirani",
 
 	"user-presence": "Prisotnost uporabnikov",
@@ -68,6 +68,7 @@
 	"unread": "Neprebrano",
 
 	"high-presence-topics": "Teme z visoko prisotnostjo",
+	"popular-searches": "Popular Searches",
 
 	"graphs.page-views": "Ogledov strani",
 	"graphs.page-views-registered": "Ogledov strani-registrirani",
@@ -75,13 +76,14 @@
 	"graphs.page-views-bot": "Ogledov strani-robot",
 	"graphs.unique-visitors": "Edinstveni obiskovalci",
 	"graphs.registered-users": "Registrirani uporabniki",
-	"graphs.anonymous-users": "Anonimni uporabniki",
+	"graphs.guest-users": "Guest Users",
 	"last-restarted-by": "Nazadnje ponovno zagnal(a)",
 	"no-users-browsing": "Ne brska noben uporabnik",
 
 	"back-to-dashboard": "Nazaj na nadzorno ploščo",
 	"details.no-users": "V izbranem časovnem okviru se ni pridružil noben uporabnik",
 	"details.no-topics": "V izbranem časovnem okviru ni bila objavljena nobena tema",
+	"details.no-searches": "No searches have been made yet",
 	"details.no-logins": "V izbranem časovnem okviru ni bila zabeležena nobena prijava",
 	"details.logins-static": "NodeBB shranjuje samo podatke o sejah za %1 dni, zato bo ta spodnja tabela prikazala samo zadnje aktivne seje",
 	"details.logins-login-time": "Čas prijave"

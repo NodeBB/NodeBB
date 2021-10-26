@@ -150,13 +150,17 @@ async function acceptOrReject(method, socket, data) {
 }
 
 async function sendQueueNotification(type, targetUid, path) {
-	const notifObj = await notifications.create({
+	const notifData = {
 		type: type,
 		nid: `${type}-${targetUid}-${path}`,
 		bodyShort: type === 'post-queue-accepted' ?
 			'[[notifications:post-queue-accepted]]' : '[[notifications:post-queue-rejected]]',
 		path: path,
-	});
+	};
+	if (parseInt(meta.config.postQueueNotificationUid, 10) > 0) {
+		notifData.from = meta.config.postQueueNotificationUid;
+	}
+	const notifObj = await notifications.create(notifData);
 	await notifications.push(notifObj, [targetUid]);
 }
 

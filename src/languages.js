@@ -13,7 +13,11 @@ const files = fs.readdirSync(path.join(paths.nodeModules, '/timeago/locales'));
 Languages.timeagoCodes = files.filter(f => f.startsWith('jquery.timeago')).map(f => f.split('.')[2]);
 
 Languages.get = async function (language, namespace) {
-	const data = await fs.promises.readFile(path.join(languagesPath, language, `${namespace}.json`), 'utf8');
+	const pathToLanguageFile = path.join(languagesPath, language, `${namespace}.json`);
+	if (!pathToLanguageFile.startsWith(languagesPath)) {
+		throw new Error('[[error:invalid-path]]');
+	}
+	const data = await fs.promises.readFile(pathToLanguageFile, 'utf8');
 	const parsed = JSON.parse(data) || {};
 	const result = await plugins.hooks.fire('filter:languages.get', {
 		language,

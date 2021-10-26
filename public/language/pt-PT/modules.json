@@ -54,7 +54,7 @@
     "composer.formatting.strikethrough": "Riscado",
     "composer.formatting.code": "Código",
     "composer.formatting.link": "Hiperligação",
-    "composer.formatting.picture": "Imagem",
+    "composer.formatting.picture": "Image Link",
     "composer.upload-picture": "Enviar imagem",
     "composer.upload-file": "Enviar um ficheiro",
     "composer.zen_mode": "Modo Zen",

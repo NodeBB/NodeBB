@@ -4,11 +4,11 @@
 define('forum/topic/move-post', [
 	'components', 'postSelect', 'translator', 'alerts', 'api',
 ], function (components, postSelect, translator, alerts, api) {
-	var MovePost = {};
+	const MovePost = {};
 
-	var moveModal;
-	var moveCommit;
-	var fromTid;
+	let moveModal;
+	let moveCommit;
+	let fromTid;
 
 	MovePost.init = function (postEl) {
 		if (moveModal) {
@@ -40,7 +40,7 @@ define('forum/topic/move-post', [
 					return;
 				}
 				moveCommit.attr('disabled', true);
-				var data = {
+				const data = {
 					pids: postSelect.pids.slice(),
 					tid: targetTid,
 				};
@@ -71,8 +71,8 @@ define('forum/topic/move-post', [
 		if (!moveModal) {
 			return;
 		}
-		var tidInput = moveModal.find('#topicId');
-		var targetTid = null;
+		const tidInput = moveModal.find('#topicId');
+		let targetTid = null;
 		if (ajaxify.data.template.topic && ajaxify.data.tid &&
 			parseInt(ajaxify.data.tid, 10) !== fromTid
 		) {
@@ -85,7 +85,7 @@ define('forum/topic/move-post', [
 	}
 
 	function getTargetTid() {
-		var tidInput = moveModal.find('#topicId');
+		const tidInput = moveModal.find('#topicId');
 		if (tidInput.length && tidInput.val()) {
 			return tidInput.val();
 		}
@@ -96,7 +96,7 @@ define('forum/topic/move-post', [
 		if (!moveModal) {
 			return;
 		}
-		var targetTid = getTargetTid();
+		const targetTid = getTargetTid();
 		if (postSelect.pids.length) {
 			if (targetTid && parseInt(targetTid, 10) !== parseInt(fromTid, 10)) {
 				api.get('/topics/' + targetTid, {}).then(function (data) {
@@ -106,7 +106,7 @@ define('forum/topic/move-post', [
 					if (data.scheduled) {
 						return app.alertError('[[error:cant-move-posts-to-scheduled]]');
 					}
-					var translateStr = translator.compile('topic:x-posts-will-be-moved-to-y', postSelect.pids.length, data.title);
+					const translateStr = translator.compile('topic:x-posts-will-be-moved-to-y', postSelect.pids.length, data.title);
 					moveModal.find('#pids').translateHtml(translateStr);
 				});
 			} else {
@@ -121,7 +121,7 @@ define('forum/topic/move-post', [
 		if (!moveModal) {
 			return;
 		}
-		var targetTid = getTargetTid();
+		const targetTid = getTargetTid();
 		if (postSelect.pids.length && targetTid &&
 			parseInt(targetTid, 10) !== parseInt(fromTid, 10)
 		) {

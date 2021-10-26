@@ -54,7 +54,7 @@
     "composer.formatting.strikethrough": "Tachado",
     "composer.formatting.code": "Código",
     "composer.formatting.link": "Enlace",
-    "composer.formatting.picture": "Foto",
+    "composer.formatting.picture": "Image Link",
     "composer.upload-picture": "Subir foto",
     "composer.upload-file": "Subir archivo",
     "composer.zen_mode": "Modo Zen",
