@@ -42,6 +42,14 @@
 				</label>
 			</div>
 			<p class="help-block">[[admin/settings/email:include-unverified-warning]]</p>
+
+			<div class="checkbox">
+				<label for="emailPrompt" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" id="emailPrompt" data-field="emailPrompt" name="emailPrompt" />
+					<span class="mdl-switch__label">[[admin/settings/email:prompt]]</span>
+				</label>
+			</div>
+			<p class="help-block">[[admin/settings/email:prompt-help]]</p>
 		</form>
 	</div>
 </div>

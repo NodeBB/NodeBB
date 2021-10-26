@@ -755,7 +755,7 @@ app.cacheBuster = null;
 	app.showEmailConfirmWarning = async (err) => {
 		const storage = await app.require('storage');
 
-		if (!app.user.uid || parseInt(storage.getItem('email-confirm-dismiss'), 10) === 1) {
+		if (!config.emailPrompt || !app.user.uid || parseInt(storage.getItem('email-confirm-dismiss'), 10) === 1) {
 			return;
 		}
 		const msg = {
