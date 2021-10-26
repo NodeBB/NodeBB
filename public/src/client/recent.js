@@ -7,7 +7,6 @@ define('forum/recent', ['topicList'], function (topicList) {
 		app.enterRoom('recent_topics');
 
 		topicList.init('recent');
-		app.showEmailConfirmWarning();
 	};
 
 	return Recent;

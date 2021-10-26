@@ -97,6 +97,7 @@ app.cacheBuster = null;
 		});
 
 		createHeaderTooltips();
+		app.showEmailConfirmWarning();
 		app.showCookieWarning();
 		registerServiceWorker();
 
@@ -754,24 +755,7 @@ app.cacheBuster = null;
 	app.showEmailConfirmWarning = async (err) => {
 		const storage = await app.require('storage');
 
-		let showModal = false;
-		switch (ajaxify.data.template.name) {
-			case 'recent': {
-				showModal = !ajaxify.data.canPost;
-				break;
-			}
-
-			case 'category': {
-				showModal = !ajaxify.data.privileges['topics:create'];
-				break;
-			}
-
-			case 'topic': {
-				showModal = !ajaxify.data.privileges['topics:reply'];
-			}
-		}
-
-		if (!showModal || !app.user.uid || parseInt(storage.getItem('email-confirm-dismiss'), 10) === 1) {
+		if (!config.emailPrompt || !app.user.uid || parseInt(storage.getItem('email-confirm-dismiss'), 10) === 1) {
 			return;
 		}
 		const msg = {
