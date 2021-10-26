@@ -99,9 +99,11 @@ searchController.search = async function (req, res, next) {
 
 async function recordSearch(data) {
 	const { query, searchIn } = data;
-	const cleanedQuery = String(query).trim().toLowerCase().substr(0, 255);
-	if (['titles', 'titlesposts', 'posts'].includes(searchIn) && cleanedQuery.length > 2) {
-		await db.sortedSetIncrBy('searches:all', 1, cleanedQuery);
+	if (query) {
+		const cleanedQuery = String(query).trim().toLowerCase().substr(0, 255);
+		if (['titles', 'titlesposts', 'posts'].includes(searchIn) && cleanedQuery.length > 2) {
+			await db.sortedSetIncrBy('searches:all', 1, cleanedQuery);
+		}
 	}
 }
 
