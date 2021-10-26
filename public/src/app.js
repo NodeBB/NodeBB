@@ -531,7 +531,8 @@ app.cacheBuster = null;
 					}
 					data.posts.forEach(function (p) {
 						const text = $('<div>' + p.content + '</div>').text();
-						const start = Math.max(0, text.toLowerCase().indexOf(inputEl.val().toLowerCase()) - 40);
+						const query = inputEl.val().toLowerCase().replace(/^in:topic-\d+/, '');
+						const start = Math.max(0, text.toLowerCase().indexOf(query) - 40);
 						p.snippet = utils.escapeHTML((start > 0 ? '...' : '') +
 							text.slice(start, start + 80) +
 							(text.length - start > 80 ? '...' : ''));
@@ -598,8 +599,9 @@ app.cacheBuster = null;
 		});
 		inputEl.on('focus', function () {
 			mousedownOnResults = false;
-			oldValue = inputEl.val();
-			if (inputEl.val() && quickSearchResults.find('#quick-search-results').children().length) {
+			const query = inputEl.val();
+			oldValue = query;
+			if (query && quickSearchResults.find('#quick-search-results').children().length) {
 				updateCategoryFilterName();
 				if (ajaxified) {
 					doSearch();
@@ -607,7 +609,10 @@ app.cacheBuster = null;
 				} else {
 					quickSearchResults.removeClass('hidden');
 				}
-				inputEl[0].setSelectionRange(0, inputEl.val().length);
+				inputEl[0].setSelectionRange(
+					query.startsWith('in:topic') ? query.indexOf(' ') + 1 : 0,
+					query.length
+				);
 			}
 		});
 
