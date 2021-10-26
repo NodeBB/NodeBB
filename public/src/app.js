@@ -590,12 +590,23 @@ app.cacheBuster = null;
 			}
 		});
 
+		let ajaxified = false;
+		hooks.on('action:ajaxify.end', function () {
+			if (!ajaxify.isCold()) {
+				ajaxified = true;
+			}
+		});
 		inputEl.on('focus', function () {
 			mousedownOnResults = false;
 			oldValue = inputEl.val();
 			if (inputEl.val() && quickSearchResults.find('#quick-search-results').children().length) {
 				updateCategoryFilterName();
-				doSearch();
+				if (ajaxified) {
+					doSearch();
+					ajaxified = false;
+				} else {
+					quickSearchResults.removeClass('hidden');
+				}
 				inputEl[0].setSelectionRange(0, inputEl.val().length);
 			}
 		});
