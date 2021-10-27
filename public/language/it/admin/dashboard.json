@@ -56,8 +56,8 @@
 	"active-users.total": "Totale",
 	"active-users.connections": "Connessioni",
 
-	"guest-registered-users": "Guest vs Registered Users",
-	"guest": "Guest",
+	"guest-registered-users": "Ospite vs Utenti Registrati",
+	"guest": "Ospite",
 	"registered": "Registrati",
 
 	"user-presence": "Presenza utente",
@@ -68,7 +68,7 @@
 	"unread": "Non letto",
 
 	"high-presence-topics": "Alta presenza discussioni",
-	"popular-searches": "Popular Searches",
+	"popular-searches": "Ricerche popolari",
 
 	"graphs.page-views": "Pagine viste",
 	"graphs.page-views-registered": "Pagine viste Registrati",
@@ -76,14 +76,14 @@
 	"graphs.page-views-bot": "Pagine viste Bot",
 	"graphs.unique-visitors": "Visitatori Unici",
 	"graphs.registered-users": "Utenti Registrati",
-	"graphs.guest-users": "Guest Users",
+	"graphs.guest-users": "Utenti ospiti",
 	"last-restarted-by": "Ultimo riavvio di",
 	"no-users-browsing": "Nessun utente sta navigando",
 
 	"back-to-dashboard": "Torna alla dashboard",
 	"details.no-users": "Nessun utente si è iscritto nell'arco di tempo selezionato",
 	"details.no-topics": "Nessuna discussione è stata postata nell'arco di tempo selezionato",
-	"details.no-searches": "No searches have been made yet",
+	"details.no-searches": "Nessuna ricerca è ancora stata fatta",
 	"details.no-logins": "Non sono stati registrati accessi nell'arco di tempo selezionato",
 	"details.logins-static": "NodeBB salva solo i dati di sessione per %1 giorni, quindi la tabella qui sotto mostrerà solo le sessioni attive più recenti",
 	"details.logins-login-time": "Tempo di accesso"
