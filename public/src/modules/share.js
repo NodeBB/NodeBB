@@ -2,10 +2,10 @@
 
 
 define('share', ['hooks'], function (hooks) {
-	var module = {};
+	const module = {};
 
 	module.addShareHandlers = function (name) {
-		var baseUrl = window.location.protocol + '//' + window.location.host;
+		const baseUrl = window.location.protocol + '//' + window.location.host;
 
 		function openShare(url, urlToPost, width, height) {
 			window.open(url + encodeURIComponent(baseUrl + config.relative_path + urlToPost), '_blank', 'width=' + width + ',height=' + height + ',scrollbars=no,status=no');
@@ -17,7 +17,7 @@ define('share', ['hooks'], function (hooks) {
 		}
 
 		$('#content').off('shown.bs.dropdown', '.share-dropdown').on('shown.bs.dropdown', '.share-dropdown', function () {
-			var postLink = $(this).find('.post-link');
+			const postLink = $(this).find('.post-link');
 			postLink.val(baseUrl + getPostUrl($(this)));
 
 			// without the setTimeout can't select the text in the input
@@ -51,7 +51,7 @@ define('share', ['hooks'], function (hooks) {
 	}
 
 	function getPostUrl(clickedElement) {
-		var pid = parseInt(clickedElement.parents('[data-pid]').attr('data-pid'), 10);
+		const pid = parseInt(clickedElement.parents('[data-pid]').attr('data-pid'), 10);
 		return '/post' + (pid ? '/' + (pid) : '');
 	}
 

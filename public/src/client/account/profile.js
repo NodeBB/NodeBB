@@ -5,7 +5,7 @@ define('forum/account/profile', [
 	'forum/account/header',
 	'bootbox',
 ], function (header, bootbox) {
-	var Account = {};
+	const Account = {};
 
 	Account.init = function () {
 		header.init();

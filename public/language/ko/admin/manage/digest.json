@@ -13,6 +13,7 @@
 	"resent-single": "포럼 메일 수동 전송 완료",
 	"resent-day": "일간 포럼 메일 재전송 완료",
 	"resent-week": "주간 포럼 메일 재전송 완료",
+	"resent-biweek": "Bi-Weekly digest resent",
 	"resent-month": "월간 포럼 메일 재전송 완료",
 	"null": "<em>기록 없음</em>",
 	"manual-run": "포럼 메일 수동 전송",

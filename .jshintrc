@@ -4,7 +4,7 @@
 
     "maxerr" : 50, // {int} Maximum error before stopping
 
-    "esversion": 6,
+    "esversion": 9,
 
     // Enforcing
     "bitwise" : true, // true: Prohibit bitwise operators (&, |, ^, etc.)

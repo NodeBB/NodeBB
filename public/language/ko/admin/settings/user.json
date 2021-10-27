@@ -71,6 +71,7 @@
 	"digest-freq.off": "해제",
 	"digest-freq.daily": "매일",
 	"digest-freq.weekly": "매주",
+	"digest-freq.biweekly": "Bi-Weekly",
 	"digest-freq.monthly": "매달",
 	"email-chat-notifs": "오프라인일 때 채팅 메시지가 도착하면 알림 메일 보내기",
 	"email-post-notif": "내가 관심있는 화제에 답글이 달리면 메일 보내기",

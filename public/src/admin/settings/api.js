@@ -1,7 +1,7 @@
 'use strict';
 
 define('admin/settings/api', ['settings'], function (settings) {
-	var ACP = {};
+	const ACP = {};
 
 	ACP.init = function () {
 		settings.load('core.api', $('.core-api-settings'));

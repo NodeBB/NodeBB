@@ -27,7 +27,7 @@
 		<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/api:tokens]]</div>
 		<div class="col-sm-10 col-xs-12">
 			<div class="form-group" data-type="sorted-list" data-sorted-list="tokens" data-item-template="admin/partials/api/sorted-list/item" data-form-template="admin/partials/api/sorted-list/form">
-				<input hidden="text" name="tokens">
+				<input type="hidden" name="tokens">
 				<ul data-type="list" class="list-group"></ul>
 				<button type="button" data-type="add" class="btn btn-info">Create Token</button>
 			</div>

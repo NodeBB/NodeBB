@@ -138,6 +138,7 @@
     "emailConfirmInterval": 10,
     "removeEmailNotificationImages": 0,
     "includeUnverifiedEmails": 0,
+    "emailPrompt": 1,
     "inviteExpiration": 7,
     "dailyDigestFreq": "off",
     "digestHour": 17,

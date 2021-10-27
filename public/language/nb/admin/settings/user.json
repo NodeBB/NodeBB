@@ -71,6 +71,7 @@
 	"digest-freq.off": "Av",
 	"digest-freq.daily": "Daglig",
 	"digest-freq.weekly": "Ukentlig",
+	"digest-freq.biweekly": "Bi-Weekly",
 	"digest-freq.monthly": "Månedlig ",
 	"email-chat-notifs": "Send en e-post hvis jeg mottar en ny chatt-melding om jeg ikke er online. ",
 	"email-post-notif": "Send en e-post når det kommer svar på tråder jeg abbonnerer på",

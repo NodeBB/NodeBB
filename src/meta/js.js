@@ -327,8 +327,10 @@ JS.buildBundle = async function (target, fork) {
 	await requirejsOptimize(target);
 	const files = await getBundleScriptList(target);
 
+	const srcPath = path.join(__dirname, `../../build/public/rjs-bundle-${target}.js`);
 	files.push({
-		srcPath: path.join(__dirname, `../../build/public/rjs-bundle-${target}.js`),
+		srcPath: srcPath,
+		filename: path.relative(basePath, srcPath).replace(/\\/g, '/'),
 	});
 
 	const minify = process.env.NODE_ENV !== 'development';

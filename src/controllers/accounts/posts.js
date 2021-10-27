@@ -140,7 +140,7 @@ postsController.getTopics = async function (req, res, next) {
 	await getPostsFromUserSet('account/topics', req, res, next);
 };
 
-async function getPostsFromUserSet(template, req, res, callback) {
+async function getPostsFromUserSet(template, req, res, next) {
 	const data = templateToData[template];
 	const page = Math.max(1, parseInt(req.query.page, 10) || 1);
 
@@ -150,7 +150,7 @@ async function getPostsFromUserSet(template, req, res, callback) {
 	]);
 
 	if (!userData) {
-		return callback();
+		return next();
 	}
 	const itemsPerPage = data.type === 'topics' ? settings.topicsPerPage : settings.postsPerPage;
 	const start = (page - 1) * itemsPerPage;

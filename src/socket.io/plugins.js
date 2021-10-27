@@ -7,7 +7,7 @@ const SocketPlugins = {};
 
 	How? From your plugin:
 
-		var SocketPlugins = require.main.require('./src/socket.io/plugins');
+		const SocketPlugins = require.main.require('./src/socket.io/plugins');
 		SocketPlugins.myPlugin = {};
 		SocketPlugins.myPlugin.myMethod = function(socket, data, callback) { ... };
 

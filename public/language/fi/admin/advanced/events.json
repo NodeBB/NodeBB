@@ -3,6 +3,7 @@
 	"no-events": "Ei tapahtumia.",
 	"control-panel": "Tapahtumien hallintapaneeli",
 	"delete-events": "Poista tapahtumia",
+	"confirm-delete-all-events": "Are you sure you want to delete all logged events?",
 	"filters": "Suodattimet",
 	"filters-apply": "Lisää suodattimia",
 	"filter-type": "Tapahtuman tyyppi",

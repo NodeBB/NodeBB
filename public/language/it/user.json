@@ -94,6 +94,7 @@
     "digest_off": "Spento",
     "digest_daily": "Quotidiano",
     "digest_weekly": "Settimanale",
+    "digest_biweekly": "Bisettimanale",
     "digest_monthly": "Mensile",
     "has_no_follower": "Questo utente non è seguito da nessuno :(",
     "follows_no_one": "Questo utente non segue nessuno :(",

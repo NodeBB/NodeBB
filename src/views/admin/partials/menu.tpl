@@ -184,6 +184,7 @@
 					<li><a href="{relative_path}/admin/dashboard/logins">[[admin/menu:dashboard/logins]]</a></li>
 					<li><a href="{relative_path}/admin/dashboard/users">[[admin/menu:dashboard/users]]</a></li>
 					<li><a href="{relative_path}/admin/dashboard/topics">[[admin/menu:dashboard/topics]]</a></li>
+					<li><a href="{relative_path}/admin/dashboard/searches">[[admin/menu:dashboard/searches]]</a></li>
 				</ul>
 			</li>
 			{{{ end }}}

@@ -71,6 +71,7 @@
 	"digest-freq.off": "Kikapcsolt",
 	"digest-freq.daily": "Napi",
 	"digest-freq.weekly": "Heti",
+	"digest-freq.biweekly": "Bi-Weekly",
 	"digest-freq.monthly": "Havi",
 	"email-chat-notifs": "Email küldése, ha új csevegési üzenet érkezik miközben nem vagyok elérhető",
 	"email-post-notif": "Email küldése, ha válasz érkezik olyan témakörhöz amire feliratkoztam",

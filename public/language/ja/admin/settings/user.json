@@ -71,6 +71,7 @@
 	"digest-freq.off": "オフ",
 	"digest-freq.daily": "デイリー",
 	"digest-freq.weekly": "ウィークリー",
+	"digest-freq.biweekly": "Bi-Weekly",
 	"digest-freq.monthly": "マンスリー",
 	"email-chat-notifs": "オンラインではない時に新しいチャットメッセージを受信した場合、通知メールを送信する。",
 	"email-post-notif": "購読中のスレッドに返信があった場合、メールで通知する。",

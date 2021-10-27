@@ -80,6 +80,7 @@ apiController.loadConfig = async function (req) {
 			size: meta.config.topicThumbSize,
 		},
 		iconBackgrounds: await user.getIconBackgrounds(req.uid),
+		emailPrompt: meta.config.emailPrompt,
 	};
 
 	let settings = config;

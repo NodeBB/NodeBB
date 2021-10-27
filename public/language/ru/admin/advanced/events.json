@@ -3,6 +3,7 @@
 	"no-events": "Нет событий",
 	"control-panel": "Панель управления событиями",
 	"delete-events": "Удалить события",
+	"confirm-delete-all-events": "Are you sure you want to delete all logged events?",
 	"filters": "Фильтр",
 	"filters-apply": "Применить фильтр",
 	"filter-type": "Тип события",

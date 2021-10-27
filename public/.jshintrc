@@ -1,6 +1,8 @@
 {
     "maxerr" : 50, // {int} Maximum error before stopping
 
+    "esversion": 9,
+
     // Enforcing
     "bitwise" : true, // true: Prohibit bitwise operators (&, |, ^, etc.)
     "camelcase" : false, // true: Identifiers must be in camelCase
@@ -42,7 +44,7 @@
     "evil" : false, // true: Tolerate use of `eval` and `new Function()`
     "expr" : false, // true: Tolerate `ExpressionStatement` as Programs
     "funcscope" : false, // true: Tolerate defining variables inside control statements"
-    "globalstrict" : false, // true: Allow global "use strict" (also enables 'strict')
+    "globalstrict" : true, // true: Allow global "use strict" (also enables 'strict')
     "iterator" : false, // true: Tolerate using the `__iterator__` property
     "lastsemic" : false, // true: Tolerate omitting a semicolon for the last statement of a 1-line block
     "laxbreak" : false, // true: Tolerate possibly unsafe line breakings
@@ -66,7 +68,6 @@
 		"utils": true,
 		"overrides": true,
 		"componentHandler": true,
-		"bootbox": true,
 		"templates": true,
 		"Visibility": true,
 		"Tinycon": true,

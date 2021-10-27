@@ -3,6 +3,7 @@
 	"no-events": "Ni dogodkov",
 	"control-panel": "Nadzorna plošča za dogodke",
 	"delete-events": "Izbriši dogodke",
+	"confirm-delete-all-events": "Are you sure you want to delete all logged events?",
 	"filters": "Filtri",
 	"filters-apply": "Uveljavi filtre",
 	"filter-type": "Tip dogodka",

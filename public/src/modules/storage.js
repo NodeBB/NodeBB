@@ -47,8 +47,8 @@ define('storage', function () {
 		});
 	}
 
-	var storage;
-	var item = Date.now().toString();
+	let storage;
+	const item = Date.now().toString();
 
 	try {
 		storage = window.localStorage;

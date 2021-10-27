@@ -29,8 +29,8 @@
 			</div>
 
 			<div class="form-group">
-				<label>[[admin/settings/web-crawler:sitemap-topics]]</label>
-				<input class="form-control" type="text" data-field="sitemapTopics" />
+				<label for="sitemapTopics">[[admin/settings/web-crawler:sitemap-topics]]</label>
+				<input id="sitemapTopics" class="form-control" type="text" data-field="sitemapTopics" />
 			</div>
 
 			<br />

@@ -139,6 +139,7 @@
     "composer.handle_placeholder": "Введите ваше имя здесь",
     "composer.discard": "Отменить",
     "composer.submit": "Отправить",
+    "composer.additional-options": "Additional Options",
     "composer.schedule": "Запланировать",
     "composer.replying_to": "Ответ %1",
     "composer.new_topic": "Создать тему",

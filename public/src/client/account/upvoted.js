@@ -2,7 +2,7 @@
 
 
 define('forum/account/upvoted', ['forum/account/header', 'forum/account/posts'], function (header, posts) {
-	var Upvoted = {};
+	const Upvoted = {};
 
 	Upvoted.init = function () {
 		header.init();

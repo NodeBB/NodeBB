@@ -83,6 +83,7 @@ SocketTopics.isFollowed = async function (socket, tid) {
 };
 
 SocketTopics.search = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'GET /api/search');
 	if (!data) {
 		throw new Error('[[error:invalid-data]]');
 	}

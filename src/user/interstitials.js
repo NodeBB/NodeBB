@@ -28,15 +28,22 @@ Interstitials.email = async (data) => {
 		callback: async (userData, formData) => {
 			// Validate and send email confirmation
 			if (userData.uid) {
-				const [isAdminOrGlobalMod, canEdit, current] = await Promise.all([
+				const [isAdminOrGlobalMod, canEdit, current, { allowed, error }] = await Promise.all([
 					user.isAdminOrGlobalMod(data.req.uid),
 					privileges.users.canEdit(data.req.uid, userData.uid),
 					user.getUserField(userData.uid, 'email'),
+					plugins.hooks.fire('filter:user.saveEmail', {
+						uid: userData.uid,
+						email: formData.email,
+						registration: false,
+						allowed: true,	// change this value to disallow
+						error: '[[error:invalid-email]]',
+					}),
 				]);
 
 				if (formData.email && formData.email.length) {
-					if (!utils.isEmailValid(formData.email)) {
-						throw new Error('[[error:invalid-email]]');
+					if (!allowed || !utils.isEmailValid(formData.email)) {
+						throw new Error(error);
 					}
 
 					if (formData.email === current) {
@@ -68,8 +75,16 @@ Interstitials.email = async (data) => {
 					}
 				}
 			} else {
-				if (meta.config.requireEmailAddress && !(formData.email && formData.email.length)) {
-					throw new Error('[[error:invalid-email]]');
+				const { allowed, error } = await plugins.hooks.fire('filter:user.saveEmail', {
+					uid: null,
+					email: formData.email,
+					registration: true,
+					allowed: true,	// change this value to disallow
+					error: '[[error:invalid-email]]',
+				});
+
+				if (!allowed || (meta.config.requireEmailAddress && !(formData.email && formData.email.length))) {
+					throw new Error(error);
 				}
 
 				// New registrants have the confirm email sent from user.create()

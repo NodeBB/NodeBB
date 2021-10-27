@@ -71,6 +71,7 @@
 	"digest-freq.off": "Desligado",
 	"digest-freq.daily": "Diariamente ",
 	"digest-freq.weekly": "Semanalmente",
+	"digest-freq.biweekly": "Bi-Weekly",
 	"digest-freq.monthly": "Mensalmente",
 	"email-chat-notifs": "Enviar um e-mail se receber uma nova mensagem e não estiver online",
 	"email-post-notif": "Send an email when replies are made to topics I am subscribed to",

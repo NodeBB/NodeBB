@@ -13,6 +13,7 @@
 	"resent-single": "摘要重发操作完成",
 	"resent-day": "已发送每日摘要",
 	"resent-week": "已发送每周摘要",
+	"resent-biweek": "Bi-Weekly digest resent",
 	"resent-month": "已发送每月摘要",
 	"null": "从不",
 	"manual-run": "手动运行摘要：",

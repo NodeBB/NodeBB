@@ -3,14 +3,14 @@
 define('categorySelector', [
 	'categorySearch', 'bootbox', 'hooks',
 ], function (categorySearch, bootbox, hooks) {
-	var categorySelector = {};
+	const categorySelector = {};
 
 	categorySelector.init = function (el, options) {
 		if (!el || !el.length) {
 			return;
 		}
 		options = options || {};
-		var onSelect = options.onSelect || function () {};
+		const onSelect = options.onSelect || function () {};
 
 		options.states = options.states || ['watching', 'notwatching', 'ignoring'];
 		options.template = 'partials/category-selector';
@@ -18,12 +18,12 @@ define('categorySelector', [
 
 		categorySearch.init(el, options);
 
-		var selector = {
+		const selector = {
 			el: el,
 			selectedCategory: null,
 		};
 		el.on('click', '[data-cid]', function () {
-			var categoryEl = $(this);
+			const categoryEl = $(this);
 			if (categoryEl.hasClass('disabled')) {
 				return false;
 			}
@@ -32,7 +32,7 @@ define('categorySelector', [
 		});
 		const defaultSelectHtml = selector.el.find('[component="category-selector-selected"]').html();
 		selector.selectCategory = function (cid) {
-			var categoryEl = selector.el.find('[data-cid="' + cid + '"]');
+			const categoryEl = selector.el.find('[data-cid="' + cid + '"]');
 			selector.selectedCategory = {
 				cid: cid,
 				name: categoryEl.attr('data-name'),
@@ -62,7 +62,7 @@ define('categorySelector', [
 		options.onSelect = options.onSelect || function () {};
 		options.onSubmit = options.onSubmit || function () {};
 		app.parseAndTranslate('admin/partials/categories/select-category', { message: options.message }, function (html) {
-			var modal = bootbox.dialog({
+			const modal = bootbox.dialog({
 				title: options.title || '[[modules:composer.select_category]]',
 				message: html,
 				buttons: {
@@ -74,7 +74,7 @@ define('categorySelector', [
 				},
 			});
 
-			var selector = categorySelector.init(modal.find('[component="category-selector"]'), options);
+			const selector = categorySelector.init(modal.find('[component="category-selector"]'), options);
 			function submit(ev) {
 				ev.preventDefault();
 				if (selector.selectedCategory) {

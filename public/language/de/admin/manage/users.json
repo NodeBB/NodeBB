@@ -47,6 +47,7 @@
 	"users.uid": "UID",
 	"users.username": "Nutzername",
 	"users.email": "E-Mail",
+	"users.no-email": "(no email)",
 	"users.ip": "IP",
 	"users.postcount": "Anzahl der Beiträge",
 	"users.reputation": "Ansehen",

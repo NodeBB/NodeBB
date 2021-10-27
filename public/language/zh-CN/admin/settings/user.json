@@ -71,6 +71,7 @@
 	"digest-freq.off": "关闭",
 	"digest-freq.daily": "每日",
 	"digest-freq.weekly": "每周",
+	"digest-freq.biweekly": "Bi-Weekly",
 	"digest-freq.monthly": "每月",
 	"email-chat-notifs": "当我不在线并收到新的聊天消息时，给我发送邮件通知",
 	"email-post-notif": "当我订阅的主题有新回复时，给我发送邮件通知",

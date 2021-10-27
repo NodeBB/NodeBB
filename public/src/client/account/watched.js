@@ -2,7 +2,7 @@
 
 
 define('forum/account/watched', ['forum/account/header', 'forum/account/topics'], function (header, topics) {
-	var AccountWatched = {};
+	const AccountWatched = {};
 
 	AccountWatched.init = function () {
 		header.init();

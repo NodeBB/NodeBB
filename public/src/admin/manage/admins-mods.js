@@ -3,7 +3,7 @@
 define('admin/manage/admins-mods', [
 	'autocomplete', 'api', 'bootbox', 'categorySelector',
 ], function (autocomplete, api, bootbox, categorySelector) {
-	var AdminsMods = {};
+	const AdminsMods = {};
 
 	AdminsMods.init = function () {
 		autocomplete.user($('#admin-search'), function (ev, ui) {
@@ -25,8 +25,8 @@ define('admin/manage/admins-mods', [
 		});
 
 		$('.administrator-area').on('click', '.remove-user-icon', function () {
-			var userCard = $(this).parents('[data-uid]');
-			var uid = userCard.attr('data-uid');
+			const userCard = $(this).parents('[data-uid]');
+			const uid = userCard.attr('data-uid');
 			if (parseInt(uid, 10) === parseInt(app.user.uid, 10)) {
 				return app.alertError('[[admin/manage/users:alerts.no-remove-yourself-admin]]');
 			}
@@ -60,8 +60,8 @@ define('admin/manage/admins-mods', [
 		});
 
 		$('.global-moderator-area').on('click', '.remove-user-icon', function () {
-			var userCard = $(this).parents('[data-uid]');
-			var uid = userCard.attr('data-uid');
+			const userCard = $(this).parents('[data-uid]');
+			const uid = userCard.attr('data-uid');
 
 			bootbox.confirm('[[admin/manage/users:alerts.confirm-remove-global-mod]]', function (confirm) {
 				if (confirm) {
@@ -85,8 +85,8 @@ define('admin/manage/admins-mods', [
 		});
 
 		autocomplete.user($('.moderator-search'), function (ev, ui) {
-			var input = $(ev.target);
-			var cid = $(ev.target).attr('data-cid');
+			const input = $(ev.target);
+			const cid = $(ev.target).attr('data-cid');
 			socket.emit('admin.categories.setPrivilege', {
 				cid: cid,
 				privilege: ajaxify.data.allPrivileges,
@@ -111,10 +111,10 @@ define('admin/manage/admins-mods', [
 		});
 
 		$('.moderator-area').on('click', '.remove-user-icon', function () {
-			var moderatorArea = $(this).parents('[data-cid]');
-			var cid = moderatorArea.attr('data-cid');
-			var userCard = $(this).parents('[data-uid]');
-			var uid = userCard.attr('data-uid');
+			const moderatorArea = $(this).parents('[data-cid]');
+			const cid = moderatorArea.attr('data-cid');
+			const userCard = $(this).parents('[data-uid]');
+			const uid = userCard.attr('data-uid');
 
 			bootbox.confirm('[[admin/manage/users:alerts.confirm-remove-moderator]]', function (confirm) {
 				if (confirm) {

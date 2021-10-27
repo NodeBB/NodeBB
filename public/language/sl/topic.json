@@ -139,6 +139,7 @@
     "composer.handle_placeholder": "Enter your name/handle here",
     "composer.discard": "Zavrzi",
     "composer.submit": "Pošlji",
+    "composer.additional-options": "Additional Options",
     "composer.schedule": "Schedule",
     "composer.replying_to": "Odgovor na %1",
     "composer.new_topic": "Nova tema",

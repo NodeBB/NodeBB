@@ -29,11 +29,11 @@
 				[[admin/settings/group:allow-multiple-badges-help]]
 			</p>
 
-			<label>[[admin/settings/group:max-name-length]]</label>
-			<input class="form-control" type="text" placeholder="255" data-field="maximumGroupNameLength" />
+			<label for="maximumGroupNameLength">[[admin/settings/group:max-name-length]]</label>
+			<input id="maximumGroupNameLength" class="form-control" type="text" placeholder="255" data-field="maximumGroupNameLength" />
 
-			<label>[[admin/settings/group:max-title-length]]</label>
-			<input class="form-control" type="text" placeholder="40" data-field="maximumGroupTitleLength" />
+			<label for="maximumGroupTitleLength">[[admin/settings/group:max-title-length]]</label>
+			<input id="maximumGroupTitleLength" class="form-control" type="text" placeholder="40" data-field="maximumGroupTitleLength" />
 		</form>
 	</div>
 </div>

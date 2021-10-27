@@ -2,14 +2,14 @@
 
 
 define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts', 'hooks'], function (navigator, components, posts, hooks) {
-	var Replies = {};
+	const Replies = {};
 
 	Replies.init = function (button) {
-		var post = button.closest('[data-pid]');
-		var pid = post.data('pid');
-		var open = button.find('[component="post/replies/open"]');
-		var loading = button.find('[component="post/replies/loading"]');
-		var close = button.find('[component="post/replies/close"]');
+		const post = button.closest('[data-pid]');
+		const pid = post.data('pid');
+		const open = button.find('[component="post/replies/open"]');
+		const loading = button.find('[component="post/replies/loading"]');
+		const close = button.find('[component="post/replies/close"]');
 
 		if (open.is(':not(.hidden)') && loading.is('.hidden')) {
 			open.addClass('hidden');
@@ -25,7 +25,7 @@ define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts', '
 				close.removeClass('hidden');
 
 				posts.modifyPostsByPrivileges(data);
-				var tplData = {
+				const tplData = {
 					posts: data,
 					privileges: ajaxify.data.privileges,
 					'downvote:disabled': ajaxify.data['downvote:disabled'],
@@ -34,7 +34,7 @@ define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts', '
 					hideReplies: config.hasOwnProperty('showNestedReplies') ? !config.showNestedReplies : true,
 				};
 				app.parseAndTranslate('topic', 'posts', tplData, function (html) {
-					var repliesEl = $('<div>', { component: 'post/replies' }).html(html).hide();
+					const repliesEl = $('<div>', { component: 'post/replies' }).html(html).hide();
 					if (button.attr('data-target-component')) {
 						post.find('[component="' + button.attr('data-target-component') + '"]').html(repliesEl);
 					} else {
@@ -57,14 +57,14 @@ define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts', '
 	};
 
 	Replies.onNewPost = function (data) {
-		var post = data.posts[0];
+		const post = data.posts[0];
 		if (!post) {
 			return;
 		}
 		incrementCount(post, 1);
 		data.hideReplies = config.hasOwnProperty('showNestedReplies') ? !config.showNestedReplies : true;
 		app.parseAndTranslate('topic', 'posts', data, function (html) {
-			var replies = $('[component="post"][data-pid="' + post.toPid + '"] [component="post/replies"]').first();
+			const replies = $('[component="post"][data-pid="' + post.toPid + '"] [component="post/replies"]').first();
 			if (replies.length) {
 				if (config.topicPostSort === 'newest_to_oldest') {
 					replies.prepend(html);
@@ -81,11 +81,11 @@ define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts', '
 	};
 
 	function incrementCount(post, inc) {
-		var replyCount = $('[component="post"][data-pid="' + post.toPid + '"]').find('[component="post/reply-count"]').first();
-		var countEl = replyCount.find('[component="post/reply-count/text"]');
-		var avatars = replyCount.find('[component="post/reply-count/avatars"]');
-		var count = Math.max(0, parseInt(countEl.attr('data-replies'), 10) + inc);
-		var timestamp = replyCount.find('.timeago').attr('title', post.timestampISO);
+		const replyCount = $('[component="post"][data-pid="' + post.toPid + '"]').find('[component="post/reply-count"]').first();
+		const countEl = replyCount.find('[component="post/reply-count/text"]');
+		const avatars = replyCount.find('[component="post/reply-count/avatars"]');
+		const count = Math.max(0, parseInt(countEl.attr('data-replies'), 10) + inc);
+		const timestamp = replyCount.find('.timeago').attr('title', post.timestampISO);
 
 		countEl.attr('data-replies', count);
 		replyCount.toggleClass('hidden', count <= 0);

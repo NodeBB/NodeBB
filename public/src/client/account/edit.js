@@ -6,8 +6,9 @@ define('forum/account/edit', [
 	'translator',
 	'api',
 	'hooks',
-], function (header, picture, translator, api, hooks) {
-	var AccountEdit = {};
+	'bootbox',
+], function (header, picture, translator, api, hooks, bootbox) {
+	const AccountEdit = {};
 
 	AccountEdit.init = function () {
 		header.init();
@@ -63,12 +64,12 @@ define('forum/account/edit', [
 	function handleAccountDelete() {
 		$('#deleteAccountBtn').on('click', function () {
 			translator.translate('[[user:delete_account_confirm]]', function (translated) {
-				var modal = bootbox.confirm(translated + '<p><input type="password" class="form-control" id="confirm-password" /></p>', function (confirm) {
+				const modal = bootbox.confirm(translated + '<p><input type="password" class="form-control" id="confirm-password" /></p>', function (confirm) {
 					if (!confirm) {
 						return;
 					}
 
-					var confirmBtn = modal.find('.btn-primary');
+					const confirmBtn = modal.find('.btn-primary');
 					confirmBtn.html('<i class="fa fa-spinner fa-spin"></i>');
 					confirmBtn.prop('disabled', true);
 
@@ -104,7 +105,7 @@ define('forum/account/edit', [
 
 	function handleEmailConfirm() {
 		$('#confirm-email').on('click', function () {
-			var btn = $(this).attr('disabled', true);
+			const btn = $(this).attr('disabled', true);
 			socket.emit('user.emailConfirm', {}, function (err) {
 				btn.removeAttr('disabled');
 				if (err) {
@@ -120,7 +121,7 @@ define('forum/account/edit', [
 	}
 
 	function updateSignature() {
-		var el = $('#signature');
+		const el = $('#signature');
 		$('#signatureCharCountLeft').html(getCharsLeft(el, ajaxify.data.maximumSignatureLength));
 
 		el.on('keyup change', function () {
@@ -129,7 +130,7 @@ define('forum/account/edit', [
 	}
 
 	function updateAboutMe() {
-		var el = $('#aboutme');
+		const el = $('#aboutme');
 		$('#aboutMeCharCountLeft').html(getCharsLeft(el, ajaxify.data.maximumAboutMeLength));
 
 		el.on('keyup change', function () {
@@ -139,11 +140,11 @@ define('forum/account/edit', [
 
 	function handleGroupSort() {
 		function move(direction) {
-			var selected = $('#groupTitle').val();
+			const selected = $('#groupTitle').val();
 			if (!ajaxify.data.allowMultipleBadges || (Array.isArray(selected) && selected.length > 1)) {
 				return;
 			}
-			var el = $('#groupTitle').find(':selected');
+			const el = $('#groupTitle').find(':selected');
 			if (el.length && el.val()) {
 				if (direction > 0) {
 					el.insertAfter(el.next());

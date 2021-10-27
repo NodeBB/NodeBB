@@ -2,6 +2,7 @@
   "extends": [
     "config:base"
   ],
+  "labels": ["dependencies"],
   "packageRules": [
     {
       "updateTypes": ["minor", "patch", "pin", "digest"],

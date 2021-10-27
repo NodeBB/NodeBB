@@ -4,7 +4,7 @@
 define('admin/modules/selectable', [
 	'jquery-ui/widgets/selectable',
 ], function () {
-	var selectable = {};
+	const selectable = {};
 
 	selectable.enable = function (containerEl, targets) {
 		$(containerEl).selectable({

@@ -18,7 +18,7 @@ Email.test = async function (socket, data) {
 	switch (data.template) {
 		case 'digest':
 			await userDigest.execute({
-				interval: 'alltime',
+				interval: 'month',
 				subscribers: [socket.uid],
 			});
 			break;

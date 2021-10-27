@@ -6,7 +6,7 @@
 	"from-help": "The from name to display in the email.",
 
 	"smtp-transport": "SMTP Transport",
-	"smtp-transport.enabled": "Use an external email server to send emails",
+	"smtp-transport.enabled": "Enable SMTP Transport",
 	"smtp-transport-help": "You can select from a list of well-known services or enter a custom one.",
 	"smtp-transport.service": "Select a service",
 	"smtp-transport.service-custom": "Özel Servis",
@@ -40,5 +40,7 @@
 	"require-email-address": "Require new users to specify an email address",
 	"require-email-address-warning": "By default, users can opt-out of entering an email address. Enabling this option means they have to enter an email address in order to proceed with registration. <strong>It does not ensure user will enter a real email address, nor even an address they own.</strong>",
 	"include-unverified-emails": "Send emails to recipients who have not explicitly confirmed their emails",
-	"include-unverified-warning": "By default, users with emails associated with their account have already been verified, but there are situations where this is not the case (e.g. SSO logins, grandfathered users, etc). <strong>Enable this setting at your own risk</strong> &ndash; sending emails to unverified addresses may be a violation of regional anti-spam laws."
+	"include-unverified-warning": "By default, users with emails associated with their account have already been verified, but there are situations where this is not the case (e.g. SSO logins, grandfathered users, etc). <strong>Enable this setting at your own risk</strong> &ndash; sending emails to unverified addresses may be a violation of regional anti-spam laws.",
+	"prompt": "Prompt users to enter or confirm their emails",
+	"prompt-help": "If a user does not have an email set, or their email is not confirmed, a warning will be shown on screen."
 }

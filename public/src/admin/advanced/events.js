@@ -1,27 +1,31 @@
 'use strict';
 
 
-define('admin/advanced/events', function () {
-	var	Events = {};
+define('admin/advanced/events', ['bootbox'], function (bootbox) {
+	const Events = {};
 
 	Events.init = function () {
 		$('[data-action="clear"]').on('click', function () {
-			socket.emit('admin.deleteAllEvents', function (err) {
-				if (err) {
-					return app.alertError(err.message);
+			bootbox.confirm('[[admin/advanced/events:confirm-delete-all-events]]', (confirm) => {
+				if (confirm) {
+					socket.emit('admin.deleteAllEvents', function (err) {
+						if (err) {
+							return app.alertError(err.message);
+						}
+						$('.events-list').empty();
+					});
 				}
-				$('.events-list').empty();
 			});
 		});
 
 		$('.delete-event').on('click', function () {
-			var parentEl = $(this).parents('[data-eid]');
-			var eid = parentEl.attr('data-eid');
+			const $parentEl = $(this).parents('[data-eid]');
+			const eid = $parentEl.attr('data-eid');
 			socket.emit('admin.deleteEvents', [eid], function (err) {
 				if (err) {
 					return app.alertError(err.message);
 				}
-				parentEl.remove();
+				$parentEl.remove();
 			});
 		});
 
@@ -31,8 +35,8 @@ define('admin/advanced/events', function () {
 	Events.refresh = function (event) {
 		event.preventDefault();
 
-		var formEl = $('#filters');
-		ajaxify.go('admin/advanced/events?' + formEl.serialize());
+		const $formEl = $('#filters');
+		ajaxify.go('admin/advanced/events?' + $formEl.serialize());
 	};
 
 	return Events;

@@ -53,6 +53,7 @@ Digest.getUsersInterval = async (uids) => {
 	const settings = await Promise.all([
 		db.isSortedSetMembers('digest:day:uids', uids),
 		db.isSortedSetMembers('digest:week:uids', uids),
+		db.isSortedSetMembers('digest:biweek:uids', uids),
 		db.isSortedSetMembers('digest:month:uids', uids),
 	]);
 
@@ -62,6 +63,8 @@ Digest.getUsersInterval = async (uids) => {
 		} else if (settings[1][index]) {
 			return 'week';
 		} else if (settings[2][index]) {
+			return 'biweek';
+		} else if (settings[3][index]) {
 			return 'month';
 		}
 		return false;

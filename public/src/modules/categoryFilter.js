@@ -1,7 +1,7 @@
 'use strict';
 
 define('categoryFilter', ['categorySearch', 'api', 'hooks'], function (categorySearch, api, hooks) {
-	var categoryFilter = {};
+	const categoryFilter = {};
 
 	categoryFilter.init = function (el, options) {
 		if (!el || !el.length) {
@@ -15,8 +15,8 @@ define('categoryFilter', ['categorySearch', 'api', 'hooks'], function (categoryS
 
 		categorySearch.init(el, options);
 
-		var selectedCids = [];
-		var initialCids = [];
+		let selectedCids = [];
+		let initialCids = [];
 		if (Array.isArray(options.selectedCids)) {
 			selectedCids = options.selectedCids.map(cid => parseInt(cid, 10));
 		} else if (Array.isArray(ajaxify.data.selectedCids)) {
@@ -25,7 +25,7 @@ define('categoryFilter', ['categorySearch', 'api', 'hooks'], function (categoryS
 		initialCids = selectedCids.slice();
 
 		el.on('hidden.bs.dropdown', function () {
-			var changed = initialCids.length !== selectedCids.length;
+			let changed = initialCids.length !== selectedCids.length;
 			initialCids.forEach(function (cid, index) {
 				if (cid !== selectedCids[index]) {
 					changed = true;
@@ -39,8 +39,8 @@ define('categoryFilter', ['categorySearch', 'api', 'hooks'], function (categoryS
 				return;
 			}
 			if (changed) {
-				var url = window.location.pathname;
-				var currentParams = utils.params();
+				let url = window.location.pathname;
+				const currentParams = utils.params();
 				if (selectedCids.length) {
 					currentParams.cid = selectedCids;
 					url += '?' + decodeURIComponent($.param(currentParams));
@@ -50,14 +50,14 @@ define('categoryFilter', ['categorySearch', 'api', 'hooks'], function (categoryS
 		});
 
 		el.on('click', '[component="category/list"] [data-cid]', function () {
-			var listEl = el.find('[component="category/list"]');
-			var categoryEl = $(this);
-			var link = categoryEl.find('a').attr('href');
+			const listEl = el.find('[component="category/list"]');
+			const categoryEl = $(this);
+			const link = categoryEl.find('a').attr('href');
 			if (link && link !== '#' && link.length) {
 				return;
 			}
-			var cid = parseInt(categoryEl.attr('data-cid'), 10);
-			var icon = categoryEl.find('[component="category/select/icon"]');
+			const cid = parseInt(categoryEl.attr('data-cid'), 10);
+			const icon = categoryEl.find('[component="category/select/icon"]');
 
 			if (selectedCids.includes(cid)) {
 				selectedCids.splice(selectedCids.indexOf(cid), 1);

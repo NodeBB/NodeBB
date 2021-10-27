@@ -94,6 +94,7 @@
     "digest_off": "Изключено",
     "digest_daily": "Ежедневно",
     "digest_weekly": "Ежеседмично",
+    "digest_biweekly": "На всеки две седмици",
     "digest_monthly": "Ежемесечно",
     "has_no_follower": "Този потребител няма последователи :(",
     "follows_no_one": "Този потребител не следва никого :(",

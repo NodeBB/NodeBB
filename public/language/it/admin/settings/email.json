@@ -6,7 +6,7 @@
 	"from-help": "Il nome da visualizzare nell'email.",
 
 	"smtp-transport": "Trasporto SMTP",
-	"smtp-transport.enabled": "Utilizza un server di posta elettronica esterno per inviare le email",
+	"smtp-transport.enabled": "Abilita trasporto SMTP",
 	"smtp-transport-help": "Puoi selezionare da un elenco di servizi noti o inserirne uno personalizzato.",
 	"smtp-transport.service": "Seleziona un servizio",
 	"smtp-transport.service-custom": "Servizio personalizzato",
@@ -40,5 +40,7 @@
 	"require-email-address": "Richiedere ai nuovi utenti di specificare un indirizzo email",
 	"require-email-address-warning": "Per impostazione predefinita, gli utenti possono rinunciare a inserire un indirizzo email. Abilitare questa opzione significa che devono inserire un indirizzo email per procedere con la registrazione. <strong>Non assicura che l'utente inserisca un indirizzo email reale, e nemmeno un indirizzo che possiede.</strong>",
 	"include-unverified-emails": "Invia email a destinatari che non hanno confermato esplicitamente le loro email",
-	"include-unverified-warning": "Per impostazione predefinita, gli utenti con email associate al loro account sono già stati verificati, ma ci sono situazioni in cui ciò non è vero (ad esempio accessi SSO, vecchi utenti, ecc.). <strong>Abilita questa impostazione a tuo rischio e pericolo</strong> &ndash; l'invio di email a indirizzi non verificati può essere una violazione delle leggi regionali anti-spam."
+	"include-unverified-warning": "Per impostazione predefinita, gli utenti con email associate al loro account sono già stati verificati, ma ci sono situazioni in cui ciò non è vero (ad esempio accessi SSO, vecchi utenti, ecc.). <strong>Abilita questa impostazione a tuo rischio e pericolo</strong> &ndash; l'invio di email a indirizzi non verificati può essere una violazione delle leggi regionali anti-spam.",
+	"prompt": "Prompt users to enter or confirm their emails",
+	"prompt-help": "If a user does not have an email set, or their email is not confirmed, a warning will be shown on screen."
 }

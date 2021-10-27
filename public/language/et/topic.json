@@ -139,6 +139,7 @@
     "composer.handle_placeholder": "Enter your name/handle here",
     "composer.discard": "Katkesta",
     "composer.submit": "Postita",
+    "composer.additional-options": "Additional Options",
     "composer.schedule": "Schedule",
     "composer.replying_to": "Vastad %1'le",
     "composer.new_topic": "Uus teema",

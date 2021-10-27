@@ -3,6 +3,7 @@
 	"no-events": "Không có sự kiện",
 	"control-panel": "Bảng Điều Khiển Sự Kiện",
 	"delete-events": "Xóa Sự Kiện",
+	"confirm-delete-all-events": "Bạn có chắc chắn muốn xóa tất cả các sự kiện đã ghi không?",
 	"filters": "Bộ lọc",
 	"filters-apply": "Áp Dụng Bộ Lọc",
 	"filter-type": "Loại Sự Kiện",

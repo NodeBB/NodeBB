@@ -139,6 +139,7 @@
     "composer.handle_placeholder": "Gib deinen Namen/Nick hier ein",
     "composer.discard": "Verwerfen",
     "composer.submit": "Absenden",
+    "composer.additional-options": "Additional Options",
     "composer.schedule": "Schedule",
     "composer.replying_to": "Antworte auf %1",
     "composer.new_topic": "Neues Thema",

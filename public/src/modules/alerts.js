@@ -2,7 +2,7 @@
 
 
 define('alerts', ['translator', 'components', 'hooks'], function (translator, components, hooks) {
-	var module = {};
+	const module = {};
 
 	module.alert = function (params) {
 		params.alert_id = 'alert_button_' + (params.alert_id ? params.alert_id : new Date().getTime());
@@ -10,7 +10,7 @@ define('alerts', ['translator', 'components', 'hooks'], function (translator, co
 		params.message = params.message ? params.message.trim() : '';
 		params.type = params.type || 'info';
 
-		var alert = $('#' + params.alert_id);
+		const alert = $('#' + params.alert_id);
 		if (alert.length) {
 			updateAlert(alert, params);
 		} else {
@@ -20,7 +20,7 @@ define('alerts', ['translator', 'components', 'hooks'], function (translator, co
 
 	function createNew(params) {
 		app.parseAndTranslate('alert', params, function (html) {
-			var alert = $('#' + params.alert_id);
+			let alert = $('#' + params.alert_id);
 			if (alert.length) {
 				return updateAlert(alert, params);
 			}
@@ -98,9 +98,9 @@ define('alerts', ['translator', 'components', 'hooks'], function (translator, co
 	}
 
 	function startTimeout(alert, params) {
-		var timeout = params.timeout;
+		const timeout = params.timeout;
 
-		var timeoutId = setTimeout(function () {
+		const timeoutId = setTimeout(function () {
 			fadeOut(alert);
 
 			if (typeof params.timeoutfn === 'function') {

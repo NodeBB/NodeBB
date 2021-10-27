@@ -1,0 +1,25 @@
+get:
+  tags:
+    - admin
+  summary: Get detailed user registration analytics
+  responses:
+    "200":
+      description: A JSON object containing popular searches.
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  searches:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        value:
+                          type: string
+                          description: The string that was searched
+                        score:
+                          type: number
+                          description: Number of times this string has been searched
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

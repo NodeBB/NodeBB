@@ -10,14 +10,14 @@
 		window.slugify = factory(XRegExp);
 	}
 }(function (XRegExp) {
-	var invalidUnicodeChars = XRegExp('[^\\p{L}\\s\\d\\-_]', 'g');
-	var invalidLatinChars = /[^\w\s\d\-_]/g;
-	var trimRegex = /^\s+|\s+$/g;
-	var collapseWhitespace = /\s+/g;
-	var collapseDash = /-+/g;
-	var trimTrailingDash = /-$/g;
-	var trimLeadingDash = /^-/g;
-	var isLatin = /^[\w\d\s.,\-@]+$/;
+	const invalidUnicodeChars = XRegExp('[^\\p{L}\\s\\d\\-_]', 'g');
+	const invalidLatinChars = /[^\w\s\d\-_]/g;
+	const trimRegex = /^\s+|\s+$/g;
+	const collapseWhitespace = /\s+/g;
+	const collapseDash = /-+/g;
+	const trimTrailingDash = /-$/g;
+	const trimLeadingDash = /^-/g;
+	const isLatin = /^[\w\d\s.,\-@]+$/;
 
 	// http://dense13.com/blog/2009/05/03/converting-string-to-slug-javascript/
 	return function slugify(str, preserveCase) {

@@ -47,6 +47,7 @@
 	"users.uid": "מזהה משתמש (ID)",
 	"users.username": "שם משתמש",
 	"users.email": "דוא\"ל",
+	"users.no-email": "(אין כתובת דוא\"ל)",
 	"users.ip": "IP",
 	"users.postcount": "מספר פוסטים",
 	"users.reputation": "מוניטין",

@@ -2,7 +2,7 @@
 
 
 define('forum/account/info', ['forum/account/header', 'components', 'forum/account/sessions'], function (header, components, sessions) {
-	var Info = {};
+	const Info = {};
 
 	Info.init = function () {
 		header.init();
@@ -12,15 +12,15 @@ define('forum/account/info', ['forum/account/header', 'components', 'forum/accou
 
 	function handleModerationNote() {
 		$('[component="account/save-moderation-note"]').on('click', function () {
-			var note = $('[component="account/moderation-note"]').val();
+			const note = $('[component="account/moderation-note"]').val();
 			socket.emit('user.setModerationNote', { uid: ajaxify.data.uid, note: note }, function (err) {
 				if (err) {
 					return app.alertError(err.message);
 				}
 				$('[component="account/moderation-note"]').val('');
 				app.alertSuccess('[[user:info.moderation-note.success]]');
-				var timestamp = Date.now();
-				var data = [{
+				const timestamp = Date.now();
+				const data = [{
 					note: utils.escapeHTML(note),
 					user: app.user,
 					timestamp: timestamp,

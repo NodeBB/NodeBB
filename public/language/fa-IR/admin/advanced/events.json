@@ -3,6 +3,7 @@
 	"no-events": "رویدادی موجود نیست",
 	"control-panel": "کنترل پنل رویداد ها",
 	"delete-events": "Delete Events",
+	"confirm-delete-all-events": "Are you sure you want to delete all logged events?",
 	"filters": "Filters",
 	"filters-apply": "Apply Filters",
 	"filter-type": "Event Type",

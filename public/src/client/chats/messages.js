@@ -1,12 +1,12 @@
 'use strict';
 
 
-define('forum/chats/messages', ['components', 'translator', 'benchpress', 'hooks'], function (components, translator, Benchpress, hooks) {
-	var messages = {};
+define('forum/chats/messages', ['components', 'translator', 'benchpress', 'hooks', 'bootbox'], function (components, translator, Benchpress, hooks, bootbox) {
+	const messages = {};
 
 	messages.sendMessage = function (roomId, inputEl) {
-		var msg = inputEl.val();
-		var mid = inputEl.attr('data-mid');
+		const msg = inputEl.val();
+		const mid = inputEl.attr('data-mid');
 
 		if (!msg.trim().length) {
 			return;
@@ -59,7 +59,7 @@ define('forum/chats/messages', ['components', 'translator', 'benchpress', 'hooks
 	};
 
 	messages.updateRemainingLength = function (parent) {
-		var element = parent.find('[component="chat/input"]');
+		const element = parent.find('[component="chat/input"]');
 		parent.find('[component="chat/message/length"]').text(element.val().length);
 		parent.find('[component="chat/message/remaining"]').text(config.maximumChatMessageLength - element.val().length);
 		hooks.fire('action:chat.updateRemainingLength', {
@@ -68,8 +68,8 @@ define('forum/chats/messages', ['components', 'translator', 'benchpress', 'hooks
 	};
 
 	messages.appendChatMessage = function (chatContentEl, data) {
-		var lastSpeaker = parseInt(chatContentEl.find('.chat-message').last().attr('data-uid'), 10);
-		var lasttimestamp = parseInt(chatContentEl.find('.chat-message').last().attr('data-timestamp'), 10);
+		const lastSpeaker = parseInt(chatContentEl.find('.chat-message').last().attr('data-uid'), 10);
+		const lasttimestamp = parseInt(chatContentEl.find('.chat-message').last().attr('data-timestamp'), 10);
 		if (!Array.isArray(data)) {
 			data.newSet = lastSpeaker !== parseInt(data.fromuid, 10) ||
 				parseInt(data.timestamp, 10) > parseInt(lasttimestamp, 10) + (1000 * 60 * 3);
@@ -81,8 +81,8 @@ define('forum/chats/messages', ['components', 'translator', 'benchpress', 'hooks
 	};
 
 	function onMessagesParsed(chatContentEl, html) {
-		var newMessage = $(html);
-		var isAtBottom = messages.isAtBottom(chatContentEl);
+		const newMessage = $(html);
+		const isAtBottom = messages.isAtBottom(chatContentEl);
 		newMessage.appendTo(chatContentEl);
 		newMessage.find('.timeago').timeago();
 		newMessage.find('img:not(.not-responsive)').addClass('img-responsive');
@@ -114,7 +114,7 @@ define('forum/chats/messages', ['components', 'translator', 'benchpress', 'hooks
 
 	messages.isAtBottom = function (containerEl, threshold) {
 		if (containerEl.length) {
-			var distanceToBottom = containerEl[0].scrollHeight - (
+			const distanceToBottom = containerEl[0].scrollHeight - (
 				containerEl.outerHeight() + containerEl.scrollTop()
 			);
 			return distanceToBottom < (threshold || 100);
@@ -131,7 +131,7 @@ define('forum/chats/messages', ['components', 'translator', 'benchpress', 'hooks
 	};
 
 	messages.toggleScrollUpAlert = function (containerEl) {
-		var isAtBottom = messages.isAtBottom(containerEl, 300);
+		const isAtBottom = messages.isAtBottom(containerEl, 300);
 		containerEl.parent()
 			.find('[component="chat/messages/scroll-up-alert"]')
 			.toggleClass('hidden', isAtBottom);
@@ -171,10 +171,10 @@ define('forum/chats/messages', ['components', 'translator', 'benchpress', 'hooks
 
 	function onChatMessageEdited(data) {
 		data.messages.forEach(function (message) {
-			var self = parseInt(message.fromuid, 10) === parseInt(app.user.uid, 10);
+			const self = parseInt(message.fromuid, 10) === parseInt(app.user.uid, 10);
 			message.self = self ? 1 : 0;
 			messages.parseMessage(message, function (html) {
-				var body = components.get('chat/message', message.messageId);
+				const body = components.get('chat/message', message.messageId);
 				if (body.length) {
 					body.replaceWith(html);
 					components.get('chat/message', message.messageId).find('.timeago').timeago();

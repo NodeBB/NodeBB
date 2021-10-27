@@ -139,6 +139,7 @@
     "composer.handle_placeholder": "Enter your name/handle here",
     "composer.discard": "Zahodiť",
     "composer.submit": "Odoslať",
+    "composer.additional-options": "Additional Options",
     "composer.schedule": "Schedule",
     "composer.replying_to": "Odpovedať na %1",
     "composer.new_topic": "Nová téma",

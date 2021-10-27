@@ -26,8 +26,8 @@
 					<br/>
 					<br/>
 
-					<label>[[admin/development/logger:file-path]]</label>
-					<input class="form-control" type="text" placeholder="[[admin/development/logger:file-path-placeholder]]" data-field="loggerPath" />
+					<label for="loggerPath">[[admin/development/logger:file-path]]</label>
+					<input id="loggerPath" class="form-control" type="text" placeholder="[[admin/development/logger:file-path-placeholder]]" data-field="loggerPath" />
 				</form>
 			</div>
 		</div>

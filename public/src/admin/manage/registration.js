@@ -1,15 +1,15 @@
 'use strict';
 
 
-define('admin/manage/registration', function () {
-	var Registration = {};
+define('admin/manage/registration', ['bootbox'], function (bootbox) {
+	const Registration = {};
 
 	Registration.init = function () {
 		$('.users-list').on('click', '[data-action]', function () {
-			var parent = $(this).parents('[data-username]');
-			var action = $(this).attr('data-action');
-			var username = parent.attr('data-username');
-			var method = action === 'accept' ? 'user.acceptRegistration' : 'user.rejectRegistration';
+			const parent = $(this).parents('[data-username]');
+			const action = $(this).attr('data-action');
+			const username = parent.attr('data-username');
+			const method = action === 'accept' ? 'user.acceptRegistration' : 'user.rejectRegistration';
 
 			socket.emit(method, { username: username }, function (err) {
 				if (err) {
@@ -21,16 +21,16 @@ define('admin/manage/registration', function () {
 		});
 
 		$('.invites-list').on('click', '[data-action]', function () {
-			var parent = $(this).parents('[data-invitation-mail][data-invited-by]');
-			var email = parent.attr('data-invitation-mail');
-			var invitedBy = parent.attr('data-invited-by');
-			var action = $(this).attr('data-action');
-			var method = 'user.deleteInvitation';
+			const parent = $(this).parents('[data-invitation-mail][data-invited-by]');
+			const email = parent.attr('data-invitation-mail');
+			const invitedBy = parent.attr('data-invited-by');
+			const action = $(this).attr('data-action');
+			const method = 'user.deleteInvitation';
 
-			var removeRow = function () {
-				var nextRow = parent.next();
-				var thisRowinvitedBy = parent.find('.invited-by');
-				var nextRowInvitedBy = nextRow.find('.invited-by');
+			const removeRow = function () {
+				const nextRow = parent.next();
+				const thisRowinvitedBy = parent.find('.invited-by');
+				const nextRowInvitedBy = nextRow.find('.invited-by');
 				if (nextRowInvitedBy.html() !== undefined && nextRowInvitedBy.html().length < 2) {
 					nextRowInvitedBy.html(thisRowinvitedBy.html());
 				}

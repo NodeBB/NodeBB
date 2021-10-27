@@ -1,8 +1,8 @@
 'use strict';
 
 
-define('forum/pagination', function () {
-	var pagination = {};
+define('forum/pagination', ['bootbox'], function (bootbox) {
+	const pagination = {};
 
 	pagination.init = function () {
 		$('body').on('click', '[component="pagination/select-page"]', function () {
@@ -20,10 +20,10 @@ define('forum/pagination', function () {
 			return;
 		}
 
-		var query = utils.params();
+		const query = utils.params();
 		query.page = page;
 
-		var url = window.location.pathname + '?' + $.param(query);
+		const url = window.location.pathname + '?' + $.param(query);
 		ajaxify.go(url, callback);
 	};
 

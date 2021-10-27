@@ -94,6 +94,7 @@
     "digest_off": "Avslagen",
     "digest_daily": "Dagligen",
     "digest_weekly": "Veckovis",
+    "digest_biweekly": "Bi-Weekly",
     "digest_monthly": "Månadsvis",
     "has_no_follower": "Denna användare har inga följare :(",
     "follows_no_one": "Denna användare följer ingen :(",
