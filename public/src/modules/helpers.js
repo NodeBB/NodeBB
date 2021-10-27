@@ -334,7 +334,6 @@
 			'alt="' + userObj.username + '"',
 			'title="' + userObj.username + '"',
 			'data-uid="' + userObj.uid + '"',
-			'loading="lazy"',
 		];
 		const styles = [];
 		classNames = classNames || '';
