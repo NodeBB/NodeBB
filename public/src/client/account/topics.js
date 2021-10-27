@@ -6,10 +6,10 @@ define('forum/account/topics', [
 	'forum/infinitescroll',
 	'hooks',
 ], function (header, infinitescroll, hooks) {
-	var AccountTopics = {};
+	const AccountTopics = {};
 
-	var template;
-	var page = 1;
+	let template;
+	let page = 1;
 
 	AccountTopics.init = function () {
 		header.init();
@@ -29,7 +29,7 @@ define('forum/account/topics', [
 		if (direction < 0) {
 			return;
 		}
-		var params = utils.params();
+		const params = utils.params();
 		page += 1;
 		params.page = page;
 

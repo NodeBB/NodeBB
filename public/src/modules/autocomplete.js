@@ -3,7 +3,7 @@
 
 
 define('autocomplete', ['api'], function (api) {
-	var module = {};
+	const module = {};
 
 	module.user = function (input, params, onselect) {
 		if (typeof params === 'function') {
@@ -29,8 +29,8 @@ define('autocomplete', ['api'], function (api) {
 						}
 
 						if (result && result.users) {
-							var names = result.users.map(function (user) {
-								var username = $('<div></div>').html(user.username).text();
+							const names = result.users.map(function (user) {
+								const username = $('<div></div>').html(user.username).text();
 								return user && {
 									label: username,
 									value: username,
@@ -75,7 +75,7 @@ define('autocomplete', ['api'], function (api) {
 							return app.alertError(err.message);
 						}
 						if (results && results.length) {
-							var names = results.map(function (group) {
+							const names = results.map(function (group) {
 								return group && {
 									label: group.name,
 									value: group.name,
@@ -121,7 +121,7 @@ define('autocomplete', ['api'], function (api) {
 
 	function handleOnSelect(input, onselect, event, ui) {
 		onselect = onselect || function () { };
-		var e = jQuery.Event('keypress');
+		const e = jQuery.Event('keypress');
 		e.which = 13;
 		e.keyCode = 13;
 		setTimeout(function () {

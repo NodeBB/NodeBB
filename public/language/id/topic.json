@@ -139,6 +139,7 @@
     "composer.handle_placeholder": "Enter your name/handle here",
     "composer.discard": "Buang",
     "composer.submit": "Kirim",
+    "composer.additional-options": "Additional Options",
     "composer.schedule": "Schedule",
     "composer.replying_to": "Membalas ke %1",
     "composer.new_topic": "Topik Baru",

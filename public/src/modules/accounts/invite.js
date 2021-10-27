@@ -36,10 +36,10 @@ define('accounts/invite', ['api', 'benchpress', 'bootbox'], function (api, Bench
 	};
 
 	Invite.send = function () {
-		var $emails = $('#invite-modal-emails');
-		var $groups = $('#invite-modal-groups');
+		const $emails = $('#invite-modal-emails');
+		const $groups = $('#invite-modal-groups');
 
-		var data = {
+		const data = {
 			emails: $emails.val()
 				.split(',')
 				.map(m => m.trim())

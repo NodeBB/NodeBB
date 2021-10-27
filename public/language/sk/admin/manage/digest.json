@@ -13,6 +13,7 @@
 	"resent-single": "Manual digest resend completed",
 	"resent-day": "Daily digest resent",
 	"resent-week": "Weekly digest resent",
+	"resent-biweek": "Bi-Weekly digest resent",
 	"resent-month": "Monthly digest resent",
 	"null": "<em>Never</em>",
 	"manual-run": "Manual digest run:",

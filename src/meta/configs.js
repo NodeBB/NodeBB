@@ -4,7 +4,6 @@
 const nconf = require('nconf');
 const path = require('path');
 const winston = require('winston');
-const util = require('util');
 
 const db = require('../database');
 const pubsub = require('../pubsub');
@@ -237,22 +236,15 @@ function ensureInteger(data, field, min) {
 	}
 }
 
-function lessRender(string, callback) {
-	const less = require('less');
-	less.render(string, {
-		compress: true,
-		javascriptEnabled: true,
-	}, callback);
-}
-
-const lessRenderAsync = util.promisify(lessRender);
-
 async function saveRenderedCss(data) {
 	if (!data.customCSS) {
 		return;
 	}
-
-	const lessObject = await lessRenderAsync(data.customCSS);
+	const less = require('less');
+	const lessObject = await less.render(data.customCSS, {
+		compress: true,
+		javascriptEnabled: false,
+	});
 	data.renderedCustomCSS = lessObject.css;
 }
 

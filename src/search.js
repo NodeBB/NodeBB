@@ -56,10 +56,19 @@ async function searchInContent(data) {
 		}
 		return [];
 	}
-	const [pids, tids] = await Promise.all([
-		doSearch('post', ['posts', 'titlesposts']),
-		doSearch('topic', ['titles', 'titlesposts']),
-	]);
+	let pids = [];
+	let tids = [];
+	const inTopic = data.query.match(/^in:topic-([\d]+) /);
+	if (inTopic) {
+		const tid = inTopic[1];
+		const cleanedTerm = data.query.replace(inTopic[0], '');
+		pids = await topics.search(tid, cleanedTerm);
+	} else {
+		[pids, tids] = await Promise.all([
+			doSearch('post', ['posts', 'titlesposts']),
+			doSearch('topic', ['titles', 'titlesposts']),
+		]);
+	}
 
 	if (data.returnIds) {
 		return { pids: pids, tids: tids };

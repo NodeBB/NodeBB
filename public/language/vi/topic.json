@@ -139,6 +139,7 @@
     "composer.handle_placeholder": "Nhập tên/xử lý của bạn ở đây",
     "composer.discard": "Huỷ bỏ",
     "composer.submit": "Gửi",
+    "composer.additional-options": "Tùy chọn bổ sung",
     "composer.schedule": "Lên lịch",
     "composer.replying_to": "Đang trả lời %1",
     "composer.new_topic": "Chủ đề mới",

@@ -6,7 +6,7 @@ define('admin/modules/instance', [
 	// the client can't fetch the template file, resulting in an error
 	config.relative_path + '/assets/templates/alert.js',
 ], function () {
-	var instance = {};
+	const instance = {};
 
 	instance.rebuildAndRestart = function (callback) {
 		app.alert({

@@ -1,5 +1,5 @@
 {
-	"alert.confirm-rebuild-and-restart": "Jesteś pewny, że chciałbyś przebudować oraz zrestartować NodeBB?",
+	"alert.confirm-rebuild-and-restart": "Czy na pewno chcesz przebudować oraz zrestartować NodeBB?",
 	"alert.confirm-restart": "Czy na pewno chcesz zrestartować NodeBB?",
 
 	"acp-title": "%1 | Panel administracyjny NodeBB",

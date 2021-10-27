@@ -139,6 +139,7 @@
     "composer.handle_placeholder": "Унесите ваше име/идентитет овде",
     "composer.discard": "Одбаци",
     "composer.submit": "Пошаљи",
+    "composer.additional-options": "Additional Options",
     "composer.schedule": "Испланирај",
     "composer.replying_to": "Писање одговора на %1",
     "composer.new_topic": "Нова тема",

@@ -26,10 +26,6 @@ Sockets.init = async function (server) {
 	});
 
 	if (nconf.get('isCluster')) {
-		// socket.io-adapter-cluster needs update
-		// if (nconf.get('singleHostCluster')) {
-		// 	io.adapter(require('./single-host-cluster'));
-		// } else if (nconf.get('redis')) {
 		if (nconf.get('redis')) {
 			const adapter = await require('../database/redis').socketAdapter();
 			io.adapter(adapter);

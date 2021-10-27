@@ -8,9 +8,9 @@ define('admin/manage/categories', [
 	'Sortable',
 	'bootbox',
 ], function (translator, Benchpress, categorySelector, api, Sortable, bootbox) {
-	var	Categories = {};
-	var newCategoryId = -1;
-	var sortables;
+	const	Categories = {};
+	let newCategoryId = -1;
+	let sortables;
 
 	Categories.init = function () {
 		categorySelector.init($('.category [component="category-selector"]'), {
@@ -26,12 +26,12 @@ define('admin/manage/categories', [
 
 		// Enable/Disable toggle events
 		$('.categories').on('click', '.category-tools [data-action="toggle"]', function () {
-			var $this = $(this);
-			var cid = $this.attr('data-disable-cid');
-			var parentEl = $this.parents('li[data-cid="' + cid + '"]');
-			var disabled = parentEl.hasClass('disabled');
-			var childrenEls = parentEl.find('li[data-cid]');
-			var childrenCids = childrenEls.map(function () {
+			const $this = $(this);
+			const cid = $this.attr('data-disable-cid');
+			const parentEl = $this.parents('li[data-cid="' + cid + '"]');
+			const disabled = parentEl.hasClass('disabled');
+			const childrenEls = parentEl.find('li[data-cid]');
+			const childrenCids = childrenEls.map(function () {
 				return $(this).attr('data-cid');
 			}).get();
 
@@ -39,15 +39,15 @@ define('admin/manage/categories', [
 		});
 
 		$('.categories').on('click', '.toggle', function () {
-			var el = $(this);
+			const el = $(this);
 			el.find('i').toggleClass('fa-minus').toggleClass('fa-plus');
 			el.closest('[data-cid]').find('> ul[data-cid]').toggleClass('hidden');
 		});
 
 		$('.categories').on('click', '.set-order', function () {
-			var cid = $(this).attr('data-cid');
-			var order = $(this).attr('data-order');
-			var modal = bootbox.dialog({
+			const cid = $(this).attr('data-cid');
+			const order = $(this).attr('data-order');
+			const modal = bootbox.dialog({
 				title: '[[admin/manage/categories:set-order]]',
 				message: '<input type="number" min="1" class="form-control input-lg" value=' + order + ' /><p class="help-block">[[admin/manage/categories:set-order-help]]</p>',
 				show: true,
@@ -56,9 +56,9 @@ define('admin/manage/categories', [
 						label: '[[modules:bootbox.confirm]]',
 						className: 'btn-primary',
 						callback: function () {
-							var val = modal.find('input').val();
+							const val = modal.find('input').val();
 							if (val && cid) {
-								var modified = {};
+								const modified = {};
 								modified[cid] = { order: Math.max(1, parseInt(val, 10)) };
 								api.put('/categories/' + cid, modified[cid]).then(function () {
 									ajaxify.refresh();
@@ -81,7 +81,7 @@ define('admin/manage/categories', [
 		});
 
 		function toggleAll(expand) {
-			var el = $('.categories .toggle');
+			const el = $('.categories .toggle');
 			el.find('i').toggleClass('fa-minus', expand).toggleClass('fa-plus', !expand);
 			el.closest('[data-cid]').find('> ul[data-cid]').toggleClass('hidden', !expand);
 		}
@@ -89,7 +89,7 @@ define('admin/manage/categories', [
 
 	Categories.throwCreateModal = function () {
 		Benchpress.render('admin/partials/categories/create', {}).then(function (html) {
-			var modal = bootbox.dialog({
+			const modal = bootbox.dialog({
 				title: '[[admin/manage/categories:alert.create]]',
 				message: html,
 				buttons: {
@@ -100,7 +100,7 @@ define('admin/manage/categories', [
 					},
 				},
 			});
-			var options = {
+			const options = {
 				localCategories: [
 					{
 						cid: 0,
@@ -109,10 +109,10 @@ define('admin/manage/categories', [
 					},
 				],
 			};
-			var parentSelector = categorySelector.init(modal.find('#parentCidGroup [component="category-selector"]'), options);
-			var cloneFromSelector = categorySelector.init(modal.find('#cloneFromCidGroup [component="category-selector"]'), options);
+			const parentSelector = categorySelector.init(modal.find('#parentCidGroup [component="category-selector"]'), options);
+			const cloneFromSelector = categorySelector.init(modal.find('#cloneFromCidGroup [component="category-selector"]'), options);
 			function submit() {
-				var formData = modal.find('form').serializeObject();
+				const formData = modal.find('form').serializeObject();
 				formData.description = '';
 				formData.icon = 'fa-comments';
 				formData.uid = app.user.uid;
@@ -125,8 +125,8 @@ define('admin/manage/categories', [
 			}
 
 			$('#cloneChildren').on('change', function () {
-				var check = $(this);
-				var parentSelect = modal.find('#parentCidGroup [component="category-selector"] .dropdown-toggle');
+				const check = $(this);
+				const parentSelect = modal.find('#parentCidGroup [component="category-selector"] .dropdown-toggle');
 
 				if (check.prop('checked')) {
 					parentSelect.attr('disabled', 'disabled');
@@ -159,7 +159,7 @@ define('admin/manage/categories', [
 	};
 
 	Categories.render = function (categories) {
-		var container = $('.categories');
+		const container = $('.categories');
 
 		if (!categories || !categories.length) {
 			translator.translate('[[admin/manage/categories:alert.none-active]]', function (text) {
@@ -190,15 +190,15 @@ define('admin/manage/categories', [
 	}
 
 	function itemDragDidEnd(e) {
-		var isCategoryUpdate = parseInt(newCategoryId, 10) !== -1;
+		const isCategoryUpdate = parseInt(newCategoryId, 10) !== -1;
 
 		// Update needed?
 		if ((e.newIndex != null && parseInt(e.oldIndex, 10) !== parseInt(e.newIndex, 10)) || isCategoryUpdate) {
-			var cid = e.item.dataset.cid;
-			var modified = {};
+			const cid = e.item.dataset.cid;
+			const modified = {};
 			// on page 1 baseIndex is 0, on page n baseIndex is (n - 1) * ajaxify.data.categoriesPerPage
 			// this makes sure order is correct when drag & drop is used on pages > 1
-			var baseIndex = (ajaxify.data.pagination.currentPage - 1) * ajaxify.data.categoriesPerPage;
+			const baseIndex = (ajaxify.data.pagination.currentPage - 1) * ajaxify.data.categoriesPerPage;
 			modified[cid] = {
 				order: baseIndex + e.newIndex + 1,
 			};
@@ -222,7 +222,7 @@ define('admin/manage/categories', [
 	 */
 	function renderList(categories, container, parentId) {
 		// Translate category names if needed
-		var count = 0;
+		let count = 0;
 		categories.forEach(function (category, idx, parent) {
 			translator.translate(category.name, function (translated) {
 				if (category.name !== translated) {
@@ -248,7 +248,7 @@ define('admin/manage/categories', [
 				container.append(html);
 
 				// Handle and children categories in this level have
-				for (var x = 0, numCategories = categories.length; x < numCategories; x += 1) {
+				for (let x = 0, numCategories = categories.length; x < numCategories; x += 1) {
 					renderList(categories[x].children, $('li[data-cid="' + categories[x].cid + '"]'), categories[x].cid);
 				}
 

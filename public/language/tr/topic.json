@@ -139,6 +139,7 @@
     "composer.handle_placeholder": "Kullanıcı adınızı buraya girin",
     "composer.discard": "Vazgeç",
     "composer.submit": "Gönder",
+    "composer.additional-options": "Additional Options",
     "composer.schedule": "Konu Zamanla",
     "composer.replying_to": "Yanıtlanan Başlık: %1",
     "composer.new_topic": "Yeni Başlık",

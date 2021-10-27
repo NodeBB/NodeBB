@@ -15,11 +15,11 @@
 			</p>
 			<div class="form-group">
 				<label for="maintenanceModeStatus">[[admin/settings/advanced:maintenance-mode.status]]</label>
-				<input class="form-control" type="text" data-field="maintenanceModeStatus">
+				<input id="maintenanceModeStatus" class="form-control" type="text" data-field="maintenanceModeStatus">
 			</div>
 			<div class="form-group">
 				<label for="maintenanceModeMessage">[[admin/settings/advanced:maintenance-mode.message]]</label>
-				<textarea class="form-control" data-field="maintenanceModeMessage"></textarea>
+				<textarea id="maintenanceModeMessage" class="form-control" data-field="maintenanceModeMessage"></textarea>
 			</div>
 		</form>
 	</div>

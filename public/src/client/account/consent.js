@@ -2,7 +2,7 @@
 
 
 define('forum/account/consent', ['forum/account/header'], function (header) {
-	var Consent = {};
+	const Consent = {};
 
 	Consent.init = function () {
 		header.init();

@@ -71,6 +71,7 @@
 	"digest-freq.off": "Tắt",
 	"digest-freq.daily": "Hàng ngày",
 	"digest-freq.weekly": "Hàng tuần",
+	"digest-freq.biweekly": "Hai tuần một lần",
 	"digest-freq.monthly": "Hàng tháng",
 	"email-chat-notifs": "Gửi email nếu có tin nhắn trò chuyện mới và tôi không trực tuyến",
 	"email-post-notif": "Gửi email khi có trả lời ở các chủ đề tôi đã đăng ký",

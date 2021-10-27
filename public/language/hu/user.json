@@ -94,6 +94,7 @@
     "digest_off": "Ki",
     "digest_daily": "Napi",
     "digest_weekly": "Heti",
+    "digest_biweekly": "Bi-Weekly",
     "digest_monthly": "Havi",
     "has_no_follower": "Ezt a felhasználót nem követi senki :(",
     "follows_no_one": "Ez a felhasználó nem követ senkit :(",

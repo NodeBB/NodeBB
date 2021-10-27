@@ -94,6 +94,7 @@
     "digest_off": "Ніколи",
     "digest_daily": "Щоденно",
     "digest_weekly": "Щотижнево",
+    "digest_biweekly": "Bi-Weekly",
     "digest_monthly": "Щомісячно",
     "has_no_follower": "Цей користувач не має відстежувачів :(",
     "follows_no_one": "Цей користувач нікого не відстежує :(",

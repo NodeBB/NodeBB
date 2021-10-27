@@ -3,7 +3,7 @@
 define('forum/account/edit/password', [
 	'forum/account/header', 'translator', 'zxcvbn', 'api',
 ], function (header, translator, zxcvbn, api) {
-	var AccountEditPassword = {};
+	const AccountEditPassword = {};
 
 	AccountEditPassword.init = function () {
 		header.init();
@@ -12,16 +12,16 @@ define('forum/account/edit/password', [
 	};
 
 	function handlePasswordChange() {
-		var currentPassword = $('#inputCurrentPassword');
-		var password_notify = $('#password-notify');
-		var password_confirm_notify = $('#password-confirm-notify');
-		var password = $('#inputNewPassword');
-		var password_confirm = $('#inputNewPasswordAgain');
-		var passwordvalid = false;
-		var passwordsmatch = false;
+		const currentPassword = $('#inputCurrentPassword');
+		const password_notify = $('#password-notify');
+		const password_confirm_notify = $('#password-confirm-notify');
+		const password = $('#inputNewPassword');
+		const password_confirm = $('#inputNewPasswordAgain');
+		let passwordvalid = false;
+		let passwordsmatch = false;
 
 		function onPasswordChanged() {
-			var passwordStrength = zxcvbn(password.val());
+			const passwordStrength = zxcvbn(password.val());
 			passwordvalid = false;
 			if (password.val().length < ajaxify.data.minimumPasswordLength) {
 				showError(password_notify, '[[reset_password:password_too_short]]');
@@ -65,7 +65,7 @@ define('forum/account/edit/password', [
 			onPasswordChanged();
 			onPasswordConfirmChanged();
 
-			var btn = $(this);
+			const btn = $(this);
 			if (passwordvalid && passwordsmatch) {
 				btn.addClass('disabled').find('i').removeClass('hide');
 				api.put('/users/' + ajaxify.data.theirid + '/password', {

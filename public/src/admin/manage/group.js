@@ -8,18 +8,19 @@ define('admin/manage/group', [
 	'groupSearch',
 	'slugify',
 	'api',
-], function (memberList, iconSelect, translator, categorySelector, groupSearch, slugify, api) {
-	var Groups = {};
+	'bootbox',
+], function (memberList, iconSelect, translator, categorySelector, groupSearch, slugify, api, bootbox) {
+	const Groups = {};
 
 	Groups.init = function () {
-		var groupIcon = $('#group-icon');
-		var changeGroupUserTitle = $('#change-group-user-title');
-		var changeGroupLabelColor = $('#change-group-label-color');
-		var changeGroupTextColor = $('#change-group-text-color');
-		var groupLabelPreview = $('#group-label-preview');
-		var groupLabelPreviewText = $('#group-label-preview-text');
+		const groupIcon = $('#group-icon');
+		const changeGroupUserTitle = $('#change-group-user-title');
+		const changeGroupLabelColor = $('#change-group-label-color');
+		const changeGroupTextColor = $('#change-group-text-color');
+		const groupLabelPreview = $('#group-label-preview');
+		const groupLabelPreviewText = $('#group-label-preview-text');
 
-		var groupName = ajaxify.data.group.name;
+		const groupName = ajaxify.data.group.name;
 
 		$('#group-selector').on('change', function () {
 			ajaxify.go('admin/manage/groups/' + $(this).val() + window.location.hash);
@@ -42,9 +43,9 @@ define('admin/manage/group', [
 		setupGroupMembersMenu();
 
 		$('#group-icon, #group-icon-label').on('click', function () {
-			var currentIcon = groupIcon.attr('value');
+			const currentIcon = groupIcon.attr('value');
 			iconSelect.init(groupIcon, function () {
-				var newIcon = groupIcon.attr('value');
+				let newIcon = groupIcon.attr('value');
 				if (newIcon === currentIcon) {
 					return;
 				}
@@ -64,9 +65,9 @@ define('admin/manage/group', [
 			showLinks: true,
 		});
 
-		var cidSelector = categorySelector.init($('.member-post-cids-selector [component="category-selector"]'), {
+		const cidSelector = categorySelector.init($('.member-post-cids-selector [component="category-selector"]'), {
 			onSelect: function (selectedCategory) {
-				var cids = ($('#memberPostCids').val() || '').split(',').map(cid => parseInt(cid, 10));
+				let cids = ($('#memberPostCids').val() || '').split(',').map(cid => parseInt(cid, 10));
 				cids.push(selectedCategory.cid);
 				cids = cids.filter((cid, index, array) => array.indexOf(cid) === index);
 				$('#memberPostCids').val(cids.join(','));
@@ -96,7 +97,7 @@ define('admin/manage/group', [
 				disableJoinRequests: $('#group-disableJoinRequests').is(':checked'),
 				disableLeave: $('#group-disableLeave').is(':checked'),
 			}).then(() => {
-				var newName = $('#change-group-name').val();
+				const newName = $('#change-group-name').val();
 
 				// If the group name changed, change url
 				if (groupName !== newName) {
@@ -111,12 +112,12 @@ define('admin/manage/group', [
 
 	function setupGroupMembersMenu() {
 		$('[component="groups/members"]').on('click', '[data-action]', function () {
-			var btnEl = $(this);
-			var userRow = btnEl.parents('[data-uid]');
-			var ownerFlagEl = userRow.find('.member-name .user-owner-icon');
-			var isOwner = !ownerFlagEl.hasClass('invisible');
-			var uid = userRow.attr('data-uid');
-			var action = btnEl.attr('data-action');
+			const btnEl = $(this);
+			const userRow = btnEl.parents('[data-uid]');
+			const ownerFlagEl = userRow.find('.member-name .user-owner-icon');
+			const isOwner = !ownerFlagEl.hasClass('invisible');
+			const uid = userRow.attr('data-uid');
+			const action = btnEl.attr('data-action');
 
 			switch (action) {
 				case 'toggleOwnership':
@@ -143,7 +144,7 @@ define('admin/manage/group', [
 
 	function navigateToCategory(cid) {
 		if (cid) {
-			var url = 'admin/manage/privileges/' + cid + '?group=' + ajaxify.data.group.nameEncoded;
+			const url = 'admin/manage/privileges/' + cid + '?group=' + ajaxify.data.group.nameEncoded;
 			if (app.flags && app.flags._unsaved === true) {
 				translator.translate('[[global:unsaved-changes]]', function (text) {
 					bootbox.confirm(text, function (navigate) {

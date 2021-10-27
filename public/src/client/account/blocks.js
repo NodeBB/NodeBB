@@ -5,13 +5,13 @@ define('forum/account/blocks', [
 	'api',
 	'hooks',
 ], function (header, api, hooks) {
-	var Blocks = {};
+	const Blocks = {};
 
 	Blocks.init = function () {
 		header.init();
 
 		$('#user-search').on('keyup', function () {
-			var username = this.value;
+			const username = this.value;
 
 			api.get('/api/users', {
 				query: username,
@@ -36,7 +36,7 @@ define('forum/account/blocks', [
 		});
 
 		$('.block-edit').on('click', '[data-action="toggle"]', function () {
-			var uid = parseInt(this.getAttribute('data-uid'), 10);
+			const uid = parseInt(this.getAttribute('data-uid'), 10);
 			socket.emit('user.toggleBlock', {
 				blockeeUid: uid,
 				blockerUid: ajaxify.data.uid,

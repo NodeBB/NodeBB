@@ -51,13 +51,13 @@
 	"alert.saved": "변경된 권한이 적용되었습니다.",
 	"alert.confirm-discard": "권한 변경을 취소하시겠습니까?",
 	"alert.discarded": "권한 변경이 취소되었습니다.",
-	"alert.confirm-copyToAll": "Are you sure you wish to apply this set of <strong>%1</strong> to <strong>all categories</strong>?",
-	"alert.confirm-copyToAllGroup": "Are you sure you wish to apply this group's set of <strong>%1</strong> to <strong>all categories</strong>?",
-	"alert.confirm-copyToChildren": "Are you sure you wish to apply this set of <strong>%1</strong> to <strong>all descendant (child) categories</strong>?",
-	"alert.confirm-copyToChildrenGroup": "Are you sure you wish to apply this group's set of <strong>%1</strong> to <strong>all descendant (child) categories</strong>?",
+	"alert.confirm-copyToAll": "<strong>%1</strong>의 설정을 <strong>모든 카테고리</strong>에 적용하시겠습니까?",
+	"alert.confirm-copyToAllGroup": "<strong>%1</strong> 그룹의 설정을 <strong>모든 카테고리</strong>에 적용하시겠습니까?",
+	"alert.confirm-copyToChildren": "<strong>%1</strong>의 설정을 <strong>모든 하위 카테고리</strong>에 적용하시겠습니까?",
+	"alert.confirm-copyToChildrenGroup": "<strong>%1</strong> 그룹의 설정을 <strong>모든 하위 카테고리</strong>에 적용하시겠습니까?",
 	"alert.no-undo": "<em>이 행동은 되돌릴 수 없습니다.</em>",
 	"alert.admin-warning": "관리자에게는 절대적인 권한이 부여됩니다.",
-  	"alert.copyPrivilegesFrom-title": "Select a category to copy from",
-  	"alert.copyPrivilegesFrom-warning": "This will copy <strong>%1</strong> from the selected category.",
-  	"alert.copyPrivilegesFromGroup-warning": "This will copy this group's set of <strong>%1</strong> from the selected category."
+  	"alert.copyPrivilegesFrom-title": "복사할 카테고리 설정",
+  	"alert.copyPrivilegesFrom-warning": "이 작업은 <strong>%1</strong>의 설정을 선택한 카테고리에서 복사합니다.",
+  	"alert.copyPrivilegesFromGroup-warning": "이 작업은 <strong>%1</strong> 그룹의 설정을 선택한 카테고리에서 복사합니다."
 }

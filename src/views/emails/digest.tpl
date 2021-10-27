@@ -27,7 +27,7 @@
 									<tr>
 										<td style="padding: 16px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; width: 32px;">
 											<!-- IF notifications.image -->
-											<img style="vertical-align: middle; width: 32px; height: 32px; border-radius: 50%" src="{notifications.image}" />
+											<img style="vertical-align: middle; width: 32px; height: 32px; border-radius: 50%" src="{notifications.image}" alt="" />
 											<!-- ELSE -->
 											<div style="vertical-align: middle; width: 32px; height: 32px; line-height: 32px; font-size: 16px; background-color: {notifications.user.icon:bgColor}; color: white; text-align: center; display: inline-block; border-radius: 50%">{notifications.user.icon:text}</div>
 											<!-- ENDIF notifications.image -->

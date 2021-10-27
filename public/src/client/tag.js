@@ -1,7 +1,7 @@
 'use strict';
 
 define('forum/tag', ['topicList', 'forum/infinitescroll'], function (topicList) {
-	var Tag = {};
+	const Tag = {};
 
 	Tag.init = function () {
 		app.enterRoom('tags');

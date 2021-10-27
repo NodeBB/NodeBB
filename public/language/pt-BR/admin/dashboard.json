@@ -56,8 +56,8 @@
 	"active-users.total": "Total",
 	"active-users.connections": "Conexões",
 
-	"anonymous-registered-users": "Anônimos vs Usuários Registrados",
-	"anonymous": "Anônimo",
+	"guest-registered-users": "Guest vs Registered Users",
+	"guest": "Guest",
 	"registered": "Registrado",
 
 	"user-presence": "Presença de Usuário",
@@ -68,6 +68,7 @@
 	"unread": "Não-lidos",
 
 	"high-presence-topics": "Tópicos de Alta Participação",
+	"popular-searches": "Popular Searches",
 
 	"graphs.page-views": "Páginas Visualizadas",
 	"graphs.page-views-registered": "Páginas Visualizadas por Registrados",
@@ -75,13 +76,14 @@
 	"graphs.page-views-bot": "Páginas Visualizadas por Bot",
 	"graphs.unique-visitors": "Visitantes Únicos",
 	"graphs.registered-users": "Usuários Registrados",
-	"graphs.anonymous-users": "Usuários Anônimos",
+	"graphs.guest-users": "Guest Users",
 	"last-restarted-by": "Última vez reiniciado por",
 	"no-users-browsing": "Nenhum usuário navegando",
 
 	"back-to-dashboard": "De volta ao Painel",
 	"details.no-users": "Nenhum usuário ingressou dentro do período de tempo selecionado",
 	"details.no-topics": "Nenhum tópico foi postado dentro do período de tempo selecionado",
+	"details.no-searches": "No searches have been made yet",
 	"details.no-logins": "Nenhum login foi registrado dentro do período de tempo selecionado",
 	"details.logins-static": "O NodeBB só salva os dados da sessão por %1 dias, então esta tabela abaixo mostrará apenas as sessões ativas mais recentemente",
 	"details.logins-login-time": "Hora de Login"

@@ -3,6 +3,7 @@
 	"no-events": "이벤트가 없습니다",
 	"control-panel": "이벤트 제어판",
 	"delete-events": "이벤트 삭제",
+	"confirm-delete-all-events": "Are you sure you want to delete all logged events?",
 	"filters": "필터",
 	"filters-apply": "필터 적용",
 	"filter-type": "이벤트 유형",

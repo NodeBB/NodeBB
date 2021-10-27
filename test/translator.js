@@ -1,5 +1,6 @@
 'use strict';
 
+// For tests relating to Transifex configuration, check i18n.js
 
 const assert = require('assert');
 const shim = require('../public/src/modules/translator');
@@ -33,6 +34,11 @@ describe('Translator shim', () => {
 		it('should translate empty string properly', async () => {
 			const translated = await shim.translate('', 'en-GB');
 			assert.strictEqual(translated, '');
+		});
+
+		it('should not allow path traversal', async () => {
+			const t = await shim.translate('[[../../../../config:secret]]');
+			assert.strictEqual(t, 'secret');
 		});
 	});
 });

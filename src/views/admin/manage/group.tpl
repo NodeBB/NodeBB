@@ -133,11 +133,11 @@
 				</div>
 				<ul component="group-list" class="dropdown-menu group-dropdown-menu" role="menu">
 					<li component="group-no-matches" role="presentation" class="group hidden">
-						<a role="menu-item">[[search:no-matches]]</a>
+						<a role="menuitem">[[search:no-matches]]</a>
 					</li>
 					<!-- BEGIN groupNames -->
 					<li role="presentation" class="group" data-name="{groupNames.displayName}">
-						<a href="{config.relative_path}/admin/manage/groups/{groupNames.encodedName}" role="menu-item">{groupNames.displayName}</a>
+						<a href="{config.relative_path}/admin/manage/groups/{groupNames.encodedName}" role="menuitem">{groupNames.displayName}</a>
 					</li>
 					<!-- END groupNames -->
 				</ul>

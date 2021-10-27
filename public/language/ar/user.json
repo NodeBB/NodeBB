@@ -94,6 +94,7 @@
     "digest_off": "غير مفعل",
     "digest_daily": "يوميا",
     "digest_weekly": "أسبوعيًّا",
+    "digest_biweekly": "Bi-Weekly",
     "digest_monthly": "شهريًّا",
     "has_no_follower": "هذا المستخدم ليس لديه أية متابعين :(",
     "follows_no_one": "هذا المستخدم لا يتابع أحد :(",

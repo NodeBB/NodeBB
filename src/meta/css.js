@@ -123,12 +123,12 @@ async function getBundleMetadata(target) {
 	}
 
 	const [lessImports, cssImports, acpLessImports] = await Promise.all([
-		moo(plugins.lessFiles, '\n@import ".', '.less'),
-		moo(plugins.cssFiles, '\n@import (inline) ".', '.css'),
-		target === 'client' ? '' : moo(plugins.acpLessFiles, '\n@import ".', '.less'),
+		filterGetImports(plugins.lessFiles, '\n@import ".', '.less'),
+		filterGetImports(plugins.cssFiles, '\n@import (inline) ".', '.css'),
+		target === 'client' ? '' : filterGetImports(plugins.acpLessFiles, '\n@import ".', '.less'),
 	]);
 
-	async function moo(files, prefix, extension) {
+	async function filterGetImports(files, prefix, extension) {
 		const filteredFiles = await filterMissingFiles(files);
 		return await getImports(filteredFiles, prefix, extension);
 	}

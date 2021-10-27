@@ -71,6 +71,7 @@
 	"digest-freq.off": "כבוי",
 	"digest-freq.daily": "יומי",
 	"digest-freq.weekly": "שבועי",
+	"digest-freq.biweekly": "Bi-Weekly",
 	"digest-freq.monthly": "חודשי",
 	"email-chat-notifs": "שלח לי הודעה למייל כאשר הודעת צ'אט נשלחה אלי בזמן שאינני מחובר",
 	"email-post-notif": "שלח לי הודעה למייל כאשר תגובות חדשות פורסמו לנושאים שאני עוקב אחריהם",

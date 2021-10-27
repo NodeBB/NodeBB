@@ -94,6 +94,7 @@
     "digest_off": "Apagado",
     "digest_daily": "Diariamente",
     "digest_weekly": "Semanalmente",
+    "digest_biweekly": "Bi-Weekly",
     "digest_monthly": "Mensualmente",
     "has_no_follower": "Este usuario no tiene seguidores :(",
     "follows_no_one": "Este miembro no sigue a nadie :(",

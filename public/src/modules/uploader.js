@@ -2,10 +2,10 @@
 
 
 define('uploader', ['jquery-form'], function () {
-	var module = {};
+	const module = {};
 
 	module.show = function (data, callback) {
-		var fileSize = data.hasOwnProperty('fileSize') && data.fileSize !== undefined ? parseInt(data.fileSize, 10) : false;
+		const fileSize = data.hasOwnProperty('fileSize') && data.fileSize !== undefined ? parseInt(data.fileSize, 10) : false;
 		app.parseAndTranslate('partials/modals/upload_file_modal', {
 			showHelp: data.hasOwnProperty('showHelp') && data.showHelp !== undefined ? data.showHelp : true,
 			fileSize: fileSize,
@@ -19,7 +19,7 @@ define('uploader', ['jquery-form'], function () {
 				uploadModal.remove();
 			});
 
-			var uploadForm = uploadModal.find('#uploadForm');
+			const uploadForm = uploadModal.find('#uploadForm');
 			uploadForm.attr('action', data.route);
 			uploadForm.find('#params').val(JSON.stringify(data.params));
 
@@ -45,7 +45,7 @@ define('uploader', ['jquery-form'], function () {
 		uploadModal.find('#upload-progress-bar').css('width', '0%');
 		uploadModal.find('#upload-progress-box').show().removeClass('hide');
 
-		var fileInput = uploadModal.find('#fileInput');
+		const fileInput = uploadModal.find('#fileInput');
 		if (!fileInput.val()) {
 			return showAlert(uploadModal, 'error', '[[uploads:select-file-to-upload]]');
 		}

@@ -5,16 +5,16 @@
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="form-group">
-				<label>[[admin/settings/post:sorting.post-default]]</label>
-				<select class="form-control" data-field="topicPostSort">
+				<label for="topicPostSort">[[admin/settings/post:sorting.post-default]]</label>
+				<select id="topicPostSort" class="form-control" data-field="topicPostSort">
 					<option value="oldest_to_newest">[[admin/settings/post:sorting.oldest-to-newest]]</option>
 					<option value="newest_to_oldest">[[admin/settings/post:sorting.newest-to-oldest]]</option>
 					<option value="most_votes">[[admin/settings/post:sorting.most-votes]]</option>
 				</select>
 			</div>
 			<div class="form-group">
-				<label>[[admin/settings/post:sorting.topic-default]]</label>
-				<select class="form-control" data-field="categoryTopicSort">
+				<label for="categoryTopicSort">[[admin/settings/post:sorting.topic-default]]</label>
+				<select id="categoryTopicSort" class="form-control" data-field="categoryTopicSort">
 					<option value="oldest_to_newest">[[admin/settings/post:sorting.oldest-to-newest]]</option>
 					<option value="newest_to_oldest">[[admin/settings/post:sorting.newest-to-oldest]]</option>
 					<option value="most_posts">[[admin/settings/post:sorting.most-posts]]</option>
@@ -140,8 +140,8 @@
 			</div>
 			<div class="row">
 				<div class="form-group">
-					<label>[[admin/settings/post:restrictions.groups-exempt-from-post-queue]]</label>
-					<select class="form-control" multiple data-field="groupsExemptFromPostQueue">
+					<label for="groupsExemptFromPostQueue">[[admin/settings/post:restrictions.groups-exempt-from-post-queue]]</label>
+					<select id="groupsExemptFromPostQueue" class="form-control" multiple data-field="groupsExemptFromPostQueue">
 						<!-- BEGIN groupsExemptFromPostQueue -->
 						<option value="{groupsExemptFromPostQueue.displayName}">{groupsExemptFromPostQueue.displayName}</option>
 						<!-- END -->
@@ -186,8 +186,8 @@
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="form-group">
-				<label>[[admin/settings/post:teaser]]</label>
-				<select class="form-control" data-field="teaserPost">
+				<label for="teaserPost">[[admin/settings/post:teaser]]</label>
+				<select id="teaserPost" class="form-control" data-field="teaserPost">
 					<option value="last-post">[[admin/settings/post:teaser.last-post]]</option>
 					<option value="last-reply">[[admin/settings/post:teaser.last-reply]]</option>
 					<option value="first">[[admin/settings/post:teaser.first]]</option>
@@ -254,8 +254,8 @@
 				</label>
 			</div>
 			<div class="form-group">
-				<label>[[admin/settings/post:signature.max-length]]</label>
-				<input type="text" class="form-control" value="255" data-field="maximumSignatureLength">
+				<label for="maximumSignatureLength">[[admin/settings/post:signature.max-length]]</label>
+				<input id="maximumSignatureLength" type="text" class="form-control" value="255" data-field="maximumSignatureLength">
 			</div>
 		</form>
 	</div>

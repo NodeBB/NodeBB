@@ -2,13 +2,13 @@
 
 
 define('admin/extend/rewards', [], function () {
-	var rewards = {};
+	const rewards = {};
 
 
-	var available;
-	var active;
-	var conditions;
-	var conditionals;
+	let available;
+	let active;
+	let conditions;
+	let conditionals;
 
 	rewards.init = function () {
 		available = ajaxify.data.rewards;
@@ -25,8 +25,8 @@ define('admin/extend/rewards', [], function () {
 				update($(this));
 			})
 			.on('click', '.delete', function () {
-				var parent = $(this).parents('[data-id]');
-				var id = parent.attr('data-id');
+				const parent = $(this).parents('[data-id]');
+				const id = parent.attr('data-id');
 
 				socket.emit('admin.rewards.delete', { id: id }, function (err) {
 					if (err) {
@@ -40,8 +40,8 @@ define('admin/extend/rewards', [], function () {
 				return false;
 			})
 			.on('click', '.toggle', function () {
-				var btn = $(this);
-				var disabled = btn.hasClass('btn-success');
+				const btn = $(this);
+				const disabled = btn.hasClass('btn-success');
 				btn.toggleClass('btn-warning').toggleClass('btn-success').translateHtml('[[admin/extend/rewards:' + (disabled ? 'disable' : 'enable') + ']]');
 				// send disable api call
 				return false;
@@ -72,12 +72,12 @@ define('admin/extend/rewards', [], function () {
 	}
 
 	function selectReward(el) {
-		var parent = el.parents('[data-rid]');
-		var div = parent.find('.inputs');
-		var inputs;
-		var html = '';
+		const parent = el.parents('[data-rid]');
+		const div = parent.find('.inputs');
+		let inputs;
+		let html = '';
 
-		for (var reward in available) {
+		for (const reward in available) {
 			if (available.hasOwnProperty(reward)) {
 				if (available[reward].rid === el.attr('data-selected')) {
 					inputs = available[reward].inputs;
@@ -112,10 +112,10 @@ define('admin/extend/rewards', [], function () {
 
 	function populateInputs() {
 		$('[data-rid]').each(function (i) {
-			var div = $(this).find('.inputs');
-			var rewards = active[i].rewards;
+			const div = $(this).find('.inputs');
+			const rewards = active[i].rewards;
 
-			for (var reward in rewards) {
+			for (const reward in rewards) {
 				if (rewards.hasOwnProperty(reward)) {
 					div.find('[name="' + reward + '"]').val(rewards[reward]);
 				}
@@ -124,9 +124,9 @@ define('admin/extend/rewards', [], function () {
 	}
 
 	function newReward() {
-		var ul = $('#active');
+		const ul = $('#active');
 
-		var data = {
+		const data = {
 			active: [{
 				disabled: true,
 				value: '',
@@ -146,12 +146,12 @@ define('admin/extend/rewards', [], function () {
 	}
 
 	function saveRewards() {
-		var activeRewards = [];
+		const activeRewards = [];
 
 		$('#active li').each(function () {
-			var data = { rewards: {} };
-			var main = $(this).find('form.main').serializeArray();
-			var rewards = $(this).find('form.rewards').serializeArray();
+			const data = { rewards: {} };
+			const main = $(this).find('form.main').serializeArray();
+			const rewards = $(this).find('form.rewards').serializeArray();
 
 			main.forEach(function (obj) {
 				data[obj.name] = obj.value;

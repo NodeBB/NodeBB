@@ -13,6 +13,7 @@
 	"resent-single": "Reenvio manual de resumos concluído",
 	"resent-day": "Resumo diário reenviado",
 	"resent-week": "Resumo semanal reenviado",
+	"resent-biweek": "Bi-Weekly digest resent",
 	"resent-month": "Resumo mensal reenviado",
 	"null": "<em>Nunca</em>",
 	"manual-run": "Execução de resumo manual:",

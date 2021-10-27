@@ -7,14 +7,14 @@ if (typeof window !== 'undefined') {
 	(function ($) {
 		require(['translator'], function (translator) {
 			$.fn.getCursorPosition = function () {
-				var el = $(this).get(0);
-				var pos = 0;
+				const el = $(this).get(0);
+				let pos = 0;
 				if ('selectionStart' in el) {
 					pos = el.selectionStart;
 				} else if ('selection' in document) {
 					el.focus();
-					var Sel = document.selection.createRange();
-					var SelLength = document.selection.createRange().text.length;
+					const Sel = document.selection.createRange();
+					const SelLength = document.selection.createRange().text.length;
 					Sel.moveStart('character', -el.value.length);
 					pos = Sel.text.length - SelLength;
 				}
@@ -30,7 +30,7 @@ if (typeof window !== 'undefined') {
 						this.focus();
 						this.setSelectionRange(start, end);
 					} else if (this.createTextRange) {
-						var range = this.createTextRange();
+						const range = this.createTextRange();
 						range.collapse(true);
 						range.moveEnd('character', end);
 						range.moveStart('character', start);
@@ -45,7 +45,7 @@ if (typeof window !== 'undefined') {
 					$(this).focus();
 
 					if (this.setSelectionRange) {
-						var len = $(this).val().length * 2;
+						const len = $(this).val().length * 2;
 						this.setSelectionRange(len, len);
 					} else {
 						$(this).val($(this).val());
@@ -68,7 +68,7 @@ if (typeof window !== 'undefined') {
 
 			$.fn.translateAttr = function (attr, str) {
 				return this.each(function () {
-					var el = $(this);
+					const el = $(this);
 					translator.translate(str, function (translated) {
 						el.attr(attr, translated);
 					});
@@ -77,7 +77,7 @@ if (typeof window !== 'undefined') {
 
 			function translate(elements, type, str) {
 				return elements.each(function () {
-					var el = $(this);
+					const el = $(this);
 					translator.translate(str, function (translated) {
 						el[type](translated);
 					});
@@ -90,7 +90,7 @@ if (typeof window !== 'undefined') {
 		// FIX FOR #1245 - https://github.com/NodeBB/NodeBB/issues/1245
 		// from http://stackoverflow.com/questions/15931962/bootstrap-dropdown-disappear-with-right-click-on-firefox
 		// obtain a reference to the original handler
-		var _clearMenus = $._data(document, 'events').click.filter(function (el) {
+		let _clearMenus = $._data(document, 'events').click.filter(function (el) {
 			return el.namespace === 'bs.data-api.dropdown' && el.selector === undefined;
 		});
 
@@ -108,7 +108,7 @@ if (typeof window !== 'undefined') {
 				}
 			});
 	}());
-	var timeagoFn;
+	let timeagoFn;
 	overrides.overrideTimeago = function () {
 		if (!timeagoFn) {
 			timeagoFn = $.fn.timeago;
@@ -121,24 +121,24 @@ if (typeof window !== 'undefined') {
 		}
 
 		$.timeago.settings.allowFuture = true;
-		var userLang = config.userLang.replace('_', '-');
-		var options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' };
-		var formatFn = function (date) {
+		const userLang = config.userLang.replace('_', '-');
+		const options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+		let formatFn = function (date) {
 			return date.toLocaleString(userLang, options);
 		};
 		try {
 			if (typeof Intl !== 'undefined') {
-				var dtFormat = new Intl.DateTimeFormat(userLang, options);
+				const dtFormat = new Intl.DateTimeFormat(userLang, options);
 				formatFn = dtFormat.format;
 			}
 		} catch (err) {
 			console.error(err);
 		}
 
-		var iso;
-		var date;
+		let iso;
+		let date;
 		$.fn.timeago = function () {
-			var els = $(this);
+			const els = $(this);
 			// Convert "old" format to new format (#5108)
 			els.each(function () {
 				iso = this.getAttribute('title');

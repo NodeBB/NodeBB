@@ -1,6 +1,7 @@
 'use strict';
 
 const async = require('async');
+const path = require('path');
 const assert = require('assert');
 const validator = require('validator');
 const mockdate = require('mockdate');
@@ -9,6 +10,7 @@ const request = require('request');
 const util = require('util');
 
 const db = require('./mocks/databasemock');
+const file = require('../src/file');
 const topics = require('../src/topics');
 const posts = require('../src/posts');
 const categories = require('../src/categories');
@@ -19,7 +21,6 @@ const groups = require('../src/groups');
 const helpers = require('./helpers');
 const socketPosts = require('../src/socket.io/posts');
 const socketTopics = require('../src/socket.io/topics');
-
 
 const requestType = util.promisify((type, url, opts, cb) => {
 	request[type](url, opts, (err, res, body) => cb(err, { res: res, body: body }));
@@ -2857,6 +2858,20 @@ describe('Topic\'s', () => {
 		it('should remove from topics:scheduled on purge', async () => {
 			const score = await db.sortedSetScore('topics:scheduled', topicData.tid);
 			assert(!score);
+		});
+	});
+});
+
+describe('Topics\'s', async () => {
+	let files;
+
+	before(async () => {
+		files = await file.walk(path.resolve(__dirname, './topics'));
+	});
+
+	it('subfolder tests', () => {
+		files.forEach((filePath) => {
+			require(filePath);
 		});
 	});
 });

@@ -20,14 +20,14 @@ const url = nconf.get('url');
 const relative_path = nconf.get('relative_path');
 const upload_url = nconf.get('upload_url');
 
-topicsController.get = async function getTopic(req, res, callback) {
+topicsController.get = async function getTopic(req, res, next) {
 	const tid = req.params.topic_id;
 
 	if (
 		(req.params.post_index && !utils.isNumber(req.params.post_index) && req.params.post_index !== 'unread') ||
 		!utils.isNumber(tid)
 	) {
-		return callback();
+		return next();
 	}
 	let postIndex = parseInt(req.params.post_index, 10) || 1;
 	const [
@@ -51,7 +51,7 @@ topicsController.get = async function getTopic(req, res, callback) {
 		invalidPagination ||
 		(topicData.scheduled && !userPrivileges.view_scheduled)
 	) {
-		return callback();
+		return next();
 	}
 
 	if (!userPrivileges['topics:read'] || (!topicData.scheduled && topicData.deleted && !userPrivileges.view_deleted)) {
@@ -334,12 +334,12 @@ topicsController.teaser = async function (req, res, next) {
 	res.json(postData[0]);
 };
 
-topicsController.pagination = async function (req, res, callback) {
+topicsController.pagination = async function (req, res, next) {
 	const tid = req.params.topic_id;
 	const currentPage = parseInt(req.query.page, 10) || 1;
 
 	if (!utils.isNumber(tid)) {
-		return callback();
+		return next();
 	}
 
 	const [userPrivileges, settings, topic] = await Promise.all([
@@ -349,7 +349,7 @@ topicsController.pagination = async function (req, res, callback) {
 	]);
 
 	if (!topic) {
-		return callback();
+		return next();
 	}
 
 	if (!userPrivileges.read || !privileges.topics.canViewDeletedScheduled(topic, userPrivileges)) {

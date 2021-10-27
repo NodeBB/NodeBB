@@ -2,10 +2,10 @@
 
 
 define('forum/compose', ['hooks'], function (hooks) {
-	var Compose = {};
+	const Compose = {};
 
 	Compose.init = function () {
-		var container = $('.composer');
+		const container = $('.composer');
 
 		if (container.length) {
 			hooks.fire('action:composer.enhance', {

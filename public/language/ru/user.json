@@ -94,6 +94,7 @@
     "digest_off": "Отключена",
     "digest_daily": "Ежедневная",
     "digest_weekly": "Еженедельная",
+    "digest_biweekly": "Bi-Weekly",
     "digest_monthly": "Ежемесячная",
     "has_no_follower": "На этого пользователя никто не подписан :(",
     "follows_no_one": "Этот пользователь ни на кого не подписан :(",

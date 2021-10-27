@@ -81,7 +81,7 @@
 							<tr data-uid="{privileges.users.uid}"{{{ if privileges.users.banned }}} data-banned{{{ end }}}>
 								<td>
 									<!-- IF ../picture -->
-									<img class="avatar avatar-sm" src="{privileges.users.picture}" title="{privileges.users.username}" />
+									<img class="avatar avatar-sm" src="{privileges.users.picture}" title="{privileges.users.username}" alt="" />
 									<!-- ELSE -->
 									<div class="avatar avatar-sm" style="background-color: {../icon:bgColor};">{../icon:text}</div>
 									<!-- ENDIF ../picture -->

@@ -139,6 +139,7 @@
     "composer.handle_placeholder": "在这里输入您的姓名/昵称",
     "composer.discard": "撤销",
     "composer.submit": "提交",
+    "composer.additional-options": "Additional Options",
     "composer.schedule": "Schedule",
     "composer.replying_to": "正在回复 %1",
     "composer.new_topic": "新主题",

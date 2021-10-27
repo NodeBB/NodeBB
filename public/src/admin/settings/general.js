@@ -2,7 +2,7 @@
 
 
 define('admin/settings/general', ['admin/settings'], function () {
-	var Module = {};
+	const Module = {};
 
 	Module.init = function () {
 		$('button[data-action="removeLogo"]').on('click', function () {
