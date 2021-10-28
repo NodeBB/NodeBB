@@ -51,7 +51,7 @@ flagsApi.appendNote = async (caller, data) => {
 			}
 		} catch (e) {
 			// Okay if not does not exist in database
-			if (!e.message === '[[error:invalid-data]]') {
+			if (e.message !== '[[error:invalid-data]]') {
 				throw e;
 			}
 		}
