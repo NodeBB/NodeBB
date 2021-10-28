@@ -71,7 +71,7 @@
 	"digest-freq.off": "Kapalı",
 	"digest-freq.daily": "Günlük",
 	"digest-freq.weekly": "Haftalık",
-	"digest-freq.biweekly": "Bi-Weekly",
+	"digest-freq.biweekly": "İki haftada bir",
 	"digest-freq.monthly": "Aylık",
 	"email-chat-notifs": "Çevrimiçi değilken gelen mesajları e-posta olarak gönder",
 	"email-post-notif": "Abone olduğum konulara cevap gelince bana e-posta gönder",
