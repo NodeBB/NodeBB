@@ -6,6 +6,6 @@
     "size/filecount": "Boyut / Dosya sayısı",
     "confirm-delete": "Bu dosyayı silmek istediğinden emin misin?",
     "filecount": "%1 dosya",
-    "new-folder": "New Folder",
-    "name-new-folder": "Enter a name for new the folder"
+    "new-folder": "Yeni Dosya",
+    "name-new-folder": "Yeni klasör için bir ad girin"
 }

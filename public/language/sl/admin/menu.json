@@ -1,10 +1,10 @@
 {
 	"section-dashboard": "Dashboards",
-	"dashboard/overview": "Overview",
+	"dashboard/overview": "Pregled",
 	"dashboard/logins": "Prijave",
 	"dashboard/users": "Uporabniki",
 	"dashboard/topics": "Teme",
-	"dashboard/searches": "Searches",
+	"dashboard/searches": "Iskanja",
 	"section-general": "Splošno",
 
 	"section-manage": "Upravljaj",
@@ -12,13 +12,13 @@
 	"manage/privileges": "Privileges",
 	"manage/tags": "Oznake",
 	"manage/users": "Uporabniki",
-	"manage/admins-mods": "Admins & Mods",
+	"manage/admins-mods": "Skrbniki in moderatorji",
 	"manage/registration": "Čakalna vrsta registracij",
 	"manage/post-queue": "Čakalna vrsta objav",
 	"manage/groups": "Skupine",
 	"manage/ip-blacklist": "IP črna lista",
-	"manage/uploads": "Uploads",
-	"manage/digest": "Digests",
+	"manage/uploads": "Nalaganja",
+	"manage/digest": "Povzetki",
 
 	"section-settings": "Nastavitve",
 	"settings/general": "Splošno",
@@ -29,16 +29,16 @@
 	"settings/user": "Uporabniki",
 	"settings/group": "Skupine",
 	"settings/guest": "Gostje",
-	"settings/uploads": "Uploads",
+	"settings/uploads": "Nalaganja",
 	"settings/languages": "Jeziki",
 	"settings/post": "Objave",
 	"settings/chat": "Klepeti",
 	"settings/pagination": "Številčenje strani",
 	"settings/tags": "Oznake",
 	"settings/notifications": "Obvestila",
-	"settings/api": "API Access",
+	"settings/api": "API dostop",
 	"settings/sounds": "Zvoki",
-	"settings/social": "Social",
+	"settings/social": "Družbeno",
 	"settings/cookies": "Piškotki",
 	"settings/web-crawler": "Web Crawler",
 	"settings/sockets": "Vtičnice",
@@ -48,12 +48,12 @@
 
 	"section-appearance": "Videz",
 	"appearance/themes": "Teme",
-	"appearance/skins": "Skins",
-	"appearance/customise": "Custom Content (HTML/JS/CSS)",
+	"appearance/skins": "Preobleke",
+	"appearance/customise": "Vsebina po meri (HTML/JS/CSS)",
 
 	"section-extend": "Extend",
 	"extend/plugins": "Vtičniki",
-	"extend/widgets": "Widgets",
+	"extend/widgets": "Pripomočki",
 	"extend/rewards": "Nagrade",
 
 	"section-social-auth": "Social Authentication",
@@ -67,7 +67,7 @@
 	"advanced/hooks": "Hooks",
 	"advanced/logs": "Prijave",
 	"advanced/errors": "Napake",
-	"advanced/cache": "Cache",
+	"advanced/cache": "Predpomnilnik",
 	"development/logger": "Logger",
 	"development/info": "Info",
 
@@ -78,12 +78,12 @@
 
 	"search.placeholder": "Press &quot;/&quot; to search for settings",
 	"search.no-results": "Ni rezultatov...",
-	"search.search-forum": "Search the forum for <strong></strong>",
-	"search.keep-typing": "Type more to see results...",
-	"search.start-typing": "Start typing to see results...",
+	"search.search-forum": "Na forumu poišči <strong></strong>",
+	"search.keep-typing": "Vnesite več, da vidite rezultate...",
+	"search.start-typing": "Začnite tipkati, da vidite rezultate...",
 
-	"connection-lost": "Connection to %1 has been lost, attempting to reconnect...",
+	"connection-lost": "Povezava z %1 je bila izgubljena, poskus ponovne povezave...",
 
-	"alerts.version": "Running <strong>NodeBB v%1</strong>",
+	"alerts.version": "Teče <strong>NodeBB v%1</strong>",
 	"alerts.upgrade": "Nadgradi na v%1"
 }

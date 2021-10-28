@@ -56,8 +56,8 @@
 	"active-users.total": "Genel Toplam",
 	"active-users.connections": "Bağlantılar",
 
-	"guest-registered-users": "Guest vs Registered Users",
-	"guest": "Guest",
+	"guest-registered-users": "Misafir ve Kayıtlı Kullanıcılar",
+	"guest": "Misafir",
 	"registered": "Kayıtlı",
 
 	"user-presence": "Kullanıcı Durumları",
@@ -68,7 +68,7 @@
 	"unread": "Okunmamış Konular Sayfasında",
 
 	"high-presence-topics": "Öne Çıkan Başlıklar",
-	"popular-searches": "Popular Searches",
+	"popular-searches": "Popüler Aramalar",
 
 	"graphs.page-views": "Sayfa Gösterimi",
 	"graphs.page-views-registered": "Kayıtlı Kullanıcıların Sayfa Gösterimi",
@@ -76,14 +76,14 @@
 	"graphs.page-views-bot": "Bot Sayfa Gösterimi",
 	"graphs.unique-visitors": "Benzersiz Ziyaretçiler",
 	"graphs.registered-users": "Kayıtlı Kullanıcılar",
-	"graphs.guest-users": "Guest Users",
+	"graphs.guest-users": "Misafir Kullanıcılar",
 	"last-restarted-by": "Son yeniden başlatma bilgisi",
 	"no-users-browsing": "İnceleyen kullanıcı yok",
 
 	"back-to-dashboard": "Yönetim Paneline geri dön",
 	"details.no-users": "Seçilen zaman aralığında herhangi bir kullanıcı üye olmadı.",
 	"details.no-topics": "Seçilen zaman aralığında herhangi bir başlık oluşturulmadı. ",
-	"details.no-searches": "No searches have been made yet",
+	"details.no-searches": "Henüz arama yapılmadı",
 	"details.no-logins": "Seçilen zaman aralığında herhangi bir giriş yapılmadı.",
 	"details.logins-static": "NodeBB oturum kayıtlarını sadece %1 gün tutar, o nedenle aşağıdaki tablo sadece en yakın aktif oturumları listeler",
 	"details.logins-login-time": "Giriş zamanı"
