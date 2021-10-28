@@ -32,12 +32,6 @@ define('forum/topic', [
 			navigator.disable();
 			components.get('navbar/title').find('span').text('').hide();
 			app.removeAlert('bookmark');
-
-			require(['search'], function (search) {
-				if (search.topicDOM.active) {
-					search.topicDOM.end();
-				}
-			});
 		}
 	});
 
@@ -79,18 +73,6 @@ define('forum/topic', [
 	};
 
 	function handleTopicSearch() {
-		$('.topic-search').off('click')
-			.on('click', '.prev', function () {
-				require(['search'], function (search) {
-					search.topicDOM.prev();
-				});
-			})
-			.on('click', '.next', function () {
-				require(['search'], function (search) {
-					search.topicDOM.next();
-				});
-			});
-
 		if (config.topicSearchEnabled) {
 			require(['mousetrap'], function (mousetrap) {
 				mousetrap.bind(['command+f', 'ctrl+f'], function (e) {
