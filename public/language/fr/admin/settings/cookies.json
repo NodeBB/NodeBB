@@ -4,7 +4,7 @@
 	"consent.message": "Message de notification",
 	"consent.acceptance": "Message d'acceptation",
 	"consent.link-text": "Texte du lien vers la politique de confidentialité",
-	"consent.link-url": "Policy Link URL",
+	"consent.link-url": "URL du lien Policy",
 	"consent.blank-localised-default": "Laisser vide pour utiliser les textes localisés par défaut de NodeBB",
 	"settings": "Réglages",
 	"cookie-domain": "Domaine de session du cookie",
