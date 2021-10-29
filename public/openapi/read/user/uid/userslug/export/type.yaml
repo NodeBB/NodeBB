@@ -1,7 +1,7 @@
 get:
   tags:
     - deprecated
-  summary: Export a user's posts (.csv)
+  summary: Export a user's posts/profile/uploads (.csv)
   parameters:
     - name: userslug
       in: path
@@ -10,10 +10,10 @@ get:
         type: string
       example: admin
   responses:
-    "200":
-      description: "A CSV file containing a user's posts"
-      content:
-        text/csv:
+    "302":
+      description: A redirect to the new URL format (without the `/uid` prefix)
+      headers:
+        Location:
           schema:
             type: string
-            format: binary
+            example: /api/user/admin/export/posts
