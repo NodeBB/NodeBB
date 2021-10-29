@@ -42,7 +42,6 @@ module.exports = function (app, middleware, controllers) {
 		...middlewares,
 		...postMiddlewares,
 		middleware.exposeUid,
-		middleware.authenticateRequest,
 		middleware.ensureLoggedIn,
 		middleware.canViewUsers,
 		middleware.checkAccountPermissions,
