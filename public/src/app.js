@@ -593,11 +593,14 @@ app.cacheBuster = null;
 		});
 
 		let ajaxified = false;
-		hooks.on('action:ajaxify.end', function () {
-			if (!ajaxify.isCold()) {
-				ajaxified = true;
-			}
+		require(['hooks'], function (hooks) {
+			hooks.on('action:ajaxify.end', function () {
+				if (!ajaxify.isCold()) {
+					ajaxified = true;
+				}
+			});
 		});
+
 		inputEl.on('focus', function () {
 			mousedownOnResults = false;
 			const query = inputEl.val();
