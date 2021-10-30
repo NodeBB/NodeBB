@@ -89,7 +89,7 @@ function sortedSetIncrByBulk(data) {
 	if ('sortedSetIncrByBulk' in db) {
 		return db.sortedSetIncrByBulk(data);
 	}
-	const queue = data.map(item => db.sortedSetIncrBy(item[0], item[1], item[2]));
+	const queue = data.map(([key, increment, value]) => db.sortedSetIncrBy(key, increment, value));
 	return Promise.all(queue);
 }
 
