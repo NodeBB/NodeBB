@@ -88,10 +88,9 @@ Analytics.pageView = async function (payload) {
 function sortedSetIncrByBulk(data) {
 	if ('sortedSetIncrByBulk' in db) {
 		return db.sortedSetIncrByBulk(data);
-	} else {
-		const queue = data.map(item => db.sortedSetIncrBy(item[0], item[1], item[2]));
-		return Promise.all(queue);
 	}
+	const queue = data.map(item => db.sortedSetIncrBy(item[0], item[1], item[2]));
+	return Promise.all(queue);
 }
 
 Analytics.writeData = async function () {
@@ -105,31 +104,31 @@ Analytics.writeData = async function () {
 	month.setHours(0, 0, 0, 0);
 
 	if (pageViews > 0) {
-		incrByBulk.push([ 'analytics:pageviews', pageViews, today.getTime() ]);
-		incrByBulk.push([ 'analytics:pageviews:month', pageViews, month.getTime() ]);
+		incrByBulk.push(['analytics:pageviews', pageViews, today.getTime()]);
+		incrByBulk.push(['analytics:pageviews:month', pageViews, month.getTime()]);
 		pageViews = 0;
 	}
 
 	if (pageViewsRegistered > 0) {
-		incrByBulk.push([ 'analytics:pageviews:registered', pageViewsRegistered, today.getTime() ]);
-		incrByBulk.push([ 'analytics:pageviews:month:registered', pageViewsRegistered, month.getTime() ]);
+		incrByBulk.push(['analytics:pageviews:registered', pageViewsRegistered, today.getTime()]);
+		incrByBulk.push(['analytics:pageviews:month:registered', pageViewsRegistered, month.getTime()]);
 		pageViewsRegistered = 0;
 	}
 
 	if (pageViewsGuest > 0) {
-		incrByBulk.push([ 'analytics:pageviews:guest', pageViewsGuest, today.getTime() ]);
-		incrByBulk.push([ 'analytics:pageviews:month:guest', pageViewsGuest, month.getTime() ]);
+		incrByBulk.push(['analytics:pageviews:guest', pageViewsGuest, today.getTime()]);
+		incrByBulk.push(['analytics:pageviews:month:guest', pageViewsGuest, month.getTime()]);
 		pageViewsGuest = 0;
 	}
 
 	if (pageViewsBot > 0) {
-		incrByBulk.push([ 'analytics:pageviews:bot', pageViewsBot, today.getTime() ]);
-		incrByBulk.push([ 'analytics:pageviews:month:bot', pageViewsBot, month.getTime() ]);
+		incrByBulk.push(['analytics:pageviews:bot', pageViewsBot, today.getTime()]);
+		incrByBulk.push(['analytics:pageviews:month:bot', pageViewsBot, month.getTime()]);
 		pageViewsBot = 0;
 	}
 
 	if (uniquevisitors > 0) {
-		incrByBulk.push([ 'analytics:uniquevisitors', uniquevisitors, today.getTime() ]);
+		incrByBulk.push(['analytics:uniquevisitors', uniquevisitors, today.getTime()]);
 		uniquevisitors = 0;
 	}
 
@@ -139,7 +138,7 @@ Analytics.writeData = async function () {
 	}
 
 	for (const [key, value] of Object.entries(counters)) {
-		incrByBulk.push([ `analytics:${key}`, value, today.getTime() ]);
+		incrByBulk.push([`analytics:${key}`, value, today.getTime()]);
 		delete counters[key];
 	}
 
