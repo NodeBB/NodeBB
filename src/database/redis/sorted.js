@@ -240,6 +240,15 @@ module.exports = function (module) {
 		return parseFloat(newValue);
 	};
 
+	module.sortedSetIncrByBulk = async function (data) {
+		const multi = module.client.multi();
+		data.forEach((item) => {
+			multi.zincrby(item[0], item[1], item[2]);
+		});
+		const result = await multi.exec();
+		return result;
+	};
+
 	module.getSortedSetRangeByLex = async function (key, min, max, start, count) {
 		return await sortedSetLex('zrangebylex', false, key, min, max, start, count);
 	};
