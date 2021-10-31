@@ -160,7 +160,7 @@ jobs:
           CI: >-
             {
               "host": "127.0.0.1",
-              "port": 27017,
+              "port": 27018,
               "database": "ci_test",
               "username": "ci_test",
               "password": "nodebb"
