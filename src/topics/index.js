@@ -254,9 +254,12 @@ Topics.addNextPostTimestamp = async function (postData, set, reverse) {
 		}
 	});
 	const lastPost = postData[postData.length - 1];
-	if (lastPost && lastPost.index) {
-		const data = await db[reverse ? 'getSortedSetRevRangeWithScores' : 'getSortedSetRangeWithScores'](set, lastPost.index, lastPost.index);
-		lastPost.nextPostTimestamp = data.length ? data[0].score : Date.now();
+	if (lastPost) {
+		lastPost.nextPostTimestamp = Date.now();
+		if (lastPost.index) {
+			const data = await db[reverse ? 'getSortedSetRevRangeWithScores' : 'getSortedSetRangeWithScores'](set, lastPost.index, lastPost.index);
+			lastPost.nextPostTimestamp = data.length ? data[0].score : lastPost.nextPostTimestamp;
+		}
 	}
 };
 
