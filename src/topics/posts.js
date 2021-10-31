@@ -24,6 +24,7 @@ module.exports = function (Topics) {
 		const postData = await posts.getPostsFromSet(set, start, stop, uid, reverse);
 		Topics.calculatePostIndices(postData, start);
 
+		await Topics.addNextPostTimestamp(postData, set, reverse);
 		return await Topics.addPostData(postData, uid);
 	};
 

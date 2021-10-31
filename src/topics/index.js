@@ -240,8 +240,25 @@ async function getMainPostAndReplies(topic, set, uid, start, stop, reverse) {
 
 	Topics.calculatePostIndices(replies, repliesStart);
 
+	await Topics.addNextPostTimestamp(postData, set, reverse);
 	return await Topics.addPostData(postData, uid);
 }
+
+Topics.addNextPostTimestamp = async function (postData, set, reverse) {
+	if (!postData.length) {
+		return;
+	}
+	postData.forEach((p, index) => {
+		if (p && postData[index + 1]) {
+			p.nextPostTimestamp = postData[index + 1].timestamp;
+		}
+	});
+	const lastPost = postData[postData.length - 1];
+	if (lastPost && lastPost.index) {
+		const data = await db[reverse ? 'getSortedSetRevRangeWithScores' : 'getSortedSetRangeWithScores'](set, lastPost.index, lastPost.index);
+		lastPost.nextPostTimestamp = data.length ? data[0].score : Date.now();
+	}
+};
 
 async function getDeleter(topicData) {
 	if (!parseInt(topicData.deleterUid, 10)) {
