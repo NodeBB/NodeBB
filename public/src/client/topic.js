@@ -201,10 +201,11 @@ define('forum/topic', [
 			}
 
 			const href = link.attr('href');
+			const validHref = href && href !== '#';
 			const pathname = utils.urlToLocation(href).pathname;
 			$('#post-tooltip').remove();
-			const postMatch = pathname && pathname.match(/\/post\/([\d]+)/);
-			const topicMatch = pathname && pathname.match(/\/topic\/([\d]+)/);
+			const postMatch = validHref && pathname && pathname.match(/\/post\/([\d]+)/);
+			const topicMatch = validHref && pathname && pathname.match(/\/topic\/([\d]+)/);
 			if (postMatch) {
 				const pid = postMatch[1];
 				if (parseInt(link.parents('[component="post"]').attr('data-pid'), 10) === parseInt(pid, 10)) {
