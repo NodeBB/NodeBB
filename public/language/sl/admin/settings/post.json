@@ -40,6 +40,7 @@
 	"teaser.last-post": "Zadnja &ndash; Prikaži najnovejšo objavo, vključno z izvirno, če ni odgovorov",
 	"teaser.last-reply": "Zadnja &ndash; Prikaži najnovejši odgovor ali \"Ni odgovorov\", če ni odgovorov",
 	"teaser.first": "Prvi",
+	"showPostPreviewsOnHover": "Show a preview of posts when mouse overed",
 	"unread": "Neprebrane nastavitve",
 	"unread.cutoff": "Unread cutoff days",
 	"unread.min-track-last": "Najmanjše število objav v temi pred sledenjem zadnjem branju",

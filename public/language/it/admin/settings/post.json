@@ -40,6 +40,7 @@
 	"teaser.last-post": "Ultimo &ndash; Mostra l'ultimo post, incluso il post originale, se non ci sono risposte",
 	"teaser.last-reply": "Ultimo &ndash; Mostra l'ultima risposta o un segnaposto \"Nessuna risposta\" se non risposto",
 	"teaser.first": "Primo",
+	"showPostPreviewsOnHover": "Show a preview of posts when mouse overed",
 	"unread": "Impostazioni non Lette",
 	"unread.cutoff": "Giorni di interruzione non letti",
 	"unread.min-track-last": "Post minimi nell'argomento prima del monitoraggio dell'ultima lettura",
