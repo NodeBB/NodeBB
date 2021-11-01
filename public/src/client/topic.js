@@ -179,12 +179,14 @@ define('forum/topic', [
 			return;
 		}
 		let timeoutId = 0;
+		const postCache = {};
 		$('[component="topic"]').on('mouseenter', '[component="post"] a, [component="topic/event"] a', async function () {
 			const link = $(this);
 
 			async function renderPost(pid) {
-				const postData = await socket.emit('posts.getPostSummaryByPid', { pid: pid });
+				const postData = postCache[pid] || await socket.emit('posts.getPostSummaryByPid', { pid: pid });
 				if (postData) {
+					postCache[pid] = postData;
 					const tooltip = await app.parseAndTranslate('partials/topic/post-preview', { post: postData });
 					tooltip.hide().find('.timeago').timeago();
 					tooltip.appendTo($('body')).fadeIn(300);
