@@ -96,6 +96,7 @@ topicsController.get = async function getTopic(req, res, next) {
 	topicData.updateUrlWithPostIndex = settings.updateUrlWithPostIndex;
 	topicData.allowMultipleBadges = meta.config.allowMultipleBadges === 1;
 	topicData.privateUploads = meta.config.privateUploads === 1;
+	topicData.showPostPreviewsOnHover = meta.config.showPostPreviewsOnHover === 1;
 	topicData.rssFeedUrl = `${relative_path}/topic/${topicData.tid}.rss`;
 	if (req.loggedIn) {
 		topicData.rssFeedUrl += `?uid=${req.uid}&token=${rssToken}`;

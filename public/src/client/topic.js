@@ -12,10 +12,11 @@ define('forum/topic', [
 	'components',
 	'storage',
 	'hooks',
+	'api',
 ], function (
 	infinitescroll, threadTools, postTools,
 	events, posts, navigator, sort,
-	components, storage, hooks
+	components, storage, hooks, api
 ) {
 	const Topic = {};
 	let currentUrl = '';
@@ -55,6 +56,7 @@ define('forum/topic', [
 		addParentHandler();
 		addDropupHandler();
 		addRepliesHandler();
+		addPostsPreviewHandler();
 
 		handleBookmark(tid);
 
@@ -169,6 +171,59 @@ define('forum/topic', [
 			require(['forum/topic/replies'], function (replies) {
 				replies.init(btn);
 			});
+		});
+	}
+
+	function addPostsPreviewHandler() {
+		if (!ajaxify.data.showPostPreviewsOnHover) {
+			return;
+		}
+		let timeoutId = 0;
+		$('[component="topic"]').on('mouseenter', '[component="post"] a, [component="topic/event"] a', async function () {
+			const link = $(this);
+
+			async function renderPost(pid) {
+				const postData = await socket.emit('posts.getPostSummaryByPid', { pid: pid });
+				if (postData) {
+					const tooltip = await app.parseAndTranslate('partials/topic/post-preview', { post: postData });
+					tooltip.hide().find('.timeago').timeago();
+					tooltip.appendTo($('body')).fadeIn(300);
+					const postContent = link.parents('[component="topic"]').find('[component="post/content"]').first();
+					const postRect = postContent.offset();
+					const postWidth = postContent.width();
+					const linkRect = link.offset();
+					tooltip.css({
+						top: linkRect.top + 30,
+						left: postRect.left,
+						width: postWidth,
+					});
+				}
+			}
+
+			const href = link.attr('href');
+			const pathname = utils.urlToLocation(href).pathname;
+			$('#post-tooltip').remove();
+			const postMatch = pathname && pathname.match(/\/post\/([\d]+)/);
+			const topicMatch = pathname && pathname.match(/\/topic\/([\d]+)/);
+			if (postMatch) {
+				const pid = postMatch[1];
+				if (parseInt(link.parents('[component="post"]').attr('data-pid'), 10) === parseInt(pid, 10)) {
+					return; // dont render self post
+				}
+
+				timeoutId = setTimeout(async () => {
+					renderPost(pid);
+				}, 300);
+			} else if (topicMatch) {
+				timeoutId = setTimeout(async () => {
+					const tid = topicMatch[1];
+					const topicData = await api.get('/topics/' + tid, {});
+					renderPost(topicData.mainPid);
+				}, 300);
+			}
+		}).on('mouseleave', '[component="post"] a, [component="topic/event"] a', function () {
+			clearTimeout(timeoutId);
+			$('#post-tooltip').remove();
 		});
 	}
 
