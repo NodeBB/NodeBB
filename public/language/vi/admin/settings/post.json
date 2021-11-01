@@ -40,6 +40,7 @@
 	"teaser.last-post": "Gần đây &ndash; Hiển thị bài đăng mới nhất, bao gồm cả bài gốc, nếu không có câu trả lời",
 	"teaser.last-reply": "Cuối cùng - Hiển thị câu trả lời mới nhất hoặc trình giữ chỗ \"Không trả lời\" nếu không có câu trả lời",
 	"teaser.first": "Đầu tiên",
+	"showPostPreviewsOnHover": "Show a preview of posts when mouse overed",
 	"unread": "Cài Đặt Chưa Đọc",
 	"unread.cutoff": "Số ngày giới hạn chưa đọc",
 	"unread.min-track-last": "Số bài viết tối thiểu trong chủ đề trước khi theo dõi lần đọc cuối cùng",

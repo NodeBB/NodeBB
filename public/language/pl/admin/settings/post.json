@@ -40,6 +40,7 @@
 	"teaser.last-post": "Ostatni &ndash; Pokaż ostatni post, włączając pierwszy post, w razie braku odpowiedzi",
 	"teaser.last-reply": "Ostatni &ndash; Pokaż ostatnią odpowiedź lub komunikat „Brak odpowiedzi” w razie ich braku",
 	"teaser.first": "Pierwszy",
+	"showPostPreviewsOnHover": "Show a preview of posts when mouse overed",
 	"unread": "Ustawienia nieprzeczytanych",
 	"unread.cutoff": "Dni do odcięcia nieprzeczytanych ",
 	"unread.min-track-last": "Minimalna liczba postów w temacie przed śledzeniem ostatnio przeczytanego",
