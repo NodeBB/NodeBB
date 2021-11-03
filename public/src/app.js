@@ -285,8 +285,8 @@ app.cacheBuster = null;
 			.removeClass('active')
 			.find('a')
 			.filter(function (i, x) {
-				return window.location.pathname === x.pathname ||
-					window.location.pathname.startsWith(x.pathname + '/');
+				return window.location.hostname === x.hostname && (window.location.pathname === x.pathname ||
+					window.location.pathname.startsWith(x.pathname + '/'));
 			})
 			.parent()
 			.addClass('active');
