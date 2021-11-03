@@ -180,6 +180,10 @@ define('forum/topic', [
 		}
 		let timeoutId = 0;
 		const postCache = {};
+		$(window).one('action:ajaxify.start', function () {
+			clearTimeout(timeoutId);
+			$('#post-tooltip').remove();
+		});
 		$('[component="topic"]').on('mouseenter', '[component="post"] a, [component="topic/event"] a', async function () {
 			const link = $(this);
 
