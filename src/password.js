@@ -14,6 +14,10 @@ function forkChild(message, callback) {
 	child.on('message', (msg) => {
 		callback(msg.err ? new Error(msg.err) : null, msg.result);
 	});
+	child.on('error', (err) => {
+		console.error(err.stack);
+		callback(err);
+	});
 
 	child.send(message);
 }
