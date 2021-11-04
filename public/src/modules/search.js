@@ -7,20 +7,9 @@ define('search', ['navigator', 'translator', 'storage', 'hooks'], function (nav,
 	};
 
 	Search.query = function (data, callback) {
-		// Detect if a tid was specified
-		const topicSearch = data.term.match(/^in:topic-([\d]+) /);
 		callback = callback || function () {};
-		if (!topicSearch) {
-			ajaxify.go('search?' + createQueryString(data));
-			callback();
-		} else {
-			const cleanedTerm = data.term.replace(topicSearch[0], '');
-			const tid = topicSearch[1];
-
-			if (cleanedTerm.length > 0) {
-				Search.queryTopic(tid, cleanedTerm, callback);
-			}
-		}
+		ajaxify.go('search?' + createQueryString(data));
+		callback();
 	};
 
 	Search.api = function (data, callback) {
@@ -137,103 +126,6 @@ define('search', ['navigator', 'translator', 'storage', 'hooks'], function (nav,
 		});
 
 		$('.search-result-text').find('img:not(.not-responsive)').addClass('img-responsive');
-	};
-
-	Search.queryTopic = function (tid, term) {
-		socket.emit('topics.search', {
-			tid: tid,
-			term: term,
-		}, function (err, pids) {
-			if (err) {
-				return app.alertError(err.message);
-			}
-
-			if (Array.isArray(pids)) {
-				// Sort pids numerically & store
-				Search.current = {
-					results: pids.sort(function (a, b) {
-						return a - b;
-					}),
-					tid: tid,
-					term: term,
-				};
-
-				Search.checkPagePresence(tid, function () {
-					Search.topicDOM.update(0);
-				});
-			}
-		});
-	};
-
-	Search.checkPagePresence = function (tid, callback) {
-		if (parseInt(ajaxify.data.tid, 10) !== parseInt(tid, 10)) {
-			ajaxify.go('topic/' + tid, callback);
-		} else {
-			callback();
-		}
-	};
-
-	Search.topicDOM = {
-		active: false,
-	};
-
-	Search.topicDOM.prev = function () {
-		Search.topicDOM.update((Search.current.index === 0) ? Search.current.results.length - 1 : Search.current.index - 1);
-	};
-
-	Search.topicDOM.next = function () {
-		Search.topicDOM.update((Search.current.index === Search.current.results.length - 1) ? 0 : Search.current.index + 1);
-	};
-
-	Search.topicDOM.update = function (index) {
-		const topicSearchEl = $('.topic-search');
-		Search.current.index = index;
-
-		Search.topicDOM.start();
-
-		if (Search.current.results.length > 0) {
-			topicSearchEl.find('.count').html((index + 1) + ' / ' + Search.current.results.length);
-			topicSearchEl.find('.prev, .next').removeAttr('disabled');
-			const data = {
-				pid: Search.current.results[index],
-				tid: Search.current.tid,
-				topicPostSort: config.topicPostSort,
-			};
-			socket.emit('posts.getPidIndex', data, function (err, postIndex) {
-				if (err) {
-					return app.alertError(err.message);
-				}
-
-				nav.scrollToIndex(postIndex, true);
-			});
-		} else {
-			translator.translate('[[search:no-matches]]', function (text) {
-				topicSearchEl.find('.count').html(text);
-			});
-			topicSearchEl.removeClass('hidden').find('.prev, .next').attr('disabled', 'disabled');
-		}
-	};
-
-	Search.topicDOM.start = function () {
-		$('.topic-search').removeClass('hidden');
-		if (!Search.topicDOM.active) {
-			Search.topicDOM.active = true;
-
-			// Bind to esc
-			require(['mousetrap'], function (mousetrap) {
-				mousetrap.bind('esc', Search.topicDOM.end);
-			});
-		}
-	};
-
-	Search.topicDOM.end = function () {
-		$('.topic-search').addClass('hidden').find('.prev, .next').attr('disabled', 'disabled');
-		Search.topicDOM.active = false;
-
-		// Unbind esc
-		require(['mousetrap'], function (mousetrap) {
-			mousetrap.unbind('esc', Search.topicDOM.end);
-		});
 	};
 
 	return Search;

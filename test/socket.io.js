@@ -106,7 +106,12 @@ describe('socket.io', () => {
 	});
 
 	it('should post a topic', (done) => {
-		io.emit('topics.post', { title: 'test topic title', content: 'test topic main post content', uid: adminUid, cid: cid }, (err, result) => {
+		io.emit('topics.post', {
+			title: 'test topic title',
+			content: 'test topic main post content',
+			uid: adminUid,
+			cid: cid,
+		}, (err, result) => {
 			assert.ifError(err);
 			assert.equal(result.user.username, 'admin');
 			assert.equal(result.category.cid, cid);
@@ -473,9 +478,17 @@ describe('socket.io', () => {
 
 	it('should toggle plugin install', function (done) {
 		this.timeout(0);
-		socketAdmin.plugins.toggleInstall({ uid: adminUid }, { id: 'nodebb-plugin-location-to-map', version: 'latest' }, (err, data) => {
+		const oldValue = process.env.NODE_ENV;
+		process.env.NODE_ENV = 'development';
+		socketAdmin.plugins.toggleInstall({
+			uid: adminUid,
+		}, {
+			id: 'nodebb-plugin-location-to-map',
+			version: 'latest',
+		}, (err, data) => {
 			assert.ifError(err);
 			assert.equal(data.name, 'nodebb-plugin-location-to-map');
+			process.env.NODE_ENV = oldValue;
 			done();
 		});
 	});
@@ -507,8 +520,16 @@ describe('socket.io', () => {
 
 	it('should upgrade plugin', function (done) {
 		this.timeout(0);
-		socketAdmin.plugins.upgrade({ uid: adminUid }, { id: 'nodebb-plugin-location-to-map', version: 'latest' }, (err) => {
+		const oldValue = process.env.NODE_ENV;
+		process.env.NODE_ENV = 'development';
+		socketAdmin.plugins.upgrade({
+			uid: adminUid,
+		}, {
+			id: 'nodebb-plugin-location-to-map',
+			version: 'latest',
+		}, (err) => {
 			assert.ifError(err);
+			process.env.NODE_ENV = oldValue;
 			done();
 		});
 	});
@@ -521,7 +542,13 @@ describe('socket.io', () => {
 	});
 
 	it('should error with invalid data', (done) => {
-		const data = [{ template: 'global', location: 'sidebar', widgets: [{ widget: 'html', data: { html: 'test', title: 'test', container: '' } }] }];
+		const data = [
+			{
+				template: 'global',
+				location: 'sidebar',
+				widgets: [{ widget: 'html', data: { html: 'test', title: 'test', container: '' } }],
+			},
+		];
 		socketAdmin.widgets.set({ uid: adminUid }, data, (err) => {
 			assert.ifError(err);
 			db.getObjectField('widgets:global', 'sidebar', (err, widgetData) => {

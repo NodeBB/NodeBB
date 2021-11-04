@@ -5,8 +5,8 @@
 
 	"user": "Benutzer",
 	"subscription": "Subscription Type",
-	"last-delivery": "Last successful delivery",
-	"default": "System default",
+	"last-delivery": "Letzte erfolgreiche Zustellung",
+	"default": "System Standard",
 	"default-help": "<em>System default</em> means the user has not explicitly overridden the global forum setting for digests, which is currently: &quot;<strong>%1</strong>&quot;",
 	"resend": "Resend Digest",
 	"resend-all-confirm": "Are you sure you wish to manually execute this digest run?",

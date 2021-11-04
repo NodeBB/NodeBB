@@ -38,7 +38,7 @@ exports.handleURIErrors = async function handleURIErrors(err, req, res, next) {
 
 // this needs to have four arguments or express treats it as `(req, res, next)`
 // don't remove `next`!
-exports.handleErrors = function handleErrors(err, req, res, next) { // eslint-disable-line no-unused-vars
+exports.handleErrors = async function handleErrors(err, req, res, next) { // eslint-disable-line no-unused-vars
 	const cases = {
 		EBADCSRFTOKEN: function () {
 			winston.error(`${req.path}\n${err.message}`);
@@ -49,6 +49,9 @@ exports.handleErrors = function handleErrors(err, req, res, next) { // eslint-di
 		},
 	};
 	const defaultHandler = async function () {
+		if (res.headersSent) {
+			return;
+		}
 		// Display NodeBB error page
 		const status = parseInt(err.status, 10);
 		if ((status === 302 || status === 308) && err.path) {
@@ -80,20 +83,29 @@ exports.handleErrors = function handleErrors(err, req, res, next) { // eslint-di
 			res.render('500', data);
 		}
 	};
-
-	plugins.hooks.fire('filter:error.handle', {
-		cases: cases,
-	}, (_err, data) => {
-		if (_err) {
-			// Assume defaults
-			winston.warn(`[errors/handle] Unable to retrieve plugin handlers for errors: ${_err.message}`);
-			data.cases = cases;
-		}
-
+	const data = await getErrorHandlers(cases);
+	try {
 		if (data.cases.hasOwnProperty(err.code)) {
 			data.cases[err.code](err, req, res, defaultHandler);
 		} else {
-			defaultHandler();
+			await defaultHandler();
 		}
-	});
+	} catch (_err) {
+		winston.error(`${req.originalUrl}\n${_err.stack}`);
+		if (!res.headersSent) {
+			res.status(500).send(_err.message);
+		}
+	}
 };
+
+async function getErrorHandlers(cases) {
+	try {
+		return await plugins.hooks.fire('filter:error.handle', {
+			cases: cases,
+		});
+	} catch (err) {
+		// Assume defaults
+		winston.warn(`[errors/handle] Unable to retrieve plugin handlers for errors: ${err.message}`);
+		return { cases };
+	}
+}

@@ -1,7 +1,6 @@
 'use strict';
 
-
-const	assert = require('assert');
+const assert = require('assert');
 const path = require('path');
 const nconf = require('nconf');
 const request = require('request');
@@ -47,7 +46,7 @@ describe('Plugins', () => {
 		});
 	});
 
-	it('should register and fire a filter hook having 3 methods, one returning a promise, one calling the callback and one just returning', async () => {
+	it('should register and fire a filter hook having 3 methods', async () => {
 		function method1(data, callback) {
 			data.foo += 1;
 			callback(null, data);
@@ -214,6 +213,16 @@ describe('Plugins', () => {
 	describe('install/activate/uninstall', () => {
 		let latest;
 		const pluginName = 'nodebb-plugin-imgur';
+		const oldValue = process.env.NODE_ENV;
+		before((done) => {
+			process.env.NODE_ENV = 'development';
+			done();
+		});
+		after((done) => {
+			process.env.NODE_ENV = oldValue;
+			done();
+		});
+
 		it('should install a plugin', function (done) {
 			this.timeout(0);
 			plugins.toggleInstall(pluginName, '1.0.16', (err, pluginData) => {
@@ -284,7 +293,8 @@ describe('Plugins', () => {
 		});
 
 		it('should 404 if resource does not exist', (done) => {
-			request.get(`${nconf.get('url')}/plugins/nodebb-plugin-dbsearch/dbsearch/templates/admin/plugins/should404.tpl`, (err, res, body) => {
+			const url = `${nconf.get('url')}/plugins/nodebb-plugin-dbsearch/dbsearch/templates/admin/plugins/should404.tpl`;
+			request.get(url, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
 				assert(body);
@@ -293,7 +303,8 @@ describe('Plugins', () => {
 		});
 
 		it('should get resource', (done) => {
-			request.get(`${nconf.get('url')}/plugins/nodebb-plugin-dbsearch/dbsearch/templates/admin/plugins/dbsearch.tpl`, (err, res, body) => {
+			const url = `${nconf.get('url')}/plugins/nodebb-plugin-dbsearch/dbsearch/templates/admin/plugins/dbsearch.tpl`;
+			request.get(url, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -302,3 +313,5 @@ describe('Plugins', () => {
 		});
 	});
 });
+
+

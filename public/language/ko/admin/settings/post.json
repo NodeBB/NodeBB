@@ -40,6 +40,7 @@
 	"teaser.last-post": "최근 - 최근 작성된 포스트를 보여주고 답글이 없을 경우 포스트 본문 보여주기",
 	"teaser.last-reply": "최근 - 최근 작성된 답글을 보여주고 답글이 없을 경우 \"답글 없음\" 표시",
 	"teaser.first": "첫 글",
+	"showPostPreviewsOnHover": "Show a preview of posts when mouse overed",
 	"unread": "읽지 않음 목록 설정",
 	"unread.cutoff": "읽지 않음 표시 기간",
 	"unread.min-track-last": "마지막으로 읽은 글 추적 기능을 사용할 최소 글 수",

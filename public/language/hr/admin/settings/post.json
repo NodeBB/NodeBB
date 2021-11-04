@@ -40,6 +40,7 @@
 	"teaser.last-post": "Last &ndash; Show the latest post, including the original post, if no replies",
 	"teaser.last-reply": "Last &ndash; Show the latest reply, or a \"No replies\" placeholder if no replies",
 	"teaser.first": "Prvi",
+	"showPostPreviewsOnHover": "Show a preview of posts when mouse overed",
 	"unread": "Nepročitane postavke",
 	"unread.cutoff": "Nepročitano dani prekinutosti",
 	"unread.min-track-last": "Minimalni broj objava u temi prije praćenja zadnje pročitanog",

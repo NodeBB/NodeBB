@@ -56,8 +56,8 @@
 	"active-users.total": "Разом",
 	"active-users.connections": "З'єднання",
 
-	"anonymous-registered-users": "Аноніми проти Зареєстрованих",
-	"anonymous": "Аноніми",
+	"guest-registered-users": "Guest vs Registered Users",
+	"guest": "Guest",
 	"registered": "Зареєстровані",
 
 	"user-presence": "Присутність користувача",
@@ -68,6 +68,7 @@
 	"unread": "Непрочитані",
 
 	"high-presence-topics": "Теми з високою присутністю",
+	"popular-searches": "Popular Searches",
 
 	"graphs.page-views": "Перегляди сторінок",
 	"graphs.page-views-registered": "Page Views Registered",
@@ -75,13 +76,14 @@
 	"graphs.page-views-bot": "Page Views Bot",
 	"graphs.unique-visitors": "Унікальні відвідувачі",
 	"graphs.registered-users": "Зареєстровані користувачі",
-	"graphs.anonymous-users": "Анонімні користувачі",
+	"graphs.guest-users": "Guest Users",
 	"last-restarted-by": "Останнє перезавантаження",
 	"no-users-browsing": "Немає користувачів онлайн",
 
 	"back-to-dashboard": "Back to Dashboard",
 	"details.no-users": "No users have joined within the selected timeframe",
 	"details.no-topics": "No topics have been posted within the selected timeframe",
+	"details.no-searches": "No searches have been made yet",
 	"details.no-logins": "No logins have been recorded within the selected timeframe",
 	"details.logins-static": "NodeBB only saves session data for %1 days, and so this table below will only show the most recently active sessions",
 	"details.logins-login-time": "Login Time"

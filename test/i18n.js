@@ -15,7 +15,7 @@ describe('i18n', () => {
 
 	before(async () => {
 		folders = await fs.promises.readdir(path.resolve(__dirname, '../public/language'));
-		folders.shift();	// remove README.md from list of folders to check
+		folders = folders.filter(f => f !== 'README.md');
 	});
 
 	it('should contain folders named after the language code', async () => {
@@ -89,21 +89,21 @@ describe('i18n', () => {
 				});
 
 				it('should contain every translation key contained in its source counterpart', () => {
-					// const sourceArr = Array.from(sourceStrings.keys());
-					// sourceArr.forEach((namespace) => {
-					// 	const sourceKeys = Object.keys(sourceStrings.get(namespace));
-					// 	const translationKeys = Object.keys(strings.get(namespace));
+					const sourceArr = Array.from(sourceStrings.keys());
+					sourceArr.forEach((namespace) => {
+						const sourceKeys = Object.keys(sourceStrings.get(namespace));
+						const translationKeys = Object.keys(strings.get(namespace));
 
-					// 	assert(sourceKeys && translationKeys);
-					// 	sourceKeys.forEach((key) => {
-					// 		assert(translationKeys.includes(key), `${namespace.slice(1, -5)}:${key} missing in ${language}`);
-					// 	});
-					// 	assert.strictEqual(
-					// 		sourceKeys.length,
-					// 		translationKeys.length,
-					// 		`Extra keys found in namespace ${namespace.slice(1, -5)} for language "${language}"`
-					// 	);
-					// });
+						assert(sourceKeys && translationKeys);
+						sourceKeys.forEach((key) => {
+							assert(translationKeys.includes(key), `${namespace.slice(1, -5)}:${key} missing in ${language}`);
+						});
+						assert.strictEqual(
+							sourceKeys.length,
+							translationKeys.length,
+							`Extra keys found in namespace ${namespace.slice(1, -5)} for language "${language}"`
+						);
+					});
 				});
 			});
 		});

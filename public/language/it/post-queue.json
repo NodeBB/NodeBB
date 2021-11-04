@@ -1,7 +1,7 @@
 
 {
-	"post-queue": "Post in attesa",
-	"description": "Non ci sono post nella coda della post. <br> Per abilitare questa funzione, vai in <a href=\"%1\">Impostazioni &rarr; Post &rarr; Codice post</a> e abilita <strong>Post in attesa</strong>.",
+	"post-queue": "Coda post",
+	"description": "Non ci sono post nella coda dei post. <br> Per abilitare questa funzione, vai in <a href=\"%1\">Impostazioni &rarr; Post &rarr; Coda post</a> e abilita <strong>Coda post</strong>.",
 	"user": "Utente",
 	"category": "Categoria",
 	"title": "Titolo",

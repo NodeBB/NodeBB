@@ -71,6 +71,9 @@ module.exports = function (Categories) {
 		}
 		const categoryData = await Categories.getCategoryFields(cid, ['parentCid', 'order']);
 		const oldParent = categoryData.parentCid;
+		if (oldParent === newParent) {
+			return;
+		}
 		await Promise.all([
 			db.sortedSetRemove(`cid:${oldParent}:children`, cid),
 			db.sortedSetAdd(`cid:${newParent}:children`, categoryData.order, cid),

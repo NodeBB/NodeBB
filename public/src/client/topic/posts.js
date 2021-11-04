@@ -207,7 +207,8 @@ define('forum/topic/posts', [
 		app.parseAndTranslate('topic', 'posts', Object.assign({}, ajaxify.data, data), function (html) {
 			html = html.filter(function () {
 				const pid = $(this).attr('data-pid');
-				return pid && $('[component="post"][data-pid="' + pid + '"]').length === 0;
+				const isPost = $(this).is('[component="post"]');
+				return !isPost || (pid && $('[component="post"][data-pid="' + pid + '"]').length === 0);
 			});
 
 			if (after) {

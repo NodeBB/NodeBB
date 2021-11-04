@@ -41,7 +41,8 @@ module.exports = function (Posts) {
 		if (isMainPost) {
 			const tid = await Posts.getPostField(pid, 'tid');
 			let thumbs = await topics.thumbs.get(tid);
-			thumbs = thumbs.map(thumb => thumb.url.replace(path.join(nconf.get('relative_path'), nconf.get('upload_url'), 'files/'), '')).filter(path => !validator.isURL(path, {
+			const replacePath = path.posix.join(nconf.get('relative_path'), nconf.get('upload_url'), 'files/');
+			thumbs = thumbs.map(thumb => thumb.url.replace(replacePath, '')).filter(path => !validator.isURL(path, {
 				require_protocol: true,
 			}));
 			uploads.push(...thumbs);

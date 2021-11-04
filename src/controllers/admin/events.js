@@ -20,15 +20,17 @@ eventsController.get = async function (req, res) {
 
 	const currentFilter = req.query.type || '';
 
-	const [eventCount, eventData] = await Promise.all([
+	const [eventCount, eventData, counts] = await Promise.all([
 		db.sortedSetCount(`events:time${currentFilter ? `:${currentFilter}` : ''}`, from || '-inf', to),
 		events.getEvents(currentFilter, start, stop, from || '-inf', to),
+		db.sortedSetsCard([''].concat(events.types).map(type => `events:time${type ? `:${type}` : ''}`)),
 	]);
 
-	const types = [''].concat(events.types).map(type => ({
+	const types = [''].concat(events.types).map((type, index) => ({
 		value: type,
 		name: type || 'all',
 		selected: type === currentFilter,
+		count: counts[index],
 	}));
 
 	const pageCount = Math.max(1, Math.ceil(eventCount / itemsPerPage));

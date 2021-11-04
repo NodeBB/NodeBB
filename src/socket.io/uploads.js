@@ -15,11 +15,12 @@ uploads.upload = async function (socket, data) {
 		'user.updateCover': socketUser.updateCover,
 		'groups.cover.update': socketGroup.cover.update,
 	};
-	if (!socket.uid || !data || !data.chunk || !data.params || !data.params.method || !methodToFunc[data.params.method]) {
+	if (!socket.uid || !data || !data.chunk ||
+		!data.params || !data.params.method || !methodToFunc.hasOwnProperty(data.params.method)) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	inProgress[socket.id] = inProgress[socket.id] || {};
+	inProgress[socket.id] = inProgress[socket.id] || Object.create(null);
 	const socketUploads = inProgress[socket.id];
 	const { method } = data.params;
 

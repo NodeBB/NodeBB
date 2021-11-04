@@ -97,6 +97,7 @@ app.cacheBuster = null;
 		});
 
 		createHeaderTooltips();
+		app.showEmailConfirmWarning();
 		app.showCookieWarning();
 		registerServiceWorker();
 
@@ -283,9 +284,12 @@ app.cacheBuster = null;
 		$('#main-nav li')
 			.removeClass('active')
 			.find('a')
-			.filter(function (i, x) {
-				return window.location.pathname === x.pathname ||
-					window.location.pathname.startsWith(x.pathname + '/');
+			.filter(function (i, a) {
+				return $(a).attr('href') !== '#' && window.location.hostname === a.hostname &&
+					(
+						window.location.pathname === a.pathname ||
+						window.location.pathname.startsWith(a.pathname + '/')
+					);
 			})
 			.parent()
 			.addClass('active');
@@ -531,7 +535,8 @@ app.cacheBuster = null;
 					}
 					data.posts.forEach(function (p) {
 						const text = $('<div>' + p.content + '</div>').text();
-						const start = Math.max(0, text.toLowerCase().indexOf(inputEl.val().toLowerCase()) - 40);
+						const query = inputEl.val().toLowerCase().replace(/^in:topic-\d+/, '');
+						const start = Math.max(0, text.toLowerCase().indexOf(query) - 40);
 						p.snippet = utils.escapeHTML((start > 0 ? '...' : '') +
 							text.slice(start, start + 80) +
 							(text.length - start > 80 ? '...' : ''));
@@ -575,7 +580,7 @@ app.cacheBuster = null;
 				return quickSearchResults.addClass('hidden');
 			}
 			doSearch();
-		}, 250));
+		}, 500));
 
 		let mousedownOnResults = false;
 		quickSearchResults.on('mousedown', function () {
@@ -590,13 +595,31 @@ app.cacheBuster = null;
 			}
 		});
 
+		let ajaxified = false;
+		require(['hooks'], function (hooks) {
+			hooks.on('action:ajaxify.end', function () {
+				if (!ajaxify.isCold()) {
+					ajaxified = true;
+				}
+			});
+		});
+
 		inputEl.on('focus', function () {
 			mousedownOnResults = false;
-			oldValue = inputEl.val();
-			if (inputEl.val() && quickSearchResults.find('#quick-search-results').children().length) {
+			const query = inputEl.val();
+			oldValue = query;
+			if (query && quickSearchResults.find('#quick-search-results').children().length) {
 				updateCategoryFilterName();
-				doSearch();
-				inputEl[0].setSelectionRange(0, inputEl.val().length);
+				if (ajaxified) {
+					doSearch();
+					ajaxified = false;
+				} else {
+					quickSearchResults.removeClass('hidden');
+				}
+				inputEl[0].setSelectionRange(
+					query.startsWith('in:topic') ? query.indexOf(' ') + 1 : 0,
+					query.length
+				);
 			}
 		});
 
@@ -738,24 +761,7 @@ app.cacheBuster = null;
 	app.showEmailConfirmWarning = async (err) => {
 		const storage = await app.require('storage');
 
-		let showModal = false;
-		switch (ajaxify.data.template.name) {
-			case 'recent': {
-				showModal = !ajaxify.data.canPost;
-				break;
-			}
-
-			case 'category': {
-				showModal = !ajaxify.data.privileges['topics:create'];
-				break;
-			}
-
-			case 'topic': {
-				showModal = !ajaxify.data.privileges['topics:reply'];
-			}
-		}
-
-		if (!showModal || !app.user.uid || parseInt(storage.getItem('email-confirm-dismiss'), 10) === 1) {
+		if (!config.emailPrompt || !app.user.uid || parseInt(storage.getItem('email-confirm-dismiss'), 10) === 1) {
 			return;
 		}
 		const msg = {

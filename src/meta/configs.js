@@ -243,7 +243,7 @@ async function saveRenderedCss(data) {
 	const less = require('less');
 	const lessObject = await less.render(data.customCSS, {
 		compress: true,
-		javascriptEnabled: true,
+		javascriptEnabled: false,
 	});
 	data.renderedCustomCSS = lessObject.css;
 }

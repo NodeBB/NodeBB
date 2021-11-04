@@ -56,8 +56,8 @@
 	"active-users.total": "סך הכל",
 	"active-users.connections": "חיבורים",
 
-	"anonymous-registered-users": "משתמשים רשומים ואורחים",
-	"anonymous": "אורחים",
+	"guest-registered-users": "Guest vs Registered Users",
+	"guest": "אורח",
 	"registered": "רשומים",
 
 	"user-presence": "נוכחות משתמשים",
@@ -68,6 +68,7 @@
 	"unread": "לא נקראו",
 
 	"high-presence-topics": "פוסטים עם הכי הרבה נוכחות",
+	"popular-searches": "חיפושים פופולריים",
 
 	"graphs.page-views": "צפיות בדפים",
 	"graphs.page-views-registered": "צפיות בדפים-רשומים",
@@ -75,13 +76,14 @@
 	"graphs.page-views-bot": "צפיות בדפים-בוטים",
 	"graphs.unique-visitors": "מבקרים ייחודיים",
 	"graphs.registered-users": "משתמשים רשומים",
-	"graphs.anonymous-users": "אורחים",
+	"graphs.guest-users": "משתמשים אורחים",
 	"last-restarted-by": "אותחל לארונה על ידי",
 	"no-users-browsing": "אין גולשים",
 
 	"back-to-dashboard": "חזרה ללוח מחוונים",
 	"details.no-users": "אין משתמש שהצטרף במסגרת הזמן שנבחרה",
 	"details.no-topics": "לא פורסמו נושאים במסגרת הזמן שנבחרה",
+	"details.no-searches": "No searches have been made yet",
 	"details.no-logins": "לא נרשמו כניסות במסגרת הזמן שנבחרה",
 	"details.logins-static": "NodeBB שומר נתוני הפעלה עבור %1 ימים בלבד, ולכן טבלה זו תציג רק את הכניסות הפעילות האחרונות",
 	"details.logins-login-time": "זמן כניסה"

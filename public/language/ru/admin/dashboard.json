@@ -56,8 +56,8 @@
 	"active-users.total": "Всего",
 	"active-users.connections": "Соединений",
 
-	"anonymous-registered-users": "Анонимные / Авторизованные",
-	"anonymous": "Анонимные",
+	"guest-registered-users": "Guest vs Registered Users",
+	"guest": "Guest",
 	"registered": "Авторизованные",
 
 	"user-presence": "Присутствие",
@@ -68,6 +68,7 @@
 	"unread": "Просм. непрочитанные",
 
 	"high-presence-topics": "Популярные темы",
+	"popular-searches": "Popular Searches",
 
 	"graphs.page-views": "Просмотры",
 	"graphs.page-views-registered": "Просм. авторизованными",
@@ -75,13 +76,14 @@
 	"graphs.page-views-bot": "Просмотров ботами",
 	"graphs.unique-visitors": "Уникальных посетителей",
 	"graphs.registered-users": "Авторизованных пользователей",
-	"graphs.anonymous-users": "Анонимных пользователей",
+	"graphs.guest-users": "Guest Users",
 	"last-restarted-by": "Последний перезапуск:",
 	"no-users-browsing": "Просмотров нет",
 
 	"back-to-dashboard": "Вернуться на Панель управления",
 	"details.no-users": "No users have joined within the selected timeframe",
 	"details.no-topics": "No topics have been posted within the selected timeframe",
+	"details.no-searches": "No searches have been made yet",
 	"details.no-logins": "No logins have been recorded within the selected timeframe",
 	"details.logins-static": "NodeBB only saves session data for %1 days, and so this table below will only show the most recently active sessions",
 	"details.logins-login-time": "Login Time"

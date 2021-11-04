@@ -52,8 +52,24 @@ image.resizeImage = async function (data) {
 		sharpImage.rotate(); // auto-orients based on exif data
 		sharpImage.resize(data.hasOwnProperty('width') ? data.width : null, data.hasOwnProperty('height') ? data.height : null);
 
-		if (data.quality && metadata.format === 'jpeg') {
-			sharpImage.jpeg({ quality: data.quality });
+		if (data.quality) {
+			switch (metadata.format) {
+				case 'jpeg': {
+					sharpImage.jpeg({
+						quality: data.quality,
+						mozjpeg: true,
+					});
+					break;
+				}
+
+				case 'png': {
+					sharpImage.png({
+						quality: data.quality,
+						compressionLevel: 9,
+					});
+					break;
+				}
+			}
 		}
 
 		await sharpImage.toFile(data.target || data.path);

@@ -35,6 +35,11 @@ describe('Translator shim', () => {
 			const translated = await shim.translate('', 'en-GB');
 			assert.strictEqual(translated, '');
 		});
+
+		it('should not allow path traversal', async () => {
+			const t = await shim.translate('[[../../../../config:secret]]');
+			assert.strictEqual(t, 'secret');
+		});
 	});
 });
 

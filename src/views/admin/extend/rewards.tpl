@@ -17,14 +17,14 @@
 						<div class="well inline-block this-block">
 							<label for="condition-is">[[admin/extend/rewards:condition-is]]</label><br />
 							<div class="row">
-								<div class="col-xs-6">
+								<div class="col-xs-4">
 									<select id="condition-is" class="form-control" name="conditional" data-selected="{active.conditional}">
 										{{{ each  conditionals }}}
 										<option value="{conditionals.conditional}">{conditionals.name}</option>
 										{{{ end }}}
 									</select>
 								</div>
-								<div class="col-xs-6">
+								<div class="col-xs-8">
 									<input class="form-control" type="text" name="value" value="{active.value}" />
 								</div>
 							</div>

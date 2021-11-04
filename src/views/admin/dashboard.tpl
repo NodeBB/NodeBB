@@ -4,22 +4,22 @@
 		<!-- IMPORT admin/partials/dashboard/stats.tpl -->
 
 		<div class="row">
-			<div class="col-lg-4">
+			<div class="col-lg-3">
 				<div class="panel panel-default">
-					<div class="panel-heading">[[admin/dashboard:anonymous-registered-users]]</div>
+					<div class="panel-heading">[[admin/dashboard:guest-registered-users]]</div>
 					<div class="panel-body">
 						<div class="graph-container pie-chart legend-down">
 							<canvas id="analytics-registered"></canvas>
 							<ul class="graph-legend" id="analytics-legend">
 								<li><div class="registered"></div><span>(<span class="count"></span>) [[admin/dashboard:registered]]</span></li>
-								<li><div class="anonymous"></div><span>(<span class="count"></span>) [[admin/dashboard:anonymous]]</span></li>
+								<li><div class="guest"></div><span>(<span class="count"></span>) [[admin/dashboard:guest]]</span></li>
 							</ul>
 						</div>
 					</div>
 				</div>
 			</div>
 
-			<div class="col-lg-4">
+			<div class="col-lg-3">
 				<div class="panel panel-default">
 					<div class="panel-heading">[[admin/dashboard:user-presence]]</div>
 					<div class="panel-body">
@@ -36,13 +36,27 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-lg-4">
+			<div class="col-lg-3">
 				<div class="panel panel-default">
 					<div class="panel-heading">[[admin/dashboard:high-presence-topics]]</div>
 					<div class="panel-body">
 						<div class="graph-container pie-chart legend-down">
 							<canvas id="analytics-topics"></canvas>
 							<ul class="graph-legend" id="topics-legend"></ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-3">
+				<div class="panel panel-default">
+					<div class="panel-heading">[[admin/dashboard:popular-searches]]</div>
+					<div class="panel-body">
+						<div class="graph-container pie-chart legend-down">
+							<ul class="graph-legend" id="popular-searches-legend">
+								{{{ each popularSearches}}}
+								<li>({popularSearches.score}) {popularSearches.value}</li>
+								{{{ end }}}
+							</ul>
 						</div>
 					</div>
 				</div>

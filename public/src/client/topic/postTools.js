@@ -84,6 +84,8 @@ define('forum/topic/postTools', [
 	function addPostHandlers(tid) {
 		const postContainer = components.get('topic');
 
+		handleSelectionTooltip();
+
 		postContainer.on('click', '[component="post/quote"]', function () {
 			onQuoteClicked($(this), tid);
 		});
@@ -459,6 +461,64 @@ define('forum/topic/postTools', [
 		});
 
 		warning.modal();
+	}
+
+	function handleSelectionTooltip() {
+		hooks.onPage('action:posts.loaded', delayedTooltip);
+
+		$(document).off('mouseup', delayedTooltip).on('mouseup', delayedTooltip);
+		$(document).off('selectionchange', selectionChange).on('selectionchange', selectionChange);
+	}
+
+	let selectionEmpty = true;
+	function selectionChange() {
+		selectionEmpty = window.getSelection().toString() === '';
+		if (selectionEmpty) {
+			$('[component="selection/tooltip"]').addClass('hidden');
+		}
+	}
+
+	function delayedTooltip() {
+		setTimeout(async function () {
+			let selectionTooltip = $('[component="selection/tooltip"]');
+			selectionTooltip.addClass('hidden');
+			const selection = window.getSelection();
+			if (selection.focusNode && selection.type === 'Range' && ajaxify.data.template.topic && !selectionEmpty) {
+				const focusNode = $(selection.focusNode);
+				const anchorNode = $(selection.anchorNode);
+				const firstPid = anchorNode.parents('[data-pid]').attr('data-pid');
+				const lastPid = focusNode.parents('[data-pid]').attr('data-pid');
+				if (firstPid !== lastPid || !focusNode.parents('[component="post/content"]').length || !anchorNode.parents('[component="post/content"]').length) {
+					return;
+				}
+				const postEl = focusNode.parents('[data-pid]');
+				const selectionRange = selection.getRangeAt(0);
+				if (!postEl.length || selectionRange.collapsed) {
+					return;
+				}
+				const rects = selectionRange.getClientRects();
+				const lastRect = rects[rects.length - 1];
+
+				if (!selectionTooltip.length) {
+					selectionTooltip = await app.parseAndTranslate('partials/topic/selection-tooltip', ajaxify.data);
+					selectionTooltip.addClass('hidden').appendTo('body');
+				}
+				selectionTooltip.off('click').on('click', '[component="selection/tooltip/quote"]', function () {
+					selectionTooltip.addClass('hidden');
+					onQuoteClicked(postEl.find('[component="post/quote"]'), ajaxify.data.tid);
+				});
+				selectionTooltip.removeClass('hidden');
+				$(window).one('action:ajaxify.start', function () {
+					selectionTooltip.remove();
+					$(document).off('selectionchange', selectionChange);
+				});
+				const tooltipWidth = selectionTooltip.outerWidth(true);
+				selectionTooltip.css({
+					top: lastRect.bottom + $(window).scrollTop(),
+					left: tooltipWidth > lastRect.width ? lastRect.left : lastRect.left + lastRect.width - tooltipWidth,
+				});
+			}
+		}, 0);
 	}
 
 	return PostTools;

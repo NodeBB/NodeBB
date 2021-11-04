@@ -56,8 +56,8 @@
 	"active-users.total": "Kopēji",
 	"active-users.connections": "Savienojumi",
 
-	"anonymous-registered-users": "Anonīmie lietotāji pret reģistrētiem lietotājiem",
-	"anonymous": "Anonīmie",
+	"guest-registered-users": "Guest vs Registered Users",
+	"guest": "Guest",
 	"registered": "Reģistrētie",
 
 	"user-presence": "Lietotāju novietojums",
@@ -68,6 +68,7 @@
 	"unread": "Skatās nelasītos rakstus",
 
 	"high-presence-topics": "Augstās klātesamības temati",
+	"popular-searches": "Popular Searches",
 
 	"graphs.page-views": "Lapu skatījumi",
 	"graphs.page-views-registered": "Lapu skatījumi no lietotājiem",
@@ -75,13 +76,14 @@
 	"graphs.page-views-bot": "Lapu skatījumi no botiem",
 	"graphs.unique-visitors": "Unikālie apmeklētāji",
 	"graphs.registered-users": "Reģistrētie lietotāji",
-	"graphs.anonymous-users": "Anonīmie lietotāji",
+	"graphs.guest-users": "Guest Users",
 	"last-restarted-by": "Pēdējoreiz restartējis",
 	"no-users-browsing": "Nav pārlūkojošo lietotāju",
 
 	"back-to-dashboard": "Back to Dashboard",
 	"details.no-users": "No users have joined within the selected timeframe",
 	"details.no-topics": "No topics have been posted within the selected timeframe",
+	"details.no-searches": "No searches have been made yet",
 	"details.no-logins": "No logins have been recorded within the selected timeframe",
 	"details.logins-static": "NodeBB only saves session data for %1 days, and so this table below will only show the most recently active sessions",
 	"details.logins-login-time": "Login Time"

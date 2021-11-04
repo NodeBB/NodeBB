@@ -24,7 +24,8 @@ define('notifications', [
 	});
 	hooks.on('filter:notifications.load', _addShortTimeagoString);
 
-	Notifications.loadNotifications = function (notifList) {
+	Notifications.loadNotifications = function (notifList, callback) {
+		callback = callback || function () {};
 		socket.emit('notifications.get', null, function (err, data) {
 			if (err) {
 				return app.alertError(err.message);
@@ -68,6 +69,7 @@ define('notifications', [
 						notifications: notifs,
 						list: notifList,
 					});
+					callback();
 				});
 			});
 		});
