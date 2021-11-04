@@ -246,7 +246,7 @@ module.exports = function (module) {
 			multi.zincrby(item[0], item[1], item[2]);
 		});
 		const result = await multi.exec();
-		return result;
+		return result.map(item => item && item[1]);
 	};
 
 	module.getSortedSetRangeByLex = async function (key, min, max, start, count) {
