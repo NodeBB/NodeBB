@@ -209,7 +209,7 @@ describe('Plugins', () => {
 			done();
 		});
 	});
-/*
+	/*
 	describe('install/activate/uninstall', () => {
 		let latest;
 		const pluginName = 'nodebb-plugin-imgur';
