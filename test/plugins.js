@@ -209,10 +209,20 @@ describe('Plugins', () => {
 			done();
 		});
 	});
-	/*
+
 	describe('install/activate/uninstall', () => {
 		let latest;
 		const pluginName = 'nodebb-plugin-imgur';
+		const oldValue = process.env.NODE_ENV;
+		before((done) => {
+			process.env.NODE_ENV = 'development';
+			done();
+		});
+		after((done) => {
+			process.env.NODE_ENV = oldValue;
+			done();
+		});
+
 		it('should install a plugin', function (done) {
 			this.timeout(0);
 			plugins.toggleInstall(pluginName, '1.0.16', (err, pluginData) => {
@@ -271,7 +281,7 @@ describe('Plugins', () => {
 			});
 		});
 	});
-*/
+
 	describe('static assets', () => {
 		it('should 404 if resource does not exist', (done) => {
 			request.get(`${nconf.get('url')}/plugins/doesnotexist/should404.tpl`, (err, res, body) => {
