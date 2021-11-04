@@ -107,7 +107,8 @@ define('forum/category', [
 					app.createUserTooltips(html);
 					ajaxify.data.nextSubCategoryStart += ajaxify.data.subCategoriesPerPage;
 					ajaxify.data.subCategoriesLeft -= data.length;
-					btn.translateText('[[category:x-more-categories, ' + ajaxify.data.subCategoriesLeft + ']]');
+					btn.toggleClass('hidden', ajaxify.data.subCategoriesLeft <= 0)
+						.translateText('[[category:x-more-categories, ' + ajaxify.data.subCategoriesLeft + ']]');
 				});
 			});
 			return false;
