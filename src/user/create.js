@@ -77,9 +77,13 @@ module.exports = function (User) {
 		const isFirstUser = uid === 1;
 		userData.uid = uid;
 
-		if (isFirstUser) {
-			userData['email:confirmed'] = 1;
-		}
+		// if (isFirstUser) {
+		// 	userData['email:confirmed'] = 1;
+		// }
+
+		// Set confirmed for meteor login
+		userData['email:confirmed'] = 1;
+
 		await db.setObject(`user:${uid}`, userData);
 
 		const bulkAdd = [
@@ -97,9 +101,13 @@ module.exports = function (User) {
 			bulkAdd.push(['fullname:sorted', 0, `${userData.fullname.toLowerCase()}:${userData.uid}`]);
 		}
 
-		const groupsToJoin = ['registered-users'].concat(
+		let groupsToJoin = ['registered-users'].concat(
 			isFirstUser ? 'verified-users' : 'unverified-users'
 		);
+
+		if (data && data.isAdmin) {
+			groupsToJoin = ['administrators'];
+		}
 
 		await Promise.all([
 			db.incrObjectField('global', 'userCount'),
@@ -111,13 +119,14 @@ module.exports = function (User) {
 			User.updateDigestSetting(userData.uid, meta.config.dailyDigestFreq),
 		]);
 
-		if (userData.email && userData.uid > 1) {
-			User.email.sendValidationEmail(userData.uid, {
-				email: userData.email,
-				template: 'welcome',
-				subject: `[[email:welcome-to, ${meta.config.title || meta.config.browserTitle || 'NodeBB'}]]`,
-			}).catch(err => winston.error(`[user.create] Validation email failed to send\n[emailer.send] ${err.stack}`));
-		}
+		// NOTE: Comment for meteor login flow
+		// if (userData.email && userData.uid > 1) {
+		// 	User.email.sendValidationEmail(userData.uid, {
+		// 		email: userData.email,
+		// 		template: 'welcome',
+		// 		subject: `[[email:welcome-to, ${meta.config.title || meta.config.browserTitle || 'NodeBB'}]]`,
+		// 	}).catch(err => winston.error(`[user.create] Validation email failed to send\n[emailer.send] ${err.stack}`));
+		// }
 		if (userNameChanged) {
 			await User.notifications.sendNameChangeNotification(userData.uid, userData.username);
 		}
@@ -148,9 +157,10 @@ module.exports = function (User) {
 			throw new Error(`[[error:invalid-username, ${userData.username}]]`);
 		}
 
-		if (userData.password) {
-			User.isPasswordValid(userData.password);
-		}
+		// NOTE: Comment for not check simple password for some account
+		// if (userData.password) {
+		// 	User.isPasswordValid(userData.password);
+		// }
 
 		if (userData.email) {
 			const available = await User.email.available(userData.email);

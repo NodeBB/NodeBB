@@ -19,6 +19,8 @@
 
 'use strict';
 
+require('dotenv').config();
+
 require('./require-main');
 
 const nconf = require('nconf');
@@ -33,6 +35,7 @@ const path = require('path');
 const file = require('./src/file');
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'production';
+process.env.BASE_URL = process.env.NODE_ENV === 'production' ? process.env.PROD_BASE_URL : process.env.LOCAL_BASE_URL;
 global.env = process.env.NODE_ENV || 'production';
 
 // Alternate configuration file support

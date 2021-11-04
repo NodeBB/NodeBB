@@ -7,6 +7,8 @@ const validator = require('validator');
 const _ = require('lodash');
 const util = require('util');
 
+const { get } = require('lodash');
+const axios = require('axios').default;
 const db = require('../database');
 const meta = require('../meta');
 const analytics = require('../analytics');
@@ -244,22 +246,57 @@ authenticationController.login = async (req, res, next) => {
 	const loginWith = meta.config.allowLoginWith || 'username-email';
 	req.body.username = req.body.username.trim();
 	const errorHandler = res.locals.noScriptErrors || helpers.noScriptErrors;
+	let meteorUser = {};
+
+	try {
+		const isEmailLogin = loginWith.includes('email') && req.body.username && utils.isEmailValid(req.body.username);
+		const axiosPayload = {
+			[isEmailLogin ? 'email' : 'username']: req.body.username,
+			password: req.body.password,
+		};
+
+
+		const { data } = await axios.post(
+			`${process.env.BASE_URL}users/login`,
+			axiosPayload,
+		);
+		console.log(data);
+		meteorUser = data;
+	} catch (err) {
+		return errorHandler(req, res, err.message, 403);
+	}
+
 	try {
 		await plugins.hooks.fire('filter:login.check', { req: req, res: res, userData: req.body });
 	} catch (err) {
 		return errorHandler(req, res, err.message, 403);
 	}
+
 	try {
-		const isEmailLogin = loginWith.includes('email') && req.body.username && utils.isEmailValid(req.body.username);
-		const isUsernameLogin = loginWith.includes('username') && !validator.isEmail(req.body.username);
-		if (isEmailLogin) {
-			const username = await user.getUsernameByEmail(req.body.username);
-			if (username !== '[[global:guest]]') {
-				req.body.username = username;
-			}
+		const username = get(meteorUser, 'username', '');
+		const userEmail = get(meteorUser, ['emails', '0', 'address'], '');
+		const userFullName = get(meteorUser, 'fullName', '');
+		const userAvatar = get(meteorUser, ['avatar', 'url'], '');
+		const userRoles = get(meteorUser, 'roles', []);
+		const isAdmin = userRoles.includes('super-user') || userRoles.includes('admin') || userRoles.includes('superAdmin');
+		const uid = await user.getUidByUsername(username); // get user id in nodebb to check if account created
+
+		if (!uid && username) {
+			// Create with given data if does not have uuid
+			await user.create(({
+				username: username,
+				fullname: userFullName,
+				email: userEmail,
+				password: req.body.password,
+				picture: userAvatar,
+				isAdmin,
+			}));
 		}
-		if (isEmailLogin || isUsernameLogin) {
-			continueLogin(strategy, req, res, next);
+
+		if (username) {
+			// replace email in request body with nodebb username
+			req.body.username = username;
+			(res.locals.continueLogin || continueLogin)(strategy, req, res, next);
 		} else {
 			errorHandler(req, res, `[[error:wrong-login-type-${loginWith}]]`, 400);
 		}
