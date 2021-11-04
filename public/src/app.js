@@ -284,9 +284,12 @@ app.cacheBuster = null;
 		$('#main-nav li')
 			.removeClass('active')
 			.find('a')
-			.filter(function (i, x) {
-				return window.location.pathname === x.pathname ||
-					window.location.pathname.startsWith(x.pathname + '/');
+			.filter(function (i, a) {
+				return $(a).attr('href') !== '#' && window.location.hostname === a.hostname &&
+					(
+						window.location.pathname === a.pathname ||
+						window.location.pathname.startsWith(a.pathname + '/')
+					);
 			})
 			.parent()
 			.addClass('active');

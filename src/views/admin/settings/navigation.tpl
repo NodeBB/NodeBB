@@ -89,6 +89,19 @@
 						</label>
 					</div>
 
+					<div class="checkbox">
+						<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+							<input class="mdl-switch__input" type="checkbox" name="dropdown" {{{ if enabled.dropdown }}}checked{{{ end }}}/>
+							<span class="mdl-switch__label"><strong>[[admin/settings/navigation:dropdown]]</strong></span>
+						</label>
+					</div>
+					<div>
+						<p class="help-block">
+							[[admin/settings/navigation:dropdown-placeholder]]
+						</p>
+						<textarea name="dropdownContent" rows="5" class="form-control">{enabled.dropdownContent}</textarea>
+					</div>
+
 					<button class="btn btn-danger delete">[[admin/settings/navigation:btn.delete]]</button>
 					<!-- IF enabled.enabled -->
 					<button class="btn btn-warning toggle">[[admin/settings/navigation:btn.disable]]</button>

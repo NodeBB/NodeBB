@@ -69,6 +69,7 @@
     "gdpr_enabled": 1,
     "allowProfileImageUploads": 1,
     "teaserPost": "last-reply",
+    "showPostPreviewsOnHover": 1,
     "allowPrivateGroups": 1,
     "unreadCutoff": 2,
     "bookmarkThreshold": 5,

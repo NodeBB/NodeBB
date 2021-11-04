@@ -98,6 +98,22 @@ SocketPosts.getPostSummaryByIndex = async function (socket, data) {
 	return postsData[0];
 };
 
+SocketPosts.getPostSummaryByPid = async function (socket, data) {
+	if (!data || !data.pid) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	const { pid } = data;
+	const tid = await posts.getPostField(pid, 'tid');
+	const topicPrivileges = await privileges.topics.get(tid, socket.uid);
+	if (!topicPrivileges['topics:read']) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	const postsData = await posts.getPostSummaryByPids([pid], socket.uid, { stripTags: false });
+	posts.modifyPostByPrivilege(postsData[0], topicPrivileges);
+	return postsData[0];
+};
+
 SocketPosts.getPost = async function (socket, pid) {
 	sockets.warnDeprecated(socket, 'GET /api/v3/posts/:pid');
 	return await api.posts.get(socket, { pid });
