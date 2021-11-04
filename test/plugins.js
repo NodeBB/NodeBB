@@ -47,7 +47,7 @@ describe('Plugins', () => {
 		});
 	});
 
-	it('should register and fire a filter hook having 3 methods, one returning a promise, one calling the callback and one just returning', async () => {
+	it('should register and fire a filter hook having 3 methods', async () => {
 		function method1(data, callback) {
 			data.foo += 1;
 			callback(null, data);
@@ -284,7 +284,8 @@ describe('Plugins', () => {
 		});
 
 		it('should 404 if resource does not exist', (done) => {
-			request.get(`${nconf.get('url')}/plugins/nodebb-plugin-dbsearch/dbsearch/templates/admin/plugins/should404.tpl`, (err, res, body) => {
+			const url = `${nconf.get('url')}/plugins/nodebb-plugin-dbsearch/dbsearch/templates/admin/plugins/should404.tpl`;
+			request.get(url, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
 				assert(body);
@@ -293,7 +294,8 @@ describe('Plugins', () => {
 		});
 
 		it('should get resource', (done) => {
-			request.get(`${nconf.get('url')}/plugins/nodebb-plugin-dbsearch/dbsearch/templates/admin/plugins/dbsearch.tpl`, (err, res, body) => {
+			const url = `${nconf.get('url')}/plugins/nodebb-plugin-dbsearch/dbsearch/templates/admin/plugins/dbsearch.tpl`;
+			request.get(url, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
