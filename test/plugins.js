@@ -1,7 +1,6 @@
 'use strict';
 
-/*
-const	assert = require('assert');
+const assert = require('assert');
 const path = require('path');
 const nconf = require('nconf');
 const request = require('request');
@@ -210,7 +209,7 @@ describe('Plugins', () => {
 			done();
 		});
 	});
-
+/*
 	describe('install/activate/uninstall', () => {
 		let latest;
 		const pluginName = 'nodebb-plugin-imgur';
@@ -272,7 +271,7 @@ describe('Plugins', () => {
 			});
 		});
 	});
-
+*/
 	describe('static assets', () => {
 		it('should 404 if resource does not exist', (done) => {
 			request.get(`${nconf.get('url')}/plugins/doesnotexist/should404.tpl`, (err, res, body) => {
@@ -305,4 +304,4 @@ describe('Plugins', () => {
 	});
 });
 
-*/
+

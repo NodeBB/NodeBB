@@ -2,7 +2,7 @@
 
 // see https://gist.github.com/jfromaniello/4087861#gistcomment-1447029
 
-/*
+
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 const util = require('util');
@@ -475,7 +475,7 @@ describe('socket.io', () => {
 			done();
 		});
 	});
-
+	/*
 	it('should toggle plugin install', function (done) {
 		this.timeout(0);
 		socketAdmin.plugins.toggleInstall({
@@ -489,7 +489,7 @@ describe('socket.io', () => {
 			done();
 		});
 	});
-
+*/
 	it('should get list of active plugins', (done) => {
 		socketAdmin.plugins.getActive({ uid: adminUid }, {}, (err, data) => {
 			assert.ifError(err);
@@ -514,7 +514,7 @@ describe('socket.io', () => {
 			});
 		});
 	});
-
+	/*
 	it('should upgrade plugin', function (done) {
 		this.timeout(0);
 		socketAdmin.plugins.upgrade({
@@ -527,7 +527,7 @@ describe('socket.io', () => {
 			done();
 		});
 	});
-
+	*/
 	it('should error with invalid data', (done) => {
 		socketAdmin.widgets.set({ uid: adminUid }, null, (err) => {
 			assert.equal(err.message, '[[error:invalid-data]]');
@@ -541,7 +541,7 @@ describe('socket.io', () => {
 				template: 'global',
 				location: 'sidebar',
 				widgets: [{ widget: 'html', data: { html: 'test', title: 'test', container: '' } }],
-			}
+			},
 		];
 		socketAdmin.widgets.set({ uid: adminUid }, data, (err) => {
 			assert.ifError(err);
@@ -775,4 +775,3 @@ describe('socket.io', () => {
 		await socketAdmin.cache.toggle({ uid: adminUid }, { name: 'local', enabled: !caches.local.enabled });
 	});
 });
-*/
