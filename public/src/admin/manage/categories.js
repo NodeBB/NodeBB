@@ -208,7 +208,7 @@ define('admin/manage/categories', [
 			}
 
 			newCategoryId = -1;
-			api.put('/categories/' + cid, modified[cid]);
+			api.put('/categories/' + cid, modified[cid]).catch(app.alertError);
 		}
 	}
 
