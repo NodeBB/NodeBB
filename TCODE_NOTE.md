@@ -21,6 +21,7 @@ Note:
 
 
 Meteor Login
+ - Checkout to add/login-return-data branch to have new adjustment of login api
  - Files:
  	src/controller/authentication.js: for meteor login and login flow (from line 249)
 	src/user/create.js: for create method adjustment
