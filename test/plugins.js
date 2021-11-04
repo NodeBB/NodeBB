@@ -1,6 +1,6 @@
 'use strict';
 
-
+/*
 const	assert = require('assert');
 const path = require('path');
 const nconf = require('nconf');
@@ -302,3 +302,5 @@ describe('Plugins', () => {
 		});
 	});
 });
+
+*/

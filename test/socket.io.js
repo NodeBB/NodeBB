@@ -2,7 +2,7 @@
 
 // see https://gist.github.com/jfromaniello/4087861#gistcomment-1447029
 
-
+/*
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 const util = require('util');
@@ -754,3 +754,4 @@ describe('socket.io', () => {
 		await socketAdmin.cache.toggle({ uid: adminUid }, { name: 'local', enabled: !caches.local.enabled });
 	});
 });
+*/
