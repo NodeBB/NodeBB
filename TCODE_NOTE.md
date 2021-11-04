@@ -48,3 +48,23 @@ Upload media in nodebb
  - All uploaded media will be stored in public/uploads's mini folders by their role
    files: for topic and others
 	 profile: for personal profile image
+
+
+Footer and logo change (can't find place to remove footer - but nodebb say go to admin panel is best option)
+
+- Logo and favicon: Login as admin --> go to admin panel (last nav button on header) --> click settings --> choose general
+  --> looking for site logo --> upload image
+	--> looking for favicon --> upload image
+
+- Footer: Login as admin
+--> go to admin panel (last nav button on header)
+--> click extend
+--> choose widgets
+--> find global footer
+--> replace html code with this
+<footer id="footer" class="container footer">
+	<div style="display: flex; flex-direction: column; align-items: center;">
+		<img src="https://cdn.jsdelivr.net/gh/ZigvyCorp/tcode-static-files@master/images/CreatiCode_EN.png" width="100px" />
+    <span>Copyright©2021 Uplifting Technology, Inc. All rights reserved</span>
+	</div>
+</footer>
