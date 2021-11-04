@@ -12,17 +12,8 @@ Configuration and setup
 
 S3 upload configuration
 - npm i @tailee/nodebb-plugin-s3-uploads
-- Access to node_modules/@tailee/nodebb-plugin-s3-uploads/index.js
-- Replace mime.lookup with mime.getType
-- Replace setting object with this: 
-  var settings = {
-	  "accessKeyId": process.env.AWS_ACCESS_KEY_ID ,
-	  "secretAccessKey": process.env.AWS_SECRET_ACCESS_KEY ,
-	  "region": process.env.AWS_DEFAULT_REGION || "us-east-1",
-	  "bucket": process.env.S3_UPLOADS_BUCKET || undefined,
-	  "host": process.env.S3_UPLOADS_HOST || "s3.amazonaws.com",
-	  "path": process.env.S3_UPLOADS_PATH || undefined
-  };
+- Clone https://github.com/kimtaizigvy/nodebb-plugin-s3-uploads-fork.git for adjust package
+- Access to node_modules/@tailee/nodebb-plugin-s3-uploads/index.js to fix code s3 ---> build and run dev after fix
 
 Note:
 - Turn off nodebb then ./nodebb dev to refresh after update code
