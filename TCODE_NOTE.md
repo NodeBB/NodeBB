@@ -10,10 +10,7 @@ Configuration and setup
 - ./nodebb start —> to start project and use (no logs)
 - Go to Localhost:4567 to see result
 
-Note: Turn off nodebb then ./nodebb dev to refresh after update code
-
-
-S3 upload config
+S3 upload configuration
 - npm i @tailee/nodebb-plugin-s3-uploads
 - Access to node_modules/@tailee/nodebb-plugin-s3-uploads/index.js
 - Replace mime.lookup with mime.getType
@@ -26,3 +23,28 @@ S3 upload config
 	  "host": process.env.S3_UPLOADS_HOST || "s3.amazonaws.com",
 	  "path": process.env.S3_UPLOADS_PATH || undefined
   };
+
+Note:
+- Turn off nodebb then ./nodebb dev to refresh after update code
+- ./nodebb build then ./nodebb dev after adjust something in node_modules or anything affect layout
+
+
+Meteor Login
+ - Files:
+ 	src/controller/authentication.js: for meteor login and login flow (from line 249)
+	src/user/create.js: for create method adjustment
+ - Flow:
+ 			Enter account from tcode
+			 --> nodebb checking login info
+			 --> login by meteor (if fail then stop and throw error)
+			 --> if have account in tcode
+			 --> take username and get uid in nodebb
+			 (if not have account nodebb then wait for create nodebb account with some main information in tcode)
+			 --> replace email in nodebb login request with username getting from login info in tcode site
+			 --> login with nodebb account (after this step is nodebb login handle)
+
+
+Upload media in nodebb
+ - All uploaded media will be stored in public/uploads's mini folders by their role
+   files: for topic and others
+	 profile: for personal profile image
