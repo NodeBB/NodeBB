@@ -29,6 +29,14 @@ app.flags = {};
 		}
 	};
 
+	// For navigating signup page to tcode signup
+	$(window).on('action:ajaxify.start', function (ev, data) {
+		if (data.url === 'register') {
+			// TODO: handle production link
+			window.location.href = 'http://localhost:3000/login?type=SIGNUP';
+		}
+	});
+
 	app.handleEarlyClicks = function () {
 		/**
 		 * Occasionally, a button or anchor (not meant to be ajaxified) is clicked before
