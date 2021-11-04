@@ -602,4 +602,10 @@ describe('meta', () => {
 			});
 		});
 	});
+
+	it('should log targets', (done) => {
+		const aliases = require('../src/meta/aliases');
+		aliases.buildTargets();
+		done();
+	});
 });

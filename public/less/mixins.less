@@ -32,13 +32,6 @@
 	}
 }
 
-.opacity(@opacity: 1) {
-	-moz-opacity: @opacity;
-	opacity: @opacity;
-	-ms-filter: ~`"progid:DXImageTransform.Microsoft.Alpha(opacity=(" + "@{opacity}" * 100 + "))"`;
-	filter: ~`"alpha(opacity = (" + "@{opacity}" * 100 + "))"`;
-}
-
 .border-radius (@radius: 5px) {
 	-webkit-border-radius: @radius;
 	-moz-border-radius: @radius;

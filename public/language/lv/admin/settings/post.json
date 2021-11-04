@@ -40,6 +40,7 @@
 	"teaser.last-post": "Pēdējo &ndash; rādīt jaunāko rakstu, ieskaitot sākotnējo rakstu, ja atbildes nav",
 	"teaser.last-reply": "Pēdējo &ndash; rādīt jaunāko atbildi, vai \"Nav atbildes\" tekstu, ja atbildes nav",
 	"teaser.first": "Pirmais",
+	"showPostPreviewsOnHover": "Show a preview of posts when mouse overed",
 	"unread": "Nelasītie raksti",
 	"unread.cutoff": "Nelasīto rakstu vecumu robeža",
 	"unread.min-track-last": "Minimālais rakstu skaits tematā pirms izseko pēdējo lasīto",

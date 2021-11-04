@@ -1,6 +1,6 @@
 {
-	"queue": "Attesa",
-	"description": "Non ci sono utenti in attesa di registrazione. <br> Per abilitare questa funzione, vai in <a href=\"%1\">Impostazioni &rarr; Utente &rarr; Registrazione Utente</a> e imposta <strong>Tipo Registrazione</strong> su \"Approvazione Amministratore\".",
+	"queue": "Coda",
+	"description": "Non ci sono utenti nella coda di registrazione. <br> Per abilitare questa funzione, vai in <a href=\"%1\">Impostazioni &rarr; Utente &rarr; Registrazione Utente</a> e imposta <strong>Tipo Registrazione</strong> su \"Approvazione Amministratore\".",
 
 	"list.name": "Nome",
 	"list.email": "Email",

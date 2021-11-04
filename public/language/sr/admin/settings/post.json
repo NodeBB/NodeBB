@@ -40,6 +40,7 @@
 	"teaser.last-post": "Poslednji &ndashč Pokazuje poslednji post, uključujući originalni post, ako nema odgovora",
 	"teaser.last-reply": "Poslednji &ndashč Pokaži najnoviji odgovor, ili ako \"Nema odgovora\" placeholder ako nema odgovora",
 	"teaser.first": "Prvi",
+	"showPostPreviewsOnHover": "Show a preview of posts when mouse overed",
 	"unread": "Nepročitana podešavanja",
 	"unread.cutoff": "Nepročitano tokom prekinutih dana",
 	"unread.min-track-last": "Minimum postova u temi, pre praćenja poslednjeg pročitanog",

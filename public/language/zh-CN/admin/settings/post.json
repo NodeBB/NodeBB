@@ -40,6 +40,7 @@
 	"teaser.last-post": "最后&ndash; 显示最新的帖子，包括原帖，如果没有回复",
 	"teaser.last-reply": "最后&ndash; 显示最新回复，如果没有回复，则显示“无回复”占位符",
 	"teaser.first": "第一",
+	"showPostPreviewsOnHover": "Show a preview of posts when mouse overed",
 	"unread": "未读设置",
 	"unread.cutoff": "未读截止时间（天）",
 	"unread.min-track-last": "跟踪最后阅读之前的主题最小帖子",

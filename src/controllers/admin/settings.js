@@ -1,5 +1,7 @@
 'use strict';
 
+const validator = require('validator');
+
 const meta = require('../../meta');
 const emailer = require('../../emailer');
 const notifications = require('../../notifications');
@@ -72,6 +74,7 @@ settingsController.navigation = async function (req, res) {
 		enabled.selected = index === 0;
 		enabled.title = translator.escape(enabled.title);
 		enabled.text = translator.escape(enabled.text);
+		enabled.dropdownContent = translator.escape(validator.escape(String(enabled.dropdownContent || '')));
 		enabled.groups = admin.groups.map(group => ({
 			displayName: group.displayName,
 			selected: enabled.groups.includes(group.name),

@@ -56,8 +56,8 @@
 	"active-users.total": "Tổng",
 	"active-users.connections": "Kết nối",
 
-	"guest-registered-users": "Guest vs Registered Users",
-	"guest": "Guest",
+	"guest-registered-users": "Khách vs Người dùng đã đăng ký",
+	"guest": "Khách",
 	"registered": "Đã đăng ký",
 
 	"user-presence": "Người Dùng Có Mặt",
@@ -68,7 +68,7 @@
 	"unread": "Chưa đọc",
 
 	"high-presence-topics": "Chủ Đề Hiện Diện Cao",
-	"popular-searches": "Popular Searches",
+	"popular-searches": "Tìm kiếm Phổ biến",
 
 	"graphs.page-views": "Xem Trang",
 	"graphs.page-views-registered": "Đã Đăng Ký Xem Trang",
@@ -76,14 +76,14 @@
 	"graphs.page-views-bot": "Bot Xem Trang",
 	"graphs.unique-visitors": "Khách Truy Cập Duy Nhất",
 	"graphs.registered-users": "Thành Viên Chính Thức",
-	"graphs.guest-users": "Guest Users",
+	"graphs.guest-users": "Người dùng khách",
 	"last-restarted-by": "Khởi động lại lần cuối bởi",
 	"no-users-browsing": "Người không xem bài",
 
 	"back-to-dashboard": "Quay lại Bảng điều khiển",
 	"details.no-users": "Không có người dùng nào tham gia trong khung thời gian đã chọn",
 	"details.no-topics": "Không có chủ đề nào được đăng trong khung thời gian đã chọn",
-	"details.no-searches": "No searches have been made yet",
+	"details.no-searches": "Chưa có tìm kiếm nào",
 	"details.no-logins": "Không có thông tin đăng nhập nào được ghi lại trong khung thời gian đã chọn",
 	"details.logins-static": "NodeBB chỉ lưu dữ liệu phiên trong %1 ngày và do đó, bảng này bên dưới sẽ chỉ hiển thị các phiên hoạt động gần đây nhất",
 	"details.logins-login-time": "Thời gian đăng nhập"

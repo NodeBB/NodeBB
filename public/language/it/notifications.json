@@ -48,7 +48,7 @@
     "posts-exported": "<strong>%1</strong> post esportati, clicca per scaricare",
     "uploads-exported": "<strong>%1</strong> caricamenti esportati, clicca per scaricare",
     "users-csv-exported": "Utenti esportati in CSV, clicca per scaricare",
-    "post-queue-accepted": "Your queued post has been accepted. Click here to see your post.",
+    "post-queue-accepted": "Il tuo post in coda è stato accettato. Clicca qui per vedere il tuo post.",
     "post-queue-rejected": "Il tuo post in coda è stato rifiutato.",
     "email-confirmed": "Email Confermata",
     "email-confirmed-message": "Grazie per aver validato la tua email. Il tuo account è ora completamente attivato.",
@@ -68,8 +68,8 @@
     "notificationType_group-invite": "Quando ricevi un invito ad un gruppo",
     "notificationType_group-leave": "Quando un utente lascia il gruppo",
     "notificationType_group-request-membership": "Quando qualcuno richiede di iscriversi a un gruppo di tua proprietà",
-    "notificationType_new-register": "Quando qualcuno è in attesa della registrazione",
-    "notificationType_post-queue": "Quando un nuovo post è in attesa",
+    "notificationType_new-register": "Quando qualcuno viene aggiunto alla coda di registrazione",
+    "notificationType_post-queue": "Quando un nuovo post è in coda",
     "notificationType_new-post-flag": "Quando un post viene segnalato",
     "notificationType_new-user-flag": "Quando un utente viene segnalato"
 }

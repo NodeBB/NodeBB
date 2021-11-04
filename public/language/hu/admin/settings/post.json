@@ -40,6 +40,7 @@
 	"teaser.last-post": "Utolsó &ndash; Utolsó hozzászólás megjelenítése, az eredeti hozzászólást is beleértve, ha nincsenek válaszok",
 	"teaser.last-reply": "Utolsó &ndash; Utolsó válasz vagy, ha nincsenek válaszok, akkor \"Nincs válasz\" szöveg megjelenítése",
 	"teaser.first": "Első",
+	"showPostPreviewsOnHover": "Show a preview of posts when mouse overed",
 	"unread": "Olvasatlansági beállítások",
 	"unread.cutoff": "Hány napig legyen olvasatlan egy hozzászólás",
 	"unread.min-track-last": "Hozzászólások minimális száma egy témakörben, mielőtt a legutóbbi olvasás követése elkezdődik",

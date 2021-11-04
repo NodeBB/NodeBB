@@ -228,7 +228,7 @@ Minifier.js.minifyBatch = async function (scripts, fork) {
 actions.buildCSS = async function buildCSS(data) {
 	const lessOutput = await less.render(data.source, {
 		paths: data.paths,
-		javascriptEnabled: true,
+		javascriptEnabled: false,
 	});
 
 	const postcssArgs = [autoprefixer];

@@ -140,7 +140,7 @@ module.exports = function (SocketUser) {
 			const userData = await user.getUserFields(data.uid, ['username', 'userslug']);
 			const n = await notifications.create({
 				bodyShort: `[[notifications:${type}-exported, ${userData.username}]]`,
-				path: `/api/user/uid/${userData.userslug}/export/${type}`,
+				path: `/api/user/${userData.userslug}/export/${type}`,
 				nid: `${type}:export:${data.uid}`,
 				from: data.uid,
 			});
