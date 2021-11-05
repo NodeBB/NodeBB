@@ -13,6 +13,7 @@ Configuration and setup
 S3 upload configuration
 - npm i @tailee/nodebb-plugin-s3-uploads
 - Clone https://github.com/kimtaizigvy/nodebb-plugin-s3-uploads-fork.git for adjust package
+- ./nodebb activate @tailee/nodebb-plugin-s3-uploads --> to activate plugin
 - Access to node_modules/@tailee/nodebb-plugin-s3-uploads/index.js to fix code s3 ---> build and run dev after fix
 
 Note:
