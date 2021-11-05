@@ -6,6 +6,7 @@ Configuration and setup
 - Press Enter to insert some first setup by default info given in message round bracket or config it with your information
 - Enter meteor mongo db uri --> get in meteor project by typing meteor mongo ---> take uri from start to "meteor?" part
 - Enter first admin account info
+- add .env file
 - ./nodebb dev —> to see hook and logs
 - ./nodebb start —> to start project and use (no logs)
 - Go to Localhost:4567 to see result

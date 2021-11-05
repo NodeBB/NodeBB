@@ -20,6 +20,7 @@ provision.sh
 feeds/recent.rss
 .eslintcache
 .svn
+.env
 
 logs/
 
