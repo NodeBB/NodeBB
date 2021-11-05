@@ -175,7 +175,7 @@ define('forum/topic', [
 	}
 
 	function addPostsPreviewHandler() {
-		if (!ajaxify.data.showPostPreviewsOnHover) {
+		if (!ajaxify.data.showPostPreviewsOnHover || utils.isMobile()) {
 			return;
 		}
 		let timeoutId = 0;
