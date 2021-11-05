@@ -319,11 +319,12 @@ Topics.isLocked = async function (tid) {
 };
 
 Topics.search = async function (tid, term) {
-	const pids = await plugins.hooks.fire('filter:topic.search', {
+	const result = await plugins.hooks.fire('filter:topic.search', {
 		tid: tid,
 		term: term,
+		ids: [],
 	});
-	return Array.isArray(pids) ? pids : [];
+	return Array.isArray(result) ? result : result.ids;
 };
 
 require('../promisify')(Topics);
