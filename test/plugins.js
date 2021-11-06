@@ -303,7 +303,7 @@ describe('Plugins', () => {
 		});
 
 		it('should get resource', (done) => {
-			const url = `${nconf.get('url')}/plugins/nodebb-plugin-dbsearch/dbsearch/templates/admin/plugins/dbsearch.tpl`;
+			const url = `${nconf.get('url')}/assets/templates/admin/plugins/dbsearch.tpl`;
 			request.get(url, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
