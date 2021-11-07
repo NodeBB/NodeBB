@@ -17,7 +17,8 @@
 						<td>[[admin/development/info:online]]</td>
 						<td>[[admin/development/info:git]]</td>
 						<td>[[admin/development/info:cpu-usage]]</td>
-						<td>[[admin/development/info:memory]]</td>
+						<td>[[admin/development/info:process-memory]]</td>
+						<td>[[admin/development/info:system-memory]]</td>
 						<td>[[admin/development/info:load]]</td>
 						<td>[[admin/development/info:uptime]]</td>
 					</tr>
@@ -38,8 +39,14 @@
 						<span title="[[admin/development/info:sockets]]">{info.stats.socketCount}</span>
 					</td>
 					<td>{info.git.branch}@<a href="https://github.com/NodeBB/NodeBB/commit/{info.git.hash}" target="_blank">{info.git.hashShort}</a></td>
-					<td>{info.process.cpuUsage.user} / {info.process.cpuUsage.system}</td>
-					<td>{info.process.memoryUsage.humanReadable} mb / {info.os.freemem} mb</td>
+					<td>{info.process.cpuUsage}%</td>
+					<td>
+						<span title="[[admin/development/info:used-memory-process]]">{info.process.memoryUsage.humanReadable} gb</span>
+					</td>
+					<td>
+						<span title="[[admin/development/info:used-memory-os]]">{info.os.usedmem} gb</span> /
+						<span title="[[admin/development/info:total-memory-os]]">{info.os.totalmem} gb</span>
+					</td>
 					<td>{info.os.load}</td>
 					<td>{info.process.uptimeHumanReadable}</td>
 				</tr>
