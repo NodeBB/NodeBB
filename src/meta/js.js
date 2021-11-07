@@ -89,7 +89,16 @@ JS.scripts = {
 		'cropper.js': 'node_modules/cropperjs/dist/cropper.min.js',
 		'jquery-ui': 'node_modules/jquery-ui/ui',
 		'zxcvbn.js': 'node_modules/zxcvbn/dist/zxcvbn.js',
-		ace: 'node_modules/ace-builds/src-min',
+
+		// only get ace files required by acp
+		'ace/ace.js': 'node_modules/ace-builds/src-min/ace.js',
+		'ace/mode-less.js': 'node_modules/ace-builds/src-min/mode-less.js',
+		'ace/mode-javascript.js': 'node_modules/ace-builds/src-min/mode-javascript.js',
+		'ace/mode-html.js': 'node_modules/ace-builds/src-min/mode-html.js',
+		'ace/theme-twilight.js': 'node_modules/ace-builds/src-min/theme-twilight.js',
+		'ace/worker-javascript.js': 'node_modules/ace-builds/src-min/worker-javascript.js',
+		'ace/worker-html.js': 'node_modules/ace-builds/src-min/worker-html.js',
+
 		'clipboard.js': 'node_modules/clipboard/dist/clipboard.min.js',
 		'tinycon.js': 'node_modules/tinycon/tinycon.js',
 		'slideout.js': 'node_modules/slideout/dist/slideout.min.js',
