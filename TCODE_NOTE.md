@@ -12,9 +12,12 @@ Configuration and setup
 - Go to Localhost:4567 to see result
 
 S3 upload configuration
+- Check env file if it have s3 env yet? (yes then everything is fine :3)
 - npm i @tailee/nodebb-plugin-s3-uploads
 - Clone https://github.com/kimtaizigvy/nodebb-plugin-s3-uploads-fork.git for adjust package
 - ./nodebb activate @tailee/nodebb-plugin-s3-uploads --> to activate plugin
+- ./nodebb build
+- ./nodebb dev
 - Access to node_modules/@tailee/nodebb-plugin-s3-uploads/index.js to fix code s3 ---> build and run dev after fix
 
 Note:
