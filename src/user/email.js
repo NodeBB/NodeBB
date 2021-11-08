@@ -143,6 +143,12 @@ UserEmail.confirmByCode = async function (code, sessionId) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
+	// If another uid has the same email, remove it
+	const oldUid = await db.sortedSetScore('email:uid', confirmObj.email.toLowerCase());
+	if (oldUid) {
+		await UserEmail.remove(oldUid, sessionId);
+	}
+
 	const oldEmail = await user.getUserField(confirmObj.uid, 'email');
 	if (oldEmail && confirmObj.email !== oldEmail) {
 		await UserEmail.remove(confirmObj.uid, sessionId);
