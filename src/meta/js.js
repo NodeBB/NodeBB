@@ -75,6 +75,7 @@ JS.scripts = {
 		'public/src/modules/storage.js',
 		'public/src/modules/handleBack.js',
 		'public/src/modules/messages.js',
+		'public/src/modules/search.js',
 	],
 
 	admin: [

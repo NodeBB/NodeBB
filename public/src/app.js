@@ -75,10 +75,6 @@ app.cacheBuster = null;
 	app.load = function () {
 		handleStatusChange();
 
-		if (config.searchEnabled) {
-			app.handleSearch();
-		}
-
 		$('body').on('click', '#new_topic', function (e) {
 			e.preventDefault();
 			app.newTopic();
@@ -103,17 +99,19 @@ app.cacheBuster = null;
 			'forum/pagination',
 			'translator',
 			'messages',
+			'search',
 			'forum/unread',
 			'forum/header/notifications',
 			'forum/header/chat',
 			'timeago/jquery.timeago',
-		], function (taskbar, helpers, pagination, translator, messages, unread, notifications, chat) {
+		], function (taskbar, helpers, pagination, translator, messages, search, unread, notifications, chat) {
 			notifications.prepareDOM();
 			chat.prepareDOM();
 			translator.prepareDOM();
 			taskbar.init();
 			helpers.register();
 			pagination.init();
+			search.init();
 
 			if (app.user.uid > 0) {
 				unread.initUnreadTopics();
@@ -404,218 +402,24 @@ app.cacheBuster = null;
 	}
 
 	app.enableTopicSearch = function (options) {
-		if (!config.searchEnabled || !app.user.privileges['search:content']) {
-			return;
-		}
-		/* eslint-disable-next-line */
-		const searchOptions = Object.assign({ in: config.searchDefaultInQuick || 'titles' }, options.searchOptions);
-		const quickSearchResults = options.searchElements.resultEl;
-		const inputEl = options.searchElements.inputEl;
-		let oldValue = inputEl.val();
-		const filterCategoryEl = quickSearchResults.find('.filter-category');
-
-		function updateCategoryFilterName() {
-			if (ajaxify.data.template.category) {
-				require(['translator'], function (translator) {
-					translator.translate('[[search:search-in-category, ' + ajaxify.data.name + ']]', function (translated) {
-						const name = $('<div></div>').html(translated).text();
-						filterCategoryEl.find('.name').text(name);
-					});
-				});
-			}
-			filterCategoryEl.toggleClass('hidden', !ajaxify.data.template.category);
-		}
-
-		function doSearch() {
-			require(['search'], function (search) {
-				/* eslint-disable-next-line */
-				options.searchOptions = Object.assign({}, searchOptions);
-				options.searchOptions.term = inputEl.val();
-				updateCategoryFilterName();
-
-				if (ajaxify.data.template.category) {
-					if (filterCategoryEl.find('input[type="checkbox"]').is(':checked')) {
-						options.searchOptions.categories = [ajaxify.data.cid];
-						options.searchOptions.searchChildren = true;
-					}
-				}
-
-				quickSearchResults.removeClass('hidden').find('.quick-search-results-container').html('');
-				quickSearchResults.find('.loading-indicator').removeClass('hidden');
-				hooks.fire('action:search.quick.start', options);
-				options.searchOptions.searchOnly = 1;
-				search.api(options.searchOptions, function (data) {
-					quickSearchResults.find('.loading-indicator').addClass('hidden');
-					if (options.hideOnNoMatches && !data.posts.length) {
-						return quickSearchResults.addClass('hidden').find('.quick-search-results-container').html('');
-					}
-					data.posts.forEach(function (p) {
-						const text = $('<div>' + p.content + '</div>').text();
-						const query = inputEl.val().toLowerCase().replace(/^in:topic-\d+/, '');
-						const start = Math.max(0, text.toLowerCase().indexOf(query) - 40);
-						p.snippet = utils.escapeHTML((start > 0 ? '...' : '') +
-							text.slice(start, start + 80) +
-							(text.length - start > 80 ? '...' : ''));
-					});
-					app.parseAndTranslate('partials/quick-search-results', data, function (html) {
-						if (html.length) {
-							html.find('.timeago').timeago();
-						}
-						quickSearchResults.toggleClass('hidden', !html.length || !inputEl.is(':focus'))
-							.find('.quick-search-results-container')
-							.html(html.length ? html : '');
-						const highlightEls = quickSearchResults.find(
-							'.quick-search-results .quick-search-title, .quick-search-results .snippet'
-						);
-						search.highlightMatches(options.searchOptions.term, highlightEls);
-						hooks.fire('action:search.quick.complete', {
-							data: data,
-							options: options,
-						});
-					});
-				});
-			});
-		}
-
-		quickSearchResults.find('.filter-category input[type="checkbox"]').on('change', function () {
-			inputEl.focus();
-			doSearch();
-		});
-
-		inputEl.off('keyup').on('keyup', utils.debounce(function () {
-			if (inputEl.val().length < 3) {
-				quickSearchResults.addClass('hidden');
-				oldValue = inputEl.val();
-				return;
-			}
-			if (inputEl.val() === oldValue) {
-				return;
-			}
-			oldValue = inputEl.val();
-			if (!inputEl.is(':focus')) {
-				return quickSearchResults.addClass('hidden');
-			}
-			doSearch();
-		}, 500));
-
-		let mousedownOnResults = false;
-		quickSearchResults.on('mousedown', function () {
-			$(window).one('mouseup', function () {
-				quickSearchResults.addClass('hidden');
-			});
-			mousedownOnResults = true;
-		});
-		inputEl.on('blur', function () {
-			if (!inputEl.is(':focus') && !mousedownOnResults && !quickSearchResults.hasClass('hidden')) {
-				quickSearchResults.addClass('hidden');
-			}
-		});
-
-		let ajaxified = false;
-		require(['hooks'], function (hooks) {
-			hooks.on('action:ajaxify.end', function () {
-				if (!ajaxify.isCold()) {
-					ajaxified = true;
-				}
-			});
-		});
-
-		inputEl.on('focus', function () {
-			mousedownOnResults = false;
-			const query = inputEl.val();
-			oldValue = query;
-			if (query && quickSearchResults.find('#quick-search-results').children().length) {
-				updateCategoryFilterName();
-				if (ajaxified) {
-					doSearch();
-					ajaxified = false;
-				} else {
-					quickSearchResults.removeClass('hidden');
-				}
-				inputEl[0].setSelectionRange(
-					query.startsWith('in:topic') ? query.indexOf(' ') + 1 : 0,
-					query.length
-				);
-			}
-		});
-
-		inputEl.off('refresh').on('refresh', function () {
-			doSearch();
+		console.warn('[deprecated] app.enableTopicSearch is deprecated, please use search.enableQuickSearch(options)');
+		require(['search'], function (search) {
+			search.enableQuickSearch(options);
 		});
 	};
 
 	app.handleSearch = function (searchOptions) {
-		searchOptions = searchOptions || { in: config.searchDefaultInQuick || 'titles' };
-		const searchButton = $('#search-button');
-		const searchFields = $('#search-fields');
-		const searchInput = $('#search-fields input');
-		const quickSearchContainer = $('#quick-search-container');
-
-		$('#search-form .advanced-search-link').off('mousedown').on('mousedown', function () {
-			ajaxify.go('/search');
-		});
-
-		$('#search-form').off('submit').on('submit', function () {
-			searchInput.blur();
-		});
-		searchInput.off('blur').on('blur', dismissSearch);
-		searchInput.off('focus');
-
-		const searchElements = {
-			inputEl: searchInput,
-			resultEl: quickSearchContainer,
-		};
-
-		app.enableTopicSearch({
-			searchOptions: searchOptions,
-			searchElements: searchElements,
-		});
-
-		function dismissSearch() {
-			setTimeout(function () {
-				if (!searchInput.is(':focus')) {
-					searchFields.addClass('hidden');
-					searchButton.removeClass('hidden');
-				}
-			}, 200);
-		}
-
-		searchButton.off('click').on('click', function (e) {
-			if (!config.loggedIn && !app.user.privileges['search:content']) {
-				app.alert({
-					message: '[[error:search-requires-login]]',
-					timeout: 3000,
-				});
-				ajaxify.go('login');
-				return false;
-			}
-			e.stopPropagation();
-
-			app.prepareSearch();
-			return false;
-		});
-
-		$('#search-form').off('submit').on('submit', function () {
-			const input = $(this).find('input');
-			require(['search'], function (search) {
-				const data = search.getSearchPreferences();
-				data.term = input.val();
-				hooks.fire('action:search.submit', {
-					searchOptions: data,
-					searchElements: searchElements,
-				});
-				search.query(data, function () {
-					input.val('');
-				});
-			});
-			return false;
+		console.warn('[deprecated] app.handleSearch is deprecated, please use search.init(options)');
+		require(['search'], function (search) {
+			search.init(searchOptions);
 		});
 	};
 
 	app.prepareSearch = function () {
-		$('#search-fields').removeClass('hidden');
-		$('#search-button').addClass('hidden');
-		$('#search-fields input').focus();
+		console.warn('[deprecated] app.prepareSearch is deprecated, please use search.showAndFocusInput()');
+		require(['search'], function (search) {
+			search.showAndFocusInput();
+		});
 	};
 
 	function handleStatusChange() {

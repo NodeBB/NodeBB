@@ -69,12 +69,12 @@ define('forum/topic', [
 
 	function handleTopicSearch() {
 		if (config.topicSearchEnabled) {
-			require(['mousetrap'], function (mousetrap) {
+			require(['mousetrap', 'search'], function (mousetrap, search) {
 				mousetrap.bind(['command+f', 'ctrl+f'], function (e) {
 					if (ajaxify.data.template.topic) {
 						e.preventDefault();
 						$('#search-fields input').val('in:topic-' + ajaxify.data.tid + ' ');
-						app.prepareSearch();
+						search.showAndFocusInput();
 					}
 				});
 			});
