@@ -420,8 +420,9 @@ define('forum/topic/postTools', [
 
 	function openChat(button) {
 		const post = button.parents('[data-pid]');
-
-		app.newChat(post.attr('data-uid'));
+		require(['chat'], function (chat) {
+			chat.newChat(post.attr('data-uid'));
+		});
 		button.parents('.btn-group').find('.dropdown-toggle').click();
 		return false;
 	}

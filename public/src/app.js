@@ -295,74 +295,16 @@ app.cacheBuster = null;
 	};
 
 	app.openChat = function (roomId, uid) {
-		if (!app.user.uid) {
-			return app.alertError('[[error:not-logged-in]]');
-		}
-
+		console.warn('[deprecated] app.openChat is deprecated, please use chat.openChat');
 		require(['chat'], function (chat) {
-			function loadAndCenter(chatModal) {
-				chat.load(chatModal.attr('data-uuid'));
-				chat.center(chatModal);
-				chat.focusInput(chatModal);
-			}
-
-			if (chat.modalExists(roomId)) {
-				loadAndCenter(chat.getModal(roomId));
-			} else {
-				socket.emit('modules.chats.loadRoom', { roomId: roomId, uid: uid || app.user.uid }, function (err, roomData) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-					roomData.users = roomData.users.filter(function (user) {
-						return user && parseInt(user.uid, 10) !== parseInt(app.user.uid, 10);
-					});
-					roomData.uid = uid || app.user.uid;
-					roomData.isSelf = true;
-					chat.createModal(roomData, loadAndCenter);
-				});
-			}
+			chat.openChat(roomId, uid);
 		});
 	};
 
 	app.newChat = function (touid, callback) {
-		function createChat() {
-			socket.emit('modules.chats.newRoom', { touid: touid }, function (err, roomId) {
-				if (err) {
-					return app.alertError(err.message);
-				}
-
-				if (!ajaxify.data.template.chats) {
-					app.openChat(roomId);
-				} else {
-					ajaxify.go('chats/' + roomId);
-				}
-
-				callback(false, roomId);
-			});
-		}
-
-		callback = callback || function () { };
-		if (!app.user.uid) {
-			return app.alertError('[[error:not-logged-in]]');
-		}
-
-		if (parseInt(touid, 10) === parseInt(app.user.uid, 10)) {
-			return app.alertError('[[error:cant-chat-with-yourself]]');
-		}
-		socket.emit('modules.chats.isDnD', touid, function (err, isDnD) {
-			if (err) {
-				return app.alertError(err.message);
-			}
-			if (!isDnD) {
-				return createChat();
-			}
-			require(['bootbox'], function (bootbox) {
-				bootbox.confirm('[[modules:chat.confirm-chat-with-dnd-user]]', function (ok) {
-					if (ok) {
-						createChat();
-					}
-				});
-			});
+		console.warn('[deprecated] app.newChat is deprecated, please use chat.newChat');
+		require(['chat'], function (chat) {
+			chat.newChat(touid, callback);
 		});
 	};
 
