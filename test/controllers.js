@@ -379,7 +379,7 @@ describe('Controllers', () => {
 				resolveWithFullResponse: true,
 			});
 
-			assert(res.body.errors.includes('[[error:invalid-email]]'));
+			assert(res.body.errors.includes('[[error:invalid-email]]'), res.body);
 		});
 
 		it('gdpr interstitial should still apply if email requirement is disabled', async () => {
