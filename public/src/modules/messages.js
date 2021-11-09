@@ -1,6 +1,6 @@
 'use strict';
 
-define('messages', ['bootbox', 'translator', 'storage'], function (bootbox, translator, storage) {
+define('messages', ['bootbox', 'translator', 'storage', 'alerts'], function (bootbox, translator, storage, alerts) {
 	const messages = {};
 
 	let showWelcomeMessage;
@@ -81,7 +81,7 @@ define('messages', ['bootbox', 'translator', 'storage'], function (bootbox, tran
 		registerMessage = params.register;
 
 		if (showWelcomeMessage) {
-			app.alert({
+			alerts.alert({
 				type: 'success',
 				title: '[[global:welcome_back]] ' + app.user.username + '!',
 				message: '[[global:you_have_successfully_logged_in]]',
@@ -95,6 +95,28 @@ define('messages', ['bootbox', 'translator', 'storage'], function (bootbox, tran
 			});
 		}
 	}
+
+	messages.showInvalidSession = function () {
+		bootbox.alert({
+			title: '[[error:invalid-session]]',
+			message: '[[error:invalid-session-text]]',
+			closeButton: false,
+			callback: function () {
+				window.location.reload();
+			},
+		});
+	};
+
+	messages.showSessionMismatch = function () {
+		bootbox.alert({
+			title: '[[error:session-mismatch]]',
+			message: '[[error:session-mismatch-text]]',
+			closeButton: false,
+			callback: function () {
+				window.location.reload();
+			},
+		});
+	};
 
 	return messages;
 });

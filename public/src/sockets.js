@@ -80,11 +80,11 @@ socket = window.socket;
 
 		socket.on('checkSession', function (uid) {
 			if (parseInt(uid, 10) !== parseInt(app.user.uid, 10)) {
-				app.handleSessionMismatch();
+				handleSessionMismatch();
 			}
 		});
 		socket.on('event:invalid_session', () => {
-			app.handleInvalidSession();
+			handleInvalidSession();
 		});
 
 		socket.on('setHostname', function (hostname) {
@@ -123,6 +123,25 @@ socket = window.socket;
 			if (app.user.isAdmin && !ajaxify.currentPage.match(/admin/)) {
 				window.location.reload();
 			}
+		});
+	}
+
+	function handleInvalidSession() {
+		socket.disconnect();
+		app.logout(false);
+		require(['messages'], function (messages) {
+			messages.showInvalidSession();
+		});
+	}
+
+	function handleSessionMismatch() {
+		if (app.flags._login || app.flags._logout) {
+			return;
+		}
+
+		socket.disconnect();
+		require(['messages'], function (messages) {
+			messages.showSessionMismatch();
 		});
 	}
 

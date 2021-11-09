@@ -212,39 +212,6 @@ app.cacheBuster = null;
 		});
 	};
 
-	app.handleInvalidSession = function () {
-		socket.disconnect();
-		app.logout(false);
-		require(['bootbox'], function (bootbox) {
-			bootbox.alert({
-				title: '[[error:invalid-session]]',
-				message: '[[error:invalid-session-text]]',
-				closeButton: false,
-				callback: function () {
-					window.location.reload();
-				},
-			});
-		});
-	};
-
-	app.handleSessionMismatch = () => {
-		if (app.flags._login || app.flags._logout) {
-			return;
-		}
-
-		socket.disconnect();
-		require(['bootbox'], function (bootbox) {
-			bootbox.alert({
-				title: '[[error:session-mismatch]]',
-				message: '[[error:session-mismatch-text]]',
-				closeButton: false,
-				callback: function () {
-					window.location.reload();
-				},
-			});
-		});
-	};
-
 	app.enterRoom = function (room, callback) {
 		callback = callback || function () { };
 		if (socket && app.user.uid && app.currentRoom !== room) {
