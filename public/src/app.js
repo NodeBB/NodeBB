@@ -11,9 +11,6 @@ app.cacheBuster = null;
 
 (function () {
 	let appLoaded = false;
-	const params = utils.params();
-	let showWelcomeMessage = !!params.loggedin;
-	let registerMessage = params.register;
 	const isTouchDevice = utils.isTouchDevice();
 
 	app.cacheBuster = config['cache-buster'];
@@ -97,8 +94,7 @@ app.cacheBuster = null;
 		});
 
 		createHeaderTooltips();
-		app.showEmailConfirmWarning();
-		app.showCookieWarning();
+
 		registerServiceWorker();
 
 		require([
@@ -106,11 +102,12 @@ app.cacheBuster = null;
 			'helpers',
 			'forum/pagination',
 			'translator',
+			'messages',
 			'forum/unread',
 			'forum/header/notifications',
 			'forum/header/chat',
 			'timeago/jquery.timeago',
-		], function (taskbar, helpers, pagination, translator, unread, notifications, chat) {
+		], function (taskbar, helpers, pagination, translator, messages, unread, notifications, chat) {
 			notifications.prepareDOM();
 			chat.prepareDOM();
 			translator.prepareDOM();
@@ -123,7 +120,7 @@ app.cacheBuster = null;
 			}
 			function finishLoad() {
 				hooks.fire('action:app.load');
-				app.showMessages();
+				messages.show();
 				appLoaded = true;
 			}
 			overrides.overrideTimeago();
@@ -330,54 +327,6 @@ app.cacheBuster = null;
 		app.createUserTooltips($('#content'));
 
 		app.createStatusTooltips();
-	};
-
-	app.showMessages = function () {
-		const messages = {
-			login: {
-				format: 'alert',
-				title: '[[global:welcome_back]] ' + app.user.username + '!',
-				message: '[[global:you_have_successfully_logged_in]]',
-			},
-			register: {
-				format: 'modal',
-			},
-		};
-
-		function showAlert(type, message) {
-			switch (messages[type].format) {
-				case 'alert':
-					app.alert({
-						type: 'success',
-						title: messages[type].title,
-						message: messages[type].message,
-						timeout: 5000,
-					});
-					break;
-
-				case 'modal':
-					require(['bootbox'], function (bootbox) {
-						bootbox.alert({
-							title: messages[type].title,
-							message: message || messages[type].message,
-						});
-					});
-					break;
-			}
-		}
-
-		if (showWelcomeMessage) {
-			showWelcomeMessage = false;
-			$(document).ready(function () {
-				showAlert('login');
-			});
-		}
-		if (registerMessage) {
-			$(document).ready(function () {
-				showAlert('register', utils.escapeHTML(decodeURIComponent(registerMessage)));
-				registerMessage = false;
-			});
-		}
 	};
 
 	app.openChat = function (roomId, uid) {
@@ -758,46 +707,6 @@ app.cacheBuster = null;
 		});
 	};
 
-	app.showEmailConfirmWarning = async (err) => {
-		const storage = await app.require('storage');
-
-		if (!config.emailPrompt || !app.user.uid || parseInt(storage.getItem('email-confirm-dismiss'), 10) === 1) {
-			return;
-		}
-		const msg = {
-			alert_id: 'email_confirm',
-			type: 'warning',
-			timeout: 0,
-			closefn: () => {
-				storage.setItem('email-confirm-dismiss', 1);
-			},
-		};
-
-		if (!app.user.email) {
-			msg.message = '[[error:no-email-to-confirm]]';
-			msg.clickfn = function () {
-				app.removeAlert('email_confirm');
-				ajaxify.go('user/' + app.user.userslug + '/edit/email');
-			};
-			app.alert(msg);
-		} else if (!app.user['email:confirmed'] && !app.user.isEmailConfirmSent) {
-			msg.message = err ? err.message : '[[error:email-not-confirmed]]';
-			msg.clickfn = function () {
-				app.removeAlert('email_confirm');
-				socket.emit('user.emailConfirm', {}, function (err) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-					app.alertSuccess('[[notifications:email-confirm-sent]]');
-				});
-			};
-			app.alert(msg);
-		} else if (!app.user['email:confirmed'] && app.user.isEmailConfirmSent) {
-			msg.message = '[[error:email-not-confirmed-email-sent]]';
-			app.alert(msg);
-		}
-	};
-
 	app.parseAndTranslate = function (template, blockName, data, callback) {
 		if (typeof blockName !== 'string') {
 			callback = data;
@@ -819,39 +728,6 @@ app.cacheBuster = null;
 			}
 
 			return html;
-		});
-	};
-
-	app.showCookieWarning = function () {
-		require(['translator', 'storage'], function (translator, storage) {
-			if (!config.cookies.enabled || !navigator.cookieEnabled) {
-				// Skip warning if cookie consent subsystem disabled (obviously), or cookies not in use
-				return;
-			} else if (window.location.pathname.startsWith(config.relative_path + '/admin')) {
-				// No need to show cookie consent warning in ACP
-				return;
-			} else if (storage.getItem('cookieconsent') === '1') {
-				return;
-			}
-
-			config.cookies.message = translator.unescape(config.cookies.message);
-			config.cookies.dismiss = translator.unescape(config.cookies.dismiss);
-			config.cookies.link = translator.unescape(config.cookies.link);
-			config.cookies.link_url = translator.unescape(config.cookies.link_url);
-
-			app.parseAndTranslate('partials/cookie-consent', config.cookies, function (html) {
-				$(document.body).append(html);
-				$(document.body).addClass('cookie-consent-open');
-
-				const warningEl = $('.cookie-consent');
-				const dismissEl = warningEl.find('button');
-				dismissEl.on('click', function () {
-					// Save consent cookie and remove warning element
-					storage.setItem('cookieconsent', '1');
-					warningEl.remove();
-					$(document.body).removeClass('cookie-consent-open');
-				});
-			});
 		});
 	};
 
