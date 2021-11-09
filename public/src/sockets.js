@@ -172,37 +172,11 @@ socket = window.socket;
 	}
 
 	function reJoinCurrentRoom() {
-		const	url_parts = window.location.pathname.slice(config.relative_path.length).split('/').slice(1);
-		let room;
-
-		switch (url_parts[0]) {
-			case 'user':
-				room = 'user/' + (ajaxify.data ? ajaxify.data.theirid : 0);
-				break;
-			case 'topic':
-				room = 'topic_' + url_parts[1];
-				break;
-			case 'category':
-				room = 'category_' + url_parts[1];
-				break;
-			case 'recent':
-				room = 'recent_topics';
-				break;
-			case 'unread':
-				room = 'unread_topics';
-				break;
-			case 'popular':
-				room = 'popular_topics';
-				break;
-			case 'admin':
-				room = 'admin';
-				break;
-			case 'categories':
-				room = 'categories';
-				break;
+		if (app.currentRoom) {
+			const current = app.currentRoom;
+			app.currentRoom = '';
+			app.enterRoom(current);
 		}
-		app.currentRoom = '';
-		app.enterRoom(room);
 	}
 
 	function onReconnecting() {

@@ -7,7 +7,6 @@ app.isFocused = true;
 app.currentRoom = null;
 app.widgets = {};
 app.flags = {};
-app.cacheBuster = null;
 
 (function () {
 	let appLoaded = false;
