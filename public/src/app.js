@@ -14,11 +14,6 @@ app.flags = {};
 
 	app.cacheBuster = config['cache-buster'];
 
-	let hooks;
-	require(['hooks'], function (_hooks) {
-		hooks = _hooks;
-	});
-
 	$(document).ready(function () {
 		ajaxify.parseData();
 		app.load();
@@ -92,8 +87,9 @@ app.flags = {};
 			'search',
 			'forum/unread',
 			'forum/header',
+			'hooks',
 			'timeago/jquery.timeago',
-		], function (taskbar, helpers, pagination, translator, messages, search, unread, header) {
+		], function (taskbar, helpers, pagination, translator, messages, search, unread, header, hooks) {
 			header.prepareDOM();
 			translator.prepareDOM();
 			taskbar.init();
@@ -140,42 +136,30 @@ app.flags = {};
 	};
 
 	app.alert = function (params) {
+		console.warn('[deprecated] app.alert is deprecated, please use alerts.alert');
 		require(['alerts'], function (alerts) {
 			alerts.alert(params);
 		});
 	};
 
 	app.removeAlert = function (id) {
+		console.warn('[deprecated] app.removeAlert is deprecated, please use alerts.remove');
 		require(['alerts'], function (alerts) {
 			alerts.remove(id);
 		});
 	};
 
 	app.alertSuccess = function (message, timeout) {
-		app.alert({
-			alert_id: utils.generateUUID(),
-			title: '[[global:alert.success]]',
-			message: message,
-			type: 'success',
-			timeout: timeout || 5000,
+		console.warn('[deprecated] app.alertSuccess is deprecated, please use alerts.success');
+		require(['alerts'], function (alerts) {
+			alerts.success(message, timeout);
 		});
 	};
 
 	app.alertError = function (message, timeout) {
-		message = (message && message.message) || message;
-
-		if (message === '[[error:revalidate-failure]]') {
-			socket.disconnect();
-			app.reconnect();
-			return;
-		}
-
-		app.alert({
-			alert_id: utils.generateUUID(),
-			title: '[[global:alert.error]]',
-			message: message,
-			type: 'danger',
-			timeout: timeout || 10000,
+		console.warn('[deprecated] app.alertError is deprecated, please use alerts.error');
+		require(['alerts'], function (alerts) {
+			alerts.error(message, timeout);
 		});
 	};
 
@@ -322,9 +306,11 @@ app.flags = {};
 	};
 
 	app.newTopic = function (cid, tags) {
-		hooks.fire('action:composer.topic.new', {
-			cid: cid || ajaxify.data.cid || 0,
-			tags: tags || (ajaxify.data.tag ? [ajaxify.data.tag] : []),
+		require(['hooks'], function (hooks) {
+			hooks.fire('action:composer.topic.new', {
+				cid: cid || ajaxify.data.cid || 0,
+				tags: tags || (ajaxify.data.tag ? [ajaxify.data.tag] : []),
+			});
 		});
 	};
 
