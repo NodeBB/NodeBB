@@ -2,7 +2,7 @@
 
 
 define('forum/chats/messages', [
-	'components', 'translator', 'benchpress', 'hooks', 'bootbox', 'messages'
+	'components', 'translator', 'benchpress', 'hooks', 'bootbox', 'messages',
 ], function (components, translator, Benchpress, hooks, bootbox, messagesModule) {
 	const messages = {};
 
