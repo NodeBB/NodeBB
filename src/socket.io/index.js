@@ -253,7 +253,7 @@ Sockets.getCountInRoom = function (room) {
 };
 
 Sockets.warnDeprecated = (socket, replacement) => {
-	if (socket.previousEvents) {
+	if (socket.previousEvents && socket.emit) {
 		socket.emit('event:deprecated_call', {
 			eventName: socket.previousEvents[socket.previousEvents.length - 1],
 			replacement: replacement,
