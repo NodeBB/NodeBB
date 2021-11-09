@@ -378,7 +378,7 @@ describe('Controllers', () => {
 				json: true,
 				resolveWithFullResponse: true,
 			});
-
+			assert(res.body.errors.length, res.body);
 			assert(res.body.errors.includes('[[error:invalid-email]]'), res.body);
 		});
 
