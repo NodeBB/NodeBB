@@ -41,6 +41,7 @@ JS.scripts = {
 
 	// files listed below are only available client-side, or are bundled in to reduce # of network requests on cold load
 	rjs: [
+		'public/src/client/header.js',
 		'public/src/client/header/chat.js',
 		'public/src/client/header/notifications.js',
 		'public/src/client/infinitescroll.js',

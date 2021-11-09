@@ -72,23 +72,14 @@ app.flags = {};
 	app.handleEarlyClicks();
 
 	app.load = function () {
-		handleStatusChange();
-
 		$('body').on('click', '#new_topic', function (e) {
 			e.preventDefault();
 			app.newTopic();
 		});
 
-		$('#header-menu .container').on('click', '[component="user/logout"]', function () {
-			app.logout();
-			return false;
-		});
-
 		Visibility.change(function (event, state) {
 			app.isFocused = state === 'visible';
 		});
-
-		createHeaderTooltips();
 
 		registerServiceWorker();
 
@@ -100,12 +91,10 @@ app.flags = {};
 			'messages',
 			'search',
 			'forum/unread',
-			'forum/header/notifications',
-			'forum/header/chat',
+			'forum/header',
 			'timeago/jquery.timeago',
-		], function (taskbar, helpers, pagination, translator, messages, search, unread, notifications, chat) {
-			notifications.prepareDOM();
-			chat.prepareDOM();
+		], function (taskbar, helpers, pagination, translator, messages, search, unread, header) {
+			header.prepareDOM();
 			translator.prepareDOM();
 			taskbar.init();
 			helpers.register();
@@ -144,29 +133,10 @@ app.flags = {};
 	};
 
 	app.logout = function (redirect) {
-		redirect = redirect === undefined ? true : redirect;
-		hooks.fire('action:app.logout');
-
-		$.ajax(config.relative_path + '/logout', {
-			type: 'POST',
-			headers: {
-				'x-csrf-token': config.csrf_token,
-			},
-			beforeSend: function () {
-				app.flags._logout = true;
-			},
-			success: function (data) {
-				hooks.fire('action:app.loggedOut', data);
-				if (redirect) {
-					if (data.next) {
-						window.location.href = data.next;
-					} else {
-						window.location.reload();
-					}
-				}
-			},
+		console.warn('[deprecated] app.logout is deprecated, please use logout module directly');
+		require(['logout'], function (logout) {
+			logout(redirect);
 		});
-		return false;
 	};
 
 	app.alert = function (params) {
@@ -314,34 +284,6 @@ app.flags = {};
 		});
 	};
 
-	function createHeaderTooltips() {
-		const env = utils.findBootstrapEnvironment();
-		if (env === 'xs' || env === 'sm' || isTouchDevice) {
-			return;
-		}
-		$('#header-menu li a[title]').each(function () {
-			$(this).tooltip({
-				placement: 'bottom',
-				trigger: 'hover',
-				title: $(this).attr('title'),
-			});
-		});
-
-
-		$('#search-form').tooltip({
-			placement: 'bottom',
-			trigger: 'hover',
-			title: $('#search-button i').attr('title'),
-		});
-
-
-		$('#user_dropdown').tooltip({
-			placement: 'bottom',
-			trigger: 'hover',
-			title: $('#user_dropdown').attr('title'),
-		});
-	}
-
 	app.enableTopicSearch = function (options) {
 		console.warn('[deprecated] app.enableTopicSearch is deprecated, please use search.enableQuickSearch(options)');
 		require(['search'], function (search) {
@@ -363,24 +305,6 @@ app.flags = {};
 		});
 	};
 
-	function handleStatusChange() {
-		$('[component="header/usercontrol"] [data-status]').off('click').on('click', function (e) {
-			const status = $(this).attr('data-status');
-			socket.emit('user.setStatus', status, function (err) {
-				if (err) {
-					return app.alertError(err.message);
-				}
-				$('[data-uid="' + app.user.uid + '"] [component="user/status"], [component="header/profilelink"] [component="user/status"]')
-					.removeClass('away online dnd offline')
-					.addClass(status);
-				$('[component="header/usercontrol"] [data-status]').each(function () {
-					$(this).find('span').toggleClass('bold', $(this).attr('data-status') === status);
-				});
-				app.user.status = status;
-			});
-			e.preventDefault();
-		});
-	}
 
 	app.updateUserStatus = function (el, status) {
 		if (!el.length) {

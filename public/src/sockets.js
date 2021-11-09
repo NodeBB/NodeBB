@@ -94,7 +94,9 @@ socket = window.socket;
 		socket.on('event:banned', onEventBanned);
 		socket.on('event:unbanned', onEventUnbanned);
 		socket.on('event:logout', function () {
-			app.logout();
+			require(['logout'], function (logout) {
+				logout();
+			});
 		});
 		socket.on('event:alert', function (params) {
 			app.alert(params);
@@ -128,8 +130,8 @@ socket = window.socket;
 
 	function handleInvalidSession() {
 		socket.disconnect();
-		app.logout(false);
-		require(['messages'], function (messages) {
+		require(['messages', 'logout'], function (messages, logout) {
+			logout(false);
 			messages.showInvalidSession();
 		});
 	}
