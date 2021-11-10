@@ -11,6 +11,8 @@
 	"properties": "Propiedades:",
 	"groups": "Grupos:",
 	"open-new-window": "Abrir en una ventana nueva",
+	"dropdown": "Dropdown",
+	"dropdown-placeholder": "Place your dropdown menu items below, ie: <br/>&lt;li&gt;&lt;a href&#x3D;&quot;https://myforum.com&quot;&gt;Link 1&lt;/a&gt;&lt;/li&gt;",
 
 	"btn.delete": "Borrar",
 	"btn.disable": "Deshabilitar",

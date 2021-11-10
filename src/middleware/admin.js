@@ -40,6 +40,7 @@ middleware.renderHeader = async (req, res, data) => {
 		configs: meta.configs.list(),
 		latestVersion: getLatestVersion(),
 		privileges: privileges.admin.get(req.uid),
+		tags: meta.tags.parse(req, {}, [], []),
 	});
 
 	const { userData } = results;
@@ -61,6 +62,8 @@ middleware.renderHeader = async (req, res, data) => {
 		configJSON: jsesc(JSON.stringify(res.locals.config), { isScriptContext: true }),
 		relative_path: res.locals.config.relative_path,
 		adminConfigJSON: encodeURIComponent(JSON.stringify(results.configs)),
+		metaTags: results.tags.meta,
+		linkTags: results.tags.link,
 		user: userData,
 		userJSON: jsesc(JSON.stringify(userData), { isScriptContext: true }),
 		plugins: results.custom_header.plugins,

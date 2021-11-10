@@ -41,6 +41,6 @@
 	"require-email-address-warning": "Mặc định, người dùng có thể chọn không nhập địa chỉ email. Bật tùy chọn này nghĩa là họ buộc phải nhập địa chỉ email để đăng ký. <strong> Việc này không chắc người dùng sẽ nhập địa chỉ email thực, hoặc không phải địa chỉ mà họ sở hữu.</strong>",
 	"include-unverified-emails": "Gửi email đến những người nhận chưa xác nhận rõ ràng email của họ",
 	"include-unverified-warning": "Theo mặc định, người dùng có email được liên kết với tài khoản của họ đã được xác minh, nhưng có những trường hợp không phải như vậy (ví dụ: đăng nhập SSO, người dùng phổ thông, v.v.). <strong>Bạn tự chịu rủi ro khi bật cài đặt này</strong> &ndash; gửi email đến các địa chỉ chưa được xác minh có thể vi phạm luật chống thư rác trong khu vực.",
-	"prompt": "Prompt users to enter or confirm their emails",
-	"prompt-help": "If a user does not have an email set, or their email is not confirmed, a warning will be shown on screen."
+	"prompt": "Nhắc người dùng nhập hoặc xác nhận email của họ",
+	"prompt-help": "Nếu người dùng chưa cung cấp email hoặc email của họ chưa được xác nhận, một cảnh báo sẽ được hiển thị trên màn hình."
 }

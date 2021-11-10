@@ -408,7 +408,7 @@ describe('Messaging Library', () => {
 			await db.sortedSetAdd('users:online', Date.now() - ((meta.config.onlineCutoff * 60000) + 50000), herpUid);
 			await socketModules.chats.send({ uid: fooUid }, { roomId: roomId, message: 'second chat message **bold** text' });
 
-			await sleep(1500);
+			await sleep(3000);
 			const data = await User.notifications.get(herpUid);
 			assert(data.unread[0]);
 			const notification = data.unread[0];

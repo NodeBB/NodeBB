@@ -193,6 +193,12 @@
 					<option value="first">[[admin/settings/post:teaser.first]]</option>
 				</select>
 			</div>
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="showPostPreviewsOnHover">
+					<span class="mdl-switch__label"><strong>[[admin/settings/post:showPostPreviewsOnHover]]</strong></span>
+				</label>
+			</div>
 		</form>
 	</div>
 </div>

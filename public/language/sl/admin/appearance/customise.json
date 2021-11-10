@@ -11,6 +11,6 @@
 	"custom-header.description": "Tukaj vnesite HTML po meri (npr. meta oznake itd.), ki bo dodan v <code>& lt; head & gt;</code> razdelek oznak vašega foruma. Oznake skript so dovoljene, vendar niso priporočljive, saj je na voljo zavihek Javascript po meri.",
 	"custom-header.enable": "Omogoči glavo po meri",
 
-	"custom-css.livereload": "Enable Live Reload",
+	"custom-css.livereload": "Omogoči ponovno nalaganje v živo",
 	"custom-css.livereload.description": "Omogočite to, da se vse seje na vsaki napravi v vašem računu osvežijo, ko kliknete shrani"
 }

@@ -71,7 +71,7 @@ module.exports = function (User) {
 	};
 
 	async function validateData(callerUid, data) {
-		await isEmailAvailable(data, data.uid);
+		await isEmailValid(data);
 		await isUsernameAvailable(data, data.uid);
 		await isWebsiteValid(callerUid, data);
 		await isAboutMeValid(callerUid, data);
@@ -82,7 +82,7 @@ module.exports = function (User) {
 		isGroupTitleValid(data);
 	}
 
-	async function isEmailAvailable(data, uid) {
+	async function isEmailValid(data) {
 		if (!data.email) {
 			return;
 		}
@@ -90,14 +90,6 @@ module.exports = function (User) {
 		data.email = data.email.trim();
 		if (!utils.isEmailValid(data.email)) {
 			throw new Error('[[error:invalid-email]]');
-		}
-		const email = await User.getUserField(uid, 'email');
-		if (email === data.email) {
-			return;
-		}
-		const available = await User.email.available(data.email);
-		if (!available) {
-			throw new Error('[[error:email-taken]]');
 		}
 	}
 

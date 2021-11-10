@@ -2462,6 +2462,22 @@ describe('User', () => {
 			assert.strictEqual(parseInt(confirmed, 10), 1);
 			assert.strictEqual(isVerified, true);
 		});
+
+		it('should remove the email from a different account if the email is already in use', async () => {
+			const email = 'confirm2@me.com';
+			const uid = await User.create({
+				username: 'confirme3',
+			});
+
+			const oldUid = await db.sortedSetScore('email:uid', email);
+			const code = await User.email.sendValidationEmail(uid, email);
+			await User.email.confirmByCode(code);
+
+			const oldUserData = await User.getUserData(oldUid);
+
+			assert.strictEqual((await db.sortedSetScore('email:uid', email)), uid);
+			assert.strictEqual(oldUserData.email, '');
+		});
 	});
 
 	describe('user jobs', () => {

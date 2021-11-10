@@ -40,6 +40,7 @@
 	"teaser.last-post": "Dernier &ndash; Affiche le dernier message, ou celui d'origine, si il n'y a pas de réponse",
 	"teaser.last-reply": "Dernier &ndash; Affiche le dernier message, ou \"Aucune réponse\" si il n'y a pas de réponse",
 	"teaser.first": "Premier",
+	"showPostPreviewsOnHover": "Afficher un aperçu des messages au survol des liens",
 	"unread": "Paramètres des messages non lus",
 	"unread.cutoff": "Nombre de jours pour les messages non-lus",
 	"unread.min-track-last": "Nombre minimum de messages dans le sujet avant de garder en mémoire le dernier message lu",

@@ -1,3 +1,162 @@
+#### v1.18.5 (2021-10-27)
+
+##### Breaking Changes
+
+*  disable javascript in custom less tab (719cfc0d)
+
+##### Chores
+
+*  remove .opacity() mixin as it is supported cross-browser (28efcb59)
+*  up themes (463b2076)
+*  up persona (1438f409)
+*  incrementing version number - v1.18.4 (945c2b0b)
+*  update changelog for v1.18.4 (7cbcb521)
+* **deps:**
+  *  update dependency lint-staged to v11.2.6 (8d4bb8bb)
+  *  update dependency lint-staged to v11.2.5 (0728a994)
+  *  update dependency lint-staged to v11.2.4 (f76a7882)
+  *  update dependency husky to v7.0.4 (2a3e13f3)
+  *  update dependency mocha to v9.1.3 (4784f016)
+  *  update dependency eslint-plugin-import to v2.25.2 (3c3f45d9)
+  *  update dependency jsdom to v18 (4b8dcd4c)
+  *  update dependency eslint-plugin-import to v2.25.1 (7c4aebbd)
+  *  update dependency lint-staged to v11.2.3 (288b5456)
+  *  update dependency lint-staged to v11.2.2 (f96c8c4d)
+  *  update dependency @commitlint/cli to v13.2.1 (52c38a1d)
+  *  update dependency lint-staged to v11.2.1 (022e8df0)
+  *  update dependency eslint-config-nodebb to v0.0.3 (4b92df82)
+* **i18n:**
+  *  fallback strings for new resources: nodebb.admin-settings-email, nodebb.error (9b68dc37)
+  *  fallback strings for new resources: nodebb.admin-dashboard (ff962b5d)
+  *  fallback strings for new resources: nodebb.admin-dashboard, nodebb.admin-menu (abe59131)
+  *  fallback strings for new resources: nodebb.admin-manage-digest, nodebb.admin-settings-user, nodebb.user (2bed40be)
+
+##### Documentation Changes
+
+*  update verbiage re: login API route (94c4f87b)
+
+##### New Features
+
+*  new ACP option `emailPrompt` ... which allows administrators to disable the client-side prompt to encourage users to enter or confirm their email addresses (80ea12c1)
+*  show popular searches (f4cf482a)
+*  new plugin hook  to allow plugins to reject email address on new registration or email change (6b4f35c2)
+*  utilities login API route now starts an actual login session, if requested (806a1e50)
+*  add method name to deprecation message (b91ae088)
+*  quote tooltip (66fca4e0)
+*  additional quality options for jpeg uploads, added quality and compression settings for png uploads (d22b076b)
+*  #8053, biweekly digest option (f7967bdf)
+*  core submit button dropdown (605a5381)
+*  added failing i18n tests (35af7634)
+*  confirm before deleting all events (#9875) (56d05b4e)
+
+##### Bug Fixes
+
+* **deps:**
+  *  update dependency nodebb-theme-vanilla to v12.1.7 (#9944) (bf20965f)
+  *  update dependency nodebb-theme-persona to v11.2.19 (#9943) (bcf85fcf)
+  *  update dependency nodebb-rewards-essentials to v0.2.0 (7c2ecb12)
+  *  update dependency nodebb-theme-vanilla to v12.1.6 (49b8b983)
+  *  update dependency nodebb-theme-persona to v11.2.18 (ed0adf2c)
+  *  update dependency nodebb-theme-persona to v11.2.17 (78661079)
+  *  update dependency postcss to v8.3.11 (a5f4e206)
+  *  update dependency nodebb-theme-vanilla to v12.1.5 (d74a6bd3)
+  *  update dependency sharp to v0.29.2 (8b8fe393)
+  *  update dependency postcss to v8.3.10 (b18a24e9)
+  *  update dependency nodebb-theme-persona to v11.2.15 (f3c8d7da)
+  *  update dependency nodebb-theme-persona to v11.2.14 (#9919) (5e08e67b)
+  *  update dependency socket.io-client to v4.3.2 (deba3e27)
+  *  update dependency socket.io to v4.3.1 (e1554f61)
+  *  update socket.io packages (ce5a0a21)
+  *  update dependency nodebb-plugin-spam-be-gone to v0.7.10 (600a8720)
+  *  update dependency nodebb-plugin-composer-default to v7.0.10 (b0128f85)
+  *  update dependency nodebb-plugin-markdown to v8.14.4 (f8f35d7e)
+  *  update dependency nodebb-plugin-composer-default to v7.0.9 (ed874662)
+  *  update dependency nodebb-theme-persona to v11.2.13 (1dba75e9)
+  *  update dependency ioredis to v4.28.0 (4ff5452d)
+  *  update dependency nodebb-theme-persona to v11.2.12 (fe9f82f6)
+  *  update dependency ioredis to v4.27.11 (6d2e0aa9)
+  *  update dependency nodebb-plugin-mentions to v2.14.1 (820f8cdf)
+  *  update dependency jquery-ui to v1.13.0 (b0eb2aed)
+*  remove loading="lazy", fixes inf. scroll loaded images (01572785)
+*  windows tests (25ebbd65)
+*  undefined query showing in searches (6cfaea06)
+*  don't repeat search if on same page (89f5e06b)
+*  api session revoke test (0926ae6e)
+*  crash (da64810a)
+*  add missing translation (eb075c73)
+*  move record to controller (ee8e0480)
+*  profile edit fields showing translated values (63572c23)
+*  #9934, fix translator test (8d316d18)
+*  token verify (04dab1d5)
+*  guard against prototype pollution (1783f918)
+*  translator path traversal (c8b2fc46)
+*  there is no alltime digest, fixes translation in test email (e62948f7)
+*  clicking outside postContainer should close tooltip (47df62e7)
+*  minification regression (998b9e79)
+*  tooltip (fec7ebed)
+*  biweekly digest #8053 (9cb4de50)
+*  restore plugin upgrade checking logic (44687394)
+*  fallbacks for new langauge key (ed4ebd22)
+*  #9917, show topics as unread for guests (4333d217)
+*  clarify site settings urls vs config.json url (#9912) (6436aa65)
+*  clarify SMTP enable toggle (#9911) (09f198fc)
+*  don't overwrite reloadRequired with false (9e0ce027)
+*  delete translations in admin/general folder (since general was removed and relocated elsewhere) (b460e590)
+*  pushed missing key to tx and pulled fallbacks (21b61082)
+*  adding missing language namespace "top" (0f9b0b78)
+*  extra debug log (bd893cda)
+*  have renovate add `dependencies` label to its PRs (eddb9868)
+*  no global bootbox (#9879) (227456fb)
+*  #9872 update app badge with notification count if applicable (3e69bcdf)
+*  better nomenclature (c1149d04)
+*  html attributes (#9877) (3acaac4c)
+*  escape thumbs, allow robots meta tag (4f9717fb)
+*  missing translations (#9876) (7935bd9e)
+
+##### Performance Improvements
+
+*  dont fs.open if plugin doesnt have language namespace (#9893) (1feb111a)
+
+##### Refactors
+
+*  wider value field (c428ba80)
+*  dont save partial searches (c7e078d4)
+*  use search api for topic search (64192731)
+*  slowdown quick search (19ee7174)
+*  typo (a5287906)
+*  add callback to loadNotifications (f02fba29)
+*  simplified utilities API > login rout (506c34a8)
+*  log error as well (1d62bd6d)
+*  catch errors from buildHeader in error handler :fire: (73a9ca09)
+*  add missing helpers.tryRoute (d4da9840)
+*  shorter middleware (ee0282f5)
+*  meta/minifier use async/await (b2429ef0)
+*  remove unused var (90b81262)
+*  catch errors from digest (8e319a9b)
+*  less.render returns promise (14bc83a8)
+*  less.render already returns promise (6da32392)
+*  prompt.get already returns promise (c70eaa0a)
+*  no need for async/callbacks (057d1d58)
+*  no more :cow: (38756a0c)
+*  allow array of uids for blocks.is/list (a9bc6a09)
+*  show full url on error log (8e6bd7e9)
+*  var to const and let (#9885) (b0a24d6d)
+*  remove unused code (997fb2b3)
+*  remove unused colorpicker (543d8521)
+
+##### Reverts
+
+*  lazy load (3d1cf168)
+
+##### Tests
+
+*  fix broken openapi3 schema (7ef5214e)
+*  restore commented-out i18n test (fa1afbcf)
+*  moved topic event and topic thumb tests to subfolder for better organisation (154ffea0)
+*  remove escape (6c25b9db)
+*  possible fix to timeout (63109c07)
+*  increase timeout (8654a996)
+
 #### v1.18.4 (2021-10-06)
 
 ##### Chores

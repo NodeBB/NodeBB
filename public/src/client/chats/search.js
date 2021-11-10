@@ -69,7 +69,9 @@ define('forum/chats/search', ['components', 'api'], function (components, api) {
 						chats.switchChat(roomId);
 					});
 				} else {
-					app.newChat(userObj.uid);
+					require(['chat'], function (chat) {
+						chat.newChat(userObj.uid);
+					});
 				}
 			});
 		});

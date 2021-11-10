@@ -80,11 +80,11 @@ socket = window.socket;
 
 		socket.on('checkSession', function (uid) {
 			if (parseInt(uid, 10) !== parseInt(app.user.uid, 10)) {
-				app.handleSessionMismatch();
+				handleSessionMismatch();
 			}
 		});
 		socket.on('event:invalid_session', () => {
-			app.handleInvalidSession();
+			handleInvalidSession();
 		});
 
 		socket.on('setHostname', function (hostname) {
@@ -94,7 +94,9 @@ socket = window.socket;
 		socket.on('event:banned', onEventBanned);
 		socket.on('event:unbanned', onEventUnbanned);
 		socket.on('event:logout', function () {
-			app.logout();
+			require(['logout'], function (logout) {
+				logout();
+			});
 		});
 		socket.on('event:alert', function (params) {
 			app.alert(params);
@@ -126,6 +128,25 @@ socket = window.socket;
 		});
 	}
 
+	function handleInvalidSession() {
+		socket.disconnect();
+		require(['messages', 'logout'], function (messages, logout) {
+			logout(false);
+			messages.showInvalidSession();
+		});
+	}
+
+	function handleSessionMismatch() {
+		if (app.flags._login || app.flags._logout) {
+			return;
+		}
+
+		socket.disconnect();
+		require(['messages'], function (messages) {
+			messages.showSessionMismatch();
+		});
+	}
+
 	function onConnect() {
 		if (!reconnecting) {
 			hooks.fire('action:connected');
@@ -153,37 +174,11 @@ socket = window.socket;
 	}
 
 	function reJoinCurrentRoom() {
-		const	url_parts = window.location.pathname.slice(config.relative_path.length).split('/').slice(1);
-		let room;
-
-		switch (url_parts[0]) {
-			case 'user':
-				room = 'user/' + (ajaxify.data ? ajaxify.data.theirid : 0);
-				break;
-			case 'topic':
-				room = 'topic_' + url_parts[1];
-				break;
-			case 'category':
-				room = 'category_' + url_parts[1];
-				break;
-			case 'recent':
-				room = 'recent_topics';
-				break;
-			case 'unread':
-				room = 'unread_topics';
-				break;
-			case 'popular':
-				room = 'popular_topics';
-				break;
-			case 'admin':
-				room = 'admin';
-				break;
-			case 'categories':
-				room = 'categories';
-				break;
+		if (app.currentRoom) {
+			const current = app.currentRoom;
+			app.currentRoom = '';
+			app.enterRoom(current);
 		}
-		app.currentRoom = '';
-		app.enterRoom(room);
 	}
 
 	function onReconnecting() {

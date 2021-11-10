@@ -212,7 +212,7 @@
 
 	function renderTopicEvents(index) {
 		const start = this.posts[index].timestamp;
-		const end = this.posts[index + 1] ? this.posts[index + 1].timestamp : Date.now();
+		const end = this.posts[index].nextPostTimestamp;
 		const events = this.events.filter(event => event.timestamp >= start && event.timestamp < end);
 		if (!events.length) {
 			return '';

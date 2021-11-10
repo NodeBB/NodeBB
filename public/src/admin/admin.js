@@ -54,7 +54,9 @@
 		}
 
 		$('[component="logout"]').on('click', function () {
-			app.logout();
+			require(['logout'], function (logout) {
+				logout();
+			});
 			return false;
 		});
 

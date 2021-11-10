@@ -1,9 +1,217 @@
 'use strict';
 
-
-define('search', ['navigator', 'translator', 'storage', 'hooks'], function (nav, translator, storage, hooks) {
+define('search', ['translator', 'storage', 'hooks'], function (translator, storage, hooks) {
 	const Search = {
 		current: {},
+	};
+
+	Search.init = function (searchOptions) {
+		if (!config.searchEnabled) {
+			return;
+		}
+
+		searchOptions = searchOptions || { in: config.searchDefaultInQuick || 'titles' };
+		const searchButton = $('#search-button');
+		const searchFields = $('#search-fields');
+		const searchInput = $('#search-fields input');
+		const quickSearchContainer = $('#quick-search-container');
+
+		$('#search-form .advanced-search-link').off('mousedown').on('mousedown', function () {
+			ajaxify.go('/search');
+		});
+
+		$('#search-form').off('submit').on('submit', function () {
+			searchInput.blur();
+		});
+		searchInput.off('blur').on('blur', function dismissSearch() {
+			setTimeout(function () {
+				if (!searchInput.is(':focus')) {
+					searchFields.addClass('hidden');
+					searchButton.removeClass('hidden');
+				}
+			}, 200);
+		});
+		searchInput.off('focus');
+
+		const searchElements = {
+			inputEl: searchInput,
+			resultEl: quickSearchContainer,
+		};
+
+		Search.enableQuickSearch({
+			searchOptions: searchOptions,
+			searchElements: searchElements,
+		});
+
+		searchButton.off('click').on('click', function (e) {
+			if (!config.loggedIn && !app.user.privileges['search:content']) {
+				app.alert({
+					message: '[[error:search-requires-login]]',
+					timeout: 3000,
+				});
+				ajaxify.go('login');
+				return false;
+			}
+			e.stopPropagation();
+
+			Search.showAndFocusInput();
+			return false;
+		});
+
+		$('#search-form').off('submit').on('submit', function () {
+			const input = $(this).find('input');
+			const data = Search.getSearchPreferences();
+			data.term = input.val();
+			hooks.fire('action:search.submit', {
+				searchOptions: data,
+				searchElements: searchElements,
+			});
+			Search.query(data, function () {
+				input.val('');
+			});
+
+			return false;
+		});
+	};
+
+	Search.enableQuickSearch = function (options) {
+		if (!config.searchEnabled || !app.user.privileges['search:content']) {
+			return;
+		}
+
+		const searchOptions = Object.assign({ in: config.searchDefaultInQuick || 'titles' }, options.searchOptions);
+		const quickSearchResults = options.searchElements.resultEl;
+		const inputEl = options.searchElements.inputEl;
+		let oldValue = inputEl.val();
+		const filterCategoryEl = quickSearchResults.find('.filter-category');
+
+		function updateCategoryFilterName() {
+			if (ajaxify.data.template.category) {
+				translator.translate('[[search:search-in-category, ' + ajaxify.data.name + ']]', function (translated) {
+					const name = $('<div></div>').html(translated).text();
+					filterCategoryEl.find('.name').text(name);
+				});
+			}
+			filterCategoryEl.toggleClass('hidden', !ajaxify.data.template.category);
+		}
+
+		function doSearch() {
+			options.searchOptions = Object.assign({}, searchOptions);
+			options.searchOptions.term = inputEl.val();
+			updateCategoryFilterName();
+
+			if (ajaxify.data.template.category) {
+				if (filterCategoryEl.find('input[type="checkbox"]').is(':checked')) {
+					options.searchOptions.categories = [ajaxify.data.cid];
+					options.searchOptions.searchChildren = true;
+				}
+			}
+
+			quickSearchResults.removeClass('hidden').find('.quick-search-results-container').html('');
+			quickSearchResults.find('.loading-indicator').removeClass('hidden');
+			hooks.fire('action:search.quick.start', options);
+			options.searchOptions.searchOnly = 1;
+			Search.api(options.searchOptions, function (data) {
+				quickSearchResults.find('.loading-indicator').addClass('hidden');
+				if (options.hideOnNoMatches && !data.posts.length) {
+					return quickSearchResults.addClass('hidden').find('.quick-search-results-container').html('');
+				}
+				data.posts.forEach(function (p) {
+					const text = $('<div>' + p.content + '</div>').text();
+					const query = inputEl.val().toLowerCase().replace(/^in:topic-\d+/, '');
+					const start = Math.max(0, text.toLowerCase().indexOf(query) - 40);
+					p.snippet = utils.escapeHTML((start > 0 ? '...' : '') +
+						text.slice(start, start + 80) +
+						(text.length - start > 80 ? '...' : ''));
+				});
+				app.parseAndTranslate('partials/quick-search-results', data, function (html) {
+					if (html.length) {
+						html.find('.timeago').timeago();
+					}
+					quickSearchResults.toggleClass('hidden', !html.length || !inputEl.is(':focus'))
+						.find('.quick-search-results-container')
+						.html(html.length ? html : '');
+					const highlightEls = quickSearchResults.find(
+						'.quick-search-results .quick-search-title, .quick-search-results .snippet'
+					);
+					Search.highlightMatches(options.searchOptions.term, highlightEls);
+					hooks.fire('action:search.quick.complete', {
+						data: data,
+						options: options,
+					});
+				});
+			});
+		}
+
+		quickSearchResults.find('.filter-category input[type="checkbox"]').on('change', function () {
+			inputEl.focus();
+			doSearch();
+		});
+
+		inputEl.off('keyup').on('keyup', utils.debounce(function () {
+			if (inputEl.val().length < 3) {
+				quickSearchResults.addClass('hidden');
+				oldValue = inputEl.val();
+				return;
+			}
+			if (inputEl.val() === oldValue) {
+				return;
+			}
+			oldValue = inputEl.val();
+			if (!inputEl.is(':focus')) {
+				return quickSearchResults.addClass('hidden');
+			}
+			doSearch();
+		}, 500));
+
+		let mousedownOnResults = false;
+		quickSearchResults.on('mousedown', function () {
+			$(window).one('mouseup', function () {
+				quickSearchResults.addClass('hidden');
+			});
+			mousedownOnResults = true;
+		});
+		inputEl.on('blur', function () {
+			if (!inputEl.is(':focus') && !mousedownOnResults && !quickSearchResults.hasClass('hidden')) {
+				quickSearchResults.addClass('hidden');
+			}
+		});
+
+		let ajaxified = false;
+		hooks.on('action:ajaxify.end', function () {
+			if (!ajaxify.isCold()) {
+				ajaxified = true;
+			}
+		});
+
+		inputEl.on('focus', function () {
+			mousedownOnResults = false;
+			const query = inputEl.val();
+			oldValue = query;
+			if (query && quickSearchResults.find('#quick-search-results').children().length) {
+				updateCategoryFilterName();
+				if (ajaxified) {
+					doSearch();
+					ajaxified = false;
+				} else {
+					quickSearchResults.removeClass('hidden');
+				}
+				inputEl[0].setSelectionRange(
+					query.startsWith('in:topic') ? query.indexOf(' ') + 1 : 0,
+					query.length
+				);
+			}
+		});
+
+		inputEl.off('refresh').on('refresh', function () {
+			doSearch();
+		});
+	};
+
+	Search.showAndFocusInput = function () {
+		$('#search-fields').removeClass('hidden');
+		$('#search-button').addClass('hidden');
+		$('#search-fields input').focus();
 	};
 
 	Search.query = function (data, callback) {

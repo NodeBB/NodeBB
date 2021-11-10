@@ -1,6 +1,8 @@
 'use strict';
 
-define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'benchpress', 'forum/account/header', 'accounts/delete', 'api', 'bootbox'], function (FlagsList, components, translator, Benchpress, AccountHeader, AccountsDelete, api, bootbox) {
+define('forum/flags/detail', [
+	'components', 'translator', 'benchpress', 'forum/account/header', 'accounts/delete', 'api', 'bootbox',
+], function (components, translator, Benchpress, AccountHeader, AccountsDelete, api, bootbox) {
 	const Detail = {};
 
 	Detail.init = function () {
@@ -59,7 +61,9 @@ define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'b
 					break;
 				}
 				case 'chat':
-					app.newChat(uid);
+					require(['chat'], function (chat) {
+						chat.newChat(uid);
+					});
 					break;
 
 				case 'ban':

@@ -8,14 +8,14 @@ define('forum/chats', [
 	'forum/chats/recent',
 	'forum/chats/search',
 	'forum/chats/messages',
-	'benchpress',
 	'composer/autocomplete',
 	'hooks',
 	'bootbox',
+	'chat',
 ], function (
 	components, translator, mousetrap,
-	recentChats, search, messages, Benchpress,
-	autocomplete, hooks, bootbox
+	recentChats, search, messages,
+	autocomplete, hooks, bootbox, chatModule
 ) {
 	const Chats = {
 		initialised: false,
@@ -93,11 +93,11 @@ define('forum/chats', [
 
 			if (app.previousUrl && app.previousUrl.match(/chats/)) {
 				ajaxify.go('user/' + ajaxify.data.userslug + '/chats', function () {
-					app.openChat(roomId, ajaxify.data.uid);
+					chatModule.openChat(roomId, ajaxify.data.uid);
 				}, true);
 			} else {
 				window.history.go(-1);
-				app.openChat(roomId, ajaxify.data.uid);
+				chatModule.openChat(roomId, ajaxify.data.uid);
 			}
 
 			$(window).one('action:chat.loaded', function () {
@@ -294,9 +294,7 @@ define('forum/chats', [
 							// Return user to chats page. If modal, close modal.
 							const modal = buttonEl.parents('.chat-modal');
 							if (modal.length) {
-								require(['chat'], function (chatLib) {
-									chatLib.close(modal);
-								});
+								chatModule.close(modal);
 							} else {
 								ajaxify.go('chats');
 							}
@@ -408,12 +406,11 @@ define('forum/chats', [
 			} else {
 				el.remove();
 			}
-			require(['chat'], function (chat) {
-				const modal = chat.getModal(roomId);
-				if (modal.length) {
-					chat.close(modal);
-				}
-			});
+
+			const modal = chatModule.getModal(roomId);
+			if (modal.length) {
+				chatModule.close(modal);
+			}
 		});
 	};
 

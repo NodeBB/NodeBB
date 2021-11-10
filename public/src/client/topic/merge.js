@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/topic/merge', function () {
+define('forum/topic/merge', ['search'], function (search) {
 	const Merge = {};
 	let modal;
 	let mergeBtn;
@@ -30,7 +30,7 @@ define('forum/topic/merge', function () {
 				mergeTopics(mergeBtn);
 			});
 
-			app.enableTopicSearch({
+			search.enableQuickSearch({
 				searchElements: {
 					inputEl: modal.find('.topic-search-input'),
 					resultEl: modal.find('.quick-search-container'),

@@ -4,6 +4,7 @@ define('hooks', [], () => {
 	const Hooks = {
 		loaded: {},
 		temporary: new Set(),
+		runOnce: new Set(),
 		deprecated: {
 			'action:script.load': 'filter:script.load',	// 👋 @ 1.18.0
 			'action:category.loaded': 'action:topics.loaded',	// 👋 @ 1.19.0
@@ -32,6 +33,10 @@ define('hooks', [], () => {
 		console.debug(`[hooks] Registered ${hookName}`, method);
 	};
 	Hooks.on = Hooks.register;
+	Hooks.one = (hookName, method) => {
+		Hooks.register(hookName, method);
+		Hooks.runOnce.add({ hookName, method });
+	};
 
 	// registerPage/onPage takes care of unregistering the listener on ajaxify
 	Hooks.registerPage = (hookName, method) => {
@@ -110,17 +115,27 @@ define('hooks', [], () => {
 
 	Hooks.fire = (hookName, data) => {
 		const type = hookName.split(':').shift();
-
+		let result;
 		switch (type) {
 			case 'filter':
-				return _fireFilterHook(hookName, data);
+				result = _fireFilterHook(hookName, data);
+				break;
 
 			case 'action':
-				return _fireActionHook(hookName, data);
+				result = _fireActionHook(hookName, data);
+				break;
 
 			case 'static':
-				return _fireStaticHook(hookName, data);
+				result = _fireStaticHook(hookName, data);
+				break;
 		}
+		Hooks.runOnce.forEach((pair) => {
+			if (pair.hookName === hookName) {
+				Hooks.unregister(hookName, pair.method);
+				Hooks.runOnce.delete(pair);
+			}
+		});
+		return result;
 	};
 
 	return Hooks;

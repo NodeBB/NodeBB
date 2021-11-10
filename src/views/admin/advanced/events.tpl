@@ -40,7 +40,7 @@
 						<label for="type">[[admin/advanced/events:filter-type]]</label>
 						<select id="type" name="type" class="form-control">
 							<!-- BEGIN types -->
-							<option value="{types.value}" <!-- IF types.selected -->selected<!-- ENDIF types.selected -->>{types.name}</option>
+							<option value="{types.value}" <!-- IF types.selected -->selected<!-- ENDIF types.selected -->>{types.name} - ({types.count}) </option>
 							<!-- END types -->
 						</select>
 					</div>

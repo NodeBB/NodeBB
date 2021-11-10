@@ -11,6 +11,8 @@
 	"properties": "속성:",
 	"groups": "그룹:",
 	"open-new-window": "새 창에서 열기",
+	"dropdown": "Dropdown",
+	"dropdown-placeholder": "Place your dropdown menu items below, ie: <br/>&lt;li&gt;&lt;a href&#x3D;&quot;https://myforum.com&quot;&gt;Link 1&lt;/a&gt;&lt;/li&gt;",
 
 	"btn.delete": "삭제",
 	"btn.disable": "비활성화",

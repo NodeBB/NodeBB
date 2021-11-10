@@ -172,7 +172,9 @@ User.exportUsersCSV = async function (socket) {
 	setTimeout(async () => {
 		try {
 			await user.exportUsersCSV();
-			socket.emit('event:export-users-csv');
+			if (socket.emit) {
+				socket.emit('event:export-users-csv');
+			}
 			const notifications = require('../../notifications');
 			const n = await notifications.create({
 				bodyShort: '[[notifications:users-csv-exported]]',
@@ -182,7 +184,7 @@ User.exportUsersCSV = async function (socket) {
 			});
 			await notifications.push(n, [socket.uid]);
 		} catch (err) {
-			winston.error(err);
+			winston.error(err.stack);
 		}
 	}, 0);
 };

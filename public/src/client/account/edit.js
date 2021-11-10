@@ -89,7 +89,9 @@ define('forum/account/edit', [
 						}
 
 						confirmBtn.html('<i class="fa fa-check"></i>');
-						app.logout();
+						require(['logout'], function (logout) {
+							logout();
+						});
 					});
 
 					return false;

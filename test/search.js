@@ -273,4 +273,20 @@ describe('Search', () => {
 			});
 		});
 	});
+
+	it('should not crash without a search term', (done) => {
+		const qs = '/api/search';
+		privileges.global.give(['groups:search:content'], 'guests', (err) => {
+			assert.ifError(err);
+			request({
+				url: nconf.get('url') + qs,
+				json: true,
+			}, (err, response, body) => {
+				assert.ifError(err);
+				assert(body);
+				assert.strictEqual(response.statusCode, 200);
+				privileges.global.rescind(['groups:search:content'], 'guests', done);
+			});
+		});
+	});
 });

@@ -11,6 +11,8 @@
 	"properties": "Thuộc tính:",
 	"groups": "Nhóm:",
 	"open-new-window": "Mở trong một cửa sổ mới",
+	"dropdown": "Thả xuống",
+	"dropdown-placeholder": "Đặt các mục menu thả xuống của bạn bên dưới, tức là: <br/>&lt;li&gt;&lt;a href&#x3D;&quot;https://myforum.com&quot;&gt;Link 1&lt;/a&gt;&lt;/li&gt;",
 
 	"btn.delete": "Xóa",
 	"btn.disable": "Tắt",

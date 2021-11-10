@@ -92,7 +92,7 @@ describe('Topic thumbs', () => {
 			require('../../src/cache').del(`topic:${topicObj.topicData.tid}:thumbs`);
 			const thumbs = await topics.thumbs.get(topicObj.topicData.tid);
 			assert.deepStrictEqual(thumbs, [{
-				id: 2,
+				id: topicObj.topicData.tid,
 				name: 'test.png',
 				url: `${nconf.get('relative_path')}${nconf.get('upload_url')}${relativeThumbPaths[0]}`,
 			}]);
@@ -102,7 +102,7 @@ describe('Topic thumbs', () => {
 			const thumbs = await topics.thumbs.get([topicObj.topicData.tid, topicObj.topicData.tid + 1]);
 			assert.deepStrictEqual(thumbs, [
 				[{
-					id: 2,
+					id: topicObj.topicData.tid,
 					name: 'test.png',
 					url: `${nconf.get('relative_path')}${nconf.get('upload_url')}${relativeThumbPaths[0]}`,
 				}],
@@ -132,7 +132,7 @@ describe('Topic thumbs', () => {
 				path: relativeThumbPaths[0],
 			});
 
-			const exists = await db.isSortedSetMember(`topic:3:thumbs`, relativeThumbPaths[0]);
+			const exists = await db.isSortedSetMember(`topic:${tid}:thumbs`, relativeThumbPaths[0]);
 			assert(exists);
 		});
 
@@ -153,17 +153,17 @@ describe('Topic thumbs', () => {
 				path: relativeThumbPaths[2],
 			});
 
-			const exists = await db.isSortedSetMember(`topic:3:thumbs`, relativeThumbPaths[2]);
+			const exists = await db.isSortedSetMember(`topic:${tid}:thumbs`, relativeThumbPaths[2]);
 			assert(exists);
 		});
 
 		it('should have a score equal to the number of thumbs prior to addition', async () => {
-			const scores = await db.sortedSetScores('topic:3:thumbs', [relativeThumbPaths[0], relativeThumbPaths[2]]);
+			const scores = await db.sortedSetScores(`topic:${tid}:thumbs`, [relativeThumbPaths[0], relativeThumbPaths[2]]);
 			assert.deepStrictEqual(scores, [0, 1]);
 		});
 
 		it('should update the relevant topic hash with the number of thumbnails', async () => {
-			const numThumbs = await topics.getTopicField(3, 'numThumbs');
+			const numThumbs = await topics.getTopicField(tid, 'numThumbs');
 			assert.strictEqual(parseInt(numThumbs, 10), 2);
 		});
 
@@ -173,7 +173,7 @@ describe('Topic thumbs', () => {
 				path: relativeThumbPaths[0],
 			});
 
-			const score = await db.sortedSetScore(`topic:3:thumbs`, relativeThumbPaths[0]);
+			const score = await db.sortedSetScore(`topic:${tid}:thumbs`, relativeThumbPaths[0]);
 
 			assert(isFinite(score));	// exists in set
 			assert.strictEqual(score, 2);
@@ -186,7 +186,7 @@ describe('Topic thumbs', () => {
 				score: 0,
 			});
 
-			const score = await db.sortedSetScore(`topic:3:thumbs`, relativeThumbPaths[0]);
+			const score = await db.sortedSetScore(`topic:${tid}:thumbs`, relativeThumbPaths[0]);
 
 			assert(isFinite(score));	// exists in set
 			assert.strictEqual(score, 0);
@@ -202,27 +202,25 @@ describe('Topic thumbs', () => {
 			const uploads = await posts.uploads.list(mainPid);
 			assert(uploads.includes(path.basename(relativeThumbPaths[0])));
 		});
-	});
 
-	describe('.migrate()', () => {
 		it('should combine the thumbs uploaded to a UUID zset and combine it with a topic\'s thumb zset', async () => {
-			await topics.thumbs.migrate(uuid, 3);
+			await topics.thumbs.migrate(uuid, tid);
 
-			const thumbs = await topics.thumbs.get(3);
+			const thumbs = await topics.thumbs.get(tid);
 			assert.strictEqual(thumbs.length, 3);
 			assert.deepStrictEqual(thumbs, [
 				{
-					id: 3,
+					id: tid,
 					name: 'test.png',
 					url: `${nconf.get('relative_path')}${nconf.get('upload_url')}${relativeThumbPaths[0]}`,
 				},
 				{
-					id: 3,
+					id: tid,
 					name: 'example.org',
 					url: 'https://example.org',
 				},
 				{
-					id: 3,
+					id: tid,
 					name: 'test2.png',
 					url: `${nconf.get('relative_path')}${nconf.get('upload_url')}${relativeThumbPaths[1]}`,
 				},
