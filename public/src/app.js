@@ -115,10 +115,9 @@ app.flags = {};
 	};
 
 	app.require = async (modules) => {	// allows you to await require.js modules
-		let single = false;
-		if (!Array.isArray(modules)) {
+		const single = !Array.isArray(modules);
+		if (single) {
 			modules = [modules];
-			single = true;
 		}
 
 		return new Promise((resolve, reject) => {
