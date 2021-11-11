@@ -167,6 +167,25 @@ widgets.setArea = async function (area) {
 	await db.setObjectField(`widgets:${area.template}`, area.location, JSON.stringify(area.widgets));
 };
 
+widgets.setAreas = async function (areas) {
+	const templates = {};
+	areas.forEach((area) => {
+		if (!area.location || !area.template) {
+			throw new Error('Missing location and template data');
+		}
+		templates[area.template] = templates[area.template] || {};
+		templates[area.template][area.location] = JSON.stringify(area.widgets);
+	});
+
+	const keys = [];
+	const data = [];
+	Object.keys(templates).forEach((tpl) => {
+		keys.push(`widgets:${tpl}`);
+		data.push(templates[tpl]);
+	});
+	await db.setObjectBulk(keys, data);
+};
+
 widgets.reset = async function () {
 	const defaultAreas = [
 		{ name: 'Draft Zone', template: 'global', location: 'header' },
