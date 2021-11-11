@@ -116,9 +116,10 @@ module.exports = function (Topics) {
 	};
 
 	Topics.renameTags = async function (data) {
-		await async.eachSeries(data, async (tagData) => {
+		for (const tagData of data) {
+			// eslint-disable-next-line no-await-in-loop
 			await renameTag(tagData.value, tagData.newName);
-		});
+		}
 	};
 
 	async function renameTag(tag, newTagName) {

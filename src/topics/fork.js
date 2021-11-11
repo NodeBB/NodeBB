@@ -1,8 +1,6 @@
 
 'use strict';
 
-const async = require('async');
-
 const db = require('../database');
 const posts = require('../posts');
 const categories = require('../categories');
@@ -55,13 +53,14 @@ module.exports = function (Topics) {
 		const tid = await Topics.create(result.params);
 		await Topics.updateTopicBookmarks(fromTid, pids);
 
-		await async.eachSeries(pids, async (pid) => {
+		for (const pid of pids) {
+			/* eslint-disable no-await-in-loop */
 			const canEdit = await privileges.posts.canEdit(pid, uid);
 			if (!canEdit.flag) {
 				throw new Error(canEdit.message);
 			}
 			await Topics.movePostToTopic(uid, pid, tid, scheduled);
-		});
+		}
 
 		await Topics.updateLastPostTime(tid, scheduled ? (postData.timestamp + 1) : Date.now());
 

@@ -1,7 +1,5 @@
 'use strict';
 
-const async = require('async');
-
 const db = require('../database');
 const meta = require('../meta');
 const utils = require('../utils');
@@ -37,9 +35,10 @@ module.exports = function (Categories) {
 			fields.splice(0, 0, fields.splice(parentCidIndex, 1)[0]);
 		}
 
-		await async.eachSeries(fields, async (key) => {
+		for (const key of fields) {
+			// eslint-disable-next-line no-await-in-loop
 			await updateCategoryField(cid, key, category[key]);
-		});
+		}
 		plugins.hooks.fire('action:category.update', { cid: cid, modified: category });
 	}
 

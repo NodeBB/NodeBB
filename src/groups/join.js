@@ -1,6 +1,5 @@
 'use strict';
 
-const async = require('async');
 const winston = require('winston');
 
 const db = require('../database');
@@ -75,8 +74,9 @@ module.exports = function (Groups) {
 			return;
 		}
 
-		await async.eachSeries(groupsToCreate, async (groupName) => {
+		for (const groupName of groupsToCreate) {
 			try {
+				// eslint-disable-next-line no-await-in-loop
 				await Groups.create({
 					name: groupName,
 					hidden: 1,
@@ -87,7 +87,7 @@ module.exports = function (Groups) {
 					throw err;
 				}
 			}
-		});
+		}
 	}
 
 	async function setGroupTitleIfNotSet(groupNames, uid) {
