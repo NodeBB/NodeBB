@@ -46,7 +46,6 @@ define('forum/account/topics', [
 		app.parseAndTranslate(template, 'topics', { topics: topics }, function (html) {
 			$('[component="category"]').append(html);
 			html.find('.timeago').timeago();
-			app.createUserTooltips();
 			utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 			hooks.fire('action:topics.loaded', { topics: topics });
 			callback();

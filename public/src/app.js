@@ -209,18 +209,8 @@ app.flags = {};
 			.addClass('active');
 	}
 
-	app.createUserTooltips = function (els, placement) {
-		if (isTouchDevice) {
-			return;
-		}
-		els = els || $('body');
-		els.find('.avatar,img[title].teaser-pic,img[title].user-img,div.user-icon,span.user-icon').each(function () {
-			$(this).tooltip({
-				placement: placement || $(this).attr('title-placement') || 'top',
-				title: $(this).attr('title'),
-				container: '#content',
-			});
-		});
+	app.createUserTooltips = function () {
+		console.warn('[removed] app.creatUserTooltips is removed');
 	};
 
 	app.createStatusTooltips = function () {
@@ -234,15 +224,9 @@ app.flags = {};
 
 	app.processPage = function () {
 		highlightNavigationLink();
-
 		$('.timeago').timeago();
-
 		utils.makeNumbersHumanReadable($('.human-readable-number'));
-
 		utils.addCommasToNumbers($('.formatted-number'));
-
-		app.createUserTooltips($('#content'));
-
 		app.createStatusTooltips();
 	};
 

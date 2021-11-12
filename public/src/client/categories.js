@@ -55,8 +55,6 @@ define('forum/categories', ['components', 'categorySelector', 'hooks'], function
 			}
 
 			html.fadeIn();
-
-			app.createUserTooltips();
 			html.find('.timeago').timeago();
 
 			if (category.find('[component="category/posts"]').length > parseInt(numRecentReplies, 10)) {
