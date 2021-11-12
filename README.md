@@ -8,7 +8,7 @@
 
 NodeBB by itself contains a "common core" of basic functionality, while additional functionality and integrations are enabled through the use of third-party plugins.
 
-### [Try it now](//try.nodebb.org)
+### [Try it now](//try.nodebb.org) | [Documentation](//docs.nodebb.org)
 
 ## Screenshots
 
