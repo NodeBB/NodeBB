@@ -21,19 +21,19 @@
 			</div>
 
 			<div class="checkbox">
-				<label for="removeEmailNotificationImages" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" id="removeEmailNotificationImages" data-field="removeEmailNotificationImages" name="removeEmailNotificationImages" />
-					<span class="mdl-switch__label">[[admin/settings/email:notifications.remove-images]]</span>
-				</label>
-			</div>
-
-			<div class="checkbox">
 				<label for="requireEmailAddress" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" id="requireEmailAddress" data-field="requireEmailAddress" name="requireEmailAddress" />
 					<span class="mdl-switch__label">[[admin/settings/email:require-email-address]]</span>
 				</label>
 			</div>
 			<p class="help-block">[[admin/settings/email:require-email-address-warning]]</p>
+
+			<div class="checkbox">
+				<label for="sendValidationEmail" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" id="sendValidationEmail" data-field="sendValidationEmail" name="sendValidationEmail" />
+					<span class="mdl-switch__label">[[admin/settings/email:send-validation-email]]</span>
+				</label>
+			</div>
 
 			<div class="checkbox">
 				<label for="includeUnverifiedEmails" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
@@ -50,6 +50,13 @@
 				</label>
 			</div>
 			<p class="help-block">[[admin/settings/email:prompt-help]]</p>
+
+			<div class="checkbox">
+				<label for="removeEmailNotificationImages" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" id="removeEmailNotificationImages" data-field="removeEmailNotificationImages" name="removeEmailNotificationImages" />
+					<span class="mdl-switch__label">[[admin/settings/email:notifications.remove-images]]</span>
+				</label>
+			</div>
 		</form>
 	</div>
 </div>
