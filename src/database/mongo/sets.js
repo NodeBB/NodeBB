@@ -11,7 +11,6 @@ module.exports = function (module) {
 			return;
 		}
 		value = value.map(v => helpers.valueToString(v));
-
 		await module.client.collection('objects').updateOne({
 			_key: key,
 		}, {
@@ -35,26 +34,27 @@ module.exports = function (module) {
 		}
 
 		value = value.map(v => helpers.valueToString(v));
+		await module.transaction(async (session) => {
+			const bulk = module.client.collection('objects').initializeUnorderedBulkOp({ session });
 
-		const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
-
-		for (let i = 0; i < keys.length; i += 1) {
-			bulk.find({ _key: keys[i] }).upsert().updateOne({
-				$addToSet: {
-					members: {
-						$each: value,
+			for (let i = 0; i < keys.length; i += 1) {
+				bulk.find({ _key: keys[i] }).upsert().updateOne({
+					$addToSet: {
+						members: {
+							$each: value,
+						},
 					},
-				},
-			});
-		}
-		try {
-			await bulk.execute();
-		} catch (err) {
-			if (err && err.message.startsWith('E11000 duplicate key error')) {
-				return await module.setsAdd(keys, value);
+				});
 			}
-			throw err;
-		}
+			try {
+				await bulk.execute();
+			} catch (err) {
+				if (err && err.message.startsWith('E11000 duplicate key error')) {
+					return await module.setsAdd(keys, value);
+				}
+				throw err;
+			}
+		});
 	};
 
 	module.setRemove = async function (key, value) {
@@ -63,8 +63,9 @@ module.exports = function (module) {
 		}
 
 		value = value.map(v => helpers.valueToString(v));
-
-		await module.client.collection('objects').updateMany({ _key: Array.isArray(key) ? { $in: key } : key }, { $pullAll: { members: value } });
+		await module.transaction(async (session) => {
+			await module.client.collection('objects').updateMany({ _key: Array.isArray(key) ? { $in: key } : key }, { $pullAll: { members: value } }, { session });
+		});
 	};
 
 	module.setsRemove = async function (keys, value) {
@@ -72,8 +73,9 @@ module.exports = function (module) {
 			return;
 		}
 		value = helpers.valueToString(value);
-
-		await module.client.collection('objects').updateMany({ _key: { $in: keys } }, { $pull: { members: value } });
+		await module.transaction(async (session) => {
+			await module.client.collection('objects').updateMany({ _key: { $in: keys } }, { $pull: { members: value } }, { session });
+		});
 	};
 
 	module.isSetMember = async function (key, value) {

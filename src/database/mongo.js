@@ -61,6 +61,7 @@ mongoModule.questions = [
 
 mongoModule.init = async function () {
 	client = await connection.connect(nconf.get('mongo'));
+	mongoModule.mongoClient = client;
 	mongoModule.client = client.db();
 };
 
@@ -185,4 +186,4 @@ require('./mongo/sorted')(mongoModule);
 require('./mongo/list')(mongoModule);
 require('./mongo/transaction')(mongoModule);
 
-require('../promisify')(mongoModule, ['client', 'sessionStore']);
+require('../promisify')(mongoModule, ['client', 'sessionStore', 'transaction']);

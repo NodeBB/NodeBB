@@ -7,7 +7,9 @@ module.exports = function (module) {
 	};
 
 	module.emptydb = async function () {
-		await module.client.collection('objects').deleteMany({});
+		await module.transaction(async (session) => {
+			await module.client.collection('objects').deleteMany({}, { session });
+		});
 		module.objectCache.reset();
 	};
 
@@ -46,7 +48,9 @@ module.exports = function (module) {
 		if (!key) {
 			return;
 		}
-		await module.client.collection('objects').deleteMany({ _key: key });
+		await module.transaction(async (session) => {
+			await module.client.collection('objects').deleteMany({ _key: key }, { session });
+		});
 		module.objectCache.del(key);
 	};
 
@@ -54,7 +58,9 @@ module.exports = function (module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return;
 		}
-		await module.client.collection('objects').deleteMany({ _key: { $in: keys } });
+		await module.transaction(async (session) => {
+			await module.client.collection('objects').deleteMany({ _key: { $in: keys } }, { session });
+		});
 		module.objectCache.del(keys);
 	};
 
@@ -100,7 +106,9 @@ module.exports = function (module) {
 	};
 
 	module.rename = async function (oldKey, newKey) {
-		await module.client.collection('objects').updateMany({ _key: oldKey }, { $set: { _key: newKey } });
+		await module.transaction(async (session) => {
+			await module.client.collection('objects').updateMany({ _key: oldKey }, { $set: { _key: newKey } }, { session });
+		});
 		module.objectCache.del([oldKey, newKey]);
 	};
 

@@ -19,9 +19,11 @@ module.exports = function (module) {
 		}
 		try {
 			if (isArray) {
-				const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
-				key.forEach(key => bulk.find({ _key: key }).upsert().updateOne({ $set: writeData }));
-				await bulk.execute();
+				await module.transaction(async (session) => {
+					const bulk = module.client.collection('objects').initializeUnorderedBulkOp({ session });
+					key.forEach(key => bulk.find({ _key: key }).upsert().updateOne({ $set: writeData }));
+					await bulk.execute();
+				});
 			} else {
 				await module.client.collection('objects').updateOne({ _key: key }, { $set: writeData }, { upsert: true });
 			}
@@ -42,18 +44,20 @@ module.exports = function (module) {
 
 		const writeData = data.map(helpers.serializeData);
 		try {
-			let bulk;
-			keys.forEach((key, i) => {
-				if (Object.keys(writeData[i]).length) {
-					if (!bulk) {
-						bulk = module.client.collection('objects').initializeUnorderedBulkOp();
+			await module.transaction(async (session) => {
+				let bulk;
+				keys.forEach((key, i) => {
+					if (Object.keys(writeData[i]).length) {
+						if (!bulk) {
+							bulk = module.client.collection('objects').initializeUnorderedBulkOp({ session });
+						}
+						bulk.find({ _key: key }).upsert().updateOne({ $set: writeData[i] });
 					}
-					bulk.find({ _key: key }).upsert().updateOne({ $set: writeData[i] });
+				});
+				if (bulk) {
+					await bulk.execute();
 				}
 			});
-			if (bulk) {
-				await bulk.execute();
-			}
 		} catch (err) {
 			if (err && err.message.startsWith('E11000 duplicate key error')) {
 				return await module.setObjectBulk(keys, data);
@@ -196,12 +200,14 @@ module.exports = function (module) {
 			field = helpers.fieldToString(field);
 			data[field] = '';
 		});
+
 		if (Array.isArray(key)) {
-			await module.client.collection('objects').updateMany({ _key: { $in: key } }, { $unset: data });
+			await module.transaction(async (session) => {
+				await module.client.collection('objects').updateMany({ _key: { $in: key } }, { $unset: data }, { session });
+			});
 		} else {
 			await module.client.collection('objects').updateOne({ _key: key }, { $unset: data });
 		}
-
 		cache.del(key);
 	};
 
@@ -224,13 +230,15 @@ module.exports = function (module) {
 		increment[field] = value;
 
 		if (Array.isArray(key)) {
-			const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
-			key.forEach((key) => {
-				bulk.find({ _key: key }).upsert().update({ $inc: increment });
+			await module.transaction(async (session) => {
+				const bulk = module.client.collection('objects').initializeUnorderedBulkOp({ session });
+				key.forEach((key) => {
+					bulk.find({ _key: key }).upsert().update({ $inc: increment });
+				});
+				await bulk.execute();
 			});
-			await bulk.execute();
-			cache.del(key);
 			const result = await module.getObjectsFields(key, [field]);
+			cache.del(key);
 			return result.map(data => data && data[field]);
 		}
 
