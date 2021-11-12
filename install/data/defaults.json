@@ -138,6 +138,7 @@
     "disableEmailSubscriptions": 0,
     "emailConfirmInterval": 10,
     "removeEmailNotificationImages": 0,
+    "sendValidationEmail": 1,
     "includeUnverifiedEmails": 0,
     "emailPrompt": 1,
     "inviteExpiration": 7,
