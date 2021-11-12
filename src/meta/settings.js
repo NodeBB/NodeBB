@@ -69,16 +69,21 @@ Settings.set = async function (hash, values, quiet) {
 			await db.deleteAll(deleteKeys);
 		}));
 
-		const ops = [];
+		const sortedSetData = [];
+		const objectData = { keys: [], data: [] };
 		sortedLists.forEach((list) => {
 			const arr = sortedListData[list];
 			arr.forEach((data, order) => {
-				ops.push(db.sortedSetAdd(`settings:${hash}:sorted-list:${list}`, order, order));
-				ops.push(db.setObject(`settings:${hash}:sorted-list:${list}:${order}`, data));
+				sortedSetData.push([`settings:${hash}:sorted-list:${list}`, order, order]);
+				objectData.keys.push(`settings:${hash}:sorted-list:${list}:${order}`);
+				objectData.data.push(data);
 			});
 		});
 
-		await Promise.all(ops);
+		await Promise.all([
+			db.sortedSetAddBulk(sortedSetData),
+			db.setObjectBulk(objectData.keys, objectData.data),
+		]);
 	}
 
 	if (Object.keys(values).length) {
