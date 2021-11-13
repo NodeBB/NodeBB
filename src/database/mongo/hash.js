@@ -35,20 +35,26 @@ module.exports = function (module) {
 		cache.del(key);
 	};
 
-	module.setObjectBulk = async function (keys, data) {
-		if (!keys.length || !data.length) {
+	module.setObjectBulk = async function (...args) {
+		let data = args[0];
+		if (!Array.isArray(data) || !data.length) {
 			return;
 		}
+		if (Array.isArray(args[1])) {
+			console.warn('[deprecated] db.setObjectBulk(keys, data) usage is deprecated, please use db.setObjectBulk(data)');
+			// conver old format to new format for backwards compatibility
+			data = args[0].map((key, i) => [key, args[1][i]]);
+		}
 
-		const writeData = data.map(helpers.serializeData);
 		try {
 			let bulk;
-			keys.forEach((key, i) => {
-				if (Object.keys(writeData[i]).length) {
+			data.forEach((item) => {
+				const writeData = helpers.serializeData(item[1]);
+				if (Object.keys(writeData).length) {
 					if (!bulk) {
 						bulk = module.client.collection('objects').initializeUnorderedBulkOp();
 					}
-					bulk.find({ _key: key }).upsert().updateOne({ $set: writeData[i] });
+					bulk.find({ _key: item[0] }).upsert().updateOne({ $set: writeData });
 				}
 			});
 			if (bulk) {
@@ -56,12 +62,12 @@ module.exports = function (module) {
 			}
 		} catch (err) {
 			if (err && err.message.startsWith('E11000 duplicate key error')) {
-				return await module.setObjectBulk(keys, data);
+				return await module.setObjectBulk(data);
 			}
 			throw err;
 		}
 
-		cache.del(keys);
+		cache.del(data.map(item => item[0]));
 	};
 
 	module.setObjectField = async function (key, field, value) {

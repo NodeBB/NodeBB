@@ -177,13 +177,9 @@ widgets.setAreas = async function (areas) {
 		templates[area.template][area.location] = JSON.stringify(area.widgets);
 	});
 
-	const keys = [];
-	const data = [];
-	Object.keys(templates).forEach((tpl) => {
-		keys.push(`widgets:${tpl}`);
-		data.push(templates[tpl]);
-	});
-	await db.setObjectBulk(keys, data);
+	await db.setObjectBulk(
+		Object.keys(templates).map(tpl => [`widgets:${tpl}`, templates[tpl]])
+	);
 };
 
 widgets.reset = async function () {

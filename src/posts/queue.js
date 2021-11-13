@@ -343,8 +343,7 @@ module.exports = function (Posts) {
 				post.data.tid = newTid;
 			});
 			await db.setObjectBulk(
-				postData.map(p => `post:queue:${p.id}`),
-				postData.map(p => ({ data: JSON.stringify(p.data) }))
+				postData.map(p => [`post:queue:${p.id}`, { data: JSON.stringify(p.data) }]),
 			);
 			cache.del('post-queue');
 		}

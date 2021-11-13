@@ -121,8 +121,7 @@ module.exports = function (Categories) {
 		);
 
 		await db.setObjectBulk(
-			childrenCids.map(cid => `category:${cid}`),
-			childrenCids.map((cid, index) => ({ order: index + 1 }))
+			childrenCids.map((cid, index) => [`category:${cid}`, { order: index + 1 }])
 		);
 
 		cache.del([

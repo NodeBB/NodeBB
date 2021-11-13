@@ -73,36 +73,33 @@ describe('Hash methods', () => {
 		});
 
 		it('should set multiple keys to different objects', async () => {
-			const keys = ['bulkKey1', 'bulkKey2'];
-			const data = [{ foo: '1' }, { baz: 'baz' }];
-
-			await db.setObjectBulk(keys, data);
-			const result = await db.getObjects(keys);
-			assert.deepStrictEqual(result, data);
+			await db.setObjectBulk([
+				['bulkKey1', { foo: '1' }],
+				['bulkKey2', { baz: 'baz' }],
+			]);
+			const result = await db.getObjects(['bulkKey1', 'bulkKey2']);
+			assert.deepStrictEqual(result, [{ foo: '1' }, { baz: 'baz' }]);
 		});
 
 		it('should not error if object is empty', async () => {
-			const keys = ['bulkKey3', 'bulkKey4'];
-			const data = [{ foo: '1' }, { }];
-
-			await db.setObjectBulk(keys, data);
-			const result = await db.getObjects(keys);
+			await db.setObjectBulk([
+				['bulkKey3', { foo: '1' }],
+				['bulkKey4', { }],
+			]);
+			const result = await db.getObjects(['bulkKey3', 'bulkKey4']);
 			assert.deepStrictEqual(result, [{ foo: '1' }, null]);
 		});
 
 		it('should update existing object on second call', async () => {
-			await db.setObjectBulk(['bulkKey3.5'], [{ foo: '1' }]);
-			await db.setObjectBulk(['bulkKey3.5'], [{ baz: '2' }]);
+			await db.setObjectBulk([['bulkKey3.5', { foo: '1' }]]);
+			await db.setObjectBulk([['bulkKey3.5', { baz: '2' }]]);
 			const result = await db.getObject('bulkKey3.5');
 			assert.deepStrictEqual(result, { foo: '1', baz: '2' });
 		});
 
 		it('should not error if object is empty', async () => {
-			const keys = ['bulkKey5'];
-			const data = [{ }];
-
-			await db.setObjectBulk(keys, data);
-			const result = await db.getObjects(keys);
+			await db.setObjectBulk([['bulkKey5', {}]]);
+			const result = await db.getObjects(['bulkKey5']);
 			assert.deepStrictEqual(result, [null]);
 		});
 
