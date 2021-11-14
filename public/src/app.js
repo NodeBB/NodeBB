@@ -214,12 +214,16 @@ app.flags = {};
 			return;
 		}
 		els = els || $('body');
-		els.find('.avatar,img[title].teaser-pic,img[title].user-img,div.user-icon,span.user-icon').each(function () {
-			$(this).tooltip({
-				placement: placement || $(this).attr('title-placement') || 'top',
-				title: $(this).attr('title'),
+		els.find('.avatar,img[title].teaser-pic,img[title].user-img,div.user-icon,span.user-icon').one('mouseenter', function (ev) {
+			const $this = $(this);
+			// perf: create tooltips on demand
+			$this.tooltip({
+				placement: placement || $this.attr('title-placement') || 'top',
+				title: $this.attr('title'),
 				container: '#content',
 			});
+			// this will cause the tooltip to show up
+			$this.trigger(ev);
 		});
 	};
 
@@ -234,15 +238,10 @@ app.flags = {};
 
 	app.processPage = function () {
 		highlightNavigationLink();
-
 		$('.timeago').timeago();
-
 		utils.makeNumbersHumanReadable($('.human-readable-number'));
-
 		utils.addCommasToNumbers($('.formatted-number'));
-
 		app.createUserTooltips($('#content'));
-
 		app.createStatusTooltips();
 	};
 
