@@ -22,7 +22,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         node: [12, 14, 16]
-        database: [mongo-dev, mongo, redis, postgres]
+        database: [mongo-dev, mongo, rs-mongo, redis, postgres]
         include:
           # only run coverage once
           - os: ubuntu-latest
@@ -70,10 +70,32 @@ jobs:
 
       mongo:
         image: 'mongo:3.2'
+        options: >-
+          --health-cmd "mongo --quiet 'localhost/test' --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
         ports:
           # Maps port 27017 on service container to the host
           - 27017:27017
-
+      mongo-rs:
+        image: 'bitnami/mongodb:5.0'
+        ports:
+          # Maps port 27017 on service container to port 27018 of the host
+          - 27018:27017
+        options: >-
+          --health-cmd "mongo -u healthcheck -p healthcheck --quiet 'localhost/test' --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        env:
+          MONGODB_REPLICA_SET_MODE: primary
+          MONGODB_REPLICA_SET_KEY: nodebb
+          MONGODB_ROOT_PASSWORD: nodebb
+          MONGODB_EXTRA_USERNAMES: nodebb,ci_test,healthcheck
+          MONGODB_EXTRA_PASSWORDS: nodebb,nodebb,healthcheck
+          MONGODB_EXTRA_DATABASES: nodebb,ci_test,test
+      
     steps:
       - uses: actions/checkout@v2
 
@@ -116,7 +138,35 @@ jobs:
             }
         run: |
           node app --setup="${SETUP}" --ci="${CI}"
+      - name: Setup on MongoDB Replica Set
+        if: startsWith(matrix.database, 'rs-mongo')
+        env:
+          SETUP: >-
+            {
+              "url": "http://127.0.0.1:4567",
+              "secret": "abcdef",
+              "admin:username": "admin",
+              "admin:email": "test@example.org",
+              "admin:password": "hAN3Eg8W",
+              "admin:password:confirm": "hAN3Eg8W",
 
+              "database": "mongo",
+              "mongo:host": "127.0.0.1",
+              "mongo:port": 27018,
+              "mongo:username": "nodebb",
+              "mongo:password": "nodebb",
+              "mongo:database": "nodebb"
+            }
+          CI: >-
+            {
+              "host": "127.0.0.1",
+              "port": 27018,
+              "database": "ci_test",
+              "username": "ci_test",
+              "password": "nodebb"
+            }
+        run: |
+          node app --setup="${SETUP}" --ci="${CI}"
       - name: Setup on PostgreSQL
         if: startsWith(matrix.database, 'postgres')
         env:

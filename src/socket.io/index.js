@@ -29,8 +29,13 @@ Sockets.init = async function (server) {
 		if (nconf.get('redis')) {
 			const adapter = await require('../database/redis').socketAdapter();
 			io.adapter(adapter);
+		} else if (nconf.get('mongo')) {
+			const adapter = await require('../database/mongo').socketAdapter();
+			if (adapter) {
+				io.adapter(adapter);
+			}
 		} else {
-			winston.warn('clustering detected, you should setup redis!');
+			winston.warn('clustering detected, you should setup redis or a MongoDB replica set!');
 		}
 	}
 

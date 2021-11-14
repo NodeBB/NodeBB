@@ -178,6 +178,40 @@ mongoModule.close = function (callback) {
 	client.close(err => callback(err));
 };
 
+mongoModule.socketAdapter = async function () {
+	const { createAdapter } = require('@socket.io/mongo-adapter');
+	if (client.topology.description.type === 'Single' || !client.topology.hasSessionSupport()) {
+		winston.warn('clustering with MongoDB is only supported on replica sets (in MongoDB versions >=3.6)');
+		return;
+	}
+	try {
+		await mongoModule.client.createCollection('socket.io-events', {
+			capped: true,
+			size: 1e6,
+		});
+	} catch (err) {
+		// catch only NamespaceExists error that is thrown if the collection already exists
+		if (err.codeName === 'NamespaceExists') {
+			// ensure the collection is capped
+			if (!await mongoModule.client.collection('socket.io-events').isCapped()) {
+				/* in mongo shell you'd run the `convertToCapped` command, but `runCommand` is not implemented in node driver.
+				Luckily since it's just a temporary store for pub/sub, there is no need to implement the most complex part,
+				that is saving the data and moving it to the new capped collection.
+				As such just recreating the collection is good enough here */
+				await mongoModule.client.collection('socket.io-events').drop();
+				await mongoModule.client.createCollection('socket.io-events', {
+					capped: true,
+					size: 1e6,
+				});
+			}
+		} else {
+			winston.error(err.stack);
+		}
+	}
+	const socketCollection = mongoModule.client.collection('socket.io-events');
+	return createAdapter(socketCollection);
+};
+
 require('./mongo/main')(mongoModule);
 require('./mongo/hash')(mongoModule);
 require('./mongo/sets')(mongoModule);
