@@ -96,6 +96,7 @@ define('chat', [
 				app.parseAndTranslate('partials/chats/dropdown', { rooms: rooms }, function (html) {
 					chatsListEl.find('*').not('.navigation-link').remove();
 					chatsListEl.prepend(html);
+					app.createUserTooltips(chatsListEl, 'right');
 					chatsListEl.off('click').on('click', '[data-roomid]', function (ev) {
 						if ($(ev.target).parents('.user-link').length) {
 							return;

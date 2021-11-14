@@ -45,6 +45,7 @@ define('forum/account/posts', ['forum/account/header', 'forum/infinitescroll', '
 			$('[component="posts"]').append(html);
 			html.find('img:not(.not-responsive)').addClass('img-responsive');
 			html.find('.timeago').timeago();
+			app.createUserTooltips();
 			utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 			hooks.fire('action:posts.loaded', { posts: posts });
 			callback();

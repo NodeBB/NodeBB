@@ -262,6 +262,7 @@ define('topicList', [
 			}
 
 			html.find('.timeago').timeago();
+			app.createUserTooltips(html);
 			utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 			hooks.fire('action:topics.loaded', { topics: topics, template: templateName });
 			callback();

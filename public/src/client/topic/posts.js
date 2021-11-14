@@ -370,6 +370,9 @@ define('forum/topic/posts', [
 
 	Posts.onNewPostsAddedToDom = function (posts) {
 		Posts.onTopicPageLoad(posts);
+
+		app.createUserTooltips(posts);
+
 		utils.addCommasToNumbers(posts.find('.formatted-number'));
 		utils.makeNumbersHumanReadable(posts.find('.human-readable-number'));
 		posts.find('.timeago').timeago();
