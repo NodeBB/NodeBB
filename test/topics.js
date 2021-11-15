@@ -1365,7 +1365,6 @@ describe('Topic\'s', () => {
 		it('should infinite load topic posts', (done) => {
 			socketTopics.loadMore({ uid: adminUid }, { tid: tid, after: 0, count: 10 }, (err, data) => {
 				assert.ifError(err);
-				assert(data.mainPost);
 				assert(data.posts);
 				assert(data.privileges);
 				done();
