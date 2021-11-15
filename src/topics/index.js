@@ -168,7 +168,7 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 		thumbs,
 		events,
 	] = await Promise.all([
-		getMainPostAndReplies(topicData, set, uid, start, stop, reverse),
+		Topics.getTopicPosts(topicData, set, start, stop, uid, reverse),
 		categories.getCategoryData(topicData.cid),
 		categories.getTagWhitelist([topicData.cid]),
 		plugins.hooks.fire('filter:topic.thread_tools', { topic: topicData, uid: uid, tools: [] }),
@@ -209,58 +209,6 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 
 	const result = await plugins.hooks.fire('filter:topic.get', { topic: topicData, uid: uid });
 	return result.topic;
-};
-
-async function getMainPostAndReplies(topic, set, uid, start, stop, reverse) {
-	let repliesStart = start;
-	let repliesStop = stop;
-	if (stop > 0) {
-		repliesStop -= 1;
-		if (start > 0) {
-			repliesStart -= 1;
-		}
-	}
-	const pids = await posts.getPidsFromSet(set, repliesStart, repliesStop, reverse);
-	if (!pids.length && !topic.mainPid) {
-		return [];
-	}
-
-	if (topic.mainPid && start === 0) {
-		pids.unshift(topic.mainPid);
-	}
-	const postData = await posts.getPostsByPids(pids, uid);
-	if (!postData.length) {
-		return [];
-	}
-	let replies = postData;
-	if (topic.mainPid && start === 0) {
-		postData[0].index = 0;
-		replies = postData.slice(1);
-	}
-
-	Topics.calculatePostIndices(replies, repliesStart);
-
-	await Topics.addNextPostTimestamp(postData, set, reverse);
-	return await Topics.addPostData(postData, uid);
-}
-
-Topics.addNextPostTimestamp = async function (postData, set, reverse) {
-	if (!postData.length) {
-		return;
-	}
-	postData.forEach((p, index) => {
-		if (p && postData[index + 1]) {
-			p.nextPostTimestamp = postData[index + 1].timestamp;
-		}
-	});
-	const lastPost = postData[postData.length - 1];
-	if (lastPost) {
-		lastPost.nextPostTimestamp = Date.now();
-		if (lastPost.index) {
-			const data = await db[reverse ? 'getSortedSetRevRangeWithScores' : 'getSortedSetRangeWithScores'](set, lastPost.index, lastPost.index);
-			lastPost.nextPostTimestamp = data.length ? data[0].score : lastPost.nextPostTimestamp;
-		}
-	}
 };
 
 async function getDeleter(topicData) {

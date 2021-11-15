@@ -16,7 +16,7 @@ module.exports = function (SocketTopics) {
 
 		const [userPrivileges, topicData] = await Promise.all([
 			privileges.topics.get(data.tid, socket.uid),
-			topics.getTopicFields(data.tid, ['postcount', 'deleted', 'scheduled', 'uid']),
+			topics.getTopicData(data.tid),
 		]);
 
 		if (!userPrivileges['topics:read'] || !privileges.topics.canViewDeletedScheduled(topicData, userPrivileges)) {
@@ -32,28 +32,22 @@ module.exports = function (SocketTopics) {
 			parseInt(data.count, 10) || meta.config.postsPerPage || 20
 		));
 
-		if (data.direction === -1) {
-			start -= (infScrollPostsPerPage + 1);
+		if (data.direction === 1) {
+			start += 1;
+		} else if (data.direction === -1) {
+			start -= infScrollPostsPerPage;
 		}
 
 		let stop = start + infScrollPostsPerPage - 1;
 
 		start = Math.max(0, start);
 		stop = Math.max(0, stop);
-
-		const [mainPost, posts, postSharing] = await Promise.all([
-			start > 0 ? null : topics.getMainPost(data.tid, socket.uid),
-			topics.getTopicPosts(data.tid, set, start, stop, socket.uid, reverse),
+		const [posts, postSharing] = await Promise.all([
+			topics.getTopicPosts(topicData, set, start, stop, socket.uid, reverse),
 			social.getActivePostSharing(),
 		]);
 
-		if (mainPost) {
-			topicData.mainPost = mainPost;
-			topicData.posts = [mainPost].concat(posts);
-		} else {
-			topicData.posts = posts;
-		}
-
+		topicData.posts = posts;
 		topicData.privileges = userPrivileges;
 		topicData.postSharing = postSharing;
 		topicData['reputation:disabled'] = meta.config['reputation:disabled'] === 1;

@@ -183,7 +183,7 @@ define('forum/topic/posts', [
 			}
 
 			data.posts = data.posts.filter(function (post) {
-				return $('[component="post"][data-pid="' + post.pid + '"]').length === 0;
+				return post.index === -1 || $('[component="post"][data-pid="' + post.pid + '"]').length === 0;
 			});
 		}
 
@@ -206,9 +206,11 @@ define('forum/topic/posts', [
 
 		app.parseAndTranslate('topic', 'posts', Object.assign({}, ajaxify.data, data), function (html) {
 			html = html.filter(function () {
-				const pid = $(this).attr('data-pid');
-				const isPost = $(this).is('[component="post"]');
-				return !isPost || (pid && $('[component="post"][data-pid="' + pid + '"]').length === 0);
+				const $this = $(this);
+				const pid = $this.attr('data-pid');
+				const index = parseInt($this.attr('data-index'), 10);
+				const isPost = $this.is('[component="post"]');
+				return !isPost || index === -1 || (pid && $('[component="post"][data-pid="' + pid + '"]').length === 0);
 			});
 
 			if (after) {

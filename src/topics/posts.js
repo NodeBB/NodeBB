@@ -4,6 +4,7 @@
 const _ = require('lodash');
 const validator = require('validator');
 const nconf = require('nconf');
+const winston = require('winston');
 
 const db = require('../database');
 const user = require('../user');
@@ -20,12 +21,67 @@ module.exports = function (Topics) {
 		await Topics.addPostToTopic(postData.tid, postData);
 	};
 
-	Topics.getTopicPosts = async function (tid, set, start, stop, uid, reverse) {
-		const postData = await posts.getPostsFromSet(set, start, stop, uid, reverse);
-		Topics.calculatePostIndices(postData, start);
+	Topics.getTopicPosts = async function (topicOrTid, set, start, stop, uid, reverse) {
+		if (topicOrTid && typeof topicOrTid !== 'object') {
+			// TODO: remove in 1.19.0
+			winston.warn('[deprecated] Topics.getTopicPosts(tid, ...) usage is deprecated, pass a topic object as first argument!');
+			topicOrTid = await Topics.getTopicData(topicOrTid);
+		}
+
+		let repliesStart = start;
+		let repliesStop = stop;
+		if (stop > 0) {
+			repliesStop -= 1;
+			if (start > 0) {
+				repliesStart -= 1;
+			}
+		}
+		const pids = await posts.getPidsFromSet(set, repliesStart, repliesStop, reverse);
+		if (!pids.length && !topicOrTid.mainPid) {
+			return [];
+		}
+
+		if (topicOrTid.mainPid && start === 0) {
+			pids.unshift(topicOrTid.mainPid);
+		}
+		const postData = await posts.getPostsByPids(pids, uid);
+		if (!postData.length) {
+			return [];
+		}
+		let replies = postData;
+		if (topicOrTid.mainPid && start === 0) {
+			postData[0].index = 0;
+			replies = postData.slice(1);
+		}
+
+		Topics.calculatePostIndices(replies, repliesStart);
 
 		await Topics.addNextPostTimestamp(postData, set, reverse);
-		return await Topics.addPostData(postData, uid);
+		const result = await plugins.hooks.fire('filter:topic.getPosts', {
+			topic: topicOrTid,
+			uid: uid,
+			posts: await Topics.addPostData(postData, uid),
+		});
+		return result.posts;
+	};
+
+	Topics.addNextPostTimestamp = async function (postData, set, reverse) {
+		if (!postData.length) {
+			return;
+		}
+		postData.forEach((p, index) => {
+			if (p && postData[index + 1]) {
+				p.nextPostTimestamp = postData[index + 1].timestamp;
+			}
+		});
+		const lastPost = postData[postData.length - 1];
+		if (lastPost) {
+			lastPost.nextPostTimestamp = Date.now();
+			if (lastPost.index) {
+				const data = await db[reverse ? 'getSortedSetRevRangeWithScores' : 'getSortedSetRangeWithScores'](set, lastPost.index, lastPost.index);
+				lastPost.nextPostTimestamp = data.length ? data[0].score : lastPost.nextPostTimestamp;
+			}
+		}
 	};
 
 	Topics.addPostData = async function (postData, uid) {
