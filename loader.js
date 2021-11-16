@@ -209,7 +209,7 @@ fs.open(pathToConfig, 'r', (err) => {
 	if (nconf.get('daemon') !== 'false' && nconf.get('daemon') !== false) {
 		if (file.existsSync(pidFilePath)) {
 			try {
-				const	pid = fs.readFileSync(pidFilePath, { encoding: 'utf-8' });
+				const pid = fs.readFileSync(pidFilePath, { encoding: 'utf-8' });
 				process.kill(pid, 0);
 				process.exit();
 			} catch (e) {

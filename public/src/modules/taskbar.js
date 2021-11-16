@@ -13,7 +13,7 @@ define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, t
 			$(document.body).append(self.taskbar);
 
 			self.taskbar.on('click', 'li', function () {
-				const	$btn = $(this);
+				const $btn = $(this);
 				const module = $btn.attr('data-module');
 				const uuid = $btn.attr('data-uuid');
 
@@ -121,7 +121,7 @@ define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, t
 	};
 
 	taskbar.updateActive = function (uuid) {
-		const	tasks = taskbar.tasklist.find('li');
+		const tasks = taskbar.tasklist.find('li');
 		tasks.removeClass('active');
 		tasks.filter('[data-uuid="' + uuid + '"]').addClass('active');
 
@@ -135,7 +135,7 @@ define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, t
 	};
 
 	function update() {
-		const	tasks = taskbar.tasklist.find('li');
+		const tasks = taskbar.tasklist.find('li');
 
 		if (tasks.length > 0) {
 			taskbar.taskbar.attr('data-active', '1');
@@ -152,7 +152,7 @@ define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, t
 		translator.translate(data.options.title, function (taskTitle) {
 			const title = $('<div></div>').text(taskTitle || 'NodeBB Task').html();
 
-			const	taskbarEl = $('<li></li>')
+			const taskbarEl = $('<li></li>')
 				.addClass(data.options.className)
 				.html('<a href="#"' + (data.options.image ? ' style="background-image: url(\'' + data.options.image + '\'); background-size: cover;"' : '') + '>' +
 					(data.options.icon ? '<i class="fa ' + data.options.icon + '"></i> ' : '') +

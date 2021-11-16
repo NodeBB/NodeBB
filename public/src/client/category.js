@@ -18,7 +18,7 @@ define('forum/category', [
 	});
 
 	Category.init = function () {
-		const	cid = ajaxify.data.cid;
+		const cid = ajaxify.data.cid;
 
 		app.enterRoom('category_' + cid);
 

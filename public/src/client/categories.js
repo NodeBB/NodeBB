@@ -2,7 +2,7 @@
 
 
 define('forum/categories', ['components', 'categorySelector', 'hooks'], function (components, categorySelector, hooks) {
-	const	categories = {};
+	const categories = {};
 
 	$(window).on('action:ajaxify.start', function (ev, data) {
 		if (ajaxify.currentPage !== data.url) {

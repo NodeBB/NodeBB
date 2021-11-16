@@ -8,7 +8,7 @@ define('admin/manage/categories', [
 	'Sortable',
 	'bootbox',
 ], function (translator, Benchpress, categorySelector, api, Sortable, bootbox) {
-	const	Categories = {};
+	const Categories = {};
 	let newCategoryId = -1;
 	let sortables;
 

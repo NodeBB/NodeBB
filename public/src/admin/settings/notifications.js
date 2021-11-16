@@ -3,7 +3,7 @@
 define('admin/settings/notifications', [
 	'autocomplete',
 ], function (autocomplete) {
-	const	Notifications = {};
+	const Notifications = {};
 
 	Notifications.init = function () {
 		const searchInput = $('[data-field="welcomeUid"]');

@@ -6,13 +6,13 @@ define('admin/manage/category-analytics', ['Chart'], function (Chart) {
 
 	CategoryAnalytics.init = function () {
 		const hourlyCanvas = document.getElementById('pageviews:hourly');
-		const	dailyCanvas = document.getElementById('pageviews:daily');
-		const	topicsCanvas = document.getElementById('topics:daily');
-		const	postsCanvas = document.getElementById('posts:daily');
-		const	hourlyLabels = utils.getHoursArray().map(function (text, idx) {
+		const dailyCanvas = document.getElementById('pageviews:daily');
+		const topicsCanvas = document.getElementById('topics:daily');
+		const postsCanvas = document.getElementById('posts:daily');
+		const hourlyLabels = utils.getHoursArray().map(function (text, idx) {
 			return idx % 3 ? '' : text;
 		});
-		const	dailyLabels = utils.getDaysArray().map(function (text, idx) {
+		const dailyLabels = utils.getDaysArray().map(function (text, idx) {
 			return idx % 3 ? '' : text;
 		});
 

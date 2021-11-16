@@ -313,7 +313,7 @@ describe('Topic\'s', () => {
 	});
 
 	describe('Get methods', () => {
-		let	newTopic;
+		let newTopic;
 		let newPost;
 
 		before((done) => {

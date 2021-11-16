@@ -752,7 +752,7 @@ describe('Groups', () => {
 			Groups.leaveAllGroups(testUid, (err) => {
 				assert.ifError(err);
 
-				const	groups = ['Test', 'Hidden'];
+				const groups = ['Test', 'Hidden'];
 				async.every(groups, (group, next) => {
 					Groups.isMember(testUid, group, (err, isMember) => {
 						next(err, !isMember);

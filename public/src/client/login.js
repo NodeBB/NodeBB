@@ -2,7 +2,7 @@
 
 
 define('forum/login', ['hooks', 'translator', 'jquery-form'], function (hooks, translator) {
-	const	Login = {
+	const Login = {
 		_capsState: false,
 	};
 

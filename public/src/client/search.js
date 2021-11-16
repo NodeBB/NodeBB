@@ -7,7 +7,7 @@ define('forum/search', [
 	'storage',
 	'hooks',
 ], function (searchModule, autocomplete, storage, hooks) {
-	const	Search = {};
+	const Search = {};
 
 	Search.init = function () {
 		const searchQuery = $('#results').attr('data-search-query');
