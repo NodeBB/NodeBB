@@ -187,32 +187,35 @@ Messaging.getLatestUndeletedMessage = async (uid, roomId) => {
 };
 
 Messaging.canMessageUser = async (uid, toUid) => {
-	if (meta.config.disableChat || uid <= 0 || uid === toUid) {
+	if (meta.config.disableChat || uid <= 0) {
 		throw new Error('[[error:chat-disabled]]');
 	}
 
 	if (parseInt(uid, 10) === parseInt(toUid, 10)) {
-		throw new Error('[[error:cant-chat-with-yourself');
+		throw new Error('[[error:cant-chat-with-yourself]]');
 	}
+	const [exists, canChat] = await Promise.all([
+		user.exists(toUid),
+		privileges.global.can('chat', uid),
+	]);
 
-	const exists = await user.exists(toUid);
 	if (!exists) {
 		throw new Error('[[error:no-user]]');
 	}
 
-	const canChat = await privileges.global.can('chat', uid);
 	if (!canChat) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
-	const results = await utils.promiseParallel({
-		settings: user.getSettings(toUid),
-		isAdmin: user.isAdministrator(uid),
-		isModerator: user.isModeratorOfAnyCategory(uid),
-		isFollowing: user.isFollowing(toUid, uid),
-	});
+	const [settings, isAdmin, isModerator, isFollowing, isBlocked] = await Promise.all([
+		user.getSettings(toUid),
+		user.isAdministrator(uid),
+		user.isModeratorOfAnyCategory(uid),
+		user.isFollowing(toUid, uid),
+		user.blocks.is(uid, toUid),
+	]);
 
-	if (results.settings.restrictChat && !results.isAdmin && !results.isModerator && !results.isFollowing) {
+	if (isBlocked || (settings.restrictChat && !isAdmin && !isModerator && !isFollowing)) {
 		throw new Error('[[error:chat-restricted]]');
 	}
 
