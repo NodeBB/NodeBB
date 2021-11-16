@@ -1,13 +1,12 @@
 'use strict';
 
 const winston = require('winston');
-const async = require('async');
 const path = require('path');
 const nconf = require('nconf');
 
-const { install } = require('../../install/web');
+const { webInstall } = require('../../install/web');
 
-function setup(initConfig) {
+async function setup(initConfig) {
 	const { paths } = require('../constants');
 	const install = require('../install');
 	const build = require('../meta/build');
@@ -21,59 +20,41 @@ function setup(initConfig) {
 	console.log('Press enter to accept the default setting (shown in brackets).');
 
 	install.values = initConfig;
+	const data = await install.setup();
+	let configFile = paths.config;
+	if (nconf.get('config')) {
+		configFile = path.resolve(paths.baseDir, nconf.get('config'));
+	}
 
-	async.series([
-		async function () {
-			return await install.setup();
-		},
-		function (next) {
-			let configFile = paths.config;
-			if (nconf.get('config')) {
-				configFile = path.resolve(paths.baseDir, nconf.get('config'));
-			}
+	prestart.loadConfig(configFile);
 
-			prestart.loadConfig(configFile);
+	if (!nconf.get('skip-build')) {
+		await build.buildAll();
+	}
 
-			if (!nconf.get('skip-build')) {
-				build.buildAll(next);
-			} else {
-				setImmediate(next);
-			}
-		},
-	], (err, data) => {
-		// Disregard build step data
-		data = data[0];
-
-		let separator = '     ';
-		if (process.stdout.columns > 10) {
-			for (let x = 0, cols = process.stdout.columns - 10; x < cols; x += 1) {
-				separator += '=';
-			}
+	let separator = '     ';
+	if (process.stdout.columns > 10) {
+		for (let x = 0, cols = process.stdout.columns - 10; x < cols; x += 1) {
+			separator += '=';
 		}
-		console.log(`\n${separator}\n`);
+	}
+	console.log(`\n${separator}\n`);
 
-		if (err) {
-			winston.error(`There was a problem completing NodeBB setup\n${err.stack}`);
-			throw err;
-		} else {
-			if (data.hasOwnProperty('password')) {
-				console.log('An administrative user was automatically created for you:');
-				console.log(`    Username: ${data.username}`);
-				console.log(`    Password: ${data.password}`);
-				console.log('');
-			}
-			console.log('NodeBB Setup Completed. Run "./nodebb start" to manually start your NodeBB server.');
+	if (data.hasOwnProperty('password')) {
+		console.log('An administrative user was automatically created for you:');
+		console.log(`    Username: ${data.username}`);
+		console.log(`    Password: ${data.password}`);
+		console.log('');
+	}
+	console.log('NodeBB Setup Completed. Run "./nodebb start" to manually start your NodeBB server.');
 
-			// If I am a child process, notify the parent of the returned data before exiting (useful for notifying
-			// hosts of auto-generated username/password during headless setups)
-			if (process.send) {
-				process.send(data);
-			}
-		}
-
-		process.exit();
-	});
+	// If I am a child process, notify the parent of the returned data before exiting (useful for notifying
+	// hosts of auto-generated username/password during headless setups)
+	if (process.send) {
+		process.send(data);
+	}
+	process.exit();
 }
 
 exports.setup = setup;
-exports.webInstall = install;
+exports.webInstall = webInstall;
