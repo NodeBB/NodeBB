@@ -21,13 +21,10 @@ Settings.get = async function (hash) {
 	]);
 	const values = data || {};
 	await Promise.all(sortedLists.map(async (list) => {
-		const members = await db.getSortedSetRange(`settings:${hash}:sorted-list:${list}`, 0, -1) || [];
-		const keys = [];
+		const members = await db.getSortedSetRange(`settings:${hash}:sorted-list:${list}`, 0, -1);
+		const keys = members.map(order => `settings:${hash}:sorted-list:${list}:${order}`);
 
 		values[list] = [];
-		for (const order of members) {
-			keys.push(`settings:${hash}:sorted-list:${list}:${order}`);
-		}
 
 		const objects = await db.getObjects(keys);
 		objects.forEach((obj) => {
