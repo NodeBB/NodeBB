@@ -66,7 +66,7 @@ Events.init = async () => {
 	Events._types = types;
 };
 
-Events.get = async (tid, uid) => {
+Events.get = async (tid, uid, reverse = false) => {
 	const topics = require('.');
 
 	if (!await topics.exists(tid)) {
@@ -79,7 +79,9 @@ Events.get = async (tid, uid) => {
 	eventIds = eventIds.map(obj => obj.value);
 	let events = await db.getObjects(keys);
 	events = await modifyEvent({ tid, uid, eventIds, timestamps, events });
-
+	if (reverse) {
+		events.reverse();
+	}
 	return events;
 };
 

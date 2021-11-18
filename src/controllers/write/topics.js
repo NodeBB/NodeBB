@@ -209,7 +209,7 @@ Topics.getEvents = async (req, res) => {
 		return helpers.formatApiResponse(403, res);
 	}
 
-	helpers.formatApiResponse(200, res, await topics.events.get(req.params.tid));
+	helpers.formatApiResponse(200, res, await topics.events.get(req.params.tid, req.uid));
 };
 
 Topics.deleteEvent = async (req, res) => {

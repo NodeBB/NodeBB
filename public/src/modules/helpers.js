@@ -210,9 +210,12 @@
 		return '<img component="user/picture" data-uid="' + topicObj.user.uid + '" src="' + topicObj.user.picture + '" class="user-img" title="' + topicObj.user.username + '" />';
 	}
 
-	function renderTopicEvents(index) {
-		const start = this.posts[index].timestamp;
-		const end = this.posts[index].nextPostTimestamp;
+	function renderTopicEvents(index, sort) {
+		if (sort === 'most_votes') {
+			return '';
+		}
+		const start = this.posts[index].eventStart;
+		const end = this.posts[index].eventEnd;
 		const events = this.events.filter(event => event.timestamp >= start && event.timestamp < end);
 		if (!events.length) {
 			return '';

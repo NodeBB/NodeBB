@@ -289,9 +289,22 @@ define('forum/topic/posts', [
 	};
 
 	Posts.addTopicEvents = function (events) {
+		if (config.topicPostSort === 'most_votes') {
+			return;
+		}
 		const html = helpers.renderEvents.call(ajaxify.data, events);
 		translator.translate(html, (translated) => {
-			document.querySelector('[component="topic"]').insertAdjacentHTML('beforeend', translated);
+			if (config.topicPostSort === 'oldest_to_newest') {
+				$('[component="topic"]').append(translated);
+			} else if (config.topicPostSort === 'newest_to_oldest') {
+				const mainPost = $('[component="topic"] [component="post"][data-index="0"]');
+				if (mainPost.length) {
+					$(translated).insertAfter(mainPost);
+				} else {
+					$('[component="topic"]').prepend(translated);
+				}
+			}
+
 			$('[component="topic/event"] .timeago').timeago();
 		});
 	};

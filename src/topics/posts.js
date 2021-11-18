@@ -56,7 +56,7 @@ module.exports = function (Topics) {
 
 		Topics.calculatePostIndices(replies, repliesStart);
 
-		await Topics.addNextPostTimestamp(postData, set, reverse);
+		await addEventStartEnd(postData, set, reverse, topicOrTid);
 		const result = await plugins.hooks.fire('filter:topic.getPosts', {
 			topic: topicOrTid,
 			uid: uid,
@@ -65,24 +65,33 @@ module.exports = function (Topics) {
 		return result.posts;
 	};
 
-	Topics.addNextPostTimestamp = async function (postData, set, reverse) {
+	async function addEventStartEnd(postData, set, reverse, topicData) {
 		if (!postData.length) {
 			return;
 		}
 		postData.forEach((p, index) => {
-			if (p && postData[index + 1]) {
-				p.nextPostTimestamp = postData[index + 1].timestamp;
+			if (p && p.index === 0 && reverse) {
+				p.eventStart = topicData.lastposttime;
+				p.eventEnd = Date.now();
+			} else if (p && postData[index + 1]) {
+				p.eventStart = reverse ? postData[index + 1].timestamp : p.timestamp;
+				p.eventEnd = reverse ? p.timestamp : postData[index + 1].timestamp;
 			}
 		});
 		const lastPost = postData[postData.length - 1];
 		if (lastPost) {
-			lastPost.nextPostTimestamp = Date.now();
+			lastPost.eventStart = reverse ? topicData.timestamp : lastPost.timestamp;
+			lastPost.eventEnd = reverse ? lastPost.timestamp : Date.now();
 			if (lastPost.index) {
-				const data = await db[reverse ? 'getSortedSetRevRangeWithScores' : 'getSortedSetRangeWithScores'](set, lastPost.index, lastPost.index);
-				lastPost.nextPostTimestamp = data.length ? data[0].score : lastPost.nextPostTimestamp;
+				const nextPost = await db[reverse ? 'getSortedSetRevRangeWithScores' : 'getSortedSetRangeWithScores'](set, lastPost.index, lastPost.index);
+				if (reverse) {
+					lastPost.eventStart = nextPost.length ? nextPost[0].score : lastPost.eventStart;
+				} else {
+					lastPost.eventEnd = nextPost.length ? nextPost[0].score : lastPost.eventEnd;
+				}
 			}
 		}
-	};
+	}
 
 	Topics.addPostData = async function (postData, uid) {
 		if (!Array.isArray(postData) || !postData.length) {
