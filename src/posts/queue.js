@@ -19,7 +19,7 @@ const socketHelpers = require('../socket.io/helpers');
 
 module.exports = function (Posts) {
 	Posts.getQueuedPosts = async (filter = {}, options = {}) => {
-		options = { metadata: true, ...options };	// defaults
+		options = { metadata: true, ...options }; // defaults
 		let postData = _.cloneDeep(cache.get('post-queue'));
 		if (!postData) {
 			const ids = await db.getSortedSetRange('post:queue', 0, -1);

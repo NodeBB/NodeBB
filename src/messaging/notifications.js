@@ -7,7 +7,7 @@ const plugins = require('../plugins');
 const meta = require('../meta');
 
 module.exports = function (Messaging) {
-	Messaging.notifyQueue = {};	// Only used to notify a user of a new chat message, see Messaging.notifyUser
+	Messaging.notifyQueue = {}; // Only used to notify a user of a new chat message, see Messaging.notifyUser
 
 	Messaging.notifyUsersInRoom = async (fromUid, roomId, messageObj) => {
 		let uids = await Messaging.getUidsInRoom(roomId, 0, -1);

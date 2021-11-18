@@ -64,8 +64,8 @@ Flags.init = async function () {
 			cid: function (sets, orSets, key) {
 				prepareSets(sets, orSets, 'flags:byCid:', key);
 			},
-			page: function () {	/* noop */ },
-			perPage: function () {	/* noop */ },
+			page: function () { /* noop */ },
+			perPage: function () { /* noop */ },
 			quick: function (sets, orSets, key, uid) {
 				switch (key) {
 					case 'mine':
@@ -141,7 +141,7 @@ Flags.getFlagIdsWithFilters = async function ({ filters, uid, query }) {
 			winston.warn(`[flags/list] No flag filter type found: ${type}`);
 		}
 	}
-	sets = (sets.length || orSets.length) ? sets : ['flags:datetime'];	// No filter default
+	sets = (sets.length || orSets.length) ? sets : ['flags:datetime']; // No filter default
 
 	let flagIds = [];
 	if (sets.length === 1) {
@@ -244,7 +244,7 @@ Flags.sort = async function (flagIds, sort) {
 			break;
 		}
 
-		case 'upvotes':	// fall-through
+		case 'upvotes': // fall-through
 		case 'downvotes':
 		case 'replies': {
 			flagIds = await filterPosts(flagIds);
@@ -426,8 +426,8 @@ Flags.create = async function (type, id, uid, reason, timestamp) {
 		}),
 		Flags.addReport(flagId, type, id, uid, reason, timestamp),
 		db.sortedSetAdd('flags:datetime', timestamp, flagId), // by time, the default
-		db.sortedSetAdd(`flags:byType:${type}`, timestamp, flagId),	// by flag type
-		db.sortedSetIncrBy('flags:byTarget', 1, [type, id].join(':')),	// by flag target (score is count)
+		db.sortedSetAdd(`flags:byType:${type}`, timestamp, flagId), // by flag type
+		db.sortedSetIncrBy('flags:byTarget', 1, [type, id].join(':')), // by flag target (score is count)
 		analytics.increment('flags') // some fancy analytics
 	);
 
@@ -441,7 +441,7 @@ Flags.create = async function (type, id, uid, reason, timestamp) {
 
 	if (type === 'post') {
 		batched.push(
-			db.sortedSetAdd(`flags:byPid:${id}`, timestamp, flagId),	// by target pid
+			db.sortedSetAdd(`flags:byPid:${id}`, timestamp, flagId), // by target pid
 			posts.setPostField(id, 'flagId', flagId)
 		);
 

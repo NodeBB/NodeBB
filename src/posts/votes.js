@@ -206,7 +206,7 @@ module.exports = function (Posts) {
 		let current = voteStatus.upvoted ? 'upvote' : 'downvote';
 		if (unvote) { // e.g. unvoting, removing a upvote or downvote
 			hook = 'unvote';
-		} else {	// e.g. User *has not* voted, clicks upvote or downvote
+		} else { // e.g. User *has not* voted, clicks upvote or downvote
 			current = 'unvote';
 		}
 		// action:post.upvote

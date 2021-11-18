@@ -285,7 +285,7 @@
 			case 'iPad':
 				icons += '<i class="fa fa-fw fa-tablet"></i>';
 				break;
-			case 'iPod':	// intentional fall-through
+			case 'iPod': // intentional fall-through
 			case 'iPhone':
 				icons += '<i class="fa fa-fw fa-mobile"></i>';
 				break;

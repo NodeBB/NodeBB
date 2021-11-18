@@ -1514,7 +1514,7 @@ describe('Post\'s', () => {
 
 				const events = await topics.events.get(tid1, 1);
 				assert(events);
-				assert.strictEqual(events.length, 1);	// should still equal 1
+				assert.strictEqual(events.length, 1); // should still equal 1
 			});
 
 			it('should not show backlink events if the feature is disabled', async () => {

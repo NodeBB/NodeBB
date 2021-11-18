@@ -102,7 +102,7 @@ define('forum/groups/details', [
 					Details.deleteGroup();
 					break;
 
-				case 'join':	// intentional fall-throughs!
+				case 'join': // intentional fall-throughs!
 					api.put('/groups/' + ajaxify.data.group.slug + '/membership/' + (uid || app.user.uid), undefined).then(() => ajaxify.refresh()).catch(app.alertError);
 					break;
 
@@ -111,7 +111,7 @@ define('forum/groups/details', [
 					break;
 
 				// TODO (14/10/2020): rewrite these to use api module and merge with above 2 case blocks
-				case 'accept':	// intentional fall-throughs!
+				case 'accept': // intentional fall-throughs!
 				case 'reject':
 				case 'issueInvite':
 				case 'rescindInvite':

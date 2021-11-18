@@ -84,7 +84,7 @@ define('admin/manage/privileges', [
 
 		Privileges.exposeAssumedPrivileges();
 		checkboxRowSelector.updateAll();
-		Privileges.addEvents();	// events with confirmation modals
+		Privileges.addEvents(); // events with confirmation modals
 	};
 
 	Privileges.addEvents = function () {

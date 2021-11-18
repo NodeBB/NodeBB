@@ -37,7 +37,7 @@ app.flags = {};
 		 * e.g. New Topic/Reply, post tools
 		 */
 		if (document.body) {
-			let earlyQueue = [];	// once we can ES6, use Set instead
+			let earlyQueue = []; // once we can ES6, use Set instead
 			const earlyClick = function (ev) {
 				let btnEl = ev.target.closest('button');
 				const anchorEl = ev.target.closest('a');
@@ -114,7 +114,7 @@ app.flags = {};
 		});
 	};
 
-	app.require = async (modules) => {	// allows you to await require.js modules
+	app.require = async (modules) => { // allows you to await require.js modules
 		const single = !Array.isArray(modules);
 		if (single) {
 			modules = [modules];

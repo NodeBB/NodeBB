@@ -716,7 +716,7 @@ describe('socket.io', () => {
 					event: async.apply(events.getEvents, '', 0, 0),
 				}, (err, data) => {
 					assert.ifError(err);
-					assert.strictEqual(data.count, 1);	// should still equal 1
+					assert.strictEqual(data.count, 1); // should still equal 1
 
 					// Event validity
 					assert.strictEqual(data.event.length, 1);

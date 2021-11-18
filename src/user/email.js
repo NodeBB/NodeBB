@@ -65,9 +65,9 @@ UserEmail.expireValidation = async (uid) => {
 
 UserEmail.sendValidationEmail = async function (uid, options) {
 	/*
-	 * 	Options:
-	 * 		- email, overrides email retrieval
-	 * 		- force, sends email even if it is too soon to send another
+	 * Options:
+	 * - email, overrides email retrieval
+	 * - force, sends email even if it is too soon to send another
 	 */
 
 	if (meta.config.sendValidationEmail !== 1) {

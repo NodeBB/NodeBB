@@ -168,7 +168,7 @@ function setupExpressApp(app) {
 	app.use((req, res, next) => {
 		als.run({ uid: req.uid }, next);
 	});
-	app.use(middleware.autoLocale);	// must be added after auth middlewares are added
+	app.use(middleware.autoLocale); // must be added after auth middlewares are added
 
 	const toobusy = require('toobusy-js');
 	toobusy.maxLag(meta.config.eventLoopLagThreshold);

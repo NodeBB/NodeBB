@@ -50,7 +50,7 @@ Topics.pin = async (req, res) => {
 	if (req.body.expiry) {
 		await topics.tools.setPinExpiry(req.params.tid, req.body.expiry, req.uid);
 	}
-	await api.topics.pin(req, {	tids: [req.params.tid] });
+	await api.topics.pin(req, { tids: [req.params.tid] });
 
 	helpers.formatApiResponse(200, res);
 };
@@ -107,7 +107,7 @@ Topics.deleteTags = async (req, res) => {
 };
 
 Topics.getThumbs = async (req, res) => {
-	if (isFinite(req.params.tid)) {	// post_uuids can be passed in occasionally, in that case no checks are necessary
+	if (isFinite(req.params.tid)) { // post_uuids can be passed in occasionally, in that case no checks are necessary
 		const [exists, canRead] = await Promise.all([
 			topics.exists(req.params.tid),
 			privileges.topics.can('topics:read', req.params.tid, req.uid),
@@ -126,7 +126,7 @@ Topics.addThumb = async (req, res) => {
 		return;
 	}
 
-	const files = await uploadsController.uploadThumb(req, res);	// response is handled here
+	const files = await uploadsController.uploadThumb(req, res); // response is handled here
 
 	// Add uploaded files to topic zset
 	if (files && files.length) {

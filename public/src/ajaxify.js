@@ -536,7 +536,7 @@ $(document).ready(function () {
 			}
 
 			// eslint-disable-next-line no-script-url
-			if (hrefEmpty(this.href) ||	this.protocol === 'javascript:' || href === '#' || href === '') {
+			if (hrefEmpty(this.href) || this.protocol === 'javascript:' || href === '#' || href === '') {
 				return e.preventDefault();
 			}
 

@@ -371,7 +371,7 @@ Notifications.merge = async function (notifications) {
 	notifications = mergeIds.reduce((notifications, mergeId) => {
 		const isolated = notifications.filter(n => n && n.hasOwnProperty('mergeId') && n.mergeId.split('|')[0] === mergeId);
 		if (isolated.length <= 1) {
-			return notifications;	// Nothing to merge
+			return notifications; // Nothing to merge
 		}
 
 		// Each isolated mergeId may have multiple differentiators, so process each separately

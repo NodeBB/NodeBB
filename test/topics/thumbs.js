@@ -175,7 +175,7 @@ describe('Topic thumbs', () => {
 
 			const score = await db.sortedSetScore(`topic:${tid}:thumbs`, relativeThumbPaths[0]);
 
-			assert(isFinite(score));	// exists in set
+			assert(isFinite(score)); // exists in set
 			assert.strictEqual(score, 2);
 		});
 
@@ -188,7 +188,7 @@ describe('Topic thumbs', () => {
 
 			const score = await db.sortedSetScore(`topic:${tid}:thumbs`, relativeThumbPaths[0]);
 
-			assert(isFinite(score));	// exists in set
+			assert(isFinite(score)); // exists in set
 			assert.strictEqual(score, 0);
 		});
 

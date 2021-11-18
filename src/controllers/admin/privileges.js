@@ -21,7 +21,7 @@ privilegesController.get = async function (req, res) {
 		name: '[[admin/manage/privileges:global]]',
 		icon: 'fa-list',
 	}, {
-		cid: 'admin',	// what do?
+		cid: 'admin',
 		name: '[[admin/manage/privileges:admin]]',
 		icon: 'fa-lock',
 	}];

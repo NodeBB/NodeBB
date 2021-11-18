@@ -19,7 +19,7 @@ describe('i18n', () => {
 	});
 
 	it('should contain folders named after the language code', async () => {
-		const valid = /(?:README.md|^[a-z]{2}(?:-[A-Z]{2})?$|^[a-z]{2}(?:-x-[a-z]+)?$)/;	// good luck
+		const valid = /(?:README.md|^[a-z]{2}(?:-[A-Z]{2})?$|^[a-z]{2}(?:-x-[a-z]+)?$)/; // good luck
 
 		folders.forEach((folder) => {
 			assert(valid.test(folder));

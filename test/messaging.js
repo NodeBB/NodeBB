@@ -17,17 +17,17 @@ const helpers = require('./helpers');
 const socketModules = require('../src/socket.io/modules');
 
 describe('Messaging Library', () => {
-	let fooUid;	// the admin
-	let bazUid;	// the user with chat restriction enabled
+	let fooUid; // the admin
+	let bazUid; // the user with chat restriction enabled
 	let herpUid;
 	let roomId;
 
 	before((done) => {
 		// Create 3 users: 1 admin, 2 regular
 		async.series([
-			async.apply(User.create, { username: 'foo', password: 'barbar' }),	// admin
-			async.apply(User.create, { username: 'baz', password: 'quuxquux' }),	// restricted user
-			async.apply(User.create, { username: 'herp', password: 'derpderp' }),	// regular user
+			async.apply(User.create, { username: 'foo', password: 'barbar' }), // admin
+			async.apply(User.create, { username: 'baz', password: 'quuxquux' }), // restricted user
+			async.apply(User.create, { username: 'herp', password: 'derpderp' }), // regular user
 		], (err, uids) => {
 			if (err) {
 				return done(err);

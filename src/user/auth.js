@@ -95,7 +95,7 @@ module.exports = function (User) {
 			const sid = uuidMapping[uuid];
 			const sessionObj = await getSessionFromStore(sid);
 			const expired = !sessionObj || !sessionObj.hasOwnProperty('passport') ||
-				!sessionObj.passport.hasOwnProperty('user')	||
+				!sessionObj.passport.hasOwnProperty('user') ||
 				parseInt(sessionObj.passport.user, 10) !== parseInt(uid, 10);
 			if (expired) {
 				expiredUUIDs.push(uuid);

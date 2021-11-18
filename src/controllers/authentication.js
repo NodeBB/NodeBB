@@ -106,7 +106,7 @@ authenticationController.register = async function (req, res) {
 
 		user.isPasswordValid(userData.password);
 
-		res.locals.processLogin = true;	// set it to false in plugin if you wish to just register only
+		res.locals.processLogin = true; // set it to false in plugin if you wish to just register only
 		await plugins.hooks.fire('filter:register.check', { req: req, res: res, userData: userData });
 
 		const data = await registerAndLoginUser(req, res, userData);
@@ -151,7 +151,7 @@ authenticationController.registerComplete = async function (req, res) {
 				req.body.files = req.files;
 				if (
 					(cur.callback.constructor && cur.callback.constructor.name === 'AsyncFunction') ||
-					cur.callback.length === 2	// non-async function w/o callback
+					cur.callback.length === 2 // non-async function w/o callback
 				) {
 					memo.push(cur.callback);
 				} else {
@@ -187,7 +187,7 @@ authenticationController.registerComplete = async function (req, res) {
 
 		if (req.session.registration.register === true) {
 			res.locals.processLogin = true;
-			req.body.noscript = 'true';	// trigger full page load on error
+			req.body.noscript = 'true'; // trigger full page load on error
 
 			const data = await registerAndLoginUser(req, res, req.session.registration);
 			if (!data) {
@@ -388,7 +388,9 @@ authenticationController.onSuccessfulLogin = async function (req, uid) {
 			version: req.useragent.version,
 		});
 		await Promise.all([
-			new Promise(resolve => req.session.save(resolve)),
+			new Promise((resolve) => {
+				req.session.save(resolve);
+			}),
 			user.auth.addSession(uid, req.sessionID),
 			user.updateLastOnlineTime(uid),
 			user.updateOnlineUsers(uid),

@@ -15,8 +15,8 @@ eventsController.get = async function (req, res) {
 	// Limit by date
 	let from = req.query.start ? new Date(req.query.start) || undefined : undefined;
 	let to = req.query.end ? new Date(req.query.end) || undefined : new Date();
-	from = from && from.setHours(0, 0, 0, 0);	// setHours returns a unix timestamp (Number, not Date)
-	to = to && to.setHours(23, 59, 59, 999);	// setHours returns a unix timestamp (Number, not Date)
+	from = from && from.setHours(0, 0, 0, 0); // setHours returns a unix timestamp (Number, not Date)
+	to = to && to.setHours(23, 59, 59, 999); // setHours returns a unix timestamp (Number, not Date)
 
 	const currentFilter = req.query.type || '';
 

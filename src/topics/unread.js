@@ -84,8 +84,8 @@ module.exports = function (Topics) {
 	};
 
 	async function getTids(params) {
-		const counts = { '': 0,	new: 0,	watched: 0,	unreplied: 0 };
-		const tidsByFilter = { '': [], new: [],	watched: [], unreplied: [] };
+		const counts = { '': 0, new: 0, watched: 0, unreplied: 0 };
+		const tidsByFilter = { '': [], new: [], watched: [], unreplied: [] };
 
 		if (params.uid <= 0) {
 			return { counts: counts, tids: [], tidsByFilter: tidsByFilter };

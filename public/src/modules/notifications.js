@@ -142,7 +142,7 @@ define('notifications', [
 			Tinycon.setBubble(count > 99 ? '99+' : count);
 		}
 
-		if (navigator.setAppBadge) {	// feature detection
+		if (navigator.setAppBadge) { // feature detection
 			navigator.setAppBadge(count);
 		}
 	};

@@ -259,6 +259,7 @@ describe('Utility Methods', () => {
 	});
 
 	it('should return passed in value if invalid', (done) => {
+		// eslint-disable-next-line no-loss-of-precision
 		const bigInt = -111111111111111111;
 		const result = utils.toISOString(bigInt);
 		assert.equal(bigInt, result);

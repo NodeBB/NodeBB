@@ -6,10 +6,10 @@ define('hooks', [], () => {
 		temporary: new Set(),
 		runOnce: new Set(),
 		deprecated: {
-			'action:script.load': 'filter:script.load',	// 👋 @ 1.18.0
-			'action:category.loaded': 'action:topics.loaded',	// 👋 @ 1.19.0
-			'action:category.loading': 'action:topics.loading',	// 👋 @ 1.19.0
-			'action:composer.check': 'filter:composer.check',	// 👋 @ 1.19.0
+			'action:script.load': 'filter:script.load', // 👋 @ 1.18.0
+			'action:category.loaded': 'action:topics.loaded', // 👋 @ 1.19.0
+			'action:category.loading': 'action:topics.loading', // 👋 @ 1.19.0
+			'action:composer.check': 'filter:composer.check', // 👋 @ 1.19.0
 		},
 	};
 

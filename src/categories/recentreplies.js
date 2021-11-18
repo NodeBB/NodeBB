@@ -153,7 +153,7 @@ module.exports = function (Categories) {
 
 	function getPostsRecursive(category, posts) {
 		if (Array.isArray(category.posts)) {
-			category.posts.forEach(p =>	posts.push(p));
+			category.posts.forEach(p => posts.push(p));
 		}
 
 		category.children.forEach(child => getPostsRecursive(child, posts));

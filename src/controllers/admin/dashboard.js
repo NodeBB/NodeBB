@@ -188,7 +188,7 @@ async function getStatsFromAnalytics(set, field) {
 		today: data.slice(-1)[0],
 		lastweek: sum(data.slice(-14)),
 		thisweek: sum(data.slice(-7)),
-		lastmonth: sum(data.slice(0)),	// entire set
+		lastmonth: sum(data.slice(0)), // entire set
 		thismonth: sum(data.slice(-30)),
 		alltime: await getGlobalField(field),
 	};

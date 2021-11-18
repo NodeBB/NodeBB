@@ -145,7 +145,7 @@ define('admin/manage/users', [
 			const uids = getSelectedUids();
 			if (!uids.length) {
 				app.alertError('[[error:no-users-selected]]');
-				return false;	// specifically to keep the menu open
+				return false; // specifically to keep the menu open
 			}
 
 			bootbox.confirm((uids.length > 1 ? '[[admin/manage/users:alerts.confirm-ban-multi]]' : '[[admin/manage/users:alerts.confirm-ban]]'), function (confirm) {
@@ -163,7 +163,7 @@ define('admin/manage/users', [
 			const uids = getSelectedUids();
 			if (!uids.length) {
 				app.alertError('[[error:no-users-selected]]');
-				return false;	// specifically to keep the menu open
+				return false; // specifically to keep the menu open
 			}
 
 			Benchpress.render('admin/partials/temporary-ban', {}).then(function (html) {
@@ -207,7 +207,7 @@ define('admin/manage/users', [
 			const uids = getSelectedUids();
 			if (!uids.length) {
 				app.alertError('[[error:no-users-selected]]');
-				return false;	// specifically to keep the menu open
+				return false; // specifically to keep the menu open
 			}
 
 			Promise.all(uids.map(function (uid) {

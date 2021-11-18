@@ -5,7 +5,7 @@ define('forum/infinitescroll', ['hooks'], function (hooks) {
 	const scroll = {};
 	let callback;
 	let previousScrollTop = 0;
-	let loadingMore	= false;
+	let loadingMore = false;
 	let container;
 	let scrollTimeout = 0;
 

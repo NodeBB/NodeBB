@@ -869,7 +869,7 @@ describe('User', () => {
 							assert.ifError(err);
 							Object.keys(data).forEach((key) => {
 								if (key === 'email') {
-									assert.strictEqual(userData.email, 'just@for.updated');	// email remains the same until confirmed
+									assert.strictEqual(userData.email, 'just@for.updated'); // email remains the same until confirmed
 								} else if (key !== 'password') {
 									assert.equal(data[key], userData[key]);
 								} else {
@@ -1500,9 +1500,9 @@ describe('User', () => {
 				function (next) {
 					User.digest.getSubscribers('day', (err, subs) => {
 						assert.ifError(err);
-						assert.strictEqual(subs.includes(uidIndex.daysub.toString()), true);	// daysub does get emailed
-						assert.strictEqual(subs.includes(uidIndex.weeksub.toString()), false);	// weeksub does not get emailed
-						assert.strictEqual(subs.includes(uidIndex.offsub.toString()), false);	// offsub doesn't get emailed
+						assert.strictEqual(subs.includes(uidIndex.daysub.toString()), true); // daysub does get emailed
+						assert.strictEqual(subs.includes(uidIndex.weeksub.toString()), false); // weeksub does not get emailed
+						assert.strictEqual(subs.includes(uidIndex.offsub.toString()), false); // offsub doesn't get emailed
 
 						next();
 					});
@@ -1516,9 +1516,9 @@ describe('User', () => {
 				function (next) {
 					User.digest.getSubscribers('week', (err, subs) => {
 						assert.ifError(err);
-						assert.strictEqual(subs.includes(uidIndex.weeksub.toString()), true);	// weeksub gets emailed
-						assert.strictEqual(subs.includes(uidIndex.daysub.toString()), false);	// daysub gets emailed
-						assert.strictEqual(subs.includes(uidIndex.offsub.toString()), false);	// offsub does not get emailed
+						assert.strictEqual(subs.includes(uidIndex.weeksub.toString()), true); // weeksub gets emailed
+						assert.strictEqual(subs.includes(uidIndex.daysub.toString()), false); // daysub gets emailed
+						assert.strictEqual(subs.includes(uidIndex.offsub.toString()), false); // offsub does not get emailed
 
 						next();
 					});

@@ -15,7 +15,7 @@ SocketFlags.create = async function (socket, data) {
 
 SocketFlags.update = async function (socket, data) {
 	sockets.warnDeprecated(socket, 'PUT /api/v3/flags/:flagId');
-	if (!data || !(data.flagId && data.data)) {	// check only req'd in socket.io
+	if (!data || !(data.flagId && data.data)) { // check only req'd in socket.io
 		throw new Error('[[error:invalid-data]]');
 	}
 
