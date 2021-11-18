@@ -353,7 +353,7 @@ app.flags = {};
 
 	function registerServiceWorker() {
 		// Do not register for Safari browsers
-		if (!ajaxify.data._locals.useragent.isSafari && 'serviceWorker' in navigator) {
+		if (!config.useragent.isSafari && 'serviceWorker' in navigator) {
 			navigator.serviceWorker.register(config.relative_path + '/service-worker.js', { scope: config.relative_path + '/' })
 				.then(function () {
 					console.info('ServiceWorker registration succeeded.');

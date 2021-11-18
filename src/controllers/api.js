@@ -81,6 +81,7 @@ apiController.loadConfig = async function (req) {
 		},
 		iconBackgrounds: await user.getIconBackgrounds(req.uid),
 		emailPrompt: meta.config.emailPrompt,
+		useragent: req.useragent,
 	};
 
 	let settings = config;
