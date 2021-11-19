@@ -142,6 +142,8 @@ paths:
     $ref: 'write/flags/flagId/notes/datetime.yaml'
   /admin/settings/{setting}:
     $ref: 'write/admin/settings/setting.yaml'
+  /admin/analytics:
+    $ref: 'write/admin/analytics.yaml'
   /admin/analytics/{set}:
     $ref: 'write/admin/analytics/set.yaml'
   /files/:
