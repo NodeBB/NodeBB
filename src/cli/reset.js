@@ -119,14 +119,10 @@ async function resetPlugin(pluginId) {
 		const isActive = await db.isSortedSetMember('plugins:active', pluginId);
 		if (isActive) {
 			await db.sortedSetRemove('plugins:active', pluginId);
-		}
-
-		await events.log({
-			type: 'plugin-deactivate',
-			text: pluginId,
-		});
-
-		if (isActive) {
+			await events.log({
+				type: 'plugin-deactivate',
+				text: pluginId,
+			});
 			winston.info('[reset] Plugin `%s` disabled', pluginId);
 		} else {
 			winston.warn('[reset] Plugin `%s` was not active on this forum', pluginId);
