@@ -90,6 +90,17 @@ Analytics.writeData = async function () {
 	const month = new Date();
 	const dbQueue = [];
 
+	// Build list of metrics that were updated
+	let metrics = [
+		'pageviews',
+		'pageviews:month',
+	];
+	metrics.forEach((metric) => {
+		const toAdd = ['registered', 'guest', 'bot'].map(type => `${metric}:${type}`);
+		metrics = [...metrics, ...toAdd];
+	});
+	metrics.push('uniquevisitors');
+
 	today.setHours(today.getHours(), 0, 0, 0);
 	month.setMonth(month.getMonth(), 1);
 	month.setHours(0, 0, 0, 0);
@@ -130,8 +141,13 @@ Analytics.writeData = async function () {
 
 	for (const [key, value] of Object.entries(counters)) {
 		dbQueue.push(db.sortedSetIncrBy(`analytics:${key}`, value, today.getTime()));
+		metrics.push(key);
 		delete counters[key];
 	}
+
+	// Update list of tracked metrics
+	dbQueue.push(db.sortedSetAdd('analyticsKeys', metrics.map(() => +Date.now()), metrics));
+
 	try {
 		await Promise.all(dbQueue);
 	} catch (err) {
