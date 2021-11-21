@@ -60,7 +60,7 @@
     "notification_and_email": "Обавештење и е-пошта",
     "notificationType_upvote": "Када неко гласа за вашу поруку",
     "notificationType_new-topic": "Када неко кога пратите постави тему",
-    "notificationType_new-reply": "Када је постављен нови одговор у теми коју надгледате",
+    "notificationType_new-reply": "Када је објављен нови одговор у теми коју надгледате",
     "notificationType_post-edit": "Када је порука уређена у теми коју надгледате",
     "notificationType_follow": "Када неко почне да вас прати",
     "notificationType_new-chat": "Када примите поруку ћаскања",
