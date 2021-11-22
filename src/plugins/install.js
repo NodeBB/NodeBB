@@ -2,7 +2,7 @@
 
 const winston = require('winston');
 const path = require('path');
-const fs = require('fs');
+const fs = require('fs').promises;
 const nconf = require('nconf');
 const os = require('os');
 const cproc = require('child_process');
@@ -137,7 +137,7 @@ module.exports = function (Plugins) {
 	Plugins.isInstalled = async function (id) {
 		const pluginDir = path.join(paths.nodeModules, id);
 		try {
-			const stats = await fs.promises.stat(pluginDir);
+			const stats = await fs.stat(pluginDir);
 			return stats.isDirectory();
 		} catch (err) {
 			return false;
@@ -150,5 +150,13 @@ module.exports = function (Plugins) {
 
 	Plugins.getActive = async function () {
 		return await db.getSortedSetRange('plugins:active', 0, -1);
+	};
+
+	Plugins.autocomplete = async (fragment) => {
+		const pluginDir = paths.nodeModules;
+		const plugins = (await fs.readdir(pluginDir)).filter(filename => filename.startsWith(fragment));
+
+		// Autocomplete only if single match
+		return plugins.length === 1 ? plugins.pop() : fragment;
 	};
 };

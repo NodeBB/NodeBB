@@ -25,6 +25,7 @@ exports.reset = async function (options) {
 					themeId = `nodebb-theme-${themeId}`;
 				}
 
+				themeId = await plugins.autocomplete(themeId);
 				await resetTheme(themeId);
 			}
 		},
@@ -38,6 +39,7 @@ exports.reset = async function (options) {
 					pluginId = `nodebb-plugin-${pluginId}`;
 				}
 
+				pluginId = await plugins.autocomplete(pluginId);
 				await resetPlugin(pluginId);
 			}
 		},
