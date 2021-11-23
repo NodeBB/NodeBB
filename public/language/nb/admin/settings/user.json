@@ -6,7 +6,6 @@
 	"allow-login-with": "Tillat innlogging med",
 	"allow-login-with.username-email": "Brukernavn eller e-post",
 	"allow-login-with.username": "Kun brukernavn",
-	"allow-login-with.email": "Kun e-post",
 	"account-settings": "Kontoinnstillinger ",
 	"gdpr_enabled": "Aktiver innhenting av GDPR-samtykke",
 	"gdpr_enabled_help": "Når aktivert, vil alle nye registranter være pålagt å eksplisitt gi samtykke til datainnsamling og behandling under <a href=\"https://ec.europa.eu/info/priorities/justice-and-fundamental-rights/data-protection/2018-reform-eu-data-protection-rules/eu-data-protection-rules_en\">Personvernforordningen (GDPR)</a>. <strong>Merk</strong>: Aktivering av GDPR tvinger ikke eksisterende brukere til å gi samtykke. For å gjøre dette, må du installere GDPR-programutvidelse. ",

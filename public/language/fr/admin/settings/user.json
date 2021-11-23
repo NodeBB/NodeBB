@@ -6,7 +6,6 @@
 	"allow-login-with": "Autoriser l'identification avec",
 	"allow-login-with.username-email": "Nom d'utilisateur ou e-mail",
 	"allow-login-with.username": "Nom d'utilisateur uniquement",
-	"allow-login-with.email": "E-mail uniquement",
 	"account-settings": "Paramètres du compte",
 	"gdpr_enabled": "Activer le consentement GRPD",
 	"gdpr_enabled_help": "Une fois activé, tous les nouveaux inscrits seront tenus de donner explicitement leur consentement pour la collecte et l'utilisation des données en vertu du <a href=\"https://ec.europa.eu/info/priorities/justice-and-fundamental-rights/data-protection/2018-reform-eu-data-protection-rules/eu-data-protection-rules_en\">Règlement Général sur la Protection des Données (RGPD)</a>. <strong>Remarque</strong>: l'activation du RGPD n'oblige pas les utilisateurs préexistants à donner leur consentement. Pour ce faire, vous devrez installer le plugin GDPR.",

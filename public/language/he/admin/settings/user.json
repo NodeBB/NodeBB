@@ -6,7 +6,6 @@
 	"allow-login-with": "אפשר התחברות עם",
 	"allow-login-with.username-email": "שם משתמש או סיסמא",
 	"allow-login-with.username": "שם משתמש בלבד",
-	"allow-login-with.email": "כתובת מייל בלבד",
 	"account-settings": "הגדרות חשבון",
 	"gdpr_enabled": "אפשר הסכמת איסוף נתונים GDPR",
 	"gdpr_enabled_help": "כאשר תאפשר, כל המשתמשים החדשים יידרשו לתת הסכמה באופן מפורש לאיסוף ושימוש בנתונים תחת ה <a href=\"https://ec.europa.eu/info/priorities/justice-and-fundamental-rights/data-protection/2018-reform-eu-data-protection-rules/eu-data-protection-rules_en\">התקנה הכללית להגנת נתונים (GDPR)</a>. <strong>הערה</strong>: הפעלת GDPR לא יכריח משתמשים קיימים לאשר הסכמה. כדי לעשות זאת, תצטרכו להתקין את התוסף GDPR.",

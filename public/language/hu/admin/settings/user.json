@@ -6,7 +6,6 @@
 	"allow-login-with": "Bejelentkezés engedélyezése ezzel:",
 	"allow-login-with.username-email": "Felhasználónév vagy email cím",
 	"allow-login-with.username": "Csak felhasználónév",
-	"allow-login-with.email": "Csak email cím",
 	"account-settings": "Fiók beállítások",
 	"gdpr_enabled": "GDPR hozzájárulás gyűjtésének engedélyezése",
 	"gdpr_enabled_help": "Ha engedélyezett, minden új regisztrációnál hozzájárulását kell adnia a felhasználónak az adatai mentéséhez és felhasználásához az <a href=\"https://ec.europa.eu/info/priorities/justice-and-fundamental-rights/data-protection/2018-reform-eu-data-protection-rules/eu-data-protection-rules_en\">Általános adatvédelmi rendelet(GDPR)</a> értelmében. <strong>Megjegyzés</strong>: A GDPR engedélyezése nem kéri a már meglévő felhasználóktól, hogy fogadják el az adatgyűjtést és felhasználást. Ehhez telepítened kell a GDPR beépülőt.",

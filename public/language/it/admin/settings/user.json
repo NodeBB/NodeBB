@@ -6,7 +6,6 @@
 	"allow-login-with": "Consenti l'accesso con",
 	"allow-login-with.username-email": "Username o Email",
 	"allow-login-with.username": "Solo Username",
-	"allow-login-with.email": "Solo Email",
 	"account-settings": "Impostazioni Account",
 	"gdpr_enabled": "Abilita la raccolta di consensi GDPR",
 	"gdpr_enabled_help": "Quando è abilitato, tutti i nuovi registranti dovranno dare il loro consenso esplicito per la raccolta e l'utilizzo dei dati ai sensi del <a href=\"https://ec.europa.eu/info/priorities/justice-and-fundamental-rights/data-protection/2018-reform-eu-data-protection-rules/eu-data-protection-rules_en\">regolamento generale sulla protezione dei dati (GDPR)</a>. <strong>Nota</strong>: L'abilitazione del GDPR non obbliga gli utenti preesistenti a fornire il consenso. Per farlo, è necessario installare il plugin GDPR.",

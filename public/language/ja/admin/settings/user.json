@@ -6,7 +6,6 @@
 	"allow-login-with": "ログインを許可",
 	"allow-login-with.username-email": "ユーザー名または電子メール",
 	"allow-login-with.username": "ユーザー名のみ",
-	"allow-login-with.email": "メールのみ",
 	"account-settings": "アカウント設定",
 	"gdpr_enabled": "GDPR同意収集を有効にする",
 	"gdpr_enabled_help": "When enabled, all new registrants will be required to explicitly give consent for data collection and usage under the <a href=\"https://ec.europa.eu/info/priorities/justice-and-fundamental-rights/data-protection/2018-reform-eu-data-protection-rules/eu-data-protection-rules_en\">General Data Protection Regulation (GDPR)</a>. <strong>Note</strong>: Enabling GDPR does not force pre-existing users to provide consent. To do so, you will need to install the GDPR plugin.",
