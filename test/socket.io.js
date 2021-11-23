@@ -191,41 +191,54 @@ describe('socket.io', () => {
 
 	describe('user create/delete', () => {
 		let uid;
+		const apiUsers = require('../src/api/users');
 		it('should create a user', async () => {
-			const userData = await socketAdmin.user.createUser({ uid: adminUid }, { username: 'foo1' });
+			const userData = await apiUsers.create({ uid: adminUid }, { username: 'foo1' });
 			uid = userData.uid;
 			const isMember = await groups.isMember(userData.uid, 'registered-users');
 			assert(isMember);
 		});
 
 		it('should delete users', async () => {
-			await socketAdmin.user.deleteUsers({ uid: adminUid }, [uid]);
+			await apiUsers.delete({ uid: adminUid }, { uid });
 			await sleep(500);
 			const isMember = await groups.isMember(uid, 'registered-users');
 			assert(!isMember);
 		});
 
-		it('should error if user does not exist', (done) => {
-			socketAdmin.user.deleteUsersAndContent({ uid: adminUid }, [uid], (err) => {
-				assert.strictEqual(err.message, '[[error:no-user]]');
-				done();
-			});
+		it('should error if user does not exist', async () => {
+			let err;
+			try {
+				await apiUsers.deleteMany({ uid: adminUid }, { uids: [uid] });
+			} catch (_err) {
+				err = _err;
+			}
+			assert.strictEqual(err.message, '[[error:no-user]]');
 		});
 
 		it('should delete users and their content', async () => {
-			const userData = await socketAdmin.user.createUser({ uid: adminUid }, { username: 'foo2' });
-			await socketAdmin.user.deleteUsersAndContent({ uid: adminUid }, [userData.uid]);
+			const userData = await apiUsers.create({ uid: adminUid }, { username: 'foo2' });
+			await apiUsers.deleteMany({ uid: adminUid }, { uids: [userData.uid] });
 			await sleep(500);
 			const isMember = await groups.isMember(userData.uid, 'registered-users');
 			assert(!isMember);
 		});
+
+		it('should error with invalid data', async () => {
+			let err;
+			try {
+				await apiUsers.create({ uid: adminUid }, null);
+			} catch (_err) {
+				err = _err;
+			}
+			assert.strictEqual(err.message, '[[error:invalid-data]]');
+		});
 	});
 
-	it('should error with invalid data', (done) => {
-		socketAdmin.user.createUser({ uid: adminUid }, null, (err) => {
-			assert.equal(err.message, '[[error:invalid-data]]');
-			done();
-		});
+	it('should load user groups', async () => {
+		const { users } = await socketAdmin.user.loadGroups({ uid: adminUid }, [adminUid]);
+		assert.strictEqual(users[0].username, 'admin');
+		assert(Array.isArray(users[0].groups));
 	});
 
 	it('should reset lockouts', (done) => {
@@ -566,7 +579,9 @@ describe('socket.io', () => {
 				await socketAdmin.email.test({ uid: adminUid }, { template: tpl });
 			}
 		} catch (err) {
-			assert.ifError(err);
+			if (err.message !== '[[error:sendmail-not-found]]') {
+				assert.ifError(err);
+			}
 		}
 	});
 
@@ -681,6 +696,41 @@ describe('socket.io', () => {
 	describe('password reset', () => {
 		const socketUser = require('../src/socket.io/user');
 
+		it('should error if uids is not array', (done) => {
+			socketAdmin.user.sendPasswordResetEmail({ uid: adminUid }, null, (err) => {
+				assert.strictEqual(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should error if uid doesnt have email', (done) => {
+			socketAdmin.user.sendPasswordResetEmail({ uid: adminUid }, [adminUid], (err) => {
+				assert.strictEqual(err.message, '[[error:user-doesnt-have-email, admin]]');
+				done();
+			});
+		});
+
+		it('should send password reset email', async () => {
+			await user.setUserField(adminUid, 'email', 'admin_test@nodebb.org');
+			await user.email.confirmByUid(adminUid);
+			await socketAdmin.user.sendPasswordResetEmail({ uid: adminUid }, [adminUid]);
+		});
+
+		it('should error if uids is not array', (done) => {
+			socketAdmin.user.forcePasswordReset({ uid: adminUid }, null, (err) => {
+				assert.strictEqual(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should for password reset', async () => {
+			const then = Date.now();
+			const uid = await user.create({ username: 'forceme', password: '123345' });
+			await socketAdmin.user.forcePasswordReset({ uid: adminUid }, [uid]);
+			const pwExpiry = await user.getUserField(uid, 'passwordExpiry');
+			assert(pwExpiry > then && pwExpiry < Date.now());
+		});
+
 		it('should not error on valid email', (done) => {
 			socketUser.reset.send({ uid: 0 }, 'regular@test.com', (err) => {
 				assert.ifError(err);
@@ -690,7 +740,7 @@ describe('socket.io', () => {
 					event: async.apply(events.getEvents, '', 0, 0),
 				}, (err, data) => {
 					assert.ifError(err);
-					assert.strictEqual(data.count, 1);
+					assert.strictEqual(data.count, 2);
 
 					// Event validity
 					assert.strictEqual(data.event.length, 1);
@@ -712,7 +762,7 @@ describe('socket.io', () => {
 					event: async.apply(events.getEvents, '', 0, 0),
 				}, (err, data) => {
 					assert.ifError(err);
-					assert.strictEqual(data.count, 1); // should still equal 1
+					assert.strictEqual(data.count, 2);
 
 					// Event validity
 					assert.strictEqual(data.event.length, 1);
@@ -731,7 +781,7 @@ describe('socket.io', () => {
 
 				db.sortedSetCount('reset:issueDate', 0, Date.now(), (err, count) => {
 					assert.ifError(err);
-					assert.strictEqual(count, 1);
+					assert.strictEqual(count, 2);
 					done();
 				});
 			});

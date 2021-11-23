@@ -99,9 +99,6 @@ privsAdmin.socketMap = {
 	'admin.user.sendValidationEmail': 'admin:users',
 	'admin.user.sendPasswordResetEmail': 'admin:users',
 	'admin.user.forcePasswordReset': 'admin:users',
-	'admin.user.deleteUsers': 'admin:users',
-	'admin.user.deleteUsersAndContent': 'admin:users',
-	'admin.user.createUser': 'admin:users',
 	'admin.user.invite': 'admin:users',
 
 	'admin.tags.create': 'admin:tags',
