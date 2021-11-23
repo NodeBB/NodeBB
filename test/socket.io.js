@@ -244,7 +244,6 @@ describe('socket.io', () => {
 	});
 
 	describe('validation emails', () => {
-		const meta = require('../src/meta');
 		const plugins = require('../src/plugins');
 
 		async function dummyEmailerHook(data) {
@@ -567,11 +566,16 @@ describe('socket.io', () => {
 		});
 	});
 
-	it('should send test email', (done) => {
-		socketAdmin.email.test({ uid: adminUid }, { template: 'digest.tpl' }, (err) => {
+	it('should send test email', async () => {
+		const tpls = ['digest', 'test', 'verify', 'welcome', 'notification', 'invitation'];
+		try {
+			for (const tpl of tpls) {
+				// eslint-disable-next-line no-await-in-loop
+				await socketAdmin.email.test({ uid: adminUid }, { template: tpl });
+			}
+		} catch (err) {
 			assert.ifError(err);
-			done();
-		});
+		}
 	});
 
 	it('should not error when resending digests', async () => {
