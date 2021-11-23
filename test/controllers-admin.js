@@ -81,12 +81,29 @@ describe('Admin Controllers', () => {
 	it('should load admin dashboard', (done) => {
 		groups.join('administrators', adminUid, (err) => {
 			assert.ifError(err);
-			request(`${nconf.get('url')}/admin`, { jar: jar }, (err, res, body) => {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 200);
-				assert(body);
-				done();
-			});
+			const dashboards = [
+				'/admin', '/admin/dashboard/logins', '/admin/dashboard/users', '/admin/dashboard/topics', '/admin/dashboard/searches',
+			];
+			async.each(dashboards, (url, next) => {
+				request(`${nconf.get('url')}${url}`, { jar: jar }, (err, res, body) => {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200, url);
+					assert(body);
+
+					next();
+				});
+			}, done);
+		});
+	});
+
+	it('should load admin analytics', (done) => {
+		request(`${nconf.get('url')}/api/admin/analytics?units=hours`, { jar: jar, json: true }, (err, res, body) => {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			assert(body.query);
+			assert(body.result);
+			done();
 		});
 	});
 
