@@ -567,7 +567,7 @@ describe('socket.io', () => {
 	});
 
 	it('should send test email', async () => {
-		const tpls = ['digest', 'test', 'verify', 'welcome', 'notification', 'invitation'];
+		const tpls = ['digest', 'banned', 'verify', 'welcome', 'notification', 'invitation'];
 		try {
 			for (const tpl of tpls) {
 				// eslint-disable-next-line no-await-in-loop
