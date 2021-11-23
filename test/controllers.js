@@ -2406,6 +2406,46 @@ describe('Controllers', () => {
 		});
 	});
 
+	describe('test routes', () => {
+		if (process.env.NODE_ENV === 'development') {
+			it('should load debug route', (done) => {
+				request(`${nconf.get('url')}/debug/test`, {}, (err, res, body) => {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 404);
+					assert(body);
+					done();
+				});
+			});
+
+			it('should load redoc read route', (done) => {
+				request(`${nconf.get('url')}/debug/spec/read`, {}, (err, res, body) => {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					assert(body);
+					done();
+				});
+			});
+
+			it('should load redoc write route', (done) => {
+				request(`${nconf.get('url')}/debug/spec/write`, {}, (err, res, body) => {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					assert(body);
+					done();
+				});
+			});
+
+			it('should load 404 for invalid type', (done) => {
+				request(`${nconf.get('url')}/debug/spec/doesnotexist`, {}, (err, res, body) => {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 404);
+					assert(body);
+					done();
+				});
+			});
+		}
+	});
+
 	after((done) => {
 		const analytics = require('../src/analytics');
 		analytics.writeData(done);
