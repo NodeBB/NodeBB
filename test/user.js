@@ -1459,7 +1459,7 @@ describe('User', () => {
 		});
 	});
 
-	describe('Digest.getSubscribers', (done) => {
+	describe('Digest.getSubscribers', () => {
 		const uidIndex = {};
 
 		before((done) => {
@@ -1561,8 +1561,11 @@ describe('User', () => {
 		});
 
 		it('should send digests', (done) => {
+			const oldValue = meta.config.includeUnverifiedEmails;
+			meta.config.includeUnverifiedEmails = true;
 			User.digest.execute({ interval: 'day' }, (err) => {
 				assert.ifError(err);
+				meta.config.includeUnverifiedEmails = oldValue;
 				done();
 			});
 		});
@@ -1572,6 +1575,12 @@ describe('User', () => {
 				assert.ifError(err);
 				done();
 			});
+		});
+
+		it('should get delivery times', async () => {
+			const data = await User.digest.getDeliveryTimes(0, -1);
+			const users = data.users.filter(u => u.username === 'digestuser');
+			assert.strictEqual(users[0].setting, 'day');
 		});
 
 		describe('unsubscribe via POST', () => {
