@@ -1,6 +1,5 @@
 'use strict';
 
-const db = require('../../database');
 const meta = require('../../meta');
 
 module.exports = {
