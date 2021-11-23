@@ -519,6 +519,20 @@ describe('Admin Controllers', () => {
 		});
 	});
 
+	it('should load /admin/manage/catgories?cid=<cid>', async () => {
+		const { cid: rootCid } = await categories.create({ name: 'parent category' });
+		const { cid: childCid } = await categories.create({ name: 'child category', parentCid: rootCid });
+		const { res, body } = await helpers.request('get', `/api/admin/manage/categories?cid=${rootCid}`, {
+			jar: jar,
+			json: true,
+		});
+		assert.strictEqual(res.statusCode, 200);
+		assert.strictEqual(body.categoriesTree[0].cid, rootCid);
+		assert.strictEqual(body.categoriesTree[0].children[0].cid, childCid);
+		assert.strictEqual(body.breadcrumbs[0].text, '[[admin/manage/categories:top-level]]');
+		assert.strictEqual(body.breadcrumbs[1].text, 'parent category');
+	});
+
 	it('should load /admin/manage/categories/1/analytics', (done) => {
 		request(`${nconf.get('url')}/api/admin/manage/categories/1/analytics`, { jar: jar, json: true }, (err, res, body) => {
 			assert.ifError(err);
