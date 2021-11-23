@@ -43,7 +43,7 @@ helpers.loginUser = function (username, password, callback) {
 		if (err || res.statusCode !== 200) {
 			return callback(err || new Error('[[error:invalid-response]]'));
 		}
-
+		const { csrf_token } = body;
 		request.post(`${nconf.get('url')}/login`, {
 			form: {
 				username: username,
@@ -52,13 +52,13 @@ helpers.loginUser = function (username, password, callback) {
 			json: true,
 			jar: jar,
 			headers: {
-				'x-csrf-token': body.csrf_token,
+				'x-csrf-token': csrf_token,
 			},
-		}, (err, res) => {
-			if (err || res.statusCode !== 200) {
+		}, (err, res, body) => {
+			if (err) {
 				return callback(err || new Error('[[error:invalid-response]]'));
 			}
-			callback(null, { jar, csrf_token: body.csrf_token });
+			callback(null, { jar, res, body, csrf_token: csrf_token });
 		});
 	});
 };
