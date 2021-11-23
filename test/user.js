@@ -1927,6 +1927,72 @@ describe('User', () => {
 				done();
 			});
 		});
+
+		it('should get unread count 0 for guest', async () => {
+			const count = await socketUser.getUnreadCount({ uid: 0 });
+			assert.strictEqual(count, 0);
+		});
+
+		it('should get unread count for user', async () => {
+			const count = await socketUser.getUnreadCount({ uid: testUid });
+			assert.strictEqual(count, 2);
+		});
+
+		it('should get unread chat count 0 for guest', async () => {
+			const count = await socketUser.getUnreadChatCount({ uid: 0 });
+			assert.strictEqual(count, 0);
+		});
+
+		it('should get unread chat count for user', async () => {
+			const count = await socketUser.getUnreadChatCount({ uid: testUid });
+			assert.strictEqual(count, 0);
+		});
+
+		it('should get unread counts 0 for guest', async () => {
+			const counts = await socketUser.getUnreadCounts({ uid: 0 });
+			assert.deepStrictEqual(counts, {});
+		});
+
+		it('should get unread counts for user', async () => {
+			const counts = await socketUser.getUnreadCounts({ uid: testUid });
+			assert.deepStrictEqual(counts, {
+				unreadChatCount: 0,
+				unreadCounts: {
+					'': 2,
+					new: 2,
+					unreplied: 2,
+					watched: 0,
+				},
+				unreadNewTopicCount: 2,
+				unreadNotificationCount: 0,
+				unreadTopicCount: 2,
+				unreadUnrepliedTopicCount: 2,
+				unreadWatchedTopicCount: 0,
+			});
+		});
+
+		it('should get user data by uid', async () => {
+			const userData = await socketUser.getUserByUID({ uid: testUid }, testUid);
+			assert.strictEqual(userData.uid, testUid);
+		});
+
+		it('should get user data by username', async () => {
+			const userData = await socketUser.getUserByUsername({ uid: testUid }, 'John Smith');
+			assert.strictEqual(userData.uid, testUid);
+		});
+
+		it('should get user data by email', async () => {
+			const userData = await socketUser.getUserByEmail({ uid: testUid }, 'john@example.com');
+			assert.strictEqual(userData.uid, testUid);
+		});
+
+		it('should check/consent gdpr status', async () => {
+			const consent = await socketUser.gdpr.check({ uid: testUid }, { uid: testUid });
+			assert(!consent);
+			await socketUser.gdpr.consent({ uid: testUid });
+			const consentAfter = await socketUser.gdpr.check({ uid: testUid }, { uid: testUid });
+			assert(consentAfter);
+		});
 	});
 
 	describe('approval queue', () => {
