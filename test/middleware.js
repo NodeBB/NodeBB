@@ -61,7 +61,6 @@ describe('Middlewares', () => {
 			const resMock = { locals: {} };
 			middleware.exposePrivilegeSet(reqMock, resMock, () => {
 				assert(resMock.locals.privileges);
-				console.log(resMock.locals.privileges);
 				assert.deepStrictEqual(resMock.locals.privileges, {
 					chat: true,
 					'upload:post:image': true,
