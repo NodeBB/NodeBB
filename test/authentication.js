@@ -29,7 +29,7 @@ describe('authentication', () => {
 
 	it('should allow login with email for uid 1', async () => {
 		const oldValue = meta.config.allowLoginWith;
-		meta.config.allowLoginWith = 'email';
+		meta.config.allowLoginWith = 'username-email';
 		const { res } = await helpers.loginUser('regular@nodebb.org', 'regularpwd');
 		assert.strictEqual(res.statusCode, 200);
 		meta.config.allowLoginWith = oldValue;
@@ -37,7 +37,7 @@ describe('authentication', () => {
 
 	it('second user should fail to login with email since email is not confirmed', async () => {
 		const oldValue = meta.config.allowLoginWith;
-		meta.config.allowLoginWith = 'email';
+		meta.config.allowLoginWith = 'username-email';
 		const uid = await user.create({ username: '2nduser', password: '2ndpassword', email: '2nduser@nodebb.org' });
 		const { res, body } = await helpers.loginUser('2nduser@nodebb.org', '2ndpassword');
 		assert.strictEqual(res.statusCode, 403);
