@@ -406,6 +406,24 @@ describe('Admin Controllers', () => {
 		});
 	});
 
+	it('should load /api/admin/advanced/cache/dump and 404 with no query param', (done) => {
+		request(`${nconf.get('url')}/api/admin/advanced/cache/dump`, { jar: jar, json: true }, (err, res, body) => {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 404);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load /api/admin/advanced/cache/dump', (done) => {
+		request(`${nconf.get('url')}/api/admin/advanced/cache/dump?name=post`, { jar: jar }, (err, res, body) => {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
 	it('should load /admin/advanced/errors', (done) => {
 		request(`${nconf.get('url')}/api/admin/advanced/errors`, { jar: jar, json: true }, (err, res, body) => {
 			assert.ifError(err);
