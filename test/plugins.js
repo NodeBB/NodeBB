@@ -210,6 +210,13 @@ describe('Plugins', () => {
 		});
 	});
 
+	it('should submit usage info', (done) => {
+		plugins.submitUsage((err) => {
+			assert.ifError(err);
+			done();
+		});
+	});
+
 	describe('install/activate/uninstall', () => {
 		let latest;
 		const pluginName = 'nodebb-plugin-imgur';
