@@ -320,7 +320,7 @@ describe('Upload Controllers', () => {
 		let regular_csrf_token;
 
 		before(async () => {
-			({ jar, csrf_token} = await helpers.loginUser('admin', 'barbar'));
+			({ jar, csrf_token } = await helpers.loginUser('admin', 'barbar'));
 			const regularLogin = await helpers.loginUser('regular', 'zugzug');
 			regularJar = regularLogin.jar;
 			regular_csrf_token = regularLogin.csrf_token;
