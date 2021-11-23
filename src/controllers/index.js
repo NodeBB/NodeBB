@@ -130,9 +130,10 @@ Controllers.login = async function (req, res) {
 		return helpers.redirect(res, { external: data.authentication[0].url });
 	}
 
+	// Re-auth challenge, pre-fill username
 	if (req.loggedIn) {
-		const userData = await user.getUserFields(req.uid, ['username', 'email']);
-		data.username = allowLoginWith === 'email' ? userData.email : userData.username;
+		const userData = await user.getUserFields(req.uid, ['username']);
+		data.username = userData.username;
 		data.alternate_logins = false;
 	}
 	res.render('login', data);
