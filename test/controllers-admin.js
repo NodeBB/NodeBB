@@ -126,6 +126,15 @@ describe('Admin Controllers', () => {
 		});
 	});
 
+	it('should load manage digests', (done) => {
+		request(`${nconf.get('url')}/admin/manage/digest`, { jar: jar }, (err, res, body) => {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
 	it('should load manage uploads', (done) => {
 		request(`${nconf.get('url')}/admin/manage/uploads`, { jar: jar }, (err, res, body) => {
 			assert.ifError(err);
