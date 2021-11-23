@@ -208,7 +208,7 @@ describe('API', async () => {
 		});
 
 		// All tests run as admin user
-		jar = await helpers.loginUser('admin', '123456');
+		({ jar } = await helpers.loginUser('admin', '123456'));
 
 		// Retrieve CSRF token using cookie, to test Write API
 		const config = await request({
@@ -457,7 +457,7 @@ describe('API', async () => {
 				it('should successfully re-login if needed', async () => {
 					const reloginPaths = ['PUT /users/{uid}/password', 'DELETE /users/{uid}/sessions/{uuid}'];
 					if (reloginPaths.includes(`${method.toUpperCase()} ${path}`)) {
-						jar = await helpers.loginUser('admin', '123456');
+						({ jar } = await helpers.loginUser('admin', '123456'));
 						const sessionUUIDs = await db.getObject('uid:1:sessionUUID:sessionId');
 						mocks.delete['/users/{uid}/sessions/{uuid}'][1].example = Object.keys(sessionUUIDs).pop();
 

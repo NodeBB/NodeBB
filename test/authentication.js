@@ -187,14 +187,12 @@ describe('authentication', () => {
 	});
 
 	it('should regenerate the session identifier on successful login', async () => {
-		const login = util.promisify(helpers.loginUser);
-		const logout = util.promisify(helpers.logoutUser);
 		const matchRegexp = /express\.sid=s%3A(.+?);/;
 		const { hostname, path } = url.parse(nconf.get('url'));
 
 		const sid = String(jar._jar.store.idx[hostname][path]['express.sid']).match(matchRegexp)[1];
-		await logout(jar);
-		const newJar = await login('regular', 'regularpwd');
+		await helpers.logoutUser(jar);
+		const newJar = (await helpers.loginUser('regular', 'regularpwd')).jar;
 		const newSid = String(newJar._jar.store.idx[hostname][path]['express.sid']).match(matchRegexp)[1];
 
 		assert.notStrictEqual(newSid, sid);

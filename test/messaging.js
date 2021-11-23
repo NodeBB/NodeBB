@@ -793,12 +793,8 @@ describe('Messaging Library', () => {
 
 	describe('logged in chat controller', () => {
 		let jar;
-		before((done) => {
-			helpers.loginUser('herp', 'derpderp', (err, _jar) => {
-				assert.ifError(err);
-				jar = _jar;
-				done();
-			});
+		before(async () => {
+			({ jar } = await helpers.loginUser('herp', 'derpderp'));
 		});
 
 		it('should return chats page data', (done) => {
@@ -833,9 +829,9 @@ describe('Messaging Library', () => {
 		});
 
 		it('should return 404 if user is not in room', (done) => {
-			helpers.loginUser('baz', 'quuxquux', (err, jar) => {
+			helpers.loginUser('baz', 'quuxquux', (err, data) => {
 				assert.ifError(err);
-				request(`${nconf.get('url')}/api/user/baz/chats/${roomId}`, { json: true, jar: jar }, (err, response) => {
+				request(`${nconf.get('url')}/api/user/baz/chats/${roomId}`, { json: true, jar: data.jar }, (err, response) => {
 					assert.ifError(err);
 					assert.equal(response.statusCode, 404);
 					done();

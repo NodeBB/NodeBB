@@ -36,7 +36,7 @@ describe('Admin Controllers', () => {
 				user.create({ username: 'admin', password: 'barbar' }, next);
 			},
 			regularUid: function (next) {
-				user.create({ username: 'regular' }, next);
+				user.create({ username: 'regular', password: 'regularpwd' }, next);
 			},
 			regular2Uid: function (next) {
 				user.create({ username: 'regular2' }, next);
@@ -66,9 +66,9 @@ describe('Admin Controllers', () => {
 	});
 
 	it('should 403 if user is not admin', (done) => {
-		helpers.loginUser('admin', 'barbar', (err, _jar) => {
+		helpers.loginUser('admin', 'barbar', (err, data) => {
 			assert.ifError(err);
-			jar = _jar;
+			jar = data.jar;
 			request(`${nconf.get('url')}/admin`, { jar: jar }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 403);
@@ -602,14 +602,11 @@ describe('Admin Controllers', () => {
 
 	describe('mods page', () => {
 		let moderatorJar;
-
-		before((done) => {
-			helpers.loginUser('moderator', 'modmod', (err, _jar) => {
-				assert.ifError(err);
-				moderatorJar = _jar;
-
-				groups.join(`cid:${cid}:privileges:moderate`, moderatorUid, done);
-			});
+		let regularJar;
+		before(async () => {
+			moderatorJar = (await helpers.loginUser('moderator', 'modmod')).jar;
+			regularJar = (await helpers.loginUser('regular', 'regularpwd')).jar;
+			await groups.join(`cid:${cid}:privileges:moderate`, moderatorUid);
 		});
 
 		it('should error with no privileges', (done) => {
@@ -652,42 +649,69 @@ describe('Admin Controllers', () => {
 		});
 
 		it('should error when you attempt to flag a privileged user\'s post', async () => {
-			const socketFlags = require('../src/socket.io/flags');
-			const oldValue = meta.config['min:rep:flag'];
-			try {
-				await socketFlags.create({ uid: regularUid }, { id: pid, type: 'post', reason: 'spam' });
-			} catch (err) {
-				assert.strictEqual(err.message, '[[error:cant-flag-privileged]]');
-			}
+			const { res, body } = await helpers.request('post', '/api/v3/flags', {
+				json: true,
+				jar: regularJar,
+				form: {
+					id: pid,
+					type: 'post',
+					reason: 'spam',
+				},
+			});
+			assert.strictEqual(res.statusCode, 400);
+			assert.strictEqual(body.status.code, 'bad-request');
+			assert.strictEqual(body.status.message, 'You are not allowed to flag the profiles or content of privileged users (moderators/global moderators/admins)');
 		});
 
-		it('should error with not enough reputation to flag', (done) => {
-			const socketFlags = require('../src/socket.io/flags');
+		it('should error with not enough reputation to flag', async () => {
 			const oldValue = meta.config['min:rep:flag'];
 			meta.config['min:rep:flag'] = 1000;
-			socketFlags.create({ uid: regularUid }, { id: regularPid, type: 'post', reason: 'spam' }, (err) => {
-				assert.strictEqual(err.message, '[[error:not-enough-reputation-to-flag]]');
-				meta.config['min:rep:flag'] = oldValue;
-				done();
+			const { res, body } = await helpers.request('post', '/api/v3/flags', {
+				json: true,
+				jar: regularJar,
+				form: {
+					id: regularPid,
+					type: 'post',
+					reason: 'spam',
+				},
 			});
+			assert.strictEqual(res.statusCode, 400);
+			assert.strictEqual(body.status.code, 'bad-request');
+			assert.strictEqual(body.status.message, 'You do not have enough reputation to flag this post');
+
+			meta.config['min:rep:flag'] = oldValue;
 		});
 
-		it('should return flag details', (done) => {
-			const socketFlags = require('../src/socket.io/flags');
+		it('should return flag details', async () => {
 			const oldValue = meta.config['min:rep:flag'];
 			meta.config['min:rep:flag'] = 0;
-			socketFlags.create({ uid: regularUid }, { id: regularPid, type: 'post', reason: 'spam' }, (err, flagId) => {
-				meta.config['min:rep:flag'] = oldValue;
-				assert.ifError(err);
-				request(`${nconf.get('url')}/api/flags/${flagId}`, { jar: moderatorJar, json: true }, (err, res, body) => {
-					assert.ifError(err);
-					assert(body);
-					assert(body.reports);
-					assert(Array.isArray(body.reports));
-					assert.strictEqual(body.reports[0].reporter.username, 'regular');
-					done();
-				});
+			const result = await helpers.request('post', '/api/v3/flags', {
+				json: true,
+				jar: regularJar,
+				form: {
+					id: regularPid,
+					type: 'post',
+					reason: 'spam',
+				},
 			});
+			meta.config['min:rep:flag'] = oldValue;
+
+			const flagsResult = await helpers.request('get', `/api/flags`, {
+				json: true,
+				jar: moderatorJar,
+			});
+
+			assert(flagsResult.body);
+			assert(Array.isArray(flagsResult.body.flags));
+			const { flagId } = flagsResult.body.flags[0];
+
+			const { body } = await helpers.request('get', `/api/flags/${flagId}`, {
+				json: true,
+				jar: moderatorJar,
+			});
+			assert(body.reports);
+			assert(Array.isArray(body.reports));
+			assert.strictEqual(body.reports[0].reporter.username, 'regular');
 		});
 	});
 
@@ -724,16 +748,9 @@ describe('Admin Controllers', () => {
 		let userJar;
 		let uid;
 		const privileges = require('../src/privileges');
-		before((done) => {
-			user.create({ username: 'regularjoe', password: 'barbar' }, (err, _uid) => {
-				assert.ifError(err);
-				uid = _uid;
-				helpers.loginUser('regularjoe', 'barbar', (err, _jar) => {
-					assert.ifError(err);
-					userJar = _jar;
-					done();
-				});
-			});
+		before(async () => {
+			uid = await user.create({ username: 'regularjoe', password: 'barbar' });
+			userJar = (await helpers.loginUser('regularjoe', 'barbar')).jar;
 		});
 
 		it('should allow normal user access to admin pages', async function () {

@@ -820,8 +820,7 @@ describe('User', () => {
 
 			await User.email.confirmByUid(uid);
 
-			const _jar = await helpers.loginUser('updateprofile', '123456');
-			jar = _jar;
+			({ jar } = await helpers.loginUser('updateprofile', '123456'));
 		});
 
 		it('should return error if data is invalid', (done) => {
@@ -1948,9 +1947,9 @@ describe('User', () => {
 				gdpr_consent: true,
 			}, (err) => {
 				assert.ifError(err);
-				helpers.loginUser('admin', '123456', (err, jar) => {
+				helpers.loginUser('admin', '123456', (err, data) => {
 					assert.ifError(err);
-					request(`${nconf.get('url')}/api/admin/manage/registration`, { jar: jar, json: true }, (err, res, body) => {
+					request(`${nconf.get('url')}/api/admin/manage/registration`, { jar: data.jar, json: true }, (err, res, body) => {
 						assert.ifError(err);
 						assert.equal(body.users[0].username, 'rejectme');
 						assert.equal(body.users[0].email, '&lt;script&gt;alert(&quot;ok&quot;)&lt;script&gt;reject@me.com');
@@ -2080,9 +2079,9 @@ describe('User', () => {
 			let jar;
 
 			before((done) => {
-				helpers.loginUser('notAnInviter', COMMON_PW, (err, _jar) => {
+				helpers.loginUser('notAnInviter', COMMON_PW, (err, data) => {
 					assert.ifError(err);
-					jar = _jar;
+					jar = data.jar;
 
 					request({
 						url: `${nconf.get('url')}/api/config`,
@@ -2116,9 +2115,9 @@ describe('User', () => {
 			let jar;
 
 			before((done) => {
-				helpers.loginUser('inviter', COMMON_PW, (err, _jar) => {
+				helpers.loginUser('inviter', COMMON_PW, (err, data) => {
 					assert.ifError(err);
-					jar = _jar;
+					jar = data.jar;
 
 					request({
 						url: `${nconf.get('url')}/api/config`,
@@ -2218,9 +2217,9 @@ describe('User', () => {
 			let jar;
 
 			before((done) => {
-				helpers.loginUser('adminInvite', COMMON_PW, (err, _jar) => {
+				helpers.loginUser('adminInvite', COMMON_PW, (err, data) => {
 					assert.ifError(err);
-					jar = _jar;
+					jar = data.jar;
 
 					request({
 						url: `${nconf.get('url')}/api/config`,
@@ -2369,9 +2368,9 @@ describe('User', () => {
 			let jar;
 
 			before((done) => {
-				helpers.loginUser('inviter', COMMON_PW, (err, _jar) => {
+				helpers.loginUser('inviter', COMMON_PW, (err, data) => {
 					assert.ifError(err);
-					jar = _jar;
+					jar = data.jar;
 
 					request({
 						url: `${nconf.get('url')}/api/config`,
@@ -2518,14 +2517,7 @@ describe('User', () => {
 				username: 'regularUser',
 				password: COMMON_PW,
 			});
-			jar = await new Promise((resolve, reject) => {
-				helpers.loginUser('regularUser', COMMON_PW, async (err, _jar) => {
-					if (err) {
-						reject(err);
-					}
-					resolve(_jar);
-				});
-			});
+			({ jar } = await helpers.loginUser('regularUser', COMMON_PW));
 		});
 
 		after((done) => {
@@ -2818,7 +2810,7 @@ describe('User', () => {
 			assert.ifError(err);
 			const oldValue = meta.config.minimumPasswordStrength;
 			meta.config.minimumPasswordStrength = 3;
-			helpers.loginUser('weakpwd', '123456', (err, jar, csrfs_token) => {
+			helpers.loginUser('weakpwd', '123456', (err) => {
 				assert.ifError(err);
 				meta.config.minimumPasswordStrength = oldValue;
 				done();

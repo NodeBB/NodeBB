@@ -38,8 +38,9 @@ describe('Topic\'s', () => {
 		adminUid = await User.create({ username: 'admin', password: '123456' });
 		fooUid = await User.create({ username: 'foo' });
 		await groups.join('administrators', adminUid);
-		adminJar = await helpers.loginUser('admin', '123456');
-		csrf_token = (await requestType('get', `${nconf.get('url')}/api/config`, { json: true, jar: adminJar })).body.csrf_token;
+		const adminLogin = await helpers.loginUser('admin', '123456');
+		adminJar = adminLogin.jar;
+		csrf_token = adminLogin.csrf_token;
 
 		categoryObj = await categories.create({
 			name: 'Test Category',

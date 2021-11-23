@@ -853,17 +853,11 @@ describe('Controllers', () => {
 		let jar;
 		let csrf_token;
 
-		before((done) => {
-			user.create({ username: 'revokeme', password: 'barbar' }, (err, _uid) => {
-				assert.ifError(err);
-				uid = _uid;
-				helpers.loginUser('revokeme', 'barbar', (err, _jar, _csrf_token) => {
-					assert.ifError(err);
-					jar = _jar;
-					csrf_token = _csrf_token;
-					done();
-				});
-			});
+		before(async () => {
+			uid = await user.create({ username: 'revokeme', password: 'barbar' });
+			const login = await helpers.loginUser('revokeme', 'barbar');
+			jar = login.jar;
+			csrf_token = login.csrf_token;
 		});
 
 		it('should fail to revoke session with missing uuid', (done) => {
@@ -1081,12 +1075,8 @@ describe('Controllers', () => {
 
 	describe('account pages', () => {
 		let jar;
-		before((done) => {
-			helpers.loginUser('foo', 'barbar', (err, _jar) => {
-				assert.ifError(err);
-				jar = _jar;
-				done();
-			});
+		before(async () => {
+			({ jar } = await helpers.loginUser('foo', 'barbar'));
 		});
 
 		it('should redirect to account page with logged in user', (done) => {
@@ -1449,8 +1439,9 @@ describe('Controllers', () => {
 		it('should return false if user can not edit user', (done) => {
 			user.create({ username: 'regularJoe', password: 'barbar' }, (err) => {
 				assert.ifError(err);
-				helpers.loginUser('regularJoe', 'barbar', (err, jar) => {
+				helpers.loginUser('regularJoe', 'barbar', (err, data) => {
 					assert.ifError(err);
+					const { jar } = data;
 					request(`${nconf.get('url')}/api/user/foo/info`, { jar: jar, json: true }, (err, res) => {
 						assert.ifError(err);
 						assert.equal(res.statusCode, 403);
@@ -1518,8 +1509,9 @@ describe('Controllers', () => {
 		});
 
 		it('should increase profile view', (done) => {
-			helpers.loginUser('regularJoe', 'barbar', (err, jar) => {
+			helpers.loginUser('regularJoe', 'barbar', (err, data) => {
 				assert.ifError(err);
+				const { jar } = data;
 				request(`${nconf.get('url')}/api/user/foo`, { jar: jar }, (err, res) => {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
@@ -1706,12 +1698,8 @@ describe('Controllers', () => {
 
 	describe('post redirect', () => {
 		let jar;
-		before((done) => {
-			helpers.loginUser('foo', 'barbar', (err, _jar) => {
-				assert.ifError(err);
-				jar = _jar;
-				done();
-			});
+		before(async () => {
+			({ jar } = await helpers.loginUser('foo', 'barbar'));
 		});
 
 		it('should 404 for invalid pid', (done) => {
@@ -1966,12 +1954,8 @@ describe('Controllers', () => {
 
 	describe('category', () => {
 		let jar;
-		before((done) => {
-			helpers.loginUser('foo', 'barbar', (err, _jar) => {
-				assert.ifError(err);
-				jar = _jar;
-				done();
-			});
+		before(async () => {
+			({ jar } = await helpers.loginUser('foo', 'barbar'));
 		});
 
 		it('should return 404 if cid is not a number', (done) => {
@@ -2238,12 +2222,8 @@ describe('Controllers', () => {
 
 	describe('unread', () => {
 		let jar;
-		before((done) => {
-			helpers.loginUser('foo', 'barbar', (err, _jar) => {
-				assert.ifError(err);
-				jar = _jar;
-				done();
-			});
+		before(async () => {
+			({ jar } = await helpers.loginUser('foo', 'barbar'));
 		});
 
 		it('should load unread page', (done) => {
@@ -2305,21 +2285,10 @@ describe('Controllers', () => {
 		let csrf_token;
 		let jar;
 
-		before((done) => {
-			helpers.loginUser('foo', 'barbar', (err, _jar) => {
-				assert.ifError(err);
-				jar = _jar;
-
-				request({
-					url: `${nconf.get('url')}/api/config`,
-					json: true,
-					jar: jar,
-				}, (err, response, body) => {
-					assert.ifError(err);
-					csrf_token = body.csrf_token;
-					done();
-				});
-			});
+		before(async () => {
+			const login = await helpers.loginUser('foo', 'barbar');
+			jar = login.jar;
+			csrf_token = login.csrf_token;
 		});
 
 		it('should load the composer route', (done) => {

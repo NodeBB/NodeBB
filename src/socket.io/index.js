@@ -171,9 +171,10 @@ async function onMessage(socket, payload) {
 }
 
 function requireModules() {
-	const modules = ['admin', 'categories', 'groups', 'meta', 'modules',
-		'notifications', 'plugins', 'posts', 'topics', 'user', 'blacklist',
-		'flags', 'uploads',
+	const modules = [
+		'admin', 'categories', 'groups', 'meta', 'modules',
+		'notifications', 'plugins', 'posts', 'topics', 'user',
+		'blacklist', 'uploads',
 	];
 
 	modules.forEach((module) => {

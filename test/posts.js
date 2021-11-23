@@ -390,11 +390,9 @@ describe('Post\'s', () => {
 					privileges.categories.rescind(['groups:posts:view_deleted'], cid, 'Global Moderators', next);
 				},
 				function (next) {
-					helpers.loginUser('global mod', '123456', (err, _jar) => {
+					helpers.loginUser('global mod', '123456', (err, data) => {
 						assert.ifError(err);
-						const jar = _jar;
-
-						request(`${nconf.get('url')}/api/topic/${tid}`, { jar: jar, json: true }, (err, res, body) => {
+						request(`${nconf.get('url')}/api/topic/${tid}`, { jar: data.jar, json: true }, (err, res, body) => {
 							assert.ifError(err);
 							assert.equal(body.posts[1].content, '[[topic:post_is_deleted]]');
 							privileges.categories.give(['groups:posts:view_deleted'], cid, 'Global Moderators', next);
@@ -1050,8 +1048,8 @@ describe('Post\'s', () => {
 		});
 
 		it('should load queued posts', (done) => {
-			helpers.loginUser('globalmod', 'globalmodpwd', (err, _jar) => {
-				jar = _jar;
+			helpers.loginUser('globalmod', 'globalmodpwd', (err, data) => {
+				jar = data.jar;
 				assert.ifError(err);
 				request(`${nconf.get('url')}/api/post-queue`, { jar: jar, json: true }, (err, res, body) => {
 					assert.ifError(err);

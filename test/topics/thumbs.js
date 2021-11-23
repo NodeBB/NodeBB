@@ -47,24 +47,12 @@ describe('Topic thumbs', () => {
 		adminUid = await user.create({ username: 'admin', password: '123456' });
 		fooUid = await user.create({ username: 'foo', password: '123456' });
 		await groups.join('administrators', adminUid);
-		({ adminJar, adminCSRF } = await new Promise((resolve, reject) => {
-			helpers.loginUser('admin', '123456', (err, adminJar, adminCSRF) => {
-				if (err) {
-					return reject(err);
-				}
-
-				resolve({ adminJar, adminCSRF });
-			});
-		}));
-		({ fooJar, fooCSRF } = await new Promise((resolve, reject) => {
-			helpers.loginUser('foo', '123456', (err, fooJar, fooCSRF) => {
-				if (err) {
-					return reject(err);
-				}
-
-				resolve({ fooJar, fooCSRF });
-			});
-		}));
+		const adminLogin = await helpers.loginUser('admin', '123456');
+		adminJar = adminLogin.jar;
+		adminCSRF = adminLogin.csrf_token;
+		const fooLogin = await helpers.loginUser('foo', '123456');
+		fooJar = fooLogin.jar;
+		fooCSRF = fooLogin.csrf_token;
 
 		categoryObj = await categories.create({
 			name: 'Test Category',
