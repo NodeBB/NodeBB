@@ -24,7 +24,7 @@
 				</div>
 				<div class="btn-group">
 					<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button"><i class="fa fa-ellipsis-v"></i></button>
-					<ul class="dropdown-menu">
+					<ul class="dropdown-menu dropdown-menu-right">
 						{{{ if showInviteButton }}}<li><a href="#" component="user/invite">[[admin/manage/users:invite]]</a></li>{{{ end }}}
 						<li><a target="_blank" href="#" class="export-csv">[[admin/manage/users:download-csv]]</a></li>
 					</ul>
