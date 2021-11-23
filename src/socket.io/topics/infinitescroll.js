@@ -1,7 +1,5 @@
 'use strict';
 
-const winston = require('winston');
-
 const topics = require('../../topics');
 const privileges = require('../../privileges');
 const meta = require('../../meta');
@@ -56,50 +54,4 @@ module.exports = function (SocketTopics) {
 		topics.modifyPostsByPrivilege(topicData, userPrivileges);
 		return topicData;
 	};
-
-	SocketTopics.loadMoreSortedTopics = async function (socket, data) {
-		winston.warn('[deprecated] SocketTopics.loadMoreSortedTopics use infinitescroll.loadMoreXhr'); // TODO: remove in 1.19.0
-		if (!data || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0) {
-			throw new Error('[[error:invalid-data]]');
-		}
-		const { start, stop } = calculateStartStop(data);
-		const params = {
-			uid: socket.uid,
-			start: start,
-			stop: stop,
-			filter: data.filter,
-			query: data.query,
-		};
-		if (data.sort === 'unread') {
-			params.cid = data.cid;
-			return await topics.getUnreadTopics(params);
-		}
-		params.cids = data.cid;
-		params.tags = data.tags;
-		params.sort = data.sort;
-		params.term = data.term;
-		return await topics.getSortedTopics(params);
-	};
-
-	SocketTopics.loadMoreFromSet = async function (socket, data) {
-		winston.warn('[deprecated] SocketTopics.loadMoreFromSet use infinitescroll.loadMoreXhr'); // TODO: remove in 1.19.0
-		if (!data || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0 || !data.set) {
-			throw new Error('[[error:invalid-data]]');
-		}
-		const { start, stop } = calculateStartStop(data);
-		return await topics.getTopicsFromSet(data.set, socket.uid, start, stop);
-	};
-
-	function calculateStartStop(data) {
-		const itemsPerPage = Math.min(
-			meta.config.topicsPerPage || 20,
-			parseInt(data.count, 10) || meta.config.topicsPerPage || 20
-		);
-		let start = Math.max(0, parseInt(data.after, 10));
-		if (data.direction === -1) {
-			start -= itemsPerPage;
-		}
-		const stop = start + Math.max(0, itemsPerPage - 1);
-		return { start: Math.max(0, start), stop: Math.max(0, stop) };
-	}
 };

@@ -131,14 +131,6 @@ describe('socket.io', () => {
 		});
 	});
 
-	it('should get more unread topics', (done) => {
-		io.emit('topics.loadMoreSortedTopics', { after: 0, count: 10, direction: 1, sort: 'unread' }, (err, result) => {
-			assert.ifError(err);
-			assert(Array.isArray(result.topics));
-			done();
-		});
-	});
-
 	it('should ban a user', (done) => {
 		const socketUser = require('../src/socket.io/user');
 		socketUser.banUsers({ uid: adminUid }, { uids: [regularUid], reason: 'spammer' }, (err) => {
