@@ -211,7 +211,7 @@ describe('Plugins', () => {
 	});
 
 	it('should submit usage info', (done) => {
-		plugins.submitUsage((err) => {
+		plugins.submitUsageData((err) => {
 			assert.ifError(err);
 			done();
 		});
