@@ -116,7 +116,7 @@ privsAdmin.socketMap = {
 };
 
 privsAdmin.resolve = (path) => {
-	if (privsAdmin.routeMap[path]) {
+	if (privsAdmin.routeMap.hasOwnProperty(path)) {
 		return privsAdmin.routeMap[path];
 	}
 
