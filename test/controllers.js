@@ -2218,6 +2218,29 @@ describe('Controllers', () => {
 				},
 			], done);
 		});
+
+		it('should load categories', async () => {
+			const helpers = require('../src/controllers/helpers');
+			const data = await helpers.getCategories('cid:0:children', 1, 'topics:read', 0);
+			assert(data.categories.length > 0);
+			assert.strictEqual(data.selectedCategory, null);
+			assert.deepStrictEqual(data.selectedCids, []);
+		});
+
+		it('should load categories by states', async () => {
+			const helpers = require('../src/controllers/helpers');
+			const data = await helpers.getCategoriesByStates(1, 1, Object.values(categories.watchStates), 'topics:read');
+			assert.deepStrictEqual(data.selectedCategory.cid, 1);
+			assert.deepStrictEqual(data.selectedCids, [1]);
+		});
+
+		it('should load categories by states', async () => {
+			const helpers = require('../src/controllers/helpers');
+			const data = await helpers.getCategoriesByStates(1, 0, [categories.watchStates.ignoring], 'topics:read');
+			assert(data.categories.length === 0);
+			assert.deepStrictEqual(data.selectedCategory, null);
+			assert.deepStrictEqual(data.selectedCids, []);
+		});
 	});
 
 	describe('unread', () => {
