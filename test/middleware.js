@@ -8,10 +8,12 @@ const groups = require('../src/groups');
 
 describe('Middlewares', () => {
 	let adminUid;
+
 	before(async () => {
 		adminUid = await user.create({ username: 'admin', password: '123456' });
 		await groups.join('administrators', adminUid);
 	});
+
 	describe('expose', () => {
 		it('should expose res.locals.isAdmin = false', (done) => {
 			const resMock = { locals: {} };

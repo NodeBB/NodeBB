@@ -61,13 +61,13 @@ privsAdmin.routeMap = {
 	'extend/widgets': 'admin:settings',
 	'extend/rewards': 'admin:settings',
 };
-privsAdmin.routeRegexpMap = {
-	'^manage/categories/\\d+': 'admin:categories',
-	'^manage/privileges/(\\d+|admin)': 'admin:privileges',
-	'^manage/groups/.+$': 'admin:groups',
-	'^settings/[\\w\\-]+$': 'admin:settings',
-	'^appearance/[\\w]+$': 'admin:settings',
-	'^plugins/[\\w\\-]+$': 'admin:settings',
+privsAdmin.routePrefixMap = {
+	'manage/categories/': 'admin:categories',
+	'manage/privileges/': 'admin:privileges',
+	'manage/groups/': 'admin:groups',
+	'settings/': 'admin:settings',
+	'appearance/': 'admin:settings',
+	'plugins/': 'admin:settings',
 };
 
 // Mapping for socket call methods to a privilege
@@ -120,16 +120,12 @@ privsAdmin.resolve = (path) => {
 		return privsAdmin.routeMap[path];
 	}
 
-	let privilege;
-	Object.keys(privsAdmin.routeRegexpMap).forEach((regexp) => {
-		if (!privilege) {
-			if (new RegExp(regexp).test(path)) {
-				privilege = privsAdmin.routeRegexpMap[regexp];
-			}
+	return Object.keys(privsAdmin.routePrefixMap).reduce((memo, cur) => {
+		if (memo) {
+			return memo;
 		}
-	});
-
-	return privilege;
+		return path.startsWith(cur) ? privsAdmin.routePrefixMap[cur] : undefined;
+	}, undefined);
 };
 
 privsAdmin.list = async function (uid) {
