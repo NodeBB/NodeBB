@@ -120,12 +120,8 @@ privsAdmin.resolve = (path) => {
 		return privsAdmin.routeMap[path];
 	}
 
-	return Object.keys(privsAdmin.routePrefixMap).reduce((memo, cur) => {
-		if (memo) {
-			return memo;
-		}
-		return path.startsWith(cur) ? privsAdmin.routePrefixMap[cur] : undefined;
-	}, undefined);
+	const found = Object.entries(privsAdmin.routePrefixMap).find(entry => path.startsWith(entry[0]));
+	return found ? found[1] : undefined;
 };
 
 privsAdmin.list = async function (uid) {

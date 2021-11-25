@@ -117,7 +117,7 @@ middleware.checkPrivileges = helpers.try(async (req, res, next) => {
 	}
 
 	// Otherwise, check for privilege based on page (if not in mapping, deny access)
-	const path = req.path.replace(/^(\/api)?\/admin\/?/g, '');
+	const path = req.path.replace(/^(\/api)?(\/v3)?\/admin\/?/g, '');
 	if (path) {
 		const privilege = privileges.admin.resolve(path);
 		if (!await privileges.admin.can(privilege, req.uid)) {

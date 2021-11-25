@@ -866,11 +866,11 @@ describe('Admin Controllers', () => {
 				for (const route of Object.keys(privileges.admin.routePrefixMap)) {
 					/* eslint-disable no-await-in-loop */
 					await privileges.admin.rescind([privileges.admin.routePrefixMap[route]], uid);
-					let res = await makeRequest(`${nconf.get('url')}/api/admin/${route}foobar`);
+					let res = await makeRequest(`${nconf.get('url')}/api/admin/${route}foobar/derp`);
 					assert.strictEqual(res.statusCode, 403);
 
 					await privileges.admin.give([privileges.admin.routePrefixMap[route]], uid);
-					res = await makeRequest(`${nconf.get('url')}/api/admin/${route}foobar`);
+					res = await makeRequest(`${nconf.get('url')}/api/admin/${route}foobar/derp`);
 					assert.strictEqual(res.statusCode, 404);
 
 					await privileges.admin.rescind([privileges.admin.routePrefixMap[route]], uid);
