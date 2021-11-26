@@ -70,7 +70,7 @@ module.exports = function (Topics) {
 				downvotes: postData.downvotes,
 			}),
 			db.sortedSetsAdd(['topics:votes', `cid:${cid}:tids:votes`], postData.votes, tid),
-			Topics.events.log(fromTid, { type: 'fork', uid, href: `/topic/${tid}` })
+			Topics.events.log(fromTid, { type: 'fork', uid, href: `/topic/${tid}`, timestamp: postData.timestamp }),
 		]);
 
 		plugins.hooks.fire('action:topic.fork', { tid: tid, fromTid: fromTid, uid: uid });
