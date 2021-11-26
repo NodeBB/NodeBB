@@ -48,6 +48,7 @@
     "moved-from-by": "Déplacé de %1 par",
     "queued-by": "Message en attente d'approbation &rarr;",
     "backlink": "Référencé par",
+    "forked-by": "Forked by",
     "bookmark_instructions": "Cliquez ici pour retourner au dernier message lu de ce fil.",
     "flag-post": "Signaler ce message",
     "flag-user": "Signaler cet utilisateur",
