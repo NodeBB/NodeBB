@@ -44,7 +44,6 @@ module.exports = function (middleware) {
 			const user = await passportAuthenticateAsync(req, res);
 			if (!user) { return true; }
 
-			// If the token received was a master token, a _uid must also be present for all calls
 			if (user.hasOwnProperty('uid')) {
 				await loginAsync(user);
 				await controllers.authentication.onSuccessfulLogin(req, user.uid);
@@ -52,6 +51,7 @@ module.exports = function (middleware) {
 				req.loggedIn = req.uid > 0;
 				return true;
 			} else if (user.hasOwnProperty('master') && user.master === true) {
+				// If the token received was a master token, a _uid must also be present for all calls
 				if (req.body.hasOwnProperty('_uid') || req.query.hasOwnProperty('_uid')) {
 					user.uid = req.body._uid || req.query._uid;
 					delete user.master;

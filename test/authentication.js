@@ -529,4 +529,86 @@ describe('authentication', () => {
 		const valid = await user.reset.validate(code);
 		assert.strictEqual(valid, false);
 	});
+
+	describe('api tokens', () => {
+		let newUid;
+		let userToken;
+		let masterToken;
+		before(async () => {
+			newUid = await user.create({ username: 'apiUserTarget' });
+			const settings = await meta.settings.get('core.api');
+			settings.tokens = settings.tokens || [];
+			userToken = {
+				token: utils.generateUUID(),
+				uid: newUid,
+				description: `api token for uid ${newUid}`,
+				timestamp: Date.now(),
+			};
+			settings.tokens.push(userToken);
+			masterToken = {
+				token: utils.generateUUID(),
+				uid: 0,
+				description: 'api master token',
+				timestamp: Date.now(),
+			};
+			settings.tokens.push(masterToken);
+
+			await meta.settings.set('core.api', settings);
+		});
+
+		it('should fail with invalid token', async () => {
+			const { res, body } = await helpers.request('get', `/api/self`, {
+				form: {
+					_uid: newUid,
+				},
+				json: true,
+				jar: jar,
+				headers: {
+					Authorization: `Bearer sdfhaskfdja-jahfdaksdf`,
+				},
+			});
+			assert.strictEqual(res.statusCode, 401);
+			assert.strictEqual(body, 'not-authorized');
+		});
+
+		it('should use a token tied to an uid', async () => {
+			const { res, body } = await helpers.request('get', `/api/self`, {
+				json: true,
+				headers: {
+					Authorization: `Bearer ${userToken.token}`,
+				},
+			});
+
+			assert.strictEqual(res.statusCode, 200);
+			assert.strictEqual(body.username, 'apiUserTarget');
+		});
+
+		it('should fail if _uid is not passed in with master token', async () => {
+			const { res, body } = await helpers.request('get', `/api/self`, {
+				form: {},
+				json: true,
+				headers: {
+					Authorization: `Bearer ${masterToken.token}`,
+				},
+			});
+
+			assert.strictEqual(res.statusCode, 500);
+			assert.strictEqual(body.error, '[[error:api.master-token-no-uid]]');
+		});
+
+		it('should use master api token and _uid', async () => {
+			const { res, body } = await helpers.request('get', `/api/self`, {
+				form: {
+					_uid: newUid,
+				},
+				json: true,
+				headers: {
+					Authorization: `Bearer ${masterToken.token}`,
+				},
+			});
+
+			assert.strictEqual(res.statusCode, 200);
+			assert.strictEqual(body.username, 'apiUserTarget');
+		});
+	});
 });
