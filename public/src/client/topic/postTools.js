@@ -483,6 +483,11 @@ define('forum/topic/postTools', [
 		setTimeout(async function () {
 			let selectionTooltip = $('[component="selection/tooltip"]');
 			selectionTooltip.addClass('hidden');
+			if (selectionTooltip.attr('data-ajaxify') === '1') {
+				selectionTooltip.remove();
+				return;
+			}
+
 			const selection = window.getSelection();
 			if (selection.focusNode && selection.type === 'Range' && ajaxify.data.template.topic && !selectionEmpty) {
 				const focusNode = $(selection.focusNode);
@@ -510,7 +515,7 @@ define('forum/topic/postTools', [
 				});
 				selectionTooltip.removeClass('hidden');
 				$(window).one('action:ajaxify.start', function () {
-					selectionTooltip.remove();
+					selectionTooltip.attr('data-ajaxify', 1).addClass('hidden');
 					$(document).off('selectionchange', selectionChange);
 				});
 				const tooltipWidth = selectionTooltip.outerWidth(true);
