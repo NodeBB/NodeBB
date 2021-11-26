@@ -811,41 +811,71 @@ describe('Admin Controllers', () => {
 			userJar = (await helpers.loginUser('regularjoe', 'barbar')).jar;
 		});
 
-		it('should allow normal user access to admin pages', async function () {
-			this.timeout(50000);
-			function makeRequest(url) {
-				return new Promise((resolve, reject) => {
-					request(url, { jar: userJar, json: true }, (err, res, body) => {
-						if (err) reject(err);
-						else resolve(res);
+		describe('routeMap parsing', () => {
+			it('should allow normal user access to admin pages', async function () {
+				this.timeout(50000);
+				function makeRequest(url) {
+					return new Promise((resolve, reject) => {
+						request(url, { jar: userJar, json: true }, (err, res, body) => {
+							if (err) reject(err);
+							else resolve(res);
+						});
 					});
-				});
-			}
-			for (const route of Object.keys(privileges.admin.routeMap)) {
-				/* eslint-disable no-await-in-loop */
-				await privileges.admin.rescind([privileges.admin.routeMap[route]], uid);
-				let res = await makeRequest(`${nconf.get('url')}/api/admin/${route}`);
-				assert.strictEqual(res.statusCode, 403);
+				}
+				for (const route of Object.keys(privileges.admin.routeMap)) {
+					/* eslint-disable no-await-in-loop */
+					await privileges.admin.rescind([privileges.admin.routeMap[route]], uid);
+					let res = await makeRequest(`${nconf.get('url')}/api/admin/${route}`);
+					assert.strictEqual(res.statusCode, 403);
 
-				await privileges.admin.give([privileges.admin.routeMap[route]], uid);
-				res = await makeRequest(`${nconf.get('url')}/api/admin/${route}`);
-				assert.strictEqual(res.statusCode, 200);
+					await privileges.admin.give([privileges.admin.routeMap[route]], uid);
+					res = await makeRequest(`${nconf.get('url')}/api/admin/${route}`);
+					assert.strictEqual(res.statusCode, 200);
 
-				await privileges.admin.rescind([privileges.admin.routeMap[route]], uid);
-			}
+					await privileges.admin.rescind([privileges.admin.routeMap[route]], uid);
+				}
 
-			for (const route of Object.keys(privileges.admin.routeMap)) {
-				/* eslint-disable no-await-in-loop */
-				await privileges.admin.rescind([privileges.admin.routeMap[route]], uid);
-				let res = await makeRequest(`${nconf.get('url')}/api/admin`);
-				assert.strictEqual(res.statusCode, 403);
+				for (const route of Object.keys(privileges.admin.routeMap)) {
+					/* eslint-disable no-await-in-loop */
+					await privileges.admin.rescind([privileges.admin.routeMap[route]], uid);
+					let res = await makeRequest(`${nconf.get('url')}/api/admin`);
+					assert.strictEqual(res.statusCode, 403);
 
-				await privileges.admin.give([privileges.admin.routeMap[route]], uid);
-				res = await makeRequest(`${nconf.get('url')}/api/admin`);
-				assert.strictEqual(res.statusCode, 200);
+					await privileges.admin.give([privileges.admin.routeMap[route]], uid);
+					res = await makeRequest(`${nconf.get('url')}/api/admin`);
+					assert.strictEqual(res.statusCode, 200);
 
-				await privileges.admin.rescind([privileges.admin.routeMap[route]], uid);
-			}
+					await privileges.admin.rescind([privileges.admin.routeMap[route]], uid);
+				}
+			});
+		});
+
+		describe('routePrefixMap parsing', () => {
+			it('should allow normal user access to admin pages', async () => {
+				// this.timeout(50000);
+				function makeRequest(url) {
+					return new Promise((resolve, reject) => {
+						process.stdout.write(`calling ${url} `);
+						request(url, { jar: userJar, json: true }, (err, res, body) => {
+							process.stdout.write(`got ${res.statusCode}\n`);
+							if (err) reject(err);
+							else resolve(res);
+						});
+					});
+				}
+				for (const route of Object.keys(privileges.admin.routePrefixMap)) {
+					/* eslint-disable no-await-in-loop */
+					await privileges.admin.rescind([privileges.admin.routePrefixMap[route]], uid);
+					let res = await makeRequest(`${nconf.get('url')}/api/admin/${route}foobar/derp`);
+					assert.strictEqual(res.statusCode, 403);
+
+					await privileges.admin.give([privileges.admin.routePrefixMap[route]], uid);
+					res = await makeRequest(`${nconf.get('url')}/api/admin/${route}foobar/derp`);
+					assert.strictEqual(res.statusCode, 404);
+
+					await privileges.admin.rescind([privileges.admin.routePrefixMap[route]], uid);
+				}
+			});
 		});
 	});
 });
