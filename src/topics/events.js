@@ -58,6 +58,10 @@ Events._types = {
 		icon: 'fa-link',
 		text: '[[topic:backlink]]',
 	},
+	fork: {
+		icon: 'fa-code-fork',
+		text: '[[topic:forked-by]]'
+	},
 };
 
 Events.init = async () => {
