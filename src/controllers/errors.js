@@ -79,6 +79,9 @@ exports.handleErrors = async function handleErrors(err, req, res, next) { // esl
 		if (res.locals.isAPI) {
 			res.json(data);
 		} else {
+			if (req.method === 'GET') {
+				await middleware.applyCSRFasync(req, res);
+			}
 			await middleware.buildHeaderAsync(req, res);
 			res.render('500', data);
 		}
