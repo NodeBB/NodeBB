@@ -203,7 +203,7 @@ module.exports = function (middleware) {
 		if (!userslug) {
 			return controllers.helpers.notAllowed(req, res);
 		}
-		const path = req.path.replace(/^(\/api)?\/me/, `/user/${userslug}`);
+		const path = req.url.replace(/^(\/api)?\/me/, () => `/user/${userslug}`);
 		controllers.helpers.redirect(res, path);
 	});
 
