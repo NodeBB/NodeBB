@@ -32,7 +32,6 @@ helpers.setupPageRoute = function (router, name, middleware, middlewares, contro
 	router.get(
 		name,
 		middleware.busyCheck,
-		middleware.applyCSRF,
 		middlewares,
 		middleware.buildHeader,
 		helpers.tryRoute(controller)
