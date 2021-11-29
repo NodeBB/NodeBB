@@ -4,7 +4,7 @@ const winston = require('winston');
 const path = require('path');
 const nconf = require('nconf');
 
-const { webInstall } = require('../../install/web');
+const { install } = require('../../install/web');
 
 async function setup(initConfig) {
 	const { paths } = require('../constants');
@@ -57,4 +57,4 @@ async function setup(initConfig) {
 }
 
 exports.setup = setup;
-exports.webInstall = webInstall;
+exports.webInstall = install;
