@@ -937,5 +937,11 @@ describe('Admin Controllers', () => {
 				'groups:admin:settings': false,
 			});
 		});
+
+		it('should not have admin:privileges', async () => {
+			const res = await privileges.admin.list(regularUid);
+			assert.strictEqual(res.keys.users.includes('admin:privileges'), false);
+			assert.strictEqual(res.keys.groups.includes('admin:privileges'), false);
+		});
 	});
 });
