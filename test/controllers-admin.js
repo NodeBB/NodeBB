@@ -134,6 +134,15 @@ describe('Admin Controllers', () => {
 		});
 	});
 
+	it('should load admin privileges page', (done) => {
+		request(`${nconf.get('url')}/admin/manage/privileges/admin`, { jar: jar }, (err, res, body) => {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
 	it('should load privileges page for category 1', (done) => {
 		request(`${nconf.get('url')}/admin/manage/privileges/1`, { jar: jar }, (err, res, body) => {
 			assert.ifError(err);
@@ -855,9 +864,7 @@ describe('Admin Controllers', () => {
 				// this.timeout(50000);
 				function makeRequest(url) {
 					return new Promise((resolve, reject) => {
-						process.stdout.write(`calling ${url} `);
 						request(url, { jar: userJar, json: true }, (err, res, body) => {
-							process.stdout.write(`got ${res.statusCode}\n`);
 							if (err) reject(err);
 							else resolve(res);
 						});
@@ -875,6 +882,59 @@ describe('Admin Controllers', () => {
 
 					await privileges.admin.rescind([privileges.admin.routePrefixMap[route]], uid);
 				}
+			});
+		});
+
+		it('should list all admin privileges', async () => {
+			const privs = await privileges.admin.getPrivilegeList();
+			assert.deepStrictEqual(privs, [
+				'admin:dashboard',
+				'admin:categories',
+				'admin:privileges',
+				'admin:admins-mods',
+				'admin:users',
+				'admin:groups',
+				'admin:tags',
+				'admin:settings',
+				'groups:admin:dashboard',
+				'groups:admin:categories',
+				'groups:admin:privileges',
+				'groups:admin:admins-mods',
+				'groups:admin:users',
+				'groups:admin:groups',
+				'groups:admin:tags',
+				'groups:admin:settings',
+			]);
+		});
+		it('should list user admin privileges', async () => {
+			const privs = await privileges.admin.userPrivileges(adminUid);
+			assert.deepStrictEqual(privs, {
+				'admin:dashboard': false,
+				'admin:categories': false,
+				'admin:privileges': false,
+				'admin:admins-mods': false,
+				'admin:users': false,
+				'admin:groups': false,
+				'admin:tags': false,
+				'admin:settings': false,
+			});
+		});
+
+		it('should check if group has admin group privilege', async () => {
+			await groups.create({ name: 'some-special-group', private: 1, hidden: 1 });
+			await privileges.admin.give(['groups:admin:users', 'groups:admin:groups'], 'some-special-group');
+			const can = await privileges.admin.canGroup('admin:users', 'some-special-group');
+			assert.strictEqual(can, true);
+			const privs = await privileges.admin.groupPrivileges('some-special-group');
+			assert.deepStrictEqual(privs, {
+				'groups:admin:dashboard': false,
+				'groups:admin:categories': false,
+				'groups:admin:privileges': false,
+				'groups:admin:admins-mods': false,
+				'groups:admin:users': true,
+				'groups:admin:groups': true,
+				'groups:admin:tags': false,
+				'groups:admin:settings': false,
 			});
 		});
 	});
