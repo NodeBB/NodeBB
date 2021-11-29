@@ -22,7 +22,6 @@ require('./posts/move')(SocketPosts);
 require('./posts/votes')(SocketPosts);
 require('./posts/bookmarks')(SocketPosts);
 require('./posts/tools')(SocketPosts);
-require('./posts/diffs')(SocketPosts);
 
 SocketPosts.reply = async function (socket, data) {
 	sockets.warnDeprecated(socket, 'POST /api/v3/topics/:tid');

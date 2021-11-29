@@ -18,6 +18,7 @@ const user = require('../src/user');
 const groups = require('../src/groups');
 const socketPosts = require('../src/socket.io/posts');
 const socketTopics = require('../src/socket.io/topics');
+const apiPosts = require('../src/api/posts');
 const meta = require('../src/meta');
 const helpers = require('./helpers');
 
@@ -625,28 +626,28 @@ describe('Post\'s', () => {
 			});
 		});
 
-		it('should not allow guests to view diffs', (done) => {
-			socketPosts.getDiffs({ uid: 0 }, { pid: 1 }, (err) => {
-				assert.equal(err.message, '[[error:no-privileges]]');
-				done();
-			});
+		it('should not allow guests to view diffs', async () => {
+			let err = {};
+			try {
+				await apiPosts.getDiffs({ uid: 0 }, { pid: 1 });
+			} catch (_err) {
+				err = _err;
+			}
+			assert.strictEqual(err.message, '[[error:no-privileges]]');
 		});
 
-		it('should allow registered-users group to view diffs', (done) => {
-			socketPosts.getDiffs({ uid: 1 }, { pid: 1 }, (err, data) => {
-				assert.ifError(err);
+		it('should allow registered-users group to view diffs', async () => {
+			const data = await apiPosts.getDiffs({ uid: 1 }, { pid: 1 });
 
-				assert.strictEqual('boolean', typeof data.editable);
-				assert.strictEqual(false, data.editable);
+			assert.strictEqual('boolean', typeof data.editable);
+			assert.strictEqual(false, data.editable);
 
-				assert.equal(true, Array.isArray(data.timestamps));
-				assert.strictEqual(1, data.timestamps.length);
+			assert.equal(true, Array.isArray(data.timestamps));
+			assert.strictEqual(1, data.timestamps.length);
 
-				assert.equal(true, Array.isArray(data.revisions));
-				assert.strictEqual(data.timestamps.length, data.revisions.length);
-				['timestamp', 'username'].every(prop => Object.keys(data.revisions[0]).includes(prop));
-				done();
-			});
+			assert.equal(true, Array.isArray(data.revisions));
+			assert.strictEqual(data.timestamps.length, data.revisions.length);
+			['timestamp', 'username'].every(prop => Object.keys(data.revisions[0]).includes(prop));
 		});
 
 		it('should not delete first diff of a post', async () => {
