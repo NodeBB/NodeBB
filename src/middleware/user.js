@@ -31,7 +31,14 @@ const passportAuthenticateAsync = function (req, res) {
 
 module.exports = function (middleware) {
 	async function authenticate(req, res) {
-		const loginAsync = util.promisify(req.login).bind(req);
+		async function finishLogin(req, user) {
+			const loginAsync = util.promisify(req.login).bind(req);
+			await loginAsync(user);
+			await controllers.authentication.onSuccessfulLogin(req, user.uid);
+			req.uid = user.uid;
+			req.loggedIn = req.uid > 0;
+			return true;
+		}
 
 		if (req.loggedIn) {
 			// If authenticated via cookie (express-session), protect routes with CSRF checking
@@ -45,22 +52,13 @@ module.exports = function (middleware) {
 			if (!user) { return true; }
 
 			if (user.hasOwnProperty('uid')) {
-				await loginAsync(user);
-				await controllers.authentication.onSuccessfulLogin(req, user.uid);
-				req.uid = user.uid;
-				req.loggedIn = req.uid > 0;
-				return true;
+				return await finishLogin(req, user);
 			} else if (user.hasOwnProperty('master') && user.master === true) {
 				// If the token received was a master token, a _uid must also be present for all calls
 				if (req.body.hasOwnProperty('_uid') || req.query.hasOwnProperty('_uid')) {
 					user.uid = req.body._uid || req.query._uid;
 					delete user.master;
-
-					await loginAsync(user);
-					await controllers.authentication.onSuccessfulLogin(req, user.uid);
-					req.uid = user.uid;
-					req.loggedIn = req.uid > 0;
-					return true;
+					return await finishLogin(req, user);
 				}
 
 				throw new Error('[[error:api.master-token-no-uid]]');
