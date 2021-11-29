@@ -8,7 +8,6 @@ const groups = require('../groups');
 const user = require('../user');
 const plugins = require('../plugins');
 const translator = require('../translator');
-const utils = require('../utils');
 
 const helpers = module.exports;
 
