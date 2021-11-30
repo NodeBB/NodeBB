@@ -5,8 +5,8 @@
 	"votes-are-public": "Alle Bewertungen sind öffentlich",
 	"thresholds": "Aktivitätsschwelle",
 	"min-rep-downvote": "Minimales Ansehen um Beiträge negativ zu bewerten",
-	"downvotes-per-day": "Downvotes per day (set to 0 for unlimited downvotes)",
-	"downvotes-per-user-per-day": "Downvotes per user per day (set to 0 for unlimited downvotes)",
+	"downvotes-per-day": "Runtervoten pro Tag (auf 0 gesetzt für unbegrenzte Runtervotes)",
+	"downvotes-per-user-per-day": "Runtervoten pro Benutzer pro Tag (auf 0 gesetzt für unbegrenzte Runtervotes)",
 	"min-rep-flag": "Minimales Ansehen und Beiträge zu melden",
 	"min-rep-website": "Erforderliche Reputation um eine \"Website\" zum Benutzerprofil hinzuzufügen",
 	"min-rep-aboutme": "Erforderliche Reputation um eine \"Über mich\"-Sektion zum Benutzerprofil hinzuzufügen",
@@ -14,9 +14,9 @@
 	"min-rep-profile-picture": "Minimale Reputation um ein Profilbild hinzuzufügen",
 	"min-rep-cover-picture": "Minimale Reputation um ein Deckbild hinzuzufügen",
 
-	"flags": "Flag Settings",
+	"flags": "Merkmal-Einstellung",
 	"flags.limit-per-target": "Maximum number of times something can be flagged",
-	"flags.limit-per-target-placeholder": "Default: 0",
+	"flags.limit-per-target-placeholder": "Standardwert: 0",
 	"flags.limit-per-target-help": "When a post or user is flagged multiple times, each additional flag is considered a &quot;report&quot; and added to the original flag. Set this option to a number other than zero to limit the number of reports an item can receive.",
-	"flags.auto-resolve-on-ban": "Automatically resolve all of a user's tickets when they are banned"
+	"flags.auto-resolve-on-ban": "Automatisches Beenden aller Tickets eines Benutzers, wenn dieser gesperrt wird"
 }
