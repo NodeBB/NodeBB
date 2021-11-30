@@ -22,7 +22,10 @@ module.exports = function (Topics) {
 	};
 
 	Topics.getTopicPosts = async function (topicOrTid, set, start, stop, uid, reverse) {
-		if (topicOrTid && typeof topicOrTid !== 'object') {
+		if (!topicOrTid) {
+			return [];
+		}
+		if (typeof topicOrTid !== 'object') {
 			// TODO: remove in 1.19.0
 			winston.warn('[deprecated] Topics.getTopicPosts(tid, ...) usage is deprecated, pass a topic object as first argument!');
 			topicOrTid = await Topics.getTopicData(topicOrTid);

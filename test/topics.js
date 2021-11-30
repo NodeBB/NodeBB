@@ -502,6 +502,11 @@ describe('Topic\'s', () => {
 					assert.strictEqual(post.index, index);
 				});
 			});
+
+			it('should return empty array if first param is falsy', async () => {
+				const posts = await topics.getTopicPosts(null, `tid:${tid}:posts`, 0, 9, topic.userId, true);
+				assert.deepStrictEqual(posts, []);
+			});
 		});
 	});
 
