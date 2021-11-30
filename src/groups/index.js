@@ -98,7 +98,7 @@ Groups.getGroups = async function (set, start, stop) {
 Groups.getGroupsAndMembers = async function (groupNames) {
 	const [groups, members] = await Promise.all([
 		Groups.getGroupsData(groupNames),
-		Groups.getMemberUsers(groupNames, 0, 3),
+		Groups.getMemberUsers(groupNames, 0, 9),
 	]);
 	groups.forEach((group, index) => {
 		if (group) {
