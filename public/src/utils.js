@@ -662,7 +662,7 @@
 					if (!hash[key]) {
 						hash[key] = value;
 					} else {
-						if (!$.isArray(hash[key])) {
+						if (!Array.isArray(hash[key])) {
 							hash[key] = [hash[key]];
 						}
 						hash[key].push(value);
