@@ -43,11 +43,11 @@ define('forum/ip-blacklist', ['Chart', 'benchpress', 'bootbox'], function (Chart
 
 	Blacklist.setupAnalytics = function () {
 		const hourlyCanvas = document.getElementById('blacklist:hourly');
-		const	dailyCanvas = document.getElementById('blacklist:daily');
-		const	hourlyLabels = utils.getHoursArray().map(function (text, idx) {
+		const dailyCanvas = document.getElementById('blacklist:daily');
+		const hourlyLabels = utils.getHoursArray().map(function (text, idx) {
 			return idx % 3 ? '' : text;
 		});
-		const	dailyLabels = utils.getDaysArray().slice(-7).map(function (text, idx) {
+		const dailyLabels = utils.getDaysArray().slice(-7).map(function (text, idx) {
 			return idx % 3 ? '' : text;
 		});
 

@@ -58,7 +58,7 @@ module.exports = function (module) {
 		if (params.withScores) {
 			project.score = '$totalScore';
 		}
-		pipeline.push({	$project: project });
+		pipeline.push({ $project: project });
 
 		let data = await module.client.collection('objects').aggregate(pipeline).toArray();
 		if (!params.withScores) {

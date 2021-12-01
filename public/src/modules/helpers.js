@@ -210,9 +210,12 @@
 		return '<img component="user/picture" data-uid="' + topicObj.user.uid + '" src="' + topicObj.user.picture + '" class="user-img" title="' + topicObj.user.username + '" />';
 	}
 
-	function renderTopicEvents(index) {
-		const start = this.posts[index].timestamp;
-		const end = this.posts[index + 1] ? this.posts[index + 1].timestamp : Date.now();
+	function renderTopicEvents(index, sort) {
+		if (sort === 'most_votes') {
+			return '';
+		}
+		const start = this.posts[index].eventStart;
+		const end = this.posts[index].eventEnd;
 		const events = this.events.filter(event => event.timestamp >= start && event.timestamp < end);
 		if (!events.length) {
 			return '';
@@ -282,7 +285,7 @@
 			case 'iPad':
 				icons += '<i class="fa fa-fw fa-tablet"></i>';
 				break;
-			case 'iPod':	// intentional fall-through
+			case 'iPod': // intentional fall-through
 			case 'iPhone':
 				icons += '<i class="fa fa-fw fa-mobile"></i>';
 				break;

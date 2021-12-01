@@ -32,21 +32,19 @@ define('forum/account/header', [
 			toggleFollow('unfollow');
 		});
 
-		components.get('account/chat').on('click', function () {
-			socket.emit('modules.chats.hasPrivateChat', ajaxify.data.uid, function (err, roomId) {
-				if (err) {
-					return app.alertError(err.message);
-				}
-				if (roomId) {
-					app.openChat(roomId);
-				} else {
-					app.newChat(ajaxify.data.uid);
-				}
-			});
+		components.get('account/chat').on('click', async function () {
+			const roomId = await socket.emit('modules.chats.hasPrivateChat', ajaxify.data.uid);
+			const chat = await app.require('chat');
+			if (roomId) {
+				chat.openChat(roomId);
+			} else {
+				chat.newChat(ajaxify.data.uid);
+			}
 		});
 
-		components.get('account/new-chat').on('click', function () {
-			app.newChat(ajaxify.data.uid, function () {
+		components.get('account/new-chat').on('click', async function () {
+			const chat = await app.require('chat');
+			chat.newChat(ajaxify.data.uid, function () {
 				components.get('account/chat').parent().removeClass('hidden');
 			});
 		});

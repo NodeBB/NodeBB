@@ -33,7 +33,7 @@ describe('API', async () => {
 	let jar;
 	let csrfToken;
 	let setup = false;
-	const unauthenticatedRoutes = ['/api/login', '/api/register'];	// Everything else will be called with the admin user
+	const unauthenticatedRoutes = ['/api/login', '/api/register']; // Everything else will be called with the admin user
 
 	const mocks = {
 		head: {},
@@ -73,19 +73,19 @@ describe('API', async () => {
 				{
 					in: 'path',
 					name: 'uuid',
-					example: '',	// to be defined below...
+					example: '', // to be defined below...
 				},
 			],
 			'/posts/{pid}/diffs/{timestamp}': [
 				{
 					in: 'path',
 					name: 'pid',
-					example: '',	// to be defined below...
+					example: '', // to be defined below...
 				},
 				{
 					in: 'path',
 					name: 'timestamp',
-					example: '',	// to be defined below...
+					example: '', // to be defined below...
 				},
 			],
 		},
@@ -116,7 +116,7 @@ describe('API', async () => {
 
 		for (let x = 0; x < 4; x++) {
 			// eslint-disable-next-line no-await-in-loop
-			await user.create({ username: 'deleteme', password: '123456' });	// for testing of DELETE /users (uids 5, 6) and DELETE /user/:uid/account (uid 7)
+			await user.create({ username: 'deleteme', password: '123456' }); // for testing of DELETE /users (uids 5, 6) and DELETE /user/:uid/account (uid 7)
 		}
 		await groups.join('administrators', adminUid);
 
@@ -208,7 +208,7 @@ describe('API', async () => {
 		});
 
 		// All tests run as admin user
-		jar = await helpers.loginUser('admin', '123456');
+		({ jar } = await helpers.loginUser('admin', '123456'));
 
 		// Retrieve CSRF token using cookie, to test Write API
 		const config = await request({
@@ -299,7 +299,7 @@ describe('API', async () => {
 	function generateTests(api, paths, prefix) {
 		// Iterate through all documented paths, make a call to it,
 		// and compare the result body with what is defined in the spec
-		const pathLib = path;	// for calling path module from inside this forEach
+		const pathLib = path; // for calling path module from inside this forEach
 		paths.forEach((path) => {
 			const context = api.paths[path];
 			let schema;
@@ -393,9 +393,9 @@ describe('API', async () => {
 								method: method,
 								jar: !unauthenticatedRoutes.includes(path) ? jar : undefined,
 								json: true,
-								followRedirect: false,	// all responses are significant (e.g. 302)
-								simple: false,	// don't throw on non-200 (e.g. 302)
-								resolveWithFullResponse: true,	// send full request back (to check statusCode)
+								followRedirect: false, // all responses are significant (e.g. 302)
+								simple: false, // don't throw on non-200 (e.g. 302)
+								resolveWithFullResponse: true, // send full request back (to check statusCode)
 								headers: headers,
 								qs: qs,
 								body: body,
@@ -457,7 +457,7 @@ describe('API', async () => {
 				it('should successfully re-login if needed', async () => {
 					const reloginPaths = ['PUT /users/{uid}/password', 'DELETE /users/{uid}/sessions/{uuid}'];
 					if (reloginPaths.includes(`${method.toUpperCase()} ${path}`)) {
-						jar = await helpers.loginUser('admin', '123456');
+						({ jar } = await helpers.loginUser('admin', '123456'));
 						const sessionUUIDs = await db.getObject('uid:1:sessionUUID:sessionId');
 						mocks.delete['/users/{uid}/sessions/{uuid}'][1].example = Object.keys(sessionUUIDs).pop();
 
@@ -572,7 +572,7 @@ describe('API', async () => {
 
 		// Compare the response to the schema
 		Object.keys(response).forEach((prop) => {
-			if (additionalProperties) {	// All bets are off
+			if (additionalProperties) { // All bets are off
 				return;
 			}
 

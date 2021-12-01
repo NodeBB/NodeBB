@@ -216,6 +216,7 @@ ${pwGenerated ? ` Generated password: ${password}` : ''}`);
 		const adminUid = await getAdminUidOrFail();
 
 		if (password) {
+			await user.setUserField(uid, 'password', '');
 			await user.changePassword(adminUid, {
 				newPassword: password,
 				uid,

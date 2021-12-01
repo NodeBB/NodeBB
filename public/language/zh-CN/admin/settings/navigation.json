@@ -11,6 +11,8 @@
 	"properties": "属性：",
 	"groups": "群组：",
 	"open-new-window": "在新窗口中打开",
+	"dropdown": "Dropdown",
+	"dropdown-placeholder": "Place your dropdown menu items below, ie: <br/>&lt;li&gt;&lt;a href&#x3D;&quot;https://myforum.com&quot;&gt;Link 1&lt;/a&gt;&lt;/li&gt;",
 
 	"btn.delete": "删除",
 	"btn.disable": "禁用",

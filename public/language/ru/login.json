@@ -1,7 +1,6 @@
 {
     "username-email": "Имя пользователя / Email",
     "username": "Имя пользователя",
-    "email": "Email",
     "remember_me": "Запомнить меня",
     "forgot_password": "Забыли пароль?",
     "alternative_logins": "Войти через",

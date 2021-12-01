@@ -1,5 +1,7 @@
 'use strict';
 
+const _ = require('lodash');
+
 const db = require('../database');
 const plugins = require('../plugins');
 const Meta = require('./index');
@@ -11,29 +13,28 @@ const Settings = module.exports;
 Settings.get = async function (hash) {
 	const cached = cache.get(`settings:${hash}`);
 	if (cached) {
-		return cached;
+		return _.cloneDeep(cached);
 	}
-	let data = await db.getObject(`settings:${hash}`) || {};
-	const sortedLists = await db.getSetMembers(`settings:${hash}:sorted-lists`);
-
+	const [data, sortedLists] = await Promise.all([
+		db.getObject(`settings:${hash}`),
+		db.getSetMembers(`settings:${hash}:sorted-lists`),
+	]);
+	const values = data || {};
 	await Promise.all(sortedLists.map(async (list) => {
-		const members = await db.getSortedSetRange(`settings:${hash}:sorted-list:${list}`, 0, -1) || [];
-		const keys = [];
+		const members = await db.getSortedSetRange(`settings:${hash}:sorted-list:${list}`, 0, -1);
+		const keys = members.map(order => `settings:${hash}:sorted-list:${list}:${order}`);
 
-		data[list] = [];
-		for (const order of members) {
-			keys.push(`settings:${hash}:sorted-list:${list}:${order}`);
-		}
+		values[list] = [];
 
 		const objects = await db.getObjects(keys);
 		objects.forEach((obj) => {
-			data[list].push(obj);
+			values[list].push(obj);
 		});
 	}));
 
-	({ values: data } = await plugins.hooks.fire('filter:settings.get', { plugin: hash, values: data }));
-	cache.set(`settings:${hash}`, data);
-	return data;
+	const result = await plugins.hooks.fire('filter:settings.get', { plugin: hash, values: values });
+	cache.set(`settings:${hash}`, result.values);
+	return _.cloneDeep(result.values);
 };
 
 Settings.getOne = async function (hash, field) {
@@ -69,16 +70,20 @@ Settings.set = async function (hash, values, quiet) {
 			await db.deleteAll(deleteKeys);
 		}));
 
-		const ops = [];
+		const sortedSetData = [];
+		const objectData = [];
 		sortedLists.forEach((list) => {
 			const arr = sortedListData[list];
 			arr.forEach((data, order) => {
-				ops.push(db.sortedSetAdd(`settings:${hash}:sorted-list:${list}`, order, order));
-				ops.push(db.setObject(`settings:${hash}:sorted-list:${list}:${order}`, data));
+				sortedSetData.push([`settings:${hash}:sorted-list:${list}`, order, order]);
+				objectData.push([`settings:${hash}:sorted-list:${list}:${order}`, data]);
 			});
 		});
 
-		await Promise.all(ops);
+		await Promise.all([
+			db.sortedSetAddBulk(sortedSetData),
+			db.setObjectBulk(objectData),
+		]);
 	}
 
 	if (Object.keys(values).length) {
@@ -89,7 +94,7 @@ Settings.set = async function (hash, values, quiet) {
 
 	plugins.hooks.fire('action:settings.set', {
 		plugin: hash,
-		settings: { ...values, ...sortedListData },	// Add back sorted list data to values hash
+		settings: { ...values, ...sortedListData }, // Add back sorted list data to values hash
 	});
 
 	pubsub.publish(`action:settings.set.${hash}`, values);

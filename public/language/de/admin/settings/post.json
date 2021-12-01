@@ -40,6 +40,7 @@
 	"teaser.last-post": "Letzter - Den neuesten Beitrag anzeigen, den originalen Beitrag innbegriffen, wenn es keine Antworten gibt",
 	"teaser.last-reply": "Letzter - Den neuesten Beitrag oder einen \"Keine Antworten\" Platzhalter, wenn es keine Antworten gibt anzeigen",
 	"teaser.first": "Erster",
+	"showPostPreviewsOnHover": "Show a preview of posts when mouse overed",
 	"unread": "Ungelesen-Einstellungen",
 	"unread.cutoff": "Ungelesen-Limit (in Tagen)",
 	"unread.min-track-last": "Minimale Anzahl an Beiträgen pro Thema bevor die letzte Sichtung mitgeschrieben wird",

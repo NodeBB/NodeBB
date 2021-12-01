@@ -68,13 +68,9 @@ describe('Upload Controllers', () => {
 		let jar;
 		let csrf_token;
 
-		before((done) => {
-			helpers.loginUser('malicioususer', 'herpderp', (err, _jar, _csrf_token) => {
-				assert.ifError(err);
-				jar = _jar;
-				csrf_token = _csrf_token;
-				privileges.global.give(['groups:upload:post:file'], 'registered-users', done);
-			});
+		before(async () => {
+			({ jar, csrf_token } = await helpers.loginUser('malicioususer', 'herpderp'));
+			await privileges.global.give(['groups:upload:post:file'], 'registered-users');
 		});
 
 		it('should fail if the user exceeds the upload rate limit threshold', (done) => {
@@ -110,14 +106,10 @@ describe('Upload Controllers', () => {
 		let jar;
 		let csrf_token;
 
-		before((done) => {
+		before(async () => {
 			meta.config.uploadRateLimitThreshold = 1000;
-			helpers.loginUser('regular', 'zugzug', (err, _jar, _csrf_token) => {
-				assert.ifError(err);
-				jar = _jar;
-				csrf_token = _csrf_token;
-				privileges.global.give(['groups:upload:post:file'], 'registered-users', done);
-			});
+			({ jar, csrf_token } = await helpers.loginUser('regular', 'zugzug'));
+			await privileges.global.give(['groups:upload:post:file'], 'registered-users');
 		});
 
 		it('should upload an image to a post', (done) => {
@@ -243,54 +235,6 @@ describe('Upload Controllers', () => {
 			});
 		});
 
-		// it('should fail if topic thumbs are disabled', function (done) {
-		// 	helpers.uploadFile(
-		// 		nconf.get('url') + '/api/topic/thumb/upload',
-		// 		path.join(__dirname, '../test/files/test.png'),
-		// 		{}, jar, csrf_token,
-		// 		function (err, res, body) {
-		// 			assert.ifError(err);
-		// 			assert.strictEqual(res.statusCode, 404);
-		// 			console.log(body);
-		// 			assert(body && body.status && body.status.code);
-		// 			assert.strictEqual(body.status.code, '[[error:topic-thumbnails-are-disabled]]');
-		// 			done();
-		// 		}
-		// 	);
-		// });
-
-		// it('should fail if file is not image', function (done) {
-		// 	meta.config.allowTopicsThumbnail = 1;
-		// 	helpers.uploadFile(
-		// 		nconf.get('url') + '/api/topic/thumb/upload',
-		// 		path.join(__dirname, '../test/files/503.html'),
-		// 		{}, jar, csrf_token,
-		// 		function (err, res, body) {
-		// 			assert.ifError(err);
-		// 			assert.equal(res.statusCode, 500);
-		// 			assert.equal(body.error, '[[error:invalid-file]]');
-		// 			done();
-		// 		}
-		// 	);
-		// });
-
-		// it('should upload topic thumb', function (done) {
-		// 	meta.config.allowTopicsThumbnail = 1;
-		// 	helpers.uploadFile(
-		// 		nconf.get('url') + '/api/topic/thumb/upload',
-		// 		path.join(__dirname, '../test/files/test.png'),
-		// 		{}, jar, csrf_token,
-		// 		function (err, res, body) {
-		// 			assert.ifError(err);
-		// 			assert.equal(res.statusCode, 200);
-		// 			assert(Array.isArray(body));
-		// 			assert(body[0].path);
-		// 			assert(body[0].url);
-		// 			done();
-		// 		}
-		// 	);
-		// });
-
 		it('should not allow non image uploads', (done) => {
 			socketUser.updateCover({ uid: 1 }, { uid: 1, file: { path: '../../text.txt' } }, (err) => {
 				assert.equal(err.message, '[[error:invalid-data]]');
@@ -334,7 +278,6 @@ describe('Upload Controllers', () => {
 		});
 
 		it('should delete users uploads if account is deleted', (done) => {
-			let jar;
 			let uid;
 			let url;
 			const file = require('../src/file');
@@ -347,8 +290,8 @@ describe('Upload Controllers', () => {
 					uid = _uid;
 					helpers.loginUser('uploader', 'barbar', next);
 				},
-				function (jar, csrf_token, next) {
-					helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token, next);
+				function (data, next) {
+					helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/test.png'), {}, data.jar, data.csrf_token, next);
 				},
 				function (res, body, next) {
 					assert(body && body.status && body.response && body.response.images);
@@ -376,25 +319,11 @@ describe('Upload Controllers', () => {
 		let regularJar;
 		let regular_csrf_token;
 
-		before((done) => {
-			async.parallel([
-				function (next) {
-					helpers.loginUser('admin', 'barbar', (err, _jar, _csrf_token) => {
-						assert.ifError(err);
-						jar = _jar;
-						csrf_token = _csrf_token;
-						next();
-					});
-				},
-				function (next) {
-					helpers.loginUser('regular', 'zugzug', (err, _jar, _csrf_token) => {
-						assert.ifError(err);
-						regularJar = _jar;
-						regular_csrf_token = _csrf_token;
-						next();
-					});
-				},
-			], done);
+		before(async () => {
+			({ jar, csrf_token } = await helpers.loginUser('admin', 'barbar'));
+			const regularLogin = await helpers.loginUser('regular', 'zugzug');
+			regularJar = regularLogin.jar;
+			regular_csrf_token = regularLogin.csrf_token;
 		});
 
 		it('should upload site logo', (done) => {

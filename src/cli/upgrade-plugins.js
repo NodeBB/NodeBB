@@ -97,7 +97,7 @@ async function checkPlugins() {
 	const toCheck = Object.keys(plugins);
 	if (!toCheck.length) {
 		process.stdout.write('  OK'.green + ''.reset);
-		return [];	// no extraneous plugins installed
+		return []; // no extraneous plugins installed
 	}
 	const suggestedModules = await getSuggestedModules(nbbVersion, toCheck);
 	process.stdout.write('  OK'.green + ''.reset);

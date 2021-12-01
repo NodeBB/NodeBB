@@ -16,7 +16,6 @@
 				<select id="allowLoginWith" class="form-control" data-field="allowLoginWith">
 					<option value="username-email">[[admin/settings/user:allow-login-with.username-email]]</option>
 					<option value="username">[[admin/settings/user:allow-login-with.username]]</option>
-					<option value="email">[[admin/settings/user:allow-login-with.email]]</option>
 				</select>
 			</div>
 		</form>

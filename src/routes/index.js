@@ -203,7 +203,7 @@ function addRemountableRoutes(app, router, middleware, mounts) {
 		const original = mount;
 		mount = mounts[original];
 
-		if (!mount) {	// do not mount at all
+		if (!mount) { // do not mount at all
 			winston.warn(`[router] Not mounting /${original}`);
 			return;
 		}

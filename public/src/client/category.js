@@ -18,7 +18,7 @@ define('forum/category', [
 	});
 
 	Category.init = function () {
-		const	cid = ajaxify.data.cid;
+		const cid = ajaxify.data.cid;
 
 		app.enterRoom('category_' + cid);
 
@@ -107,7 +107,8 @@ define('forum/category', [
 					app.createUserTooltips(html);
 					ajaxify.data.nextSubCategoryStart += ajaxify.data.subCategoriesPerPage;
 					ajaxify.data.subCategoriesLeft -= data.length;
-					btn.translateText('[[category:x-more-categories, ' + ajaxify.data.subCategoriesLeft + ']]');
+					btn.toggleClass('hidden', ajaxify.data.subCategoriesLeft <= 0)
+						.translateText('[[category:x-more-categories, ' + ajaxify.data.subCategoriesLeft + ']]');
 				});
 			});
 			return false;
@@ -135,7 +136,7 @@ define('forum/category', [
 	function loadTopicsAfter(after, direction, callback) {
 		callback = callback || function () {};
 
-		hooks.fire('action:category.loading');
+		hooks.fire('action:topics.loading');
 		const params = utils.params();
 		infinitescroll.loadMore('categories.loadMore', {
 			cid: ajaxify.data.cid,
@@ -144,7 +145,7 @@ define('forum/category', [
 			query: params,
 			categoryTopicSort: config.categoryTopicSort,
 		}, function (data, done) {
-			hooks.fire('action:category.loaded');
+			hooks.fire('action:topics.loaded', { topics: data.topics });
 			callback(data, done);
 		});
 	}

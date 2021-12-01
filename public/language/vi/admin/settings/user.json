@@ -6,7 +6,6 @@
 	"allow-login-with": "Cho phép đăng nhập với",
 	"allow-login-with.username-email": "Tên Đăng Nhập hoặc Email",
 	"allow-login-with.username": "Chỉ Tên Đăng Nhập",
-	"allow-login-with.email": "Chỉ Email",
 	"account-settings": "Cài Đặt Tài Khoản",
 	"gdpr_enabled": "Bật đồng ý thu thâp GDPR",
 	"gdpr_enabled_help": "Khi được bật, tất cả những người đăng ký mới sẽ được yêu cầu đồng ý rõ ràng cho việc thu thập và sử dụng dữ liệu theo <a href=\"https://ec.europa.eu/info/priorities/justice-and-fundamental-rights/data-protection/2018-reform-eu-data-protection-rules/eu-data-protection-rules_en\">Quy định chung về bảo vệ dữ liệu (GDPR)</a>. Ghi chú: Bật GDPR không buộc người dùng đã có từ trước phải đồng ý. Để làm như vậy, bạn sẽ cần cài đặt plugin GDPR.",

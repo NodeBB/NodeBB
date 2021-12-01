@@ -2,7 +2,7 @@
 
 
 define('forum/reset', function () {
-	const	ResetPassword = {};
+	const ResetPassword = {};
 
 	ResetPassword.init = function () {
 		const inputEl = $('#email');

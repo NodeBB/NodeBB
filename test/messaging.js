@@ -17,17 +17,17 @@ const helpers = require('./helpers');
 const socketModules = require('../src/socket.io/modules');
 
 describe('Messaging Library', () => {
-	let fooUid;	// the admin
-	let bazUid;	// the user with chat restriction enabled
+	let fooUid; // the admin
+	let bazUid; // the user with chat restriction enabled
 	let herpUid;
 	let roomId;
 
 	before((done) => {
 		// Create 3 users: 1 admin, 2 regular
 		async.series([
-			async.apply(User.create, { username: 'foo', password: 'barbar' }),	// admin
-			async.apply(User.create, { username: 'baz', password: 'quuxquux' }),	// restricted user
-			async.apply(User.create, { username: 'herp', password: 'derpderp' }),	// regular user
+			async.apply(User.create, { username: 'foo', password: 'barbar' }), // admin
+			async.apply(User.create, { username: 'baz', password: 'quuxquux' }), // restricted user
+			async.apply(User.create, { username: 'herp', password: 'derpderp' }), // regular user
 		], (err, uids) => {
 			if (err) {
 				return done(err);
@@ -408,7 +408,7 @@ describe('Messaging Library', () => {
 			await db.sortedSetAdd('users:online', Date.now() - ((meta.config.onlineCutoff * 60000) + 50000), herpUid);
 			await socketModules.chats.send({ uid: fooUid }, { roomId: roomId, message: 'second chat message **bold** text' });
 
-			await sleep(1500);
+			await sleep(3000);
 			const data = await User.notifications.get(herpUid);
 			assert(data.unread[0]);
 			const notification = data.unread[0];
@@ -793,12 +793,8 @@ describe('Messaging Library', () => {
 
 	describe('logged in chat controller', () => {
 		let jar;
-		before((done) => {
-			helpers.loginUser('herp', 'derpderp', (err, _jar) => {
-				assert.ifError(err);
-				jar = _jar;
-				done();
-			});
+		before(async () => {
+			({ jar } = await helpers.loginUser('herp', 'derpderp'));
 		});
 
 		it('should return chats page data', (done) => {
@@ -833,9 +829,9 @@ describe('Messaging Library', () => {
 		});
 
 		it('should return 404 if user is not in room', (done) => {
-			helpers.loginUser('baz', 'quuxquux', (err, jar) => {
+			helpers.loginUser('baz', 'quuxquux', (err, data) => {
 				assert.ifError(err);
-				request(`${nconf.get('url')}/api/user/baz/chats/${roomId}`, { json: true, jar: jar }, (err, response) => {
+				request(`${nconf.get('url')}/api/user/baz/chats/${roomId}`, { json: true, jar: data.jar }, (err, response) => {
 					assert.ifError(err);
 					assert.equal(response.statusCode, 404);
 					done();

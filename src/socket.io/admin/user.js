@@ -4,7 +4,6 @@ const async = require('async');
 const winston = require('winston');
 
 const db = require('../../database');
-const api = require('../../api');
 const groups = require('../../groups');
 const user = require('../../user');
 const events = require('../../events');
@@ -51,11 +50,6 @@ User.removeAdmins = async function (socket, uids) {
 			ip: socket.ip,
 		});
 	}
-};
-
-User.createUser = async function (socket, userData) {
-	sockets.warnDeprecated(socket, 'POST /api/v3/users');
-	return await api.users.create(socket, userData);
 };
 
 User.resetLockouts = async function (socket, uids) {
@@ -126,25 +120,6 @@ User.forcePasswordReset = async function (socket, uids) {
 	uids.forEach(uid => sockets.in(`uid_${uid}`).emit('event:logout'));
 };
 
-User.deleteUsers = async function (socket, uids) {
-	sockets.warnDeprecated(socket, 'DELETE /api/v3/users/:uid/account');
-	await Promise.all(uids.map(async (uid) => {
-		await api.users.deleteAccount(socket, { uid });
-	}));
-};
-
-User.deleteUsersContent = async function (socket, uids) {
-	sockets.warnDeprecated(socket, 'DELETE /api/v3/users/:uid/content');
-	await Promise.all(uids.map(async (uid) => {
-		await api.users.deleteContent(socket, { uid });
-	}));
-};
-
-User.deleteUsersAndContent = async function (socket, uids) {
-	sockets.warnDeprecated(socket, 'DELETE /api/v3/users or DELETE /api/v3/users/:uid');
-	await api.users.deleteMany(socket, { uids });
-};
-
 User.restartJobs = async function () {
 	user.startJobs();
 };
@@ -172,7 +147,9 @@ User.exportUsersCSV = async function (socket) {
 	setTimeout(async () => {
 		try {
 			await user.exportUsersCSV();
-			socket.emit('event:export-users-csv');
+			if (socket.emit) {
+				socket.emit('event:export-users-csv');
+			}
 			const notifications = require('../../notifications');
 			const n = await notifications.create({
 				bodyShort: '[[notifications:users-csv-exported]]',
@@ -182,7 +159,7 @@ User.exportUsersCSV = async function (socket) {
 			});
 			await notifications.push(n, [socket.uid]);
 		} catch (err) {
-			winston.error(err);
+			winston.error(err.stack);
 		}
 	}, 0);
 };

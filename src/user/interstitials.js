@@ -36,7 +36,7 @@ Interstitials.email = async (data) => {
 						uid: userData.uid,
 						email: formData.email,
 						registration: false,
-						allowed: true,	// change this value to disallow
+						allowed: true, // change this value to disallow
 						error: '[[error:invalid-email]]',
 					}),
 				]);
@@ -79,7 +79,7 @@ Interstitials.email = async (data) => {
 					uid: null,
 					email: formData.email,
 					registration: true,
-					allowed: true,	// change this value to disallow
+					allowed: true, // change this value to disallow
 					error: '[[error:invalid-email]]',
 				});
 

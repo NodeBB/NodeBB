@@ -5,7 +5,7 @@
 			<div class="pull-right">
 				<div class="btn-group">
 					<button class="btn btn-primary dropdown-toggle" id="action-dropdown" data-toggle="dropdown" type="button" disabled="disabled">[[admin/manage/users:edit]] <span class="caret"></span></button>
-					<ul class="dropdown-menu">
+					<ul class="dropdown-menu dropdown-menu-right">
 						<li><a href="#" class="validate-email"><i class="fa fa-fw fa-check"></i> [[admin/manage/users:validate-email]]</a></li>
 						<li><a href="#" class="send-validation-email"><i class="fa fa-fw fa-mail-forward"></i> [[admin/manage/users:send-validation-email]]</a></li>
 						<li><a href="#" class="password-reset-email"><i class="fa fa-fw fa-key"></i> [[admin/manage/users:password-reset-email]]</a></li>
@@ -24,7 +24,7 @@
 				</div>
 				<div class="btn-group">
 					<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button"><i class="fa fa-ellipsis-v"></i></button>
-					<ul class="dropdown-menu">
+					<ul class="dropdown-menu dropdown-menu-right">
 						{{{ if showInviteButton }}}<li><a href="#" component="user/invite">[[admin/manage/users:invite]]</a></li>{{{ end }}}
 						<li><a target="_blank" href="#" class="export-csv">[[admin/manage/users:download-csv]]</a></li>
 					</ul>

@@ -8,8 +8,8 @@ const utils = require('../utils');
 const Hooks = module.exports;
 
 Hooks.deprecatedHooks = {
-	'filter:email.send': 'static:email.send',	// 👋 @ 1.19.0
-	'filter:router.page': 'response:router.page',	// 👋 @ 2.0.0
+	'filter:email.send': 'static:email.send', // 👋 @ 1.19.0
+	'filter:router.page': 'response:router.page', // 👋 @ 2.0.0
 };
 
 Hooks.internals = {
@@ -109,7 +109,7 @@ Hooks.fire = async function (hook, params) {
 		Hooks.fire('action:plugins.firehook', payload);
 	}
 	if (result !== undefined) {
-		if (deleteCaller && result && result.caller) {
+		if (deleteCaller && result && result.hasOwnProperty('caller')) {
 			delete result.caller;
 		}
 		return result;

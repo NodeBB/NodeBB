@@ -40,6 +40,7 @@
 	"teaser.last-post": "Son &ndash; cevap yoksa orijinal gönderi de dahil olmak üzere en son gönderiyi gösterir.",
 	"teaser.last-reply": "Son &ndash; cevap yoksa en son yanıtı veya \"Yanıt yok\" yertutucusunu gösterir.",
 	"teaser.first": "İlk",
+	"showPostPreviewsOnHover": "Show a preview of posts when mouse overed",
 	"unread": "Okunmamış Ayarları",
 	"unread.cutoff": "Okunmamış gün sınırı",
 	"unread.min-track-last": "Son okumayı takip etmeden önce konuya yapılan asgari gönderim",

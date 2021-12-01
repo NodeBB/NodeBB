@@ -25,6 +25,9 @@ async function activate(plugin) {
 			// Allow omission of `nodebb-plugin-`
 			plugin = `nodebb-plugin-${plugin}`;
 		}
+
+		plugin = await plugins.autocomplete(plugin);
+
 		const isInstalled = await plugins.isInstalled(plugin);
 		if (!isInstalled) {
 			throw new Error('plugin not installed');

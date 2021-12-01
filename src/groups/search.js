@@ -42,7 +42,7 @@ module.exports = function (Groups) {
 				groups.sort((a, b) => b.createtime - a.createtime);
 				break;
 
-			case 'alpha':	// intentional fall-through
+			case 'alpha': // intentional fall-through
 			default:
 				groups.sort((a, b) => (a.slug > b.slug ? 1 : -1));
 		}

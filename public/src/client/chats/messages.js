@@ -1,7 +1,9 @@
 'use strict';
 
 
-define('forum/chats/messages', ['components', 'translator', 'benchpress', 'hooks', 'bootbox'], function (components, translator, Benchpress, hooks, bootbox) {
+define('forum/chats/messages', [
+	'components', 'translator', 'benchpress', 'hooks', 'bootbox', 'messages',
+], function (components, translator, Benchpress, hooks, bootbox, messagesModule) {
 	const messages = {};
 
 	messages.sendMessage = function (roomId, inputEl) {
@@ -30,7 +32,7 @@ define('forum/chats/messages', ['components', 'translator', 'benchpress', 'hooks
 					inputEl.val(msg);
 					messages.updateRemainingLength(inputEl.parent());
 					if (err.message === '[[error:email-not-confirmed-chat]]') {
-						return app.showEmailConfirmWarning(err);
+						return messagesModule.showEmailConfirmWarning(err.message);
 					}
 
 					return app.alert({

@@ -11,6 +11,8 @@
 	"properties": "Свойства:",
 	"groups": "Групи:",
 	"open-new-window": "Отваряне в нов прозорец",
+	"dropdown": "Падащо меню",
+	"dropdown-placeholder": "Въведете елементите на падащото меню по-долу. Пример: <br/>&lt;li&gt;&lt;a href&#x3D;&quot;https://myforum.com&quot;&gt;Връзка 1&lt;/a&gt;&lt;/li&gt;",
 
 	"btn.delete": "Изтриване",
 	"btn.disable": "Изключване",

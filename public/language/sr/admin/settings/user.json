@@ -6,7 +6,6 @@
 	"allow-login-with": "Dozvoli login sa",
 	"allow-login-with.username-email": "Korisničko ime ili Email",
 	"allow-login-with.username": "Samo korisničko ime",
-	"allow-login-with.email": "Samo Email",
 	"account-settings": "Podešavanje naloga",
 	"gdpr_enabled": "Enable GDPR consent collection",
 	"gdpr_enabled_help": "When enabled, all new registrants will be required to explicitly give consent for data collection and usage under the <a href=\"https://ec.europa.eu/info/priorities/justice-and-fundamental-rights/data-protection/2018-reform-eu-data-protection-rules/eu-data-protection-rules_en\">General Data Protection Regulation (GDPR)</a>. <strong>Note</strong>: Enabling GDPR does not force pre-existing users to provide consent. To do so, you will need to install the GDPR plugin.",

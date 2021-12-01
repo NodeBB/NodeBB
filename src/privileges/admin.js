@@ -61,13 +61,13 @@ privsAdmin.routeMap = {
 	'extend/widgets': 'admin:settings',
 	'extend/rewards': 'admin:settings',
 };
-privsAdmin.routeRegexpMap = {
-	'^manage/categories/\\d+': 'admin:categories',
-	'^manage/privileges/(\\d+|admin)': 'admin:privileges',
-	'^manage/groups/.+$': 'admin:groups',
-	'^settings/[\\w\\-]+$': 'admin:settings',
-	'^appearance/[\\w]+$': 'admin:settings',
-	'^plugins/[\\w\\-]+$': 'admin:settings',
+privsAdmin.routePrefixMap = {
+	'manage/categories/': 'admin:categories',
+	'manage/privileges/': 'admin:privileges',
+	'manage/groups/': 'admin:groups',
+	'settings/': 'admin:settings',
+	'appearance/': 'admin:settings',
+	'plugins/': 'admin:settings',
 };
 
 // Mapping for socket call methods to a privilege
@@ -99,9 +99,6 @@ privsAdmin.socketMap = {
 	'admin.user.sendValidationEmail': 'admin:users',
 	'admin.user.sendPasswordResetEmail': 'admin:users',
 	'admin.user.forcePasswordReset': 'admin:users',
-	'admin.user.deleteUsers': 'admin:users',
-	'admin.user.deleteUsersAndContent': 'admin:users',
-	'admin.user.createUser': 'admin:users',
 	'admin.user.invite': 'admin:users',
 
 	'admin.tags.create': 'admin:tags',
@@ -119,20 +116,12 @@ privsAdmin.socketMap = {
 };
 
 privsAdmin.resolve = (path) => {
-	if (privsAdmin.routeMap[path]) {
+	if (privsAdmin.routeMap.hasOwnProperty(path)) {
 		return privsAdmin.routeMap[path];
 	}
 
-	let privilege;
-	Object.keys(privsAdmin.routeRegexpMap).forEach((regexp) => {
-		if (!privilege) {
-			if (new RegExp(regexp).test(path)) {
-				privilege = privsAdmin.routeRegexpMap[regexp];
-			}
-		}
-	});
-
-	return privilege;
+	const found = Object.entries(privsAdmin.routePrefixMap).find(entry => path.startsWith(entry[0]));
+	return found ? found[1] : undefined;
 };
 
 privsAdmin.list = async function (uid) {

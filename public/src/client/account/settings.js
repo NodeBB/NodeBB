@@ -2,7 +2,7 @@
 
 
 define('forum/account/settings', ['forum/account/header', 'components', 'translator', 'api'], function (header, components, translator, api) {
-	const	AccountSettings = {};
+	const AccountSettings = {};
 
 	// If page skin is changed but not saved, switch the skin back
 	$(window).on('action:ajaxify.start', function () {

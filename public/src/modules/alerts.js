@@ -18,6 +18,38 @@ define('alerts', ['translator', 'components', 'hooks'], function (translator, co
 		}
 	};
 
+	module.success = function (message, timeout) {
+		module.alert({
+			alert_id: utils.generateUUID(),
+			title: '[[global:alert.success]]',
+			message: message,
+			type: 'success',
+			timeout: timeout || 5000,
+		});
+	};
+
+	module.error = function (message, timeout) {
+		message = (message && message.message) || message;
+
+		if (message === '[[error:revalidate-failure]]') {
+			socket.disconnect();
+			app.reconnect();
+			return;
+		}
+
+		module.alert({
+			alert_id: utils.generateUUID(),
+			title: '[[global:alert.error]]',
+			message: message,
+			type: 'danger',
+			timeout: timeout || 10000,
+		});
+	};
+
+	module.remove = function (id) {
+		$('#alert_button_' + id).remove();
+	};
+
 	function createNew(params) {
 		app.parseAndTranslate('alert', params, function (html) {
 			let alert = $('#' + params.alert_id);
@@ -55,10 +87,6 @@ define('alerts', ['translator', 'components', 'hooks'], function (translator, co
 			hooks.fire('action:alert.new', { alert, params });
 		});
 	}
-
-	module.remove = function (id) {
-		$('#alert_button_' + id).remove();
-	};
 
 	function updateAlert(alert, params) {
 		alert.find('strong').html(params.title);

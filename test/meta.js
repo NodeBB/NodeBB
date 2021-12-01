@@ -19,9 +19,9 @@ describe('meta', () => {
 		Groups.cache.reset();
 		// Create 3 users: 1 admin, 2 regular
 		async.series([
-			async.apply(User.create, { username: 'foo', password: 'barbar' }),	// admin
-			async.apply(User.create, { username: 'baz', password: 'quuxquux' }),	// restricted user
-			async.apply(User.create, { username: 'herp', password: 'derpderp' }),	// regular user
+			async.apply(User.create, { username: 'foo', password: 'barbar' }), // admin
+			async.apply(User.create, { username: 'baz', password: 'quuxquux' }), // restricted user
+			async.apply(User.create, { username: 'herp', password: 'derpderp' }), // regular user
 		], (err, uids) => {
 			if (err) {
 				return done(err);

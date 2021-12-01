@@ -2,7 +2,7 @@
 
 
 define('admin/advanced/logs', function () {
-	const	Logs = {};
+	const Logs = {};
 
 	Logs.init = function () {
 		const logsEl = $('.logs pre');

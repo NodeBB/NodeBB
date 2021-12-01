@@ -94,7 +94,7 @@ postsAPI.edit = async function (caller, data) {
 	]);
 
 	const uids = _.uniq(_.flatten(memberData).concat(String(caller.uid)));
-	uids.forEach(uid =>	websockets.in(`uid_${uid}`).emit('event:post_edited', editResult));
+	uids.forEach(uid => websockets.in(`uid_${uid}`).emit('event:post_edited', editResult));
 	return returnData;
 };
 

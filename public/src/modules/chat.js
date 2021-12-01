@@ -1,13 +1,79 @@
 'use strict';
 
 define('chat', [
-	'components',
-	'taskbar',
-	'translator',
-	'hooks',
-], function (components, taskbar, translator, hooks) {
+	'components', 'taskbar', 'translator', 'hooks', 'bootbox',
+], function (components, taskbar, translator, hooks, bootbox) {
 	const module = {};
 	let newMessage = false;
+
+	module.openChat = function (roomId, uid) {
+		if (!app.user.uid) {
+			return app.alertError('[[error:not-logged-in]]');
+		}
+
+		function loadAndCenter(chatModal) {
+			module.load(chatModal.attr('data-uuid'));
+			module.center(chatModal);
+			module.focusInput(chatModal);
+		}
+
+		if (module.modalExists(roomId)) {
+			loadAndCenter(module.getModal(roomId));
+		} else {
+			socket.emit('modules.chats.loadRoom', { roomId: roomId, uid: uid || app.user.uid }, function (err, roomData) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+				roomData.users = roomData.users.filter(function (user) {
+					return user && parseInt(user.uid, 10) !== parseInt(app.user.uid, 10);
+				});
+				roomData.uid = uid || app.user.uid;
+				roomData.isSelf = true;
+				module.createModal(roomData, loadAndCenter);
+			});
+		}
+	};
+
+	module.newChat = function (touid, callback) {
+		function createChat() {
+			socket.emit('modules.chats.newRoom', { touid: touid }, function (err, roomId) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+
+				if (!ajaxify.data.template.chats) {
+					module.openChat(roomId);
+				} else {
+					ajaxify.go('chats/' + roomId);
+				}
+
+				callback(null, roomId);
+			});
+		}
+
+		callback = callback || function () { };
+		if (!app.user.uid) {
+			return app.alertError('[[error:not-logged-in]]');
+		}
+
+		if (parseInt(touid, 10) === parseInt(app.user.uid, 10)) {
+			return app.alertError('[[error:cant-chat-with-yourself]]');
+		}
+		socket.emit('modules.chats.isDnD', touid, function (err, isDnD) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+			if (!isDnD) {
+				return createChat();
+			}
+
+			bootbox.confirm('[[modules:chat.confirm-chat-with-dnd-user]]', function (ok) {
+				if (ok) {
+					createChat();
+				}
+			});
+		});
+	};
 
 	module.loadChatsDropdown = function (chatsListEl) {
 		socket.emit('modules.chats.getRecentChats', {
@@ -37,7 +103,7 @@ define('chat', [
 						}
 						const roomId = $(this).attr('data-roomid');
 						if (!ajaxify.currentPage.match(/^chats\//)) {
-							app.openChat(roomId);
+							module.openChat(roomId);
 						} else {
 							ajaxify.go('user/' + app.user.userslug + '/chats/' + roomId);
 						}
@@ -206,7 +272,7 @@ define('chat', [
 					module.minimize(uuid);
 				});
 
-				chatModal.on('click', ':not(.close)', function () {
+				chatModal.on('mouseup', function () {
 					taskbar.updateActive(chatModal.attr('data-uuid'));
 
 					if (dragged) {

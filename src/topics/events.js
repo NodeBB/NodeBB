@@ -58,6 +58,10 @@ Events._types = {
 		icon: 'fa-link',
 		text: '[[topic:backlink]]',
 	},
+	fork: {
+		icon: 'fa-code-fork',
+		text: '[[topic:forked-by]]',
+	},
 };
 
 Events.init = async () => {
@@ -66,7 +70,7 @@ Events.init = async () => {
 	Events._types = types;
 };
 
-Events.get = async (tid, uid) => {
+Events.get = async (tid, uid, reverse = false) => {
 	const topics = require('.');
 
 	if (!await topics.exists(tid)) {
@@ -79,7 +83,9 @@ Events.get = async (tid, uid) => {
 	eventIds = eventIds.map(obj => obj.value);
 	let events = await db.getObjects(keys);
 	events = await modifyEvent({ tid, uid, eventIds, timestamps, events });
-
+	if (reverse) {
+		events.reverse();
+	}
 	return events;
 };
 
@@ -153,7 +159,7 @@ async function modifyEvent({ tid, uid, eventIds, timestamps, events }) {
 Events.log = async (tid, payload) => {
 	const topics = require('.');
 	const { type } = payload;
-	const now = Date.now();
+	const timestamp = payload.timestamp || Date.now();
 
 	if (!Events._types.hasOwnProperty(type)) {
 		throw new Error(`[[error:topic-event-unrecognized, ${type}]]`);
@@ -165,12 +171,12 @@ Events.log = async (tid, payload) => {
 
 	await Promise.all([
 		db.setObject(`topicEvent:${eventId}`, payload),
-		db.sortedSetAdd(`topic:${tid}:events`, now, eventId),
+		db.sortedSetAdd(`topic:${tid}:events`, timestamp, eventId),
 	]);
 
 	let events = await modifyEvent({
 		eventIds: [eventId],
-		timestamps: [now],
+		timestamps: [timestamp],
 		events: [payload],
 	});
 

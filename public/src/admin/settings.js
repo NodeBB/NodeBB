@@ -30,9 +30,9 @@ define('admin/settings', ['uploader', 'mousetrap', 'hooks'], function (uploader,
 	Settings.prepare = function (callback) {
 		// Populate the fields on the page from the config
 		const fields = $('#content [data-field]');
-		const	numFields = fields.length;
-		const	saveBtn = $('#save');
-		const	revertBtn = $('#revert');
+		const numFields = fields.length;
+		const saveBtn = $('#save');
+		const revertBtn = $('#revert');
 		let x;
 		let key;
 		let inputType;

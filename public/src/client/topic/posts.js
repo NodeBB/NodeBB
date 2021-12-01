@@ -183,7 +183,7 @@ define('forum/topic/posts', [
 			}
 
 			data.posts = data.posts.filter(function (post) {
-				return $('[component="post"][data-pid="' + post.pid + '"]').length === 0;
+				return post.index === -1 || $('[component="post"][data-pid="' + post.pid + '"]').length === 0;
 			});
 		}
 
@@ -206,8 +206,11 @@ define('forum/topic/posts', [
 
 		app.parseAndTranslate('topic', 'posts', Object.assign({}, ajaxify.data, data), function (html) {
 			html = html.filter(function () {
-				const pid = $(this).attr('data-pid');
-				return pid && $('[component="post"][data-pid="' + pid + '"]').length === 0;
+				const $this = $(this);
+				const pid = $this.attr('data-pid');
+				const index = parseInt($this.attr('data-index'), 10);
+				const isPost = $this.is('[component="post"]');
+				return !isPost || index === -1 || (pid && $('[component="post"][data-pid="' + pid + '"]').length === 0);
 			});
 
 			if (after) {
@@ -286,9 +289,22 @@ define('forum/topic/posts', [
 	};
 
 	Posts.addTopicEvents = function (events) {
+		if (config.topicPostSort === 'most_votes') {
+			return;
+		}
 		const html = helpers.renderEvents.call(ajaxify.data, events);
 		translator.translate(html, (translated) => {
-			document.querySelector('[component="topic"]').insertAdjacentHTML('beforeend', translated);
+			if (config.topicPostSort === 'oldest_to_newest') {
+				$('[component="topic"]').append(translated);
+			} else if (config.topicPostSort === 'newest_to_oldest') {
+				const mainPost = $('[component="topic"] [component="post"][data-index="0"]');
+				if (mainPost.length) {
+					$(translated).insertAfter(mainPost);
+				} else {
+					$('[component="topic"]').prepend(translated);
+				}
+			}
+
 			$('[component="topic/event"] .timeago').timeago();
 		});
 	};

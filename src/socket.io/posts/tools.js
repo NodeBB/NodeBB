@@ -28,7 +28,7 @@ module.exports = function (SocketPosts) {
 			canDelete: privileges.posts.canDelete(data.pid, socket.uid),
 			canPurge: privileges.posts.canPurge(data.pid, socket.uid),
 			canFlag: privileges.posts.canFlag(data.pid, socket.uid),
-			flagged: flags.exists('post', data.pid, socket.uid),	// specifically, whether THIS calling user flagged
+			flagged: flags.exists('post', data.pid, socket.uid), // specifically, whether THIS calling user flagged
 			bookmarked: posts.hasBookmarked(data.pid, socket.uid),
 			postSharing: social.getActivePostSharing(),
 			history: posts.diffs.exists(data.pid),

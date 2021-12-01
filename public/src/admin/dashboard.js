@@ -2,17 +2,17 @@
 
 
 define('admin/dashboard', ['Chart', 'translator', 'benchpress', 'bootbox'], function (Chart, translator, Benchpress, bootbox) {
-	const	Admin = {};
-	const	intervals = {
+	const Admin = {};
+	const intervals = {
 		rooms: false,
 		graphs: false,
 	};
 	let isMobile = false;
-	const	graphData = {
+	const graphData = {
 		rooms: {},
 		traffic: {},
 	};
-	const	currentGraph = {
+	const currentGraph = {
 		units: 'hours',
 		until: undefined,
 	};
@@ -23,7 +23,7 @@ define('admin/dashboard', ['Chart', 'translator', 'benchpress', 'bootbox'], func
 		realtimeInterval: 1500,
 	};
 
-	const	usedTopicColors = [];
+	const usedTopicColors = [];
 
 	$(window).on('action:ajaxify.start', function () {
 		clearInterval(intervals.rooms);
@@ -520,7 +520,7 @@ define('admin/dashboard', ['Chart', 'translator', 'benchpress', 'bootbox'], func
 			let html = '';
 			topics.forEach(function (t, i) {
 				const link = t.tid ? '<a title="' + t.title + '"href="' + config.relative_path + '/topic/' + t.tid + '" target="_blank"> ' + t.title + '</a>' : t.title;
-				const	label = t.count === '0' ? t.title : link;
+				const label = t.count === '0' ? t.title : link;
 
 				html += '<li>' +
 					'<div style="background-color: ' + topicColors[i] + ';"></div>' +

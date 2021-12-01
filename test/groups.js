@@ -60,7 +60,7 @@ describe('Groups', () => {
 		// Also create a hidden group
 		await Groups.join('Hidden', 'Test');
 		// create another group that starts with test for search/sort
-		await Groups.create({	name: 'Test2', description: 'Foobar!' });
+		await Groups.create({ name: 'Test2', description: 'Foobar!' });
 
 		testUid = await User.create({
 			username: 'testuser',
@@ -752,7 +752,7 @@ describe('Groups', () => {
 			Groups.leaveAllGroups(testUid, (err) => {
 				assert.ifError(err);
 
-				const	groups = ['Test', 'Hidden'];
+				const groups = ['Test', 'Hidden'];
 				async.every(groups, (group, next) => {
 					Groups.isMember(testUid, group, (err, isMember) => {
 						next(err, !isMember);

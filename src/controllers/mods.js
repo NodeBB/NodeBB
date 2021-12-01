@@ -114,7 +114,7 @@ modsController.flags.detail = async function (req, res, next) {
 	results.privileges = { ...results.privileges[0], ...results.privileges[1] };
 
 	if (!results.flagData || (!(results.isAdminOrGlobalMod || !!results.moderatedCids.length))) {
-		return next();	// 404
+		return next(); // 404
 	}
 
 	if (results.flagData.type === 'user') {

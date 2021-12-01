@@ -1,23 +1,14 @@
 # ![NodeBB](public/images/logo.svg)
 
-[![Build Status](https://travis-ci.org/NodeBB/NodeBB.svg?branch=master)](https://travis-ci.org/NodeBB/NodeBB)
+[![Workflow](https://github.com/NodeBB/NodeBB/actions/workflows/test.yaml/badge.svg)](https://github.com/NodeBB/NodeBB/actions/workflows/test.yaml)
 [![Coverage Status](https://coveralls.io/repos/github/NodeBB/NodeBB/badge.svg?branch=master)](https://coveralls.io/github/NodeBB/NodeBB?branch=master)
-[![Dependency Status](https://david-dm.org/nodebb/nodebb.svg?path=install)](https://david-dm.org/nodebb/nodebb?path=install)
 [![Code Climate](https://codeclimate.com/github/NodeBB/NodeBB/badges/gpa.svg)](https://codeclimate.com/github/NodeBB/NodeBB)
 
-[**NodeBB Forum Software**](https://nodebb.org) is powered by Node.js and supports either Redis, MongoDB, or a PostgreSQL database. It utilizes web sockets for instant interactions and real-time notifications. NodeBB has many modern features out of the box such as social network integration and streaming discussions, while still making sure to be compatible with older browsers.
+[**NodeBB Forum Software**](https://nodebb.org) is powered by Node.js and supports either Redis, MongoDB, or a PostgreSQL database. It utilizes web sockets for instant interactions and real-time notifications. NodeBB takes the best of the modern web: real-time streaming discussions, mobile responsiveness, and rich RESTful read/write APIs, while staying true to the original bulletin board/forum format &rarr; categorical hierarchies, local user accounts, and asynchronous messaging.
 
-Additional functionality is enabled through the use of third-party plugins.
+NodeBB by itself contains a "common core" of basic functionality, while additional functionality and integrations are enabled through the use of third-party plugins.
 
-* [Demo](https://try.nodebb.org)
-* [Developer Community](http://community.nodebb.org)
-* [Documentation & Installation Instructions](http://docs.nodebb.org)
-* [Help translate NodeBB](https://www.transifex.com/projects/p/nodebb/)
-* [NodeBB Blog](http://blog.nodebb.org)
-* [Premium Hosting for NodeBB](http://www.nodebb.org/ "NodeBB")
-* Unofficial IRC community &ndash; channel `#nodebb` on Libera.chat
-* [Follow us on Twitter](http://www.twitter.com/NodeBB/ "NodeBB Twitter")
-* [Like us on Facebook](http://www.facebook.com/NodeBB/ "NodeBB Facebook")
+### [Try it now](//try.nodebb.org) | [Documentation](//docs.nodebb.org)
 
 ## Screenshots
 
@@ -51,7 +42,7 @@ Our minimalist "Persona" theme gets you going right away, no coding experience r
 NodeBB requires the following software to be installed:
 
 * A version of Node.js at least 12 or greater ([installation/upgrade instructions](https://github.com/nodesource/distributions))
-* MongoDB, version 2.6 or greater **or** Redis, version 2.8.9 or greater
+* MongoDB, version 3.6 or greater **or** Redis, version 2.8.9 or greater
 * If you are using [clustering](https://docs.nodebb.org/configuring/scaling/) you need Redis installed and configured.
 * nginx, version 1.3.13 or greater (**only if** intending to use nginx to proxy requests to a NodeBB)
 
@@ -79,3 +70,15 @@ Detailed upgrade instructions are listed in [Upgrading NodeBB](https://docs.node
 NodeBB is licensed under the **GNU General Public License v3 (GPL-3)** (http://www.gnu.org/copyleft/gpl.html).
 
 Interested in a sublicense agreement for use of NodeBB in a non-free/restrictive environment? Contact us at sales@nodebb.org.
+
+## More Information/Links
+
+* [Demo](https://try.nodebb.org)
+* [Developer Community](http://community.nodebb.org)
+* [Documentation & Installation Instructions](http://docs.nodebb.org)
+* [Help translate NodeBB](https://www.transifex.com/projects/p/nodebb/)
+* [NodeBB Blog](http://blog.nodebb.org)
+* [Premium Hosting for NodeBB](http://www.nodebb.org/ "NodeBB")
+* Unofficial IRC community &ndash; channel `#nodebb` on Libera.chat
+* [Follow us on Twitter](http://www.twitter.com/NodeBB/ "NodeBB Twitter")
+* [Like us on Facebook](http://www.facebook.com/NodeBB/ "NodeBB Facebook")

@@ -6,10 +6,10 @@ define('admin/manage/groups', [
 	'api',
 	'bootbox',
 ], function (categorySelector, slugify, api, bootbox) {
-	const	Groups = {};
+	const Groups = {};
 
 	Groups.init = function () {
-		const	createModal = $('#create-modal');
+		const createModal = $('#create-modal');
 		const createGroupName = $('#create-group-name');
 		const createModalGo = $('#create-modal-go');
 		const createModalError = $('#create-modal-error');

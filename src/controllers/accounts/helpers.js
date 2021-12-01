@@ -78,7 +78,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 	userData.isSelf = isSelf;
 	userData.isFollowing = results.isFollowing;
 	userData.hasPrivateChat = results.hasPrivateChat;
-	userData.showHidden = results.canEdit;	// remove in v1.19.0
+	userData.showHidden = results.canEdit; // remove in v1.19.0
 	userData.groups = Array.isArray(results.groups) && results.groups.length ? results.groups[0] : [];
 	userData.disableSignatures = meta.config.disableSignatures === 1;
 	userData['reputation:disabled'] = meta.config['reputation:disabled'] === 1;

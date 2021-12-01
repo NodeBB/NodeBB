@@ -40,6 +40,7 @@
 	"teaser.last-post": "Last &ndash; הצג את הפוסט האחרון, כולל הפוסט המקורי, אם אין תגובות",
 	"teaser.last-reply": "Last &ndash; הצג את התשובה האחרונה, או ציין \"ללא תשובות\" אם אין תשובות",
 	"teaser.first": "ראשון",
+	"showPostPreviewsOnHover": "הצג תצוגה מקדימה בריחוף על פוסט",
 	"unread": "הגדרות \"שלא נקראו\"",
 	"unread.cutoff": "ימי ניתוק שלא נקראו",
 	"unread.min-track-last": "פוסטים מינימליים בנושא לפני מעקב אחר קריאה אחרונה",

@@ -1,3 +1,110 @@
+#### v1.18.6 (2021-11-10)
+
+##### Chores
+
+*  make it a link (a0f0dd02)
+*  update badges, remove david doesnt work (dad31c8e)
+*  up themes (b1d6c9ba)
+*  up mentions (98b98a11)
+*  up mentions (3e4d477e)
+*  fix type.yaml example and summary (591424ce)
+*  incrementing version number - v1.18.5 (1e418f5b)
+*  update changelog for v1.18.5 (82eda23a)
+*  remove .opacity() mixin as it is supported cross-browser (28efcb59)
+* **deps:**
+  *  update dependency eslint-plugin-import to v2.25.3 (45a0895c)
+  *  update commitlint monorepo to v14 (dc78125a)
+  *  update dependency jsdom to v18.0.1 (7d468e72)
+* **i18n:**
+  *  fallback strings for new resources: nodebb.admin-development-info (91676c6c)
+  *  fallback strings for new resources: nodebb.admin-settings-navigation (3727e39f)
+  *  fallback strings for new resources: nodebb.admin-settings-post (46789910)
+
+##### New Features
+
+*  #9992, hooks.one (96f13e4f)
+*  use auto-generated meta and link tags in ACP, closes #9991 (1719bff8)
+*  add node 16 (#9847) (d27c9696)
+*  #9967, allow dropdowns in navigation (2e623dd2)
+*  show number of events per type in acp (b916e42f)
+*  show posts previews if enabled on mouse over (8c670316)
+
+##### Bug Fixes
+
+* **deps:**
+  *  update dependency nodebb-theme-slick to v1.4.16 (#9990) (cf30876f)
+  *  update dependency nodebb-plugin-composer-default to v7.0.14 (#9989) (ef02bdc4)
+  *  update dependency nodebb-plugin-composer-default to v7.0.13 (#9988) (654c8e61)
+  *  update dependency nodebb-plugin-mentions to v3.0.2 (1a22b0ec)
+  *  update dependency socket.io to v4.3.2 (98ebc4d9)
+  *  update dependency html-to-text to v8.1.0 (c1f5889f)
+  *  update dependency nodebb-plugin-dbsearch to v5.1.0 (#9983) (4f1ee1fc)
+  *  update dependency nodebb-plugin-composer-default to v7.0.12 (7fee0e32)
+  *  update dependency nodebb-plugin-mentions to v3.0.1 (#9979) (8224a2a9)
+  *  update dependency nodebb-plugin-spam-be-gone to v0.7.11 (91293ecc)
+  *  update dependency nodebb-theme-lavender to v5.3.1 (f7295aaa)
+  *  update dependency nodebb-plugin-mentions to v3 (#9966) (0888aae6)
+  *  update dependency mongodb to v4.1.4 (#9968) (f5993731)
+  *  update dependency nodebb-theme-persona to v11.2.21 (#9969) (8fac8d61)
+  *  update dependency nodebb-plugin-mentions to v2.15.1 (0f8a68c0)
+  *  update dependency validator to v13.7.0 (81c8d70c)
+  *  update dependency autoprefixer to v10.4.0 (755860f1)
+*  ability to enumerate email via updateProfile method (c1ac2912)
+*  accidentally not clearing email when said email is confirmed for a different uid (b912a564)
+*  #9976 (28dd31a8)
+*  #9976, handle array or object (9bfb6c72)
+*  dont show previews on mobile (41e02400)
+*  category load more btn visibility (05468526)
+*  #9973, ignore if assigning to same parent (66e7cdac)
+*  #9972 (67cb2491)
+*  remove tooltip on ajaxify (f728abda)
+*  don't highlight external nav items (8a88295d)
+*  don't use # for previews (5a0efd2d)
+*  events for just topic with main post (3d611ab7)
+*  #9954, get next post timestamp (89399c0e)
+*  topic events not rendered in infinitescroll (a7f235db)
+*  broken post uploads due to 6a976a9db0340e34577961ce8d5d9479c78f7856 (485b6ced)
+*  #9950, rename account export routes to remove `uid/` prefix (0ee85d5a)
+*  double invocation of authenticateRequest (60352eca)
+*  #9945, call authenticateRequest middleware for mount points in /api (6a976a9d)
+*  hooks is sometimes undefined (74aa12c9)
+*  typo in flags (bc4b19b4)
+*  remove unused code (50b2ebf8)
+*  handle undefined data.query (8f08d9ca)
+
+##### Performance Improvements
+
+*  only load posts once (9fbb3b11)
+
+##### Refactors
+
+*  shorter require (41c3eb82)
+*  deprecate app.alert functions user alerts module directly (0428912c)
+*  deprecate app.logout (8b4510cc)
+*  simpler rejoin (61903448)
+*  deprecate app.openChat/newChat (f352be63)
+*  move search functions from app.js to search module (1a9b1598)
+*  move session messages (666fe209)
+*  move warnings/messages out of app.js (51855254)
+*  remove jshint (0a7ff208)
+*  cleanup info, better cpu usage % (4b738c8c)
+*  acp only uses 3 modes and a single theme (890bf03f)
+*  display errors from category drag/drop (c1cc35a9)
+*  use utils.debounce (e8c17fee)
+
+##### Tests
+
+*  add another assert for random failing test (ae64b9f4)
+*  socket.emit doesnt exist in tests (61d1f565)
+*  show body when test fails (e3f5b706)
+*  lint (3d2398ac)
+*  fix tpl test (30cce142)
+*  dbsearch no longer has staticDir (3386893b)
+*  increase timeout (4ac9270a)
+*  fix account export test routes (10bb8cf7)
+*  add test aliases.buildTargets (62ac9a8b)
+*  empty query params for search (bda5d144)
+
 #### v1.18.5 (2021-10-27)
 
 ##### Breaking Changes

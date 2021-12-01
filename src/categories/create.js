@@ -21,7 +21,7 @@ module.exports = function (Categories) {
 		data.name = String(data.name || `Category ${cid}`);
 		const slug = `${cid}/${slugify(data.name)}`;
 		const smallestOrder = firstChild.length ? firstChild[0].score - 1 : 1;
-		const order = data.order || smallestOrder;	// If no order provided, place it at the top
+		const order = data.order || smallestOrder; // If no order provided, place it at the top
 		const colours = Categories.assignColours();
 
 		let category = {

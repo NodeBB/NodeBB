@@ -31,6 +31,9 @@ const relative_path = nconf.get('relative_path');
 middleware.buildHeader = helpers.try(async (req, res, next) => {
 	res.locals.renderHeader = true;
 	res.locals.isAPI = false;
+	if (req.method === 'GET') {
+		await require('./index').applyCSRFasync(req, res);
+	}
 	const [config, canLoginIfBanned] = await Promise.all([
 		controllers.api.loadConfig(req),
 		user.bans.canLoginIfBanned(req.uid),

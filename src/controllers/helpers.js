@@ -242,7 +242,7 @@ helpers.buildTitle = function (pageTitle) {
 
 helpers.getCategories = async function (set, uid, privilege, selectedCid) {
 	const cids = await categories.getCidsByPrivilege(set, uid, privilege);
-	return await getCategoryData(cids, uid, selectedCid, privilege);
+	return await getCategoryData(cids, uid, selectedCid, Object.values(categories.watchStates), privilege);
 };
 
 helpers.getCategoriesByStates = async function (uid, selectedCid, states, privilege = 'topics:read') {
@@ -251,44 +251,23 @@ helpers.getCategoriesByStates = async function (uid, selectedCid, states, privil
 };
 
 async function getCategoryData(cids, uid, selectedCid, states, privilege) {
-	if (selectedCid && !Array.isArray(selectedCid)) {
-		selectedCid = [selectedCid];
-	}
-	selectedCid = selectedCid && selectedCid.map(String);
-
-	const visibleCategories = await helpers.getVisibleCategories({
-		cids, uid, states, privilege, showLinks: false,
-	});
+	const [visibleCategories, selectData] = await Promise.all([
+		helpers.getVisibleCategories({
+			cids, uid, states, privilege, showLinks: false,
+		}),
+		helpers.getSelectedCategory(selectedCid),
+	]);
 
 	const categoriesData = categories.buildForSelectCategories(visibleCategories, ['disabledClass']);
 
-	let selectedCategory = [];
-	const selectedCids = [];
 	categoriesData.forEach((category) => {
-		category.selected = selectedCid ? selectedCid.includes(String(category.cid)) : false;
-		if (category.selected) {
-			selectedCategory.push(category);
-			selectedCids.push(category.cid);
-		}
+		category.selected = selectData.selectedCids.includes(category.cid);
 	});
-	selectedCids.sort((a, b) => a - b);
-
-	if (selectedCategory.length > 1) {
-		selectedCategory = {
-			icon: 'fa-plus',
-			name: '[[unread:multiple-categories-selected]]',
-			bgColor: '#ddd',
-		};
-	} else if (selectedCategory.length === 1) {
-		selectedCategory = selectedCategory[0];
-	} else {
-		selectedCategory = null;
-	}
-
+	selectData.selectedCids.sort((a, b) => a - b);
 	return {
 		categories: categoriesData,
-		selectedCategory: selectedCategory,
-		selectedCids: selectedCids,
+		selectedCategory: selectData.selectedCategory,
+		selectedCids: selectData.selectedCids,
 	};
 }
 
@@ -347,26 +326,26 @@ helpers.getVisibleCategories = async function (params) {
 	});
 };
 
-helpers.getSelectedCategory = async function (cid) {
-	if (cid && !Array.isArray(cid)) {
-		cid = [cid];
+helpers.getSelectedCategory = async function (cids) {
+	if (cids && !Array.isArray(cids)) {
+		cids = [cids];
 	}
-	cid = cid && cid.map(cid => parseInt(cid, 10));
-	let selectedCategories = await categories.getCategoriesData(cid);
-
+	cids = cids && cids.map(cid => parseInt(cid, 10));
+	let selectedCategories = await categories.getCategoriesData(cids);
+	const selectedCids = selectedCategories.map(c => c && c.cid).filter(Boolean);
 	if (selectedCategories.length > 1) {
 		selectedCategories = {
 			icon: 'fa-plus',
 			name: '[[unread:multiple-categories-selected]]',
 			bgColor: '#ddd',
 		};
-	} else if (selectedCategories.length === 1) {
+	} else if (selectedCategories.length === 1 && selectedCategories[0]) {
 		selectedCategories = selectedCategories[0];
 	} else {
 		selectedCategories = null;
 	}
 	return {
-		selectedCids: cid || [],
+		selectedCids: selectedCids,
 		selectedCategory: selectedCategories,
 	};
 };

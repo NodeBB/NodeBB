@@ -38,8 +38,9 @@ describe('Topic\'s', () => {
 		adminUid = await User.create({ username: 'admin', password: '123456' });
 		fooUid = await User.create({ username: 'foo' });
 		await groups.join('administrators', adminUid);
-		adminJar = await helpers.loginUser('admin', '123456');
-		csrf_token = (await requestType('get', `${nconf.get('url')}/api/config`, { json: true, jar: adminJar })).body.csrf_token;
+		const adminLogin = await helpers.loginUser('admin', '123456');
+		adminJar = adminLogin.jar;
+		csrf_token = adminLogin.csrf_token;
 
 		categoryObj = await categories.create({
 			name: 'Test Category',
@@ -313,7 +314,7 @@ describe('Topic\'s', () => {
 	});
 
 	describe('Get methods', () => {
-		let	newTopic;
+		let newTopic;
 		let newPost;
 
 		before((done) => {
@@ -500,6 +501,11 @@ describe('Topic\'s', () => {
 				data.posts.forEach((post, index) => {
 					assert.strictEqual(post.index, index);
 				});
+			});
+
+			it('should return empty array if first param is falsy', async () => {
+				const posts = await topics.getTopicPosts(null, `tid:${tid}:posts`, 0, 9, topic.userId, true);
+				assert.deepStrictEqual(posts, []);
 			});
 		});
 	});
@@ -1365,61 +1371,8 @@ describe('Topic\'s', () => {
 		it('should infinite load topic posts', (done) => {
 			socketTopics.loadMore({ uid: adminUid }, { tid: tid, after: 0, count: 10 }, (err, data) => {
 				assert.ifError(err);
-				assert(data.mainPost);
 				assert(data.posts);
 				assert(data.privileges);
-				done();
-			});
-		});
-
-		it('should error with invalid data', (done) => {
-			socketTopics.loadMoreSortedTopics({ uid: adminUid }, { after: 'invalid' }, (err) => {
-				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
-		});
-
-		it('should load more unread topics', (done) => {
-			socketTopics.markUnread({ uid: adminUid }, tid, (err) => {
-				assert.ifError(err);
-				socketTopics.loadMoreSortedTopics({ uid: adminUid }, { cid: topic.categoryId, after: 0, count: 10, sort: 'unread' }, (err, data) => {
-					assert.ifError(err);
-					assert(data);
-					assert(Array.isArray(data.topics));
-					done();
-				});
-			});
-		});
-
-		it('should error with invalid data', (done) => {
-			socketTopics.loadMoreSortedTopics({ uid: adminUid }, { after: 'invalid' }, (err) => {
-				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
-		});
-
-
-		it('should load more recent topics', (done) => {
-			socketTopics.loadMoreSortedTopics({ uid: adminUid }, { cid: topic.categoryId, after: 0, count: 10, sort: 'recent' }, (err, data) => {
-				assert.ifError(err);
-				assert(data);
-				assert(Array.isArray(data.topics));
-				done();
-			});
-		});
-
-		it('should error with invalid data', (done) => {
-			socketTopics.loadMoreFromSet({ uid: adminUid }, { after: 'invalid' }, (err) => {
-				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
-		});
-
-		it('should load more from custom set', (done) => {
-			socketTopics.loadMoreFromSet({ uid: adminUid }, { set: `uid:${adminUid}:topics`, after: 0, count: 10 }, (err, data) => {
-				assert.ifError(err);
-				assert(data);
-				assert(Array.isArray(data.topics));
 				done();
 			});
 		});

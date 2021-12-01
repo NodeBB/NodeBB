@@ -15,20 +15,22 @@ eventsController.get = async function (req, res) {
 	// Limit by date
 	let from = req.query.start ? new Date(req.query.start) || undefined : undefined;
 	let to = req.query.end ? new Date(req.query.end) || undefined : new Date();
-	from = from && from.setHours(0, 0, 0, 0);	// setHours returns a unix timestamp (Number, not Date)
-	to = to && to.setHours(23, 59, 59, 999);	// setHours returns a unix timestamp (Number, not Date)
+	from = from && from.setHours(0, 0, 0, 0); // setHours returns a unix timestamp (Number, not Date)
+	to = to && to.setHours(23, 59, 59, 999); // setHours returns a unix timestamp (Number, not Date)
 
 	const currentFilter = req.query.type || '';
 
-	const [eventCount, eventData] = await Promise.all([
+	const [eventCount, eventData, counts] = await Promise.all([
 		db.sortedSetCount(`events:time${currentFilter ? `:${currentFilter}` : ''}`, from || '-inf', to),
 		events.getEvents(currentFilter, start, stop, from || '-inf', to),
+		db.sortedSetsCard([''].concat(events.types).map(type => `events:time${type ? `:${type}` : ''}`)),
 	]);
 
-	const types = [''].concat(events.types).map(type => ({
+	const types = [''].concat(events.types).map((type, index) => ({
 		value: type,
 		name: type || 'all',
 		selected: type === currentFilter,
+		count: counts[index],
 	}));
 
 	const pageCount = Math.max(1, Math.ceil(eventCount / itemsPerPage));

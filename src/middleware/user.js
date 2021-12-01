@@ -31,7 +31,14 @@ const passportAuthenticateAsync = function (req, res) {
 
 module.exports = function (middleware) {
 	async function authenticate(req, res) {
-		const loginAsync = util.promisify(req.login).bind(req);
+		async function finishLogin(req, user) {
+			const loginAsync = util.promisify(req.login).bind(req);
+			await loginAsync(user);
+			await controllers.authentication.onSuccessfulLogin(req, user.uid);
+			req.uid = user.uid;
+			req.loggedIn = req.uid > 0;
+			return true;
+		}
 
 		if (req.loggedIn) {
 			// If authenticated via cookie (express-session), protect routes with CSRF checking
@@ -44,23 +51,14 @@ module.exports = function (middleware) {
 			const user = await passportAuthenticateAsync(req, res);
 			if (!user) { return true; }
 
-			// If the token received was a master token, a _uid must also be present for all calls
 			if (user.hasOwnProperty('uid')) {
-				await loginAsync(user);
-				await controllers.authentication.onSuccessfulLogin(req, user.uid);
-				req.uid = user.uid;
-				req.loggedIn = req.uid > 0;
-				return true;
+				return await finishLogin(req, user);
 			} else if (user.hasOwnProperty('master') && user.master === true) {
+				// If the token received was a master token, a _uid must also be present for all calls
 				if (req.body.hasOwnProperty('_uid') || req.query.hasOwnProperty('_uid')) {
 					user.uid = req.body._uid || req.query._uid;
 					delete user.master;
-
-					await loginAsync(user);
-					await controllers.authentication.onSuccessfulLogin(req, user.uid);
-					req.uid = user.uid;
-					req.loggedIn = req.uid > 0;
-					return true;
+					return await finishLogin(req, user);
 				}
 
 				throw new Error('[[error:api.master-token-no-uid]]');
@@ -73,7 +71,7 @@ module.exports = function (middleware) {
 		await plugins.hooks.fire('response:middleware.authenticate', {
 			req: req,
 			res: res,
-			next: function () {},	// no-op for backwards compatibility
+			next: function () {}, // no-op for backwards compatibility
 		});
 
 		if (!res.headersSent) {
@@ -82,30 +80,12 @@ module.exports = function (middleware) {
 		return !res.headersSent;
 	}
 
-	// TODO: Remove in v1.19.0
-	middleware.authenticate = helpers.try(async (req, res, next) => {
-		winston.warn(`[middleware] middleware.authenticate has been deprecated, page and API routes are now automatically authenticated via setup(Page|API)Route. Use middleware.authenticateRequest (if not using route helper) and middleware.ensureLoggedIn instead. (request path: ${req.path})`);
-		if (!await authenticate(req, res)) {
-			return;
-		}
-		if (!req.loggedIn) {
-			return controllers.helpers.notAllowed(req, res);
-		}
-		next();
-	});
-
 	middleware.authenticateRequest = helpers.try(async (req, res, next) => {
 		if (!await authenticate(req, res)) {
 			return;
 		}
 		next();
 	});
-
-	// TODO: Remove in v1.19.0
-	middleware.authenticateOrGuest = (req, res, next) => {
-		winston.warn(`[middleware] middleware.authenticateOrGuest has been renamed, use middleware.authenticateRequest instead. (request path: ${req.path})`);
-		middleware.authenticateRequest(req, res, next);
-	};
 
 	middleware.ensureSelfOrGlobalPrivilege = helpers.try(async (req, res, next) => {
 		await ensureSelfOrMethod(user.isAdminOrGlobalMod, req, res, next);
@@ -203,7 +183,7 @@ module.exports = function (middleware) {
 		if (!userslug) {
 			return controllers.helpers.notAllowed(req, res);
 		}
-		const path = req.path.replace(/^(\/api)?\/me/, `/user/${userslug}`);
+		const path = req.url.replace(/^(\/api)?\/me/, () => `/user/${userslug}`);
 		controllers.helpers.redirect(res, path);
 	});
 

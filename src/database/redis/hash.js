@@ -36,18 +36,25 @@ module.exports = function (module) {
 		cache.del(key);
 	};
 
-	module.setObjectBulk = async function (keys, data) {
-		if (!keys.length || !data.length) {
+	module.setObjectBulk = async function (...args) {
+		let data = args[0];
+		if (!Array.isArray(data) || !data.length) {
 			return;
 		}
+		if (Array.isArray(args[1])) {
+			console.warn('[deprecated] db.setObjectBulk(keys, data) usage is deprecated, please use db.setObjectBulk(data)');
+			// conver old format to new format for backwards compatibility
+			data = args[0].map((key, i) => [key, args[1][i]]);
+		}
+
 		const batch = module.client.batch();
-		keys.forEach((k, i) => {
-			if (Object.keys(data[i]).length) {
-				batch.hmset(k, data[i]);
+		data.forEach((item) => {
+			if (Object.keys(item[1]).length) {
+				batch.hmset(item[0], item[1]);
 			}
 		});
 		await helpers.execBatch(batch);
-		cache.del(keys);
+		cache.del(data.map(item => item[0]));
 	};
 
 	module.setObjectField = async function (key, field, value) {

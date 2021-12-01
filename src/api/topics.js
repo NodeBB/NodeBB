@@ -71,7 +71,7 @@ topicsAPI.reply = async function (caller, data) {
 		return queueObj;
 	}
 
-	const postData = await topics.reply(payload);	// postData seems to be a subset of postObj, refactor?
+	const postData = await topics.reply(payload); // postData seems to be a subset of postObj, refactor?
 	const postObj = await posts.getPostSummaryByPids([postData.pid], caller.uid, {});
 
 	const result = {

@@ -110,12 +110,14 @@ async function recordSearch(data) {
 				clearTimeout(searches[data.uid].timeoutId);
 			}
 			searches[data.uid].timeoutId = setTimeout(async () => {
-				const copy = searches[data.uid].queries.slice();
-				const filtered = searches[data.uid].queries.filter(
-					q => !copy.find(query => query.startsWith(q) && query.length > q.length)
-				);
-				await Promise.all(filtered.map(query => db.sortedSetIncrBy('searches:all', 1, query)));
-				delete searches[data.uid];
+				if (searches[data.uid] && searches[data.uid].queries) {
+					const copy = searches[data.uid].queries.slice();
+					const filtered = searches[data.uid].queries.filter(
+						q => !copy.find(query => query.startsWith(q) && query.length > q.length)
+					);
+					delete searches[data.uid];
+					await Promise.all(filtered.map(query => db.sortedSetIncrBy('searches:all', 1, query)));
+				}
 			}, 5000);
 		}
 	}

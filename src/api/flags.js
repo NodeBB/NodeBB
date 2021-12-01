@@ -71,6 +71,10 @@ flagsApi.deleteNote = async (caller, data) => {
 	}
 
 	await flags.deleteNote(data.flagId, data.datetime);
+	await flags.appendHistory(data.flagId, caller.uid, {
+		notes: '[[flags:note-deleted]]',
+		datetime: Date.now(),
+	});
 
 	const [notes, history] = await Promise.all([
 		flags.getNotes(data.flagId),

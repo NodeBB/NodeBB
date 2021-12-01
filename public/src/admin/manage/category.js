@@ -8,7 +8,7 @@ define('admin/manage/category', [
 	'api',
 	'bootbox',
 ], function (uploader, iconSelect, categorySelector, Benchpress, api, bootbox) {
-	const	Category = {};
+	const Category = {};
 	let updateHash = {};
 
 	Category.init = function () {

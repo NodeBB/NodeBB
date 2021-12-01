@@ -6,7 +6,7 @@ define('admin/manage/tags', [
 	'forum/infinitescroll',
 	'admin/modules/selectable',
 ], function (bootbox, infinitescroll, selectable) {
-	const	Tags = {};
+	const Tags = {};
 
 	Tags.init = function () {
 		selectable.enable('.tag-management', '.tag-row');

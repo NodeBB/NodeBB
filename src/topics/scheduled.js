@@ -124,5 +124,5 @@ async function updateUserLastposttimes(uids, topicsData) {
 async function shiftPostTimes(tid, timestamp) {
 	const pids = (await posts.getPidsFromSet(`tid:${tid}:posts`, 0, -1, false));
 	// Leaving other related score values intact, since they reflect post order correctly, and it seems that's good enough
-	return db.setObjectBulk(pids.map(pid => `post:${pid}`), pids.map((_, idx) => ({ timestamp: timestamp + idx + 1 })));
+	return db.setObjectBulk(pids.map((pid, idx) => [`post:${pid}`, { timestamp: timestamp + idx + 1 }]));
 }

@@ -4,6 +4,7 @@
 const _ = require('lodash');
 const validator = require('validator');
 const nconf = require('nconf');
+const winston = require('winston');
 
 const db = require('../database');
 const user = require('../user');
@@ -20,12 +21,80 @@ module.exports = function (Topics) {
 		await Topics.addPostToTopic(postData.tid, postData);
 	};
 
-	Topics.getTopicPosts = async function (tid, set, start, stop, uid, reverse) {
-		const postData = await posts.getPostsFromSet(set, start, stop, uid, reverse);
-		Topics.calculatePostIndices(postData, start);
+	Topics.getTopicPosts = async function (topicOrTid, set, start, stop, uid, reverse) {
+		if (!topicOrTid) {
+			return [];
+		}
+		if (typeof topicOrTid !== 'object') {
+			// TODO: remove in 1.19.0
+			winston.warn('[deprecated] Topics.getTopicPosts(tid, ...) usage is deprecated, pass a topic object as first argument!');
+			topicOrTid = await Topics.getTopicData(topicOrTid);
+		}
 
-		return await Topics.addPostData(postData, uid);
+		let repliesStart = start;
+		let repliesStop = stop;
+		if (stop > 0) {
+			repliesStop -= 1;
+			if (start > 0) {
+				repliesStart -= 1;
+			}
+		}
+		const pids = await posts.getPidsFromSet(set, repliesStart, repliesStop, reverse);
+		if (!pids.length && !topicOrTid.mainPid) {
+			return [];
+		}
+
+		if (topicOrTid.mainPid && start === 0) {
+			pids.unshift(topicOrTid.mainPid);
+		}
+		const postData = await posts.getPostsByPids(pids, uid);
+		if (!postData.length) {
+			return [];
+		}
+		let replies = postData;
+		if (topicOrTid.mainPid && start === 0) {
+			postData[0].index = 0;
+			replies = postData.slice(1);
+		}
+
+		Topics.calculatePostIndices(replies, repliesStart);
+
+		await addEventStartEnd(postData, set, reverse, topicOrTid);
+		const result = await plugins.hooks.fire('filter:topic.getPosts', {
+			topic: topicOrTid,
+			uid: uid,
+			posts: await Topics.addPostData(postData, uid),
+		});
+		return result.posts;
 	};
+
+	async function addEventStartEnd(postData, set, reverse, topicData) {
+		if (!postData.length) {
+			return;
+		}
+		postData.forEach((p, index) => {
+			if (p && p.index === 0 && reverse) {
+				p.eventStart = topicData.lastposttime;
+				p.eventEnd = Date.now();
+			} else if (p && postData[index + 1]) {
+				p.eventStart = reverse ? postData[index + 1].timestamp : p.timestamp;
+				p.eventEnd = reverse ? p.timestamp : postData[index + 1].timestamp;
+			}
+		});
+		const lastPost = postData[postData.length - 1];
+		if (lastPost) {
+			lastPost.eventStart = reverse ? topicData.timestamp : lastPost.timestamp;
+			lastPost.eventEnd = reverse ? lastPost.timestamp : Date.now();
+			if (lastPost.index) {
+				const nextPost = await db[reverse ? 'getSortedSetRevRangeWithScores' : 'getSortedSetRangeWithScores'](set, lastPost.index, lastPost.index);
+				if (reverse) {
+					lastPost.eventStart = nextPost.length ? nextPost[0].score : lastPost.eventStart;
+				} else {
+					lastPost.eventEnd = nextPost.length ? nextPost[0].score : lastPost.eventEnd;
+				}
+			}
+		}
+	}
 
 	Topics.addPostData = async function (postData, uid) {
 		if (!Array.isArray(postData) || !postData.length) {

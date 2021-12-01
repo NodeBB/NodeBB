@@ -1,6 +1,5 @@
 'use strict';
 
-const user = require('../../user');
 const meta = require('../../meta');
 const privileges = require('../../privileges');
 const analytics = require('../../analytics');
@@ -20,13 +19,16 @@ Admin.updateSetting = async (req, res) => {
 	helpers.formatApiResponse(200, res);
 };
 
-Admin.getAnalytics = async (req, res) => {
-	const ok = await user.isAdministrator(req.uid);
+Admin.getAnalyticsKeys = async (req, res) => {
+	let keys = await analytics.getKeys();
 
-	if (!ok) {
-		return helpers.formatApiResponse(403, res);
-	}
+	// Sort keys alphabetically
+	keys = keys.sort((a, b) => (a < b ? -1 : 1));
 
+	helpers.formatApiResponse(200, res, { keys });
+};
+
+Admin.getAnalyticsData = async (req, res) => {
 	// Default returns views from past 24 hours, by hour
 	if (!req.query.amount) {
 		if (req.query.units === 'days') {

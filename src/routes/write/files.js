@@ -11,9 +11,9 @@ module.exports = function () {
 	const middlewares = [middleware.ensureLoggedIn, middleware.admin.checkPrivileges];
 
 	// setupApiRoute(router, 'put', '/', [
-	// 	...middlewares,
-	// 	middleware.checkRequired.bind(null, ['path']),
-	// 	middleware.assert.folder
+	//  ...middlewares,
+	//  middleware.checkRequired.bind(null, ['path']),
+	//  middleware.assert.folder
 	// ], controllers.write.files.upload);
 	setupApiRoute(router, 'delete', '/', [
 		...middlewares,

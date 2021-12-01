@@ -45,14 +45,16 @@ async function searchInContent(data) {
 
 	async function doSearch(type, searchIn) {
 		if (searchIn.includes(data.searchIn)) {
-			return await plugins.hooks.fire('filter:search.query', {
+			const result = await plugins.hooks.fire('filter:search.query', {
 				index: type,
 				content: data.query,
 				matchWords: data.matchWords || 'all',
 				cid: searchCids,
 				uid: searchUids,
 				searchData: data,
+				ids: [],
 			});
+			return Array.isArray(result) ? result : result.ids;
 		}
 		return [];
 	}

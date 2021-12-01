@@ -4,7 +4,7 @@
 define('forum/users', [
 	'translator', 'benchpress', 'api', 'accounts/invite',
 ], function (translator, Benchpress, api, AccountInvite) {
-	const	Users = {};
+	const Users = {};
 
 	let searchResultCount = 0;
 

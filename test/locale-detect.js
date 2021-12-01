@@ -1,6 +1,6 @@
 'use strict';
 
-const	assert = require('assert');
+const assert = require('assert');
 const nconf = require('nconf');
 const request = require('request');
 

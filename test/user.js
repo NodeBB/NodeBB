@@ -820,8 +820,7 @@ describe('User', () => {
 
 			await User.email.confirmByUid(uid);
 
-			const _jar = await helpers.loginUser('updateprofile', '123456');
-			jar = _jar;
+			({ jar } = await helpers.loginUser('updateprofile', '123456'));
 		});
 
 		it('should return error if data is invalid', (done) => {
@@ -869,7 +868,7 @@ describe('User', () => {
 							assert.ifError(err);
 							Object.keys(data).forEach((key) => {
 								if (key === 'email') {
-									assert.strictEqual(userData.email, 'just@for.updated');	// email remains the same until confirmed
+									assert.strictEqual(userData.email, 'just@for.updated'); // email remains the same until confirmed
 								} else if (key !== 'password') {
 									assert.equal(data[key], userData[key]);
 								} else {
@@ -1460,7 +1459,7 @@ describe('User', () => {
 		});
 	});
 
-	describe('Digest.getSubscribers', (done) => {
+	describe('Digest.getSubscribers', () => {
 		const uidIndex = {};
 
 		before((done) => {
@@ -1500,9 +1499,9 @@ describe('User', () => {
 				function (next) {
 					User.digest.getSubscribers('day', (err, subs) => {
 						assert.ifError(err);
-						assert.strictEqual(subs.includes(uidIndex.daysub.toString()), true);	// daysub does get emailed
-						assert.strictEqual(subs.includes(uidIndex.weeksub.toString()), false);	// weeksub does not get emailed
-						assert.strictEqual(subs.includes(uidIndex.offsub.toString()), false);	// offsub doesn't get emailed
+						assert.strictEqual(subs.includes(uidIndex.daysub.toString()), true); // daysub does get emailed
+						assert.strictEqual(subs.includes(uidIndex.weeksub.toString()), false); // weeksub does not get emailed
+						assert.strictEqual(subs.includes(uidIndex.offsub.toString()), false); // offsub doesn't get emailed
 
 						next();
 					});
@@ -1516,9 +1515,9 @@ describe('User', () => {
 				function (next) {
 					User.digest.getSubscribers('week', (err, subs) => {
 						assert.ifError(err);
-						assert.strictEqual(subs.includes(uidIndex.weeksub.toString()), true);	// weeksub gets emailed
-						assert.strictEqual(subs.includes(uidIndex.daysub.toString()), false);	// daysub gets emailed
-						assert.strictEqual(subs.includes(uidIndex.offsub.toString()), false);	// offsub does not get emailed
+						assert.strictEqual(subs.includes(uidIndex.weeksub.toString()), true); // weeksub gets emailed
+						assert.strictEqual(subs.includes(uidIndex.daysub.toString()), false); // daysub gets emailed
+						assert.strictEqual(subs.includes(uidIndex.offsub.toString()), false); // offsub does not get emailed
 
 						next();
 					});
@@ -1562,8 +1561,11 @@ describe('User', () => {
 		});
 
 		it('should send digests', (done) => {
+			const oldValue = meta.config.includeUnverifiedEmails;
+			meta.config.includeUnverifiedEmails = true;
 			User.digest.execute({ interval: 'day' }, (err) => {
 				assert.ifError(err);
+				meta.config.includeUnverifiedEmails = oldValue;
 				done();
 			});
 		});
@@ -1573,6 +1575,12 @@ describe('User', () => {
 				assert.ifError(err);
 				done();
 			});
+		});
+
+		it('should get delivery times', async () => {
+			const data = await User.digest.getDeliveryTimes(0, -1);
+			const users = data.users.filter(u => u.username === 'digestuser');
+			assert.strictEqual(users[0].setting, 'day');
 		});
 
 		describe('unsubscribe via POST', () => {
@@ -1919,6 +1927,72 @@ describe('User', () => {
 				done();
 			});
 		});
+
+		it('should get unread count 0 for guest', async () => {
+			const count = await socketUser.getUnreadCount({ uid: 0 });
+			assert.strictEqual(count, 0);
+		});
+
+		it('should get unread count for user', async () => {
+			const count = await socketUser.getUnreadCount({ uid: testUid });
+			assert.strictEqual(count, 2);
+		});
+
+		it('should get unread chat count 0 for guest', async () => {
+			const count = await socketUser.getUnreadChatCount({ uid: 0 });
+			assert.strictEqual(count, 0);
+		});
+
+		it('should get unread chat count for user', async () => {
+			const count = await socketUser.getUnreadChatCount({ uid: testUid });
+			assert.strictEqual(count, 0);
+		});
+
+		it('should get unread counts 0 for guest', async () => {
+			const counts = await socketUser.getUnreadCounts({ uid: 0 });
+			assert.deepStrictEqual(counts, {});
+		});
+
+		it('should get unread counts for user', async () => {
+			const counts = await socketUser.getUnreadCounts({ uid: testUid });
+			assert.deepStrictEqual(counts, {
+				unreadChatCount: 0,
+				unreadCounts: {
+					'': 2,
+					new: 2,
+					unreplied: 2,
+					watched: 0,
+				},
+				unreadNewTopicCount: 2,
+				unreadNotificationCount: 0,
+				unreadTopicCount: 2,
+				unreadUnrepliedTopicCount: 2,
+				unreadWatchedTopicCount: 0,
+			});
+		});
+
+		it('should get user data by uid', async () => {
+			const userData = await socketUser.getUserByUID({ uid: testUid }, testUid);
+			assert.strictEqual(userData.uid, testUid);
+		});
+
+		it('should get user data by username', async () => {
+			const userData = await socketUser.getUserByUsername({ uid: testUid }, 'John Smith');
+			assert.strictEqual(userData.uid, testUid);
+		});
+
+		it('should get user data by email', async () => {
+			const userData = await socketUser.getUserByEmail({ uid: testUid }, 'john@example.com');
+			assert.strictEqual(userData.uid, testUid);
+		});
+
+		it('should check/consent gdpr status', async () => {
+			const consent = await socketUser.gdpr.check({ uid: testUid }, { uid: testUid });
+			assert(!consent);
+			await socketUser.gdpr.consent({ uid: testUid });
+			const consentAfter = await socketUser.gdpr.check({ uid: testUid }, { uid: testUid });
+			assert(consentAfter);
+		});
 	});
 
 	describe('approval queue', () => {
@@ -1948,9 +2022,9 @@ describe('User', () => {
 				gdpr_consent: true,
 			}, (err) => {
 				assert.ifError(err);
-				helpers.loginUser('admin', '123456', (err, jar) => {
+				helpers.loginUser('admin', '123456', (err, data) => {
 					assert.ifError(err);
-					request(`${nconf.get('url')}/api/admin/manage/registration`, { jar: jar, json: true }, (err, res, body) => {
+					request(`${nconf.get('url')}/api/admin/manage/registration`, { jar: data.jar, json: true }, (err, res, body) => {
 						assert.ifError(err);
 						assert.equal(body.users[0].username, 'rejectme');
 						assert.equal(body.users[0].email, '&lt;script&gt;alert(&quot;ok&quot;)&lt;script&gt;reject@me.com');
@@ -2080,9 +2154,9 @@ describe('User', () => {
 			let jar;
 
 			before((done) => {
-				helpers.loginUser('notAnInviter', COMMON_PW, (err, _jar) => {
+				helpers.loginUser('notAnInviter', COMMON_PW, (err, data) => {
 					assert.ifError(err);
-					jar = _jar;
+					jar = data.jar;
 
 					request({
 						url: `${nconf.get('url')}/api/config`,
@@ -2116,9 +2190,9 @@ describe('User', () => {
 			let jar;
 
 			before((done) => {
-				helpers.loginUser('inviter', COMMON_PW, (err, _jar) => {
+				helpers.loginUser('inviter', COMMON_PW, (err, data) => {
 					assert.ifError(err);
-					jar = _jar;
+					jar = data.jar;
 
 					request({
 						url: `${nconf.get('url')}/api/config`,
@@ -2218,9 +2292,9 @@ describe('User', () => {
 			let jar;
 
 			before((done) => {
-				helpers.loginUser('adminInvite', COMMON_PW, (err, _jar) => {
+				helpers.loginUser('adminInvite', COMMON_PW, (err, data) => {
 					assert.ifError(err);
-					jar = _jar;
+					jar = data.jar;
 
 					request({
 						url: `${nconf.get('url')}/api/config`,
@@ -2369,9 +2443,9 @@ describe('User', () => {
 			let jar;
 
 			before((done) => {
-				helpers.loginUser('inviter', COMMON_PW, (err, _jar) => {
+				helpers.loginUser('inviter', COMMON_PW, (err, data) => {
 					assert.ifError(err);
-					jar = _jar;
+					jar = data.jar;
 
 					request({
 						url: `${nconf.get('url')}/api/config`,
@@ -2462,6 +2536,22 @@ describe('User', () => {
 			assert.strictEqual(parseInt(confirmed, 10), 1);
 			assert.strictEqual(isVerified, true);
 		});
+
+		it('should remove the email from a different account if the email is already in use', async () => {
+			const email = 'confirm2@me.com';
+			const uid = await User.create({
+				username: 'confirme3',
+			});
+
+			const oldUid = await db.sortedSetScore('email:uid', email);
+			const code = await User.email.sendValidationEmail(uid, email);
+			await User.email.confirmByCode(code);
+
+			const oldUserData = await User.getUserData(oldUid);
+
+			assert.strictEqual((await db.sortedSetScore('email:uid', email)), uid);
+			assert.strictEqual(oldUserData.email, '');
+		});
 	});
 
 	describe('user jobs', () => {
@@ -2502,14 +2592,7 @@ describe('User', () => {
 				username: 'regularUser',
 				password: COMMON_PW,
 			});
-			jar = await new Promise((resolve, reject) => {
-				helpers.loginUser('regularUser', COMMON_PW, async (err, _jar) => {
-					if (err) {
-						reject(err);
-					}
-					resolve(_jar);
-				});
-			});
+			({ jar } = await helpers.loginUser('regularUser', COMMON_PW));
 		});
 
 		after((done) => {
@@ -2802,7 +2885,7 @@ describe('User', () => {
 			assert.ifError(err);
 			const oldValue = meta.config.minimumPasswordStrength;
 			meta.config.minimumPasswordStrength = 3;
-			helpers.loginUser('weakpwd', '123456', (err, jar, csrfs_token) => {
+			helpers.loginUser('weakpwd', '123456', (err) => {
 				assert.ifError(err);
 				meta.config.minimumPasswordStrength = oldValue;
 				done();

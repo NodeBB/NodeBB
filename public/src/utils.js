@@ -662,7 +662,7 @@
 					if (!hash[key]) {
 						hash[key] = value;
 					} else {
-						if (!$.isArray(hash[key])) {
+						if (!Array.isArray(hash[key])) {
 							hash[key] = [hash[key]];
 						}
 						hash[key].push(value);
@@ -737,7 +737,7 @@
 		},
 
 		isInternalURI: function (targetLocation, referenceLocation, relative_path) {
-			return targetLocation.host === '' ||	// Relative paths are always internal links
+			return targetLocation.host === '' || // Relative paths are always internal links
 				(
 					targetLocation.host === referenceLocation.host &&
 					// Otherwise need to check if protocol and host match

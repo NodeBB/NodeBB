@@ -44,29 +44,30 @@ module.exports = function (module) {
 		});
 	};
 
-	module.setObjectBulk = async function (keys, data) {
-		if (!keys.length || !data.length) {
+	module.setObjectBulk = async function (...args) {
+		let data = args[0];
+		if (!Array.isArray(data) || !data.length) {
 			return;
 		}
+		if (Array.isArray(args[1])) {
+			console.warn('[deprecated] db.setObjectBulk(keys, data) usage is deprecated, please use db.setObjectBulk(data)');
+			// conver old format to new format for backwards compatibility
+			data = args[0].map((key, i) => [key, args[1][i]]);
+		}
 		await module.transaction(async (client) => {
-			keys = keys.slice();
-			data = data.filter((d, i) => {
-				if (d.hasOwnProperty('')) {
-					delete d[''];
+			data = data.filter((item) => {
+				if (item[1].hasOwnProperty('')) {
+					delete item[1][''];
 				}
-				const keep = !!Object.keys(d).length;
-				if (!keep) {
-					keys.splice(i, 1);
-				}
-				return keep;
+				return !!Object.keys(item[1]).length;
 			});
-
+			const keys = data.map(item => item[0]);
 			if (!keys.length) {
 				return;
 			}
 
 			await helpers.ensureLegacyObjectsType(client, keys, 'hash');
-			const dataStrings = data.map(JSON.stringify);
+			const dataStrings = data.map(item => JSON.stringify(item[1]));
 			await client.query({
 				name: 'setObjectBulk',
 				text: `

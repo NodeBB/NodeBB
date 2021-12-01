@@ -16,42 +16,33 @@ const privileges = require('../src/privileges');
 const helpers = require('./helpers');
 
 describe('authentication', () => {
-	function loginUser(username, password, callback) {
-		const jar = request.jar();
-		request({
-			url: `${nconf.get('url')}/api/config`,
-			json: true,
-			jar: jar,
-		}, (err, response, body) => {
-			if (err) {
-				return callback(err);
-			}
-
-			request.post(`${nconf.get('url')}/login`, {
-				form: {
-					username: username,
-					password: password,
-				},
-				json: true,
-				jar: jar,
-				headers: {
-					'x-csrf-token': body.csrf_token,
-				},
-			}, (err, response, body) => {
-				callback(err, response, body, jar);
-			});
-		});
-	}
-	const loginUserPromisified = util.promisify(loginUser);
-
 	const jar = request.jar();
 	let regularUid;
 	before((done) => {
 		user.create({ username: 'regular', password: 'regularpwd', email: 'regular@nodebb.org' }, (err, uid) => {
 			assert.ifError(err);
 			regularUid = uid;
+			assert.strictEqual(uid, 1);
 			done();
 		});
+	});
+
+	it('should allow login with email for uid 1', async () => {
+		const oldValue = meta.config.allowLoginWith;
+		meta.config.allowLoginWith = 'username-email';
+		const { res } = await helpers.loginUser('regular@nodebb.org', 'regularpwd');
+		assert.strictEqual(res.statusCode, 200);
+		meta.config.allowLoginWith = oldValue;
+	});
+
+	it('second user should fail to login with email since email is not confirmed', async () => {
+		const oldValue = meta.config.allowLoginWith;
+		meta.config.allowLoginWith = 'username-email';
+		const uid = await user.create({ username: '2nduser', password: '2ndpassword', email: '2nduser@nodebb.org' });
+		const { res, body } = await helpers.loginUser('2nduser@nodebb.org', '2ndpassword');
+		assert.strictEqual(res.statusCode, 403);
+		assert.strictEqual(body, '[[error:invalid-login-credentials]]');
+		meta.config.allowLoginWith = oldValue;
 	});
 
 	it('should fail to create user if username is too short', (done) => {
@@ -164,13 +155,13 @@ describe('authentication', () => {
 	});
 
 	it('should login a user', (done) => {
-		loginUser('regular', 'regularpwd', (err, response, body, jar) => {
+		helpers.loginUser('regular', 'regularpwd', (err, data) => {
 			assert.ifError(err);
-			assert(body);
+			assert(data.body);
 			request({
 				url: `${nconf.get('url')}/api/self`,
 				json: true,
-				jar: jar,
+				jar: data.jar,
 			}, (err, response, body) => {
 				assert.ifError(err);
 				assert(body);
@@ -187,14 +178,12 @@ describe('authentication', () => {
 	});
 
 	it('should regenerate the session identifier on successful login', async () => {
-		const login = util.promisify(helpers.loginUser);
-		const logout = util.promisify(helpers.logoutUser);
 		const matchRegexp = /express\.sid=s%3A(.+?);/;
 		const { hostname, path } = url.parse(nconf.get('url'));
 
 		const sid = String(jar._jar.store.idx[hostname][path]['express.sid']).match(matchRegexp)[1];
-		await logout(jar);
-		const newJar = await login('regular', 'regularpwd');
+		await helpers.logoutUser(jar);
+		const newJar = (await helpers.loginUser('regular', 'regularpwd')).jar;
 		const newSid = String(newJar._jar.store.idx[hostname][path]['express.sid']).match(matchRegexp)[1];
 
 		assert.notStrictEqual(newSid, sid);
@@ -247,37 +236,37 @@ describe('authentication', () => {
 	});
 
 	it('should fail to login if user does not exist', (done) => {
-		loginUser('doesnotexist', 'nopassword', (err, response, body) => {
+		helpers.loginUser('doesnotexist', 'nopassword', (err, data) => {
 			assert.ifError(err);
-			assert.equal(response.statusCode, 403);
-			assert.equal(body, '[[error:invalid-login-credentials]]');
+			assert.equal(data.res.statusCode, 403);
+			assert.equal(data.body, '[[error:invalid-login-credentials]]');
 			done();
 		});
 	});
 
 	it('should fail to login if username is empty', (done) => {
-		loginUser('', 'some password', (err, response, body) => {
+		helpers.loginUser('', 'some password', (err, data) => {
 			assert.ifError(err);
-			assert.equal(response.statusCode, 403);
-			assert.equal(body, '[[error:invalid-username-or-password]]');
+			assert.equal(data.res.statusCode, 403);
+			assert.equal(data.body, '[[error:invalid-username-or-password]]');
 			done();
 		});
 	});
 
 	it('should fail to login if password is empty', (done) => {
-		loginUser('someuser', '', (err, response, body) => {
+		helpers.loginUser('someuser', '', (err, data) => {
 			assert.ifError(err);
-			assert.equal(response.statusCode, 403);
-			assert.equal(body, '[[error:invalid-username-or-password]]');
+			assert.equal(data.res.statusCode, 403);
+			assert.equal(data.body, '[[error:invalid-username-or-password]]');
 			done();
 		});
 	});
 
 	it('should fail to login if username and password are empty', (done) => {
-		loginUser('', '', (err, response, body) => {
+		helpers.loginUser('', '', (err, data) => {
 			assert.ifError(err);
-			assert.equal(response.statusCode, 403);
-			assert.equal(body, '[[error:invalid-username-or-password]]');
+			assert.equal(data.res.statusCode, 403);
+			assert.equal(data.body, '[[error:invalid-username-or-password]]');
 			done();
 		});
 	});
@@ -285,10 +274,10 @@ describe('authentication', () => {
 	it('should fail to login if user does not have password field in db', (done) => {
 		user.create({ username: 'hasnopassword', email: 'no@pass.org' }, (err, uid) => {
 			assert.ifError(err);
-			loginUser('hasnopassword', 'doesntmatter', (err, response, body) => {
+			helpers.loginUser('hasnopassword', 'doesntmatter', (err, data) => {
 				assert.ifError(err);
-				assert.equal(response.statusCode, 403);
-				assert.equal(body, '[[error:invalid-login-credentials]]');
+				assert.equal(data.res.statusCode, 403);
+				assert.equal(data.body, '[[error:invalid-login-credentials]]');
 				done();
 			});
 		});
@@ -299,10 +288,10 @@ describe('authentication', () => {
 		for (let i = 0; i < 5000; i++) {
 			longPassword += 'a';
 		}
-		loginUser('someuser', longPassword, (err, response, body) => {
+		helpers.loginUser('someuser', longPassword, (err, data) => {
 			assert.ifError(err);
-			assert.equal(response.statusCode, 403);
-			assert.equal(body, '[[error:password-too-long]]');
+			assert.equal(data.res.statusCode, 403);
+			assert.equal(data.body, '[[error:password-too-long]]');
 			done();
 		});
 	});
@@ -310,10 +299,10 @@ describe('authentication', () => {
 	it('should fail to login if local login is disabled', (done) => {
 		privileges.global.rescind(['groups:local:login'], 'registered-users', (err) => {
 			assert.ifError(err);
-			loginUser('regular', 'regularpwd', (err, response, body) => {
+			helpers.loginUser('regular', 'regularpwd', (err, data) => {
 				assert.ifError(err);
-				assert.equal(response.statusCode, 403);
-				assert.equal(body, '[[error:local-login-disabled]]');
+				assert.equal(data.res.statusCode, 403);
+				assert.equal(data.body, '[[error:local-login-disabled]]');
 				privileges.global.give(['groups:local:login'], 'registered-users', done);
 			});
 		});
@@ -398,17 +387,17 @@ describe('authentication', () => {
 	it('should be able to login with email', async () => {
 		const uid = await user.create({ username: 'ginger', password: '123456', email: 'ginger@nodebb.org' });
 		await user.email.confirmByUid(uid);
-		const response = await loginUserPromisified('ginger@nodebb.org', '123456');
-		assert.equal(response.statusCode, 200);
+		const { res } = await helpers.loginUser('ginger@nodebb.org', '123456');
+		assert.equal(res.statusCode, 200);
 	});
 
 	it('should fail to login if login type is username and an email is sent', (done) => {
 		meta.config.allowLoginWith = 'username';
-		loginUser('ginger@nodebb.org', '123456', (err, response, body) => {
+		helpers.loginUser('ginger@nodebb.org', '123456', (err, data) => {
 			meta.config.allowLoginWith = 'username-email';
 			assert.ifError(err);
-			assert.equal(response.statusCode, 400);
-			assert.equal(body, '[[error:wrong-login-type-username]]');
+			assert.equal(data.res.statusCode, 400);
+			assert.equal(data.body, '[[error:wrong-login-type-username]]');
 			done();
 		});
 	});
@@ -452,28 +441,28 @@ describe('authentication', () => {
 		it('should prevent banned user from logging in', (done) => {
 			user.bans.ban(bannedUser.uid, 0, 'spammer', (err) => {
 				assert.ifError(err);
-				loginUser(bannedUser.username, bannedUser.pw, (err, res, body) => {
+				helpers.loginUser(bannedUser.username, bannedUser.pw, (err, data) => {
 					assert.ifError(err);
-					assert.equal(res.statusCode, 403);
-					delete body.timestamp;
-					assert.deepStrictEqual(body, {
+					assert.equal(data.res.statusCode, 403);
+					delete data.body.timestamp;
+					assert.deepStrictEqual(data.body, {
 						banned_until: 0,
 						banned_until_readable: '',
 						expiry: 0,
 						expiry_readable: '',
 						reason: 'spammer',
-						uid: 6,
+						uid: bannedUser.uid,
 					});
 					user.bans.unban(bannedUser.uid, (err) => {
 						assert.ifError(err);
 						const expiry = Date.now() + 10000;
 						user.bans.ban(bannedUser.uid, expiry, '', (err) => {
 							assert.ifError(err);
-							loginUser(bannedUser.username, bannedUser.pw, (err, res, body) => {
+							helpers.loginUser(bannedUser.username, bannedUser.pw, (err, data) => {
 								assert.ifError(err);
-								assert.equal(res.statusCode, 403);
-								assert(body.banned_until);
-								assert(body.reason, '[[user:info.banned-no-reason]]');
+								assert.equal(data.res.statusCode, 403);
+								assert(data.body.banned_until);
+								assert(data.body.reason, '[[user:info.banned-no-reason]]');
 								done();
 							});
 						});
@@ -484,14 +473,14 @@ describe('authentication', () => {
 
 		it('should allow banned user to log in if the "banned-users" group has "local-login" privilege', async () => {
 			await privileges.global.give(['groups:local:login'], 'banned-users');
-			const res = await loginUserPromisified(bannedUser.username, bannedUser.pw);
+			const { res } = await helpers.loginUser(bannedUser.username, bannedUser.pw);
 			assert.strictEqual(res.statusCode, 200);
 		});
 
 		it('should allow banned user to log in if the user herself has "local-login" privilege', async () => {
 			await privileges.global.rescind(['groups:local:login'], 'banned-users');
 			await privileges.categories.give(['local:login'], 0, bannedUser.uid);
-			const res = await loginUserPromisified(bannedUser.username, bannedUser.pw);
+			const { res } = await helpers.loginUser(bannedUser.username, bannedUser.pw);
 			assert.strictEqual(res.statusCode, 200);
 		});
 	});
@@ -505,26 +494,26 @@ describe('authentication', () => {
 			},
 			function (_uid, next) {
 				uid = _uid;
-				loginUser('lockme', 'abcdef', next);
+				helpers.loginUser('lockme', 'abcdef', next);
 			},
-			function (res, body, jar, next) {
-				loginUser('lockme', 'abcdef', next);
+			function (data, next) {
+				helpers.loginUser('lockme', 'abcdef', next);
 			},
-			function (res, body, jar, next) {
-				loginUser('lockme', 'abcdef', next);
+			function (data, next) {
+				helpers.loginUser('lockme', 'abcdef', next);
 			},
-			function (res, body, jar, next) {
-				loginUser('lockme', 'abcdef', next);
+			function (data, next) {
+				helpers.loginUser('lockme', 'abcdef', next);
 			},
-			function (res, body, jar, next) {
+			function (data, next) {
 				meta.config.loginAttempts = 5;
-				assert.equal(res.statusCode, 403);
-				assert.equal(body, '[[error:account-locked]]');
-				loginUser('lockme', 'abcdef', next);
+				assert.equal(data.res.statusCode, 403);
+				assert.equal(data.body, '[[error:account-locked]]');
+				helpers.loginUser('lockme', 'abcdef', next);
 			},
-			function (res, body, jar, next) {
-				assert.equal(res.statusCode, 403);
-				assert.equal(body, '[[error:account-locked]]');
+			function (data, next) {
+				assert.equal(data.res.statusCode, 403);
+				assert.equal(data.body, '[[error:account-locked]]');
 				db.exists(`lockout:${uid}`, next);
 			},
 			function (locked, next) {
@@ -536,8 +525,90 @@ describe('authentication', () => {
 
 	it('should clear all reset tokens upon successful login', async () => {
 		const code = await user.reset.generate(regularUid);
-		await loginUserPromisified('regular', 'regularpwd');
+		await helpers.loginUser('regular', 'regularpwd');
 		const valid = await user.reset.validate(code);
 		assert.strictEqual(valid, false);
+	});
+
+	describe('api tokens', () => {
+		let newUid;
+		let userToken;
+		let masterToken;
+		before(async () => {
+			newUid = await user.create({ username: 'apiUserTarget' });
+			const settings = await meta.settings.get('core.api');
+			settings.tokens = settings.tokens || [];
+			userToken = {
+				token: utils.generateUUID(),
+				uid: newUid,
+				description: `api token for uid ${newUid}`,
+				timestamp: Date.now(),
+			};
+			settings.tokens.push(userToken);
+			masterToken = {
+				token: utils.generateUUID(),
+				uid: 0,
+				description: 'api master token',
+				timestamp: Date.now(),
+			};
+			settings.tokens.push(masterToken);
+
+			await meta.settings.set('core.api', settings);
+		});
+
+		it('should fail with invalid token', async () => {
+			const { res, body } = await helpers.request('get', `/api/self`, {
+				form: {
+					_uid: newUid,
+				},
+				json: true,
+				jar: jar,
+				headers: {
+					Authorization: `Bearer sdfhaskfdja-jahfdaksdf`,
+				},
+			});
+			assert.strictEqual(res.statusCode, 401);
+			assert.strictEqual(body, 'not-authorized');
+		});
+
+		it('should use a token tied to an uid', async () => {
+			const { res, body } = await helpers.request('get', `/api/self`, {
+				json: true,
+				headers: {
+					Authorization: `Bearer ${userToken.token}`,
+				},
+			});
+
+			assert.strictEqual(res.statusCode, 200);
+			assert.strictEqual(body.username, 'apiUserTarget');
+		});
+
+		it('should fail if _uid is not passed in with master token', async () => {
+			const { res, body } = await helpers.request('get', `/api/self`, {
+				form: {},
+				json: true,
+				headers: {
+					Authorization: `Bearer ${masterToken.token}`,
+				},
+			});
+
+			assert.strictEqual(res.statusCode, 500);
+			assert.strictEqual(body.error, '[[error:api.master-token-no-uid]]');
+		});
+
+		it('should use master api token and _uid', async () => {
+			const { res, body } = await helpers.request('get', `/api/self`, {
+				form: {
+					_uid: newUid,
+				},
+				json: true,
+				headers: {
+					Authorization: `Bearer ${masterToken.token}`,
+				},
+			});
+
+			assert.strictEqual(res.statusCode, 200);
+			assert.strictEqual(body.username, 'apiUserTarget');
+		});
 	});
 });

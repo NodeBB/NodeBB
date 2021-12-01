@@ -22,7 +22,6 @@ require('./posts/move')(SocketPosts);
 require('./posts/votes')(SocketPosts);
 require('./posts/bookmarks')(SocketPosts);
 require('./posts/tools')(SocketPosts);
-require('./posts/diffs')(SocketPosts);
 
 SocketPosts.reply = async function (socket, data) {
 	sockets.warnDeprecated(socket, 'POST /api/v3/topics/:tid');
@@ -89,6 +88,22 @@ SocketPosts.getPostSummaryByIndex = async function (socket, data) {
 	}
 
 	const topicPrivileges = await privileges.topics.get(data.tid, socket.uid);
+	if (!topicPrivileges['topics:read']) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	const postsData = await posts.getPostSummaryByPids([pid], socket.uid, { stripTags: false });
+	posts.modifyPostByPrivilege(postsData[0], topicPrivileges);
+	return postsData[0];
+};
+
+SocketPosts.getPostSummaryByPid = async function (socket, data) {
+	if (!data || !data.pid) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	const { pid } = data;
+	const tid = await posts.getPostField(pid, 'tid');
+	const topicPrivileges = await privileges.topics.get(tid, socket.uid);
 	if (!topicPrivileges['topics:read']) {
 		throw new Error('[[error:no-privileges]]');
 	}

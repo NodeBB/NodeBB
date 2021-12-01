@@ -2,7 +2,7 @@
 
 
 define('forum/categories', ['components', 'categorySelector', 'hooks'], function (components, categorySelector, hooks) {
-	const	categories = {};
+	const categories = {};
 
 	$(window).on('action:ajaxify.start', function (ev, data) {
 		if (ajaxify.currentPage !== data.url) {
@@ -56,7 +56,7 @@ define('forum/categories', ['components', 'categorySelector', 'hooks'], function
 
 			html.fadeIn();
 
-			app.createUserTooltips();
+			app.createUserTooltips(html);
 			html.find('.timeago').timeago();
 
 			if (category.find('[component="category/posts"]').length > parseInt(numRecentReplies, 10)) {

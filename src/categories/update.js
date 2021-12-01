@@ -1,7 +1,5 @@
 'use strict';
 
-const async = require('async');
-
 const db = require('../database');
 const meta = require('../meta');
 const utils = require('../utils');
@@ -37,9 +35,10 @@ module.exports = function (Categories) {
 			fields.splice(0, 0, fields.splice(parentCidIndex, 1)[0]);
 		}
 
-		await async.eachSeries(fields, async (key) => {
+		for (const key of fields) {
+			// eslint-disable-next-line no-await-in-loop
 			await updateCategoryField(cid, key, category[key]);
-		});
+		}
 		plugins.hooks.fire('action:category.update', { cid: cid, modified: category });
 	}
 
@@ -71,6 +70,9 @@ module.exports = function (Categories) {
 		}
 		const categoryData = await Categories.getCategoryFields(cid, ['parentCid', 'order']);
 		const oldParent = categoryData.parentCid;
+		if (oldParent === newParent) {
+			return;
+		}
 		await Promise.all([
 			db.sortedSetRemove(`cid:${oldParent}:children`, cid),
 			db.sortedSetAdd(`cid:${newParent}:children`, categoryData.order, cid),
@@ -119,8 +121,7 @@ module.exports = function (Categories) {
 		);
 
 		await db.setObjectBulk(
-			childrenCids.map(cid => `category:${cid}`),
-			childrenCids.map((cid, index) => ({ order: index + 1 }))
+			childrenCids.map((cid, index) => [`category:${cid}`, { order: index + 1 }])
 		);
 
 		cache.del([

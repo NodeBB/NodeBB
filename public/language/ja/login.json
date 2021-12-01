@@ -1,7 +1,6 @@
 {
     "username-email": "ユーザー名またはメールアドレス",
     "username": "ユーザー名",
-    "email": "メール",
     "remember_me": "ログイン情報を記憶",
     "forgot_password": "パスワードを忘れましたか？",
     "alternative_logins": "ほかのログイン方法",
