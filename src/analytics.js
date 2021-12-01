@@ -87,14 +87,6 @@ Analytics.pageView = async function (payload) {
 	}
 };
 
-function sortedSetIncrByBulk(data) {
-	if ('sortedSetIncrByBulk' in db) {
-		return db.sortedSetIncrByBulk(data);
-	}
-	const queue = data.map(([key, increment, value]) => db.sortedSetIncrBy(key, increment, value));
-	return Promise.all(queue);
-}
-
 Analytics.writeData = async function () {
 	const today = new Date();
 	const month = new Date();
@@ -157,7 +149,7 @@ Analytics.writeData = async function () {
 	}
 
 	if (incrByBulk.length) {
-		dbQueue.push(sortedSetIncrByBulk(incrByBulk));
+		dbQueue.push(db.sortedSetIncrByBulk(incrByBulk));
 	}
 
 	// Update list of tracked metrics
