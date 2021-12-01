@@ -137,8 +137,14 @@ function setupExpressApp(app) {
 		const compression = require('compression');
 		app.use(compression());
 	}
-
-	app.use(middleware.ensureRelativePath);
+	if (relativePath) {
+		app.use((req, res, next) => {
+			if (!req.path.startsWith(relativePath)) {
+				return require('./controllers/helpers').redirect(res, req.path);
+			}
+			next();
+		});
+	}
 
 	app.get(`${relativePath}/ping`, pingController.ping);
 	app.get(`${relativePath}/sping`, pingController.ping);

@@ -59,19 +59,6 @@ middleware.ensureLoggedIn = (req, res, next) => {
 	setImmediate(next);
 };
 
-middleware.ensureRelativePath = (req, res, next) => {
-	const prefix = nconf.get('relative_path');
-	if (!prefix) {
-		return setImmediate(next);
-	}
-
-	if (!req.path.startsWith(prefix)) {
-		return controllers.helpers.redirect(res, req.path);
-	}
-
-	return next();
-};
-
 Object.assign(middleware, {
 	admin: require('./admin'),
 	...require('./header'),
