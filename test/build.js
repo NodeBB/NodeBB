@@ -130,7 +130,6 @@ describe('Build', (done) => {
 	it('should build plugin static dirs', (done) => {
 		build.build(['plugin static dirs'], (err) => {
 			assert.ifError(err);
-			assert(file.existsSync(path.join(__dirname, '../build/public/plugins/nodebb-plugin-dbsearch/dbsearch')));
 			done();
 		});
 	});

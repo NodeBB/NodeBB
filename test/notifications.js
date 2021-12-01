@@ -359,7 +359,7 @@ describe('Notifications', () => {
 						assert(nids.includes(nid));
 						done();
 					});
-				}, 1500);
+				}, 3000);
 			});
 		});
 	});

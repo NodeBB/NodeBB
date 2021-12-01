@@ -17,9 +17,10 @@ module.exports = function (Plugins) {
 		}), null, true);
 	};
 
-	Plugins.submitUsageData = function () {
+	Plugins.submitUsageData = function (callback) {
+		callback = callback || function () {};
 		if (!meta.config.submitPluginUsage || !Plugins.loadedPlugins.length || global.env !== 'production') {
-			return;
+			return callback();
 		}
 
 		const hash = crypto.createHash('sha256');
@@ -33,10 +34,14 @@ module.exports = function (Plugins) {
 			timeout: 5000,
 		}, (err, res, body) => {
 			if (err) {
-				return winston.error(err.stack);
+				winston.error(err.stack);
+				return callback(err);
 			}
 			if (res.statusCode !== 200) {
 				winston.error(`[plugins.submitUsageData] received ${res.statusCode} ${body}`);
+				callback(new Error(`[[error:nbbpm-${res.statusCode}]]`));
+			} else {
+				callback();
 			}
 		});
 	};

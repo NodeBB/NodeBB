@@ -2,12 +2,12 @@
 
 
 define('forum/reset', function () {
-	var	ResetPassword = {};
+	const ResetPassword = {};
 
 	ResetPassword.init = function () {
-		var inputEl = $('#email');
-		var errorEl = $('#error');
-		var successEl = $('#success');
+		const inputEl = $('#email');
+		const errorEl = $('#error');
+		const successEl = $('#success');
 
 		$('#reset').on('click', function () {
 			if (inputEl.val() && inputEl.val().indexOf('@') !== -1) {

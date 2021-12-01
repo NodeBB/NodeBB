@@ -1,6 +1,20 @@
 					<label>[[admin/manage/privileges:group-privileges]]</label>
 					<table class="table table-striped privilege-table">
 						<thead>
+							{{{ if !isAdminPriv }}}
+							<tr class="privilege-table-header">
+								<th colspan="3"></th>
+								<th class="arrowed" colspan="6">
+									[[admin/manage/categories:privileges.section-posting]]
+								</th>
+								<th class="arrowed" colspan="7">
+									[[admin/manage/categories:privileges.section-viewing]]
+								</th>
+								<th class="arrowed" colspan="2">
+									[[admin/manage/categories:privileges.section-moderation]]
+								</th>
+							</tr><tr><!-- zebrastripe reset --></tr>
+							{{{ end }}}
 							<tr>
 								<th colspan="2">[[admin/manage/categories:privileges.section-group]]</th>
 								<th class="text-center">[[admin/manage/privileges:select-clear-all]]</th>
@@ -67,7 +81,7 @@
 							<tr data-uid="{privileges.users.uid}"{{{ if privileges.users.banned }}} data-banned{{{ end }}}>
 								<td>
 									<!-- IF ../picture -->
-									<img class="avatar avatar-sm" src="{privileges.users.picture}" title="{privileges.users.username}" />
+									<img class="avatar avatar-sm" src="{privileges.users.picture}" title="{privileges.users.username}" alt="" />
 									<!-- ELSE -->
 									<div class="avatar avatar-sm" style="background-color: {../icon:bgColor};">{../icon:text}</div>
 									<!-- ENDIF ../picture -->

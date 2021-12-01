@@ -40,6 +40,7 @@
 	"teaser.last-post": "最後＆ndash;返信がない場合は、元の投稿を含む最新の投稿を表示",
 	"teaser.last-reply": "最後＆ndash;最新の返信を表示するか、返信がない場合は「返信なし」のプレースホルダを表示する",
 	"teaser.first": "最初",
+	"showPostPreviewsOnHover": "Show a preview of posts when mouse overed",
 	"unread": "未読の設定",
 	"unread.cutoff": "未読のカットオフ日",
 	"unread.min-track-last": "最後に読み込みを行う前に追跡するスレッドの最小投稿数",
@@ -56,6 +57,9 @@
 	"composer.show-help": "「ヘルプ」タグを表示",
 	"composer.enable-plugin-help": "プラグインがヘルプタブにコンテンツを追加できるようにする",
 	"composer.custom-help": "カスタムヘルプテキスト",
+	"backlinks": "Backlinks",
+	"backlinks.enabled": "Enable topic backlinks",
+	"backlinks.help": "If a post references another topic, a link back to the post will be inserted into the referenced topic at that point in time.",
 	"ip-tracking": "IPトラッキング",
 	"ip-tracking.each-post": "各投稿のトラックIPアドレス",
 	"enable-post-history": "Enable Post History"

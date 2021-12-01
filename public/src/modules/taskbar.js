@@ -2,10 +2,10 @@
 
 
 define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, translator, hooks) {
-	var taskbar = {};
+	const taskbar = {};
 
 	taskbar.init = function () {
-		var self = this;
+		const self = this;
 
 		Benchpress.render('modules/taskbar', {}).then(function (html) {
 			self.taskbar = $(html);
@@ -13,9 +13,9 @@ define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, t
 			$(document.body).append(self.taskbar);
 
 			self.taskbar.on('click', 'li', function () {
-				var	$btn = $(this);
-				var module = $btn.attr('data-module');
-				var uuid = $btn.attr('data-uuid');
+				const $btn = $(this);
+				const module = $btn.attr('data-module');
+				const uuid = $btn.attr('data-uuid');
 
 				require([module], function (module) {
 					if (!$btn.hasClass('active')) {
@@ -41,8 +41,8 @@ define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, t
 
 	taskbar.close = function (module, uuid) {
 		// Sends signal to the appropriate module's .close() fn (if present)
-		var btnEl = taskbar.tasklist.find('[data-module="' + module + '"][data-uuid="' + uuid + '"]');
-		var fnName = 'close';
+		const btnEl = taskbar.tasklist.find('[data-module="' + module + '"][data-uuid="' + uuid + '"]');
+		let fnName = 'close';
 
 		// TODO: Refactor chat module to not take uuid in close instead of by jQuery element
 		if (module === 'chat') {
@@ -60,7 +60,7 @@ define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, t
 
 	taskbar.closeAll = function (module) {
 		// module is optional
-		var selector = '[data-uuid]';
+		let selector = '[data-uuid]';
 
 		if (module) {
 			selector = '[data-module="' + module + '"]' + selector;
@@ -72,7 +72,7 @@ define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, t
 	};
 
 	taskbar.discard = function (module, uuid) {
-		var btnEl = taskbar.tasklist.find('[data-module="' + module + '"][data-uuid="' + uuid + '"]');
+		const btnEl = taskbar.tasklist.find('[data-module="' + module + '"][data-uuid="' + uuid + '"]');
 		btnEl.remove();
 
 		update();
@@ -80,9 +80,9 @@ define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, t
 
 	taskbar.push = function (module, uuid, options, callback) {
 		callback = callback || function () {};
-		var element = taskbar.tasklist.find('li[data-uuid="' + uuid + '"]');
+		const element = taskbar.tasklist.find('li[data-uuid="' + uuid + '"]');
 
-		var data = {
+		const data = {
 			module: module,
 			uuid: uuid,
 			options: options,
@@ -99,7 +99,7 @@ define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, t
 	};
 
 	taskbar.get = function (module) {
-		var items = $('[data-module="' + module + '"]').map(function (idx, el) {
+		const items = $('[data-module="' + module + '"]').map(function (idx, el) {
 			return $(el).data();
 		});
 
@@ -107,12 +107,12 @@ define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, t
 	};
 
 	taskbar.minimize = function (module, uuid) {
-		var btnEl = taskbar.tasklist.find('[data-module="' + module + '"][data-uuid="' + uuid + '"]');
+		const btnEl = taskbar.tasklist.find('[data-module="' + module + '"][data-uuid="' + uuid + '"]');
 		btnEl.toggleClass('active', false);
 	};
 
 	taskbar.toggleNew = function (uuid, state, silent) {
-		var btnEl = taskbar.tasklist.find('[data-uuid="' + uuid + '"]');
+		const btnEl = taskbar.tasklist.find('[data-uuid="' + uuid + '"]');
 		btnEl.toggleClass('new', state);
 
 		if (!silent) {
@@ -121,7 +121,7 @@ define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, t
 	};
 
 	taskbar.updateActive = function (uuid) {
-		var	tasks = taskbar.tasklist.find('li');
+		const tasks = taskbar.tasklist.find('li');
 		tasks.removeClass('active');
 		tasks.filter('[data-uuid="' + uuid + '"]').addClass('active');
 
@@ -130,12 +130,12 @@ define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, t
 	};
 
 	taskbar.isActive = function (uuid) {
-		var taskBtn = taskbar.tasklist.find('li[data-uuid="' + uuid + '"]');
+		const taskBtn = taskbar.tasklist.find('li[data-uuid="' + uuid + '"]');
 		return taskBtn.hasClass('active');
 	};
 
 	function update() {
-		var	tasks = taskbar.tasklist.find('li');
+		const tasks = taskbar.tasklist.find('li');
 
 		if (tasks.length > 0) {
 			taskbar.taskbar.attr('data-active', '1');
@@ -150,9 +150,9 @@ define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, t
 
 	function createTaskbarItem(data, callback) {
 		translator.translate(data.options.title, function (taskTitle) {
-			var title = $('<div></div>').text(taskTitle || 'NodeBB Task').html();
+			const title = $('<div></div>').text(taskTitle || 'NodeBB Task').html();
 
-			var	taskbarEl = $('<li></li>')
+			const taskbarEl = $('<li></li>')
 				.addClass(data.options.className)
 				.html('<a href="#"' + (data.options.image ? ' style="background-image: url(\'' + data.options.image + '\'); background-size: cover;"' : '') + '>' +
 					(data.options.icon ? '<i class="fa ' + data.options.icon + '"></i> ' : '') +
@@ -180,7 +180,7 @@ define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, t
 		});
 	}
 
-	var processUpdate = function (element, key, value) {
+	const processUpdate = function (element, key, value) {
 		switch (key) {
 			case 'title':
 				element.find('[component="taskbar/title"]').text(value);
@@ -198,11 +198,11 @@ define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, t
 	};
 
 	taskbar.update = function (module, uuid, options) {
-		var element = taskbar.tasklist.find('[data-module="' + module + '"][data-uuid="' + uuid + '"]');
+		const element = taskbar.tasklist.find('[data-module="' + module + '"][data-uuid="' + uuid + '"]');
 		if (!element.length) {
 			return;
 		}
-		var data = element.data();
+		const data = element.data();
 
 		Object.keys(options).forEach(function (key) {
 			data[key] = options[key];

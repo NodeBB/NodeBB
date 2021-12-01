@@ -54,7 +54,7 @@
     "composer.formatting.strikethrough": "Barrato",
     "composer.formatting.code": "Codice",
     "composer.formatting.link": "Collegamento",
-    "composer.formatting.picture": "Immagine",
+    "composer.formatting.picture": "Link immagine",
     "composer.upload-picture": "Carica immagine",
     "composer.upload-file": "Carica file",
     "composer.zen_mode": "Zen Mode",

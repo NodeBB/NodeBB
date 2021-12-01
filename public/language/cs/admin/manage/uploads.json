@@ -5,5 +5,7 @@
     "orphaned": "Nevyužito",
     "size/filecount": "Velikost / Počet souborů",
     "confirm-delete": "Opravdu chcete odstranit tento soubor?",
-    "filecount": "%1 souborů"
+    "filecount": "%1 souborů",
+    "new-folder": "New Folder",
+    "name-new-folder": "Enter a name for new the folder"
 }

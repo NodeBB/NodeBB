@@ -21,6 +21,7 @@
     "edit": "Chỉnh sửa",
     "delete": "Xóa",
     "delete-event": "Xóa Sự Kiện",
+    "delete-event-confirm": "Bạn có chắc muốn xóa sự kiện này không?",
     "purge": "Xóa hẳn",
     "restore": "Khôi phục",
     "move": "Chuyển đi",
@@ -46,6 +47,8 @@
     "restored-by": "Được khôi phục bởi",
     "moved-from-by": "Đã chuyển từ %1 bởi",
     "queued-by": "Bài đăng được xếp hàng chờ duyệt &rarr;",
+    "backlink": "Được giới thiệu bởi",
+    "forked-by": "Forked by",
     "bookmark_instructions": "Nhấn vào đây để trở lại bài viết đã đọc cuối cùng trong chủ đề này.",
     "flag-post": "Gắn cờ bài đăng này",
     "flag-user": "Gắn cờ người dùng này",
@@ -137,6 +140,7 @@
     "composer.handle_placeholder": "Nhập tên/xử lý của bạn ở đây",
     "composer.discard": "Huỷ bỏ",
     "composer.submit": "Gửi",
+    "composer.additional-options": "Tùy chọn bổ sung",
     "composer.schedule": "Lên lịch",
     "composer.replying_to": "Đang trả lời %1",
     "composer.new_topic": "Chủ đề mới",
@@ -157,6 +161,7 @@
     "newest_to_oldest": "Mới đến cũ",
     "most_votes": "Nhiều Bình Chọn",
     "most_posts": "Nhiều Bài Đăng",
+    "most_views": "Xem Nhiều",
     "stale.title": "Tạo chủ đề mới thay thế?",
     "stale.warning": "Chủ đề bạn đang trả lời đã khá cũ. Bạn có muốn tạo chủ đề mới, và liên kết với chủ đề hiện tại trong bài viết trả lời của bạn?",
     "stale.create": "Tạo chủ đề mới",
@@ -175,5 +180,6 @@
     "timeago_later": "%1 sau",
     "timeago_earlier": "%1 trước đó",
     "first-post": "Bài viết đầu tiên",
-    "last-post": "Bài viết cuối cùng"
+    "last-post": "Bài viết cuối cùng",
+    "post-quick-reply": "Đăng trả lời nhanh"
 }

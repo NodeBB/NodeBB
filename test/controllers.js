@@ -302,16 +302,6 @@ describe('Controllers', () => {
 	});
 
 	it('should load /register/complete', (done) => {
-		function hookMethod(data, next) {
-			data.interstitials.push({ template: 'topic.tpl', data: {} });
-			next(null, data);
-		}
-
-		plugins.hooks.register('myTestPlugin', {
-			hook: 'filter:register.interstitial',
-			method: hookMethod,
-		});
-
 		const data = {
 			username: 'interstitial',
 			password: '123456',
@@ -347,10 +337,83 @@ describe('Controllers', () => {
 					assert(body.sections);
 					assert(body.errors);
 					assert(body.title);
-					plugins.hooks.unregister('myTestPlugin', 'filter:register.interstitial', hookMethod);
 					done();
 				});
 			});
+		});
+	});
+
+	describe('registration interstitials', () => {
+		let jar;
+		let token;
+
+		it('email interstitial should still apply if empty email entered and requireEmailAddress is enabled', async () => {
+			meta.config.requireEmailAddress = 1;
+
+			jar = await helpers.registerUser({
+				username: 'testEmailReg',
+				password: 'asdasd',
+			});
+			token = await helpers.getCsrfToken(jar);
+
+			let res = await requestAsync(`${nconf.get('url')}/register/complete`, {
+				method: 'post',
+				jar,
+				json: true,
+				followRedirect: false,
+				simple: false,
+				resolveWithFullResponse: true,
+				headers: {
+					'x-csrf-token': token,
+				},
+				form: {
+					email: '',
+				},
+			});
+
+			assert.strictEqual(res.headers.location, `${nconf.get('relative_path')}/register/complete`);
+
+			res = await requestAsync(`${nconf.get('url')}/api/register/complete`, {
+				jar,
+				json: true,
+				resolveWithFullResponse: true,
+			});
+			assert(res.body.errors.length, res.body);
+			assert(res.body.errors.includes('[[error:invalid-email]]'), res.body);
+		});
+
+		it('gdpr interstitial should still apply if email requirement is disabled', async () => {
+			meta.config.requireEmailAddress = 0;
+
+			const res = await requestAsync(`${nconf.get('url')}/api/register/complete`, {
+				jar,
+				json: true,
+				resolveWithFullResponse: true,
+			});
+
+			assert(!res.body.errors.includes('[[error:invalid-email]]'));
+			assert(!res.body.errors.includes('[[error:gdpr_consent_denied]]'));
+		});
+
+		it('registration should succeed once gdpr prompts are agreed to', async () => {
+			const res = await requestAsync(`${nconf.get('url')}/register/complete`, {
+				method: 'post',
+				jar,
+				json: true,
+				followRedirect: false,
+				simple: false,
+				resolveWithFullResponse: true,
+				headers: {
+					'x-csrf-token': token,
+				},
+				form: {
+					gdpr_agree_data: 'on',
+					gdpr_agree_email: 'on',
+				},
+			});
+
+			assert.strictEqual(res.statusCode, 302);
+			assert.strictEqual(res.headers.location, `${nconf.get('relative_path')}/`);
 		});
 	});
 
@@ -790,17 +853,11 @@ describe('Controllers', () => {
 		let jar;
 		let csrf_token;
 
-		before((done) => {
-			user.create({ username: 'revokeme', password: 'barbar' }, (err, _uid) => {
-				assert.ifError(err);
-				uid = _uid;
-				helpers.loginUser('revokeme', 'barbar', (err, _jar, _csrf_token) => {
-					assert.ifError(err);
-					jar = _jar;
-					csrf_token = _csrf_token;
-					done();
-				});
-			});
+		before(async () => {
+			uid = await user.create({ username: 'revokeme', password: 'barbar' });
+			const login = await helpers.loginUser('revokeme', 'barbar');
+			jar = login.jar;
+			csrf_token = login.csrf_token;
 		});
 
 		it('should fail to revoke session with missing uuid', (done) => {
@@ -1018,12 +1075,8 @@ describe('Controllers', () => {
 
 	describe('account pages', () => {
 		let jar;
-		before((done) => {
-			helpers.loginUser('foo', 'barbar', (err, _jar) => {
-				assert.ifError(err);
-				jar = _jar;
-				done();
-			});
+		before(async () => {
+			({ jar } = await helpers.loginUser('foo', 'barbar'));
 		});
 
 		it('should redirect to account page with logged in user', (done) => {
@@ -1253,7 +1306,7 @@ describe('Controllers', () => {
 		});
 
 		it('should export users posts', (done) => {
-			request(`${nconf.get('url')}/api/user/uid/foo/export/posts`, { jar: jar }, (err, res, body) => {
+			request(`${nconf.get('url')}/api/user/foo/export/posts`, { jar: jar }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -1262,7 +1315,7 @@ describe('Controllers', () => {
 		});
 
 		it('should export users uploads', (done) => {
-			request(`${nconf.get('url')}/api/user/uid/foo/export/uploads`, { jar: jar }, (err, res, body) => {
+			request(`${nconf.get('url')}/api/user/foo/export/uploads`, { jar: jar }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -1271,7 +1324,7 @@ describe('Controllers', () => {
 		});
 
 		it('should export users profile', (done) => {
-			request(`${nconf.get('url')}/api/user/uid/foo/export/profile`, { jar: jar }, (err, res, body) => {
+			request(`${nconf.get('url')}/api/user/foo/export/profile`, { jar: jar }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -1386,8 +1439,9 @@ describe('Controllers', () => {
 		it('should return false if user can not edit user', (done) => {
 			user.create({ username: 'regularJoe', password: 'barbar' }, (err) => {
 				assert.ifError(err);
-				helpers.loginUser('regularJoe', 'barbar', (err, jar) => {
+				helpers.loginUser('regularJoe', 'barbar', (err, data) => {
 					assert.ifError(err);
+					const { jar } = data;
 					request(`${nconf.get('url')}/api/user/foo/info`, { jar: jar, json: true }, (err, res) => {
 						assert.ifError(err);
 						assert.equal(res.statusCode, 403);
@@ -1455,8 +1509,9 @@ describe('Controllers', () => {
 		});
 
 		it('should increase profile view', (done) => {
-			helpers.loginUser('regularJoe', 'barbar', (err, jar) => {
+			helpers.loginUser('regularJoe', 'barbar', (err, data) => {
 				assert.ifError(err);
+				const { jar } = data;
 				request(`${nconf.get('url')}/api/user/foo`, { jar: jar }, (err, res) => {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
@@ -1643,12 +1698,8 @@ describe('Controllers', () => {
 
 	describe('post redirect', () => {
 		let jar;
-		before((done) => {
-			helpers.loginUser('foo', 'barbar', (err, _jar) => {
-				assert.ifError(err);
-				jar = _jar;
-				done();
-			});
+		before(async () => {
+			({ jar } = await helpers.loginUser('foo', 'barbar'));
 		});
 
 		it('should 404 for invalid pid', (done) => {
@@ -1903,12 +1954,8 @@ describe('Controllers', () => {
 
 	describe('category', () => {
 		let jar;
-		before((done) => {
-			helpers.loginUser('foo', 'barbar', (err, _jar) => {
-				assert.ifError(err);
-				jar = _jar;
-				done();
-			});
+		before(async () => {
+			({ jar } = await helpers.loginUser('foo', 'barbar'));
 		});
 
 		it('should return 404 if cid is not a number', (done) => {
@@ -2171,16 +2218,35 @@ describe('Controllers', () => {
 				},
 			], done);
 		});
+
+		it('should load categories', async () => {
+			const helpers = require('../src/controllers/helpers');
+			const data = await helpers.getCategories('cid:0:children', 1, 'topics:read', 0);
+			assert(data.categories.length > 0);
+			assert.strictEqual(data.selectedCategory, null);
+			assert.deepStrictEqual(data.selectedCids, []);
+		});
+
+		it('should load categories by states', async () => {
+			const helpers = require('../src/controllers/helpers');
+			const data = await helpers.getCategoriesByStates(1, 1, Object.values(categories.watchStates), 'topics:read');
+			assert.deepStrictEqual(data.selectedCategory.cid, 1);
+			assert.deepStrictEqual(data.selectedCids, [1]);
+		});
+
+		it('should load categories by states', async () => {
+			const helpers = require('../src/controllers/helpers');
+			const data = await helpers.getCategoriesByStates(1, 0, [categories.watchStates.ignoring], 'topics:read');
+			assert(data.categories.length === 0);
+			assert.deepStrictEqual(data.selectedCategory, null);
+			assert.deepStrictEqual(data.selectedCids, []);
+		});
 	});
 
 	describe('unread', () => {
 		let jar;
-		before((done) => {
-			helpers.loginUser('foo', 'barbar', (err, _jar) => {
-				assert.ifError(err);
-				jar = _jar;
-				done();
-			});
+		before(async () => {
+			({ jar } = await helpers.loginUser('foo', 'barbar'));
 		});
 
 		it('should load unread page', (done) => {
@@ -2242,21 +2308,10 @@ describe('Controllers', () => {
 		let csrf_token;
 		let jar;
 
-		before((done) => {
-			helpers.loginUser('foo', 'barbar', (err, _jar) => {
-				assert.ifError(err);
-				jar = _jar;
-
-				request({
-					url: `${nconf.get('url')}/api/config`,
-					json: true,
-					jar: jar,
-				}, (err, response, body) => {
-					assert.ifError(err);
-					csrf_token = body.csrf_token;
-					done();
-				});
-			});
+		before(async () => {
+			const login = await helpers.loginUser('foo', 'barbar');
+			jar = login.jar;
+			csrf_token = login.csrf_token;
 		});
 
 		it('should load the composer route', (done) => {
@@ -2372,6 +2427,46 @@ describe('Controllers', () => {
 				});
 			});
 		});
+	});
+
+	describe('test routes', () => {
+		if (process.env.NODE_ENV === 'development') {
+			it('should load debug route', (done) => {
+				request(`${nconf.get('url')}/debug/test`, {}, (err, res, body) => {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 404);
+					assert(body);
+					done();
+				});
+			});
+
+			it('should load redoc read route', (done) => {
+				request(`${nconf.get('url')}/debug/spec/read`, {}, (err, res, body) => {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					assert(body);
+					done();
+				});
+			});
+
+			it('should load redoc write route', (done) => {
+				request(`${nconf.get('url')}/debug/spec/write`, {}, (err, res, body) => {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					assert(body);
+					done();
+				});
+			});
+
+			it('should load 404 for invalid type', (done) => {
+				request(`${nconf.get('url')}/debug/spec/doesnotexist`, {}, (err, res, body) => {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 404);
+					assert(body);
+					done();
+				});
+			});
+		}
 	});
 
 	after((done) => {

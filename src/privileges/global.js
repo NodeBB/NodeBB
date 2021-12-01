@@ -16,8 +16,8 @@ privsGlobal.privilegeLabels = [
 	{ name: '[[admin/manage/privileges:upload-images]]' },
 	{ name: '[[admin/manage/privileges:upload-files]]' },
 	{ name: '[[admin/manage/privileges:signature]]' },
-	{ name: '[[admin/manage/privileges:ban]]' },
 	{ name: '[[admin/manage/privileges:invite]]' },
+	{ name: '[[admin/manage/privileges:allow-group-creation]]' },
 	{ name: '[[admin/manage/privileges:search-content]]' },
 	{ name: '[[admin/manage/privileges:search-users]]' },
 	{ name: '[[admin/manage/privileges:search-tags]]' },
@@ -25,7 +25,7 @@ privsGlobal.privilegeLabels = [
 	{ name: '[[admin/manage/privileges:view-tags]]' },
 	{ name: '[[admin/manage/privileges:view-groups]]' },
 	{ name: '[[admin/manage/privileges:allow-local-login]]' },
-	{ name: '[[admin/manage/privileges:allow-group-creation]]' },
+	{ name: '[[admin/manage/privileges:ban]]' },
 	{ name: '[[admin/manage/privileges:view-users-info]]' },
 ];
 
@@ -34,8 +34,8 @@ privsGlobal.userPrivilegeList = [
 	'upload:post:image',
 	'upload:post:file',
 	'signature',
-	'ban',
 	'invite',
+	'group:create',
 	'search:content',
 	'search:users',
 	'search:tags',
@@ -43,11 +43,23 @@ privsGlobal.userPrivilegeList = [
 	'view:tags',
 	'view:groups',
 	'local:login',
-	'group:create',
+	'ban',
 	'view:users:info',
 ];
 
 privsGlobal.groupPrivilegeList = privsGlobal.userPrivilegeList.map(privilege => `groups:${privilege}`);
+
+privsGlobal.privilegeList = privsGlobal.userPrivilegeList.concat(privsGlobal.groupPrivilegeList);
+
+privsGlobal.getUserPrivilegeList = async () => await plugins.hooks.fire('filter:privileges.global.list', privsGlobal.userPrivilegeList.slice());
+privsGlobal.getGroupPrivilegeList = async () => await plugins.hooks.fire('filter:privileges.global.groups.list', privsGlobal.groupPrivilegeList.slice());
+privsGlobal.getPrivilegeList = async () => {
+	const [user, group] = await Promise.all([
+		privsGlobal.getUserPrivilegeList(),
+		privsGlobal.getGroupPrivilegeList(),
+	]);
+	return user.concat(group);
+};
 
 privsGlobal.list = async function () {
 	async function getLabels() {
@@ -75,13 +87,14 @@ privsGlobal.list = async function () {
 };
 
 privsGlobal.get = async function (uid) {
+	const userPrivilegeList = await privsGlobal.getUserPrivilegeList();
 	const [userPrivileges, isAdministrator] = await Promise.all([
-		helpers.isAllowedTo(privsGlobal.userPrivilegeList, uid, 0),
+		helpers.isAllowedTo(userPrivilegeList, uid, 0),
 		user.isAdministrator(uid),
 	]);
 
 	const combined = userPrivileges.map(allowed => allowed || isAdministrator);
-	const privData = _.zipObject(privsGlobal.userPrivilegeList, combined);
+	const privData = _.zipObject(userPrivilegeList, combined);
 
 	return await plugins.hooks.fire('filter:privileges.global.get', privData);
 };
@@ -120,9 +133,11 @@ privsGlobal.rescind = async function (privileges, groupName) {
 };
 
 privsGlobal.userPrivileges = async function (uid) {
-	return await helpers.userOrGroupPrivileges(0, uid, privsGlobal.userPrivilegeList);
+	const userPrivilegeList = await privsGlobal.getUserPrivilegeList();
+	return await helpers.userOrGroupPrivileges(0, uid, userPrivilegeList);
 };
 
 privsGlobal.groupPrivileges = async function (groupName) {
-	return await helpers.userOrGroupPrivileges(0, groupName, privsGlobal.groupPrivilegeList);
+	const groupPrivilegeList = await privsGlobal.getGroupPrivilegeList();
+	return await helpers.userOrGroupPrivileges(0, groupName, groupPrivilegeList);
 };

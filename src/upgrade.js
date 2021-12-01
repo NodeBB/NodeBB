@@ -71,7 +71,9 @@ Upgrade.appendPluginScripts = async function (files) {
 				});
 			}
 		} catch (e) {
-			winston.warn(`[upgrade/appendPluginScripts] Unable to read plugin.json for plugin \`${plugin}\`. Skipping.`);
+			if (e.code !== 'MODULE_NOT_FOUND') {
+				winston.error(e.stack);
+			}
 		}
 	});
 	return files;

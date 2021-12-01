@@ -13,6 +13,7 @@
 	"resent-single": "שליחת התקציר מחדש באופן ידני בוצע בהצלחה",
 	"resent-day": "תקציר יומי נשלח",
 	"resent-week": "תקציר שבועי נשלח",
+	"resent-biweek": "Bi-Weekly digest resent",
 	"resent-month": "תקציר חודשי נשלח",
 	"null": "<em>אף פעם</em>",
 	"manual-run": "הפעל תקציר ידני",

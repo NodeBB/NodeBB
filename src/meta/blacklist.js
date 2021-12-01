@@ -45,8 +45,8 @@ Blacklist.get = async function () {
 
 Blacklist.test = async function (clientIp) {
 	// Some handy test addresses
-	// clientIp = '2001:db8:85a3:0:0:8a2e:370:7334';	// IPv6
-	// clientIp = '127.0.15.1';	// IPv4
+	// clientIp = '2001:db8:85a3:0:0:8a2e:370:7334'; // IPv6
+	// clientIp = '127.0.15.1'; // IPv4
 	// clientIp = '127.0.15.1:3443'; // IPv4 with port strip port to not fail
 	if (!clientIp) {
 		return;
@@ -62,15 +62,15 @@ Blacklist.test = async function (clientIp) {
 	}
 
 	if (
-		!Blacklist._rules.ipv4.includes(clientIp) &&	// not explicitly specified in ipv4 list
-		!Blacklist._rules.ipv6.includes(clientIp) &&	// not explicitly specified in ipv6 list
+		!Blacklist._rules.ipv4.includes(clientIp) && // not explicitly specified in ipv4 list
+		!Blacklist._rules.ipv6.includes(clientIp) && // not explicitly specified in ipv6 list
 		!Blacklist._rules.cidr.some((subnet) => {
 			const cidr = ipaddr.parseCIDR(subnet);
 			if (addr.kind() !== cidr[0].kind()) {
 				return false;
 			}
 			return addr.match(cidr);
-		})	// not in a blacklisted IPv4 or IPv6 cidr range
+		}) // not in a blacklisted IPv4 or IPv6 cidr range
 	) {
 		try {
 			// To return test failure, pass back an error in callback

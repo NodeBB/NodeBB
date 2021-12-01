@@ -47,6 +47,7 @@
 	"users.uid": "ID",
 	"users.username": "Логин",
 	"users.email": "E-mail",
+	"users.no-email": "(no email)",
 	"users.ip": "IP",
 	"users.postcount": "Сообщения",
 	"users.reputation": "Репутация",

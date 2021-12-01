@@ -10,7 +10,7 @@ define('forum/category/tools', [
 	'api',
 	'bootbox',
 ], function (topicSelect, threadTools, components, translator, api, bootbox) {
-	var CategoryTools = {};
+	const CategoryTools = {};
 
 	CategoryTools.init = function () {
 		topicSelect.init(updateDropdownOptions);
@@ -54,7 +54,7 @@ define('forum/category/tools', [
 
 		// todo: should also use categoryCommand, but no write api call exists for this yet
 		components.get('topic/mark-unread-for-all').on('click', function () {
-			var tids = topicSelect.getSelectedTids();
+			const tids = topicSelect.getSelectedTids();
 			if (!tids.length) {
 				return app.alertError('[[error:no-topics-selected]]');
 			}
@@ -73,7 +73,7 @@ define('forum/category/tools', [
 
 		components.get('topic/move').on('click', function () {
 			require(['forum/topic/move'], function (move) {
-				var tids = topicSelect.getSelectedTids();
+				const tids = topicSelect.getSelectedTids();
 
 				if (!tids.length) {
 					return app.alertError('[[error:no-topics-selected]]');
@@ -85,7 +85,7 @@ define('forum/category/tools', [
 		});
 
 		components.get('topic/move-all').on('click', function () {
-			var cid = ajaxify.data.cid;
+			const cid = ajaxify.data.cid;
 			if (!ajaxify.data.template.category) {
 				return app.alertError('[[error:invalid-data]]');
 			}
@@ -101,7 +101,7 @@ define('forum/category/tools', [
 		});
 
 		components.get('topic/merge').on('click', function () {
-			var tids = topicSelect.getSelectedTids();
+			const tids = topicSelect.getSelectedTids();
 			require(['forum/topic/merge'], function (merge) {
 				merge.init(function () {
 					if (tids.length) {
@@ -185,11 +185,11 @@ define('forum/category/tools', [
 	}
 
 	function updateDropdownOptions() {
-		var tids = topicSelect.getSelectedTids();
-		var isAnyDeleted = isAny(isTopicDeleted, tids);
-		var areAllDeleted = areAll(isTopicDeleted, tids);
-		var isAnyPinned = isAny(isTopicPinned, tids);
-		var isAnyLocked = isAny(isTopicLocked, tids);
+		const tids = topicSelect.getSelectedTids();
+		const isAnyDeleted = isAny(isTopicDeleted, tids);
+		const areAllDeleted = areAll(isTopicDeleted, tids);
+		const isAnyPinned = isAny(isTopicPinned, tids);
+		const isAnyLocked = isAny(isTopicLocked, tids);
 		const isAnyScheduled = isAny(isTopicScheduled, tids);
 		const areAllScheduled = areAll(isTopicScheduled, tids);
 
@@ -207,7 +207,7 @@ define('forum/category/tools', [
 	}
 
 	function isAny(method, tids) {
-		for (var i = 0; i < tids.length; i += 1) {
+		for (let i = 0; i < tids.length; i += 1) {
 			if (method(tids[i])) {
 				return true;
 			}
@@ -216,7 +216,7 @@ define('forum/category/tools', [
 	}
 
 	function areAll(method, tids) {
-		for (var i = 0; i < tids.length; i += 1) {
+		for (let i = 0; i < tids.length; i += 1) {
 			if (!method(tids[i])) {
 				return false;
 			}
@@ -245,20 +245,20 @@ define('forum/category/tools', [
 	}
 
 	function setDeleteState(data) {
-		var topic = getTopicEl(data.tid);
+		const topic = getTopicEl(data.tid);
 		topic.toggleClass('deleted', data.isDeleted);
 		topic.find('[component="topic/locked"]').toggleClass('hide', !data.isDeleted);
 	}
 
 	function setPinnedState(data) {
-		var topic = getTopicEl(data.tid);
+		const topic = getTopicEl(data.tid);
 		topic.toggleClass('pinned', data.isPinned);
 		topic.find('[component="topic/pinned"]').toggleClass('hide', !data.isPinned);
 		ajaxify.refresh();
 	}
 
 	function setLockedState(data) {
-		var topic = getTopicEl(data.tid);
+		const topic = getTopicEl(data.tid);
 		topic.toggleClass('locked', data.isLocked);
 		topic.find('[component="topic/locked"]').toggleClass('hide', !data.isLocked);
 	}
@@ -275,31 +275,24 @@ define('forum/category/tools', [
 		if (!ajaxify.data.topics || !ajaxify.data.template.category) {
 			return;
 		}
-		var numPinned = ajaxify.data.topics.reduce(function (memo, topic) {
-			memo = topic.pinned ? memo += 1 : memo;
-			return memo;
-		}, 0);
-
+		const numPinned = ajaxify.data.topics.filter(topic => topic.pinned).length;
 		if ((!app.user.isAdmin && !app.user.isMod) || numPinned < 2) {
 			return;
 		}
 
 		app.loadJQueryUI(function () {
-			var topicListEl = $('[component="category"]').filter(function (i, e) {
+			const topicListEl = $('[component="category"]').filter(function (i, e) {
 				return !$(e).parents('[widget-area],[data-widget-area]').length;
 			});
 			topicListEl.sortable({
 				handle: '[component="topic/pinned"]',
 				items: '[component="category/topic"].pinned',
-				update: function () {
-					var data = [];
-
-					var pinnedTopics = topicListEl.find('[component="category/topic"].pinned');
-					pinnedTopics.each(function (index, element) {
-						data.push({ tid: $(element).attr('data-tid'), order: pinnedTopics.length - index - 1 });
-					});
-
-					socket.emit('topics.orderPinnedTopics', data, function (err) {
+				update: function (ev, ui) {
+					const baseIndex = parseInt(topicListEl.find('[component="category/topic"].pinned').first().attr('data-index'), 10);
+					socket.emit('topics.orderPinnedTopics', {
+						tid: ui.item.attr('data-tid'),
+						order: baseIndex + ui.item.index() - 1,
+					}, function (err) {
 						if (err) {
 							return app.alertError(err.message);
 						}

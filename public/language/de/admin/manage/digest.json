@@ -1,21 +1,22 @@
 {
-	"lead": "A listing of digest delivery stats and times is displayed below.",
-	"disclaimer": "Please be advised that email delivery is not guaranteed, due to the nature of email technology. Many variables factor into whether an email sent to the recipient server is ultimately delivered into the user's inbox, including server reputation, blacklisted IP addresses, and whether DKIM/SPF/DMARC is configured.",
-	"disclaimer-continued": "A successful delivery means the message was sent successfully by NodeBB and acknowledged by the recipient server. It does not mean the email landed in the inbox. For best results, we recommend using a third-party email delivery service such as <a href=\"https://sendgrid.com/why-sendgrid/\">SendGrid</a>.",
+	"lead": "Nachfolgend ist eine Auflistung der Zustellungsstatistiken und -zeiten zusammengefasst.",
+	"disclaimer": "Bitte beachten Sie, dass die Zustellung von E-Mails aufgrund der Funktionsweise von E-Mail-Technologien nicht garantiert werden kann. Ob eine E-Mail im Posteingang des Benutzers auf dem an Empfängerserver letztendlich ankommt, hängt von vielen Variablen ab, z. B. von der Reputation des Servers, von IP-Adressen, die auf der schwarzen Liste stehen, und davon, ob DKIM/SPF/DMARC konfiguriert ist.",
+	"disclaimer-continued": "Eine erfolgreiche Zustellung zeigt an, dass die Nachricht erfolgreich von NodeBB gesendet und vom Empfänger-Server bestätigt wurde. Es bedeutet nicht, dass die E-Mail im Posteingang gelandet ist. Um beste Ergebnisse zu erzielen, empfehlen wir, einen E-Mail-Zustelldienst eines Drittanbieters wie <a href=\"https://sendgrid.com/why-sendgrid/\">SendGrid</a> zu verwenden.",
 
 	"user": "Benutzer",
-	"subscription": "Subscription Type",
-	"last-delivery": "Last successful delivery",
-	"default": "System default",
-	"default-help": "<em>System default</em> means the user has not explicitly overridden the global forum setting for digests, which is currently: &quot;<strong>%1</strong>&quot;",
-	"resend": "Resend Digest",
-	"resend-all-confirm": "Are you sure you wish to manually execute this digest run?",
-	"resent-single": "Manual digest resend completed",
-	"resent-day": "Daily digest resent",
-	"resent-week": "Weekly digest resent",
-	"resent-month": "Monthly digest resent",
-	"null": "<em>Never</em>",
-	"manual-run": "Manual digest run:",
+	"subscription": "Abonnement Typ",
+	"last-delivery": "Letzte erfolgreiche Zustellung",
+	"default": "System Standard",
+	"default-help": "<em>Systemstandard</em> bedeutet, dass der Benutzer die globale Foreneinstellung für Tagesübersichten nicht explizit außer Kraft gesetzt hat, die derzeit wie folgt lautet: &quot;<strong>%1</strong>&quot;",
+	"resend": "Tagesübersicht erneut senden",
+	"resend-all-confirm": "Sind Sie sicher, dass Sie diesen Tagesübersichts-Lauf manuell ausführen möchten?",
+	"resent-single": "Manuelles Übersichtversenden abgeschlossen",
+	"resent-day": "Tägliche Übersicht erneut gesendet",
+	"resent-week": "Wöchentliche Übersicht erneut gesendet",
+	"resent-biweek": "Zweiwöchentliche Übersicht erneut gesendet",
+	"resent-month": "Monatliche Übersicht erneut gesendet",
+	"null": "<em>Niemals</em>",
+	"manual-run": "Manueller Tagesübersichts-Lauf:",
 
-	"no-delivery-data": "No delivery data found"
+	"no-delivery-data": "Keine Zustelldaten gefunden"
 }

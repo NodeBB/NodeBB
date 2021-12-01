@@ -10,7 +10,7 @@ define('admin/settings/homepage', ['admin/settings'], function () {
 		}
 	}
 
-	var Homepage = {};
+	const Homepage = {};
 
 	Homepage.init = function () {
 		$('[data-field="homePageRoute"]').on('change', toggleCustomRoute);

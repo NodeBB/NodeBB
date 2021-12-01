@@ -100,6 +100,8 @@ module.exports = function (Categories) {
 			set = `cid:${cid}:tids:posts`;
 		} else if (sort === 'most_votes') {
 			set = `cid:${cid}:tids:votes`;
+		} else if (sort === 'most_views') {
+			set = `cid:${cid}:tids:views`;
 		}
 
 		if (data.tag) {
@@ -123,7 +125,7 @@ module.exports = function (Categories) {
 
 	Categories.getSortedSetRangeDirection = async function (sort) {
 		sort = sort || 'newest_to_oldest';
-		const direction = sort === 'newest_to_oldest' || sort === 'most_posts' || sort === 'most_votes' ? 'highest-to-lowest' : 'lowest-to-highest';
+		const direction = ['newest_to_oldest', 'most_posts', 'most_votes', 'most_views'].includes(sort) ? 'highest-to-lowest' : 'lowest-to-highest';
 		const result = await plugins.hooks.fire('filter:categories.getSortedSetRangeDirection', {
 			sort: sort,
 			direction: direction,

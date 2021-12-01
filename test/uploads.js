@@ -1,10 +1,11 @@
 'use strict';
 
 const async = require('async');
-const	assert = require('assert');
+const assert = require('assert');
 const nconf = require('nconf');
 const path = require('path');
 const request = require('request');
+const requestAsync = require('request-promise-native');
 
 const db = require('./mocks/databasemock');
 const categories = require('../src/categories');
@@ -67,13 +68,9 @@ describe('Upload Controllers', () => {
 		let jar;
 		let csrf_token;
 
-		before((done) => {
-			helpers.loginUser('malicioususer', 'herpderp', (err, _jar, _csrf_token) => {
-				assert.ifError(err);
-				jar = _jar;
-				csrf_token = _csrf_token;
-				privileges.global.give(['groups:upload:post:file'], 'registered-users', done);
-			});
+		before(async () => {
+			({ jar, csrf_token } = await helpers.loginUser('malicioususer', 'herpderp'));
+			await privileges.global.give(['groups:upload:post:file'], 'registered-users');
 		});
 
 		it('should fail if the user exceeds the upload rate limit threshold', (done) => {
@@ -109,14 +106,10 @@ describe('Upload Controllers', () => {
 		let jar;
 		let csrf_token;
 
-		before((done) => {
+		before(async () => {
 			meta.config.uploadRateLimitThreshold = 1000;
-			helpers.loginUser('regular', 'zugzug', (err, _jar, _csrf_token) => {
-				assert.ifError(err);
-				jar = _jar;
-				csrf_token = _csrf_token;
-				privileges.global.give(['groups:upload:post:file'], 'registered-users', done);
-			});
+			({ jar, csrf_token } = await helpers.loginUser('regular', 'zugzug'));
+			await privileges.global.give(['groups:upload:post:file'], 'registered-users');
 		});
 
 		it('should upload an image to a post', (done) => {
@@ -195,11 +188,11 @@ describe('Upload Controllers', () => {
 		});
 
 		it('should fail to upload image to post if image dimensions are too big', (done) => {
-			helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/toobig.jpg'), {}, jar, csrf_token, (err, res, body) => {
+			helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/toobig.png'), {}, jar, csrf_token, (err, res, body) => {
 				assert.ifError(err);
 				assert.strictEqual(res.statusCode, 500);
 				assert(body && body.status && body.status.message);
-				assert.strictEqual(body.status.message, 'Input image exceeds pixel limit');
+				assert.strictEqual(body.status.message, 'Image dimensions are too big');
 				done();
 			});
 		});
@@ -241,54 +234,6 @@ describe('Upload Controllers', () => {
 				done();
 			});
 		});
-
-		// it('should fail if topic thumbs are disabled', function (done) {
-		// 	helpers.uploadFile(
-		// 		nconf.get('url') + '/api/topic/thumb/upload',
-		// 		path.join(__dirname, '../test/files/test.png'),
-		// 		{}, jar, csrf_token,
-		// 		function (err, res, body) {
-		// 			assert.ifError(err);
-		// 			assert.strictEqual(res.statusCode, 404);
-		// 			console.log(body);
-		// 			assert(body && body.status && body.status.code);
-		// 			assert.strictEqual(body.status.code, '[[error:topic-thumbnails-are-disabled]]');
-		// 			done();
-		// 		}
-		// 	);
-		// });
-
-		// it('should fail if file is not image', function (done) {
-		// 	meta.config.allowTopicsThumbnail = 1;
-		// 	helpers.uploadFile(
-		// 		nconf.get('url') + '/api/topic/thumb/upload',
-		// 		path.join(__dirname, '../test/files/503.html'),
-		// 		{}, jar, csrf_token,
-		// 		function (err, res, body) {
-		// 			assert.ifError(err);
-		// 			assert.equal(res.statusCode, 500);
-		// 			assert.equal(body.error, '[[error:invalid-file]]');
-		// 			done();
-		// 		}
-		// 	);
-		// });
-
-		// it('should upload topic thumb', function (done) {
-		// 	meta.config.allowTopicsThumbnail = 1;
-		// 	helpers.uploadFile(
-		// 		nconf.get('url') + '/api/topic/thumb/upload',
-		// 		path.join(__dirname, '../test/files/test.png'),
-		// 		{}, jar, csrf_token,
-		// 		function (err, res, body) {
-		// 			assert.ifError(err);
-		// 			assert.equal(res.statusCode, 200);
-		// 			assert(Array.isArray(body));
-		// 			assert(body[0].path);
-		// 			assert(body[0].url);
-		// 			done();
-		// 		}
-		// 	);
-		// });
 
 		it('should not allow non image uploads', (done) => {
 			socketUser.updateCover({ uid: 1 }, { uid: 1, file: { path: '../../text.txt' } }, (err) => {
@@ -333,7 +278,6 @@ describe('Upload Controllers', () => {
 		});
 
 		it('should delete users uploads if account is deleted', (done) => {
-			let jar;
 			let uid;
 			let url;
 			const file = require('../src/file');
@@ -346,8 +290,8 @@ describe('Upload Controllers', () => {
 					uid = _uid;
 					helpers.loginUser('uploader', 'barbar', next);
 				},
-				function (jar, csrf_token, next) {
-					helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token, next);
+				function (data, next) {
+					helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/test.png'), {}, data.jar, data.csrf_token, next);
 				},
 				function (res, body, next) {
 					assert(body && body.status && body.response && body.response.images);
@@ -372,14 +316,14 @@ describe('Upload Controllers', () => {
 	describe('admin uploads', () => {
 		let jar;
 		let csrf_token;
+		let regularJar;
+		let regular_csrf_token;
 
-		before((done) => {
-			helpers.loginUser('admin', 'barbar', (err, _jar, _csrf_token) => {
-				assert.ifError(err);
-				jar = _jar;
-				csrf_token = _csrf_token;
-				done();
-			});
+		before(async () => {
+			({ jar, csrf_token } = await helpers.loginUser('admin', 'barbar'));
+			const regularLogin = await helpers.loginUser('regular', 'zugzug');
+			regularJar = regularLogin.jar;
+			regular_csrf_token = regularLogin.csrf_token;
 		});
 
 		it('should upload site logo', (done) => {
@@ -488,6 +432,68 @@ describe('Upload Controllers', () => {
 				assert.equal(res.statusCode, 500);
 				assert.strictEqual(body.error, '[[error:invalid-path]]');
 				done();
+			});
+		});
+
+		describe('ACP uploads screen', () => {
+			it('should create a folder', async () => {
+				const res = await helpers.createFolder('', 'myfolder', jar, csrf_token);
+				assert.strictEqual(res.statusCode, 200);
+				assert(file.existsSync(path.join(nconf.get('upload_path'), 'myfolder')));
+			});
+
+			it('should fail to create a folder if it already exists', async () => {
+				const res = await helpers.createFolder('', 'myfolder', jar, csrf_token);
+				assert.strictEqual(res.statusCode, 403);
+				assert.deepStrictEqual(res.body.status, {
+					code: 'forbidden',
+					message: 'Folder exists',
+				});
+			});
+
+			it('should fail to create a folder as a non-admin', async () => {
+				const res = await helpers.createFolder('', 'hisfolder', regularJar, regular_csrf_token);
+				assert.strictEqual(res.statusCode, 403);
+				assert.deepStrictEqual(res.body.status, {
+					code: 'forbidden',
+					message: 'You are not authorised to make this call',
+				});
+			});
+
+			it('should fail to create a folder in wrong directory', async () => {
+				const res = await helpers.createFolder('../traversing', 'unexpectedfolder', jar, csrf_token);
+				assert.strictEqual(res.statusCode, 403);
+				assert.deepStrictEqual(res.body.status, {
+					code: 'forbidden',
+					message: 'Invalid path',
+				});
+			});
+
+			it('should use basename of given folderName to create new folder', async () => {
+				const res = await helpers.createFolder('/myfolder', '../another folder', jar, csrf_token);
+				assert.strictEqual(res.statusCode, 200);
+				const slugifiedName = 'another-folder';
+				assert(file.existsSync(path.join(nconf.get('upload_path'), 'myfolder', slugifiedName)));
+			});
+
+			it('should fail to delete a file as a non-admin', async () => {
+				const res = await requestAsync.delete(`${nconf.get('url')}/api/v3/files`, {
+					body: {
+						path: '/system/test.png',
+					},
+					jar: regularJar,
+					json: true,
+					headers: {
+						'x-csrf-token': regular_csrf_token,
+					},
+					simple: false,
+					resolveWithFullResponse: true,
+				});
+				assert.strictEqual(res.statusCode, 403);
+				assert.deepStrictEqual(res.body.status, {
+					code: 'forbidden',
+					message: 'You are not authorised to make this call',
+				});
 			});
 		});
 	});

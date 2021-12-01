@@ -1,10 +1,9 @@
 'use strict';
 
 define('settings/textarea', function () {
-	var Settings = null;
-	var SettingsArea;
+	let Settings = null;
 
-	SettingsArea = {
+	const SettingsArea = {
 		types: ['textarea'],
 		use: function () {
 			Settings = this;
@@ -19,7 +18,7 @@ define('settings/textarea', function () {
 			element.val(value || '');
 		},
 		get: function (element, trim, empty) {
-			var value = element.val();
+			let value = element.val();
 			if (trim) {
 				if (value == null) {
 					value = undefined;

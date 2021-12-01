@@ -7,12 +7,12 @@ define('forum/search', [
 	'storage',
 	'hooks',
 ], function (searchModule, autocomplete, storage, hooks) {
-	var	Search = {};
+	const Search = {};
 
 	Search.init = function () {
-		var searchQuery = $('#results').attr('data-search-query');
+		const searchQuery = $('#results').attr('data-search-query');
 
-		var searchIn = $('#search-in');
+		const searchIn = $('#search-in');
 
 		searchIn.on('change', function () {
 			updateFormItemVisiblity(searchIn.val());
@@ -36,8 +36,8 @@ define('forum/search', [
 	};
 
 	function getSearchDataFromDOM() {
-		var form = $('#advanced-search');
-		var searchData = {
+		const form = $('#advanced-search');
+		const searchData = {
 			in: $('#search-in').val(),
 		};
 		searchData.term = $('#search-input').val();
@@ -65,17 +65,17 @@ define('forum/search', [
 	}
 
 	function updateFormItemVisiblity(searchIn) {
-		var hide = searchIn.indexOf('posts') === -1 && searchIn.indexOf('titles') === -1;
+		const hide = searchIn.indexOf('posts') === -1 && searchIn.indexOf('titles') === -1;
 		$('.post-search-item').toggleClass('hide', hide);
 	}
 
 	function fillOutForm() {
-		var params = utils.params({
+		const params = utils.params({
 			disableToType: true,
 		});
 
-		var searchData = searchModule.getSearchPreferences();
-		var formData = utils.merge(searchData, params);
+		const searchData = searchModule.getSearchPreferences();
+		const formData = utils.merge(searchData, params);
 
 		if (formData) {
 			if (ajaxify.data.term) {
@@ -127,8 +127,8 @@ define('forum/search', [
 			$('#post-sort-direction').val(formData.sortDirection || 'desc');
 
 			if (formData.showAs) {
-				var isTopic = formData.showAs === 'topics';
-				var isPost = formData.showAs === 'posts';
+				const isTopic = formData.showAs === 'topics';
+				const isPost = formData.showAs === 'posts';
 				$('#show-as-topics').prop('checked', isTopic).parent().toggleClass('active', isTopic);
 				$('#show-as-posts').prop('checked', isPost).parent().toggleClass('active', isPost);
 			}
@@ -148,7 +148,7 @@ define('forum/search', [
 
 		$('#clear-preferences').on('click', function () {
 			storage.removeItem('search-preferences');
-			var query = $('#search-input').val();
+			const query = $('#search-input').val();
 			$('#advanced-search')[0].reset();
 			$('#search-input').val(query);
 			app.alertSuccess('[[search:search-preferences-cleared]]');
@@ -157,7 +157,7 @@ define('forum/search', [
 	}
 
 	function enableAutoComplete() {
-		var userEl = $('#posted-by-user');
+		const userEl = $('#posted-by-user');
 		userEl.tagsinput({
 			confirmKeys: [13, 44],
 			trimValue: true,
@@ -166,7 +166,7 @@ define('forum/search', [
 			autocomplete.user(userEl.siblings('.bootstrap-tagsinput').find('input'));
 		}
 
-		var tagEl = $('#has-tags');
+		const tagEl = $('#has-tags');
 		tagEl.tagsinput({
 			confirmKeys: [13, 44],
 			trimValue: true,

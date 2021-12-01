@@ -137,7 +137,7 @@ Topics.getTopicsByTids = async function (tids, options) {
 			topic.teaser = result.teasers[i] || null;
 			topic.isOwner = topic.uid === parseInt(uid, 10);
 			topic.ignored = isIgnored[i];
-			topic.unread = parseInt(uid, 10) > 0 && !hasRead[i] && !isIgnored[i];
+			topic.unread = parseInt(uid, 10) <= 0 || (!hasRead[i] && !isIgnored[i]);
 			topic.bookmark = sortNewToOld ?
 				Math.max(1, topic.postcount + 2 - bookmarks[i]) :
 				Math.min(topic.postcount, bookmarks[i] + 1);
@@ -168,7 +168,7 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 		thumbs,
 		events,
 	] = await Promise.all([
-		getMainPostAndReplies(topicData, set, uid, start, stop, reverse),
+		Topics.getTopicPosts(topicData, set, start, stop, uid, reverse),
 		categories.getCategoryData(topicData.cid),
 		categories.getTagWhitelist([topicData.cid]),
 		plugins.hooks.fire('filter:topic.thread_tools', { topic: topicData, uid: uid, tools: [] }),
@@ -179,7 +179,7 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 		getMerger(topicData),
 		Topics.getRelatedTopics(topicData, uid),
 		Topics.thumbs.load([topicData]),
-		Topics.events.get(topicData.tid, uid),
+		Topics.events.get(topicData.tid, uid, reverse),
 	]);
 
 	topicData.thumbs = thumbs[0];
@@ -210,38 +210,6 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 	const result = await plugins.hooks.fire('filter:topic.get', { topic: topicData, uid: uid });
 	return result.topic;
 };
-
-async function getMainPostAndReplies(topic, set, uid, start, stop, reverse) {
-	let repliesStart = start;
-	let repliesStop = stop;
-	if (stop > 0) {
-		repliesStop -= 1;
-		if (start > 0) {
-			repliesStart -= 1;
-		}
-	}
-	const pids = await posts.getPidsFromSet(set, repliesStart, repliesStop, reverse);
-	if (!pids.length && !topic.mainPid) {
-		return [];
-	}
-
-	if (topic.mainPid && start === 0) {
-		pids.unshift(topic.mainPid);
-	}
-	const postData = await posts.getPostsByPids(pids, uid);
-	if (!postData.length) {
-		return [];
-	}
-	let replies = postData;
-	if (topic.mainPid && start === 0) {
-		postData[0].index = 0;
-		replies = postData.slice(1);
-	}
-
-	Topics.calculatePostIndices(replies, repliesStart);
-
-	return await Topics.addPostData(postData, uid);
-}
 
 async function getDeleter(topicData) {
 	if (!parseInt(topicData.deleterUid, 10)) {
@@ -299,11 +267,12 @@ Topics.isLocked = async function (tid) {
 };
 
 Topics.search = async function (tid, term) {
-	const pids = await plugins.hooks.fire('filter:topic.search', {
+	const result = await plugins.hooks.fire('filter:topic.search', {
 		tid: tid,
 		term: term,
+		ids: [],
 	});
-	return Array.isArray(pids) ? pids : [];
+	return Array.isArray(result) ? result : result.ids;
 };
 
 require('../promisify')(Topics);

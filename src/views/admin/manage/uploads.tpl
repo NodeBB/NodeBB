@@ -1,6 +1,13 @@
 <!-- IMPORT partials/breadcrumbs.tpl -->
 <div class="clearfix">
-	<button id="upload" class="btn-success pull-right"><i class="fa fa-upload"></i> [[global:upload]]</button>
+	<div class="pull-right">
+		<div class="btn-group">
+			<button id="new-folder" class="btn-primary"><i class="fa fa-folder"></i> [[admin/manage/uploads:new-folder]]</button>
+		</div>
+		<div class="btn-group">
+			<button id="upload" class="btn-success"><i class="fa fa-upload"></i> [[global:upload]]</button>
+		</div>
+	</div>
 </div>
 
 <div class="table-responsive">

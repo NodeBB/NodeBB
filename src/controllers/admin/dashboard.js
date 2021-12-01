@@ -4,6 +4,7 @@ const nconf = require('nconf');
 const semver = require('semver');
 const winston = require('winston');
 const _ = require('lodash');
+const validator = require('validator');
 
 const versions = require('../../admin/versions');
 const db = require('../../database');
@@ -18,12 +19,13 @@ const emailer = require('../../emailer');
 const dashboardController = module.exports;
 
 dashboardController.get = async function (req, res) {
-	const [stats, notices, latestVersion, lastrestart, isAdmin] = await Promise.all([
+	const [stats, notices, latestVersion, lastrestart, isAdmin, popularSearches] = await Promise.all([
 		getStats(),
 		getNotices(),
 		getLatestVersion(),
 		getLastRestart(),
 		user.isAdministrator(req.uid),
+		getPopularSearches(),
 	]);
 	const version = nconf.get('version');
 
@@ -38,6 +40,7 @@ dashboardController.get = async function (req, res) {
 		canRestart: !!process.send,
 		lastrestart: lastrestart,
 		showSystemControls: isAdmin,
+		popularSearches: popularSearches,
 	});
 };
 
@@ -185,7 +188,7 @@ async function getStatsFromAnalytics(set, field) {
 		today: data.slice(-1)[0],
 		lastweek: sum(data.slice(-14)),
 		thisweek: sum(data.slice(-7)),
-		lastmonth: sum(data.slice(0)),	// entire set
+		lastmonth: sum(data.slice(0)), // entire set
 		thismonth: sum(data.slice(-30)),
 		alltime: await getGlobalField(field),
 	};
@@ -236,6 +239,11 @@ async function getLastRestart() {
 	lastrestart.user = userData;
 	lastrestart.timestampISO = utils.toISOString(lastrestart.timestamp);
 	return lastrestart;
+}
+
+async function getPopularSearches() {
+	const searches = await db.getSortedSetRevRangeWithScores('searches:all', 0, 9);
+	return searches.map(s => ({ value: validator.escape(String(s.value)), score: s.score }));
 }
 
 dashboardController.getLogins = async (req, res) => {
@@ -325,5 +333,12 @@ dashboardController.getTopics = async (req, res) => {
 		stats,
 		summary,
 		topics: topicData,
+	});
+};
+
+dashboardController.getSearches = async (req, res) => {
+	const searches = await db.getSortedSetRevRangeWithScores('searches:all', 0, 99);
+	res.render('admin/dashboard/searches', {
+		searches: searches.map(s => ({ value: validator.escape(String(s.value)), score: s.score })),
 	});
 };

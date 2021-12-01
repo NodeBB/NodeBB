@@ -18,9 +18,8 @@ module.exports = function (middleware) {
 			return next();
 		}
 
-		const isAdmin = await user.isAdministrator(req.user.uid);
-		res.locals.isAdmin = isAdmin;
-		return next();
+		res.locals.isAdmin = await user.isAdministrator(req.user.uid);
+		next();
 	};
 
 	middleware.exposePrivileges = async (req, res, next) => {
@@ -36,7 +35,7 @@ module.exports = function (middleware) {
 		}
 
 		res.locals.privileges = hash;
-		return next();
+		next();
 	};
 
 	middleware.exposePrivilegeSet = async (req, res, next) => {
@@ -45,6 +44,6 @@ module.exports = function (middleware) {
 			...await privileges.global.get(req.user.uid),
 			...await privileges.admin.get(req.user.uid),
 		};
-		return next();
+		next();
 	};
 };

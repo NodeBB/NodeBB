@@ -9,9 +9,10 @@ define('forum/account/header', [
 	'benchpress',
 	'accounts/delete',
 	'api',
-], function (coverPhoto, pictureCropper, components, translator, Benchpress, AccountsDelete, api) {
-	var AccountHeader = {};
-	var isAdminOrSelfOrGlobalMod;
+	'bootbox',
+], function (coverPhoto, pictureCropper, components, translator, Benchpress, AccountsDelete, api, bootbox) {
+	const AccountHeader = {};
+	let isAdminOrSelfOrGlobalMod;
 
 	AccountHeader.init = function () {
 		isAdminOrSelfOrGlobalMod = ajaxify.data.isAdmin || ajaxify.data.isSelf || ajaxify.data.isGlobalModerator;
@@ -31,21 +32,19 @@ define('forum/account/header', [
 			toggleFollow('unfollow');
 		});
 
-		components.get('account/chat').on('click', function () {
-			socket.emit('modules.chats.hasPrivateChat', ajaxify.data.uid, function (err, roomId) {
-				if (err) {
-					return app.alertError(err.message);
-				}
-				if (roomId) {
-					app.openChat(roomId);
-				} else {
-					app.newChat(ajaxify.data.uid);
-				}
-			});
+		components.get('account/chat').on('click', async function () {
+			const roomId = await socket.emit('modules.chats.hasPrivateChat', ajaxify.data.uid);
+			const chat = await app.require('chat');
+			if (roomId) {
+				chat.openChat(roomId);
+			} else {
+				chat.newChat(ajaxify.data.uid);
+			}
 		});
 
-		components.get('account/new-chat').on('click', function () {
-			app.newChat(ajaxify.data.uid, function () {
+		components.get('account/new-chat').on('click', async function () {
+			const chat = await app.require('chat');
+			chat.newChat(ajaxify.data.uid, function () {
 				components.get('account/chat').parent().removeClass('hidden');
 			});
 		});
@@ -77,7 +76,7 @@ define('forum/account/header', [
 
 	function selectActivePill() {
 		$('.account-sub-links li').removeClass('active').each(function () {
-			var href = $(this).find('a').attr('href');
+			const href = $(this).find('a').attr('href');
 
 			if (decodeURIComponent(href) === decodeURIComponent(window.location.pathname)) {
 				$(this).addClass('active');
@@ -145,12 +144,12 @@ define('forum/account/header', [
 					submit: {
 						label: '[[user:ban_account]]',
 						callback: function () {
-							var formData = $('.ban-modal form').serializeArray().reduce(function (data, cur) {
+							const formData = $('.ban-modal form').serializeArray().reduce(function (data, cur) {
 								data[cur.name] = cur.value;
 								return data;
 							}, {});
 
-							var until = formData.length > 0 ? (
+							const until = formData.length > 0 ? (
 								Date.now() + (formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1))
 							) : 0;
 
@@ -187,7 +186,7 @@ define('forum/account/header', [
 	}
 
 	function toggleBlockAccount() {
-		var targetEl = this;
+		const targetEl = this;
 		socket.emit('user.toggleBlock', {
 			blockeeUid: ajaxify.data.uid,
 			blockerUid: app.user.uid,

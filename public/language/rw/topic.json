@@ -21,6 +21,7 @@
     "edit": "Hinduraho",
     "delete": "Siba",
     "delete-event": "Delete Event",
+    "delete-event-confirm": "Are you sure you want to delete this event?",
     "purge": "Sibanganya",
     "restore": "Garuraho",
     "move": "Imura",
@@ -46,6 +47,8 @@
     "restored-by": "Restored by",
     "moved-from-by": "Moved from %1 by",
     "queued-by": "Post queued for approval &rarr;",
+    "backlink": "Referenced by",
+    "forked-by": "Forked by",
     "bookmark_instructions": "Click here to return to the last read post in this thread.",
     "flag-post": "Flag this post",
     "flag-user": "Flag this user",
@@ -137,6 +140,7 @@
     "composer.handle_placeholder": "Enter your name/handle here",
     "composer.discard": "Byihorere",
     "composer.submit": "Shyiraho",
+    "composer.additional-options": "Additional Options",
     "composer.schedule": "Schedule",
     "composer.replying_to": "Gusubiza %1",
     "composer.new_topic": "Ikiganiro Gishya",
@@ -157,6 +161,7 @@
     "newest_to_oldest": "Ibya Vuba Ujya ku bya Kera",
     "most_votes": "Most Votes",
     "most_posts": "Most Posts",
+    "most_views": "Most Views",
     "stale.title": "Urashaka gutangiza ahubwo ikiganiro gishya?",
     "stale.warning": "Ikiganiro ushaka kuvugaho cyarashaje. Wahitamo gutangiza ikiganiro gishya ariko wenda ukagaragaza kino mu gisubizo uza gushyiraho?",
     "stale.create": "Tangiza ikiganiro gishya",
@@ -175,5 +180,6 @@
     "timeago_later": "%1 later",
     "timeago_earlier": "%1 earlier",
     "first-post": "First post",
-    "last-post": "Last post"
+    "last-post": "Last post",
+    "post-quick-reply": "Post quick reply"
 }

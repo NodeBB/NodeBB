@@ -8,8 +8,6 @@
 	"delete": "Видалити",
 	"enable": "Увімкнути",
 	"disable": "Вимкнути",
-	"control-panel": "Керування нагородами",
-	"new-reward": "Нова нагорода",
 
 	"alert.delete-success": "Нагороду успішно видалено",
 	"alert.no-inputs-found": "Невірна нагорода — поля пусті!",

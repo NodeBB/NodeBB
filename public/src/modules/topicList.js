@@ -8,21 +8,14 @@ define('topicList', [
 	'forum/category/tools',
 	'hooks',
 ], function (infinitescroll, handleBack, topicSelect, categoryFilter, categoryTools, hooks) {
-	var TopicList = {};
-	var templateName = '';
+	const TopicList = {};
+	let templateName = '';
 
-	var tplToSort = {
-		recent: 'recent',
-		unread: 'unread',
-		popular: 'posts',
-		top: 'votes',
-	};
+	let newTopicCount = 0;
+	let newPostCount = 0;
 
-	var newTopicCount = 0;
-	var newPostCount = 0;
-
-	var loadTopicsCallback;
-	var topicListEl;
+	let loadTopicsCallback;
+	let topicListEl;
 
 	const scheduledTopics = [];
 
@@ -40,7 +33,7 @@ define('topicList', [
 		categoryTools.init();
 
 		TopicList.watchForNewPosts();
-		var states = ['watching'];
+		const states = ['watching'];
 		if (ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.filter === 'watched') {
 			states.push('notwatching', 'ignoring');
 		} else if (template !== 'unread') {
@@ -120,7 +113,7 @@ define('topicList', [
 	}
 
 	function onNewPost(data) {
-		var post = data.posts[0];
+		const post = data.posts[0];
 		if (!post || !post.topic || post.topic.isFollowing) {
 			return;
 		}
@@ -148,7 +141,7 @@ define('topicList', [
 	}
 
 	function updateAlertText() {
-		var text = '';
+		let text = '';
 
 		if (newTopicCount === 0) {
 			if (newPostCount === 1) {
@@ -184,9 +177,9 @@ define('topicList', [
 		if (!topicListEl.length || !topicListEl.children().length) {
 			return;
 		}
-		var topics = topicListEl.find('[component="category/topic"]');
-		var afterEl = direction > 0 ? topics.last() : topics.first();
-		var after = (parseInt(afterEl.attr('data-index'), 10) || 0) + (direction > 0 ? 1 : 0);
+		const topics = topicListEl.find('[component="category/topic"]');
+		const afterEl = direction > 0 ? topics.last() : topics.first();
+		const after = (parseInt(afterEl.attr('data-index'), 10) || 0) + (direction > 0 ? 1 : 0);
 
 		if (!utils.isNumber(after) || (after === 0 && topicListEl.find('[component="category/topic"][data-index="0"]').length)) {
 			return;
@@ -197,21 +190,15 @@ define('topicList', [
 		});
 	};
 
+	function calculateNextPage(after, direction) {
+		return Math.floor(after / config.topicsPerPage) + (direction > 0 ? 1 : 0);
+	}
+
 	function loadTopicsAfter(after, direction, callback) {
 		callback = callback || function () {};
-		var query = utils.params();
-		infinitescroll.loadMore('topics.loadMoreSortedTopics', {
-			after: after,
-			direction: direction,
-			sort: tplToSort[templateName],
-			count: config.topicsPerPage,
-			cid: query.cid,
-			tags: query.tags,
-			query: query,
-			term: ajaxify.data.selectedTerm && ajaxify.data.selectedTerm.term,
-			filter: ajaxify.data.selectedFilter.filter,
-			set: topicListEl.attr('data-set') ? topicListEl.attr('data-set') : 'topics:recent',
-		}, callback);
+		const query = utils.params();
+		query.page = calculateNextPage(after, direction);
+		infinitescroll.loadMoreXhr(query, callback);
 	}
 
 	function filterTopicsOnDom(topics) {
@@ -232,9 +219,9 @@ define('topicList', [
 			return callback();
 		}
 
-		var after;
-		var before;
-		var topicEls = topicListEl.find('[component="category/topic"]');
+		let after;
+		let before;
+		const topicEls = topicListEl.find('[component="category/topic"]');
 
 		if (direction > 0 && topics.length) {
 			after = topicEls.last();
@@ -242,7 +229,7 @@ define('topicList', [
 			before = topicEls.first();
 		}
 
-		var tplData = {
+		const tplData = {
 			topics: topics,
 			showSelect: showSelect,
 			template: {
@@ -260,8 +247,8 @@ define('topicList', [
 			if (after && after.length) {
 				html.insertAfter(after);
 			} else if (before && before.length) {
-				var height = $(document).height();
-				var scrollTop = $(window).scrollTop();
+				const height = $(document).height();
+				const scrollTop = $(window).scrollTop();
 
 				html.insertBefore(before);
 

@@ -1,6 +1,5 @@
 'use strict';
 
-const async = require('async');
 const db = require('../../database');
 
 const batch = require('../../batch');
@@ -9,61 +8,30 @@ const user = require('../../user');
 module.exports = {
 	name: 'Record first entry in username/email history',
 	timestamp: Date.UTC(2018, 7, 28),
-	method: function (callback) {
+	method: async function () {
 		const { progress } = this;
 
-		batch.processSortedSet('users:joindate', (ids, next) => {
-			async.each(ids, (uid, next) => {
-				async.parallel([
-					function (next) {
-						// Username
-						async.waterfall([
-							async.apply(db.sortedSetCard, `user:${uid}:usernames`),
-							(count, next) => {
-								if (count > 0) {
-									// User has changed their username before, no record of original username, skip.
-									return setImmediate(next, null, null);
-								}
+		await batch.processSortedSet('users:joindate', async (uids) => {
+			async function updateHistory(uid, set, fieldName) {
+				const count = await db.sortedSetCard(set);
+				if (count <= 0) {
+					// User has not changed their username/email before, record original username
+					const userData = await user.getUserFields(uid, [fieldName, 'joindate']);
+					if (userData && userData.joindate && userData[fieldName]) {
+						await db.sortedSetAdd(set, userData.joindate, [userData[fieldName], userData.joindate].join(':'));
+					}
+				}
+			}
 
-								user.getUserFields(uid, ['username', 'joindate'], next);
-							},
-							(userdata, next) => {
-								if (!userdata || !userdata.joindate) {
-									return setImmediate(next);
-								}
-
-								db.sortedSetAdd(`user:${uid}:usernames`, userdata.joindate, [userdata.username, userdata.joindate].join(':'), next);
-							},
-						], next);
-					},
-					function (next) {
-						// Email
-						async.waterfall([
-							async.apply(db.sortedSetCard, `user:${uid}:emails`),
-							(count, next) => {
-								if (count > 0) {
-									// User has changed their email before, no record of original email, skip.
-									return setImmediate(next, null, null);
-								}
-
-								user.getUserFields(uid, ['email', 'joindate'], next);
-							},
-							(userdata, next) => {
-								if (!userdata || !userdata.joindate) {
-									return setImmediate(next);
-								}
-
-								db.sortedSetAdd(`user:${uid}:emails`, userdata.joindate, [userdata.email, userdata.joindate].join(':'), next);
-							},
-						], next);
-					},
-				], (err) => {
-					progress.incr();
-					setImmediate(next, err);
-				});
-			}, next);
+			await Promise.all(uids.map(async (uid) => {
+				await Promise.all([
+					updateHistory(uid, `user:${uid}:usernames`, 'username'),
+					updateHistory(uid, `user:${uid}:emails`, 'email'),
+				]);
+				progress.incr();
+			}));
 		}, {
 			progress: this.progress,
-		}, callback);
+		});
 	},
 };

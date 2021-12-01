@@ -47,6 +47,7 @@
 	"users.uid": "UID",
 	"users.username": "用户名",
 	"users.email": "电子邮件",
+	"users.no-email": "(no email)",
 	"users.ip": "IP",
 	"users.postcount": "发帖数",
 	"users.reputation": "声望",

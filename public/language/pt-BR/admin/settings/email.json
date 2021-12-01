@@ -6,7 +6,7 @@
 	"from-help": "O nome que será mostrado em \"De\" no e-mail.",
 
 	"smtp-transport": "Trasporte por SMTP",
-	"smtp-transport.enabled": "Utilizar um servidor de e-mail externo para enviar e-mails",
+	"smtp-transport.enabled": "Enable SMTP Transport",
 	"smtp-transport-help": "Você pode escolher entre uma lista de serviços conhecidos ou adicionar um personalizado.",
 	"smtp-transport.service": "Escolha um serviço",
 	"smtp-transport.service-custom": "Serviço Personalizado",
@@ -37,6 +37,11 @@
 	"subscriptions.hour": "Hora de Envio dos Resumos",
 	"subscriptions.hour-help": "Por favor, entre um número representando a hora para enviar os resumos agendados via e-mail (por exemplo: <code>0</code> para meia-noite, <code>17</code> para 5:00pm). Tenha em mente que esta é a hora de acordo com o servidor e pode não combinar exatamente com o relógio do seu sistema.<br /> O horário aproximado do servidor é: <span id=\"serverTime\"></span><br /> O próximo resumo diário está agendado para ser enviado <span id=\"nextDigestTime\"></span>",
 	"notifications.remove-images": "Remover imagens de notificações por e-mail",
+	"require-email-address": "Require new users to specify an email address",
+	"require-email-address-warning": "By default, users can opt-out of entering an email address by leaving the field blank. Enabling this option means they have to enter an email address in order to proceed with registration. <strong>It does not ensure user will enter a real email address, nor even an address they own.</strong>",
+	"send-validation-email": "Send validation emails when an email is added or changed",
 	"include-unverified-emails": "Send emails to recipients who have not explicitly confirmed their emails",
-	"include-unverified-warning": "By default, users with emails associated with their account have already been verified, but there are situations where this is not the case (e.g. SSO logins, grandfathered users, etc). <strong>Enable this setting at your own risk</strong> &ndash; sending emails to unverified addresses may be a violation of regional anti-spam laws."
+	"include-unverified-warning": "By default, users with emails associated with their account have already been verified, but there are situations where this is not the case (e.g. SSO logins, grandfathered users, etc). <strong>Enable this setting at your own risk</strong> &ndash; sending emails to unverified addresses may be a violation of regional anti-spam laws.",
+	"prompt": "Prompt users to enter or confirm their emails",
+	"prompt-help": "If a user does not have an email set, or their email is not confirmed, a warning will be shown on screen."
 }

@@ -9,28 +9,18 @@ module.exports = function (module) {
 		}
 
 		await module.transaction(async (client) => {
-			async function doPrepend(value) {
-				await client.query({
-					name: 'listPrepend',
-					text: `
-	INSERT INTO "legacy_list" ("_key", "array")
-	VALUES ($1::TEXT, ARRAY[$2::TEXT])
-	ON CONFLICT ("_key")
-	DO UPDATE SET "array" = ARRAY[$2::TEXT] || "legacy_list"."array"`,
-					values: [key, value],
-				});
-			}
-
 			await helpers.ensureLegacyObjectType(client, key, 'list');
-			if (Array.isArray(value)) {
-				// TODO: perf make single query
-				for (const v of value) {
-					// eslint-disable-next-line
-					await doPrepend(v);
-				}
-				return;
-			}
-			await doPrepend(value);
+			value = Array.isArray(value) ? value : [value];
+			value.reverse();
+			await client.query({
+				name: 'listPrependValues',
+				text: `
+INSERT INTO "legacy_list" ("_key", "array")
+VALUES ($1::TEXT, $2::TEXT[])
+ON CONFLICT ("_key")
+DO UPDATE SET "array" = EXCLUDED.array || "legacy_list"."array"`,
+				values: [key, value],
+			});
 		});
 	};
 
@@ -39,27 +29,18 @@ module.exports = function (module) {
 			return;
 		}
 		await module.transaction(async (client) => {
-			async function doAppend(value) {
-				await client.query({
-					name: 'listAppend',
-					text: `
-	INSERT INTO "legacy_list" ("_key", "array")
-	VALUES ($1::TEXT, ARRAY[$2::TEXT])
-	ON CONFLICT ("_key")
-	DO UPDATE SET "array" = "legacy_list"."array" || ARRAY[$2::TEXT]`,
-					values: [key, value],
-				});
-			}
+			value = Array.isArray(value) ? value : [value];
+
 			await helpers.ensureLegacyObjectType(client, key, 'list');
-			if (Array.isArray(value)) {
-				// TODO: perf make single query
-				for (const v of value) {
-					// eslint-disable-next-line
-					await doAppend(v);
-				}
-				return;
-			}
-			await doAppend(value);
+			await client.query({
+				name: 'listAppend',
+				text: `
+INSERT INTO "legacy_list" ("_key", "array")
+VALUES ($1::TEXT, $2::TEXT[])
+ON CONFLICT ("_key")
+DO UPDATE SET "array" = "legacy_list"."array" || EXCLUDED.array`,
+				values: [key, value],
+			});
 		});
 	};
 
@@ -94,7 +75,11 @@ RETURNING A."array"[array_length(A."array", 1)] v`,
 		if (!key) {
 			return;
 		}
-
+		// TODO: remove all values with one query
+		if (Array.isArray(value)) {
+			await Promise.all(value.map(v => module.listRemoveAll(key, v)));
+			return;
+		}
 		await module.pool.query({
 			name: 'listRemoveAll',
 			text: `

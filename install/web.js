@@ -7,11 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const childProcess = require('child_process');
 const less = require('less');
-const util = require('util');
 
-const lessRenderAsync = util.promisify(
-	(style, opts, cb) => less.render(String(style), opts, cb)
-);
 const uglify = require('uglify-es');
 const nconf = require('nconf');
 
@@ -253,7 +249,7 @@ async function compileLess() {
 	try {
 		const installSrc = path.join(__dirname, '../public/less/install.less');
 		const style = await fs.promises.readFile(installSrc);
-		const css = await lessRenderAsync(style, { filename: path.resolve(installSrc) });
+		const css = await less.render(String(style), { filename: path.resolve(installSrc) });
 		await fs.promises.writeFile(path.join(__dirname, '../public/installer.css'), css.css);
 	} catch (err) {
 		winston.error(`Unable to compile LESS: \n${err.stack}`);

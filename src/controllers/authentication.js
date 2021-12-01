@@ -14,7 +14,6 @@ const user = require('../user');
 const plugins = require('../plugins');
 const utils = require('../utils');
 const slugify = require('../slugify');
-const translator = require('../translator');
 const helpers = require('./helpers');
 const privileges = require('../privileges');
 const sockets = require('../socket.io');
@@ -107,7 +106,7 @@ authenticationController.register = async function (req, res) {
 
 		user.isPasswordValid(userData.password);
 
-		res.locals.processLogin = true;	// set it to false in plugin if you wish to just register only
+		res.locals.processLogin = true; // set it to false in plugin if you wish to just register only
 		await plugins.hooks.fire('filter:register.check', { req: req, res: res, userData: userData });
 
 		const data = await registerAndLoginUser(req, res, userData);
@@ -129,7 +128,7 @@ async function addToApprovalQueue(req, userData) {
 	if (meta.config.showAverageApprovalTime) {
 		const average_time = await db.getObjectField('registration:queue:approval:times', 'average');
 		if (average_time > 0) {
-			message += ` [[register:registration-queue-average-time, ${Math.floor(average_time / 60)}, ${average_time % 60}]]`;
+			message += ` [[register:registration-queue-average-time, ${Math.floor(average_time / 60)}, ${Math.floor(average_time % 60)}]]`;
 		}
 	}
 	if (meta.config.autoApproveTime > 0) {
@@ -138,23 +137,21 @@ async function addToApprovalQueue(req, userData) {
 	return { message: message };
 }
 
-authenticationController.registerComplete = function (req, res, next) {
-	// For the interstitials that respond, execute the callback with the form body
-	plugins.hooks.fire('filter:register.interstitial', {
-		req,
-		userData: req.session.registration,
-		interstitials: [],
-	}, async (err, data) => {
-		if (err) {
-			return next(err);
-		}
+authenticationController.registerComplete = async function (req, res) {
+	try {
+		// For the interstitials that respond, execute the callback with the form body
+		const data = await plugins.hooks.fire('filter:register.interstitial', {
+			req,
+			userData: req.session.registration,
+			interstitials: [],
+		});
 
 		const callbacks = data.interstitials.reduce((memo, cur) => {
 			if (cur.hasOwnProperty('callback') && typeof cur.callback === 'function') {
 				req.body.files = req.files;
 				if (
 					(cur.callback.constructor && cur.callback.constructor.name === 'AsyncFunction') ||
-					cur.callback.length === 2	// non-async function w/o callback
+					cur.callback.length === 2 // non-async function w/o callback
 				) {
 					memo.push(cur.callback);
 				} else {
@@ -165,20 +162,17 @@ authenticationController.registerComplete = function (req, res, next) {
 			return memo;
 		}, []);
 
-		const done = function (err, data) {
+		const done = function (data) {
 			delete req.session.registration;
-			if (err) {
-				return res.redirect(`${nconf.get('relative_path')}/?register=${encodeURIComponent(err.message)}`);
-			}
-
-			if (!err && data && data.message) {
-				return res.redirect(`${nconf.get('relative_path')}/?register=${encodeURIComponent(data.message)}`);
+			const relative_path = nconf.get('relative_path');
+			if (data && data.message) {
+				return res.redirect(`${relative_path}/?register=${encodeURIComponent(data.message)}`);
 			}
 
 			if (req.session.returnTo) {
-				res.redirect(nconf.get('relative_path') + req.session.returnTo);
+				res.redirect(relative_path + req.session.returnTo.replace(new RegExp(`^${relative_path}`), ''));
 			} else {
-				res.redirect(`${nconf.get('relative_path')}/`);
+				res.redirect(`${relative_path}/`);
 			}
 		};
 
@@ -193,14 +187,13 @@ authenticationController.registerComplete = function (req, res, next) {
 
 		if (req.session.registration.register === true) {
 			res.locals.processLogin = true;
-			req.body.noscript = 'true';	// trigger full page load on error
+			req.body.noscript = 'true'; // trigger full page load on error
 
 			const data = await registerAndLoginUser(req, res, req.session.registration);
 			if (!data) {
 				return winston.warn('[register] Interstitial callbacks processed with no errors, but one or more interstitials remain. This is likely an issue with one of the interstitials not properly handling a null case or invalid value.');
 			}
-
-			done();
+			done(data);
 		} else {
 			// Update user hash, clear registration data in session
 			const payload = req.session.registration;
@@ -217,14 +210,17 @@ authenticationController.registerComplete = function (req, res, next) {
 			await user.setUserFields(uid, payload);
 			done();
 		}
-	});
+	} catch (err) {
+		delete req.session.registration;
+		res.redirect(`${nconf.get('relative_path')}/?register=${encodeURIComponent(err.message)}`);
+	}
 };
 
 authenticationController.registerAbort = function (req, res) {
 	if (req.uid) {
 		// Clear interstitial data and continue on...
 		delete req.session.registration;
-		res.redirect(nconf.get('relative_path') + req.session.returnTo);
+		res.redirect(nconf.get('relative_path') + (req.session.returnTo || '/'));
 	} else {
 		// End the session and redirect to home
 		req.session.destroy(() => {
@@ -263,7 +259,7 @@ authenticationController.login = async (req, res, next) => {
 			}
 		}
 		if (isEmailLogin || isUsernameLogin) {
-			(res.locals.continueLogin || continueLogin)(strategy, req, res, next);
+			continueLogin(strategy, req, res, next);
 		} else {
 			errorHandler(req, res, `[[error:wrong-login-type-${loginWith}]]`, 400);
 		}
@@ -276,7 +272,7 @@ function continueLogin(strategy, req, res, next) {
 	passport.authenticate(strategy, async (err, userData, info) => {
 		if (err) {
 			plugins.hooks.fire('action:login.continue', { req, strategy, userData, error: err });
-			return helpers.noScriptErrors(req, res, err.message, 403);
+			return helpers.noScriptErrors(req, res, err.data || err.message, 403);
 		}
 
 		if (!userData) {
@@ -307,9 +303,7 @@ function continueLogin(strategy, req, res, next) {
 			req.session.passwordExpired = true;
 
 			const code = await user.reset.generate(userData.uid);
-			res.status(200).send({
-				next: `${nconf.get('relative_path')}/reset/${code}`,
-			});
+			(res.locals.redirectAfterLogin || redirectAfterLogin)(req, res, `${nconf.get('relative_path')}/reset/${code}`);
 		} else {
 			delete req.query.lang;
 			await authenticationController.doLogin(req, userData.uid);
@@ -323,15 +317,19 @@ function continueLogin(strategy, req, res, next) {
 				destination = `${nconf.get('relative_path')}/`;
 			}
 
-			if (req.body.noscript === 'true') {
-				res.redirect(`${destination}?loggedin`);
-			} else {
-				res.status(200).send({
-					next: destination,
-				});
-			}
+			(res.locals.redirectAfterLogin || redirectAfterLogin)(req, res, destination);
 		}
 	})(req, res, next);
+}
+
+function redirectAfterLogin(req, res, destination) {
+	if (req.body.noscript === 'true') {
+		res.redirect(`${destination}?loggedin`);
+	} else {
+		res.status(200).send({
+			next: destination,
+		});
+	}
 }
 
 authenticationController.doLogin = async function (req, uid) {
@@ -390,7 +388,9 @@ authenticationController.onSuccessfulLogin = async function (req, uid) {
 			version: req.useragent.version,
 		});
 		await Promise.all([
-			new Promise(resolve => req.session.save(resolve)),
+			new Promise((resolve) => {
+				req.session.save(resolve);
+			}),
 			user.auth.addSession(uid, req.sessionID),
 			user.updateLastOnlineTime(uid),
 			user.updateOnlineUsers(uid),
@@ -436,8 +436,7 @@ authenticationController.localLogin = async function (req, username, password, n
 		userData.isAdminOrGlobalMod = isAdminOrGlobalMod;
 
 		if (!canLoginIfBanned) {
-			const banMesage = await getBanInfo(uid);
-			return next(new Error(banMesage));
+			return next(await getBanError(uid));
 		}
 
 		// Doing this after the ban check, because user's privileges might change after a ban expires
@@ -496,19 +495,19 @@ authenticationController.logout = async function (req, res, next) {
 	}
 };
 
-async function getBanInfo(uid) {
+async function getBanError(uid) {
 	try {
 		const banInfo = await user.getLatestBanInfo(uid);
 
 		if (!banInfo.reason) {
-			banInfo.reason = await translator.translate('[[user:info.banned-no-reason]]');
+			banInfo.reason = '[[user:info.banned-no-reason]]';
 		}
-		return banInfo.banned_until ?
-			`[[error:user-banned-reason-until, ${banInfo.banned_until_readable}, ${banInfo.reason}]]` :
-			`[[error:user-banned-reason, ${banInfo.reason}]]`;
+		const err = new Error(banInfo.reason);
+		err.data = banInfo;
+		return err;
 	} catch (err) {
 		if (err.message === 'no-ban-info') {
-			return '[[error:user-banned]]';
+			return new Error('[[error:user-banned]]');
 		}
 		throw err;
 	}

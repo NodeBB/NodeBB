@@ -451,20 +451,20 @@ describe('Flags', () => {
 		});
 
 		it('should rescind notification if flag is resolved', async () => {
-			const SocketFlags = require('../src/socket.io/flags');
+			const flagsAPI = require('../src/api/flags');
 			const result = await Topics.post({
 				cid: category.cid,
 				uid: uid3,
 				title: 'Topic to flag',
 				content: 'This is flaggable content',
 			});
-			const flagId = await SocketFlags.create({ uid: uid1 }, { type: 'post', id: result.postData.pid, reason: 'spam' });
+			const flagObj = await flagsAPI.create({ uid: uid1 }, { type: 'post', id: result.postData.pid, reason: 'spam' });
 			await sleep(2000);
 
 			let userNotifs = await User.notifications.getAll(adminUid);
 			assert(userNotifs.includes(`flag:post:${result.postData.pid}`));
 
-			await Flags.update(flagId, adminUid, {
+			await Flags.update(flagObj.flagId, adminUid, {
 				state: 'resolved',
 			});
 
@@ -554,34 +554,22 @@ describe('Flags', () => {
 			});
 		});
 
-		it('should not error if user blocked target', (done) => {
-			const SocketFlags = require('../src/socket.io/flags');
-			let reporterUid;
-			let reporteeUid;
-			async.waterfall([
-				function (next) {
-					User.create({ username: 'reporter' }, next);
-				},
-				function (uid, next) {
-					reporterUid = uid;
-					User.create({ username: 'reportee' }, next);
-				},
-				function (uid, next) {
-					reporteeUid = uid;
-					User.blocks.add(reporteeUid, reporterUid, next);
-				},
-				function (next) {
-					Topics.post({
-						cid: 1,
-						uid: reporteeUid,
-						title: 'Another topic',
-						content: 'This is flaggable content',
-					}, next);
-				},
-				function (data, next) {
-					SocketFlags.create({ uid: reporterUid }, { type: 'post', id: data.postData.pid, reason: 'spam' }, next);
-				},
-			], done);
+		it('should not error if user blocked target', async () => {
+			const apiFlags = require('../src/api/flags');
+			const reporterUid = await User.create({ username: 'reporter' });
+			const reporteeUid = await User.create({ username: 'reportee' });
+			await User.blocks.add(reporteeUid, reporterUid);
+			const data = await Topics.post({
+				cid: 1,
+				uid: reporteeUid,
+				title: 'Another topic',
+				content: 'This is flaggable content',
+			});
+			await apiFlags.create({ uid: reporterUid }, {
+				type: 'post',
+				id: data.postData.pid,
+				reason: 'spam',
+			});
 		});
 
 		it('should send back error if reporter does not exist', (done) => {
@@ -685,8 +673,8 @@ describe('Flags', () => {
 						throw err;
 					}
 
-					// 1 for the new event appended, 1 for username change (email not changed immediately)
-					assert.strictEqual(entries + 2, history.length);
+					// 1 for the new event appended, 2 for username/email change
+					assert.strictEqual(entries + 3, history.length);
 					done();
 				});
 			});
@@ -704,20 +692,14 @@ describe('Flags', () => {
 	});
 
 	describe('(v3 API)', () => {
-		const SocketFlags = require('../src/socket.io/flags');
 		let pid;
 		let tid;
 		let jar;
 		let csrfToken;
 		before(async () => {
-			const login = util.promisify(helpers.loginUser);
-			jar = await login('testUser2', 'abcdef');
-			const config = await request({
-				url: `${nconf.get('url')}/api/config`,
-				json: true,
-				jar: jar,
-			});
-			csrfToken = config.csrf_token;
+			const login = await helpers.loginUser('testUser2', 'abcdef');
+			jar = login.jar;
+			csrfToken = login.csrf_token;
 
 			const result = await Topics.post({
 				cid: 1,
@@ -787,7 +769,8 @@ describe('Flags', () => {
 					title: 'private topic',
 					content: 'private post',
 				});
-				const jar3 = await util.promisify(helpers.loginUser)('unprivileged', 'abcdef');
+				const login = await helpers.loginUser('unprivileged', 'abcdef');
+				const jar3 = login.jar;
 				const config = await request({
 					url: `${nconf.get('url')}/api/config`,
 					json: true,

@@ -3,10 +3,6 @@
 const prompt = require('prompt');
 const winston = require('winston');
 
-const util = require('util');
-
-const promptGet = util.promisify((schema, callback) => prompt.get(schema, callback));
-
 const questions = {
 	redis: require('../src/database/redis').questions,
 	mongo: require('../src/database/mongo').questions,
@@ -28,17 +24,17 @@ async function getDatabaseConfig(config) {
 		if (config['redis:host'] && config['redis:port']) {
 			return config;
 		}
-		return await promptGet(questions.redis);
+		return await prompt.get(questions.redis);
 	} else if (config.database === 'mongo') {
 		if ((config['mongo:host'] && config['mongo:port']) || config['mongo:uri']) {
 			return config;
 		}
-		return await promptGet(questions.mongo);
+		return await prompt.get(questions.mongo);
 	} else if (config.database === 'postgres') {
 		if (config['postgres:host'] && config['postgres:port']) {
 			return config;
 		}
-		return await promptGet(questions.postgres);
+		return await prompt.get(questions.postgres);
 	}
 	throw new Error(`unknown database : ${config.database}`);
 }

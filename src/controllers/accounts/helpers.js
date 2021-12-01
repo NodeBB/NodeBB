@@ -43,13 +43,13 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 
 	userData.emailClass = 'hide';
 
-	if (!isAdmin && !isGlobalModerator && !isSelf && (!userSettings.showemail || meta.config.hideEmail)) {
+	if (!results.canEdit && (!userSettings.showemail || meta.config.hideEmail)) {
 		userData.email = '';
 	} else if (!userSettings.showemail) {
 		userData.emailClass = '';
 	}
 
-	if (!isAdmin && !isGlobalModerator && !isSelf && (!userSettings.showfullname || meta.config.hideFullname)) {
+	if (!results.canEdit && (!userSettings.showfullname || meta.config.hideFullname)) {
 		userData.fullname = '';
 	}
 
@@ -78,7 +78,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 	userData.isSelf = isSelf;
 	userData.isFollowing = results.isFollowing;
 	userData.hasPrivateChat = results.hasPrivateChat;
-	userData.showHidden = isSelf || isAdmin || (isGlobalModerator && !results.isTargetAdmin);
+	userData.showHidden = results.canEdit; // remove in v1.19.0
 	userData.groups = Array.isArray(results.groups) && results.groups.length ? results.groups[0] : [];
 	userData.disableSignatures = meta.config.disableSignatures === 1;
 	userData['reputation:disabled'] = meta.config['reputation:disabled'] === 1;
@@ -95,13 +95,13 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 
 	userData.sso = results.sso.associations;
 	userData.banned = Boolean(userData.banned);
-	userData.website = validator.escape(String(userData.website || ''));
+	userData.website = escape(userData.website);
 	userData.websiteLink = !userData.website.startsWith('http') ? `http://${userData.website}` : userData.website;
 	userData.websiteName = userData.website.replace(validator.escape('http://'), '').replace(validator.escape('https://'), '');
 
-	userData.fullname = validator.escape(String(userData.fullname || ''));
-	userData.location = validator.escape(String(userData.location || ''));
-	userData.signature = validator.escape(String(userData.signature || ''));
+	userData.fullname = escape(userData.fullname);
+	userData.location = escape(userData.location);
+	userData.signature = escape(userData.signature);
 	userData.birthday = validator.escape(String(userData.birthday || ''));
 	userData.moderationNote = validator.escape(String(userData.moderationNote || ''));
 
@@ -124,6 +124,10 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 	});
 	return hookData.userData;
 };
+
+function escape(value) {
+	return translator.escape(validator.escape(String(value || '')));
+}
 
 async function getAllData(uid, callerUID) {
 	return await utils.promiseParallel({
@@ -234,6 +238,7 @@ async function parseAboutMe(userData) {
 	}
 	userData.aboutme = validator.escape(String(userData.aboutme || ''));
 	const parsed = await plugins.hooks.fire('filter:parse.aboutme', userData.aboutme);
+	userData.aboutme = translator.escape(userData.aboutme);
 	userData.aboutmeParsed = translator.escape(parsed);
 }
 

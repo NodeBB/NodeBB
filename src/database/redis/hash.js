@@ -30,20 +30,31 @@ module.exports = function (module) {
 			key.forEach(k => batch.hmset(k, data));
 			await helpers.execBatch(batch);
 		} else {
-			await module.client.async.hmset(key, data);
+			await module.client.hmset(key, data);
 		}
 
 		cache.del(key);
 	};
 
-	module.setObjectBulk = async function (keys, data) {
-		if (!keys.length || !data.length) {
+	module.setObjectBulk = async function (...args) {
+		let data = args[0];
+		if (!Array.isArray(data) || !data.length) {
 			return;
 		}
+		if (Array.isArray(args[1])) {
+			console.warn('[deprecated] db.setObjectBulk(keys, data) usage is deprecated, please use db.setObjectBulk(data)');
+			// conver old format to new format for backwards compatibility
+			data = args[0].map((key, i) => [key, args[1][i]]);
+		}
+
 		const batch = module.client.batch();
-		keys.forEach((k, i) => batch.hmset(k, data[i]));
+		data.forEach((item) => {
+			if (Object.keys(item[1]).length) {
+				batch.hmset(item[0], item[1]);
+			}
+		});
 		await helpers.execBatch(batch);
-		cache.del(keys);
+		cache.del(data.map(item => item[0]));
 	};
 
 	module.setObjectField = async function (key, field, value) {
@@ -55,7 +66,7 @@ module.exports = function (module) {
 			key.forEach(k => batch.hset(k, field, value));
 			await helpers.execBatch(batch);
 		} else {
-			await module.client.async.hset(key, field, value);
+			await module.client.hset(key, field, value);
 		}
 
 		cache.del(key);
@@ -83,7 +94,7 @@ module.exports = function (module) {
 		if (cachedData[key]) {
 			return cachedData[key].hasOwnProperty(field) ? cachedData[key][field] : null;
 		}
-		return await module.client.async.hget(key, String(field));
+		return await module.client.hget(key, String(field));
 	};
 
 	module.getObjectFields = async function (key, fields) {
@@ -108,7 +119,7 @@ module.exports = function (module) {
 			unCachedKeys.forEach(k => batch.hgetall(k));
 			data = await helpers.execBatch(batch);
 		} else if (unCachedKeys.length === 1) {
-			data = [await module.client.async.hgetall(unCachedKeys[0])];
+			data = [await module.client.hgetall(unCachedKeys[0])];
 		}
 
 		// convert empty objects into null for back-compat with node_redis
@@ -138,15 +149,15 @@ module.exports = function (module) {
 	};
 
 	module.getObjectKeys = async function (key) {
-		return await module.client.async.hkeys(key);
+		return await module.client.hkeys(key);
 	};
 
 	module.getObjectValues = async function (key) {
-		return await module.client.async.hvals(key);
+		return await module.client.hvals(key);
 	};
 
 	module.isObjectField = async function (key, field) {
-		const exists = await module.client.async.hexists(key, field);
+		const exists = await module.client.hexists(key, field);
 		return exists === 1;
 	};
 
@@ -161,7 +172,7 @@ module.exports = function (module) {
 		if (key === undefined || key === null || field === undefined || field === null) {
 			return;
 		}
-		await module.client.async.hdel(key, field);
+		await module.client.hdel(key, field);
 		cache.del(key);
 	};
 
@@ -178,7 +189,7 @@ module.exports = function (module) {
 			key.forEach(k => batch.hdel(k, fields));
 			await helpers.execBatch(batch);
 		} else {
-			await module.client.async.hdel(key, fields);
+			await module.client.hdel(key, fields);
 		}
 
 		cache.del(key);
@@ -203,7 +214,7 @@ module.exports = function (module) {
 			key.forEach(k => batch.hincrby(k, field, value));
 			result = await helpers.execBatch(batch);
 		} else {
-			result = await module.client.async.hincrby(key, field, value);
+			result = await module.client.hincrby(key, field, value);
 		}
 		cache.del(key);
 		return Array.isArray(result) ? result.map(value => parseInt(value, 10)) : parseInt(result, 10);

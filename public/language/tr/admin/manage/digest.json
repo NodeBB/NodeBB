@@ -13,6 +13,7 @@
 	"resent-single": "El ile özet gönderimi tamamlandı",
 	"resent-day": "Günlük özet yeniden gönderildi",
 	"resent-week": "Haftalık özet yeniden gönderildi",
+	"resent-biweek": "İki Haftalık özeti yeniden gönder",
 	"resent-month": "Aylık özet yeniden gönderildi",
 	"null": "<em>Hiçbir zaman</em>",
 	"manual-run": "El ile özet gönderimi:",

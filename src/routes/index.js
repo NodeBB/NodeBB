@@ -60,7 +60,12 @@ _mounts.topic = (app, name, middleware, controllers) => {
 };
 
 _mounts.post = (app, name, middleware, controllers) => {
-	const middlewares = [middleware.maintenanceMode, middleware.registrationComplete, middleware.pluginHooks];
+	const middlewares = [
+		middleware.maintenanceMode,
+		middleware.authenticateRequest,
+		middleware.registrationComplete,
+		middleware.pluginHooks,
+	];
 	app.get(`/${name}/:pid`, middleware.busyCheck, middlewares, controllers.posts.redirectToPost);
 	app.get(`/api/${name}/:pid`, middlewares, controllers.posts.redirectToPost);
 };
@@ -198,7 +203,7 @@ function addRemountableRoutes(app, router, middleware, mounts) {
 		const original = mount;
 		mount = mounts[original];
 
-		if (!mount) {	// do not mount at all
+		if (!mount) { // do not mount at all
 			winston.warn(`[router] Not mounting /${original}`);
 			return;
 		}

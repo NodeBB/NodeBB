@@ -63,7 +63,8 @@ module.exports = function (Posts) {
 
 		putVoteInProgress(pid, uid);
 		try {
-			return await unvote(pid, uid, 'unvote');
+			const voteStatus = await Posts.hasVoted(pid, uid);
+			return await unvote(pid, uid, 'unvote', voteStatus);
 		} finally {
 			clearVoteProgress(pid, uid);
 		}
@@ -114,48 +115,26 @@ module.exports = function (Posts) {
 	}
 
 	async function toggleVote(type, pid, uid) {
-		await unvote(pid, uid, type);
-		return await vote(type, false, pid, uid);
+		const voteStatus = await Posts.hasVoted(pid, uid);
+		await unvote(pid, uid, type, voteStatus);
+		return await vote(type, false, pid, uid, voteStatus);
 	}
 
-	async function unvote(pid, uid, command) {
-		const [owner, voteStatus] = await Promise.all([
-			Posts.getPostField(pid, 'uid'),
-			Posts.hasVoted(pid, uid),
-		]);
-
+	async function unvote(pid, uid, type, voteStatus) {
+		const owner = await Posts.getPostField(pid, 'uid');
 		if (parseInt(uid, 10) === parseInt(owner, 10)) {
 			throw new Error('[[error:self-vote]]');
 		}
 
-		if (command === 'downvote') {
+		if (type === 'downvote') {
 			await checkDownvoteLimitation(pid, uid);
 		}
-
-		let hook;
-		let current = voteStatus.upvoted ? 'upvote' : 'downvote';
-
-		if ((voteStatus.upvoted && command === 'downvote') || (voteStatus.downvoted && command === 'upvote')) {	// e.g. User *has* upvoted, and clicks downvote
-			hook = command;
-		} else if (voteStatus.upvoted || voteStatus.downvoted) {	// e.g. User *has* upvoted, clicks upvote (so we "unvote")
-			hook = 'unvote';
-		} else {	// e.g. User *has not* voted, clicks upvote
-			hook = command;
-			current = 'unvote';
-		}
-
-		plugins.hooks.fire(`action:post.${hook}`, {
-			pid: pid,
-			uid: uid,
-			owner: owner,
-			current: current,
-		});
 
 		if (!voteStatus || (!voteStatus.upvoted && !voteStatus.downvoted)) {
 			return;
 		}
 
-		return await vote(voteStatus.upvoted ? 'downvote' : 'upvote', true, pid, uid);
+		return await vote(voteStatus.upvoted ? 'downvote' : 'upvote', true, pid, uid, voteStatus);
 	}
 
 	async function checkDownvoteLimitation(pid, uid) {
@@ -185,7 +164,7 @@ module.exports = function (Posts) {
 		}
 	}
 
-	async function vote(type, unvote, pid, uid) {
+	async function vote(type, unvote, pid, uid, voteStatus) {
 		uid = parseInt(uid, 10);
 		if (uid <= 0) {
 			throw new Error('[[error:not-logged-in]]');
@@ -209,6 +188,8 @@ module.exports = function (Posts) {
 
 		await adjustPostVotes(postData, uid, type, unvote);
 
+		await fireVoteHook(postData, uid, type, unvote, voteStatus);
+
 		return {
 			user: {
 				reputation: newReputation,
@@ -218,6 +199,25 @@ module.exports = function (Posts) {
 			upvote: type === 'upvote' && !unvote,
 			downvote: type === 'downvote' && !unvote,
 		};
+	}
+
+	async function fireVoteHook(postData, uid, type, unvote, voteStatus) {
+		let hook = type;
+		let current = voteStatus.upvoted ? 'upvote' : 'downvote';
+		if (unvote) { // e.g. unvoting, removing a upvote or downvote
+			hook = 'unvote';
+		} else { // e.g. User *has not* voted, clicks upvote or downvote
+			current = 'unvote';
+		}
+		// action:post.upvote
+		// action:post.downvote
+		// action:post.unvote
+		plugins.hooks.fire(`action:post.${hook}`, {
+			pid: postData.pid,
+			uid: uid,
+			owner: postData.uid,
+			current: current,
+		});
 	}
 
 	async function adjustPostVotes(postData, uid, type, unvote) {

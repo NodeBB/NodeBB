@@ -21,6 +21,7 @@
     "edit": "Изменить",
     "delete": "Удалить",
     "delete-event": "Delete Event",
+    "delete-event-confirm": "Are you sure you want to delete this event?",
     "purge": "Стереть",
     "restore": "Восстановить",
     "move": "Перенести",
@@ -46,6 +47,8 @@
     "restored-by": "Восстановлено",
     "moved-from-by": "Moved from %1 by",
     "queued-by": "Сообщение поставлено в очередь на утверждение;",
+    "backlink": "Referenced by",
+    "forked-by": "Forked by",
     "bookmark_instructions": "Нажмите здесь, чтобы вернуться к последнему прочитанному сообщению в этой теме.",
     "flag-post": "Пожаловаться на это сообщение",
     "flag-user": "Пожаловаться на этого пользователя",
@@ -137,6 +140,7 @@
     "composer.handle_placeholder": "Введите ваше имя здесь",
     "composer.discard": "Отменить",
     "composer.submit": "Отправить",
+    "composer.additional-options": "Additional Options",
     "composer.schedule": "Запланировать",
     "composer.replying_to": "Ответ %1",
     "composer.new_topic": "Создать тему",
@@ -157,6 +161,7 @@
     "newest_to_oldest": "Сначала новые",
     "most_votes": "По количеству голосов",
     "most_posts": "По количеству сообщений",
+    "most_views": "Most Views",
     "stale.title": "Создать новую тему вместо этой?",
     "stale.warning": "Тема, в которую вы собираетесь написать, очень старая. Может, стоит создать новую, а про эту просто напомнить к случаю?",
     "stale.create": "Создать новую тему",
@@ -175,5 +180,6 @@
     "timeago_later": "через %1",
     "timeago_earlier": "на %1 раньше",
     "first-post": "Первое сообщение",
-    "last-post": "Последнее сообщение"
+    "last-post": "Последнее сообщение",
+    "post-quick-reply": "Post quick reply"
 }

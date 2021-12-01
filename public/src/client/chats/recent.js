@@ -2,7 +2,7 @@
 
 
 define('forum/chats/recent', function () {
-	var recent = {};
+	const recent = {};
 
 	recent.init = function () {
 		require(['forum/chats'], function (Chats) {
@@ -11,8 +11,8 @@ define('forum/chats/recent', function () {
 			});
 
 			$('[component="chat/recent"]').on('scroll', function () {
-				var $this = $(this);
-				var bottom = ($this[0].scrollHeight - $this.height()) * 0.9;
+				const $this = $(this);
+				const bottom = ($this[0].scrollHeight - $this.height()) * 0.9;
 				if ($this.scrollTop() > bottom) {
 					loadMoreRecentChats();
 				}
@@ -21,7 +21,7 @@ define('forum/chats/recent', function () {
 	};
 
 	function loadMoreRecentChats() {
-		var recentChats = $('[component="chat/recent"]');
+		const recentChats = $('[component="chat/recent"]');
 		if (recentChats.attr('loading')) {
 			return;
 		}

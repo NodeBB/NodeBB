@@ -7,7 +7,6 @@ const semver = require('semver');
 const fs = require('fs');
 const path = require('path');
 const nconf = require('nconf');
-const util = require('util');
 
 const { paths, pluginNamePattern } = require('../constants');
 
@@ -91,14 +90,14 @@ async function getSuggestedModules(nbbVersion, toCheck) {
 async function checkPlugins() {
 	process.stdout.write('Checking installed plugins and themes for updates... ');
 	const [plugins, nbbVersion] = await Promise.all([
-		getInstalledPlugins,
-		getCurrentVersion,
+		getInstalledPlugins(),
+		getCurrentVersion(),
 	]);
 
 	const toCheck = Object.keys(plugins);
 	if (!toCheck.length) {
 		process.stdout.write('  OK'.green + ''.reset);
-		return [];	// no extraneous plugins installed
+		return []; // no extraneous plugins installed
 	}
 	const suggestedModules = await getSuggestedModules(nbbVersion, toCheck);
 	process.stdout.write('  OK'.green + ''.reset);
@@ -138,9 +137,8 @@ async function upgradePlugins() {
 		prompt.message = '';
 		prompt.delimiter = '';
 
-		const promptGet = util.promisify((schema, callback) => prompt.get(schema, callback));
 		prompt.start();
-		const result = await promptGet({
+		const result = await prompt.get({
 			name: 'upgrade',
 			description: '\nProceed with upgrade (y|n)?'.reset,
 			type: 'string',

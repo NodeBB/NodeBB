@@ -1,10 +1,9 @@
 'use strict';
 
 define('settings/checkbox', function () {
-	var Settings = null;
-	var SettingsCheckbox;
+	let Settings = null;
 
-	SettingsCheckbox = {
+	const SettingsCheckbox = {
 		types: ['checkbox'],
 		use: function () {
 			Settings = this;
@@ -19,7 +18,7 @@ define('settings/checkbox', function () {
 			element.closest('.mdl-switch').toggleClass('is-checked', element.is(':checked'));
 		},
 		get: function (element, trim, empty) {
-			var value = element.prop('checked');
+			const value = element.prop('checked');
 			if (value == null) {
 				return;
 			}

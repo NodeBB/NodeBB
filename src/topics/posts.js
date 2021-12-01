@@ -3,6 +3,8 @@
 
 const _ = require('lodash');
 const validator = require('validator');
+const nconf = require('nconf');
+const winston = require('winston');
 
 const db = require('../database');
 const user = require('../user');
@@ -11,18 +13,88 @@ const meta = require('../meta');
 const plugins = require('../plugins');
 const utils = require('../../public/src/utils');
 
+const backlinkRegex = new RegExp(`(?:${nconf.get('url').replace('/', '\\/')}|\b|\\s)\\/topic\\/(\\d+)(?:\\/\\w+)?`, 'g');
+
 module.exports = function (Topics) {
 	Topics.onNewPostMade = async function (postData) {
 		await Topics.updateLastPostTime(postData.tid, postData.timestamp);
 		await Topics.addPostToTopic(postData.tid, postData);
 	};
 
-	Topics.getTopicPosts = async function (tid, set, start, stop, uid, reverse) {
-		const postData = await posts.getPostsFromSet(set, start, stop, uid, reverse);
-		Topics.calculatePostIndices(postData, start);
+	Topics.getTopicPosts = async function (topicOrTid, set, start, stop, uid, reverse) {
+		if (!topicOrTid) {
+			return [];
+		}
+		if (typeof topicOrTid !== 'object') {
+			// TODO: remove in 1.19.0
+			winston.warn('[deprecated] Topics.getTopicPosts(tid, ...) usage is deprecated, pass a topic object as first argument!');
+			topicOrTid = await Topics.getTopicData(topicOrTid);
+		}
 
-		return await Topics.addPostData(postData, uid);
+		let repliesStart = start;
+		let repliesStop = stop;
+		if (stop > 0) {
+			repliesStop -= 1;
+			if (start > 0) {
+				repliesStart -= 1;
+			}
+		}
+		const pids = await posts.getPidsFromSet(set, repliesStart, repliesStop, reverse);
+		if (!pids.length && !topicOrTid.mainPid) {
+			return [];
+		}
+
+		if (topicOrTid.mainPid && start === 0) {
+			pids.unshift(topicOrTid.mainPid);
+		}
+		const postData = await posts.getPostsByPids(pids, uid);
+		if (!postData.length) {
+			return [];
+		}
+		let replies = postData;
+		if (topicOrTid.mainPid && start === 0) {
+			postData[0].index = 0;
+			replies = postData.slice(1);
+		}
+
+		Topics.calculatePostIndices(replies, repliesStart);
+
+		await addEventStartEnd(postData, set, reverse, topicOrTid);
+		const result = await plugins.hooks.fire('filter:topic.getPosts', {
+			topic: topicOrTid,
+			uid: uid,
+			posts: await Topics.addPostData(postData, uid),
+		});
+		return result.posts;
 	};
+
+	async function addEventStartEnd(postData, set, reverse, topicData) {
+		if (!postData.length) {
+			return;
+		}
+		postData.forEach((p, index) => {
+			if (p && p.index === 0 && reverse) {
+				p.eventStart = topicData.lastposttime;
+				p.eventEnd = Date.now();
+			} else if (p && postData[index + 1]) {
+				p.eventStart = reverse ? postData[index + 1].timestamp : p.timestamp;
+				p.eventEnd = reverse ? p.timestamp : postData[index + 1].timestamp;
+			}
+		});
+		const lastPost = postData[postData.length - 1];
+		if (lastPost) {
+			lastPost.eventStart = reverse ? topicData.timestamp : lastPost.timestamp;
+			lastPost.eventEnd = reverse ? lastPost.timestamp : Date.now();
+			if (lastPost.index) {
+				const nextPost = await db[reverse ? 'getSortedSetRevRangeWithScores' : 'getSortedSetRangeWithScores'](set, lastPost.index, lastPost.index);
+				if (reverse) {
+					lastPost.eventStart = nextPost.length ? nextPost[0].score : lastPost.eventStart;
+				} else {
+					lastPost.eventEnd = nextPost.length ? nextPost[0].score : lastPost.eventEnd;
+				}
+			}
+		}
+	}
 
 	Topics.addPostData = async function (postData, uid) {
 		if (!Array.isArray(postData) || !postData.length) {
@@ -208,12 +280,13 @@ module.exports = function (Topics) {
 	};
 
 	Topics.increaseViewCount = async function (tid) {
-		incrementFieldAndUpdateSortedSet(tid, 'viewcount', 1, 'topics:views');
+		const cid = await Topics.getTopicField(tid, 'cid');
+		incrementFieldAndUpdateSortedSet(tid, 'viewcount', 1, ['topics:views', `cid:${cid}:tids:views`]);
 	};
 
 	async function incrementFieldAndUpdateSortedSet(tid, field, by, set) {
 		const value = await db.incrObjectFieldBy(`topic:${tid}`, field, by);
-		await db.sortedSetAdd(set, value, tid);
+		await db[Array.isArray(set) ? 'sortedSetsAdd' : 'sortedSetAdd'](set, value, tid);
 	}
 
 	Topics.getTitleByPid = async function (pid) {
@@ -287,4 +360,40 @@ module.exports = function (Topics) {
 
 		return returnData;
 	}
+
+	Topics.syncBacklinks = async (postData) => {
+		if (!postData) {
+			throw new Error('[[error:invalid-data]]');
+		}
+
+		// Scan post content for topic links
+		const matches = [...postData.content.matchAll(backlinkRegex)];
+		if (!matches) {
+			return 0;
+		}
+
+		const { pid, uid, tid } = postData;
+		let add = matches.map(match => match[1]);
+
+		const now = Date.now();
+		const topicsExist = await Topics.exists(add);
+		const current = (await db.getSortedSetMembers(`pid:${pid}:backlinks`)).map(tid => parseInt(tid, 10));
+		const remove = current.filter(tid => !add.includes(tid));
+		add = add.filter((_tid, idx) => topicsExist[idx] && !current.includes(_tid) && tid !== parseInt(_tid, 10));
+
+		// Remove old backlinks
+		await db.sortedSetRemove(`pid:${pid}:backlinks`, remove);
+
+		// Add new backlinks
+		await db.sortedSetAdd(`pid:${pid}:backlinks`, add.map(Number.bind(null, now)), add);
+		await Promise.all(add.map(async (tid) => {
+			await Topics.events.log(tid, {
+				uid,
+				type: 'backlink',
+				href: `/post/${pid}`,
+			});
+		}));
+
+		return add.length + (current - remove);
+	};
 };

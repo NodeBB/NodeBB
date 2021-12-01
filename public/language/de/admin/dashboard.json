@@ -29,8 +29,8 @@
 	"up-to-date": "<p>NodeBB Version ist <strong>aktuell</strong> <i class=\"fa fa-check\"></i></p>",
 	"upgrade-available": "<p>Eine neuere Version (v%1) ist erschienen. Erwäge <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">NodeBB zu upgraden</a>.</p>",
 	"prerelease-upgrade-available": "<p>Das ist eine veraltete NodeBB-Vorabversion. Eine neuere Version (v%1) ist erschienen. Erwäge <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">NodeBB zu upgraden</a>.</p>",
-	"prerelease-warning": "<p>Das ist eine <strong>pre-release</strong> Version von NodeBB. Es können ungewollte Fehler auftreten. <i class=\"fa fa-exclamation-triangle\"></i></p>",
-	"fallback-emailer-not-found": "Fallback emailer not found!",
+	"prerelease-warning": "<p>Das ist eine <strong>Vorabversion</strong> von NodeBB. Es können ungewollte Fehler auftreten. <i class=\"fa fa-exclamation-triangle\"></i></p>",
+	"fallback-emailer-not-found": "Fallback-Emailer nicht gefunden",
 	"running-in-development": "<span>Das Forum wurde im Entwicklermodus gestartet. Das Forum könnte potenziellen Gefahren ausgeliefert sein. Bitte kontaktiere den Systemadministrator.</span>",
 	"latest-lookup-failed": "<p>Beim nachschlagen der neuesten verfügbaren NodeBB Version ist ein Fehler aufgetreten</p>",
 
@@ -56,8 +56,8 @@
 	"active-users.total": "Gesamt",
 	"active-users.connections": "Verbindungen",
 
-	"anonymous-registered-users": "Anonyme vs Registrierte Benutzer",
-	"anonymous": "Anonym",
+	"guest-registered-users": "Guest vs Registered Users",
+	"guest": "Guest",
 	"registered": "Registriert",
 
 	"user-presence": "Benutzerpräsenz",
@@ -68,6 +68,7 @@
 	"unread": "Ungelesen",
 
 	"high-presence-topics": "Meist besuchte Themen",
+	"popular-searches": "Popular Searches",
 
 	"graphs.page-views": "Seitenaufrufe",
 	"graphs.page-views-registered": "Registrierte Seitenaufrufe",
@@ -75,13 +76,14 @@
 	"graphs.page-views-bot": "Seitenaufrufe von Bots",
 	"graphs.unique-visitors": "Verschiedene Besucher",
 	"graphs.registered-users": "Registrierte Benutzer",
-	"graphs.anonymous-users": "Anonyme Benutzer",
+	"graphs.guest-users": "Guest Users",
 	"last-restarted-by": "Zuletzt Neugestartet von: ",
 	"no-users-browsing": "Keine aktiven Benutzer",
 
 	"back-to-dashboard": "Zurück zur Übersicht",
 	"details.no-users": "Keine Benutzer sind im gewählten Zeitraum beigetreten",
 	"details.no-topics": "Keine Themen wurden im gewählten Zeitraum beigetreten",
+	"details.no-searches": "No searches have been made yet",
 	"details.no-logins": "Keine Logins wurden im gewählten Zeitraum festgestellt",
 	"details.logins-static": "NodeBB speichert Sitzungsdaten nur für %1 Tage, deshalb zeigt die untere Tabelle nur die neuesten, aktiven Sitzungen",
 	"details.logins-login-time": "Anmelde Zeit"

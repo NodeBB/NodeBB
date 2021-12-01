@@ -21,6 +21,7 @@
     "edit": "Endre",
     "delete": "Slett",
     "delete-event": "Delete Event",
+    "delete-event-confirm": "Are you sure you want to delete this event?",
     "purge": "Rensk",
     "restore": "Gjenopprett",
     "move": "Flytt",
@@ -46,6 +47,8 @@
     "restored-by": "Gjenopprettet av",
     "moved-from-by": "Moved from %1 by",
     "queued-by": "Innlegg i kø for godkjenning & rarr;",
+    "backlink": "Referenced by",
+    "forked-by": "Forked by",
     "bookmark_instructions": "Klikk her for å gå tilbake til det siste innlegget i denne tråden.",
     "flag-post": "Flagg denne posten",
     "flag-user": "Flagg denne brukeren",
@@ -137,6 +140,7 @@
     "composer.handle_placeholder": "Skriv inn navnet ditt / signatur her",
     "composer.discard": "Forkast",
     "composer.submit": "Send",
+    "composer.additional-options": "Additional Options",
     "composer.schedule": "Timeplan",
     "composer.replying_to": "Svarer i %1",
     "composer.new_topic": "Ny tråd",
@@ -157,6 +161,7 @@
     "newest_to_oldest": "Nyeste til eldste",
     "most_votes": "Flest stemmer",
     "most_posts": "Flest innlegg",
+    "most_views": "Most Views",
     "stale.title": "Lag en ny tråd i stedet?",
     "stale.warning": "Tråden du svarer på er ganske gammel. Vil du heller lage en ny tråd og refere til denne i den?",
     "stale.create": "Lag en ny tråd",
@@ -175,5 +180,6 @@
     "timeago_later": "%1 senere",
     "timeago_earlier": "%1 tidligere",
     "first-post": "Første innlegg",
-    "last-post": "Seneste innlegg"
+    "last-post": "Seneste innlegg",
+    "post-quick-reply": "Post quick reply"
 }

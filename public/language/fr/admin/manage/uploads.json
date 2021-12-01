@@ -5,5 +5,7 @@
     "orphaned": "Orphelin",
     "size/filecount": "Taille / nombre de fichiers",
     "confirm-delete": "Voulez-vous vraiment supprimer ce fichier?",
-    "filecount": "%1 fichiers"
+    "filecount": "%1 fichiers",
+    "new-folder": "Nouveau Dossier",
+    "name-new-folder": "Entrez un nom pour le nouveau dossier"
 }

@@ -1,6 +1,7 @@
 'use strict';
 
 module.exports = function (module) {
+	const _ = require('lodash');
 	const helpers = require('./helpers');
 
 	module.setAdd = async function (key, value) {
@@ -64,7 +65,11 @@ module.exports = function (module) {
 
 		value = value.map(v => helpers.valueToString(v));
 
-		await module.client.collection('objects').updateMany({ _key: Array.isArray(key) ? { $in: key } : key }, { $pullAll: { members: value } });
+		await module.client.collection('objects').updateMany({
+			_key: Array.isArray(key) ? { $in: key } : key,
+		}, {
+			$pullAll: { members: value },
+		});
 	};
 
 	module.setsRemove = async function (keys, value) {
@@ -73,7 +78,11 @@ module.exports = function (module) {
 		}
 		value = helpers.valueToString(value);
 
-		await module.client.collection('objects').updateMany({ _key: { $in: keys } }, { $pull: { members: value } });
+		await module.client.collection('objects').updateMany({
+			_key: { $in: keys },
+		}, {
+			$pull: { members: value },
+		});
 	};
 
 	module.isSetMember = async function (key, value) {
@@ -82,7 +91,11 @@ module.exports = function (module) {
 		}
 		value = helpers.valueToString(value);
 
-		const item = await module.client.collection('objects').findOne({ _key: key, members: value }, { projection: { _id: 0, members: 0 } });
+		const item = await module.client.collection('objects').findOne({
+			_key: key, members: value,
+		}, {
+			projection: { _id: 0, members: 0 },
+		});
 		return item !== null && item !== undefined;
 	};
 
@@ -92,7 +105,11 @@ module.exports = function (module) {
 		}
 		values = values.map(v => helpers.valueToString(v));
 
-		const result = await module.client.collection('objects').findOne({ _key: key }, { projection: { _id: 0, _key: 0 } });
+		const result = await module.client.collection('objects').findOne({
+			_key: key,
+		}, {
+			projection: { _id: 0, _key: 0 },
+		});
 		const membersSet = new Set(result && Array.isArray(result.members) ? result.members : []);
 		return values.map(v => membersSet.has(v));
 	};
@@ -103,7 +120,11 @@ module.exports = function (module) {
 		}
 		value = helpers.valueToString(value);
 
-		const result = await module.client.collection('objects').find({ _key: { $in: sets }, members: value }, { projection: { _id: 0, members: 0 } }).toArray();
+		const result = await module.client.collection('objects').find({
+			_key: { $in: sets }, members: value,
+		}, {
+			projection: { _id: 0, members: 0 },
+		}).toArray();
 
 		const map = {};
 		result.forEach((item) => {
@@ -118,7 +139,11 @@ module.exports = function (module) {
 			return [];
 		}
 
-		const data = await module.client.collection('objects').findOne({ _key: key }, { projection: { _id: 0, _key: 0 } });
+		const data = await module.client.collection('objects').findOne({
+			_key: key,
+		}, {
+			projection: { _id: 0, _key: 0 },
+		});
 		return data ? data.members : [];
 	};
 
@@ -126,7 +151,11 @@ module.exports = function (module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return [];
 		}
-		const data = await module.client.collection('objects').find({ _key: { $in: keys } }, { projection: { _id: 0 } }).toArray();
+		const data = await module.client.collection('objects').find({
+			_key: { $in: keys },
+		}, {
+			projection: { _id: 0 },
+		}).toArray();
 
 		const sets = {};
 		data.forEach((set) => {
@@ -140,14 +169,20 @@ module.exports = function (module) {
 		if (!key) {
 			return 0;
 		}
-		const data = await module.client.collection('objects').findOne({ _key: key }, { projection: { _id: 0 } });
-		return data ? data.members.length : 0;
+		const data = await module.client.collection('objects').aggregate([
+			{ $match: { _key: key } },
+			{ $project: { _id: 0, count: { $size: '$members' } } },
+		]).toArray();
+		return Array.isArray(data) && data.length ? data[0].count : 0;
 	};
 
 	module.setsCount = async function (keys) {
-		const setsMembers = await module.getSetsMembers(keys);
-		const counts = setsMembers.map(members => (members && members.length) || 0);
-		return counts;
+		const data = await module.client.collection('objects').aggregate([
+			{ $match: { _key: { $in: keys } } },
+			{ $project: { _id: 0, _key: 1, count: { $size: '$members' } } },
+		]).toArray();
+		const map = _.keyBy(data, '_key');
+		return keys.map(key => (map.hasOwnProperty(key) ? map[key].count : 0));
 	};
 
 	module.setRemoveRandom = async function (key) {

@@ -21,6 +21,7 @@
     "edit": "ویرایش",
     "delete": "حذف",
     "delete-event": "Delete Event",
+    "delete-event-confirm": "Are you sure you want to delete this event?",
     "purge": "پاک کردن",
     "restore": "برگرداندن",
     "move": "جابه‌جا کردن",
@@ -46,6 +47,8 @@
     "restored-by": "Restored by",
     "moved-from-by": "Moved from %1 by",
     "queued-by": "Post queued for approval &rarr;",
+    "backlink": "Referenced by",
+    "forked-by": "Forked by",
     "bookmark_instructions": "برای بازگشت به آخرین پست در این موضوع اینجا را کلیک کنید.",
     "flag-post": "گزارش این پست",
     "flag-user": "گزارش این کاربر",
@@ -137,6 +140,7 @@
     "composer.handle_placeholder": "Enter your name/handle here",
     "composer.discard": "انصراف",
     "composer.submit": "ارسال",
+    "composer.additional-options": "Additional Options",
     "composer.schedule": "Schedule",
     "composer.replying_to": "پاسخ به %1",
     "composer.new_topic": "موضوع تازه",
@@ -157,6 +161,7 @@
     "newest_to_oldest": "جدید‌ترین به قدیمی‌ترین",
     "most_votes": "بیشترین رای ها",
     "most_posts": "بیشترین پست",
+    "most_views": "Most Views",
     "stale.title": "آیا مایلید به جای آن یک موضوع جدید ایجاد کنید؟",
     "stale.warning": "موضوعی که شما در حال پاسخگویی به آن هستید قدیمی می باشد. آیا میلید به جای آن یک موضوع جدید ایجاد کنید و در آن به این موضوع ارجاع دهید؟",
     "stale.create": "ایجاد یک موضوع جدید",
@@ -175,5 +180,6 @@
     "timeago_later": "1% بعد",
     "timeago_earlier": "%1 قبل",
     "first-post": "اولین پست",
-    "last-post": "آخرین پست"
+    "last-post": "آخرین پست",
+    "post-quick-reply": "Post quick reply"
 }

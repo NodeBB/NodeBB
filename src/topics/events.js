@@ -2,6 +2,7 @@
 
 const _ = require('lodash');
 const db = require('../database');
+const meta = require('../meta');
 const user = require('../user');
 const posts = require('../posts');
 const categories = require('../categories');
@@ -53,6 +54,14 @@ Events._types = {
 		text: '[[topic:queued-by]]',
 		href: '/post-queue',
 	},
+	backlink: {
+		icon: 'fa-link',
+		text: '[[topic:backlink]]',
+	},
+	fork: {
+		icon: 'fa-code-fork',
+		text: '[[topic:forked-by]]',
+	},
 };
 
 Events.init = async () => {
@@ -61,7 +70,7 @@ Events.init = async () => {
 	Events._types = types;
 };
 
-Events.get = async (tid, uid) => {
+Events.get = async (tid, uid, reverse = false) => {
 	const topics = require('.');
 
 	if (!await topics.exists(tid)) {
@@ -74,7 +83,9 @@ Events.get = async (tid, uid) => {
 	eventIds = eventIds.map(obj => obj.value);
 	let events = await db.getObjects(keys);
 	events = await modifyEvent({ tid, uid, eventIds, timestamps, events });
-
+	if (reverse) {
+		events.reverse();
+	}
 	return events;
 };
 
@@ -115,6 +126,11 @@ async function modifyEvent({ tid, uid, eventIds, timestamps, events }) {
 		getCategoryInfo(events.map(event => event.fromCid).filter(Boolean)),
 	]);
 
+	// Remove backlink events if backlinks are disabled
+	if (meta.config.topicBacklinks !== 1) {
+		events = events.filter(event => event.type !== 'backlink');
+	}
+
 	// Remove events whose types no longer exist (e.g. plugin uninstalled)
 	events = events.filter(event => Events._types.hasOwnProperty(event.type));
 
@@ -143,7 +159,7 @@ async function modifyEvent({ tid, uid, eventIds, timestamps, events }) {
 Events.log = async (tid, payload) => {
 	const topics = require('.');
 	const { type } = payload;
-	const now = Date.now();
+	const timestamp = payload.timestamp || Date.now();
 
 	if (!Events._types.hasOwnProperty(type)) {
 		throw new Error(`[[error:topic-event-unrecognized, ${type}]]`);
@@ -155,12 +171,12 @@ Events.log = async (tid, payload) => {
 
 	await Promise.all([
 		db.setObject(`topicEvent:${eventId}`, payload),
-		db.sortedSetAdd(`topic:${tid}:events`, now, eventId),
+		db.sortedSetAdd(`topic:${tid}:events`, timestamp, eventId),
 	]);
 
 	let events = await modifyEvent({
 		eventIds: [eventId],
-		timestamps: [now],
+		timestamps: [timestamp],
 		events: [payload],
 	});
 

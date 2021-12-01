@@ -91,7 +91,7 @@ UserReset.commit = async function (code, password) {
 	// don't verify email if password reset is due to expiry
 	const isPasswordExpired = userData.passwordExpiry && userData.passwordExpiry < Date.now();
 	if (!isPasswordExpired) {
-		data['email:confirmed']	= 1;
+		data['email:confirmed'] = 1;
 		await groups.join('verified-users', uid);
 		await groups.leave('unverified-users', uid);
 	}

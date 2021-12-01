@@ -1,0 +1,36 @@
+put:
+  tags:
+    - files
+  summary: create a new folder
+  description: This operation creates a new folder inside upload path
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            path:
+              type: string
+              description: Path to the file (relative to the configured `upload_path`)
+              example: /files
+            folderName:
+              type: string
+              description: New folder name
+              example: myfiles
+          required:
+            - path
+            - folderName
+  responses:
+    '200':
+      description: Folder created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}

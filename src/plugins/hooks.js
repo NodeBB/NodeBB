@@ -8,8 +8,8 @@ const utils = require('../utils');
 const Hooks = module.exports;
 
 Hooks.deprecatedHooks = {
-	'filter:email.send': 'static:email.send',	// 👋 @ 1.18.0
-	'filter:router.page': 'response:router.page',	// 👋 @ 2.0.0
+	'filter:email.send': 'static:email.send', // 👋 @ 1.19.0
+	'filter:router.page': 'response:router.page', // 👋 @ 2.0.0
 };
 
 Hooks.internals = {
@@ -96,6 +96,12 @@ Hooks.fire = async function (hook, params) {
 		winston.warn(`[plugins] Unknown hookType: ${hookType}, hook : ${hook}`);
 		return;
 	}
+	let deleteCaller = false;
+	if (params && typeof params === 'object' && !params.hasOwnProperty('caller')) {
+		const als = require('../als');
+		params.caller = als.getStore();
+		deleteCaller = true;
+	}
 	const result = await hookTypeToMethod[hookType](hook, hookList, params);
 
 	if (hook !== 'action:plugins.firehook' && hook !== 'filter:plugins.firehook') {
@@ -103,6 +109,9 @@ Hooks.fire = async function (hook, params) {
 		Hooks.fire('action:plugins.firehook', payload);
 	}
 	if (result !== undefined) {
+		if (deleteCaller && result && result.hasOwnProperty('caller')) {
+			delete result.caller;
+		}
 		return result;
 	}
 };

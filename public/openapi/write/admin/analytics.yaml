@@ -1,0 +1,20 @@
+get:
+  tags:
+    - admin
+  summary: get analytics keys
+  description: This operation returns the list metrics tracked by NodeBB. It is only accessible to administrators.
+  responses:
+    '200':
+      description: Analytics keys retrieved
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  keys:
+                    type: array

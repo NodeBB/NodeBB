@@ -51,10 +51,13 @@
 	"alert.saved": "שינויי הרשאות נשמרו והוחלו",
 	"alert.confirm-discard": "האם אתה בטוח שברצונך לבטל את שינויי ההרשאות שלך?",
 	"alert.discarded": "שינויי ההרשאות נמחקו",
-	"alert.confirm-copyToAll": "האם אתה בטוח שברצונך להחיל את הגדרות הרשאות זו <strong>לכל הקטגוריות (זהירות!)</strong>?",
-	"alert.confirm-copyToAllGroup": "זהירות!! האם אתה בטוח שברצונך להחיל את הרשאות קבוצה זו <strong>לכל הקטגוריות</strong>?",
-	"alert.confirm-copyToChildren": "האם אתה בטוח שברצונך להחיל את קבוצת הרשאות זו <strong>לכל קטגוריות הצאצאים (ילדים)</strong>?",
-	"alert.confirm-copyToChildrenGroup": "האם אתה בטוח שברצונך להחיל את הרשאות קבוצה זו <strong>לכל קטגוריות הצאצאים (ילדים)</strong>?",
+	"alert.confirm-copyToAll": "זהירות!! האם אתה בטוח שברצונך להחיל הגדרת הרשאות זו של <strong>%1</strong> ל <strong>כל הקטגוריות</strong>?",
+	"alert.confirm-copyToAllGroup": "זהירות!! האם אתה בטוח שברצונך להחיל הרשאות קבוצה זו של<strong>%1</strong> ל <strong>כל הקטגוריות</strong>?",
+	"alert.confirm-copyToChildren": "האם אתה בטוח שברצונך להחיל הגדרת הרשאות זו של <strong>%1</strong> ל <strong>כל קטגוריות הצאצאים (ילדים)</strong>?",
+	"alert.confirm-copyToChildrenGroup": "האם אתה בטוח שברצונך להחיל הרשאות קבוצה זו של<strong>%1</strong> ל <strong>לכל קטגוריות הצאצאים (ילדים)</strong>?",
 	"alert.no-undo": "<em>לא ניתן לבטל פעולה זו.</em>",
-	"alert.admin-warning": "מנהלים מקבלים את כל ההרשאות"
+	"alert.admin-warning": "מנהלים מקבלים את כל ההרשאות",
+  	"alert.copyPrivilegesFrom-title": "בחר קטגוריה להעתקה ממנו",
+  	"alert.copyPrivilegesFrom-warning": "פעולה זו תעתיק <strong>%1</strong> מהקטגוריה שנבחרה.",
+  	"alert.copyPrivilegesFromGroup-warning": "פעולה זו תעתיק את הגדרת הקבוצה של  <strong>%1</strong> מהקטגוריה שנבחרה."
 }

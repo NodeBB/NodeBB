@@ -1,7 +1,7 @@
 'use strict';
 
 
-const	assert = require('assert');
+const assert = require('assert');
 const async = require('async');
 const request = require('request');
 const nconf = require('nconf');
@@ -18,6 +18,7 @@ const user = require('../src/user');
 const groups = require('../src/groups');
 const socketPosts = require('../src/socket.io/posts');
 const socketTopics = require('../src/socket.io/topics');
+const apiPosts = require('../src/api/posts');
 const meta = require('../src/meta');
 const helpers = require('./helpers');
 
@@ -390,11 +391,9 @@ describe('Post\'s', () => {
 					privileges.categories.rescind(['groups:posts:view_deleted'], cid, 'Global Moderators', next);
 				},
 				function (next) {
-					helpers.loginUser('global mod', '123456', (err, _jar) => {
+					helpers.loginUser('global mod', '123456', (err, data) => {
 						assert.ifError(err);
-						const jar = _jar;
-
-						request(`${nconf.get('url')}/api/topic/${tid}`, { jar: jar, json: true }, (err, res, body) => {
+						request(`${nconf.get('url')}/api/topic/${tid}`, { jar: data.jar, json: true }, (err, res, body) => {
 							assert.ifError(err);
 							assert.equal(body.posts[1].content, '[[topic:post_is_deleted]]');
 							privileges.categories.give(['groups:posts:view_deleted'], cid, 'Global Moderators', next);
@@ -627,28 +626,28 @@ describe('Post\'s', () => {
 			});
 		});
 
-		it('should not allow guests to view diffs', (done) => {
-			socketPosts.getDiffs({ uid: 0 }, { pid: 1 }, (err) => {
-				assert.equal(err.message, '[[error:no-privileges]]');
-				done();
-			});
+		it('should not allow guests to view diffs', async () => {
+			let err = {};
+			try {
+				await apiPosts.getDiffs({ uid: 0 }, { pid: 1 });
+			} catch (_err) {
+				err = _err;
+			}
+			assert.strictEqual(err.message, '[[error:no-privileges]]');
 		});
 
-		it('should allow registered-users group to view diffs', (done) => {
-			socketPosts.getDiffs({ uid: 1 }, { pid: 1 }, (err, data) => {
-				assert.ifError(err);
+		it('should allow registered-users group to view diffs', async () => {
+			const data = await apiPosts.getDiffs({ uid: 1 }, { pid: 1 });
 
-				assert.strictEqual('boolean', typeof data.editable);
-				assert.strictEqual(false, data.editable);
+			assert.strictEqual('boolean', typeof data.editable);
+			assert.strictEqual(false, data.editable);
 
-				assert.equal(true, Array.isArray(data.timestamps));
-				assert.strictEqual(1, data.timestamps.length);
+			assert.equal(true, Array.isArray(data.timestamps));
+			assert.strictEqual(1, data.timestamps.length);
 
-				assert.equal(true, Array.isArray(data.revisions));
-				assert.strictEqual(data.timestamps.length, data.revisions.length);
-				['timestamp', 'username'].every(prop => Object.keys(data.revisions[0]).includes(prop));
-				done();
-			});
+			assert.equal(true, Array.isArray(data.revisions));
+			assert.strictEqual(data.timestamps.length, data.revisions.length);
+			['timestamp', 'username'].every(prop => Object.keys(data.revisions[0]).includes(prop));
 		});
 
 		it('should not delete first diff of a post', async () => {
@@ -1050,8 +1049,8 @@ describe('Post\'s', () => {
 		});
 
 		it('should load queued posts', (done) => {
-			helpers.loginUser('globalmod', 'globalmodpwd', (err, _jar) => {
-				jar = _jar;
+			helpers.loginUser('globalmod', 'globalmodpwd', (err, data) => {
+				jar = data.jar;
 				assert.ifError(err);
 				request(`${nconf.get('url')}/api/post-queue`, { jar: jar, json: true }, (err, res, body) => {
 					assert.ifError(err);
@@ -1423,6 +1422,113 @@ describe('Post\'s', () => {
 				assert.strictEqual(true, Array.isArray(uploads));
 				assert.strictEqual(0, uploads.length);
 				done();
+			});
+		});
+	});
+
+	describe('Topic Backlinks', () => {
+		let tid1;
+		before(async () => {
+			tid1 = await topics.post({
+				uid: 1,
+				cid,
+				title: 'Topic backlink testing - topic 1',
+				content: 'Some text here for the OP',
+			});
+			tid1 = tid1.topicData.tid;
+		});
+
+		describe('.syncBacklinks()', () => {
+			it('should error on invalid data', async () => {
+				try {
+					await topics.syncBacklinks();
+				} catch (e) {
+					assert(e);
+					assert.strictEqual(e.message, '[[error:invalid-data]]');
+				}
+			});
+
+			it('should do nothing if the post does not contain a link to a topic', async () => {
+				const backlinks = await topics.syncBacklinks({
+					content: 'This is a post\'s content',
+				});
+
+				assert.strictEqual(backlinks, 0);
+			});
+
+			it('should create a backlink if it detects a topic link in a post', async () => {
+				const count = await topics.syncBacklinks({
+					pid: 2,
+					content: `This is a link to [topic 1](${nconf.get('url')}/topic/1/abcdef)`,
+				});
+				const events = await topics.events.get(1, 1);
+				const backlinks = await db.getSortedSetMembers('pid:2:backlinks');
+
+				assert.strictEqual(count, 1);
+				assert(events);
+				assert.strictEqual(events.length, 1);
+				assert(backlinks);
+				assert(backlinks.includes('1'));
+			});
+
+			it('should remove the backlink (but keep the event) if the post no longer contains a link to a topic', async () => {
+				const count = await topics.syncBacklinks({
+					pid: 2,
+					content: 'This is a link to [nothing](http://example.org)',
+				});
+				const events = await topics.events.get(1, 1);
+				const backlinks = await db.getSortedSetMembers('pid:2:backlinks');
+
+				assert.strictEqual(count, 0);
+				assert(events);
+				assert.strictEqual(events.length, 1);
+				assert(backlinks);
+				assert.strictEqual(backlinks.length, 0);
+			});
+		});
+
+		describe('integration tests', () => {
+			it('should create a topic event in the referenced topic', async () => {
+				const topic = await topics.post({
+					uid: 1,
+					cid,
+					title: 'Topic backlink testing - topic 2',
+					content: `Some text here for the OP &ndash; ${nconf.get('url')}/topic/${tid1}`,
+				});
+
+				const events = await topics.events.get(tid1, 1);
+				assert(events);
+				assert.strictEqual(events.length, 1);
+				assert.strictEqual(events[0].type, 'backlink');
+				assert.strictEqual(parseInt(events[0].uid, 10), 1);
+				assert.strictEqual(events[0].href, `/post/${topic.postData.pid}`);
+			});
+
+			it('should not create a topic event if referenced topic is the same as current topic', async () => {
+				await topics.reply({
+					uid: 1,
+					tid: tid1,
+					content: `Referencing itself &ndash; ${nconf.get('url')}/topic/${tid1}`,
+				});
+
+				const events = await topics.events.get(tid1, 1);
+				assert(events);
+				assert.strictEqual(events.length, 1); // should still equal 1
+			});
+
+			it('should not show backlink events if the feature is disabled', async () => {
+				meta.config.topicBacklinks = 0;
+
+				await topics.post({
+					uid: 1,
+					cid,
+					title: 'Topic backlink testing - topic 3',
+					content: `Some text here for the OP &ndash; ${nconf.get('url')}/topic/${tid1}`,
+				});
+
+				const events = await topics.events.get(tid1, 1);
+				assert(events);
+				assert.strictEqual(events.length, 0);
 			});
 		});
 	});

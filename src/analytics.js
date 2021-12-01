@@ -53,6 +53,8 @@ Analytics.increment = function (keys, callback) {
 	}
 };
 
+Analytics.getKeys = async () => db.getSortedSetRange('analyticsKeys', 0, -1);
+
 Analytics.pageView = async function (payload) {
 	pageViews += 1;
 
@@ -89,37 +91,49 @@ Analytics.writeData = async function () {
 	const today = new Date();
 	const month = new Date();
 	const dbQueue = [];
+	const incrByBulk = [];
+
+	// Build list of metrics that were updated
+	let metrics = [
+		'pageviews',
+		'pageviews:month',
+	];
+	metrics.forEach((metric) => {
+		const toAdd = ['registered', 'guest', 'bot'].map(type => `${metric}:${type}`);
+		metrics = [...metrics, ...toAdd];
+	});
+	metrics.push('uniquevisitors');
 
 	today.setHours(today.getHours(), 0, 0, 0);
 	month.setMonth(month.getMonth(), 1);
 	month.setHours(0, 0, 0, 0);
 
 	if (pageViews > 0) {
-		dbQueue.push(db.sortedSetIncrBy('analytics:pageviews', pageViews, today.getTime()));
-		dbQueue.push(db.sortedSetIncrBy('analytics:pageviews:month', pageViews, month.getTime()));
+		incrByBulk.push(['analytics:pageviews', pageViews, today.getTime()]);
+		incrByBulk.push(['analytics:pageviews:month', pageViews, month.getTime()]);
 		pageViews = 0;
 	}
 
 	if (pageViewsRegistered > 0) {
-		dbQueue.push(db.sortedSetIncrBy('analytics:pageviews:registered', pageViewsRegistered, today.getTime()));
-		dbQueue.push(db.sortedSetIncrBy('analytics:pageviews:month:registered', pageViewsRegistered, month.getTime()));
+		incrByBulk.push(['analytics:pageviews:registered', pageViewsRegistered, today.getTime()]);
+		incrByBulk.push(['analytics:pageviews:month:registered', pageViewsRegistered, month.getTime()]);
 		pageViewsRegistered = 0;
 	}
 
 	if (pageViewsGuest > 0) {
-		dbQueue.push(db.sortedSetIncrBy('analytics:pageviews:guest', pageViewsGuest, today.getTime()));
-		dbQueue.push(db.sortedSetIncrBy('analytics:pageviews:month:guest', pageViewsGuest, month.getTime()));
+		incrByBulk.push(['analytics:pageviews:guest', pageViewsGuest, today.getTime()]);
+		incrByBulk.push(['analytics:pageviews:month:guest', pageViewsGuest, month.getTime()]);
 		pageViewsGuest = 0;
 	}
 
 	if (pageViewsBot > 0) {
-		dbQueue.push(db.sortedSetIncrBy('analytics:pageviews:bot', pageViewsBot, today.getTime()));
-		dbQueue.push(db.sortedSetIncrBy('analytics:pageviews:month:bot', pageViewsBot, month.getTime()));
+		incrByBulk.push(['analytics:pageviews:bot', pageViewsBot, today.getTime()]);
+		incrByBulk.push(['analytics:pageviews:month:bot', pageViewsBot, month.getTime()]);
 		pageViewsBot = 0;
 	}
 
 	if (uniquevisitors > 0) {
-		dbQueue.push(db.sortedSetIncrBy('analytics:uniquevisitors', uniquevisitors, today.getTime()));
+		incrByBulk.push(['analytics:uniquevisitors', uniquevisitors, today.getTime()]);
 		uniquevisitors = 0;
 	}
 
@@ -129,9 +143,18 @@ Analytics.writeData = async function () {
 	}
 
 	for (const [key, value] of Object.entries(counters)) {
-		dbQueue.push(db.sortedSetIncrBy(`analytics:${key}`, value, today.getTime()));
+		incrByBulk.push([`analytics:${key}`, value, today.getTime()]);
+		metrics.push(key);
 		delete counters[key];
 	}
+
+	if (incrByBulk.length) {
+		dbQueue.push(db.sortedSetIncrByBulk(incrByBulk));
+	}
+
+	// Update list of tracked metrics
+	dbQueue.push(db.sortedSetAdd('analyticsKeys', metrics.map(() => +Date.now()), metrics));
+
 	try {
 		await Promise.all(dbQueue);
 	} catch (err) {

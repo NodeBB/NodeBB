@@ -40,6 +40,7 @@
 	"teaser.last-post": "Gần đây &ndash; Hiển thị bài đăng mới nhất, bao gồm cả bài gốc, nếu không có câu trả lời",
 	"teaser.last-reply": "Cuối cùng - Hiển thị câu trả lời mới nhất hoặc trình giữ chỗ \"Không trả lời\" nếu không có câu trả lời",
 	"teaser.first": "Đầu tiên",
+	"showPostPreviewsOnHover": "Hiển thị bản xem trước của các bài đăng khi di chuột qua",
 	"unread": "Cài Đặt Chưa Đọc",
 	"unread.cutoff": "Số ngày giới hạn chưa đọc",
 	"unread.min-track-last": "Số bài viết tối thiểu trong chủ đề trước khi theo dõi lần đọc cuối cùng",
@@ -56,6 +57,9 @@
 	"composer.show-help": "Hiển thị tab \"Trợ giúp\"",
 	"composer.enable-plugin-help": "Cho phép các plugin thêm nội dung vào tab trợ giúp",
 	"composer.custom-help": "Văn Bản Trợ Giúp Tùy Chỉnh",
+	"backlinks": "Liên kết ngược",
+	"backlinks.enabled": "Bật liên kết ngược chủ đề",
+	"backlinks.help": "Nếu một bài đăng tham chiếu đến chủ đề khác, một liên kết quay lại bài đăng sẽ được chèn vào chủ đề được tham chiếu tại thời điểm đó.",
 	"ip-tracking": "Theo dõi IP",
 	"ip-tracking.each-post": "Theo dõi Địa chỉ IP mỗi bài đăng",
 	"enable-post-history": "Bật Lịch Sử Bài Đăng"

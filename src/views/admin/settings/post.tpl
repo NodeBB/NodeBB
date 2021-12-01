@@ -5,16 +5,16 @@
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="form-group">
-				<label>[[admin/settings/post:sorting.post-default]]</label>
-				<select class="form-control" data-field="topicPostSort">
+				<label for="topicPostSort">[[admin/settings/post:sorting.post-default]]</label>
+				<select id="topicPostSort" class="form-control" data-field="topicPostSort">
 					<option value="oldest_to_newest">[[admin/settings/post:sorting.oldest-to-newest]]</option>
 					<option value="newest_to_oldest">[[admin/settings/post:sorting.newest-to-oldest]]</option>
 					<option value="most_votes">[[admin/settings/post:sorting.most-votes]]</option>
 				</select>
 			</div>
 			<div class="form-group">
-				<label>[[admin/settings/post:sorting.topic-default]]</label>
-				<select class="form-control" data-field="categoryTopicSort">
+				<label for="categoryTopicSort">[[admin/settings/post:sorting.topic-default]]</label>
+				<select id="categoryTopicSort" class="form-control" data-field="categoryTopicSort">
 					<option value="oldest_to_newest">[[admin/settings/post:sorting.oldest-to-newest]]</option>
 					<option value="newest_to_oldest">[[admin/settings/post:sorting.newest-to-oldest]]</option>
 					<option value="most_posts">[[admin/settings/post:sorting.most-posts]]</option>
@@ -140,8 +140,8 @@
 			</div>
 			<div class="row">
 				<div class="form-group">
-					<label>[[admin/settings/post:restrictions.groups-exempt-from-post-queue]]</label>
-					<select class="form-control" multiple data-field="groupsExemptFromPostQueue">
+					<label for="groupsExemptFromPostQueue">[[admin/settings/post:restrictions.groups-exempt-from-post-queue]]</label>
+					<select id="groupsExemptFromPostQueue" class="form-control" multiple data-field="groupsExemptFromPostQueue">
 						<!-- BEGIN groupsExemptFromPostQueue -->
 						<option value="{groupsExemptFromPostQueue.displayName}">{groupsExemptFromPostQueue.displayName}</option>
 						<!-- END -->
@@ -186,12 +186,18 @@
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="form-group">
-				<label>[[admin/settings/post:teaser]]</label>
-				<select class="form-control" data-field="teaserPost">
+				<label for="teaserPost">[[admin/settings/post:teaser]]</label>
+				<select id="teaserPost" class="form-control" data-field="teaserPost">
 					<option value="last-post">[[admin/settings/post:teaser.last-post]]</option>
 					<option value="last-reply">[[admin/settings/post:teaser.last-reply]]</option>
 					<option value="first">[[admin/settings/post:teaser.first]]</option>
 				</select>
+			</div>
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="showPostPreviewsOnHover">
+					<span class="mdl-switch__label"><strong>[[admin/settings/post:showPostPreviewsOnHover]]</strong></span>
+				</label>
 			</div>
 		</form>
 	</div>
@@ -254,8 +260,8 @@
 				</label>
 			</div>
 			<div class="form-group">
-				<label>[[admin/settings/post:signature.max-length]]</label>
-				<input type="text" class="form-control" value="255" data-field="maximumSignatureLength">
+				<label for="maximumSignatureLength">[[admin/settings/post:signature.max-length]]</label>
+				<input id="maximumSignatureLength" type="text" class="form-control" value="255" data-field="maximumSignatureLength">
 			</div>
 		</form>
 	</div>
@@ -288,6 +294,21 @@
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="enablePostHistory">
 					<input class="mdl-switch__input" type="checkbox" id="enablePostHistory" data-field="enablePostHistory" checked />
 					<span class="mdl-switch__label">[[admin/settings/post:enable-post-history]]</span>
+				</label>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/post:backlinks]]</div>
+	<div class="col-sm-10 col-xs-12">
+		<form>
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="topicBacklinks">
+					<span class="mdl-switch__label"><strong>[[admin/settings/post:backlinks.enabled]]</strong></span>
+					<p class="help-block">[[admin/settings/post:backlinks.help]]</p>
 				</label>
 			</div>
 		</form>

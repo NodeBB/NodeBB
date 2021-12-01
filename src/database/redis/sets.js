@@ -10,7 +10,7 @@ module.exports = function (module) {
 		if (!value.length) {
 			return;
 		}
-		await module.client.async.sadd(key, value);
+		await module.client.sadd(key, value);
 	};
 
 	module.setsAdd = async function (keys, value) {
@@ -45,7 +45,7 @@ module.exports = function (module) {
 	};
 
 	module.isSetMember = async function (key, value) {
-		const result = await module.client.async.sismember(key, value);
+		const result = await module.client.sismember(key, value);
 		return result === 1;
 	};
 
@@ -64,7 +64,7 @@ module.exports = function (module) {
 	};
 
 	module.getSetMembers = async function (key) {
-		return await module.client.async.smembers(key);
+		return await module.client.smembers(key);
 	};
 
 	module.getSetsMembers = async function (keys) {
@@ -74,7 +74,7 @@ module.exports = function (module) {
 	};
 
 	module.setCount = async function (key) {
-		return await module.client.async.scard(key);
+		return await module.client.scard(key);
 	};
 
 	module.setsCount = async function (keys) {
@@ -84,7 +84,7 @@ module.exports = function (module) {
 	};
 
 	module.setRemoveRandom = async function (key) {
-		return await module.client.async.spop(key);
+		return await module.client.spop(key);
 	};
 
 	return module;

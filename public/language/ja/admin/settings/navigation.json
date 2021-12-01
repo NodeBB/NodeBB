@@ -11,6 +11,8 @@
 	"properties": "プロパティ:",
 	"groups": "Groups:",
 	"open-new-window": "新しいウィンドウで開く",
+	"dropdown": "Dropdown",
+	"dropdown-placeholder": "Place your dropdown menu items below, ie: <br/>&lt;li&gt;&lt;a href&#x3D;&quot;https://myforum.com&quot;&gt;Link 1&lt;/a&gt;&lt;/li&gt;",
 
 	"btn.delete": "削除",
 	"btn.disable": "無効",

@@ -2,7 +2,7 @@
 
 (function (factory) {
 	if (typeof module === 'object' && module.exports) {
-		var relative_path = require('nconf').get('relative_path');
+		const relative_path = require('nconf').get('relative_path');
 		module.exports = factory(require('../utils'), require('benchpressjs'), relative_path);
 	} else if (typeof define === 'function' && define.amd) {
 		define('helpers', ['benchpress'], function (Benchpress) {
@@ -13,24 +13,26 @@
 	Benchpress.setGlobal('true', true);
 	Benchpress.setGlobal('false', false);
 
-	var helpers = {
-		displayMenuItem: displayMenuItem,
-		buildMetaTag: buildMetaTag,
-		buildLinkTag: buildLinkTag,
-		stringify: stringify,
-		escape: escape,
-		stripTags: stripTags,
-		generateCategoryBackground: generateCategoryBackground,
-		generateChildrenCategories: generateChildrenCategories,
-		generateTopicClass: generateTopicClass,
-		membershipBtn: membershipBtn,
-		spawnPrivilegeStates: spawnPrivilegeStates,
-		localeToHTML: localeToHTML,
-		renderTopicImage: renderTopicImage,
-		renderDigestAvatar: renderDigestAvatar,
-		userAgentIcons: userAgentIcons,
-		buildAvatar: buildAvatar,
-		register: register,
+	const helpers = {
+		displayMenuItem,
+		buildMetaTag,
+		buildLinkTag,
+		stringify,
+		escape,
+		stripTags,
+		generateCategoryBackground,
+		generateChildrenCategories,
+		generateTopicClass,
+		membershipBtn,
+		spawnPrivilegeStates,
+		localeToHTML,
+		renderTopicImage,
+		renderTopicEvents,
+		renderEvents,
+		renderDigestAvatar,
+		userAgentIcons,
+		buildAvatar,
+		register,
 		__escape: identity,
 	};
 
@@ -39,7 +41,7 @@
 	}
 
 	function displayMenuItem(data, index) {
-		var item = data.navigation[index];
+		const item = data.navigation[index];
 		if (!item) {
 			return false;
 		}
@@ -60,18 +62,18 @@
 	}
 
 	function buildMetaTag(tag) {
-		var name = tag.name ? 'name="' + tag.name + '" ' : '';
-		var property = tag.property ? 'property="' + tag.property + '" ' : '';
-		var content = tag.content ? 'content="' + tag.content.replace(/\n/g, ' ') + '" ' : '';
+		const name = tag.name ? 'name="' + tag.name + '" ' : '';
+		const property = tag.property ? 'property="' + tag.property + '" ' : '';
+		const content = tag.content ? 'content="' + tag.content.replace(/\n/g, ' ') + '" ' : '';
 
 		return '<meta ' + name + property + content + '/>\n\t';
 	}
 
 	function buildLinkTag(tag) {
-		const attributes = ['link', 'rel', 'as', 'type', 'href', 'sizes', 'title'];
-		const [link, rel, as, type, href, sizes, title] = attributes.map(attr => (tag[attr] ? `${attr}="${tag[attr]}" ` : ''));
+		const attributes = ['link', 'rel', 'as', 'type', 'href', 'sizes', 'title', 'crossorigin'];
+		const [link, rel, as, type, href, sizes, title, crossorigin] = attributes.map(attr => (tag[attr] ? `${attr}="${tag[attr]}" ` : ''));
 
-		return '<link ' + link + rel + as + type + sizes + title + href + '/>\n\t';
+		return '<link ' + link + rel + as + type + sizes + title + href + crossorigin + '/>\n\t';
 	}
 
 	function stringify(obj) {
@@ -92,7 +94,7 @@
 		if (!category) {
 			return '';
 		}
-		var style = [];
+		const style = [];
 
 		if (category.bgColor) {
 			style.push('background-color: ' + category.bgColor);
@@ -113,13 +115,13 @@
 	}
 
 	function generateChildrenCategories(category) {
-		var html = '';
+		let html = '';
 		if (!category || !category.children || !category.children.length) {
 			return html;
 		}
 		category.children.forEach(function (child) {
 			if (child && !child.isSection) {
-				var link = child.link ? child.link : (relative_path + '/category/' + child.slug);
+				const link = child.link ? child.link : (relative_path + '/category/' + child.slug);
 				html += '<span class="category-children-item pull-left">' +
 					'<div role="presentation" class="icon pull-left" style="' + generateCategoryBackground(child) + '">' +
 					'<i class="fa fa-fw ' + child.icon + '"></i>' +
@@ -132,7 +134,7 @@
 	}
 
 	function generateTopicClass(topic) {
-		var style = [];
+		const style = [];
 
 		if (topic.locked) {
 			style.push('locked');
@@ -174,8 +176,8 @@
 	}
 
 	function spawnPrivilegeStates(member, privileges) {
-		var states = [];
-		for (var priv in privileges) {
+		const states = [];
+		for (const priv in privileges) {
 			if (privileges.hasOwnProperty(priv)) {
 				states.push({
 					name: priv,
@@ -184,10 +186,10 @@
 			}
 		}
 		return states.map(function (priv) {
-			var guestDisabled = ['groups:moderate', 'groups:posts:upvote', 'groups:posts:downvote', 'groups:local:login', 'groups:group:create'];
-			var spidersEnabled = ['groups:find', 'groups:read', 'groups:topics:read', 'groups:view:users', 'groups:view:tags', 'groups:view:groups'];
-			var globalModDisabled = ['groups:moderate'];
-			var disabled =
+			const guestDisabled = ['groups:moderate', 'groups:posts:upvote', 'groups:posts:downvote', 'groups:local:login', 'groups:group:create'];
+			const spidersEnabled = ['groups:find', 'groups:read', 'groups:topics:read', 'groups:view:users', 'groups:view:tags', 'groups:view:groups'];
+			const globalModDisabled = ['groups:moderate'];
+			const disabled =
 				(member === 'guests' && (guestDisabled.includes(priv.name) || priv.name.startsWith('groups:admin:'))) ||
 				(member === 'spiders' && !spidersEnabled.includes(priv.name)) ||
 				(member === 'Global Moderators' && globalModDisabled.includes(priv.name));
@@ -208,6 +210,49 @@
 		return '<img component="user/picture" data-uid="' + topicObj.user.uid + '" src="' + topicObj.user.picture + '" class="user-img" title="' + topicObj.user.username + '" />';
 	}
 
+	function renderTopicEvents(index, sort) {
+		if (sort === 'most_votes') {
+			return '';
+		}
+		const start = this.posts[index].eventStart;
+		const end = this.posts[index].eventEnd;
+		const events = this.events.filter(event => event.timestamp >= start && event.timestamp < end);
+		if (!events.length) {
+			return '';
+		}
+
+		return renderEvents.call(this, events);
+	}
+
+	function renderEvents(events) {
+		return events.reduce((html, event) => {
+			html += `<li component="topic/event" class="timeline-event" data-topic-event-id="${event.id}">
+				<div class="timeline-badge">
+					<i class="fa ${event.icon || 'fa-circle'}"></i>
+				</div>
+				<span class="timeline-text">
+					${event.href ? `<a href="${relative_path}${event.href}">${event.text}</a>` : event.text}&nbsp;
+				</span>
+			`;
+
+			if (event.user) {
+				if (!event.user.system) {
+					html += `<span><a href="${relative_path}/user/${event.user.userslug}">${buildAvatar(event.user, 'xs', true)}&nbsp;${event.user.username}</a></span>&nbsp;`;
+				} else {
+					html += `<span class="timeline-text">[[global:system-user]]</span>&nbsp;`;
+				}
+			}
+
+			html += `<span class="timeago timeline-text" title="${event.timestampISO}"></span>`;
+
+			if (this.privileges.isAdminOrMod) {
+				html += `&nbsp;<span component="topic/event/delete" data-topic-event-id="${event.id}" class="timeline-text pointer" title="[[topic:delete-event]]"><i class="fa fa-trash"></i></span>`;
+			}
+
+			return html;
+		}, '');
+	}
+
 	function renderDigestAvatar(block) {
 		if (block.teaser) {
 			if (block.teaser.user.picture) {
@@ -222,7 +267,7 @@
 	}
 
 	function userAgentIcons(data) {
-		var icons = '';
+		let icons = '';
 
 		switch (data.platform) {
 			case 'Linux':
@@ -240,7 +285,7 @@
 			case 'iPad':
 				icons += '<i class="fa fa-fw fa-tablet"></i>';
 				break;
-			case 'iPod':	// intentional fall-through
+			case 'iPod': // intentional fall-through
 			case 'iPhone':
 				icons += '<i class="fa fa-fw fa-mobile"></i>';
 				break;
@@ -288,13 +333,13 @@
 			userObj = this;
 		}
 
-		var attributes = [
+		const attributes = [
 			'alt="' + userObj.username + '"',
 			'title="' + userObj.username + '"',
 			'data-uid="' + userObj.uid + '"',
 			'loading="lazy"',
 		];
-		var styles = [];
+		const styles = [];
 		classNames = classNames || '';
 
 		// Validate sizes, handle integers, otherwise fall back to `avatar-sm`

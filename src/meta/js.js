@@ -41,6 +41,7 @@ JS.scripts = {
 
 	// files listed below are only available client-side, or are bundled in to reduce # of network requests on cold load
 	rjs: [
+		'public/src/client/header.js',
 		'public/src/client/header/chat.js',
 		'public/src/client/header/notifications.js',
 		'public/src/client/infinitescroll.js',
@@ -74,6 +75,8 @@ JS.scripts = {
 		'public/src/modules/helpers.js',
 		'public/src/modules/storage.js',
 		'public/src/modules/handleBack.js',
+		'public/src/modules/messages.js',
+		'public/src/modules/search.js',
 	],
 
 	admin: [
@@ -89,7 +92,16 @@ JS.scripts = {
 		'cropper.js': 'node_modules/cropperjs/dist/cropper.min.js',
 		'jquery-ui': 'node_modules/jquery-ui/ui',
 		'zxcvbn.js': 'node_modules/zxcvbn/dist/zxcvbn.js',
-		ace: 'node_modules/ace-builds/src-min',
+
+		// only get ace files required by acp
+		'ace/ace.js': 'node_modules/ace-builds/src-min/ace.js',
+		'ace/mode-less.js': 'node_modules/ace-builds/src-min/mode-less.js',
+		'ace/mode-javascript.js': 'node_modules/ace-builds/src-min/mode-javascript.js',
+		'ace/mode-html.js': 'node_modules/ace-builds/src-min/mode-html.js',
+		'ace/theme-twilight.js': 'node_modules/ace-builds/src-min/theme-twilight.js',
+		'ace/worker-javascript.js': 'node_modules/ace-builds/src-min/worker-javascript.js',
+		'ace/worker-html.js': 'node_modules/ace-builds/src-min/worker-html.js',
+
 		'clipboard.js': 'node_modules/clipboard/dist/clipboard.min.js',
 		'tinycon.js': 'node_modules/tinycon/tinycon.js',
 		'slideout.js': 'node_modules/slideout/dist/slideout.min.js',
@@ -327,8 +339,10 @@ JS.buildBundle = async function (target, fork) {
 	await requirejsOptimize(target);
 	const files = await getBundleScriptList(target);
 
+	const srcPath = path.join(__dirname, `../../build/public/rjs-bundle-${target}.js`);
 	files.push({
-		srcPath: path.join(__dirname, `../../build/public/rjs-bundle-${target}.js`),
+		srcPath: srcPath,
+		filename: path.relative(basePath, srcPath).replace(/\\/g, '/'),
 	});
 
 	const minify = process.env.NODE_ENV !== 'development';

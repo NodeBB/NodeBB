@@ -40,6 +40,7 @@
 	"teaser.last-post": "Poslednji &ndashč Pokazuje poslednji post, uključujući originalni post, ako nema odgovora",
 	"teaser.last-reply": "Poslednji &ndashč Pokaži najnoviji odgovor, ili ako \"Nema odgovora\" placeholder ako nema odgovora",
 	"teaser.first": "Prvi",
+	"showPostPreviewsOnHover": "Show a preview of posts when mouse overed",
 	"unread": "Nepročitana podešavanja",
 	"unread.cutoff": "Nepročitano tokom prekinutih dana",
 	"unread.min-track-last": "Minimum postova u temi, pre praćenja poslednjeg pročitanog",
@@ -56,6 +57,9 @@
 	"composer.show-help": "Prikaži tab \"Pomoć\"",
 	"composer.enable-plugin-help": "Dozvoli plugin-ovima da dodaju sadržaj na tab-u \"pomoć\"",
 	"composer.custom-help": "Prilagođen tekst za pomoć",
+	"backlinks": "Backlinks",
+	"backlinks.enabled": "Enable topic backlinks",
+	"backlinks.help": "If a post references another topic, a link back to the post will be inserted into the referenced topic at that point in time.",
 	"ip-tracking": "Praćenje IP adrese",
 	"ip-tracking.each-post": "Prati IP Adresu za svaki post",
 	"enable-post-history": "Enable Post History"

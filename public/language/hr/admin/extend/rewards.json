@@ -8,8 +8,6 @@
 	"delete": "Obriši",
 	"enable": "Omogući",
 	"disable": "onemogući",
-	"control-panel": "Kontrola nagrada",
-	"new-reward": "Nova nagrada",
 
 	"alert.delete-success": "Uspješno obrisana nagrada",
 	"alert.no-inputs-found": "Ilegalna nagrada - nije pronađen unos!",

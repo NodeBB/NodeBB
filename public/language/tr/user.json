@@ -94,10 +94,12 @@
     "digest_off": "Kapalı",
     "digest_daily": "Günlük",
     "digest_weekly": "Haftalık",
+    "digest_biweekly": "İki haftada bir",
     "digest_monthly": "Aylık",
     "has_no_follower": "Bu kullanıcının hiç takipçisi yok :(",
     "follows_no_one": "Bu kullanıcı kimseyi takip etmiyor :(",
     "has_no_posts": "Bu kullanıcı henüz herhangi bir ileti yazmamış :(",
+    "has_no_best_posts": "Bu kullanıcının herhangi bir gönderisi henüz olumlu oy almadı.",
     "has_no_topics": "Bu kullanıcı henüz hiçbir başlık açmamış :(",
     "has_no_watched_topics": "Bu kullanıcı henüz hiçbir başlığı takip etmiyor :(",
     "has_no_ignored_topics": "Bu kullanıcı henüz hiçbir başlığı yok saymamış.",
@@ -181,7 +183,7 @@
     "consent.export-uploads-success": "Yüklemeler aktarılmak üzere hazırlanıyor, işlem tamamlandığında bildirim alacaksınız!",
     "consent.export_posts": "Gönderileri Dışa Aktar (.csv)",
     "consent.export-posts-success": "İletiler aktarılmak üzere hazırlanıyor, işlem tamamlandığında bildirim alacaksınız!",
-    "emailUpdate.intro": "Please enter your email address below. This forum uses your email address for scheduled digest and notifications, as well as for account recovery in the event of a lost password.",
-    "emailUpdate.optional": "<strong>This field is optional</strong>. You are not obligated to provide your email address, but without a validated email, you will not be able to recover your account.",
-    "emailUpdate.change-instructions": "A confirmation email will be sent to the entered email address with a unique link. Accessing that link will confirm your ownership of the email address and it will become active on your account. At any time, you are able to update your email on file from within your account page."
+    "emailUpdate.intro": "Lütfen e-posta adresinizi aşağıya girin. Bu forum, e-posta adresinizi planlanmış özet ve bildirimler ile parolanın kaybolması durumunda hesap kurtarma için kullanır.",
+    "emailUpdate.optional": "<strong>Bu alan isteğe bağlıdır</strong>. E-posta adresinizi vermek zorunda değilsiniz, ancak doğrulanmış bir e-posta olmadan hesabınızı kurtaramazsınız.",
+    "emailUpdate.change-instructions": "Girilen e-posta adresine kişiye özel bir bağlantı içeren bir onay e-postası gönderilecektir. Bu bağlantıya erişmek, e-posta adresinin sahibi olduğunuzu onaylayacak ve hesabınızda etkin hale gelecektir. İstediğiniz zaman, hesap sayfanızdan kayıtlı e-postanızı güncelleyebilirsiniz."
 }

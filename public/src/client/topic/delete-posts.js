@@ -2,11 +2,11 @@
 
 
 define('forum/topic/delete-posts', ['components', 'postSelect'], function (components, postSelect) {
-	var DeletePosts = {};
-	var modal;
-	var deleteBtn;
-	var purgeBtn;
-	var tid;
+	const DeletePosts = {};
+	let modal;
+	let deleteBtn;
+	let purgeBtn;
+	let tid;
 
 	DeletePosts.init = function () {
 		tid = ajaxify.data.tid;

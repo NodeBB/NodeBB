@@ -8,8 +8,6 @@
 	"delete": "Odstranit",
 	"enable": "Povolit",
 	"disable": "Zakázat",
-	"control-panel": "Ovládací panel odměn",
-	"new-reward": "Nová odměna",
 
 	"alert.delete-success": "Odměna byla úspěšně smazána",
 	"alert.no-inputs-found": "Nepovolená odměna – nebyl nalezen žádný záznam.",

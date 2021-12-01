@@ -1,29 +1,29 @@
 'use strict';
 
 define('navigator', ['forum/pagination', 'components', 'hooks'], function (pagination, components, hooks) {
-	var navigator = {};
-	var index = 0;
-	var count = 0;
-	var navigatorUpdateTimeoutId;
+	const navigator = {};
+	let index = 0;
+	let count = 0;
+	let navigatorUpdateTimeoutId;
 
-	var renderPostIntervalId;
-	var touchX;
-	var touchY;
-	var renderPostIndex;
-	var isNavigating = false;
-	var firstMove = true;
+	let renderPostIntervalId;
+	let touchX;
+	let touchY;
+	let renderPostIndex;
+	let isNavigating = false;
+	let firstMove = true;
 
 	navigator.scrollActive = false;
 
-	var paginationBlockEl = $('.pagination-block');
-	var paginationTextEl = paginationBlockEl.find('.pagination-text');
-	var paginationBlockMeterEl = paginationBlockEl.find('meter');
-	var paginationBlockProgressEl = paginationBlockEl.find('.progress-bar');
-	var thumb;
-	var thumbText;
-	var thumbIcon;
-	var thumbIconHeight;
-	var thumbIconHalfHeight;
+	let paginationBlockEl = $('.pagination-block');
+	let paginationTextEl = paginationBlockEl.find('.pagination-text');
+	let paginationBlockMeterEl = paginationBlockEl.find('meter');
+	let paginationBlockProgressEl = paginationBlockEl.find('.progress-bar');
+	let thumb;
+	let thumbText;
+	let thumbIcon;
+	let thumbIconHeight;
+	let thumbIconHalfHeight;
 
 	$(window).on('action:ajaxify.start', function () {
 		$(window).off('keydown', onKeyDown);
@@ -66,14 +66,14 @@ define('navigator', ['forum/pagination', 'components', 'hooks'], function (pagin
 
 		paginationBlockEl.find('input').on('keydown', function (e) {
 			if (e.which === 13) {
-				var input = $(this);
+				const input = $(this);
 				if (!utils.isNumber(input.val())) {
 					input.val('');
 					return;
 				}
 
-				var index = parseInt(input.val(), 10);
-				var url = generateUrl(index);
+				const index = parseInt(input.val(), 10);
+				const url = generateUrl(index);
 				input.val('');
 				$('.pagination-block .dropdown-toggle').trigger('click');
 				ajaxify.go(url);
@@ -91,8 +91,8 @@ define('navigator', ['forum/pagination', 'components', 'hooks'], function (pagin
 	};
 
 	function clampTop(newTop) {
-		var parent = thumb.parent();
-		var parentOffset = parent.offset();
+		const parent = thumb.parent();
+		const parentOffset = parent.offset();
 		if (newTop < parentOffset.top) {
 			newTop = parentOffset.top;
 		} else if (newTop > parentOffset.top + parent.height() - thumbIconHeight) {
@@ -105,15 +105,15 @@ define('navigator', ['forum/pagination', 'components', 'hooks'], function (pagin
 		if (!thumb.length || thumb.is(':hidden')) {
 			return;
 		}
-		var parent = thumb.parent();
-		var parentOffset = parent.offset();
-		var percent = (index - 1) / ajaxify.data.postcount;
+		const parent = thumb.parent();
+		const parentOffset = parent.offset();
+		let percent = (index - 1) / ajaxify.data.postcount;
 		if (index === count) {
 			percent = 1;
 		}
-		var newTop = clampTop(parentOffset.top + ((parent.height() - thumbIconHeight) * percent));
+		const newTop = clampTop(parentOffset.top + ((parent.height() - thumbIconHeight) * percent));
 
-		var offset = { top: newTop, left: thumb.offset().left };
+		const offset = { top: newTop, left: thumb.offset().left };
 		thumb.offset(offset);
 		thumbText.text(index + '/' + ajaxify.data.postcount);
 		renderPost(index);
@@ -124,24 +124,24 @@ define('navigator', ['forum/pagination', 'components', 'hooks'], function (pagin
 			return;
 		}
 
-		var parent = thumb.parent();
+		const parent = thumb.parent();
 		parent.on('click', function (ev) {
 			if ($(ev.target).hasClass('scroller-container')) {
-				var index = calculateIndexFromY(ev.pageY);
+				const index = calculateIndexFromY(ev.pageY);
 				navigator.scrollToIndex(index - 1, true, 0);
 				return false;
 			}
 		});
 
 		function calculateIndexFromY(y) {
-			var newTop = clampTop(y - thumbIconHalfHeight);
-			var parentOffset = parent.offset();
-			var percent = (newTop - parentOffset.top) / (parent.height() - thumbIconHeight);
+			const newTop = clampTop(y - thumbIconHalfHeight);
+			const parentOffset = parent.offset();
+			const percent = (newTop - parentOffset.top) / (parent.height() - thumbIconHeight);
 			index = Math.max(1, Math.ceil(ajaxify.data.postcount * percent));
 			return index > ajaxify.data.postcount ? ajaxify.data.count : index;
 		}
 
-		var mouseDragging = false;
+		let mouseDragging = false;
 		hooks.on('action:ajaxify.end', function () {
 			renderPostIndex = null;
 		});
@@ -167,9 +167,9 @@ define('navigator', ['forum/pagination', 'components', 'hooks'], function (pagin
 		}
 
 		function mousemove(ev) {
-			var newTop = clampTop(ev.pageY - thumbIconHalfHeight);
+			const newTop = clampTop(ev.pageY - thumbIconHalfHeight);
 			thumb.offset({ top: newTop, left: thumb.offset().left });
-			var index = calculateIndexFromY(ev.pageY);
+			const index = calculateIndexFromY(ev.pageY);
 			navigator.updateTextAndProgressBar();
 			thumbText.text(index + '/' + ajaxify.data.postcount);
 			if (firstMove) {
@@ -198,10 +198,10 @@ define('navigator', ['forum/pagination', 'components', 'hooks'], function (pagin
 		});
 
 		thumb.on('touchmove', function (ev) {
-			var windowWidth = $(window).width();
-			var windowHeight = $(window).height();
-			var deltaX = Math.abs(touchX - Math.min(windowWidth, Math.max(0, ev.touches[0].clientX)));
-			var deltaY = Math.abs(touchY - Math.min(windowHeight, Math.max(0, ev.touches[0].clientY)));
+			const windowWidth = $(window).width();
+			const windowHeight = $(window).height();
+			const deltaX = Math.abs(touchX - Math.min(windowWidth, Math.max(0, ev.touches[0].clientX)));
+			const deltaY = Math.abs(touchY - Math.min(windowHeight, Math.max(0, ev.touches[0].clientY)));
 			touchX = Math.min(windowWidth, Math.max(0, ev.touches[0].clientX));
 			touchY = Math.min(windowHeight, Math.max(0, ev.touches[0].clientY));
 
@@ -213,9 +213,9 @@ define('navigator', ['forum/pagination', 'components', 'hooks'], function (pagin
 			if (isNavigating && ev.cancelable) {
 				ev.preventDefault();
 				ev.stopPropagation();
-				var newTop = clampTop(touchY + $(window).scrollTop() - thumbIconHalfHeight);
+				const newTop = clampTop(touchY + $(window).scrollTop() - thumbIconHalfHeight);
 				thumb.offset({ top: newTop, left: thumb.offset().left });
-				var index = calculateIndexFromY(touchY + $(window).scrollTop());
+				const index = calculateIndexFromY(touchY + $(window).scrollTop());
 				navigator.updateTextAndProgressBar();
 				thumbText.text(index + '/' + ajaxify.data.postcount);
 				if (firstMove) {
@@ -286,8 +286,8 @@ define('navigator', ['forum/pagination', 'components', 'hooks'], function (pagin
 	}
 
 	function generateUrl(index) {
-		var pathname = window.location.pathname.replace(config.relative_path, '');
-		var parts = pathname.split('/');
+		const pathname = window.location.pathname.replace(config.relative_path, '');
+		const parts = pathname.split('/');
 		return parts[1] + '/' + parts[2] + '/' + parts[3] + (index ? '/' + index : '');
 	}
 
@@ -315,7 +315,7 @@ define('navigator', ['forum/pagination', 'components', 'hooks'], function (pagin
 	};
 
 	function toggle(flag) {
-		var path = ajaxify.removeRelativePath(window.location.pathname.slice(1));
+		const path = ajaxify.removeRelativePath(window.location.pathname.slice(1));
 		if (flag && (!path.startsWith('topic') && !path.startsWith('category'))) {
 			return;
 		}
@@ -338,22 +338,22 @@ define('navigator', ['forum/pagination', 'components', 'hooks'], function (pagin
 			a spot where a user is expecting to begin reading.
 		*/
 		threshold = typeof threshold === 'number' ? threshold : undefined;
-		var newIndex = index;
-		var els = $(navigator.selector);
+		let newIndex = index;
+		const els = $(navigator.selector);
 		if (els.length) {
 			newIndex = parseInt(els.first().attr('data-index'), 10) + 1;
 		}
 
-		var scrollTop = $(window).scrollTop();
-		var windowHeight = $(window).height();
-		var documentHeight = $(document).height();
-		var middleOfViewport = scrollTop + (windowHeight / 2);
-		var previousDistance = Number.MAX_VALUE;
+		const scrollTop = $(window).scrollTop();
+		const windowHeight = $(window).height();
+		const documentHeight = $(document).height();
+		const middleOfViewport = scrollTop + (windowHeight / 2);
+		let previousDistance = Number.MAX_VALUE;
 		els.each(function () {
-			var $this = $(this);
-			var elIndex = parseInt($this.attr('data-index'), 10);
+			const $this = $(this);
+			const elIndex = parseInt($this.attr('data-index'), 10);
 			if (elIndex >= 0) {
-				var distanceToMiddle = Math.abs(middleOfViewport - ($this.offset().top + ($this.outerHeight(true) / 2)));
+				const distanceToMiddle = Math.abs(middleOfViewport - ($this.offset().top + ($this.outerHeight(true) / 2)));
 				if (distanceToMiddle > previousDistance) {
 					return false;
 				}
@@ -365,8 +365,8 @@ define('navigator', ['forum/pagination', 'components', 'hooks'], function (pagin
 			}
 		});
 
-		var atTop = scrollTop === 0 && parseInt(els.first().attr('data-index'), 10) === 0;
-		var nearBottom = scrollTop + windowHeight > documentHeight - 100 && parseInt(els.last().attr('data-index'), 10) === count - 1;
+		const atTop = scrollTop === 0 && parseInt(els.first().attr('data-index'), 10) === 0;
+		const nearBottom = scrollTop + windowHeight > documentHeight - 100 && parseInt(els.last().attr('data-index'), 10) === count - 1;
 
 		if (atTop) {
 			newIndex = 1;
@@ -379,9 +379,9 @@ define('navigator', ['forum/pagination', 'components', 'hooks'], function (pagin
 			if (atTop) {
 				threshold = 0;
 			} else {
-				var anchorEl = components.get('post/anchor', index - 1);
+				const anchorEl = components.get('post/anchor', index - 1);
 				if (anchorEl.length) {
-					var anchorRect = anchorEl.get(0).getBoundingClientRect();
+					const anchorRect = anchorEl.get(0).getBoundingClientRect();
 					threshold = anchorRect.top;
 				}
 			}
@@ -406,16 +406,16 @@ define('navigator', ['forum/pagination', 'components', 'hooks'], function (pagin
 		}
 		index = index > count ? count : index;
 		paginationTextEl.translateHtml('[[global:pagination.out_of, ' + index + ', ' + count + ']]');
-		var fraction = (index - 1) / (count - 1 || 1);
+		const fraction = (index - 1) / (count - 1 || 1);
 		paginationBlockMeterEl.val(fraction);
 		paginationBlockProgressEl.width((fraction * 100) + '%');
 	};
 
 	navigator.scrollUp = function () {
-		var $window = $(window);
+		const $window = $(window);
 
 		if (config.usePagination) {
-			var atTop = $window.scrollTop() <= 0;
+			const atTop = $window.scrollTop() <= 0;
 			if (atTop) {
 				return pagination.previousPage(function () {
 					$('body,html').scrollTop($(document).height() - $window.height());
@@ -428,10 +428,10 @@ define('navigator', ['forum/pagination', 'components', 'hooks'], function (pagin
 	};
 
 	navigator.scrollDown = function () {
-		var $window = $(window);
+		const $window = $(window);
 
 		if (config.usePagination) {
-			var atBottom = $window.scrollTop() >= $(document).height() - $window.height();
+			const atBottom = $window.scrollTop() >= $(document).height() - $window.height();
 			if (atBottom) {
 				return pagination.nextPage();
 			}
@@ -463,8 +463,8 @@ define('navigator', ['forum/pagination', 'components', 'hooks'], function (pagin
 	};
 
 	navigator.scrollToIndex = function (index, highlight, duration) {
-		var inTopic = !!components.get('topic').length;
-		var inCategory = !!components.get('category').length;
+		const inTopic = !!components.get('topic').length;
+		const inCategory = !!components.get('category').length;
 
 		if (!utils.isNumber(index) || (!inTopic && !inCategory)) {
 			return;
@@ -490,9 +490,9 @@ define('navigator', ['forum/pagination', 'components', 'hooks'], function (pagin
 			return;
 		}
 
-		var scrollMethod = inTopic ? navigator.scrollToPostIndex : navigator.scrollToTopicIndex;
+		const scrollMethod = inTopic ? navigator.scrollToPostIndex : navigator.scrollToTopicIndex;
 
-		var page = 1 + Math.floor(index / config.postsPerPage);
+		const page = 1 + Math.floor(index / config.postsPerPage);
 		if (parseInt(page, 10) !== ajaxify.data.pagination.currentPage) {
 			pagination.loadPage(page, function () {
 				scrollMethod(index, highlight, duration);
@@ -503,12 +503,12 @@ define('navigator', ['forum/pagination', 'components', 'hooks'], function (pagin
 	};
 
 	navigator.scrollToPostIndex = function (postIndex, highlight, duration) {
-		var scrollTo = components.get('post', 'index', postIndex);
+		const scrollTo = components.get('post', 'index', postIndex);
 		navigator.scrollToElement(scrollTo, highlight, duration);
 	};
 
 	navigator.scrollToTopicIndex = function (topicIndex, highlight, duration) {
-		var scrollTo = $('[component="category/topic"][data-index="' + topicIndex + '"]');
+		const scrollTo = $('[component="category/topic"][data-index="' + topicIndex + '"]');
 		navigator.scrollToElement(scrollTo, highlight, duration);
 	};
 
@@ -518,23 +518,23 @@ define('navigator', ['forum/pagination', 'components', 'hooks'], function (pagin
 			return;
 		}
 
-		var postHeight = scrollTo.outerHeight(true);
-		var navbarHeight = components.get('navbar').outerHeight(true);
-		var topicHeaderHeight = $('.topic-header').outerHeight(true) || 0;
-		var viewportHeight = $(window).height();
+		const postHeight = scrollTo.outerHeight(true);
+		const navbarHeight = components.get('navbar').outerHeight(true);
+		const topicHeaderHeight = $('.topic-header').outerHeight(true) || 0;
+		const viewportHeight = $(window).height();
 
 		// Temporarily disable navigator update on scroll
 		$(window).off('scroll', navigator.delayedUpdate);
 
 		duration = duration !== undefined ? duration : 400;
 		navigator.scrollActive = true;
-		var done = false;
+		let done = false;
 
 		function animateScroll() {
 			function reenableScroll() {
 				// Re-enable onScroll behaviour
 				$(window).on('scroll', navigator.delayedUpdate);
-				var scrollToRect = scrollTo.get(0).getBoundingClientRect();
+				const scrollToRect = scrollTo.get(0).getBoundingClientRect();
 				navigator.update(scrollToRect.top);
 			}
 			function onAnimateComplete() {
@@ -550,7 +550,7 @@ define('navigator', ['forum/pagination', 'components', 'hooks'], function (pagin
 				$('html').scrollTop($('html').scrollTop() - 1);
 			}
 
-			var scrollTop = 0;
+			let scrollTop = 0;
 			if (postHeight < viewportHeight - navbarHeight - topicHeaderHeight) {
 				scrollTop = scrollTo.offset().top - (viewportHeight / 2) + (postHeight / 2);
 			} else {

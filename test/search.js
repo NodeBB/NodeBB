@@ -1,7 +1,7 @@
 'use strict';
 
 
-const	assert = require('assert');
+const assert = require('assert');
 const async = require('async');
 const request = require('request');
 const nconf = require('nconf');
@@ -269,6 +269,22 @@ describe('Search', () => {
 				assert(body.hasOwnProperty('posts'));
 				assert(!body.hasOwnProperty('categories'));
 
+				privileges.global.rescind(['groups:search:content'], 'guests', done);
+			});
+		});
+	});
+
+	it('should not crash without a search term', (done) => {
+		const qs = '/api/search';
+		privileges.global.give(['groups:search:content'], 'guests', (err) => {
+			assert.ifError(err);
+			request({
+				url: nconf.get('url') + qs,
+				json: true,
+			}, (err, response, body) => {
+				assert.ifError(err);
+				assert(body);
+				assert.strictEqual(response.statusCode, 200);
 				privileges.global.rescind(['groups:search:content'], 'guests', done);
 			});
 		});

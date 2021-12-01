@@ -22,7 +22,6 @@ require('./posts/move')(SocketPosts);
 require('./posts/votes')(SocketPosts);
 require('./posts/bookmarks')(SocketPosts);
 require('./posts/tools')(SocketPosts);
-require('./posts/diffs')(SocketPosts);
 
 SocketPosts.reply = async function (socket, data) {
 	sockets.warnDeprecated(socket, 'POST /api/v3/topics/:tid');
@@ -98,6 +97,22 @@ SocketPosts.getPostSummaryByIndex = async function (socket, data) {
 	return postsData[0];
 };
 
+SocketPosts.getPostSummaryByPid = async function (socket, data) {
+	if (!data || !data.pid) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	const { pid } = data;
+	const tid = await posts.getPostField(pid, 'tid');
+	const topicPrivileges = await privileges.topics.get(tid, socket.uid);
+	if (!topicPrivileges['topics:read']) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	const postsData = await posts.getPostSummaryByPids([pid], socket.uid, { stripTags: false });
+	posts.modifyPostByPrivilege(postsData[0], topicPrivileges);
+	return postsData[0];
+};
+
 SocketPosts.getPost = async function (socket, pid) {
 	sockets.warnDeprecated(socket, 'GET /api/v3/posts/:pid');
 	return await api.posts.get(socket, { pid });
@@ -150,13 +165,17 @@ async function acceptOrReject(method, socket, data) {
 }
 
 async function sendQueueNotification(type, targetUid, path) {
-	const notifObj = await notifications.create({
+	const notifData = {
 		type: type,
 		nid: `${type}-${targetUid}-${path}`,
 		bodyShort: type === 'post-queue-accepted' ?
 			'[[notifications:post-queue-accepted]]' : '[[notifications:post-queue-rejected]]',
 		path: path,
-	});
+	};
+	if (parseInt(meta.config.postQueueNotificationUid, 10) > 0) {
+		notifData.from = meta.config.postQueueNotificationUid;
+	}
+	const notifObj = await notifications.create(notifData);
 	await notifications.push(notifObj, [targetUid]);
 }
 

@@ -13,6 +13,7 @@
 	"resent-single": "Lettre d'activité envoyée",
 	"resent-day": "Lettre d'activités quotidienne envoyée",
 	"resent-week": "Lettre d'activité hebdomadaire envoyée",
+	"resent-biweek": "Lettre d'activité envoyée deux fois par semaine",
 	"resent-month": "Lettre d'activité mensuel envoyé",
 	"null": "<em>Jamais</em>",
 	"manual-run": "Lancer manuellement l'envoi:",

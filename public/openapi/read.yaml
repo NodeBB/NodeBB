@@ -78,6 +78,8 @@ paths:
     $ref: 'read/admin/dashboard/users.yaml'
   /api/admin/dashboard/topics:
     $ref: 'read/admin/dashboard/topics.yaml'
+  /api/admin/dashboard/searches:
+    $ref: 'read/admin/dashboard/searches.yaml'
   "/api/admin/settings/{term}":
     $ref: 'read/admin/settings/term.yaml'
   /api/admin/settings/languages:
@@ -178,12 +180,14 @@ paths:
     $ref: 'read/user/username/username.yaml'
   "/api/user/email/{email}":
     $ref: 'read/user/email/email.yaml'
-  "/api/user/uid/{userslug}/export/posts":
-    $ref: 'read/user/uid/userslug/export/posts.yaml'
-  "/api/user/uid/{userslug}/export/uploads":
-    $ref: 'read/user/uid/userslug/export/uploads.yaml'
-  "/api/user/uid/{userslug}/export/profile":
-    $ref: 'read/user/uid/userslug/export/profile.yaml'
+  "/api/user/{userslug}/export/posts":
+    $ref: 'read/user/userslug/export/posts.yaml'
+  "/api/user/{userslug}/export/uploads":
+    $ref: 'read/user/userslug/export/uploads.yaml'
+  "/api/user/{userslug}/export/profile":
+    $ref: 'read/user/userslug/export/profile.yaml'
+  "/api/user/uid/{userslug}/export/{type}":
+    $ref: 'read/user/uid/userslug/export/type.yaml'
   /api/categories:
     $ref: 'read/categories.yaml'
   "/api/categories/{cid}/moderators":

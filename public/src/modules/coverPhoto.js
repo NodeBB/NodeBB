@@ -4,7 +4,7 @@
 define('coverPhoto', [
 	'vendor/jquery/draggable-background/backgroundDraggable',
 ], function () {
-	var coverPhoto = {
+	const coverPhoto = {
 		coverEl: null,
 		saveFn: null,
 	};
@@ -37,8 +37,8 @@ define('coverPhoto', [
 		e.stopPropagation();
 		e.preventDefault();
 
-		var files = e.originalEvent.dataTransfer.files;
-		var reader = new FileReader();
+		const files = e.originalEvent.dataTransfer.files;
+		const reader = new FileReader();
 
 		if (files.length && files[0].type.match('image.*')) {
 			reader.onload = function (e) {

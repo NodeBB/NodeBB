@@ -40,6 +40,7 @@
 	"teaser.last-post": "最后&ndash; 显示最新的帖子，包括原帖，如果没有回复",
 	"teaser.last-reply": "最后&ndash; 显示最新回复，如果没有回复，则显示“无回复”占位符",
 	"teaser.first": "第一",
+	"showPostPreviewsOnHover": "Show a preview of posts when mouse overed",
 	"unread": "未读设置",
 	"unread.cutoff": "未读截止时间（天）",
 	"unread.min-track-last": "跟踪最后阅读之前的主题最小帖子",
@@ -56,6 +57,9 @@
 	"composer.show-help": "显示“帮助”选项卡",
 	"composer.enable-plugin-help": "允许插件添加内容到帮助选项卡",
 	"composer.custom-help": "自定义帮助文本",
+	"backlinks": "Backlinks",
+	"backlinks.enabled": "Enable topic backlinks",
+	"backlinks.help": "If a post references another topic, a link back to the post will be inserted into the referenced topic at that point in time.",
 	"ip-tracking": "IP 跟踪",
 	"ip-tracking.each-post": "跟踪每个帖子的 IP 地址",
 	"enable-post-history": "启用回复历史"

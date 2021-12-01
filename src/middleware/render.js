@@ -65,7 +65,7 @@ module.exports = function (middleware) {
 					req.app.set('json spaces', global.env === 'development' || req.query.pretty ? 4 : 0);
 					return res.json(options);
 				}
-
+				const optionsString = JSON.stringify(options).replace(/<\//g, '<\\/');
 				const results = await utils.promiseParallel({
 					header: renderHeaderFooter('renderHeader', req, res, options),
 					content: renderContent(render, templateToRender, req, res, options),
@@ -76,7 +76,7 @@ module.exports = function (middleware) {
 					(res.locals.postHeader || '') +
 					results.content
 				}<script id="ajaxify-data" type="application/json">${
-					JSON.stringify(options).replace(/<\//g, '<\\/')
+					optionsString
 				}</script>${
 					res.locals.preFooter || ''
 				}${results.footer}`;

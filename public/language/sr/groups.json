@@ -11,7 +11,7 @@
     "pending.none": "Тренутно нема чланова на чекању.",
     "invited.none": "Тренутно нема позваних чланова.",
     "invited.uninvite": "Поништи позив",
-    "invited.search": "Тражите корисника да позовете у ову групу",
+    "invited.search": "Потражите корисника којег ћете позвати у ову групу",
     "invited.notification_title": "Добили сте позив да се придружите <strong>%1</strong>",
     "request.notification_title": "Чланство групе затражено од стране <strong>%1</strong>",
     "request.notification_text": "<strong>%1</strong> је затражио да постане члан <strong>%2</strong>",

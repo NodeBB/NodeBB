@@ -2,7 +2,7 @@
 
 
 define('forum/popular', ['topicList'], function (topicList) {
-	var Popular = {};
+	const Popular = {};
 
 	Popular.init = function () {
 		app.enterRoom('popular_topics');

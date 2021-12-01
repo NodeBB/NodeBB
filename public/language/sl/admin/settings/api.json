@@ -1,16 +1,16 @@
 {
-	"tokens": "Tokens",
-	"settings": "Settings",
-	"lead-text": "From this page you can configure access to the Write API in NodeBB.",
-	"intro": "By default, the Write API authenticates users based on their session cookie, but NodeBB also supports Bearer authentication via tokens generated via this page.",
-	"docs": "Click here to access the full API specification",
+	"tokens": "Žetoni",
+	"settings": "Nastavitve",
+	"lead-text": "Na tej strani lahko konfigurirate dostop do API-ja za pisanje v NodeBB.",
+	"intro": "API za pisanje privzeto preverja uporabnike na podlagi njihovega piškotka seje, vendar NodeBB podpira tudi preverjanje pristnosti nosilca prek žetonov, ustvarjenih na tej strani.",
+	"docs": "Kliknite tukaj za dostop do celotne specifikacije API-ja",
 
-	"require-https": "Require API usage via HTTPS only",
-	"require-https-caveat": "<strong>Note</strong>: Some installations involving load balancers may proxy their requests to NodeBB using HTTP, in which case this option should remain disabled.",
+	"require-https": "Zahtevaj uporabo API samo prek protokola HTTPS",
+	"require-https-caveat": "<strong>Opomba</strong>: Nekatere namestitve, ki vključujejo izravnalnike obremenitve, lahko svoje zahteve posredujejo NodeBB prek protokola HTTP, v tem primeru bi morala ta možnost ostati onemogočena.",
 
-	"uid": "User ID",
-	"uid-help-text": "Specify a User ID to associate with this token. If the user ID is <code>0</code>, it will be considered a <em>master</em> token, which can assume the identity of other users based on the <code>_uid</code> parameter",
-	"description": "Description",
-	"no-description": "No description specified.",
-	"token-on-save": "Token will be generated once form is saved"
+	"uid": "ID uporabnika",
+	"uid-help-text": "Določite ID uporabnika, ki ga želite povezati s tem žetonom. Če je ID uporabnika <code>0</code>, bo veljal za <em>glavni</em> žeton, ki lahko prevzame identiteto drugih uporabnikov na podlagi parametra <code>_uid</code>",
+	"description": "Opis",
+	"no-description": "Opis ni naveden.",
+	"token-on-save": "Žeton bo ustvarjen, ko bo obrazec shranjen"
 }

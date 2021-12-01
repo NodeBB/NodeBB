@@ -12,7 +12,7 @@ connection.getConnectionString = function (mongo) {
 	let usernamePassword = '';
 	const uri = mongo.uri || '';
 	if (mongo.username && mongo.password) {
-		usernamePassword = `${nconf.get('mongo:username')}:${encodeURIComponent(nconf.get('mongo:password'))}@`;
+		usernamePassword = `${mongo.username}:${encodeURIComponent(mongo.password)}@`;
 	} else if (!uri.includes('@') || !uri.slice(uri.indexOf('://') + 3, uri.indexOf('@'))) {
 		winston.warn('You have no mongo username/password setup!');
 	}
@@ -44,10 +44,9 @@ connection.getConnectionString = function (mongo) {
 connection.getConnectionOptions = function (mongo) {
 	mongo = mongo || nconf.get('mongo');
 	const connOptions = {
-		poolSize: 10,
+		maxPoolSize: 10,
+		minPoolSize: 3,
 		connectTimeoutMS: 90000,
-		useNewUrlParser: true,
-		useUnifiedTopology: true,
 	};
 
 	return _.merge(connOptions, mongo.options || {});

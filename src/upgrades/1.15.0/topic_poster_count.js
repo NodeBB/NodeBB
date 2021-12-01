@@ -15,15 +15,13 @@ module.exports = {
 			const keys = tids.map(tid => `tid:${tid}:posters`);
 			await db.sortedSetsRemoveRangeByScore(keys, '-inf', 0);
 			const counts = await db.sortedSetsCard(keys);
-			const setKeys = [];
-			const data = [];
+			const bulkSet = [];
 			for (let i = 0; i < tids.length; i++) {
 				if (counts[i] > 0) {
-					setKeys.push(`topic:${tids[i]}`);
-					data.push({ postercount: counts[i] });
+					bulkSet.push([`topic:${tids[i]}`, { postercount: counts[i] }]);
 				}
 			}
-			await db.setObjectBulk(setKeys, data);
+			await db.setObjectBulk(bulkSet);
 		}, {
 			progress: progress,
 			batchSize: 500,

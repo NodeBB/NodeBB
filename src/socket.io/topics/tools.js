@@ -68,7 +68,7 @@ module.exports = function (SocketTopics) {
 	};
 
 	SocketTopics.orderPinnedTopics = async function (socket, data) {
-		if (!Array.isArray(data)) {
+		if (!data || !data.tid) {
 			throw new Error('[[error:invalid-data]]');
 		}
 

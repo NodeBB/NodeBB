@@ -25,7 +25,7 @@
 	"access-topics": "Başlıklara Eriş",
 	"create-topics": "Başlık Oluştur",
 	"reply-to-topics": "Başlığı Cevapla",
-	"schedule-topics": "Schedule Topics",
+	"schedule-topics": "Konuları Planla",
 	"tag-topics": "Başlığı etiketle",
 	"edit-posts": "İletiyi düzenle",
 	"view-edit-history": "Düzenleme Geçmişini Görüntüle",
@@ -51,10 +51,13 @@
 	"alert.saved": "Ayrıcalık değişiklikleri kaydedildi ve uygulandı",
 	"alert.confirm-discard": "Ayrıcalık değişikliklerini iptal etmek istediğinize emin misiniz?",
 	"alert.discarded": "Ayrıcalık değişiklikleri iptal edildi",
-	"alert.confirm-copyToAll": "Bu ayrıcalıkları <strong>tüm kategoriler</strong> için uygulamaya emin misiniz?",
-	"alert.confirm-copyToAllGroup": "Bu grup ayrıcalıklarını <strong>tüm kategoriler</strong> için uygulamaya emin misiniz?",
-	"alert.confirm-copyToChildren": "Bu ayrıcalıkları <strong>tüm alt (aşağı) kategoriler</strong> için uygulamaya emin misiniz?",
-	"alert.confirm-copyToChildrenGroup": "Bu grup ayrıcalıklarını <strong>tüm alt (aşağı) kategoriler</strong> uygulamaya emin misiniz?",
+	"alert.confirm-copyToAll": "Bu  <strong>%1</strong> kategorisini <strong>tüm kategorilere</strong> uygulamak istediğinizden emin misiniz? ",
+	"alert.confirm-copyToAllGroup": "Bu grubun <strong>%1</strong> kümesini <strong>tüm kategorilere</strong> uygulamak istediğinizden emin misiniz?",
+	"alert.confirm-copyToChildren": "Bu <strong>%1</strong> kümesini<strong> tüm alt (alt) kategorilere</strong> uygulamak istediğinizden emin misiniz?",
+	"alert.confirm-copyToChildrenGroup": "Bu grubun <strong>%1</strong> kümesini <strong>tüm alt (alt) kategorilere</strong> uygulamak istediğinizden emin misiniz?",
 	"alert.no-undo": "<em>Bu işlem geri alınamaz.</em>",
-	"alert.admin-warning": "Yöneticiler dolaylı olarak tüm ayrıcalıklara sahiptirler"
+	"alert.admin-warning": "Yöneticiler dolaylı olarak tüm ayrıcalıklara sahiptirler",
+  	"alert.copyPrivilegesFrom-title": "Kopyalamak için bir kategori seçin",
+  	"alert.copyPrivilegesFrom-warning": "Seçilen kategoriden <strong>%1</strong> kopyalayacaktır.",
+  	"alert.copyPrivilegesFromGroup-warning": "Bu, seçilen kategoriden bu grubun <strong>%1</strong> kümesini kopyalayacaktır."
 }

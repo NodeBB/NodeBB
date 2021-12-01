@@ -26,10 +26,6 @@ Sockets.init = async function (server) {
 	});
 
 	if (nconf.get('isCluster')) {
-		// socket.io-adapter-cluster needs update
-		// if (nconf.get('singleHostCluster')) {
-		// 	io.adapter(require('./single-host-cluster'));
-		// } else if (nconf.get('redis')) {
 		if (nconf.get('redis')) {
 			const adapter = await require('../database/redis').socketAdapter();
 			io.adapter(adapter);
@@ -73,7 +69,8 @@ function onConnection(socket) {
 	onConnect(socket);
 	socket.onAny((event, ...args) => {
 		const payload = { data: [event].concat(args) };
-		onMessage(socket, payload);
+		const als = require('../als');
+		als.run({ uid: socket.uid }, onMessage, socket, payload);
 	});
 
 	socket.on('disconnect', () => {
@@ -174,9 +171,10 @@ async function onMessage(socket, payload) {
 }
 
 function requireModules() {
-	const modules = ['admin', 'categories', 'groups', 'meta', 'modules',
-		'notifications', 'plugins', 'posts', 'topics', 'user', 'blacklist',
-		'flags', 'uploads',
+	const modules = [
+		'admin', 'categories', 'groups', 'meta', 'modules',
+		'notifications', 'plugins', 'posts', 'topics', 'user',
+		'blacklist', 'uploads',
 	];
 
 	modules.forEach((module) => {
@@ -256,7 +254,7 @@ Sockets.getCountInRoom = function (room) {
 };
 
 Sockets.warnDeprecated = (socket, replacement) => {
-	if (socket.previousEvents) {
+	if (socket.previousEvents && socket.emit) {
 		socket.emit('event:deprecated_call', {
 			eventName: socket.previousEvents[socket.previousEvents.length - 1],
 			replacement: replacement,

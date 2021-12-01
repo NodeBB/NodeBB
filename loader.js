@@ -5,7 +5,6 @@ const fs = require('fs');
 const url = require('url');
 const path = require('path');
 const { fork } = require('child_process');
-const async = require('async');
 const logrotate = require('logrotate-stream');
 const mkdirp = require('mkdirp');
 
@@ -36,7 +35,7 @@ const Loader = {
 };
 const appPath = path.join(__dirname, 'app.js');
 
-Loader.init = function (callback) {
+Loader.init = function () {
 	if (silent) {
 		console.log = (...args) => {
 			output.write(`${args.join(' ')}\n`);
@@ -45,17 +44,15 @@ Loader.init = function (callback) {
 
 	process.on('SIGHUP', Loader.restart);
 	process.on('SIGTERM', Loader.stop);
-	callback();
 };
 
-Loader.displayStartupMessages = function (callback) {
+Loader.displayStartupMessages = function () {
 	console.log('');
-	console.log(`NodeBB v${pkg.version} Copyright (C) 2013-2014 NodeBB Inc.`);
+	console.log(`NodeBB v${pkg.version} Copyright (C) 2013-${(new Date()).getFullYear()} NodeBB Inc.`);
 	console.log('This program comes with ABSOLUTELY NO WARRANTY.');
 	console.log('This is free software, and you are welcome to redistribute it under certain conditions.');
 	console.log('For the full license, please visit: http://www.gnu.org/copyleft/gpl.html');
 	console.log('');
-	callback();
 };
 
 Loader.addWorkerEvents = function (worker) {
@@ -107,16 +104,12 @@ Loader.addWorkerEvents = function (worker) {
 	});
 };
 
-Loader.start = function (callback) {
+Loader.start = function () {
 	numProcs = getPorts().length;
 	console.log(`Clustering enabled: Spinning up ${numProcs} process(es).\n`);
 
 	for (let x = 0; x < numProcs; x += 1) {
 		forkWorker(x, x === 0);
-	}
-
-	if (callback) {
-		callback();
 	}
 };
 
@@ -216,7 +209,7 @@ fs.open(pathToConfig, 'r', (err) => {
 	if (nconf.get('daemon') !== 'false' && nconf.get('daemon') !== false) {
 		if (file.existsSync(pidFilePath)) {
 			try {
-				const	pid = fs.readFileSync(pidFilePath, { encoding: 'utf-8' });
+				const pid = fs.readFileSync(pidFilePath, { encoding: 'utf-8' });
 				process.kill(pid, 0);
 				process.exit();
 			} catch (e) {
@@ -232,15 +225,12 @@ fs.open(pathToConfig, 'r', (err) => {
 
 		fs.writeFileSync(pidFilePath, String(process.pid));
 	}
-
-	async.series([
-		Loader.init,
-		Loader.displayStartupMessages,
-		Loader.start,
-	], (err) => {
-		if (err) {
-			console.error('[loader] Error during startup');
-			throw err;
-		}
-	});
+	try {
+		Loader.init();
+		Loader.displayStartupMessages();
+		Loader.start();
+	} catch (err) {
+		console.error('[loader] Error during startup');
+		throw err;
+	}
 });

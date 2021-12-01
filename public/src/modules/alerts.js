@@ -2,7 +2,7 @@
 
 
 define('alerts', ['translator', 'components', 'hooks'], function (translator, components, hooks) {
-	var module = {};
+	const module = {};
 
 	module.alert = function (params) {
 		params.alert_id = 'alert_button_' + (params.alert_id ? params.alert_id : new Date().getTime());
@@ -10,7 +10,7 @@ define('alerts', ['translator', 'components', 'hooks'], function (translator, co
 		params.message = params.message ? params.message.trim() : '';
 		params.type = params.type || 'info';
 
-		var alert = $('#' + params.alert_id);
+		const alert = $('#' + params.alert_id);
 		if (alert.length) {
 			updateAlert(alert, params);
 		} else {
@@ -18,9 +18,41 @@ define('alerts', ['translator', 'components', 'hooks'], function (translator, co
 		}
 	};
 
+	module.success = function (message, timeout) {
+		module.alert({
+			alert_id: utils.generateUUID(),
+			title: '[[global:alert.success]]',
+			message: message,
+			type: 'success',
+			timeout: timeout || 5000,
+		});
+	};
+
+	module.error = function (message, timeout) {
+		message = (message && message.message) || message;
+
+		if (message === '[[error:revalidate-failure]]') {
+			socket.disconnect();
+			app.reconnect();
+			return;
+		}
+
+		module.alert({
+			alert_id: utils.generateUUID(),
+			title: '[[global:alert.error]]',
+			message: message,
+			type: 'danger',
+			timeout: timeout || 10000,
+		});
+	};
+
+	module.remove = function (id) {
+		$('#alert_button_' + id).remove();
+	};
+
 	function createNew(params) {
 		app.parseAndTranslate('alert', params, function (html) {
-			var alert = $('#' + params.alert_id);
+			let alert = $('#' + params.alert_id);
 			if (alert.length) {
 				return updateAlert(alert, params);
 			}
@@ -55,10 +87,6 @@ define('alerts', ['translator', 'components', 'hooks'], function (translator, co
 			hooks.fire('action:alert.new', { alert, params });
 		});
 	}
-
-	module.remove = function (id) {
-		$('#alert_button_' + id).remove();
-	};
 
 	function updateAlert(alert, params) {
 		alert.find('strong').html(params.title);
@@ -98,9 +126,9 @@ define('alerts', ['translator', 'components', 'hooks'], function (translator, co
 	}
 
 	function startTimeout(alert, params) {
-		var timeout = params.timeout;
+		const timeout = params.timeout;
 
-		var timeoutId = setTimeout(function () {
+		const timeoutId = setTimeout(function () {
 			fadeOut(alert);
 
 			if (typeof params.timeoutfn === 'function') {

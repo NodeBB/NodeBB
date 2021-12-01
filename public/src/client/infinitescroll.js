@@ -2,12 +2,12 @@
 
 
 define('forum/infinitescroll', ['hooks'], function (hooks) {
-	var scroll = {};
-	var callback;
-	var previousScrollTop = 0;
-	var loadingMore	= false;
-	var container;
-	var scrollTimeout = 0;
+	const scroll = {};
+	let callback;
+	let previousScrollTop = 0;
+	let loadingMore = false;
+	let container;
+	let scrollTimeout = 0;
 
 	scroll.init = function (el, cb) {
 		const $body = $('body');
@@ -37,20 +37,20 @@ define('forum/infinitescroll', ['hooks'], function (hooks) {
 	}
 
 	function onScroll() {
-		var bsEnv = utils.findBootstrapEnvironment();
-		var mobileComposerOpen = (bsEnv === 'xs' || bsEnv === 'sm') && $('html').hasClass('composing');
+		const bsEnv = utils.findBootstrapEnvironment();
+		const mobileComposerOpen = (bsEnv === 'xs' || bsEnv === 'sm') && $('html').hasClass('composing');
 		if (loadingMore || mobileComposerOpen) {
 			return;
 		}
-		var currentScrollTop = $(window).scrollTop();
-		var wh = $(window).height();
-		var viewportHeight = container.height() - wh;
-		var offsetTop = container.offset() ? container.offset().top : 0;
-		var scrollPercent = 100 * (currentScrollTop - offsetTop) / (viewportHeight <= 0 ? wh : viewportHeight);
+		const currentScrollTop = $(window).scrollTop();
+		const wh = $(window).height();
+		const viewportHeight = container.height() - wh;
+		const offsetTop = container.offset() ? container.offset().top : 0;
+		const scrollPercent = 100 * (currentScrollTop - offsetTop) / (viewportHeight <= 0 ? wh : viewportHeight);
 
-		var top = 15;
-		var bottom = 85;
-		var direction = currentScrollTop > previousScrollTop ? 1 : -1;
+		const top = 15;
+		const bottom = 85;
+		const direction = currentScrollTop > previousScrollTop ? 1 : -1;
 
 		if (scrollPercent < top && currentScrollTop < previousScrollTop) {
 			callback(direction);
@@ -69,7 +69,7 @@ define('forum/infinitescroll', ['hooks'], function (hooks) {
 		}
 		loadingMore = true;
 
-		var hookData = { method: method, data: data };
+		const hookData = { method: method, data: data };
 		hooks.fire('action:infinitescroll.loadmore', hookData);
 
 		socket.emit(hookData.method, hookData.data, function (err, data) {
@@ -88,8 +88,8 @@ define('forum/infinitescroll', ['hooks'], function (hooks) {
 			return;
 		}
 		loadingMore = true;
-		var url = config.relative_path + '/api' + location.pathname.replace(new RegExp('^' + config.relative_path), '');
-		var hookData = { url: url, data: data };
+		const url = config.relative_path + '/api' + location.pathname.replace(new RegExp('^' + config.relative_path), '');
+		const hookData = { url: url, data: data };
 		hooks.fire('action:infinitescroll.loadmore.xhr', hookData);
 
 		$.get(url, data, function (data) {
@@ -107,10 +107,10 @@ define('forum/infinitescroll', ['hooks'], function (hooks) {
 			return;
 		}
 
-		var removeCount = els.length - count;
+		const removeCount = els.length - count;
 		if (direction > 0) {
-			var height = $(document).height();
-			var scrollTop = $(window).scrollTop();
+			const height = $(document).height();
+			const scrollTop = $(window).scrollTop();
 
 			els.slice(0, removeCount).remove();
 

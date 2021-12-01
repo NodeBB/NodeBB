@@ -21,6 +21,7 @@
     "edit": "Επεξεργασία",
     "delete": "Διαγραφή",
     "delete-event": "Delete Event",
+    "delete-event-confirm": "Are you sure you want to delete this event?",
     "purge": "Εκκαθάριση",
     "restore": "Επαναφορά",
     "move": "Μετακίνηση",
@@ -46,6 +47,8 @@
     "restored-by": "Restored by",
     "moved-from-by": "Moved from %1 by",
     "queued-by": "Post queued for approval &rarr;",
+    "backlink": "Referenced by",
+    "forked-by": "Forked by",
     "bookmark_instructions": "Click here to return to the last read post in this thread.",
     "flag-post": "Flag this post",
     "flag-user": "Flag this user",
@@ -137,6 +140,7 @@
     "composer.handle_placeholder": "Enter your name/handle here",
     "composer.discard": "Πέταγμα",
     "composer.submit": "Υποβολή",
+    "composer.additional-options": "Additional Options",
     "composer.schedule": "Schedule",
     "composer.replying_to": "Απάντηση στο %1",
     "composer.new_topic": "Νέο Θέμα",
@@ -157,6 +161,7 @@
     "newest_to_oldest": "Νεότερο προς Παλαιότερο",
     "most_votes": "Most Votes",
     "most_posts": "Most Posts",
+    "most_views": "Most Views",
     "stale.title": "Create new topic instead?",
     "stale.warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
     "stale.create": "Create a new topic",
@@ -175,5 +180,6 @@
     "timeago_later": "%1 later",
     "timeago_earlier": "%1 earlier",
     "first-post": "First post",
-    "last-post": "Last post"
+    "last-post": "Last post",
+    "post-quick-reply": "Post quick reply"
 }

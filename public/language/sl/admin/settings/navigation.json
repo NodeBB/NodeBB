@@ -1,23 +1,25 @@
 {
-	"icon": "Icon:",
+	"icon": "Ikona:",
 	"change-icon": "change",
-	"route": "Route:",
+	"route": "Pot:",
 	"tooltip": "Tooltip:",
-	"text": "Text:",
+	"text": "Besedilo:",
 	"text-class": "Text Class: <small>optional</small>",
 	"class": "Class: <small>optional</small>",
-	"id": "ID: <small>optional</small>",
+	"id": "ID: <small>izbirno</small>",
 
-	"properties": "Properties:",
-	"groups": "Groups:",
-	"open-new-window": "Open in a new window",
+	"properties": "Lastnosti:",
+	"groups": "Skupine",
+	"open-new-window": "Odpri v novem oknu",
+	"dropdown": "Dropdown",
+	"dropdown-placeholder": "Place your dropdown menu items below, ie: <br/>&lt;li&gt;&lt;a href&#x3D;&quot;https://myforum.com&quot;&gt;Link 1&lt;/a&gt;&lt;/li&gt;",
 
-	"btn.delete": "Delete",
-	"btn.disable": "Disable",
-	"btn.enable": "Enable",
+	"btn.delete": "Izbriši",
+	"btn.disable": "Onemogoči",
+	"btn.enable": "Omogoči",
 
-	"available-menu-items": "Available Menu Items",
-	"custom-route": "Custom Route",
-	"core": "core",
-	"plugin": "plugin"
+	"available-menu-items": "Razpoložljivi elementi menija",
+	"custom-route": "Pot po meri",
+	"core": "jedro",
+	"plugin": "vtičnik"
 }

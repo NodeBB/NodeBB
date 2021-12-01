@@ -1,6 +1,5 @@
 'use strict';
 
-const async = require('async');
 const db = require('../database');
 
 const user = require('../user');
@@ -60,10 +59,11 @@ module.exports = function (Topics) {
 
 	Topics.purgePostsAndTopic = async function (tid, uid) {
 		const mainPid = await Topics.getTopicField(tid, 'mainPid');
-		await batch.processSortedSet(`tid:${tid}:posts`, (pids, next) => {
-			async.eachSeries(pids, (pid, next) => {
-				posts.purge(pid, uid, next);
-			}, next);
+		await batch.processSortedSet(`tid:${tid}:posts`, async (pids) => {
+			for (const pid of pids) {
+				// eslint-disable-next-line no-await-in-loop
+				await posts.purge(pid, uid);
+			}
 		}, { alwaysStartAt: 0 });
 		await posts.purge(mainPid, uid);
 		await Topics.purge(tid, uid);
@@ -125,6 +125,7 @@ module.exports = function (Topics) {
 				`cid:${topicData.cid}:tids:posts`,
 				`cid:${topicData.cid}:tids:lastposttime`,
 				`cid:${topicData.cid}:tids:votes`,
+				`cid:${topicData.cid}:tids:views`,
 				`cid:${topicData.cid}:recent_tids`,
 				`cid:${topicData.cid}:uid:${topicData.uid}:tids`,
 				`uid:${topicData.uid}:topics`,

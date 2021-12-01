@@ -45,7 +45,7 @@ module.exports = function (Groups) {
 			groupNames = [groupNames];
 		}
 		const sets = [];
-		groupNames.forEach(groupName =>	sets.push(`group:${groupName}:pending`, `group:${groupName}:invited`));
+		groupNames.forEach(groupName => sets.push(`group:${groupName}:pending`, `group:${groupName}:invited`));
 		await db.setsRemove(sets, uid);
 	};
 
@@ -82,8 +82,8 @@ module.exports = function (Groups) {
 
 		const set = type === 'invite' ? `group:${groupName}:invited` : `group:${groupName}:pending`;
 		await db.setAdd(set, uids);
-		const hookName = type === 'invite' ? 'action:group.inviteMember' : 'action:group.requestMembership';
-		plugins.hooks.fire(hookName, {
+		const hookName = type === 'invite' ? 'inviteMember' : 'requestMembership';
+		plugins.hooks.fire(`action:group.${hookName}`, {
 			groupName: groupName,
 			uids: uids,
 		});

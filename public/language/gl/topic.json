@@ -21,6 +21,7 @@
     "edit": "Editar",
     "delete": "Borrar",
     "delete-event": "Delete Event",
+    "delete-event-confirm": "Are you sure you want to delete this event?",
     "purge": "Purgar",
     "restore": "Restaurar",
     "move": "Mover",
@@ -46,6 +47,8 @@
     "restored-by": "Restored by",
     "moved-from-by": "Moved from %1 by",
     "queued-by": "Post queued for approval &rarr;",
+    "backlink": "Referenced by",
+    "forked-by": "Forked by",
     "bookmark_instructions": "Pica aquí para volver á última mensaxe lida neste tema ",
     "flag-post": "Flag this post",
     "flag-user": "Flag this user",
@@ -137,6 +140,7 @@
     "composer.handle_placeholder": "Enter your name/handle here",
     "composer.discard": "Descartar",
     "composer.submit": "Enviar",
+    "composer.additional-options": "Additional Options",
     "composer.schedule": "Schedule",
     "composer.replying_to": "En resposta a %1",
     "composer.new_topic": "Novo tema",
@@ -157,6 +161,7 @@
     "newest_to_oldest": "Máis novo a máis antigo",
     "most_votes": "Most Votes",
     "most_posts": "Most Posts",
+    "most_views": "Most Views",
     "stale.title": "Crear un novo tema no seu lugar?",
     "stale.warning": "O tema no que queres publicar é bastante vello. Queres crear un novo tema no seu lugar e incluir unha referencia a este na túa mensaxe?",
     "stale.create": "Crear un novo tema",
@@ -175,5 +180,6 @@
     "timeago_later": "%1 later",
     "timeago_earlier": "%1 earlier",
     "first-post": "First post",
-    "last-post": "Last post"
+    "last-post": "Last post",
+    "post-quick-reply": "Post quick reply"
 }

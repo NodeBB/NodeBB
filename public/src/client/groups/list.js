@@ -1,9 +1,9 @@
 'use strict';
 
 define('forum/groups/list', [
-	'forum/infinitescroll', 'benchpress', 'api',
-], function (infinitescroll, Benchpress, api) {
-	var Groups = {};
+	'forum/infinitescroll', 'benchpress', 'api', 'bootbox',
+], function (infinitescroll, Benchpress, api, bootbox) {
+	const Groups = {};
 
 	Groups.init = function () {
 		infinitescroll.init(Groups.loadMoreGroups);
@@ -20,7 +20,7 @@ define('forum/groups/list', [
 				}
 			});
 		});
-		var params = utils.params();
+		const params = utils.params();
 		$('#search-sort').val(params.sort || 'alpha');
 
 		// Group searching
@@ -58,9 +58,9 @@ define('forum/groups/list', [
 	};
 
 	Groups.search = function () {
-		var groupsEl = $('#groups-list');
-		var queryEl = $('#search-text');
-		var sortEl = $('#search-sort');
+		const groupsEl = $('#groups-list');
+		const queryEl = $('#search-text');
+		const sortEl = $('#search-sort');
 
 		socket.emit('groups.search', {
 			query: queryEl.val(),

@@ -432,6 +432,26 @@ describe('Categories', () => {
 			});
 		});
 
+		it('should not remove category from parent if parent is set again to same category', async () => {
+			const parentCat = await Categories.create({ name: 'parent', description: 'poor parent' });
+			const updateData = {};
+			updateData[cid] = {
+				parentCid: parentCat.cid,
+			};
+			await Categories.update(updateData);
+			let data = await Categories.getCategoryData(cid);
+			assert.equal(data.parentCid, updateData[cid].parentCid);
+			let childrenCids = await db.getSortedSetRange(`cid:${parentCat.cid}:children`, 0, -1);
+			assert(childrenCids.includes(String(cid)));
+
+			// update again to same parent
+			await Categories.update(updateData);
+			data = await Categories.getCategoryData(cid);
+			assert.equal(data.parentCid, updateData[cid].parentCid);
+			childrenCids = await db.getSortedSetRange(`cid:${parentCat.cid}:children`, 0, -1);
+			assert(childrenCids.includes(String(cid)));
+		});
+
 		it('should purge category', (done) => {
 			Categories.create({
 				name: 'purge me',

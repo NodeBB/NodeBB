@@ -259,6 +259,7 @@ describe('Utility Methods', () => {
 	});
 
 	it('should return passed in value if invalid', (done) => {
+		// eslint-disable-next-line no-loss-of-precision
 		const bigInt = -111111111111111111;
 		const result = utils.toISOString(bigInt);
 		assert.equal(bigInt, result);
@@ -314,6 +315,14 @@ describe('Utility Methods', () => {
 		assert.equal(params.foo, 1);
 		assert.equal(params.bar, 'test');
 		assert.equal(params.herp, 2);
+		done();
+	});
+
+	it('should get url params as arrays', (done) => {
+		const params = utils.params({ url: 'http://nodebb.org?foo=1&bar=test&herp[]=2&herp[]=3' });
+		assert.equal(params.foo, 1);
+		assert.equal(params.bar, 'test');
+		assert.deepStrictEqual(params.herp, [2, 3]);
 		done();
 	});
 

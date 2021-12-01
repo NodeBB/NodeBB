@@ -33,7 +33,7 @@ exports.processSortedSet = async function (setKey, process, options) {
 	options.doneIf = typeof options.doneIf === 'function' ? options.doneIf : function () {};
 
 	let start = 0;
-	let stop = options.batch;
+	let stop = options.batch - 1;
 
 	if (process && process.constructor && process.constructor.name !== 'AsyncFunction') {
 		process = util.promisify(process);
@@ -47,8 +47,8 @@ exports.processSortedSet = async function (setKey, process, options) {
 		}
 		await process(ids);
 
-		start += utils.isNumber(options.alwaysStartAt) ? options.alwaysStartAt : options.batch + 1;
-		stop = start + options.batch;
+		start += utils.isNumber(options.alwaysStartAt) ? options.alwaysStartAt : options.batch;
+		stop = start + options.batch - 1;
 
 		if (options.interval) {
 			await sleep(options.interval);

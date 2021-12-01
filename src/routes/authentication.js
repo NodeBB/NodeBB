@@ -16,15 +16,8 @@ let loginStrategies = [];
 const Auth = module.exports;
 
 Auth.initialize = function (app, middleware) {
-	const passportInitMiddleware = passport.initialize();
-	app.use((req, res, next) => {
-		passportInitMiddleware(req, res, next);
-	});
-	const passportSessionMiddleware = passport.session();
-	app.use((req, res, next) => {
-		passportSessionMiddleware(req, res, next);
-	});
-
+	app.use(passport.initialize());
+	app.use(passport.session());
 	app.use((req, res, next) => {
 		Auth.setAuthVars(req, res);
 		next();
@@ -51,13 +44,9 @@ Auth.getLoginStrategies = function () {
 };
 
 Auth.verifyToken = async function (token, done) {
-	let { tokens = [] } = await meta.settings.get('core.api');
-	tokens = tokens.reduce((memo, cur) => {
-		memo[cur.token] = cur.uid;
-		return memo;
-	}, {});
-
-	const uid = tokens[token];
+	const { tokens = [] } = await meta.settings.get('core.api');
+	const tokenObj = tokens.find(t => t.token === token);
+	const uid = tokenObj ? tokenObj.uid : undefined;
 
 	if (uid !== undefined) {
 		if (parseInt(uid, 10) > 0) {
@@ -148,9 +137,7 @@ Auth.reloadRoutes = async function (params) {
 				res.locals.strategy = strategy;
 				next();
 			})(req, res, next);
-		},
-		Auth.middleware.validateAuth,
-		(req, res, next) => {
+		}, Auth.middleware.validateAuth, (req, res, next) => {
 			async.waterfall([
 				async.apply(req.login.bind(req), res.locals.user),
 				async.apply(controllers.authentication.onSuccessfulLogin, req, req.uid),

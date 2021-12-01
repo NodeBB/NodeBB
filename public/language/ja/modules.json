@@ -54,7 +54,7 @@
     "composer.formatting.strikethrough": "取り消し線",
     "composer.formatting.code": "コード",
     "composer.formatting.link": "リンク",
-    "composer.formatting.picture": "画像",
+    "composer.formatting.picture": "Image Link",
     "composer.upload-picture": "画像をアップロード",
     "composer.upload-file": "ファイルをアップロード",
     "composer.zen_mode": "Zen モード",

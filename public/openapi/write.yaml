@@ -52,6 +52,8 @@ paths:
     $ref: 'write/users.yaml'
   /users/{uid}:
     $ref: 'write/users/uid.yaml'
+  /users/{uid}/picture:
+    $ref: 'write/users/uid/picture.yaml'
   /users/{uid}/content:
     $ref: 'write/users/uid/content.yaml'
   /users/{uid}/account:
@@ -140,7 +142,11 @@ paths:
     $ref: 'write/flags/flagId/notes/datetime.yaml'
   /admin/settings/{setting}:
     $ref: 'write/admin/settings/setting.yaml'
+  /admin/analytics:
+    $ref: 'write/admin/analytics.yaml'
   /admin/analytics/{set}:
     $ref: 'write/admin/analytics/set.yaml'
   /files/:
     $ref: 'write/files.yaml'
+  /files/folder:
+    $ref: 'write/files/folder.yaml'

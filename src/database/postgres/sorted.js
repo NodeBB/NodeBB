@@ -498,6 +498,11 @@ RETURNING "score" s`,
 		});
 	};
 
+	module.sortedSetIncrByBulk = async function (data) {
+		// TODO: perf single query?
+		return await Promise.all(data.map(item => module.sortedSetIncrBy(item[0], item[1], item[2])));
+	};
+
 	module.getSortedSetRangeByLex = async function (key, min, max, start, count) {
 		return await sortedSetLex(key, min, max, 1, start, count);
 	};

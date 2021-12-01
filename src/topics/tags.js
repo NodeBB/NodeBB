@@ -116,9 +116,10 @@ module.exports = function (Topics) {
 	};
 
 	Topics.renameTags = async function (data) {
-		await async.eachSeries(data, async (tagData) => {
+		for (const tagData of data) {
+			// eslint-disable-next-line no-await-in-loop
 			await renameTag(tagData.value, tagData.newName);
-		});
+		}
 	};
 
 	async function renameTag(tag, newTagName) {
@@ -154,8 +155,7 @@ module.exports = function (Topics) {
 				}
 			});
 			await db.setObjectBulk(
-				topicData.map(t => `topic:${t.tid}`),
-				topicData.map(t => ({ tags: t.tags.join(',') }))
+				topicData.map(t => [`topic:${t.tid}`, { tags: t.tags.join(',') }]),
 			);
 		}, {});
 		await Topics.deleteTag(tag);
@@ -334,14 +334,11 @@ module.exports = function (Topics) {
 					topicTags.push(tag);
 				}
 			});
-			bulkSet.push({ tags: topicTags.join(',') });
+			bulkSet.push([`topic:${t.tid}`, { tags: topicTags.join(',') }]);
 		});
 		await Promise.all([
 			db.sortedSetAddBulk(bulkAdd),
-			db.setObjectBulk(
-				topicData.map(t => `topic:${t.tid}`),
-				bulkSet,
-			),
+			db.setObjectBulk(bulkSet),
 		]);
 
 		await Promise.all(tags.map(updateTagCount));
@@ -362,14 +359,11 @@ module.exports = function (Topics) {
 					topicTags.splice(topicTags.indexOf(tag), 1);
 				}
 			});
-			bulkSet.push({ tags: topicTags.join(',') });
+			bulkSet.push([`topic:${t.tid}`, { tags: topicTags.join(',') }]);
 		});
 		await Promise.all([
 			db.sortedSetRemoveBulk(bulkRemove),
-			db.setObjectBulk(
-				topicData.map(t => `topic:${t.tid}`),
-				bulkSet,
-			),
+			db.setObjectBulk(bulkSet),
 		]);
 
 		await Promise.all(tags.map(updateTagCount));

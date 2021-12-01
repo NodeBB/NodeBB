@@ -77,9 +77,6 @@ module.exports = function (User) {
 		const isFirstUser = uid === 1;
 		userData.uid = uid;
 
-		if (isFirstUser) {
-			userData['email:confirmed'] = 1;
-		}
 		await db.setObject(`user:${uid}`, userData);
 
 		const bulkAdd = [
@@ -97,19 +94,19 @@ module.exports = function (User) {
 			bulkAdd.push(['fullname:sorted', 0, `${userData.fullname.toLowerCase()}:${userData.uid}`]);
 		}
 
-		const groupsToJoin = ['registered-users'].concat(
-			isFirstUser ? 'verified-users' : 'unverified-users'
-		);
-
 		await Promise.all([
 			db.incrObjectField('global', 'userCount'),
 			analytics.increment('registrations'),
 			db.sortedSetAddBulk(bulkAdd),
-			groups.join(groupsToJoin, userData.uid),
+			groups.join(['registered-users', 'unverified-users'], userData.uid),
 			User.notifications.sendWelcomeNotification(userData.uid),
 			storePassword(userData.uid, data.password),
 			User.updateDigestSetting(userData.uid, meta.config.dailyDigestFreq),
 		]);
+
+		if (userData.email && isFirstUser) {
+			await User.email.confirmByUid(userData.uid);
+		}
 
 		if (userData.email && userData.uid > 1) {
 			User.email.sendValidationEmail(userData.uid, {

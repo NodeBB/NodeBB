@@ -21,7 +21,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        node: [12, 14]
+        node: [12, 14, 16]
         database: [mongo-dev, mongo, redis, postgres]
         include:
           # only run coverage once
@@ -69,7 +69,7 @@ jobs:
           - 6379:6379
 
       mongo:
-        image: 'mongo:3.2'
+        image: 'mongo:3.6'
         ports:
           # Maps port 27017 on service container to the host
           - 27017:27017

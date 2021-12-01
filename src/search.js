@@ -45,21 +45,32 @@ async function searchInContent(data) {
 
 	async function doSearch(type, searchIn) {
 		if (searchIn.includes(data.searchIn)) {
-			return await plugins.hooks.fire('filter:search.query', {
+			const result = await plugins.hooks.fire('filter:search.query', {
 				index: type,
 				content: data.query,
 				matchWords: data.matchWords || 'all',
 				cid: searchCids,
 				uid: searchUids,
 				searchData: data,
+				ids: [],
 			});
+			return Array.isArray(result) ? result : result.ids;
 		}
 		return [];
 	}
-	const [pids, tids] = await Promise.all([
-		doSearch('post', ['posts', 'titlesposts']),
-		doSearch('topic', ['titles', 'titlesposts']),
-	]);
+	let pids = [];
+	let tids = [];
+	const inTopic = String(data.query || '').match(/^in:topic-([\d]+) /);
+	if (inTopic) {
+		const tid = inTopic[1];
+		const cleanedTerm = data.query.replace(inTopic[0], '');
+		pids = await topics.search(tid, cleanedTerm);
+	} else {
+		[pids, tids] = await Promise.all([
+			doSearch('post', ['posts', 'titlesposts']),
+			doSearch('topic', ['titles', 'titlesposts']),
+		]);
+	}
 
 	if (data.returnIds) {
 		return { pids: pids, tids: tids };

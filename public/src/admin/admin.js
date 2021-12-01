@@ -1,8 +1,8 @@
 'use strict';
 
 (function () {
-	var logoutTimer = 0;
-	var logoutMessage;
+	let logoutTimer = 0;
+	let logoutMessage;
 	function startLogoutTimer() {
 		if (app.config.adminReloginDuration <= 0) {
 			return;
@@ -20,12 +20,14 @@
 		}
 
 		logoutTimer = setTimeout(function () {
-			bootbox.alert({
-				closeButton: false,
-				message: logoutMessage,
-				callback: function () {
-					window.location.reload();
-				},
+			require(['bootbox'], function (bootbox) {
+				bootbox.alert({
+					closeButton: false,
+					message: logoutMessage,
+					callback: function () {
+						window.location.reload();
+					},
+				});
 			});
 		}, 3600000);
 	}
@@ -52,7 +54,9 @@
 		}
 
 		$('[component="logout"]').on('click', function () {
-			app.logout();
+			require(['logout'], function (logout) {
+				logout();
+			});
 			return false;
 		});
 
@@ -92,11 +96,11 @@
 			}
 
 			url = [config.relative_path, url].join('/');
-			var fallback;
+			let fallback;
 
 			$('#main-menu li').removeClass('active');
 			$('#main-menu a').removeClass('active').filter('[href="' + url + '"]').each(function () {
-				var menu = $(this);
+				const menu = $(this);
 				if (menu.parent().attr('data-link')) {
 					return;
 				}
@@ -107,13 +111,13 @@
 				fallback = menu.text();
 			});
 
-			var mainTitle;
-			var pageTitle;
+			let mainTitle;
+			let pageTitle;
 			if (/admin\/plugins\//.test(url)) {
 				mainTitle = fallback;
 				pageTitle = '[[admin/menu:section-plugins]] > ' + mainTitle;
 			} else {
-				var matches = url.match(/admin\/(.+?)\/(.+?)$/);
+				const matches = url.match(/admin\/(.+?)\/(.+?)$/);
 				if (matches) {
 					mainTitle = '[[admin/menu:' + matches[1] + '/' + matches[2] + ']]';
 					pageTitle = '[[admin/menu:section-' +
@@ -141,31 +145,35 @@
 
 	function setupRestartLinks() {
 		$('.rebuild-and-restart').off('click').on('click', function () {
-			bootbox.confirm('[[admin/admin:alert.confirm-rebuild-and-restart]]', function (confirm) {
-				if (confirm) {
-					require(['admin/modules/instance'], function (instance) {
-						instance.rebuildAndRestart();
-					});
-				}
+			require(['bootbox'], function (bootbox) {
+				bootbox.confirm('[[admin/admin:alert.confirm-rebuild-and-restart]]', function (confirm) {
+					if (confirm) {
+						require(['admin/modules/instance'], function (instance) {
+							instance.rebuildAndRestart();
+						});
+					}
+				});
 			});
 		});
 
 		$('.restart').off('click').on('click', function () {
-			bootbox.confirm('[[admin/admin:alert.confirm-restart]]', function (confirm) {
-				if (confirm) {
-					require(['admin/modules/instance'], function (instance) {
-						instance.restart();
-					});
-				}
+			require(['bootbox'], function (bootbox) {
+				bootbox.confirm('[[admin/admin:alert.confirm-restart]]', function (confirm) {
+					if (confirm) {
+						require(['admin/modules/instance'], function (instance) {
+							instance.restart();
+						});
+					}
+				});
 			});
 		});
 	}
 
 	function configureSlidemenu() {
 		require(['slideout'], function (Slideout) {
-			var env = utils.findBootstrapEnvironment();
+			let env = utils.findBootstrapEnvironment();
 
-			var slideout = new Slideout({
+			const slideout = new Slideout({
 				panel: document.getElementById('panel'),
 				menu: document.getElementById('menu'),
 				padding: 256,

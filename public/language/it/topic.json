@@ -21,6 +21,7 @@
     "edit": "Modifica",
     "delete": "Elimina",
     "delete-event": "Elimina evento",
+    "delete-event-confirm": "Sei sicuro di voler cancellare questo evento?",
     "purge": "Elimina definitivamente",
     "restore": "Ripristina",
     "move": "Muovi",
@@ -46,6 +47,8 @@
     "restored-by": "Ripristinato da",
     "moved-from-by": "Spostato da %1 da",
     "queued-by": "Post in coda per l'approvazione &rarr;",
+    "backlink": "Referenziato da",
+    "forked-by": "Forked by",
     "bookmark_instructions": "Clicca qui per tornare all'ultimo post letto in questa discussione.",
     "flag-post": "Segnala questo post",
     "flag-user": "Segnala questo utente",
@@ -137,6 +140,7 @@
     "composer.handle_placeholder": "Inserisci qui il tuo nome/nome utente ospite",
     "composer.discard": "Annulla",
     "composer.submit": "Invia",
+    "composer.additional-options": "Opzioni aggiuntive",
     "composer.schedule": "Pianifica",
     "composer.replying_to": "Rispondendo a %1",
     "composer.new_topic": "Nuova Discussione",
@@ -157,6 +161,7 @@
     "newest_to_oldest": "Da Nuovi a Vecchi",
     "most_votes": "Più Voti",
     "most_posts": "Più Post",
+    "most_views": "Più visualizzazioni",
     "stale.title": "Preferisci creare una nuova discussione?",
     "stale.warning": "Il topic al quale stai rispondendo è abbastanza vecchio. Vorresti piuttosto creare un nuovo topic in riferimento a questo nella tua risposta?",
     "stale.create": "Crea una nuova discussione",
@@ -175,5 +180,6 @@
     "timeago_later": "%1 dopo",
     "timeago_earlier": "%1 precedente",
     "first-post": "Primo post",
-    "last-post": "Ultimo post"
+    "last-post": "Ultimo post",
+    "post-quick-reply": "Invia una risposta rapida"
 }

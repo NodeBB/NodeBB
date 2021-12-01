@@ -2,21 +2,14 @@
 					<table class="table table-striped privilege-table">
 						<thead>
 							<tr class="privilege-table-header">
-								<th colspan="3"></th>
-								<th class="arrowed" colspan="3">
-									[[admin/manage/categories:privileges.section-viewing]]
+								<th class="privilege-filters btn-toolbar" colspan="100">
+									<!-- IF privileges.columnCountGroupOther -->
+									<button type="button" data-filter="19,99" class="btn btn-default pull-right">[[admin/manage/categories:privileges.section-other]]</button>
+									<!-- END -->
+									<button type="button" data-filter="16,18" class="btn btn-default pull-right">[[admin/manage/categories:privileges.section-moderation]]</button>
+									<button type="button" data-filter="6,15" class="btn btn-default pull-right">[[admin/manage/categories:privileges.section-posting]]</button>
+									<button type="button" data-filter="3,5" class="btn btn-default pull-right">[[admin/manage/categories:privileges.section-viewing]]</button>
 								</th>
-								<th class="arrowed" colspan="10">
-									[[admin/manage/categories:privileges.section-posting]]
-								</th>
-								<th class="arrowed" colspan="3">
-									[[admin/manage/categories:privileges.section-moderation]]
-								</th>
-								<!-- IF privileges.columnCountGroupOther -->
-								<th class="arrowed" colspan="{privileges.columnCountGroupOther}">
-									[[admin/manage/categories:privileges.section-other]]
-								</th>
-								<!-- END -->
 							</tr><tr><!-- zebrastripe reset --></tr>
 							<tr>
 								<th colspan="2">[[admin/manage/categories:privileges.section-group]]</th>
@@ -92,21 +85,14 @@
 					<table class="table table-striped privilege-table">
 						<thead>
 							<tr class="privilege-table-header">
-								<th colspan="3"></th>
-								<th class="arrowed" colspan="3">
-									[[admin/manage/categories:privileges.section-viewing]]
+								<th class="privilege-filters btn-toolbar" colspan="100">
+									<!-- IF privileges.columnCountUserOther -->
+									<button type="button" data-filter="19,99" class="btn btn-default pull-right">[[admin/manage/categories:privileges.section-other]]</button>
+									<!-- END -->
+									<button type="button" data-filter="16,18" class="btn btn-default pull-right">[[admin/manage/categories:privileges.section-moderation]]</button>
+									<button type="button" data-filter="6,15" class="btn btn-default pull-right">[[admin/manage/categories:privileges.section-posting]]</button>
+									<button type="button" data-filter="3,5" class="btn btn-default pull-right">[[admin/manage/categories:privileges.section-viewing]]</button>
 								</th>
-								<th class="arrowed" colspan="10">
-									[[admin/manage/categories:privileges.section-posting]]
-								</th>
-								<th class="arrowed" colspan="3">
-									[[admin/manage/categories:privileges.section-moderation]]
-								</th>
-								<!-- IF privileges.columnCountUserOther -->
-								<th class="arrowed" colspan="{privileges.columnCountUserOther}">
-									[[admin/manage/categories:privileges.section-other]]
-								</th>
-								<!-- END -->
 							</tr><tr><!-- zebrastripe reset --></tr>
 							<tr>
 								<th colspan="2">[[admin/manage/categories:privileges.section-user]]</th>
@@ -121,7 +107,7 @@
 							<tr data-uid="{privileges.users.uid}"{{{ if privileges.users.banned }}} data-banned{{{ end }}}>
 								<td>
 									<!-- IF ../picture -->
-									<img class="avatar avatar-sm" src="{privileges.users.picture}" title="{privileges.users.username}" />
+									<img class="avatar avatar-sm" src="{privileges.users.picture}" title="{privileges.users.username}" alt="" />
 									<!-- ELSE -->
 									<div class="avatar avatar-sm" style="background-color: {../icon:bgColor};">{../icon:text}</div>
 									<!-- ENDIF ../picture -->

@@ -40,6 +40,7 @@
 	"teaser.last-post": "Last &ndash; הצג את הפוסט האחרון, כולל הפוסט המקורי, אם אין תגובות",
 	"teaser.last-reply": "Last &ndash; הצג את התשובה האחרונה, או ציין \"ללא תשובות\" אם אין תשובות",
 	"teaser.first": "ראשון",
+	"showPostPreviewsOnHover": "הצג תצוגה מקדימה בריחוף על פוסט",
 	"unread": "הגדרות \"שלא נקראו\"",
 	"unread.cutoff": "ימי ניתוק שלא נקראו",
 	"unread.min-track-last": "פוסטים מינימליים בנושא לפני מעקב אחר קריאה אחרונה",
@@ -56,6 +57,9 @@
 	"composer.show-help": "הצג כרטיסיית \"עזרה\"",
 	"composer.enable-plugin-help": "אפשר לתוסיפים להוסיף תוכן ללשונית עזרה",
 	"composer.custom-help": "טקסט עזרה מותאם אישית",
+	"backlinks": "Backlinks",
+	"backlinks.enabled": "Enable topic backlinks",
+	"backlinks.help": "If a post references another topic, a link back to the post will be inserted into the referenced topic at that point in time.",
 	"ip-tracking": "IP מעקב",
 	"ip-tracking.each-post": "מעקב אחר כתובת IP על כל הודעה",
 	"enable-post-history": "הפוך היסטוריית פוסטים לזמינה"

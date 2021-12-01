@@ -5,5 +5,7 @@
     "orphaned": "미등록",
     "size/filecount": "크기 / 파일 수",
     "confirm-delete": "이 파일을 정말로 삭제하시겠습니까?",
-    "filecount": "%1 파일"
+    "filecount": "%1 파일",
+    "new-folder": "새로운 폴더",
+    "name-new-folder": "폴더의 이름을 입력해주세요."
 }

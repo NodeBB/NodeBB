@@ -19,7 +19,7 @@
 	"category-image": "תמונת קטגוריה",
 	"parent-category": "קטגוריית אב",
 	"optional-parent-category": "(אופציונלי) קטגוריית הורים",
-	"top-level": "Top Level",
+	"top-level": "רמה עליונה",
 	"parent-category-none": "(ללא)",
 	"copy-parent": "העתק אב",
 	"copy-settings": "העתק הגדרות מ:",
@@ -32,8 +32,8 @@
 	"edit": "ערוך",
 	"analytics": "נתח",
 	"view-category": "הצג קטגוריה",
-	"set-order": "Set order",
-	"set-order-help": "Setting the order of the category will move this category to that order and update the order of other categories as necessary. Minimum order is 1 which puts the category at the top.",
+	"set-order": "קבע סדר",
+	"set-order-help": "הגדרת סדר הקטגוריה תעביר קטגוריה זו לסדר זה ותעדכן את סדר הקטגוריות האחרות לפי הצורך. מינימום קביעת סדר הוא 1 מה שמציב את הקטגוריה בראש.",
 
 	"select-category": "בחר קטגוריה",
 	"set-parent-category": "הגדר קטגוריית אב",
@@ -59,7 +59,7 @@
 	"privileges.copy-group-privileges-to-children": "העתק הרשאות קבוצה זו לצאצאי קטגוריה זו.",
 	"privileges.copy-group-privileges-to-all-categories": "העתק הרשאות קבוצה זו לכל הקטגוריות (זהירות!).",
 	"privileges.copy-group-privileges-from": "העתק הרשאות קבוצה זו מקטגוריה אחרת.",
-	"privileges.inherit": "אם קבוצת <code>משתמשים רשומים</code> מקבלים הרשאה ספציפית, יסומן <strong>הרשאה אוטומטית</strong>לכל הקבוצות האחרות. הרשאה אוטומטית זו יוגדר גם אם לא תסמן אותה במפורש. מכיוון שכל המשתמשים הם חלק מקבוצת המשתמשים <code>משתמשים רשומים</code> , ולכן, אין צורך להעניק במפורש הרשאות עבור קבוצות נוספות.",
+	"privileges.inherit": "אם קבוצת <code>משתמשים רשומים</code> מקבלים הרשאה ספציפית, יסומן <strong>הרשאה אוטומטית</strong> לכל הקבוצות האחרות. הרשאה אוטומטית זו יוגדר גם אם לא תסמן אותה במפורש. מכיוון שכל המשתמשים הם חלק מקבוצת המשתמשים <code>משתמשים רשומים</code> , ולכן, אין צורך להעניק במפורש הרשאות עבור קבוצות נוספות.",
 	"privileges.copy-success": "הרשאות הועתקו!",
 
 	"analytics.back": "חזור לרשימת קטגוריות",

@@ -7,9 +7,6 @@ const prompt = require('prompt');
 const winston = require('winston');
 const nconf = require('nconf');
 const _ = require('lodash');
-const util = require('util');
-
-const promptGet = util.promisify((schema, callback) => prompt.get(schema, callback));
 
 const utils = require('./utils');
 
@@ -147,7 +144,7 @@ async function setupConfig() {
 			}
 		});
 	} else {
-		config = await promptGet(questions.main);
+		config = await prompt.get(questions.main);
 	}
 	await configureDatabases(config);
 	await completeConfigSetup(config);
@@ -298,7 +295,7 @@ async function createAdmin() {
 
 	async function retryPassword(originalResults) {
 		// Ask only the password questions
-		const results = await promptGet(passwordQuestions);
+		const results = await prompt.get(passwordQuestions);
 
 		// Update the original data with newly collected password
 		originalResults.password = results.password;
@@ -312,7 +309,7 @@ async function createAdmin() {
 	questions = questions.concat(passwordQuestions);
 
 	if (!install.values) {
-		const results = await promptGet(questions);
+		const results = await prompt.get(questions);
 		return await success(results);
 	}
 	// If automated setup did not provide a user password, generate one,
@@ -530,7 +527,16 @@ install.save = async function (server_conf) {
 		serverConfigPath = path.resolve(__dirname, '../', nconf.get('config'));
 	}
 
-	await fs.promises.writeFile(serverConfigPath, JSON.stringify(server_conf, null, 4));
+	let currentConfig = {};
+	try {
+		currentConfig = require(serverConfigPath);
+	} catch (err) {
+		if (err.code !== 'MODULE_NOT_FOUND') {
+			throw err;
+		}
+	}
+
+	await fs.promises.writeFile(serverConfigPath, JSON.stringify({ ...currentConfig, ...server_conf }, null, 4));
 	console.log('Configuration Saved OK');
 	nconf.file({
 		file: serverConfigPath,

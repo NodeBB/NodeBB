@@ -51,10 +51,13 @@
 	"alert.saved": "Jogosultságok módosításai mentésre kerültek",
 	"alert.confirm-discard": "Biztosan el szeretnéd vetni ezeket a jogosultsági módosításokat?",
 	"alert.discarded": "Jogosultságok módosításai elvetve",
-	"alert.confirm-copyToAll": "Biztosan elmented ezt a jogosultsági beállítást <strong>minden kategóriának</strong>?",
-	"alert.confirm-copyToAllGroup": "Biztosan elmented ennek a csoportnak a jogosultsági beállításait <strong>minden kategóriának</strong>?",
-	"alert.confirm-copyToChildren": "Biztosan elmented ezt a jogosultsági beállítást <strong>minden leszármazott kategóriának</strong>?",
-	"alert.confirm-copyToChildrenGroup": "Biztosan elmented ennek a csoportnak a jogosultsági beállításait <strong>minden leszármazott kategóriának</strong>?",
+	"alert.confirm-copyToAll": "Are you sure you wish to apply this set of <strong>%1</strong> to <strong>all categories</strong>?",
+	"alert.confirm-copyToAllGroup": "Are you sure you wish to apply this group's set of <strong>%1</strong> to <strong>all categories</strong>?",
+	"alert.confirm-copyToChildren": "Are you sure you wish to apply this set of <strong>%1</strong> to <strong>all descendant (child) categories</strong>?",
+	"alert.confirm-copyToChildrenGroup": "Are you sure you wish to apply this group's set of <strong>%1</strong> to <strong>all descendant (child) categories</strong>?",
 	"alert.no-undo": "<em>Ez a művelet nem vonható vissza.</em>",
-	"alert.admin-warning": "Az adminisztrátorok automatikusan megkapnak minden jogosultságot"
+	"alert.admin-warning": "Az adminisztrátorok automatikusan megkapnak minden jogosultságot",
+  	"alert.copyPrivilegesFrom-title": "Select a category to copy from",
+  	"alert.copyPrivilegesFrom-warning": "This will copy <strong>%1</strong> from the selected category.",
+  	"alert.copyPrivilegesFromGroup-warning": "This will copy this group's set of <strong>%1</strong> from the selected category."
 }

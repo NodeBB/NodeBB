@@ -8,8 +8,6 @@
 	"delete": "Entfernen",
 	"enable": "Aktivieren",
 	"disable": "Deaktivieren",
-	"control-panel": "Belohnungseinstellungen",
-	"new-reward": "Neue Belohnung",
 
 	"alert.delete-success": "Die Belohnung wurde erfolgreich gelöscht",
 	"alert.no-inputs-found": "Ungültige Belohnung - keine Eingaben gefunden!",

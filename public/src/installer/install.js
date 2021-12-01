@@ -25,12 +25,12 @@ $('document').ready(function () {
 
 	function setupInputs() {
 		$('form').on('focus', '.form-control', function () {
-			var parent = $(this).parents('.input-row');
+			const parent = $(this).parents('.input-row');
 
 			$('.input-row.active').removeClass('active');
 			parent.addClass('active').removeClass('error');
 
-			var help = parent.find('.help-text');
+			const help = parent.find('.help-text');
 			help.html(help.attr('data-help'));
 		});
 
@@ -56,9 +56,9 @@ $('document').ready(function () {
 	}
 
 	function activate(type, el) {
-		var field = el.val();
-		var parent = el.parents('.input-row');
-		var help = parent.children('.help-text');
+		const field = el.val();
+		const parent = el.parents('.input-row');
+		const help = parent.children('.help-text');
 
 		function validateUsername(field) {
 			if (!utils.isUserNameValid(field) || !slugify(field)) {
@@ -123,8 +123,8 @@ $('document').ready(function () {
 	function launchForum() {
 		$('#launch .working').removeClass('hide');
 		$.post('/launch', function () {
-			var successCount = 0;
-			var url = $('#launch').attr('data-url');
+			let successCount = 0;
+			const url = $('#launch').attr('data-url');
 			setInterval(function () {
 				$.get(url + '/admin').done(function () {
 					if (successCount >= 5) {

@@ -21,6 +21,7 @@
     "edit": "Ändra",
     "delete": "Ta bort",
     "delete-event": "Delete Event",
+    "delete-event-confirm": "Are you sure you want to delete this event?",
     "purge": "Rensa",
     "restore": "Återställ",
     "move": "Flytta",
@@ -46,6 +47,8 @@
     "restored-by": "Restored by",
     "moved-from-by": "Moved from %1 by",
     "queued-by": "Post queued for approval &rarr;",
+    "backlink": "Referenced by",
+    "forked-by": "Forked by",
     "bookmark_instructions": "Klicka här för att återgå till senast lästa inlägg i detta ämne.",
     "flag-post": "Flag this post",
     "flag-user": "Flag this user",
@@ -137,6 +140,7 @@
     "composer.handle_placeholder": "Enter your name/handle here",
     "composer.discard": "Avbryt",
     "composer.submit": "Skicka",
+    "composer.additional-options": "Additional Options",
     "composer.schedule": "Schedule",
     "composer.replying_to": "Svarar till %1",
     "composer.new_topic": "Nytt ämne",
@@ -157,6 +161,7 @@
     "newest_to_oldest": "Nyaste till äldst",
     "most_votes": "Flest röster",
     "most_posts": "Flest inlägg",
+    "most_views": "Most Views",
     "stale.title": "Skapa nytt ämne istället?",
     "stale.warning": "Ämnet du svarar på är ganska gammalt. Vill du skapa ett nytt ämne istället och inkludera en referens till det här ämnet i ditt inlägg?",
     "stale.create": "Skapa nytt ämne",
@@ -175,5 +180,6 @@
     "timeago_later": "%1 senare",
     "timeago_earlier": "%1 tidigare",
     "first-post": "First post",
-    "last-post": "Last post"
+    "last-post": "Last post",
+    "post-quick-reply": "Post quick reply"
 }

@@ -21,6 +21,7 @@
     "edit": "Muokkaa",
     "delete": "Poista",
     "delete-event": "Delete Event",
+    "delete-event-confirm": "Are you sure you want to delete this event?",
     "purge": "Poista pysyvästi",
     "restore": "Palauta",
     "move": "Siirrä",
@@ -46,6 +47,8 @@
     "restored-by": "Restored by",
     "moved-from-by": "Moved from %1 by",
     "queued-by": "Post queued for approval &rarr;",
+    "backlink": "Referenced by",
+    "forked-by": "Forked by",
     "bookmark_instructions": "Klikkaa tästä palataksesi viimeisimpään luettuun viestiin tässä aiheessa",
     "flag-post": "Flag this post",
     "flag-user": "Flag this user",
@@ -137,6 +140,7 @@
     "composer.handle_placeholder": "Enter your name/handle here",
     "composer.discard": "Hylkää",
     "composer.submit": "Lähetä",
+    "composer.additional-options": "Additional Options",
     "composer.schedule": "Schedule",
     "composer.replying_to": "Vastaus viestiin %1",
     "composer.new_topic": "Uusi aihe",
@@ -157,6 +161,7 @@
     "newest_to_oldest": "Uusimmasta vanhimpaan",
     "most_votes": "Eniten ääniä",
     "most_posts": "Eniten viestejä",
+    "most_views": "Most Views",
     "stale.title": "Create new topic instead?",
     "stale.warning": "Aihe johon olet vastaamassa on melko vanha. Haluaisitko luoda mieluummin uuden aiheen ja viitata siitä tähän viestissäsi?",
     "stale.create": "Luo uusi aihe",
@@ -175,5 +180,6 @@
     "timeago_later": "%1 myöhempi",
     "timeago_earlier": "%1 aiempi",
     "first-post": "First post",
-    "last-post": "Last post"
+    "last-post": "Last post",
+    "post-quick-reply": "Post quick reply"
 }

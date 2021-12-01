@@ -2,7 +2,9 @@
 
 define('accounts/picture', [
 	'pictureCropper',
-], (pictureCropper) => {
+	'api',
+	'bootbox',
+], (pictureCropper, api, bootbox) => {
 	const Picture = {};
 
 	Picture.openChangeModal = () => {
@@ -14,7 +16,7 @@ define('accounts/picture', [
 			}
 
 			// boolean to signify whether an uploaded picture is present in the pictures list
-			var uploaded = pictures.reduce(function (memo, cur) {
+			const uploaded = pictures.reduce(function (memo, cur) {
 				return memo || cur.type === 'uploaded';
 			}, false);
 
@@ -33,7 +35,7 @@ define('accounts/picture', [
 					'icon:bgColor': ajaxify.data['icon:bgColor'],
 				},
 			}, function (html) {
-				var modal = bootbox.dialog({
+				const modal = bootbox.dialog({
 					className: 'picture-switcher',
 					title: '[[user:change_picture]]',
 					message: html,
@@ -86,17 +88,13 @@ define('accounts/picture', [
 				}
 
 				function saveSelection() {
-					var type = modal.find('.list-group-item.active').attr('data-type');
+					const type = modal.find('.list-group-item.active').attr('data-type');
 					const iconBgColor = document.querySelector('.modal.picture-switcher input[type="radio"]:checked').value || 'transparent';
 
-					changeUserPicture(type, iconBgColor, function (err) {
-						if (err) {
-							return app.alertError(err.message);
-						}
-
+					changeUserPicture(type, iconBgColor).then(() => {
 						Picture.updateHeader(type === 'default' ? '' : modal.find('.list-group-item.active img').attr('src'), iconBgColor);
 						ajaxify.refresh();
-					});
+					}).catch(app.alertError);
 				}
 
 				function onCloseModal() {
@@ -176,7 +174,7 @@ define('accounts/picture', [
 				uploadModal.modal('show');
 
 				uploadModal.find('.upload-btn').on('click', function () {
-					var url = uploadModal.find('#uploadFromUrl').val();
+					const url = uploadModal.find('#uploadFromUrl').val();
 					if (!url) {
 						return false;
 					}
@@ -212,12 +210,8 @@ define('accounts/picture', [
 		});
 	}
 
-	function changeUserPicture(type, bgColor, callback) {
-		socket.emit('user.changePicture', {
-			type,
-			bgColor,
-			uid: ajaxify.data.theirid,
-		}, callback);
+	function changeUserPicture(type, bgColor) {
+		return api.put(`/users/${ajaxify.data.theirid}/picture`, { type, bgColor });
 	}
 
 	return Picture;

@@ -13,6 +13,7 @@
 	"resent-single": "Invio del riepilogo manuale completato",
 	"resent-day": "Rinvio riepilogo giornaliero",
 	"resent-week": "Rinvio del riepilogo settimanale",
+	"resent-biweek": "Re invio riepilogo bisettimanale",
 	"resent-month": "Rinvio del riepilogo mensile",
 	"null": "<em>Mai</em>",
 	"manual-run": "Esecuzione riepilogo manuale:",

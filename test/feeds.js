@@ -127,12 +127,8 @@ describe('feeds', () => {
 	describe('private feeds and tokens', () => {
 		let jar;
 		let rssToken;
-		before((done) => {
-			helpers.loginUser('foo', 'barbar', (err, _jar) => {
-				assert.ifError(err);
-				jar = _jar;
-				done();
-			});
+		before(async () => {
+			({ jar } = await helpers.loginUser('foo', 'barbar'));
 		});
 
 		it('should load feed if its not private', (done) => {

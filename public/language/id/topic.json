@@ -21,6 +21,7 @@
     "edit": "Ubah",
     "delete": "Hapus",
     "delete-event": "Delete Event",
+    "delete-event-confirm": "Are you sure you want to delete this event?",
     "purge": "Musnahkan",
     "restore": "Kembalikan",
     "move": "Pindah",
@@ -46,6 +47,8 @@
     "restored-by": "Restored by",
     "moved-from-by": "Moved from %1 by",
     "queued-by": "Post queued for approval &rarr;",
+    "backlink": "Referenced by",
+    "forked-by": "Forked by",
     "bookmark_instructions": "Klik di sini untuk kembali ke posting yang terakhir kali dibaca pada topik ini.",
     "flag-post": "Flag this post",
     "flag-user": "Flag this user",
@@ -137,6 +140,7 @@
     "composer.handle_placeholder": "Enter your name/handle here",
     "composer.discard": "Buang",
     "composer.submit": "Kirim",
+    "composer.additional-options": "Additional Options",
     "composer.schedule": "Schedule",
     "composer.replying_to": "Membalas ke %1",
     "composer.new_topic": "Topik Baru",
@@ -157,6 +161,7 @@
     "newest_to_oldest": "Terbaru ke Terlama",
     "most_votes": "Most Votes",
     "most_posts": "Most Posts",
+    "most_views": "Most Views",
     "stale.title": "Create new topic instead?",
     "stale.warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
     "stale.create": "Create a new topic",
@@ -175,5 +180,6 @@
     "timeago_later": "%1 later",
     "timeago_earlier": "%1 earlier",
     "first-post": "First post",
-    "last-post": "Last post"
+    "last-post": "Last post",
+    "post-quick-reply": "Post quick reply"
 }

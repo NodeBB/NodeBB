@@ -1,7 +1,7 @@
 {
-	"alert.confirm-rebuild-and-restart": "Are you sure you wish to rebuild and restart NodeBB?",
-	"alert.confirm-restart": "Are you sure you wish to restart NodeBB?",
+	"alert.confirm-rebuild-and-restart": "Ste prepričani, da želite obnoviti in ponovno zagnati NodeBB?",
+	"alert.confirm-restart": "Ste prepričani, da želite znova zagnati NodeBB?",
 
-	"acp-title": "%1 | NodeBB Admin Control Panel",
-	"settings-header-contents": "Contents"
+	"acp-title": "%1 | NodeBB skrbniška  nadzorna plošča",
+	"settings-header-contents": "Vsebine"
 }

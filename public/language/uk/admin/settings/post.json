@@ -40,6 +40,7 @@
 	"teaser.last-post": "Останній &mdash; показувати останній пост або перший, якщо немає відповідей",
 	"teaser.last-reply": "Останній &mdash; показувати останній пост або \"Немає відповідей\", якщо немає відповідей",
 	"teaser.first": "Перший",
+	"showPostPreviewsOnHover": "Show a preview of posts when mouse overed",
 	"unread": "Налаштування непрочитаних",
 	"unread.cutoff": "За скільки днів показувати непрочитані",
 	"unread.min-track-last": "Мінімальна кількість постів у темі перш ніж відслідковувати останні прочитані",
@@ -56,6 +57,9 @@
 	"composer.show-help": "Показувати вкладку \"Довідка\"",
 	"composer.enable-plugin-help": "Дозволити плагінам додавати зміст довідки",
 	"composer.custom-help": "Користувацький текст довідки",
+	"backlinks": "Backlinks",
+	"backlinks.enabled": "Enable topic backlinks",
+	"backlinks.help": "If a post references another topic, a link back to the post will be inserted into the referenced topic at that point in time.",
 	"ip-tracking": "Відстеження IP",
 	"ip-tracking.each-post": "Відстежувати IP адреси для кожного посту",
 	"enable-post-history": "Увімкнути Історію Постів"

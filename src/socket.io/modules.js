@@ -146,19 +146,7 @@ SocketModules.chats.addUserToRoom = async function (socket, data) {
 	if (!uid) {
 		throw new Error('[[error:no-user]]');
 	}
-	if (socket.uid === parseInt(uid, 10)) {
-		throw new Error('[[error:cant-chat-with-yourself]]');
-	}
-	const [settings, isAdminOrGlobalMod, isFollowing] = await Promise.all([
-		user.getSettings(uid),
-		user.isAdminOrGlobalMod(socket.uid),
-		user.isFollowing(uid, socket.uid),
-	]);
-
-	if (settings.restrictChat && !isAdminOrGlobalMod && !isFollowing) {
-		throw new Error('[[error:chat-restricted]]');
-	}
-
+	await Messaging.canMessageUser(socket.uid, uid);
 	await Messaging.addUsersToRoom(socket.uid, [uid], data.roomId);
 };
 

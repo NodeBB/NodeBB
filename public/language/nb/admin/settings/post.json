@@ -40,6 +40,7 @@
 	"teaser.last-post": "Last &ndash; Show the latest post, including the original post, if no replies",
 	"teaser.last-reply": "Last &ndash; Show the latest reply, or a \"No replies\" placeholder if no replies",
 	"teaser.first": "First",
+	"showPostPreviewsOnHover": "Show a preview of posts when mouse overed",
 	"unread": "Unread Settings",
 	"unread.cutoff": "Unread cutoff days",
 	"unread.min-track-last": "Minimum antall innlegg i tråd før registrering av sist lest",
@@ -56,6 +57,9 @@
 	"composer.show-help": "Show \"Help\" tab",
 	"composer.enable-plugin-help": "Allow plugins to add content to the help tab",
 	"composer.custom-help": "Custom Help Text",
+	"backlinks": "Backlinks",
+	"backlinks.enabled": "Enable topic backlinks",
+	"backlinks.help": "If a post references another topic, a link back to the post will be inserted into the referenced topic at that point in time.",
 	"ip-tracking": "IP Tracking",
 	"ip-tracking.each-post": "Track IP Address for each post",
 	"enable-post-history": "Enable Post History"

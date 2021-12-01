@@ -40,6 +40,7 @@
 	"teaser.last-post": "Ostatni &ndash; Pokaż ostatni post, włączając pierwszy post, w razie braku odpowiedzi",
 	"teaser.last-reply": "Ostatni &ndash; Pokaż ostatnią odpowiedź lub komunikat „Brak odpowiedzi” w razie ich braku",
 	"teaser.first": "Pierwszy",
+	"showPostPreviewsOnHover": "Show a preview of posts when mouse overed",
 	"unread": "Ustawienia nieprzeczytanych",
 	"unread.cutoff": "Dni do odcięcia nieprzeczytanych ",
 	"unread.min-track-last": "Minimalna liczba postów w temacie przed śledzeniem ostatnio przeczytanego",
@@ -56,6 +57,9 @@
 	"composer.show-help": "Pokazuj zakładkę „Pomoc”",
 	"composer.enable-plugin-help": "Zezwalaj wtyczkom na dodawanie zawartości do zakładki pomocy",
 	"composer.custom-help": "Własny tekst pomocy",
+	"backlinks": "Backlinks",
+	"backlinks.enabled": "Enable topic backlinks",
+	"backlinks.help": "If a post references another topic, a link back to the post will be inserted into the referenced topic at that point in time.",
 	"ip-tracking": "Śledzenie IP",
 	"ip-tracking.each-post": "Śledź adres IP dla każdego postu",
 	"enable-post-history": "Włącz historię wpisu"

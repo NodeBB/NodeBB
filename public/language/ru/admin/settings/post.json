@@ -40,6 +40,7 @@
 	"teaser.last-post": "Последнее &ndash; показать последнее сообщение в теме (первое, если ответов нет).",
 	"teaser.last-reply": "Последнее &ndash; показать последнее сообщение или пометку &laquo;Ответов нет&raquo;",
 	"teaser.first": "Первое сообщение",
+	"showPostPreviewsOnHover": "Show a preview of posts when mouse overed",
 	"unread": "Настройка списка непрочитанных тем",
 	"unread.cutoff": "Порог отсечки (в днях)",
 	"unread.min-track-last": "Минимальное кол-во сообщений в теме, чтобы начать отслеживать непрочитанные ответы",
@@ -56,6 +57,9 @@
 	"composer.show-help": "Показывать вкладку с подсказками",
 	"composer.enable-plugin-help": "Разрешить плагинам добавлять подсказки на вкладку",
 	"composer.custom-help": "Пользовательский текст для вкладки с подсказками",
+	"backlinks": "Backlinks",
+	"backlinks.enabled": "Enable topic backlinks",
+	"backlinks.help": "If a post references another topic, a link back to the post will be inserted into the referenced topic at that point in time.",
 	"ip-tracking": "Отслеживание IP",
 	"ip-tracking.each-post": "Отслеживать IP для каждого сообщения",
 	"enable-post-history": "Включить историю правок"

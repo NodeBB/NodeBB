@@ -26,4 +26,10 @@ describe('Upgrade', () => {
 		await db.set('schemaDate', 1);
 		await upgrade.run();
 	});
+
+	it('should run particular upgrades', async () => {
+		const files = await upgrade.getAll();
+		await db.set('schemaDate', 1);
+		await upgrade.runParticular(files.slice(0, 2));
+	});
 });

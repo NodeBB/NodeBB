@@ -8,8 +8,6 @@
 	"delete": "Удалить",
 	"enable": "Включить",
 	"disable": "Выключить",
-	"control-panel": "Управление наградами",
-	"new-reward": "Новая награда",
 
 	"alert.delete-success": "Награда успешно удалена",
 	"alert.no-inputs-found": "Некорректная награда!",

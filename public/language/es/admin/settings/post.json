@@ -40,6 +40,7 @@
 	"teaser.last-post": "Último &ndash; Muestra la última entrada, incluyendo la entrada original, si no hay respuestas.",
 	"teaser.last-reply": "Última &ndash; Muestra la última respuesta, o un texto \"No hay respuestas\" si no hay respuestas.",
 	"teaser.first": "Primera",
+	"showPostPreviewsOnHover": "Show a preview of posts when mouse overed",
 	"unread": "Configuraciones sin leer",
 	"unread.cutoff": "Días límite sin leer",
 	"unread.min-track-last": "Entradas mínimas en un tema antes de indicar la última leída.",
@@ -56,6 +57,9 @@
 	"composer.show-help": "Mostrar pestaña \"Ayuda\"",
 	"composer.enable-plugin-help": "Permitir a plugins añadir contenido a la pestaña de ayuda",
 	"composer.custom-help": "Texto de Ayuda Personalizado",
+	"backlinks": "Backlinks",
+	"backlinks.enabled": "Enable topic backlinks",
+	"backlinks.help": "If a post references another topic, a link back to the post will be inserted into the referenced topic at that point in time.",
 	"ip-tracking": "Seguimiento de IP",
 	"ip-tracking.each-post": "Seguir la IP para cada entrada/respuesta",
 	"enable-post-history": "Activar historial de respuestas"

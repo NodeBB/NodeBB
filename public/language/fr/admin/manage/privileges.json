@@ -51,10 +51,13 @@
 	"alert.saved": "Changements de privilèges enregistrés et appliqués",
 	"alert.confirm-discard": "Êtes-vous sûr de vouloir annuler vos modifications de privilèges ?",
 	"alert.discarded": "Modifications de privilèges annulés",
-	"alert.confirm-copyToAll": "Voulez-vous vraiment appliquer ce jeu de privilèges à <strong>toutes les catégories</strong> ?",
-	"alert.confirm-copyToAllGroup": "Voulez-vous vraiment appliquer le jeu de privilèges de ce groupe à <strong>toutes les catégories</strong> ?",
-	"alert.confirm-copyToChildren": "Voulez-vous vraiment appliquer ces privilèges à <strong>toutes les catégories incluses (enfants)</strong> ?",
-	"alert.confirm-copyToChildrenGroup": "Voulez-vous vraiment appliquer le jeu de privilèges de ce groupe à <strong>toutes les catégories incluses (enfants)</strong> ?",
+	"alert.confirm-copyToAll": "Voulez-vous vraiment appliquer cet ensemble de <strong>%1</strong> à <strong>toutes les catégories</strong>?",
+	"alert.confirm-copyToAllGroup": "Voulez-vous vraiment appliquer l'ensemble de <strong>%1</strong> de ce groupe à <strong>toutes les catégories</strong>?",
+	"alert.confirm-copyToChildren": "Voulez-vous vraiment appliquer cet ensemble de <strong>%1</strong> à <strong>toutes les catégories incluses (enfants)</strong>?",
+	"alert.confirm-copyToChildrenGroup": "Voulez-vous vraiment appliquer l'ensemble de <strong>%1</strong> de ce groupe à <strong>toutes les catégories incluses (enfants)</strong>?",
 	"alert.no-undo": "<em>Cette action ne peut pas être annulée.</em>",
-	"alert.admin-warning": "Les administrateurs obtiennent implicitement tous les privilèges"
+	"alert.admin-warning": "Les administrateurs obtiennent implicitement tous les privilèges",
+  	"alert.copyPrivilegesFrom-title": "Sélectionnez une catégorie à copier",
+  	"alert.copyPrivilegesFrom-warning": "Cela copiera <strong>%1</strong> de la catégorie sélectionnée.",
+  	"alert.copyPrivilegesFromGroup-warning": "Cela copiera l'ensemble de <strong>%1</strong> de ce groupe à partir de la catégorie sélectionnée."
 }

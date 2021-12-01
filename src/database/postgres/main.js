@@ -28,7 +28,7 @@ module.exports = function (module) {
 			});
 			return key.map(k => res.rows.some(r => r.k === k));
 		}
-		const res =	await module.pool.query({
+		const res = await module.pool.query({
 			name: 'exists',
 			text: `
 			SELECT EXISTS(SELECT *

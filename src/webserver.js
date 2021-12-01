@@ -148,15 +148,8 @@ function setupExpressApp(app) {
 	configureBodyParser(app);
 
 	app.use(cookieParser(nconf.get('secret')));
-	const userAgentMiddleware = useragent.express();
-	app.use((req, res, next) => {
-		userAgentMiddleware(req, res, next);
-	});
-	const spiderDetectorMiddleware = detector.middleware();
-	app.use((req, res, next) => {
-		spiderDetectorMiddleware(req, res, next);
-	});
-
+	app.use(useragent.express());
+	app.use(detector.middleware());
 	app.use(session({
 		store: db.sessionStore,
 		secret: nconf.get('secret'),
@@ -171,7 +164,11 @@ function setupExpressApp(app) {
 	app.use(middleware.addHeaders);
 	app.use(middleware.processRender);
 	auth.initialize(app, middleware);
-	app.use(middleware.autoLocale);	// must be added after auth middlewares are added
+	const als = require('./als');
+	app.use((req, res, next) => {
+		als.run({ uid: req.uid }, next);
+	});
+	app.use(middleware.autoLocale); // must be added after auth middlewares are added
 
 	const toobusy = require('toobusy-js');
 	toobusy.maxLag(meta.config.eventLoopLagThreshold);

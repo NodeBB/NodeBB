@@ -1,6 +1,6 @@
 {
-	"language-settings": "Language Settings",
-	"description": "The default language determines the language settings for all users who are visiting your forum. <br />Individual users can override the default language on their account settings page.",
-	"default-language": "Default Language",
-	"auto-detect": "Auto Detect Language Setting for Guests"
+	"language-settings": "Nastavitve jezika",
+	"description": "Privzeti jezik določa jezikovne nastavitve za vse uporabnike, ki obiščejo vaš forum. <br /> Posamezni uporabniki lahko na strani z nastavitvami računa preglasijo privzeti jezik.",
+	"default-language": "Privzeti jezik",
+	"auto-detect": "Samodejna zaznava nastavitev jezika za goste"
 }

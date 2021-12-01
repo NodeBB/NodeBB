@@ -392,7 +392,7 @@ Categories.buildForSelectCategories = function (categories, fields, parentCid) {
 	rootCategories.forEach(category => recursive(category, categoriesData, '', 0));
 
 	const pickFields = [
-		'cid', 'name', 'level', 'icon',	'parentCid',
+		'cid', 'name', 'level', 'icon', 'parentCid',
 		'color', 'bgColor', 'backgroundImage', 'imageClass',
 	];
 	fields = fields || [];

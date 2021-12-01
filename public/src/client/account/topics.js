@@ -6,10 +6,10 @@ define('forum/account/topics', [
 	'forum/infinitescroll',
 	'hooks',
 ], function (header, infinitescroll, hooks) {
-	var AccountTopics = {};
+	const AccountTopics = {};
 
-	var template;
-	var page = 1;
+	let template;
+	let page = 1;
 
 	AccountTopics.init = function () {
 		header.init();
@@ -29,7 +29,7 @@ define('forum/account/topics', [
 		if (direction < 0) {
 			return;
 		}
-		var params = utils.params();
+		const params = utils.params();
 		page += 1;
 		params.page = page;
 
@@ -46,7 +46,7 @@ define('forum/account/topics', [
 		app.parseAndTranslate(template, 'topics', { topics: topics }, function (html) {
 			$('[component="category"]').append(html);
 			html.find('.timeago').timeago();
-			app.createUserTooltips();
+			app.createUserTooltips(html);
 			utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 			hooks.fire('action:topics.loaded', { topics: topics });
 			callback();

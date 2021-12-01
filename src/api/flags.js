@@ -51,7 +51,7 @@ flagsApi.appendNote = async (caller, data) => {
 			}
 		} catch (e) {
 			// Okay if not does not exist in database
-			if (!e.message === '[[error:invalid-data]]') {
+			if (e.message !== '[[error:invalid-data]]') {
 				throw e;
 			}
 		}
@@ -71,6 +71,10 @@ flagsApi.deleteNote = async (caller, data) => {
 	}
 
 	await flags.deleteNote(data.flagId, data.datetime);
+	await flags.appendHistory(data.flagId, caller.uid, {
+		notes: '[[flags:note-deleted]]',
+		datetime: Date.now(),
+	});
 
 	const [notes, history] = await Promise.all([
 		flags.getNotes(data.flagId),

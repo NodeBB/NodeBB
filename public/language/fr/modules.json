@@ -54,7 +54,7 @@
     "composer.formatting.strikethrough": "Barré",
     "composer.formatting.code": "Code",
     "composer.formatting.link": "Lien",
-    "composer.formatting.picture": "Image",
+    "composer.formatting.picture": "Lien d'image",
     "composer.upload-picture": "Envoyer une image",
     "composer.upload-file": "Envoyer un fichier",
     "composer.zen_mode": "Mode Zen",

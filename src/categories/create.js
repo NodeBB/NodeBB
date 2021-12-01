@@ -21,7 +21,7 @@ module.exports = function (Categories) {
 		data.name = String(data.name || `Category ${cid}`);
 		const slug = `${cid}/${slugify(data.name)}`;
 		const smallestOrder = firstChild.length ? firstChild[0].score - 1 : 1;
-		const order = data.order || smallestOrder;	// If no order provided, place it at the top
+		const order = data.order || smallestOrder; // If no order provided, place it at the top
 		const colours = Categories.assignColours();
 
 		let category = {
@@ -199,13 +199,20 @@ module.exports = function (Categories) {
 		cache.del(`cid:${toCid}:tag:whitelist`);
 	}
 
-	Categories.copyPrivilegesFrom = async function (fromCid, toCid, group) {
+	Categories.copyPrivilegesFrom = async function (fromCid, toCid, group, filter = []) {
 		group = group || '';
+		let privsToCopy;
+		if (group) {
+			const groupPrivilegeList = await privileges.categories.getGroupPrivilegeList();
+			privsToCopy = groupPrivilegeList.slice(...filter);
+		} else {
+			const privs = await privileges.categories.getPrivilegeList();
+			const halfIdx = privs.length / 2;
+			privsToCopy = privs.slice(0, halfIdx).slice(...filter).concat(privs.slice(halfIdx).slice(...filter));
+		}
 
 		const data = await plugins.hooks.fire('filter:categories.copyPrivilegesFrom', {
-			privileges: group ?
-				privileges.categories.groupPrivilegeList.slice() :
-				privileges.categories.privilegeList.slice(),
+			privileges: privsToCopy,
 			fromCid: fromCid,
 			toCid: toCid,
 			group: group,

@@ -40,6 +40,7 @@
 	"teaser.last-post": "Posledný - zobrazenie posledného príspevku, vrátane hlavného príspevku, ak nie sú odpovede",
 	"teaser.last-reply": "Posledný - zobrazenie poslednej odpovede, alebo ak nie sú žiadne odpovede textu „Bez odpovede”",
 	"teaser.first": "Prvý",
+	"showPostPreviewsOnHover": "Show a preview of posts when mouse overed",
 	"unread": "Nastavenia neprečítaných",
 	"unread.cutoff": "Dni ukončenia neprečítaných",
 	"unread.min-track-last": "Minimálny počet príspevkov v téme pred posledným prečítaním",
@@ -56,6 +57,9 @@
 	"composer.show-help": "Zobraziť záložku „Nápoveda”",
 	"composer.enable-plugin-help": "Povoliť zásuvné moduly pre pridanie obsahu do záložky nápovedy",
 	"composer.custom-help": "Používateľský text nápovedy",
+	"backlinks": "Backlinks",
+	"backlinks.enabled": "Enable topic backlinks",
+	"backlinks.help": "If a post references another topic, a link back to the post will be inserted into the referenced topic at that point in time.",
 	"ip-tracking": "Sledovanie IP adresy",
 	"ip-tracking.each-post": "Sledovať IP adresu pri každom príspevku",
 	"enable-post-history": "Povoliť históriu príspevkov"

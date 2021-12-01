@@ -1,12 +1,12 @@
 'use strict';
 
 define('forum/header/notifications', ['components'], function (components) {
-	var notifications = {};
+	const notifications = {};
 
 	notifications.prepareDOM = function () {
-		var notifContainer = components.get('notifications');
-		var notifTrigger = notifContainer.children('a');
-		var notifList = components.get('notifications/list');
+		const notifContainer = components.get('notifications');
+		const notifTrigger = notifContainer.children('a');
+		const notifList = components.get('notifications/list');
 
 		notifTrigger.on('click', function (e) {
 			e.preventDefault();

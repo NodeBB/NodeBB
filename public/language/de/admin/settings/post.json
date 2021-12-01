@@ -40,6 +40,7 @@
 	"teaser.last-post": "Letzter - Den neuesten Beitrag anzeigen, den originalen Beitrag innbegriffen, wenn es keine Antworten gibt",
 	"teaser.last-reply": "Letzter - Den neuesten Beitrag oder einen \"Keine Antworten\" Platzhalter, wenn es keine Antworten gibt anzeigen",
 	"teaser.first": "Erster",
+	"showPostPreviewsOnHover": "Show a preview of posts when mouse overed",
 	"unread": "Ungelesen-Einstellungen",
 	"unread.cutoff": "Ungelesen-Limit (in Tagen)",
 	"unread.min-track-last": "Minimale Anzahl an Beiträgen pro Thema bevor die letzte Sichtung mitgeschrieben wird",
@@ -56,6 +57,9 @@
 	"composer.show-help": "\"Hilfe\"-Tab anzeigen",
 	"composer.enable-plugin-help": "Plugins erlauben Inhalte dem \"Help\"-Tab hinzuzufügen",
 	"composer.custom-help": "Benutzerdefinierter Hilfe-Text",
+	"backlinks": "Backlinks",
+	"backlinks.enabled": "Enable topic backlinks",
+	"backlinks.help": "If a post references another topic, a link back to the post will be inserted into the referenced topic at that point in time.",
 	"ip-tracking": "IP-Verfolgung",
 	"ip-tracking.each-post": "IP-Adresse für jeden Beitrag speichern",
 	"enable-post-history": "Aktiviere Beitrags-Änderungsgeschichte"

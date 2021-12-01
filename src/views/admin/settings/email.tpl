@@ -21,9 +21,17 @@
 			</div>
 
 			<div class="checkbox">
-				<label for="removeEmailNotificationImages" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" id="removeEmailNotificationImages" data-field="removeEmailNotificationImages" name="removeEmailNotificationImages" />
-					<span class="mdl-switch__label">[[admin/settings/email:notifications.remove-images]]</span>
+				<label for="requireEmailAddress" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" id="requireEmailAddress" data-field="requireEmailAddress" name="requireEmailAddress" />
+					<span class="mdl-switch__label">[[admin/settings/email:require-email-address]]</span>
+				</label>
+			</div>
+			<p class="help-block">[[admin/settings/email:require-email-address-warning]]</p>
+
+			<div class="checkbox">
+				<label for="sendValidationEmail" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" id="sendValidationEmail" data-field="sendValidationEmail" name="sendValidationEmail" />
+					<span class="mdl-switch__label">[[admin/settings/email:send-validation-email]]</span>
 				</label>
 			</div>
 
@@ -34,6 +42,21 @@
 				</label>
 			</div>
 			<p class="help-block">[[admin/settings/email:include-unverified-warning]]</p>
+
+			<div class="checkbox">
+				<label for="emailPrompt" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" id="emailPrompt" data-field="emailPrompt" name="emailPrompt" />
+					<span class="mdl-switch__label">[[admin/settings/email:prompt]]</span>
+				</label>
+			</div>
+			<p class="help-block">[[admin/settings/email:prompt-help]]</p>
+
+			<div class="checkbox">
+				<label for="removeEmailNotificationImages" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" id="removeEmailNotificationImages" data-field="removeEmailNotificationImages" name="removeEmailNotificationImages" />
+					<span class="mdl-switch__label">[[admin/settings/email:notifications.remove-images]]</span>
+				</label>
+			</div>
 		</form>
 	</div>
 </div>
@@ -122,14 +145,14 @@
 			</div>
 			<div class="form-group">
 				<label for="email:smtpTransport:user"><strong>[[admin/settings/email:smtp-transport.username]]</strong></label>
-				<input type="text" class="form-control input-lg" data-field="email:smtpTransport:user" placeholder="admin@example.org" />
+				<input id="email:smtpTransport:user" type="text" class="form-control input-lg" data-field="email:smtpTransport:user" placeholder="admin@example.org" autocomplete="off" />
 				<p class="help-block">
 					[[admin/settings/email:smtp-transport.username-help]]
 				</p>
 			</div>
 			<div class="form-group">
 				<label for="email:smtpTransport:pass"><strong>[[admin/settings/email:smtp-transport.password]]</strong></label>
-				<input type="password" class="form-control input-lg" data-field="email:smtpTransport:pass" />
+				<input id="email:smtpTransport:pass" type="password" class="form-control input-lg" data-field="email:smtpTransport:pass" autocomplete="off" />
 			</div>
 		</form>
 	</div>
@@ -138,7 +161,7 @@
 <div class="row">
 	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/email:template]]</div>
 	<div class="col-sm-10 col-xs-12">
-		<label>[[admin/settings/email:template.select]]</label><br />
+		<label for="email-editor-selector">[[admin/settings/email:template.select]]</label><br />
 		<select id="email-editor-selector" class="form-control">
 			<!-- BEGIN emails -->
 			<option value="{emails.path}">{emails.path}</option>
@@ -156,7 +179,7 @@
 	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/email:testing]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<div class="form-group">
-			<label>[[admin/settings/email:testing.select]]</label>
+			<label for="test-email">[[admin/settings/email:testing.select]]</label>
 			<select id="test-email" class="form-control">
 				<!-- BEGIN sendable -->
 				<option value="{@value}">{@value}</option>

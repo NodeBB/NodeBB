@@ -2,17 +2,17 @@
 
 
 define('admin/advanced/logs', function () {
-	var	Logs = {};
+	const Logs = {};
 
 	Logs.init = function () {
-		var logsEl = $('.logs pre');
+		const logsEl = $('.logs pre');
 		logsEl.scrollTop(logsEl.prop('scrollHeight'));
 		// Affix menu
 		$('.affix').affix();
 
 		$('.logs').find('button[data-action]').on('click', function () {
-			var btnEl = $(this);
-			var action = btnEl.attr('data-action');
+			const btnEl = $(this);
+			const action = btnEl.attr('data-action');
 
 			switch (action) {
 				case 'reload':

@@ -13,6 +13,7 @@
 	"resent-single": "Manuální znovu poslání přehledu bylo dokončeno",
 	"resent-day": "Znovu odeslat denní přehled",
 	"resent-week": "Znovu odeslat týdenní přehled",
+	"resent-biweek": "Bi-Weekly digest resent",
 	"resent-month": "Znovu odeslat měsíční přehled",
 	"null": "<em>Nikdy</em>",
 	"manual-run": "Spustit manuálně přehled:",

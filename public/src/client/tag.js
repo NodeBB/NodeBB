@@ -1,22 +1,12 @@
 'use strict';
 
-
-define('forum/tag', ['topicList', 'forum/infinitescroll'], function (topicList, infinitescroll) {
-	var Tag = {};
+define('forum/tag', ['topicList', 'forum/infinitescroll'], function (topicList) {
+	const Tag = {};
 
 	Tag.init = function () {
 		app.enterRoom('tags');
 
-		topicList.init('tag', loadMoreTopics);
-
-		function loadMoreTopics(after, direction, callback) {
-			infinitescroll.loadMore('topics.loadMoreFromSet', {
-				set: 'tag:' + ajaxify.data.tag + ':topics',
-				after: after,
-				direction: direction,
-				count: config.topicsPerPage,
-			}, callback);
-		}
+		topicList.init('tag');
 	};
 
 	return Tag;

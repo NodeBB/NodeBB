@@ -28,15 +28,22 @@ Interstitials.email = async (data) => {
 		callback: async (userData, formData) => {
 			// Validate and send email confirmation
 			if (userData.uid) {
-				const [isAdminOrGlobalMod, canEdit, current] = await Promise.all([
+				const [isAdminOrGlobalMod, canEdit, current, { allowed, error }] = await Promise.all([
 					user.isAdminOrGlobalMod(data.req.uid),
 					privileges.users.canEdit(data.req.uid, userData.uid),
 					user.getUserField(userData.uid, 'email'),
+					plugins.hooks.fire('filter:user.saveEmail', {
+						uid: userData.uid,
+						email: formData.email,
+						registration: false,
+						allowed: true, // change this value to disallow
+						error: '[[error:invalid-email]]',
+					}),
 				]);
 
 				if (formData.email && formData.email.length) {
-					if (!utils.isEmailValid(formData.email)) {
-						throw new Error('[[error:invalid-email]]');
+					if (!allowed || !utils.isEmailValid(formData.email)) {
+						throw new Error(error);
 					}
 
 					if (formData.email === current) {
@@ -57,11 +64,29 @@ Interstitials.email = async (data) => {
 						// User attempting to edit another user's email -- not allowed
 						throw new Error('[[error:no-privileges]]');
 					}
-				} else if (current) {
-					// User explicitly clearing their email
-					await user.email.remove(userData.uid, data.req.session.id);
+				} else {
+					if (meta.config.requireEmailAddress) {
+						throw new Error('[[error:invalid-email]]');
+					}
+
+					if (current) {
+						// User explicitly clearing their email
+						await user.email.remove(userData.uid, data.req.session.id);
+					}
 				}
 			} else {
+				const { allowed, error } = await plugins.hooks.fire('filter:user.saveEmail', {
+					uid: null,
+					email: formData.email,
+					registration: true,
+					allowed: true, // change this value to disallow
+					error: '[[error:invalid-email]]',
+				});
+
+				if (!allowed || (meta.config.requireEmailAddress && !(formData.email && formData.email.length))) {
+					throw new Error(error);
+				}
+
 				// New registrants have the confirm email sent from user.create()
 				userData.email = formData.email;
 			}

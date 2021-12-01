@@ -2,5 +2,6 @@
 	"notifications": "Oznámení",
 	"welcome-notification": "Uvítání",
 	"welcome-notification-link": "Odkaz na uvítání",
-	"welcome-notification-uid": "Uvítání uživatele (UID)"
+	"welcome-notification-uid": "Uvítání uživatele (UID)",
+	"post-queue-notification-uid": "Post Queue User (UID)"
 }

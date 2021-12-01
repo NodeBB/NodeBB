@@ -6,11 +6,11 @@ define('forum/topic/change-owner', [
 	'postSelect',
 	'autocomplete',
 ], function (components, postSelect, autocomplete) {
-	var ChangeOwner = {};
+	const ChangeOwner = {};
 
-	var modal;
-	var commit;
-	var toUid = 0;
+	let modal;
+	let commit;
+	let toUid = 0;
 	ChangeOwner.init = function (postEl) {
 		if (modal) {
 			return;

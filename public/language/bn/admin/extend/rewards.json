@@ -8,8 +8,6 @@
 	"delete": "Delete",
 	"enable": "Enable",
 	"disable": "Disable",
-	"control-panel": "Rewards Control",
-	"new-reward": "New Reward",
 
 	"alert.delete-success": "Successfully deleted reward",
 	"alert.no-inputs-found": "Illegal reward - no inputs found!",

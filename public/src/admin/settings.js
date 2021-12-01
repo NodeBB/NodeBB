@@ -2,21 +2,21 @@
 
 
 define('admin/settings', ['uploader', 'mousetrap', 'hooks'], function (uploader, mousetrap, hooks) {
-	var Settings = {};
+	const Settings = {};
 
 	Settings.populateTOC = function () {
-		var headers = $('.settings-header');
+		const headers = $('.settings-header');
 
 		if (headers.length > 1) {
 			headers.each(function () {
-				var header = $(this).text();
-				var anchor = header.toLowerCase().replace(/ /g, '-').trim();
+				const header = $(this).text();
+				const anchor = header.toLowerCase().replace(/ /g, '-').trim();
 
 				$(this).prepend('<a name="' + anchor + '"></a>');
 				$('.section-content ul').append('<li><a href="#' + anchor + '">' + header + '</a></li>');
 			});
 
-			var scrollTo = $('a[name="' + window.location.hash.replace('#', '') + '"]');
+			const scrollTo = $('a[name="' + window.location.hash.replace('#', '') + '"]');
 			if (scrollTo.length) {
 				$('html, body').animate({
 					scrollTop: (scrollTo.offset().top) + 'px',
@@ -29,28 +29,28 @@ define('admin/settings', ['uploader', 'mousetrap', 'hooks'], function (uploader,
 
 	Settings.prepare = function (callback) {
 		// Populate the fields on the page from the config
-		var fields = $('#content [data-field]');
-		var	numFields = fields.length;
-		var	saveBtn = $('#save');
-		var	revertBtn = $('#revert');
-		var	x;
-		var key;
-		var inputType;
-		var field;
+		const fields = $('#content [data-field]');
+		const numFields = fields.length;
+		const saveBtn = $('#save');
+		const revertBtn = $('#revert');
+		let x;
+		let key;
+		let inputType;
+		let field;
 
 		// Handle unsaved changes
 		fields.on('change', function () {
 			app.flags = app.flags || {};
 			app.flags._unsaved = true;
 		});
-		var defaultInputs = ['text', 'hidden', 'password', 'textarea', 'number'];
+		const defaultInputs = ['text', 'hidden', 'password', 'textarea', 'number'];
 		for (x = 0; x < numFields; x += 1) {
 			field = fields.eq(x);
 			key = field.attr('data-field');
 			inputType = field.attr('type');
 			if (app.config.hasOwnProperty(key)) {
 				if (field.is('input') && inputType === 'checkbox') {
-					var checked = parseInt(app.config[key], 10) === 1;
+					const checked = parseInt(app.config[key], 10) === 1;
 					field.prop('checked', checked);
 					field.parents('.mdl-switch').toggleClass('is-checked', checked);
 				} else if (field.is('textarea') || field.is('select') || (field.is('input') && defaultInputs.indexOf(inputType) !== -1)) {
@@ -117,7 +117,7 @@ define('admin/settings', ['uploader', 'mousetrap', 'hooks'], function (uploader,
 
 	function handleUploads() {
 		$('#content input[data-action="upload"]').each(function () {
-			var uploadBtn = $(this);
+			const uploadBtn = $(this);
 			uploadBtn.on('click', function () {
 				uploader.show({
 					title: uploadBtn.attr('data-title'),
@@ -146,13 +146,13 @@ define('admin/settings', ['uploader', 'mousetrap', 'hooks'], function (uploader,
 	};
 
 	function saveFields(fields, callback) {
-		var data = {};
+		const data = {};
 
 		fields.each(function () {
-			var field = $(this);
-			var key = field.attr('data-field');
-			var value;
-			var inputType;
+			const field = $(this);
+			const key = field.attr('data-field');
+			let value;
+			let inputType;
 
 			if (field.is('input')) {
 				inputType = field.attr('type');
@@ -181,7 +181,7 @@ define('admin/settings', ['uploader', 'mousetrap', 'hooks'], function (uploader,
 				return callback(err);
 			}
 
-			for (var field in data) {
+			for (const field in data) {
 				if (data.hasOwnProperty(field)) {
 					app.config[field] = data[field];
 				}

@@ -22,6 +22,9 @@ const middleware = module.exports;
 
 middleware.buildHeader = helpers.try(async (req, res, next) => {
 	res.locals.renderAdminHeader = true;
+	if (req.method === 'GET') {
+		await require('./index').applyCSRFasync(req, res);
+	}
 	res.locals.config = await controllers.api.loadConfig(req);
 	next();
 });
@@ -40,6 +43,7 @@ middleware.renderHeader = async (req, res, data) => {
 		configs: meta.configs.list(),
 		latestVersion: getLatestVersion(),
 		privileges: privileges.admin.get(req.uid),
+		tags: meta.tags.parse(req, {}, [], []),
 	});
 
 	const { userData } = results;
@@ -61,6 +65,8 @@ middleware.renderHeader = async (req, res, data) => {
 		configJSON: jsesc(JSON.stringify(res.locals.config), { isScriptContext: true }),
 		relative_path: res.locals.config.relative_path,
 		adminConfigJSON: encodeURIComponent(JSON.stringify(results.configs)),
+		metaTags: results.tags.meta,
+		linkTags: results.tags.link,
 		user: userData,
 		userJSON: jsesc(JSON.stringify(userData), { isScriptContext: true }),
 		plugins: results.custom_header.plugins,
@@ -114,7 +120,7 @@ middleware.checkPrivileges = helpers.try(async (req, res, next) => {
 	}
 
 	// Otherwise, check for privilege based on page (if not in mapping, deny access)
-	const path = req.path.replace(/^(\/api)?\/admin\/?/g, '');
+	const path = req.path.replace(/^(\/api)?(\/v3)?\/admin\/?/g, '');
 	if (path) {
 		const privilege = privileges.admin.resolve(path);
 		if (!await privileges.admin.can(privilege, req.uid)) {

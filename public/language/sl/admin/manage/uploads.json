@@ -1,9 +1,11 @@
 {
-    "upload-file": "Upload File",
-    "filename": "Filename",
+    "upload-file": "Naloži datoteko",
+    "filename": "Ime datoteke",
     "usage": "Post Usage",
     "orphaned": "Orphaned",
-    "size/filecount": "Size / Filecount",
-    "confirm-delete": "Do you really want to delete this file?",
-    "filecount": "%1 files"
+    "size/filecount": "Velikost / Število datotek",
+    "confirm-delete": "Ste prepričani, da želite izbrisati to datoteko?",
+    "filecount": "%1 datotek",
+    "new-folder": "Nova mapa",
+    "name-new-folder": "Vnesite ime nove mape"
 }

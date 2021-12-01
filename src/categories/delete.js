@@ -39,6 +39,7 @@ module.exports = function (Categories) {
 			`cid:${cid}:tids:pinned`,
 			`cid:${cid}:tids:posts`,
 			`cid:${cid}:tids:votes`,
+			`cid:${cid}:tids:views`,
 			`cid:${cid}:tids:lastposttime`,
 			`cid:${cid}:recent_tids`,
 			`cid:${cid}:pids`,
@@ -48,7 +49,8 @@ module.exports = function (Categories) {
 			`cid:${cid}:tag:whitelist`,
 			`category:${cid}`,
 		]);
-		await groups.destroy(privileges.categories.privilegeList.map(privilege => `cid:${cid}:privileges:${privilege}`));
+		const privilegeList = await privileges.categories.getPrivilegeList();
+		await groups.destroy(privilegeList.map(privilege => `cid:${cid}:privileges:${privilege}`));
 	}
 
 	async function removeFromParent(cid) {

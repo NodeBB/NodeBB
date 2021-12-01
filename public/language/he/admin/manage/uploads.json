@@ -5,5 +5,7 @@
     "orphaned": "מיותם",
     "size/filecount": "גודל / ספירת קבצים",
     "confirm-delete": "האם אתה בטוח שאתה רוצה למחוק קובץ זה?",
-    "filecount": "%1 קבצים"
+    "filecount": "%1 קבצים",
+    "new-folder": "תיקייה חדשה",
+    "name-new-folder": "הכנס שם לתיקייה החדשה"
 }

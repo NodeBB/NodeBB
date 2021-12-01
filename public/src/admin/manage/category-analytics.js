@@ -2,17 +2,17 @@
 
 
 define('admin/manage/category-analytics', ['Chart'], function (Chart) {
-	var CategoryAnalytics = {};
+	const CategoryAnalytics = {};
 
 	CategoryAnalytics.init = function () {
-		var hourlyCanvas = document.getElementById('pageviews:hourly');
-		var	dailyCanvas = document.getElementById('pageviews:daily');
-		var	topicsCanvas = document.getElementById('topics:daily');
-		var	postsCanvas = document.getElementById('posts:daily');
-		var	hourlyLabels = utils.getHoursArray().map(function (text, idx) {
+		const hourlyCanvas = document.getElementById('pageviews:hourly');
+		const dailyCanvas = document.getElementById('pageviews:daily');
+		const topicsCanvas = document.getElementById('topics:daily');
+		const postsCanvas = document.getElementById('posts:daily');
+		const hourlyLabels = utils.getHoursArray().map(function (text, idx) {
 			return idx % 3 ? '' : text;
 		});
-		var	dailyLabels = utils.getDaysArray().map(function (text, idx) {
+		const dailyLabels = utils.getDaysArray().map(function (text, idx) {
 			return idx % 3 ? '' : text;
 		});
 
@@ -20,7 +20,7 @@ define('admin/manage/category-analytics', ['Chart'], function (Chart) {
 			Chart.defaults.global.tooltips.enabled = false;
 		}
 
-		var data = {
+		const data = {
 			'pageviews:hourly': {
 				labels: hourlyLabels,
 				datasets: [
