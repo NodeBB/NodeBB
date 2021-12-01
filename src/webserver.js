@@ -138,6 +138,8 @@ function setupExpressApp(app) {
 		app.use(compression());
 	}
 
+	app.use(middleware.ensureRelativePath);
+
 	app.get(`${relativePath}/ping`, pingController.ping);
 	app.get(`${relativePath}/sping`, pingController.ping);
 
