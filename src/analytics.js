@@ -152,7 +152,7 @@ Analytics.writeData = async function () {
 
 	for (const [key, value] of Object.entries(counters)) {
 		incrByBulk.push([`analytics:${key}`, value, today.getTime()]);
-    metrics.push(key);
+		metrics.push(key);
 		delete counters[key];
 	}
 
