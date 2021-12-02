@@ -1715,7 +1715,7 @@ describe('Topic\'s', () => {
 		before((done) => {
 			async.series([
 				function (next) {
-					topics.post({ uid: adminUid, tags: ['php', 'nosql', 'psql', 'nodebb'], title: 'topic title 1', content: 'topic 1 content', cid: topic.categoryId }, next);
+					topics.post({ uid: adminUid, tags: ['php', 'nosql', 'psql', 'nodebb', 'node icon'], title: 'topic title 1', content: 'topic 1 content', cid: topic.categoryId }, next);
 				},
 				function (next) {
 					topics.post({ uid: adminUid, tags: ['javascript', 'mysql', 'python', 'nodejs'], title: 'topic title 2', content: 'topic 2 content', cid: topic.categoryId }, next);
@@ -1775,12 +1775,13 @@ describe('Topic\'s', () => {
 		it('should search and load tags', (done) => {
 			socketTopics.searchAndLoadTags({ uid: adminUid }, { query: 'no' }, (err, data) => {
 				assert.ifError(err);
-				assert.equal(data.matchCount, 3);
+				assert.equal(data.matchCount, 4);
 				assert.equal(data.pageCount, 1);
 				const tagData = [
-					{ value: 'nodebb', valueEscaped: 'nodebb', score: 3 },
-					{ value: 'nodejs', valueEscaped: 'nodejs', score: 1 },
-					{ value: 'nosql', valueEscaped: 'nosql', score: 1 },
+					{ value: 'nodebb', valueEscaped: 'nodebb', score: 3, class: 'nodebb' },
+					{ value: 'node icon', valueEscaped: 'node icon', score: 1, class: 'node-icon' },
+					{ value: 'nodejs', valueEscaped: 'nodejs', score: 1, class: 'nodejs' },
+					{ value: 'nosql', valueEscaped: 'nosql', score: 1, class: 'nosql' },
 				];
 				assert.deepEqual(data.tags, tagData);
 
@@ -2020,17 +2021,17 @@ describe('Topic\'s', () => {
 			await topics.post({ uid: adminUid, tags: ['cattag1'], title: title, content: 'topic 1 content', cid: cid });
 			let result = await topics.getCategoryTagsData(cid, 0, -1);
 			assert.deepStrictEqual(result, [
-				{ value: 'cattag1', score: 3, valueEscaped: 'cattag1' },
-				{ value: 'cattag2', score: 2, valueEscaped: 'cattag2' },
-				{ value: 'cattag3', score: 1, valueEscaped: 'cattag3' },
+				{ value: 'cattag1', score: 3, valueEscaped: 'cattag1', class: 'cattag1' },
+				{ value: 'cattag2', score: 2, valueEscaped: 'cattag2', class: 'cattag2' },
+				{ value: 'cattag3', score: 1, valueEscaped: 'cattag3', class: 'cattag3' },
 			]);
 
 			// after purging values should update properly
 			await topics.purge(postResult.topicData.tid, adminUid);
 			result = await topics.getCategoryTagsData(cid, 0, -1);
 			assert.deepStrictEqual(result, [
-				{ value: 'cattag1', score: 2, valueEscaped: 'cattag1' },
-				{ value: 'cattag2', score: 1, valueEscaped: 'cattag2' },
+				{ value: 'cattag1', score: 2, valueEscaped: 'cattag1', class: 'cattag1' },
+				{ value: 'cattag2', score: 1, valueEscaped: 'cattag2', class: 'cattag2' },
 			]);
 		});
 
@@ -2049,11 +2050,11 @@ describe('Topic\'s', () => {
 			let result1 = await topics.getCategoryTagsData(cid1, 0, -1);
 			let result2 = await topics.getCategoryTagsData(cid2, 0, -1);
 			assert.deepStrictEqual(result1, [
-				{ value: 'movedtag1', score: 2, valueEscaped: 'movedtag1' },
-				{ value: 'movedtag2', score: 1, valueEscaped: 'movedtag2' },
+				{ value: 'movedtag1', score: 2, valueEscaped: 'movedtag1', class: 'movedtag1' },
+				{ value: 'movedtag2', score: 1, valueEscaped: 'movedtag2', class: 'movedtag2' },
 			]);
 			assert.deepStrictEqual(result2, [
-				{ value: 'movedtag2', score: 1, valueEscaped: 'movedtag2' },
+				{ value: 'movedtag2', score: 1, valueEscaped: 'movedtag2', class: 'movedtag2' },
 			]);
 
 			// after moving values should update properly
@@ -2062,11 +2063,11 @@ describe('Topic\'s', () => {
 			result1 = await topics.getCategoryTagsData(cid1, 0, -1);
 			result2 = await topics.getCategoryTagsData(cid2, 0, -1);
 			assert.deepStrictEqual(result1, [
-				{ value: 'movedtag1', score: 1, valueEscaped: 'movedtag1' },
+				{ value: 'movedtag1', score: 1, valueEscaped: 'movedtag1', class: 'movedtag1' },
 			]);
 			assert.deepStrictEqual(result2, [
-				{ value: 'movedtag2', score: 2, valueEscaped: 'movedtag2' },
-				{ value: 'movedtag1', score: 1, valueEscaped: 'movedtag1' },
+				{ value: 'movedtag2', score: 2, valueEscaped: 'movedtag2', class: 'movedtag2' },
+				{ value: 'movedtag1', score: 1, valueEscaped: 'movedtag1', class: 'movedtag1' },
 			]);
 		});
 

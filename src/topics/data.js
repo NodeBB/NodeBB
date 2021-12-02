@@ -129,9 +129,13 @@ function modifyTopic(topic, fields) {
 
 	if (fields.includes('tags') || !fields.length) {
 		const tags = String(topic.tags || '');
-		topic.tags = tags.split(',').filter(Boolean).map(tag => ({
-			value: tag,
-			valueEscaped: validator.escape(String(tag)),
-		}));
+		topic.tags = tags.split(',').filter(Boolean).map((tag) => {
+			const escaped = validator.escape(String(tag));
+			return {
+				value: tag,
+				valueEscaped: escaped,
+				class: escaped.replace(/\s/g, '-'),
+			};
+		});
 	}
 }
