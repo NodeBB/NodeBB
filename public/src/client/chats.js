@@ -34,7 +34,6 @@ define('forum/chats', [
 		recentChats.init();
 
 		Chats.addEventListeners();
-		Chats.resizeMainWindow();
 		Chats.setActive();
 
 		if (env === 'md' || env === 'lg') {
@@ -429,7 +428,6 @@ define('forum/chats', [
 							app.parseAndTranslate('partials/chats/message-window', payload, function (html) {
 								components.get('chat/main-wrapper').html(html);
 								html.find('.timeago').timeago();
-								Chats.resizeMainWindow();
 								ajaxify.data = payload;
 								Chats.setActive();
 								Chats.addEventListeners();
@@ -455,7 +453,6 @@ define('forum/chats', [
 	};
 
 	Chats.addGlobalEventListeners = function () {
-		$(window).on('resize', utils.throttle(Chats.resizeMainWindow, 100));
 		$(window).on('mousemove keypress click', function () {
 			if (newMessage && ajaxify.data.roomId) {
 				socket.emit('modules.chats.markRead', ajaxify.data.roomId);
@@ -505,18 +502,6 @@ define('forum/chats', [
 
 			titleEl.text(data.newName);
 		});
-	};
-
-	Chats.resizeMainWindow = function () {
-		const viewportHeight = $(window).height();
-		const mainWrapper = components.get('chat/main-wrapper');
-		const navWrapper = components.get('chat/nav-wrapper');
-		let fromTop = 0;
-		if (mainWrapper.length && navWrapper.length) {
-			fromTop = mainWrapper.offset().top || navWrapper.offset().top;
-		}
-
-		$('.chats-full').height(viewportHeight - fromTop - 1);
 	};
 
 	Chats.setActive = function () {
