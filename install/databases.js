@@ -5,6 +5,7 @@ const winston = require('winston');
 
 const questions = {
 	redis: require('../src/database/redis').questions,
+	firestore: require('../src/database/firestore').questions,
 	mongo: require('../src/database/mongo').questions,
 	postgres: require('../src/database/postgres').questions,
 };
@@ -30,6 +31,11 @@ async function getDatabaseConfig(config) {
 			return config;
 		}
 		return await prompt.get(questions.mongo);
+	} else if (config.database === 'firestore') {
+		if ((config['firestore:host'] && config['firestore:port']) || config['firestore:uri']) {
+			return config;
+		}
+		return await prompt.get(questions.firestore);
 	} else if (config.database === 'postgres') {
 		if (config['postgres:host'] && config['postgres:port']) {
 			return config;
@@ -73,6 +79,14 @@ function saveDatabaseConfig(config, databaseConfig) {
 			password: databaseConfig['postgres:password'],
 			database: databaseConfig['postgres:database'],
 			ssl: databaseConfig['postgres:ssl'],
+		};
+	} else if (config.database === 'firestore') {
+		config.postgres = {
+			database: databaseConfig['firestore:database'],
+			host: databaseConfig['firestore:host'],
+			password: databaseConfig['firestore:password'],
+			port: databaseConfig['firestore:port'],
+			username: databaseConfig['firestore:username'],
 		};
 	} else {
 		throw new Error(`unknown database : ${config.database}`);
