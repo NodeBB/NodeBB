@@ -1024,6 +1024,47 @@ describe('Sorted Set methods', () => {
 				});
 			});
 		});
+
+		it('should increment fields of sorted sets with a single call', async () => {
+			const data = await db.sortedSetIncrByBulk([
+				['sortedIncrBulk1', 1, 'value1'],
+				['sortedIncrBulk2', 2, 'value2'],
+				['sortedIncrBulk3', 3, 'value3'],
+				['sortedIncrBulk3', 4, 'value4'],
+			]);
+			assert.deepStrictEqual(data, [1, 2, 3, 4]);
+			assert.deepStrictEqual(
+				await db.getSortedSetRangeWithScores('sortedIncrBulk1', 0, -1),
+				[{ value: 'value1', score: 1 }],
+			);
+			assert.deepStrictEqual(
+				await db.getSortedSetRangeWithScores('sortedIncrBulk2', 0, -1),
+				[{ value: 'value2', score: 2 }],
+			);
+			assert.deepStrictEqual(
+				await db.getSortedSetRangeWithScores('sortedIncrBulk3', 0, -1),
+				[
+					{ value: 'value3', score: 3 },
+					{ value: 'value4', score: 4 },
+				],
+			);
+		});
+
+		it('should increment the same field', async () => {
+			const data1 = await db.sortedSetIncrByBulk([
+				['sortedIncrBulk5', 5, 'value5'],
+			]);
+
+			const data2 = await db.sortedSetIncrByBulk([
+				['sortedIncrBulk5', 5, 'value5'],
+			]);
+			assert.deepStrictEqual(
+				await db.getSortedSetRangeWithScores('sortedIncrBulk5', 0, -1),
+				[
+					{ value: 'value5', score: 10 },
+				],
+			);
+		});
 	});
 
 

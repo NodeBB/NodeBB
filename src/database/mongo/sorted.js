@@ -1,5 +1,6 @@
 'use strict';
 
+const _ = require('lodash');
 const utils = require('../../utils');
 
 module.exports = function (module) {
@@ -420,6 +421,28 @@ module.exports = function (module) {
 			}
 			throw err;
 		}
+	};
+
+	module.sortedSetIncrByBulk = async function (data) {
+		const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
+		data.forEach((item) => {
+			bulk.find({ _key: item[0], value: helpers.valueToString(item[2]) })
+				.upsert()
+				.update({ $inc: { score: parseFloat(item[1]) } });
+		});
+		await bulk.execute();
+		const result = await module.client.collection('objects').find({
+			_key: { $in: _.uniq(data.map(i => i[0])) },
+			value: { $in: _.uniq(data.map(i => i[2])) },
+		}, {
+			projection: { _id: 0, _key: 1, value: 1, score: 1 },
+		}).toArray();
+
+		const map = {};
+		result.forEach((item) => {
+			map[`${item._key}:${item.value}`] = item.score;
+		});
+		return data.map(item => map[`${item[0]}:${item[2]}`]);
 	};
 
 	module.getSortedSetRangeByLex = async function (key, min, max, start, count) {
