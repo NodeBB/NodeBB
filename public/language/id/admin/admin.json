@@ -1,5 +1,5 @@
 {
-	"alert.confirm-rebuild-and-restart": "Anda yakin ingin membangun ulang asset dan mulai ulang NodeBB?",
+	"alert.confirm-rebuild-and-restart": "Anda yakin ingin membangun ulang dan mulai ulang NodeBB?",
 	"alert.confirm-restart": "Anda yakin ingin mulai ulang NodeBB?",
 
 	"acp-title": "%1 | Kontrol Panel Admin NodeBB",
