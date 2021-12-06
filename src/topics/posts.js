@@ -4,7 +4,6 @@
 const _ = require('lodash');
 const validator = require('validator');
 const nconf = require('nconf');
-const winston = require('winston');
 
 const db = require('../database');
 const user = require('../user');
