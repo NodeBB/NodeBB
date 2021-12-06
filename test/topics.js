@@ -507,6 +507,42 @@ describe('Topic\'s', () => {
 				const posts = await topics.getTopicPosts(null, `tid:${tid}:posts`, 0, 9, topic.userId, true);
 				assert.deepStrictEqual(posts, []);
 			});
+
+			it('should only return main post', async () => {
+				const topicData = await topics.getTopicData(tid);
+				const postsData = await topics.getTopicPosts(topicData, `tid:${tid}:posts`, 0, 0, topic.userId, false);
+				assert.strictEqual(postsData.length, 1);
+				assert.strictEqual(postsData[0].content, 'main post');
+			});
+
+			it('should only return first reply', async () => {
+				const topicData = await topics.getTopicData(tid);
+				const postsData = await topics.getTopicPosts(topicData, `tid:${tid}:posts`, 1, 1, topic.userId, false);
+				assert.strictEqual(postsData.length, 1);
+				assert.strictEqual(postsData[0].content, 'topic reply 1');
+			});
+
+			it('should return main post and first reply', async () => {
+				const topicData = await topics.getTopicData(tid);
+				const postsData = await topics.getTopicPosts(topicData, `tid:${tid}:posts`, 0, 1, topic.userId, false);
+				assert.strictEqual(postsData.length, 2);
+				assert.strictEqual(postsData[0].content, 'main post');
+				assert.strictEqual(postsData[1].content, 'topic reply 1');
+			});
+
+			it('should return posts in correct order', async () => {
+				const data = await socketTopics.loadMore({ uid: topic.userId }, { tid: tid, after: 20, direction: 1 });
+				assert.strictEqual(data.posts.length, 11);
+				assert.strictEqual(data.posts[0].content, 'topic reply 20');
+				assert.strictEqual(data.posts[1].content, 'topic reply 21');
+			});
+
+			it('should return posts in correct order in reverse direction', async () => {
+				const data = await socketTopics.loadMore({ uid: topic.userId }, { tid: tid, after: 25, direction: -1 });
+				assert.strictEqual(data.posts.length, 20);
+				assert.strictEqual(data.posts[0].content, 'topic reply 5');
+				assert.strictEqual(data.posts[1].content, 'topic reply 6');
+			});
 		});
 	});
 

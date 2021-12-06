@@ -261,7 +261,7 @@ define('forum/topic/posts', [
 
 		infinitescroll.loadMore('topics.loadMore', {
 			tid: tid,
-			after: after,
+			after: after + (direction > 0 ? 1 : 0),
 			count: config.postsPerPage,
 			direction: direction,
 			topicPostSort: config.topicPostSort,

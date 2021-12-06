@@ -39,7 +39,10 @@ module.exports = function (Topics) {
 				repliesStart -= 1;
 			}
 		}
-		const pids = await posts.getPidsFromSet(set, repliesStart, repliesStop, reverse);
+		let pids = [];
+		if (start !== 0 || stop !== 0) {
+			pids = await posts.getPidsFromSet(set, repliesStart, repliesStop, reverse);
+		}
 		if (!pids.length && !topicOrTid.mainPid) {
 			return [];
 		}

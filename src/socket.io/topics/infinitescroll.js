@@ -30,9 +30,7 @@ module.exports = function (SocketTopics) {
 			parseInt(data.count, 10) || meta.config.postsPerPage || 20
 		));
 
-		if (data.direction === 1) {
-			start += 1;
-		} else if (data.direction === -1) {
+		if (data.direction === -1) {
 			start -= infScrollPostsPerPage;
 		}
 
