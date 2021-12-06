@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/account/info', ['forum/account/header', 'components', 'forum/account/sessions'], function (header, components, sessions) {
+define('forum/account/info', ['forum/account/header', 'alerts', 'forum/account/sessions'], function (header, alerts, sessions) {
 	const Info = {};
 
 	Info.init = function () {
@@ -15,10 +15,10 @@ define('forum/account/info', ['forum/account/header', 'components', 'forum/accou
 			const note = $('[component="account/moderation-note"]').val();
 			socket.emit('user.setModerationNote', { uid: ajaxify.data.uid, note: note }, function (err) {
 				if (err) {
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
 				$('[component="account/moderation-note"]').val('');
-				app.alertSuccess('[[user:info.moderation-note.success]]');
+				alerts.success('[[user:info.moderation-note.success]]');
 				const timestamp = Date.now();
 				const data = [{
 					note: utils.escapeHTML(note),

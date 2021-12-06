@@ -56,7 +56,7 @@ define('forum/topic/move-post', [
 						},
 						clickfn: function (alert, params) {
 							delete params.timeoutfn;
-							app.alertSuccess('[[topic:topic_move_posts_undone]]');
+							alerts.success('[[topic:topic_move_posts_undone]]');
 							moveCommit.removeAttr('disabled');
 						},
 					});
@@ -101,10 +101,10 @@ define('forum/topic/move-post', [
 			if (targetTid && parseInt(targetTid, 10) !== parseInt(fromTid, 10)) {
 				api.get('/topics/' + targetTid, {}).then(function (data) {
 					if (!data || !data.tid) {
-						return app.alertError('[[error:no-topic]]');
+						return alerts.error('[[error:no-topic]]');
 					}
 					if (data.scheduled) {
-						return app.alertError('[[error:cant-move-posts-to-scheduled]]');
+						return alerts.error('[[error:cant-move-posts-to-scheduled]]');
 					}
 					const translateStr = translator.compile('topic:x-posts-will-be-moved-to-y', postSelect.pids.length, data.title);
 					moveModal.find('#pids').translateHtml(translateStr);
@@ -151,7 +151,7 @@ define('forum/topic/move-post', [
 			});
 
 			closeMoveModal();
-		}).catch(app.alertError);
+		}).catch(alerts.error);
 	}
 
 	function closeMoveModal() {

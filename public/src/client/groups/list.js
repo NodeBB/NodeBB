@@ -1,8 +1,8 @@
 'use strict';
 
 define('forum/groups/list', [
-	'forum/infinitescroll', 'benchpress', 'api', 'bootbox',
-], function (infinitescroll, Benchpress, api, bootbox) {
+	'forum/infinitescroll', 'benchpress', 'api', 'bootbox', 'alerts',
+], function (infinitescroll, Benchpress, api, bootbox, alerts) {
 	const Groups = {};
 
 	Groups.init = function () {
@@ -16,7 +16,7 @@ define('forum/groups/list', [
 						name: name,
 					}).then((res) => {
 						ajaxify.go('groups/' + res.slug);
-					}).catch(app.alertError);
+					}).catch(alerts.error);
 				}
 			});
 		});
@@ -72,7 +72,7 @@ define('forum/groups/list', [
 			},
 		}, function (err, groups) {
 			if (err) {
-				return app.alertError(err.message);
+				return alerts.error(err);
 			}
 			groups = groups.filter(function (group) {
 				return group.name !== 'registered-users' && group.name !== 'guests';

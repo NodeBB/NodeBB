@@ -11,6 +11,7 @@ define('forum/groups/details', [
 	'slugify',
 	'categorySelector',
 	'bootbox',
+	'alerts',
 ], function (
 	memberList,
 	iconSelect,
@@ -21,7 +22,8 @@ define('forum/groups/details', [
 	api,
 	slugify,
 	categorySelector,
-	bootbox
+	bootbox,
+	alerts,
 ) {
 	const Details = {};
 	let groupName;
@@ -79,7 +81,7 @@ define('forum/groups/details', [
 				case 'toggleOwnership':
 					api[isOwner ? 'del' : 'put'](`/groups/${ajaxify.data.group.slug}/ownership/${uid}`, {}).then(() => {
 						ownerFlagEl.toggleClass('invisible');
-					}).catch(app.alertError);
+					}).catch(alerts.error);
 					break;
 
 				case 'kick':
@@ -89,7 +91,7 @@ define('forum/groups/details', [
 								return;
 							}
 
-							api.del(`/groups/${ajaxify.data.group.slug}/membership/${uid}`, undefined).then(() => userRow.slideUp().remove()).catch(app.alertError);
+							api.del(`/groups/${ajaxify.data.group.slug}/membership/${uid}`, undefined).then(() => userRow.slideUp().remove()).catch(alerts.error);
 						});
 					});
 					break;
@@ -103,11 +105,11 @@ define('forum/groups/details', [
 					break;
 
 				case 'join': // intentional fall-throughs!
-					api.put('/groups/' + ajaxify.data.group.slug + '/membership/' + (uid || app.user.uid), undefined).then(() => ajaxify.refresh()).catch(app.alertError);
+					api.put('/groups/' + ajaxify.data.group.slug + '/membership/' + (uid || app.user.uid), undefined).then(() => ajaxify.refresh()).catch(alerts.error);
 					break;
 
 				case 'leave':
-					api.del('/groups/' + ajaxify.data.group.slug + '/membership/' + (uid || app.user.uid), undefined).then(() => ajaxify.refresh()).catch(app.alertError);
+					api.del('/groups/' + ajaxify.data.group.slug + '/membership/' + (uid || app.user.uid), undefined).then(() => ajaxify.refresh()).catch(alerts.error);
 					break;
 
 				// TODO (14/10/2020): rewrite these to use api module and merge with above 2 case blocks
@@ -126,7 +128,7 @@ define('forum/groups/details', [
 						if (!err) {
 							ajaxify.refresh();
 						} else {
-							app.alertError(err.message);
+							alerts.error(err);
 						}
 					});
 					break;
@@ -219,8 +221,8 @@ define('forum/groups/details', [
 					ajaxify.refresh();
 				}
 
-				app.alertSuccess('[[groups:event.updated]]');
-			}).catch(app.alertError);
+				alerts.success('[[groups:event.updated]]');
+			}).catch(alerts.error);
 		}
 	};
 
@@ -230,9 +232,9 @@ define('forum/groups/details', [
 				bootbox.prompt('Please enter the name of this group in order to delete it:', function (response) {
 					if (response === groupName) {
 						api.del(`/groups/${ajaxify.data.group.slug}`, {}).then(() => {
-							app.alertSuccess('[[groups:event.deleted, ' + utils.escapeHTML(groupName) + ']]');
+							alerts.success('[[groups:event.deleted, ' + utils.escapeHTML(groupName) + ']]');
 							ajaxify.go('groups');
-						}).catch(app.alertError);
+						}).catch(alerts.error);
 					}
 				});
 			}
@@ -252,7 +254,7 @@ define('forum/groups/details', [
 					groupName: ajaxify.data.group.name,
 				}, function (err) {
 					if (err) {
-						return app.alertError(err.message);
+						return alerts.error(err);
 					}
 					ajaxify.refresh();
 				});
@@ -269,7 +271,7 @@ define('forum/groups/details', [
 				groupName: ajaxify.data.group.name,
 			}, function (err) {
 				if (err) {
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
 				ajaxify.refresh();
 			});
@@ -290,7 +292,7 @@ define('forum/groups/details', [
 					if (!err) {
 						ajaxify.refresh();
 					} else {
-						app.alertError(err.message);
+						alerts.error(err);
 					}
 				});
 			});

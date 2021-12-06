@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/settings/social', [], function () {
+define('admin/settings/social', ['alerts'], function (alerts) {
 	const social = {};
 
 	social.init = function () {
@@ -15,10 +15,10 @@ define('admin/settings/social', [], function () {
 
 			socket.emit('admin.social.savePostSharingNetworks', networks, function (err) {
 				if (err) {
-					return app.alertError(err);
+					return alerts.error(err);
 				}
 
-				app.alertSuccess('[[admin/settings/social:save-success]]');
+				alerts.success('[[admin/settings/social:save-success]]');
 			});
 		});
 	};

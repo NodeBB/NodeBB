@@ -101,7 +101,7 @@ define('admin/settings', ['uploader', 'mousetrap', 'hooks', 'alerts'], function 
 
 		$('#clear-sitemap-cache').off('click').on('click', function () {
 			socket.emit('admin.settings.clearSitemapCache', function () {
-				app.alertSuccess('Sitemap Cache Cleared!');
+				alerts.success('Sitemap Cache Cleared!');
 			});
 			return false;
 		});

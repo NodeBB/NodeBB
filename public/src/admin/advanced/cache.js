@@ -1,6 +1,6 @@
 'use strict';
 
-define('admin/advanced/cache', function () {
+define('admin/advanced/cache', ['alerts'], function (alerts) {
 	const Cache = {};
 	Cache.init = function () {
 		require(['admin/settings'], function (Settings) {
@@ -11,7 +11,7 @@ define('admin/advanced/cache', function () {
 			const name = $(this).attr('data-name');
 			socket.emit('admin.cache.clear', { name: name }, function (err) {
 				if (err) {
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
 				ajaxify.refresh();
 			});
@@ -23,7 +23,7 @@ define('admin/advanced/cache', function () {
 			const name = $(this).attr('data-name');
 			socket.emit('admin.cache.toggle', { name: name, enabled: flag }, function (err) {
 				if (err) {
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
 			});
 		});

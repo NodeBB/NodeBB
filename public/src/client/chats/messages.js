@@ -54,7 +54,7 @@ define('forum/chats/messages', [
 					inputEl.val(msg);
 					inputEl.attr('data-mid', mid);
 					messages.updateRemainingLength(inputEl.parent());
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
 			});
 		}
@@ -142,7 +142,7 @@ define('forum/chats/messages', [
 	messages.prepEdit = function (inputEl, messageId, roomId) {
 		socket.emit('modules.chats.getRaw', { mid: messageId, roomId: roomId }, function (err, raw) {
 			if (err) {
-				return app.alertError(err.message);
+				return alerts.error(err);
 			}
 			// Populate the input field with the raw message content
 			if (inputEl.val().length === 0) {
@@ -209,7 +209,7 @@ define('forum/chats/messages', [
 					roomId: roomId,
 				}, function (err) {
 					if (err) {
-						return app.alertError(err.message);
+						return alerts.error(err);
 					}
 
 					components.get('chat/message', messageId).toggleClass('deleted', true);
@@ -224,7 +224,7 @@ define('forum/chats/messages', [
 			roomId: roomId,
 		}, function (err) {
 			if (err) {
-				return app.alertError(err.message);
+				return alerts.error(err);
 			}
 
 			components.get('chat/message', messageId).toggleClass('deleted', false);

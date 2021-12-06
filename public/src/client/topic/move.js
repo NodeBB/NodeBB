@@ -75,7 +75,7 @@ define('forum/topic/move', ['categorySelector', 'alerts', 'hooks'], function (ca
 					},
 					clickfn: function (alert, params) {
 						delete params.timeoutfn;
-						app.alertSuccess('[[topic:topic_move_undone]]');
+						alerts.success('[[topic:topic_move_undone]]');
 					},
 				});
 			}
@@ -89,7 +89,7 @@ define('forum/topic/move', ['categorySelector', 'alerts', 'hooks'], function (ca
 
 		socket.emit(!data.tids ? 'topics.moveAll' : 'topics.move', data, function (err) {
 			if (err) {
-				return app.alertError(err.message);
+				return alerts.error(err);
 			}
 
 			if (typeof data.onComplete === 'function') {

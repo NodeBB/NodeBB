@@ -1,6 +1,6 @@
 'use strict';
 
-define('forum/account/uploads', ['forum/account/header'], function (header) {
+define('forum/account/uploads', ['forum/account/header', 'alerts'], function (header, alerts) {
 	const AccountUploads = {};
 
 	AccountUploads.init = function () {
@@ -12,7 +12,7 @@ define('forum/account/uploads', ['forum/account/header'], function (header) {
 
 			socket.emit('user.deleteUpload', { name: name, uid: ajaxify.data.uid }, function (err) {
 				if (err) {
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
 				el.remove();
 			});

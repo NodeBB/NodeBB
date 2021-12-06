@@ -1,6 +1,6 @@
 'use strict';
 
-define('accounts/invite', ['api', 'benchpress', 'bootbox'], function (api, Benchpress, bootbox) {
+define('accounts/invite', ['api', 'benchpress', 'bootbox', 'alerts'], function (api, Benchpress, bootbox, alerts) {
 	const Invite = {};
 
 	function isACP() {
@@ -29,9 +29,7 @@ define('accounts/invite', ['api', 'benchpress', 'bootbox'], function (api, Bench
 						},
 					});
 				});
-			}).catch((err) => {
-				app.alertError(err.message);
-			});
+			}).catch(alerts.error);
 		});
 	};
 
@@ -54,10 +52,8 @@ define('accounts/invite', ['api', 'benchpress', 'bootbox'], function (api, Bench
 		}
 
 		api.post(`/users/${app.user.uid}/invites`, data).then(() => {
-			app.alertSuccess(`[[${isACP() ? 'admin/manage/users:alerts.email-sent-to' : 'users:invitation-email-sent'}, ${data.emails.replace(/,/g, '&#44; ')}]]`);
-		}).catch((err) => {
-			app.alertError(err.message);
-		});
+			alerts.success(`[[${isACP() ? 'admin/manage/users:alerts.email-sent-to' : 'users:invitation-email-sent'}, ${data.emails.replace(/,/g, '&#44; ')}]]`);
+		}).catch(alerts.error);
 	};
 
 	return Invite;

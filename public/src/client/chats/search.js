@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/chats/search', ['components', 'api'], function (components, api) {
+define('forum/chats/search', ['components', 'api', 'alerts'], function (components, api, alerts) {
 	const search = {};
 
 	search.init = function () {
@@ -19,7 +19,7 @@ define('forum/chats/search', ['components', 'api'], function (components, api) {
 			searchBy: 'username',
 			paginate: false,
 		}).then(displayResults)
-			.catch(app.alertError);
+			.catch(alerts.error);
 	}
 
 	function displayResults(data) {
@@ -62,7 +62,7 @@ define('forum/chats/search', ['components', 'api'], function (components, api) {
 		chatEl.on('click', function () {
 			socket.emit('modules.chats.hasPrivateChat', userObj.uid, function (err, roomId) {
 				if (err) {
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
 				if (roomId) {
 					require(['forum/chats'], function (chats) {

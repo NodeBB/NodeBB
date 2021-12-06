@@ -6,10 +6,10 @@ define('forum/category/tools', [
 	'topicSelect',
 	'forum/topic/threadTools',
 	'components',
-	'translator',
 	'api',
 	'bootbox',
-], function (topicSelect, threadTools, components, translator, api, bootbox) {
+	'alerts',
+], function (topicSelect, threadTools, components, api, bootbox, alerts) {
 	const CategoryTools = {};
 
 	CategoryTools.init = function () {
@@ -56,13 +56,13 @@ define('forum/category/tools', [
 		components.get('topic/mark-unread-for-all').on('click', function () {
 			const tids = topicSelect.getSelectedTids();
 			if (!tids.length) {
-				return app.alertError('[[error:no-topics-selected]]');
+				return alerts.error('[[error:no-topics-selected]]');
 			}
 			socket.emit('topics.markAsUnreadForAll', tids, function (err) {
 				if (err) {
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
-				app.alertSuccess('[[topic:markAsUnreadForAll.success]]');
+				alerts.success('[[topic:markAsUnreadForAll.success]]');
 				tids.forEach(function (tid) {
 					$('[component="category/topic"][data-tid="' + tid + '"]').addClass('unread');
 				});
@@ -76,7 +76,7 @@ define('forum/category/tools', [
 				const tids = topicSelect.getSelectedTids();
 
 				if (!tids.length) {
-					return app.alertError('[[error:no-topics-selected]]');
+					return alerts.error('[[error:no-topics-selected]]');
 				}
 				move.init(tids, null, onCommandComplete);
 			});
@@ -87,12 +87,12 @@ define('forum/category/tools', [
 		components.get('topic/move-all').on('click', function () {
 			const cid = ajaxify.data.cid;
 			if (!ajaxify.data.template.category) {
-				return app.alertError('[[error:invalid-data]]');
+				return alerts.error('[[error:invalid-data]]');
 			}
 			require(['forum/topic/move'], function (move) {
 				move.init(null, cid, function (err) {
 					if (err) {
-						return app.alertError(err.message);
+						return alerts.error(err);
 					}
 
 					ajaxify.refresh();
@@ -134,12 +134,12 @@ define('forum/category/tools', [
 			if (ok) {
 				Promise.all(tids.map(tid => api[method](`/topics/${tid}${path}`, body)))
 					.then(onComplete)
-					.catch(app.alertError);
+					.catch(alerts.error);
 			}
 		};
 
 		if (!tids.length) {
-			return app.alertError('[[error:no-topics-selected]]');
+			return alerts.error('[[error:no-topics-selected]]');
 		}
 
 		switch (command) {
@@ -294,7 +294,7 @@ define('forum/category/tools', [
 						order: baseIndex + ui.item.index() - 1,
 					}, function (err) {
 						if (err) {
-							return app.alertError(err.message);
+							return alerts.error(err);
 						}
 					});
 				},

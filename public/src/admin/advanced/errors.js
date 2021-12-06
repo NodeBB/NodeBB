@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/advanced/errors', ['bootbox', 'Chart'], function (bootbox, Chart) {
+define('admin/advanced/errors', ['bootbox', 'alerts', 'Chart'], function (bootbox, alerts, Chart) {
 	const Errors = {};
 
 	Errors.init = function () {
@@ -15,11 +15,11 @@ define('admin/advanced/errors', ['bootbox', 'Chart'], function (bootbox, Chart) 
 			if (ok) {
 				socket.emit('admin.errors.clear', {}, function (err) {
 					if (err) {
-						return app.alertError(err.message);
+						return alerts.error(err);
 					}
 
 					ajaxify.refresh();
-					app.alertSuccess('[[admin/advanced/errors:clear404-success]]');
+					alerts.success('[[admin/advanced/errors:clear404-success]]');
 				});
 			}
 		});

@@ -2,8 +2,8 @@
 
 
 define('forum/topic/votes', [
-	'components', 'translator', 'benchpress', 'api', 'hooks', 'bootbox',
-], function (components, translator, Benchpress, api, hooks, bootbox) {
+	'components', 'translator', 'api', 'hooks', 'bootbox', 'alerts',
+], function (components, translator, api, hooks, bootbox, alerts) {
 	const Votes = {};
 
 	Votes.addVoteHandler = function () {
@@ -20,7 +20,7 @@ define('forum/topic/votes', [
 
 		socket.emit('posts.getUpvoters', [pid], function (err, data) {
 			if (err) {
-				return app.alertError(err.message);
+				return alerts.error(err);
 			}
 
 			if (data.length) {
@@ -68,7 +68,7 @@ define('forum/topic/votes', [
 					ajaxify.go('login');
 					return;
 				}
-				return app.alertError(err.message);
+				return alerts.error(err);
 			}
 			hooks.fire('action:post.toggleVote', {
 				pid: pid,
@@ -88,7 +88,7 @@ define('forum/topic/votes', [
 				}
 
 				// Only show error if it's an unexpected error.
-				return app.alertError(err.message);
+				return alerts.error(err);
 			}
 
 			app.parseAndTranslate('partials/modals/votes_modal', data, function (html) {

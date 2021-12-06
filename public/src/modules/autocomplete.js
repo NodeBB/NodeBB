@@ -2,7 +2,7 @@
 'use strict';
 
 
-define('autocomplete', ['api'], function (api) {
+define('autocomplete', ['api', 'alerts'], function (api, alerts) {
 	const module = {};
 
 	module.user = function (input, params, onselect) {
@@ -25,7 +25,7 @@ define('autocomplete', ['api'], function (api) {
 
 					api.get('/api/users', params, function (err, result) {
 						if (err) {
-							return app.alertError(err.message);
+							return alerts.error(err);
 						}
 
 						if (result && result.users) {
@@ -72,7 +72,7 @@ define('autocomplete', ['api'], function (api) {
 						query: request.term,
 					}, function (err, results) {
 						if (err) {
-							return app.alertError(err.message);
+							return alerts.error(err);
 						}
 						if (results && results.length) {
 							const names = results.map(function (group) {
@@ -107,7 +107,7 @@ define('autocomplete', ['api'], function (api) {
 						cid: ajaxify.data.cid || 0,
 					}, function (err, tags) {
 						if (err) {
-							return app.alertError(err.message);
+							return alerts.error(err);
 						}
 						if (tags) {
 							response(tags);

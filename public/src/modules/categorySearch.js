@@ -1,6 +1,6 @@
 'use strict';
 
-define('categorySearch', function () {
+define('categorySearch', ['alerts'], function (alerts) {
 	const categorySearch = {};
 
 	categorySearch.init = function (el, options) {
@@ -77,7 +77,7 @@ define('categorySearch', function () {
 				showLinks: options.showLinks,
 			}, function (err, categories) {
 				if (err) {
-					return app.alertError(err);
+					return alerts.error(err);
 				}
 				callback(localCategories.concat(categories));
 			});

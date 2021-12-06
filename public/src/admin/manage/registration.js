@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/manage/registration', ['bootbox'], function (bootbox) {
+define('admin/manage/registration', ['bootbox', 'alerts'], function (bootbox, alerts) {
 	const Registration = {};
 
 	Registration.init = function () {
@@ -13,7 +13,7 @@ define('admin/manage/registration', ['bootbox'], function (bootbox) {
 
 			socket.emit(method, { username: username }, function (err) {
 				if (err) {
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
 				parent.remove();
 			});
@@ -41,7 +41,7 @@ define('admin/manage/registration', ['bootbox'], function (bootbox) {
 					if (confirm) {
 						socket.emit(method, { email: email, invitedBy: invitedBy }, function (err) {
 							if (err) {
-								return app.alertError(err.message);
+								return alerts.error(err);
 							}
 							removeRow();
 						});

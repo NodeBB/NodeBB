@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/chats/recent', function () {
+define('forum/chats/recent', ['alerts'], function (alerts) {
 	const recent = {};
 
 	recent.init = function () {
@@ -31,7 +31,7 @@ define('forum/chats/recent', function () {
 			after: recentChats.attr('data-nextstart'),
 		}, function (err, data) {
 			if (err) {
-				return app.alertError(err.message);
+				return alerts.error(err);
 			}
 
 			if (data && data.rooms.length) {

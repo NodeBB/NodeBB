@@ -245,7 +245,7 @@ define('admin/extend/widgets', [
 		cloneBtn.on('click', function () {
 			const template = cloneBtn.attr('data-template');
 			if (!template) {
-				return app.alertError('[[admin/extend/widgets:error.select-clone]]');
+				return alerts.error('[[admin/extend/widgets:error.select-clone]]');
 			}
 
 			const currentTemplate = $('#active-widgets .active.tab-pane[data-template] .area');
@@ -274,7 +274,7 @@ define('admin/extend/widgets', [
 				clone(location);
 			}
 
-			app.alertSuccess('[[admin/extend/widgets:alert.clone-success]]');
+			alerts.success('[[admin/extend/widgets:alert.clone-success]]');
 		});
 	}
 

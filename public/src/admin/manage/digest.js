@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/manage/digest', ['bootbox'], function (bootbox) {
+define('admin/manage/digest', ['bootbox', 'alerts'], function (bootbox, alerts) {
 	const Digest = {};
 
 	Digest.init = function () {
@@ -15,20 +15,20 @@ define('admin/manage/digest', ['bootbox'], function (bootbox) {
 					if (ok) {
 						Digest.send(action, undefined, function (err) {
 							if (err) {
-								return app.alertError(err);
+								return alerts.error(err);
 							}
 
-							app.alertSuccess('[[admin/manage/digest:resent-' + interval + ']]');
+							alerts.success('[[admin/manage/digest:resent-' + interval + ']]');
 						});
 					}
 				});
 			} else {
 				Digest.send(action, uid, function (err) {
 					if (err) {
-						return app.alertError(err);
+						return alerts.error(err);
 					}
 
-					app.alertSuccess('[[admin/manage/digest:resent-single]]');
+					alerts.success('[[admin/manage/digest:resent-single]]');
 				});
 			}
 		});

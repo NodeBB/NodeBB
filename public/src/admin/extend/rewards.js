@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/extend/rewards', [], function () {
+define('admin/extend/rewards', ['alerts'], function (alerts) {
 	const rewards = {};
 
 
@@ -30,9 +30,9 @@ define('admin/extend/rewards', [], function () {
 
 				socket.emit('admin.rewards.delete', { id: id }, function (err) {
 					if (err) {
-						app.alertError(err.message);
+						alerts.error(err);
 					} else {
-						app.alertSuccess('[[admin/extend/rewards:alert.delete-success]]');
+						alerts.success('[[admin/extend/rewards:alert.delete-success]]');
 					}
 				});
 
@@ -88,7 +88,7 @@ define('admin/extend/rewards', [], function () {
 		}
 
 		if (!inputs) {
-			return app.alertError('[[admin/extend/rewards:alert.no-inputs-found]] ' + el.attr('data-selected'));
+			return alerts.error('[[admin/extend/rewards:alert.no-inputs-found]] ' + el.attr('data-selected'));
 		}
 
 		inputs.forEach(function (input) {
@@ -169,9 +169,9 @@ define('admin/extend/rewards', [], function () {
 
 		socket.emit('admin.rewards.save', activeRewards, function (err, result) {
 			if (err) {
-				app.alertError(err.message);
+				alerts.error(err);
 			} else {
-				app.alertSuccess('[[admin/extend/rewards:alert.save-success]]');
+				alerts.success('[[admin/extend/rewards:alert.save-success]]');
 				// newly added rewards are missing data-id, update to prevent rewards getting duplicated
 				$('#active li').each(function (index) {
 					if (!$(this).attr('data-id')) {

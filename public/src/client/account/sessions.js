@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/account/sessions', ['forum/account/header', 'components', 'api'], function (header, components, api) {
+define('forum/account/sessions', ['forum/account/header', 'components', 'api', 'alerts'], function (header, components, api, alerts) {
 	const Sessions = {};
 
 	Sessions.init = function () {
@@ -25,9 +25,9 @@ define('forum/account/sessions', ['forum/account/header', 'components', 'api'], 
 						if (errorObj.loggedIn === false) {
 							window.location.href = config.relative_path + '/login?error=' + errorObj.title;
 						}
-						app.alertError(errorObj.title);
+						alerts.error(errorObj.title);
 					} catch (e) {
-						app.alertError('[[error:invalid-data]]');
+						alerts.error('[[error:invalid-data]]');
 					}
 				});
 			}

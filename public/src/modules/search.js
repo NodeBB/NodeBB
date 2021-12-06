@@ -237,7 +237,7 @@ define('search', ['translator', 'storage', 'hooks', 'alerts'], function (transla
 		try {
 			term = encodeURIComponent(term);
 		} catch (e) {
-			return app.alertError('[[error:invalid-search-term]]');
+			return alerts.error('[[error:invalid-search-term]]');
 		}
 
 		const query = {

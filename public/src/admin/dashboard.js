@@ -1,7 +1,9 @@
 'use strict';
 
 
-define('admin/dashboard', ['Chart', 'translator', 'benchpress', 'bootbox'], function (Chart, translator, Benchpress, bootbox) {
+define('admin/dashboard', [
+	'Chart', 'translator', 'benchpress', 'bootbox', 'alerts',
+], function (Chart, translator, Benchpress, bootbox, alerts) {
 	const Admin = {};
 	const intervals = {
 		rooms: false,
@@ -53,7 +55,7 @@ define('admin/dashboard', ['Chart', 'translator', 'benchpress', 'bootbox'], func
 
 	Admin.updateRoomUsage = function (err, data) {
 		if (err) {
-			return app.alertError(err.message);
+			return alerts.error(err);
 		}
 
 		if (JSON.stringify(graphData.rooms) === JSON.stringify(data)) {
@@ -425,7 +427,7 @@ define('admin/dashboard', ['Chart', 'translator', 'benchpress', 'bootbox'], func
 			amount: amount,
 		}, function (err, data) {
 			if (err) {
-				return app.alertError(err.message);
+				return alerts.error(err);
 			}
 			if (JSON.stringify(graphData.traffic) === JSON.stringify(data)) {
 				return;

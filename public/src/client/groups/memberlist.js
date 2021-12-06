@@ -1,6 +1,6 @@
 'use strict';
 
-define('forum/groups/memberlist', ['api', 'bootbox'], function (api, bootbox) {
+define('forum/groups/memberlist', ['api', 'bootbox', 'alerts'], function (api, bootbox, alerts) {
 	const MemberList = {};
 	let searchInterval;
 	let groupName;
@@ -51,7 +51,7 @@ define('forum/groups/memberlist', ['api', 'bootbox'], function (api, bootbox) {
 						paginate: false,
 					}, function (err, result) {
 						if (err) {
-							return app.alertError(err.message);
+							return alerts.error(err);
 						}
 						result.users.forEach(function (user) {
 							foundUsers[user.uid] = user;
@@ -79,12 +79,12 @@ define('forum/groups/memberlist', ['api', 'bootbox'], function (api, bootbox) {
 		if (groupName === 'administrators') {
 			socket.emit('admin.user.makeAdmins', uids, function (err) {
 				if (err) {
-					return app.alertError(err);
+					return alerts.error(err);
 				}
 				done();
 			});
 		} else {
-			Promise.all(uids.map(uid => api.put('/groups/' + ajaxify.data.group.slug + '/membership/' + uid))).then(done).catch(app.alertError);
+			Promise.all(uids.map(uid => api.put('/groups/' + ajaxify.data.group.slug + '/membership/' + uid))).then(done).catch(alerts.error);
 		}
 	}
 
@@ -99,7 +99,7 @@ define('forum/groups/memberlist', ['api', 'bootbox'], function (api, bootbox) {
 			searchInterval = setTimeout(function () {
 				socket.emit('groups.searchMembers', { groupName: groupName, query: query }, function (err, results) {
 					if (err) {
-						return app.alertError(err.message);
+						return alerts.error(err);
 					}
 					parseAndTranslate(results.users, function (html) {
 						$('[component="groups/members"] tbody').html(html);
@@ -133,7 +133,7 @@ define('forum/groups/memberlist', ['api', 'bootbox'], function (api, bootbox) {
 			after: members.attr('data-nextstart'),
 		}, function (err, data) {
 			if (err) {
-				return app.alertError(err.message);
+				return alerts.error(err);
 			}
 
 			if (data && data.users.length) {

@@ -1,7 +1,9 @@
 'use strict';
 
 
-define('forum/account/settings', ['forum/account/header', 'components', 'translator', 'api'], function (header, components, translator, api) {
+define('forum/account/settings', [
+	'forum/account/header', 'components', 'translator', 'api', 'alerts',
+], function (header, components, translator, api, alerts) {
 	const AccountSettings = {};
 
 	// If page skin is changed but not saved, switch the skin back
@@ -21,7 +23,7 @@ define('forum/account/settings', ['forum/account/header', 'components', 'transla
 				$.get(config.relative_path + '/' + settings.homePageCustom, function () {
 					saveSettings(settings);
 				}).fail(function () {
-					app.alertError('[[error:invalid-home-page-route]]');
+					alerts.error('[[error:invalid-home-page-route]]');
 				});
 			} else {
 				saveSettings(settings);
@@ -67,7 +69,7 @@ define('forum/account/settings', ['forum/account/header', 'components', 'transla
 
 	function saveSettings(settings) {
 		api.put(`/users/${ajaxify.data.uid}/settings`, { settings }).then((newSettings) => {
-			app.alertSuccess('[[success:settings-saved]]');
+			alerts.success('[[success:settings-saved]]');
 			let languageChanged = false;
 			for (const key in newSettings) {
 				if (newSettings.hasOwnProperty(key)) {

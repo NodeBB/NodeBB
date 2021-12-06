@@ -38,9 +38,9 @@ define('messages', ['bootbox', 'translator', 'storage', 'alerts'], function (boo
 				app.removeAlert('email_confirm');
 				socket.emit('user.emailConfirm', {}, function (err) {
 					if (err) {
-						return app.alertError(err.message);
+						return alerts.error(err);
 					}
-					app.alertSuccess('[[notifications:email-confirm-sent]]');
+					alerts.success('[[notifications:email-confirm-sent]]');
 				});
 			};
 			alerts.alert(msg);

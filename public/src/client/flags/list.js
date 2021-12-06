@@ -1,6 +1,8 @@
 'use strict';
 
-define('forum/flags/list', ['components', 'Chart', 'categoryFilter', 'autocomplete', 'api'], function (components, Chart, categoryFilter, autocomplete, api) {
+define('forum/flags/list', [
+	'components', 'Chart', 'categoryFilter', 'autocomplete', 'api', 'alerts',
+], function (components, Chart, categoryFilter, autocomplete, api, alerts) {
 	const Flags = {};
 
 	let selectedCids;
@@ -171,12 +173,12 @@ define('forum/flags/list', ['components', 'Chart', 'categoryFilter', 'autocomple
 						return res.status === 'rejected';
 					});
 					if (fulfilled) {
-						app.alertSuccess('[[flags:bulk-success, ' + fulfilled + ']]');
+						alerts.success('[[flags:bulk-success, ' + fulfilled + ']]');
 						ajaxify.refresh();
 					}
 
 					errors.forEach(function (res) {
-						app.alertError(res.reason);
+						alerts.error(res.reason);
 					});
 				});
 			}

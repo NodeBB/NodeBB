@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts', 'hooks'], function (navigator, components, posts, hooks) {
+define('forum/topic/replies', ['forum/topic/posts', 'hooks', 'alerts'], function (posts, hooks, alerts) {
 	const Replies = {};
 
 	Replies.init = function (button) {
@@ -19,7 +19,7 @@ define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts', '
 				loading.addClass('hidden');
 				if (err) {
 					open.removeClass('hidden');
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
 
 				close.removeClass('hidden');

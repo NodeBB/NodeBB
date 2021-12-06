@@ -9,7 +9,8 @@ define('admin/manage/group', [
 	'slugify',
 	'api',
 	'bootbox',
-], function (memberList, iconSelect, translator, categorySelector, groupSearch, slugify, api, bootbox) {
+	'alerts',
+], function (memberList, iconSelect, translator, categorySelector, groupSearch, slugify, api, bootbox, alerts) {
 	const Groups = {};
 
 	Groups.init = function () {
@@ -104,8 +105,8 @@ define('admin/manage/group', [
 					ajaxify.go('admin/manage/groups/' + encodeURIComponent(newName), undefined, true);
 				}
 
-				app.alertSuccess('[[admin/manage/groups:edit.save-success]]');
-			}).catch(app.alertError);
+				alerts.success('[[admin/manage/groups:edit.save-success]]');
+			}).catch(alerts.error);
 			return false;
 		});
 	};
@@ -123,7 +124,7 @@ define('admin/manage/group', [
 				case 'toggleOwnership':
 					api[isOwner ? 'del' : 'put'](`/groups/${ajaxify.data.group.slug}/ownership/${uid}`, {}).then(() => {
 						ownerFlagEl.toggleClass('invisible');
-					}).catch(app.alertError);
+					}).catch(alerts.error);
 					break;
 
 				case 'kick':
@@ -133,7 +134,7 @@ define('admin/manage/group', [
 						}
 						api.del('/groups/' + ajaxify.data.group.slug + '/membership/' + uid).then(() => {
 							userRow.slideUp().remove();
-						}).catch(app.alertError);
+						}).catch(alerts.error);
 					});
 					break;
 				default:

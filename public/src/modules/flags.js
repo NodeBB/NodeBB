@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('flags', ['hooks', 'components', 'api'], function (hooks, components, api) {
+define('flags', ['hooks', 'components', 'api', 'alerts'], function (hooks, components, api, alerts) {
 	const Flag = {};
 	let flagModal;
 	let flagCommit;
@@ -57,9 +57,9 @@ define('flags', ['hooks', 'components', 'api'], function (hooks, components, api
 		api.put(`/flags/${flagId}`, {
 			state: 'resolved',
 		}).then(() => {
-			app.alertSuccess('[[flags:resolved]]');
+			alerts.success('[[flags:resolved]]');
 			hooks.fire('action:flag.resolved', { flagId: flagId });
-		}).catch(app.alertError);
+		}).catch(alerts.error);
 	};
 
 	function createFlag(type, id, reason) {
@@ -69,11 +69,11 @@ define('flags', ['hooks', 'components', 'api'], function (hooks, components, api
 		const data = { type: type, id: id, reason: reason };
 		api.post('/flags', data, function (err, flagId) {
 			if (err) {
-				return app.alertError(err.message);
+				return alerts.error(err);
 			}
 
 			flagModal.modal('hide');
-			app.alertSuccess('[[flags:modal-submit-success]]');
+			alerts.success('[[flags:modal-submit-success]]');
 			if (type === 'post') {
 				const postEl = components.get('post', 'pid', id);
 				postEl.find('[component="post/flag"]').addClass('hidden').parent().attr('hidden', '');

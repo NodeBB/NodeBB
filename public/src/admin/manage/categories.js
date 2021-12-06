@@ -63,7 +63,7 @@ define('admin/manage/categories', [
 								modified[cid] = { order: Math.max(1, parseInt(val, 10)) };
 								api.put('/categories/' + cid, modified[cid]).then(function () {
 									ajaxify.refresh();
-								}).catch(err => app.alertError(err));
+								}).catch(alerts.error);
 							} else {
 								return false;
 							}
@@ -183,7 +183,7 @@ define('admin/manage/categories', [
 			const categoryEl = listEl.querySelector(`li[data-cid="${cid}"]`);
 			categoryEl.classList[disabled ? 'add' : 'remove']('disabled');
 			$(categoryEl).find('li a[data-action="toggle"]').first().translateText(disabled ? '[[admin/manage/categories:enable]]' : '[[admin/manage/categories:disable]]');
-		}).catch(app.alertError)));
+		}).catch(alerts.error)));
 	};
 
 	function itemDidAdd(e) {
@@ -209,7 +209,7 @@ define('admin/manage/categories', [
 			}
 
 			newCategoryId = -1;
-			api.put('/categories/' + cid, modified[cid]).catch(app.alertError);
+			api.put('/categories/' + cid, modified[cid]).catch(alerts.error);
 		}
 	}
 

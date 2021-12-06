@@ -5,10 +5,11 @@ define('admin/settings/navigation', [
 	'translator',
 	'iconSelect',
 	'benchpress',
+	'alerts',
 	'jquery-ui/widgets/draggable',
 	'jquery-ui/widgets/droppable',
 	'jquery-ui/widgets/sortable',
-], function (translator, iconSelect, Benchpress) {
+], function (translator, iconSelect, Benchpress, alerts) {
 	const navigation = {};
 	let available;
 
@@ -128,9 +129,9 @@ define('admin/settings/navigation', [
 
 		socket.emit('admin.navigation.save', nav, function (err) {
 			if (err) {
-				app.alertError(err.message);
+				alerts.error(err);
 			} else {
-				app.alertSuccess('Successfully saved navigation');
+				alerts.success('Successfully saved navigation');
 			}
 		});
 	}

@@ -5,10 +5,10 @@ define('notifications', [
 	'translator',
 	'components',
 	'navigator',
-	'benchpress',
 	'tinycon',
 	'hooks',
-], function (translator, components, navigator, Benchpress, Tinycon, hooks) {
+	'alerts',
+], function (translator, components, navigator, Tinycon, hooks, alerts) {
 	const Notifications = {};
 
 	let unreadNotifs = {};
@@ -28,7 +28,7 @@ define('notifications', [
 		callback = callback || function () {};
 		socket.emit('notifications.get', null, function (err, data) {
 			if (err) {
-				return app.alertError(err.message);
+				return alerts.error(err);
 			}
 
 			const notifs = data.unread.concat(data.read).sort(function (a, b) {
@@ -82,7 +82,7 @@ define('notifications', [
 
 		socket.emit('notifications.getCount', function (err, count) {
 			if (err) {
-				return app.alertError(err.message);
+				return alerts.error(err);
 			}
 
 			Notifications.updateNotifCount(count);
@@ -96,7 +96,7 @@ define('notifications', [
 	function markNotification(nid, read, callback) {
 		socket.emit('notifications.mark' + (read ? 'Read' : 'Unread'), nid, function (err) {
 			if (err) {
-				return app.alertError(err.message);
+				return alerts.error(err);
 			}
 
 			if (read && unreadNotifs[nid]) {
@@ -150,7 +150,7 @@ define('notifications', [
 	Notifications.markAllRead = function () {
 		socket.emit('notifications.markAllRead', function (err) {
 			if (err) {
-				app.alertError(err.message);
+				alerts.error(err);
 			}
 			unreadNotifs = {};
 		});

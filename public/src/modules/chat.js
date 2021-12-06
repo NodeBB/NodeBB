@@ -1,14 +1,14 @@
 'use strict';
 
 define('chat', [
-	'components', 'taskbar', 'translator', 'hooks', 'bootbox',
-], function (components, taskbar, translator, hooks, bootbox) {
+	'components', 'taskbar', 'translator', 'hooks', 'bootbox', 'alerts'
+], function (components, taskbar, translator, hooks, bootbox, alerts) {
 	const module = {};
 	let newMessage = false;
 
 	module.openChat = function (roomId, uid) {
 		if (!app.user.uid) {
-			return app.alertError('[[error:not-logged-in]]');
+			return alerts.error('[[error:not-logged-in]]');
 		}
 
 		function loadAndCenter(chatModal) {
@@ -22,7 +22,7 @@ define('chat', [
 		} else {
 			socket.emit('modules.chats.loadRoom', { roomId: roomId, uid: uid || app.user.uid }, function (err, roomData) {
 				if (err) {
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
 				roomData.users = roomData.users.filter(function (user) {
 					return user && parseInt(user.uid, 10) !== parseInt(app.user.uid, 10);
@@ -38,7 +38,7 @@ define('chat', [
 		function createChat() {
 			socket.emit('modules.chats.newRoom', { touid: touid }, function (err, roomId) {
 				if (err) {
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
 
 				if (!ajaxify.data.template.chats) {
@@ -53,15 +53,15 @@ define('chat', [
 
 		callback = callback || function () { };
 		if (!app.user.uid) {
-			return app.alertError('[[error:not-logged-in]]');
+			return alerts.error('[[error:not-logged-in]]');
 		}
 
 		if (parseInt(touid, 10) === parseInt(app.user.uid, 10)) {
-			return app.alertError('[[error:cant-chat-with-yourself]]');
+			return alerts.error('[[error:cant-chat-with-yourself]]');
 		}
 		socket.emit('modules.chats.isDnD', touid, function (err, isDnD) {
 			if (err) {
-				return app.alertError(err.message);
+				return alerts.error(err);
 			}
 			if (!isDnD) {
 				return createChat();
@@ -81,7 +81,7 @@ define('chat', [
 			after: 0,
 		}, function (err, data) {
 			if (err) {
-				return app.alertError(err.message);
+				return alerts.error(err);
 			}
 
 			const rooms = data.rooms.filter(function (room) {
@@ -112,7 +112,7 @@ define('chat', [
 					$('[component="chats/mark-all-read"]').off('click').on('click', function () {
 						socket.emit('modules.chats.markAllRead', function (err) {
 							if (err) {
-								return app.alertError(err);
+								return alerts.error(err);
 							}
 						});
 					});
@@ -134,7 +134,7 @@ define('chat', [
 				roomId: data.roomId,
 			}, function (err, roomData) {
 				if (err) {
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
 
 				roomData.users = roomData.users.filter(function (user) {

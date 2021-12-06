@@ -1,6 +1,6 @@
 'use strict';
 
-define('forum/header', ['forum/header/notifications', 'forum/header/chat'], function (notifications, chat) {
+define('forum/header', ['forum/header/notifications', 'forum/header/chat', 'alerts'], function (notifications, chat, alerts) {
 	const module = {};
 
 	module.prepareDOM = function () {
@@ -16,7 +16,7 @@ define('forum/header', ['forum/header/notifications', 'forum/header/chat'], func
 			const status = $(this).attr('data-status');
 			socket.emit('user.setStatus', status, function (err) {
 				if (err) {
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
 				$('[data-uid="' + app.user.uid + '"] [component="user/status"], [component="header/profilelink"] [component="user/status"]')
 					.removeClass('away online dnd offline')

@@ -156,7 +156,9 @@ ajaxify = window.ajaxify || {};
 				$('#footer, #content').removeClass('hide').addClass('ajaxifying');
 				return renderTemplate(url, status.toString(), data.responseJSON || {}, callback);
 			} else if (status === 401) {
-				app.alertError('[[global:please_log_in]]');
+				require(['alerts'], function (alerts) {
+					alerts.error('[[global:please_log_in]]');
+				});
 				app.previousUrl = url;
 				window.location.href = config.relative_path + '/login';
 			} else if (status === 302 || status === 308) {
@@ -174,7 +176,9 @@ ajaxify = window.ajaxify || {};
 				}
 			}
 		} else if (textStatus !== 'abort') {
-			app.alertError(data.responseJSON.error);
+			require(['alerts'], function (alerts) {
+				alerts.error(data.responseJSON.error);
+			});
 		}
 	}
 

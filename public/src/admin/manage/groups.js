@@ -5,7 +5,8 @@ define('admin/manage/groups', [
 	'slugify',
 	'api',
 	'bootbox',
-], function (categorySelector, slugify, api, bootbox) {
+	'alerts',
+], function (categorySelector, slugify, api, bootbox, alerts) {
 	const Groups = {};
 
 	Groups.init = function () {
@@ -61,7 +62,7 @@ define('admin/manage/groups', [
 				case 'delete':
 					bootbox.confirm('[[admin/manage/groups:alerts.confirm-delete]]', function (confirm) {
 						if (confirm) {
-							api.del(`/groups/${slugify(groupName)}`, {}).then(ajaxify.refresh).catch(app.alertError);
+							api.del(`/groups/${slugify(groupName)}`, {}).then(ajaxify.refresh).catch(alerts.error);
 						}
 					});
 					break;
@@ -99,7 +100,7 @@ define('admin/manage/groups', [
 				},
 			}, function (err, groups) {
 				if (err) {
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
 
 				app.parseAndTranslate('admin/manage/groups', 'groups', {

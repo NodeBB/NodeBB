@@ -2,8 +2,8 @@
 
 
 define('forum/post-queue', [
-	'categoryFilter', 'categorySelector', 'api',
-], function (categoryFilter, categorySelector, api) {
+	'categoryFilter', 'categorySelector', 'api', 'alerts',
+], function (categoryFilter, categorySelector, api, alerts) {
 	const PostQueue = {};
 
 	PostQueue.init = function () {
@@ -27,7 +27,7 @@ define('forum/post-queue', [
 
 			socket.emit('posts.' + action, { id: id }, function (err) {
 				if (err) {
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
 				parent.remove();
 
@@ -66,9 +66,7 @@ define('forum/post-queue', [
 								$this.replaceWith(html.find('.topic-category'));
 							}
 						});
-					}).catch(function (err) {
-						app.alertError(err);
-					});
+					}).catch(alerts.error);
 				},
 			});
 			return false;
@@ -99,7 +97,7 @@ define('forum/post-queue', [
 				content: titleEdit ? undefined : textarea.val(),
 			}, function (err, data) {
 				if (err) {
-					return app.alertError(err);
+					return alerts.error(err);
 				}
 				if (titleEdit) {
 					if (preview.find('.title-text').length) {

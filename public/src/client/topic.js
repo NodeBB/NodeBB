@@ -28,7 +28,7 @@ define('forum/topic', [
 		if (!String(data.url).startsWith('topic/')) {
 			navigator.disable();
 			components.get('navbar/title').find('span').text('').hide();
-			app.removeAlert('bookmark');
+			alerts.remove('bookmark');
 		}
 	});
 
@@ -89,7 +89,7 @@ define('forum/topic', [
 	Topic.toBottom = function () {
 		socket.emit('topics.postcount', ajaxify.data.tid, function (err, postCount) {
 			if (err) {
-				return app.alertError(err.message);
+				return alerts.error(err);
 			}
 
 			navigator.scrollBottom(postCount - 1);
@@ -297,7 +297,7 @@ define('forum/topic', [
 					index: index,
 				}, function (err) {
 					if (err) {
-						return app.alertError(err.message);
+						return alerts.error(err);
 					}
 					ajaxify.data.bookmark = index + 1;
 				});
@@ -308,7 +308,7 @@ define('forum/topic', [
 
 		// removes the bookmark alert when we get to / past the bookmark
 		if (!currentBookmark || parseInt(index, 10) >= parseInt(currentBookmark, 10)) {
-			app.removeAlert('bookmark');
+			alerts.remove('bookmark');
 		}
 	}
 

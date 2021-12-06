@@ -11,11 +11,12 @@ define('forum/chats', [
 	'composer/autocomplete',
 	'hooks',
 	'bootbox',
+	'alerts',
 	'chat',
 ], function (
 	components, translator, mousetrap,
 	recentChats, search, messages,
-	autocomplete, hooks, bootbox, chatModule
+	autocomplete, hooks, bootbox, alerts, chatModule
 ) {
 	const Chats = {
 		initialised: false,
@@ -79,7 +80,7 @@ define('forum/chats', [
 			const mid = ipEl.parents('[data-mid]').attr('data-mid');
 			socket.emit('modules.chats.getIP', mid, function (err, ip) {
 				if (err) {
-					return app.alertError(err);
+					return alerts.error(err);
 				}
 				ipEl.html(ip);
 			});
@@ -126,7 +127,7 @@ define('forum/chats', [
 				start: start,
 			}, function (err, data) {
 				if (err) {
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
 				if (!data) {
 					loading = false;
@@ -270,7 +271,7 @@ define('forum/chats', [
 				uid: uid,
 			}, function (err) {
 				if (err) {
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
 
 				Chats.refreshParticipantsList(roomId, modal);
@@ -288,7 +289,7 @@ define('forum/chats', [
 					if (ok) {
 						socket.emit('modules.chats.leave', roomId, function (err) {
 							if (err) {
-								app.alertError(err.message);
+								alerts.error(err);
 							}
 
 							// Return user to chats page. If modal, close modal.
@@ -350,7 +351,7 @@ define('forum/chats', [
 				newName: modal.find('#roomName').val(),
 			}, function (err) {
 				if (err) {
-					return app.alertError(err.message);
+					alerts.error(err);
 				}
 			});
 		}
@@ -399,7 +400,7 @@ define('forum/chats', [
 		const roomId = el.attr('data-roomid');
 		socket.emit('modules.chats.leave', roomId, function (err) {
 			if (err) {
-				return app.alertError(err.message);
+				return alerts.error(err);
 			}
 			if (parseInt(roomId, 10) === parseInt(ajaxify.data.roomId, 10)) {
 				ajaxify.go('user/' + ajaxify.data.userslug + '/chats');

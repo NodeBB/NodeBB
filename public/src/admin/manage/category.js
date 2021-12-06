@@ -50,7 +50,7 @@ define('admin/manage/category', [
 		$('#save').on('click', function () {
 			const tags = $('#tag-whitelist').val() ? $('#tag-whitelist').val().split(',') : [];
 			if (tags.length && tags.length < parseInt($('#cid-min-tags').val(), 10)) {
-				return app.alertError('[[admin/manage/categories:alert.not-enough-whitelisted-tags]]');
+				return alerts.error('[[admin/manage/categories:alert.not-enough-whitelisted-tags]]');
 			}
 
 			const cid = ajaxify.data.category.cid;
@@ -89,7 +89,7 @@ define('admin/manage/category', [
 								const intervalId = setInterval(function () {
 									socket.emit('categories.getTopicCount', ajaxify.data.category.cid, function (err, count) {
 										if (err) {
-											return app.alertError(err);
+											return alerts.error(err);
 										}
 
 										let percent = 0;
@@ -106,9 +106,9 @@ define('admin/manage/category', [
 										clearInterval(intervalId);
 									}
 									modal.modal('hide');
-									app.alertSuccess('[[admin/manage/categories:alert.purge-success]]');
+									alerts.success('[[admin/manage/categories:alert.purge-success]]');
 									ajaxify.go('admin/manage/categories');
-								}).catch(app.alertError);
+								}).catch(alerts.error);
 
 								return false;
 							},
@@ -139,11 +139,11 @@ define('admin/manage/category', [
 									copyParent: modal.find('#copyParent').prop('checked'),
 								}, function (err) {
 									if (err) {
-										return app.alertError(err.message);
+										return alerts.error(err);
 									}
 
 									modal.modal('hide');
-									app.alertSuccess('[[admin/manage/categories:alert.copy-success]]');
+									alert.success('[[admin/manage/categories:alert.copy-success]]');
 									ajaxify.refresh();
 								});
 								return false;
@@ -215,7 +215,7 @@ define('admin/manage/category', [
 				$('button[data-action="removeParent"]').parent().addClass('hide');
 				$('button[data-action="changeParent"]').parent().addClass('hide');
 				$('button[data-action="setParent"]').removeClass('hide');
-			}).catch(app.alertError);
+			}).catch(alerts.error);
 		});
 		$('button[data-action="toggle"]').on('click', function () {
 			const $this = $(this);
@@ -226,7 +226,7 @@ define('admin/manage/category', [
 				$this.translateText(!disabled ? '[[admin/manage/categories:enable]]' : '[[admin/manage/categories:disable]]');
 				$this.toggleClass('btn-primary', !disabled).toggleClass('btn-danger', disabled);
 				$this.attr('data-disabled', disabled ? 0 : 1);
-			}).catch(app.alertError);
+			}).catch(alerts.error);
 		});
 	};
 
@@ -298,7 +298,7 @@ define('admin/manage/category', [
 
 					$('button[data-action="removeParent"]').parent().removeClass('hide');
 					$('button[data-action="setParent"]').addClass('hide');
-				}).catch(app.alertError);
+				}).catch(alerts.error);
 			},
 			showLinks: true,
 		});

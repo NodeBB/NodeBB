@@ -169,7 +169,7 @@ define('admin/extend/plugins', [
 				submitPluginUsage: $(this).prop('checked') ? '1' : '0',
 			}, function (err) {
 				if (err) {
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
 			});
 		});
@@ -178,7 +178,7 @@ define('admin/extend/plugins', [
 			$('#order-active-plugins-modal').modal('show');
 			socket.emit('admin.plugins.getActive', function (err, activePlugins) {
 				if (err) {
-					return app.alertError(err);
+					return alerts.error(err);
 				}
 				let html = '';
 				activePlugins.forEach(function (plugin) {

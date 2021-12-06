@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/infinitescroll', ['hooks'], function (hooks) {
+define('forum/infinitescroll', ['hooks', 'alerts'], function (hooks, alerts) {
 	const scroll = {};
 	let callback;
 	let previousScrollTop = 0;
@@ -75,7 +75,7 @@ define('forum/infinitescroll', ['hooks'], function (hooks) {
 		socket.emit(hookData.method, hookData.data, function (err, data) {
 			if (err) {
 				loadingMore = false;
-				return app.alertError(err.message);
+				return alerts.error(err);
 			}
 			callback(data, function () {
 				loadingMore = false;
@@ -98,7 +98,7 @@ define('forum/infinitescroll', ['hooks'], function (hooks) {
 			});
 		}).fail(function (jqXHR) {
 			loadingMore = false;
-			app.alertError(String(jqXHR.responseJSON || jqXHR.statusText));
+			alerts.error(String(jqXHR.responseJSON || jqXHR.statusText));
 		});
 	};
 

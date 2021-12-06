@@ -1,6 +1,6 @@
 'use strict';
 
-define('forum/account/edit/email', ['forum/account/header', 'api'], function (header, api) {
+define('forum/account/edit/email', ['forum/account/header', 'api', 'alerts'], function (header, api, alerts) {
 	const AccountEditEmail = {};
 
 	AccountEditEmail.init = function () {
@@ -20,7 +20,7 @@ define('forum/account/edit/email', ['forum/account/header', 'api'], function (he
 
 			if (userData.email === userData.password) {
 				curPasswordEl.parents('.control-group').toggleClass('has-error', true);
-				return app.alertError('[[user:email_same_as_password]]');
+				return alerts.error('[[user:email_same_as_password]]');
 			}
 
 			const btn = $(this);
@@ -32,7 +32,7 @@ define('forum/account/edit/email', ['forum/account/header', 'api'], function (he
 			}).catch((err) => {
 				setTimeout(() => {
 					btn.removeClass('disabled').find('i').addClass('hide');
-					app.alertError(err);
+					alerts.error(err);
 				}, 300); // for UX: this call is too fast.
 			});
 

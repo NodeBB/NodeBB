@@ -3,9 +3,9 @@
 
 define('admin/manage/tags', [
 	'bootbox',
-	'forum/infinitescroll',
+	'alerts',
 	'admin/modules/selectable',
-], function (bootbox, infinitescroll, selectable) {
+], function (bootbox, alerts, selectable) {
 	const Tags = {};
 
 	Tags.init = function () {
@@ -40,7 +40,7 @@ define('admin/manage/tags', [
 				tag: createTagName.val(),
 			}, function (err) {
 				if (err) {
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
 
 				createTagName.val('');
@@ -58,7 +58,7 @@ define('admin/manage/tags', [
 				query: $('#tag-search').val(),
 			}, function (err, result) {
 				if (err) {
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
 
 				app.parseAndTranslate('admin/manage/tags', 'tags', {
@@ -98,9 +98,9 @@ define('admin/manage/tags', [
 
 							socket.emit('admin.tags.rename', data, function (err) {
 								if (err) {
-									return app.alertError(err.message);
+									return alerts.error(err);
 								}
-								app.alertSuccess('[[admin/manage/tags:alerts.update-success]]');
+								alerts.success('[[admin/manage/tags:alerts.update-success]]');
 								ajaxify.refresh();
 							});
 						},
@@ -129,7 +129,7 @@ define('admin/manage/tags', [
 					tags: tags,
 				}, function (err) {
 					if (err) {
-						return app.alertError(err.message);
+						return alerts.error(err);
 					}
 					tagsToDelete.remove();
 				});

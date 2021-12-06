@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/topic/delete-posts', ['components', 'postSelect'], function (components, postSelect) {
+define('forum/topic/delete-posts', ['postSelect', 'alerts'], function (postSelect, alerts) {
 	const DeletePosts = {};
 	let modal;
 	let deleteBtn;
@@ -56,7 +56,7 @@ define('forum/topic/delete-posts', ['components', 'postSelect'], function (compo
 		}, function (err) {
 			btn.removeAttr('disabled');
 			if (err) {
-				return app.alertError(err.message);
+				return alerts.error(err);
 			}
 
 			closeModal();
