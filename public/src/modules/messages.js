@@ -28,14 +28,14 @@ define('messages', ['bootbox', 'translator', 'storage', 'alerts'], function (boo
 		if (!app.user.email) {
 			msg.message = '[[error:no-email-to-confirm]]';
 			msg.clickfn = function () {
-				app.removeAlert('email_confirm');
+				alerts.remove('email_confirm');
 				ajaxify.go('user/' + app.user.userslug + '/edit/email');
 			};
 			alerts.alert(msg);
 		} else if (!app.user['email:confirmed'] && !app.user.isEmailConfirmSent) {
 			msg.message = message || '[[error:email-not-confirmed]]';
 			msg.clickfn = function () {
-				app.removeAlert('email_confirm');
+				alerts.remove('email_confirm');
 				socket.emit('user.emailConfirm', {}, function (err) {
 					if (err) {
 						return alerts.error(err);

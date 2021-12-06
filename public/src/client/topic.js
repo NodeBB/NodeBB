@@ -243,7 +243,7 @@ define('forum/topic', [
 			span.html('').addClass('hidden');
 		}
 		if ($(window).scrollTop() > 300) {
-			app.removeAlert('bookmark');
+			alerts.remove('bookmark');
 		}
 	}
 
