@@ -3,5 +3,9 @@
 	"alert.confirm-restart": "Sei sicuro di voler riavviare NodeBB?",
 
 	"acp-title": "%1 | Pannello di controllo amministratore NodeBB",
-	"settings-header-contents": "Contenuti"
+	"settings-header-contents": "Contenuti",
+	"changes-saved": "Changed Saved",
+	"changes-saved-message": "Your changes to the NodeBB configuration have been saved.",
+	"changes-not-saved": "Changes Not Saved",
+	"changes-not-saved-message": "NodeBB encountered a problem saving your changes. (%1)"
 }

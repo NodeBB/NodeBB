@@ -3,5 +3,9 @@
 	"alert.confirm-restart": "Er du sikker på at du ønsker å restarte NoddeBB?",
 
 	"acp-title": "%1 | NodeBB Admin Kontrollpanel",
-	"settings-header-contents": "Innhold"
+	"settings-header-contents": "Innhold",
+	"changes-saved": "Changed Saved",
+	"changes-saved-message": "Your changes to the NodeBB configuration have been saved.",
+	"changes-not-saved": "Changes Not Saved",
+	"changes-not-saved-message": "NodeBB encountered a problem saving your changes. (%1)"
 }
