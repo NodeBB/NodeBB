@@ -23,7 +23,7 @@ define('forum/groups/details', [
 	slugify,
 	categorySelector,
 	bootbox,
-	alerts,
+	alerts
 ) {
 	const Details = {};
 	let groupName;

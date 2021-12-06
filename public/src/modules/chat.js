@@ -1,7 +1,7 @@
 'use strict';
 
 define('chat', [
-	'components', 'taskbar', 'translator', 'hooks', 'bootbox', 'alerts'
+	'components', 'taskbar', 'translator', 'hooks', 'bootbox', 'alerts',
 ], function (components, taskbar, translator, hooks, bootbox, alerts) {
 	const module = {};
 	let newMessage = false;
