@@ -25,11 +25,6 @@ module.exports = function (Topics) {
 		if (!topicOrTid) {
 			return [];
 		}
-		if (typeof topicOrTid !== 'object') {
-			// TODO: remove in 1.19.0
-			winston.warn('[deprecated] Topics.getTopicPosts(tid, ...) usage is deprecated, pass a topic object as first argument!');
-			topicOrTid = await Topics.getTopicData(topicOrTid);
-		}
 
 		let repliesStart = start;
 		let repliesStop = stop;
