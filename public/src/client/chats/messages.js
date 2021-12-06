@@ -2,8 +2,8 @@
 
 
 define('forum/chats/messages', [
-	'components', 'translator', 'benchpress', 'hooks', 'bootbox', 'messages',
-], function (components, translator, Benchpress, hooks, bootbox, messagesModule) {
+	'components', 'translator', 'benchpress', 'hooks', 'bootbox', 'alerts', 'messages',
+], function (components, translator, Benchpress, hooks, bootbox, alerts, messagesModule) {
 	const messages = {};
 
 	messages.sendMessage = function (roomId, inputEl) {
@@ -35,7 +35,7 @@ define('forum/chats/messages', [
 						return messagesModule.showEmailConfirmWarning(err.message);
 					}
 
-					return app.alert({
+					return alerts.alert({
 						alert_id: 'chat_spam_error',
 						title: '[[global:alert.error]]',
 						message: err.message,

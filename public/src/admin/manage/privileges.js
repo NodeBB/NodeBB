@@ -4,11 +4,12 @@ define('admin/manage/privileges', [
 	'api',
 	'autocomplete',
 	'bootbox',
+	'alerts',
 	'translator',
 	'categorySelector',
 	'mousetrap',
 	'admin/modules/checkboxRowSelector',
-], function (api, autocomplete, bootbox, translator, categorySelector, mousetrap, checkboxRowSelector) {
+], function (api, autocomplete, bootbox, alerts, translator, categorySelector, mousetrap, checkboxRowSelector) {
 	const Privileges = {};
 
 	let cid;
@@ -267,7 +268,7 @@ define('admin/manage/privileges', [
 
 			autocomplete.group(inputEl, function (ev, ui) {
 				if (ui.item.group.name === 'administrators') {
-					return app.alert({
+					return alerts.alert({
 						type: 'warning',
 						message: '[[admin/manage/privileges:alert.admin-warning]]',
 					});

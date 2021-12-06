@@ -1,6 +1,6 @@
 'use strict';
 
-define('admin/settings/api', ['settings'], function (settings) {
+define('admin/settings/api', ['settings', 'alerts'], function (settings, alerts) {
 	const ACP = {};
 
 	ACP.init = function () {
@@ -20,7 +20,7 @@ define('admin/settings/api', ['settings'], function (settings) {
 
 	function saveSettings() {
 		settings.save('core.api', $('.core-api-settings'), function () {
-			app.alert({
+			alerts.alert({
 				type: 'success',
 				alert_id: 'core.api-saved',
 				title: 'Settings Saved',

@@ -1,8 +1,8 @@
 'use strict';
 
 define('admin/manage/users', [
-	'translator', 'benchpress', 'autocomplete', 'api', 'slugify', 'bootbox', 'accounts/invite',
-], function (translator, Benchpress, autocomplete, api, slugify, bootbox, AccountInvite) {
+	'translator', 'benchpress', 'autocomplete', 'api', 'slugify', 'bootbox', 'alerts', 'accounts/invite',
+], function (translator, Benchpress, autocomplete, api, slugify, bootbox, alerts, AccountInvite) {
 	const Users = {};
 
 	Users.init = function () {
@@ -15,8 +15,8 @@ define('admin/manage/users', [
 
 		$('.export-csv').on('click', function () {
 			socket.once('event:export-users-csv', function () {
-				app.removeAlert('export-users-start');
-				app.alert({
+				alerts.remove('export-users-start');
+				alerts.alert({
 					alert_id: 'export-users',
 					type: 'success',
 					title: '[[global:alert.success]]',
@@ -29,9 +29,9 @@ define('admin/manage/users', [
 			});
 			socket.emit('admin.user.exportUsersCSV', {}, function (err) {
 				if (err) {
-					return app.alertError(err);
+					return alerts.error(err);
 				}
-				app.alert({
+				alerts.alert({
 					alert_id: 'export-users-start',
 					message: '[[admin/manage/users:export-users-started]]',
 					timeout: (ajaxify.data.userCount / 5000) * 500,

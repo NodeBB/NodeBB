@@ -9,7 +9,8 @@ define('forum/topic/threadTools', [
 	'api',
 	'hooks',
 	'bootbox',
-], function (components, translator, handleBack, posts, api, hooks, bootbox) {
+	'alerts',
+], function (components, translator, handleBack, posts, api, hooks, bootbox, alerts) {
 	const ThreadTools = {};
 
 	ThreadTools.init = function (tid, topicContainer) {
@@ -149,7 +150,7 @@ define('forum/topic/threadTools', [
 
 				setFollowState(type);
 
-				app.alert({
+				alerts.alert({
 					alert_id: 'follow_thread',
 					message: message,
 					type: 'success',
@@ -158,7 +159,7 @@ define('forum/topic/threadTools', [
 
 				hooks.fire('action:topics.changeWatching', { tid: tid, type: type });
 			}, () => {
-				app.alert({
+				alerts.alert({
 					type: 'danger',
 					alert_id: 'topic_follow',
 					title: '[[global:please_log_in]]',

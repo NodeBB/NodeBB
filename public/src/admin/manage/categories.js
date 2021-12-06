@@ -7,7 +7,8 @@ define('admin/manage/categories', [
 	'api',
 	'Sortable',
 	'bootbox',
-], function (translator, Benchpress, categorySelector, api, Sortable, bootbox) {
+	'alerts',
+], function (translator, Benchpress, categorySelector, api, Sortable, bootbox, alerts) {
 	const Categories = {};
 	let newCategoryId = -1;
 	let sortables;
@@ -143,10 +144,10 @@ define('admin/manage/categories', [
 	Categories.create = function (payload) {
 		api.post('/categories', payload, function (err, data) {
 			if (err) {
-				return app.alertError(err.message);
+				return alerts.error(err);
 			}
 
-			app.alert({
+			alerts.alert({
 				alert_id: 'category_created',
 				title: '[[admin/manage/categories:alert.created]]',
 				message: '[[admin/manage/categories:alert.create-success]]',

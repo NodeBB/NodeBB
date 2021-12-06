@@ -7,7 +7,8 @@ define('admin/manage/category', [
 	'benchpress',
 	'api',
 	'bootbox',
-], function (uploader, iconSelect, categorySelector, Benchpress, api, bootbox) {
+	'alerts',
+], function (uploader, iconSelect, categorySelector, Benchpress, api, bootbox, alerts) {
 	const Category = {};
 	let updateHash = {};
 
@@ -55,14 +56,14 @@ define('admin/manage/category', [
 			const cid = ajaxify.data.category.cid;
 			api.put('/categories/' + cid, updateHash).then((res) => {
 				app.flags._unsaved = false;
-				app.alert({
+				alerts.alert({
 					title: 'Updated Categories',
 					message: 'Category "' + res.name + '" was successfully updated.',
 					type: 'success',
 					timeout: 5000,
 				});
 				updateHash = {};
-			}).catch(app.alertError);
+			}).catch(alerts.error);
 
 			return false;
 		});

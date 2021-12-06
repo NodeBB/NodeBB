@@ -13,10 +13,11 @@ define('forum/topic', [
 	'storage',
 	'hooks',
 	'api',
+	'alerts',
 ], function (
 	infinitescroll, threadTools, postTools,
 	events, posts, navigator, sort,
-	components, storage, hooks, api
+	components, storage, hooks, api, alerts
 ) {
 	const Topic = {};
 	let currentUrl = '';
@@ -113,7 +114,7 @@ define('forum/topic', [
 			!config.usePagination ||
 			(config.usePagination && ajaxify.data.pagination.currentPage === 1)
 		) && ajaxify.data.postcount > ajaxify.data.bookmarkThreshold) {
-			app.alert({
+			alerts.alert({
 				alert_id: 'bookmark',
 				message: '[[topic:bookmark_instructions]]',
 				timeout: 0,
@@ -126,7 +127,7 @@ define('forum/topic', [
 				},
 			});
 			setTimeout(function () {
-				app.removeAlert('bookmark');
+				alerts.remove('bookmark');
 			}, 10000);
 		}
 	}

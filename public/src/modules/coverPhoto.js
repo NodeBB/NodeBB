@@ -2,8 +2,9 @@
 
 
 define('coverPhoto', [
+	'alerts',
 	'vendor/jquery/draggable-background/backgroundDraggable',
-], function () {
+], function (alerts) {
 	const coverPhoto = {
 		coverEl: null,
 		saveFn: null,
@@ -58,7 +59,7 @@ define('coverPhoto', [
 				units: 'percent',
 			});
 
-		app.alert({
+		alerts.alert({
 			alert_id: 'drag_start',
 			title: '[[modules:cover.dragging_title]]',
 			message: '[[modules:cover.dragging_message]]',
@@ -75,9 +76,9 @@ define('coverPhoto', [
 				coverPhoto.coverEl.backgroundDraggable('disable');
 				coverPhoto.coverEl.off('dragover', coverPhoto.onDragOver);
 				coverPhoto.coverEl.off('drop', coverPhoto.onDrop);
-				app.alertSuccess('[[modules:cover.saved]]');
+				alerts.success('[[modules:cover.saved]]');
 			} else {
-				app.alertError(err.message);
+				alerts.error(err);
 			}
 
 			coverPhoto.coverEl.removeClass('saving');

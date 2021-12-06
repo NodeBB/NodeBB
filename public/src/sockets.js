@@ -99,7 +99,9 @@ socket = window.socket;
 			});
 		});
 		socket.on('event:alert', function (params) {
-			app.alert(params);
+			require(['alerts'], function (alerts) {
+				alerts.alert(params);
+			});
 		});
 		socket.on('event:deprecated_call', function (data) {
 			console.warn('[socket.io] ', data.eventName, 'is now deprecated in favour of', data.replacement);
@@ -109,15 +111,16 @@ socket = window.socket;
 		socket.on('event:nodebb.ready', function (data) {
 			if ((data.hostname === app.upstreamHost) && (!app.cacheBuster || app.cacheBuster !== data['cache-buster'])) {
 				app.cacheBuster = data['cache-buster'];
-
-				app.alert({
-					alert_id: 'forum_updated',
-					title: '[[global:updated.title]]',
-					message: '[[global:updated.message]]',
-					clickfn: function () {
-						window.location.reload();
-					},
-					type: 'warning',
+				require(['alerts'], function (alerts) {
+					alerts.alert({
+						alert_id: 'forum_updated',
+						title: '[[global:updated.title]]',
+						message: '[[global:updated.message]]',
+						clickfn: function () {
+							window.location.reload();
+						},
+						type: 'warning',
+					});
 				});
 			}
 		});

@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/appearance/skins', ['translator'], function (translator) {
+define('admin/appearance/skins', ['translator', 'alerts'], function (translator, alerts) {
 	const Skins = {};
 
 	Skins.init = function () {
@@ -33,11 +33,11 @@ define('admin/appearance/skins', ['translator'], function (translator) {
 					src: cssSrc,
 				}, function (err) {
 					if (err) {
-						return app.alertError(err.message);
+						return alerts.error(err);
 					}
 					highlightSelectedTheme(themeId);
 
-					app.alert({
+					alerts.alert({
 						alert_id: 'admin:theme',
 						type: 'info',
 						title: '[[admin/appearance/skins:skin-updated]]',

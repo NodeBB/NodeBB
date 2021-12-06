@@ -5,8 +5,9 @@ define('admin/extend/plugins', [
 	'translator',
 	'benchpress',
 	'bootbox',
+	'alerts',
 	'jquery-ui/widgets/sortable',
-], function (translator, Benchpress, bootbox) {
+], function (translator, Benchpress, bootbox, alerts) {
 	const Plugins = {};
 	Plugins.init = function () {
 		const pluginsList = $('.plugins');
@@ -33,7 +34,7 @@ define('admin/extend/plugins', [
 			function toggleActivate() {
 				socket.emit('admin.plugins.toggleActive', pluginID, function (err, status) {
 					if (err) {
-						return app.alertError(err);
+						return alerts.error(err);
 					}
 					translator.translate('<i class="fa fa-power-off"></i> [[admin/extend/plugins:plugin-item.' + (status.active ? 'deactivate' : 'activate') + ']]', function (buttonText) {
 						btn.html(buttonText);
@@ -47,7 +48,7 @@ define('admin/extend/plugins', [
 						// Toggle active state in template data
 						pluginData.active = !pluginData.active;
 
-						app.alert({
+						alerts.alert({
 							alert_id: 'plugin_toggled',
 							title: '[[admin/extend/plugins:alert.' + (status.active ? 'enabled' : 'disabled') + ']]',
 							message: '[[admin/extend/plugins:alert.' + (status.active ? 'activate-success' : 'deactivate-success') + ']]',
@@ -213,11 +214,11 @@ define('admin/extend/plugins', [
 
 			socket.emit('admin.plugins.orderActivePlugins', data, function (err) {
 				if (err) {
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
 				$('#order-active-plugins-modal').modal('hide');
 
-				app.alert({
+				alerts.alert({
 					alert_id: 'plugin_reordered',
 					title: '[[admin/extend/plugins:alert.reorder]]',
 					message: '[[admin/extend/plugins:alert.reorder-success]]',
@@ -250,14 +251,14 @@ define('admin/extend/plugins', [
 			version: version,
 		}, function (err, isActive) {
 			if (err) {
-				return app.alertError(err.message);
+				return alerts.error(err);
 			}
 			const parent = btn.parents('li');
 			parent.find('.fa-exclamation-triangle').remove();
 			parent.find('.currentVersion').text(version);
 			btn.remove();
 			if (isActive) {
-				app.alert({
+				alerts.alert({
 					alert_id: 'plugin_upgraded',
 					title: '[[admin/extend/plugins:alert.upgraded]]',
 					message: '[[admin/extend/plugins:alert.upgrade-success]]',
@@ -283,12 +284,12 @@ define('admin/extend/plugins', [
 		}, function (err, pluginData) {
 			if (err) {
 				btn.removeAttr('disabled');
-				return app.alertError(err.message);
+				return alerts.error(err);
 			}
 
 			ajaxify.refresh();
 
-			app.alert({
+			alerts.alert({
 				alert_id: 'plugin_toggled',
 				title: '[[admin/extend/plugins:alert.' + (pluginData.installed ? 'installed' : 'uninstalled') + ']]',
 				message: '[[admin/extend/plugins:alert.' + (pluginData.installed ? 'install-success' : 'uninstall-success') + ']]',
