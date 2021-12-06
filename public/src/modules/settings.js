@@ -555,13 +555,14 @@ define('settings', ['hooks', 'alerts'], function (hooks, alerts) {
 						callback(err);
 					} else if (err) {
 						alerts.alert({
-							title: 'Error while saving settings',
+							title: '[[admin/admin:changes-not-saved]]',
+							message: `[[admin/admin:changes-not-saved-message, ${err.message}]]`,
 							type: 'error',
 							timeout: 2500,
 						});
 					} else {
 						alerts.alert({
-							title: 'Settings Saved',
+							title: '[[admin/admin:changes-saved]]',
 							type: 'success',
 							timeout: 2500,
 						});
