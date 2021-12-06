@@ -543,6 +543,16 @@ describe('Topic\'s', () => {
 				assert.strictEqual(data.posts[0].content, 'topic reply 5');
 				assert.strictEqual(data.posts[1].content, 'topic reply 6');
 			});
+
+			it('should return all posts in correct order', async () => {
+				const topicData = await topics.getTopicData(tid);
+				const postsData = await topics.getTopicPosts(topicData, `tid:${tid}:posts`, 0, -1, topic.userId, false);
+				assert.strictEqual(postsData.length, 31);
+				assert.strictEqual(postsData[0].content, 'main post');
+				for (let i = 1; i < 30; i++) {
+					assert.strictEqual(postsData[i].content, `topic reply ${i}`);
+				}
+			});
 		});
 	});
 
