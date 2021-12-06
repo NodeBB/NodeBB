@@ -4,7 +4,7 @@
 
 	"acp-title": "%1 | NodeBB 관리자 제어판",
 	"settings-header-contents": "컨텐츠",
-	"changes-saved": "Changed Saved",
+	"changes-saved": "Changes Saved",
 	"changes-saved-message": "Your changes to the NodeBB configuration have been saved.",
 	"changes-not-saved": "Changes Not Saved",
 	"changes-not-saved-message": "NodeBB encountered a problem saving your changes. (%1)"
