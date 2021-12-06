@@ -3,5 +3,9 @@
 	"alert.confirm-restart": "Oled kindel, et soovid taaslaadida NodeBB?",
 
 	"acp-title": "%1 | NodeBB Administraatori kontrollpaneel",
-	"settings-header-contents": "Sisu"
+	"settings-header-contents": "Sisu",
+	"changes-saved": "Changed Saved",
+	"changes-saved-message": "Your changes to the NodeBB configuration have been saved.",
+	"changes-not-saved": "Changes Not Saved",
+	"changes-not-saved-message": "NodeBB encountered a problem saving your changes. (%1)"
 }
