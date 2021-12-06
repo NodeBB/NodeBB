@@ -14,15 +14,15 @@ define('accounts/invite', ['api', 'benchpress', 'bootbox'], function (api, Bench
 				Benchpress.parse('modals/invite', { groups: groups }, function (html) {
 					bootbox.dialog({
 						message: html,
-						title: `[[${isACP ? 'admin/manage/users:invite' : 'users:invite'}]]`,
+						title: `[[${isACP() ? 'admin/manage/users:invite' : 'users:invite'}]]`,
 						onEscape: true,
 						buttons: {
 							cancel: {
-								label: `[[${isACP ? 'admin/manage/users:alerts.button-cancel' : 'modules:bootbox.cancel'}]]`,
+								label: `[[${isACP() ? 'admin/manage/users:alerts.button-cancel' : 'modules:bootbox.cancel'}]]`,
 								className: 'btn-default',
 							},
 							invite: {
-								label: `[[${isACP ? 'admin/manage/users:invite' : 'users:invite'}]]`,
+								label: `[[${isACP() ? 'admin/manage/users:invite' : 'users:invite'}]]`,
 								className: 'btn-primary',
 								callback: Invite.send,
 							},
@@ -54,7 +54,7 @@ define('accounts/invite', ['api', 'benchpress', 'bootbox'], function (api, Bench
 		}
 
 		api.post(`/users/${app.user.uid}/invites`, data).then(() => {
-			app.alertSuccess(`[[${isACP ? 'admin/manage/users:alerts.email-sent-to' : 'users:invitation-email-sent'}, ${data.emails.replace(/,/g, '&#44; ')}]]`);
+			app.alertSuccess(`[[${isACP() ? 'admin/manage/users:alerts.email-sent-to' : 'users:invitation-email-sent'}, ${data.emails.replace(/,/g, '&#44; ')}]]`);
 		}).catch((err) => {
 			app.alertError(err.message);
 		});
