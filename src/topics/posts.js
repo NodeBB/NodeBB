@@ -21,8 +21,8 @@ module.exports = function (Topics) {
 		await Topics.addPostToTopic(postData.tid, postData);
 	};
 
-	Topics.getTopicPosts = async function (topicOrTid, set, start, stop, uid, reverse) {
-		if (!topicOrTid) {
+	Topics.getTopicPosts = async function (topicData, set, start, stop, uid, reverse) {
+		if (!topicData) {
 			return [];
 		}
 
@@ -38,28 +38,28 @@ module.exports = function (Topics) {
 		if (start !== 0 || stop !== 0) {
 			pids = await posts.getPidsFromSet(set, repliesStart, repliesStop, reverse);
 		}
-		if (!pids.length && !topicOrTid.mainPid) {
+		if (!pids.length && !topicData.mainPid) {
 			return [];
 		}
 
-		if (topicOrTid.mainPid && start === 0) {
-			pids.unshift(topicOrTid.mainPid);
+		if (topicData.mainPid && start === 0) {
+			pids.unshift(topicData.mainPid);
 		}
 		const postData = await posts.getPostsByPids(pids, uid);
 		if (!postData.length) {
 			return [];
 		}
 		let replies = postData;
-		if (topicOrTid.mainPid && start === 0) {
+		if (topicData.mainPid && start === 0) {
 			postData[0].index = 0;
 			replies = postData.slice(1);
 		}
 
 		Topics.calculatePostIndices(replies, repliesStart);
 
-		await addEventStartEnd(postData, set, reverse, topicOrTid);
+		await addEventStartEnd(postData, set, reverse, topicData);
 		const result = await plugins.hooks.fire('filter:topic.getPosts', {
-			topic: topicOrTid,
+			topic: topicData,
 			uid: uid,
 			posts: await Topics.addPostData(postData, uid),
 		});
