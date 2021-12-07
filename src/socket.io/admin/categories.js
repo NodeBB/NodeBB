@@ -11,12 +11,6 @@ Categories.getNames = async function () {
 	return await categories.getAllCategoryFields(['cid', 'name']);
 };
 
-Categories.purge = async function (socket, cid) {
-	sockets.warnDeprecated(socket, 'DELETE /api/v3/categories/:cid');
-
-	await api.categories.delete(socket, { cid: cid });
-};
-
 Categories.update = async function (socket, data) {
 	sockets.warnDeprecated(socket, 'PUT /api/v3/categories/:cid');
 

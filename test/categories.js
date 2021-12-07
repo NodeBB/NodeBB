@@ -348,7 +348,7 @@ describe('Categories', () => {
 		});
 	});
 
-	describe('admin socket methods', () => {
+	describe('admin api/socket methods', () => {
 		const socketCategories = require('../src/socket.io/admin/categories');
 		const apiCategories = require('../src/api/categories');
 		let cid;
@@ -449,25 +449,20 @@ describe('Categories', () => {
 			assert(childrenCids.includes(String(cid)));
 		});
 
-		it('should purge category', (done) => {
-			Categories.create({
+		it('should purge category', async () => {
+			const category = await Categories.create({
 				name: 'purge me',
 				description: 'update description',
-			}, (err, category) => {
-				assert.ifError(err);
-				Topics.post({
-					uid: posterUid,
-					cid: category.cid,
-					title: 'Test Topic Title',
-					content: 'The content of test topic',
-				}, (err) => {
-					assert.ifError(err);
-					socketCategories.purge({ uid: adminUid }, category.cid, (err) => {
-						assert.ifError(err);
-						done();
-					});
-				});
 			});
+			await Topics.post({
+				uid: posterUid,
+				cid: category.cid,
+				title: 'Test Topic Title',
+				content: 'The content of test topic',
+			});
+			await apiCategories.delete({ uid: adminUid }, { cid: category.cid });
+			const data = await Categories.getCategoryById(category.cid);
+			assert.strictEqual(data, null);
 		});
 
 		it('should get all category names', (done) => {
