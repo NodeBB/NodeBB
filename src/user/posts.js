@@ -109,7 +109,6 @@ module.exports = function (User) {
 	}
 
 	User.getPostIds = async function (uid, start, stop) {
-		const pids = await db.getSortedSetRevRange(`uid:${uid}:posts`, start, stop);
-		return Array.isArray(pids) ? pids : [];
+		return await db.getSortedSetRevRange(`uid:${uid}:posts`, start, stop);
 	};
 };
