@@ -19,5 +19,8 @@ module.exports = function () {
 	setupApiRoute(router, 'put', '/:cid/privileges/:privilege', [...middlewares, middleware.checkRequired.bind(null, ['member'])], controllers.write.categories.setPrivilege);
 	setupApiRoute(router, 'delete', '/:cid/privileges/:privilege', [...middlewares, middleware.checkRequired.bind(null, ['member'])], controllers.write.categories.setPrivilege);
 
+	setupApiRoute(router, 'put', '/:cid/moderator/:uid', [...middlewares], controllers.write.categories.setModerator);
+	setupApiRoute(router, 'delete', '/:cid/moderator/:uid', [...middlewares], controllers.write.categories.setModerator);
+
 	return router;
 };

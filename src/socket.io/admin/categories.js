@@ -2,31 +2,11 @@
 
 
 const categories = require('../../categories');
-const api = require('../../api');
-const sockets = require('..');
 
 const Categories = module.exports;
 
 Categories.getNames = async function () {
 	return await categories.getAllCategoryFields(['cid', 'name']);
-};
-
-Categories.setPrivilege = async function (socket, data) {
-	sockets.warnDeprecated(socket, 'PUT /api/v3/categories/:cid/privileges/:privilege');
-
-	if (!data) {
-		throw new Error('[[error:invalid-data]]');
-	}
-	return await api.categories.setPrivilege(socket, data);
-};
-
-Categories.getPrivilegeSettings = async function (socket, cid) {
-	sockets.warnDeprecated(socket, 'GET /api/v3/categories/:cid/privileges');
-
-	if (!isFinite(cid) && cid !== 'admin') {
-		throw new Error('[[error:invalid-data]]');
-	}
-	return await api.categories.getPrivileges(socket, cid);
 };
 
 Categories.copyPrivilegesToChildren = async function (socket, data) {

@@ -468,67 +468,43 @@ describe('Categories', () => {
 			});
 		});
 
-		it('should give privilege', (done) => {
-			socketCategories.setPrivilege({ uid: adminUid }, { cid: categoryObj.cid, privilege: ['groups:topics:delete'], set: true, member: 'registered-users' }, (err) => {
-				assert.ifError(err);
-				privileges.categories.can('topics:delete', categoryObj.cid, posterUid, (err, canDeleteTopcis) => {
-					assert.ifError(err);
-					assert(canDeleteTopcis);
-					done();
-				});
-			});
+		it('should give privilege', async () => {
+			await apiCategories.setPrivilege({ uid: adminUid }, { cid: categoryObj.cid, privilege: ['groups:topics:delete'], set: true, member: 'registered-users' });
+			const canDeleteTopics = await privileges.categories.can('topics:delete', categoryObj.cid, posterUid);
+			assert(canDeleteTopics);
 		});
 
-		it('should remove privilege', (done) => {
-			socketCategories.setPrivilege({ uid: adminUid }, { cid: categoryObj.cid, privilege: 'groups:topics:delete', set: false, member: 'registered-users' }, (err) => {
-				assert.ifError(err);
-				privileges.categories.can('topics:delete', categoryObj.cid, posterUid, (err, canDeleteTopcis) => {
-					assert.ifError(err);
-					assert(!canDeleteTopcis);
-					done();
-				});
-			});
+		it('should remove privilege', async () => {
+			await apiCategories.setPrivilege({ uid: adminUid }, { cid: categoryObj.cid, privilege: 'groups:topics:delete', set: false, member: 'registered-users' });
+			const canDeleteTopics = await privileges.categories.can('topics:delete', categoryObj.cid, posterUid);
+			assert(!canDeleteTopics);
 		});
 
-		it('should get privilege settings', (done) => {
-			socketCategories.getPrivilegeSettings({ uid: adminUid }, categoryObj.cid, (err, data) => {
-				assert.ifError(err);
-				assert(data);
-				done();
-			});
+		it('should get privilege settings', async () => {
+			const data = await apiCategories.getPrivileges({ uid: adminUid }, categoryObj.cid);
+			assert(data.labels);
+			assert(data.labels.users);
+			assert(data.labels.groups);
+			assert(data.keys.users);
+			assert(data.keys.groups);
+			assert(data.users);
+			assert(data.groups);
 		});
 
-		it('should copy privileges to children', (done) => {
-			let parentCid;
-			let child1Cid;
-			let child2Cid;
-			async.waterfall([
-				function (next) {
-					Categories.create({ name: 'parent' }, next);
-				},
-				function (category, next) {
-					parentCid = category.cid;
-					Categories.create({ name: 'child1', parentCid: parentCid }, next);
-				},
-				function (category, next) {
-					child1Cid = category.cid;
-					Categories.create({ name: 'child2', parentCid: child1Cid }, next);
-				},
-				function (category, next) {
-					child2Cid = category.cid;
-					socketCategories.setPrivilege({ uid: adminUid }, { cid: parentCid, privilege: 'groups:topics:delete', set: true, member: 'registered-users' }, next);
-				},
-				function (next) {
-					socketCategories.copyPrivilegesToChildren({ uid: adminUid }, { cid: parentCid, group: '' }, next);
-				},
-				function (next) {
-					privileges.categories.can('topics:delete', child2Cid, posterUid, next);
-				},
-				function (canDelete, next) {
-					assert(canDelete);
-					next();
-				},
-			], done);
+		it('should copy privileges to children', async () => {
+			const parentCategory = await Categories.create({ name: 'parent' });
+			const parentCid = parentCategory.cid;
+			const child1 = await Categories.create({ name: 'child1', parentCid: parentCid });
+			const child2 = await Categories.create({ name: 'child2', parentCid: child1.cid });
+			await apiCategories.setPrivilege({ uid: adminUid }, {
+				cid: parentCid,
+				privilege: 'groups:topics:delete',
+				set: true,
+				member: 'registered-users',
+			});
+			await socketCategories.copyPrivilegesToChildren({ uid: adminUid }, { cid: parentCid, group: '' });
+			const canDelete = await privileges.categories.can('topics:delete', child2.cid, posterUid);
+			assert(canDelete);
 		});
 
 		it('should create category with settings from', (done) => {
@@ -579,60 +555,34 @@ describe('Categories', () => {
 			], done);
 		});
 
-		it('should copy privileges from another category', (done) => {
-			let child1Cid;
-			let parentCid;
-			async.waterfall([
-				function (next) {
-					Categories.create({ name: 'parent', description: 'copy me' }, next);
-				},
-				function (category, next) {
-					parentCid = category.cid;
-					Categories.create({ name: 'child1' }, next);
-				},
-				function (category, next) {
-					child1Cid = category.cid;
-					socketCategories.setPrivilege({ uid: adminUid }, { cid: parentCid, privilege: 'groups:topics:delete', set: true, member: 'registered-users' }, next);
-				},
-				function (next) {
-					socketCategories.copyPrivilegesFrom({ uid: adminUid }, { fromCid: parentCid, toCid: child1Cid }, next);
-				},
-				function (next) {
-					privileges.categories.can('topics:delete', child1Cid, posterUid, next);
-				},
-				function (canDelete, next) {
-					assert(canDelete);
-					next();
-				},
-			], done);
+		it('should copy privileges from another category', async () => {
+			const parent = await Categories.create({ name: 'parent', description: 'copy me' });
+			const parentCid = parent.cid;
+			const child1 = await Categories.create({ name: 'child1' });
+			await apiCategories.setPrivilege({ uid: adminUid }, {
+				cid: parentCid,
+				privilege: 'groups:topics:delete',
+				set: true,
+				member: 'registered-users',
+			});
+			await socketCategories.copyPrivilegesFrom({ uid: adminUid }, { fromCid: parentCid, toCid: child1.cid });
+			const canDelete = await privileges.categories.can('topics:delete', child1.cid, posterUid);
+			assert(canDelete);
 		});
 
-		it('should copy privileges from another category for a single group', (done) => {
-			let child1Cid;
-			let parentCid;
-			async.waterfall([
-				function (next) {
-					Categories.create({ name: 'parent', description: 'copy me' }, next);
-				},
-				function (category, next) {
-					parentCid = category.cid;
-					Categories.create({ name: 'child1' }, next);
-				},
-				function (category, next) {
-					child1Cid = category.cid;
-					socketCategories.setPrivilege({ uid: adminUid }, { cid: parentCid, privilege: 'groups:topics:delete', set: true, member: 'registered-users' }, next);
-				},
-				function (next) {
-					socketCategories.copyPrivilegesFrom({ uid: adminUid }, { fromCid: parentCid, toCid: child1Cid, group: 'registered-users' }, next);
-				},
-				function (next) {
-					privileges.categories.can('topics:delete', child1Cid, 0, next);
-				},
-				function (canDelete, next) {
-					assert(!canDelete);
-					next();
-				},
-			], done);
+		it('should copy privileges from another category for a single group', async () => {
+			const parent = await Categories.create({ name: 'parent', description: 'copy me' });
+			const parentCid = parent.cid;
+			const child1 = await Categories.create({ name: 'child1' });
+			await apiCategories.setPrivilege({ uid: adminUid }, {
+				cid: parentCid,
+				privilege: 'groups:topics:delete',
+				set: true,
+				member: 'registered-users',
+			});
+			await socketCategories.copyPrivilegesFrom({ uid: adminUid }, { fromCid: parentCid, toCid: child1.cid, group: 'registered-users' });
+			const canDelete = await privileges.categories.can('topics:delete', child1.cid, 0);
+			assert(!canDelete);
 		});
 	});
 

@@ -87,12 +87,7 @@ define('admin/manage/admins-mods', [
 		autocomplete.user($('.moderator-search'), function (ev, ui) {
 			const input = $(ev.target);
 			const cid = $(ev.target).attr('data-cid');
-			socket.emit('admin.categories.setPrivilege', {
-				cid: cid,
-				privilege: ajaxify.data.allPrivileges,
-				set: true,
-				member: ui.item.user.uid,
-			}, function (err) {
+			api.put(`/categories/${cid}/moderator/${ui.item.user.uid}`, {}, function (err) {
 				if (err) {
 					return alerts.error(err);
 				}
@@ -118,12 +113,7 @@ define('admin/manage/admins-mods', [
 
 			bootbox.confirm('[[admin/manage/users:alerts.confirm-remove-moderator]]', function (confirm) {
 				if (confirm) {
-					socket.emit('admin.categories.setPrivilege', {
-						cid: cid,
-						privilege: ajaxify.data.allPrivileges,
-						set: false,
-						member: uid,
-					}, function (err) {
+					api.delete(`/categories/${cid}/moderator/${uid}`, {}, function (err) {
 						if (err) {
 							return alerts.error(err);
 						}

@@ -66,3 +66,17 @@ Categories.setPrivilege = async (req, res) => {
 	const privilegeSet = await api.categories.getPrivileges(req, req.params.cid);
 	helpers.formatApiResponse(200, res, privilegeSet);
 };
+
+Categories.setModerator = async (req, res) => {
+	if (!await privileges.admin.can('admin:admins-mods', req.uid)) {
+		throw new Error('[[error:no-privileges]]');
+	}
+	const privilegeList = await privileges.categories.getUserPrivilegeList();
+	await api.categories.setPrivilege(req, {
+		cid: req.params.cid,
+		privilege: privilegeList,
+		member: req.params.uid,
+		set: req.method === 'PUT',
+	});
+	helpers.formatApiResponse(200, res);
+};
