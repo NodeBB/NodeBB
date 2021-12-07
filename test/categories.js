@@ -200,9 +200,9 @@ describe('Categories', () => {
 		});
 	});
 
-	describe('socket methods', () => {
+	describe('api/socket methods', () => {
 		const socketCategories = require('../src/socket.io/categories');
-
+		const apiCategories = require('../src/api/categories');
 		before(async () => {
 			await Topics.post({
 				uid: posterUid,
@@ -339,12 +339,9 @@ describe('Categories', () => {
 			});
 		});
 
-		it('should get category data', (done) => {
-			socketCategories.getCategory({ uid: posterUid }, categoryObj.cid, (err, data) => {
-				assert.ifError(err);
-				assert.equal(categoryObj.cid, data.cid);
-				done();
-			});
+		it('should get category data', async () => {
+			const data = await apiCategories.get({ uid: posterUid }, { cid: categoryObj.cid });
+			assert.equal(categoryObj.cid, data.cid);
 		});
 	});
 
