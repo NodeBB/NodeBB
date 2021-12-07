@@ -5,7 +5,6 @@ const _ = require('lodash');
 const db = require('../../database');
 const groups = require('../../groups');
 const categories = require('../../categories');
-const privileges = require('../../privileges');
 const user = require('../../user');
 
 const AdminsMods = module.exports;
