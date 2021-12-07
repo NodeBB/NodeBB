@@ -473,14 +473,6 @@ describe('Categories', () => {
 			});
 		});
 
-		it('should get all categories', (done) => {
-			socketCategories.getAll({ uid: adminUid }, {}, (err, data) => {
-				assert.ifError(err);
-				assert(data);
-				done();
-			});
-		});
-
 		it('should get all category names', (done) => {
 			socketCategories.getNames({ uid: adminUid }, {}, (err, data) => {
 				assert.ifError(err);

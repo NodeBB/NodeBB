@@ -1,9 +1,7 @@
 'use strict';
 
-const winston = require('winston');
 
 const categories = require('../../categories');
-const plugins = require('../../plugins');
 const api = require('../../api');
 const sockets = require('..');
 
@@ -16,19 +14,6 @@ Categories.create = async function (socket, data) {
 		throw new Error('[[error:invalid-data]]');
 	}
 	return await api.categories.create(socket, data);
-};
-
-// DEPRECATED: @1.14.3, remove in version >=1.16
-Categories.getAll = async function () {
-	winston.warn('[deprecated] admin.categories.getAll deprecated, data is returned in the api route');
-	const cids = await categories.getAllCidsFromSet('categories:cid');
-	const fields = [
-		'cid', 'name', 'icon', 'parentCid', 'disabled', 'link',
-		'color', 'bgColor', 'backgroundImage', 'imageClass',
-	];
-	const categoriesData = await categories.getCategoriesFields(cids, fields);
-	const result = await plugins.hooks.fire('filter:admin.categories.get', { categories: categoriesData, fields: fields });
-	return categories.getTree(result.categories, 0);
 };
 
 Categories.getNames = async function () {
