@@ -45,6 +45,6 @@ Config.setMultiple = async function (socket, data) {
 	}
 };
 
-Config.remove = function (socket, key, callback) {
-	meta.configs.remove(key, callback);
+Config.remove = async function (socket, key) {
+	await meta.configs.remove(key);
 };

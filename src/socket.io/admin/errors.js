@@ -4,6 +4,6 @@ const meta = require('../../meta');
 
 const Errors = module.exports;
 
-Errors.clear = function (socket, data, callback) {
-	meta.errors.clear(callback);
+Errors.clear = async function () {
+	await meta.errors.clear();
 };
