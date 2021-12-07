@@ -514,7 +514,7 @@ describe('User', () => {
 			});
 		});
 
-		it('should not re-add user to users:postcount if post is deleted after user deletion', async () => {
+		it('should not re-add user to users:postcount if post is purged after user account deletion', async () => {
 			const uid = await User.create({ username: 'olduserwithposts' });
 			assert(await db.isSortedSetMember('users:postcount', uid));
 
@@ -531,7 +531,7 @@ describe('User', () => {
 			assert(!await db.isSortedSetMember('users:postcount', uid));
 		});
 
-		it('should not re-add user to users:reputation if post is upvoted after user deletion', async () => {
+		it('should not re-add user to users:reputation if post is upvoted after user account deletion', async () => {
 			const uid = await User.create({ username: 'olduserwithpostsupvote' });
 			assert(await db.isSortedSetMember('users:reputation', uid));
 

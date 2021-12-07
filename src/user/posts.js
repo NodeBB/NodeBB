@@ -56,10 +56,11 @@ module.exports = function (User) {
 		// For scheduled posts, use "action" time. It'll be updated in related cron job when post is published
 		const lastposttime = postData.timestamp > Date.now() ? Date.now() : postData.timestamp;
 
-		await User.addPostIdToUser(postData);
-		await User.incrementUserPostCountBy(postData.uid, 1);
-		await User.setUserField(postData.uid, 'lastposttime', lastposttime);
-		await User.updateLastOnlineTime(postData.uid);
+		await Promise.all([
+			User.addPostIdToUser(postData),
+			User.setUserField(postData.uid, 'lastposttime', lastposttime),
+			User.updateLastOnlineTime(postData.uid),
+		]);
 	};
 
 	User.addPostIdToUser = async function (postData) {
@@ -67,6 +68,18 @@ module.exports = function (User) {
 			`uid:${postData.uid}:posts`,
 			`cid:${postData.cid}:uid:${postData.uid}:pids`,
 		], postData.timestamp, postData.pid);
+		await User.updatePostCount(postData.uid);
+	};
+
+	User.updatePostCount = async (uid) => {
+		const exists = await User.exists(uid);
+		if (exists) {
+			const count = await db.sortedSetCard(`uid:${uid}:posts`);
+			await Promise.all([
+				User.setUserField(uid, 'postcount', count),
+				db.sortedSetAdd('users:postcount', count, uid),
+			]);
+		}
 	};
 
 	User.incrementUserPostCountBy = async function (uid, value) {

@@ -169,7 +169,7 @@ module.exports = function (Posts) {
 			db.setObjectField(pids.map(pid => `post:${pid}`), 'uid', toUid),
 			db.sortedSetRemoveBulk(bulkRemove),
 			db.sortedSetAddBulk(bulkAdd),
-			user.incrementUserPostCountBy(toUid, pids.length),
+			user.updatePostCount(toUid),
 			user.incrementUserReputationBy(toUid, repChange),
 			handleMainPidOwnerChange(postData, toUid),
 			reduceCounters(postsByUser),
@@ -187,7 +187,7 @@ module.exports = function (Posts) {
 		await async.eachOfSeries(postsByUser, async (posts, uid) => {
 			const repChange = posts.reduce((acc, val) => acc + val.votes, 0);
 			await Promise.all([
-				user.incrementUserPostCountBy(uid, -posts.length),
+				user.updatePostCount(uid),
 				user.incrementUserReputationBy(uid, -repChange),
 			]);
 		});
