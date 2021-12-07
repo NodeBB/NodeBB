@@ -350,20 +350,17 @@ describe('Categories', () => {
 
 	describe('admin socket methods', () => {
 		const socketCategories = require('../src/socket.io/admin/categories');
+		const apiCategories = require('../src/api/categories');
 		let cid;
-		before((done) => {
-			socketCategories.create({ uid: adminUid }, {
+		before(async () => {
+			const category = await apiCategories.create({ uid: adminUid }, {
 				name: 'update name',
 				description: 'update description',
 				parentCid: categoryObj.cid,
 				icon: 'fa-check',
 				order: '5',
-			}, (err, category) => {
-				assert.ifError(err);
-
-				cid = category.cid;
-				done();
 			});
+			cid = category.cid;
 		});
 
 		it('should return error with invalid data', (done) => {

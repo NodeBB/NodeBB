@@ -7,15 +7,6 @@ const sockets = require('..');
 
 const Categories = module.exports;
 
-Categories.create = async function (socket, data) {
-	sockets.warnDeprecated(socket, 'POST /api/v3/categories');
-
-	if (!data) {
-		throw new Error('[[error:invalid-data]]');
-	}
-	return await api.categories.create(socket, data);
-};
-
 Categories.getNames = async function () {
 	return await categories.getAllCategoryFields(['cid', 'name']);
 };
