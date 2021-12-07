@@ -363,50 +363,49 @@ describe('Categories', () => {
 			cid = category.cid;
 		});
 
-		it('should return error with invalid data', (done) => {
-			socketCategories.update({ uid: adminUid }, null, (err) => {
-				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
+		it('should return error with invalid data', async () => {
+			let err;
+			try {
+				await apiCategories.update({ uid: adminUid }, null);
+			} catch (_err) {
+				err = _err;
+			}
+			assert.strictEqual(err.message, '[[error:invalid-data]]');
 		});
 
-		it('should error if you try to set parent as self', (done) => {
+		it('should error if you try to set parent as self', async () => {
 			const updateData = {};
 			updateData[cid] = {
 				parentCid: cid,
 			};
-			socketCategories.update({ uid: adminUid }, updateData, (err) => {
-				assert.equal(err.message, '[[error:cant-set-self-as-parent]]');
-				done();
-			});
+			let err;
+			try {
+				await apiCategories.update({ uid: adminUid }, updateData);
+			} catch (_err) {
+				err = _err;
+			}
+			assert.strictEqual(err.message, '[[error:cant-set-self-as-parent]]');
 		});
 
-		it('should error if you try to set child as parent', (done) => {
-			let child1Cid;
-			let parentCid;
-			async.waterfall([
-				function (next) {
-					Categories.create({ name: 'parent 1', description: 'poor parent' }, next);
-				},
-				function (category, next) {
-					parentCid = category.cid;
-					Categories.create({ name: 'child1', description: 'wanna be parent', parentCid: parentCid }, next);
-				},
-				function (category, next) {
-					child1Cid = category.cid;
-					const updateData = {};
-					updateData[parentCid] = {
-						parentCid: child1Cid,
-					};
-					socketCategories.update({ uid: adminUid }, updateData, (err) => {
-						assert.equal(err.message, '[[error:cant-set-child-as-parent]]');
-						next();
-					});
-				},
-			], done);
+		it('should error if you try to set child as parent', async () => {
+			const parentCategory = await Categories.create({ name: 'parent 1', description: 'poor parent' });
+			const parentCid = parentCategory.cid;
+			const childCategory = await Categories.create({ name: 'child1', description: 'wanna be parent', parentCid: parentCid });
+			const child1Cid = childCategory.cid;
+			const updateData = {};
+			updateData[parentCid] = {
+				parentCid: child1Cid,
+			};
+			let err;
+			try {
+				await apiCategories.update({ uid: adminUid }, updateData);
+			} catch (_err) {
+				err = _err;
+			}
+			assert.strictEqual(err.message, '[[error:cant-set-child-as-parent]]');
 		});
 
-		it('should update category data', (done) => {
+		it('should update category data', async () => {
 			const updateData = {};
 			updateData[cid] = {
 				name: 'new name',
@@ -415,18 +414,14 @@ describe('Categories', () => {
 				order: 3,
 				icon: 'fa-hammer',
 			};
-			socketCategories.update({ uid: adminUid }, updateData, (err) => {
-				assert.ifError(err);
-				Categories.getCategoryData(cid, (err, data) => {
-					assert.ifError(err);
-					assert.equal(data.name, updateData[cid].name);
-					assert.equal(data.description, updateData[cid].description);
-					assert.equal(data.parentCid, updateData[cid].parentCid);
-					assert.equal(data.order, updateData[cid].order);
-					assert.equal(data.icon, updateData[cid].icon);
-					done();
-				});
-			});
+			await apiCategories.update({ uid: adminUid }, updateData);
+
+			const data = await Categories.getCategoryData(cid);
+			assert.equal(data.name, updateData[cid].name);
+			assert.equal(data.description, updateData[cid].description);
+			assert.equal(data.parentCid, updateData[cid].parentCid);
+			assert.equal(data.order, updateData[cid].order);
+			assert.equal(data.icon, updateData[cid].icon);
 		});
 
 		it('should not remove category from parent if parent is set again to same category', async () => {

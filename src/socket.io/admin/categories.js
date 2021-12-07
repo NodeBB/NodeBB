@@ -11,15 +11,6 @@ Categories.getNames = async function () {
 	return await categories.getAllCategoryFields(['cid', 'name']);
 };
 
-Categories.update = async function (socket, data) {
-	sockets.warnDeprecated(socket, 'PUT /api/v3/categories/:cid');
-
-	if (!data) {
-		throw new Error('[[error:invalid-data]]');
-	}
-	return await api.categories.update(socket, data);
-};
-
 Categories.setPrivilege = async function (socket, data) {
 	sockets.warnDeprecated(socket, 'PUT /api/v3/categories/:cid/privileges/:privilege');
 

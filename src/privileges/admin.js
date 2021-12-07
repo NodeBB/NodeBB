@@ -76,7 +76,6 @@ privsAdmin.socketMap = {
 	'admin.rooms.getAll': 'admin:dashboard',
 	'admin.analytics.get': 'admin:dashboard',
 
-	'admin.categories.update': 'admin:categories',
 	'admin.categories.copySettingsFrom': 'admin:categories',
 
 	'admin.categories.getPrivilegeSettings': 'admin:privileges',
