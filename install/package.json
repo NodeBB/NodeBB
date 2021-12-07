@@ -88,7 +88,7 @@
         "nodebb-plugin-dbsearch": "5.1.1",
         "nodebb-plugin-emoji": "^3.5.4",
         "nodebb-plugin-emoji-android": "2.0.5",
-        "nodebb-plugin-markdown": "8.14.4",
+        "nodebb-plugin-markdown": "8.14.5",
         "nodebb-plugin-mentions": "3.0.3",
         "nodebb-plugin-spam-be-gone": "0.7.11",
         "nodebb-rewards-essentials": "0.2.0",
