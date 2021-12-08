@@ -169,11 +169,14 @@ module.exports = function (Posts) {
 			db.setObjectField(pids.map(pid => `post:${pid}`), 'uid', toUid),
 			db.sortedSetRemoveBulk(bulkRemove),
 			db.sortedSetAddBulk(bulkAdd),
-			user.updatePostCount(toUid),
 			user.incrementUserReputationBy(toUid, repChange),
 			handleMainPidOwnerChange(postData, toUid),
-			reduceCounters(postsByUser),
 			updateTopicPosters(postData, toUid),
+		]);
+
+		await Promise.all([
+			user.updatePostCount(toUid),
+			reduceCounters(postsByUser),
 		]);
 
 		plugins.hooks.fire('action:post.changeOwner', {
