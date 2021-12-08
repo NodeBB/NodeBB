@@ -299,6 +299,9 @@ define('forum/category/tools', [
 						if (err) {
 							return alerts.error(err);
 						}
+						topicListEl.find('[component="category/topic"].pinned').each((index, el) => {
+							$(el).attr('data-index', baseIndex + index);
+						});
 					});
 				},
 			});
