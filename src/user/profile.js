@@ -2,7 +2,6 @@
 'use strict';
 
 const _ = require('lodash');
-const async = require('async');
 const validator = require('validator');
 const winston = require('winston');
 
@@ -38,8 +37,8 @@ module.exports = function (User) {
 		await validateData(uid, data);
 
 		const oldData = await User.getUserFields(updateUid, fields);
-
-		await async.each(fields, async (field) => {
+		const updateData = {};
+		await Promise.all(fields.map(async (field) => {
 			if (!(data[field] !== undefined && typeof data[field] === 'string')) {
 				return;
 			}
@@ -53,9 +52,12 @@ module.exports = function (User) {
 			} else if (field === 'fullname') {
 				return await updateFullname(updateUid, data.fullname);
 			}
+			updateData[field] = data[field];
+		}));
 
-			await User.setUserField(updateUid, field, data[field]);
-		});
+		if (Object.keys(updateData).length) {
+			await User.setUserFields(updateUid, updateData);
+		}
 
 		plugins.hooks.fire('action:user.updateProfile', {
 			uid: uid,

@@ -724,6 +724,12 @@ describe('User', () => {
 			});
 		});
 
+		it('should not modify the fields array passed in', async () => {
+			const fields = ['username', 'email'];
+			await User.getUserFields(testUid, fields);
+			assert.deepStrictEqual(fields, ['username', 'email']);
+		});
+
 		it('should return an icon text and valid background if username and picture is explicitly requested', async () => {
 			const payload = await User.getUserFields(testUid, ['username', 'picture']);
 			const validBackgrounds = await User.getIconBackgrounds(testUid);
