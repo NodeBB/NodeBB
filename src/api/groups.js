@@ -15,6 +15,8 @@ const groupsAPI = module.exports;
 groupsAPI.create = async function (caller, data) {
 	if (!caller.uid) {
 		throw new Error('[[error:no-privileges]]');
+	} else if (!data) {
+		throw new Error('[[error:invalid-data]]');
 	} else if (typeof data.name !== 'string' || groups.isPrivilegeGroup(data.name)) {
 		throw new Error('[[error:invalid-group-name]]');
 	}
@@ -34,6 +36,9 @@ groupsAPI.create = async function (caller, data) {
 };
 
 groupsAPI.update = async function (caller, data) {
+	if (!data) {
+		throw new Error('[[error:invalid-data]]');
+	}
 	const groupName = await groups.getGroupNameByGroupSlug(data.slug);
 	await isOwner(caller, groupName);
 
@@ -60,6 +65,9 @@ groupsAPI.delete = async function (caller, data) {
 };
 
 groupsAPI.join = async function (caller, data) {
+	if (!data) {
+		throw new Error('[[error:invalid-data]]');
+	}
 	if (caller.uid <= 0 || !data.uid) {
 		throw new Error('[[error:invalid-uid]]');
 	}
@@ -118,6 +126,9 @@ groupsAPI.join = async function (caller, data) {
 };
 
 groupsAPI.leave = async function (caller, data) {
+	if (!data) {
+		throw new Error('[[error:invalid-data]]');
+	}
 	if (caller.uid <= 0) {
 		throw new Error('[[error:invalid-uid]]');
 	}
