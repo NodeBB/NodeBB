@@ -683,72 +683,62 @@ describe('Post\'s', () => {
 		let tid;
 		let moveTid;
 
-		before((done) => {
-			async.waterfall([
-				function (next) {
-					topics.post({
-						uid: voterUid,
-						cid: cid,
-						title: 'topic 1',
-						content: 'some content',
-					}, next);
-				},
-				function (data, next) {
-					tid = data.topicData.tid;
-					topics.post({
-						uid: voterUid,
-						cid: cid,
-						title: 'topic 2',
-						content: 'some content',
-					}, next);
-				},
-				function (data, next) {
-					moveTid = data.topicData.tid;
-					topics.reply({
-						uid: voterUid,
-						tid: tid,
-						timestamp: Date.now(),
-						content: 'A reply to move',
-					}, (err, data) => {
-						assert.ifError(err);
-						replyPid = data.pid;
-						next();
-					});
-				},
-			], done);
+		before(async () => {
+			const topic1 = await topics.post({
+				uid: voterUid,
+				cid: cid,
+				title: 'topic 1',
+				content: 'some content',
+			});
+			tid = topic1.topicData.tid;
+			const topic2 = await topics.post({
+				uid: voterUid,
+				cid: cid,
+				title: 'topic 2',
+				content: 'some content',
+			});
+			moveTid = topic2.topicData.tid;
+
+			const reply = await topics.reply({
+				uid: voterUid,
+				tid: tid,
+				timestamp: Date.now(),
+				content: 'A reply to move',
+			});
+			replyPid = reply.pid;
 		});
 
-		it('should error if uid is not logged in', (done) => {
-			socketPosts.movePost({ uid: 0 }, {}, (err) => {
-				assert.equal(err.message, '[[error:not-logged-in]]');
-				done();
-			});
+		it('should error if uid is not logged in', async () => {
+			try {
+				await apiPosts.move({ uid: 0 }, {});
+			} catch (err) {
+				return assert.equal(err.message, '[[error:not-logged-in]]');
+			}
+			assert(false);
 		});
 
-		it('should error if data is invalid', (done) => {
-			socketPosts.movePost({ uid: globalModUid }, {}, (err) => {
-				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
+		it('should error if data is invalid', async () => {
+			try {
+				await apiPosts.move({ uid: globalModUid }, {});
+			} catch (err) {
+				return assert.equal(err.message, '[[error:invalid-data]]');
+			}
+			assert(false);
 		});
 
-		it('should error if user does not have move privilege', (done) => {
-			socketPosts.movePost({ uid: voterUid }, { pid: replyPid, tid: moveTid }, (err) => {
-				assert.equal(err.message, '[[error:no-privileges]]');
-				done();
-			});
+		it('should error if user does not have move privilege', async () => {
+			try {
+				await apiPosts.move({ uid: voterUid }, { pid: replyPid, tid: moveTid });
+			} catch (err) {
+				return assert.equal(err.message, '[[error:no-privileges]]');
+			}
+			assert(false);
 		});
 
-
-		it('should move a post', (done) => {
-			socketPosts.movePost({ uid: globalModUid }, { pid: replyPid, tid: moveTid }, (err) => {
-				assert.ifError(err);
-				posts.getPostField(replyPid, 'tid', (err, tid) => {
-					assert.ifError(err);
-					assert(tid, moveTid);
-					done();
-				});
-			});
+		it('should move a post', async () => {
+			await apiPosts.move({ uid: globalModUid }, { pid: replyPid, tid: moveTid });
+			const tid = await posts.getPostField(replyPid, 'tid');
+			assert(tid, moveTid);
 		});
 
 		it('should fail to move post if not moderator of target category', async () => {
@@ -759,7 +749,7 @@ describe('Post\'s', () => {
 			await privileges.categories.give(privileges.categories.userPrivilegeList, cat1.cid, modUid);
 			let err;
 			try {
-				await socketPosts.movePost({ uid: modUid }, { pid: replyPid, tid: result.tid });
+				await apiPosts.move({ uid: modUid }, { pid: replyPid, tid: result.tid });
 			} catch (_err) {
 				err = _err;
 			}

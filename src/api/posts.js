@@ -208,6 +208,12 @@ async function isMainAndLastPost(pid) {
 }
 
 postsAPI.move = async function (caller, data) {
+	if (!caller.uid) {
+		throw new Error('[[error:not-logged-in]]');
+	}
+	if (!data || !data.pid || !data.tid) {
+		throw new Error('[[error:invalid-data]]');
+	}
 	const canMove = await Promise.all([
 		privileges.topics.isAdminOrMod(data.tid, caller.uid),
 		privileges.posts.canMove(data.pid, caller.uid),
