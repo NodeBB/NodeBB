@@ -19,6 +19,6 @@ Settings.set = async function (socket, data) {
 	await events.log(eventData);
 };
 
-Settings.clearSitemapCache = function () {
+Settings.clearSitemapCache = async function () {
 	require('../../sitemap').clearCache();
 };

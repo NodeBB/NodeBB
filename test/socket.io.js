@@ -564,9 +564,8 @@ describe('socket.io', () => {
 		});
 	});
 
-	it('should clear sitemap cache', (done) => {
-		socketAdmin.settings.clearSitemapCache({ uid: adminUid }, {});
-		done();
+	it('should clear sitemap cache', async () => {
+		await socketAdmin.settings.clearSitemapCache({ uid: adminUid }, {});
 	});
 
 	it('should send test email', async () => {
