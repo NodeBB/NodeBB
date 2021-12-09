@@ -46,6 +46,9 @@ postsAPI.edit = async function (caller, data) {
 	if (!data || !data.pid || (meta.config.minimumPostLength !== 0 && !data.content)) {
 		throw new Error('[[error:invalid-data]]');
 	}
+	if (!caller.uid) {
+		throw new Error('[[error:not-logged-in]]');
+	}
 	// Trim and remove HTML (latter for composers that send in HTML, like redactor)
 	const contentLen = utils.stripHTMLTags(data.content).trim().length;
 

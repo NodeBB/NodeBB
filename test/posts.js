@@ -8,6 +8,9 @@ const nconf = require('nconf');
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
+const util = require('util');
+
+const sleep = util.promisify(setTimeout);
 
 const db = require('./mocks/databasemock');
 const topics = require('../src/topics');
@@ -481,73 +484,90 @@ describe('Post\'s', () => {
 			});
 		});
 
-		it('should error if user is not logged in', (done) => {
-			socketPosts.edit({ uid: 0 }, {}, (err) => {
-				assert.equal(err.message, '[[error:not-logged-in]]');
-				done();
-			});
+		it('should error if user is not logged in', async () => {
+			try {
+				await apiPosts.edit({ uid: 0 }, { pid: pid, content: 'gg' });
+			} catch (err) {
+				return assert.equal(err.message, '[[error:not-logged-in]]');
+			}
+			assert(false);
 		});
 
-		it('should error if data is invalid or missing', (done) => {
-			socketPosts.edit({ uid: voterUid }, {}, (err) => {
-				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
+		it('should error if data is invalid or missing', async () => {
+			try {
+				await apiPosts.edit({ uid: voterUid }, {});
+			} catch (err) {
+				return assert.equal(err.message, '[[error:invalid-data]]');
+			}
+			assert(false);
 		});
 
-		it('should error if title is too short', (done) => {
-			socketPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content', title: 'a' }, (err) => {
-				assert.equal(err.message, `[[error:title-too-short, ${meta.config.minimumTitleLength}]]`);
-				done();
-			});
+		it('should error if title is too short', async () => {
+			try {
+				await apiPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content', title: 'a' });
+			} catch (err) {
+				return assert.equal(err.message, `[[error:title-too-short, ${meta.config.minimumTitleLength}]]`);
+			}
+			assert(false);
 		});
 
-		it('should error if title is too long', (done) => {
+		it('should error if title is too long', async () => {
 			const longTitle = new Array(meta.config.maximumTitleLength + 2).join('a');
-			socketPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content', title: longTitle }, (err) => {
-				assert.equal(err.message, `[[error:title-too-long, ${meta.config.maximumTitleLength}]]`);
-				done();
-			});
+			try {
+				await apiPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content', title: longTitle });
+			} catch (err) {
+				return assert.equal(err.message, `[[error:title-too-long, ${meta.config.maximumTitleLength}]]`);
+			}
+			assert(false);
 		});
 
-		it('should error with too few tags', (done) => {
+		it('should error with too few tags', async () => {
 			const oldValue = meta.config.minimumTagsPerTopic;
 			meta.config.minimumTagsPerTopic = 1;
-			socketPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content', tags: [] }, (err) => {
+			try {
+				await apiPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content', tags: [] });
+			} catch (err) {
 				assert.equal(err.message, `[[error:not-enough-tags, ${meta.config.minimumTagsPerTopic}]]`);
 				meta.config.minimumTagsPerTopic = oldValue;
-				done();
-			});
+				return;
+			}
+			assert(false);
 		});
 
-		it('should error with too many tags', (done) => {
+		it('should error with too many tags', async () => {
 			const tags = [];
 			for (let i = 0; i < meta.config.maximumTagsPerTopic + 1; i += 1) {
 				tags.push(`tag${i}`);
 			}
-			socketPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content', tags: tags }, (err) => {
-				assert.equal(err.message, `[[error:too-many-tags, ${meta.config.maximumTagsPerTopic}]]`);
-				done();
-			});
+			try {
+				await apiPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content', tags: tags });
+			} catch (err) {
+				return assert.equal(err.message, `[[error:too-many-tags, ${meta.config.maximumTagsPerTopic}]]`);
+			}
+			assert(false);
 		});
 
-		it('should error if content is too short', (done) => {
-			socketPosts.edit({ uid: voterUid }, { pid: pid, content: 'e' }, (err) => {
-				assert.equal(err.message, `[[error:content-too-short, ${meta.config.minimumPostLength}]]`);
-				done();
-			});
+		it('should error if content is too short', async () => {
+			try {
+				await apiPosts.edit({ uid: voterUid }, { pid: pid, content: 'e' });
+			} catch (err) {
+				return assert.equal(err.message, `[[error:content-too-short, ${meta.config.minimumPostLength}]]`);
+			}
+			assert(false);
 		});
 
-		it('should error if content is too long', (done) => {
+		it('should error if content is too long', async () => {
 			const longContent = new Array(meta.config.maximumPostLength + 2).join('a');
-			socketPosts.edit({ uid: voterUid }, { pid: pid, content: longContent }, (err) => {
-				assert.equal(err.message, `[[error:content-too-long, ${meta.config.maximumPostLength}]]`);
-				done();
-			});
+			try {
+				await apiPosts.edit({ uid: voterUid }, { pid: pid, content: longContent });
+			} catch (err) {
+				return assert.equal(err.message, `[[error:content-too-long, ${meta.config.maximumPostLength}]]`);
+			}
+			assert(false);
 		});
 
 		it('should edit post', async () => {
-			const data = await socketPosts.edit({ uid: voterUid }, {
+			const data = await apiPosts.edit({ uid: voterUid }, {
 				pid: pid,
 				content: 'edited post content',
 				title: 'edited title',
@@ -562,40 +582,34 @@ describe('Post\'s', () => {
 			assert(!res.hasOwnProperty('bookmarks'));
 		});
 
-		it('should disallow post editing for new users if post was made past the threshold for editing', (done) => {
+		it('should disallow post editing for new users if post was made past the threshold for editing', async () => {
 			meta.config.newbiePostEditDuration = 1;
-			setTimeout(() => {
-				socketPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content again', title: 'edited title again', tags: ['edited-twice'] }, (err, data) => {
-					assert.equal(err.message, '[[error:post-edit-duration-expired, 1]]');
-					meta.config.newbiePostEditDuration = 3600;
-					done();
-				});
-			}, 1000);
+			await sleep(1000);
+			try {
+				await apiPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content again', title: 'edited title again', tags: ['edited-twice'] });
+			} catch (err) {
+				assert.equal(err.message, '[[error:post-edit-duration-expired, 1]]');
+				meta.config.newbiePostEditDuration = 3600;
+				return;
+			}
+			assert(false);
 		});
 
-		it('should edit a deleted post', (done) => {
-			socketPosts.delete({ uid: voterUid }, { pid: pid, tid: tid }, (err) => {
-				assert.ifError(err);
-				socketPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited deleted content', title: 'edited deleted title', tags: ['deleted'] }, (err, data) => {
-					assert.ifError(err);
-					assert.equal(data.content, 'edited deleted content');
-					assert.equal(data.editor, voterUid);
-					assert.equal(data.topic.title, 'edited deleted title');
-					assert.equal(data.topic.tags[0].value, 'deleted');
-					done();
-				});
-			});
+		it('should edit a deleted post', async () => {
+			await apiPosts.delete({ uid: voterUid }, { pid: pid, tid: tid });
+			const data = await apiPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited deleted content', title: 'edited deleted title', tags: ['deleted'] });
+			assert.equal(data.content, 'edited deleted content');
+			assert.equal(data.editor, voterUid);
+			assert.equal(data.topic.title, 'edited deleted title');
+			assert.equal(data.topic.tags[0].value, 'deleted');
 		});
 
-		it('should edit a reply post', (done) => {
-			socketPosts.edit({ uid: voterUid }, { pid: replyPid, content: 'edited reply' }, (err, data) => {
-				assert.ifError(err);
-				assert.equal(data.content, 'edited reply');
-				assert.equal(data.editor, voterUid);
-				assert.equal(data.topic.isMainPost, false);
-				assert.equal(data.topic.renamed, false);
-				done();
-			});
+		it('should edit a reply post', async () => {
+			const data = await apiPosts.edit({ uid: voterUid }, { pid: replyPid, content: 'edited reply' });
+			assert.equal(data.content, 'edited reply');
+			assert.equal(data.editor, voterUid);
+			assert.equal(data.topic.isMainPost, false);
+			assert.equal(data.topic.renamed, false);
 		});
 
 		it('should return diffs', (done) => {
@@ -650,8 +664,8 @@ describe('Post\'s', () => {
 		});
 
 		it('should delete a post diff', async () => {
-			await socketPosts.edit({ uid: voterUid }, { pid: replyPid, content: 'another edit has been made' });
-			await socketPosts.edit({ uid: voterUid }, { pid: replyPid, content: 'most recent edit' });
+			await apiPosts.edit({ uid: voterUid }, { pid: replyPid, content: 'another edit has been made' });
+			await apiPosts.edit({ uid: voterUid }, { pid: replyPid, content: 'most recent edit' });
 			const timestamp = (await posts.diffs.list(replyPid)).pop();
 			await posts.diffs.delete(replyPid, timestamp, voterUid);
 			const differentTimestamp = (await posts.diffs.list(replyPid)).pop();

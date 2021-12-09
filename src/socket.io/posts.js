@@ -17,7 +17,6 @@ const sockets = require('.');
 
 const SocketPosts = module.exports;
 
-require('./posts/edit')(SocketPosts);
 require('./posts/move')(SocketPosts);
 require('./posts/votes')(SocketPosts);
 require('./posts/tools')(SocketPosts);
