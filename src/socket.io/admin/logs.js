@@ -8,6 +8,6 @@ Logs.get = async function () {
 	return await meta.logs.get();
 };
 
-Logs.clear = function () {
-	return await meta.logs.clear();
+Logs.clear = async function () {
+	await meta.logs.clear();
 };
