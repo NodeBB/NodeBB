@@ -1271,8 +1271,7 @@ describe('Groups', () => {
 		});
 	});
 
-	describe('admin api/socket methods', () => {
-		const socketGroups = require('../src/socket.io/admin/groups');
+	describe('api methods', () => {
 		const apiGroups = require('../src/api/groups');
 		it('should fail to create group with invalid data', async () => {
 			let err;
