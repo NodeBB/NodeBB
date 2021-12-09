@@ -282,28 +282,18 @@ describe('Post\'s', () => {
 	});
 
 	describe('bookmarking', () => {
-		it('should bookmark a post', (done) => {
-			socketPosts.bookmark({ uid: voterUid }, { pid: postData.pid, room_id: `topic_${postData.tid}` }, (err, data) => {
-				assert.ifError(err);
-				assert.equal(data.isBookmarked, true);
-				posts.hasBookmarked(postData.pid, voterUid, (err, hasBookmarked) => {
-					assert.ifError(err);
-					assert.equal(hasBookmarked, true);
-					done();
-				});
-			});
+		it('should bookmark a post', async () => {
+			const data = await apiPosts.bookmark({ uid: voterUid }, { pid: postData.pid, room_id: `topic_${postData.tid}` });
+			assert.equal(data.isBookmarked, true);
+			const hasBookmarked = await posts.hasBookmarked(postData.pid, voterUid);
+			assert.equal(hasBookmarked, true);
 		});
 
-		it('should unbookmark a post', (done) => {
-			socketPosts.unbookmark({ uid: voterUid }, { pid: postData.pid, room_id: `topic_${postData.tid}` }, (err, data) => {
-				assert.ifError(err);
-				assert.equal(data.isBookmarked, false);
-				posts.hasBookmarked([postData.pid], voterUid, (err, hasBookmarked) => {
-					assert.ifError(err);
-					assert.equal(hasBookmarked[0], false);
-					done();
-				});
-			});
+		it('should unbookmark a post', async () => {
+			const data = await apiPosts.unbookmark({ uid: voterUid }, { pid: postData.pid, room_id: `topic_${postData.tid}` });
+			assert.equal(data.isBookmarked, false);
+			const hasBookmarked = await posts.hasBookmarked([postData.pid], voterUid);
+			assert.equal(hasBookmarked[0], false);
 		});
 	});
 

@@ -20,7 +20,6 @@ const SocketPosts = module.exports;
 require('./posts/edit')(SocketPosts);
 require('./posts/move')(SocketPosts);
 require('./posts/votes')(SocketPosts);
-require('./posts/bookmarks')(SocketPosts);
 require('./posts/tools')(SocketPosts);
 
 SocketPosts.reply = async function (socket, data) {
