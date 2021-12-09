@@ -12,5 +12,5 @@ Logs.get = async function () {
 };
 
 Logs.clear = async function () {
-	return await fs.promises.truncate(Logs.path, 0);
+	await fs.promises.truncate(Logs.path, 0);
 };
