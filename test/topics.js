@@ -623,7 +623,7 @@ describe('Topic\'s', () => {
 		});
 
 		it('should delete the topic', async () => {
-			await apiTopics.delete({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid })
+			await apiTopics.delete({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid });
 			const deleted = await topics.getTopicField(newTopic.tid, 'deleted');
 			assert.strictEqual(deleted, 1);
 		});
