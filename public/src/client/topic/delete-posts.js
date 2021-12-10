@@ -1,7 +1,8 @@
 'use strict';
 
-
-define('forum/topic/delete-posts', ['postSelect', 'alerts'], function (postSelect, alerts) {
+define('forum/topic/delete-posts', [
+	'postSelect', 'alerts', 'api',
+], function (postSelect, alerts, api) {
 	const DeletePosts = {};
 	let modal;
 	let deleteBtn;
@@ -34,10 +35,10 @@ define('forum/topic/delete-posts', ['postSelect', 'alerts'], function (postSelec
 			showPostsSelected();
 
 			deleteBtn.on('click', function () {
-				deletePosts(deleteBtn, 'posts.deletePosts');
+				deletePosts(deleteBtn, pid => `/posts/${pid}/state`);
 			});
 			purgeBtn.on('click', function () {
-				deletePosts(purgeBtn, 'posts.purgePosts');
+				deletePosts(purgeBtn, pid => `/posts/${pid}`);
 			});
 		});
 	};
@@ -49,18 +50,14 @@ define('forum/topic/delete-posts', ['postSelect', 'alerts'], function (postSelec
 		}
 	}
 
-	function deletePosts(btn, command) {
+	function deletePosts(btn, route) {
 		btn.attr('disabled', true);
-		socket.emit(command, {
-			pids: postSelect.pids,
-		}, function (err) {
-			btn.removeAttr('disabled');
-			if (err) {
-				return alerts.error(err);
-			}
-
-			closeModal();
-		});
+		Promise.all(postSelect.pids.map(pid => api.delete(route(pid), {})))
+			.then(closeModal)
+			.catch(alerts.error)
+			.finally(() => {
+				btn.removeAttr('disabled');
+			});
 	}
 
 	function showPostsSelected() {

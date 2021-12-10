@@ -308,55 +308,48 @@ describe('Post\'s', () => {
 	});
 
 	describe('delete/restore/purge', () => {
-		function createTopicWithReply(callback) {
-			topics.post({
+		async function createTopicWithReply() {
+			const topicPostData = await topics.post({
 				uid: voterUid,
 				cid: cid,
 				title: 'topic to delete/restore/purge',
 				content: 'A post to delete/restore/purge',
-			}, (err, topicPostData) => {
-				assert.ifError(err);
-				topics.reply({
-					uid: voterUid,
-					tid: topicPostData.topicData.tid,
-					timestamp: Date.now(),
-					content: 'A post to delete/restore and purge',
-				}, (err, replyData) => {
-					assert.ifError(err);
-					callback(topicPostData, replyData);
-				});
 			});
+
+			const replyData = await topics.reply({
+				uid: voterUid,
+				tid: topicPostData.topicData.tid,
+				timestamp: Date.now(),
+				content: 'A post to delete/restore and purge',
+			});
+			return [topicPostData, replyData];
 		}
 
 		let tid;
 		let mainPid;
 		let replyPid;
 
-		before((done) => {
-			createTopicWithReply((topicPostData, replyData) => {
-				tid = topicPostData.topicData.tid;
-				mainPid = topicPostData.postData.pid;
-				replyPid = replyData.pid;
-				privileges.categories.give(['groups:purge'], cid, 'registered-users', done);
-			});
+		before(async () => {
+			const [topicPostData, replyData] = await createTopicWithReply();
+			tid = topicPostData.topicData.tid;
+			mainPid = topicPostData.postData.pid;
+			replyPid = replyData.pid;
+			await privileges.categories.give(['groups:purge'], cid, 'registered-users');
 		});
 
-		it('should error with invalid data', (done) => {
-			socketPosts.delete({ uid: voterUid }, null, (err) => {
-				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
+		it('should error with invalid data', async () => {
+			try {
+				await apiPosts.delete({ uid: voterUid }, null);
+			} catch (err) {
+				return assert.equal(err.message, '[[error:invalid-data]]');
+			}
+			assert(false);
 		});
 
-		it('should delete a post', (done) => {
-			socketPosts.delete({ uid: voterUid }, { pid: replyPid, tid: tid }, (err) => {
-				assert.ifError(err);
-				posts.getPostField(replyPid, 'deleted', (err, isDeleted) => {
-					assert.ifError(err);
-					assert.strictEqual(isDeleted, 1);
-					done();
-				});
-			});
+		it('should delete a post', async () => {
+			await apiPosts.delete({ uid: voterUid }, { pid: replyPid, tid: tid });
+			const isDeleted = await posts.getPostField(replyPid, 'deleted');
+			assert.strictEqual(isDeleted, 1);
 		});
 
 		it('should not see post content if global mod does not have posts:view_deleted privilege', (done) => {
@@ -383,64 +376,27 @@ describe('Post\'s', () => {
 			], done);
 		});
 
-		it('should restore a post', (done) => {
-			socketPosts.restore({ uid: voterUid }, { pid: replyPid, tid: tid }, (err) => {
-				assert.ifError(err);
-				posts.getPostField(replyPid, 'deleted', (err, isDeleted) => {
-					assert.ifError(err);
-					assert.strictEqual(isDeleted, 0);
-					done();
-				});
-			});
+		it('should restore a post', async () => {
+			await apiPosts.restore({ uid: voterUid }, { pid: replyPid, tid: tid });
+			const isDeleted = await posts.getPostField(replyPid, 'deleted');
+			assert.strictEqual(isDeleted, 0);
 		});
 
-		it('should delete posts', (done) => {
-			socketPosts.deletePosts({ uid: globalModUid }, { pids: [replyPid, mainPid] }, (err) => {
-				assert.ifError(err);
-				posts.getPostField(replyPid, 'deleted', (err, deleted) => {
-					assert.ifError(err);
-					assert.strictEqual(deleted, 1);
-					posts.getPostField(mainPid, 'deleted', (err, deleted) => {
-						assert.ifError(err);
-						assert.strictEqual(deleted, 1);
-						done();
-					});
-				});
-			});
+		it('should delete topic if last main post is deleted', async () => {
+			const data = await topics.post({ uid: voterUid, cid: cid, title: 'test topic', content: 'test topic' });
+			await apiPosts.delete({ uid: globalModUid }, { pid: data.postData.pid });
+			const deleted = await topics.getTopicField(data.topicData.tid, 'deleted');
+			assert.strictEqual(deleted, 1);
 		});
 
-		it('should delete topic if last main post is deleted', (done) => {
-			topics.post({ uid: voterUid, cid: cid, title: 'test topic', content: 'test topic' }, (err, data) => {
-				assert.ifError(err);
-				socketPosts.deletePosts({ uid: globalModUid }, { pids: [data.postData.pid] }, (err) => {
-					assert.ifError(err);
-					topics.getTopicField(data.topicData.tid, 'deleted', (err, deleted) => {
-						assert.ifError(err);
-						assert.strictEqual(deleted, 1);
-						done();
-					});
-				});
-			});
-		});
-
-		it('should purge posts and purge topic', (done) => {
-			createTopicWithReply((topicPostData, replyData) => {
-				socketPosts.purgePosts({ uid: voterUid }, {
-					pids: [replyData.pid, topicPostData.postData.pid],
-					tid: topicPostData.topicData.tid,
-				}, (err) => {
-					assert.ifError(err);
-					posts.exists(`post:${replyData.pid}`, (err, exists) => {
-						assert.ifError(err);
-						assert.equal(exists, false);
-						topics.exists(topicPostData.topicData.tid, (err, exists) => {
-							assert.ifError(err);
-							assert(!exists);
-							done();
-						});
-					});
-				});
-			});
+		it('should purge posts and purge topic', async () => {
+			const [topicPostData, replyData] = await createTopicWithReply();
+			await apiPosts.purge({ uid: voterUid }, { pid: replyData.pid });
+			await apiPosts.purge({ uid: voterUid }, { pid: topicPostData.postData.pid });
+			const pidExists = await posts.exists(replyData.pid);
+			assert.strictEqual(pidExists, false);
+			const tidExists = await topics.exists(topicPostData.topicData.tid);
+			assert.strictEqual(tidExists, false);
 		});
 	});
 
