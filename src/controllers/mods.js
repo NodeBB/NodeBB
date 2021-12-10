@@ -117,6 +117,8 @@ modsController.flags.detail = async function (req, res, next) {
 		return next(); // 404
 	}
 
+	results.flagData.history = results.isAdminOrGlobalMod ? (await flags.getHistory(req.params.flagId)) : null;
+
 	if (results.flagData.type === 'user') {
 		results.flagData.type_path = 'uid';
 	} else if (results.flagData.type === 'post') {

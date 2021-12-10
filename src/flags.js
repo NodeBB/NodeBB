@@ -93,9 +93,8 @@ Flags.init = async function () {
 };
 
 Flags.get = async function (flagId) {
-	const [base, history, notes, reports] = await Promise.all([
+	const [base, notes, reports] = await Promise.all([
 		db.getObject(`flag:${flagId}`),
-		Flags.getHistory(flagId),
 		Flags.getNotes(flagId),
 		Flags.getReports(flagId),
 	]);
@@ -109,9 +108,8 @@ Flags.get = async function (flagId) {
 		datetimeISO: utils.toISOString(base.datetime),
 		target_readable: `${base.type.charAt(0).toUpperCase() + base.type.slice(1)} ${base.targetId}`,
 		target: await Flags.getTarget(base.type, base.targetId, 0),
-		history: history,
-		notes: notes,
-		reports: reports,
+		notes,
+		reports,
 	};
 
 	const data = await plugins.hooks.fire('filter:flags.get', {
