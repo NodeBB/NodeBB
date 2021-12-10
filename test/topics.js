@@ -21,6 +21,7 @@ const groups = require('../src/groups');
 const helpers = require('./helpers');
 const socketPosts = require('../src/socket.io/posts');
 const socketTopics = require('../src/socket.io/topics');
+const apiTopics = require('../src/api/topics');
 
 const requestType = util.promisify((type, url, opts, cb) => {
 	request[type](url, opts, (err, res, body) => cb(err, { res: res, body: body }));
@@ -621,62 +622,40 @@ describe('Topic\'s', () => {
 			});
 		});
 
-		it('should delete the topic', (done) => {
-			socketTopics.delete({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid }, (err) => {
-				assert.ifError(err);
-				done();
-			});
+		it('should delete the topic', async () => {
+			await apiTopics.delete({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid })
+			const deleted = await topics.getTopicField(newTopic.tid, 'deleted');
+			assert.strictEqual(deleted, 1);
 		});
 
-		it('should restore the topic', (done) => {
-			socketTopics.restore({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid }, (err) => {
-				assert.ifError(err);
-				done();
-			});
+		it('should restore the topic', async () => {
+			await apiTopics.restore({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid });
+			const deleted = await topics.getTopicField(newTopic.tid, 'deleted');
+			assert.strictEqual(deleted, 0);
 		});
 
-		it('should lock topic', (done) => {
-			socketTopics.lock({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid }, (err) => {
-				assert.ifError(err);
-				topics.isLocked(newTopic.tid, (err, isLocked) => {
-					assert.ifError(err);
-					assert(isLocked);
-					done();
-				});
-			});
+		it('should lock topic', async () => {
+			await apiTopics.lock({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid });
+			const isLocked = await topics.isLocked(newTopic.tid);
+			assert(isLocked);
 		});
 
-		it('should unlock topic', (done) => {
-			socketTopics.unlock({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid }, (err) => {
-				assert.ifError(err);
-				topics.isLocked(newTopic.tid, (err, isLocked) => {
-					assert.ifError(err);
-					assert(!isLocked);
-					done();
-				});
-			});
+		it('should unlock topic', async () => {
+			await apiTopics.unlock({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid });
+			const isLocked = await topics.isLocked(newTopic.tid);
+			assert(!isLocked);
 		});
 
-		it('should pin topic', (done) => {
-			socketTopics.pin({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid }, (err) => {
-				assert.ifError(err);
-				topics.getTopicField(newTopic.tid, 'pinned', (err, pinned) => {
-					assert.ifError(err);
-					assert.strictEqual(pinned, 1);
-					done();
-				});
-			});
+		it('should pin topic', async () => {
+			await apiTopics.pin({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid });
+			const pinned = await topics.getTopicField(newTopic.tid, 'pinned');
+			assert.strictEqual(pinned, 1);
 		});
 
-		it('should unpin topic', (done) => {
-			socketTopics.unpin({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid }, (err) => {
-				assert.ifError(err);
-				topics.getTopicField(newTopic.tid, 'pinned', (err, pinned) => {
-					assert.ifError(err);
-					assert.strictEqual(pinned, 0);
-					done();
-				});
-			});
+		it('should unpin topic', async () => {
+			await apiTopics.unpin({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid });
+			const pinned = await topics.getTopicField(newTopic.tid, 'pinned');
+			assert.strictEqual(pinned, 0);
 		});
 
 		it('should move all topics', (done) => {
@@ -815,47 +794,31 @@ describe('Topic\'s', () => {
 			], done);
 		});
 
-		it('should fail to purge topic if user does not have privilege', (done) => {
-			let globalModUid;
-			let tid;
-			async.waterfall([
-				function (next) {
-					topics.post({
-						uid: adminUid,
-						title: 'topic for purge test',
-						content: 'topic content',
-						cid: categoryObj.cid,
-					}, next);
-				},
-				function (result, next) {
-					tid = result.topicData.tid;
-					User.create({ username: 'global mod' }, next);
-				},
-				function (uid, next) {
-					globalModUid = uid;
-					groups.join('Global Moderators', uid, next);
-				},
-				function (next) {
-					privileges.categories.rescind(['groups:purge'], categoryObj.cid, 'Global Moderators', next);
-				},
-				function (next) {
-					socketTopics.purge({ uid: globalModUid }, { tids: [tid], cid: categoryObj.cid }, (err) => {
-						assert.equal(err.message, '[[error:no-privileges]]');
-						privileges.categories.give(['groups:purge'], categoryObj.cid, 'Global Moderators', next);
-					});
-				},
-			], done);
+		it('should fail to purge topic if user does not have privilege', async () => {
+			const topic1 = await topics.post({
+				uid: adminUid,
+				title: 'topic for purge test',
+				content: 'topic content',
+				cid: categoryObj.cid,
+			});
+			const tid1 = topic1.topicData.tid;
+			const globalModUid = await User.create({ username: 'global mod' });
+			await groups.join('Global Moderators', globalModUid);
+			await privileges.categories.rescind(['groups:purge'], categoryObj.cid, 'Global Moderators');
+			try {
+				await apiTopics.purge({ uid: globalModUid }, { tids: [tid1], cid: categoryObj.cid });
+			} catch (err) {
+				assert.equal(err.message, '[[error:no-privileges]]');
+				await privileges.categories.give(['groups:purge'], categoryObj.cid, 'Global Moderators');
+				return;
+			}
+			assert(false);
 		});
 
-		it('should purge the topic', (done) => {
-			socketTopics.purge({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid }, (err) => {
-				assert.ifError(err);
-				db.isSortedSetMember(`uid:${followerUid}:followed_tids`, newTopic.tid, (err, isMember) => {
-					assert.ifError(err);
-					assert.strictEqual(false, isMember);
-					done();
-				});
-			});
+		it('should purge the topic', async () => {
+			await apiTopics.purge({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid });
+			const isMember = await db.isSortedSetMember(`uid:${followerUid}:followed_tids`, newTopic.tid);
+			assert.strictEqual(false, isMember);
 		});
 
 		it('should not allow user to restore their topic if it was deleted by an admin', async () => {
@@ -865,12 +828,13 @@ describe('Topic\'s', () => {
 				content: 'topic content',
 				cid: categoryObj.cid,
 			});
-			await socketTopics.delete({ uid: adminUid }, { tids: [result.topicData.tid], cid: categoryObj.cid });
+			await apiTopics.delete({ uid: adminUid }, { tids: [result.topicData.tid], cid: categoryObj.cid });
 			try {
-				await socketTopics.restore({ uid: fooUid }, { tids: [result.topicData.tid], cid: categoryObj.cid });
+				await apiTopics.restore({ uid: fooUid }, { tids: [result.topicData.tid], cid: categoryObj.cid });
 			} catch (err) {
-				assert.strictEqual(err.message, '[[error:no-privileges]]');
+				return assert.strictEqual(err.message, '[[error:no-privileges]]');
 			}
+			assert(false);
 		});
 	});
 
