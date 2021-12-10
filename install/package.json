@@ -43,7 +43,7 @@
         "clipboard": "^2.0.6",
         "colors": "^1.4.0",
         "commander": "^7.1.0",
-        "compare-versions": "4.1.1",
+        "compare-versions": "4.1.2",
         "compression": "^1.7.4",
         "connect-flash": "^0.1.1",
         "connect-mongo": "4.6.0",
