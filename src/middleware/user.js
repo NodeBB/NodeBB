@@ -133,6 +133,14 @@ module.exports = function (middleware) {
 		controllers.helpers.notAllowed(req, res);
 	});
 
+	middleware.canChat = helpers.try(async (req, res, next) => {
+		const canChat = await privileges.global.can('chat', req.uid);
+		if (canChat) {
+			return next();
+		}
+		controllers.helpers.notAllowed(req, res);
+	});
+
 	middleware.checkAccountPermissions = helpers.try(async (req, res, next) => {
 		// This middleware ensures that only the requested user and admins can pass
 

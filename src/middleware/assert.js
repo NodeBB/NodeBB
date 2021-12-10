@@ -14,6 +14,7 @@ const user = require('../user');
 const groups = require('../groups');
 const topics = require('../topics');
 const posts = require('../posts');
+const messaging = require('../messaging');
 const slugify = require('../slugify');
 
 const helpers = require('./helpers');
@@ -101,6 +102,23 @@ Assert.folderName = helpers.try(async (req, res, next) => {
 	}
 
 	res.locals.folderPath = folderPath;
+
+	next();
+});
+
+Assert.room = helpers.try(async (req, res, next) => {
+	const [exists, inRoom] = await Promise.all([
+		await messaging.roomExists(req.params.roomId),
+		await messaging.isUserInRoom(req.uid, req.params.roomId),
+	]);
+
+	if (!exists) {
+		return controllerHelpers.formatApiResponse(404, res, new Error('[[error:chat-room-does-not-exist]]'));
+	}
+
+	if (!inRoom) {
+		return controllerHelpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
+	}
 
 	next();
 });
