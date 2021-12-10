@@ -163,36 +163,33 @@ describe('Post\'s', () => {
 	});
 
 	describe('voting', () => {
-		it('should fail to upvote post if group does not have upvote permission', (done) => {
-			privileges.categories.rescind(['groups:posts:upvote', 'groups:posts:downvote'], cid, 'registered-users', (err) => {
-				assert.ifError(err);
-				socketPosts.upvote({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_1' }, (err) => {
-					assert.equal(err.message, '[[error:no-privileges]]');
-					socketPosts.downvote({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_1' }, (err) => {
-						assert.equal(err.message, '[[error:no-privileges]]');
-						privileges.categories.give(['groups:posts:upvote', 'groups:posts:downvote'], cid, 'registered-users', (err) => {
-							assert.ifError(err);
-							done();
-						});
-					});
-				});
-			});
+		it('should fail to upvote post if group does not have upvote permission', async () => {
+			await privileges.categories.rescind(['groups:posts:upvote', 'groups:posts:downvote'], cid, 'registered-users');
+			let err;
+			try {
+				await apiPosts.upvote({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_1' });
+			} catch (_err) {
+				err = _err;
+			}
+			assert.equal(err.message, '[[error:no-privileges]]');
+			try {
+				await apiPosts.downvote({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_1' });
+			} catch (_err) {
+				err = _err;
+			}
+			assert.equal(err.message, '[[error:no-privileges]]');
+			await privileges.categories.give(['groups:posts:upvote', 'groups:posts:downvote'], cid, 'registered-users');
 		});
 
-		it('should upvote a post', (done) => {
-			socketPosts.upvote({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_1' }, (err, result) => {
-				assert.ifError(err);
-				assert.equal(result.post.upvotes, 1);
-				assert.equal(result.post.downvotes, 0);
-				assert.equal(result.post.votes, 1);
-				assert.equal(result.user.reputation, 1);
-				posts.hasVoted(postData.pid, voterUid, (err, data) => {
-					assert.ifError(err);
-					assert.equal(data.upvoted, true);
-					assert.equal(data.downvoted, false);
-					done();
-				});
-			});
+		it('should upvote a post', async () => {
+			const result = await apiPosts.upvote({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_1' });
+			assert.equal(result.post.upvotes, 1);
+			assert.equal(result.post.downvotes, 0);
+			assert.equal(result.post.votes, 1);
+			assert.equal(result.user.reputation, 1);
+			const data = await posts.hasVoted(postData.pid, voterUid);
+			assert.equal(data.upvoted, true);
+			assert.equal(data.downvoted, false);
 		});
 
 		it('should get voters', (done) => {
@@ -215,36 +212,26 @@ describe('Post\'s', () => {
 			});
 		});
 
-		it('should unvote a post', (done) => {
-			socketPosts.unvote({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_1' }, (err, result) => {
-				assert.ifError(err);
-				assert.equal(result.post.upvotes, 0);
-				assert.equal(result.post.downvotes, 0);
-				assert.equal(result.post.votes, 0);
-				assert.equal(result.user.reputation, 0);
-				posts.hasVoted(postData.pid, voterUid, (err, data) => {
-					assert.ifError(err);
-					assert.equal(data.upvoted, false);
-					assert.equal(data.downvoted, false);
-					done();
-				});
-			});
+		it('should unvote a post', async () => {
+			const result = await apiPosts.unvote({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_1' });
+			assert.equal(result.post.upvotes, 0);
+			assert.equal(result.post.downvotes, 0);
+			assert.equal(result.post.votes, 0);
+			assert.equal(result.user.reputation, 0);
+			const data = await posts.hasVoted(postData.pid, voterUid);
+			assert.equal(data.upvoted, false);
+			assert.equal(data.downvoted, false);
 		});
 
-		it('should downvote a post', (done) => {
-			socketPosts.downvote({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_1' }, (err, result) => {
-				assert.ifError(err);
-				assert.equal(result.post.upvotes, 0);
-				assert.equal(result.post.downvotes, 1);
-				assert.equal(result.post.votes, -1);
-				assert.equal(result.user.reputation, -1);
-				posts.hasVoted(postData.pid, voterUid, (err, data) => {
-					assert.ifError(err);
-					assert.equal(data.upvoted, false);
-					assert.equal(data.downvoted, true);
-					done();
-				});
-			});
+		it('should downvote a post', async () => {
+			const result = await apiPosts.downvote({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_1' });
+			assert.equal(result.post.upvotes, 0);
+			assert.equal(result.post.downvotes, 1);
+			assert.equal(result.post.votes, -1);
+			assert.equal(result.user.reputation, -1);
+			const data = await posts.hasVoted(postData.pid, voterUid);
+			assert.equal(data.upvoted, false);
+			assert.equal(data.downvoted, true);
 		});
 
 		it('should prevent downvoting more than total daily limit', async () => {
@@ -257,7 +244,7 @@ describe('Post\'s', () => {
 				content: 'raw content',
 			});
 			try {
-				await socketPosts.downvote({ uid: voterUid }, { pid: p1.pid, room_id: 'topic_1' });
+				await apiPosts.downvote({ uid: voterUid }, { pid: p1.pid, room_id: 'topic_1' });
 			} catch (_err) {
 				err = _err;
 			}
@@ -275,7 +262,7 @@ describe('Post\'s', () => {
 				content: 'raw content',
 			});
 			try {
-				await socketPosts.downvote({ uid: voterUid }, { pid: p1.pid, room_id: 'topic_1' });
+				await apiPosts.downvote({ uid: voterUid }, { pid: p1.pid, room_id: 'topic_1' });
 			} catch (_err) {
 				err = _err;
 			}
