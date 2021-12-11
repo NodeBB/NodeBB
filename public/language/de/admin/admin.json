@@ -4,8 +4,8 @@
 
 	"acp-title": "%1 | NodeBB Admin Systemsteuerung",
 	"settings-header-contents": "Inhalte",
-	"changes-saved": "Changes Saved",
-	"changes-saved-message": "Your changes to the NodeBB configuration have been saved.",
-	"changes-not-saved": "Changes Not Saved",
-	"changes-not-saved-message": "NodeBB encountered a problem saving your changes. (%1)"
+	"changes-saved": "Änderungen gespeichert",
+	"changes-saved-message": "Deine Änderungen an der NodeBB Konfiguration wurden gespeichert.",
+	"changes-not-saved": "Änderungen verworfen",
+	"changes-not-saved-message": "Beim Speichern der Änderungen ist ein Problem aufgetreten. (%1)"
 }
