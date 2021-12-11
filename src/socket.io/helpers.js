@@ -13,14 +13,8 @@ const notifications = require('../notifications');
 const plugins = require('../plugins');
 const utils = require('../utils');
 const batch = require('../batch');
-const apiHelpers = require('../api/helpers');
 
 const SocketHelpers = module.exports;
-
-SocketHelpers.setDefaultPostData = function (data, socket) {
-	websockets.warnDeprecated(socket, 'apiHelpers.setDefaultPostData');
-	apiHelpers.setDefaultPostData(socket, data);
-};
 
 SocketHelpers.notifyNew = async function (uid, type, result) {
 	let uids = await user.getUidsFromSet('users:online', 0, -1);
