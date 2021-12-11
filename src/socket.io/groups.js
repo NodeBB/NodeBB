@@ -5,8 +5,6 @@ const user = require('../user');
 const utils = require('../utils');
 const events = require('../events');
 const privileges = require('../privileges');
-const api = require('../api');
-const sockets = require('.');
 
 const SocketGroups = module.exports;
 
@@ -14,18 +12,6 @@ SocketGroups.before = async (socket, method, data) => {
 	if (!data) {
 		throw new Error('[[error:invalid-data]]');
 	}
-};
-
-SocketGroups.join = async (socket, data) => {
-	sockets.warnDeprecated(socket, 'PUT /api/v3/groups/:slug/membership/:uid');
-	const slug = await groups.getGroupField(data.groupName, 'slug');
-	await api.groups.join(socket, { slug: slug, uid: data.uid || socket.uid });
-};
-
-SocketGroups.leave = async (socket, data) => {
-	sockets.warnDeprecated(socket, 'DELETE /api/v3/groups/:slug/membership/:uid');
-	const slug = await groups.getGroupField(data.groupName, 'slug');
-	await api.groups.leave(socket, { slug: slug, uid: data.uid || socket.uid });
 };
 
 SocketGroups.addMember = async (socket, data) => {
@@ -77,28 +63,6 @@ async function isInvited(socket, data) {
 		throw new Error('[[error:not-invited]]');
 	}
 }
-
-SocketGroups.grant = async (socket, data) => {
-	sockets.warnDeprecated(socket, 'PUT /api/v3/groups/:slug/ownership/:uid');
-
-	await isOwner(socket, data);
-	await groups.ownership.grant(data.toUid, data.groupName);
-	logGroupEvent(socket, 'group-owner-grant', {
-		groupName: data.groupName,
-		targetUid: data.toUid,
-	});
-};
-
-SocketGroups.rescind = async (socket, data) => {
-	sockets.warnDeprecated(socket, 'DELETE /api/v3/groups/:slug/ownership/:uid');
-
-	await isOwner(socket, data);
-	await groups.ownership.rescind(data.toUid, data.groupName);
-	logGroupEvent(socket, 'group-owner-rescind', {
-		groupName: data.groupName,
-		targetUid: data.toUid,
-	});
-};
 
 SocketGroups.accept = async (socket, data) => {
 	await isOwner(socket, data);
@@ -189,15 +153,6 @@ SocketGroups.rejectInvite = async (socket, data) => {
 	});
 };
 
-SocketGroups.update = async (socket, data) => {
-	sockets.warnDeprecated(socket, 'PUT /api/v3/groups/:slug');
-	await isOwner(socket, data);
-
-	const slug = await groups.getGroupField(data.groupName, 'slug');
-	await api.groups.update(socket, { slug, ...data.values });
-};
-
-
 SocketGroups.kick = async (socket, data) => {
 	await isOwner(socket, data);
 	if (socket.uid === parseInt(data.uid, 10)) {
@@ -210,18 +165,6 @@ SocketGroups.kick = async (socket, data) => {
 		groupName: data.groupName,
 		targetUid: data.uid,
 	});
-};
-
-SocketGroups.create = async (socket, data) => {
-	sockets.warnDeprecated(socket, 'POST /api/v3/groups');
-	const groupData = await api.groups.create(socket, data);
-	return groupData;
-};
-
-SocketGroups.delete = async (socket, data) => {
-	sockets.warnDeprecated(socket, 'DEL /api/v3/groups');
-	const slug = await groups.getGroupField(data.groupName, 'slug');
-	await api.groups.delete(socket, { slug: slug });
 };
 
 SocketGroups.search = async (socket, data) => {
