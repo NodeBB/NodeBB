@@ -56,11 +56,13 @@ describe('Topic\'s', () => {
 	});
 
 	describe('.post', () => {
-		it('should fail to create topic with invalid data', (done) => {
-			socketTopics.post({ uid: 0 }, null, (err) => {
+		it('should fail to create topic with invalid data', async () => {
+			try {
+				await apiTopics.create({ uid: 0 }, null);
+				assert(false);
+			} catch (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
+			}
 		});
 
 		it('should create a new topic with proper parameters', (done) => {
@@ -85,12 +87,9 @@ describe('Topic\'s', () => {
 			});
 		});
 
-		it('should load topic', (done) => {
-			socketTopics.getTopic({ uid: adminUid }, topic.tid, (err, data) => {
-				assert.ifError(err);
-				assert.equal(data.tid, topic.tid);
-				done();
-			});
+		it('should load topic', async () => {
+			const data = await apiTopics.get({ uid: adminUid }, { tid: topic.tid });
+			assert.equal(data.tid, topic.tid);
 		});
 
 		it('should fail to create new topic with invalid user id', (done) => {
@@ -2209,14 +2208,16 @@ describe('Topic\'s', () => {
 	});
 
 	describe('topics search', () => {
-		it('should error with invalid data', (done) => {
-			socketTopics.search({ uid: adminUid }, null, (err) => {
+		it('should error with invalid data', async () => {
+			try {
+				await topics.search(null, null);
+				assert(false);
+			} catch (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
+			}
 		});
 
-		it('should return results', (done) => {
+		it('should return results', async () => {
 			const plugins = require('../src/plugins');
 			plugins.hooks.register('myTestPlugin', {
 				hook: 'filter:topic.search',
@@ -2224,11 +2225,8 @@ describe('Topic\'s', () => {
 					callback(null, [1, 2, 3]);
 				},
 			});
-			socketTopics.search({ uid: adminUid }, { tid: topic.tid, term: 'test' }, (err, results) => {
-				assert.ifError(err);
-				assert.deepEqual(results, [1, 2, 3]);
-				done();
-			});
+			const results = await topics.search(topic.tid, 'test');
+			assert.deepEqual(results, [1, 2, 3]);
 		});
 	});
 

@@ -16,11 +16,6 @@ require('./topics/infinitescroll')(SocketTopics);
 require('./topics/tags')(SocketTopics);
 require('./topics/merge')(SocketTopics);
 
-SocketTopics.post = async function (socket, data) {
-	sockets.warnDeprecated(socket, 'POST /api/v3/topics');
-	return await api.topics.create(socket, data);
-};
-
 SocketTopics.postcount = async function (socket, tid) {
 	const canRead = await privileges.topics.can('topics:read', tid, socket.uid);
 	if (!canRead) {
@@ -82,22 +77,9 @@ SocketTopics.isFollowed = async function (socket, tid) {
 	return isFollowing[0];
 };
 
-SocketTopics.search = async function (socket, data) {
-	sockets.warnDeprecated(socket, 'GET /api/search');
-	if (!data) {
-		throw new Error('[[error:invalid-data]]');
-	}
-	return await topics.search(data.tid, data.term);
-};
-
 SocketTopics.isModerator = async function (socket, tid) {
 	const cid = await topics.getTopicField(tid, 'cid');
 	return await user.isModerator(socket.uid, cid);
-};
-
-SocketTopics.getTopic = async function (socket, tid) {
-	sockets.warnDeprecated(socket, 'GET /api/v3/topics/:tid');
-	return await api.topics.get(socket, { tid });
 };
 
 require('../promisify')(SocketTopics);

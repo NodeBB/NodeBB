@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/topic/merge', ['search', 'alerts'], function (search, alerts) {
+define('forum/topic/merge', ['search', 'alerts', 'api'], function (search, alerts, api) {
 	const Merge = {};
 	let modal;
 	let mergeBtn;
@@ -52,10 +52,7 @@ define('forum/topic/merge', ['search', 'alerts'], function (search, alerts) {
 
 	Merge.addTopic = function (tid, callback) {
 		callback = callback || function () {};
-		socket.emit('topics.getTopic', tid, function (err, topicData) {
-			if (err) {
-				return alerts.error(err);
-			}
+		api.get(`/topics/${tid}`, {}).then(function (topicData) {
 			const title = topicData ? topicData.title : 'No title';
 			if (selectedTids[tid]) {
 				delete selectedTids[tid];
@@ -65,7 +62,7 @@ define('forum/topic/merge', ['search', 'alerts'], function (search, alerts) {
 			checkButtonEnable();
 			showTopicsSelected();
 			callback();
-		});
+		}).catch(alerts.error);
 	};
 
 	function onTopicClicked(ev) {

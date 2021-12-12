@@ -688,7 +688,7 @@ describe('Post\'s', () => {
 		it('should fail to move post if not moderator of target category', async () => {
 			const cat1 = await categories.create({ name: 'Test Category', description: 'Test category created by testing script' });
 			const cat2 = await categories.create({ name: 'Test Category', description: 'Test category created by testing script' });
-			const result = await socketTopics.post({ uid: globalModUid }, { title: 'target topic', content: 'queued topic', cid: cat2.cid });
+			const result = await apiTopics.create({ uid: globalModUid }, { title: 'target topic', content: 'queued topic', cid: cat2.cid });
 			const modUid = await user.create({ username: 'modofcat1' });
 			await privileges.categories.give(privileges.categories.userPrivilegeList, cat1.cid, modUid);
 			let err;
@@ -966,15 +966,11 @@ describe('Post\'s', () => {
 			done();
 		});
 
-		it('should add topic to post queue', (done) => {
-			socketTopics.post({ uid: uid }, { title: 'should be queued', content: 'queued topic content', cid: cid }, (err, result) => {
-				assert.ifError(err);
-				assert.strictEqual(result.queued, true);
-				assert.equal(result.message, '[[success:post-queued]]');
-				topicQueueId = result.id;
-
-				done();
-			});
+		it('should add topic to post queue', async () => {
+			const result = await apiTopics.create({ uid: uid }, { title: 'should be queued', content: 'queued topic content', cid: cid });
+			assert.strictEqual(result.queued, true);
+			assert.equal(result.message, '[[success:post-queued]]');
+			topicQueueId = result.id;
 		});
 
 		it('should add reply to post queue', async () => {
@@ -1086,15 +1082,15 @@ describe('Post\'s', () => {
 			const oldValue = meta.config.groupsExemptFromPostQueue;
 			meta.config.groupsExemptFromPostQueue = ['registered-users'];
 			const uid = await user.create({ username: 'mergeexemptuser' });
-			const result = await socketTopics.post({ uid: uid, emit: () => {} }, { title: 'should not be queued', content: 'topic content', cid: cid });
+			const result = await apiTopics.create({ uid: uid, emit: () => {} }, { title: 'should not be queued', content: 'topic content', cid: cid });
 			assert.strictEqual(result.title, 'should not be queued');
 			meta.config.groupsExemptFromPostQueue = oldValue;
 		});
 
 		it('should update queued post\'s topic if target topic is merged', async () => {
 			const uid = await user.create({ username: 'mergetestsuser' });
-			const result1 = await socketTopics.post({ uid: globalModUid }, { title: 'topic A', content: 'topic A content', cid: cid });
-			const result2 = await socketTopics.post({ uid: globalModUid }, { title: 'topic B', content: 'topic B content', cid: cid });
+			const result1 = await apiTopics.create({ uid: globalModUid }, { title: 'topic A', content: 'topic A content', cid: cid });
+			const result2 = await apiTopics.create({ uid: globalModUid }, { title: 'topic B', content: 'topic B content', cid: cid });
 
 			const result = await apiTopics.reply({ uid: uid }, { content: 'the moved queued post', tid: result1.tid });
 
