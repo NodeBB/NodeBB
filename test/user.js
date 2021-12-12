@@ -19,8 +19,8 @@ const Password = require('../src/password');
 const groups = require('../src/groups');
 const helpers = require('./helpers');
 const meta = require('../src/meta');
-const events = require('../src/events');
 const socketUser = require('../src/socket.io/user');
+const apiUser = require('../src/api/users');
 
 describe('User', () => {
 	let userData;
@@ -360,69 +360,73 @@ describe('User', () => {
 			});
 		});
 
-		it('should search user', (done) => {
-			socketUser.search({ uid: testUid }, { query: 'john' }, (err, searchData) => {
-				assert.ifError(err);
-				assert.equal(searchData.users[0].username, 'John Smith');
-				done();
-			});
+		it('should search user', async () => {
+			const searchData = await apiUser.search({ uid: testUid }, { query: 'john' });
+			assert.equal(searchData.users[0].username, 'John Smith');
 		});
 
-		it('should error for guest', (done) => {
-			socketUser.search({ uid: 0 }, { query: 'john' }, (err) => {
+		it('should error for guest', async () => {
+			try {
+				await apiUser.search({ uid: 0 }, { query: 'john' });
+				assert(false);
+			} catch (err) {
 				assert.equal(err.message, '[[error:no-privileges]]');
-				done();
-			});
+			}
 		});
 
-		it('should error with invalid data', (done) => {
-			socketUser.search({ uid: testUid }, null, (err) => {
+		it('should error with invalid data', async () => {
+			try {
+				await apiUser.search({ uid: testUid }, null);
+				assert(false);
+			} catch (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
+			}
 		});
 
-		it('should error for unprivileged user', (done) => {
-			socketUser.search({ uid: testUid }, { searchBy: 'ip', query: '123' }, (err) => {
+		it('should error for unprivileged user', async () => {
+			try {
+				await apiUser.search({ uid: testUid }, { searchBy: 'ip', query: '123' });
+				assert(false);
+			} catch (err) {
 				assert.equal(err.message, '[[error:no-privileges]]');
-				done();
-			});
+			}
 		});
 
-		it('should error for unprivileged user', (done) => {
-			socketUser.search({ uid: testUid }, { filters: ['banned'], query: '123' }, (err) => {
+		it('should error for unprivileged user', async () => {
+			try {
+				await apiUser.search({ uid: testUid }, { filters: ['banned'], query: '123' });
+				assert(false);
+			} catch (err) {
 				assert.equal(err.message, '[[error:no-privileges]]');
-				done();
-			});
+			}
 		});
 
-		it('should error for unprivileged user', (done) => {
-			socketUser.search({ uid: testUid }, { filters: ['flagged'], query: '123' }, (err) => {
+		it('should error for unprivileged user', async () => {
+			try {
+				await apiUser.search({ uid: testUid }, { filters: ['flagged'], query: '123' });
+				assert(false);
+			} catch (err) {
 				assert.equal(err.message, '[[error:no-privileges]]');
-				done();
-			});
+			}
 		});
 
 		it('should search users by ip', async () => {
 			const uid = await User.create({ username: 'ipsearch' });
 			await db.sortedSetAdd('ip:1.1.1.1:uid', [1, 1], [testUid, uid]);
-			const data = await socketUser.search({ uid: adminUid }, { query: '1.1.1.1', searchBy: 'ip' });
+			const data = await apiUser.search({ uid: adminUid }, { query: '1.1.1.1', searchBy: 'ip' });
 			assert(Array.isArray(data.users));
 			assert.equal(data.users.length, 2);
 		});
 
-		it('should search users by uid', (done) => {
-			socketUser.search({ uid: testUid }, { query: uid, searchBy: 'uid' }, (err, data) => {
-				assert.ifError(err);
-				assert(Array.isArray(data.users));
-				assert.equal(data.users[0].uid, uid);
-				done();
-			});
+		it('should search users by uid', async () => {
+			const data = await apiUser.search({ uid: testUid }, { query: uid, searchBy: 'uid' });
+			assert(Array.isArray(data.users));
+			assert.equal(data.users[0].uid, uid);
 		});
 
 		it('should search users by fullname', async () => {
 			const uid = await User.create({ username: 'fullnamesearch1', fullname: 'Mr. Fullname' });
-			const data = await socketUser.search({ uid: adminUid }, { query: 'mr', searchBy: 'fullname' });
+			const data = await apiUser.search({ uid: adminUid }, { query: 'mr', searchBy: 'fullname' });
 			assert(Array.isArray(data.users));
 			assert.equal(data.users.length, 1);
 			assert.equal(uid, data.users[0].uid);
@@ -430,38 +434,26 @@ describe('User', () => {
 
 		it('should search users by fullname', async () => {
 			const uid = await User.create({ username: 'fullnamesearch2', fullname: 'Baris:Usakli' });
-			const data = await socketUser.search({ uid: adminUid }, { query: 'baris:', searchBy: 'fullname' });
+			const data = await apiUser.search({ uid: adminUid }, { query: 'baris:', searchBy: 'fullname' });
 			assert(Array.isArray(data.users));
 			assert.equal(data.users.length, 1);
 			assert.equal(uid, data.users[0].uid);
 		});
 
-		it('should return empty array if query is empty', (done) => {
-			socketUser.search({ uid: testUid }, { query: '' }, (err, data) => {
-				assert.ifError(err);
-				assert.equal(data.users.length, 0);
-				done();
-			});
+		it('should return empty array if query is empty', async () => {
+			const data = await apiUser.search({ uid: testUid }, { query: '' });
+			assert.equal(data.users.length, 0);
 		});
 
-		it('should filter users', (done) => {
-			User.create({ username: 'ipsearch_filter' }, (err, uid) => {
-				assert.ifError(err);
-				User.bans.ban(uid, 0, '', (err) => {
-					assert.ifError(err);
-					User.setUserFields(uid, { flags: 10 }, (err) => {
-						assert.ifError(err);
-						socketUser.search({ uid: adminUid }, {
-							query: 'ipsearch',
-							filters: ['online', 'banned', 'flagged'],
-						}, (err, data) => {
-							assert.ifError(err);
-							assert.equal(data.users[0].username, 'ipsearch_filter');
-							done();
-						});
-					});
-				});
+		it('should filter users', async () => {
+			const uid = await User.create({ username: 'ipsearch_filter' });
+			await User.bans.ban(uid, 0, '');
+			await User.setUserFields(uid, { flags: 10 });
+			const data = await apiUser.search({ uid: adminUid }, {
+				query: 'ipsearch',
+				filters: ['online', 'banned', 'flagged'],
 			});
+			assert.equal(data.users[0].username, 'ipsearch_filter');
 		});
 
 		it('should sort results by username', (done) => {

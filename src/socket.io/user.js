@@ -22,7 +22,6 @@ const sockets = require('.');
 const SocketUser = module.exports;
 
 require('./user/profile')(SocketUser);
-require('./user/search')(SocketUser);
 require('./user/status')(SocketUser);
 require('./user/picture')(SocketUser);
 require('./user/ban')(SocketUser);
