@@ -24,7 +24,6 @@ const SocketUser = module.exports;
 require('./user/profile')(SocketUser);
 require('./user/status')(SocketUser);
 require('./user/picture')(SocketUser);
-require('./user/ban')(SocketUser);
 require('./user/registration')(SocketUser);
 
 SocketUser.exists = async function (socket, data) {

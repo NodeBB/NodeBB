@@ -121,20 +121,15 @@ describe('socket.io', () => {
 		});
 	});
 
-	it('should ban a user', (done) => {
-		const socketUser = require('../src/socket.io/user');
-		socketUser.banUsers({ uid: adminUid }, { uids: [regularUid], reason: 'spammer' }, (err) => {
-			assert.ifError(err);
-			user.getLatestBanInfo(regularUid, (err, data) => {
-				assert.ifError(err);
-				assert(data.uid);
-				assert(data.timestamp);
-				assert(data.hasOwnProperty('banned_until'));
-				assert(data.hasOwnProperty('banned_until_readable'));
-				assert.equal(data.reason, 'spammer');
-				done();
-			});
-		});
+	it('should ban a user', async () => {
+		const apiUser = require('../src/api/users');
+		await apiUser.ban({ uid: adminUid }, { uid: regularUid, reason: 'spammer' });
+		const data = await user.getLatestBanInfo(regularUid);
+		assert(data.uid);
+		assert(data.timestamp);
+		assert(data.hasOwnProperty('banned_until'));
+		assert(data.hasOwnProperty('banned_until_readable'));
+		assert.equal(data.reason, 'spammer');
 	});
 
 	it('should return ban reason', (done) => {
@@ -145,16 +140,11 @@ describe('socket.io', () => {
 		});
 	});
 
-	it('should unban a user', (done) => {
-		const socketUser = require('../src/socket.io/user');
-		socketUser.unbanUsers({ uid: adminUid }, [regularUid], (err) => {
-			assert.ifError(err);
-			user.bans.isBanned(regularUid, (err, isBanned) => {
-				assert.ifError(err);
-				assert(!isBanned);
-				done();
-			});
-		});
+	it('should unban a user', async () => {
+		const apiUser = require('../src/api/users');
+		await apiUser.unban({ uid: adminUid }, { uid: regularUid });
+		const isBanned = await user.bans.isBanned(regularUid);
+		assert(!isBanned);
 	});
 
 	it('should make user admin', (done) => {
