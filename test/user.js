@@ -1057,15 +1057,10 @@ describe('User', () => {
 			});
 		});
 
-		it('should change user picture', (done) => {
-			socketUser.changePicture({ uid: uid }, { type: 'default', uid: uid }, (err) => {
-				assert.ifError(err);
-				User.getUserField(uid, 'picture', (err, picture) => {
-					assert.ifError(err);
-					assert.equal(picture, '');
-					done();
-				});
-			});
+		it('should change user picture', async () => {
+			await apiUser.changePicture({ uid: uid }, { type: 'default', uid: uid });
+			const picture = await User.getUserField(uid, 'picture');
+			assert.equal(picture, '');
 		});
 
 		it('should let you set an external image', async () => {
@@ -1090,32 +1085,29 @@ describe('User', () => {
 			assert.strictEqual(picture, validator.escape('https://example.org/picture.jpg'));
 		});
 
-		it('should fail to change user picture with invalid data', (done) => {
-			socketUser.changePicture({ uid: uid }, null, (err) => {
+		it('should fail to change user picture with invalid data', async () => {
+			try {
+				await apiUser.changePicture({ uid: uid }, null);
+				assert(false);
+			} catch (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
+			}
 		});
 
-		it('should fail to change user picture with invalid uid', (done) => {
-			socketUser.changePicture({ uid: 0 }, null, (err) => {
-				assert.equal(err.message, '[[error:invalid-uid]]');
-				done();
-			});
+		it('should fail to change user picture with invalid uid', async () => {
+			try {
+				await apiUser.changePicture({ uid: 0 }, { uid: 1 });
+				assert(false);
+			} catch (err) {
+				assert.equal(err.message, '[[error:no-privileges]]');
+			}
 		});
 
-		it('should set user picture to uploaded', (done) => {
-			User.setUserField(uid, 'uploadedpicture', '/test', (err) => {
-				assert.ifError(err);
-				socketUser.changePicture({ uid: uid }, { type: 'uploaded', uid: uid }, (err) => {
-					assert.ifError(err);
-					User.getUserField(uid, 'picture', (err, picture) => {
-						assert.ifError(err);
-						assert.equal(picture, `${nconf.get('relative_path')}/test`);
-						done();
-					});
-				});
-			});
+		it('should set user picture to uploaded', async () => {
+			await User.setUserField(uid, 'uploadedpicture', '/test');
+			await apiUser.changePicture({ uid: uid }, { type: 'uploaded', uid: uid });
+			const picture = await User.getUserField(uid, 'picture');
+			assert.equal(picture, `${nconf.get('relative_path')}/test`);
 		});
 
 		it('should return error if profile image uploads disabled', (done) => {
