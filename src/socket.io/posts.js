@@ -8,51 +8,12 @@ const meta = require('../meta');
 const topics = require('../topics');
 const user = require('../user');
 const notifications = require('../notifications');
-const socketHelpers = require('./helpers');
 const utils = require('../utils');
-const api = require('../api');
-const apiHelpers = require('../api/helpers');
-
-const sockets = require('.');
 
 const SocketPosts = module.exports;
 
 require('./posts/votes')(SocketPosts);
 require('./posts/tools')(SocketPosts);
-
-SocketPosts.reply = async function (socket, data) {
-	sockets.warnDeprecated(socket, 'POST /api/v3/topics/:tid');
-
-	if (!data || !data.tid || (meta.config.minimumPostLength !== 0 && !data.content)) {
-		throw new Error('[[error:invalid-data]]');
-	}
-
-	apiHelpers.setDefaultPostData(socket, data);
-	await meta.blacklist.test(data.req.ip);
-	const shouldQueue = await posts.shouldQueue(socket.uid, data);
-	if (shouldQueue) {
-		return await posts.addToQueue(data);
-	}
-	return await postReply(socket, data);
-};
-
-async function postReply(socket, data) {
-	const postData = await topics.reply(data);
-	const result = {
-		posts: [postData],
-		'reputation:disabled': meta.config['reputation:disabled'] === 1,
-		'downvote:disabled': meta.config['downvote:disabled'] === 1,
-	};
-
-	if (socket.emit) {
-		socket.emit('event:new_post', result);
-	}
-	user.updateOnlineUsers(socket.uid);
-
-	socketHelpers.notifyNew(socket.uid, 'newPost', result);
-
-	return postData;
-}
 
 SocketPosts.getRawPost = async function (socket, pid) {
 	const canRead = await privileges.posts.can('topics:read', pid, socket.uid);
@@ -108,11 +69,6 @@ SocketPosts.getPostSummaryByPid = async function (socket, data) {
 	const postsData = await posts.getPostSummaryByPids([pid], socket.uid, { stripTags: false });
 	posts.modifyPostByPrivilege(postsData[0], topicPrivileges);
 	return postsData[0];
-};
-
-SocketPosts.getPost = async function (socket, pid) {
-	sockets.warnDeprecated(socket, 'GET /api/v3/posts/:pid');
-	return await api.posts.get(socket, { pid });
 };
 
 SocketPosts.getCategory = async function (socket, pid) {

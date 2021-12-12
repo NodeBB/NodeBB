@@ -60,6 +60,9 @@ topicsAPI.create = async function (caller, data) {
 };
 
 topicsAPI.reply = async function (caller, data) {
+	if (!data || !data.tid || (meta.config.minimumPostLength !== 0 && !data.content)) {
+		throw new Error('[[error:invalid-data]]');
+	}
 	const payload = { ...data };
 	apiHelpers.setDefaultPostData(caller, payload);
 

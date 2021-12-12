@@ -22,6 +22,7 @@ const groups = require('../src/groups');
 const socketPosts = require('../src/socket.io/posts');
 const socketTopics = require('../src/socket.io/topics');
 const apiPosts = require('../src/api/posts');
+const apiTopics = require('../src/api/topics');
 const meta = require('../src/meta');
 const helpers = require('./helpers');
 
@@ -813,18 +814,22 @@ describe('Post\'s', () => {
 			});
 		});
 
-		it('should error with invalid data', (done) => {
-			socketPosts.reply({ uid: 0 }, null, (err) => {
+		it('should error with invalid data', async () => {
+			try {
+				await apiTopics.reply({ uid: 0 }, null);
+				assert(false);
+			} catch (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
+			}
 		});
 
-		it('should error with invalid tid', (done) => {
-			socketPosts.reply({ uid: 0 }, { tid: 0, content: 'derp' }, (err) => {
+		it('should error with invalid tid', async () => {
+			try {
+				await apiTopics.reply({ uid: 0 }, { tid: 0, content: 'derp' });
+				assert(false);
+			} catch (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
+			}
 		});
 
 		it('should fail to get raw post because of privilege', (done) => {
@@ -855,12 +860,9 @@ describe('Post\'s', () => {
 			});
 		});
 
-		it('should get post', (done) => {
-			socketPosts.getPost({ uid: voterUid }, pid, (err, postData) => {
-				assert.ifError(err);
-				assert(postData);
-				done();
-			});
+		it('should get post', async () => {
+			const postData = await apiPosts.get({ uid: voterUid }, { pid });
+			assert(postData);
 		});
 
 		it('should get post category', (done) => {
@@ -975,14 +977,11 @@ describe('Post\'s', () => {
 			});
 		});
 
-		it('should add reply to post queue', (done) => {
-			socketPosts.reply({ uid: uid }, { content: 'this is a queued reply', tid: topicData.tid }, (err, result) => {
-				assert.ifError(err);
-				assert.strictEqual(result.queued, true);
-				assert.equal(result.message, '[[success:post-queued]]');
-				queueId = result.id;
-				done();
-			});
+		it('should add reply to post queue', async () => {
+			const result = await apiTopics.reply({ uid: uid }, { content: 'this is a queued reply', tid: topicData.tid });
+			assert.strictEqual(result.queued, true);
+			assert.equal(result.message, '[[success:post-queued]]');
+			queueId = result.id;
 		});
 
 		it('should load queued posts', (done) => {
@@ -1097,7 +1096,7 @@ describe('Post\'s', () => {
 			const result1 = await socketTopics.post({ uid: globalModUid }, { title: 'topic A', content: 'topic A content', cid: cid });
 			const result2 = await socketTopics.post({ uid: globalModUid }, { title: 'topic B', content: 'topic B content', cid: cid });
 
-			const result = await socketPosts.reply({ uid: uid }, { content: 'the moved queued post', tid: result1.tid });
+			const result = await apiTopics.reply({ uid: uid }, { content: 'the moved queued post', tid: result1.tid });
 
 			await topics.merge([
 				result1.tid, result2.tid,

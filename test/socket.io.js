@@ -121,16 +121,6 @@ describe('socket.io', () => {
 		});
 	});
 
-	it('should reply to topic', (done) => {
-		io.emit('posts.reply', { tid: tid, uid: adminUid, content: 'test post content' }, (err, result) => {
-			assert.ifError(err);
-			assert.equal(result.uid, adminUid);
-			assert.equal(result.user.username, 'admin');
-			assert.equal(result.topic.tid, tid);
-			done();
-		});
-	});
-
 	it('should ban a user', (done) => {
 		const socketUser = require('../src/socket.io/user');
 		socketUser.banUsers({ uid: adminUid }, { uids: [regularUid], reason: 'spammer' }, (err) => {
