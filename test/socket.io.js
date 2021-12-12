@@ -105,22 +105,6 @@ describe('socket.io', () => {
 		});
 	});
 
-	it('should post a topic', (done) => {
-		io.emit('topics.post', {
-			title: 'test topic title',
-			content: 'test topic main post content',
-			uid: adminUid,
-			cid: cid,
-		}, (err, result) => {
-			assert.ifError(err);
-			assert.equal(result.user.username, 'admin');
-			assert.equal(result.category.cid, cid);
-			assert.equal(result.mainPost.content, 'test topic main post content');
-			tid = result.tid;
-			done();
-		});
-	});
-
 	it('should ban a user', async () => {
 		const apiUser = require('../src/api/users');
 		await apiUser.ban({ uid: adminUid }, { uid: regularUid, reason: 'spammer' });
