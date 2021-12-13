@@ -136,6 +136,10 @@ paths:
     $ref: 'write/posts/pid/diffs/since.yaml'
   /posts/{pid}/diffs/{timestamp}:
     $ref: 'write/posts/pid/diffs/timestamp.yaml'
+  /chats/:
+    $ref: 'write/chats.yaml'
+  /chats/{roomId}:
+    $ref: 'write/chats/roomId.yaml'
   /flags/:
     $ref: 'write/flags.yaml'
   /flags/{flagId}:

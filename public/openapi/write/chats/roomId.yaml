@@ -1,0 +1,17 @@
+head:
+  tags:
+    - chats
+  summary: check if a chat room exists
+  parameters:
+    - in: path
+      name: roomId
+      schema:
+        type: number
+      required: true
+      description: room ID to check
+      example: 1
+  responses:
+    '200':
+      description: chat room found
+    '404':
+      description: chat room not found
