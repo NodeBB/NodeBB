@@ -84,7 +84,7 @@
 
 					<div class="checkbox">
 						<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-							<input class="mdl-switch__input" type="checkbox" name="property:targetBlank" <!-- IF enabled.properties.targetBlank -->checked<!-- ENDIF enabled.properties.targetBlank -->/>
+							<input class="mdl-switch__input" type="checkbox" name="targetBlank" <!-- IF enabled.targetBlank -->checked<!-- ENDIF enabled.targetBlank -->/>
 							<span class="mdl-switch__label"><strong>[[admin/settings/navigation:open-new-window]]</strong></span>
 						</label>
 					</div>

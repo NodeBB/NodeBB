@@ -99,12 +99,9 @@ define('admin/settings/navigation', [
 			const el = $('#enabled').children('[data-index="' + index + '"]');
 			const form = el.find('form').serializeArray();
 			const data = {};
-			const properties = {};
 
 			form.forEach(function (input) {
-				if (input.name.slice(0, 9) === 'property:' && input.value === 'on') {
-					properties[input.name.slice(9)] = true;
-				} else if (data[input.name]) {
+				if (data[input.name]) {
 					if (!Array.isArray(data[input.name])) {
 						data[input.name] = [
 							data[input.name],
@@ -115,14 +112,6 @@ define('admin/settings/navigation', [
 					data[input.name] = input.value;
 				}
 			});
-
-			data.properties = {};
-
-			for (const prop in properties) {
-				if (properties.hasOwnProperty(prop)) {
-					data.properties[prop] = properties[prop];
-				}
-			}
 
 			nav.push(data);
 		});

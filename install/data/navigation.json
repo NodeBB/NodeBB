@@ -64,9 +64,6 @@
 		"iconClass": "fa-cogs",
 		"textClass": "visible-xs-inline",
 		"text": "[[global:header.admin]]",
-		"groups": ["administrators"],
-		"properties": {
-			"targetBlank": false
-		}
+		"groups": ["administrators"]
 	}
 ]
