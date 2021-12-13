@@ -1,14 +1,20 @@
-/* eslint-disable */
 'use strict';
 
 const api = require('../../api');
+const messaging = require('../../messaging');
 
 const helpers = require('../helpers');
 
 const Chats = module.exports;
 
 Chats.list = async (req, res) => {
-	// ...
+	const page = (isFinite(req.query.page) && parseInt(req.query.page, 10)) || 1;
+	const perPage = (isFinite(req.query.perPage) && parseInt(req.query.perPage, 10)) || 20;
+	const start = Math.max(0, page - 1) * perPage;
+	const stop = start + perPage;
+	const { rooms } = await messaging.getRecentChats(req.uid, req.uid, start, stop);
+
+	helpers.formatApiResponse(200, res, { rooms });
 };
 
 Chats.create = async (req, res) => {
@@ -39,7 +45,7 @@ Chats.kick = async (req, res) => {
 	// ...
 };
 
-Chats.message = {};
+Chats.messages = {};
 Chats.messages.edit = async (req, res) => {
 	// ...
 };
