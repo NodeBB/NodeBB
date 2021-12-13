@@ -9,6 +9,8 @@ const nconf = require('nconf');
 const request = require('request');
 const util = require('util');
 
+const sleep = util.promisify(setTimeout);
+
 const db = require('./mocks/databasemock');
 const file = require('../src/file');
 const topics = require('../src/topics');
@@ -1498,35 +1500,15 @@ describe('Topic\'s', () => {
 			});
 		});
 
-		it('should mark topic notifications read', (done) => {
-			async.waterfall([
-				function (next) {
-					socketTopics.follow({ uid: adminUid }, tid, next);
-				},
-				function (next) {
-					topics.reply({ uid: uid, timestamp: Date.now(), content: 'some content', tid: tid }, next);
-				},
-				function (data, next) {
-					setTimeout(next, 2500);
-				},
-				function (next) {
-					User.notifications.getUnreadCount(adminUid, next);
-				},
-				function (count, next) {
-					assert.equal(count, 1);
-					socketTopics.markTopicNotificationsRead({ uid: adminUid }, [tid], next);
-				},
-				function (next) {
-					User.notifications.getUnreadCount(adminUid, next);
-				},
-				function (count, next) {
-					assert.equal(count, 0);
-					next();
-				},
-			], (err) => {
-				assert.ifError(err);
-				done();
-			});
+		it('should mark topic notifications read', async () => {
+			await apiTopics.follow({ uid: adminUid }, { tid: tid });
+			const data = await topics.reply({ uid: uid, timestamp: Date.now(), content: 'some content', tid: tid });
+			await sleep(2500);
+			let count = await User.notifications.getUnreadCount(adminUid);
+			assert.strictEqual(count, 1);
+			await socketTopics.markTopicNotificationsRead({ uid: adminUid }, [tid]);
+			count = await User.notifications.getUnreadCount(adminUid);
+			assert.strictEqual(count, 0);
 		});
 
 		it('should fail with invalid data', (done) => {
@@ -2161,37 +2143,29 @@ describe('Topic\'s', () => {
 			});
 		});
 
-		it('should error if not logged in', (done) => {
-			socketTopics.changeWatching({ uid: 0 }, { tid: tid, type: 'ignore' }, (err) => {
+		it('should error if not logged in', async () => {
+			try {
+				await apiTopics.ignore({ uid: 0 }, { tid: tid });
+				assert(false);
+			} catch (err) {
 				assert.equal(err.message, '[[error:not-logged-in]]');
-				done();
-			});
+			}
 		});
 
-		it('should filter ignoring uids', (done) => {
-			socketTopics.changeWatching({ uid: followerUid }, { tid: tid, type: 'ignore' }, (err) => {
-				assert.ifError(err);
-				topics.filterIgnoringUids(tid, [adminUid, followerUid], (err, uids) => {
-					assert.ifError(err);
-					assert.equal(uids.length, 1);
-					assert.equal(uids[0], adminUid);
-					done();
-				});
-			});
+		it('should filter ignoring uids', async () => {
+			await apiTopics.ignore({ uid: followerUid }, { tid: tid });
+			const uids = await topics.filterIgnoringUids(tid, [adminUid, followerUid]);
+			assert.equal(uids.length, 1);
+			assert.equal(uids[0], adminUid);
 		});
 
-		it('should error with invalid data', (done) => {
-			socketTopics.changeWatching({ uid: followerUid }, {}, (err) => {
-				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
-		});
-
-		it('should error with invalid type', (done) => {
-			socketTopics.changeWatching({ uid: followerUid }, { tid: tid, type: 'derp' }, (err) => {
-				assert.equal(err.message, '[[error:invalid-command]]');
-				done();
-			});
+		it('should error with topic that does not exist', async () => {
+			try {
+				await apiTopics.follow({ uid: followerUid }, { tid: -1 });
+				assert(false);
+			} catch (err) {
+				assert.equal(err.message, '[[error:no-topic]]');
+			}
 		});
 
 		it('should follow topic', (done) => {

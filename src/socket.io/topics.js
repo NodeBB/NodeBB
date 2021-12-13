@@ -1,11 +1,9 @@
 'use strict';
 
-const api = require('../api');
 const topics = require('../topics');
 const user = require('../user');
 const meta = require('../meta');
 const privileges = require('../privileges');
-const sockets = require('.');
 
 const SocketTopics = module.exports;
 
@@ -45,32 +43,6 @@ SocketTopics.createTopicFromPosts = async function (socket, data) {
 
 	return await topics.createTopicFromPosts(socket.uid, data.title, data.pids, data.fromTid);
 };
-
-SocketTopics.changeWatching = async function (socket, data) {
-	if (!data || !data.tid || !data.type) {
-		throw new Error('[[error:invalid-data]]');
-	}
-	const commands = ['follow', 'unfollow', 'ignore'];
-	if (!commands.includes(data.type)) {
-		throw new Error('[[error:invalid-command]]');
-	}
-
-	sockets.warnDeprecated(socket, 'PUT/DELETE /api/v3/topics/:tid/(follow|ignore)');
-	await followCommand(data.type, socket, data.tid);
-};
-
-SocketTopics.follow = async function (socket, tid) {
-	sockets.warnDeprecated(socket, 'PUT /api/v3/topics/:tid/follow');
-	await followCommand('follow', socket, tid);
-};
-
-async function followCommand(method, socket, tid) {
-	if (!socket.uid) {
-		throw new Error('[[error:not-logged-in]]');
-	}
-
-	await api.topics[method](socket, { tid });
-}
 
 SocketTopics.isFollowed = async function (socket, tid) {
 	const isFollowing = await topics.isFollowing([tid], socket.uid);
