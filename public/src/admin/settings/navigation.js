@@ -42,7 +42,7 @@ define('admin/settings/navigation', [
 			const el = $(this);
 			const index = el.parents('[data-index]').attr('data-index');
 			$('#active-navigation [data-index="' + index + '"] i.dropdown-icon').toggleClass('hidden', !el.is(':checked'));
-		})
+		});
 
 		$('#active-navigation').on('click', 'li', onSelect);
 
