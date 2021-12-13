@@ -3,9 +3,9 @@
 		<div class="clearfix">
 			<ul id="active-navigation" class="nav navbar-nav">
 				<!-- BEGIN navigation -->
-				<li data-index="{navigation.index}" class="{navigation.class} <!-- IF navigation.selected --> active <!-- ENDIF navigation.selected -->">
+				<li data-index="{navigation.index}" class="{navigation.class} {{{ if navigation.selected }}} active {{{ end }}}">
 					<a href="#" title="{navigation.route}" id="{navigation.id}">
-						<i class="fa fa-fw <!-- IF navigation.iconClass -->{navigation.iconClass}<!-- ENDIF navigation.iconClass -->"></i>
+						<i class="nav-icon fa fa-fw {{{ if navigation.iconClass }}}{navigation.iconClass}{{{ end }}}"></i><i class="dropdown-icon fa fa-caret-down{{{ if !navigation.dropdown }}} hidden{{{ end }}}"></i>
 					</a>
 				</li>
 				<!-- END navigation -->

@@ -26,6 +26,7 @@ admin.save = async function (data) {
 
 	cache = null;
 	pubsub.publish('admin:navigation:save');
+	await db.deleteAll(data.map(item => `navigation:enabled:${item.order}`));
 	await db.setObjectBulk(bulkSet);
 	await db.delete('navigation:enabled');
 	await db.sortedSetAdd('navigation:enabled', order, order);

@@ -32,11 +32,17 @@ define('admin/settings/navigation', [
 			iconSelect.init(iconEl, function (el) {
 				const newIconClass = el.attr('value');
 				const index = iconEl.parents('[data-index]').attr('data-index');
-				$('#active-navigation [data-index="' + index + '"] i').attr('class', 'fa fa-fw ' + newIconClass);
+				$('#active-navigation [data-index="' + index + '"] i.nav-icon').attr('class', 'fa fa-fw ' + newIconClass);
 				iconEl.siblings('[name="iconClass"]').val(newIconClass);
 				iconEl.siblings('.change-icon-link').toggleClass('hidden', !!newIconClass);
 			});
 		});
+
+		$('#enabled').on('click', '[name="dropdown"]', function () {
+			const el = $(this);
+			const index = el.parents('[data-index]').attr('data-index');
+			$('#active-navigation [data-index="' + index + '"] i.dropdown-icon').toggleClass('hidden', !el.is(':checked'));
+		})
 
 		$('#active-navigation').on('click', 'li', onSelect);
 
