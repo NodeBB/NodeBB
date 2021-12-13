@@ -12,6 +12,9 @@ const server = require('./index');
 const user = require('../user');
 const privileges = require('../privileges');
 
+const sockets = require('.');
+const api = require('../api');
+
 const SocketModules = module.exports;
 
 SocketModules.chats = {};
@@ -43,20 +46,16 @@ SocketModules.chats.isDnD = async function (socket, uid) {
 };
 
 SocketModules.chats.newRoom = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'POST /api/v3/chats');
+
 	if (!data) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	if (rateLimitExceeded(socket)) {
-		throw new Error('[[error:too-many-messages]]');
-	}
-
-	const canChat = await privileges.global.can('chat', socket.uid);
-	if (!canChat) {
-		throw new Error('[[error:no-privileges]]');
-	}
-	await Messaging.canMessageUser(socket.uid, data.touid);
-	return await Messaging.newRoom(socket.uid, [data.touid]);
+	const roomObj = await api.chats.create(socket, {
+		uids: [data.touid],
+	});
+	return roomObj.roomId;
 };
 
 SocketModules.chats.send = async function (socket, data) {

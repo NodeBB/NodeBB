@@ -19,7 +19,7 @@ info:
     # Authentication
 
     Please see the ["Authentication" section under the Read API](../read/#section/Overview/Authentication) for more information on how to authenticate against this API in order to make calls.
-  version: 1.15.0
+  version: 1.19.0
   contact:
     email: support@nodebb.org
   license:
@@ -39,6 +39,8 @@ tags:
     description: Topic-based calls (create, modify, delete, etc.)
   - name: posts
     description: Individual post-related calls (create, modify, delete, etc.)
+  - name: chats
+    description: Calls related to the user private messaging system
   - name: admin
     description: Administrative calls
   - name: files

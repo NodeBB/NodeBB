@@ -1,0 +1,29 @@
+post:
+  tags:
+    - chats
+  summary: create a chat room
+  description: This operation creates a new chat room and adds users to the room, if provided.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            uids:
+              type: array
+              example: [2, 3]
+          required:
+            - uids
+  responses:
+    '200':
+      description: chat room successfully created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../components/schemas/Chats.yaml#/RoomObject

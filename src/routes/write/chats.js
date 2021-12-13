@@ -11,7 +11,7 @@ module.exports = function () {
 	const middlewares = [middleware.ensureLoggedIn, middleware.canChat];
 
 	setupApiRoute(router, 'get', '/', [...middlewares], controllers.write.chats.list);
-	// setupApiRoute(router, 'post', '/', [...middlewares, middleware.checkRequired.bind(null, ['uids'])], controllers.write.chats.create);
+	setupApiRoute(router, 'post', '/', [...middlewares, middleware.checkRequired.bind(null, ['uids'])], controllers.write.chats.create);
 
 	setupApiRoute(router, 'head', '/:roomId', [...middlewares, middleware.assert.room], controllers.write.chats.exists);
 	// setupApiRoute(router, 'get', '/:roomId', [...middlewares, middleware.assert.room], controllers.write.chats.get);

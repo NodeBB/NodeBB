@@ -18,7 +18,8 @@ Chats.list = async (req, res) => {
 };
 
 Chats.create = async (req, res) => {
-	// ...
+	const roomObj = await api.chats.create(req, req.body);
+	helpers.formatApiResponse(200, res, roomObj);
 };
 
 Chats.exists = async (req, res) => {

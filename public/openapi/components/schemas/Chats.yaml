@@ -1,0 +1,14 @@
+RoomObject:
+  type: object
+  properties:
+    owner:
+      type: number
+      description: the uid of the chat room owner (usually the user who created the room initially)
+    roomId:
+      type: string
+      description: unique identifier for the chat room
+    roomName:
+      type: string
+    groupChat:
+      type: boolean
+      description: whether the chat room is a group chat or not
