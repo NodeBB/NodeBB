@@ -27,7 +27,12 @@ Chats.exists = async (req, res) => {
 };
 
 Chats.get = async (req, res) => {
-	// ...
+	const roomObj = await messaging.loadRoom(req.uid, {
+		uid: req.query.uid || req.uid,
+		roomId: req.params.roomId,
+	});
+
+	helpers.formatApiResponse(200, res, roomObj);
 };
 
 Chats.post = async (req, res) => {

@@ -100,6 +100,8 @@ function rateLimitExceeded(socket) {
 }
 
 SocketModules.chats.loadRoom = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'GET /api/v3/chats/:roomId');
+
 	if (!data || !data.roomId) {
 		throw new Error('[[error:invalid-data]]');
 	}
