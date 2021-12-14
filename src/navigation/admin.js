@@ -1,6 +1,7 @@
 'use strict';
 
 const validator = require('validator');
+const winston = require('winston');
 
 const plugins = require('../plugins');
 const db = require('../database');
@@ -66,7 +67,12 @@ admin.get = async function () {
 	const data = await db.getObjects(ids.map(id => `navigation:enabled:${id}`));
 	cache = data.map((item) => {
 		if (item.hasOwnProperty('groups')) {
-			item.groups = JSON.parse(item.groups);
+			try {
+				item.groups = JSON.parse(item.groups);
+			} catch (err) {
+				winston.error(err.stack);
+				item.groups = [];
+			}
 		}
 		item.groups = item.groups || [];
 		if (item.groups && !Array.isArray(item.groups)) {
