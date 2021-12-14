@@ -1649,20 +1649,13 @@ describe('Controllers', () => {
 
 	describe('account follow page', () => {
 		const socketUser = require('../src/socket.io/user');
+		const apiUser = require('../src/api/users');
 		let uid;
-		before((done) => {
-			user.create({ username: 'follower' }, (err, _uid) => {
-				assert.ifError(err);
-				uid = _uid;
-				socketUser.follow({ uid: uid }, { uid: fooUid }, (err) => {
-					assert.ifError(err);
-					socketUser.isFollowing({ uid: uid }, { uid: fooUid }, (err, isFollowing) => {
-						assert.ifError(err);
-						assert(isFollowing);
-						done();
-					});
-				});
-			});
+		before(async () => {
+			uid = await user.create({ username: 'follower' });
+			await apiUser.follow({ uid: uid }, { uid: fooUid });
+			const isFollowing = await socketUser.isFollowing({ uid: uid }, { uid: fooUid });
+			assert(isFollowing);
 		});
 
 		it('should get followers page', (done) => {
@@ -1683,16 +1676,11 @@ describe('Controllers', () => {
 			});
 		});
 
-		it('should return empty after unfollow', (done) => {
-			socketUser.unfollow({ uid: uid }, { uid: fooUid }, (err) => {
-				assert.ifError(err);
-				request(`${nconf.get('url')}/api/user/foo/followers`, { json: true }, (err, res, body) => {
-					assert.ifError(err);
-					assert.equal(res.statusCode, 200);
-					assert.equal(body.users.length, 0);
-					done();
-				});
-			});
+		it('should return empty after unfollow', async () => {
+			await apiUser.unfollow({ uid: uid }, { uid: fooUid });
+			const { res, body } = await helpers.request('get', `/api/user/foo/followers`, { json: true });
+			assert.equal(res.statusCode, 200);
+			assert.equal(body.users.length, 0);
 		});
 	});
 
