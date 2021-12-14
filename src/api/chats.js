@@ -1,17 +1,17 @@
 'use strict';
 
+const user = require('../user');
 const meta = require('../meta');
-const privileges = require('../privileges');
 const messaging = require('../messaging');
+const plugins = require('../plugins');
 
-
-const websockets = require('../socket.io');
-const socketHelpers = require('../socket.io/helpers');
+// const websockets = require('../socket.io');
+// const socketHelpers = require('../socket.io/helpers');
 
 const chatsAPI = module.exports;
 
 function rateLimitExceeded(caller) {
-	const session = caller.request ? caller.request.session : caller.session;	// socket vs req
+	const session = caller.request ? caller.request.session : caller.session; // socket vs req
 	const now = Date.now();
 	session.lastChatMessageTime = session.lastChatMessageTime || 0;
 	if (now - session.lastChatMessageTime < meta.config.chatMessageDelay) {
@@ -34,4 +34,28 @@ chatsAPI.create = async function (caller, data) {
 	const roomId = await messaging.newRoom(caller.uid, data.uids);
 
 	return await messaging.getRoomData(roomId);
+};
+
+chatsAPI.post = async (caller, data) => {
+	if (rateLimitExceeded(caller)) {
+		throw new Error('[[error:too-many-messages]]');
+	}
+
+	({ data } = await plugins.hooks.fire('filter:messaging.send', {
+		data,
+		uid: caller.uid,
+	}));
+
+	await messaging.canMessageRoom(caller.uid, data.roomId);
+	const message = await messaging.sendMessage({
+		uid: caller.uid,
+		roomId: data.roomId,
+		content: data.message,
+		timestamp: Date.now(),
+		ip: caller.ip,
+	});
+	messaging.notifyUsersInRoom(caller.uid, data.roomId, message);
+	user.updateOnlineUsers(caller.uid);
+
+	return message;
 };

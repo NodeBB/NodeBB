@@ -59,45 +59,19 @@ SocketModules.chats.newRoom = async function (socket, data) {
 };
 
 SocketModules.chats.send = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'POST /api/v3/chats/:roomId');
+
 	if (!data || !data.roomId || !socket.uid) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	if (rateLimitExceeded(socket)) {
-		throw new Error('[[error:too-many-messages]]');
-	}
 	const canChat = await privileges.global.can('chat', socket.uid);
 	if (!canChat) {
 		throw new Error('[[error:no-privileges]]');
 	}
-	const results = await plugins.hooks.fire('filter:messaging.send', {
-		data: data,
-		uid: socket.uid,
-	});
-	data = results.data;
 
-	await Messaging.canMessageRoom(socket.uid, data.roomId);
-	const message = await Messaging.sendMessage({
-		uid: socket.uid,
-		roomId: data.roomId,
-		content: data.message,
-		timestamp: Date.now(),
-		ip: socket.ip,
-	});
-	Messaging.notifyUsersInRoom(socket.uid, data.roomId, message);
-	user.updateOnlineUsers(socket.uid);
-	return message;
+	return api.chats.post(socket, data);
 };
-
-function rateLimitExceeded(socket) {
-	const now = Date.now();
-	socket.lastChatMessageTime = socket.lastChatMessageTime || 0;
-	if (now - socket.lastChatMessageTime < meta.config.chatMessageDelay) {
-		return true;
-	}
-	socket.lastChatMessageTime = now;
-	return false;
-}
 
 SocketModules.chats.loadRoom = async function (socket, data) {
 	sockets.warnDeprecated(socket, 'GET /api/v3/chats/:roomId');

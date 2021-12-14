@@ -94,3 +94,53 @@ get:
                         type: boolean
                       isAdminOrGlobalMod:
                         type: boolean
+post:
+  tags:
+    - chats
+  summary: send a chat message
+  description: This operation sends a chat message to a chat room
+  parameters:
+    - in: path
+      name: roomId
+      schema:
+        type: number
+      required: true
+      description: a valid chat room id
+      example: 1
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: This is a test message
+          required:
+            - message
+  responses:
+    '200':
+      description: message successfully sent
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../components/schemas/Status.yaml#/Status
+              response:
+                allOf:
+                  - $ref: ../../components/schemas/Chats.yaml#/MessageObject
+                  - type: object
+                    properties:
+                      self:
+                        type: number
+                        description: Whether or not the message was sent by the calling user (which if you're using this route, will always be 1)
+                      newSet:
+                        type: boolean
+                        description: Whether the message is considered part of a new "set" of messages. It is used in the frontend UI for explicitly denoting that a time gap existed between messages.
+                      cleanedContent:
+                        type: string
+                      mid:
+                        type: number

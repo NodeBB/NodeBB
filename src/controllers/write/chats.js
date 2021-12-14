@@ -36,7 +36,12 @@ Chats.get = async (req, res) => {
 };
 
 Chats.post = async (req, res) => {
-	// ...
+	const messageObj = await api.chats.post(req, {
+		...req.body,
+		roomId: req.params.roomId,
+	});
+
+	helpers.formatApiResponse(200, res, messageObj);
 };
 
 Chats.users = async (req, res) => {

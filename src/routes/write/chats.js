@@ -15,7 +15,7 @@ module.exports = function () {
 
 	setupApiRoute(router, 'head', '/:roomId', [...middlewares, middleware.assert.room], controllers.write.chats.exists);
 	setupApiRoute(router, 'get', '/:roomId', [...middlewares, middleware.assert.room], controllers.write.chats.get);
-	// setupApiRoute(router, 'post', '/:roomId', [...middlewares, middleware.assert.room], controllers.write.chats.post);
+	setupApiRoute(router, 'post', '/:roomId', [...middlewares, middleware.assert.room, middleware.checkRequired.bind(null, ['message'])], controllers.write.chats.post);
 	// // no route for room deletion, reserved just in case...
 
 	// setupApiRoute(router, 'get', '/:roomId/users', [...middlewares, middleware.assert.room], controllers.write.chats.users);

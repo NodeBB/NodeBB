@@ -1,8 +1,8 @@
 'use strict';
 
 define('chat', [
-	'components', 'taskbar', 'translator', 'hooks', 'bootbox', 'alerts',
-], function (components, taskbar, translator, hooks, bootbox, alerts) {
+	'components', 'taskbar', 'translator', 'hooks', 'bootbox', 'alerts', 'api',
+], function (components, taskbar, translator, hooks, bootbox, alerts, api) {
 	const module = {};
 	let newMessage = false;
 
@@ -20,27 +20,24 @@ define('chat', [
 		if (module.modalExists(roomId)) {
 			loadAndCenter(module.getModal(roomId));
 		} else {
-			socket.emit('modules.chats.loadRoom', { roomId: roomId, uid: uid || app.user.uid }, function (err, roomData) {
-				if (err) {
-					return alerts.error(err);
-				}
+			api.get(`/chats/${roomId}`, {
+				uid: uid || app.user.uid,
+			}).then((roomData) => {
 				roomData.users = roomData.users.filter(function (user) {
 					return user && parseInt(user.uid, 10) !== parseInt(app.user.uid, 10);
 				});
 				roomData.uid = uid || app.user.uid;
 				roomData.isSelf = true;
 				module.createModal(roomData, loadAndCenter);
-			});
+			}).catch(alerts.error);
 		}
 	};
 
 	module.newChat = function (touid, callback) {
 		function createChat() {
-			socket.emit('modules.chats.newRoom', { touid: touid }, function (err, roomId) {
-				if (err) {
-					return alerts.error(err);
-				}
-
+			api.post(`/chats`, {
+				uids: [touid],
+			}).then(({ roomId }) => {
 				if (!ajaxify.data.template.chats) {
 					module.openChat(roomId);
 				} else {
@@ -48,7 +45,7 @@ define('chat', [
 				}
 
 				callback(null, roomId);
-			});
+			}).catch(alerts.error);
 		}
 
 		callback = callback || function () { };
@@ -130,13 +127,7 @@ define('chat', [
 		if (module.modalExists(data.roomId)) {
 			addMessageToModal(data);
 		} else if (!ajaxify.data.template.chats) {
-			socket.emit('modules.chats.loadRoom', {
-				roomId: data.roomId,
-			}, function (err, roomData) {
-				if (err) {
-					return alerts.error(err);
-				}
-
+			api.get(`/chats/${data.roomId}`, {}).then((roomData) => {
 				roomData.users = roomData.users.filter(function (user) {
 					return user && parseInt(user.uid, 10) !== parseInt(app.user.uid, 10);
 				});
@@ -144,7 +135,7 @@ define('chat', [
 				roomData.uid = app.user.uid;
 				roomData.isSelf = isSelf;
 				module.createModal(roomData);
-			});
+			}).catch(alerts.error);
 		}
 	};
 

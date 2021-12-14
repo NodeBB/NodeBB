@@ -2,8 +2,9 @@
 
 
 define('forum/chats/messages', [
-	'components', 'translator', 'benchpress', 'hooks', 'bootbox', 'alerts', 'messages',
-], function (components, translator, Benchpress, hooks, bootbox, alerts, messagesModule) {
+	'components', 'translator', 'benchpress', 'hooks',
+	'bootbox', 'alerts', 'messages', 'api',
+], function (components, translator, Benchpress, hooks, bootbox, alerts, messagesModule, api) {
 	const messages = {};
 
 	messages.sendMessage = function (roomId, inputEl) {
@@ -24,25 +25,22 @@ define('forum/chats/messages', [
 		});
 
 		if (!mid) {
-			socket.emit('modules.chats.send', {
-				roomId: roomId,
+			api.post(`/chats/${roomId}`, {
 				message: msg,
-			}, function (err) {
-				if (err) {
-					inputEl.val(msg);
-					messages.updateRemainingLength(inputEl.parent());
-					if (err.message === '[[error:email-not-confirmed-chat]]') {
-						return messagesModule.showEmailConfirmWarning(err.message);
-					}
-
-					return alerts.alert({
-						alert_id: 'chat_spam_error',
-						title: '[[global:alert.error]]',
-						message: err.message,
-						type: 'danger',
-						timeout: 10000,
-					});
+			}).catch((err) => {
+				inputEl.val(msg);
+				messages.updateRemainingLength(inputEl.parent());
+				if (err.message === '[[error:email-not-confirmed-chat]]') {
+					return messagesModule.showEmailConfirmWarning(err.message);
 				}
+
+				return alerts.alert({
+					alert_id: 'chat_spam_error',
+					title: '[[global:alert.error]]',
+					message: err.message,
+					type: 'danger',
+					timeout: 10000,
+				});
 			});
 		} else {
 			socket.emit('modules.chats.edit', {
