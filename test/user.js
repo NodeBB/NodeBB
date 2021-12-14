@@ -1653,14 +1653,14 @@ describe('User', () => {
 		let delUid;
 
 		it('should fail with invalid data', (done) => {
-			socketUser.exists({ uid: testUid }, null, (err) => {
+			meta.userOrGroupExists(null, (err) => {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
 		});
 
 		it('should return true if user/group exists', (done) => {
-			socketUser.exists({ uid: testUid }, { username: 'registered-users' }, (err, exists) => {
+			meta.userOrGroupExists('registered-users', (err, exists) => {
 				assert.ifError(err);
 				assert(exists);
 				done();
@@ -1668,7 +1668,7 @@ describe('User', () => {
 		});
 
 		it('should return true if user/group exists', (done) => {
-			socketUser.exists({ uid: testUid }, { username: 'John Smith' }, (err, exists) => {
+			meta.userOrGroupExists('John Smith', (err, exists) => {
 				assert.ifError(err);
 				assert(exists);
 				done();
@@ -1676,7 +1676,7 @@ describe('User', () => {
 		});
 
 		it('should return false if user/group does not exists', (done) => {
-			socketUser.exists({ uid: testUid }, { username: 'doesnot exist' }, (err, exists) => {
+			meta.userOrGroupExists('doesnot exist', (err, exists) => {
 				assert.ifError(err);
 				assert(!exists);
 				done();
@@ -1700,8 +1700,8 @@ describe('User', () => {
 			assert(result.url);
 			meta.config['profile:keepAllUserImages'] = 0;
 
-			await socketUser.deleteAccount({ uid: delUid }, {});
-			const exists = await socketUser.exists({ uid: testUid }, { username: 'willbedeleted' });
+			await apiUser.deleteAccount({ uid: delUid }, { uid: delUid });
+			const exists = await meta.userOrGroupExists('willbedeleted');
 			assert(!exists);
 		});
 
@@ -1715,32 +1715,32 @@ describe('User', () => {
 
 		it('should fail to delete user with wrong password', async () => {
 			const uid = await User.create({ username: 'willbedeletedpwd', password: '123456' });
-			let err;
 			try {
-				await socketUser.deleteAccount({ uid: uid }, { password: '654321' });
-			} catch (_err) {
-				err = _err;
+				await apiUser.deleteAccount({ uid: uid }, { uid: uid, password: '654321' });
+				assert(false);
+			} catch (err) {
+				assert.strictEqual(err.message, '[[error:invalid-password]]');
 			}
-			assert.strictEqual(err.message, '[[error:invalid-password]]');
 		});
 
 		it('should delete user with correct password', async () => {
 			const uid = await User.create({ username: 'willbedeletedcorrectpwd', password: '123456' });
-			await socketUser.deleteAccount({ uid: uid }, { password: '123456' });
+			await apiUser.deleteAccount({ uid: uid }, { uid: uid, password: '123456' });
 			const exists = await User.exists(uid);
 			assert(!exists);
 		});
 
 		it('should fail to delete user if account deletion is not allowed', async () => {
-			const oldValue = meta.config.allowAccountDeletion;
-			meta.config.allowAccountDeletion = 0;
+			const oldValue = meta.config.allowAccountDelete;
+			meta.config.allowAccountDelete = 0;
 			const uid = await User.create({ username: 'tobedeleted' });
 			try {
-				await socketUser.deleteAccount({ uid: uid }, {});
+				await apiUser.deleteAccount({ uid: uid }, { uid: uid });
+				assert(false);
 			} catch (err) {
-				assert.equal(err.message, '[[error:no-privileges]]');
+				assert.strictEqual(err.message, '[[error:account-deletion-disabled]]');
 			}
-			meta.config.allowAccountDeletion = oldValue;
+			meta.config.allowAccountDelete = oldValue;
 		});
 
 		it('should send email confirm', async () => {
@@ -1780,7 +1780,7 @@ describe('User', () => {
 			});
 		});
 
-		it('should save user settings', (done) => {
+		it('should save user settings', async () => {
 			const data = {
 				uid: testUid,
 				settings: {
@@ -1800,17 +1800,12 @@ describe('User', () => {
 					followTopicsOnReply: 1,
 				},
 			};
-			socketUser.saveSettings({ uid: testUid }, data, (err) => {
-				assert.ifError(err);
-				User.getSettings(testUid, (err, data) => {
-					assert.ifError(err);
-					assert.equal(data.usePagination, true);
-					done();
-				});
-			});
+			await apiUser.updateSettings({ uid: testUid }, data);
+			const userSettings = await User.getSettings(testUid);
+			assert.strictEqual(userSettings.usePagination, true);
 		});
 
-		it('should properly escape homePageRoute', (done) => {
+		it('should properly escape homePageRoute', async () => {
 			const data = {
 				uid: testUid,
 				settings: {
@@ -1830,18 +1825,13 @@ describe('User', () => {
 					followTopicsOnReply: 1,
 				},
 			};
-			socketUser.saveSettings({ uid: testUid }, data, (err) => {
-				assert.ifError(err);
-				User.getSettings(testUid, (err, data) => {
-					assert.ifError(err);
-					assert.strictEqual(data.homePageRoute, 'category/6/testing-ground');
-					done();
-				});
-			});
+			await apiUser.updateSettings({ uid: testUid }, data);
+			const userSettings = await User.getSettings(testUid);
+			assert.strictEqual(userSettings.homePageRoute, 'category/6/testing-ground');
 		});
 
 
-		it('should error if language is invalid', (done) => {
+		it('should error if language is invalid', async () => {
 			const data = {
 				uid: testUid,
 				settings: {
@@ -1850,10 +1840,12 @@ describe('User', () => {
 					postsPerPage: '5',
 				},
 			};
-			socketUser.saveSettings({ uid: testUid }, data, (err) => {
+			try {
+				await apiUser.updateSettings({ uid: testUid }, data);
+				assert(false);
+			} catch (err) {
 				assert.equal(err.message, '[[error:invalid-language]]');
-				done();
-			});
+			}
 		});
 
 		it('should set moderation note', (done) => {
