@@ -18,6 +18,9 @@ module.exports = {
 				}
 				delete navItem.properties;
 			}
+			if (navItem.hasOwnProperty('groups') && Array.isArray(navItem.groups)) {
+				navItem.groups = JSON.stringify(navItem.groups);
+			}
 			bulkSet.push([`navigation:enabled:${item.score}`, navItem]);
 			order.push(item.score);
 		});
