@@ -2,26 +2,14 @@
 
 const winston = require('winston');
 
-const api = require('../../api');
 const user = require('../../user');
 const events = require('../../events');
 const notifications = require('../../notifications');
 const privileges = require('../../privileges');
 const db = require('../../database');
 const plugins = require('../../plugins');
-const sockets = require('..');
 
 module.exports = function (SocketUser) {
-	SocketUser.changeUsernameEmail = async function (socket, data) {
-		sockets.warnDeprecated(socket, 'PUT /api/v3/users/:uid');
-
-		if (!data || !data.uid || !socket.uid) {
-			throw new Error('[[error:invalid-data]]');
-		}
-		await isPrivilegedOrSelfAndPasswordMatch(socket, data);
-		return await SocketUser.updateProfile(socket, data);
-	};
-
 	SocketUser.updateCover = async function (socket, data) {
 		if (!socket.uid) {
 			throw new Error('[[error:no-privileges]]');
@@ -54,39 +42,6 @@ module.exports = function (SocketUser) {
 			uid: data.uid,
 			user: userData,
 		});
-	};
-
-	async function isPrivilegedOrSelfAndPasswordMatch(socket, data) {
-		const { uid } = socket;
-		const isSelf = parseInt(uid, 10) === parseInt(data.uid, 10);
-
-		const [isAdmin, isTargetAdmin, isGlobalMod] = await Promise.all([
-			user.isAdministrator(uid),
-			user.isAdministrator(data.uid),
-			user.isGlobalModerator(uid),
-		]);
-
-		if ((isTargetAdmin && !isAdmin) || (!isSelf && !(isAdmin || isGlobalMod))) {
-			throw new Error('[[error:no-privileges]]');
-		}
-		const [hasPassword, passwordMatch] = await Promise.all([
-			user.hasPassword(data.uid),
-			data.password ? user.isPasswordCorrect(data.uid, data.password, socket.ip) : false,
-		]);
-
-		if (isSelf && hasPassword && !passwordMatch) {
-			throw new Error('[[error:invalid-password]]');
-		}
-	}
-
-	SocketUser.changePassword = async function (socket, data) {
-		sockets.warnDeprecated(socket, 'PUT /api/v3/users/:uid/password');
-		await api.users.changePassword(socket, data);
-	};
-
-	SocketUser.updateProfile = async function (socket, data) {
-		sockets.warnDeprecated(socket, 'PUT /api/v3/users/:uid');
-		return await api.users.update(socket, data);
 	};
 
 	SocketUser.toggleBlock = async function (socket, data) {

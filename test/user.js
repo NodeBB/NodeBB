@@ -799,15 +799,6 @@ describe('User', () => {
 		});
 	});
 
-	describe('not logged in', () => {
-		it('should return error if not logged in', (done) => {
-			socketUser.updateProfile({ uid: 0 }, { uid: 1 }, (err) => {
-				assert.equal(err.message, '[[error:invalid-uid]]');
-				done();
-			});
-		});
-	});
-
 	describe('profile methods', () => {
 		let uid;
 		let jar;
@@ -821,64 +812,67 @@ describe('User', () => {
 			({ jar } = await helpers.loginUser('updateprofile', '123456'));
 		});
 
-		it('should return error if data is invalid', (done) => {
-			socketUser.updateProfile({ uid: uid }, null, (err) => {
-				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
+		it('should return error if not logged in', async () => {
+			try {
+				await apiUser.update({ uid: 0 }, { uid: 1 });
+				assert(false);
+			} catch (err) {
+				assert.equal(err.message, '[[error:invalid-uid]]');
+			}
 		});
 
-		it('should return error if data is missing uid', (done) => {
-			socketUser.updateProfile({ uid: uid }, { username: 'bip', email: 'bop' }, (err) => {
+		it('should return error if data is invalid', async () => {
+			try {
+				await apiUser.update({ uid: uid }, null);
+				assert(false);
+			} catch (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
+			}
+		});
+
+		it('should return error if data is missing uid', async () => {
+			try {
+				await apiUser.update({ uid: uid }, { username: 'bip', email: 'bop' });
+				assert(false);
+			} catch (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+			}
 		});
 
 		describe('.updateProfile()', () => {
 			let uid;
 
-			it('should update a user\'s profile', (done) => {
-				User.create({ username: 'justforupdate', email: 'just@for.updated', password: '123456' }, (err, _uid) => {
-					uid = _uid;
+			it('should update a user\'s profile', async () => {
+				uid = await User.create({ username: 'justforupdate', email: 'just@for.updated', password: '123456' });
+				const data = {
+					uid: uid,
+					username: 'updatedUserName',
+					email: 'updatedEmail@me.com',
+					fullname: 'updatedFullname',
+					website: 'http://nodebb.org',
+					location: 'izmir',
+					groupTitle: 'testGroup',
+					birthday: '01/01/1980',
+					signature: 'nodebb is good',
+					password: '123456',
+				};
+				const result = await apiUser.update({ uid: uid }, { ...data, password: '123456', invalid: 'field' });
+				assert.equal(result.username, 'updatedUserName');
+				assert.equal(result.userslug, 'updatedusername');
+				assert.equal(result.location, 'izmir');
 
-					assert.ifError(err);
-					const data = {
-						uid: uid,
-						username: 'updatedUserName',
-						email: 'updatedEmail@me.com',
-						fullname: 'updatedFullname',
-						website: 'http://nodebb.org',
-						location: 'izmir',
-						groupTitle: 'testGroup',
-						birthday: '01/01/1980',
-						signature: 'nodebb is good',
-						password: '123456',
-					};
-					socketUser.updateProfile({ uid: uid }, { ...data, password: '123456', invalid: 'field' }, (err, result) => {
-						assert.ifError(err);
-
-						assert.equal(result.username, 'updatedUserName');
-						assert.equal(result.userslug, 'updatedusername');
-						assert.equal(result.location, 'izmir');
-
-						db.getObject(`user:${uid}`, (err, userData) => {
-							assert.ifError(err);
-							Object.keys(data).forEach((key) => {
-								if (key === 'email') {
-									assert.strictEqual(userData.email, 'just@for.updated'); // email remains the same until confirmed
-								} else if (key !== 'password') {
-									assert.equal(data[key], userData[key]);
-								} else {
-									assert(userData[key].startsWith('$2a$'));
-								}
-							});
-							// updateProfile only saves valid fields
-							assert.strictEqual(userData.invalid, undefined);
-							done();
-						});
-					});
+				const userData = await db.getObject(`user:${uid}`);
+				Object.keys(data).forEach((key) => {
+					if (key === 'email') {
+						assert.strictEqual(userData.email, 'just@for.updated'); // email remains the same until confirmed
+					} else if (key !== 'password') {
+						assert.equal(data[key], userData[key]);
+					} else {
+						assert(userData[key].startsWith('$2a$'));
+					}
 				});
+				// updateProfile only saves valid fields
+				assert.strictEqual(userData.invalid, undefined);
 			});
 
 			it('should also generate an email confirmation code for the changed email', async () => {
@@ -887,44 +881,34 @@ describe('User', () => {
 			});
 		});
 
-		it('should change a user\'s password', (done) => {
-			User.create({ username: 'changepassword', password: '123456' }, (err, uid) => {
-				assert.ifError(err);
-				socketUser.changePassword({ uid: uid }, { uid: uid, newPassword: '654321', currentPassword: '123456' }, (err) => {
-					assert.ifError(err);
-					User.isPasswordCorrect(uid, '654321', '127.0.0.1', (err, correct) => {
-						assert.ifError(err);
-						assert(correct);
-						done();
-					});
-				});
-			});
+		it('should change a user\'s password', async () => {
+			const uid = await User.create({ username: 'changepassword', password: '123456' });
+			await apiUser.changePassword({ uid: uid }, { uid: uid, newPassword: '654321', currentPassword: '123456' });
+			const correct = await User.isPasswordCorrect(uid, '654321', '127.0.0.1');
+			assert(correct);
 		});
 
 		it('should not let user change another user\'s password', async () => {
 			const regularUserUid = await User.create({ username: 'regularuserpwdchange', password: 'regularuser1234' });
 			const uid = await User.create({ username: 'changeadminpwd1', password: '123456' });
-			let err;
 			try {
-				await socketUser.changePassword({ uid: uid }, { uid: regularUserUid, newPassword: '654321', currentPassword: '123456' });
-			} catch (_err) {
-				err = _err;
+				await apiUser.changePassword({ uid: uid }, { uid: regularUserUid, newPassword: '654321', currentPassword: '123456' });
+				assert(false);
+			} catch (err) {
+				assert.equal(err.message, '[[user:change_password_error_privileges]]');
 			}
-			assert.equal(err.message, '[[user:change_password_error_privileges]]');
 		});
 
 		it('should not let user change admin\'s password', async () => {
 			const adminUid = await User.create({ username: 'adminpwdchange', password: 'admin1234' });
 			await groups.join('administrators', adminUid);
 			const uid = await User.create({ username: 'changeadminpwd2', password: '123456' });
-
-			let err;
 			try {
-				await socketUser.changePassword({ uid: uid }, { uid: adminUid, newPassword: '654321', currentPassword: '123456' });
-			} catch (_err) {
-				err = _err;
+				await apiUser.changePassword({ uid: uid }, { uid: adminUid, newPassword: '654321', currentPassword: '123456' });
+				assert(false);
+			} catch (err) {
+				assert.equal(err.message, '[[user:change_password_error_privileges]]');
 			}
-			assert.equal(err.message, '[[user:change_password_error_privileges]]');
 		});
 
 		it('should let admin change another users password', async () => {
@@ -932,7 +916,7 @@ describe('User', () => {
 			await groups.join('administrators', adminUid);
 			const uid = await User.create({ username: 'forgotmypassword', password: '123456' });
 
-			await socketUser.changePassword({ uid: adminUid }, { uid: uid, newPassword: '654321' });
+			await apiUser.changePassword({ uid: adminUid }, { uid: uid, newPassword: '654321' });
 			const correct = await User.isPasswordCorrect(uid, '654321', '127.0.0.1');
 			assert(correct);
 		});
@@ -941,28 +925,22 @@ describe('User', () => {
 			const adminUid = await User.create({ username: 'adminforgotpwd', password: 'admin1234' });
 			await groups.join('administrators', adminUid);
 
-			let err;
 			try {
-				await socketUser.changePassword({ uid: adminUid }, { uid: adminUid, newPassword: '654321', currentPassword: 'wrongpwd' });
-			} catch (_err) {
-				err = _err;
+				await apiUser.changePassword({ uid: adminUid }, { uid: adminUid, newPassword: '654321', currentPassword: 'wrongpwd' });
+				assert(false);
+			} catch (err) {
+				assert.equal(err.message, '[[user:change_password_error_wrong_current]]');
 			}
-			assert.equal(err.message, '[[user:change_password_error_wrong_current]]');
 		});
 
-		it('should change username', (done) => {
-			socketUser.changeUsernameEmail({ uid: uid }, { uid: uid, username: 'updatedAgain', password: '123456' }, (err) => {
-				assert.ifError(err);
-				db.getObjectField(`user:${uid}`, 'username', (err, username) => {
-					assert.ifError(err);
-					assert.equal(username, 'updatedAgain');
-					done();
-				});
-			});
+		it('should change username', async () => {
+			await apiUser.update({ uid: uid }, { uid: uid, username: 'updatedAgain', password: '123456' });
+			const username = await db.getObjectField(`user:${uid}`, 'username');
+			assert.equal(username, 'updatedAgain');
 		});
 
 		it('should not let setting an empty username', async () => {
-			await socketUser.changeUsernameEmail({ uid: uid }, { uid: uid, username: '', password: '123456' });
+			await apiUser.update({ uid: uid }, { uid: uid, username: '', password: '123456' });
 			const username = await db.getObjectField(`user:${uid}`, 'username');
 			assert.strictEqual(username, 'updatedAgain');
 		});
@@ -971,7 +949,7 @@ describe('User', () => {
 			const maxLength = meta.config.maximumUsernameLength + 1;
 			const longName = new Array(maxLength).fill('a').join('');
 			const uid = await User.create({ username: longName });
-			await socketUser.changeUsernameEmail({ uid: uid }, { uid: uid, username: longName, email: 'verylong@name.com' });
+			await apiUser.update({ uid: uid }, { uid: uid, username: longName, email: 'verylong@name.com' });
 			const userData = await db.getObject(`user:${uid}`);
 			const awaitingValidation = await User.email.isValidationPending(uid, 'verylong@name.com');
 
@@ -979,34 +957,26 @@ describe('User', () => {
 			assert.strictEqual(awaitingValidation, true);
 		});
 
-		it('should not update a user\'s username if it did not change', (done) => {
-			socketUser.changeUsernameEmail({ uid: uid }, { uid: uid, username: 'updatedAgain', password: '123456' }, (err) => {
-				assert.ifError(err);
-				db.getSortedSetRevRange(`user:${uid}:usernames`, 0, -1, (err, data) => {
-					assert.ifError(err);
-					assert.equal(data.length, 2);
-					assert(data[0].startsWith('updatedAgain'));
-					done();
-				});
-			});
+		it('should not update a user\'s username if it did not change', async () => {
+			await apiUser.update({ uid: uid }, { uid: uid, username: 'updatedAgain', password: '123456' });
+			const data = await db.getSortedSetRevRange(`user:${uid}:usernames`, 0, -1);
+			assert.equal(data.length, 2);
+			assert(data[0].startsWith('updatedAgain'));
 		});
 
 		it('should not update a user\'s username if a password is not supplied', async () => {
-			let _err;
 			try {
-				await socketUser.updateProfile({ uid: uid }, { uid: uid, username: 'updatedAgain', password: '' });
+				await apiUser.update({ uid: uid }, { uid: uid, username: 'updatedAgain', password: '' });
+				assert(false);
 			} catch (err) {
-				_err = err;
+				assert.strictEqual(err.message, '[[error:invalid-password]]');
 			}
-
-			assert(_err);
-			assert.strictEqual(_err.message, '[[error:invalid-password]]');
 		});
 
 		it('should send validation email', async () => {
 			const uid = await User.create({ username: 'pooremailupdate', email: 'poor@update.me', password: '123456' });
 			await User.email.expireValidation(uid);
-			await socketUser.changeUsernameEmail({ uid: uid }, { uid: uid, email: 'updatedAgain@me.com', password: '123456' });
+			await apiUser.update({ uid: uid }, { uid: uid, email: 'updatedAgain@me.com', password: '123456' });
 
 			assert.strictEqual(await User.email.isValidationPending(uid), true);
 		});
