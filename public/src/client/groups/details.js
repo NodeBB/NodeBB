@@ -104,7 +104,7 @@ define('forum/groups/details', [
 					Details.deleteGroup();
 					break;
 
-				case 'join': // intentional fall-throughs!
+				case 'join':
 					api.put('/groups/' + ajaxify.data.group.slug + '/membership/' + (uid || app.user.uid), undefined).then(() => ajaxify.refresh()).catch(alerts.error);
 					break;
 
