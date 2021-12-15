@@ -369,14 +369,14 @@
 			return utils.languageKeyRegex.test(input);
 		},
 		userLangToTimeagoCode: function (userLang) {
-			const mapping = Object.create(null, {
+			const mapping = {
 				'en-GB': 'en',
 				'en-US': 'en',
 				'fa-IR': 'fa',
 				'pt-BR': 'pt-br',
 				nb: 'no',
-			});
-			return mapping[userLang] || userLang;
+			};
+			return mapping.hasOwnProperty(userLang) ? mapping[userLang] : userLang;
 		},
 		// shallow objects merge
 		merge: function () {
@@ -397,7 +397,7 @@
 			return ('' + path).split('.').pop();
 		},
 
-		extensionMimeTypeMap: Object.create(null, {
+		extensionMimeTypeMap: {
 			bmp: 'image/bmp',
 			cmx: 'image/x-cmx',
 			cod: 'image/cis-cod',
@@ -421,7 +421,7 @@
 			xbm: 'image/x-xbitmap',
 			xpm: 'image/x-xpixmap',
 			xwd: 'image/x-xwindowdump',
-		}),
+		},
 
 		fileMimeType: function (path) {
 			return utils.extensionToMimeType(utils.fileExtension(path));
