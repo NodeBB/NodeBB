@@ -428,7 +428,7 @@
 		},
 
 		extensionToMimeType: function (extension) {
-			return utils.extensionMimeTypeMap.hasOwnProperty('extension') ? utils.extensionMimeTypeMap[extension] : '*';
+			return utils.extensionMimeTypeMap.hasOwnProperty(extension) ? utils.extensionMimeTypeMap[extension] : '*';
 		},
 
 		isPromise: function (object) {
