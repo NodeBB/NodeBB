@@ -1,12 +1,14 @@
 'use strict';
 
+const validator = require('validator');
+
 const user = require('../user');
 const meta = require('../meta');
 const messaging = require('../messaging');
 const plugins = require('../plugins');
 
 // const websockets = require('../socket.io');
-// const socketHelpers = require('../socket.io/helpers');
+const socketHelpers = require('../socket.io/helpers');
 
 const chatsAPI = module.exports;
 
@@ -58,4 +60,15 @@ chatsAPI.post = async (caller, data) => {
 	user.updateOnlineUsers(caller.uid);
 
 	return message;
+};
+
+chatsAPI.rename = async (caller, data) => {
+	await messaging.renameRoom(caller.uid, data.roomId, data.name);
+	const uids = await messaging.getUidsInRoom(data.roomId, 0, -1);
+	const eventData = { roomId: data.roomId, newName: validator.escape(String(data.name)) };
+
+	socketHelpers.emitToUids('event:chats.roomRename', eventData, uids);
+	return messaging.loadRoom(caller.uid, {
+		roomId: data.roomId,
+	});
 };

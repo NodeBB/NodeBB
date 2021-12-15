@@ -44,6 +44,15 @@ Chats.post = async (req, res) => {
 	helpers.formatApiResponse(200, res, messageObj);
 };
 
+Chats.rename = async (req, res) => {
+	const roomObj = await api.chats.rename(req, {
+		...req.body,
+		roomId: req.params.roomId,
+	});
+
+	helpers.formatApiResponse(200, res, roomObj);
+};
+
 Chats.users = async (req, res) => {
 	// ...
 };

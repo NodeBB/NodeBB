@@ -13,10 +13,12 @@ define('forum/chats', [
 	'bootbox',
 	'alerts',
 	'chat',
+	'api',
 ], function (
 	components, translator, mousetrap,
 	recentChats, search, messages,
-	autocomplete, hooks, bootbox, alerts, chatModule
+	autocomplete, hooks, bootbox, alerts, chatModule,
+	api
 ) {
 	const Chats = {
 		initialised: false,
@@ -345,14 +347,9 @@ define('forum/chats', [
 		});
 
 		function submit() {
-			socket.emit('modules.chats.renameRoom', {
-				roomId: roomId,
-				newName: modal.find('#roomName').val(),
-			}, function (err) {
-				if (err) {
-					alerts.error(err);
-				}
-			});
+			api.put(`/chats/${roomId}`, {
+				name: modal.find('#roomName').val(),
+			}).catch(alerts.error);
 		}
 	};
 

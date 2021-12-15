@@ -203,15 +203,15 @@ SocketModules.chats.markAllRead = async function (socket) {
 };
 
 SocketModules.chats.renameRoom = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'PUT /api/v3/chats/:roomId');
+
 	if (!data || !data.roomId || !data.newName) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	await Messaging.renameRoom(socket.uid, data.roomId, data.newName);
-	const uids = await Messaging.getUidsInRoom(data.roomId, 0, -1);
-	const eventData = { roomId: data.roomId, newName: validator.escape(String(data.newName)) };
-	uids.forEach((uid) => {
-		server.in(`uid_${uid}`).emit('event:chats.roomRename', eventData);
-	});
+
+	data.name = data.newName;
+	delete data.newName;
+	await api.chats.rename(socket, data);
 };
 
 SocketModules.chats.getRecentChats = async function (socket, data) {
