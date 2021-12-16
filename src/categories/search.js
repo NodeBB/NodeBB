@@ -18,6 +18,7 @@ module.exports = function (Categories) {
 		let cids = await findCids(query, data.hardCap);
 
 		const result = await plugins.hooks.fire('filter:categories.search', {
+			data: data,
 			cids: cids,
 			uid: uid,
 		});
