@@ -191,7 +191,7 @@ module.exports = function (Messaging) {
 
 	Messaging.renameRoom = async function (uid, roomId, newName) {
 		if (!newName) {
-			throw new Error('[[error:invalid-name]]');
+			throw new Error('[[error:invalid-data]]');
 		}
 		newName = newName.trim();
 		if (newName.length > 75) {

@@ -521,24 +521,17 @@ describe('Messaging Library', () => {
 			});
 		});
 
-		it('should fail to rename room with invalid data', (done) => {
-			socketModules.chats.renameRoom({ uid: mocks.users.foo.uid }, null, (err) => {
-				assert.equal(err.message, '[[error:invalid-data]]');
-				socketModules.chats.renameRoom({ uid: mocks.users.foo.uid }, { roomId: null }, (err) => {
-					assert.equal(err.message, '[[error:invalid-data]]');
-					socketModules.chats.renameRoom({ uid: mocks.users.foo.uid }, { roomId: roomId, newName: null }, (err) => {
-						assert.equal(err.message, '[[error:invalid-data]]');
-						done();
-					});
-				});
-			});
+		it('should fail to rename room with invalid data', async () => {
+			let { body } = await callv3API('put', `/chats/${roomId}`, { name: null }, 'foo');
+			assert.strictEqual(body.status.message, await translator.translate('[[error:invalid-data]]'));
+
+			({ body } = await callv3API('put', `/chats/${roomId}`, {}, 'foo'));
+			assert.strictEqual(body.status.message, await translator.translate('[[error:required-parameters-missing, name]]'));
 		});
 
-		it('should rename room', (done) => {
-			socketModules.chats.renameRoom({ uid: mocks.users.foo.uid }, { roomId: roomId, newName: 'new room name' }, (err) => {
-				assert.ifError(err);
-				done();
-			});
+		it('should rename room', async () => {
+			const { statusCode } = await callv3API('put', `/chats/${roomId}`, { name: 'new room name' }, 'foo');
+			assert.strictEqual(statusCode, 200);
 		});
 
 		it('should send a room-rename system message when a room is renamed', (done) => {
