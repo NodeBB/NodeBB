@@ -2,6 +2,7 @@
 	"invalid-data": "Invalid Data",
 	"invalid-json": "Invalid JSON",
 	"array-expected": "A value of type Array was expected for property `%1`, but %2 was received instead",
+	"required-parameters-missing": "Required parameters were missing from this API call: %1",
 
 	"not-logged-in": "You don't seem to be logged in.",
 	"account-locked": "Your account has been locked temporarily",

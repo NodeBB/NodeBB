@@ -255,5 +255,5 @@ middleware.checkRequired = function (fields, req, res, next) {
 		return next();
 	}
 
-	controllers.helpers.formatApiResponse(400, res, new Error(`Required parameters were missing from this API call: ${missing.join(', ')}`));
+	controllers.helpers.formatApiResponse(400, res, new Error(`[[error:required-parameters-missing, ${missing.join(' ')}]]`));
 };
