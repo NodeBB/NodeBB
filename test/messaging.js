@@ -115,11 +115,9 @@ describe('Messaging Library', () => {
 	});
 
 	describe('rooms', () => {
-		it('should fail to create a new chat room with invalid data', (done) => {
-			socketModules.chats.newRoom({ uid: mocks.users.foo.uid }, null, (err) => {
-				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
+		it('should fail to create a new chat room with invalid data', async () => {
+			const { body } = await callv3API('post', '/chats', {}, 'foo');
+			assert.equal(body.status.message, await translator.translate('[[error:required-parameters-missing, uids]]'));
 		});
 
 		it('should return rate limit error on second try', async () => {
@@ -360,17 +358,12 @@ describe('Messaging Library', () => {
 			assert(!isInRoom);
 		});
 
-		it('should fail to send a message to room with invalid data', (done) => {
-			socketModules.chats.send({ uid: mocks.users.foo.uid }, null, (err) => {
-				assert.equal(err.message, '[[error:invalid-data]]');
-				socketModules.chats.send({ uid: mocks.users.foo.uid }, { roomId: null }, (err) => {
-					assert.equal(err.message, '[[error:invalid-data]]');
-					socketModules.chats.send({ uid: null }, { roomId: 1 }, (err) => {
-						assert.equal(err.message, '[[error:invalid-data]]');
-						done();
-					});
-				});
-			});
+		it('should fail to send a message to room with invalid data', async () => {
+			let { body } = await callv3API('post', `/chats/abc`, { message: 'test' }, 'foo');
+			assert.strictEqual(body.status.message, await translator.translate('[[error:invalid-data]]'));
+
+			({ body } = await callv3API('post', `/chats/1`, {}, 'foo'));
+			assert.strictEqual(body.status.message, await translator.translate('[[error:required-parameters-missing, message]]'));
 		});
 
 		it('should fail to send chat if content is empty', async () => {
@@ -548,30 +541,19 @@ describe('Messaging Library', () => {
 			);
 		});
 
-		it('should fail to load room with invalid-data', (done) => {
-			socketModules.chats.loadRoom({ uid: mocks.users.foo.uid }, null, (err) => {
-				assert.equal(err.message, '[[error:invalid-data]]');
-				socketModules.chats.loadRoom({ uid: mocks.users.foo.uid }, { roomId: null }, (err) => {
-					assert.equal(err.message, '[[error:invalid-data]]');
-					done();
-				});
-			});
+		it('should fail to load room with invalid-data', async () => {
+			const { body } = await callv3API('get', `/chats/abc`, {}, 'foo');
+			assert.strictEqual(body.status.message, await translator.translate('[[error:invalid-data]]'));
 		});
 
-		it('should fail to load room if user is not in', (done) => {
-			socketModules.chats.loadRoom({ uid: 0 }, { roomId: roomId }, (err) => {
-				assert.equal(err.message, '[[error:no-privileges]]');
-				done();
-			});
+		it('should fail to load room if user is not in', async () => {
+			const { body } = await callv3API('get', `/chats/${roomId}`, {}, 'baz');
+			assert.strictEqual(body.status.message, await translator.translate('[[error:no-privileges]]'));
 		});
 
-		it('should load chat room', (done) => {
-			socketModules.chats.loadRoom({ uid: mocks.users.foo.uid }, { roomId: roomId }, (err, data) => {
-				assert.ifError(err);
-				assert(data);
-				assert.equal(data.roomName, 'new room name');
-				done();
-			});
+		it('should load chat room', async () => {
+			const { body } = await callv3API('get', `/chats/${roomId}`, {}, 'foo');
+			assert.strictEqual(body.response.roomName, 'new room name');
 		});
 
 		it('should return true if user is dnd', (done) => {

@@ -107,6 +107,10 @@ Assert.folderName = helpers.try(async (req, res, next) => {
 });
 
 Assert.room = helpers.try(async (req, res, next) => {
+	if (!isFinite(req.params.roomId)) {
+		return controllerHelpers.formatApiResponse(400, res, new Error('[[error:invalid-data]]'));
+	}
+
 	const [exists, inRoom] = await Promise.all([
 		await messaging.roomExists(req.params.roomId),
 		await messaging.isUserInRoom(req.uid, req.params.roomId),
