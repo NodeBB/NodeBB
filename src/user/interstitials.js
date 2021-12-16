@@ -61,7 +61,7 @@ Interstitials.email = async (data) => {
 							email: formData.email,
 							force: true,
 						}).catch((err) => {
-							winston.error(`[user.create] Validation email failed to send\n[emailer.send] ${err.stack}`);
+							winston.error(`[user.interstitials.email] Validation email failed to send\n[emailer.send] ${err.stack}`);
 						});
 						data.req.session.emailChanged = 1;
 					} else {
