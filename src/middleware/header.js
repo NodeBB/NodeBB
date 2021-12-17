@@ -64,6 +64,7 @@ middleware.renderHeader = async function renderHeader(req, res, data) {
 		'brand:logo:display': meta.config['brand:logo'] ? '' : 'hide',
 		allowRegistration: registrationType === 'normal',
 		searchEnabled: plugins.hooks.hasListeners('filter:search.query'),
+		postQueueEnabled: !!meta.config.postQueue,
 		config: res.locals.config,
 		relative_path,
 		bodyClass: data.bodyClass,

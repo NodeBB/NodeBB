@@ -46,7 +46,7 @@ _mounts.main = (app, middleware, controllers) => {
 _mounts.mod = (app, middleware, controllers) => {
 	setupPageRoute(app, '/flags', middleware, [], controllers.mods.flags.list);
 	setupPageRoute(app, '/flags/:flagId', middleware, [], controllers.mods.flags.detail);
-	setupPageRoute(app, '/post-queue', middleware, [], controllers.mods.postQueue);
+	setupPageRoute(app, '/post-queue/:id?', middleware, [], controllers.mods.postQueue);
 };
 
 _mounts.globalMod = (app, middleware, controllers) => {

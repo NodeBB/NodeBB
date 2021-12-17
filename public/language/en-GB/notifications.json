@@ -54,6 +54,7 @@
 	"users-csv-exported": "Users csv exported, click to download",
 	"post-queue-accepted": "Your queued post has been accepted. Click here to see your post.",
 	"post-queue-rejected": "Your queued post has been rejected.",
+	"post-queue-notify": "Queued post received a notification:<br/>\"%1\"",
 
 	"email-confirmed": "Email Confirmed",
 	"email-confirmed-message": "Thank you for validating your email. Your account is now fully activated.",

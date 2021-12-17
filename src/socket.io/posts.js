@@ -1,5 +1,7 @@
 'use strict';
 
+const validator = require('validator');
+
 const db = require('../database');
 const posts = require('../posts');
 const privileges = require('../privileges');
@@ -100,29 +102,41 @@ SocketPosts.getReplies = async function (socket, pid) {
 };
 
 SocketPosts.accept = async function (socket, data) {
-	const result = await acceptOrReject(posts.submitFromQueue, socket, data);
-	await sendQueueNotification('post-queue-accepted', result.uid, `/post/${result.pid}`);
+	await canEditQueue(socket, data, 'accept');
+	const result = await posts.submitFromQueue(data.id);
+	if (result && socket.uid !== parseInt(result.uid, 10)) {
+		await sendQueueNotification('post-queue-accepted', result.uid, `/post/${result.pid}`);
+	}
 };
 
 SocketPosts.reject = async function (socket, data) {
-	const result = await acceptOrReject(posts.removeFromQueue, socket, data);
-	await sendQueueNotification('post-queue-rejected', result.uid, '/');
+	await canEditQueue(socket, data, 'reject');
+	const result = await posts.removeFromQueue(data.id);
+	if (result && socket.uid !== parseInt(result.uid, 10)) {
+		await sendQueueNotification('post-queue-rejected', result.uid, '/');
+	}
 };
 
-async function acceptOrReject(method, socket, data) {
-	const canEditQueue = await posts.canEditQueue(socket.uid, data);
+SocketPosts.notify = async function (socket, data) {
+	await canEditQueue(socket, data, 'notify');
+	const result = await posts.getFromQueue(data.id);
+	if (result) {
+		await sendQueueNotification('post-queue-notify', result.uid, `/post-queue/${data.id}`, validator.escape(String(data.message)));
+	}
+};
+
+async function canEditQueue(socket, data, action) {
+	const canEditQueue = await posts.canEditQueue(socket.uid, data, action);
 	if (!canEditQueue) {
 		throw new Error('[[error:no-privileges]]');
 	}
-	return await method(data.id);
 }
 
-async function sendQueueNotification(type, targetUid, path) {
+async function sendQueueNotification(type, targetUid, path, notificationText) {
 	const notifData = {
 		type: type,
 		nid: `${type}-${targetUid}-${path}`,
-		bodyShort: type === 'post-queue-accepted' ?
-			'[[notifications:post-queue-accepted]]' : '[[notifications:post-queue-rejected]]',
+		bodyShort: `[[notifications:post-queue-notify, ${notificationText}]]` || `[[notifications:${type}]]`,
 		path: path,
 	};
 	if (parseInt(meta.config.postQueueNotificationUid, 10) > 0) {
