@@ -14,5 +14,8 @@
 	"reply": "Одговори",
 	"topic": "Тема",
 	"accept": "Прихвати",
-	"reject": "Одбиј"
+	"reject": "Одбиј",
+	"remove": "Remove",
+	"notify": "Notify",
+	"notify-user": "Notify User"
 }

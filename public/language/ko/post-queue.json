@@ -14,5 +14,8 @@
 	"reply": "답글",
 	"topic": "화제",
 	"accept": "승인",
-	"reject": "거절"
+	"reject": "거절",
+	"remove": "Remove",
+	"notify": "Notify",
+	"notify-user": "Notify User"
 }
