@@ -68,6 +68,8 @@
     "bootbox.ok": "Добре",
     "bootbox.cancel": "Отказ",
     "bootbox.confirm": "Потвърждаване",
+    "bootbox.submit": "Submit",
+    "bootbox.send": "Send",
     "cover.dragging_title": "Наместване на снимката",
     "cover.dragging_message": "Преместете снимката на желаното положение и натиснете „Запазване“",
     "cover.saved": "Снимката и мястото ѝ бяха запазени",

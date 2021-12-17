@@ -50,6 +50,7 @@
     "users-csv-exported": "Users csv exported, click to download",
     "post-queue-accepted": "Your queued post has been accepted. Click here to see your post.",
     "post-queue-rejected": "Your queued post has been rejected.",
+    "post-queue-notify": "Queued post received a notification:<br/>\"%1\"",
     "email-confirmed": "Email Yemejwe",
     "email-confirmed-message": "Urakoze kugaragaza ko email yawe ikora. Ubu ngubu konte yawe irakora nta kabuza. ",
     "email-confirm-error-message": "Havutse ikibazo mu gushaka kumenya niba email yawe ikora. Ushobora kuba wakoresheje kode itari yo cyangwa se yarengeje igihe. ",

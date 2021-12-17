@@ -68,6 +68,8 @@
     "bootbox.ok": "باشه",
     "bootbox.cancel": "انصراف",
     "bootbox.confirm": "تایید",
+    "bootbox.submit": "Submit",
+    "bootbox.send": "Send",
     "cover.dragging_title": "تنظیم مکان عکس کاور",
     "cover.dragging_message": "عکس کاور با کلیک موس گرفته و در مکان دلخواه رها کنید و بر روی \"ذخیره\" کلیک کنید",
     "cover.saved": "عکس کاور و مکان آن ذخیره شد",

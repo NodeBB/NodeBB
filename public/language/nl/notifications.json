@@ -50,6 +50,7 @@
     "users-csv-exported": "Csv met gebruikers geëxporteerd, klik om te downloaden",
     "post-queue-accepted": "Je bericht in de wachtrij is geaccepteerd. Klik hier om je bericht te bekijken.",
     "post-queue-rejected": "Je bericht in de wachtrij is afgekeurd.",
+    "post-queue-notify": "Queued post received a notification:<br/>\"%1\"",
     "email-confirmed": "E-mailadres bevestigd",
     "email-confirmed-message": "Bedankt voor het bevestigen van je e-mailadres. Je account is nu volledig geactiveerd.",
     "email-confirm-error-message": "Er was een probleem met het bevestigen van dit e-mailadres. Misschien is de code niet goed ingevoerd of was de beschikbare tijd inmiddels verstreken.",

@@ -68,6 +68,8 @@
     "bootbox.ok": "OK",
     "bootbox.cancel": "Anuluj",
     "bootbox.confirm": "Potwierdź",
+    "bootbox.submit": "Submit",
+    "bootbox.send": "Send",
     "cover.dragging_title": "Pozycjonowanie tła",
     "cover.dragging_message": "Przeciągnij zdjęcie tła do wybranej pozycji i kliknij „Zapisz”",
     "cover.saved": "Tło zapisane",

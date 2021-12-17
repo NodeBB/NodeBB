@@ -68,6 +68,8 @@
     "bootbox.ok": "ОК",
     "bootbox.cancel": "Скасувати",
     "bootbox.confirm": "Підтвердити",
+    "bootbox.submit": "Submit",
+    "bootbox.send": "Send",
     "cover.dragging_title": "Розташування обкладинки",
     "cover.dragging_message": "Перетягніть обкладинку на бажане місце на натисніть \"Зберегти\"",
     "cover.saved": "Зображення обкладинки та її позиція збережені",

@@ -68,6 +68,8 @@
     "bootbox.ok": "Ok",
     "bootbox.cancel": "Batal",
     "bootbox.confirm": "Pasti",
+    "bootbox.submit": "Submit",
+    "bootbox.send": "Send",
     "cover.dragging_title": "Kedudukan Gambar Muka",
     "cover.dragging_message": "Seret gambar muka ke kedudukan yang diingini dan klik \"Simpan\"",
     "cover.saved": "Gambar muka dan kedudukan disimpan",

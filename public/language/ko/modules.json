@@ -68,6 +68,8 @@
     "bootbox.ok": "확인",
     "bootbox.cancel": "취소",
     "bootbox.confirm": "확인",
+    "bootbox.submit": "Submit",
+    "bootbox.send": "Send",
     "cover.dragging_title": "커버 사진 위치변경",
     "cover.dragging_message": "원하는 위치로 커버 사진을 드래그한 후 \"저장\" 버튼을 클릭하세요.",
     "cover.saved": "커버 사진을 저장하였습니다.",

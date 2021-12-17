@@ -68,6 +68,8 @@
     "bootbox.ok": "確認",
     "bootbox.cancel": "取消",
     "bootbox.confirm": "確認",
+    "bootbox.submit": "Submit",
+    "bootbox.send": "Send",
     "cover.dragging_title": "設定封面照片位置",
     "cover.dragging_message": "拖拽封面照片到期望的位置，然後點擊“儲存”",
     "cover.saved": "封面照片和位置已儲存",

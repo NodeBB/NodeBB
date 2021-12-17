@@ -68,6 +68,8 @@
     "bootbox.ok": "У реду",
     "bootbox.cancel": "Откажи",
     "bootbox.confirm": "Потврди",
+    "bootbox.submit": "Submit",
+    "bootbox.send": "Send",
     "cover.dragging_title": "Позиционирање насловне фотографије",
     "cover.dragging_message": "Повуците насловну фотографију до жељене локације и кликните на \"Сачувај\"",
     "cover.saved": "Насловна фотографија и позиција су сачуване",

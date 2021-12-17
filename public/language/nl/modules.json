@@ -68,6 +68,8 @@
     "bootbox.ok": "OK",
     "bootbox.cancel": "Annuleren",
     "bootbox.confirm": "Bevestig",
+    "bootbox.submit": "Submit",
+    "bootbox.send": "Send",
     "cover.dragging_title": "Omslag Foto Positionering",
     "cover.dragging_message": "Sleep de omslag foto voor de gewilde positie en klik \"Opslaan\"",
     "cover.saved": "Omslag foto en positie opgeslagen",

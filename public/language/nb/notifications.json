@@ -50,6 +50,7 @@
     "users-csv-exported": "Bruker csv eksportert, klikk for å laste ned",
     "post-queue-accepted": "Innlegget ditt i køen er godtatt. Klikk her for å se innlegget ditt.",
     "post-queue-rejected": "Innlegget dit i køen har blitt avvist",
+    "post-queue-notify": "Queued post received a notification:<br/>\"%1\"",
     "email-confirmed": "E-post bekreftet",
     "email-confirmed-message": "Takk for at du har validert din e-post. Kontoen din er nå fullstendig aktivert.",
     "email-confirm-error-message": "Det oppsto et problem under valdiering av din e-post. Koden kan ha vært ugyldig eller ha utløpt.",

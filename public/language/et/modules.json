@@ -68,6 +68,8 @@
     "bootbox.ok": "Olgu",
     "bootbox.cancel": "Katkesta",
     "bootbox.confirm": "Kinnita",
+    "bootbox.submit": "Submit",
+    "bootbox.send": "Send",
     "cover.dragging_title": "Kaanefoto Positsioneerimine",
     "cover.dragging_message": "Vea kaanefoto soovitud kohta ja klikka \"Salvesta\"",
     "cover.saved": "Kaanefoto ja paiknemine salvestatud",

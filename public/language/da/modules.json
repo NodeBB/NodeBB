@@ -68,6 +68,8 @@
     "bootbox.ok": "OK",
     "bootbox.cancel": "Annuller",
     "bootbox.confirm": "Bekræft",
+    "bootbox.submit": "Submit",
+    "bootbox.send": "Send",
     "cover.dragging_title": "Coverbillede positionering",
     "cover.dragging_message": "Træk coverbilledet til den ønskede position og klik \"Gem\"",
     "cover.saved": "Coverbillede og position gemt",

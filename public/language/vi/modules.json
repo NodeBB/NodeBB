@@ -68,6 +68,8 @@
     "bootbox.ok": "Đồng ý",
     "bootbox.cancel": "Huỷ bỏ",
     "bootbox.confirm": "Xác nhận",
+    "bootbox.submit": "Submit",
+    "bootbox.send": "Send",
     "cover.dragging_title": "Điều chỉnh vị trí ảnh cover",
     "cover.dragging_message": "Kéo ảnh cover vào vị trí bạn ưng ý và nhấn \"Lưu\"",
     "cover.saved": "Ảnh cover và vị trí đã được lưu",

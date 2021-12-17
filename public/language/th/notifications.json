@@ -50,6 +50,7 @@
     "users-csv-exported": "Users csv exported, click to download",
     "post-queue-accepted": "Your queued post has been accepted. Click here to see your post.",
     "post-queue-rejected": "Your queued post has been rejected.",
+    "post-queue-notify": "Queued post received a notification:<br/>\"%1\"",
     "email-confirmed": "Email ได้รับการยืนยันแล้ว",
     "email-confirmed-message": "ขอบคุณที่ยืนยัน Email ของคุณ บัญชีของคุณสามารถใช้งานได้แล้ว",
     "email-confirm-error-message": "มีปัญหาในการยืนยัน Email ของคุณ บางทีรหัสไม่ถูกต้องหรือหมดอายุแล้ว",
