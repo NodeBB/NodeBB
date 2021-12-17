@@ -1,7 +1,5 @@
 'use strict';
 
-const validator = require('validator');
-
 const user = require('../user');
 const posts = require('../posts');
 const flags = require('../flags');
