@@ -103,21 +103,21 @@ define('forum/infinitescroll', ['hooks', 'alerts'], function (hooks, alerts) {
 	};
 
 	scroll.removeExtra = function (els, direction, count) {
+		let removedEls = $();
 		if (els.length <= count) {
-			return;
+			return removedEls;
 		}
 
 		const removeCount = els.length - count;
 		if (direction > 0) {
 			const height = $(document).height();
 			const scrollTop = $(window).scrollTop();
-
-			els.slice(0, removeCount).remove();
-
+			removedEls = els.slice(0, removeCount).remove();
 			$(window).scrollTop(scrollTop + ($(document).height() - height));
 		} else {
-			els.slice(els.length - removeCount).remove();
+			removedEls = els.slice(els.length - removeCount).remove();
 		}
+		return removedEls;
 	};
 
 	return scroll;
