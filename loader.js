@@ -187,7 +187,6 @@ Loader.stop = function () {
 	killWorkers();
 
 	// Clean up the pidfile
-	console.log('stop called');
 	if (nconf.get('daemon') !== 'false' && nconf.get('daemon') !== false) {
 		fs.unlinkSync(pidFilePath);
 	}
