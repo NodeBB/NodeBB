@@ -187,6 +187,7 @@ Loader.stop = function () {
 	killWorkers();
 
 	// Clean up the pidfile
+	console.log('stop called');
 	if (nconf.get('daemon') !== 'false' && nconf.get('daemon') !== false) {
 		fs.unlinkSync(pidFilePath);
 	}
@@ -208,12 +209,25 @@ fs.open(pathToConfig, 'r', (err) => {
 
 	if (nconf.get('daemon') !== 'false' && nconf.get('daemon') !== false) {
 		if (file.existsSync(pidFilePath)) {
+			let pid = 0;
 			try {
-				const pid = fs.readFileSync(pidFilePath, { encoding: 'utf-8' });
-				process.kill(pid, 0);
-				process.exit();
-			} catch (e) {
-				fs.unlinkSync(pidFilePath);
+				pid = fs.readFileSync(pidFilePath, { encoding: 'utf-8' });
+				if (pid) {
+					process.kill(pid, 0);
+					console.info(`Process "${pid}" from pidfile already running, exiting`);
+					process.exit();
+				} else {
+					console.info(`Invalid pid "${pid}" from pidfile, deleting pidfile`);
+					fs.unlinkSync(pidFilePath);
+				}
+			} catch (err) {
+				if (err.code === 'ESRCH') {
+					console.info(`Process "${pid}" from pidfile not found, deleting pidfile`);
+					fs.unlinkSync(pidFilePath);
+				} else {
+					console.error(err.stack);
+					throw err;
+				}
 			}
 		}
 
