@@ -1,0 +1,7 @@
+build
+logs
+test
+.github
+.husky
+.tx
+node_modules
