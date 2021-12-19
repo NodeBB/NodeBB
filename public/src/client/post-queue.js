@@ -2,8 +2,8 @@
 
 
 define('forum/post-queue', [
-	'categoryFilter', 'categorySelector', 'api',
-], function (categoryFilter, categorySelector, api) {
+	'categoryFilter', 'categorySelector', 'api', 'alerts', 'bootbox',
+], function (categoryFilter, categorySelector, api, alerts, bootbox) {
 	const PostQueue = {};
 
 	PostQueue.init = function () {
@@ -13,23 +13,45 @@ define('forum/post-queue', [
 			privilege: 'moderate',
 		});
 
-		$('.posts-list').on('click', '[data-action]', function () {
+		$('.posts-list').on('click', '[data-action]', async function () {
+			function getMessage() {
+				return new Promise((resolve) => {
+					const modal = bootbox.dialog({
+						title: '[[post-queue:notify-user]]',
+						message: '<textarea class="form-control"></textarea>',
+						buttons: {
+							OK: {
+								label: '[[modules:bootbox.send]]',
+								callback: function () {
+									const val = modal.find('textarea').val();
+									if (val) {
+										resolve(val);
+									}
+								},
+							},
+						},
+					});
+				});
+			}
 			const parent = $(this).parents('[data-id]');
 			const action = $(this).attr('data-action');
 			const id = parent.attr('data-id');
 			const listContainer = parent.get(0).parentNode;
 
-			if (!['accept', 'reject'].some(function (valid) {
-				return action === valid;
-			})) {
+			if (!['accept', 'reject', 'notify'].includes(action)) {
 				return;
 			}
 
-			socket.emit('posts.' + action, { id: id }, function (err) {
+			socket.emit('posts.' + action, {
+				id: id,
+				message: action === 'notify' ? await getMessage() : undefined,
+			}, function (err) {
 				if (err) {
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
-				parent.remove();
+				if (action === 'accept' || action === 'reject') {
+					parent.remove();
+				}
 
 				if (listContainer.childElementCount === 0) {
 					ajaxify.refresh();
@@ -66,9 +88,7 @@ define('forum/post-queue', [
 								$this.replaceWith(html.find('.topic-category'));
 							}
 						});
-					}).catch(function (err) {
-						app.alertError(err);
-					});
+					}).catch(alerts.error);
 				},
 			});
 			return false;
@@ -99,7 +119,7 @@ define('forum/post-queue', [
 				content: titleEdit ? undefined : textarea.val(),
 			}, function (err, data) {
 				if (err) {
-					return app.alertError(err);
+					return alerts.error(err);
 				}
 				if (titleEdit) {
 					if (preview.find('.title-text').length) {

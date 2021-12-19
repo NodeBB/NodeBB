@@ -50,6 +50,7 @@
     "users-csv-exported": "Users csv exported, click to download",
     "post-queue-accepted": "Your queued post has been accepted. Click here to see your post.",
     "post-queue-rejected": "Your queued post has been rejected.",
+    "post-queue-notify": "Queued post received a notification:<br/>\"%1\"",
     "email-confirmed": "Email potvrđen",
     "email-confirmed-message": "Hvala na potvrdi emaila. Vaš račun je sada aktivan.",
     "email-confirm-error-message": "Nastao je problem pri potvrdi Vaše email adrese. Provjerite kod ili zatražite novi.",

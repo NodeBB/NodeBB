@@ -3,5 +3,9 @@
 	"alert.confirm-restart": "Наистина ли искате да рестартирате NodeBB?",
 
 	"acp-title": "%1 | Контролен панел за администратори на NodeBB",
-	"settings-header-contents": "Съдържание"
+	"settings-header-contents": "Съдържание",
+	"changes-saved": "Промените са запазени",
+	"changes-saved-message": "Промените Ви в настройките на NodeBB  бяха запазени.",
+	"changes-not-saved": "Промените не са запазени",
+	"changes-not-saved-message": "Възникна проблем при запазването на промените Ви по NodeBB. (%1)"
 }

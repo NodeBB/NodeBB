@@ -4,7 +4,8 @@ define('accounts/picture', [
 	'pictureCropper',
 	'api',
 	'bootbox',
-], (pictureCropper, api, bootbox) => {
+	'alerts',
+], (pictureCropper, api, bootbox, alerts) => {
 	const Picture = {};
 
 	Picture.openChangeModal = () => {
@@ -12,7 +13,7 @@ define('accounts/picture', [
 			uid: ajaxify.data.uid,
 		}, function (err, pictures) {
 			if (err) {
-				return app.alertError(err.message);
+				return alerts.error(err);
 			}
 
 			// boolean to signify whether an uploaded picture is present in the pictures list
@@ -94,7 +95,7 @@ define('accounts/picture', [
 					changeUserPicture(type, iconBgColor).then(() => {
 						Picture.updateHeader(type === 'default' ? '' : modal.find('.list-group-item.active img').attr('src'), iconBgColor);
 						ajaxify.refresh();
-					}).catch(app.alertError);
+					}).catch(alerts.error);
 				}
 
 				function onCloseModal() {
@@ -203,7 +204,7 @@ define('accounts/picture', [
 			}, function (err) {
 				modal.modal('hide');
 				if (err) {
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
 				onRemoveComplete();
 			});

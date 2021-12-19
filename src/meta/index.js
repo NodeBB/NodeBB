@@ -27,6 +27,9 @@ Meta.languages = require('./languages');
 
 /* Assorted */
 Meta.userOrGroupExists = async function (slug) {
+	if (!slug) {
+		throw new Error('[[error:invalid-data]]');
+	}
 	const user = require('../user');
 	const groups = require('../groups');
 	slug = slugify(slug);

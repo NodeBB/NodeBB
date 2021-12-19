@@ -14,5 +14,8 @@
 	"reply": "Responder",
 	"topic": "Tópico",
 	"accept": "Aceitar",
-	"reject": "Rejeitar"
+	"reject": "Rejeitar",
+	"remove": "Remove",
+	"notify": "Notify",
+	"notify-user": "Notify User"
 }

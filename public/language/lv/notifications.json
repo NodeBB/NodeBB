@@ -50,6 +50,7 @@
     "users-csv-exported": "Users csv exported, click to download",
     "post-queue-accepted": "Your queued post has been accepted. Click here to see your post.",
     "post-queue-rejected": "Your queued post has been rejected.",
+    "post-queue-notify": "Queued post received a notification:<br/>\"%1\"",
     "email-confirmed": "E-pasta adrese ir apstiprināta",
     "email-confirmed-message": "Paldies, ka apstiprināji e-pasta adresi. Tavs konts tagad ir pilnībā aktivizēts.",
     "email-confirm-error-message": "Tavā e-pasta adreses apstiprināšanā radās problēma. Iespējams, kods ir nederīgs vai ir beidzies derīguma termiņš.",

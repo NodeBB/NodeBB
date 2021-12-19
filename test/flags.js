@@ -24,6 +24,9 @@ describe('Flags', () => {
 	let uid1;
 	let adminUid;
 	let uid3;
+	let moderatorUid;
+	let jar;
+	let csrfToken;
 	let category;
 	before(async () => {
 		// Create some stuff to flag
@@ -45,6 +48,15 @@ describe('Flags', () => {
 		uid3 = await User.create({
 			username: 'unprivileged', password: 'abcdef', email: 'd@e.com',
 		});
+
+		moderatorUid = await User.create({
+			username: 'moderator', password: 'abcdef',
+		});
+		await Privileges.categories.give(['moderate'], category.cid, [moderatorUid]);
+
+		const login = await helpers.loginUser('moderator', 'abcdef');
+		jar = login.jar;
+		csrfToken = login.csrf_token;
 	});
 
 	describe('.create()', () => {
@@ -140,6 +152,54 @@ describe('Flags', () => {
 
 				done();
 			});
+		});
+
+		it('should show user history for admins', async () => {
+			await Groups.join('administrators', moderatorUid);
+			const flagData = await request({
+				uri: `${nconf.get('url')}/api/flags/1`,
+				jar,
+				headers: {
+					'x-csrf-token': csrfToken,
+				},
+				json: true,
+			});
+
+			assert(flagData.history);
+			assert(Array.isArray(flagData.history));
+
+			await Groups.leave('administrators', moderatorUid);
+		});
+
+		it('should show user history for global moderators', async () => {
+			await Groups.join('Global Moderators', moderatorUid);
+			const flagData = await request({
+				uri: `${nconf.get('url')}/api/flags/1`,
+				jar,
+				headers: {
+					'x-csrf-token': csrfToken,
+				},
+				json: true,
+			});
+
+			assert(flagData.history);
+			assert(Array.isArray(flagData.history));
+
+			await Groups.leave('Global Moderators', moderatorUid);
+		});
+
+		it('should NOT show user history for regular moderators', async () => {
+			const flagData = await request({
+				uri: `${nconf.get('url')}/api/flags/1`,
+				jar,
+				headers: {
+					'x-csrf-token': csrfToken,
+				},
+				json: true,
+			});
+
+			assert(flagData.hasOwnProperty('history'));
+			assert(flagData.history === null);
 		});
 	});
 

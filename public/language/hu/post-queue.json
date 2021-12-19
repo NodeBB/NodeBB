@@ -14,5 +14,8 @@
 	"reply": "Válasz",
 	"topic": "Témakör",
 	"accept": "Elfogad",
-	"reject": "Elutasít"
+	"reject": "Elutasít",
+	"remove": "Remove",
+	"notify": "Notify",
+	"notify-user": "Notify User"
 }

@@ -1,6 +1,8 @@
 'use strict';
 
-define('forum/flags/list', ['components', 'Chart', 'categoryFilter', 'autocomplete', 'api'], function (components, Chart, categoryFilter, autocomplete, api) {
+define('forum/flags/list', [
+	'components', 'Chart', 'categoryFilter', 'autocomplete', 'api', 'alerts',
+], function (components, Chart, categoryFilter, autocomplete, api, alerts) {
 	const Flags = {};
 
 	let selectedCids;
@@ -134,33 +136,14 @@ define('forum/flags/list', ['components', 'Chart', 'categoryFilter', 'autocomple
 			if (subselector) {
 				const action = subselector.getAttribute('data-action');
 				const flagIds = Flags.getSelected();
-				const promises = [];
-
-				// TODO: this can be better done with flagIds.map to return promises
-				flagIds.forEach(function (flagId) {
-					promises.push(new Promise(function (resolve, reject) {
-						const handler = function (err) {
-							if (err) {
-								reject(err);
-							}
-
-							resolve(arguments[1]);
-						};
-
-						switch (action) {
-							case 'bulk-assign':
-								api.put(`/flags/${flagId}`, {
-									assignee: app.user.uid,
-								}, handler);
-								break;
-
-							case 'bulk-mark-resolved':
-								api.put(`/flags/${flagId}`, {
-									state: 'resolved',
-								}, handler);
-								break;
-						}
-					}));
+				const promises = flagIds.map((flagId) => {
+					const data = {};
+					if (action === 'bulk-assign') {
+						data.assignee = app.user.uid;
+					} else if (action === 'bulk-mark-resolved') {
+						data.state = 'resolved';
+					}
+					return api.put(`/flags/${flagId}`, data);
 				});
 
 				Promise.allSettled(promises).then(function (results) {
@@ -171,12 +154,12 @@ define('forum/flags/list', ['components', 'Chart', 'categoryFilter', 'autocomple
 						return res.status === 'rejected';
 					});
 					if (fulfilled) {
-						app.alertSuccess('[[flags:bulk-success, ' + fulfilled + ']]');
+						alerts.success('[[flags:bulk-success, ' + fulfilled + ']]');
 						ajaxify.refresh();
 					}
 
 					errors.forEach(function (res) {
-						app.alertError(res.reason);
+						alerts.error(res.reason);
 					});
 				});
 			}

@@ -68,6 +68,8 @@
     "bootbox.ok": "אישור",
     "bootbox.cancel": "בטל",
     "bootbox.confirm": "אשר",
+    "bootbox.submit": "Submit",
+    "bootbox.send": "Send",
     "cover.dragging_title": "מיקום תמונת נושא",
     "cover.dragging_message": "גרור תמונת נושא למיקום הרצוי ולחץ על \"שמור\"",
     "cover.saved": "תמונת הנושא והמיקום נשמר",

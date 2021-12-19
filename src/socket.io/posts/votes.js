@@ -5,9 +5,6 @@ const user = require('../../user');
 const posts = require('../../posts');
 const privileges = require('../../privileges');
 const meta = require('../../meta');
-const api = require('../../api');
-
-const sockets = require('..');
 
 module.exports = function (SocketPosts) {
 	SocketPosts.getVoters = async function (socket, data) {
@@ -60,20 +57,5 @@ module.exports = function (SocketPosts) {
 			};
 		}));
 		return result;
-	};
-
-	SocketPosts.upvote = async function (socket, data) {
-		sockets.warnDeprecated(socket, 'PUT /api/v3/posts/:pid/vote');
-		return await api.posts.upvote(socket, data);
-	};
-
-	SocketPosts.downvote = async function (socket, data) {
-		sockets.warnDeprecated(socket, 'PUT /api/v3/posts/:pid/vote');
-		return await api.posts.downvote(socket, data);
-	};
-
-	SocketPosts.unvote = async function (socket, data) {
-		sockets.warnDeprecated(socket, 'DELETE /api/v3/posts/:pid/vote');
-		return await api.posts.unvote(socket, data);
 	};
 };

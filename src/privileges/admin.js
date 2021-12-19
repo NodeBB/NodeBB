@@ -76,14 +76,7 @@ privsAdmin.socketMap = {
 	'admin.rooms.getAll': 'admin:dashboard',
 	'admin.analytics.get': 'admin:dashboard',
 
-	'admin.categories.getAll': 'admin:categories',
-	'admin.categories.create': 'admin:categories',
-	'admin.categories.update': 'admin:categories',
-	'admin.categories.purge': 'admin:categories',
 	'admin.categories.copySettingsFrom': 'admin:categories',
-
-	'admin.categories.getPrivilegeSettings': 'admin:privileges',
-	'admin.categories.setPrivilege': 'admin:privileges;admin:admins-mods',
 	'admin.categories.copyPrivilegesToChildren': 'admin:privileges',
 	'admin.categories.copyPrivilegesFrom': 'admin:privileges',
 	'admin.categories.copyPrivilegesToAllCategories': 'admin:privileges',

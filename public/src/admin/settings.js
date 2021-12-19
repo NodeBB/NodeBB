@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/settings', ['uploader', 'mousetrap', 'hooks'], function (uploader, mousetrap, hooks) {
+define('admin/settings', ['uploader', 'mousetrap', 'hooks', 'alerts'], function (uploader, mousetrap, hooks, alerts) {
 	const Settings = {};
 
 	Settings.populateTOC = function () {
@@ -68,22 +68,22 @@ define('admin/settings', ['uploader', 'mousetrap', 'hooks'], function (uploader,
 
 			saveFields(fields, function onFieldsSaved(err) {
 				if (err) {
-					return app.alert({
+					return alerts.alert({
 						alert_id: 'config_status',
 						timeout: 2500,
-						title: 'Changes Not Saved',
-						message: 'NodeBB encountered a problem saving your changes. (' + err.message + ')',
+						title: '[[admin/admin:changes-not-saved]]',
+						message: `[[admin/admin:changes-not-saved-message, ${err.message}]]`,
 						type: 'danger',
 					});
 				}
 
 				app.flags._unsaved = false;
 
-				app.alert({
+				alerts.alert({
 					alert_id: 'config_status',
 					timeout: 2500,
-					title: 'Changes Saved',
-					message: 'Your changes to the NodeBB configuration have been saved.',
+					title: '[[admin/admin:changes-saved]]',
+					message: '[[admin/admin:changes-saved-message]]',
 					type: 'success',
 				});
 
@@ -101,7 +101,7 @@ define('admin/settings', ['uploader', 'mousetrap', 'hooks'], function (uploader,
 
 		$('#clear-sitemap-cache').off('click').on('click', function () {
 			socket.emit('admin.settings.clearSitemapCache', function () {
-				app.alertSuccess('Sitemap Cache Cleared!');
+				alerts.success('Sitemap Cache Cleared!');
 			});
 			return false;
 		});

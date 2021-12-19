@@ -30,8 +30,8 @@ Plugins.toggleInstall = async function (socket, data) {
 	return pluginData;
 };
 
-Plugins.getActive = function (socket, data, callback) {
-	plugins.getActive(callback);
+Plugins.getActive = async function () {
+	return await plugins.getActive();
 };
 
 Plugins.orderActivePlugins = async function (socket, data) {
@@ -39,6 +39,6 @@ Plugins.orderActivePlugins = async function (socket, data) {
 	await Promise.all(data.map(plugin => db.sortedSetAdd('plugins:active', plugin.order || 0, plugin.name)));
 };
 
-Plugins.upgrade = function (socket, data, callback) {
-	plugins.upgrade(data.id, data.version, callback);
+Plugins.upgrade = async function (socket, data) {
+	return await plugins.upgrade(data.id, data.version);
 };

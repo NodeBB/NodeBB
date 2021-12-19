@@ -10,7 +10,8 @@ define('forum/account/header', [
 	'accounts/delete',
 	'api',
 	'bootbox',
-], function (coverPhoto, pictureCropper, components, translator, Benchpress, AccountsDelete, api, bootbox) {
+	'alerts',
+], function (coverPhoto, pictureCropper, components, translator, Benchpress, AccountsDelete, api, bootbox, alerts) {
 	const AccountHeader = {};
 	let isAdminOrSelfOrGlobalMod;
 
@@ -117,11 +118,11 @@ define('forum/account/header', [
 	function toggleFollow(type) {
 		api[type === 'follow' ? 'put' : 'del']('/users/' + ajaxify.data.uid + '/follow', undefined, function (err) {
 			if (err) {
-				return app.alertError(err);
+				return alerts.error(err);
 			}
 			components.get('account/follow').toggleClass('hide', type === 'follow');
 			components.get('account/unfollow').toggleClass('hide', type === 'unfollow');
-			app.alertSuccess('[[global:alert.' + type + ', ' + ajaxify.data.username + ']]');
+			alerts.success('[[global:alert.' + type + ', ' + ajaxify.data.username + ']]');
 		});
 
 		return false;
@@ -162,7 +163,7 @@ define('forum/account/header', [
 								}
 
 								ajaxify.refresh();
-							}).catch(app.alertError);
+							}).catch(alerts.error);
 						},
 					},
 				},
@@ -173,7 +174,7 @@ define('forum/account/header', [
 	function unbanAccount() {
 		api.del('/users/' + ajaxify.data.theirid + '/ban').then(() => {
 			ajaxify.refresh();
-		}).catch(app.alertError);
+		}).catch(alerts.error);
 	}
 
 	function flagAccount() {
@@ -192,7 +193,7 @@ define('forum/account/header', [
 			blockerUid: app.user.uid,
 		}, function (err, blocked) {
 			if (err) {
-				return app.alertError(err.message);
+				return alerts.error(err);
 			}
 
 			translator.translate('[[user:' + (blocked ? 'unblock' : 'block') + '_user]]', function (label) {
@@ -217,7 +218,7 @@ define('forum/account/header', [
 					if (!err) {
 						ajaxify.refresh();
 					} else {
-						app.alertError(err.message);
+						alerts.error(err);
 					}
 				});
 			});

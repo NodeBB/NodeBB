@@ -68,6 +68,8 @@
     "bootbox.ok": "OK",
     "bootbox.cancel": "Zrušiť",
     "bootbox.confirm": "Potvrdiť",
+    "bootbox.submit": "Submit",
+    "bootbox.send": "Send",
     "cover.dragging_title": "Pozícia profilovej fotografie",
     "cover.dragging_message": "Presuňte profilovú fotografiu do požadovanej pozície a kliknite na „Uložiť\"",
     "cover.saved": "Profilová fotografia a pozícia boli uložené",

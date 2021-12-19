@@ -68,6 +68,8 @@
     "bootbox.ok": "ตกลง",
     "bootbox.cancel": "ยกเลิก",
     "bootbox.confirm": "ยืนยัน",
+    "bootbox.submit": "Submit",
+    "bootbox.send": "Send",
     "cover.dragging_title": "ตำแหน่งภาพหน้าปก",
     "cover.dragging_message": "ลากภาพหน้าปกเพื่อเลือกตำแหน่งแล้วกด \"บันทึก\"",
     "cover.saved": "ภาพหน้าปกและตำแหน่งได้รับการบันทึกแล้ว",

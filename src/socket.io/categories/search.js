@@ -53,9 +53,9 @@ module.exports = function (SocketCategories) {
 		const result = await categories.search({
 			uid: uid,
 			query: data.search,
+			qs: data.query,
 			paginate: false,
 		});
-
 
 		let matchedCids = result.categories.map(c => c.cid);
 		// no need to filter if all 3 states are used

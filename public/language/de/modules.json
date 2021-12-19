@@ -68,6 +68,8 @@
     "bootbox.ok": "OK",
     "bootbox.cancel": "Abbrechen",
     "bootbox.confirm": "Bestätigen",
+    "bootbox.submit": "Submit",
+    "bootbox.send": "Send",
     "cover.dragging_title": "Titelbildpositionierung",
     "cover.dragging_message": "Ziehe das Titelbild an die gewünschte Position und klicke auf \"Speichern\"",
     "cover.saved": "Titelbild und -position gespeichert",

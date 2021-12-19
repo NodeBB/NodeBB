@@ -1,17 +1,17 @@
 'use strict';
 
 define('admin/manage/admins-mods', [
-	'autocomplete', 'api', 'bootbox', 'categorySelector',
-], function (autocomplete, api, bootbox, categorySelector) {
+	'autocomplete', 'api', 'bootbox', 'alerts', 'categorySelector',
+], function (autocomplete, api, bootbox, alerts, categorySelector) {
 	const AdminsMods = {};
 
 	AdminsMods.init = function () {
 		autocomplete.user($('#admin-search'), function (ev, ui) {
 			socket.emit('admin.user.makeAdmins', [ui.item.user.uid], function (err) {
 				if (err) {
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
-				app.alertSuccess('[[admin/manage/users:alerts.make-admin-success]]');
+				alerts.success('[[admin/manage/users:alerts.make-admin-success]]');
 				$('#admin-search').val('');
 
 				if ($('.administrator-area [data-uid="' + ui.item.user.uid + '"]').length) {
@@ -28,15 +28,15 @@ define('admin/manage/admins-mods', [
 			const userCard = $(this).parents('[data-uid]');
 			const uid = userCard.attr('data-uid');
 			if (parseInt(uid, 10) === parseInt(app.user.uid, 10)) {
-				return app.alertError('[[admin/manage/users:alerts.no-remove-yourself-admin]]');
+				return alerts.error('[[admin/manage/users:alerts.no-remove-yourself-admin]]');
 			}
 			bootbox.confirm('[[admin/manage/users:alerts.confirm-remove-admin]]', function (confirm) {
 				if (confirm) {
 					socket.emit('admin.user.removeAdmins', [uid], function (err) {
 						if (err) {
-							return app.alertError(err.message);
+							return alerts.error(err.message);
 						}
-						app.alertSuccess('[[admin/manage/users:alerts.remove-admin-success]]');
+						alerts.success('[[admin/manage/users:alerts.remove-admin-success]]');
 						userCard.remove();
 					});
 				}
@@ -45,7 +45,7 @@ define('admin/manage/admins-mods', [
 
 		autocomplete.user($('#global-mod-search'), function (ev, ui) {
 			api.put('/groups/global-moderators/membership/' + ui.item.user.uid).then(() => {
-				app.alertSuccess('[[admin/manage/users:alerts.make-global-mod-success]]');
+				alerts.success('[[admin/manage/users:alerts.make-global-mod-success]]');
 				$('#global-mod-search').val('');
 
 				if ($('.global-moderator-area [data-uid="' + ui.item.user.uid + '"]').length) {
@@ -56,7 +56,7 @@ define('admin/manage/admins-mods', [
 					$('.global-moderator-area').prepend(html);
 					$('#no-global-mods-warning').addClass('hidden');
 				});
-			}).catch(app.alertError);
+			}).catch(alerts.error);
 		});
 
 		$('.global-moderator-area').on('click', '.remove-user-icon', function () {
@@ -66,12 +66,12 @@ define('admin/manage/admins-mods', [
 			bootbox.confirm('[[admin/manage/users:alerts.confirm-remove-global-mod]]', function (confirm) {
 				if (confirm) {
 					api.del('/groups/global-moderators/membership/' + uid).then(() => {
-						app.alertSuccess('[[admin/manage/users:alerts.remove-global-mod-success]]');
+						alerts.success('[[admin/manage/users:alerts.remove-global-mod-success]]');
 						userCard.remove();
 						if (!$('.global-moderator-area').children().length) {
 							$('#no-global-mods-warning').removeClass('hidden');
 						}
-					}).catch(app.alertError);
+					}).catch(alerts.error);
 				}
 			});
 		});
@@ -87,16 +87,11 @@ define('admin/manage/admins-mods', [
 		autocomplete.user($('.moderator-search'), function (ev, ui) {
 			const input = $(ev.target);
 			const cid = $(ev.target).attr('data-cid');
-			socket.emit('admin.categories.setPrivilege', {
-				cid: cid,
-				privilege: ajaxify.data.allPrivileges,
-				set: true,
-				member: ui.item.user.uid,
-			}, function (err) {
+			api.put(`/categories/${cid}/moderator/${ui.item.user.uid}`, {}, function (err) {
 				if (err) {
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
-				app.alertSuccess('[[admin/manage/users:alerts.make-moderator-success]]');
+				alerts.success('[[admin/manage/users:alerts.make-moderator-success]]');
 				input.val('');
 
 				if ($('.moderator-area[data-cid="' + cid + '"] [data-uid="' + ui.item.user.uid + '"]').length) {
@@ -118,16 +113,11 @@ define('admin/manage/admins-mods', [
 
 			bootbox.confirm('[[admin/manage/users:alerts.confirm-remove-moderator]]', function (confirm) {
 				if (confirm) {
-					socket.emit('admin.categories.setPrivilege', {
-						cid: cid,
-						privilege: ajaxify.data.allPrivileges,
-						set: false,
-						member: uid,
-					}, function (err) {
+					api.delete(`/categories/${cid}/moderator/${uid}`, {}, function (err) {
 						if (err) {
-							return app.alertError(err.message);
+							return alerts.error(err);
 						}
-						app.alertSuccess('[[admin/manage/users:alerts.remove-moderator-success]]');
+						alerts.success('[[admin/manage/users:alerts.remove-moderator-success]]');
 						userCard.remove();
 						if (!moderatorArea.children().length) {
 							$('.no-moderator-warning[data-cid="' + cid + '"]').removeClass('hidden');

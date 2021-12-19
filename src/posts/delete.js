@@ -84,7 +84,7 @@ module.exports = function (Posts) {
 			topics.updateTeaser(postData.tid),
 			topics.updateLastPostTimeFromLastPid(postData.tid),
 			db.sortedSetIncrBy(`tid:${postData.tid}:posters`, -1, postData.uid),
-			user.incrementUserPostCountBy(postData.uid, -1),
+			user.updatePostCount(postData.uid),
 			notifications.rescind(`new_post:tid:${postData.tid}:pid:${postData.pid}:uid:${postData.uid}`),
 		];
 

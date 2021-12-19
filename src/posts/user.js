@@ -169,11 +169,14 @@ module.exports = function (Posts) {
 			db.setObjectField(pids.map(pid => `post:${pid}`), 'uid', toUid),
 			db.sortedSetRemoveBulk(bulkRemove),
 			db.sortedSetAddBulk(bulkAdd),
-			user.incrementUserPostCountBy(toUid, pids.length),
 			user.incrementUserReputationBy(toUid, repChange),
 			handleMainPidOwnerChange(postData, toUid),
-			reduceCounters(postsByUser),
 			updateTopicPosters(postData, toUid),
+		]);
+
+		await Promise.all([
+			user.updatePostCount(toUid),
+			reduceCounters(postsByUser),
 		]);
 
 		plugins.hooks.fire('action:post.changeOwner', {
@@ -187,7 +190,7 @@ module.exports = function (Posts) {
 		await async.eachOfSeries(postsByUser, async (posts, uid) => {
 			const repChange = posts.reduce((acc, val) => acc + val.votes, 0);
 			await Promise.all([
-				user.incrementUserPostCountBy(uid, -posts.length),
+				user.updatePostCount(uid),
 				user.incrementUserReputationBy(uid, -repChange),
 			]);
 		});

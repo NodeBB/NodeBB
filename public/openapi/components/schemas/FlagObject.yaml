@@ -76,6 +76,7 @@ FlagHistoryObject:
   properties:
     history:
       type: array
+      nullable: true
       items:
         type: object
         properties:

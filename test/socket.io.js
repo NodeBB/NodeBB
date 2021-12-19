@@ -105,46 +105,15 @@ describe('socket.io', () => {
 		});
 	});
 
-	it('should post a topic', (done) => {
-		io.emit('topics.post', {
-			title: 'test topic title',
-			content: 'test topic main post content',
-			uid: adminUid,
-			cid: cid,
-		}, (err, result) => {
-			assert.ifError(err);
-			assert.equal(result.user.username, 'admin');
-			assert.equal(result.category.cid, cid);
-			assert.equal(result.mainPost.content, 'test topic main post content');
-			tid = result.tid;
-			done();
-		});
-	});
-
-	it('should reply to topic', (done) => {
-		io.emit('posts.reply', { tid: tid, uid: adminUid, content: 'test post content' }, (err, result) => {
-			assert.ifError(err);
-			assert.equal(result.uid, adminUid);
-			assert.equal(result.user.username, 'admin');
-			assert.equal(result.topic.tid, tid);
-			done();
-		});
-	});
-
-	it('should ban a user', (done) => {
-		const socketUser = require('../src/socket.io/user');
-		socketUser.banUsers({ uid: adminUid }, { uids: [regularUid], reason: 'spammer' }, (err) => {
-			assert.ifError(err);
-			user.getLatestBanInfo(regularUid, (err, data) => {
-				assert.ifError(err);
-				assert(data.uid);
-				assert(data.timestamp);
-				assert(data.hasOwnProperty('banned_until'));
-				assert(data.hasOwnProperty('banned_until_readable'));
-				assert.equal(data.reason, 'spammer');
-				done();
-			});
-		});
+	it('should ban a user', async () => {
+		const apiUser = require('../src/api/users');
+		await apiUser.ban({ uid: adminUid }, { uid: regularUid, reason: 'spammer' });
+		const data = await user.getLatestBanInfo(regularUid);
+		assert(data.uid);
+		assert(data.timestamp);
+		assert(data.hasOwnProperty('banned_until'));
+		assert(data.hasOwnProperty('banned_until_readable'));
+		assert.equal(data.reason, 'spammer');
 	});
 
 	it('should return ban reason', (done) => {
@@ -155,16 +124,11 @@ describe('socket.io', () => {
 		});
 	});
 
-	it('should unban a user', (done) => {
-		const socketUser = require('../src/socket.io/user');
-		socketUser.unbanUsers({ uid: adminUid }, [regularUid], (err) => {
-			assert.ifError(err);
-			user.bans.isBanned(regularUid, (err, isBanned) => {
-				assert.ifError(err);
-				assert(!isBanned);
-				done();
-			});
-		});
+	it('should unban a user', async () => {
+		const apiUser = require('../src/api/users');
+		await apiUser.unban({ uid: adminUid }, { uid: regularUid });
+		const isBanned = await user.bans.isBanned(regularUid);
+		assert(!isBanned);
 	});
 
 	it('should make user admin', (done) => {
@@ -564,11 +528,8 @@ describe('socket.io', () => {
 		});
 	});
 
-	it('should clear sitemap cache', (done) => {
-		socketAdmin.settings.clearSitemapCache({ uid: adminUid }, {}, (err) => {
-			assert.ifError(err);
-			done();
-		});
+	it('should clear sitemap cache', async () => {
+		await socketAdmin.settings.clearSitemapCache({ uid: adminUid }, {});
 	});
 
 	it('should send test email', async () => {

@@ -46,6 +46,9 @@ postsAPI.edit = async function (caller, data) {
 	if (!data || !data.pid || (meta.config.minimumPostLength !== 0 && !data.content)) {
 		throw new Error('[[error:invalid-data]]');
 	}
+	if (!caller.uid) {
+		throw new Error('[[error:not-logged-in]]');
+	}
 	// Trim and remove HTML (latter for composers that send in HTML, like redactor)
 	const contentLen = utils.stripHTMLTags(data.content).trim().length;
 
@@ -205,6 +208,12 @@ async function isMainAndLastPost(pid) {
 }
 
 postsAPI.move = async function (caller, data) {
+	if (!caller.uid) {
+		throw new Error('[[error:not-logged-in]]');
+	}
+	if (!data || !data.pid || !data.tid) {
+		throw new Error('[[error:invalid-data]]');
+	}
 	const canMove = await Promise.all([
 		privileges.topics.isAdminOrMod(data.tid, caller.uid),
 		privileges.posts.canMove(data.pid, caller.uid),

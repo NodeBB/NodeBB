@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/account/categories', ['forum/account/header'], function (header) {
+define('forum/account/categories', ['forum/account/header', 'alerts'], function (header, alerts) {
 	const Categories = {};
 
 	Categories.init = function () {
@@ -20,7 +20,7 @@ define('forum/account/categories', ['forum/account/header'], function (header) {
 
 			socket.emit('categories.setWatchState', { cid: cids, state: state, uid: ajaxify.data.uid }, function (err, modified_cids) {
 				if (err) {
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
 				updateDropdowns(modified_cids, state);
 			});
@@ -35,11 +35,11 @@ define('forum/account/categories', ['forum/account/header'], function (header) {
 
 			socket.emit('categories.setWatchState', { cid: cid, state: state, uid: ajaxify.data.uid }, function (err, modified_cids) {
 				if (err) {
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
 				updateDropdowns(modified_cids, state);
 
-				app.alertSuccess('[[category:' + state + '.message]]');
+				alerts.success('[[category:' + state + '.message]]');
 			});
 		});
 	}

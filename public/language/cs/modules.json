@@ -68,6 +68,8 @@
     "bootbox.ok": "OK",
     "bootbox.cancel": "Zrušit",
     "bootbox.confirm": "Potvrdit",
+    "bootbox.submit": "Submit",
+    "bootbox.send": "Send",
     "cover.dragging_title": "Umístění fotografie",
     "cover.dragging_message": "Přesuňte fotku na požadovanou pozici a klikněte na „Uložit”",
     "cover.saved": "Fotografie a její umístění uloženo",

@@ -68,6 +68,8 @@
     "bootbox.ok": "OK",
     "bootbox.cancel": "Cancelar",
     "bootbox.confirm": "Confirmar",
+    "bootbox.submit": "Submit",
+    "bootbox.send": "Send",
     "cover.dragging_title": "Colocar la foto de portada",
     "cover.dragging_message": "Arrastra la foto de portada al lugar que quieras y haz click en \"Guardar\"",
     "cover.saved": "Imagen y posición de la foto de portada guardadas.",

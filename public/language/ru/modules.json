@@ -68,6 +68,8 @@
     "bootbox.ok": "ОК",
     "bootbox.cancel": "Отмена",
     "bootbox.confirm": "Подтвердить",
+    "bootbox.submit": "Submit",
+    "bootbox.send": "Send",
     "cover.dragging_title": "Позиционирование обложки",
     "cover.dragging_message": "Перетащите обложку на желаемое место и нажмите \"Сохранить\"",
     "cover.saved": "Обложка и её расположение сохранены",

@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/settings/email', ['ace/ace', 'admin/settings'], function (ace) {
+define('admin/settings/email', ['ace/ace', 'alerts', 'admin/settings'], function (ace, alerts) {
 	const module = {};
 	let emailEditor;
 
@@ -23,9 +23,9 @@ define('admin/settings/email', ['ace/ace', 'admin/settings'], function (ace) {
 			socket.emit('admin.email.test', { template: $('#test-email').val() }, function (err) {
 				if (err) {
 					console.error(err.message);
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
-				app.alertSuccess('Test Email Sent');
+				alerts.success('Test Email Sent');
 			});
 			return false;
 		});
@@ -85,7 +85,7 @@ define('admin/settings/email', ['ace/ace', 'admin/settings'], function (ace) {
 
 		socket.emit('admin.getServerTime', {}, function (err, now) {
 			if (err) {
-				return app.alertError(err.message);
+				return alerts.error(err);
 			}
 
 			const date = new Date(now.timestamp);

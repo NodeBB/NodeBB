@@ -267,6 +267,9 @@ Topics.isLocked = async function (tid) {
 };
 
 Topics.search = async function (tid, term) {
+	if (!tid || !term) {
+		throw new Error('[[error:invalid-data]]');
+	}
 	const result = await plugins.hooks.fire('filter:topic.search', {
 		tid: tid,
 		term: term,

@@ -117,6 +117,8 @@ modsController.flags.detail = async function (req, res, next) {
 		return next(); // 404
 	}
 
+	results.flagData.history = results.isAdminOrGlobalMod ? (await flags.getHistory(req.params.flagId)) : null;
+
 	if (results.flagData.type === 'user') {
 		results.flagData.type_path = 'uid';
 	} else if (results.flagData.type === 'post') {
@@ -147,29 +149,25 @@ modsController.flags.detail = async function (req, res, next) {
 };
 
 modsController.postQueue = async function (req, res, next) {
-	// Admins, global mods, and individual mods only
-	const isPrivileged = await user.isPrivileged(req.uid);
-	if (!isPrivileged) {
+	if (!req.loggedIn) {
 		return next();
 	}
+	const { id } = req.params;
 	const { cid } = req.query;
 	const page = parseInt(req.query.page, 10) || 1;
 	const postsPerPage = 20;
 
-	let postData = await posts.getQueuedPosts();
-	const [isAdminOrGlobalMod, moderatedCids, categoriesData] = await Promise.all([
-		user.isAdminOrGlobalMod(req.uid),
+	let postData = await posts.getQueuedPosts({ id: id });
+	const [isAdmin, isGlobalMod, moderatedCids, categoriesData] = await Promise.all([
+		user.isAdministrator(req.uid),
+		user.isGlobalModerator(req.uid),
 		user.getModeratedCids(req.uid),
 		helpers.getSelectedCategory(cid),
 	]);
 
-	if (cid && !moderatedCids.includes(Number(cid)) && !isAdminOrGlobalMod) {
-		return next();
-	}
-
 	postData = postData.filter(p => p &&
 		(!categoriesData.selectedCids.length || categoriesData.selectedCids.includes(p.category.cid)) &&
-		(isAdminOrGlobalMod || moderatedCids.includes(Number(p.category.cid))));
+		(isAdmin || isGlobalMod || moderatedCids.includes(Number(p.category.cid)) || req.uid === p.user.uid));
 
 	({ posts: postData } = await plugins.hooks.fire('filter:post-queue.get', {
 		posts: postData,
@@ -180,13 +178,19 @@ modsController.postQueue = async function (req, res, next) {
 	const start = (page - 1) * postsPerPage;
 	const stop = start + postsPerPage - 1;
 	postData = postData.slice(start, stop + 1);
-
+	const crumbs = [{ text: '[[pages:post-queue]]', url: id ? '/post-queue' : undefined }];
+	if (id && postData.length) {
+		const text = postData[0].data.tid ? '[[post-queue:reply]]' : '[[post-queue:topic]]';
+		crumbs.push({ text: text });
+	}
 	res.render('post-queue', {
 		title: '[[pages:post-queue]]',
 		posts: postData,
+		isAdmin: isAdmin,
+		canAccept: isAdmin || isGlobalMod || !!moderatedCids.length,
 		...categoriesData,
 		allCategoriesUrl: `post-queue${helpers.buildQueryString(req.query, 'cid', '')}`,
 		pagination: pagination.create(page, pageCount),
-		breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[pages:post-queue]]' }]),
+		breadcrumbs: helpers.buildBreadcrumbs(crumbs),
 	});
 };

@@ -1,8 +1,8 @@
 'use strict';
 
 define('admin/manage/users', [
-	'translator', 'benchpress', 'autocomplete', 'api', 'slugify', 'bootbox', 'accounts/invite',
-], function (translator, Benchpress, autocomplete, api, slugify, bootbox, AccountInvite) {
+	'translator', 'benchpress', 'autocomplete', 'api', 'slugify', 'bootbox', 'alerts', 'accounts/invite',
+], function (translator, Benchpress, autocomplete, api, slugify, bootbox, alerts, AccountInvite) {
 	const Users = {};
 
 	Users.init = function () {
@@ -15,8 +15,8 @@ define('admin/manage/users', [
 
 		$('.export-csv').on('click', function () {
 			socket.once('event:export-users-csv', function () {
-				app.removeAlert('export-users-start');
-				app.alert({
+				alerts.remove('export-users-start');
+				alerts.alert({
 					alert_id: 'export-users',
 					type: 'success',
 					title: '[[global:alert.success]]',
@@ -29,9 +29,9 @@ define('admin/manage/users', [
 			});
 			socket.emit('admin.user.exportUsersCSV', {}, function (err) {
 				if (err) {
-					return app.alertError(err);
+					return alerts.error(err);
 				}
-				app.alert({
+				alerts.alert({
 					alert_id: 'export-users-start',
 					message: '[[admin/manage/users:export-users-started]]',
 					timeout: (ajaxify.data.userCount / 5000) * 500,
@@ -76,9 +76,9 @@ define('admin/manage/users', [
 		function done(successMessage, className, flag) {
 			return function (err) {
 				if (err) {
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
-				app.alertSuccess(successMessage);
+				alerts.success(successMessage);
 				if (className) {
 					update(className, flag);
 				}
@@ -87,7 +87,7 @@ define('admin/manage/users', [
 		}
 
 		function onSuccess(successMessage, className, flag) {
-			app.alertSuccess(successMessage);
+			alerts.success(successMessage);
 			if (className) {
 				update(className, flag);
 			}
@@ -101,12 +101,12 @@ define('admin/manage/users', [
 		$('.manage-groups').on('click', function () {
 			const uids = getSelectedUids();
 			if (!uids.length) {
-				app.alertError('[[error:no-users-selected]]');
+				alerts.error('[[error:no-users-selected]]');
 				return false;
 			}
 			socket.emit('admin.user.loadGroups', uids, function (err, data) {
 				if (err) {
-					return app.alertError(err);
+					return alerts.error(err);
 				}
 				Benchpress.render('admin/partials/manage_user_groups', data).then(function (html) {
 					const modal = bootbox.dialog({
@@ -122,7 +122,7 @@ define('admin/manage/users', [
 								app.parseAndTranslate('admin/partials/manage_user_groups', { users: [{ groups: [ui.item.group] }] }, function (html) {
 									$('[data-uid=' + uid + '] .group-area').append(html.find('.group-area').html());
 								});
-							}).catch(app.alertError);
+							}).catch(alerts.error);
 						});
 					});
 					modal.on('click', '.group-area a', function () {
@@ -134,7 +134,7 @@ define('admin/manage/users', [
 						const uid = $(this).parents('[data-uid]').attr('data-uid');
 						api.del('/groups/' + slugify(groupName) + '/membership/' + uid).then(() => {
 							groupCard.remove();
-						}).catch(app.alertError);
+						}).catch(alerts.error);
 						return false;
 					});
 				});
@@ -144,7 +144,7 @@ define('admin/manage/users', [
 		$('.ban-user').on('click', function () {
 			const uids = getSelectedUids();
 			if (!uids.length) {
-				app.alertError('[[error:no-users-selected]]');
+				alerts.error('[[error:no-users-selected]]');
 				return false; // specifically to keep the menu open
 			}
 
@@ -154,7 +154,7 @@ define('admin/manage/users', [
 						return api.put('/users/' + uid + '/ban');
 					})).then(() => {
 						onSuccess('[[admin/manage/users:alerts.ban-success]]', '.ban', true);
-					}).catch(app.alertError);
+					}).catch(alerts.error);
 				}
 			});
 		});
@@ -162,7 +162,7 @@ define('admin/manage/users', [
 		$('.ban-user-temporary').on('click', function () {
 			const uids = getSelectedUids();
 			if (!uids.length) {
-				app.alertError('[[error:no-users-selected]]');
+				alerts.error('[[error:no-users-selected]]');
 				return false; // specifically to keep the menu open
 			}
 
@@ -195,7 +195,7 @@ define('admin/manage/users', [
 									});
 								})).then(() => {
 									onSuccess('[[admin/manage/users:alerts.ban-success]]', '.ban', true);
-								}).catch(app.alertError);
+								}).catch(alerts.error);
 							},
 						},
 					},
@@ -206,7 +206,7 @@ define('admin/manage/users', [
 		$('.unban-user').on('click', function () {
 			const uids = getSelectedUids();
 			if (!uids.length) {
-				app.alertError('[[error:no-users-selected]]');
+				alerts.error('[[error:no-users-selected]]');
 				return false; // specifically to keep the menu open
 			}
 
@@ -238,9 +238,9 @@ define('admin/manage/users', [
 				}
 				socket.emit('admin.user.validateEmail', uids, function (err) {
 					if (err) {
-						return app.alertError(err.message);
+						return alerts.error(err);
 					}
-					app.alertSuccess('[[admin/manage/users:alerts.validate-email-success]]');
+					alerts.success('[[admin/manage/users:alerts.validate-email-success]]');
 					update('.notvalidated', false);
 					update('.validated', true);
 					unselectAll();
@@ -255,9 +255,9 @@ define('admin/manage/users', [
 			}
 			socket.emit('admin.user.sendValidationEmail', uids, function (err) {
 				if (err) {
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
-				app.alertSuccess('[[notifications:email-confirm-sent]]');
+				alerts.success('[[notifications:email-confirm-sent]]');
 			});
 		});
 
@@ -331,15 +331,15 @@ define('admin/manage/users', [
 						)
 					).then(() => {
 						if (path !== '/content') {
-							app.alertSuccess('[[admin/manage/users:alerts.delete-success]]');
+							alerts.success('[[admin/manage/users:alerts.delete-success]]');
 						} else {
-							app.alertSuccess('[[admin/manage/users:alerts.delete-content-success]]');
+							alerts.success('[[admin/manage/users:alerts.delete-content-success]]');
 						}
 						unselectAll();
 						if (!$('.users-table [component="user/select/single"]').length) {
 							ajaxify.refresh();
 						}
-					}).catch(app.alertError);
+					}).catch(alerts.error);
 				}
 			});
 		}
@@ -399,7 +399,7 @@ define('admin/manage/users', [
 					modal.on('hidden.bs.modal', function () {
 						ajaxify.refresh();
 					});
-					app.alertSuccess('[[admin/manage/users:alerts.create-success]]');
+					alerts.success('[[admin/manage/users:alerts.create-success]]');
 				})
 				.catch(err => errorEl.translateHtml('[[admin/manage/users:alerts.error-x, ' + err.status.message + ']]').removeClass('hidden'));
 		}
@@ -441,7 +441,7 @@ define('admin/manage/users', [
 			}
 		}).fail(function (xhrErr) {
 			if (xhrErr && xhrErr.responseJSON && xhrErr.responseJSON.error) {
-				app.alertError(xhrErr.responseJSON.error);
+				alerts.error(xhrErr.responseJSON.error);
 			}
 		});
 	}

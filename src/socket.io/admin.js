@@ -15,7 +15,6 @@ const SocketAdmin = module.exports;
 SocketAdmin.user = require('./admin/user');
 SocketAdmin.categories = require('./admin/categories');
 SocketAdmin.settings = require('./admin/settings');
-SocketAdmin.groups = require('./admin/groups');
 SocketAdmin.tags = require('./admin/tags');
 SocketAdmin.rewards = require('./admin/rewards');
 SocketAdmin.navigation = require('./admin/navigation');

@@ -45,10 +45,10 @@
     "unpinned-by": "Откачио",
     "deleted-by": "Избрисао",
     "restored-by": "Вратио",
-    "moved-from-by": "Moved from %1 by",
+    "moved-from-by": "Из %1 преместио",
     "queued-by": "Порука је на чекању за одобрење &rarr;",
-    "backlink": "Referenced by",
-    "forked-by": "Forked by",
+    "backlink": "Упутио",
+    "forked-by": "Рачвао",
     "bookmark_instructions": "Кликните овде за повратак на последњу прочитану поруку у овој теми.",
     "flag-post": "Означи поруку заставицом",
     "flag-user": "Означи корисника заставицом",
@@ -140,7 +140,7 @@
     "composer.handle_placeholder": "Унесите ваше име/идентитет овде",
     "composer.discard": "Одбаци",
     "composer.submit": "Проследи",
-    "composer.additional-options": "Additional Options",
+    "composer.additional-options": "Додатне опције",
     "composer.schedule": "Испланирај",
     "composer.replying_to": "Писање одговора на %1",
     "composer.new_topic": "Нова тема",
@@ -161,7 +161,7 @@
     "newest_to_oldest": "Од новијих ка старијим",
     "most_votes": "Највише гласова",
     "most_posts": "Највише порука",
-    "most_views": "Most Views",
+    "most_views": "Највише прегледа",
     "stale.title": "Креирати нову тему уместо тога?",
     "stale.warning": "Тема у којој желите да одговорите је сувише стара. Да ли желите да уместо тога креирате нову тему и упутите на ову у вашем одговору?",
     "stale.create": "Креирај нову тему",
@@ -181,5 +181,5 @@
     "timeago_earlier": "%1 раније",
     "first-post": "Прва порука",
     "last-post": "Последња порука",
-    "post-quick-reply": "Post quick reply"
+    "post-quick-reply": "Објави брзи одговор"
 }

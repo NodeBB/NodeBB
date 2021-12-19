@@ -1,6 +1,6 @@
 'use strict';
 
-define('pictureCropper', ['cropper'], function (Cropper) {
+define('pictureCropper', ['cropper', 'alerts'], function (Cropper, alerts) {
 	const module = {};
 
 	module.show = function (data, callback) {
@@ -118,7 +118,7 @@ define('pictureCropper', ['cropper'], function (Cropper) {
 								cropperModal.find('#upload-progress-box').hide();
 								cropperModal.find('.upload-btn').removeClass('disabled');
 								cropperModal.find('.crop-btn').removeClass('disabled');
-								return app.alertError(err.message);
+								return alerts.error(err);
 							}
 
 							callback(result.url);
@@ -158,7 +158,7 @@ define('pictureCropper', ['cropper'], function (Cropper) {
 				params: socketData,
 			}, function (err, result) {
 				if (err) {
-					return app.alertError(err);
+					return alerts.error(err);
 				}
 
 				if (socketData.progress + chunkSize < socketData.size) {
@@ -185,9 +185,9 @@ define('pictureCropper', ['cropper'], function (Cropper) {
 				'Failed to execute \'toDataURL\' on \'HTMLCanvasElement\': Tainted canvases may not be exported.',
 			];
 			if (corsErrors.indexOf(err.message) !== -1) {
-				app.alertError('[[error:cors-error]]');
+				alerts.error('[[error:cors-error]]');
 			} else {
-				app.alertError(err.message);
+				alerts.error(err.message);
 			}
 			return;
 		}

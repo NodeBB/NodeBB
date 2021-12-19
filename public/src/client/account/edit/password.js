@@ -1,8 +1,8 @@
 'use strict';
 
 define('forum/account/edit/password', [
-	'forum/account/header', 'translator', 'zxcvbn', 'api',
-], function (header, translator, zxcvbn, api) {
+	'forum/account/header', 'translator', 'zxcvbn', 'api', 'alerts',
+], function (header, translator, zxcvbn, api, alerts) {
 	const AccountEditPassword = {};
 
 	AccountEditPassword.init = function () {
@@ -91,11 +91,11 @@ define('forum/account/edit/password', [
 					});
 			} else {
 				if (!passwordsmatch) {
-					app.alertError('[[user:change_password_error_match]]');
+					alerts.error('[[user:change_password_error_match]]');
 				}
 
 				if (!passwordvalid) {
-					app.alertError('[[user:change_password_error]]');
+					alerts.error('[[user:change_password_error]]');
 				}
 			}
 			return false;

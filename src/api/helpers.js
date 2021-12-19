@@ -50,8 +50,8 @@ exports.doTopicAction = async function (action, event, caller, { tids }) {
 		throw new Error('[[error:invalid-tid]]');
 	}
 
-	const exists = (await Promise.all(tids.map(async tid => await topics.exists(tid)))).every(Boolean);
-	if (!exists) {
+	const exists = await topics.exists(tids);
+	if (!exists.every(Boolean)) {
 		throw new Error('[[error:no-topic]]');
 	}
 

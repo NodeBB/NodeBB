@@ -1,6 +1,6 @@
 'use strict';
 
-define('navigator', ['forum/pagination', 'components', 'hooks'], function (pagination, components, hooks) {
+define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], function (pagination, components, hooks, alerts) {
 	const navigator = {};
 	let index = 0;
 	let count = 0;
@@ -251,7 +251,7 @@ define('navigator', ['forum/pagination', 'components', 'hooks'], function (pagin
 
 		socket.emit('posts.getPostSummaryByIndex', { tid: ajaxify.data.tid, index: index - 1 }, function (err, postData) {
 			if (err) {
-				return app.alertError(err.message);
+				return alerts.error(err);
 			}
 			app.parseAndTranslate('partials/topic/navigation-post', { post: postData }, function (html) {
 				paginationBlockEl

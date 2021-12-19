@@ -26,42 +26,31 @@ describe('Controllers', () => {
 	let cid;
 	let pid;
 	let fooUid;
+	let adminUid;
 	let category;
 
-	before((done) => {
-		async.series({
-			category: function (next) {
-				categories.create({
-					name: 'Test Category',
-					description: 'Test category created by testing script',
-				}, next);
-			},
-			user: async () => {
-				const uid = await user.create({ username: 'foo', password: 'barbar', gdpr_consent: true });
-				await user.setUserField(uid, 'email', 'foo@test.com');
-				await user.email.confirmByUid(uid);
-				return uid;
-			},
-			navigation: function (next) {
-				const navigation = require('../src/navigation/admin');
-				const data = require('../install/data/navigation.json');
-
-				navigation.save(data, next);
-			},
-		}, (err, results) => {
-			if (err) {
-				return done(err);
-			}
-			category = results.category;
-			cid = results.category.cid;
-			fooUid = results.user;
-
-			topics.post({ uid: results.user, title: 'test topic title', content: 'test topic content', cid: results.category.cid }, (err, result) => {
-				tid = result.topicData.tid;
-				pid = result.postData.pid;
-				done(err);
-			});
+	before(async () => {
+		category = await categories.create({
+			name: 'Test Category',
+			description: 'Test category created by testing script',
 		});
+		cid = category.cid;
+
+		fooUid = await user.create({ username: 'foo', password: 'barbar', gdpr_consent: true });
+		await user.setUserField(fooUid, 'email', 'foo@test.com');
+		await user.email.confirmByUid(fooUid);
+
+		adminUid = await user.create({ username: 'admin', password: 'barbar', gdpr_consent: true });
+		await groups.join('administrators', adminUid);
+
+		const navigation = require('../src/navigation/admin');
+		const data = require('../install/data/navigation.json');
+
+		await navigation.save(data);
+
+		const result = await topics.post({ uid: fooUid, title: 'test topic title', content: 'test topic content', cid: cid });
+		tid = result.topicData.tid;
+		pid = result.postData.pid;
 	});
 
 	it('should load /config with csrf_token', (done) => {
@@ -414,6 +403,99 @@ describe('Controllers', () => {
 
 			assert.strictEqual(res.statusCode, 302);
 			assert.strictEqual(res.headers.location, `${nconf.get('relative_path')}/`);
+		});
+
+		it('should error if userData is falsy', async () => {
+			try {
+				await user.interstitials.email({ userData: null });
+				assert(false);
+			} catch (err) {
+				assert.strictEqual(err.message, '[[error:invalid-data]]');
+			}
+		});
+
+		it('should throw error if email is not valid', async () => {
+			const uid = await user.create({ username: 'interstiuser1' });
+			try {
+				const result = await user.interstitials.email({
+					userData: { uid: uid, updateEmail: true },
+					req: { uid: uid },
+					interstitials: [],
+				});
+				assert.strictEqual(result.interstitials[0].template, 'partials/email_update');
+				await result.interstitials[0].callback({ uid: uid }, {
+					email: 'invalidEmail',
+				});
+				assert(false);
+			} catch (err) {
+				assert.strictEqual(err.message, '[[error:invalid-email]]');
+			}
+		});
+
+		it('should set req.session.emailChanged to 1', async () => {
+			const uid = await user.create({ username: 'interstiuser2' });
+			const result = await user.interstitials.email({
+				userData: { uid: uid, updateEmail: true },
+				req: { uid: uid, session: {} },
+				interstitials: [],
+			});
+
+			await result.interstitials[0].callback({ uid: uid }, {
+				email: 'interstiuser2@nodebb.org',
+			});
+			assert.strictEqual(result.req.session.emailChanged, 1);
+		});
+
+		it('should set email if admin is changing it', async () => {
+			const uid = await user.create({ username: 'interstiuser3' });
+			const result = await user.interstitials.email({
+				userData: { uid: uid, updateEmail: true },
+				req: { uid: adminUid },
+				interstitials: [],
+			});
+
+			await result.interstitials[0].callback({ uid: uid }, {
+				email: 'interstiuser3@nodebb.org',
+			});
+			const userData = await user.getUserData(uid);
+			assert.strictEqual(userData.email, 'interstiuser3@nodebb.org');
+			assert.strictEqual(userData['email:confirmed'], 1);
+		});
+
+		it('should throw error if user tries to edit other users email', async () => {
+			const uid = await user.create({ username: 'interstiuser4' });
+			try {
+				const result = await user.interstitials.email({
+					userData: { uid: uid, updateEmail: true },
+					req: { uid: 1000 },
+					interstitials: [],
+				});
+
+				await result.interstitials[0].callback({ uid: uid }, {
+					email: 'derp@derp.com',
+				});
+				assert(false);
+			} catch (err) {
+				assert.strictEqual(err.message, '[[error:no-privileges]]');
+			}
+		});
+
+		it('should remove current email', async () => {
+			const uid = await user.create({ username: 'interstiuser5', email: 'interstiuser5@nodebb.org' });
+			await user.email.confirmByUid(uid);
+
+			const result = await user.interstitials.email({
+				userData: { uid: uid, updateEmail: true },
+				req: { uid: uid, session: { id: 0 } },
+				interstitials: [],
+			});
+
+			await result.interstitials[0].callback({ uid: uid }, {
+				email: '',
+			});
+			const userData = await user.getUserData(uid);
+			assert.strictEqual(userData.email, '');
+			assert.strictEqual(userData['email:confirmed'], 0);
 		});
 	});
 
@@ -1649,20 +1731,13 @@ describe('Controllers', () => {
 
 	describe('account follow page', () => {
 		const socketUser = require('../src/socket.io/user');
+		const apiUser = require('../src/api/users');
 		let uid;
-		before((done) => {
-			user.create({ username: 'follower' }, (err, _uid) => {
-				assert.ifError(err);
-				uid = _uid;
-				socketUser.follow({ uid: uid }, { uid: fooUid }, (err) => {
-					assert.ifError(err);
-					socketUser.isFollowing({ uid: uid }, { uid: fooUid }, (err, isFollowing) => {
-						assert.ifError(err);
-						assert(isFollowing);
-						done();
-					});
-				});
-			});
+		before(async () => {
+			uid = await user.create({ username: 'follower' });
+			await apiUser.follow({ uid: uid }, { uid: fooUid });
+			const isFollowing = await socketUser.isFollowing({ uid: uid }, { uid: fooUid });
+			assert(isFollowing);
 		});
 
 		it('should get followers page', (done) => {
@@ -1683,16 +1758,11 @@ describe('Controllers', () => {
 			});
 		});
 
-		it('should return empty after unfollow', (done) => {
-			socketUser.unfollow({ uid: uid }, { uid: fooUid }, (err) => {
-				assert.ifError(err);
-				request(`${nconf.get('url')}/api/user/foo/followers`, { json: true }, (err, res, body) => {
-					assert.ifError(err);
-					assert.equal(res.statusCode, 200);
-					assert.equal(body.users.length, 0);
-					done();
-				});
-			});
+		it('should return empty after unfollow', async () => {
+			await apiUser.unfollow({ uid: uid }, { uid: fooUid });
+			const { res, body } = await helpers.request('get', `/api/user/foo/followers`, { json: true });
+			assert.equal(res.statusCode, 200);
+			assert.equal(body.users.length, 0);
 		});
 	});
 

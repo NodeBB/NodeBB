@@ -3,5 +3,9 @@
 	"alert.confirm-restart": "Bạn có thật sự muốn khởi động lại NodeBB",
 
 	"acp-title": "%1 | Bảng Điểu Khiển Quản Trị Viên NodeBB",
-	"settings-header-contents": "Nội dung"
+	"settings-header-contents": "Nội dung",
+	"changes-saved": "Đã Lưu Thay Đổi",
+	"changes-saved-message": "Các thay đổi của bạn đối với cấu hình NodeBB đã được lưu.",
+	"changes-not-saved": "Thay Đổi Chưa Được Lưu",
+	"changes-not-saved-message": "NodeBB đã gặp sự cố khi lưu các thay đổi của bạn. (%1)"
 }

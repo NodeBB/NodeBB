@@ -27,6 +27,9 @@ categoriesAPI.create = async function (caller, data) {
 };
 
 categoriesAPI.update = async function (caller, data) {
+	if (!data) {
+		throw new Error('[[error:invalid-data]]');
+	}
 	await categories.update(data);
 };
 

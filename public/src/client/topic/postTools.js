@@ -9,8 +9,9 @@ define('forum/topic/postTools', [
 	'forum/topic/votes',
 	'api',
 	'bootbox',
+	'alerts',
 	'hooks',
-], function (share, navigator, components, translator, votes, api, bootbox, hooks) {
+], function (share, navigator, components, translator, votes, api, bootbox, alerts, hooks) {
 	const PostTools = {};
 
 	let staleReplyAnyway = false;
@@ -42,7 +43,7 @@ define('forum/topic/postTools', [
 
 			socket.emit('posts.loadPostTools', { pid: pid, cid: ajaxify.data.cid }, function (err, data) {
 				if (err) {
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
 				data.posts.display_move_tools = data.posts.display_move_tools && index !== 0;
 
@@ -208,7 +209,7 @@ define('forum/topic/postTools', [
 						msg = '[[error:' + languageKey + '-minutes, ' + numMinutes + ']]';
 					}
 				}
-				app.alertError(msg);
+				alerts.error(msg);
 				return false;
 			}
 			return true;
@@ -240,9 +241,9 @@ define('forum/topic/postTools', [
 			const ip = $(this).attr('data-ip');
 			socket.emit('blacklist.addRule', ip, function (err) {
 				if (err) {
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
-				app.alertSuccess('[[admin/manage/blacklist:ban-ip]]');
+				alerts.success('[[admin/manage/blacklist:ban-ip]]');
 			});
 		});
 
@@ -306,7 +307,7 @@ define('forum/topic/postTools', [
 			}
 			socket.emit('posts.getRawPost', toPid, function (err, post) {
 				if (err) {
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
 
 				quote(post);
@@ -352,7 +353,7 @@ define('forum/topic/postTools', [
 
 		api[method](`/posts/${pid}/bookmark`, undefined, function (err) {
 			if (err) {
-				return app.alertError(err);
+				return alerts.error(err);
 			}
 			const type = method === 'put' ? 'bookmark' : 'unbookmark';
 			hooks.fire(`action:post.${type}`, { pid: pid });
@@ -414,7 +415,7 @@ define('forum/topic/postTools', [
 
 			const route = action === 'purge' ? '' : '/state';
 			const method = action === 'restore' ? 'put' : 'del';
-			api[method](`/posts/${pid}${route}`).catch(app.alertError);
+			api[method](`/posts/${pid}${route}`).catch(alerts.error);
 		});
 	}
 

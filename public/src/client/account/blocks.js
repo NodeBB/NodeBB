@@ -4,7 +4,8 @@ define('forum/account/blocks', [
 	'forum/account/header',
 	'api',
 	'hooks',
-], function (header, api, hooks) {
+	'alerts',
+], function (header, api, hooks, alerts) {
 	const Blocks = {};
 
 	Blocks.init = function () {
@@ -19,7 +20,7 @@ define('forum/account/blocks', [
 				paginate: false,
 			}, function (err, data) {
 				if (err) {
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
 
 				// Only show first 10 matches
@@ -46,7 +47,7 @@ define('forum/account/blocks', [
 
 	Blocks.refreshList = function (err) {
 		if (err) {
-			return app.alertError(err.message);
+			return alerts.error(err);
 		}
 
 		$.get(config.relative_path + '/api/' + ajaxify.currentPage)

@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/reset_code', ['zxcvbn'], function (zxcvbn) {
+define('forum/reset_code', ['zxcvbn', 'alerts'], function (zxcvbn, alerts) {
 	const ResetCode = {};
 
 	ResetCode.init = function () {
@@ -33,7 +33,7 @@ define('forum/reset_code', ['zxcvbn'], function (zxcvbn) {
 				}, function (err) {
 					if (err) {
 						ajaxify.refresh();
-						return app.alertError(err.message);
+						return alerts.error(err);
 					}
 
 					window.location.href = config.relative_path + '/login';

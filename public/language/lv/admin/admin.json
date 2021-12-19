@@ -3,5 +3,9 @@
 	"alert.confirm-restart": "Vai tiešām vēlies pārstartēt NodeBB?",
 
 	"acp-title": "%1 | NodeBB administrācijas vadības panelis",
-	"settings-header-contents": "Saturs"
+	"settings-header-contents": "Saturs",
+	"changes-saved": "Changes Saved",
+	"changes-saved-message": "Your changes to the NodeBB configuration have been saved.",
+	"changes-not-saved": "Changes Not Saved",
+	"changes-not-saved-message": "NodeBB encountered a problem saving your changes. (%1)"
 }

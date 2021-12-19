@@ -14,5 +14,8 @@
 	"reply": "Yanıtla",
 	"topic": "Başlık",
 	"accept": "Onayla",
-	"reject": "Reddet"
+	"reject": "Reddet",
+	"remove": "Remove",
+	"notify": "Notify",
+	"notify-user": "Notify User"
 }

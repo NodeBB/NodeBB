@@ -7,7 +7,8 @@ define('admin/manage/categories', [
 	'api',
 	'Sortable',
 	'bootbox',
-], function (translator, Benchpress, categorySelector, api, Sortable, bootbox) {
+	'alerts',
+], function (translator, Benchpress, categorySelector, api, Sortable, bootbox, alerts) {
 	const Categories = {};
 	let newCategoryId = -1;
 	let sortables;
@@ -62,7 +63,7 @@ define('admin/manage/categories', [
 								modified[cid] = { order: Math.max(1, parseInt(val, 10)) };
 								api.put('/categories/' + cid, modified[cid]).then(function () {
 									ajaxify.refresh();
-								}).catch(err => app.alertError(err));
+								}).catch(alerts.error);
 							} else {
 								return false;
 							}
@@ -143,10 +144,10 @@ define('admin/manage/categories', [
 	Categories.create = function (payload) {
 		api.post('/categories', payload, function (err, data) {
 			if (err) {
-				return app.alertError(err.message);
+				return alerts.error(err);
 			}
 
-			app.alert({
+			alerts.alert({
 				alert_id: 'category_created',
 				title: '[[admin/manage/categories:alert.created]]',
 				message: '[[admin/manage/categories:alert.create-success]]',
@@ -182,7 +183,7 @@ define('admin/manage/categories', [
 			const categoryEl = listEl.querySelector(`li[data-cid="${cid}"]`);
 			categoryEl.classList[disabled ? 'add' : 'remove']('disabled');
 			$(categoryEl).find('li a[data-action="toggle"]').first().translateText(disabled ? '[[admin/manage/categories:enable]]' : '[[admin/manage/categories:disable]]');
-		}).catch(app.alertError)));
+		}).catch(alerts.error)));
 	};
 
 	function itemDidAdd(e) {
@@ -208,7 +209,7 @@ define('admin/manage/categories', [
 			}
 
 			newCategoryId = -1;
-			api.put('/categories/' + cid, modified[cid]).catch(app.alertError);
+			api.put('/categories/' + cid, modified[cid]).catch(alerts.error);
 		}
 	}
 

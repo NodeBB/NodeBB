@@ -1,6 +1,6 @@
 'use strict';
 
-define('admin/modules/search', ['mousetrap'], function (mousetrap) {
+define('admin/modules/search', ['mousetrap', 'alerts'], function (mousetrap, alerts) {
 	const search = {};
 
 	function find(dict, term) {
@@ -52,7 +52,7 @@ define('admin/modules/search', ['mousetrap'], function (mousetrap) {
 
 		socket.emit('admin.getSearchDict', {}, function (err, dict) {
 			if (err) {
-				app.alertError(err);
+				alerts.error(err);
 				throw err;
 			}
 			setupACPSearch(dict);

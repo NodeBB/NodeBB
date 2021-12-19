@@ -172,7 +172,10 @@ app.flags = {};
 			}, function (err) {
 				if (err) {
 					app.currentRoom = previousRoom;
-					return app.alertError(err.message);
+					require(['alerts'], function (alerts) {
+						alerts.error(err);
+					});
+					return;
 				}
 
 				callback();
@@ -189,7 +192,9 @@ app.flags = {};
 		socket.emit('meta.rooms.leaveCurrent', function (err) {
 			if (err) {
 				app.currentRoom = previousRoom;
-				return app.alertError(err.message);
+				require(['alerts'], function (alerts) {
+					alerts.error(err);
+				});
 			}
 		});
 	};

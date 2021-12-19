@@ -68,6 +68,8 @@
     "bootbox.ok": "OK",
     "bootbox.cancel": "Avbryt",
     "bootbox.confirm": "Bekräfta",
+    "bootbox.submit": "Submit",
+    "bootbox.send": "Send",
     "cover.dragging_title": "Positionering av omslagsbild",
     "cover.dragging_message": "Dra omslagsbilden till önskad position och tryck \"Spara\"",
     "cover.saved": "Omslagsbilden sparad",

@@ -14,5 +14,8 @@
 	"reply": "Svare",
 	"topic": "Emne",
 	"accept": "Aksepter ",
-	"reject": "Avvis"
+	"reject": "Avvis",
+	"remove": "Remove",
+	"notify": "Notify",
+	"notify-user": "Notify User"
 }

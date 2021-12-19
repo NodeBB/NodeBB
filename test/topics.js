@@ -9,6 +9,8 @@ const nconf = require('nconf');
 const request = require('request');
 const util = require('util');
 
+const sleep = util.promisify(setTimeout);
+
 const db = require('./mocks/databasemock');
 const file = require('../src/file');
 const topics = require('../src/topics');
@@ -21,6 +23,7 @@ const groups = require('../src/groups');
 const helpers = require('./helpers');
 const socketPosts = require('../src/socket.io/posts');
 const socketTopics = require('../src/socket.io/topics');
+const apiTopics = require('../src/api/topics');
 
 const requestType = util.promisify((type, url, opts, cb) => {
 	request[type](url, opts, (err, res, body) => cb(err, { res: res, body: body }));
@@ -55,11 +58,13 @@ describe('Topic\'s', () => {
 	});
 
 	describe('.post', () => {
-		it('should fail to create topic with invalid data', (done) => {
-			socketTopics.post({ uid: 0 }, null, (err) => {
+		it('should fail to create topic with invalid data', async () => {
+			try {
+				await apiTopics.create({ uid: 0 }, null);
+				assert(false);
+			} catch (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
+			}
 		});
 
 		it('should create a new topic with proper parameters', (done) => {
@@ -84,12 +89,9 @@ describe('Topic\'s', () => {
 			});
 		});
 
-		it('should load topic', (done) => {
-			socketTopics.getTopic({ uid: adminUid }, topic.tid, (err, data) => {
-				assert.ifError(err);
-				assert.equal(data.tid, topic.tid);
-				done();
-			});
+		it('should load topic', async () => {
+			const data = await apiTopics.get({ uid: adminUid }, { tid: topic.tid });
+			assert.equal(data.tid, topic.tid);
 		});
 
 		it('should fail to create new topic with invalid user id', (done) => {
@@ -507,6 +509,52 @@ describe('Topic\'s', () => {
 				const posts = await topics.getTopicPosts(null, `tid:${tid}:posts`, 0, 9, topic.userId, true);
 				assert.deepStrictEqual(posts, []);
 			});
+
+			it('should only return main post', async () => {
+				const topicData = await topics.getTopicData(tid);
+				const postsData = await topics.getTopicPosts(topicData, `tid:${tid}:posts`, 0, 0, topic.userId, false);
+				assert.strictEqual(postsData.length, 1);
+				assert.strictEqual(postsData[0].content, 'main post');
+			});
+
+			it('should only return first reply', async () => {
+				const topicData = await topics.getTopicData(tid);
+				const postsData = await topics.getTopicPosts(topicData, `tid:${tid}:posts`, 1, 1, topic.userId, false);
+				assert.strictEqual(postsData.length, 1);
+				assert.strictEqual(postsData[0].content, 'topic reply 1');
+			});
+
+			it('should return main post and first reply', async () => {
+				const topicData = await topics.getTopicData(tid);
+				const postsData = await topics.getTopicPosts(topicData, `tid:${tid}:posts`, 0, 1, topic.userId, false);
+				assert.strictEqual(postsData.length, 2);
+				assert.strictEqual(postsData[0].content, 'main post');
+				assert.strictEqual(postsData[1].content, 'topic reply 1');
+			});
+
+			it('should return posts in correct order', async () => {
+				const data = await socketTopics.loadMore({ uid: topic.userId }, { tid: tid, after: 20, direction: 1 });
+				assert.strictEqual(data.posts.length, 11);
+				assert.strictEqual(data.posts[0].content, 'topic reply 20');
+				assert.strictEqual(data.posts[1].content, 'topic reply 21');
+			});
+
+			it('should return posts in correct order in reverse direction', async () => {
+				const data = await socketTopics.loadMore({ uid: topic.userId }, { tid: tid, after: 25, direction: -1 });
+				assert.strictEqual(data.posts.length, 20);
+				assert.strictEqual(data.posts[0].content, 'topic reply 5');
+				assert.strictEqual(data.posts[1].content, 'topic reply 6');
+			});
+
+			it('should return all posts in correct order', async () => {
+				const topicData = await topics.getTopicData(tid);
+				const postsData = await topics.getTopicPosts(topicData, `tid:${tid}:posts`, 0, -1, topic.userId, false);
+				assert.strictEqual(postsData.length, 31);
+				assert.strictEqual(postsData[0].content, 'main post');
+				for (let i = 1; i < 30; i++) {
+					assert.strictEqual(postsData[i].content, `topic reply ${i}`);
+				}
+			});
 		});
 	});
 
@@ -575,62 +623,40 @@ describe('Topic\'s', () => {
 			});
 		});
 
-		it('should delete the topic', (done) => {
-			socketTopics.delete({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid }, (err) => {
-				assert.ifError(err);
-				done();
-			});
+		it('should delete the topic', async () => {
+			await apiTopics.delete({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid });
+			const deleted = await topics.getTopicField(newTopic.tid, 'deleted');
+			assert.strictEqual(deleted, 1);
 		});
 
-		it('should restore the topic', (done) => {
-			socketTopics.restore({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid }, (err) => {
-				assert.ifError(err);
-				done();
-			});
+		it('should restore the topic', async () => {
+			await apiTopics.restore({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid });
+			const deleted = await topics.getTopicField(newTopic.tid, 'deleted');
+			assert.strictEqual(deleted, 0);
 		});
 
-		it('should lock topic', (done) => {
-			socketTopics.lock({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid }, (err) => {
-				assert.ifError(err);
-				topics.isLocked(newTopic.tid, (err, isLocked) => {
-					assert.ifError(err);
-					assert(isLocked);
-					done();
-				});
-			});
+		it('should lock topic', async () => {
+			await apiTopics.lock({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid });
+			const isLocked = await topics.isLocked(newTopic.tid);
+			assert(isLocked);
 		});
 
-		it('should unlock topic', (done) => {
-			socketTopics.unlock({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid }, (err) => {
-				assert.ifError(err);
-				topics.isLocked(newTopic.tid, (err, isLocked) => {
-					assert.ifError(err);
-					assert(!isLocked);
-					done();
-				});
-			});
+		it('should unlock topic', async () => {
+			await apiTopics.unlock({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid });
+			const isLocked = await topics.isLocked(newTopic.tid);
+			assert(!isLocked);
 		});
 
-		it('should pin topic', (done) => {
-			socketTopics.pin({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid }, (err) => {
-				assert.ifError(err);
-				topics.getTopicField(newTopic.tid, 'pinned', (err, pinned) => {
-					assert.ifError(err);
-					assert.strictEqual(pinned, 1);
-					done();
-				});
-			});
+		it('should pin topic', async () => {
+			await apiTopics.pin({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid });
+			const pinned = await topics.getTopicField(newTopic.tid, 'pinned');
+			assert.strictEqual(pinned, 1);
 		});
 
-		it('should unpin topic', (done) => {
-			socketTopics.unpin({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid }, (err) => {
-				assert.ifError(err);
-				topics.getTopicField(newTopic.tid, 'pinned', (err, pinned) => {
-					assert.ifError(err);
-					assert.strictEqual(pinned, 0);
-					done();
-				});
-			});
+		it('should unpin topic', async () => {
+			await apiTopics.unpin({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid });
+			const pinned = await topics.getTopicField(newTopic.tid, 'pinned');
+			assert.strictEqual(pinned, 0);
 		});
 
 		it('should move all topics', (done) => {
@@ -769,47 +795,31 @@ describe('Topic\'s', () => {
 			], done);
 		});
 
-		it('should fail to purge topic if user does not have privilege', (done) => {
-			let globalModUid;
-			let tid;
-			async.waterfall([
-				function (next) {
-					topics.post({
-						uid: adminUid,
-						title: 'topic for purge test',
-						content: 'topic content',
-						cid: categoryObj.cid,
-					}, next);
-				},
-				function (result, next) {
-					tid = result.topicData.tid;
-					User.create({ username: 'global mod' }, next);
-				},
-				function (uid, next) {
-					globalModUid = uid;
-					groups.join('Global Moderators', uid, next);
-				},
-				function (next) {
-					privileges.categories.rescind(['groups:purge'], categoryObj.cid, 'Global Moderators', next);
-				},
-				function (next) {
-					socketTopics.purge({ uid: globalModUid }, { tids: [tid], cid: categoryObj.cid }, (err) => {
-						assert.equal(err.message, '[[error:no-privileges]]');
-						privileges.categories.give(['groups:purge'], categoryObj.cid, 'Global Moderators', next);
-					});
-				},
-			], done);
+		it('should fail to purge topic if user does not have privilege', async () => {
+			const topic1 = await topics.post({
+				uid: adminUid,
+				title: 'topic for purge test',
+				content: 'topic content',
+				cid: categoryObj.cid,
+			});
+			const tid1 = topic1.topicData.tid;
+			const globalModUid = await User.create({ username: 'global mod' });
+			await groups.join('Global Moderators', globalModUid);
+			await privileges.categories.rescind(['groups:purge'], categoryObj.cid, 'Global Moderators');
+			try {
+				await apiTopics.purge({ uid: globalModUid }, { tids: [tid1], cid: categoryObj.cid });
+			} catch (err) {
+				assert.equal(err.message, '[[error:no-privileges]]');
+				await privileges.categories.give(['groups:purge'], categoryObj.cid, 'Global Moderators');
+				return;
+			}
+			assert(false);
 		});
 
-		it('should purge the topic', (done) => {
-			socketTopics.purge({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid }, (err) => {
-				assert.ifError(err);
-				db.isSortedSetMember(`uid:${followerUid}:followed_tids`, newTopic.tid, (err, isMember) => {
-					assert.ifError(err);
-					assert.strictEqual(false, isMember);
-					done();
-				});
-			});
+		it('should purge the topic', async () => {
+			await apiTopics.purge({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid });
+			const isMember = await db.isSortedSetMember(`uid:${followerUid}:followed_tids`, newTopic.tid);
+			assert.strictEqual(false, isMember);
 		});
 
 		it('should not allow user to restore their topic if it was deleted by an admin', async () => {
@@ -819,12 +829,13 @@ describe('Topic\'s', () => {
 				content: 'topic content',
 				cid: categoryObj.cid,
 			});
-			await socketTopics.delete({ uid: adminUid }, { tids: [result.topicData.tid], cid: categoryObj.cid });
+			await apiTopics.delete({ uid: adminUid }, { tids: [result.topicData.tid], cid: categoryObj.cid });
 			try {
-				await socketTopics.restore({ uid: fooUid }, { tids: [result.topicData.tid], cid: categoryObj.cid });
+				await apiTopics.restore({ uid: fooUid }, { tids: [result.topicData.tid], cid: categoryObj.cid });
 			} catch (err) {
-				assert.strictEqual(err.message, '[[error:no-privileges]]');
+				return assert.strictEqual(err.message, '[[error:no-privileges]]');
 			}
+			assert(false);
 		});
 	});
 
@@ -1489,35 +1500,15 @@ describe('Topic\'s', () => {
 			});
 		});
 
-		it('should mark topic notifications read', (done) => {
-			async.waterfall([
-				function (next) {
-					socketTopics.follow({ uid: adminUid }, tid, next);
-				},
-				function (next) {
-					topics.reply({ uid: uid, timestamp: Date.now(), content: 'some content', tid: tid }, next);
-				},
-				function (data, next) {
-					setTimeout(next, 2500);
-				},
-				function (next) {
-					User.notifications.getUnreadCount(adminUid, next);
-				},
-				function (count, next) {
-					assert.equal(count, 1);
-					socketTopics.markTopicNotificationsRead({ uid: adminUid }, [tid], next);
-				},
-				function (next) {
-					User.notifications.getUnreadCount(adminUid, next);
-				},
-				function (count, next) {
-					assert.equal(count, 0);
-					next();
-				},
-			], (err) => {
-				assert.ifError(err);
-				done();
-			});
+		it('should mark topic notifications read', async () => {
+			await apiTopics.follow({ uid: adminUid }, { tid: tid });
+			const data = await topics.reply({ uid: uid, timestamp: Date.now(), content: 'some content', tid: tid });
+			await sleep(2500);
+			let count = await User.notifications.getUnreadCount(adminUid);
+			assert.strictEqual(count, 1);
+			await socketTopics.markTopicNotificationsRead({ uid: adminUid }, [tid]);
+			count = await User.notifications.getUnreadCount(adminUid);
+			assert.strictEqual(count, 0);
 		});
 
 		it('should fail with invalid data', (done) => {
@@ -1715,7 +1706,7 @@ describe('Topic\'s', () => {
 		before((done) => {
 			async.series([
 				function (next) {
-					topics.post({ uid: adminUid, tags: ['php', 'nosql', 'psql', 'nodebb'], title: 'topic title 1', content: 'topic 1 content', cid: topic.categoryId }, next);
+					topics.post({ uid: adminUid, tags: ['php', 'nosql', 'psql', 'nodebb', 'node icon'], title: 'topic title 1', content: 'topic 1 content', cid: topic.categoryId }, next);
 				},
 				function (next) {
 					topics.post({ uid: adminUid, tags: ['javascript', 'mysql', 'python', 'nodejs'], title: 'topic title 2', content: 'topic 2 content', cid: topic.categoryId }, next);
@@ -1775,12 +1766,13 @@ describe('Topic\'s', () => {
 		it('should search and load tags', (done) => {
 			socketTopics.searchAndLoadTags({ uid: adminUid }, { query: 'no' }, (err, data) => {
 				assert.ifError(err);
-				assert.equal(data.matchCount, 3);
+				assert.equal(data.matchCount, 4);
 				assert.equal(data.pageCount, 1);
 				const tagData = [
-					{ value: 'nodebb', valueEscaped: 'nodebb', score: 3 },
-					{ value: 'nodejs', valueEscaped: 'nodejs', score: 1 },
-					{ value: 'nosql', valueEscaped: 'nosql', score: 1 },
+					{ value: 'nodebb', valueEscaped: 'nodebb', score: 3, class: 'nodebb' },
+					{ value: 'node icon', valueEscaped: 'node icon', score: 1, class: 'node-icon' },
+					{ value: 'nodejs', valueEscaped: 'nodejs', score: 1, class: 'nodejs' },
+					{ value: 'nosql', valueEscaped: 'nosql', score: 1, class: 'nosql' },
 				];
 				assert.deepEqual(data.tags, tagData);
 
@@ -2020,17 +2012,17 @@ describe('Topic\'s', () => {
 			await topics.post({ uid: adminUid, tags: ['cattag1'], title: title, content: 'topic 1 content', cid: cid });
 			let result = await topics.getCategoryTagsData(cid, 0, -1);
 			assert.deepStrictEqual(result, [
-				{ value: 'cattag1', score: 3, valueEscaped: 'cattag1' },
-				{ value: 'cattag2', score: 2, valueEscaped: 'cattag2' },
-				{ value: 'cattag3', score: 1, valueEscaped: 'cattag3' },
+				{ value: 'cattag1', score: 3, valueEscaped: 'cattag1', class: 'cattag1' },
+				{ value: 'cattag2', score: 2, valueEscaped: 'cattag2', class: 'cattag2' },
+				{ value: 'cattag3', score: 1, valueEscaped: 'cattag3', class: 'cattag3' },
 			]);
 
 			// after purging values should update properly
 			await topics.purge(postResult.topicData.tid, adminUid);
 			result = await topics.getCategoryTagsData(cid, 0, -1);
 			assert.deepStrictEqual(result, [
-				{ value: 'cattag1', score: 2, valueEscaped: 'cattag1' },
-				{ value: 'cattag2', score: 1, valueEscaped: 'cattag2' },
+				{ value: 'cattag1', score: 2, valueEscaped: 'cattag1', class: 'cattag1' },
+				{ value: 'cattag2', score: 1, valueEscaped: 'cattag2', class: 'cattag2' },
 			]);
 		});
 
@@ -2049,11 +2041,11 @@ describe('Topic\'s', () => {
 			let result1 = await topics.getCategoryTagsData(cid1, 0, -1);
 			let result2 = await topics.getCategoryTagsData(cid2, 0, -1);
 			assert.deepStrictEqual(result1, [
-				{ value: 'movedtag1', score: 2, valueEscaped: 'movedtag1' },
-				{ value: 'movedtag2', score: 1, valueEscaped: 'movedtag2' },
+				{ value: 'movedtag1', score: 2, valueEscaped: 'movedtag1', class: 'movedtag1' },
+				{ value: 'movedtag2', score: 1, valueEscaped: 'movedtag2', class: 'movedtag2' },
 			]);
 			assert.deepStrictEqual(result2, [
-				{ value: 'movedtag2', score: 1, valueEscaped: 'movedtag2' },
+				{ value: 'movedtag2', score: 1, valueEscaped: 'movedtag2', class: 'movedtag2' },
 			]);
 
 			// after moving values should update properly
@@ -2062,11 +2054,11 @@ describe('Topic\'s', () => {
 			result1 = await topics.getCategoryTagsData(cid1, 0, -1);
 			result2 = await topics.getCategoryTagsData(cid2, 0, -1);
 			assert.deepStrictEqual(result1, [
-				{ value: 'movedtag1', score: 1, valueEscaped: 'movedtag1' },
+				{ value: 'movedtag1', score: 1, valueEscaped: 'movedtag1', class: 'movedtag1' },
 			]);
 			assert.deepStrictEqual(result2, [
-				{ value: 'movedtag2', score: 2, valueEscaped: 'movedtag2' },
-				{ value: 'movedtag1', score: 1, valueEscaped: 'movedtag1' },
+				{ value: 'movedtag2', score: 2, valueEscaped: 'movedtag2', class: 'movedtag2' },
+				{ value: 'movedtag1', score: 1, valueEscaped: 'movedtag1', class: 'movedtag1' },
 			]);
 		});
 
@@ -2151,37 +2143,29 @@ describe('Topic\'s', () => {
 			});
 		});
 
-		it('should error if not logged in', (done) => {
-			socketTopics.changeWatching({ uid: 0 }, { tid: tid, type: 'ignore' }, (err) => {
+		it('should error if not logged in', async () => {
+			try {
+				await apiTopics.ignore({ uid: 0 }, { tid: tid });
+				assert(false);
+			} catch (err) {
 				assert.equal(err.message, '[[error:not-logged-in]]');
-				done();
-			});
+			}
 		});
 
-		it('should filter ignoring uids', (done) => {
-			socketTopics.changeWatching({ uid: followerUid }, { tid: tid, type: 'ignore' }, (err) => {
-				assert.ifError(err);
-				topics.filterIgnoringUids(tid, [adminUid, followerUid], (err, uids) => {
-					assert.ifError(err);
-					assert.equal(uids.length, 1);
-					assert.equal(uids[0], adminUid);
-					done();
-				});
-			});
+		it('should filter ignoring uids', async () => {
+			await apiTopics.ignore({ uid: followerUid }, { tid: tid });
+			const uids = await topics.filterIgnoringUids(tid, [adminUid, followerUid]);
+			assert.equal(uids.length, 1);
+			assert.equal(uids[0], adminUid);
 		});
 
-		it('should error with invalid data', (done) => {
-			socketTopics.changeWatching({ uid: followerUid }, {}, (err) => {
-				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
-		});
-
-		it('should error with invalid type', (done) => {
-			socketTopics.changeWatching({ uid: followerUid }, { tid: tid, type: 'derp' }, (err) => {
-				assert.equal(err.message, '[[error:invalid-command]]');
-				done();
-			});
+		it('should error with topic that does not exist', async () => {
+			try {
+				await apiTopics.follow({ uid: followerUid }, { tid: -1 });
+				assert(false);
+			} catch (err) {
+				assert.equal(err.message, '[[error:no-topic]]');
+			}
 		});
 
 		it('should follow topic', (done) => {
@@ -2198,14 +2182,16 @@ describe('Topic\'s', () => {
 	});
 
 	describe('topics search', () => {
-		it('should error with invalid data', (done) => {
-			socketTopics.search({ uid: adminUid }, null, (err) => {
+		it('should error with invalid data', async () => {
+			try {
+				await topics.search(null, null);
+				assert(false);
+			} catch (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
+			}
 		});
 
-		it('should return results', (done) => {
+		it('should return results', async () => {
 			const plugins = require('../src/plugins');
 			plugins.hooks.register('myTestPlugin', {
 				hook: 'filter:topic.search',
@@ -2213,11 +2199,8 @@ describe('Topic\'s', () => {
 					callback(null, [1, 2, 3]);
 				},
 			});
-			socketTopics.search({ uid: adminUid }, { tid: topic.tid, term: 'test' }, (err, results) => {
-				assert.ifError(err);
-				assert.deepEqual(results, [1, 2, 3]);
-				done();
-			});
+			const results = await topics.search(topic.tid, 'test');
+			assert.deepEqual(results, [1, 2, 3]);
 		});
 	});
 

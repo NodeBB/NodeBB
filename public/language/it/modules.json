@@ -68,6 +68,8 @@
     "bootbox.ok": "OK",
     "bootbox.cancel": "Annulla",
     "bootbox.confirm": "Conferma",
+    "bootbox.submit": "Invia",
+    "bootbox.send": "Invia",
     "cover.dragging_title": "Posizionando la foto copertina",
     "cover.dragging_message": "Trascina l'immagine di copertina nella posizione desiderata e clicca su \"Salva\"",
     "cover.saved": "Immagine di copertina e posizione salvati",

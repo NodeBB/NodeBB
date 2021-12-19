@@ -1,0 +1,64 @@
+put:
+  tags:
+    - categories
+  summary: Make a user moderator of category
+  description: This operation makes a user the moderator of a specific category
+  parameters:
+    - in: path
+      name: cid
+      schema:
+        type: string
+      required: true
+      description: a valid category id
+      example: 1
+    - in: path
+      name: uid
+      schema:
+        type: string
+      required: true
+      description: The uid of the user that will be the moderator
+      example: 2
+  responses:
+    '200':
+      description: User successfully made moderator
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+delete:
+  tags:
+    - categories
+  summary: Remove a category moderator
+  description: This operation removes a user from category moderators
+  parameters:
+    - in: path
+      name: cid
+      schema:
+        type: string
+      required: true
+      description: a valid category id
+      example: 1
+    - in: path
+      name: uid
+      schema:
+        type: string
+      required: true
+      description: The uid of the user that will be removed from moderators
+      example: 2
+  responses:
+    '200':
+      description: User successfully made moderator
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object

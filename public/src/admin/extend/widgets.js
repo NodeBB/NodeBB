@@ -3,11 +3,12 @@
 
 define('admin/extend/widgets', [
 	'bootbox',
+	'alerts',
 	'jquery-ui/widgets/sortable',
 	'jquery-ui/widgets/draggable',
 	'jquery-ui/widgets/droppable',
 	'jquery-ui/widgets/datepicker',
-], function (bootbox) {
+], function (bootbox, alerts) {
 	const Widgets = {};
 
 	Widgets.init = function () {
@@ -126,10 +127,10 @@ define('admin/extend/widgets', [
 
 			socket.emit('admin.widgets.set', saveData, function (err) {
 				if (err) {
-					app.alertError(err.message);
+					alerts.error(err);
 				}
 
-				app.alert({
+				alerts.alert({
 					alert_id: 'admin:widgets',
 					type: 'success',
 					title: '[[admin/extend/widgets:alert.updated]]',
@@ -244,7 +245,7 @@ define('admin/extend/widgets', [
 		cloneBtn.on('click', function () {
 			const template = cloneBtn.attr('data-template');
 			if (!template) {
-				return app.alertError('[[admin/extend/widgets:error.select-clone]]');
+				return alerts.error('[[admin/extend/widgets:error.select-clone]]');
 			}
 
 			const currentTemplate = $('#active-widgets .active.tab-pane[data-template] .area');
@@ -273,7 +274,7 @@ define('admin/extend/widgets', [
 				clone(location);
 			}
 
-			app.alertSuccess('[[admin/extend/widgets:alert.clone-success]]');
+			alerts.success('[[admin/extend/widgets:alert.clone-success]]');
 		});
 	}
 

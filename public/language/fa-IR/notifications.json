@@ -50,6 +50,7 @@
     "users-csv-exported": "Users csv exported, click to download",
     "post-queue-accepted": "Your queued post has been accepted. Click here to see your post.",
     "post-queue-rejected": "Your queued post has been rejected.",
+    "post-queue-notify": "Queued post received a notification:<br/>\"%1\"",
     "email-confirmed": "ایمیل تایید شد",
     "email-confirmed-message": "بابت تایید ایمیلتان سپاس‌گزاریم. حساب کاربری شما اکنون به صورت کامل فعال شده است.",
     "email-confirm-error-message": "خطایی در تایید آدرس ایمیل شما پیش آمده است. ممکن است کد نا‌معتبر و یا منقضی شده باشد.",

@@ -4,7 +4,6 @@
 const _ = require('lodash');
 const validator = require('validator');
 const nconf = require('nconf');
-const winston = require('winston');
 
 const db = require('../database');
 const user = require('../user');
@@ -21,14 +20,9 @@ module.exports = function (Topics) {
 		await Topics.addPostToTopic(postData.tid, postData);
 	};
 
-	Topics.getTopicPosts = async function (topicOrTid, set, start, stop, uid, reverse) {
-		if (!topicOrTid) {
+	Topics.getTopicPosts = async function (topicData, set, start, stop, uid, reverse) {
+		if (!topicData) {
 			return [];
-		}
-		if (typeof topicOrTid !== 'object') {
-			// TODO: remove in 1.19.0
-			winston.warn('[deprecated] Topics.getTopicPosts(tid, ...) usage is deprecated, pass a topic object as first argument!');
-			topicOrTid = await Topics.getTopicData(topicOrTid);
 		}
 
 		let repliesStart = start;
@@ -39,29 +33,32 @@ module.exports = function (Topics) {
 				repliesStart -= 1;
 			}
 		}
-		const pids = await posts.getPidsFromSet(set, repliesStart, repliesStop, reverse);
-		if (!pids.length && !topicOrTid.mainPid) {
+		let pids = [];
+		if (start !== 0 || stop !== 0) {
+			pids = await posts.getPidsFromSet(set, repliesStart, repliesStop, reverse);
+		}
+		if (!pids.length && !topicData.mainPid) {
 			return [];
 		}
 
-		if (topicOrTid.mainPid && start === 0) {
-			pids.unshift(topicOrTid.mainPid);
+		if (topicData.mainPid && start === 0) {
+			pids.unshift(topicData.mainPid);
 		}
 		const postData = await posts.getPostsByPids(pids, uid);
 		if (!postData.length) {
 			return [];
 		}
 		let replies = postData;
-		if (topicOrTid.mainPid && start === 0) {
+		if (topicData.mainPid && start === 0) {
 			postData[0].index = 0;
 			replies = postData.slice(1);
 		}
 
 		Topics.calculatePostIndices(replies, repliesStart);
 
-		await addEventStartEnd(postData, set, reverse, topicOrTid);
+		await addEventStartEnd(postData, set, reverse, topicData);
 		const result = await plugins.hooks.fire('filter:topic.getPosts', {
-			topic: topicOrTid,
+			topic: topicData,
 			uid: uid,
 			posts: await Topics.addPostData(postData, uid),
 		});

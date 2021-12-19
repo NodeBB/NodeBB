@@ -68,6 +68,8 @@
     "bootbox.ok": "Labi",
     "bootbox.cancel": "Atcelt",
     "bootbox.confirm": "Apstiprināt",
+    "bootbox.submit": "Submit",
+    "bootbox.send": "Send",
     "cover.dragging_title": "Novietot galvenes bildi",
     "cover.dragging_message": "Velc galvenes bildi vēlamajā vietā un noklikšķini uz \"Saglabāt\"",
     "cover.saved": "Galvenes bilde un novietojums saglabāta",

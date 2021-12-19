@@ -68,6 +68,8 @@
     "bootbox.ok": "Sawa",
     "bootbox.cancel": "Isubire",
     "bootbox.confirm": "Emeza",
+    "bootbox.submit": "Submit",
+    "bootbox.send": "Send",
     "cover.dragging_title": "Kuringaniza Ifoto yo Hejuru",
     "cover.dragging_message": "Kurura ifoto yo hejuru mu cyerekezo ushaka ubundi ubike ibirangijwe",
     "cover.saved": "Ibyatunganyijwe ku ifoto yo hejuru byafashe",

@@ -13,10 +13,11 @@ define('forum/topic', [
 	'storage',
 	'hooks',
 	'api',
+	'alerts',
 ], function (
 	infinitescroll, threadTools, postTools,
 	events, posts, navigator, sort,
-	components, storage, hooks, api
+	components, storage, hooks, api, alerts
 ) {
 	const Topic = {};
 	let currentUrl = '';
@@ -27,7 +28,7 @@ define('forum/topic', [
 		if (!String(data.url).startsWith('topic/')) {
 			navigator.disable();
 			components.get('navbar/title').find('span').text('').hide();
-			app.removeAlert('bookmark');
+			alerts.remove('bookmark');
 		}
 	});
 
@@ -88,7 +89,7 @@ define('forum/topic', [
 	Topic.toBottom = function () {
 		socket.emit('topics.postcount', ajaxify.data.tid, function (err, postCount) {
 			if (err) {
-				return app.alertError(err.message);
+				return alerts.error(err);
 			}
 
 			navigator.scrollBottom(postCount - 1);
@@ -113,7 +114,7 @@ define('forum/topic', [
 			!config.usePagination ||
 			(config.usePagination && ajaxify.data.pagination.currentPage === 1)
 		) && ajaxify.data.postcount > ajaxify.data.bookmarkThreshold) {
-			app.alert({
+			alerts.alert({
 				alert_id: 'bookmark',
 				message: '[[topic:bookmark_instructions]]',
 				timeout: 0,
@@ -126,7 +127,7 @@ define('forum/topic', [
 				},
 			});
 			setTimeout(function () {
-				app.removeAlert('bookmark');
+				alerts.remove('bookmark');
 			}, 10000);
 		}
 	}
@@ -242,7 +243,7 @@ define('forum/topic', [
 			span.html('').addClass('hidden');
 		}
 		if ($(window).scrollTop() > 300) {
-			app.removeAlert('bookmark');
+			alerts.remove('bookmark');
 		}
 	}
 
@@ -296,7 +297,7 @@ define('forum/topic', [
 					index: index,
 				}, function (err) {
 					if (err) {
-						return app.alertError(err.message);
+						return alerts.error(err);
 					}
 					ajaxify.data.bookmark = index + 1;
 				});
@@ -307,7 +308,7 @@ define('forum/topic', [
 
 		// removes the bookmark alert when we get to / past the bookmark
 		if (!currentBookmark || parseInt(index, 10) >= parseInt(currentBookmark, 10)) {
-			app.removeAlert('bookmark');
+			alerts.remove('bookmark');
 		}
 	}
 

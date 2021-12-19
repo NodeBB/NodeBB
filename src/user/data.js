@@ -52,11 +52,15 @@ module.exports = function (User) {
 		uids = uids.map(uid => (isNaN(uid) ? 0 : parseInt(uid, 10)));
 
 		const fieldsToRemove = [];
+		fields = fields.slice();
 		ensureRequiredFields(fields, fieldsToRemove);
 
 		const uniqueUids = _.uniq(uids).filter(uid => uid > 0);
 
-		const results = await plugins.hooks.fire('filter:user.whitelistFields', { uids: uids, whitelist: fieldWhitelist.slice() });
+		const results = await plugins.hooks.fire('filter:user.whitelistFields', {
+			uids: uids,
+			whitelist: fieldWhitelist.slice(),
+		});
 		if (!fields.length) {
 			fields = results.whitelist;
 		} else {

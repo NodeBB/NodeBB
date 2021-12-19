@@ -50,6 +50,7 @@
     "users-csv-exported": "Users csv exported, click to download",
     "post-queue-accepted": "Your queued post has been accepted. Click here to see your post.",
     "post-queue-rejected": "Your queued post has been rejected.",
+    "post-queue-notify": "Queued post received a notification:<br/>\"%1\"",
     "email-confirmed": "Електронну пошту підтверджено",
     "email-confirmed-message": "Дякуємо за підтвердження електронної пошти. Ваш акаунт тепер повністю активовано.",
     "email-confirm-error-message": "При перевірці вашої електронної пошти сталася проблема. Можливо код був недійсним або простроченим.",

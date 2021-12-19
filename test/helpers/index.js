@@ -21,11 +21,19 @@ helpers.getCsrfToken = async (jar) => {
 };
 
 helpers.request = async function (method, uri, options) {
-	const csrf_token = await helpers.getCsrfToken(options.jar);
+	const ignoreMethods = ['GET', 'HEAD', 'OPTIONS'];
+	const lowercaseMethod = String(method).toLowerCase();
+	let csrf_token;
+	if (!ignoreMethods.some(method => method.toLowerCase() === lowercaseMethod)) {
+		csrf_token = await helpers.getCsrfToken(options.jar);
+	}
+
 	return new Promise((resolve, reject) => {
 		options.headers = options.headers || {};
-		options.headers['x-csrf-token'] = csrf_token;
-		request[method](`${nconf.get('url')}${uri}`, options, (err, res, body) => {
+		if (csrf_token) {
+			options.headers['x-csrf-token'] = csrf_token;
+		}
+		request[lowercaseMethod](`${nconf.get('url')}${uri}`, options, (err, res, body) => {
 			if (err) reject(err);
 			else resolve({ res, body });
 		});

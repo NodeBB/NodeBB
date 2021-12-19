@@ -3,9 +3,9 @@
 		<div class="clearfix">
 			<ul id="active-navigation" class="nav navbar-nav">
 				<!-- BEGIN navigation -->
-				<li data-index="{navigation.index}" class="{navigation.class} <!-- IF navigation.selected --> active <!-- ENDIF navigation.selected -->">
+				<li data-index="{navigation.index}" class="{navigation.class} {{{ if navigation.selected }}} active {{{ end }}}">
 					<a href="#" title="{navigation.route}" id="{navigation.id}">
-						<i class="fa fa-fw <!-- IF navigation.iconClass -->{navigation.iconClass}<!-- ENDIF navigation.iconClass -->"></i>
+						<i class="nav-icon fa fa-fw {{{ if navigation.iconClass }}}{navigation.iconClass}{{{ end }}}"></i><i class="dropdown-icon fa fa-caret-down{{{ if !navigation.dropdown }}} hidden{{{ end }}}"></i>
 					</a>
 				</li>
 				<!-- END navigation -->
@@ -84,7 +84,7 @@
 
 					<div class="checkbox">
 						<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-							<input class="mdl-switch__input" type="checkbox" name="property:targetBlank" <!-- IF enabled.properties.targetBlank -->checked<!-- ENDIF enabled.properties.targetBlank -->/>
+							<input class="mdl-switch__input" type="checkbox" name="targetBlank" <!-- IF enabled.targetBlank -->checked<!-- ENDIF enabled.targetBlank -->/>
 							<span class="mdl-switch__label"><strong>[[admin/settings/navigation:open-new-window]]</strong></span>
 						</label>
 					</div>

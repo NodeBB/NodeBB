@@ -68,6 +68,8 @@
     "bootbox.ok": "V redu",
     "bootbox.cancel": "Prekliči",
     "bootbox.confirm": "Potrdi",
+    "bootbox.submit": "Submit",
+    "bootbox.send": "Send",
     "cover.dragging_title": "Določanje položaja naslovne fotografije",
     "cover.dragging_message": "Povleci sliko na želeni položaj in klikni \"Shrani\". ",
     "cover.saved": "Naslovna fotografija in položaj shranjena",

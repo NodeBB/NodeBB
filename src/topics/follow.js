@@ -35,8 +35,8 @@ module.exports = function (Topics) {
 	};
 
 	async function setWatching(method1, method2, hook, tid, uid) {
-		if (parseInt(uid, 10) <= 0) {
-			return;
+		if (!(parseInt(uid, 10) > 0)) {
+			throw new Error('[[error:not-logged-in]]');
 		}
 		const exists = await Topics.exists(tid);
 		if (!exists) {

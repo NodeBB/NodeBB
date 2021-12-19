@@ -1,8 +1,8 @@
 'use strict';
 
 define('forum/flags/detail', [
-	'components', 'translator', 'benchpress', 'forum/account/header', 'accounts/delete', 'api', 'bootbox',
-], function (components, translator, Benchpress, AccountHeader, AccountsDelete, api, bootbox) {
+	'components', 'translator', 'benchpress', 'forum/account/header', 'accounts/delete', 'api', 'bootbox', 'alerts',
+], function (components, translator, Benchpress, AccountHeader, AccountsDelete, api, bootbox, alerts) {
 	const Detail = {};
 
 	Detail.init = function () {
@@ -27,9 +27,9 @@ define('forum/flags/detail', [
 					}, {});
 
 					api.put(`/flags/${ajaxify.data.flagId}`, data).then((history) => {
-						app.alertSuccess('[[flags:updated]]');
+						alerts.success('[[flags:updated]]');
 						Detail.reloadHistory(history);
-					}).catch(app.alertError);
+					}).catch(alerts.error);
 					break;
 				}
 
@@ -39,12 +39,12 @@ define('forum/flags/detail', [
 						note: noteEl.value,
 						datetime: parseInt(noteEl.getAttribute('data-datetime'), 10),
 					}).then((payload) => {
-						app.alertSuccess('[[flags:note-added]]');
+						alerts.success('[[flags:note-added]]');
 						Detail.reloadNotes(payload.notes);
 						Detail.reloadHistory(payload.history);
 
 						noteEl.removeAttribute('data-datetime');
-					}).catch(app.alertError);
+					}).catch(alerts.error);
 					break;
 
 				case 'delete-note': {
@@ -52,10 +52,10 @@ define('forum/flags/detail', [
 					bootbox.confirm('[[flags:delete-note-confirm]]', function (ok) {
 						if (ok) {
 							api.delete(`/flags/${ajaxify.data.flagId}/notes/${datetime}`, {}).then((payload) => {
-								app.alertSuccess('[[flags:note-deleted]]');
+								alerts.success('[[flags:note-deleted]]');
 								Detail.reloadNotes(payload.notes);
 								Detail.reloadHistory(payload.history);
-							}).catch(app.alertError);
+							}).catch(alerts.error);
 						}
 					});
 					break;
@@ -127,7 +127,7 @@ define('forum/flags/detail', [
 					tid: tid,
 				}, function (err) {
 					if (err) {
-						app.alertError(err.message);
+						alerts.error(err);
 					}
 
 					ajaxify.refresh();

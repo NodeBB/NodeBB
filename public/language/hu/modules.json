@@ -68,6 +68,8 @@
     "bootbox.ok": "OK",
     "bootbox.cancel": "Mégse",
     "bootbox.confirm": "Megerősítés",
+    "bootbox.submit": "Submit",
+    "bootbox.send": "Send",
     "cover.dragging_title": "Fedőkép pozíciója",
     "cover.dragging_message": "Húzd a fedőképet a kívánt pozícióba, majd \"Mentés\"",
     "cover.saved": "Fedőkép és annak pozíciója elmentve",

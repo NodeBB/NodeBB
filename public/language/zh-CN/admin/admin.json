@@ -3,5 +3,9 @@
 	"alert.confirm-restart": "您确定要重启 NodeBB 吗？",
 
 	"acp-title": "%1 | NodeBB 管理员控制面板",
-	"settings-header-contents": "内容"
+	"settings-header-contents": "内容",
+	"changes-saved": "Changes Saved",
+	"changes-saved-message": "Your changes to the NodeBB configuration have been saved.",
+	"changes-not-saved": "Changes Not Saved",
+	"changes-not-saved-message": "NodeBB encountered a problem saving your changes. (%1)"
 }

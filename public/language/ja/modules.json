@@ -68,6 +68,8 @@
     "bootbox.ok": "OK",
     "bootbox.cancel": "キャンセル",
     "bootbox.confirm": "確認",
+    "bootbox.submit": "Submit",
+    "bootbox.send": "Send",
     "cover.dragging_title": "カバー写真の配置について",
     "cover.dragging_message": "カバー写真をドラッグで目的位置に移動し、\"保存\"をクリックします。",
     "cover.saved": "カバー写真と配置設定を保存しました。",

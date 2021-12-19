@@ -9,7 +9,8 @@ define('forum/topic/threadTools', [
 	'api',
 	'hooks',
 	'bootbox',
-], function (components, translator, handleBack, posts, api, hooks, bootbox) {
+	'alerts',
+], function (components, translator, handleBack, posts, api, hooks, bootbox, alerts) {
 	const ThreadTools = {};
 
 	ThreadTools.init = function (tid, topicContainer) {
@@ -60,7 +61,7 @@ define('forum/topic/threadTools', [
 						.then(function () {
 							eventEl.remove();
 						})
-						.catch(app.alertError);
+						.catch(alerts.error);
 				}
 			});
 		});
@@ -69,7 +70,7 @@ define('forum/topic/threadTools', [
 		topicContainer.on('click', '[component="topic/mark-unread"]', function () {
 			socket.emit('topics.markUnread', tid, function (err) {
 				if (err) {
-					return app.alertError(err);
+					return alerts.error(err);
 				}
 
 				if (app.previousUrl && !app.previousUrl.match('^/topic')) {
@@ -80,7 +81,7 @@ define('forum/topic/threadTools', [
 					ajaxify.go('category/' + ajaxify.data.category.slug, handleBack.onBackClicked);
 				}
 
-				app.alertSuccess('[[topic:mark_unread.success]]');
+				alerts.success('[[topic:mark_unread.success]]');
 			});
 			return false;
 		});
@@ -89,9 +90,9 @@ define('forum/topic/threadTools', [
 			const btn = $(this);
 			socket.emit('topics.markAsUnreadForAll', [tid], function (err) {
 				if (err) {
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
-				app.alertSuccess('[[topic:markAsUnreadForAll.success]]');
+				alerts.success('[[topic:markAsUnreadForAll.success]]');
 				btn.parents('.thread-tools.open').find('.dropdown-toggle').trigger('click');
 			});
 			return false;
@@ -149,7 +150,7 @@ define('forum/topic/threadTools', [
 
 				setFollowState(type);
 
-				app.alert({
+				alerts.alert({
 					alert_id: 'follow_thread',
 					message: message,
 					type: 'success',
@@ -158,7 +159,7 @@ define('forum/topic/threadTools', [
 
 				hooks.fire('action:topics.changeWatching', { tid: tid, type: type });
 			}, () => {
-				app.alert({
+				alerts.alert({
 					type: 'danger',
 					alert_id: 'topic_follow',
 					title: '[[global:please_log_in]]',
@@ -181,7 +182,7 @@ define('forum/topic/threadTools', [
 
 			socket.emit('topics.loadTopicTools', { tid: ajaxify.data.tid, cid: ajaxify.data.cid }, function (err, data) {
 				if (err) {
-					return app.alertError(err);
+					return alerts.error(err);
 				}
 				app.parseAndTranslate('partials/topic/topic-menu-list', data, function (html) {
 					dropdownMenu.html(html);
@@ -203,7 +204,7 @@ define('forum/topic/threadTools', [
 			if (ok) {
 				api[method](`/topics/${tid}${path}`, body)
 					.then(onComplete)
-					.catch(app.alertError);
+					.catch(alerts.error);
 			}
 		};
 
@@ -255,7 +256,7 @@ define('forum/topic/threadTools', [
 								body.expiry = expiry.getTime();
 								onSuccess();
 							} else {
-								app.alertError('[[error:invalid-date]]');
+								alerts.error('[[error:invalid-date]]');
 							}
 						},
 					},

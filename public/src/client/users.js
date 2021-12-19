@@ -2,8 +2,8 @@
 
 
 define('forum/users', [
-	'translator', 'benchpress', 'api', 'accounts/invite',
-], function (translator, Benchpress, api, AccountInvite) {
+	'translator', 'benchpress', 'api', 'alerts', 'accounts/invite',
+], function (translator, Benchpress, api, alerts, AccountInvite) {
 	const Users = {};
 
 	let searchResultCount = 0;
@@ -82,7 +82,7 @@ define('forum/users', [
 	function loadPage(query) {
 		api.get('/api/users', query)
 			.then(renderSearchResults)
-			.catch(app.alertError);
+			.catch(alerts.error);
 	}
 
 	function renderSearchResults(data) {

@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/account/consent', ['forum/account/header'], function (header) {
+define('forum/account/consent', ['forum/account/header', 'alerts'], function (header, alerts) {
 	const Consent = {};
 
 	Consent.init = function () {
@@ -10,7 +10,7 @@ define('forum/account/consent', ['forum/account/header'], function (header) {
 		$('[data-action="consent"]').on('click', function () {
 			socket.emit('user.gdpr.consent', {}, function (err) {
 				if (err) {
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
 
 				ajaxify.refresh();
@@ -25,9 +25,9 @@ define('forum/account/consent', ['forum/account/header'], function (header) {
 			el.on('click', function () {
 				socket.emit(method, { uid: ajaxify.data.uid }, function (err) {
 					if (err) {
-						return app.alertError(err.message);
+						return alerts.error(err);
 					}
-					app.alertSuccess(success);
+					alerts.success(success);
 				});
 			});
 		}

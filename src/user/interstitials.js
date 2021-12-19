@@ -1,5 +1,7 @@
 'use strict';
 
+const winston = require('winston');
+
 const user = require('.');
 const db = require('../database');
 const meta = require('../meta');
@@ -58,6 +60,8 @@ Interstitials.email = async (data) => {
 						await user.email.sendValidationEmail(userData.uid, {
 							email: formData.email,
 							force: true,
+						}).catch((err) => {
+							winston.error(`[user.interstitials.email] Validation email failed to send\n[emailer.send] ${err.stack}`);
 						});
 						data.req.session.emailChanged = 1;
 					} else {

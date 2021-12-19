@@ -1,6 +1,6 @@
 'use strict';
 
-define('forum/topic/diffs', ['api', 'bootbox', 'forum/topic/images'], function (api, bootbox) {
+define('forum/topic/diffs', ['api', 'bootbox', 'alerts', 'forum/topic/images'], function (api, bootbox, alerts) {
 	const Diffs = {};
 	const localeStringOpts = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' };
 
@@ -43,7 +43,7 @@ define('forum/topic/diffs', ['api', 'bootbox', 'forum/topic/images'], function (
 					$deleteEl.prop('disabled', true);
 				});
 			});
-		}).catch(app.alertError);
+		}).catch(alerts.error);
 	};
 
 	Diffs.load = function (pid, since, $postContainer) {
@@ -59,7 +59,7 @@ define('forum/topic/diffs', ['api', 'bootbox', 'forum/topic/images'], function (
 			}, function ($html) {
 				$postContainer.empty().append($html);
 			});
-		}).catch(app.alertError);
+		}).catch(alerts.error);
 	};
 
 	Diffs.restore = function (pid, since, $modal) {
@@ -69,8 +69,8 @@ define('forum/topic/diffs', ['api', 'bootbox', 'forum/topic/images'], function (
 
 		api.put(`/posts/${pid}/diffs/${since}`, {}).then(() => {
 			$modal.modal('hide');
-			app.alertSuccess('[[topic:diffs.post-restored]]');
-		}).catch(app.alertError);
+			alerts.success('[[topic:diffs.post-restored]]');
+		}).catch(alerts.error);
 	};
 
 	Diffs.delete = function (pid, timestamp, $selectEl, $numberOfDiffCon) {
@@ -80,9 +80,9 @@ define('forum/topic/diffs', ['api', 'bootbox', 'forum/topic/images'], function (
 				$selectEl.trigger('change');
 				const numberOfDiffs = $selectEl.find('option').length;
 				$numberOfDiffCon.text(numberOfDiffs);
-				app.alertSuccess('[[topic:diffs.deleted]]');
+				alerts.success('[[topic:diffs.deleted]]');
 			});
-		}).catch(app.alertError);
+		}).catch(alerts.error);
 	};
 
 	function parsePostHistory(data, blockName) {

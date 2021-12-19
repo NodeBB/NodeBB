@@ -50,6 +50,7 @@
     "users-csv-exported": "Users csv exported, click to download",
     "post-queue-accepted": "Your queued post has been accepted. Click here to see your post.",
     "post-queue-rejected": "Your queued post has been rejected.",
+    "post-queue-notify": "Queued post received a notification:<br/>\"%1\"",
     "email-confirmed": "Email telah Dikonfirmasi",
     "email-confirmed-message": "Terimakasih telah melakukan validasi email. Akunmu saat ini telah aktif sepenuhnya.",
     "email-confirm-error-message": "Terjadi masalah saat melakukan validasi emailmu. Mungkin terjadi kesalahan kode atau waktu habis.",

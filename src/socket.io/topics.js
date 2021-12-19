@@ -1,11 +1,9 @@
 'use strict';
 
-const api = require('../api');
 const topics = require('../topics');
 const user = require('../user');
 const meta = require('../meta');
 const privileges = require('../privileges');
-const sockets = require('.');
 
 const SocketTopics = module.exports;
 
@@ -15,11 +13,6 @@ require('./topics/tools')(SocketTopics);
 require('./topics/infinitescroll')(SocketTopics);
 require('./topics/tags')(SocketTopics);
 require('./topics/merge')(SocketTopics);
-
-SocketTopics.post = async function (socket, data) {
-	sockets.warnDeprecated(socket, 'POST /api/v3/topics');
-	return await api.topics.create(socket, data);
-};
 
 SocketTopics.postcount = async function (socket, tid) {
 	const canRead = await privileges.topics.can('topics:read', tid, socket.uid);
@@ -51,53 +44,14 @@ SocketTopics.createTopicFromPosts = async function (socket, data) {
 	return await topics.createTopicFromPosts(socket.uid, data.title, data.pids, data.fromTid);
 };
 
-SocketTopics.changeWatching = async function (socket, data) {
-	if (!data || !data.tid || !data.type) {
-		throw new Error('[[error:invalid-data]]');
-	}
-	const commands = ['follow', 'unfollow', 'ignore'];
-	if (!commands.includes(data.type)) {
-		throw new Error('[[error:invalid-command]]');
-	}
-
-	sockets.warnDeprecated(socket, 'PUT/DELETE /api/v3/topics/:tid/(follow|ignore)');
-	await followCommand(data.type, socket, data.tid);
-};
-
-SocketTopics.follow = async function (socket, tid) {
-	sockets.warnDeprecated(socket, 'PUT /api/v3/topics/:tid/follow');
-	await followCommand('follow', socket, tid);
-};
-
-async function followCommand(method, socket, tid) {
-	if (!socket.uid) {
-		throw new Error('[[error:not-logged-in]]');
-	}
-
-	await api.topics[method](socket, { tid });
-}
-
 SocketTopics.isFollowed = async function (socket, tid) {
 	const isFollowing = await topics.isFollowing([tid], socket.uid);
 	return isFollowing[0];
 };
 
-SocketTopics.search = async function (socket, data) {
-	sockets.warnDeprecated(socket, 'GET /api/search');
-	if (!data) {
-		throw new Error('[[error:invalid-data]]');
-	}
-	return await topics.search(data.tid, data.term);
-};
-
 SocketTopics.isModerator = async function (socket, tid) {
 	const cid = await topics.getTopicField(tid, 'cid');
 	return await user.isModerator(socket.uid, cid);
-};
-
-SocketTopics.getTopic = async function (socket, tid) {
-	sockets.warnDeprecated(socket, 'GET /api/v3/topics/:tid');
-	return await api.topics.get(socket, { tid });
 };
 
 require('../promisify')(SocketTopics);

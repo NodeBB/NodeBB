@@ -4,11 +4,12 @@ define('admin/manage/privileges', [
 	'api',
 	'autocomplete',
 	'bootbox',
+	'alerts',
 	'translator',
 	'categorySelector',
 	'mousetrap',
 	'admin/modules/checkboxRowSelector',
-], function (api, autocomplete, bootbox, translator, categorySelector, mousetrap, checkboxRowSelector) {
+], function (api, autocomplete, bootbox, alerts, translator, categorySelector, mousetrap, checkboxRowSelector) {
 	const Privileges = {};
 
 	let cid;
@@ -78,7 +79,7 @@ define('admin/manage/privileges', [
 				}
 				checkboxRowSelector.updateState($checkboxEl);
 			} else {
-				app.alertError('[[error:invalid-data]]');
+				alerts.error('[[error:invalid-data]]');
 			}
 		});
 
@@ -166,17 +167,17 @@ define('admin/manage/privileges', [
 			const rejects = results.filter(r => r.status === 'rejected');
 			if (rejects.length) {
 				rejects.forEach((result) => {
-					app.alertError(result.reason);
+					alerts.error(result.reason);
 				});
 			} else {
-				app.alertSuccess('[[admin/manage/privileges:alert.saved]]');
+				alerts.success('[[admin/manage/privileges:alert.saved]]');
 			}
 		});
 	};
 
 	Privileges.discard = function () {
 		Privileges.refreshPrivilegeTable();
-		app.alertSuccess('[[admin/manage/privileges:alert.discarded]]');
+		alerts.success('[[admin/manage/privileges:alert.discarded]]');
 	};
 
 	Privileges.refreshPrivilegeTable = function (groupToHighlight) {
@@ -198,7 +199,7 @@ define('admin/manage/privileges', [
 
 				hightlightRowByDataAttr('data-group-name', groupToHighlight);
 			});
-		}).catch(app.alertError);
+		}).catch(alert.error);
 	};
 
 	Privileges.exposeAssumedPrivileges = function () {
@@ -267,7 +268,7 @@ define('admin/manage/privileges', [
 
 			autocomplete.group(inputEl, function (ev, ui) {
 				if (ui.item.group.name === 'administrators') {
-					return app.alert({
+					return alerts.alert({
 						type: 'warning',
 						message: '[[admin/manage/privileges:alert.admin-warning]]',
 					});
@@ -283,9 +284,9 @@ define('admin/manage/privileges', [
 		const filter = getPrivilegeFilter();
 		socket.emit('admin.categories.copyPrivilegesToChildren', { cid, group, filter }, function (err) {
 			if (err) {
-				return app.alertError(err.message);
+				return alerts.error(err.message);
 			}
-			app.alertSuccess('[[admin/manage/categories:privileges.copy-success]]');
+			alerts.success('[[admin/manage/categories:privileges.copy-success]]');
 		});
 	};
 
@@ -308,7 +309,7 @@ define('admin/manage/privileges', [
 					group: group,
 				}, function (err) {
 					if (err) {
-						return app.alertError(err.message);
+						return alerts.error(err);
 					}
 					ajaxify.refresh();
 				});
@@ -320,9 +321,9 @@ define('admin/manage/privileges', [
 		const filter = getPrivilegeFilter();
 		socket.emit('admin.categories.copyPrivilegesToAllCategories', { cid, group, filter }, function (err) {
 			if (err) {
-				return app.alertError(err.message);
+				return alerts.error(err);
 			}
-			app.alertSuccess('[[admin/manage/categories:privileges.copy-success]]');
+			alerts.success('[[admin/manage/categories:privileges.copy-success]]');
 		});
 	};
 

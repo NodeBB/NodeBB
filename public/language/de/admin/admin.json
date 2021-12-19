@@ -3,5 +3,9 @@
 	"alert.confirm-restart": "Bist du sicher, dass du NodeBB neu starten möchtest?",
 
 	"acp-title": "%1 | NodeBB Admin Systemsteuerung",
-	"settings-header-contents": "Inhalte"
+	"settings-header-contents": "Inhalte",
+	"changes-saved": "Änderungen gespeichert",
+	"changes-saved-message": "Deine Änderungen an der NodeBB Konfiguration wurden gespeichert.",
+	"changes-not-saved": "Änderungen verworfen",
+	"changes-not-saved-message": "Beim Speichern der Änderungen ist ein Problem aufgetreten. (%1)"
 }

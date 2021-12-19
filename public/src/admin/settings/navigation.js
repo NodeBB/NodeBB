@@ -5,10 +5,11 @@ define('admin/settings/navigation', [
 	'translator',
 	'iconSelect',
 	'benchpress',
+	'alerts',
 	'jquery-ui/widgets/draggable',
 	'jquery-ui/widgets/droppable',
 	'jquery-ui/widgets/sortable',
-], function (translator, iconSelect, Benchpress) {
+], function (translator, iconSelect, Benchpress, alerts) {
 	const navigation = {};
 	let available;
 
@@ -31,10 +32,16 @@ define('admin/settings/navigation', [
 			iconSelect.init(iconEl, function (el) {
 				const newIconClass = el.attr('value');
 				const index = iconEl.parents('[data-index]').attr('data-index');
-				$('#active-navigation [data-index="' + index + '"] i').attr('class', 'fa fa-fw ' + newIconClass);
+				$('#active-navigation [data-index="' + index + '"] i.nav-icon').attr('class', 'fa fa-fw ' + newIconClass);
 				iconEl.siblings('[name="iconClass"]').val(newIconClass);
 				iconEl.siblings('.change-icon-link').toggleClass('hidden', !!newIconClass);
 			});
+		});
+
+		$('#enabled').on('click', '[name="dropdown"]', function () {
+			const el = $(this);
+			const index = el.parents('[data-index]').attr('data-index');
+			$('#active-navigation [data-index="' + index + '"] i.dropdown-icon').toggleClass('hidden', !el.is(':checked'));
 		});
 
 		$('#active-navigation').on('click', 'li', onSelect);
@@ -98,12 +105,9 @@ define('admin/settings/navigation', [
 			const el = $('#enabled').children('[data-index="' + index + '"]');
 			const form = el.find('form').serializeArray();
 			const data = {};
-			const properties = {};
 
 			form.forEach(function (input) {
-				if (input.name.slice(0, 9) === 'property:' && input.value === 'on') {
-					properties[input.name.slice(9)] = true;
-				} else if (data[input.name]) {
+				if (data[input.name]) {
 					if (!Array.isArray(data[input.name])) {
 						data[input.name] = [
 							data[input.name],
@@ -115,22 +119,14 @@ define('admin/settings/navigation', [
 				}
 			});
 
-			data.properties = {};
-
-			for (const prop in properties) {
-				if (properties.hasOwnProperty(prop)) {
-					data.properties[prop] = properties[prop];
-				}
-			}
-
 			nav.push(data);
 		});
 
 		socket.emit('admin.navigation.save', nav, function (err) {
 			if (err) {
-				app.alertError(err.message);
+				alerts.error(err);
 			} else {
-				app.alertSuccess('Successfully saved navigation');
+				alerts.success('Successfully saved navigation');
 			}
 		});
 	}

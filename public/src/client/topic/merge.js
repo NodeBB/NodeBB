@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/topic/merge', ['search'], function (search) {
+define('forum/topic/merge', ['search', 'alerts', 'api'], function (search, alerts, api) {
 	const Merge = {};
 	let modal;
 	let mergeBtn;
@@ -52,10 +52,7 @@ define('forum/topic/merge', ['search'], function (search) {
 
 	Merge.addTopic = function (tid, callback) {
 		callback = callback || function () {};
-		socket.emit('topics.getTopic', tid, function (err, topicData) {
-			if (err) {
-				return app.alertError(err);
-			}
+		api.get(`/topics/${tid}`, {}).then(function (topicData) {
 			const title = topicData ? topicData.title : 'No title';
 			if (selectedTids[tid]) {
 				delete selectedTids[tid];
@@ -65,7 +62,7 @@ define('forum/topic/merge', ['search'], function (search) {
 			checkButtonEnable();
 			showTopicsSelected();
 			callback();
-		});
+		}).catch(alerts.error);
 	};
 
 	function onTopicClicked(ev) {
@@ -93,7 +90,7 @@ define('forum/topic/merge', ['search'], function (search) {
 		socket.emit('topics.merge', { tids: tids, options: options }, function (err, tid) {
 			btn.removeAttr('disabled');
 			if (err) {
-				return app.alertError(err.message);
+				return alerts.error(err);
 			}
 			ajaxify.go('/topic/' + tid);
 			closeModal();

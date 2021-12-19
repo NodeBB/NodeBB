@@ -1,6 +1,6 @@
 'use strict';
 
-define('admin/manage/uploads', ['api', 'bootbox', 'uploader'], function (api, bootbox, uploader) {
+define('admin/manage/uploads', ['api', 'bootbox', 'alerts', 'uploader'], function (api, bootbox, alerts, uploader) {
 	const Uploads = {};
 
 	Uploads.init = function () {
@@ -25,7 +25,7 @@ define('admin/manage/uploads', ['api', 'bootbox', 'uploader'], function (api, bo
 					path: file.attr('data-path'),
 				}).then(() => {
 					file.remove();
-				}).catch(app.alertError);
+				}).catch(alerts.error);
 			});
 		});
 
@@ -40,7 +40,7 @@ define('admin/manage/uploads', ['api', 'bootbox', 'uploader'], function (api, bo
 					folderName: newFolderName,
 				}).then(() => {
 					ajaxify.refresh();
-				}).catch(app.alertError);
+				}).catch(alerts.error);
 			});
 		});
 	};

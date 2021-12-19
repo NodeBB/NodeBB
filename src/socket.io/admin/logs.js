@@ -4,10 +4,10 @@ const meta = require('../../meta');
 
 const Logs = module.exports;
 
-Logs.get = function (socket, data, callback) {
-	meta.logs.get(callback);
+Logs.get = async function () {
+	return await meta.logs.get();
 };
 
-Logs.clear = function (socket, data, callback) {
-	meta.logs.clear(callback);
+Logs.clear = async function () {
+	await meta.logs.clear();
 };

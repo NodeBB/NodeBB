@@ -2,9 +2,7 @@
 
 (function (factory) {
 	if (typeof module === 'object' && module.exports) {
-		const winston = require('winston');
-
-		module.exports = factory(require('xregexp'), winston);
+		module.exports = factory();
 
 		process.profile = function (operation, start) {
 			console.log('%s took %d milliseconds', operation, process.elapsedTimeSince(start));
@@ -15,14 +13,12 @@
 			return (diff[0] * 1e3) + (diff[1] / 1e6);
 		};
 	} else {
-		window.utils = factory(window.XRegExp, console);
+		window.utils = factory();
 	}
 	// eslint-disable-next-line
-}(function (XRegExp, console) {
-	const freeze = Object.freeze || function (obj) { return obj; };
-
+}(function () {
 	// add default escape function for escaping HTML entities
-	const escapeCharMap = freeze({
+	const escapeCharMap = Object.freeze({
 		'&': '&amp;',
 		'<': '&lt;',
 		'>': '&gt;',
@@ -36,7 +32,7 @@
 	}
 	const escapeChars = /[&<>"'`=]/g;
 
-	const HTMLEntities = freeze({
+	const HTMLEntities = Object.freeze({
 		amp: '&',
 		gt: '>',
 		lt: '<',
@@ -380,7 +376,7 @@
 				'pt-BR': 'pt-br',
 				nb: 'no',
 			};
-			return mapping[userLang] || userLang;
+			return mapping.hasOwnProperty(userLang) ? mapping[userLang] : userLang;
 		},
 		// shallow objects merge
 		merge: function () {
@@ -432,7 +428,7 @@
 		},
 
 		extensionToMimeType: function (extension) {
-			return utils.extensionMimeTypeMap[extension] || '*';
+			return utils.extensionMimeTypeMap.hasOwnProperty(extension) ? utils.extensionMimeTypeMap[extension] : '*';
 		},
 
 		isPromise: function (object) {

@@ -117,9 +117,9 @@ module.exports = function (Messaging) {
 		const userCounts = await db.sortedSetsCard(roomIds.map(roomId => `chat:room:${roomId}:uids`));
 		const groupChats = roomIds.filter((roomId, index) => userCounts[index] > 2);
 		const privateChats = roomIds.filter((roomId, index) => userCounts[index] <= 2);
-		await Promise.all([
-			db.setObjectField(groupChats.map(id => `chat:room:${id}`, 'groupChat', 1)),
-			db.setObjectField(privateChats.map(id => `chat:room:${id}`, 'groupChat', 0)),
+		await db.setObjectBulk([
+			...groupChats.map(id => [`chat:room:${id}`, { groupChat: 1 }]),
+			...privateChats.map(id => [`chat:room:${id}`, { groupChat: 0 }]),
 		]);
 	}
 

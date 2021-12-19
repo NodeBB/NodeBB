@@ -50,6 +50,7 @@
     "users-csv-exported": "Users csv exported, click to download",
     "post-queue-accepted": "Your queued post has been accepted. Click here to see your post.",
     "post-queue-rejected": "Your queued post has been rejected.",
+    "post-queue-notify": "Queued post received a notification:<br/>\"%1\"",
     "email-confirmed": "Sähköpostiosoite vahvistettu",
     "email-confirmed-message": "Kiitos sähköpostiosoitteesi vahvistamisesta. Käyttäjätilisi on nyt täysin aktivoitu.",
     "email-confirm-error-message": "Ongelma sähköpostiosoitteen vahvistamisessa. Ehkäpä koodi oli virheellinen tai vanhentunut.",

@@ -1,6 +1,8 @@
 'use strict';
 
-define('topicThumbs', ['api', 'bootbox', 'uploader', 'benchpress', 'translator', 'jquery-ui/widgets/sortable'], function (api, bootbox, uploader, Benchpress, translator) {
+define('topicThumbs', [
+	'api', 'bootbox', 'alerts', 'uploader', 'benchpress', 'translator', 'jquery-ui/widgets/sortable',
+], function (api, bootbox, alerts, uploader, Benchpress, translator) {
 	const Thumbs = {};
 
 	Thumbs.get = id => api.get(`/topics/${id}/thumbs`, {});
@@ -97,7 +99,7 @@ define('topicThumbs', ['api', 'bootbox', 'uploader', 'benchpress', 'translator',
 						path: path,
 					}).then(() => {
 						Thumbs.modal.open(payload);
-					}).catch(app.alertError);
+					}).catch(alerts.error);
 				});
 			}
 		});
@@ -120,7 +122,7 @@ define('topicThumbs', ['api', 'bootbox', 'uploader', 'benchpress', 'translator',
 			let path = el.getAttribute('data-path');
 			path = path.replace(new RegExp(`^${config.upload_url}`), '');
 
-			api.put(`/topics/${id}/thumbs/order`, { path, order }).catch(app.alertError);
+			api.put(`/topics/${id}/thumbs/order`, { path, order }).catch(alerts.error);
 		});
 	};
 

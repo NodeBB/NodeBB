@@ -1,6 +1,7 @@
 'use strict';
 
 const validator = require('validator');
+const winston = require('winston');
 
 const plugins = require('../plugins');
 const db = require('../database');
@@ -15,15 +16,22 @@ pubsub.on('admin:navigation:save', () => {
 
 admin.save = async function (data) {
 	const order = Object.keys(data);
-	const items = data.map((item, index) => {
+	const bulkSet = [];
+	data.forEach((item, index) => {
 		item.order = order[index];
-		return JSON.stringify(item);
+		if (item.hasOwnProperty('groups')) {
+			item.groups = JSON.stringify(item.groups);
+		}
+		bulkSet.push([`navigation:enabled:${item.order}`, item]);
 	});
 
 	cache = null;
 	pubsub.publish('admin:navigation:save');
+	const ids = await db.getSortedSetRange('navigation:enabled', 0, -1);
+	await db.deleteAll(ids.map(id => `navigation:enabled:${id}`));
+	await db.setObjectBulk(bulkSet);
 	await db.delete('navigation:enabled');
-	await db.sortedSetAdd('navigation:enabled', order, items);
+	await db.sortedSetAdd('navigation:enabled', order, order);
 };
 
 admin.getAdmin = async function () {
@@ -55,9 +63,17 @@ admin.get = async function () {
 	if (cache) {
 		return cache.map(item => ({ ...item }));
 	}
-	const data = await db.getSortedSetRange('navigation:enabled', 0, -1);
+	const ids = await db.getSortedSetRange('navigation:enabled', 0, -1);
+	const data = await db.getObjects(ids.map(id => `navigation:enabled:${id}`));
 	cache = data.map((item) => {
-		item = JSON.parse(item);
+		if (item.hasOwnProperty('groups')) {
+			try {
+				item.groups = JSON.parse(item.groups);
+			} catch (err) {
+				winston.error(err.stack);
+				item.groups = [];
+			}
+		}
 		item.groups = item.groups || [];
 		if (item.groups && !Array.isArray(item.groups)) {
 			item.groups = [item.groups];
@@ -73,8 +89,6 @@ async function getAvailable() {
 	const core = require('../../install/data/navigation.json').map((item) => {
 		item.core = true;
 		item.id = item.id || '';
-		item.properties = item.properties || { targetBlank: false };
-
 		return item;
 	});
 

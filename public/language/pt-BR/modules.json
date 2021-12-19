@@ -68,6 +68,8 @@
     "bootbox.ok": "OK",
     "bootbox.cancel": "Cancelar",
     "bootbox.confirm": "Confirmar",
+    "bootbox.submit": "Submit",
+    "bootbox.send": "Send",
     "cover.dragging_title": "Posicionamento da Foto de Capa",
     "cover.dragging_message": "Arraste a foto de capa na posição desejada e clique em \"Salvar\"",
     "cover.saved": "Imagem de foto da capa e posição foram gravadas",

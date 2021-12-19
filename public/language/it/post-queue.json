@@ -14,5 +14,8 @@
 	"reply": "Rispondi",
 	"topic": "Discussione",
 	"accept": "Accetta",
-	"reject": "Rifiuta"
+	"reject": "Rifiuta",
+	"remove": "Rimuovi",
+	"notify": "Notifica",
+	"notify-user": "Notifica all'utente"
 }

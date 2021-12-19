@@ -14,5 +14,8 @@
 	"reply": "Trả lời",
 	"topic": "Chủ đề",
 	"accept": "Chấp nhận",
-	"reject": "Từ chối"
+	"reject": "Từ chối",
+	"remove": "Remove",
+	"notify": "Notify",
+	"notify-user": "Notify User"
 }

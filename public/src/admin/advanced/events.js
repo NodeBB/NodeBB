@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/advanced/events', ['bootbox'], function (bootbox) {
+define('admin/advanced/events', ['bootbox', 'alerts'], function (bootbox, alerts) {
 	const Events = {};
 
 	Events.init = function () {
@@ -10,7 +10,7 @@ define('admin/advanced/events', ['bootbox'], function (bootbox) {
 				if (confirm) {
 					socket.emit('admin.deleteAllEvents', function (err) {
 						if (err) {
-							return app.alertError(err.message);
+							return alerts.error(err);
 						}
 						$('.events-list').empty();
 					});
@@ -23,7 +23,7 @@ define('admin/advanced/events', ['bootbox'], function (bootbox) {
 			const eid = $parentEl.attr('data-eid');
 			socket.emit('admin.deleteEvents', [eid], function (err) {
 				if (err) {
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
 				$parentEl.remove();
 			});

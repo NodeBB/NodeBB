@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('settings', ['hooks'], function (hooks) {
+define('settings', ['hooks', 'alerts'], function (hooks, alerts) {
 	const DEFAULT_PLUGINS = [
 		'settings/checkbox',
 		'settings/number',
@@ -310,17 +310,17 @@ define('settings', ['hooks'], function (hooks) {
 			}, function (err) {
 				if (notify) {
 					if (err) {
-						app.alert({
-							title: 'Settings Not Saved',
+						alerts.alert({
+							title: '[[admin/admin:changes-not-saved]]',
 							type: 'danger',
-							message: 'NodeBB failed to save the settings.',
+							message: `[[admin/admin/changes-not-saved-message, ${err.message}]]`,
 							timeout: 5000,
 						});
 					} else {
-						app.alert({
-							title: 'Settings Saved',
+						alerts.alert({
+							title: '[[admin/admin:changes-saved]]',
 							type: 'success',
-							message: 'Settings have been successfully saved',
+							message: '[[admin/admin:changes-saved-message]]',
 							timeout: 2500,
 						});
 					}
@@ -460,7 +460,7 @@ define('settings', ['hooks'], function (hooks) {
 				}
 			}
 			if (notSaved.length) {
-				app.alert({
+				alerts.alert({
 					title: 'Attributes Not Saved',
 					message: "'" + (notSaved.join(', ')) + "' could not be saved. Please contact the plugin-author!",
 					type: 'danger',
@@ -554,14 +554,15 @@ define('settings', ['hooks'], function (hooks) {
 					if (typeof callback === 'function') {
 						callback(err);
 					} else if (err) {
-						app.alert({
-							title: 'Error while saving settings',
+						alerts.alert({
+							title: '[[admin/admin:changes-not-saved]]',
+							message: `[[admin/admin:changes-not-saved-message, ${err.message}]]`,
 							type: 'error',
 							timeout: 2500,
 						});
 					} else {
-						app.alert({
-							title: 'Settings Saved',
+						alerts.alert({
+							title: '[[admin/admin:changes-saved]]',
 							type: 'success',
 							timeout: 2500,
 						});

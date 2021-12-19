@@ -3,5 +3,9 @@
 	"alert.confirm-restart": "আপনি কি নিশ্চিত যে আপনি NodeBB রিস্টার্ট করতে চান ?",
 
 	"acp-title": "%1 |  NodeBB  এডমিন কন্ট্রোল প্যানেল",
-	"settings-header-contents": "কনটেন্টস"
+	"settings-header-contents": "কনটেন্টস",
+	"changes-saved": "Changes Saved",
+	"changes-saved-message": "Your changes to the NodeBB configuration have been saved.",
+	"changes-not-saved": "Changes Not Saved",
+	"changes-not-saved-message": "NodeBB encountered a problem saving your changes. (%1)"
 }

@@ -42,7 +42,9 @@ module.exports = function (Posts) {
 			});
 			cache.set('post-queue', _.cloneDeep(postData));
 		}
-
+		if (filter.id) {
+			postData = postData.filter(p => p.id === filter.id);
+		}
 		if (options.metadata) {
 			await Promise.all(postData.map(p => addMetaData(p)));
 		}
@@ -161,7 +163,7 @@ module.exports = function (Posts) {
 			mergeId: 'post-queue',
 			bodyShort: '[[notifications:post_awaiting_review]]',
 			bodyLong: bodyLong,
-			path: '/post-queue',
+			path: `/post-queue/${id}`,
 		});
 		await notifications.push(notifObj, uids);
 		return {
@@ -235,7 +237,7 @@ module.exports = function (Posts) {
 	Posts.removeFromQueue = async function (id) {
 		const data = await getParsedObject(id);
 		if (!data) {
-			return;
+			return null;
 		}
 		await removeQueueNotification(id);
 		await db.sortedSetRemove('post:queue', id);
@@ -247,7 +249,7 @@ module.exports = function (Posts) {
 	Posts.submitFromQueue = async function (id) {
 		const data = await getParsedObject(id);
 		if (!data) {
-			return;
+			return null;
 		}
 		if (data.type === 'topic') {
 			const result = await createTopic(data.data);
@@ -258,6 +260,10 @@ module.exports = function (Posts) {
 		}
 		await Posts.removeFromQueue(id);
 		return data;
+	};
+
+	Posts.getFromQueue = async function (id) {
+		return await getParsedObject(id);
 	};
 
 	async function getParsedObject(id) {
@@ -288,7 +294,7 @@ module.exports = function (Posts) {
 	}
 
 	Posts.editQueuedContent = async function (uid, editData) {
-		const canEditQueue = await Posts.canEditQueue(uid, editData);
+		const canEditQueue = await Posts.canEditQueue(uid, editData, 'edit');
 		if (!canEditQueue) {
 			throw new Error('[[error:no-privileges]]');
 		}
@@ -309,7 +315,7 @@ module.exports = function (Posts) {
 		cache.del('post-queue');
 	};
 
-	Posts.canEditQueue = async function (uid, editData) {
+	Posts.canEditQueue = async function (uid, editData, action) {
 		const [isAdminOrGlobalMod, data] = await Promise.all([
 			user.isAdminOrGlobalMod(uid),
 			getParsedObject(editData.id),
@@ -317,8 +323,8 @@ module.exports = function (Posts) {
 		if (!data) {
 			return false;
 		}
-
-		if (isAdminOrGlobalMod) {
+		const selfPost = parseInt(uid, 10) === parseInt(data.uid, 10);
+		if (isAdminOrGlobalMod || ((action === 'reject' || action === 'edit') && selfPost)) {
 			return true;
 		}
 

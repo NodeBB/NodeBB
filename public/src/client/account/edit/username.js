@@ -1,8 +1,8 @@
 'use strict';
 
 define('forum/account/edit/username', [
-	'forum/account/header', 'api', 'slugify',
-], function (header, api, slugify) {
+	'forum/account/header', 'api', 'slugify', 'alerts',
+], function (header, api, slugify, alerts) {
 	const AccountEditUsername = {};
 
 	AccountEditUsername.init = function () {
@@ -20,7 +20,7 @@ define('forum/account/edit/username', [
 			}
 
 			if (userData.username === userData.password) {
-				return app.alertError('[[user:username_same_as_password]]');
+				return alerts.error('[[user:username_same_as_password]]');
 			}
 
 			const btn = $(this);
@@ -38,7 +38,7 @@ define('forum/account/edit/username', [
 				}
 
 				ajaxify.go('user/' + userslug + '/edit');
-			}).catch(app.alertError)
+			}).catch(alerts.error)
 				.finally(() => {
 					btn.removeClass('disabled').find('i').addClass('hide');
 				});

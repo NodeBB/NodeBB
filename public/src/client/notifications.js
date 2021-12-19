@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/notifications', ['components'], function (components) {
+define('forum/notifications', ['components', 'alerts'], function (components, alerts) {
 	const Notifications = {};
 
 	Notifications.init = function () {
@@ -10,7 +10,7 @@ define('forum/notifications', ['components'], function (components) {
 			const nid = $(this).parents('[data-nid]').attr('data-nid');
 			socket.emit('notifications.markRead', nid, function (err) {
 				if (err) {
-					return app.alertError(err);
+					return alerts.error(err);
 				}
 			});
 		});
@@ -18,7 +18,7 @@ define('forum/notifications', ['components'], function (components) {
 		components.get('notifications/mark_all').on('click', function () {
 			socket.emit('notifications.markAllRead', function (err) {
 				if (err) {
-					return app.alertError(err.message);
+					return alerts.error(err);
 				}
 
 				components.get('notifications/item').removeClass('unread');
