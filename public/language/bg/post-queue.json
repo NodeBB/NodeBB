@@ -15,7 +15,7 @@
 	"topic": "Тема",
 	"accept": "Приемане",
 	"reject": "Отказване",
-	"remove": "Remove",
-	"notify": "Notify",
-	"notify-user": "Notify User"
+	"remove": "Премахване",
+	"notify": "Известяване",
+	"notify-user": "Известяване на потребителя"
 }
