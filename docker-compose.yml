@@ -7,18 +7,23 @@ services:
     depends_on:
       - db
     ports:
-      - 4567:4567/tcp
-
+      - "4567:4567/tcp"
+    volumes:
+      - user-dir:/mnt/nodebb/user-dir
+    cap_add:
+      - SYS_ADMIN
+    devices:
+      - /dev/fuse
   db:
-    image: mongo:4.4.1-bionic
+    image: postgres:14.1-alpine3.15
     restart: unless-stopped
     expose:
-      - 27017
+      - 8080
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: root
+      POSTGRES_PASSWORD: nodebb
     volumes:
-      - mongo:/data/db
+      - postgres:/var/lib/postgresql/data
 
 volumes:
-  mongo:
+  postgres:
+  user-dir:
