@@ -54,7 +54,10 @@ Chats.rename = async (req, res) => {
 };
 
 Chats.users = async (req, res) => {
-	// ...
+	const users = await api.chats.users(req, {
+		...req.params,
+	});
+	helpers.formatApiResponse(200, res, users);
 };
 
 Chats.invite = async (req, res) => {

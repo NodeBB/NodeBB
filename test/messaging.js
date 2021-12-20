@@ -22,6 +22,7 @@ describe('Messaging Library', () => {
 	const mocks = {
 		users: {
 			foo: {}, // the admin
+			bar: {},
 			baz: {}, // the user with chat restriction enabled
 			herp: {},
 		},
@@ -53,10 +54,12 @@ describe('Messaging Library', () => {
 		// Create 3 users: 1 admin, 2 regular
 		({
 			foo: mocks.users.foo.uid,
+			bar: mocks.users.bar.uid,
 			baz: mocks.users.baz.uid,
 			herp: mocks.users.herp.uid,
 		} = await utils.promiseParallel({
 			foo: User.create({ username: 'foo', password: 'barbar' }), // admin
+			bar: User.create({ username: 'bar', password: 'bazbaz' }), // admin
 			baz: User.create({ username: 'baz', password: 'quuxquux' }), // restricted user
 			herp: User.create({ username: 'herp', password: 'derpderp' }), // a regular user
 		}));
@@ -65,6 +68,7 @@ describe('Messaging Library', () => {
 		await User.setSetting(mocks.users.baz.uid, 'restrictChat', '1');
 
 		({ jar: mocks.users.foo.jar, csrf_token: mocks.users.foo.csrf } = await util.promisify(helpers.loginUser)('foo', 'barbar'));
+		({ jar: mocks.users.bar.jar, csrf_token: mocks.users.bar.csrf } = await util.promisify(helpers.loginUser)('bar', 'bazbaz'));
 		({ jar: mocks.users.baz.jar, csrf_token: mocks.users.baz.csrf } = await util.promisify(helpers.loginUser)('baz', 'quuxquux'));
 		({ jar: mocks.users.herp.jar, csrf_token: mocks.users.herp.csrf } = await util.promisify(helpers.loginUser)('herp', 'derpderp'));
 
@@ -190,17 +194,16 @@ describe('Messaging Library', () => {
 		});
 
 		it('should get users in room', async () => {
-			const data = await socketModules.chats.getUsersInRoom({ uid: mocks.users.foo.uid }, { roomId: roomId });
-			assert(Array.isArray(data));
-			assert.strictEqual(data.length, 3);
+			const { body } = await callv3API('get', `/chats/${roomId}/users`, {}, 'foo');
+			assert(Array.isArray(body.response.users));
+			assert.strictEqual(body.response.users.length, 3);
+			console.log(body.response.users);
 		});
 
 		it('should throw error if user is not in room', async () => {
-			try {
-				const data = await socketModules.chats.getUsersInRoom({ uid: 123123123 }, { roomId: roomId });
-			} catch (err) {
-				assert.equal(err.message, '[[error:no-privileges]]');
-			}
+			const { statusCode, body } = await callv3API('get', `/chats/${roomId}/users`, {}, 'bar');
+			assert.strictEqual(statusCode, 403);
+			assert.equal(body.status.message, await translator.translate('[[error:no-privileges]]'));
 		});
 
 		it('should fail to add users to room if max is reached', (done) => {

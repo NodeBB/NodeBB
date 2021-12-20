@@ -308,19 +308,14 @@ define('forum/chats', [
 	};
 
 	Chats.refreshParticipantsList = function (roomId, modal) {
-		socket.emit('modules.chats.getUsersInRoom', { roomId: roomId }, function (err, users) {
-			const listEl = modal.find('.list-group');
-
-			if (err) {
-				return translator.translate('[[error:invalid-data]]', function (translated) {
-					listEl.find('li').text(translated);
-				});
-			}
-
-			app.parseAndTranslate('partials/modals/manage_room_users', {
-				users: users,
-			}, function (html) {
+		const listEl = modal.find('.list-group');
+		api.get(`/chats/${roomId}/users`, {}).then(({ users }) => {
+			app.parseAndTranslate('partials/modals/manage_room_users', { users }, function (html) {
 				listEl.html(html);
+			});
+		}).catch(() => {
+			translator.translate('[[error:invalid-data]]', function (translated) {
+				listEl.find('li').text(translated);
 			});
 		});
 	};

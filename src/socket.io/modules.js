@@ -84,21 +84,17 @@ SocketModules.chats.loadRoom = async function (socket, data) {
 };
 
 SocketModules.chats.getUsersInRoom = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'GET /api/v3/chats/:roomId/user');
+
 	if (!data || !data.roomId) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	const [isUserInRoom, isOwner, userData] = await Promise.all([
-		Messaging.isUserInRoom(socket.uid, data.roomId),
-		Messaging.isRoomOwner(socket.uid, data.roomId),
-		Messaging.getUsersInRoom(data.roomId, 0, -1),
-	]);
+	const isUserInRoom = await Messaging.isUserInRoom(socket.uid, data.roomId);
 	if (!isUserInRoom) {
 		throw new Error('[[error:no-privileges]]');
 	}
-	userData.forEach((user) => {
-		user.canKick = (parseInt(user.uid, 10) !== parseInt(socket.uid, 10)) && isOwner;
-	});
-	return userData;
+
+	return api.chats.users(socket, data);
 };
 
 SocketModules.chats.addUserToRoom = async function (socket, data) {
