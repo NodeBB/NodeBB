@@ -20,6 +20,7 @@ require('./rooms')(Messaging);
 require('./unread')(Messaging);
 require('./notifications')(Messaging);
 
+Messaging.messageExists = async mid => db.exists(`message:${mid}`);
 
 Messaging.getMessages = async (params) => {
 	const isNew = params.isNew || false;

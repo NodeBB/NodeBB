@@ -47,6 +47,11 @@ module.exports = function (Messaging) {
 			durationConfig = 'chatDeleteDuration';
 		}
 
+		const exists = await Messaging.messageExists(messageId);
+		if (!exists) {
+			throw new Error('[[error:invalid-mid]]');
+		}
+
 		const isAdminOrGlobalMod = await user.isAdminOrGlobalMod(uid);
 
 		if (meta.config.disableChat) {

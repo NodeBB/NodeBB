@@ -146,6 +146,8 @@ SocketModules.chats.leave = async function (socket, roomid) {
 };
 
 SocketModules.chats.edit = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'PUT /api/v3/chats/:roomId/:mid');
+
 	if (!data || !data.roomId || !data.message) {
 		throw new Error('[[error:invalid-data]]');
 	}
