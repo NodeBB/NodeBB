@@ -66,6 +66,11 @@ Chats.kick = async (req, res) => {
 };
 
 Chats.messages = {};
+Chats.messages.get = async (req, res) => {
+	const messages = await messaging.getMessagesData([req.params.mid], req.uid, req.params.roomId, false);
+	helpers.formatApiResponse(200, res, messages.pop());
+};
+
 Chats.messages.edit = async (req, res) => {
 	await messaging.canEdit(req.params.mid, req.uid);
 	await messaging.editMessage(req.uid, req.params.mid, req.params.roomId, req.body.message);

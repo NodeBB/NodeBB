@@ -23,7 +23,7 @@ module.exports = function () {
 	// setupApiRoute(router, 'put', '/:roomId/users', [...middlewares, middleware.assert.room, middleware.checkRequired.bind(null, ['uids'])], controllers.write.chats.invite);
 	// setupApiRoute(router, 'delete', '/:roomId/users', [...middlewares, middleware.assert.room, middleware.checkRequired.bind(null, ['uids'])], controllers.write.chats.kick);
 
-	// setupApiRoute(router, 'get', '/:roomId/:mid', [...middlewares, middleware.assert.room], controllers.write.chats.messages.get);
+	setupApiRoute(router, 'get', '/:roomId/:mid', [...middlewares, middleware.assert.room], controllers.write.chats.messages.get);
 	setupApiRoute(router, 'put', '/:roomId/:mid', [...middlewares, middleware.assert.room], controllers.write.chats.messages.edit);
 	// setupApiRoute(router, 'delete', '/:roomId/:mid', [...middlewares, middleware.assert.room], controllers.write.chats.messages.delete);
 

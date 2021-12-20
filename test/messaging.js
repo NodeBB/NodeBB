@@ -657,7 +657,11 @@ describe('Messaging Library', () => {
 		});
 
 		it('should edit message', async () => {
-			const { statusCode, body } = await callv3API('put', `/chats/${roomId}/${mid}`, { message: 'message edited' }, 'foo');
+			let { statusCode, body } = await callv3API('put', `/chats/${roomId}/${mid}`, { message: 'message edited' }, 'foo');
+			assert.strictEqual(statusCode, 200);
+			assert.strictEqual(body.response.content, 'message edited');
+
+			({ statusCode, body } = await callv3API('get', `/chats/${roomId}/${mid}`, {}, 'foo'));
 			assert.strictEqual(statusCode, 200);
 			assert.strictEqual(body.response.content, 'message edited');
 		});
