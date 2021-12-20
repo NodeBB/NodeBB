@@ -190,31 +190,17 @@ define('forum/chats/messages', [
 					return;
 				}
 
-				socket.emit('modules.chats.delete', {
-					messageId: messageId,
-					roomId: roomId,
-				}, function (err) {
-					if (err) {
-						return alerts.error(err);
-					}
-
+				api.delete(`/chats/${roomId}/${messageId}`, {}).then(() => {
 					components.get('chat/message', messageId).toggleClass('deleted', true);
-				});
+				}).catch(alerts.error);
 			});
 		});
 	};
 
 	messages.restore = function (messageId, roomId) {
-		socket.emit('modules.chats.restore', {
-			messageId: messageId,
-			roomId: roomId,
-		}, function (err) {
-			if (err) {
-				return alerts.error(err);
-			}
-
+		api.post(`/chats/${roomId}/${messageId}`, {}).then(() => {
 			components.get('chat/message', messageId).toggleClass('deleted', false);
-		});
+		}).catch(alerts.error);
 	};
 
 	return messages;

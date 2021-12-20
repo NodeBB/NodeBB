@@ -140,6 +140,8 @@ paths:
     $ref: 'write/chats.yaml'
   /chats/{roomId}:
     $ref: 'write/chats/roomId.yaml'
+  /chats/{roomId}/{mid}:
+    $ref: 'write/chats/roomId/mid.yaml'
   /flags/:
     $ref: 'write/flags.yaml'
   /flags/{flagId}:

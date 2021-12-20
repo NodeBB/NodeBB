@@ -80,5 +80,15 @@ Chats.messages.edit = async (req, res) => {
 };
 
 Chats.messages.delete = async (req, res) => {
-	// ...
+	await messaging.canDelete(req.params.mid, req.uid);
+	await messaging.deleteMessage(req.params.mid, req.uid);
+
+	helpers.formatApiResponse(200, res);
+};
+
+Chats.messages.restore = async (req, res) => {
+	await messaging.canDelete(req.params.mid, req.uid);
+	await messaging.restoreMessage(req.params.mid, req.uid);
+
+	helpers.formatApiResponse(200, res);
 };

@@ -156,6 +156,8 @@ SocketModules.chats.edit = async function (socket, data) {
 };
 
 SocketModules.chats.delete = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'DELETE /api/v3/chats/:roomId/:mid');
+
 	if (!data || !data.roomId || !data.messageId) {
 		throw new Error('[[error:invalid-data]]');
 	}
@@ -164,6 +166,8 @@ SocketModules.chats.delete = async function (socket, data) {
 };
 
 SocketModules.chats.restore = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'POST /api/v3/chats/:roomId/:mid');
+
 	if (!data || !data.roomId || !data.messageId) {
 		throw new Error('[[error:invalid-data]]');
 	}
