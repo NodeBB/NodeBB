@@ -69,12 +69,19 @@ module.exports = function (Messaging) {
 
 	Messaging.getUserCountInRoom = async roomId => db.sortedSetCard(`chat:room:${roomId}:uids`);
 
-	Messaging.isRoomOwner = async (uid, roomId, knownOwner) => {
-		const owner = (knownOwner == null) ? await db.getObjectField(`chat:room:${roomId}`, 'owner') : knownOwner;
-		const isOwner = parseInt(uid, 10) === parseInt(owner, 10);
+	Messaging.isRoomOwner = async (uids, roomId) => {
+		const isArray = Array.isArray(uids);
+		if (!isArray) {
+			uids = [uids];
+		}
+		const owner = await db.getObjectField(`chat:room:${roomId}`, 'owner');
+		const isOwners = uids.map(uid => parseInt(uid, 10) === parseInt(owner, 10));
 
-		const payload = await plugins.hooks.fire('filter:messaging.isRoomOwner', { uid, roomId, owner, isOwner });
-		return payload.isOwner;
+		const result = await Promise.all(isOwners.map(async (isOwner, index) => {
+			const payload = await plugins.hooks.fire('filter:messaging.isRoomOwner', { uid: uids[index], roomId, owner, isOwner });
+			return payload.isOwner;
+		}));
+		return isArray ? result : result[0];
 	};
 
 	Messaging.addUsersToRoom = async function (uid, uids, roomId) {
@@ -171,15 +178,15 @@ module.exports = function (Messaging) {
 
 	Messaging.getUsersInRoom = async (roomId, start, stop) => {
 		const uids = await Messaging.getUidsInRoom(roomId, start, stop);
-		const [users, ownerId] = await Promise.all([
+		const [users, isOwners] = await Promise.all([
 			user.getUsersFields(uids, ['uid', 'username', 'picture', 'status']),
-			db.getObjectField(`chat:room:${roomId}`, 'owner'),
+			Messaging.isRoomOwner(uids, roomId),
 		]);
 
-		return Promise.all(users.map(async (user) => {
-			user.isOwner = await Messaging.isRoomOwner(user.uid, roomId, ownerId);
+		return users.map((user, index) => {
+			user.isOwner = isOwners[index];
 			return user;
-		}));
+		});
 	};
 
 	Messaging.renameRoom = async function (uid, roomId, newName) {
@@ -240,7 +247,7 @@ module.exports = function (Messaging) {
 		]);
 
 		room.messages = messages;
-		room.isOwner = await Messaging.isRoomOwner(uid, room.roomId, room.owner);
+		room.isOwner = await Messaging.isRoomOwner(uid, room.roomId);
 		room.users = users.filter(user => user && parseInt(user.uid, 10) && parseInt(user.uid, 10) !== parseInt(uid, 10));
 		room.canReply = canReply;
 		room.groupChat = room.hasOwnProperty('groupChat') ? room.groupChat : users.length > 2;
