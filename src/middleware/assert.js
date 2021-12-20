@@ -126,3 +126,11 @@ Assert.room = helpers.try(async (req, res, next) => {
 
 	next();
 });
+
+Assert.message = helpers.try(async (req, res, next) => {
+	if (!isFinite(req.params.mid) || !(await messaging.messageExists(req.params.mid))) {
+		return controllerHelpers.formatApiResponse(400, res, new Error('[[error:invalid-mid]]'));
+	}
+
+	next();
+});
