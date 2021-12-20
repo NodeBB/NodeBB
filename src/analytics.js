@@ -159,7 +159,6 @@ Analytics.writeData = async function () {
 		await Promise.all(dbQueue);
 	} catch (err) {
 		winston.error(`[analytics] Encountered error while writing analytics to data store\n${err.stack}`);
-		throw err;
 	}
 };
 
