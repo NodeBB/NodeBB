@@ -35,7 +35,7 @@ const path = require('path');
 const file = require('./src/file');
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'production';
-process.env.BASE_URL = process.env.NODE_ENV === 'production' ? process.env.PROD_BASE_URL : process.env.LOCAL_BASE_URL;
+process.env.METEOR_DOMAIN = process.env.METEOR_DOMAIN || 'https://app.creaticode.com';
 global.env = process.env.NODE_ENV || 'production';
 
 // Alternate configuration file support
