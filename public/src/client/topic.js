@@ -190,7 +190,8 @@ define('forum/topic', [
 
 			async function renderPost(pid) {
 				const postData = postCache[pid] || await socket.emit('posts.getPostSummaryByPid', { pid: pid });
-				if (postData) {
+				$('#post-tooltip').remove();
+				if (postData && ajaxify.data.template.topic) {
 					postCache[pid] = postData;
 					const tooltip = await app.parseAndTranslate('partials/topic/post-preview', { post: postData });
 					tooltip.hide().find('.timeago').timeago();
