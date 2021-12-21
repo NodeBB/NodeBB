@@ -84,7 +84,7 @@ SocketModules.chats.loadRoom = async function (socket, data) {
 };
 
 SocketModules.chats.getUsersInRoom = async function (socket, data) {
-	sockets.warnDeprecated(socket, 'GET /api/v3/chats/:roomId/user');
+	sockets.warnDeprecated(socket, 'GET /api/v3/chats/:roomId/users');
 
 	if (!data || !data.roomId) {
 		throw new Error('[[error:invalid-data]]');
@@ -98,6 +98,8 @@ SocketModules.chats.getUsersInRoom = async function (socket, data) {
 };
 
 SocketModules.chats.addUserToRoom = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'POST /api/v3/chats/:roomId/users');
+
 	if (!data || !data.roomId || !data.username) {
 		throw new Error('[[error:invalid-data]]');
 	}
@@ -107,18 +109,11 @@ SocketModules.chats.addUserToRoom = async function (socket, data) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
-	const userCount = await Messaging.getUserCountInRoom(data.roomId);
-	const maxUsers = meta.config.maximumUsersInChatRoom;
-	if (maxUsers && userCount >= maxUsers) {
-		throw new Error('[[error:cant-add-more-users-to-chat-room]]');
-	}
+	// Revised API now takes uids, not usernames
+	data.uids = [await user.getUidByUsername(data.username)];
+	delete data.username;
 
-	const uid = await user.getUidByUsername(data.username);
-	if (!uid) {
-		throw new Error('[[error:no-user]]');
-	}
-	await Messaging.canMessageUser(socket.uid, uid);
-	await Messaging.addUsersToRoom(socket.uid, [uid], data.roomId);
+	await api.chats.invite(socket, data);
 };
 
 SocketModules.chats.removeUserFromRoom = async function (socket, data) {

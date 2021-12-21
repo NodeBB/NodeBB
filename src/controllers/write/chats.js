@@ -61,7 +61,12 @@ Chats.users = async (req, res) => {
 };
 
 Chats.invite = async (req, res) => {
-	// ...
+	const users = await api.chats.invite(req, {
+		...req.body,
+		roomId: req.params.roomId,
+	});
+
+	helpers.formatApiResponse(200, res, users);
 };
 
 Chats.kick = async (req, res) => {

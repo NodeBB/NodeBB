@@ -22,40 +22,43 @@ get:
               status:
                 $ref: ../../../components/schemas/Status.yaml#/Status
               response:
-                type: object
-                properties:
-                  users:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        uid:
-                          type: number
-                          description: A user identifier
-                        username:
-                          type: string
-                          description: A friendly name for a given user account
-                        picture:
-                          nullable: true
-                          type: string
-                        status:
-                          type: string
-                        displayname:
-                          type: string
-                          description: This is either username or fullname depending on forum and user settings
-                        icon:text:
-                          type: string
-                          description: A single-letter representation of a username. This is used in the
-                            auto-generated icon given to users
-                            without an avatar
-                        icon:bgColor:
-                          type: string
-                          description: A six-character hexadecimal colour code assigned to the user. This
-                            value is used in conjunction with
-                            `icon:text` for the user's
-                            auto-generated icon
-                          example: "#f44336"
-                        isOwner:
-                          type: boolean
-                        canKick:
-                          type: boolean
+                $ref: ../../../components/schemas/Chats.yaml#/RoomUserList
+post:
+  tags:
+    - chats
+  summary: add users to chat room
+  description: This operation invites users to a chat room
+  parameters:
+    - in: path
+      name: roomId
+      schema:
+        type: number
+      required: true
+      description: a valid chat room id
+      example: 1
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            uids:
+              type: array
+              description: A list of valid uids
+              example: [2]
+              items:
+                type: number
+                description: A valid uid
+  responses:
+    '200':
+      description: users successfully invited to chat room
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../../components/schemas/Chats.yaml#/RoomUserList

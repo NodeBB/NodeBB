@@ -244,18 +244,15 @@ define('forum/chats', [
 				require(['autocomplete', 'translator'], function (autocomplete, translator) {
 					autocomplete.user(searchInput, function (event, selected) {
 						errorEl.text('');
-						socket.emit('modules.chats.addUserToRoom', {
-							roomId: roomId,
-							username: selected.item.user.name,
-						}, function (err) {
-							if (err) {
-								translator.translate(err.message, function (translated) {
-									errorEl.text(translated);
-								});
-							}
-
-							Chats.refreshParticipantsList(roomId, modal);
+						api.post(`/chats/${roomId}/users`, {
+							uids: [selected.item.user.uid],
+						}).then((body) => {
+							Chats.refreshParticipantsList(roomId, modal, body);
 							searchInput.val('');
+						}).catch((err) => {
+							translator.translate(err.message, function (translated) {
+								errorEl.text(translated);
+							});
 						});
 					});
 				});
@@ -307,16 +304,21 @@ define('forum/chats', [
 		});
 	};
 
-	Chats.refreshParticipantsList = function (roomId, modal) {
+	Chats.refreshParticipantsList = async (roomId, modal, data) => {
 		const listEl = modal.find('.list-group');
-		api.get(`/chats/${roomId}/users`, {}).then(({ users }) => {
-			app.parseAndTranslate('partials/modals/manage_room_users', { users }, function (html) {
-				listEl.html(html);
-			});
-		}).catch(() => {
-			translator.translate('[[error:invalid-data]]', function (translated) {
-				listEl.find('li').text(translated);
-			});
+
+		if (!data) {
+			try {
+				data = await api.get(`/chats/${roomId}/users`, {});
+			} catch (err) {
+				translator.translate('[[error:invalid-data]]', function (translated) {
+					listEl.find('li').text(translated);
+				});
+			}
+		}
+
+		app.parseAndTranslate('partials/modals/manage_room_users', data, function (html) {
+			listEl.html(html);
 		});
 	};
 

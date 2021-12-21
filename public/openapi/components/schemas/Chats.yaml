@@ -94,6 +94,44 @@ MessageObject:
       type: boolean
     cleanedContent:
       type: string
+RoomUserList:
+  type: object
+  properties:
+    users:
+      type: array
+      items:
+        type: object
+        properties:
+          uid:
+            type: number
+            description: A user identifier
+          username:
+            type: string
+            description: A friendly name for a given user account
+          picture:
+            nullable: true
+            type: string
+          status:
+            type: string
+          displayname:
+            type: string
+            description: This is either username or fullname depending on forum and user settings
+          icon:text:
+            type: string
+            description: A single-letter representation of a username. This is used in the
+              auto-generated icon given to users
+              without an avatar
+          icon:bgColor:
+            type: string
+            description: A six-character hexadecimal colour code assigned to the user. This
+              value is used in conjunction with
+              `icon:text` for the user's
+              auto-generated icon
+            example: "#f44336"
+          isOwner:
+            type: boolean
+          canKick:
+            type: boolean
 RoomObjectFull:
   # Messaging.loadRoom
   allOf:

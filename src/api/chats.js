@@ -83,3 +83,21 @@ chatsAPI.users = async (caller, data) => {
 	});
 	return { users };
 };
+
+chatsAPI.invite = async (caller, data) => {
+	const userCount = await messaging.getUserCountInRoom(data.roomId);
+	const maxUsers = meta.config.maximumUsersInChatRoom;
+	if (maxUsers && userCount >= maxUsers) {
+		throw new Error('[[error:cant-add-more-users-to-chat-room]]');
+	}
+
+	const uidsExist = await user.exists(data.uids);
+	if (!uidsExist.every(Boolean)) {
+		throw new Error('[[error:no-user]]');
+	}
+	await Promise.all(data.uids.map(async uid => messaging.canMessageUser(caller.uid, uid)));
+	await messaging.addUsersToRoom(caller.uid, data.uids, data.roomId);
+
+	delete data.uids;
+	return chatsAPI.users(caller, data);
+};
