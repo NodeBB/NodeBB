@@ -255,14 +255,16 @@ authenticationController.login = async (req, res, next) => {
 			password: req.body.password,
 		};
 
-
 		const { data } = await axios.post(
-			`${process.env.BASE_URL}users/login`,
+			`${process.env.METEOR_DOMAIN}/users/login`,
 			axiosPayload,
 		);
-		console.log(data);
+
+		console.log('data', data);
+
 		meteorUser = data;
 	} catch (err) {
+		console.log('OUTPUT ~ authenticationController.login ~ err', err);
 		return errorHandler(req, res, err.message, 403);
 	}
 
