@@ -17,6 +17,7 @@ const Categories = require('../src/categories');
 const Posts = require('../src/posts');
 const Password = require('../src/password');
 const groups = require('../src/groups');
+const messaging = require('../src/messaging');
 const helpers = require('./helpers');
 const meta = require('../src/meta');
 const socketUser = require('../src/socket.io/user');
@@ -544,9 +545,13 @@ describe('User', () => {
 			const socketModules = require('../src/socket.io/modules');
 			const uid1 = await User.create({ username: 'chatuserdelete1' });
 			const uid2 = await User.create({ username: 'chatuserdelete2' });
-			const roomId = await socketModules.chats.newRoom({ uid: uid1 }, { touid: uid2 });
-			await socketModules.chats.send({ uid: uid1 }, { roomId: roomId, message: 'hello' });
-			await socketModules.chats.leave({ uid: uid2 }, roomId);
+			const roomId = await messaging.newRoom(uid1, [uid2]);
+			await messaging.addMessage({
+				uid: uid1,
+				content: 'hello',
+				roomId,
+			});
+			await messaging.leaveRoom([uid2], roomId);
 			await User.delete(1, uid1);
 			assert.strictEqual(await User.exists(uid1), false);
 		});
