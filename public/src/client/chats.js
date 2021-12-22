@@ -278,11 +278,7 @@ define('forum/chats', [
 				message: '<p>[[modules:chat.leave-prompt]]</p><p class="help-block">[[modules:chat.leave-help]]</p>',
 				callback: function (ok) {
 					if (ok) {
-						socket.emit('modules.chats.leave', roomId, function (err) {
-							if (err) {
-								alerts.error(err);
-							}
-
+						api.delete(`/chats/${roomId}/users/${app.user.uid}`, {}).then(() => {
 							// Return user to chats page. If modal, close modal.
 							const modal = buttonEl.parents('.chat-modal');
 							if (modal.length) {
@@ -290,7 +286,7 @@ define('forum/chats', [
 							} else {
 								ajaxify.go('chats');
 							}
-						});
+						}).catch(alerts.error);
 					}
 				},
 			});
@@ -384,10 +380,7 @@ define('forum/chats', [
 
 	Chats.leave = function (el) {
 		const roomId = el.attr('data-roomid');
-		socket.emit('modules.chats.leave', roomId, function (err) {
-			if (err) {
-				return alerts.error(err);
-			}
+		api.delete(`/chats/${roomId}/users/${app.user.uid}`, {}).then(() => {
 			if (parseInt(roomId, 10) === parseInt(ajaxify.data.roomId, 10)) {
 				ajaxify.go('user/' + ajaxify.data.userslug + '/chats');
 			} else {
@@ -398,7 +391,7 @@ define('forum/chats', [
 			if (modal.length) {
 				chatModule.close(modal);
 			}
-		});
+		}).catch(alerts.error);
 	};
 
 	Chats.switchChat = function (roomid) {

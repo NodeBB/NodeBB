@@ -65,8 +65,8 @@ post:
 delete:
   tags:
     - chats
-  summary: remove users from chat room
-  description: This operation removes (kicks) a user from a chat room
+  summary: leave/remove users from chat room
+  description: This operation removes (kicks) multiple user from a chat room, or leaves the chat room if the requested user is the same as the calling user.
   parameters:
     - in: path
       name: roomId

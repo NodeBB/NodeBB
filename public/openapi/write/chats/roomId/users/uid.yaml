@@ -1,7 +1,7 @@
 delete:
   tags:
     - chats
-  summary: remove one user from chat room
+  summary: leave/remove one user from chat room
   description: This operation removes (kicks) a single user from a chat room
   parameters:
     - in: path

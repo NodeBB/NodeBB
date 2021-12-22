@@ -131,6 +131,8 @@ SocketModules.chats.removeUserFromRoom = async function (socket, data) {
 };
 
 SocketModules.chats.leave = async function (socket, roomid) {
+	sockets.warnDeprecated(socket, 'DELETE /api/v3/chats/:roomId/users OR DELETE /api/v3/chats/:roomId/users/:uid');
+
 	if (!socket.uid || !roomid) {
 		throw new Error('[[error:invalid-data]]');
 	}

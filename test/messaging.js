@@ -213,29 +213,22 @@ describe('Messaging Library', () => {
 			assert.strictEqual(body.status.message, await translator.translate('[[error:cant-chat-with-yourself]]'));
 		});
 
-		it('should fail to leave room with invalid data', (done) => {
-			socketModules.chats.leave({ uid: null }, roomId, (err) => {
-				assert.equal(err.message, '[[error:invalid-data]]');
-				socketModules.chats.leave({ uid: mocks.users.foo.uid }, null, (err) => {
-					assert.equal(err.message, '[[error:invalid-data]]');
-					done();
-				});
-			});
+		it('should fail to leave room with invalid data', async () => {
+			let { statusCode, body } = await callv3API('delete', `/chats/${roomId}/users`, {}, 'foo');
+			assert.strictEqual(statusCode, 400);
+			assert.strictEqual(body.status.message, await translator.translate('[[error:required-parameters-missing, uids]]'));
+
+			({ statusCode, body } = await callv3API('delete', `/chats/${roomId}/users`, { uids: [98237423] }, 'foo'));
+			assert.strictEqual(statusCode, 400);
+			assert.strictEqual(body.status.message, await translator.translate('[[error:no-user]]'));
 		});
 
-		it('should leave the chat room', (done) => {
-			socketModules.chats.leave({ uid: mocks.users.baz.uid }, roomId, (err) => {
-				assert.ifError(err);
-				Messaging.isUserInRoom(mocks.users.baz.uid, roomId, (err, isUserInRoom) => {
-					assert.ifError(err);
-					assert.equal(isUserInRoom, false);
-					Messaging.getRoomData(roomId, (err, data) => {
-						assert.ifError(err);
-						assert.equal(data.owner, mocks.users.foo.uid);
-						done();
-					});
-				});
-			});
+		it('should leave the chat room', async () => {
+			await callv3API('delete', `/chats/${roomId}/users/${mocks.users.baz.uid}`, {}, 'baz');
+			const isUserInRoom = await Messaging.isUserInRoom(mocks.users.baz.uid, roomId);
+			assert.equal(isUserInRoom, false);
+			const data = await Messaging.getRoomData(roomId);
+			assert.equal(data.owner, mocks.users.foo.uid);
 		});
 
 		it('should send a user-leave system message when a user leaves the chat room', (done) => {
@@ -253,16 +246,21 @@ describe('Messaging Library', () => {
 			);
 		});
 
-		it('should send not a user-leave system message when a user tries to leave a room they are not in', async () => {
-			await socketModules.chats.leave({ uid: mocks.users.baz.uid }, roomId);
+		it('should not send a user-leave system message when a user tries to leave a room they are not in', async () => {
+			await callv3API('delete', `/chats/${roomId}/users/${mocks.users.baz.uid}`, {}, 'baz');
 			const messages = await socketModules.chats.getMessages(
 				{ uid: mocks.users.foo.uid },
 				{ uid: mocks.users.foo.uid, roomId: roomId, start: 0 }
 			);
 			assert.equal(messages.length, 4);
-			const message = messages.pop();
+			let message = messages.pop();
 			assert.strictEqual(message.system, true);
 			assert.strictEqual(message.content, 'user-leave');
+
+			// The message before should still be a user-join
+			message = messages.pop();
+			assert.strictEqual(message.system, true);
+			assert.strictEqual(message.content, 'user-join');
 		});
 
 		it('should change owner when owner leaves room', async () => {
@@ -605,7 +603,7 @@ describe('Messaging Library', () => {
 		});
 
 		after(async () => {
-			await socketModules.chats.leave({ uid: mocks.users.baz.uid }, roomId);
+			await callv3API('delete', `/chats/${roomId}/users/${mocks.users.baz.uid}`, {}, 'baz');
 		});
 
 		it('should fail to edit message with invalid data', async () => {

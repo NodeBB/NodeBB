@@ -108,7 +108,12 @@ chatsAPI.kick = async (caller, data) => {
 		throw new Error('[[error:no-user]]');
 	}
 
-	await messaging.removeUsersFromRoom(caller.uid, data.uids, data.roomId);
+	// Additional checks if kicking vs leaving
+	if (data.uids.length === 1 && parseInt(data.uids[0], 10) === caller.uid) {
+		await messaging.leaveRoom([caller.uid], data.roomId);
+	} else {
+		await messaging.removeUsersFromRoom(caller.uid, data.uids, data.roomId);
+	}
 
 	delete data.uids;
 	return chatsAPI.users(caller, data);
