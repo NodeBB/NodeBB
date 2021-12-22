@@ -1,11 +1,7 @@
 'use strict';
 
-const validator = require('validator');
-
 const db = require('../database');
-const meta = require('../meta');
 const notifications = require('../notifications');
-const plugins = require('../plugins');
 const Messaging = require('../messaging');
 const utils = require('../utils');
 const server = require('./index');
