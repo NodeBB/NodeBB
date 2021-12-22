@@ -2,7 +2,7 @@ delete:
   tags:
     - chats
   summary: leave/remove one user from chat room
-  description: This operation removes (kicks) a single user from a chat room
+  description: This operation removes (kicks) a single user from a chat room, or leaves the chat room if the requested user is the same as the calling user.
   parameters:
     - in: path
       name: roomId
