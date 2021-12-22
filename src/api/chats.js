@@ -29,7 +29,7 @@ chatsAPI.create = async function (caller, data) {
 	}
 
 	if (!data.uids || !Array.isArray(data.uids)) {
-		throw new Error(`[[error:array-expected, uids, ${typeof data.uids}]]`);
+		throw new Error(`[[error:wrong-parameter-type, uids, ${typeof data.uids}, Array]]`);
 	}
 
 	await Promise.all(data.uids.map(async uid => messaging.canMessageUser(caller.uid, uid)));
