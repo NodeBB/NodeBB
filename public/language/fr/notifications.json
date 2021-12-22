@@ -50,7 +50,7 @@
     "users-csv-exported": "Utilisateurs exportés en CSV, cliquez pour télécharger",
     "post-queue-accepted": "Votre message a été accepté. Cliquez ici pour voir votre message.",
     "post-queue-rejected": "Votre message a été rejeté.",
-    "post-queue-notify": "Queued post received a notification:<br/>\"%1\"",
+    "post-queue-notify": "Vous avez reçu une notification: <br/>\"%1\"",
     "email-confirmed": "Email vérifié",
     "email-confirmed-message": "Merci pour la validation de votre adresse email. Votre compte est désormais activé.",
     "email-confirm-error-message": "Il y a un un problème dans la vérification de votre adresse email. Le code est peut être invalide ou a expiré.",

@@ -15,7 +15,7 @@
 	"topic": "Sujet",
 	"accept": "Accepter",
 	"reject": "Refuser",
-	"remove": "Remove",
-	"notify": "Notify",
-	"notify-user": "Notify User"
+	"remove": "Enlever",
+	"notify": "Notifier",
+	"notify-user": "Notifier l'utilisateur"
 }
