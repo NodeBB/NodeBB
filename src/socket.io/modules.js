@@ -232,6 +232,8 @@ SocketModules.chats.hasPrivateChat = async function (socket, uid) {
 };
 
 SocketModules.chats.getMessages = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'GET /api/v3/chats/:roomId/messages');
+
 	if (!socket.uid || !data || !data.uid || !data.roomId) {
 		throw new Error('[[error:invalid-data]]');
 	}

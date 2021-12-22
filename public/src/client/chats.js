@@ -122,14 +122,9 @@ define('forum/chats', [
 			}
 			loading = true;
 			const start = parseInt(el.children('[data-mid]').length, 10);
-			socket.emit('modules.chats.getMessages', {
-				roomId: roomId,
-				uid: uid,
-				start: start,
-			}, function (err, data) {
-				if (err) {
-					return alerts.error(err);
-				}
+			api.get(`/chats/${roomId}/messages`, { uid, start }).then((data) => {
+				data = data.messages;
+
 				if (!data) {
 					loading = false;
 					return;
@@ -151,7 +146,7 @@ define('forum/chats', [
 					el.scrollTop((el[0].scrollHeight - previousHeight) + currentScrollTop);
 					loading = false;
 				});
-			});
+			}).catch(alerts.error);
 		});
 	};
 

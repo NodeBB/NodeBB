@@ -89,6 +89,18 @@ Chats.kickUser = async (req, res) => {
 };
 
 Chats.messages = {};
+Chats.messages.list = async (req, res) => {
+	const messages = await messaging.getMessages({
+		callerUid: req.uid,
+		uid: req.query.uid || req.uid,
+		roomId: req.params.roomId,
+		start: parseInt(req.query.start, 10) || 0,
+		count: 50,
+	});
+
+	helpers.formatApiResponse(200, res, { messages });
+};
+
 Chats.messages.get = async (req, res) => {
 	const messages = await messaging.getMessagesData([req.params.mid], req.uid, req.params.roomId, false);
 	helpers.formatApiResponse(200, res, messages.pop());
