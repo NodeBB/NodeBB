@@ -277,4 +277,15 @@ Messaging.hasPrivateChat = async (uid, withUid) => {
 	return roomId;
 };
 
+Messaging.canViewMessage = async (mids, roomId, uid) => {
+	let single = false;
+	if (!Array.isArray(mids) && isFinite(mids)) {
+		mids = [mids];
+		single = true;
+	}
+
+	const canView = await db.isSortedSetMembers(`uid:${uid}:chat:room:${roomId}:mids`, mids);
+	return single ? canView.pop() : canView;
+};
+
 require('../promisify')(Messaging);

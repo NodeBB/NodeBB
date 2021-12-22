@@ -628,6 +628,12 @@ describe('Messaging Library', () => {
 			assert.strictEqual(body.status.message, await translator.translate('[[error:cant-edit-chat-message]]'));
 		});
 
+		it('should fail to edit message if message not in room', async () => {
+			const { statusCode, body } = await callv3API('put', `/chats/${roomId}/messages/1014`, { message: 'message edited' }, 'herp');
+			assert.strictEqual(statusCode, 400);
+			assert.strictEqual(body.status.message, await translator.translate('[[error:invalid-mid]]'));
+		});
+
 		it('should edit message', async () => {
 			let { statusCode, body } = await callv3API('put', `/chats/${roomId}/messages/${mid}`, { message: 'message edited' }, 'foo');
 			assert.strictEqual(statusCode, 200);
