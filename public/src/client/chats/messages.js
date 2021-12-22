@@ -37,7 +37,7 @@ define('forum/chats/messages', [
 				});
 			});
 		} else {
-			api.put(`/chats/${roomId}/${mid}`, { message }).catch((err) => {
+			api.put(`/chats/${roomId}/messages/${mid}`, { message }).catch((err) => {
 				inputEl.val(message);
 				inputEl.attr('data-mid', mid);
 				messages.updateRemainingLength(inputEl.parent());
@@ -190,7 +190,7 @@ define('forum/chats/messages', [
 					return;
 				}
 
-				api.delete(`/chats/${roomId}/${messageId}`, {}).then(() => {
+				api.delete(`/chats/${roomId}/messages/${messageId}`, {}).then(() => {
 					components.get('chat/message', messageId).toggleClass('deleted', true);
 				}).catch(alerts.error);
 			});
@@ -198,7 +198,7 @@ define('forum/chats/messages', [
 	};
 
 	messages.restore = function (messageId, roomId) {
-		api.post(`/chats/${roomId}/${messageId}`, {}).then(() => {
+		api.post(`/chats/${roomId}/messages/${messageId}`, {}).then(() => {
 			components.get('chat/message', messageId).toggleClass('deleted', false);
 		}).catch(alerts.error);
 	};

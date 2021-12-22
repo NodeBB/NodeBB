@@ -27,9 +27,9 @@ get:
             type: object
             properties:
               status:
-                $ref: ../../../components/schemas/Status.yaml#/Status
+                $ref: ../../../../components/schemas/Status.yaml#/Status
               response:
-                $ref: ../../../components/schemas/Chats.yaml#/MessageObject
+                $ref: ../../../../components/schemas/Chats.yaml#/MessageObject
 put:
   tags:
     - chats
@@ -70,9 +70,9 @@ put:
             type: object
             properties:
               status:
-                $ref: ../../../components/schemas/Status.yaml#/Status
+                $ref: ../../../../components/schemas/Status.yaml#/Status
               response:
-                $ref: ../../../components/schemas/Chats.yaml#/MessageObject
+                $ref: ../../../../components/schemas/Chats.yaml#/MessageObject
 delete:
   tags:
     - chats
@@ -102,7 +102,7 @@ delete:
             type: object
             properties:
               status:
-                $ref: ../../../components/schemas/Status.yaml#/Status
+                $ref: ../../../../components/schemas/Status.yaml#/Status
               response:
                 type: object
                 properties: {}
@@ -135,7 +135,7 @@ post:
             type: object
             properties:
               status:
-                $ref: ../../../components/schemas/Status.yaml#/Status
+                $ref: ../../../../components/schemas/Status.yaml#/Status
               response:
                 type: object
                 properties: {}

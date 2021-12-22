@@ -158,7 +158,7 @@ describe('Messaging Library', () => {
 			assert.strictEqual(messages[0].system, true);
 			assert.strictEqual(messages[0].content, 'user-join');
 
-			const { statusCode, body: body2 } = await callv3API('put', `/chats/${roomId}/${messages[0].messageId}`, {
+			const { statusCode, body: body2 } = await callv3API('put', `/chats/${roomId}/messages/${messages[0].messageId}`, {
 				message: 'test',
 			}, 'foo');
 			assert.strictEqual(statusCode, 400);
@@ -607,33 +607,33 @@ describe('Messaging Library', () => {
 		});
 
 		it('should fail to edit message with invalid data', async () => {
-			let { statusCode, body } = await callv3API('put', `/chats/1/10000`, { message: 'foo' }, 'foo');
+			let { statusCode, body } = await callv3API('put', `/chats/1/messages/10000`, { message: 'foo' }, 'foo');
 			assert.strictEqual(statusCode, 400);
 			assert.strictEqual(body.status.message, await translator.translate('[[error:invalid-mid]]'));
 
-			({ statusCode, body } = await callv3API('put', `/chats/${roomId}/${mid}`, {}, 'foo'));
+			({ statusCode, body } = await callv3API('put', `/chats/${roomId}/messages/${mid}`, {}, 'foo'));
 			assert.strictEqual(statusCode, 400);
 			assert.strictEqual(body.status.message, await translator.translate('[[error:invalid-chat-message]]'));
 		});
 
 		it('should fail to edit message if new content is empty string', async () => {
-			const { statusCode, body } = await callv3API('put', `/chats/${roomId}/${mid}`, { message: ' ' }, 'foo');
+			const { statusCode, body } = await callv3API('put', `/chats/${roomId}/messages/${mid}`, { message: ' ' }, 'foo');
 			assert.strictEqual(statusCode, 400);
 			assert.strictEqual(body.status.message, await translator.translate('[[error:invalid-chat-message]]'));
 		});
 
 		it('should fail to edit message if not own message', async () => {
-			const { statusCode, body } = await callv3API('put', `/chats/${roomId}/${mid}`, { message: 'message edited' }, 'herp');
+			const { statusCode, body } = await callv3API('put', `/chats/${roomId}/messages/${mid}`, { message: 'message edited' }, 'herp');
 			assert.strictEqual(statusCode, 400);
 			assert.strictEqual(body.status.message, await translator.translate('[[error:cant-edit-chat-message]]'));
 		});
 
 		it('should edit message', async () => {
-			let { statusCode, body } = await callv3API('put', `/chats/${roomId}/${mid}`, { message: 'message edited' }, 'foo');
+			let { statusCode, body } = await callv3API('put', `/chats/${roomId}/messages/${mid}`, { message: 'message edited' }, 'foo');
 			assert.strictEqual(statusCode, 200);
 			assert.strictEqual(body.response.content, 'message edited');
 
-			({ statusCode, body } = await callv3API('get', `/chats/${roomId}/${mid}`, {}, 'foo'));
+			({ statusCode, body } = await callv3API('get', `/chats/${roomId}/messages/${mid}`, {}, 'foo'));
 			assert.strictEqual(statusCode, 200);
 			assert.strictEqual(body.response.content, 'message edited');
 		});
