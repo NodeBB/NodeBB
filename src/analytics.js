@@ -5,26 +5,36 @@ const winston = require('winston');
 const nconf = require('nconf');
 const crypto = require('crypto');
 const LRU = require('lru-cache');
+const util = require('util');
+const _ = require('lodash');
 
+const sleep = util.promisify(setTimeout);
 
 const db = require('./database');
 const utils = require('./utils');
 const plugins = require('./plugins');
 const meta = require('./meta');
+const pubsub = require('./pubsub');
 
 const Analytics = module.exports;
 
 const secret = nconf.get('secret');
 
-const counters = {};
+let local = {
+	counters: {},
+	pageViews: 0,
+	pageViewsRegistered: 0,
+	pageViewsGuest: 0,
+	pageViewsBot: 0,
+	uniqueIPCount: 0,
+	uniquevisitors: 0,
+};
+const empty = _.cloneDeep(local);
+const total = _.cloneDeep(local);
 
-let pageViews = 0;
-let pageViewsRegistered = 0;
-let pageViewsGuest = 0;
-let pageViewsBot = 0;
-let uniqueIPCount = 0;
-let uniquevisitors = 0;
 let ipCache;
+
+const runJobs = nconf.get('runJobs');
 
 Analytics.init = async function () {
 	ipCache = new LRU({
@@ -33,10 +43,38 @@ Analytics.init = async function () {
 		maxAge: 0,
 	});
 
-	new cronJob('*/10 * * * * *', (() => {
-		Analytics.writeData();
+	new cronJob('*/10 * * * * *', (async () => {
+		publishLocalAnalytics();
+		if (runJobs) {
+			await sleep(2000);
+			await Analytics.writeData();
+		}
 	}), null, true);
+
+	if (runJobs) {
+		pubsub.on('analytics:publish', (data) => {
+			incrementProperties(total, data.local);
+		});
+	}
 };
+
+function publishLocalAnalytics() {
+	pubsub.publish('analytics:publish', {
+		local: local,
+	});
+	local = _.cloneDeep(empty);
+}
+
+function incrementProperties(obj1, obj2) {
+	for (const [key, value] of Object.entries(obj2)) {
+		if (typeof value === 'object') {
+			incrementProperties(obj1[key], value);
+		} else if (utils.isNumber(value)) {
+			obj1[key] = obj1[key] || 0;
+			obj1[key] += obj2[key];
+		}
+	}
+}
 
 Analytics.increment = function (keys, callback) {
 	keys = Array.isArray(keys) ? keys : [keys];
@@ -44,8 +82,8 @@ Analytics.increment = function (keys, callback) {
 	plugins.hooks.fire('action:analytics.increment', { keys: keys });
 
 	keys.forEach((key) => {
-		counters[key] = counters[key] || 0;
-		counters[key] += 1;
+		local.counters[key] = local.counters[key] || 0;
+		local.counters[key] += 1;
 	});
 
 	if (typeof callback === 'function') {
@@ -56,14 +94,14 @@ Analytics.increment = function (keys, callback) {
 Analytics.getKeys = async () => db.getSortedSetRange('analyticsKeys', 0, -1);
 
 Analytics.pageView = async function (payload) {
-	pageViews += 1;
+	local.pageViews += 1;
 
 	if (payload.uid > 0) {
-		pageViewsRegistered += 1;
+		local.pageViewsRegistered += 1;
 	} else if (payload.uid < 0) {
-		pageViewsBot += 1;
+		local.pageViewsBot += 1;
 	} else {
-		pageViewsGuest += 1;
+		local.pageViewsGuest += 1;
 	}
 
 	if (payload.ip) {
@@ -76,12 +114,12 @@ Analytics.pageView = async function (payload) {
 
 		const score = await db.sortedSetScore('ip:recent', hash);
 		if (!score) {
-			uniqueIPCount += 1;
+			local.uniqueIPCount += 1;
 		}
 		const today = new Date();
 		today.setHours(today.getHours(), 0, 0, 0);
 		if (!score || score < today.getTime()) {
-			uniquevisitors += 1;
+			local.uniquevisitors += 1;
 			await db.sortedSetAdd('ip:recent', Date.now(), hash);
 		}
 	}
@@ -108,44 +146,44 @@ Analytics.writeData = async function () {
 	month.setMonth(month.getMonth(), 1);
 	month.setHours(0, 0, 0, 0);
 
-	if (pageViews > 0) {
-		incrByBulk.push(['analytics:pageviews', pageViews, today.getTime()]);
-		incrByBulk.push(['analytics:pageviews:month', pageViews, month.getTime()]);
-		pageViews = 0;
+	if (total.pageViews > 0) {
+		incrByBulk.push(['analytics:pageviews', total.pageViews, today.getTime()]);
+		incrByBulk.push(['analytics:pageviews:month', total.pageViews, month.getTime()]);
+		total.pageViews = 0;
 	}
 
-	if (pageViewsRegistered > 0) {
-		incrByBulk.push(['analytics:pageviews:registered', pageViewsRegistered, today.getTime()]);
-		incrByBulk.push(['analytics:pageviews:month:registered', pageViewsRegistered, month.getTime()]);
-		pageViewsRegistered = 0;
+	if (total.pageViewsRegistered > 0) {
+		incrByBulk.push(['analytics:pageviews:registered', total.pageViewsRegistered, today.getTime()]);
+		incrByBulk.push(['analytics:pageviews:month:registered', total.pageViewsRegistered, month.getTime()]);
+		total.pageViewsRegistered = 0;
 	}
 
-	if (pageViewsGuest > 0) {
-		incrByBulk.push(['analytics:pageviews:guest', pageViewsGuest, today.getTime()]);
-		incrByBulk.push(['analytics:pageviews:month:guest', pageViewsGuest, month.getTime()]);
-		pageViewsGuest = 0;
+	if (total.pageViewsGuest > 0) {
+		incrByBulk.push(['analytics:pageviews:guest', total.pageViewsGuest, today.getTime()]);
+		incrByBulk.push(['analytics:pageviews:month:guest', total.pageViewsGuest, month.getTime()]);
+		total.pageViewsGuest = 0;
 	}
 
-	if (pageViewsBot > 0) {
-		incrByBulk.push(['analytics:pageviews:bot', pageViewsBot, today.getTime()]);
-		incrByBulk.push(['analytics:pageviews:month:bot', pageViewsBot, month.getTime()]);
-		pageViewsBot = 0;
+	if (total.pageViewsBot > 0) {
+		incrByBulk.push(['analytics:pageviews:bot', total.pageViewsBot, today.getTime()]);
+		incrByBulk.push(['analytics:pageviews:month:bot', total.pageViewsBot, month.getTime()]);
+		total.pageViewsBot = 0;
 	}
 
-	if (uniquevisitors > 0) {
-		incrByBulk.push(['analytics:uniquevisitors', uniquevisitors, today.getTime()]);
-		uniquevisitors = 0;
+	if (total.uniquevisitors > 0) {
+		incrByBulk.push(['analytics:uniquevisitors', total.uniquevisitors, today.getTime()]);
+		total.uniquevisitors = 0;
 	}
 
-	if (uniqueIPCount > 0) {
-		dbQueue.push(db.incrObjectFieldBy('global', 'uniqueIPCount', uniqueIPCount));
-		uniqueIPCount = 0;
+	if (total.uniqueIPCount > 0) {
+		dbQueue.push(db.incrObjectFieldBy('global', 'uniqueIPCount', total.uniqueIPCount));
+		total.uniqueIPCount = 0;
 	}
 
-	for (const [key, value] of Object.entries(counters)) {
+	for (const [key, value] of Object.entries(total.counters)) {
 		incrByBulk.push([`analytics:${key}`, value, today.getTime()]);
 		metrics.push(key);
-		delete counters[key];
+		delete total.counters[key];
 	}
 
 	if (incrByBulk.length) {
@@ -221,7 +259,7 @@ Analytics.getDailyStatsForSet = async function (set, day, numDays) {
 };
 
 Analytics.getUnwrittenPageviews = function () {
-	return pageViews;
+	return local.pageViews;
 };
 
 Analytics.getSummary = async function () {
