@@ -5,7 +5,7 @@ RoomObject:
       type: number
       description: the uid of the chat room owner (usually the user who created the room initially)
     roomId:
-      type: string
+      type: number
       description: unique identifier for the chat room
     roomName:
       type: string
