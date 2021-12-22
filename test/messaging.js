@@ -298,44 +298,33 @@ describe('Messaging Library', () => {
 			assert.equal(data.owner, receiver);
 		});
 
-		it('should fail to remove user from room', (done) => {
-			socketModules.chats.removeUserFromRoom({ uid: mocks.users.foo.uid }, null, (err) => {
-				assert.equal(err.message, '[[error:invalid-data]]');
-				socketModules.chats.removeUserFromRoom({ uid: mocks.users.foo.uid }, {}, (err) => {
-					assert.equal(err.message, '[[error:invalid-data]]');
-					done();
-				});
-			});
+		it('should fail to remove user from room', async () => {
+			let { statusCode, body } = await callv3API('delete', `/chats/${roomId}/users`, {}, 'foo');
+			assert.strictEqual(statusCode, 400);
+			assert.strictEqual(body.status.message, await translator.translate('[[error:required-parameters-missing, uids]]'));
+
+			({ statusCode, body } = await callv3API('delete', `/chats/${roomId}/users`, { uids: [null] }, 'foo'));
+			assert.strictEqual(statusCode, 400);
+			assert.strictEqual(body.status.message, await translator.translate('[[error:no-user]]'));
 		});
 
-		it('should fail to remove user from room if user does not exist', (done) => {
-			socketModules.chats.removeUserFromRoom({ uid: mocks.users.foo.uid }, { roomId: roomId, uid: 99 }, (err) => {
-				assert.equal('[[error:no-user]]', err.message);
-				done();
-			});
+		it('should fail to remove user from room if user does not exist', async () => {
+			const { statusCode, body } = await callv3API('delete', `/chats/${roomId}/users`, { uids: [99] }, 'foo');
+			assert.strictEqual(statusCode, 400);
+			assert.strictEqual(body.status.message, await translator.translate('[[error:no-user]]'));
 		});
 
 		it('should remove user from room', async () => {
-			const { body } = await callv3API('post', `/chats`, {
+			const { statusCode, body } = await callv3API('post', `/chats`, {
 				uids: [mocks.users.herp.uid],
 			}, 'foo');
 			const { roomId } = body.response;
+			assert.strictEqual(statusCode, 200);
 
 			let isInRoom = await Messaging.isUserInRoom(mocks.users.herp.uid, roomId);
 			assert(isInRoom);
 
-			try {
-				await util.promisify(
-					socketModules.chats.removeUserFromRoom
-				)({ uid: mocks.users.foo.uid }, { roomId: roomId, uid: mocks.users.herp.uid });
-			} catch (err) {
-				assert.equal(err.message, '[[error:cant-remove-last-user]]');
-			}
-
-			await callv3API('post', `/chats/${roomId}/users`, { uids: [mocks.users.baz.uid] }, 'foo');
-			await util.promisify(
-				socketModules.chats.removeUserFromRoom
-			)({ uid: mocks.users.foo.uid }, { roomId: roomId, uid: mocks.users.herp.uid });
+			await callv3API('delete', `/chats/${roomId}/users`, { uids: [mocks.users.herp.uid] }, 'foo');
 			isInRoom = await Messaging.isUserInRoom(mocks.users.herp.uid, roomId);
 			assert(!isInRoom);
 		});

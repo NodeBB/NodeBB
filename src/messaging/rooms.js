@@ -109,9 +109,6 @@ module.exports = function (Messaging) {
 		if (!payload.isOwner) {
 			throw new Error('[[error:cant-remove-users-from-chat-room]]');
 		}
-		if (payload.userCount === 2) {
-			throw new Error('[[error:cant-remove-last-user]]');
-		}
 
 		await Messaging.leaveRoom(payload.uids, payload.roomId);
 	};
