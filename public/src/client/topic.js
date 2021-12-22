@@ -209,8 +209,9 @@ define('forum/topic', [
 			}
 
 			const href = link.attr('href');
-			const validHref = href && href !== '#';
-			const pathname = utils.urlToLocation(href).pathname;
+			const location = utils.urlToLocation(href);
+			const pathname = location.pathname;
+			const validHref = href && href !== '#' && window.location.hostname === location.hostname;
 			$('#post-tooltip').remove();
 			const postMatch = validHref && pathname && pathname.match(/\/post\/([\d]+)/);
 			const topicMatch = validHref && pathname && pathname.match(/\/topic\/([\d]+)/);
