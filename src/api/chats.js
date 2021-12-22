@@ -101,3 +101,15 @@ chatsAPI.invite = async (caller, data) => {
 	delete data.uids;
 	return chatsAPI.users(caller, data);
 };
+
+chatsAPI.kick = async (caller, data) => {
+	const uidsExist = await user.exists(data.uids);
+	if (!uidsExist.every(Boolean)) {
+		throw new Error('[[error:no-user]]');
+	}
+
+	await messaging.removeUsersFromRoom(caller.uid, data.uids, data.roomId);
+
+	delete data.uids;
+	return chatsAPI.users(caller, data);
+};

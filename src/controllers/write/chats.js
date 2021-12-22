@@ -70,7 +70,22 @@ Chats.invite = async (req, res) => {
 };
 
 Chats.kick = async (req, res) => {
-	// ...
+	const users = await api.chats.kick(req, {
+		...req.body,
+		roomId: req.params.roomId,
+	});
+
+	helpers.formatApiResponse(200, res, users);
+};
+
+Chats.kickUser = async (req, res) => {
+	req.body.uids = [req.params.uid];
+	const users = await api.chats.kick(req, {
+		...req.body,
+		roomId: req.params.roomId,
+	});
+
+	helpers.formatApiResponse(200, res, users);
 };
 
 Chats.messages = {};

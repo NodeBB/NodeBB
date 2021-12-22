@@ -117,15 +117,17 @@ SocketModules.chats.addUserToRoom = async function (socket, data) {
 };
 
 SocketModules.chats.removeUserFromRoom = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'DELETE /api/v3/chats/:roomId/users OR DELETE /api/v3/chats/:roomId/users/:uid');
+
 	if (!data || !data.roomId) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	const exists = await user.exists(data.uid);
-	if (!exists) {
-		throw new Error('[[error:no-user]]');
-	}
 
-	await Messaging.removeUsersFromRoom(socket.uid, [data.uid], data.roomId);
+	// Revised API can accept multiple uids now
+	data.uids = [data.uid];
+	delete data.uid;
+
+	await api.chats.kick(socket, data);
 };
 
 SocketModules.chats.leave = async function (socket, roomid) {

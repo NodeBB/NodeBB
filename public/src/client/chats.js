@@ -264,16 +264,9 @@ define('forum/chats', [
 		modal.on('click', '[data-action="kick"]', function () {
 			const uid = parseInt(this.getAttribute('data-uid'), 10);
 
-			socket.emit('modules.chats.removeUserFromRoom', {
-				roomId: roomId,
-				uid: uid,
-			}, function (err) {
-				if (err) {
-					return alerts.error(err);
-				}
-
-				Chats.refreshParticipantsList(roomId, modal);
-			});
+			api.delete(`/chats/${roomId}/users/${uid}`, {}).then((body) => {
+				Chats.refreshParticipantsList(roomId, modal, body);
+			}).catch(alerts.error);
 		});
 	};
 

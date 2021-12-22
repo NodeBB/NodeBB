@@ -390,6 +390,7 @@ describe('API', async () => {
 
 					try {
 						if (type === 'json') {
+							console.log(`calling ${url}`);
 							response = await request(url, {
 								method: method,
 								jar: !unauthenticatedRoutes.includes(path) ? jar : undefined,
@@ -418,7 +419,12 @@ describe('API', async () => {
 
 				it('response status code should match one of the schema defined responses', () => {
 					// HACK: allow HTTP 418 I am a teapot, for now   👇
-					assert(context[method].responses.hasOwnProperty('418') || Object.keys(context[method].responses).includes(String(response.statusCode)), `${method.toUpperCase()} ${path} sent back unexpected HTTP status code: ${response.statusCode}`);
+					try {
+						assert(context[method].responses.hasOwnProperty('418') || Object.keys(context[method].responses).includes(String(response.statusCode)), `${method.toUpperCase()} ${path} sent back unexpected HTTP status code: ${response.statusCode}`);
+					} catch (e) {
+						console.log(response.body);
+						throw e;
+					}
 				});
 
 				// Recursively iterate through schema properties, comparing type

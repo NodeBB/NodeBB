@@ -46,13 +46,52 @@ post:
             uids:
               type: array
               description: A list of valid uids
-              example: [2]
+              example: [2, 4]
               items:
                 type: number
                 description: A valid uid
   responses:
     '200':
       description: users successfully invited to chat room
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../../components/schemas/Chats.yaml#/RoomUserList
+delete:
+  tags:
+    - chats
+  summary: remove users from chat room
+  description: This operation removes (kicks) a user from a chat room
+  parameters:
+    - in: path
+      name: roomId
+      schema:
+        type: number
+      required: true
+      description: a valid chat room id
+      example: 1
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            uids:
+              type: array
+              description: A list of valid uids
+              example: [2]
+              items:
+                type: number
+                description: A valid uid
+  responses:
+    '200':
+      description: users successfully removed from chat room
       content:
         application/json:
           schema:
