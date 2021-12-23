@@ -50,7 +50,7 @@
     "users-csv-exported": "Kullanıcılar csv hazırlandı, indirmek için tıklayınız",
     "post-queue-accepted": "Sıradaki gönderiniz kabul edildi. Gönderinizi görmek için burayı tıklayın.",
     "post-queue-rejected": "Sıraya alınmış gönderiniz reddedildi.",
-    "post-queue-notify": "Queued post received a notification:<br/>\"%1\"",
+    "post-queue-notify": "Onay sırasındaki ileti için bir bildirim var:<br/>\"%1\"",
     "email-confirmed": "E-posta onaylandı",
     "email-confirmed-message": "E-postanızı onayladığınız için teşekkürler. Hesabınız tamamen aktif edildi.",
     "email-confirm-error-message": "E-posta adresinizi onaylarken bir hata oluştu. Kodunuz geçersiz ya da eski olabilir.",

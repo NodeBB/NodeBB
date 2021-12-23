@@ -15,7 +15,7 @@
 	"topic": "Başlık",
 	"accept": "Onayla",
 	"reject": "Reddet",
-	"remove": "Remove",
-	"notify": "Notify",
-	"notify-user": "Notify User"
+	"remove": "Sil",
+	"notify": "Bildirim yap",
+	"notify-user": "Kullanıcıyı uyar"
 }
