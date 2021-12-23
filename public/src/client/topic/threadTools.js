@@ -285,7 +285,7 @@ define('forum/topic/threadTools', [
 
 		threadEl.find('[component="post"][data-uid="' + app.user.uid + '"].deleted [component="post/tools"]').toggleClass('hidden', isLocked);
 
-		$('.topic-header [component="topic/locked"]').toggleClass('hidden', !data.isLocked);
+		$('[component="topic/labels"] [component="topic/locked"]').toggleClass('hidden', !data.isLocked);
 		$('[component="post/tools"] .dropdown-menu').html('');
 		ajaxify.data.locked = data.isLocked;
 
@@ -334,7 +334,7 @@ define('forum/topic/threadTools', [
 
 		components.get('topic/pin').toggleClass('hidden', data.pinned).parent().attr('hidden', data.pinned ? '' : null);
 		components.get('topic/unpin').toggleClass('hidden', !data.pinned).parent().attr('hidden', !data.pinned ? '' : null);
-		const icon = $('.topic-header [component="topic/pinned"]');
+		const icon = $('[component="topic/labels"] [component="topic/pinned"]');
 		icon.toggleClass('hidden', !data.pinned);
 		if (data.pinned) {
 			icon.translateAttr('title', (
