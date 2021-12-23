@@ -239,17 +239,26 @@ module.exports = function (module) {
 			const result = await module.getObjectsFields(key, [field]);
 			return result.map(data => data && data[field]);
 		}
-
-		const result = await module.client.collection('objects').findOneAndUpdate({
-			_key: key,
-		}, {
-			$inc: increment,
-		}, {
-			returnDocument: 'after',
-			upsert: true,
-		});
-
-		cache.del(key);
-		return result && result.value ? result.value[field] : null;
+		try {
+			const result = await module.client.collection('objects').findOneAndUpdate({
+				_key: key,
+			}, {
+				$inc: increment,
+			}, {
+				returnDocument: 'after',
+				upsert: true,
+			});
+			cache.del(key);
+			return result && result.value ? result.value[field] : null;
+		} catch (err) {
+			// if there is duplicate key error retry the upsert
+			// https://github.com/NodeBB/NodeBB/issues/4467
+			// https://jira.mongodb.org/browse/SERVER-14322
+			// https://docs.mongodb.org/manual/reference/command/findAndModify/#upsert-and-unique-index
+			if (err && err.message.startsWith('E11000 duplicate key error')) {
+				return await module.incrObjectFieldBy(key, field, value);
+			}
+			throw err;
+		}
 	};
 };
