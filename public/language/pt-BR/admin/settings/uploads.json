@@ -1,6 +1,5 @@
 {
 	"posts": "Posts",
-	"allow-files": "Permitir usuários de enviar arquivos comuns",
 	"private": "Tornar arquivos enviados particulares",
 	"strip-exif-data": "Retirar Metadata EXIF",
 	"private-extensions": "Extensões de arquivo para tornar privado",

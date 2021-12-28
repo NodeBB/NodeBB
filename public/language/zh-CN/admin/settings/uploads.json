@@ -1,6 +1,5 @@
 {
 	"posts": "帖子",
-	"allow-files": "允许用户上传普通文件",
 	"private": "使上传的文件私有化",
 	"strip-exif-data": "去除 EXIF 数据",
 	"private-extensions": "自定义文件扩展名",

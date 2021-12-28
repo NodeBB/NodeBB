@@ -1,6 +1,5 @@
 {
 	"posts": "Hozzászólások",
-	"allow-files": "Szokásos fájlok feltöltésének engedélyezése a felhasználók számára",
 	"private": "Feltöltött fájlok priváttá tevése",
 	"strip-exif-data": "EXIF adatok törlése",
 	"private-extensions": "Privát kiterjesztések",

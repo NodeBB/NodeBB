@@ -1,6 +1,5 @@
 {
 	"posts": "포스트",
-	"allow-files": "사용자가 (이미지가 아닌) 일반 파일을 업로드하는 것을 허용",
 	"private": "가입된 사용자만 파일 열람 허용",
 	"strip-exif-data": "이미지 EXIF 데이터 제거",
 	"private-extensions": "파일 확장자 숨김",

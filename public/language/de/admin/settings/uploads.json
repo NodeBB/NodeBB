@@ -1,6 +1,5 @@
 {
 	"posts": "Beiträge",
-	"allow-files": "Nutzern erlauben normale Dateien hochzuladen",
 	"private": "Hochgeladene Dateien privatisieren",
 	"strip-exif-data": "EXIF-Daten entfernen",
 	"private-extensions": "Private Dateiendungen",

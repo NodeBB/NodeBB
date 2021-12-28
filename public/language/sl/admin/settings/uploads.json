@@ -1,6 +1,5 @@
 {
 	"posts": "Objave",
-	"allow-files": "Dovoli uporabnikom nalaganje navadnih datotek",
 	"private": "Naložene datoteke označi kot zasebne",
 	"strip-exif-data": "Strip EXIF Data",
 	"private-extensions": "File extensions to make private",

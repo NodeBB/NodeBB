@@ -1,6 +1,5 @@
 {
 	"posts": "Bài Đăng",
-	"allow-files": "Cho phép người dùng tải lên tệp thông dụng",
 	"private": "Đặt tệp tải lên ở chế độ riêng tư",
 	"strip-exif-data": "Tách Dữ Liệu EXIF",
 	"private-extensions": "Phần mở rộng tệp để đặt ở chế độ riêng tư",

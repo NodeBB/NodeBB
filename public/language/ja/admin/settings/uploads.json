@@ -1,6 +1,5 @@
 {
 	"posts": "投稿",
-	"allow-files": "ユーザーが通常のファイルをアップロードできるようにする。",
 	"private": "アップロードしたファイルを非公開にする",
 	"strip-exif-data": "EXIFデータを削除",
 	"private-extensions": "非公開にするファイル拡張子",

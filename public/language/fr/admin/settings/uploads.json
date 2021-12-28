@@ -1,6 +1,5 @@
 {
 	"posts": "Sujets",
-	"allow-files": "Autoriser les utilisateurs à télécharger des fichiers standards",
 	"private": "Rendre privés les fichiers téléchargés",
 	"strip-exif-data": "Supprimer les données EXIF",
 	"private-extensions": "Rendre privé des extensions de fichier.",

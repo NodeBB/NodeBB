@@ -1,6 +1,5 @@
 {
 	"posts": "المشاركات",
-	"allow-files": "السماح للأعضاء بتحميل الملفات الإعتيادية",
 	"private": "جعل الملفات التي تم رفعها خاصة",
 	"strip-exif-data": "Strip EXIF Data",
 	"private-extensions": "File extensions to make private",

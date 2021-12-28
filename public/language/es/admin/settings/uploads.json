@@ -1,6 +1,5 @@
 {
 	"posts": "Mensajes",
-	"allow-files": "Permitir a los usuarios subir archivos habituales",
 	"private": "Hacer las subidas de archivos privadas",
 	"strip-exif-data": "Strip EXIF Data",
 	"private-extensions": "Extensiones de archivo para hacer privadas.",

@@ -1,6 +1,5 @@
 {
 	"posts": "Publicações",
-	"allow-files": "Permitir aos utilizadores carregar ficheiros normais",
 	"private": "Tornar os ficheiros enviados privados",
 	"strip-exif-data": "Strip EXIF Data",
 	"private-extensions": "File extensions to make private",

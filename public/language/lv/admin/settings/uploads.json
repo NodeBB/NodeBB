@@ -1,6 +1,5 @@
 {
 	"posts": "Raksti",
-	"allow-files": "Atļaut lietotājiem augšupielādēt parastos failus",
 	"private": "Iestatīt augšupielādētos failus kā privātus",
 	"strip-exif-data": "Strip EXIF Data",
 	"private-extensions": "Failu paplašīnājumi, kurus turēt privātus",

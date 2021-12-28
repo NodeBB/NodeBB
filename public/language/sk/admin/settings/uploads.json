@@ -1,6 +1,5 @@
 {
 	"posts": "Príspevky",
-	"allow-files": "Umožniť používateľom nahrávať bežné súbory",
 	"private": "Nahrané súbory sú súkromné",
 	"strip-exif-data": "Strip EXIF Data",
 	"private-extensions": "Prípona súborov je súkromná",

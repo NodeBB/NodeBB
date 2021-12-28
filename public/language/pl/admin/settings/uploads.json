@@ -1,6 +1,5 @@
 {
 	"posts": "Posty",
-	"allow-files": "Zezwalaj użytkownikom wysyłać pliki",
 	"private": "Oznaczaj wysyłane pliki jako prywatne",
 	"strip-exif-data": "Usuń dane EXIF",
 	"private-extensions": "Rozszerzenia plików, które mają być prywatne",

@@ -1,6 +1,5 @@
 {
 	"posts": "Posts",
-	"allow-files": "Abilita gli utenti all'upload di file",
 	"private": "Rendi privati i file caricati",
 	"strip-exif-data": "Togli EXIF Data",
 	"private-extensions": "Estensione dei file da rendere privata",

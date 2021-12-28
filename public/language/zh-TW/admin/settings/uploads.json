@@ -1,6 +1,5 @@
 {
 	"posts": "貼文",
-	"allow-files": "允許使用者上傳普通檔案",
 	"private": "使上傳的檔案私有化",
 	"strip-exif-data": "去除 EXIF 資料",
 	"private-extensions": "自訂檔案附檔名",

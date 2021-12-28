@@ -1,6 +1,5 @@
 {
 	"posts": "İletiler",
-	"allow-files": "Kullanıcıların normal dosyalar yüklemesine izin ver",
 	"private": "Yüklenen dosyaları gizli yap",
 	"strip-exif-data": "EXIF bilgilerini sil",
 	"private-extensions": "Gizli yapılacak dosya uzantıları",

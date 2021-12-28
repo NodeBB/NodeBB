@@ -1,6 +1,5 @@
 {
 	"posts": "Пости",
-	"allow-files": "Дозволити користувачам завантажувати звичайні файли",
 	"private": "Зробити завантажувані файли приватними",
 	"strip-exif-data": "Strip EXIF Data",
 	"private-extensions": "File extensions to make private",
