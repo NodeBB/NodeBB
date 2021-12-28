@@ -65,7 +65,7 @@ function loadConfig(configFile) {
 	castAsBool.forEach((prop) => {
 		const value = nconf.get(prop);
 		if (value !== undefined) {
-			nconf.set(prop, typeof value === 'boolean' ? value : String(value).toLowerCase() === 'true');
+			nconf.set(prop, ['1', 1, 'true', true].includes(value));
 		}
 	});
 	nconf.stores.env.readOnly = true;
