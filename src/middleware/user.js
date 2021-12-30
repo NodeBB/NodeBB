@@ -2,6 +2,8 @@
 
 const winston = require('winston');
 const passport = require('passport');
+const nconf = require('nconf');
+const path = require('path');
 const util = require('util');
 
 const user = require('../user');
@@ -81,6 +83,20 @@ module.exports = function (middleware) {
 	}
 
 	middleware.authenticateRequest = helpers.try(async (req, res, next) => {
+		const { skip } = await plugins.hooks.fire('filter:middleware.authenticate', {
+			skip: {
+				// get: [],
+				post: ['/api/v3/utilities/login'],
+				// etc...
+			},
+		});
+
+		const mountedPath = path.join(req.baseUrl, req.path).replace(nconf.get('relative_path'), '');
+		const method = req.method.toLowerCase();
+		if (skip[method] && skip[method].includes(mountedPath)) {
+			return next();
+		}
+
 		if (!await authenticate(req, res)) {
 			return;
 		}

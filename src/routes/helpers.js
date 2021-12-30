@@ -15,9 +15,9 @@ function _handleArgs(middleware, middlewares, controller) {
 	}
 
 	middlewares = [
+		middleware.authenticateRequest,
 		middleware.maintenanceMode,
 		middleware.registrationComplete,
-		middleware.authenticateRequest,
 		middleware.pluginHooks,
 		...middlewares,
 	];
