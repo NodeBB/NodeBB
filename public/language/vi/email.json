@@ -16,7 +16,7 @@
     "invitation.text1": "%1 đã mời bạn tham gia %2",
     "invitation.text2": "Lời mời của bạn sẽ hết hạn sau %1 ngày.",
     "invitation.cta": "Bấm vào đây để tạo tài khoản của bạn.",
-    "reset.text1": "Chúng tôi nhận được yêu cầu khởi tạo lại mật khẩu của bạn, rất có thể vì bạn đã quên mất nó. Nếu bạn không gởi yêu cầu, hãy bỏ qua email này.",
+    "reset.text1": "Chúng tôi nhận được yêu cầu đặt lại mật khẩu của bạn, có thể bởi vì bạn đã quên nó. Nếu không đúng như vậy, vui lòng bỏ qua email này.",
     "reset.text2": "Để đặt lại mật khẩu, hãy bấm vào liên kết sau:",
     "reset.cta": "Nhấn vào đây để đặt lại mật khẩu của bạn",
     "reset.notify.subject": "Thay đổi mật khẩu thành công",
