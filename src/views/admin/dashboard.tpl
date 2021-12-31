@@ -142,7 +142,7 @@
 					<!-- IF notices.done -->
 					<i class="fa fa-fw fa-check text-success"></i> {notices.doneText}
 					<!-- ELSE -->
-					<!-- IF notices.link --><a href="{notices.link}" data-toggle="tooltip" title="{notices.tooltip}"><!-- ENDIF notices.link -->
+					<!-- IF notices.link --><a href="{config.relative_path}{notices.link}" data-toggle="tooltip" title="{notices.tooltip}"><!-- ENDIF notices.link -->
 					<i class="fa fa-fw fa-times text-danger"></i> {notices.notDoneText}
 					<!-- IF notices.link --></a><!-- ENDIF notices.link -->
 					<!-- ENDIF notices.done -->
