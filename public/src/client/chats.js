@@ -367,7 +367,7 @@ define('forum/chats', [
 			},
 		};
 
-		hooks.fire('chat:autocomplete:init', data);
+		$(window).trigger('chat:autocomplete:init', data);
 		if (data.strategies.length) {
 			autocomplete.setup(data);
 		}
