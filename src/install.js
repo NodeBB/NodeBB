@@ -46,16 +46,12 @@ questions.optional = [
 	},
 ];
 
-function checkSetupEnv() {
-	const setupVal = {};
-	const envVars = process.env; // fills envVars dict with all env vars
-
-	winston.info('checking env vars for setup info...');
+function checkSetupFlagEnv() {
+	let setupVal = install.values || {};
 
 	const envConfMap = {
 		NODEBB_URL: 'url',
 		NODEBB_PORT: 'port',
-		NODEBB_SECRET: 'secret', // only a "cookie" for web setup???
 		NODEBB_ADMIN_USERNAME: 'admin:username',
 		NODEBB_ADMIN_PASSWORD: 'admin:password',
 		NODEBB_ADMIN_EMAIL: 'admin:email',
@@ -68,9 +64,12 @@ function checkSetupEnv() {
 		NODEBB_DB_SSL: 'ssl',
 	};
 
-	Object.entries(envVars).forEach(([evName, evValue]) => {
+	// Set setup values from env vars (if set)
+	winston.info('checking env vars for setup info...');
+
+	Object.entries(process.env).forEach(([evName, evValue]) => { // get setup values from env
 		if (evName.startsWith('NODEBB_DB_')) {
-			setupVal[`${envVars.NODEBB_DB}:${envConfMap[evName]}`] = evValue;
+			setupVal[`${process.env.NODEBB_DB}:${envConfMap[evName]}`] = evValue;
 		} else if (evName.startsWith('NODEBB_')) {
 			setupVal[envConfMap[evName]] = evValue;
 		}
@@ -78,41 +77,14 @@ function checkSetupEnv() {
 
 	setupVal['admin:password:confirm'] = setupVal['admin:password'];
 
-	if (setupVal['admin:username'] && setupVal['admin:password'] && setupVal['admin:email']) {
-		install.values = setupVal;
-	} else {
-		winston.error('Required values are missing for automated setup:');
-		if (!setupVal['admin:username']) {
-			winston.error('  admin:username');
-		}
-		if (!setupVal['admin:password']) {
-			winston.error('  admin:password');
-		}
-		if (!setupVal['admin:password:confirm']) {
-			winston.error('  admin:password:confirm');
-		}
-		if (!setupVal['admin:email']) {
-			winston.error('  admin:email');
-		}
-
-		process.exit();
-	}
-	if (nconf.get('database')) {
-		install.values = install.values || {};
-		install.values.database = nconf.get('database');
-	}
-}
-
-
-function checkSetupFlag() {
-	let setupVal = install.values;
-
+	// try to get setup values from json, if successful this overwrites all values set by env
+	// TODO: better behaviour would be to support overrides per value, i.e. in order of priority (generic pattern): flag, env, config file, default
 	try {
 		if (nconf.get('setup')) {
 			setupVal = JSON.parse(nconf.get('setup'));
 		}
 	} catch (err) {
-		winston.error('Invalid json in nconf.get(\'setup\'), ignoring setup values');
+		winston.error('Invalid json in nconf.get(\'setup\'), ignoring setup values from json');
 	}
 
 	if (setupVal && typeof setupVal === 'object') {
@@ -550,8 +522,7 @@ async function checkUpgrade() {
 
 install.setup = async function () {
 	try {
-		checkSetupEnv();
-		checkSetupFlag();
+		checkSetupFlagEnv();
 		checkCIFlag();
 		await setupConfig();
 		await setupDefaultConfigs();
