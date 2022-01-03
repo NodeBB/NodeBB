@@ -4,8 +4,8 @@
 
 	"acp-title": "%1 | NodeBB 管理员控制面板",
 	"settings-header-contents": "内容",
-	"changes-saved": "Changes Saved",
-	"changes-saved-message": "Your changes to the NodeBB configuration have been saved.",
-	"changes-not-saved": "Changes Not Saved",
-	"changes-not-saved-message": "NodeBB encountered a problem saving your changes. (%1)"
+	"changes-saved": "更改已保存",
+	"changes-saved-message": "您对 NodeBB 配置的更改已保存。",
+	"changes-not-saved": "更改未保存",
+	"changes-not-saved-message": "NodeBB 在保存您的更改时遇到了问题。 (%1)"
 }

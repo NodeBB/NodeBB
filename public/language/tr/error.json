@@ -1,8 +1,8 @@
 {
     "invalid-data": "Geçersiz Veri",
     "invalid-json": "Geçersiz JSON",
-    "wrong-parameter-type": "A value of type %3 was expected for property `%1`, but %2 was received instead",
-    "required-parameters-missing": "Required parameters were missing from this API call: %1",
+    "wrong-parameter-type": "\"%1\" özelliği için %3 türünde bir değer bekleniyordu, ancak bunun yerine %2 alındı",
+    "required-parameters-missing": "Bu API çağrısında gerekli parametreler eksikti: %1",
     "not-logged-in": "Giriş yapmamış görünüyorsunuz.",
     "account-locked": "Hesabınız geçici olarak kilitlendi",
     "search-requires-login": "Arama yapmak için üyelik hesabı gerekiyor. Lütfen giriş yapın ya da kaydolun.",
