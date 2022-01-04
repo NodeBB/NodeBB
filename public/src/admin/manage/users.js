@@ -401,7 +401,7 @@ define('admin/manage/users', [
 					});
 					alerts.success('[[admin/manage/users:alerts.create-success]]');
 				})
-				.catch(err => errorEl.translateHtml('[[admin/manage/users:alerts.error-x, ' + err.status.message + ']]').removeClass('hidden'));
+				.catch(err => errorEl.translateHtml('[[admin/manage/users:alerts.error-x, ' + err.message + ']]').removeClass('hidden'));
 		}
 
 		handleSearch();
