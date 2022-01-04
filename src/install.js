@@ -79,7 +79,7 @@ function checkSetupFlagEnv() {
 
 	// try to get setup values from json, if successful this overwrites all values set by env
 	// TODO: better behaviour would be to support overrides per value, i.e. in order of priority (generic pattern):
-	//		 flag, env, config file, default
+	//       flag, env, config file, default
 	try {
 		if (nconf.get('setup')) {
 			setupVal = JSON.parse(nconf.get('setup'));
