@@ -184,6 +184,6 @@
     "consent.export_posts": "Gönderileri Dışa Aktar (.csv)",
     "consent.export-posts-success": "İletiler aktarılmak üzere hazırlanıyor, işlem tamamlandığında bildirim alacaksınız!",
     "emailUpdate.intro": "Lütfen e-posta adresinizi aşağıya girin. Bu forum, e-posta adresinizi planlanmış özet ve bildirimler ile parolanın kaybolması durumunda hesap kurtarma için kullanır.",
-    "emailUpdate.optional": "<strong>Bu alan isteğe bağlıdır</strong>. E-posta adresinizi vermek zorunda değilsiniz, ancak doğrulanmış bir e-posta olmadan hesabınızı kurtaramazsınız.",
+    "emailUpdate.optional": "<strong>This field is optional</strong>. You are not obligated to provide your email address, but without a validated email, you will not be able to recover your account or login with your email.",
     "emailUpdate.change-instructions": "Girilen e-posta adresine kişiye özel bir bağlantı içeren bir onay e-postası gönderilecektir. Bu bağlantıya erişmek, e-posta adresinin sahibi olduğunuzu onaylayacak ve hesabınızda etkin hale gelecektir. İstediğiniz zaman, hesap sayfanızdan kayıtlı e-postanızı güncelleyebilirsiniz."
 }
