@@ -136,10 +136,13 @@ usersAPI.follow = async function (caller, data) {
 		toUid: data.uid,
 	});
 
-	const userData = await user.getUserFields(caller.uid, ['username', 'userslug']);
+	const userData = await user.getUserFields(caller.uid, ['username', 'userslug', 'fullname']);
+	let name = userData.username;
+	if (meta.config.useFullnameInNotifications && userData.fullname) name = userData.fullname;
+
 	const notifObj = await notifications.create({
 		type: 'follow',
-		bodyShort: `[[notifications:user_started_following_you, ${userData.username}]]`,
+		bodyShort: `[[notifications:user_started_following_you, ${name}]]`,
 		nid: `follow:${data.uid}:uid:${caller.uid}`,
 		from: caller.uid,
 		path: `/uid/${data.uid}/followers`,
