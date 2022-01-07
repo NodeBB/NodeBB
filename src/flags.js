@@ -730,7 +730,6 @@ Flags.appendNote = async function (flagId, uid, note, datetime) {
 };
 
 Flags.notify = async function (flagObj, uid) {
-	console.log('🚀 ~ file: flags.js ~ line 733 ~ flagObj, uid', flagObj, uid);
 	const [admins, globalMods] = await Promise.all([
 		groups.getMembers('administrators', 0, -1),
 		groups.getMembers('Global Moderators', 0, -1),
