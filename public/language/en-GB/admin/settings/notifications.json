@@ -3,5 +3,6 @@
 	"welcome-notification": "Welcome Notification",
 	"welcome-notification-link": "Welcome Notification Link",
 	"welcome-notification-uid": "Welcome Notification User (UID)",
+	"use-fullname": "Use fullname instead of username (if available)",
 	"post-queue-notification-uid": "Post Queue User (UID)"
 }
