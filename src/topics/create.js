@@ -192,9 +192,17 @@ module.exports = function (Topics) {
 		}
 
 		if (parseInt(uid, 10) || meta.config.allowGuestReplyNotifications) {
+			let name = postData.user.username;
+
+			if (meta.config.useFullnameInNotifications) {
+				const fullname = await user.getUserField(postData.user.uid, 'fullname');
+				postData.user.fullname = fullname;
+				if (fullname) name = fullname;
+			}
+
 			Topics.notifyFollowers(postData, uid, {
 				type: 'new-reply',
-				bodyShort: translator.compile('notifications:user_posted_to', postData.user.username, postData.topic.title),
+				bodyShort: translator.compile('notifications:user_posted_to', name, postData.topic.title),
 				nid: `new_post:tid:${postData.topic.tid}:pid:${postData.pid}:uid:${uid}`,
 				mergeId: `notifications:user_posted_to|${postData.topic.tid}`,
 			});

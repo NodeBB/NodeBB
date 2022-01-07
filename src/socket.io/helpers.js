@@ -13,6 +13,7 @@ const notifications = require('../notifications');
 const plugins = require('../plugins');
 const utils = require('../utils');
 const batch = require('../batch');
+const meta = require('../meta');
 
 const SocketHelpers = module.exports;
 
@@ -80,18 +81,21 @@ SocketHelpers.sendNotificationToPostOwner = async function (pid, fromuid, comman
 	if (!canRead || isIgnoring[0] || !postData.uid || fromuid === postData.uid) {
 		return;
 	}
-	const [username, topicTitle, postObj] = await Promise.all([
-		user.getUserField(fromuid, 'username'),
+	const [userData, topicTitle, postObj] = await Promise.all([
+		user.getUserFields(fromuid, ['username', 'fullname']),
 		topics.getTopicField(postData.tid, 'title'),
 		posts.parsePost(postData),
 	]);
+
+	const { username, fullname } = userData;
+	const name = meta.config.useFullnameInNotifications && fullname ? fullname : username;
 
 	const title = utils.decodeHTMLEntities(topicTitle);
 	const titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 
 	const notifObj = await notifications.create({
 		type: command,
-		bodyShort: `[[${notification}, ${username}, ${titleEscaped}]]`,
+		bodyShort: `[[${notification}, ${name}, ${titleEscaped}]]`,
 		bodyLong: postObj.content,
 		pid: pid,
 		tid: postData.tid,
@@ -113,20 +117,24 @@ SocketHelpers.sendNotificationToTopicOwner = async function (tid, fromuid, comma
 
 	fromuid = parseInt(fromuid, 10);
 
-	const [username, topicData] = await Promise.all([
-		user.getUserField(fromuid, 'username'),
+	const [userData, topicData] = await Promise.all([
+		user.getUserFields(fromuid, ['username', 'fullname']),
 		topics.getTopicFields(tid, ['uid', 'slug', 'title']),
 	]);
 
 	if (fromuid === topicData.uid) {
 		return;
 	}
+
+	const { username, fullname } = userData;
+	const name = meta.config.useFullnameInNotifications && fullname ? fullname : username;
+
 	const ownerUid = topicData.uid;
 	const title = utils.decodeHTMLEntities(topicData.title);
 	const titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 
 	const notifObj = await notifications.create({
-		bodyShort: `[[${notification}, ${username}, ${titleEscaped}]]`,
+		bodyShort: `[[${notification}, ${name}, ${titleEscaped}]]`,
 		path: `/topic/${topicData.slug}`,
 		nid: `${command}:tid:${tid}:uid:${fromuid}`,
 		from: fromuid,

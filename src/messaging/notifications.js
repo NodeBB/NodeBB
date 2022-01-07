@@ -57,11 +57,19 @@ module.exports = function (Messaging) {
 			return;
 		}
 
+		const { username } = messageObj.fromUser;
+
+		let name = username;
+		if (meta.config.useFullnameInNotifications) {
+			const fullname = await user.getUserField(messageObj.fromUser.uid, 'fullname');
+			if (fullname) name = fullname;
+		}
+
 		const isGroupChat = await Messaging.isGroupChat(roomId);
 		const notification = await notifications.create({
 			type: isGroupChat ? 'new-group-chat' : 'new-chat',
-			subject: `[[email:notif.chat.subject, ${messageObj.fromUser.username}]]`,
-			bodyShort: `[[notifications:new_message_from, ${messageObj.fromUser.username}]]`,
+			subject: `[[email:notif.chat.subject, ${name}]]`,
+			bodyShort: `[[notifications:new_message_from, ${name}]]`,
 			bodyLong: messageObj.content,
 			nid: `chat_${fromuid}_${roomId}`,
 			from: fromuid,
