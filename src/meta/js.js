@@ -1,4 +1,3 @@
-/* eslint-disable no-await-in-loop */
 'use strict';
 
 const path = require('path');
