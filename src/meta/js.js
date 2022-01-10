@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 'use strict';
 
 const path = require('path');
@@ -5,6 +6,7 @@ const fs = require('fs');
 const util = require('util');
 const mkdirp = require('mkdirp');
 const rimraf = require('rimraf');
+const _ = require('lodash');
 
 const rimrafAsync = util.promisify(rimraf);
 
@@ -99,8 +101,10 @@ JS.scripts = {
 		'ace/mode-javascript.js': 'node_modules/ace-builds/src-min/mode-javascript.js',
 		'ace/mode-html.js': 'node_modules/ace-builds/src-min/mode-html.js',
 		'ace/theme-twilight.js': 'node_modules/ace-builds/src-min/theme-twilight.js',
+		'ace/worker-css.js': 'node_modules/ace-builds/src-min/worker-css.js',
 		'ace/worker-javascript.js': 'node_modules/ace-builds/src-min/worker-javascript.js',
 		'ace/worker-html.js': 'node_modules/ace-builds/src-min/worker-html.js',
+		'ace/ext-searchbox.js': 'node_modules/ace-builds/src-min/ext-searchbox.js',
 
 		'clipboard.js': 'node_modules/clipboard/dist/clipboard.min.js',
 		'tinycon.js': 'node_modules/tinycon/tinycon.js',
@@ -152,14 +156,15 @@ async function minifyModules(modules, fork) {
 async function linkModules() {
 	const { modules } = JS.scripts;
 
+	const uniqDirs = _.uniq(
+		Object.keys(modules).map(relPath => path.dirname(path.join(__dirname, '../../build/public/src/modules', relPath)))
+	);
+	await Promise.all(uniqDirs.map(mkdirp));
+
 	await Promise.all(Object.keys(modules).map(async (relPath) => {
 		const srcPath = path.join(__dirname, '../../', modules[relPath]);
 		const destPath = path.join(__dirname, '../../build/public/src/modules', relPath);
-		const [stats] = await Promise.all([
-			fs.promises.stat(srcPath),
-			mkdirp(path.dirname(destPath)),
-		]);
-
+		const stats = await fs.promises.stat(srcPath);
 		if (stats.isDirectory()) {
 			await file.linkDirs(srcPath, destPath, true);
 			return;
