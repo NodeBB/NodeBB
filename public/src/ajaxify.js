@@ -140,7 +140,7 @@ ajaxify = window.ajaxify || {};
 
 		if (data) {
 			let status = parseInt(data.status, 10);
-			if (status === 403 || status === 404 || status === 500 || status === 502 || status === 503) {
+			if ([400, 403, 404, 500, 502, 504].includes(status)) {
 				if (status === 502 && retry) {
 					retry = false;
 					ajaxifyTimer = undefined;

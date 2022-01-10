@@ -285,6 +285,7 @@ module.exports = function (Topics) {
 		}
 		tags.forEach((tag) => {
 			tag.valueEscaped = validator.escape(String(tag.value));
+			tag.valueEncoded = encodeURIComponent(tag.valueEscaped);
 			tag.class = tag.valueEscaped.replace(/\s/g, '-');
 		});
 		return tags;

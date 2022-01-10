@@ -134,6 +134,7 @@ function modifyTopic(topic, fields) {
 			return {
 				value: tag,
 				valueEscaped: escaped,
+				valueEncoded: encodeURIComponent(escaped),
 				class: escaped.replace(/\s/g, '-'),
 			};
 		});

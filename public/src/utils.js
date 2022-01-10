@@ -334,7 +334,7 @@
 			tag = tag.trim().toLowerCase();
 			// see https://github.com/NodeBB/NodeBB/issues/4378
 			tag = tag.replace(/\u202E/gi, '');
-			tag = tag.replace(/[,/#!$%^*;:{}=_`<>'"~()?|]/g, '');
+			tag = tag.replace(/[,/#!$^*;:{}=_`<>'"~()?|]/g, '');
 			tag = tag.substr(0, maxLength || 15).trim();
 			const matches = tag.match(/^[.-]*(.+?)[.-]*$/);
 			if (matches && matches.length > 1) {
