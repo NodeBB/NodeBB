@@ -8,6 +8,7 @@ const notifications = require('../../notifications');
 const privileges = require('../../privileges');
 const db = require('../../database');
 const plugins = require('../../plugins');
+const meta = require('../../meta');
 
 module.exports = function (SocketUser) {
 	SocketUser.updateCover = async function (socket, data) {
@@ -92,9 +93,11 @@ module.exports = function (SocketUser) {
 		});
 		child.on('exit', async () => {
 			await db.deleteObjectField('locks', `export:${data.uid}${type}`);
-			const userData = await user.getUserFields(data.uid, ['username', 'userslug']);
+			const userData = await user.getUserFields(data.uid, ['username', 'userslug', 'fullname']);
+			const { username, fullname } = userData;
+			const name = meta.config.useFullnameInNotifications && fullname ? fullname : username;
 			const n = await notifications.create({
-				bodyShort: `[[notifications:${type}-exported, ${userData.username}]]`,
+				bodyShort: `[[notifications:${type}-exported, ${name}]]`,
 				path: `/api/user/${userData.userslug}/export/${type}`,
 				nid: `${type}:export:${data.uid}`,
 				from: data.uid,
