@@ -147,7 +147,7 @@ describe('Utility Methods', () => {
 
 	describe('cleanUpTag', () => {
 		it('should cleanUp a tag', (done) => {
-			const cleanedTag = utils.cleanUpTag(',/#!$%^*;TaG1:{}=_`<>\'"~()?|');
+			const cleanedTag = utils.cleanUpTag(',/#!$^*;TaG1:{}=_`<>\'"~()?|');
 			assert.equal(cleanedTag, 'tag1');
 			done();
 		});
