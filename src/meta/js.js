@@ -5,7 +5,6 @@ const fs = require('fs');
 const util = require('util');
 const mkdirp = require('mkdirp');
 const rimraf = require('rimraf');
-const _ = require('lodash');
 
 const rimrafAsync = util.promisify(rimraf);
 
