@@ -117,20 +117,24 @@ SocketHelpers.sendNotificationToTopicOwner = async function (tid, fromuid, comma
 
 	fromuid = parseInt(fromuid, 10);
 
-	const [username, topicData] = await Promise.all([
-		user.getUserField(fromuid, 'username'),
+	const [userData, topicData] = await Promise.all([
+		user.getUserFields(fromuid, ['username', 'fullname']),
 		topics.getTopicFields(tid, ['uid', 'slug', 'title']),
 	]);
 
 	if (fromuid === topicData.uid) {
 		return;
 	}
+
+	const { username, fullname } = userData;
+	const name = meta.config.useFullnameInNotifications && fullname ? fullname : username;
+
 	const ownerUid = topicData.uid;
 	const title = utils.decodeHTMLEntities(topicData.title);
 	const titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 
 	const notifObj = await notifications.create({
-		bodyShort: `[[${notification}, ${username}, ${titleEscaped}]]`,
+		bodyShort: `[[${notification}, ${name}, ${titleEscaped}]]`,
 		path: `/topic/${topicData.slug}`,
 		nid: `${command}:tid:${tid}:uid:${fromuid}`,
 		from: fromuid,
