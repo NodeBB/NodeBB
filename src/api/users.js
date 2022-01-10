@@ -137,8 +137,9 @@ usersAPI.follow = async function (caller, data) {
 	});
 
 	const userData = await user.getUserFields(caller.uid, ['username', 'userslug', 'fullname']);
-	let name = userData.username;
-	if (meta.config.useFullnameInNotifications && userData.fullname) name = userData.fullname;
+	const { username, fullname } = userData;
+
+	const name = meta.config.useFullnameInNotifications && fullname ? fullname : username;
 
 	const notifObj = await notifications.create({
 		type: 'follow',
