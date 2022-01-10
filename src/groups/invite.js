@@ -13,8 +13,7 @@ module.exports = function (Groups) {
 	Groups.requestMembership = async function (groupName, uid) {
 		await inviteOrRequestMembership(groupName, uid, 'request');
 		const { username, fullname } = await user.getUserFields(uid, ['username', 'fullname']);
-		let name = username;
-		if (meta.config.useFullnameInNotifications && fullname) name = fullname;
+		const name = meta.config.useFullnameInNotifications && fullname ? fullname : username;
 
 		const [notification, owners] = await Promise.all([
 			notifications.create({
