@@ -173,8 +173,7 @@ groupsAPI.leave = async function (caller, data) {
 
 	const { username, fullname } = await user.getUserFields(data.uid, ['username', 'fullname']);
 
-	let name = username;
-	if (meta.config.useFullnameInNotifications && fullname) name = fullname;
+	const name = meta.config.useFullnameInNotifications && fullname ? fullname : username;
 
 	const notification = await notifications.create({
 		type: 'group-leave',
