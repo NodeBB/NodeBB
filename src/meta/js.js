@@ -155,15 +155,13 @@ async function minifyModules(modules, fork) {
 async function linkModules() {
 	const { modules } = JS.scripts;
 
-	const uniqDirs = _.uniq(
-		Object.keys(modules).map(relPath => path.dirname(path.join(__dirname, '../../build/public/src/modules', relPath)))
-	);
-	await Promise.all(uniqDirs.map(mkdirp));
-
 	await Promise.all(Object.keys(modules).map(async (relPath) => {
 		const srcPath = path.join(__dirname, '../../', modules[relPath]);
 		const destPath = path.join(__dirname, '../../build/public/src/modules', relPath);
-		const stats = await fs.promises.stat(srcPath);
+		const [stats] = await Promise.all([
+			fs.promises.stat(srcPath),
+			mkdirp(path.dirname(destPath)),
+		]);
 		if (stats.isDirectory()) {
 			await file.linkDirs(srcPath, destPath, true);
 			return;
