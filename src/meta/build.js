@@ -6,6 +6,7 @@ const nconf = require('nconf');
 const _ = require('lodash');
 const path = require('path');
 const mkdirp = require('mkdirp');
+const chalk = require('chalk');
 
 const cacheBuster = require('./cacheBuster');
 const { aliases } = require('./aliases');
@@ -60,8 +61,7 @@ const aliasMap = Object.keys(aliases).reduce((prev, key) => {
 
 async function beforeBuild(targets) {
 	const db = require('../database');
-	require('colors');
-	process.stdout.write('  started'.green + '\n'.reset);
+	process.stdout.write(`${chalk.green('  started')}\n`);
 	try {
 		await db.init();
 		meta = require('./index');

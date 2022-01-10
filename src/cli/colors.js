@@ -5,6 +5,7 @@
 // so the CLI looks nice
 
 const { Command, Help } = require('commander');
+const chalk = require('chalk');
 
 const colors = [
 	// depth = 0, top-level command
@@ -49,38 +50,38 @@ module.exports = {
 		let parentCmd = cmd.parent;
 		let parentDepth = depth - 1;
 		while (parentCmd) {
-			parentCmdNames = `${parentCmd.name()[colors[parentDepth].command]} ${parentCmdNames}`;
+			parentCmdNames = `${chalk[colors[parentDepth].command](parentCmd.name())} ${parentCmdNames}`;
 
 			parentCmd = parentCmd.parent;
 			parentDepth -= 1;
 		}
 
 		// from Command.prototype.usage()
-		const args = cmd._args.map(arg => humanReadableArgName(arg)[colors[depth].arg]);
+		const args = cmd._args.map(arg => chalk[colors[depth].arg](humanReadableArgName(arg)));
 		const cmdUsage = [].concat(
-			(cmd.options.length || cmd._hasHelpOption ? '[options]'[colors[depth].option] : []),
-			(cmd.commands.length ? '[command]'[colors[depth + 1].command] : []),
+			(cmd.options.length || cmd._hasHelpOption ? chalk[colors[depth].option]('[options]') : []),
+			(cmd.commands.length ? chalk[colors[depth + 1].command]('[command]') : []),
 			(cmd._args.length ? args : [])
 		).join(' ');
 
-		return `${parentCmdNames}${cmdName[colors[depth].command]} ${cmdUsage}`;
+		return `${parentCmdNames}${chalk[colors[depth].command](cmdName)} ${cmdUsage}`;
 	},
 	subcommandTerm(cmd) {
 		const depth = cmd.depth();
 
 		// Legacy. Ignores custom usage string, and nested commands.
 		const args = cmd._args.map(arg => humanReadableArgName(arg)).join(' ');
-		return (cmd._name + (
+		return chalk[colors[depth].command](cmd._name + (
 			cmd._aliases[0] ? `|${cmd._aliases[0]}` : ''
-		))[colors[depth].command] +
-      (cmd.options.length ? ' [options]' : '')[colors[depth].option] + // simplistic check for non-help option
-      (args ? ` ${args}` : '')[colors[depth].arg];
+		)) +
+      chalk[colors[depth].option](cmd.options.length ? ' [options]' : '') + // simplistic check for non-help option
+      chalk[colors[depth].arg](args ? ` ${args}` : '');
 	},
 	longestOptionTermLength(cmd, helper) {
-		return Help.prototype.longestOptionTermLength.call(this, cmd, helper) + ''.red.length;
+		return Help.prototype.longestOptionTermLength.call(this, cmd, helper) + chalk.red('').length;
 	},
 	longestArgumentTermLength(cmd, helper) {
-		return Help.prototype.longestArgumentTermLength.call(this, cmd, helper) + ''.red.length;
+		return Help.prototype.longestArgumentTermLength.call(this, cmd, helper) + chalk.red('').length;
 	},
 	formatHelp(cmd, helper) {
 		const depth = cmd.depth();
@@ -111,7 +112,7 @@ module.exports = {
 
 		// Arguments
 		const argumentList = helper.visibleArguments(cmd).map(argument => formatItem(
-			argument.term[colors[depth].arg],
+			chalk[colors[depth].arg](argument.term),
 			argument.description
 		));
 		if (argumentList.length > 0) {
@@ -120,7 +121,7 @@ module.exports = {
 
 		// Options
 		const optionList = helper.visibleOptions(cmd).map(option => formatItem(
-			helper.optionTerm(option)[colors[depth].option],
+			chalk[colors[depth].option](helper.optionTerm(option)),
 			helper.optionDescription(option)
 		));
 		if (optionList.length > 0) {

@@ -4,6 +4,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const chalk = require('chalk');
 
 require('../../require-main');
 
@@ -24,8 +25,7 @@ try {
 		try {
 			fs.accessSync(path.join(paths.nodeModules, 'colors/package.json'), fs.constants.R_OK);
 
-			require('colors');
-			console.log('OK'.green);
+			console.log(chalk.green('OK'));
 		} catch (e) {
 			console.log('OK');
 		}
@@ -61,14 +61,12 @@ try {
 		packageInstall.updatePackageFile();
 		packageInstall.installAll();
 
-		require('colors');
-		console.log('OK'.green + '\n'.reset);
+		console.log(`${chalk.green('OK')}\n`);
 	} else {
 		throw e;
 	}
 }
 
-require('colors');
 const nconf = require('nconf');
 const { program } = require('commander');
 const yargs = require('yargs');
@@ -173,7 +171,7 @@ program
 			try {
 				initConfig = JSON.parse(initConfig);
 			} catch (e) {
-				console.warn('Invalid JSON passed as initial config value.'.red);
+				console.warn(chalk.red('Invalid JSON passed as initial config value.'));
 				console.log('If you meant to pass in an initial config value, please try again.\n');
 
 				throw e;
@@ -190,7 +188,7 @@ program
 	});
 program
 	.command('build [targets...]')
-	.description(`Compile static assets ${'(JS, CSS, templates, languages)'.red}`)
+	.description(`Compile static assets ${chalk.red('(JS, CSS, templates, languages)')}`)
 	.option('-s, --series', 'Run builds in series without extra processes')
 	.action((targets, options) => {
 		if (program.opts().dev) {
@@ -240,7 +238,7 @@ resetCommand
 	.action((options) => {
 		const valid = ['theme', 'plugin', 'widgets', 'settings', 'all'].some(x => options[x]);
 		if (!valid) {
-			console.warn('\n  No valid options passed in, so nothing was reset.'.red);
+			console.warn(`\n${chalk.red('No valid options passed in, so nothing was reset.')}`);
 			resetCommand.help();
 		}
 
@@ -270,8 +268,8 @@ program
 		console.log(`\n${[
 			'When running particular upgrade scripts, options are ignored.',
 			'By default all options are enabled. Passing any options disables that default.',
-			`Only package and dependency updates: ${'./nodebb upgrade -mi'.yellow}`,
-			`Only database update: ${'./nodebb upgrade -s'.yellow}`,
+			`Only package and dependency updates: ${chalk.yellow('./nodebb upgrade -mi')}`,
+			`Only database update: ${chalk.yellow('./nodebb upgrade -s')}`,
 		].join('\n')}`);
 	})
 	.action((scripts, options) => {
@@ -289,7 +287,7 @@ program
 			if (err) {
 				throw err;
 			}
-			console.log('OK'.green);
+			console.log(chalk.green('OK'));
 			process.exit();
 		});
 	});
