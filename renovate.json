@@ -6,13 +6,11 @@
   "packageRules": [
     {
       "matchDepTypes": ["dependencies"],
-      "updateTypes": ["minor", "patch", "pin", "digest"],
       "excludePackageNames": ["colors"],
       "rangeStrategy": "pin"
     },
     {
       "matchDepTypes": ["devDependencies"],
-      "updateTypes": ["minor", "patch", "pin", "digest"],
       "automerge": true,
       "rangeStrategy": "pin"
     },
