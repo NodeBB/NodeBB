@@ -237,6 +237,7 @@ module.exports = function (User) {
 			return;
 		}
 
+		// 👉 Looking for email change logic? src/user/email.js (UserEmail.confirmByUid)
 		if (newEmail) {
 			await User.email.sendValidationEmail(uid, {
 				email: newEmail,
