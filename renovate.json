@@ -2,13 +2,23 @@
   "extends": [
     "config:base"
   ],
-  "rangeStrategy": "pin",
   "labels": ["dependencies"],
   "packageRules": [
     {
+      "matchDepTypes": ["dependencies"],
+      "updateTypes": ["minor", "patch", "pin", "digest"],
+      "excludePackageNames": ["colors"],
+      "rangeStrategy": "pin"
+    },
+    {
+      "matchDepTypes": ["devDependencies"],
       "updateTypes": ["minor", "patch", "pin", "digest"],
       "automerge": true,
-      "excludePackageNames": ["colors"]
+      "rangeStrategy": "pin"
+    },
+    {
+      "matchDepTypes": ["engines"],
+      "rangeStrategy": "auto"
     }
   ]
 }
