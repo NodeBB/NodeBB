@@ -163,7 +163,7 @@
         "url": "https://github.com/NodeBB/NodeBB/issues"
     },
     "engines": {
-        "node": "17.3.1"
+        "node": ">=12"
     },
     "maintainers": [
         {
