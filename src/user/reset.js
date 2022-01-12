@@ -105,6 +105,7 @@ UserReset.commit = async function (code, password) {
 		]),
 		user.reset.updateExpiry(uid),
 		user.auth.resetLockout(uid),
+		user.auth.revokeAllSessions(uid),
 		user.email.expireValidation(uid),
 	]);
 };
