@@ -95,15 +95,18 @@ UserReset.commit = async function (code, password) {
 		await groups.join('verified-users', uid);
 		await groups.leave('unverified-users', uid);
 	}
-	await user.setUserFields(uid, data);
-	await db.deleteObjectField('reset:uid', code);
-	await db.sortedSetRemoveBulk([
-		['reset:issueDate', code],
-		['reset:issueDate:uid', uid],
+
+	await Promise.all([
+		user.setUserFields(uid, data),
+		db.deleteObjectField('reset:uid', code),
+		db.sortedSetRemoveBulk([
+			['reset:issueDate', code],
+			['reset:issueDate:uid', uid],
+		]),
+		user.reset.updateExpiry(uid),
+		user.auth.resetLockout(uid),
+		user.email.expireValidation(uid),
 	]);
-	await user.reset.updateExpiry(uid);
-	await user.auth.resetLockout(uid);
-	await user.email.expireValidation(uid);
 };
 
 UserReset.updateExpiry = async function (uid) {
