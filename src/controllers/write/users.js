@@ -265,12 +265,12 @@ Users.getEmail = async (req, res) => {
 };
 
 Users.confirmEmail = async (req, res) => {
-	const [exists, isAdmin] = await Promise.all([
+	const [exists, canManage] = await Promise.all([
 		db.isSortedSetMember('email:uid', req.params.email.toLowerCase()),
-		user.isAdministrator(req.uid),
+		privileges.admin.can('admin:users', req.uid),
 	]);
 
-	if (!isAdmin) {
+	if (!canManage) {
 		helpers.notAllowed(req, res);
 	}
 
