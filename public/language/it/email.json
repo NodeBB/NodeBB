@@ -48,6 +48,8 @@
     "unsub.cta": "Clicca qui per modificare queste impostazioni",
     "unsubscribe": "Annulla l'iscrizione",
     "unsub.success": "Non riceverai più email dalla <strong>%1</strong> mailing list",
+    "unsub.failure.title": "Unable to unsubscribe",
+    "unsub.failure.message": "Unfortunately, we were not able to unsubscribe you from the mailing list, as there was an issue with the link. However, you can alter your email preferences by going to <a href=\"%2\">your user settings</a>.<br /><br />(error: <code>%1</code>)",
     "banned.subject": "Sei stato bannato da %1",
     "banned.text1": "L'utente %1 è stato bannato da %2",
     "banned.text2": "Questo ban durerà fino a %1.",

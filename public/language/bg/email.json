@@ -48,6 +48,8 @@
     "unsub.cta": "Натиснете тук, за да промените тези настройки",
     "unsubscribe": "отписване",
     "unsub.success": "Повече няма да получавате е-писма от пощенския списък на <strong>%1</strong>",
+    "unsub.failure.title": "Unable to unsubscribe",
+    "unsub.failure.message": "Unfortunately, we were not able to unsubscribe you from the mailing list, as there was an issue with the link. However, you can alter your email preferences by going to <a href=\"%2\">your user settings</a>.<br /><br />(error: <code>%1</code>)",
     "banned.subject": "Вие бяхте блокиран(а) от %1",
     "banned.text1": "Потребителят %1 беше блокиран от %2.",
     "banned.text2": "Това блокиране ще е в сила до %1.",

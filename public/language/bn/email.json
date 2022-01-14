@@ -48,6 +48,8 @@
     "unsub.cta": "সেটিংসগুলো পরিবর্তন করতে এখানে ক্লিক করুন",
     "unsubscribe": "unsubscribe",
     "unsub.success": "You will no longer receive emails from the <strong>%1</strong> mailing list",
+    "unsub.failure.title": "Unable to unsubscribe",
+    "unsub.failure.message": "Unfortunately, we were not able to unsubscribe you from the mailing list, as there was an issue with the link. However, you can alter your email preferences by going to <a href=\"%2\">your user settings</a>.<br /><br />(error: <code>%1</code>)",
     "banned.subject": "আপনি %1 এ নিষিদ্ধ হয়েছেন",
     "banned.text1": "ব্যবহারকারি %1  %2 তে নিষিদ্ধ হয়েছেন",
     "banned.text2": "This ban will last until %1.",
