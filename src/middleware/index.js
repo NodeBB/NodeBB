@@ -34,17 +34,11 @@ middleware.regexes = {
 	timestampedUpload: /^\d+-.+$/,
 };
 
-const csurfMiddleware = csrf({
-	cookie: nconf.get('url_parsed').protocol === 'https:' ? {
-		secure: true,
-		sameSite: 'Strict',
-		httpOnly: true,
-	} : true,
-});
+const csrfMiddleware = csrf();
 
 middleware.applyCSRF = function (req, res, next) {
 	if (req.uid >= 0) {
-		csurfMiddleware(req, res, next);
+		csrfMiddleware(req, res, next);
 	} else {
 		next();
 	}

@@ -472,8 +472,6 @@ authenticationController.logout = async function (req, res, next) {
 
 		await destroyAsync(req);
 		res.clearCookie(nconf.get('sessionKey'), meta.configs.cookie.get());
-		req.uid = 0;
-		req.headers['x-csrf-token'] = req.csrfToken();
 
 		await user.setUserField(uid, 'lastonline', Date.now() - (meta.config.onlineCutoff * 60000));
 		await db.sortedSetAdd('users:online', Date.now() - (meta.config.onlineCutoff * 60000), uid);
