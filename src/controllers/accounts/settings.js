@@ -149,10 +149,12 @@ settingsController.unsubscribe = async (req, res) => {
 		}
 		await doUnsubscribe(payload);
 		res.render('unsubscribe', {
-			payload: payload,
+			payload,
 		});
 	} catch (err) {
-		throw new Error(err);
+		res.render('unsubscribe', {
+			error: err.message,
+		});
 	}
 };
 
