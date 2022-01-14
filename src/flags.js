@@ -737,14 +737,7 @@ Flags.notify = async function (flagObj, uid) {
 	let uids = admins.concat(globalMods);
 	let notifObj = null;
 
-	const { reporter } = flagObj.reports[flagObj.reports.length - 1];
-	const { username } = reporter;
-
-	let reporterName = username;
-	if (meta.config.useFullnameInNotifications) {
-		const fullname = await user.getUserField(reporter.uid, 'fullname');
-		if (fullname) reporterName = fullname;
-	}
+	const { displayname } = flagObj.reports[flagObj.reports.length - 1].reporter;
 
 	if (flagObj.type === 'post') {
 		const [title, cid] = await Promise.all([
@@ -757,7 +750,7 @@ Flags.notify = async function (flagObj, uid) {
 
 		notifObj = await notifications.create({
 			type: 'new-post-flag',
-			bodyShort: `[[notifications:user_flagged_post_in, ${reporterName}, ${titleEscaped}]]`,
+			bodyShort: `[[notifications:user_flagged_post_in, ${displayname}, ${titleEscaped}]]`,
 			bodyLong: await plugins.hooks.fire('filter:parse.raw', String(flagObj.description || '')),
 			pid: flagObj.targetId,
 			path: `/flags/${flagObj.flagId}`,
@@ -770,7 +763,7 @@ Flags.notify = async function (flagObj, uid) {
 	} else if (flagObj.type === 'user') {
 		notifObj = await notifications.create({
 			type: 'new-user-flag',
-			bodyShort: `[[notifications:user_flagged_user, ${reporterName}, ${flagObj.target.username}]]`,
+			bodyShort: `[[notifications:user_flagged_user, ${displayname}, ${flagObj.target.user.displayname}]]`,
 			bodyLong: await plugins.hooks.fire('filter:parse.raw', String(flagObj.description || '')),
 			path: `/flags/${flagObj.flagId}`,
 			nid: `flag:user:${flagObj.targetId}`,

@@ -82,20 +82,19 @@ SocketHelpers.sendNotificationToPostOwner = async function (pid, fromuid, comman
 		return;
 	}
 	const [userData, topicTitle, postObj] = await Promise.all([
-		user.getUserFields(fromuid, ['username', 'fullname']),
+		user.getUserFields(fromuid, ['username']),
 		topics.getTopicField(postData.tid, 'title'),
 		posts.parsePost(postData),
 	]);
 
-	const { username, fullname } = userData;
-	const name = meta.config.useFullnameInNotifications && fullname ? fullname : username;
+	const { displayname } = userData;
 
 	const title = utils.decodeHTMLEntities(topicTitle);
 	const titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 
 	const notifObj = await notifications.create({
 		type: command,
-		bodyShort: `[[${notification}, ${name}, ${titleEscaped}]]`,
+		bodyShort: `[[${notification}, ${displayname}, ${titleEscaped}]]`,
 		bodyLong: postObj.content,
 		pid: pid,
 		tid: postData.tid,
@@ -118,7 +117,7 @@ SocketHelpers.sendNotificationToTopicOwner = async function (tid, fromuid, comma
 	fromuid = parseInt(fromuid, 10);
 
 	const [userData, topicData] = await Promise.all([
-		user.getUserFields(fromuid, ['username', 'fullname']),
+		user.getUserFields(fromuid, ['username']),
 		topics.getTopicFields(tid, ['uid', 'slug', 'title']),
 	]);
 
@@ -126,15 +125,14 @@ SocketHelpers.sendNotificationToTopicOwner = async function (tid, fromuid, comma
 		return;
 	}
 
-	const { username, fullname } = userData;
-	const name = meta.config.useFullnameInNotifications && fullname ? fullname : username;
+	const { displayname } = userData;
 
 	const ownerUid = topicData.uid;
 	const title = utils.decodeHTMLEntities(topicData.title);
 	const titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 
 	const notifObj = await notifications.create({
-		bodyShort: `[[${notification}, ${name}, ${titleEscaped}]]`,
+		bodyShort: `[[${notification}, ${displayname}, ${titleEscaped}]]`,
 		path: `/topic/${topicData.slug}`,
 		nid: `${command}:tid:${tid}:uid:${fromuid}`,
 		from: fromuid,

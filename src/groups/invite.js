@@ -7,19 +7,17 @@ const user = require('../user');
 const slugify = require('../slugify');
 const plugins = require('../plugins');
 const notifications = require('../notifications');
-const meta = require('../meta');
 
 module.exports = function (Groups) {
 	Groups.requestMembership = async function (groupName, uid) {
 		await inviteOrRequestMembership(groupName, uid, 'request');
-		const { username, fullname } = await user.getUserFields(uid, ['username', 'fullname']);
-		const name = meta.config.useFullnameInNotifications && fullname ? fullname : username;
+		const { displayname } = await user.getUserFields(uid, ['username']);
 
 		const [notification, owners] = await Promise.all([
 			notifications.create({
 				type: 'group-request-membership',
-				bodyShort: `[[groups:request.notification_title, ${name}]]`,
-				bodyLong: `[[groups:request.notification_text, ${name}, ${groupName}]]`,
+				bodyShort: `[[groups:request.notification_title, ${displayname}]]`,
+				bodyLong: `[[groups:request.notification_text, ${displayname}, ${groupName}]]`,
 				nid: `group:${groupName}:uid:${uid}:request`,
 				path: `/groups/${slugify(groupName)}`,
 				from: uid,
