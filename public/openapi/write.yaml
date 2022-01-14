@@ -78,6 +78,12 @@ paths:
     $ref: 'write/users/uid/invites.yaml'
   /users/{uid}/invites/groups:
     $ref: 'write/users/uid/invites/groups.yaml'
+  /users/{uid}/emails:
+    $ref: 'write/users/uid/emails.yaml'
+  /users/{uid}/emails/{email}:
+    $ref: 'write/users/uid/emails/email.yaml'
+  /users/{uid}/emails/{email}/confirm:
+    $ref: 'write/users/uid/emails/email/confirm.yaml'
   /groups/:
     $ref: 'write/groups.yaml'
   /groups/{slug}:

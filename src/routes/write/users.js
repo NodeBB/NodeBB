@@ -44,6 +44,10 @@ function authenticatedRoutes() {
 	setupApiRoute(router, 'post', '/:uid/invites', middlewares, controllers.write.users.invite);
 	setupApiRoute(router, 'get', '/:uid/invites/groups', [...middlewares, middleware.assert.user], controllers.write.users.getInviteGroups);
 
+	setupApiRoute(router, 'get', '/:uid/emails', [...middlewares, middleware.assert.user], controllers.write.users.listEmails);
+	setupApiRoute(router, 'get', '/:uid/emails/:email', [...middlewares, middleware.assert.user], controllers.write.users.getEmail);
+	setupApiRoute(router, 'post', '/:uid/emails/:email', [...middlewares, middleware.assert.user], controllers.write.users.confirmEmail);
+
 	// Shorthand route to access user routes by userslug
 	router.all('/+bySlug/:userslug*?', [], controllers.write.users.redirectBySlug);
 }
