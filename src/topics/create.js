@@ -183,7 +183,7 @@ module.exports = function (Topics) {
 		postData = await onNewPost(postData, data);
 
 		const settings = await user.getSettings(uid);
-		if (settings.followTopicsOnReply) {
+		if (uid > 0 && settings.followTopicsOnReply) {
 			await Topics.follow(postData.tid, uid);
 		}
 
