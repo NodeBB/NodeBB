@@ -130,6 +130,28 @@ describe('Topic\'s', () => {
 			});
 		});
 
+		it('should fail to post a topic as guest with invalid csrf_token', async () => {
+			const categoryObj = await categories.create({
+				name: 'Test Category',
+				description: 'Test category created by testing script',
+			});
+			await privileges.categories.give(['groups:topics:create'], categoryObj.cid, 'guests');
+			await privileges.categories.give(['groups:topics:reply'], categoryObj.cid, 'guests');
+			const result = await requestType('post', `${nconf.get('url')}/api/v3/topics`, {
+				form: {
+					title: 'just a title',
+					cid: categoryObj.cid,
+					content: 'content for the main post',
+				},
+				headers: {
+					'x-csrf-token': 'invalid',
+				},
+				json: true,
+			});
+			assert.strictEqual(result.status.code, 'forbidden');
+			assert.strictEqual(result.body.status.message, 'You do not have enough privileges for this action.');
+		});
+
 		it('should fail to post a topic as guest if no privileges', async () => {
 			const categoryObj = await categories.create({
 				name: 'Test Category',
