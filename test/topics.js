@@ -148,7 +148,7 @@ describe('Topic\'s', () => {
 				},
 				json: true,
 			});
-			assert.strictEqual(result.status.code, 'forbidden');
+			assert.strictEqual(result.body.status.code, 'forbidden');
 			assert.strictEqual(result.body.status.message, 'You do not have enough privileges for this action.');
 		});
 
