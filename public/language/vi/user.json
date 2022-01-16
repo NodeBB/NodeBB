@@ -184,6 +184,7 @@
     "consent.export_posts": "Xuất bài viết (.csv)",
     "consent.export-posts-success": "Đang xuất bài viết, bạn sẽ nhận được thông báo khi hoàn tất.",
     "emailUpdate.intro": "Vui lòng nhập địa chỉ email của bạn dưới đây. Diễn đàn này sử dụng địa chỉ email của bạn để nhận thông báo và thông báo theo lịch trình, cũng như để khôi phục tài khoản trong trường hợp mất mật khẩu.",
-    "emailUpdate.optional": "<strong>Mục này không bắt buộc</strong>. Bạn không có nghĩa vụ cung cấp địa chỉ email của mình, nhưng nếu không có email được xác thực, bạn sẽ không thể khôi phục tài khoản hoặc đăng nhập bằng email của mình.",
+    "emailUpdate.optional": "<strong>This field is optional</strong>. You are not obligated to provide your email address, but without a validated email you will not be able to recover your account or login with your email.",
+    "emailUpdate.required": "<strong>This field is required</strong>.",
     "emailUpdate.change-instructions": "Một email xác nhận sẽ được gửi đến địa chỉ email đã nhập với một liên kết duy nhất. Việc truy cập vào liên kết đó sẽ xác nhận quyền sở hữu của bạn đối với địa chỉ email và nó sẽ có hiệu lực trên tài khoản của bạn. Bất cứ lúc nào, bạn có thể cập nhật email của mình trong hồ sơ từ trong trang tài khoản của bạn."
 }

@@ -184,6 +184,7 @@
     "consent.export_posts": "יצוא פוסטים (CVS.)",
     "consent.export-posts-success": "ייצוא הפוסטים מתבצע כעת. תקבל התראה כאשר הייצוא יסתיים.",
     "emailUpdate.intro": "אנא הכנס את כתובת הדוא\"ל שלך. הפורום משתמש בדוא\"ל שלך לשליחת תקציר מתוזמן והתראות, כמו כן לשחזור חשבון במקרה ששוכחים את הסיסמה.",
-    "emailUpdate.optional": "<strong>This field is optional</strong>. You are not obligated to provide your email address, but without a validated email, you will not be able to recover your account or login with your email.",
+    "emailUpdate.optional": "<strong>This field is optional</strong>. You are not obligated to provide your email address, but without a validated email you will not be able to recover your account or login with your email.",
+    "emailUpdate.required": "<strong>This field is required</strong>.",
     "emailUpdate.change-instructions": "מייל אימות יישלח לכתובת דוא\"ל שהכנסת עם קישור ייחודי. לחיצה על הקישור יאמת את בעלותך על הדוא\"ל ותקבל גישה לחשבונך. בכל זמן, תוכל לעדכן את כתובת הדוא\"ל שלך בדף החשבון שלך."
 }
