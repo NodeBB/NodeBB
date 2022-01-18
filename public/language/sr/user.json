@@ -185,6 +185,6 @@
     "consent.export-posts-success": "Извоз порука, добићете обавештење након завршетка.",
     "emailUpdate.intro": "Унесите своју адресу е-поште испод. Овај форум користи вашу адресу е-поште за планирано слање сажетка и обавештења, као и за опоравак налога у случају изгубљене лозинке.",
     "emailUpdate.optional": "<strong>This field is optional</strong>. You are not obligated to provide your email address, but without a validated email you will not be able to recover your account or login with your email.",
-    "emailUpdate.required": "<strong>This field is required</strong>.",
+    "emailUpdate.required": "<strong>Ово поље је обавезно</strong>.",
     "emailUpdate.change-instructions": "На унету адресу е-поште биће послата потврдна порука са јединственом везом. Приступ тој вези потврдиће ваше власништво над адресом е-поште и она ће постати активна на вашем налогу. У било ком тренутку можете да ажурирате своју е-пошту на страници налога."
 }
