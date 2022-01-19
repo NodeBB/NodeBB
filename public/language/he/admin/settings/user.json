@@ -1,6 +1,5 @@
 {
 	"authentication": "אימות",
-	"require-email-confirmation": "דורש אישור על ידי כתובת מייל",
 	"email-confirm-interval": "המשתמש לא יוכל לשלוח הודעת אישור מייל עד שיחלוף",
 	"email-confirm-email2": "דקות",
 	"allow-login-with": "אפשר התחברות עם",

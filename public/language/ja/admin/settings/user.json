@@ -1,6 +1,5 @@
 {
 	"authentication": "認証",
-	"require-email-confirmation": "Eメールの確認が必要です",
 	"email-confirm-interval": "ユーザーが確認するまでEメールを再送信しない",
 	"email-confirm-email2": "分経過",
 	"allow-login-with": "ログインを許可",
