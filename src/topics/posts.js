@@ -44,7 +44,7 @@ module.exports = function (Topics) {
 		if (topicData.mainPid && start === 0) {
 			pids.unshift(topicData.mainPid);
 		}
-		const postData = await posts.getPostsByPids(pids, uid);
+		let postData = await posts.getPostsByPids(pids, uid);
 		if (!postData.length) {
 			return [];
 		}
@@ -55,7 +55,7 @@ module.exports = function (Topics) {
 		}
 
 		Topics.calculatePostIndices(replies, repliesStart);
-
+		postData = await user.blocks.filter(uid, postData);
 		await addEventStartEnd(postData, set, reverse, topicData);
 		const result = await plugins.hooks.fire('filter:topic.getPosts', {
 			topic: topicData,
