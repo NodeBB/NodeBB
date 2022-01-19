@@ -1,6 +1,5 @@
 {
 	"authentication": "인증",
-	"require-email-confirmation": "이메일 인증 필수화",
 	"email-confirm-interval": "사용자는",
 	"email-confirm-email2": "분이 지나기 전까지 인증 메일 재요청이 불가능합니다.",
 	"allow-login-with": "로그인 허용 수단",

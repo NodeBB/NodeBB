@@ -1,6 +1,5 @@
 {
 	"authentication": "Hitelesítés",
-	"require-email-confirmation": "Email megerősítés megkövetelése",
 	"email-confirm-interval": "A felhasználó nem küldetheti újra az emailt ameddig nem telt el",
 	"email-confirm-email2": "perc",
 	"allow-login-with": "Bejelentkezés engedélyezése ezzel:",

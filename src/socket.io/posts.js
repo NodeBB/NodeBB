@@ -136,7 +136,7 @@ async function sendQueueNotification(type, targetUid, path, notificationText) {
 	const notifData = {
 		type: type,
 		nid: `${type}-${targetUid}-${path}`,
-		bodyShort: `[[notifications:post-queue-notify, ${notificationText}]]` || `[[notifications:${type}]]`,
+		bodyShort: notificationText ? `[[notifications:${type}, ${notificationText}]]` : `[[notifications:${type}]]`,
 		path: path,
 	};
 	if (parseInt(meta.config.postQueueNotificationUid, 10) > 0) {

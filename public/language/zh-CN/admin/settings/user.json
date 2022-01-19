@@ -1,6 +1,5 @@
 {
 	"authentication": "验证",
-	"require-email-confirmation": "需要电子邮箱激活",
 	"email-confirm-interval": "用户无法重新发送电子邮箱激活直到",
 	"email-confirm-email2": "分钟已经过",
 	"allow-login-with": "允许使用何种登录名",

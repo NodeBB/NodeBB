@@ -370,13 +370,13 @@ module.exports = function (Topics) {
 		}
 
 		const { pid, uid, tid } = postData;
-		let add = matches.map(match => match[1]);
+		let add = matches.map(match => match[1]).map(tid => parseInt(tid, 10));
 
 		const now = Date.now();
 		const topicsExist = await Topics.exists(add);
 		const current = (await db.getSortedSetMembers(`pid:${pid}:backlinks`)).map(tid => parseInt(tid, 10));
 		const remove = current.filter(tid => !add.includes(tid));
-		add = add.filter((_tid, idx) => topicsExist[idx] && !current.includes(_tid) && tid !== parseInt(_tid, 10));
+		add = add.filter((_tid, idx) => topicsExist[idx] && !current.includes(_tid) && tid !== _tid);
 
 		// Remove old backlinks
 		await db.sortedSetRemove(`pid:${pid}:backlinks`, remove);
