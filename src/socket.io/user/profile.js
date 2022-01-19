@@ -8,7 +8,6 @@ const notifications = require('../../notifications');
 const privileges = require('../../privileges');
 const db = require('../../database');
 const plugins = require('../../plugins');
-const meta = require('../../meta');
 
 module.exports = function (SocketUser) {
 	SocketUser.updateCover = async function (socket, data) {

@@ -13,7 +13,6 @@ const notifications = require('../notifications');
 const plugins = require('../plugins');
 const utils = require('../utils');
 const batch = require('../batch');
-const meta = require('../meta');
 
 const SocketHelpers = module.exports;
 
