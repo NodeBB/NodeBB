@@ -370,7 +370,7 @@ module.exports = function (Topics) {
 		}
 
 		const { pid, uid, tid } = postData;
-		let add = matches.map(match => match[1]).map(tid => parseInt(tid, 10));
+		let add = _.uniq(matches.map(match => match[1]).map(tid => parseInt(tid, 10)));
 
 		const now = Date.now();
 		const topicsExist = await Topics.exists(add);
@@ -382,7 +382,7 @@ module.exports = function (Topics) {
 		await db.sortedSetRemove(`pid:${pid}:backlinks`, remove);
 
 		// Add new backlinks
-		await db.sortedSetAdd(`pid:${pid}:backlinks`, add.map(Number.bind(null, now)), add);
+		await db.sortedSetAdd(`pid:${pid}:backlinks`, add.map(() => now), add);
 		await Promise.all(add.map(async (tid) => {
 			await Topics.events.log(tid, {
 				uid,
