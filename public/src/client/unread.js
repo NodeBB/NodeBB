@@ -70,7 +70,6 @@ define('forum/unread', [
 				doneRemovingTids(tids);
 			});
 		}
-		const selectCategoryLabel = ajaxify.data.selectCategoryLabel || '[[unread:mark_as_read]]';
 		const selector = categorySelector.init($('[component="category-selector"]'), {
 			onSelect: function (category) {
 				selector.selectCategory(0);
@@ -82,7 +81,7 @@ define('forum/unread', [
 					markCategoryRead(category.cid);
 				}
 			},
-			selectCategoryLabel: selectCategoryLabel,
+			selectCategoryLabel: ajaxify.data.selectCategoryLabel || '[[unread:mark_as_read]]',
 			localCategories: [
 				{
 					cid: 'selected',
@@ -95,14 +94,6 @@ define('forum/unread', [
 					icon: '',
 				},
 			],
-		});
-		app.parseAndTranslate('partials/category-selector-content', {
-			selectCategoryLabel: selectCategoryLabel,
-			selectCategoryIcon: ajaxify.data.selectCategoryIcon,
-		}, function (html) {
-			selector.el.find('[component="category-selector-selected"]').html(
-				html.find('[component="category-selector-selected"]').html()
-			);
 		});
 	}
 
