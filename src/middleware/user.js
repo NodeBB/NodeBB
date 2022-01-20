@@ -42,12 +42,12 @@ module.exports = function (middleware) {
 			return true;
 		}
 
-		if (req.loggedIn) {
+		if (res.locals.isAPI && (req.loggedIn || !req.headers.hasOwnProperty('authorization'))) {
 			// If authenticated via cookie (express-session), protect routes with CSRF checking
-			if (res.locals.isAPI) {
-				await middleware.applyCSRFasync(req, res);
-			}
+			await middleware.applyCSRFasync(req, res);
+		}
 
+		if (req.loggedIn) {
 			return true;
 		} else if (req.headers.hasOwnProperty('authorization')) {
 			const user = await passportAuthenticateAsync(req, res);

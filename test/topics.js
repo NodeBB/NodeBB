@@ -130,17 +130,41 @@ describe('Topic\'s', () => {
 			});
 		});
 
-		it('should fail to post a topic as guest if no privileges', async () => {
+		it('should fail to post a topic as guest with invalid csrf_token', async () => {
 			const categoryObj = await categories.create({
 				name: 'Test Category',
 				description: 'Test category created by testing script',
 			});
+			await privileges.categories.give(['groups:topics:create'], categoryObj.cid, 'guests');
+			await privileges.categories.give(['groups:topics:reply'], categoryObj.cid, 'guests');
 			const result = await requestType('post', `${nconf.get('url')}/api/v3/topics`, {
 				form: {
 					title: 'just a title',
 					cid: categoryObj.cid,
 					content: 'content for the main post',
 				},
+				headers: {
+					'x-csrf-token': 'invalid',
+				},
+				json: true,
+			});
+			assert.strictEqual(result.res.statusCode, 403);
+			assert.strictEqual(result.body, 'Forbidden');
+		});
+
+		it('should fail to post a topic as guest if no privileges', async () => {
+			const categoryObj = await categories.create({
+				name: 'Test Category',
+				description: 'Test category created by testing script',
+			});
+			const jar = request.jar();
+			const result = await helpers.request('post', `/api/v3/topics`, {
+				form: {
+					title: 'just a title',
+					cid: categoryObj.cid,
+					content: 'content for the main post',
+				},
+				jar: jar,
 				json: true,
 			});
 			assert.strictEqual(result.body.status.message, 'You do not have enough privileges for this action.');
@@ -154,12 +178,14 @@ describe('Topic\'s', () => {
 			await privileges.categories.give(['groups:topics:create'], categoryObj.cid, 'guests');
 			await privileges.categories.give(['groups:topics:reply'], categoryObj.cid, 'guests');
 
-			const result = await requestType('post', `${nconf.get('url')}/api/v3/topics`, {
+			const jar = request.jar();
+			const result = await helpers.request('post', `/api/v3/topics`, {
 				form: {
 					title: 'just a title',
 					cid: categoryObj.cid,
 					content: 'content for the main post',
 				},
+				jar: jar,
 				json: true,
 			});
 
@@ -167,10 +193,11 @@ describe('Topic\'s', () => {
 			assert.strictEqual(result.body.response.title, 'just a title');
 			assert.strictEqual(result.body.response.user.username, '[[global:guest]]');
 
-			const replyResult = await requestType('post', `${nconf.get('url')}/api/v3/topics/${result.body.response.tid}`, {
+			const replyResult = await helpers.request('post', `/api/v3/topics/${result.body.response.tid}`, {
 				form: {
 					content: 'a reply by guest',
 				},
+				jar: jar,
 				json: true,
 			});
 			assert.strictEqual(replyResult.body.response.content, 'a reply by guest');
@@ -186,13 +213,14 @@ describe('Topic\'s', () => {
 			await privileges.categories.give(['groups:topics:reply'], categoryObj.cid, 'guests');
 			const oldValue = meta.config.allowGuestHandles;
 			meta.config.allowGuestHandles = 1;
-			const result = await requestType('post', `${nconf.get('url')}/api/v3/topics`, {
+			const result = await helpers.request('post', `/api/v3/topics`, {
 				form: {
 					title: 'just a title',
 					cid: categoryObj.cid,
 					content: 'content for the main post',
 					handle: 'guest123',
 				},
+				jar: request.jar(),
 				json: true,
 			});
 
@@ -201,11 +229,12 @@ describe('Topic\'s', () => {
 			assert.strictEqual(result.body.response.user.username, 'guest123');
 			assert.strictEqual(result.body.response.user.displayname, 'guest123');
 
-			const replyResult = await requestType('post', `${nconf.get('url')}/api/v3/topics/${result.body.response.tid}`, {
+			const replyResult = await helpers.request('post', `/api/v3/topics/${result.body.response.tid}`, {
 				form: {
 					content: 'a reply by guest',
 					handle: 'guest124',
 				},
+				jar: request.jar(),
 				json: true,
 			});
 			assert.strictEqual(replyResult.body.response.content, 'a reply by guest');
@@ -2715,7 +2744,10 @@ describe('Topic\'s', () => {
 
 		it('should allow guests to reply if privilege is given', async () => {
 			await privileges.categories.give(['groups:topics:schedule'], categoryObj.cid, 'guests');
-			const response = await requestType('post', `${nconf.get('url')}/api/v3/topics/${topicData.tid}`, replyData);
+			const response = await helpers.request('post', `/api/v3/topics/${topicData.tid}`, {
+				...replyData,
+				jar: request.jar(),
+			});
 			assert.strictEqual(response.body.response.content, 'a reply by guest');
 			assert.strictEqual(response.body.response.user.username, '[[global:guest]]');
 		});
