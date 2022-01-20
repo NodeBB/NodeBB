@@ -1,6 +1,5 @@
 {
 	"authentication": "Authentication",
-	"require-email-confirmation": "Require Email Confirmation",
 	"email-confirm-interval": "User may not resend a confirmation email until",
 	"email-confirm-email2": "minutes have elapsed",
 	"allow-login-with": "Allow login with",

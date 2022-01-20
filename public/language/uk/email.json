@@ -48,6 +48,8 @@
     "unsub.cta": "Натисніть тут, щоб змінити ці налаштування",
     "unsubscribe": "відписатись",
     "unsub.success": "Ви більше не будете отримувати повідомлення з <strong>%1</strong> поштової розсилки",
+    "unsub.failure.title": "Unable to unsubscribe",
+    "unsub.failure.message": "Unfortunately, we were not able to unsubscribe you from the mailing list, as there was an issue with the link. However, you can alter your email preferences by going to <a href=\"%2\">your user settings</a>.<br /><br />(error: <code>%1</code>)",
     "banned.subject": "Ви були забанені на %1",
     "banned.text1": "Користувач %1 був забанений на %2.",
     "banned.text2": "Тривалість бану - до %1.",

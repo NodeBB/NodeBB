@@ -183,7 +183,7 @@ module.exports = function (Topics) {
 		postData = await onNewPost(postData, data);
 
 		const settings = await user.getSettings(uid);
-		if (settings.followTopicsOnReply) {
+		if (uid > 0 && settings.followTopicsOnReply) {
 			await Topics.follow(postData.tid, uid);
 		}
 
@@ -192,9 +192,11 @@ module.exports = function (Topics) {
 		}
 
 		if (parseInt(uid, 10) || meta.config.allowGuestReplyNotifications) {
+			const { displayname } = postData.user;
+
 			Topics.notifyFollowers(postData, uid, {
 				type: 'new-reply',
-				bodyShort: translator.compile('notifications:user_posted_to', postData.user.username, postData.topic.title),
+				bodyShort: translator.compile('notifications:user_posted_to', displayname, postData.topic.title),
 				nid: `new_post:tid:${postData.topic.tid}:pid:${postData.pid}:uid:${uid}`,
 				mergeId: `notifications:user_posted_to|${postData.topic.tid}`,
 			});

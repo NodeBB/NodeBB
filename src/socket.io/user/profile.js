@@ -93,8 +93,9 @@ module.exports = function (SocketUser) {
 		child.on('exit', async () => {
 			await db.deleteObjectField('locks', `export:${data.uid}${type}`);
 			const userData = await user.getUserFields(data.uid, ['username', 'userslug']);
+			const { displayname } = userData;
 			const n = await notifications.create({
-				bodyShort: `[[notifications:${type}-exported, ${userData.username}]]`,
+				bodyShort: `[[notifications:${type}-exported, ${displayname}]]`,
 				path: `/api/user/${userData.userslug}/export/${type}`,
 				nid: `${type}:export:${data.uid}`,
 				from: data.uid,

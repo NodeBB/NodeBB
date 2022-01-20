@@ -48,6 +48,8 @@
     "unsub.cta": "Noklikšķini, lai mainītu šos iestatījumus",
     "unsubscribe": "unsubscribe",
     "unsub.success": "You will no longer receive emails from the <strong>%1</strong> mailing list",
+    "unsub.failure.title": "Unable to unsubscribe",
+    "unsub.failure.message": "Unfortunately, we were not able to unsubscribe you from the mailing list, as there was an issue with the link. However, you can alter your email preferences by going to <a href=\"%2\">your user settings</a>.<br /><br />(error: <code>%1</code>)",
     "banned.subject": "Tu esi bloķēts no %1",
     "banned.text1": "Lietotājs %1 ir bloķēts no %2.",
     "banned.text2": "Bloķēšana ilgs līdz %1.",

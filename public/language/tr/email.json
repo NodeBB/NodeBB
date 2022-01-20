@@ -48,6 +48,8 @@
     "unsub.cta": "Buraya tıklayarak ayarlarınızı değiştirebilirsiniz.",
     "unsubscribe": "abonelikten çık",
     "unsub.success": "Artık <strong>%1</strong> eposta listesinden eposta almayacaksınız.",
+    "unsub.failure.title": "Abonelikten çıkarılamaz",
+    "unsub.failure.message": "Maalesef bağlantı linkiyle ilgili bir problemden ötürü abonelikten çıkarılamadınız. Fakat, eposta tercihlerinizi şu bölüme giderek değiştirebillirsiniz: <a href=\"%2\">Kullanıcı ayarları</a>.<br /><br />(hata: <code>%1</code>)",
     "banned.subject": "%1 sitesinden yasaklandınız!",
     "banned.text1": "%1 kullanıcısı %2 sitesinden yasaklandı.",
     "banned.text2": "Bu yasak %1 tarihine kadar sürecek.",

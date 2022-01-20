@@ -98,6 +98,7 @@ SocketPosts.getReplies = async function (socket, pid) {
 	postData = await topics.addPostData(postData, socket.uid);
 	postData.forEach((postData, index) => posts.modifyPostByPrivilege(postData, postPrivileges[index]));
 	postData = postData.filter((postData, index) => postData && postPrivileges[index].read);
+	postData = await user.blocks.filter(socket.uid, postData);
 	return postData;
 };
 
@@ -136,7 +137,7 @@ async function sendQueueNotification(type, targetUid, path, notificationText) {
 	const notifData = {
 		type: type,
 		nid: `${type}-${targetUid}-${path}`,
-		bodyShort: `[[notifications:post-queue-notify, ${notificationText}]]` || `[[notifications:${type}]]`,
+		bodyShort: notificationText ? `[[notifications:${type}, ${notificationText}]]` : `[[notifications:${type}]]`,
 		path: path,
 	};
 	if (parseInt(meta.config.postQueueNotificationUid, 10) > 0) {

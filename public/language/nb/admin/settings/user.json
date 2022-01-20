@@ -1,6 +1,5 @@
 {
 	"authentication": "Autentisering ",
-	"require-email-confirmation": "Krever bekreftelse via e-post",
 	"email-confirm-interval": "Brukeren kan ikke sende en bekreftelses-e-post på nytt før",
 	"email-confirm-email2": "minutter har gått",
 	"allow-login-with": "Tillat innlogging med",
