@@ -184,7 +184,7 @@
     "consent.export_posts": "Esporta i post (.csv)",
     "consent.export-posts-success": "Esportazione dei post, riceverai una notifica al termine.",
     "emailUpdate.intro": "Inserisci il tuo indirizzo email qui sotto. Questo forum utilizza il tuo indirizzo email per il riepilogo programmato e le notifiche, così come per il recupero dell'account in caso di perdita della password.",
-    "emailUpdate.optional": "<strong>This field is optional</strong>. You are not obligated to provide your email address, but without a validated email you will not be able to recover your account or login with your email.",
-    "emailUpdate.required": "<strong>This field is required</strong>.",
+    "emailUpdate.optional": "<strong>Questo campo è facoltativo</strong>. Non sei obbligato a fornire il tuo indirizzo email, ma senza un'email convalidata non sarai in grado di recuperare il tuo account o di accedere con la tua email.",
+    "emailUpdate.required": "<strong>Questo campo è obbligatorio</strong>.",
     "emailUpdate.change-instructions": "Un'email di conferma sarà inviata all'indirizzo email inserito con un link unico. Accedendo a quel link confermerai la tua proprietà dell'indirizzo email e questo diventerà attivo sul tuo account. In qualsiasi momento, sei in grado di aggiornare la tua email in archivio dalla pagina del tuo account."
 }
