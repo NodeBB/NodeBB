@@ -1,6 +1,5 @@
 {
 	"authentication": "Overenie",
-	"require-email-confirmation": "Požadované potvrdenie e-mailom",
 	"email-confirm-interval": "Používateľ nesmie požiadať o znovu odoslanie potvrdzujúceho e-mailu do",
 	"email-confirm-email2": "minút uplynulo",
 	"allow-login-with": "Povoliť prihlásenie pomocou",

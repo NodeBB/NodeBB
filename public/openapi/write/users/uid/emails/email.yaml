@@ -1,0 +1,25 @@
+get:
+  tags:
+    - users
+  summary: get user's email data
+  description: |
+    This operation lists the data associated with a single email.
+    This route is accessible to all users if the target user has elected to show their email publicly. Otherwise, it is only accessible to privileged users, or if the calling user is the same as the target user.
+  parameters:
+    - in: path
+      required: true
+      name: uid
+      schema:
+        type: number
+      description: A valid user id
+      example: 1
+    - in: path
+      required: true
+      name: email
+      schema:
+        type: string
+      description: A valid email address
+      example: test@example.org
+  responses:
+    '204':
+      description: user's email data successfully retrieved

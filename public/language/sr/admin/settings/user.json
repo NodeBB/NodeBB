@@ -1,6 +1,5 @@
 {
 	"authentication": "Auntentifikacija",
-	"require-email-confirmation": "Zahteva Email konfirmaciju",
 	"email-confirm-interval": "Korisnik možda neće moći da ponovo pošalje email konfirmaciju sve dok",
 	"email-confirm-email2": "minuta je prošlo",
 	"allow-login-with": "Dozvoli login sa",

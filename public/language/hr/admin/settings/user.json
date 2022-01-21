@@ -1,6 +1,5 @@
 {
 	"authentication": "Autentifikacija",
-	"require-email-confirmation": "Zahtjeva potvrdu email-om",
 	"email-confirm-interval": "Korisnik ne može ponovno poslati potvrdni email do ",
 	"email-confirm-email2": "prošlo je minuta",
 	"allow-login-with": "Dozvoli prijavu sa",

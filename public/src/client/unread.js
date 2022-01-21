@@ -70,7 +70,6 @@ define('forum/unread', [
 				doneRemovingTids(tids);
 			});
 		}
-
 		const selector = categorySelector.init($('[component="category-selector"]'), {
 			onSelect: function (category) {
 				selector.selectCategory(0);

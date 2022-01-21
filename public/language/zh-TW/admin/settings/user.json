@@ -1,6 +1,5 @@
 {
 	"authentication": "驗證",
-	"require-email-confirmation": "需要電子信箱確認",
 	"email-confirm-interval": "使用者無法重新發送電子信箱確認信直到",
 	"email-confirm-email2": "分鐘已經過",
 	"allow-login-with": "允許使用何種登入名",

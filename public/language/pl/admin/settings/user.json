@@ -1,6 +1,5 @@
 {
 	"authentication": "Uwierzytelnianie",
-	"require-email-confirmation": "Wymagaj potwierdzenia adresu e-mail",
 	"email-confirm-interval": "Użytkownik nie może ponownie wysłać e-maila z potwierdzeniem, dopóki nie minie",
 	"email-confirm-email2": "minut",
 	"allow-login-with": "Zezwalaj na logowanie przy użyciu",

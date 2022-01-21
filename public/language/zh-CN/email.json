@@ -48,6 +48,8 @@
     "unsub.cta": "点击这里修改这些设置",
     "unsubscribe": "退订",
     "unsub.success": "您将不再收到来自<strong>%1</strong>邮寄名单的邮件",
+    "unsub.failure.title": "Unable to unsubscribe",
+    "unsub.failure.message": "Unfortunately, we were not able to unsubscribe you from the mailing list, as there was an issue with the link. However, you can alter your email preferences by going to <a href=\"%2\">your user settings</a>.<br /><br />(error: <code>%1</code>)",
     "banned.subject": "您在 %1  的账户已被封禁",
     "banned.text1": "您在 %2 的账户 %1 已被封禁。",
     "banned.text2": "本次封禁将在 %1 结束。",

@@ -48,6 +48,8 @@
     "unsub.cta": "Cliquez ici pour modifier ces paramètres",
     "unsubscribe": "Se désinscrire",
     "unsub.success": "Vous ne recevrez plus d'e-mails de la liste de diffusion <strong>%1</strong>",
+    "unsub.failure.title": "Impossible de se désinscrire",
+    "unsub.failure.message": "Malheureusement, nous n'avons pas pu vous désinscrire de la liste de diffusion, car il y avait un problème avec le lien. Cependant, vous pouvez modifier vos préférences de messagerie en accédant à <a href=\"%2\">vos paramètres utilisateur</a>. <br /><br />(erreur: <code>%1</code>)",
     "banned.subject": "Vous avez été banni de %1",
     "banned.text1": "L'utilisateur %1 a été banni de %2.",
     "banned.text2": "Ce ban est effectif jusqu'au %1.",

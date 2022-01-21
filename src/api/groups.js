@@ -171,10 +171,11 @@ groupsAPI.leave = async function (caller, data) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
-	const username = await user.getUserField(data.uid, 'username');
+	const { displayname } = await user.getUserFields(data.uid, ['username']);
+
 	const notification = await notifications.create({
 		type: 'group-leave',
-		bodyShort: `[[groups:membership.leave.notification_title, ${username}, ${groupName}]]`,
+		bodyShort: `[[groups:membership.leave.notification_title, ${displayname}, ${groupName}]]`,
 		nid: `group:${validator.escape(groupName)}:uid:${data.uid}:group-leave`,
 		path: `/groups/${slugify(groupName)}`,
 		from: data.uid,

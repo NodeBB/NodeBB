@@ -48,6 +48,8 @@
     "unsub.cta": "설정을 변경하려면 여기를 클릭하세요.",
     "unsubscribe": "구독 해제",
     "unsub.success": "지금부터 <strong>%1</strong> 의 메일을 수신하지 않습니다.",
+    "unsub.failure.title": "Unable to unsubscribe",
+    "unsub.failure.message": "Unfortunately, we were not able to unsubscribe you from the mailing list, as there was an issue with the link. However, you can alter your email preferences by going to <a href=\"%2\">your user settings</a>.<br /><br />(error: <code>%1</code>)",
     "banned.subject": "사용자는 %1에서 차단되었습니다.",
     "banned.text1": "사용자 %1는 %2에서 차단되었습니다.",
     "banned.text2": "차단은 %1까지 유효합니다.",
