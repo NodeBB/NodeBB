@@ -1,0 +1,34 @@
+post:
+  tags:
+    - users
+  summary: validate a user's email address
+  description: |
+    Marks the passed-in user's email as confirmed.
+    This route is only accessible to administrators with the `admin:users` privilege (or superadmins)
+  parameters:
+    - in: path
+      required: true
+      name: uid
+      schema:
+        type: number
+      description: A valid user id
+      example: 1
+    - in: path
+      required: true
+      name: email
+      schema:
+        type: string
+      description: A valid email address
+      example: test@example.org
+  responses:
+    '200':
+      description: successfully confirmed a user email
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
