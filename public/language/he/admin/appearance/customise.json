@@ -1,13 +1,13 @@
 {
 	"custom-css": "CSS/LESS מותאם אישית",
 	"custom-css.description": "הזן כאן  CSS / LESS משלך, שיוחלו לאחר כל הסגנונות האחרים.",
-	"custom-css.enable": "אפשר CSS / LESS מותאמים אישית",
+	"custom-css.enable": "Enable Custom CSS/LESS",
 
 	"custom-js": "Javascript מותאם אישית",
-	"custom-js.description": "הזן כאן javascript משלך. זה יבוצע לאחר טעינת הדף לחלוטין.",
-	"custom-js.enable": "אפשר Javascript מותאם אישית",
+	"custom-js.description": "Enter your own javascript here. It will be executed after the page is loaded completely.",
+	"custom-js.enable": "Enable Custom Javascript",
 
-	"custom-header": "HTML מותאם אישית",
+	"custom-header": "Custom Header",
 	"custom-header.description": "הזן כאן HTML משלך (לדוגמא תגיות מטא), שיתווספו לתגית ה-<code>head</code> של הפורום. ניתן להכניס סקריפטים, אך מומלץ להכניס אותם בכרטיסיית <a href=\"#custom-js\" data-toggle=\"tab\">Javascript מותאם אישית</a>.",
 	"custom-header.enable": "אפשר HTML מותאם אישית",
 

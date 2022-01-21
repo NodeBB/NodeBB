@@ -15,8 +15,8 @@
 	"min-rep-cover-picture": "Minimale Reputation um ein Deckbild hinzuzufügen",
 
 	"flags": "Merkmal-Einstellung",
-	"flags.limit-per-target": "Maximum number of times something can be flagged",
+	"flags.limit-per-target": "Maximale Häufigkeit, mit der etwas markiert werden kann",
 	"flags.limit-per-target-placeholder": "Standardwert: 0",
-	"flags.limit-per-target-help": "When a post or user is flagged multiple times, each additional flag is considered a &quot;report&quot; and added to the original flag. Set this option to a number other than zero to limit the number of reports an item can receive.",
+	"flags.limit-per-target-help": "Wenn ein Beitrag oder ein Benutzer mehrfach markiert wird, wird jede zusätzliche Markierung als &quot;Nachricht&quot; betrachtet und zur ursprünglichen Markierung hinzugezählt. Setzen Sie diese Option auf eine andere Zahl als Null, um die Anzahl der Nachricht, die ein Artikel erhalten kann, zu begrenzen.",
 	"flags.auto-resolve-on-ban": "Automatisches Beenden aller Tickets eines Benutzers, wenn dieser gesperrt wird"
 }

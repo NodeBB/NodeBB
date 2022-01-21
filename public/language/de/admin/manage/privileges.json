@@ -25,7 +25,7 @@
 	"access-topics": "Themenzutritt",
 	"create-topics": "Themen erstellen",
 	"reply-to-topics": "Auf Themen antworten",
-	"schedule-topics": "Schedule Topics",
+	"schedule-topics": "Geplante Themen",
 	"tag-topics": "Themen taggen",
 	"edit-posts": "Beiträge editieren",
 	"view-edit-history": "Beitragsänderungsverlauf ansehen",
@@ -51,13 +51,13 @@
 	"alert.saved": "Änderungen an Rechten gespeichert und angewendet",
 	"alert.confirm-discard": "Bist du sicher, dass du die Änderungen an den Rechten verwerfen möchtest?",
 	"alert.discarded": "Änderungen an Rechten verworfen",
-	"alert.confirm-copyToAll": "Are you sure you wish to apply this set of <strong>%1</strong> to <strong>all categories</strong>?",
+	"alert.confirm-copyToAll": "Bist Du dir sicher, dass Du die Rechte von <strong>%1</strong> auf <strong>alle Kategorien</strong> anwenden möchtest?",
 	"alert.confirm-copyToAllGroup": "Are you sure you wish to apply this group's set of <strong>%1</strong> to <strong>all categories</strong>?",
 	"alert.confirm-copyToChildren": "Are you sure you wish to apply this set of <strong>%1</strong> to <strong>all descendant (child) categories</strong>?",
 	"alert.confirm-copyToChildrenGroup": "Are you sure you wish to apply this group's set of <strong>%1</strong> to <strong>all descendant (child) categories</strong>?",
 	"alert.no-undo": "<em>Dieser Vorgang kann nicht rückgängig gemacht werden.</em>",
 	"alert.admin-warning": "Administratoren erhalten implizit alle Berechtigungen",
-  	"alert.copyPrivilegesFrom-title": "Select a category to copy from",
-  	"alert.copyPrivilegesFrom-warning": "This will copy <strong>%1</strong> from the selected category.",
-  	"alert.copyPrivilegesFromGroup-warning": "This will copy this group's set of <strong>%1</strong> from the selected category."
+  	"alert.copyPrivilegesFrom-title": "Wähle eine Kategorie aus, aus der kopiert werden soll",
+  	"alert.copyPrivilegesFrom-warning": "Dadurch wird <strong>%1</strong> aus der ausgewählten Kategorie kopiert.",
+  	"alert.copyPrivilegesFromGroup-warning": "Dadurch wird der <strong>%1</strong>-Satz dieser Gruppe aus der ausgewählten Kategorie kopiert."
 }
