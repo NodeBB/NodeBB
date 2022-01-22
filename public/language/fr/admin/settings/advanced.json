@@ -16,7 +16,7 @@
 	"headers.acam": "\nAccess-Control-Allow-Methods",
 	"headers.acah": "\nAccess-Control-Allow-Headers",
 	"headers.coep": "Cross-Origin-Embedder-Policy",
-	"headers.coep-help": "When enabled (default), will set the header to <code>require-corp</code>",
+	"headers.coep-help": "Lorsqu'il est activé (par défaut), définira l'en-tête sur <code>require-corp</code>",
 	"headers.corp": "Cross-Origin-Resource-Policy",
 	"hsts": "Strict Transport Security",
 	"hsts.enabled": "Activer HSTS  (recommandé)",
