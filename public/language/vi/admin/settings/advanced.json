@@ -16,7 +16,7 @@
 	"headers.acam": "Access-Control-Allow-Methods",
 	"headers.acah": "Access-Control-Allow-Headers",
 	"headers.coep": "Cross-Origin-Embedder-Policy",
-	"headers.coep-help": "When enabled (default), will set the header to <code>require-corp</code>",
+	"headers.coep-help": "Khi được bật (mặc định), sẽ đặt tiêu đề thành <code>require-corp</code>",
 	"headers.corp": "Cross-Origin-Resource-Policy",
 	"hsts": "Bảo Vệ Truyền Tải Nghiêm Ngặt",
 	"hsts.enabled": "Đã bật HSTS (đề nghị)",
