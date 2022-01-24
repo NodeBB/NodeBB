@@ -25,6 +25,10 @@ define('forum/account/edit', [
 			});
 		});
 
+		if (ajaxify.data.groupTitleArray.length === 1 && ajaxify.data.groupTitleArray[0] === '') {
+			$('#groupTitle option[value=""]').attr('selected', true);
+		}
+
 		handleImageChange();
 		handleAccountDelete();
 		handleEmailConfirm();
@@ -36,6 +40,7 @@ define('forum/account/edit', [
 	function updateProfile() {
 		const userData = $('form[component="profile/edit/form"]').serializeObject();
 		userData.uid = ajaxify.data.uid;
+		userData.groupTitle = userData.groupTitle || '';
 		userData.groupTitle = JSON.stringify(
 			Array.isArray(userData.groupTitle) ? userData.groupTitle : [userData.groupTitle]
 		);
