@@ -60,7 +60,7 @@
         "express-session": "1.17.2",
         "express-useragent": "1.0.15",
         "graceful-fs": "4.2.9",
-        "helmet": "5.0.1",
+        "helmet": "5.0.2",
         "html-to-text": "8.1.0",
         "ipaddr.js": "2.0.1",
         "jquery": "3.6.0",
