@@ -11,7 +11,8 @@ define('forum/topic/postTools', [
 	'bootbox',
 	'alerts',
 	'hooks',
-], function (share, navigator, components, translator, votes, api, bootbox, alerts, hooks) {
+	'slugify',
+], function (share, navigator, components, translator, votes, api, bootbox, alerts, hooks, slugify) {
 	const PostTools = {};
 
 	let staleReplyAnyway = false;
@@ -374,7 +375,7 @@ define('forum/topic/postTools', [
 		}
 
 		if (post.length) {
-			slug = post.attr('data-userslug');
+			slug = slugify(post.attr('data-username'), true);
 			if (!slug) {
 				if (post.attr('data-uid') !== '0') {
 					slug = '[[global:former_user]]';
