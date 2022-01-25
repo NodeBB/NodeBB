@@ -147,7 +147,7 @@
     "digestHour": 17,
     "passwordExpiryDays": 0,
     "cross-origin-embedder-policy": 0,
-    "cross-origin-resource-policy": "cross-origin",
+    "cross-origin-resource-policy": "same-origin",
     "hsts-maxage": 31536000,
     "hsts-subdomains": 0,
     "hsts-preload": 0,
