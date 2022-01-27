@@ -200,7 +200,7 @@ Users.invite = async (req, res) => {
 		return helpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
 	}
 
-	const inviteGroups = await groups.getUserInviteGroups(req.uid);
+	const inviteGroups = (await groups.getUserInviteGroups(req.uid)).map(group => group.name);
 	const cannotInvite = groupsToJoin.some(group => !inviteGroups.includes(group));
 	if (groupsToJoin.length > 0 && cannotInvite) {
 		return helpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
@@ -231,7 +231,7 @@ Users.getInviteGroups = async function (req, res) {
 	}
 
 	const userInviteGroups = await groups.getUserInviteGroups(req.params.uid);
-	return helpers.formatApiResponse(200, res, userInviteGroups);
+	return helpers.formatApiResponse(200, res, userInviteGroups.map(group => group.displayName));
 };
 
 Users.listEmails = async (req, res) => {
