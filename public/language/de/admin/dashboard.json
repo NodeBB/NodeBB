@@ -56,8 +56,8 @@
 	"active-users.total": "Gesamt",
 	"active-users.connections": "Verbindungen",
 
-	"guest-registered-users": "Guest vs Registered Users",
-	"guest": "Guest",
+	"guest-registered-users": "Gast vs. registrierte Benutzer",
+	"guest": "Gast",
 	"registered": "Registriert",
 
 	"user-presence": "Benutzerpräsenz",
@@ -68,7 +68,7 @@
 	"unread": "Ungelesen",
 
 	"high-presence-topics": "Meist besuchte Themen",
-	"popular-searches": "Popular Searches",
+	"popular-searches": "Beliebte Suchanfragen",
 
 	"graphs.page-views": "Seitenaufrufe",
 	"graphs.page-views-registered": "Registrierte Seitenaufrufe",
@@ -76,14 +76,14 @@
 	"graphs.page-views-bot": "Seitenaufrufe von Bots",
 	"graphs.unique-visitors": "Verschiedene Besucher",
 	"graphs.registered-users": "Registrierte Benutzer",
-	"graphs.guest-users": "Guest Users",
+	"graphs.guest-users": "Gast-Benutzer",
 	"last-restarted-by": "Zuletzt Neugestartet von: ",
 	"no-users-browsing": "Keine aktiven Benutzer",
 
 	"back-to-dashboard": "Zurück zur Übersicht",
 	"details.no-users": "Keine Benutzer sind im gewählten Zeitraum beigetreten",
 	"details.no-topics": "Keine Themen wurden im gewählten Zeitraum beigetreten",
-	"details.no-searches": "No searches have been made yet",
+	"details.no-searches": "Es wurden noch keine Suchen durchgeführt",
 	"details.no-logins": "Keine Logins wurden im gewählten Zeitraum festgestellt",
 	"details.logins-static": "NodeBB speichert Sitzungsdaten nur für %1 Tage, deshalb zeigt die untere Tabelle nur die neuesten, aktiven Sitzungen",
 	"details.logins-login-time": "Anmelde Zeit"
