@@ -194,7 +194,6 @@ async function pushToUids(uids, notification) {
 		}
 		body = posts.relativeToAbsolute(body, posts.urlRegex);
 		body = posts.relativeToAbsolute(body, posts.imgRegex);
-		let errorLogged = false;
 		await async.eachLimit(uids, 3, async (uid) => {
 			await emailer.send('notification', uid, {
 				path: notification.path,
@@ -204,11 +203,6 @@ async function pushToUids(uids, notification) {
 				body: body,
 				notification: notification,
 				showUnsubscribe: true,
-			}).catch((err) => {
-				if (!errorLogged) {
-					winston.error(`[emailer.send] ${err.stack}`);
-					errorLogged = true;
-				}
 			});
 		});
 	}
