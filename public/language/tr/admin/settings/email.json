@@ -43,5 +43,6 @@
 	"include-unverified-emails": "E-postalarını onaylamayan alıcılara onay e-postası gönderin",
 	"include-unverified-warning": "Varsayılan olarak, hesaplarıyla ilişkili e-postaları olan kullanıcılar (Sosyal Login) zaten doğrulanmıştır, ancak durumun böyle olmadığı durumlar vardır (ör. Riski size ait olmak üzere bu ayarı etkinleştirin &ndash; doğrulanmamış adreslere e-posta göndermek, bölgesel istenmeyen posta önleme <strong>yasalarının ihlali olabilir.</strong>",
 	"prompt": "Kullanıcılardan e-postalarını girmelerini veya onaylamalarını isteyin",
-	"prompt-help": "Bir kullanıcının e-posta seti yoksa veya e-postası onaylanmadıysa ekranda bir uyarı gösterilir."
+	"prompt-help": "Bir kullanıcının e-posta seti yoksa veya e-postası onaylanmadıysa ekranda bir uyarı gösterilir.",
+	"sendEmailToBanned": "Send emails to users even if they have been banned"
 }
