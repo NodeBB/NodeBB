@@ -141,6 +141,7 @@
     "sendValidationEmail": 1,
     "includeUnverifiedEmails": 0,
     "emailPrompt": 1,
+    "sendEmailToBanned": 0,
     "requireEmailAddress": 0,
     "inviteExpiration": 7,
     "dailyDigestFreq": "off",

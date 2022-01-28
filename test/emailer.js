@@ -8,6 +8,8 @@ const path = require('path');
 const db = require('./mocks/databasemock');
 const Plugins = require('../src/plugins');
 const Emailer = require('../src/emailer');
+const user = require('../src/user');
+const meta = require('../src/meta');
 const Meta = require('../src/meta');
 
 describe('emailer', () => {
@@ -137,5 +139,43 @@ describe('emailer', () => {
 			'email:smtpTransport:enabled': '0',
 			'email:custom:test': '',
 		}, done);
+	});
+
+	describe('emailer.send()', () => {
+		let senderUid;
+		let recipientUid;
+
+		before(async () => {
+			Plugins.hooks.register('emailer-test', {
+				hook: 'filter:email.send',
+				method: async () => {}, // noop
+			});
+
+			senderUid = await user.create({ username: 'sender' });
+			recipientUid = await user.create({ username: 'recipient', email: 'test@example.org' });
+			await user.email.confirmByUid(recipientUid);
+		});
+
+		it('should return false on attempted email send to a banned user', async () => {
+			await user.bans.ban(recipientUid);
+			const success = await Emailer.send('test', recipientUid, {});
+			assert.strictEqual(success, false);
+		});
+
+		it('should return true if the template is "banned"', async () => {
+			const success = await Emailer.send('banned', recipientUid, {});
+			assert.strictEqual(success, true);
+		});
+
+		it('should return true if system settings allow sending to banned users', async () => {
+			meta.config.sendEmailToBanned = 1;
+			const success = await Emailer.send('test', recipientUid, {});
+			assert.strictEqual(success, true);
+			meta.config.sendEmailToBanned = 0;
+		});
+
+		after(() => {
+			Plugins.hooks.unregister('emailer-test', 'filter:email.send');
+		});
 	});
 });
