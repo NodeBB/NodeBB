@@ -45,7 +45,7 @@ describe('emailer', () => {
 
 	// TODO: test sendmail here at some point
 
-	it('plugin hook should work', (done) => {
+	it('plugin hook should work', async () => {
 		const error = new Error();
 
 		Plugins.hooks.register('emailer-test', {
@@ -59,12 +59,10 @@ describe('emailer', () => {
 			},
 		});
 
-		Emailer.sendToEmail(template, email, language, params, (err) => {
-			assert.equal(err, error);
+		const success = await Emailer.sendToEmail(template, email, language, params);
+		assert.strictEqual(success, false);
 
-			Plugins.hooks.unregister('emailer-test', 'filter:email.send');
-			done();
-		});
+		Plugins.hooks.unregister('emailer-test', 'filter:email.send');
 	});
 
 	it('should build custom template on config change', (done) => {

@@ -230,7 +230,7 @@ Emailer.send = async (template, uid, params) => {
 		if (process.env.NODE_ENV === 'development') {
 			winston.warn(`uid : ${uid} has no email, not sending "${template}" email.`);
 		}
-		return;
+		return false;
 	}
 
 	const allowedTpls = ['verify-email', 'welcome', 'registration_accepted', 'reset', 'reset_notify'];
@@ -238,7 +238,7 @@ Emailer.send = async (template, uid, params) => {
 		if (process.env.NODE_ENV === 'development') {
 			winston.warn(`uid : ${uid} (${userData.email}) has not confirmed email, not sending "${template}" email.`);
 		}
-		return;
+		return false;
 	}
 	const userSettings = await User.getSettings(uid);
 	// Combined passed-in payload with default values
@@ -254,9 +254,10 @@ Emailer.send = async (template, uid, params) => {
 	});
 
 	if (result.cancel) {
-		return;
+		return false;
 	}
-	await Emailer.sendToEmail(template, userData.email, userSettings.userLang, params);
+
+	return Emailer.sendToEmail(template, userData.email, userSettings.userLang, params);
 };
 
 Emailer.sendToEmail = async (template, email, language, params) => {
@@ -331,13 +332,17 @@ Emailer.sendToEmail = async (template, email, language, params) => {
 		} else {
 			await Emailer.sendViaFallback(data);
 		}
+
+		return true;
 	} catch (err) {
 		if (err.code === 'ENOENT' && usingFallback) {
 			Emailer.fallbackNotFound = true;
-			throw new Error('[[error:sendmail-not-found]]');
+			winston.error(`[emailer/sendToEmail] ${await translator.translate('[[error:sendmail-not-found]]')}`);
 		} else {
-			throw err;
+			winston.error(`[emailer/sendToEmail] ${err.message || err.code || 'Unknown error while sending email.'}`);
 		}
+
+		return false;
 	}
 };
 
@@ -352,6 +357,7 @@ Emailer.sendViaFallback = async (data) => {
 
 	winston.verbose(`[emailer] Sending email to uid ${data.uid} (${data.to})`);
 	await Emailer.fallbackTransport.sendMail(data);
+	return true;
 };
 
 Emailer.renderAndTranslate = async (template, params, lang) => {
