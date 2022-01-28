@@ -144,39 +144,52 @@ describe('emailer', () => {
 	});
 
 	describe('emailer.send()', () => {
-		let senderUid;
 		let recipientUid;
 
 		before(async () => {
-			Plugins.hooks.register('emailer-test', {
-				hook: 'filter:email.send',
-				method: async () => {}, // noop
-			});
-
-			senderUid = await user.create({ username: 'sender' });
 			recipientUid = await user.create({ username: 'recipient', email: 'test@example.org' });
 			await user.email.confirmByUid(recipientUid);
 		});
 
-		it('should return false on attempted email send to a banned user', async () => {
+		it('should not send email to a banned user', async () => {
+			Plugins.hooks.register('emailer-test', {
+				hook: 'filter:email.send',
+				method: async () => {
+					assert(false); // if thrown, email was sent
+				},
+			});
+
 			await user.bans.ban(recipientUid);
-			const success = await Emailer.send('test', recipientUid, {});
-			assert.strictEqual(success, false);
+			await Emailer.send('test', recipientUid, {});
+
+			Plugins.hooks.unregister('emailer-test', 'filter:email.send');
 		});
 
 		it('should return true if the template is "banned"', async () => {
-			const success = await Emailer.send('banned', recipientUid, {});
-			assert.strictEqual(success, true);
+			Plugins.hooks.register('emailer-test', {
+				hook: 'filter:email.send',
+				method: async () => {
+					assert(true); // if thrown, email was sent
+				},
+			});
+
+			await Emailer.send('banned', recipientUid, {});
+			Plugins.hooks.unregister('emailer-test', 'filter:email.send');
 		});
 
 		it('should return true if system settings allow sending to banned users', async () => {
-			meta.config.sendEmailToBanned = 1;
-			const success = await Emailer.send('test', recipientUid, {});
-			assert.strictEqual(success, true);
-			meta.config.sendEmailToBanned = 0;
-		});
+			Plugins.hooks.register('emailer-test', {
+				hook: 'filter:email.send',
+				method: async () => {
+					assert(true); // if thrown, email was sent
+				},
+			});
 
-		after(() => {
+			meta.config.sendEmailToBanned = 1;
+			await Emailer.send('test', recipientUid, {});
+			meta.config.sendEmailToBanned = 0;
+			await user.bans.unban(recipientUid);
+
 			Plugins.hooks.unregister('emailer-test', 'filter:email.send');
 		});
 	});

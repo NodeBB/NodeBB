@@ -230,7 +230,7 @@ Emailer.send = async (template, uid, params) => {
 	if (!meta.config.sendEmailToBanned && template !== 'banned') {
 		if (userData.banned) {
 			winston.warn(`[emailer/send] User ${userData.username} (uid: ${uid}) is banned; not sending email due to system config.`);
-			return false;
+			return;
 		}
 	}
 
