@@ -49,22 +49,23 @@ describe('emailer', () => {
 
 	it('plugin hook should work', (done) => {
 		const error = new Error();
+		const method = function (data, next) {
+			assert(data);
+			assert.equal(data.to, email);
+			assert.equal(data.subject, `[NodeBB] ${params.subject}`);
+
+			next(error);
+		};
 
 		Plugins.hooks.register('emailer-test', {
 			hook: 'filter:email.send',
-			method: function (data, next) {
-				assert(data);
-				assert.equal(data.to, email);
-				assert.equal(data.subject, `[NodeBB] ${params.subject}`);
-
-				next(error);
-			},
+			method,
 		});
 
 		Emailer.sendToEmail(template, email, language, params, (err) => {
 			assert.equal(err, error);
 
-			Plugins.hooks.unregister('emailer-test', 'filter:email.send');
+			Plugins.hooks.unregister('emailer-test', 'filter:email.send', method);
 			done();
 		});
 	});
@@ -152,37 +153,40 @@ describe('emailer', () => {
 		});
 
 		it('should not send email to a banned user', async () => {
+			const method = async () => {
+				assert(false); // if thrown, email was sent
+			};
 			Plugins.hooks.register('emailer-test', {
 				hook: 'filter:email.send',
-				method: async () => {
-					assert(false); // if thrown, email was sent
-				},
+				method,
 			});
 
 			await user.bans.ban(recipientUid);
 			await Emailer.send('test', recipientUid, {});
 
-			Plugins.hooks.unregister('emailer-test', 'filter:email.send');
+			Plugins.hooks.unregister('emailer-test', 'filter:email.send', method);
 		});
 
 		it('should return true if the template is "banned"', async () => {
+			const method = async () => {
+				assert(true); // if thrown, email was sent
+			};
 			Plugins.hooks.register('emailer-test', {
 				hook: 'filter:email.send',
-				method: async () => {
-					assert(true); // if thrown, email was sent
-				},
+				method,
 			});
 
 			await Emailer.send('banned', recipientUid, {});
-			Plugins.hooks.unregister('emailer-test', 'filter:email.send');
+			Plugins.hooks.unregister('emailer-test', 'filter:email.send', method);
 		});
 
 		it('should return true if system settings allow sending to banned users', async () => {
+			const method = async () => {
+				assert(true); // if thrown, email was sent
+			};
 			Plugins.hooks.register('emailer-test', {
 				hook: 'filter:email.send',
-				method: async () => {
-					assert(true); // if thrown, email was sent
-				},
+				method,
 			});
 
 			meta.config.sendEmailToBanned = 1;
@@ -190,7 +194,7 @@ describe('emailer', () => {
 			meta.config.sendEmailToBanned = 0;
 			await user.bans.unban(recipientUid);
 
-			Plugins.hooks.unregister('emailer-test', 'filter:email.send');
+			Plugins.hooks.unregister('emailer-test', 'filter:email.send', method);
 		});
 	});
 });
