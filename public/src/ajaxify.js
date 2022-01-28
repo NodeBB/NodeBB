@@ -344,7 +344,7 @@ ajaxify = window.ajaxify || {};
 			// Require and parse modules
 			let outstanding = data.scripts.length;
 
-			data.scripts.map(function (script) {
+			const scripts = data.scripts.map(function (script) {
 				if (typeof script === 'function') {
 					return function (next) {
 						script();
@@ -369,14 +369,20 @@ ajaxify = window.ajaxify || {};
 					};
 				}
 				return null;
-			}).filter(Boolean).forEach(function (fn) {
-				fn(function () {
-					outstanding -= 1;
-					if (outstanding === 0) {
-						callback();
-					}
+			}).filter(Boolean);
+
+			if (scripts.length) {
+				scripts.forEach(function (fn) {
+					fn(function () {
+						outstanding -= 1;
+						if (outstanding === 0) {
+							callback();
+						}
+					});
 				});
-			});
+			} else {
+				callback();
+			}
 		});
 	};
 
