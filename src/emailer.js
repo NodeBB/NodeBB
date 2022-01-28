@@ -219,7 +219,6 @@ Emailer.send = async (template, uid, params) => {
 	}
 
 	let userData = await User.getUserFields(uid, ['email', 'username', 'email:confirmed', 'banned']);
-	userData.banned = true;
 
 	// 'welcome' and 'verify-email' explicitly used passed-in email address
 	if (['welcome', 'verify-email'].includes(template)) {
