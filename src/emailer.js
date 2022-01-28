@@ -343,20 +343,12 @@ Emailer.sendToEmail = async (template, email, language, params) => {
 
 		return true;
 	} catch (err) {
-		if (Emailer._emailFailThrottle) {
-			return false;
-		}
-
 		if (err.code === 'ENOENT' && usingFallback) {
 			Emailer.fallbackNotFound = true;
 			winston.error(`[emailer/sendToEmail] ${await translator.translate('[[error:sendmail-not-found]]')}`);
 		} else {
 			winston.error(`[emailer/sendToEmail] ${err.message || err.code || 'Unknown error while sending email.'}`);
 		}
-
-		Emailer._emailFailThrottle = setTimeout(() => {
-			delete Emailer._emailFailThrottle;
-		}, 1000 * 60 * 5); // 5 minutes
 
 		return false;
 	}

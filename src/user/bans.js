@@ -58,7 +58,7 @@ module.exports = function (User) {
 			until: until ? (new Date(until)).toUTCString().replace(/,/g, '\\,') : false,
 			reason: reason,
 		};
-		await emailer.send('banned', uid, data);
+		await emailer.send('banned', uid, data).catch(err => winston.error(`[emailer.send] ${err.stack}`));
 
 		return banData;
 	};
