@@ -87,15 +87,16 @@ async function filesToData(currentDir, files) {
 }
 
 async function getFileData(currentDir, file) {
-	const stat = await fs.promises.stat(path.join(currentDir, file));
+	const pathToFile = path.join(currentDir, file);
+	const stat = await fs.promises.stat(pathToFile);
 	let filesInDir = [];
 	if (stat.isDirectory()) {
-		filesInDir = await fs.promises.readdir(path.join(currentDir, file));
+		filesInDir = await fs.promises.readdir(pathToFile);
 	}
 	const url = `${nconf.get('upload_url') + currentDir.replace(nconf.get('upload_path'), '')}/${file}`;
 	return {
 		name: file,
-		path: path.join(currentDir, file).replace(nconf.get('upload_path'), ''),
+		path: pathToFile.replace(path.join(nconf.get('upload_path'), '/'), ''),
 		url: url,
 		fileCount: Math.max(0, filesInDir.length - 1), // ignore .gitignore
 		size: stat.size,
