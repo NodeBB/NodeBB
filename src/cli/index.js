@@ -4,7 +4,6 @@
 
 const fs = require('fs');
 const path = require('path');
-const chalk = require('chalk');
 
 require('../../require-main');
 
@@ -23,8 +22,9 @@ try {
 		packageInstall.preserveExtraneousPlugins();
 
 		try {
-			fs.accessSync(path.join(paths.nodeModules, 'colors/package.json'), fs.constants.R_OK);
+			fs.accessSync(path.join(paths.nodeModules, 'chalk/package.json'), fs.constants.R_OK);
 
+			const chalk = require('chalk');
 			console.log(chalk.green('OK'));
 		} catch (e) {
 			console.log('OK');
@@ -52,7 +52,7 @@ try {
 	checkVersion('nconf');
 	checkVersion('async');
 	checkVersion('commander');
-	checkVersion('colors');
+	checkVersion('chalk');
 } catch (e) {
 	if (['ENOENT', 'DEP_WRONG_VERSION', 'MODULE_NOT_FOUND'].includes(e.code)) {
 		console.warn('Dependencies outdated or not yet installed.');
@@ -61,12 +61,14 @@ try {
 		packageInstall.updatePackageFile();
 		packageInstall.installAll();
 
+		const chalk = require('chalk');
 		console.log(`${chalk.green('OK')}\n`);
 	} else {
 		throw e;
 	}
 }
 
+const chalk = require('chalk');
 const nconf = require('nconf');
 const { program } = require('commander');
 const yargs = require('yargs');
