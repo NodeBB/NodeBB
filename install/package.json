@@ -106,7 +106,7 @@
         "pg": "8.7.1",
         "pg-cursor": "2.7.1",
         "postcss": "8.4.6",
-        "postcss-clean": "1.2.0",
+        "postcss-clean": "1.2.2",
         "prompt": "1.2.1",
         "ioredis": "4.28.3",
         "request": "2.88.2",
