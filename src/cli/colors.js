@@ -24,6 +24,11 @@ function humanReadableArgName(arg) {
 	return arg.required ? `<${nameOutput}>` : `[${nameOutput}]`;
 }
 
+function getControlCharacterSpaces(term) {
+	const matches = term.match(/.\[\d+m/g);
+	return matches ? matches.length * 5 : 0;
+}
+
 // get depth of command
 // 0 = top, 1 = subcommand of top, etc
 Command.prototype.depth = function () {
@@ -78,10 +83,22 @@ module.exports = {
 		chalk[colors[depth].arg](args ? ` ${args}` : '');
 	},
 	longestOptionTermLength(cmd, helper) {
-		return Help.prototype.longestOptionTermLength.call(this, cmd, helper) + chalk.red('').length;
+		return helper.visibleOptions(cmd).reduce((max, option) => Math.max(
+			max,
+			helper.optionTerm(option).length - getControlCharacterSpaces(helper.optionTerm(option))
+		), 0);
+	},
+	longestSubcommandTermLength(cmd, helper) {
+		return helper.visibleCommands(cmd).reduce((max, command) => Math.max(
+			max,
+			helper.subcommandTerm(command).length - getControlCharacterSpaces(helper.subcommandTerm(command))
+		), 0);
 	},
 	longestArgumentTermLength(cmd, helper) {
-		return Help.prototype.longestArgumentTermLength.call(this, cmd, helper) + chalk.red('').length;
+		return helper.visibleArguments(cmd).reduce((max, argument) => Math.max(
+			max,
+			helper.argumentTerm(argument).length - getControlCharacterSpaces(helper.argumentTerm(argument))
+		), 0);
 	},
 	formatHelp(cmd, helper) {
 		const depth = cmd.depth();
@@ -92,8 +109,7 @@ module.exports = {
 		const itemSeparatorWidth = 2; // between term and description
 		function formatItem(term, description) {
 			if (description) {
-				const controlCharacterSpaces = ' '.repeat(term.match(/.\[\d+m/g).length * 5);
-				const fullText = `${term.padEnd(termWidth + itemSeparatorWidth)}${controlCharacterSpaces}${description}`;
+				const fullText = `${term.padEnd(termWidth + itemSeparatorWidth)}${' '.repeat(getControlCharacterSpaces(term))}${description}`;
 				return helper.wrap(fullText, helpWidth - itemIndentWidth, termWidth + itemSeparatorWidth);
 			}
 			return term;
