@@ -74,8 +74,8 @@ module.exports = {
 		return chalk[colors[depth].command](cmd._name + (
 			cmd._aliases[0] ? `|${cmd._aliases[0]}` : ''
 		)) +
-      chalk[colors[depth].option](cmd.options.length ? ' [options]' : '') + // simplistic check for non-help option
-      chalk[colors[depth].arg](args ? ` ${args}` : '');
+		chalk[colors[depth].option](cmd.options.length ? ' [options]' : '') + // simplistic check for non-help option
+		chalk[colors[depth].arg](args ? ` ${args}` : '');
 	},
 	longestOptionTermLength(cmd, helper) {
 		return Help.prototype.longestOptionTermLength.call(this, cmd, helper) + chalk.red('').length;
@@ -92,7 +92,8 @@ module.exports = {
 		const itemSeparatorWidth = 2; // between term and description
 		function formatItem(term, description) {
 			if (description) {
-				const fullText = `${term.padEnd(termWidth + itemSeparatorWidth)}${description}`;
+				const controlCharacterSpaces = ' '.repeat(term.match(/.\[\d+m/g).length * 5);
+				const fullText = `${term.padEnd(termWidth + itemSeparatorWidth)}${controlCharacterSpaces}${description}`;
 				return helper.wrap(fullText, helpWidth - itemIndentWidth, termWidth + itemSeparatorWidth);
 			}
 			return term;
