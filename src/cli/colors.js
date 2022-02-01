@@ -4,7 +4,7 @@
 // to include color styling in the output
 // so the CLI looks nice
 
-const { Command, Help } = require('commander');
+const { Command } = require('commander');
 const chalk = require('chalk');
 
 const colors = [
@@ -108,8 +108,9 @@ module.exports = {
 		const itemIndentWidth = 2;
 		const itemSeparatorWidth = 2; // between term and description
 		function formatItem(term, description) {
+			const padding = ' '.repeat((termWidth + itemSeparatorWidth) - (term.length - getControlCharacterSpaces(term)));
 			if (description) {
-				const fullText = `${term.padEnd(termWidth + itemSeparatorWidth)}${' '.repeat(getControlCharacterSpaces(term))}${description}`;
+				const fullText = `${term}${padding}${description}`;
 				return helper.wrap(fullText, helpWidth - itemIndentWidth, termWidth + itemSeparatorWidth);
 			}
 			return term;
