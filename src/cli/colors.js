@@ -4,7 +4,8 @@
 // to include color styling in the output
 // so the CLI looks nice
 
-const { Command, Help } = require('commander');
+const { Command } = require('commander');
+const chalk = require('chalk');
 
 const colors = [
 	// depth = 0, top-level command
@@ -21,6 +22,11 @@ function humanReadableArgName(arg) {
 	const nameOutput = arg.name + (arg.variadic === true ? '...' : '');
 
 	return arg.required ? `<${nameOutput}>` : `[${nameOutput}]`;
+}
+
+function getControlCharacterSpaces(term) {
+	const matches = term.match(/.\[\d+m/g);
+	return matches ? matches.length * 5 : 0;
 }
 
 // get depth of command
@@ -49,38 +55,50 @@ module.exports = {
 		let parentCmd = cmd.parent;
 		let parentDepth = depth - 1;
 		while (parentCmd) {
-			parentCmdNames = `${parentCmd.name()[colors[parentDepth].command]} ${parentCmdNames}`;
+			parentCmdNames = `${chalk[colors[parentDepth].command](parentCmd.name())} ${parentCmdNames}`;
 
 			parentCmd = parentCmd.parent;
 			parentDepth -= 1;
 		}
 
 		// from Command.prototype.usage()
-		const args = cmd._args.map(arg => humanReadableArgName(arg)[colors[depth].arg]);
+		const args = cmd._args.map(arg => chalk[colors[depth].arg](humanReadableArgName(arg)));
 		const cmdUsage = [].concat(
-			(cmd.options.length || cmd._hasHelpOption ? '[options]'[colors[depth].option] : []),
-			(cmd.commands.length ? '[command]'[colors[depth + 1].command] : []),
+			(cmd.options.length || cmd._hasHelpOption ? chalk[colors[depth].option]('[options]') : []),
+			(cmd.commands.length ? chalk[colors[depth + 1].command]('[command]') : []),
 			(cmd._args.length ? args : [])
 		).join(' ');
 
-		return `${parentCmdNames}${cmdName[colors[depth].command]} ${cmdUsage}`;
+		return `${parentCmdNames}${chalk[colors[depth].command](cmdName)} ${cmdUsage}`;
 	},
 	subcommandTerm(cmd) {
 		const depth = cmd.depth();
 
 		// Legacy. Ignores custom usage string, and nested commands.
 		const args = cmd._args.map(arg => humanReadableArgName(arg)).join(' ');
-		return (cmd._name + (
+		return chalk[colors[depth].command](cmd._name + (
 			cmd._aliases[0] ? `|${cmd._aliases[0]}` : ''
-		))[colors[depth].command] +
-      (cmd.options.length ? ' [options]' : '')[colors[depth].option] + // simplistic check for non-help option
-      (args ? ` ${args}` : '')[colors[depth].arg];
+		)) +
+		chalk[colors[depth].option](cmd.options.length ? ' [options]' : '') + // simplistic check for non-help option
+		chalk[colors[depth].arg](args ? ` ${args}` : '');
 	},
 	longestOptionTermLength(cmd, helper) {
-		return Help.prototype.longestOptionTermLength.call(this, cmd, helper) + ''.red.length;
+		return helper.visibleOptions(cmd).reduce((max, option) => Math.max(
+			max,
+			helper.optionTerm(option).length - getControlCharacterSpaces(helper.optionTerm(option))
+		), 0);
+	},
+	longestSubcommandTermLength(cmd, helper) {
+		return helper.visibleCommands(cmd).reduce((max, command) => Math.max(
+			max,
+			helper.subcommandTerm(command).length - getControlCharacterSpaces(helper.subcommandTerm(command))
+		), 0);
 	},
 	longestArgumentTermLength(cmd, helper) {
-		return Help.prototype.longestArgumentTermLength.call(this, cmd, helper) + ''.red.length;
+		return helper.visibleArguments(cmd).reduce((max, argument) => Math.max(
+			max,
+			helper.argumentTerm(argument).length - getControlCharacterSpaces(helper.argumentTerm(argument))
+		), 0);
 	},
 	formatHelp(cmd, helper) {
 		const depth = cmd.depth();
@@ -90,8 +108,9 @@ module.exports = {
 		const itemIndentWidth = 2;
 		const itemSeparatorWidth = 2; // between term and description
 		function formatItem(term, description) {
+			const padding = ' '.repeat((termWidth + itemSeparatorWidth) - (term.length - getControlCharacterSpaces(term)));
 			if (description) {
-				const fullText = `${term.padEnd(termWidth + itemSeparatorWidth)}${description}`;
+				const fullText = `${term}${padding}${description}`;
 				return helper.wrap(fullText, helpWidth - itemIndentWidth, termWidth + itemSeparatorWidth);
 			}
 			return term;
@@ -111,7 +130,7 @@ module.exports = {
 
 		// Arguments
 		const argumentList = helper.visibleArguments(cmd).map(argument => formatItem(
-			argument.term[colors[depth].arg],
+			chalk[colors[depth].arg](argument.term),
 			argument.description
 		));
 		if (argumentList.length > 0) {
@@ -120,7 +139,7 @@ module.exports = {
 
 		// Options
 		const optionList = helper.visibleOptions(cmd).map(option => formatItem(
-			helper.optionTerm(option)[colors[depth].option],
+			chalk[colors[depth].option](helper.optionTerm(option)),
 			helper.optionDescription(option)
 		));
 		if (optionList.length > 0) {
