@@ -53,15 +53,44 @@ pkgInstall.supportedPackageManager = [
 ];
 
 pkgInstall.getPackageManager = () => {
-	// Use this method if you can't reliably require('nconf') directly
 	try {
-		// Quick & dirty nconf setup
 		fs.accessSync(path.join(paths.nodeModules, 'nconf/package.json'), fs.constants.R_OK);
 		const nconf = require('nconf');
-		const configFile = path.resolve(__dirname, '../../', nconf.any(['config', 'CONFIG']) || 'config.json');
-		nconf.env().file({ // not sure why adding .argv() causes the process to terminate
-			file: configFile,
-		});
+		if (!Object.keys(nconf.stores).length) {
+			// Quick & dirty nconf setup for when you cannot rely on nconf having been required already
+			const configFile = path.resolve(__dirname, '../../', nconf.any(['config', 'CONFIG']) || 'config.json');
+			nconf.env().file({ // not sure why adding .argv() causes the process to terminate
+				file: configFile,
+			});
+		}
+
+		if (nconf.get('package_manager') && !pkgInstall.supportedPackageManager.includes(nconf.get('package_manager'))) {
+			nconf.clear('package_manager');
+		}
+
+		if (!nconf.get('package_manager')) {
+			// Best guess based on lockfile detection
+			try {
+				// use npm if lockfile present
+				fs.accessSync(path.resolve(__dirname, '../../package-lock.json'), fs.constants.R_OK);
+			} catch (e) {
+				nconf.set('package_manager', [
+					// no cnpm detection as it uses same lockfile as npm
+					'yarn.lock', 'pnpm-lock.yaml',
+				].reduce((result, cur) => {
+					if (result) {
+						return result;
+					}
+
+					try {
+						fs.accessSync(path.resolve(__dirname, `../../${cur}`), fs.constants.R_OK);
+						return cur.slice(0, 4);
+					} catch (e) {
+						return result;
+					}
+				}, undefined));
+			}
+		}
 
 		return nconf.get('package_manager') || 'npm';
 	} catch (e) {
