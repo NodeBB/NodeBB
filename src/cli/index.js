@@ -270,8 +270,9 @@ program
 		console.log(`\n${[
 			'When running particular upgrade scripts, options are ignored.',
 			'By default all options are enabled. Passing any options disables that default.',
-			`Only package and dependency updates: ${chalk.yellow('./nodebb upgrade -mi')}`,
-			`Only database update: ${chalk.yellow('./nodebb upgrade -s')}`,
+			'\nExamples:',
+			`  Only package and dependency updates: ${chalk.yellow('./nodebb upgrade -mi')}`,
+			`  Only database update: ${chalk.yellow('./nodebb upgrade -s')}`,
 		].join('\n')}`);
 	})
 	.action((scripts, options) => {
