@@ -6,7 +6,18 @@ const cproc = require('child_process');
 
 const { paths, pluginNamePattern } = require('../constants');
 
-function updatePackageFile() {
+const pkgInstall = module.exports;
+
+function sortDependencies(dependencies) {
+	return Object.entries(dependencies)
+		.sort((a, b) => (a < b ? -1 : 1))
+		.reduce((memo, pkg) => {
+			memo[pkg[0]] = pkg[1];
+			return memo;
+		}, {});
+}
+
+pkgInstall.updatePackageFile = () => {
 	let oldPackageContents = {};
 
 	try {
@@ -32,45 +43,58 @@ function updatePackageFile() {
 	const packageContents = { ...oldPackageContents, ...defaultPackageContents, dependencies: dependencies };
 
 	fs.writeFileSync(paths.currentPackage, JSON.stringify(packageContents, null, 2));
-}
+};
 
-exports.updatePackageFile = updatePackageFile;
-
-exports.supportedPackageManager = [
+pkgInstall.supportedPackageManager = [
 	'npm',
 	'cnpm',
 	'pnpm',
 	'yarn',
 ];
 
-function installAll() {
-	const prod = global.env !== 'development';
-	let command = 'npm install';
+pkgInstall.getPackageManager = () => {
+	// Use this method if you can't reliably require('nconf') directly
 	try {
+		// Quick & dirty nconf setup
 		fs.accessSync(path.join(paths.nodeModules, 'nconf/package.json'), fs.constants.R_OK);
-		const supportedPackageManagerList = exports.supportedPackageManager; // load config from src/cli/package-install.js
-		const packageManager = require('nconf').get('package_manager');
-		if (supportedPackageManagerList.indexOf(packageManager) >= 0) {
-			switch (packageManager) {
-				case 'yarn':
-					command = 'yarn';
-					break;
-				case 'pnpm':
-					command = 'pnpm install';
-					break;
-				case 'cnpm':
-					command = 'cnpm install';
-					break;
-				default:
-					break;
-			}
-		}
+		const nconf = require('nconf');
+		const configFile = path.resolve(__dirname, '../../', nconf.any(['config', 'CONFIG']) || 'config.json');
+		nconf.env().file({ // not sure why adding .argv() causes the process to terminate
+			file: configFile,
+		});
+
+		return nconf.get('package_manager') || 'npm';
 	} catch (e) {
-		// No error handling is required here.
-		// If nconf is not installed, regular package installation via npm is carried out.
+		// nconf not install or other unexpected error/exception
+		return 'npm';
 	}
+};
+
+pkgInstall.installAll = () => {
+	const prod = process.env.NODE_ENV !== 'development';
+	let command = 'npm install';
+
+	const supportedPackageManagerList = exports.supportedPackageManager; // load config from src/cli/package-install.js
+	const packageManager = pkgInstall.getPackageManager();
+	if (supportedPackageManagerList.indexOf(packageManager) >= 0) {
+		switch (packageManager) {
+			case 'yarn':
+				command = `yarn${prod ? ' --production' : ''}`;
+				break;
+			case 'pnpm':
+				command = 'pnpm install'; // pnpm checks NODE_ENV
+				break;
+			case 'cnpm':
+				command = `cnpm install ${prod ? ' --production' : ''}`;
+				break;
+			default:
+				command += prod ? ' --production' : '';
+				break;
+		}
+	}
+
 	try {
-		cproc.execSync(command + (prod ? ' --production' : ''), {
+		cproc.execSync(command, {
 			cwd: path.join(__dirname, '../../'),
 			stdio: [0, 1, 2],
 		});
@@ -81,11 +105,9 @@ function installAll() {
 		console.log(`stderr: ${e.stderr}`);
 		throw e;
 	}
-}
+};
 
-exports.installAll = installAll;
-
-function preserveExtraneousPlugins() {
+pkgInstall.preserveExtraneousPlugins = () => {
 	// Skip if `node_modules/` is not found or inaccessible
 	try {
 		fs.accessSync(paths.nodeModules, fs.constants.R_OK);
@@ -117,15 +139,4 @@ function preserveExtraneousPlugins() {
 	packageContents.dependencies = sortDependencies({ ...packageContents.dependencies, ...extraneous });
 
 	fs.writeFileSync(paths.currentPackage, JSON.stringify(packageContents, null, 2));
-}
-
-function sortDependencies(dependencies) {
-	return Object.entries(dependencies)
-		.sort((a, b) => (a < b ? -1 : 1))
-		.reduce((memo, pkg) => {
-			memo[pkg[0]] = pkg[1];
-			return memo;
-		}, {});
-}
-
-exports.preserveExtraneousPlugins = preserveExtraneousPlugins;
+};
