@@ -32,11 +32,11 @@ function buildTargets() {
 
 		return [name, arr.join(', ')];
 	}).map(tuple => `     ${chalk.magenta(_.padEnd(`"${tuple[0]}"`, length + 2))}  |  ${tuple[1]}`).join('\n');
-	console.log(
-		`\n\n  Build targets:\n${
-			(`\n     ${_.padEnd('Target', length + 2)}  |  Aliases`).green
-		}${'\n     ------------------------------------------------------\n'.blue
-		}${output}\n`
+	process.stdout.write(
+		'\n\n  Build targets:\n' +
+		`${chalk.green(`\n     ${_.padEnd('Target', length + 2)}  |  Aliases`)}` +
+		`${chalk.blue('\n     ------------------------------------------------------\n')}` +
+		`${output}\n\n`
 	);
 }
 
