@@ -5,6 +5,7 @@
     "most_flags": "舉報最多",
     "search": "搜尋",
     "enter_username": "輸入使用者名搜索",
+    "search-user-for-chat": "Search a user to start chat",
     "load_more": "載入更多",
     "users-found-search-took": "找到 %1 位使用者！耗時 %2 秒。",
     "filter-by": "過濾選項",

@@ -5,6 +5,7 @@
     "most_flags": "С най-много доклади",
     "search": "Търсене",
     "enter_username": "Въведете потребителско име, което да потърсите",
+    "search-user-for-chat": "Search a user to start chat",
     "load_more": "Зареждане на още",
     "users-found-search-took": "Намерени са %1 потребител(и)! Търсенето отне %2 секунди.",
     "filter-by": "Филтриране",
