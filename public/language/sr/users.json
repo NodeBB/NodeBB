@@ -5,6 +5,7 @@
     "most_flags": "Најчешће означени заставицом",
     "search": "Претрага",
     "enter_username": "Унесите корисничко име за претрагу",
+    "search-user-for-chat": "Search a user to start chat",
     "load_more": "Учитај више",
     "users-found-search-took": "Нађено је %1 корисника! Претрага је завршена за %2 секунде.",
     "filter-by": "Филтрирај према",

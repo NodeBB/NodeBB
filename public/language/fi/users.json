@@ -5,6 +5,7 @@
     "most_flags": "Eniten ",
     "search": "Hae",
     "enter_username": "Syötä käyttäjätunnus hakeaksesi",
+    "search-user-for-chat": "Search a user to start chat",
     "load_more": "Lataa lisää",
     "users-found-search-took": "%1 käyttäjä(ä) löytyi! Haku kesti %2 sekuntia.",
     "filter-by": "Suodata",
