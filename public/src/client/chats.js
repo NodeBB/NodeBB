@@ -14,11 +14,12 @@ define('forum/chats', [
 	'alerts',
 	'chat',
 	'api',
+	'uploadHelpers',
 ], function (
 	components, translator, mousetrap,
 	recentChats, search, messages,
 	autocomplete, hooks, bootbox, alerts, chatModule,
-	api
+	api, uploadHelpers
 ) {
 	const Chats = {
 		initialised: false,
@@ -69,9 +70,32 @@ define('forum/chats', [
 		Chats.addCharactersLeftHandler($('[component="chat/main-wrapper"]'));
 		Chats.addIPHandler($('[component="chat/main-wrapper"]'));
 		Chats.createAutoComplete($('[component="chat/input"]'));
+		Chats.addUploadHandler({
+			dragDropAreaEl: $('.chats-full'),
+			pasteEl: $('[component="chat/input"]'),
+			uploadFormEl: $('[component="chat/upload"]'),
+			inputEl: $('[component="chat/input"]'),
+		});
 
 		$('[data-action="close"]').on('click', function () {
 			Chats.switchChat();
+		});
+	};
+
+	Chats.addUploadHandler = function (options) {
+		uploadHelpers.init({
+			dragDropAreaEl: options.dragDropAreaEl,
+			pasteEl: options.pasteEl,
+			uploadFormEl: options.uploadFormEl,
+			route: '/api/post/upload', // using same route as post uploads
+			callback: function (uploads) {
+				const inputEl = options.inputEl;
+				let text = inputEl.val();
+				uploads.forEach((upload) => {
+					text = text + (text ? '\n' : '') + (upload.isImage ? '!' : '') + `[${upload.filename}](${upload.url})`;
+				});
+				inputEl.val(text);
+			},
 		});
 	};
 
