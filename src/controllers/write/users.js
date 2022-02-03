@@ -265,8 +265,9 @@ Users.getEmail = async (req, res) => {
 };
 
 Users.confirmEmail = async (req, res) => {
-	const [pending, canManage] = await Promise.all([
+	const [pending, current, canManage] = await Promise.all([
 		user.email.isValidationPending(req.params.uid, req.params.email),
+		user.getUserField(req.params.uid, 'email'),
 		privileges.admin.can('admin:users', req.uid),
 	]);
 
@@ -274,9 +275,12 @@ Users.confirmEmail = async (req, res) => {
 		helpers.notAllowed(req, res);
 	}
 
-	if (pending) {
+	if (pending) { // has active confirmation request
 		const code = await db.get(`confirm:byUid:${req.params.uid}`);
 		await user.email.confirmByCode(code, req.session.id);
+		helpers.formatApiResponse(200, res);
+	} else if (current && current === req.params.email) { // email in user hash (i.e. email passed into user.create)
+		await user.email.confirmByUid(req.params.uid);
 		helpers.formatApiResponse(200, res);
 	} else {
 		helpers.formatApiResponse(404, res);
