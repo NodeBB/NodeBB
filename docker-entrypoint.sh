@@ -1,12 +1,18 @@
-#!/bin/sh
+#!/bin/bash
 
-export BASE_DIR=/usr/src/app/base
-export USER_DIR=/mnt/nodebb/user-dir
+export CONFIG_DIR=/opt/config
+export CONFIG=$CONFIG_DIR/config.json
 
-mkdir -p /usr/src/app/merged $USER_DIR
-fuse-overlayfs -o lowerdir=$BASE_DIR,upperdir=$USER_DIR,workdir=$USER_DIR /usr/src/app/merged
+mkdir -p $CONFIG_DIR
+chmod 777 -R $CONFIG_DIR
 
-cd /usr/src/app/merged
-yarn
+[[ -f $CONFIG_DIR/package.json ]] || cp install/package.json $CONFIG_DIR/package.json
+[[ -f $CONFIG_DIR/package-lock.json ]] || echo {} > $CONFIG_DIR/package-lock.json
+
+ln -s $CONFIG_DIR/package.json package.json
+ln -s $CONFIG_DIR/package-lock.json package-lock.json
+
+npm install --only=prod
+
 ./nodebb build
 ./nodebb start
