@@ -5,6 +5,7 @@ const user = require('../../user');
 const posts = require('../../posts');
 const topics = require('../../topics');
 const categories = require('../../categories');
+const privileges = require('../../privileges');
 const pagination = require('../../pagination');
 const helpers = require('../helpers');
 const accountHelpers = require('./helpers');
@@ -54,6 +55,27 @@ const templateToData = {
 		getSets: async function (callerUid, userData) {
 			const cids = await categories.getCidsByPrivilege('categories:cid', callerUid, 'topics:read');
 			return cids.map(c => `cid:${c}:uid:${userData.uid}:pids:votes`);
+		},
+		getTopics: async (sets, req, start, stop) => {
+			let pids = await db.getSortedSetRevRangeByScore(sets, start, stop, '+inf', '1');
+			pids = await privileges.posts.filter('topics:read', pids, req.uid);
+			const postObjs = await posts.getPostSummaryByPids(pids, req.uid, { stripTags: false });
+			return { posts: postObjs, nextStart: stop + 1 };
+		},
+	},
+	'account/controversial': {
+		type: 'posts',
+		noItemsFoundKey: '[[user:has_no_voted_posts]]',
+		crumb: '[[global:controversial]]',
+		getSets: async function (callerUid, userData) {
+			const cids = await categories.getCidsByPrivilege('categories:cid', callerUid, 'topics:read');
+			return cids.map(c => `cid:${c}:uid:${userData.uid}:pids:votes`);
+		},
+		getTopics: async (sets, req, start, stop) => {
+			let pids = await db.getSortedSetRangeByScore(sets, start, stop, '-inf', '-1');
+			pids = await privileges.posts.filter('topics:read', pids, req.uid);
+			const postObjs = await posts.getPostSummaryByPids(pids, req.uid, { stripTags: false });
+			return { posts: postObjs, nextStart: stop + 1 };
 		},
 	},
 	'account/watched': {
@@ -126,6 +148,10 @@ postsController.getDownVotedPosts = async function (req, res, next) {
 
 postsController.getBestPosts = async function (req, res, next) {
 	await getPostsFromUserSet('account/best', req, res, next);
+};
+
+postsController.getControversialPosts = async function (req, res, next) {
+	await getPostsFromUserSet('account/controversial', req, res, next);
 };
 
 postsController.getWatchedTopics = async function (req, res, next) {
