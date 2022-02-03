@@ -983,7 +983,7 @@ describe('User', () => {
 			await User.email.expireValidation(uid);
 			await apiUser.update({ uid: uid }, { uid: uid, email: 'updatedAgain@me.com', password: '123456' });
 
-			assert.strictEqual(await User.email.isValidationPending(uid), true);
+			assert.strictEqual(await User.email.isValidationPending(uid, 'updatedAgain@me.com'.toLowerCase()), true);
 		});
 
 		it('should update cover image', (done) => {
