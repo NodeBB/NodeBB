@@ -258,7 +258,7 @@ module.exports = function (Posts) {
 		const topicData = await topics.getTopicFields(postData.tid, ['mainPid', 'cid', 'pinned']);
 
 		if (postData.uid) {
-			if (postData.votes > 0) {
+			if (postData.votes !== 0) {
 				await db.sortedSetAdd(`cid:${topicData.cid}:uid:${postData.uid}:pids:votes`, postData.votes, postData.pid);
 			} else {
 				await db.sortedSetRemove(`cid:${topicData.cid}:uid:${postData.uid}:pids:votes`, postData.pid);

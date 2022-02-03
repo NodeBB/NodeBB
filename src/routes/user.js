@@ -24,6 +24,7 @@ module.exports = function (app, name, middleware, controllers) {
 	setupPageRoute(app, `/${name}/:userslug/posts`, middleware, middlewares, controllers.accounts.posts.getPosts);
 	setupPageRoute(app, `/${name}/:userslug/topics`, middleware, middlewares, controllers.accounts.posts.getTopics);
 	setupPageRoute(app, `/${name}/:userslug/best`, middleware, middlewares, controllers.accounts.posts.getBestPosts);
+	setupPageRoute(app, `/${name}/:userslug/controversial`, middleware, middlewares, controllers.accounts.posts.getControversialPosts);
 	setupPageRoute(app, `/${name}/:userslug/groups`, middleware, middlewares, controllers.accounts.groups.get);
 
 	setupPageRoute(app, `/${name}/:userslug/categories`, middleware, accountMiddlewares, controllers.accounts.categories.get);
