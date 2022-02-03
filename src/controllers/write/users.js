@@ -272,7 +272,7 @@ Users.confirmEmail = async (req, res) => {
 	]);
 
 	if (!canManage) {
-		helpers.notAllowed(req, res);
+		return helpers.notAllowed(req, res);
 	}
 
 	if (pending) { // has active confirmation request
