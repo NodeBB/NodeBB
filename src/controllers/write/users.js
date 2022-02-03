@@ -265,8 +265,8 @@ Users.getEmail = async (req, res) => {
 };
 
 Users.confirmEmail = async (req, res) => {
-	const [exists, canManage] = await Promise.all([
-		db.isSortedSetMember('email:uid', req.params.email.toLowerCase()),
+	const [pending, canManage] = await Promise.all([
+		user.email.isValidationPending(req.params.uid, req.params.email),
 		privileges.admin.can('admin:users', req.uid),
 	]);
 
@@ -274,8 +274,9 @@ Users.confirmEmail = async (req, res) => {
 		helpers.notAllowed(req, res);
 	}
 
-	if (exists) {
-		await user.email.confirmByUid(req.params.uid);
+	if (pending) {
+		const code = await db.get(`confirm:byUid:${req.params.uid}`);
+		await user.email.confirmByCode(code, req.session.id);
 		helpers.formatApiResponse(200, res);
 	} else {
 		helpers.formatApiResponse(404, res);
