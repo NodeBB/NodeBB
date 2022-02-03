@@ -1,7 +1,8 @@
-build
+.*
 logs
 test
-.github
-.husky
-.tx
 node_modules
+commitlint.config.js
+docker-compose.yml
+nodebb.bat
+renovate.json
