@@ -54,6 +54,7 @@
     "account/upvoted": "Поруке које је гласао %1",
     "account/downvoted": "Поруке које је негативно гласао %1",
     "account/best": "Најбоље поруке од %1",
+    "account/controversial": "Controversial posts made by %1",
     "account/blocks": "Корисници које је блокирао %1",
     "account/uploads": "Отпремио %1",
     "account/sessions": "Сесије пријављивања",

@@ -54,6 +54,7 @@
     "account/upvoted": "帖子被 %1 顶过",
     "account/downvoted": "帖子被 %1 踩过",
     "account/best": "%1 发布的最佳帖子",
+    "account/controversial": "Controversial posts made by %1",
     "account/blocks": "%1 屏蔽的用户",
     "account/uploads": "%1 上传的文件",
     "account/sessions": "已登录的会话",

@@ -54,6 +54,7 @@
     "account/upvoted": "Posts upvoted by %1",
     "account/downvoted": "Posts downvoted by %1",
     "account/best": "Geriausi pranešimai, kuriuos parašė %1",
+    "account/controversial": "Controversial posts made by %1",
     "account/blocks": "Užblokuoti vartotojai dėl %1",
     "account/uploads": "%1 Įkėlimai",
     "account/sessions": "Login Sessions",

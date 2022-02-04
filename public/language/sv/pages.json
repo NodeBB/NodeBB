@@ -54,6 +54,7 @@
     "account/upvoted": "Inlägg som röstats upp av %1",
     "account/downvoted": "Inlägg som röstats ned av %1",
     "account/best": "Bästa inläggen skapade av %1",
+    "account/controversial": "Controversial posts made by %1",
     "account/blocks": "Blockerade användare för %1",
     "account/uploads": "Uppladdningar av %1",
     "account/sessions": "Inloggningssessioner",

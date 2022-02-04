@@ -54,6 +54,7 @@
     "account/upvoted": "פוסטים שהוצבעו לטובה על ידי %1",
     "account/downvoted": "פוסטים שהוצבעו לרעה על ידי %1",
     "account/best": "הפוסטים הטובים ביותר שנוצרו על ידי %1",
+    "account/controversial": "Controversial posts made by %1",
     "account/blocks": "המשתמשים ש-%1 חסם",
     "account/uploads": "העלאות של %1",
     "account/sessions": "סשני התחברות",
