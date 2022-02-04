@@ -41,7 +41,7 @@ pkgInstall.updatePackageFile = () => {
 	// Sort dependencies alphabetically
 	dependencies = sortDependencies({ ...dependencies, ...defaultPackageContents.dependencies });
 
-	const packageContents = _.merge(oldPackageContents, defaultPackageContents, { dependencies });
+	const packageContents = { ..._.merge(oldPackageContents, defaultPackageContents), dependencies };
 
 	fs.writeFileSync(paths.currentPackage, JSON.stringify(packageContents, null, 2));
 };

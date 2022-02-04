@@ -1,6 +1,5 @@
 'use strict';
 
-const { execSync } = require('child_process');
 const path = require('path');
 const fs = require('fs').promises;
 const assert = require('assert');
@@ -27,25 +26,15 @@ describe('Package install lib', () => {
 		});
 
 		it('should remove non-`nodebb-` modules not specified in `install/package.json`', async () => {
-			const oldValue = process.env.NODE_ENV;
-			process.env.NODE_ENV = 'development';
+			source.dependencies.dotenv = '16.0.0';
+			await fs.writeFile(packageFilePath, JSON.stringify(source, null, 4));
+			delete source.dependencies.dotenv;
 
-			// install an extra package
-			// chose dotenv because it's a popular package
-			// and we use nconf instead
-			execSync('npm install dotenv --save');
-
-			// assert it saves in package.json
-			const packageWithExtras = JSON.parse(await fs.readFile(packageFilePath, 'utf8'));
-			assert(packageWithExtras.dependencies.dotenv, 'dependency did not save');
-
-			// update the package file
 			pkgInstall.updatePackageFile();
 
 			// assert it removed the extra package
 			const packageCleaned = JSON.parse(await fs.readFile(packageFilePath, 'utf8'));
 			assert(!packageCleaned.dependencies.dotenv, 'dependency was not removed');
-			process.env.NODE_ENV = oldValue;
 		});
 
 		it('should merge new root level properties from `install/package.json` into `package.json`', async () => {
