@@ -122,6 +122,8 @@ define('forum/unread', [
 		$('a[href="' + config.relative_path + url + '"].navigation-link i')
 			.toggleClass('unread-count', count > 0)
 			.attr('data-content', count > 99 ? '99+' : count);
+
+		$('#mobile-menu [data-unread-url="' + url + '"]').attr('data-content', count > 99 ? '99+' : count);
 	}
 
 	Unread.initUnreadTopics = function () {
