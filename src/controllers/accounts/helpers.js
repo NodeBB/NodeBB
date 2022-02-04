@@ -170,8 +170,8 @@ async function getCounts(userData, callerUID) {
 		promises.blocks = user.getUserField(userData.uid, 'blocksCount');
 	}
 	const counts = await utils.promiseParallel(promises);
-	counts.best = counts.best.reduce((sum, count) => sum + count);
-	counts.controversial = counts.controversial.reduce((sum, count) => sum + count);
+	counts.best = counts.best.reduce((sum, count) => sum + count, 0);
+	counts.controversial = counts.controversial.reduce((sum, count) => sum + count, 0);
 	counts.categoriesWatched = counts.categoriesWatched && counts.categoriesWatched.length;
 	counts.groups = userData.groups.length;
 	counts.following = userData.followingCount;
