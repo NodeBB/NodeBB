@@ -3,6 +3,7 @@
 const path = require('path');
 const fs = require('fs');
 const cproc = require('child_process');
+const _ = require('lodash');
 
 const { paths, pluginNamePattern } = require('../constants');
 
@@ -40,7 +41,7 @@ pkgInstall.updatePackageFile = () => {
 	// Sort dependencies alphabetically
 	dependencies = sortDependencies({ ...dependencies, ...defaultPackageContents.dependencies });
 
-	const packageContents = { ...oldPackageContents, ...defaultPackageContents, dependencies: dependencies };
+	const packageContents = _.merge(oldPackageContents, defaultPackageContents, { dependencies });
 
 	fs.writeFileSync(paths.currentPackage, JSON.stringify(packageContents, null, 2));
 };
