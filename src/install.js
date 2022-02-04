@@ -65,7 +65,7 @@ function checkSetupFlagEnv() {
 	};
 
 	// Set setup values from env vars (if set)
-	winston.info('checking env vars for setup info...');
+	winston.info('[install/checkSetupFlagEnv] checking env vars for setup info...');
 
 	Object.entries(process.env).forEach(([evName, evValue]) => { // get setup values from env
 		if (evName.startsWith('NODEBB_DB_')) {
@@ -82,17 +82,18 @@ function checkSetupFlagEnv() {
 	//       flag, env, config file, default
 	try {
 		if (nconf.get('setup')) {
-			setupVal = JSON.parse(nconf.get('setup'));
+			const setupJSON = JSON.parse(nconf.get('setup'));
+			setupVal = { ...setupVal, ...setupJSON };
 		}
 	} catch (err) {
-		winston.error('Invalid json in nconf.get(\'setup\'), ignoring setup values from json');
+		winston.error('[install/checkSetupFlagEnv] invalid json in nconf.get(\'setup\'), ignoring setup values from json');
 	}
 
 	if (setupVal && typeof setupVal === 'object') {
 		if (setupVal['admin:username'] && setupVal['admin:password'] && setupVal['admin:password:confirm'] && setupVal['admin:email']) {
 			install.values = setupVal;
 		} else {
-			winston.error('Required values are missing for automated setup:');
+			winston.error('[install/checkSetupFlagEnv] required values are missing for automated setup:');
 			if (!setupVal['admin:username']) {
 				winston.error('  admin:username');
 			}
@@ -126,7 +127,7 @@ function checkCIFlag() {
 		if (ciVals.hasOwnProperty('host') && ciVals.hasOwnProperty('port') && ciVals.hasOwnProperty('database')) {
 			install.ciVals = ciVals;
 		} else {
-			winston.error('Required values are missing for automated CI integration:');
+			winston.error('[install/checkCIFlag] required values are missing for automated CI integration:');
 			if (!ciVals.hasOwnProperty('host')) {
 				winston.error('  host');
 			}
