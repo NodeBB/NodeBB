@@ -20,6 +20,7 @@ const groups = require('../src/groups');
 const messaging = require('../src/messaging');
 const helpers = require('./helpers');
 const meta = require('../src/meta');
+const file = require('../src/file');
 const socketUser = require('../src/socket.io/user');
 const apiUser = require('../src/api/users');
 
@@ -983,7 +984,7 @@ describe('User', () => {
 			await User.email.expireValidation(uid);
 			await apiUser.update({ uid: uid }, { uid: uid, email: 'updatedAgain@me.com', password: '123456' });
 
-			assert.strictEqual(await User.email.isValidationPending(uid), true);
+			assert.strictEqual(await User.email.isValidationPending(uid, 'updatedAgain@me.com'.toLowerCase()), true);
 		});
 
 		it('should update cover image', (done) => {
@@ -2846,6 +2847,20 @@ describe('User', () => {
 				assert.ifError(err);
 				meta.config.minimumPasswordStrength = oldValue;
 				done();
+			});
+		});
+	});
+
+	describe('User\'s', async () => {
+		let files;
+
+		before(async () => {
+			files = await file.walk(path.resolve(__dirname, './user'));
+		});
+
+		it('subfolder tests', () => {
+			files.forEach((filePath) => {
+				require(filePath);
 			});
 		});
 	});
