@@ -5,7 +5,6 @@ const user = require('../../user');
 const posts = require('../../posts');
 const topics = require('../../topics');
 const categories = require('../../categories');
-const privileges = require('../../privileges');
 const pagination = require('../../pagination');
 const helpers = require('../helpers');
 const accountHelpers = require('./helpers');
