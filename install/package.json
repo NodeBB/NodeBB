@@ -105,7 +105,7 @@
         "passport-http-bearer": "1.0.1",
         "passport-local": "1.0.0",
         "pg": "8.7.3",
-        "pg-cursor": "2.7.1",
+        "pg-cursor": "2.7.3",
         "postcss": "8.4.6",
         "postcss-clean": "1.2.0",
         "prompt": "1.2.1",
