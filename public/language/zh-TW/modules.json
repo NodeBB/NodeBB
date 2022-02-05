@@ -1,6 +1,6 @@
 {
     "chat.chatting_with": "與<span id=\"chat-with-name\"></span>聊天",
-    "chat.placeholder": "在這裡輸入聊天訊息，按返回鍵發送",
+    "chat.placeholder": "Type chat message here, drag & drop images, press enter to send",
     "chat.scroll-up-alert": "You are looking at older messages, click here to go to most recent message.",
     "chat.send": "發送",
     "chat.no_active": "暫無聊天",

@@ -1,6 +1,6 @@
 {
     "chat.chatting_with": "채팅",
-    "chat.placeholder": "메시지를 여기에 입력한 후 엔터를 눌러 전송하세요.",
+    "chat.placeholder": "Type chat message here, drag & drop images, press enter to send",
     "chat.scroll-up-alert": "오래된 메시지를 보고 있습니다. 여기를 눌러 최신 메시지로 이동하세요.",
     "chat.send": "전송",
     "chat.no_active": "활성화된 채팅이 없습니다.",

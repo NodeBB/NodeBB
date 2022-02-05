@@ -1,6 +1,6 @@
 {
     "chat.chatting_with": "چت با",
-    "chat.placeholder": "پیام گفتگو را اینجا بنویسید، دکمه Enter را بزنید تا فرستاده شود.",
+    "chat.placeholder": "Type chat message here, drag & drop images, press enter to send",
     "chat.scroll-up-alert": "شما در حال مشاهده پیام های قدیمی هستید، برای دیدن پیام های اخیر کلیک کنید.",
     "chat.send": "ارسال",
     "chat.no_active": "شما هیچ گفتگوی فعالی ندارید.",

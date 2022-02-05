@@ -1,6 +1,6 @@
 {
     "chat.chatting_with": "Разговор с",
-    "chat.placeholder": "Въведете съобщението тук и натиснете Ентер за изпращане",
+    "chat.placeholder": "Type chat message here, drag & drop images, press enter to send",
     "chat.scroll-up-alert": "В момента разглеждате по-стари съобщения. Щракнете тук, за да се прехвърлите към най-новото съобщение.",
     "chat.send": "Изпращане",
     "chat.no_active": "Нямате текущи разговори.",

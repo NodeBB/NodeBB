@@ -1,6 +1,6 @@
 {
     "chat.chatting_with": "とチャット",
-    "chat.placeholder": "メッセージを入力し、Enterで送信",
+    "chat.placeholder": "Type chat message here, drag & drop images, press enter to send",
     "chat.scroll-up-alert": "You are looking at older messages, click here to go to most recent message.",
     "chat.send": "送信",
     "chat.no_active": "チャットはありません。",
