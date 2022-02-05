@@ -57,8 +57,7 @@ const templateToData = {
 			return cids.map(c => `cid:${c}:uid:${userData.uid}:pids:votes`);
 		},
 		getTopics: async (sets, req, start, stop) => {
-			let pids = await db.getSortedSetRevRangeByScore(sets, start, stop, '+inf', '1');
-			pids = await privileges.posts.filter('topics:read', pids, req.uid);
+			const pids = await db.getSortedSetRevRangeByScore(sets, start, stop - start + 1, '+inf', 1);
 			const postObjs = await posts.getPostSummaryByPids(pids, req.uid, { stripTags: false });
 			return { posts: postObjs, nextStart: stop + 1 };
 		},
@@ -72,8 +71,7 @@ const templateToData = {
 			return cids.map(c => `cid:${c}:uid:${userData.uid}:pids:votes`);
 		},
 		getTopics: async (sets, req, start, stop) => {
-			let pids = await db.getSortedSetRangeByScore(sets, start, stop, '-inf', '-1');
-			pids = await privileges.posts.filter('topics:read', pids, req.uid);
+			const pids = await db.getSortedSetRangeByScore(sets, start, stop - start + 1, '-inf', -1);
 			const postObjs = await posts.getPostSummaryByPids(pids, req.uid, { stripTags: false });
 			return { posts: postObjs, nextStart: stop + 1 };
 		},

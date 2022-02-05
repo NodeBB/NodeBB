@@ -10,25 +10,19 @@ module.exports = {
 		const posts = require('../../posts');
 		const { progress } = this;
 
-		await batch.processSortedSet('posts:pid', async (ids) => {
-			const postData = await posts.getPostsFields(ids, ['uid', 'downvotes']);
-			const cids = await posts.getCidsByPids(ids);
+		await batch.processSortedSet('posts:pid', async (pids) => {
+			const postData = await posts.getPostsFields(pids, ['pid', 'uid', 'upvotes', 'downvotes']);
+			const cids = await posts.getCidsByPids(pids);
 
-			const promises = ids.reduce((memo, pid, idx) => {
-				const { uid, downvotes } = postData[idx];
-				const cid = cids[idx];
-
-				if (!downvotes) {
-					progress.incr();
-					return memo;
+			const bulkAdd = [];
+			postData.forEach((post, index) => {
+				if (post.votes > 0 || post.votes < 0) {
+					const cid = cids[index];
+					bulkAdd.push([`cid:${cid}:uid:${post.uid}:pids:votes`, post.votes, post.pid]);
 				}
-
-				memo.push(db.sortedSetAdd(`cid:${cid}:uid:${uid}:pids:votes`, -downvotes, pid));
-				return memo;
-			}, []);
-
-			await Promise.all(promises);
-			progress.incr(promises.length);
+			});
+			await db.sortedSetAddBulk(bulkAdd);
+			progress.incr(postData.length);
 		}, {
 			progress,
 		});

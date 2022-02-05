@@ -158,7 +158,7 @@ module.exports = function (Posts) {
 
 			bulkAdd.push([`uid:${toUid}:posts`, post.timestamp, post.pid]);
 			bulkAdd.push([`cid:${post.cid}:uid:${toUid}:pids`, post.timestamp, post.pid]);
-			if (post.votes > 0) {
+			if (post.votes > 0 || post.votes < 0) {
 				bulkAdd.push([`cid:${post.cid}:uid:${toUid}:pids:votes`, post.votes, post.pid]);
 			}
 			postsByUser[post.uid] = postsByUser[post.uid] || [];
