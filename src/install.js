@@ -222,6 +222,35 @@ async function enableDefaultTheme() {
 	});
 }
 
+async function createDefaultUserGroups() {
+	const groups = require('./groups');
+	async function createGroup(name) {
+		await groups.create({
+			name: name,
+			hidden: 1,
+			private: 1,
+			system: 1,
+			disableLeave: 1,
+			disableJoinRequests: 1,
+		});
+	}
+
+	const [verifiedExists, unverifiedExists, bannedExists] = await groups.exists([
+		'verified-users', 'unverified-users', 'banned-users',
+	]);
+	if (!verifiedExists) {
+		await createGroup('verified-users');
+	}
+
+	if (!unverifiedExists) {
+		await createGroup('unverified-users');
+	}
+
+	if (!bannedExists) {
+		await createGroup('banned-users');
+	}
+}
+
 async function createAdministrator() {
 	const Groups = require('./groups');
 	const memberCount = await Groups.getMemberCount('administrators');
@@ -498,6 +527,7 @@ install.setup = async function () {
 		await setupDefaultConfigs();
 		await enableDefaultTheme();
 		await createCategories();
+		await createDefaultUserGroups();
 		const adminInfo = await createAdministrator();
 		await createGlobalModeratorsGroup();
 		await giveGlobalPrivileges();
