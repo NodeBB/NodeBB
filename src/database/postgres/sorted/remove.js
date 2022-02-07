@@ -3,21 +3,6 @@
 module.exports = function (module) {
 	const helpers = require('../helpers');
 
-	const _deleteOnEmpty = async (keys) => {
-		// In Redis and Mongo, empty sorted sets are automatically considered non-existant, this matches that behaviour
-		if (typeof keys === 'string') {
-			keys = [keys];
-		} else if (!Array.isArray(keys)) {
-			throw new Error('[[error:invalid-data]]');
-		}
-
-		await Promise.all(keys.map(async (key) => {
-			if (!await module.sortedSetCard(key)) {
-				await module.delete(key);
-			}
-		}));
-	};
-
 	module.sortedSetRemove = async function (key, value) {
 		if (!key) {
 			return;
@@ -43,7 +28,6 @@ DELETE FROM "legacy_zset"
    AND "value" = ANY($2::TEXT[])`,
 			values: [key, value],
 		});
-		await _deleteOnEmpty(key);
 	};
 
 	module.sortedSetsRemove = async function (keys, value) {
@@ -61,7 +45,6 @@ DELETE FROM "legacy_zset"
    AND "value" = $2::TEXT`,
 			values: [keys, value],
 		});
-		await _deleteOnEmpty(keys);
 	};
 
 	module.sortedSetsRemoveRangeByScore = async function (keys, min, max) {
@@ -85,7 +68,6 @@ DELETE FROM "legacy_zset"
    AND ("score" <= $3::NUMERIC OR $3::NUMERIC IS NULL)`,
 			values: [keys, min, max],
 		});
-		await _deleteOnEmpty(keys);
 	};
 
 	module.sortedSetRemoveBulk = async function (data) {
@@ -105,6 +87,5 @@ DELETE FROM "legacy_zset"
 		)`,
 			values: [keys, values],
 		});
-		await _deleteOnEmpty(keys);
 	};
 };
