@@ -15,6 +15,13 @@ const cache = require('../cache');
 
 const Thumbs = module.exports;
 
+Thumbs.hasThumbs = async function (id) {
+	const isDraft = validator.isUUID(String(id));
+	const set = `${isDraft ? 'draft' : 'topic'}:${id}:thumbs`;
+	const count = await db.sortedSetCard(set);
+	return count > 0;
+};
+
 Thumbs.exists = async function (id, path) {
 	const isDraft = validator.isUUID(String(id));
 	const set = `${isDraft ? 'draft' : 'topic'}:${id}:thumbs`;
@@ -108,6 +115,14 @@ Thumbs.migrate = async function (uuid, id) {
 	cache.del(set);
 };
 
+Thumbs.migrateToUuid = async function (uuid, newUuid) {
+	// Converts the draft thumb zset to the topic zset (combines thumbs if applicable)
+	const set = `draft:${uuid}:thumbs`;
+	const newSet = `draft:${newUuid}:thumbs`;
+	await db.rename(set, newSet);
+	cache.del(set);
+};
+
 Thumbs.delete = async function (id, relativePath) {
 	const isDraft = validator.isUUID(String(id));
 	const set = `${isDraft ? 'draft' : 'topic'}:${id}:thumbs`;
@@ -136,4 +151,42 @@ Thumbs.delete = async function (id, relativePath) {
 			await posts.uploads.dissociate(mainPid, relativePath.replace('/files/', ''));
 		}
 	}
+};
+
+Thumbs.deleteAll = async function (id) {
+	const isDraft = validator.isUUID(String(id));
+	const set = `${isDraft ? 'draft' : 'topic'}:${id}:thumbs`;
+
+	const thumbs = await db.getSortedSetRange(set, 0, -1);
+	const absolutePaths = thumbs.map(thumb => path.posix.join(nconf.get('upload_path'), thumb));
+	const existsOnDisk = await Promise.all(absolutePaths.map(el => file.exists(el)));
+
+	const filesToDeletePromises = [];
+	const postsToDissociatePromises = [];
+
+	for (let i = 0, len = thumbs.length; i < len; i++) {
+		const thumb = thumbs[i];
+
+		if (existsOnDisk[i]) {
+			filesToDeletePromises.push(file.delete(absolutePaths[i]));
+		}
+
+		// Dissociate thumbnails with the main pid
+		if (!isDraft) {
+			const topics = require('.');
+			postsToDissociatePromises.push(
+				topics.getTopicsFields(id, ['mainPid']).then(
+					mainPid => {console.log(mainPid); posts.uploads.dissociate(mainPid, thumb.replace('/files/', ''))}
+				)
+			);
+		}
+	}
+
+	await Promise.all(filesToDeletePromises);
+	await Promise.all(postsToDissociatePromises);
+
+	await db.delete(set);
+	await db.deleteObjectField(`topic:${id}`, 'numThumbs');
+
+	cache.del(set);
 };

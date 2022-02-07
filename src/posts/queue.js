@@ -139,6 +139,15 @@ module.exports = function (Posts) {
 		const id = `${type}-${now}`;
 		await canPost(type, data);
 
+		if (type === 'topic') {
+			const { uuid: oldUUID } = data;
+			const hasThumbs = await topics.thumbs.hasThumbs(oldUUID);
+			if (hasThumbs) {
+				data.uuid = utils.generateUUID();
+				await topics.thumbs.migrateToUuid(oldUUID, data.uuid);
+			}
+		}
+
 		let payload = {
 			id: id,
 			uid: data.uid,
@@ -239,6 +248,12 @@ module.exports = function (Posts) {
 		if (!data) {
 			return null;
 		}
+		if (data.type === 'topic') {
+			const hasThumbs = await topics.thumbs.hasThumbs(data.data.uuid);
+			if (hasThumbs) {
+				await topics.thumbs.deleteAll(data.data.uuid);
+			}
+		}
 		await removeQueueNotification(id);
 		await db.sortedSetRemove('post:queue', id);
 		await db.delete(`post:queue:${id}`);
@@ -278,6 +293,10 @@ module.exports = function (Posts) {
 
 	async function createTopic(data) {
 		const result = await topics.post(data);
+		const hasThumbs = await topics.thumbs.hasThumbs(data.uuid);
+		if (hasThumbs) {
+			await topics.thumbs.migrate(data.uuid, result.topicData.tid);
+		}
 		socketHelpers.notifyNew(data.uid, 'newTopic', { posts: [result.postData], topic: result.topicData });
 		return result;
 	}
