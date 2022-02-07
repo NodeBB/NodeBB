@@ -50,7 +50,7 @@
         "connect-mongo": "4.6.0",
         "connect-multiparty": "2.2.0",
         "connect-pg-simple": "7.0.0",
-        "connect-redis": "6.1.0",
+        "connect-redis": "6.1.1",
         "cookie-parser": "1.4.6",
         "cron": "1.8.2",
         "cropperjs": "1.5.12",
