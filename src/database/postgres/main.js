@@ -17,6 +17,13 @@ module.exports = function (module) {
 			return;
 		}
 
+		// Redis/Mongo consider empty zsets as non-existent, match that behaviour
+		const type = await module.type(key);
+		if (type === 'zset') {
+			const members = await module.getSortedSetRange(key, 0, 0);
+			return members.length > 0;
+		}
+
 		if (Array.isArray(key)) {
 			const res = await module.pool.query({
 				name: 'existsArray',
