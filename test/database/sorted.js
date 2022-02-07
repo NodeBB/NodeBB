@@ -1085,6 +1085,11 @@ describe('Sorted Set methods', () => {
 			});
 		});
 
+		it('should not think the sorted set exists if the last element is removed', async () => {
+			await db.sortedSetRemove('sorted3', 'value1');
+			assert.strictEqual(await db.exists('sorted3'), false);
+		});
+
 		it('should remove multiple values from multiple keys', (done) => {
 			db.sortedSetAdd('multiTest1', [1, 2, 3, 4], ['one', 'two', 'three', 'four'], (err) => {
 				assert.ifError(err);
