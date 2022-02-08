@@ -262,10 +262,8 @@ describe('Topic thumbs', () => {
 		});
 
 		it('should handle an array of relative paths', async () => {
-			await Promise.all([
-				topics.thumbs.associate({ id: 1, path: thumbPaths[0] }),
-				topics.thumbs.associate({ id: 1, path: thumbPaths[1] }),
-			]);
+			await topics.thumbs.associate({ id: 1, path: thumbPaths[0] });
+			await topics.thumbs.associate({ id: 1, path: thumbPaths[1] });
 
 			await topics.thumbs.delete(1, [relativeThumbPaths[0], relativeThumbPaths[1]]);
 		});
@@ -276,10 +274,8 @@ describe('Topic thumbs', () => {
 		});
 
 		it('should decrement numThumbs if dissociated one by one', async () => {
-			await Promise.all([
-				topics.thumbs.associate({ id: 1, path: thumbPaths[0] }),
-				topics.thumbs.associate({ id: 1, path: thumbPaths[1] }),
-			]);
+			await topics.thumbs.associate({ id: 1, path: thumbPaths[0] });
+			await topics.thumbs.associate({ id: 1, path: thumbPaths[1] });
 
 			await topics.thumbs.delete(1, [relativeThumbPaths[0]]);
 			let numThumbs = parseInt(await db.getObjectField('topic:1', 'numThumbs'), 10);
