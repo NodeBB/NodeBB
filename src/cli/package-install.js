@@ -38,11 +38,12 @@ pkgInstall.updatePackageFile = () => {
 		}
 	});
 
+	const { devDependencies } = defaultPackageContents;
+
 	// Sort dependencies alphabetically
 	dependencies = sortDependencies({ ...dependencies, ...defaultPackageContents.dependencies });
 
-	const packageContents = { ..._.merge(oldPackageContents, defaultPackageContents), dependencies };
-
+	const packageContents = { ..._.merge(oldPackageContents, defaultPackageContents), dependencies, devDependencies };
 	fs.writeFileSync(paths.currentPackage, JSON.stringify(packageContents, null, 2));
 };
 

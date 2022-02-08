@@ -86,6 +86,15 @@ describe('Package install lib', () => {
 			assert.strictEqual(updated.scripts.preinstall, 'echo "What are you?";');
 		});
 
+		it('should remove extraneous devDependencies', async () => {
+			current.devDependencies.expect = '27.5.1';
+			await fs.writeFile(packageFilePath, JSON.stringify(current, null, 4));
+
+			pkgInstall.updatePackageFile();
+			const updated = JSON.parse(await fs.readFile(packageFilePath, 'utf8'));
+			assert.strictEqual(updated.devDependencies.hasOwnProperty('expect'), false);
+		});
+
 		after(async () => {
 			// Clean up
 			await fs.rename(path.resolve(__dirname, '../install/package.json.bak'), sourcePackagePath);
