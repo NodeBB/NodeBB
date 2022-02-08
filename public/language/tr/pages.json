@@ -54,7 +54,7 @@
     "account/upvoted": "%1 tarafından artılanan iletiler",
     "account/downvoted": "%1 tarafından eksilenen iletiler",
     "account/best": "%1 tarafından gönderilen en iyi iletiler",
-    "account/controversial": "Controversial posts made by %1",
+    "account/controversial": "%1 tarafından yapılan tartışmalı gönderiler",
     "account/blocks": "%1 tarafından engellenen kullanıcılar",
     "account/uploads": "%1 kullanıcısının yüklediği dosyalar",
     "account/sessions": "Giriş Oturumları",

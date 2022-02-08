@@ -16,7 +16,7 @@
 	"headers.acam": "Erişim-Kontrolü-Yöntem-İzni",
 	"headers.acah": "Erişim-Kontrolü-Başlık-İzni",
 	"headers.coep": "Cross-Origin-Embed Politikası",
-	"headers.coep-help": "When enabled (default), will set the header to <code>require-corp</code>",
+	"headers.coep-help": "Etkinleştirildiğinde (varsayılan), başlığı  <code>require-corp</code> olarak ayarlayacaktır.",
 	"headers.corp": "Cross-Origin Kaynak Politikası",
 	"hsts": "STS",
 	"hsts.enabled": "HSTS'yi etkinleştir (önerilir)",
