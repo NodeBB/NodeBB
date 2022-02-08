@@ -55,11 +55,11 @@
     "account/downvoted": "Innlegg nedstemt av %1",
     "account/best": "Beste innlegg skrevet av %1",
     "account/controversial": "Controversial posts made by %1",
-    "account/blocks": "Blokkerte brukere for % 1",
+    "account/blocks": "Blokkerte brukere for %1",
     "account/uploads": "Opplastninger av %1",
     "account/sessions": "Påloggingsøkter",
     "confirm": "E-post bekreftet",
     "maintenance.text": "%1 er for tiden under vedlikehold. Kom tilbake en annen gang.",
     "maintenance.messageIntro": "I tillegg har administratoren skrevet denne meldingen:",
-    "throttled.text": "% 1 er for øyeblikket ikke tilgjengelig på grunn av overdreven belastning. Kom tilbake en annen gang."
+    "throttled.text": "%1 er for øyeblikket ikke tilgjengelig på grunn av overdreven belastning. Kom tilbake en annen gang."
 }
