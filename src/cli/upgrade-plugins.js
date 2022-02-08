@@ -125,7 +125,7 @@ async function upgradePlugins() {
 		if (found && found.length) {
 			process.stdout.write(`\n\nA total of ${chalk.bold(String(found.length))} package(s) can be upgraded:\n\n`);
 			found.forEach((suggestObj) => {
-				process.stdout.write(`${chalk.yellow('  * ') + suggestObj.name} (${chalk.yellow(suggestObj.current)}' -> '${chalk.green(suggestObj.suggested)}')\n'`);
+				process.stdout.write(`${chalk.yellow('  * ') + suggestObj.name} ('${chalk.yellow(suggestObj.current)}' -> '${chalk.green(suggestObj.suggested)}')\n'`);
 			});
 		} else {
 			console.log(chalk.green('\nAll packages up-to-date!'));
