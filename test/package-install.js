@@ -7,8 +7,15 @@ const assert = require('assert');
 const pkgInstall = require('../src/cli/package-install');
 
 describe('Package install lib', () => {
+	/**
+	 * Important:
+	 *   - The tests here have a beforeEach() run prior to each test, it resets
+	 *     package.json and install/package.json back to identical states.
+	 *   - Update `source` and `current` for testing.
+	 */
 	describe('updatePackageFile()', () => {
 		let source;
+		let current;
 		const sourcePackagePath = path.resolve(__dirname, '../install/package.json');
 		const packageFilePath = path.resolve(__dirname, '../package.json');
 
@@ -23,6 +30,7 @@ describe('Package install lib', () => {
 			await fs.copyFile(path.resolve(__dirname, '../install/package.json.bak'), sourcePackagePath);
 			await fs.copyFile(path.resolve(__dirname, '../package.json.bak'), packageFilePath);
 			source = JSON.parse(await fs.readFile(sourcePackagePath));
+			current = JSON.parse(await fs.readFile(packageFilePath));
 		});
 
 		it('should remove non-`nodebb-` modules not specified in `install/package.json`', async () => {
@@ -65,9 +73,8 @@ describe('Package install lib', () => {
 		});
 
 		it('should deep merge nested objects', async () => {
-			source.scripts.postinstall = 'echo "I am a silly bean";';
-			await fs.writeFile(packageFilePath, JSON.stringify(source, null, 4));
-			delete source.scripts.postinstall;
+			current.scripts.postinstall = 'echo "I am a silly bean";';
+			await fs.writeFile(packageFilePath, JSON.stringify(current, null, 4));
 			source.scripts.preinstall = 'echo "What are you?";';
 			await fs.writeFile(sourcePackagePath, JSON.stringify(source, null, 4));
 			source.scripts.postinstall = 'echo "I am a silly bean";';
