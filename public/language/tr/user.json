@@ -105,7 +105,7 @@
     "has_no_ignored_topics": "Bu kullanıcı henüz hiçbir başlığı yok saymamış.",
     "has_no_upvoted_posts": "Bu kullanıcı henüz hiçbir iletiyi artılamamış.",
     "has_no_downvoted_posts": "Bu kullanıcı henüz hiçbir iletiyi eksilememiş.",
-    "has_no_voted_posts": "Bu kullanıcının hiç oylanmış iletisi yok.",
+    "has_no_controversial_posts": "This user does not have any downvoted posts yet.",
     "has_no_blocks": "Hiçbir kullanıcıyı engellemediniz.",
     "email_hidden": "E-posta gizli",
     "hidden": "gizli",

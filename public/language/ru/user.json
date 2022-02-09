@@ -105,7 +105,7 @@
     "has_no_ignored_topics": "Этот пользователь не игнорирует ни одну тему.",
     "has_no_upvoted_posts": "Этот пользователь ещё ни одному сообщению не поднимал рейтинг.",
     "has_no_downvoted_posts": "Этот пользователь ещё ни одному сообщению не понижал рейтинг.",
-    "has_no_voted_posts": "За сообщения этого пользователя ещё не голосовали",
+    "has_no_controversial_posts": "This user does not have any downvoted posts yet.",
     "has_no_blocks": "Вы никого не заблокировали.",
     "email_hidden": "Электронная почта скрыта",
     "hidden": "скрыто",

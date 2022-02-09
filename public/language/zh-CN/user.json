@@ -105,7 +105,7 @@
     "has_no_ignored_topics": "此用户尚未忽略任何主题。",
     "has_no_upvoted_posts": "此用户还未顶过任何帖子。",
     "has_no_downvoted_posts": "此用户还未踩过任何帖子。",
-    "has_no_voted_posts": "这个用户还未评价任何帖子",
+    "has_no_controversial_posts": "This user does not have any downvoted posts yet.",
     "has_no_blocks": "您没有屏蔽其他用户。",
     "email_hidden": "电子邮箱已隐藏",
     "hidden": "隐藏",

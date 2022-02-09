@@ -105,7 +105,7 @@
     "has_no_ignored_topics": "This user hasn't ignored any topics yet.",
     "has_no_upvoted_posts": "Antud kasutaja pole veel ühtegi postitust kiitnud.",
     "has_no_downvoted_posts": "Antud kasutaja pole veel ühtegi postitust laitnud.",
-    "has_no_voted_posts": "Antud kasutaja pole veel ühtegi postitust hinnanud.",
+    "has_no_controversial_posts": "This user does not have any downvoted posts yet.",
     "has_no_blocks": "You have blocked no users.",
     "email_hidden": "Peidetud email",
     "hidden": "peidetud",

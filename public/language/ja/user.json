@@ -105,7 +105,7 @@
     "has_no_ignored_topics": "この利用者はまだトピックを無視していません。",
     "has_no_upvoted_posts": "このユーザーはまだ一つも投稿に高評価を付けていません。",
     "has_no_downvoted_posts": "このユーザーはまだ一つも投稿に低評価を付けていません。",
-    "has_no_voted_posts": "このユーザーは投稿を評価していません。",
+    "has_no_controversial_posts": "This user does not have any downvoted posts yet.",
     "has_no_blocks": "ブロック中のユーザーはいません。",
     "email_hidden": "メールアドレスを非表示",
     "hidden": "非表示",

@@ -105,7 +105,7 @@
     "has_no_ignored_topics": "This user hasn't ignored any topics yet.",
     "has_no_upvoted_posts": "Uyu muntu ntabwo arashima icyashyizweho na kimwe.",
     "has_no_downvoted_posts": "Uyu muntu ntabwo aragaya icyashizweho na kimwe. ",
-    "has_no_voted_posts": "Uyu muntu ntabwo aragira ikintu yashimiwe gushyiraho",
+    "has_no_controversial_posts": "This user does not have any downvoted posts yet.",
     "has_no_blocks": "You have blocked no users.",
     "email_hidden": "Email Yahishwe",
     "hidden": "byahishwe",

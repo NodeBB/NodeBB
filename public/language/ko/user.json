@@ -105,7 +105,7 @@
     "has_no_ignored_topics": "이 사용자는 아직 무시 중인 화제가 없습니다.",
     "has_no_upvoted_posts": "이 사용자가 추천한 포스트가 없습니다.",
     "has_no_downvoted_posts": "이 사용자가 비추천한 포스트가 없습니다.",
-    "has_no_voted_posts": "이 사용자가 투표를 받은 게시물이 없습니다.",
+    "has_no_controversial_posts": "This user does not have any downvoted posts yet.",
     "has_no_blocks": "차단한 사용자가 없습니다.",
     "email_hidden": "이메일 비공개",
     "hidden": "비공개",

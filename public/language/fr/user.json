@@ -105,7 +105,7 @@
     "has_no_ignored_topics": "Cet utilisateur n'a encore ignoré aucun sujet.",
     "has_no_upvoted_posts": "Cet utilisateur n'a donné d'avis positifs",
     "has_no_downvoted_posts": "Cet utilisateur n'a pas donné d'avis négatifs",
-    "has_no_voted_posts": "Personne n'a voté pour des messages de cet utilisateur",
+    "has_no_controversial_posts": "This user does not have any downvoted posts yet.",
     "has_no_blocks": "Vous n'avez bloqué aucun utilisateur.",
     "email_hidden": "Email masqué",
     "hidden": "masqué",

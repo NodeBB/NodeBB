@@ -105,7 +105,7 @@
     "has_no_ignored_topics": "Овај корисник још није игнорисао ниједну тему.",
     "has_no_upvoted_posts": "Овај корисник још увек није гласао за неку поруку.",
     "has_no_downvoted_posts": "Овај корисник још увек није негативно гласао за неку поруку.",
-    "has_no_voted_posts": "Овај корисник нема објаве за које се гласало.",
+    "has_no_controversial_posts": "This user does not have any downvoted posts yet.",
     "has_no_blocks": "Нисте блокирали ниједног корисника",
     "email_hidden": "Скривена е-пошта",
     "hidden": "скривена",
