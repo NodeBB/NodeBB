@@ -60,6 +60,10 @@ const templateToData = {
 			const postObjs = await posts.getPostSummaryByPids(pids, req.uid, { stripTags: false });
 			return { posts: postObjs, nextStart: stop + 1 };
 		},
+		getItemCount: async (sets) => {
+			const counts = await Promise.all(sets.map(set => db.sortedSetCount(set, 1, '+inf')));
+			return counts.reduce((acc, val) => acc + val, 0);
+		},
 	},
 	'account/controversial': {
 		type: 'posts',
@@ -73,6 +77,10 @@ const templateToData = {
 			const pids = await db.getSortedSetRangeByScore(sets, start, stop - start + 1, '-inf', -1);
 			const postObjs = await posts.getPostSummaryByPids(pids, req.uid, { stripTags: false });
 			return { posts: postObjs, nextStart: stop + 1 };
+		},
+		getItemCount: async (sets) => {
+			const counts = await Promise.all(sets.map(set => db.sortedSetCount(set, '-inf', -1)));
+			return counts.reduce((acc, val) => acc + val, 0);
 		},
 	},
 	'account/watched': {
@@ -194,7 +202,7 @@ async function getPostsFromUserSet(template, req, res, next) {
 		});
 	} else {
 		result = await utils.promiseParallel({
-			itemCount: settings.usePagination ? db.sortedSetsCardSum(sets) : 0,
+			itemCount: getItemCount(sets, data, settings),
 			itemData: getItemData(sets, data, req, start, stop),
 		});
 	}
@@ -230,4 +238,14 @@ async function getItemData(sets, data, req, start, stop) {
 	}
 	const method = data.type === 'topics' ? topics.getTopicsFromSet : posts.getPostSummariesFromSet;
 	return await method(sets, req.uid, start, stop);
+}
+
+async function getItemCount(sets, data, settings) {
+	if (!settings.usePagination) {
+		return 0;
+	}
+	if (data.getItemCount) {
+		return await data.getItemCount(sets);
+	}
+	return await db.sortedSetsCardSum(sets);
 }
