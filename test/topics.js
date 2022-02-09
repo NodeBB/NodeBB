@@ -2830,7 +2830,7 @@ describe('Topic\'s', () => {
 	});
 });
 
-describe('Topics\'s', async () => {
+describe('Topics\'', async () => {
 	let files;
 
 	before(async () => {
