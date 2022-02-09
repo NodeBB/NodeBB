@@ -1,10 +1,10 @@
 'use strict';
 
-const colors = require('colors/safe');
 const nconf = require('nconf');
 const validator = require('validator');
 const querystring = require('querystring');
 const _ = require('lodash');
+const chalk = require('chalk');
 
 const translator = require('../translator');
 const user = require('../user');
@@ -451,7 +451,7 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 
 		if (global.env === 'development') {
 			returnPayload.stack = payload.stack;
-			process.stdout.write(`[${colors.yellow('api')}] Exception caught, error with stack trace follows:\n`);
+			process.stdout.write(`[${chalk.yellow('api')}] Exception caught, error with stack trace follows:\n`);
 			process.stdout.write(payload.stack);
 		}
 		res.status(statusCode).json(returnPayload);

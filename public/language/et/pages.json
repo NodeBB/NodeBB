@@ -54,6 +54,7 @@
     "account/upvoted": "Postitused %1 poolt heaks kiidetud",
     "account/downvoted": "Postitused %1 poolt vastu hääletatud",
     "account/best": "Parimad postitused %1 poolt",
+    "account/controversial": "Controversial posts made by %1",
     "account/blocks": "Blocked users for %1",
     "account/uploads": "Uploads by %1",
     "account/sessions": "Login Sessions",

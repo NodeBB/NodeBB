@@ -218,7 +218,7 @@ Emailer.send = async (template, uid, params) => {
 		throw Error('[emailer] App not ready!');
 	}
 
-	let userData = await User.getUserFields(uid, ['email', 'username', 'email:confirmed']);
+	let userData = await User.getUserFields(uid, ['email', 'username', 'email:confirmed', 'banned']);
 
 	// 'welcome' and 'verify-email' explicitly used passed-in email address
 	if (['welcome', 'verify-email'].includes(template)) {
@@ -226,6 +226,14 @@ Emailer.send = async (template, uid, params) => {
 	}
 
 	({ template, userData, params } = await Plugins.hooks.fire('filter:email.prepare', { template, uid, userData, params }));
+
+	if (!meta.config.sendEmailToBanned && template !== 'banned') {
+		if (userData.banned) {
+			winston.warn(`[emailer/send] User ${userData.username} (uid: ${uid}) is banned; not sending email due to system config.`);
+			return;
+		}
+	}
+
 	if (!userData || !userData.email) {
 		if (process.env.NODE_ENV === 'development') {
 			winston.warn(`uid : ${uid} has no email, not sending "${template}" email.`);

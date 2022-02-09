@@ -1,6 +1,6 @@
 {
     "chat.chatting_with": "Klepetajte z",
-    "chat.placeholder": "Sem vpišite sporočilo, nato potrdite za pošiljanje.",
+    "chat.placeholder": "Type chat message here, drag & drop images, press enter to send",
     "chat.scroll-up-alert": "You are looking at older messages, click here to go to most recent message.",
     "chat.send": "Pošlji",
     "chat.no_active": "Ni aktivnih klepetov.",

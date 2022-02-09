@@ -645,10 +645,10 @@
 
 			params.forEach(function (param) {
 				const val = param.split('=');
-				let key = decodeURI(val[0]);
+				let key = decodeURIComponent(val[0]);
 				const value = (
 					options.disableToType ||
-					options.skipToType[key] ? decodeURI(val[1]) : utils.toType(decodeURI(val[1]))
+					options.skipToType[key] ? decodeURIComponent(val[1]) : utils.toType(decodeURIComponent(val[1]))
 				);
 
 				if (key) {

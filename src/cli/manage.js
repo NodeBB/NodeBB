@@ -3,6 +3,7 @@
 const winston = require('winston');
 const childProcess = require('child_process');
 const CliGraph = require('cli-graph');
+const chalk = require('chalk');
 
 const build = require('../meta/build');
 const db = require('../database');
@@ -76,9 +77,9 @@ async function listPlugins() {
 	process.stdout.write('Active plugins:\n');
 	combined.forEach((plugin) => {
 		process.stdout.write(`\t* ${plugin.id}${plugin.version ? `@${plugin.version}` : ''} (`);
-		process.stdout.write(plugin.installed ? 'installed'.green : 'not installed'.red);
+		process.stdout.write(plugin.installed ? chalk.green('installed') : chalk.red('not installed'));
 		process.stdout.write(', ');
-		process.stdout.write(plugin.active ? 'enabled'.green : 'disabled'.yellow);
+		process.stdout.write(plugin.active ? chalk.green('enabled') : chalk.yellow('disabled'));
 		process.stdout.write(')\n');
 	});
 
@@ -88,9 +89,9 @@ async function listPlugins() {
 async function listEvents(count = 10) {
 	await db.init();
 	const eventData = await events.getEvents('', 0, count - 1);
-	console.log((`\nDisplaying last ${count} administrative events...`).bold);
+	console.log(chalk.bold(`\nDisplaying last ${count} administrative events...`));
 	eventData.forEach((event) => {
-		console.log(`  * ${String(event.timestampISO).green} ${String(event.type).yellow}${event.text ? ` ${event.text}` : ''}${' (uid: '.reset}${event.uid ? event.uid : 0})`);
+		console.log(`  * ${chalk.green(String(event.timestampISO))} ${chalk.yellow(String(event.type))}${event.text ? ` ${event.text}` : ''} (uid: ${event.uid ? event.uid : 0})`);
 	});
 	process.exit();
 }

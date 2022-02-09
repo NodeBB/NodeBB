@@ -5,6 +5,7 @@
     "most_flags": "Flest flagg",
     "search": "Søk",
     "enter_username": "Skriv inn et brukernavn for å søke",
+    "search-user-for-chat": "Search a user to start chat",
     "load_more": "Last flere",
     "users-found-search-took": "%1 bruker(e) funnet. Søket tok %2 sekunder.",
     "filter-by": "Filtrer etter",

@@ -4,6 +4,7 @@
 const _ = require('lodash');
 const validator = require('validator');
 const winston = require('winston');
+const punycode = require('punycode');
 
 const utils = require('../utils');
 const slugify = require('../slugify');
@@ -45,14 +46,28 @@ module.exports = function (User) {
 
 			data[field] = data[field].trim();
 
-			if (field === 'email') {
-				return await updateEmail(updateUid, data.email);
-			} else if (field === 'username') {
-				return await updateUsername(updateUid, data.username);
-			} else if (field === 'fullname') {
-				return await updateFullname(updateUid, data.fullname);
+			switch (field) {
+				case 'email': {
+					return await updateEmail(updateUid, data.email);
+				}
+
+				case 'username': {
+					return await updateUsername(updateUid, data.username);
+				}
+
+				case 'fullname': {
+					return await updateFullname(updateUid, data.fullname);
+				}
+
+				case 'website': {
+					updateData[field] = punycode.toASCII(data[field]);
+					break;
+				}
+
+				default: {
+					updateData[field] = data[field];
+				}
 			}
-			updateData[field] = data[field];
 		}));
 
 		if (Object.keys(updateData).length) {

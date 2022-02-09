@@ -54,6 +54,7 @@
     "account/upvoted": "Berichten omhoog gestemd door %1",
     "account/downvoted": "Berichten omlaag gestemd door %1",
     "account/best": "Beste berichten geplaast door %1",
+    "account/controversial": "Controversial posts made by %1",
     "account/blocks": "Gebruikers geblokkeerd door %1",
     "account/uploads": "Uploads door %1",
     "account/sessions": "Login sessies",

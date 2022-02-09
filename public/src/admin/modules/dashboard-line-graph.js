@@ -182,7 +182,8 @@ define('admin/modules/dashboard-line-graph', ['Chart', 'translator', 'benchpress
 					count: amount,
 				});
 				apiEl.attr('href', `${config.relative_path}/api/v3/admin/analytics/${ajaxify.data.set}?${newHref}`);
-				ajaxify.updateHistory(`${ajaxify.data.url.slice(1)}?${newHref}`, true);
+				const url = ajaxify.removeRelativePath(ajaxify.data.url.slice(1));
+				ajaxify.updateHistory(`${url}?${newHref}`, true);
 				hooks.fire('action:admin.dashboard.updateGraph', {
 					graph: Graph._current,
 				});

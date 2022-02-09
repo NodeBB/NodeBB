@@ -43,5 +43,6 @@
 	"include-unverified-emails": "Envoyer des mails aux destinataires qui n'ont pas explicitement confirmé leurs mails",
 	"include-unverified-warning": "Par défaut, les utilisateurs dont les mails sont associés à leur compte ont déjà été vérifiés, mais il existe des situations où ce n'est pas le cas (par exemple, les connexions SSO, les utilisateurs bénéficiant de droits acquis, etc.). <strong>Activez ce paramètre à vos risques et périls </strong>&ndash; l'envoi de mails à des adresses non vérifiées peut constituer une violation des lois anti-spam régionales.",
 	"prompt": "Inviter les utilisateurs à saisir ou à confirmer leurs emails",
-	"prompt-help": "Si un utilisateur n'a pas défini d'email ou si son email n'est pas confirmé, un avertissement s'affichera à l'écran."
+	"prompt-help": "Si un utilisateur n'a pas défini d'email ou si son email n'est pas confirmé, un avertissement s'affichera à l'écran.",
+	"sendEmailToBanned": "Envoyer des e-mails aux utilisateurs même s'ils ont été bannis"
 }

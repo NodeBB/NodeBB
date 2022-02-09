@@ -54,6 +54,7 @@
     "account/upvoted": "Posts votados positivamente por %1",
     "account/downvoted": "Posts votados negativamente por %1",
     "account/best": "Melhores posts de %1",
+    "account/controversial": "Controversial posts made by %1",
     "account/blocks": "Usuários bloqueados para %1",
     "account/uploads": "Uploads feitos por %1",
     "account/sessions": "Sessões de Login",

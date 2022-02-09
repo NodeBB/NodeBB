@@ -43,5 +43,6 @@
 	"include-unverified-emails": "Gửi email đến những người nhận chưa xác nhận rõ ràng email của họ",
 	"include-unverified-warning": "Theo mặc định, người dùng có email được liên kết với tài khoản của họ đã được xác minh, nhưng có những trường hợp không phải như vậy (ví dụ: đăng nhập SSO, người dùng phổ thông, v.v.). <strong>Bạn tự chịu rủi ro khi bật cài đặt này</strong> &ndash; gửi email đến các địa chỉ chưa được xác minh có thể vi phạm luật chống thư rác trong khu vực.",
 	"prompt": "Nhắc người dùng nhập hoặc xác nhận email của họ",
-	"prompt-help": "Nếu người dùng chưa cung cấp email hoặc email của họ chưa được xác nhận, một cảnh báo sẽ được hiển thị trên màn hình."
+	"prompt-help": "Nếu người dùng chưa cung cấp email hoặc email của họ chưa được xác nhận, một cảnh báo sẽ được hiển thị trên màn hình.",
+	"sendEmailToBanned": "Gửi email cho người dùng ngay cả khi họ đã bị cấm"
 }

@@ -54,6 +54,7 @@
     "account/upvoted": "Понравилось пользователю %1",
     "account/downvoted": "Не понравилось пользователю %1",
     "account/best": "Лучшие сообщения %1",
+    "account/controversial": "Controversial posts made by %1",
     "account/blocks": "Пользователи, заблокированные %1",
     "account/uploads": "Загрузки %1",
     "account/sessions": "Сессии",

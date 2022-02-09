@@ -6,15 +6,13 @@ const cproc = require('child_process');
 const semver = require('semver');
 const fs = require('fs');
 const path = require('path');
-const nconf = require('nconf');
+const chalk = require('chalk');
 
 const { paths, pluginNamePattern } = require('../constants');
+const pkgInstall = require('./package-install');
 
-const packageManager = nconf.get('package_manager');
-
-const supportedPackageManagerList = require('./package-install').supportedPackageManager; // load config from src/cli/package-install.js
-
-let packageManagerExecutable = supportedPackageManagerList.indexOf(packageManager) >= 0 ? packageManager : 'npm';
+const packageManager = pkgInstall.getPackageManager();
+let packageManagerExecutable = packageManager;
 const packageManagerInstallArgs = packageManager === 'yarn' ? ['add'] : ['install', '--save'];
 
 if (process.platform === 'win32') {
@@ -96,11 +94,11 @@ async function checkPlugins() {
 
 	const toCheck = Object.keys(plugins);
 	if (!toCheck.length) {
-		process.stdout.write('  OK'.green + ''.reset);
+		process.stdout.write(chalk.green('  OK'));
 		return []; // no extraneous plugins installed
 	}
 	const suggestedModules = await getSuggestedModules(nbbVersion, toCheck);
-	process.stdout.write('  OK'.green + ''.reset);
+	process.stdout.write(chalk.green('  OK'));
 
 	let current;
 	let suggested;
@@ -125,12 +123,12 @@ async function upgradePlugins() {
 	try {
 		const found = await checkPlugins();
 		if (found && found.length) {
-			process.stdout.write(`\n\nA total of ${String(found.length).bold} package(s) can be upgraded:\n\n`);
+			process.stdout.write(`\n\nA total of ${chalk.bold(String(found.length))} package(s) can be upgraded:\n\n`);
 			found.forEach((suggestObj) => {
-				process.stdout.write(`${'  * '.yellow + suggestObj.name.reset} (${suggestObj.current.yellow}${' -> '.reset}${suggestObj.suggested.green}${')\n'.reset}`);
+				process.stdout.write(`${chalk.yellow('  * ') + suggestObj.name} ('${chalk.yellow(suggestObj.current)}' -> '${chalk.green(suggestObj.suggested)}')\n'`);
 			});
 		} else {
-			console.log('\nAll packages up-to-date!'.green + ''.reset);
+			console.log(chalk.green('\nAll packages up-to-date!'));
 			return;
 		}
 
@@ -140,7 +138,7 @@ async function upgradePlugins() {
 		prompt.start();
 		const result = await prompt.get({
 			name: 'upgrade',
-			description: '\nProceed with upgrade (y|n)?'.reset,
+			description: '\nProceed with upgrade (y|n)?',
 			type: 'string',
 		});
 
@@ -150,10 +148,10 @@ async function upgradePlugins() {
 
 			cproc.execFileSync(packageManagerExecutable, args, { stdio: 'ignore' });
 		} else {
-			console.log('Package upgrades skipped'.yellow + '. Check for upgrades at any time by running "'.reset + './nodebb upgrade -p'.green + '".'.reset);
+			console.log(`${chalk.yellow('Package upgrades skipped')}. Check for upgrades at any time by running "${chalk.green('./nodebb upgrade -p')}".`);
 		}
 	} catch (err) {
-		console.log('Warning'.yellow + ': An unexpected error occured when attempting to verify plugin upgradability'.reset);
+		console.log(`${chalk.yellow('Warning')}: An unexpected error occured when attempting to verify plugin upgradability`);
 		throw err;
 	}
 }

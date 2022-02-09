@@ -52,6 +52,13 @@
 			<p class="help-block">[[admin/settings/email:prompt-help]]</p>
 
 			<div class="checkbox">
+				<label for="sendEmailToBanned" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" id="sendEmailToBanned" data-field="sendEmailToBanned" name="sendEmailToBanned" />
+					<span class="mdl-switch__label">[[admin/settings/email:sendEmailToBanned]]</span>
+				</label>
+			</div>
+
+			<div class="checkbox">
 				<label for="removeEmailNotificationImages" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" id="removeEmailNotificationImages" data-field="removeEmailNotificationImages" name="removeEmailNotificationImages" />
 					<span class="mdl-switch__label">[[admin/settings/email:notifications.remove-images]]</span>

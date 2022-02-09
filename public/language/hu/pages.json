@@ -54,6 +54,7 @@
     "account/upvoted": "%1 által kedvelt témakörök",
     "account/downvoted": "%1 által utált témakörök",
     "account/best": "%1 által írt legjobb hozzászólások",
+    "account/controversial": "Controversial posts made by %1",
     "account/blocks": "Felhasználó letiltva erről: %1",
     "account/uploads": "Feltöltések általa: %1",
     "account/sessions": "Bejelentkezések munkamenete",

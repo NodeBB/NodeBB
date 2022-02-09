@@ -1,9 +1,9 @@
 'use strict';
 
-require('colors');
 const path = require('path');
 const winston = require('winston');
 const fs = require('fs');
+const chalk = require('chalk');
 
 const db = require('../database');
 const events = require('../events');
@@ -57,8 +57,8 @@ exports.reset = async function (options) {
 
 	if (!tasks.length) {
 		console.log([
-			'No arguments passed in, so nothing was reset.\n'.yellow,
-			`Use ./nodebb reset ${'{-t|-p|-w|-s|-a}'.red}`,
+			chalk.yellow('No arguments passed in, so nothing was reset.\n'),
+			`Use ./nodebb reset ${chalk.red('{-t|-p|-w|-s|-a}')}`,
 			'    -t\tthemes',
 			'    -p\tplugins',
 			'    -w\twidgets',

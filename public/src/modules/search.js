@@ -113,7 +113,7 @@ define('search', ['translator', 'storage', 'hooks', 'alerts'], function (transla
 			options.searchOptions.searchOnly = 1;
 			Search.api(options.searchOptions, function (data) {
 				quickSearchResults.find('.loading-indicator').addClass('hidden');
-				if (options.hideOnNoMatches && !data.posts.length) {
+				if (!data.posts || (options.hideOnNoMatches && !data.posts.length)) {
 					return quickSearchResults.addClass('hidden').find('.quick-search-results-container').html('');
 				}
 				data.posts.forEach(function (p) {

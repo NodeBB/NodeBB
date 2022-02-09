@@ -54,6 +54,7 @@
     "account/upvoted": "Príspevky, ktorým používateľ %1 dal hlas",
     "account/downvoted": "Nesúhlasí s príspevkom %1",
     "account/best": "Najlepšie príspevky vytvorené užívateľom %1",
+    "account/controversial": "Controversial posts made by %1",
     "account/blocks": "Zablokovaní používatelia z %1",
     "account/uploads": "Nahraté od %1",
     "account/sessions": "Login Sessions",

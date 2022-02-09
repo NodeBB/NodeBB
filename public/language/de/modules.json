@@ -1,6 +1,6 @@
 {
     "chat.chatting_with": "Chat mit",
-    "chat.placeholder": "Schreibe hier etwas, und drücke Enter zum Absenden.",
+    "chat.placeholder": "Type chat message here, drag & drop images, press enter to send",
     "chat.scroll-up-alert": "Diese Nachrichten sind möglicherweise veraltet, klicke hier um neuere Nachrichten anzuzeigen.",
     "chat.send": "Senden",
     "chat.no_active": "Du hast keine aktiven Chats.",

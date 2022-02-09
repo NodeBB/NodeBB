@@ -4,6 +4,7 @@ const nconf = require('nconf');
 const url = require('url');
 const winston = require('winston');
 const path = require('path');
+const chalk = require('chalk');
 
 const pkg = require('../package.json');
 const { paths } = require('./constants');
@@ -111,7 +112,7 @@ function versionCheck() {
 
 	if (!compatible) {
 		winston.warn('Your version of Node.js is too outdated for NodeBB. Please update your version of Node.js.');
-		winston.warn(`Recommended ${range.green}${', '.reset}${version.yellow}${' provided\n'.reset}`);
+		winston.warn(`Recommended ${chalk.green(range)}, ${chalk.yellow(version)} provided\n`);
 	}
 }
 

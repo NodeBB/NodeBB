@@ -26,41 +26,44 @@ define('settings/sorted-list', [
 				values[key].push(formData);
 			});
 		},
-		get: function ($container, hash) {
-			const $list = $container.find('[data-type="list"]');
-			const key = $container.attr('data-sorted-list');
-			const formTpl = $container.attr('data-form-template');
-
-			benchpress.render(formTpl, {}).then(function (formHtml) {
-				const addBtn = $('[data-sorted-list="' + key + '"] [data-type="add"]');
-
-				addBtn.on('click', function () {
-					const modal = bootbox.confirm(formHtml, function (save) {
-						if (save) {
-							SortedList.addItem(modal.find('form').children(), $container);
-						}
-					});
-				});
-
-				const call = $container.parents('form').attr('data-socket-get');
-				const list = ajaxify.data[call ? hash : 'settings'][key];
-
-				if (Array.isArray(list) && typeof list[0] !== 'string') {
-					list.forEach(function (item) {
-						const itemUUID = utils.generateUUID();
-						const form = $(formHtml).deserialize(item);
-						form.attr('data-sorted-list-uuid', itemUUID);
-						form.attr('data-sorted-list-object', key);
-						$('#content').append(form.hide());
-
-						parse($container, itemUUID, item).then(() => {
-							hooks.fire('action:settings.sorted-list.loaded', { element: $list.get(0) });
-						});
-					});
-				}
+		get: async ($container, hash) => {
+			const { listEl, key, formTpl, formValues } = await hooks.fire('filter:settings.sorted-list.load', {
+				listEl: $container.find('[data-type="list"]'),
+				key: $container.attr('data-sorted-list'),
+				formTpl: $container.attr('data-form-template'),
+				formValues: {},
 			});
 
-			$list.sortable().addClass('pointer');
+			const formHtml = await benchpress.render(formTpl, formValues);
+
+			const addBtn = $('[data-sorted-list="' + key + '"] [data-type="add"]');
+
+			addBtn.on('click', function () {
+				const modal = bootbox.confirm(formHtml, function (save) {
+					if (save) {
+						SortedList.addItem(modal.find('form').children(), $container);
+					}
+				});
+			});
+
+			const call = $container.parents('form').attr('data-socket-get');
+			const list = ajaxify.data[call ? hash : 'settings'][key];
+
+			if (Array.isArray(list) && typeof list[0] !== 'string') {
+				list.forEach(function (item) {
+					const itemUUID = utils.generateUUID();
+					const form = $(formHtml).deserialize(item);
+					form.attr('data-sorted-list-uuid', itemUUID);
+					form.attr('data-sorted-list-object', key);
+					$('#content').append(form.hide());
+
+					parse($container, itemUUID, item).then(() => {
+						hooks.fire('action:settings.sorted-list.loaded', { element: listEl.get(0) });
+					});
+				});
+			}
+
+			listEl.sortable().addClass('pointer');
 		},
 		addItem: function ($formElements, $target) {
 			const key = $target.attr('data-sorted-list');

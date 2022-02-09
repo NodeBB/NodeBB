@@ -1,3 +1,62 @@
+#### v1.19.1 (2022-01-21)
+
+##### Chores
+
+* **deps:**
+  *  bump compare-versions from 4.1.2 to 4.1.3 in /install (#10154) (4a5182e4)
+  *  update dependency lint-staged to v12.2.2 (f090de36)
+  *  update dependency @commitlint/cli to v16.1.0 (44d81a95)
+  *  update dependency lint-staged to v12.2.1 (857ac480)
+  *  update dependency @commitlint/cli to v16.0.3 (9c63d076)
+  *  update dependency lint-staged to v12.2.0 (1a0c117d)
+  *  update dependency eslint to v8.7.0 (8abaf3f6)
+  *  update dependency mocha to v9.1.4 (f5ad173b)
+*  up persona (89871d71)
+*  add test.sh to gitignore (d7796f0b)
+*  delete test script (250274c7)
+*  remove unused lang key #10180 (2fe91e36)
+*  incrementing version number - v1.19.0 (18b0a29f)
+*  update changelog for v1.19.0 (c8f1bc53)
+* **i18n:**
+  *  fallback strings for new resources: nodebb.admin-settings-user (78cd6de7)
+  *  fallback strings for new resources: nodebb.user (3ec9197c)
+  *  fallback strings for new resources: nodebb.email (354aa1a5)
+
+##### New Features
+
+*  revert label js change (1c80adf1)
+*  hide all categories link on flags filters (e9d0db28)
+*  nicer error handling for bad jwt in unsubscribe template (31ea2266)
+
+##### Bug Fixes
+
+* **deps:**
+  *  update dependency jquery-ui to v1.13.1 (#10186) (55b3a355)
+  *  update dependency multiparty to v4.2.3 (#10188) (7fa2ba70)
+  *  update dependency nodebb-theme-persona to v11.3.15 (#10155) (e03d4747)
+  *  update dependency mongodb to v4.3.1 (#10178) (693ca1f1)
+  *  update dependency nodebb-plugin-composer-default to v7.0.18 (#10164) (2c75cce6)
+*  urls used when recent/unread/popular/top is used as the homepage (28359665)
+*  mark unread button showing the selected category (fdfafb44)
+*  catch exceptions from sendNotifications (c1ec2047)
+*  multiple cid filter on flags page (3e8cb732)
+*  post indices if there is a blocked user in topic (f9279b63)
+*  dont add duplicate link backs (3b72ff87)
+*  #10175, fix topic linkbacks duplicating on post edit (b06c6329)
+*  #10173, don't show optional message if email is required (d1eb21c5)
+*  #10172, fix postqueue accept/reject notification text (6a75ed50)
+*  #10167, fix regression prevent guest post (4799efc7)
+*  CSRF handler to go back to saving in session (#10159) (e9ee843b)
+*  #10158, fix extra padding (03f5cbcc)
+
+##### Refactors
+
+*  add method to error messages (c9fabb0e)
+
+##### Tests
+
+*  add failing guest csrf test (#10169) (10949184)
+
 #### v1.19.0 (2022-01-13)
 
 ##### Breaking Changes

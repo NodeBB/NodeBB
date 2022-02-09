@@ -45,7 +45,7 @@
 	"admin-tags": "Тэги",
 	"admin-settings": "Настройки",
 
-	"alert.confirm-moderate": "<strong>Are you sure you wish to grant the moderation privilege to this user group?</strong> This group is public, and any users can join at will.",
+	"alert.confirm-moderate": "<strong>Вы уверены, что хотите наделить правами модерации эту группу?</strong> Эта группа является публичной, и к ней может присоединиться любой пользователь.",
 	"alert.confirm-admins-mods": "<strong>Are you sure you wish to grant the &quot;Admins &amp; Mods&quot; privilege to this user/group?</strong> Users with this privilege are able to promote and demote other users into privileged positions, <em>including super administrator</em>",
 	"alert.confirm-save": "Вы действительно хотите сохранить эти права доступа",
 	"alert.saved": "Изменения прав доступа сохранены и применены",

@@ -5,6 +5,7 @@
     "most_flags": "Most Flags",
     "search": "Search",
     "enter_username": "Enter a username to search",
+    "search-user-for-chat": "Search a user to start chat",
     "load_more": "Load More",
     "users-found-search-took": "%1 user(s) found! Search took %2 seconds.",
     "filter-by": "Filter By",

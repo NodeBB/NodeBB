@@ -54,6 +54,7 @@
     "account/upvoted": "Bài đăng được %1 ủng hộ",
     "account/downvoted": "Bài viết %1 phản đối",
     "account/best": "Bài viết hay nhất của %1",
+    "account/controversial": "Các bài đăng gây tranh cãi được thực hiện bởi %1",
     "account/blocks": "Người dùng bị chặn vì %1",
     "account/uploads": "Tải lên bởi %1",
     "account/sessions": "Phiên Đăng Nhập",

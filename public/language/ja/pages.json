@@ -54,6 +54,7 @@
     "account/upvoted": "%1が投稿を高評価しました",
     "account/downvoted": "%1が投稿を低評価しました",
     "account/best": "%1のベストな投稿",
+    "account/controversial": "Controversial posts made by %1",
     "account/blocks": "%1のユーザーをブロックしました",
     "account/uploads": "Uploads by %1",
     "account/sessions": "Login Sessions",

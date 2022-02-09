@@ -54,6 +54,7 @@
     "account/upvoted": "%1 balsojis \"par\"",
     "account/downvoted": "%1 balsojis \"pret\"",
     "account/best": "%1 labākie raksti",
+    "account/controversial": "Controversial posts made by %1",
     "account/blocks": "%1 bloķētie lietotāji",
     "account/uploads": "%1 augšupielādes",
     "account/sessions": "Aktīvās sesijas",

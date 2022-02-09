@@ -196,7 +196,9 @@ define('chat', [
 
 	module.createModal = function (data, callback) {
 		callback = callback || function () {};
-		require(['scrollStop', 'forum/chats', 'forum/chats/messages'], function (scrollStop, Chats, ChatsMessages) {
+		require([
+			'scrollStop', 'forum/chats', 'forum/chats/messages',
+		], function (scrollStop, Chats, ChatsMessages) {
 			app.parseAndTranslate('chat', data, function (chatModal) {
 				if (module.modalExists(data.roomId)) {
 					return callback(module.getModal(data.roomId));
@@ -233,7 +235,7 @@ define('chat', [
 							taskbar.updateActive(uuid);
 						},
 						stop: function () {
-							chatModal.find('#chat-message-input').focus();
+							module.focusInput(chatModal);
 						},
 						distance: 10,
 						handle: '.modal-header',
@@ -297,6 +299,14 @@ define('chat', [
 
 				Chats.addCharactersLeftHandler(chatModal);
 				Chats.addIPHandler(chatModal);
+
+				Chats.addUploadHandler({
+					dragDropAreaEl: chatModal.find('.modal-content'),
+					pasteEl: chatModal,
+					uploadFormEl: chatModal.find('[component="chat/upload"]'),
+					inputEl: chatModal.find('[component="chat/input"]'),
+				});
+
 				ChatsMessages.addSocketListeners();
 
 				taskbar.push('chat', chatModal.attr('data-uuid'), {
@@ -318,7 +328,9 @@ define('chat', [
 	};
 
 	module.focusInput = function (chatModal) {
-		chatModal.find('[component="chat/input"]').focus();
+		setTimeout(function () {
+			chatModal.find('[component="chat/input"]').focus();
+		}, 20);
 	};
 
 	module.close = function (chatModal) {

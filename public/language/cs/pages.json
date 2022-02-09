@@ -54,6 +54,7 @@
     "account/upvoted": "Souhlasí s příspěvkem %1",
     "account/downvoted": "Nesouhlasí s příspěvkem %1",
     "account/best": "Nejlepší příspěvky od %1",
+    "account/controversial": "Controversial posts made by %1",
     "account/blocks": "Zablokovaní uživatelé z %1",
     "account/uploads": "Nahráno od %1",
     "account/sessions": "Relace s přihlášením",

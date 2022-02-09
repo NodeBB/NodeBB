@@ -55,6 +55,25 @@ const templateToData = {
 			const cids = await categories.getCidsByPrivilege('categories:cid', callerUid, 'topics:read');
 			return cids.map(c => `cid:${c}:uid:${userData.uid}:pids:votes`);
 		},
+		getTopics: async (sets, req, start, stop) => {
+			const pids = await db.getSortedSetRevRangeByScore(sets, start, stop - start + 1, '+inf', 1);
+			const postObjs = await posts.getPostSummaryByPids(pids, req.uid, { stripTags: false });
+			return { posts: postObjs, nextStart: stop + 1 };
+		},
+	},
+	'account/controversial': {
+		type: 'posts',
+		noItemsFoundKey: '[[user:has_no_voted_posts]]',
+		crumb: '[[global:controversial]]',
+		getSets: async function (callerUid, userData) {
+			const cids = await categories.getCidsByPrivilege('categories:cid', callerUid, 'topics:read');
+			return cids.map(c => `cid:${c}:uid:${userData.uid}:pids:votes`);
+		},
+		getTopics: async (sets, req, start, stop) => {
+			const pids = await db.getSortedSetRangeByScore(sets, start, stop - start + 1, '-inf', -1);
+			const postObjs = await posts.getPostSummaryByPids(pids, req.uid, { stripTags: false });
+			return { posts: postObjs, nextStart: stop + 1 };
+		},
 	},
 	'account/watched': {
 		type: 'topics',
@@ -126,6 +145,10 @@ postsController.getDownVotedPosts = async function (req, res, next) {
 
 postsController.getBestPosts = async function (req, res, next) {
 	await getPostsFromUserSet('account/best', req, res, next);
+};
+
+postsController.getControversialPosts = async function (req, res, next) {
+	await getPostsFromUserSet('account/controversial', req, res, next);
 };
 
 postsController.getWatchedTopics = async function (req, res, next) {

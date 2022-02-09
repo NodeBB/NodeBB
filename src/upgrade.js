@@ -6,6 +6,7 @@ const util = require('util');
 const semver = require('semver');
 const readline = require('readline');
 const winston = require('winston');
+const chalk = require('chalk');
 
 const db = require('./database');
 const file = require('./file');
@@ -118,7 +119,7 @@ Upgrade.runParticular = async function (names) {
 };
 
 Upgrade.process = async function (files, skipCount) {
-	console.log('OK'.green + ' | '.reset + String(files.length).cyan + ' script(s) found'.cyan + (skipCount > 0 ? ', '.cyan + String(skipCount).cyan + ' skipped'.cyan : ''));
+	console.log(`${chalk.green('OK')} | ${chalk.cyan(`${files.length} script(s) found`)}${skipCount > 0 ? chalk.cyan(`, ${skipCount} skipped`) : ''}`);
 	const [schemaDate, schemaLogCount] = await Promise.all([
 		db.get('schemaDate'),
 		db.sortedSetCard('schemaLog'),
@@ -138,11 +139,11 @@ Upgrade.process = async function (files, skipCount) {
 			date: date,
 		};
 
-		process.stdout.write(`${'  → '.white + String(`[${[date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/')}] `).gray + String(scriptExport.name).reset}...`);
+		process.stdout.write(`${chalk.white('  → ') + chalk.gray(`[${[date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/')}] `) + scriptExport.name}...`);
 
 		// For backwards compatibility, cross-reference with schemaDate (if found). If a script's date is older, skip it
 		if ((!schemaDate && !schemaLogCount) || (scriptExport.timestamp <= schemaDate && semver.lt(version, '1.5.0'))) {
-			process.stdout.write(' skipped\n'.grey);
+			process.stdout.write(chalk.grey(' skipped\n'));
 
 			await db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'));
 			// eslint-disable-next-line no-continue
@@ -165,13 +166,13 @@ Upgrade.process = async function (files, skipCount) {
 			throw err;
 		}
 		const upgradeDuration = ((Date.now() - upgradeStart) / 1000).toFixed(2);
-		process.stdout.write(` OK (${upgradeDuration} seconds)\n`.green);
+		process.stdout.write(chalk.green(` OK (${upgradeDuration} seconds)\n`));
 
 		// Record success in schemaLog
 		await db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'));
 	}
 
-	console.log('Schema update complete!\n'.green);
+	console.log(chalk.green('Schema update complete!\n'));
 };
 
 Upgrade.incrementProgress = function (value) {

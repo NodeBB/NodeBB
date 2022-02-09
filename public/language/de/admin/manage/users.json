@@ -93,8 +93,8 @@
 	"alerts.confirm-delete": "<strong>Warning!</strong><p>Do you really want to delete <strong>user(s)</strong>?</p><p>This action is not reversible! Only the user account will be deleted, their posts and topics will remain.</p>",
 	"alerts.delete-success": "Benutzer gelöscht!",
 	"alerts.confirm-delete-content": "<strong>Warning!</strong><p>Do you really want to delete these user(s) <strong>content</strong>?</p><p>This action is not reversible! The users' accounts will remain, but their posts and topics will be deleted.</p>",
-	"alerts.delete-content-success": "User(s) Content Deleted!",
-	"alerts.confirm-purge": "<strong>Warning!</strong><p>Do you really want to delete <strong>user(s) and their content</strong>?</p><p>This action is not reversible! All user data and content will be erased!</p>",
+	"alerts.delete-content-success": "Beiträge des/der Nutzer(s) gelöscht!",
+	"alerts.confirm-purge": "<strong>Warnung!</strong><p>Bist du sicher, dass Du den/die <strong>Nutzer und deren Beiträge</strong> löschen möchtest?</p><p>Diese Aktion kann nicht rückgängig gemacht werden! Alle Nutzerdaten und Beiträge werden dabei gelöscht!</p>",
 	"alerts.create": "Nutzer Erstellen",
 	"alerts.button-create": "Erstellen",
 	"alerts.button-cancel": "Abbrechen",
@@ -104,7 +104,7 @@
 
 	"alerts.prompt-email": "E-Mails:",
 	"alerts.email-sent-to": "Eine Einladungsemail wurde an %1 gesendet",
-	"alerts.x-users-found": "%1 user(s) found, (%2 seconds)",
+	"alerts.x-users-found": "%1 Benutzer gefunden, (%2 Sekunden)",
 	"export-users-started": "Der Export von Benutzern als CSV kann eine Weile dauern. Sie erhalten eine Benachrichtigung, wenn es abgeschlossen ist.",
 	"export-users-completed": "Benutzer wurden als CSV exportiert, klicken Sie hier, um sie herunterzuladen."
 }

@@ -1315,6 +1315,15 @@ describe('Controllers', () => {
 			});
 		});
 
+		it('should load /user/foo/controversial', (done) => {
+			request(`${nconf.get('url')}/api/user/foo/controversial`, (err, res, body) => {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
 		it('should load /user/foo/watched', (done) => {
 			request(`${nconf.get('url')}/api/user/foo/watched`, { jar: jar }, (err, res, body) => {
 				assert.ifError(err);

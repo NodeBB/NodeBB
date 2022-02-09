@@ -54,6 +54,7 @@
     "account/upvoted": "Mensaxes votadas positivamente por %1",
     "account/downvoted": "Mensaxes votadas negativamente por %1",
     "account/best": "Mellores mensaxes escritas por %1",
+    "account/controversial": "Controversial posts made by %1",
     "account/blocks": "Blocked users for %1",
     "account/uploads": "Uploads by %1",
     "account/sessions": "Login Sessions",

@@ -15,7 +15,7 @@
     "delete_account": "Konto löschen",
     "delete_account_as_admin": "<strong>Konto</strong> löschen",
     "delete_content": "Konto-<strong>Inhalt</strong> löschen",
-    "delete_all": "<strong>Konto</strong> und<strong>Inhalt</strong> löschen",
+    "delete_all": "<strong>Konto</strong> und <strong>Inhalt</strong> löschen",
     "delete_account_confirm": "Bist du sicher, dass du diesen Account löschen und deine Beiträge anonymisieren mnöchtest?<br /><strong>Diese Aktion kann nicht rückgängig gemacht werden und die Daten können nicht wiederhergestellt werden.</strong><br /><br />Gib dein Passwort ein um das Löschen des Accounts zu bestätigen.",
     "delete_this_account_confirm": "Bist du sicher, dass du diesen Account löschen und seine Inhalte beibehalten möchstes?<br /><strong>Diese Aktion kann nicht rückgängig gemacht werden. Beiträge werden anonymisiert und können nicht wieder mit dem gelöschten Account verknüpft werden.</strong><br /><br />",
     "delete_account_content_confirm": "Bist du sicher, dass du die Inhalte dieses Accounts (Beiträge/Themen/Uploads) löschen möchtest? <br /><strong>Diese Aktion ist irreversibel und die Daten können nicht wiederhergestellt werden.</strong><br /><br />",
