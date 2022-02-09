@@ -1,6 +1,5 @@
 'use strict';
 
-const async = require('async');
 const nconf = require('nconf');
 const crypto = require('crypto');
 const path = require('path');
@@ -19,6 +18,12 @@ module.exports = function (Posts) {
 	const md5 = filename => crypto.createHash('md5').update(filename).digest('hex');
 	const pathPrefix = path.join(nconf.get('upload_path'), 'files');
 	const searchRegex = /\/assets\/uploads\/files\/([^\s")]+\.?[\w]*)/g;
+
+	const _getFullPath = relativePath => path.resolve(pathPrefix, relativePath);
+	const _filterValidPaths = async filePaths => (await Promise.all(filePaths.map(async (filePath) => {
+		const fullPath = _getFullPath(filePath);
+		return fullPath.startsWith(pathPrefix) && await file.exists(fullPath) ? filePath : false;
+	}))).filter(Boolean);
 
 	Posts.uploads.sync = async function (pid) {
 		// Scans a post's content and updates sorted set of uploads
@@ -92,8 +97,7 @@ module.exports = function (Posts) {
 		if (!filePaths.length) {
 			return;
 		}
-		// Only process files that exist
-		filePaths = await async.filter(filePaths, async filePath => await file.exists(path.join(pathPrefix, filePath)));
+		filePaths = await _filterValidPaths(filePaths); // Only process files that exist and are within uploads directory
 
 		const now = Date.now();
 		const scores = filePaths.map(() => now);
@@ -131,7 +135,7 @@ module.exports = function (Posts) {
 		});
 		await Promise.all(filePaths.map(async (fileName) => {
 			try {
-				const size = await image.size(path.join(pathPrefix, fileName));
+				const size = await image.size(_getFullPath(fileName));
 				winston.verbose(`[posts/uploads/${fileName}] Saving size`);
 				await db.setObject(`upload:${md5(fileName)}`, {
 					width: size.width,
