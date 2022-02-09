@@ -49,7 +49,7 @@ const templateToData = {
 	},
 	'account/best': {
 		type: 'posts',
-		noItemsFoundKey: '[[user:has_no_voted_posts]]',
+		noItemsFoundKey: '[[user:has_no_best_posts]]',
 		crumb: '[[global:best]]',
 		getSets: async function (callerUid, userData) {
 			const cids = await categories.getCidsByPrivilege('categories:cid', callerUid, 'topics:read');
@@ -67,7 +67,7 @@ const templateToData = {
 	},
 	'account/controversial': {
 		type: 'posts',
-		noItemsFoundKey: '[[user:has_no_voted_posts]]',
+		noItemsFoundKey: '[[user:has_no_controversial_posts]]',
 		crumb: '[[global:controversial]]',
 		getSets: async function (callerUid, userData) {
 			const cids = await categories.getCidsByPrivilege('categories:cid', callerUid, 'topics:read');
