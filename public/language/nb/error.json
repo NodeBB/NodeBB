@@ -147,7 +147,7 @@
     "cant-edit-chat-message": "Du har ikke tilgang til å redigere denne meldingen",
     "cant-delete-chat-message": " Du har ikke lov til å slette denne brukeren",
     "chat-edit-duration-expired": "Du har kun lov til å redigere meldinger i %1 sekund(er) etter at den er sendt",
-    "chat-delete-duration-expired": "Du har kun lov til å slette meldinger i % 1 sekund(er) etter den er sendt",
+    "chat-delete-duration-expired": "Du har kun lov til å slette meldinger i %1 sekund(er) etter den er sendt",
     "chat-deleted-already": "Denne meldingen har allerede blitt slettet.",
     "chat-restored-already": "Denne meldingen har allerede blitt gjenopprettet.",
     "chat-room-does-not-exist": "Dette chatterommet finnes ikke.",
