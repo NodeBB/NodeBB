@@ -17,10 +17,10 @@ module.exports = function (Posts) {
 	Posts.uploads = {};
 
 	const md5 = filename => crypto.createHash('md5').update(filename).digest('hex');
-	const pathPrefix = path.join(nconf.get('upload_path'), 'files');
-	const searchRegex = /\/assets\/uploads\/files\/([^\s")]+\.?[\w]*)/g;
+	const pathPrefix = path.join(nconf.get('upload_path'));
+	const searchRegex = /\/assets\/uploads\/(files\/[^\s")]+\.?[\w]*)/g;
 
-	const _getFullPath = relativePath => path.resolve(pathPrefix, relativePath);
+	const _getFullPath = relativePath => path.join(pathPrefix, relativePath);
 	const _filterValidPaths = async filePaths => (await Promise.all(filePaths.map(async (filePath) => {
 		const fullPath = _getFullPath(filePath);
 		return fullPath.startsWith(pathPrefix) && await file.exists(fullPath) ? filePath : false;
@@ -47,7 +47,7 @@ module.exports = function (Posts) {
 		if (isMainPost) {
 			const tid = await Posts.getPostField(pid, 'tid');
 			let thumbs = await topics.thumbs.get(tid);
-			const replacePath = path.posix.join(nconf.get('relative_path'), nconf.get('upload_url'), 'files/');
+			const replacePath = path.posix.join(`${nconf.get('relative_path')}${nconf.get('upload_url')}/`);
 			thumbs = thumbs.map(thumb => thumb.url.replace(replacePath, '')).filter(path => !validator.isURL(path, {
 				require_protocol: true,
 			}));
@@ -157,7 +157,7 @@ module.exports = function (Posts) {
 		await Promise.all(filePaths.map(async (fileName) => {
 			try {
 				const size = await image.size(_getFullPath(fileName));
-				winston.verbose(`[posts/uploads/${fileName}] Saving size`);
+				winston.verbose(`[posts/uploads/${fileName}] Saving size (${size.width}px x ${size.height}px)`);
 				await db.setObject(`upload:${md5(fileName)}`, {
 					width: size.width,
 					height: size.height,
