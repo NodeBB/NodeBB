@@ -3,11 +3,13 @@
 const path = require('path');
 const nconf = require('nconf');
 const winston = require('winston');
+const crypto = require('crypto');
 
 const db = require('../database');
 const file = require('../file');
 const batch = require('../batch');
 
+const md5 = filename => crypto.createHash('md5').update(filename).digest('hex');
 const _getFullPath = relativePath => path.resolve(nconf.get('upload_path'), relativePath);
 const _validatePath = async (relativePath) => {
 	const fullPath = _getFullPath(relativePath);
@@ -21,7 +23,10 @@ const _validatePath = async (relativePath) => {
 module.exports = function (User) {
 	User.associateUpload = async (uid, relativePath) => {
 		await _validatePath(relativePath);
-		await db.sortedSetAdd(`uid:${uid}:uploads`, Date.now(), relativePath);
+		await Promise.all([
+			db.sortedSetAdd(`uid:${uid}:uploads`, Date.now(), relativePath),
+			db.setObjectField(`upload:${md5(relativePath)}:uid`, uid),
+		]);
 	};
 
 	User.deleteUpload = async function (callerUid, uid, uploadName) {
