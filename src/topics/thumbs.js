@@ -91,7 +91,7 @@ Thumbs.associate = async function ({ id, path, score }) {
 	// Associate thumbnails with the main pid (only on local upload)
 	if (!isDraft && isLocal) {
 		const mainPid = (await topics.getMainPids([id]))[0];
-		await posts.uploads.associate(mainPid, path.replace('/files/', ''));
+		await posts.uploads.associate(mainPid, path);
 	}
 };
 

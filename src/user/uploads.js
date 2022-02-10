@@ -8,7 +8,22 @@ const db = require('../database');
 const file = require('../file');
 const batch = require('../batch');
 
+const _getFullPath = relativePath => path.resolve(nconf.get('upload_path'), relativePath);
+const _validatePath = async (relativePath) => {
+	const fullPath = _getFullPath(relativePath);
+	const exists = await file.exists(fullPath);
+
+	if (!fullPath.startsWith(nconf.get('upload_path')) || !exists) {
+		throw new Error('[[error:invalid-path]]');
+	}
+};
+
 module.exports = function (User) {
+	User.associateUpload = async (uid, relativePath) => {
+		await _validatePath(relativePath);
+		await db.sortedSetAdd(`uid:${uid}:uploads`, Date.now(), relativePath);
+	};
+
 	User.deleteUpload = async function (callerUid, uid, uploadName) {
 		const [isUsersUpload, isAdminOrGlobalMod] = await Promise.all([
 			db.isSortedSetMember(`uid:${callerUid}:uploads`, uploadName),
@@ -18,14 +33,12 @@ module.exports = function (User) {
 			throw new Error('[[error:no-privileges]]');
 		}
 
-		const finalPath = path.join(nconf.get('upload_path'), uploadName);
-		if (!finalPath.startsWith(nconf.get('upload_path'))) {
-			throw new Error('[[error:invalid-path]]');
-		}
+		await _validatePath(uploadName);
+		const fullPath = _getFullPath(uploadName);
 		winston.verbose(`[user/deleteUpload] Deleting ${uploadName}`);
 		await Promise.all([
-			file.delete(finalPath),
-			file.delete(file.appendToFileName(finalPath, '-resized')),
+			file.delete(fullPath),
+			file.delete(file.appendToFileName(fullPath, '-resized')),
 		]);
 		await db.sortedSetRemove(`uid:${uid}:uploads`, uploadName);
 	};
@@ -33,7 +46,7 @@ module.exports = function (User) {
 	User.collateUploads = async function (uid, archive) {
 		await batch.processSortedSet(`uid:${uid}:uploads`, (files, next) => {
 			files.forEach((file) => {
-				archive.file(path.join(nconf.get('upload_path'), file), {
+				archive.file(_getFullPath(file), {
 					name: path.basename(file),
 				});
 			});
