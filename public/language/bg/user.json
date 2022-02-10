@@ -105,7 +105,7 @@
     "has_no_ignored_topics": "Този потребител не е пренебрегнал нито една тема досега.",
     "has_no_upvoted_posts": "Този потребител не е гласувал положително досега.",
     "has_no_downvoted_posts": "Този потребител не е гласувал отрицателно досега.",
-    "has_no_controversial_posts": "This user does not have any downvoted posts yet.",
+    "has_no_controversial_posts": "Този потребител няма публикации с отрицателни гласове засега.",
     "has_no_blocks": "Не сте блокирали никого.",
     "email_hidden": "Е-пощата е скрита",
     "hidden": "скрито",
