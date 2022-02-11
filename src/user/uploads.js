@@ -11,11 +11,17 @@ const batch = require('../batch');
 
 const md5 = filename => crypto.createHash('md5').update(filename).digest('hex');
 const _getFullPath = relativePath => path.resolve(nconf.get('upload_path'), relativePath);
-const _validatePath = async (relativePath) => {
-	const fullPath = _getFullPath(relativePath);
-	const exists = await file.exists(fullPath);
+const _validatePath = async (relativePaths) => {
+	if (typeof relativePaths === 'string') {
+		relativePaths = [relativePaths];
+	} else if (!Array.isArray(relativePaths)) {
+		throw new Error(`[[error:wrong-parameter-type, relativePaths, ${typeof relativePaths}, array]]`);
+	}
 
-	if (!fullPath.startsWith(nconf.get('upload_path')) || !exists) {
+	const fullPaths = relativePaths.map(path => _getFullPath(path));
+	const exists = await Promise.all(fullPaths.map(async fullPath => file.exists(fullPath)));
+
+	if (!fullPaths.every(fullPath => fullPath.startsWith(nconf.get('upload_path'))) || !exists.every(Boolean)) {
 		throw new Error('[[error:invalid-path]]');
 	}
 };
@@ -29,23 +35,35 @@ module.exports = function (User) {
 		]);
 	};
 
-	User.deleteUpload = async function (callerUid, uid, uploadName) {
+	User.deleteUpload = async function (callerUid, uid, uploadNames) {
+		if (typeof uploadNames === 'string') {
+			uploadNames = [uploadNames];
+		} else if (!Array.isArray(uploadNames)) {
+			throw new Error(`[[error:wrong-parameter-type, uploadNames, ${typeof uploadNames}, array]]`);
+		}
+
 		const [isUsersUpload, isAdminOrGlobalMod] = await Promise.all([
-			db.isSortedSetMember(`uid:${callerUid}:uploads`, uploadName),
+			db.isSortedSetMembers(`uid:${callerUid}:uploads`, uploadNames),
 			User.isAdminOrGlobalMod(callerUid),
 		]);
-		if (!isAdminOrGlobalMod && !isUsersUpload) {
+		if (!isAdminOrGlobalMod && !isUsersUpload.every(Boolean)) {
 			throw new Error('[[error:no-privileges]]');
 		}
 
-		await _validatePath(uploadName);
-		const fullPath = _getFullPath(uploadName);
-		winston.verbose(`[user/deleteUpload] Deleting ${uploadName}`);
-		await Promise.all([
-			file.delete(fullPath),
-			file.delete(file.appendToFileName(fullPath, '-resized')),
-		]);
-		await db.sortedSetRemove(`uid:${uid}:uploads`, uploadName);
+		await _validatePath(uploadNames);
+
+		await batch.processArray(uploadNames, async (uploadNames) => {
+			const fullPaths = uploadNames.map(path => _getFullPath(path));
+
+			await Promise.all(fullPaths.map(async (fullPath, idx) => {
+				winston.verbose(`[user/deleteUpload] Deleting ${uploadNames[idx]}`);
+				await Promise.all([
+					file.delete(fullPath),
+					file.delete(file.appendToFileName(fullPath, '-resized')),
+				]);
+				await db.sortedSetRemove(`uid:${uid}:uploads`, uploadNames[idx]);
+			}));
+		}, { batch: 50 });
 	};
 
 	User.collateUploads = async function (uid, archive) {
