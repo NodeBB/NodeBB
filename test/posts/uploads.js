@@ -207,6 +207,16 @@ describe('upload methods', () => {
 				done();
 			});
 		});
+
+		it('should remove the image\'s user association, if present', async () => {
+			_recreateFiles();
+			await posts.uploads.associate(pid, 'files/wut.txt');
+			await user.associateUpload(uid, 'files/wut.txt');
+			await posts.uploads.dissociate(pid, 'files/wut.txt');
+
+			const userUploads = await db.getSortedSetMembers(`uid:${uid}:uploads`);
+			assert.strictEqual(userUploads.includes('files/wut.txt'), false);
+		});
 	});
 
 	describe('.dissociateAll()', () => {

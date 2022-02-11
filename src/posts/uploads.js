@@ -9,6 +9,7 @@ const validator = require('validator');
 
 const db = require('../database');
 const image = require('../image');
+const user = require('../user');
 const topics = require('../topics');
 const file = require('../file');
 const meta = require('../meta');
@@ -123,14 +124,19 @@ module.exports = function (Posts) {
 			db.sortedSetRemoveBulk(bulkRemove),
 		];
 
+		await Promise.all(promises);
+
 		if (!meta.config.preserveOrphanedUploads) {
 			const deletePaths = (await Promise.all(
 				filePaths.map(async filePath => (await Posts.uploads.isOrphan(filePath) ? filePath : false))
 			)).filter(Boolean);
-			promises.push(Posts.uploads.deleteFromDisk(deletePaths));
-		}
 
-		await Promise.all(promises);
+			const uploaderUids = (await db.getObjectsFields(deletePaths.map(path => `upload:${md5(path)}`, ['uid']))).map(o => (o ? o.uid || null : null));
+			await Promise.all(uploaderUids.map((uid, idx) => (
+				uid && isFinite(uid) ? user.deleteUpload(uid, uid, deletePaths[idx]) : null
+			)).filter(Boolean));
+			await Posts.uploads.deleteFromDisk(deletePaths);
+		}
 	};
 
 	Posts.uploads.dissociateAll = async (pid) => {

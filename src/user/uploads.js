@@ -6,6 +6,7 @@ const winston = require('winston');
 const crypto = require('crypto');
 
 const db = require('../database');
+const posts = require('../posts');
 const file = require('../file');
 const batch = require('../batch');
 
@@ -66,6 +67,12 @@ module.exports = function (User) {
 					db.delete(`upload:${md5(uploadNames[idx])}`),
 				]);
 			}));
+
+			// Dissociate the upload from pids, if any
+			const pids = await db.getSortedSetsMembers(uploadNames.map(relativePath => `upload:${md5(relativePath)}:pids`));
+			await Promise.all(pids.map(async (pids, idx) => Promise.all(
+				pids.map(async pid => posts.uploads.dissociate(pid, uploadNames[idx]))
+			)));
 		}, { batch: 50 });
 	};
 
