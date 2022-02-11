@@ -4,7 +4,6 @@ const crypto = require('crypto');
 
 const db = require('../../database');
 const batch = require('../../batch');
-const posts = require('../../posts');
 
 const md5 = filename => crypto.createHash('md5').update(filename).digest('hex');
 
