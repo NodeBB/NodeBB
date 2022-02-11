@@ -22,7 +22,6 @@ module.exports = function (User) {
 
 	User.delete = async (callerUid, uid) => {
 		await User.deleteContent(callerUid, uid);
-		await removeFromSortedSets(uid);
 		return await User.deleteAccount(uid);
 	};
 
