@@ -9,6 +9,8 @@ const nconf = require('nconf');
 const db = require('../mocks/databasemock');
 
 const user = require('../../src/user');
+const topics = require('../../src/topics');
+const categories = require('../../src/categories');
 const file = require('../../src/file');
 const utils = require('../../public/src/utils');
 
@@ -143,6 +145,22 @@ describe('uploads.js', () => {
 				assert(e);
 				assert.strictEqual(e.message, '[[error:invalid-path]]');
 			}
+		});
+
+		it('should remove the post association as well, if present', async () => {
+			const { cid } = await categories.create({ name: utils.generateUUID() });
+			const { postData } = await topics.post({
+				uid,
+				cid,
+				title: utils.generateUUID(),
+				content: `[an upload](/assets/uploads/${relativePath})`,
+			});
+
+			assert.deepStrictEqual(await db.getSortedSetMembers(`upload:${md5(relativePath)}:pids`), [postData.pid.toString()]);
+
+			await user.deleteUpload(uid, uid, relativePath);
+
+			assert.strictEqual(await db.exists(`upload:${md5(relativePath)}:pids`), false);
 		});
 	});
 });
