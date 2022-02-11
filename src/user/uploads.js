@@ -42,6 +42,8 @@ module.exports = function (User) {
 			throw new Error(`[[error:wrong-parameter-type, uploadNames, ${typeof uploadNames}, array]]`);
 		}
 
+		await _validatePath(uploadNames);
+
 		const [isUsersUpload, isAdminOrGlobalMod] = await Promise.all([
 			db.isSortedSetMembers(`uid:${callerUid}:uploads`, uploadNames),
 			User.isAdminOrGlobalMod(callerUid),
@@ -49,8 +51,6 @@ module.exports = function (User) {
 		if (!isAdminOrGlobalMod && !isUsersUpload.every(Boolean)) {
 			throw new Error('[[error:no-privileges]]');
 		}
-
-		await _validatePath(uploadNames);
 
 		await batch.processArray(uploadNames, async (uploadNames) => {
 			const fullPaths = uploadNames.map(path => _getFullPath(path));
@@ -61,7 +61,10 @@ module.exports = function (User) {
 					file.delete(fullPath),
 					file.delete(file.appendToFileName(fullPath, '-resized')),
 				]);
-				await db.sortedSetRemove(`uid:${uid}:uploads`, uploadNames[idx]);
+				await Promise.all([
+					db.sortedSetRemove(`uid:${uid}:uploads`, uploadNames[idx]),
+					db.delete(`upload:${md5(uploadNames[idx])}`),
+				]);
 			}));
 		}, { batch: 50 });
 	};
