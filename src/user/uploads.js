@@ -31,7 +31,7 @@ module.exports = function (User) {
 		await _validatePath(relativePath);
 		await Promise.all([
 			db.sortedSetAdd(`uid:${uid}:uploads`, Date.now(), relativePath),
-			db.setObjectField(`upload:${md5(relativePath)}:uid`, uid),
+			db.setObjectField(`upload:${md5(relativePath)}`, 'uid', uid),
 		]);
 	};
 
