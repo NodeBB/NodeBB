@@ -15,7 +15,6 @@ const groups = require('../groups');
 const messaging = require('../messaging');
 const plugins = require('../plugins');
 const batch = require('../batch');
-const file = require('../file');
 
 module.exports = function (User) {
 	const deletesInProgress = {};
@@ -35,7 +34,7 @@ module.exports = function (User) {
 		deletesInProgress[uid] = 'user.delete';
 		await deletePosts(callerUid, uid);
 		await deleteTopics(callerUid, uid);
-		await deleteUploads(uid);
+		await deleteUploads(callerUid, uid);
 		await deleteQueued(uid);
 		delete deletesInProgress[uid];
 	};
@@ -56,13 +55,9 @@ module.exports = function (User) {
 		}, { alwaysStartAt: 0 });
 	}
 
-	async function deleteUploads(uid) {
-		await batch.processSortedSet(`uid:${uid}:uploads`, async (uploadNames) => {
-			await async.each(uploadNames, async (uploadName) => {
-				await file.delete(path.join(nconf.get('upload_path'), uploadName));
-			});
-			await db.sortedSetRemove(`uid:${uid}:uploads`, uploadNames);
-		}, { alwaysStartAt: 0 });
+	async function deleteUploads(callerUid, uid) {
+		const uploads = await db.getSortedSetMembers(`uid:${uid}:uploads`);
+		await User.deleteUpload(callerUid, uid, uploads);
 	}
 
 	async function deleteQueued(uid) {
