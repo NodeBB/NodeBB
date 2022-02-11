@@ -109,7 +109,6 @@
         "postcss": "8.4.6",
         "postcss-clean": "1.2.0",
         "prompt": "1.2.1",
-        "punycode": "2.1.1",
         "ioredis": "4.28.5",
         "request": "2.88.2",
         "request-promise-native": "1.0.9",
