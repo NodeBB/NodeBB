@@ -4,7 +4,6 @@ const path = require('path');
 const nconf = require('nconf');
 const validator = require('validator');
 
-const db = require('../database');
 const user = require('../user');
 const meta = require('../meta');
 const file = require('../file');
