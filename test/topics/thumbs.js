@@ -182,13 +182,13 @@ describe('Topic thumbs', () => {
 
 		it('should associate the thumbnail with that topic\'s main pid\'s uploads', async () => {
 			const uploads = await posts.uploads.list(mainPid);
-			assert(uploads.includes(path.basename(relativeThumbPaths[0])));
+			assert(uploads.includes(relativeThumbPaths[0].slice(1)));
 		});
 
 		it('should maintain state in the topic\'s main pid\'s uploads if posts.uploads.sync() is called', async () => {
 			await posts.uploads.sync(mainPid);
 			const uploads = await posts.uploads.list(mainPid);
-			assert(uploads.includes(path.basename(relativeThumbPaths[0])));
+			assert(uploads.includes(relativeThumbPaths[0].slice(1)));
 		});
 
 		it('should combine the thumbs uploaded to a UUID zset and combine it with a topic\'s thumb zset', async () => {
@@ -217,7 +217,7 @@ describe('Topic thumbs', () => {
 	});
 
 	describe(`.delete()`, () => {
-		it('should remove a file from sorted set AND disk', async () => {
+		it('should remove a file from sorted set', async () => {
 			await topics.thumbs.associate({
 				id: 1,
 				path: thumbPaths[0],
@@ -225,7 +225,6 @@ describe('Topic thumbs', () => {
 			await topics.thumbs.delete(1, relativeThumbPaths[0]);
 
 			assert.strictEqual(await db.isSortedSetMember('topic:1:thumbs', relativeThumbPaths[0]), false);
-			assert.strictEqual(await file.exists(thumbPaths[0]), false);
 		});
 
 		it('should no longer be associated with that topic\'s main pid\'s uploads', async () => {
@@ -430,9 +429,9 @@ describe('Topic thumbs', () => {
 			assert.strictEqual(await db.exists(`topic:${topicObj.tid}:thumbs`), false);
 		});
 
-		it('should not leave files behind', async () => {
-			const exists = await Promise.all(thumbPaths.slice(0, 2).map(async absolutePath => file.exists(absolutePath)));
-			assert.strictEqual(exists.some(Boolean), false);
+		it('should not leave post upload associations behind', async () => {
+			const uploads = await db.getSortedSetMembers(`post:${topicObj.postData.pid}:uploads`);
+			assert.strictEqual(uploads.length, 0);
 		});
 	});
 });
