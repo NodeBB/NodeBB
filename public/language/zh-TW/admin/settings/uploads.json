@@ -2,6 +2,7 @@
 	"posts": "貼文",
 	"private": "使上傳的檔案私有化",
 	"strip-exif-data": "去除 EXIF 資料",
+	"preserve-orphaned-uploads": "Keep uploaded files on disk after a post is purged",
 	"private-extensions": "自訂檔案附檔名",
 	"private-uploads-extensions-help": "在此處輸入以逗號分隔的副檔名列表 (例如<code> pdf，xls，doc </code>）並將其用於自訂。為空則表示允許所有副檔名。",
 	"resize-image-width-threshold": "如果圖片寬度超過指定大小，則對圖片進行縮放",

@@ -2,6 +2,7 @@
 	"posts": "Příspěvky",
 	"private": "Nahrané soubory jsou soukromé",
 	"strip-exif-data": "Nepoužít data EXIF",
+	"preserve-orphaned-uploads": "Keep uploaded files on disk after a post is purged",
 	"private-extensions": "Přípona souborů je soukromá",
 	"private-uploads-extensions-help": "Pro nastavení soukromí, zde zadejte seznam souborů oddělený čárkou (tj. <code>pdf, xls,doc</code>). prázdný seznam znamená, že všechny soubory jsou soukromé.",
 	"resize-image-width-threshold": "Změnit velikost obrázků, jsou-li širší než určená šířka",

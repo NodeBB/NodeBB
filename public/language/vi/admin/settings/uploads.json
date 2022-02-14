@@ -2,6 +2,7 @@
 	"posts": "Bài Đăng",
 	"private": "Đặt tệp tải lên ở chế độ riêng tư",
 	"strip-exif-data": "Tách Dữ Liệu EXIF",
+	"preserve-orphaned-uploads": "Keep uploaded files on disk after a post is purged",
 	"private-extensions": "Phần mở rộng tệp để đặt ở chế độ riêng tư",
 	"private-uploads-extensions-help": "Nhập danh sách phần mở rộng tệp tại đây phân tách bằng dấu phẩy để đặt ở chế độ riêng tư (VD: <code>pdf,xls,doc</code>). Để trống có nghĩa là mọi tệp đều riêng tư.",
 	"resize-image-width-threshold": "Chỉnh kích cỡ ảnh nếu chúng rộng hơn chiều rộng đã đặt",

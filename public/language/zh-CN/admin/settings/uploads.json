@@ -2,6 +2,7 @@
 	"posts": "帖子",
 	"private": "使上传的文件私有化",
 	"strip-exif-data": "去除 EXIF 数据",
+	"preserve-orphaned-uploads": "Keep uploaded files on disk after a post is purged",
 	"private-extensions": "自定义文件扩展名",
 	"private-uploads-extensions-help": "在此处输入以逗号分隔的文件扩展名列表 (例如<code> pdf，xls，doc </code>）并将其用于自定义。为空则表示允许所有扩展名。",
 	"resize-image-width-threshold": "如果图像宽度超过指定大小，则对图像进行缩放",
