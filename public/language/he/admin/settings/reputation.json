@@ -18,5 +18,5 @@
 	"flags.limit-per-target": "מספר הפעמים המרבי שניתן לסמן משהו",
 	"flags.limit-per-target-placeholder": "ברירת מחדל: 0",
 	"flags.limit-per-target-help": "כשפוסט או משתמש מסומן כמה פעמים, כל דיווח נוסף נחשב ל &quot;דיווח&quot; ונוסף לדיווח הראשון. הגדר את האופציה הזאת לכל מספר שהוא לא 0 כדי להגביל את כמות הדיווחים שפוסט או משתמש יכול לקבל.",
-	"flags.auto-resolve-on-ban": "Automatically resolve all of a user's tickets when they are banned"
+	"flags.auto-resolve-on-ban": "פתור אוטומטי כל כרטיסי משתמש כאשר הוא מוחרם"
 }
