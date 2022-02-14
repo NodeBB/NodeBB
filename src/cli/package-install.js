@@ -60,7 +60,7 @@ pkgInstall.updatePackageFile = () => {
 	dependencies = sortDependencies({ ...dependencies, ...defaultPackageContents.dependencies });
 
 	const packageContents = { ...merge(oldPackageContents, defaultPackageContents), dependencies, devDependencies };
-	fs.writeFileSync(paths.currentPackage, JSON.stringify(packageContents, null, 2));
+	fs.writeFileSync(paths.currentPackage, JSON.stringify(packageContents, null, 4));
 };
 
 pkgInstall.supportedPackageManager = [
@@ -185,5 +185,5 @@ pkgInstall.preserveExtraneousPlugins = () => {
 	// Add those packages to package.json
 	packageContents.dependencies = sortDependencies({ ...packageContents.dependencies, ...extraneous });
 
-	fs.writeFileSync(paths.currentPackage, JSON.stringify(packageContents, null, 2));
+	fs.writeFileSync(paths.currentPackage, JSON.stringify(packageContents, null, 4));
 };
