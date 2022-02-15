@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('settings', ['hooks', 'alerts', 'jquery-deserialize'], function (hooks, alerts) {
+define('settings', ['hooks', 'alerts'], function (hooks, alerts) {
 	// eslint-disable-next-line prefer-const
 	let Settings;
 	let onReady = [];
