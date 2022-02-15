@@ -1,5 +1,7 @@
 'use strict';
 
+require('../app');
+
 (function () {
 	let logoutTimer = 0;
 	let logoutMessage;
@@ -67,7 +69,7 @@
 	$(window).on('action:ajaxify.contentLoaded', function (ev, data) {
 		selectMenuItem(data.url);
 		setupRestartLinks();
-
+		require('material-design-lite');
 		componentHandler.upgradeDom();
 	});
 

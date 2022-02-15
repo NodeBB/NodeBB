@@ -24,7 +24,7 @@ module.exports = {
 	],
 	entry: {
 		app: './public/src/app.js',
-		// admin: './public/src/admin/admin.js',
+		admin: './public/src/admin/admin.js',
 	},
 	output: {
 		filename: '[name].bundle.js',

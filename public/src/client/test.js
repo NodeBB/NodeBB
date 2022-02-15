@@ -5,6 +5,7 @@ import * as autocomplete from 'autocomplete';
 // we are using browser colorpicker
 // import { enable as colorpickerEnable } from '../admin/modules/colorpicker';
 import 'jquery-deserialize';
+import 'jquery-serializeobject';
 import * as api from 'api';
 import * as alerts from 'alerts';
 
