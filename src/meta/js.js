@@ -134,6 +134,13 @@ async function clearModules() {
 
 JS.buildModules = async function () {
 	await clearModules();
+
+	const fse = require('fs-extra');
+	await fse.copy(
+		path.join(__dirname, `../../public/src/modules`),
+		path.join(__dirname, `../../build/public/src/modules`)
+	);
+
 	await linkModules();
 };
 

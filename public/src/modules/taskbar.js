@@ -12,26 +12,22 @@ define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, t
 			self.tasklist = self.taskbar.find('ul');
 			$(document.body).append(self.taskbar);
 
-			self.taskbar.on('click', 'li', function () {
+			self.taskbar.on('click', 'li', async function () {
 				const $btn = $(this);
 				const moduleName = $btn.attr('data-module');
 				const uuid = $btn.attr('data-uuid');
 
-				// TODO: throws warning in webpack
-				// https://webpack.js.org/api/module-methods/#dynamic-expressions-in-import
-				require([moduleName], function (module) {
-					if (!$btn.hasClass('active')) {
-						minimizeAll();
-						module.load(uuid);
-						taskbar.toggleNew(uuid, false);
+				const module = await app.importScript(moduleName);
+				if (!$btn.hasClass('active')) {
+					minimizeAll();
+					module.load(uuid);
+					taskbar.toggleNew(uuid, false);
 
-						taskbar.tasklist.removeClass('active');
-						$btn.addClass('active');
-					} else {
-						module.minimize(uuid);
-					}
-				});
-
+					taskbar.tasklist.removeClass('active');
+					$btn.addClass('active');
+				} else {
+					module.minimize(uuid);
+				}
 				return false;
 			});
 		});
@@ -41,22 +37,21 @@ define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, t
 		});
 	};
 
-	taskbar.close = function (module, uuid) {
+	taskbar.close = async function (moduleName, uuid) {
 		// Sends signal to the appropriate module's .close() fn (if present)
 		const btnEl = taskbar.tasklist.find('[data-module="' + module + '"][data-uuid="' + uuid + '"]');
 		let fnName = 'close';
 
 		// TODO: Refactor chat module to not take uuid in close instead of by jQuery element
-		if (module === 'chat') {
+		if (moduleName === 'chat') {
 			fnName = 'closeByUUID';
 		}
 
 		if (btnEl.length) {
-			require([module], function (module) {
-				if (typeof module[fnName] === 'function') {
-					module[fnName](uuid);
-				}
-			});
+			const module = await app.importScript(moduleName);
+			if (module && typeof module[fnName] === 'function') {
+				module[fnName](uuid);
+			}
 		}
 	};
 

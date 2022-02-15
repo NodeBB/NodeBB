@@ -215,7 +215,7 @@ exports.webpack = async function (options) {
 		if (options.watch) {
 			stats = await webpackWatch(webpackCfg.watchOptions);
 			compiler.hooks.assetEmitted.tap('nbbWatchPlugin', (file) => {
-				console.log(`webpack:assetEmitted > ${webpackCfg.output.publicPath} ${file}`);
+				console.log(`webpack:assetEmitted > ${webpackCfg.output.publicPath}${file}`);
 			});
 		} else {
 			stats = await webpackRun();

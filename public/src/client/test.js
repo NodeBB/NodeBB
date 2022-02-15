@@ -7,9 +7,9 @@ import * as autocomplete from 'autocomplete';
 import 'jquery-deserialize';
 import * as api from 'api';
 import * as alerts from 'alerts';
+
 export function init() {
 	console.log('should be true semver.gt("1.1.1", "1.0.0")', semver.gt('1.1.1', '1.0.0'));
-
 	$('#change-skin').val(config.bootswatchSkin);
 
 	$('#inputTags').tagsinput({
@@ -99,3 +99,6 @@ export function init() {
 		document.head.appendChild(linkEl);
 	}
 }
+
+const testPage = { init };
+export default testPage;

@@ -28,21 +28,18 @@ module.exports = {
 	},
 	output: {
 		filename: '[name].bundle.js',
-		chunkFilename: '[name].bundle.js',
 		path: path.resolve(__dirname, 'dist'),
 		publicPath: `${relativePath}/dist/`,
 	},
 	watchOptions: {
 		poll: 500,
-		aggregateTimeout: 500,
+		aggregateTimeout: 250,
 	},
 	resolve: {
 		symlinks: false,
 		modules: [
 			'build/public/src/modules',
 			'public/src',
-			'public/src/modules',
-			'public/src/client',
 			'node_modules',
 			...activePlugins.map(p => `node_modules/${p}/node_modules`),
 		],

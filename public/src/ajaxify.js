@@ -334,9 +334,13 @@ ajaxify.widgets = { render: render };
 	};
 
 	ajaxify.loadScript = function (tpl_url, callback) {
+		let location = !app.inAdmin ? 'forum/' : '';
+		if (tpl_url.startsWith('admin')) {
+			location = '';
+		}
 		const data = {
 			tpl_url: tpl_url,
-			scripts: [tpl_url],
+			scripts: [location + tpl_url],
 		};
 
 		// Hint: useful if you want to load a module on a specific page (append module name to `scripts`)
@@ -354,7 +358,7 @@ ajaxify.widgets = { render: render };
 				}
 				if (typeof script === 'string') {
 					return async function (next) {
-						const module = await importScript(script);
+						const module = await app.importScript(script);
 						// Hint: useful if you want to override a loaded library (e.g. replace core client-side logic),
 						// or call a method other than .init()
 						hooks.fire('static:script.init', { tpl_url, name: script, module }).then(() => {
@@ -382,25 +386,6 @@ ajaxify.widgets = { render: render };
 			}
 		});
 	};
-
-	async function importScript(scriptName) {
-		let pageScript;
-		try {
-			if (scriptName.startsWith('admin/plugins')) {
-				pageScript = await import(/* webpackChunkName: "admin/plugins/[request]" */ 'admin/plugins/' + scriptName.replace(/^admin\/plugins\//, ''));
-			} else if (scriptName.startsWith('admin')) {
-				pageScript = await import(/* webpackChunkName: "admin/[request]" */ 'admin/' + scriptName.replace(/^admin\//, ''));
-			} else if (scriptName.startsWith('forum/plugins')) {
-				pageScript = await import(/* webpackChunkName: "forum/plugins/[request]" */ 'forum/plugins/' + scriptName.replace(/^forum\/plugins\//, ''));
-			} else {
-				pageScript = await import(/* webpackChunkName: "forum/[request]" */ 'forum/' + scriptName);
-			}
-		} catch (err) {
-			console.warn('error loading script' + err.stack);
-		}
-		return pageScript;
-	}
-
 
 	ajaxify.loadData = function (url, callback) {
 		url = ajaxify.removeRelativePath(url);
