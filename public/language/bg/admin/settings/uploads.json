@@ -2,7 +2,7 @@
 	"posts": "Публикации",
 	"private": "Качените файлове да бъдат частни",
 	"strip-exif-data": "Премахване на данните EXIF",
-	"preserve-orphaned-uploads": "Keep uploaded files on disk after a post is purged",
+	"preserve-orphaned-uploads": "Запазване на качените файлове на диска дори след изтриването на публикацията",
 	"private-extensions": "Файлови разширения, които да бъдат частни",
 	"private-uploads-extensions-help": "Въведете списък от файлови разширения, разделени със запетаи, които искате да бъдат частни (например <code>pdf,xls,doc</code>). Ако оставите това поле празно, всички файлове ще бъдат частни.",
 	"resize-image-width-threshold": "Преоразмеряване на изображенията, ако са по-широки от определената ширина",
