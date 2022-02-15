@@ -38,6 +38,12 @@ require('../app');
 		hooks.on('action:ajaxify.end', () => {
 			showCorrectNavTab();
 			startLogoutTimer();
+			if ($('.settings').length) {
+				require(['admin/settings'], function (Settings) {
+					Settings.prepare();
+					Settings.populateTOC();
+				});
+			}
 		});
 	});
 
