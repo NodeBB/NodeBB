@@ -14,10 +14,12 @@ define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, t
 
 			self.taskbar.on('click', 'li', function () {
 				const $btn = $(this);
-				const module = $btn.attr('data-module');
+				const moduleName = $btn.attr('data-module');
 				const uuid = $btn.attr('data-uuid');
 
-				require([module], function (module) {
+				// TODO: throws warning in webpack
+				// https://webpack.js.org/api/module-methods/#dynamic-expressions-in-import
+				require([moduleName], function (module) {
 					if (!$btn.hasClass('active')) {
 						minimizeAll();
 						module.load(uuid);

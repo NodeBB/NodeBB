@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/ip-blacklist', ['Chart', 'benchpress', 'bootbox', 'alerts'], function (Chart, Benchpress, bootbox, alerts) {
+define('forum/ip-blacklist', ['chart.js', 'benchpress', 'bootbox', 'alerts'], function (Chart, Benchpress, bootbox, alerts) {
 	const Blacklist = {};
 
 	Blacklist.init = function () {

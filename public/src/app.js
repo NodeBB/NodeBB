@@ -1,5 +1,24 @@
 'use strict';
 
+window.$ = require('jquery');
+
+window.jQuery = window.$;
+require('bootstrap');
+window.bootbox = require('bootbox');
+require('jquery-form');
+window.utils = require('./utils');
+require('timeago');
+
+const Visibility = require('visibilityjs');
+const Benchpress = require('benchpressjs');
+
+Benchpress.setGlobal('config', config);
+
+require('../../build/public/client-scripts.min');
+
+require('./sockets');
+require('./overrides');
+require('./ajaxify');
 
 app = window.app || {};
 
@@ -7,6 +26,7 @@ app.isFocused = true;
 app.currentRoom = null;
 app.widgets = {};
 app.flags = {};
+
 
 (function () {
 	let appLoaded = false;
@@ -111,19 +131,6 @@ app.flags = {};
 			} else {
 				finishLoad();
 			}
-		});
-	};
-
-	app.require = async (modules) => { // allows you to await require.js modules
-		const single = !Array.isArray(modules);
-		if (single) {
-			modules = [modules];
-		}
-
-		return new Promise((resolve, reject) => {
-			require(modules, (...exports) => {
-				resolve(single ? exports.pop() : exports);
-			}, reject);
 		});
 	};
 
@@ -322,11 +329,11 @@ app.flags = {};
 			return callback();
 		}
 		require([
-			'jquery-ui/widgets/datepicker',
-			'jquery-ui/widgets/autocomplete',
-			'jquery-ui/widgets/sortable',
-			'jquery-ui/widgets/resizable',
-			'jquery-ui/widgets/draggable',
+			'jquery-ui/ui/widgets/datepicker',
+			'jquery-ui/ui/widgets/autocomplete',
+			'jquery-ui/ui/widgets/sortable',
+			'jquery-ui/ui/widgets/resizable',
+			'jquery-ui/ui/widgets/draggable',
 		], function () {
 			callback();
 		});

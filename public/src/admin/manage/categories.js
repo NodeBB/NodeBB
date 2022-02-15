@@ -5,7 +5,7 @@ define('admin/manage/categories', [
 	'benchpress',
 	'categorySelector',
 	'api',
-	'Sortable',
+	'sortablejs',
 	'bootbox',
 	'alerts',
 ], function (translator, Benchpress, categorySelector, api, Sortable, bootbox, alerts) {

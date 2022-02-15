@@ -227,10 +227,4 @@
 			});
 		});
 	}
-
-	// tell ace to use the right paths when requiring modules
-	require(['ace/ace'], function (ace) {
-		ace.config.set('packaged', true);
-		ace.config.set('basePath', config.relative_path + '/assets/src/modules/ace/');
-	});
 }());

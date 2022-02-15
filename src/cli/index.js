@@ -192,6 +192,7 @@ program
 	.command('build [targets...]')
 	.description(`Compile static assets ${chalk.red('(JS, CSS, templates, languages)')}`)
 	.option('-s, --series', 'Run builds in series without extra processes')
+	.option('-w, --webpack', 'Bundle assets with webpack', true)
 	.action((targets, options) => {
 		if (program.opts().dev) {
 			process.env.NODE_ENV = 'development';

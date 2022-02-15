@@ -6,7 +6,7 @@ define('admin/extend/plugins', [
 	'benchpress',
 	'bootbox',
 	'alerts',
-	'jquery-ui/widgets/sortable',
+	'jquery-ui/ui/widgets/sortable',
 ], function (translator, Benchpress, bootbox, alerts) {
 	const Plugins = {};
 	Plugins.init = function () {

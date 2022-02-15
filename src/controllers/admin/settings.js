@@ -11,7 +11,7 @@ const navigationAdmin = require('../../navigation/admin');
 const social = require('../../social');
 
 const helpers = require('../helpers');
-const translator = require('../../../public/src/modules/translator');
+const translator = require('../../translator');
 
 const settingsController = module.exports;
 

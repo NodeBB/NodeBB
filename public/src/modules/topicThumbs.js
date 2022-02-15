@@ -1,7 +1,7 @@
 'use strict';
 
 define('topicThumbs', [
-	'api', 'bootbox', 'alerts', 'uploader', 'benchpress', 'translator', 'jquery-ui/widgets/sortable',
+	'api', 'bootbox', 'alerts', 'uploader', 'benchpress', 'translator', 'jquery-ui/ui/widgets/sortable',
 ], function (api, bootbox, alerts, uploader, Benchpress, translator) {
 	const Thumbs = {};
 

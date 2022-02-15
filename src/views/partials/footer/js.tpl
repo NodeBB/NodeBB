@@ -1,4 +1,4 @@
-<script defer src="{relative_path}/assets/nodebb.min.js?{config.cache-buster}"></script>
+<script defer src="{relative_path}/dist/app.bundle.js?{config.cache-buster}"></script>
 
 {{{each scripts}}}
 <script defer type="text/javascript" src="{scripts.src}"></script>

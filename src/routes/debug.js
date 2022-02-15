@@ -6,11 +6,21 @@ const nconf = require('nconf');
 const fs = require('fs').promises;
 const path = require('path');
 
-module.exports = function (app) {
+module.exports = function (app, middleware) {
 	const router = express.Router();
 
-	router.get('/test', async (req, res) => {
-		res.redirect(404);
+	// router.get('/test', async (req, res) => {
+	// res.redirect(404);
+	// });
+
+	const { setupPageRoute } = require('./helpers');
+	setupPageRoute(app, '/debug/test', middleware, [], async (req, res) => {
+		// res.redirect(404);
+		const meta = require('../meta');
+		res.render('test', {
+			now: new Date().toISOString(),
+			skins: [{ name: 'no-skin', value: '' }].concat(meta.css.supportedSkins.map(s => ({ name: s, value: s }))),
+		});
 	});
 
 	// Redoc

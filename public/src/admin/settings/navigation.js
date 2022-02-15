@@ -6,9 +6,9 @@ define('admin/settings/navigation', [
 	'iconSelect',
 	'benchpress',
 	'alerts',
-	'jquery-ui/widgets/draggable',
-	'jquery-ui/widgets/droppable',
-	'jquery-ui/widgets/sortable',
+	'jquery-ui/ui/widgets/draggable',
+	'jquery-ui/ui/widgets/droppable',
+	'jquery-ui/ui/widgets/sortable',
 ], function (translator, iconSelect, Benchpress, alerts) {
 	const navigation = {};
 	let available;

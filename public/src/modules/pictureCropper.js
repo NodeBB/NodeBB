@@ -1,6 +1,6 @@
 'use strict';
 
-define('pictureCropper', ['cropper', 'alerts'], function (Cropper, alerts) {
+define('pictureCropper', ['alerts'], function (alerts) {
 	const module = {};
 
 	module.show = function (data, callback) {
@@ -36,7 +36,7 @@ define('pictureCropper', ['cropper', 'alerts'], function (Cropper, alerts) {
 		$('#crop-picture-modal').remove();
 		app.parseAndTranslate('modals/crop_picture', {
 			url: utils.escapeHTML(data.url),
-		}, function (cropperModal) {
+		}, async function (cropperModal) {
 			cropperModal.modal({
 				backdrop: 'static',
 			}).modal('show');
@@ -45,6 +45,7 @@ define('pictureCropper', ['cropper', 'alerts'], function (Cropper, alerts) {
 			const cropBoxHeight = parseInt($(window).height() / 2, 10);
 			const img = document.getElementById('cropped-image');
 			$(img).css('max-height', cropBoxHeight);
+			const Cropper = await import(/* webpackChunkName: "cropperjs" */ 'cropperjs');
 
 			let cropperTool = new Cropper(img, {
 				aspectRatio: data.aspectRatio,

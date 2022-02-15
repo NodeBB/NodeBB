@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/advanced/errors', ['bootbox', 'alerts', 'Chart'], function (bootbox, alerts, Chart) {
+define('admin/advanced/errors', ['bootbox', 'alerts', 'chart.js'], function (bootbox, alerts, Chart) {
 	const Errors = {};
 
 	Errors.init = function () {

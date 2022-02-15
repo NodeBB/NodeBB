@@ -1,8 +1,9 @@
 'use strict';
 
+import io from 'socket.io-client';
+import $ from 'jquery';
 
 app = window.app || {};
-socket = window.socket;
 
 (function () {
 	let reconnecting = false;
@@ -14,7 +15,7 @@ socket = window.socket;
 		path: config.relative_path + '/socket.io',
 	};
 
-	socket = io(config.websocketAddress, ioParams);
+	window.socket = io(config.websocketAddress, ioParams);
 
 	const oEmit = socket.emit;
 	socket.emit = function (event, data, callback) {

@@ -4,10 +4,10 @@
 define('admin/extend/widgets', [
 	'bootbox',
 	'alerts',
-	'jquery-ui/widgets/sortable',
-	'jquery-ui/widgets/draggable',
-	'jquery-ui/widgets/droppable',
-	'jquery-ui/widgets/datepicker',
+	'jquery-ui/ui/widgets/sortable',
+	'jquery-ui/ui/widgets/draggable',
+	'jquery-ui/ui/widgets/droppable',
+	'jquery-ui/ui/widgets/datepicker',
 ], function (bootbox, alerts) {
 	const Widgets = {};
 

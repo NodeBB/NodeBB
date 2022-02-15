@@ -137,9 +137,10 @@ module.exports = function (grunt) {
 		});
 		const build = require('./src/meta/build');
 		if (!grunt.option('skip')) {
-			await build.build(true);
+			await build.build(true, { webpack: false });
 		}
 		run();
+		await build.webpack({ watch: true });
 		done();
 	});
 
@@ -183,7 +184,7 @@ module.exports = function (grunt) {
 			return run();
 		}
 
-		require('./src/meta/build').build([compiling], (err) => {
+		require('./src/meta/build').build([compiling], { webpack: false }, (err) => {
 			if (err) {
 				winston.error(err.stack);
 			}

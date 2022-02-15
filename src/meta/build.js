@@ -8,6 +8,7 @@ const path = require('path');
 const mkdirp = require('mkdirp');
 const chalk = require('chalk');
 
+const db = require('../database');
 const cacheBuster = require('./cacheBuster');
 const { aliases } = require('./aliases');
 
@@ -176,12 +177,61 @@ exports.build = async function (targets, options) {
 
 		const startTime = Date.now();
 		await buildTargets(targets, !series);
+
+		if (options.webpack) {
+			await exports.webpack(options);
+		}
+
 		const totalTime = (Date.now() - startTime) / 1000;
 		await cacheBuster.write();
 		winston.info(`[build] Asset compilation successful. Completed in ${totalTime}sec.`);
 	} catch (err) {
 		winston.error(`[build] Encountered error during build step\n${err.stack ? err.stack : err}`);
 		throw err;
+	}
+};
+
+function getWebpackConfig() {
+	return require(process.env.NODE_ENV !== 'development' ? '../../webpack.prod' : '../../webpack.dev');
+}
+
+exports.webpack = async function (options) {
+	winston.info(`[build] ${(options.watch ? 'Watching' : 'Bundling')} with Webpack.`);
+	const webpack = require('webpack');
+	const fs = require('fs');
+	const util = require('util');
+	const activePlugins = await db.getSortedSetRange('plugins:active', 0, -1);
+	if (!activePlugins.includes('nodebb-plugin-composer-default')) {
+		activePlugins.push('nodebb-plugin-composer-default');
+	}
+	await fs.promises.writeFile(path.resolve(__dirname, '../../build/active_plugins.json'), JSON.stringify(activePlugins));
+
+	const webpackCfg = getWebpackConfig();
+	const compiler = webpack(webpackCfg);
+	const webpackRun = util.promisify(compiler.run).bind(compiler);
+	const webpackWatch = util.promisify(compiler.watch).bind(compiler);
+	try {
+		let stats;
+		if (options.watch) {
+			stats = await webpackWatch(webpackCfg.watchOptions);
+			compiler.hooks.assetEmitted.tap('nbbWatchPlugin', (file) => {
+				console.log(`webpack:assetEmitted > ${webpackCfg.output.publicPath} ${file}`);
+			});
+		} else {
+			stats = await webpackRun();
+		}
+
+		if (stats.hasErrors() || stats.hasWarnings()) {
+			console.log(stats.toString('minimal'));
+		} else {
+			const statsJson = stats.toJson();
+			winston.info(`[build] ${(options.watch ? 'Watching' : 'Bundling')} took ${statsJson.time} ms`);
+		}
+	} catch (err) {
+		console.error(err.stack || err);
+		if (err.details) {
+			console.error(err.details);
+		}
 	}
 };
 

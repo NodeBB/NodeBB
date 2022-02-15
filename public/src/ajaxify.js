@@ -1,8 +1,14 @@
 'use strict';
 
+import $ from 'jquery';
+import Benchpress from 'benchpressjs';
+import render from './widgets';
+import translator from './modules/translator';
 
-ajaxify = window.ajaxify || {};
+translator.translate('[[error:no-connection]]');
 
+window.ajaxify = window.ajaxify || {};
+ajaxify.widgets = { render: render };
 (function () {
 	let apiXHR = null;
 	let ajaxifyTimer;
@@ -328,14 +334,9 @@ ajaxify = window.ajaxify || {};
 	};
 
 	ajaxify.loadScript = function (tpl_url, callback) {
-		let location = !app.inAdmin ? 'forum/' : '';
-
-		if (tpl_url.startsWith('admin')) {
-			location = '';
-		}
 		const data = {
 			tpl_url: tpl_url,
-			scripts: [location + tpl_url],
+			scripts: [tpl_url],
 		};
 
 		// Hint: useful if you want to load a module on a specific page (append module name to `scripts`)
@@ -352,18 +353,14 @@ ajaxify = window.ajaxify || {};
 					};
 				}
 				if (typeof script === 'string') {
-					return function (next) {
-						require([script], function (module) {
-							// Hint: useful if you want to override a loaded library (e.g. replace core client-side logic),
-							// or call a method other than .init()
-							hooks.fire('static:script.init', { tpl_url, name: script, module }).then(() => {
-								if (module && module.init) {
-									module.init();
-								}
-								next();
-							});
-						}, function () {
-							// ignore 404 error
+					return async function (next) {
+						const module = await importScript(script);
+						// Hint: useful if you want to override a loaded library (e.g. replace core client-side logic),
+						// or call a method other than .init()
+						hooks.fire('static:script.init', { tpl_url, name: script, module }).then(() => {
+							if (module && module.init) {
+								module.init();
+							}
 							next();
 						});
 					};
@@ -385,6 +382,25 @@ ajaxify = window.ajaxify || {};
 			}
 		});
 	};
+
+	async function importScript(scriptName) {
+		let pageScript;
+		try {
+			if (scriptName.startsWith('admin/plugins')) {
+				pageScript = await import(/* webpackChunkName: "admin/plugins/[request]" */ 'admin/plugins/' + scriptName.replace(/^admin\/plugins\//, ''));
+			} else if (scriptName.startsWith('admin')) {
+				pageScript = await import(/* webpackChunkName: "admin/[request]" */ 'admin/' + scriptName.replace(/^admin\//, ''));
+			} else if (scriptName.startsWith('forum/plugins')) {
+				pageScript = await import(/* webpackChunkName: "forum/plugins/[request]" */ 'forum/plugins/' + scriptName.replace(/^forum\/plugins\//, ''));
+			} else {
+				pageScript = await import(/* webpackChunkName: "forum/[request]" */ 'forum/' + scriptName);
+			}
+		} catch (err) {
+			console.warn('error loading script' + err.stack);
+		}
+		return pageScript;
+	}
+
 
 	ajaxify.loadData = function (url, callback) {
 		url = ajaxify.removeRelativePath(url);
@@ -434,9 +450,24 @@ ajaxify = window.ajaxify || {};
 	};
 
 	ajaxify.loadTemplate = function (template, callback) {
-		require([config.assetBaseUrl + '/templates/' + template + '.js'], callback, function (err) {
+		$.ajax({
+			url: `${config.assetBaseUrl}/templates/${template}.js`,
+			dataType: 'text',
+			success: function (script) {
+				var context = {
+					module: {
+						exports: {},
+					},
+				};
+
+				// eslint-disable-next-line no-new-func
+				const renderFunction = new Function('module', script);
+				renderFunction(context.module);
+				callback(context.module.exports);
+			},
+		}).fail(function () {
 			console.error('Unable to load template: ' + template);
-			throw err;
+			callback(new Error('[[error:unable-to-load-template]]'));
 		});
 	};
 

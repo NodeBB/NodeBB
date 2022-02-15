@@ -2,7 +2,7 @@
 
 
 define('admin/modules/selectable', [
-	'jquery-ui/widgets/selectable',
+	'jquery-ui/ui/widgets/selectable',
 ], function () {
 	const selectable = {};
 

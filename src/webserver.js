@@ -34,7 +34,7 @@ const topicEvents = require('./topics/events');
 const routes = require('./routes');
 const auth = require('./routes/authentication');
 
-const helpers = require('../public/src/modules/helpers');
+const helpers = require('../public/src/modules/helpers.common')(require('./utils'), Benchpress, nconf.get('relative_path'));
 
 if (nconf.get('ssl')) {
 	server = require('https').createServer({

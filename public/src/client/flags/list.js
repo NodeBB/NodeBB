@@ -1,7 +1,7 @@
 'use strict';
 
 define('forum/flags/list', [
-	'components', 'Chart', 'categoryFilter', 'autocomplete', 'api', 'alerts',
+	'components', 'chart.js', 'categoryFilter', 'autocomplete', 'api', 'alerts',
 ], function (components, Chart, categoryFilter, autocomplete, api, alerts) {
 	const Flags = {};
 
