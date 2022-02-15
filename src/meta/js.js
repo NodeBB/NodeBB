@@ -17,7 +17,6 @@ const JS = module.exports;
 
 JS.scripts = {
 	base: [
-		// 'public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.min.js',
 		'node_modules/@adactive/bootstrap-tagsinput/src/bootstrap-tagsinput.js',
 		'node_modules/jquery-serializeobject/jquery.serializeObject.js',
 		'public/vendor/bootbox/wrapper.js',
@@ -27,66 +26,6 @@ JS.scripts = {
 	// they get linked into /build/public/src/modules
 	modules: { },
 };
-
-// JS.scripts = {
-// 	base: [
-// 		'node_modules/socket.io-client/dist/socket.io.js',
-// 		'node_modules/requirejs/require.js',
-// 		'public/src/require-config.js',
-// 		'node_modules/jquery/dist/jquery.js',
-// 		'node_modules/textcomplete/dist/textcomplete.min.js',
-// 		'node_modules/textcomplete.contenteditable/dist/textcomplete.codemirror.min.js',
-// 		'node_modules/visibilityjs/lib/visibility.core.js',
-// 		'node_modules/bootstrap/dist/js/bootstrap.js',
-// 		'node_modules/@adactive/bootstrap-tagsinput/src/bootstrap-tagsinput.js',
-// 		'node_modules/benchpressjs/build/benchpress.js',
-// 		'node_modules/jquery-serializeobject/jquery.serializeObject.js',
-// 		'node_modules/jquery-deserialize/src/jquery.deserialize.js',
-
-// 		'public/vendor/bootbox/wrapper.js',
-
-// 		'public/src/utils.js',
-// 		'public/src/sockets.js',
-// 		'public/src/app.js',
-// 		'public/src/ajaxify.js',
-// 		'public/src/overrides.js',
-// 		'public/src/widgets.js',
-// 	],
-
-// 	admin: [
-// 		'node_modules/material-design-lite/material.js',
-// 		'public/src/admin/admin.js',
-// 		'node_modules/jquery-deserialize/src/jquery.deserialize.js',
-// 	],
-
-// 	// modules listed below are built (/src/modules) so they can be defined anonymously
-// 	modules: {
-// 		'Chart.js': 'node_modules/chart.js/dist/Chart.min.js',
-// 		'mousetrap.js': 'node_modules/mousetrap/mousetrap.min.js',
-// 		'cropper.js': 'node_modules/cropperjs/dist/cropper.min.js',
-// 		'jquery-ui': 'node_modules/jquery-ui/ui',
-// 		'zxcvbn.js': 'node_modules/zxcvbn/dist/zxcvbn.js',
-
-// 		// only get ace files required by acp
-// 		'ace/ace.js': 'node_modules/ace-builds/src-min/ace.js',
-// 		'ace/mode-less.js': 'node_modules/ace-builds/src-min/mode-less.js',
-// 		'ace/mode-javascript.js': 'node_modules/ace-builds/src-min/mode-javascript.js',
-// 		'ace/mode-html.js': 'node_modules/ace-builds/src-min/mode-html.js',
-// 		'ace/theme-twilight.js': 'node_modules/ace-builds/src-min/theme-twilight.js',
-// 		'ace/worker-css.js': 'node_modules/ace-builds/src-min/worker-css.js',
-// 		'ace/worker-javascript.js': 'node_modules/ace-builds/src-min/worker-javascript.js',
-// 		'ace/worker-html.js': 'node_modules/ace-builds/src-min/worker-html.js',
-// 		'ace/ext-searchbox.js': 'node_modules/ace-builds/src-min/ext-searchbox.js',
-
-// 		'clipboard.js': 'node_modules/clipboard/dist/clipboard.min.js',
-// 		'tinycon.js': 'node_modules/tinycon/tinycon.js',
-// 		'slideout.js': 'node_modules/slideout/dist/slideout.min.js',
-// 		'compare-versions.js': 'node_modules/compare-versions/index.js',
-// 		'timeago/locales': 'node_modules/timeago/locales',
-// 		'jquery-form.js': 'node_modules/jquery-form/dist/jquery.form.min.js',
-// 		'xregexp.js': 'node_modules/xregexp/xregexp-all.js',
-// 	},
-// };
 
 async function linkIfLinux(srcPath, destPath) {
 	if (process.platform === 'win32') {
