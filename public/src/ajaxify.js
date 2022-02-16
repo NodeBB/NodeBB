@@ -436,7 +436,7 @@ ajaxify.widgets = { render: render };
 
 	ajaxify.loadTemplate = function (template, callback) {
 		$.ajax({
-			url: `${config.assetBaseUrl}/templates/${template}.js`,
+			url: `${config.asset_base_url}/templates/${template}.js`,
 			dataType: 'text',
 			success: function (script) {
 				var context = {
