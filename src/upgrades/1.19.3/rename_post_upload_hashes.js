@@ -40,10 +40,20 @@ module.exports = {
 				// Rename the object and pids zsets
 				const hashes = uploads.map(upload => md5(upload.value));
 				const newHashes = uploads.map(upload => md5(`files/${upload.value}`));
-				const promises = hashes.map((hash, idx) => db.rename(`upload:${hash}`, `upload:${newHashes[idx]}`));
-				promises.concat(hashes.map((hash, idx) => db.rename(`upload:${hash}:pids`, `upload:${newHashes[idx]}:pids`)));
 
-				await Promise.all(promises);
+				// cant use db.rename since `fix_user_uploads_zset.js` upgrade script already creates
+				// `upload:md5(upload.value) hash, trying to rename to existing key results in dupe error
+				const oldData = await db.getObjects(hashes.map(hash => `upload:${hash}`));
+				const bulkSet = [];
+				oldData.forEach((data, idx) => {
+					if (data) {
+						bulkSet.push([`upload:${newHashes[idx]}`, data]);
+					}
+				});
+				await db.setObjectBulk(bulkSet);
+				await db.deleteAll(hashes.map(hash => `upload:${hash}`));
+
+				await Promise.all(hashes.map((hash, idx) => db.rename(`upload:${hash}:pids`, `upload:${newHashes[idx]}:pids`)));
 			}
 		}, {
 			batch: 100,
