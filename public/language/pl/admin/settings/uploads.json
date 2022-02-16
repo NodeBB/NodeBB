@@ -2,6 +2,7 @@
 	"posts": "Posty",
 	"private": "Oznaczaj wysyłane pliki jako prywatne",
 	"strip-exif-data": "Usuń dane EXIF",
+	"preserve-orphaned-uploads": "Keep uploaded files on disk after a post is purged",
 	"private-extensions": "Rozszerzenia plików, które mają być prywatne",
 	"private-uploads-extensions-help": "Tutaj wpisz oddzielone przecinkami rozszerzenia plików, które mają być prywatne (np. <code>pdf,xls,doc</code>). Jeśli lista jest pusta, wszystkie pliki są prywatne.",
 	"resize-image-width-threshold": "Zmień rozmiar obrazów, jeśli są szersze niż określona szerokość",

@@ -105,7 +105,7 @@
     "has_no_ignored_topics": "Tento používateľ neignoruje žiadne témy.",
     "has_no_upvoted_posts": "Tento užívateľ doteraz nedal hlas žiadnemu príspevku.",
     "has_no_downvoted_posts": "Tento užívateľ doteraz neodobral hlas žiadnemu príspevku.",
-    "has_no_voted_posts": "Tento užívateľ nemá žiadne príspevky s hlasmi",
+    "has_no_controversial_posts": "This user does not have any downvoted posts yet.",
     "has_no_blocks": "Nezablokoval ste žiadneho používateľa.",
     "email_hidden": "Skrytý e-mail",
     "hidden": "skrytý",

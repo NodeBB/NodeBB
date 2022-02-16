@@ -2,6 +2,7 @@
 	"posts": "포스트",
 	"private": "가입된 사용자만 파일 열람 허용",
 	"strip-exif-data": "이미지 EXIF 데이터 제거",
+	"preserve-orphaned-uploads": "Keep uploaded files on disk after a post is purged",
 	"private-extensions": "파일 확장자 숨김",
 	"private-uploads-extensions-help": "비공개로 설정할 파일 확장자 목록을 쉼표로 구분해서 입력하세요. (예: <code>pdf, xls, doc</code>). 빈 목록은 모든 파일이 비공개임을 의미합니다.",
 	"resize-image-width-threshold": "설정한 너비보다 넓은 이미지의 크기 조정",

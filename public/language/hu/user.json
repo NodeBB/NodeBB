@@ -105,7 +105,7 @@
     "has_no_ignored_topics": "A felhasználó még nem mellőzött témakört.",
     "has_no_upvoted_posts": "A felhasználó még egy hozzászólást sem kedvelt.",
     "has_no_downvoted_posts": "A felhasználó még egy hozzászólást sem utált.",
-    "has_no_voted_posts": "A felhasználó még nem szavazott hozzászólásra.",
+    "has_no_controversial_posts": "This user does not have any downvoted posts yet.",
     "has_no_blocks": "Nem blokkoltál egy felhasználót sem.",
     "email_hidden": "E-mail rejtett",
     "hidden": "rejtett",

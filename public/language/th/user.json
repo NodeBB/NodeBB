@@ -105,7 +105,7 @@
     "has_no_ignored_topics": "ผู้ใช้นี้ไม่ได้ละเว้นกระทู้ใดๆ",
     "has_no_upvoted_posts": "ผู้ใช้นี้ไม่ได้โหวตขึ้นให้ข้อความใดๆ",
     "has_no_downvoted_posts": "ผู้ใช้นี้ไม่ได้โหวตลงให้ข้อความใดๆ",
-    "has_no_voted_posts": "ผู้ใช้นี้ไม่เคยโหวตข้อความ",
+    "has_no_controversial_posts": "This user does not have any downvoted posts yet.",
     "has_no_blocks": "You have blocked no users.",
     "email_hidden": "ซ่อนอีเมล",
     "hidden": "ซ่อน",

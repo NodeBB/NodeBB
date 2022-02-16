@@ -2,6 +2,7 @@
 	"posts": "פוסטים",
 	"private": "הפוך קבצים שהועלו לפרטיים",
 	"strip-exif-data": "הפשט נתוני EXIF",
+	"preserve-orphaned-uploads": "Keep uploaded files on disk after a post is purged",
 	"private-extensions": "סיומות קובצים להפוך לפרטיים",
 	"private-uploads-extensions-help": "הכנס כאן רשימה של פורמטי הקבצים, מופרדים בפסיק, כדי להפוך אותם לפרטיים  (לדוגמא <code>pdf,xls,doc</code>). שורה ריקה פירושו שכל הקבצים פרטיים.",
 	"resize-image-width-threshold": "שנה גודל תמונות אם הם רחבים יותר מהרוחב המוגדר",

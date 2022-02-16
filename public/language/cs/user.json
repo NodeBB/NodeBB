@@ -105,7 +105,7 @@
     "has_no_ignored_topics": "Tento uživatel ještě neignoruje žádné témata.",
     "has_no_upvoted_posts": "Tento uživatel zatím nevyjádřil souhlas u žádného příspěvku.",
     "has_no_downvoted_posts": "Tento uživatel zatím nevyjádřil nesouhlas  u žádného příspěvku.",
-    "has_no_voted_posts": "Tento uživatel nemá žádné hlasovací příspěvky",
+    "has_no_controversial_posts": "This user does not have any downvoted posts yet.",
     "has_no_blocks": "Nezablokoval/a jste žádné uživatele.",
     "email_hidden": "E-mail je skryt",
     "hidden": "skrytý",

@@ -105,7 +105,7 @@
     "has_no_ignored_topics": "Deze gebruiker heeft nog geen berichten genegeerd.",
     "has_no_upvoted_posts": "Deze gebruiker heeft nog geen berichten omhoog gestemd.",
     "has_no_downvoted_posts": "Deze gebruiker heeft nog geen berichten omlaag gestemd.",
-    "has_no_voted_posts": "Deze gebruiker heeft nog niet op berichten gestemd",
+    "has_no_controversial_posts": "This user does not have any downvoted posts yet.",
     "has_no_blocks": "U hebt geen gebruikers geblokkeerd",
     "email_hidden": "E-mail niet beschikbaar",
     "hidden": "verborgen",

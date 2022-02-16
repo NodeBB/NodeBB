@@ -105,7 +105,7 @@
     "has_no_ignored_topics": "Цей користувач ще не проігнорував будь-які теми.",
     "has_no_upvoted_posts": "Цей користувач ще не голосував за жоден з постів.",
     "has_no_downvoted_posts": "Цей користувач ще не голосував проти жодного поста.",
-    "has_no_voted_posts": "У цього користувача немає постів за котрі хтось голосував",
+    "has_no_controversial_posts": "This user does not have any downvoted posts yet.",
     "has_no_blocks": "Ви нікого не заблокували.",
     "email_hidden": "Електронна адреса прихована",
     "hidden": "прихований",

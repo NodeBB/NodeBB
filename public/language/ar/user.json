@@ -105,7 +105,7 @@
     "has_no_ignored_topics": "هذا المستخدم لم يقم بتجاهل اية مواضيع حتى الآن.",
     "has_no_upvoted_posts": "هذا المستخدم لم يقم بالتصويت للأعلى لأي مشاركة حتى الآن.",
     "has_no_downvoted_posts": "هذا المستخدم لم يقم بالتصويت للأسفل لأي مشاركة حتى الآن.",
-    "has_no_voted_posts": "هذا المستخدم لا يمتلك اية مشاركات تم التصويت عليها",
+    "has_no_controversial_posts": "This user does not have any downvoted posts yet.",
     "has_no_blocks": "You have blocked no users.",
     "email_hidden": "البريد الإلكتروني مخفي",
     "hidden": "مخفي",

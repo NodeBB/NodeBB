@@ -105,7 +105,7 @@
     "has_no_ignored_topics": "此使用者尚未忽略任何主題。",
     "has_no_upvoted_posts": "此使用者還未點贊過任何貼文。",
     "has_no_downvoted_posts": "此使用者還未倒讚過任何貼文。",
-    "has_no_voted_posts": "這個使用者還未評價任何貼文",
+    "has_no_controversial_posts": "This user does not have any downvoted posts yet.",
     "has_no_blocks": "您沒有封鎖其他使用者。",
     "email_hidden": "電子信箱已隱藏",
     "hidden": "隱藏",

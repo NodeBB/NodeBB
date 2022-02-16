@@ -2,6 +2,7 @@
 	"posts": "Hozzászólások",
 	"private": "Feltöltött fájlok priváttá tevése",
 	"strip-exif-data": "EXIF adatok törlése",
+	"preserve-orphaned-uploads": "Keep uploaded files on disk after a post is purged",
 	"private-extensions": "Privát kiterjesztések",
 	"private-uploads-extensions-help": "Add meg vesszővel elválasztva a privát kiterjesztések listáját (pl.: <code>pdf,xls,doc</code>) Az üres lista azt jelenti, hogy minden fájl privát.",
 	"resize-image-width-threshold": "Képek átméretezése, ha szélesebbek, mint a megadott szélesség",

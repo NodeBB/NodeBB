@@ -4,7 +4,7 @@ const path = require('path');
 const nconf = require('nconf');
 const validator = require('validator');
 
-const db = require('../database');
+const user = require('../user');
 const meta = require('../meta');
 const file = require('../file');
 const plugins = require('../plugins');
@@ -190,8 +190,8 @@ async function saveFileToLocal(uid, folder, uploadedFile) {
 		path: upload.path,
 		name: uploadedFile.name,
 	};
-	const fileKey = upload.url.replace(nconf.get('upload_url'), '');
-	await db.sortedSetAdd(`uid:${uid}:uploads`, Date.now(), fileKey);
+
+	await user.associateUpload(uid, upload.url.replace(`${nconf.get('upload_url')}/`, ''));
 	const data = await plugins.hooks.fire('filter:uploadStored', { uid: uid, uploadedFile: uploadedFile, storedFile: storedFile });
 	return data.storedFile;
 }

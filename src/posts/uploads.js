@@ -1,6 +1,5 @@
 'use strict';
 
-const async = require('async');
 const nconf = require('nconf');
 const crypto = require('crypto');
 const path = require('path');
@@ -10,15 +9,23 @@ const validator = require('validator');
 
 const db = require('../database');
 const image = require('../image');
+const user = require('../user');
 const topics = require('../topics');
 const file = require('../file');
+const meta = require('../meta');
 
 module.exports = function (Posts) {
 	Posts.uploads = {};
 
 	const md5 = filename => crypto.createHash('md5').update(filename).digest('hex');
-	const pathPrefix = path.join(nconf.get('upload_path'), 'files');
-	const searchRegex = /\/assets\/uploads\/files\/([^\s")]+\.?[\w]*)/g;
+	const pathPrefix = path.join(nconf.get('upload_path'));
+	const searchRegex = /\/assets\/uploads\/(files\/[^\s")]+\.?[\w]*)/g;
+
+	const _getFullPath = relativePath => path.join(pathPrefix, relativePath);
+	const _filterValidPaths = async filePaths => (await Promise.all(filePaths.map(async (filePath) => {
+		const fullPath = _getFullPath(filePath);
+		return fullPath.startsWith(pathPrefix) && await file.exists(fullPath) ? filePath : false;
+	}))).filter(Boolean);
 
 	Posts.uploads.sync = async function (pid) {
 		// Scans a post's content and updates sorted set of uploads
@@ -41,7 +48,7 @@ module.exports = function (Posts) {
 		if (isMainPost) {
 			const tid = await Posts.getPostField(pid, 'tid');
 			let thumbs = await topics.thumbs.get(tid);
-			const replacePath = path.posix.join(nconf.get('relative_path'), nconf.get('upload_url'), 'files/');
+			const replacePath = path.posix.join(`${nconf.get('relative_path')}${nconf.get('upload_url')}/`);
 			thumbs = thumbs.map(thumb => thumb.url.replace(replacePath, '')).filter(path => !validator.isURL(path, {
 				require_protocol: true,
 			}));
@@ -92,8 +99,7 @@ module.exports = function (Posts) {
 		if (!filePaths.length) {
 			return;
 		}
-		// Only process files that exist
-		filePaths = await async.filter(filePaths, async filePath => await file.exists(path.join(pathPrefix, filePath)));
+		filePaths = await _filterValidPaths(filePaths); // Only process files that exist and are within uploads directory
 
 		const now = Date.now();
 		const scores = filePaths.map(() => now);
@@ -113,15 +119,40 @@ module.exports = function (Posts) {
 		}
 
 		const bulkRemove = filePaths.map(path => [`upload:${md5(path)}:pids`, pid]);
-		await Promise.all([
+		const promises = [
 			db.sortedSetRemove(`post:${pid}:uploads`, filePaths),
 			db.sortedSetRemoveBulk(bulkRemove),
-		]);
+		];
+
+		await Promise.all(promises);
+
+		if (!meta.config.preserveOrphanedUploads) {
+			const deletePaths = (await Promise.all(
+				filePaths.map(async filePath => (await Posts.uploads.isOrphan(filePath) ? filePath : false))
+			)).filter(Boolean);
+
+			const uploaderUids = (await db.getObjectsFields(deletePaths.map(path => `upload:${md5(path)}`, ['uid']))).map(o => (o ? o.uid || null : null));
+			await Promise.all(uploaderUids.map((uid, idx) => (
+				uid && isFinite(uid) ? user.deleteUpload(uid, uid, deletePaths[idx]) : null
+			)).filter(Boolean));
+			await Posts.uploads.deleteFromDisk(deletePaths);
+		}
 	};
 
 	Posts.uploads.dissociateAll = async (pid) => {
 		const current = await Posts.uploads.list(pid);
-		await Promise.all(current.map(async path => await Posts.uploads.dissociate(pid, path)));
+		await Posts.uploads.dissociate(pid, current);
+	};
+
+	Posts.uploads.deleteFromDisk = async (filePaths) => {
+		if (typeof filePaths === 'string') {
+			filePaths = [filePaths];
+		} else if (!Array.isArray(filePaths)) {
+			throw new Error(`[[error:wrong-parameter-type, filePaths, ${typeof filePaths}, array]]`);
+		}
+
+		filePaths = (await _filterValidPaths(filePaths)).map(_getFullPath);
+		await Promise.all(filePaths.map(file.delete));
 	};
 
 	Posts.uploads.saveSize = async (filePaths) => {
@@ -131,8 +162,8 @@ module.exports = function (Posts) {
 		});
 		await Promise.all(filePaths.map(async (fileName) => {
 			try {
-				const size = await image.size(path.join(pathPrefix, fileName));
-				winston.verbose(`[posts/uploads/${fileName}] Saving size`);
+				const size = await image.size(_getFullPath(fileName));
+				winston.verbose(`[posts/uploads/${fileName}] Saving size (${size.width}px x ${size.height}px)`);
 				await db.setObject(`upload:${md5(fileName)}`, {
 					width: size.width,
 					height: size.height,

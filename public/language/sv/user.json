@@ -105,7 +105,7 @@
     "has_no_ignored_topics": "Denna användare ignorerar inte några ämnen ännu.",
     "has_no_upvoted_posts": "Den här användaren har inte röstat upp några inlägg än.",
     "has_no_downvoted_posts": "Den här användaren har inte röstat ned några inlägg än.",
-    "has_no_voted_posts": "Den här användaren har inga inlägg med röster",
+    "has_no_controversial_posts": "This user does not have any downvoted posts yet.",
     "has_no_blocks": "Du har inte blockerat några användare.",
     "email_hidden": "E-post dold",
     "hidden": "dold",

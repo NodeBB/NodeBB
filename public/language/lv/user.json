@@ -105,7 +105,7 @@
     "has_no_ignored_topics": "Lietotājs nav vēl ignorējis nevienu tematu.",
     "has_no_upvoted_posts": "Lietotājs vēl nav balsojis \"par\" nevienu rakstu.",
     "has_no_downvoted_posts": "Lietotājs vēl nav balsojis \"pret\" nevienu rakstu.",
-    "has_no_voted_posts": "Lietotājam nav nevienu rakstu ar balsojumiem.",
+    "has_no_controversial_posts": "This user does not have any downvoted posts yet.",
     "has_no_blocks": "Tu neesi bloķējis nevienu lietotāju.",
     "email_hidden": "E-pasta adrese paslēpta",
     "hidden": "paslēpies",

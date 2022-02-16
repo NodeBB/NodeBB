@@ -105,7 +105,7 @@
     "has_no_ignored_topics": "Ta uporabnik še nima nobenih prezrtih tem.",
     "has_no_upvoted_posts": "Uporabnik še ni glasoval za nobeno objavo.",
     "has_no_downvoted_posts": "Uporabnik še ni glasoval proti nobeni objavi.",
-    "has_no_voted_posts": "Uporabnik nima glasovanih objav",
+    "has_no_controversial_posts": "This user does not have any downvoted posts yet.",
     "has_no_blocks": "Nimate blokiranih uporabnikov.",
     "email_hidden": "Skrit e-poštni naslov",
     "hidden": "skrit",

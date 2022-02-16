@@ -3,7 +3,6 @@
 const path = require('path');
 const fs = require('fs');
 const cproc = require('child_process');
-const _ = require('lodash');
 
 const { paths, pluginNamePattern } = require('../constants');
 
@@ -16,6 +15,23 @@ function sortDependencies(dependencies) {
 			memo[pkg[0]] = pkg[1];
 			return memo;
 		}, {});
+}
+
+function merge(to, from) {
+	// Poor man's version of _.merge()
+	if (Object.values(from).every(val => typeof val !== 'object')) {
+		return Object.assign(to, from);
+	}
+
+	Object.keys(from).forEach((key) => {
+		if (Object.getPrototypeOf(from[key]) === Object.prototype) {
+			to[key] = merge(to[key], from[key]);
+		} else {
+			to[key] = from[key];
+		}
+	});
+
+	return to;
 }
 
 pkgInstall.updatePackageFile = () => {
@@ -43,8 +59,8 @@ pkgInstall.updatePackageFile = () => {
 	// Sort dependencies alphabetically
 	dependencies = sortDependencies({ ...dependencies, ...defaultPackageContents.dependencies });
 
-	const packageContents = { ..._.merge(oldPackageContents, defaultPackageContents), dependencies, devDependencies };
-	fs.writeFileSync(paths.currentPackage, JSON.stringify(packageContents, null, 2));
+	const packageContents = { ...merge(oldPackageContents, defaultPackageContents), dependencies, devDependencies };
+	fs.writeFileSync(paths.currentPackage, JSON.stringify(packageContents, null, 4));
 };
 
 pkgInstall.supportedPackageManager = [
@@ -169,5 +185,5 @@ pkgInstall.preserveExtraneousPlugins = () => {
 	// Add those packages to package.json
 	packageContents.dependencies = sortDependencies({ ...packageContents.dependencies, ...extraneous });
 
-	fs.writeFileSync(paths.currentPackage, JSON.stringify(packageContents, null, 2));
+	fs.writeFileSync(paths.currentPackage, JSON.stringify(packageContents, null, 4));
 };

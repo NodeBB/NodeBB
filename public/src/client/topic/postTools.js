@@ -11,8 +11,7 @@ define('forum/topic/postTools', [
 	'bootbox',
 	'alerts',
 	'hooks',
-	'slugify',
-], function (share, navigator, components, translator, votes, api, bootbox, alerts, hooks, slugify) {
+], function (share, navigator, components, translator, votes, api, bootbox, alerts, hooks) {
 	const PostTools = {};
 
 	let staleReplyAnyway = false;
@@ -256,8 +255,8 @@ define('forum/topic/postTools', [
 	function onReplyClicked(button, tid) {
 		const selectedNode = getSelectedNode();
 
-		showStaleWarning(function () {
-			let username = getUserSlug(button);
+		showStaleWarning(async function () {
+			let username = await getUserSlug(button);
 			if (getData(button, 'data-uid') === '0' || !getData(button, 'data-userslug')) {
 				username = '';
 			}
@@ -289,8 +288,8 @@ define('forum/topic/postTools', [
 	function onQuoteClicked(button, tid) {
 		const selectedNode = getSelectedNode();
 
-		showStaleWarning(function () {
-			const username = getUserSlug(button);
+		showStaleWarning(async function () {
+			const username = await getUserSlug(button);
 			const toPid = getData(button, 'data-pid');
 
 			function quote(text) {
@@ -316,7 +315,7 @@ define('forum/topic/postTools', [
 		});
 	}
 
-	function getSelectedNode() {
+	async function getSelectedNode() {
 		let selectedText = '';
 		let selectedPid;
 		let username = '';
@@ -343,7 +342,7 @@ define('forum/topic/postTools', [
 			selectedText = range.toString();
 			const postEl = $(content).parents('[component="post"]');
 			selectedPid = postEl.attr('data-pid');
-			username = getUserSlug($(content));
+			username = await getUserSlug($(content));
 			range.detach();
 		}
 		return { text: selectedText, pid: selectedPid, username: username };
@@ -367,28 +366,33 @@ define('forum/topic/postTools', [
 	}
 
 	function getUserSlug(button) {
-		let slug = '';
-		const post = button.parents('[data-pid]');
-
-		if (button.attr('component') === 'topic/reply') {
-			return slug;
-		}
-
-		if (post.length) {
-			slug = slugify(post.attr('data-username'), true);
-			if (!slug) {
-				if (post.attr('data-uid') !== '0') {
-					slug = '[[global:former_user]]';
-				} else {
-					slug = '[[global:guest]]';
-				}
+		return new Promise((resolve) => {
+			let slug = '';
+			if (button.attr('component') === 'topic/reply') {
+				resolve(slug);
+				return;
 			}
-		}
-		if (post.length && post.attr('data-uid') !== '0') {
-			slug = '@' + slug;
-		}
+			const post = button.parents('[data-pid]');
+			if (post.length) {
+				require(['slugify'], function (slugify) {
+					slug = slugify(post.attr('data-username'), true);
+					if (!slug) {
+						if (post.attr('data-uid') !== '0') {
+							slug = '[[global:former_user]]';
+						} else {
+							slug = '[[global:guest]]';
+						}
+					}
+					if (slug && slug !== '[[global:former_user]]' && slug !== '[[global:guest]]') {
+						slug = '@' + slug;
+					}
+					resolve(slug);
+				});
+				return;
+			}
 
-		return slug;
+			resolve(slug);
+		});
 	}
 
 	function togglePostDelete(button) {

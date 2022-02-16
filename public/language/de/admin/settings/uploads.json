@@ -2,6 +2,7 @@
 	"posts": "Beiträge",
 	"private": "Hochgeladene Dateien privatisieren",
 	"strip-exif-data": "EXIF-Daten entfernen",
+	"preserve-orphaned-uploads": "Keep uploaded files on disk after a post is purged",
 	"private-extensions": "Private Dateiendungen",
 	"private-uploads-extensions-help": "Gib eine Komma-Separierte Liste mit Dateiendungen an, die privatisiert werden sollen (z.B. <code>pdf,xls,doc</code>). Eine leere Liste bedeutet, dass alle Dateien privat sind.",
 	"resize-image-width-threshold": "Bilder zu einer bestimmten Breite runterskalieren wenn sie breiter sind als die angegebene Breite.",

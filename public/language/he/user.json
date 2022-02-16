@@ -105,7 +105,7 @@
     "has_no_ignored_topics": "המשתמש הזה טרם התעלם מנושאים.",
     "has_no_upvoted_posts": "המשתמש טרם הצביע בעד פוסטים כלשהם.",
     "has_no_downvoted_posts": "המשתמש טרם הצביע נגד פוסטים כלשהם.",
-    "has_no_voted_posts": "למשתמש אין פוסטים שהוצבעו",
+    "has_no_controversial_posts": "This user does not have any downvoted posts yet.",
     "has_no_blocks": "לא חסמת אף משתמש.",
     "email_hidden": "כתובת אימייל מוסתרת",
     "hidden": "מוסתר",

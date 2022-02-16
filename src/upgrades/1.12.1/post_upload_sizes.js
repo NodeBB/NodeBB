@@ -10,11 +10,11 @@ module.exports = {
 	method: async function () {
 		const { progress } = this;
 
-		await batch.processSortedSet('posts:pid', async (postData) => {
-			const keys = postData.map(p => `post:${p.pid}:uploads`);
+		await batch.processSortedSet('posts:pid', async (pids) => {
+			const keys = pids.map(p => `post:${p}:uploads`);
 			const uploads = await db.getSortedSetRange(keys, 0, -1);
 			await posts.uploads.saveSize(uploads);
-			progress.incr(postData.length);
+			progress.incr(pids.length);
 		}, {
 			batch: 100,
 			progress: progress,

@@ -105,7 +105,7 @@
     "has_no_ignored_topics": "Denne brukeren har ikke ignorert noen emner ennå",
     "has_no_upvoted_posts": "Denne brukeren har ikke lastet opp noen innlegg ennå",
     "has_no_downvoted_posts": "Denne brukeren har ikke nedlastet noen innlegg ennå",
-    "has_no_voted_posts": "Denne brukeren har ingen innlegg som er stemt på",
+    "has_no_controversial_posts": "This user does not have any downvoted posts yet.",
     "has_no_blocks": "Du har ingen blokkerte brukere.",
     "email_hidden": "E-post skjult",
     "hidden": "skjult",

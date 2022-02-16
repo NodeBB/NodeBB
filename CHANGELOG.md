@@ -1,3 +1,151 @@
+#### v1.19.2 (2022-02-09)
+
+##### Chores
+
+*  up persona (14ecafb6)
+*  up markdown (8a4b7dc4)
+*  add missing quote (b98758d3)
+*  use source and current local vars, + docs (9e4147f0)
+*  up persona (1eaae1d0)
+*  up emoji (106ef7cf)
+*  persona (3b4cf971)
+*  persona (78db61cf)
+*  up deps (c7a56439)
+*  add punycode dependency (452f29c0)
+*  up persona (d50d4a9e)
+*  up persona (458606bc)
+*  up persona (cfe53305)
+*  up persona (f29bed27)
+*  up packages (b4a4e60e)
+*  up persona (3e30b6cd)
+*  incrementing version number - v1.19.1 (7f450268)
+*  update changelog for v1.19.1 (55df683a)
+* **deps:**
+  *  bump ioredis from 4.28.4 to 4.28.5 in /install (#10254) (b496ad44)
+  *  bump nodebb-widget-essentials in /install (#10219) (b71025ce)
+  *  update dependency lint-staged to v12.3.3 (6ba25557)
+  *  update dependency eslint to v8.8.0 (153693e0)
+  *  bump nodebb-theme-persona in /install (#10199) (2db54e67)
+  *  update dependency lint-staged to v12.3.2 (814cb66b)
+  *  update dependency mocha to v9.2.0 (05e2b354)
+  *  bump helmet from 5.0.1 to 5.0.2 in /install (1f037bf6)
+  *  update dependency lint-staged to v12.3.1 (ac244af3)
+  *  update dependency lint-staged to v12.3.0 (7060837b)
+  *  bump helmet from 4.6.0 to 5.0.1 in /install (5d3900dc)
+* **i18n:**
+  *  fallback strings for new resources: nodebb.modules (a71b8e59)
+  *  fallback strings for new resources: nodebb.global, nodebb.pages (aa812f03)
+  *  fallback strings for new resources: nodebb.users (70eeb204)
+  *  fallback strings for new resources: nodebb.admin-settings-email (e9588ca7)
+  *  fallback strings for new resources: nodebb.admin-settings-advanced (2ec4e31f)
+
+##### Documentation Changes
+
+*  openapi spec for new route (9b912db7)
+*  some tweaks to cli help (c869d7db)
+
+##### New Features
+
+*  handle array of keys in psql exists for zsets (5143ca33)
+*  upgrade script to clean up leftover :thumb zsets (0ac28435)
+*  more tests for ensuring downvoted posts are added to the :votes zset (1b8eeaf8)
+*  upgrade script to store downvotes posts in the user :votes sorted set (cf88483f)
+*  new accounts route to show most downvoted ('controversial') posts (5afd5de0)
+*  v3 user email tests (aa8914a1)
+*  allow gif profile images, sharp 0.30.0 supports gifs (7f1c4477)
+*  detect alternative package managers based on lockfile (8ba9e67c)
+*  new language key for user search in chat (766ad6b7)
+*  remove colors in favour of chalk (#10142) (cf8f62ae)
+*  add upload helper module for drag&drop, paste, closes #6388 (cf5c0968)
+*  no more sending emails to banned users, + feature flag (ea27eaf1)
+*  push the theme name into body class (e1e1d522)
+*  add ACP toggles for COEP and CORP headers (d91aeea3)
+
+##### Bug Fixes
+
+* **deps:**
+  *  update dependency sharp to v0.30.1 (#10270) (8e52abe8)
+  *  update dependency nodebb-widget-essentials to v5.0.7 (#10269) (6c0f7034)
+  *  update dependency nodebb-theme-persona to v11.3.37 (#10265) (78d48c37)
+  *  update dependency ioredis to v4.28.5 (#10252) (721a70c0)
+  *  update dependency connect-redis to v6.1.1 (#10260) (a10e4940)
+  *  update dependency nodebb-theme-persona to v11.3.36 (#10253) (0e2a4a2d)
+  *  update dependency nodebb-theme-persona to v11.3.35 (#10251) (6465e012)
+  *  update dependency pg-cursor to v2.7.3 (#10244) (e6185883)
+  *  update dependency nodebb-theme-persona to v11.3.33 (#10248) (32477676)
+  *  update dependency nodebb-theme-vanilla to v12.1.17 (#10249) (8f5b5ef1)
+  *  update dependency nodebb-plugin-emoji to v3.5.9 (#10250) (1eb0939e)
+  *  update dependency sanitize-html to v2.7.0 (#10246) (845717b8)
+  *  update dependency pg to v8.7.3 (#10243) (531a3b1e)
+  *  update dependency connect-redis to v6.1.0 (#10245) (c343b631)
+  *  update dependency nodebb-theme-persona to v11.3.31 (#10241) (f1bed441)
+  *  update dependency nodebb-plugin-composer-default to v7.0.20 (#10231) (a4702959)
+  *  update dependency nodebb-theme-persona to v11.3.30 (#10232) (916a0db3)
+  *  update dependency nodebb-plugin-emoji to v3.5.8 (#10239) (ebf4e12b)
+  *  update dependency sharp to v0.30.0 (#10221) (2924cd3b)
+  *  update dependency ioredis to v4.28.4 (#10224) (cda07cb7)
+  *  update dependency clipboard to v2.0.10 (2c605d1c)
+  *  update dependency sitemap to v7.1.1 (1bf938da)
+  *  update dependency winston to v3.5.1 (b0dd68bb)
+  *  pin dependency punycode to 2.1.1 (e7ba24c5)
+  *  update dependency postcss to v8.4.6 (322f1033)
+  *  update dependency nodebb-plugin-markdown to v9 (7d5080cd)
+  *  update dependency ace-builds to v1.4.14 (#10200) (c50f6512)
+  *  update dependency winston to v3.5.0 (#10202) (a7f142be)
+  *  update dependency clipboard to v2.0.9 (#10203) (c6164e48)
+*  remove extraneous devDependencies on package merge (a2c7d69e)
+*  #10257, topic thumbs not deleting on topic deletion (0f788b8e)
+*  #10256, allow quote tooltip on mobile (fb3f4f9a)
+*  #10255, create verified/unverified groups on install (08f2a050)
+*  controversial posts/bests posts not showing anything (079c487d)
+*  regression in package.json merging logic that caused extraneous packages to not be removed (d34471f6)
+*  #10229, package merging should deep merge nested objects (689c125c)
+*  use fs.promises (a0a38706)
+*  bug where .reduce() exploded due to no initial value, if input value was an empty array (5cff6e3f)
+*  https://github.com/NodeBB/NodeBB/issues/10242 (dcb201df)
+*  missing early return (ad635175)
+*  handle case where email is explicitly passed into user.create, and thus is set in user hash, but confirmation request may have expired (936562c3)
+*  #10236, don't check email:uid, instead verify an email confirmation is active (0322e984)
+*  don't crash if requestedFields is undefined (98839108)
+*  a missed invocation of colors (c3d926ff)
+*  proactively guard against homograph characters in website values (fa7dcdb9)
+*  #10208, don't use leading slash in directory names (1d01741a)
+*  don't crash if quick search doesn't return posts (93d18383)
+*  properly unregister hooks in emailer tests (fc2c755c)
+*  email ban tests (dee9cca3)
+*  update usage of emailer.send to not catch (as errors are no longer thrown), email error throttler (d4e5259f)
+*  derp (b3f7b742)
+*  bug where page wouldn't complete loading if data.scripts was emptied (578145ac)
+*  use escaped group names in invite modal (2a89ad82)
+*  https://github.com/julianlam/nodebb-plugin-mentions/issues/170 (dc6e629d)
+*  #10197, fix relative path urls for dashboard pages (92a249c9)
+*  actually, CORP is ok (df8c8ad8)
+*  update defaults for corp and coep to be more permissive, for now, to be reverted for v1.20.0 (4467299e)
+*  if no group label is selected, select no group title option (94da5026)
+
+##### Other Changes
+
+*  remove unused require (6be330f2)
+
+##### Performance Improvements
+
+*  increase batch size (b548083b)
+
+##### Refactors
+
+*  update chat plcaeholder message (fbd9ba79)
+*  updated package-install.js exports style, new exported method 'getPackageManager' for use in cases where nconf is unreliable, fix bug where nconf was not correctly set up in cli tools, proper installation of dev dependencies based on global env value (9a169085)
+*  emailer.send and emailer.sendToEmail returns Boolean based on message being successfully sent (f0e32ff1)
+*  sorted-list .get() to be async fn (89b559a2)
+
+##### Tests
+
+*  fix occasional test failure (2dbdd181)
+*  add test to verify that a sorted set is automatically deleted if its last element is removed (#10261) (60680876)
+*  stricter isValidationPending check (d1b1f50b)
+*  fix derp (680e36da)
+*  up acp plugin page timeout (a214f9a6)
+
 #### v1.19.1 (2022-01-21)
 
 ##### Chores
