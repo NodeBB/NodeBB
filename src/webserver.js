@@ -174,7 +174,8 @@ function setupExpressApp(app) {
 	auth.initialize(app, middleware);
 	const als = require('./als');
 	app.use((req, res, next) => {
-		als.run({ uid: req.uid }, next);
+		als.run({ uid: req.uid, url: req.url, baseUrl: req.baseUrl,
+	 		originalUrl: req.originalUrl, path: req.path }, next);
 	});
 	app.use(middleware.autoLocale); // must be added after auth middlewares are added
 
