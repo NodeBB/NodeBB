@@ -1,3 +1,5 @@
+/* eslint-disable no-await-in-loop */
+
 'use strict';
 
 const crypto = require('crypto');
@@ -18,9 +20,9 @@ module.exports = {
 			const exists = await db.exists(keys);
 			keys = keys.filter((key, idx) => exists[idx]);
 
-			progress.incr(pids.length - keys.length);
+			progress.incr(pids.length);
 
-			await Promise.all(keys.map(async (key) => {
+			for (const key of keys) {
 				// Rename the paths within
 				let uploads = await db.getSortedSetRangeWithScores(key, 0, -1);
 
@@ -42,8 +44,7 @@ module.exports = {
 				promises.concat(hashes.map((hash, idx) => db.rename(`upload:${hash}:pids`, `upload:${newHashes[idx]}:pids`)));
 
 				await Promise.all(promises);
-				progress.incr();
-			}));
+			}
 		}, {
 			batch: 100,
 			progress: progress,

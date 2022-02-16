@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 'use strict';
 
 const crypto = require('crypto');
@@ -14,13 +15,11 @@ module.exports = {
 		const { progress } = this;
 
 		await batch.processSortedSet('users:joindate', async (uids) => {
-			let keys = uids.map(uid => `uid:${uid}:uploads`);
-			const exists = await db.exists(keys);
-			keys = keys.filter((key, idx) => exists[idx]);
+			const keys = uids.map(uid => `uid:${uid}:uploads`);
+			progress.incr(uids.length);
 
-			progress.incr(uids.length - keys.length);
-
-			await Promise.all(keys.map(async (key, idx) => {
+			for (let idx = 0; idx < uids.length; idx++) {
+				const key = keys[idx];
 				// Rename the paths within
 				let uploads = await db.getSortedSetRangeWithScores(key, 0, -1);
 
@@ -37,9 +36,7 @@ module.exports = {
 				// Add uid to the upload's hash object
 				uploads = await db.getSortedSetMembers(key);
 				await db.setObjectBulk(uploads.map(relativePath => [`upload:${md5(relativePath)}`, { uid: uids[idx] }]));
-
-				progress.incr();
-			}));
+			}
 		}, {
 			batch: 100,
 			progress: progress,
