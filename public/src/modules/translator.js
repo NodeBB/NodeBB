@@ -3,7 +3,7 @@
 (function (factory) {
 	function loadClient(language, namespace) {
 		return new Promise(function (resolve, reject) {
-			jQuery.getJSON([config.assetBaseUrl, 'language', language, namespace].join('/') + '.json?' + config['cache-buster'], function (data) {
+			jQuery.getJSON([config.asset_base_url, 'language', language, namespace].join('/') + '.json?' + config['cache-buster'], function (data) {
 				const payload = {
 					language: language,
 					namespace: namespace,
