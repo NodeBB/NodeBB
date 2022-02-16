@@ -3,6 +3,7 @@
 'use strict';
 
 const crypto = require('crypto');
+const _ = require('lodash');
 
 const db = require('../../database');
 const batch = require('../../batch');
@@ -27,7 +28,7 @@ module.exports = {
 				let uploads = await db.getSortedSetRangeWithScores(key, 0, -1);
 
 				// Don't process those that have already the right format
-				uploads = uploads.filter(upload => !upload.value.startsWith('files/'));
+				uploads = _.uniq(uploads.filter(upload => !upload.value.startsWith('files/')));
 
 				// Rename the zset members
 				await db.sortedSetRemove(key, uploads.map(upload => upload.value));
