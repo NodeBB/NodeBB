@@ -179,7 +179,7 @@ function setupExpressApp(app) {
 			url: req.url,
 			baseUrl: req.baseUrl,
 			originalUrl: req.originalUrl,
-			path: req.path
+			path: req.path,
 		}, next);
 	});
 	app.use(middleware.autoLocale); // must be added after auth middlewares are added
