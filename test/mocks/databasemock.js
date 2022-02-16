@@ -38,6 +38,7 @@ nconf.defaults({
 const urlObject = url.parse(nconf.get('url'));
 const relativePath = urlObject.pathname !== '/' ? urlObject.pathname : '';
 nconf.set('relative_path', relativePath);
+nconf.set('asset_base_url', `${relativePath}/assets`);
 nconf.set('upload_path', path.join(nconf.get('base_dir'), nconf.get('upload_path')));
 nconf.set('upload_url', '/assets/uploads');
 nconf.set('url_parsed', urlObject);

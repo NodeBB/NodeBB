@@ -434,7 +434,7 @@ ajaxify = window.ajaxify || {};
 	};
 
 	ajaxify.loadTemplate = function (template, callback) {
-		require([config.assetBaseUrl + '/templates/' + template + '.js'], callback, function (err) {
+		require([config.asset_base_url + '/templates/' + template + '.js'], callback, function (err) {
 			console.error('Unable to load template: ' + template);
 			throw err;
 		});
