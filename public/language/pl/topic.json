@@ -181,5 +181,7 @@
     "timeago_earlier": "%1 wcześniej",
     "first-post": "Pierwszy post",
     "last-post": "Ostatni post",
+    "go-to-my-next-post": "Go to my next post",
+    "no-more-next-post": "You don't have more posts in this topic",
     "post-quick-reply": "Wyślij szybką odpowiedź"
 }

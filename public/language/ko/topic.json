@@ -181,5 +181,7 @@
     "timeago_earlier": "%1 이전",
     "first-post": "첫 포스트",
     "last-post": "마지막 포스트",
+    "go-to-my-next-post": "Go to my next post",
+    "no-more-next-post": "You don't have more posts in this topic",
     "post-quick-reply": "빠른 답글"
 }
