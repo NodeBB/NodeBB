@@ -47,7 +47,7 @@ questions.optional = [
 ];
 
 function checkSetupFlagEnv() {
-	let setupVal = install.values || {};
+	let setupVal = install.values;
 
 	const envConfMap = {
 		NODEBB_URL: 'url',
@@ -65,17 +65,21 @@ function checkSetupFlagEnv() {
 	};
 
 	// Set setup values from env vars (if set)
-	winston.info('[install/checkSetupFlagEnv] checking env vars for setup info...');
+	const envKeys = Object.keys(process.env);
+	if (Object.keys(envConfMap).some(key => envKeys.includes(key))) {
+		winston.info('[install/checkSetupFlagEnv] checking env vars for setup info...');
+		setupVal = setupVal || {};
 
-	Object.entries(process.env).forEach(([evName, evValue]) => { // get setup values from env
-		if (evName.startsWith('NODEBB_DB_')) {
-			setupVal[`${process.env.NODEBB_DB}:${envConfMap[evName]}`] = evValue;
-		} else if (evName.startsWith('NODEBB_')) {
-			setupVal[envConfMap[evName]] = evValue;
-		}
-	});
+		Object.entries(process.env).forEach(([evName, evValue]) => { // get setup values from env
+			if (evName.startsWith('NODEBB_DB_')) {
+				setupVal[`${process.env.NODEBB_DB}:${envConfMap[evName]}`] = evValue;
+			} else if (evName.startsWith('NODEBB_')) {
+				setupVal[envConfMap[evName]] = evValue;
+			}
+		});
 
-	setupVal['admin:password:confirm'] = setupVal['admin:password'];
+		setupVal['admin:password:confirm'] = setupVal['admin:password'];
+	}
 
 	// try to get setup values from json, if successful this overwrites all values set by env
 	// TODO: better behaviour would be to support overrides per value, i.e. in order of priority (generic pattern):
