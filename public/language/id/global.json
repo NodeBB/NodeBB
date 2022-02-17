@@ -23,7 +23,7 @@
     "close": "Tutup",
     "pagination": "Halaman",
     "pagination.out_of": "%1 dari %2",
-    "pagination.enter_index": "Masukkan index",
+    "pagination.enter_index": "Go to post index",
     "header.admin": "Admin",
     "header.categories": "Kategori",
     "header.recent": "Terbaru",

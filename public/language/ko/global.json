@@ -23,7 +23,7 @@
     "close": "닫기",
     "pagination": "페이지",
     "pagination.out_of": "현재: %1 / 전체: %2",
-    "pagination.enter_index": "이동할 포스트 번호 입력",
+    "pagination.enter_index": "Go to post index",
     "header.admin": "관리자",
     "header.categories": "카테고리",
     "header.recent": "최근",

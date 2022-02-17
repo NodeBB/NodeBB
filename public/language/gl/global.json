@@ -23,7 +23,7 @@
     "close": "Pechar ",
     "pagination": "Paxinación",
     "pagination.out_of": "%1 de %2",
-    "pagination.enter_index": "Introduce unha referencia",
+    "pagination.enter_index": "Go to post index",
     "header.admin": "Admin",
     "header.categories": "Categorías",
     "header.recent": "Recentes",

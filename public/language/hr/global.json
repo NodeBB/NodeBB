@@ -23,7 +23,7 @@
     "close": "Zatvori",
     "pagination": "Stranice",
     "pagination.out_of": "%1 od %2",
-    "pagination.enter_index": "Unesi index",
+    "pagination.enter_index": "Go to post index",
     "header.admin": "Admin",
     "header.categories": "Kategorije",
     "header.recent": "Posljednje",

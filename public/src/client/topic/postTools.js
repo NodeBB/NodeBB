@@ -383,12 +383,12 @@ define('forum/topic/postTools', [
 							slug = '[[global:guest]]';
 						}
 					}
+					if (slug && slug !== '[[global:former_user]]' && slug !== '[[global:guest]]') {
+						slug = '@' + slug;
+					}
 					resolve(slug);
 				});
 				return;
-			}
-			if (post.length && post.attr('data-uid') !== '0') {
-				slug = '@' + slug;
 			}
 
 			resolve(slug);

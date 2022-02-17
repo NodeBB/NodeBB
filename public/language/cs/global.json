@@ -23,7 +23,7 @@
     "close": "Zrušit",
     "pagination": "Stránkování",
     "pagination.out_of": "%1 z %2",
-    "pagination.enter_index": "Zadejte index",
+    "pagination.enter_index": "Go to post index",
     "header.admin": "Administrace",
     "header.categories": "Kategorie",
     "header.recent": "Nejnovější",

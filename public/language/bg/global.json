@@ -23,7 +23,7 @@
     "close": "Затваряне",
     "pagination": "Странициране",
     "pagination.out_of": "%1 от %2",
-    "pagination.enter_index": "Въведете номер",
+    "pagination.enter_index": "Към публикация номер",
     "header.admin": "Администратор",
     "header.categories": "Категории",
     "header.recent": "Скорошни",

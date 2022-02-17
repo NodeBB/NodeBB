@@ -23,7 +23,7 @@
     "close": "Stäng",
     "pagination": "Siduppdelning",
     "pagination.out_of": "%1 av %2",
-    "pagination.enter_index": "Skriv in index ",
+    "pagination.enter_index": "Go to post index",
     "header.admin": "Admin",
     "header.categories": "Kategorier",
     "header.recent": "Senaste",

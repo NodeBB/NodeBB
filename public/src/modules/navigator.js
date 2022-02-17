@@ -54,15 +54,22 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 			e.stopPropagation();
 		});
 
-		paginationBlockEl.off('shown.bs.dropdown', '.dropdown').on('shown.bs.dropdown', '.dropdown', function () {
-			setTimeout(function () {
-				$('.pagination-block input').focus();
+		paginationBlockEl.off('shown.bs.dropdown', '.wrapper').on('shown.bs.dropdown', '.wrapper', function () {
+			setTimeout(async function () {
+				if (utils.findBootstrapEnvironment() === 'lg') {
+					$('.pagination-block input').focus();
+				}
+				const postCountInTopic = await socket.emit('topics.getPostCountInTopic', ajaxify.data.tid);
+				if (postCountInTopic > 0) {
+					paginationBlockEl.find('#myNextPostBtn').removeAttr('disabled');
+				}
 			}, 100);
 		});
 		paginationBlockEl.find('.pageup').off('click').on('click', navigator.scrollUp);
 		paginationBlockEl.find('.pagedown').off('click').on('click', navigator.scrollDown);
 		paginationBlockEl.find('.pagetop').off('click').on('click', navigator.toTop);
 		paginationBlockEl.find('.pagebottom').off('click').on('click', navigator.toBottom);
+		paginationBlockEl.find('#myNextPostBtn').off('click').on('click', gotoMyNextPost);
 
 		paginationBlockEl.find('input').on('keydown', function (e) {
 			if (e.which === 13) {
@@ -89,6 +96,39 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 		navigator.setCount(count);
 		navigator.update(0);
 	};
+
+	let lastNextIndex = 0;
+	async function gotoMyNextPost() {
+		async function getNext(startIndex) {
+			return await socket.emit('topics.getMyNextPostIndex', {
+				tid: ajaxify.data.tid,
+				index: Math.max(1, startIndex),
+				sort: config.topicPostSort,
+			});
+		}
+		if (ajaxify.data.template.topic) {
+			let nextIndex = await getNext(index);
+			if (lastNextIndex === nextIndex) { // handles last post in pagination
+				nextIndex = await getNext(nextIndex);
+			}
+			if (nextIndex && index !== nextIndex + 1) {
+				lastNextIndex = nextIndex;
+				$(window).one('action:ajaxify.end', function () {
+					if (paginationBlockEl.find('.dropdown-menu').is(':hidden')) {
+						paginationBlockEl.find('.dropdown-toggle').dropdown('toggle');
+					}
+				});
+				navigator.scrollToIndex(nextIndex, true, 0);
+			} else {
+				alerts.alert({
+					message: '[[topic:no-more-next-post]]',
+					type: 'info',
+				});
+
+				lastNextIndex = 1;
+			}
+		}
+	}
 
 	function clampTop(newTop) {
 		const parent = thumb.parent();

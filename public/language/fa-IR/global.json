@@ -23,7 +23,7 @@
     "close": "بستن",
     "pagination": "صفحه‌بندی",
     "pagination.out_of": "%1 از %2",
-    "pagination.enter_index": "شماره را وارد کنید",
+    "pagination.enter_index": "Go to post index",
     "header.admin": "مدیر",
     "header.categories": "دسته‌بندی‌ها",
     "header.recent": "تازه‌ها",

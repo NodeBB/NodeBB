@@ -23,7 +23,7 @@
     "close": "Sluiten",
     "pagination": "Paginering",
     "pagination.out_of": "%1 van %2",
-    "pagination.enter_index": "Vul index in",
+    "pagination.enter_index": "Go to post index",
     "header.admin": "Beheer",
     "header.categories": "Categorieën",
     "header.recent": "Recent",

@@ -23,7 +23,7 @@
     "close": "Sulje",
     "pagination": "Sivutus",
     "pagination.out_of": "%1/%2",
-    "pagination.enter_index": "Syötä indeksi",
+    "pagination.enter_index": "Go to post index",
     "header.admin": "Ylläpitäjä",
     "header.categories": "Kategoriat",
     "header.recent": "Viimeisimmät",

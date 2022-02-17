@@ -23,7 +23,7 @@
     "close": "Закрыть",
     "pagination": "Разбивка на страницы",
     "pagination.out_of": "%1 из %2",
-    "pagination.enter_index": "Перейти на...",
+    "pagination.enter_index": "Go to post index",
     "header.admin": "Админка",
     "header.categories": "Категории",
     "header.recent": "Последние",

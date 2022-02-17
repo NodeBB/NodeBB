@@ -4,8 +4,8 @@
 
 	"acp-title": "%1 | לוח בקרה למנהל NodeBB",
 	"settings-header-contents": "תוכן",
-	"changes-saved": "Changes Saved",
-	"changes-saved-message": "Your changes to the NodeBB configuration have been saved.",
-	"changes-not-saved": "Changes Not Saved",
-	"changes-not-saved-message": "NodeBB encountered a problem saving your changes. (%1)"
+	"changes-saved": "שינויים שנשמרו",
+	"changes-saved-message": "השינויים שלך בתצורת NodeBB נשמרו.",
+	"changes-not-saved": "השינויים לא נשמרו",
+	"changes-not-saved-message": "NodeBB נתקל בעיה בשמירת השינויים שלך. (%1)"
 }
