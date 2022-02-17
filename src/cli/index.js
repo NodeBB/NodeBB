@@ -11,6 +11,17 @@ const packageInstall = require('./package-install');
 const { paths } = require('../constants');
 
 try {
+	fs.accessSync(paths.currentPackage, fs.constants.R_OK); // throw on missing package.json
+	try { // handle missing node_modules/ directory
+		fs.accessSync(paths.nodeModules, fs.constants.R_OK);
+	} catch (e) {
+		if (e.code === 'ENOENT') {
+			// run package installation just to sync up node_modules/ with existing package.json
+			packageInstall.installAll();
+		} else {
+			throw e;
+		}
+	}
 	fs.accessSync(path.join(paths.nodeModules, 'semver/package.json'), fs.constants.R_OK);
 
 	const semver = require('semver');
