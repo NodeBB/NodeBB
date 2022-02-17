@@ -1,9 +1,14 @@
 'use strict';
 
+const _ = require('lodash');
+
+const db = require('../database');
+const posts = require('../posts');
 const topics = require('../topics');
 const user = require('../user');
 const meta = require('../meta');
 const privileges = require('../privileges');
+const cache = require('../cache');
 
 const SocketTopics = module.exports;
 
@@ -52,6 +57,54 @@ SocketTopics.isFollowed = async function (socket, tid) {
 SocketTopics.isModerator = async function (socket, tid) {
 	const cid = await topics.getTopicField(tid, 'cid');
 	return await user.isModerator(socket.uid, cid);
+};
+
+SocketTopics.getMyNextPostIndex = async function (socket, data) {
+	if (!data || !data.tid || !data.index || !data.sort) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
+	async function getTopicPids(index) {
+		const topicSet = data.sort === 'most_votes' ? `tid:${data.tid}:posts:votes` : `tid:${data.tid}:posts`;
+		const reverse = data.sort === 'newest_to_oldest' || data.sort === 'most_votes';
+		const cacheKey = `np:s:${topicSet}:r:${String(reverse)}:tid:${data.tid}:pids`;
+		const topicPids = cache.get(cacheKey);
+		if (topicPids) {
+			return topicPids.slice(index - 1);
+		}
+		const pids = await db[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](topicSet, 0, -1);
+		cache.set(cacheKey, pids, 30000);
+		return pids.slice(index - 1);
+	}
+
+	async function getUserPids() {
+		const cid = await topics.getTopicField(data.tid, 'cid');
+		const cacheKey = `np:cid:${cid}:uid:${socket.uid}:pids`;
+		const userPids = cache.get(cacheKey);
+		if (userPids) {
+			return userPids;
+		}
+		const pids = await db.getSortedSetRange(`cid:${cid}:uid:${socket.uid}:pids`, 0, -1);
+		cache.set(cacheKey, pids, 30000);
+		return pids;
+	}
+
+	const [topicPids, userPidsInCategory] = await Promise.all([
+		getTopicPids(data.index),
+		getUserPids(),
+	]);
+	const userPidsInTopic = _.intersection(topicPids, userPidsInCategory);
+	if (!userPidsInTopic.length) {
+		return 0;
+	}
+	return await posts.getPidIndex(userPidsInTopic[0], data.tid, data.sort);
+};
+
+SocketTopics.getPostCountInTopic = async function (socket, tid) {
+	if (!socket.uid || !tid) {
+		return 0;
+	}
+	return await db.sortedSetScore(`tid:${tid}:posters`, socket.uid);
 };
 
 require('../promisify')(SocketTopics);
