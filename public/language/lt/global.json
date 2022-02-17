@@ -23,7 +23,7 @@
     "close": "Uždaryti",
     "pagination": "Numeracija",
     "pagination.out_of": "%1 iš %2",
-    "pagination.enter_index": "Įrašykite indeksą",
+    "pagination.enter_index": "Go to post index",
     "header.admin": "Administratorius",
     "header.categories": "Kategorijos",
     "header.recent": "Naujausi",

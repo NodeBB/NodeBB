@@ -23,7 +23,7 @@
     "close": "Затвори",
     "pagination": "Нумерисање страница",
     "pagination.out_of": "%1 од %2",
-    "pagination.enter_index": "Унесите индекс",
+    "pagination.enter_index": "Go to post index",
     "header.admin": "Админ",
     "header.categories": "Категорије",
     "header.recent": "Недавно",

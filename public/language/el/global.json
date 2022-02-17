@@ -23,7 +23,7 @@
     "close": "Κλείσιμο",
     "pagination": "Σελιδοποίηση",
     "pagination.out_of": "%1 από %2",
-    "pagination.enter_index": "Εισαγωγή Σελίδας",
+    "pagination.enter_index": "Go to post index",
     "header.admin": "Διαχειριστής",
     "header.categories": "Κατηγορίες",
     "header.recent": "Πρόσφατα",

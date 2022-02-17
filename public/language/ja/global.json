@@ -23,7 +23,7 @@
     "close": "閉じる",
     "pagination": "ページ",
     "pagination.out_of": "%2件中%1件目",
-    "pagination.enter_index": "Enter index",
+    "pagination.enter_index": "Go to post index",
     "header.admin": "管理",
     "header.categories": "カテゴリ",
     "header.recent": "最近",

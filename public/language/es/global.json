@@ -23,7 +23,7 @@
     "close": "Cerrar",
     "pagination": "Paginación",
     "pagination.out_of": "%1 de %2",
-    "pagination.enter_index": "Introduzca el número",
+    "pagination.enter_index": "Go to post index",
     "header.admin": "Administración",
     "header.categories": "Categorías",
     "header.recent": "Recientes",

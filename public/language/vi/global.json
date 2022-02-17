@@ -23,7 +23,7 @@
     "close": "Đóng",
     "pagination": "Phân trang",
     "pagination.out_of": "%1 trong số %2",
-    "pagination.enter_index": "Nhập chỉ mục",
+    "pagination.enter_index": "Đi đến chỉ mục bài đăng",
     "header.admin": "Quản trị viên",
     "header.categories": "Chuyên mục",
     "header.recent": "Gần đây",
