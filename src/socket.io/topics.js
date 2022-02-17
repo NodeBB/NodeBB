@@ -88,13 +88,21 @@ SocketTopics.getMyNextPostIndex = async function (socket, data) {
 		cache.set(cacheKey, pids, 30000);
 		return pids;
 	}
-
+	const postCountInTopic = await db.sortedSetScore(`tid:${data.tid}:posters`, socket.uid);
+	if (postCountInTopic <= 0) {
+		return 0;
+	}
 	const [topicPids, userPidsInCategory] = await Promise.all([
 		getTopicPids(data.index),
 		getUserPids(),
 	]);
 	const userPidsInTopic = _.intersection(topicPids, userPidsInCategory);
 	if (!userPidsInTopic.length) {
+		if (postCountInTopic > 0) {
+			// wrap around to beginning
+			const wrapIndex = await SocketTopics.getMyNextPostIndex(socket, { ...data, index: 1 });
+			return wrapIndex;
+		}
 		return 0;
 	}
 	return await posts.getPidIndex(userPidsInTopic[0], data.tid, data.sort);

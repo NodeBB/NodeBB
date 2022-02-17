@@ -56,7 +56,9 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 
 		paginationBlockEl.off('shown.bs.dropdown', '.wrapper').on('shown.bs.dropdown', '.wrapper', function () {
 			setTimeout(async function () {
-				$('.pagination-block input').focus();
+				if (utils.findBootstrapEnvironment() === 'lg') {
+					$('.pagination-block input').focus();
+				}
 				const postCountInTopic = await socket.emit('topics.getPostCountInTopic', ajaxify.data.tid);
 				if (postCountInTopic > 0) {
 					paginationBlockEl.find('#myNextPostBtn').removeAttr('disabled');
@@ -107,10 +109,9 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 		if (ajaxify.data.template.topic) {
 			let nextIndex = await getNext(index);
 			if (lastNextIndex === nextIndex) { // handles last post in pagination
-				console.log('fail', nextIndex, lastNextIndex);
 				nextIndex = await getNext(nextIndex);
 			}
-			if (nextIndex) {
+			if (nextIndex && index !== nextIndex + 1) {
 				lastNextIndex = nextIndex;
 				$(window).one('action:ajaxify.end', function () {
 					if (paginationBlockEl.find('.dropdown-menu').is(':hidden')) {
