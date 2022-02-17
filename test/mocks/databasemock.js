@@ -29,7 +29,8 @@ winston.add(new winston.transports.Console({
 try {
 	const fs = require('fs');
 	const configJSON = fs.readFileSync(path.join(__dirname, '../../config.json'), 'utf-8');
-	console.log('configJSON', configJSON);
+	winston.info('configJSON');
+	winston.info(configJSON);
 } catch (err) {
 	console.error(err.stack);
 	throw err;
