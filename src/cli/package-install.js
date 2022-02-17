@@ -1,9 +1,9 @@
 'use strict';
 
 const path = require('path');
+
 const fs = require('fs');
 const cproc = require('child_process');
-const _ = require('lodash');
 
 const { paths, pluginNamePattern } = require('../constants');
 
@@ -19,16 +19,21 @@ function sortDependencies(dependencies) {
 }
 
 pkgInstall.updatePackageFile = () => {
-	let oldPackageContents = {};
+	let oldPackageContents;
 
 	try {
 		oldPackageContents = JSON.parse(fs.readFileSync(paths.currentPackage, 'utf8'));
 	} catch (e) {
 		if (e.code !== 'ENOENT') {
 			throw e;
+		} else {
+			// No local package.json, copy from install/package.json
+			fs.copyFileSync(paths.installPackage, paths.currentPackage);
+			return;
 		}
 	}
 
+	const _ = require('lodash');
 	const defaultPackageContents = JSON.parse(fs.readFileSync(paths.installPackage, 'utf8'));
 
 	let dependencies = {};
