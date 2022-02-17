@@ -6,7 +6,6 @@ const databaseName = nconf.get('database');
 const winston = require('winston');
 
 if (!databaseName) {
-	winston.error(new Error('stack').stack);
 	winston.error(new Error('Database type not set! Run ./nodebb setup'));
 	process.exit();
 }

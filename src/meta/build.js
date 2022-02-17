@@ -8,7 +8,6 @@ const path = require('path');
 const mkdirp = require('mkdirp');
 const chalk = require('chalk');
 
-const db = require('../database');
 const cacheBuster = require('./cacheBuster');
 const { aliases } = require('./aliases');
 
@@ -200,6 +199,8 @@ exports.webpack = async function (options) {
 	const webpack = require('webpack');
 	const fs = require('fs');
 	const util = require('util');
+	const db = require('../database');
+
 	const activePlugins = await db.getSortedSetRange('plugins:active', 0, -1);
 	if (!activePlugins.includes('nodebb-plugin-composer-default')) {
 		activePlugins.push('nodebb-plugin-composer-default');
