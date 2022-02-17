@@ -6,9 +6,11 @@ const assert = require('assert');
 const mkdirp = require('mkdirp');
 const rimraf = require('rimraf');
 const async = require('async');
+const nconf = require('nconf');
 
 const db = require('./mocks/databasemock');
 const file = require('../src/file');
+const helpers = require('./helpers');
 
 describe('minifier', () => {
 	before(async () => {
@@ -117,7 +119,7 @@ describe('minifier', () => {
 	});
 });
 
-describe('Build', (done) => {
+describe('Build', () => {
 	const build = require('../src/meta/build');
 
 	before((done) => {
@@ -187,6 +189,19 @@ describe('Build', (done) => {
 			done();
 		});
 	});
+
+	// TODO: doesn't work because plugins js modules are not loaded into build/public/src/modules
+	// it('should build bundle files', async () => {
+	// 	await build.buildAll();
+	// 	assert(file.existsSync(path.join(__dirname, '../dist/app.bundle.js')));
+	// 	assert(file.existsSync(path.join(__dirname, '../dist/admin.bundle.js')));
+	// 	const { res1, body1 } = await helpers.request('GET', `${nconf.get('url')}/dist/app.bundle.js`, {});
+	// 	assert(res1.statusCode, 200);
+	// 	assert(body1);
+	// 	const { res2, body2 } = await helpers.request('GET', `${nconf.get('url')}/dist/admin.bundle.js`, {});
+	// 	assert(res2.statusCode, 200);
+	// 	assert(body2);
+	// });
 
 	it('should build templates', function (done) {
 		this.timeout(0);

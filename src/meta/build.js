@@ -237,7 +237,7 @@ exports.webpack = async function (options) {
 };
 
 exports.buildAll = async function () {
-	await exports.build(allTargets);
+	await exports.build(allTargets, { webpack: true });
 };
 
 require('../promisify')(exports);

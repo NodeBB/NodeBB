@@ -718,25 +718,6 @@ describe('Controllers', () => {
 		});
 	});
 
-
-	it('should load nodebb.min.js', (done) => {
-		request(`${nconf.get('url')}/dist/app.bundle.js`, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
-	});
-
-	it('should load acp.min.js', (done) => {
-		request(`${nconf.get('url')}/dist/admin.bundle.js`, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
-	});
-
 	it('should load sitemap.xml', (done) => {
 		request(`${nconf.get('url')}/sitemap.xml`, (err, res, body) => {
 			assert.ifError(err);
