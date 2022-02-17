@@ -3,7 +3,6 @@
 
 const assert = require('assert');
 const { JSDOM } = require('jsdom');
-const utils = require('../public/src/utils');
 const slugify = require('../src/slugify');
 const db = require('./mocks/databasemock');
 
@@ -11,13 +10,15 @@ describe('Utility Methods', () => {
 	// https://gist.github.com/robballou/9ee108758dc5e0e2d028
 	// create some jsdom magic to allow jQuery to work
 	const dom = new JSDOM('<html><body></body></html>');
-	const { window } = dom;
-	global.window = window;
+	global.window = dom.window;
+	global.document = dom.window.document;
 	global.jQuery = require('jquery');
 	global.$ = global.jQuery;
 	const { $ } = global;
 	require('jquery-deserialize');
 	require('jquery-serializeobject');
+
+	const utils = require('../public/src/utils');
 
 	it('should serialize/deserialize form data properly', () => {
 		const formSerialize = $(`
@@ -283,17 +284,7 @@ describe('Utility Methods', () => {
 	});
 
 	it('should return false if not touch device', (done) => {
-		global.document = global.document || {};
-		global.document.documentElement = {};
 		assert(!utils.isTouchDevice());
-		done();
-	});
-
-	it('should return true if touch device', (done) => {
-		global.document.documentElement = {
-			ontouchstart: 1,
-		};
-		assert(utils.isTouchDevice());
 		done();
 	});
 
@@ -304,7 +295,6 @@ describe('Utility Methods', () => {
 	});
 
 	it('should get empty object for url params', (done) => {
-		global.document = window.document;
 		const params = utils.params();
 		assert.equal(Object.keys(params), 0);
 		done();

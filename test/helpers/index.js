@@ -6,7 +6,7 @@ const nconf = require('nconf');
 const fs = require('fs');
 const winston = require('winston');
 
-const utils = require('../../public/src/utils');
+const utils = require('../../src/utils');
 
 const helpers = module.exports;
 
