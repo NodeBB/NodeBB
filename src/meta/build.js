@@ -8,7 +8,7 @@ const path = require('path');
 const mkdirp = require('mkdirp');
 const chalk = require('chalk');
 
-winston.error('meta.build', new Error('stack').stack);
+winston.error(`meta.build \n${new Error('stack').stack}`);
 const db = require('../database');
 const cacheBuster = require('./cacheBuster');
 const { aliases } = require('./aliases');
