@@ -57,7 +57,7 @@
         "csurf": "1.11.0",
         "daemon": "1.1.0",
         "diff": "5.0.0",
-        "express": "4.17.2",
+        "express": "4.17.3",
         "express-session": "1.17.2",
         "express-useragent": "1.0.15",
         "graceful-fs": "4.2.9",
