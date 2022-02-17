@@ -137,9 +137,8 @@ describe('Build', (done) => {
 	it('should build requirejs modules', (done) => {
 		build.build(['requirejs modules'], (err) => {
 			assert.ifError(err);
-			const filename = path.join(__dirname, '../build/public/src/modules/Chart.js');
+			const filename = path.join(__dirname, '../build/public/src/modules/alerts.js');
 			assert(file.existsSync(filename));
-			assert(fs.readFileSync(filename).toString().startsWith('/*!\n * Chart.js'));
 			done();
 		});
 	});
@@ -147,7 +146,7 @@ describe('Build', (done) => {
 	it('should build client js bundle', (done) => {
 		build.build(['client js bundle'], (err) => {
 			assert.ifError(err);
-			const filename = path.join(__dirname, '../build/public/nodebb.min.js');
+			const filename = path.join(__dirname, '../build/public/client-scripts.min.js');
 			assert(file.existsSync(filename));
 			assert(fs.readFileSync(filename).length > 1000);
 			done();
@@ -157,7 +156,7 @@ describe('Build', (done) => {
 	it('should build admin js bundle', (done) => {
 		build.build(['admin js bundle'], (err) => {
 			assert.ifError(err);
-			const filename = path.join(__dirname, '../build/public/acp.min.js');
+			const filename = path.join(__dirname, '../build/public/acp-scripts.min.js');
 			assert(file.existsSync(filename));
 			assert(fs.readFileSync(filename).length > 1000);
 			done();

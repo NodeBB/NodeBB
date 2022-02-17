@@ -720,7 +720,7 @@ describe('Controllers', () => {
 
 
 	it('should load nodebb.min.js', (done) => {
-		request(`${nconf.get('url')}/assets/nodebb.min.js`, (err, res, body) => {
+		request(`${nconf.get('url')}/dist/app.bundle.js`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -729,7 +729,7 @@ describe('Controllers', () => {
 	});
 
 	it('should load acp.min.js', (done) => {
-		request(`${nconf.get('url')}/assets/acp.min.js`, (err, res, body) => {
+		request(`${nconf.get('url')}/dist/admin.bundle.js`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -1999,33 +1999,6 @@ describe('Controllers', () => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 500);
 				assert(body);
-				done();
-			});
-		});
-	});
-
-	describe('timeago locales', () => {
-		it('should load timeago locale', (done) => {
-			request(`${nconf.get('url')}/assets/src/modules/timeago/locales/jquery.timeago.af.js`, (err, res, body) => {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 200);
-				assert(body.includes('"gelede"'));
-				done();
-			});
-		});
-
-		it('should return not found if NodeBB language exists but timeago locale does not exist', (done) => {
-			request(`${nconf.get('url')}/assets/src/modules/timeago/locales/jquery.timeago.ms.js`, (err, res, body) => {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 404);
-				done();
-			});
-		});
-
-		it('should return not found if NodeBB language does not exist', (done) => {
-			request(`${nconf.get('url')}/assets/src/modules/timeago/locales/jquery.timeago.muggle.js`, (err, res, body) => {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 404);
 				done();
 			});
 		});
