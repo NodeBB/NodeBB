@@ -17,7 +17,7 @@ const posts = require('../../src/posts');
 const user = require('../../src/user');
 const meta = require('../../src/meta');
 const file = require('../../src/file');
-const utils = require('../../public/src/utils');
+const utils = require('../../src/utils');
 
 const _filenames = ['abracadabra.png', 'shazam.jpg', 'whoa.gif', 'amazeballs.jpg', 'wut.txt', 'test.bmp'];
 const _recreateFiles = () => {

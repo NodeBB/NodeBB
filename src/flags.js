@@ -15,7 +15,7 @@ const topics = require('./topics');
 const posts = require('./posts');
 const privileges = require('./privileges');
 const plugins = require('./plugins');
-const utils = require('../public/src/utils');
+const utils = require('./utils');
 const batch = require('./batch');
 
 const Flags = module.exports;

@@ -6,7 +6,7 @@ const validator = require('validator');
 const db = require('../database');
 const posts = require('../posts');
 const topics = require('../topics');
-const utils = require('../../public/src/utils');
+const utils = require('../utils');
 
 module.exports = function (User) {
 	User.getLatestBanInfo = async function (uid) {
