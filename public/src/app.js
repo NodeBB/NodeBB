@@ -352,11 +352,11 @@ app.flags = {};
 			return callback();
 		}
 		require([
-			'jquery-ui/ui/widgets/datepicker',
-			'jquery-ui/ui/widgets/autocomplete',
-			'jquery-ui/ui/widgets/sortable',
-			'jquery-ui/ui/widgets/resizable',
-			'jquery-ui/ui/widgets/draggable',
+			'jquery-ui/widgets/datepicker',
+			'jquery-ui/widgets/autocomplete',
+			'jquery-ui/widgets/sortable',
+			'jquery-ui/widgets/resizable',
+			'jquery-ui/widgets/draggable',
 		], function () {
 			callback();
 		});

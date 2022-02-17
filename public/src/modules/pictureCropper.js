@@ -45,7 +45,7 @@ define('pictureCropper', ['alerts'], function (alerts) {
 			const cropBoxHeight = parseInt($(window).height() / 2, 10);
 			const img = document.getElementById('cropped-image');
 			$(img).css('max-height', cropBoxHeight);
-			const Cropper = await import(/* webpackChunkName: "cropperjs" */ 'cropperjs');
+			const Cropper = (await import(/* webpackChunkName: "cropperjs" */ 'cropperjs')).default;
 
 			let cropperTool = new Cropper(img, {
 				aspectRatio: data.aspectRatio,
@@ -127,10 +127,11 @@ define('pictureCropper', ['alerts'], function (alerts) {
 						});
 					});
 
-					cropperModal.find('.upload-btn').on('click', function () {
+
+					cropperModal.find('.upload-btn').on('click', async function () {
 						$(this).addClass('disabled');
 						cropperTool.destroy();
-
+						const Cropper = (await import(/* webpackChunkName: "cropperjs" */ 'cropperjs')).default;
 						cropperTool = new Cropper(img, {
 							viewMode: 1,
 							autoCropArea: 1,

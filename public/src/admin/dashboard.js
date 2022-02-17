@@ -2,7 +2,7 @@
 
 
 define('admin/dashboard', [
-	'chart.js', 'translator', 'benchpress', 'bootbox', 'alerts',
+	'Chart', 'translator', 'benchpress', 'bootbox', 'alerts',
 ], function (Chart, translator, Benchpress, bootbox, alerts) {
 	const Admin = {};
 	const intervals = {

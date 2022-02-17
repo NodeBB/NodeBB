@@ -4,7 +4,7 @@ define('settings/sorted-list', [
 	'benchpress',
 	'bootbox',
 	'hooks',
-	'jquery-ui/ui/widgets/sortable',
+	'jquery-ui/widgets/sortable',
 ], function (benchpress, bootbox, hooks) {
 	let Settings;
 
