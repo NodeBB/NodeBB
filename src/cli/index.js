@@ -10,31 +10,18 @@ require('../../require-main');
 const packageInstall = require('./package-install');
 const { paths } = require('../constants');
 
-// check to make sure dependencies are installed
 try {
-	fs.accessSync(paths.currentPackage, fs.constants.R_OK);
-} catch (e) {
-	if (e.code === 'ENOENT') {
-		console.warn('package.json not found.');
-		console.log('Populating package.json...');
-
-		packageInstall.updatePackageFile();
-		packageInstall.preserveExtraneousPlugins();
-
-		try {
-			fs.accessSync(path.join(paths.nodeModules, 'chalk/package.json'), fs.constants.R_OK);
-
-			const chalk = require('chalk');
-			console.log(chalk.green('OK'));
-		} catch (e) {
-			console.log('OK');
+	fs.accessSync(paths.currentPackage, fs.constants.R_OK); // throw on missing package.json
+	try { // handle missing node_modules/ directory
+		fs.accessSync(paths.nodeModules, fs.constants.R_OK);
+	} catch (e) {
+		if (e.code === 'ENOENT') {
+			// run package installation just to sync up node_modules/ with existing package.json
+			packageInstall.installAll();
+		} else {
+			throw e;
 		}
-	} else {
-		throw e;
 	}
-}
-
-try {
 	fs.accessSync(path.join(paths.nodeModules, 'semver/package.json'), fs.constants.R_OK);
 
 	const semver = require('semver');
@@ -53,12 +40,14 @@ try {
 	checkVersion('async');
 	checkVersion('commander');
 	checkVersion('chalk');
+	checkVersion('lodash');
 } catch (e) {
 	if (['ENOENT', 'DEP_WRONG_VERSION', 'MODULE_NOT_FOUND'].includes(e.code)) {
 		console.warn('Dependencies outdated or not yet installed.');
 		console.log('Installing them now...\n');
 
 		packageInstall.updatePackageFile();
+		packageInstall.preserveExtraneousPlugins();
 		packageInstall.installAll();
 
 		const chalk = require('chalk');
