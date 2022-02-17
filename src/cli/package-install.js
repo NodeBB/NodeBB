@@ -1,6 +1,7 @@
 'use strict';
 
 const path = require('path');
+
 const fs = require('fs');
 const cproc = require('child_process');
 
@@ -17,34 +18,22 @@ function sortDependencies(dependencies) {
 		}, {});
 }
 
-function merge(to, from) {
-	// Poor man's version of _.merge()
-	if (Object.values(from).every(val => typeof val !== 'object')) {
-		return Object.assign(to, from);
-	}
-
-	Object.keys(from).forEach((key) => {
-		if (Object.getPrototypeOf(from[key]) === Object.prototype) {
-			to[key] = merge(to[key], from[key]);
-		} else {
-			to[key] = from[key];
-		}
-	});
-
-	return to;
-}
-
 pkgInstall.updatePackageFile = () => {
-	let oldPackageContents = {};
+	let oldPackageContents;
 
 	try {
 		oldPackageContents = JSON.parse(fs.readFileSync(paths.currentPackage, 'utf8'));
 	} catch (e) {
 		if (e.code !== 'ENOENT') {
 			throw e;
+		} else {
+			// No local package.json, copy from install/package.json
+			fs.copyFileSync(paths.installPackage, paths.currentPackage);
+			return;
 		}
 	}
 
+	const _ = require('lodash');
 	const defaultPackageContents = JSON.parse(fs.readFileSync(paths.installPackage, 'utf8'));
 
 	let dependencies = {};
@@ -59,7 +48,7 @@ pkgInstall.updatePackageFile = () => {
 	// Sort dependencies alphabetically
 	dependencies = sortDependencies({ ...dependencies, ...defaultPackageContents.dependencies });
 
-	const packageContents = { ...merge(oldPackageContents, defaultPackageContents), dependencies, devDependencies };
+	const packageContents = { ..._.merge(oldPackageContents, defaultPackageContents), dependencies, devDependencies };
 	fs.writeFileSync(paths.currentPackage, JSON.stringify(packageContents, null, 4));
 };
 
