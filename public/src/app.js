@@ -14,9 +14,9 @@ const Benchpress = require('benchpressjs');
 
 Benchpress.setGlobal('config', config);
 if (app.inAdmin) {
- 	require('../../build/public/acp-scripts.min');
+ 	require('../../build/public/scripts-admin.min');
 } else {
-	require('../../build/public/client-scripts.min');
+	require('../../build/public/scripts-client.min');
 }
 
 require('./sockets');

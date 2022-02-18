@@ -6,7 +6,6 @@ const assert = require('assert');
 const mkdirp = require('mkdirp');
 const rimraf = require('rimraf');
 const async = require('async');
-const nconf = require('nconf');
 
 const db = require('./mocks/databasemock');
 const file = require('../src/file');
@@ -148,7 +147,7 @@ describe('Build', () => {
 	it('should build client js bundle', (done) => {
 		build.build(['client js bundle'], (err) => {
 			assert.ifError(err);
-			const filename = path.join(__dirname, '../build/public/client-scripts.min.js');
+			const filename = path.join(__dirname, '../build/public/scripts-client.min.js');
 			assert(file.existsSync(filename));
 			assert(fs.readFileSync(filename).length > 1000);
 			done();
@@ -158,7 +157,7 @@ describe('Build', () => {
 	it('should build admin js bundle', (done) => {
 		build.build(['admin js bundle'], (err) => {
 			assert.ifError(err);
-			const filename = path.join(__dirname, '../build/public/acp-scripts.min.js');
+			const filename = path.join(__dirname, '../build/public/scripts-admin.min.js');
 			assert(file.existsSync(filename));
 			assert(fs.readFileSync(filename).length > 1000);
 			done();
@@ -190,17 +189,21 @@ describe('Build', () => {
 		});
 	});
 
-	// TODO: doesn't work because plugins js modules are not loaded into build/public/src/modules
-	it('should build bundle files', async () => {
-		await build.buildAll();
-		assert(file.existsSync(path.join(__dirname, '../dist/app.bundle.js')));
-		assert(file.existsSync(path.join(__dirname, '../dist/admin.bundle.js')));
-		let { res, body } = await helpers.request('GET', `/dist/app.bundle.js`, {});
-		assert(res.statusCode, 200);
-		assert(body);
-		({ res, body } = await helpers.request('GET', `/dist/admin.bundle.js`, {}));
-		assert(res.statusCode, 200);
-		assert(body);
+
+	it('should build bundle files', function (done) {
+		this.timeout(0);
+		build.buildAll(async (err) => {
+			assert.ifError(err);
+			assert(file.existsSync(path.join(__dirname, '../build/webpack/nodebb.min.js')));
+			assert(file.existsSync(path.join(__dirname, '../build/webpack/admin.min.js')));
+			let { res, body } = await helpers.request('GET', `/assets/nodebb.min.js`, {});
+			assert(res.statusCode, 200);
+			assert(body);
+			({ res, body } = await helpers.request('GET', `/assets/admin.min.js`, {}));
+			assert(res.statusCode, 200);
+			assert(body);
+			done();
+		});
 	});
 
 	it('should build templates', function (done) {

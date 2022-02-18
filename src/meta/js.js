@@ -128,18 +128,14 @@ async function getBundleScriptList(target) {
 }
 
 JS.buildBundle = async function (target, fork) {
-	const fileNames = {
-		client: 'client-scripts.min.js',
-		admin: 'acp-scripts.min.js',
-	};
-
+	const filename = `scripts-${target}.min.js`;
 	const files = await getBundleScriptList(target);
 	const minify = process.env.NODE_ENV !== 'development';
-	const filePath = path.join(__dirname, '../../build/public', fileNames[target]);
+	const filePath = path.join(__dirname, '../../build/public', filename);
 
 	await minifier.js.bundle({
 		files: files,
-		filename: fileNames[target],
+		filename: filename,
 		destPath: filePath,
 	}, minify, fork);
 };
