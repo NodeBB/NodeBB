@@ -91,8 +91,8 @@ module.exports = function (grunt) {
 			},
 			clientUpdated: {
 				files: [
-					// 'public/src/modules/**/*.js',
-					// 'public/vendor/**/*.js',
+					'public/src/**/*.js',
+					'public/vendor/**/*.js',
 					...clientUpdated,
 					'node_modules/benchpressjs/build/benchpress.js',
 				],

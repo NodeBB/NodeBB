@@ -42,8 +42,8 @@ async function linkModules() {
 	const { modules } = JS.scripts;
 
 	await Promise.all([
-		mkdirp(path.join(__dirname, '../../build/public/src/modules/admin/plugins')),
-		mkdirp(path.join(__dirname, '../../build/public/src/modules/forum/plugins')),
+		mkdirp(path.join(__dirname, '../../build/public/src/admin/plugins')),
+		mkdirp(path.join(__dirname, '../../build/public/src/client/plugins')),
 	]);
 
 	await Promise.all(Object.keys(modules).map(async (relPath) => {
@@ -77,8 +77,8 @@ JS.buildModules = async function () {
 
 	const fse = require('fs-extra');
 	await fse.copy(
-		path.join(__dirname, `../../public/src/modules`),
-		path.join(__dirname, `../../build/public/src/modules`)
+		path.join(__dirname, `../../public/src`),
+		path.join(__dirname, `../../build/public/src`)
 	);
 
 	await linkModules();

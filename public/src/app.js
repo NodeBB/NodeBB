@@ -14,9 +14,9 @@ const Benchpress = require('benchpressjs');
 
 Benchpress.setGlobal('config', config);
 if (app.inAdmin) {
- 	require('../../build/public/scripts-admin.min');
+ 	require('../scripts-admin.min');
 } else {
-	require('../../build/public/scripts-client.min');
+	require('../scripts-client.min');
 }
 
 require('./sockets');
@@ -55,16 +55,12 @@ app.flags = {};
 	app.importScript = async function (scriptName) {
 		let pageScript;
 		try {
-			if (scriptName.startsWith('admin/plugins')) {
-				pageScript = await import(/* webpackChunkName: "admin/plugins/[request]" */ 'admin/plugins/' + scriptName.replace(/^admin\/plugins\//, ''));
-			} else if (scriptName.startsWith('admin')) {
+			if (scriptName.startsWith('admin')) {
 				pageScript = await import(/* webpackChunkName: "admin/[request]" */ 'admin/' + scriptName.replace(/^admin\//, ''));
-			} else if (scriptName.startsWith('forum/plugins')) {
-				pageScript = await import(/* webpackChunkName: "forum/plugins/[request]" */ 'forum/plugins/' + scriptName.replace(/^forum\/plugins\//, ''));
 			} else if (scriptName.startsWith('forum')) {
 				pageScript = await import(/* webpackChunkName: "forum/[request]" */ 'forum/' + scriptName.replace(/^forum\//, ''));
 			} else {
-				pageScript = await import(/* webpackChunkName: "modules/[request]" */ '../../build/public/src/modules/' + scriptName);
+				pageScript = await import(/* webpackChunkName: "modules/[request]" */ 'modules/' + scriptName);
 			}
 		} catch (err) {
 			console.warn('error loading script' + err.stack);

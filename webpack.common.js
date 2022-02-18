@@ -23,8 +23,8 @@ module.exports = {
 		new CleanWebpackPlugin(), // cleans dist folder
 	],
 	entry: {
-		nodebb: './public/src/app.js',
-		admin: './public/src/admin/admin.js',
+		nodebb: './build/public/src/app.js',
+		admin: './build/public/src/admin/admin.js',
 	},
 	output: {
 		filename: '[name].min.js',
@@ -39,16 +39,14 @@ module.exports = {
 		symlinks: false,
 		modules: [
 			'build/public/src/modules',
-			'public/src',
+			'build/public/src',
 			'node_modules',
 			...activePlugins.map(p => `node_modules/${p}/node_modules`),
 		],
 		alias: {
 			assets: path.resolve(__dirname, 'build/public'),
-			'forum/plugins': path.resolve(__dirname, 'build/public/src/modules/forum/plugins'),
-			forum: path.resolve(__dirname, 'public/src/client'),
-			'admin/plugins': path.resolve(__dirname, 'build/public/src/modules/admin/plugins'),
-			admin: path.resolve(__dirname, 'public/src/admin'),
+			forum: path.resolve(__dirname, 'build/public/src/client'),
+			admin: path.resolve(__dirname, 'build/public/src/admin'),
 			vendor: path.resolve(__dirname, 'public/vendor'),
 			benchpress: path.resolve(__dirname, 'node_modules/benchpressjs'),
 			Chart: path.resolve(__dirname, 'node_modules/chart.js'),
