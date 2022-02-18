@@ -2348,7 +2348,7 @@ describe('Controllers', () => {
 		});
 
 		it('should load the composer route', (done) => {
-			request(`${nconf.get('url')}/api/compose`, { json: true }, (err, res, body) => {
+			request(`${nconf.get('url')}/api/compose?cid=1`, { json: true }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body.title);
@@ -2369,7 +2369,7 @@ describe('Controllers', () => {
 				method: hookMethod,
 			});
 
-			request(`${nconf.get('url')}/api/compose`, { json: true }, (err, res, body) => {
+			request(`${nconf.get('url')}/api/compose?cid=1`, { json: true }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body.title);
@@ -2380,26 +2380,6 @@ describe('Controllers', () => {
 				done();
 			});
 		});
-
-		it('should 404 if plugin calls next', (done) => {
-			function hookMethod(hookData, callback) {
-				hookData.next();
-			}
-
-			plugins.hooks.register('myTestPlugin', {
-				hook: 'filter:composer.build',
-				method: hookMethod,
-			});
-
-			request(`${nconf.get('url')}/api/compose`, { json: true }, (err, res, body) => {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 404);
-
-				plugins.hooks.unregister('myTestPlugin', 'filter:composer.build', hookMethod);
-				done();
-			});
-		});
-
 
 		it('should error with invalid data', (done) => {
 			request.post(`${nconf.get('url')}/compose`, {
