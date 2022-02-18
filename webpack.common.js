@@ -23,7 +23,7 @@ module.exports = {
 		new CleanWebpackPlugin(), // cleans dist folder
 	],
 	entry: {
-		nodebb: './build/public/src/app.js',
+		nodebb: './build/public/src/client.js',
 		admin: './build/public/src/admin/admin.js',
 	},
 	output: {

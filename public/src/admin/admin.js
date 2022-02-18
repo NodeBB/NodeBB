@@ -1,6 +1,9 @@
 'use strict';
 
 require('../app');
+// scripts-admin.min contains javascript files
+// from plugins that add files to "acpScripts" block in plugin.json
+require('../../scripts-admin.min');
 
 (function () {
 	let logoutTimer = 0;

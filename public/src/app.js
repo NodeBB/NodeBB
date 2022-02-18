@@ -13,11 +13,6 @@ const Visibility = require('visibilityjs');
 const Benchpress = require('benchpressjs');
 
 Benchpress.setGlobal('config', config);
-if (app.inAdmin) {
- 	require('../scripts-admin.min');
-} else {
-	require('../scripts-client.min');
-}
 
 require('./sockets');
 require('./overrides');
