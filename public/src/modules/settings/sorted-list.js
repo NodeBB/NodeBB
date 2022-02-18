@@ -92,9 +92,15 @@ define('settings/sorted-list', [
 		const editBtn = $('[data-sorted-list-uuid="' + itemUUID + '"] [data-type="edit"]');
 
 		editBtn.on('click', function () {
-			const form = $('[data-sorted-list-uuid="' + itemUUID + '"][data-sorted-list-object="' + key + '"]').clone(true).show();
+			const form = $('[data-sorted-list-uuid="' + itemUUID + '"][data-sorted-list-object="' + key + '"]');
+			const clone = form.clone(true).show();
 
-			const modal = bootbox.confirm(form, function (save) {
+			// .clone() doesn't preserve the state of `select` elements, fixing after the fact
+			clone.find('select').each((idx, el) => {
+				el.value = form.find(`select#${el.id}`).val();
+			});
+
+			const modal = bootbox.confirm(clone, function (save) {
 				if (save) {
 					const form = $('<form class="" data-sorted-list-uuid="' + itemUUID + '" data-sorted-list-object="' + key + '"></form>');
 					form.append(modal.find('form').children());
