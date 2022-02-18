@@ -18,7 +18,7 @@
 			};
 		</script>
 
-		<script type="text/javascript" src="{relative_path}/dist/admin.bundle.js?{cache-buster}"></script>
+		<script type="text/javascript" src="{relative_path}/assets/admin.min.js?{cache-buster}"></script>
 
 		<!-- BEGIN scripts -->
 		<script type="text/javascript" src="{scripts.src}"></script>
