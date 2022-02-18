@@ -23,13 +23,13 @@ module.exports = {
 		new CleanWebpackPlugin(), // cleans dist folder
 	],
 	entry: {
-		app: './public/src/app.js',
+		nodebb: './public/src/app.js',
 		admin: './public/src/admin/admin.js',
 	},
 	output: {
-		filename: '[name].bundle.js',
-		path: path.resolve(__dirname, 'dist'),
-		publicPath: `${relativePath}/dist/`,
+		filename: '[name].min.js',
+		path: path.resolve(__dirname, 'build/webpack'),
+		publicPath: `${relativePath}/assets/`,
 	},
 	watchOptions: {
 		poll: 500,
