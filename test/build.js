@@ -191,17 +191,17 @@ describe('Build', () => {
 	});
 
 	// TODO: doesn't work because plugins js modules are not loaded into build/public/src/modules
-	// it('should build bundle files', async () => {
-	// 	await build.buildAll();
-	// 	assert(file.existsSync(path.join(__dirname, '../dist/app.bundle.js')));
-	// 	assert(file.existsSync(path.join(__dirname, '../dist/admin.bundle.js')));
-	// 	const { res1, body1 } = await helpers.request('GET', `${nconf.get('url')}/dist/app.bundle.js`, {});
-	// 	assert(res1.statusCode, 200);
-	// 	assert(body1);
-	// 	const { res2, body2 } = await helpers.request('GET', `${nconf.get('url')}/dist/admin.bundle.js`, {});
-	// 	assert(res2.statusCode, 200);
-	// 	assert(body2);
-	// });
+	it('should build bundle files', async () => {
+		await build.buildAll();
+		assert(file.existsSync(path.join(__dirname, '../dist/app.bundle.js')));
+		assert(file.existsSync(path.join(__dirname, '../dist/admin.bundle.js')));
+		let { res, body } = await helpers.request('GET', `/dist/app.bundle.js`, {});
+		assert(res.statusCode, 200);
+		assert(body);
+		({ res, body } = await helpers.request('GET', `/dist/admin.bundle.js`, {}));
+		assert(res.statusCode, 200);
+		assert(body);
+	});
 
 	it('should build templates', function (done) {
 		this.timeout(0);

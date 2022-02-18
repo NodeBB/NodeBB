@@ -434,7 +434,12 @@ ajaxify.widgets = { render: render };
 		});
 	};
 
+	let template500Function = null;
+
 	ajaxify.loadTemplate = function (template, callback) {
+		if (template === "500" && template500Function) {
+			return callback(template500Function);
+		}
 		$.ajax({
 			url: `${config.asset_base_url}/templates/${template}.js`,
 			dataType: 'text',
@@ -462,6 +467,9 @@ ajaxify.widgets = { render: render };
 		translator.translate(`[[global:reconnecting-message, ${config.siteTitle}]]`);
 		Benchpress.registerLoader(ajaxify.loadTemplate);
 		Benchpress.setGlobal('config', config);
+		ajaxify.loadTemplate('500', function (renderFunction) {
+			template500Function = renderFunction;
+		});
 	});
 }());
 

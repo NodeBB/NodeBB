@@ -15,6 +15,7 @@ logs/
 *.iws
 /coverage
 /build
+/dist
 .eslintrc
 test/files
 *.min.js
