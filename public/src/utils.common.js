@@ -272,6 +272,7 @@ const HTMLEntities = Object.freeze({
 	'diams;': 9830,
 });
 
+/* eslint-disable no-redeclare */
 const utils = {
 	generateUUID: function () {
 		/* eslint-disable no-bitwise */
