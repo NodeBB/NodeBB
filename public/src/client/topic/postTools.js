@@ -252,8 +252,8 @@ define('forum/topic/postTools', [
 		});
 	}
 
-	function onReplyClicked(button, tid) {
-		const selectedNode = getSelectedNode();
+	async function onReplyClicked(button, tid) {
+		const selectedNode = await getSelectedNode();
 
 		showStaleWarning(async function () {
 			let username = await getUserSlug(button);
@@ -285,8 +285,8 @@ define('forum/topic/postTools', [
 		});
 	}
 
-	function onQuoteClicked(button, tid) {
-		const selectedNode = getSelectedNode();
+	async function onQuoteClicked(button, tid) {
+		const selectedNode = await getSelectedNode();
 
 		showStaleWarning(async function () {
 			const username = await getUserSlug(button);
