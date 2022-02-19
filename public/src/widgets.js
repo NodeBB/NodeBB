@@ -1,8 +1,6 @@
 'use strict';
 
-// import $ from 'jquery';
-
-export default function render(template) {
+module.exports.render = function (template) {
 	if (template.match(/^admin/)) {
 		return;
 	}

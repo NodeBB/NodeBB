@@ -1,11 +1,6 @@
 'use strict';
 
-import $ from 'jquery';
-import Benchpress from 'benchpressjs';
-import render from './widgets';
-import translator from './modules/translator';
-
-translator.translate('[[error:no-connection]]');
+const { render } = require('./widgets');
 
 window.ajaxify = window.ajaxify || {};
 ajaxify.widgets = { render: render };
@@ -437,7 +432,7 @@ ajaxify.widgets = { render: render };
 	let template500Function = null;
 
 	ajaxify.loadTemplate = function (template, callback) {
-		if (template === "500" && template500Function) {
+		if (template === '500' && template500Function) {
 			return callback(template500Function);
 		}
 		$.ajax({
