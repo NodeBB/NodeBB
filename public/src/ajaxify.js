@@ -353,7 +353,7 @@ ajaxify.widgets = { render: render };
 				}
 				if (typeof script === 'string') {
 					return async function (next) {
-						const module = await app.importScript(script);
+						const module = await app.require(script);
 						// Hint: useful if you want to override a loaded library (e.g. replace core client-side logic),
 						// or call a method other than .init()
 						hooks.fire('static:script.init', { tpl_url, name: script, module }).then(() => {

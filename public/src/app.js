@@ -47,22 +47,6 @@ app.flags = {};
 		}
 	};
 
-	app.importScript = async function (scriptName) {
-		let pageScript;
-		try {
-			if (scriptName.startsWith('admin')) {
-				pageScript = await import(/* webpackChunkName: "admin/[request]" */ 'admin/' + scriptName.replace(/^admin\//, ''));
-			} else if (scriptName.startsWith('forum')) {
-				pageScript = await import(/* webpackChunkName: "forum/[request]" */ 'forum/' + scriptName.replace(/^forum\//, ''));
-			} else {
-				pageScript = await import(/* webpackChunkName: "modules/[request]" */ 'modules/' + scriptName);
-			}
-		} catch (err) {
-			console.warn('error loading script' + err.stack);
-		}
-		return pageScript && pageScript.default;
-	}
-
 	app.handleEarlyClicks = function () {
 		/**
 		 * Occasionally, a button or anchor (not meant to be ajaxified) is clicked before
@@ -147,6 +131,30 @@ app.flags = {};
 			}
 		});
 	};
+
+	app.require = async function (modules) {
+		const single = !Array.isArray(modules);
+		if (single) {
+			modules = [modules];
+		}
+		async function requireModule(moduleName) {
+			let _module;
+			try {
+				if (moduleName.startsWith('admin')) {
+					_module = await import(/* webpackChunkName: "admin/[request]" */ 'admin/' + moduleName.replace(/^admin\//, ''));
+				} else if (moduleName.startsWith('forum')) {
+					_module = await import(/* webpackChunkName: "forum/[request]" */ 'forum/' + moduleName.replace(/^forum\//, ''));
+				} else {
+					_module = await import(/* webpackChunkName: "modules/[request]" */ 'modules/' + moduleName);
+				}
+			} catch (err) {
+				console.warn(`error loading ${moduleName}\n${err.stack}`);
+			}
+			return _module && _module.default;
+		}
+		const result = await Promise.all(modules.map(requireModule));
+		return single ? result.pop() : result;
+	}
 
 	app.logout = function (redirect) {
 		console.warn('[deprecated] app.logout is deprecated, please use logout module directly');

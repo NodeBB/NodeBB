@@ -17,7 +17,7 @@ define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, t
 				const moduleName = $btn.attr('data-module');
 				const uuid = $btn.attr('data-uuid');
 
-				const module = await app.importScript(moduleName);
+				const module = await app.require(moduleName);
 				if (!$btn.hasClass('active')) {
 					minimizeAll();
 					module.load(uuid);
@@ -48,7 +48,7 @@ define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, t
 		}
 
 		if (btnEl.length) {
-			const module = await app.importScript(moduleName);
+			const module = await app.require(moduleName);
 			if (module && typeof module[fnName] === 'function') {
 				module[fnName](uuid);
 			}
