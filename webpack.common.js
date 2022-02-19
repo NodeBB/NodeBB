@@ -51,6 +51,7 @@ module.exports = {
 			benchpress: path.resolve(__dirname, 'node_modules/benchpressjs'),
 			Chart: path.resolve(__dirname, 'node_modules/chart.js'),
 			Sortable: path.resolve(__dirname, 'node_modules/sortablejs'),
+			cropper: path.resolve(__dirname, 'node_modules/cropperjs'),
 			'jquery-ui/widgets': path.resolve(__dirname, 'node_modules/jquery-ui/ui/widgets'),
 			'ace/ace': path.resolve(__dirname, 'build/public/src/modules/ace-editor.js'),
 		},
