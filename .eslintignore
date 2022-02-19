@@ -19,3 +19,10 @@ logs/
 .eslintrc
 test/files
 *.min.js
+
+/public/src/app.js
+/public/src/modules/translator.common.js
+/public/src/modules/pictureCropper.js
+/public/src/modules/ace-editor.js
+/public/src/client/account/header.js
+/public/src/client/test.js

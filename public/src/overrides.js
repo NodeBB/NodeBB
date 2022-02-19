@@ -1,7 +1,8 @@
 'use strict';
 
-import $ from 'jquery';
-import translator from './modules/translator';
+
+
+const translator = require('./modules/translator');
 
 window.overrides = window.overrides || {};
 

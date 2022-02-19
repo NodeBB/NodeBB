@@ -1,7 +1,9 @@
 'use strict';
 
-import io from 'socket.io-client';
-import $ from 'jquery';
+// eslint-disable-next-line no-redeclare
+const io = require('socket.io-client');
+// eslint-disable-next-line no-redeclare
+const $ = require('jquery');
 
 app = window.app || {};
 
