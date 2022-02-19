@@ -190,15 +190,19 @@ describe('Build', () => {
 	});
 
 
-	it('should build bundle files', function (done) {
-		this.timeout(50000);
-		build.buildAll((err) => {
-			assert.ifError(err);
-			assert(file.existsSync(path.join(__dirname, '../build/webpack/nodebb.min.js')));
-			assert(file.existsSync(path.join(__dirname, '../build/webpack/admin.min.js')));
-			done();
-		});
-	});
+	it('should build bundle files', async () => {
+		await build.buildAll();
+		assert(file.existsSync(path.join(__dirname, '../build/webpack/nodebb.min.js')));
+		assert(file.existsSync(path.join(__dirname, '../build/webpack/admin.min.js')));
+
+		let { res, body } = await helpers.request('GET', `/assets/nodebb.min.js`, {});
+		assert(res.statusCode, 200);
+		assert(body);
+
+		({ res, body } = await helpers.request('GET', `/assets/admin.min.js`, {}));
+		assert(res.statusCode, 200);
+		assert(body);
+	}).timeout(50000);
 
 	it('should build templates', function (done) {
 		this.timeout(0);
