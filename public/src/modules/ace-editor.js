@@ -1,4 +1,4 @@
-import ace from 'ace-builds';
+export * from 'ace-builds';
 
 // only import the modes and theme we use
 import 'ace-builds/src-noconflict/mode-javascript';

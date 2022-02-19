@@ -52,6 +52,7 @@ module.exports = {
 			Chart: path.resolve(__dirname, 'node_modules/chart.js'),
 			Sortable: path.resolve(__dirname, 'node_modules/sortablejs'),
 			'jquery-ui/widgets': path.resolve(__dirname, 'node_modules/jquery-ui/ui/widgets'),
+			'ace/ace': path.resolve(__dirname, 'build/public/src/modules/ace-editor.js'),
 		},
 	},
 };

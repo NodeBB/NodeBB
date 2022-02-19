@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/settings/email', ['alerts', 'admin/settings', 'ace-editor'], function (ace, alerts) {
+define('admin/settings/email', ['ace/ace', 'alerts', 'admin/settings'], function (ace, alerts) {
 	const module = {};
 	let emailEditor;
 
