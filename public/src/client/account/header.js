@@ -35,7 +35,7 @@ define('forum/account/header', [
 
 		components.get('account/chat').on('click', async function () {
 			const roomId = await socket.emit('modules.chats.hasPrivateChat', ajaxify.data.uid);
-			const chat = await import('chat');
+			const chat = await app.require('chat');
 			if (roomId) {
 				chat.openChat(roomId);
 			} else {
@@ -44,7 +44,7 @@ define('forum/account/header', [
 		});
 
 		components.get('account/new-chat').on('click', async function () {
-			const chat = await import('chat');
+			const chat = await app.require('chat');
 			chat.newChat(ajaxify.data.uid, function () {
 				components.get('account/chat').parent().removeClass('hidden');
 			});
