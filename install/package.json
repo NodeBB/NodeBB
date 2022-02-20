@@ -90,7 +90,7 @@
         "nodebb-plugin-2factor": "3.0.4",
         "nodebb-plugin-composer-default": "https://github.com/nodebb/nodebb-plugin-composer-default.git#webpack5",
         "nodebb-plugin-dbsearch": "5.1.3",
-        "nodebb-plugin-emoji": "3.5.17",
+        "nodebb-plugin-emoji": "https://github.com/NodeBB/nodebb-plugin-emoji.git#webpack5",
         "nodebb-plugin-emoji-android": "2.0.5",
         "nodebb-plugin-markdown": "https://github.com/julianlam/nodebb-plugin-markdown.git#webpack5",
         "nodebb-plugin-mentions": "3.0.6",
