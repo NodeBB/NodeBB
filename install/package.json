@@ -100,7 +100,7 @@
         "nodebb-theme-persona": "https://github.com/nodebb/nodebb-theme-persona.git#webpack5",
         "nodebb-theme-slick": "https://github.com/pichalite/nodebb-theme-slick.git#webpack5",
         "nodebb-theme-vanilla": "12.1.17",
-        "nodebb-widget-essentials": "5.0.9",
+        "nodebb-widget-essentials": "https://github.com/nodebb/nodebb-widget-essentials.git#webpack5",
         "nodemailer": "6.7.2",
         "nprogress": "0.2.0",
         "passport": "0.5.2",
