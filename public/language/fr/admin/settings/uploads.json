@@ -2,7 +2,7 @@
 	"posts": "Sujets",
 	"private": "Rendre privés les fichiers téléchargés",
 	"strip-exif-data": "Supprimer les données EXIF",
-	"preserve-orphaned-uploads": "Keep uploaded files on disk after a post is purged",
+	"preserve-orphaned-uploads": "Conserver les fichiers téléchargés après la suppression d'une publication.",
 	"private-extensions": "Rendre privé des extensions de fichier.",
 	"private-uploads-extensions-help": "Renseignez ici une liste d'extensions de fichiers séparées par des virgules pour les rendre privées (par exemple : <code>pdf, xls, doc</code>). Une liste vide signifie que tous les fichiers sont privés.",
 	"resize-image-width-threshold": "Redimensionner les images si elles sont plus larges que la largeur spécifiée",

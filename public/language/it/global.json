@@ -23,7 +23,7 @@
     "close": "Chiudi",
     "pagination": "Impaginazione",
     "pagination.out_of": "%1 di %2",
-    "pagination.enter_index": "Go to post index",
+    "pagination.enter_index": "Vai all'indice dei post",
     "header.admin": "Amministratore",
     "header.categories": "Categorie",
     "header.recent": "Recenti",
