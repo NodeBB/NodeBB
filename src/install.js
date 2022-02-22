@@ -493,7 +493,7 @@ async function enableDefaultPlugins() {
 	];
 	let customDefaults = nconf.get('defaultplugins') || nconf.get('defaultPlugins');
 
-	winston.info('[install/defaultPlugins] customDefaults', customDefaults);
+	winston.info(`[install/defaultPlugins] customDefaults ${String(customDefaults)}`);
 
 	if (customDefaults && customDefaults.length) {
 		try {

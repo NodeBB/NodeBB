@@ -112,7 +112,7 @@ function ping(req, res) {
 }
 
 function welcome(req, res) {
-	const dbs = ['redis', 'mongo', 'postgres'];
+	const dbs = ['mongo', 'redis', 'postgres'];
 	const databases = dbs.map((databaseName) => {
 		const questions = require(`../src/database/${databaseName}`).questions.filter(question => question && !question.hideOnWebInstall);
 
@@ -145,29 +145,28 @@ function install(req, res) {
 	}
 	req.setTimeout(0);
 	installing = true;
-	const setupEnvVars = nconf.get();
-	for (const [key, value] of Object.entries(req.body)) {
-		if (!process.env.hasOwnProperty(key)) {
-			setupEnvVars[key.replace(':', '__')] = value;
-		}
-	}
 
-	// Flatten any objects in setupEnvVars
-	const pushToRoot = function (parentKey, key) {
-		setupEnvVars[`${parentKey}__${key}`] = setupEnvVars[parentKey][key];
+	const database = nconf.get('database') || req.body.database || 'mongo';
+	const setupEnvVars = {
+		...process.env,
+		NODEBB_URL: nconf.get('url') || req.body.url || (`${req.protocol}://${req.get('host')}`),
+		NODEBB_PORT: nconf.get('port') || 4567,
+		NODEBB_ADMIN_USERNAME: nconf.get('admin:username') || req.body['admin:username'],
+		NODEBB_ADMIN_PASSWORD: nconf.get('admin:password') || req.body['admin:password'],
+		NODEBB_ADMIN_EMAIL: nconf.get('admin:email') || req.body['admin:email'],
+		NODEBB_DB: database,
+		NODEBB_DB_HOST: nconf.get(`${database}:host`) || req.body[`${database}:host`],
+		NODEBB_DB_PORT: nconf.get(`${database}:port`) || req.body[`${database}:port`],
+		NODEBB_DB_USER: nconf.get(`${database}:username`) || req.body[`${database}:username`],
+		NODEBB_DB_PASSWORD: nconf.get(`${database}:password`) || req.body[`${database}:password`],
+		NODEBB_DB_NAME: nconf.get(`${database}:database`) || req.body[`${database}:database`],
+		NODEBB_DB_SSL: nconf.get(`${database}:ssl`) || req.body[`${database}:ssl`],
+		defaultPlugins: JSON.stringify(nconf.get('defaultplugins') || nconf.get('defaultPlugins') || []),
 	};
-	for (const [parentKey, value] of Object.entries(setupEnvVars)) {
-		if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-			Object.keys(value).forEach(key => pushToRoot(parentKey, key));
-			delete setupEnvVars[parentKey];
-		} else if (Array.isArray(value)) {
-			setupEnvVars[parentKey] = JSON.stringify(value);
-		}
-	}
 
 	winston.info('Starting setup process');
 	winston.info(JSON.stringify(setupEnvVars, null, 4));
-	launchUrl = setupEnvVars.url;
+	launchUrl = setupEnvVars.NODEBB_URL;
 
 	const child = require('child_process').fork('app', ['--setup'], {
 		env: setupEnvVars,
