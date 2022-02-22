@@ -148,7 +148,7 @@ define('settings/sorted-list', [
 
 	function stripTags(data) {
 		return Object.entries(data || {}).forEach(([field, value]) => {
-			data[field] = utils.stripHTMLTags(value, utils.stripTags);
+			data[field] = typeof value === 'string' ? utils.stripHTMLTags(value, utils.stripTags) : value;
 		});
 	}
 
