@@ -28,6 +28,7 @@ module.exports = {
 	},
 	output: {
 		filename: '[name].min.js',
+		chunkFilename: '[name].[contenthash].js',
 		path: path.resolve(__dirname, 'build/webpack'),
 		publicPath: `${relativePath}/assets/`,
 	},
