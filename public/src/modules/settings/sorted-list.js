@@ -50,7 +50,9 @@ define('settings/sorted-list', [
 			const list = ajaxify.data[call ? hash : 'settings'][key];
 
 			if (Array.isArray(list) && typeof list[0] !== 'string') {
-				list.forEach(function (item) {
+				await Promise.all(list.map(async (item) => {
+					({ item } = await hooks.fire('filter:settings.sorted-list.loadItem', { item }));
+
 					const itemUUID = utils.generateUUID();
 					const form = $(formHtml).deserialize(item);
 					form.attr('data-sorted-list-uuid', itemUUID);
@@ -60,7 +62,7 @@ define('settings/sorted-list', [
 					parse($container, itemUUID, item).then(() => {
 						hooks.fire('action:settings.sorted-list.loaded', { element: listEl.get(0) });
 					});
-				});
+				}));
 			}
 
 			listEl.sortable().addClass('pointer');
