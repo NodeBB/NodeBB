@@ -10,10 +10,9 @@ module.exports = {
 		installer: './public/src/installer/install.js',
 	},
 	output: {
-		filename: '[name].bundle.js',
-		chunkFilename: '[name].bundle.js',
-		path: path.resolve(__dirname, 'dist'),
-		publicPath: '/dist/',
+		filename: '[name].min.js',
+		path: path.resolve(__dirname, 'build/webpack'),
+		publicPath: `/assets/`,
 	},
 	resolve: {
 		symlinks: false,

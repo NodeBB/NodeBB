@@ -9,7 +9,7 @@
 	<link rel="stylesheet" type="text/css" href="bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="installer.css">
 
-	<script type="text/javascript" async defer src="installer.min.js"></script>
+	<script type="text/javascript" async defer src="/assets/installer.min.js"></script>
 </head>
 
 <body>

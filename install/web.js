@@ -8,7 +8,7 @@ const path = require('path');
 const childProcess = require('child_process');
 const less = require('less');
 
-const uglify = require('uglify-es');
+const webpack = require('webpack');
 const nconf = require('nconf');
 
 const Benchpress = require('benchpressjs');
@@ -46,16 +46,6 @@ winston.configure({
 });
 
 const web = module.exports;
-
-const scripts = [
-	'node_modules/jquery/dist/jquery.js',
-	'node_modules/xregexp/xregexp-all.js',
-	'public/src/modules/slugify.js',
-	'public/src/utils.js',
-	'public/src/installer/install.js',
-	'node_modules/zxcvbn/dist/zxcvbn.js',
-];
-
 let installing = false;
 let success = false;
 let error = false;
@@ -68,6 +58,8 @@ web.install = async function (port) {
 	winston.info(`Launching web installer on port ${port}`);
 
 	app.use(express.static('public', {}));
+	app.use('/assets', express.static(path.join(__dirname, '../build/webpack'), {}));
+
 	app.engine('tpl', (filepath, options, callback) => {
 		filepath = filepath.replace(/\.tpl$/, '.js');
 
@@ -82,7 +74,7 @@ web.install = async function (port) {
 		await Promise.all([
 			compileTemplate(),
 			compileLess(),
-			compileJS(),
+			runWebpack(),
 			copyCSS(),
 			loadDefaults(),
 		]);
@@ -93,6 +85,13 @@ web.install = async function (port) {
 	}
 };
 
+async function runWebpack() {
+	const util = require('util');
+	const webpackCfg = require('../webpack.installer');
+	const compiler = webpack(webpackCfg);
+	const webpackRun = util.promisify(compiler.run).bind(compiler);
+	await webpackRun();
+}
 
 function launchExpress(port) {
 	server = app.listen(port, () => {
@@ -167,7 +166,7 @@ function install(req, res) {
 	}
 
 	winston.info('Starting setup process');
-	winston.info(setupEnvVars);
+	winston.info(JSON.stringify(setupEnvVars, null, 4));
 	launchUrl = setupEnvVars.url;
 
 	const child = require('child_process').fork('app', ['--setup'], {
@@ -255,23 +254,6 @@ async function compileLess() {
 		winston.error(`Unable to compile LESS: \n${err.stack}`);
 		throw err;
 	}
-}
-
-async function compileJS() {
-	let code = '';
-
-	for (const srcPath of scripts) {
-		// eslint-disable-next-line no-await-in-loop
-		const buffer = await fs.promises.readFile(path.join(__dirname, '..', srcPath));
-		code += buffer.toString();
-	}
-	const minified = uglify.minify(code, {
-		compress: false,
-	});
-	if (!minified.code) {
-		throw new Error('[[error:failed-to-minify]]');
-	}
-	await fs.promises.writeFile(path.join(__dirname, '../public/installer.min.js'), minified.code);
 }
 
 async function copyCSS() {

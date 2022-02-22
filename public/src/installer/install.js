@@ -1,6 +1,11 @@
+/* eslint-disable no-redeclare */
+
 'use strict';
 
-/* global zxcvbn, slugify */
+const $ = require('jquery');
+const zxcvbn = require('zxcvbn');
+const utils = require('../utils');
+const slugify = require('../modules/slugify');
 
 $('document').ready(function () {
 	setupInputs();
