@@ -67,7 +67,7 @@ define('settings/sorted-list', [
 
 			listEl.sortable().addClass('pointer');
 		},
-		addItem: function ($formElements, $target) {
+		addItem: async ($formElements, $target) => {
 			const key = $target.attr('data-sorted-list');
 			const itemUUID = utils.generateUUID();
 			const form = $('<form class="" data-sorted-list-uuid="' + itemUUID + '" data-sorted-list-object="' + key + '"></form>');
@@ -75,7 +75,8 @@ define('settings/sorted-list', [
 
 			$('#content').append(form.hide());
 
-			const data = Settings.helper.serializeForm(form);
+			let data = Settings.helper.serializeForm(form);
+			({ item: data } = await hooks.fire('filter:settings.sorted-list.loadItem', { item: data }));
 			parse($target, itemUUID, data);
 		},
 	};
@@ -90,7 +91,6 @@ define('settings/sorted-list', [
 	function setupEditButton($container, itemUUID) {
 		const $list = $container.find('[data-type="list"]');
 		const key = $container.attr('data-sorted-list');
-		const itemTpl = $container.attr('data-item-template');
 		const editBtn = $('[data-sorted-list-uuid="' + itemUUID + '"] [data-type="edit"]');
 
 		editBtn.on('click', function () {
@@ -102,7 +102,7 @@ define('settings/sorted-list', [
 				el.value = form.find(`select#${el.id}`).val();
 			});
 
-			const modal = bootbox.confirm(clone, function (save) {
+			const modal = bootbox.confirm(clone, async (save) => {
 				if (save) {
 					const form = $('<form class="" data-sorted-list-uuid="' + itemUUID + '" data-sorted-list-object="' + key + '"></form>');
 					form.append(modal.find('form').children());
@@ -111,25 +111,19 @@ define('settings/sorted-list', [
 					$('#content').append(form.hide());
 
 
-					const data = Settings.helper.serializeForm(form);
+					let data = Settings.helper.serializeForm(form);
+					({ item: data } = await hooks.fire('filter:settings.sorted-list.loadItem', { item: data }));
 					stripTags(data);
 
-					app.parseAndTranslate(itemTpl, data, function (itemHtml) {
-						itemHtml = $(itemHtml);
-						const oldItem = $list.find('[data-sorted-list-uuid="' + itemUUID + '"]');
-						oldItem.after(itemHtml);
-						oldItem.remove();
-						itemHtml.attr('data-sorted-list-uuid', itemUUID);
-
-						setupRemoveButton($container, itemUUID);
-						setupEditButton($container, itemUUID);
-					});
+					const oldItem = $list.find('[data-sorted-list-uuid="' + itemUUID + '"]');
+					parse($container, itemUUID, data, oldItem);
 				}
 			});
 		});
 	}
 
-	function parse($container, itemUUID, data) {
+	function parse($container, itemUUID, data, replaceEl) {
+		// replaceEl is optional
 		const $list = $container.find('[data-type="list"]');
 		const itemTpl = $container.attr('data-item-template');
 
@@ -138,7 +132,11 @@ define('settings/sorted-list', [
 		return new Promise((resolve) => {
 			app.parseAndTranslate(itemTpl, data, function (itemHtml) {
 				itemHtml = $(itemHtml);
-				$list.append(itemHtml);
+				if (replaceEl) {
+					replaceEl.replaceWith(itemHtml);
+				} else {
+					$list.append(itemHtml);
+				}
 				itemHtml.attr('data-sorted-list-uuid', itemUUID);
 
 				setupRemoveButton($container, itemUUID);
