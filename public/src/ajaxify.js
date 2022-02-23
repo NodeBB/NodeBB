@@ -428,18 +428,14 @@ ajaxify.widgets = { render: render };
 	ajaxify.loadTemplate = function (template, callback) {
 		$.ajax({
 			url: `${config.asset_base_url}/templates/${template}.js`,
+			cache: false,
 			dataType: 'text',
 			success: function (script) {
-				var context = {
-					module: {
-						exports: {},
-					},
-				};
-
 				// eslint-disable-next-line no-new-func
 				const renderFunction = new Function('module', script);
-				renderFunction(context.module);
-				callback(context.module.exports);
+				const moduleObj = { exports: {} };
+				renderFunction(moduleObj);
+				callback(moduleObj.exports);
 			},
 		}).fail(function () {
 			console.error('Unable to load template: ' + template);
