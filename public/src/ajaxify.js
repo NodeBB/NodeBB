@@ -1,5 +1,6 @@
 'use strict';
 
+const hooks = require('./modules/hooks');
 const { render } = require('./widgets');
 
 window.ajaxify = window.ajaxify || {};
@@ -13,11 +14,6 @@ ajaxify.widgets = { render: render };
 
 	ajaxify.count = 0;
 	ajaxify.currentPage = null;
-
-	let hooks;
-	require(['hooks'], function (_hooks) {
-		hooks = _hooks;
-	});
 
 	ajaxify.go = function (url, callback, quiet) {
 		// Automatically reconnect to socket and re-ajaxify on success
@@ -469,11 +465,6 @@ ajaxify.widgets = { render: render };
 }());
 
 $(document).ready(function () {
-	let hooks;
-	require(['hooks'], function (_hooks) {
-		hooks = _hooks;
-	});
-
 	$(window).on('popstate', function (ev) {
 		ev = ev.originalEvent;
 
