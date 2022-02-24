@@ -70,7 +70,7 @@
         "jquery-serializeobject": "1.0.0",
         "jquery-ui": "1.13.1",
         "jsesc": "3.0.2",
-        "json2csv": "5.0.6",
+        "json2csv": "5.0.7",
         "jsonwebtoken": "8.5.1",
         "less": "3.13.1",
         "lodash": "4.17.21",
