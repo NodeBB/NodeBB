@@ -56,7 +56,7 @@ define('notifications', [
 					components.get('notifications').on('click', '.mark-all-read', Notifications.markAllRead);
 
 					notifList.on('click', '.mark-read', function () {
-						const liEl = $(this).parent();
+						const liEl = $(this).parents('li');
 						const unread = liEl.hasClass('unread');
 						const nid = liEl.attr('data-nid');
 						markNotification(nid, unread, function () {
