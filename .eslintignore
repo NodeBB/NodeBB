@@ -20,6 +20,8 @@ test/files
 *.min.js
 
 /public/src/app.js
+/public/src/client.js
+/public/src/admin/admin.js
 /public/src/modules/translator.common.js
 /public/src/modules/pictureCropper.js
 /public/src/modules/ace-editor.js
