@@ -147,7 +147,7 @@ describe('Build', () => {
 	it('should build client js bundle', (done) => {
 		build.build(['client js bundle'], (err) => {
 			assert.ifError(err);
-			const filename = path.join(__dirname, '../build/public/scripts-client.min.js');
+			const filename = path.join(__dirname, '../build/public/scripts-client.js');
 			assert(file.existsSync(filename));
 			assert(fs.readFileSync(filename).length > 1000);
 			done();
@@ -157,7 +157,7 @@ describe('Build', () => {
 	it('should build admin js bundle', (done) => {
 		build.build(['admin js bundle'], (err) => {
 			assert.ifError(err);
-			const filename = path.join(__dirname, '../build/public/scripts-admin.min.js');
+			const filename = path.join(__dirname, '../build/public/scripts-admin.js');
 			assert(file.existsSync(filename));
 			assert(fs.readFileSync(filename).length > 1000);
 			done();
