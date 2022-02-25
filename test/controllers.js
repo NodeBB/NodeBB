@@ -367,8 +367,10 @@ describe('Controllers', () => {
 				json: true,
 				resolveWithFullResponse: true,
 			});
-			assert(res.body.errors.length, res.body);
-			assert(res.body.errors.includes('[[error:invalid-email]]'), res.body);
+			console.log(res.statusCode, JSON.stringify(res.body, null, 4));
+			assert.strictEqual(res.statusCode, 200);
+			assert(res.body.errors.length);
+			assert(res.body.errors.includes('[[error:invalid-email]]'));
 		});
 
 		it('gdpr interstitial should still apply if email requirement is disabled', async () => {
