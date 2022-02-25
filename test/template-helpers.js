@@ -2,10 +2,9 @@
 
 const nconf = require('nconf');
 const assert = require('assert');
-const benchpress = require('benchpressjs');
 
 const db = require('./mocks/databasemock');
-const helpers = require('../public/src/modules/helpers.common')(require('../src/utils'), benchpress, nconf.get('relative_path'));
+const helpers = require('../src/helpers');
 
 describe('helpers', () => {
 	it('should return false if item doesn\'t exist', (done) => {
