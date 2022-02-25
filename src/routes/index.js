@@ -4,6 +4,7 @@ const nconf = require('nconf');
 const winston = require('winston');
 const path = require('path');
 const express = require('express');
+const chalk = require('chalk');
 
 const meta = require('../meta');
 const controllers = require('../controllers');
@@ -172,7 +173,6 @@ function addCoreRoutes(app, router, middleware, mounts) {
 		{ route: '/assets', path: path.join(__dirname, '../../build/public') },
 		{ route: '/assets', path: path.join(__dirname, '../../build/webpack') }, // todo: messy; relocate in v3
 		{ route: '/assets', path: path.join(__dirname, '../../public') },
-		{ route: '/plugins', path: path.join(__dirname, '../../build/public/plugins') },
 	];
 	const staticOptions = {
 		maxAge: app.enabled('cache') ? 5184000000 : 0,
@@ -187,6 +187,10 @@ function addCoreRoutes(app, router, middleware, mounts) {
 	});
 	app.use(`${relativePath}/uploads`, (req, res) => {
 		res.redirect(`${relativePath}/assets/uploads${req.path}?${meta.config['cache-buster']}`);
+	});
+	app.use(`${relativePath}/plugins`, (req, res) => {
+		winston.warn(`${chalk.bold.red('[deprecation]')} The \`/plugins\` shorthand prefix is deprecated, prefix with \`/assets/plugins\` instead (path: ${req.path})`);
+		res.redirect(`${relativePath}/assets/plugins${req.path}${req._parsedUrl.search || ''}`);
 	});
 
 	// Skins
