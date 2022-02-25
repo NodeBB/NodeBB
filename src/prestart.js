@@ -94,6 +94,9 @@ function loadConfig(configFile) {
 		nconf.set('secure', urlObject.protocol === 'https:');
 		nconf.set('use_port', !!urlObject.port);
 		nconf.set('relative_path', relativePath);
+		if (!nconf.get('asset_base_url')) {
+			nconf.set('asset_base_url', `${relativePath}/assets`);
+		}
 		nconf.set('port', nconf.get('PORT') || nconf.get('port') || urlObject.port || (nconf.get('PORT_ENV_VAR') ? nconf.get(nconf.get('PORT_ENV_VAR')) : false) || 4567);
 
 		// cookies don't provide isolation by port: http://stackoverflow.com/a/16328399/122353
