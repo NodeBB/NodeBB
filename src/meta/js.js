@@ -128,9 +128,9 @@ async function getBundleScriptList(target) {
 }
 
 JS.buildBundle = async function (target, fork) {
-	const filename = `scripts-${target}.min.js`;
+	const filename = `scripts-${target}.js`;
 	const files = await getBundleScriptList(target);
-	const minify = process.env.NODE_ENV !== 'development';
+	const minify = false; // webpack will minify in prod
 	const filePath = path.join(__dirname, '../../build/public', filename);
 
 	await minifier.js.bundle({

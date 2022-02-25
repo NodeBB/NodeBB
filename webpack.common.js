@@ -4,8 +4,6 @@ const path = require('path');
 const url = require('url');
 const nconf = require('nconf');
 
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-
 const activePlugins = require('./build/active_plugins.json');
 
 let relativePath = nconf.get('relative_path');
@@ -19,18 +17,21 @@ if (relativePath === undefined) {
 }
 
 module.exports = {
-	plugins: [
-		new CleanWebpackPlugin(), // cleans dist folder
-	],
+	plugins: [],
 	entry: {
 		nodebb: './build/public/src/client.js',
 		admin: './build/public/src/admin/admin.js',
 	},
 	output: {
 		filename: '[name].min.js',
-		chunkFilename: '[name].[contenthash].js',
-		path: path.resolve(__dirname, 'build/webpack'),
+		chunkFilename: '[name].[contenthash].min.js',
+		path: path.resolve(__dirname, 'build/public'),
 		publicPath: `${relativePath}/assets/`,
+		clean: {
+			keep(asset) {
+				return !asset.endsWith('.min.js');
+			},
+		},
 	},
 	watchOptions: {
 		poll: 500,

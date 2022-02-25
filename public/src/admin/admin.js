@@ -5,7 +5,7 @@ require('../app');
 // scripts-admin.min contains javascript files
 // from plugins that add files to "acpScripts" block in plugin.json
 // eslint-disable-next-line import/no-unresolved
-require('../../scripts-admin.min');
+require('../../scripts-admin');
 
 (function () {
 	let logoutTimer = 0;

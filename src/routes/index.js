@@ -171,7 +171,6 @@ function addCoreRoutes(app, router, middleware, mounts) {
 
 	const statics = [
 		{ route: '/assets', path: path.join(__dirname, '../../build/public') },
-		{ route: '/assets', path: path.join(__dirname, '../../build/webpack') }, // todo: messy; relocate in v3
 		{ route: '/assets', path: path.join(__dirname, '../../public') },
 	];
 	const staticOptions = {
