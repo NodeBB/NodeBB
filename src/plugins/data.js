@@ -97,7 +97,7 @@ Data.getStaticDirectories = async function (pluginData) {
 			return;
 		}
 
-		const dirPath = path.join(pluginData.path, pluginData.staticDirs[route]);
+		const dirPath = await resolveModulePath(pluginData.path, pluginData.staticDirs[route]);
 		try {
 			const stats = await fs.promises.stat(dirPath);
 			if (!stats.isDirectory()) {
