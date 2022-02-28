@@ -1,6 +1,6 @@
 'use strict';
 
-const hooks = require('./modules/hooks');
+const hooks = require('hooks');
 const { render } = require('./widgets');
 
 window.ajaxify = window.ajaxify || {};
@@ -326,6 +326,7 @@ ajaxify.widgets = { render: render };
 
 	ajaxify.loadScript = function (tpl_url, callback) {
 		let location = !app.inAdmin ? 'forum/' : '';
+
 		if (tpl_url.startsWith('admin')) {
 			location = '';
 		}

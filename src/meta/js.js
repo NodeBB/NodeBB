@@ -14,7 +14,6 @@ const minifier = require('./minifier');
 
 const JS = module.exports;
 
-
 JS.scripts = {
 	base: [
 		'node_modules/@adactive/bootstrap-tagsinput/src/bootstrap-tagsinput.js',

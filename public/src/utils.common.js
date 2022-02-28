@@ -448,14 +448,6 @@ const utils = {
 		return !utils.isAbsoluteUrl(url);
 	},
 
-	makeNumbersHumanReadable: function (elements) {
-		elements.each(function () {
-			$(this)
-				.html(utils.makeNumberHumanReadable($(this).attr('title')))
-				.removeClass('hidden');
-		});
-	},
-
 	makeNumberHumanReadable: function (num) {
 		const n = parseInt(num, 10);
 		if (!n) {
@@ -467,14 +459,6 @@ const utils = {
 			return (n / 1000).toFixed(1) + 'k';
 		}
 		return n;
-	},
-
-	addCommasToNumbers: function (elements) {
-		elements.each(function (index, element) {
-			$(element)
-				.html(utils.addCommas($(element).html()))
-				.removeClass('hidden');
-		});
 	},
 
 	// takes a string like 1000 and returns 1,000

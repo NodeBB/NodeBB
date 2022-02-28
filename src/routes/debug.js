@@ -13,16 +13,6 @@ module.exports = function (app) {
 		res.redirect(404);
 	});
 
-	// const { setupPageRoute } = require('./helpers');
-	// setupPageRoute(app, '/debug/test', middleware, [], async (req, res) => {
-	// // res.redirect(404);
-	// const meta = require('../meta');
-	// res.render('test', {
-	// now: new Date().toISOString(),
-	// skins: [{ name: 'no-skin', value: '' }].concat(meta.css.supportedSkins.map(s => ({ name: s, value: s }))),
-	// });
-	// });
-
 	// Redoc
 	router.get('/spec/:type', async (req, res, next) => {
 		const types = ['read', 'write'];

@@ -25,7 +25,6 @@ app.currentRoom = null;
 app.widgets = {};
 app.flags = {};
 
-
 (function () {
 	let appLoaded = false;
 	const isTouchDevice = utils.isTouchDevice();
