@@ -1,6 +1,6 @@
 'use strict';
 
-const hooks = require('hooks');
+const hooks = require('./modules/hooks');
 const { render } = require('./widgets');
 
 window.ajaxify = window.ajaxify || {};
