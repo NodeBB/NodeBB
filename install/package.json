@@ -92,7 +92,7 @@
         "nodebb-plugin-emoji": "https://github.com/NodeBB/nodebb-plugin-emoji.git#webpack5",
         "nodebb-plugin-emoji-android": "2.0.5",
         "nodebb-plugin-markdown": "https://github.com/julianlam/nodebb-plugin-markdown.git#webpack5",
-        "nodebb-plugin-mentions": "3.0.6",
+        "nodebb-plugin-mentions": "3.0.7",
         "nodebb-plugin-spam-be-gone": "https://github.com/akhoury/nodebb-plugin-spam-be-gone.git#webpack5",
         "nodebb-rewards-essentials": "0.2.1",
         "nodebb-theme-lavender": "https://github.com/nodebb/nodebb-theme-lavender.git#webpack5",
