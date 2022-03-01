@@ -83,15 +83,15 @@ define('forum/flags/detail', [
 					break;
 
 				case 'delete-post':
-					postAction('delete', ajaxify.data.target.pid, ajaxify.data.target.tid);
+					postAction('delete', api.del, `/posts/${ajaxify.data.target.pid}/state`);
 					break;
 
 				case 'purge-post':
-					postAction('purge', ajaxify.data.target.pid, ajaxify.data.target.tid);
+					postAction('purge', api.del, `/posts/${ajaxify.data.target.pid}`);
 					break;
 
 				case 'restore-post':
-					postAction('restore', ajaxify.data.target.pid, ajaxify.data.target.tid);
+					postAction('restore', api.put, `/posts/${ajaxify.data.target.pid}/state`);
 					break;
 
 				case 'prepare-edit': {
@@ -115,23 +115,14 @@ define('forum/flags/detail', [
 		});
 	};
 
-	function postAction(action, pid, tid) {
+	function postAction(action, method, path) {
 		translator.translate('[[topic:post_' + action + '_confirm]]', function (msg) {
 			bootbox.confirm(msg, function (confirm) {
 				if (!confirm) {
 					return;
 				}
 
-				socket.emit('posts.' + action, {
-					pid: pid,
-					tid: tid,
-				}, function (err) {
-					if (err) {
-						alerts.error(err);
-					}
-
-					ajaxify.refresh();
-				});
+				method(path).then(ajaxify.refresh).catch(alerts.error);
 			});
 		});
 	}
