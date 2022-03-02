@@ -182,7 +182,9 @@ authenticationController.registerComplete = async function (req, res) {
 		const errors = results.map(result => result.status === 'rejected' && result.reason && result.reason.message).filter(Boolean);
 		if (errors.length) {
 			req.flash('errors', errors);
-			return res.redirect(`${nconf.get('relative_path')}/register/complete`);
+			return req.session.save(() => {
+				res.redirect(`${nconf.get('relative_path')}/register/complete`);
+			});
 		}
 
 		if (req.session.registration.register === true) {
