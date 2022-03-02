@@ -148,14 +148,22 @@ usersController.getUsers = async function (set, uid, query) {
 usersController.getUsersAndCount = async function (set, uid, start, stop) {
 	async function getCount() {
 		if (set === 'users:online') {
-			return await db.sortedSetCount('users:online', Date.now() - (meta.config.onlineCutoff * 60000), '+inf');
+			return await db.sortedSetCount('users:online', Date.now() - 86400000, '+inf');
 		} else if (set === 'users:banned' || set === 'users:flags') {
 			return await db.sortedSetCard(set);
 		}
 		return await db.getObjectField('global', 'userCount');
 	}
+	async function getUsers() {
+		if (set === 'users:online') {
+			const count = parseInt(stop, 10) === -1 ? stop : stop - start + 1;
+			const uids = await db.getSortedSetRevRangeByScore(set, start, count, '+inf', Date.now() - 86400000);
+			return await user.getUsers(uids, uid);
+		}
+		return await user.getUsersFromSet(set, uid, start, stop);
+	}
 	const [usersData, count] = await Promise.all([
-		user.getUsersFromSet(set, uid, start, stop),
+		getUsers(),
 		getCount(),
 	]);
 	return {
