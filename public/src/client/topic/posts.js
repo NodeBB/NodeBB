@@ -132,7 +132,7 @@ define('forum/topic/posts', [
 		if (!isPreviousPostAdded && data.posts[0].selfPost) {
 			return ajaxify.go('post/' + data.posts[0].pid);
 		}
-		const repliesSelector = $('[component="post"]:not([data-index=0]), [component="topic/event"]');
+		const repliesSelector = $('[component="topic"]>[component="post"]:not([data-index=0]), [component="topic"]>[component="topic/event"]');
 		createNewPosts(data, repliesSelector, direction, false, function (html) {
 			if (html) {
 				html.addClass('new');
