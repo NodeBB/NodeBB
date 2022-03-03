@@ -23,7 +23,7 @@
     "close": "Kapat",
     "pagination": "Sayfalara numara koyma",
     "pagination.out_of": "%1 - %2",
-    "pagination.enter_index": "Go to post index",
+    "pagination.enter_index": "İleti dizinine git",
     "header.admin": "Yönetim",
     "header.categories": "Kategoriler",
     "header.recent": "Güncel",
