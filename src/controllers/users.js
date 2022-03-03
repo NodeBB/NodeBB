@@ -162,7 +162,7 @@ usersController.getUsersAndCount = async function (set, uid, start, stop) {
 			const uids = data.map(d => d.value);
 			const scores = data.map(d => d.score);
 			const [userStatus, userData] = await Promise.all([
-				user.getUsersFields(uids, ['status']),
+				db.getObjectsFields(uids.map(uid => `user:${uid}`), ['status']),
 				user.getUsers(uids, uid),
 			]);
 
