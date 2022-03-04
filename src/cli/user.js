@@ -101,7 +101,7 @@ async function execute(cmd, args) {
 
 function UserCmdHelpers() {
 	async function getAdminUidOrFail() {
-		const adminUid = (await db.getSortedSetMembers('group:administrators:members')).reverse()[0];
+		const adminUid = await user.getFirstAdminUid();
 		if (!adminUid) {
 			const err = new Error('An admin account does not exists to execute the operation.');
 			err.name = 'UserError';

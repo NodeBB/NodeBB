@@ -211,6 +211,10 @@ User.getAdminsandGlobalModsandModerators = async function () {
 	return await User.getUsersData(_.union(...results));
 };
 
+User.getFirstAdminUid = async function () {
+	return (await db.getSortedSetMembers('group:administrators:members')).reverse()[0];
+};
+
 User.getModeratorUids = async function () {
 	const cids = await categories.getAllCidsFromSet('categories:cid');
 	const uids = await categories.getModeratorUids(cids);

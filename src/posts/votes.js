@@ -2,10 +2,12 @@
 
 const meta = require('../meta');
 const db = require('../database');
+const flags = require('../flags');
 const user = require('../user');
 const topics = require('../topics');
 const plugins = require('../plugins');
 const privileges = require('../privileges');
+const translator = require('../translator');
 
 module.exports = function (Posts) {
 	const votesInProgress = {};
@@ -242,6 +244,13 @@ module.exports = function (Posts) {
 	Posts.updatePostVoteCount = async function (postData) {
 		if (!postData || !postData.pid || !postData.tid) {
 			return;
+		}
+		const threshold = meta.config['flags:autoFlagOnDownvoteThreshold'];
+		if (threshold && postData.votes <= (-threshold)) {
+			const adminUid = await user.getFirstAdminUid();
+			const reportMsg = await translator.translate(`[[flags:auto-flagged, ${-postData.votes}]]`);
+			const flagObj = await flags.create('post', postData.pid, adminUid, reportMsg, null, true);
+			await flags.notify(flagObj, adminUid, true);
 		}
 		await Promise.all([
 			updateTopicVoteCount(postData),
