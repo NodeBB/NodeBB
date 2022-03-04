@@ -52,10 +52,11 @@ usersController.getOnlineUsers = async function (req, res) {
 	let hiddenCount = 0;
 	if (!userData.isAdminOrGlobalMod) {
 		userData.users = userData.users.filter((user) => {
-			if (user && user.userStatus === 'offline') {
+			const showUser = user && (user.uid === req.uid || user.userStatus !== 'offline');
+			if (!showUser) {
 				hiddenCount += 1;
 			}
-			return user && user.userStatus !== 'offline';
+			return showUser;
 		});
 	}
 
