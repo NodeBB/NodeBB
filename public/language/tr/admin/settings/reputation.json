@@ -18,5 +18,6 @@
 	"flags.limit-per-target": "Maksimum şikayet edilme sayısı",
 	"flags.limit-per-target-placeholder": "Varsayılan: 0",
 	"flags.limit-per-target-help": "Bir gönderi veya kullanıcı birden çok kez işaretlendiğinde, her ek işaret bir \"rapor\" olarak kabul edilir ve orijinal bayrağa eklenir. Bir öğenin alabileceği rapor sayısını sınırlamak için bu seçeneği sıfırdan farklı bir sayıya ayarlayın.",
+  	"flags.auto-flag-on-downvote-threshold": "Number of downvotes to auto flag posts (Set to 0 to disable, default: 0)",
 	"flags.auto-resolve-on-ban": "Bir kullanıcı forumdan yasaklandığında otomatik olarak şikayetlerini çözülmüş say"
 }

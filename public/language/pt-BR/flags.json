@@ -81,5 +81,6 @@
 	"bulk-actions": "Ações em Massa",
 	"bulk-resolve": "Resolver Sinalização(ões)",
 	"bulk-success": "%1 sinalizações atualizadas",
-	"flagged-timeago-readable": "Sinalizado <span class=\"timeago\" title=\"%1\"></span> (%2)"
+	"flagged-timeago-readable": "Sinalizado <span class=\"timeago\" title=\"%1\"></span> (%2)",
+  	"auto-flagged": "[Auto Flagged] Received %1 downvotes."
 }

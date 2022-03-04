@@ -81,5 +81,6 @@
 	"bulk-actions": "대량 작업",
 	"bulk-resolve": "해결된 신고",
 	"bulk-success": "%1 신고 업데이트됨",
-	"flagged-timeago-readable": "신고됨 <span class=\"timeago\" title=\"%1\"></span> (%2)"
+	"flagged-timeago-readable": "신고됨 <span class=\"timeago\" title=\"%1\"></span> (%2)",
+  	"auto-flagged": "[Auto Flagged] Received %1 downvotes."
 }
