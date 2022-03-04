@@ -212,7 +212,7 @@ User.getAdminsandGlobalModsandModerators = async function () {
 };
 
 User.getFirstAdminUid = async function () {
-	return (await db.getSortedSetMembers('group:administrators:members')).reverse()[0];
+	return (await db.getSortedSetRange('group:administrators:members', 0, 0))[0];
 };
 
 User.getModeratorUids = async function () {
