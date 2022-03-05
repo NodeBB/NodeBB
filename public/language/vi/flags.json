@@ -82,5 +82,5 @@
 	"bulk-resolve": "Xử Lý Cờ",
 	"bulk-success": "%1 cờ đã cập nhật",
 	"flagged-timeago-readable": "Đã Gắn Cờ <span class=\"timeago\" title=\"%1\"></span> (%2)",
-  	"auto-flagged": "[Auto Flagged] Received %1 downvotes."
+  	"auto-flagged": "[Tự động được gắn cờ] Đã nhận được %1 phiếu phản đối."
 }
