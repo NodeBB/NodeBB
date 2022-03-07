@@ -82,5 +82,5 @@
 	"bulk-resolve": "Разрешаване на доклад(и)",
 	"bulk-success": "%1 доклада са обновени",
 	"flagged-timeago-readable": "Докладвано <span class=\"timeago\" title=\"%1\"></span> (%2)",
-  	"auto-flagged": "[Auto Flagged] Received %1 downvotes."
+  	"auto-flagged": "[Авт. докладвано] Получени %1 отрицателни гласа."
 }
