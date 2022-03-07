@@ -82,6 +82,10 @@
 					[[admin/settings/reputation:flags.limit-per-target-help]]
 				</p>
 			</div>
+			<div class="form-group">
+				<label for="flags:autoFlagOnDownvoteThreshold">[[admin/settings/reputation:flags.auto-flag-on-downvote-threshold]]</label>
+				<input type="text" class="form-control" placeholder="0" data-field="flags:autoFlagOnDownvoteThreshold" id="flags:autoFlagOnDownvoteThreshold">
+			</div>
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input type="checkbox" class="mdl-switch__input" data-field="flags:autoResolveOnBan">

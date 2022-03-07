@@ -18,5 +18,6 @@
 	"flags.limit-per-target": "Maksymalna ilość razy coś może być oflagowane",
 	"flags.limit-per-target-placeholder": "Domyślnie:  0",
 	"flags.limit-per-target-help": "When a post or user is flagged multiple times, each additional flag is considered a &quot;report&quot; and added to the original flag. Set this option to a number other than zero to limit the number of reports an item can receive.",
+  	"flags.auto-flag-on-downvote-threshold": "Number of downvotes to auto flag posts (Set to 0 to disable, default: 0)",
 	"flags.auto-resolve-on-ban": "Automatically resolve all of a user's tickets when they are banned"
 }

@@ -18,5 +18,6 @@
 	"flags.limit-per-target": "Número máximo de vezes que algo pode ser sinalizado",
 	"flags.limit-per-target-placeholder": "Padrão: 0",
 	"flags.limit-per-target-help": "Quando uma postagem ou usuário é sinalizado várias vezes, cada sinalizador adicional é considerado uma 'reportagem' e adicionado ao sinalizador original. Defina esta opção com um número diferente de zero para limitar o número de relatórios que um item pode receber.",
+  	"flags.auto-flag-on-downvote-threshold": "Number of downvotes to auto flag posts (Set to 0 to disable, default: 0)",
 	"flags.auto-resolve-on-ban": "Resolver automaticamente todos os tickets de um usuário quando eles são banidos"
 }

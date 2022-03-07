@@ -377,7 +377,7 @@ Flags.deleteNote = async function (flagId, datetime) {
 	await db.sortedSetRemove(`flag:${flagId}:notes`, note[0]);
 };
 
-Flags.create = async function (type, id, uid, reason, timestamp) {
+Flags.create = async function (type, id, uid, reason, timestamp, forceFlag = false) {
 	let doHistoryAppend = false;
 	if (!timestamp) {
 		timestamp = Date.now();
@@ -387,14 +387,14 @@ Flags.create = async function (type, id, uid, reason, timestamp) {
 		// Sanity checks
 		Flags.exists(type, id, uid),
 		Flags.targetExists(type, id),
-		Flags.canFlag(type, id, uid),
+		Flags.canFlag(type, id, uid, forceFlag),
 		Flags.targetFlagged(type, id),
 
 		// Extra data for zset insertion
 		Flags.getTargetUid(type, id),
 		Flags.getTargetCid(type, id),
 	]);
-	if (flagExists) {
+	if (!forceFlag && flagExists) {
 		throw new Error(`[[error:${type}-already-flagged]]`);
 	} else if (!targetExists) {
 		throw new Error('[[error:invalid-data]]');
@@ -499,9 +499,9 @@ Flags.exists = async function (type, id, uid) {
 	return await db.isSortedSetMember('flags:hash', [type, id, uid].join(':'));
 };
 
-Flags.canFlag = async function (type, id, uid) {
+Flags.canFlag = async function (type, id, uid, skipLimitCheck = false) {
 	const limit = meta.config['flags:limitPerTarget'];
-	if (limit > 0) {
+	if (!skipLimitCheck && limit > 0) {
 		const score = await db.sortedSetScore('flags:byTarget', `${type}:${id}`);
 		if (score >= limit) {
 			throw new Error(`[[error:${type}-flagged-too-many-times]]`);
@@ -729,7 +729,7 @@ Flags.appendNote = async function (flagId, uid, note, datetime) {
 	});
 };
 
-Flags.notify = async function (flagObj, uid) {
+Flags.notify = async function (flagObj, uid, notifySelf = false) {
 	const [admins, globalMods] = await Promise.all([
 		groups.getMembers('administrators', 0, -1),
 		groups.getMembers('Global Moderators', 0, -1),
@@ -780,7 +780,9 @@ Flags.notify = async function (flagObj, uid) {
 		from: uid,
 		to: uids,
 	});
-	uids = uids.filter(_uid => parseInt(_uid, 10) !== parseInt(uid, 10));
+	if (!notifySelf) {
+		uids = uids.filter(_uid => parseInt(_uid, 10) !== parseInt(uid, 10));
+	}
 	await notifications.push(notifObj, uids);
 };
 

@@ -81,5 +81,6 @@
 	"bulk-actions": "عملیات گروهی",
 	"bulk-resolve": "Resolve Flag(s)",
 	"bulk-success": "%1 گزارش بروزرسانی شد",
-	"flagged-timeago-readable": "گزارش شده <span class=\"timeago\" title=\"%1\"></span> (%2)"
+	"flagged-timeago-readable": "گزارش شده <span class=\"timeago\" title=\"%1\"></span> (%2)",
+  	"auto-flagged": "[Auto Flagged] Received %1 downvotes."
 }
