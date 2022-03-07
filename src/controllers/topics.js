@@ -269,11 +269,15 @@ async function addTags(topicData, req, res) {
 async function addOGImageTags(res, topicData, postAtIndex) {
 	const uploads = postAtIndex ? await posts.uploads.listWithSizes(postAtIndex.pid) : [];
 	const images = uploads.map((upload) => {
-		upload.name = `${url + upload_url}/files/${upload.name}`;
+		upload.name = `${url + upload_url}/${upload.name}`;
 		return upload;
 	});
 	if (topicData.thumbs) {
-		images.push(...topicData.thumbs.map(thumbObj => ({ name: nconf.get('url') + thumbObj.url })));
+		const path = require('path');
+		const thumbs = topicData.thumbs.filter(
+			t => t && images.every(img => path.normalize(img.name) !== path.normalize(url + t.url))
+		);
+		images.push(...thumbs.map(thumbObj => ({ name: url + thumbObj.url })));
 	}
 	if (topicData.category.backgroundImage && (!postAtIndex || !postAtIndex.index)) {
 		images.push(topicData.category.backgroundImage);
