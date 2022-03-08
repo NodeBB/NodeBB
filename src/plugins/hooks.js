@@ -99,7 +99,7 @@ Hooks.fire = async function (hook, params) {
 	let deleteCaller = false;
 	if (params && typeof params === 'object' && !params.hasOwnProperty('caller')) {
 		const als = require('../als');
-		params.caller = als.getStore();
+		params.caller = { ...als.getStore(), hook };
 		deleteCaller = true;
 	}
 	const result = await hookTypeToMethod[hookType](hook, hookList, params);
