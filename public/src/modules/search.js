@@ -62,6 +62,7 @@ define('search', ['translator', 'storage', 'hooks', 'alerts'], function (transla
 			const input = $(this).find('input');
 			const data = Search.getSearchPreferences();
 			data.term = input.val();
+			data.in = searchOptions.in;
 			hooks.fire('action:search.submit', {
 				searchOptions: data,
 				searchElements: searchElements,
