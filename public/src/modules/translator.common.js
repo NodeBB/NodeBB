@@ -556,6 +556,9 @@ module.exports = function (utils, load, warn) {
 				warn('Translation failed: ' + err.stack);
 			});
 		},
+		translateKeys: async function (keys, language, cb) {
+			return await Promise.all(keys.map(key => adaptor.translate(key, language, cb)));
+		},
 
 		/**
 		 * Add translations to the cache
