@@ -11,7 +11,7 @@ Hooks._deprecated = new Map([
 	['filter:email.send', {
 		new: 'static:email.send',
 		since: 'v1.17.0',
-		until: 'v1.19.0',
+		until: 'v2.0.0',
 		affected: new Set(),
 	}],
 	['filter:router.page', {
