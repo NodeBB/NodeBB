@@ -127,6 +127,17 @@ Plugins.reload = async function () {
 	posts.registerHooks();
 	meta.configs.registerHooks();
 
+	// Deprecation notices
+	Plugins.hooks._deprecated.forEach((deprecation, hook) => {
+		if (!deprecation.affected.size) {
+			return;
+		}
+
+		const replacement = deprecation.hasOwnProperty('new') ? `Please use ${chalk.yellow(deprecation.new)} instead.` : 'There is no alternative.';
+		winston.warn(`[plugins/load] ${chalk.white.bgRed.bold('DEPRECATION')} The hook ${chalk.yellow(hook)} has been deprecated as of ${deprecation.since}, and slated for removal in ${deprecation.until}. ${replacement} The following plugins are still listening for this hook:`);
+		deprecation.affected.forEach(id => console.log(`  ${chalk.yellow('*')} ${id}`));
+	});
+
 	// Lower priority runs earlier
 	Object.keys(Plugins.loadedHooks).forEach((hook) => {
 		Plugins.loadedHooks[hook].sort((a, b) => a.priority - b.priority);
