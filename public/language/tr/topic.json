@@ -181,5 +181,7 @@
     "timeago_earlier": "%1 önce",
     "first-post": "İlk ileti",
     "last-post": "Son ileti",
+    "go-to-my-next-post": "Diğer iletime git",
+    "no-more-next-post": "Bu başlıkta başka bir iletiniz bulunmamaktadır.",
     "post-quick-reply": "Hızlı yanıt gönder"
 }

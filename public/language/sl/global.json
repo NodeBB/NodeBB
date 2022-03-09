@@ -23,7 +23,7 @@
     "close": "Zapri",
     "pagination": "Oštevilčenje strani",
     "pagination.out_of": "%1 od %2",
-    "pagination.enter_index": "Vnesi številko",
+    "pagination.enter_index": "Go to post index",
     "header.admin": "Skrbnik",
     "header.categories": "Kategorije",
     "header.recent": "Nedavno",

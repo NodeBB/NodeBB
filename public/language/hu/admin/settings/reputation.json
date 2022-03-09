@@ -18,5 +18,6 @@
 	"flags.limit-per-target": "Bizonyos dolgokat legfeljebb hányszor lehessen megjelölni",
 	"flags.limit-per-target-placeholder": "Alapértelmezett: 0",
 	"flags.limit-per-target-help": "Amikor egy hozzászólás vagy felhasználó több megjelölést kap, akkor minden megjelölés &quot;jelentésnek&quot; számít és hozzáadódik az eredeti megjelöléshez. Adj meg 0-tól eltérő értéket egy maximális jelölési szám beállításához.",
+  	"flags.auto-flag-on-downvote-threshold": "Number of downvotes to auto flag posts (Set to 0 to disable, default: 0)",
 	"flags.auto-resolve-on-ban": "A felhasználó összes megjelölésének feloldása, amikor kitiltásra kerül"
 }

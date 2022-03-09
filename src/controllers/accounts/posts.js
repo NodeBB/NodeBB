@@ -5,6 +5,7 @@ const user = require('../../user');
 const posts = require('../../posts');
 const topics = require('../../topics');
 const categories = require('../../categories');
+const privileges = require('../../privileges');
 const pagination = require('../../pagination');
 const helpers = require('../helpers');
 const accountHelpers = require('./helpers');
@@ -56,7 +57,8 @@ const templateToData = {
 			return cids.map(c => `cid:${c}:uid:${userData.uid}:pids:votes`);
 		},
 		getTopics: async (sets, req, start, stop) => {
-			const pids = await db.getSortedSetRevRangeByScore(sets, start, stop - start + 1, '+inf', 1);
+			let pids = await db.getSortedSetRevRangeByScore(sets, start, stop - start + 1, '+inf', 1);
+			pids = await privileges.posts.filter('topics:read', pids, req.uid);
 			const postObjs = await posts.getPostSummaryByPids(pids, req.uid, { stripTags: false });
 			return { posts: postObjs, nextStart: stop + 1 };
 		},
@@ -74,7 +76,8 @@ const templateToData = {
 			return cids.map(c => `cid:${c}:uid:${userData.uid}:pids:votes`);
 		},
 		getTopics: async (sets, req, start, stop) => {
-			const pids = await db.getSortedSetRangeByScore(sets, start, stop - start + 1, '-inf', -1);
+			let pids = await db.getSortedSetRangeByScore(sets, start, stop - start + 1, '-inf', -1);
+			pids = await privileges.posts.filter('topics:read', pids, req.uid);
 			const postObjs = await posts.getPostSummaryByPids(pids, req.uid, { stripTags: false });
 			return { posts: postObjs, nextStart: stop + 1 };
 		},

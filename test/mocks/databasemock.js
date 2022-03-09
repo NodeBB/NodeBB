@@ -26,6 +26,16 @@ winston.add(new winston.transports.Console({
 	),
 }));
 
+try {
+	const fs = require('fs');
+	const configJSON = fs.readFileSync(path.join(__dirname, '../../config.json'), 'utf-8');
+	winston.info('configJSON');
+	winston.info(configJSON);
+} catch (err) {
+	console.error(err.stack);
+	throw err;
+}
+
 nconf.file({ file: path.join(__dirname, '../../config.json') });
 nconf.defaults({
 	base_dir: path.join(__dirname, '../..'),

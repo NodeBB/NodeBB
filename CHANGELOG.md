@@ -1,3 +1,71 @@
+#### v1.19.3 (2022-02-16)
+
+##### Chores
+
+* **i18n:**
+  *  fallback strings for new resources: nodebb.admin-settings-uploads (4043f179)
+  *  fallback strings for new resources: nodebb.user (775d9077)
+* **deps:**
+  *  update dependency lint-staged to v12.3.4 (9577ef8d)
+  *  update commitlint monorepo to v16.2.1 (2290cee5)
+  *  update dependency eslint to v8.9.0 (763cd193)
+*  remove punycode dep (e9cb1452)
+*  incrementing version number - v1.19.2 (e49b31f0)
+*  update changelog for v1.19.2 (f012984d)
+
+##### New Features
+
+*  delete diffs on post purge, closes #10291 (e9e48a75)
+*  closes #10296 (58b5781c)
+*  deleting a user upload dissociates from posts, and vice versa (d5ed8736)
+*  #10276, dont change/revert theme if its current (398d25c2)
+
+##### Bug Fixes
+
+*  #10302, fix regression (503e27f7)
+*  one last try (9205169f)
+*  doggy.gif (2f64d633)
+*  one more fix (cfdfbf32)
+*  dupe key errors (770fcd9e)
+*  #10292, delete missing fields (dbf7a458)
+*  local deleteUploads() method in `src/user/delete.js` to call `User.deleteUpload()` (b9edee14)
+*  #10144, automatically delete uploads from disk on post purge, ACP option to keep uploads on disk if desired (84dfda59)
+*  four-space indents in package.json (9aa3e442)
+*  #10289, remove lodash dependency in src/cli/package-install.js (81fa2e22)
+*  non-functional upgrade script (1c7fb8fe)
+*  language keys (350052ec)
+*  #10273, properly calculate item count for best/controversial (d70ce3a9)
+* **deps:**
+  *  update dependency nodebb-plugin-emoji to v3.5.16 (#10297) (b47ca86d)
+  *  update dependency nodebb-plugin-markdown to v9.0.7 (#10293) (5b0d4a8e)
+  *  update dependency nodebb-plugin-emoji to v3.5.14 (#10295) (7af057fa)
+  *  update dependency nodebb-plugin-mentions to v3.0.5 (#10294) (55a98183)
+  *  update dependency winston to v3.6.0 (#10285) (22da7a10)
+  *  update dependency nodebb-plugin-markdown to v9.0.6 (3225a1af)
+  *  update dependency nodebb-plugin-spam-be-gone to v0.7.13 (#10280) (3dc108d3)
+  *  update dependency nodebb-plugin-emoji to v3.5.12 (#10279) (2c0b6322)
+  *  update dependency nodebb-plugin-emoji to v3.5.11 (#10274) (766ef4e5)
+
+##### Refactors
+
+*  lazy load slugify (946d351f)
+*  .deleteUpload() to accept array of paths (7ef9c7d2)
+*  fix user uploads paths, and associate uid with user uploads (ea36016d)
+*  change the post uploads' hash seeds to have the `files/` prefix (6489e9fd)
+*  abstract some common code out to local utility methods (aad0c5fd)
+*  move post upload tests to its own file (d92da828)
+*  remove extra zset remove, closes #10277 (489c0d30)
+
+##### Code Style Changes
+
+*  linting errors (5d7e1ebc)
+
+##### Tests
+
+*  fix topic thumb tests and topic thumbs to work properly with post upload assoc. (fb78570c)
+*  user uploads.js tests (8c2752ba)
+*  testing user upload methods, already fixed one bug (11275d68)
+
 #### v1.19.2 (2022-02-09)
 
 ##### Chores

@@ -23,7 +23,7 @@
     "close": "ปิด",
     "pagination": "การแบ่งหน้า",
     "pagination.out_of": "%1 จาก %2",
-    "pagination.enter_index": "กรอกหมายเลข",
+    "pagination.enter_index": "Go to post index",
     "header.admin": "ผู้ดูแลระบบ",
     "header.categories": "หมวดหมู่",
     "header.recent": "ล่าสุด",

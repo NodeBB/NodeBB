@@ -23,7 +23,7 @@
     "close": "বন্ধ",
     "pagination": "পাতা নং",
     "pagination.out_of": "%2 এর মাঝে %1",
-    "pagination.enter_index": "সূচক লিখুন",
+    "pagination.enter_index": "Go to post index",
     "header.admin": "অ্যাডমিন",
     "header.categories": "বিভাগ",
     "header.recent": "সাম্প্রতিক",

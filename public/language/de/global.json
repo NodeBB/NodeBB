@@ -23,7 +23,7 @@
     "close": "Schließen",
     "pagination": "Seitennummerierung",
     "pagination.out_of": "%1 von %2",
-    "pagination.enter_index": "Seitenzahl eingeben",
+    "pagination.enter_index": "Go to post index",
     "header.admin": "Admin",
     "header.categories": "Kategorien",
     "header.recent": "Aktuell",

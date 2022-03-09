@@ -59,7 +59,7 @@
     "composer.upload-file": "Dosya Yükle",
     "composer.zen_mode": "Tam ekran modu",
     "composer.select_category": "Bir kategori seç",
-    "composer.textarea.placeholder": "İletinizi buraya giriniz, görselleri sürükleyip bırakabilirsiniz",
+    "composer.textarea.placeholder": "iletinizi buraya giriniz, görselleri sürükleyip bırakabilirsiniz...",
     "composer.schedule-for": "Konuyu Zamanla",
     "composer.schedule-date": "Tarih",
     "composer.schedule-time": "Zaman",

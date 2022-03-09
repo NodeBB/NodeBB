@@ -23,7 +23,7 @@
     "close": "Aizvērt",
     "pagination": "Dalīšana pa lapām",
     "pagination.out_of": "%1 no %2",
-    "pagination.enter_index": "Ievadīt numuru",
+    "pagination.enter_index": "Go to post index",
     "header.admin": "Administrācija",
     "header.categories": "Kategorijas",
     "header.recent": "Nesenie",

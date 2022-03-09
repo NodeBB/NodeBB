@@ -18,5 +18,6 @@
 	"flags.limit-per-target": "Maximale Häufigkeit, mit der etwas markiert werden kann",
 	"flags.limit-per-target-placeholder": "Standardwert: 0",
 	"flags.limit-per-target-help": "Wenn ein Beitrag oder ein Benutzer mehrfach markiert wird, wird jede zusätzliche Markierung als &quot;Nachricht&quot; betrachtet und zur ursprünglichen Markierung hinzugezählt. Setzen Sie diese Option auf eine andere Zahl als Null, um die Anzahl der Nachricht, die ein Artikel erhalten kann, zu begrenzen.",
+  	"flags.auto-flag-on-downvote-threshold": "Number of downvotes to auto flag posts (Set to 0 to disable, default: 0)",
 	"flags.auto-resolve-on-ban": "Automatisches Beenden aller Tickets eines Benutzers, wenn dieser gesperrt wird"
 }

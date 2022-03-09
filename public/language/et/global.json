@@ -23,7 +23,7 @@
     "close": "Sulge",
     "pagination": "Lehekülgede numeratsioon",
     "pagination.out_of": "%1 kõigist %2-st",
-    "pagination.enter_index": "Sisetage indeks",
+    "pagination.enter_index": "Go to post index",
     "header.admin": "Admin",
     "header.categories": "Kategooriad",
     "header.recent": "Hiljutised",

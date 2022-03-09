@@ -605,6 +605,19 @@
 				warn('Translation failed: ' + err.stack);
 			});
 		},
+		translateKeys: async function (keys, language, callback) {
+			let cb = callback;
+			let lang = language;
+			if (typeof language === 'function') {
+				cb = language;
+				lang = null;
+			}
+			const translations = await Promise.all(keys.map(key => adaptor.translate(key, lang)));
+			if (typeof cb === 'function') {
+				return setTimeout(cb, 0, translations);
+			}
+			return translations;
+		},
 
 		/**
 		 * Add translations to the cache

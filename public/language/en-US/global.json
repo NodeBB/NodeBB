@@ -23,7 +23,7 @@
     "close": "Close",
     "pagination": "Pagination",
     "pagination.out_of": "%1 out of %2",
-    "pagination.enter_index": "Enter index",
+    "pagination.enter_index": "Go to post index",
     "header.admin": "Admin",
     "header.categories": "Categories",
     "header.recent": "Recent",

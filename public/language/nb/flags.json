@@ -81,5 +81,6 @@
 	"bulk-actions": "Massehandlinger",
 	"bulk-resolve": "Løse Flagg(ene).",
 	"bulk-success": "%1 flagg er oppdaterte ",
-	"flagged-timeago-readable": "Flaggede 11 (%2)"
+	"flagged-timeago-readable": "Flaggede 11 (%2)",
+  	"auto-flagged": "[Auto Flagged] Received %1 downvotes."
 }

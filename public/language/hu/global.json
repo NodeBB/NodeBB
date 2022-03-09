@@ -23,7 +23,7 @@
     "close": "Bezárás",
     "pagination": "Lapozás",
     "pagination.out_of": "%1 / %2",
-    "pagination.enter_index": "Írj be egy számot",
+    "pagination.enter_index": "Go to post index",
     "header.admin": "Admin",
     "header.categories": "Kategóriák",
     "header.recent": "Legutóbbi",

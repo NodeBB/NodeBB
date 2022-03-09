@@ -47,18 +47,18 @@ define('api', ['hooks'], (hooks) => {
 	}
 
 	api.get = (route, payload, onSuccess) => call({
-		url: route + (Object.keys(payload).length ? ('?' + $.param(payload)) : ''),
+		url: route + (payload && Object.keys(payload).length ? ('?' + $.param(payload)) : ''),
 	}, onSuccess);
 
 	api.head = (route, payload, onSuccess) => call({
-		url: route + (Object.keys(payload).length ? ('?' + $.param(payload)) : ''),
+		url: route + (payload && Object.keys(payload).length ? ('?' + $.param(payload)) : ''),
 		method: 'head',
 	}, onSuccess);
 
 	api.post = (route, payload, onSuccess) => call({
 		url: route,
 		method: 'post',
-		data: JSON.stringify(payload),
+		data: JSON.stringify(payload || {}),
 		contentType: 'application/json; charset=utf-8',
 		headers: {
 			'x-csrf-token': config.csrf_token,
@@ -68,7 +68,7 @@ define('api', ['hooks'], (hooks) => {
 	api.put = (route, payload, onSuccess) => call({
 		url: route,
 		method: 'put',
-		data: JSON.stringify(payload),
+		data: JSON.stringify(payload || {}),
 		contentType: 'application/json; charset=utf-8',
 		headers: {
 			'x-csrf-token': config.csrf_token,

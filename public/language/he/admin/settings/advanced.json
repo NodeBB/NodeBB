@@ -13,7 +13,7 @@
 	"headers.acao-help": "כדי למנוע גישה לכל האתרים, השאר ריק",
 	"headers.acao-regex-help": "הכנס תבנית טקסט (Regex) כאן כדי לאפשר קריאה דינאמית מאתרים חיצוניים. אם ברצונך לחסום כל גישה חיצונית, השאר ריק.",
 	"headers.acac": "אתרים אשר אל בקשות אליהם, יתווספו גם נתוני כניסה כגוןCookie וכו'. ( Access-Control-Allow-Credentials)",
-	"headers.acam": "Access-Control-Allow-Methods",
+	"headers.acam": "שיטות אפשריות בבקרת גישה",
 	"headers.acah": "Access-Control-Allow-Headers",
 	"headers.coep": "Cross-Origin-Embedder-Policy",
 	"headers.coep-help": "When enabled (default), will set the header to <code>require-corp</code>",

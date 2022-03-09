@@ -85,11 +85,10 @@ app.flags = {};
 			'translator',
 			'messages',
 			'search',
-			'forum/unread',
 			'forum/header',
 			'hooks',
 			'timeago/jquery.timeago',
-		], function (taskbar, helpers, pagination, translator, messages, search, unread, header, hooks) {
+		], function (taskbar, helpers, pagination, translator, messages, search, header, hooks) {
 			header.prepareDOM();
 			translator.prepareDOM();
 			taskbar.init();
@@ -97,9 +96,6 @@ app.flags = {};
 			pagination.init();
 			search.init();
 
-			if (app.user.uid > 0) {
-				unread.initUnreadTopics();
-			}
 			function finishLoad() {
 				hooks.fire('action:app.load');
 				messages.show();

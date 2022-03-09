@@ -23,7 +23,7 @@
     "close": "Luk",
     "pagination": "Sidetal",
     "pagination.out_of": "%1 ud af %2",
-    "pagination.enter_index": "Indtast indeks",
+    "pagination.enter_index": "Go to post index",
     "header.admin": "Administrator",
     "header.categories": "Kategorier",
     "header.recent": "Seneste",

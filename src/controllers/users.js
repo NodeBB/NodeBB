@@ -8,6 +8,7 @@ const pagination = require('../pagination');
 const privileges = require('../privileges');
 const helpers = require('./helpers');
 const api = require('../api');
+const utils = require('../utils');
 
 const usersController = module.exports;
 
@@ -51,10 +52,11 @@ usersController.getOnlineUsers = async function (req, res) {
 	let hiddenCount = 0;
 	if (!userData.isAdminOrGlobalMod) {
 		userData.users = userData.users.filter((user) => {
-			if (user && user.status === 'offline') {
+			const showUser = user && (user.uid === req.uid || user.userStatus !== 'offline');
+			if (!showUser) {
 				hiddenCount += 1;
 			}
-			return user && user.status !== 'offline';
+			return showUser;
 		});
 	}
 
@@ -148,14 +150,36 @@ usersController.getUsers = async function (set, uid, query) {
 usersController.getUsersAndCount = async function (set, uid, start, stop) {
 	async function getCount() {
 		if (set === 'users:online') {
-			return await db.sortedSetCount('users:online', Date.now() - (meta.config.onlineCutoff * 60000), '+inf');
+			return await db.sortedSetCount('users:online', Date.now() - 86400000, '+inf');
 		} else if (set === 'users:banned' || set === 'users:flags') {
 			return await db.sortedSetCard(set);
 		}
 		return await db.getObjectField('global', 'userCount');
 	}
+	async function getUsers() {
+		if (set === 'users:online') {
+			const count = parseInt(stop, 10) === -1 ? stop : stop - start + 1;
+			const data = await db.getSortedSetRevRangeByScoreWithScores(set, start, count, '+inf', Date.now() - 86400000);
+			const uids = data.map(d => d.value);
+			const scores = data.map(d => d.score);
+			const [userStatus, userData] = await Promise.all([
+				db.getObjectsFields(uids.map(uid => `user:${uid}`), ['status']),
+				user.getUsers(uids, uid),
+			]);
+
+			userData.forEach((user, i) => {
+				if (user) {
+					user.lastonline = scores[i];
+					user.lastonlineISO = utils.toISOString(user.lastonline);
+					user.userStatus = userStatus[i].status || 'online';
+				}
+			});
+			return userData;
+		}
+		return await user.getUsersFromSet(set, uid, start, stop);
+	}
 	const [usersData, count] = await Promise.all([
-		user.getUsersFromSet(set, uid, start, stop),
+		getUsers(),
 		getCount(),
 	]);
 	return {

@@ -18,5 +18,6 @@
 	"flags.limit-per-target": "Số lần tối đa nội dung nào đó có thể được gắn cờ",
 	"flags.limit-per-target-placeholder": "Mặc định: 0",
 	"flags.limit-per-target-help": "Khi một bài đăng hoặc người dùng bị gắn cờ nhiều lần, mỗi cờ bổ sung được coi là một &quot;báo cáo&quot; và được thêm vào cờ gốc. Đặt tùy chọn này thành một số khác 0 để giới hạn số lượng báo cáo mà một mục có thể nhận được.",
+  	"flags.auto-flag-on-downvote-threshold": "Số phiếu phản đối cho các bài đăng tự động gắn cờ (Đặt thành 0 để tắt, mặc định: 0)",
 	"flags.auto-resolve-on-ban": "Tự động giải quyết tất cả các vé của người dùng khi họ bị cấm"
 }

@@ -23,7 +23,7 @@
     "close": "Закрити",
     "pagination": "Розбиття на сторінки",
     "pagination.out_of": "%1 із %2",
-    "pagination.enter_index": "Уведіть номер",
+    "pagination.enter_index": "Go to post index",
     "header.admin": "Адмін",
     "header.categories": "Категорії",
     "header.recent": "Недавні",

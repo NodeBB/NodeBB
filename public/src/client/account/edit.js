@@ -16,15 +16,6 @@ define('forum/account/edit', [
 
 		$('#submitBtn').on('click', updateProfile);
 
-		app.loadJQueryUI(function () {
-			$('#inputBirthday').datepicker({
-				changeMonth: true,
-				changeYear: true,
-				yearRange: '1900:-5y',
-				defaultDate: '-13y',
-			});
-		});
-
 		if (ajaxify.data.groupTitleArray.length === 1 && ajaxify.data.groupTitleArray[0] === '') {
 			$('#groupTitle option[value=""]').attr('selected', true);
 		}

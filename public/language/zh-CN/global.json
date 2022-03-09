@@ -23,7 +23,7 @@
     "close": "关闭",
     "pagination": "分页",
     "pagination.out_of": "%1 / %2",
-    "pagination.enter_index": "输入索引",
+    "pagination.enter_index": "Go to post index",
     "header.admin": "管理",
     "header.categories": "版块",
     "header.recent": "最新",

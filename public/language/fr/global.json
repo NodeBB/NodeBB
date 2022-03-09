@@ -23,7 +23,7 @@
     "close": "Fermer",
     "pagination": "Pagination",
     "pagination.out_of": "%1 sur %2",
-    "pagination.enter_index": "Entrer un numéro de page",
+    "pagination.enter_index": "Aller à l'index des messages",
     "header.admin": "Admin",
     "header.categories": "Catégories",
     "header.recent": "Récent",

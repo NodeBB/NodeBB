@@ -23,7 +23,7 @@
     "close": "Zatvoriť",
     "pagination": "Stránkovanie",
     "pagination.out_of": "%1 z %2",
-    "pagination.enter_index": "Zadajte záznam",
+    "pagination.enter_index": "Go to post index",
     "header.admin": "Správca",
     "header.categories": "Kategórie",
     "header.recent": "Nedávne",
