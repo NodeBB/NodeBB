@@ -70,8 +70,8 @@ privsGlobal.list = async function () {
 	}
 
 	const keys = await utils.promiseParallel({
-		users: plugins.hooks.fire('filter:privileges.global.list', privsGlobal.userPrivilegeList.slice()),
-		groups: plugins.hooks.fire('filter:privileges.global.groups.list', privsGlobal.groupPrivilegeList.slice()),
+		users: privsGlobal.getUserPrivilegeList(),
+		groups: privsGlobal.getGroupPrivilegeList(),
 	});
 
 	const payload = await utils.promiseParallel({

@@ -7,10 +7,20 @@ const utils = require('../utils');
 
 const Hooks = module.exports;
 
-Hooks.deprecatedHooks = {
-	'filter:email.send': 'static:email.send', // 👋 @ 1.19.0
-	'filter:router.page': 'response:router.page', // 👋 @ 2.0.0
-};
+Hooks._deprecated = new Map([
+	['filter:email.send', {
+		new: 'static:email.send',
+		since: 'v1.17.0',
+		until: 'v2.0.0',
+		affected: new Set(),
+	}],
+	['filter:router.page', {
+		new: 'response:router.page',
+		since: 'v1.15.3',
+		until: 'v2.1.0',
+		affected: new Set(),
+	}],
+]);
 
 Hooks.internals = {
 	_register: function (data) {
@@ -39,14 +49,10 @@ Hooks.register = function (id, data) {
 	}
 
 	// `hasOwnProperty` needed for hooks with no alternative (set to null)
-	if (Hooks.deprecatedHooks.hasOwnProperty(data.hook)) {
-		const deprecated = Hooks.deprecatedHooks[data.hook];
-
-		if (deprecated) {
-			winston.warn(`[plugins/${id}] Hook "${data.hook}" is deprecated, please use "${deprecated}" instead.`);
-		} else {
-			winston.warn(`[plugins/${id}] Hook "${data.hook}" is deprecated, there is no alternative.`);
-		}
+	if (Hooks._deprecated.has(data.hook)) {
+		const deprecation = Hooks._deprecated.get(data.hook);
+		deprecation.affected.add(id);
+		Hooks._deprecated.set(data.hook, deprecation);
 	}
 
 	data.id = id;
