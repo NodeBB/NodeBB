@@ -32,7 +32,7 @@ module.exports = function (Posts) {
 			}
 		});
 
-		return await Promise.all(userData.map(async (userData) => {
+		const result = await Promise.all(userData.map(async (userData) => {
 			const [isMemberOfGroups, signature, customProfileInfo] = await Promise.all([
 				checkGroupMembership(userData.uid, userData.groupTitleArray),
 				parseSignature(userData, uid, uidsSignatureSet),
@@ -51,6 +51,8 @@ module.exports = function (Posts) {
 
 			return await plugins.hooks.fire('filter:posts.modifyUserInfo', userData);
 		}));
+		const hookResult = await plugins.hooks.fire('filter:posts.getUserInfoForPosts', { users: result });
+		return hookResult.users;
 	};
 
 	Posts.overrideGuestHandle = function (postData, handle) {
