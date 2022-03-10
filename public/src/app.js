@@ -11,7 +11,6 @@ require('timeago');
 
 const Visibility = require('visibilityjs');
 const Benchpress = require('benchpressjs');
-
 Benchpress.setGlobal('config', config);
 
 require('./sockets');
@@ -25,24 +24,25 @@ app.currentRoom = null;
 app.widgets = {};
 app.flags = {};
 
+window.addEventListener('DOMContentLoaded', async function () {
+	if (app.user.timeagoCode && app.user.timeagoCode !== 'en') {
+		await import(/* webpackChunkName: "timeago/[request]" */ 'timeago/locales/jquery.timeago.' + app.user.timeagoCode);
+	}
+	ajaxify.parseData();
+	app.load();
+});
+
 (function () {
 	let appLoaded = false;
 	const isTouchDevice = utils.isTouchDevice();
 
 	app.cacheBuster = config['cache-buster'];
 
-	$(document).ready(function () {
-		ajaxify.parseData();
-		app.load();
-	});
-
 	app.coldLoad = function () {
 		if (appLoaded) {
 			ajaxify.coldLoad();
 		} else {
-			$(window).on('action:app.load', function () {
-				ajaxify.coldLoad();
-			});
+			$(window).one('action:app.load', ajaxify.coldLoad);
 		}
 	};
 
@@ -99,31 +99,20 @@ app.flags = {};
 			'taskbar',
 			'helpers',
 			'forum/pagination',
-			'translator',
 			'messages',
 			'search',
 			'forum/header',
 			'hooks',
-			'timeago/jquery.timeago',
-		], function (taskbar, helpers, pagination, translator, messages, search, header, hooks) {
+		], function (taskbar, helpers, pagination, messages, search, header, hooks) {
 			header.prepareDOM();
-			translator.prepareDOM();
 			taskbar.init();
 			helpers.register();
 			pagination.init();
 			search.init();
-
-			function finishLoad() {
-				hooks.fire('action:app.load');
-				messages.show();
-				appLoaded = true;
-			}
 			overrides.overrideTimeago();
-			if (app.user.timeagoCode && app.user.timeagoCode !== 'en') {
-				translator.switchTimeagoLanguage(app.user.timeagoCode, finishLoad);
-			} else {
-				finishLoad();
-			}
+			hooks.fire('action:app.load');
+			messages.show();
+			appLoaded = true;
 		});
 	};
 
