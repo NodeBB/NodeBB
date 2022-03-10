@@ -18,9 +18,9 @@
 							<tr>
 								<th colspan="2">[[admin/manage/categories:privileges.section-group]]</th>
 								<th class="text-center">[[admin/manage/privileges:select-clear-all]]</th>
-								<!-- BEGIN privileges.labels.groups -->
-								<th class="text-center">{privileges.labels.groups.name}</th>
-								<!-- END privileges.labels.groups -->
+								{{{ each privileges.labels.groups }}}
+								<th class="text-center">{@value}</th>
+								{{{ end }}}
 							</tr>
 						</thead>
 						<tbody>
@@ -71,9 +71,9 @@
 							<tr>
 								<th colspan="2">[[admin/manage/categories:privileges.section-user]]</th>
 								<th class="text-center">[[admin/manage/privileges:select-clear-all]]</th>
-								<!-- BEGIN privileges.labels.users -->
-								<th class="text-center">{privileges.labels.users.name}</th>
-								<!-- END privileges.labels.users -->
+								{{{ each privileges.labels.users }}}
+								<th class="text-center">{@value}</th>
+								{{{ end }}}
 							</tr>
 						</thead>
 						<tbody>

@@ -11,48 +11,31 @@ const utils = require('../utils');
 
 const privsGlobal = module.exports;
 
-privsGlobal.privilegeLabels = [
-	{ name: '[[admin/manage/privileges:chat]]' },
-	{ name: '[[admin/manage/privileges:upload-images]]' },
-	{ name: '[[admin/manage/privileges:upload-files]]' },
-	{ name: '[[admin/manage/privileges:signature]]' },
-	{ name: '[[admin/manage/privileges:invite]]' },
-	{ name: '[[admin/manage/privileges:allow-group-creation]]' },
-	{ name: '[[admin/manage/privileges:search-content]]' },
-	{ name: '[[admin/manage/privileges:search-users]]' },
-	{ name: '[[admin/manage/privileges:search-tags]]' },
-	{ name: '[[admin/manage/privileges:view-users]]' },
-	{ name: '[[admin/manage/privileges:view-tags]]' },
-	{ name: '[[admin/manage/privileges:view-groups]]' },
-	{ name: '[[admin/manage/privileges:allow-local-login]]' },
-	{ name: '[[admin/manage/privileges:ban]]' },
-	{ name: '[[admin/manage/privileges:view-users-info]]' },
-];
+/**
+ * Looking to add a new global privilege via plugin/theme? Attach a hook to
+ * `static:privileges.global.init` and call .set() on the privilege map passed
+ * in to your listener.
+ */
+const _privilegeMap = new Map([
+	['chat', { label: '[[admin/manage/privileges:chat]]' }],
+	['upload:post:image', { label: '[[admin/manage/privileges:upload-images]]' }],
+	['upload:post:file', { label: '[[admin/manage/privileges:upload-files]]' }],
+	['signature', { label: '[[admin/manage/privileges:signature]]' }],
+	['invite', { label: '[[admin/manage/privileges:invite]]' }],
+	['group:create', { label: '[[admin/manage/privileges:allow-group-creation]]' }],
+	['search:content', { label: '[[admin/manage/privileges:search-content]]' }],
+	['search:users', { label: '[[admin/manage/privileges:search-users]]' }],
+	['search:tags', { label: '[[admin/manage/privileges:search-tags]]' }],
+	['view:users', { label: '[[admin/manage/privileges:view-users]]' }],
+	['view:tags', { label: '[[admin/manage/privileges:view-tags]]' }],
+	['view:groups', { label: '[[admin/manage/privileges:view-groups]]' }],
+	['local:login', { label: '[[admin/manage/privileges:allow-local-login]]' }],
+	['ban', { label: '[[admin/manage/privileges:ban]]' }],
+	['view:users:info', { label: '[[admin/manage/privileges:view-users-info]]' }],
+]);
 
-privsGlobal.userPrivilegeList = [
-	'chat',
-	'upload:post:image',
-	'upload:post:file',
-	'signature',
-	'invite',
-	'group:create',
-	'search:content',
-	'search:users',
-	'search:tags',
-	'view:users',
-	'view:tags',
-	'view:groups',
-	'local:login',
-	'ban',
-	'view:users:info',
-];
-
-privsGlobal.groupPrivilegeList = privsGlobal.userPrivilegeList.map(privilege => `groups:${privilege}`);
-
-privsGlobal.privilegeList = privsGlobal.userPrivilegeList.concat(privsGlobal.groupPrivilegeList);
-
-privsGlobal.getUserPrivilegeList = async () => await plugins.hooks.fire('filter:privileges.global.list', privsGlobal.userPrivilegeList.slice());
-privsGlobal.getGroupPrivilegeList = async () => await plugins.hooks.fire('filter:privileges.global.groups.list', privsGlobal.groupPrivilegeList.slice());
+privsGlobal.getUserPrivilegeList = async () => await plugins.hooks.fire('filter:privileges.global.list', Array.from(_privilegeMap.keys()));
+privsGlobal.getGroupPrivilegeList = async () => await plugins.hooks.fire('filter:privileges.global.groups.list', Array.from(_privilegeMap.keys()).map(privilege => `groups:${privilege}`));
 privsGlobal.getPrivilegeList = async () => {
 	const [user, group] = await Promise.all([
 		privsGlobal.getUserPrivilegeList(),
@@ -61,11 +44,18 @@ privsGlobal.getPrivilegeList = async () => {
 	return user.concat(group);
 };
 
+privsGlobal.init = async () => {
+	await plugins.hooks.fire('static:privileges.global.init', {
+		privileges: _privilegeMap,
+	});
+};
+
 privsGlobal.list = async function () {
 	async function getLabels() {
+		const labels = Array.from(_privilegeMap.values()).map(data => data.label);
 		return await utils.promiseParallel({
-			users: plugins.hooks.fire('filter:privileges.global.list_human', privsGlobal.privilegeLabels.slice()),
-			groups: plugins.hooks.fire('filter:privileges.global.groups.list_human', privsGlobal.privilegeLabels.slice()),
+			users: plugins.hooks.fire('filter:privileges.global.list_human', labels.slice()),
+			groups: plugins.hooks.fire('filter:privileges.global.groups.list_human', labels.slice()),
 		});
 	}
 
