@@ -30,19 +30,13 @@ get:
                       users:
                         type: array
                         items:
-                          type: object
-                          properties:
-                            name:
-                              type: string
-                              description: Language key of the privilege name's user-friendly name
+                          type: string
+                          description: Language key of the privilege name's user-friendly name
                       groups:
                         type: array
                         items:
-                          type: object
-                          properties:
-                            name:
-                              type: string
-                              description: Language key of the privilege name's user-friendly name
+                          type: string
+                          description: Language key of the privilege name's user-friendly name
                   users:
                     type: array
                     items:
