@@ -120,7 +120,7 @@ app.flags = {};
 			}
 			overrides.overrideTimeago();
 			if (app.user.timeagoCode && app.user.timeagoCode !== 'en') {
-				require(['timeago/locales/jquery.timeago.' + app.user.timeagoCode], finishLoad);
+				translator.switchTimeagoLanguage(app.user.timeagoCode, finishLoad);
 			} else {
 				finishLoad();
 			}
