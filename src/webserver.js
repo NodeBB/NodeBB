@@ -31,6 +31,7 @@ const logger = require('./logger');
 const plugins = require('./plugins');
 const flags = require('./flags');
 const topicEvents = require('./topics/events');
+const privileges = require('./privileges');
 const routes = require('./routes');
 const auth = require('./routes/authentication');
 
@@ -103,6 +104,7 @@ async function initializeNodeBB() {
 		middleware: middleware,
 	});
 	await routes(app, middleware);
+	await privileges.init();
 	await meta.blacklist.load();
 	await flags.init();
 	await analytics.init();

@@ -12,50 +12,32 @@ const utils = require('../utils');
 
 const privsCategories = module.exports;
 
-privsCategories.privilegeLabels = [
-	{ name: '[[admin/manage/privileges:find-category]]' },
-	{ name: '[[admin/manage/privileges:access-category]]' },
-	{ name: '[[admin/manage/privileges:access-topics]]' },
-	{ name: '[[admin/manage/privileges:create-topics]]' },
-	{ name: '[[admin/manage/privileges:reply-to-topics]]' },
-	{ name: '[[admin/manage/privileges:schedule-topics]]' },
-	{ name: '[[admin/manage/privileges:tag-topics]]' },
-	{ name: '[[admin/manage/privileges:edit-posts]]' },
-	{ name: '[[admin/manage/privileges:view-edit-history]]' },
-	{ name: '[[admin/manage/privileges:delete-posts]]' },
-	{ name: '[[admin/manage/privileges:upvote-posts]]' },
-	{ name: '[[admin/manage/privileges:downvote-posts]]' },
-	{ name: '[[admin/manage/privileges:delete-topics]]' },
-	{ name: '[[admin/manage/privileges:view_deleted]]' },
-	{ name: '[[admin/manage/privileges:purge]]' },
-	{ name: '[[admin/manage/privileges:moderate]]' },
-];
+/**
+ * Looking to add a new global privilege via plugin/theme? Attach a hook to
+ * `static:privileges.global.init` and call .set() on the privilege map passed
+ * in to your listener.
+ */
+const _privilegeMap = new Map([
+	['find', { label: '[[admin/manage/privileges:find-category]]' }],
+	['read', { label: '[[admin/manage/privileges:access-category]]' }],
+	['topics:read', { label: '[[admin/manage/privileges:access-topics]]' }],
+	['topics:create', { label: '[[admin/manage/privileges:create-topics]]' }],
+	['topics:reply', { label: '[[admin/manage/privileges:reply-to-topics]]' }],
+	['topics:schedule', { label: '[[admin/manage/privileges:schedule-topics]]' }],
+	['topics:tag', { label: '[[admin/manage/privileges:tag-topics]]' }],
+	['posts:edit', { label: '[[admin/manage/privileges:edit-posts]]' }],
+	['posts:history', { label: '[[admin/manage/privileges:view-edit-history]]' }],
+	['posts:delete', { label: '[[admin/manage/privileges:delete-posts]]' }],
+	['posts:upvote', { label: '[[admin/manage/privileges:upvote-posts]]' }],
+	['posts:downvote', { label: '[[admin/manage/privileges:downvote-posts]]' }],
+	['topics:delete', { label: '[[admin/manage/privileges:delete-topics]]' }],
+	['posts:view_deleted', { label: '[[admin/manage/privileges:view_deleted]]' }],
+	['purge', { label: '[[admin/manage/privileges:purge]]' }],
+	['moderate', { label: '[[admin/manage/privileges:moderate]]' }],
+]);
 
-privsCategories.userPrivilegeList = [
-	'find',
-	'read',
-	'topics:read',
-	'topics:create',
-	'topics:reply',
-	'topics:schedule',
-	'topics:tag',
-	'posts:edit',
-	'posts:history',
-	'posts:delete',
-	'posts:upvote',
-	'posts:downvote',
-	'topics:delete',
-	'posts:view_deleted',
-	'purge',
-	'moderate',
-];
-
-privsCategories.groupPrivilegeList = privsCategories.userPrivilegeList.map(privilege => `groups:${privilege}`);
-
-privsCategories.privilegeList = privsCategories.userPrivilegeList.concat(privsCategories.groupPrivilegeList);
-
-privsCategories.getUserPrivilegeList = async () => await plugins.hooks.fire('filter:privileges.list', privsCategories.userPrivilegeList.slice());
-privsCategories.getGroupPrivilegeList = async () => await plugins.hooks.fire('filter:privileges.groups.list', privsCategories.groupPrivilegeList.slice());
+privsCategories.getUserPrivilegeList = async () => await plugins.hooks.fire('filter:privileges.list', Array.from(_privilegeMap.keys()));
+privsCategories.getGroupPrivilegeList = async () => await plugins.hooks.fire('filter:privileges.groups.list', Array.from(_privilegeMap.keys()).map(privilege => `groups:${privilege}`));
 privsCategories.getPrivilegeList = async () => {
 	const [user, group] = await Promise.all([
 		privsCategories.getUserPrivilegeList(),
@@ -64,16 +46,23 @@ privsCategories.getPrivilegeList = async () => {
 	return user.concat(group);
 };
 
+privsCategories.init = async () => {
+	await plugins.hooks.fire('static:privileges.categories.init', {
+		privileges: _privilegeMap,
+	});
+};
+
 // Method used in admin/category controller to show all users/groups with privs in that given cid
 privsCategories.list = async function (cid) {
-	const labels = await utils.promiseParallel({
-		users: plugins.hooks.fire('filter:privileges.list_human', privsCategories.privilegeLabels.slice()),
-		groups: plugins.hooks.fire('filter:privileges.groups.list_human', privsCategories.privilegeLabels.slice()),
+	let labels = Array.from(_privilegeMap.values()).map(data => data.label);
+	labels = await utils.promiseParallel({
+		users: plugins.hooks.fire('filter:privileges.list_human', labels.slice()),
+		groups: plugins.hooks.fire('filter:privileges.groups.list_human', labels.slice()),
 	});
 
 	const keys = await utils.promiseParallel({
-		users: plugins.hooks.fire('filter:privileges.list', privsCategories.userPrivilegeList.slice()),
-		groups: plugins.hooks.fire('filter:privileges.groups.list', privsCategories.groupPrivilegeList.slice()),
+		users: privsCategories.getUserPrivilegeList(),
+		groups: privsCategories.getGroupPrivilegeList(),
 	});
 
 	const payload = await utils.promiseParallel({
@@ -83,8 +72,8 @@ privsCategories.list = async function (cid) {
 	});
 	payload.keys = keys;
 
-	payload.columnCountUserOther = payload.labels.users.length - privsCategories.privilegeLabels.length;
-	payload.columnCountGroupOther = payload.labels.groups.length - privsCategories.privilegeLabels.length;
+	payload.columnCountUserOther = payload.labels.users.length - labels.users.length;
+	payload.columnCountGroupOther = payload.labels.groups.length - labels.groups.length;
 
 	return payload;
 };
