@@ -165,7 +165,6 @@ function install(req, res) {
 	};
 
 	winston.info('Starting setup process');
-	winston.info(JSON.stringify(setupEnvVars, null, 4));
 	launchUrl = setupEnvVars.NODEBB_URL;
 
 	const child = require('child_process').fork('app', ['--setup'], {

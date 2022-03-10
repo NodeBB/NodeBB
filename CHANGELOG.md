@@ -1,3 +1,96 @@
+#### v1.19.4 (2022-03-09)
+
+##### Chores
+
+*  incrementing version number - v1.19.4 (67282057)
+*  delay `filter:email.send` removal to v2.0.0 (83fd4311)
+*  up persona (c23b2089)
+*  incrementing version number - v1.19.3 (09cb11c8)
+*  update changelog for v1.19.3 (0b48ec54)
+* **deps:**
+  *  bump postcss from 8.4.7 to 8.4.8 in /install (#10372) (d7a4ae1f)
+  *  update dependency lint-staged to v12.3.5 (517ae926)
+  *  bump nodebb-plugin-spam-be-gone in /install (81e7ca20)
+  *  update dependency eslint to v8.10.0 (e83c8be2)
+  *  bump postcss from 8.4.6 to 8.4.7 in /install (52ee5ce8)
+  *  bump json2csv from 5.0.6 to 5.0.7 in /install (e44cbb24)
+  *  update dependency smtp-server to v3.10.0 (67e4df78)
+  *  update dependency mocha to v9.2.1 (00eebf10)
+  *  bump prompt from 1.2.1 to 1.2.2 in /install (21913b5b)
+  *  bump express from 4.17.2 to 4.17.3 in /install (5321ba4d)
+* **i18n:**
+  *  fallback strings for new resources: nodebb.admin-settings-reputation, nodebb.flags (a5fe8350)
+  *  fallback strings for new resources: nodebb.topic (dc0f9a73)
+
+##### New Features
+
+*  add hook filter:posts.getUserInfoForPosts (df46ab48)
+*  add translateKeys (e841d59a)
+*  post auto flagging on downvotes #10029 (#10367) (62187caa)
+*  closes #10324, show recently online users as well (eac9cd03)
+*  resolve paths for staticDirs as well (e0b1c374)
+*  ability to go through your posts in a topic (b517b376)
+* **sorted-list:**  add new client-side hook `filter:settings.sorted-list.loadItem` (92d613e4)
+
+##### Bug Fixes
+
+*  apply some DRY (a3b4c668)
+*  optional params (e9a86cb9)
+*  #10374, use quick search in setting (70e613f8)
+*  #10366, remove dupe /files (371b4658)
+*  always show self on /users?online (56345777)
+*  db call (21cd1e61)
+*  lastonline timestamps and display for guests (cc665fd6)
+*  #10357 (7ee4e4e0)
+*  #10358, bad uploads path (5479f364)
+*  #10360, only take top level posts (37ef8366)
+*  #10354, flag actions regression (fec907d9)
+*  dont overwrite asset_base_url if its set (0e12f82d)
+*  allow calls to api module without a defined payload (914733e4)
+*  #10334, use the correct env vars for web install (6b22d0e1)
+*  persona test fail (10a5901e)
+*  #10316, fix quoting regression (0b813d60)
+*  #10322 (5694e62e)
+*  #10329, select elements in sorted-list not showing proper values (1fa41342)
+*  allow translation keys in `label` attributes (52836f3a)
+*  don't load setup.json into nconf if setup.json doesn't exist (6e156daa)
+*  regression caused by 94b79ce4024f72a3eee2cfa06b05d8f66898149f (4164898d)
+* **deps:**
+  *  update dependency nodebb-plugin-markdown to v9.0.10 (bcb68ee9)
+  *  update dependency mongodb to v4.4.1 (#10364) (4b730df9)
+  *  update dependency nodebb-theme-persona to v11.4.2 (#10361) (4d590f65)
+  *  update dependency body-parser to v1.19.2 (#10298) (c75714b7)
+  *  update dependency sharp to v0.30.2 (#10359) (1a6c2c55)
+  *  update dependency nodebb-plugin-mentions to v3.0.7 (#10355) (3e5a0f0d)
+  *  update dependency nodebb-plugin-2factor to v3.0.5 (f30c65a4)
+  *  update dependency nodebb-theme-persona to v11.4.1 (#10337) (b84e61d5)
+  *  update dependency nodebb-theme-persona to v11.4.0 (#10325) (244d8801)
+  *  update dependency nodebb-plugin-mentions to v3.0.6 (#10328) (31cbff19)
+  *  update dependency nodebb-plugin-dbsearch to v5.1.3 (#10330) (1c1062e1)
+  *  update dependency nodebb-plugin-markdown to v9.0.8 (#10327) (c17b9bd4)
+  *  update dependency mongodb to v4.4.0 (#10319) (afd2993d)
+  *  update dependency nodebb-plugin-emoji to v3.5.17 (#10314) (04900291)
+  *  update dependency nodebb-plugin-dbsearch to v5.1.2 (#10313) (0e30362b)
+  *  update dependency nodebb-widget-essentials to v5.0.9 (#10307) (5666c103)
+  *  update dependency nodebb-widget-essentials to v5.0.8 (#10306) (636f1baf)
+* **sorted-list:**
+  *  call loadItem hook on add/edit items as well as on item retrieval, refactor edit to call parse() (1c8d1d23)
+  *  only call `.stripHTMLTags()` on string values (fb4f89f3)
+
+##### Refactors
+
+*  show a louder deprecation notice, alert once for each hook, not per plugin per hook (93b80f17)
+*  move header unread code to separate module (40230725)
+*  remove code that doesn't do anything (4a1e761a)
+*  wrap around if at end (3acd2ac8)
+*  change lang string (94961196)
+
+##### Tests
+
+*  possible fix random psql test failure (50ed3a32)
+*  log configJSON (9db90a30)
+*  check contents of config.json in tests (32f69301)
+
 #### v1.19.3 (2022-02-16)
 
 ##### Chores
