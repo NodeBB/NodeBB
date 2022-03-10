@@ -13,8 +13,8 @@ const utils = require('../utils');
 const privsCategories = module.exports;
 
 /**
- * Looking to add a new global privilege via plugin/theme? Attach a hook to
- * `static:privileges.global.init` and call .set() on the privilege map passed
+ * Looking to add a new category privilege via plugin/theme? Attach a hook to
+ * `static:privileges.category.init` and call .set() on the privilege map passed
  * in to your listener.
  */
 const _privilegeMap = new Map([
