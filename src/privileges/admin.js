@@ -120,7 +120,7 @@ privsAdmin.list = async function (uid) {
 
 	// Restrict privileges column to superadmins
 	if (!(await user.isAdministrator(uid))) {
-		const idx = privsAdmin.userPrivilegeList.indexOf('admin:privileges');
+		const idx = Array.from(_privilegeMap.keys()).indexOf('admin:privileges');
 		privilegeLabels.splice(idx, 1);
 		userPrivilegeList.splice(idx, 1);
 		groupPrivilegeList.splice(idx, 1);
