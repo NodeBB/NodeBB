@@ -124,6 +124,10 @@ window.addEventListener('DOMContentLoaded', async function () {
 		async function requireModule(moduleName) {
 			let _module;
 			try {
+				switch (moduleName) {
+					case 'bootbox': return require('bootbox');
+					case 'benchpressjs': return require('benchpressjs');
+				}
 				if (moduleName.startsWith('admin')) {
 					_module = await import(/* webpackChunkName: "admin/[request]" */ 'admin/' + moduleName.replace(/^admin\//, ''));
 				} else if (moduleName.startsWith('forum')) {
