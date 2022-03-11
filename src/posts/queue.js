@@ -239,18 +239,26 @@ module.exports = function (Posts) {
 		if (!data) {
 			return null;
 		}
+		const result = await plugins.hooks.fire('filter:post-queue:removeFromQueue', { data: data });
+		await removeFromQueue(id);
+		plugins.hooks.fire('action:post-queue:removeFromQueue', { data: result.data });
+		return result.data;
+	};
+
+	async function removeFromQueue(id) {
 		await removeQueueNotification(id);
 		await db.sortedSetRemove('post:queue', id);
 		await db.delete(`post:queue:${id}`);
 		cache.del('post-queue');
-		return data;
-	};
+	}
 
 	Posts.submitFromQueue = async function (id) {
-		const data = await getParsedObject(id);
+		let data = await getParsedObject(id);
 		if (!data) {
 			return null;
 		}
+		const result = await plugins.hooks.fire('filter:post-queue:submitFromQueue', { data: data });
+		data = result.data;
 		if (data.type === 'topic') {
 			const result = await createTopic(data.data);
 			data.pid = result.postData.pid;
@@ -258,7 +266,8 @@ module.exports = function (Posts) {
 			const result = await createReply(data.data);
 			data.pid = result.pid;
 		}
-		await Posts.removeFromQueue(id);
+		await removeFromQueue(id);
+		plugins.hooks.fire('action:post-queue:submitFromQueue', { data: data });
 		return data;
 	};
 
