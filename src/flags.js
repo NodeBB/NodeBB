@@ -289,7 +289,7 @@ Flags.validate = async function (payload) {
 	if (payload.type === 'post') {
 		const editable = await privileges.posts.canEdit(payload.id, payload.uid);
 		if (!editable.flag && !meta.config['reputation:disabled'] && reporter.reputation < meta.config['min:rep:flag']) {
-			throw new Error('[[error:not-enough-reputation-to-flag]]');
+			throw new Error(`[[error:not-enough-reputation-to-flag, ${meta.config['min:rep:flag']}]]`);
 		}
 	} else if (payload.type === 'user') {
 		if (parseInt(payload.id, 10) === parseInt(payload.uid, 10)) {
@@ -297,7 +297,7 @@ Flags.validate = async function (payload) {
 		}
 		const editable = await privileges.users.canEdit(payload.uid, payload.id);
 		if (!editable && !meta.config['reputation:disabled'] && reporter.reputation < meta.config['min:rep:flag']) {
-			throw new Error('[[error:not-enough-reputation-to-flag]]');
+			throw new Error(`[[error:not-enough-reputation-to-flag, ${meta.config['min:rep:flag']}]]`);
 		}
 	} else {
 		throw new Error('[[error:invalid-data]]');

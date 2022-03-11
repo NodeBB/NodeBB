@@ -608,7 +608,7 @@ describe('Flags', () => {
 					uid: 3,
 				}, (err) => {
 					assert.ok(err);
-					assert.strictEqual('[[error:not-enough-reputation-to-flag]]', err.message);
+					assert.strictEqual('[[error:not-enough-reputation-to-flag, 50]]', err.message);
 					Meta.configs.set('min:rep:flag', 0, done);
 				});
 			});

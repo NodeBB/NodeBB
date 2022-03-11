@@ -128,8 +128,8 @@ module.exports = function (Posts) {
 			throw new Error('[[error:self-vote]]');
 		}
 
-		if (type === 'downvote') {
-			await checkDownvoteLimitation(pid, uid);
+		if (type === 'downvote' || type === 'upvote') {
+			await checkVoteLimitation(pid, uid, type);
 		}
 
 		if (!voteStatus || (!voteStatus.upvoted && !voteStatus.downvoted)) {
@@ -139,29 +139,30 @@ module.exports = function (Posts) {
 		return await vote(voteStatus.upvoted ? 'downvote' : 'upvote', true, pid, uid, voteStatus);
 	}
 
-	async function checkDownvoteLimitation(pid, uid) {
+	async function checkVoteLimitation(pid, uid, type) {
+		// type = 'upvote' or 'downvote'
 		const oneDay = 86400000;
-		const [reputation, targetUid, downvotedPids] = await Promise.all([
+		const [reputation, targetUid, votedPidsToday] = await Promise.all([
 			user.getUserField(uid, 'reputation'),
 			Posts.getPostField(pid, 'uid'),
 			db.getSortedSetRevRangeByScore(
-				`uid:${uid}:downvote`, 0, -1, '+inf', Date.now() - oneDay
+				`uid:${uid}:${type}`, 0, -1, '+inf', Date.now() - oneDay
 			),
 		]);
 
-		if (reputation < meta.config['min:rep:downvote']) {
-			throw new Error('[[error:not-enough-reputation-to-downvote]]');
+		if (reputation < meta.config[`min:rep:${type}`]) {
+			throw new Error(`[[error:not-enough-reputation-to-${type}, ${meta.config[`min:rep:${type}`]}]]`);
 		}
-
-		if (meta.config.downvotesPerDay && downvotedPids.length >= meta.config.downvotesPerDay) {
-			throw new Error(`[[error:too-many-downvotes-today, ${meta.config.downvotesPerDay}]]`);
+		const votesToday = meta.config[`${type}sPerDay`];
+		if (votesToday && votedPidsToday.length >= votesToday) {
+			throw new Error(`[[error:too-many-${type}s-today, ${votesToday}]]`);
 		}
-
-		if (meta.config.downvotesPerUserPerDay) {
-			const postData = await Posts.getPostsFields(downvotedPids, ['uid']);
-			const targetDownvotes = postData.filter(p => p.uid === targetUid).length;
-			if (targetDownvotes >= meta.config.downvotesPerUserPerDay) {
-				throw new Error(`[[error:too-many-downvotes-today-user, ${meta.config.downvotesPerUserPerDay}]]`);
+		const voterPerUserToday = meta.config[`${type}sPerUserPerDay`];
+		if (voterPerUserToday) {
+			const postData = await Posts.getPostsFields(votedPidsToday, ['uid']);
+			const targetUpVotes = postData.filter(p => p.uid === targetUid).length;
+			if (targetUpVotes >= voterPerUserToday) {
+				throw new Error(`[[error:too-many-${type}s-today-user, ${voterPerUserToday}]]`);
 			}
 		}
 	}
