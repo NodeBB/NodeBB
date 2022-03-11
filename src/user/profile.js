@@ -226,7 +226,7 @@ module.exports = function (User) {
 		}
 		const reputation = await User.getUserField(uid, 'reputation');
 		if (reputation < meta.config[setting]) {
-			throw new Error(`[[error:not-enough-reputation-${setting.replace(/:/g, '-')}]]`);
+			throw new Error(`[[error:not-enough-reputation-${setting.replace(/:/g, '-')}, ${meta.config[setting]}]]`);
 		}
 	};
 
