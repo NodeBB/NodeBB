@@ -11,7 +11,7 @@ module.exports = {
 	},
 	output: {
 		filename: '[name].min.js',
-		path: path.resolve(__dirname, 'build/webpack'),
+		path: path.resolve(__dirname, 'build/public'),
 		publicPath: `/assets/`,
 	},
 	resolve: {
