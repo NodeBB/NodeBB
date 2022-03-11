@@ -24,8 +24,7 @@ app.currentRoom = null;
 app.widgets = {};
 app.flags = {};
 
-$(document).ready(async function () {
-// window.addEventListener('DOMContentLoaded', async function () {
+document.addEventListener('DOMContentLoaded', async function () {
 	if (app.user.timeagoCode && app.user.timeagoCode !== 'en') {
 		await import(/* webpackChunkName: "timeago/[request]" */ 'timeago/locales/jquery.timeago.' + app.user.timeagoCode);
 	}
