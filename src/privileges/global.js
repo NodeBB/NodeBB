@@ -26,6 +26,7 @@ privsGlobal.privilegeLabels = [
 	{ name: '[[admin/manage/privileges:view-groups]]' },
 	{ name: '[[admin/manage/privileges:allow-local-login]]' },
 	{ name: '[[admin/manage/privileges:ban]]' },
+	{ name: '[[admin/manage/privileges:mute]]' },
 	{ name: '[[admin/manage/privileges:view-users-info]]' },
 ];
 
@@ -44,6 +45,7 @@ privsGlobal.userPrivilegeList = [
 	'view:groups',
 	'local:login',
 	'ban',
+	'mute',
 	'view:users:info',
 ];
 

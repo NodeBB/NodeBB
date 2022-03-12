@@ -3,15 +3,13 @@
 						<thead>
 							{{{ if !isAdminPriv }}}
 							<tr class="privilege-table-header">
-								<th colspan="3"></th>
-								<th class="arrowed" colspan="6">
-									[[admin/manage/categories:privileges.section-posting]]
-								</th>
-								<th class="arrowed" colspan="7">
-									[[admin/manage/categories:privileges.section-viewing]]
-								</th>
-								<th class="arrowed" colspan="2">
-									[[admin/manage/categories:privileges.section-moderation]]
+								<th class="privilege-filters btn-toolbar" colspan="100">
+									<!-- IF privileges.columnCountGroupOther -->
+									<button type="button" data-filter="19,99" class="btn btn-default pull-right">[[admin/manage/categories:privileges.section-other]]</button>
+									<!-- END -->
+									<button type="button" data-filter="16,18" class="btn btn-default pull-right">[[admin/manage/categories:privileges.section-moderation]]</button>
+									<button type="button" data-filter="3,8" class="btn btn-default pull-right">[[admin/manage/categories:privileges.section-posting]]</button>
+									<button type="button" data-filter="9,15" class="btn btn-default pull-right">[[admin/manage/categories:privileges.section-viewing]]</button>
 								</th>
 							</tr><tr><!-- zebrastripe reset --></tr>
 							{{{ end }}}
@@ -65,9 +63,18 @@
 					<label>[[admin/manage/privileges:user-privileges]]</label>
 					<table class="table table-striped privilege-table">
 						<thead>
+							{{{ if !isAdminPriv }}}
 							<tr class="privilege-table-header">
-								<th colspan="15"></th>
+								<th class="privilege-filters btn-toolbar" colspan="100">
+									<!-- IF privileges.columnCountGroupOther -->
+									<button type="button" data-filter="21,99" class="btn btn-default pull-right">[[admin/manage/categories:privileges.section-other]]</button>
+									<!-- END -->
+									<button type="button" data-filter="18,20" class="btn btn-default pull-right">[[admin/manage/categories:privileges.section-moderation]]</button>
+									<button type="button" data-filter="10,17" class="btn btn-default pull-right">[[admin/manage/categories:privileges.section-posting]]</button>
+									<button type="button" data-filter="3,9" class="btn btn-default pull-right">[[admin/manage/categories:privileges.section-viewing]]</button>
+								</th>
 							</tr><tr><!-- zebrastripe reset --></tr>
+							{{{ end }}}
 							<tr>
 								<th colspan="2">[[admin/manage/categories:privileges.section-user]]</th>
 								<th class="text-center">[[admin/manage/privileges:select-clear-all]]</th>

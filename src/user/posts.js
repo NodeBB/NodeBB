@@ -18,7 +18,7 @@ module.exports = function (User) {
 			return;
 		}
 		const [userData, isAdminOrMod] = await Promise.all([
-			User.getUserFields(uid, ['uid', 'banned', 'joindate', 'email', 'reputation'].concat([field])),
+			User.getUserFields(uid, ['uid', 'banned', 'mutedUntil', 'joindate', 'email', 'reputation'].concat([field])),
 			privileges.categories.isAdminOrMod(cid, uid),
 		]);
 
@@ -35,6 +35,16 @@ module.exports = function (User) {
 		}
 
 		const now = Date.now();
+		if (userData.mutedUntil > now) {
+			let muteLeft = ((userData.mutedUntil - now) / (1000 * 60));
+			if (muteLeft > 60) {
+				muteLeft = (muteLeft / 60).toFixed(0);
+				throw new Error(`[[error:user-muted-for-hours, ${muteLeft}]]`);
+			} else {
+				throw new Error(`[[error:user-muted-for-minutes, ${muteLeft.toFixed(0)}]]`);
+			}
+		}
+
 		if (now - userData.joindate < meta.config.initialPostDelay * 1000) {
 			throw new Error(`[[error:user-too-new, ${meta.config.initialPostDelay}]]`);
 		}

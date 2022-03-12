@@ -54,7 +54,9 @@ define('forum/account/header', [
 		components.get('account/ban').on('click', function () {
 			banAccount(ajaxify.data.theirid);
 		});
+		components.get('account/mute').on('click', muteAccount);
 		components.get('account/unban').on('click', unbanAccount);
+		components.get('account/unmute').on('click', unmuteAccount);
 		components.get('account/delete-account').on('click', handleDeleteEvent.bind(null, 'account'));
 		components.get('account/delete-content').on('click', handleDeleteEvent.bind(null, 'content'));
 		components.get('account/delete-all').on('click', handleDeleteEvent.bind(null, 'purge'));
@@ -173,6 +175,49 @@ define('forum/account/header', [
 
 	function unbanAccount() {
 		api.del('/users/' + ajaxify.data.theirid + '/ban').then(() => {
+			ajaxify.refresh();
+		}).catch(alerts.error);
+	}
+
+	function muteAccount() {
+		Benchpress.render('admin/partials/temporary-mute', {}).then(function (html) {
+			bootbox.dialog({
+				className: 'mute-modal',
+				title: '[[user:mute_account]]',
+				message: html,
+				show: true,
+				buttons: {
+					close: {
+						label: '[[global:close]]',
+						className: 'btn-link',
+					},
+					submit: {
+						label: '[[user:mute_account]]',
+						callback: function () {
+							const formData = $('.mute-modal form').serializeArray().reduce(function (data, cur) {
+								data[cur.name] = cur.value;
+								return data;
+							}, {});
+
+							const until = formData.length > 0 ? (
+								Date.now() + (formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1))
+							) : 0;
+
+							api.put('/users/' + ajaxify.data.theirid + '/mute', {
+								until: until,
+								reason: formData.reason || '',
+							}).then(() => {
+								ajaxify.refresh();
+							}).catch(alerts.error);
+						},
+					},
+				},
+			});
+		});
+	}
+
+	function unmuteAccount() {
+		api.del('/users/' + ajaxify.data.theirid + '/mute').then(() => {
 			ajaxify.refresh();
 		}).catch(alerts.error);
 	}
