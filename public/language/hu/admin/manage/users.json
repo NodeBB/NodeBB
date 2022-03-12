@@ -62,7 +62,7 @@
 	"create.password": "Jelszó",
 	"create.password-confirm": "Jelszó megerősítése",
 
-	"temp-ban.length": "Kitiltás hossza",
+	"temp-ban.length": "Length",
 	"temp-ban.reason": "Indok <span class=\"text-muted\">(Nem kötelező)</span>",
 	"temp-ban.hours": "Óra",
 	"temp-ban.days": "Nap",

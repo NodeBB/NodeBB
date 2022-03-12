@@ -62,7 +62,7 @@
 	"create.password": "Geslo",
 	"create.password-confirm": "Potrdi geslo",
 
-	"temp-ban.length": "Ban Length",
+	"temp-ban.length": "Length",
 	"temp-ban.reason": "Reason <span class=\"text-muted\">(Optional)</span>",
 	"temp-ban.hours": "Ur",
 	"temp-ban.days": "Dni",

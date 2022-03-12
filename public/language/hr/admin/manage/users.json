@@ -62,7 +62,7 @@
 	"create.password": "Lozinka",
 	"create.password-confirm": "Potvdri lozinku",
 
-	"temp-ban.length": "Dužina blokade",
+	"temp-ban.length": "Length",
 	"temp-ban.reason": "Razlog <span class=\"text-muted\">(Opcionalno)</span>",
 	"temp-ban.hours": "Sati",
 	"temp-ban.days": "Dani",

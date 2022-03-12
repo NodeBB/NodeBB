@@ -62,7 +62,7 @@
 	"create.password": "비밀번호",
 	"create.password-confirm": "비밀번호 재입력",
 
-	"temp-ban.length": "차단 기간",
+	"temp-ban.length": "Length",
 	"temp-ban.reason": "사유 <span class=\"text-muted\">(선택 사항)</span>",
 	"temp-ban.hours": "시간",
 	"temp-ban.days": "일",
