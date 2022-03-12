@@ -62,7 +62,7 @@
 	"create.password": "Parola",
 	"create.password-confirm": "Parolayı Onayla",
 
-	"temp-ban.length": "Length",
+	"temp-ban.length": "Uzunluk",
 	"temp-ban.reason": "Sebep<span class=\"text-muted\">(İsteğe Bağlı)</span>",
 	"temp-ban.hours": "Saat",
 	"temp-ban.days": "Gün",
