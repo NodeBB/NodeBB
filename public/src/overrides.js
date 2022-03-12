@@ -109,16 +109,21 @@ if (typeof window !== 'undefined') {
 			});
 	}());
 	let timeagoFn;
+	overrides.overrideTimeagoCutoff = function () {
+		const cutoff = parseInt(ajaxify.data.timeagoCutoff || config.timeagoCutoff, 10);
+		if (cutoff === 0) {
+			$.timeago.settings.cutoff = 1;
+		} else if (cutoff > 0) {
+			$.timeago.settings.cutoff = 1000 * 60 * 60 * 24 * cutoff;
+		}
+	};
+
 	overrides.overrideTimeago = function () {
 		if (!timeagoFn) {
 			timeagoFn = $.fn.timeago;
 		}
 
-		if (parseInt(config.timeagoCutoff, 10) === 0) {
-			$.timeago.settings.cutoff = 1;
-		} else if (parseInt(config.timeagoCutoff, 10) > 0) {
-			$.timeago.settings.cutoff = 1000 * 60 * 60 * 24 * (parseInt(config.timeagoCutoff, 10) || 30);
-		}
+		overrides.overrideTimeagoCutoff();
 
 		$.timeago.settings.allowFuture = true;
 		const userLang = config.userLang.replace('_', '-');
