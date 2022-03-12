@@ -62,7 +62,7 @@
 	"create.password": "รหัสผ่าน",
 	"create.password-confirm": "ยืนยันรหัสผ่าน",
 
-	"temp-ban.length": "ระยะเวลาการแบน",
+	"temp-ban.length": "Length",
 	"temp-ban.reason": "เหตุผล <span class=\"text-muted\">(ตัวเลือก)</span>",
 	"temp-ban.hours": "ชั่วโมง",
 	"temp-ban.days": "วัน",

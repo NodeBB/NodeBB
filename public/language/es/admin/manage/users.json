@@ -62,7 +62,7 @@
 	"create.password": "Contraseña",
 	"create.password-confirm": "Confirmar Contraseña",
 
-	"temp-ban.length": "Duración de la Expulsión",
+	"temp-ban.length": "Length",
 	"temp-ban.reason": "Razón <span class=\"text-muted\">(Opcional)</span>",
 	"temp-ban.hours": "Horas",
 	"temp-ban.days": "Días",

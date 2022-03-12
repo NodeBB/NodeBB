@@ -62,7 +62,7 @@
 	"create.password": "密码",
 	"create.password-confirm": "确认密码",
 
-	"temp-ban.length": "封禁时长",
+	"temp-ban.length": "Length",
 	"temp-ban.reason": "理由<span class=\"text-muted\">（可选）</span>",
 	"temp-ban.hours": "小时",
 	"temp-ban.days": "天",

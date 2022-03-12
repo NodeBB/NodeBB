@@ -62,7 +62,7 @@
 	"create.password": "סיסמה",
 	"create.password-confirm": "אשר סיסמה",
 
-	"temp-ban.length": "זמן הרחקה",
+	"temp-ban.length": "Length",
 	"temp-ban.reason": "סיבה <span class=\"text-muted\">(אופציונאלי)</span>",
 	"temp-ban.hours": "שעות",
 	"temp-ban.days": "ימים",

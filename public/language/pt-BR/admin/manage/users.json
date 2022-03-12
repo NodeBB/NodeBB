@@ -62,7 +62,7 @@
 	"create.password": "Senha",
 	"create.password-confirm": "Confirme a Senha",
 
-	"temp-ban.length": "Período do Banimento",
+	"temp-ban.length": "Length",
 	"temp-ban.reason": "Motivo <span class=\"text-muted\">(Opcional)</span>",
 	"temp-ban.hours": "Horas",
 	"temp-ban.days": "Dias",

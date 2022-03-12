@@ -62,7 +62,7 @@
 	"create.password": "Parool",
 	"create.password-confirm": "Kinnita parool",
 
-	"temp-ban.length": "Keelustuse pikkus",
+	"temp-ban.length": "Length",
 	"temp-ban.reason": "Põhjus <span class=\"text-muted\">(valikuline)</span>",
 	"temp-ban.hours": "Tunnid",
 	"temp-ban.days": "Päevad",
