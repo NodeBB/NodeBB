@@ -62,7 +62,7 @@
 	"create.password": "Парола",
 	"create.password-confirm": "Потвърдете паролата",
 
-	"temp-ban.length": "Length",
+	"temp-ban.length": "Продължителност",
 	"temp-ban.reason": "Причина <span class=\"text-muted\">(незадължително)</span>",
 	"temp-ban.hours": "Часове",
 	"temp-ban.days": "Дни",

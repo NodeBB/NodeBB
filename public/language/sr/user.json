@@ -156,7 +156,7 @@
     "info.banned-permanently": "Забрањен трајно",
     "info.banned-reason-label": "Разлог",
     "info.banned-no-reason": "Није дат разлог.",
-    "info.muted-no-reason": "No reason given.",
+    "info.muted-no-reason": "Није наведен разлог.",
     "info.username-history": "Историја корисничког имена",
     "info.email-history": "Историја е-поште",
     "info.moderation-note": "Белешка модерације",
