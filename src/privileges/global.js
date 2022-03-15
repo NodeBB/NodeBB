@@ -31,6 +31,7 @@ const _privilegeMap = new Map([
 	['view:groups', { label: '[[admin/manage/privileges:view-groups]]' }],
 	['local:login', { label: '[[admin/manage/privileges:allow-local-login]]' }],
 	['ban', { label: '[[admin/manage/privileges:ban]]' }],
+	['mute', { label: '[[admin/manage/privileges:mute]]' }],
 	['view:users:info', { label: '[[admin/manage/privileges:view-users-info]]' }],
 ]);
 

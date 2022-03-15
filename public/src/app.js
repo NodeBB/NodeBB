@@ -260,6 +260,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 	app.processPage = function () {
 		highlightNavigationLink();
+		overrides.overrideTimeagoCutoff();
 		$('.timeago').timeago();
 		utils.makeNumbersHumanReadable($('.human-readable-number'));
 		utils.addCommasToNumbers($('.formatted-number'));

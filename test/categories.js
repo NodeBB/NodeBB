@@ -729,6 +729,7 @@ describe('Categories', () => {
 				assert.ifError(err);
 				assert.deepEqual(data, {
 					ban: false,
+					mute: false,
 					invite: false,
 					chat: false,
 					'search:content': false,
@@ -780,6 +781,7 @@ describe('Categories', () => {
 				assert.ifError(err);
 				assert.deepEqual(data, {
 					'groups:ban': false,
+					'groups:mute': false,
 					'groups:invite': false,
 					'groups:chat': true,
 					'groups:search:content': true,

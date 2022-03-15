@@ -62,7 +62,7 @@
 	"create.password": "Mật khẩu",
 	"create.password-confirm": "Xác Nhận Mật Khẩu",
 
-	"temp-ban.length": "Độ Dài Cấm",
+	"temp-ban.length": "Length",
 	"temp-ban.reason": "Lý do <span class=\"text-muted\">(Không bắt buộc)</span>",
 	"temp-ban.hours": "Giờ",
 	"temp-ban.days": "Ngày",

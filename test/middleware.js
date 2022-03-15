@@ -78,6 +78,7 @@ describe('Middlewares', () => {
 					'view:groups': true,
 					'local:login': true,
 					ban: true,
+					mute: true,
 					'view:users:info': true,
 					'admin:dashboard': true,
 					'admin:categories': true,

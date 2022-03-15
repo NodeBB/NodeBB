@@ -62,7 +62,7 @@
 	"create.password": "密碼",
 	"create.password-confirm": "確認密碼",
 
-	"temp-ban.length": "停權期間",
+	"temp-ban.length": "Length",
 	"temp-ban.reason": "理由<span class=\"text-muted\">（可選）</span>",
 	"temp-ban.hours": "小時",
 	"temp-ban.days": "天",

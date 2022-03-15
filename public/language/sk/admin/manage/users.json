@@ -62,7 +62,7 @@
 	"create.password": "Heslo",
 	"create.password-confirm": "Potvrdiť heslo",
 
-	"temp-ban.length": "Trvanie zákazu",
+	"temp-ban.length": "Length",
 	"temp-ban.reason": "Dôvod <span class=\"text-muted\">(voliteľné)</span>",
 	"temp-ban.hours": "Hodiny",
 	"temp-ban.days": "Dni",

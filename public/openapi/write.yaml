@@ -68,6 +68,8 @@ paths:
     $ref: 'write/users/uid/follow.yaml'
   /users/{uid}/ban:
     $ref: 'write/users/uid/ban.yaml'
+  /users/{uid}/mute:
+    $ref: 'write/users/uid/mute.yaml'
   /users/{uid}/tokens:
     $ref: 'write/users/uid/tokens.yaml'
   /users/{uid}/tokens/{token}:

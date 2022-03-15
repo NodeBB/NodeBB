@@ -62,7 +62,7 @@
 	"create.password": "Password",
 	"create.password-confirm": "Conferma Password",
 
-	"temp-ban.length": "Lunghezza Ban",
+	"temp-ban.length": "Length",
 	"temp-ban.reason": "Ragione <span class=\"text-muted\">(Opzionale)</span>",
 	"temp-ban.hours": "Ore",
 	"temp-ban.days": "Giorni",

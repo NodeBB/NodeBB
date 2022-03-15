@@ -62,7 +62,7 @@
 	"create.password": "Пароль",
 	"create.password-confirm": "Пароль ще раз",
 
-	"temp-ban.length": "Тривалість бану",
+	"temp-ban.length": "Length",
 	"temp-ban.reason": "Причина <span class=\"text-muted\">(необов'язково)</span>",
 	"temp-ban.hours": "Години",
 	"temp-ban.days": "Дні",

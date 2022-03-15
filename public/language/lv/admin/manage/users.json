@@ -62,7 +62,7 @@
 	"create.password": "Parole",
 	"create.password-confirm": "Atkārtot paroli",
 
-	"temp-ban.length": "Bloķēšanas termiņš",
+	"temp-ban.length": "Length",
 	"temp-ban.reason": "Iemesls <span class=\"text-muted\">(neobligāts)</span>",
 	"temp-ban.hours": "Stundas",
 	"temp-ban.days": "Dienas",

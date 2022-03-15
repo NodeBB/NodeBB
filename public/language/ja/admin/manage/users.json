@@ -62,7 +62,7 @@
 	"create.password": "パスワード",
 	"create.password-confirm": "パスワードを確認",
 
-	"temp-ban.length": "BANの長さ",
+	"temp-ban.length": "Length",
 	"temp-ban.reason": "理由<span class = \"text-muted\">(任意)</ span>",
 	"temp-ban.hours": "時間",
 	"temp-ban.days": "日",
