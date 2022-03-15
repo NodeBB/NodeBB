@@ -13,7 +13,11 @@ const db = require('./mocks/databasemock');
 describe('i18n', () => {
 	let folders;
 
-	before(async () => {
+	before(async function () {
+		if (process.env.GITHUB_EVENT_NAME === 'pull_request') {
+			this.skip();
+		}
+
 		folders = await fs.promises.readdir(path.resolve(__dirname, '../public/language'));
 		folders = folders.filter(f => f !== 'README.md');
 	});
