@@ -40,6 +40,10 @@ ajaxify.widgets = { render: render };
 			return true;
 		}
 
+		if (!quiet && url === ajaxify.currentPage + window.location.search + window.location.hash) {
+			quiet = true;
+		}
+
 		app.leaveCurrentRoom();
 
 		$(window).off('scroll');
