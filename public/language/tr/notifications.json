@@ -48,7 +48,7 @@
     "posts-exported": "<strong>%1</strong> iletileri hazırlandı, indirmek için tıklayınız",
     "uploads-exported": "<strong>%1</strong> yüklemeleri hazırlandı, indirmek için tıklayınız",
     "users-csv-exported": "Kullanıcılar csv hazırlandı, indirmek için tıklayınız",
-    "post-queue-accepted": "Sıradaki gönderiniz kabul edildi. Gönderinizi görmek için burayı tıklayın.",
+    "post-queue-accepted": "Sıradaki gönderiniz kabul edildi. Gönderinizi görmek için buraya tıklayın.",
     "post-queue-rejected": "Sıraya alınmış gönderiniz reddedildi.",
     "post-queue-notify": "Onay sırasındaki ileti için bir bildirim var:<br/>\"%1\"",
     "email-confirmed": "E-posta onaylandı",
