@@ -111,7 +111,7 @@ async function modifyEvent({ tid, uid, eventIds, timestamps, events }) {
 	const isPrivileged = await user.isPrivileged(uid);
 	if (isPrivileged) {
 		const queuedPosts = await posts.getQueuedPosts({ tid }, { metadata: false });
-		Object.assign(events, queuedPosts.map(item => ({
+		events.push(...queuedPosts.map(item => ({
 			type: 'post-queue',
 			timestamp: item.data.timestamp || Date.now(),
 			uid: item.data.uid,
