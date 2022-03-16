@@ -119,6 +119,7 @@ ajaxify.widgets = { render: render };
 			url: url,
 		};
 
+		hooks.logs.collect();
 		hooks.fire('action:ajaxify.start', payload);
 
 		ajaxify.count += 1;
@@ -301,6 +302,7 @@ ajaxify.widgets = { render: render };
 		}
 		ajaxify.loadScript(tpl_url, function done() {
 			hooks.fire('action:ajaxify.end', { url: url, tpl_url: tpl_url, title: ajaxify.data.title });
+			hooks.logs.flush();
 		});
 		ajaxify.widgets.render(tpl_url);
 
