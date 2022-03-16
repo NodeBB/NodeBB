@@ -1,3 +1,56 @@
+#### v1.19.5 (2022-03-16)
+
+##### Chores
+
+*  incrementing version number - v1.19.5 (48d6eb4f)
+*  update changelog for v1.19.4 (0e6e49b2)
+* **deps:**
+  *  bump less from 3.13.1 to 4.1.2 in /install (#9856) (d33485f6)
+  *  bump autoprefixer from 10.4.2 to 10.4.4 in /install (#10403) (90094935)
+  *  update dependency lint-staged to v12.3.6 (0a4522a2)
+  *  update commitlint monorepo to v16.2.3 (0a97015d)
+  *  bump nodebb-plugin-spam-be-gone in /install (#10387) (445e3d70)
+  *  bump connect-redis from 6.1.1 to 6.1.2 in /install (#10391) (145621f7)
+  *  update dependency eslint to v8.11.0 (feaf3068)
+  *  update dependency mocha to v9.2.2 (#10383) (4ffbd78d)
+* **i18n:**
+  *  fallback strings for new resources: nodebb.admin-manage-users (2f09c22c)
+  *  fallback strings for new resources: nodebb.admin-manage-privileges, nodebb.admin-manage-users, nodebb.error, nodebb.user (15508bac)
+  *  fallback strings for new resources: nodebb.admin-settings-reputation, nodebb.error (5274a6aa)
+
+##### New Features
+
+*  collect hook logs in order to reduce console noise, flush on ajaxify loadScript completion (935704a8)
+*  add support for PATCH method in api module (4b79dfd2)
+*  on online users page override timeago cutoff to 24 hours (7c946570)
+*  ability to mute users (be6bbabd)
+*  min:rep:upvote, and other limits similar to downvotes (3414a23b)
+*  post-queue hooks, closes #10381 (2056ac04)
+
+##### Bug Fixes
+
+*  topic events if there is a blocked user in topic (3935a86b)
+*  topic events disappearing if there are queued posts (2808c952)
+*  #10393, move 'Create User' control to overflow menu (cd687cff)
+*  don't append to history on refresh or ajaxify to same url (c83987bd)
+*  global privs (7d063d73)
+*  #10384 -- mixed up sizes for fallback touch icons (cb113208)
+*  #10377, remove logging of env vars (997ab7d4)
+* **deps:**
+  *  update dependency postcss to v8.4.12 (#10396) (bdbc168d)
+  *  update dependency sharp to v0.30.3 (#10389) (b4213859)
+
+##### Refactors
+
+*  closes #10301 (c8e986d6)
+
+##### Tests
+
+*  skip i18n tests if the github event is a pull request (e578c605)
+*  fix middleware test (24c1f879)
+*  fix category tests (6344c3b6)
+*  fix one more test (a5511425)
+
 #### v1.19.4 (2022-03-09)
 
 ##### Chores
