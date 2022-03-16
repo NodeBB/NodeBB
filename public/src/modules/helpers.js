@@ -134,29 +134,8 @@
 	}
 
 	function generateTopicClass(topic) {
-		const style = [];
-
-		if (topic.locked) {
-			style.push('locked');
-		}
-
-		if (topic.pinned) {
-			style.push('pinned');
-		}
-
-		if (topic.deleted) {
-			style.push('deleted');
-		}
-
-		if (topic.unread) {
-			style.push('unread');
-		}
-
-		if (topic.scheduled) {
-			style.push('scheduled');
-		}
-
-		return style.join(' ');
+		const fields = ['locked', 'pinned', 'deleted', 'unread', 'scheduled'];
+		return fields.filter(field => !!topic[field]).join(' ');
 	}
 
 	// Groups helpers
