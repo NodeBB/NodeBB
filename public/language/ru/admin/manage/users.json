@@ -18,7 +18,8 @@
 	"download-csv": "Скачать CSV",
 	"manage-groups": "Изменить членство в группах",
 	"add-group": "Добавить группу",
-	"invite": "Пригласить",
+	"create": "Create User",
+	"invite": "Invite by Email",
 	"new": "Новый пользователь",
 	"filter-by": "Фильтровать по",
 	"pills.unvalidated": "Не подтверждены",
@@ -62,7 +63,7 @@
 	"create.password": "Пароль",
 	"create.password-confirm": "Подтвердите пароль",
 
-	"temp-ban.length": "Период блокировки",
+	"temp-ban.length": "Length",
 	"temp-ban.reason": "Причина <span class=\"text-muted\">(Необязательно)</span>",
 	"temp-ban.hours": "Часов",
 	"temp-ban.days": "Дней",

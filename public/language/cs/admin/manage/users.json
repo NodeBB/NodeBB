@@ -18,7 +18,8 @@
 	"download-csv": "Stáhnout jako CSV",
 	"manage-groups": "Spravovat skupiny",
 	"add-group": "Přidat skupinu",
-	"invite": "Pozvat",
+	"create": "Create User",
+	"invite": "Invite by Email",
 	"new": "Nový uživatel",
 	"filter-by": "Filter by",
 	"pills.unvalidated": "Neověřeno",
@@ -62,7 +63,7 @@
 	"create.password": "Heslo",
 	"create.password-confirm": "Potvrdit heslo",
 
-	"temp-ban.length": "Trvání zákazu",
+	"temp-ban.length": "Length",
 	"temp-ban.reason": "Důvod <span class=\"text-muted\">(volitelné)</span>",
 	"temp-ban.hours": "Hodiny",
 	"temp-ban.days": "Dny",

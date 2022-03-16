@@ -18,7 +18,8 @@
 	"download-csv": "Скачати CSV",
 	"manage-groups": "Manage Groups",
 	"add-group": "Add Group",
-	"invite": "Запросити",
+	"create": "Create User",
+	"invite": "Invite by Email",
 	"new": "Новий користувач",
 	"filter-by": "Filter by",
 	"pills.unvalidated": "Не підтверджені",
@@ -62,7 +63,7 @@
 	"create.password": "Пароль",
 	"create.password-confirm": "Пароль ще раз",
 
-	"temp-ban.length": "Тривалість бану",
+	"temp-ban.length": "Length",
 	"temp-ban.reason": "Причина <span class=\"text-muted\">(необов'язково)</span>",
 	"temp-ban.hours": "Години",
 	"temp-ban.days": "Дні",

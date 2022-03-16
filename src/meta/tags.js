@@ -115,27 +115,27 @@ Tags.parse = async (req, data, meta, link) => {
 		}, {
 			rel: 'icon',
 			sizes: '36x36',
-			href: `${relative_path}/assets/images/touch/192.png`,
+			href: `${relative_path}/assets/images/touch/36.png`,
 		}, {
 			rel: 'icon',
 			sizes: '48x48',
-			href: `${relative_path}/assets/images/touch/144.png`,
-		}, {
-			rel: 'icon',
-			sizes: '72x72',
-			href: `${relative_path}/assets/images/touch/96.png`,
-		}, {
-			rel: 'icon',
-			sizes: '96x96',
-			href: `${relative_path}/assets/images/touch/72.png`,
-		}, {
-			rel: 'icon',
-			sizes: '144x144',
 			href: `${relative_path}/assets/images/touch/48.png`,
 		}, {
 			rel: 'icon',
+			sizes: '72x72',
+			href: `${relative_path}/assets/images/touch/72.png`,
+		}, {
+			rel: 'icon',
+			sizes: '96x96',
+			href: `${relative_path}/assets/images/touch/96.png`,
+		}, {
+			rel: 'icon',
+			sizes: '144x144',
+			href: `${relative_path}/assets/images/touch/144.png`,
+		}, {
+			rel: 'icon',
 			sizes: '192x192',
-			href: `${relative_path}/assets/images/touch/36.png`,
+			href: `${relative_path}/assets/images/touch/192.png`,
 		}, {
 			rel: 'icon',
 			sizes: '512x512',

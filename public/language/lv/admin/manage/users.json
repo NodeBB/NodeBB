@@ -18,7 +18,8 @@
 	"download-csv": "Lejupielādēt .csv",
 	"manage-groups": "Manage Groups",
 	"add-group": "Add Group",
-	"invite": "Uzaicināt",
+	"create": "Create User",
+	"invite": "Invite by Email",
 	"new": "Izveidot jaunu lietotāju",
 	"filter-by": "Filter by",
 	"pills.unvalidated": "Neapstiprinātie",
@@ -62,7 +63,7 @@
 	"create.password": "Parole",
 	"create.password-confirm": "Atkārtot paroli",
 
-	"temp-ban.length": "Bloķēšanas termiņš",
+	"temp-ban.length": "Length",
 	"temp-ban.reason": "Iemesls <span class=\"text-muted\">(neobligāts)</span>",
 	"temp-ban.hours": "Stundas",
 	"temp-ban.days": "Dienas",

@@ -18,7 +18,8 @@
 	"download-csv": "CSV 다운로드",
 	"manage-groups": "그룹 관리",
 	"add-group": "그룹 추가",
-	"invite": "초대",
+	"create": "Create User",
+	"invite": "Invite by Email",
 	"new": "새로운 사용자",
 	"filter-by": "필터",
 	"pills.unvalidated": "인증되지 않음",
@@ -62,7 +63,7 @@
 	"create.password": "비밀번호",
 	"create.password-confirm": "비밀번호 재입력",
 
-	"temp-ban.length": "차단 기간",
+	"temp-ban.length": "Length",
 	"temp-ban.reason": "사유 <span class=\"text-muted\">(선택 사항)</span>",
 	"temp-ban.hours": "시간",
 	"temp-ban.days": "일",

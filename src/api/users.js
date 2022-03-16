@@ -225,6 +225,53 @@ usersAPI.unban = async function (caller, data) {
 	});
 };
 
+usersAPI.mute = async function (caller, data) {
+	if (!await privileges.users.hasMutePrivilege(caller.uid)) {
+		throw new Error('[[error:no-privileges]]');
+	} else if (await user.isAdministrator(data.uid)) {
+		throw new Error('[[error:cant-mute-other-admins]]');
+	}
+	await db.setObject(`user:${data.uid}`, {
+		mutedUntil: data.until,
+		mutedReason: data.reason || '[[user:info.muted-no-reason]]',
+	});
+
+	await events.log({
+		type: 'user-mute',
+		uid: caller.uid,
+		targetUid: data.uid,
+		ip: caller.ip,
+		reason: data.reason || undefined,
+	});
+	plugins.hooks.fire('action:user.muted', {
+		callerUid: caller.uid,
+		ip: caller.ip,
+		uid: data.uid,
+		until: data.until > 0 ? data.until : undefined,
+		reason: data.reason || undefined,
+	});
+};
+
+usersAPI.unmute = async function (caller, data) {
+	if (!await privileges.users.hasMutePrivilege(caller.uid)) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	await db.deleteObjectFields(`user:${data.uid}`, ['mutedUntil', 'mutedReason']);
+
+	await events.log({
+		type: 'user-unmute',
+		uid: caller.uid,
+		targetUid: data.uid,
+		ip: caller.ip,
+	});
+	plugins.hooks.fire('action:user.unmuted', {
+		callerUid: caller.uid,
+		ip: caller.ip,
+		uid: data.uid,
+	});
+};
+
 async function isPrivilegedOrSelfAndPasswordMatch(caller, data) {
 	const { uid } = caller;
 	const isSelf = parseInt(uid, 10) === parseInt(data.uid, 10);

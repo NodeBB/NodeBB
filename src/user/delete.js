@@ -146,7 +146,6 @@ module.exports = function (User) {
 			db.deleteAll(keys),
 			db.setRemove('invitation:uids', uid),
 			deleteUserIps(uid),
-			deleteBans(uid),
 			deleteUserFromFollowers(uid),
 			deleteImages(uid),
 			groups.leaveAllGroups(uid),
@@ -183,12 +182,6 @@ module.exports = function (User) {
 		const ips = await db.getSortedSetRange(`uid:${uid}:ip`, 0, -1);
 		await db.sortedSetsRemove(ips.map(ip => `ip:${ip}:uid`), uid);
 		await db.delete(`uid:${uid}:ip`);
-	}
-
-	async function deleteBans(uid) {
-		const bans = await db.getSortedSetRange(`uid:${uid}:bans:timestamp`, 0, -1);
-		await db.deleteAll(bans);
-		await db.delete(`uid:${uid}:bans:timestamp`);
 	}
 
 	async function deleteUserFromFollowers(uid) {

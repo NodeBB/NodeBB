@@ -18,7 +18,8 @@
 	"download-csv": "Tải về CSV",
 	"manage-groups": "Quản Lý Nhóm",
 	"add-group": "Thêm Nhóm",
-	"invite": "Mời",
+	"create": "Create User",
+	"invite": "Invite by Email",
 	"new": "Người Dùng Mới",
 	"filter-by": "Lọc bởi",
 	"pills.unvalidated": "Không Hợp Lệ",
@@ -62,7 +63,7 @@
 	"create.password": "Mật khẩu",
 	"create.password-confirm": "Xác Nhận Mật Khẩu",
 
-	"temp-ban.length": "Độ Dài Cấm",
+	"temp-ban.length": "Length",
 	"temp-ban.reason": "Lý do <span class=\"text-muted\">(Không bắt buộc)</span>",
 	"temp-ban.hours": "Giờ",
 	"temp-ban.days": "Ngày",

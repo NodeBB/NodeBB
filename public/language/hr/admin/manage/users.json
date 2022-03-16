@@ -18,7 +18,8 @@
 	"download-csv": "Preuzmi CSV",
 	"manage-groups": "Manage Groups",
 	"add-group": "Add Group",
-	"invite": "Pozivnica",
+	"create": "Create User",
+	"invite": "Invite by Email",
 	"new": "Novi korisnik",
 	"filter-by": "Filter by",
 	"pills.unvalidated": "Nije potvrđen",
@@ -62,7 +63,7 @@
 	"create.password": "Lozinka",
 	"create.password-confirm": "Potvdri lozinku",
 
-	"temp-ban.length": "Dužina blokade",
+	"temp-ban.length": "Length",
 	"temp-ban.reason": "Razlog <span class=\"text-muted\">(Opcionalno)</span>",
 	"temp-ban.hours": "Sati",
 	"temp-ban.days": "Dani",

@@ -32,6 +32,19 @@
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="form-group">
+				<label for="min:rep:upvote">[[admin/settings/reputation:min-rep-upvote]]</label>
+				<input type="text" class="form-control" placeholder="0" data-field="min:rep:upvote" id="min:rep:upvote">
+			</div>
+			<div class="form-group">
+				<label for="upvotesPerDay">[[admin/settings/reputation:upvotes-per-day]]</label>
+				<input type="text" class="form-control" placeholder="10" data-field="upvotesPerDay" id="upvotesPerDay">
+			</div>
+			<div class="form-group">
+				<label for="upvotesPerUserPerDay">[[admin/settings/reputation:upvotes-per-user-per-day]]</label>
+				<input type="text" class="form-control" placeholder="3" data-field="upvotesPerUserPerDay" id="upvotesPerUserPerDay">
+			</div>
+
+			<div class="form-group">
 				<label for="min:rep:downvote">[[admin/settings/reputation:min-rep-downvote]]</label>
 				<input type="text" class="form-control" placeholder="0" data-field="min:rep:downvote" id="min:rep:downvote">
 			</div>

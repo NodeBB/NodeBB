@@ -18,7 +18,8 @@
 	"download-csv": "ייצא משתמשים כ-CSV",
 	"manage-groups": "נהל קבוצות",
 	"add-group": "הוסף קבוצה",
-	"invite": "הזמן",
+	"create": "Create User",
+	"invite": "Invite by Email",
 	"new": "משתמש חדש",
 	"filter-by": "סנן לפי",
 	"pills.unvalidated": "לא מאומת",
@@ -62,7 +63,7 @@
 	"create.password": "סיסמה",
 	"create.password-confirm": "אשר סיסמה",
 
-	"temp-ban.length": "זמן הרחקה",
+	"temp-ban.length": "Length",
 	"temp-ban.reason": "סיבה <span class=\"text-muted\">(אופציונאלי)</span>",
 	"temp-ban.hours": "שעות",
 	"temp-ban.days": "ימים",

@@ -18,7 +18,8 @@
 	"download-csv": "Pobierz CSV",
 	"manage-groups": "Zarządzaj grupami",
 	"add-group": "Dodaj grupę",
-	"invite": "Zaproś",
+	"create": "Create User",
+	"invite": "Invite by Email",
 	"new": "Nowy użytkownik",
 	"filter-by": "Filtruj po",
 	"pills.unvalidated": "Niezweryfikowani",
@@ -62,7 +63,7 @@
 	"create.password": "Hasło",
 	"create.password-confirm": "Powtórz hasło",
 
-	"temp-ban.length": "Okres bana",
+	"temp-ban.length": "Length",
 	"temp-ban.reason": "Powód <span class=\"text-muted\">(Opcjonalnie)</span>",
 	"temp-ban.hours": "Godziny",
 	"temp-ban.days": "Dni",

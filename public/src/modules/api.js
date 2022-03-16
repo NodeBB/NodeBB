@@ -65,6 +65,16 @@ define('api', ['hooks'], (hooks) => {
 		},
 	}, onSuccess);
 
+	api.patch = (route, payload, onSuccess) => call({
+		url: route,
+		method: 'patch',
+		data: JSON.stringify(payload || {}),
+		contentType: 'application/json; charset=utf-8',
+		headers: {
+			'x-csrf-token': config.csrf_token,
+		},
+	}, onSuccess);
+
 	api.put = (route, payload, onSuccess) => call({
 		url: route,
 		method: 'put',

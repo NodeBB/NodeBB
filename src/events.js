@@ -36,6 +36,8 @@ events.types = [
 	'user-removeAdmin',
 	'user-ban',
 	'user-unban',
+	'user-mute',
+	'user-unmute',
 	'user-delete',
 	'user-deleteAccount',
 	'user-deleteContent',

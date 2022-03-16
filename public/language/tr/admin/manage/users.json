@@ -18,7 +18,8 @@
 	"download-csv": "CSV İndir",
 	"manage-groups": "Grupları Düzenle",
 	"add-group": "Grup ekle",
-	"invite": "Davet et",
+	"create": "Create User",
+	"invite": "Invite by Email",
 	"new": "Yeni Kullanıcı",
 	"filter-by": "Filtreleme",
 	"pills.unvalidated": "Onaylanmamış",
@@ -62,7 +63,7 @@
 	"create.password": "Parola",
 	"create.password-confirm": "Parolayı Onayla",
 
-	"temp-ban.length": "Yasaklama uzunluğu",
+	"temp-ban.length": "Uzunluk",
 	"temp-ban.reason": "Sebep<span class=\"text-muted\">(İsteğe Bağlı)</span>",
 	"temp-ban.hours": "Saat",
 	"temp-ban.days": "Gün",

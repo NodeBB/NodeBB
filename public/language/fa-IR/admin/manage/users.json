@@ -18,7 +18,8 @@
 	"download-csv": "Download CSV",
 	"manage-groups": "Manage Groups",
 	"add-group": "Add Group",
-	"invite": "Invite",
+	"create": "Create User",
+	"invite": "Invite by Email",
 	"new": "New User",
 	"filter-by": "Filter by",
 	"pills.unvalidated": "Not Validated",
@@ -62,7 +63,7 @@
 	"create.password": "Password",
 	"create.password-confirm": "Confirm Password",
 
-	"temp-ban.length": "میزان مدت اخراج",
+	"temp-ban.length": "Length",
 	"temp-ban.reason": "علت <span class=\"text-muted\">(اختیاری)</span>",
 	"temp-ban.hours": "ساعت",
 	"temp-ban.days": "روز",

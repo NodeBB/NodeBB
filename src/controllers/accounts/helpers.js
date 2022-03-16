@@ -73,6 +73,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 	userData.isSelfOrAdminOrGlobalModerator = isSelf || isAdmin || isGlobalModerator;
 	userData.canEdit = results.canEdit;
 	userData.canBan = results.canBanUser;
+	userData.canMute = results.canMuteUser;
 	userData.canFlag = (await privileges.users.canFlag(callerUID, userData.uid)).flag;
 	userData.canChangePassword = isAdmin || (isSelf && !meta.config['password:disableEdit']);
 	userData.isSelf = isSelf;
@@ -95,6 +96,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 
 	userData.sso = results.sso.associations;
 	userData.banned = Boolean(userData.banned);
+	userData.muted = parseInt(userData.mutedUntil, 10) > Date.now();
 	userData.website = escape(userData.website);
 	userData.websiteLink = !userData.website.startsWith('http') ? `http://${userData.website}` : userData.website;
 	userData.websiteName = userData.website.replace(validator.escape('http://'), '').replace(validator.escape('https://'), '');
@@ -144,6 +146,7 @@ async function getAllData(uid, callerUID) {
 		sso: plugins.hooks.fire('filter:auth.list', { uid: uid, associations: [] }),
 		canEdit: privileges.users.canEdit(callerUID, uid),
 		canBanUser: privileges.users.canBanUser(callerUID, uid),
+		canMuteUser: privileges.users.canMuteUser(callerUID, uid),
 		isBlocked: user.blocks.is(uid, callerUID),
 		canViewInfo: privileges.global.can('view:users:info', callerUID),
 		hasPrivateChat: messaging.hasPrivateChat(callerUID, uid),

@@ -111,6 +111,16 @@ Users.unban = async (req, res) => {
 	helpers.formatApiResponse(200, res);
 };
 
+Users.mute = async (req, res) => {
+	await api.users.mute(req, { ...req.body, uid: req.params.uid });
+	helpers.formatApiResponse(200, res);
+};
+
+Users.unmute = async (req, res) => {
+	await api.users.unmute(req, { ...req.body, uid: req.params.uid });
+	helpers.formatApiResponse(200, res);
+};
+
 Users.generateToken = async (req, res) => {
 	await hasAdminPrivilege(req.uid, 'settings');
 	if (parseInt(req.params.uid, 10) !== parseInt(req.user.uid, 10)) {
