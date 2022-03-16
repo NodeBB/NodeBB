@@ -106,7 +106,7 @@
         "passport-local": "1.0.0",
         "pg": "8.7.3",
         "pg-cursor": "2.7.3",
-        "postcss": "8.4.8",
+        "postcss": "8.4.11",
         "postcss-clean": "1.2.0",
         "prompt": "1.2.2",
         "ioredis": "4.28.5",
