@@ -1,0 +1,21 @@
+
+{
+	"post-queue": "Radha e postimit",
+	"description": "Nuk ka asnjë postim në radhën e postimeve. 1 Për të aktivizuar këtë veçori, shkoni te Cilësimet &rarr; Post &rarr; radha e postimeve dhe aktivizoni Radha e Postimeve",
+	"user": "Përdorues",
+	"category": "Kategoria",
+	"title": "Titulli",
+	"content": "përmbajtja",
+	"posted": "U postua",
+	"reply-to": "Përgjigju \"% 1\"",
+	"content-editable": "Klikoni mbi përmbajtjen për ta modifikuar",
+	"category-editable": "Klikoni në kategori për ta modifikuar",
+	"title-editable": "Klikoni mbi titullin për të modifikuar",
+	"reply": "Përgjigju",
+	"topic": "Tema",
+	"accept": "Pranoj",
+	"reject": "refuzoj",
+	"remove": "Hiq",
+	"notify": "Njofto",
+	"notify-user": "Njoftoni përdoruesin"
+}

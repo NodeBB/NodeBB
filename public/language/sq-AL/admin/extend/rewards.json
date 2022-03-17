@@ -1,0 +1,15 @@
+{
+	"rewards": "Rewards",
+	"condition-if-users": "If User's",
+	"condition-is": "Is:",
+	"condition-then": "Then:",
+	"max-claims": "Amount of times reward is claimable",
+	"zero-infinite": "Enter 0 for infinite",
+	"delete": "Delete",
+	"enable": "Enable",
+	"disable": "Disable",
+
+	"alert.delete-success": "Successfully deleted reward",
+	"alert.no-inputs-found": "Illegal reward - no inputs found!",
+	"alert.save-success": "Successfully saved rewards"
+}

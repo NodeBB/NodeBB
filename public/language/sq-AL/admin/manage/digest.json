@@ -1,0 +1,22 @@
+{
+	"lead": "A listing of digest delivery stats and times is displayed below.",
+	"disclaimer": "Please be advised that email delivery is not guaranteed, due to the nature of email technology. Many variables factor into whether an email sent to the recipient server is ultimately delivered into the user's inbox, including server reputation, blacklisted IP addresses, and whether DKIM/SPF/DMARC is configured.",
+	"disclaimer-continued": "A successful delivery means the message was sent successfully by NodeBB and acknowledged by the recipient server. It does not mean the email landed in the inbox. For best results, we recommend using a third-party email delivery service such as <a href=\"https://sendgrid.com/why-sendgrid/\">SendGrid</a>.",
+
+	"user": "User",
+	"subscription": "Subscription Type",
+	"last-delivery": "Last successful delivery",
+	"default": "System default",
+	"default-help": "<em>System default</em> means the user has not explicitly overridden the global forum setting for digests, which is currently: &quot;<strong>%1</strong>&quot;",
+	"resend": "Resend Digest",
+	"resend-all-confirm": "Are you sure you wish to manually execute this digest run?",
+	"resent-single": "Manual digest resend completed",
+	"resent-day": "Daily digest resent",
+	"resent-week": "Weekly digest resent",
+	"resent-biweek": "Bi-Weekly digest resent",
+	"resent-month": "Monthly digest resent",
+	"null": "<em>Never</em>",
+	"manual-run": "Manual digest run:",
+
+	"no-delivery-data": "No delivery data found"
+}
