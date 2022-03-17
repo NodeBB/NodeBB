@@ -46,6 +46,7 @@ privsGlobal.getPrivilegeList = async () => {
 };
 
 privsGlobal.init = async () => {
+	privsGlobal._coreSize = _privilegeMap.size;
 	await plugins.hooks.fire('static:privileges.global.init', {
 		privileges: _privilegeMap,
 	});
@@ -72,8 +73,9 @@ privsGlobal.list = async function () {
 	});
 	payload.keys = keys;
 
-	// This is a hack because I can't do {labels.users.length} to echo the count in templates.js
-	payload.columnCount = payload.labels.users.length + 3;
+	payload.columnCountUserOther = keys.users.length - privsGlobal._coreSize;
+	payload.columnCountGroupOther = keys.groups.length - privsGlobal._coreSize;
+
 	return payload;
 };
 

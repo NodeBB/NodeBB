@@ -66,7 +66,7 @@
 							{{{ if !isAdminPriv }}}
 							<tr class="privilege-table-header">
 								<th class="privilege-filters btn-toolbar" colspan="100">
-									<!-- IF privileges.columnCountGroupOther -->
+									<!-- IF privileges.columnCountUserOther -->
 									<button type="button" data-filter="19,99" class="btn btn-default pull-right">[[admin/manage/categories:privileges.section-other]]</button>
 									<!-- END -->
 									<button type="button" data-filter="16,18" class="btn btn-default pull-right">[[admin/manage/categories:privileges.section-moderation]]</button>
