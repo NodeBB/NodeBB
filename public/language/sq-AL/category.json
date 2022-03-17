@@ -1,0 +1,23 @@
+{
+    "category": "Kategoria",
+    "subcategories": "Nënkategoritë",
+    "new_topic_button": "Temë e re",
+    "guest-login-post": "Hyr për të postuar",
+    "no_topics": "<strong>Nuk ka tema në këtë kategori.</strong><br />Pse nuk provon të postosh diçka?",
+    "browsing": "Duke Shfletuar",
+    "no_replies": "Askush nuk ka kthyer përgjigje",
+    "no_new_posts": "Nuk ka postime të reja",
+    "watch": "Shiko",
+    "ignore": "Injoro",
+    "watching": "Duke parë",
+    "not-watching": "Nuk jam duke parë",
+    "ignoring": "Duke injoruar",
+    "watching.description": "Shfaq temat e fundit të palexuara",
+    "not-watching.description": "Mos shfaq temat e palexuara, shfaq vetem temat e fundit",
+    "ignoring.description": "Mos shfaq temat e palexuara dhe të fundit",
+    "watching.message": "Tani je duke parë përditësimet nga kjo kategori dhe të gjitha nënkategoritë e saj.",
+    "notwatching.message": "Tani nuk je duke parë përditësimet nga kjo kategori dhe të gjitha nënkategoritë e saj.",
+    "ignoring.message": "Tani je duke injoruar përditësimet nga kjo kategori dhe të gjitha nënkategoritë e saj.",
+    "watched-categories": "Kategoritë e kërkuara",
+    "x-more-categories": "%1 më shumë kategori"
+}

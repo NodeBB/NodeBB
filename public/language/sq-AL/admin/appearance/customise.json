@@ -1,0 +1,16 @@
+{
+	"custom-css": "Custom CSS/LESS",
+	"custom-css.description": "Enter your own CSS/LESS declarations here, which will be applied after all other styles.",
+	"custom-css.enable": "Enable Custom CSS/LESS",
+
+	"custom-js": "Custom Javascript",
+	"custom-js.description": "Enter your own javascript here. It will be executed after the page is loaded completely.",
+	"custom-js.enable": "Enable Custom Javascript",
+
+	"custom-header": "Custom Header",
+	"custom-header.description": "Enter custom HTML here (ex. Meta Tags, etc.), which will be appended to the <code>&lt;head&gt;</code> section of your forum's markup. Script tags are allowed, but are discouraged, as the <a href=\"#custom-js\" data-toggle=\"tab\">Custom Javascript</a> tab is available.",
+	"custom-header.enable": "Enable Custom Header",
+
+	"custom-css.livereload": "Enable Live Reload",
+	"custom-css.livereload.description": "Enable this to force all sessions on every device under your account to refresh whenever you click save"
+}
