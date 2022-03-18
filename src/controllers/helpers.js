@@ -420,6 +420,10 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 	}
 
 	if (String(statusCode).startsWith('2')) {
+		if (res.req.loggedIn) {
+			res.set('cache-control', 'private');
+		}
+
 		res.status(statusCode).json({
 			status: {
 				code: 'ok',

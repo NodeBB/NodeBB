@@ -1,5 +1,3 @@
-/* eslint-disable no-await-in-loop */
-
 'use strict';
 
 const crypto = require('crypto');
@@ -16,30 +14,29 @@ module.exports = {
 		const { progress } = this;
 
 		await batch.processSortedSet('users:joindate', async (uids) => {
-			const keys = uids.map(uid => `uid:${uid}:uploads`);
 			progress.incr(uids.length);
 
-			for (let idx = 0; idx < uids.length; idx++) {
-				const key = keys[idx];
+			await Promise.all(uids.map(async (uid) => {
+				const key = `uid:${uid}:uploads`;
 				// Rename the paths within
 				let uploads = await db.getSortedSetRangeWithScores(key, 0, -1);
+				if (uploads.length) {
+					// Don't process those that have already the right format
+					uploads = uploads.filter(upload => upload.value.startsWith('/files/'));
 
-				// Don't process those that have already the right format
-				uploads = uploads.filter(upload => upload.value.startsWith('/files/'));
-
-				await db.sortedSetRemove(key, uploads.map(upload => upload.value));
-				await db.sortedSetAdd(
-					key,
-					uploads.map(upload => upload.score),
-					uploads.map(upload => upload.value.slice(1))
-				);
-
-				// Add uid to the upload's hash object
-				uploads = await db.getSortedSetMembers(key);
-				await db.setObjectBulk(uploads.map(relativePath => [`upload:${md5(relativePath)}`, { uid: uids[idx] }]));
-			}
+					await db.sortedSetRemove(key, uploads.map(upload => upload.value));
+					await db.sortedSetAdd(
+						key,
+						uploads.map(upload => upload.score),
+						uploads.map(upload => upload.value.slice(1))
+					);
+					// Add uid to the upload's hash object
+					uploads = await db.getSortedSetMembers(key);
+					await db.setObjectBulk(uploads.map(relativePath => [`upload:${md5(relativePath)}`, { uid: uid }]));
+				}
+			}));
 		}, {
-			batch: 100,
+			batch: 500,
 			progress: progress,
 		});
 	},
