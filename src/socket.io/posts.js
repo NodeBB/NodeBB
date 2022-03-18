@@ -122,22 +122,23 @@ SocketPosts.reject = async function (socket, data) {
 };
 
 async function logQueueEvent(socket, result, type) {
-	await events.log({
+	const eventData = {
 		type: `post-queue-${result.type}-${type}`,
 		uid: socket.uid,
 		ip: socket.ip,
 		content: result.data.content,
 		targetUid: result.uid,
-		...(result.type === 'topic' ?
-			{
-				cid: result.data.cid,
-				title: result.data.title,
-			} :
-			{
-				tid: result.data.tid,
-			}),
-		...(result.pid ? { pid: result.pid } : {}),
-	});
+	};
+	if (result.type === 'topic') {
+		eventData.cid = result.data.cid;
+		eventData.title = result.data.title;
+	} else {
+		eventData.tid = result.data.tid;
+	}
+	if (result.pid) {
+		eventData.pid = result.pid;
+	}
+	await events.log(eventData);
 }
 
 SocketPosts.notify = async function (socket, data) {
