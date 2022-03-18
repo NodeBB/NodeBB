@@ -26,7 +26,6 @@ middleware.buildHeader = helpers.try(async (req, res, next) => {
 		await require('./index').applyCSRFasync(req, res);
 	}
 
-	res.set('cache-control', 'private');
 	res.locals.config = await controllers.api.loadConfig(req);
 	next();
 });

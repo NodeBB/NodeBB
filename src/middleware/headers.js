@@ -3,7 +3,6 @@
 const os = require('os');
 const winston = require('winston');
 const _ = require('lodash');
-const util = require('util');
 
 const meta = require('../meta');
 const languages = require('../languages');
@@ -109,13 +108,4 @@ module.exports = function (middleware) {
 			return [defaultLang];
 		}
 	}
-
-	middleware.inhibitCache = (req, res, next) => {
-		if (req.loggedIn) {
-			res.set('cache-control', 'private');
-		}
-
-		next();
-	};
-	middleware.inhibitCacheAsync = util.promisify(middleware.inhibitCache);
 };

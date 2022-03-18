@@ -55,7 +55,6 @@ exports.send404 = async function (req, res) {
 		});
 	}
 
-	await middleware.inhibitCacheAsync(req, res);
 	await middleware.buildHeaderAsync(req, res);
 	await res.render('404', {
 		path: validator.escape(path),

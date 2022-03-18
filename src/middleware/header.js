@@ -45,10 +45,6 @@ middleware.buildHeader = helpers.try(async (req, res, next) => {
 		return res.redirect('/');
 	}
 
-	if (req.loggedIn) {
-		res.set('cache-control', 'private');
-	}
-
 	res.locals.config = config;
 	next();
 });

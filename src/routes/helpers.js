@@ -18,7 +18,6 @@ function _handleArgs(middleware, middlewares, controller) {
 		middleware.authenticateRequest,
 		middleware.maintenanceMode,
 		middleware.registrationComplete,
-		middleware.inhibitCache,
 		middleware.pluginHooks,
 		...middlewares,
 	];

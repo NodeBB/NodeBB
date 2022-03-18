@@ -100,7 +100,7 @@ describe('Middlewares', () => {
 		});
 	});
 
-	describe('.inhibitCache (cache-control header)', () => {
+	describe('cache-control header', () => {
 		let uid;
 		let jar;
 
