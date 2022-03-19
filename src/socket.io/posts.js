@@ -11,6 +11,7 @@ const topics = require('../topics');
 const user = require('../user');
 const notifications = require('../notifications');
 const utils = require('../utils');
+const events = require('../events');
 
 const SocketPosts = module.exports;
 
@@ -108,6 +109,7 @@ SocketPosts.accept = async function (socket, data) {
 	if (result && socket.uid !== parseInt(result.uid, 10)) {
 		await sendQueueNotification('post-queue-accepted', result.uid, `/post/${result.pid}`);
 	}
+	await logQueueEvent(socket, result, 'accept');
 };
 
 SocketPosts.reject = async function (socket, data) {
@@ -116,7 +118,28 @@ SocketPosts.reject = async function (socket, data) {
 	if (result && socket.uid !== parseInt(result.uid, 10)) {
 		await sendQueueNotification('post-queue-rejected', result.uid, '/');
 	}
+	await logQueueEvent(socket, result, 'reject');
 };
+
+async function logQueueEvent(socket, result, type) {
+	const eventData = {
+		type: `post-queue-${result.type}-${type}`,
+		uid: socket.uid,
+		ip: socket.ip,
+		content: result.data.content,
+		targetUid: result.uid,
+	};
+	if (result.type === 'topic') {
+		eventData.cid = result.data.cid;
+		eventData.title = result.data.title;
+	} else {
+		eventData.tid = result.data.tid;
+	}
+	if (result.pid) {
+		eventData.pid = result.pid;
+	}
+	await events.log(eventData);
+}
 
 SocketPosts.notify = async function (socket, data) {
 	await canEditQueue(socket, data, 'notify');
