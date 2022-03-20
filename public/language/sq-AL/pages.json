@@ -28,7 +28,7 @@
     "registration-complete": "Regjistrimi ka përfunduar",
     "login": "Hyni në llogarinë tuaj",
     "reset": "Rivendosni fjalëkalimin e llogarisë tuaj",
-    "categories": "Kategorit",
+    "categories": "Kategoritë",
     "groups": "Grupet",
     "group": "% 1 grup",
     "chats": "Bisedat",
@@ -58,7 +58,7 @@
     "account/blocks": "Përdoruesit e bllokuara për %1",
     "account/uploads": "Ngarkimet e %1",
     "account/sessions": "Seancat e hyrjes",
-    "confirm": "Email Confirmed",
+    "confirm": "Email-i u konfirmua",
     "maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
     "maintenance.messageIntro": "Additionally, the administrator has left this message:",
     "throttled.text": "%1 is currently unavailable due to excessive load. Please come back another time."

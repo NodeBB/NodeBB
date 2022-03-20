@@ -34,7 +34,7 @@
     "digest.title.day": "Përmbledhja juaj e përditshme",
     "digest.title.week": "Përmbledhja juaj e përjavshme",
     "digest.title.month": "Përmbledhja juaj mujore",
-    "notif.chat.subject": "Mesazh i ri bisede u dërgua nga % 1",
+    "notif.chat.subject": "Një mesazh i ri nga % 1",
     "notif.chat.cta": "Klikoni këtu për të vazhduar bisedën",
     "notif.chat.unsub.info": "Ky njoftim bisede të është dërguar për shkak të cilësimeve të abonimit.",
     "notif.post.unsub.info": "Ky njoftim i postimit të është dërguar për shkak të cilësimeve të abonimit.",

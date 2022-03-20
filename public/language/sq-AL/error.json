@@ -140,7 +140,7 @@
     "invalid-file": "Dokument i pavlefshëm",
     "uploads-are-disabled": "Ngarkimet janë çaktivizuar",
     "signature-too-long": "Na vjen keq, nënshkrimi juaj nuk mund të jetë më i gjatë se %1 karakter(ë).",
-    "about-me-too-long": "Na vjen keq, por jotja për mua nuk mund të jetë më e gjatë se %1 karakter(ë).",
+    "about-me-too-long": "Na vjen keq, por përshkrimi nuk mund të jetë më i gjatë se %1 karakter(ë).",
     "cant-chat-with-yourself": "Nuk mund të bësh bashkëbisedim me vetveten!",
     "chat-restricted": "Ky përdorues ka kufizuar mesazhet e tij të bisedës. Ata duhet t'ju ndjekin përpara se të bisedoni me ta",
     "chat-disabled": "Sistemi i bisedës është çaktivizuar",
