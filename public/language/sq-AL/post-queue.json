@@ -5,7 +5,7 @@
 	"user": "Përdorues",
 	"category": "Kategoria",
 	"title": "Titulli",
-	"content": "përmbajtja",
+	"content": "Përmbajtja",
 	"posted": "U postua",
 	"reply-to": "Përgjigju \"% 1\"",
 	"content-editable": "Klikoni mbi përmbajtjen për ta modifikuar",
@@ -14,7 +14,7 @@
 	"reply": "Përgjigju",
 	"topic": "Tema",
 	"accept": "Pranoj",
-	"reject": "refuzoj",
+	"reject": "Refuzoj",
 	"remove": "Hiq",
 	"notify": "Njofto",
 	"notify-user": "Njoftoni përdoruesin"
