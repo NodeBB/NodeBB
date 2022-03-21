@@ -62,7 +62,7 @@ module.exports = function (middleware) {
 		}
 
 		if (process.env.NODE_ENV === 'development') {
-			headers['X-Upstream-Hostname'] = os.hostname().replace(/[^0-9A-Za-z-]/g, '');
+			headers['X-Upstream-Hostname'] = os.hostname().replace(/[^0-9A-Za-z-.]/g, '');
 		}
 
 		for (const [key, value] of Object.entries(headers)) {
