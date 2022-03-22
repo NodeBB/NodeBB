@@ -4,9 +4,9 @@
 	"disable-down-voting": "Désactiver les votes négatifs",
 	"votes-are-public": "Tous les votes sont publics",
 	"thresholds": "Seuils d'activité",
-	"min-rep-upvote": "Minimum reputation to upvote posts",
-	"upvotes-per-day": "Upvotes per day (set to 0 for unlimited upvotes)",
-	"upvotes-per-user-per-day": "Upvotes per user per day (set to 0 for unlimited upvotes)",
+	"min-rep-upvote": "Réputation minimale pour voter pour les publications",
+	"upvotes-per-day": "Votes positifs par jour (0 pour un nombre illimité)",
+	"upvotes-per-user-per-day": "Votes positifs par utilisateur et par jour (0 pour un nombre illimité)",
 	"min-rep-downvote": "Réputation minimum pour les votes négatifs",
 	"downvotes-per-day": "Votes négatif par jour (0 = illimités)",
 	"downvotes-per-user-per-day": "Votes négatif pour un utilisateur par jour (0 = illimités)",
@@ -21,6 +21,6 @@
 	"flags.limit-per-target": "Nombre maximum de fois qu'un élément peut être signalé",
 	"flags.limit-per-target-placeholder": "Défaut: 0",
 	"flags.limit-per-target-help": "Lorsqu'un message ou un utilisateur a été signalé plusieurs fois, chaque indicateur supplémentaire est considéré comme un \"rapport\". et ajouté au signalement d'origine. Définissez cette option sur un nombre autre que zéro pour limiter le nombre de rapports qu'un signalement peut admettre.",
-  	"flags.auto-flag-on-downvote-threshold": "Number of downvotes to auto flag posts (Set to 0 to disable, default: 0)",
+  	"flags.auto-flag-on-downvote-threshold": "Nombre de votes négatifs pour les signalements (0 pour désactiver, par défaut : 0)",
 	"flags.auto-resolve-on-ban": "Résoudre automatiquement tous les tickets d'un utilisateur lorsqu'il est banni"
 }
