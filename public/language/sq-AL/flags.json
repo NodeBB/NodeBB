@@ -1,5 +1,5 @@
 {
-	"state": "gjendja",
+	"state": "Gjendja",
 	"reports": "Raportet",
 	"first-reported": "Raportuar për herë të parë",
 	"no-flags": "Juhu! Nuk u gjet asnje gabim.",
@@ -7,11 +7,11 @@
 	"update": "Përditëso",
 	"updated": "I përditësuar",
 	"resolved": "E zgjidhur",
-	"target-purged": "Përmbajtja të cilës i referohet ky flamur është pastruar dhe nuk disponohet më.",
+	"target-purged": "Përmbajtja të cilës i referohet ky raportim është fshire dhe nuk disponohet më.",
 
-	"graph-label": "Flamujt e Përditshëm",
+	"graph-label": "Raportimet e Përditshëme",
 	"quick-filters": "Filtra të shpejtë",
-	"filter-active": "Ka një ose më shumë filtra aktivë në këtë listë flamujsh",
+	"filter-active": "Ka një ose më shumë filtra aktivë në këtë listë raportimesh",
 	"filter-reset": "Hiqni filtrat",
 	"filters": "Opsionet e filtrit",
 	"filter-reporterId": "UID e reporterit",
@@ -20,7 +20,7 @@
 	"filter-type-all": "E gjithë Përmbajtja",
 	"filter-type-post": "Postim",
 	"filter-type-user": "Përdorues",
-	"filter-state": "gjendja",
+	"filter-state": "Gjendja",
 	"filter-assignee": "Përfituesi UID",
 	"filter-cid": "Kategoria",
 	"filter-quick-mine": "Më është caktuar mua",
@@ -30,26 +30,26 @@
 	"fewer-filters": "Më pak filtra",
 
 	"quick-actions": "Veprimet e shpejta",
-	"flagged-user": "Përdorues i shënuar",
+	"flagged-user": "Përdorues i raportuar",
 	"view-profile": "Shiko Profilin",
 	"start-new-chat": "Filloni një bisedë të re",
-	"go-to-target": "Shiko objektivin e flamurit",
-	"assign-to-me": "Cakto për mua",
+	"go-to-target": "Shiko objektivin e raportimit",
+	"assign-to-me": "Ma cakto mua",
 	"delete-post": "Fshij postimin",
-	"purge-post": "Pastrimi i postës",
+	"purge-post": "Pastro postimin",
 	"restore-post": "Rivendos postimin",
 
 	"user-view": "Shiko Profilin",
 	"user-edit": "Rregullo Profilin",
 
-	"notes": "Shënime flamuri",
+	"notes": "Shënime nga raportimet",
 	"add-note": "Shtoni shënim",
 	"no-notes": "Nuk ka shënime të përbashkëta.",
-	"delete-note-confirm": "Je i sigurt që dëshiron ta fshish këtë shënim flamuri?",
+	"delete-note-confirm": "Je i sigurt që dëshiron ta fshish këtë shënim?",
 	"note-added": "Shënimi u shtua",
 	"note-deleted": "Shënimi u fshi",
 
-	"history": "Llogaria &amp; Historia e Flamurit",
+	"history": "Llogaria &amp; Historia e raportimeve",
 	"no-history": "Nuk ka histori flamuri.",
 
 	"state-all": "Të gjitha gjendjet",
@@ -79,7 +79,7 @@
 	"modal-submit-success": "Përmbajtja është raportuar për moderim",
 
 	"bulk-actions": "Veprimet me shumicë",
-	"bulk-resolve": "Zgjidhja e flamurit(eve)",
+	"bulk-resolve": "Zgjidhja e raportim(eve)",
 	"bulk-success": "%1 flamujt u përditësuan",
 	"flagged-timeago-readable": "I shënuar 1 (% 2)",
   	"auto-flagged": "[Auto Flagged] Received %1 downvotes."
