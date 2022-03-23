@@ -1,6 +1,6 @@
 {
 	"lead": "Konfiguro listën e zezë të IP-së këtu.",
-	"description": "Herë pas here, një ndalim i llogarisë së përdoruesit nuk është një pengesë e mjaftueshme. Herë të tjera, kufizimi i aksesit në forum në një IP të caktuar ose një sërë IP-sh është mënyra më e mirë për të mbrojtur një forum. Në këto skenarë, ju mund të shtoni adresa IP problematike ose blloqe të tëra CIDR në këtë listë të zezë dhe ato do të parandalohen nga hyrja ose regjistrimi i një llogarie të re.",
+	"description": "Herë pas here, një bllokim i llogarisë së përdoruesit nuk është një pengesë e mjaftueshme. Nganjëhere, kufizimi i aksesit në forum në një IP të caktuar ose një sërë IP-sh është mënyra më e mirë për të mbrojtur një forum. Në këto skenarë, ju mund të shtoni adresa IP problematike ose blloqe të tëra CIDR në këtë listë të zezë dhe ato do të parandalohen nga hyrja ose regjistrimi i një llogarie të re.",
 	"active-rules": "Rregullat aktive",
 	"validate": "Vërteto listën e zezë",
 	"apply": "Aplikoni listën e zezë",

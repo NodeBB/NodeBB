@@ -1,7 +1,7 @@
 {
     "groups": "Grupe",
     "view_group": "Shiko grupin",
-    "owner": "Pronari i grupit",
+    "owner": "Zotuesi i grupit",
     "new_group": "Krijo një grup të ri",
     "no_groups_found": "Nuk ka grupe për të parë",
     "pending.accept": "Pranoje",
@@ -38,7 +38,7 @@
     "details.member-post-cids": "ID-të e kategorive për të shfaqur postimet nga",
     "details.badge_preview": "Pamja paraprake e medaljes",
     "details.change_icon": "Ndrysho ikonën",
-    "details.change_label_colour": "Ndrysho ngjyrën e etiketës",
+    "details.change_label_colour": "Ndrysho ngjyrën e kontureve",
     "details.change_text_colour": "Ndrysho ngjyrën e tekstit",
     "details.badge_text": "Teksti i medaljes",
     "details.userTitleEnabled": "Shfaq medaljen",
@@ -57,8 +57,8 @@
     "membership.leave.notification_title": "% 1 ka lënë grupin % 2",
     "membership.reject": "Refuzoj",
     "new-group.group_name": "Emri i grupit:",
-    "upload-group-cover": "Ngarko kopertinën e grupit",
+    "upload-group-cover": "Ngarko foton e coverit për grupin",
     "bulk-invite-instructions": "Futni një listë të emrave të përdoruesve të ndarë me presje për t'i ftuar në këtë grup",
     "bulk-invite": "Ftesë me shumicë",
-    "remove_group_cover_confirm": "Jeni i sigurt që dëshironi të hiqni foton e kopertinës?"
+    "remove_group_cover_confirm": "Jeni i sigurt që dëshironi ta hiqni foton e coverit?"
 }
