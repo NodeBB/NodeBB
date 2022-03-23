@@ -59,17 +59,18 @@ define('hooks', [], () => {
 		}
 
 		Hooks.logs.log(`[hooks] Registered ${hookName}`, method);
+		return Hooks;
 	};
 	Hooks.on = Hooks.register;
 	Hooks.one = (hookName, method) => {
-		Hooks.register(hookName, method);
 		Hooks.runOnce.add({ hookName, method });
+		return Hooks.register(hookName, method);
 	};
 
 	// registerPage/onPage takes care of unregistering the listener on ajaxify
 	Hooks.registerPage = (hookName, method) => {
 		Hooks.temporary.add({ hookName, method });
-		Hooks.register(hookName, method);
+		return Hooks.register(hookName, method);
 	};
 	Hooks.onPage = Hooks.registerPage;
 	Hooks.register('action:ajaxify.start', () => {
@@ -86,6 +87,8 @@ define('hooks', [], () => {
 		} else {
 			Hooks.logs.log(`[hooks] Unregistration of ${hookName} failed, passed-in method is not a registered listener or the hook itself has no listeners, currently.`);
 		}
+
+		return Hooks;
 	};
 	Hooks.off = Hooks.unregister;
 
