@@ -493,6 +493,8 @@ Flags.purge = async function (flagIds) {
 			...assignedFlags.map(flagObj => ([`flags:byAssignee:${flagObj.assignee}`, flagObj.flagId])),
 			...userFlags.map(flagObj => ([`flags:byTargetUid:${flagObj.targetUid}`, flagObj.flagId])),
 		]),
+		db.deleteObjectFields(postFlags.map(flagObj => `post:${flagObj.targetId}`, ['flagId'])),
+		db.deleteObjectFields(userFlags.map(flagObj => `user:${flagObj.targetId}`, ['flagId'])),
 		db.deleteAll([
 			...flagIds.map(flagId => `flag:${flagId}`),
 			...flagIds.map(flagId => `flag:${flagId}:notes`),
