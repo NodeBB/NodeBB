@@ -498,6 +498,7 @@ Flags.purge = async function (flagIds) {
 			...flagIds.map(flagId => `flag:${flagId}`),
 			...flagIds.map(flagId => `flag:${flagId}:notes`),
 			...flagIds.map(flagId => `flag:${flagId}:reports`),
+			...flagIds.map(flagId => `flag:${flagId}:history`),
 		]),
 		db.sortedSetRemove(cids.map(cid => `flags:byCid:${cid}`), flagIds),
 		db.sortedSetRemove('flags:datetime', flagIds),
