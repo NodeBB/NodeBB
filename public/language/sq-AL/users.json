@@ -1,8 +1,8 @@
 {
     "latest_users": "Përdoruesit e fundit",
-    "top_posters": "Krijuesit më të mirë",
-    "most_reputation": "Reputacioni më i madh",
-    "most_flags": "Most Flags",
+    "top_posters": "Postuesit më të mirë",
+    "most_reputation": "Reputacionin më të madh",
+    "most_flags": "Më shumë raportime",
     "search": "Kërko",
     "enter_username": "Futni një emër përdoruesi për të kërkuar",
     "search-user-for-chat": "Kërkoni një përdorues për të filluar bisedën",
@@ -19,6 +19,6 @@
     "popular_topics": "Temat me te kerkuara",
     "unread_topics": "Tema të palexuara",
     "categories": "Kategoritë",
-    "tags": "Etiketa",
+    "tags": "Etiketimet",
     "no-users-found": "Nuk u gjet asnjë përdorues!"
 }

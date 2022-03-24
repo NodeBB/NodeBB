@@ -163,7 +163,6 @@ module.exports = function (Posts) {
 		await Promise.all(filePaths.map(async (fileName) => {
 			try {
 				const size = await image.size(_getFullPath(fileName));
-				winston.verbose(`[posts/uploads/${fileName}] Saving size (${size.width}px x ${size.height}px)`);
 				await db.setObject(`upload:${md5(fileName)}`, {
 					width: size.width,
 					height: size.height,

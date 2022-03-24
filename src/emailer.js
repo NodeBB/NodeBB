@@ -357,8 +357,6 @@ Emailer.sendViaFallback = async (data) => {
 	// NodeMailer uses a combined "from"
 	data.from = `${data.from_name}<${data.from}>`;
 	delete data.from_name;
-
-	winston.verbose(`[emailer] Sending email to uid ${data.uid} (${data.to})`);
 	await Emailer.fallbackTransport.sendMail(data);
 };
 
