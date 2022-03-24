@@ -47,9 +47,9 @@ Sockets.init = async function (server) {
 	 * Production only so you don't get accidentally locked out.
 	 * Can be overridden via config (socket.io:origins)
 	 */
-	if (process.env.NODE_ENV !== 'development') {
+	if (process.env.NODE_ENV !== 'development' || nconf.get('socket.io:cors')) {
 		const origins = nconf.get('socket.io:origins');
-		opts.cors = {
+		opts.cors = nconf.get('socket.io:cors') || {
 			origin: origins,
 			methods: ['GET', 'POST'],
 			allowedHeaders: ['content-type'],
@@ -201,10 +201,17 @@ const getSessionAsync = util.promisify(
 
 async function validateSession(socket, errorMsg) {
 	const req = socket.request;
-	if (!req.signedCookies || !req.signedCookies[nconf.get('sessionKey')]) {
+	const { sessionId } = await plugins.hooks.fire('filter:sockets.sessionId', {
+		sessionId: req.signedCookies ? req.signedCookies[nconf.get('sessionKey')] : null,
+		request: req,
+	});
+
+	if (!sessionId) {
 		return;
 	}
-	const sessionData = await getSessionAsync(req.signedCookies[nconf.get('sessionKey')]);
+
+	const sessionData = await getSessionAsync(sessionId);
+
 	if (!sessionData) {
 		throw new Error(errorMsg);
 	}
@@ -226,7 +233,14 @@ async function authorize(socket, callback) {
 	}
 
 	await cookieParserAsync(request);
-	const sessionData = await getSessionAsync(request.signedCookies[nconf.get('sessionKey')]);
+
+	const { sessionId } = await plugins.hooks.fire('filter:sockets.sessionId', {
+		sessionId: request.signedCookies ? request.signedCookies[nconf.get('sessionKey')] : null,
+		request: request,
+	});
+
+	const sessionData = await getSessionAsync(sessionId);
+
 	if (sessionData && sessionData.passport && sessionData.passport.user) {
 		request.session = sessionData;
 		socket.uid = parseInt(sessionData.passport.user, 10);
