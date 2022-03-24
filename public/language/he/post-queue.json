@@ -17,5 +17,6 @@
 	"reject": "דחה",
 	"remove": "הסרה",
 	"notify": "Notify",
-	"notify-user": "שלח התראה למשתמש"
+	"notify-user": "שלח התראה למשתמש",
+	"confirm-reject": "Do you want to reject this post?"
 }

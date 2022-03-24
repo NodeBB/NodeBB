@@ -17,5 +17,6 @@
 	"reject": "Отказване",
 	"remove": "Премахване",
 	"notify": "Известяване",
-	"notify-user": "Известяване на потребителя"
+	"notify-user": "Известяване на потребителя",
+	"confirm-reject": "Do you want to reject this post?"
 }

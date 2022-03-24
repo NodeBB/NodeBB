@@ -17,5 +17,6 @@
 	"reject": "Refuzoj",
 	"remove": "Hiq",
 	"notify": "Njofto",
-	"notify-user": "Njoftoni përdoruesin"
+	"notify-user": "Njoftoni përdoruesin",
+	"confirm-reject": "Do you want to reject this post?"
 }

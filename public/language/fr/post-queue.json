@@ -17,5 +17,6 @@
 	"reject": "Refuser",
 	"remove": "Enlever",
 	"notify": "Notifier",
-	"notify-user": "Notifier l'utilisateur"
+	"notify-user": "Notifier l'utilisateur",
+	"confirm-reject": "Do you want to reject this post?"
 }
