@@ -1,13 +1,13 @@
 
 {
 	"post-queue": "Radha e postimit",
-	"description": "Nuk ka asnjë postim në radhën e postimeve. 1 Për të aktivizuar këtë veçori, shkoni te Cilësimet &rarr; Post &rarr; radha e postimeve dhe aktivizoni Radha e Postimeve",
+	"description": "Nuk ka asnjë postim në radhën e postimeve. 1<br>Për të aktivizuar këtë veçori, shkoni te <a href=\"%1\">Cilësimet &rarr; Post &rarr; radha e postimeve</a> dhe aktivizoni <strong>Radha e Postimeve</strong>",
 	"user": "Përdorues",
 	"category": "Kategoria",
 	"title": "Titulli",
 	"content": "Përmbajtja",
 	"posted": "U postua",
-	"reply-to": "Përgjigju \"% 1\"",
+	"reply-to": "Përgjigju \"%1\"",
 	"content-editable": "Klikoni mbi përmbajtjen për ta modifikuar",
 	"category-editable": "Klikoni në kategori për ta modifikuar",
 	"title-editable": "Klikoni mbi titullin për të modifikuar",

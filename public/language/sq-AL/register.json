@@ -1,8 +1,8 @@
 {
     "register": "Regjistrohu",
     "cancel_registration": "Anulo regjistrimin",
-    "help.email": "Si parazgjedhje, emaili juaj do të fshihet nga publiku.",
-    "help.username_restrictions": "Një emër përdoruesi unik midis %1 dhe %2 karaktereve. Të tjerët mund t'ju përmendin me @username.",
+    "help.email": "Si parazgjedhje, emaili juaj do të mbahet i fshihte nga publiku.",
+    "help.username_restrictions": "Një emër përdoruesi unik midis %1 dhe %2 karaktereve. Të tjerët mund t'ju përmendin me @<span id='yourUsername'>username</span>.",
     "help.minimum_password_length": "Gjatësia e fjalëkalimit tuaj duhet të jetë të paktën %1 karaktere.",
     "email_address": "Adresa e emailit",
     "email_address_placeholder": "Fut adresën e emailit",
