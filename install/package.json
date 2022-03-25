@@ -147,7 +147,7 @@
         "@commitlint/cli": "16.2.3",
         "@commitlint/config-angular": "16.2.3",
         "coveralls": "3.1.1",
-        "eslint": "8.11.0",
+        "eslint": "8.12.0",
         "eslint-config-nodebb": "0.1.1",
         "eslint-plugin-import": "2.25.4",
         "grunt": "1.4.1",
