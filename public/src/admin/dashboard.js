@@ -356,9 +356,9 @@ define('admin/dashboard', [
 						},
 					}).on('shown.bs.modal', function () {
 						const date = new Date();
-						const today = date.toISOString().substr(0, 10);
+						const today = date.toISOString().slice(0, 10);
 						date.setDate(date.getDate() - 1);
-						const yesterday = date.toISOString().substr(0, 10);
+						const yesterday = date.toISOString().slice(0, 10);
 
 						modal.find('#startRange').val(targetEl.attr('data-startRange') || yesterday);
 						modal.find('#endRange').val(targetEl.attr('data-endRange') || today);

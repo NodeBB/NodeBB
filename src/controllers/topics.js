@@ -202,7 +202,7 @@ async function addTags(topicData, req, res) {
 	}
 
 	if (description.length > 255) {
-		description = `${description.substr(0, 255)}...`;
+		description = `${description.slice(0, 255)}...`;
 	}
 	description = description.replace(/\n/g, ' ');
 

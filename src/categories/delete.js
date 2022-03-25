@@ -29,7 +29,7 @@ module.exports = function (Categories) {
 	async function purgeCategory(cid, categoryData) {
 		const bulkRemove = [['categories:cid', cid]];
 		if (categoryData && categoryData.name) {
-			bulkRemove.push(['categories:name', `${categoryData.name.substr(0, 200).toLowerCase()}:${cid}`]);
+			bulkRemove.push(['categories:name', `${categoryData.name.slice(0, 200).toLowerCase()}:${cid}`]);
 		}
 		await db.sortedSetRemoveBulk(bulkRemove);
 
