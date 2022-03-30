@@ -70,7 +70,7 @@ define('settings/sorted-list', [
 					hooks.fire('action:settings.sorted-list.itemLoaded', { element: listEl.get(0) });
 				}
 
-				hooks.fire('action:settings.sortd-list.loaded', {
+				hooks.fire('action:settings.sorted-list.loaded', {
 					containerEl: $container.get(0),
 					listEl: listEl.get(0),
 					hash,
