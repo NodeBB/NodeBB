@@ -50,7 +50,7 @@ define('settings/sorted-list', [
 			const list = ajaxify.data[call ? hash : 'settings'][key];
 
 			if (Array.isArray(list) && typeof list[0] !== 'string') {
-				await Promise.all(list.map(async (item) => {
+				const items = await Promise.all(list.map(async (item) => {
 					({ item } = await hooks.fire('filter:settings.sorted-list.loadItem', { item }));
 
 					const itemUUID = utils.generateUUID();
@@ -59,10 +59,23 @@ define('settings/sorted-list', [
 					form.attr('data-sorted-list-object', key);
 					$('#content').append(form.hide());
 
-					parse($container, itemUUID, item).then(() => {
-						hooks.fire('action:settings.sorted-list.loaded', { element: listEl.get(0) });
-					});
+					return { itemUUID, item };
 				}));
+
+				// todo: parse() needs to be refactored to return the html, so multiple calls can be parallelized
+				// eslint-disable-next-line no-restricted-syntax
+				for (const { itemUUID, item } of items) {
+					// eslint-disable-next-line no-await-in-loop
+					await parse($container, itemUUID, item);
+					hooks.fire('action:settings.sorted-list.itemLoaded', { element: listEl.get(0) });
+				}
+
+				hooks.fire('action:settings.sortd-list.loaded', {
+					containerEl: $container.get(0),
+					listEl: listEl.get(0),
+					hash,
+					key,
+				});
 			}
 
 			listEl.sortable().addClass('pointer');

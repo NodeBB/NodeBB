@@ -1,13 +1,13 @@
 'use strict';
 
-define('admin/settings/api', ['settings', 'alerts'], function (settings, alerts) {
+define('admin/settings/api', ['settings', 'alerts', 'hooks'], function (settings, alerts, hooks) {
 	const ACP = {};
 
 	ACP.init = function () {
 		settings.load('core.api', $('.core-api-settings'));
 		$('#save').on('click', saveSettings);
 
-		$(window).on('action:settings.sorted-list.loaded', (ev, { element }) => {
+		hooks.on('action:settings.sorted-list.itemLoaded', (ev, { element }) => {
 			element.addEventListener('click', (ev) => {
 				if (ev.target.closest('input[readonly]')) {
 					// Select entire input text
