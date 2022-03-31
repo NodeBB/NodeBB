@@ -107,10 +107,13 @@ image.stripEXIF = async function (path) {
 		return;
 	}
 	try {
-		const buffer = await fs.promises.readFile(path);
 		const sharp = requireSharp();
-		const img = sharp(buffer, { failOnError: true });
+		const util = require('util');
+		const execFile = util.promisify(require('child_process').execFile);
+		let img = sharp(path, { failOnError: true });
 		const { orientation } = await img.metadata();
+		await execFile('exiv2', [ 'rm', path ]);
+		img = sharp(path, { failOnError: true });
 		await img.withMetadata({ orientation }).toFile(path);
 	} catch (err) {
 		winston.error(err.stack);
