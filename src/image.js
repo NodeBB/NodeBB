@@ -109,7 +109,9 @@ image.stripEXIF = async function (path) {
 	try {
 		const buffer = await fs.promises.readFile(path);
 		const sharp = requireSharp();
-		await sharp(buffer, { failOnError: true }).rotate().toFile(path);
+		const img = sharp(buffer, { failOnError: true });
+		const { orientation } = await img.metadata();
+		await img.withMetadata({ orientation }).toFile(path);
 	} catch (err) {
 		winston.error(err.stack);
 	}
