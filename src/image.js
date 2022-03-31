@@ -107,14 +107,9 @@ image.stripEXIF = async function (path) {
 		return;
 	}
 	try {
-		const sharp = requireSharp();
 		const util = require('util');
 		const execFile = util.promisify(require('child_process').execFile);
-		let img = sharp(path, { failOnError: true });
-		const { orientation } = await img.metadata();
-		await execFile('exiv2', [ 'rm', path ]);
-		img = sharp(path, { failOnError: true });
-		await img.withMetadata({ orientation }).toFile(path);
+		await execFile('exiftool', [ '-all=', '-tagsfromfile', '@', '-Orientation', path ]);
 	} catch (err) {
 		winston.error(err.stack);
 	}
