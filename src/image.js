@@ -107,6 +107,12 @@ image.stripEXIF = async function (path) {
 		return;
 	}
 	try {
+		if (plugins.hooks.hasListeners('filter:image.stripEXIF')) {
+			await plugins.hooks.fire('filter:image.stripEXIF', {
+				path: path,
+			});
+			return;
+		}
 		const buffer = await fs.promises.readFile(path);
 		const sharp = requireSharp();
 		await sharp(buffer, { failOnError: true }).rotate().toFile(path);
