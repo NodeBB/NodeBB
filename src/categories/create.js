@@ -88,7 +88,7 @@ module.exports = function (Categories) {
 		await db.sortedSetAddBulk([
 			['categories:cid', category.order, category.cid],
 			[`cid:${parentCid}:children`, category.order, category.cid],
-			['categories:name', 0, `${data.name.substr(0, 200).toLowerCase()}:${category.cid}`],
+			['categories:name', 0, `${data.name.slice(0, 200).toLowerCase()}:${category.cid}`],
 		]);
 
 		await privileges.categories.give(result.defaultPrivileges, category.cid, 'registered-users');

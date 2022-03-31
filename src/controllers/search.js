@@ -102,7 +102,7 @@ const searches = {};
 async function recordSearch(data) {
 	const { query, searchIn } = data;
 	if (query) {
-		const cleanedQuery = String(query).trim().toLowerCase().substr(0, 255);
+		const cleanedQuery = String(query).trim().toLowerCase().slice(0, 255);
 		if (['titles', 'titlesposts', 'posts'].includes(searchIn) && cleanedQuery.length > 2) {
 			searches[data.uid] = searches[data.uid] || { timeoutId: 0, queries: [] };
 			searches[data.uid].queries.push(cleanedQuery);
