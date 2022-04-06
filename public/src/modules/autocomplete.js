@@ -2,8 +2,13 @@
 
 define('autocomplete', ['api', 'alerts'], function (api, alerts) {
 	const module = {};
+	const _default = {
+		delay: 200,
+	};
 
-	module.init = ({ input, source, onSelect, delay = 200 }) => {
+	module.init = (params) => {
+		const { input, source, onSelect, delay } = { ..._default, ...params };
+
 		app.loadJQueryUI(function () {
 			input.autocomplete({
 				delay,
@@ -11,7 +16,6 @@ define('autocomplete', ['api', 'alerts'], function (api, alerts) {
 					$(this).autocomplete('widget').css('z-index', 100005);
 				},
 				select: function (event, ui) {
-					console.log(onSelect);
 					handleOnSelect(input, onSelect, event, ui);
 				},
 				source,
