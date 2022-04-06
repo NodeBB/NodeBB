@@ -45,14 +45,32 @@ module.exports = function (Posts) {
 		return postData;
 	}
 
-	Posts.purge = async function (pid, uid) {
-		const postData = await Posts.getPostData(pid);
-		if (!postData) {
+	Posts.purge = async function (pids, uid) {
+		pids = Array.isArray(pids) ? pids : [pids];
+		let postData = await Posts.getPostsData(pids);
+		pids = pids.filter((pid, index) => !!postData[index]);
+		postData = postData.filter(Boolean);
+		if (!postData.length) {
 			return;
 		}
-		const topicData = await topics.getTopicFields(postData.tid, ['tid', 'cid', 'pinned']);
-		postData.cid = topicData.cid;
-		await plugins.hooks.fire('filter:post.purge', { post: postData, pid: pid, uid: uid });
+		const uniqTids = _.uniq(postData.map(p => p.tid));
+		const topicData = await topics.getTopicsFields(uniqTids, ['tid', 'cid', 'pinned']);
+		const tidToTopic = _.zipObject(uniqTids, topicData);
+
+		postData.forEach((p) => {
+			p.cid = tidToTopic[p.tid] && tidToTopic[p.tid].cid;
+		});
+
+		// deprecated hook
+		await Promise.all(postData.map(p => plugins.hooks.fire('filter:post.purge', { post: p, pid: p.pid, uid: uid })));
+
+		// new hook
+		await plugins.hooks.fire('filter:posts.purge', {
+			posts: postData,
+			pids: postData.map(p => p.pid),
+			uid: uid,
+		});
+
 		await Promise.all([
 			deletePostFromTopicUserNotification(postData, topicData),
 			deletePostFromCategoryRecentPosts(postData),
@@ -61,12 +79,19 @@ module.exports = function (Posts) {
 			deletePostFromReplies(postData),
 			deletePostFromGroups(postData),
 			deletePostDiffs(pid),
-			db.sortedSetsRemove(['posts:pid', 'posts:votes', 'posts:flagged'], pid),
+			db.sortedSetsRemove(['posts:pid', 'posts:votes', 'posts:flagged'], pids),
 			Posts.uploads.dissociateAll(pid),
 		]);
-		await flags.resolveFlag('post', pid, uid);
-		plugins.hooks.fire('action:post.purge', { post: postData, uid: uid });
-		await db.delete(`post:${pid}`);
+
+		await resolveFlags(postData, uid);
+
+		// deprecated hook
+		Promise.all(postData.map(p => plugins.hooks.fire('action:post.purge', { post: p, uid: uid })));
+
+		// new hook
+		plugins.hooks.fire('action:posts.purge', { posts: postData, uid: uid });
+
+		await db.deleteAll(postData.map(p => `post:${p.pid}`));
 	};
 
 	async function deletePostFromTopicUserNotification(postData, topicData) {
@@ -152,5 +177,10 @@ module.exports = function (Posts) {
 			`post:${pid}:diffs`,
 			...timestamps.map(t => `diff:${pid}.${t}`),
 		]);
+	}
+
+	async function resolveFlags(postData, uid) {
+		const flaggedPosts = postData.filter(p => parseInt(p.flagId, 10));
+		await Promise.all(flaggedPosts.map(p => flags.update(p.flagId, uid, { state: 'resolved' })));
 	}
 };
