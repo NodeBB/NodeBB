@@ -31,7 +31,7 @@ Hooks._deprecated = new Map([
 		since: 'v1.19.6',
 		until: 'v2.1.0',
 		affected: new Set(),
-	}]
+	}],
 ]);
 
 Hooks.internals = {
