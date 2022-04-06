@@ -6,7 +6,6 @@ const db = require('../database');
 const topics = require('../topics');
 const categories = require('../categories');
 const user = require('../user');
-const groups = require('../groups');
 const notifications = require('../notifications');
 const plugins = require('../plugins');
 const flags = require('../flags');
@@ -72,15 +71,15 @@ module.exports = function (Posts) {
 		});
 
 		await Promise.all([
-			deletePostFromTopicUserNotification(postData, topicData),
-			deletePostFromCategoryRecentPosts(postData),
-			deletePostFromUsersBookmarks(pid),
-			deletePostFromUsersVotes(pid),
-			deletePostFromReplies(postData),
-			deletePostFromGroups(pids),
-			deletePostDiffs(pids),
+			deleteFromTopicUserNotification(postData, topicData),
+			deleteFromCategoryRecentPosts(postData),
+			deleteFromUsersBookmarks(pid),
+			deleteFromUsersVotes(pid),
+			deleteFromReplies(postData),
+			deleteFromGroups(pids),
+			deleteDiffs(pids),
+			deleteFromUploads(pids),
 			db.sortedSetsRemove(['posts:pid', 'posts:votes', 'posts:flagged'], pids),
-			Posts.uploads.dissociateAll(pid),
 		]);
 
 		await resolveFlags(postData, uid);
@@ -94,7 +93,7 @@ module.exports = function (Posts) {
 		await db.deleteAll(postData.map(p => `post:${p.pid}`));
 	};
 
-	async function deletePostFromTopicUserNotification(postData, topicData) {
+	async function deleteFromTopicUserNotification(postData, topicData) {
 		await db.sortedSetsRemove([
 			`tid:${postData.tid}:posts`,
 			`tid:${postData.tid}:posts:votes`,
@@ -120,21 +119,21 @@ module.exports = function (Posts) {
 		await Promise.all(tasks);
 	}
 
-	async function deletePostFromCategoryRecentPosts(postData) {
+	async function deleteFromCategoryRecentPosts(postData) {
 		const cids = await categories.getAllCidsFromSet('categories:cid');
 		const sets = cids.map(cid => `cid:${cid}:pids`);
 		await db.sortedSetsRemove(sets, postData.pid);
 		await categories.updateRecentTidForCid(postData.cid);
 	}
 
-	async function deletePostFromUsersBookmarks(pid) {
+	async function deleteFromUsersBookmarks(pid) {
 		const uids = await db.getSetMembers(`pid:${pid}:users_bookmarked`);
 		const sets = uids.map(uid => `uid:${uid}:bookmarks`);
 		await db.sortedSetsRemove(sets, pid);
 		await db.delete(`pid:${pid}:users_bookmarked`);
 	}
 
-	async function deletePostFromUsersVotes(pid) {
+	async function deleteFromUsersVotes(pid) {
 		const [upvoters, downvoters] = await Promise.all([
 			db.getSetMembers(`pid:${pid}:upvote`),
 			db.getSetMembers(`pid:${pid}:downvote`),
@@ -147,7 +146,7 @@ module.exports = function (Posts) {
 		]);
 	}
 
-	async function deletePostFromReplies(postData) {
+	async function deleteFromReplies(postData) {
 		const arrayOfReplyPids = await db.getSortedSetsMembers(postData.map(p => `pid:${p.pid}:replies`));
 		const allReplyPids = _.flatten(arrayOfReplyPids);
 		const promises = [
@@ -167,18 +166,22 @@ module.exports = function (Posts) {
 		await db.setObjectBulk(parentPids.map((pid, index) => [`post:${pid}`, { replies: counts[index] }]));
 	}
 
-	async function deletePostFromGroups(pids) {
+	async function deleteFromGroups(pids) {
 		const groupNames = await db.getSortedSetMembers('groups:visible:createtime');
 		const keys = groupNames.map(groupName => `group:${groupName}:member:pids`);
 		await db.sortedSetRemove(keys, pids);
 	}
 
-	async function deletePostDiffs(pids) {
+	async function deleteDiffs(pids) {
 		const timestamps = await Promise.all(pids.map(pid => Posts.diffs.list(pid)));
 		await db.deleteAll([
 			...pids.map(pid => `post:${pid}:diffs`),
 			..._.flattenDeep(pids.map((pid, index) => timestamps[index].map(t => `diff:${pid}.${t}`))),
 		]);
+	}
+
+	async function deleteFromUploads(pids) {
+		await Promise.all(pids.map(Posts.uploads.dissociateAll));
 	}
 
 	async function resolveFlags(postData, uid) {
