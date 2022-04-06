@@ -77,7 +77,7 @@ module.exports = function (Posts) {
 			deletePostFromUsersBookmarks(pid),
 			deletePostFromUsersVotes(pid),
 			deletePostFromReplies(postData),
-			deletePostFromGroups(postData),
+			deletePostFromGroups(pids),
 			deletePostDiffs(pids),
 			db.sortedSetsRemove(['posts:pid', 'posts:votes', 'posts:flagged'], pids),
 			Posts.uploads.dissociateAll(pid),
@@ -148,27 +148,29 @@ module.exports = function (Posts) {
 	}
 
 	async function deletePostFromReplies(postData) {
-		const replyPids = await db.getSortedSetMembers(`pid:${postData.pid}:replies`);
+		const arrayOfReplyPids = await db.getSortedSetsMembers(postData.map(p => `pid:${p.pid}:replies`));
+		const allReplyPids = _.flatten(arrayOfReplyPids);
 		const promises = [
 			db.deleteObjectFields(
-				replyPids.map(pid => `post:${pid}`), ['toPid']
+				allReplyPids.map(pid => `post:${pid}`), ['toPid']
 			),
-			db.delete(`pid:${postData.pid}:replies`),
+			db.deleteAll(postData.map(p => `pid:${p.pid}:replies`)),
 		];
-		if (parseInt(postData.toPid, 10)) {
-			promises.push(db.sortedSetRemove(`pid:${postData.toPid}:replies`, postData.pid));
-			promises.push(db.decrObjectField(`post:${postData.toPid}`, 'replies'));
-		}
+
+		const postsWithParents = postData.filter(p => parseInt(p.toPid, 10));
+		const bulkRemove = postsWithParents.map(p => [`pid:${p.toPid}:replies`, p.pid]);
+		promises.push(db.sortedSetRemoveBulk(bulkRemove));
 		await Promise.all(promises);
+
+		const parentPids = _.uniq(postsWithParents.map(p => p.toPid));
+		const counts = db.sortedSetsCard(parentPids.map(pid => `pid:${pid}:replies`));
+		await db.setObjectBulk(parentPids.map((pid, index) => [`post:${pid}`, { replies: counts[index] }]));
 	}
 
-	async function deletePostFromGroups(postData) {
-		if (!parseInt(postData.uid, 10)) {
-			return;
-		}
-		const groupNames = await groups.getUserGroupMembership('groups:visible:createtime', [postData.uid]);
-		const keys = groupNames[0].map(groupName => `group:${groupName}:member:pids`);
-		await db.sortedSetsRemove(keys, postData.pid);
+	async function deletePostFromGroups(pids) {
+		const groupNames = await db.getSortedSetMembers('groups:visible:createtime');
+		const keys = groupNames.map(groupName => `group:${groupName}:member:pids`);
+		await db.sortedSetRemove(keys, pids);
 	}
 
 	async function deletePostDiffs(pids) {

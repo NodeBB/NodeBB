@@ -55,7 +55,7 @@ module.exports = function (Topics) {
 		const mainPid = await Topics.getTopicField(tid, 'mainPid');
 		await batch.processSortedSet(`tid:${tid}:posts`, async (pids) => {
 			await posts.purge(pids, uid);
-		}, { alwaysStartAt: 0 });
+		}, { alwaysStartAt: 0, batch: 500 });
 		await posts.purge(mainPid, uid);
 		await Topics.purge(tid, uid);
 	};
