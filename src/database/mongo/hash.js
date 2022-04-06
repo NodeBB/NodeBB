@@ -261,4 +261,22 @@ module.exports = function (module) {
 			throw err;
 		}
 	};
+
+	module.incrObjectFieldByBulk = async function (data) {
+		if (!Array.isArray(data) || !data.length) {
+			return;
+		}
+
+		const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
+
+		data.forEach((item) => {
+			const increment = {};
+			for (const [field, value] of Object.entries(item[1])) {
+				increment[helpers.fieldToString(field)] = value;
+			}
+			bulk.find({ _key: item[0] }).upsert().update({ $inc: increment });
+		});
+		await bulk.execute();
+		cache.del(data.map(item => item[0]));
+	};
 };
