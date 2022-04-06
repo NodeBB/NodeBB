@@ -53,10 +53,11 @@ module.exports = function (Posts) {
 			return;
 		}
 		const uniqTids = _.uniq(postData.map(p => p.tid));
-		const topicData = await topics.getTopicsFields(uniqTids, ['tid', 'cid', 'pinned']);
+		const topicData = await topics.getTopicsFields(uniqTids, ['tid', 'cid', 'pinned', 'postcount']);
 		const tidToTopic = _.zipObject(uniqTids, topicData);
 
 		postData.forEach((p) => {
+			p.topic = tidToTopic[p.tid];
 			p.cid = tidToTopic[p.tid] && tidToTopic[p.tid].cid;
 		});
 
@@ -71,7 +72,7 @@ module.exports = function (Posts) {
 		});
 
 		await Promise.all([
-			deleteFromTopicUserNotification(postData, topicData),
+			deleteFromTopicUserNotification(postData),
 			deleteFromCategoryRecentPosts(postData),
 			deleteFromUsersBookmarks(pids),
 			deleteFromUsersVotes(pids),
@@ -93,30 +94,54 @@ module.exports = function (Posts) {
 		await db.deleteAll(postData.map(p => `post:${p.pid}`));
 	};
 
-	async function deleteFromTopicUserNotification(postData, topicData) {
-		await db.sortedSetsRemove([
-			`tid:${postData.tid}:posts`,
-			`tid:${postData.tid}:posts:votes`,
-			`uid:${postData.uid}:posts`,
-		], postData.pid);
+	async function deleteFromTopicUserNotification(postData) {
+		const bulkRemove = [];
+		postData.forEach((p) => {
+			bulkRemove.push([`tid:${p.tid}:posts`, p.pid]);
+			bulkRemove.push([`tid:${p.tid}:posts:votes`, p.pid]);
+			bulkRemove.push([`uid:${p.uid}:posts`, p.pid]);
+			bulkRemove.push([`cid:${p.cid}:uid:${p.uid}:pids`, p.pid]);
+			bulkRemove.push([`cid:${p.cid}:uid:${p.uid}:pids:votes`, p.pid]);
+		});
+		await db.sortedSetRemoveBulk(bulkRemove);
 
-		const tasks = [
-			db.decrObjectField('global', 'postCount'),
-			db.decrObjectField(`category:${topicData.cid}`, 'post_count'),
-			db.sortedSetRemove(`cid:${topicData.cid}:uid:${postData.uid}:pids`, postData.pid),
-			db.sortedSetRemove(`cid:${topicData.cid}:uid:${postData.uid}:pids:votes`, postData.pid),
-			topics.decreasePostCount(postData.tid),
-			topics.updateTeaser(postData.tid),
-			topics.updateLastPostTimeFromLastPid(postData.tid),
-			db.sortedSetIncrBy(`tid:${postData.tid}:posters`, -1, postData.uid),
-			user.updatePostCount(postData.uid),
-			notifications.rescind(`new_post:tid:${postData.tid}:pid:${postData.pid}:uid:${postData.uid}`),
-		];
+		const incrObjectBulk = [['global', { postCount: -postData.length }]];
 
-		if (!topicData.pinned) {
-			tasks.push(db.sortedSetIncrBy(`cid:${topicData.cid}:tids:posts`, -1, postData.tid));
+		const postsByCategory = _.groupBy(postData, p => parseInt(p.cid, 10));
+		for (const [cid, posts] of Object.entries(postsByCategory)) {
+			incrObjectBulk.push([`category:${cid}`, { post_count: -posts.length }]);
 		}
-		await Promise.all(tasks);
+
+		const postsByTopic = _.groupBy(postData, p => parseInt(p.tid, 10));
+		const topicPostCountTasks = [];
+		const topicTasks = [];
+		const zsetIncrBulk = [];
+		for (const [tid, posts] of Object.entries(postsByTopic)) {
+			incrObjectBulk.push([`topic:${tid}`, { postcount: -posts.length }]);
+			if (posts.length && posts[0]) {
+				const topicData = posts[0].topic;
+				const newPostCount = topicData.postcount - posts.length;
+				topicPostCountTasks.push(['topics:posts', newPostCount, tid]);
+				if (!topicData.pinned) {
+					zsetIncrBulk.push([`cid:${topicData.cid}:tids:posts`, -posts.length, tid]);
+				}
+			}
+			topicTasks.push(topics.updateTeaser(tid));
+			topicTasks.push(topics.updateLastPostTimeFromLastPid(tid));
+			const postsByUid = _.groupBy(posts, p => parseInt(p.uid, 10));
+			for (const [uid, uidPosts] of Object.entries(postsByUid)) {
+				zsetIncrBulk.push([`tid:${tid}:posters`, -uidPosts.length, uid]);
+			}
+			topicTasks.push(db.sortedSetIncrByBulk(zsetIncrBulk));
+		}
+
+		await Promise.all([
+			db.incrObjectFieldByBulk(incrObjectBulk),
+			db.sortedSetAddBulk(topicPostCountTasks),
+			...topicTasks,
+			user.updatePostCount(_.uniq(postData.map(p => p.uid))),
+			notifications.rescind(...postData.map(p => `new_post:tid:${p.tid}:pid:${p.pid}:uid:${p.uid}`)),
+		]);
 	}
 
 	async function deleteFromCategoryRecentPosts(postData) {
