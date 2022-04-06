@@ -73,8 +73,8 @@ module.exports = function (Posts) {
 		await Promise.all([
 			deleteFromTopicUserNotification(postData, topicData),
 			deleteFromCategoryRecentPosts(postData),
-			deleteFromUsersBookmarks(pid),
-			deleteFromUsersVotes(pid),
+			deleteFromUsersBookmarks(pids),
+			deleteFromUsersVotes(pids),
 			deleteFromReplies(postData),
 			deleteFromGroups(pids),
 			deleteDiffs(pids),
@@ -120,29 +120,45 @@ module.exports = function (Posts) {
 	}
 
 	async function deleteFromCategoryRecentPosts(postData) {
-		const cids = await categories.getAllCidsFromSet('categories:cid');
-		const sets = cids.map(cid => `cid:${cid}:pids`);
-		await db.sortedSetsRemove(sets, postData.pid);
-		await categories.updateRecentTidForCid(postData.cid);
+		const uniqCids = _.uniq(postData.map(p => p.cid));
+		const sets = uniqCids.map(cid => `cid:${cid}:pids`);
+		await db.sortedSetRemove(sets, postData.map(p => p.pid));
+		await Promise.all(uniqCids.map(categories.updateRecentTidForCid));
 	}
 
-	async function deleteFromUsersBookmarks(pid) {
-		const uids = await db.getSetMembers(`pid:${pid}:users_bookmarked`);
-		const sets = uids.map(uid => `uid:${uid}:bookmarks`);
-		await db.sortedSetsRemove(sets, pid);
-		await db.delete(`pid:${pid}:users_bookmarked`);
+	async function deleteFromUsersBookmarks(pids) {
+		const arrayOfUids = await db.getSetsMembers(pids.map(pid => `pid:${pid}:users_bookmarked`));
+		const bulkRemove = [];
+		pids.forEach((pid, index) => {
+			arrayOfUids[index].forEach((uid) => {
+				bulkRemove.push([`uid:${uid}:bookmarks`, pid]);
+			});
+		});
+		await db.sortedSetRemoveBulk(bulkRemove);
+		await db.deleteAll(pids.map(pid => `pid:${pid}:users_bookmarked`));
 	}
 
-	async function deleteFromUsersVotes(pid) {
+	async function deleteFromUsersVotes(pids) {
 		const [upvoters, downvoters] = await Promise.all([
-			db.getSetMembers(`pid:${pid}:upvote`),
-			db.getSetMembers(`pid:${pid}:downvote`),
+			db.getSetsMembers(pids.map(pid => `pid:${pid}:upvote`)),
+			db.getSetsMembers(pids.map(pid => `pid:${pid}:downvote`)),
 		]);
-		const upvoterSets = upvoters.map(uid => `uid:${uid}:upvote`);
-		const downvoterSets = downvoters.map(uid => `uid:${uid}:downvote`);
+		const bulkRemove = [];
+		pids.forEach((pid, index) => {
+			upvoters[index].forEach((upvoterUid) => {
+				bulkRemove.push([`uid:${upvoterUid}:upvote`, pid]);
+			});
+			downvoters[index].forEach((downvoterUid) => {
+				bulkRemove.push([`uid:${downvoterUid}:downvote`, pid]);
+			});
+		});
+
 		await Promise.all([
-			db.sortedSetsRemove(upvoterSets.concat(downvoterSets), pid),
-			db.deleteAll([`pid:${pid}:upvote`, `pid:${pid}:downvote`]),
+			db.sortedSetRemoveBulk(bulkRemove),
+			db.deleteAll([
+				...pids.map(pid => `pid:${pid}:upvote`),
+				...pids.map(pid => `pid:${pid}:downvote`),
+			]),
 		]);
 	}
 
