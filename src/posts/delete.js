@@ -78,7 +78,7 @@ module.exports = function (Posts) {
 			deletePostFromUsersVotes(pid),
 			deletePostFromReplies(postData),
 			deletePostFromGroups(postData),
-			deletePostDiffs(pid),
+			deletePostDiffs(pids),
 			db.sortedSetsRemove(['posts:pid', 'posts:votes', 'posts:flagged'], pids),
 			Posts.uploads.dissociateAll(pid),
 		]);
@@ -171,11 +171,11 @@ module.exports = function (Posts) {
 		await db.sortedSetsRemove(keys, postData.pid);
 	}
 
-	async function deletePostDiffs(pid) {
-		const timestamps = await Posts.diffs.list(pid);
+	async function deletePostDiffs(pids) {
+		const timestamps = await Promise.all(pids.map(pid => Posts.diffs.list(pid)));
 		await db.deleteAll([
-			`post:${pid}:diffs`,
-			...timestamps.map(t => `diff:${pid}.${t}`),
+			...pids.map(pid => `post:${pid}:diffs`),
+			..._.flattenDeep(pids.map((pid, index) => timestamps[index].map(t => `diff:${pid}.${t}`))),
 		]);
 	}
 
