@@ -33,12 +33,17 @@ define('forum/post-queue', [
 					});
 				});
 			}
+			function confirmReject() {
+				return new Promise((resolve) => {
+					bootbox.confirm('[[post-queue:confirm-reject]]', resolve);
+				});
+			}
 			const parent = $(this).parents('[data-id]');
 			const action = $(this).attr('data-action');
 			const id = parent.attr('data-id');
 			const listContainer = parent.get(0).parentNode;
 
-			if (!['accept', 'reject', 'notify'].includes(action)) {
+			if ((!['accept', 'reject', 'notify'].includes(action)) || (action === 'reject' && !await confirmReject())) {
 				return;
 			}
 

@@ -82,5 +82,5 @@
 	"bulk-resolve": "Risolvi segnalazione(i)",
 	"bulk-success": "%1 segnalazioni aggiornate",
 	"flagged-timeago-readable": "Segnalato <span class=\"timeago\" title=\"%1\"></span> (%2)",
-  	"auto-flagged": "[Auto Flagged] Received %1 downvotes."
+  	"auto-flagged": "[Contrassegnato automaticamente] Ha ricevuto %1 voti negativi."
 }

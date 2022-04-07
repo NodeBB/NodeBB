@@ -40,7 +40,7 @@ exports.buildReqObject = (req, payload) => {
 		protocol: encrypted ? 'https' : 'http',
 		secure: encrypted,
 		url: referer,
-		path: referer.substr(referer.indexOf(host) + host.length),
+		path: referer.slice(referer.indexOf(host) + host.length),
 		headers: headers,
 	};
 };

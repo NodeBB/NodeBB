@@ -81,13 +81,15 @@ module.exports = function (User) {
 		await User.updatePostCount(postData.uid);
 	};
 
-	User.updatePostCount = async (uid) => {
-		const exists = await User.exists(uid);
-		if (exists) {
-			const count = await db.sortedSetCard(`uid:${uid}:posts`);
+	User.updatePostCount = async (uids) => {
+		uids = Array.isArray(uids) ? uids : [uids];
+		const exists = await User.exists(uids);
+		uids = uids.filter((uid, index) => exists[index]);
+		if (uids.length) {
+			const counts = await db.sortedSetsCard(uids.map(uid => `uid:${uid}:posts`));
 			await Promise.all([
-				User.setUserField(uid, 'postcount', count),
-				db.sortedSetAdd('users:postcount', count, uid),
+				db.setObjectBulk(uids.map((uid, index) => ([`user:${uid}`, { postcount: counts[index] }]))),
+				db.sortedSetAdd('users:postcount', counts, uids),
 			]);
 		}
 	};

@@ -469,9 +469,9 @@ Flags.purge = async function (flagIds) {
 	const userFlags = flagData.filter(flagObj => flagObj.type === 'user');
 	const assignedFlags = flagData.filter(flagObj => !!flagObj.assignee);
 
-	const [allReports, postCids] = await Promise.all([
+	const [allReports, cids] = await Promise.all([
 		db.getSortedSetsMembers(flagData.map(flagObj => `flag:${flagObj.flagId}:reports`)),
-		posts.getCidsByPids(postFlags.map(flagObj => flagObj.targetId)),
+		categories.getAllCidsFromSet('categories:cid'),
 	]);
 	const allReporterUids = allReports.map(flagReports => flagReports.map(report => report && report.split(';')[0]));
 	const removeReporters = [];
@@ -488,16 +488,19 @@ Flags.purge = async function (flagIds) {
 			...flagData.map(flagObj => ([`flags:byType:${flagObj.type}`, flagObj.flagId])),
 			...flagData.map(flagObj => ([`flags:byState:${flagObj.state}`, flagObj.flagId])),
 			...removeReporters,
-			...postFlags.map((flagObj, i) => ([`flags:byCid:${postCids[i]}`, flagObj.flagId])),
 			...postFlags.map(flagObj => ([`flags:byPid:${flagObj.targetId}`, flagObj.flagId])),
 			...assignedFlags.map(flagObj => ([`flags:byAssignee:${flagObj.assignee}`, flagObj.flagId])),
 			...userFlags.map(flagObj => ([`flags:byTargetUid:${flagObj.targetUid}`, flagObj.flagId])),
 		]),
+		db.deleteObjectFields(postFlags.map(flagObj => `post:${flagObj.targetId}`, ['flagId'])),
+		db.deleteObjectFields(userFlags.map(flagObj => `user:${flagObj.targetId}`, ['flagId'])),
 		db.deleteAll([
 			...flagIds.map(flagId => `flag:${flagId}`),
 			...flagIds.map(flagId => `flag:${flagId}:notes`),
 			...flagIds.map(flagId => `flag:${flagId}:reports`),
+			...flagIds.map(flagId => `flag:${flagId}:history`),
 		]),
+		db.sortedSetRemove(cids.map(cid => `flags:byCid:${cid}`), flagIds),
 		db.sortedSetRemove('flags:datetime', flagIds),
 		db.sortedSetRemove(
 			'flags:byTarget',

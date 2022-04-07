@@ -4,9 +4,9 @@
 	"disable-down-voting": "Disabilita voto negativo",
 	"votes-are-public": "Tutti i voti sono pubblici",
 	"thresholds": "Soglie di attività",
-	"min-rep-upvote": "Minimum reputation to upvote posts",
-	"upvotes-per-day": "Upvotes per day (set to 0 for unlimited upvotes)",
-	"upvotes-per-user-per-day": "Upvotes per user per day (set to 0 for unlimited upvotes)",
+	"min-rep-upvote": "Reputazione minima per votare positivamente i post",
+	"upvotes-per-day": "Voti positivi al giorno (impostare a 0 per i voti positivi illimitati)",
+	"upvotes-per-user-per-day": "Voti positivi per utente al giorno (impostare a 0 per voti positivi illimitati)",
 	"min-rep-downvote": "Reputazione minima per votare negativamente i post",
 	"downvotes-per-day": "Voti negativi al giorno (imposta a 0 per voti negativi illimitati)",
 	"downvotes-per-user-per-day": "Voti negativi per utenti al giorno (imposta a 0 per voti negativi illimitati)",
@@ -21,6 +21,6 @@
 	"flags.limit-per-target": "Numero massimo di volte che qualcosa può essere segnalato",
 	"flags.limit-per-target-placeholder": "Predefinito: 0",
 	"flags.limit-per-target-help": "Quando un post o un utente viene segnalato più volte, ogni segnalazione aggiuntiva è considerata una &quot;report&quot; e aggiunto alla segnalazione originale. Imposta questa opzione su un numero diverso da zero per limitare il numero di rapporti che un elemento può ricevere.",
-  	"flags.auto-flag-on-downvote-threshold": "Number of downvotes to auto flag posts (Set to 0 to disable, default: 0)",
+  	"flags.auto-flag-on-downvote-threshold": "Numero di voti negativi per contrassegnare automaticamente i post (impostare a 0 per disabilitare, predefinito: 0)",
 	"flags.auto-resolve-on-ban": "Risolvi automaticamente tutti i ticket di un utente quando vengono bannati"
 }

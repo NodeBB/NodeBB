@@ -17,5 +17,6 @@
 	"reject": "Одбиј",
 	"remove": "Уклони",
 	"notify": "Обавештење",
-	"notify-user": "Обавести корисника"
+	"notify-user": "Обавести корисника",
+	"confirm-reject": "Do you want to reject this post?"
 }

@@ -17,5 +17,6 @@
 	"reject": "Ablehnen",
 	"remove": "Entfernen",
 	"notify": "Benachrichtigen",
-	"notify-user": "Benutzer benachrichtigen"
+	"notify-user": "Benutzer benachrichtigen",
+	"confirm-reject": "Do you want to reject this post?"
 }

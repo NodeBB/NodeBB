@@ -20,6 +20,18 @@ Hooks._deprecated = new Map([
 		until: 'v2.1.0',
 		affected: new Set(),
 	}],
+	['filter:post.purge', {
+		new: 'filter:posts.purge',
+		since: 'v1.19.6',
+		until: 'v2.1.0',
+		affected: new Set(),
+	}],
+	['action:post.purge', {
+		new: 'action:posts.purge',
+		since: 'v1.19.6',
+		until: 'v2.1.0',
+		affected: new Set(),
+	}],
 ]);
 
 Hooks.internals = {
