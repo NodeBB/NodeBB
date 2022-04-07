@@ -320,7 +320,7 @@ const utils = {
 		// see https://github.com/NodeBB/NodeBB/issues/4378
 		tag = tag.replace(/\u202E/gi, '');
 		tag = tag.replace(/[,/#!$^*;:{}=_`<>'"~()?|]/g, '');
-		tag = tag.substr(0, maxLength || 15).trim();
+		tag = tag.slice(0, maxLength || 15).trim();
 		const matches = tag.match(/^[.-]*(.+?)[.-]*$/);
 		if (matches && matches.length > 1) {
 			tag = matches[1];
@@ -621,7 +621,7 @@ const utils = {
 			);
 
 			if (key) {
-				if (key.substr(-2, 2) === '[]') {
+				if (key.slice(-2) === '[]') {
 					key = key.slice(0, -2);
 				}
 				if (!hash[key]) {
