@@ -5,10 +5,12 @@ on:
     branches:
       - master
       - develop
+      - webpack5
   pull_request:
     branches:
       - master
       - develop
+      - webpack5
 
 defaults:
   run:
@@ -95,7 +97,6 @@ jobs:
           SETUP: >-
             {
               "url": "http://127.0.0.1:4567",
-              "secret": "abcdef",
               "admin:username": "admin",
               "admin:email": "test@example.org",
               "admin:password": "hAN3Eg8W",
@@ -123,7 +124,6 @@ jobs:
           SETUP: >-
             {
               "url": "http://127.0.0.1:4567",
-              "secret": "abcdef",
               "admin:username": "admin",
               "admin:email": "test@example.org",
               "admin:password": "hAN3Eg8W",
@@ -154,7 +154,6 @@ jobs:
           SETUP: >-
             {
               "url": "http://127.0.0.1:4567/forum",
-              "secret": "abcdef",
               "admin:username": "admin",
               "admin:email": "test@example.org",
               "admin:password": "hAN3Eg8W",
