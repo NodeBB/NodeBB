@@ -14,6 +14,7 @@ start.start = async function () {
 		const db = require('./database');
 		await db.init();
 		await db.checkCompatibility();
+		await updateSecret();
 
 		const meta = require('./meta');
 		await meta.configs.init();
@@ -113,6 +114,19 @@ function addProcessHandlers() {
 			translator.flush();
 		}
 	});
+}
+
+async function updateSecret() {
+	const db = require('./database');
+	const utils = require('./utils');
+
+	let secret = nconf.get('secret') || await db.getObjectField('global', 'secret');
+	if (!secret) {
+		secret = utils.generateUUID();
+		await db.setObjectField('global', 'secret', secret);
+	}
+
+	nconf.set('secret', secret);
 }
 
 function restart() {

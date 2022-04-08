@@ -38,7 +38,7 @@ global.env = process.env.NODE_ENV || 'production';
 // Alternate configuration file support
 const configFile = path.resolve(__dirname, nconf.any(['config', 'CONFIG']) || 'config.json');
 
-const configExists = file.existsSync(configFile) || (nconf.get('url') && nconf.get('secret') && nconf.get('database'));
+const configExists = file.existsSync(configFile) || (nconf.get('url') && nconf.get('database'));
 
 const prestart = require('./src/prestart');
 
