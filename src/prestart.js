@@ -55,6 +55,7 @@ function loadConfig(configFile) {
 		upload_path: 'public/uploads',
 		views_dir: path.join(paths.baseDir, 'build/public/templates'),
 		version: pkg.version,
+		sessionKey: 'express.sid',
 		isCluster: false,
 		isPrimary: true,
 		jobsDisabled: false,
@@ -79,12 +80,6 @@ function loadConfig(configFile) {
 
 	nconf.set('upload_path', path.resolve(nconf.get('base_dir'), nconf.get('upload_path')));
 	nconf.set('upload_url', '/assets/uploads');
-
-
-	// nconf defaults, if not set in config
-	if (!nconf.get('sessionKey')) {
-		nconf.set('sessionKey', 'express.sid');
-	}
 
 	if (nconf.get('url')) {
 		nconf.set('url_parsed', url.parse(nconf.get('url')));
