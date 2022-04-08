@@ -43,6 +43,7 @@ nconf.defaults({
 	upload_path: 'test/uploads',
 	views_dir: path.join(__dirname, '../../build/public/templates'),
 	relative_path: '',
+	secret: 'abcdef',
 });
 
 const urlObject = url.parse(nconf.get('url'));
