@@ -136,7 +136,7 @@
         "uglify-es": "3.3.9",
         "validator": "13.7.0",
         "visibilityjs": "2.0.2",
-        "winston": "3.6.0",
+        "winston": "3.7.2",
         "xml": "1.0.1",
         "xregexp": "5.1.0",
         "yargs": "17.4.1",
