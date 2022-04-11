@@ -155,14 +155,27 @@ define('forum/topic', [
 		});
 	}
 
+	Topic.applyDropup = function () {
+		const containerRect = this.getBoundingClientRect();
+		const dropdownEl = this.querySelector('.dropdown-menu');
+		const dropdownStyle = window.getComputedStyle(dropdownEl);
+		const dropdownHeight = dropdownStyle.getPropertyValue('height').slice(0, -2);
+		const offset = document.documentElement.style.getPropertyValue('--panel-offset').slice(0, -2);
+
+		// Toggler position (including its height, since the menu spawns above it),
+		// minus the dropdown's height and navbar offset
+		const dropUp = (containerRect.top + containerRect.height - dropdownHeight - offset) > 0;
+		this.classList.toggle('dropup', dropUp);
+	};
+
 	function addDropupHandler() {
 		// Locate all dropdowns
 		const target = $('#content .dropdown-menu').parent();
-
-		// Toggle dropup if past 50% of screen
-		$(target).on('show.bs.dropdown', function () {
-			const dropUp = this.getBoundingClientRect().top > ($(window).height() / 2);
-			$(this).toggleClass('dropup', dropUp);
+		$(target).on('shown.bs.dropdown', function () {
+			const dropdownEl = this.querySelector('.dropdown-menu');
+			if (dropdownEl.innerHTML) {
+				Topic.applyDropup.call(this);
+			}
 		});
 	}
 
