@@ -48,6 +48,7 @@ Messaging.getMessages = async (params) => {
 		messageData.isOwner = messageData.fromuid === parseInt(params.uid, 10);
 		if (messageData.deleted && !messageData.isOwner) {
 			messageData.content = '[[modules:chat.message-deleted]]';
+			messageData.cleanedContent = messageData.content;
 		}
 	});
 

@@ -702,6 +702,7 @@ describe('Messaging Library', () => {
 					assert.ifError(err);
 					messages.forEach((msg) => {
 						assert(!msg.deleted || msg.content === '[[modules:chat.message-deleted]]', msg.content);
+						assert(!msg.deleted || msg.cleanedContent, '[[modules:chat.message-deleted]]', msg.content);
 					});
 					done();
 				}
