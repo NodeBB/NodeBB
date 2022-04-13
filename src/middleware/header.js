@@ -44,6 +44,7 @@ middleware.buildHeader = helpers.try(async (req, res, next) => {
 		req.logout();
 		return res.redirect('/');
 	}
+
 	res.locals.config = config;
 	next();
 });

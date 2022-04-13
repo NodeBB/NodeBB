@@ -140,5 +140,5 @@ async function getGitInfo() {
 		getAsync('git rev-parse HEAD'),
 		getAsync('git rev-parse --abbrev-ref HEAD'),
 	]);
-	return { hash: hash, hashShort: hash.substr(0, 6), branch: branch };
+	return { hash: hash, hashShort: hash.slice(0, 6), branch: branch };
 }

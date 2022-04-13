@@ -1,0 +1,11 @@
+{
+    "upload-file": "Upload File",
+    "filename": "Filename",
+    "usage": "Post Usage",
+    "orphaned": "Orphaned",
+    "size/filecount": "Size / Filecount",
+    "confirm-delete": "Do you really want to delete this file?",
+    "filecount": "%1 files",
+    "new-folder": "New Folder",
+    "name-new-folder": "Enter a name for new the folder"
+}

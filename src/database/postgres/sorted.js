@@ -577,11 +577,11 @@ DELETE FROM "legacy_zset" z
 
 		if (min !== '-') {
 			if (min.match(/^\(/)) {
-				q.values.push(min.substr(1));
+				q.values.push(min.slice(1));
 				q.suffix += 'GT';
 				q.where += ` AND z."value" > $${q.values.length}::TEXT COLLATE "C"`;
 			} else if (min.match(/^\[/)) {
-				q.values.push(min.substr(1));
+				q.values.push(min.slice(1));
 				q.suffix += 'GE';
 				q.where += ` AND z."value" >= $${q.values.length}::TEXT COLLATE "C"`;
 			} else {
@@ -593,11 +593,11 @@ DELETE FROM "legacy_zset" z
 
 		if (max !== '+') {
 			if (max.match(/^\(/)) {
-				q.values.push(max.substr(1));
+				q.values.push(max.slice(1));
 				q.suffix += 'LT';
 				q.where += ` AND z."value" < $${q.values.length}::TEXT COLLATE "C"`;
 			} else if (max.match(/^\[/)) {
-				q.values.push(max.substr(1));
+				q.values.push(max.slice(1));
 				q.suffix += 'LE';
 				q.where += ` AND z."value" <= $${q.values.length}::TEXT COLLATE "C"`;
 			} else {

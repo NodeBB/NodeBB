@@ -17,5 +17,6 @@
 	"reject": "Reddet",
 	"remove": "Sil",
 	"notify": "Bildirim yap",
-	"notify-user": "Kullanıcıyı uyar"
+	"notify-user": "Kullanıcıyı uyar",
+	"confirm-reject": "Bu iletiyi reddetmek istediğinize emin misiniz?"
 }

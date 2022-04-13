@@ -73,6 +73,8 @@ module.exports = function (Posts) {
 		returnPostData.topic = topic;
 		returnPostData.editedISO = utils.toISOString(editPostData.edited);
 		returnPostData.changed = contentChanged;
+		returnPostData.oldContent = oldContent;
+		returnPostData.newContent = data.content;
 
 		await topics.notifyFollowers(returnPostData, data.uid, {
 			type: 'post-edit',

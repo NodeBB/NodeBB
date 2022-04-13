@@ -123,6 +123,11 @@ helpers.buildTerms = function (url, term, query) {
 helpers.notAllowed = async function (req, res, error) {
 	({ error } = await plugins.hooks.fire('filter:helpers.notAllowed', { req, res, error }));
 
+	await plugins.hooks.fire('response:helpers.notAllowed', { req, res, error });
+	if (res.headersSent) {
+		return;
+	}
+
 	if (req.loggedIn || req.uid === -1) {
 		if (res.locals.isAPI) {
 			if (req.originalUrl.startsWith(`${relative_path}/api/v3`)) {
@@ -420,6 +425,10 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 	}
 
 	if (String(statusCode).startsWith('2')) {
+		if (res.req.loggedIn) {
+			res.set('cache-control', 'private');
+		}
+
 		res.status(statusCode).json({
 			status: {
 				code: 'ok',

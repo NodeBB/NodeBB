@@ -213,8 +213,7 @@ Analytics.getHourlyStatsForSet = async function (set, hour, numHours) {
 	hour.setHours(hour.getHours(), 0, 0, 0);
 
 	for (let i = 0, ii = numHours; i < ii; i += 1) {
-		hoursArr.push(hour.getTime());
-		hour.setHours(hour.getHours() - 1, 0, 0, 0);
+		hoursArr.push(hour.getTime() - (i * 3600 * 1000));
 	}
 
 	const counts = await db.sortedSetScores(set, hoursArr);

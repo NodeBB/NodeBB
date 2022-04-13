@@ -82,5 +82,5 @@
 	"bulk-resolve": "Signalement(s) résolu(s)",
 	"bulk-success": "%1 signalement mis à jour",
 	"flagged-timeago-readable": "Signalé <span class=\"timeago\" title=\"%1\"></span> (%2)",
-  	"auto-flagged": "[Auto Flagged] Received %1 downvotes."
+  	"auto-flagged": "[Auto Signalement] A reçu %1 votes négatifs."
 }

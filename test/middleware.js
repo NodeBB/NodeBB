@@ -1,20 +1,25 @@
 'use strict';
 
 const assert = require('assert');
+const nconf = require('nconf');
+const request = require('request-promise-native');
 const db = require('./mocks/databasemock');
 const middleware = require('../src/middleware');
 const user = require('../src/user');
 const groups = require('../src/groups');
+const utils = require('../src/utils');
+
+const helpers = require('./helpers');
 
 describe('Middlewares', () => {
-	let adminUid;
-
-	before(async () => {
-		adminUid = await user.create({ username: 'admin', password: '123456' });
-		await groups.join('administrators', adminUid);
-	});
-
 	describe('expose', () => {
+		let adminUid;
+
+		before(async () => {
+			adminUid = await user.create({ username: 'admin', password: '123456' });
+			await groups.join('administrators', adminUid);
+		});
+
 		it('should expose res.locals.isAdmin = false', (done) => {
 			const resMock = { locals: {} };
 			middleware.exposeAdmin({}, resMock, () => {
@@ -92,6 +97,94 @@ describe('Middlewares', () => {
 				});
 				done();
 			});
+		});
+	});
+
+	describe('cache-control header', () => {
+		let uid;
+		let jar;
+
+		before(async () => {
+			uid = await user.create({ username: 'testuser', password: '123456' });
+			({ jar } = await helpers.loginUser('testuser', '123456'));
+		});
+
+		it('should be absent on non-existent routes, for guests', async () => {
+			const res = await request(`${nconf.get('url')}/${utils.generateUUID()}`, {
+				simple: false,
+				resolveWithFullResponse: true,
+			});
+
+			assert.strictEqual(res.statusCode, 404);
+			assert(!Object.keys(res.headers).includes('cache-control'));
+		});
+
+		it('should be set to "private" on non-existent routes, for logged in users', async () => {
+			const res = await request(`${nconf.get('url')}/${utils.generateUUID()}`, {
+				simple: false,
+				resolveWithFullResponse: true,
+				jar,
+			});
+
+			assert.strictEqual(res.statusCode, 404);
+			assert(Object.keys(res.headers).includes('cache-control'));
+			assert.strictEqual(res.headers['cache-control'], 'private');
+		});
+
+		it('should be absent on regular routes, for guests', async () => {
+			const res = await request(nconf.get('url'), {
+				simple: false,
+				resolveWithFullResponse: true,
+			});
+
+			assert.strictEqual(res.statusCode, 200);
+			assert(!Object.keys(res.headers).includes('cache-control'));
+		});
+
+		it('should be absent on api routes, for guests', async () => {
+			const res = await request(`${nconf.get('url')}/api`, {
+				simple: false,
+				resolveWithFullResponse: true,
+			});
+
+			assert.strictEqual(res.statusCode, 200);
+			assert(!Object.keys(res.headers).includes('cache-control'));
+		});
+
+		it('should be set to "private" on regular routes, for logged-in users', async () => {
+			const res = await request(nconf.get('url'), {
+				simple: false,
+				resolveWithFullResponse: true,
+				jar,
+			});
+
+			assert.strictEqual(res.statusCode, 200);
+			assert(Object.keys(res.headers).includes('cache-control'));
+			assert.strictEqual(res.headers['cache-control'], 'private');
+		});
+
+		it('should be set to "private" on api routes, for logged-in users', async () => {
+			const res = await request(`${nconf.get('url')}/api`, {
+				simple: false,
+				resolveWithFullResponse: true,
+				jar,
+			});
+
+			assert.strictEqual(res.statusCode, 200);
+			assert(Object.keys(res.headers).includes('cache-control'));
+			assert.strictEqual(res.headers['cache-control'], 'private');
+		});
+
+		it('should be set to "private" on apiv3 routes, for logged-in users', async () => {
+			const res = await request(`${nconf.get('url')}/api/v3/users/${uid}`, {
+				simple: false,
+				resolveWithFullResponse: true,
+				jar,
+			});
+
+			assert.strictEqual(res.statusCode, 200);
+			assert(Object.keys(res.headers).includes('cache-control'));
+			assert.strictEqual(res.headers['cache-control'], 'private');
 		});
 	});
 });

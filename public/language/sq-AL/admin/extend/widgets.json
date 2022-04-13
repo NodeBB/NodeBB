@@ -1,0 +1,30 @@
+{
+	"available": "Available Widgets",
+	"explanation": "Select a widget from the dropdown menu and then drag and drop it into a template's widget area on the left.",
+	"none-installed": "No widgets found! Activate the widget essentials plugin in the <a href=\"%1\">plugins</a> control panel.",
+	"clone-from": "Clone widgets from",
+	"containers.available": "Available Containers",
+	"containers.explanation": "Drag and drop on top of any active widget",
+	"containers.none": "None",
+	"container.well": "Well",
+	"container.jumbotron": "Jumbotron",
+	"container.panel": "Panel",
+	"container.panel-header": "Panel Header",
+	"container.panel-body": "Panel Body",
+	"container.alert": "Alert",
+
+	"alert.confirm-delete": "Are you sure you wish to delete this widget?",
+	"alert.updated": "Widgets Updated",
+	"alert.update-success": "Successfully updated widgets",
+	"alert.clone-success": "Successfully cloned widgets",
+
+	"error.select-clone": "Please select a page to clone from",
+
+	"title": "Title",
+	"title.placeholder": "Title (only shown on some containers)",
+	"container": "Container",
+	"container.placeholder": "Drag and drop a container or enter HTML here.",
+	"show-to-groups": "Show to groups",
+	"hide-from-groups": "Hide from groups",
+	"hide-on-mobile": "Hide on mobile"
+}

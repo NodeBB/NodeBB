@@ -83,8 +83,9 @@ privsGlobal.list = async function () {
 	});
 	payload.keys = keys;
 
-	// This is a hack because I can't do {labels.users.length} to echo the count in templates.js
-	payload.columnCount = payload.labels.users.length + 3;
+	payload.columnCountUserOther = keys.users.length - privsGlobal.userPrivilegeList.length;
+	payload.columnCountGroupOther = keys.groups.length - privsGlobal.groupPrivilegeList.length;
+
 	return payload;
 };
 

@@ -9,6 +9,7 @@ const user = require('../user');
 const meta = require('../meta');
 const privileges = require('../privileges');
 const cache = require('../cache');
+const events = require('../events');
 
 const SocketTopics = module.exports;
 
@@ -46,7 +47,16 @@ SocketTopics.createTopicFromPosts = async function (socket, data) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	return await topics.createTopicFromPosts(socket.uid, data.title, data.pids, data.fromTid);
+	const result = await topics.createTopicFromPosts(socket.uid, data.title, data.pids, data.fromTid);
+	await events.log({
+		type: `topic-fork`,
+		uid: socket.uid,
+		ip: socket.ip,
+		pids: String(data.pids),
+		fromTid: data.fromTid,
+		toTid: result.tid,
+	});
+	return result;
 };
 
 SocketTopics.isFollowed = async function (socket, tid) {

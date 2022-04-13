@@ -215,7 +215,7 @@ define('forum/groups/details', [
 			api.put(`/groups/${ajaxify.data.group.slug}`, settings).then(() => {
 				if (settings.name) {
 					let pathname = window.location.pathname;
-					pathname = pathname.substr(1, pathname.lastIndexOf('/'));
+					pathname = pathname.slice(1, pathname.lastIndexOf('/') + 1);
 					ajaxify.go(pathname + slugify(settings.name));
 				} else {
 					ajaxify.refresh();

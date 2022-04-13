@@ -101,7 +101,7 @@ Emailer.getTemplates = async (config) => {
 	emails = emails.filter(email => !email.endsWith('.js'));
 
 	const templates = await Promise.all(emails.map(async (email) => {
-		const path = email.replace(emailsPath, '').substr(1).replace('.tpl', '');
+		const path = email.replace(emailsPath, '').slice(1).replace('.tpl', '');
 		const original = await fs.promises.readFile(email, 'utf8');
 
 		return {
@@ -357,8 +357,6 @@ Emailer.sendViaFallback = async (data) => {
 	// NodeMailer uses a combined "from"
 	data.from = `${data.from_name}<${data.from}>`;
 	delete data.from_name;
-
-	winston.verbose(`[emailer] Sending email to uid ${data.uid} (${data.to})`);
 	await Emailer.fallbackTransport.sendMail(data);
 };
 

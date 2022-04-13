@@ -372,4 +372,17 @@ RETURNING ("data"->>$2::TEXT)::NUMERIC v`,
 			return Array.isArray(key) ? res.rows.map(r => parseFloat(r.v)) : parseFloat(res.rows[0].v);
 		});
 	};
+
+	module.incrObjectFieldByBulk = async function (data) {
+		if (!Array.isArray(data) || !data.length) {
+			return;
+		}
+		// TODO: perf?
+		await Promise.all(data.map(async (item) => {
+			for (const [field, value] of Object.entries(item[1])) {
+				// eslint-disable-next-line no-await-in-loop
+				await module.incrObjectFieldBy(item[0], field, value);
+			}
+		}));
+	};
 };

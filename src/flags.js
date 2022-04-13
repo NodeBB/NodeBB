@@ -463,6 +463,52 @@ Flags.create = async function (type, id, uid, reason, timestamp, forceFlag = fal
 	return flagObj;
 };
 
+Flags.purge = async function (flagIds) {
+	const flagData = (await db.getObjects(flagIds.map(flagId => `flag:${flagId}`))).filter(Boolean);
+	const postFlags = flagData.filter(flagObj => flagObj.type === 'post');
+	const userFlags = flagData.filter(flagObj => flagObj.type === 'user');
+	const assignedFlags = flagData.filter(flagObj => !!flagObj.assignee);
+
+	const [allReports, cids] = await Promise.all([
+		db.getSortedSetsMembers(flagData.map(flagObj => `flag:${flagObj.flagId}:reports`)),
+		categories.getAllCidsFromSet('categories:cid'),
+	]);
+	const allReporterUids = allReports.map(flagReports => flagReports.map(report => report && report.split(';')[0]));
+	const removeReporters = [];
+	flagData.forEach((flagObj, i) => {
+		if (Array.isArray(allReporterUids[i])) {
+			allReporterUids[i].forEach((uid) => {
+				removeReporters.push([`flags:hash`, [flagObj.type, flagObj.targetId, uid].join(':')]);
+				removeReporters.push([`flags:byReporter:${uid}`, flagObj.flagId]);
+			});
+		}
+	});
+	await Promise.all([
+		db.sortedSetRemoveBulk([
+			...flagData.map(flagObj => ([`flags:byType:${flagObj.type}`, flagObj.flagId])),
+			...flagData.map(flagObj => ([`flags:byState:${flagObj.state}`, flagObj.flagId])),
+			...removeReporters,
+			...postFlags.map(flagObj => ([`flags:byPid:${flagObj.targetId}`, flagObj.flagId])),
+			...assignedFlags.map(flagObj => ([`flags:byAssignee:${flagObj.assignee}`, flagObj.flagId])),
+			...userFlags.map(flagObj => ([`flags:byTargetUid:${flagObj.targetUid}`, flagObj.flagId])),
+		]),
+		db.deleteObjectFields(postFlags.map(flagObj => `post:${flagObj.targetId}`, ['flagId'])),
+		db.deleteObjectFields(userFlags.map(flagObj => `user:${flagObj.targetId}`, ['flagId'])),
+		db.deleteAll([
+			...flagIds.map(flagId => `flag:${flagId}`),
+			...flagIds.map(flagId => `flag:${flagId}:notes`),
+			...flagIds.map(flagId => `flag:${flagId}:reports`),
+			...flagIds.map(flagId => `flag:${flagId}:history`),
+		]),
+		db.sortedSetRemove(cids.map(cid => `flags:byCid:${cid}`), flagIds),
+		db.sortedSetRemove('flags:datetime', flagIds),
+		db.sortedSetRemove(
+			'flags:byTarget',
+			flagData.map(flagObj => [flagObj.type, flagObj.targetId].join(':'))
+		),
+	]);
+};
+
 Flags.getReports = async function (flagId) {
 	const payload = await db.getSortedSetRevRangeWithScores(`flag:${flagId}:reports`, 0, -1);
 	const [reports, uids] = payload.reduce((memo, cur) => {

@@ -25,6 +25,7 @@ middleware.buildHeader = helpers.try(async (req, res, next) => {
 	if (req.method === 'GET') {
 		await require('./index').applyCSRFasync(req, res);
 	}
+
 	res.locals.config = await controllers.api.loadConfig(req);
 	next();
 });

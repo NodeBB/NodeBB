@@ -17,5 +17,6 @@
 	"reject": "拒绝",
 	"remove": "Remove",
 	"notify": "Notify",
-	"notify-user": "Notify User"
+	"notify-user": "Notify User",
+	"confirm-reject": "Do you want to reject this post?"
 }

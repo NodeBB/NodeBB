@@ -17,5 +17,6 @@
 	"reject": "Từ chối",
 	"remove": "Xóa",
 	"notify": "Thông báo",
-	"notify-user": "Thông Báo Người Dùng"
+	"notify-user": "Thông Báo Người Dùng",
+	"confirm-reject": "Bạn có muốn từ chối bài viết này không?"
 }

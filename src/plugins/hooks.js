@@ -20,6 +20,18 @@ Hooks._deprecated = new Map([
 		until: 'v2.1.0',
 		affected: new Set(),
 	}],
+	['filter:post.purge', {
+		new: 'filter:posts.purge',
+		since: 'v1.19.6',
+		until: 'v2.1.0',
+		affected: new Set(),
+	}],
+	['action:post.purge', {
+		new: 'action:posts.purge',
+		since: 'v1.19.6',
+		until: 'v2.1.0',
+		affected: new Set(),
+	}],
 ]);
 
 Hooks.internals = {
@@ -103,7 +115,7 @@ Hooks.fire = async function (hook, params) {
 		return;
 	}
 	let deleteCaller = false;
-	if (params && typeof params === 'object' && !params.hasOwnProperty('caller')) {
+	if (params && typeof params === 'object' && !Array.isArray(params) && !params.hasOwnProperty('caller')) {
 		const als = require('../als');
 		params.caller = als.getStore();
 		deleteCaller = true;
