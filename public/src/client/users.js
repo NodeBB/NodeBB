@@ -11,7 +11,7 @@ define('forum/users', [
 	Users.init = function () {
 		app.enterRoom('user_list');
 
-		const section = utils.params().section ? ('?section=' + utils.params().section) : '';
+		const section = utils.param('section') ? ('?section=' + utils.param('section')) : '';
 		$('.nav-pills li').removeClass('active').find('a[href="' + window.location.pathname + section + '"]').parent()
 			.addClass('active');
 
@@ -115,7 +115,7 @@ define('forum/users', [
 	}
 
 	function getActiveSection() {
-		return utils.params().section || '';
+		return utils.param('section') || '';
 	}
 
 	return Users;

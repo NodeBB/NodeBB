@@ -596,45 +596,8 @@ const utils = {
 
 	// get all the url params in a single key/value hash
 	params: function (options) {
-		const hash = {};
-
-		options = options || {};
-		options.skipToType = options.skipToType || {};
-
-		let searchStr = window.location.search;
-		if (options.hasOwnProperty('url')) {
-			if (options.url) {
-				const a = utils.urlToLocation(options.url);
-				searchStr = a ? a.search : '';
-			} else {
-				searchStr = '';
-			}
-		}
-		const params = searchStr.substring(1).split('&');
-
-		params.forEach(function (param) {
-			const val = param.split('=');
-			let key = decodeURIComponent(val[0]);
-			const value = (
-				options.disableToType ||
-				options.skipToType[key] ? decodeURIComponent(val[1]) : utils.toType(decodeURIComponent(val[1]))
-			);
-
-			if (key) {
-				if (key.slice(-2) === '[]') {
-					key = key.slice(0, -2);
-				}
-				if (!hash[key]) {
-					hash[key] = value;
-				} else {
-					if (!Array.isArray(hash[key])) {
-						hash[key] = [hash[key]];
-					}
-					hash[key].push(value);
-				}
-			}
-		});
-		return hash;
+		const params = (new URL(document.location || options.url)).searchParams;
+		return Object.fromEntries(params);
 	},
 
 	param: function (key) {
