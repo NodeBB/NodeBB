@@ -1,3 +1,86 @@
+#### v1.19.6 (2022-04-13)
+
+##### Chores
+
+*  incrementing version number - v1.19.6 (283a0072)
+*  update changelog for v1.19.5 (05032ca2)
+* **deps:**
+  *  bump semver from 7.3.6 to 7.3.7 in /install (#10493) (65cec8d0)
+  *  update dependency grunt to v1.5.2 (9f496659)
+  *  update dependency grunt to v1.5.1 (0a8bf44e)
+  *  update dependency grunt to v1.5.0 (e82d8bb6)
+  *  update dependency eslint to v8.13.0 (bc3aabb4)
+  *  update dependency eslint-plugin-import to v2.26.0 (a2ebf53b)
+  *  bump nodebb-theme-persona from 11.4.3 to 11.4.4 in /install (#10437) (5b1789c1)
+  *  bump nodebb-plugin-composer-default in /install (#10438) (c8c42933)
+  *  update dependency eslint to v8.12.0 (a6590e20)
+  *  update dependency lint-staged to v12.3.7 (#10407) (5f36ad39)
+* **i18n:**  fallback strings for new resources: nodebb.post-queue (a06d1246)
+
+##### New Features
+
+*  #10460, add cutoff to suggested topics (799e94e0)
+*  add response:helpers.notAllowed (e8058ca3)
+*  add filter:image.stripEXIF (b8765df5)
+*  add confirm to reject, closes #10427 (538ad9e1)
+*  allow client-side hook registration chaining (b88bb3cf)
+*  delete flagId field from post/user on flag purge (31251282)
+*  add flags.purge (3b529b84)
+*  new admin events, closes #10405 (421ba6e1)
+*  add Albanian localisation :tada: (309968bf)
+
+##### Bug Fixes
+
+*  dont add caller to arrays (5316029f)
+*  #10491, don't leak deleted message in cleanedContent (c52401da)
+*  #10473, trim trailing slashes on config url (9f91db16)
+*  closes #10436, fix DST issue on acp dashboard (39877763)
+*  delete history as well (002a241c)
+*  handle purge posts as well (93b60532)
+*  byCid removal, targetCid not stored in flagObj (03fdb5be)
+*  upgrade script (55be4202)
+*  column counts for other privileges (2b9b2b4a)
+* **deps:**
+  *  update dependency nodebb-plugin-mentions to v3.0.8 (#10490) (7c733e9c)
+  *  update dependency winston to v3.7.2 (#10454) (dc03a2f9)
+  *  update dependency nconf to v0.11.4 (#10481) (f253bbdd)
+  *  update dependency yargs to v17.4.1 (#10480) (bbf2b73e)
+  *  update dependency ioredis to v5.0.4 (#10479) (88200ec1)
+  *  update dependency html-to-text to v8.2.0 (#10471) (91026e5f)
+  *  update dependency semver to v7.3.6 (#10466) (c50de911)
+  *  update dependency html-to-text to v8.1.1 (#10470) (b3ec8059)
+  *  update dependency nodebb-widget-essentials to v5.0.10 (#10461) (b6517cfd)
+  *  update dependency body-parser to v1.20.0 (#10450) (26511185)
+  *  update dependency spdx-license-list to v6.5.0 (#10452) (5e37f34e)
+  *  update dependency graceful-fs to v4.2.10 (#10457) (947fa193)
+  *  update dependency mongodb to v4.5.0 (#10458) (30f728ca)
+  *  update dependency ioredis to v5.0.3 (#10446) (0d744d30)
+  *  update dependency ioredis to v5 (#10434) (060ad1b0)
+  *  update dependency nodebb-plugin-2factor to v3.0.6 (#10435) (0ac426e0)
+  *  update dependency nodebb-plugin-composer-default to v7.0.21 (#10429) (898e0e89)
+  *  update dependency nodebb-plugin-spam-be-gone to v0.8.1 (#10425) (47399bfe)
+  *  update dependency sortablejs to v1.15.0 (#10418) (12cd1df2)
+  *  update dependency nodemailer to v6.7.3 (#10421) (7e542495)
+  *  update dependency yargs to v17.4.0 (#10416) (eaa05517)
+  *  update dependency nodebb-theme-persona to v11.4.3 (#10414) (720a9dba)
+  *  update dependency connect-redis to v6.1.3 (#10390) (06594131)
+* **security:**
+  *  explicitly declare cache-control header instead of using middleware (38ca73c4)
+  *  cache-control on all pages using setupPageRoute or setupApiRoute, and 404 controllers. (1f6f389f)
+  *  explicitly set cache-control 'private' on any page where a header is built (e39cdd49)
+
+##### Performance Improvements
+
+*  WIP #10449, allow array of pids for posts.purge (#10465) (76797371)
+*  #10410, faster upgrade script (dab22d5f)
+
+##### Refactors
+
+*  replace deprecated String.prototype.substr() (#10432) (200f0b2e)
+*  remove some verbose logging (9abe22a0)
+*  :trollface: (29b86b32)
+*  shorter generateTopicClass (f76c0e89)
+
 #### v1.19.5 (2022-03-16)
 
 ##### Chores
