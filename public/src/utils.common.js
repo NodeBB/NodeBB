@@ -596,7 +596,7 @@ const utils = {
 
 	// get all the url params in a single key/value hash
 	params: function (options) {
-		const params = (new URL(document.location || options.url)).searchParams;
+		const params = (new URL(options.url || document.location)).searchParams;
 
 		if (options.full) { // return URLSearchParams object
 			return params;
