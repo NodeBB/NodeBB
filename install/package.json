@@ -116,7 +116,7 @@
         "rimraf": "3.0.2",
         "rss": "1.2.2",
         "sanitize-html": "2.7.0",
-        "semver": "7.3.6",
+        "semver": "7.3.7",
         "serve-favicon": "2.5.0",
         "sharp": "0.30.3",
         "sitemap": "7.1.1",
