@@ -3,6 +3,8 @@
 'use strict';
 
 const $ = require('jquery');
+const zxcvbn = require('zxcvbn');
+
 const utils = require('./utils.common');
 
 utils.getLanguage = function () {
@@ -53,6 +55,22 @@ utils.isMobile = function () {
 	return ['xs', 'sm'].some(function (targetEnv) {
 		return targetEnv === env;
 	});
+};
+
+utils.assertPasswordValidity = (password) => {
+	// More checks on top of basic utils.isPasswordValid()
+	if (!utils.isPasswordValid(password)) {
+		throw new Error('[[user:change_password_error]]');
+	} else if (password.length < ajaxify.data.minimumPasswordLength) {
+		throw new Error('[[reset_password:password_too_short]]');
+	} else if (password.length > 512) {
+		throw new Error('[[error:password-too-long]]');
+	}
+
+	const passwordStrength = zxcvbn(password);
+	if (passwordStrength.score < ajaxify.data.minimumPasswordStrength) {
+		throw new Error('[[user:weak_password]]');
+	}
 };
 
 module.exports = utils;

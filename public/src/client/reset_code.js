@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/reset_code', ['zxcvbn', 'alerts'], function (zxcvbn, alerts) {
+define('forum/reset_code', ['alerts'], function (alerts) {
 	const ResetCode = {};
 
 	ResetCode.init = function () {
@@ -12,20 +12,13 @@ define('forum/reset_code', ['zxcvbn', 'alerts'], function (zxcvbn, alerts) {
 		const repeat = $('#repeat');
 
 		resetEl.on('click', function () {
-			const strength = zxcvbn(password.val());
-			if (password.val().length < ajaxify.data.minimumPasswordLength) {
-				$('#notice').removeClass('hidden');
-				$('#notice strong').translateText('[[reset_password:password_too_short]]');
-			} else if (password.val().length > 512) {
-				$('#notice').removeClass('hidden');
-				$('#notice strong').translateText('[[error:password-too-long]]');
-			} else if (password.val() !== repeat.val()) {
-				$('#notice').removeClass('hidden');
-				$('#notice strong').translateText('[[reset_password:passwords_do_not_match]]');
-			} else if (strength.score < ajaxify.data.minimumPasswordStrength) {
-				$('#notice').removeClass('hidden');
-				$('#notice strong').translateText('[[user:weak_password]]');
-			} else {
+			try {
+				utils.assertPasswordValidity(password.val());
+
+				if (password.val() !== repeat.val()) {
+					throw new Error('[[reset_password:passwords_do_not_match]]');
+				}
+
 				resetEl.prop('disabled', true).translateHtml('<i class="fa fa-spin fa-refresh"></i> [[reset_password:changing_password]]');
 				socket.emit('user.reset.commit', {
 					code: reset_code,
@@ -38,7 +31,11 @@ define('forum/reset_code', ['zxcvbn', 'alerts'], function (zxcvbn, alerts) {
 
 					window.location.href = config.relative_path + '/login';
 				});
+			} catch (err) {
+				$('#notice').removeClass('hidden');
+				$('#notice strong').translateText(err.message);
 			}
+
 			return false;
 		});
 	};
