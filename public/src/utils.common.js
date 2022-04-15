@@ -596,7 +596,16 @@ const utils = {
 
 	// get all the url params in a single key/value hash
 	params: function (options = {}) {
-		const params = (new URL(options.url || document.location)).searchParams;
+		let url;
+		if (options.url && !options.url.startsWith('http')) {
+			// relative path passed in
+			options.url = options.url.replace(new RegExp(`/?${config.relative_path.slice(1)}/`, 'g'), '');
+			url = new URL(document.location);
+			url.pathname = options.url;
+		} else {
+			url = new URL(options.url || document.location);
+		}
+		const params = url.searchParams;
 
 		if (options.full) { // return URLSearchParams object
 			return params;
