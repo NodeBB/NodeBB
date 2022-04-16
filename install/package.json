@@ -84,7 +84,7 @@
         "mousetrap": "1.6.5",
         "multiparty": "4.2.3",
         "@nodebb/bootswatch": "3.4.2",
-        "nconf": "0.11.4",
+        "nconf": "0.12.0",
         "nodebb-plugin-2factor": "3.0.6",
         "nodebb-plugin-composer-default": "7.0.22",
         "nodebb-plugin-dbsearch": "5.1.3",
