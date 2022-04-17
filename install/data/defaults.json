@@ -81,6 +81,7 @@
     "upvotesPerUserPerDay": 6,
     "downvotesPerDay": 10,
     "downvotesPerUserPerDay": 3,
+    "min:rep:chat": 0,
     "min:rep:downvote": 0,
     "min:rep:upvote": 0,
     "min:rep:flag": 0,

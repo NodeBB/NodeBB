@@ -32,6 +32,10 @@
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="form-group">
+				<label for="min:rep:chat">[[admin/settings/reputation:min-rep-chat]]</label>
+				<input type="text" class="form-control" placeholder="0" data-field="min:rep:chat" id="min:rep:chat">
+			</div>
+			<div class="form-group">
 				<label for="min:rep:upvote">[[admin/settings/reputation:min-rep-upvote]]</label>
 				<input type="text" class="form-control" placeholder="0" data-field="min:rep:upvote" id="min:rep:upvote">
 			</div>
