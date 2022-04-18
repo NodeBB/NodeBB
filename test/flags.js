@@ -19,6 +19,7 @@ const User = require('../src/user');
 const Groups = require('../src/groups');
 const Meta = require('../src/meta');
 const Privileges = require('../src/privileges');
+const utils = require('../src/utils');
 
 describe('Flags', () => {
 	let uid1;
@@ -933,6 +934,154 @@ describe('Flags', () => {
 				assert(Array.isArray(response.history));
 				assert(Array.isArray(response.notes));
 				assert.strictEqual(response.notes.length, 0);
+			});
+		});
+
+		describe('access control', () => {
+			let uid;
+			let requests;
+
+			const noteTime = Date.now();
+
+			before(async () => {
+				uid = await User.create({ username: 'flags-access-control', password: 'abcdef' });
+				const { jar, csrf_token } = await helpers.loginUser('flags-access-control', 'abcdef');
+
+				const { postData } = await Topics.post({
+					uid,
+					cid: 1,
+					title: 'test topic for flagging',
+					content: 'test content 123',
+				});
+
+				const flaggerUid = await User.create({ username: 'flags-access-control-flagger', password: 'abcdef' });
+
+				const { flagId } = await Flags.create('post', postData.pid, flaggerUid, 'spam');
+
+				requests = new Set([
+					{
+						method: 'get',
+						uri: `${nconf.get('url')}/api/v3/flags/${flagId}`,
+						jar,
+						headers: {
+							'x-csrf-token': csrf_token,
+						},
+						json: true,
+						simple: false,
+						resolveWithFullResponse: true,
+					},
+					{
+						method: 'put',
+						uri: `${nconf.get('url')}/api/v3/flags/${flagId}`,
+						jar,
+						headers: {
+							'x-csrf-token': csrf_token,
+						},
+						body: {
+							state: 'wip',
+						},
+						json: true,
+						simple: false,
+						resolveWithFullResponse: true,
+					},
+					{
+						method: 'post',
+						uri: `${nconf.get('url')}/api/v3/flags/${flagId}/notes`,
+						jar,
+						headers: {
+							'x-csrf-token': csrf_token,
+						},
+						body: {
+							note: 'test note',
+							datetime: noteTime,
+						},
+						json: true,
+						simple: false,
+						resolveWithFullResponse: true,
+					},
+					{
+						method: 'delete',
+						uri: `${nconf.get('url')}/api/v3/flags/${flagId}/notes/${noteTime}`,
+						jar,
+						headers: {
+							'x-csrf-token': csrf_token,
+						},
+						json: true,
+						simple: false,
+						resolveWithFullResponse: true,
+					},
+				]);
+			});
+
+			beforeEach(async () => {
+				// Reset uid back to unprivileged user
+				await Groups.leave('administrators', uid);
+				await Groups.leave('Global Moderators', uid);
+				await Privileges.categories.rescind(['moderate'], 1, [uid]);
+			});
+
+			it('should not allow access to privileged flag endpoints to guests', async () => {
+				for (let opts of requests) {
+					opts = { ...opts };
+					delete opts.jar;
+					delete opts.headers;
+
+					// eslint-disable-next-line no-await-in-loop
+					const { statusCode } = await request(opts);
+					assert(statusCode.toString().startsWith(4));
+				}
+			});
+
+			it('should not allow access to privileged flag endpoints to regular users', async () => {
+				for (const opts of requests) {
+					// eslint-disable-next-line no-await-in-loop
+					const { statusCode } = await request(opts);
+					assert(statusCode.toString().startsWith(4));
+				}
+			});
+
+			it('should allow access to privileged endpoints to administrators', async () => {
+				await Groups.join('administrators', uid);
+
+				for (const opts of requests) {
+					// eslint-disable-next-line no-await-in-loop
+					const { statusCode, body } = await request(opts);
+					assert.strictEqual(statusCode, 200);
+				}
+			});
+
+			it('should allow access to privileged endpoints to global moderators', async () => {
+				await Groups.join('Global Moderators', uid);
+
+				for (const opts of requests) {
+					// eslint-disable-next-line no-await-in-loop
+					const { statusCode, body } = await request(opts);
+					assert.strictEqual(statusCode, 200);
+				}
+			});
+
+			it('should allow access to privileged endpoints to moderators if the flag target is a post in a cid they moderate', async () => {
+				await Privileges.categories.give(['moderate'], 1, [uid]);
+
+				for (const opts of requests) {
+					// eslint-disable-next-line no-await-in-loop
+					const { statusCode, body } = await request(opts);
+					assert.strictEqual(statusCode, 200);
+				}
+			});
+
+			it('should NOT allow access to privileged endpoints to moderators if the flag target is a post in a cid they DO NOT moderate', async () => {
+				// This is a new category the user will moderate, but the flagged post is in a different category
+				const { cid } = await Categories.create({
+					name: utils.generateUUID(),
+				});
+				await Privileges.categories.give(['moderate'], cid, [uid]);
+
+				for (const opts of requests) {
+					// eslint-disable-next-line no-await-in-loop
+					const { statusCode, body } = await request(opts);
+					assert(statusCode.toString().startsWith(4), `${opts.method.toUpperCase()} ${opts.uri}`);
+				}
 			});
 		});
 	});

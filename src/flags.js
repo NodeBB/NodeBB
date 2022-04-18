@@ -545,6 +545,22 @@ Flags.exists = async function (type, id, uid) {
 	return await db.isSortedSetMember('flags:hash', [type, id, uid].join(':'));
 };
 
+Flags.canView = async (flagId, uid) => {
+	const [{ type, targetId }, isAdminOrGlobalMod] = await Promise.all([
+		db.getObject(`flag:${flagId}`),
+		user.isAdminOrGlobalMod(uid),
+	]);
+
+	if (type === 'post') {
+		const cid = await Flags.getTargetCid(type, targetId);
+		const isModerator = await user.isModerator(uid, cid);
+
+		return isAdminOrGlobalMod || isModerator;
+	}
+
+	return isAdminOrGlobalMod;
+};
+
 Flags.canFlag = async function (type, id, uid, skipLimitCheck = false) {
 	const limit = meta.config['flags:limitPerTarget'];
 	if (!skipLimitCheck && limit > 0) {
