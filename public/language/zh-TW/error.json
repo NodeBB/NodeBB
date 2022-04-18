@@ -157,6 +157,7 @@
     "already-voting-for-this-post": "您已讚過此貼文回覆了。",
     "reputation-system-disabled": "聲望系統已停用。",
     "downvoting-disabled": "倒讚已被停用",
+    "not-enough-reputation-to-chat": "You need %1 reputation to chat",
     "not-enough-reputation-to-upvote": "You need %1 reputation to upvote",
     "not-enough-reputation-to-downvote": "You need %1 reputation to downvote",
     "not-enough-reputation-to-flag": "You need %1 reputation to flag this post",

@@ -157,6 +157,7 @@
     "already-voting-for-this-post": "Du har allerede stemt på dette innlegget",
     "reputation-system-disabled": "Ryktesystemet er deaktivert.",
     "downvoting-disabled": "Nedstemming er deaktivert",
+    "not-enough-reputation-to-chat": "You need %1 reputation to chat",
     "not-enough-reputation-to-upvote": "Du trenger %1 omdømme for å stemme opp.  ",
     "not-enough-reputation-to-downvote": "Du trenger %1 omdømme for å stemme ned. ",
     "not-enough-reputation-to-flag": "Du trenger %1 omdømme for å flagge dette innlegget.",

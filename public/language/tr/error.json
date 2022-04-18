@@ -157,6 +157,7 @@
     "already-voting-for-this-post": "Bu gönderi için zaten oy verdin.",
     "reputation-system-disabled": "İtibar sistemi devre dışı.",
     "downvoting-disabled": "Eksi oylama devre dışı bırakılmış. ",
+    "not-enough-reputation-to-chat": "You need %1 reputation to chat",
     "not-enough-reputation-to-upvote": "Artı oy verebilmek için en az %1 saygınlık puanına sahip olmalısınız.",
     "not-enough-reputation-to-downvote": "Eksi oy verebilmek için en az %1 saygınlık puanına sahip olmalısınız.",
     "not-enough-reputation-to-flag": "Bu iletiyi şikayet etmek için en az %1 saygınlık puanına sahip olmalısınız.",

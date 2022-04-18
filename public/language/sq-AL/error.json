@@ -157,6 +157,7 @@
     "already-voting-for-this-post": "Ju keni votuar tashmë për këtë postim.",
     "reputation-system-disabled": "Sistemi i reputacionit është i çaktivizuar.",
     "downvoting-disabled": "Kundërvotimi është i çaktivizuar",
+    "not-enough-reputation-to-chat": "You need %1 reputation to chat",
     "not-enough-reputation-to-upvote": "Ju nevojitet %1 reputacion për të votuar pro",
     "not-enough-reputation-to-downvote": "Ju nevojitet %1 reputacion për të votuar kundër",
     "not-enough-reputation-to-flag": "Ju nevojitet %1 reputacion për të raportuar postimin",

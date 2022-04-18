@@ -157,6 +157,7 @@
     "already-voting-for-this-post": "Hai già votato per questo post",
     "reputation-system-disabled": "Il sistema di reputazione è disabilitato.",
     "downvoting-disabled": "Votata negativamente è disabilitato",
+    "not-enough-reputation-to-chat": "You need %1 reputation to chat",
     "not-enough-reputation-to-upvote": "Hai bisogno di %1 reputazione/i per votare positivamente",
     "not-enough-reputation-to-downvote": "Hai bisogno di %1 reputazione/i per effettuare un voto negativo",
     "not-enough-reputation-to-flag": "Hai bisogno di %1 reputazione/i per segnalare questo post",

@@ -157,6 +157,7 @@
     "already-voting-for-this-post": "Вече сте дали глас за тази публикация.",
     "reputation-system-disabled": "Системата за репутация е изключена.",
     "downvoting-disabled": "Отрицателното гласуване е изключено",
+    "not-enough-reputation-to-chat": "You need %1 reputation to chat",
     "not-enough-reputation-to-upvote": "Репутацията Ви трябва да бъде поне %1, за да гласувате положително",
     "not-enough-reputation-to-downvote": "Репутацията Ви трябва да бъде поне %1, за да гласувате отрицателно",
     "not-enough-reputation-to-flag": "Репутацията Ви трябва да бъде поне %1, за да докладвате тази публикация",

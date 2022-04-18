@@ -10,6 +10,7 @@
 	"min-rep-downvote": "Minimální reputace pro vyjádření nesouhlasu s příspěvkem",
 	"downvotes-per-day": "Downvotes per day (set to 0 for unlimited downvotes)",
 	"downvotes-per-user-per-day": "Downvotes per user per day (set to 0 for unlimited downvotes)",
+	"min-rep-chat": "Minimum reputation to send chat messages",
 	"min-rep-flag": "Minimální reputace pro označení příspěvků",
 	"min-rep-website": "Minimální reputace pro přidání „Webové stránky” do uživatelského profilu",
 	"min-rep-aboutme": "Minimální reputace pro přidání „O mně” do uživatelského profilu",

@@ -10,6 +10,7 @@
 	"min-rep-downvote": "Reputazione minima per votare negativamente i post",
 	"downvotes-per-day": "Voti negativi al giorno (imposta a 0 per voti negativi illimitati)",
 	"downvotes-per-user-per-day": "Voti negativi per utenti al giorno (imposta a 0 per voti negativi illimitati)",
+	"min-rep-chat": "Minimum reputation to send chat messages",
 	"min-rep-flag": "Reputazione minima per segnalare i post",
 	"min-rep-website": "Reputazione minima per aggiungere \"Sito Web\" al profilo utente",
 	"min-rep-aboutme": "Reputazione minima per aggiungere \"Su di me\" al profilo utente",
