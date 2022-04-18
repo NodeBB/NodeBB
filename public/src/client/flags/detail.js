@@ -34,7 +34,6 @@ define('forum/flags/detail', [
 				}
 
 				case 'appendNote':
-					// socket.emit('flags.appendNote', {
 					api.post(`/flags/${ajaxify.data.flagId}/notes`, {
 						note: noteEl.value,
 						datetime: parseInt(noteEl.getAttribute('data-datetime'), 10),
@@ -109,6 +108,18 @@ define('forum/flags/detail', [
 					}
 					selectedNoteEl.classList.add('editing');
 					textareaEl.focus();
+					break;
+				}
+
+				case 'delete-flag': {
+					bootbox.confirm('[[flags:delete-flag-confirm]]', function (ok) {
+						if (ok) {
+							api.delete(`/flags/${ajaxify.data.flagId}`, {}).then(() => {
+								alerts.success('[[flags:flag-deleted]]');
+								ajaxify.go('flags');
+							}).catch(alerts.error);
+						}
+					});
 					break;
 				}
 			}
