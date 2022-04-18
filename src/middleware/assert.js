@@ -57,12 +57,8 @@ Assert.post = helpers.try(async (req, res, next) => {
 });
 
 Assert.flag = helpers.try(async (req, res, next) => {
-	const checks = await Promise.all([
-		db.isSortedSetMember('flags:datetime', req.params.flagId),
-		flags.canView(req.params.flagId, req.uid),
-	]);
-
-	if (!checks.every(Boolean)) {
+	const canView = await flags.canView(req.params.flagId, req.uid);
+	if (!canView) {
 		return controllerHelpers.formatApiResponse(404, res, new Error('[[error:no-flag]]'));
 	}
 

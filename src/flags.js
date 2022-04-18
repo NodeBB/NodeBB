@@ -546,6 +546,11 @@ Flags.exists = async function (type, id, uid) {
 };
 
 Flags.canView = async (flagId, uid) => {
+	const exists = await db.isSortedSetMember('flags:datetime', flagId);
+	if (!exists) {
+		return false;
+	}
+
 	const [{ type, targetId }, isAdminOrGlobalMod] = await Promise.all([
 		db.getObject(`flag:${flagId}`),
 		user.isAdminOrGlobalMod(uid),
