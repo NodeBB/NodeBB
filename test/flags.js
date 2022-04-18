@@ -939,25 +939,36 @@ describe('Flags', () => {
 
 		describe('access control', () => {
 			let uid;
+			let jar;
+			let csrf_token;
 			let requests;
+
+			let flaggerUid;
+			let flagId;
 
 			const noteTime = Date.now();
 
 			before(async () => {
 				uid = await User.create({ username: 'flags-access-control', password: 'abcdef' });
-				const { jar, csrf_token } = await helpers.loginUser('flags-access-control', 'abcdef');
+				({ jar, csrf_token } = await helpers.loginUser('flags-access-control', 'abcdef'));
+
+				flaggerUid = await User.create({ username: 'flags-access-control-flagger', password: 'abcdef' });
+			});
+
+			beforeEach(async () => {
+				// Reset uid back to unprivileged user
+				await Groups.leave('administrators', uid);
+				await Groups.leave('Global Moderators', uid);
+				await Privileges.categories.rescind(['moderate'], 1, [uid]);
 
 				const { postData } = await Topics.post({
 					uid,
 					cid: 1,
-					title: 'test topic for flagging',
-					content: 'test content 123',
+					title: utils.generateUUID(),
+					content: utils.generateUUID(),
 				});
 
-				const flaggerUid = await User.create({ username: 'flags-access-control-flagger', password: 'abcdef' });
-
-				const { flagId } = await Flags.create('post', postData.pid, flaggerUid, 'spam');
-
+				({ flagId } = await Flags.create('post', postData.pid, flaggerUid, 'spam'));
 				requests = new Set([
 					{
 						method: 'get',
@@ -1010,14 +1021,18 @@ describe('Flags', () => {
 						simple: false,
 						resolveWithFullResponse: true,
 					},
+					{
+						method: 'delete',
+						uri: `${nconf.get('url')}/api/v3/flags/${flagId}`,
+						jar,
+						headers: {
+							'x-csrf-token': csrf_token,
+						},
+						json: true,
+						simple: false,
+						resolveWithFullResponse: true,
+					},
 				]);
-			});
-
-			beforeEach(async () => {
-				// Reset uid back to unprivileged user
-				await Groups.leave('administrators', uid);
-				await Groups.leave('Global Moderators', uid);
-				await Privileges.categories.rescind(['moderate'], 1, [uid]);
 			});
 
 			it('should not allow access to privileged flag endpoints to guests', async () => {
@@ -1028,7 +1043,7 @@ describe('Flags', () => {
 
 					// eslint-disable-next-line no-await-in-loop
 					const { statusCode } = await request(opts);
-					assert(statusCode.toString().startsWith(4));
+					assert(statusCode.toString().startsWith(4), `${opts.method.toUpperCase()} ${opts.uri} => ${statusCode}`);
 				}
 			});
 
@@ -1036,7 +1051,7 @@ describe('Flags', () => {
 				for (const opts of requests) {
 					// eslint-disable-next-line no-await-in-loop
 					const { statusCode } = await request(opts);
-					assert(statusCode.toString().startsWith(4));
+					assert(statusCode.toString().startsWith(4), `${opts.method.toUpperCase()} ${opts.uri} => ${statusCode}`);
 				}
 			});
 
@@ -1045,8 +1060,8 @@ describe('Flags', () => {
 
 				for (const opts of requests) {
 					// eslint-disable-next-line no-await-in-loop
-					const { statusCode, body } = await request(opts);
-					assert.strictEqual(statusCode, 200);
+					const { statusCode } = await request(opts);
+					assert.strictEqual(statusCode, 200, `${opts.method.toUpperCase()} ${opts.uri} => ${statusCode}`);
 				}
 			});
 
@@ -1055,8 +1070,8 @@ describe('Flags', () => {
 
 				for (const opts of requests) {
 					// eslint-disable-next-line no-await-in-loop
-					const { statusCode, body } = await request(opts);
-					assert.strictEqual(statusCode, 200);
+					const { statusCode } = await request(opts);
+					assert.strictEqual(statusCode, 200, `${opts.method.toUpperCase()} ${opts.uri} => ${statusCode}`);
 				}
 			});
 
@@ -1065,8 +1080,8 @@ describe('Flags', () => {
 
 				for (const opts of requests) {
 					// eslint-disable-next-line no-await-in-loop
-					const { statusCode, body } = await request(opts);
-					assert.strictEqual(statusCode, 200);
+					const { statusCode } = await request(opts);
+					assert.strictEqual(statusCode, 200, `${opts.method.toUpperCase()} ${opts.uri} => ${statusCode}`);
 				}
 			});
 
@@ -1079,8 +1094,8 @@ describe('Flags', () => {
 
 				for (const opts of requests) {
 					// eslint-disable-next-line no-await-in-loop
-					const { statusCode, body } = await request(opts);
-					assert(statusCode.toString().startsWith(4), `${opts.method.toUpperCase()} ${opts.uri}`);
+					const { statusCode } = await request(opts);
+					assert(statusCode.toString().startsWith(4), `${opts.method.toUpperCase()} ${opts.uri} => ${statusCode}`);
 				}
 			});
 		});
