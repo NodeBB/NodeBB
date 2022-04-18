@@ -65,3 +65,31 @@ put:
                 $ref: ../../components/schemas/Status.yaml#/Status
               response:
                 $ref: ../../components/schemas/FlagObject.yaml#/FlagHistoryObject
+delete:
+  tags:
+    - flags
+  summary: delete a flag
+  description: |
+    This operation deletes a flag. Unlike posts and topics, flags are not marked as deleted.
+    This deletion endpoint will purge the flag and all of its associated content from the database.
+  parameters:
+    - in: path
+      name: flagId
+      schema:
+        type: number
+      required: true
+      description: a valid flag id
+      example: 1
+  responses:
+    '200':
+      description: Flag successfully deleted
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}
