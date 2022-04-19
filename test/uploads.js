@@ -230,7 +230,7 @@ describe('Upload Controllers', () => {
 
 		it('should fail if file is missing', (done) => {
 			image.size(path.join(__dirname, '../test/files/doesnotexist.png'), (err) => {
-				assert.strictEqual(err.message, 'Input file is missing');
+				assert(err.message.startsWith('Input file is missing'));
 				done();
 			});
 		});
