@@ -43,7 +43,7 @@
     "details.badge_text": "Teksti i medaljes",
     "details.userTitleEnabled": "Shfaq medaljen",
     "details.private_help": "Nëse aktivizohet, bashkimi i grupeve kërkon miratimin nga një pronar grupi",
-    "details.hidden": "i fshehur",
+    "details.hidden": "I fshehur",
     "details.hidden_help": "Nëse aktivizohet, ky grup nuk do të gjendet në listën e grupeve dhe përdoruesit do të duhet të ftohen manualisht",
     "details.delete_group": "Fshij grupin",
     "details.private_system_help": "Grupet private janë çaktivizuar në nivel sistemi, ky opsion nuk bën asgjë",

@@ -1,7 +1,7 @@
 {
     "home": "Faqja kryesore",
     "unread": "Tema të palexuara",
-    "popular-day": "Temat e njohura sot",
+    "popular-day": "Temat e ndjekura sot",
     "popular-week": "Temat e njohura këtë javë",
     "popular-month": "Temat e njohura këtë muaj",
     "popular-alltime": "Tema të njohura gjatë gjithë kohës",
@@ -19,7 +19,7 @@
     "users/sort-posts": "Përdoruesit me më shumë postime",
     "users/sort-reputation": "Përdoruesit me reputacionin më të madh",
     "users/banned": "Përdoruesit e Ndaluar",
-    "users/most-flags": "Shumica e përdoruesve të shënuar",
+    "users/most-flags": "Shumica e përdoruesve të raportuar",
     "users/search": "Kërkimi i përdoruesit",
     "notifications": "Njoftimet",
     "tags": "Etiketimet",

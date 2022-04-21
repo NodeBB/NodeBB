@@ -22,10 +22,10 @@
     "chat.thirty_days": "30 Ditë",
     "chat.three_months": "3 Muaj",
     "chat.delete_message_confirm": "A je i sigurt që dëshiron ta fshihni këtë mesazh?",
-    "chat.retrieving-users": "Duek marre perdoruesit...",
-    "chat.manage-room": "Menaxho hapesiren e bisedave",
+    "chat.retrieving-users": "Duke marrë përdoruesit...",
+    "chat.manage-room": "Menaxho hapësirën e bisedave",
     "chat.add-user-help": "Kërkoni për përdoruesit këtu. Kur zgjidhet, përdoruesi do të shtohet në bisedë. Përdoruesi i ri nuk do të jetë në gjendje të shohë mesazhet e bisedës të shkruara përpara se të shtoheshin në bisedë. Vetëm krijuesit e bisedes (<i class=\"fa fa-star text-warning\"></i>) mund të heqin përdoruesit nga hapesirat e bisedës.",
-    "chat.confirm-chat-with-dnd-user": "Ky përdorues ka vendosur statusin e tij në DnD (Mos shqetëso). Dëshiron ende të bisedosh me ta?",
+    "chat.confirm-chat-with-dnd-user": "Ky përdorues ka vendosur statusin e tij në (Mos shqetëso). Dëshiron ende të bisedosh me ta?",
     "chat.rename-room": "Riemërto dhomën",
     "chat.rename-placeholder": "Shkruani emrin e dhomës tuaj këtu",
     "chat.rename-help": "Emri i dhomës i vendosur këtu do të jetë i dukshëm nga të gjithë pjesëmarrësit në dhomë.",
@@ -35,7 +35,7 @@
     "chat.in-room": "Në këtë dhomë",
     "chat.kick": "Largo",
     "chat.show-ip": "Shfaq IP",
-    "chat.owner": "Administratori i hapesires",
+    "chat.owner": "Administratori i hapësirës",
     "chat.system.user-join": "%1 i është bashkuar hapësirës",
     "chat.system.user-leave": "%1 ka dalë nga hapësira",
     "chat.system.room-rename": "%2 e ka riemërtuar këtë hapësirë: %1",
@@ -78,5 +78,5 @@
     "thumbs.modal.resize-note": "<strong>Shenim</strong>: Ky forum eshte konfiguruar per te ndryshuar permasat e gjeresise te materialit maksimalisht ne 1%1p",
     "thumbs.modal.add": "Shto informacion",
     "thumbs.modal.remove": "Largo informacionin",
-    "thumbs.modal.confirm-remove": "Jeni te sigurte qe doni ta fshini kete informacion?"
+    "thumbs.modal.confirm-remove": "Jeni te sigurtë që doni ta fshini këtë informacion?"
 }
