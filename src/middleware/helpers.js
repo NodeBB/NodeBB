@@ -32,6 +32,7 @@ helpers.buildBodyClass = function (req, res, templateData = {}) {
 		try {
 			p = slugify(decodeURIComponent(p));
 		} catch (err) {
+			winston.error(`Error decoding URI: ${p}`);
 			winston.error(err.stack);
 			p = '';
 		}
