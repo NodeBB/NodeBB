@@ -24,7 +24,7 @@
     "reset.notify.text2": "Nëse nuk e keni autorizuar këtë, ju lutemi njoftoni menjëherë një administrator të VIAL.",
     "digest.latest_topics": "Temat më të fundit nga % 1",
     "digest.top-topics": "Temat kryesore nga % 1",
-    "digest.popular-topics": "Tema të njohura nga % 1",
+    "digest.popular-topics": "Tema të kërkuara nga % 1",
     "digest.cta": "Klikoni këtu për të vizituar %1",
     "digest.unsub.info": "Kjo përmbledhje të është dërguar për shkak të abonimit tuaj.",
     "digest.day": "Ditë",
