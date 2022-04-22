@@ -85,7 +85,7 @@
         "multiparty": "4.2.3",
         "@nodebb/bootswatch": "3.4.2",
         "nconf": "0.12.0",
-        "nodebb-plugin-2factor": "3.0.6",
+        "nodebb-plugin-2factor": "3.0.7",
         "nodebb-plugin-composer-default": "7.0.22",
         "nodebb-plugin-dbsearch": "5.1.3",
         "nodebb-plugin-emoji": "3.5.17",
