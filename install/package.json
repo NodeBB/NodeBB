@@ -121,7 +121,7 @@
         "sharp": "0.30.4",
         "sitemap": "7.1.1",
         "slideout": "1.0.1",
-        "socket.io": "4.4.1",
+        "socket.io": "4.5.0",
         "socket.io-adapter-cluster": "1.0.1",
         "socket.io-client": "4.4.1",
         "@socket.io/redis-adapter": "7.1.0",
