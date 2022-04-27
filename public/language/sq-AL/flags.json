@@ -32,7 +32,7 @@
 	"quick-actions": "Veprimet e shpejta",
 	"flagged-user": "Përdorues i raportuar",
 	"view-profile": "Shiko Profilin",
-	"start-new-chat": "Filloni një bisedë të re",
+	"start-new-chat": "Fillo një bisedë të re",
 	"go-to-target": "Shiko objektivin e raportimit",
 	"assign-to-me": "Ma cakto mua",
 	"delete-post": "Fshij postimin",
@@ -50,7 +50,7 @@
 	"note-deleted": "Shënimi u fshi",
 
 	"history": "Llogaria &amp; Historia e raportimeve",
-	"no-history": "Nuk ka histori flamuri.",
+	"no-history": "Nuk ka histori raportuese",
 
 	"state-all": "Të gjitha gjendjet",
 	"state-open": "E re/e hapur",
@@ -63,7 +63,7 @@
 	"sort-newest": "Më të rejat ne fillim",
 	"sort-oldest": "Më të vjetrat në filim",
 	"sort-reports": "Shumica e raporteve",
-	"sort-all": "Të gjitha llojet e flamujve...",
+	"sort-all": "Të gjitha llojet e raportimeve...",
 	"sort-posts-only": "Vetëm postime...",
 	"sort-downvotes": "Më pak të pëlqyerat ",
 	"sort-upvotes": "Më të pëlqyerat",
@@ -78,7 +78,7 @@
 	"modal-submit": "Dërgo raportin",
 	"modal-submit-success": "Përmbajtja është raportuar për moderim",
 
-	"bulk-actions": "Veprimet me shumicë",
+	"bulk-actions": "Veprime në mas",
 	"bulk-resolve": "Zgjidhja e raportim(eve)",
 	"bulk-success": "%1 raportime u përditësuan",
 	"flagged-timeago-readable": "I raportuar<span class=\"timeago\" title=\"%1\"></span> (% 2)",

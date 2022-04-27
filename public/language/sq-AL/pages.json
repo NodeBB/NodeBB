@@ -1,7 +1,7 @@
 {
     "home": "Faqja kryesore",
     "unread": "Tema të palexuara",
-    "popular-day": "Temat e ndjekura sot",
+    "popular-day": "Temat më të ndjekura sot",
     "popular-week": "Temat e njohura këtë javë",
     "popular-month": "Temat e njohura këtë muaj",
     "popular-alltime": "Tema të njohura gjatë gjithë kohës",
@@ -30,7 +30,7 @@
     "reset": "Rivendosni fjalëkalimin e llogarisë tuaj",
     "categories": "Kategoritë",
     "groups": "Grupet",
-    "group": "% 1 grup",
+    "group": "%1 grup",
     "chats": "Bisedat",
     "chat": "Biseda me %1",
     "flags": "Flamuret",

@@ -48,7 +48,7 @@
     "details.delete_group": "Fshij grupin",
     "details.private_system_help": "Grupet private janë çaktivizuar në nivel sistemi, ky opsion nuk bën asgjë",
     "event.updated": "Detajet e grupit janë përditësuar",
-    "event.deleted": "Grupi \"% 1\" është fshirë",
+    "event.deleted": "Grupi \"%1\" është fshirë",
     "membership.accept-invitation": "Prano Ftesën",
     "membership.accept.notification_title": "Tani jeni anëtar i <strong>%1</strong>",
     "membership.invitation-pending": "Ftesa në pritje",
