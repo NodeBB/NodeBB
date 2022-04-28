@@ -68,6 +68,25 @@ get:
                                                   type: string
                                               unread-class:
                                                 type: string
+                                      lastTopic:
+                                        type: object
+                                        properties:
+                                          tid:
+                                            type: number
+                                          mainPid:
+                                            type: number
+                                          slug:
+                                            type: string
+                                          title:
+                                            type: string
+                                          titleRaw:
+                                            type: string
+                                          teaserPid:
+                                            type: number
+                                          cid:
+                                            type: number
+                                          postcount:
+                                            type: number
                                       posts:
                                         type: array
                                         items:
@@ -118,14 +137,45 @@ get:
                                             topic:
                                               type: object
                                               properties:
+                                                tid:
+                                                  type: number
+                                                mainPid:
+                                                  type: number
                                                 slug:
                                                   type: string
                                                 title:
                                                   type: string
+                                                titleRaw:
+                                                  type: string
+                                                teaserPid:
+                                                  type: number
+                                                cid:
+                                                  type: number
+                                                postcount:
+                                                  type: number
                                       imageClass:
                                         type: string
                                       timesClicked:
                                         type: number
+                            lastTopic:
+                              type: object
+                              properties:
+                                tid:
+                                  type: number
+                                mainPid:
+                                  type: number
+                                slug:
+                                  type: string
+                                title:
+                                  type: string
+                                titleRaw:
+                                  type: string
+                                teaserPid:
+                                  type: number
+                                cid:
+                                  type: number
+                                postcount:
+                                  type: number
                             posts:
                               type: array
                               items:
@@ -179,10 +229,22 @@ get:
                                   topic:
                                     type: object
                                     properties:
+                                      tid:
+                                        type: number
+                                      mainPid:
+                                        type: number
                                       slug:
                                         type: string
                                       title:
                                         type: string
+                                      titleRaw:
+                                        type: string
+                                      teaserPid:
+                                        type: number
+                                      cid:
+                                        type: number
+                                      postcount:
+                                        type: number
                             teaser:
                               type: object
                               properties:

@@ -114,10 +114,7 @@ module.exports = function (Categories) {
 				teaser.parentCids = cidToRoot[teaser.cid];
 				teaser.tid = undefined;
 				teaser.uid = undefined;
-				teaser.topic = {
-					slug: topicData[index].slug,
-					title: topicData[index].title,
-				};
+				teaser.topic = topicData[index];
 			}
 		});
 		return teasers.filter(Boolean);
@@ -126,7 +123,10 @@ module.exports = function (Categories) {
 	function assignTopicsToCategories(categories, topics) {
 		categories.forEach((category) => {
 			if (category) {
-				category.posts = topics.filter(t => t.cid && (t.cid === category.cid || t.parentCids.includes(category.cid)))
+				const filtered = topics.filter(t => t.cid && (t.cid === category.cid || t.parentCids.includes(category.cid)));
+				category.lastTopic = filtered
+					.sort((a, b) => b.topic.tid - a.topic.tid)[0]?.topic;
+				category.posts = filtered
 					.sort((a, b) => b.pid - a.pid)
 					.slice(0, parseInt(category.numRecentReplies, 10));
 			}
