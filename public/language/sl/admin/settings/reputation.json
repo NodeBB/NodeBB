@@ -10,6 +10,7 @@
 	"min-rep-downvote": "Najmanjši ugled za objavo glasov proti",
 	"downvotes-per-day": "Glasovi proti na dan (nastavljeno na 0 za neomejeno število glasov proti)",
 	"downvotes-per-user-per-day": "Glasovi proti na uporabnika na dan (nastavljeno na 0 za neomejeno število glasov proti)",
+	"min-rep-chat": "Minimum reputation to send chat messages",
 	"min-rep-flag": "Najmanjši ugled za označevanje objav z zastavico",
 	"min-rep-website": "Najmanjši ugled za dodajanje \"Spletna stran\" v uporabniški profil",
 	"min-rep-aboutme": "Najmanjši ugled za dodajanje \"O meni\" v uporabniški profil",

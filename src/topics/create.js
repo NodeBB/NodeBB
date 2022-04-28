@@ -88,7 +88,9 @@ module.exports = function (Topics) {
 		Topics.checkTitle(data.title);
 		await Topics.validateTags(data.tags, data.cid, uid);
 		data.tags = await Topics.filterTags(data.tags, data.cid);
-		Topics.checkContent(data.content);
+		if (!data.fromQueue) {
+			Topics.checkContent(data.content);
+		}
 
 		const [categoryExists, canCreate, canTag] = await Promise.all([
 			categories.exists(data.cid),
@@ -165,13 +167,13 @@ module.exports = function (Topics) {
 		data.cid = topicData.cid;
 
 		await guestHandleValid(data);
-		if (!data.fromQueue) {
-			await user.isReadyToPost(uid, data.cid);
-		}
 		if (data.content) {
 			data.content = utils.rtrim(data.content);
 		}
-		Topics.checkContent(data.content);
+		if (!data.fromQueue) {
+			await user.isReadyToPost(uid, data.cid);
+			Topics.checkContent(data.content);
+		}
 
 		// For replies to scheduled topics, don't have a timestamp older than topic's itself
 		if (topicData.scheduled) {

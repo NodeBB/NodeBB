@@ -157,6 +157,7 @@
     "already-voting-for-this-post": "Tu jau balsoji par šo rakstu.",
     "reputation-system-disabled": "Ranga punktu sistēma ir atspējota.",
     "downvoting-disabled": "Balsošana \"pret\" ir atspējota",
+    "not-enough-reputation-to-chat": "You need %1 reputation to chat",
     "not-enough-reputation-to-upvote": "You need %1 reputation to upvote",
     "not-enough-reputation-to-downvote": "You need %1 reputation to downvote",
     "not-enough-reputation-to-flag": "You need %1 reputation to flag this post",

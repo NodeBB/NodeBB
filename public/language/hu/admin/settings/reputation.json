@@ -10,6 +10,7 @@
 	"min-rep-downvote": "Szükséges minimális hírnév a leszavazás használatához",
 	"downvotes-per-day": "Leszavazások naponta (adj meg 0-t, hogy ne legyen korlátozás)",
 	"downvotes-per-user-per-day": "Leszavazások felhasználónként naponta (adj meg 0-t, hogy ne legyen korlátozás)",
+	"min-rep-chat": "Minimum reputation to send chat messages",
 	"min-rep-flag": "Szükséges minimális hírnév hozzászólások megjelöléséhez",
 	"min-rep-website": "Szükséges minimális hírnév \"weboldal\" megadásához a felhasználói profilon",
 	"min-rep-aboutme": "Szükséges minimális hírnév \"bemutatkozás\" megadásához a felhasználói profilon",

@@ -157,6 +157,7 @@
     "already-voting-for-this-post": "이미 이 포스트에 투표하셨습니다.",
     "reputation-system-disabled": "인지도 시스템이 비활성화되어있습니다.",
     "downvoting-disabled": "비추천 기능이 비활성 상태입니다.",
+    "not-enough-reputation-to-chat": "You need %1 reputation to chat",
     "not-enough-reputation-to-upvote": "You need %1 reputation to upvote",
     "not-enough-reputation-to-downvote": "You need %1 reputation to downvote",
     "not-enough-reputation-to-flag": "You need %1 reputation to flag this post",
