@@ -10,6 +10,7 @@
 	"min-rep-downvote": "Uy tín tối thiểu để phản đối bài đăng",
 	"downvotes-per-day": "Số phản đối mỗi ngày (đặt là 0 không giới hạn phản đối)",
 	"downvotes-per-user-per-day": "Số phản đối mỗi người dùng mỗi ngày (đặt là 0 không giới hạn số phản đối)",
+	"min-rep-chat": "Uy tín tối thiểu để gửi tin nhắn trò chuyện",
 	"min-rep-flag": "Uy tín tối thiểu để gắn cờ bài đăng",
 	"min-rep-website": "Uy tín tối thiểu để thêm \"Trang web\" vào hồ sơ người dùng",
 	"min-rep-aboutme": "Uy tín tối thiểu để thêm \"Giới thiệu bản thân\" vào hồ sơ người dùng",

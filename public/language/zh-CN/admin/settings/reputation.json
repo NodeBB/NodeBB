@@ -10,6 +10,7 @@
 	"min-rep-downvote": "踩帖子 需要的最低声望",
 	"downvotes-per-day": "每天踩的次数（设置为0则表示无限制）",
 	"downvotes-per-user-per-day": "每位用户每天踩的次数（设置为0则表示无限制）",
+	"min-rep-chat": "Minimum reputation to send chat messages",
 	"min-rep-flag": "举报帖子 需要的最低声望",
 	"min-rep-website": "添加 个人网站 需要的最低声望",
 	"min-rep-aboutme": "添加 个人 “关于我”页 需要的最低声望",

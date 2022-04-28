@@ -157,6 +157,7 @@
     "already-voting-for-this-post": "Már szavaztál erre a hozzászólásra.",
     "reputation-system-disabled": "Hírnév funkció kikapcsolva.",
     "downvoting-disabled": "Leszavazás funkció kikapcsolva",
+    "not-enough-reputation-to-chat": "You need %1 reputation to chat",
     "not-enough-reputation-to-upvote": "You need %1 reputation to upvote",
     "not-enough-reputation-to-downvote": "You need %1 reputation to downvote",
     "not-enough-reputation-to-flag": "You need %1 reputation to flag this post",

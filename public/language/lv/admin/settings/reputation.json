@@ -10,6 +10,7 @@
 	"min-rep-downvote": "Minimālie ranga punkti, lai balsotu \"pret\" rakstiem",
 	"downvotes-per-day": "Downvotes per day (set to 0 for unlimited downvotes)",
 	"downvotes-per-user-per-day": "Downvotes per user per day (set to 0 for unlimited downvotes)",
+	"min-rep-chat": "Minimum reputation to send chat messages",
 	"min-rep-flag": "Minimālie ranga punkti, lai atzīmētu rakstus",
 	"min-rep-website": "Minimālie ranga punkti, lai lietotāja profilam pievienotu mājaslapu",
 	"min-rep-aboutme": "Minimālie ranga punkti, lai lietotāja profilam pievienotu \"Par mani\"",

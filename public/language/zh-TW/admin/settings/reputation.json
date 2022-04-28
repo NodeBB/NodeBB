@@ -10,6 +10,7 @@
 	"min-rep-downvote": "倒讚貼文 需要的最低聲望",
 	"downvotes-per-day": "Downvotes per day (set to 0 for unlimited downvotes)",
 	"downvotes-per-user-per-day": "Downvotes per user per day (set to 0 for unlimited downvotes)",
+	"min-rep-chat": "Minimum reputation to send chat messages",
 	"min-rep-flag": "舉報貼文 需要的最低聲望",
 	"min-rep-website": "加入 個人網站 需要的最低聲望",
 	"min-rep-aboutme": "加入 個人 “關於我”頁 需要的最低聲望",

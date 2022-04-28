@@ -157,6 +157,7 @@
     "already-voting-for-this-post": "لقد شاركت بالتصويت ، ألا تذكر؟",
     "reputation-system-disabled": "نظام السمعة معطل",
     "downvoting-disabled": "التصويتات السلبية معطلة",
+    "not-enough-reputation-to-chat": "You need %1 reputation to chat",
     "not-enough-reputation-to-upvote": "You need %1 reputation to upvote",
     "not-enough-reputation-to-downvote": "You need %1 reputation to downvote",
     "not-enough-reputation-to-flag": "You need %1 reputation to flag this post",

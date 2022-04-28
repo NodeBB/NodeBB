@@ -199,6 +199,7 @@ Messaging.canMessageUser = async (uid, toUid) => {
 	const [exists, canChat] = await Promise.all([
 		user.exists(toUid),
 		privileges.global.can('chat', uid),
+		checkReputation(uid),
 	]);
 
 	if (!exists) {
@@ -232,12 +233,16 @@ Messaging.canMessageRoom = async (uid, roomId) => {
 		throw new Error('[[error:chat-disabled]]');
 	}
 
-	const inRoom = await Messaging.isUserInRoom(uid, roomId);
+	const [inRoom, canChat] = await Promise.all([
+		Messaging.isUserInRoom(uid, roomId),
+		privileges.global.can('chat', uid),
+		checkReputation(uid),
+	]);
+
 	if (!inRoom) {
 		throw new Error('[[error:not-in-room]]');
 	}
 
-	const canChat = await privileges.global.can('chat', uid);
 	if (!canChat) {
 		throw new Error('[[error:no-privileges]]');
 	}
@@ -247,6 +252,15 @@ Messaging.canMessageRoom = async (uid, roomId) => {
 		roomId: roomId,
 	});
 };
+
+async function checkReputation(uid) {
+	if (meta.config['min:rep:chat'] > 0) {
+		const reputation = await user.getUserField(uid, 'reputation');
+		if (meta.config['min:rep:chat'] > reputation) {
+			throw new Error(`[[error:not-enough-reputation-to-chat, ${meta.config['min:rep:chat']}]]`);
+		}
+	}
+}
 
 Messaging.hasPrivateChat = async (uid, withUid) => {
 	if (parseInt(uid, 10) === parseInt(withUid, 10)) {
