@@ -8,7 +8,6 @@
 const path = require('path');
 const nconf = require('nconf');
 
-const db = require('../database');
 const file = require('../file');
 const user = require('../user');
 const groups = require('../groups');
