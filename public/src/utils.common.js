@@ -605,13 +605,34 @@ const utils = {
 		} else {
 			url = new URL(options.url || document.location);
 		}
-		const params = url.searchParams;
+		let params = url.searchParams;
 
 		if (options.full) { // return URLSearchParams object
 			return params;
 		}
 
-		return Object.fromEntries(params);
+		// Handle arrays passed in query string (Object.fromEntries does not)
+		const arrays = {};
+		params.forEach((value, key) => {
+			if (!key.endsWith('[]')) {
+				return;
+			}
+
+			key = key.slice(0, -2);
+			arrays[key] = arrays[key] || [];
+			arrays[key].push(utils.toType(value));
+		});
+		Object.keys(arrays).forEach((key) => {
+			params.delete(`${key}[]`);
+		});
+
+		// Backwards compatibility with v1.x -- all values passed through utils.toType()
+		params = Object.fromEntries(params);
+		Object.keys(params).forEach((key) => {
+			params[key] = utils.toType(params[key]);
+		});
+
+		return { ...params, ...arrays };
 	},
 
 	param: function (key) {

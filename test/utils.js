@@ -264,16 +264,16 @@ describe('Utility Methods', () => {
 
 	it('should get url params', (done) => {
 		const params = utils.params({ url: 'http://nodebb.org?foo=1&bar=test&herp=2' });
-		assert.equal(params.foo, 1);
-		assert.equal(params.bar, 'test');
-		assert.equal(params.herp, 2);
+		assert.strictEqual(params.foo, 1);
+		assert.strictEqual(params.bar, 'test');
+		assert.strictEqual(params.herp, 2);
 		done();
 	});
 
 	it('should get url params as arrays', (done) => {
 		const params = utils.params({ url: 'http://nodebb.org?foo=1&bar=test&herp[]=2&herp[]=3' });
-		assert.equal(params.foo, 1);
-		assert.equal(params.bar, 'test');
+		assert.strictEqual(params.foo, 1);
+		assert.strictEqual(params.bar, 'test');
 		assert.deepStrictEqual(params.herp, [2, 3]);
 		done();
 	});
@@ -283,6 +283,13 @@ describe('Utility Methods', () => {
 		done();
 	});
 
+	it('should get the full URLSearchParams object', async () => {
+		const params = utils.params({ url: 'http://nodebb.org?foo=1&bar=test&herp[]=2&herp[]=3', full: true });
+		assert(params instanceof URLSearchParams);
+		assert.strictEqual(params.get('foo'), '1');
+		assert.strictEqual(params.get('bar'), 'test');
+		assert.strictEqual(params.get('herp[]'), '2');
+	});
 
 	describe('toType', () => {
 		it('should return param as is if not string', (done) => {
