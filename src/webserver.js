@@ -7,6 +7,7 @@ const path = require('path');
 const os = require('os');
 const nconf = require('nconf');
 const express = require('express');
+const chalk = require('chalk');
 
 const app = express();
 app.renderAsync = util.promisify((tpl, data, callback) => app.render(tpl, data, callback));
@@ -289,11 +290,12 @@ async function listen() {
 		server.listen(...args.concat([function (err) {
 			const onText = `${isSocket ? socketPath : `${bind_address}:${port}`}`;
 			if (err) {
-				winston.error(`[startup] NodeBB was unable to listen on: ${onText}`);
+				winston.error(`[startup] NodeBB was unable to listen on: ${chalk.yellow(onText)}`);
 				reject(err);
 			}
 
-			winston.info(`NodeBB is now listening on: ${onText}`);
+			winston.info(`NodeBB is now listening on: ${chalk.yellow(onText)}`);
+			winston.info(`Canonical URL: ${chalk.yellow(nconf.get('url'))}`);
 			if (oldUmask) {
 				process.umask(oldUmask);
 			}
