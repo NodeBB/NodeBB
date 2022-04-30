@@ -25,7 +25,7 @@
 	"reject-all": "Reject All",
 	"reject-all-confirm": "Do you want to reject all posts?",
 	"reject-selected": "Reject Selected",
-	"reject-selected-confirm": "Do you want to reject selected posts?",
+	"reject-selected-confirm": "Do you want to reject %1 selected posts?",
 	"bulk-accept-success": "%1 posts accepted",
 	"bulk-reject-success": "%1 posts rejected"
 }
