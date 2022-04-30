@@ -2,17 +2,6 @@
 
 
 define('settings', ['hooks', 'alerts'], function (hooks, alerts) {
-	const DEFAULT_PLUGINS = [
-		'settings/checkbox',
-		'settings/number',
-		'settings/textarea',
-		'settings/select',
-		'settings/array',
-		'settings/key',
-		'settings/object',
-		'settings/sorted-list',
-	];
-
 	// eslint-disable-next-line prefer-const
 	let Settings;
 	let onReady = [];
@@ -574,7 +563,16 @@ define('settings', ['hooks', 'alerts'], function (hooks, alerts) {
 
 
 	helper.registerReadyJobs(1);
-	require(DEFAULT_PLUGINS, function () {
+	require([
+		'settings/checkbox',
+		'settings/number',
+		'settings/textarea',
+		'settings/select',
+		'settings/array',
+		'settings/key',
+		'settings/object',
+		'settings/sorted-list',
+	], function () {
 		for (let i = 0; i < arguments.length; i += 1) {
 			Settings.registerPlugin(arguments[i]);
 		}

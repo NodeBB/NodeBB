@@ -1,4 +1,4 @@
-
+<!-- IMPORT admin/partials/settings/header.tpl -->
 <div class="row post-cache">
 	<div class="col-lg-12">
 		<div class="row">
@@ -118,7 +118,4 @@
 	</div>
 </div>
 
-
-<button id="save" class="floating-button mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
-    <i class="material-icons">save</i>
-</button>
+<!-- IMPORT admin/partials/settings/footer.tpl -->

@@ -15,7 +15,7 @@ const topics = require('./topics');
 const posts = require('./posts');
 const privileges = require('./privileges');
 const plugins = require('./plugins');
-const utils = require('../public/src/utils');
+const utils = require('./utils');
 const batch = require('./batch');
 
 const Flags = module.exports;
@@ -543,6 +543,27 @@ Flags.addReport = async function (flagId, type, id, uid, reason, timestamp) {
 
 Flags.exists = async function (type, id, uid) {
 	return await db.isSortedSetMember('flags:hash', [type, id, uid].join(':'));
+};
+
+Flags.canView = async (flagId, uid) => {
+	const exists = await db.isSortedSetMember('flags:datetime', flagId);
+	if (!exists) {
+		return false;
+	}
+
+	const [{ type, targetId }, isAdminOrGlobalMod] = await Promise.all([
+		db.getObject(`flag:${flagId}`),
+		user.isAdminOrGlobalMod(uid),
+	]);
+
+	if (type === 'post') {
+		const cid = await Flags.getTargetCid(type, targetId);
+		const isModerator = await user.isModerator(uid, cid);
+
+		return isAdminOrGlobalMod || isModerator;
+	}
+
+	return isAdminOrGlobalMod;
 };
 
 Flags.canFlag = async function (type, id, uid, skipLimitCheck = false) {

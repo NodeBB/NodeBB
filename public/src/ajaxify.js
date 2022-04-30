@@ -1,8 +1,10 @@
 'use strict';
 
+const hooks = require('./modules/hooks');
+const { render } = require('./widgets');
 
-ajaxify = window.ajaxify || {};
-
+window.ajaxify = window.ajaxify || {};
+ajaxify.widgets = { render: render };
 (function () {
 	let apiXHR = null;
 	let ajaxifyTimer;
@@ -12,11 +14,6 @@ ajaxify = window.ajaxify || {};
 
 	ajaxify.count = 0;
 	ajaxify.currentPage = null;
-
-	let hooks;
-	require(['hooks'], function (_hooks) {
-		hooks = _hooks;
-	});
 
 	ajaxify.go = function (url, callback, quiet) {
 		// Automatically reconnect to socket and re-ajaxify on success
@@ -358,18 +355,14 @@ ajaxify = window.ajaxify || {};
 					};
 				}
 				if (typeof script === 'string') {
-					return function (next) {
-						require([script], function (module) {
-							// Hint: useful if you want to override a loaded library (e.g. replace core client-side logic),
-							// or call a method other than .init()
-							hooks.fire('static:script.init', { tpl_url, name: script, module }).then(() => {
-								if (module && module.init) {
-									module.init();
-								}
-								next();
-							});
-						}, function () {
-							// ignore 404 error
+					return async function (next) {
+						const module = await app.require(script);
+						// Hint: useful if you want to override a loaded library (e.g. replace core client-side logic),
+						// or call a method other than .init()
+						hooks.fire('static:script.init', { tpl_url, name: script, module }).then(() => {
+							if (module && module.init) {
+								module.init();
+							}
 							next();
 						});
 					};
@@ -440,9 +433,20 @@ ajaxify = window.ajaxify || {};
 	};
 
 	ajaxify.loadTemplate = function (template, callback) {
-		require([config.asset_base_url + '/templates/' + template + '.js'], callback, function (err) {
+		$.ajax({
+			url: `${config.asset_base_url}/templates/${template}.js`,
+			cache: false,
+			dataType: 'text',
+			success: function (script) {
+				// eslint-disable-next-line no-new-func
+				const renderFunction = new Function('module', script);
+				const moduleObj = { exports: {} };
+				renderFunction(moduleObj);
+				callback(moduleObj.exports);
+			},
+		}).fail(function () {
 			console.error('Unable to load template: ' + template);
-			throw err;
+			callback(new Error('[[error:unable-to-load-template]]'));
 		});
 	};
 
@@ -452,15 +456,11 @@ ajaxify = window.ajaxify || {};
 		translator.translate(`[[global:reconnecting-message, ${config.siteTitle}]]`);
 		Benchpress.registerLoader(ajaxify.loadTemplate);
 		Benchpress.setGlobal('config', config);
+		Benchpress.render('500', {}); // loads and caches the 500.tpl
 	});
 }());
 
 $(document).ready(function () {
-	let hooks;
-	require(['hooks'], function (_hooks) {
-		hooks = _hooks;
-	});
-
 	$(window).on('popstate', function (ev) {
 		ev = ev.originalEvent;
 

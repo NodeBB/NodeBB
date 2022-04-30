@@ -9,7 +9,7 @@ const user = require('../user');
 const meta = require('../meta');
 const plugins = require('../plugins');
 const privileges = require('../privileges');
-const utils = require('../../public/src/utils');
+const utils = require('../utils');
 const versions = require('../admin/versions');
 const helpers = require('./helpers');
 

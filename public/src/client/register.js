@@ -2,8 +2,8 @@
 
 
 define('forum/register', [
-	'translator', 'zxcvbn', 'slugify', 'api', 'bootbox', 'forum/login', 'jquery-form',
-], function (translator, zxcvbn, slugify, api, bootbox, Login) {
+	'translator', 'slugify', 'api', 'bootbox', 'forum/login', 'jquery-form',
+], function (translator, slugify, api, bootbox, Login) {
 	const Register = {};
 	let validationError = false;
 	const successIcon = '';
@@ -141,20 +141,17 @@ define('forum/register', [
 	function validatePassword(password, password_confirm) {
 		const password_notify = $('#password-notify');
 		const password_confirm_notify = $('#password-confirm-notify');
-		const passwordStrength = zxcvbn(password);
 
-		if (password.length < ajaxify.data.minimumPasswordLength) {
-			showError(password_notify, '[[reset_password:password_too_short]]');
-		} else if (password.length > 512) {
-			showError(password_notify, '[[error:password-too-long]]');
-		} else if (!utils.isPasswordValid(password)) {
-			showError(password_notify, '[[user:change_password_error]]');
-		} else if (password === $('#username').val()) {
-			showError(password_notify, '[[user:password_same_as_username]]');
-		} else if (passwordStrength.score < ajaxify.data.minimumPasswordStrength) {
-			showError(password_notify, '[[user:weak_password]]');
-		} else {
+		try {
+			utils.assertPasswordValidity(password);
+
+			if (password === $('#username').val()) {
+				throw new Error('[[user:password_same_as_username]]');
+			}
+
 			showSuccess(password_notify, successIcon);
+		} catch (err) {
+			showError(password_notify, err.message);
 		}
 
 		if (password !== password_confirm && password_confirm !== '') {
