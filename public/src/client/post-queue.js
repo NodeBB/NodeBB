@@ -162,7 +162,7 @@ define('forum/post-queue', [
 			}
 			const ids = queueEls.map((i, el) => $(el).attr('data-id')).get();
 			const showConfirm = bulkAction === 'reject-all' || bulkAction === 'reject-selected';
-			if (!ids.length || (showConfirm && !(await confirmReject(`[[post-queue:${bulkAction}-confirm]]`)))) {
+			if (!ids.length || (showConfirm && !(await confirmReject(`[[post-queue:${bulkAction}-confirm, ${ids.length}]]`)))) {
 				return;
 			}
 			const action = bulkAction.split('-')[0];
