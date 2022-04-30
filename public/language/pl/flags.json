@@ -38,6 +38,7 @@
 	"delete-post": "Usuń post",
 	"purge-post": "Wyczyść post",
 	"restore-post": "Przywróć post",
+	"delete": "Delete Flag",
 
 	"user-view": "Zobacz profil",
 	"user-edit": "Edytuj profil",
@@ -46,8 +47,10 @@
 	"add-note": "Dodaj notatkę",
 	"no-notes": "Brak udostępnionych notatek",
 	"delete-note-confirm": "Czy na pewno chcesz usunąć tę notatkę do flagi?",
+	"delete-flag-confirm": "Are you sure you want to delete this flag?",
 	"note-added": "Dodano notatkę",
 	"note-deleted": "Notatka usunięta",
+	"flag-deleted": "Flag Deleted",
 
 	"history": "Konto i historia flag",
 	"no-history": "Brak historii flag",

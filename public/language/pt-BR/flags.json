@@ -38,6 +38,7 @@
 	"delete-post": "Excluir Post",
 	"purge-post": "Expurgar Post",
 	"restore-post": "Restaurar Post",
+	"delete": "Delete Flag",
 
 	"user-view": "Ver Perfil",
 	"user-edit": "Editar Perfil",
@@ -46,8 +47,10 @@
 	"add-note": "Adicionar Nota",
 	"no-notes": "Nenhuma nota compartilhada.",
 	"delete-note-confirm": "Tem certeza de que deseja excluir esta nota de sinalização?",
+	"delete-flag-confirm": "Are you sure you want to delete this flag?",
 	"note-added": "Nota Adicionada",
 	"note-deleted": "Nota Excluída",
+	"flag-deleted": "Flag Deleted",
 
 	"history": "Histórico da Conta & Sinalizações",
 	"no-history": "Sem histórico de sinalizações.",

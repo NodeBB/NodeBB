@@ -38,6 +38,7 @@
 	"delete-post": "Fshij postimin",
 	"purge-post": "Pastro postimin",
 	"restore-post": "Rikthe postimin",
+	"delete": "Delete Flag",
 
 	"user-view": "Shiko Profilin",
 	"user-edit": "Rregullo Profilin",
@@ -46,8 +47,10 @@
 	"add-note": "Shtoni shënim",
 	"no-notes": "Nuk ka shënime të përbashkëta.",
 	"delete-note-confirm": "Je i sigurt që dëshiron ta fshish këtë shënim?",
+	"delete-flag-confirm": "Are you sure you want to delete this flag?",
 	"note-added": "Shënimi u shtua",
 	"note-deleted": "Shënimi u fshi",
+	"flag-deleted": "Flag Deleted",
 
 	"history": "Llogaria &amp; Historia e raportimeve",
 	"no-history": "Nuk ka histori raportuese",

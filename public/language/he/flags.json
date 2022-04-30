@@ -38,6 +38,7 @@
 	"delete-post": "מחק פוסט",
 	"purge-post": "מחק לצמיתות",
 	"restore-post": "שחזור פוסט",
+	"delete": "Delete Flag",
 
 	"user-view": "צפה בפרופיל",
 	"user-edit": "ערוך פרופיל",
@@ -46,8 +47,10 @@
 	"add-note": "הוסף הערה",
 	"no-notes": "אין הערות",
 	"delete-note-confirm": "האם אתה בטוח שאתה רוצה למחוק הערה זו?",
+	"delete-flag-confirm": "Are you sure you want to delete this flag?",
 	"note-added": "נוספה הערה",
 	"note-deleted": "ההערה נמחקה",
+	"flag-deleted": "Flag Deleted",
 
 	"history": "היסטוריית הסימונים למשתמש",
 	"no-history": "אין הסיטוריית סימונים",

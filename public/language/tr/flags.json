@@ -38,6 +38,7 @@
 	"delete-post": "İletiyi Sil",
 	"purge-post": "İletiyi Temizle",
 	"restore-post": "İletiyi Geri Getir",
+	"delete": "Delete Flag",
 
 	"user-view": "Profili Gör",
 	"user-edit": "Profili Düzenle",
@@ -46,8 +47,10 @@
 	"add-note": "Not Ekle",
 	"no-notes": "Not paylaşılmadı",
 	"delete-note-confirm": "Bu şikayet notunu silmek istediğinize emin misiniz?",
+	"delete-flag-confirm": "Are you sure you want to delete this flag?",
 	"note-added": "Not eklendi",
 	"note-deleted": "Not silindi",
+	"flag-deleted": "Flag Deleted",
 
 	"history": "Hesap &amp; Şikayet Geçmişi",
 	"no-history": "Şikayet geçmişi yok",

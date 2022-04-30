@@ -61,6 +61,7 @@
     "no-group": "Grupi nuk ekziston",
     "no-user": "Përdoruesi nuk ekziston",
     "no-teaser": "Përmbledhja nuk ekziston",
+    "no-flag": "Flag does not exist",
     "no-privileges": "Nuk keni akses të mjaftueshem për këtë veprim.",
     "category-disabled": "Kategori e çaktivizuar",
     "topic-locked": "Temë e kyçur",

@@ -61,6 +61,7 @@
     "no-group": "Grup tidak ditemukan",
     "no-user": "Pengguna tidak ditemukan",
     "no-teaser": "Teaser tidak ditemukan",
+    "no-flag": "Flag does not exist",
     "no-privileges": "Kamu tidak punya cukup izin untuk melakukan ini",
     "category-disabled": "Kategori ditiadakan",
     "topic-locked": "Topik dikunci",

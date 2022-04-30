@@ -38,6 +38,7 @@
 	"delete-post": "Izbriši objavo",
 	"purge-post": "Purge Post",
 	"restore-post": "Obnovi objavo",
+	"delete": "Delete Flag",
 
 	"user-view": "Poglej profil",
 	"user-edit": "Uredi profil",
@@ -46,8 +47,10 @@
 	"add-note": "Dodaj opombo",
 	"no-notes": "Ni deljenih opomb.",
 	"delete-note-confirm": "Are you sure you want to delete this flag note?",
+	"delete-flag-confirm": "Are you sure you want to delete this flag?",
 	"note-added": "Opomba dodana",
 	"note-deleted": "Opomba izbrisana",
+	"flag-deleted": "Flag Deleted",
 
 	"history": "Account &amp; Flag History",
 	"no-history": "No flag history.",

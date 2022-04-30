@@ -61,6 +61,7 @@
     "no-group": "Skupina neexistuje",
     "no-user": "Uživatel neexistuje",
     "no-teaser": "Chyták neexistuje",
+    "no-flag": "Flag does not exist",
     "no-privileges": "Na tuto akci nemáte dostatečné oprávnění.",
     "category-disabled": "Kategorie zakázána",
     "topic-locked": "Téma uzamknuto",

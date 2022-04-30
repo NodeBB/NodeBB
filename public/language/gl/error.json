@@ -61,6 +61,7 @@
     "no-group": "O grupo non existe",
     "no-user": "O usuario non existe",
     "no-teaser": "A vista previa do tema non existe",
+    "no-flag": "Flag does not exist",
     "no-privileges": "Non tes privilexios dabondo para ver este tema.",
     "category-disabled": "Categoría deshabilitada",
     "topic-locked": "Tema Pechado",

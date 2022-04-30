@@ -38,6 +38,7 @@
 	"delete-post": "حذف پست",
 	"purge-post": "پاک کردن پست",
 	"restore-post": "برگرداندن پست",
+	"delete": "Delete Flag",
 
 	"user-view": "نمایش پروفایل",
 	"user-edit": "ویرایش پروفایل",
@@ -46,8 +47,10 @@
 	"add-note": "افزودن یادداشت",
 	"no-notes": "بدون یادداشت",
 	"delete-note-confirm": "آیا مطمئن هستید میخواهید این یادداشت را حذف کنید؟",
+	"delete-flag-confirm": "Are you sure you want to delete this flag?",
 	"note-added": "یادداشت افزوده شد",
 	"note-deleted": "یادداشت حذف شد",
+	"flag-deleted": "Flag Deleted",
 
 	"history": "Account &amp; Flag History",
 	"no-history": "بدون تاریخچه گزارش",

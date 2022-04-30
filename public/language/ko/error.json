@@ -61,6 +61,7 @@
     "no-group": "존재하지 않는 그룹입니다.",
     "no-user": "존재하지 않는 사용자입니다.",
     "no-teaser": "존재하지 않는 미리보기입니다.",
+    "no-flag": "Flag does not exist",
     "no-privileges": "이 작업을 할 수 있는 권한이 없습니다.",
     "category-disabled": "카테고리가 비활성화 되었습니다.",
     "topic-locked": "게시물이 잠금 상태입니다.",

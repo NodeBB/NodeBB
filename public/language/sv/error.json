@@ -61,6 +61,7 @@
     "no-group": "Gruppen finns inte",
     "no-user": "Användaren finns inte",
     "no-teaser": "Förhandsvisningen finns inte",
+    "no-flag": "Flag does not exist",
     "no-privileges": "Du har inte tillräckliga rättigheter för den här åtgärden.",
     "category-disabled": "Kategorin inaktiverad",
     "topic-locked": "Ämnet låst",

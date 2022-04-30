@@ -61,6 +61,7 @@
     "no-group": "Skupina ne obstaja.",
     "no-user": "Uporabnik ne obstaja.",
     "no-teaser": "Predogled ne obstaja.",
+    "no-flag": "Flag does not exist",
     "no-privileges": "Nimate dovolj pravic za to dejanje.",
     "category-disabled": "Kategorija je onemogočena.",
     "topic-locked": "Tema je zaklenjena.",

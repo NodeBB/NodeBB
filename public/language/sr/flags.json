@@ -38,6 +38,7 @@
 	"delete-post": "Избриши поруку",
 	"purge-post": "Очисти поруку",
 	"restore-post": "Врати поруку",
+	"delete": "Delete Flag",
 
 	"user-view": "Погледај профил",
 	"user-edit": "Уреди профил",
@@ -46,8 +47,10 @@
 	"add-note": "Додај белешку",
 	"no-notes": "Нема дељених бележака.",
 	"delete-note-confirm": "Да ли сте сигурни да желите избрисати ову белешку са заставицом?",
+	"delete-flag-confirm": "Are you sure you want to delete this flag?",
 	"note-added": "Белешка је додата",
 	"note-deleted": "Белешка је избрисана",
+	"flag-deleted": "Flag Deleted",
 
 	"history": "Налог и историја заставица",
 	"no-history": "Нема историје заставица",

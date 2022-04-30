@@ -61,6 +61,7 @@
     "no-group": "Grupa nav atrasta",
     "no-user": "Lietotājs nav atrasts",
     "no-teaser": "Ievadapraksts nav atrasts",
+    "no-flag": "Flag does not exist",
     "no-privileges": "Tev nepietiek tiesības šai darbībai.",
     "category-disabled": "Kategorija ir atspējota",
     "topic-locked": "Temats ir slēgts",

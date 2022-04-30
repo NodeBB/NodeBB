@@ -61,6 +61,7 @@
     "no-group": "Skupina neexistuje",
     "no-user": "Užívateľ neexistuje",
     "no-teaser": "Ukážka neexistuje",
+    "no-flag": "Flag does not exist",
     "no-privileges": "Na túto akciu nemáte dostatočné oprávnenia.",
     "category-disabled": "Kategória je zablokovaná",
     "topic-locked": "Téma je uzamknutá",

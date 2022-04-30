@@ -38,6 +38,7 @@
 	"delete-post": "Delete Post",
 	"purge-post": "Purge Post",
 	"restore-post": "Restore Post",
+	"delete": "Delete Flag",
 
 	"user-view": "View Profile",
 	"user-edit": "Edit Profile",
@@ -46,8 +47,10 @@
 	"add-note": "Add Note",
 	"no-notes": "No shared notes.",
 	"delete-note-confirm": "Are you sure you want to delete this flag note?",
+	"delete-flag-confirm": "Are you sure you want to delete this flag?",
 	"note-added": "Note Added",
 	"note-deleted": "Note Deleted",
+	"flag-deleted": "Flag Deleted",
 
 	"history": "Account &amp; Flag History",
 	"no-history": "No flag history.",

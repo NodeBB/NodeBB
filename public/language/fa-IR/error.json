@@ -61,6 +61,7 @@
     "no-group": "گروه وجود ندارد",
     "no-user": "کاربر وجود ندارد",
     "no-teaser": "تیزر وجود ندارد",
+    "no-flag": "Flag does not exist",
     "no-privileges": "شما دسترسی کافی برای این کار را ندارید",
     "category-disabled": "دسته غیر‌فعال شد.",
     "topic-locked": "موضوع بسته شد.",

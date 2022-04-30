@@ -61,6 +61,7 @@
     "no-group": "Grupė neegzistuoja",
     "no-user": "Tokio vartotojo nėra",
     "no-teaser": "Anonsas neegzistuoja",
+    "no-flag": "Flag does not exist",
     "no-privileges": "Šiam veiksmui jūs neturite pakankamų privilegijų.",
     "category-disabled": "Kategorija išjungta",
     "topic-locked": "Tema užrakinta",

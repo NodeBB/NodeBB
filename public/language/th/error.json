@@ -61,6 +61,7 @@
     "no-group": "ยังไม่มี Group นี้",
     "no-user": "ยังไม่มีผู้ใช้งานนี้",
     "no-teaser": "ยังไม่มีทีเซอร์นี้",
+    "no-flag": "Flag does not exist",
     "no-privileges": "คุณมีสิทธิ์ไม่เพียงพอที่จะทำรายการนี้",
     "category-disabled": "Category นี้ถูกปิดการใช้งานแล้ว",
     "topic-locked": "กระทู้ถูกล็อก",

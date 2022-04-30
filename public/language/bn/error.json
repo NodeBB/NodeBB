@@ -61,6 +61,7 @@
     "no-group": "এই গ্রুপ অস্তিত্বহীন",
     "no-user": "এই নামে কোন সদস্য নেই",
     "no-teaser": "টিজারটি খুজে পাওয়া যায় নি",
+    "no-flag": "Flag does not exist",
     "no-privileges": "এই কাজটির জন্য আপনার পর্যাপ্ত অধিকার নেই",
     "category-disabled": "বিভাগটি নিষ্ক্রিয়",
     "topic-locked": "টপিক বন্ধ",

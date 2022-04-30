@@ -61,6 +61,7 @@
     "no-group": "Nem létező csoport",
     "no-user": "Nem létező felhasználó",
     "no-teaser": "A bevezető nem létezik",
+    "no-flag": "Flag does not exist",
     "no-privileges": "Nincs elég jogod ehhez a művelethez.",
     "category-disabled": "Kategória kikapcsolva",
     "topic-locked": "Téma lezárva",

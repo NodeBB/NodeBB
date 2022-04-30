@@ -61,6 +61,7 @@
     "no-group": "Il Gruppo non esiste",
     "no-user": "L'Utente non esiste",
     "no-teaser": "Teaser non esiste",
+    "no-flag": "Flag does not exist",
     "no-privileges": "Non hai abbastanza privilegi per questa azione.",
     "category-disabled": "Categoria disabilitata",
     "topic-locked": "Discussione Bloccata",

@@ -61,6 +61,7 @@
     "no-group": "Gruppi ei eksisteeri",
     "no-user": "Kasutajat ei eksisteeri",
     "no-teaser": "Eelvaadet ei eksisteeri",
+    "no-flag": "Flag does not exist",
     "no-privileges": "Sul pole piisavalt õigusi.",
     "category-disabled": "Kategooria keelatud",
     "topic-locked": "Teema lukustatud",
