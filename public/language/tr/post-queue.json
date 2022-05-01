@@ -25,7 +25,7 @@
 	"reject-all": "Hepsini Reddet",
 	"reject-all-confirm": "Tüm iletileri reddetmek istediğinize emin misiniz?",
 	"reject-selected": "Seçili Olanları Reddet",
-	"reject-selected-confirm": "Do you want to reject %1 selected posts?",
+	"reject-selected-confirm": "Seçili olan %1 iletiyi reddetmek istediğinize emin misiniz?",
 	"bulk-accept-success": "%1 ileti onaylandı",
-	"bulk-reject-success": "%1 posts rejected"
+	"bulk-reject-success": "%1 ileti reddedildi"
 }
