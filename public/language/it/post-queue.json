@@ -19,13 +19,13 @@
 	"notify": "Notifica",
 	"notify-user": "Notifica all'utente",
 	"confirm-reject": "Vuoi rifiutare questo post?",
-	"bulk-actions": "Bulk Actions",
-	"accept-all": "Accept All",
-	"accept-selected": "Accept Selected",
-	"reject-all": "Reject All",
-	"reject-all-confirm": "Do you want to reject all posts?",
-	"reject-selected": "Reject Selected",
-	"reject-selected-confirm": "Do you want to reject %1 selected posts?",
-	"bulk-accept-success": "%1 posts accepted",
-	"bulk-reject-success": "%1 posts rejected"
+	"bulk-actions": "Azioni in blocco",
+	"accept-all": "Accetta tutti",
+	"accept-selected": "Accetta selezionato",
+	"reject-all": "Rifiuta tutti",
+	"reject-all-confirm": "Vuoi rifiutare tutti i post?",
+	"reject-selected": "Rifiuta selezionato",
+	"reject-selected-confirm": "Vuoi rifiutare %1 post selezionati?",
+	"bulk-accept-success": "%1 post accettati",
+	"bulk-reject-success": "%1 post rifiutati"
 }

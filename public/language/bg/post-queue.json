@@ -19,13 +19,13 @@
 	"notify": "Известяване",
 	"notify-user": "Известяване на потребителя",
 	"confirm-reject": "Искате ли да отхвърлите тази публикация?",
-	"bulk-actions": "Bulk Actions",
-	"accept-all": "Accept All",
-	"accept-selected": "Accept Selected",
-	"reject-all": "Reject All",
-	"reject-all-confirm": "Do you want to reject all posts?",
-	"reject-selected": "Reject Selected",
-	"reject-selected-confirm": "Do you want to reject %1 selected posts?",
-	"bulk-accept-success": "%1 posts accepted",
-	"bulk-reject-success": "%1 posts rejected"
+	"bulk-actions": "Групови действия",
+	"accept-all": "Приемане на всички",
+	"accept-selected": "Приемане на избраните",
+	"reject-all": "Отхвърляне на всички",
+	"reject-all-confirm": "Наистина ли искате да отхвърлите всички публикации?",
+	"reject-selected": "Отхвърляне на избраните",
+	"reject-selected-confirm": "Наистина ли искате да отхвърлите %1 избрани публикации?",
+	"bulk-accept-success": "Одобрени публикации: %1",
+	"bulk-reject-success": "Отхвърлени публикации: %1"
 }
