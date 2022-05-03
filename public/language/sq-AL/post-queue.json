@@ -18,5 +18,14 @@
 	"remove": "Hiq",
 	"notify": "Njofto",
 	"notify-user": "Njoftoni përdoruesin",
-	"confirm-reject": "Jeni i sigurt që dëshironi ta anulloni këtë postim?"
+	"confirm-reject": "Jeni i sigurt që dëshironi ta anulloni këtë postim?",
+	"bulk-actions": "Bulk Actions",
+	"accept-all": "Accept All",
+	"accept-selected": "Accept Selected",
+	"reject-all": "Reject All",
+	"reject-all-confirm": "Do you want to reject all posts?",
+	"reject-selected": "Reject Selected",
+	"reject-selected-confirm": "Do you want to reject %1 selected posts?",
+	"bulk-accept-success": "%1 posts accepted",
+	"bulk-reject-success": "%1 posts rejected"
 }

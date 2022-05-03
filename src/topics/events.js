@@ -7,6 +7,7 @@ const user = require('../user');
 const posts = require('../posts');
 const categories = require('../categories');
 const plugins = require('../plugins');
+const translator = require('../translator');
 
 const Events = module.exports;
 
@@ -144,7 +145,7 @@ async function modifyEvent({ tid, uid, eventIds, timestamps, events }) {
 		}
 		if (event.hasOwnProperty('fromCid')) {
 			event.fromCategory = fromCategories[event.fromCid];
-			event.text = `[[topic:moved-from-by, ${event.fromCategory.name}]]`;
+			event.text = translator.compile('topic:moved-from-by', event.fromCategory.name);
 		}
 
 		Object.assign(event, Events._types[event.type]);

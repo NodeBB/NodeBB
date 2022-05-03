@@ -1,5 +1,12 @@
 'use strict';
 
+require('../app');
+
+// scripts-admin.js contains javascript files
+// from plugins that add files to "acpScripts" block in plugin.json
+// eslint-disable-next-line import/no-unresolved
+require('../../scripts-admin');
+
 (function () {
 	let logoutTimer = 0;
 	let logoutMessage;
@@ -36,6 +43,12 @@
 		hooks.on('action:ajaxify.end', () => {
 			showCorrectNavTab();
 			startLogoutTimer();
+			if ($('.settings').length) {
+				require(['admin/settings'], function (Settings) {
+					Settings.prepare();
+					Settings.populateTOC();
+				});
+			}
 		});
 	});
 
@@ -67,7 +80,7 @@
 	$(window).on('action:ajaxify.contentLoaded', function (ev, data) {
 		selectMenuItem(data.url);
 		setupRestartLinks();
-
+		require('material-design-lite');
 		componentHandler.upgradeDom();
 	});
 
@@ -227,10 +240,4 @@
 			});
 		});
 	}
-
-	// tell ace to use the right paths when requiring modules
-	require(['ace/ace'], function (ace) {
-		ace.config.set('packaged', true);
-		ace.config.set('basePath', config.relative_path + '/assets/src/modules/ace/');
-	});
 }());

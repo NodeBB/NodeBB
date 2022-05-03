@@ -1,3 +1,54 @@
+#### v1.19.7 (2022-04-28)
+
+##### Breaking Changes
+
+*  #10443, regression where sorted-list items did not render into the DOM in the predicted order [breaking] (46fbe156)
+
+##### Chores
+
+*  incrementing version number - v1.19.7 (0c4850e2)
+*  update changelog for v1.19.6 (acca7811)
+* **deps:**
+  *  update commitlint monorepo to v16.2.4 (0d9179f7)
+  *  update dependency lint-staged to v12.4.1 (#10527) (804542e4)
+  *  bump socket.io from 4.4.1 to 4.5.0 in /install (#10523) (0c2d015c)
+  *  update dependency eslint to v8.14.0 (#10514) (40b7ff4b)
+  *  update dependency lint-staged to v12.4.0 (fff818c6)
+  *  update dependency lint-staged to v12.3.8 (7c1d98c7)
+* **i18n:**  fallback strings for new resources: nodebb.admin-settings-reputation, nodebb.error (01e65395)
+
+##### New Features
+
+*  make it simpler to use redis sentinels (82389469)
+*  closes #10501, minimum reputation to chat (b28f9f77)
+
+##### Bug Fixes
+
+*  typo in hook name (21dbd476)
+*  upload test for latest sharp (424db9ff)
+*  #10502, allow unblocking admin/mod (b9f91643)
+* **deps:**
+  *  update dependency express to v4.18.0 (#10526) (5ae690a6)
+  *  update socket.io packages to v4.5.0 (#10522) (d86c447a)
+  *  update dependency autoprefixer to v10.4.5 (#10521) (5ce4c874)
+  *  update dependency nodebb-plugin-2factor to v3.0.7 (#10510) (b81a0cfe)
+  *  update dependency nodebb-widget-essentials to v5.0.11 (#10517) (a767d623)
+  *  update dependency sharp to v0.30.4 (#10504) (a36911fc)
+  *  update dependency prompt to v1.3.0 (#10487) (07678fb5)
+  *  update dependency nconf to v0.12.0 (#10496) (fe492b11)
+  *  update dependency archiver to v5.3.1 (#10500) (6c727859)
+
+##### Refactors
+
+*  closes #10509 (7f241dbb)
+*  show invalid uri (ac125538)
+*  skip content length check if submitting from post-queue (a8e642ad)
+
+##### Tests
+
+*  remove node18 until nodemailer is fixed (50658a82)
+*  remove node 12, add 18 (976914e7)
+
 #### v1.19.6 (2022-04-13)
 
 ##### Chores

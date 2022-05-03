@@ -61,6 +61,7 @@
     "no-group": "グループは存在しません",
     "no-user": "ユーザーは存在しません",
     "no-teaser": "ティーザーが存在しません",
+    "no-flag": "Flag does not exist",
     "no-privileges": "あなたがこの行為する権利がありません。",
     "category-disabled": "この板は無効された",
     "topic-locked": "スレッドがロックされた",

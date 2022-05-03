@@ -11,7 +11,7 @@
     "email.verify.text3": "Once you confirm this email address, we will replace your current email address with this one (%1).",
     "welcome.text1": "感谢您注册 %1 帐户！",
     "welcome.text2": "在您验证您绑定的邮箱地址之后，您的账户才能激活。",
-    "welcome.text3": "管理员批准了您的注册申请，现在您可以登录您的账户了。",
+    "welcome.text3": "管理员批准了您的注册申请，您现在可以使用您的用户名和密码进行登录了。",
     "welcome.cta": "点击这里确认您的电子邮箱地址",
     "invitation.text1": "%1 邀请您加入 %2",
     "invitation.text2": "您的邀请将在 %1 天后过期。",

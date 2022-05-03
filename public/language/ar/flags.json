@@ -38,6 +38,7 @@
 	"delete-post": "حذف المشاركة",
 	"purge-post": "Purge Post",
 	"restore-post": "استرجاع المشاركة",
+	"delete": "Delete Flag",
 
 	"user-view": "مشاهدة الملف الشخصي",
 	"user-edit": "تعديل الملف الشخصي",
@@ -46,8 +47,10 @@
 	"add-note": "اضافة ملاحظة",
 	"no-notes": "No shared notes.",
 	"delete-note-confirm": "Are you sure you want to delete this flag note?",
+	"delete-flag-confirm": "Are you sure you want to delete this flag?",
 	"note-added": "Note Added",
 	"note-deleted": "Note Deleted",
+	"flag-deleted": "Flag Deleted",
 
 	"history": "Account &amp; Flag History",
 	"no-history": "No flag history.",

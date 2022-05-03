@@ -61,6 +61,7 @@
     "no-group": "Kumpulan tidak wujud",
     "no-user": "Pengguna tidak wujud",
     "no-teaser": "Pengusik tidak wujud",
+    "no-flag": "Flag does not exist",
     "no-privileges": "Anda tidak mempunyai cukup keistimewaan untuk perbuatan ini.",
     "category-disabled": "Kategori dilumpuhkan",
     "topic-locked": "Topik Dikunci",

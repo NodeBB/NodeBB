@@ -61,6 +61,7 @@
     "no-group": "קבוצה אינה קיימת",
     "no-user": "משתמש אינו קיים",
     "no-teaser": "תקציר אינו קיים",
+    "no-flag": "Flag does not exist",
     "no-privileges": "ההרשאות שלך אינן מספיקות לביצוע פעולה זו",
     "category-disabled": "קטגוריה לא פעילה",
     "topic-locked": "נושא נעול",

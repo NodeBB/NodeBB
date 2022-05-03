@@ -61,6 +61,7 @@
     "no-group": "Ryhmää ei ole olemassa",
     "no-user": "Käyttäjää ei ole olemassa",
     "no-teaser": "Teaser does not exist",
+    "no-flag": "Flag does not exist",
     "no-privileges": "Oikeutesi eivät riitä toiminnon suorittamiseen.",
     "category-disabled": "Kategoria ei ole käytössä",
     "topic-locked": "Aihe lukittu",

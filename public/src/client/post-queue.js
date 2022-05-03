@@ -13,6 +13,8 @@ define('forum/post-queue', [
 			privilege: 'moderate',
 		});
 
+		handleBulkActions();
+
 		$('.posts-list').on('click', '[data-action]', async function () {
 			function getMessage() {
 				return new Promise((resolve) => {
@@ -33,17 +35,13 @@ define('forum/post-queue', [
 					});
 				});
 			}
-			function confirmReject() {
-				return new Promise((resolve) => {
-					bootbox.confirm('[[post-queue:confirm-reject]]', resolve);
-				});
-			}
+
 			const parent = $(this).parents('[data-id]');
 			const action = $(this).attr('data-action');
 			const id = parent.attr('data-id');
 			const listContainer = parent.get(0).parentNode;
 
-			if ((!['accept', 'reject', 'notify'].includes(action)) || (action === 'reject' && !await confirmReject())) {
+			if ((!['accept', 'reject', 'notify'].includes(action)) || (action === 'reject' && !await confirmReject('[[post-queue:confirm-reject]]'))) {
 				return;
 			}
 
@@ -59,7 +57,11 @@ define('forum/post-queue', [
 				}
 
 				if (listContainer.childElementCount === 0) {
-					ajaxify.refresh();
+					if (ajaxify.data.singlePost) {
+						ajaxify.go('/post-queue' + window.location.search);
+					} else {
+						ajaxify.refresh();
+					}
 				}
 			});
 			return false;
@@ -102,6 +104,12 @@ define('forum/post-queue', [
 		$('[component="post/content"] img:not(.not-responsive)').addClass('img-responsive');
 	};
 
+	function confirmReject(msg) {
+		return new Promise((resolve) => {
+			bootbox.confirm(msg, resolve);
+		});
+	}
+
 	function handleContentEdit(displayClass, editableClass, inputSelector) {
 		$('.posts-list').on('click', displayClass, function () {
 			const el = $(this);
@@ -139,6 +147,36 @@ define('forum/post-queue', [
 
 				textarea.parent().addClass('hidden');
 				preview.removeClass('hidden');
+			});
+		});
+	}
+
+	function handleBulkActions() {
+		$('[component="post-queue/bulk-actions"]').on('click', '[data-action]', async function () {
+			const bulkAction = $(this).attr('data-action');
+			let queueEls = $('.posts-list [data-id]');
+			if (bulkAction === 'accept-selected' || bulkAction === 'reject-selected') {
+				queueEls = queueEls.filter(
+					(i, el) => $(el).find('input[type="checkbox"]').is(':checked')
+				);
+			}
+			const ids = queueEls.map((i, el) => $(el).attr('data-id')).get();
+			const showConfirm = bulkAction === 'reject-all' || bulkAction === 'reject-selected';
+			if (!ids.length || (showConfirm && !(await confirmReject(`[[post-queue:${bulkAction}-confirm, ${ids.length}]]`)))) {
+				return;
+			}
+			const action = bulkAction.split('-')[0];
+			const promises = ids.map(id => socket.emit('posts.' + action, { id: id }));
+
+			Promise.allSettled(promises).then(function (results) {
+				const fulfilled = results.filter(res => res.status === 'fulfilled').length;
+				const errors = results.filter(res => res.status === 'rejected');
+				if (fulfilled) {
+					alerts.success(`[[post-queue:bulk-${action}-success, ${fulfilled}]]`);
+					ajaxify.refresh();
+				}
+
+				errors.forEach(res => alerts.error(res.reason));
 			});
 		});
 	}

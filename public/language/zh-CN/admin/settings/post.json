@@ -35,7 +35,7 @@
 	"timestamp.necro-threshold": "挖坟警告（单位：天）",
 	"timestamp.necro-threshold-help": "若进行回复的帖子最后回复的时间早于挖坟警告设定的天数，则在尝试回复前显示挖坟警告（默认：<code>7</code>天）。可以设置为 0 来禁用。</em>",
 	"timestamp.topic-views-interval": "Increment topic views interval (in minutes)",
-	"timestamp.topic-views-interval-help": "Topic views will only increment once every X minutes as defined by this setting.",
+	"timestamp.topic-views-interval-help": "根据此设置，主题的访问数量每 X 分钟只增加一次。",
 	"teaser": "预览帖子",
 	"teaser.last-post": "最后&ndash; 显示最新的帖子，包括原帖，如果没有回复",
 	"teaser.last-reply": "最后&ndash; 显示最新回复，如果没有回复，则显示“无回复”占位符",

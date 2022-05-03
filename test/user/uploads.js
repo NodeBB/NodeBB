@@ -12,7 +12,7 @@ const user = require('../../src/user');
 const topics = require('../../src/topics');
 const categories = require('../../src/categories');
 const file = require('../../src/file');
-const utils = require('../../public/src/utils');
+const utils = require('../../src/utils');
 
 const md5 = filename => crypto.createHash('md5').update(filename).digest('hex');
 

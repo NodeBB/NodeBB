@@ -38,6 +38,7 @@
 	"delete-post": "Xóa Bài Viết",
 	"purge-post": "Thanh Lọc Bài Viết",
 	"restore-post": "Khôi Phục Bài Viết",
+	"delete": "Xóa cờ",
 
 	"user-view": "Xem Hồ Sơ",
 	"user-edit": "Sửa Hồ Sơ",
@@ -46,8 +47,10 @@
 	"add-note": "Thêm Ghi Chú",
 	"no-notes": "Không có chia sẻ ghi chú.",
 	"delete-note-confirm": "Bạn có chắc muốn xóa ghi chú cờ này không?",
+	"delete-flag-confirm": "Bạn có chắc chắn muốn xóa cờ này không?",
 	"note-added": "Đã Thêm Ghi Chú",
 	"note-deleted": "Đã Xóa Ghi Chú",
+	"flag-deleted": "Đã xóa cờ",
 
 	"history": "Tài Khoản &amp; Lịch Sử Gắn Cờ",
 	"no-history": "Không có lịch sử gắn cờ",

@@ -171,8 +171,9 @@ describe('API', async () => {
 		mocks.delete['/posts/{pid}/diffs/{timestamp}'][1].example = (await posts.diffs.list(unprivTopic.postData.pid))[0];
 
 		// Create a sample flag
-		const { flagId } = await flags.create('post', 1, unprivUid, 'sample reasons', Date.now());
+		const { flagId } = await flags.create('post', 1, unprivUid, 'sample reasons', Date.now()); // deleted in DELETE /api/v3/flags/1
 		await flags.appendNote(flagId, 1, 'test note', 1626446956652);
+		await flags.create('post', 2, unprivUid, 'sample reasons', Date.now()); // for testing flag notes (since flag 1 deleted)
 
 		// Create a new chat room
 		await messaging.newRoom(1, [2]);

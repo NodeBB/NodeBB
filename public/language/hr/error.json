@@ -61,6 +61,7 @@
     "no-group": "Grupa ne postoji",
     "no-user": "Korisnik ne postoji",
     "no-teaser": "Zadirkivač ne postoji",
+    "no-flag": "Flag does not exist",
     "no-privileges": "Nemate privilegije za ovu radnju.",
     "category-disabled": "Kategorija onemogućena",
     "topic-locked": "Tema zaključana",

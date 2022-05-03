@@ -10,7 +10,7 @@ const user = require('../user');
 const posts = require('../posts');
 const meta = require('../meta');
 const plugins = require('../plugins');
-const utils = require('../../public/src/utils');
+const utils = require('../utils');
 
 const backlinkRegex = new RegExp(`(?:${nconf.get('url').replace('/', '\\/')}|\b|\\s)\\/topic\\/(\\d+)(?:\\/\\w+)?`, 'g');
 

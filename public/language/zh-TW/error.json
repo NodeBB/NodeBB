@@ -61,6 +61,7 @@
     "no-group": "群組不存在",
     "no-user": "使用者不存在",
     "no-teaser": "主題預覽不存在",
+    "no-flag": "Flag does not exist",
     "no-privileges": "您的權限不足以執行此操作。",
     "category-disabled": "版面已停用",
     "topic-locked": "主題已鎖定",

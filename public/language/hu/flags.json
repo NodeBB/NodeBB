@@ -38,6 +38,7 @@
 	"delete-post": "Bejegyzés törlése",
 	"purge-post": "Bejegyzés megtisztítása",
 	"restore-post": "Bejegyzés helyreállítása",
+	"delete": "Delete Flag",
 
 	"user-view": "Profil megtekintése",
 	"user-edit": "Profil szerkesztése",
@@ -46,8 +47,10 @@
 	"add-note": "Új jegyzet hozzáadása",
 	"no-notes": "Nincsenek megosztott jegyzetek.",
 	"delete-note-confirm": "Biztosan törölni akarod ezt a jegyzet jelölőt?",
+	"delete-flag-confirm": "Are you sure you want to delete this flag?",
 	"note-added": "Jegyzet hozzá adva",
 	"note-deleted": "Jegyzet törölve",
+	"flag-deleted": "Flag Deleted",
 
 	"history": "Felhasználó &amp; Előzmény jelölő",
 	"no-history": "Nincs előzmény jelölő.",

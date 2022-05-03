@@ -367,8 +367,10 @@ describe('Controllers', () => {
 				json: true,
 				resolveWithFullResponse: true,
 			});
-			assert(res.body.errors.length, res.body);
-			assert(res.body.errors.includes('[[error:invalid-email]]'), res.body);
+			console.log(res.statusCode, JSON.stringify(res.body, null, 4));
+			assert.strictEqual(res.statusCode, 200);
+			assert(res.body.errors.length);
+			assert(res.body.errors.includes('[[error:invalid-email]]'));
 		});
 
 		it('gdpr interstitial should still apply if email requirement is disabled', async () => {
@@ -711,25 +713,6 @@ describe('Controllers', () => {
 
 	it('should load admin.css', (done) => {
 		request(`${nconf.get('url')}/assets/admin.css`, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
-	});
-
-
-	it('should load nodebb.min.js', (done) => {
-		request(`${nconf.get('url')}/assets/nodebb.min.js`, (err, res, body) => {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
-	});
-
-	it('should load acp.min.js', (done) => {
-		request(`${nconf.get('url')}/assets/acp.min.js`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -2004,33 +1987,6 @@ describe('Controllers', () => {
 		});
 	});
 
-	describe('timeago locales', () => {
-		it('should load timeago locale', (done) => {
-			request(`${nconf.get('url')}/assets/src/modules/timeago/locales/jquery.timeago.af.js`, (err, res, body) => {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 200);
-				assert(body.includes('"gelede"'));
-				done();
-			});
-		});
-
-		it('should return not found if NodeBB language exists but timeago locale does not exist', (done) => {
-			request(`${nconf.get('url')}/assets/src/modules/timeago/locales/jquery.timeago.ms.js`, (err, res, body) => {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 404);
-				done();
-			});
-		});
-
-		it('should return not found if NodeBB language does not exist', (done) => {
-			request(`${nconf.get('url')}/assets/src/modules/timeago/locales/jquery.timeago.muggle.js`, (err, res, body) => {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 404);
-				done();
-			});
-		});
-	});
-
 	describe('category', () => {
 		let jar;
 		before(async () => {
@@ -2394,7 +2350,7 @@ describe('Controllers', () => {
 		});
 
 		it('should load the composer route', (done) => {
-			request(`${nconf.get('url')}/api/compose`, { json: true }, (err, res, body) => {
+			request(`${nconf.get('url')}/api/compose?cid=1`, { json: true }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body.title);
@@ -2415,7 +2371,7 @@ describe('Controllers', () => {
 				method: hookMethod,
 			});
 
-			request(`${nconf.get('url')}/api/compose`, { json: true }, (err, res, body) => {
+			request(`${nconf.get('url')}/api/compose?cid=1`, { json: true }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body.title);
@@ -2426,26 +2382,6 @@ describe('Controllers', () => {
 				done();
 			});
 		});
-
-		it('should 404 if plugin calls next', (done) => {
-			function hookMethod(hookData, callback) {
-				hookData.next();
-			}
-
-			plugins.hooks.register('myTestPlugin', {
-				hook: 'filter:composer.build',
-				method: hookMethod,
-			});
-
-			request(`${nconf.get('url')}/api/compose`, { json: true }, (err, res, body) => {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 404);
-
-				plugins.hooks.unregister('myTestPlugin', 'filter:composer.build', hookMethod);
-				done();
-			});
-		});
-
 
 		it('should error with invalid data', (done) => {
 			request.post(`${nconf.get('url')}/compose`, {

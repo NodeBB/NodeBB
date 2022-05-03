@@ -38,6 +38,7 @@
 	"delete-post": "Slett innlegg",
 	"purge-post": "Rens post",
 	"restore-post": "Gjenopprett post",
+	"delete": "Delete Flag",
 
 	"user-view": "Vis profil",
 	"user-edit": "Rediger profil",
@@ -46,8 +47,10 @@
 	"add-note": "Legg til flagg",
 	"no-notes": "Ingen delte notiser ",
 	"delete-note-confirm": "Er du sikker på at du ønsker å slette flaggnotifikasjonen? ",
+	"delete-flag-confirm": "Are you sure you want to delete this flag?",
 	"note-added": "Merknad lagt til",
 	"note-deleted": "Merknad slettet",
+	"flag-deleted": "Flag Deleted",
 
 	"history": "Account &amp; Flag History",
 	"no-history": "Ingen flagghistorikk",

@@ -194,5 +194,6 @@ modsController.postQueue = async function (req, res, next) {
 		allCategoriesUrl: `post-queue${helpers.buildQueryString(req.query, 'cid', '')}`,
 		pagination: pagination.create(page, pageCount),
 		breadcrumbs: helpers.buildBreadcrumbs(crumbs),
+		singlePost: !!id,
 	});
 };

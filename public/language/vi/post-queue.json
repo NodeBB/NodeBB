@@ -18,5 +18,14 @@
 	"remove": "Xóa",
 	"notify": "Thông báo",
 	"notify-user": "Thông Báo Người Dùng",
-	"confirm-reject": "Bạn có muốn từ chối bài viết này không?"
+	"confirm-reject": "Bạn có muốn từ chối bài viết này không?",
+	"bulk-actions": "Hành động số lượng lớn",
+	"accept-all": "Chấp nhận tất cả",
+	"accept-selected": "Chấp nhận đã chọn",
+	"reject-all": "Từ chối tất cả",
+	"reject-all-confirm": "Bạn có muốn từ chối tất cả các bài viết?",
+	"reject-selected": "Từ chối đã chọn",
+	"reject-selected-confirm": "Bạn có muốn từ chối %1 bài viết đã chọn không?",
+	"bulk-accept-success": "%1 bài đăng được chấp nhận",
+	"bulk-reject-success": "%1 bài đăng bị từ chối"
 }

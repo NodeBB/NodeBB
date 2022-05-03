@@ -61,6 +61,7 @@
     "no-group": "Gruppen eksisterer ikke",
     "no-user": "Brugeren eksisterer ikke",
     "no-teaser": "Teaser eksisterer ikke",
+    "no-flag": "Flag does not exist",
     "no-privileges": "Du har ikke nok rettigheder til at udføre denne handling",
     "category-disabled": "Kategorien er deaktiveret",
     "topic-locked": "Tråden er låst",

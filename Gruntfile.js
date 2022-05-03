@@ -105,9 +105,9 @@ module.exports = function (grunt) {
 					'app.js',
 					'install/*.js',
 					'src/**/*.js',
-					'public/src/modules/translator.js',
-					'public/src/modules/helpers.js',
-					'public/src/utils.js',
+					'public/src/modules/translator.common.js',
+					'public/src/modules/helpers.common.js',
+					'public/src/utils.common.js',
 					serverUpdated,
 					'!src/upgrades/**',
 				],
@@ -137,9 +137,10 @@ module.exports = function (grunt) {
 		});
 		const build = require('./src/meta/build');
 		if (!grunt.option('skip')) {
-			await build.build(true);
+			await build.build(true, { webpack: false });
 		}
 		run();
+		await build.webpack({ watch: true });
 		done();
 	});
 
@@ -183,7 +184,7 @@ module.exports = function (grunt) {
 			return run();
 		}
 
-		require('./src/meta/build').build([compiling], (err) => {
+		require('./src/meta/build').build([compiling], { webpack: false }, (err) => {
 			if (err) {
 				winston.error(err.stack);
 			}

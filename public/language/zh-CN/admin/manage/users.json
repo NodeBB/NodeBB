@@ -1,6 +1,6 @@
 {
 	"users": "用户",
-	"edit": "Actions",
+	"edit": "操作",
 	"make-admin": "设为管理",
 	"remove-admin": "取消管理员",
 	"validate-email": "验证邮箱",
@@ -19,11 +19,11 @@
 	"manage-groups": "管理用户组",
 	"add-group": "添加至群组",
 	"create": "Create User",
-	"invite": "Invite by Email",
+	"invite": "通过邮件邀请",
 	"new": "新建用户",
-	"filter-by": "Filter by",
+	"filter-by": "过滤选项",
 	"pills.unvalidated": "未验证",
-	"pills.validated": "Validated",
+	"pills.validated": "已验证",
 	"pills.banned": "被封禁",
 
 	"50-per-page": "每页50",
@@ -63,7 +63,7 @@
 	"create.password": "密码",
 	"create.password-confirm": "确认密码",
 
-	"temp-ban.length": "Length",
+	"temp-ban.length": "时长",
 	"temp-ban.reason": "理由<span class=\"text-muted\">（可选）</span>",
 	"temp-ban.hours": "小时",
 	"temp-ban.days": "天",
@@ -107,5 +107,5 @@
 	"alerts.email-sent-to": "已发送邀请给 %1",
 	"alerts.x-users-found": "找到 %1 位用户（耗时 %2 秒）",
 	"export-users-started": "Exporting users as csv, this might take a while. You will receive a notification when it is complete.",
-	"export-users-completed": "Users exported as csv, click here to download."
+	"export-users-completed": "用户列表已被导出为 CSV 文件，点击以下载。"
 }

@@ -61,6 +61,7 @@
     "no-group": "Grupul nu exista.",
     "no-user": "Utilizatorul nu exista.",
     "no-teaser": "Teaser does not exist",
+    "no-flag": "Flag does not exist",
     "no-privileges": "You do not have enough privileges for this action.",
     "category-disabled": "Categorie dezactivată",
     "topic-locked": "Subiect Închis",

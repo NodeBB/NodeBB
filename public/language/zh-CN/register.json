@@ -22,7 +22,7 @@
     "registration-queue-auto-approve-time": "您在此论坛的帐号将会在最迟  %1  小时后被完全激活。",
     "interstitial.intro": "We'd like some additional information in order to update your account&hellip;",
     "interstitial.intro-new": "We'd like some additional information before we can create your account&hellip;",
-    "interstitial.errors-found": "Please review the entered information:",
+    "interstitial.errors-found": "请检查输入的信息：",
     "gdpr_agree_data": "我同意此网站对我个人信息的收集与处理。",
     "gdpr_agree_email": "我同意此网站向我发送摘要和通知邮件。",
     "gdpr_consent_denied": "您需要同意此网站收集与处理您的个人信息，以及向您发送电子邮件。",

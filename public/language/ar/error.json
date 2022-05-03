@@ -61,6 +61,7 @@
     "no-group": "مجموعة غير موجودة",
     "no-user": "اسم مستخدم غير موجود",
     "no-teaser": "مقتطف غير موجود",
+    "no-flag": "Flag does not exist",
     "no-privileges": "لاتملك الصلاحيات اللازمة للقيام بهذه العملية",
     "category-disabled": "قائمة معطلة",
     "topic-locked": "الموضوع مقفول",

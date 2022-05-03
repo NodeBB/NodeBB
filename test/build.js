@@ -9,6 +9,7 @@ const async = require('async');
 
 const db = require('./mocks/databasemock');
 const file = require('../src/file');
+const helpers = require('./helpers');
 
 describe('minifier', () => {
 	before(async () => {
@@ -117,7 +118,7 @@ describe('minifier', () => {
 	});
 });
 
-describe('Build', (done) => {
+describe('Build', () => {
 	const build = require('../src/meta/build');
 
 	before((done) => {
@@ -137,9 +138,8 @@ describe('Build', (done) => {
 	it('should build requirejs modules', (done) => {
 		build.build(['requirejs modules'], (err) => {
 			assert.ifError(err);
-			const filename = path.join(__dirname, '../build/public/src/modules/Chart.js');
+			const filename = path.join(__dirname, '../build/public/src/modules/alerts.js');
 			assert(file.existsSync(filename));
-			assert(fs.readFileSync(filename).toString().startsWith('/*!\n * Chart.js'));
 			done();
 		});
 	});
@@ -147,7 +147,7 @@ describe('Build', (done) => {
 	it('should build client js bundle', (done) => {
 		build.build(['client js bundle'], (err) => {
 			assert.ifError(err);
-			const filename = path.join(__dirname, '../build/public/nodebb.min.js');
+			const filename = path.join(__dirname, '../build/public/scripts-client.js');
 			assert(file.existsSync(filename));
 			assert(fs.readFileSync(filename).length > 1000);
 			done();
@@ -157,7 +157,7 @@ describe('Build', (done) => {
 	it('should build admin js bundle', (done) => {
 		build.build(['admin js bundle'], (err) => {
 			assert.ifError(err);
-			const filename = path.join(__dirname, '../build/public/acp.min.js');
+			const filename = path.join(__dirname, '../build/public/scripts-admin.js');
 			assert(file.existsSync(filename));
 			assert(fs.readFileSync(filename).length > 1000);
 			done();
@@ -188,6 +188,25 @@ describe('Build', (done) => {
 			done();
 		});
 	});
+
+
+	/* disabled, doesn't work on gh actions in prod mode
+	it('should build bundle files', function (done) {
+		this.timeout(0);
+		build.buildAll(async (err) => {
+			assert.ifError(err);
+			assert(file.existsSync(path.join(__dirname, '../build/webpack/nodebb.min.js')));
+			assert(file.existsSync(path.join(__dirname, '../build/webpack/admin.min.js')));
+			let { res, body } = await helpers.request('GET', `/assets/nodebb.min.js`, {});
+			assert(res.statusCode, 200);
+			assert(body);
+			({ res, body } = await helpers.request('GET', `/assets/admin.min.js`, {}));
+			assert(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+	*/
 
 	it('should build templates', function (done) {
 		this.timeout(0);

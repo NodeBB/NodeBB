@@ -7,6 +7,7 @@ const path = require('path');
 const os = require('os');
 const nconf = require('nconf');
 const express = require('express');
+const chalk = require('chalk');
 
 const app = express();
 app.renderAsync = util.promisify((tpl, data, callback) => app.render(tpl, data, callback));
@@ -31,10 +32,11 @@ const logger = require('./logger');
 const plugins = require('./plugins');
 const flags = require('./flags');
 const topicEvents = require('./topics/events');
+const privileges = require('./privileges');
 const routes = require('./routes');
 const auth = require('./routes/authentication');
 
-const helpers = require('../public/src/modules/helpers');
+const helpers = require('./helpers');
 
 if (nconf.get('ssl')) {
 	server = require('https').createServer({
@@ -103,6 +105,7 @@ async function initializeNodeBB() {
 		middleware: middleware,
 	});
 	await routes(app, middleware);
+	await privileges.init();
 	await meta.blacklist.load();
 	await flags.init();
 	await analytics.init();
@@ -289,11 +292,12 @@ async function listen() {
 		server.listen(...args.concat([function (err) {
 			const onText = `${isSocket ? socketPath : `${bind_address}:${port}`}`;
 			if (err) {
-				winston.error(`[startup] NodeBB was unable to listen on: ${onText}`);
+				winston.error(`[startup] NodeBB was unable to listen on: ${chalk.yellow(onText)}`);
 				reject(err);
 			}
 
-			winston.info(`NodeBB is now listening on: ${onText}`);
+			winston.info(`NodeBB is now listening on: ${chalk.yellow(onText)}`);
+			winston.info(`Canonical URL: ${chalk.yellow(nconf.get('url'))}`);
 			if (oldUmask) {
 				process.umask(oldUmask);
 			}

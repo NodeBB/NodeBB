@@ -61,6 +61,7 @@
     "no-group": "Group does not exist",
     "no-user": "User does not exist",
     "no-teaser": "Teaser does not exist",
+    "no-flag": "Flag does not exist",
     "no-privileges": "You do not have enough privileges for this action.",
     "category-disabled": "Η κατηγορία έχει απενεργοποιηθεί",
     "topic-locked": "Το θέμα έχει κλειδωθεί",

@@ -18,5 +18,14 @@
 	"remove": "Entfernen",
 	"notify": "Benachrichtigen",
 	"notify-user": "Benutzer benachrichtigen",
-	"confirm-reject": "Do you want to reject this post?"
+	"confirm-reject": "Do you want to reject this post?",
+	"bulk-actions": "Bulk Actions",
+	"accept-all": "Accept All",
+	"accept-selected": "Accept Selected",
+	"reject-all": "Reject All",
+	"reject-all-confirm": "Do you want to reject all posts?",
+	"reject-selected": "Reject Selected",
+	"reject-selected-confirm": "Do you want to reject %1 selected posts?",
+	"bulk-accept-success": "%1 posts accepted",
+	"bulk-reject-success": "%1 posts rejected"
 }

@@ -38,6 +38,7 @@
 	"delete-post": "Supprimer les messages",
 	"purge-post": "Supprimer définitivement",
 	"restore-post": "Restaurer les messages",
+	"delete": "Delete Flag",
 
 	"user-view": "Voir le profil",
 	"user-edit": "Éditer le profil",
@@ -46,8 +47,10 @@
 	"add-note": "Ajouter une note",
 	"no-notes": "aucune note partagée",
 	"delete-note-confirm": "Êtes-vous sûr de bien vouloir supprimer cette note de signalement ?",
+	"delete-flag-confirm": "Are you sure you want to delete this flag?",
 	"note-added": "Note ajoutée",
 	"note-deleted": "Note supprimée",
+	"flag-deleted": "Flag Deleted",
 
 	"history": "Compte &amp; Historique des signalements",
 	"no-history": "Aucun historique de signalements",

@@ -61,6 +61,7 @@
     "no-group": "Groep bestaat niet",
     "no-user": "Gebruiker bestaat niet",
     "no-teaser": "Dit voorproefje bestaat niet",
+    "no-flag": "Flag does not exist",
     "no-privileges": "Onvoldoende rechten om deze actie uit te voeren",
     "category-disabled": "Categorie uitgeschakeld",
     "topic-locked": "Onderwerp gesloten",

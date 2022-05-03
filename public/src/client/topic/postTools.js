@@ -32,6 +32,7 @@ define('forum/topic/postTools', [
 
 	function renderMenu() {
 		$('[component="topic"]').on('show.bs.dropdown', '.moderator-tools', function () {
+			const self = this;
 			const $this = $(this);
 			const dropdownMenu = $this.find('.dropdown-menu');
 			if (dropdownMenu.html()) {
@@ -41,19 +42,23 @@ define('forum/topic/postTools', [
 			const pid = postEl.attr('data-pid');
 			const index = parseInt(postEl.attr('data-index'), 10);
 
-			socket.emit('posts.loadPostTools', { pid: pid, cid: ajaxify.data.cid }, function (err, data) {
+			socket.emit('posts.loadPostTools', { pid: pid, cid: ajaxify.data.cid }, async (err, data) => {
 				if (err) {
 					return alerts.error(err);
 				}
 				data.posts.display_move_tools = data.posts.display_move_tools && index !== 0;
 
-				app.parseAndTranslate('partials/topic/post-menu-list', data, function (html) {
-					dropdownMenu.html(html);
-					require(['clipboard'], function (clipboard) {
-						new clipboard('[data-clipboard-text]');
-					});
-					hooks.fire('action:post.tools.load');
-				});
+				const html = await app.parseAndTranslate('partials/topic/post-menu-list', data);
+				const clipboard = require('clipboard');
+				// eslint-disable-next-line import/no-unresolved
+				const topic = require('forum/topic');
+
+				dropdownMenu.html(html);
+				dropdownMenu.get(0).classList.toggle('hidden', false);
+				topic.applyDropup.call(self);
+				new clipboard('[data-clipboard-text]');
+
+				hooks.fire('action:post.tools.load');
 			});
 		});
 	}

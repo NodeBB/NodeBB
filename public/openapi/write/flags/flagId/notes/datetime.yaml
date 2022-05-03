@@ -10,7 +10,7 @@ delete:
         type: number
       required: true
       description: a valid flag id
-      example: 1
+      example: 2
     - in: path
       name: datetime
       schema:
