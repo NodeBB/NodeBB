@@ -19,13 +19,13 @@
 	"notify": "Njofto",
 	"notify-user": "Njoftoni përdoruesin",
 	"confirm-reject": "Jeni i sigurt që dëshironi ta anulloni këtë postim?",
-	"bulk-actions": "Bulk Actions",
-	"accept-all": "Accept All",
+	"bulk-actions": "Veprime njëkohësisht",
+	"accept-all": "Prano të gjitha",
 	"accept-selected": "Accept Selected",
-	"reject-all": "Reject All",
-	"reject-all-confirm": "Do you want to reject all posts?",
+	"reject-all": "Refuzo të gjitha",
+	"reject-all-confirm": "Dëshiron të refuzosh të gjitha postimet?",
 	"reject-selected": "Reject Selected",
-	"reject-selected-confirm": "Do you want to reject %1 selected posts?",
-	"bulk-accept-success": "%1 posts accepted",
-	"bulk-reject-success": "%1 posts rejected"
+	"reject-selected-confirm": "Dëshiron të refuzosh %1 postimet e selektuara?",
+	"bulk-accept-success": "%1 postime u pranuan",
+	"bulk-reject-success": "%1 postime u refuzuan"
 }

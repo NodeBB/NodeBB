@@ -32,8 +32,8 @@
 	"edit": "编辑",
 	"analytics": "分析",
 	"view-category": "查看版块",
-	"set-order": "Set order",
-	"set-order-help": "Setting the order of the category will move this category to that order and update the order of other categories as necessary. Minimum order is 1 which puts the category at the top.",
+	"set-order": "设置顺序",
+	"set-order-help": "设置版块的顺序会将此版块移动到对应的顺序，并根据需要更新其他版块的顺序。顺序值最小为 1，即将版块置于顶部。",
 
 	"select-category": "选择版块",
 	"set-parent-category": "设置父版块",

@@ -184,7 +184,7 @@
     "wrong-login-type-username": "Ju lutemi përdorni emrin tuaj të përdoruesit për t'u identifikuar",
     "sso-registration-disabled": "Regjistrimi është çaktivizuar për llogaritë %1, ju lutemi regjistrohuni fillimisht me një adresë emaili",
     "sso-multiple-association": "Ju nuk mund të lidhni shumë llogari nga ky shërbim me llogarinë tuaj NodeBB. Ju lutemi shkëputni llogarinë tuaj ekzistuese dhe provoni përsëri.",
-    "invite-maximum-met": "Ju keni ftuar numrin maksimal të njerëzve (% 1 nga %2).",
+    "invite-maximum-met": "Ju keni ftuar numrin maksimal të njerëzve (%1 nga %2).",
     "no-session-found": "Nuk u gjet asnjë seancë identifikimi!",
     "not-in-room": "Përdoruesi nuk është në dhomën e bisedës",
     "cant-kick-self": "Nuk mund ta largosh veten nga grupi",

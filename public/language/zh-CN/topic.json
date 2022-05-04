@@ -173,7 +173,7 @@
     "diffs.current-revision": "当前版本",
     "diffs.original-revision": "原始版本",
     "diffs.restore": "恢复到此修订",
-    "diffs.restore-description": "A new revision will be appended to this post's edit history after restoring.",
+    "diffs.restore-description": "恢复后，新的修订版本将会被添加到此帖子的编辑历史记录中。",
     "diffs.post-restored": "帖子成功恢复到更早的修订版本",
     "diffs.delete": "删除此修订",
     "diffs.deleted": "Revision deleted",
