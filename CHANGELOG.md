@@ -1,3 +1,45 @@
+#### v2.0.0 (2022-05-04)
+
+##### Chores
+
+*  incrementing version number - v2.0.0 (f23c3ff5)
+*  update changelog for v1.19.7 (a764df52)
+* **deps:**
+  *  update dependency mocha to v10 (a7986773)
+  *  bump nodebb-plugin-dbsearch from 5.1.3 to 5.1.4 in /install (#10545) (a2e263a1)
+  *  update dependency smtp-server to v3.11.0 (62f1c78a)
+* **i18n:**
+  *  fallback strings for new resources: nodebb.post-queue (d617c665)
+  *  fallback strings for new resources: nodebb.post-queue (3492dd11)
+  *  fallback strings for new resources: nodebb.error, nodebb.flags (72d47a0b)
+
+##### New Features
+
+*  show number of selected posts in reject confirm (012860a4)
+*  post queue bulk actions closes #10520, fix #10555, (23175110)
+*  output canonical URL as last line on NodeBB boot (e4a9c078)
+
+##### Bug Fixes
+
+* **deps:**
+  *  update dependency @socket.io/redis-adapter to v7.2.0 (#10571) (c3c77915)
+  *  update dependency autoprefixer to v10.4.7 (#10563) (68168a7d)
+  *  update dependency nodebb-theme-persona to v12.0.1 (#10561) (1d446e14)
+  *  update dependency nodebb-plugin-mentions to v3.0.10 (#10560) (eb3c398e)
+  *  update dependency nodebb-plugin-dbsearch to v5.1.5 (#10559) (c3ff28ff)
+  *  update dependency nodebb-plugin-mentions to v3.0.9 (#10554) (1acbe4c1)
+  *  update dependency postcss to v8.4.13 (#10553) (6217db00)
+  *  update dependency express to v4.18.1 (#10550) (b0dc5615)
+  *  pin dependency webpack to 5.72.0 (#10549) (672ab25a)
+  *  update dependency cron to v1.8.3 (#10543) (d6843294)
+  *  update dependency bootbox to v5.5.3 (#10531) (8d47f352)
+  *  update dependency nodemailer to v6.7.4 (#10540) (afefee08)
+*  #10569, fix category move event text (ea01ba01)
+
+##### Refactors
+
+*  not used anymore (d2e6f317)
+
 #### v1.19.7 (2022-04-28)
 
 ##### Breaking Changes
