@@ -11,6 +11,7 @@ const emailer = require('../emailer');
 const groups = require('../groups');
 const translator = require('../translator');
 const utils = require('../utils');
+const plugins = require('../plugins');
 
 module.exports = function (User) {
 	User.getInvites = async function (uid) {
@@ -53,6 +54,7 @@ module.exports = function (User) {
 
 		const data = await prepareInvitation(uid, email, groupsToJoin);
 		await emailer.sendToEmail('invitation', email, meta.config.defaultLang, data);
+		plugins.hooks.fire('action:user.invite', { uid, email, groupsToJoin });
 	};
 
 	User.verifyInvitation = async function (query) {
