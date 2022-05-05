@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 			} catch (err) {
 				console.warn(`error loading ${moduleName}\n${err.stack}`);
 			}
-			return _module && _module.default;
+			return _module && _module.default ? _module.default : _module;
 		}
 		const result = await Promise.all(modules.map(requireModule));
 		return single ? result.pop() : result;
