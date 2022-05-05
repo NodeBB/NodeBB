@@ -194,6 +194,8 @@ jobs:
           parallel: true
 
   finish:
+    permissions:
+      checks: write  # for coverallsapp/github-action to create new checks
     needs: test
     runs-on: ubuntu-latest
     steps:
