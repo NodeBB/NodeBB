@@ -8,6 +8,7 @@ const posts = require('../posts');
 const categories = require('../categories');
 const plugins = require('../plugins');
 const translator = require('../translator');
+const privileges = require('../privileges');
 
 const Events = module.exports;
 
@@ -130,6 +131,14 @@ async function modifyEvent({ tid, uid, eventIds, timestamps, events }) {
 	// Remove backlink events if backlinks are disabled
 	if (meta.config.topicBacklinks !== 1) {
 		events = events.filter(event => event.type !== 'backlink');
+	} else {
+		// remove backlinks that we dont have read permission
+		const backlinkPids = events.filter(e => e.type === 'backlink')
+			.map(e => e.href.split('/').pop());
+		const pids = await privileges.posts.filter('topics:read', backlinkPids, uid);
+		events = events.filter(
+			e => e.type !== 'backlink' || pids.includes(e.href.split('/').pop())
+		);
 	}
 
 	// Remove events whose types no longer exist (e.g. plugin uninstalled)
