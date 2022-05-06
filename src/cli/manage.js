@@ -45,10 +45,12 @@ async function activate(plugin) {
 			type: 'plugin-activate',
 			text: plugin,
 		});
+
+		process.exit(0);
 	} catch (err) {
 		winston.error(`An error occurred during plugin activation\n${err.stack}`);
+		process.exit(1);
 	}
-	process.exit(0);
 }
 
 async function listPlugins() {
