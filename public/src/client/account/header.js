@@ -54,7 +54,9 @@ define('forum/account/header', [
 		components.get('account/ban').on('click', function () {
 			banAccount(ajaxify.data.theirid);
 		});
-		components.get('account/mute').on('click', muteAccount);
+		components.get('account/mute').on('click', function () {
+			muteAccount(ajaxify.data.theirid);
+		});
 		components.get('account/unban').on('click', unbanAccount);
 		components.get('account/unmute').on('click', unmuteAccount);
 		components.get('account/delete-account').on('click', handleDeleteEvent.bind(null, 'account'));
@@ -70,6 +72,7 @@ define('forum/account/header', [
 
 	// TODO: This exported method is used in forum/flags/detail -- refactor??
 	AccountHeader.banAccount = banAccount;
+	AccountHeader.muteAccount = muteAccount;
 
 	function hidePrivateLinks() {
 		if (!app.user.uid || app.user.uid !== parseInt(ajaxify.data.theirid, 10)) {
@@ -179,7 +182,8 @@ define('forum/account/header', [
 		}).catch(alerts.error);
 	}
 
-	function muteAccount() {
+	function muteAccount(theirid, onSuccess) {
+		theirid = theirid || ajaxify.data.theirid;
 		Benchpress.render('admin/partials/temporary-mute', {}).then(function (html) {
 			bootbox.dialog({
 				className: 'mute-modal',
@@ -203,10 +207,13 @@ define('forum/account/header', [
 								Date.now() + (formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1))
 							) : 0;
 
-							api.put('/users/' + ajaxify.data.theirid + '/mute', {
+							api.put('/users/' + theirid + '/mute', {
 								until: until,
 								reason: formData.reason || '',
 							}).then(() => {
+								if (typeof onSuccess === 'function') {
+									return onSuccess();
+								}
 								ajaxify.refresh();
 							}).catch(alerts.error);
 						},
