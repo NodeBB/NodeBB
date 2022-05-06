@@ -58,7 +58,7 @@ web.install = async function (port) {
 	winston.info(`Launching web installer on port ${port}`);
 
 	app.use(express.static('public', {}));
-	app.use('/assets', express.static(path.join(__dirname, '../build/webpack'), {}));
+	app.use('/assets', express.static(path.join(__dirname, '../build/public'), {}));
 
 	app.engine('tpl', (filepath, options, callback) => {
 		filepath = filepath.replace(/\.tpl$/, '.js');
@@ -206,15 +206,20 @@ async function launch(req, res) {
 		}
 
 		const filesToDelete = [
-			'installer.css',
-			'installer.min.js',
-			'bootstrap.min.css',
+			path.join(__dirname, '../public', 'installer.css'),
+			path.join(__dirname, '../public', 'bootstrap.min.css'),
+			path.join(__dirname, '../build/public', 'installer.min.js'),
 		];
-		await Promise.all(
-			filesToDelete.map(
-				filename => fs.promises.unlink(path.join(__dirname, '../public', filename))
-			)
-		);
+		try {
+			await Promise.all(
+				filesToDelete.map(
+					filename => fs.promises.unlink(filename)
+				)
+			);
+		} catch (err) {
+			console.log(err.stack);
+		}
+
 		child.unref();
 		process.exit(0);
 	} catch (err) {
