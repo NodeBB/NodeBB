@@ -19,13 +19,13 @@
 	"notify": "Notifier",
 	"notify-user": "Notifier l'utilisateur",
 	"confirm-reject": "Voulez vous réellement rejeter ce message ?",
-	"bulk-actions": "Bulk Actions",
-	"accept-all": "Accept All",
-	"accept-selected": "Accept Selected",
-	"reject-all": "Reject All",
-	"reject-all-confirm": "Do you want to reject all posts?",
-	"reject-selected": "Reject Selected",
-	"reject-selected-confirm": "Do you want to reject %1 selected posts?",
-	"bulk-accept-success": "%1 posts accepted",
-	"bulk-reject-success": "%1 posts rejected"
+	"bulk-actions": "Actions",
+	"accept-all": "Tout accepter",
+	"accept-selected": "Acceptation sélectionné",
+	"reject-all": "Tout rejeter",
+	"reject-all-confirm": "Voulez vous réellement rejeter tous ces messages ?",
+	"reject-selected": "Rejets sélectionnés",
+	"reject-selected-confirm": "Voulez vous réellement rejeter ces %1 messages ?",
+	"bulk-accept-success": "%1 messages acceptés",
+	"bulk-reject-success": "%1 messages rejetés"
 }
