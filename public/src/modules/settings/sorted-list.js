@@ -156,6 +156,7 @@ define('settings/sorted-list', [
 
 				setupRemoveButton($container, itemUUID);
 				setupEditButton($container, itemUUID);
+				hooks.fire('action:settings.sorted-list.parse', { itemHtml });
 				resolve();
 			});
 		});
