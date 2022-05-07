@@ -44,6 +44,7 @@ define('settings/sorted-list', [
 						SortedList.addItem(modal.find('form').children(), $container);
 					}
 				});
+				hooks.fire('action:settings.sorted-list.modal', { modal });
 			});
 
 			const call = $container.parents('form').attr('data-socket-get');
@@ -132,6 +133,7 @@ define('settings/sorted-list', [
 					parse($container, itemUUID, data, oldItem);
 				}
 			});
+			hooks.fire('action:settings.sorted-list.modal', { modal });
 		});
 	}
 
