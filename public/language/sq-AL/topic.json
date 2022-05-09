@@ -142,7 +142,7 @@
     "composer.submit": "Posto",
     "composer.additional-options": "Opsione shtesë",
     "composer.schedule": "Skedulo",
-    "composer.replying_to": "Duke iu përgjigjur \"%1\"",
+    "composer.replying_to": "Duke komentuar \"%1\"",
     "composer.new_topic": "Temë e re",
     "composer.editing": "Duke edituar",
     "composer.uploading": "duke u ngarkuar...",
