@@ -91,7 +91,7 @@ define('uploadHelpers', ['alerts'], function (alerts) {
 				draggingDocument = true;
 			})
 			.off('dragend')
-			.on('dragend', function () {
+			.on('dragend, mouseup', function () {
 				draggingDocument = false;
 			});
 
