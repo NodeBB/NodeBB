@@ -23,6 +23,7 @@ define('sort', ['components', 'api'], function (components, api) {
 					const payload = { settings: {} };
 					payload.settings[field] = newSetting;
 					api.put(`/users/${app.user.uid}/settings`, payload).then(() => {
+						// Yes, this is normal. If you are logged in, sort is not added to qs since it's saved to user settings
 						refresh(newSetting, utils.params());
 					});
 				} else {
