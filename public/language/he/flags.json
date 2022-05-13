@@ -38,7 +38,7 @@
 	"delete-post": "מחק פוסט",
 	"purge-post": "מחק לצמיתות",
 	"restore-post": "שחזור פוסט",
-	"delete": "Delete Flag",
+	"delete": "מחק דיווח",
 
 	"user-view": "צפה בפרופיל",
 	"user-edit": "ערוך פרופיל",
@@ -47,10 +47,10 @@
 	"add-note": "הוסף הערה",
 	"no-notes": "אין הערות",
 	"delete-note-confirm": "האם אתה בטוח שאתה רוצה למחוק הערה זו?",
-	"delete-flag-confirm": "Are you sure you want to delete this flag?",
+	"delete-flag-confirm": "האם אתה בטוח שברצונך למחוק את הדיווח הזה?",
 	"note-added": "נוספה הערה",
 	"note-deleted": "ההערה נמחקה",
-	"flag-deleted": "Flag Deleted",
+	"flag-deleted": "הדיווח נמחק",
 
 	"history": "היסטוריית הסימונים למשתמש",
 	"no-history": "אין הסיטוריית סימונים",
@@ -85,5 +85,5 @@
 	"bulk-resolve": "השלם דיווח(ים)",
 	"bulk-success": "%1 דיווחים עודכנו",
 	"flagged-timeago-readable": "מדווחים <span class=\"timeago\" title=\"%1\"></span> (%2)",
-  	"auto-flagged": "[Auto Flagged] Received %1 downvotes."
+  	"auto-flagged": "[דיווח אוטומטי] פוסט זה קיבל %1 הצבעות למטה."
 }

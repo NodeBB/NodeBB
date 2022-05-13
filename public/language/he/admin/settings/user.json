@@ -64,7 +64,7 @@
 	"restrict-chat": "אשר הודעות צ'אט רק ממשתמשים שאני עוקב אחריהם",
 	"outgoing-new-tab": "פתח קישורים חיצוניים בכרטיסייה חדשה",
 	"topic-search": "הפעל חיפוש בתוך נושא",
-	"update-url-with-post-index": "Update url with post index while browsing topics",
+	"update-url-with-post-index": "עדכן את כתובת הURL עם מספר הפוסט הנוכחי בזמן גלישה בנושאים",
 	"digest-freq": "הרשם לקבלת תקציר",
 	"digest-freq.off": "כבוי",
 	"digest-freq.daily": "יומי",
