@@ -1,8 +1,10 @@
 {
     "administrators": "Administrators",
     "global-moderators": "Globale Moderators",
+    "moderators": "Moderators",
     "no-global-moderators": "Geen Globale Moderators",
-    "moderators-of-category": "%1 Moderators",
+    "no-sub-categories": "No subcategories",
+    "subcategories": "%1 subcategories",
     "no-moderators": "Geen Moderators",
     "add-administrator": "Voeg Administrator toe",
     "add-global-moderator": "Voeg Globale Moderator toe",

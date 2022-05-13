@@ -1,8 +1,10 @@
 {
     "administrators": "관리자",
     "global-moderators": "통합 조정자",
+    "moderators": "Moderators",
     "no-global-moderators": "통합 조정자 없음",
-    "moderators-of-category": "%1 담당 조정자",
+    "no-sub-categories": "No subcategories",
+    "subcategories": "%1 subcategories",
     "no-moderators": "조정자 없음",
     "add-administrator": "관리자 추가",
     "add-global-moderator": "통합 조정자 추가",
