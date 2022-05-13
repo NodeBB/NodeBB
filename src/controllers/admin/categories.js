@@ -77,7 +77,7 @@ categoriesController.getAll = async function (req, res) {
 		if (c.children) {
 			c.subCategoriesLeft = Math.max(0, c.children.length - c.subCategoriesPerPage);
 			c.hasMoreSubCategories = c.children.length > c.subCategoriesPerPage;
-			c.showMorePage = Math.ceil(c.subCategoriesPerPage / meta.config.categoriesPerPage)
+			c.showMorePage = Math.ceil(c.subCategoriesPerPage / meta.config.categoriesPerPage);
 			c.children = c.children.slice(0, c.subCategoriesPerPage);
 			c.children.forEach(c => trim(c));
 		}
