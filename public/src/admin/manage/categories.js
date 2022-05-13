@@ -172,7 +172,7 @@ define('admin/manage/categories', [
 			});
 		} else {
 			sortables = {};
-			renderList(categories, container, 0);
+			renderList(categories, container, { cid: 0 });
 		}
 	};
 
@@ -222,9 +222,10 @@ define('admin/manage/categories', [
 	 * @param container {object} parent jquery element for the list
 	 * @param parentId {number} parent category identifier
 	 */
-	function renderList(categories, container, parentId) {
+	function renderList(categories, container, parentCategory) {
 		// Translate category names if needed
 		let count = 0;
+		const parentId = parentCategory.cid;
 		categories.forEach(function (category, idx, parent) {
 			translator.translate(category.name, function (translated) {
 				if (category.name !== translated) {
@@ -244,14 +245,15 @@ define('admin/manage/categories', [
 
 		function continueRender() {
 			app.parseAndTranslate('admin/partials/categories/category-rows', {
-				cid: parentId,
+				cid: parentCategory.cid,
 				categories: categories,
+				parentCategory: parentCategory,
 			}, function (html) {
 				container.append(html);
 
 				// Handle and children categories in this level have
 				for (let x = 0, numCategories = categories.length; x < numCategories; x += 1) {
-					renderList(categories[x].children, $('li[data-cid="' + categories[x].cid + '"]'), categories[x].cid);
+					renderList(categories[x].children, $('li[data-cid="' + categories[x].cid + '"]'), categories[x]);
 				}
 
 				// Make list sortable

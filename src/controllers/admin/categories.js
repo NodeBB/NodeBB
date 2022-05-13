@@ -66,8 +66,7 @@ categoriesController.getAll = async function (req, res) {
 	const categoriesData = await categories.getCategoriesFields(cids, fields);
 	const result = await plugins.hooks.fire('filter:admin.categories.get', { categories: categoriesData, fields: fields });
 	let tree = categories.getTree(result.categories, rootParent);
-
-	const cidsCount = rootCid ? cids.length - 1 : tree.length;
+	const cidsCount = rootCid && tree[0] ? tree[0].children.length : tree.length;
 
 	const pageCount = Math.max(1, Math.ceil(cidsCount / meta.config.categoriesPerPage));
 	const page = Math.min(parseInt(req.query.page, 10) || 1, pageCount);
@@ -76,6 +75,9 @@ categoriesController.getAll = async function (req, res) {
 
 	function trim(c) {
 		if (c.children) {
+			c.subCategoriesLeft = Math.max(0, c.children.length - c.subCategoriesPerPage);
+			c.hasMoreSubCategories = c.children.length > c.subCategoriesPerPage;
+			c.showMorePage = Math.ceil(c.subCategoriesPerPage / meta.config.categoriesPerPage)
 			c.children = c.children.slice(0, c.subCategoriesPerPage);
 			c.children.forEach(c => trim(c));
 		}
