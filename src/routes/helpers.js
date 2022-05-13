@@ -12,7 +12,7 @@ helpers.setupPageRoute = function (...args) {
 	const controller = args[args.length - 1];
 
 	if (args.length === 5) {
-		winston.warn('[helpers.setupPageRotue] passing middleware as third param is deprecated');
+		winston.warn(`[helpers.setupPageRoute(${name})] passing \`middleware\` as the third param is deprecated, it can now be safely removed`);
 	}
 
 	middlewares = [
