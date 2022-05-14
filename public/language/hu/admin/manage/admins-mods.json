@@ -1,8 +1,10 @@
 {
     "administrators": "Adminisztrátorok",
     "global-moderators": "Globális moderátorok",
+    "moderators": "Moderators",
     "no-global-moderators": "Nincsenek Globális moderátorok",
-    "moderators-of-category": "%1 Moderátorok",
+    "no-sub-categories": "No subcategories",
+    "subcategories": "%1 subcategories",
     "no-moderators": "Nincsenek Moderátorok",
     "add-administrator": "Adminisztrátor hozzáadása",
     "add-global-moderator": "Globális moderátor hozzáadása",

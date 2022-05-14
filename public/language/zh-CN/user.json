@@ -101,7 +101,7 @@
     "has_no_follower": "此用户还没有粉丝 :(",
     "follows_no_one": "此用户尚未关注任何人 :(",
     "has_no_posts": "此用户从未发言。",
-    "has_no_best_posts": "This user does not have any upvoted posts yet.",
+    "has_no_best_posts": "此用户没有任何顶过的帖子。",
     "has_no_topics": "此用户还未发布任何主题。",
     "has_no_watched_topics": "此用户还未关注任何主题。",
     "has_no_ignored_topics": "此用户尚未忽略任何主题。",
@@ -156,7 +156,7 @@
     "info.banned-permanently": "永久封禁",
     "info.banned-reason-label": "原因",
     "info.banned-no-reason": "没有原因",
-    "info.muted-no-reason": "No reason given.",
+    "info.muted-no-reason": "没有原因",
     "info.username-history": "历史用户名",
     "info.email-history": "历史邮箱",
     "info.moderation-note": "版主备注",
@@ -186,8 +186,8 @@
     "consent.export-uploads-success": "上传导出完成后，您将会收到一条通知。",
     "consent.export_posts": "导出帖子 (.csv)",
     "consent.export-posts-success": "帖子导出完成后，您将会收到一条通知。",
-    "emailUpdate.intro": "Please enter your email address below. This forum uses your email address for scheduled digest and notifications, as well as for account recovery in the event of a lost password.",
+    "emailUpdate.intro": "请在下方输入您的电子邮箱地址。此论坛使用您的电子邮箱地址用于定时发送摘要和通知，以及用于忘记密码时找回账号。",
     "emailUpdate.optional": "<strong>This field is optional</strong>. You are not obligated to provide your email address, but without a validated email you will not be able to recover your account or login with your email.",
-    "emailUpdate.required": "<strong>This field is required</strong>.",
-    "emailUpdate.change-instructions": "A confirmation email will be sent to the entered email address with a unique link. Accessing that link will confirm your ownership of the email address and it will become active on your account. At any time, you are able to update your email on file from within your account page."
+    "emailUpdate.required": "<strong>此字段为必填</strong>。",
+    "emailUpdate.change-instructions": "将向输入的电子邮箱地址发送一封带有唯一链接的确认电子邮件。访问该链接将验证您对该电子邮箱的所有权，它将在您的账号上处于活动状态。在任何时候，您都可以在您的账号页面更新存档的电子邮箱地址。"
 }
