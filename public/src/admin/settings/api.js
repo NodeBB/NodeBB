@@ -7,7 +7,7 @@ define('admin/settings/api', ['settings', 'alerts', 'hooks'], function (settings
 		settings.load('core.api', $('.core-api-settings'));
 		$('#save').on('click', saveSettings);
 
-		hooks.on('action:settings.sorted-list.itemLoaded', (ev, { element }) => {
+		hooks.on('action:settings.sorted-list.itemLoaded', ({ element }) => {
 			element.addEventListener('click', (ev) => {
 				if (ev.target.closest('input[readonly]')) {
 					// Select entire input text
