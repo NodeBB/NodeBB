@@ -35,7 +35,7 @@
 	"maskable-icon.help": "推荐的尺寸和格式：512x512，仅限PNG格式。如果没有指定可遮蔽图标，NodeBB将回退到触摸图标。",
 	"outgoing-links": "站外链接",
 	"outgoing-links.warning-page": "使用站外链接警告页",
-	"search": "Search",
+	"search": "搜索",
 	"search-default-in": "Search In",
 	"search-default-in-quick": "Quick Search In",
 	"search-default-sort-by": "排序",
