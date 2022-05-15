@@ -165,7 +165,8 @@ module.exports = function (User) {
 		if (!data.signature) {
 			return;
 		}
-		if (data.signature !== undefined && data.signature.length > meta.config.maximumSignatureLength) {
+		const signature = data.signature.replace(/\r\n/g, '\n');
+		if (signature.length > meta.config.maximumSignatureLength) {
 			throw new Error(`[[error:signature-too-long, ${meta.config.maximumSignatureLength}]]`);
 		}
 		await User.checkMinReputation(callerUid, data.uid, 'min:rep:signature');
