@@ -1,10 +1,10 @@
 {
     "administrators": "Yöneticiler",
     "global-moderators": "Genel Moderatörler",
-    "moderators": "Moderators",
+    "moderators": "Moderatörler",
     "no-global-moderators": "Genel Moderatör Yok",
-    "no-sub-categories": "No subcategories",
-    "subcategories": "%1 subcategories",
+    "no-sub-categories": "Alt Kategori Yok",
+    "subcategories": "%1 Alt Kategori",
     "no-moderators": "Moderatör Yok",
     "add-administrator": "Yönetici Ekle",
     "add-global-moderator": "Genel Moderatör Ekle",
