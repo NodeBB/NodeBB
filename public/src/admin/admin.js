@@ -157,26 +157,25 @@ require('../../scripts-admin');
 	}
 
 	function setupRestartLinks() {
-		$('.rebuild-and-restart').off('click').on('click', function () {
-			require(['bootbox'], function (bootbox) {
-				bootbox.confirm('[[admin/admin:alert.confirm-rebuild-and-restart]]', function (confirm) {
-					if (confirm) {
-						require(['admin/modules/instance'], function (instance) {
+		require(['benchpress', 'bootbox', 'admin/modules/instance'], function (benchpress, bootbox, instance) {
+			// need to preload the compiled alert template
+			// otherwise it can be unloaded when rebuild & restart is run
+			// the client can't fetch the template file, resulting in an error
+			benchpress.render('alert', {}).then(function () {
+				$('.rebuild-and-restart').off('click').on('click', function () {
+					bootbox.confirm('[[admin/admin:alert.confirm-rebuild-and-restart]]', function (confirm) {
+						if (confirm) {
 							instance.rebuildAndRestart();
-						});
-					}
+						}
+					});
 				});
-			});
-		});
 
-		$('.restart').off('click').on('click', function () {
-			require(['bootbox'], function (bootbox) {
-				bootbox.confirm('[[admin/admin:alert.confirm-restart]]', function (confirm) {
-					if (confirm) {
-						require(['admin/modules/instance'], function (instance) {
+				$('.restart').off('click').on('click', function () {
+					bootbox.confirm('[[admin/admin:alert.confirm-restart]]', function (confirm) {
+						if (confirm) {
 							instance.restart();
-						});
-					}
+						}
+					});
 				});
 			});
 		});
