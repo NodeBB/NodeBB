@@ -40,7 +40,7 @@ helpers.setupAdminPageRoute = function (...args) {
 	const middlewares = args.length > 3 ? args[args.length - 2] : [];
 	const controller = args[args.length - 1];
 	if (args.length === 5) {
-		winston.warn('[helpers.setupAdminPageRoute] passing middleware as third param is deprecated');
+		winston.warn(`[helpers.setupAdminPageRoute(${name})] passing \`middleware\` as the third param is deprecated, it can now be safely removed`);
 	}
 	router.get(name, middleware.admin.buildHeader, middlewares, helpers.tryRoute(controller));
 	router.get(`/api${name}`, middlewares, helpers.tryRoute(controller));
