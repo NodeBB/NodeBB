@@ -460,7 +460,7 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 			Object.assign(response, { params });
 		}
 
-		const returnPayload = await helpers.generateError(statusCode, message);
+		const returnPayload = await helpers.generateError(statusCode, message, res);
 		returnPayload.response = response;
 
 		if (global.env === 'development') {
@@ -471,7 +471,7 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 		res.status(statusCode).json(returnPayload);
 	} else if (!payload) {
 		// Non-2xx statusCode, generate predefined error
-		const returnPayload = await helpers.generateError(statusCode);
+		const returnPayload = await helpers.generateError(statusCode, null, res);
 		res.status(statusCode).json(returnPayload);
 	}
 };
@@ -495,15 +495,21 @@ async function generateBannedResponse(res) {
 	return response;
 }
 
-helpers.generateError = async (statusCode, message) => {
+helpers.generateError = async (statusCode, message, res) => {
+	async function translateMessage(message) {
+		const { req } = res;
+		const settings = req.query.lang ? null : await user.getSettings(req.uid);
+		const language = String(req.query.lang || settings.userLang || meta.config.defaultLang);
+		return await translator.translate(message, language);
+	}
 	if (message && message.startsWith('[[')) {
-		message = await translator.translate(message);
+		message = await translateMessage(message);
 	}
 
 	const payload = {
 		status: {
 			code: 'internal-server-error',
-			message: message || await translator.translate(`[[error:api.${statusCode}]]`),
+			message: message || await translateMessage(`[[error:api.${statusCode}]]`),
 		},
 		response: {},
 	};
