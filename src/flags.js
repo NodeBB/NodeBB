@@ -757,6 +757,7 @@ Flags.getHistory = async function (flagId) {
 
 	// Append ban history and username change data
 	history = await mergeBanHistory(history, targetUid, uids);
+	history = await mergeMuteHistory(history, targetUid, uids);
 	history = await mergeUsernameEmailChanges(history, targetUid, uids);
 
 	const userData = await user.getUsersFields(uids, ['username', 'userslug', 'picture']);
@@ -854,21 +855,39 @@ Flags.notify = async function (flagObj, uid, notifySelf = false) {
 };
 
 async function mergeBanHistory(history, targetUid, uids) {
-	let recentBans = await db.getSortedSetRevRange(`uid:${targetUid}:bans:timestamp`, 0, 19);
-	recentBans = await db.getObjects(recentBans);
+	return await mergeBanMuteHistory(history, uids, {
+		set: `uid:${targetUid}:bans:timestamp`,
+		label: '[[user:banned]]',
+		reasonDefault: '[[user:info.banned-no-reason]]',
+		expiryKey: '[[user:info.banned-expiry]]',
+	});
+}
 
-	return history.concat(recentBans.reduce((memo, cur) => {
+async function mergeMuteHistory(history, targetUid, uids) {
+	return await mergeBanMuteHistory(history, uids, {
+		set: `uid:${targetUid}:mutes:timestamp`,
+		label: '[[user:muted]]',
+		reasonDefault: '[[user:info.muted-no-reason]]',
+		expiryKey: '[[user:info.muted-expiry]]',
+	});
+}
+
+async function mergeBanMuteHistory(history, uids, params) {
+	let recentObjs = await db.getSortedSetRevRange(params.set, 0, 19);
+	recentObjs = await db.getObjects(recentObjs);
+
+	return history.concat(recentObjs.reduce((memo, cur) => {
 		uids.push(cur.fromUid);
 		memo.push({
 			uid: cur.fromUid,
 			meta: [
 				{
-					key: '[[user:banned]]',
-					value: validator.escape(String(cur.reason)),
+					key: params.label,
+					value: validator.escape(String(cur.reason || params.reasonDefault)),
 					labelClass: 'danger',
 				},
 				{
-					key: '[[user:info.banned-expiry]]',
+					key: params.expiryKey,
 					value: new Date(parseInt(cur.expire, 10)).toISOString(),
 					labelClass: 'default',
 				},

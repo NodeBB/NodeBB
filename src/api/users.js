@@ -231,11 +231,24 @@ usersAPI.mute = async function (caller, data) {
 	} else if (await user.isAdministrator(data.uid)) {
 		throw new Error('[[error:cant-mute-other-admins]]');
 	}
+	const reason = data.reason || '[[user:info.muted-no-reason]]';
 	await db.setObject(`user:${data.uid}`, {
 		mutedUntil: data.until,
-		mutedReason: data.reason || '[[user:info.muted-no-reason]]',
+		mutedReason: reason,
 	});
-
+	const now = Date.now();
+	const muteKey = `uid:${data.uid}:mute:${now}`;
+	const muteData = {
+		fromUid: caller.uid,
+		uid: data.uid,
+		timestamp: now,
+		expire: data.until,
+	};
+	if (data.reason) {
+		muteData.reason = reason;
+	}
+	await db.sortedSetAdd(`uid:${data.uid}:mutes:timestamp`, now, muteKey);
+	await db.setObject(muteKey, muteData);
 	await events.log({
 		type: 'user-mute',
 		uid: caller.uid,

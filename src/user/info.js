@@ -30,9 +30,10 @@ module.exports = function (User) {
 	};
 
 	User.getModerationHistory = async function (uid) {
-		let [flags, bans] = await Promise.all([
+		let [flags, bans, mutes] = await Promise.all([
 			db.getSortedSetRevRangeWithScores(`flags:byTargetUid:${uid}`, 0, 19),
 			db.getSortedSetRevRange(`uid:${uid}:bans:timestamp`, 0, 19),
+			db.getSortedSetRevRange(`uid:${uid}:mutes:timestamp`, 0, 19),
 		]);
 
 		// Get pids from flag objects
@@ -51,14 +52,16 @@ module.exports = function (User) {
 			return memo;
 		}, []);
 
-		[flags, bans] = await Promise.all([
+		[flags, bans, mutes] = await Promise.all([
 			getFlagMetadata(flags),
-			formatBanData(bans),
+			formatBanMuteData(bans, '[[user:info.banned-no-reason]]'),
+			formatBanMuteData(mutes, '[[user:info.muted-no-reason]]'),
 		]);
 
 		return {
 			flags: flags,
 			bans: bans,
+			mutes: mutes,
 		};
 	};
 
@@ -95,17 +98,17 @@ module.exports = function (User) {
 		return flags;
 	}
 
-	async function formatBanData(bans) {
-		const banData = await db.getObjects(bans);
-		const uids = banData.map(banData => banData.fromUid);
+	async function formatBanMuteData(keys, noReasonLangKey) {
+		const data = await db.getObjects(keys);
+		const uids = data.map(d => d.fromUid);
 		const usersData = await User.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture']);
-		return banData.map((banObj, index) => {
+		return data.map((banObj, index) => {
 			banObj.user = usersData[index];
 			banObj.until = parseInt(banObj.expire, 10);
 			banObj.untilReadable = new Date(banObj.until).toString();
 			banObj.timestampReadable = new Date(parseInt(banObj.timestamp, 10)).toString();
 			banObj.timestampISO = utils.toISOString(banObj.timestamp);
-			banObj.reason = validator.escape(String(banObj.reason || '')) || '[[user:info.banned-no-reason]]';
+			banObj.reason = validator.escape(String(banObj.reason || '')) || noReasonLangKey;
 			return banObj;
 		});
 	}
