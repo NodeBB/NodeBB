@@ -1,5 +1,6 @@
 {
     "banned": "Banido",
+    "muted": "Muted",
     "offline": "Offline",
     "deleted": "Deletado",
     "username": "Nome de Usuário",
@@ -156,6 +157,10 @@
     "info.banned-permanently": "Banido permanentemente",
     "info.banned-reason-label": "Motivo",
     "info.banned-no-reason": "Sem motivo escolhido.",
+    "info.mute-history": "Recent Mute History",
+    "info.no-mute-history": "This user has never been muted",
+    "info.muted-until": "Muted until %1",
+    "info.muted-expiry": "Expiry",
     "info.muted-no-reason": "No reason given.",
     "info.username-history": "Histórico do Nome de Usuário",
     "info.email-history": "Histórico do Email",

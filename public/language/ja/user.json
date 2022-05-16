@@ -1,5 +1,6 @@
 {
     "banned": "BANされた",
+    "muted": "Muted",
     "offline": "オフライン",
     "deleted": "削除されました",
     "username": "ユーザー名",
@@ -156,6 +157,10 @@
     "info.banned-permanently": "永久に停止",
     "info.banned-reason-label": "理由",
     "info.banned-no-reason": "理由なし。",
+    "info.mute-history": "Recent Mute History",
+    "info.no-mute-history": "This user has never been muted",
+    "info.muted-until": "Muted until %1",
+    "info.muted-expiry": "Expiry",
     "info.muted-no-reason": "No reason given.",
     "info.username-history": "ユーザー名の履歴",
     "info.email-history": "Eメール履歴",

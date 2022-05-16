@@ -1,5 +1,6 @@
 {
     "banned": "اخراج شده",
+    "muted": "Muted",
     "offline": "آفلاین",
     "deleted": "حذف شده",
     "username": "نام کاربری",
@@ -156,6 +157,10 @@
     "info.banned-permanently": "مسدود شده به طور دائم",
     "info.banned-reason-label": "دلیل",
     "info.banned-no-reason": "هیچ دلیلی ارایه نشد.",
+    "info.mute-history": "Recent Mute History",
+    "info.no-mute-history": "This user has never been muted",
+    "info.muted-until": "Muted until %1",
+    "info.muted-expiry": "Expiry",
     "info.muted-no-reason": "No reason given.",
     "info.username-history": "تاریخچه تعویض نام کاربری",
     "info.email-history": "تاریخچه تعویض ایمیل",

@@ -1,5 +1,6 @@
 {
     "banned": "I ndaluar",
+    "muted": "Muted",
     "offline": "Jashtë linje",
     "deleted": "Fshirë",
     "username": "Emri i përdoruesit",
@@ -156,6 +157,10 @@
     "info.banned-permanently": "Ndaluar përgjithmonë",
     "info.banned-reason-label": "Arsye",
     "info.banned-no-reason": "Asnjë arsye e dhënë.",
+    "info.mute-history": "Recent Mute History",
+    "info.no-mute-history": "This user has never been muted",
+    "info.muted-until": "Muted until %1",
+    "info.muted-expiry": "Expiry",
     "info.muted-no-reason": "Nuk u dha asnjë arsye",
     "info.username-history": "Historia e emrit të përdoruesit",
     "info.email-history": "Historia e emailit",

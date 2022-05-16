@@ -1,5 +1,6 @@
 {
     "banned": "Блокиран",
+    "muted": "Muted",
     "offline": "Извън линия",
     "deleted": "Изтрит",
     "username": "Потребителско име",
@@ -156,6 +157,10 @@
     "info.banned-permanently": "Блокиран за постоянно",
     "info.banned-reason-label": "Причина",
     "info.banned-no-reason": "Няма посочена причина.",
+    "info.mute-history": "Recent Mute History",
+    "info.no-mute-history": "This user has never been muted",
+    "info.muted-until": "Muted until %1",
+    "info.muted-expiry": "Expiry",
     "info.muted-no-reason": "Няма посочена причина.",
     "info.username-history": "История на потребителските имена",
     "info.email-history": "Историята на е-пощите",

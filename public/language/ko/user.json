@@ -1,5 +1,6 @@
 {
     "banned": "차단됨",
+    "muted": "Muted",
     "offline": "오프라인",
     "deleted": "삭제됨",
     "username": "사용자명",
@@ -156,6 +157,10 @@
     "info.banned-permanently": "영구 차단",
     "info.banned-reason-label": "사유",
     "info.banned-no-reason": "사유 없음",
+    "info.mute-history": "Recent Mute History",
+    "info.no-mute-history": "This user has never been muted",
+    "info.muted-until": "Muted until %1",
+    "info.muted-expiry": "Expiry",
     "info.muted-no-reason": "No reason given.",
     "info.username-history": "사용자명 변경 기록",
     "info.email-history": "이메일 변경 기록",

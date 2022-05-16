@@ -1,5 +1,6 @@
 {
     "banned": "Yasaklı",
+    "muted": "Muted",
     "offline": "Çevrimdışı",
     "deleted": "Silindi",
     "username": "Kullanıcı Adı",
@@ -156,6 +157,10 @@
     "info.banned-permanently": "Kalıcı şekilde yasakla",
     "info.banned-reason-label": "Gerekçe",
     "info.banned-no-reason": "Gerekçe belirtilmedi.",
+    "info.mute-history": "Recent Mute History",
+    "info.no-mute-history": "This user has never been muted",
+    "info.muted-until": "Muted until %1",
+    "info.muted-expiry": "Expiry",
     "info.muted-no-reason": "Herhangi bir gerekçe belirtilmedi.",
     "info.username-history": "Kullanıcı Adı Geçmişi",
     "info.email-history": "E-posta Geçmişi",

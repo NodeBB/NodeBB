@@ -1,5 +1,6 @@
 {
     "banned": "ถูกแบน",
+    "muted": "Muted",
     "offline": "ออฟไลน์",
     "deleted": "ลบแล้ว",
     "username": "ชื่อผู้ใช้",
@@ -156,6 +157,10 @@
     "info.banned-permanently": "แบนอย่างถาวร",
     "info.banned-reason-label": "เหตุผล",
     "info.banned-no-reason": "ไม่มีเหตุผล",
+    "info.mute-history": "Recent Mute History",
+    "info.no-mute-history": "This user has never been muted",
+    "info.muted-until": "Muted until %1",
+    "info.muted-expiry": "Expiry",
     "info.muted-no-reason": "No reason given.",
     "info.username-history": "ประวัติผู้ใช้",
     "info.email-history": "ประวัติอีเมล์",

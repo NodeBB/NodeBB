@@ -1,5 +1,6 @@
 {
     "banned": "מורחק",
+    "muted": "Muted",
     "offline": "לא מחובר",
     "deleted": "נמחק",
     "username": "שם משתמש",
@@ -156,6 +157,10 @@
     "info.banned-permanently": "הורחק לצמיתות",
     "info.banned-reason-label": "סיבה",
     "info.banned-no-reason": "לא ניתנה סיבה.",
+    "info.mute-history": "Recent Mute History",
+    "info.no-mute-history": "This user has never been muted",
+    "info.muted-until": "Muted until %1",
+    "info.muted-expiry": "Expiry",
     "info.muted-no-reason": "לא סופקה סיבה.",
     "info.username-history": "היסטוריית שם משתמש",
     "info.email-history": "היסטוריית אימייל",

@@ -1,5 +1,6 @@
 {
     "banned": "Bannlyst",
+    "muted": "Muted",
     "offline": "Offline",
     "deleted": "Raderad",
     "username": "Användarnamn",
@@ -156,6 +157,10 @@
     "info.banned-permanently": "Permanent bannad",
     "info.banned-reason-label": "Anledning",
     "info.banned-no-reason": "Ingen anledning angiven",
+    "info.mute-history": "Recent Mute History",
+    "info.no-mute-history": "This user has never been muted",
+    "info.muted-until": "Muted until %1",
+    "info.muted-expiry": "Expiry",
     "info.muted-no-reason": "No reason given.",
     "info.username-history": "Användarnamn historik",
     "info.email-history": "Epost historik",

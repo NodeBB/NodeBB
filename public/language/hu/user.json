@@ -1,5 +1,6 @@
 {
     "banned": "Kitiltva",
+    "muted": "Muted",
     "offline": "Nem elérhető",
     "deleted": "Törölve",
     "username": "Felhasználónév",
@@ -156,6 +157,10 @@
     "info.banned-permanently": "Végleges kitiltás",
     "info.banned-reason-label": "Oka",
     "info.banned-no-reason": "Az oka nincs megadva.",
+    "info.mute-history": "Recent Mute History",
+    "info.no-mute-history": "This user has never been muted",
+    "info.muted-until": "Muted until %1",
+    "info.muted-expiry": "Expiry",
     "info.muted-no-reason": "No reason given.",
     "info.username-history": "Felhasználónév előzmény",
     "info.email-history": "E-mail előzmény",

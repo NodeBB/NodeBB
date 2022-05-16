@@ -1,5 +1,6 @@
 {
     "banned": "Bị cấm",
+    "muted": "Muted",
     "offline": "Ngoại tuyến",
     "deleted": "Đã xoá",
     "username": "Tên Đăng Nhập",
@@ -156,6 +157,10 @@
     "info.banned-permanently": "Bị cấm vĩnh viễn",
     "info.banned-reason-label": "Lý do",
     "info.banned-no-reason": "Không có lí do.",
+    "info.mute-history": "Recent Mute History",
+    "info.no-mute-history": "This user has never been muted",
+    "info.muted-until": "Muted until %1",
+    "info.muted-expiry": "Expiry",
     "info.muted-no-reason": "Không có lý do nào được đưa ra.",
     "info.username-history": "Lịch sử tên người d",
     "info.email-history": "Lịch sử email",

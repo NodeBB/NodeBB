@@ -1,5 +1,6 @@
 {
     "banned": "Verbannen",
+    "muted": "Muted",
     "offline": "Offline",
     "deleted": "Verwijderd",
     "username": "Gebruikersnaam",
@@ -156,6 +157,10 @@
     "info.banned-permanently": "Voor altijd verbannen",
     "info.banned-reason-label": "Reden",
     "info.banned-no-reason": "Geen reden opgegeven",
+    "info.mute-history": "Recent Mute History",
+    "info.no-mute-history": "This user has never been muted",
+    "info.muted-until": "Muted until %1",
+    "info.muted-expiry": "Expiry",
     "info.muted-no-reason": "No reason given.",
     "info.username-history": "Gebruikersnaam geschiedenis",
     "info.email-history": "Email geschiedenis",

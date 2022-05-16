@@ -1,5 +1,6 @@
 {
     "banned": "Izločen",
+    "muted": "Muted",
     "offline": "Odjavljeni",
     "deleted": "Izbrisano",
     "username": "Uporabniško ime",
@@ -156,6 +157,10 @@
     "info.banned-permanently": "Banned permanently",
     "info.banned-reason-label": "Razlog",
     "info.banned-no-reason": "Razlog ni podan.",
+    "info.mute-history": "Recent Mute History",
+    "info.no-mute-history": "This user has never been muted",
+    "info.muted-until": "Muted until %1",
+    "info.muted-expiry": "Expiry",
     "info.muted-no-reason": "No reason given.",
     "info.username-history": "Zgodovina uporabniškega imena",
     "info.email-history": "Zgodovina e-poštnega naslova",

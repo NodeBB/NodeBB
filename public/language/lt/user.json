@@ -1,5 +1,6 @@
 {
     "banned": "Užblokuotas",
+    "muted": "Muted",
     "offline": "Atsijungęs",
     "deleted": "Ištrinti",
     "username": "Vartotojo vardas",
@@ -156,6 +157,10 @@
     "info.banned-permanently": "Užblokuotas visam laikui",
     "info.banned-reason-label": "Priežastis",
     "info.banned-no-reason": "Be priežasties",
+    "info.mute-history": "Recent Mute History",
+    "info.no-mute-history": "This user has never been muted",
+    "info.muted-until": "Muted until %1",
+    "info.muted-expiry": "Expiry",
     "info.muted-no-reason": "No reason given.",
     "info.username-history": "Username History",
     "info.email-history": "El. pašto istorija",

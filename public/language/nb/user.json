@@ -1,5 +1,6 @@
 {
     "banned": "Utestengt",
+    "muted": "Muted",
     "offline": "Offline",
     "deleted": "Slettet",
     "username": "Brukernavn",
@@ -156,6 +157,10 @@
     "info.banned-permanently": "Utestengt permanent",
     "info.banned-reason-label": "Årsak",
     "info.banned-no-reason": "ingen årsak oppgitt",
+    "info.mute-history": "Recent Mute History",
+    "info.no-mute-history": "This user has never been muted",
+    "info.muted-until": "Muted until %1",
+    "info.muted-expiry": "Expiry",
     "info.muted-no-reason": "Ingen grunn oppgitt.",
     "info.username-history": "Brukernavnhistorikk",
     "info.email-history": "E-post historikk",

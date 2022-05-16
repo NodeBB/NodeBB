@@ -1,5 +1,6 @@
 {
     "banned": "已停權",
+    "muted": "Muted",
     "offline": "離線",
     "deleted": "已刪除",
     "username": "使用者名",
@@ -156,6 +157,10 @@
     "info.banned-permanently": "永久禁用",
     "info.banned-reason-label": "原因",
     "info.banned-no-reason": "沒有原因",
+    "info.mute-history": "Recent Mute History",
+    "info.no-mute-history": "This user has never been muted",
+    "info.muted-until": "Muted until %1",
+    "info.muted-expiry": "Expiry",
     "info.muted-no-reason": "No reason given.",
     "info.username-history": "用過的使用者名",
     "info.email-history": "用過的電子信箱",

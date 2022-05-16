@@ -1,5 +1,6 @@
 {
     "banned": "Zablokován",
+    "muted": "Muted",
     "offline": "Nepřipojen",
     "deleted": "Odstraněno",
     "username": "Uživatelské jméno",
@@ -156,6 +157,10 @@
     "info.banned-permanently": "Trvale zablokován",
     "info.banned-reason-label": "Důvod",
     "info.banned-no-reason": "Bez důvodu",
+    "info.mute-history": "Recent Mute History",
+    "info.no-mute-history": "This user has never been muted",
+    "info.muted-until": "Muted until %1",
+    "info.muted-expiry": "Expiry",
     "info.muted-no-reason": "No reason given.",
     "info.username-history": "Historie uživatelského jména",
     "info.email-history": "E-mailová historie",
