@@ -69,8 +69,16 @@ define('forum/flags/detail', [
 					AccountHeader.banAccount(uid, ajaxify.refresh);
 					break;
 
+				case 'unban':
+					AccountHeader.unbanAccount(uid);
+					break;
+
 				case 'mute':
 					AccountHeader.muteAccount(uid, ajaxify.refresh);
+					break;
+
+				case 'unmute':
+					AccountHeader.unmuteAccount(uid);
 					break;
 
 				case 'delete-account':

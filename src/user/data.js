@@ -252,6 +252,10 @@ module.exports = function (User) {
 					user.banned = false;
 				}
 			}
+
+			if (user.hasOwnProperty('mutedUntil')) {
+				user.muted = user.mutedUntil > Date.now();
+			}
 		}));
 
 		return await plugins.hooks.fire('filter:users.get', users);
