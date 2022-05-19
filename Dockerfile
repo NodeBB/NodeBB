@@ -8,6 +8,8 @@ ENV NODE_ENV $NODE_ENV
 
 COPY install/package.json /usr/src/app/package.json
 
+RUN npm config set legacy-peer-deps true
+
 RUN npm install --only=prod && \
     npm cache clean --force
     
