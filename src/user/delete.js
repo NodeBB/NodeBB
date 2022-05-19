@@ -79,6 +79,7 @@ module.exports = function (User) {
 			'users:online',
 			'digest:day:uids',
 			'digest:week:uids',
+			'digest:biweek:uids',
 			'digest:month:uids',
 		], uid);
 	}
