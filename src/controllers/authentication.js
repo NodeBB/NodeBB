@@ -459,6 +459,7 @@ authenticationController.localLogin = async function (req, username, password, n
 };
 
 const destroyAsync = util.promisify((req, callback) => req.session.destroy(callback));
+const logoutAsync = util.promisify((req, callback) => req.logout(callback));
 
 authenticationController.logout = async function (req, res, next) {
 	if (!req.loggedIn || !req.sessionID) {
@@ -470,7 +471,7 @@ authenticationController.logout = async function (req, res, next) {
 
 	try {
 		await user.auth.revokeSession(sessionID, uid);
-		req.logout();
+		await logoutAsync();
 
 		await destroyAsync(req);
 		res.clearCookie(nconf.get('sessionKey'), meta.configs.cookie.get());

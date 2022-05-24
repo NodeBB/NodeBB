@@ -381,7 +381,7 @@ describe('API', async () => {
 					await setupData();
 
 					// if (csrfToken) {
-					// 	headers['x-csrf-token'] = csrfToken;
+					// headers['x-csrf-token'] = csrfToken;
 					// }
 					const config = await request({
 						url: `${nconf.get('url')}/api/config`,
