@@ -111,7 +111,7 @@
         "postcss": "8.4.13",
         "postcss-clean": "1.2.0",
         "prompt": "1.3.0",
-        "ioredis": "5.0.4",
+        "ioredis": "5.0.5",
         "request": "2.88.2",
         "request-promise-native": "1.0.9",
         "rimraf": "3.0.2",
