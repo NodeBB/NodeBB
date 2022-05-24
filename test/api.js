@@ -380,9 +380,15 @@ describe('API', async () => {
 				it('should not error out when called', async () => {
 					await setupData();
 
-					if (csrfToken) {
-						headers['x-csrf-token'] = csrfToken;
-					}
+					// if (csrfToken) {
+					// 	headers['x-csrf-token'] = csrfToken;
+					// }
+					const config = await request({
+						url: `${nconf.get('url')}/api/config`,
+						json: true,
+						jar: jar,
+					});
+					headers['x-csrf-token'] = config.csrf_token;
 
 					let body = {};
 					let type = 'json';
