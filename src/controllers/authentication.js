@@ -351,7 +351,7 @@ authenticationController.doLogin = async function (req, uid) {
 		}
 	}
 
-	await loginAsync({ uid: uid });
+	await loginAsync({ uid: uid }, { keepSessionInfo: true });
 	await authenticationController.onSuccessfulLogin(req, uid);
 };
 
