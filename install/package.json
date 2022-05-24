@@ -29,7 +29,7 @@
     },
     "dependencies": {
         "@adactive/bootstrap-tagsinput": "0.8.2",
-        "ace-builds": "1.4.14",
+        "ace-builds": "1.5.1",
         "archiver": "5.3.1",
         "async": "3.2.3",
         "autoprefixer": "10.4.7",
