@@ -290,13 +290,11 @@
 
 	const utils = {
 		generateUUID: function () {
-			/* eslint-disable no-bitwise */
-			return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-				const r = Math.random() * 16 | 0;
-				const v = c === 'x' ? r : ((r & 0x3) | 0x8);
-				return v.toString(16);
-			});
-			/* eslint-enable no-bitwise */
+			// from https://github.com/tracker1/node-uuid4/blob/master/browser.js
+			const temp_url = URL.createObjectURL(new Blob());
+			const uuid = temp_url.toString();
+			URL.revokeObjectURL(temp_url);
+			return uuid.split(/[:\/]/g).pop().toLowerCase(); // remove prefixes
 		},
 		// https://github.com/substack/node-ent/blob/master/index.js
 		decodeHTMLEntities: function (html) {
