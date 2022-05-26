@@ -78,7 +78,7 @@ utils.generateUUID = function () {
 	const temp_url = URL.createObjectURL(new Blob());
 	const uuid = temp_url.toString();
 	URL.revokeObjectURL(temp_url);
-	return uuid.split(/[:\/]/g).pop().toLowerCase(); // remove prefixes
+	return uuid.split(/[:/]/g).pop().toLowerCase(); // remove prefixes
 };
 
 module.exports = utils;
