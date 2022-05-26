@@ -274,15 +274,6 @@ const HTMLEntities = Object.freeze({
 
 /* eslint-disable no-redeclare */
 const utils = {
-	generateUUID: function () {
-		/* eslint-disable no-bitwise */
-		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-			const r = Math.random() * 16 | 0;
-			const v = c === 'x' ? r : ((r & 0x3) | 0x8);
-			return v.toString(16);
-		});
-		/* eslint-enable no-bitwise */
-	},
 	// https://github.com/substack/node-ent/blob/master/index.js
 	decodeHTMLEntities: function (html) {
 		return String(html)
