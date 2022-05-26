@@ -102,8 +102,10 @@ describe('Utility Methods', () => {
 
 	describe('UUID generation', () => {
 		it('return unique random value every time', () => {
-			const uuid1 = utils.generateUUID();
-			const uuid2 = utils.generateUUID();
+			delete require.cache[require.resolve('../src/utils')];
+			const { generateUUID } = require('../src/utils');
+			const uuid1 = generateUUID();
+			const uuid2 = generateUUID();
 			assert.notEqual(uuid1, uuid2, 'matches');
 		});
 	});
