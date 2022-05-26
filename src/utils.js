@@ -10,7 +10,7 @@ process.elapsedTimeSince = function (start) {
 	const diff = process.hrtime(start);
 	return (diff[0] * 1e3) + (diff[1] / 1e6);
 };
-const utils = require('../public/src/utils.common');
+const utils = { ...require('../public/src/utils.common') };
 
 utils.getLanguage = function () {
 	const meta = require('./meta');

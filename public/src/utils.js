@@ -5,7 +5,7 @@
 const $ = require('jquery');
 const zxcvbn = require('zxcvbn');
 
-const utils = require('./utils.common');
+const utils = { ...require('./utils.common') };
 
 utils.getLanguage = function () {
 	let lang = 'en-GB';
