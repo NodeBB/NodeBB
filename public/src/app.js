@@ -24,13 +24,16 @@ app.currentRoom = null;
 app.widgets = {};
 app.flags = {};
 
-document.addEventListener('DOMContentLoaded', async function () {
-	if (app.user.timeagoCode && app.user.timeagoCode !== 'en') {
-		await import(/* webpackChunkName: "timeago/[request]" */ 'timeago/locales/jquery.timeago.' + app.user.timeagoCode);
-	}
-	ajaxify.parseData();
-	app.load();
-});
+app.onDomReady = function () {
+	$(document).ready(async function () {
+		if (app.user.timeagoCode && app.user.timeagoCode !== 'en') {
+			await import(/* webpackChunkName: "timeago/[request]" */ 'timeago/locales/jquery.timeago.' + app.user.timeagoCode);
+		}
+		ajaxify.parseData();
+		app.load();
+	});
+};
+
 
 (function () {
 	let appLoaded = false;

@@ -7,6 +7,8 @@ require('../app');
 // eslint-disable-next-line import/no-unresolved
 require('../../scripts-admin');
 
+app.onDomReady();
+
 (function () {
 	let logoutTimer = 0;
 	let logoutMessage;
