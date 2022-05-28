@@ -1,3 +1,9 @@
+#### v2.0.1 (2022-05-28)
+
+##### Bug Fixes
+
+*  get rid of math.random in utils.generateUUID (a4ab49c2)
+
 #### v2.0.0 (2022-05-04)
 
 ##### Chores
