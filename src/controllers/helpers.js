@@ -13,6 +13,7 @@ const categories = require('../categories');
 const plugins = require('../plugins');
 const meta = require('../meta');
 const middlewareHelpers = require('../middleware/helpers');
+const utils = require('../utils');
 
 const helpers = module.exports;
 
@@ -227,7 +228,7 @@ helpers.buildBreadcrumbs = function (crumbs) {
 	crumbs.forEach((crumb) => {
 		if (crumb) {
 			if (crumb.url) {
-				crumb.url = relative_path + crumb.url;
+				crumb.url = `${utils.isRelativeUrl(crumb.url) ? relative_path : ''}${crumb.url}`;
 			}
 			breadcrumbs.push(crumb);
 		}
