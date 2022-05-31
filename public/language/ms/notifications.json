@@ -1,8 +1,8 @@
 {
     "title": "pemberitahuan",
     "no_notifs": "Anda tiada pemberitahuan baru",
-    "see_all": "Lihat semua pemberitahuan",
-    "mark_all_read": "Tandakan semua pemberitahuan sudah dibaca",
+    "see_all": "All notifications",
+    "mark_all_read": "Mark all read",
     "back_to_home": "Kembali ke %1",
     "outgoing_link": "Sambungan luar",
     "outgoing_link_message": "Anda sedang meninggalkan %1",

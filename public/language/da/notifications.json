@@ -1,8 +1,8 @@
 {
     "title": "Notifikationer",
     "no_notifs": "Du har ingen nye notifkationer",
-    "see_all": "Se alle notifikationer",
-    "mark_all_read": "Marker alle notifikationer læst",
+    "see_all": "All notifications",
+    "mark_all_read": "Mark all read",
     "back_to_home": "Tilbage til %1",
     "outgoing_link": "Udgående link",
     "outgoing_link_message": "Du forlader nu %1",

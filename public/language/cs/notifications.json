@@ -1,8 +1,8 @@
 {
     "title": "Upozornění",
     "no_notifs": "Nemáte žádná nová upozornění.",
-    "see_all": "Zobrazit všechna upozornění",
-    "mark_all_read": "Označit všechna upozornění jako přečtená",
+    "see_all": "All notifications",
+    "mark_all_read": "Mark all read",
     "back_to_home": "Zpět na %1",
     "outgoing_link": "Odkaz mimo fórum",
     "outgoing_link_message": "Opouštíte %1",
