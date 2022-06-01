@@ -130,6 +130,7 @@ app.onDomReady = function () {
 				switch (moduleName) {
 					case 'bootbox': return require('bootbox');
 					case 'benchpressjs': return require('benchpressjs');
+					case 'clipboard': return require('clipboard');
 				}
 				if (moduleName.startsWith('admin')) {
 					_module = await import(/* webpackChunkName: "admin/[request]" */ 'admin/' + moduleName.replace(/^admin\//, ''));
