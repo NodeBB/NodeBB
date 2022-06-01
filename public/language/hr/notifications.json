@@ -1,8 +1,8 @@
 {
     "title": "Obavijesti",
     "no_notifs": "Nema novih obavijesti",
-    "see_all": "Pogledaj sve obavijesti",
-    "mark_all_read": "Označi sve obavijesti kao pročitane",
+    "see_all": "All notifications",
+    "mark_all_read": "Mark all read",
     "back_to_home": "Povratak na %1",
     "outgoing_link": "Odlazna poveznica",
     "outgoing_link_message": "Napuštate %1",

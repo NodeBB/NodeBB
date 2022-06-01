@@ -1,8 +1,8 @@
 {
     "title": "آگاه‌سازی‌ها",
     "no_notifs": "هیچ آگاه‌سازی تازه‌ای ندارید",
-    "see_all": "دیدن همه‌ی آگاه‌سازی‌ها",
-    "mark_all_read": "همه آگاه‌سازی‌ها را خوانده شده علامت بزن",
+    "see_all": "All notifications",
+    "mark_all_read": "Mark all read",
     "back_to_home": "بازگشت به %1",
     "outgoing_link": "پیوند برون‌رو",
     "outgoing_link_message": "شما در حال ترک %1 هستید",
