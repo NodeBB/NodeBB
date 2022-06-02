@@ -2,6 +2,16 @@
 
 ##### Chores
 
+*  update changelog for v2.1.0 (7121949d)
+*  incrementing version number - v2.1.0 (987045c3)
+*  bump persona (91f32487)
+*  update changelog for v2.0.1 (abd8e216)
+*  incrementing version number - v2.0.1 (768427d4)
+*  remove optional `middleware` parameter from setupPageRoute and setupAdminPageRoute calls (54ff768f)
+*  add note re: sort module (5aca106b)
+*  up emoji (265a0139)
+*  update changelog for v2.0.0 (60fc3f5d)
+*  incrementing version number - v2.0.0 (f23c3ff5)
 * **deps:**
   *  bump nodebb-plugin-2factor from 4.0.1 to 5.0.0 in /install (6e95e5c5)
   *  update dependency lint-staged to v12.5.0 (01f607a5)
@@ -13,15 +23,41 @@
   *  update dependency lint-staged to v12.4.2 (#10647) (18e76c21)
   *  bump nodebb-plugin-mentions in /install (#10648) (e894147c)
   *  bump helmet from 5.0.2 to 5.1.0 in /install (#10641) (5faaf6a1)
+  *  bump socket.io from 4.5.0 to 4.5.1 in /install (#10639) (9d9b3f4e)
+  *  bump ioredis from 5.0.4 to 5.0.5 in /install (#10637) (f9c9ac9c)
+  *  bump ace-builds from 1.4.14 to 1.5.1 in /install (#10636) (acf188b0)
+  *  bump yargs from 17.4.1 to 17.5.1 in /install (#10624) (c7aefe9c)
+  *  update dependency @commitlint/cli to v16.3.0 (1dc96717)
+  *  bump mongodb from 4.5.0 to 4.6.0 in /install (#10603) (aee74bd6)
+  *  bump express-session from 1.17.2 to 1.17.3 in /install (#10604) (b1967681)
+  *  bump webpack from 5.72.0 to 5.72.1 in /install (#10600) (06edb6e6)
 * **deps-dev:**
   *  bump @commitlint/cli from 17.0.1 to 17.0.2 in /install (#10672) (5f6e9f67)
   *  bump @commitlint/cli from 16.3.0 to 17.0.1 in /install (#10644) (fe873182)
-*  bump persona (91f32487)
-*  update changelog for v2.0.1 (abd8e216)
+  *  bump @commitlint/config-angular in /install (#10614) (9c4ef133)
+  *  bump husky from 8.0.0 to 8.0.1 in /install (#10595) (54876583)
+  *  bump grunt from 1.5.2 to 1.5.3 in /install (fcb6c191)
+  *  bump husky from 7.0.4 to 8.0.0 in /install (#10591) (03453a62)
+  *  bump eslint from 8.14.0 to 8.15.0 in /install (#10592) (0d75c6cb)
+* **i18n:**
+  *  fallback strings for new resources: nodebb.user (2bace634)
+  *  fallback strings for new resources: nodebb.admin-manage-admins-mods (192aa2d3)
 
 ##### New Features
 
 *  add clipboard to runtime modules (39d61061)
+*  add mute history, closes #10596 (c926358d)
+*  allow unban/unmute on flag details page. closes  #10593 (9acdc680)
+*  paginaton for admins-mods, closes #10610 (b860c260)
+*  fix typo, show route in deprecation notice for third-param removal in `setupPageRoute` (14110596)
+*  add button to see category children, closes #10606 (a5831412)
+*  closes #10601, ability to prevent alerts on topic list (dc320c89)
+*  add post to hook params (f07b4484)
+*  add sorted-list.parse (e904f438)
+*  add new hook that fires when sorted-set list modal is shown (8faa6f23)
+*  #10585, ability to mute from flag details (7867ccd7)
+*  send back missing parameters as array of missing properties, in API response (0c19b1e5)
+*  add hook for user invite (323dbc97)
 
 ##### Bug Fixes
 
@@ -35,9 +71,43 @@
   *  update dependency sharp to v0.30.6 (#10662) (23232508)
   *  update dependency nodebb-theme-persona to v12.0.5 (#10649) (1fd68281)
   *  update dependency cron to v2 (#10568) (ad370202)
+  *  update dependency clipboard to v2.0.11 (#10574) (db67a50a)
+  *  update dependency nodebb-theme-slick to v2.0.1 (#10578) (d98f4ea9)
+  *  update dependency nodebb-theme-persona to v12.0.2 (#10577) (930aefcf)
+  *  update dependency nodemailer to v6.7.5 (#10573) (6eef08f9)
 *  buildBreadcrumbs naively prepending relative path even if absolute paths are passed in (a3564260)
 *  more generic copy for notif/chat button labels (f6a7582c)
 *  #10642, fix order of dom ready events (2bfccac7)
+*  get rid of math.random in utils.generateUUID (e802fab8)
+*  #10528, gray out disabled nav items (7e4d2852)
+*  encode privilege name for API call (92abb352)
+*  #10631, fix user digest setting display acp (0084b563)
+*  translate api error messages to user lang, closes #10623, (b17a81bf)
+*  alert template error. closes #10620 (24a640d9)
+*  closes #10621, convert \r\n to \n so it isn't counted as 2 characters (3a009f96)
+*  remove ev, hooks don't pass event, closes #10611 (082a9e1d)
+*  'unread' postIndex regression closes #10607 (0e60a704)
+*  clear dragging on mouseup as well (70ad4a52)
+*  #10588 exit code 1 on failed plugin activation (e2ff1e39)
+*  #10584, dont show backlinks if you dont have read privilege (5e7d366f)
+*  #10586, fix webinstaller folders (1928a186)
+*  closes #10583, replace removed socket method with api method (5e82cf23)
+*  add missing fs-extra, #10580 (e7077393)
+
+##### Other Changes
+
+*  unnecessary escape (60eeae95)
+*  fix semicolon (3a77e714)
+
+##### Refactors
+
+*  return module if it doesn't have default export (12b58fcf)
+*  deprecate middleware param (#10513) (84f27263)
+
+##### Tests
+
+*  fix tests again (191fb9f4)
+*  fix UUID test (6677efd7)
 
 #### v2.0.1 (2022-05-28)
 
