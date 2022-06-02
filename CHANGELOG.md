@@ -1,3 +1,44 @@
+#### v2.1.0 (2022-06-02)
+
+##### Chores
+
+* **deps:**
+  *  bump nodebb-plugin-2factor from 4.0.1 to 5.0.0 in /install (6e95e5c5)
+  *  update dependency lint-staged to v12.5.0 (01f607a5)
+  *  update dependency lint-staged to v12.4.3 (8885d228)
+  *  update dependency eslint to v8.16.0 (#10654) (f6728404)
+  *  bump sharp from 0.30.4 to 0.30.5 in /install (#10651) (d9f2096d)
+  *  bump postcss from 8.4.13 to 8.4.14 in /install (#10652) (0772ec07)
+  *  bump socket.io-client from 4.5.0 to 4.5.1 in /install (#10653) (a13a523b)
+  *  update dependency lint-staged to v12.4.2 (#10647) (18e76c21)
+  *  bump nodebb-plugin-mentions in /install (#10648) (e894147c)
+  *  bump helmet from 5.0.2 to 5.1.0 in /install (#10641) (5faaf6a1)
+* **deps-dev:**
+  *  bump @commitlint/cli from 17.0.1 to 17.0.2 in /install (#10672) (5f6e9f67)
+  *  bump @commitlint/cli from 16.3.0 to 17.0.1 in /install (#10644) (fe873182)
+*  bump persona (91f32487)
+*  update changelog for v2.0.1 (abd8e216)
+
+##### New Features
+
+*  add clipboard to runtime modules (39d61061)
+
+##### Bug Fixes
+
+* **deps:**
+  *  update dependency ace-builds to v1.5.3 (#10667) (e7fd1861)
+  *  update dependency ioredis to v5.0.6 (#10668) (5bafab79)
+  *  update dependency nodebb-theme-persona to v12.0.8 (#10669) (e47a63f0)
+  *  update dependency nodebb-plugin-2factor to v4.0.1 (#10665) (356f9a18)
+  *  update dependency ace-builds to v1.5.2 (#10664) (7b5f53fc)
+  *  update dependency nodebb-theme-persona to v12.0.7 (#10666) (a9a26836)
+  *  update dependency sharp to v0.30.6 (#10662) (23232508)
+  *  update dependency nodebb-theme-persona to v12.0.5 (#10649) (1fd68281)
+  *  update dependency cron to v2 (#10568) (ad370202)
+*  buildBreadcrumbs naively prepending relative path even if absolute paths are passed in (a3564260)
+*  more generic copy for notif/chat button labels (f6a7582c)
+*  #10642, fix order of dom ready events (2bfccac7)
+
 #### v2.0.1 (2022-05-28)
 
 ##### Bug Fixes
