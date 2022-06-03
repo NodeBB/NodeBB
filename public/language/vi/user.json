@@ -158,7 +158,7 @@
     "info.banned-reason-label": "Lý do",
     "info.banned-no-reason": "Không có lí do.",
     "info.mute-history": "Recent Mute History",
-    "info.no-mute-history": "This user has never been muted",
+    "info.no-mute-history": "Người dùng này chưa bao giờ bị tắt tiếng",
     "info.muted-until": "Muted until %1",
     "info.muted-expiry": "Expiry",
     "info.muted-no-reason": "Không có lý do nào được đưa ra.",
