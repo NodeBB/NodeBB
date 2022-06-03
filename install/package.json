@@ -137,7 +137,7 @@
         "uglify-es": "3.3.9",
         "validator": "13.7.0",
         "visibilityjs": "2.0.2",
-        "webpack": "5.72.1",
+        "webpack": "5.73.0",
         "webpack-merge": "5.8.0",
         "winston": "3.7.2",
         "xml": "1.0.1",
