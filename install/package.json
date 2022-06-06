@@ -141,7 +141,7 @@
         "webpack-merge": "5.8.0",
         "winston": "3.7.2",
         "xml": "1.0.1",
-        "xregexp": "5.1.0",
+        "xregexp": "5.1.1",
         "yargs": "17.5.1",
         "zxcvbn": "4.4.2"
     },
