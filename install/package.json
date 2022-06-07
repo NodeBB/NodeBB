@@ -31,7 +31,7 @@
         "@adactive/bootstrap-tagsinput": "0.8.2",
         "ace-builds": "1.5.3",
         "archiver": "5.3.1",
-        "async": "3.2.3",
+        "async": "3.2.4",
         "autoprefixer": "10.4.7",
         "bcryptjs": "2.4.3",
         "benchpressjs": "2.4.3",
