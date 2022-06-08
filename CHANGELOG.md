@@ -1,3 +1,32 @@
+#### v2.1.1 (2022-06-08)
+
+##### Chores
+
+* **deps:**
+  *  bump nodebb-theme-persona from 12.0.8 to 12.0.9 in /install (bb39dfba)
+  *  bump mongodb from 4.6.0 to 4.7.0 in /install (a8987856)
+  *  bump async from 3.2.3 to 3.2.4 in /install (ce38f711)
+  *  bump xregexp from 5.1.0 to 5.1.1 in /install (eb9a46f8)
+  *  bump webpack from 5.72.1 to 5.73.0 in /install (#10677) (6239a1ff)
+  *  bump nodebb-theme-slick from 2.0.1 to 2.0.2 in /install (557648e6)
+* **deps-dev:**
+  *  bump @commitlint/config-angular in /install (e5e788d2)
+  *  bump eslint from 8.16.0 to 8.17.0 in /install (52c86dba)
+*  incrementing version number - v2.1.0 (a3114d33)
+*  update changelog for v2.1.0 (7121949d)
+
+##### Documentation Changes
+
+*  fix changelog to more accurately reflect new changes (a9744416)
+
+##### Bug Fixes
+
+*  #10675, don't ajaxify to /assets/ urls (48564cfa)
+
+##### Other Changes
+
+* //github.com/pichalite/nodebb-theme-slick/issues/60 (6a0339de)
+
 #### v2.1.0 (2022-06-02)
 
 ##### Chores
