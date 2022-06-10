@@ -131,6 +131,8 @@
 	"bookmarks": "Bookmarks",
 	"bookmarks.has_no_bookmarks": "You haven't bookmarked any posts yet.",
 
+	"copy-permalink": "Copy Permalink",
+
 	"loading_more_posts": "Loading More Posts",
 	"move_topic": "Move Topic",
 	"move_topics": "Move Topics",
