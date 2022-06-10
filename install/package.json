@@ -127,7 +127,7 @@
         "socket.io-client": "4.5.1",
         "@socket.io/redis-adapter": "7.2.0",
         "sortablejs": "1.15.0",
-        "spdx-license-list": "6.5.0",
+        "spdx-license-list": "6.6.0",
         "spider-detector": "2.0.0",
         "textcomplete": "0.18.2",
         "textcomplete.contenteditable": "0.1.1",
