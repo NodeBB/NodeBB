@@ -89,7 +89,7 @@ module.exports = function (Posts) {
 			filePaths = [filePaths];
 		}
 
-		const keys = filePaths.map(fileObj => `upload:${md5(fileObj.name.replace('-resized', ''))}:pids`);
+		const keys = filePaths.map(fileObj => `upload:${md5(fileObj.path.replace('-resized', ''))}:pids`);
 		return await Promise.all(keys.map(k => db.getSortedSetRange(k, 0, -1)));
 	};
 
