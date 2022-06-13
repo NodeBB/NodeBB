@@ -118,7 +118,8 @@ describe('authentication', () => {
 			}, (err, response, body) => {
 				assert.ifError(err);
 				assert(body);
-
+				assert(body.hasOwnProperty('uid') && body.uid > 0);
+				const newUid = body.uid;
 				request({
 					url: `${nconf.get('url')}/api/self`,
 					json: true,
@@ -128,6 +129,7 @@ describe('authentication', () => {
 					assert(body);
 					assert.equal(body.username, 'admin');
 					assert.equal(body.email, 'admin@nodebb.org');
+					assert.equal(body.uid, newUid);
 					user.getSettings(body.uid, (err, settings) => {
 						assert.ifError(err);
 						assert.equal(settings.userLang, 'it');
