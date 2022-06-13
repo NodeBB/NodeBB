@@ -1,11 +1,13 @@
 'use strict';
 
 const nconf = require('nconf');
+const fs = require('fs').promises;
 const crypto = require('crypto');
 const path = require('path');
 const winston = require('winston');
 const mime = require('mime');
 const validator = require('validator');
+const cronJob = require('cron').CronJob;
 
 const db = require('../database');
 const image = require('../image');
@@ -26,6 +28,29 @@ module.exports = function (Posts) {
 		const fullPath = _getFullPath(filePath);
 		return fullPath.startsWith(pathPrefix) && await file.exists(fullPath) ? filePath : false;
 	}))).filter(Boolean);
+
+	const runJobs = nconf.get('runJobs');
+	if (runJobs) {
+		new cronJob('0 2 * * 0', (async () => {
+			const now = Date.now();
+			const days = meta.config.orphanExpiryDays;
+			if (!days) {
+				return;
+			}
+
+			let orphans = await Posts.uploads.getOrphans();
+
+			orphans = await Promise.all(orphans.map(async (relPath) => {
+				const { mtimeMs } = await fs.stat(_getFullPath(relPath));
+				return mtimeMs < now - (1000 * 60 * 60 * 24 * meta.config.orphanExpiryDays) ? relPath : null;
+			}));
+			orphans = orphans.filter(Boolean);
+
+			orphans.forEach((relPath) => {
+				file.delete(_getFullPath(relPath));
+			});
+		}), null, true);
+	}
 
 	Posts.uploads.sync = async function (pid) {
 		// Scans a post's content and updates sorted set of uploads
@@ -76,6 +101,16 @@ module.exports = function (Posts) {
 			...sizeObj,
 			name: paths[idx],
 		}));
+	};
+
+	Posts.uploads.getOrphans = async () => {
+		let files = await fs.readdir(_getFullPath('/files'));
+		files = files.filter(filename => filename !== '.gitignore');
+
+		files = await Promise.all(files.map(async filename => (await Posts.uploads.isOrphan(`files/${filename}`) ? `files/${filename}` : null)));
+		files = files.filter(Boolean);
+
+		return files;
 	};
 
 	Posts.uploads.isOrphan = async function (filePath) {
