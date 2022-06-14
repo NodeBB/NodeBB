@@ -269,7 +269,7 @@ define('admin/manage/users', [
 
 			bootbox.confirm('[[admin/manage/users:alerts.password-reset-confirm]]', function (confirm) {
 				if (confirm) {
-					socket.emit('admin.user.sendPasswordResetEmail', uids, done('[[notifications:email-confirm-sent]]'));
+					socket.emit('admin.user.sendPasswordResetEmail', uids, done('[[admin/manage/users:alerts.password-reset-email-sent]]'));
 				}
 			});
 		});
