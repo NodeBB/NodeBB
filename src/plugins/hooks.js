@@ -28,6 +28,12 @@ Hooks._deprecated = new Map([
 		since: 'v1.19.6',
 		until: 'v2.1.0',
 	}],
+	['filter:user.verify.code', {
+		new: 'filter:user.verify',
+		since: 'v2.2.0',
+		until: 'v3.0.0',
+		affected: new Set(),
+	}],
 ]);
 
 Hooks.internals = {
