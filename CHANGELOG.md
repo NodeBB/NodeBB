@@ -1,3 +1,43 @@
+#### v2.2.0 (2022-06-15)
+
+##### Chores
+
+* **i18n:**
+  *  fallback strings for new resources: nodebb.admin-settings-uploads (f5afb5c3)
+  *  fallback strings for new resources: nodebb.admin-manage-users (b1dc0531)
+  *  fallback strings for new resources: nodebb.topic (d7d32a8a)
+*  remove unnecessary `affected` set from deprecated plugin hook (bef236f3)
+*  bump persona, #10699 (c7fa73b1)
+*  bump vanilla (d90fc18b)
+*  bump persona, closes #10566 (5bc972df)
+*  update changelog for v2.1.1 (ca038b84)
+* **deps:**
+  *  bump less from 4.1.2 to 4.1.3 in /install (#10685) (78322636)
+  *  bump nodebb-plugin-2factor from 5.0.0 to 5.0.1 in /install (#10686) (701d8d76)
+  *  bump spdx-license-list from 6.5.0 to 6.6.0 in /install (c82d34c8)
+
+##### New Features
+
+*  new cronjob and ACP option to delete orphans after configurable number of days, closes #10659 (88aee439)
+*  allowed plugins to modify email verification details prior to db saving or email send/plugin fire (b9d4724e)
+*  pass absolute url to post into post tools response, #10566 (ece733ed)
+
+##### Bug Fixes
+
+*  no need to pass in empty Set in deprecated hooks (3a015eb8)
+*  #10696, fix alert for password reset email (2da188fe)
+*  #10692 (b6f8e2fd)
+*  #10690, all uploads in `uploads/files` showing orphaned (a04da673)
+*  bug where post associations are not shown when the directory is `files` (7f870beb)
+
+##### Refactors
+
+*  move orphan cleaning logic to its own method, added tests for getOrphans and cleanOrphans (22368b99)
+
+##### Tests
+
+*  add more asserts to failing test (ea1ed667)
+
 #### v2.1.1 (2022-06-08)
 
 ##### Chores
