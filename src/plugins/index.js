@@ -129,7 +129,7 @@ Plugins.reload = async function () {
 
 	// Deprecation notices
 	Plugins.hooks._deprecated.forEach((deprecation, hook) => {
-		if (!deprecation.affected.size) {
+		if (!deprecation.affected || !deprecation.affected.size) {
 			return;
 		}
 

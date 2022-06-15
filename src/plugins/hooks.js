@@ -12,25 +12,21 @@ Hooks._deprecated = new Map([
 		new: 'static:email.send',
 		since: 'v1.17.0',
 		until: 'v2.0.0',
-		affected: new Set(),
 	}],
 	['filter:router.page', {
 		new: 'response:router.page',
 		since: 'v1.15.3',
 		until: 'v2.1.0',
-		affected: new Set(),
 	}],
 	['filter:post.purge', {
 		new: 'filter:posts.purge',
 		since: 'v1.19.6',
 		until: 'v2.1.0',
-		affected: new Set(),
 	}],
 	['action:post.purge', {
 		new: 'action:posts.purge',
 		since: 'v1.19.6',
 		until: 'v2.1.0',
-		affected: new Set(),
 	}],
 ]);
 
@@ -63,6 +59,9 @@ Hooks.register = function (id, data) {
 	// `hasOwnProperty` needed for hooks with no alternative (set to null)
 	if (Hooks._deprecated.has(data.hook)) {
 		const deprecation = Hooks._deprecated.get(data.hook);
+		if (!deprecation.hasOwnProperty('affected')) {
+			deprecation.affected = new Set();
+		}
 		deprecation.affected.add(id);
 		Hooks._deprecated.set(data.hook, deprecation);
 	}
