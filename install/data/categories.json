@@ -1,35 +1,35 @@
 [
     {
-        "name": "Announcements",
-        "description": "Announcements regarding our community",
-        "descriptionParsed": "<p>Announcements regarding our community</p>\n",
+        "name": "[[categorys:announcements.name]]",
+        "description": "[[categorys:announcements.description]]",
+        "descriptionParsed": "<p>[[categorys:announcements.descriptionParsed]]</p>\n",
         "bgColor": "#fda34b",
         "color": "#ffffff",
         "icon" : "fa-bullhorn",
         "order": 1
     },
     {
-        "name": "General Discussion",
-        "description": "A place to talk about whatever you want",
-        "descriptionParsed": "<p>A place to talk about whatever you want</p>\n",
+        "name": "[[categorys:general_discussion.name]]",
+        "description": "[[categorys:general_discussion.description]]",
+        "descriptionParsed": "<p>[[categorys:general_discussion.descriptionParsed]]</p>\n",
         "bgColor": "#59b3d0",
         "color": "#ffffff",
         "icon" : "fa-comments-o",
         "order": 2
     },
     {
-        "name": "Blogs",
-        "description": "Blog posts from individual members",
-        "descriptionParsed": "<p>Blog posts from individual members</p>\n",
+        "name": "[[categorys:blogs.name]]",
+        "description": "[[categorys:blogs.description]]",
+        "descriptionParsed": "<p>[[categorys:blogs.descriptionParsed]]</p>\n",
         "bgColor": "#86ba4b",
         "color": "#ffffff",
         "icon" : "fa-newspaper-o",
         "order": 4
     },
     {
-        "name": "Comments & Feedback",
-        "description": "Got a question? Ask away!",
-        "descriptionParsed": "<p>Got a question? Ask away!</p>\n",
+        "name": "[[categorys:comments_feedback.name]]",
+        "description": "[[categorys:comments_feedback.description]]",
+        "descriptionParsed": "<p>[[categorys:comments_feedback.descriptionParsed]]</p>\n",
         "bgColor": "#e95c5a",
         "color": "#ffffff",
         "icon" : "fa-question",
