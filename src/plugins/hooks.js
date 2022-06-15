@@ -32,7 +32,6 @@ Hooks._deprecated = new Map([
 		new: 'filter:user.verify',
 		since: 'v2.2.0',
 		until: 'v3.0.0',
-		affected: new Set(),
 	}],
 ]);
 
