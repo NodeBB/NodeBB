@@ -1,11 +1,11 @@
 {
-    "test-email.subject": "Email Test",
+    "test-email.subject": "E-mail Test",
     "password-reset-requested": "Demande de réinitialisation de mot de passe !",
     "welcome-to": "Bienvenue sur %1",
     "invite": "Invitation de %1",
     "greeting_no_name": "Bonjour",
     "greeting_with_name": "Bonjour %1",
-    "email.verify-your-email.subject": "Veuillez vérifier votre Email",
+    "email.verify-your-email.subject": "Veuillez vérifier votre e-mail",
     "email.verify.text1": "Vous avez demandé que nous modifiions ou confirmions votre adresse mail",
     "email.verify.text2": "Pour des raisons de sécurité, nous ne modifions ou ne confirmons l'adresse mail enregistrée qu'une fois que sa propriété soit confirmée. <strong>Si vous ne l'avez pas demandé, aucune action n'est requise de votre part.</strong>",
     "email.verify.text3": "Une fois que vous aurez confirmé ce mail, nous remplacerons votre adresse e-mail actuelle par celle-ci (%1).",

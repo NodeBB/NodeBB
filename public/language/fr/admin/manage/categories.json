@@ -78,7 +78,7 @@
 	"alert.copy-success": "Paramètres copiés !",
 	"alert.set-parent-category": "Définir une catégorie parent",
 	"alert.updated": "Catégories mises à jour",
-	"alert.updated-success": "L' ID de la catégorie %1  a été mis à jour avec succès",
+	"alert.updated-success": "L'ID de la catégorie %1 a été mis à jour avec succès",
 	"alert.upload-image": "Uploader une image de catégorie",
 	"alert.find-user": "Trouver un utilisateur",
 	"alert.user-search": "Chercher un utilisateur ici...",

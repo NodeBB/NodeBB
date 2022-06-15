@@ -9,7 +9,7 @@
 	"find-plugins": "Chercher des plugins",
 
 	"plugin-search": "Recherche de plugin",
-	"plugin-search-placeholder": "Rechercher un plugin…",
+	"plugin-search-placeholder": "Rechercher un plugin...",
 	"submit-anonymous-usage": "Autoriser l'envoi anonyme des données d'utilisation des plugins",
 	"reorder-plugins": "Réordonner les plugins",
 	"order-active": "Trier les plugins actifs",

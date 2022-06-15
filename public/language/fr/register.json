@@ -17,7 +17,7 @@
     "terms_of_use": "Conditions générales d'utilisation",
     "agree_to_terms_of_use": "J'accepte les conditions générales d'utilisation",
     "terms_of_use_error": "Vous devez accepter les conditions générales d'utilisation",
-    "registration-added-to-queue": "Votre inscription a été ajoutée à la liste d'approbation. Vous recevrez un email quand celle-ci sera acceptée par un administrateur.",
+    "registration-added-to-queue": "Votre inscription a été ajoutée à la liste d'approbation. Vous recevrez un e-mail quand celle-ci sera acceptée par un administrateur.",
     "registration-queue-average-time": "Temps moyen d'approbation des adhésions est de %1 heures %2 minutes.",
     "registration-queue-auto-approve-time": "Votre adhésion à ce forum sera entièrement activée dans un maximum de %1 heures.",
     "interstitial.intro": "Nous aimerions avoir des informations supplémentaires afin de mettre à jour votre compte&hellip;",
