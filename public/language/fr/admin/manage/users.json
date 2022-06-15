@@ -91,6 +91,7 @@
 	"alerts.validate-email-success": "Adresse e-mail vérifiée",
 	"alerts.validate-force-password-reset-success": "Les mots de passe des utilisateurs ont été réinitialisés et leurs sessions existantes ont été révoquées.",
 	"alerts.password-reset-confirm": "Voulez-vous réellement envoyer un e-mail de réinitialisation de mot de passe à ces utilisateurs ?",
+	"alerts.password-reset-email-sent": "Password reset email sent.",
 	"alerts.confirm-delete": "<strong>Attention !</strong><p>Voulez-vous réellement supprimer <strong>le(s) utilisateur(s)</strong> ?</p><p> Cette action est irréversible ! Toutes les données de ces utilisateurs seront effacées !</p>",
 	"alerts.delete-success": "Utilisateur(s) supprimé(s) !",
 	"alerts.confirm-delete-content": "<strong>Attention !</strong><p>Voulez-vous réellement supprimer <strong>le contenu de ces utilisateurs</strong> ?</p><p> Cette action est irréversible ! Toutes les données de ces utilisateurs seront effacées !</p>",

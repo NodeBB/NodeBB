@@ -91,6 +91,7 @@
 	"alerts.validate-email-success": "כתובות אימייל אומתו",
 	"alerts.validate-force-password-reset-success": "סיסמאות משתמשים אופסו והחיבורים שלהם נותקו.",
 	"alerts.password-reset-confirm": "האם אתה רוצה לשלוח אימייל לאיפוס סיסמה למשתמש(ים) אלו?",
+	"alerts.password-reset-email-sent": "Password reset email sent.",
 	"alerts.confirm-delete": "<strong>אזהרה!</strong><p>האם אתה בטוח שברצונך למחוק <strong>משתמש(ים)</strong>?</p><p>פעולה זו אינה הפיכה! רק חשבון המשתמש יימחק, הפוסטים והנושאים שלהם יישארו.</p>",
 	"alerts.delete-success": "משתמש(ים) נמחק!",
 	"alerts.confirm-delete-content": "<strong>אזהרה!</strong><p>האם אתה בטוח שברצונך למחוק את <strong>תוכן</strong>משתמש(ים) אלו?</p><p>פעולה זו אינה הפיכה! חשבונות המשתמשים יישארו, אך הפוסטים והנושאים שלהם יימחקו.</p>",

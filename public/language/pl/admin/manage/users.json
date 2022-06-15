@@ -91,6 +91,7 @@
 	"alerts.validate-email-success": "Zweryfikowano adresy e-mail",
 	"alerts.validate-force-password-reset-success": "Hasła użytkownika(ów) zostały zresetowane, a ich istniejące sesje zostały odwołane.",
 	"alerts.password-reset-confirm": "Czy chcesz wysłać e-mail do resetu hasła tym użytkownikom?",
+	"alerts.password-reset-email-sent": "Password reset email sent.",
 	"alerts.confirm-delete": "<strong>Uwaga!</strong><p>Czy na pewno chcesz usunąć <strong>Uzykownika(ów)</strong>?</p><p>To działanie jest nieodwracalne! Tylko konto użytkownika zostanie usunięte, jego posty i tematy pozostaną.</p>",
 	"alerts.delete-success": "Skasowano użytkownika(-ów)!",
 	"alerts.confirm-delete-content": "<strong>Uwaga!</strong><p>Czy na pewno chcesz usunąć <strong>treści</strong>użytkownika(ów)?</p><p>To działanie jest nieodwracalne! Konto użytkownika pozostanie, jednak jego posty i tematy zostaną usunięte.</p>",

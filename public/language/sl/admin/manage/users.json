@@ -91,6 +91,7 @@
 	"alerts.validate-email-success": "E-poštni naslovi so potrjeni",
 	"alerts.validate-force-password-reset-success": "Gesla uporabnikov so bila ponastavljena in obstoječe seje preklicane.",
 	"alerts.password-reset-confirm": "Ali želite poslati e-poštno sporočilo za obnovitev gesla temu/tem uporabniku(om)?",
+	"alerts.password-reset-email-sent": "Password reset email sent.",
 	"alerts.confirm-delete": "Opozorilo!</strong><p>Ali res želite izbrisati <strong>uporabnika(e)</strong>?</p><p>Tega dejanja ni mogoče razveljaviti! Izbrisan bo samo uporabniški račun, njegove objave in teme bodo ostale.</p>\n",
 	"alerts.delete-success": "Uporabnik(i) je/so izbrisan(i)!",
 	"alerts.confirm-delete-content": "<strong>Warning!</strong><p>Do you really want to delete these user(s) <strong>content</strong>?</p><p>This action is not reversible! The users' accounts will remain, but their posts and topics will be deleted.</p>",

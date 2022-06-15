@@ -91,6 +91,7 @@
 	"alerts.validate-email-success": "이메일 인증 완료",
 	"alerts.validate-force-password-reset-success": "사용자(들)의 비밀번호가 초기화되고 세션이 초기화되었습니다.",
 	"alerts.password-reset-confirm": "이 사용자(들)에게 비밀번호 초기화 이메일을 보내시겠습니까?",
+	"alerts.password-reset-email-sent": "Password reset email sent.",
 	"alerts.confirm-delete": "<strong>경고!</strong><p>정말 <strong>계정(들)</strong>의 삭제를 진행합니까?</p><p>이 행동은 되돌릴 수 없습니다! 계정만 삭제되고 화제와 포스트는 삭제되지 않습니다.</p>",
 	"alerts.delete-success": "계정 삭제 완료!",
 	"alerts.confirm-delete-content": "<strong>경고!</strong><p>정말 이 사용자(들)의<strong>게시물</strong> 삭제를 진행합니까?</p><p>이 행동은 되돌릴 수 없습니다! 계정은 삭제되지 않지만 모든 포스트와 화제가 삭제됩니다.</p>",

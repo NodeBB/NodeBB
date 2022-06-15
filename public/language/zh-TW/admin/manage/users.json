@@ -91,6 +91,7 @@
 	"alerts.validate-email-success": "電郵地址已驗證",
 	"alerts.validate-force-password-reset-success": "用戶密碼已經被重設，現存的會話已經被移除",
 	"alerts.password-reset-confirm": "您確定要向這些使用者發送密碼重設郵件嗎？",
+	"alerts.password-reset-email-sent": "Password reset email sent.",
 	"alerts.confirm-delete": "<strong>Warning!</strong><p>Do you really want to delete <strong>user(s)</strong>?</p><p>This action is not reversible! Only the user account will be deleted, their posts and topics will remain.</p>",
 	"alerts.delete-success": "使用者已刪除！",
 	"alerts.confirm-delete-content": "<strong>Warning!</strong><p>Do you really want to delete these user(s) <strong>content</strong>?</p><p>This action is not reversible! The users' accounts will remain, but their posts and topics will be deleted.</p>",

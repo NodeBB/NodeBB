@@ -91,6 +91,7 @@
 	"alerts.validate-email-success": "E-Mails bestätigt",
 	"alerts.validate-force-password-reset-success": "Die Passwörter der Benutzer wurden zurückgesetzt und ihre bestehenden Sitzungen wurden widerrufen.",
 	"alerts.password-reset-confirm": "Möchtest Du wirklich (eine) Passwort-Reset-Email(s) an diese(n) Benutzer schicken?",
+	"alerts.password-reset-email-sent": "Password reset email sent.",
 	"alerts.confirm-delete": "<strong>Warning!</strong><p>Do you really want to delete <strong>user(s)</strong>?</p><p>This action is not reversible! Only the user account will be deleted, their posts and topics will remain.</p>",
 	"alerts.delete-success": "Benutzer gelöscht!",
 	"alerts.confirm-delete-content": "<strong>Warning!</strong><p>Do you really want to delete these user(s) <strong>content</strong>?</p><p>This action is not reversible! The users' accounts will remain, but their posts and topics will be deleted.</p>",

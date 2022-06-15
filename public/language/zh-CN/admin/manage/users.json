@@ -91,6 +91,7 @@
 	"alerts.validate-email-success": "电子邮箱已验证",
 	"alerts.validate-force-password-reset-success": "用户密码已经被重置，现存的会话已经被移除",
 	"alerts.password-reset-confirm": "您确定要向这些用户发送密码重置邮件吗？",
+	"alerts.password-reset-email-sent": "Password reset email sent.",
 	"alerts.confirm-delete": "<strong>警告！</strong><p>您确定要删除<strong>这些用户</strong>吗？</p><p>该操作不可逆转！该操作只会删除用户账号，他们的帖子与主题仍会保留。</p>",
 	"alerts.delete-success": "用户已删除！",
 	"alerts.confirm-delete-content": "<strong>警告！</strong><p>您确定要删除这些用户<strong>内容</strong>吗？</p><p>该操作不可逆转！用户账号会被保留，但是用户的帖子和主题将会被删除。</p>",

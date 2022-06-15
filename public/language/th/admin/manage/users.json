@@ -91,6 +91,7 @@
 	"alerts.validate-email-success": "อีเมลที่ได้รับการยืนยัน",
 	"alerts.validate-force-password-reset-success": "User(s) passwords have been reset and their existing sessions have been revoked.",
 	"alerts.password-reset-confirm": "คุณต้องการที่จะส่งอีเมลการล้างค่ารหัสผ่านให้กับผู้ใช้เหล่านี้หรือไม่?",
+	"alerts.password-reset-email-sent": "Password reset email sent.",
 	"alerts.confirm-delete": "<strong>Warning!</strong><p>Do you really want to delete <strong>user(s)</strong>?</p><p>This action is not reversible! Only the user account will be deleted, their posts and topics will remain.</p>",
 	"alerts.delete-success": "ผู้ใช้งานโดนลบ!",
 	"alerts.confirm-delete-content": "<strong>Warning!</strong><p>Do you really want to delete these user(s) <strong>content</strong>?</p><p>This action is not reversible! The users' accounts will remain, but their posts and topics will be deleted.</p>",

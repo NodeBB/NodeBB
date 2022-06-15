@@ -91,6 +91,7 @@
 	"alerts.validate-email-success": "電子メールが検証されました",
 	"alerts.validate-force-password-reset-success": "ユーザー(s)のパスワードがリセットされ、既存のセッションが取り消されました。",
 	"alerts.password-reset-confirm": "これらのユーザー(s)にパスワードリセットのメール(s)を送信しますか？",
+	"alerts.password-reset-email-sent": "Password reset email sent.",
 	"alerts.confirm-delete": "<strong>Warning!</strong><p>Do you really want to delete <strong>user(s)</strong>?</p><p>This action is not reversible! Only the user account will be deleted, their posts and topics will remain.</p>",
 	"alerts.delete-success": "ユーザー(s)は削除されました!",
 	"alerts.confirm-delete-content": "<strong>Warning!</strong><p>Do you really want to delete these user(s) <strong>content</strong>?</p><p>This action is not reversible! The users' accounts will remain, but their posts and topics will be deleted.</p>",

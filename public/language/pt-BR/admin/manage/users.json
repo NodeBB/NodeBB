@@ -91,6 +91,7 @@
 	"alerts.validate-email-success": "E-mails validados",
 	"alerts.validate-force-password-reset-success": "A senha do(s) usuário(s) foi redefinida e as suas sessões existentes foram revogadas.",
 	"alerts.password-reset-confirm": "Você quer enviar e-mail(s) de redefinição de senha para este(s) usuário(s)?",
+	"alerts.password-reset-email-sent": "Password reset email sent.",
 	"alerts.confirm-delete": "<strong>Aviso!</strong><p>Você realmente quer deletar <strong>usuário(s)</strong>?</p><p>Esta ação não é reversível! Apenas a conta do usuário será excluída, suas postagens e tópicos permanecerão.</p>",
 	"alerts.delete-success": "Usuário(s) Deletados!",
 	"alerts.confirm-delete-content": "<strong>Aviso!</strong><p>Você realmente deseja excluir o <strong>conteúdo</strong> destes usuários?</p><p>Esta ação não é reversível! As contão permanecerão, mas seus posts e tópicos serão excluídos.</p>",

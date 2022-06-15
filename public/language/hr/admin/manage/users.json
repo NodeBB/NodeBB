@@ -91,6 +91,7 @@
 	"alerts.validate-email-success": "Email potvrđen",
 	"alerts.validate-force-password-reset-success": "User(s) passwords have been reset and their existing sessions have been revoked.",
 	"alerts.password-reset-confirm": "Želite li poslati email za reset lozinke korisniku ?",
+	"alerts.password-reset-email-sent": "Password reset email sent.",
 	"alerts.confirm-delete": "<strong>Warning!</strong><p>Do you really want to delete <strong>user(s)</strong>?</p><p>This action is not reversible! Only the user account will be deleted, their posts and topics will remain.</p>",
 	"alerts.delete-success": "Korisnici obrisani!",
 	"alerts.confirm-delete-content": "<strong>Warning!</strong><p>Do you really want to delete these user(s) <strong>content</strong>?</p><p>This action is not reversible! The users' accounts will remain, but their posts and topics will be deleted.</p>",
