@@ -1,8 +1,10 @@
 {
 	"posts": "Posts",
+	"orphans": "Orphaned Files",
 	"private": "Tornar arquivos enviados particulares",
 	"strip-exif-data": "Retirar Metadata EXIF",
 	"preserve-orphaned-uploads": "Keep uploaded files on disk after a post is purged",
+	"orphanExpiryDays": "Days to keep orphaned files",
 	"private-extensions": "Extensões de arquivo para tornar privado",
 	"private-uploads-extensions-help": "Digite uma lista, separada por vírgulas, de extensões de arquivos para torná-las privadas aqui (por exemplo: <code>pdf, xls, doc</code>). Uma lista vazia sinigica que todos os arquivos são privado.",
 	"resize-image-width-threshold": "Redimensionar imagens se a largura dela for maior do que a largura especificada",
