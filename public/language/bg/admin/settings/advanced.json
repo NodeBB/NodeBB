@@ -17,6 +17,7 @@
 	"headers.acah": "Access-Control-Allow-Headers",
 	"headers.coep": "Cross-Origin-Embedder-Policy",
 	"headers.coep-help": "Когато е включено (по подразбиране), стойността на заглавката ще бъде <code>require-corp</code>",
+	"headers.coop": "Cross-Origin-Opener-Policy",
 	"headers.corp": "Cross-Origin-Resource-Policy",
 	"hsts": "Стриктна транспортна сигурност",
 	"hsts.enabled": "Включване на HSTS (препоръчително)",
