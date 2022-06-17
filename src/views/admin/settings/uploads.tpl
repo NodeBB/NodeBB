@@ -135,9 +135,10 @@
 		</div>
 
 		<div class="row">
-			<div class="form-group col-sm-4">
+			<div class="form-group col-sm-6">
 				<label for="orphanExpiryDays">[[admin/settings/uploads:orphanExpiryDays]]</label>
-				<input id="orphanExpiryDays" type="number" min="0" placeholder="0 to disable" class="form-control" data-field="orphanExpiryDays" />
+				<input id="orphanExpiryDays" type="number" min="0" placeholder="0" class="form-control" data-field="orphanExpiryDays" />
+				<p class="help-block">[[admin/settings/uploads:orphanExpiryDays-help]]</p>
 			</div>
 		</div>
 	</div>
