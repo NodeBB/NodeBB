@@ -196,7 +196,7 @@ function setupHelmet(app) {
 	if (meta.config['cross-origin-embedder-policy']) {
 		app.use(helmet.crossOriginEmbedderPolicy());
 	}
-	app.use(helmet.crossOriginOpenerPolicy({ policy: meta.config['cross-origin-opener-policy'] }));
+	app.use(helmet.crossOriginOpenerPolicy());
 	app.use(helmet.crossOriginResourcePolicy({ policy: meta.config['cross-origin-resource-policy'] }));
 	app.use(helmet.dnsPrefetchControl());
 	app.use(helmet.expectCt());
