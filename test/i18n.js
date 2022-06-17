@@ -41,6 +41,10 @@ describe('i18n', () => {
 			it('should only contain valid JSON files', async () => {
 				try {
 					fullPaths.forEach((fullPath) => {
+						if (fullPath.endsWith('_DO_NOT_EDIT_FILES_HERE.md')) {
+							return;
+						}
+
 						const hash = require(fullPath);
 						sourceStrings.set(fullPath.replace(sourcePath, ''), hash);
 					});
@@ -84,6 +88,10 @@ describe('i18n', () => {
 				it('should contain only valid JSON files', () => {
 					try {
 						fullPaths.forEach((fullPath) => {
+							if (fullPath.endsWith('_DO_NOT_EDIT_FILES_HERE.md')) {
+								return;
+							}
+
 							const hash = require(fullPath);
 							strings.set(fullPath.replace(translationPath, ''), hash);
 						});
