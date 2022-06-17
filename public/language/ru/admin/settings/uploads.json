@@ -5,6 +5,7 @@
 	"strip-exif-data": "Удалять метаданные EXIF",
 	"preserve-orphaned-uploads": "Keep uploaded files on disk after a post is purged",
 	"orphanExpiryDays": "Days to keep orphaned files",
+	"orphanExpiryDays-help": "After this many days, orphaned uploads will be deleted from the file system.<br />Set 0 or leave blank to disable.",
 	"private-extensions": "Типы файлов, которые следует скрывать от гостей",
 	"private-uploads-extensions-help": "Укажите через запятую список расширений файлов, например <code>pdf,xls,doc</code>. Оставьте поле пустым, чтобы все загрузки были недоступны гостям.",
 	"resize-image-width-threshold": "Уменьшать изображения, когда ширина превышает",

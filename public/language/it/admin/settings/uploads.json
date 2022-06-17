@@ -5,6 +5,7 @@
 	"strip-exif-data": "Togli EXIF Data",
 	"preserve-orphaned-uploads": "Mantieni i file caricati su disco dopo l'eliminazione di un post",
 	"orphanExpiryDays": "Days to keep orphaned files",
+	"orphanExpiryDays-help": "After this many days, orphaned uploads will be deleted from the file system.<br />Set 0 or leave blank to disable.",
 	"private-extensions": "Estensione dei file da rendere privata",
 	"private-uploads-extensions-help": "Inserisci la lista di estensioni separati da virgola quì (es. <code>pdf,xls,doc</code>). Una lista vuota significa che tutti i file sono privati.",
 	"resize-image-width-threshold": "Ridimensiona le immagini se sono più grandi della larghezza specificata",
