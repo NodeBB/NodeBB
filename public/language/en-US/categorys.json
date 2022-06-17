@@ -1,0 +1,22 @@
+{
+    "announcements": {
+        "name": "Announcements",
+        "description": "Announcements regarding our community",
+        "descriptionParsed": "Announcements regarding our community"
+    },
+    "general_discussion": {
+        "name": "General Discussion",
+        "description": "A place to talk about whatever you want",
+        "descriptionParsed": "A place to talk about whatever you want"
+    },
+    "blogs": {
+        "name": "Blogs",
+        "description": "Blog posts from individual members",
+        "descriptionParsed": "Blog posts from individual members"
+    },
+    "comments_feedback": {
+        "name": "Comments & Feedback",
+        "description": "Got a question? Ask away!",
+        "descriptionParsed": "Got a question? Ask away!"
+    }
+}
