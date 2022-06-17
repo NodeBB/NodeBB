@@ -17,7 +17,6 @@
 	"headers.acah": "Kontrola-Dostępu-Zezwól-Nagłówki",
 	"headers.coep": "Cross-Origin-Embedder-Policy",
 	"headers.coep-help": "When enabled (default), will set the header to <code>require-corp</code>",
-	"headers.coop": "Cross-Origin-Opener-Policy",
 	"headers.corp": "Cross-Origin-Resource-Policy",
 	"hsts": "Strict Transport Security",
 	"hsts.enabled": "Włączony HSTS (zalecane)",
