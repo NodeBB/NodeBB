@@ -61,6 +61,14 @@ pkgInstall.supportedPackageManager = [
 
 pkgInstall.getPackageManager = () => {
 	try {
+		const packageContents = require(paths.currentPackage);
+		// This regex technically allows invalid values:
+		// cnpm isn't supported by corepack and it doesn't enforce a version string being present
+		const pmRegex = new RegExp(`^(?<packageManager>${pkgInstall.supportedPackageManager.join('|')})@?[\\d\\w\\.\\-]*$`);
+		const packageManager = packageContents.packageManager ? packageContents.packageManager.match(pmRegex) : false;
+		if (packageManager) {
+			return packageManager.groups.packageManager;
+		}
 		fs.accessSync(path.join(paths.nodeModules, 'nconf/package.json'), fs.constants.R_OK);
 		const nconf = require('nconf');
 		if (!Object.keys(nconf.stores).length) {
@@ -70,41 +78,29 @@ pkgInstall.getPackageManager = () => {
 				file: configFile,
 			});
 		}
-
 		if (nconf.get('package_manager') && !pkgInstall.supportedPackageManager.includes(nconf.get('package_manager'))) {
 			nconf.clear('package_manager');
 		}
 
 		if (!nconf.get('package_manager')) {
-			// Best guess based on lockfile detection
-			try {
-				// use npm if lockfile present
-				fs.accessSync(path.resolve(__dirname, '../../package-lock.json'), fs.constants.R_OK);
-			} catch (e) {
-				nconf.set('package_manager', [
-					// no cnpm detection as it uses same lockfile as npm
-					'yarn.lock', 'pnpm-lock.yaml',
-				].reduce((result, cur) => {
-					if (result) {
-						return result;
-					}
-
-					try {
-						fs.accessSync(path.resolve(__dirname, `../../${cur}`), fs.constants.R_OK);
-						return cur.slice(0, 4);
-					} catch (e) {
-						return result;
-					}
-				}, undefined));
-			}
+			nconf.set('package_manager', getPackageManagerByLockfile());
 		}
 
 		return nconf.get('package_manager') || 'npm';
 	} catch (e) {
-		// nconf not install or other unexpected error/exception
-		return 'npm';
+		// nconf not installed or other unexpected error/exception
+		return getPackageManagerByLockfile() || 'npm';
 	}
 };
+
+function getPackageManagerByLockfile() {
+	for (const [packageManager, lockfile] of Object.entries({ npm: 'package-lock.json', yarn: 'yarn.lock', pnpm: 'pnpm-lock.yaml' })) {
+		try {
+			fs.accessSync(path.resolve(__dirname, `../../${lockfile}`), fs.constants.R_OK);
+			return packageManager;
+		} catch (e) {}
+	}
+}
 
 pkgInstall.installAll = () => {
 	const prod = process.env.NODE_ENV !== 'development';
