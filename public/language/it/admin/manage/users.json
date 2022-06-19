@@ -91,7 +91,7 @@
 	"alerts.validate-email-success": "Email validate",
 	"alerts.validate-force-password-reset-success": "Le password degli utenti sono resettate e la loro sessione è revocata.",
 	"alerts.password-reset-confirm": "Vuoi realmente inviare il reset della(e) password via email per questo(i) utente(i)",
-	"alerts.password-reset-email-sent": "Password reset email sent.",
+	"alerts.password-reset-email-sent": "Email per reimpostare la password inviata.",
 	"alerts.confirm-delete": "<strong>Avvertimento!</strong><p>Vuoi davvero eliminare <strong>l'utente(i)</strong>?</p><p>Questa azione non è reversibile! Solo l'account utente sarà eliminato, i suoi post e le sue discussioni rimarranno.</p>",
 	"alerts.delete-success": "Utente(i) Cancellato(i)",
 	"alerts.confirm-delete-content": "<strong>Avvertimento!</strong>Vuoi davvero eliminare il <strong>contenuto</strong> di questo utente(i)?<p><p>Questa azione non è reversibile! Gli account degli utenti rimarranno, ma i loro post e discussioni saranno eliminati.",
