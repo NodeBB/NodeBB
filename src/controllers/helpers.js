@@ -357,10 +357,14 @@ helpers.getSelectedCategory = async function (cids) {
 };
 
 helpers.trimChildren = function (category) {
-	if (Array.isArray(category.children)) {
+	if (category && Array.isArray(category.children)) {
 		category.children = category.children.slice(0, category.subCategoriesPerPage);
 		category.children.forEach((child) => {
-			child.children = undefined;
+			if (category.isSection) {
+				helpers.trimChildren(child);
+			} else {
+				child.children = undefined;
+			}
 		});
 	}
 };
