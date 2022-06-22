@@ -1,0 +1,53 @@
+"project_id_env": "CROWDIN_PROJECT_ID"
+"api_token_env": "CROWDIN_PERSONAL_TOKEN"
+"base_path": "."
+
+"preserve_hierarchy": true
+
+"files": [
+  {
+    "source": "public/language/en-US/**/*.json",
+    "translation": "public/language/%locale%/**/%original_file_name%",
+    "languages_mapping": {
+      "locale": {
+        "ar": "ar",
+        "bg": "bg",
+        "bn": "bn",
+        "cs": "cs",
+        "de": "de",
+        "el": "el",
+        "en-PT": "en-x-pirate",
+        "es-ES": "es",
+        "et": "et",
+        "fa": "fa-IR",
+        "fi": "fi",
+        "fr": "fr",
+        "gl": "gl",
+        "he": "he",
+        "hr": "hr",
+        "hu": "hu",
+        "id": "id",
+        "it": "it",
+        "ja": "ja",
+        "ko": "ko",
+        "lt": "lt",
+        "lv": "lv",
+        "ms": "ms",
+        "nb": "nb",
+        "nl": "nl",
+        "pl": "pl",
+        "ro": "ro",
+        "ru": "ru",
+        "rw": "rw",
+        "sc": "sc",
+        "sl": "sl",
+        "sq": "sq-AL",
+        "sr": "sr",
+        "sv-SE": "sv",
+        "th": "th",
+        "uk": "uk",
+        "vi": "vi"
+      }
+    }
+  }
+]
