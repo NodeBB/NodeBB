@@ -1,10 +1,11 @@
 {
 	"posts": "İletiler",
-	"orphans": "Orphaned Files",
+	"orphans": "Artık Dosyalar",
 	"private": "Yüklenen dosyaları gizli yap",
 	"strip-exif-data": "EXIF bilgilerini sil",
 	"preserve-orphaned-uploads": "Bir ileti kaldırıldıktan sonra yüklenilen dosyaları diskte bırak",
-	"orphanExpiryDays": "Days to keep orphaned files",
+	"orphanExpiryDays": "Artık dosyaların tutulacağı gün süresi",
+	"orphanExpiryDays-help": "Bu kadar günden sonra artık dosyalar sistemden silinecek. <br /> Devredışı bırakmak için 0 olarak girin veya boş bırakın.",
 	"private-extensions": "Gizli yapılacak dosya uzantıları",
 	"private-uploads-extensions-help": "Buraya gizli yapılacak dosya uzantıları listesini virgülle ayırarak giriniz. (ör. <code>pdf,xls,doc</code>). Boş bırakmak, tüm dosyaların gizli olacağı anlamına gelir.",
 	"resize-image-width-threshold": "Belirtilen genişlikten daha genişse görüntüleri yeniden boyutlandırın",

@@ -1,0 +1,81 @@
+name: Bug Report
+description: File a bug report
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Github Issues are for bug reports and feature requests only
+        Please visit https://community.nodebb.org for other support
+        Found a security exploit? Please email us at security@nodebb.org instead for immediate attention
+        ### → DO NOT SUBMIT VULNERABILITIES TO THE PUBLIC BUG TRACKER ←
+  - type: input
+    attributes:
+      label: NodeBB version
+      placeholder: e.g. v2.2.0
+  - type: input
+    attributes:
+      label: NodeBB git hash
+      description: to find your git hash, execute `git rev-parse HEAD` from the main NodeBB directory
+      placeholder: e.g. 783250ee6f8c51cdc243ce3b8d9f1a080517247e
+  - type: input
+    attributes:
+      label: NodeJS version
+      placeholder: e.g. v16.15.1
+  - type: textarea
+    attributes:
+      label: Installed NodeBB plugins
+      description: to find installed plugins run `./nodebb plugins`
+      placeholder: |
+        e.g.
+        * nodebb-plugin-2factor@5.0.1 (installed, disabled)
+        * nodebb-plugin-composer-default@8.0.0 (installed, enabled)
+        * nodebb-plugin-dbsearch@5.1.5 (installed, disabled)
+        * nodebb-plugin-emoji@4.0.4 (installed, enabled)
+        * nodebb-plugin-emoji-android@3.0.0 (installed, enabled)
+        * nodebb-plugin-markdown@10.0.0 (installed, enabled)
+        * nodebb-plugin-mentions@3.0.11 (installed, enabled)
+        * nodebb-plugin-spam-be-gone@1.0.0 (installed, disabled)
+        * nodebb-rewards-essentials@0.2.1 (installed, enabled)
+        * nodebb-theme-lavender@6.0.0 (installed, disabled)
+        * nodebb-theme-persona@12.0.11 (installed, enabled)
+        * nodebb-theme-slick@2.0.2 (installed, disabled)
+        * nodebb-theme-vanilla@12.1.18 (installed, disabled)
+        * nodebb-widget-essentials@6.0.0 (installed, enabled)
+  - type: dropdown
+    attributes:
+      label: Database type
+      multiple: true
+      options:
+        - MongoDB
+        - Redis
+        - PostgreSQL
+  - type: input
+    attributes:
+      label: Database version
+      description: "`mongod --version`, `redis-server --version`, or `postgres --version`"
+      placeholder: e.g. v5.0.9
+  - type: textarea
+    attributes:
+      label: Exact steps to cause this issue
+      placeholder: |
+        1. First I did this...
+        2. Then, I clicked on this item...
+
+        A quick note: MP4 and MOV formatted video files are now allowed to be uploaded to GH.
+        Please upload if reproduction steps are hard to describe or reproduce reliably.
+  - type: textarea
+    attributes:
+      label: What you expected
+      placeholder: e.g. I expected *abc* to *xyz*
+  - type: textarea
+    attributes:
+      label: What happened instead
+      placeholder: e.g. Instead, I got *zyx* and NodeBB set fire to my house
+  - type: textarea
+    attributes:
+      label: Anything else?
+      description: Any additional context about the issue you're encountering
+  - type: markdown
+    attributes:
+      value: "**Thank you!**"

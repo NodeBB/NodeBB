@@ -91,7 +91,7 @@
 	"alerts.validate-email-success": "E-postalar doğrulandı",
 	"alerts.validate-force-password-reset-success": "Kullanıcıların şifreleri sıfırlandı ve mevcut oturumları iptal edildi.  ",
 	"alerts.password-reset-confirm": "Bu kullanıcıya(lara) şifre sıfırlama e-postası(ları) göndermek istiyor musunuz?",
-	"alerts.password-reset-email-sent": "Password reset email sent.",
+	"alerts.password-reset-email-sent": "Şifre yenileme e-postası gönderildi!",
 	"alerts.confirm-delete": "<strong>Uyarı!</strong><p><strong>Kullanıcı(lar)ı</strong> gerçekten silmek istiyor musunuz?</p><p>Bu işlem geri alınamaz! Yalnızca kullanıcı hesapları silinecektir, iletiler ve konular kalacaktır.",
 	"alerts.delete-success": "Kullanıcı(lar) Silindi!",
 	"alerts.confirm-delete-content": "<strong>Uyarı!</strong><p>Bu kullanıcının(ların) <strong>içeriklerini</strong>gerçekten silmek istiyor musunuz?</p><p>Bu işlem geri alınamaz! Yalnızca kullanıcı hesabı kalacaktır, iletiler ve konular silinecektir.</p>",

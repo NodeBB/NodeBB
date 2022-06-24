@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Community Forum
+    url: https://community.nodebb.org
+    about: Github Issues are for bug reports and feature requests only, please use community forum for other support
