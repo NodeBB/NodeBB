@@ -3,7 +3,3 @@ contact_links:
   - name: Community Forum
     url: https://community.nodebb.org
     about: Github Issues are for bug reports and feature requests only, please use community forum for other support
-  - name: Security Issues
-    url: https://nodebb.org/bounty/
-    about: |
-      Found a security exploit? Please email us at security@nodebb.org instead for immediate attention. DO NOT SUBMIT VULNERABILITIES TO THE PUBLIC BUG TRACKER
