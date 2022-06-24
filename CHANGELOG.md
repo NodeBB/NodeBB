@@ -1,3 +1,33 @@
+#### v2.2.1 (2022-06-24)
+
+##### Chores
+
+* **i18n:**
+  *  fallback strings for new resources: nodebb.admin-settings-uploads (da481163)
+  *  fallback strings for new resources: nodebb.admin-settings-advanced (34d75e96)
+*  add in warning in language directories about not editing files directly (06074e8c)
+*  incrementing version number - v2.2.0 (eecb836d)
+*  update changelog for v2.2.0 (bb3766df)
+
+##### Documentation Changes
+
+*  remove the redundant security policy template (7f5b285e)
+
+##### New Features
+
+*  cross origin opener policy options (#10710) (88132358)
+
+##### Bug Fixes
+
+* **deps:**
+  *  update dependency winston to v3.8.0 (#10725) (d4a5039e)
+  *  update dependency sharp to v0.30.7 (#10724) (0a07c2c0)
+*  handle ENOENT on file deletion, closes #10645 (43f9e6c8)
+
+##### Tests
+
+*  fix i18n tests (05c30677)
+
 #### v2.2.0 (2022-06-15)
 
 ##### Chores
