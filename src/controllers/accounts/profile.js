@@ -7,6 +7,7 @@ const db = require('../../database');
 const user = require('../../user');
 const posts = require('../../posts');
 const categories = require('../../categories');
+const plugins = require('../../plugins');
 const meta = require('../../meta');
 const privileges = require('../../privileges');
 const accountHelpers = require('./helpers');
@@ -106,11 +107,17 @@ async function getPosts(callerUid, userData, setSuffix) {
 
 	do {
 		/* eslint-disable no-await-in-loop */
-		const pids = await db.getSortedSetRevRange(keys, start, start + count - 1);
+		let pids = await db.getSortedSetRevRange(keys, start, start + count - 1);
 		if (!pids.length || pids.length < count) {
 			hasMorePosts = false;
 		}
 		if (pids.length) {
+			({ pids } = await plugins.hooks.fire('filter:account.profile.getPids', {
+				uid: callerUid,
+				userData,
+				setSuffix,
+				pids,
+			}));
 			const p = await posts.getPostSummaryByPids(pids, callerUid, { stripTags: false });
 			postData.push(...p.filter(
 				p => p && p.topic && (isAdmin || cidToIsMod[p.topic.cid] ||
