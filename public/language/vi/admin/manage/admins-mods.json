@@ -1,10 +1,10 @@
 {
     "administrators": "Quản Trị Viên",
     "global-moderators": "Người Điều Hành Toàn Quyền",
-    "moderators": "Moderators",
+    "moderators": "Người điều hành",
     "no-global-moderators": "Không Có Người Điều Hành Toàn Quyền",
-    "no-sub-categories": "No subcategories",
-    "subcategories": "%1 subcategories",
+    "no-sub-categories": "Không có danh mục phụ",
+    "subcategories": "%1 danh mục phụ",
     "no-moderators": "Không Có Người Điều Hành",
     "add-administrator": "Thêm Quản Trị Viên",
     "add-global-moderator": "Thêm Người Điều Hành Toàn Quyền",
