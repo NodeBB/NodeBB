@@ -7,9 +7,9 @@ define('forum/chats/messages', [
 ], function (components, translator, Benchpress, hooks, bootbox, alerts, messagesModule, api) {
 	const messages = {};
 
-	messages.sendMessage = function (roomId, inputEl) {
-		const message = inputEl.val();
-		const mid = inputEl.attr('data-mid');
+	messages.sendMessage = async function (roomId, inputEl) {
+		let message = inputEl.val();
+		let mid = inputEl.attr('data-mid');
 
 		if (!message.trim().length) {
 			return;
@@ -18,7 +18,10 @@ define('forum/chats/messages', [
 		inputEl.val('');
 		inputEl.removeAttr('data-mid');
 		messages.updateRemainingLength(inputEl.parent());
-		hooks.fire('action:chat.sent', { roomId, message, mid });
+		const payload = { roomId, message, mid };
+		// TODO: move this to success callback of api.post/put call?
+		hooks.fire('action:chat.sent', payload);
+		({ roomId, message, mid } = await hooks.fire('filter:chat.send', payload));
 
 		if (!mid) {
 			api.post(`/chats/${roomId}`, { message }).catch((err) => {
