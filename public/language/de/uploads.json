@@ -1,6 +1,6 @@
 {
-    "uploading-file": "Lade Datei hoch...",
-    "select-file-to-upload": "Wähle eine Datei zum Hochladen aus!",
+    "uploading-file": "Hochladen der Datei...",
+    "select-file-to-upload": "Eine Datei zum hochladen auswählen!",
     "upload-success": "Datei erfolgreich hochgeladen!",
     "maximum-file-size": "Maximal %1 kb",
     "no-uploads-found": "Keine Uploads gefunden",

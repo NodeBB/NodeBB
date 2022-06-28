@@ -1,6 +1,6 @@
 {
 	"maintenance-mode": "Wartungsmodus",
-	"maintenance-mode.help": "Während das Forum im Wartungsmodus ist werden alle Anfragen zu einer statischen Seite weitergeleitet. Administratoren sind von dieser Weiterleitung ausgenommen und können die Seite normal aufrufen.",
+	"maintenance-mode.help": "Wenn sich das Forum im Wartungsmodus befindet, werden alle Anfragen auf eine statische Warteseite umgeleitet. Administratoren sind von dieser Umleitung ausgenommen und können normal auf die Site zugreifen.",
 	"maintenance-mode.status": "Statuscode für Wartungsmodus",
 	"maintenance-mode.message": "Wartungsnachricht",
 	"headers": "Headers",

@@ -1,13 +1,13 @@
 {
 	"events": "Ereignisse",
 	"no-events": "Es gibt keine Ereignisse",
-	"control-panel": "Ereignis-Steuerung",
+	"control-panel": "Ereignissteuerung",
 	"delete-events": "Ereignisse löschen",
 	"confirm-delete-all-events": "Bist du sicher, dass du alle gespeicherten Events löschen möchtest?",
 	"filters": "Filter",
 	"filters-apply": "Filter anwenden",
 	"filter-type": "Ereignistyp",
-	"filter-start": "Start-Datum",
-	"filter-end": "End-Datum",
+	"filter-start": "Anfangsdatum",
+	"filter-end": "Enddatum",
 	"filter-perPage": "Pro Seite"
 }

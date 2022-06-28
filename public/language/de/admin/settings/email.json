@@ -18,7 +18,7 @@
 	"smtp-transport.security": "Verbindungssicherheit",
 	"smtp-transport.security-encrypted": "Verschlüsselt",
 	"smtp-transport.security-starttls": "StartTLS",
-	"smtp-transport.security-none": "Keine",
+	"smtp-transport.security-none": "Nichts",
 	"smtp-transport.username": "Benutzername",
 	"smtp-transport.username-help": "Bitte füge die komplette Email-Adresse <b>für Gmail</b> hier ein, insbesondere wenn du eine von Google Apps gemanagete domain verwendest.",
 	"smtp-transport.password": "Passwort",

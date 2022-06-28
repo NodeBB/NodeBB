@@ -35,7 +35,7 @@
 	"registration-type": "Registrierungart",
 	"registration-approval-type": "Art der Registrierungsgenehmigung",
 	"registration-type.normal": "Normal",
-	"registration-type.admin-approval": "Admin Genehmigung",
+	"registration-type.admin-approval": "Admin-Genehmigung",
 	"registration-type.admin-approval-ip": "Admin Genehmigung für IPs",
 	"registration-type.invite-only": "Nur Einladungen",
 	"registration-type.admin-invite-only": "Nur Admin Einladungen",
