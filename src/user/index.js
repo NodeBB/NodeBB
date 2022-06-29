@@ -77,11 +77,13 @@ User.getUsersWithFields = async function (uids, fields, uid) {
 };
 
 User.getUsers = async function (uids, uid) {
-	return await User.getUsersWithFields(uids, [
+	const userData = await User.getUsersWithFields(uids, [
 		'uid', 'username', 'userslug', 'picture', 'status',
 		'postcount', 'reputation', 'email:confirmed', 'lastonline',
 		'flags', 'banned', 'banned:expire', 'joindate',
 	], uid);
+
+	return User.hidePrivateData(userData, uid);
 };
 
 User.getStatus = function (userData) {
