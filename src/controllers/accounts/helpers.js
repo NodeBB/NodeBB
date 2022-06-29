@@ -28,7 +28,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 	}
 	await parseAboutMe(results.userData);
 
-	const { userData } = results;
+	let { userData } = results;
 	const { userSettings } = results;
 	const { isAdmin } = results;
 	const { isGlobalModerator } = results;
@@ -41,17 +41,8 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 		userData.birthday ? Math.floor((new Date().getTime() - new Date(userData.birthday).getTime()) / 31536000000) : 0
 	);
 
-	userData.emailClass = 'hide';
-
-	if (!results.canEdit && (!userSettings.showemail || meta.config.hideEmail)) {
-		userData.email = '';
-	} else if (!userSettings.showemail) {
-		userData.emailClass = '';
-	}
-
-	if (!results.canEdit && (!userSettings.showfullname || meta.config.hideFullname)) {
-		userData.fullname = '';
-	}
+	userData = await user.hidePrivateData(userData, callerUID);
+	userData.emailClass = userSettings.showemail ? 'hide' : '';
 
 	if (isAdmin || isSelf || (canViewInfo && !results.isTargetAdmin)) {
 		userData.ips = results.ips;
