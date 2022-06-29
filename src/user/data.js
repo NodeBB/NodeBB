@@ -146,8 +146,10 @@ module.exports = function (User) {
 	};
 
 	User.hidePrivateData = async function (users, callerUID) {
+		let single = false;
 		if (!Array.isArray(users)) {
 			users = [users];
+			single = true;
 		}
 
 		const [userSettings, isAdmin, isGlobalModerator] = await Promise.all([
@@ -171,7 +173,7 @@ module.exports = function (User) {
 			return _userData;
 		}));
 
-		return users.length === 1 ? users.pop() : users;
+		return single ? users.pop() : users;
 	};
 
 	async function modifyUserData(users, requestedFields, fieldsToRemove) {
