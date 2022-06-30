@@ -1,16 +1,16 @@
 {
 	"tokens": "Tokens",
 	"settings": "Einstellungen",
-	"lead-text": "Von dieser Seite aus können Sie den Zugriff auf die Schreib-API in NodeBB konfigurieren.",
-	"intro": "Standardmäßig authentifiziert die <code>write-api</code> Nutzer anhand ihres Sitzungs-Cookies, aber NodeBB unterstützt auch die Bearer-Authentifizierung über Token, die über diese Seite generiert werden.",
-	"docs": "Klicken Sie hier, um auf die vollständige API-Spezifikation zuzugreifen",
+	"lead-text": "Auf dieser Seite kanst Du den Zugriff auf die Write-API in NodeBB konfigurieren.",
+	"intro": "Standardmäßig authentifiziert die Write-API Benutzer basierend auf ihrem Sitzungscookie, aber NodeBB unterstützt auch die Bearer-Authentifizierung über Token, die über diese Seite generiert werden.",
+	"docs": "Klicke hier, um auf die vollständige API-Spezifikation zuzugreifen",
 
 	"require-https": "API-Nutzung nur über HTTPS möglich",
 	"require-https-caveat": "<strong>Hinweis</strong>: Einige Installationen mit Load Balancern können ihre Anfragen über HTTP an NodeBB weiterleiten, in diesem Fall sollte diese Option deaktiviert bleiben.",
 
 	"uid": "Nutzer–ID",
-	"uid-help-text": "Geben Sie eine Nutzer–ID an, die mit diesem Token verknüpft werden soll. Wenn die Benutzer-ID <code>0</code> lautet, wird sie als ein <em>master</em>-Token betrachtet, das die Identität anderer Benutzer auf der Grundlage des Parameters <code>_uid</code> annehmen kann.",
+	"uid-help-text": "Gebe eine Benutzer-ID an, die diesem Token zugeordnet werden soll. Wenn die Benutzer-ID <code>0</code> ist, wird sie als <em>Master</em>-Token betrachtet, das basierend auf dem <code>_uid</code>-Parameter die Identität anderer Benutzer annehmen kann",
 	"description": "Beschreibung",
 	"no-description": "Keine Beschreibung angegeben.",
-	"token-on-save": "Das Token wird generiert, sobald das Formular gespeichert wird."
+	"token-on-save": "Token wird generiert, sobald das Formular gespeichert wird"
 }
