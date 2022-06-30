@@ -1,3 +1,23 @@
+#### v2.2.2 (2022-06-30)
+
+##### Chores
+
+* **deps-dev:**
+  *  bump eslint from 8.17.0 to 8.18.0 in /install (bfd626b0)
+  *  bump jsdom from 19.0.0 to 20.0.0 in /install (d037c2c9)
+*  incrementing version number - v2.2.1 (efc77b2a)
+*  update changelog for v2.2.1 (667780cf)
+*  incrementing version number - v2.2.0 (eecb836d)
+
+##### Bug Fixes
+
+*  improper handling of single vs. multiple inputs for hidePrivateData (f38b2a73)
+*  observe user-specific and ACP-specific hiding rules for fullname (ecf0e8ce)
+
+##### Refactors
+
+*  allow user.hidePrivateData() to handle an array of `userData` (3f5ae893)
+
 #### v2.2.1 (2022-06-24)
 
 ##### Chores
