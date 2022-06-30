@@ -1,6 +1,6 @@
 {
 	"maintenance-mode": "Wartungsmodus",
-	"maintenance-mode.help": "Während das Forum im Wartungsmodus ist werden alle Anfragen zu einer statischen Seite weitergeleitet. Administratoren sind von dieser Weiterleitung ausgenommen und können die Seite normal aufrufen.",
+	"maintenance-mode.help": "Wenn sich das Forum im Wartungsmodus befindet, werden alle Anfragen auf eine statische Warteseite umgeleitet. Administratoren sind von dieser Umleitung ausgenommen und können normal auf die Site zugreifen.",
 	"maintenance-mode.status": "Statuscode für Wartungsmodus",
 	"maintenance-mode.message": "Wartungsnachricht",
 	"headers": "Headers",
@@ -15,8 +15,8 @@
 	"headers.acac": "Access-Control-Allow-Credentials",
 	"headers.acam": "Access-Control-Allow-Methods",
 	"headers.acah": "Access-Control-Allow-Headers",
-	"headers.coep": "Cross-Origin-Embedder-Policy",
-	"headers.coep-help": "When enabled (default), will set the header to <code>require-corp</code>",
+	"headers.coep": "Cross-Origin-Embedder-Richtlinie",
+	"headers.coep-help": "Wenn aktiviert (Standard), wird der Header auf <code>require-corp</code> gesetzt",
 	"headers.corp": "Cross-Origin-Resource-Policy",
 	"hsts": "Strict Transport Security",
 	"hsts.enabled": "HSTS Aktivieren (empfohlen)",

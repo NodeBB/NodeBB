@@ -1,19 +1,19 @@
 {
 	"lead": "Konfiguriere hier deine IP-Blacklist",
-	"description": "Manchmal ist eine User-Sperrung nicht abschreckend genug. In vielen Fällen ist es daher sinnvoll, den Zugriff auf ein Forum für eine bestimmte Reihe von IP-Adressen zu blockieren. In diesen Fällen können Sie problematische IP-Adressen oder komplette CIDR Blöcke zu dieser Blacklist hinzufügen, welche dann daran gehindert werden sich einzuloggen, oder ein neues Konto zu erstellen.",
+	"description": "Gelegentlich reicht die Sperrung eines Benutzerkontos nicht aus, um abzuschrecken. In anderen Fällen ist die Beschränkung des Zugriffs auf das Forum auf eine bestimmte IP oder eine Reihe von IPs der beste Weg, ein Forum zu schützen. In diesen Szenarien kannst Du dieser Blacklist problematische IP-Adressen oder ganze CIDR-Blöcke hinzufügen, und sie werden daran gehindert, sich bei einem neuen Konto anzumelden oder ein neues Konto zu registrieren.",
 	"active-rules": "Aktive Regeln",
 	"validate": "Blacklist validieren",
 	"apply": "Blacklist anwenden",
 	"hints": "Syntax Hinweise",
 	"hint-1": "Pro Zeile kann eine IP-Adresse angegeben werden. Es können auch IP-Blöcke im CIDR Format (z.B. <code>192.168.100.0/22</code>) hinzugefügt werden.",
-	"hint-2": "Sie können Kommentare hinzufügen, indem Sie die Zeilen mit dem <code>#</code> Symbol beginnen.",
+	"hint-2": "Du kannst Kommentare hinzufügen, indem Du die Zeilen mit dem <code>#</code> Symbol beginnst.",
 
 	"validate.x-valid": "<strong>%1</strong> von <strong>%2</strong> Regel(n) zulässig.",
 	"validate.x-invalid": "Die folgenden <strong>%1</strong> Regeln sind unzulässig:",
 
-	"alerts.applied-success": "Blacklist angewandt",
+	"alerts.applied-success": "Blacklist angewendet",
 
 	"analytics.blacklist-hourly": "<strong>Figur 1</strong> &ndash; Blacklist-Treffer pro Stunde",
 	"analytics.blacklist-daily": " <strong>Figur 2</strong> &ndash; Blacklist-Treffer pro Tag",
-	"ip-banned": "IP-Adresse ist gebannt"
+	"ip-banned": "IP-Adresse gesperrt"
 }

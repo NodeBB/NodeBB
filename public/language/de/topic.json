@@ -113,7 +113,7 @@
     "bookmark": "Lesezeichen",
     "bookmarks": "Lesezeichen",
     "bookmarks.has_no_bookmarks": "Du hast noch keine Beiträge mit Lesezeichen markiert.",
-    "copy-permalink": "Copy Permalink",
+    "copy-permalink": "Permalink kopieren",
     "loading_more_posts": "Lade mehr Beiträge",
     "move_topic": "Thema verschieben",
     "move_topics": "Themen verschieben",
@@ -182,7 +182,7 @@
     "timeago_earlier": "%1 früher",
     "first-post": "Erster Beitrag",
     "last-post": "Letzter Beitrag",
-    "go-to-my-next-post": "Go to my next post",
-    "no-more-next-post": "You don't have more posts in this topic",
+    "go-to-my-next-post": "Zu meinem nächsten Beitrag gehen",
+    "no-more-next-post": "Du hast keine weiteren Beiträge zu diesem Thema",
     "post-quick-reply": "Beitrag schnell Beantworten"
 }
