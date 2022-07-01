@@ -25,11 +25,12 @@ app.widgets = {};
 app.flags = {};
 
 app.onDomReady = function () {
+	document.addEventListener('DOMContentLoaded',  ajaxify.parseData);
+
 	$(document).ready(async function () {
 		if (app.user.timeagoCode && app.user.timeagoCode !== 'en') {
 			await import(/* webpackChunkName: "timeago/[request]" */ 'timeago/locales/jquery.timeago.' + app.user.timeagoCode);
 		}
-		ajaxify.parseData();
 		app.load();
 	});
 };
