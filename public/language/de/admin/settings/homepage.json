@@ -1,8 +1,8 @@
 {
 	"home-page": "Startseite",
-	"description": "Wähle aus, welche Seite angezeigt werden soll, wenn Nutzer zur Startseite des Forums navigieren.",
-	"home-page-route": "Startseitenpfad",
-	"custom-route": "Eigener Startseitenpfad",
-	"allow-user-home-pages": "Benutzern eigene Startseiten erlauben",
+	"description": "Wähle, welche Seite angezeigt wird, wenn Benutzer zur Stamm-URL deines Forums navigieren.",
+	"home-page-route": "Startseiten Route",
+	"custom-route": "Benutzerdefinierte Route",
+	"allow-user-home-pages": "Benutzer-Startseiten zulassen",
 	"home-page-title": "Titel der Startseite (Standardmäßig \"Home\")"
 }
