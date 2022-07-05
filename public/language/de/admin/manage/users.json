@@ -97,16 +97,16 @@
 	"alerts.confirm-delete-content": "<strong>Warnung!</strong><p>Möchtest Du diese <strong>Benutzerinhalte</strong> wirklich löschen?</p><p>Diese Aktion kann nicht umgekehrt werden! Die Konten der Benutzer bleiben bestehen, aber ihre Beiträge und Themen werden gelöscht.</p>",
 	"alerts.delete-content-success": "Beiträge des/der Nutzer(s) gelöscht!",
 	"alerts.confirm-purge": "<strong>Warnung!</strong><p>Bist du sicher, dass Du den/die <strong>Nutzer und deren Beiträge</strong> löschen möchtest?</p><p>Diese Aktion kann nicht rückgängig gemacht werden! Alle Nutzerdaten und Beiträge werden dabei gelöscht!</p>",
-	"alerts.create": "Nutzer Erstellen",
+	"alerts.create": "Benutzer erstellen",
 	"alerts.button-create": "Erstellen",
 	"alerts.button-cancel": "Abbrechen",
 	"alerts.error-passwords-different": "Die Passwörter müssen übereinstimmen",
 	"alerts.error-x": "<strong>Fehler</strong><p>%1</p>",
-	"alerts.create-success": "Nutzer erstellt",
+	"alerts.create-success": "Benutzer erstellt!",
 
 	"alerts.prompt-email": "E-Mails:",
 	"alerts.email-sent-to": "Eine Einladungsemail wurde an %1 gesendet",
 	"alerts.x-users-found": "%1 Benutzer gefunden, (%2 Sekunden)",
 	"export-users-started": "Der Export von Benutzern als CSV kann eine Weile dauern. Sie erhalten eine Benachrichtigung, wenn es abgeschlossen ist.",
-	"export-users-completed": "Benutzer wurden als CSV exportiert, klicken Sie hier, um sie herunterzuladen."
+	"export-users-completed": "Benutzer wurden als CSV exportiert, klicke hier, um sie herunterzuladen."
 }

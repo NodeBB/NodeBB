@@ -311,11 +311,17 @@ ajaxify.widgets = { render: render };
 		app.processPage();
 	};
 
-	ajaxify.parseData = function () {
-		const dataEl = $('#ajaxify-data');
-		if (dataEl.length) {
-			ajaxify.data = JSON.parse(dataEl.text());
-			dataEl.remove();
+	ajaxify.parseData = () => {
+		const dataEl = document.getElementById('ajaxify-data');
+		if (dataEl) {
+			try {
+				ajaxify.data = JSON.parse(dataEl.textContent);
+			} catch (e) {
+				console.error(e);
+				ajaxify.data = {};
+			} finally {
+				dataEl.remove();
+			}
 		}
 	};
 

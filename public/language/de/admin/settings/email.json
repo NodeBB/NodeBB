@@ -29,7 +29,7 @@
 	"template.select": "E-Mail Vorlage auswählen",
 	"template.revert": "Original wiederherstellen",
 	"testing": "E-Mail Test",
-	"testing.select": "Wählen Sie die E-Mail Vorlage",
+	"testing.select": "E-Mail-Vorlage auswählen",
 	"testing.send": "Test-E-Mail versenden",
 	"testing.send-help": "Die Test-E-Mail wird an die E-Mail Adresse des momentan eingeloggten Nutzers geschickt.",
 	"subscriptions": "Email Zusammenfassungen",
