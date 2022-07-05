@@ -1,3 +1,21 @@
+#### v2.2.3 (2022-07-05)
+
+##### Chores
+
+*  incrementing version number - v2.2.2 (343ffa66)
+*  update changelog for v2.2.2 (f59ddc34)
+*  incrementing version number - v2.2.1 (efc77b2a)
+*  incrementing version number - v2.2.0 (eecb836d)
+
+##### Bug Fixes
+
+*  move call to `ajaxify.parseData` out to root level (b778e38c)
+*  move `ajaxify.parseData` back out to DOMContentLoaded (2582cb53)
+
+##### Refactors
+
+*  rewrite ajaxify.parseData in vanilla (165b804d)
+
 #### v2.2.2 (2022-06-30)
 
 ##### Chores
