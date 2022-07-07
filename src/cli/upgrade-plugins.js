@@ -100,6 +100,8 @@ async function checkPlugins() {
 	const suggestedModules = await getSuggestedModules(nbbVersion, toCheck);
 	process.stdout.write(chalk.green('  OK'));
 
+	console.log(plugins, suggestedModules);
+
 	let current;
 	let suggested;
 	const upgradable = suggestedModules.map((suggestObj) => {
@@ -125,7 +127,7 @@ async function upgradePlugins() {
 		if (found && found.length) {
 			process.stdout.write(`\n\nA total of ${chalk.bold(String(found.length))} package(s) can be upgraded:\n\n`);
 			found.forEach((suggestObj) => {
-				process.stdout.write(`${chalk.yellow('  * ') + suggestObj.name} ('${chalk.yellow(suggestObj.current)}' -> '${chalk.green(suggestObj.suggested)}')\n'`);
+				process.stdout.write(`${chalk.yellow('  * ') + suggestObj.name} (${chalk.yellow(suggestObj.current)} -> ${chalk.green(suggestObj.suggested)})\n`);
 			});
 		} else {
 			console.log(chalk.green('\nAll packages up-to-date!'));
