@@ -62,7 +62,7 @@ const nconf = require('nconf');
 const { program } = require('commander');
 const yargs = require('yargs');
 
-const pkg = require('../../package.json');
+const pkg = require('../../install/package.json');
 const file = require('../file');
 const prestart = require('../prestart');
 
