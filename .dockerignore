@@ -3,6 +3,8 @@ logs
 test
 node_modules
 commitlint.config.js
-docker-compose.yml
 nodebb.bat
 renovate.json
+*.yml
+*.md
+Dockerfile
