@@ -1,0 +1,14 @@
+version: '3.5'
+
+services:
+  db:
+    image: "mongo:5.0.9-focal"
+    restart: unless-stopped
+    expose:
+      - "27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: nodebb
+      MONGO_INITDB_ROOT_PASSWORD: nodebb
+    volumes:
+      - ./.docker/database/mongo/config:/etc/mongo
+      - ./.docker/database/mongo/data:/data/db

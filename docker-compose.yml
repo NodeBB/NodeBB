@@ -1,7 +1,7 @@
 version: '3.5'
 
 services:
-  node:
+  nodebb:
     build: .
     restart: unless-stopped
     depends_on:
@@ -9,20 +9,7 @@ services:
     ports:
       - "4567:4567/tcp"
     volumes:
-      - ./docker/node_modules:/usr/src/app/node_modules
-      - ./docker/build:/usr/src/app/build
-      - ./docker/public/uploads:/usr/src/app/public/uploads
-      - ./docker:/opt/config
-  db:
-    image: postgres:14.1-alpine3.15
-    restart: unless-stopped
-    expose:
-      - 8080
-    environment:
-      POSTGRES_PASSWORD: nodebb
-    volumes:
-      - postgres:/var/lib/postgresql/data
-
-volumes:
-  postgres:
-  user-dir:
+      - ./.docker/node_modules:/usr/src/app/node_modules
+      - ./.docker/build:/usr/src/app/build
+      - ./.docker/public/uploads:/usr/src/app/public/uploads
+      - ./.docker:/opt/config
