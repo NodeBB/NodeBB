@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export CONFIG_DIR=/opt/config
+export CONFIG_DIR="${CONFIG_DIR:-/opt/config}"
 export CONFIG=$CONFIG_DIR/config.json
 
 mkdir -p $CONFIG_DIR
