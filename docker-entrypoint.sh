@@ -14,5 +14,13 @@ ln -s $CONFIG_DIR/package-lock.json package-lock.json
 
 npm install --only=prod
 
-./nodebb build --config=$CONFIG
-./nodebb start --config=$CONFIG
+if [ -f $CONFIG ]; then
+  echo "Config file exist at $CONFIG, assuming it is a valid config"
+  echo "Starting forum"
+  ./nodebb build --config=$CONFIG
+  ./nodebb start --config=$CONFIG
+else
+  echo "Config file not found at $CONFIG"
+  echo "Starting installer"
+    ./nodebb install --config=$CONFIG
+fi
