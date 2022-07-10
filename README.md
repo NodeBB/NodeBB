@@ -55,10 +55,10 @@ At least Docker Compose version 3.5 is required.
 
 ### Choosing your database
 
-You will need to choose the type of database first. In this repo you will find three files
-- docker-compose.mongo.yml
-- docker-compose.postgres.yml
-- docker-compose.redis.yml
+You will need to choose the type of database first. In this repo you can choose the following three profiles
+- mongo
+- postgres
+- redis
 
 For MongoDB, PostgreSQL (legacy), Redis support respectively. 
 This will be supplied along with the main Docker Compose launch command as extra file source.
@@ -68,7 +68,7 @@ Let's call this `{DATABASE}` shall we?
 
 To start the example, you just need to run the command in the following style
 ```bash
-$ docker-compose -f docker-compose.yml -f {DATABASE} up
+$ docker-compose --profile {DATABASE} up
 ```
 After few minutes or so you should be able to see (console output may be clobbered):
 ```bash
