@@ -9,11 +9,10 @@ services:
     ports:
       - "4567:4567/tcp"
     volumes:
-      - user-dir:/mnt/nodebb/user-dir
-    cap_add:
-      - SYS_ADMIN
-    devices:
-      - /dev/fuse
+      - ./docker/node_modules:/usr/src/app/node_modules
+      - ./docker/build:/usr/src/app/build
+      - ./docker/public/uploads:/usr/src/app/public/uploads
+      - ./docker:/opt/config
   db:
     image: postgres:14.1-alpine3.15
     restart: unless-stopped
