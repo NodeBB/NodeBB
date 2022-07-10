@@ -51,6 +51,8 @@ function checkSetupFlagEnv() {
 	let setupVal = install.values;
 
 	const envConfMap = {
+		CONFIG: 'config',
+		NODEBB_CONFIG: 'config',
 		NODEBB_URL: 'url',
 		NODEBB_PORT: 'port',
 		NODEBB_ADMIN_USERNAME: 'admin:username',
