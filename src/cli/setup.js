@@ -21,9 +21,9 @@ async function setup(initConfig) {
 
 	install.values = initConfig;
 	let configFile = paths.config;
-	const config = nconf.any(['config', 'CONFIG'])
+	const config = nconf.any(['config', 'CONFIG']);
 	if (config) {
-		nconf.set('config', config)
+		nconf.set('config', config);
 		configFile = path.resolve(paths.baseDir, config);
 	}
 
