@@ -28,7 +28,7 @@
 
 	"pagination": "Pagination",
 	"pagination.out_of": "%1 out of %2",
-	"pagination.enter_index": "Enter index",
+	"pagination.enter_index": "Go to post index",
 
 	"header.admin": "Admin",
 	"header.categories": "Categories",
@@ -70,6 +70,7 @@
 	"posts": "Posts",
 	"x-posts": "%1 posts",
 	"best": "Best",
+	"controversial": "Controversial",
 	"votes": "Votes",
 	"x-votes": "%1 votes",
 	"voters": "Voters",

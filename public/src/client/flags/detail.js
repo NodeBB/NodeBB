@@ -34,7 +34,6 @@ define('forum/flags/detail', [
 				}
 
 				case 'appendNote':
-					// socket.emit('flags.appendNote', {
 					api.post(`/flags/${ajaxify.data.flagId}/notes`, {
 						note: noteEl.value,
 						datetime: parseInt(noteEl.getAttribute('data-datetime'), 10),
@@ -70,6 +69,18 @@ define('forum/flags/detail', [
 					AccountHeader.banAccount(uid, ajaxify.refresh);
 					break;
 
+				case 'unban':
+					AccountHeader.unbanAccount(uid);
+					break;
+
+				case 'mute':
+					AccountHeader.muteAccount(uid, ajaxify.refresh);
+					break;
+
+				case 'unmute':
+					AccountHeader.unmuteAccount(uid);
+					break;
+
 				case 'delete-account':
 					AccountsDelete.account(uid, ajaxify.refresh);
 					break;
@@ -83,15 +94,15 @@ define('forum/flags/detail', [
 					break;
 
 				case 'delete-post':
-					postAction('delete', ajaxify.data.target.pid, ajaxify.data.target.tid);
+					postAction('delete', api.del, `/posts/${ajaxify.data.target.pid}/state`);
 					break;
 
 				case 'purge-post':
-					postAction('purge', ajaxify.data.target.pid, ajaxify.data.target.tid);
+					postAction('purge', api.del, `/posts/${ajaxify.data.target.pid}`);
 					break;
 
 				case 'restore-post':
-					postAction('restore', ajaxify.data.target.pid, ajaxify.data.target.tid);
+					postAction('restore', api.put, `/posts/${ajaxify.data.target.pid}/state`);
 					break;
 
 				case 'prepare-edit': {
@@ -111,27 +122,30 @@ define('forum/flags/detail', [
 					textareaEl.focus();
 					break;
 				}
+
+				case 'delete-flag': {
+					bootbox.confirm('[[flags:delete-flag-confirm]]', function (ok) {
+						if (ok) {
+							api.delete(`/flags/${ajaxify.data.flagId}`, {}).then(() => {
+								alerts.success('[[flags:flag-deleted]]');
+								ajaxify.go('flags');
+							}).catch(alerts.error);
+						}
+					});
+					break;
+				}
 			}
 		});
 	};
 
-	function postAction(action, pid, tid) {
+	function postAction(action, method, path) {
 		translator.translate('[[topic:post_' + action + '_confirm]]', function (msg) {
 			bootbox.confirm(msg, function (confirm) {
 				if (!confirm) {
 					return;
 				}
 
-				socket.emit('posts.' + action, {
-					pid: pid,
-					tid: tid,
-				}, function (err) {
-					if (err) {
-						alerts.error(err);
-					}
-
-					ajaxify.refresh();
-				});
+				method(path).then(ajaxify.refresh).catch(alerts.error);
 			});
 		});
 	}

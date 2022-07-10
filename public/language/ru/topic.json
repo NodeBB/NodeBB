@@ -113,6 +113,7 @@
     "bookmark": "Добавить в закладки",
     "bookmarks": "Закладки",
     "bookmarks.has_no_bookmarks": "Вы ещё не добавили в закладки ни одного сообщения.",
+    "copy-permalink": "Copy Permalink",
     "loading_more_posts": "Загружаем больше сообщений",
     "move_topic": "Перенести тему",
     "move_topics": "Перенести темы",
@@ -181,5 +182,7 @@
     "timeago_earlier": "на %1 раньше",
     "first-post": "Первое сообщение",
     "last-post": "Последнее сообщение",
+    "go-to-my-next-post": "Go to my next post",
+    "no-more-next-post": "You don't have more posts in this topic",
     "post-quick-reply": "Post quick reply"
 }

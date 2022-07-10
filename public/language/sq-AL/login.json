@@ -1,0 +1,12 @@
+{
+    "username-email": "Emri i përdoruesit / Email",
+    "username": "Emri i përdoruesit",
+    "remember_me": "Më mban mend?",
+    "forgot_password": "Harruat fjalëkalimin?",
+    "alternative_logins": "Hyrjet alternative",
+    "failed_login_attempt": "Identifikimi i pasuksesshëm",
+    "login_successful": "Ju keni hyrë me sukses në forum!",
+    "dont_have_account": "Nuk keni një llogari?",
+    "logged-out-due-to-inactivity": "Ju keni dalë nga paneli i kontrollit të administratorit për shkak të pasivitetit",
+    "caps-lock-enabled": "Caps Lock është aktivizuar"
+}

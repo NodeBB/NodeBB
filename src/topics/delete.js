@@ -11,14 +11,12 @@ const batch = require('../batch');
 
 module.exports = function (Topics) {
 	Topics.delete = async function (tid, uid) {
-		await Promise.all([
-			Topics.setTopicFields(tid, {
-				deleted: 1,
-				deleterUid: uid,
-				deletedTimestamp: Date.now(),
-			}),
-			removeTopicPidsFromCid(tid),
-		]);
+		await removeTopicPidsFromCid(tid);
+		await Topics.setTopicFields(tid, {
+			deleted: 1,
+			deleterUid: uid,
+			deletedTimestamp: Date.now(),
+		});
 	};
 
 	async function removeTopicPidsFromCid(tid) {
@@ -37,34 +35,27 @@ module.exports = function (Topics) {
 		]);
 		let postData = await posts.getPostsFields(pids, ['pid', 'timestamp', 'deleted']);
 		postData = postData.filter(post => post && !post.deleted);
-		const pidsToAdd = [];
-		const scores = [];
-		postData.forEach((post) => {
-			pidsToAdd.push(post.pid);
-			scores.push(post.timestamp);
-		});
+		const pidsToAdd = postData.map(post => post.pid);
+		const scores = postData.map(post => post.timestamp);
 		await db.sortedSetAdd(`cid:${cid}:pids`, scores, pidsToAdd);
 		await categories.updateRecentTidForCid(cid);
 	}
 
 	Topics.restore = async function (tid) {
-		await Topics.deleteTopicFields(tid, [
-			'deleterUid', 'deletedTimestamp',
-		]);
 		await Promise.all([
-			Topics.setTopicField(tid, 'deleted', 0),
+			Topics.deleteTopicFields(tid, [
+				'deleterUid', 'deletedTimestamp',
+			]),
 			addTopicPidsToCid(tid),
 		]);
+		await Topics.setTopicField(tid, 'deleted', 0);
 	};
 
 	Topics.purgePostsAndTopic = async function (tid, uid) {
 		const mainPid = await Topics.getTopicField(tid, 'mainPid');
 		await batch.processSortedSet(`tid:${tid}:posts`, async (pids) => {
-			for (const pid of pids) {
-				// eslint-disable-next-line no-await-in-loop
-				await posts.purge(pid, uid);
-			}
-		}, { alwaysStartAt: 0 });
+			await posts.purge(pids, uid);
+		}, { alwaysStartAt: 0, batch: 500 });
 		await posts.purge(mainPid, uid);
 		await Topics.purge(tid, uid);
 	};
@@ -100,6 +91,7 @@ module.exports = function (Topics) {
 			deleteTopicFromCategoryAndUser(tid),
 			Topics.deleteTopicTags(tid),
 			Topics.events.purge(tid),
+			Topics.thumbs.deleteAll(tid),
 			reduceCounters(tid),
 		]);
 		plugins.hooks.fire('action:topic.purge', { topic: deletedTopic, uid: uid });

@@ -13,10 +13,9 @@ const db = require('../database');
 const meta = require('../meta');
 const pubsub = require('../pubsub');
 const { paths } = require('../constants');
+const pkgInstall = require('../cli/package-install');
 
-const supportedPackageManagerList = require('../cli/package-install').supportedPackageManager;
-// load config from src/cli/package-install.js
-const packageManager = supportedPackageManagerList.indexOf(nconf.get('package_manager')) >= 0 ? nconf.get('package_manager') : 'npm';
+const packageManager = pkgInstall.getPackageManager();
 let packageManagerExecutable = packageManager;
 const packageManagerCommands = {
 	yarn: {

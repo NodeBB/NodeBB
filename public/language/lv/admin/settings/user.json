@@ -1,6 +1,5 @@
 {
 	"authentication": "Autentifikācija",
-	"require-email-confirmation": "Pieprasīt apstiprinājuma e-pastu",
 	"email-confirm-interval": "Lietotājs nevar atkārtoti nosūtīt apstiprinājuma e-pastu pirms",
 	"email-confirm-email2": "minūtes nav pagājušas",
 	"allow-login-with": "Ielogoties",

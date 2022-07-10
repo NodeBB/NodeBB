@@ -15,7 +15,17 @@
 	"topic": "Sujet",
 	"accept": "Accepter",
 	"reject": "Refuser",
-	"remove": "Remove",
-	"notify": "Notify",
-	"notify-user": "Notify User"
+	"remove": "Enlever",
+	"notify": "Notifier",
+	"notify-user": "Notifier l'utilisateur",
+	"confirm-reject": "Voulez vous réellement rejeter ce message ?",
+	"bulk-actions": "Actions",
+	"accept-all": "Tout accepter",
+	"accept-selected": "Acceptation sélectionné",
+	"reject-all": "Tout rejeter",
+	"reject-all-confirm": "Voulez vous réellement rejeter tous ces messages ?",
+	"reject-selected": "Rejets sélectionnés",
+	"reject-selected-confirm": "Voulez vous réellement rejeter ces %1 messages ?",
+	"bulk-accept-success": "%1 messages acceptés",
+	"bulk-reject-success": "%1 messages rejetés"
 }

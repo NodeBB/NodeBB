@@ -4,7 +4,7 @@
     "buttons.close": "Kapat",
     "403.title": "Erişim Engellendi",
     "403.message": "Erişim izniniz olmayan bir sayfaya denk gelmiş gibisiniz.",
-    "403.login": "Belki de tekrar <a href='%1/login'>giriş</a> yapmayı denersiniz?",
+    "403.login": "Belki tekrar <a href='%1/login'>giriş</a> yapmalısınız?",
     "404.title": "Bulunamadı",
     "404.message": "Erişim izniniz olmayan bir sayfaya denk gelmiş gibisiniz. <a href='%1/'>Anasayfa</a>'ya geri dönün.",
     "500.title": "Dahili hata.",
@@ -23,7 +23,7 @@
     "close": "Kapat",
     "pagination": "Sayfalara numara koyma",
     "pagination.out_of": "%1 - %2",
-    "pagination.enter_index": "İndex gir",
+    "pagination.enter_index": "İleti dizinine git",
     "header.admin": "Yönetim",
     "header.categories": "Kategoriler",
     "header.recent": "Güncel",
@@ -56,7 +56,8 @@
     "posts": "İleti",
     "x-posts": "%1 ileti",
     "best": "En İyi",
-    "votes": "Oylar",
+    "controversial": "Tartışmalı",
+    "votes": "Oy",
     "x-votes": "%1 oy",
     "voters": "Oy Verenler",
     "upvoters": "Artı Oy Verenler",
@@ -121,5 +122,5 @@
     "edited": "Düzenlendi",
     "disabled": "Devre dışı",
     "select": "Seç",
-    "user-search-prompt": "Kullanıcı bulmak için buraya bir şeyler yazın ..."
+    "user-search-prompt": "Kullanıcı bulmak için buraya yazın ..."
 }

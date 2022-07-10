@@ -8,12 +8,13 @@
 const path = require('path');
 const nconf = require('nconf');
 
-const db = require('../database');
 const file = require('../file');
 const user = require('../user');
 const groups = require('../groups');
 const topics = require('../topics');
 const posts = require('../posts');
+const messaging = require('../messaging');
+const flags = require('../flags');
 const slugify = require('../slugify');
 
 const helpers = require('./helpers');
@@ -55,7 +56,8 @@ Assert.post = helpers.try(async (req, res, next) => {
 });
 
 Assert.flag = helpers.try(async (req, res, next) => {
-	if (!await db.isSortedSetMember('flags:datetime', req.params.flagId)) {
+	const canView = await flags.canView(req.params.flagId, req.uid);
+	if (!canView) {
 		return controllerHelpers.formatApiResponse(404, res, new Error('[[error:no-flag]]'));
 	}
 
@@ -101,6 +103,39 @@ Assert.folderName = helpers.try(async (req, res, next) => {
 	}
 
 	res.locals.folderPath = folderPath;
+
+	next();
+});
+
+Assert.room = helpers.try(async (req, res, next) => {
+	if (!isFinite(req.params.roomId)) {
+		return controllerHelpers.formatApiResponse(400, res, new Error('[[error:invalid-data]]'));
+	}
+
+	const [exists, inRoom] = await Promise.all([
+		await messaging.roomExists(req.params.roomId),
+		await messaging.isUserInRoom(req.uid, req.params.roomId),
+	]);
+
+	if (!exists) {
+		return controllerHelpers.formatApiResponse(404, res, new Error('[[error:chat-room-does-not-exist]]'));
+	}
+
+	if (!inRoom) {
+		return controllerHelpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
+	}
+
+	next();
+});
+
+Assert.message = helpers.try(async (req, res, next) => {
+	if (
+		!isFinite(req.params.mid) ||
+		!(await messaging.messageExists(req.params.mid)) ||
+		!(await messaging.canViewMessage(req.params.mid, req.params.roomId, req.uid))
+	) {
+		return controllerHelpers.formatApiResponse(400, res, new Error('[[error:invalid-mid]]'));
+	}
 
 	next();
 });

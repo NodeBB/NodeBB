@@ -1,8 +1,8 @@
 {
     "title": "Notificações",
     "no_notifs": "Não tens notificações novas",
-    "see_all": "Ver todas as notificações",
-    "mark_all_read": "Marcar todas as notificações como lidas",
+    "see_all": "All notifications",
+    "mark_all_read": "Mark all read",
     "back_to_home": "Voltar para %1",
     "outgoing_link": "Link Externo",
     "outgoing_link_message": "Estás agora a abandonar %1",

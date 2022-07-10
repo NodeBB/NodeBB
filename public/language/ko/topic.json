@@ -113,6 +113,7 @@
     "bookmark": "즐겨찾기",
     "bookmarks": "즐겨찾기 목록",
     "bookmarks.has_no_bookmarks": "즐겨찾기에 추가한 글이 없습니다.",
+    "copy-permalink": "Copy Permalink",
     "loading_more_posts": "더 많은 글 불러오는 중",
     "move_topic": "화제 이동",
     "move_topics": "화제 이동",
@@ -181,5 +182,7 @@
     "timeago_earlier": "%1 이전",
     "first-post": "첫 포스트",
     "last-post": "마지막 포스트",
+    "go-to-my-next-post": "Go to my next post",
+    "no-more-next-post": "You don't have more posts in this topic",
     "post-quick-reply": "빠른 답글"
 }

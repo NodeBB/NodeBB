@@ -1,7 +1,7 @@
 
 {
 	"post-queue": "Innleggskø",
-	"description": "There are no posts in the post queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
+	"description": "Det er ingen innlegg i innleggskøen. <br> For å skru på denne funksjonen, gå til <a href=\"%1\">Innstillinger &rarr; Innlegg &rarr; Innleggskø</a> og skru på  <strong>Innleggskø</strong>.",
 	"user": "Bruker",
 	"category": "Kategori",
 	"title": "Tittel",
@@ -15,7 +15,17 @@
 	"topic": "Emne",
 	"accept": "Aksepter ",
 	"reject": "Avvis",
-	"remove": "Remove",
-	"notify": "Notify",
-	"notify-user": "Notify User"
+	"remove": "Fjern",
+	"notify": "Varsle",
+	"notify-user": "Varsle bruker",
+	"confirm-reject": "Vil du avvise dette innlegget?",
+	"bulk-actions": "Bulk Actions",
+	"accept-all": "Accept All",
+	"accept-selected": "Accept Selected",
+	"reject-all": "Reject All",
+	"reject-all-confirm": "Do you want to reject all posts?",
+	"reject-selected": "Reject Selected",
+	"reject-selected-confirm": "Do you want to reject %1 selected posts?",
+	"bulk-accept-success": "%1 posts accepted",
+	"bulk-reject-success": "%1 posts rejected"
 }

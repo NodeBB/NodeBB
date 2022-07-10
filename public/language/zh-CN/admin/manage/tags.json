@@ -1,18 +1,18 @@
 {
-	"none": "您的论坛目前没有带有话题的主题。",
+	"none": "您的论坛目前没有带标签的主题。",
 	"bg-color": "背景颜色",
 	"text-color": "文字颜色",
-	"description": "通过点击或拖动选择话题，按住<code>CTRL</code>进行多选。",
-	"create": "创建话题",
-	"modify": "修改话题",
-	"rename": "重命名话题",
-	"delete": "删除所选话题",
-	"search": "搜索话题...",
-	"settings": "话题设置",
-	"name": "话题名",
+	"description": "通过点击或拖动选择标签，按住 <code>CTRL</code> 进行多选。",
+	"create": "创建标签",
+	"modify": "修改标签",
+	"rename": "重命名标签",
+	"delete": "删除所选标签",
+	"search": "搜索标签...",
+	"settings": "标签设置",
+	"name": "标签名称",
 
 	"alerts.editing": "编辑标签",
-	"alerts.confirm-delete": "是否要删除所选话题？",
-	"alerts.update-success": "话题已更新！",
-	"reset-colors": "Reset colors"
+	"alerts.confirm-delete": "您确定要删除选择的标签吗？",
+	"alerts.update-success": "标签已更新！",
+	"reset-colors": "重置颜色"
 }

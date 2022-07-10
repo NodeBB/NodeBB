@@ -7,10 +7,33 @@ const utils = require('../utils');
 
 const Hooks = module.exports;
 
-Hooks.deprecatedHooks = {
-	'filter:email.send': 'static:email.send', // 👋 @ 1.19.0
-	'filter:router.page': 'response:router.page', // 👋 @ 2.0.0
-};
+Hooks._deprecated = new Map([
+	['filter:email.send', {
+		new: 'static:email.send',
+		since: 'v1.17.0',
+		until: 'v2.0.0',
+	}],
+	['filter:router.page', {
+		new: 'response:router.page',
+		since: 'v1.15.3',
+		until: 'v2.1.0',
+	}],
+	['filter:post.purge', {
+		new: 'filter:posts.purge',
+		since: 'v1.19.6',
+		until: 'v2.1.0',
+	}],
+	['action:post.purge', {
+		new: 'action:posts.purge',
+		since: 'v1.19.6',
+		until: 'v2.1.0',
+	}],
+	['filter:user.verify.code', {
+		new: 'filter:user.verify',
+		since: 'v2.2.0',
+		until: 'v3.0.0',
+	}],
+]);
 
 Hooks.internals = {
 	_register: function (data) {
@@ -39,14 +62,13 @@ Hooks.register = function (id, data) {
 	}
 
 	// `hasOwnProperty` needed for hooks with no alternative (set to null)
-	if (Hooks.deprecatedHooks.hasOwnProperty(data.hook)) {
-		const deprecated = Hooks.deprecatedHooks[data.hook];
-
-		if (deprecated) {
-			winston.warn(`[plugins/${id}] Hook "${data.hook}" is deprecated, please use "${deprecated}" instead.`);
-		} else {
-			winston.warn(`[plugins/${id}] Hook "${data.hook}" is deprecated, there is no alternative.`);
+	if (Hooks._deprecated.has(data.hook)) {
+		const deprecation = Hooks._deprecated.get(data.hook);
+		if (!deprecation.hasOwnProperty('affected')) {
+			deprecation.affected = new Set();
 		}
+		deprecation.affected.add(id);
+		Hooks._deprecated.set(data.hook, deprecation);
 	}
 
 	data.id = id;
@@ -97,7 +119,7 @@ Hooks.fire = async function (hook, params) {
 		return;
 	}
 	let deleteCaller = false;
-	if (params && typeof params === 'object' && !params.hasOwnProperty('caller')) {
+	if (params && typeof params === 'object' && !Array.isArray(params) && !params.hasOwnProperty('caller')) {
 		const als = require('../als');
 		params.caller = als.getStore();
 		deleteCaller = true;

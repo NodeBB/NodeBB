@@ -15,7 +15,17 @@
 	"topic": "主题",
 	"accept": "接受",
 	"reject": "拒绝",
-	"remove": "Remove",
+	"remove": "移除",
 	"notify": "Notify",
-	"notify-user": "Notify User"
+	"notify-user": "Notify User",
+	"confirm-reject": "Do you want to reject this post?",
+	"bulk-actions": "Bulk Actions",
+	"accept-all": "全部同意",
+	"accept-selected": "同意选中项",
+	"reject-all": "全部拒绝",
+	"reject-all-confirm": "Do you want to reject all posts?",
+	"reject-selected": "拒绝选中项",
+	"reject-selected-confirm": "Do you want to reject %1 selected posts?",
+	"bulk-accept-success": "%1 posts accepted",
+	"bulk-reject-success": "%1 posts rejected"
 }

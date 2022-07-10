@@ -92,7 +92,13 @@ async function getAvailable() {
 		return item;
 	});
 
-	return await plugins.hooks.fire('filter:navigation.available', core);
+	const navItems = await plugins.hooks.fire('filter:navigation.available', core);
+	navItems.forEach((item) => {
+		if (item && !item.hasOwnProperty('enabled')) {
+			item.enabled = true;
+		}
+	});
+	return navItems;
 }
 
 require('../promisify')(admin);

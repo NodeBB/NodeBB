@@ -1,9 +1,9 @@
 {
     "register": "הרשם",
     "cancel_registration": "בטל רישום",
-    "help.email": "כברירת מחדל, כתובת האימייל שלך אינה חשופה למשתמשים אחרים",
+    "help.email": "כברירת מחדל, כתובת האימייל שלך לא גלויה למשתמשים אחרים",
     "help.username_restrictions": "שם משתמש ייחודי בין %1 ל %2 תווים. משתמשים אחרים יכולים לציין את שמך באמצעות @<span id='yourUsername'>שם המשתמש שלך</span>.",
-    "help.minimum_password_length": "סיסמתך חייבת להיות לפחות באורך של %1 תווים.",
+    "help.minimum_password_length": "הסיסמה שלך חייבת להיות לפחות באורך של %1 תווים.",
     "email_address": "כתובת אימייל",
     "email_address_placeholder": "הכנס כתובת אימייל",
     "username": "שם משתמש",

@@ -54,6 +54,7 @@
     "account/upvoted": "رای مثبت داده شده به پست ها توسط  %1",
     "account/downvoted": "رای منفی داده شده به پست ها توسط %1",
     "account/best": "بهترین پست های %1",
+    "account/controversial": "Controversial posts made by %1",
     "account/blocks": "کاربران مسدود شده توسط %1",
     "account/uploads": "آپلود های %1",
     "account/sessions": "Session های ورود",

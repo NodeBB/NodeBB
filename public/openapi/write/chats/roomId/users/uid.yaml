@@ -1,0 +1,32 @@
+delete:
+  tags:
+    - chats
+  summary: leave/remove one user from chat room
+  description: This operation removes (kicks) a single user from a chat room, or leaves the chat room if the requested user is the same as the calling user.
+  parameters:
+    - in: path
+      name: roomId
+      schema:
+        type: number
+      required: true
+      description: a valid chat room id
+      example: 1
+    - in: path
+      name: uid
+      schema:
+        type: number
+      required: true
+      description: a valid user id
+      example: 4
+  responses:
+    '200':
+      description: user successfully removed from chat room
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../../../components/schemas/Chats.yaml#/RoomUserList

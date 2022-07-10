@@ -6,7 +6,7 @@
     "post_is_deleted": "פוסט זה נמחק!",
     "topic_is_deleted": "נושא זה נמחק!",
     "profile": "פרופיל",
-    "posted_by": "הפוסט הועלה על ידי %1",
+    "posted_by": "פורסם על ידי %1",
     "posted_by_guest": "פורסם על-ידי אורח",
     "chat": "צ'אט",
     "notify_me": "קבל התראה כאשר יש תגובות חדשות בנושא זה",
@@ -76,7 +76,7 @@
     "not-watching.description": "אל תודיע לי על תגובות חדשות. <br/>הצג נושא ברשימת הלא נקראו במידה ובחרתי לא להתעלם מקטגוריה זו",
     "ignoring.description": "אל תודיע לי על תגובות חדשות. <br/>אל תראה את הנושא ברשימת הלא נקראו ",
     "thread_tools.title": "כלי נושא",
-    "thread_tools.markAsUnreadForAll": "סמן לא נקרא לכולם",
+    "thread_tools.markAsUnreadForAll": "סמן לכולם כלא נקרא",
     "thread_tools.pin": "נעץ נושא",
     "thread_tools.unpin": "הסר נעץ",
     "thread_tools.lock": "נעל נושא",
@@ -113,6 +113,7 @@
     "bookmark": "הוסף למועדפים",
     "bookmarks": "מועדפים",
     "bookmarks.has_no_bookmarks": "לא צירפת פוסט למועדפים עדיין",
+    "copy-permalink": "Copy Permalink",
     "loading_more_posts": "טוען פוסטים נוספים",
     "move_topic": "הזז נושא",
     "move_topics": "הזז נושאים",
@@ -181,5 +182,7 @@
     "timeago_earlier": "לפני %1 ",
     "first-post": "פוסט ראשון",
     "last-post": "פוסט אחרון",
+    "go-to-my-next-post": "Go to my next post",
+    "no-more-next-post": "You don't have more posts in this topic",
     "post-quick-reply": "רשום תשובה מהירה"
 }

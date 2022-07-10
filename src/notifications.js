@@ -272,10 +272,11 @@ Notifications.pushGroups = async function (notification, groupNames) {
 	await Notifications.push(notification, groupMembers);
 };
 
-Notifications.rescind = async function (nid) {
+Notifications.rescind = async function (nids) {
+	nids = Array.isArray(nids) ? nids : [nids];
 	await Promise.all([
-		db.sortedSetRemove('notifications', nid),
-		db.delete(`notifications:${nid}`),
+		db.sortedSetRemove('notifications', nids),
+		db.deleteAll(nids.map(nid => `notifications:${nid}`)),
 	]);
 };
 

@@ -5,6 +5,7 @@
     "most_flags": "Most Flags",
     "search": "Αναζήτηση",
     "enter_username": "Γράψε ένα όνομα χρήστη προς αναζήτηση",
+    "search-user-for-chat": "Search a user to start chat",
     "load_more": "Φόρτωση περισσότερων",
     "users-found-search-took": "%1 user(s) found! Search took %2 seconds.",
     "filter-by": "Filter By",

@@ -1,8 +1,8 @@
 {
     "title": "Értesítések",
     "no_notifs": "Nincsenek új értesítéseid",
-    "see_all": "Minden értesítés megtekintése",
-    "mark_all_read": "Minden értesítés olvasottra",
+    "see_all": "All notifications",
+    "mark_all_read": "Mark all read",
     "back_to_home": "Vissza - %1",
     "outgoing_link": "Külső hivatkozás",
     "outgoing_link_message": "Most elhagyod az oldalt: %1",

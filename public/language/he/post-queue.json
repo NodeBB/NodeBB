@@ -15,7 +15,17 @@
 	"topic": "נושא",
 	"accept": "אשר",
 	"reject": "דחה",
-	"remove": "Remove",
-	"notify": "Notify",
-	"notify-user": "Notify User"
+	"remove": "הסרה",
+	"notify": "שלח הודעה",
+	"notify-user": "שלח התראה למשתמש",
+	"confirm-reject": "האם אתה בטוח שברצונך לדחות את הפוסט הזה?",
+	"bulk-actions": "Bulk Actions",
+	"accept-all": "אשר הכל",
+	"accept-selected": "אשר הכל",
+	"reject-all": "דחה הכל",
+	"reject-all-confirm": "האם אתה בטוח שברצונך לדחות את כל הפוסטים?",
+	"reject-selected": "דחה פוסטים נבחרים",
+	"reject-selected-confirm": "האם אתה בטוח שברצונך לדחות את %1 הפוסטים שנבחרו?",
+	"bulk-accept-success": "%1 פוסטים אושרו",
+	"bulk-reject-success": "%1 פוסטים נדחו"
 }

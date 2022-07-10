@@ -4,6 +4,13 @@
 	  - Now available in front-end for global mods as well
 */
 
+.page-flags {
+	// hide the all categories li element
+	[component="flags/filters"] [component="category/dropdown"] [data-all="all"] {
+		display: none;
+	}
+}
+
 .page-manage-flags, .page-posts-flags {
 	.post-container > .row {
 		margin-bottom: 2rem;

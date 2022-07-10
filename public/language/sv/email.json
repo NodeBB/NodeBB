@@ -48,6 +48,8 @@
     "unsub.cta": "Klicka här för att ändra inställningarna",
     "unsubscribe": "unsubscribe",
     "unsub.success": "You will no longer receive emails from the <strong>%1</strong> mailing list",
+    "unsub.failure.title": "Unable to unsubscribe",
+    "unsub.failure.message": "Unfortunately, we were not able to unsubscribe you from the mailing list, as there was an issue with the link. However, you can alter your email preferences by going to <a href=\"%2\">your user settings</a>.<br /><br />(error: <code>%1</code>)",
     "banned.subject": "Du har blivit bannlyst från %1",
     "banned.text1": "Användaren %1 har blivit bannlyst från %2.",
     "banned.text2": "Denna bannlysning gäller t.o.m. %1",

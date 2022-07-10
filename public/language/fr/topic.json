@@ -49,7 +49,7 @@
     "queued-by": "Message en attente d'approbation &rarr;",
     "backlink": "Référencé par",
     "forked-by": "Dupliqué par",
-    "bookmark_instructions": "Cliquez ici pour retourner au dernier message lu de ce fil.",
+    "bookmark_instructions": "Cliquez ici pour aller au dernier message lu de ce fil.",
     "flag-post": "Signaler ce message",
     "flag-user": "Signaler cet utilisateur",
     "already-flagged": "Déjà signalé",
@@ -113,6 +113,7 @@
     "bookmark": "Marque-page",
     "bookmarks": "Marque-pages",
     "bookmarks.has_no_bookmarks": "Vous n'avez encore aucun marque-page.",
+    "copy-permalink": "Copier le permalien",
     "loading_more_posts": "Charger plus de messages",
     "move_topic": "Déplacer le sujet",
     "move_topics": "Déplacer des sujets",
@@ -181,5 +182,7 @@
     "timeago_earlier": "il y a %1",
     "first-post": "Premier message",
     "last-post": "Dernier message",
+    "go-to-my-next-post": "Aller à mon prochain message",
+    "no-more-next-post": "Vous n'avez plus de messages dans ce sujet",
     "post-quick-reply": "Réponse rapide"
 }

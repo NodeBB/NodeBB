@@ -1,5 +1,7 @@
 'use strict';
 
+const nconf = require('nconf');
+
 const db = require('../../database');
 const posts = require('../../posts');
 const flags = require('../../flags');
@@ -33,6 +35,7 @@ module.exports = function (SocketPosts) {
 		});
 
 		const postData = results.posts;
+		postData.absolute_url = `${nconf.get('url')}/post/${data.pid}`;
 		postData.bookmarked = results.bookmarked;
 		postData.selfPost = socket.uid && socket.uid === postData.uid;
 		postData.display_edit_tools = results.canEdit.flag;
@@ -55,13 +58,14 @@ module.exports = function (SocketPosts) {
 		if (!results.isAdmin && !results.canViewInfo) {
 			postData.ip = undefined;
 		}
-		const tools = await plugins.hooks.fire('filter:post.tools', {
+		const { tools } = await plugins.hooks.fire('filter:post.tools', {
 			pid: data.pid,
 			post: postData,
 			uid: socket.uid,
 			tools: [],
 		});
-		postData.tools = tools.tools;
+		postData.tools = tools;
+
 		return results;
 	};
 

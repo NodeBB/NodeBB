@@ -66,8 +66,7 @@ categoriesController.getAll = async function (req, res) {
 	const categoriesData = await categories.getCategoriesFields(cids, fields);
 	const result = await plugins.hooks.fire('filter:admin.categories.get', { categories: categoriesData, fields: fields });
 	let tree = categories.getTree(result.categories, rootParent);
-
-	const cidsCount = rootCid ? cids.length - 1 : tree.length;
+	const cidsCount = rootCid && tree[0] ? tree[0].children.length : tree.length;
 
 	const pageCount = Math.max(1, Math.ceil(cidsCount / meta.config.categoriesPerPage));
 	const page = Math.min(parseInt(req.query.page, 10) || 1, pageCount);
@@ -76,6 +75,9 @@ categoriesController.getAll = async function (req, res) {
 
 	function trim(c) {
 		if (c.children) {
+			c.subCategoriesLeft = Math.max(0, c.children.length - c.subCategoriesPerPage);
+			c.hasMoreSubCategories = c.children.length > c.subCategoriesPerPage;
+			c.showMorePage = Math.ceil(c.subCategoriesPerPage / meta.config.categoriesPerPage);
 			c.children = c.children.slice(0, c.subCategoriesPerPage);
 			c.children.forEach(c => trim(c));
 		}
@@ -92,7 +94,7 @@ categoriesController.getAll = async function (req, res) {
 	if (rootCid) {
 		selectedCategory = await categories.getCategoryData(rootCid);
 	}
-	const crumbs = await buildBreadcrumbs(req, selectedCategory);
+	const crumbs = await buildBreadcrumbs(selectedCategory, '/admin/manage/categories');
 	res.render('admin/manage/categories', {
 		categoriesTree: tree,
 		selectedCategory: selectedCategory,
@@ -102,14 +104,14 @@ categoriesController.getAll = async function (req, res) {
 	});
 };
 
-async function buildBreadcrumbs(req, categoryData) {
+async function buildBreadcrumbs(categoryData, url) {
 	if (!categoryData) {
 		return;
 	}
 	const breadcrumbs = [
 		{
 			text: categoryData.name,
-			url: `${nconf.get('relative_path')}/admin/manage/categories?cid=${categoryData.cid}`,
+			url: `${nconf.get('relative_path')}${url}?cid=${categoryData.cid}`,
 			cid: categoryData.cid,
 		},
 	];
@@ -117,15 +119,17 @@ async function buildBreadcrumbs(req, categoryData) {
 	const crumbs = allCrumbs.filter(c => c.cid);
 
 	crumbs.forEach((c) => {
-		c.url = `/admin/manage/categories?cid=${c.cid}`;
+		c.url = `${url}?cid=${c.cid}`;
 	});
 	crumbs.unshift({
 		text: '[[admin/manage/categories:top-level]]',
-		url: '/admin/manage/categories',
+		url: url,
 	});
 
 	return crumbs.concat(breadcrumbs);
 }
+
+categoriesController.buildBreadCrumbs = buildBreadcrumbs;
 
 categoriesController.getAnalytics = async function (req, res) {
 	const [name, analyticsData] = await Promise.all([

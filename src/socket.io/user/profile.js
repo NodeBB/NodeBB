@@ -45,11 +45,8 @@ module.exports = function (SocketUser) {
 	};
 
 	SocketUser.toggleBlock = async function (socket, data) {
-		const [is] = await Promise.all([
-			user.blocks.is(data.blockeeUid, data.blockerUid),
-			user.blocks.can(socket.uid, data.blockerUid, data.blockeeUid),
-		]);
-		const isBlocked = is;
+		const isBlocked = await user.blocks.is(data.blockeeUid, data.blockerUid);
+		await user.blocks.can(socket.uid, data.blockerUid, data.blockeeUid, isBlocked ? 'unblock' : 'block');
 		await user.blocks[isBlocked ? 'remove' : 'add'](data.blockeeUid, data.blockerUid);
 		return !isBlocked;
 	};
@@ -93,8 +90,9 @@ module.exports = function (SocketUser) {
 		child.on('exit', async () => {
 			await db.deleteObjectField('locks', `export:${data.uid}${type}`);
 			const userData = await user.getUserFields(data.uid, ['username', 'userslug']);
+			const { displayname } = userData;
 			const n = await notifications.create({
-				bodyShort: `[[notifications:${type}-exported, ${userData.username}]]`,
+				bodyShort: `[[notifications:${type}-exported, ${displayname}]]`,
 				path: `/api/user/${userData.userslug}/export/${type}`,
 				nid: `${type}:export:${data.uid}`,
 				from: data.uid,

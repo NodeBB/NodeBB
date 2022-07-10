@@ -20,6 +20,7 @@ require('./rooms')(Messaging);
 require('./unread')(Messaging);
 require('./notifications')(Messaging);
 
+Messaging.messageExists = async mid => db.exists(`message:${mid}`);
 
 Messaging.getMessages = async (params) => {
 	const isNew = params.isNew || false;
@@ -47,6 +48,7 @@ Messaging.getMessages = async (params) => {
 		messageData.isOwner = messageData.fromuid === parseInt(params.uid, 10);
 		if (messageData.deleted && !messageData.isOwner) {
 			messageData.content = '[[modules:chat.message-deleted]]';
+			messageData.cleanedContent = messageData.content;
 		}
 	});
 
@@ -197,6 +199,7 @@ Messaging.canMessageUser = async (uid, toUid) => {
 	const [exists, canChat] = await Promise.all([
 		user.exists(toUid),
 		privileges.global.can('chat', uid),
+		checkReputation(uid),
 	]);
 
 	if (!exists) {
@@ -230,12 +233,16 @@ Messaging.canMessageRoom = async (uid, roomId) => {
 		throw new Error('[[error:chat-disabled]]');
 	}
 
-	const inRoom = await Messaging.isUserInRoom(uid, roomId);
+	const [inRoom, canChat] = await Promise.all([
+		Messaging.isUserInRoom(uid, roomId),
+		privileges.global.can('chat', uid),
+		checkReputation(uid),
+	]);
+
 	if (!inRoom) {
 		throw new Error('[[error:not-in-room]]');
 	}
 
-	const canChat = await privileges.global.can('chat', uid);
 	if (!canChat) {
 		throw new Error('[[error:no-privileges]]');
 	}
@@ -245,6 +252,15 @@ Messaging.canMessageRoom = async (uid, roomId) => {
 		roomId: roomId,
 	});
 };
+
+async function checkReputation(uid) {
+	if (meta.config['min:rep:chat'] > 0) {
+		const reputation = await user.getUserField(uid, 'reputation');
+		if (meta.config['min:rep:chat'] > reputation) {
+			throw new Error(`[[error:not-enough-reputation-to-chat, ${meta.config['min:rep:chat']}]]`);
+		}
+	}
+}
 
 Messaging.hasPrivateChat = async (uid, withUid) => {
 	if (parseInt(uid, 10) === parseInt(withUid, 10)) {
@@ -274,6 +290,17 @@ Messaging.hasPrivateChat = async (uid, withUid) => {
 	}
 
 	return roomId;
+};
+
+Messaging.canViewMessage = async (mids, roomId, uid) => {
+	let single = false;
+	if (!Array.isArray(mids) && isFinite(mids)) {
+		mids = [mids];
+		single = true;
+	}
+
+	const canView = await db.isSortedSetMembers(`uid:${uid}:chat:room:${roomId}:mids`, mids);
+	return single ? canView.pop() : canView;
 };
 
 require('../promisify')(Messaging);

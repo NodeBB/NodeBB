@@ -113,6 +113,7 @@
     "bookmark": "บุ๊กมาร์ก",
     "bookmarks": "บุ๊กมาร์ก",
     "bookmarks.has_no_bookmarks": "คุณยังไม่มีบุ๊กมาร์กใดๆเลย",
+    "copy-permalink": "Copy Permalink",
     "loading_more_posts": "โหลดโพสเพิ่มเติม",
     "move_topic": "ย้ายกระทู้",
     "move_topics": "ย้ายกระทู้",
@@ -181,5 +182,7 @@
     "timeago_earlier": "%1 earlier",
     "first-post": "First post",
     "last-post": "Last post",
+    "go-to-my-next-post": "Go to my next post",
+    "no-more-next-post": "You don't have more posts in this topic",
     "post-quick-reply": "Post quick reply"
 }

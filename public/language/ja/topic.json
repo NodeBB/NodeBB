@@ -113,6 +113,7 @@
     "bookmark": "ブックマーク",
     "bookmarks": "ブックマーク",
     "bookmarks.has_no_bookmarks": "まだ投稿をブックマークしていません。",
+    "copy-permalink": "Copy Permalink",
     "loading_more_posts": "もっと見る",
     "move_topic": "スレッドを移動",
     "move_topics": "スレッドを移動する",
@@ -181,5 +182,7 @@
     "timeago_earlier": "%1 earlier",
     "first-post": "First post",
     "last-post": "Last post",
+    "go-to-my-next-post": "Go to my next post",
+    "no-more-next-post": "You don't have more posts in this topic",
     "post-quick-reply": "Post quick reply"
 }

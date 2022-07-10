@@ -15,6 +15,9 @@ define('admin/appearance/themes', ['bootbox', 'translator', 'alerts'], function 
 				const cssSrc = parentEl.attr('data-css');
 				const themeId = parentEl.attr('data-theme');
 
+				if (config['theme:id'] === themeId) {
+					return;
+				}
 				socket.emit('admin.themes.set', {
 					type: themeType,
 					id: themeId,
@@ -43,6 +46,9 @@ define('admin/appearance/themes', ['bootbox', 'translator', 'alerts'], function 
 		});
 
 		$('#revert_theme').on('click', function () {
+			if (config['theme:id'] === 'nodebb-theme-persona') {
+				return;
+			}
 			bootbox.confirm('[[admin/appearance/themes:revert-confirm]]', function (confirm) {
 				if (confirm) {
 					socket.emit('admin.themes.set', {
@@ -52,6 +58,7 @@ define('admin/appearance/themes', ['bootbox', 'translator', 'alerts'], function 
 						if (err) {
 							return alerts.error(err);
 						}
+						config['theme:id'] = 'nodebb-theme-persona';
 						highlightSelectedTheme('nodebb-theme-persona');
 						alerts.alert({
 							alert_id: 'admin:theme',

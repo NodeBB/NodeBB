@@ -54,6 +54,7 @@
     "account/upvoted": "%1 tykkäämät viestit",
     "account/downvoted": "Posts downvoted by %1",
     "account/best": "%1 tekemät parhaat viestit",
+    "account/controversial": "Controversial posts made by %1",
     "account/blocks": "Blocked users for %1",
     "account/uploads": "%1 lähetykset",
     "account/sessions": "Login Sessions",

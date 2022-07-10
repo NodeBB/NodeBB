@@ -1,6 +1,5 @@
 {
 	"authentication": "Xác thực",
-	"require-email-confirmation": "Yêu Cầu Xác Nhận Email",
 	"email-confirm-interval": "Người dùng không thể gửi lại email xác nhận cho đến khi",
 	"email-confirm-email2": "phút đã trôi qua",
 	"allow-login-with": "Cho phép đăng nhập với",

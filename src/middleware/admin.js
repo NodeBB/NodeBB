@@ -9,7 +9,7 @@ const user = require('../user');
 const meta = require('../meta');
 const plugins = require('../plugins');
 const privileges = require('../privileges');
-const utils = require('../../public/src/utils');
+const utils = require('../utils');
 const versions = require('../admin/versions');
 const helpers = require('./helpers');
 
@@ -25,6 +25,7 @@ middleware.buildHeader = helpers.try(async (req, res, next) => {
 	if (req.method === 'GET') {
 		await require('./index').applyCSRFasync(req, res);
 	}
+
 	res.locals.config = await controllers.api.loadConfig(req);
 	next();
 });

@@ -219,4 +219,19 @@ module.exports = function (module) {
 		cache.del(key);
 		return Array.isArray(result) ? result.map(value => parseInt(value, 10)) : parseInt(result, 10);
 	};
+
+	module.incrObjectFieldByBulk = async function (data) {
+		if (!Array.isArray(data) || !data.length) {
+			return;
+		}
+
+		const batch = module.client.batch();
+		data.forEach((item) => {
+			for (const [field, value] of Object.entries(item[1])) {
+				batch.hincrby(item[0], field, value);
+			}
+		});
+		await helpers.execBatch(batch);
+		cache.del(data.map(item => item[0]));
+	};
 };

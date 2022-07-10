@@ -1,16 +1,16 @@
 {
 	"custom-css": "CSS/LESS מותאם אישית",
-	"custom-css.description": "הזן כאן  CSS / LESS משלך, שיוחלו לאחר כל הסגנונות האחרים.",
-	"custom-css.enable": "אפשר CSS / LESS מותאמים אישית",
+	"custom-css.description": "הכניסו כאן CSS / LESS משלכם, שיבוצע לאחר טעינת כל הסגנונות האחרים.",
+	"custom-css.enable": "הפעלת CSS/LESS מותאם אישית",
 
 	"custom-js": "Javascript מותאם אישית",
-	"custom-js.description": "הזן כאן javascript משלך. זה יבוצע לאחר טעינת הדף לחלוטין.",
-	"custom-js.enable": "אפשר Javascript מותאם אישית",
+	"custom-js.description": "הכניסו כאן JavaScript משלכם, שיבוצע לאחר טעינת הדף לחלוטין.",
+	"custom-js.enable": "הפעלת Javascript מותאם אישית",
 
-	"custom-header": "HTML מותאם אישית",
-	"custom-header.description": "הזן כאן HTML משלך (לדוגמא תגיות מטא), שיתווספו לתגית ה-<code>head</code> של הפורום. ניתן להכניס סקריפטים, אך מומלץ להכניס אותם בכרטיסיית <a href=\"#custom-js\" data-toggle=\"tab\">Javascript מותאם אישית</a>.",
-	"custom-header.enable": "אפשר HTML מותאם אישית",
+	"custom-header": "Header מותאם אישית",
+	"custom-header.description": "הכניסו כאן HTML משלכם (לדוגמא תגיות Meta), שיתווספו לתגית ה-<code>head</code> של הפורום. ניתן להכניס סקריפטים, אך מומלץ להכניס אותם בכרטיסיית <a href=\"#custom-js\" data-toggle=\"tab\">Javascript מותאם אישית</a>.",
+	"custom-header.enable": "הפעלת HTML מותאם אישית",
 
-	"custom-css.livereload": "אפשר טעינה מחדש אוטומטית.",
-	"custom-css.livereload.description": "אפשר זאת כדי שכל החיבורים מכל מכשיר יתרעננו כאשר אתה שומר."
+	"custom-css.livereload": "הפעלת טעינה מחדש אוטומטית.",
+	"custom-css.livereload.description": "הפעלה זו נועדה כדי לרענן את כל החיבורים מכל מכשיר, כאשר תשמרו את הדף המותאם אישית."
 }

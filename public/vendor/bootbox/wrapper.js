@@ -23,7 +23,7 @@ require(['translator', 'bootbox'], function (shim, bootbox) {
 
 	var translator = shim.Translator.create();
 	var dialog = bootbox.dialog;
-	var attrsToTranslate = ['placeholder', 'title', 'value'];
+	var attrsToTranslate = ['placeholder', 'title', 'value', 'label'];
 	bootbox.dialog = function (options) {
 		var show = options.show !== false;
 		options.show = false;

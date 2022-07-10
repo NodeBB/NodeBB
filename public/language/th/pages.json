@@ -54,6 +54,7 @@
     "account/upvoted": "โพสต์ที่ถูกโหวตขึ้นโดย %1",
     "account/downvoted": "โพสต์ที่โหวตลงโดย %1",
     "account/best": "โพสต์ดีที่สุดที่ถูกสร้างโดย %1",
+    "account/controversial": "Controversial posts made by %1",
     "account/blocks": "Blocked users for %1",
     "account/uploads": "Uploads by %1",
     "account/sessions": "Login Sessions",

@@ -4,9 +4,13 @@
 	"disable-down-voting": "低評価を無効にする",
 	"votes-are-public": "すべての投票は公開されています",
 	"thresholds": "アクティビティのしきい値",
+	"min-rep-upvote": "Minimum reputation to upvote posts",
+	"upvotes-per-day": "Upvotes per day (set to 0 for unlimited upvotes)",
+	"upvotes-per-user-per-day": "Upvotes per user per day (set to 0 for unlimited upvotes)",
 	"min-rep-downvote": "投稿をdownvoteするための最低評価",
 	"downvotes-per-day": "Downvotes per day (set to 0 for unlimited downvotes)",
 	"downvotes-per-user-per-day": "Downvotes per user per day (set to 0 for unlimited downvotes)",
+	"min-rep-chat": "Minimum reputation to send chat messages",
 	"min-rep-flag": "フラグの投稿に低評価",
 	"min-rep-website": "Minimum reputation to add \"Website\" to user profile",
 	"min-rep-aboutme": "Minimum reputation to add \"About me\" to user profile",
@@ -18,5 +22,6 @@
 	"flags.limit-per-target": "Maximum number of times something can be flagged",
 	"flags.limit-per-target-placeholder": "Default: 0",
 	"flags.limit-per-target-help": "When a post or user is flagged multiple times, each additional flag is considered a &quot;report&quot; and added to the original flag. Set this option to a number other than zero to limit the number of reports an item can receive.",
+  	"flags.auto-flag-on-downvote-threshold": "Number of downvotes to auto flag posts (Set to 0 to disable, default: 0)",
 	"flags.auto-resolve-on-ban": "Automatically resolve all of a user's tickets when they are banned"
 }

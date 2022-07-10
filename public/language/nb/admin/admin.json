@@ -4,8 +4,8 @@
 
 	"acp-title": "%1 | NodeBB Admin Kontrollpanel",
 	"settings-header-contents": "Innhold",
-	"changes-saved": "Changes Saved",
-	"changes-saved-message": "Your changes to the NodeBB configuration have been saved.",
-	"changes-not-saved": "Changes Not Saved",
-	"changes-not-saved-message": "NodeBB encountered a problem saving your changes. (%1)"
+	"changes-saved": "Endringer lagret",
+	"changes-saved-message": "Dine endringer til NodeBB-konfigurasjonen har blitt lagret.",
+	"changes-not-saved": "Endringer ikke lagret",
+	"changes-not-saved-message": "NodeBB støtte på et problem ved lagring av endringer. (%1)"
 }

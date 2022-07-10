@@ -1,11 +1,11 @@
 {
-    "checking-for-installed": "Prüfe auf installierte Themes...",
-    "homepage": "Homepage",
-    "select-theme": "Wähle Theme",
+    "checking-for-installed": "Auf installierte Themes wird geprüft...",
+    "homepage": "Startseite",
+    "select-theme": "Theme wählen",
     "current-theme": "Aktuelles Theme",
     "no-themes": "Keine installierten Theme gefunden.",
-    "revert-confirm": "Bist du dir sicher, dass du das standard NodeBB Theme wieder herstellen willst?",
+    "revert-confirm": "Bist du sicher, dass du das standardmäßige NodeBB-Design wiederherstellen möchten?",
     "theme-changed": "Theme geändert",
     "revert-success": "Du hast dein NodeBB erfolgreich wieder auf das Standard-Theme zurückgesetzt.",
-    "restart-to-activate": "Bitte baue und starte NodeBB neu um das Theme zu aktivieren."
+    "restart-to-activate": "Bitte builde und starte dein NodeBB neu um das Theme zu aktivieren."
 }

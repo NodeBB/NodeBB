@@ -26,7 +26,10 @@ Interstitials.email = async (data) => {
 
 	data.interstitials.push({
 		template: 'partials/email_update',
-		data: { email },
+		data: {
+			email,
+			requireEmailAddress: meta.config.requireEmailAddress,
+		},
 		callback: async (userData, formData) => {
 			// Validate and send email confirmation
 			if (userData.uid) {

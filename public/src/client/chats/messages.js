@@ -2,60 +2,46 @@
 
 
 define('forum/chats/messages', [
-	'components', 'translator', 'benchpress', 'hooks', 'bootbox', 'alerts', 'messages',
-], function (components, translator, Benchpress, hooks, bootbox, alerts, messagesModule) {
+	'components', 'translator', 'benchpress', 'hooks',
+	'bootbox', 'alerts', 'messages', 'api',
+], function (components, translator, Benchpress, hooks, bootbox, alerts, messagesModule, api) {
 	const messages = {};
 
 	messages.sendMessage = function (roomId, inputEl) {
-		const msg = inputEl.val();
+		const message = inputEl.val();
 		const mid = inputEl.attr('data-mid');
 
-		if (!msg.trim().length) {
+		if (!message.trim().length) {
 			return;
 		}
 
 		inputEl.val('');
 		inputEl.removeAttr('data-mid');
 		messages.updateRemainingLength(inputEl.parent());
-		hooks.fire('action:chat.sent', {
-			roomId: roomId,
-			message: msg,
-			mid: mid,
-		});
+		hooks.fire('action:chat.sent', { roomId, message, mid });
 
 		if (!mid) {
-			socket.emit('modules.chats.send', {
-				roomId: roomId,
-				message: msg,
-			}, function (err) {
-				if (err) {
-					inputEl.val(msg);
-					messages.updateRemainingLength(inputEl.parent());
-					if (err.message === '[[error:email-not-confirmed-chat]]') {
-						return messagesModule.showEmailConfirmWarning(err.message);
-					}
-
-					return alerts.alert({
-						alert_id: 'chat_spam_error',
-						title: '[[global:alert.error]]',
-						message: err.message,
-						type: 'danger',
-						timeout: 10000,
-					});
+			api.post(`/chats/${roomId}`, { message }).catch((err) => {
+				inputEl.val(message);
+				messages.updateRemainingLength(inputEl.parent());
+				if (err.message === '[[error:email-not-confirmed-chat]]') {
+					return messagesModule.showEmailConfirmWarning(err.message);
 				}
+
+				return alerts.alert({
+					alert_id: 'chat_spam_error',
+					title: '[[global:alert.error]]',
+					message: err.message,
+					type: 'danger',
+					timeout: 10000,
+				});
 			});
 		} else {
-			socket.emit('modules.chats.edit', {
-				roomId: roomId,
-				mid: mid,
-				message: msg,
-			}, function (err) {
-				if (err) {
-					inputEl.val(msg);
-					inputEl.attr('data-mid', mid);
-					messages.updateRemainingLength(inputEl.parent());
-					return alerts.error(err);
-				}
+			api.put(`/chats/${roomId}/messages/${mid}`, { message }).catch((err) => {
+				inputEl.val(message);
+				inputEl.attr('data-mid', mid);
+				messages.updateRemainingLength(inputEl.parent());
+				return alerts.error(err);
 			});
 		}
 	};
@@ -204,31 +190,17 @@ define('forum/chats/messages', [
 					return;
 				}
 
-				socket.emit('modules.chats.delete', {
-					messageId: messageId,
-					roomId: roomId,
-				}, function (err) {
-					if (err) {
-						return alerts.error(err);
-					}
-
+				api.delete(`/chats/${roomId}/messages/${messageId}`, {}).then(() => {
 					components.get('chat/message', messageId).toggleClass('deleted', true);
-				});
+				}).catch(alerts.error);
 			});
 		});
 	};
 
 	messages.restore = function (messageId, roomId) {
-		socket.emit('modules.chats.restore', {
-			messageId: messageId,
-			roomId: roomId,
-		}, function (err) {
-			if (err) {
-				return alerts.error(err);
-			}
-
+		api.post(`/chats/${roomId}/messages/${messageId}`, {}).then(() => {
 			components.get('chat/message', messageId).toggleClass('deleted', false);
-		});
+		}).catch(alerts.error);
 	};
 
 	return messages;

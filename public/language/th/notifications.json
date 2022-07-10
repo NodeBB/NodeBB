@@ -1,8 +1,8 @@
 {
     "title": "แจ้งเตือน",
     "no_notifs": "คุณไม่มีข้อแจ้งเตือนใหม่",
-    "see_all": "ดูการแจ้งเตือนทั้งหมด",
-    "mark_all_read": "ทำให้การแจ้งเตือนทั้งหมดถูกอ่านแล้ว",
+    "see_all": "All notifications",
+    "mark_all_read": "Mark all read",
     "back_to_home": "กลับสู่  %1",
     "outgoing_link": "ลิงค์ออก",
     "outgoing_link_message": "ตอนนี้คุณกำลังออกจาก %1",

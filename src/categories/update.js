@@ -138,8 +138,8 @@ module.exports = function (Categories) {
 
 	async function updateName(cid, newName) {
 		const oldName = await Categories.getCategoryField(cid, 'name');
-		await db.sortedSetRemove('categories:name', `${oldName.substr(0, 200).toLowerCase()}:${cid}`);
-		await db.sortedSetAdd('categories:name', 0, `${newName.substr(0, 200).toLowerCase()}:${cid}`);
+		await db.sortedSetRemove('categories:name', `${oldName.slice(0, 200).toLowerCase()}:${cid}`);
+		await db.sortedSetAdd('categories:name', 0, `${newName.slice(0, 200).toLowerCase()}:${cid}`);
 		await db.setObjectField(`category:${cid}`, 'name', newName);
 	}
 };

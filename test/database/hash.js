@@ -657,4 +657,21 @@ describe('Hash methods', () => {
 			});
 		});
 	});
+
+	describe('incrObjectFieldByBulk', () => {
+		before(async () => {
+			await db.setObject('testObject16', { age: 100 });
+		});
+
+		it('should increment multiple object fields', async () => {
+			await db.incrObjectFieldByBulk([
+				['testObject16', { age: 5, newField: 10 }],
+				['testObject17', { newField: -5 }],
+			]);
+			const d = await db.getObjects(['testObject16', 'testObject17']);
+			assert.equal(d[0].age, 105);
+			assert.equal(d[0].newField, 10);
+			assert.equal(d[1].newField, -5);
+		});
+	});
 });

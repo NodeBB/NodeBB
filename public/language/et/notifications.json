@@ -1,8 +1,8 @@
 {
     "title": "Teated",
     "no_notifs": "Sul pole uusi teateid",
-    "see_all": "Vaata kõiki teavitusi",
-    "mark_all_read": "Märgi kõik teavitused loetuks",
+    "see_all": "All notifications",
+    "mark_all_read": "Mark all read",
     "back_to_home": "Tagasi %1",
     "outgoing_link": "Väljaminev link",
     "outgoing_link_message": "Lahkud %1",

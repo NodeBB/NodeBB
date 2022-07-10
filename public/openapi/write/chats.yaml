@@ -1,0 +1,192 @@
+get:
+  tags:
+    - chats
+  summary: list recent chat rooms
+  description: This operation lists recently used chat rooms that the calling user is a part of
+  parameters:
+    - in: query
+      name: perPage
+      schema:
+        type: number
+      description: The number of chat rooms displayed per page
+      example: 20
+    - in: query
+      name: page
+      schema:
+        type: number
+      description: The page number
+      example: 1
+  responses:
+    '200':
+      description: chat rooms successfully listed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../components/schemas/Status.yaml#/Status
+              response:
+                allOf:
+                  - $ref: ../components/schemas/Chats.yaml#/RoomObject
+                  - type: object
+                    properties:
+                      unread:
+                        type: boolean
+                        description: Whether or not the chat has unread messages within
+                      teaser:
+                        type: object
+                        nullable: true
+                        properties:
+                          fromuid:
+                            type: number
+                          content:
+                            type: string
+                          timestamp:
+                            type: number
+                          timestampISO:
+                            type: string
+                          user:
+                            type: object
+                            properties:
+                              uid:
+                                type: number
+                                description: A user identifier
+                              username:
+                                type: string
+                                description: A friendly name for a given user account
+                              displayname:
+                                type: string
+                                description: This is either username or fullname depending on forum and user settings
+                              userslug:
+                                type: string
+                                description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                  removed, etc.)
+                              picture:
+                                nullable: true
+                                type: string
+                              status:
+                                type: string
+                              lastonline:
+                                type: number
+                              icon:text:
+                                type: string
+                                description: A single-letter representation of a username. This is used in the
+                                  auto-generated icon given to users
+                                  without an avatar
+                              icon:bgColor:
+                                type: string
+                                description: A six-character hexadecimal colour code assigned to the user. This
+                                  value is used in conjunction with
+                                  `icon:text` for the user's
+                                  auto-generated icon
+                                example: "#f44336"
+                              lastonlineISO:
+                                type: string
+                      users:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            uid:
+                              type: number
+                              description: A user identifier
+                            username:
+                              type: string
+                              description: A friendly name for a given user account
+                            displayname:
+                              type: string
+                              description: This is either username or fullname depending on forum and user settings
+                            userslug:
+                              type: string
+                              description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                                removed, etc.)
+                            picture:
+                              nullable: true
+                              type: string
+                            status:
+                              type: string
+                            lastonline:
+                              type: number
+                            icon:text:
+                              type: string
+                              description: A single-letter representation of a username. This is used in the
+                                auto-generated icon given to users
+                                without an avatar
+                            icon:bgColor:
+                              type: string
+                              description: A six-character hexadecimal colour code assigned to the user. This
+                                value is used in conjunction with
+                                `icon:text` for the user's
+                                auto-generated icon
+                              example: "#f44336"
+                            lastonlineISO:
+                              type: string
+                      lastUser:
+                        type: object
+                        properties:
+                          uid:
+                            type: number
+                            description: A user identifier
+                          username:
+                            type: string
+                            description: A friendly name for a given user account
+                          displayname:
+                            type: string
+                            description: This is either username or fullname depending on forum and user settings
+                          userslug:
+                            type: string
+                            description: An URL-safe variant of the username (i.e. lower-cased, spaces
+                              removed, etc.)
+                          picture:
+                            nullable: true
+                            type: string
+                          status:
+                            type: string
+                          lastonline:
+                            type: number
+                          icon:text:
+                            type: string
+                            description: A single-letter representation of a username. This is used in the
+                              auto-generated icon given to users
+                              without an avatar
+                          icon:bgColor:
+                            type: string
+                            description: A six-character hexadecimal colour code assigned to the user. This
+                              value is used in conjunction with
+                              `icon:text` for the user's
+                              auto-generated icon
+                            example: "#f44336"
+                          lastonlineISO:
+                            type: string
+                      usernames:
+                        type: string
+post:
+  tags:
+    - chats
+  summary: create a chat room
+  description: This operation creates a new chat room and adds users to the room, if provided.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            uids:
+              type: array
+              example: [2]
+          required:
+            - uids
+  responses:
+    '200':
+      description: chat room successfully created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../components/schemas/Chats.yaml#/RoomObject

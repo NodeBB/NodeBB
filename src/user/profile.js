@@ -165,7 +165,8 @@ module.exports = function (User) {
 		if (!data.signature) {
 			return;
 		}
-		if (data.signature !== undefined && data.signature.length > meta.config.maximumSignatureLength) {
+		const signature = data.signature.replace(/\r\n/g, '\n');
+		if (signature.length > meta.config.maximumSignatureLength) {
 			throw new Error(`[[error:signature-too-long, ${meta.config.maximumSignatureLength}]]`);
 		}
 		await User.checkMinReputation(callerUid, data.uid, 'min:rep:signature');
@@ -226,7 +227,7 @@ module.exports = function (User) {
 		}
 		const reputation = await User.getUserField(uid, 'reputation');
 		if (reputation < meta.config[setting]) {
-			throw new Error(`[[error:not-enough-reputation-${setting.replace(/:/g, '-')}]]`);
+			throw new Error(`[[error:not-enough-reputation-${setting.replace(/:/g, '-')}, ${meta.config[setting]}]]`);
 		}
 	};
 
@@ -237,6 +238,7 @@ module.exports = function (User) {
 			return;
 		}
 
+		// 👉 Looking for email change logic? src/user/email.js (UserEmail.confirmByUid)
 		if (newEmail) {
 			await User.email.sendValidationEmail(uid, {
 				email: newEmail,

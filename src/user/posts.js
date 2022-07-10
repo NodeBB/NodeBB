@@ -18,7 +18,7 @@ module.exports = function (User) {
 			return;
 		}
 		const [userData, isAdminOrMod] = await Promise.all([
-			User.getUserFields(uid, ['uid', 'banned', 'joindate', 'email', 'reputation'].concat([field])),
+			User.getUserFields(uid, ['uid', 'banned', 'mutedUntil', 'joindate', 'email', 'reputation'].concat([field])),
 			privileges.categories.isAdminOrMod(cid, uid),
 		]);
 
@@ -35,6 +35,16 @@ module.exports = function (User) {
 		}
 
 		const now = Date.now();
+		if (userData.mutedUntil > now) {
+			let muteLeft = ((userData.mutedUntil - now) / (1000 * 60));
+			if (muteLeft > 60) {
+				muteLeft = (muteLeft / 60).toFixed(0);
+				throw new Error(`[[error:user-muted-for-hours, ${muteLeft}]]`);
+			} else {
+				throw new Error(`[[error:user-muted-for-minutes, ${muteLeft.toFixed(0)}]]`);
+			}
+		}
+
 		if (now - userData.joindate < meta.config.initialPostDelay * 1000) {
 			throw new Error(`[[error:user-too-new, ${meta.config.initialPostDelay}]]`);
 		}
@@ -71,13 +81,15 @@ module.exports = function (User) {
 		await User.updatePostCount(postData.uid);
 	};
 
-	User.updatePostCount = async (uid) => {
-		const exists = await User.exists(uid);
-		if (exists) {
-			const count = await db.sortedSetCard(`uid:${uid}:posts`);
+	User.updatePostCount = async (uids) => {
+		uids = Array.isArray(uids) ? uids : [uids];
+		const exists = await User.exists(uids);
+		uids = uids.filter((uid, index) => exists[index]);
+		if (uids.length) {
+			const counts = await db.sortedSetsCard(uids.map(uid => `uid:${uid}:posts`));
 			await Promise.all([
-				User.setUserField(uid, 'postcount', count),
-				db.sortedSetAdd('users:postcount', count, uid),
+				db.setObjectBulk(uids.map((uid, index) => ([`user:${uid}`, { postcount: counts[index] }]))),
+				db.sortedSetAdd('users:postcount', counts, uids),
 			]);
 		}
 	};

@@ -43,5 +43,6 @@
 	"include-unverified-emails": "전자 메일을 명시적으로 확인하지 않은 수신자에게 전자 메일 보내기",
 	"include-unverified-warning": "기본적으로 계정과 연결된 전자 메일이 있는 사용자는 이미 확인되었지만 그렇지 않은 경우가 있습니다(예: SSO 로그인, 약관으로부터 제외된 사용자 등). <strong>사용자가 위험을 감수하고 이 설정을 사용하도록 설정합니다.</strong> &ndash; 확인되지 않은 주소로 이메일을 보내는 것은 지역별 스팸 방지법을 위반하는 것일 수 있습니다.",
 	"prompt": "Prompt users to enter or confirm their emails",
-	"prompt-help": "If a user does not have an email set, or their email is not confirmed, a warning will be shown on screen."
+	"prompt-help": "If a user does not have an email set, or their email is not confirmed, a warning will be shown on screen.",
+	"sendEmailToBanned": "Send emails to users even if they have been banned"
 }

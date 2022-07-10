@@ -4,7 +4,7 @@ const nconf = require('nconf');
 const assert = require('assert');
 
 const db = require('./mocks/databasemock');
-const helpers = require('../public/src/modules/helpers');
+const helpers = require('../src/helpers');
 
 describe('helpers', () => {
 	it('should return false if item doesn\'t exist', (done) => {

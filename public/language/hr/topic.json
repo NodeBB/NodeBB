@@ -113,6 +113,7 @@
     "bookmark": "Zabilježi",
     "bookmarks": "Zabilješke",
     "bookmarks.has_no_bookmarks": "Nemate zabiježenih objava.",
+    "copy-permalink": "Copy Permalink",
     "loading_more_posts": "Učitavam više objava",
     "move_topic": "Pomakni temu",
     "move_topics": "Pomakni teme",
@@ -181,5 +182,7 @@
     "timeago_earlier": "%1 earlier",
     "first-post": "First post",
     "last-post": "Last post",
+    "go-to-my-next-post": "Go to my next post",
+    "no-more-next-post": "You don't have more posts in this topic",
     "post-quick-reply": "Post quick reply"
 }

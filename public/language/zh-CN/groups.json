@@ -41,7 +41,7 @@
     "details.change_label_colour": "更改标签颜色",
     "details.change_text_colour": "更改文本颜色",
     "details.badge_text": "徽章文本",
-    "details.userTitleEnabled": "显示组内称号",
+    "details.userTitleEnabled": "显示徽章",
     "details.private_help": "启用此选项后，加入群组需要组长审批。",
     "details.hidden": "隐藏",
     "details.hidden_help": "启用此选项后，群组将不在群组列表中展现，成员只能通过邀请加入。",

@@ -113,6 +113,7 @@
     "bookmark": "Marcador",
     "bookmarks": "Marcadores",
     "bookmarks.has_no_bookmarks": "Ainda não marcaste nenhuma publicação.",
+    "copy-permalink": "Copy Permalink",
     "loading_more_posts": "Carregando mais publicações",
     "move_topic": "Mover tópico",
     "move_topics": "Mover tópicos",
@@ -181,5 +182,7 @@
     "timeago_earlier": "%1 antes",
     "first-post": "First post",
     "last-post": "Last post",
+    "go-to-my-next-post": "Go to my next post",
+    "no-more-next-post": "You don't have more posts in this topic",
     "post-quick-reply": "Post quick reply"
 }

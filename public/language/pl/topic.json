@@ -113,6 +113,7 @@
     "bookmark": "Dodaj do zakładek",
     "bookmarks": "Zakładki",
     "bookmarks.has_no_bookmarks": "Nie masz jeszcze żadnych postów w zakładkach.",
+    "copy-permalink": "Copy Permalink",
     "loading_more_posts": "Załaduj więcej postów",
     "move_topic": "Przenieś temat",
     "move_topics": "Przenieś tematy",
@@ -181,5 +182,7 @@
     "timeago_earlier": "%1 wcześniej",
     "first-post": "Pierwszy post",
     "last-post": "Ostatni post",
+    "go-to-my-next-post": "Go to my next post",
+    "no-more-next-post": "You don't have more posts in this topic",
     "post-quick-reply": "Wyślij szybką odpowiedź"
 }

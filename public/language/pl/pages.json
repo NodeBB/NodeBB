@@ -54,6 +54,7 @@
     "account/upvoted": "Posty, na które zagłosował  %1",
     "account/downvoted": "Posty, przeciw którym zagłosował %1",
     "account/best": "Najlepsze posty napisane przez %1",
+    "account/controversial": "Controversial posts made by %1",
     "account/blocks": "Użytkownicy zablokowani przez %1",
     "account/uploads": "Pliki przesłane przez %1",
     "account/sessions": "Sesje logowania",

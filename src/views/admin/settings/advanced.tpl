@@ -66,6 +66,22 @@
 				<label for="access-control-allow-headers">[[admin/settings/advanced:headers.acah]]</label>
 				<input class="form-control" id="access-control-allow-headers" type="text" placeholder="" data-field="access-control-allow-headers" /><br />
 			</div>
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="cross-origin-embedder-policy" id="cross-origin-embedder-policy">
+					<span class="mdl-switch__label"><strong>[[admin/settings/advanced:headers.coep]]</strong></span>
+				</label>
+			</div>
+			<p class="help-block">[[admin/settings/advanced:headers.coep-help]]</p>
+			<div class="form-group">
+				<label for="cross-origin-resource-policy">[[admin/settings/advanced:headers.corp]]</label>
+				<select class="form-control" id="cross-origin-resource-policy" data-field="cross-origin-resource-policy">
+					<option value="same-site">same-site</option>
+					<option value="same-origin">same-origin</option>
+					<option value="cross-origin">cross-origin</option>
+				</select>
+				<br />
+			</div>
 		</form>
 	</div>
 </div>

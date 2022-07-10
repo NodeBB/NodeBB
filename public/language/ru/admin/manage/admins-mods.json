@@ -1,8 +1,10 @@
 {
     "administrators": "Администраторы",
     "global-moderators": "Глобальные модераторы",
+    "moderators": "Moderators",
     "no-global-moderators": "Нет глобальных модераторов",
-    "moderators-of-category": "Модераторы категории «%1»",
+    "no-sub-categories": "No subcategories",
+    "subcategories": "%1 subcategories",
     "no-moderators": "Нет модераторов",
     "add-administrator": "Добавить администратора",
     "add-global-moderator": "Добавить глобального модератора",

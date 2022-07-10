@@ -28,7 +28,7 @@ flagsApi.create = async (caller, data) => {
 flagsApi.update = async (caller, data) => {
 	const allowed = await user.isPrivileged(caller.uid);
 	if (!allowed) {
-		throw new Error('[[no-privileges]]');
+		throw new Error('[[error:no-privileges]]');
 	}
 
 	const { flagId } = data;

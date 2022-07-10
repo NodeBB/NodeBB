@@ -25,6 +25,7 @@
 				<div class="btn-group">
 					<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button"><i class="fa fa-ellipsis-v"></i></button>
 					<ul class="dropdown-menu dropdown-menu-right">
+						<li><a href="#" data-action="create">[[admin/manage/users:create]]</a></li>
 						{{{ if showInviteButton }}}<li><a href="#" component="user/invite">[[admin/manage/users:invite]]</a></li>{{{ end }}}
 						<li><a target="_blank" href="#" class="export-csv">[[admin/manage/users:download-csv]]</a></li>
 					</ul>
@@ -136,7 +137,3 @@
 
 	</div>
 </div>
-
-<button data-action="create" class="floating-button mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
-    <i class="material-icons">add</i>
-</button>

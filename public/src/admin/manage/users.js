@@ -269,7 +269,7 @@ define('admin/manage/users', [
 
 			bootbox.confirm('[[admin/manage/users:alerts.password-reset-confirm]]', function (confirm) {
 				if (confirm) {
-					socket.emit('admin.user.sendPasswordResetEmail', uids, done('[[notifications:email-confirm-sent]]'));
+					socket.emit('admin.user.sendPasswordResetEmail', uids, done('[[admin/manage/users:alerts.password-reset-email-sent]]'));
 				}
 			});
 		});
@@ -401,7 +401,7 @@ define('admin/manage/users', [
 					});
 					alerts.success('[[admin/manage/users:alerts.create-success]]');
 				})
-				.catch(err => errorEl.translateHtml('[[admin/manage/users:alerts.error-x, ' + err.status.message + ']]').removeClass('hidden'));
+				.catch(err => errorEl.translateHtml('[[admin/manage/users:alerts.error-x, ' + err.message + ']]').removeClass('hidden'));
 		}
 
 		handleSearch();

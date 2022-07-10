@@ -58,12 +58,12 @@ topicsController.get = async function getTopic(req, res, next) {
 		return helpers.notAllowed(req, res);
 	}
 
-	if (!res.locals.isAPI && (!req.params.slug || topicData.slug !== `${tid}/${req.params.slug}`) && (topicData.slug && topicData.slug !== `${tid}/`)) {
-		return helpers.redirect(res, `/topic/${topicData.slug}${postIndex ? `/${postIndex}` : ''}${generateQueryString(req.query)}`, true);
+	if (req.params.post_index === 'unread') {
+		postIndex = await topics.getUserBookmark(tid, req.uid);
 	}
 
-	if (postIndex === 'unread') {
-		postIndex = await topics.getUserBookmark(tid, req.uid);
+	if (!res.locals.isAPI && (!req.params.slug || topicData.slug !== `${tid}/${req.params.slug}`) && (topicData.slug && topicData.slug !== `${tid}/`)) {
+		return helpers.redirect(res, `/topic/${topicData.slug}${postIndex ? `/${postIndex}` : ''}${generateQueryString(req.query)}`, true);
 	}
 
 	if (utils.isNumber(postIndex) && topicData.postcount > 0 && (postIndex < 1 || postIndex > topicData.postcount)) {
@@ -202,7 +202,7 @@ async function addTags(topicData, req, res) {
 	}
 
 	if (description.length > 255) {
-		description = `${description.substr(0, 255)}...`;
+		description = `${description.slice(0, 255)}...`;
 	}
 	description = description.replace(/\n/g, ' ');
 
@@ -269,11 +269,15 @@ async function addTags(topicData, req, res) {
 async function addOGImageTags(res, topicData, postAtIndex) {
 	const uploads = postAtIndex ? await posts.uploads.listWithSizes(postAtIndex.pid) : [];
 	const images = uploads.map((upload) => {
-		upload.name = `${url + upload_url}/files/${upload.name}`;
+		upload.name = `${url + upload_url}/${upload.name}`;
 		return upload;
 	});
 	if (topicData.thumbs) {
-		images.push(...topicData.thumbs.map(thumbObj => ({ name: nconf.get('url') + thumbObj.url })));
+		const path = require('path');
+		const thumbs = topicData.thumbs.filter(
+			t => t && images.every(img => path.normalize(img.name) !== path.normalize(url + t.url))
+		);
+		images.push(...thumbs.map(thumbObj => ({ name: url + thumbObj.url })));
 	}
 	if (topicData.category.backgroundImage && (!postAtIndex || !postAtIndex.index)) {
 		images.push(topicData.category.backgroundImage);

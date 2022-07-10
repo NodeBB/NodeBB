@@ -1,0 +1,33 @@
+get:
+  tags:
+    - users
+  summary: get user emails
+  description: |
+    This operation lists all emails associated with the user.
+    This route is accessible to all users if the target user has elected to show their email publicly. Otherwise, it is only accessible to privileged users, or if the calling user is the same as the target user.
+  parameters:
+    - in: path
+      required: true
+      name: uid
+      schema:
+        type: number
+      description: A valid user id
+      example: 1
+  responses:
+    '200':
+      description: user emails successfully listed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  emails:
+                    type: array
+                    items:
+                      type: string
+                      description: An email address

@@ -35,7 +35,7 @@
     "details.member_count": "Mitgliederanzahl",
     "details.creation_date": "Erstelldatum",
     "details.description": "Beschreibung",
-    "details.member-post-cids": "Category IDs to display posts from",
+    "details.member-post-cids": "Kategorie-IDs, aus denen Beiträge angezeigt werden sollen",
     "details.badge_preview": "Abzeichenvorschau",
     "details.change_icon": "Symbol ändern",
     "details.change_label_colour": "Label-Farbe ändern",

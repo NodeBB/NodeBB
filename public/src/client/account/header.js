@@ -54,7 +54,15 @@ define('forum/account/header', [
 		components.get('account/ban').on('click', function () {
 			banAccount(ajaxify.data.theirid);
 		});
-		components.get('account/unban').on('click', unbanAccount);
+		components.get('account/mute').on('click', function () {
+			muteAccount(ajaxify.data.theirid);
+		});
+		components.get('account/unban').on('click', function () {
+			unbanAccount(ajaxify.data.theirid);
+		});
+		components.get('account/unmute').on('click', function () {
+			unmuteAccount(ajaxify.data.theirid);
+		});
 		components.get('account/delete-account').on('click', handleDeleteEvent.bind(null, 'account'));
 		components.get('account/delete-content').on('click', handleDeleteEvent.bind(null, 'content'));
 		components.get('account/delete-all').on('click', handleDeleteEvent.bind(null, 'purge'));
@@ -68,6 +76,9 @@ define('forum/account/header', [
 
 	// TODO: This exported method is used in forum/flags/detail -- refactor??
 	AccountHeader.banAccount = banAccount;
+	AccountHeader.muteAccount = muteAccount;
+	AccountHeader.unbanAccount = unbanAccount;
+	AccountHeader.unmuteAccount = unmuteAccount;
 
 	function hidePrivateLinks() {
 		if (!app.user.uid || app.user.uid !== parseInt(ajaxify.data.theirid, 10)) {
@@ -171,8 +182,55 @@ define('forum/account/header', [
 		});
 	}
 
-	function unbanAccount() {
-		api.del('/users/' + ajaxify.data.theirid + '/ban').then(() => {
+	function unbanAccount(theirid) {
+		api.del('/users/' + theirid + '/ban').then(() => {
+			ajaxify.refresh();
+		}).catch(alerts.error);
+	}
+
+	function muteAccount(theirid, onSuccess) {
+		theirid = theirid || ajaxify.data.theirid;
+		Benchpress.render('admin/partials/temporary-mute', {}).then(function (html) {
+			bootbox.dialog({
+				className: 'mute-modal',
+				title: '[[user:mute_account]]',
+				message: html,
+				show: true,
+				buttons: {
+					close: {
+						label: '[[global:close]]',
+						className: 'btn-link',
+					},
+					submit: {
+						label: '[[user:mute_account]]',
+						callback: function () {
+							const formData = $('.mute-modal form').serializeArray().reduce(function (data, cur) {
+								data[cur.name] = cur.value;
+								return data;
+							}, {});
+
+							const until = formData.length > 0 ? (
+								Date.now() + (formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1))
+							) : 0;
+
+							api.put('/users/' + theirid + '/mute', {
+								until: until,
+								reason: formData.reason || '',
+							}).then(() => {
+								if (typeof onSuccess === 'function') {
+									return onSuccess();
+								}
+								ajaxify.refresh();
+							}).catch(alerts.error);
+						},
+					},
+				},
+			});
+		});
+	}
+
+	function unmuteAccount(theirid) {
+		api.del('/users/' + theirid + '/mute').then(() => {
 			ajaxify.refresh();
 		}).catch(alerts.error);
 	}

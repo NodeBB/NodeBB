@@ -113,6 +113,7 @@
     "bookmark": "Обележивач",
     "bookmarks": "Обележивачи",
     "bookmarks.has_no_bookmarks": "Нисте додали ниједну поруку у обележиваче",
+    "copy-permalink": "Копирај трајну везу",
     "loading_more_posts": "Учитавање још порука",
     "move_topic": "Премести тему",
     "move_topics": "Премести теме",
@@ -181,5 +182,7 @@
     "timeago_earlier": "%1 раније",
     "first-post": "Прва порука",
     "last-post": "Последња порука",
+    "go-to-my-next-post": "Иди на моју следећу поруку",
+    "no-more-next-post": "Немате више порука у овој теми",
     "post-quick-reply": "Објави брзи одговор"
 }

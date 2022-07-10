@@ -1,12 +1,12 @@
 {
-    "tag": "话题设置",
-    "link-to-manage": "管理话题",
-    "system-tags": "System Tags",
+    "tag": "标签设置",
+    "link-to-manage": "管理标签",
+    "system-tags": "系统标签",
     "system-tags-help": "Only privileged users will be able to use these tags.",
-    "min-per-topic": "每个主题的最少话题数",
-    "max-per-topic": "每话题的最大话题数",
-    "min-length": "最短话题长度",
-    "max-length": "最大话题长度",
+    "min-per-topic": "每个主题的最少标签数",
+    "max-per-topic": "每个主题的最多标签数",
+    "min-length": "标签名称最小长度",
+    "max-length": "标签名称最大长度",
     "related-topics": "相关主题",
     "max-related-topics": "最大相关主题显示量(如果主题支持)"
 }

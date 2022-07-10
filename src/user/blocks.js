@@ -22,7 +22,7 @@ module.exports = function (User) {
 		return isArray ? isBlocked : isBlocked[0];
 	};
 
-	User.blocks.can = async function (callerUid, blockerUid, blockeeUid) {
+	User.blocks.can = async function (callerUid, blockerUid, blockeeUid, type) {
 		// Guests can't block
 		if (blockerUid === 0 || blockeeUid === 0) {
 			throw new Error('[[error:cannot-block-guest]]');
@@ -36,7 +36,7 @@ module.exports = function (User) {
 			User.isAdminOrGlobalMod(callerUid),
 			User.isAdminOrGlobalMod(blockeeUid),
 		]);
-		if (isBlockeeAdminOrMod) {
+		if (isBlockeeAdminOrMod && type === 'block') {
 			throw new Error('[[error:cannot-block-privileged]]');
 		}
 		if (parseInt(callerUid, 10) !== parseInt(blockerUid, 10) && !isCallerAdminOrMod) {

@@ -13,7 +13,11 @@ const db = require('./mocks/databasemock');
 describe('i18n', () => {
 	let folders;
 
-	before(async () => {
+	before(async function () {
+		if (process.env.GITHUB_EVENT_NAME === 'pull_request') {
+			this.skip();
+		}
+
 		folders = await fs.promises.readdir(path.resolve(__dirname, '../public/language'));
 		folders = folders.filter(f => f !== 'README.md');
 	});
@@ -37,6 +41,10 @@ describe('i18n', () => {
 			it('should only contain valid JSON files', async () => {
 				try {
 					fullPaths.forEach((fullPath) => {
+						if (fullPath.endsWith('_DO_NOT_EDIT_FILES_HERE.md')) {
+							return;
+						}
+
 						const hash = require(fullPath);
 						sourceStrings.set(fullPath.replace(sourcePath, ''), hash);
 					});
@@ -80,6 +88,10 @@ describe('i18n', () => {
 				it('should contain only valid JSON files', () => {
 					try {
 						fullPaths.forEach((fullPath) => {
+							if (fullPath.endsWith('_DO_NOT_EDIT_FILES_HERE.md')) {
+								return;
+							}
+
 							const hash = require(fullPath);
 							strings.set(fullPath.replace(translationPath, ''), hash);
 						});

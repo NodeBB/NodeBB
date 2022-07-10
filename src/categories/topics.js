@@ -163,7 +163,7 @@ module.exports = function (Categories) {
 			if (!topic.scheduled && topic.deleted && !topic.isOwner) {
 				topic.title = '[[topic:topic_is_deleted]]';
 				if (topic.hasOwnProperty('titleRaw')) {
-					topics.titleRaw = '[[topic:topic_is_deleted]]';
+					topic.titleRaw = '[[topic:topic_is_deleted]]';
 				}
 				topic.slug = topic.tid;
 				topic.teaser = null;

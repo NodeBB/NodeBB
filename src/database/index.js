@@ -14,7 +14,7 @@ const primaryDB = require(`./${databaseName}`);
 
 primaryDB.parseIntFields = function (data, intFields, requestedFields) {
 	intFields.forEach((field) => {
-		if (!requestedFields.length || requestedFields.includes(field)) {
+		if (!requestedFields || !requestedFields.length || requestedFields.includes(field)) {
 			data[field] = parseInt(data[field], 10) || 0;
 		}
 	});

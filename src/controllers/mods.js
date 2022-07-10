@@ -36,9 +36,11 @@ modsController.flags.list = async function (req, res) {
 
 	// Parse query string params for filters, eliminate non-valid filters
 	filters = filters.reduce((memo, cur) => {
-		if (req.query.hasOwnProperty(cur) && typeof req.query[cur] === 'string') {
-			if (req.query[cur].trim() !== '') {
+		if (req.query.hasOwnProperty(cur)) {
+			if (typeof req.query[cur] === 'string' && req.query[cur].trim() !== '') {
 				memo[cur] = req.query[cur].trim();
+			} else if (Array.isArray(req.query[cur]) && req.query[cur].length) {
+				memo[cur] = req.query[cur];
 			}
 		}
 
@@ -192,5 +194,6 @@ modsController.postQueue = async function (req, res, next) {
 		allCategoriesUrl: `post-queue${helpers.buildQueryString(req.query, 'cid', '')}`,
 		pagination: pagination.create(page, pageCount),
 		breadcrumbs: helpers.buildBreadcrumbs(crumbs),
+		singlePost: !!id,
 	});
 };

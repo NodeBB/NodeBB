@@ -1,6 +1,7 @@
 'use strict';
 
 const nconf = require('nconf');
+const chalk = require('chalk');
 
 const packageInstall = require('./package-install');
 const { upgradePlugins } = require('./upgrade-plugins');
@@ -11,13 +12,13 @@ const steps = {
 		handler: function () {
 			packageInstall.updatePackageFile();
 			packageInstall.preserveExtraneousPlugins();
-			process.stdout.write('  OK\n'.green);
+			process.stdout.write(chalk.green('  OK\n'));
 		},
 	},
 	install: {
 		message: 'Bringing base dependencies up to date...',
 		handler: function () {
-			process.stdout.write('  started\n'.green);
+			process.stdout.write(chalk.green('  started\n'));
 			packageInstall.installAll();
 		},
 	},
@@ -49,7 +50,7 @@ async function runSteps(tasks) {
 		for (let i = 0; i < tasks.length; i++) {
 			const step = steps[tasks[i]];
 			if (step && step.message && step.handler) {
-				process.stdout.write(`\n${(`${i + 1}. `).bold}${step.message.yellow}`);
+				process.stdout.write(`\n${chalk.bold(`${i + 1}. `)}${chalk.yellow(step.message)}`);
 				/* eslint-disable-next-line */
 				await step.handler();
 			}
@@ -60,7 +61,7 @@ async function runSteps(tasks) {
 		const { columns } = process.stdout;
 		const spaces = columns ? new Array(Math.floor(columns / 2) - (message.length / 2) + 1).join(' ') : '  ';
 
-		console.log(`\n\n${spaces}${message.green.bold}${'\n'.reset}`);
+		console.log(`\n\n${spaces}${chalk.green.bold(message)}\n`);
 
 		process.exit();
 	} catch (err) {
@@ -70,7 +71,7 @@ async function runSteps(tasks) {
 }
 
 async function runUpgrade(upgrades, options) {
-	console.log('\nUpdating NodeBB...'.cyan);
+	console.log(chalk.cyan('\nUpdating NodeBB...'));
 	options = options || {};
 	// disable mongo timeouts during upgrade
 	nconf.set('mongo:options:socketTimeoutMS', 0);

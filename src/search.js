@@ -72,10 +72,6 @@ async function searchInContent(data) {
 		]);
 	}
 
-	if (data.returnIds) {
-		return { pids: pids, tids: tids };
-	}
-
 	const mainPids = await topics.getMainPids(tids);
 
 	let allPids = mainPids.concat(pids).filter(Boolean);
@@ -86,6 +82,15 @@ async function searchInContent(data) {
 	const metadata = await plugins.hooks.fire('filter:search.inContent', {
 		pids: allPids,
 	});
+
+	if (data.returnIds) {
+		const mainPidsSet = new Set(mainPids);
+		const mainPidToTid = _.zipObject(mainPids, tids);
+		const pidsSet = new Set(pids);
+		const returnPids = allPids.filter(pid => pidsSet.has(pid));
+		const returnTids = allPids.filter(pid => mainPidsSet.has(pid)).map(pid => mainPidToTid[pid]);
+		return { pids: returnPids, tids: returnTids };
+	}
 
 	const itemsPerPage = Math.min(data.itemsPerPage || 10, 100);
 	const returnData = {

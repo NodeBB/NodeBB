@@ -1,0 +1,128 @@
+head:
+  tags:
+    - chats
+  summary: check if a chat room exists
+  parameters:
+    - in: path
+      name: roomId
+      schema:
+        type: number
+      required: true
+      description: room ID to check
+      example: 1
+  responses:
+    '200':
+      description: chat room found
+    '404':
+      description: chat room not found
+get:
+  tags:
+    - chats
+  summary: get a chat room
+  description: This operation retrieves a chat room's data including users and messages
+  parameters:
+    - in: path
+      name: roomId
+      schema:
+        type: number
+      required: true
+      description: a valid chat room id
+      example: 1
+  responses:
+    '200':
+      description: Chat room successfully retrieved
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../components/schemas/Chats.yaml#/RoomObjectFull
+post:
+  tags:
+    - chats
+  summary: send a chat message
+  description: This operation sends a chat message to a chat room
+  parameters:
+    - in: path
+      name: roomId
+      schema:
+        type: number
+      required: true
+      description: a valid chat room id
+      example: 1
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: This is a test message
+          required:
+            - message
+  responses:
+    '200':
+      description: message successfully sent
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../components/schemas/Status.yaml#/Status
+              response:
+                allOf:
+                  - $ref: ../../components/schemas/Chats.yaml#/MessageObject
+                  - type: object
+                    properties:
+                      self:
+                        type: number
+                        description: Whether or not the message was sent by the calling user (which if you're using this route, will always be 1)
+                      newSet:
+                        type: boolean
+                        description: Whether the message is considered part of a new "set" of messages. It is used in the frontend UI for explicitly denoting that a time gap existed between messages.
+                      cleanedContent:
+                        type: string
+                      mid:
+                        type: number
+put:
+  tags:
+    - chats
+  summary: rename a chat room
+  description: This operation renames a chat room.
+  parameters:
+    - in: path
+      name: roomId
+      schema:
+        type: number
+      required: true
+      description: a valid room id
+      example: 1
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+              description: the new name of the room
+              example: 'casper the friendly room'
+  responses:
+    '200':
+      description: Chat room renamed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../components/schemas/Chats.yaml#/RoomObjectFull

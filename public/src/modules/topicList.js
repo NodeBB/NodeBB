@@ -101,15 +101,18 @@ define('topicList', [
 		const category = d.template.category &&
 			parseInt(d.cid, 10) !== parseInt(data.cid, 10);
 
-		if (categories || filterWatched || category || scheduledTopics.includes(data.tid)) {
-			return;
-		}
+		const preventAlert = !!(categories || filterWatched || category || scheduledTopics.includes(data.tid));
+		hooks.fire('filter:topicList.onNewTopic', { topic: data, preventAlert }).then((result) => {
+			if (result.preventAlert) {
+				return;
+			}
 
-		if (data.scheduled && data.tid) {
-			scheduledTopics.push(data.tid);
-		}
-		newTopicCount += 1;
-		updateAlertText();
+			if (data.scheduled && data.tid) {
+				scheduledTopics.push(data.tid);
+			}
+			newTopicCount += 1;
+			updateAlertText();
+		});
 	}
 
 	function onNewPost(data) {
@@ -132,12 +135,15 @@ define('topicList', [
 		const category = d.template.category &&
 			parseInt(d.cid, 10) !== parseInt(post.topic.cid, 10);
 
-		if (isMain || categories || filterNew || filterWatched || category) {
-			return;
-		}
+		const preventAlert = !!(isMain || categories || filterNew || filterWatched || category);
+		hooks.fire('filter:topicList.onNewPost', { post, preventAlert }).then((result) => {
+			if (result.preventAlert) {
+				return;
+			}
 
-		newPostCount += 1;
-		updateAlertText();
+			newPostCount += 1;
+			updateAlertText();
+		});
 	}
 
 	function updateAlertText() {

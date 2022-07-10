@@ -130,17 +130,41 @@ describe('Topic\'s', () => {
 			});
 		});
 
-		it('should fail to post a topic as guest if no privileges', async () => {
+		it('should fail to post a topic as guest with invalid csrf_token', async () => {
 			const categoryObj = await categories.create({
 				name: 'Test Category',
 				description: 'Test category created by testing script',
 			});
+			await privileges.categories.give(['groups:topics:create'], categoryObj.cid, 'guests');
+			await privileges.categories.give(['groups:topics:reply'], categoryObj.cid, 'guests');
 			const result = await requestType('post', `${nconf.get('url')}/api/v3/topics`, {
 				form: {
 					title: 'just a title',
 					cid: categoryObj.cid,
 					content: 'content for the main post',
 				},
+				headers: {
+					'x-csrf-token': 'invalid',
+				},
+				json: true,
+			});
+			assert.strictEqual(result.res.statusCode, 403);
+			assert.strictEqual(result.body, 'Forbidden');
+		});
+
+		it('should fail to post a topic as guest if no privileges', async () => {
+			const categoryObj = await categories.create({
+				name: 'Test Category',
+				description: 'Test category created by testing script',
+			});
+			const jar = request.jar();
+			const result = await helpers.request('post', `/api/v3/topics`, {
+				form: {
+					title: 'just a title',
+					cid: categoryObj.cid,
+					content: 'content for the main post',
+				},
+				jar: jar,
 				json: true,
 			});
 			assert.strictEqual(result.body.status.message, 'You do not have enough privileges for this action.');
@@ -154,12 +178,14 @@ describe('Topic\'s', () => {
 			await privileges.categories.give(['groups:topics:create'], categoryObj.cid, 'guests');
 			await privileges.categories.give(['groups:topics:reply'], categoryObj.cid, 'guests');
 
-			const result = await requestType('post', `${nconf.get('url')}/api/v3/topics`, {
+			const jar = request.jar();
+			const result = await helpers.request('post', `/api/v3/topics`, {
 				form: {
 					title: 'just a title',
 					cid: categoryObj.cid,
 					content: 'content for the main post',
 				},
+				jar: jar,
 				json: true,
 			});
 
@@ -167,10 +193,11 @@ describe('Topic\'s', () => {
 			assert.strictEqual(result.body.response.title, 'just a title');
 			assert.strictEqual(result.body.response.user.username, '[[global:guest]]');
 
-			const replyResult = await requestType('post', `${nconf.get('url')}/api/v3/topics/${result.body.response.tid}`, {
+			const replyResult = await helpers.request('post', `/api/v3/topics/${result.body.response.tid}`, {
 				form: {
 					content: 'a reply by guest',
 				},
+				jar: jar,
 				json: true,
 			});
 			assert.strictEqual(replyResult.body.response.content, 'a reply by guest');
@@ -186,13 +213,14 @@ describe('Topic\'s', () => {
 			await privileges.categories.give(['groups:topics:reply'], categoryObj.cid, 'guests');
 			const oldValue = meta.config.allowGuestHandles;
 			meta.config.allowGuestHandles = 1;
-			const result = await requestType('post', `${nconf.get('url')}/api/v3/topics`, {
+			const result = await helpers.request('post', `/api/v3/topics`, {
 				form: {
 					title: 'just a title',
 					cid: categoryObj.cid,
 					content: 'content for the main post',
 					handle: 'guest123',
 				},
+				jar: request.jar(),
 				json: true,
 			});
 
@@ -201,11 +229,12 @@ describe('Topic\'s', () => {
 			assert.strictEqual(result.body.response.user.username, 'guest123');
 			assert.strictEqual(result.body.response.user.displayname, 'guest123');
 
-			const replyResult = await requestType('post', `${nconf.get('url')}/api/v3/topics/${result.body.response.tid}`, {
+			const replyResult = await helpers.request('post', `/api/v3/topics/${result.body.response.tid}`, {
 				form: {
 					content: 'a reply by guest',
 					handle: 'guest124',
 				},
+				jar: request.jar(),
 				json: true,
 			});
 			assert.strictEqual(replyResult.body.response.content, 'a reply by guest');
@@ -1769,10 +1798,10 @@ describe('Topic\'s', () => {
 				assert.equal(data.matchCount, 4);
 				assert.equal(data.pageCount, 1);
 				const tagData = [
-					{ value: 'nodebb', valueEscaped: 'nodebb', score: 3, class: 'nodebb' },
-					{ value: 'node icon', valueEscaped: 'node icon', score: 1, class: 'node-icon' },
-					{ value: 'nodejs', valueEscaped: 'nodejs', score: 1, class: 'nodejs' },
-					{ value: 'nosql', valueEscaped: 'nosql', score: 1, class: 'nosql' },
+					{ value: 'nodebb', valueEscaped: 'nodebb', valueEncoded: 'nodebb', score: 3, class: 'nodebb' },
+					{ value: 'node icon', valueEscaped: 'node icon', valueEncoded: 'node%20icon', score: 1, class: 'node-icon' },
+					{ value: 'nodejs', valueEscaped: 'nodejs', valueEncoded: 'nodejs', score: 1, class: 'nodejs' },
+					{ value: 'nosql', valueEscaped: 'nosql', valueEncoded: 'nosql', score: 1, class: 'nosql' },
 				];
 				assert.deepEqual(data.tags, tagData);
 
@@ -2012,17 +2041,17 @@ describe('Topic\'s', () => {
 			await topics.post({ uid: adminUid, tags: ['cattag1'], title: title, content: 'topic 1 content', cid: cid });
 			let result = await topics.getCategoryTagsData(cid, 0, -1);
 			assert.deepStrictEqual(result, [
-				{ value: 'cattag1', score: 3, valueEscaped: 'cattag1', class: 'cattag1' },
-				{ value: 'cattag2', score: 2, valueEscaped: 'cattag2', class: 'cattag2' },
-				{ value: 'cattag3', score: 1, valueEscaped: 'cattag3', class: 'cattag3' },
+				{ value: 'cattag1', score: 3, valueEscaped: 'cattag1', valueEncoded: 'cattag1', class: 'cattag1' },
+				{ value: 'cattag2', score: 2, valueEscaped: 'cattag2', valueEncoded: 'cattag2', class: 'cattag2' },
+				{ value: 'cattag3', score: 1, valueEscaped: 'cattag3', valueEncoded: 'cattag3', class: 'cattag3' },
 			]);
 
 			// after purging values should update properly
 			await topics.purge(postResult.topicData.tid, adminUid);
 			result = await topics.getCategoryTagsData(cid, 0, -1);
 			assert.deepStrictEqual(result, [
-				{ value: 'cattag1', score: 2, valueEscaped: 'cattag1', class: 'cattag1' },
-				{ value: 'cattag2', score: 1, valueEscaped: 'cattag2', class: 'cattag2' },
+				{ value: 'cattag1', score: 2, valueEscaped: 'cattag1', valueEncoded: 'cattag1', class: 'cattag1' },
+				{ value: 'cattag2', score: 1, valueEscaped: 'cattag2', valueEncoded: 'cattag2', class: 'cattag2' },
 			]);
 		});
 
@@ -2041,11 +2070,11 @@ describe('Topic\'s', () => {
 			let result1 = await topics.getCategoryTagsData(cid1, 0, -1);
 			let result2 = await topics.getCategoryTagsData(cid2, 0, -1);
 			assert.deepStrictEqual(result1, [
-				{ value: 'movedtag1', score: 2, valueEscaped: 'movedtag1', class: 'movedtag1' },
-				{ value: 'movedtag2', score: 1, valueEscaped: 'movedtag2', class: 'movedtag2' },
+				{ value: 'movedtag1', score: 2, valueEscaped: 'movedtag1', valueEncoded: 'movedtag1', class: 'movedtag1' },
+				{ value: 'movedtag2', score: 1, valueEscaped: 'movedtag2', valueEncoded: 'movedtag2', class: 'movedtag2' },
 			]);
 			assert.deepStrictEqual(result2, [
-				{ value: 'movedtag2', score: 1, valueEscaped: 'movedtag2', class: 'movedtag2' },
+				{ value: 'movedtag2', score: 1, valueEscaped: 'movedtag2', valueEncoded: 'movedtag2', class: 'movedtag2' },
 			]);
 
 			// after moving values should update properly
@@ -2054,11 +2083,11 @@ describe('Topic\'s', () => {
 			result1 = await topics.getCategoryTagsData(cid1, 0, -1);
 			result2 = await topics.getCategoryTagsData(cid2, 0, -1);
 			assert.deepStrictEqual(result1, [
-				{ value: 'movedtag1', score: 1, valueEscaped: 'movedtag1', class: 'movedtag1' },
+				{ value: 'movedtag1', score: 1, valueEscaped: 'movedtag1', valueEncoded: 'movedtag1', class: 'movedtag1' },
 			]);
 			assert.deepStrictEqual(result2, [
-				{ value: 'movedtag2', score: 2, valueEscaped: 'movedtag2', class: 'movedtag2' },
-				{ value: 'movedtag1', score: 1, valueEscaped: 'movedtag1', class: 'movedtag1' },
+				{ value: 'movedtag2', score: 2, valueEscaped: 'movedtag2', valueEncoded: 'movedtag2', class: 'movedtag2' },
+				{ value: 'movedtag1', score: 1, valueEscaped: 'movedtag1', valueEncoded: 'movedtag1', class: 'movedtag1' },
 			]);
 		});
 
@@ -2715,7 +2744,10 @@ describe('Topic\'s', () => {
 
 		it('should allow guests to reply if privilege is given', async () => {
 			await privileges.categories.give(['groups:topics:schedule'], categoryObj.cid, 'guests');
-			const response = await requestType('post', `${nconf.get('url')}/api/v3/topics/${topicData.tid}`, replyData);
+			const response = await helpers.request('post', `/api/v3/topics/${topicData.tid}`, {
+				...replyData,
+				jar: request.jar(),
+			});
 			assert.strictEqual(response.body.response.content, 'a reply by guest');
 			assert.strictEqual(response.body.response.user.username, '[[global:guest]]');
 		});
@@ -2798,7 +2830,7 @@ describe('Topic\'s', () => {
 	});
 });
 
-describe('Topics\'s', async () => {
+describe('Topics\'', async () => {
 	let files;
 
 	before(async () => {

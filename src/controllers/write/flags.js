@@ -30,6 +30,11 @@ Flags.update = async (req, res) => {
 	helpers.formatApiResponse(200, res, { history });
 };
 
+Flags.delete = async (req, res) => {
+	await flags.purge([req.params.flagId]);
+	helpers.formatApiResponse(200, res);
+};
+
 Flags.appendNote = async (req, res) => {
 	const payload = await api.flags.appendNote(req, {
 		flagId: req.params.flagId,

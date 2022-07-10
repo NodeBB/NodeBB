@@ -1,0 +1,191 @@
+RoomObject:
+  type: object
+  properties:
+    owner:
+      type: number
+      description: the uid of the chat room owner (usually the user who created the room initially)
+    roomId:
+      type: number
+      description: unique identifier for the chat room
+    roomName:
+      type: string
+    groupChat:
+      type: boolean
+      description: whether the chat room is a group chat or not
+MessageObject:
+  type: object
+  properties:
+    content:
+      type: string
+      description: A chat message's content, parsed like a post (so probably outputs html)
+    timestamp:
+      type: number
+    fromuid:
+      type: number
+    roomId:
+      type: number
+    deleted:
+      type: boolean
+    system:
+      type: boolean
+    edited:
+      type: number
+    timestampISO:
+      type: string
+    editedISO:
+      type: string
+    messageId:
+      type: number
+    fromUser:
+      type: object
+      properties:
+        uid:
+          type: number
+          description: A user identifier
+        username:
+          type: string
+          description: A friendly name for a given user account
+          example: Dragon Fruit
+        userslug:
+          type: string
+          description: An URL-safe variant of the username (i.e. lower-cased, spaces removed, etc.)
+          example: dragon-fruit
+        picture:
+          type: string
+          nullable: true
+          description: A URL pointing to a picture to be used as the user's avatar
+          example: 'https://images.unsplash.com/photo-1560070094-e1f2ddec4337?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=256&h=256&q=80'
+        status:
+          type: string
+          enum:
+            - online
+            - offline
+            - dnd
+            - away
+        banned:
+          type: boolean
+          description: Whether a user is banned or not
+          example: false
+        displayname:
+          type: string
+          description: This is either username or fullname depending on forum and user settings
+          example: Dragon Fruit
+        icon:text:
+          type: string
+          description: A single-letter representation of a username. This is used in the
+            auto-generated icon given to users
+            without an avatar
+        icon:bgColor:
+          type: string
+          description: A six-character hexadecimal colour code assigned to the user. This
+            value is used in conjunction with
+            `icon:text` for the user's
+            auto-generated icon
+          example: "#f44336"
+        banned_until_readable:
+          type: string
+          description: An ISO 8601 formatted date string representing the moment a ban will be lifted, or the words "Not Banned"
+          example: Not Banned
+        deleted:
+          type: boolean
+    self:
+      type: number
+    newSet:
+      type: boolean
+    cleanedContent:
+      type: string
+RoomUserList:
+  type: object
+  properties:
+    users:
+      type: array
+      items:
+        type: object
+        properties:
+          uid:
+            type: number
+            description: A user identifier
+          username:
+            type: string
+            description: A friendly name for a given user account
+          picture:
+            nullable: true
+            type: string
+          status:
+            type: string
+          displayname:
+            type: string
+            description: This is either username or fullname depending on forum and user settings
+          icon:text:
+            type: string
+            description: A single-letter representation of a username. This is used in the
+              auto-generated icon given to users
+              without an avatar
+          icon:bgColor:
+            type: string
+            description: A six-character hexadecimal colour code assigned to the user. This
+              value is used in conjunction with
+              `icon:text` for the user's
+              auto-generated icon
+            example: "#f44336"
+          isOwner:
+            type: boolean
+          canKick:
+            type: boolean
+RoomObjectFull:
+  # Messaging.loadRoom
+  allOf:
+    - $ref: '#/RoomObject'
+    - $ref: '#/MessageObject'
+    - type: object
+      properties:
+        isOwner:
+          type: boolean
+        users:
+          type: array
+          items:
+            type: object
+            properties:
+              uid:
+                type: number
+                description: A user identifier
+              username:
+                type: string
+                description: A friendly name for a given user account
+              picture:
+                nullable: true
+                type: string
+              status:
+                type: string
+              displayname:
+                type: string
+                description: This is either username or fullname depending on forum and user settings
+              icon:text:
+                type: string
+                description: A single-letter representation of a username. This is used in the
+                  auto-generated icon given to users
+                  without an avatar
+              icon:bgColor:
+                type: string
+                description: A six-character hexadecimal colour code assigned to the user. This
+                  value is used in conjunction with
+                  `icon:text` for the user's
+                  auto-generated icon
+                example: "#f44336"
+              isOwner:
+                type: boolean
+        canReply:
+          type: boolean
+        groupChat:
+          type: boolean
+        usernames:
+          type: string
+          description: User-friendly depiction of the users within the chat room
+        maximumUsersInChatRoom:
+          type: number
+        maximumChatMessageLength:
+          type: number
+        showUserInput:
+          type: boolean
+        isAdminOrGlobalMod:
+          type: boolean

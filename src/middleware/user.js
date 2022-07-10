@@ -2,6 +2,8 @@
 
 const winston = require('winston');
 const passport = require('passport');
+const nconf = require('nconf');
+const path = require('path');
 const util = require('util');
 
 const user = require('../user');
@@ -40,12 +42,12 @@ module.exports = function (middleware) {
 			return true;
 		}
 
-		if (req.loggedIn) {
+		if (res.locals.isAPI && (req.loggedIn || !req.headers.hasOwnProperty('authorization'))) {
 			// If authenticated via cookie (express-session), protect routes with CSRF checking
-			if (res.locals.isAPI) {
-				await middleware.applyCSRFasync(req, res);
-			}
+			await middleware.applyCSRFasync(req, res);
+		}
 
+		if (req.loggedIn) {
 			return true;
 		} else if (req.headers.hasOwnProperty('authorization')) {
 			const user = await passportAuthenticateAsync(req, res);
@@ -81,6 +83,20 @@ module.exports = function (middleware) {
 	}
 
 	middleware.authenticateRequest = helpers.try(async (req, res, next) => {
+		const { skip } = await plugins.hooks.fire('filter:middleware.authenticate', {
+			skip: {
+				// get: [],
+				post: ['/api/v3/utilities/login'],
+				// etc...
+			},
+		});
+
+		const mountedPath = path.join(req.baseUrl, req.path).replace(nconf.get('relative_path'), '');
+		const method = req.method.toLowerCase();
+		if (skip[method] && skip[method].includes(mountedPath)) {
+			return next();
+		}
+
 		if (!await authenticate(req, res)) {
 			return;
 		}
@@ -128,6 +144,14 @@ module.exports = function (middleware) {
 	middleware.canViewGroups = helpers.try(async (req, res, next) => {
 		const canView = await privileges.global.can('view:groups', req.uid);
 		if (canView) {
+			return next();
+		}
+		controllers.helpers.notAllowed(req, res);
+	});
+
+	middleware.canChat = helpers.try(async (req, res, next) => {
+		const canChat = await privileges.global.can('chat', req.uid);
+		if (canChat) {
 			return next();
 		}
 		controllers.helpers.notAllowed(req, res);

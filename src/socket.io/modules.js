@@ -1,16 +1,15 @@
 'use strict';
 
-const validator = require('validator');
-
 const db = require('../database');
-const meta = require('../meta');
 const notifications = require('../notifications');
-const plugins = require('../plugins');
 const Messaging = require('../messaging');
 const utils = require('../utils');
 const server = require('./index');
 const user = require('../user');
 const privileges = require('../privileges');
+
+const sockets = require('.');
+const api = require('../api');
 
 const SocketModules = module.exports;
 
@@ -43,64 +42,36 @@ SocketModules.chats.isDnD = async function (socket, uid) {
 };
 
 SocketModules.chats.newRoom = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'POST /api/v3/chats');
+
 	if (!data) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	if (rateLimitExceeded(socket)) {
-		throw new Error('[[error:too-many-messages]]');
-	}
-
-	const canChat = await privileges.global.can('chat', socket.uid);
-	if (!canChat) {
-		throw new Error('[[error:no-privileges]]');
-	}
-	await Messaging.canMessageUser(socket.uid, data.touid);
-	return await Messaging.newRoom(socket.uid, [data.touid]);
+	const roomObj = await api.chats.create(socket, {
+		uids: [data.touid],
+	});
+	return roomObj.roomId;
 };
 
 SocketModules.chats.send = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'POST /api/v3/chats/:roomId');
+
 	if (!data || !data.roomId || !socket.uid) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	if (rateLimitExceeded(socket)) {
-		throw new Error('[[error:too-many-messages]]');
-	}
 	const canChat = await privileges.global.can('chat', socket.uid);
 	if (!canChat) {
 		throw new Error('[[error:no-privileges]]');
 	}
-	const results = await plugins.hooks.fire('filter:messaging.send', {
-		data: data,
-		uid: socket.uid,
-	});
-	data = results.data;
 
-	await Messaging.canMessageRoom(socket.uid, data.roomId);
-	const message = await Messaging.sendMessage({
-		uid: socket.uid,
-		roomId: data.roomId,
-		content: data.message,
-		timestamp: Date.now(),
-		ip: socket.ip,
-	});
-	Messaging.notifyUsersInRoom(socket.uid, data.roomId, message);
-	user.updateOnlineUsers(socket.uid);
-	return message;
+	return api.chats.post(socket, data);
 };
 
-function rateLimitExceeded(socket) {
-	const now = Date.now();
-	socket.lastChatMessageTime = socket.lastChatMessageTime || 0;
-	if (now - socket.lastChatMessageTime < meta.config.chatMessageDelay) {
-		return true;
-	}
-	socket.lastChatMessageTime = now;
-	return false;
-}
-
 SocketModules.chats.loadRoom = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'GET /api/v3/chats/:roomId');
+
 	if (!data || !data.roomId) {
 		throw new Error('[[error:invalid-data]]');
 	}
@@ -109,24 +80,22 @@ SocketModules.chats.loadRoom = async function (socket, data) {
 };
 
 SocketModules.chats.getUsersInRoom = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'GET /api/v3/chats/:roomId/users');
+
 	if (!data || !data.roomId) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	const [isUserInRoom, isOwner, userData] = await Promise.all([
-		Messaging.isUserInRoom(socket.uid, data.roomId),
-		Messaging.isRoomOwner(socket.uid, data.roomId),
-		Messaging.getUsersInRoom(data.roomId, 0, -1),
-	]);
+	const isUserInRoom = await Messaging.isUserInRoom(socket.uid, data.roomId);
 	if (!isUserInRoom) {
 		throw new Error('[[error:no-privileges]]');
 	}
-	userData.forEach((user) => {
-		user.canKick = (parseInt(user.uid, 10) !== parseInt(socket.uid, 10)) && isOwner;
-	});
-	return userData;
+
+	return api.chats.users(socket, data);
 };
 
 SocketModules.chats.addUserToRoom = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'POST /api/v3/chats/:roomId/users');
+
 	if (!data || !data.roomId || !data.username) {
 		throw new Error('[[error:invalid-data]]');
 	}
@@ -136,33 +105,30 @@ SocketModules.chats.addUserToRoom = async function (socket, data) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
-	const userCount = await Messaging.getUserCountInRoom(data.roomId);
-	const maxUsers = meta.config.maximumUsersInChatRoom;
-	if (maxUsers && userCount >= maxUsers) {
-		throw new Error('[[error:cant-add-more-users-to-chat-room]]');
-	}
+	// Revised API now takes uids, not usernames
+	data.uids = [await user.getUidByUsername(data.username)];
+	delete data.username;
 
-	const uid = await user.getUidByUsername(data.username);
-	if (!uid) {
-		throw new Error('[[error:no-user]]');
-	}
-	await Messaging.canMessageUser(socket.uid, uid);
-	await Messaging.addUsersToRoom(socket.uid, [uid], data.roomId);
+	await api.chats.invite(socket, data);
 };
 
 SocketModules.chats.removeUserFromRoom = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'DELETE /api/v3/chats/:roomId/users OR DELETE /api/v3/chats/:roomId/users/:uid');
+
 	if (!data || !data.roomId) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	const exists = await user.exists(data.uid);
-	if (!exists) {
-		throw new Error('[[error:no-user]]');
-	}
 
-	await Messaging.removeUsersFromRoom(socket.uid, [data.uid], data.roomId);
+	// Revised API can accept multiple uids now
+	data.uids = [data.uid];
+	delete data.uid;
+
+	await api.chats.kick(socket, data);
 };
 
 SocketModules.chats.leave = async function (socket, roomid) {
+	sockets.warnDeprecated(socket, 'DELETE /api/v3/chats/:roomId/users OR DELETE /api/v3/chats/:roomId/users/:uid');
+
 	if (!socket.uid || !roomid) {
 		throw new Error('[[error:invalid-data]]');
 	}
@@ -171,6 +137,8 @@ SocketModules.chats.leave = async function (socket, roomid) {
 };
 
 SocketModules.chats.edit = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'PUT /api/v3/chats/:roomId/:mid');
+
 	if (!data || !data.roomId || !data.message) {
 		throw new Error('[[error:invalid-data]]');
 	}
@@ -179,6 +147,8 @@ SocketModules.chats.edit = async function (socket, data) {
 };
 
 SocketModules.chats.delete = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'DELETE /api/v3/chats/:roomId/:mid');
+
 	if (!data || !data.roomId || !data.messageId) {
 		throw new Error('[[error:invalid-data]]');
 	}
@@ -187,6 +157,8 @@ SocketModules.chats.delete = async function (socket, data) {
 };
 
 SocketModules.chats.restore = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'POST /api/v3/chats/:roomId/:mid');
+
 	if (!data || !data.roomId || !data.messageId) {
 		throw new Error('[[error:invalid-data]]');
 	}
@@ -228,15 +200,15 @@ SocketModules.chats.markAllRead = async function (socket) {
 };
 
 SocketModules.chats.renameRoom = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'PUT /api/v3/chats/:roomId');
+
 	if (!data || !data.roomId || !data.newName) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	await Messaging.renameRoom(socket.uid, data.roomId, data.newName);
-	const uids = await Messaging.getUidsInRoom(data.roomId, 0, -1);
-	const eventData = { roomId: data.roomId, newName: validator.escape(String(data.newName)) };
-	uids.forEach((uid) => {
-		server.in(`uid_${uid}`).emit('event:chats.roomRename', eventData);
-	});
+
+	data.name = data.newName;
+	delete data.newName;
+	await api.chats.rename(socket, data);
 };
 
 SocketModules.chats.getRecentChats = async function (socket, data) {
@@ -256,6 +228,8 @@ SocketModules.chats.hasPrivateChat = async function (socket, uid) {
 };
 
 SocketModules.chats.getMessages = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'GET /api/v3/chats/:roomId/messages');
+
 	if (!socket.uid || !data || !data.uid || !data.roomId) {
 		throw new Error('[[error:invalid-data]]');
 	}

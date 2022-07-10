@@ -1,8 +1,10 @@
 {
     "administrators": "מנהלים",
     "global-moderators": "מודרטורים גולבליים",
+    "moderators": "Moderators",
     "no-global-moderators": "אין מודרטורים גולבליים",
-    "moderators-of-category": "%1 מודרטורים",
+    "no-sub-categories": "No subcategories",
+    "subcategories": "%1 subcategories",
     "no-moderators": "אין מודרטורים",
     "add-administrator": "הוסף מנהל",
     "add-global-moderator": "הוסף מודרטור גלובלי",

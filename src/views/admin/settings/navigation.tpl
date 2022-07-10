@@ -4,7 +4,7 @@
 			<ul id="active-navigation" class="nav navbar-nav">
 				<!-- BEGIN navigation -->
 				<li data-index="{navigation.index}" class="{navigation.class} {{{ if navigation.selected }}} active {{{ end }}}">
-					<a href="#" title="{navigation.route}" id="{navigation.id}">
+					<a href="#" title="{navigation.route}" id="{navigation.id}" class="{{{ if !navigation.enabled }}}text-muted{{{ end }}}">
 						<i class="nav-icon fa fa-fw {{{ if navigation.iconClass }}}{navigation.iconClass}{{{ end }}}"></i><i class="dropdown-icon fa fa-caret-down{{{ if !navigation.dropdown }}} hidden{{{ end }}}"></i>
 					</a>
 				</li>
@@ -18,6 +18,17 @@
 			{{{ each enabled }}}
 			<li data-index="{enabled.index}" class="well <!-- IF !enabled.selected -->hidden<!-- ENDIF !enabled.selected -->">
 				<form>
+					<div class="row">
+						<div class="col-sm-12 text-right">
+							{{{ if enabled.enabled }}}
+							<button class="btn btn-warning toggle">[[admin/settings/navigation:btn.disable]]</button>
+							{{{ else }}}
+							<button class="btn btn-success toggle">[[admin/settings/navigation:btn.enable]]</button>
+							{{{ end }}}
+							<button class="btn btn-danger delete">[[admin/settings/navigation:btn.delete]]</button>
+							<input type="hidden" name="enabled" value="{{{ if enabled.enabled }}}on{{{ end}}}" />
+						</div>
+					</div>
 					<div class="row">
 						<div class="col-sm-1">
 							<div class="form-group">
@@ -101,14 +112,6 @@
 						</p>
 						<textarea name="dropdownContent" rows="5" class="form-control">{enabled.dropdownContent}</textarea>
 					</div>
-
-					<button class="btn btn-danger delete">[[admin/settings/navigation:btn.delete]]</button>
-					<!-- IF enabled.enabled -->
-					<button class="btn btn-warning toggle">[[admin/settings/navigation:btn.disable]]</button>
-					<!-- ELSE -->
-					<button class="btn btn-success toggle">[[admin/settings/navigation:btn.enable]]</button>
-					<!-- ENDIF enabled.enabled -->
-					<input type="hidden" name="enabled" value="{enabled.enabled}" />
 				</form>
 			</li>
 			{{{ end }}}

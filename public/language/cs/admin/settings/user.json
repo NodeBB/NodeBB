@@ -1,6 +1,5 @@
 {
 	"authentication": "Ověření",
-	"require-email-confirmation": "Vyžadovat potvrzení e-mailem",
 	"email-confirm-interval": "Uživatel nesmí požádat o znovu zaslání potvrzujícího e-mailu do",
 	"email-confirm-email2": "minut uplynulo",
 	"allow-login-with": "Povolit přihlášení pomocí",

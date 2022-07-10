@@ -10,7 +10,7 @@ const user = require('../user');
 const posts = require('../posts');
 const meta = require('../meta');
 const plugins = require('../plugins');
-const utils = require('../../public/src/utils');
+const utils = require('../utils');
 
 const backlinkRegex = new RegExp(`(?:${nconf.get('url').replace('/', '\\/')}|\b|\\s)\\/topic\\/(\\d+)(?:\\/\\w+)?`, 'g');
 
@@ -44,7 +44,7 @@ module.exports = function (Topics) {
 		if (topicData.mainPid && start === 0) {
 			pids.unshift(topicData.mainPid);
 		}
-		const postData = await posts.getPostsByPids(pids, uid);
+		let postData = await posts.getPostsByPids(pids, uid);
 		if (!postData.length) {
 			return [];
 		}
@@ -55,8 +55,18 @@ module.exports = function (Topics) {
 		}
 
 		Topics.calculatePostIndices(replies, repliesStart);
-
 		await addEventStartEnd(postData, set, reverse, topicData);
+		const allPosts = postData.slice();
+		postData = await user.blocks.filter(uid, postData);
+		if (allPosts.length !== postData.length) {
+			const includedPids = new Set(postData.map(p => p.pid));
+			allPosts.reverse().forEach((p, index) => {
+				if (!includedPids.has(p.pid) && allPosts[index + 1] && !reverse) {
+					allPosts[index + 1].eventEnd = p.eventEnd;
+				}
+			});
+		}
+
 		const result = await plugins.hooks.fire('filter:topic.getPosts', {
 			topic: topicData,
 			uid: uid,
@@ -370,19 +380,19 @@ module.exports = function (Topics) {
 		}
 
 		const { pid, uid, tid } = postData;
-		let add = matches.map(match => match[1]);
+		let add = _.uniq(matches.map(match => match[1]).map(tid => parseInt(tid, 10)));
 
 		const now = Date.now();
 		const topicsExist = await Topics.exists(add);
 		const current = (await db.getSortedSetMembers(`pid:${pid}:backlinks`)).map(tid => parseInt(tid, 10));
 		const remove = current.filter(tid => !add.includes(tid));
-		add = add.filter((_tid, idx) => topicsExist[idx] && !current.includes(_tid) && tid !== parseInt(_tid, 10));
+		add = add.filter((_tid, idx) => topicsExist[idx] && !current.includes(_tid) && tid !== _tid);
 
 		// Remove old backlinks
 		await db.sortedSetRemove(`pid:${pid}:backlinks`, remove);
 
 		// Add new backlinks
-		await db.sortedSetAdd(`pid:${pid}:backlinks`, add.map(Number.bind(null, now)), add);
+		await db.sortedSetAdd(`pid:${pid}:backlinks`, add.map(() => now), add);
 		await Promise.all(add.map(async (tid) => {
 			await Topics.events.log(tid, {
 				uid,
