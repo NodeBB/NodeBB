@@ -17,5 +17,15 @@
 	"reject": "Одбиј",
 	"remove": "Уклони",
 	"notify": "Обавештење",
-	"notify-user": "Обавести корисника"
+	"notify-user": "Обавести корисника",
+	"confirm-reject": "Да ли желите да одбаците ову поруку?",
+	"bulk-actions": "Масовне радње",
+	"accept-all": "Прихвати све",
+	"accept-selected": "Прихвати изабрано",
+	"reject-all": "Одбаци све",
+	"reject-all-confirm": "Да ли желите да одбаците све поруке?",
+	"reject-selected": "Одбаци изабрано",
+	"reject-selected-confirm": "Да ли желите да одбаците изабране поруке (укупно %1)?",
+	"bulk-accept-success": "Прихваћених порука: %1",
+	"bulk-reject-success": "Одбачених порука: %1"
 }

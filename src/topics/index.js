@@ -252,7 +252,8 @@ Topics.getMainPosts = async function (tids, uid) {
 };
 
 async function getMainPosts(mainPids, uid) {
-	const postData = await posts.getPostsByPids(mainPids, uid);
+	let postData = await posts.getPostsByPids(mainPids, uid);
+	postData = await user.blocks.filter(uid, postData);
 	postData.forEach((post) => {
 		if (post) {
 			post.index = 0;

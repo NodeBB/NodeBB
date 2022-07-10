@@ -1,5 +1,7 @@
 'use strict';
 
+const winston = require('winston');
+
 const user = require('../user');
 const notifications = require('../notifications');
 const sockets = require('../socket.io');
@@ -45,8 +47,12 @@ module.exports = function (Messaging) {
 			Messaging.notifyQueue[`${fromUid}:${roomId}`] = queueObj;
 		}
 
-		queueObj.timeout = setTimeout(() => {
-			sendNotifications(fromUid, uids, roomId, queueObj.message);
+		queueObj.timeout = setTimeout(async () => {
+			try {
+				await sendNotifications(fromUid, uids, roomId, queueObj.message);
+			} catch (err) {
+				winston.error(`[messaging/notifications] Unabled to send notification\n${err.stack}`);
+			}
 		}, meta.config.notificationSendDelay * 1000);
 	};
 
@@ -57,11 +63,13 @@ module.exports = function (Messaging) {
 			return;
 		}
 
+		const { displayname } = messageObj.fromUser;
+
 		const isGroupChat = await Messaging.isGroupChat(roomId);
 		const notification = await notifications.create({
 			type: isGroupChat ? 'new-group-chat' : 'new-chat',
-			subject: `[[email:notif.chat.subject, ${messageObj.fromUser.username}]]`,
-			bodyShort: `[[notifications:new_message_from, ${messageObj.fromUser.username}]]`,
+			subject: `[[email:notif.chat.subject, ${displayname}]]`,
+			bodyShort: `[[notifications:new_message_from, ${displayname}]]`,
 			bodyLong: messageObj.content,
 			nid: `chat_${fromuid}_${roomId}`,
 			from: fromuid,

@@ -70,6 +70,18 @@ postsAPI.edit = async function (caller, data) {
 	if (editResult.topic.isMainPost) {
 		await topics.thumbs.migrate(data.uuid, editResult.topic.tid);
 	}
+	const selfPost = parseInt(caller.uid, 10) === parseInt(editResult.post.uid, 10);
+	if (!selfPost && editResult.post.changed) {
+		await events.log({
+			type: `post-edit`,
+			uid: caller.uid,
+			ip: caller.ip,
+			pid: editResult.post.pid,
+			oldContent: editResult.post.oldContent,
+			newContent: editResult.post.newContent,
+		});
+	}
+
 	if (editResult.topic.renamed) {
 		await events.log({
 			type: 'topic-rename',
@@ -227,6 +239,13 @@ postsAPI.move = async function (caller, data) {
 	const [postDeleted, topicDeleted] = await Promise.all([
 		posts.getPostField(data.pid, 'deleted'),
 		topics.getTopicField(data.tid, 'deleted'),
+		await events.log({
+			type: `post-move`,
+			uid: caller.uid,
+			ip: caller.ip,
+			pid: data.pid,
+			toTid: data.tid,
+		}),
 	]);
 
 	if (!postDeleted && !topicDeleted) {

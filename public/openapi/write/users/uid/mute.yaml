@@ -1,0 +1,61 @@
+put:
+  tags:
+    - users
+  summary: mute a user
+  parameters:
+    - in: path
+      name: uid
+      schema:
+        type: integer
+      required: true
+      description: uid of the user to mute
+      example: 2
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            until:
+              type: number
+              description: UNIX timestamp of the mute expiry
+              example: 1585775608076
+            reason:
+              type: string
+              example: the reason for the mute
+  responses:
+    '200':
+      description: successfully muted user
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+delete:
+  tags:
+    - users
+  summary: unmute a user
+  parameters:
+    - in: path
+      name: uid
+      schema:
+        type: integer
+      required: true
+      description: uid of the user to unmute
+      example: 2
+  responses:
+    '200':
+      description: successfully unmuted user
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object

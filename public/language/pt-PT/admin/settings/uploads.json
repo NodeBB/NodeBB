@@ -1,8 +1,11 @@
 {
 	"posts": "Publicações",
-	"allow-files": "Permitir aos utilizadores carregar ficheiros normais",
+	"orphans": "Orphaned Files",
 	"private": "Tornar os ficheiros enviados privados",
 	"strip-exif-data": "Strip EXIF Data",
+	"preserve-orphaned-uploads": "Keep uploaded files on disk after a post is purged",
+	"orphanExpiryDays": "Days to keep orphaned files",
+	"orphanExpiryDays-help": "After this many days, orphaned uploads will be deleted from the file system.<br />Set 0 or leave blank to disable.",
 	"private-extensions": "File extensions to make private",
 	"private-uploads-extensions-help": "Enter comma-separated list of file extensions to make private here (e.g. <code>pdf,xls,doc</code>). An empty list means all files are private.",
 	"resize-image-width-threshold": "Resize images if they are wider than specified width",

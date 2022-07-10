@@ -4,6 +4,8 @@ const winston = require('winston');
 const validator = require('validator');
 const slugify = require('../slugify');
 
+const meta = require('../meta');
+
 const helpers = module.exports;
 
 helpers.try = function (middleware) {
@@ -32,6 +34,7 @@ helpers.buildBodyClass = function (req, res, templateData = {}) {
 		try {
 			p = slugify(decodeURIComponent(p));
 		} catch (err) {
+			winston.error(`Error decoding URI: ${p}`);
 			winston.error(err.stack);
 			p = '';
 		}
@@ -53,6 +56,8 @@ helpers.buildBodyClass = function (req, res, templateData = {}) {
 	}
 
 	parts.push(`page-status-${res.statusCode}`);
+
+	parts.push(`theme-${meta.config['theme:id'].split('-')[2]}`);
 
 	if (req.loggedIn) {
 		parts.push('user-loggedin');

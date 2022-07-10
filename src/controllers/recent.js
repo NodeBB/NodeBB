@@ -12,6 +12,7 @@ const pagination = require('../pagination');
 const privileges = require('../privileges');
 
 const recentController = module.exports;
+const relative_path = nconf.get('relative_path');
 
 recentController.get = async function (req, res, next) {
 	const data = await recentController.getData(req, 'recent', 'recent');
@@ -56,33 +57,36 @@ recentController.getData = async function (req, url, sort) {
 		query: req.query,
 	});
 
+	const isDisplayedAsHome = !(req.originalUrl.startsWith(`${relative_path}/api/${url}`) || req.originalUrl.startsWith(`${relative_path}/${url}`));
+	const baseUrl = isDisplayedAsHome ? '' : url;
+
+	if (isDisplayedAsHome) {
+		data.title = meta.config.homePageTitle || '[[pages:home]]';
+	} else {
+		data.title = `[[pages:${url}]]`;
+		data.breadcrumbs = helpers.buildBreadcrumbs([{ text: `[[${url}:title]]` }]);
+	}
+
 	data.canPost = canPost;
 	data.showSelect = isPrivileged;
 	data.showTopicTools = isPrivileged;
-	data.allCategoriesUrl = url + helpers.buildQueryString(req.query, 'cid', '');
+	data.allCategoriesUrl = baseUrl + helpers.buildQueryString(req.query, 'cid', '');
 	data.selectedCategory = categoryData.selectedCategory;
 	data.selectedCids = categoryData.selectedCids;
 	data['feeds:disableRSS'] = meta.config['feeds:disableRSS'] || 0;
-	data.rssFeedUrl = `${nconf.get('relative_path')}/${url}.rss`;
+	data.rssFeedUrl = `${relative_path}/${url}.rss`;
 	if (req.loggedIn) {
 		data.rssFeedUrl += `?uid=${req.uid}&token=${rssToken}`;
 	}
-	data.title = meta.config.homePageTitle || '[[pages:home]]';
 
-	data.filters = helpers.buildFilters(url, filter, req.query);
+	data.filters = helpers.buildFilters(baseUrl, filter, req.query);
 	data.selectedFilter = data.filters.find(filter => filter && filter.selected);
-	data.terms = helpers.buildTerms(url, term, req.query);
+	data.terms = helpers.buildTerms(baseUrl, term, req.query);
 	data.selectedTerm = data.terms.find(term => term && term.selected);
 
 	const pageCount = Math.max(1, Math.ceil(data.topicCount / settings.topicsPerPage));
 	data.pagination = pagination.create(page, pageCount, req.query);
 	helpers.addLinkTags({ url: url, res: req.res, tags: data.pagination.rel });
-
-	if (req.originalUrl.startsWith(`${nconf.get('relative_path')}/api/${url}`) || req.originalUrl.startsWith(`${nconf.get('relative_path')}/${url}`)) {
-		data.title = `[[pages:${url}]]`;
-		data.breadcrumbs = helpers.buildBreadcrumbs([{ text: `[[${url}:title]]` }]);
-	}
-
 	return data;
 };
 

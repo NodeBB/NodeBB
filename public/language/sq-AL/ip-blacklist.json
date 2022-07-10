@@ -1,0 +1,19 @@
+{
+	"lead": "Konfiguro listën e zezë të IP-së këtu.",
+	"description": "Herë pas here, një bllokim i llogarisë së përdoruesit nuk është një pengesë e mjaftueshme. Nganjëhere, kufizimi i aksesit në forum në një IP të caktuar ose një sërë IP-sh është mënyra më e mirë për të mbrojtur një forum. Në këto skenarë, ju mund të shtoni adresa IP problematike ose blloqe të tëra CIDR në këtë listë të zezë dhe ato do të parandalohen nga hyrja ose regjistrimi i një llogarie të re.",
+	"active-rules": "Rregullat aktive",
+	"validate": "Vërteto listën e zezë",
+	"apply": "Aplikoni listën e zezë",
+	"hints": "Këshilla sintaksore",
+	"hint-1": "Përcaktoni një adresë IP të vetme për rresht. Mund të shtoni blloqe IP për sa kohë që ato ndjekin formatin CIDR (p.sh. <code>192.168.100.0/22</code>).",
+	"hint-2": "Mund të shtoni në komente duke filluar rreshtat me simbolin <code>#</code>.",
+
+	"validate.x-valid": "<strong>% 1</strong> nga <strong>%2</strong> rregull(e) të vlefshme.",
+	"validate.x-invalid": "Rregullat e mëposhtme <strong>% 1</strong> janë të pavlefshme:",
+
+	"alerts.applied-success": "Lista e zezë u aplikua",
+
+	"analytics.blacklist-hourly": "<strong>Figura 1</strong> &ndash; Goditjet në listën e zezë në orë",
+	"analytics.blacklist-daily": "<strong>Figura 2</strong> &ndash; Hitet në listën e zezë në ditë",
+	"ip-banned": "IP e ndaluar"
+}

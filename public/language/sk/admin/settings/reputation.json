@@ -4,9 +4,13 @@
 	"disable-down-voting": "Zakázať hlasovanie",
 	"votes-are-public": "Všetky hlasovania sú verejné",
 	"thresholds": "Obmedzenie aktivity",
+	"min-rep-upvote": "Minimum reputation to upvote posts",
+	"upvotes-per-day": "Upvotes per day (set to 0 for unlimited upvotes)",
+	"upvotes-per-user-per-day": "Upvotes per user per day (set to 0 for unlimited upvotes)",
 	"min-rep-downvote": "Minimálna reputácia k vyjadreniu nesúhlasu s príspevkom ",
 	"downvotes-per-day": "Downvotes per day (set to 0 for unlimited downvotes)",
 	"downvotes-per-user-per-day": "Downvotes per user per day (set to 0 for unlimited downvotes)",
+	"min-rep-chat": "Minimum reputation to send chat messages",
 	"min-rep-flag": "Minimálna reputácia pre označenie príspevku",
 	"min-rep-website": "Minimálna reputácia pre pridanie „Webovej stránky” do používateľského profilu",
 	"min-rep-aboutme": "Minimálna reputácia pre pridanie „O mne” do používateľského profilu",
@@ -18,5 +22,6 @@
 	"flags.limit-per-target": "Maximum number of times something can be flagged",
 	"flags.limit-per-target-placeholder": "Default: 0",
 	"flags.limit-per-target-help": "When a post or user is flagged multiple times, each additional flag is considered a &quot;report&quot; and added to the original flag. Set this option to a number other than zero to limit the number of reports an item can receive.",
+  	"flags.auto-flag-on-downvote-threshold": "Number of downvotes to auto flag posts (Set to 0 to disable, default: 0)",
 	"flags.auto-resolve-on-ban": "Automatically resolve all of a user's tickets when they are banned"
 }

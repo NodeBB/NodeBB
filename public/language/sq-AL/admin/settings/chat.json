@@ -1,0 +1,12 @@
+{
+	"chat-settings": "Chat Settings",
+	"disable": "Disable chat",
+	"disable-editing": "Disable chat message editing/deletion",
+	"disable-editing-help": "Administrators and global moderators are exempt from this restriction",
+	"max-length": "Maximum length of chat messages",
+	"max-room-size": "Maximum number of users in chat rooms",
+	"delay": "Time between chat messages in milliseconds",
+	"notification-delay": "Notification delay for chat messages. (0 for no delay)",
+	"restrictions.seconds-edit-after": "Number of seconds a chat message will remain editable. (0 disabled)",
+	"restrictions.seconds-delete-after": "Number of seconds a chat message will remain deletable. (0 disabled)"
+}

@@ -4,6 +4,7 @@ const nconf = require('nconf');
 const winston = require('winston');
 const path = require('path');
 const express = require('express');
+const chalk = require('chalk');
 
 const meta = require('../meta');
 const controllers = require('../controllers');
@@ -27,36 +28,36 @@ const _mounts = {
 _mounts.main = (app, middleware, controllers) => {
 	const loginRegisterMiddleware = [middleware.redirectToAccountIfLoggedIn];
 
-	setupPageRoute(app, '/login', middleware, loginRegisterMiddleware, controllers.login);
-	setupPageRoute(app, '/register', middleware, loginRegisterMiddleware, controllers.register);
-	setupPageRoute(app, '/register/complete', middleware, [], controllers.registerInterstitial);
-	setupPageRoute(app, '/compose', middleware, [], controllers.composer.get);
-	setupPageRoute(app, '/confirm/:code', middleware, [], controllers.confirmEmail);
-	setupPageRoute(app, '/outgoing', middleware, [], controllers.outgoing);
-	setupPageRoute(app, '/search', middleware, [], controllers.search.search);
-	setupPageRoute(app, '/reset/:code?', middleware, [middleware.delayLoading], controllers.reset);
-	setupPageRoute(app, '/tos', middleware, [], controllers.termsOfUse);
+	setupPageRoute(app, '/login', loginRegisterMiddleware, controllers.login);
+	setupPageRoute(app, '/register', loginRegisterMiddleware, controllers.register);
+	setupPageRoute(app, '/register/complete', [], controllers.registerInterstitial);
+	setupPageRoute(app, '/compose', [], controllers.composer.get);
+	setupPageRoute(app, '/confirm/:code', [], controllers.confirmEmail);
+	setupPageRoute(app, '/outgoing', [], controllers.outgoing);
+	setupPageRoute(app, '/search', [], controllers.search.search);
+	setupPageRoute(app, '/reset/:code?', [middleware.delayLoading], controllers.reset);
+	setupPageRoute(app, '/tos', [], controllers.termsOfUse);
 
-	setupPageRoute(app, '/email/unsubscribe/:token', middleware, [], controllers.accounts.settings.unsubscribe);
+	setupPageRoute(app, '/email/unsubscribe/:token', [], controllers.accounts.settings.unsubscribe);
 	app.post('/email/unsubscribe/:token', controllers.accounts.settings.unsubscribePost);
 
 	app.post('/compose', middleware.applyCSRF, controllers.composer.post);
 };
 
 _mounts.mod = (app, middleware, controllers) => {
-	setupPageRoute(app, '/flags', middleware, [], controllers.mods.flags.list);
-	setupPageRoute(app, '/flags/:flagId', middleware, [], controllers.mods.flags.detail);
-	setupPageRoute(app, '/post-queue/:id?', middleware, [], controllers.mods.postQueue);
+	setupPageRoute(app, '/flags', [], controllers.mods.flags.list);
+	setupPageRoute(app, '/flags/:flagId', [], controllers.mods.flags.detail);
+	setupPageRoute(app, '/post-queue/:id?', [], controllers.mods.postQueue);
 };
 
 _mounts.globalMod = (app, middleware, controllers) => {
-	setupPageRoute(app, '/ip-blacklist', middleware, [], controllers.globalMods.ipBlacklist);
-	setupPageRoute(app, '/registration-queue', middleware, [], controllers.globalMods.registrationQueue);
+	setupPageRoute(app, '/ip-blacklist', [], controllers.globalMods.ipBlacklist);
+	setupPageRoute(app, '/registration-queue', [], controllers.globalMods.registrationQueue);
 };
 
 _mounts.topic = (app, name, middleware, controllers) => {
-	setupPageRoute(app, `/${name}/:topic_id/:slug/:post_index?`, middleware, [], controllers.topics.get);
-	setupPageRoute(app, `/${name}/:topic_id/:slug?`, middleware, [], controllers.topics.get);
+	setupPageRoute(app, `/${name}/:topic_id/:slug/:post_index?`, [], controllers.topics.get);
+	setupPageRoute(app, `/${name}/:topic_id/:slug?`, [], controllers.topics.get);
 };
 
 _mounts.post = (app, name, middleware, controllers) => {
@@ -71,33 +72,33 @@ _mounts.post = (app, name, middleware, controllers) => {
 };
 
 _mounts.tags = (app, name, middleware, controllers) => {
-	setupPageRoute(app, `/${name}/:tag`, middleware, [middleware.privateTagListing], controllers.tags.getTag);
-	setupPageRoute(app, `/${name}`, middleware, [middleware.privateTagListing], controllers.tags.getTags);
+	setupPageRoute(app, `/${name}/:tag`, [middleware.privateTagListing], controllers.tags.getTag);
+	setupPageRoute(app, `/${name}`, [middleware.privateTagListing], controllers.tags.getTags);
 };
 
 _mounts.category = (app, name, middleware, controllers) => {
-	setupPageRoute(app, '/categories', middleware, [], controllers.categories.list);
-	setupPageRoute(app, '/popular', middleware, [], controllers.popular.get);
-	setupPageRoute(app, '/recent', middleware, [], controllers.recent.get);
-	setupPageRoute(app, '/top', middleware, [], controllers.top.get);
-	setupPageRoute(app, '/unread', middleware, [middleware.ensureLoggedIn], controllers.unread.get);
+	setupPageRoute(app, '/categories', [], controllers.categories.list);
+	setupPageRoute(app, '/popular', [], controllers.popular.get);
+	setupPageRoute(app, '/recent', [], controllers.recent.get);
+	setupPageRoute(app, '/top', [], controllers.top.get);
+	setupPageRoute(app, '/unread', [middleware.ensureLoggedIn], controllers.unread.get);
 
-	setupPageRoute(app, `/${name}/:category_id/:slug/:topic_index`, middleware, [], controllers.category.get);
-	setupPageRoute(app, `/${name}/:category_id/:slug?`, middleware, [], controllers.category.get);
+	setupPageRoute(app, `/${name}/:category_id/:slug/:topic_index`, [], controllers.category.get);
+	setupPageRoute(app, `/${name}/:category_id/:slug?`, [], controllers.category.get);
 };
 
 _mounts.users = (app, name, middleware, controllers) => {
 	const middlewares = [middleware.canViewUsers];
 
-	setupPageRoute(app, `/${name}`, middleware, middlewares, controllers.users.index);
+	setupPageRoute(app, `/${name}`, middlewares, controllers.users.index);
 };
 
 _mounts.groups = (app, name, middleware, controllers) => {
 	const middlewares = [middleware.canViewGroups];
 
-	setupPageRoute(app, `/${name}`, middleware, middlewares, controllers.groups.list);
-	setupPageRoute(app, `/${name}/:slug`, middleware, middlewares, controllers.groups.details);
-	setupPageRoute(app, `/${name}/:slug/members`, middleware, middlewares, controllers.groups.members);
+	setupPageRoute(app, `/${name}`, middlewares, controllers.groups.list);
+	setupPageRoute(app, `/${name}/:slug`, middlewares, controllers.groups.details);
+	setupPageRoute(app, `/${name}/:slug/members`, middlewares, controllers.groups.members);
 };
 
 module.exports = async function (app, middleware) {
@@ -138,7 +139,7 @@ module.exports = async function (app, middleware) {
 	router.use('/', controllers.home.rewrite);
 
 	// homepage handled by `action:homepage.get:[route]`
-	setupPageRoute(router, '/', middleware, [], controllers.home.pluginHook);
+	setupPageRoute(router, '/', [], controllers.home.pluginHook);
 
 	await plugins.reloadRoutes({ router: router });
 	await authRoutes.reloadRoutes({ router: router });
@@ -171,7 +172,6 @@ function addCoreRoutes(app, router, middleware, mounts) {
 	const statics = [
 		{ route: '/assets', path: path.join(__dirname, '../../build/public') },
 		{ route: '/assets', path: path.join(__dirname, '../../public') },
-		{ route: '/plugins', path: path.join(__dirname, '../../build/public/plugins') },
 	];
 	const staticOptions = {
 		maxAge: app.enabled('cache') ? 5184000000 : 0,
@@ -186,6 +186,10 @@ function addCoreRoutes(app, router, middleware, mounts) {
 	});
 	app.use(`${relativePath}/uploads`, (req, res) => {
 		res.redirect(`${relativePath}/assets/uploads${req.path}?${meta.config['cache-buster']}`);
+	});
+	app.use(`${relativePath}/plugins`, (req, res) => {
+		winston.warn(`${chalk.bold.red('[deprecation]')} The \`/plugins\` shorthand prefix is deprecated, prefix with \`/assets/plugins\` instead (path: ${req.path})`);
+		res.redirect(`${relativePath}/assets/plugins${req.path}${req._parsedUrl.search || ''}`);
 	});
 
 	// Skins

@@ -1,0 +1,15 @@
+{
+    "title": "Të palexuara",
+    "no_unread_topics": "Nuk ka tema të palexuara.",
+    "load_more": "Ngarko më shumë",
+    "mark_as_read": "Shëno si të lexuar",
+    "selected": "I/e Zgjedhur",
+    "all": "Të gjitha",
+    "all_categories": "Të gjitha kategoritë",
+    "topics_marked_as_read.success": "Temat e shënuara si të lexuara!",
+    "all-topics": "Të gjitha temat",
+    "new-topics": "Tema të reja",
+    "watched-topics": "Temat e shikuara",
+    "unreplied-topics": "Tema pa përgjigje",
+    "multiple-categories-selected": "Disa të zgjedhura njëkohësisht"
+}

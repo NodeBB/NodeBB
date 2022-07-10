@@ -1,8 +1,8 @@
 {
-    "no_tag_topics": "此话题还没有主题帖。",
-    "tags": "话题",
-    "enter_tags_here": "在这里输入话题，每个话题 %1 到 %2 个字符。",
-    "enter_tags_here_short": "输入话题...",
-    "no_tags": "尚无话题。",
-    "select_tags": "选择话题"
+    "no_tag_topics": "此标签还没有主题帖。",
+    "tags": "标签",
+    "enter_tags_here": "在这里输入标签，每个标签 %1 到 %2 个字符。",
+    "enter_tags_here_short": "输入标签...",
+    "no_tags": "尚无标签。",
+    "select_tags": "选择标签"
 }

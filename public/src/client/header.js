@@ -1,9 +1,17 @@
 'use strict';
 
-define('forum/header', ['forum/header/notifications', 'forum/header/chat', 'alerts'], function (notifications, chat, alerts) {
+define('forum/header', [
+	'forum/header/unread',
+	'forum/header/notifications',
+	'forum/header/chat',
+	'alerts',
+], function (unread, notifications, chat, alerts) {
 	const module = {};
 
 	module.prepareDOM = function () {
+		if (app.user.uid > 0) {
+			unread.initUnreadTopics();
+		}
 		notifications.prepareDOM();
 		chat.prepareDOM();
 		handleStatusChange();

@@ -113,6 +113,7 @@
     "bookmark": "Закладка",
     "bookmarks": "Закладки",
     "bookmarks.has_no_bookmarks": "Ви ще не додали в закладки жодного поста.",
+    "copy-permalink": "Copy Permalink",
     "loading_more_posts": "Завантажуємо більше постів",
     "move_topic": "Перемістити тему",
     "move_topics": "Перемістити теми",
@@ -181,5 +182,7 @@
     "timeago_earlier": "%1 раніше",
     "first-post": "First post",
     "last-post": "Last post",
+    "go-to-my-next-post": "Go to my next post",
+    "no-more-next-post": "You don't have more posts in this topic",
     "post-quick-reply": "Post quick reply"
 }

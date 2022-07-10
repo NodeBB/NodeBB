@@ -1,8 +1,11 @@
 {
 	"posts": "Sujets",
-	"allow-files": "Autoriser les utilisateurs à télécharger des fichiers standards",
+	"orphans": "Fichiers orphelins",
 	"private": "Rendre privés les fichiers téléchargés",
 	"strip-exif-data": "Supprimer les données EXIF",
+	"preserve-orphaned-uploads": "Conserver les fichiers téléchargés après la suppression d'une publication.",
+	"orphanExpiryDays": "Jours pour garder les fichiers orphelins",
+	"orphanExpiryDays-help": "After this many days, orphaned uploads will be deleted from the file system.<br />Set 0 or leave blank to disable.",
 	"private-extensions": "Rendre privé des extensions de fichier.",
 	"private-uploads-extensions-help": "Renseignez ici une liste d'extensions de fichiers séparées par des virgules pour les rendre privées (par exemple : <code>pdf, xls, doc</code>). Une liste vide signifie que tous les fichiers sont privés.",
 	"resize-image-width-threshold": "Redimensionner les images si elles sont plus larges que la largeur spécifiée",

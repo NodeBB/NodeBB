@@ -56,8 +56,8 @@
 	"active-users.total": "全部",
 	"active-users.connections": "连接",
 
-	"guest-registered-users": "Guest vs Registered Users",
-	"guest": "Guest",
+	"guest-registered-users": "游客 vs 注册用户",
+	"guest": "游客",
 	"registered": "已注册",
 
 	"user-presence": "用户光临",
@@ -68,7 +68,7 @@
 	"unread": "未读",
 
 	"high-presence-topics": "热门话题",
-	"popular-searches": "Popular Searches",
+	"popular-searches": "热门搜索",
 
 	"graphs.page-views": "页面浏览量",
 	"graphs.page-views-registered": "注册用户页面浏览量",
@@ -76,14 +76,14 @@
 	"graphs.page-views-bot": "爬虫页面浏览量",
 	"graphs.unique-visitors": "单一访客",
 	"graphs.registered-users": "已注册用户",
-	"graphs.guest-users": "Guest Users",
+	"graphs.guest-users": "游客",
 	"last-restarted-by": "上次重启管理员/时间",
 	"no-users-browsing": "没有用户正在浏览",
 
 	"back-to-dashboard": "返回控制面板",
 	"details.no-users": "选定的时间内没有用户加入",
 	"details.no-topics": "选定的时间内没有发布主题",
-	"details.no-searches": "No searches have been made yet",
+	"details.no-searches": "目前还没有进行任何搜索",
 	"details.no-logins": "选定的时间内没有登录记录",
 	"details.logins-static": "NodeBB只保留%1天登录数据，下列表格显示最近活动的登录。",
 	"details.logins-login-time": "登录时间"

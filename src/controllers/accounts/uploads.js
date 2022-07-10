@@ -1,5 +1,7 @@
 'use strict';
 
+const path = require('path');
+
 const nconf = require('nconf');
 
 const db = require('../../database');
@@ -27,7 +29,7 @@ uploadsController.get = async function (req, res, next) {
 
 	userData.uploads = uploadNames.map(uploadName => ({
 		name: uploadName,
-		url: nconf.get('upload_url') + uploadName,
+		url: path.resolve(nconf.get('upload_url'), uploadName),
 	}));
 	const pageCount = Math.ceil(itemCount / itemsPerPage);
 	userData.pagination = pagination.create(page, pageCount, req.query);

@@ -1,0 +1,103 @@
+get:
+  tags:
+    - chats
+  summary: get chat room users
+  description: This operation retrieves the users in a chat room message
+  parameters:
+    - in: path
+      name: roomId
+      schema:
+        type: number
+      required: true
+      description: a valid chat room id
+      example: 1
+  responses:
+    '200':
+      description: Users successfully retrieved
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../../components/schemas/Chats.yaml#/RoomUserList
+post:
+  tags:
+    - chats
+  summary: add users to chat room
+  description: This operation invites users to a chat room
+  parameters:
+    - in: path
+      name: roomId
+      schema:
+        type: number
+      required: true
+      description: a valid chat room id
+      example: 1
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            uids:
+              type: array
+              description: A list of valid uids
+              example: [2, 4]
+              items:
+                type: number
+                description: A valid uid
+  responses:
+    '200':
+      description: users successfully invited to chat room
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../../components/schemas/Chats.yaml#/RoomUserList
+delete:
+  tags:
+    - chats
+  summary: leave/remove users from chat room
+  description: This operation removes (kicks) multiple user from a chat room, or leaves the chat room if the requested user is the same as the calling user.
+  parameters:
+    - in: path
+      name: roomId
+      schema:
+        type: number
+      required: true
+      description: a valid chat room id
+      example: 1
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            uids:
+              type: array
+              description: A list of valid uids
+              example: [2]
+              items:
+                type: number
+                description: A valid uid
+  responses:
+    '200':
+      description: users successfully removed from chat room
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../../components/schemas/Chats.yaml#/RoomUserList

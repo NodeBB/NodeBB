@@ -9,7 +9,7 @@
 	<link rel="stylesheet" type="text/css" href="bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="installer.css">
 
-	<script type="text/javascript" async defer src="installer.min.js"></script>
+	<script type="text/javascript" async defer src="/assets/installer.min.js"></script>
 </head>
 
 <body>
@@ -100,8 +100,8 @@
 					<div class="col-sm-7 col-xs-12 input-field">
 						<label for="install:database">Database Type</label>
 						<select id="install:database" class="form-control" name="database">
-							<option value="redis">Redis</option>
 							<option value="mongo">MongoDB</option>
+							<option value="redis">Redis</option>
 							<option value="postgres">PostgreSQL</option>
 						</select>
 					</div>

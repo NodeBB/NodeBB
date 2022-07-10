@@ -32,7 +32,7 @@ module.exports = function (Posts) {
 			}
 		});
 
-		return await Promise.all(userData.map(async (userData) => {
+		const result = await Promise.all(userData.map(async (userData) => {
 			const [isMemberOfGroups, signature, customProfileInfo] = await Promise.all([
 				checkGroupMembership(userData.uid, userData.groupTitleArray),
 				parseSignature(userData, uid, uidsSignatureSet),
@@ -51,6 +51,8 @@ module.exports = function (Posts) {
 
 			return await plugins.hooks.fire('filter:posts.modifyUserInfo', userData);
 		}));
+		const hookResult = await plugins.hooks.fire('filter:posts.getUserInfoForPosts', { users: result });
+		return hookResult.users;
 	};
 
 	Posts.overrideGuestHandle = function (postData, handle) {
@@ -102,7 +104,7 @@ module.exports = function (Posts) {
 			'uid', 'username', 'fullname', 'userslug',
 			'reputation', 'postcount', 'topiccount', 'picture',
 			'signature', 'banned', 'banned:expire', 'status',
-			'lastonline', 'groupTitle',
+			'lastonline', 'groupTitle', 'mutedUntil',
 		];
 		const result = await plugins.hooks.fire('filter:posts.addUserFields', {
 			fields: fields,
@@ -158,7 +160,7 @@ module.exports = function (Posts) {
 
 			bulkAdd.push([`uid:${toUid}:posts`, post.timestamp, post.pid]);
 			bulkAdd.push([`cid:${post.cid}:uid:${toUid}:pids`, post.timestamp, post.pid]);
-			if (post.votes > 0) {
+			if (post.votes > 0 || post.votes < 0) {
 				bulkAdd.push([`cid:${post.cid}:uid:${toUid}:pids:votes`, post.votes, post.pid]);
 			}
 			postsByUser[post.uid] = postsByUser[post.uid] || [];

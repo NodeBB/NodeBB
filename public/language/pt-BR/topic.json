@@ -113,6 +113,7 @@
     "bookmark": "Favorito",
     "bookmarks": "Favoritos",
     "bookmarks.has_no_bookmarks": "Você ainda não adicionou quaisquer posts aos favoritos.",
+    "copy-permalink": "Copy Permalink",
     "loading_more_posts": "Carregando Mais Posts",
     "move_topic": "Mover Tópico",
     "move_topics": "Mover Tópicos",
@@ -181,5 +182,7 @@
     "timeago_earlier": "%1 mais cedo",
     "first-post": "Primeiro post",
     "last-post": "Último post",
+    "go-to-my-next-post": "Go to my next post",
+    "no-more-next-post": "You don't have more posts in this topic",
     "post-quick-reply": "Post quick reply"
 }

@@ -137,9 +137,11 @@ usersAPI.follow = async function (caller, data) {
 	});
 
 	const userData = await user.getUserFields(caller.uid, ['username', 'userslug']);
+	const { displayname } = userData;
+
 	const notifObj = await notifications.create({
 		type: 'follow',
-		bodyShort: `[[notifications:user_started_following_you, ${userData.username}]]`,
+		bodyShort: `[[notifications:user_started_following_you, ${displayname}]]`,
 		nid: `follow:${data.uid}:uid:${caller.uid}`,
 		from: caller.uid,
 		path: `/uid/${data.uid}/followers`,
@@ -217,6 +219,66 @@ usersAPI.unban = async function (caller, data) {
 		ip: caller.ip,
 	});
 	plugins.hooks.fire('action:user.unbanned', {
+		callerUid: caller.uid,
+		ip: caller.ip,
+		uid: data.uid,
+	});
+};
+
+usersAPI.mute = async function (caller, data) {
+	if (!await privileges.users.hasMutePrivilege(caller.uid)) {
+		throw new Error('[[error:no-privileges]]');
+	} else if (await user.isAdministrator(data.uid)) {
+		throw new Error('[[error:cant-mute-other-admins]]');
+	}
+	const reason = data.reason || '[[user:info.muted-no-reason]]';
+	await db.setObject(`user:${data.uid}`, {
+		mutedUntil: data.until,
+		mutedReason: reason,
+	});
+	const now = Date.now();
+	const muteKey = `uid:${data.uid}:mute:${now}`;
+	const muteData = {
+		fromUid: caller.uid,
+		uid: data.uid,
+		timestamp: now,
+		expire: data.until,
+	};
+	if (data.reason) {
+		muteData.reason = reason;
+	}
+	await db.sortedSetAdd(`uid:${data.uid}:mutes:timestamp`, now, muteKey);
+	await db.setObject(muteKey, muteData);
+	await events.log({
+		type: 'user-mute',
+		uid: caller.uid,
+		targetUid: data.uid,
+		ip: caller.ip,
+		reason: data.reason || undefined,
+	});
+	plugins.hooks.fire('action:user.muted', {
+		callerUid: caller.uid,
+		ip: caller.ip,
+		uid: data.uid,
+		until: data.until > 0 ? data.until : undefined,
+		reason: data.reason || undefined,
+	});
+};
+
+usersAPI.unmute = async function (caller, data) {
+	if (!await privileges.users.hasMutePrivilege(caller.uid)) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	await db.deleteObjectFields(`user:${data.uid}`, ['mutedUntil', 'mutedReason']);
+
+	await events.log({
+		type: 'user-unmute',
+		uid: caller.uid,
+		targetUid: data.uid,
+		ip: caller.ip,
+	});
+	plugins.hooks.fire('action:user.unmuted', {
 		callerUid: caller.uid,
 		ip: caller.ip,
 		uid: data.uid,

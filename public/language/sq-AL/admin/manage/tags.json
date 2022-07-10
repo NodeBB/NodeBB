@@ -1,0 +1,18 @@
+{
+	"none": "Your forum does not have any topics with tags yet.",
+	"bg-color": "Background Colour",
+	"text-color": "Text Colour",
+	"description": "Select tags by clicking or dragging, use <code>CTRL</code> to select multiple tags.",
+	"create": "Create Tag",
+	"modify": "Modify Tags",
+	"rename": "Rename Tags",
+	"delete": "Delete Selected Tags",
+	"search": "Search for tags...",
+	"settings": "Tags Settings",
+	"name": "Tag Name",
+
+	"alerts.editing": "Editing tag(s)",
+	"alerts.confirm-delete": "Do you want to delete the selected tags?",
+	"alerts.update-success": "Tag Updated!",
+	"reset-colors": "Reset colors"
+}

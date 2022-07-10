@@ -68,6 +68,7 @@ UserEmail.sendValidationEmail = async function (uid, options) {
 	 * Options:
 	 * - email, overrides email retrieval
 	 * - force, sends email even if it is too soon to send another
+	 * - template, changes the template used for email sending
 	 */
 
 	if (meta.config.sendValidationEmail !== 1) {
@@ -84,7 +85,7 @@ UserEmail.sendValidationEmail = async function (uid, options) {
 		};
 	}
 
-	let confirm_code = utils.generateUUID();
+	const confirm_code = utils.generateUUID();
 	const confirm_link = `${nconf.get('url')}/confirm/${confirm_code}`;
 
 	const emailInterval = meta.config.emailConfirmInterval;
@@ -104,17 +105,27 @@ UserEmail.sendValidationEmail = async function (uid, options) {
 		throw new Error(`[[error:confirm-email-already-sent, ${emailInterval}]]`);
 	}
 
+	const username = await user.getUserField(uid, 'username');
+	const data = await plugins.hooks.fire('filter:user.verify', {
+		uid,
+		username,
+		confirm_link,
+		confirm_code: await plugins.hooks.fire('filter:user.verify.code', confirm_code),
+		email: options.email,
+
+		subject: options.subject || '[[email:email.verify-your-email.subject]]',
+		template: options.template || 'verify-email',
+	});
+
 	await UserEmail.expireValidation(uid);
 	await db.set(`confirm:byUid:${uid}`, confirm_code);
 	await db.pexpireAt(`confirm:byUid:${uid}`, Date.now() + (emailInterval * 60 * 1000));
-	confirm_code = await plugins.hooks.fire('filter:user.verify.code', confirm_code);
 
 	await db.setObject(`confirm:${confirm_code}`, {
 		email: options.email.toLowerCase(),
 		uid: uid,
 	});
 	await db.expireAt(`confirm:${confirm_code}`, Math.floor((Date.now() / 1000) + (60 * 60 * 24)));
-	const username = await user.getUserField(uid, 'username');
 
 	winston.verbose(`[user/email] Validation email for uid ${uid} sent to ${options.email}`);
 	events.log({
@@ -123,17 +134,6 @@ UserEmail.sendValidationEmail = async function (uid, options) {
 		confirm_code,
 		...options,
 	});
-
-	const data = {
-		uid,
-		username,
-		confirm_link,
-		confirm_code,
-		email: options.email,
-
-		subject: options.subject || '[[email:email.verify-your-email.subject]]',
-		template: options.template || 'verify-email',
-	};
 
 	if (plugins.hooks.hasListeners('action:user.verify')) {
 		plugins.hooks.fire('action:user.verify', { uid: uid, data: data });

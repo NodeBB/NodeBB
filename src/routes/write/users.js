@@ -36,6 +36,9 @@ function authenticatedRoutes() {
 	setupApiRoute(router, 'put', '/:uid/ban', [...middlewares, middleware.assert.user], controllers.write.users.ban);
 	setupApiRoute(router, 'delete', '/:uid/ban', [...middlewares, middleware.assert.user], controllers.write.users.unban);
 
+	setupApiRoute(router, 'put', '/:uid/mute', [...middlewares, middleware.assert.user], controllers.write.users.mute);
+	setupApiRoute(router, 'delete', '/:uid/mute', [...middlewares, middleware.assert.user], controllers.write.users.unmute);
+
 	setupApiRoute(router, 'post', '/:uid/tokens', [...middlewares, middleware.assert.user], controllers.write.users.generateToken);
 	setupApiRoute(router, 'delete', '/:uid/tokens/:token', [...middlewares, middleware.assert.user], controllers.write.users.deleteToken);
 
@@ -43,6 +46,10 @@ function authenticatedRoutes() {
 
 	setupApiRoute(router, 'post', '/:uid/invites', middlewares, controllers.write.users.invite);
 	setupApiRoute(router, 'get', '/:uid/invites/groups', [...middlewares, middleware.assert.user], controllers.write.users.getInviteGroups);
+
+	setupApiRoute(router, 'get', '/:uid/emails', [...middlewares, middleware.assert.user], controllers.write.users.listEmails);
+	setupApiRoute(router, 'get', '/:uid/emails/:email', [...middlewares, middleware.assert.user], controllers.write.users.getEmail);
+	setupApiRoute(router, 'post', '/:uid/emails/:email/confirm', [...middlewares, middleware.assert.user], controllers.write.users.confirmEmail);
 
 	// Shorthand route to access user routes by userslug
 	router.all('/+bySlug/:userslug*?', [], controllers.write.users.redirectBySlug);

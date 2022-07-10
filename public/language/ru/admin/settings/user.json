@@ -1,6 +1,5 @@
 {
 	"authentication": "Авторизация",
-	"require-email-confirmation": "Необходим подтверждённый адрес электронной почты",
 	"email-confirm-interval": "Пользователь не сможет снова запросить код подтверждения, пока не пройдёт",
 	"email-confirm-email2": "минут",
 	"allow-login-with": "Разрешить вход с помощью",

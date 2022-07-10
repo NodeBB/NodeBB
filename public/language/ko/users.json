@@ -5,6 +5,7 @@
     "most_flags": "신고순",
     "search": "검색",
     "enter_username": "검색할 사용자명을 입력하세요.",
+    "search-user-for-chat": "Search a user to start chat",
     "load_more": "더 보기",
     "users-found-search-took": "%1명의 사용자를 찾았습니다. 검색 소요 시간 %2초",
     "filter-by": "필터 기준",

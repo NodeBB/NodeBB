@@ -113,6 +113,7 @@
     "bookmark": "Favoriet",
     "bookmarks": "Favorieten",
     "bookmarks.has_no_bookmarks": "Je hebt nog geen berichten aan je favorieten toegevoegd.",
+    "copy-permalink": "Copy Permalink",
     "loading_more_posts": "Meer berichten laden...",
     "move_topic": "Onderwerp verplaatsen",
     "move_topics": "Verplaats onderwerpen",
@@ -181,5 +182,7 @@
     "timeago_earlier": "%1 eerder",
     "first-post": "First post",
     "last-post": "Last post",
+    "go-to-my-next-post": "Go to my next post",
+    "no-more-next-post": "You don't have more posts in this topic",
     "post-quick-reply": "Post quick reply"
 }

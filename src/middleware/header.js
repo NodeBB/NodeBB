@@ -44,6 +44,7 @@ middleware.buildHeader = helpers.try(async (req, res, next) => {
 		req.logout();
 		return res.redirect('/');
 	}
+
 	res.locals.config = config;
 	next();
 });
@@ -183,6 +184,8 @@ async function appendUnreadCounts({ uid, navigation, unreadData, query }) {
 		newTopic: unreadCounts.new || 0,
 		watchedTopic: unreadCounts.watched || 0,
 		unrepliedTopic: unreadCounts.unreplied || 0,
+		mobileUnread: 0,
+		unreadUrl: '/unread',
 		chat: results.unreadChatCount || 0,
 		notification: results.unreadNotificationCount || 0,
 		flags: results.unreadFlagCount || 0,
@@ -200,6 +203,8 @@ async function appendUnreadCounts({ uid, navigation, unreadData, query }) {
 			if (item && item.originalRoute === route) {
 				unreadData[filter] = _.zipObject(tidsByFilter[filter], tidsByFilter[filter].map(() => true));
 				item.content = content;
+				unreadCount.mobileUnread = content;
+				unreadCount.unreadUrl = route;
 				if (unreadCounts[filter] > 0) {
 					item.iconClass += ' unread-count';
 				}

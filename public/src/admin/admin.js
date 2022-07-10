@@ -1,5 +1,14 @@
 'use strict';
 
+require('../app');
+
+// scripts-admin.js contains javascript files
+// from plugins that add files to "acpScripts" block in plugin.json
+// eslint-disable-next-line import/no-unresolved
+require('../../scripts-admin');
+
+app.onDomReady();
+
 (function () {
 	let logoutTimer = 0;
 	let logoutMessage;
@@ -36,6 +45,12 @@
 		hooks.on('action:ajaxify.end', () => {
 			showCorrectNavTab();
 			startLogoutTimer();
+			if ($('.settings').length) {
+				require(['admin/settings'], function (Settings) {
+					Settings.prepare();
+					Settings.populateTOC();
+				});
+			}
 		});
 	});
 
@@ -67,7 +82,7 @@
 	$(window).on('action:ajaxify.contentLoaded', function (ev, data) {
 		selectMenuItem(data.url);
 		setupRestartLinks();
-
+		require('material-design-lite');
 		componentHandler.upgradeDom();
 	});
 
@@ -144,26 +159,25 @@
 	}
 
 	function setupRestartLinks() {
-		$('.rebuild-and-restart').off('click').on('click', function () {
-			require(['bootbox'], function (bootbox) {
-				bootbox.confirm('[[admin/admin:alert.confirm-rebuild-and-restart]]', function (confirm) {
-					if (confirm) {
-						require(['admin/modules/instance'], function (instance) {
+		require(['benchpress', 'bootbox', 'admin/modules/instance'], function (benchpress, bootbox, instance) {
+			// need to preload the compiled alert template
+			// otherwise it can be unloaded when rebuild & restart is run
+			// the client can't fetch the template file, resulting in an error
+			benchpress.render('alert', {}).then(function () {
+				$('.rebuild-and-restart').off('click').on('click', function () {
+					bootbox.confirm('[[admin/admin:alert.confirm-rebuild-and-restart]]', function (confirm) {
+						if (confirm) {
 							instance.rebuildAndRestart();
-						});
-					}
+						}
+					});
 				});
-			});
-		});
 
-		$('.restart').off('click').on('click', function () {
-			require(['bootbox'], function (bootbox) {
-				bootbox.confirm('[[admin/admin:alert.confirm-restart]]', function (confirm) {
-					if (confirm) {
-						require(['admin/modules/instance'], function (instance) {
+				$('.restart').off('click').on('click', function () {
+					bootbox.confirm('[[admin/admin:alert.confirm-restart]]', function (confirm) {
+						if (confirm) {
 							instance.restart();
-						});
-					}
+						}
+					});
 				});
 			});
 		});
@@ -227,10 +241,4 @@
 			});
 		});
 	}
-
-	// tell ace to use the right paths when requiring modules
-	require(['ace/ace'], function (ace) {
-		ace.config.set('packaged', true);
-		ace.config.set('basePath', config.relative_path + '/assets/src/modules/ace/');
-	});
 }());

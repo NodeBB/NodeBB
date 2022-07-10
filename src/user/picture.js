@@ -9,7 +9,6 @@ const db = require('../database');
 const file = require('../file');
 const image = require('../image');
 const meta = require('../meta');
-const plugins = require('../plugins');
 
 module.exports = function (User) {
 	User.getAllowedProfileImageExtensions = function () {
@@ -21,11 +20,7 @@ module.exports = function (User) {
 	};
 
 	User.getAllowedImageTypes = function () {
-		const allowedTypes = ['image/png', 'image/jpeg', 'image/bmp'];
-		if (plugins.hooks.hasListeners('filter:image.isFileTypeAllowed')) {
-			allowedTypes.push('image/gif');
-		}
-		return allowedTypes;
+		return ['image/png', 'image/jpeg', 'image/bmp', 'image/gif'];
 	};
 
 	User.updateCoverPosition = async function (uid, position) {

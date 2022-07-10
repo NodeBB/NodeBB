@@ -1,0 +1,54 @@
+get:
+  tags:
+    - chats
+  summary: get chat room messages
+  description: This operation retrieves the messages in a chat room, with pagination options accepted
+  parameters:
+    - in: path
+      name: roomId
+      schema:
+        type: number
+      required: true
+      description: a valid chat room id
+      example: 1
+    - in: query
+      name: uid
+      schema:
+        type: number
+      description: a valid user id
+      example: 1
+    - in: query
+      name: start
+      schema:
+        type: number
+      description: At which chat message index to start returning messages from
+      example: 0
+  responses:
+    '200':
+      description: Messages successfully retrieved
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  messages:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: ../../../components/schemas/Chats.yaml#/MessageObject
+                        - type: object
+                          description: Optional properties that may or may not be present (except for `messageId`, which is always present, and is only here as a hack to pass validation)
+                          properties:
+                            messageId:
+                              type: number
+                            index:
+                              type: number
+                            isOwner:
+                              type: boolean
+                          required:
+                            - messageId

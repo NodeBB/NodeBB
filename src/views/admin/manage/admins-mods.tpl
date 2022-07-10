@@ -38,11 +38,19 @@
 
 	<br/>
 
+	<h4 id="moderators-title">[[admin/manage/admins-mods:moderators]]</h4>
+
+	<!-- IMPORT partials/breadcrumbs.tpl -->
+
 	<!-- IMPORT partials/category-selector.tpl -->
+
+	{{{ if !categoryMods.length }}}
+	<div><p class="well">[[admin/manage/admins-mods:no-sub-categories]]</p></div>
+	{{{ end }}}
 
 	{{{ each categoryMods }}}
 	<div class="categories category-wrapper category-depth-{categoryMods.depth}">
-	<h4>{{{ if categoryMods.icon }}}<i class="fa {categoryMods.icon}"></i> {{{ end }}}[[admin/manage/admins-mods:moderators-of-category, {categoryMods.name}]]{{{if categoryMods.disabled}}}<span class="badge badge-primary">[[admin/manage/admins-mods:disabled]]</span>{{{end}}}</h4>
+	<h4>{{{ if categoryMods.icon }}}<i class="fa {categoryMods.icon}"></i> {{{ end }}}{categoryMods.name} {{{ if categoryMods.subCategoryCount }}}<small><a href="{config.relative_path}/admin/manage/admins-mods?cid={categoryMods.cid}#moderators-title">[[admin/manage/admins-mods:subcategories, {categoryMods.subCategoryCount}]]</a></small>{{{ else }}}{{{ end }}}{{{if categoryMods.disabled}}}<span class="badge badge-primary">[[admin/manage/admins-mods:disabled]]</span>{{{end}}}</h4>
 	<div class="moderator-area" data-cid="{categoryMods.cid}">
 		{{{ each categoryMods.moderators }}}
 			<div class="user-card pull-left" data-uid="{categoryMods.moderators.uid}">
@@ -63,4 +71,7 @@
 	</div>
 	<br/>
 	{{{ end }}}
+	<div>
+		<!-- IMPORT partials/paginator.tpl -->
+	</div>
 </div>

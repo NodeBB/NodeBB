@@ -1,6 +1,5 @@
 {
 	"authentication": "Preverjanje pristnosti",
-	"require-email-confirmation": "Zahtevaj potrditev po e-pošti",
 	"email-confirm-interval": "Uporabnik morda ne bo mogel znova poslati potrditvenega e-poštnega sporočila, dokler",
 	"email-confirm-email2": "minutes have elapsed",
 	"allow-login-with": "Dovoli prijavo z",

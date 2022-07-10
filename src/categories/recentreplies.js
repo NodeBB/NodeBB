@@ -176,7 +176,7 @@ module.exports = function (Categories) {
 				bulkRemove.push([`cid:${oldCid}:uid:${post.uid}:pids`, post.pid]);
 				bulkRemove.push([`cid:${oldCid}:uid:${post.uid}:pids:votes`, post.pid]);
 				bulkAdd.push([`cid:${cid}:uid:${post.uid}:pids`, post.timestamp, post.pid]);
-				if (post.votes > 0) {
+				if (post.votes > 0 || post.votes < 0) {
 					bulkAdd.push([`cid:${cid}:uid:${post.uid}:pids:votes`, post.votes, post.pid]);
 				}
 			});

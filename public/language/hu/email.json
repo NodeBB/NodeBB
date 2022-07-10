@@ -48,6 +48,8 @@
     "unsub.cta": "Kattintson ide a beállítások módosításához",
     "unsubscribe": "Leiratkozás",
     "unsub.success": "Nem fog kapni több email a következő <strong>%1</strong> email fiókból",
+    "unsub.failure.title": "Unable to unsubscribe",
+    "unsub.failure.message": "Unfortunately, we were not able to unsubscribe you from the mailing list, as there was an issue with the link. However, you can alter your email preferences by going to <a href=\"%2\">your user settings</a>.<br /><br />(error: <code>%1</code>)",
     "banned.subject": "Ki lettél tiltva a(z) %1 oldalról",
     "banned.text1": "%1 nevű felhasználó ki lett tiltva a(z) %2 oldalról.",
     "banned.text2": "A kitiltás lejárta: %1.",

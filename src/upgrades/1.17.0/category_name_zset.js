@@ -16,7 +16,7 @@ module.exports = {
 			const bulkAdd = categoryData.map(cat => [
 				'categories:name',
 				0,
-				`${String(cat.name).substr(0, 200).toLowerCase()}:${cat.cid}`,
+				`${String(cat.name).slice(0, 200).toLowerCase()}:${cat.cid}`,
 			]);
 			await db.sortedSetAddBulk(bulkAdd);
 			progress.incr(cids.length);

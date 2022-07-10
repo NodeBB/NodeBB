@@ -4,9 +4,13 @@
 	"disable-down-voting": "비추천 비활성화",
 	"votes-are-public": "모든 투표 비익명화",
 	"thresholds": "포럼 활동 기준선",
+	"min-rep-upvote": "Minimum reputation to upvote posts",
+	"upvotes-per-day": "Upvotes per day (set to 0 for unlimited upvotes)",
+	"upvotes-per-user-per-day": "Upvotes per user per day (set to 0 for unlimited upvotes)",
 	"min-rep-downvote": "포스트 비추천에 필요한 최소 인지도",
 	"downvotes-per-day": "일일 최대 비추천 (0일 경우 무제한)",
 	"downvotes-per-user-per-day": "개인 일일 최대 비추천 (0일 경우 무제한)",
+	"min-rep-chat": "Minimum reputation to send chat messages",
 	"min-rep-flag": "포스트 신고에 필요한 최소 인지도",
 	"min-rep-website": "\"웹사이트\" 등록에 필요한 최소 인지도",
 	"min-rep-aboutme": "\"설명\" 작성에 필요한 최소 인지도",
@@ -18,5 +22,6 @@
 	"flags.limit-per-target": "포스트 혹은 사용자 최대 신고 횟수",
 	"flags.limit-per-target-placeholder": "기본값: 0",
 	"flags.limit-per-target-help": "포스트나 사용자가 다수의 신고를 받을 경우 각각의 신고가 최초의 신고와 함께 표시됩니다. 이 옵션을 변경해서 하나의 대상에 누적될 신고의 최대 횟수를 지정할 수 있습니다.",
+  	"flags.auto-flag-on-downvote-threshold": "Number of downvotes to auto flag posts (Set to 0 to disable, default: 0)",
 	"flags.auto-resolve-on-ban": "차단될 경우 사용자의 모든 기회 박탈"
 }

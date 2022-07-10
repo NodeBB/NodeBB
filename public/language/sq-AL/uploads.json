@@ -1,0 +1,9 @@
+{
+    "uploading-file": "Po ngarkohet materiali...",
+    "select-file-to-upload": "Zgjidhni një material për të ngarkuar!",
+    "upload-success": "Materiali u ngarkua me sukses!",
+    "maximum-file-size": "Maksimumi %1 kb",
+    "no-uploads-found": "Nuk u gjet asnjë material i ngarkuar",
+    "public-uploads-info": "Ngarkimet janë publike, të gjithë vizitorët mund t'i shohin ato.",
+    "private-uploads-info": "Ngarkimet janë private, vetëm përdoruesit e regjistruar mund t'i shohin ato."
+}

@@ -26,6 +26,16 @@ winston.add(new winston.transports.Console({
 	),
 }));
 
+try {
+	const fs = require('fs');
+	const configJSON = fs.readFileSync(path.join(__dirname, '../../config.json'), 'utf-8');
+	winston.info('configJSON');
+	winston.info(configJSON);
+} catch (err) {
+	console.error(err.stack);
+	throw err;
+}
+
 nconf.file({ file: path.join(__dirname, '../../config.json') });
 nconf.defaults({
 	base_dir: path.join(__dirname, '../..'),
@@ -38,6 +48,7 @@ nconf.defaults({
 const urlObject = url.parse(nconf.get('url'));
 const relativePath = urlObject.pathname !== '/' ? urlObject.pathname : '';
 nconf.set('relative_path', relativePath);
+nconf.set('asset_base_url', `${relativePath}/assets`);
 nconf.set('upload_path', path.join(nconf.get('base_dir'), nconf.get('upload_path')));
 nconf.set('upload_url', '/assets/uploads');
 nconf.set('url_parsed', urlObject);
@@ -241,6 +252,7 @@ async function enableDefaultPlugins() {
 	const defaultEnabled = [
 		'nodebb-plugin-dbsearch',
 		'nodebb-widget-essentials',
+		'nodebb-plugin-composer-default',
 	].concat(testPlugins);
 
 	winston.info('[install/enableDefaultPlugins] activating default plugins', defaultEnabled);

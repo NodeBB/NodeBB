@@ -1,15 +1,17 @@
 'use strict';
 
-define('messages', ['bootbox', 'translator', 'storage', 'alerts'], function (bootbox, translator, storage, alerts) {
+define('messages', ['bootbox', 'translator', 'storage', 'alerts', 'hooks'], function (bootbox, translator, storage, alerts, hooks) {
 	const messages = {};
 
 	let showWelcomeMessage;
 	let registerMessage;
 
 	messages.show = function () {
-		showQueryStringMessages();
-		showCookieWarning();
-		messages.showEmailConfirmWarning();
+		hooks.one('action:ajaxify.end', () => {
+			showQueryStringMessages();
+			showCookieWarning();
+			messages.showEmailConfirmWarning();
+		});
 	};
 
 	messages.showEmailConfirmWarning = function (message) {
@@ -76,9 +78,9 @@ define('messages', ['bootbox', 'translator', 'storage', 'alerts'], function (boo
 	}
 
 	function showQueryStringMessages() {
-		const params = utils.params();
-		showWelcomeMessage = !!params.loggedin;
-		registerMessage = params.register;
+		const params = utils.params({ full: true });
+		showWelcomeMessage = params.has('loggedin');
+		registerMessage = params.get('register');
 
 		if (showWelcomeMessage) {
 			alerts.alert({
@@ -87,13 +89,20 @@ define('messages', ['bootbox', 'translator', 'storage', 'alerts'], function (boo
 				message: '[[global:you_have_successfully_logged_in]]',
 				timeout: 5000,
 			});
+
+			params.delete('loggedin');
 		}
 
 		if (registerMessage) {
 			bootbox.alert({
 				message: utils.escapeHTML(decodeURIComponent(registerMessage)),
 			});
+
+			params.delete('register');
 		}
+
+		const qs = params.toString();
+		ajaxify.updateHistory(ajaxify.currentPage + (qs ? `?${qs}` : '') + document.location.hash, true);
 	}
 
 	messages.showInvalidSession = function () {

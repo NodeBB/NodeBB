@@ -38,6 +38,7 @@
 	"delete-post": "Delete Post",
 	"purge-post": "Purge Post",
 	"restore-post": "Restore Post",
+	"delete": "Delete Flag",
 
 	"user-view": "Pogledaj profil",
 	"user-edit": "Uredi profil",
@@ -46,8 +47,10 @@
 	"add-note": "Dodaj bilješku",
 	"no-notes": "Nema podijeljenih bilješki",
 	"delete-note-confirm": "Are you sure you want to delete this flag note?",
+	"delete-flag-confirm": "Are you sure you want to delete this flag?",
 	"note-added": "Bilješka dodana",
 	"note-deleted": "Note Deleted",
+	"flag-deleted": "Flag Deleted",
 
 	"history": "Account &amp; Flag History",
 	"no-history": "Nema povijesti zastava.",
@@ -81,5 +84,6 @@
 	"bulk-actions": "Bulk Actions",
 	"bulk-resolve": "Resolve Flag(s)",
 	"bulk-success": "%1 flags updated",
-	"flagged-timeago-readable": "Flagged <span class=\"timeago\" title=\"%1\"></span> (%2)"
+	"flagged-timeago-readable": "Flagged <span class=\"timeago\" title=\"%1\"></span> (%2)",
+  	"auto-flagged": "[Auto Flagged] Received %1 downvotes."
 }

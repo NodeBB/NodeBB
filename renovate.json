@@ -5,8 +5,18 @@
   "labels": ["dependencies"],
   "packageRules": [
     {
-      "updateTypes": ["minor", "patch", "pin", "digest"],
-      "automerge": true
+      "matchDepTypes": ["dependencies"],
+      "excludePackageNames": ["colors"],
+      "rangeStrategy": "pin"
+    },
+    {
+      "matchDepTypes": ["devDependencies"],
+      "automerge": true,
+      "rangeStrategy": "pin"
+    },
+    {
+      "matchDepTypes": ["engines"],
+      "rangeStrategy": "auto"
     }
   ]
 }

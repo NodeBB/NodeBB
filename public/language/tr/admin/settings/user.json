@@ -1,6 +1,5 @@
 {
 	"authentication": "Kimlik Doğrulama",
-	"require-email-confirmation": "E-posta Onayı Gerektirir",
 	"email-confirm-interval": "Kullanıcı onay e-postasını tekrar gönderemez",
 	"email-confirm-email2": "dakika geçti",
 	"allow-login-with": "Girişe izin ver:",

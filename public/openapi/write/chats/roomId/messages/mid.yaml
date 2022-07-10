@@ -1,0 +1,141 @@
+get:
+  tags:
+    - chats
+  summary: get a chat message
+  description: This operation retrieves a single chat room message, by its id
+  parameters:
+    - in: path
+      name: roomId
+      schema:
+        type: number
+      required: true
+      description: a valid chat room id
+      example: 1
+    - in: path
+      name: mid
+      schema:
+        type: number
+      required: true
+      description: a valid message id
+      example: 1
+  responses:
+    '200':
+      description: Message successfully retrieved
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../../../components/schemas/Chats.yaml#/MessageObject
+put:
+  tags:
+    - chats
+  summary: edit a chat message
+  description: This operation edits a chat message.
+  parameters:
+    - in: path
+      name: roomId
+      schema:
+        type: number
+      required: true
+      description: a valid chat room id
+      example: 1
+    - in: path
+      name: mid
+      schema:
+        type: number
+      required: true
+      description: a valid message id
+      example: 5
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              description: message content
+              example: 'edited message'
+  responses:
+    '200':
+      description: Message successfully edited
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../../../components/schemas/Chats.yaml#/MessageObject
+delete:
+  tags:
+    - chats
+  summary: delete a chat message
+  description: This operation deletes a chat message
+  parameters:
+    - in: path
+      name: roomId
+      schema:
+        type: number
+      required: true
+      description: a valid chat room id
+      example: 1
+    - in: path
+      name: mid
+      schema:
+        type: number
+      required: true
+      description: a valid message id
+      example: 5
+  responses:
+    '200':
+      description: Message successfully deleted
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}
+post:
+  tags:
+    - chats
+  summary: restore a chat message
+  description: This operation restores a delete chat message
+  parameters:
+    - in: path
+      name: roomId
+      schema:
+        type: number
+      required: true
+      description: a valid chat room id
+      example: 1
+    - in: path
+      name: mid
+      schema:
+        type: number
+      required: true
+      description: a valid message id
+      example: 5
+  responses:
+    '200':
+      description: message successfully restored
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}

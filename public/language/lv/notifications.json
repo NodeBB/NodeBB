@@ -1,8 +1,8 @@
 {
     "title": "Paziņojumi",
     "no_notifs": "Nav jaunu paziņojumu",
-    "see_all": "Skatīt visus paziņojumus",
-    "mark_all_read": "Atzīmēt visus paziņojumus kā lasītus",
+    "see_all": "All notifications",
+    "mark_all_read": "Mark all read",
     "back_to_home": "Atpakaļ uz %1",
     "outgoing_link": "Izejošā saite",
     "outgoing_link_message": "Tu tagad atstāj %1",

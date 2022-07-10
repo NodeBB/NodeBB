@@ -1,6 +1,5 @@
 {
 	"authentication": "Autenticazione",
-	"require-email-confirmation": "Richiesta Email di Conferma",
 	"email-confirm-interval": "L'utente non può mandare una nuova email di conferma fino a",
 	"email-confirm-email2": "minuti trascorsi",
 	"allow-login-with": "Consenti l'accesso con",

@@ -1,6 +1,5 @@
 {
 	"authentication": "Autenticação",
-	"require-email-confirmation": "Exigir Confirmação de E-mail",
 	"email-confirm-interval": "O usuário não pode reenviar um e-mail de confirmação até",
 	"email-confirm-email2": "minutos decorridos",
 	"allow-login-with": "Permitir login com",

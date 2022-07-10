@@ -1,0 +1,11 @@
+{
+	"alert.confirm-rebuild-and-restart": "Jeni i sigurt që dëshironi të rindërtoni dhe rinisni NodeBB?",
+	"alert.confirm-restart": "Jeni i sigurt që dëshironi të rinisni NodeBB?",
+
+	"acp-title": "%1 | NodeBB Paneli i Kontrollit të Administratorit ",
+	"settings-header-contents": "Përmbatja ",
+	"changes-saved": "Ndryshimet u ruajtën!",
+	"changes-saved-message": "Ndryshimet në konfigurimin e NodeBB u ruajtën me sukses!",
+	"changes-not-saved": "Ndryshimet nuk u ruajtën!",
+	"changes-not-saved-message": "NodeBB gjeti një problem gjatë ruajtjes së ndryshimeve. (%1)"
+}

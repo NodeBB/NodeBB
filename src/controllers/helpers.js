@@ -1,10 +1,10 @@
 'use strict';
 
-const colors = require('colors/safe');
 const nconf = require('nconf');
 const validator = require('validator');
 const querystring = require('querystring');
 const _ = require('lodash');
+const chalk = require('chalk');
 
 const translator = require('../translator');
 const user = require('../user');
@@ -13,6 +13,7 @@ const categories = require('../categories');
 const plugins = require('../plugins');
 const meta = require('../meta');
 const middlewareHelpers = require('../middleware/helpers');
+const utils = require('../utils');
 
 const helpers = module.exports;
 
@@ -123,6 +124,11 @@ helpers.buildTerms = function (url, term, query) {
 helpers.notAllowed = async function (req, res, error) {
 	({ error } = await plugins.hooks.fire('filter:helpers.notAllowed', { req, res, error }));
 
+	await plugins.hooks.fire('response:helpers.notAllowed', { req, res, error });
+	if (res.headersSent) {
+		return;
+	}
+
 	if (req.loggedIn || req.uid === -1) {
 		if (res.locals.isAPI) {
 			if (req.originalUrl.startsWith(`${relative_path}/api/v3`)) {
@@ -222,7 +228,7 @@ helpers.buildBreadcrumbs = function (crumbs) {
 	crumbs.forEach((crumb) => {
 		if (crumb) {
 			if (crumb.url) {
-				crumb.url = relative_path + crumb.url;
+				crumb.url = `${utils.isRelativeUrl(crumb.url) ? relative_path : ''}${crumb.url}`;
 			}
 			breadcrumbs.push(crumb);
 		}
@@ -420,6 +426,10 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 	}
 
 	if (String(statusCode).startsWith('2')) {
+		if (res.req.loggedIn) {
+			res.set('cache-control', 'private');
+		}
+
 		res.status(statusCode).json({
 			status: {
 				code: 'ok',
@@ -432,7 +442,7 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 		const response = {};
 
 		// Update status code based on some common error codes
-		switch (payload.message) {
+		switch (message) {
 			case '[[error:user-banned]]':
 				Object.assign(response, await generateBannedResponse(res));
 				// intentional fall through
@@ -446,18 +456,23 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 				break;
 		}
 
-		const returnPayload = await helpers.generateError(statusCode, message);
+		if (message.startsWith('[[error:required-parameters-missing, ')) {
+			const params = message.slice('[[error:required-parameters-missing, '.length, -2).split(' ');
+			Object.assign(response, { params });
+		}
+
+		const returnPayload = await helpers.generateError(statusCode, message, res);
 		returnPayload.response = response;
 
 		if (global.env === 'development') {
 			returnPayload.stack = payload.stack;
-			process.stdout.write(`[${colors.yellow('api')}] Exception caught, error with stack trace follows:\n`);
+			process.stdout.write(`[${chalk.yellow('api')}] Exception caught, error with stack trace follows:\n`);
 			process.stdout.write(payload.stack);
 		}
 		res.status(statusCode).json(returnPayload);
 	} else if (!payload) {
 		// Non-2xx statusCode, generate predefined error
-		const returnPayload = await helpers.generateError(statusCode);
+		const returnPayload = await helpers.generateError(statusCode, null, res);
 		res.status(statusCode).json(returnPayload);
 	}
 };
@@ -481,15 +496,21 @@ async function generateBannedResponse(res) {
 	return response;
 }
 
-helpers.generateError = async (statusCode, message) => {
+helpers.generateError = async (statusCode, message, res) => {
+	async function translateMessage(message) {
+		const { req } = res;
+		const settings = req.query.lang ? null : await user.getSettings(req.uid);
+		const language = String(req.query.lang || settings.userLang || meta.config.defaultLang);
+		return await translator.translate(message, language);
+	}
 	if (message && message.startsWith('[[')) {
-		message = await translator.translate(message);
+		message = await translateMessage(message);
 	}
 
 	const payload = {
 		status: {
 			code: 'internal-server-error',
-			message: message || await translator.translate(`[[error:api.${statusCode}]]`),
+			message: message || await translateMessage(`[[error:api.${statusCode}]]`),
 		},
 		response: {},
 	};

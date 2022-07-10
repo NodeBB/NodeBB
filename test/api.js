@@ -135,6 +135,7 @@ describe('API', async () => {
 		});
 		meta.config.allowTopicsThumbnail = 1;
 		meta.config.termsOfUse = 'I, for one, welcome our new test-driven overlords';
+		meta.config.chatMessageDelay = 0;
 
 		// Create a category
 		const testCategory = await categories.create({ name: 'test' });
@@ -170,8 +171,9 @@ describe('API', async () => {
 		mocks.delete['/posts/{pid}/diffs/{timestamp}'][1].example = (await posts.diffs.list(unprivTopic.postData.pid))[0];
 
 		// Create a sample flag
-		const { flagId } = await flags.create('post', 1, unprivUid, 'sample reasons', Date.now());
+		const { flagId } = await flags.create('post', 1, unprivUid, 'sample reasons', Date.now()); // deleted in DELETE /api/v3/flags/1
 		await flags.appendNote(flagId, 1, 'test note', 1626446956652);
+		await flags.create('post', 2, unprivUid, 'sample reasons', Date.now()); // for testing flag notes (since flag 1 deleted)
 
 		// Create a new chat room
 		await messaging.newRoom(1, [2]);
@@ -266,7 +268,10 @@ describe('API', async () => {
 			pathObj.path = pathObj.path.replace(/\/:([^\\/]+)/g, '/{$1}');
 			return pathObj;
 		});
-		const exclusionPrefixes = ['/api/admin/plugins', '/api/compose', '/debug'];
+		const exclusionPrefixes = [
+			'/api/admin/plugins', '/api/compose', '/debug',
+			'/api/user/{userslug}/theme', // from persona
+		];
 		paths = paths.filter(path => path.method !== '_all' && !exclusionPrefixes.some(prefix => path.path.startsWith(prefix)));
 
 

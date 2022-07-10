@@ -88,7 +88,9 @@ module.exports = function (Topics) {
 		Topics.checkTitle(data.title);
 		await Topics.validateTags(data.tags, data.cid, uid);
 		data.tags = await Topics.filterTags(data.tags, data.cid);
-		Topics.checkContent(data.content);
+		if (!data.fromQueue) {
+			Topics.checkContent(data.content);
+		}
 
 		const [categoryExists, canCreate, canTag] = await Promise.all([
 			categories.exists(data.cid),
@@ -165,13 +167,13 @@ module.exports = function (Topics) {
 		data.cid = topicData.cid;
 
 		await guestHandleValid(data);
-		if (!data.fromQueue) {
-			await user.isReadyToPost(uid, data.cid);
-		}
 		if (data.content) {
 			data.content = utils.rtrim(data.content);
 		}
-		Topics.checkContent(data.content);
+		if (!data.fromQueue) {
+			await user.isReadyToPost(uid, data.cid);
+			Topics.checkContent(data.content);
+		}
 
 		// For replies to scheduled topics, don't have a timestamp older than topic's itself
 		if (topicData.scheduled) {
@@ -183,7 +185,7 @@ module.exports = function (Topics) {
 		postData = await onNewPost(postData, data);
 
 		const settings = await user.getSettings(uid);
-		if (settings.followTopicsOnReply) {
+		if (uid > 0 && settings.followTopicsOnReply) {
 			await Topics.follow(postData.tid, uid);
 		}
 
@@ -192,9 +194,11 @@ module.exports = function (Topics) {
 		}
 
 		if (parseInt(uid, 10) || meta.config.allowGuestReplyNotifications) {
+			const { displayname } = postData.user;
+
 			Topics.notifyFollowers(postData, uid, {
 				type: 'new-reply',
-				bodyShort: translator.compile('notifications:user_posted_to', postData.user.username, postData.topic.title),
+				bodyShort: translator.compile('notifications:user_posted_to', displayname, postData.topic.title),
 				nid: `new_post:tid:${postData.topic.tid}:pid:${postData.pid}:uid:${uid}`,
 				mergeId: `notifications:user_posted_to|${postData.topic.tid}`,
 			});

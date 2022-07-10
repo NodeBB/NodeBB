@@ -1,8 +1,8 @@
 {
     "title": "Сповіщення",
     "no_notifs": "У вас немає нових сповіщень",
-    "see_all": "Переглянути всі сповіщення",
-    "mark_all_read": "Помітити всі сповіщення прочитаними",
+    "see_all": "All notifications",
+    "mark_all_read": "Mark all read",
     "back_to_home": "Повернутись до %1",
     "outgoing_link": "Зовнішнє посилання",
     "outgoing_link_message": "Ви залишаєте %1",

@@ -107,6 +107,11 @@ file.delete = async function (path) {
 	try {
 		await fs.promises.unlink(path);
 	} catch (err) {
+		if (err.code === 'ENOENT') {
+			winston.verbose(`[file] Attempted to delete non-existent file: ${path}`);
+			return;
+		}
+
 		winston.warn(err);
 	}
 };

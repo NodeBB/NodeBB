@@ -1,5 +1,21 @@
 'use strict';
 
+window.$ = require('jquery');
+
+window.jQuery = window.$;
+require('bootstrap');
+window.bootbox = require('bootbox');
+require('jquery-form');
+window.utils = require('./utils');
+require('timeago');
+
+const Visibility = require('visibilityjs');
+const Benchpress = require('benchpressjs');
+Benchpress.setGlobal('config', config);
+
+require('./sockets');
+require('./overrides');
+require('./ajaxify');
 
 app = window.app || {};
 
@@ -7,6 +23,16 @@ app.isFocused = true;
 app.currentRoom = null;
 app.widgets = {};
 app.flags = {};
+app.onDomReady = function () {
+	$(document).ready(async function () {
+		if (app.user.timeagoCode && app.user.timeagoCode !== 'en') {
+			await import(/* webpackChunkName: "timeago/[request]" */ 'timeago/locales/jquery.timeago.' + app.user.timeagoCode);
+		}
+		app.load();
+	});
+};
+
+document.addEventListener('DOMContentLoaded',  ajaxify.parseData);
 
 (function () {
 	let appLoaded = false;
@@ -14,18 +40,11 @@ app.flags = {};
 
 	app.cacheBuster = config['cache-buster'];
 
-	$(document).ready(function () {
-		ajaxify.parseData();
-		app.load();
-	});
-
 	app.coldLoad = function () {
 		if (appLoaded) {
 			ajaxify.coldLoad();
 		} else {
-			$(window).on('action:app.load', function () {
-				ajaxify.coldLoad();
-			});
+			$(window).one('action:app.load', ajaxify.coldLoad);
 		}
 	};
 
@@ -82,50 +101,51 @@ app.flags = {};
 			'taskbar',
 			'helpers',
 			'forum/pagination',
-			'translator',
 			'messages',
 			'search',
-			'forum/unread',
 			'forum/header',
 			'hooks',
-			'timeago/jquery.timeago',
-		], function (taskbar, helpers, pagination, translator, messages, search, unread, header, hooks) {
+		], function (taskbar, helpers, pagination, messages, search, header, hooks) {
 			header.prepareDOM();
-			translator.prepareDOM();
 			taskbar.init();
 			helpers.register();
 			pagination.init();
 			search.init();
-
-			if (app.user.uid > 0) {
-				unread.initUnreadTopics();
-			}
-			function finishLoad() {
-				hooks.fire('action:app.load');
-				messages.show();
-				appLoaded = true;
-			}
 			overrides.overrideTimeago();
-			if (app.user.timeagoCode && app.user.timeagoCode !== 'en') {
-				require(['timeago/locales/jquery.timeago.' + app.user.timeagoCode], finishLoad);
-			} else {
-				finishLoad();
-			}
+			hooks.fire('action:app.load');
+			messages.show();
+			appLoaded = true;
 		});
 	};
 
-	app.require = async (modules) => { // allows you to await require.js modules
+	app.require = async function (modules) {
 		const single = !Array.isArray(modules);
 		if (single) {
 			modules = [modules];
 		}
-
-		return new Promise((resolve, reject) => {
-			require(modules, (...exports) => {
-				resolve(single ? exports.pop() : exports);
-			}, reject);
-		});
-	};
+		async function requireModule(moduleName) {
+			let _module;
+			try {
+				switch (moduleName) {
+					case 'bootbox': return require('bootbox');
+					case 'benchpressjs': return require('benchpressjs');
+					case 'clipboard': return require('clipboard');
+				}
+				if (moduleName.startsWith('admin')) {
+					_module = await import(/* webpackChunkName: "admin/[request]" */ 'admin/' + moduleName.replace(/^admin\//, ''));
+				} else if (moduleName.startsWith('forum')) {
+					_module = await import(/* webpackChunkName: "forum/[request]" */ 'forum/' + moduleName.replace(/^forum\//, ''));
+				} else {
+					_module = await import(/* webpackChunkName: "modules/[request]" */ 'modules/' + moduleName);
+				}
+			} catch (err) {
+				console.warn(`error loading ${moduleName}\n${err.stack}`);
+			}
+			return _module && _module.default ? _module.default : _module;
+		}
+		const result = await Promise.all(modules.map(requireModule));
+		return single ? result.pop() : result;
+	}
 
 	app.logout = function (redirect) {
 		console.warn('[deprecated] app.logout is deprecated, please use logout module directly');
@@ -243,6 +263,7 @@ app.flags = {};
 
 	app.processPage = function () {
 		highlightNavigationLink();
+		overrides.overrideTimeagoCutoff();
 		$('.timeago').timeago();
 		utils.makeNumbersHumanReadable($('.human-readable-number'));
 		utils.addCommasToNumbers($('.formatted-number'));

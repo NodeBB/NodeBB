@@ -54,6 +54,7 @@
     "account/upvoted": "Пости за які проголосував %1",
     "account/downvoted": "Пости проти яких проголосував %1",
     "account/best": "Найкращі пости %1",
+    "account/controversial": "Controversial posts made by %1",
     "account/blocks": "Заблоковані користувачі для %1",
     "account/uploads": "Завантаження від %1",
     "account/sessions": "Логін-сесії",

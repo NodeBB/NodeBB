@@ -1,8 +1,10 @@
 'use strict';
 
+const hooks = require('./modules/hooks');
+const { render } = require('./widgets');
 
-ajaxify = window.ajaxify || {};
-
+window.ajaxify = window.ajaxify || {};
+ajaxify.widgets = { render: render };
 (function () {
 	let apiXHR = null;
 	let ajaxifyTimer;
@@ -12,11 +14,6 @@ ajaxify = window.ajaxify || {};
 
 	ajaxify.count = 0;
 	ajaxify.currentPage = null;
-
-	let hooks;
-	require(['hooks'], function (_hooks) {
-		hooks = _hooks;
-	});
 
 	ajaxify.go = function (url, callback, quiet) {
 		// Automatically reconnect to socket and re-ajaxify on success
@@ -41,6 +38,10 @@ ajaxify = window.ajaxify || {};
 
 		if (ajaxify.handleRedirects(url)) {
 			return true;
+		}
+
+		if (!quiet && url === ajaxify.currentPage + window.location.search + window.location.hash) {
+			quiet = true;
 		}
 
 		app.leaveCurrentRoom();
@@ -118,6 +119,7 @@ ajaxify = window.ajaxify || {};
 			url: url,
 		};
 
+		hooks.logs.collect();
 		hooks.fire('action:ajaxify.start', payload);
 
 		ajaxify.count += 1;
@@ -140,7 +142,7 @@ ajaxify = window.ajaxify || {};
 
 		if (data) {
 			let status = parseInt(data.status, 10);
-			if (status === 403 || status === 404 || status === 500 || status === 502 || status === 503) {
+			if ([400, 403, 404, 500, 502, 504].includes(status)) {
 				if (status === 502 && retry) {
 					retry = false;
 					ajaxifyTimer = undefined;
@@ -300,6 +302,7 @@ ajaxify = window.ajaxify || {};
 		}
 		ajaxify.loadScript(tpl_url, function done() {
 			hooks.fire('action:ajaxify.end', { url: url, tpl_url: tpl_url, title: ajaxify.data.title });
+			hooks.logs.flush();
 		});
 		ajaxify.widgets.render(tpl_url);
 
@@ -308,11 +311,17 @@ ajaxify = window.ajaxify || {};
 		app.processPage();
 	};
 
-	ajaxify.parseData = function () {
-		const dataEl = $('#ajaxify-data');
-		if (dataEl.length) {
-			ajaxify.data = JSON.parse(dataEl.text());
-			dataEl.remove();
+	ajaxify.parseData = () => {
+		const dataEl = document.getElementById('ajaxify-data');
+		if (dataEl) {
+			try {
+				ajaxify.data = JSON.parse(dataEl.textContent);
+			} catch (e) {
+				console.error(e);
+				ajaxify.data = {};
+			} finally {
+				dataEl.remove();
+			}
 		}
 	};
 
@@ -344,7 +353,7 @@ ajaxify = window.ajaxify || {};
 			// Require and parse modules
 			let outstanding = data.scripts.length;
 
-			data.scripts.map(function (script) {
+			const scripts = data.scripts.map(function (script) {
 				if (typeof script === 'function') {
 					return function (next) {
 						script();
@@ -352,31 +361,33 @@ ajaxify = window.ajaxify || {};
 					};
 				}
 				if (typeof script === 'string') {
-					return function (next) {
-						require([script], function (module) {
-							// Hint: useful if you want to override a loaded library (e.g. replace core client-side logic),
-							// or call a method other than .init()
-							hooks.fire('static:script.init', { tpl_url, name: script, module }).then(() => {
-								if (module && module.init) {
-									module.init();
-								}
-								next();
-							});
-						}, function () {
-							// ignore 404 error
+					return async function (next) {
+						const module = await app.require(script);
+						// Hint: useful if you want to override a loaded library (e.g. replace core client-side logic),
+						// or call a method other than .init()
+						hooks.fire('static:script.init', { tpl_url, name: script, module }).then(() => {
+							if (module && module.init) {
+								module.init();
+							}
 							next();
 						});
 					};
 				}
 				return null;
-			}).filter(Boolean).forEach(function (fn) {
-				fn(function () {
-					outstanding -= 1;
-					if (outstanding === 0) {
-						callback();
-					}
+			}).filter(Boolean);
+
+			if (scripts.length) {
+				scripts.forEach(function (fn) {
+					fn(function () {
+						outstanding -= 1;
+						if (outstanding === 0) {
+							callback();
+						}
+					});
 				});
-			});
+			} else {
+				callback();
+			}
 		});
 	};
 
@@ -428,9 +439,20 @@ ajaxify = window.ajaxify || {};
 	};
 
 	ajaxify.loadTemplate = function (template, callback) {
-		require([config.assetBaseUrl + '/templates/' + template + '.js'], callback, function (err) {
+		$.ajax({
+			url: `${config.asset_base_url}/templates/${template}.js`,
+			cache: false,
+			dataType: 'text',
+			success: function (script) {
+				// eslint-disable-next-line no-new-func
+				const renderFunction = new Function('module', script);
+				const moduleObj = { exports: {} };
+				renderFunction(moduleObj);
+				callback(moduleObj.exports);
+			},
+		}).fail(function () {
 			console.error('Unable to load template: ' + template);
-			throw err;
+			callback(new Error('[[error:unable-to-load-template]]'));
 		});
 	};
 
@@ -440,15 +462,11 @@ ajaxify = window.ajaxify || {};
 		translator.translate(`[[global:reconnecting-message, ${config.siteTitle}]]`);
 		Benchpress.registerLoader(ajaxify.loadTemplate);
 		Benchpress.setGlobal('config', config);
+		Benchpress.render('500', {}); // loads and caches the 500.tpl
 	});
 }());
 
 $(document).ready(function () {
-	let hooks;
-	require(['hooks'], function (_hooks) {
-		hooks = _hooks;
-	});
-
 	$(window).on('popstate', function (ev) {
 		ev = ev.originalEvent;
 
@@ -533,7 +551,7 @@ $(document).ready(function () {
 			}
 
 			// Default behaviour for uploads and direct links to API urls
-			if (internalLink && ['/uploads', '/assets/uploads/', '/api/'].some(function (prefix) {
+			if (internalLink && ['/uploads', '/assets/', '/api/'].some(function (prefix) {
 				return String(_self.pathname).startsWith(config.relative_path + prefix);
 			})) {
 				return;

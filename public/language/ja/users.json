@@ -5,6 +5,7 @@
     "most_flags": "最も多いフラグ",
     "search": "検索",
     "enter_username": "ユーザー名を入力",
+    "search-user-for-chat": "Search a user to start chat",
     "load_more": "もっと見る",
     "users-found-search-took": "%1人のユーザーを見つけました！(検索まで%2秒掛かりました。)",
     "filter-by": "フィルタ",

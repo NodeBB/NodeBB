@@ -1,6 +1,6 @@
 {
 	"logs": "Protokolle",
-	"control-panel": "Protokoll Steuerung",
+	"control-panel": "Logs-Systemsteuerung",
 	"reload": "Protokolle neu laden",
 	"clear": "Protokolle löschen",
 	"clear-success": "Protokolle gelöscht"

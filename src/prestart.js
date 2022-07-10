@@ -4,6 +4,7 @@ const nconf = require('nconf');
 const url = require('url');
 const winston = require('winston');
 const path = require('path');
+const chalk = require('chalk');
 
 const pkg = require('../package.json');
 const { paths } = require('./constants');
@@ -65,7 +66,7 @@ function loadConfig(configFile) {
 	castAsBool.forEach((prop) => {
 		const value = nconf.get(prop);
 		if (value !== undefined) {
-			nconf.set(prop, typeof value === 'boolean' ? value : String(value).toLowerCase() === 'true');
+			nconf.set(prop, ['1', 1, 'true', true].includes(value));
 		}
 	});
 	nconf.stores.env.readOnly = true;
@@ -86,6 +87,7 @@ function loadConfig(configFile) {
 	}
 
 	if (nconf.get('url')) {
+		nconf.set('url', nconf.get('url').replace(/\/$/, ''));
 		nconf.set('url_parsed', url.parse(nconf.get('url')));
 		// Parse out the relative_url and other goodies from the configured URL
 		const urlObject = url.parse(nconf.get('url'));
@@ -94,6 +96,9 @@ function loadConfig(configFile) {
 		nconf.set('secure', urlObject.protocol === 'https:');
 		nconf.set('use_port', !!urlObject.port);
 		nconf.set('relative_path', relativePath);
+		if (!nconf.get('asset_base_url')) {
+			nconf.set('asset_base_url', `${relativePath}/assets`);
+		}
 		nconf.set('port', nconf.get('PORT') || nconf.get('port') || urlObject.port || (nconf.get('PORT_ENV_VAR') ? nconf.get(nconf.get('PORT_ENV_VAR')) : false) || 4567);
 
 		// cookies don't provide isolation by port: http://stackoverflow.com/a/16328399/122353
@@ -111,7 +116,7 @@ function versionCheck() {
 
 	if (!compatible) {
 		winston.warn('Your version of Node.js is too outdated for NodeBB. Please update your version of Node.js.');
-		winston.warn(`Recommended ${range.green}${', '.reset}${version.yellow}${' provided\n'.reset}`);
+		winston.warn(`Recommended ${chalk.green(range)}, ${chalk.yellow(version)} provided\n`);
 	}
 }
 

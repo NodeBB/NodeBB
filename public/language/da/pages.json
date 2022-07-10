@@ -54,6 +54,7 @@
     "account/upvoted": "Indlæg syntes godt om af %1",
     "account/downvoted": "Indlæg syntes ikke godt om af %1",
     "account/best": "Bedste indlæg skrevet af %1",
+    "account/controversial": "Controversial posts made by %1",
     "account/blocks": "Blocked users for %1",
     "account/uploads": "Uploads by %1",
     "account/sessions": "Login Sessions",

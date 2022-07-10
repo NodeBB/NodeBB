@@ -4,9 +4,13 @@
 	"disable-down-voting": "Onemogoči glasovanje proti",
 	"votes-are-public": "Vsi glasovi so javni",
 	"thresholds": "Activity Thresholds",
+	"min-rep-upvote": "Minimum reputation to upvote posts",
+	"upvotes-per-day": "Upvotes per day (set to 0 for unlimited upvotes)",
+	"upvotes-per-user-per-day": "Upvotes per user per day (set to 0 for unlimited upvotes)",
 	"min-rep-downvote": "Najmanjši ugled za objavo glasov proti",
 	"downvotes-per-day": "Glasovi proti na dan (nastavljeno na 0 za neomejeno število glasov proti)",
 	"downvotes-per-user-per-day": "Glasovi proti na uporabnika na dan (nastavljeno na 0 za neomejeno število glasov proti)",
+	"min-rep-chat": "Minimum reputation to send chat messages",
 	"min-rep-flag": "Najmanjši ugled za označevanje objav z zastavico",
 	"min-rep-website": "Najmanjši ugled za dodajanje \"Spletna stran\" v uporabniški profil",
 	"min-rep-aboutme": "Najmanjši ugled za dodajanje \"O meni\" v uporabniški profil",
@@ -18,5 +22,6 @@
 	"flags.limit-per-target": "Največkrat, ko je mogoče nekaj označiti z zastavico",
 	"flags.limit-per-target-placeholder": "Privzeto: 0",
 	"flags.limit-per-target-help": "Ko je objava ali uporabnik večkrat označen z zastavico, se vsaka dodatna zastavica šteje za & quot;poročilo&quot; in dodana prvotni zastavici. To možnost nastavite na število, različno od nič, da omejite število poročil, ki jih element lahko prejme.",
+  	"flags.auto-flag-on-downvote-threshold": "Number of downvotes to auto flag posts (Set to 0 to disable, default: 0)",
 	"flags.auto-resolve-on-ban": "Automatically resolve all of a user's tickets when they are banned"
 }

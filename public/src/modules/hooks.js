@@ -8,6 +8,37 @@ define('hooks', [], () => {
 		deprecated: {
 
 		},
+		logs: {
+			_collection: new Set(),
+		},
+	};
+
+	Hooks.logs.collect = () => {
+		if (Hooks.logs._collection) {
+			return;
+		}
+
+		Hooks.logs._collection = new Set();
+	};
+
+	Hooks.logs.log = (...args) => {
+		if (Hooks.logs._collection) {
+			Hooks.logs._collection.add(args);
+		} else {
+			console.log.apply(console, args);
+		}
+	};
+
+	Hooks.logs.flush = () => {
+		if (Hooks.logs._collection && Hooks.logs._collection.size) {
+			console.groupCollapsed('[hooks] Changes to hooks on this page …');
+			Hooks.logs._collection.forEach((args) => {
+				console.log.apply(console, args);
+			});
+			console.groupEnd();
+		}
+
+		delete Hooks.logs._collection;
 	};
 
 	Hooks.register = (hookName, method) => {
@@ -27,18 +58,19 @@ define('hooks', [], () => {
 			console.groupEnd();
 		}
 
-		console.debug(`[hooks] Registered ${hookName}`, method);
+		Hooks.logs.log(`[hooks] Registered ${hookName}`, method);
+		return Hooks;
 	};
 	Hooks.on = Hooks.register;
 	Hooks.one = (hookName, method) => {
-		Hooks.register(hookName, method);
 		Hooks.runOnce.add({ hookName, method });
+		return Hooks.register(hookName, method);
 	};
 
 	// registerPage/onPage takes care of unregistering the listener on ajaxify
 	Hooks.registerPage = (hookName, method) => {
 		Hooks.temporary.add({ hookName, method });
-		Hooks.register(hookName, method);
+		return Hooks.register(hookName, method);
 	};
 	Hooks.onPage = Hooks.registerPage;
 	Hooks.register('action:ajaxify.start', () => {
@@ -51,10 +83,12 @@ define('hooks', [], () => {
 	Hooks.unregister = (hookName, method) => {
 		if (Hooks.loaded[hookName] && Hooks.loaded[hookName].has(method)) {
 			Hooks.loaded[hookName].delete(method);
-			console.debug(`[hooks] Unregistered ${hookName}`, method);
+			Hooks.logs.log(`[hooks] Unregistered ${hookName}`, method);
 		} else {
-			console.debug(`[hooks] Unregistration of ${hookName} failed, passed-in method is not a registered listener or the hook itself has no listeners, currently.`);
+			Hooks.logs.log(`[hooks] Unregistration of ${hookName} failed, passed-in method is not a registered listener or the hook itself has no listeners, currently.`);
 		}
+
+		return Hooks;
 	};
 	Hooks.off = Hooks.unregister;
 

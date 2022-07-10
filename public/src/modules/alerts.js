@@ -89,8 +89,8 @@ define('alerts', ['translator', 'components', 'hooks'], function (translator, co
 	}
 
 	function updateAlert(alert, params) {
-		alert.find('strong').html(params.title);
-		alert.find('p').html(params.message);
+		alert.find('strong').translateHtml(params.title);
+		alert.find('p').translateHtml(params.message);
 		alert.attr('class', 'alert alert-dismissable alert-' + params.type + ' clearfix');
 
 		clearTimeout(parseInt(alert.attr('timeoutId'), 10));
@@ -98,12 +98,7 @@ define('alerts', ['translator', 'components', 'hooks'], function (translator, co
 			startTimeout(alert, params);
 		}
 
-		alert.children().fadeOut(100);
-		translator.translate(alert.html(), function (translatedHTML) {
-			alert.children().fadeIn(100);
-			alert.html(translatedHTML);
-			hooks.fire('action:alert.update', { alert, params });
-		});
+		hooks.fire('action:alert.update', { alert, params });
 
 		// Handle changes in the clickfn
 		alert.off('click').removeClass('pointer');

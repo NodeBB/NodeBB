@@ -62,6 +62,7 @@ define('search', ['translator', 'storage', 'hooks', 'alerts'], function (transla
 			const input = $(this).find('input');
 			const data = Search.getSearchPreferences();
 			data.term = input.val();
+			data.in = searchOptions.in;
 			hooks.fire('action:search.submit', {
 				searchOptions: data,
 				searchElements: searchElements,
@@ -113,7 +114,7 @@ define('search', ['translator', 'storage', 'hooks', 'alerts'], function (transla
 			options.searchOptions.searchOnly = 1;
 			Search.api(options.searchOptions, function (data) {
 				quickSearchResults.find('.loading-indicator').addClass('hidden');
-				if (options.hideOnNoMatches && !data.posts.length) {
+				if (!data.posts || (options.hideOnNoMatches && !data.posts.length)) {
 					return quickSearchResults.addClass('hidden').find('.quick-search-results-container').html('');
 				}
 				data.posts.forEach(function (p) {

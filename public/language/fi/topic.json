@@ -113,6 +113,7 @@
     "bookmark": "Kirjanmerkki",
     "bookmarks": "Kirjanmerkit",
     "bookmarks.has_no_bookmarks": "Et ole kirjanmerkinnyt yhtään viestiä vielä.",
+    "copy-permalink": "Copy Permalink",
     "loading_more_posts": "Ladataan lisää viestejä",
     "move_topic": "Siirrä aihe",
     "move_topics": "Siirrä aiheet",
@@ -181,5 +182,7 @@
     "timeago_earlier": "%1 aiempi",
     "first-post": "First post",
     "last-post": "Last post",
+    "go-to-my-next-post": "Go to my next post",
+    "no-more-next-post": "You don't have more posts in this topic",
     "post-quick-reply": "Post quick reply"
 }

@@ -39,10 +39,6 @@ define('share', ['hooks'], function (hooks) {
 			return openShare('https://www.facebook.com/sharer/sharer.php?u=', getPostUrl($(this)), 626, 436);
 		});
 
-		addHandler('[component="share/google"]', function () {
-			return openShare('https://plus.google.com/share?url=', getPostUrl($(this)), 500, 570);
-		});
-
 		hooks.fire('action:share.addHandlers', { openShare: openShare });
 	};
 

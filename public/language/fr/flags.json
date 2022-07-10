@@ -38,6 +38,7 @@
 	"delete-post": "Supprimer les messages",
 	"purge-post": "Supprimer définitivement",
 	"restore-post": "Restaurer les messages",
+	"delete": "Supprimer le signalement",
 
 	"user-view": "Voir le profil",
 	"user-edit": "Éditer le profil",
@@ -46,8 +47,10 @@
 	"add-note": "Ajouter une note",
 	"no-notes": "aucune note partagée",
 	"delete-note-confirm": "Êtes-vous sûr de bien vouloir supprimer cette note de signalement ?",
+	"delete-flag-confirm": "Êtes-vous sûr de bien vouloir supprimer ce signalement ?",
 	"note-added": "Note ajoutée",
 	"note-deleted": "Note supprimée",
+	"flag-deleted": "Signalement supprimé",
 
 	"history": "Compte &amp; Historique des signalements",
 	"no-history": "Aucun historique de signalements",
@@ -81,5 +84,6 @@
 	"bulk-actions": "Actions",
 	"bulk-resolve": "Signalement(s) résolu(s)",
 	"bulk-success": "%1 signalement mis à jour",
-	"flagged-timeago-readable": "Signalé <span class=\"timeago\" title=\"%1\"></span> (%2)"
+	"flagged-timeago-readable": "Signalé <span class=\"timeago\" title=\"%1\"></span> (%2)",
+  	"auto-flagged": "[Auto Signalement] A reçu %1 votes négatifs."
 }

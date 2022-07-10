@@ -1,7 +1,7 @@
 get:
   tags:
     - users
-  summary: Get a user's best performing topics
+  summary: Get a user's best performing posts
   parameters:
     - name: userslug
       in: path

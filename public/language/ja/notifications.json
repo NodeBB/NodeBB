@@ -1,8 +1,8 @@
 {
     "title": "お知らせ",
     "no_notifs": "新しい通知はありません",
-    "see_all": "すべての通知を見る",
-    "mark_all_read": "すべての通知を既読にする",
+    "see_all": "All notifications",
+    "mark_all_read": "Mark all read",
     "back_to_home": "%1へ戻る",
     "outgoing_link": "外部サイトへのリンク",
     "outgoing_link_message": "%1から離れようとしています",

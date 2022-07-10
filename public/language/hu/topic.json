@@ -113,6 +113,7 @@
     "bookmark": "Könyvjelző",
     "bookmarks": "Könyvjelzők",
     "bookmarks.has_no_bookmarks": "Még nem tettél egyetlen hozzászólást sem könyvjelzőbe.",
+    "copy-permalink": "Copy Permalink",
     "loading_more_posts": "További hozzászólások betöltése",
     "move_topic": "Témakör áthelyezése",
     "move_topics": "Témakörök áthelyezése",
@@ -181,5 +182,7 @@
     "timeago_earlier": "%1 korábban",
     "first-post": "Első bejegyzés",
     "last-post": "Utolsó bejegyzés",
+    "go-to-my-next-post": "Go to my next post",
+    "no-more-next-post": "You don't have more posts in this topic",
     "post-quick-reply": "Post quick reply"
 }

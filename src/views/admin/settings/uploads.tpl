@@ -8,15 +8,15 @@
 		<form>
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="privateUploads">
-					<span class="mdl-switch__label"><strong>[[admin/settings/uploads:private]]</strong></span>
+					<input class="mdl-switch__input" type="checkbox" data-field="stripEXIFData">
+					<span class="mdl-switch__label"><strong>[[admin/settings/uploads:strip-exif-data]]</strong></span>
 				</label>
 			</div>
 
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="stripEXIFData">
-					<span class="mdl-switch__label"><strong>[[admin/settings/uploads:strip-exif-data]]</strong></span>
+					<input class="mdl-switch__input" type="checkbox" data-field="privateUploads">
+					<span class="mdl-switch__label"><strong>[[admin/settings/uploads:private]]</strong></span>
 				</label>
 			</div>
 
@@ -120,7 +120,28 @@
 			</div>
 		</form>
 	</div>
+</div>
 
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">
+		[[admin/settings/uploads:orphans]]
+	</div>
+	<div class="col-sm-10 col-xs-12">
+		<div class="checkbox">
+			<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+				<input class="mdl-switch__input" type="checkbox" data-field="preserveOrphanedUploads">
+				<span class="mdl-switch__label"><strong>[[admin/settings/uploads:preserve-orphaned-uploads]]</strong></span>
+			</label>
+		</div>
+
+		<div class="row">
+			<div class="form-group col-sm-6">
+				<label for="orphanExpiryDays">[[admin/settings/uploads:orphanExpiryDays]]</label>
+				<input id="orphanExpiryDays" type="number" min="0" placeholder="0" class="form-control" data-field="orphanExpiryDays" />
+				<p class="help-block">[[admin/settings/uploads:orphanExpiryDays-help]]</p>
+			</div>
+		</div>
+	</div>
 </div>
 
 <div class="row">

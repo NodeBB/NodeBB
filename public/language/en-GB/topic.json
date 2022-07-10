@@ -131,6 +131,8 @@
 	"bookmarks": "Bookmarks",
 	"bookmarks.has_no_bookmarks": "You haven't bookmarked any posts yet.",
 
+	"copy-permalink": "Copy Permalink",
+
 	"loading_more_posts": "Loading More Posts",
 	"move_topic": "Move Topic",
 	"move_topics": "Move Topics",
@@ -207,5 +209,7 @@
 	"timeago_earlier": "%1 earlier",
 	"first-post": "First post",
 	"last-post": "Last post",
+	"go-to-my-next-post": "Go to my next post",
+	"no-more-next-post": "You don't have more posts in this topic",
 	"post-quick-reply": "Post quick reply"
 }

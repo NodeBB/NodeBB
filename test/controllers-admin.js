@@ -242,7 +242,8 @@ describe('Admin Controllers', () => {
 		});
 	});
 
-	it('should load /admin/extend/plugins', (done) => {
+	it('should load /admin/extend/plugins', function (done) {
+		this.timeout(50000);
 		request(`${nconf.get('url')}/api/admin/extend/plugins`, { jar: jar, json: true }, (err, res, body) => {
 			assert.ifError(err);
 			assert(body.hasOwnProperty('installed'));
@@ -744,7 +745,7 @@ describe('Admin Controllers', () => {
 			});
 			assert.strictEqual(res.statusCode, 400);
 			assert.strictEqual(body.status.code, 'bad-request');
-			assert.strictEqual(body.status.message, 'You do not have enough reputation to flag this post');
+			assert.strictEqual(body.status.message, 'You need 1000 reputation to flag this post');
 
 			meta.config['min:rep:flag'] = oldValue;
 		});

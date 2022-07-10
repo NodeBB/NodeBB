@@ -113,6 +113,13 @@ module.exports = function (Topics) {
 			await db.sortedSetAdd('tags:topic:count', 0, tag);
 			cache.del('tags:topic:count');
 		}
+		const allCids = await categories.getAllCidsFromSet('categories:cid');
+		const isMembers = await db.isMemberOfSortedSets(
+			allCids.map(cid => `cid:${cid}:tags`), tag
+		);
+		const bulkAdd = allCids.filter((cid, index) => !isMembers[index])
+			.map(cid => ([`cid:${cid}:tags`, 0, tag]));
+		await db.sortedSetAddBulk(bulkAdd);
 	};
 
 	Topics.renameTags = async function (data) {
@@ -285,6 +292,7 @@ module.exports = function (Topics) {
 		}
 		tags.forEach((tag) => {
 			tag.valueEscaped = validator.escape(String(tag.value));
+			tag.valueEncoded = encodeURIComponent(tag.valueEscaped);
 			tag.class = tag.valueEscaped.replace(/\s/g, '-');
 		});
 		return tags;

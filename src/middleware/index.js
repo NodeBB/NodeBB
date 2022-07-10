@@ -34,17 +34,11 @@ middleware.regexes = {
 	timestampedUpload: /^\d+-.+$/,
 };
 
-const csurfMiddleware = csrf({
-	cookie: nconf.get('url_parsed').protocol === 'https:' ? {
-		secure: true,
-		sameSite: 'Strict',
-		httpOnly: true,
-	} : true,
-});
+const csrfMiddleware = csrf();
 
 middleware.applyCSRF = function (req, res, next) {
 	if (req.uid >= 0) {
-		csurfMiddleware(req, res, next);
+		csrfMiddleware(req, res, next);
 	} else {
 		next();
 	}
@@ -255,5 +249,5 @@ middleware.checkRequired = function (fields, req, res, next) {
 		return next();
 	}
 
-	controllers.helpers.formatApiResponse(400, res, new Error(`Required parameters were missing from this API call: ${missing.join(', ')}`));
+	controllers.helpers.formatApiResponse(400, res, new Error(`[[error:required-parameters-missing, ${missing.join(' ')}]]`));
 };

@@ -1,0 +1,19 @@
+{
+    "title": "E fundit",
+    "day": "Ditë",
+    "week": "Javë",
+    "month": "Muaj",
+    "year": "Vit",
+    "alltime": "I gjithë kohërave",
+    "no_recent_topics": "Nuk ka tema të fundit.",
+    "no_popular_topics": "Nuk ka tema të njohura.",
+    "there-is-a-new-topic": "Ka një temë të re.",
+    "there-is-a-new-topic-and-a-new-post": "Ka një temë të re dhe një postim të ri.",
+    "there-is-a-new-topic-and-new-posts": "Ka një temë të re dhe %1 postime të reja.",
+    "there-are-new-topics": "Ka %1 tema të reja.",
+    "there-are-new-topics-and-a-new-post": "Ka %1 tema të reja dhe një postim të ri.",
+    "there-are-new-topics-and-new-posts": "Ka %1 tema të reja dhe %2 postime të reja.",
+    "there-is-a-new-post": "Ka një postim të ri",
+    "there-are-new-posts": "Ka %1 postime të reja.",
+    "click-here-to-reload": "Kliko këtu për të ringarkuar."
+}
