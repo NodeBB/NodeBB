@@ -48,6 +48,42 @@ NodeBB requires the following software to be installed:
 
 [Please refer to platform-specific installation documentation](https://docs.nodebb.org/installing/os)
 
+## Docker usage
+
+An example instance of NodeBB can also be rapidly started using Docker Compose provided in this repo.
+At least Docker Compose version 3.5 is required.
+
+### Choosing your database
+
+You will need to choose the type of database first. In this repo you will find three files
+- docker-compose.mongo.yml
+- docker-compose.postgres.yml
+- docker-compose.redis.yml
+
+For MongoDB, PostgreSQL (legacy), Redis support respectively. 
+This will be supplied along with the main Docker Compose launch command as extra file source.
+Let's call this `{DATABASE}` shall we?
+
+### Starting NodeBB
+
+To start the example, you just need to run the command in the following style
+```bash
+$ docker-compose -f docker-compose.yml -f {DATABASE} up
+```
+After few minutes or so you should be able to see (console output may be clobbered):
+```bash
+nodebb_1  | Config file not found at /opt/config/config.json
+nodebb_1  | Starting installer
+nodebb_1  | 2022-07-10T15:05:35.085Z [23] - info: Launching web installer on port 4567
+nodebb_1  | 2022-07-10T15:05:47.697Z [23] - info: Web installer listening on http://0.0.0.0:4567
+```
+Now open your browser and access to http://localhost:4567. 
+
+**The default database URL is `db`** (yes just `db` for all three types of database)
+
+Your stateful files (build artifacts, node_modules, database data) will be stored at `.docker` at the current working directory,
+but you are adviced to not rely on the default Docker Compose setup and instead make up your own.
+
 ## Securing NodeBB
 
 It is important to ensure that your NodeBB and database servers are secured. Bear these points in mind:
@@ -58,6 +94,7 @@ It is important to ensure that your NodeBB and database servers are secured. Bea
     * Familiarise yourself with [Redis Security](http://redis.io/topics/security)
 2. Use `iptables` to secure your server from unintended open ports. In Ubuntu, `ufw` provides a friendlier interface to working with `iptables`.
     * e.g. If your NodeBB is proxied, no ports should be open except 80 (and possibly 22, for SSH access)
+
 
 ## Upgrading NodeBB
 
