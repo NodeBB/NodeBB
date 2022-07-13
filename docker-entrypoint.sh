@@ -3,9 +3,12 @@
 export CONFIG_DIR="${CONFIG_DIR:-/opt/config}"
 export CONFIG=$CONFIG_DIR/config.json
 export FORCE_BUILD_BEFORE_START="${FORCE_BUILD_BEFORE_START:-false}"
-export NODEBB_INIT_VERB="${NODEBB_INIT_VERB:-install}"
 
-# TODO: constraint NODEBB_INIT_VERB to {install, setup} using a hash set (or hash table)
+# Supported verbs: install (web install), setup (interactive CLI session). Default: web install
+# TODO: constraint it using a hash set (or hash table)
+export NODEBB_INIT_VERB="${NODEBB_INIT_VERB:-install}"
+# Setup variable for backward compatibility, default: <empty>
+export SETUP="${SETUP:-}"
 
 mkdir -p $CONFIG_DIR
 chmod 777 -R $CONFIG_DIR
@@ -18,7 +21,11 @@ ln -s $CONFIG_DIR/package-lock.json package-lock.json
 
 npm install --only=prod
 
-if [ -f $CONFIG ]; then
+if [[ -n $SETUP ]]; then
+  echo "Setup environmental variable detected"
+  echo "Starting setup session"
+  ./nodebb setup --config=$CONFIG
+elif [ -f $CONFIG ]; then
   echo "Config file exist at $CONFIG, assuming it is a valid config"
   echo "Starting forum"
   if [ "$FORCE_BUILD_BEFORE_START" = true ]; then
