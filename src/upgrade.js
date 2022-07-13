@@ -62,8 +62,16 @@ Upgrade.getAll = async function () {
 Upgrade.appendPluginScripts = async function (files) {
 	// Find all active plugins
 	const plugins = await db.getSortedSetRange('plugins:active', 0, -1);
-	plugins.forEach((plugin) => {
-		const configPath = path.join(paths.nodeModules, plugin, 'plugin.json');
+	for (const plugin of plugins) {
+		let configPath = path.join(paths.nodeModules, plugin, 'plugin.json');
+		if (!await file.exists(configPath)) {
+			configPath = path.join(paths.nodeModules, plugin, 'plugin.js');
+		}
+		if (!await file.exists(configPath)) {
+			winston.error(`Missing plugin scripts for ${plugin} -- ignoring`)
+			continue
+		}
+
 		try {
 			const pluginConfig = require(configPath);
 			if (pluginConfig.hasOwnProperty('upgrades') && Array.isArray(pluginConfig.upgrades)) {
@@ -76,7 +84,7 @@ Upgrade.appendPluginScripts = async function (files) {
 				winston.error(e.stack);
 			}
 		}
-	});
+	}
 	return files;
 };
 
