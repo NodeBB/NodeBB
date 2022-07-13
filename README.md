@@ -48,10 +48,15 @@ NodeBB requires the following software to be installed:
 
 [Please refer to platform-specific installation documentation](https://docs.nodebb.org/installing/os)
 
-## Docker usage
+## Docker information
+
+The Docker image allows for an easier deployment of NodeBB. 
+For more information, [please refer to the document](https://docs.nodebb.org/installing/os/docker/)
+
+### Docker Compose usage
 
 An example instance of NodeBB can also be rapidly started using Docker Compose provided in this repo.
-At least Docker Compose version 3.5 is required.
+At least Docker Compose version 3.8 is required.
 
 ### Choosing your database
 
