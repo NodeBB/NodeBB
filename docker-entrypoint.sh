@@ -3,6 +3,9 @@
 export CONFIG_DIR="${CONFIG_DIR:-/opt/config}"
 export CONFIG=$CONFIG_DIR/config.json
 export FORCE_BUILD_BEFORE_START="${FORCE_BUILD_BEFORE_START:-false}"
+export NODEBB_INIT_VERB="${NODEBB_INIT_VERB:-install}"
+
+# TODO: constraint NODEBB_INIT_VERB to {install, setup} using a hash set (or hash table)
 
 mkdir -p $CONFIG_DIR
 chmod 777 -R $CONFIG_DIR
@@ -24,6 +27,6 @@ if [ -f $CONFIG ]; then
   ./nodebb start --config=$CONFIG
 else
   echo "Config file not found at $CONFIG"
-  echo "Starting installer"
-  ./nodebb install --config=$CONFIG
+  echo "Starting installation session"
+  ./nodebb "${NODEBB_INIT_VERB}" --config=$CONFIG
 fi
