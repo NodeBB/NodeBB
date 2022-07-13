@@ -79,10 +79,15 @@ nodebb_1  | 2022-07-10T15:05:47.697Z [23] - info: Web installer listening on htt
 ```
 Now open your browser and access to http://localhost:4567. 
 
-**The default database URL is `db`** (yes just `db` for all three types of database)
+**The default database host is the name of your database, so type in `redis` if you used Redis, `mongo` using MongoDB, etc.**
 
 Your stateful files (build artifacts, node_modules, database data) will be stored at `.docker` at the current working directory,
 but you are adviced to not rely on the default Docker Compose setup and instead make up your own.
+
+#### Additional information for MongoDB
+
+For MongoDB, please notice that you need to use **admin** as database at the moment, since for some reason the latest version of the official 
+MongoDB docker did not take in account for `MONGO_INITDB_DATABASE`, so the default `admin` database is still used.
 
 ## Securing NodeBB
 
