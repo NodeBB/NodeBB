@@ -64,12 +64,15 @@ Upgrade.appendPluginScripts = async function (files) {
 	const plugins = await db.getSortedSetRange('plugins:active', 0, -1);
 	for (const plugin of plugins) {
 		let configPath = path.join(paths.nodeModules, plugin, 'plugin.json');
+		// eslint-disable-next-line no-await-in-loop
 		if (!await file.exists(configPath)) {
 			configPath = path.join(paths.nodeModules, plugin, 'plugin.js');
 		}
+		// eslint-disable-next-line no-await-in-loop
 		if (!await file.exists(configPath)) {
-			winston.error(`Missing plugin scripts for ${plugin} -- ignoring`)
-			continue
+			winston.error(`Missing plugin scripts for ${plugin} -- ignoring`);
+			// eslint-disable-next-line no-continue
+			continue;
 		}
 
 		try {
