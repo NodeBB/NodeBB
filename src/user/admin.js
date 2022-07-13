@@ -50,19 +50,33 @@ module.exports = function (User) {
 	User.exportUsersCSV = async function () {
 		winston.verbose('[user/exportUsersCSV] Exporting User CSV data');
 
-		const data = await plugins.hooks.fire('filter:user.csvFields', { fields: ['email', 'username', 'uid'] });
+		const { fields, showIps } = await plugins.hooks.fire('filter:user.csvFields', {
+			fields: ['email', 'username', 'uid'],
+			showIps: true,
+		});
 		const fd = await fs.promises.open(
 			path.join(baseDir, 'build/export', 'users.csv'),
 			'w'
 		);
-		fs.promises.appendFile(fd, `${data.fields.join(',')},ip\n`);
+		fs.promises.appendFile(fd, `${fields.join(',')}${showIps ? ',ip' : ''}\n`);
 		await batch.processSortedSet('users:joindate', async (uids) => {
-			const usersData = await User.getUsersFields(uids, data.fields.slice());
-			const ips = await Promise.all(uids.map(uid => db.getSortedSetRevRange(`uid:${uid}:ip`, 0, -1)));
+			const usersData = await User.getUsersFields(uids, fields.slice());
+			let userIPs = '';
+			let ips = [];
+
+			if (showIps) {
+				ips = await Promise.all(uids.map(uid => db.getSortedSetRevRange(`uid:${uid}:ip`, 0, -1)));
+			}
+
 			let line = '';
 			usersData.forEach((user, index) => {
-				const userIPs = ips[index] ? ips[index].join(',') : '';
-				line += `${data.fields.map(field => user[field]).join(',')},"${userIPs}"\n`;
+				line += `${fields.map(field => user[field]).join(',')}`;
+				if (showIps) {
+					userIPs = ips[index] ? ips[index].join(',') : '';
+					line += `,"${userIPs}"\n`;
+				} else {
+					line += '\n';
+				}
 			});
 
 			await fs.promises.appendFile(fd, line);
