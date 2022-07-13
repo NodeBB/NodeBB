@@ -119,23 +119,23 @@ export interface SortedSetQueryable {
   getSortedSetRevUnion(
     params: SortedSetTheoryOperation & { withScores: true },
   ): Promise<ValueAndScore[]>
-
-  getSortedSetScan(
-    params: SortedSetScanBaseParameters & { withScores: true },
-  ): Promise<ValueAndScore[]>
-
+  
   getSortedSetScan(
     params: SortedSetScanBaseParameters & { withScores: false },
   ): Promise<string[]>
-
-  getSortedSetUnion(
-    params: SortedSetTheoryOperation & { withScores: true },
+  
+  getSortedSetScan(
+    params: SortedSetScanBaseParameters & { withScores: true },
   ): Promise<ValueAndScore[]>
-
+  
   getSortedSetUnion(
     params: SortedSetTheoryOperation & { withScores: false },
   ): Promise<string[]>
-
+  
+  getSortedSetUnion(
+    params: SortedSetTheoryOperation & { withScores: true },
+  ): Promise<ValueAndScore[]>
+  
   getSortedSetsMembers(keys: string[]): Promise<string[][]>
 
   isMemberOfSortedSets(keys: string[], value: string): Promise<boolean[]>
@@ -223,7 +223,7 @@ export interface SortedSetQueryable {
 
   sortedSetsRanks<T extends readonly [] | readonly string[]>(
     keys: T,
-    values: { [K in keyof T]: string },
+    values: Record<keyof T, string>,
   ): Promise<number[]>
 
   sortedSetsRemove(keys: string[], value: string): Promise<void>

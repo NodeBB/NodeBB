@@ -1,8 +1,12 @@
 export interface HashQueryable {
   decrObjectField(
-    key: string | string[],
+    key: string,
     field: string,
-  ): Promise<number | number[]>
+  ): Promise<number>
+  decrObjectField(
+    key: string[],
+    field: string,
+  ): Promise<number[]>
 
   deleteObjectField(key: string, field: string): Promise<void>
 
@@ -24,17 +28,26 @@ export interface HashQueryable {
     keys: string[],
     fields: string[],
   ): Promise<Record<string, any>[]>
-
+  
   incrObjectField(
-    key: string | string[],
+    key: string,
     field: string,
-  ): Promise<number | number[]>
+  ): Promise<number>
+  incrObjectField(
+    key: string[],
+    field: string,
+  ): Promise<number[]>
 
   incrObjectFieldBy(
-    key: string | string[],
+    key: string,
     field: string,
     value: number,
-  ): Promise<number | number[]>
+  ): Promise<number>
+  incrObjectFieldBy(
+    key: string[],
+    field: string,
+    value: number,
+  ): Promise<number[]>
 
   incrObjectFieldByBulk(
     data: [key: string, batch: Record<string, number>][],
