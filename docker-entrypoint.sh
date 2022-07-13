@@ -2,6 +2,7 @@
 
 export CONFIG_DIR="${CONFIG_DIR:-/opt/config}"
 export CONFIG=$CONFIG_DIR/config.json
+export FORCE_BUILD_BEFORE_START="${FORCE_BUILD_BEFORE_START:-false}"
 
 mkdir -p $CONFIG_DIR
 chmod 777 -R $CONFIG_DIR
@@ -17,10 +18,12 @@ npm install --only=prod
 if [ -f $CONFIG ]; then
   echo "Config file exist at $CONFIG, assuming it is a valid config"
   echo "Starting forum"
-  ./nodebb build --config=$CONFIG
+  if [ "$FORCE_BUILD_BEFORE_START" = true ]; then
+    ./nodebb build --config=$CONFIG
+  fi
   ./nodebb start --config=$CONFIG
 else
   echo "Config file not found at $CONFIG"
   echo "Starting installer"
-    ./nodebb install --config=$CONFIG
+  ./nodebb install --config=$CONFIG
 fi
