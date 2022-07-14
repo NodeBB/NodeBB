@@ -8,8 +8,6 @@ const path = require('path');
 const mkdirp = require('mkdirp');
 const chalk = require('chalk');
 
-const plugins = require('../plugins');
-
 const cacheBuster = require('./cacheBuster');
 const { aliases } = require('./aliases');
 
@@ -201,7 +199,9 @@ exports.webpack = async function (options) {
 	const webpack = require('webpack');
 	const fs = require('fs');
 	const util = require('util');
-	const activePlugins = await plugins.getActive();
+	const plugins = require('../plugins/data');
+
+	const activePlugins = await plugins.getActiveIds();
 	if (!activePlugins.includes('nodebb-plugin-composer-default')) {
 		activePlugins.push('nodebb-plugin-composer-default');
 	}
