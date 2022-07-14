@@ -201,7 +201,7 @@ exports.webpack = async function (options) {
 	const util = require('util');
 	const plugins = require('../plugins/data');
 
-	const activePlugins = await plugins.getActiveIds();
+	const activePlugins = await plugins.getActive();
 	if (!activePlugins.includes('nodebb-plugin-composer-default')) {
 		activePlugins.push('nodebb-plugin-composer-default');
 	}
