@@ -359,14 +359,14 @@ describe('Plugins', () => {
 				keys.forEach((key) => {
 					assert(data[0].hasOwnProperty(key));
 				});
-				data.forEach((plugin) => {
-					assert(activePlugins.includes(plugin.id));
+				data.forEach((pluginData) => {
+					assert.equal(pluginData.active, activePlugins.includes(pluginData.id));
 				});
 				done();
 			});
 		});
 
-		it('should not deactivate a plugin if active plugins are set in configuration', async (done) => {
+		it('should not deactivate a plugin if active plugins are set in configuration', (done) => {
 			assert.rejects(plugins.toggleActive(activePlugins[0]), Error).then(() => {
 				plugins.isActive(activePlugins[0], (err, isActive) => {
 					assert.ifError(err);
@@ -376,7 +376,7 @@ describe('Plugins', () => {
 			});
 		});
 
-		it('should not activate a plugin if active plugins are set in configuration', async (done) => {
+		it('should not activate a plugin if active plugins are set in configuration', (done) => {
 			assert.rejects(plugins.toggleActive(inactivePlugin), Error).then(() => {
 				plugins.isActive(inactivePlugin, (err, isActive) => {
 					assert.ifError(err);
