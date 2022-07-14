@@ -201,7 +201,6 @@ exports.webpack = async function (options) {
 	const webpack = require('webpack');
 	const fs = require('fs');
 	const util = require('util');
-	const db = require('../database');
 	const activePlugins = plugins.data.getActiveIds();
 	if (!activePlugins.includes('nodebb-plugin-composer-default')) {
 		activePlugins.push('nodebb-plugin-composer-default');

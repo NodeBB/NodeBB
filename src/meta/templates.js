@@ -15,7 +15,6 @@ const Benchpress = require('benchpressjs');
 
 const plugins = require('../plugins');
 const file = require('../file');
-const db = require('../database');
 const { themeNamePattern, paths } = require('../constants');
 
 const viewsPath = nconf.get('views_dir');

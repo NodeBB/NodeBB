@@ -11,7 +11,6 @@ const chalk = require('chalk');
 const plugins = require('./plugins');
 const db = require('./database');
 const file = require('./file');
-const { paths } = require('./constants');
 
 /*
  * Need to write an upgrade script for NodeBB? Cool.
