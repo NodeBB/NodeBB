@@ -242,6 +242,7 @@
 
 	"plugin-not-whitelisted": "Unable to install plugin &ndash; only plugins whitelisted by the NodeBB Package Manager can be installed via the ACP",
 	"plugins-set-in-configuration": "Cannot change plugin state while it is set in the configuration (config.json, environmental variables or terminal arguments), please modify the configuration instead",
+	"theme-not-set-in-configuration": "When defining active plugins in configuration, changing themes requires adding the new theme to the list of active plugins before updating it in the ACP",
 
 	"topic-event-unrecognized": "Topic event '%1' unrecognized",
 
