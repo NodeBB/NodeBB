@@ -121,7 +121,7 @@ async function compile() {
 
 	let files = nconf.get('plugins:active');
 	if (!files) {
-		await db.getSortedSetRange('plugins:active', 0, -1);
+		files = await db.getSortedSetRange('plugins:active', 0, -1);
 	}
 	files = await getTemplateDirs(files);
 	files = await getTemplateFiles(files);
