@@ -43,7 +43,10 @@ module.exports = function (grunt) {
 		let plugins = [];
 		if (!process.argv.includes('--core')) {
 			await db.init();
-			plugins = await db.getSortedSetRange('plugins:active', 0, -1);
+			plugins = nconf.get('plugins:active');
+			if (!plugins) {
+				plugins = await db.getSortedSetRange('plugins:active', 0, -1);
+			}
 			addBaseThemes(plugins);
 			if (!plugins.includes('nodebb-plugin-composer-default')) {
 				plugins.push('nodebb-plugin-composer-default');

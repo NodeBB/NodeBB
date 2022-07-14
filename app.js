@@ -71,7 +71,7 @@ if (nconf.get('setup') || nconf.get('install')) {
 	});
 } else if (nconf.get('activate')) {
 	require('./src/cli/manage').activate(nconf.get('activate'));
-} else if (nconf.get('plugins')) {
+} else if (nconf.get('plugins') && typeof nconf.get('plugins') !== 'object') {
 	require('./src/cli/manage').listPlugins();
 } else if (nconf.get('build')) {
 	require('./src/cli/manage').build(nconf.get('build'));

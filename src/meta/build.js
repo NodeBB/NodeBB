@@ -200,8 +200,10 @@ exports.webpack = async function (options) {
 	const fs = require('fs');
 	const util = require('util');
 	const db = require('../database');
-
-	const activePlugins = await db.getSortedSetRange('plugins:active', 0, -1);
+	let activePlugins = nconf.get('plugins:active');
+	if (!activePlugins) {
+		activePlugins = await db.getSortedSetRange('plugins:active', 0, -1);
+	}
 	if (!activePlugins.includes('nodebb-plugin-composer-default')) {
 		activePlugins.push('nodebb-plugin-composer-default');
 	}

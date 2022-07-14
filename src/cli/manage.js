@@ -4,6 +4,7 @@ const winston = require('winston');
 const childProcess = require('child_process');
 const CliGraph = require('cli-graph');
 const chalk = require('chalk');
+const nconf = require('nconf');
 
 const build = require('../meta/build');
 const db = require('../database');
@@ -38,6 +39,10 @@ async function activate(plugin) {
 			winston.info('Plugin `%s` already active', plugin);
 			process.exit(0);
 		}
+		if (nconf.get('plugins:active')) {
+			winston.error('Cannot activate plugins while plugin state configuration is set, please change your active configuration (config.json, environmental variables or terminal arguments) instead');
+			process.exit(0);
+		}
 		const numPlugins = await db.sortedSetCard('plugins:active');
 		winston.info('Activating plugin `%s`', plugin);
 		await db.sortedSetAdd('plugins:active', numPlugins, plugin);
@@ -57,8 +62,10 @@ async function listPlugins() {
 	await db.init();
 	const installed = await plugins.showInstalled();
 	const installedList = installed.map(plugin => plugin.name);
-	const active = await db.getSortedSetRange('plugins:active', 0, -1);
-
+	let active = nconf.get('plugins:active');
+	if (!active) {
+		active = await db.getSortedSetRange('plugins:active', 0, -1);
+	}
 	// Merge the two sets, defer to plugins in  `installed` if already present
 	const combined = installed.concat(active.reduce((memo, cur) => {
 		if (!installedList.includes(cur)) {

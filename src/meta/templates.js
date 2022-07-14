@@ -119,7 +119,10 @@ async function compile() {
 	await _rimraf(viewsPath);
 	await mkdirp(viewsPath);
 
-	let files = await db.getSortedSetRange('plugins:active', 0, -1);
+	let files = nconf.get('plugins:active');
+	if (!files) {
+		await db.getSortedSetRange('plugins:active', 0, -1);
+	}
 	files = await getTemplateDirs(files);
 	files = await getTemplateFiles(files);
 

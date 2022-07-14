@@ -7,6 +7,7 @@ const semver = require('semver');
 const readline = require('readline');
 const winston = require('winston');
 const chalk = require('chalk');
+const nconf = require('nconf');
 
 const db = require('./database');
 const file = require('./file');
@@ -61,7 +62,10 @@ Upgrade.getAll = async function () {
 
 Upgrade.appendPluginScripts = async function (files) {
 	// Find all active plugins
-	const plugins = await db.getSortedSetRange('plugins:active', 0, -1);
+	let plugins = nconf.get('plugins:active');
+	if (!plugins) {
+		plugins = await db.getSortedSetRange('plugins:active', 0, -1);
+	}
 	plugins.forEach((plugin) => {
 		const configPath = path.join(paths.nodeModules, plugin, 'plugin.json');
 		try {

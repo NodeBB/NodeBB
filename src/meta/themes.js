@@ -97,10 +97,15 @@ Themes.set = async (data) => {
 
 				let config = await fs.promises.readFile(pathToThemeJson, 'utf8');
 				config = JSON.parse(config);
+				if (nconf.get('plugins:active')) {
+					// this is only a warning because otherwise it becomes impossible to actually change themes
+					winston.warn('Changing themes also requires adjusting the configuration (config.json, environmental variables or terminal arguments), please change it instead');
+				} else {
+					await db.sortedSetRemove('plugins:active', current);
+					const numPlugins = await db.sortedSetCard('plugins:active');
+					await db.sortedSetAdd('plugins:active', numPlugins, data.id);
+				}
 
-				await db.sortedSetRemove('plugins:active', current);
-				const numPlugins = await db.sortedSetCard('plugins:active');
-				await db.sortedSetAdd('plugins:active', numPlugins, data.id);
 				// Re-set the themes path (for when NodeBB is reloaded)
 				Themes.setPath(config);
 
