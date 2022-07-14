@@ -127,7 +127,7 @@ async function info() {
 			console.log(`        version: ${info.version}`);
 			console.log(`        engine:  ${info.storageEngine}`);
 			break;
-		case 'postges':
+		case 'postgres':
 			console.log(`        version: ${info.version}`);
 			console.log(`        uptime:  ${info.uptime}`);
 			break;
