@@ -5,7 +5,7 @@
 								<!-- IF ../isTheme -->
 								<a href="{config.relative_path}/admin/appearance/themes" class="btn btn-info">[[admin/extend/plugins:plugin-item.themes]]</a>
 								<!-- ELSE -->
-								<button  data-action="toggleActive" class="btn <!-- IF ../active --> btn-warning<!-- ELSE --> btn-success<!-- ENDIF ../active --> <!-- IF !canChangeState -->disabled<!-- ENDIF -->">
+								<button data-action="toggleActive" class="btn <!-- IF ../active --> btn-warning<!-- ELSE --> btn-success<!-- ENDIF ../active --> <!-- IF !canChangeState -->disabled<!-- ENDIF -->">
 								<i class="fa fa-power-off"></i> <!-- IF ../active -->[[admin/extend/plugins:plugin-item.deactivate]]<!-- ELSE -->[[admin/extend/plugins:plugin-item.activate]]<!-- ENDIF ../active --></button>
 								<!-- ENDIF ../isTheme -->
 
