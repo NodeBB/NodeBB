@@ -14,11 +14,17 @@ const Data = module.exports;
 
 const basePath = path.join(__dirname, '../../');
 
-Data.getPluginPaths = async function () {
-	let plugins = nconf.get('plugins:active');
-	if (!plugins) {
-		plugins = await db.getSortedSetRange('plugins:active', 0, -1);
+// to get this functionality use `plugins.getActive()` from `src/plugins/install.js` instead
+// this method duplicates that one, because requiring that file here would have side effects
+async function getActiveIds() {
+	if (nconf.get('plugins:active')) {
+		return nconf.get('plugins:active');
 	}
+	return await db.getSortedSetRange('plugins:active', 0, -1);
+}
+
+Data.getPluginPaths = async function () {
+	const plugins = await getActiveIds();
 	const pluginPaths = plugins.filter(plugin => plugin && typeof plugin === 'string')
 		.map(plugin => path.join(paths.nodeModules, plugin));
 	const exists = await Promise.all(pluginPaths.map(file.exists));

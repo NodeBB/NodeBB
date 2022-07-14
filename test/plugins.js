@@ -366,6 +366,17 @@ describe('Plugins', () => {
 			});
 		});
 
+		it('should return a list of only active plugins from configuration', (done) => {
+			plugins.getActive((err, data) => {
+				assert.ifError(err);
+				assert(Array.isArray(data));
+				data.forEach((pluginData) => {
+					assert(activePlugins.includes(pluginData.id));
+				});
+				done();
+			});
+		});
+
 		it('should not deactivate a plugin if active plugins are set in configuration', (done) => {
 			assert.rejects(plugins.toggleActive(activePlugins[0]), Error).then(() => {
 				plugins.isActive(activePlugins[0], (err, isActive) => {

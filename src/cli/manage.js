@@ -41,7 +41,7 @@ async function activate(plugin) {
 		}
 		if (nconf.get('plugins:active')) {
 			winston.error('Cannot activate plugins while plugin state configuration is set, please change your active configuration (config.json, environmental variables or terminal arguments) instead');
-			process.exit(0);
+			process.exit(1);
 		}
 		const numPlugins = await db.sortedSetCard('plugins:active');
 		winston.info('Activating plugin `%s`', plugin);
@@ -62,10 +62,7 @@ async function listPlugins() {
 	await db.init();
 	const installed = await plugins.showInstalled();
 	const installedList = installed.map(plugin => plugin.name);
-	let active = nconf.get('plugins:active');
-	if (!active) {
-		active = await db.getSortedSetRange('plugins:active', 0, -1);
-	}
+	const active = await plugins.getActive();
 	// Merge the two sets, defer to plugins in  `installed` if already present
 	const combined = installed.concat(active.reduce((memo, cur) => {
 		if (!installedList.includes(cur)) {

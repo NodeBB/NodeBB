@@ -7,8 +7,8 @@ const semver = require('semver');
 const readline = require('readline');
 const winston = require('winston');
 const chalk = require('chalk');
-const nconf = require('nconf');
 
+const plugins = require('./plugins');
 const db = require('./database');
 const file = require('./file');
 const { paths } = require('./constants');
@@ -62,12 +62,9 @@ Upgrade.getAll = async function () {
 
 Upgrade.appendPluginScripts = async function (files) {
 	// Find all active plugins
-	let plugins = nconf.get('plugins:active');
-	if (!plugins) {
-		plugins = await db.getSortedSetRange('plugins:active', 0, -1);
-	}
-	plugins.forEach((plugin) => {
-		const configPath = path.join(paths.nodeModules, plugin, 'plugin.json');
+	const activePlugins = plugins.data.getActive();
+	activePlugins.forEach((plugin) => {
+		const configPath = path.join(plugin.path, 'plugin.json');
 		try {
 			const pluginConfig = require(configPath);
 			if (pluginConfig.hasOwnProperty('upgrades') && Array.isArray(pluginConfig.upgrades)) {
