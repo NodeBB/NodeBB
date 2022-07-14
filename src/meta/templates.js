@@ -118,7 +118,7 @@ async function compile() {
 	await _rimraf(viewsPath);
 	await mkdirp(viewsPath);
 
-	let files = plugins.getActive();
+	let files = await plugins.getActive();
 	files = await getTemplateDirs(files);
 	files = await getTemplateFiles(files);
 
