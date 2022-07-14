@@ -119,7 +119,7 @@ async function resetThemeTo(themeId) {
 
 async function resetPlugin(pluginId) {
 	try {
-		if (!nconf.get('plugins:active')) {
+		if (nconf.get('plugins:active')) {
 			winston.error('Cannot reset plugins while plugin state is set in the configuration (config.json, environmental variables or terminal arguments), please modify the configuration instead');
 			process.exit(1);
 		}
@@ -142,7 +142,7 @@ async function resetPlugin(pluginId) {
 }
 
 async function resetPlugins() {
-	if (!nconf.get('plugins:active')) {
+	if (nconf.get('plugins:active')) {
 		winston.error('Cannot reset plugins while plugin state is set in the configuration (config.json, environmental variables or terminal arguments), please modify the configuration instead');
 		process.exit(1);
 	}
