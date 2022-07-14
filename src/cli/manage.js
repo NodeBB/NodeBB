@@ -112,13 +112,12 @@ async function info() {
 	const hash = childProcess.execSync('git rev-parse HEAD');
 	console.log(`  git hash: ${hash}`);
 
-	const config = require('../../config.json');
-	console.log(`  database: ${config.database}`);
+	console.log(`  database: ${nconf.get('database')}`);
 
 	await db.init();
 	const info = await db.info(db.client);
 
-	switch (config.database) {
+	switch (nconf.get('database')) {
 		case 'redis':
 			console.log(`        version: ${info.redis_version}`);
 			console.log(`        disk sync:  ${info.rdb_last_bgsave_status}`);
@@ -127,6 +126,10 @@ async function info() {
 		case 'mongo':
 			console.log(`        version: ${info.version}`);
 			console.log(`        engine:  ${info.storageEngine}`);
+			break;
+		case 'postges':
+			console.log(`        version: ${info.version}`);
+			console.log(`        uptime:  ${info.uptime}`);
 			break;
 	}
 
