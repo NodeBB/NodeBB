@@ -61,7 +61,7 @@ Upgrade.getAll = async function () {
 
 Upgrade.appendPluginScripts = async function (files) {
 	// Find all active plugins
-	const activePlugins = plugins.data.getActive();
+	const activePlugins = await plugins.data.getActive();
 	activePlugins.forEach((plugin) => {
 		const configPath = path.join(plugin.path, 'plugin.json');
 		try {
