@@ -331,7 +331,7 @@ describe('Plugins', () => {
 			done();
 		});
 		afterEach((done) => {
-			nconf.reset('plugins:active', activePlugins);
+			nconf.remove('plugins:active', activePlugins);
 			done();
 		});
 
