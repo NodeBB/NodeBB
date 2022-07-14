@@ -327,10 +327,12 @@ describe('Plugins', () => {
 		];
 		const inactivePlugin = 'nodebb-plugin-emoji';
 		beforeEach((done) => {
-			nconf.set('plugins:active', activePlugins, () => done());
+			nconf.set('plugins:active', activePlugins);
+			done();
 		});
 		afterEach((done) => {
-			nconf.reset('plugins:active', activePlugins, () => done());
+			nconf.reset('plugins:active', activePlugins);
+			done();
 		});
 
 		it('should return active plugin state from configuration', (done) => {
