@@ -11,7 +11,7 @@ const chalk = require('chalk');
 const plugins = require('./plugins');
 const db = require('./database');
 const file = require('./file');
-
+const { paths } = require('./constants');
 /*
  * Need to write an upgrade script for NodeBB? Cool.
  *
@@ -61,9 +61,9 @@ Upgrade.getAll = async function () {
 
 Upgrade.appendPluginScripts = async function (files) {
 	// Find all active plugins
-	const activePlugins = await plugins.data.getActive();
+	const activePlugins = await plugins.getActive();
 	activePlugins.forEach((plugin) => {
-		const configPath = path.join(plugin.path, 'plugin.json');
+		const configPath = path.join(paths.nodeModules, plugin, 'plugin.json');
 		try {
 			const pluginConfig = require(configPath);
 			if (pluginConfig.hasOwnProperty('upgrades') && Array.isArray(pluginConfig.upgrades)) {
