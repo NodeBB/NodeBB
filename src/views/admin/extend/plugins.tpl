@@ -75,6 +75,7 @@
 	<div class="col-lg-9 col-lg-pull-3">
 		<div class="tab-content">
 			<div class="tab-pane fade" id="trending">
+				<!-- IMPORT admin/partials/plugins/no-plugins.tpl -->
 				<ul class="trending">
 					{{{ each trending }}}
 					<!-- IMPORT admin/partials/installed_plugin_item.tpl -->
@@ -82,6 +83,7 @@
 				</ul>
 			</div>
 			<div class="tab-pane fade active in" id="installed">
+				<!-- IMPORT admin/partials/plugins/no-plugins.tpl -->
 				<ul class="installed">
 					<!-- BEGIN installed -->
 					<!-- IMPORT admin/partials/installed_plugin_item.tpl -->
@@ -89,15 +91,19 @@
 				</ul>
 			</div>
 			<div class="tab-pane fade" id="active">
+				<!-- IMPORT admin/partials/plugins/no-plugins.tpl -->
 				<ul class="active"></ul>
 			</div>
 			<div class="tab-pane fade" id="deactive">
+				<!-- IMPORT admin/partials/plugins/no-plugins.tpl -->
 				<ul class="deactive"></ul>
 			</div>
 			<div class="tab-pane fade" id="upgrade">
+				<!-- IMPORT admin/partials/plugins/no-plugins.tpl -->
 				<ul class="upgrade"></ul>
 			</div>
 			<div class="tab-pane fade" id="download">
+				<!-- IMPORT admin/partials/plugins/no-plugins.tpl -->
 				<ul class="download">
 					<!-- BEGIN download -->
 					<!-- IMPORT admin/partials/download_plugin_item.tpl -->
