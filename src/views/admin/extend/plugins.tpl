@@ -1,3 +1,6 @@
+{{{ if !canChangeState }}}
+<div class="alert alert-warning">[[error:plugins-set-in-configuration]]</div>
+{{{ end }}}
 <ul class="nav nav-pills">
 	<li>
 		<a href="#trending" data-toggle="tab">
