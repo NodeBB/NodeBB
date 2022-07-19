@@ -187,34 +187,26 @@ function setupExpressApp(app) {
 }
 
 function setupHelmet(app) {
-	/**
-	 * The only reason why these middlewares are all explicitly spelled out is because
-	 * helmet.contentSecurityPolicy() is too restrictive and breaks plugins.
-	 *
-	 * It should be implemented in the future... 🔜
-	 */
+	const options = {
+		contentSecurityPolicy: false, // defaults are too restrive and break plugins that load external assets... 🔜
+		crossOriginOpenerPolicy: { policy: meta.config['cross-origin-opener-policy'] },
+		crossOriginResourcePolicy: { policy: meta.config['cross-origin-resource-policy'] },
+		referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+	};
+
 	if (meta.config['cross-origin-embedder-policy']) {
-		app.use(helmet.crossOriginEmbedderPolicy());
+		options.crossOriginEmbedderPolicy = false;
 	}
-	app.use(helmet.crossOriginOpenerPolicy({ policy: meta.config['cross-origin-opener-policy'] }));
-	app.use(helmet.crossOriginResourcePolicy({ policy: meta.config['cross-origin-resource-policy'] }));
-	app.use(helmet.dnsPrefetchControl());
-	app.use(helmet.expectCt());
-	app.use(helmet.frameguard());
-	app.use(helmet.hidePoweredBy());
+
 	if (meta.config['hsts-enabled']) {
-		app.use(helmet.hsts({
+		options.hsts = {
 			maxAge: meta.config['hsts-maxage'],
 			includeSubDomains: !!meta.config['hsts-subdomains'],
 			preload: !!meta.config['hsts-preload'],
-		}));
+		};
 	}
-	app.use(helmet.ieNoOpen());
-	app.use(helmet.noSniff());
-	app.use(helmet.originAgentCluster());
-	app.use(helmet.permittedCrossDomainPolicies());
-	app.use(helmet.referrerPolicy({ policy: 'strict-origin-when-cross-origin' }));
-	app.use(helmet.xssFilter());
+
+	app.use(helmet(options));
 }
 
 
