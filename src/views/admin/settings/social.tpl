@@ -1,4 +1,4 @@
-<div class="social settings">
+<div class="social">
 	<form role="form">
 		<div class="row">
 			<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/social:post-sharing]]</div>
