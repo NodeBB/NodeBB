@@ -41,12 +41,12 @@ social.getActivePostSharing = async function () {
 };
 
 social.setActivePostSharingNetworks = async function (networkIDs) {
+	social.postSharing = null;
 	await db.delete('social:posts.activated');
 	if (!networkIDs.length) {
 		return;
 	}
 	await db.setAdd('social:posts.activated', networkIDs);
-	social.postSharing = null;
 };
 
 require('./promisify')(social);
