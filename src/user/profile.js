@@ -327,6 +327,7 @@ module.exports = function (User) {
 			User.reset.cleanByUid(data.uid),
 			User.reset.updateExpiry(data.uid),
 			User.auth.revokeAllSessions(data.uid),
+			User.email.expireValidation(data.uid),
 		]);
 
 		plugins.hooks.fire('action:password.change', { uid: uid, targetUid: data.uid });
