@@ -1,3 +1,29 @@
+#### v2.2.4 (2022-07-12)
+
+##### Chores
+
+* **deps:**
+  *  update docker/metadata-action action to v4 (42a45a71)
+  *  bump ace-builds from 1.5.3 to 1.7.1 in /install (d568d2f5)
+  *  bump winston from 3.8.0 to 3.8.1 in /install (26b73b39)
+  *  bump ioredis from 5.0.6 to 5.1.0 in /install (0d55c42d)
+  *  bump nodemailer from 6.7.5 to 6.7.7 in /install (bd37b286)
+* **deps-dev:**
+  *  bump @commitlint/cli from 17.0.2 to 17.0.3 in /install (9e44cdad)
+  *  bump eslint from 8.18.0 to 8.19.0 in /install (7139ad5f)
+*  incrementing version number - v2.2.3 (f80476b9)
+*  update changelog for v2.2.3 (8719a93f)
+*  incrementing version number - v2.2.2 (343ffa66)
+*  incrementing version number - v2.2.1 (efc77b2a)
+*  incrementing version number - v2.2.0 (eecb836d)
+
+##### Bug Fixes
+
+* **deps:**  update dependency diff to v5.1.0 (452e5bf7)
+*  #10733, extraneous apostrophes in plugin upgrader (3c41ae04)
+*  get version from install/package.json instead (60114219)
+*  #10739, always re-add theme to active plugins, on theme set (8d701ec3)
+
 #### v2.2.3 (2022-07-05)
 
 ##### Chores
