@@ -1,3 +1,28 @@
+#### v2.2.5 (2022-07-21)
+
+##### Chores
+
+* **deps-dev:**
+  *  bump eslint from 8.19.0 to 8.20.0 in /install (8d109fef)
+  *  bump @commitlint/config-angular in /install (2a88a50f)
+* **deps:**
+  *  bump cron from 2.0.0 to 2.1.0 in /install (4c1bda32)
+  *  bump jquery-ui from 1.13.1 to 1.13.2 in /install (abb19e98)
+  *  bump nodebb-theme-persona in /install (9e52b8c6)
+  *  bump ioredis from 5.1.0 to 5.2.0 in /install (8c20fdad)
+*  incrementing version number - v2.2.4 (d1d63e6b)
+*  update changelog for v2.2.4 (52f7ed64)
+*  incrementing version number - v2.2.3 (f80476b9)
+*  incrementing version number - v2.2.2 (343ffa66)
+*  incrementing version number - v2.2.1 (efc77b2a)
+*  incrementing version number - v2.2.0 (eecb836d)
+
+##### Bug Fixes
+
+*  expire email validation tokens on password change (c93bd010)
+*  remove extraneous console.log (0d58e8a6)
+* **deps:**  update dependency mongodb to v4.8.0 (bff239da)
+
 #### v2.2.4 (2022-07-12)
 
 ##### Chores
