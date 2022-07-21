@@ -251,6 +251,12 @@ define('admin/manage/categories', [
 			}, function (html) {
 				container.append(html);
 
+				// Disable expand toggle
+				if (!categories.length) {
+					const toggleEl = container.get(0).querySelector('.toggle');
+					toggleEl.remove();
+				}
+
 				// Handle and children categories in this level have
 				for (let x = 0, numCategories = categories.length; x < numCategories; x += 1) {
 					renderList(categories[x].children, $('li[data-cid="' + categories[x].cid + '"]'), categories[x]);
