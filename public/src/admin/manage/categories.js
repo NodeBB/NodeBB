@@ -42,7 +42,7 @@ define('admin/manage/categories', [
 
 		$('.categories').on('click', '.toggle', function () {
 			const el = $(this);
-			el.find('i').toggleClass('fa-minus').toggleClass('fa-plus');
+			el.find('i').toggleClass('fa-chevron-down').toggleClass('fa-chevron-right');
 			el.closest('[data-cid]').find('> ul[data-cid]').toggleClass('hidden');
 		});
 
@@ -84,7 +84,7 @@ define('admin/manage/categories', [
 
 		function toggleAll(expand) {
 			const el = $('.categories .toggle');
-			el.find('i').toggleClass('fa-minus', expand).toggleClass('fa-plus', !expand);
+			el.find('i').toggleClass('fa-chevron-down', expand).toggleClass('fa-chevron-right', !expand);
 			el.closest('[data-cid]').find('> ul[data-cid]').toggleClass('hidden', !expand);
 		}
 	};
