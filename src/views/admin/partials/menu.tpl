@@ -139,8 +139,8 @@
 			{{{ if user.privileges.admin:settings }}}
 			<form role="search">
 				<div id="acp-search" >
-					<div class="dropdown">
-						<input type="text" data-toggle="dropdown" class="form-control" placeholder="[[admin/menu:search.placeholder]]">
+					<div class="dropdown" data-text="[[admin/menu:search.placeholder]]">
+						<input type="text" data-toggle="dropdown" class="form-control">
 						<ul class="dropdown-menu dropdown-menu-right state-start-typing" role="menu">
 							<li role="presentation" class="no-results">
 								<a>[[admin/menu:search.no-results]]</a>
