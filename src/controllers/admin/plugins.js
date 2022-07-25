@@ -35,6 +35,7 @@ pluginsController.get = async function (req, res) {
 		installedCount: installedPlugins.length,
 		activeCount: activePlugins.length,
 		inactiveCount: Math.max(0, installedPlugins.length - activePlugins.length),
+		canChangeState: !nconf.get('plugins:active'),
 		upgradeCount: compatible.reduce((count, current) => {
 			if (current.installed && current.outdated) {
 				count += 1;
