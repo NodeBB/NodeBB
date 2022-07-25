@@ -75,11 +75,8 @@ define('admin/modules/search', ['mousetrap', 'alerts'], function (mousetrap, ale
 
 		$('#acp-search').parents('form').on('submit', function (ev) {
 			const query = input.val();
-			let selected = menu.find('li.result > a.focus').attr('href');
-			if (!selected.length) {
-				selected = menu.find('li.result > a').first().attr('href');
-			}
-			const href = selected || config.relative_path + '/search?in=titlesposts&term=' + escape(query);
+			const selected = menu.get(0).querySelector('li.result > a.focus') || menu.get(0).querySelector('li.result > a');
+			const href = selected ? selected.getAttribute('href') : config.relative_path + '/search?in=titlesposts&term=' + escape(query);
 
 			ajaxify.go(href.replace(/^\//, ''));
 
