@@ -86,6 +86,36 @@
 			}
 		}
 
+		.dropdown:not(.open) {
+			&:before {
+				content: '/';
+				border: 1px solid @gray;
+				border-radius: 5px;
+				padding: 0px 6px;
+				font-size: 12px;
+				font-weight: 600;
+				pointer-events: none;
+
+				position: absolute;
+				top: 10px;
+				left: 1em;
+			}
+
+			&:after {
+				content: attr(data-text);
+				position: absolute;
+				top: 10px;
+				left: 3em;
+				font-size: small;
+				font-weight: 600;
+				pointer-events: none;
+			}
+
+			input {
+				color: transparent;
+			}
+		}
+
 		.search-match {
 			font-weight: 700;
 			color: black;
