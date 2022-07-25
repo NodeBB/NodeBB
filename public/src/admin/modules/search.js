@@ -63,6 +63,7 @@ define('admin/modules/search', ['mousetrap', 'alerts'], function (mousetrap, ale
 		const dropdown = $('#acp-search .dropdown');
 		const menu = $('#acp-search .dropdown-menu');
 		const input = $('#acp-search input');
+		const placeholderText = dropdown.attr('data-text');
 
 		if (!config.searchEnabled) {
 			menu.addClass('search-disabled');
@@ -73,17 +74,19 @@ define('admin/modules/search', ['mousetrap', 'alerts'], function (mousetrap, ale
 		});
 
 		$('#acp-search').parents('form').on('submit', function (ev) {
+			const query = input.val();
 			let selected = menu.find('li.result > a.focus').attr('href');
 			if (!selected.length) {
 				selected = menu.find('li.result > a').first().attr('href');
 			}
-			const href = selected || config.relative_path + '/search?in=titlesposts&term=' + escape(input.val());
+			const href = selected || config.relative_path + '/search?in=titlesposts&term=' + escape(query);
 
 			ajaxify.go(href.replace(/^\//, ''));
 
 			setTimeout(function () {
 				dropdown.removeClass('open');
 				input.blur();
+				dropdown.attr('data-text', query || placeholderText);
 			}, 150);
 
 			ev.preventDefault();
