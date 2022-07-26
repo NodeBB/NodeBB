@@ -205,6 +205,8 @@
     "no-connection": "Parece haver um problema com a sua conexão com a internet",
     "socket-reconnect-failed": "Não foi possível acessar o servidor neste momento. Clique aqui para tentar novamente ou tente novamente mais tarde",
     "plugin-not-whitelisted": "Não foi possível instalar o plugin - apenas os plug-ins permitidos pelo NodeBB Package Manager podem ser instalados através do ACP",
+    "plugins-set-in-configuration": "You are not allowed to change plugin state as they are defined at runtime (config.json, environmental variables or terminal arguments), please modify the configuration instead.",
+    "theme-not-set-in-configuration": "When defining active plugins in configuration, changing themes requires adding the new theme to the list of active plugins before updating it in the ACP",
     "topic-event-unrecognized": "Evento de tópico '%1' não reconhecido",
     "cant-set-child-as-parent": "Não é possível definir filho como categoria pai",
     "cant-set-self-as-parent": "Não é possível definir a si mesmo como categoria pai",
