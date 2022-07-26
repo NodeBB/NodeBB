@@ -11,7 +11,12 @@ export NODEBB_INIT_VERB="${NODEBB_INIT_VERB:-install}"
 export SETUP="${SETUP:-}"
 
 mkdir -p $CONFIG_DIR
-chmod 777 -R $CONFIG_DIR
+chmod -fR 760 $CONFIG_DIR
+
+if [[ ! -w $CONFIG_DIR/package.json ]]; then
+  echo "panic: no write permission for $CONFIG_DIR"
+  exit 1
+fi
 
 [[ -f $CONFIG_DIR/package.json ]] || cp install/package.json $CONFIG_DIR/package.json
 [[ -f $CONFIG_DIR/package-lock.json ]] || touch $CONFIG_DIR/package-lock.json
