@@ -207,6 +207,20 @@ define('admin/manage/categories', [
 
 			if (isCategoryUpdate) {
 				modified[cid].parentCid = newCategoryId;
+
+				// Show/hide expand buttons after drag completion
+				const oldParentCid = parseInt(e.from.getAttribute('data-cid'), 10);
+				const newParentCid = parseInt(e.to.getAttribute('data-cid'), 10);
+				if (oldParentCid !== newParentCid) {
+					document.querySelector(`.categories li[data-cid="${newParentCid}"] .toggle`).classList.toggle('hide', false);
+
+					const children = document.querySelectorAll(`.categories li[data-cid="${oldParentCid}"] ul[data-cid] li[data-cid]`);
+					if (!children.length) {
+						document.querySelector(`.categories li[data-cid="${oldParentCid}"] .toggle`).classList.toggle('hide', true);
+					}
+
+					e.item.dataset.parentCid = newParentCid;
+				}
 			}
 
 			newCategoryId = -1;
@@ -254,7 +268,7 @@ define('admin/manage/categories', [
 				// Disable expand toggle
 				if (!categories.length) {
 					const toggleEl = container.get(0).querySelector('.toggle');
-					toggleEl.remove();
+					toggleEl.classList.toggle('hide', true);
 				}
 
 				// Handle and children categories in this level have
