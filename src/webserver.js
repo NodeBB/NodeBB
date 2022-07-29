@@ -194,7 +194,7 @@ function setupHelmet(app) {
 		referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
 	};
 
-	if (meta.config['cross-origin-embedder-policy']) {
+	if (!meta.config['cross-origin-embedder-policy']) {
 		options.crossOriginEmbedderPolicy = false;
 	}
 
