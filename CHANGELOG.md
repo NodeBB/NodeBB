@@ -1,3 +1,24 @@
+#### v2.3.1 (2022-07-29)
+
+##### Chores
+
+* **deps:**
+  *  bump sanitize-html from 2.7.0 to 2.7.1 in /install (7b606d2e)
+  *  bump webpack from 5.73.0 to 5.74.0 in /install (a9900625)
+* **i18n:**  fallback strings for new resources: nodebb.admin-settings-advanced, nodebb.admin-menu, nodebb.error (17120e03)
+*  incrementing version number - v2.3.0 (046ea120)
+*  update changelog for v2.3.0 (a6f7fff0)
+
+##### New Features
+
+*  add emoji to startup logs, because procrastination. (5176fb15)
+
+##### Bug Fixes
+
+*  #10798, logic error in COEP header; helmet config (89173f17)
+*  #10795, early return for selection tooltip based on calling user privilege (847d2b91)
+* **deps:**  update persona to v12.0.14 (9f225e70)
+
 #### v2.3.0 (2022-07-28)
 
 ##### Chores
