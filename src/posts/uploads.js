@@ -99,7 +99,7 @@ module.exports = function (Posts) {
 		files = files.filter(filename => filename !== '.gitignore');
 
 		// Exclude non-timestamped files (e.g. group covers; see gh#10783/gh#10705)
-		const tsPrefix = /^\d{13}\-/;
+		const tsPrefix = /^\d{13}-/;
 		files = files.filter(filename => tsPrefix.test(filename));
 
 		files = await Promise.all(files.map(async filename => (await Posts.uploads.isOrphan(`files/${filename}`) ? `files/${filename}` : null)));
