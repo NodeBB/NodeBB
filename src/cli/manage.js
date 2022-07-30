@@ -4,6 +4,7 @@ const winston = require('winston');
 const childProcess = require('child_process');
 const CliGraph = require('cli-graph');
 const chalk = require('chalk');
+const nconf = require('nconf');
 
 const build = require('../meta/build');
 const db = require('../database');
@@ -38,6 +39,10 @@ async function activate(plugin) {
 			winston.info('Plugin `%s` already active', plugin);
 			process.exit(0);
 		}
+		if (nconf.get('plugins:active')) {
+			winston.error('Cannot activate plugins while plugin state configuration is set, please change your active configuration (config.json, environmental variables or terminal arguments) instead');
+			process.exit(1);
+		}
 		const numPlugins = await db.sortedSetCard('plugins:active');
 		winston.info('Activating plugin `%s`', plugin);
 		await db.sortedSetAdd('plugins:active', numPlugins, plugin);
@@ -57,8 +62,7 @@ async function listPlugins() {
 	await db.init();
 	const installed = await plugins.showInstalled();
 	const installedList = installed.map(plugin => plugin.name);
-	const active = await db.getSortedSetRange('plugins:active', 0, -1);
-
+	const active = await plugins.getActive();
 	// Merge the two sets, defer to plugins in  `installed` if already present
 	const combined = installed.concat(active.reduce((memo, cur) => {
 		if (!installedList.includes(cur)) {
@@ -108,13 +112,12 @@ async function info() {
 	const hash = childProcess.execSync('git rev-parse HEAD');
 	console.log(`  git hash: ${hash}`);
 
-	const config = require('../../config.json');
-	console.log(`  database: ${config.database}`);
+	console.log(`  database: ${nconf.get('database')}`);
 
 	await db.init();
 	const info = await db.info(db.client);
 
-	switch (config.database) {
+	switch (nconf.get('database')) {
 		case 'redis':
 			console.log(`        version: ${info.redis_version}`);
 			console.log(`        disk sync:  ${info.rdb_last_bgsave_status}`);
@@ -123,6 +126,10 @@ async function info() {
 		case 'mongo':
 			console.log(`        version: ${info.version}`);
 			console.log(`        engine:  ${info.storageEngine}`);
+			break;
+		case 'postgres':
+			console.log(`        version: ${info.version}`);
+			console.log(`        uptime:  ${info.uptime}`);
 			break;
 	}
 

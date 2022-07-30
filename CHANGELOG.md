@@ -1,3 +1,122 @@
+#### v2.2.5 (2022-07-21)
+
+##### Chores
+
+* **deps-dev:**
+  *  bump eslint from 8.19.0 to 8.20.0 in /install (8d109fef)
+  *  bump @commitlint/config-angular in /install (2a88a50f)
+* **deps:**
+  *  bump cron from 2.0.0 to 2.1.0 in /install (4c1bda32)
+  *  bump jquery-ui from 1.13.1 to 1.13.2 in /install (abb19e98)
+  *  bump nodebb-theme-persona in /install (9e52b8c6)
+  *  bump ioredis from 5.1.0 to 5.2.0 in /install (8c20fdad)
+*  incrementing version number - v2.2.4 (d1d63e6b)
+*  update changelog for v2.2.4 (52f7ed64)
+*  incrementing version number - v2.2.3 (f80476b9)
+*  incrementing version number - v2.2.2 (343ffa66)
+*  incrementing version number - v2.2.1 (efc77b2a)
+*  incrementing version number - v2.2.0 (eecb836d)
+
+##### Bug Fixes
+
+*  expire email validation tokens on password change (c93bd010)
+*  remove extraneous console.log (0d58e8a6)
+* **deps:**  update dependency mongodb to v4.8.0 (bff239da)
+
+#### v2.2.4 (2022-07-12)
+
+##### Chores
+
+* **deps:**
+  *  update docker/metadata-action action to v4 (42a45a71)
+  *  bump ace-builds from 1.5.3 to 1.7.1 in /install (d568d2f5)
+  *  bump winston from 3.8.0 to 3.8.1 in /install (26b73b39)
+  *  bump ioredis from 5.0.6 to 5.1.0 in /install (0d55c42d)
+  *  bump nodemailer from 6.7.5 to 6.7.7 in /install (bd37b286)
+* **deps-dev:**
+  *  bump @commitlint/cli from 17.0.2 to 17.0.3 in /install (9e44cdad)
+  *  bump eslint from 8.18.0 to 8.19.0 in /install (7139ad5f)
+*  incrementing version number - v2.2.3 (f80476b9)
+*  update changelog for v2.2.3 (8719a93f)
+*  incrementing version number - v2.2.2 (343ffa66)
+*  incrementing version number - v2.2.1 (efc77b2a)
+*  incrementing version number - v2.2.0 (eecb836d)
+
+##### Bug Fixes
+
+* **deps:**  update dependency diff to v5.1.0 (452e5bf7)
+*  #10733, extraneous apostrophes in plugin upgrader (3c41ae04)
+*  get version from install/package.json instead (60114219)
+*  #10739, always re-add theme to active plugins, on theme set (8d701ec3)
+
+#### v2.2.3 (2022-07-05)
+
+##### Chores
+
+*  incrementing version number - v2.2.2 (343ffa66)
+*  update changelog for v2.2.2 (f59ddc34)
+*  incrementing version number - v2.2.1 (efc77b2a)
+*  incrementing version number - v2.2.0 (eecb836d)
+
+##### Bug Fixes
+
+*  move call to `ajaxify.parseData` out to root level (b778e38c)
+*  move `ajaxify.parseData` back out to DOMContentLoaded (2582cb53)
+
+##### Refactors
+
+*  rewrite ajaxify.parseData in vanilla (165b804d)
+
+#### v2.2.2 (2022-06-30)
+
+##### Chores
+
+* **deps-dev:**
+  *  bump eslint from 8.17.0 to 8.18.0 in /install (bfd626b0)
+  *  bump jsdom from 19.0.0 to 20.0.0 in /install (d037c2c9)
+*  incrementing version number - v2.2.1 (efc77b2a)
+*  update changelog for v2.2.1 (667780cf)
+*  incrementing version number - v2.2.0 (eecb836d)
+
+##### Bug Fixes
+
+*  improper handling of single vs. multiple inputs for hidePrivateData (f38b2a73)
+*  observe user-specific and ACP-specific hiding rules for fullname (ecf0e8ce)
+
+##### Refactors
+
+*  allow user.hidePrivateData() to handle an array of `userData` (3f5ae893)
+
+#### v2.2.1 (2022-06-24)
+
+##### Chores
+
+* **i18n:**
+  *  fallback strings for new resources: nodebb.admin-settings-uploads (da481163)
+  *  fallback strings for new resources: nodebb.admin-settings-advanced (34d75e96)
+*  add in warning in language directories about not editing files directly (06074e8c)
+*  incrementing version number - v2.2.0 (eecb836d)
+*  update changelog for v2.2.0 (bb3766df)
+
+##### Documentation Changes
+
+*  remove the redundant security policy template (7f5b285e)
+
+##### New Features
+
+*  cross origin opener policy options (#10710) (88132358)
+
+##### Bug Fixes
+
+* **deps:**
+  *  update dependency winston to v3.8.0 (#10725) (d4a5039e)
+  *  update dependency sharp to v0.30.7 (#10724) (0a07c2c0)
+*  handle ENOENT on file deletion, closes #10645 (43f9e6c8)
+
+##### Tests
+
+*  fix i18n tests (05c30677)
+
 #### v2.2.0 (2022-06-15)
 
 ##### Chores

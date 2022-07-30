@@ -12,7 +12,7 @@
 	"page-views-custom": "Benutzerdefinierte Tagesspanne",
 	"page-views-custom-start": "Spannen-Anfang",
 	"page-views-custom-end": "Spannen-Ende",
-	"page-views-custom-help": "Gib eine Zeitspanne an, in dem du die Besichtigungszahlen ansehen willst. Sollte keine Kalenderauswahl verfügbar sein ist das akzeptierte format <code>YYYY-MM-DD</code>",
+	"page-views-custom-help": "Gebe einen Datumsbereich für Seitenaufrufe ein, die du anzeigen möchtest. Wenn keine Datumsauswahl verfügbar ist, ist das akzeptierte Format <code>YYYY-MM-DD</code>",
 	"page-views-custom-error": "Bitte gib eine gültige Zeitspanne im Format <code>YYYY-MM-DD</code> an",
 
 	"stats.yesterday": "Gestern",

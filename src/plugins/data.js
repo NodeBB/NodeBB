@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const winston = require('winston');
 const _ = require('lodash');
+const nconf = require('nconf');
 
 const db = require('../database');
 const file = require('../file');
@@ -13,11 +14,19 @@ const Data = module.exports;
 
 const basePath = path.join(__dirname, '../../');
 
+// to get this functionality use `plugins.getActive()` from `src/plugins/install.js` instead
+// this method duplicates that one, because requiring that file here would have side effects
+async function getActiveIds() {
+	if (nconf.get('plugins:active')) {
+		return nconf.get('plugins:active');
+	}
+	return await db.getSortedSetRange('plugins:active', 0, -1);
+}
+
 Data.getPluginPaths = async function () {
-	const plugins = await db.getSortedSetRange('plugins:active', 0, -1);
+	const plugins = await getActiveIds();
 	const pluginPaths = plugins.filter(plugin => plugin && typeof plugin === 'string')
 		.map(plugin => path.join(paths.nodeModules, plugin));
-
 	const exists = await Promise.all(pluginPaths.map(file.exists));
 	exists.forEach((exists, i) => {
 		if (!exists) {
@@ -96,7 +105,6 @@ Data.getStaticDirectories = async function (pluginData) {
 				route}. Path must adhere to: ${validMappedPath.toString()}`);
 			return;
 		}
-
 		const dirPath = await resolveModulePath(pluginData.path, pluginData.staticDirs[route]);
 		try {
 			const stats = await fs.promises.stat(dirPath);

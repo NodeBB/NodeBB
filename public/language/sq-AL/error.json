@@ -205,6 +205,8 @@
     "no-connection": "Duket se ka një problem me lidhjen tuaj të internetit",
     "socket-reconnect-failed": "Nuk mund të arrihet serveri në këtë moment. Kliko këtu për të provuar përsëri, ose provo më vonë",
     "plugin-not-whitelisted": "Nuk mund të instalohet plugin &ndash; vetëm shtojcat e listuara në listën e bardhë nga Menaxheri i Paketave të NodeBB mund të instalohen nëpërmjet ACP",
+    "plugins-set-in-configuration": "You are not allowed to change plugin state as they are defined at runtime (config.json, environmental variables or terminal arguments), please modify the configuration instead.",
+    "theme-not-set-in-configuration": "When defining active plugins in configuration, changing themes requires adding the new theme to the list of active plugins before updating it in the ACP",
     "topic-event-unrecognized": "Ngjarja e temës '%1' nuk njihet",
     "cant-set-child-as-parent": "Nuk mund të vendoset si kategori mëmë",
     "cant-set-self-as-parent": "Nuk mund të vendosësh veten si kategori mëmë",

@@ -56,6 +56,10 @@ module.exports = function (Plugins) {
 	}
 
 	Plugins.toggleActive = async function (id) {
+		if (nconf.get('plugins:active')) {
+			winston.error('Cannot activate plugins while plugin state is set in the configuration (config.json, environmental variables or terminal arguments), please modify the configuration instead');
+			throw new Error('[[error:plugins-set-in-configuration]]');
+		}
 		const isActive = await Plugins.isActive(id);
 		if (isActive) {
 			await db.sortedSetRemove('plugins:active', id);
@@ -144,10 +148,16 @@ module.exports = function (Plugins) {
 	};
 
 	Plugins.isActive = async function (id) {
+		if (nconf.get('plugins:active')) {
+			return nconf.get('plugins:active').includes(id);
+		}
 		return await db.isSortedSetMember('plugins:active', id);
 	};
 
 	Plugins.getActive = async function () {
+		if (nconf.get('plugins:active')) {
+			return nconf.get('plugins:active');
+		}
 		return await db.getSortedSetRange('plugins:active', 0, -1);
 	};
 

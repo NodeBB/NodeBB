@@ -1,7 +1,7 @@
 {
-    "success": "Fertig",
+    "success": "Erfolgreich",
     "topic-post": "Beitrag erfolgreich erstellt.",
-    "post-queued": "Ihr Beitrag wird zur Genehmigung in die Warteschlange gestellt. Sie erhalten eine Benachrichtigung, wenn dieser akzeptiert oder abgelehnt wird.",
+    "post-queued": "Dein Beitrag wird zur Genehmigung in die Warteschlange gestellt. Du erhälst eine Benachrichtigung, wenn es akzeptiert oder abgelehnt wird.",
     "authentication-successful": "Authentifizierung erfolgreich!",
     "settings-saved": "Einstellungen gespeichert!"
 }

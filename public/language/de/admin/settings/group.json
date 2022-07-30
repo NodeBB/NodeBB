@@ -7,7 +7,7 @@
 	"allow-multiple-badges-help": "Diese Eintellung kann verwendet werden um Benutzern zu erlauben mehrere Gruppen abzeichen auszuwählen, benötigt Theme unterstützung.",
 	"max-name-length": "Maximale Länge von Gruppennamen",
 	"max-title-length": "Maximale Gruppentitellänge",
-	"cover-image": "Gruppen-Deckbild",
-	"default-cover": "Standard-Deckbild",
-	"default-cover-help": "Fügen Sie Komma-getrennte standard-Deckbilder für Gruppen hinzu, welche kein Deckbild hochgeladen haben"
+	"cover-image": "Titelbild der Gruppe",
+	"default-cover": "Standard-Titelbilder",
+	"default-cover-help": "Füge urch Kommas getrennte Standard-Titelbilder für Gruppen hinzu, die kein hochgeladenes Titelbild haben"
 }

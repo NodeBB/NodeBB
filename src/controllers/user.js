@@ -3,7 +3,6 @@
 const path = require('path');
 
 const user = require('../user');
-const meta = require('../meta');
 const privileges = require('../privileges');
 const accountHelpers = require('./accounts/helpers');
 
@@ -68,17 +67,13 @@ userController.getUserDataByUID = async function (callerUid, uid) {
 	if (!canView) {
 		throw new Error('[[error:no-privileges]]');
 	}
-	const [userData, settings] = await Promise.all([
-		user.getUserData(uid),
-		user.getSettings(uid),
-	]);
 
+	let userData = await user.getUserData(uid);
 	if (!userData) {
 		throw new Error('[[error:no-user]]');
 	}
 
-	userData.email = settings.showemail && !meta.config.hideEmail ? userData.email : undefined;
-	userData.fullname = settings.showfullname && !meta.config.hideFullname ? userData.fullname : undefined;
+	userData = await user.hidePrivateData(userData, callerUid);
 
 	return userData;
 };

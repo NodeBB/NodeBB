@@ -15,7 +15,6 @@ const Benchpress = require('benchpressjs');
 
 const plugins = require('../plugins');
 const file = require('../file');
-const db = require('../database');
 const { themeNamePattern, paths } = require('../constants');
 
 const viewsPath = nconf.get('views_dir');
@@ -119,7 +118,7 @@ async function compile() {
 	await _rimraf(viewsPath);
 	await mkdirp(viewsPath);
 
-	let files = await db.getSortedSetRange('plugins:active', 0, -1);
+	let files = await plugins.getActive();
 	files = await getTemplateDirs(files);
 	files = await getTemplateFiles(files);
 

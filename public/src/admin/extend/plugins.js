@@ -162,6 +162,15 @@ define('admin/extend/plugins', [
 				const pluginId = $(this).attr('data-plugin-id');
 				$(this).toggleClass('hide', pluginId && pluginId.indexOf(term) === -1);
 			});
+
+			const tabEls = document.querySelectorAll('.plugins .tab-pane');
+			tabEls.forEach((tabEl) => {
+				const remaining = tabEl.querySelectorAll('li:not(.hide)').length;
+				const noticeEl = tabEl.querySelector('.no-plugins');
+				if (noticeEl) {
+					noticeEl.classList.toggle('hide', remaining !== 0);
+				}
+			});
 		});
 
 		$('#plugin-submit-usage').on('click', function () {
