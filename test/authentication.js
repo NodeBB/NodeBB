@@ -115,7 +115,9 @@ describe('authentication', () => {
 				headers: {
 					'x-csrf-token': body.csrf_token,
 				},
-			}, (err, response, body) => {
+			}, async (err, response, body) => {
+				const validationPending = await user.email.isValidationPending(body.uid, 'admin@nodebb.org');
+				assert.strictEqual(validationPending, true);
 				assert.ifError(err);
 				assert(body);
 				assert(body.hasOwnProperty('uid') && body.uid > 0);
@@ -128,7 +130,6 @@ describe('authentication', () => {
 					assert.ifError(err);
 					assert(body);
 					assert.equal(body.username, 'admin');
-					assert.equal(body.email, 'admin@nodebb.org');
 					assert.equal(body.uid, newUid);
 					user.getSettings(body.uid, (err, settings) => {
 						assert.ifError(err);
@@ -387,7 +388,9 @@ describe('authentication', () => {
 
 
 	it('should be able to login with email', async () => {
-		const uid = await user.create({ username: 'ginger', password: '123456', email: 'ginger@nodebb.org' });
+		const email = 'ginger@nodebb.org';
+		const uid = await user.create({ username: 'ginger', password: '123456', email });
+		await user.setUserField(uid, 'email', email);
 		await user.email.confirmByUid(uid);
 		const { res } = await helpers.loginUser('ginger@nodebb.org', '123456');
 		assert.equal(res.statusCode, 200);
