@@ -298,7 +298,7 @@ Users.confirmEmail = async (req, res) => {
 		const code = await db.get(`confirm:byUid:${req.params.uid}`);
 		await user.email.confirmByCode(code, req.session.id);
 		helpers.formatApiResponse(200, res);
-	} else if (current && current === req.params.email) { // email in user hash (i.e. email passed into user.create)
+	} else if (current && current === req.params.email) { // i.e. old account w/ unconf. email in user hash
 		await user.email.confirmByUid(req.params.uid);
 		helpers.formatApiResponse(200, res);
 	} else {
