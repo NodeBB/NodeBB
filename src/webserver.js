@@ -83,7 +83,7 @@ exports.listen = async function () {
 	helpers.register();
 	logger.init(app);
 	await initializeNodeBB();
-	winston.info('NodeBB Ready');
+	winston.info('🎉 NodeBB Ready');
 
 	require('./socket.io').server.emit('event:nodebb.ready', {
 		'cache-buster': meta.config['cache-buster'],
@@ -194,7 +194,7 @@ function setupHelmet(app) {
 		referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
 	};
 
-	if (meta.config['cross-origin-embedder-policy']) {
+	if (!meta.config['cross-origin-embedder-policy']) {
 		options.crossOriginEmbedderPolicy = false;
 	}
 	if (meta.config['hsts-enabled']) {
@@ -257,7 +257,7 @@ async function listen() {
 	}
 	port = parseInt(port, 10);
 	if ((port !== 80 && port !== 443) || nconf.get('trust_proxy') === true) {
-		winston.info('Enabling \'trust proxy\'');
+		winston.info('🤝 Enabling \'trust proxy\'');
 		app.enable('trust proxy');
 	}
 
@@ -287,8 +287,8 @@ async function listen() {
 				reject(err);
 			}
 
-			winston.info(`NodeBB is now listening on: ${chalk.yellow(onText)}`);
-			winston.info(`Canonical URL: ${chalk.yellow(nconf.get('url'))}`);
+			winston.info(`📡 NodeBB is now listening on: ${chalk.yellow(onText)}`);
+			winston.info(`🔗 Canonical URL: ${chalk.yellow(nconf.get('url'))}`);
 			if (oldUmask) {
 				process.umask(oldUmask);
 			}
