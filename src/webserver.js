@@ -83,7 +83,7 @@ exports.listen = async function () {
 	helpers.register();
 	logger.init(app);
 	await initializeNodeBB();
-	winston.info('🪄 NodeBB Ready');
+	winston.info('🎉 NodeBB Ready');
 
 	require('./socket.io').server.emit('event:nodebb.ready', {
 		'cache-buster': meta.config['cache-buster'],
