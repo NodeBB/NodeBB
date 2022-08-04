@@ -32,7 +32,11 @@ app.onDomReady = function () {
 	});
 };
 
-document.addEventListener('DOMContentLoaded',  ajaxify.parseData);
+if (document.readyState === 'loading') {
+	document.addEventListener('DOMContentLoaded', ajaxify.parseData);
+} else {
+	ajaxify.parseData();
+}
 
 (function () {
 	let appLoaded = false;
