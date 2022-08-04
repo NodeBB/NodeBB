@@ -23,6 +23,7 @@ const meta = require('../src/meta');
 const file = require('../src/file');
 const socketUser = require('../src/socket.io/user');
 const apiUser = require('../src/api/users');
+const utils = require('../src/utils');
 
 describe('User', () => {
 	let userData;
@@ -82,7 +83,11 @@ describe('User', () => {
 		it('should be created properly', async () => {
 			const uid = await User.create({ username: 'weirdemail', email: '<h1>test</h1>@gmail.com' });
 			const data = await User.getUserData(uid);
-			assert.equal(data.email, '&lt;h1&gt;test&lt;&#x2F;h1&gt;@gmail.com');
+
+			const validationPending = await User.email.isValidationPending(uid, '<h1>test</h1>@gmail.com');
+			assert.strictEqual(validationPending, true);
+
+			assert.equal(data.email, '');
 			assert.strictEqual(data.profileviews, 0);
 			assert.strictEqual(data.reputation, 0);
 			assert.strictEqual(data.postcount, 0);
@@ -813,6 +818,7 @@ describe('User', () => {
 			const newUid = await User.create({ username: 'updateprofile', email: 'update@me.com', password: '123456' });
 			uid = newUid;
 
+			await User.setUserField(uid, 'email', 'update@me.com');
 			await User.email.confirmByUid(uid);
 
 			({ jar } = await helpers.loginUser('updateprofile', '123456'));
@@ -850,6 +856,9 @@ describe('User', () => {
 
 			it('should update a user\'s profile', async () => {
 				uid = await User.create({ username: 'justforupdate', email: 'just@for.updated', password: '123456' });
+				await User.setUserField(uid, 'email', 'just@for.updated');
+				await User.email.confirmByUid(uid);
+
 				const data = {
 					uid: uid,
 					username: 'updatedUserName',
@@ -2085,26 +2094,27 @@ describe('User', () => {
 
 		const COMMON_PW = '123456';
 
-		before((done) => {
-			async.parallel({
-				publicGroup: async.apply(groups.create, { name: PUBLIC_GROUP, private: 0 }),
-				privateGroup: async.apply(groups.create, { name: PRIVATE_GROUP, private: 1 }),
-				hiddenGroup: async.apply(groups.create, { name: HIDDEN_GROUP, hidden: 1 }),
-				notAnInviter: async.apply(User.create, { username: 'notAnInviter', password: COMMON_PW, email: 'notaninviter@nodebb.org' }),
-				inviter: async.apply(User.create, { username: 'inviter', password: COMMON_PW, email: 'inviter@nodebb.org' }),
-				admin: async.apply(User.create, { username: 'adminInvite', password: COMMON_PW }),
-			}, (err, results) => {
-				assert.ifError(err);
-				notAnInviterUid = results.notAnInviter;
-				inviterUid = results.inviter;
-				adminUid = results.admin;
-				async.parallel([
-					async.apply(groups.create, { name: OWN_PRIVATE_GROUP, ownerUid: inviterUid, private: 1 }),
-					async.apply(groups.join, 'administrators', adminUid),
-					async.apply(groups.join, 'cid:0:privileges:invite', inviterUid),
-					async.apply(User.email.confirmByUid, inviterUid),
-				], done);
+		before(async () => {
+			const results = await utils.promiseParallel({
+				publicGroup: groups.create({ name: PUBLIC_GROUP, private: 0 }),
+				privateGroup: groups.create({ name: PRIVATE_GROUP, private: 1 }),
+				hiddenGroup: groups.create({ name: HIDDEN_GROUP, hidden: 1 }),
+				notAnInviter: User.create({ username: 'notAnInviter', password: COMMON_PW }),
+				inviter: User.create({ username: 'inviter', password: COMMON_PW }),
+				admin: User.create({ username: 'adminInvite', password: COMMON_PW }),
 			});
+
+			notAnInviterUid = results.notAnInviter;
+			inviterUid = results.inviter;
+			adminUid = results.admin;
+
+			await User.setUserField(inviterUid, 'email', 'inviter@nodebb.org');
+			await Promise.all([
+				groups.create({ name: OWN_PRIVATE_GROUP, ownerUid: inviterUid, private: 1 }),
+				groups.join('administrators', adminUid),
+				groups.join('cid:0:privileges:invite', inviterUid),
+				User.email.confirmByUid(inviterUid),
+			]);
 		});
 
 		describe('when inviter is not an admin and does not have invite privilege', () => {
@@ -2465,7 +2475,7 @@ describe('User', () => {
 				email: email,
 			});
 
-			const code = await User.email.sendValidationEmail(uid, email);
+			const code = await User.email.sendValidationEmail(uid, { email, force: 1 });
 			const unverified = await groups.isMember(uid, 'unverified-users');
 			assert.strictEqual(unverified, true);
 			await User.email.confirmByCode(code);
@@ -2481,8 +2491,9 @@ describe('User', () => {
 			const email = 'confirm2@me.com';
 			const uid = await User.create({
 				username: 'confirme2',
-				email: email,
+				email,
 			});
+			await User.setUserField(uid, 'email', email);
 
 			const unverified = await groups.isMember(uid, 'unverified-users');
 			assert.strictEqual(unverified, true);

@@ -483,7 +483,8 @@ describe('Controllers', () => {
 		});
 
 		it('should remove current email', async () => {
-			const uid = await user.create({ username: 'interstiuser5', email: 'interstiuser5@nodebb.org' });
+			const uid = await user.create({ username: 'interstiuser5' });
+			await user.setUserField(uid, 'email', 'interstiuser5@nodebb.org');
 			await user.email.confirmByUid(uid);
 
 			const result = await user.interstitials.email({
