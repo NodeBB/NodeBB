@@ -81,13 +81,14 @@ describe('User', () => {
 		});
 
 		it('should be created properly', async () => {
-			const uid = await User.create({ username: 'weirdemail', email: '<h1>test</h1>@gmail.com' });
+			const email = '<h1>test</h1>@gmail.com';
+			const uid = await User.create({ username: 'weirdemail', email: email });
 			const data = await User.getUserData(uid);
 
-			const validationPending = await User.email.isValidationPending(uid, '<h1>test</h1>@gmail.com');
+			const validationPending = await User.email.isValidationPending(uid, email);
 			assert.strictEqual(validationPending, true);
 
-			assert.equal(data.email, '');
+			assert.equal(data.email, '&lt;h1&gt;test&lt;&#x2F;h1&gt;@gmail.com');
 			assert.strictEqual(data.profileviews, 0);
 			assert.strictEqual(data.reputation, 0);
 			assert.strictEqual(data.postcount, 0);
