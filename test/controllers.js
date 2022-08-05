@@ -332,7 +332,7 @@ describe('Controllers', () => {
 		});
 	});
 
-	describe.only('registration interstitials', () => {
+	describe('registration interstitials', () => {
 		describe('email update', () => {
 			let jar;
 			let token;
@@ -342,7 +342,6 @@ describe('Controllers', () => {
 					username: utils.generateUUID().slice(0, 10),
 					password: utils.generateUUID(),
 				});
-				console.log(jar);
 				token = await helpers.getCsrfToken(jar);
 
 				meta.config.requireEmailAddress = 1;
@@ -411,7 +410,7 @@ describe('Controllers', () => {
 						interstitials: [],
 					});
 					assert.strictEqual(result.interstitials[0].template, 'partials/email_update');
-					await result.interstitials[0].callback({ uid: uid }, {
+					await result.interstitials[0].callback({ uid }, {
 						email: 'invalidEmail',
 					});
 					assert(false);
@@ -494,7 +493,7 @@ describe('Controllers', () => {
 
 			before(async () => {
 				jar = await helpers.registerUser({
-					username: utils.generateUUID(),
+					username: utils.generateUUID().slice(0, 10),
 					password: utils.generateUUID(),
 				});
 				token = await helpers.getCsrfToken(jar);
