@@ -22,7 +22,11 @@ Interstitials.email = async (data) => {
 		return data;
 	}
 
-	const isAdminOrGlobalMod = await user.isAdminOrGlobalMod(data.req.uid);
+	const [isAdminOrGlobalMod, hasPassword] = await Promise.all([
+		user.isAdminOrGlobalMod(data.req.uid),
+		user.hasPassword(data.userData.uid),
+	]);
+
 	let email;
 	if (data.userData.uid) {
 		email = await user.getUserField(data.userData.uid, 'email');
@@ -33,7 +37,7 @@ Interstitials.email = async (data) => {
 		data: {
 			email,
 			requireEmailAddress: meta.config.requireEmailAddress,
-			update: !!data.userData.uid,
+			issuePasswordChallenge: !!data.userData.uid && hasPassword,
 		},
 		callback: async (userData, formData) => {
 			// Validate and send email confirmation
@@ -69,7 +73,7 @@ Interstitials.email = async (data) => {
 						await user.setUserField(userData.uid, 'email', formData.email);
 						await user.email.confirmByUid(userData.uid);
 					} else if (canEdit) {
-						if (!isPasswordCorrect) {
+						if (hasPassword && !isPasswordCorrect) {
 							throw new Error('[[error:invalid-password]]');
 						}
 
@@ -89,7 +93,7 @@ Interstitials.email = async (data) => {
 						throw new Error('[[error:invalid-email]]');
 					}
 
-					if (current.length && (isPasswordCorrect || isAdminOrGlobalMod)) {
+					if (current.length && (!hasPassword || (hasPassword && isPasswordCorrect) || isAdminOrGlobalMod)) {
 						// User explicitly clearing their email
 						await user.email.remove(userData.uid, data.req.session.id);
 					}
