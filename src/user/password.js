@@ -26,7 +26,12 @@ module.exports = function (User) {
 			hashedPassword = '';
 		}
 
-		User.isPasswordValid(password, 0);
+		try {
+			User.isPasswordValid(password, 0);
+		} catch (e) {
+			return false;
+		}
+
 		await User.auth.logAttempt(uid, ip);
 		const ok = await Password.compare(password, hashedPassword, !!parseInt(shaWrapped, 10));
 		if (ok) {
