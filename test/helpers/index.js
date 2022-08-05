@@ -167,6 +167,7 @@ helpers.registerUser = function (data, callback) {
 				'x-csrf-token': body.csrf_token,
 			},
 		}, (err, response, body) => {
+			console.log(body);
 			callback(err, jar, response, body);
 		});
 	});
