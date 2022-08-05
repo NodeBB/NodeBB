@@ -333,7 +333,7 @@ describe('Controllers', () => {
 	});
 
 	describe('registration interstitials', () => {
-		describe.only('email update', () => {
+		describe('email update', () => {
 			let jar;
 			let token;
 			const dummyEmailerHook = async (data) => {};
@@ -492,6 +492,74 @@ describe('Controllers', () => {
 				const userData = await user.getUserData(uid);
 				assert.strictEqual(userData.email, '');
 				assert.strictEqual(userData['email:confirmed'], 0);
+			});
+
+			it('should require a password (if one is set) for email change', async () => {
+				try {
+					const [username, password] = [utils.generateUUID().slice(0, 10), utils.generateUUID()];
+					const uid = await user.create({ username, password });
+					await user.setUserField(uid, 'email', `${username}@nodebb.org`);
+					await user.email.confirmByUid(uid);
+
+					const result = await user.interstitials.email({
+						userData: { uid: uid, updateEmail: true },
+						req: { uid: uid, session: { id: 0 } },
+						interstitials: [],
+					});
+
+					await result.interstitials[0].callback({ uid: uid }, {
+						email: `${username}@nodebb.com`,
+					});
+				} catch (err) {
+					assert.strictEqual(err.message, '[[error:invalid-password]]');
+				}
+			});
+
+			it('should require a password (if one is set) for email clearing', async () => {
+				try {
+					const [username, password] = [utils.generateUUID().slice(0, 10), utils.generateUUID()];
+					const uid = await user.create({ username, password });
+					await user.setUserField(uid, 'email', `${username}@nodebb.org`);
+					await user.email.confirmByUid(uid);
+
+					const result = await user.interstitials.email({
+						userData: { uid: uid, updateEmail: true },
+						req: { uid: uid, session: { id: 0 } },
+						interstitials: [],
+					});
+
+					await result.interstitials[0].callback({ uid: uid }, {
+						email: '',
+					});
+				} catch (err) {
+					assert.strictEqual(err.message, '[[error:invalid-password]]');
+				}
+			});
+
+			it('should successfully issue validation request if the correct password is passed in', async () => {
+				const [username, password] = [utils.generateUUID().slice(0, 10), utils.generateUUID()];
+				const uid = await user.create({ username, password });
+				await user.setUserField(uid, 'email', `${username}@nodebb.org`);
+				await user.email.confirmByUid(uid);
+
+				const result = await user.interstitials.email({
+					userData: { uid: uid, updateEmail: true },
+					req: { uid: uid, session: { id: 0 } },
+					interstitials: [],
+				});
+
+				await result.interstitials[0].callback({ uid }, {
+					email: `${username}@nodebb.com`,
+					password,
+				});
+
+				const pending = await user.email.isValidationPending(uid, `${username}@nodebb.com`);
+				assert.strictEqual(pending, true);
+				await user.setUserField(uid, 'email', `${username}@nodebb.com`);
+				await user.email.confirmByUid(uid);
+				const userData = await user.getUserData(uid);
+				assert.strictEqual(userData.email, `${username}@nodebb.com`);
+				assert.strictEqual(userData['email:confirmed'], 1);
 			});
 		});
 
