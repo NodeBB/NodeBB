@@ -333,11 +333,18 @@ describe('Controllers', () => {
 	});
 
 	describe('registration interstitials', () => {
-		describe('email update', () => {
+		describe.only('email update', () => {
 			let jar;
 			let token;
+			const dummyEmailerHook = async (data) => {};
 
 			before(async () => {
+				// Attach an emailer hook so related requests do not error
+				plugins.hooks.register('emailer-test', {
+					hook: 'filter:email.send',
+					method: dummyEmailerHook,
+				});
+
 				jar = await helpers.registerUser({
 					username: utils.generateUUID().slice(0, 10),
 					password: utils.generateUUID(),
@@ -349,6 +356,7 @@ describe('Controllers', () => {
 
 			after(() => {
 				meta.config.requireEmailAddress = 0;
+				plugins.hooks.unregister('emailer-test', 'filter:email.send');
 			});
 
 			it('email interstitial should still apply if empty email entered and requireEmailAddress is enabled', async () => {
