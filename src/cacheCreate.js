@@ -4,6 +4,22 @@ module.exports = function (opts) {
 	const LRU = require('lru-cache');
 	const pubsub = require('./pubsub');
 
+	// lru-cache@7 deprecations
+	const winston = require('winston');
+	const chalk = require('chalk');
+	const deprecations = new Map([
+		['stale', 'allowStale'],
+		['maxAge', 'ttl'],
+		['length', 'sizeCalculation'],
+	]);
+	deprecations.forEach((newProp, oldProp) => {
+		if (opts.hasOwnProperty(oldProp) && !opts.hasOwnProperty(newProp)) {
+			winston.warn(`[cache/init (${opts.name})] ${chalk.white.bgRed.bold('DEPRECATION')} The option ${chalk.yellow(oldProp)} has been deprecated as of lru-cache@7.0.0. Please change this to ${chalk.yellow(newProp)} instead.`);
+			opts[newProp] = opts[oldProp];
+			delete opts[oldProp];
+		}
+	});
+
 	const cache = new LRU(opts);
 
 	cache.name = opts.name;
@@ -13,8 +29,8 @@ module.exports = function (opts) {
 
 	const cacheSet = cache.set;
 	const cacheGet = cache.get;
-	const cacheDel = cache.del;
-	const cacheReset = cache.reset;
+	const cacheDelete = cache.delete;
+	const cacheClear = cache.clear;
 
 	cache.set = function (key, value, maxAge) {
 		if (!cache.enabled) {
@@ -36,32 +52,32 @@ module.exports = function (opts) {
 		return data;
 	};
 
-	cache.del = function (keys) {
+	cache.delete = function (keys) {
 		if (!Array.isArray(keys)) {
 			keys = [keys];
 		}
-		pubsub.publish(`${cache.name}:cache:del`, keys);
-		keys.forEach(key => cacheDel.apply(cache, [key]));
+		pubsub.publish(`${cache.name}:cache:delete`, keys);
+		keys.forEach(key => cacheDelete.apply(cache, [key]));
 	};
 
-	cache.reset = function () {
-		pubsub.publish(`${cache.name}:cache:reset`);
-		localReset();
+	cache.clear = function () {
+		pubsub.publish(`${cache.name}:cache:clear`);
+		localClear();
 	};
 
-	function localReset() {
-		cacheReset.apply(cache);
+	function localClear() {
+		cacheClear.apply(cache);
 		cache.hits = 0;
 		cache.misses = 0;
 	}
 
-	pubsub.on(`${cache.name}:cache:reset`, () => {
-		localReset();
+	pubsub.on(`${cache.name}:cache:clear`, () => {
+		localClear();
 	});
 
-	pubsub.on(`${cache.name}:cache:del`, (keys) => {
+	pubsub.on(`${cache.name}:cache:delete`, (keys) => {
 		if (Array.isArray(keys)) {
-			keys.forEach(key => cacheDel.apply(cache, [key]));
+			keys.forEach(key => cacheDelete.apply(cache, [key]));
 		}
 	});
 
