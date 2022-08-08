@@ -19,7 +19,7 @@ const colors = [
 ];
 
 function humanReadableArgName(arg) {
-	const nameOutput = arg.name + (arg.variadic === true ? '...' : '');
+	const nameOutput = arg.name() + (arg.variadic === true ? '...' : '');
 
 	return arg.required ? `<${nameOutput}>` : `[${nameOutput}]`;
 }
