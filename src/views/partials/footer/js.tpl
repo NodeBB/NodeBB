@@ -5,8 +5,6 @@
 {{{end}}}
 
 <script>
-    document.documentElement.style.setProperty('--panel-offset', `${localStorage.getItem('panelOffset') || 0}px`);
-
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', prepareFooter);
     } else {
