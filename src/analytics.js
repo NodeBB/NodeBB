@@ -4,7 +4,6 @@ const cronJob = require('cron').CronJob;
 const winston = require('winston');
 const nconf = require('nconf');
 const crypto = require('crypto');
-const LRU = require('lru-cache');
 const util = require('util');
 const _ = require('lodash');
 
