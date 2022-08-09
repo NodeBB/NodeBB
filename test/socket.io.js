@@ -688,6 +688,8 @@ describe('socket.io', () => {
 			const uid = await user.create({ username: 'forceme', password: '123345' });
 			await socketAdmin.user.forcePasswordReset({ uid: adminUid }, [uid]);
 			const pwExpiry = await user.getUserField(uid, 'passwordExpiry');
+			const sleep = util.promisify(setTimeout);
+			await sleep(500);
 			assert(pwExpiry > then && pwExpiry < Date.now());
 		});
 
