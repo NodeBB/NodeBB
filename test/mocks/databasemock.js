@@ -184,6 +184,9 @@ async function setupMockDefaults() {
 	const meta = require('../../src/meta');
 	await db.emptydb();
 
+	winston.info('test_database flushed');
+	await setupDefaultConfigs(meta);
+	await giveDefaultGlobalPrivileges();
 	await meta.configs.init();
 	meta.config.postDelay = 0;
 	meta.config.initialPostDelay = 0;
@@ -194,10 +197,6 @@ async function setupMockDefaults() {
 	require('../../src/posts/cache').reset();
 	require('../../src/cache').reset();
 	require('../../src/middleware/uploads').clearCache();
-
-	winston.info('test_database flushed');
-	await setupDefaultConfigs(meta);
-	await giveDefaultGlobalPrivileges();
 
 	await enableDefaultPlugins();
 
