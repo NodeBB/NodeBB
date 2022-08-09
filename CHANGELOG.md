@@ -1,3 +1,86 @@
+#### v2.3.1 (2022-07-29)
+
+##### Chores
+
+* **deps:**
+  *  bump sanitize-html from 2.7.0 to 2.7.1 in /install (7b606d2e)
+  *  bump webpack from 5.73.0 to 5.74.0 in /install (a9900625)
+* **i18n:**  fallback strings for new resources: nodebb.admin-settings-advanced, nodebb.admin-menu, nodebb.error (17120e03)
+*  incrementing version number - v2.3.0 (046ea120)
+*  update changelog for v2.3.0 (a6f7fff0)
+
+##### New Features
+
+*  add emoji to startup logs, because procrastination. (5176fb15)
+
+##### Bug Fixes
+
+*  #10798, logic error in COEP header; helmet config (89173f17)
+*  #10795, early return for selection tooltip based on calling user privilege (847d2b91)
+* **deps:**  update persona to v12.0.14 (9f225e70)
+
+#### v2.3.0 (2022-07-28)
+
+##### Chores
+
+* **deps:**
+  *  update dependency lint-staged to v13 (07ce0c39)
+  *  bump ace-builds from 1.7.1 to 1.8.1 in /install (f397d968)
+  *  bump ioredis from 5.2.0 to 5.2.2 in /install (067a5110)
+*  have renovate work off of `develop` branch instead (f334e398)
+*  update changelog for v2.2.5 (6c3ebf3b)
+
+##### New Features
+
+*  add client side filter:chat.send, closes #10729 (b2da02d6)
+*  UI changes for ACP > Manage > Categories (#10782) (820bc994)
+*  show an informative message when no plugins are found after filtering (6840a742)
+*  Allow defining active plugins in config (#10767) (23cb67a1)
+*  allow plugins to toggle whether IPs are shown in the users CSV export (a6af47da)
+*  fire hook to allow plugins to filter the pids returned in a user profile (c26be43a)
+*  closes #10719, don't trim children if category is marked section (7e80cc10)
+
+##### Bug Fixes
+
+* **deps:**
+  *  update dependency mongodb to v4.8.1 (8384b7cf)
+  *  update dependency helmet to v5.1.1 (03a173bb)
+*  bug where fallback to forum search was not working due to client-side error (25046642)
+*  better looking placeholder text for ACP search (1b9c6819)
+*  use `user.hidePrivateData();` more consistently across user retrieval endpoints (0529f2fb)
+*  minor margin tweak for alert in acp header (4faf0cdf)
+*  cannot turn off all networks (bbc7f2af)
+*  cannot setting networks for sharing posts (2e088a8e)
+
+##### Refactors
+
+*  invert helmet configuration (dcacd815)
+
+#### v2.2.5 (2022-07-21)
+
+##### Chores
+
+* **deps-dev:**
+  *  bump eslint from 8.19.0 to 8.20.0 in /install (8d109fef)
+  *  bump @commitlint/config-angular in /install (2a88a50f)
+* **deps:**
+  *  bump cron from 2.0.0 to 2.1.0 in /install (4c1bda32)
+  *  bump jquery-ui from 1.13.1 to 1.13.2 in /install (abb19e98)
+  *  bump nodebb-theme-persona in /install (9e52b8c6)
+  *  bump ioredis from 5.1.0 to 5.2.0 in /install (8c20fdad)
+*  incrementing version number - v2.2.4 (d1d63e6b)
+*  update changelog for v2.2.4 (52f7ed64)
+*  incrementing version number - v2.2.3 (f80476b9)
+*  incrementing version number - v2.2.2 (343ffa66)
+*  incrementing version number - v2.2.1 (efc77b2a)
+*  incrementing version number - v2.2.0 (eecb836d)
+
+##### Bug Fixes
+
+*  expire email validation tokens on password change (c93bd010)
+*  remove extraneous console.log (0d58e8a6)
+* **deps:**  update dependency mongodb to v4.8.0 (bff239da)
+
 #### v2.2.4 (2022-07-12)
 
 ##### Chores

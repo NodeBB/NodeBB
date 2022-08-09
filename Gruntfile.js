@@ -20,6 +20,7 @@ const prestart = require('./src/prestart');
 prestart.loadConfig(configFile);
 
 const db = require('./src/database');
+const plugins = require('./src/plugins');
 
 module.exports = function (grunt) {
 	const args = [];
@@ -40,35 +41,35 @@ module.exports = function (grunt) {
 
 	grunt.registerTask('init', async function () {
 		const done = this.async();
-		let plugins = [];
+		let pluginList = [];
 		if (!process.argv.includes('--core')) {
 			await db.init();
-			plugins = await db.getSortedSetRange('plugins:active', 0, -1);
-			addBaseThemes(plugins);
-			if (!plugins.includes('nodebb-plugin-composer-default')) {
-				plugins.push('nodebb-plugin-composer-default');
+			pluginList = await plugins.getActive();
+			addBaseThemes(pluginList);
+			if (!pluginList.includes('nodebb-plugin-composer-default')) {
+				pluginList.push('nodebb-plugin-composer-default');
 			}
-			if (!plugins.includes('nodebb-theme-persona')) {
-				plugins.push('nodebb-theme-persona');
+			if (!pluginList.includes('nodebb-theme-persona')) {
+				pluginList.push('nodebb-theme-persona');
 			}
 		}
 
-		const styleUpdated_Client = plugins.map(p => `node_modules/${p}/*.less`)
-			.concat(plugins.map(p => `node_modules/${p}/*.css`))
-			.concat(plugins.map(p => `node_modules/${p}/+(public|static|less)/**/*.less`))
-			.concat(plugins.map(p => `node_modules/${p}/+(public|static)/**/*.css`));
+		const styleUpdated_Client = pluginList.map(p => `node_modules/${p}/*.less`)
+			.concat(pluginList.map(p => `node_modules/${p}/*.css`))
+			.concat(pluginList.map(p => `node_modules/${p}/+(public|static|less)/**/*.less`))
+			.concat(pluginList.map(p => `node_modules/${p}/+(public|static)/**/*.css`));
 
-		const styleUpdated_Admin = plugins.map(p => `node_modules/${p}/*.less`)
-			.concat(plugins.map(p => `node_modules/${p}/*.css`))
-			.concat(plugins.map(p => `node_modules/${p}/+(public|static|less)/**/*.less`))
-			.concat(plugins.map(p => `node_modules/${p}/+(public|static)/**/*.css`));
+		const styleUpdated_Admin = pluginList.map(p => `node_modules/${p}/*.less`)
+			.concat(pluginList.map(p => `node_modules/${p}/*.css`))
+			.concat(pluginList.map(p => `node_modules/${p}/+(public|static|less)/**/*.less`))
+			.concat(pluginList.map(p => `node_modules/${p}/+(public|static)/**/*.css`));
 
-		const clientUpdated = plugins.map(p => `node_modules/${p}/+(public|static)/**/*.js`);
-		const serverUpdated = plugins.map(p => `node_modules/${p}/*.js`)
-			.concat(plugins.map(p => `node_modules/${p}/+(lib|src)/**/*.js`));
+		const clientUpdated = pluginList.map(p => `node_modules/${p}/+(public|static)/**/*.js`);
+		const serverUpdated = pluginList.map(p => `node_modules/${p}/*.js`)
+			.concat(pluginList.map(p => `node_modules/${p}/+(lib|src)/**/*.js`));
 
-		const templatesUpdated = plugins.map(p => `node_modules/${p}/+(public|static|templates)/**/*.tpl`);
-		const langUpdated = plugins.map(p => `node_modules/${p}/+(public|static|languages)/**/*.json`);
+		const templatesUpdated = pluginList.map(p => `node_modules/${p}/+(public|static|templates)/**/*.tpl`);
+		const langUpdated = pluginList.map(p => `node_modules/${p}/+(public|static|languages)/**/*.json`);
 
 		grunt.config(['watch'], {
 			styleUpdated_Client: {
@@ -195,10 +196,10 @@ module.exports = function (grunt) {
 	});
 };
 
-function addBaseThemes(plugins) {
-	let themeId = plugins.find(p => p.includes('nodebb-theme-'));
+function addBaseThemes(pluginList) {
+	let themeId = pluginList.find(p => p.includes('nodebb-theme-'));
 	if (!themeId) {
-		return plugins;
+		return pluginList;
 	}
 	let baseTheme;
 	do {
@@ -209,9 +210,9 @@ function addBaseThemes(plugins) {
 		}
 
 		if (baseTheme) {
-			plugins.push(baseTheme);
+			pluginList.push(baseTheme);
 			themeId = baseTheme;
 		}
 	} while (baseTheme);
-	return plugins;
+	return pluginList;
 }

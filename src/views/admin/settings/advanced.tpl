@@ -74,6 +74,15 @@
 			</div>
 			<p class="help-block">[[admin/settings/advanced:headers.coep-help]]</p>
 			<div class="form-group">
+				<label for="cross-origin-resource-policy">[[admin/settings/advanced:headers.coop]]</label>
+				<select class="form-control" id="cross-origin-opener-policy" data-field="cross-origin-opener-policy">
+					<option value="same-origin">same-origin</option>
+					<option value="same-origin-allow-popups">same-origin-allow-popups</option>
+					<option value="unsafe-none">unsafe-none</option>
+				</select>
+			</div>
+
+			<div class="form-group">
 				<label for="cross-origin-resource-policy">[[admin/settings/advanced:headers.corp]]</label>
 				<select class="form-control" id="cross-origin-resource-policy" data-field="cross-origin-resource-policy">
 					<option value="same-site">same-site</option>

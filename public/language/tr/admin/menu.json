@@ -76,7 +76,7 @@
 	"logout": "Çıkış",
 	"view-forum": "Forumu Görüntüle",
 
-	"search.placeholder": "Ayarları aramak için &quot;/&quot; işaretine tıklayın",
+	"search.placeholder": "Search settings",
 	"search.no-results": "Sonuç yok...",
 	"search.search-forum": "Forumda ara: <strong></strong>",
 	"search.keep-typing": "Sonuçları görmek için daha fazla yazın...",

@@ -42,7 +42,7 @@ define('admin/manage/categories', [
 
 		$('.categories').on('click', '.toggle', function () {
 			const el = $(this);
-			el.find('i').toggleClass('fa-minus').toggleClass('fa-plus');
+			el.find('i').toggleClass('fa-chevron-down').toggleClass('fa-chevron-right');
 			el.closest('[data-cid]').find('> ul[data-cid]').toggleClass('hidden');
 		});
 
@@ -84,7 +84,7 @@ define('admin/manage/categories', [
 
 		function toggleAll(expand) {
 			const el = $('.categories .toggle');
-			el.find('i').toggleClass('fa-minus', expand).toggleClass('fa-plus', !expand);
+			el.find('i').toggleClass('fa-chevron-down', expand).toggleClass('fa-chevron-right', !expand);
 			el.closest('[data-cid]').find('> ul[data-cid]').toggleClass('hidden', !expand);
 		}
 	};
@@ -207,6 +207,20 @@ define('admin/manage/categories', [
 
 			if (isCategoryUpdate) {
 				modified[cid].parentCid = newCategoryId;
+
+				// Show/hide expand buttons after drag completion
+				const oldParentCid = parseInt(e.from.getAttribute('data-cid'), 10);
+				const newParentCid = parseInt(e.to.getAttribute('data-cid'), 10);
+				if (oldParentCid !== newParentCid) {
+					document.querySelector(`.categories li[data-cid="${newParentCid}"] .toggle`).classList.toggle('hide', false);
+
+					const children = document.querySelectorAll(`.categories li[data-cid="${oldParentCid}"] ul[data-cid] li[data-cid]`);
+					if (!children.length) {
+						document.querySelector(`.categories li[data-cid="${oldParentCid}"] .toggle`).classList.toggle('hide', true);
+					}
+
+					e.item.dataset.parentCid = newParentCid;
+				}
 			}
 
 			newCategoryId = -1;
@@ -250,6 +264,12 @@ define('admin/manage/categories', [
 				parentCategory: parentCategory,
 			}, function (html) {
 				container.append(html);
+
+				// Disable expand toggle
+				if (!categories.length) {
+					const toggleEl = container.get(0).querySelector('.toggle');
+					toggleEl.classList.toggle('hide', true);
+				}
 
 				// Handle and children categories in this level have
 				for (let x = 0, numCategories = categories.length; x < numCategories; x += 1) {

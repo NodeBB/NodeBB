@@ -478,6 +478,10 @@ define('forum/topic/postTools', [
 	const selectionChangeFn = utils.debounce(selectionChange, 100);
 
 	function handleSelectionTooltip() {
+		if (!ajaxify.data.privileges['topics:reply']) {
+			return;
+		}
+
 		hooks.onPage('action:posts.loaded', delayedTooltip);
 
 		$(document).off('selectionchange', selectionChangeFn).on('selectionchange', selectionChangeFn);

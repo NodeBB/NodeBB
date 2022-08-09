@@ -5,7 +5,7 @@
             <div class="col-md-9">
                 <div class="clearfix">
                     <div class="toggle">
-                        <i class="fa fa-minus"></i>
+                        <i class="fa fa-chevron-down"></i>
                     </div>
                     <div class="information">
                         <div class="icon" style="
@@ -56,5 +56,4 @@
     </li>
 	{{{ end }}}
 <!-- END categories -->
-<li class="children-placeholder"></li>
 </ul>
