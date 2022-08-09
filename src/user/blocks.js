@@ -9,6 +9,7 @@ module.exports = function (User) {
 		_cache: cacheCreate({
 			name: 'user:blocks',
 			max: 100,
+			sizeCalculation: function () { return 1; },
 			ttl: 0,
 		}),
 	};

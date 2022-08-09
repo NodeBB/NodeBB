@@ -5,6 +5,7 @@ const meta = require('../meta');
 const helpers = require('./helpers');
 const user = require('../user');
 
+console.log('ttl', meta.config.uploadRateLimitCooldown * 1000);
 const cache = cacheCreate({
 	ttl: meta.config.uploadRateLimitCooldown * 1000,
 });
