@@ -39,7 +39,6 @@ const runJobs = nconf.get('runJobs');
 Analytics.init = async function () {
 	ipCache = cacheCreate({
 		max: parseInt(meta.config['analytics:maxCache'], 10) || 500,
-		sizeCalculation: function () { return 1; },
 		ttl: 0,
 	});
 
