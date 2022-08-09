@@ -20,30 +20,51 @@ module.exports = function (opts) {
 		}
 	});
 
-	const cache = new LRU(opts);
+	const lruCache = new LRU(opts);
 
+	const cache = {};
 	cache.name = opts.name;
 	cache.hits = 0;
 	cache.misses = 0;
 	cache.enabled = opts.hasOwnProperty('enabled') ? opts.enabled : true;
+	// cache.enabled = false;
+	const cacheSet = lruCache.set;
+	const cacheGet = lruCache.get;
+	const cacheDel = lruCache.delete;
+	const cacheReset = lruCache.clear;
 
-	const cacheSet = cache.set;
-	const cacheGet = cache.get;
-	const cacheDelete = cache.delete;
-	const cacheClear = cache.clear;
+	// backwards compatibility
+	const propertyMap = new Map([
+		['length', 'calculatedSize'],
+		['max', 'max'],
+		['itemCount', 'size'],
+	]);
+	propertyMap.forEach((cacheProp, lruProp) => {
+		Object.defineProperty(cache, cacheProp, {
+			get: function () {
+				return lruCache[lruProp];
+			},
+			configurable: true,
+			enumerable: true,
+		});
+	});
 
-	cache.set = function (key, value, maxAge) {
+	cache.set = function (key, value, ttl) {
 		if (!cache.enabled) {
 			return;
 		}
-		cacheSet.apply(cache, [key, value, maxAge]);
+		const opts = {};
+		if (ttl) {
+			opts.ttl = ttl;
+		}
+		cacheSet.apply(lruCache, [key, value, opts]);
 	};
 
 	cache.get = function (key) {
 		if (!cache.enabled) {
 			return undefined;
 		}
-		const data = cacheGet.apply(cache, [key]);
+		const data = cacheGet.apply(lruCache, [key]);
 		if (data === undefined) {
 			cache.misses += 1;
 		} else {
@@ -52,32 +73,34 @@ module.exports = function (opts) {
 		return data;
 	};
 
-	cache.delete = function (keys) {
+	cache.del = function (keys) {
 		if (!Array.isArray(keys)) {
 			keys = [keys];
 		}
-		pubsub.publish(`${cache.name}:cache:delete`, keys);
-		keys.forEach(key => cacheDelete.apply(cache, [key]));
+		pubsub.publish(`${cache.name}:cache:del`, keys);
+		keys.forEach(key => cacheDel.apply(lruCache, [key]));
 	};
+	cache.delete = cache.del;
 
-	cache.clear = function () {
-		pubsub.publish(`${cache.name}:cache:clear`);
-		localClear();
+	cache.reset = function () {
+		pubsub.publish(`${cache.name}:cache:reset`);
+		localReset();
 	};
+	cache.clear = cache.reset;
 
-	function localClear() {
-		cacheClear.apply(cache);
+	function localReset() {
+		cacheReset.apply(lruCache);
 		cache.hits = 0;
 		cache.misses = 0;
 	}
 
-	pubsub.on(`${cache.name}:cache:clear`, () => {
-		localClear();
+	pubsub.on(`${cache.name}:cache:reset`, () => {
+		localReset();
 	});
 
-	pubsub.on(`${cache.name}:cache:delete`, (keys) => {
+	pubsub.on(`${cache.name}:cache:del`, (keys) => {
 		if (Array.isArray(keys)) {
-			keys.forEach(key => cacheDelete.apply(cache, [key]));
+			keys.forEach(key => cacheDel.apply(lruCache, [key]));
 		}
 	});
 
@@ -101,6 +124,14 @@ module.exports = function (opts) {
 		cache.hits += hits;
 		cache.misses += misses;
 		return unCachedKeys;
+	};
+
+	cache.dump = function () {
+		return lruCache.dump();
+	};
+
+	cache.peek = function (key) {
+		return lruCache.peek(key);
 	};
 
 	return cache;
