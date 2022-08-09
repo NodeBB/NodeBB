@@ -27,11 +27,7 @@ module.exports = function (opts) {
 	cache.hits = 0;
 	cache.misses = 0;
 	cache.enabled = opts.hasOwnProperty('enabled') ? opts.enabled : true;
-	// cache.enabled = false;
 	const cacheSet = lruCache.set;
-	const cacheGet = lruCache.get;
-	const cacheDel = lruCache.delete;
-	const cacheReset = lruCache.clear;
 
 	// backwards compatibility
 	const propertyMap = new Map([
@@ -64,7 +60,7 @@ module.exports = function (opts) {
 		if (!cache.enabled) {
 			return undefined;
 		}
-		const data = cacheGet.apply(lruCache, [key]);
+		const data = lruCache.get(key);
 		if (data === undefined) {
 			cache.misses += 1;
 		} else {
@@ -78,7 +74,7 @@ module.exports = function (opts) {
 			keys = [keys];
 		}
 		pubsub.publish(`${cache.name}:cache:del`, keys);
-		keys.forEach(key => cacheDel.apply(lruCache, [key]));
+		keys.forEach(key => lruCache.delete(key));
 	};
 	cache.delete = cache.del;
 
@@ -89,7 +85,7 @@ module.exports = function (opts) {
 	cache.clear = cache.reset;
 
 	function localReset() {
-		cacheReset.apply(lruCache);
+		lruCache.clear();
 		cache.hits = 0;
 		cache.misses = 0;
 	}
@@ -100,7 +96,7 @@ module.exports = function (opts) {
 
 	pubsub.on(`${cache.name}:cache:del`, (keys) => {
 		if (Array.isArray(keys)) {
-			keys.forEach(key => cacheDel.apply(lruCache, [key]));
+			keys.forEach(key => lruCache.delete(key));
 		}
 	});
 

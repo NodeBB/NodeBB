@@ -88,7 +88,6 @@ async function uploadAsImage(req, uploadedFile) {
 
 async function uploadAsFile(req, uploadedFile) {
 	const canUpload = await privileges.global.can('upload:post:file', req.uid);
-	console.log('canUpload file', req.uid, canUpload);
 	if (!canUpload) {
 		throw new Error('[[error:no-privileges]]');
 	}

@@ -12,7 +12,6 @@ const utils = require('../src/utils');
 const helpers = require('./helpers');
 
 describe('Middlewares', () => {
-
 	describe('expose', () => {
 		let adminUid;
 

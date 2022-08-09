@@ -186,7 +186,7 @@ async function setupMockDefaults() {
 
 	winston.info('test_database flushed');
 	await setupDefaultConfigs(meta);
-	await giveDefaultGlobalPrivileges();
+
 	await meta.configs.init();
 	meta.config.postDelay = 0;
 	meta.config.initialPostDelay = 0;
@@ -197,7 +197,8 @@ async function setupMockDefaults() {
 	require('../../src/posts/cache').reset();
 	require('../../src/cache').reset();
 	require('../../src/middleware/uploads').clearCache();
-
+	// privileges must be given after cache reset
+	await giveDefaultGlobalPrivileges();
 	await enableDefaultPlugins();
 
 	await meta.themes.set({
