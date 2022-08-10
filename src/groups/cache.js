@@ -6,7 +6,7 @@ module.exports = function (Groups) {
 	Groups.cache = cacheCreate({
 		name: 'group',
 		max: 40000,
-		maxAge: 0,
+		ttl: 0,
 	});
 
 	Groups.clearCache = function (uid, groupNames) {
