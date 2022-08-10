@@ -7,6 +7,14 @@ module.exports = function (opts) {
 	// lru-cache@7 deprecations
 	const winston = require('winston');
 	const chalk = require('chalk');
+
+	// sometimes we kept passing in `length` with no corresponding `maxSize`.
+	// This is now enforced in v7; drop superfluous property
+	if (opts.hasOwnProperty('length') && !opts.hasOwnProperty('maxSize')) {
+		winston.warn(`[cache/init(${opts.name})] ${chalk.white.bgRed.bold('DEPRECATION')} ${chalk.yellow('length')} was passed in without a corresponding ${chalk.yellow('maxSize')}. Both are now required as of lru-cache@7.0.0.`);
+		delete opts.length;
+	}
+
 	const deprecations = new Map([
 		['stale', 'allowStale'],
 		['maxAge', 'ttl'],
