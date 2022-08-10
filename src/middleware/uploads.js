@@ -1,6 +1,6 @@
 'use strict';
 
-const cacheCreate = require('../cache/lru');
+const cacheCreate = require('../cache/ttl');
 const meta = require('../meta');
 const helpers = require('./helpers');
 const user = require('../user');
