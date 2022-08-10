@@ -6,6 +6,7 @@ const csrf = require('csurf');
 const validator = require('validator');
 const nconf = require('nconf');
 const toobusy = require('toobusy-js');
+const LRU = require('lru-cache');
 const util = require('util');
 
 const plugins = require('../plugins');
@@ -14,7 +15,6 @@ const user = require('../user');
 const groups = require('../groups');
 const analytics = require('../analytics');
 const privileges = require('../privileges');
-const cacheCreate = require('../cacheCreate');
 const helpers = require('./helpers');
 
 const controllers = {
@@ -22,8 +22,8 @@ const controllers = {
 	helpers: require('../controllers/helpers'),
 };
 
-const delayCache = cacheCreate({
-	ttl: 1000 * 60,
+const delayCache = new LRU({
+	maxAge: 1000 * 60,
 });
 
 const middleware = module.exports;

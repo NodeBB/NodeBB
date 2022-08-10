@@ -1,16 +1,16 @@
 'use strict';
 
-const cacheCreate = require('../cacheCreate');
+const LRU = require('lru-cache');
 const meta = require('../meta');
 const helpers = require('./helpers');
 const user = require('../user');
 
-const cache = cacheCreate({
-	ttl: meta.config.uploadRateLimitCooldown * 1000,
+const cache = new LRU({
+	maxAge: meta.config.uploadRateLimitCooldown * 1000,
 });
 
 exports.clearCache = function () {
-	cache.clear();
+	cache.reset();
 };
 
 exports.ratelimit = helpers.try(async (req, res, next) => {
@@ -23,6 +23,7 @@ exports.ratelimit = helpers.try(async (req, res, next) => {
 	if (count > meta.config.uploadRateLimitThreshold) {
 		return next(new Error(['[[error:upload-ratelimit-reached]]']));
 	}
+
 	cache.set(`${req.ip}:uploaded_file_count`, count);
 	next();
 });
