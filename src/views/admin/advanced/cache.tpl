@@ -12,7 +12,7 @@
 							</label>
 						</div>
 
-						<span>{postCache.length} / {postCache.maxSize}</span><br/>
+						<span>{postCache.length} / {postCache.max}</span><br/>
 
 						<div class="progress">
 							<div class="progress-bar" role="progressbar" aria-valuenow="{postCache.percentFull}" aria-valuemin="0" aria-valuemax="100" style="width: {postCache.percentFull}%;">
@@ -46,7 +46,7 @@
 								<input class="mdl-switch__input" type="checkbox" {{{if objectCache.enabled}}}checked{{{end}}}>
 							</label>
 						</div>
-						<span>{objectCache.itemCount} / {objectCache.max}</span><br/>
+						<span>{objectCache.length} / {objectCache.max}</span><br/>
 						<div class="progress">
 							<div class="progress-bar" role="progressbar" aria-valuenow="{objectCache.percentFull}" aria-valuemin="0" aria-valuemax="100" style="width: {objectCache.percentFull}%;">
 								[[admin/advanced/cache:percent-full, {objectCache.percentFull}]]
@@ -72,7 +72,7 @@
 								<input class="mdl-switch__input" type="checkbox" {{{if groupCache.enabled}}}checked{{{end}}}>
 							</label>
 						</div>
-						<span>{groupCache.itemCount} / {groupCache.max}</span><br/>
+						<span>{groupCache.length} / {groupCache.max}</span><br/>
 
 						<div class="progress">
 							<div class="progress-bar" role="progressbar" aria-valuenow="{groupCache.percentFull}" aria-valuemin="0" aria-valuemax="100" style="width: {groupCache.percentFull}%;">
@@ -98,7 +98,7 @@
 								<input class="mdl-switch__input" type="checkbox" {{{if localCache.enabled}}}checked{{{end}}}>
 							</label>
 						</div>
-						<span>{localCache.itemCount} / {localCache.max}</span><br/>
+						<span>{localCache.length} / {localCache.max}</span><br/>
 
 						<div class="progress">
 							<div class="progress-bar" role="progressbar" aria-valuenow="{localCache.percentFull}" aria-valuemin="0" aria-valuemax="100" style="width: {localCache.percentFull}%;">

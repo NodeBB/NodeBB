@@ -22,6 +22,7 @@ const helpers = require('./helpers');
 const file = require('../src/file');
 const image = require('../src/image');
 
+const uploadFile = util.promisify(helpers.uploadFile);
 const emptyUploadsFolder = async () => {
 	const files = await fs.readdir(`${nconf.get('upload_path')}/files`);
 	await Promise.all(files.map(async (filename) => {
@@ -516,7 +517,7 @@ describe('Upload Controllers', () => {
 		describe('.getOrphans()', () => {
 			before(async () => {
 				const { jar, csrf_token } = await helpers.loginUser('regular', 'zugzug');
-				await helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token);
+				await uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token);
 			});
 
 			it('should return files with no post associated with them', async () => {
@@ -537,7 +538,7 @@ describe('Upload Controllers', () => {
 
 			before(async () => {
 				const { jar, csrf_token } = await helpers.loginUser('regular', 'zugzug');
-				await helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token);
+				await uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token);
 
 				// modify all files in uploads folder to be 30 days old
 				const files = await fs.readdir(`${nconf.get('upload_path')}/files`);

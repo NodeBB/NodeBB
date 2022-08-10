@@ -184,21 +184,20 @@ async function setupMockDefaults() {
 	const meta = require('../../src/meta');
 	await db.emptydb();
 
+	require('../../src/groups').cache.reset();
+	require('../../src/posts/cache').reset();
+	require('../../src/cache').reset();
+	require('../../src/middleware/uploads').clearCache();
+
 	winston.info('test_database flushed');
 	await setupDefaultConfigs(meta);
-
+	await giveDefaultGlobalPrivileges();
 	await meta.configs.init();
 	meta.config.postDelay = 0;
 	meta.config.initialPostDelay = 0;
 	meta.config.newbiePostDelay = 0;
 	meta.config.autoDetectLang = 0;
 
-	require('../../src/groups').cache.reset();
-	require('../../src/posts/cache').reset();
-	require('../../src/cache').reset();
-	require('../../src/middleware/uploads').clearCache();
-	// privileges must be given after cache reset
-	await giveDefaultGlobalPrivileges();
 	await enableDefaultPlugins();
 
 	await meta.themes.set({
