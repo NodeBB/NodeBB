@@ -44,6 +44,11 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 	userData = await user.hidePrivateData(userData, callerUID);
 	userData.emailClass = userSettings.showemail ? 'hide' : '';
 
+	// If email unconfirmed, hide from result set
+	if (!userData['email:confirmed']) {
+		userData.email = '';
+	}
+
 	if (isAdmin || isSelf || (canViewInfo && !results.isTargetAdmin)) {
 		userData.ips = results.ips;
 	}

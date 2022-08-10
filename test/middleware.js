@@ -4,7 +4,7 @@ const assert = require('assert');
 const nconf = require('nconf');
 const request = require('request-promise-native');
 const db = require('./mocks/databasemock');
-const middleware = require('../src/middleware');
+
 const user = require('../src/user');
 const groups = require('../src/groups');
 const utils = require('../src/utils');
@@ -21,6 +21,7 @@ describe('Middlewares', () => {
 		});
 
 		it('should expose res.locals.isAdmin = false', (done) => {
+			const middleware = require('../src/middleware');
 			const resMock = { locals: {} };
 			middleware.exposeAdmin({}, resMock, () => {
 				assert.strictEqual(resMock.locals.isAdmin, false);
@@ -29,6 +30,7 @@ describe('Middlewares', () => {
 		});
 
 		it('should expose res.locals.isAdmin = true', (done) => {
+			const middleware = require('../src/middleware');
 			const reqMock = { user: { uid: adminUid } };
 			const resMock = { locals: {} };
 			middleware.exposeAdmin(reqMock, resMock, () => {
@@ -38,6 +40,7 @@ describe('Middlewares', () => {
 		});
 
 		it('should expose privileges in res.locals.privileges and isSelf=true', (done) => {
+			const middleware = require('../src/middleware');
 			const reqMock = { user: { uid: adminUid }, params: { uid: adminUid } };
 			const resMock = { locals: {} };
 			middleware.exposePrivileges(reqMock, resMock, () => {
@@ -51,6 +54,7 @@ describe('Middlewares', () => {
 		});
 
 		it('should expose privileges in res.locals.privileges and isSelf=false', (done) => {
+			const middleware = require('../src/middleware');
 			const reqMock = { user: { uid: 0 }, params: { uid: adminUid } };
 			const resMock = { locals: {} };
 			middleware.exposePrivileges(reqMock, resMock, () => {
@@ -64,6 +68,7 @@ describe('Middlewares', () => {
 		});
 
 		it('should expose privilege set', (done) => {
+			const middleware = require('../src/middleware');
 			const reqMock = { user: { uid: adminUid } };
 			const resMock = { locals: {} };
 			middleware.exposePrivilegeSet(reqMock, resMock, () => {

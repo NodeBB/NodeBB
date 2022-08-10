@@ -65,7 +65,7 @@ module.exports = function (User) {
 			let ips = [];
 
 			if (showIps) {
-				ips = await Promise.all(uids.map(uid => db.getSortedSetRevRange(`uid:${uid}:ip`, 0, -1)));
+				ips = await db.getSortedSetsMembers(uids.map(uid => `uid:${uid}:ip`));
 			}
 
 			let line = '';

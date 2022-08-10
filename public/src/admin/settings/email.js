@@ -108,6 +108,18 @@ define('admin/settings/email', ['ace/ace', 'alerts', 'admin/settings'], function
 	function handleSmtpServiceChange() {
 		const isCustom = $('[id="email:smtpTransport:service"]').val() === 'nodebb-custom-smtp';
 		$('[id="email:smtpTransport:custom-service"]')[isCustom ? 'slideDown' : 'slideUp'](isCustom);
+
+		const enabledEl = document.getElementById('email:smtpTransport:enabled');
+		if (enabledEl) {
+			if (!enabledEl.checked) {
+				enabledEl.closest('label').classList.toggle('is-checked', true);
+				enabledEl.checked = true;
+				alerts.alert({
+					message: '[[admin/settings/email:smtp-transport.auto-enable-toast]]',
+					timeout: 5000,
+				});
+			}
+		}
 	}
 
 	return module;

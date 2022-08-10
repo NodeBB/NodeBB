@@ -333,171 +333,268 @@ describe('Controllers', () => {
 	});
 
 	describe('registration interstitials', () => {
-		let jar;
-		let token;
+		describe('email update', () => {
+			let jar;
+			let token;
+			const dummyEmailerHook = async (data) => {};
 
-		it('email interstitial should still apply if empty email entered and requireEmailAddress is enabled', async () => {
-			meta.config.requireEmailAddress = 1;
+			before(async () => {
+				// Attach an emailer hook so related requests do not error
+				plugins.hooks.register('emailer-test', {
+					hook: 'filter:email.send',
+					method: dummyEmailerHook,
+				});
 
-			jar = await helpers.registerUser({
-				username: 'testEmailReg',
-				password: 'asdasd',
+				jar = await helpers.registerUser({
+					username: utils.generateUUID().slice(0, 10),
+					password: utils.generateUUID(),
+				});
+				token = await helpers.getCsrfToken(jar);
+
+				meta.config.requireEmailAddress = 1;
 			});
-			token = await helpers.getCsrfToken(jar);
 
-			let res = await requestAsync(`${nconf.get('url')}/register/complete`, {
-				method: 'post',
-				jar,
-				json: true,
-				followRedirect: false,
-				simple: false,
-				resolveWithFullResponse: true,
-				headers: {
-					'x-csrf-token': token,
-				},
-				form: {
+			after(() => {
+				meta.config.requireEmailAddress = 0;
+				plugins.hooks.unregister('emailer-test', 'filter:email.send');
+			});
+
+			it('email interstitial should still apply if empty email entered and requireEmailAddress is enabled', async () => {
+				let res = await requestAsync(`${nconf.get('url')}/register/complete`, {
+					method: 'post',
+					jar,
+					json: true,
+					followRedirect: false,
+					simple: false,
+					resolveWithFullResponse: true,
+					headers: {
+						'x-csrf-token': token,
+					},
+					form: {
+						email: '',
+					},
+				});
+
+				assert.strictEqual(res.headers.location, `${nconf.get('relative_path')}/register/complete`);
+
+				res = await requestAsync(`${nconf.get('url')}/api/register/complete`, {
+					jar,
+					json: true,
+					resolveWithFullResponse: true,
+				});
+				assert.strictEqual(res.statusCode, 200);
+				assert(res.body.errors.length);
+				assert(res.body.errors.includes('[[error:invalid-email]]'));
+			});
+
+			it('gdpr interstitial should still apply if email requirement is disabled', async () => {
+				meta.config.requireEmailAddress = 0;
+
+				const res = await requestAsync(`${nconf.get('url')}/api/register/complete`, {
+					jar,
+					json: true,
+					resolveWithFullResponse: true,
+				});
+
+				assert(!res.body.errors.includes('[[error:invalid-email]]'));
+				assert(!res.body.errors.includes('[[error:gdpr_consent_denied]]'));
+			});
+
+			it('should error if userData is falsy', async () => {
+				try {
+					await user.interstitials.email({ userData: null });
+					assert(false);
+				} catch (err) {
+					assert.strictEqual(err.message, '[[error:invalid-data]]');
+				}
+			});
+
+			it('should throw error if email is not valid', async () => {
+				const uid = await user.create({ username: 'interstiuser1' });
+				try {
+					const result = await user.interstitials.email({
+						userData: { uid: uid, updateEmail: true },
+						req: { uid: uid },
+						interstitials: [],
+					});
+					assert.strictEqual(result.interstitials[0].template, 'partials/email_update');
+					await result.interstitials[0].callback({ uid }, {
+						email: 'invalidEmail',
+					});
+					assert(false);
+				} catch (err) {
+					assert.strictEqual(err.message, '[[error:invalid-email]]');
+				}
+			});
+
+			it('should set req.session.emailChanged to 1', async () => {
+				const uid = await user.create({ username: 'interstiuser2' });
+				const result = await user.interstitials.email({
+					userData: { uid: uid, updateEmail: true },
+					req: { uid: uid, session: {} },
+					interstitials: [],
+				});
+
+				await result.interstitials[0].callback({ uid: uid }, {
+					email: 'interstiuser2@nodebb.org',
+				});
+				assert.strictEqual(result.req.session.emailChanged, 1);
+			});
+
+			it('should set email if admin is changing it', async () => {
+				const uid = await user.create({ username: 'interstiuser3' });
+				const result = await user.interstitials.email({
+					userData: { uid: uid, updateEmail: true },
+					req: { uid: adminUid },
+					interstitials: [],
+				});
+
+				await result.interstitials[0].callback({ uid: uid }, {
+					email: 'interstiuser3@nodebb.org',
+				});
+				const userData = await user.getUserData(uid);
+				assert.strictEqual(userData.email, 'interstiuser3@nodebb.org');
+				assert.strictEqual(userData['email:confirmed'], 1);
+			});
+
+			it('should throw error if user tries to edit other users email', async () => {
+				const uid = await user.create({ username: 'interstiuser4' });
+				try {
+					const result = await user.interstitials.email({
+						userData: { uid: uid, updateEmail: true },
+						req: { uid: 1000 },
+						interstitials: [],
+					});
+
+					await result.interstitials[0].callback({ uid: uid }, {
+						email: 'derp@derp.com',
+					});
+					assert(false);
+				} catch (err) {
+					assert.strictEqual(err.message, '[[error:no-privileges]]');
+				}
+			});
+
+			it('should remove current email', async () => {
+				const uid = await user.create({ username: 'interstiuser5' });
+				await user.setUserField(uid, 'email', 'interstiuser5@nodebb.org');
+				await user.email.confirmByUid(uid);
+
+				const result = await user.interstitials.email({
+					userData: { uid: uid, updateEmail: true },
+					req: { uid: uid, session: { id: 0 } },
+					interstitials: [],
+				});
+
+				await result.interstitials[0].callback({ uid: uid }, {
 					email: '',
-				},
+				});
+				const userData = await user.getUserData(uid);
+				assert.strictEqual(userData.email, '');
+				assert.strictEqual(userData['email:confirmed'], 0);
 			});
 
-			assert.strictEqual(res.headers.location, `${nconf.get('relative_path')}/register/complete`);
+			it('should require a password (if one is set) for email change', async () => {
+				try {
+					const [username, password] = [utils.generateUUID().slice(0, 10), utils.generateUUID()];
+					const uid = await user.create({ username, password });
+					await user.setUserField(uid, 'email', `${username}@nodebb.org`);
+					await user.email.confirmByUid(uid);
 
-			res = await requestAsync(`${nconf.get('url')}/api/register/complete`, {
-				jar,
-				json: true,
-				resolveWithFullResponse: true,
-			});
-			console.log(res.statusCode, JSON.stringify(res.body, null, 4));
-			assert.strictEqual(res.statusCode, 200);
-			assert(res.body.errors.length);
-			assert(res.body.errors.includes('[[error:invalid-email]]'));
-		});
+					const result = await user.interstitials.email({
+						userData: { uid: uid, updateEmail: true },
+						req: { uid: uid, session: { id: 0 } },
+						interstitials: [],
+					});
 
-		it('gdpr interstitial should still apply if email requirement is disabled', async () => {
-			meta.config.requireEmailAddress = 0;
-
-			const res = await requestAsync(`${nconf.get('url')}/api/register/complete`, {
-				jar,
-				json: true,
-				resolveWithFullResponse: true,
-			});
-
-			assert(!res.body.errors.includes('[[error:invalid-email]]'));
-			assert(!res.body.errors.includes('[[error:gdpr_consent_denied]]'));
-		});
-
-		it('registration should succeed once gdpr prompts are agreed to', async () => {
-			const res = await requestAsync(`${nconf.get('url')}/register/complete`, {
-				method: 'post',
-				jar,
-				json: true,
-				followRedirect: false,
-				simple: false,
-				resolveWithFullResponse: true,
-				headers: {
-					'x-csrf-token': token,
-				},
-				form: {
-					gdpr_agree_data: 'on',
-					gdpr_agree_email: 'on',
-				},
+					await result.interstitials[0].callback({ uid: uid }, {
+						email: `${username}@nodebb.com`,
+					});
+				} catch (err) {
+					assert.strictEqual(err.message, '[[error:invalid-password]]');
+				}
 			});
 
-			assert.strictEqual(res.statusCode, 302);
-			assert.strictEqual(res.headers.location, `${nconf.get('relative_path')}/`);
-		});
+			it('should require a password (if one is set) for email clearing', async () => {
+				try {
+					const [username, password] = [utils.generateUUID().slice(0, 10), utils.generateUUID()];
+					const uid = await user.create({ username, password });
+					await user.setUserField(uid, 'email', `${username}@nodebb.org`);
+					await user.email.confirmByUid(uid);
 
-		it('should error if userData is falsy', async () => {
-			try {
-				await user.interstitials.email({ userData: null });
-				assert(false);
-			} catch (err) {
-				assert.strictEqual(err.message, '[[error:invalid-data]]');
-			}
-		});
+					const result = await user.interstitials.email({
+						userData: { uid: uid, updateEmail: true },
+						req: { uid: uid, session: { id: 0 } },
+						interstitials: [],
+					});
 
-		it('should throw error if email is not valid', async () => {
-			const uid = await user.create({ username: 'interstiuser1' });
-			try {
+					await result.interstitials[0].callback({ uid: uid }, {
+						email: '',
+					});
+				} catch (err) {
+					assert.strictEqual(err.message, '[[error:invalid-password]]');
+				}
+			});
+
+			it('should successfully issue validation request if the correct password is passed in', async () => {
+				const [username, password] = [utils.generateUUID().slice(0, 10), utils.generateUUID()];
+				const uid = await user.create({ username, password });
+				await user.setUserField(uid, 'email', `${username}@nodebb.org`);
+				await user.email.confirmByUid(uid);
+
 				const result = await user.interstitials.email({
 					userData: { uid: uid, updateEmail: true },
-					req: { uid: uid },
-					interstitials: [],
-				});
-				assert.strictEqual(result.interstitials[0].template, 'partials/email_update');
-				await result.interstitials[0].callback({ uid: uid }, {
-					email: 'invalidEmail',
-				});
-				assert(false);
-			} catch (err) {
-				assert.strictEqual(err.message, '[[error:invalid-email]]');
-			}
-		});
-
-		it('should set req.session.emailChanged to 1', async () => {
-			const uid = await user.create({ username: 'interstiuser2' });
-			const result = await user.interstitials.email({
-				userData: { uid: uid, updateEmail: true },
-				req: { uid: uid, session: {} },
-				interstitials: [],
-			});
-
-			await result.interstitials[0].callback({ uid: uid }, {
-				email: 'interstiuser2@nodebb.org',
-			});
-			assert.strictEqual(result.req.session.emailChanged, 1);
-		});
-
-		it('should set email if admin is changing it', async () => {
-			const uid = await user.create({ username: 'interstiuser3' });
-			const result = await user.interstitials.email({
-				userData: { uid: uid, updateEmail: true },
-				req: { uid: adminUid },
-				interstitials: [],
-			});
-
-			await result.interstitials[0].callback({ uid: uid }, {
-				email: 'interstiuser3@nodebb.org',
-			});
-			const userData = await user.getUserData(uid);
-			assert.strictEqual(userData.email, 'interstiuser3@nodebb.org');
-			assert.strictEqual(userData['email:confirmed'], 1);
-		});
-
-		it('should throw error if user tries to edit other users email', async () => {
-			const uid = await user.create({ username: 'interstiuser4' });
-			try {
-				const result = await user.interstitials.email({
-					userData: { uid: uid, updateEmail: true },
-					req: { uid: 1000 },
+					req: { uid: uid, session: { id: 0 } },
 					interstitials: [],
 				});
 
-				await result.interstitials[0].callback({ uid: uid }, {
-					email: 'derp@derp.com',
+				await result.interstitials[0].callback({ uid }, {
+					email: `${username}@nodebb.com`,
+					password,
 				});
-				assert(false);
-			} catch (err) {
-				assert.strictEqual(err.message, '[[error:no-privileges]]');
-			}
+
+				const pending = await user.email.isValidationPending(uid, `${username}@nodebb.com`);
+				assert.strictEqual(pending, true);
+				await user.setUserField(uid, 'email', `${username}@nodebb.com`);
+				await user.email.confirmByUid(uid);
+				const userData = await user.getUserData(uid);
+				assert.strictEqual(userData.email, `${username}@nodebb.com`);
+				assert.strictEqual(userData['email:confirmed'], 1);
+			});
 		});
 
-		it('should remove current email', async () => {
-			const uid = await user.create({ username: 'interstiuser5', email: 'interstiuser5@nodebb.org' });
-			await user.email.confirmByUid(uid);
+		describe('gdpr', () => {
+			let jar;
+			let token;
 
-			const result = await user.interstitials.email({
-				userData: { uid: uid, updateEmail: true },
-				req: { uid: uid, session: { id: 0 } },
-				interstitials: [],
+			before(async () => {
+				jar = await helpers.registerUser({
+					username: utils.generateUUID().slice(0, 10),
+					password: utils.generateUUID(),
+				});
+				token = await helpers.getCsrfToken(jar);
 			});
 
-			await result.interstitials[0].callback({ uid: uid }, {
-				email: '',
+			it('registration should succeed once gdpr prompts are agreed to', async () => {
+				const res = await requestAsync(`${nconf.get('url')}/register/complete`, {
+					method: 'post',
+					jar,
+					json: true,
+					followRedirect: false,
+					simple: false,
+					resolveWithFullResponse: true,
+					headers: {
+						'x-csrf-token': token,
+					},
+					form: {
+						gdpr_agree_data: 'on',
+						gdpr_agree_email: 'on',
+					},
+				});
+
+				assert.strictEqual(res.statusCode, 302);
+				assert.strictEqual(res.headers.location, `${nconf.get('relative_path')}/`);
 			});
-			const userData = await user.getUserData(uid);
-			assert.strictEqual(userData.email, '');
-			assert.strictEqual(userData['email:confirmed'], 0);
 		});
 	});
 

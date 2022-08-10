@@ -194,5 +194,6 @@
     "emailUpdate.intro": "Vennligst skriv inn e-postadressen din nedenfor. Dette forumet bruker e-postadressen din for å planlegge sammendrag og varsler, samt for gjenoppretting av konto i tilfelle tapt passord.",
     "emailUpdate.optional": "<strong>Dette feltet e valgfritt</strong>. Du er ikke forpliktet til å oppgi e-postadressen din, men uten en validert e-post vil du ikke kunne gjenopprette kontoen din eller logge på med e-posten din.",
     "emailUpdate.required": "<strong>Dette feltet er obligatorisk</strong>",
-    "emailUpdate.change-instructions": "En bekreftelses-e-post vil bli sendt til den angitte e-postadressen med en unik lenke. Å få tilgang til den koblingen vil bekrefte at du eier e-postadressen, og den blir aktiv på kontoen din. Du kan når som helst oppdatere e-posten din fra siden til kontoen din."
+    "emailUpdate.change-instructions": "En bekreftelses-e-post vil bli sendt til den angitte e-postadressen med en unik lenke. Å få tilgang til den koblingen vil bekrefte at du eier e-postadressen, og den blir aktiv på kontoen din. Du kan når som helst oppdatere e-posten din fra siden til kontoen din.",
+    "emailUpdate.password-challenge": "Please enter your password in order to verify account ownership."
 }

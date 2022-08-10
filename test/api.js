@@ -111,6 +111,8 @@ describe('API', async () => {
 		// Create sample users
 		const adminUid = await user.create({ username: 'admin', password: '123456', email: 'test@example.org' });
 		const unprivUid = await user.create({ username: 'unpriv', password: '123456', email: 'unpriv@example.org' });
+		await user.setUserField(adminUid, 'email', 'test@example.org');
+		await user.setUserField(unprivUid, 'email', 'unpriv@example.org');
 		await user.email.confirmByUid(adminUid);
 		await user.email.confirmByUid(unprivUid);
 

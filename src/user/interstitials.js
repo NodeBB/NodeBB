@@ -1,6 +1,7 @@
 'use strict';
 
 const winston = require('winston');
+const util = require('util');
 
 const user = require('.');
 const db = require('../database');
@@ -8,6 +9,8 @@ const meta = require('../meta');
 const privileges = require('../privileges');
 const plugins = require('../plugins');
 const utils = require('../utils');
+
+const sleep = util.promisify(setTimeout);
 
 const Interstitials = module.exports;
 
@@ -19,6 +22,11 @@ Interstitials.email = async (data) => {
 		return data;
 	}
 
+	const [isAdminOrGlobalMod, hasPassword] = await Promise.all([
+		user.isAdminOrGlobalMod(data.req.uid),
+		user.hasPassword(data.userData.uid),
+	]);
+
 	let email;
 	if (data.userData.uid) {
 		email = await user.getUserField(data.userData.uid, 'email');
@@ -29,12 +37,13 @@ Interstitials.email = async (data) => {
 		data: {
 			email,
 			requireEmailAddress: meta.config.requireEmailAddress,
+			issuePasswordChallenge: !!data.userData.uid && hasPassword,
 		},
 		callback: async (userData, formData) => {
 			// Validate and send email confirmation
 			if (userData.uid) {
-				const [isAdminOrGlobalMod, canEdit, current, { allowed, error }] = await Promise.all([
-					user.isAdminOrGlobalMod(data.req.uid),
+				const [isPasswordCorrect, canEdit, current, { allowed, error }] = await Promise.all([
+					user.isPasswordCorrect(userData.uid, formData.password, data.req.ip),
 					privileges.users.canEdit(data.req.uid, userData.uid),
 					user.getUserField(userData.uid, 'email'),
 					plugins.hooks.fire('filter:user.saveEmail', {
@@ -45,6 +54,10 @@ Interstitials.email = async (data) => {
 						error: '[[error:invalid-email]]',
 					}),
 				]);
+
+				if (!isAdminOrGlobalMod && !isPasswordCorrect) {
+					await sleep(2000);
+				}
 
 				if (formData.email && formData.email.length) {
 					if (!allowed || !utils.isEmailValid(formData.email)) {
@@ -60,6 +73,10 @@ Interstitials.email = async (data) => {
 						await user.setUserField(userData.uid, 'email', formData.email);
 						await user.email.confirmByUid(userData.uid);
 					} else if (canEdit) {
+						if (hasPassword && !isPasswordCorrect) {
+							throw new Error('[[error:invalid-password]]');
+						}
+
 						await user.email.sendValidationEmail(userData.uid, {
 							email: formData.email,
 							force: true,
@@ -76,7 +93,7 @@ Interstitials.email = async (data) => {
 						throw new Error('[[error:invalid-email]]');
 					}
 
-					if (current) {
+					if (current.length && (!hasPassword || (hasPassword && isPasswordCorrect) || isAdminOrGlobalMod)) {
 						// User explicitly clearing their email
 						await user.email.remove(userData.uid, data.req.session.id);
 					}
