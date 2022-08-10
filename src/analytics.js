@@ -4,7 +4,6 @@ const cronJob = require('cron').CronJob;
 const winston = require('winston');
 const nconf = require('nconf');
 const crypto = require('crypto');
-const LRU = require('lru-cache');
 const util = require('util');
 const _ = require('lodash');
 
@@ -15,6 +14,7 @@ const utils = require('./utils');
 const plugins = require('./plugins');
 const meta = require('./meta');
 const pubsub = require('./pubsub');
+const cacheCreate = require('./cacheCreate');
 
 const Analytics = module.exports;
 
@@ -37,10 +37,9 @@ let ipCache;
 const runJobs = nconf.get('runJobs');
 
 Analytics.init = async function () {
-	ipCache = new LRU({
+	ipCache = cacheCreate({
 		max: parseInt(meta.config['analytics:maxCache'], 10) || 500,
-		length: function () { return 1; },
-		maxAge: 0,
+		ttl: 0,
 	});
 
 	new cronJob('*/10 * * * * *', (async () => {
