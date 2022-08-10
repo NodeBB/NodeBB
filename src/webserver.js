@@ -197,7 +197,6 @@ function setupHelmet(app) {
 	if (!meta.config['cross-origin-embedder-policy']) {
 		options.crossOriginEmbedderPolicy = false;
 	}
-
 	if (meta.config['hsts-enabled']) {
 		options.hsts = {
 			maxAge: meta.config['hsts-maxage'],

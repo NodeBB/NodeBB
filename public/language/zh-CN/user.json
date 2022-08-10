@@ -194,5 +194,6 @@
     "emailUpdate.intro": "请在下方输入您的电子邮箱地址。此论坛使用您的电子邮箱地址用于定时发送摘要和通知，以及用于忘记密码时找回账号。",
     "emailUpdate.optional": "<strong>This field is optional</strong>. You are not obligated to provide your email address, but without a validated email you will not be able to recover your account or login with your email.",
     "emailUpdate.required": "<strong>此字段为必填</strong>。",
-    "emailUpdate.change-instructions": "将向输入的电子邮箱地址发送一封带有唯一链接的确认电子邮件。访问该链接将验证您对该电子邮箱的所有权，它将在您的账号上处于活动状态。在任何时候，您都可以在您的账号页面更新存档的电子邮箱地址。"
+    "emailUpdate.change-instructions": "将向输入的电子邮箱地址发送一封带有唯一链接的确认电子邮件。访问该链接将验证您对该电子邮箱的所有权，它将在您的账号上处于活动状态。在任何时候，您都可以在您的账号页面更新存档的电子邮箱地址。",
+    "emailUpdate.password-challenge": "Please enter your password in order to verify account ownership."
 }
