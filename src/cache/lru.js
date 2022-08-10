@@ -82,13 +82,13 @@ module.exports = function (opts) {
 		if (!Array.isArray(keys)) {
 			keys = [keys];
 		}
-		pubsub.publish(`${cache.name}:cache:del`, keys);
+		pubsub.publish(`${cache.name}:lruCache:del`, keys);
 		keys.forEach(key => lruCache.delete(key));
 	};
 	cache.delete = cache.del;
 
 	cache.reset = function () {
-		pubsub.publish(`${cache.name}:cache:reset`);
+		pubsub.publish(`${cache.name}:lruCache:reset`);
 		localReset();
 	};
 	cache.clear = cache.reset;
@@ -99,11 +99,11 @@ module.exports = function (opts) {
 		cache.misses = 0;
 	}
 
-	pubsub.on(`${cache.name}:cache:reset`, () => {
+	pubsub.on(`${cache.name}:lruCache:reset`, () => {
 		localReset();
 	});
 
-	pubsub.on(`${cache.name}:cache:del`, (keys) => {
+	pubsub.on(`${cache.name}:lruCache:del`, (keys) => {
 		if (Array.isArray(keys)) {
 			keys.forEach(key => lruCache.delete(key));
 		}
