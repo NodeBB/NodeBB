@@ -14,7 +14,7 @@ const user = require('../user');
 const groups = require('../groups');
 const analytics = require('../analytics');
 const privileges = require('../privileges');
-const cacheCreate = require('../cacheCreate');
+const cacheCreate = require('../cache/lru');
 const helpers = require('./helpers');
 
 const controllers = {
