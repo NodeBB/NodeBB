@@ -33,9 +33,10 @@ module.exports = function (opts) {
 	const propertyMap = new Map([
 		['length', 'calculatedSize'],
 		['max', 'max'],
+		['maxSize', 'maxSize'],
 		['itemCount', 'size'],
 	]);
-	propertyMap.forEach((cacheProp, lruProp) => {
+	propertyMap.forEach((lruProp, cacheProp) => {
 		Object.defineProperty(cache, cacheProp, {
 			get: function () {
 				return lruCache[lruProp];
