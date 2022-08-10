@@ -1,6 +1,6 @@
 'use strict';
 
-const cacheCreate = require('../cacheCreate');
+const cacheCreate = require('../cache/ttl');
 const meta = require('../meta');
 const helpers = require('./helpers');
 const user = require('../user');
@@ -19,7 +19,7 @@ exports.ratelimit = helpers.try(async (req, res, next) => {
 		return next();
 	}
 
-	const count = (cache.peek(`${req.ip}:uploaded_file_count`) || 0) + req.files.files.length;
+	const count = (cache.get(`${req.ip}:uploaded_file_count`) || 0) + req.files.files.length;
 	if (count > meta.config.uploadRateLimitThreshold) {
 		return next(new Error(['[[error:upload-ratelimit-reached]]']));
 	}

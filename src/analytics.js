@@ -14,7 +14,7 @@ const utils = require('./utils');
 const plugins = require('./plugins');
 const meta = require('./meta');
 const pubsub = require('./pubsub');
-const cacheCreate = require('./cacheCreate');
+const cacheCreate = require('./cache/lru');
 
 const Analytics = module.exports;
 
