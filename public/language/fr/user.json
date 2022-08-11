@@ -194,5 +194,6 @@
     "emailUpdate.intro": "Veuillez renseigner votre adresse mails. Ce forum utilise votre adresse mail pour suivre l'activité et les notifications programmés, ainsi que pour la récupération de compte en cas de perte de mot de passe.",
     "emailUpdate.optional": "<strong>Ce champ est facultatif</strong>. Vous n'êtes pas obligé de fournir votre adresse e-mail, mais sans e-mail validé, vous ne pourrez pas récupérer votre compte ou vous connecter avec votre e-mail.",
     "emailUpdate.required": "<strong>Ce champ est requis</strong>.",
-    "emailUpdate.change-instructions": "Un mail de confirmation sera envoyé à l'adresse mail saisie avec un lien unique. L'accès à ce lien confirmera votre propriété de mail et elle deviendra active sur votre compte. À tout moment, vous pouvez mettre à jour votre mail enregistré depuis la page de votre compte."
+    "emailUpdate.change-instructions": "Un mail de confirmation sera envoyé à l'adresse mail saisie avec un lien unique. L'accès à ce lien confirmera votre propriété de mail et elle deviendra active sur votre compte. À tout moment, vous pouvez mettre à jour votre mail enregistré depuis la page de votre compte.",
+    "emailUpdate.password-challenge": "Please enter your password in order to verify account ownership."
 }
