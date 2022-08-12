@@ -448,6 +448,7 @@ describe('API', async () => {
 						return;
 					}
 
+					console.log(response.body);
 					assert.strictEqual(response.statusCode, 200, `HTTP 200 expected (path: ${method} ${path}`);
 
 					const hasJSON = http200.content && http200.content['application/json'];

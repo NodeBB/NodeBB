@@ -39,9 +39,10 @@ middleware.buildHeader = helpers.try(async (req, res, next) => {
 		user.bans.canLoginIfBanned(req.uid),
 		plugins.hooks.fire('filter:middleware.buildHeader', { req: req, locals: res.locals }),
 	]);
+	const logoutAsync = util.promisify(req.logout).bind(req);
 
 	if (!canLoginIfBanned && req.loggedIn) {
-		req.logout();
+		await logoutAsync();
 		return res.redirect('/');
 	}
 

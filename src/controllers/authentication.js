@@ -271,7 +271,7 @@ authenticationController.login = async (req, res, next) => {
 };
 
 function continueLogin(strategy, req, res, next) {
-	passport.authenticate(strategy, async (err, userData, info) => {
+	passport.authenticate(strategy, { keepSessionInfo: true }, async (err, userData, info) => {
 		if (err) {
 			plugins.hooks.fire('action:login.continue', { req, strategy, userData, error: err });
 			return helpers.noScriptErrors(req, res, err.data || err.message, 403);
@@ -351,7 +351,7 @@ authenticationController.doLogin = async function (req, uid) {
 		}
 	}
 
-	await loginAsync({ uid: uid });
+	await loginAsync({ uid: uid }, { keepSessionInfo: true });
 	await authenticationController.onSuccessfulLogin(req, uid);
 };
 
@@ -467,11 +467,11 @@ authenticationController.logout = async function (req, res, next) {
 	}
 	const { uid } = req;
 	const { sessionID } = req;
+	const logoutAsync = util.promisify(req.logout).bind(req);
 
 	try {
 		await user.auth.revokeSession(sessionID, uid);
-		req.logout();
-
+		await logoutAsync();
 		await destroyAsync(req);
 		res.clearCookie(nconf.get('sessionKey'), meta.configs.cookie.get());
 
