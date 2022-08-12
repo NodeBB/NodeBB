@@ -51,7 +51,7 @@ define('alerts', ['translator', 'components', 'hooks'], function (translator, co
 	};
 
 	function createNew(params) {
-		app.parseAndTranslate('alert', params, function (html) {
+		app.parseAndTranslate('partials/toast', params, function (html) {
 			let alert = $('#' + params.alert_id);
 			if (alert.length) {
 				return updateAlert(alert, params);
