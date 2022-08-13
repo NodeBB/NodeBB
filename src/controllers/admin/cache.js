@@ -3,8 +3,9 @@
 const cacheController = module.exports;
 
 const utils = require('../../utils');
+const plugins = require('../../plugins');
 
-cacheController.get = function (req, res) {
+cacheController.get = async function (req, res) {
 	const postCache = require('../../posts/cache');
 	const groupCache = require('../../groups').cache;
 	const { objectCache } = require('../../database');
@@ -25,27 +26,30 @@ cacheController.get = function (req, res) {
 			enabled: cache.enabled,
 		};
 	}
-
-	const data = {
-		postCache: getInfo(postCache),
-		groupCache: getInfo(groupCache),
-		localCache: getInfo(localCache),
+	let caches = {
+		post: postCache,
+		group: groupCache,
+		local: localCache,
 	};
-
 	if (objectCache) {
-		data.objectCache = getInfo(objectCache);
+		caches.object = objectCache;
+	}
+	caches = await plugins.hooks.fire('filter:admin.cache.get', caches);
+	for (const [key, value] of Object.entries(caches)) {
+		caches[key] = getInfo(value);
 	}
 
-	res.render('admin/advanced/cache', data);
+	res.render('admin/advanced/cache', { caches });
 };
 
-cacheController.dump = function (req, res, next) {
-	const caches = {
+cacheController.dump = async function (req, res, next) {
+	let caches = {
 		post: require('../../posts/cache'),
 		object: require('../../database').objectCache,
 		group: require('../../groups').cache,
 		local: require('../../cache'),
 	};
+	caches = await plugins.hooks.fire('filter:admin.cache.get', caches);
 	if (!caches[req.query.name]) {
 		return next();
 	}
