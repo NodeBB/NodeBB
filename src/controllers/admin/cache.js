@@ -24,6 +24,7 @@ cacheController.get = async function (req, res) {
 			misses: utils.addCommas(String(cache.misses)),
 			hitRatio: ((cache.hits / (cache.hits + cache.misses) || 0)).toFixed(4),
 			enabled: cache.enabled,
+			ttl: cache.ttl,
 		};
 	}
 	let caches = {

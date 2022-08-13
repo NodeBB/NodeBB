@@ -24,7 +24,7 @@
 						<label>Hits:</label> <span>{../hits}</span><br/>
 						<label>Misses:</label> <span>{../misses}</span><br/>
 						<label>Hit Ratio:</label> <span>{../hitRatio}</span><br/>
-
+						{{{if ../ttl}}}<label>TTL:</label> <span>{../ttl}</span></br>{{{end}}}
 						{{{if (@key == "post")}}}
 						<hr/>
 						<div class="form-group">
