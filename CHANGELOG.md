@@ -1,3 +1,67 @@
+#### v2.4.0 (2022-08-10)
+
+##### Chores
+
+* **deps:**
+  *  update dependency eslint to v8.21.0 (13a17bd1)
+  *  bump commander from 7.2.0 to 9.4.0 in /install (993b7747)
+*  update to new transifex project url (659cfe85)
+*  re-order interstitial tests so email and gdpr tests are in sub-blocks (342cca35)
+*  opt-out of dependabot, due to conflicts with renovate (70d60289)
+*  incrementing version number - v2.3.1 (d2425942)
+*  update changelog for v2.3.1 (2f487175)
+*  incrementing version number - v2.3.0 (046ea120)
+* **i18n:**
+  *  fallback strings for new resources: nodebb.admin-settings-email (cdaa8f21)
+  *  fallback strings for new resources: nodebb.admin-settings-email (3e56c547)
+  *  fallback strings for new resources: nodebb.user (bcf7ef67)
+
+##### New Features
+
+*  support packageManager property in package.json (b3a37a7f)
+*  automatically enable the SMTP transport option if the SMTP service is changed (4055e3bd)
+*  present a password challenge on email update flow (7fcee42b)
+*  add client side filter:chat.send, closes #10729 (cb084cbd)
+*  fire hook to allow plugins to filter the pids returned in a user profile (17e44ff5)
+*  closes #10719, don't trim children if category is marked section (be917e8d)
+*  closes #10719, don't trim children if category is marked section (0bec52bc)
+
+##### Bug Fixes
+
+*  adapt to breaking change in commander (38bf30c8)
+*  move panel-offset setting code back to theme header (d0255fc6)
+*  #10808; tweak copy for gmail app passwords support (7082291b)
+*  don't require password challenge if no password is set in user account (9d27e907)
+*  do not throw if password passed into `isPasswordCorrect` is invalid, just return false (287f4c2c)
+*  don't crash if req.body.username is not string (7e8ad785)
+*  don't crash if target/user is undefined (55c5588a)
+*  race condition causing undefined ajaxify.data (4586f68e)
+*  #10809, test runner to only run tests for plugins included in `test_plugins` (1ca09b63)
+*  #10805, hide unconfirmed emails from user data retrieval methods (cba9047f)
+*  use different emoji on NodeBB Ready — again because procrastination (3e062a7f)
+*  unnecessary escape (cd438b32)
+*  remove socket.io cluster adapter (#10742) (456b8798)
+*  #10783, do not purge files without a timestamp prefix (dc3a6a29)
+* **deps:**
+  *  bump persona v12.1.0 (1465598d)
+  *  bump 2factor to v5.0.2 (bd18004d)
+  *  update dependency sanitize-html to v2.7.1 (#10792) (f02492bd)
+  *  update dependency html-to-text to v8.2.1 (f22790c0)
+  *  update dependency webpack to v5.74.0 (e748e31f)
+  *  update dependency autoprefixer to v10.4.8 (#10799) (4ca0d571)
+
+##### Performance Improvements
+
+*  make single db call (d73f0f9c)
+
+##### Tests
+
+*  additional tests for password challenge on email update (65c59cc1)
+*  add dummy emailer hook to suppress sendmail error logging (8e1a4bb5)
+*  fix one last failing test (68bcd7f4)
+*  fix user email tests (06f089af)
+*  fix tests so that when user.create is called, email is set prior to confirmation (f93a0b83)
+
 #### v2.3.1 (2022-07-29)
 
 ##### Chores
