@@ -1,3 +1,20 @@
+#### v2.4.1 (2022-08-14)
+
+##### Chores
+
+* **deps:**
+  *  update docker/build-push-action action to v3 (bfd6318c)
+  *  update docker/login-action action to v2 (3d68accf)
+  *  update docker/setup-buildx-action action to v2 (371ac032)
+*  incrementing version number - v2.4.0 (4834cde3)
+*  update changelog for v2.4.0 (c4714ff7)
+*  incrementing version number - v2.3.1 (d2425942)
+*  incrementing version number - v2.3.0 (046ea120)
+
+##### Bug Fixes
+
+*  return at least one in sizeCalculation (#10832) (15ca460c)
+
 #### v2.4.0 (2022-08-10)
 
 ##### Chores
