@@ -1,5 +1,8 @@
 {
 	"post-cache": "التخزين المؤقت للمشاركات",
+	"group-cache": "Group Cache",
+	"local-cache": "Local Cache",
+	"object-cache": "Object Cache",
 	"percent-full": "1% كاملة",
 	"post-cache-size": "حجم التخزين المؤقت للمشاركات",
 	"items-in-cache": "العناصر في التخزين المؤقت"
