@@ -41,8 +41,10 @@ middleware.buildHeader = helpers.try(async (req, res, next) => {
 	]);
 
 	if (!canLoginIfBanned && req.loggedIn) {
-		req.logout();
-		return res.redirect('/');
+		req.logout(() => {
+			res.redirect('/');
+		});
+		return;
 	}
 
 	res.locals.config = config;
