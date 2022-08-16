@@ -9,6 +9,7 @@ const groups = require('../../groups');
 const meta = require('../../meta');
 const pagination = require('../../pagination');
 const events = require('../../events');
+const slugify = require('../../slugify');
 
 const groupsController = module.exports;
 
@@ -31,7 +32,8 @@ groupsController.list = async function (req, res) {
 };
 
 groupsController.get = async function (req, res, next) {
-	const groupName = req.params.name;
+	const slug = slugify(req.params.name);
+	const groupName = await groups.getGroupNameByGroupSlug(slug);
 	const [groupNames, group] = await Promise.all([
 		getGroupNames(),
 		groups.get(groupName, { uid: req.uid, truncateUserList: true, userListCount: 20 }),
