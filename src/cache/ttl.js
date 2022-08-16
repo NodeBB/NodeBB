@@ -13,6 +13,23 @@ module.exports = function (opts) {
 	cache.enabled = opts.hasOwnProperty('enabled') ? opts.enabled : true;
 	const cacheSet = ttlCache.set;
 
+	// expose properties
+	const propertyMap = new Map([
+		['max', 'max'],
+		['itemCount', 'size'],
+		['size', 'size'],
+		['ttl', 'ttl'],
+	]);
+	propertyMap.forEach((ttlProp, cacheProp) => {
+		Object.defineProperty(cache, cacheProp, {
+			get: function () {
+				return ttlCache[ttlProp];
+			},
+			configurable: true,
+			enumerable: true,
+		});
+	});
+
 	cache.set = function (key, value, ttl) {
 		if (!cache.enabled) {
 			return;
@@ -88,6 +105,14 @@ module.exports = function (opts) {
 		cache.hits += hits;
 		cache.misses += misses;
 		return unCachedKeys;
+	};
+
+	cache.dump = function () {
+		return Array.from(ttlCache.entries());
+	};
+
+	cache.peek = function (key) {
+		return ttlCache.get(key, { updateAgeOnGet: false });
 	};
 
 	return cache;

@@ -196,7 +196,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 
 	function renderEvents(events) {
 		return events.reduce((html, event) => {
-			html += `<li component="topic/event" class="timeline-event" data-topic-event-id="${event.id}">
+			html += `<li component="topic/event" class="timeline-event" data-topic-event-id="${event.id}" data-topic-event-type="${event.type}">
 				<div class="timeline-badge">
 					<i class="fa ${event.icon || 'fa-circle'}"></i>
 				</div>
@@ -216,7 +216,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 			html += `<span class="timeago timeline-text" title="${event.timestampISO}"></span>`;
 
 			if (this.privileges.isAdminOrMod) {
-				html += `&nbsp;<span component="topic/event/delete" data-topic-event-id="${event.id}" class="timeline-text pointer" title="[[topic:delete-event]]"><i class="fa fa-trash"></i></span>`;
+				html += `&nbsp;<span component="topic/event/delete" data-topic-event-id="${event.id}" data-topic-event-type="${event.type} class="timeline-text pointer" title="[[topic:delete-event]]"><i class="fa fa-trash"></i></span>`;
 			}
 
 			return html;
