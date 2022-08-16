@@ -51,6 +51,7 @@
 	"signature.disable": "Отключить подписи",
 	"signature.no-links": "Отключить ссылки в подписях",
 	"signature.no-images": "Отключить картинки в подписях",
+	"signature.hide-duplicates": "Hide duplicate signatures in topics",
 	"signature.max-length": "Максимальная длина подписи",
 	"composer": "Настройки редактора",
 	"composer-help": "Эти настройки определяют функциональность и/или внешний вид редактора сообщений",

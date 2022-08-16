@@ -51,6 +51,7 @@
 	"signature.disable": "Signaturen deaktivieren",
 	"signature.no-links": "Links in signaturen deaktivieren",
 	"signature.no-images": "Bilder in Signaturen deaktivieren",
+	"signature.hide-duplicates": "Hide duplicate signatures in topics",
 	"signature.max-length": "Maximale Signaturlänge",
 	"composer": "Editor Einstellungen",
 	"composer-help": "Die folgenden Einstellungen bestimmen die funktionalität und/oder das Aussehen des Beitragseditors, der Nutzern angezeigt wird, webb sie neue Themen erstellen, oder bereits existierenden Antworten.",

@@ -51,6 +51,7 @@
 	"signature.disable": "Вимкнути підписи",
 	"signature.no-links": "Вимкнути посилання в підписах",
 	"signature.no-images": "Вимкнути зображення в підписах",
+	"signature.hide-duplicates": "Hide duplicate signatures in topics",
 	"signature.max-length": "Максимальна довжина підпису",
 	"composer": "Налаштування редактора",
 	"composer-help": "Ці налаштування керують функціональністю та виглядом редактору постів для користувачів коли вони створюють нові теми або відповідають на існуючі.",
