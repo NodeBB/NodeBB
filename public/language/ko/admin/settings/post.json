@@ -51,6 +51,7 @@
 	"signature.disable": "서명 비활성화",
 	"signature.no-links": "서명에 포함된 바로가기 비활성화",
 	"signature.no-images": "서명에 포함된 이미지 비활성화",
+	"signature.hide-duplicates": "Hide duplicate signatures in topics",
 	"signature.max-length": "최대 서명 길이",
 	"composer": "에디터 설정",
 	"composer-help": "아래의 설정들은 사용자가 새로운 화제나 답글을 작성할 때 나타나는 에디터 화면의 기능과 외형에 영향을 끼칩니다.",

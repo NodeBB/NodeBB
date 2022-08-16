@@ -51,6 +51,7 @@
 	"signature.disable": "Desactivar firmas",
 	"signature.no-links": "Desactivar enlaces en firmas",
 	"signature.no-images": "Desactivar imágenes en firmas",
+	"signature.hide-duplicates": "Hide duplicate signatures in topics",
 	"signature.max-length": "Longitud Máxima de Firma",
 	"composer": "Configuración del Editor de Texto",
 	"composer-help": "LAs configuraciones siguientes gobiernan la funcionalidad y/o apariencia del editor de entradas mostrado\n\t\t\t\ta los usuarios cuando crean nuevos temas, o responden a temas existentes.",

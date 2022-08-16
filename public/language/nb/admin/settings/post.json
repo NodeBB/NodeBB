@@ -51,6 +51,7 @@
 	"signature.disable": "Disable signatures",
 	"signature.no-links": "Disable links in signatures",
 	"signature.no-images": "Disable images in signatures",
+	"signature.hide-duplicates": "Hide duplicate signatures in topics",
 	"signature.max-length": "Maximum Signature Length",
 	"composer": "Composer Settings",
 	"composer-help": "Følgende innstillinger styrer funksjonaliteten og/ eller utseendet til skriveverktøyet vist\n\t\t\t\ttil brukere når de lager nye tråder, eller svarer på eksisterende tråder.",

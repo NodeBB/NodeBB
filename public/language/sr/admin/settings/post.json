@@ -51,6 +51,7 @@
 	"signature.disable": "Onemogući potpise",
 	"signature.no-links": "Onemogući linkove u potpisima",
 	"signature.no-images": "Onemogući slike u potpisima",
+	"signature.hide-duplicates": "Hide duplicate signatures in topics",
 	"signature.max-length": "Minimum karaktera u Potpisu",
 	"composer": "Podešavanje Composer-a",
 	"composer-help": "Sledeća podešavanja upravljaju funkcionalnošću i/ili izgledom prikazanom kompozera post-a\n\t\t\t\tprema korisnicima kada prave nove teme, ili odgovaraju na postojeće.",

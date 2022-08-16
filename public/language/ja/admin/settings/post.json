@@ -51,6 +51,7 @@
 	"signature.disable": "署名を無効にする",
 	"signature.no-links": "署名内のリンクを無効にする",
 	"signature.no-images": "署名内の画像を無効にする",
+	"signature.hide-duplicates": "Hide duplicate signatures in topics",
 	"signature.max-length": "署名の最大文字数",
 	"composer": "Composerの設定",
 	"composer-help": "次の設定は、投稿者の機能や外観を制御します。\n\\t\\t\\t\\tユーザーに新しいスレッドを作成したり、既存のトピックに返信したりできます。",
