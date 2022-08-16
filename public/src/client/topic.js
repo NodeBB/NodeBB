@@ -20,6 +20,7 @@ define('forum/topic', [
 	components, storage, hooks, api, alerts
 ) {
 	const Topic = {};
+	let tid = 0;
 	let currentUrl = '';
 
 	$(window).on('action:ajaxify.start', function (ev, data) {
@@ -33,14 +34,18 @@ define('forum/topic', [
 	});
 
 	Topic.init = function () {
-		const tid = ajaxify.data.tid;
+		const tidChanged = !tid || parseInt(tid, 10) !== parseInt(ajaxify.data.tid, 10);
+		tid = ajaxify.data.tid;
 		currentUrl = ajaxify.currentPage;
 		hooks.fire('action:topic.loading');
 
 		app.enterRoom('topic_' + tid);
 
+		if (tidChanged) {
+			console.log('tid changed clearing');
+			posts.signaturesShown = {};
+		}
 		posts.onTopicPageLoad(components.get('post'));
-		posts.signaturesShown = {};
 		navigator.init('[component="post"]', ajaxify.data.postcount, Topic.toTop, Topic.toBottom, utils.debounce(Topic.navigatorCallback, 500));
 
 		postTools.init(tid);
