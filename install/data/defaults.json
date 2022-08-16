@@ -78,6 +78,7 @@
     "reputation:disabled": 0,
     "downvote:disabled": 0,
     "disableSignatures": 0,
+    "signatures:hideDuplicates": 0,
     "upvotesPerDay": 20,
     "upvotesPerUserPerDay": 6,
     "downvotesPerDay": 10,

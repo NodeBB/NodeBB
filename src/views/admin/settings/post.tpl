@@ -259,6 +259,12 @@
 					<span class="mdl-switch__label"><strong>[[admin/settings/post:signature.no-images]]</strong></span>
 				</label>
 			</div>
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="signatures:hideDuplicates">
+					<span class="mdl-switch__label"><strong>[[admin/settings/post:signature.hide-duplicates]]</strong></span>
+				</label>
+			</div>
 			<div class="form-group">
 				<label for="maximumSignatureLength">[[admin/settings/post:signature.max-length]]</label>
 				<input id="maximumSignatureLength" type="text" class="form-control" value="255" data-field="maximumSignatureLength">

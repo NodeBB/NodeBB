@@ -40,7 +40,7 @@ define('forum/topic', [
 		app.enterRoom('topic_' + tid);
 
 		posts.onTopicPageLoad(components.get('post'));
-
+		posts.signaturesShown = {};
 		navigator.init('[component="post"]', ajaxify.data.postcount, Topic.toTop, Topic.toBottom, utils.debounce(Topic.navigatorCallback, 500));
 
 		postTools.init(tid);
