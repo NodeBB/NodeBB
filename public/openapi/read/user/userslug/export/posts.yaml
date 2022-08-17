@@ -2,6 +2,7 @@ get:
   tags:
     - users
   summary: Export a user's posts (.csv)
+  description: This route retrieves an existing export of user's posts. To create one go to `/user/{userslug}/consent`
   parameters:
     - name: userslug
       in: path
