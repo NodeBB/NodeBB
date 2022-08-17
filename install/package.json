@@ -30,6 +30,9 @@
     "dependencies": {
         "@adactive/bootstrap-tagsinput": "0.8.2",
         "@isaacs/ttlcache": "1.2.0",
+        "@textcomplete/contenteditable": "^0.1.12",
+        "@textcomplete/core": "^0.1.12",
+        "@textcomplete/textarea": "^0.1.12",
         "ace-builds": "1.9.5",
         "archiver": "5.3.1",
         "async": "3.2.4",
@@ -129,8 +132,6 @@
         "sortablejs": "1.15.0",
         "spdx-license-list": "6.6.0",
         "spider-detector": "2.0.0",
-        "textcomplete": "0.18.2",
-        "textcomplete.contenteditable": "0.1.1",
         "timeago": "1.6.7",
         "tinycon": "0.6.8",
         "toobusy-js": "0.5.1",
