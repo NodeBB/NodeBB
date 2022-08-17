@@ -1,8 +1,8 @@
 {
 	"post-cache": "포스트 캐시",
-	"group-cache": "Group Cache",
-	"local-cache": "Local Cache",
-	"object-cache": "Object Cache",
+	"group-cache": "그룹 캐시",
+	"local-cache": "자체 캐시",
+	"object-cache": "오프젝트 캐시",
 	"percent-full": "%1%꽉참",
 	"post-cache-size": "포스트 캐시 크기",
 	"items-in-cache": "캐시된 항목들"
