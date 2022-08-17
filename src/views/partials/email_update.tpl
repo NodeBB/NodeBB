@@ -11,7 +11,7 @@
 		<p class="help-block">[[user:emailUpdate.change-instructions]]</p>
 	</div>
 
-	{{{ if update }}}
+	{{{ if issuePasswordChallenge }}}
 	<div class="form-group">
 		<label for="password">[[register:password]]</label>
 		<input class="form-control" type="password" id="password" name="password" />
