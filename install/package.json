@@ -92,7 +92,7 @@
         "@nodebb/bootswatch": "3.4.2",
         "nconf": "0.12.0",
         "nodebb-plugin-2factor": "5.0.2",
-        "nodebb-plugin-composer-default": "8.0.1",
+        "nodebb-plugin-composer-default": "9.0.0",
         "nodebb-plugin-dbsearch": "5.1.5",
         "nodebb-plugin-emoji": "4.0.4",
         "nodebb-plugin-emoji-android": "3.0.0",
