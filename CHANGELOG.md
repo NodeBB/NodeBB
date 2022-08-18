@@ -1,3 +1,41 @@
+#### v2.4.3 (2022-08-18)
+
+##### Chores
+
+*  incrementing version number - v2.4.2 (3aa7b855)
+*  update changelog for v2.4.2 (ba7a3466)
+*  incrementing version number - v2.4.1 (60cbd148)
+*  incrementing version number - v2.4.0 (4834cde3)
+*  incrementing version number - v2.3.1 (d2425942)
+*  incrementing version number - v2.3.0 (046ea120)
+
+##### Bug Fixes
+
+*  #10845, disallow inline viewing of uploaded html files (4dc7fa05)
+
+#### v2.4.2 (2022-08-17)
+
+##### Chores
+
+*  incrementing version number - v2.4.1 (60cbd148)
+*  update changelog for v2.4.1 (4b6baabb)
+*  incrementing version number - v2.4.0 (4834cde3)
+*  incrementing version number - v2.3.1 (d2425942)
+*  incrementing version number - v2.3.0 (046ea120)
+
+##### Documentation Changes
+
+*  explain what export routes actually do in OpenAPI documentation (#10836) (72e7b9f7)
+
+##### Bug Fixes
+
+*  #10841, incorrect conditional in email interstitial partial (ec048a01)
+*  don't crash if post is undefined (4a3e36a7)
+
+##### Tests
+
+*  passport0.6 (#10638) (6b2a6f90)
+
 #### v2.4.1 (2022-08-14)
 
 ##### Chores

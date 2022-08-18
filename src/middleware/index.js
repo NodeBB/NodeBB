@@ -214,12 +214,13 @@ middleware.buildSkinAsset = helpers.try(async (req, res, next) => {
 	res.status(200).type('text/css').send(css);
 });
 
-middleware.trimUploadTimestamps = function trimUploadTimestamps(req, res, next) {
-	// Check match
+middleware.addUploadHeaders = function addUploadHeaders(req, res, next) {
+	// Trim uploaded files' timestamps when downloading + force download if html
 	let basename = path.basename(req.path);
+	const extname = path.extname(req.path);
 	if (req.path.startsWith('/uploads/files/') && middleware.regexes.timestampedUpload.test(basename)) {
 		basename = basename.slice(14);
-		res.header('Content-Disposition', `inline; filename="${basename}"`);
+		res.header('Content-Disposition', `${extname.startsWith('.htm') ? 'attachment' : 'inline'}; filename="${basename}"`);
 	}
 
 	next();
