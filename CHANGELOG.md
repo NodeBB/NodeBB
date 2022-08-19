@@ -1,3 +1,34 @@
+#### v2.4.4 (2022-08-18)
+
+##### Chores
+
+*  incrementing version number - v2.4.3 (9c647c6c)
+*  update changelog for v2.4.3 (06da15a5)
+*  incrementing version number - v2.4.2 (3aa7b855)
+*  incrementing version number - v2.4.1 (60cbd148)
+*  incrementing version number - v2.4.0 (4834cde3)
+*  incrementing version number - v2.3.1 (d2425942)
+*  incrementing version number - v2.3.0 (046ea120)
+
+##### Bug Fixes
+
+*  missing req, closes #10847 (489fb3a3)
+
+#### v2.4.3 (2022-08-18)
+
+##### Chores
+
+*  incrementing version number - v2.4.2 (3aa7b855)
+*  update changelog for v2.4.2 (ba7a3466)
+*  incrementing version number - v2.4.1 (60cbd148)
+*  incrementing version number - v2.4.0 (4834cde3)
+*  incrementing version number - v2.3.1 (d2425942)
+*  incrementing version number - v2.3.0 (046ea120)
+
+##### Bug Fixes
+
+*  #10845, disallow inline viewing of uploaded html files (4dc7fa05)
+
 #### v2.4.2 (2022-08-17)
 
 ##### Chores

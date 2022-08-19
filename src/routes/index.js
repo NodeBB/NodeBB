@@ -182,7 +182,7 @@ function addCoreRoutes(app, router, middleware, mounts) {
 	}
 
 	statics.forEach((obj) => {
-		app.use(relativePath + obj.route, middleware.trimUploadTimestamps, express.static(obj.path, staticOptions));
+		app.use(relativePath + obj.route, middleware.addUploadHeaders, express.static(obj.path, staticOptions));
 	});
 	app.use(`${relativePath}/uploads`, (req, res) => {
 		res.redirect(`${relativePath}/assets/uploads${req.path}?${meta.config['cache-buster']}`);
