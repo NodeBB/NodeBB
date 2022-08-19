@@ -25,20 +25,6 @@ Auth.initialize = function (app, middleware) {
 
 	Auth.app = app;
 	Auth.middleware = middleware;
-
-	// Apply wrapper around passport.authenticate to pass in keepSessionInfo option
-	const _authenticate = passport.authenticate;
-	passport.authenticate = (strategy, options, callback) => {
-		if (!callback && typeof options === 'function') {
-			return _authenticate.call(passport, strategy, options);
-		}
-
-		if (!options.hasOwnProperty('keepSessionInfo')) {
-			options.keepSessionInfo = true;
-		}
-
-		return _authenticate.call(passport, strategy, options, callback);
-	};
 };
 
 Auth.setAuthVars = function setAuthVars(req) {
