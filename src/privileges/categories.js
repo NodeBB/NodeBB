@@ -73,8 +73,8 @@ privsCategories.list = async function (cid) {
 	});
 	payload.keys = keys;
 
-	payload.columnCountUserOther = payload.labels.users.length - privsCategories._coreSize;;
-	payload.columnCountGroupOther = payload.labels.groups.length - privsCategories._coreSize;;
+	payload.columnCountUserOther = payload.labels.users.length - privsCategories._coreSize;
+	payload.columnCountGroupOther = payload.labels.groups.length - privsCategories._coreSize;
 
 	return payload;
 };
