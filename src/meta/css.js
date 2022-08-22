@@ -6,7 +6,6 @@ const fs = require('fs');
 const util = require('util');
 const path = require('path');
 const rimraf = require('rimraf');
-const url = require('url');
 
 const rimrafAsync = util.promisify(rimraf);
 
