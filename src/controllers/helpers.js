@@ -434,11 +434,22 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 			res.set('cache-control', 'private');
 		}
 
+		let code = 'ok';
+		let message = 'OK';
+		switch (statusCode) {
+			case 202:
+				code = 'accepted';
+				message = 'Accepted';
+				break;
+
+			case 204:
+				code = 'no-content';
+				message = 'No Content';
+				break;
+		}
+
 		res.status(statusCode).json({
-			status: {
-				code: 'ok',
-				message: 'OK',
-			},
+			status: { code, message },
 			response: payload || {},
 		});
 	} else if (payload instanceof Error) {
