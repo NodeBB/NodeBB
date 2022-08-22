@@ -43,7 +43,7 @@ define('forum/header', [
 		if (env === 'xs' || env === 'sm' || utils.isTouchDevice()) {
 			return;
 		}
-		$('#header-menu li a[title]').each(function () {
+		$('#header-menu li[title]').each(function () {
 			$(this).tooltip({
 				placement: 'bottom',
 				trigger: 'hover',
