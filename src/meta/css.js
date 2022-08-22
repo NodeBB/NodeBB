@@ -24,38 +24,35 @@ CSS.supportedSkins = [
 
 const buildImports = {
 	client: function (source) {
-		return `@import "./theme";\n${source}\n${[
-			'@import "../public/vendor/fontawesome/scss/regular.scss";',
-			'@import "../public/vendor/fontawesome/scss/solid.scss";',
-			'@import "../public/vendor/fontawesome/scss/brands.scss";',
-			'@import "../public/vendor/fontawesome/scss/fontawesome.scss";',
-			'@import "../public/vendor/fontawesome/scss/v4-shims.scss";',
-			'@import "../public/vendor/fontawesome/scss/nodebb-shims.scss";',
+		return [
+			'@import "bootstrap/scss/bootstrap";',
+			'@import "../../public/scss/mixins.scss";',
+			'@import "../../public/scss/generics.scss";',
+			'@import "./theme";',
+			source,
+			'@import "fontawesome";',
 			'@import "../../public/scss/jquery-ui.scss";',
 			'@import "../node_modules/@adactive/bootstrap-tagsinput/src/bootstrap-tagsinput";',
 			'@import "../node_modules/cropperjs/dist/cropper";',
-			'@import "../../public/scss/mixins.scss";',
+
 			'@import "../../public/scss/flags.scss";',
-			'@import "../../public/scss/generics.scss";',
+
 			'@import "../../public/scss/global.scss";',
 			'@import "../../public/scss/modals.scss";',
-		].join('\n')}`;
+		].join('\n');
 	},
 	admin: function (source) {
-		return `${source}\n${[
-			'@import "../public/vendor/fontawesome/scss/regular.scss";',
-			'@import "../public/vendor/fontawesome/scss/solid.scss";',
-			'@import "../public/vendor/fontawesome/scss/brands.scss";',
-			'@import "../public/vendor/fontawesome/scss/fontawesome.scss";',
-			'@import "../public/vendor/fontawesome/scss/v4-shims.scss";',
-			'@import "../public/vendor/fontawesome/scss/nodebb-shims.scss";',
-			'@import "../public/scss/admin/admin.scss";',
+		return [
+			'@import "bootstrap/scss/bootstrap";',
 			'@import "../../public/scss/mixins.scss";',
 			'@import "../public/scss/generics.scss";',
+			'@import "../public/scss/admin/admin.scss";',
+			source,
+			'@import "fontawesome";',
 			'@import "../../public/scss/jquery-ui.scss";',
 			'@import "../node_modules/@adactive/bootstrap-tagsinput/src/bootstrap-tagsinput";',
 			'@import "../public/vendor/mdl/material";',
-		].join('\n')}`;
+		].join('\n');
 	},
 };
 
