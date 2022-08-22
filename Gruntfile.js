@@ -56,12 +56,16 @@ module.exports = function (grunt) {
 
 		const styleUpdated_Client = pluginList.map(p => `node_modules/${p}/*.less`)
 			.concat(pluginList.map(p => `node_modules/${p}/*.css`))
+			.concat(pluginList.map(p => `node_modules/${p}/*.scss`))
 			.concat(pluginList.map(p => `node_modules/${p}/+(public|static|less)/**/*.less`))
+			.concat(pluginList.map(p => `node_modules/${p}/+(public|static|scss)/**/*.scss`))
 			.concat(pluginList.map(p => `node_modules/${p}/+(public|static)/**/*.css`));
 
 		const styleUpdated_Admin = pluginList.map(p => `node_modules/${p}/*.less`)
 			.concat(pluginList.map(p => `node_modules/${p}/*.css`))
+			.concat(pluginList.map(p => `node_modules/${p}/*.scss`))
 			.concat(pluginList.map(p => `node_modules/${p}/+(public|static|less)/**/*.less`))
+			.concat(pluginList.map(p => `node_modules/${p}/+(public|static|scss)/**/*.scss`))
 			.concat(pluginList.map(p => `node_modules/${p}/+(public|static)/**/*.css`));
 
 		const clientUpdated = pluginList.map(p => `node_modules/${p}/+(public|static)/**/*.js`);
@@ -75,6 +79,7 @@ module.exports = function (grunt) {
 			styleUpdated_Client: {
 				files: [
 					'public/less/**/*.less',
+					'public/scss/**/*.scss',
 					...styleUpdated_Client,
 				],
 				options: {
@@ -84,6 +89,7 @@ module.exports = function (grunt) {
 			styleUpdated_Admin: {
 				files: [
 					'public/less/**/*.less',
+					'public/scss/**/*.scss',
 					...styleUpdated_Admin,
 				],
 				options: {
