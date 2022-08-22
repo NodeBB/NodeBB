@@ -5,7 +5,7 @@ const os = require('os');
 const uglify = require('uglify-es');
 const async = require('async');
 const winston = require('winston');
-const less = require('less');
+const sass = require('sass');
 const postcss = require('postcss');
 const autoprefixer = require('autoprefixer');
 const clean = require('postcss-clean');
@@ -226,9 +226,8 @@ Minifier.js.minifyBatch = async function (scripts, fork) {
 };
 
 actions.buildCSS = async function buildCSS(data) {
-	const lessOutput = await less.render(data.source, {
-		paths: data.paths,
-		javascriptEnabled: false,
+	const scssOutput = sass.compileString(data.source, {
+		loadPaths: data.paths,
 	});
 
 	const postcssArgs = [autoprefixer];
@@ -237,7 +236,7 @@ actions.buildCSS = async function buildCSS(data) {
 			processImportFrom: ['local'],
 		}));
 	}
-	const result = await postcss(postcssArgs).process(lessOutput.css, {
+	const result = await postcss(postcssArgs).process(scssOutput.css.toString(), {
 		from: undefined,
 	});
 	return { code: result.css };

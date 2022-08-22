@@ -25,36 +25,37 @@ CSS.supportedSkins = [
 const buildImports = {
 	client: function (source) {
 		return `@import "./theme";\n${source}\n${[
-			'@import "../public/vendor/fontawesome/less/regular.less";',
-			'@import "../public/vendor/fontawesome/less/solid.less";',
-			'@import "../public/vendor/fontawesome/less/brands.less";',
-			'@import "../public/vendor/fontawesome/less/fontawesome.less";',
-			'@import "../public/vendor/fontawesome/less/v4-shims.less";',
-			'@import "../public/vendor/fontawesome/less/nodebb-shims.less";',
-			'@import "../../public/less/jquery-ui.less";',
-			'@import (inline) "../node_modules/@adactive/bootstrap-tagsinput/src/bootstrap-tagsinput.css";',
-			'@import (inline) "../node_modules/cropperjs/dist/cropper.css";',
-			'@import "../../public/less/flags.less";',
-			'@import "../../public/less/generics.less";',
-			'@import "../../public/less/mixins.less";',
-			'@import "../../public/less/global.less";',
-			'@import "../../public/less/modals.less";',
-		].map(str => str.replace(/\//g, path.sep)).join('\n')}`;
+			'@import "../public/vendor/fontawesome/scss/regular.scss";',
+			'@import "../public/vendor/fontawesome/scss/solid.scss";',
+			'@import "../public/vendor/fontawesome/scss/brands.scss";',
+			'@import "../public/vendor/fontawesome/scss/fontawesome.scss";',
+			'@import "../public/vendor/fontawesome/scss/v4-shims.scss";',
+			'@import "../public/vendor/fontawesome/scss/nodebb-shims.scss";',
+			'@import "../../public/scss/jquery-ui.scss";',
+			'@import "../node_modules/@adactive/bootstrap-tagsinput/src/bootstrap-tagsinput";',
+			'@import "../node_modules/cropperjs/dist/cropper";',
+			'@import "../../public/scss/mixins.scss";',
+			'@import "../../public/scss/flags.scss";',
+			'@import "../../public/scss/generics.scss";',
+			'@import "../../public/scss/global.scss";',
+			'@import "../../public/scss/modals.scss";',
+		].join('\n')}`;
 	},
 	admin: function (source) {
 		return `${source}\n${[
-			'@import "../public/vendor/fontawesome/less/regular.less";',
-			'@import "../public/vendor/fontawesome/less/solid.less";',
-			'@import "../public/vendor/fontawesome/less/brands.less";',
-			'@import "../public/vendor/fontawesome/less/fontawesome.less";',
-			'@import "../public/vendor/fontawesome/less/v4-shims.less";',
-			'@import "../public/vendor/fontawesome/less/nodebb-shims.less";',
-			'@import "../public/less/admin/admin";',
-			'@import "../public/less/generics.less";',
-			'@import "../../public/less/jquery-ui.less";',
-			'@import (inline) "../node_modules/@adactive/bootstrap-tagsinput/src/bootstrap-tagsinput.css";',
-			'@import (inline) "../public/vendor/mdl/material.css";',
-		].map(str => str.replace(/\//g, path.sep)).join('\n')}`;
+			'@import "../public/vendor/fontawesome/scss/regular.scss";',
+			'@import "../public/vendor/fontawesome/scss/solid.scss";',
+			'@import "../public/vendor/fontawesome/scss/brands.scss";',
+			'@import "../public/vendor/fontawesome/scss/fontawesome.scss";',
+			'@import "../public/vendor/fontawesome/scss/v4-shims.scss";',
+			'@import "../public/vendor/fontawesome/scss/nodebb-shims.scss";',
+			'@import "../public/scss/admin/admin.scss";',
+			'@import "../../public/scss/mixins.scss";',
+			'@import "../public/scss/generics.scss";',
+			'@import "../../public/scss/jquery-ui.scss";',
+			'@import "../node_modules/@adactive/bootstrap-tagsinput/src/bootstrap-tagsinput";',
+			'@import "../public/vendor/mdl/material";',
+		].join('\n')}`;
 	},
 };
 
@@ -75,9 +76,18 @@ async function getImports(files, prefix, extension) {
 	const pluginDirectories = [];
 	let source = '';
 
+	function fixPath(file) {
+		if (!file) {
+			return;
+		}
+		const parsed = path.parse(file);
+		const newFile = path.join(parsed.dir, parsed.name);
+		return newFile.replace(/\\/g, '/');
+	}
+
 	files.forEach((styleFile) => {
 		if (styleFile.endsWith(extension)) {
-			source += `${prefix + path.sep + styleFile}";`;
+			source += `${prefix + fixPath(styleFile)}";`;
 		} else {
 			pluginDirectories.push(styleFile);
 		}
@@ -85,7 +95,7 @@ async function getImports(files, prefix, extension) {
 	await Promise.all(pluginDirectories.map(async (directory) => {
 		const styleFiles = await file.walk(directory);
 		styleFiles.forEach((styleFile) => {
-			source += `${prefix + path.sep + styleFile}";`;
+			source += `${prefix + fixPath(styleFile)}";`;
 		});
 	}));
 	return source;
@@ -94,8 +104,8 @@ async function getImports(files, prefix, extension) {
 async function getBundleMetadata(target) {
 	const paths = [
 		path.join(__dirname, '../../node_modules'),
-		path.join(__dirname, '../../public/less'),
-		path.join(__dirname, '../../public/vendor/fontawesome/less'),
+		path.join(__dirname, '../../public/scss'),
+		path.join(__dirname, '../../public/vendor/fontawesome/scss'),
 	];
 
 	// Skin support
@@ -122,10 +132,10 @@ async function getBundleMetadata(target) {
 		skinImport = skinImport.join('');
 	}
 
-	const [lessImports, cssImports, acpLessImports] = await Promise.all([
-		filterGetImports(plugins.lessFiles, '\n@import ".', '.less'),
-		filterGetImports(plugins.cssFiles, '\n@import (inline) ".', '.css'),
-		target === 'client' ? '' : filterGetImports(plugins.acpLessFiles, '\n@import ".', '.less'),
+	const [scssImports, cssImports, acpScssImports] = await Promise.all([
+		filterGetImports(plugins.scssFiles, '\n@import "', '.scss'),
+		filterGetImports(plugins.cssFiles, '\n@import "', ''),
+		target === 'client' ? '' : filterGetImports(plugins.acpScssFiles, '\n@import "', '.scss'),
 	]);
 
 	async function filterGetImports(files, prefix, extension) {
@@ -133,7 +143,7 @@ async function getBundleMetadata(target) {
 		return await getImports(filteredFiles, prefix, extension);
 	}
 
-	let imports = `${skinImport}\n${cssImports}\n${lessImports}\n${acpLessImports}`;
+	let imports = `${skinImport}\n${cssImports}\n${scssImports}\n${acpScssImports}`;
 	imports = buildImports[target](imports);
 
 	return { paths: paths, imports: imports };
