@@ -6,6 +6,7 @@ const fs = require('fs');
 const util = require('util');
 const path = require('path');
 const rimraf = require('rimraf');
+const url = require('url');
 
 const rimrafAsync = util.promisify(rimraf);
 
@@ -72,22 +73,23 @@ async function filterMissingFiles(filepaths) {
 	return filepaths.filter((filePath, i) => exists[i]);
 }
 
-async function getImports(files, prefix, extension) {
+async function getImports(files, extension) {
 	const pluginDirectories = [];
 	let source = '';
 
-	function fixPath(file) {
+	function pathToImport(file) {
 		if (!file) {
-			return;
+			return '';
 		}
+		// trim css extension so it inlines the css like less (inline)
 		const parsed = path.parse(file);
 		const newFile = path.join(parsed.dir, parsed.name);
-		return newFile.replace(/\\/g, '/');
+		return `\n@import "${newFile.replace(/\\/g, '/')}";`;
 	}
 
 	files.forEach((styleFile) => {
 		if (styleFile.endsWith(extension)) {
-			source += `${prefix + fixPath(styleFile)}";`;
+			source += pathToImport(styleFile);
 		} else {
 			pluginDirectories.push(styleFile);
 		}
@@ -95,7 +97,7 @@ async function getImports(files, prefix, extension) {
 	await Promise.all(pluginDirectories.map(async (directory) => {
 		const styleFiles = await file.walk(directory);
 		styleFiles.forEach((styleFile) => {
-			source += `${prefix + fixPath(styleFile)}";`;
+			source += pathToImport(styleFile);
 		});
 	}));
 	return source;
@@ -133,9 +135,9 @@ async function getBundleMetadata(target) {
 	}
 
 	const [scssImports, cssImports, acpScssImports] = await Promise.all([
-		filterGetImports(plugins.scssFiles, '\n@import "', '.scss'),
-		filterGetImports(plugins.cssFiles, '\n@import "', ''),
-		target === 'client' ? '' : filterGetImports(plugins.acpScssFiles, '\n@import "', '.scss'),
+		filterGetImports(plugins.scssFiles, '.scss'),
+		filterGetImports(plugins.cssFiles, '.css'),
+		target === 'client' ? '' : filterGetImports(plugins.acpScssFiles, '.scss'),
 	]);
 
 	async function filterGetImports(files, prefix, extension) {
