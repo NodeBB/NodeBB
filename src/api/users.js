@@ -1,6 +1,7 @@
 'use strict';
 
 const validator = require('validator');
+const winston = require('winston');
 
 const db = require('../database');
 const user = require('../user');
@@ -440,4 +441,38 @@ usersAPI.changePicture = async (caller, data) => {
 		picture: picture,
 		'icon:bgColor': data.bgColor,
 	}, ['picture', 'icon:bgColor']);
+};
+
+usersAPI.generateExport = async (caller, { uid, type }) => {
+	const count = await db.incrObjectField('locks', `export:${uid}${type}`);
+	if (count > 1) {
+		throw new Error('[[error:already-exporting]]');
+	}
+
+	const child = require('child_process').fork(`./src/user/jobs/export-${type}.js`, [], {
+		env: process.env,
+	});
+	child.send({ uid });
+	child.on('error', async (err) => {
+		winston.error(err.stack);
+		await db.deleteObjectField('locks', `export:${uid}${type}`);
+	});
+	child.on('exit', async () => {
+		await db.deleteObjectField('locks', `export:${uid}${type}`);
+		const userData = await user.getUserFields(uid, ['username', 'userslug']);
+		const { displayname } = userData;
+		const n = await notifications.create({
+			bodyShort: `[[notifications:${type}-exported, ${displayname}]]`,
+			path: `/api/user/${userData.userslug}/export/${type}`,
+			nid: `${type}:export:${uid}`,
+			from: uid,
+		});
+		await notifications.push(n, [caller.uid]);
+		await events.log({
+			type: `export:${type}`,
+			uid: caller.uid,
+			targetUid: uid,
+			ip: caller.ip,
+		});
+	});
 };

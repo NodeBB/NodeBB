@@ -2,6 +2,9 @@
 
 const util = require('util');
 const nconf = require('nconf');
+const path = require('path');
+const crypto = require('crypto');
+const fs = require('fs').promises;
 
 const db = require('../../database');
 const api = require('../../api');
@@ -14,6 +17,12 @@ const utils = require('../../utils');
 const helpers = require('../helpers');
 
 const Users = module.exports;
+
+const exportMetadata = new Map([
+	['posts', ['csv', 'text/csv']],
+	['uploads', ['zip', 'application/zip']],
+	['profile', ['json', 'application/json']],
+]);
 
 const hasAdminPrivilege = async (uid, privilege) => {
 	const ok = await privileges.admin.can(`admin:${privilege}`, uid);
@@ -295,4 +304,53 @@ Users.confirmEmail = async (req, res) => {
 	} else {
 		helpers.formatApiResponse(404, res);
 	}
+};
+
+const prepareExport = async (req, res) => {
+	const [extension] = exportMetadata.get(req.params.type);
+	const filename = `${req.params.uid}_${req.params.type}.${extension}`;
+	try {
+		const stat = await fs.stat(path.join(__dirname, '../../../build/export', filename));
+		const modified = new Date(stat.mtimeMs);
+		res.set('Last-Modified', modified.toUTCString());
+		res.set('ETag', `"${crypto.createHash('md5').update(String(stat.mtimeMs)).digest('hex')}"`);
+		res.status(204);
+		return true;
+	} catch (e) {
+		res.status(404);
+		return false;
+	}
+};
+
+Users.checkExportByType = async (req, res) => {
+	await prepareExport(req, res);
+	res.end();
+};
+
+Users.getExportByType = async (req, res) => {
+	const [extension, mime] = exportMetadata.get(req.params.type);
+	const filename = `${req.params.uid}_${req.params.type}.${extension}`;
+
+	const exists = await prepareExport(req, res);
+	if (!exists) {
+		return res.end();
+	}
+
+	res.status(200);
+	res.sendFile(filename, {
+		root: path.join(__dirname, '../../../build/export'),
+		headers: {
+			'Content-Type': mime,
+			'Content-Disposition': `attachment; filename=${filename}`,
+		},
+	}, (err) => {
+		if (err) {
+			throw err;
+		}
+	});
+};
+
+Users.generateExportsByType = async (req, res) => {
+	await api.users.generateExport(req, req.params);
+	helpers.formatApiResponse(202, res);
 };
