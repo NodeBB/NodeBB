@@ -179,3 +179,16 @@ $brand-danger:          #d9534f;
 	width: 100%;
 	display: none;
 }
+
+// some classes that are used commonly in themes from bs3
+.hidden, .hide {
+    display: none!important;
+}
+
+.pull-left {
+	float: left!important;
+}
+
+.pull-right {
+	float: right!important;
+}
