@@ -70,7 +70,7 @@ $brand-danger:          #d9534f;
 @mixin user-icon() {
 	display: inline-block;
 	text-align: center;
-	color: $gray-300;
+	color: $gray-light;
 	font-weight: normal;
 	vertical-align: middle;
 	overflow: hidden;	/* stops alt text from overflowing past boundaries if image does not load */
@@ -175,7 +175,7 @@ $brand-danger:          #d9534f;
 	position: absolute;
 	text-align: center;
 	font-size: 24px;
-	color: $gray-300;
+	color: $gray-light;
 	width: 100%;
 	display: none;
 }

@@ -23,41 +23,46 @@ CSS.supportedSkins = [
 ];
 
 const buildImports = {
-	client: function (source) {
+	client: function (source, themeData) {
 		return [
-			'@import "bootstrap/scss/bootstrap";',
-			'@import "../../public/scss/mixins.scss";',
-			'@import "../../public/scss/generics.scss";',
-			'@import "../../public/scss/responsive-utilities.scss";',
+			'@import "mixins";',
+			'@import "generics";',
 			'@import "fontawesome";',
-			'@import "./theme";',
+			boostrapImport(themeData),
+			'@import "responsive-utilities";',
 			source,
-
-			'@import "../../public/scss/jquery-ui.scss";',
-			'@import "../node_modules/@adactive/bootstrap-tagsinput/src/bootstrap-tagsinput";',
-			'@import "../node_modules/cropperjs/dist/cropper";',
-
-			'@import "../../public/scss/flags.scss";',
-
-			'@import "../../public/scss/global.scss";',
-			'@import "../../public/scss/modals.scss";',
+			'@import "jquery-ui";',
+			'@import "@adactive/bootstrap-tagsinput/src/bootstrap-tagsinput";',
+			'@import "cropperjs/dist/cropper";',
+			'@import "flags";',
+			'@import "global";',
+			'@import "modals";',
 		].join('\n');
 	},
 	admin: function (source) {
 		return [
 			'@import "bootstrap/scss/bootstrap";',
-			'@import "../../public/scss/mixins.scss";',
-			'@import "../public/scss/generics.scss";',
-			'@import "../../public/scss/responsive-utilities.scss";',
+			'@import "mixins.scss";',
+			'@import "generics.scss";',
+			'@import "responsive-utilities.scss";',
 			'@import "fontawesome";',
-			'@import "../public/scss/admin/admin.scss";',
+			'@import "admin/admin.scss";',
 			source,
-			'@import "../../public/scss/jquery-ui.scss";',
-			'@import "../node_modules/@adactive/bootstrap-tagsinput/src/bootstrap-tagsinput";',
+			'@import "jquery-ui.scss";',
+			'@import "@adactive/bootstrap-tagsinput/src/bootstrap-tagsinput";',
 			'@import "../public/vendor/mdl/material";',
 		].join('\n');
 	},
 };
+
+function boostrapImport(themeData) {
+	const { bootswatchSkin } = themeData;
+	return [
+		bootswatchSkin ? `@import "bootswatch/dist/${bootswatchSkin}/variables";` : '',
+		'@import "./theme";',
+		bootswatchSkin ? `@import "bootswatch/dist/${bootswatchSkin}/bootswatch";` : '',
+	].join('\n');
+}
 
 async function filterMissingFiles(filepaths) {
 	const exists = await Promise.all(
@@ -118,19 +123,15 @@ async function getBundleMetadata(target) {
 			target = 'client';
 		}
 	}
-	let skinImport = [];
+
+	let themeData = null;
 	if (target === 'client') {
-		const themeData = await db.getObjectFields('config', ['theme:type', 'theme:id', 'bootswatchSkin']);
+		themeData = await db.getObjectFields('config', ['theme:type', 'theme:id', 'bootswatchSkin']);
 		const themeId = (themeData['theme:id'] || 'nodebb-theme-persona');
 		const baseThemePath = path.join(nconf.get('themes_path'), (themeData['theme:type'] && themeData['theme:type'] === 'local' ? themeId : 'nodebb-theme-vanilla'));
 		paths.unshift(baseThemePath);
 
 		themeData.bootswatchSkin = skin || themeData.bootswatchSkin;
-		if (themeData && themeData.bootswatchSkin) {
-			skinImport.push(`\n@import "./@nodebb/bootswatch/${themeData.bootswatchSkin}/variables.less";`);
-			skinImport.push(`\n@import "./@nodebb/bootswatch/${themeData.bootswatchSkin}/bootswatch.less";`);
-		}
-		skinImport = skinImport.join('');
 	}
 
 	const [scssImports, cssImports, acpScssImports] = await Promise.all([
@@ -144,8 +145,8 @@ async function getBundleMetadata(target) {
 		return await getImports(filteredFiles, prefix, extension);
 	}
 
-	let imports = `${skinImport}\n${cssImports}\n${scssImports}\n${acpScssImports}`;
-	imports = buildImports[target](imports);
+	let imports = `${cssImports}\n${scssImports}\n${acpScssImports}`;
+	imports = buildImports[target](imports, themeData);
 
 	return { paths: paths, imports: imports };
 }
