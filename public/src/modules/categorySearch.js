@@ -25,8 +25,10 @@ define('categorySearch', ['alerts'], function (alerts) {
 
 		el.on('show.bs.dropdown', function () {
 			if (toggleVisibility) {
-				el.find('.dropdown-toggle').addClass('hidden');
 				searchEl.removeClass('hidden');
+				searchEl.css({
+					'z-index': el.find('.dropdown-toggle').css('z-index') + 1,
+				});
 			}
 
 			function doSearch() {
@@ -58,7 +60,6 @@ define('categorySearch', ['alerts'], function (alerts) {
 
 		el.on('hide.bs.dropdown', function () {
 			if (toggleVisibility) {
-				el.find('.dropdown-toggle').removeClass('hidden');
 				searchEl.addClass('hidden');
 			}
 
@@ -90,7 +91,7 @@ define('categorySearch', ['alerts'], function (alerts) {
 				allCategoriesUrl: ajaxify.data.allCategoriesUrl,
 			}, function (html) {
 				el.find('[component="category/list"]')
-					.replaceWith(html.find('[component="category/list"]'));
+					.html(html.find('[component="category/list"]').html());
 				el.find('[component="category/list"] [component="category/no-matches"]')
 					.toggleClass('hidden', !!categories.length);
 			});
