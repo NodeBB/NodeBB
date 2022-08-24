@@ -54,7 +54,6 @@ define('forum/topic/postTools', [
 				const topic = require('forum/topic');
 
 				dropdownMenu.html(html);
-				dropdownMenu.get(0).classList.toggle('hidden', false);
 				topic.applyDropup.call(self);
 				new clipboard('[data-clipboard-text]');
 
