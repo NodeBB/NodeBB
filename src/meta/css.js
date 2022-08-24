@@ -17,9 +17,10 @@ const minifier = require('./minifier');
 const CSS = module.exports;
 
 CSS.supportedSkins = [
-	'cerulean', 'cyborg', 'flatly', 'journal', 'lumen', 'paper', 'simplex',
-	'spacelab', 'united', 'cosmo', 'darkly', 'readable', 'sandstone',
-	'slate', 'superhero', 'yeti',
+	'cerulean', 'cosmo', 'cyborg', 'darkly', 'flatly', 'journal', 'litera',
+	'lumen', 'lux', 'materia', 'minty', 'morph', 'pulse', 'quartz', 'sandstone',
+	'simplex', 'sketchy', 'slate', 'solar', 'spacelab', 'superhero', 'united',
+	'vapor', 'yeti', 'zephyr',
 ];
 
 const buildImports = {
