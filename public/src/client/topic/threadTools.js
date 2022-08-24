@@ -355,10 +355,11 @@ define('forum/topic/threadTools', [
 			unfollow: '[[topic:not-watching]]',
 			ignore: '[[topic:ignoring]]',
 		};
+		// TODO: doesnt work on bs5
 		translator.translate(titles[state], function (translatedTitle) {
-			$('[component="topic/watch"] button')
+			$('[component="topic/watch"]')
 				.attr('title', translatedTitle)
-				.tooltip('fixTitle');
+				.tooltip();
 		});
 
 		let menu = components.get('topic/following/menu');
