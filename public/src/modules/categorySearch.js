@@ -25,6 +25,7 @@ define('categorySearch', ['alerts'], function (alerts) {
 
 		el.on('show.bs.dropdown', function () {
 			if (toggleVisibility) {
+				el.find('.dropdown-toggle').css({ visibility: 'hidden' });
 				searchEl.removeClass('hidden');
 				searchEl.css({
 					'z-index': el.find('.dropdown-toggle').css('z-index') + 1,
@@ -60,6 +61,7 @@ define('categorySearch', ['alerts'], function (alerts) {
 
 		el.on('hide.bs.dropdown', function () {
 			if (toggleVisibility) {
+				el.find('.dropdown-toggle').css({ visibility: 'visible' });
 				searchEl.addClass('hidden');
 			}
 
