@@ -12,7 +12,9 @@ define('forum/users', [
 		app.enterRoom('user_list');
 
 		const section = utils.param('section') ? ('?section=' + utils.param('section')) : '';
-		$('.nav-pills li').removeClass('active').find('a[href="' + window.location.pathname + section + '"]').parent()
+		const navItems = $('.nav-pills li');
+		navItems.find('a').removeClass('active');
+		navItems.find('a[href="' + window.location.pathname + section + '"]')
 			.addClass('active');
 
 		Users.handleSearch();
