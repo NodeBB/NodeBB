@@ -310,6 +310,7 @@ define('search', ['translator', 'storage', 'hooks', 'alerts'], function (transla
 		}
 		searchQuery = utils.escapeHTML(searchQuery.replace(/^"/, '').replace(/"$/, '').trim());
 		const regexStr = searchQuery.split(' ')
+			.filter(word => word.length > 1)
 			.map(function (word) { return utils.escapeRegexChars(word); })
 			.join('|');
 		const regex = new RegExp('(' + regexStr + ')', 'gi');
