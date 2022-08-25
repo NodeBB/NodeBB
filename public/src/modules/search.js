@@ -173,9 +173,11 @@ define('search', ['translator', 'storage', 'hooks', 'alerts'], function (transla
 			mousedownOnResults = true;
 		});
 		inputEl.on('blur', function () {
-			if (!inputEl.is(':focus') && !mousedownOnResults && !quickSearchResults.hasClass('hidden')) {
-				quickSearchResults.addClass('hidden');
-			}
+			setTimeout(function () {
+				if (!inputEl.is(':focus') && !mousedownOnResults && !quickSearchResults.hasClass('hidden')) {
+					quickSearchResults.addClass('hidden');
+				}
+			}, 200);
 		});
 
 		let ajaxified = false;
