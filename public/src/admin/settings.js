@@ -135,6 +135,7 @@ define('admin/settings', ['uploader', 'mousetrap', 'hooks', 'alerts'], function 
 
 	function setupTagsInput() {
 		$('[data-field-type="tagsinput"]').tagsinput({
+			tagClass: 'badge bg-info',
 			confirmKeys: [13, 44],
 			trimValue: true,
 		});

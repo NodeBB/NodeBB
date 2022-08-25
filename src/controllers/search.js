@@ -81,7 +81,7 @@ searchController.search = async function (req, res, next) {
 	}
 
 	searchData.allCategories = categoriesData;
-	searchData.allCategoriesCount = Math.max(10, Math.min(20, categoriesData.length));
+	searchData.allCategoriesCount = Math.max(10, Math.min(15, categoriesData.length));
 
 	searchData.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[global:search]]' }]);
 	searchData.expandSearch = !req.query.term;

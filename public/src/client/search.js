@@ -160,6 +160,7 @@ define('forum/search', [
 	function enableAutoComplete() {
 		const userEl = $('#posted-by-user');
 		userEl.tagsinput({
+			tagClass: 'badge bg-info',
 			confirmKeys: [13, 44],
 			trimValue: true,
 		});
@@ -169,6 +170,7 @@ define('forum/search', [
 
 		const tagEl = $('#has-tags');
 		tagEl.tagsinput({
+			tagClass: 'badge bg-info',
 			confirmKeys: [13, 44],
 			trimValue: true,
 		});

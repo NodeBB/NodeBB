@@ -266,6 +266,7 @@ define('admin/manage/category', [
 	function handleTags() {
 		const tagEl = $('#tag-whitelist');
 		tagEl.tagsinput({
+			tagClass: 'badge bg-info',
 			confirmKeys: [13, 44],
 			trimValue: true,
 		});
