@@ -30,9 +30,6 @@
     "dependencies": {
         "@adactive/bootstrap-tagsinput": "0.8.2",
         "@isaacs/ttlcache": "1.2.0",
-        "@textcomplete/contenteditable": "^0.1.12",
-        "@textcomplete/core": "^0.1.12",
-        "@textcomplete/textarea": "^0.1.12",
         "ace-builds": "1.9.5",
         "archiver": "5.3.1",
         "async": "3.2.4",
@@ -92,7 +89,7 @@
         "@nodebb/bootswatch": "3.4.2",
         "nconf": "0.12.0",
         "nodebb-plugin-2factor": "5.0.2",
-        "nodebb-plugin-composer-default": "9.0.0",
+        "nodebb-plugin-composer-default": "9.1.0",
         "nodebb-plugin-dbsearch": "5.1.5",
         "nodebb-plugin-emoji": "4.0.4",
         "nodebb-plugin-emoji-android": "3.0.0",
