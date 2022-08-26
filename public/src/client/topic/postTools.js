@@ -32,7 +32,6 @@ define('forum/topic/postTools', [
 
 	function renderMenu() {
 		$('[component="topic"]').on('show.bs.dropdown', '.moderator-tools', function () {
-			const self = this;
 			const $this = $(this);
 			const dropdownMenu = $this.find('.dropdown-menu');
 			if (dropdownMenu.html()) {
@@ -50,15 +49,14 @@ define('forum/topic/postTools', [
 
 				const html = await app.parseAndTranslate('partials/topic/post-menu-list', data);
 				const clipboard = require('clipboard');
-				// eslint-disable-next-line import/no-unresolved
-				const topic = require('forum/topic');
 
 				dropdownMenu.html(html);
 				dropdownMenu.get(0).classList.toggle('hidden', false);
-				topic.applyDropup.call(self);
 				new clipboard('[data-clipboard-text]');
 
-				hooks.fire('action:post.tools.load');
+				hooks.fire('action:post.tools.load', {
+					element: dropdownMenu,
+				});
 			});
 		});
 	}
