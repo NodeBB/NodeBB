@@ -180,14 +180,12 @@ define('forum/topic/threadTools', [
 				return;
 			}
 
-			dropdownMenu.toggleClass('hidden', true);
 			socket.emit('topics.loadTopicTools', { tid: ajaxify.data.tid, cid: ajaxify.data.cid }, function (err, data) {
 				if (err) {
 					return alerts.error(err);
 				}
 				app.parseAndTranslate('partials/topic/topic-menu-list', data, function (html) {
 					dropdownMenu.html(html);
-					dropdownMenu.toggleClass('hidden', false);
 
 					hooks.fire('action:topic.tools.load', {
 						element: dropdownMenu,

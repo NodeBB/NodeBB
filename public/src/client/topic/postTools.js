@@ -51,7 +51,6 @@ define('forum/topic/postTools', [
 				const clipboard = require('clipboard');
 
 				dropdownMenu.html(html);
-//				dropdownMenu.get(0).classList.toggle('hidden', false);
 				new clipboard('[data-clipboard-text]');
 
 				hooks.fire('action:post.tools.load', {
