@@ -20,6 +20,7 @@ const Groups = require('../src/groups');
 const Meta = require('../src/meta');
 const Privileges = require('../src/privileges');
 const utils = require('../src/utils');
+const api = require('../src/api');
 
 describe('Flags', () => {
 	let uid1;
@@ -511,26 +512,75 @@ describe('Flags', () => {
 			assert.strictEqual('wip', state);
 		});
 
-		it('should rescind notification if flag is resolved', async () => {
-			const flagsAPI = require('../src/api/flags');
-			const result = await Topics.post({
-				cid: category.cid,
-				uid: uid3,
-				title: 'Topic to flag',
-				content: 'This is flaggable content',
-			});
-			const flagObj = await flagsAPI.create({ uid: uid1 }, { type: 'post', id: result.postData.pid, reason: 'spam' });
-			await sleep(2000);
-
-			let userNotifs = await User.notifications.getAll(adminUid);
-			assert(userNotifs.includes(`flag:post:${result.postData.pid}`));
-
-			await Flags.update(flagObj.flagId, adminUid, {
-				state: 'resolved',
+		describe('resolve/reject', () => {
+			let result;
+			let flagObj;
+			beforeEach(async () => {
+				result = await Topics.post({
+					cid: category.cid,
+					uid: uid3,
+					title: 'Topic to flag',
+					content: 'This is flaggable content',
+				});
+				flagObj = await api.flags.create({ uid: uid1 }, { type: 'post', id: result.postData.pid, reason: 'spam' });
+				await sleep(2000);
 			});
 
-			userNotifs = await User.notifications.getAll(adminUid);
-			assert(!userNotifs.includes(`flag:post:${result.postData.pid}`));
+			it('should rescind notification if flag is resolved', async () => {
+				let userNotifs = await User.notifications.getAll(adminUid);
+				assert(userNotifs.includes(`flag:post:${result.postData.pid}`));
+
+				await Flags.update(flagObj.flagId, adminUid, {
+					state: 'resolved',
+				});
+
+				userNotifs = await User.notifications.getAll(adminUid);
+				assert(!userNotifs.includes(`flag:post:${result.postData.pid}`));
+			});
+
+			it('should rescind notification if flag is rejected', async () => {
+				let userNotifs = await User.notifications.getAll(adminUid);
+				assert(userNotifs.includes(`flag:post:${result.postData.pid}`));
+
+				await Flags.update(flagObj.flagId, adminUid, {
+					state: 'rejected',
+				});
+
+				userNotifs = await User.notifications.getAll(adminUid);
+				assert(!userNotifs.includes(`flag:post:${result.postData.pid}`));
+			});
+
+			it('should do nothing if flag is resolved but ACP action is not "rescind"', async () => {
+				Meta.config['flags:actionOnResolve'] = '';
+
+				let userNotifs = await User.notifications.getAll(adminUid);
+				assert(userNotifs.includes(`flag:post:${result.postData.pid}`));
+
+				await Flags.update(flagObj.flagId, adminUid, {
+					state: 'resolved',
+				});
+
+				userNotifs = await User.notifications.getAll(adminUid);
+				assert(userNotifs.includes(`flag:post:${result.postData.pid}`));
+
+				delete Meta.config['flags:actionOnResolve'];
+			});
+
+			it('should do nothing if flag is rejected but ACP action is not "rescind"', async () => {
+				Meta.config['flags:actionOnReject'] = '';
+
+				let userNotifs = await User.notifications.getAll(adminUid);
+				assert(userNotifs.includes(`flag:post:${result.postData.pid}`));
+
+				await Flags.update(flagObj.flagId, adminUid, {
+					state: 'rejected',
+				});
+
+				userNotifs = await User.notifications.getAll(adminUid);
+				assert(userNotifs.includes(`flag:post:${result.postData.pid}`));
+
+				delete Meta.config['flags:actionOnReject'];
+			});
 		});
 	});
 

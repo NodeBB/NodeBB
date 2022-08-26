@@ -679,7 +679,10 @@ Flags.update = async function (flagId, uid, changeset) {
 			} else {
 				tasks.push(db.sortedSetAdd(`flags:byState:${changeset[prop]}`, now, flagId));
 				tasks.push(db.sortedSetRemove(`flags:byState:${current[prop]}`, flagId));
-				if (changeset[prop] === 'resolved' || changeset[prop] === 'rejected') {
+				if (changeset[prop] === 'resolved' && meta.config['flags:actionOnResolve'] === 'rescind') {
+					tasks.push(notifications.rescind(`flag:${current.type}:${current.targetId}`));
+				}
+				if (changeset[prop] === 'rejected' && meta.config['flags:actionOnReject'] === 'rescind') {
 					tasks.push(notifications.rescind(`flag:${current.type}:${current.targetId}`));
 				}
 			}
