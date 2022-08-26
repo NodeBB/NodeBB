@@ -181,6 +181,12 @@ define('forum/topic', [
 				Topic.applyDropup.call(this);
 			}
 		});
+		hooks.onPage('action:topic.tools.load', ({ element }) => {
+			Topic.applyDropup.call(element.get(0).parentNode);
+		});
+		hooks.onPage('action:post.tools.load', ({ element }) => {
+			Topic.applyDropup.call(element.get(0).parentNode);
+		});
 	}
 
 	function addRepliesHandler() {
