@@ -27,9 +27,9 @@ const buildImports = {
 	client: function (source, themeData) {
 		return [
 			'@import "mixins";',
-			'@import "generics";',
 			'@import "fontawesome";',
 			boostrapImport(themeData),
+			'@import "generics";',
 			'@import "responsive-utilities";',
 			source,
 			'@import "jquery-ui";',

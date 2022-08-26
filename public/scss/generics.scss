@@ -1,18 +1,4 @@
 
-// TODO: these should be removed from persona and core use bs5 grays instead
-$gray-base:              #000;
-$gray-darker:            lighten($gray-base, 13.5%); // #222
-$gray-dark:              lighten($gray-base, 20%);   // #333
-$gray:                   lighten($gray-base, 33.5%); // #555
-$gray-light:             lighten($gray-base, 46.7%); // #777
-$gray-lighter:           lighten($gray-base, 93.5%); // #eee
-
-$brand-primary:         darken(#428bca, 6.5%); // #337ab7
-$brand-success:         #5cb85c;
-$brand-info:            #5bc0de;
-$brand-warning:         #f0ad4e;
-$brand-danger:          #d9534f;
-
 #move_thread_modal .category-list {
 	height: 500px;
 	overflow-y: auto;
@@ -36,7 +22,7 @@ $brand-danger:          #d9534f;
 		@include border-radius(3px);
 
 		&.disabled {
-			background-color: #888!important;
+			background-color: $gray-600!important;
 			opacity: 0.5;
 		}
 	}
@@ -53,7 +39,7 @@ $brand-danger:          #d9534f;
 		padding: 0.5rem 1rem;
 
 		&:hover {
-			background: #eee;
+			background: $gray-300;
 		}
 
 		.avatar  {
@@ -71,7 +57,7 @@ $brand-danger:          #d9534f;
 @mixin user-icon() {
 	display: inline-block;
 	text-align: center;
-	color: $gray-light;
+	color: $gray-300;
 	font-weight: normal;
 	vertical-align: middle;
 	overflow: hidden;	/* stops alt text from overflowing past boundaries if image does not load */
@@ -176,7 +162,7 @@ $brand-danger:          #d9534f;
 	position: absolute;
 	text-align: center;
 	font-size: 24px;
-	color: $gray-light;
+	color: $gray-600;
 	width: 100%;
 	display: none;
 }
