@@ -42,7 +42,6 @@ define('forum/topic', [
 		app.enterRoom('topic_' + tid);
 
 		if (tidChanged) {
-			console.log('tid changed clearing');
 			posts.signaturesShown = {};
 		}
 		posts.onTopicPageLoad(components.get('post'));
