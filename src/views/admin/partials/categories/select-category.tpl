@@ -13,7 +13,16 @@
 				</li>
 				<!-- BEGIN categories -->
 				<li role="presentation" class="category {{{if categories.disabledClass}}}disabled{{{end}}}" data-cid="{categories.cid}" data-name="{categories.name}">
-					<a role="menuitem">{categories.level}<span component="category-markup"><!-- IF categories.icon --><span class="fa-stack" style="{function.generateCategoryBackground}"><i style="color: {categories.color};" class="fa fa-stack-1x fa-fw {categories.icon}"></i></span><!-- ENDIF categories.icon --> {categories.name}</span></a>
+					<a role="menuitem">{categories.level}
+						<span component="category-markup">
+							<div class="category-item d-inline-block">
+								<div role="presentation" class="icon pull-left" style="{function.generateCategoryBackground}">
+									<i class="fa fa-fw {./icon}"></i>
+								</div>
+								{./name}
+							</div>
+						</span>
+					</a>
 				</li>
 				<!-- END categories -->
 			</ul>
