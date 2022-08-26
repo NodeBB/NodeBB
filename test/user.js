@@ -2548,21 +2548,45 @@ describe('User', () => {
 
 	describe('hideEmail/hideFullname', () => {
 		const COMMON_PW = '123456';
-		let uid;
-		let jar;
-		let regularUserUid;
+		const hidingUser = {
+			username: 'hiddenemail',
+			email: 'should@be.hidden',
+			fullname: 'baris soner usakli',
+			password: COMMON_PW,
+		};
+		const regularUser = {
+			username: 'regularUser',
+			email: 'regular@example.com',
+			fullname: 'regular user',
+			password: COMMON_PW,
+		};
+		let hidingUserJar;
+		let adminUid;
+		let adminJar;
+		let globalModJar;
+		let regularUserJar;
 
 		before(async () => {
-			uid = await User.create({
-				username: 'hiddenemail',
-				email: 'should@be.hidden',
-				fullname: 'baris soner usakli',
-			});
-			regularUserUid = await User.create({
-				username: 'regularUser',
+			adminUid = await User.create({
+				username: 'adminhideemail',
 				password: COMMON_PW,
 			});
-			({ jar } = await helpers.loginUser('regularUser', COMMON_PW));
+			await groups.join('administrators', adminUid);
+			({ jar: adminJar } = await helpers.loginUser('adminhideemail', COMMON_PW));
+
+			// Edge case: In a grepped test, this user should not be created as the first user to have its email not confirmed
+			hidingUser.uid = await User.create(hidingUser);
+			({ jar: hidingUserJar } = await helpers.loginUser(hidingUser.username, COMMON_PW));
+
+			const globalModUid = await User.create({
+				username: 'globalmodhideemail',
+				password: COMMON_PW,
+			});
+			await groups.join('Global Moderators', globalModUid);
+			({ jar: globalModJar } = await helpers.loginUser('globalmodhideemail', COMMON_PW));
+
+			regularUser.uid = await User.create(regularUser);
+			({ jar: regularUserJar } = await helpers.loginUser(regularUser.username, COMMON_PW));
 		});
 
 		after((done) => {
@@ -2571,22 +2595,152 @@ describe('User', () => {
 			done();
 		});
 
-		it('should hide email and fullname', async () => {
+		async function assertPrivacy({ expectVisible, jar, v3Api, emailOnly }) {
+			const path = v3Api ? `v3/users/${hidingUser.uid}` : `user/${hidingUser.username}`;
+			const response = await requestAsync(`${nconf.get('url')}/api/${path}`, { json: true, jar });
+			const { response: userData } = v3Api ? response : { response };
+
+			assert.strictEqual(userData.email, expectVisible ? hidingUser.email : '');
+			if (!emailOnly) {
+				assert.strictEqual(userData.fullname, expectVisible ? hidingUser.fullname : '');
+			}
+		}
+
+		it('should hide unconfirmed emails on profile pages', async () => {
+			await assertPrivacy({ v3Api: false, emailOnly: true });
+			await assertPrivacy({ v3Api: false, jar: hidingUserJar, emailOnly: true });
+			await assertPrivacy({ v3Api: false, jar: adminJar, emailOnly: true });
+			await assertPrivacy({ v3Api: false, jar: globalModJar, emailOnly: true });
+			await assertPrivacy({ v3Api: false, jar: regularUserJar, emailOnly: true });
+
+			// Let's confirm for afterwards
+			await User.email.confirmByUid(hidingUser.uid);
+		});
+
+		it('should hide from guests by default', async () => {
+			await assertPrivacy({ v3Api: false });
+		});
+
+		it('should hide from unprivileged users by default', async () => {
+			await assertPrivacy({ v3Api: false, jar: regularUserJar });
+			await assertPrivacy({ v3Api: true, jar: regularUserJar });
+		});
+
+		it('should be visible to self by default', async () => {
+			await assertPrivacy({ v3Api: false, jar: hidingUserJar, expectVisible: true });
+			await assertPrivacy({ v3Api: true, jar: hidingUserJar, expectVisible: true });
+		});
+
+		it('should be visible to privileged users by default', async () => {
+			await assertPrivacy({ v3Api: false, jar: adminJar, expectVisible: true });
+			await assertPrivacy({ v3Api: true, jar: adminJar, expectVisible: true });
+			await assertPrivacy({ v3Api: false, jar: globalModJar, expectVisible: true });
+			await assertPrivacy({ v3Api: true, jar: globalModJar, expectVisible: true });
+		});
+
+		it('should hide from guests (system-wide: hide, by-user: hide)', async () => {
+			meta.config.hideEmail = 1;
+			meta.config.hideFullname = 1;
+			// Explicitly set user's privacy settings to hide its email and fullname
+			const data = { uid: hidingUser.uid, settings: { showemail: 0, showfullname: 0 } };
+			await apiUser.updateSettings({ uid: hidingUser.uid }, data);
+
+			await assertPrivacy({ v3Api: false });
+		});
+
+		it('should hide from unprivileged users (system-wide: hide, by-user: hide)', async () => {
+			await assertPrivacy({ v3Api: false, jar: regularUserJar });
+			await assertPrivacy({ v3Api: true, jar: regularUserJar });
+		});
+
+		it('should be visible to self (system-wide: hide, by-user: hide)', async () => {
+			await assertPrivacy({ v3Api: false, jar: hidingUserJar, expectVisible: true });
+			await assertPrivacy({ v3Api: true, jar: hidingUserJar, expectVisible: true });
+		});
+
+		it('should be visible to privileged users (system-wide: hide, by-user: hide)', async () => {
+			await assertPrivacy({ v3Api: false, jar: adminJar, expectVisible: true });
+			await assertPrivacy({ v3Api: true, jar: adminJar, expectVisible: true });
+			await assertPrivacy({ v3Api: false, jar: globalModJar, expectVisible: true });
+			await assertPrivacy({ v3Api: true, jar: globalModJar, expectVisible: true });
+		});
+
+		it('should hide from guests (system-wide: show, by-user: hide)', async () => {
+			meta.config.hideEmail = 0;
+			meta.config.hideFullname = 0;
+
+			await assertPrivacy({ v3Api: false });
+		});
+
+		it('should hide from unprivileged users (system-wide: show, by-user: hide)', async () => {
+			await assertPrivacy({ v3Api: false, jar: regularUserJar });
+			await assertPrivacy({ v3Api: true, jar: regularUserJar });
+		});
+
+		it('should be visible to self (system-wide: show, by-user: hide)', async () => {
+			await assertPrivacy({ v3Api: false, jar: hidingUserJar, expectVisible: true });
+			await assertPrivacy({ v3Api: true, jar: hidingUserJar, expectVisible: true });
+		});
+
+		it('should be visible to privileged users (system-wide: show, by-user: hide)', async () => {
+			await assertPrivacy({ v3Api: false, jar: adminJar, expectVisible: true });
+			await assertPrivacy({ v3Api: true, jar: adminJar, expectVisible: true });
+			await assertPrivacy({ v3Api: false, jar: globalModJar, expectVisible: true });
+			await assertPrivacy({ v3Api: true, jar: globalModJar, expectVisible: true });
+		});
+
+		it('should be visible to guests (system-wide: show, by-user: show)', async () => {
+			meta.config.hideEmail = 0;
+			meta.config.hideFullname = 0;
+
+			// Set user's individual privacy settings to show its email and fullname
+			const data = { uid: hidingUser.uid, settings: { showemail: 1, showfullname: 1 } };
+			await apiUser.updateSettings({ uid: hidingUser.uid }, data);
+
+			await assertPrivacy({ v3Api: false, expectVisible: true });
+		});
+
+		it('should be visible to unprivileged users (system-wide: show, by-user: show)', async () => {
+			await assertPrivacy({ v3Api: false, jar: regularUserJar, expectVisible: true });
+			await assertPrivacy({ v3Api: true, jar: regularUserJar, expectVisible: true });
+		});
+
+		// System-wide "hide" prioritized over individual users' settings
+		it('should hide from guests (system-wide: hide, by-user: show)', async () => {
 			meta.config.hideEmail = 1;
 			meta.config.hideFullname = 1;
 
-			const userData1 = await requestAsync(`${nconf.get('url')}/api/user/hiddenemail`, { json: true });
-			assert.strictEqual(userData1.fullname, '');
-			assert.strictEqual(userData1.email, '');
+			await assertPrivacy({ v3Api: false });
+		});
 
-			const { response } = await requestAsync(`${nconf.get('url')}/api/v3/users/${uid}`, { json: true, jar: jar });
-			assert.strictEqual(response.fullname, '');
-			assert.strictEqual(response.email, '');
+		it('should hide from unprivileged users (system-wide: hide, by-user: show)', async () => {
+			await assertPrivacy({ v3Api: false, jar: regularUserJar });
+			await assertPrivacy({ v3Api: true, jar: regularUserJar });
+		});
+
+		it('should be visible to self (system-wide: hide, by-user: show)', async () => {
+			await assertPrivacy({ v3Api: false, jar: hidingUserJar, expectVisible: true });
+			await assertPrivacy({ v3Api: true, jar: hidingUserJar, expectVisible: true });
+		});
+
+		it('should be visible to privileged users (system-wide: hide, by-user: show)', async () => {
+			await assertPrivacy({ v3Api: false, jar: adminJar, expectVisible: true });
+			await assertPrivacy({ v3Api: true, jar: adminJar, expectVisible: true });
+			await assertPrivacy({ v3Api: false, jar: globalModJar, expectVisible: true });
+			await assertPrivacy({ v3Api: true, jar: globalModJar, expectVisible: true });
+		});
+
+		it('should handle array of user data (system-wide: hide)', async () => {
+			const userData = await User.hidePrivateData([hidingUser, regularUser], hidingUser.uid);
+			assert.strictEqual(userData[0].fullname, hidingUser.fullname);
+			assert.strictEqual(userData[0].email, hidingUser.email);
+			assert.strictEqual(userData[1].fullname, '');
+			assert.strictEqual(userData[1].email, '');
 		});
 
 		it('should hide fullname in topic list and topic', (done) => {
 			Topics.post({
-				uid: uid,
+				uid: hidingUser.uid,
 				title: 'Topic hidden',
 				content: 'lorem ipsum',
 				cid: testCid,

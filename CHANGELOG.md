@@ -1,3 +1,21 @@
+#### v2.4.5 (2022-08-22)
+
+##### Chores
+
+*  incrementing version number - v2.4.4 (d5525c87)
+*  update changelog for v2.4.4 (77e492b8)
+*  incrementing version number - v2.4.3 (9c647c6c)
+*  incrementing version number - v2.4.2 (3aa7b855)
+*  incrementing version number - v2.4.1 (60cbd148)
+*  incrementing version number - v2.4.0 (4834cde3)
+*  incrementing version number - v2.3.1 (d2425942)
+*  incrementing version number - v2.3.0 (046ea120)
+
+##### Bug Fixes
+
+*  wrap passport.authenticate to pass in keepSessionInfo if not already set (9b96c33d)
+*  parseInt caller.uid closes #10849 (bc37a5c5)
+
 #### v2.4.4 (2022-08-18)
 
 ##### Chores
