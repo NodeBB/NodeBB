@@ -1,4 +1,8 @@
 
+.pointer {
+	@include pointer;
+}
+
 #move_thread_modal .category-list {
 	height: 500px;
 	overflow-y: auto;
