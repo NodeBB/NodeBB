@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/reset_code', ['alerts'], function (alerts) {
+define('forum/reset_code', ['alerts', 'zxcvbn'], function (alerts, zxcvbn) {
 	const ResetCode = {};
 
 	ResetCode.init = function () {
@@ -13,7 +13,7 @@ define('forum/reset_code', ['alerts'], function (alerts) {
 
 		resetEl.on('click', function () {
 			try {
-				utils.assertPasswordValidity(password.val());
+				utils.assertPasswordValidity(password.val(), zxcvbn);
 
 				if (password.val() !== repeat.val()) {
 					throw new Error('[[reset_password:passwords_do_not_match]]');
