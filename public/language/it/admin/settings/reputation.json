@@ -24,8 +24,8 @@
 	"flags.limit-per-target-help": "Quando un post o un utente viene segnalato più volte, ogni segnalazione aggiuntiva è considerata una &quot;report&quot; e aggiunto alla segnalazione originale. Imposta questa opzione su un numero diverso da zero per limitare il numero di rapporti che un elemento può ricevere.",
   	"flags.auto-flag-on-downvote-threshold": "Numero di voti negativi per contrassegnare automaticamente i post (impostare a 0 per disabilitare, predefinito: 0)",
 	"flags.auto-resolve-on-ban": "Risolvi automaticamente tutti i ticket di un utente quando vengono bannati",
-	"flags.action-on-resolve": "Do the following when a flag is resolved",
-	"flags.action-on-reject": "Do the following when a flag is rejected",
-	"flags.action.nothing": "Do nothing",
-	"flags.action.rescind": "Rescind the notification send to moderators/administrators"
+	"flags.action-on-resolve": "Esegui le seguenti operazioni quando una segnalazione viene risolta",
+	"flags.action-on-reject": "Esegui le seguenti operazioni quando una segnalazione viene rifiutata",
+	"flags.action.nothing": "Non fare nulla",
+	"flags.action.rescind": "Annulla l'invio della notifica ai moderatori/amministratori"
 }
