@@ -9,7 +9,6 @@ require('jquery-form');
 window.utils = require('./utils');
 require('timeago');
 
-const Visibility = require('visibilityjs');
 const Benchpress = require('benchpressjs');
 Benchpress.setGlobal('config', config);
 
