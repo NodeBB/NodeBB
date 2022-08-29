@@ -23,5 +23,9 @@
 	"flags.limit-per-target-placeholder": "Défaut: 0",
 	"flags.limit-per-target-help": "Lorsqu'un message ou un utilisateur a été signalé plusieurs fois, chaque indicateur supplémentaire est considéré comme un \"rapport\". et ajouté au signalement d'origine. Définissez cette option sur un nombre autre que zéro pour limiter le nombre de rapports qu'un signalement peut admettre.",
   	"flags.auto-flag-on-downvote-threshold": "Nombre de votes négatifs pour les signalements (0 pour désactiver, par défaut : 0)",
-	"flags.auto-resolve-on-ban": "Résoudre automatiquement tous les tickets d'un utilisateur lorsqu'il est banni"
+	"flags.auto-resolve-on-ban": "Résoudre automatiquement tous les tickets d'un utilisateur lorsqu'il est banni",
+	"flags.action-on-resolve": "Do the following when a flag is resolved",
+	"flags.action-on-reject": "Do the following when a flag is rejected",
+	"flags.action.nothing": "Do nothing",
+	"flags.action.rescind": "Rescind the notification send to moderators/administrators"
 }

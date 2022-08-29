@@ -103,6 +103,26 @@
 				<label for="flags:autoFlagOnDownvoteThreshold">[[admin/settings/reputation:flags.auto-flag-on-downvote-threshold]]</label>
 				<input type="text" class="form-control" placeholder="0" data-field="flags:autoFlagOnDownvoteThreshold" id="flags:autoFlagOnDownvoteThreshold">
 			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label for="flags:actionOnResolve">[[admin/settings/reputation:flags.action-on-resolve]]</label>
+						<select class="form-control" data-field="flags:actionOnResolve" name="flags:actionOnResolve" id="flags:actionOnResolve">
+							<option value="">[[admin/settings/reputation:flags.action.nothing]]</option>
+							<option value="rescind">[[admin/settings/reputation:flags.action.rescind]]</option>
+						</select>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label for="flags:actionOnReject">[[admin/settings/reputation:flags.action-on-reject]]</label>
+						<select class="form-control" data-field="flags:actionOnReject" name="flags:actionOnReject" id="flags:actionOnReject">
+							<option value="">[[admin/settings/reputation:flags.action.nothing]]</option>
+							<option value="rescind">[[admin/settings/reputation:flags.action.rescind]]</option>
+						</select>
+					</div>
+				</div>
+			</div>
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input type="checkbox" class="mdl-switch__input" data-field="flags:autoResolveOnBan">

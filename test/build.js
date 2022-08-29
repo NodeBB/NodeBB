@@ -9,11 +9,17 @@ const async = require('async');
 
 const db = require('./mocks/databasemock');
 const file = require('../src/file');
-const helpers = require('./helpers');
 
 describe('minifier', () => {
+	const testPath = path.join(__dirname, '../test/build');
 	before(async () => {
-		await mkdirp(path.join(__dirname, '../build/test'));
+		await mkdirp(testPath);
+	});
+
+	after(async () => {
+		const files = await file.walk(testPath);
+		await Promise.all(files.map(async path => fs.promises.rm(path)));
+		await fs.promises.rmdir(testPath);
 	});
 
 	const minifier = require('../src/meta/minifier');
@@ -22,12 +28,12 @@ describe('minifier', () => {
 		path.resolve(__dirname, './files/2.js'),
 	].map(script => ({
 		srcPath: script,
-		destPath: path.resolve(__dirname, '../build/test', path.basename(script)),
+		destPath: path.resolve(__dirname, '../test/build', path.basename(script)),
 		filename: path.basename(script),
 	}));
 
 	it('.js.bundle() should concat scripts', (done) => {
-		const destPath = path.resolve(__dirname, '../build/test/concatenated.js');
+		const destPath = path.resolve(__dirname, '../test/build/concatenated.js');
 
 		minifier.js.bundle({
 			files: scripts,
@@ -55,7 +61,7 @@ describe('minifier', () => {
 		});
 	});
 	it('.js.bundle() should minify scripts', (done) => {
-		const destPath = path.resolve(__dirname, '../build/test/minified.js');
+		const destPath = path.resolve(__dirname, '../test/build/minified.js');
 
 		minifier.js.bundle({
 			files: scripts,

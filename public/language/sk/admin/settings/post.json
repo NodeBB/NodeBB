@@ -51,6 +51,7 @@
 	"signature.disable": "Zakázať podpisy",
 	"signature.no-links": "Zakázať odkazy v podpisoch",
 	"signature.no-images": "Zakázať obrázky v podpisoch",
+	"signature.hide-duplicates": "Hide duplicate signatures in topics",
 	"signature.max-length": "Maximálna dĺžka podpisu",
 	"composer": "Nastavenia kompozície",
 	"composer-help": "Nasledujúce nastavenia kontroluje funkčnosť a/alebo vzhľad zobrazených príspevkov\n\t\t\t\tpre používateľov, ktorí vytvoria novú tému alebo odpovedajú na existujúcu tému.",

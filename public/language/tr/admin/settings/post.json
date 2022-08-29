@@ -51,6 +51,7 @@
 	"signature.disable": "İmzaları devre dışı bırak",
 	"signature.no-links": "İmzalarda linkleri devre dışı bırak",
 	"signature.no-images": "İmzalarda resimleri devre dışı bırak",
+	"signature.hide-duplicates": "Hide duplicate signatures in topics",
 	"signature.max-length": "Maksimum İmza Uzunluğu",
 	"composer": "Editör Ayarları",
 	"composer-help": "Aşağıdaki ayarlar, yeni konular oluşturduklarında veya mevcut konulara cevap verdiklerinde kullanıcıların \n\t\t\t\tyazı alanının işlevselliğini ve / veya görünümünü yönetmelerini sağlar.",

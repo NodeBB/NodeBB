@@ -186,7 +186,6 @@ define('forum/topic/threadTools', [
 				}
 				app.parseAndTranslate('partials/topic/topic-menu-list', data, function (html) {
 					dropdownMenu.html(html);
-
 					hooks.fire('action:topic.tools.load', {
 						element: dropdownMenu,
 					});

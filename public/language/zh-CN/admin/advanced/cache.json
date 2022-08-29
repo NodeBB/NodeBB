@@ -1,5 +1,8 @@
 {
 	"post-cache": "帖子缓存",
+	"group-cache": "Group Cache",
+	"local-cache": "Local Cache",
+	"object-cache": "Object Cache",
 	"percent-full": "%1% 容量",
 	"post-cache-size": "帖子缓存大小",
 	"items-in-cache": "缓存中的条目数量"

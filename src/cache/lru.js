@@ -37,12 +37,15 @@ module.exports = function (opts) {
 	cache.enabled = opts.hasOwnProperty('enabled') ? opts.enabled : true;
 	const cacheSet = lruCache.set;
 
-	// backwards compatibility
+	// expose properties while keeping backwards compatibility
 	const propertyMap = new Map([
 		['length', 'calculatedSize'],
+		['calculatedSize', 'calculatedSize'],
 		['max', 'max'],
 		['maxSize', 'maxSize'],
 		['itemCount', 'size'],
+		['size', 'size'],
+		['ttl', 'ttl'],
 	]);
 	propertyMap.forEach((lruProp, cacheProp) => {
 		Object.defineProperty(cache, cacheProp, {

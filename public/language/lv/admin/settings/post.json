@@ -51,6 +51,7 @@
 	"signature.disable": "Atspējot parakstus",
 	"signature.no-links": "Atspējot saites parakstos",
 	"signature.no-images": "Atspējot bildes parakstos",
+	"signature.hide-duplicates": "Hide duplicate signatures in topics",
 	"signature.max-length": "Maksimālais paraksta garums",
 	"composer": "Redaktora iestatījumi",
 	"composer-help": "Tālāk norādītie iestatījumi nosaka funkcionalitāti un izskatu no raksta redaktoru, ko lieto jaunus tematus izveidojot, vai atbildot jau eksistējošiem tematiem.",
