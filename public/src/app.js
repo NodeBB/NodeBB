@@ -98,7 +98,7 @@ if (document.readyState === 'loading') {
 			get() {
 				return document.visibilityState === 'visible';
 			}
-		})
+		});
 
 		registerServiceWorker();
 
