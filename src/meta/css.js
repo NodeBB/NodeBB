@@ -42,6 +42,7 @@ const buildImports = {
 	},
 	admin: function (source) {
 		return [
+			'@import "admin/vars.scss";',
 			'@import "bootstrap/scss/bootstrap";',
 			'@import "mixins.scss";',
 			'@import "generics.scss";',
