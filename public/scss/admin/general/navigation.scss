@@ -1,0 +1,57 @@
+#navigation {
+	.fa-nbb-none {
+		display: inline-block;
+		width: 16px;
+		height: 16px;
+		border: 2px dashed #aaa;
+		position: relative;
+		top: 0.2em;
+	}
+
+	#active-navigation {
+		float: none;
+		min-height: 50px;
+		border: 1px solid #eee;
+		overflow: auto;
+
+		.active {
+			background-color: #eee;
+		}
+
+		li a {
+			cursor: move;
+		}
+
+		li {
+			display: inline-block;
+		}
+	}
+
+	#available {
+		.drag-item {
+			cursor: move;
+			margin-right: 10px;
+			padding: 8px 10px;
+			margin-bottom: 5px;
+		}
+
+		p {
+			line-height: 20px;
+			min-height: 40px;
+		}
+	}
+
+	#enabled {
+		.iconPicker i {
+			cursor: pointer;
+		}
+		.form-group {
+			min-height: 80px;
+		}
+	}
+
+	ul {
+		list-style-type: none;
+		padding: 0;
+	}
+}

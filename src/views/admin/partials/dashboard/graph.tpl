@@ -1,5 +1,5 @@
-<div class="panel panel-default" id="analytics-panel">
-	<div class="panel-heading">
+<div class="card mb-3" id="analytics-panel">
+	<div class="card-header">
 		[[admin/dashboard:forum-traffic]]
 		<div class="pull-right">
 			<a href="#"><i class="fa fa-fw fa-expand"></i></a>
@@ -8,7 +8,7 @@
 			<a target="_blank" id="view-as-json" href="{config.relative_path}/api/v3/admin/analytics/{set}?type=hourly"><i class="fa fa-fw fa-terminal"></i></a>
 		</div>
 	</div>
-	<div class="panel-body">
+	<div class="card-body">
 		<div class="graph-container" id="analytics-traffic-container">
 			<canvas id="analytics-traffic" width="100%" height="400"></canvas>
 		</div>

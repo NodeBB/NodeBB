@@ -5,9 +5,9 @@
 
 		<div class="row">
 			<div class="col-lg-3">
-				<div class="panel panel-default">
-					<div class="panel-heading">[[admin/dashboard:guest-registered-users]]</div>
-					<div class="panel-body">
+				<div class="card">
+					<div class="card-body">
+						<h6 class="card-title">[[admin/dashboard:guest-registered-users]]</h6>
 						<div class="graph-container pie-chart legend-down">
 							<canvas id="analytics-registered"></canvas>
 							<ul class="graph-legend" id="analytics-legend">
@@ -20,9 +20,9 @@
 			</div>
 
 			<div class="col-lg-3">
-				<div class="panel panel-default">
-					<div class="panel-heading">[[admin/dashboard:user-presence]]</div>
-					<div class="panel-body">
+				<div class="card">
+					<div class="card-body">
+						<h6 class="card-title">[[admin/dashboard:user-presence]]</h6>
 						<div class="graph-container pie-chart legend-down">
 							<canvas id="analytics-presence"></canvas>
 							<ul class="graph-legend" id="analytics-presence-legend">
@@ -37,9 +37,9 @@
 				</div>
 			</div>
 			<div class="col-lg-3">
-				<div class="panel panel-default">
-					<div class="panel-heading">[[admin/dashboard:high-presence-topics]]</div>
-					<div class="panel-body">
+				<div class="card">
+					<div class="card-body">
+						<h6 class="card-title">[[admin/dashboard:high-presence-topics]]</h6>
 						<div class="graph-container pie-chart legend-down">
 							<canvas id="analytics-topics"></canvas>
 							<ul class="graph-legend" id="topics-legend"></ul>
@@ -48,9 +48,9 @@
 				</div>
 			</div>
 			<div class="col-lg-3">
-				<div class="panel panel-default">
-					<div class="panel-heading">[[admin/dashboard:popular-searches]]</div>
-					<div class="panel-body">
+				<div class="card">
+					<div class="card-body">
+						<h6 class="card-title mb-3">[[admin/dashboard:popular-searches]]</h6>
 						<div class="graph-container pie-chart legend-down">
 							<ul class="graph-legend" id="popular-searches-legend">
 								{{{ each popularSearches}}}
@@ -66,9 +66,9 @@
 
 	<div class="col-lg-3">
 		{{{ if showSystemControls }}}
-		<div class="panel panel-default">
-			<div class="panel-heading">[[admin/dashboard:control-panel]]</div>
-			<div class="panel-body text-center">
+		<div class="card mb-3">
+			<div class="card-header">[[admin/dashboard:control-panel]]</div>
+			<div class="card-body text-center">
 				<p>
 					<button class="btn btn-block btn-warning restart"<!-- IF !canRestart --> disabled<!-- END -->>[[admin/dashboard:restart]]</button>
 					<button class="btn btn-block btn-danger rebuild-and-restart"<!-- IF !canRestart --> disabled<!-- END -->>[[admin/dashboard:rebuild-and-restart]]</button>
@@ -96,16 +96,16 @@
 		</div>
 		{{{ end }}}
 
-		<div class="panel panel-default">
-			<div class="panel-heading">[[admin/dashboard:active-users]]</div>
-			<div class="panel-body">
+		<div class="card mb-3">
+			<div class="card-header">[[admin/dashboard:active-users]]</div>
+			<div class="card-body">
 				<div id="active-users" class="stats"></div>
 			</div>
 		</div>
 
-		<div class="panel panel-default">
-			<div class="panel-heading">[[admin/dashboard:updates]]</div>
-			<div class="panel-body">
+		<div class="card mb-3">
+			<div class="card-header">[[admin/dashboard:updates]]</div>
+			<div class="card-body">
 				<div class="alert <!-- IF lookupFailed -->alert-danger<!-- ELSE --><!-- IF upgradeAvailable -->alert-warning<!-- ELSE --><!-- IF currentPrerelease -->alert-info<!-- ELSE -->alert-success<!-- END --><!-- END --><!-- END --> version-check">
 					<p>[[admin/dashboard:running-version, {version}]]</p>
 					<p>
@@ -134,9 +134,9 @@
 			</div>
 		</div>
 
-		<div class="panel panel-default">
-			<div class="panel-heading">[[admin/dashboard:notices]]</div>
-			<div class="panel-body">
+		<div class="card">
+			<div class="card-header">[[admin/dashboard:notices]]</div>
+			<div class="card-body">
 			<!-- BEGIN notices -->
 				<div>
 					<!-- IF notices.done -->
