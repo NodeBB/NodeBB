@@ -95,10 +95,11 @@ if (document.readyState === 'loading') {
 			app.newTopic();
 		});
 
-		Visibility.change(function (event, state) {
-			app.isFocused = state === 'visible';
-		});
-
+		Object.defineProperty(app, 'isFocused', {
+			get() {
+				return document.visibilityState === 'visible';
+			}
+		})
 		registerServiceWorker();
 
 		require([
