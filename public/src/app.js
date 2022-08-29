@@ -18,7 +18,11 @@ require('./ajaxify');
 
 app = window.app || {};
 
-app.isFocused = true;
+Object.defineProperty(app, 'isFocused', {
+	get() {
+		return document.visibilityState === 'visible';
+	}
+});
 app.currentRoom = null;
 app.widgets = {};
 app.flags = {};
@@ -92,12 +96,6 @@ if (document.readyState === 'loading') {
 		$('body').on('click', '#new_topic', function (e) {
 			e.preventDefault();
 			app.newTopic();
-		});
-
-		Object.defineProperty(app, 'isFocused', {
-			get() {
-				return document.visibilityState === 'visible';
-			}
 		});
 
 		registerServiceWorker();
