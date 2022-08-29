@@ -24,8 +24,8 @@
 	"flags.limit-per-target-help": "Когато публикация или потребител бъде докладван няколко пъти, това се добавя към един общ доклад. Задайте на тази настройка стойност по-голяма от нула, за да ограничите броя на докладванията, които могат да бъдат натрупани към една публикация или потребител.",
   	"flags.auto-flag-on-downvote-threshold": "Брой отрицателни гласове, при които публикациите да бъдат докладвани автоматично (0 = изключено, по подразбиране: 0)",
 	"flags.auto-resolve-on-ban": "Автоматично премахване на всички доклади за потребител, когато той бъде блокиран",
-	"flags.action-on-resolve": "Do the following when a flag is resolved",
-	"flags.action-on-reject": "Do the following when a flag is rejected",
-	"flags.action.nothing": "Do nothing",
-	"flags.action.rescind": "Rescind the notification send to moderators/administrators"
+	"flags.action-on-resolve": "Когато докладване бъде разрешено, да се направи следното",
+	"flags.action-on-reject": "Когато докладване бъде отхвърлено, да се направи следното",
+	"flags.action.nothing": "Да не се прави нищо",
+	"flags.action.rescind": "Да се отмени известието, изпратено до модераторите/администраторите"
 }
