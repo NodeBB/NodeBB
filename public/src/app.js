@@ -99,6 +99,7 @@ if (document.readyState === 'loading') {
 				return document.visibilityState === 'visible';
 			}
 		})
+
 		registerServiceWorker();
 
 		require([
