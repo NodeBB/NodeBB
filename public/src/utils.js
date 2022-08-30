@@ -6,6 +6,13 @@ const $ = require('jquery');
 
 const utils = { ...require('./utils.common') };
 
+utils.requireZxcvbn = async () => new Promise((resolve) => {
+	require(['zxcvbn'], (zxcvbn) => {
+		app.zxcvbn = zxcvbn;
+		resolve(zxcvbn);
+	});
+});
+
 utils.getLanguage = function () {
 	let lang = 'en-GB';
 	if (typeof window === 'object' && window.config && window.utils) {
@@ -56,7 +63,7 @@ utils.isMobile = function () {
 	});
 };
 
-utils.assertPasswordValidity = (password, zxcvbn) => {
+utils.assertPasswordValidity = (password) => {
 	// More checks on top of basic utils.isPasswordValid()
 	if (!utils.isPasswordValid(password)) {
 		throw new Error('[[user:change_password_error]]');
@@ -66,7 +73,7 @@ utils.assertPasswordValidity = (password, zxcvbn) => {
 		throw new Error('[[error:password-too-long]]');
 	}
 
-	const passwordStrength = zxcvbn(password);
+	const passwordStrength = app.zxcvbn(password);
 	if (passwordStrength.score < ajaxify.data.minimumPasswordStrength) {
 		throw new Error('[[user:weak_password]]');
 	}

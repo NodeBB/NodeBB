@@ -1,13 +1,14 @@
 'use strict';
 
 define('forum/account/edit/password', [
-	'forum/account/header', 'translator', 'zxcvbn', 'api', 'alerts',
-], function (header, translator, zxcvbn, api, alerts) {
+	'forum/account/header', 'translator', 'api', 'alerts',
+], function (header, translator, api, alerts) {
 	const AccountEditPassword = {};
 
 	AccountEditPassword.init = function () {
 		header.init();
 
+		utils.requireZxcvbn();
 		handlePasswordChange();
 	};
 
@@ -24,7 +25,7 @@ define('forum/account/edit/password', [
 			passwordvalid = false;
 
 			try {
-				utils.assertPasswordValidity(password.val(), zxcvbn);
+				utils.assertPasswordValidity(password.val());
 
 				if (password.val() === ajaxify.data.username) {
 					throw new Error('[[user:password_same_as_username]]');

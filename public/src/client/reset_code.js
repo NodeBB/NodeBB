@@ -1,10 +1,12 @@
 'use strict';
 
 
-define('forum/reset_code', ['alerts', 'zxcvbn'], function (alerts, zxcvbn) {
+define('forum/reset_code', ['alerts'], function (alerts) {
 	const ResetCode = {};
 
 	ResetCode.init = function () {
+		utils.requireZxcvbn();
+
 		const reset_code = ajaxify.data.code;
 
 		const resetEl = $('#reset');
@@ -13,7 +15,7 @@ define('forum/reset_code', ['alerts', 'zxcvbn'], function (alerts, zxcvbn) {
 
 		resetEl.on('click', function () {
 			try {
-				utils.assertPasswordValidity(password.val(), zxcvbn);
+				utils.assertPasswordValidity(password.val());
 
 				if (password.val() !== repeat.val()) {
 					throw new Error('[[reset_password:passwords_do_not_match]]');
