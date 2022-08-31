@@ -199,7 +199,7 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 			$(window).off('mousemove', mousemove);
 			if (mouseDragging) {
 				navigator.scrollToIndex(index - 1, true, 0);
-				paginationBlockEl.find('[data-toggle="dropdown"]').trigger('click');
+				paginationBlockEl.find('[data-bs-toggle="dropdown"]').trigger('click');
 			}
 			clearRenderInterval();
 			mouseDragging = false;
@@ -270,7 +270,7 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 			if (isNavigating) {
 				navigator.scrollToIndex(index - 1, true, 0);
 				isNavigating = false;
-				paginationBlockEl.find('[data-toggle="dropdown"]').trigger('click');
+				paginationBlockEl.find('[data-bs-toggle="dropdown"]').trigger('click');
 			}
 		});
 	}

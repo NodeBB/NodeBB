@@ -3,12 +3,12 @@
 		<ul class="nav nav-pills">
 
 			<li role="presentation" class="dropdown">
-				<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+				<a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
 				<span class="selected-template">{templates.0.template}</span> <span class="caret"></span>
 				</a>
 				<ul class="dropdown-menu">
 					{{{ each templates }}}
-					<li><a href="#" data-template="{../template}" data-toggle="pill">{../template}</a></li>
+					<li><a class="dropdown-item" href="#" data-template="{../template}" data-toggle="pill">{../template}</a></li>
 					{{{ end }}}
 				</ul>
 			</li>
@@ -70,13 +70,13 @@
 
 					<div class="btn-group" component="clone">
 						<button type="button" class="btn btn-primary" component="clone/button">[[admin/extend/widgets:clone-from]] ...</button>
-						<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+						<button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
 							<span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu pull-right">
 							<!-- BEGIN templates -->
 							<!-- IF !@first -->
-							<li><a href="#">{templates.template}</a></li>
+							<li><a class="dropdown-item" href="#">{templates.template}</a></li>
 							<!-- END -->
 							<!-- END templates -->
 						</ul>

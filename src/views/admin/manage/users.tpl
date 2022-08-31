@@ -4,30 +4,30 @@
 
 			<div class="pull-right">
 				<div class="btn-group">
-					<button class="btn btn-primary dropdown-toggle" id="action-dropdown" data-toggle="dropdown" type="button" disabled="disabled">[[admin/manage/users:edit]] <span class="caret"></span></button>
+					<button class="btn btn-primary dropdown-toggle" id="action-dropdown" data-bs-toggle="dropdown" type="button" disabled="disabled">[[admin/manage/users:edit]] <span class="caret"></span></button>
 					<ul class="dropdown-menu dropdown-menu-right">
-						<li><a href="#" class="validate-email"><i class="fa fa-fw fa-check"></i> [[admin/manage/users:validate-email]]</a></li>
-						<li><a href="#" class="send-validation-email"><i class="fa fa-fw fa-mail-forward"></i> [[admin/manage/users:send-validation-email]]</a></li>
-						<li><a href="#" class="password-reset-email"><i class="fa fa-fw fa-key"></i> [[admin/manage/users:password-reset-email]]</a></li>
-						<li><a href="#" class="force-password-reset"><i class="fa fa-fw fa-unlock-alt"></i> [[admin/manage/users:force-password-reset]]</a></li>
-						<li><a href="#" class="manage-groups"><i class="fa fa-fw fa-users"></i> [[admin/manage/users:manage-groups]]</a></li>
+						<li><a href="#" class="dropdown-item validate-email"><i class="fa fa-fw fa-check"></i> [[admin/manage/users:validate-email]]</a></li>
+						<li><a href="#" class="dropdown-item send-validation-email"><i class="fa fa-fw fa-mail-forward"></i> [[admin/manage/users:send-validation-email]]</a></li>
+						<li><a href="#" class="dropdown-item password-reset-email"><i class="fa fa-fw fa-key"></i> [[admin/manage/users:password-reset-email]]</a></li>
+						<li><a href="#" class="dropdown-item force-password-reset"><i class="fa fa-fw fa-unlock-alt"></i> [[admin/manage/users:force-password-reset]]</a></li>
+						<li><a href="#" class="dropdown-item manage-groups"><i class="fa fa-fw fa-users"></i> [[admin/manage/users:manage-groups]]</a></li>
+						<li class="dropdown-divider"></li>
+						<li><a href="#" class="dropdown-item ban-user"><i class="fa fa-fw fa-gavel"></i> [[admin/manage/users:ban]]</a></li>
+						<li><a href="#" class="dropdown-item ban-user-temporary"><i class="fa fa-fw fa-clock-o"></i> [[admin/manage/users:temp-ban]]</a></li>
+						<li><a href="#" class="dropdown-item unban-user"><i class="fa fa-fw fa-comment-o"></i> [[admin/manage/users:unban]]</a></li>
+						<li><a href="#" class="dropdown-item reset-lockout"><i class="fa fa-fw fa-unlock"></i> [[admin/manage/users:reset-lockout]]</a></li>
 						<li class="divider"></li>
-						<li><a href="#" class="ban-user"><i class="fa fa-fw fa-gavel"></i> [[admin/manage/users:ban]]</a></li>
-						<li><a href="#" class="ban-user-temporary"><i class="fa fa-fw fa-clock-o"></i> [[admin/manage/users:temp-ban]]</a></li>
-						<li><a href="#" class="unban-user"><i class="fa fa-fw fa-comment-o"></i> [[admin/manage/users:unban]]</a></li>
-						<li><a href="#" class="reset-lockout"><i class="fa fa-fw fa-unlock"></i> [[admin/manage/users:reset-lockout]]</a></li>
-						<li class="divider"></li>
-						<li><a href="#" class="delete-user"><i class="fa fa-fw fa-trash-o"></i> [[admin/manage/users:delete]]</a></li>
-						<li><a href="#" class="delete-user-content"><i class="fa fa-fw fa-trash-o"></i> [[admin/manage/users:delete-content]]</a></li>
-						<li><a href="#" class="delete-user-and-content"><i class="fa fa-fw fa-trash-o"></i> [[admin/manage/users:purge]]</a></li>
+						<li><a href="#" class="dropdown-item delete-user"><i class="fa fa-fw fa-trash-o"></i> [[admin/manage/users:delete]]</a></li>
+						<li><a href="#" class="dropdown-item delete-user-content"><i class="fa fa-fw fa-trash-o"></i> [[admin/manage/users:delete-content]]</a></li>
+						<li><a href="#" class="dropdown-item delete-user-and-content"><i class="fa fa-fw fa-trash-o"></i> [[admin/manage/users:purge]]</a></li>
 					</ul>
 				</div>
 				<div class="btn-group">
-					<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button"><i class="fa fa-ellipsis-v"></i></button>
+					<button class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown" type="button"><i class="fa fa-ellipsis-v"></i></button>
 					<ul class="dropdown-menu dropdown-menu-right">
-						<li><a href="#" data-action="create">[[admin/manage/users:create]]</a></li>
-						{{{ if showInviteButton }}}<li><a href="#" component="user/invite">[[admin/manage/users:invite]]</a></li>{{{ end }}}
-						<li><a target="_blank" href="#" class="export-csv">[[admin/manage/users:download-csv]]</a></li>
+						<li><a class="dropdown-item" href="#" data-action="create">[[admin/manage/users:create]]</a></li>
+						{{{ if showInviteButton }}}<li><a class="dropdown-item" href="#" component="user/invite">[[admin/manage/users:invite]]</a></li>{{{ end }}}
+						<li><a target="_blank" href="#" class="dropdown-item export-csv">[[admin/manage/users:download-csv]]</a></li>
 					</ul>
 				</div>
 			</div>
@@ -51,18 +51,18 @@
 				</select>
 
 				<div class="btn-group" id="filter-by">
-					<button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown">
+					<button type="button" class="btn btn-link dropdown-toggle" data-bs-toggle="dropdown">
 						[[admin/manage/users:filter-by]] <span class="caret"></span>
 					</button>
 					<ul class="dropdown-menu" role="menu">
 						<li data-filter-by="unverified" role="presentation">
-							<a role="menuitem" href="#"><i class="fa fa-fw {{{ if filterBy_unverified }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.unvalidated]]</a>
+							<a class="dropdown-item" role="menuitem" href="#"><i class="fa fa-fw {{{ if filterBy_unverified }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.unvalidated]]</a>
 						</li>
 						<li data-filter-by="verified" role="presentation">
-							<a role="menuitem" href="#"><i class="fa fa-fw {{{ if filterBy_verified }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.validated]]</a>
+							<a class="dropdown-item" role="menuitem" href="#"><i class="fa fa-fw {{{ if filterBy_verified }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.validated]]</a>
 						</li>
 						<li data-filter-by="banned" role="presentation">
-							<a role="menuitem" href="#"><i class="fa fa-fw {{{ if filterBy_banned }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.banned]]</a>
+							<a class="dropdown-item" role="menuitem" href="#"><i class="fa fa-fw {{{ if filterBy_banned }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.banned]]</a>
 						</li>
 					</ul>
 				</div>

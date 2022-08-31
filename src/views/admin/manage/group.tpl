@@ -125,7 +125,7 @@
 		</div>
 		<div class="col-md-3">
 			<div component="group-selector" class="btn-group">
-				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+				<button type="button" class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown">
 					<span component="group-selector-selected">{group.displayName}</span> <span class="caret"></span>
 				</button>
 				<div component="group-selector-search" class="hidden">
@@ -133,11 +133,11 @@
 				</div>
 				<ul component="group-list" class="dropdown-menu group-dropdown-menu" role="menu">
 					<li component="group-no-matches" role="presentation" class="group hidden">
-						<a role="menuitem">[[search:no-matches]]</a>
+						<a class="dropdown-item" role="menuitem">[[search:no-matches]]</a>
 					</li>
 					<!-- BEGIN groupNames -->
 					<li role="presentation" class="group" data-name="{groupNames.displayName}">
-						<a href="{config.relative_path}/admin/manage/groups/{groupNames.encodedName}" role="menuitem">{groupNames.displayName}</a>
+						<a class="dropdown-item" href="{config.relative_path}/admin/manage/groups/{groupNames.encodedName}" role="menuitem">{groupNames.displayName}</a>
 					</li>
 					<!-- END groupNames -->
 				</ul>

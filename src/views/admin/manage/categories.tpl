@@ -5,10 +5,10 @@
             <!-- IMPORT partials/category-selector.tpl -->
         </div>
         <div class="btn-group">
-            <button id="collapse-all" class="btn btn-default">[[admin/manage/categories:collapse-all]]</button>
+            <button id="collapse-all" class="btn btn-outline-secondary">[[admin/manage/categories:collapse-all]]</button>
         </div>
         <div class="btn-group">
-            <button id="expand-all" class="btn btn-default">[[admin/manage/categories:expand-all]]</button>
+            <button id="expand-all" class="btn btn-outline-secondary">[[admin/manage/categories:expand-all]]</button>
         </div>
     </div>
 </div>

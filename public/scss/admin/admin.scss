@@ -3,11 +3,11 @@
  @import "./mixins";
 
 @import "./header";
-// @import "./mobile";
+@import "./mobile";
 
 @import "./general/dashboard";
 @import "./general/navigation";
-// @import "./manage/categories";
+@import "./manage/categories";
 // @import "./manage/privileges";
 // @import "./manage/tags";
 // @import "./manage/groups";
@@ -25,7 +25,7 @@
 // @import "./advanced/errors";
 // @import "./advanced/hooks";
 // @import "./development/info";
-// @import "./settings";
+@import "./settings";
 
 // @import "../flags";
 
@@ -229,13 +229,26 @@ label {
 		margin: 35px 5px 0 5px;
 	}
 }
+
+.category-dropdown-container.right .category-dropdown-menu {
+	--bs-position: end;
+}
+
 [component="category-selector"] {
-	.fa-stack {
+	.category-item > .icon {
+		min-width: 23px;
+		min-height: 23px;
+		font-size: 10px;
+		line-height: 12px;
+		padding: 5px;
+		margin-right: 5px;
 		border-radius: 50%;
 	}
+
 	.category-dropdown-menu {
-		max-height: 400px;
+		max-height: 500px;
 		overflow-y: auto;
+		overflow-x: hidden;
 	}
 }
 
