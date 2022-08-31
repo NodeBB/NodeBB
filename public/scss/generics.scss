@@ -82,37 +82,37 @@
 	&.avatar-xs {
 		width: 16px;
 		height: 16px;
-		@include user-icon-style(16px, 1rem);
+		@include user-icon-style($line-height-base, $font-size-base * 0.75);
 	}
 
 	&.avatar-sm {
 		width: 24px;
 		height: 24px;
-		@include user-icon-style(24px, 1.5rem);
+		@include user-icon-style($line-height-base, $font-size-base);
 	}
 
 	&.avatar-sm2x {
 		width: 48px;
 		height: 48px;
-		@include user-icon-style(48px, 1.5rem);
+		@include user-icon-style($line-height-base, $font-size-base * 2);
 	}
 
 	&.avatar-md {
 		width: 32px;
 		height: 32px;
-		@include user-icon-style(32px, 1.5rem);
+		@include user-icon-style($line-height-base, $font-size-base * 1.5);
 	}
 
 	&.avatar-lg {
 		width: 64px;
 		height: 64px;
-		@include user-icon-style(64px, 4rem);
+		@include user-icon-style($line-height-base, $font-size-base * 3);
 	}
 
 	&.avatar-xl {
 		width: 128px;
 		height: 128px;
-		@include user-icon-style(128px, 7.5rem);
+		@include user-icon-style($line-height-base * 1.15, $font-size-base * 6);
 	}
 
 	&.avatar-rounded {
