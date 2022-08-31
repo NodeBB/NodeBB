@@ -1,8 +1,8 @@
 <div component="category-selector" class="btn-group">
-	<button type="button" class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown">
+	<button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
 		<span>[[admin/manage/groups:privileges]]</span> <span class="caret"></span>
 	</button>
-	<div component="category-selector-search" class="hidden">
+	<div component="category-selector-search" class="hidden position-absolute">
 		<input type="text" class="form-control" autocomplete="off">
 	</div>
 	<ul component="category/list" class="dropdown-menu category-dropdown-menu dropdown-menu-end" role="menu">
