@@ -110,20 +110,20 @@ label {
 		@include box-header-font;
 	}
 
-	.panel:not([data-container-html]) {
+	.card:not([data-container-html]) {
 		background-color: #FFF;
 		box-sizing: border-box;
 		border-radius: 3px;
 		box-shadow: 0px 1px 3px 0px rgba(165, 165, 165, 0.75);
 		margin-bottom: 20px;
 
-		&.panel-default >.panel-heading {
+		.card-header {
 			@include acp-panel-heading;
 			background: #fefefe;
 			color: #333;
 		}
 
-		&.panel-danger >.panel-heading {
+		&.card-danger >.card-header {
 			@include acp-panel-heading;
 		}
 	}

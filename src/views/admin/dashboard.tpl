@@ -6,8 +6,8 @@
 		<div class="row">
 			<div class="col-lg-3">
 				<div class="card">
+					<div class="card-header">[[admin/dashboard:guest-registered-users]]</div>
 					<div class="card-body">
-						<h6 class="card-title">[[admin/dashboard:guest-registered-users]]</h6>
 						<div class="graph-container pie-chart legend-down">
 							<canvas id="analytics-registered"></canvas>
 							<ul class="graph-legend" id="analytics-legend">
@@ -21,8 +21,8 @@
 
 			<div class="col-lg-3">
 				<div class="card">
+					<div class="card-header">[[admin/dashboard:user-presence]]</div>
 					<div class="card-body">
-						<h6 class="card-title">[[admin/dashboard:user-presence]]</h6>
 						<div class="graph-container pie-chart legend-down">
 							<canvas id="analytics-presence"></canvas>
 							<ul class="graph-legend" id="analytics-presence-legend">
@@ -38,8 +38,8 @@
 			</div>
 			<div class="col-lg-3">
 				<div class="card">
+					<div class="card-header">[[admin/dashboard:high-presence-topics]]</div>
 					<div class="card-body">
-						<h6 class="card-title">[[admin/dashboard:high-presence-topics]]</h6>
 						<div class="graph-container pie-chart legend-down">
 							<canvas id="analytics-topics"></canvas>
 							<ul class="graph-legend" id="topics-legend"></ul>
@@ -49,8 +49,8 @@
 			</div>
 			<div class="col-lg-3">
 				<div class="card">
+					<div class="card-header">[[admin/dashboard:popular-searches]]</div>
 					<div class="card-body">
-						<h6 class="card-title mb-3">[[admin/dashboard:popular-searches]]</h6>
 						<div class="graph-container pie-chart legend-down">
 							<ul class="graph-legend" id="popular-searches-legend">
 								{{{ each popularSearches}}}
@@ -69,17 +69,17 @@
 		<div class="card mb-3">
 			<div class="card-header">[[admin/dashboard:control-panel]]</div>
 			<div class="card-body text-center">
-				<p>
+				<div class="d-grid gap-2 mb-2">
 					<button class="btn btn-block btn-warning restart"<!-- IF !canRestart --> disabled<!-- END -->>[[admin/dashboard:restart]]</button>
 					<button class="btn btn-block btn-danger rebuild-and-restart"<!-- IF !canRestart --> disabled<!-- END -->>[[admin/dashboard:rebuild-and-restart]]</button>
-				</p>
+				</div>
 				<!-- IF lastrestart -->
 				<p>
 					[[admin/dashboard:last-restarted-by]]<br />
-					<a href="{config.relative_path}/uid/{lastrestart.uid}"><span class="label label-info">{lastrestart.user.username}</span></a> <span class="timeago" title="{lastrestart.timestampISO}"></span>
+					<a href="{config.relative_path}/uid/{lastrestart.uid}"><span class="badge bg-info">{lastrestart.user.username}</span></a> <span class="timeago" title="{lastrestart.timestampISO}"></span>
 				</p>
 				<!-- ENDIF lastrestart -->
-				<p class="<!-- IF canRestart -->help-block<!-- ELSE -->alert alert-warning<!-- END -->">
+				<p class="<!-- IF canRestart -->form-text<!-- ELSE -->alert alert-warning<!-- END -->">
 					<!-- IF canRestart -->
 					[[admin/dashboard:restart-warning]]
 					<!-- ELSE -->
