@@ -4,11 +4,11 @@
 							<tr class="privilege-table-header">
 								<th class="privilege-filters btn-toolbar" colspan="100">
 									<!-- IF privileges.columnCountGroupOther -->
-									<button type="button" data-filter="19,99" class="btn btn-default pull-right">[[admin/manage/categories:privileges.section-other]]</button>
+									<button type="button" data-filter="19,99" class="btn btn-outline-secondary pull-right">[[admin/manage/categories:privileges.section-other]]</button>
 									<!-- END -->
-									<button type="button" data-filter="16,18" class="btn btn-default pull-right">[[admin/manage/categories:privileges.section-moderation]]</button>
-									<button type="button" data-filter="6,15" class="btn btn-default pull-right">[[admin/manage/categories:privileges.section-posting]]</button>
-									<button type="button" data-filter="3,5" class="btn btn-default pull-right">[[admin/manage/categories:privileges.section-viewing]]</button>
+									<button type="button" data-filter="16,18" class="btn btn-outline-secondary pull-right">[[admin/manage/categories:privileges.section-moderation]]</button>
+									<button type="button" data-filter="6,15" class="btn btn-outline-secondary pull-right">[[admin/manage/categories:privileges.section-posting]]</button>
+									<button type="button" data-filter="3,5" class="btn btn-outline-secondary pull-right">[[admin/manage/categories:privileges.section-viewing]]</button>
 								</th>
 							</tr><tr><!-- zebrastripe reset --></tr>
 							<tr>
@@ -36,7 +36,7 @@
 								</td>
 								<td>
 									<div class="dropdown">
-										<button class="btn btn-default btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+										<button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 											<i class="fa fa-copy"></i>
 										</button>
 										<ul class="dropdown-menu">
@@ -55,20 +55,20 @@
 							<tr>
 								<td colspan="3"></td>
 								<td colspan="{privileges.keys.groups.length}">
-									<div class="btn-toolbar">
-										<button type="button" class="btn btn-default pull-right" data-ajaxify="false" data-action="search.group">
+									<div class="btn-toolbar justify-content-end">
+										<button type="button" class="btn btn-outline-secondary pull-right" data-ajaxify="false" data-action="search.group">
 											<i class="fa fa-users"></i>
 											[[admin/manage/categories:privileges.search-group]]
 										</button>
-										<button type="button" class="btn btn-default pull-right" data-ajaxify="false" data-action="copyPrivilegesFrom">
+										<button type="button" class="btn btn-outline-secondary pull-right" data-ajaxify="false" data-action="copyPrivilegesFrom">
 											<i class="fa fa-copy"></i>
 											[[admin/manage/categories:privileges.copy-from-category]]
 										</button>
-										<button type="button" class="btn btn-default pull-right" data-ajaxify="false" data-action="copyToChildren">
+										<button type="button" class="btn btn-outline-secondary pull-right" data-ajaxify="false" data-action="copyToChildren">
 											<i class="fa fa-copy"></i>
 											[[admin/manage/categories:privileges.copy-to-children]]
 										</button>
-										<button type="button" class="btn btn-default pull-right" data-ajaxify="false" data-action="copyToAll">
+										<button type="button" class="btn btn-outline-secondary pull-right" data-ajaxify="false" data-action="copyToAll">
 											<i class="fa fa-copy"></i>
 											[[admin/manage/categories:privileges.copy-privileges-to-all-categories]]
 										</button>
@@ -87,11 +87,11 @@
 							<tr class="privilege-table-header">
 								<th class="privilege-filters btn-toolbar" colspan="100">
 									<!-- IF privileges.columnCountUserOther -->
-									<button type="button" data-filter="19,99" class="btn btn-default pull-right">[[admin/manage/categories:privileges.section-other]]</button>
+									<button type="button" data-filter="19,99" class="btn btn-outline-secondary pull-right">[[admin/manage/categories:privileges.section-other]]</button>
 									<!-- END -->
-									<button type="button" data-filter="16,18" class="btn btn-default pull-right">[[admin/manage/categories:privileges.section-moderation]]</button>
-									<button type="button" data-filter="6,15" class="btn btn-default pull-right">[[admin/manage/categories:privileges.section-posting]]</button>
-									<button type="button" data-filter="3,5" class="btn btn-default pull-right">[[admin/manage/categories:privileges.section-viewing]]</button>
+									<button type="button" data-filter="16,18" class="btn btn-outline-secondary pull-right">[[admin/manage/categories:privileges.section-moderation]]</button>
+									<button type="button" data-filter="6,15" class="btn btn-outline-secondary pull-right">[[admin/manage/categories:privileges.section-posting]]</button>
+									<button type="button" data-filter="3,5" class="btn btn-outline-secondary pull-right">[[admin/manage/categories:privileges.section-viewing]]</button>
 								</th>
 							</tr><tr><!-- zebrastripe reset --></tr>
 							<tr>
@@ -127,10 +127,12 @@
 							<tr>
 								<td colspan="3"></td>
 								<td colspan="{privileges.keys.users.length}">
-									<button type="button" class="btn btn-default pull-right" data-ajaxify="false" data-action="search.user">
-										<i class="fa fa-user"></i>
-										[[admin/manage/categories:privileges.search-user]]
-									</button>
+									<div class="btn-toolbar justify-content-end"></div>
+										<button type="button" class="btn btn-outline-secondary pull-right" data-ajaxify="false" data-action="search.user">
+											<i class="fa fa-user"></i>
+											[[admin/manage/categories:privileges.search-user]]
+										</button>
+									</td>
 								</td>
 							</tr>
 						</tfoot>

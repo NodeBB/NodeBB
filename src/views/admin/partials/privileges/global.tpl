@@ -5,11 +5,11 @@
 							<tr class="privilege-table-header">
 								<th class="privilege-filters btn-toolbar" colspan="100">
 									<!-- IF privileges.columnCountGroupOther -->
-									<button type="button" data-filter="19,99" class="btn btn-default pull-right">[[admin/manage/categories:privileges.section-other]]</button>
+									<button type="button" data-filter="19,99" class="btn btn-outline-secondary pull-right">[[admin/manage/categories:privileges.section-other]]</button>
 									<!-- END -->
-									<button type="button" data-filter="16,18" class="btn btn-default pull-right">[[admin/manage/categories:privileges.section-moderation]]</button>
-									<button type="button" data-filter="3,8" class="btn btn-default pull-right">[[admin/manage/categories:privileges.section-posting]]</button>
-									<button type="button" data-filter="9,15" class="btn btn-default pull-right">[[admin/manage/categories:privileges.section-viewing]]</button>
+									<button type="button" data-filter="16,18" class="btn btn-outline-secondary pull-right">[[admin/manage/categories:privileges.section-moderation]]</button>
+									<button type="button" data-filter="3,8" class="btn btn-outline-secondary pull-right">[[admin/manage/categories:privileges.section-posting]]</button>
+									<button type="button" data-filter="9,15" class="btn btn-outline-secondary pull-right">[[admin/manage/categories:privileges.section-viewing]]</button>
 								</th>
 							</tr><tr><!-- zebrastripe reset --></tr>
 							{{{ end }}}
@@ -46,8 +46,8 @@
 							<tr>
 								<td colspan="3"></td>
 								<td colspan="{privileges.keys.groups.length}">
-									<div class="btn-toolbar">
-										<button type="button" class="btn btn-default pull-right" data-ajaxify="false" data-action="search.group">
+									<div class="btn-toolbar justify-content-end">
+										<button type="button" class="btn btn-outline-secondary pull-right" data-ajaxify="false" data-action="search.group">
 											<i class="fa fa-users"></i>
 											[[admin/manage/categories:privileges.search-group]]
 										</button>
@@ -67,11 +67,11 @@
 							<tr class="privilege-table-header">
 								<th class="privilege-filters btn-toolbar" colspan="100">
 									<!-- IF privileges.columnCountUserOther -->
-									<button type="button" data-filter="19,99" class="btn btn-default pull-right">[[admin/manage/categories:privileges.section-other]]</button>
+									<button type="button" data-filter="19,99" class="btn btn-outline-secondary pull-right">[[admin/manage/categories:privileges.section-other]]</button>
 									<!-- END -->
-									<button type="button" data-filter="16,18" class="btn btn-default pull-right">[[admin/manage/categories:privileges.section-moderation]]</button>
-									<button type="button" data-filter="3,8" class="btn btn-default pull-right">[[admin/manage/categories:privileges.section-posting]]</button>
-									<button type="button" data-filter="9,15" class="btn btn-default pull-right">[[admin/manage/categories:privileges.section-viewing]]</button>
+									<button type="button" data-filter="16,18" class="btn btn-outline-secondary pull-right">[[admin/manage/categories:privileges.section-moderation]]</button>
+									<button type="button" data-filter="3,8" class="btn btn-outline-secondary pull-right">[[admin/manage/categories:privileges.section-posting]]</button>
+									<button type="button" data-filter="9,15" class="btn btn-outline-secondary pull-right">[[admin/manage/categories:privileges.section-viewing]]</button>
 								</th>
 							</tr><tr><!-- zebrastripe reset --></tr>
 							{{{ end }}}
@@ -108,10 +108,12 @@
 							<tr>
 								<td colspan="3"></td>
 								<td colspan="{privileges.keys.users.length}">
-									<button type="button" class="btn btn-default pull-right" data-ajaxify="false" data-action="search.user">
-										<i class="fa fa-user"></i>
-										[[admin/manage/categories:privileges.search-user]]
-									</button>
+									<div class="btn-toolbar justify-content-end">
+										<button type="button" class="btn btn-outline-secondary pull-right" data-ajaxify="false" data-action="search.user">
+											<i class="fa fa-user"></i>
+											[[admin/manage/categories:privileges.search-user]]
+										</button>
+									</div>
 								</td>
 							</tr>
 						</tfoot>
