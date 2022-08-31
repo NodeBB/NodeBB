@@ -1,11 +1,53 @@
 <div class="row manage-users">
 	<div class="col-lg-12">
-		<div class="clearfix">
+		<div class="d-flex justify-content-between">
+			<div class="row">
+				<div class="col">
+					<div class="input-group">
+						<input type="text" class="form-control" placeholder="[[global:search]]" id="user-search" value="{query}">
+						<span class="input-group-text search-button"><i class="fa fa-search"></i></span>
+					</div>
+				</div>
+				<div class="col">
+					<select id="user-search-by" class="form-select">
+						<option value="username" {{{if searchBy_username}}}selected{{{end}}}>[[admin/manage/users:search.username]]</option>
+						<option value="email" {{{if searchBy_email}}}selected{{{end}}}>[[admin/manage/users:search.email]]</option>
+						<option value="uid" {{{if searchBy_uid}}}selected{{{end}}}>[[admin/manage/users:search.uid]]</option>
+						<option value="ip" {{{if searchBy_ip}}}selected{{{end}}}>[[admin/manage/users:search.ip]]</option>
+					</select>
+				</div>
+				<div class="col">
+					<select id="results-per-page" class="form-select">
+						<option value="50">[[admin/manage/users:50-per-page]]</option>
+						<option value="100">[[admin/manage/users:100-per-page]]</option>
+						<option value="250">[[admin/manage/users:250-per-page]]</option>
+						<option value="500">[[admin/manage/users:500-per-page]]</option>
+					</select>
+				</div>
+				<div class="col">
+					<div class="btn-group" id="filter-by">
+						<button type="button" class="btn btn-link dropdown-toggle" data-bs-toggle="dropdown">
+							[[admin/manage/users:filter-by]] <span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu" role="menu">
+							<li data-filter-by="unverified" role="presentation">
+								<a class="dropdown-item" role="menuitem" href="#"><i class="fa fa-fw {{{ if filterBy_unverified }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.unvalidated]]</a>
+							</li>
+							<li data-filter-by="verified" role="presentation">
+								<a class="dropdown-item" role="menuitem" href="#"><i class="fa fa-fw {{{ if filterBy_verified }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.validated]]</a>
+							</li>
+							<li data-filter-by="banned" role="presentation">
+								<a class="dropdown-item" role="menuitem" href="#"><i class="fa fa-fw {{{ if filterBy_banned }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.banned]]</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
 
-			<div class="pull-right">
+			<div class="">
 				<div class="btn-group">
 					<button class="btn btn-primary dropdown-toggle" id="action-dropdown" data-bs-toggle="dropdown" type="button" disabled="disabled">[[admin/manage/users:edit]] <span class="caret"></span></button>
-					<ul class="dropdown-menu dropdown-menu-right">
+					<ul class="dropdown-menu dropdown-menu-end">
 						<li><a href="#" class="dropdown-item validate-email"><i class="fa fa-fw fa-check"></i> [[admin/manage/users:validate-email]]</a></li>
 						<li><a href="#" class="dropdown-item send-validation-email"><i class="fa fa-fw fa-mail-forward"></i> [[admin/manage/users:send-validation-email]]</a></li>
 						<li><a href="#" class="dropdown-item password-reset-email"><i class="fa fa-fw fa-key"></i> [[admin/manage/users:password-reset-email]]</a></li>
@@ -23,50 +65,14 @@
 					</ul>
 				</div>
 				<div class="btn-group">
-					<button class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown" type="button"><i class="fa fa-ellipsis-v"></i></button>
-					<ul class="dropdown-menu dropdown-menu-right">
+					<button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" type="button"><i class="fa fa-ellipsis-v"></i></button>
+					<ul class="dropdown-menu dropdown-menu-end">
 						<li><a class="dropdown-item" href="#" data-action="create">[[admin/manage/users:create]]</a></li>
 						{{{ if showInviteButton }}}<li><a class="dropdown-item" href="#" component="user/invite">[[admin/manage/users:invite]]</a></li>{{{ end }}}
 						<li><a target="_blank" href="#" class="dropdown-item export-csv">[[admin/manage/users:download-csv]]</a></li>
 					</ul>
 				</div>
 			</div>
-
-			<form class="form-inline pull-left">
-				<div class="input-group">
-					<input type="text" class="form-control" placeholder="[[global:search]]" id="user-search" value="{query}">
-					<span class="input-group-addon search-button"><i class="fa fa-search"></i></span>
-				</div>
-				<select id="user-search-by" class="form-control">
-					<option value="username" {{{if searchBy_username}}}selected{{{end}}}>[[admin/manage/users:search.username]]</option>
-					<option value="email" {{{if searchBy_email}}}selected{{{end}}}>[[admin/manage/users:search.email]]</option>
-					<option value="uid" {{{if searchBy_uid}}}selected{{{end}}}>[[admin/manage/users:search.uid]]</option>
-					<option value="ip" {{{if searchBy_ip}}}selected{{{end}}}>[[admin/manage/users:search.ip]]</option>
-				</select>
-				<select id="results-per-page" class="form-control">
-					<option value="50">[[admin/manage/users:50-per-page]]</option>
-					<option value="100">[[admin/manage/users:100-per-page]]</option>
-					<option value="250">[[admin/manage/users:250-per-page]]</option>
-					<option value="500">[[admin/manage/users:500-per-page]]</option>
-				</select>
-
-				<div class="btn-group" id="filter-by">
-					<button type="button" class="btn btn-link dropdown-toggle" data-bs-toggle="dropdown">
-						[[admin/manage/users:filter-by]] <span class="caret"></span>
-					</button>
-					<ul class="dropdown-menu" role="menu">
-						<li data-filter-by="unverified" role="presentation">
-							<a class="dropdown-item" role="menuitem" href="#"><i class="fa fa-fw {{{ if filterBy_unverified }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.unvalidated]]</a>
-						</li>
-						<li data-filter-by="verified" role="presentation">
-							<a class="dropdown-item" role="menuitem" href="#"><i class="fa fa-fw {{{ if filterBy_verified }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.validated]]</a>
-						</li>
-						<li data-filter-by="banned" role="presentation">
-							<a class="dropdown-item" role="menuitem" href="#"><i class="fa fa-fw {{{ if filterBy_banned }}}fa-check{{{end}}}"></i>[[admin/manage/users:pills.banned]]</a>
-						</li>
-					</ul>
-				</div>
-			</form>
 		</div>
 
 		<hr/>
@@ -80,9 +86,9 @@
 		</div>
 
 		<!-- IF inactive -->
-		<a href="{config.relative_path}/admin/manage/users/inactive?months=3&resultsPerPage={resultsPerPage}" class="btn btn-default">[[admin/manage/users:inactive.3-months]]</a>
-		<a href="{config.relative_path}/admin/manage/users/inactive?months=6&resultsPerPage={resultsPerPage}" class="btn btn-default">[[admin/manage/users:inactive.6-months]]</a>
-		<a href="{config.relative_path}/admin/manage/users/inactive?months=12&resultsPerPage={resultsPerPage}" class="btn btn-default">[[admin/manage/users:inactive.12-months]]</a>
+		<a href="{config.relative_path}/admin/manage/users/inactive?months=3&resultsPerPage={resultsPerPage}" class="btn btn-outline-secondary">[[admin/manage/users:inactive.3-months]]</a>
+		<a href="{config.relative_path}/admin/manage/users/inactive?months=6&resultsPerPage={resultsPerPage}" class="btn btn-outline-secondary">[[admin/manage/users:inactive.6-months]]</a>
+		<a href="{config.relative_path}/admin/manage/users/inactive?months=12&resultsPerPage={resultsPerPage}" class="btn btn-outline-secondary">[[admin/manage/users:inactive.12-months]]</a>
 		<!-- ENDIF inactive -->
 
 		<div class="table-responsive">
