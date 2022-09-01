@@ -3,7 +3,6 @@
 'use strict';
 
 const $ = require('jquery');
-const zxcvbn = require('zxcvbn');
 
 const utils = { ...require('./utils.common') };
 
@@ -57,7 +56,7 @@ utils.isMobile = function () {
 	});
 };
 
-utils.assertPasswordValidity = (password) => {
+utils.assertPasswordValidity = (password, zxcvbn) => {
 	// More checks on top of basic utils.isPasswordValid()
 	if (!utils.isPasswordValid(password)) {
 		throw new Error('[[user:change_password_error]]');

@@ -23,5 +23,9 @@
 	"flags.limit-per-target-placeholder": "Alapértelmezett: 0",
 	"flags.limit-per-target-help": "Amikor egy hozzászólás vagy felhasználó több megjelölést kap, akkor minden megjelölés &quot;jelentésnek&quot; számít és hozzáadódik az eredeti megjelöléshez. Adj meg 0-tól eltérő értéket egy maximális jelölési szám beállításához.",
   	"flags.auto-flag-on-downvote-threshold": "Number of downvotes to auto flag posts (Set to 0 to disable, default: 0)",
-	"flags.auto-resolve-on-ban": "A felhasználó összes megjelölésének feloldása, amikor kitiltásra kerül"
+	"flags.auto-resolve-on-ban": "A felhasználó összes megjelölésének feloldása, amikor kitiltásra kerül",
+	"flags.action-on-resolve": "Do the following when a flag is resolved",
+	"flags.action-on-reject": "Do the following when a flag is rejected",
+	"flags.action.nothing": "Do nothing",
+	"flags.action.rescind": "Rescind the notification send to moderators/administrators"
 }

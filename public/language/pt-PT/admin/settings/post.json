@@ -51,6 +51,7 @@
 	"signature.disable": "Desativar assinaturas",
 	"signature.no-links": "Desativar links nas assinaturas",
 	"signature.no-images": "Desativar imagens nas assinaturas",
+	"signature.hide-duplicates": "Hide duplicate signatures in topics",
 	"signature.max-length": "Comprimento Máximo da Assinatura",
 	"composer": "Definições do Editor",
 	"composer-help": "The following settings govern the functionality and/or appearance of the post composer shown\n\t\t\t\tto users when they create new topics, or reply to existing topics.",

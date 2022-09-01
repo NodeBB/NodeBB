@@ -51,6 +51,7 @@
 	"signature.disable": "Disable signatures",
 	"signature.no-links": "Disable links in signatures",
 	"signature.no-images": "Disable images in signatures",
+	"signature.hide-duplicates": "Hide duplicate signatures in topics",
 	"signature.max-length": "Maximum Signature Length",
 	"composer": "Composer Settings",
 	"composer-help": "The following settings govern the functionality and/or appearance of the post composer shown\n\\t\\t\\t\\tto users when they create new topics, or reply to existing topics.",

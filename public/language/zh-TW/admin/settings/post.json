@@ -51,6 +51,7 @@
 	"signature.disable": "禁用簽名",
 	"signature.no-links": "禁用簽名中的連結",
 	"signature.no-images": "禁用簽名中的圖片",
+	"signature.hide-duplicates": "Hide duplicate signatures in topics",
 	"signature.max-length": "簽名字數上限",
 	"composer": "編輯器設定",
 	"composer-help": "以下設定控制所示後期編輯器的功能和/或外觀\n\t\t\t\t當使用者建立新主題或回覆現有主題時。",

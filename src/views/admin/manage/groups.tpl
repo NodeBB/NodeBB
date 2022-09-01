@@ -21,7 +21,7 @@
 				<!-- BEGIN groups -->
 				<tr data-groupname="{groups.displayName}" data-name-encoded="{groups.nameEncoded}">
 					<td>
-						<a href="{config.relative_path}/admin/manage/groups/{groups.nameEncoded}">{groups.displayName}</a> ({groups.memberCount})
+						<a href="{config.relative_path}/admin/manage/groups/{groups.slug}">{groups.displayName}</a> ({groups.memberCount})
 						<p class="description">{groups.description}</p>
 					</td>
 					<td>

@@ -51,6 +51,7 @@
 	"signature.disable": "Tắt chữ ký",
 	"signature.no-links": "Tắt liên kết trong chữ ký",
 	"signature.no-images": "Tắt ảnh trong chữ ký",
+	"signature.hide-duplicates": "Ẩn chữ ký trùng lặp trong các chủ đề",
 	"signature.max-length": "Chữ Ký Dài Tối Đa",
 	"composer": "Cài Đặt Trình Biên Soạn",
 	"composer-help": "Các cài đặt sau chi phối chức năng và / hoặc giao diện hiển thị của trình soạn bài\n\t\t\t\tngười dùng khi họ tạo chủ đề mới hoặc trả lời các chủ đề hiện có.",

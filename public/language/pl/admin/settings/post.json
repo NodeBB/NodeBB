@@ -51,6 +51,7 @@
 	"signature.disable": "Wyłącz sygnatury",
 	"signature.no-links": "Wyłącz odnośniki w sygnaturach",
 	"signature.no-images": "Wyłącz obrazy w sygnaturach",
+	"signature.hide-duplicates": "Hide duplicate signatures in topics",
 	"signature.max-length": "Maksymalna długość sygnatury",
 	"composer": "Ustawienia okna pisania",
 	"composer-help": "Następujące ustawienia zarządzają funkcjonalnością oraz/lub wyglądem okna pisania postów wyświetlanego\n\t\t\t\tużytkownikom, gdy tworzą nowe tematy lub odpowiadają w istniejących.",

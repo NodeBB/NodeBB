@@ -1,0 +1,85 @@
+head:
+  tags:
+    - users
+  summary: Check if a user's export exists
+  parameters:
+    - in: path
+      name: uid
+      schema:
+        type: integer
+      required: true
+      description: uid of the user to make the query for
+      example: 1
+    - in: path
+      name: type
+      schema:
+        type: string
+      required: true
+      description: The type of export to query
+      example: posts
+  responses:
+    '204':
+      description: Exported file found.
+    '404':
+      description: Exported file not found — this could be because an export has never been generated for this user.
+get:
+  tags:
+    - users
+  summary: Download a user's exported data
+  parameters:
+    - in: path
+      name: uid
+      schema:
+        type: integer
+      required: true
+      description: uid of the user to make the query for
+      example: 1
+    - in: path
+      name: type
+      schema:
+        type: string
+      required: true
+      description: The type of export to download
+      example: posts
+  responses:
+    '200':
+      description: A download containing the requested exported data
+    '404':
+      description: Exported file not found — this could be because an export has never been generated for this user.
+post:
+  tags:
+    - users
+  summary: Generate a user export
+  description: |
+    This operation generates a user export file for later download.
+    It will return immediately with the `202 Accepted` response code, meaning the request was accepted for processing.
+    The expected behaviour is for the client to then poll the corresponding `HEAD` method until it returns a `204 No Content`
+    (or if awaiting a new export, for the `Last-Modified` or `ETag` header to change)
+    at which point the `GET` method can be called for download.
+  parameters:
+    - in: path
+      name: uid
+      schema:
+        type: integer
+      required: true
+      description: uid of the user to make the query for
+      example: 1
+    - in: path
+      name: type
+      schema:
+        type: string
+      required: true
+      description: The type of export to download
+      example: posts
+  responses:
+    '202':
+      description: Successfully started generating the requested user export
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object

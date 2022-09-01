@@ -88,6 +88,7 @@ topicsController.get = async function getTopic(req, res, next) {
 	topicData['reputation:disabled'] = meta.config['reputation:disabled'];
 	topicData['downvote:disabled'] = meta.config['downvote:disabled'];
 	topicData['feeds:disableRSS'] = meta.config['feeds:disableRSS'] || 0;
+	topicData['signatures:hideDuplicates'] = meta.config['signatures:hideDuplicates'];
 	topicData.bookmarkThreshold = meta.config.bookmarkThreshold;
 	topicData.necroThreshold = meta.config.necroThreshold;
 	topicData.postEditDuration = meta.config.postEditDuration;

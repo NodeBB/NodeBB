@@ -14,6 +14,8 @@ define('forum/topic/posts', [
 ], function (pagination, infinitescroll, postTools, images, navigator, components, translator, hooks, helpers) {
 	const Posts = { };
 
+	Posts.signaturesShown = {};
+
 	Posts.onNewPost = function (data) {
 		if (
 			!data ||
@@ -282,6 +284,7 @@ define('forum/topic/posts', [
 	Posts.onTopicPageLoad = function (posts) {
 		handlePrivateUploads(posts);
 		images.wrapImagesInLinks(posts);
+		hideDuplicateSignatures(posts);
 		Posts.showBottomPostBar();
 		posts.find('[component="post/content"] img:not(.not-responsive)').addClass('img-responsive');
 		Posts.addBlockquoteEllipses(posts);
@@ -351,6 +354,20 @@ define('forum/topic/posts', [
 				});
 			}
 		});
+	}
+
+	function hideDuplicateSignatures(posts) {
+		if (ajaxify.data['signatures:hideDuplicates']) {
+			posts.each((index, el) => {
+				const signatureEl = $(el).find('[component="post/signature"]');
+				const uid = signatureEl.attr('data-uid');
+				if (Posts.signaturesShown[uid]) {
+					signatureEl.addClass('hidden');
+				} else {
+					Posts.signaturesShown[uid] = true;
+				}
+			});
+		}
 	}
 
 	function removeNecroPostMessages(removedPostEls) {
