@@ -12,7 +12,6 @@
 @import "./manage/tags";
 @import "./manage/groups";
 // @import "./manage/registration";
-// @import "./manage/admins-mods";
 // @import "./appearance/customise";
 // @import "./appearance/themes";
 // @import "./extend/plugins";
@@ -41,20 +40,19 @@ body {
 	background: #fff;
 	font-size: 14px;
 
-h1 {
-	font-size: 35px;
-	margin-bottom: 50px;
-}
+	h1 {
+		font-size: 35px;
+		margin-bottom: 50px;
+	}
 
-label {
-	font-weight: 700;
-	height: auto;
-}
+	label {
+		font-weight: 700;
+		height: auto;
+	}
 
-
-.btn {
-	border-radius: 0;
-}
+	.btn {
+		border-radius: 0;
+	}
 
 	// .floating-button can either be a container or the button itself
 	.floating-button {
@@ -109,7 +107,7 @@ label {
 		@include box-header-font;
 	}
 
-	.card:not([data-container-html]) {
+	.dashboard .card:not([data-container-html]) {
 		background-color: #FFF;
 		box-sizing: border-box;
 		border-radius: 3px;

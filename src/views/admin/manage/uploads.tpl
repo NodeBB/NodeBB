@@ -2,10 +2,10 @@
 <div class="clearfix">
 	<div class="pull-right">
 		<div class="btn-group">
-			<button id="new-folder" class="btn-primary"><i class="fa fa-folder"></i> [[admin/manage/uploads:new-folder]]</button>
+			<button id="new-folder" class="btn btn-primary"><i class="fa fa-folder"></i> [[admin/manage/uploads:new-folder]]</button>
 		</div>
 		<div class="btn-group">
-			<button id="upload" class="btn-success"><i class="fa fa-upload"></i> [[global:upload]]</button>
+			<button id="upload" class="btn btn-success"><i class="fa fa-upload"></i> [[global:upload]]</button>
 		</div>
 	</div>
 </div>
