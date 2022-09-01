@@ -1,16 +1,16 @@
 <!-- IMPORT admin/partials/settings/header.tpl -->
 
 <div class="row">
-	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/languages:language-settings]]</div>
-	<div class="col-sm-10 col-xs-12">
+	<div class="col-sm-2 col-12 settings-header">[[admin/settings/languages:language-settings]]</div>
+	<div class="col-sm-10 col-12">
 		<p>
 			[[admin/settings/languages:description]]
 		</p>
 
-		<form class="row">
+		<form class="row mb-4">
 			<div class="form-group col-sm-6">
-				<label for="language">[[admin/settings/languages:default-language]]</label>
-				<select id="language" data-field="defaultLang" class="form-control">
+				<label class="form-label" for="language">[[admin/settings/languages:default-language]]</label>
+				<select id="language" data-field="defaultLang" class="form-select">
 					<!-- BEGIN languages -->
 					<option value="{languages.code}" <!-- IF languages.selected -->selected<!-- ENDIF languages.selected -->>{languages.name} ({languages.code})</option>
 					<!-- END languages -->

@@ -1,8 +1,4 @@
 .settings {
-	> .row {
-		margin-bottom: 30px;
-	}
-
 	.section-content {
 		border-left: 3px solid $primary;
 
@@ -11,10 +7,6 @@
 			font-size: 16px;
 			padding-left: 20px;
 		}
-	}
-
-	[data-action="upload"][type="text"] {
-		width: 95%;
 	}
 
 	.bootstrap-tagsinput {

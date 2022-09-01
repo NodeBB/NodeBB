@@ -1,5 +1,5 @@
 <div class="settings">
-	<div class="row">
+	<div class="row mb-4">
 		<div class="col-sm-2 col-xs-12 content-header">
 			[[admin/admin:settings-header-contents]]
 		</div>
