@@ -129,6 +129,8 @@
         "sortablejs": "1.15.0",
         "spdx-license-list": "6.6.0",
         "spider-detector": "2.0.0",
+        "textcomplete": "0.18.2",
+        "textcomplete.contenteditable": "0.1.1",
         "timeago": "1.6.7",
         "tinycon": "0.6.8",
         "toobusy-js": "0.5.1",
