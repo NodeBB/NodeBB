@@ -141,7 +141,7 @@
 				<div id="acp-search" >
 					<div class="dropdown" data-text="[[admin/menu:search.placeholder]]">
 						<input type="text" data-bs-toggle="dropdown" class="form-control">
-						<ul class="dropdown-menu dropdown-menu-right state-start-typing" role="menu">
+						<ul class="dropdown-menu dropdown-menu-end state-start-typing" role="menu">
 							<li role="presentation" class="no-results">
 								<a class="dropdown-item">[[admin/menu:search.no-results]]</a>
 							</li>

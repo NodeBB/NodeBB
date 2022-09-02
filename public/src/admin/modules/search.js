@@ -33,7 +33,7 @@ define('admin/modules/search', ['mousetrap', 'alerts'], function (mousetrap, ale
 			);
 
 			return '<li role="presentation" class="result">' +
-				'<a role= "menuitem" href= "' + config.relative_path + '/' + namespace + '" >' +
+				'<a class="dropdown-item" role="menuitem" href= "' + config.relative_path + '/' + namespace + '" >' +
 					title +
 					'<br>' + (!results ? '' :
 				('<small><code>' +

@@ -75,10 +75,8 @@
 			padding: 10px 20px;
 			width: 250px;
 			height: 44px;
-			background-color: rgba(0, 0, 0, 0.2);
 			border-radius: 3px;
 			box-shadow: none;
-			// @include transition(.4s ease background-color);
 			transition: .4s ease background-color;
 
 			&:focus {
