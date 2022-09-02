@@ -24,6 +24,10 @@
 
 		li {
 			display: inline-block;
+			>a:hover, >a:focus {
+                color: $gray-300;
+                background-color: $gray-700;
+            }
 		}
 	}
 

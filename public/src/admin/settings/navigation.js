@@ -55,16 +55,20 @@ define('admin/settings/navigation', [
 
 	function onSelect() {
 		const clickedIndex = $(this).attr('data-index');
-		$('#active-navigation li').removeClass('active');
-		$(this).addClass('active');
+		selectIndex(clickedIndex);
+		return false;
+	}
 
-		const detailsForm = $('#enabled').children('[data-index="' + clickedIndex + '"]');
+	function selectIndex(index) {
+		$('#active-navigation li').removeClass('active');
+		$('#active-navigation [data-index="' + index + '"]').addClass('active');
+
+		const detailsForm = $('#enabled').children('[data-index="' + index + '"]');
 		$('#enabled li').addClass('hidden');
 
 		if (detailsForm.length) {
 			detailsForm.removeClass('hidden');
 		}
-		return false;
 	}
 
 	function drop(ev, ui) {
@@ -80,20 +84,32 @@ define('admin/settings/navigation', [
 		data.title = translator.escape(data.title);
 		data.text = translator.escape(data.text);
 		data.groups = ajaxify.data.groups;
-		Benchpress.parse('admin/settings/navigation', 'navigation', { navigation: [data] }, function (li) {
-			translator.translate(li, function (li) {
-				li = $(translator.unescape(li));
-				el.after(li);
-				el.remove();
+
+		const renderNav = new Promise((resolve) => {
+			Benchpress.parse('admin/settings/navigation', 'navigation', { navigation: [data] }, function (li) {
+				translator.translate(li, function (li) {
+					li = $(translator.unescape(li));
+					el.after(li);
+					el.remove();
+					resolve();
+				});
 			});
 		});
-		Benchpress.parse('admin/settings/navigation', 'enabled', { enabled: [data] }, function (li) {
-			translator.translate(li, function (li) {
-				li = $(translator.unescape(li));
-				$('#enabled').append(li);
-				componentHandler.upgradeDom();
+		const renderForm = new Promise((resolve) => {
+			Benchpress.parse('admin/settings/navigation', 'enabled', { enabled: [data] }, function (li) {
+				translator.translate(li, function (li) {
+					li = $(translator.unescape(li));
+					$('#enabled').append(li);
+					componentHandler.upgradeDom();
+					resolve();
+				});
 			});
 		});
+
+		Promise.all([
+			renderNav,
+			renderForm,
+		]).then(() => selectIndex(data.index));
 	}
 
 	function save() {
