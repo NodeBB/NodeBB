@@ -1,3 +1,23 @@
+#### v2.5.1 (2022-09-02)
+
+##### Chores
+
+*  incrementing version number - v2.5.0 (01d276cb)
+*  update changelog for v2.5.0 (1076285d)
+*  incrementing version number - v2.4.5 (dd3e1a28)
+*  incrementing version number - v2.4.4 (d5525c87)
+*  incrementing version number - v2.4.3 (9c647c6c)
+*  incrementing version number - v2.4.2 (3aa7b855)
+*  incrementing version number - v2.4.1 (60cbd148)
+*  incrementing version number - v2.4.0 (4834cde3)
+*  incrementing version number - v2.3.1 (d2425942)
+*  incrementing version number - v2.3.0 (046ea120)
+
+##### Bug Fixes
+
+*  missing escape on ACP category backgroundImage property (67cb7035)
+* **deps:**  temporarily add back old textcomplete dependencies so emoji plugin can import them (61d1e9e0)
+
 #### v2.5.0 (2022-09-01)
 
 ##### Breaking Changes
