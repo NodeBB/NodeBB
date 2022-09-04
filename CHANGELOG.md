@@ -1,3 +1,31 @@
+#### v2.5.2 (2022-09-04)
+
+##### Chores
+
+*  incrementing version number - v2.5.1 (ce3aa950)
+*  update changelog for v2.5.1 (2b2fd4f3)
+*  incrementing version number - v2.5.0 (01d276cb)
+*  incrementing version number - v2.4.5 (dd3e1a28)
+*  incrementing version number - v2.4.4 (d5525c87)
+*  incrementing version number - v2.4.3 (9c647c6c)
+*  incrementing version number - v2.4.2 (3aa7b855)
+*  incrementing version number - v2.4.1 (60cbd148)
+*  incrementing version number - v2.4.0 (4834cde3)
+*  incrementing version number - v2.3.1 (d2425942)
+*  incrementing version number - v2.3.0 (046ea120)
+
+##### Bug Fixes
+
+*  registration regression, closes #10875 (f6f37dc1)
+
+##### Other Changes
+
+*  fix lint error (b45e2413)
+
+##### Tests
+
+*  disable nbbpm test temporarily (1dc79d76)
+
 #### v2.5.1 (2022-09-02)
 
 ##### Chores
