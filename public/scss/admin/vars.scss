@@ -19,5 +19,25 @@
 $font-family-system: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 $font-family-sans-serif: font-family-system;
 
-
 $light: #f5f5f5;
+
+// options
+$enable-gradients: false;
+// no caret on dropdown-toggle
+$enable-caret: false;
+
+$font-size-base:            1rem !default;
+$font-weight-base:          400 !default;
+
+// Buttons
+$input-btn-padding-y:       .4rem !default;
+$input-btn-padding-x:       1rem !default;
+
+// Forms
+
+$input-padding-y:                0.4rem !default;
+$input-padding-x:                0 !default;
+$input-padding-y-sm:             0 !default;
+$input-padding-x-sm:             0 !default;
+$input-padding-y-lg:             ($font-size-base * 1.25) !default;
+$input-padding-x-lg:             0 !default;

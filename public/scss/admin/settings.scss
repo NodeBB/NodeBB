@@ -6,6 +6,15 @@
 			list-style-type: none;
 			font-size: 16px;
 			padding-left: 20px;
+			li:not(:last-child) {
+				margin-bottom: 5px;
+			}
+			a {
+				text-decoration: none;
+				&:hover{
+					text-decoration: underline;
+				}
+			}
 		}
 	}
 

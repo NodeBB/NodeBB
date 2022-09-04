@@ -1,6 +1,4 @@
-// @import "./paper/variables"; // TODO: bootwatch paper doesnt exist in 5.x
-// @import "./paper/bootswatch"; // TODO: bootwatch paper doesnt exist in 5.x
- @import "./mixins";
+@import "./mixins";
 
 @import "./header";
 @import "./mobile";
@@ -51,6 +49,13 @@ body {
 
 	.btn {
 		border-radius: 0;
+	}
+	.btn-outline-secondary {
+		color: $gray-700;
+		box-shadow: 0 1px 4px rgba(0, 0, 0, .4) !important;
+		&:hover {
+			background-color: $gray-200 !important;
+		}
 	}
 
 	// .floating-button can either be a container or the button itself
