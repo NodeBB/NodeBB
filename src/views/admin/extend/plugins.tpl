@@ -3,7 +3,7 @@
 {{{ end }}}
 <ul class="nav nav-pills">
 	<li>
-		<a href="#trending" data-toggle="tab" class="hidden">
+		<a href="#trending" data-toggle="tab">
 			[[admin/extend/plugins:trending]]
 			<i class="fa fa-star"></i>
 		</a>
