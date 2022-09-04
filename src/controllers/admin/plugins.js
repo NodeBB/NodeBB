@@ -11,7 +11,8 @@ pluginsController.get = async function (req, res) {
 	const [compatible, all, trending] = await Promise.all([
 		getCompatiblePlugins(),
 		getAllPlugins(),
-		plugins.listTrending(),
+		Promise.resolve([]),
+		//plugins.listTrending(),
 	]);
 
 	const compatiblePkgNames = compatible.map(pkgData => pkgData.name);
