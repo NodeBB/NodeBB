@@ -12,7 +12,7 @@ pluginsController.get = async function (req, res) {
 		getCompatiblePlugins(),
 		getAllPlugins(),
 		Promise.resolve([]),
-		//plugins.listTrending(),
+		// plugins.listTrending(),
 	]);
 
 	const compatiblePkgNames = compatible.map(pkgData => pkgData.name);
