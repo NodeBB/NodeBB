@@ -2,7 +2,7 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<button type="button" class="close" data-bs-dismiss="modal" aria-hidden="true">×</button>
 				<h3 id="crop-picture">[[user:crop_picture]]</h3>
 			</div>
 			<div class="modal-body">
@@ -30,7 +30,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+				<button class="btn btn-default" data-bs-dismiss="modal" aria-hidden="true">Close</button>
 				<button class="btn btn-primary upload-btn <!-- IF !allowSkippingCrop -->hidden<!-- ENDIF !allowSkippingCrop -->">[[user:upload_picture]]</button>
 				<button class="btn btn-primary crop-btn">[[user:upload_cropped_picture]]</button>
 			</div>

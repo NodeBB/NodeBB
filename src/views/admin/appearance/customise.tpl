@@ -1,12 +1,12 @@
 <div id="customise" class="customise">
-	<ul class="nav nav-pills">
-		<li class="active"><a href="#custom-css" data-toggle="tab">[[admin/appearance/customise:custom-css]]</a></li>
-		<li><a href="#custom-js" data-toggle="tab">[[admin/appearance/customise:custom-js]]</a></li>
-		<li><a href="#custom-header" data-toggle="tab">[[admin/appearance/customise:custom-header]]</a></li>
+	<ul class="nav nav-pills mb-3">
+		<li class="nav-item"><a class="nav-link active" href="#custom-css" data-bs-toggle="tab">[[admin/appearance/customise:custom-css]]</a></li>
+		<li class="nav-item"><a class="nav-link" href="#custom-js" data-bs-toggle="tab">[[admin/appearance/customise:custom-js]]</a></li>
+		<li class="nav-item"><a class="nav-link" href="#custom-header" data-bs-toggle="tab">[[admin/appearance/customise:custom-header]]</a></li>
 	</ul>
-	<br />
+
 	<div class="tab-content">
-		<div class="tab-pane fade active in" id="custom-css">
+		<div class="tab-pane fade show active" id="custom-css">
 			<p>
 				[[admin/appearance/customise:custom-css.description]]
 			</p>
@@ -15,7 +15,7 @@
 
 			<br />
 			<form class="form">
-				<div class="form-group">
+				<div class="mb-3">
 					<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="useCustomCSS">
 						<input class="mdl-switch__input" id="useCustomCSS" type="checkbox" data-field="useCustomCSS" />
 						<span class="mdl-switch__label">[[admin/appearance/customise:custom-css.enable]]</span>
@@ -33,7 +33,7 @@
 
 			<br />
 			<form class="form">
-				<div class="form-group">
+				<div class="mb-3">
 					<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="useCustomJS">
 						<input class="mdl-switch__input" id="useCustomJS" type="checkbox" data-field="useCustomJS" />
 						<span class="mdl-switch__label">[[admin/appearance/customise:custom-js.enable]]</span>
@@ -52,7 +52,7 @@
 
 			<br />
 			<form class="form">
-				<div class="form-group">
+				<div class="mb-3">
 					<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="useCustomHTML">
 						<input class="mdl-switch__input" id="useCustomHTML" type="checkbox" data-field="useCustomHTML" />
 						<span class="mdl-switch__label">[[admin/appearance/customise:custom-header.enable]]</span>
@@ -62,7 +62,7 @@
 		</div>
 
 		<form class="form">
-			<div class="form-group">
+			<div class="mb-3">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="enableLiveReload">
 					<input class="mdl-switch__input" id="enableLiveReload" type="checkbox" data-field="enableLiveReload" checked />
 					<span class="mdl-switch__label">

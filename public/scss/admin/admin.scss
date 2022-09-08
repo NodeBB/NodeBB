@@ -10,10 +10,9 @@
 @import "./manage/tags";
 @import "./manage/groups";
 @import "./appearance/customise";
-// @import "./appearance/themes";
-// @import "./extend/plugins";
-// @import "./extend/rewards";
-// @import "./extend/widgets";
+@import "./extend/plugins";
+@import "./extend/rewards";
+@import "./extend/widgets";
 // @import "./advanced/database";
 // @import "./advanced/events";
 // @import "./advanced/logs";
@@ -118,7 +117,7 @@ body {
 		box-shadow: 0px 1px 3px 0px rgba(165, 165, 165, 0.75);
 		margin-bottom: 20px;
 
-		.card-header {
+		>.card-header {
 			@include acp-panel-heading;
 			background: #fefefe;
 			color: #333;
@@ -285,4 +284,14 @@ body {
 
 form small {
 	color: $gray-700;
+}
+
+.caret {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    vertical-align: middle;
+    border-top: 4px dashed;
+    border-right: 4px solid transparent;
+    border-left: 4px solid transparent;
 }

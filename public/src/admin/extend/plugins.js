@@ -21,6 +21,10 @@ define('admin/extend/plugins', [
 			return;
 		}
 
+		if (window.location.hash) {
+			$(`.nav-pills button[data-bs-target="${window.location.hash}"]`).trigger('click');
+		}
+
 		const searchInputEl = document.querySelector('#plugin-search');
 		searchInputEl.value = '';
 

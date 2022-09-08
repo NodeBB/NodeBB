@@ -65,7 +65,7 @@
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<button type="button" class="close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
 					<h4 class="modal-title">[[admin/manage/groups:create]]</h4>
 				</div>
 				<div class="modal-body">
@@ -95,7 +95,7 @@
 					</form>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">
+					<button type="button" class="btn btn-default" data-bs-dismiss="modal">
 						[[global:close]]
 					</button>
 					<button type="button" class="btn btn-primary" id="create-modal-go">
