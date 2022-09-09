@@ -7,7 +7,7 @@ define('forum/post-queue', [
 	const PostQueue = {};
 
 	PostQueue.init = function () {
-		$('[data-toggle="tooltip"]').tooltip();
+		$('[data-bs-toggle="tooltip"]').tooltip();
 
 		categoryFilter.init($('[component="category/dropdown"]'), {
 			privilege: 'moderate',

@@ -87,7 +87,7 @@
 					<!-- END -->
 				</p>
 				<p>
-					<a href="{config.relative_path}/admin/settings/advanced" class="btn btn-info btn-block" data-placement="bottom" data-toggle="tooltip" title="[[admin/dashboard:maintenance-mode-title]]">[[admin/dashboard:maintenance-mode]]</a>
+					<a href="{config.relative_path}/admin/settings/advanced" class="btn btn-info btn-block" data-bs-placement="bottom" data-bs-toggle="tooltip" title="[[admin/dashboard:maintenance-mode-title]]">[[admin/dashboard:maintenance-mode]]</a>
 				</p>
 
 				<hr />
@@ -142,7 +142,7 @@
 					<!-- IF notices.done -->
 					<i class="fa fa-fw fa-check text-success"></i> {notices.doneText}
 					<!-- ELSE -->
-					<!-- IF notices.link --><a href="{config.relative_path}{notices.link}" data-toggle="tooltip" title="{notices.tooltip}"><!-- ENDIF notices.link -->
+					<!-- IF notices.link --><a href="{config.relative_path}{notices.link}" data-bs-toggle="tooltip" title="{notices.tooltip}"><!-- ENDIF notices.link -->
 					<i class="fa fa-fw fa-times text-danger"></i> {notices.notDoneText}
 					<!-- IF notices.link --></a><!-- ENDIF notices.link -->
 					<!-- ENDIF notices.done -->

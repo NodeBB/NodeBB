@@ -124,7 +124,7 @@
 
 <main id="panel">
 	<nav class="header" id="header">
-		<div class="pull-left">
+		<div class="float-start">
 			<div id="mobile-menu">
 				<div class="bar"></div>
 				<div class="bar"></div>
@@ -133,7 +133,7 @@
 			<h1 id="main-page-title"></h1>
 		</div>
 
-		<ul class="quick-actions hidden-xs hidden-sm">
+		<ul class="quick-actions hidden-xs hidden-sm hidden-md align-items-center">
 			<!-- IMPORT admin/partials/quick_actions/buttons.tpl -->
 
 			{{{ if user.privileges.admin:settings }}}

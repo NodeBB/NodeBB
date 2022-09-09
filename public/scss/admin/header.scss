@@ -23,10 +23,6 @@
 		flex-direction: row-reverse;
 		margin: 0;
 
-		li {
-			align-self: end;
-		}
-
 		> * {
 			margin-right: 20px;
 		}
@@ -75,6 +71,7 @@
 			padding: 10px 20px;
 			width: 250px;
 			height: 44px;
+			background-color: rgba(0,0,0,.2);
 			border-radius: 3px;
 			box-shadow: none;
 			transition: .4s ease background-color;
@@ -96,14 +93,14 @@
 				pointer-events: none;
 
 				position: absolute;
-				top: 10px;
+				top: 13px;
 				left: 1em;
 			}
 
 			&:after {
 				content: attr(data-text);
 				position: absolute;
-				top: 10px;
+				top: 13px;
 				left: 3em;
 				font-size: small;
 				font-weight: 600;
