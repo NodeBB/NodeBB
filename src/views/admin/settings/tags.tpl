@@ -38,8 +38,8 @@
 </div>
 
 <div class="row">
-	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/tags:related-topics]]</div>
-	<div class="col-sm-10 col-xs-12">
+	<div class="col-sm-2 col-12 settings-header">[[admin/settings/tags:related-topics]]</div>
+	<div class="col-sm-10 col-12">
 		<form>
 			<div class="mb-3">
 				<label class="form-label" for="maximumRelatedTopics">[[admin/settings/tags:max-related-topics]]</label>

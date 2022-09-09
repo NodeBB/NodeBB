@@ -41,7 +41,7 @@
 				</p>
 
 				<div class="row input-row">
-					<div class="col-sm-7 col-xs-12 input-field">
+					<div class="col-sm-7 col-12 input-field">
 						<label for="install:url">Web Address (URL)</label>
 						<input id="install:url" type="text" class="form-control" name="url" value="<!-- IF url -->{url}<!-- ENDIF url -->" placeholder="http://localhost:4567" />
 					</div>
@@ -56,28 +56,28 @@
 				</p>
 
 				<div class="row input-row">
-					<div class="col-sm-7 col-xs-12 input-field">
+					<div class="col-sm-7 col-12 input-field">
 						<label for="admin:username">Username</label>
 						<input id="admin:username" type="text" class="form-control" name="admin:username" value="<!-- IF admin:username -->{admin:username}<!-- ENDIF admin:username -->" placeholder="Username" />
 					</div>
 					<div class="col-sm-5 help-text" data-help="Enter an <strong>alphanumeric username</strong>. Spaces between words are allowed. You can always change your username later on your profile page."></div>
 				</div>
 				<div class="row input-row">
-					<div class="col-sm-7 col-xs-12 input-field">
+					<div class="col-sm-7 col-12 input-field">
 						<label for="admin:email">Email Address</label>
 						<input id="admin:email" type="text" class="form-control" name="admin:email" value="<!-- IF admin:email -->{admin:email}<!-- ENDIF admin:email -->" placeholder="Email Address" />
 					</div>
 					<div class="col-sm-5 help-text" data-help="Please enter your email address."></div>
 				</div>
 				<div class="row input-row">
-					<div class="col-sm-7 col-xs-12 input-field">
+					<div class="col-sm-7 col-12 input-field">
 						<label for="admin:password">Password</label>
 						<input id="admin:password" type="password" class="form-control" name="admin:password" value="<!-- IF admin:password -->{admin:password}<!-- ENDIF admin:password -->" placeholder="Password" data-minimum-strength="{minimumPasswordStrength}" data-minimum-length="{minimumPasswordLength}" />
 					</div>
 					<div class="col-sm-5 help-text" data-help="Use a combination of numbers, symbols, and different cases. You can change the strictness of password creation in the Admin Control Panel. Minimum {minimumPasswordLength} characters."></div>
 				</div>
 				<div class="row input-row">
-					<div class="col-sm-7 col-xs-12 input-field">
+					<div class="col-sm-7 col-12 input-field">
 						<label for="admin:passwordConfirm">Confirm Password</label>
 						<input id="admin:passwordConfirm" type="password" class="form-control" name="admin:passwordConfirm" value="<!-- IF admin:passwordConfirm -->{admin:passwordConfirm}<!-- ENDIF admin:passwordConfirm -->" placeholder="Confirm Password" />
 					</div>
@@ -97,7 +97,7 @@
 				</p>
 
 				<div class="row input-row">
-					<div class="col-sm-7 col-xs-12 input-field">
+					<div class="col-sm-7 col-12 input-field">
 						<label for="install:database">Database Type</label>
 						<select id="install:database" class="form-control" name="database">
 							<option value="mongo">MongoDB</option>
@@ -138,7 +138,7 @@
 		<div data-database="{databases.name}">
 			 {{{ each databases.questions }}}
 				<div class="row input-row">
-					<div class="col-sm-7 col-xs-12 input-field">
+					<div class="col-sm-7 col-12 input-field">
 						<label for="{databases.questions.name}">{databases.questions.description}</label>
 						<input id="{databases.questions.name}" type="<!-- IF hidden -->password<!-- ELSE -->text<!-- ENDIF hidden -->" class="form-control" name="{databases.questions.name}" placeholder="{databases.questions.default}" value="{databases.questions.default}" />
 					</div>

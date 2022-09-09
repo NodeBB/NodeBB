@@ -1,5 +1,5 @@
 <div class="dashboard">
-	<div class="col-xs-12">
+	<div class="col-12">
 		<a class="btn btn-link" href="{config.relative_path}/admin/dashboard">
 			<i class="fa fa-chevron-left"></i>
 			[[admin/dashboard:back-to-dashboard]]
