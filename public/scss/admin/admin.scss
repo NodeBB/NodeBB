@@ -13,15 +13,8 @@
 @import "./extend/plugins";
 @import "./extend/rewards";
 @import "./extend/widgets";
-// @import "./advanced/database";
-// @import "./advanced/events";
-// @import "./advanced/logs";
-// @import "./advanced/errors";
-// @import "./advanced/hooks";
-// @import "./development/info";
+@import "./advanced/database";
 @import "./settings";
-
-// @import "../flags";
 
 @import "./modules/alerts";
 @import "./modules/selectable";
