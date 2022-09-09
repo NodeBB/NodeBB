@@ -5,7 +5,7 @@
 				<div class="col">
 					<div class="input-group">
 						<input type="text" class="form-control" placeholder="[[global:search]]" id="user-search" value="{query}">
-						<span class="input-group-text search-button"><i class="fa fa-search"></i></span>
+						<span class="input-group-text px-2 search-button"><i class="fa fa-search"></i></span>
 					</div>
 				</div>
 				<div class="col">
