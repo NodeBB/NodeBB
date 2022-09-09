@@ -1,13 +1,13 @@
 <form class="form">
 	<div class="row">
 		<div class="col-4">
-			<div class="form-group">
+			<div class="mb-3">
 				<label for="length">[[admin/manage/users:temp-ban.length]]</label>
 				<input class="form-control" id="length" name="length" type="number" min="0" value="1" />
 			</div>
 		</div>
 		<div class="col-8">
-			<div class="form-group">
+			<div class="mb-3">
 				<label for="reason">[[admin/manage/users:temp-ban.reason]]</label>
 				<input type="text" class="form-control" id="reason" name="reason" />
 			</div>
@@ -15,7 +15,7 @@
 	</div>
 	<div class="row">
 		<div class="col-sm-4 text-center">
-			<div class="form-group units">
+			<div class="mb-3 units">
 				<label>[[admin/manage/users:temp-ban.hours]]</label>
 				<input type="radio" name="unit" value="0" checked />
 				&nbsp;&nbsp;

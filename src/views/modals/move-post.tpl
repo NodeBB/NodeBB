@@ -16,8 +16,8 @@
 	</div>
 	<div class="panel-footer text-right">
 		<div class="btn-group">
-			<button class="btn btn-link btn-xs" id="move_posts_cancel">[[global:buttons.close]]</button>
-			<button class="btn btn-primary btn-xs" id="move_posts_confirm" disabled>[[topic:move]]</button>
+			<button class="btn btn-link btn-sm" id="move_posts_cancel">[[global:buttons.close]]</button>
+			<button class="btn btn-primary btn-sm" id="move_posts_confirm" disabled>[[topic:move]]</button>
 		</div>
 	</div>
 </div>

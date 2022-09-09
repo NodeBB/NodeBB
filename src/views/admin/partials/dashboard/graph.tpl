@@ -1,10 +1,10 @@
 <div class="card mb-3" id="analytics-panel">
 	<div class="card-header">
 		[[admin/dashboard:forum-traffic]]
-		<div class="pull-right">
+		<div class="float-end">
 			<a href="#"><i class="fa fa-fw fa-expand"></i></a>
 		</div>
-		<div class="pull-right">
+		<div class="float-end">
 			<a target="_blank" id="view-as-json" href="{config.relative_path}/api/v3/admin/analytics/{set}?type=hourly"><i class="fa fa-fw fa-terminal"></i></a>
 		</div>
 	</div>
