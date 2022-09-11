@@ -13,7 +13,7 @@
 			<div class="mb-3">
 				<label class="form-label" for="systemTags">[[admin/settings/tags:system-tags]]</label>
 				<input id="systemTags" type="text" class="form-control" value="" data-field="systemTags" data-field-type="tagsinput" />
-				<p class="help-block">
+				<p class="form-text">
 					[[admin/settings/tags:system-tags-help]]
 				</p>
 			</div>

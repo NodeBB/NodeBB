@@ -13,7 +13,7 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 
 		if (selected) {
 			try {
-				$('#icons .fa-icons .fa.' + selected).addClass('selected');
+				$('#icons .nbb-fa-icons .fa.' + selected).addClass('selected');
 			} catch (err) {
 				selected = '';
 			}
@@ -21,7 +21,7 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 
 		Benchpress.render('partials/fontawesome', {}).then(function (html) {
 			html = $(html);
-			html.find('.fa-icons').prepend($('<i class="fa fa-nbb-none"></i>'));
+			html.find('.nbb-fa-icons').prepend($('<i class="fa fa-nbb-none"></i>'));
 
 			const picker = bootbox.dialog({
 				onEscape: true,
@@ -79,7 +79,7 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 			picker.on('shown.bs.modal', function () {
 				const modalEl = $(this);
 				const searchEl = modalEl.find('input');
-				const icons = modalEl.find('.fa-icons i');
+				const icons = modalEl.find('.nbb-fa-icons i');
 				const submitEl = modalEl.find('button.btn-primary');
 
 				function changeSelection(newSelection) {

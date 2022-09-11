@@ -56,7 +56,7 @@
 							</tr>
 						</tfoot>
 					</table>
-					<div class="help-block">
+					<div class="form-text">
 						[[admin/manage/categories:privileges.inherit]]
 					</div>
 					<hr/>

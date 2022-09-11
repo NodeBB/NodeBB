@@ -158,8 +158,7 @@
 
 <div id="icons" style="display:none;">
 	<div class="icon-container">
-		<div class="row fa-icons">
-			<i class="fa fa-doesnt-exist"></i>
+		<div class="row nbb-fa-icons">
 			<!-- IMPORT partials/fontawesome.tpl -->
 		</div>
 	</div>

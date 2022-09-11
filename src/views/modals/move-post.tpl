@@ -4,13 +4,13 @@
 	</h5>
 	<div class="card-body">
 		<div>
-			<label for="topicId">[[topic:topic-id]]</label>
+			<label class="form-label" for="topicId">[[topic:topic-id]]</label>
 			<input id="topicId" type="text" class="form-control"><br/>
 		</div>
 		<p>
     		<strong><span id="pids"></span></strong>
         </p>
-        <p class="help-block">
+        <p class="form-text">
             [[topic:move_posts_instruction]]
         </p>
 	</div>

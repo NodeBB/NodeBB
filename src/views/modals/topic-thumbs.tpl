@@ -16,5 +16,5 @@
 	</div>
 	{{{ end }}}
 	<hr />
-	<p class="help-block">[[modules:thumbs.modal.resize-note, {config.thumbs.size}]]</p>
+	<p class="form-text">[[modules:thumbs.modal.resize-note, {config.thumbs.size}]]</p>
 </div>

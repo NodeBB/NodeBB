@@ -294,7 +294,7 @@ define('forum/chats', [
 			bootbox.confirm({
 				size: 'small',
 				title: '[[modules:chat.leave]]',
-				message: '<p>[[modules:chat.leave-prompt]]</p><p class="help-block">[[modules:chat.leave-help]]</p>',
+				message: '<p>[[modules:chat.leave-prompt]]</p><p class="form-text">[[modules:chat.leave-help]]</p>',
 				callback: function (ok) {
 					if (ok) {
 						api.delete(`/chats/${roomId}/users/${app.user.uid}`, {}).then(() => {

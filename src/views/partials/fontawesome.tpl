@@ -1,9 +1,9 @@
 <div class="icon-container">
 	<div class="form-group">
-		<label for="fa-filter">Type to filter icons</label>
+		<label class="form-label" for="fa-filter">Type to filter icons</label>
 		<input type="text" class="form-control" id="fa-filter" data-action="filter" placeholder="e.g. umbrella" />
 	</div>
-	<div class="row fa-icons">
+	<div class="d-flex nbb-fa-icons flex-wrap">
 		<i class="fa fa-500px"></i>
 		<i class="fa fa-address-book"></i>
 		<i class="fa fa-address-book-o"></i>
@@ -792,7 +792,7 @@
 		<i class="fa fa-youtube-square"></i>
 
 	</div>
-	<p class="help-block text-center">
+	<p class="form-text text-center">
 		For a full list of icons, please consult:
 		<a href="https://fontawesome.com/v5.15/icons/">FontAwesome</a>
 	</p>

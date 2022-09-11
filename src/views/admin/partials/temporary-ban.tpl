@@ -24,7 +24,7 @@
 			</div>
 		</div>
 		<div class="col-sm-8">
-			<p class="help-block">
+			<p class="form-text">
 				[[admin/manage/users:temp-ban.explanation]]
 			</p>
 		</div>

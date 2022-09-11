@@ -126,16 +126,19 @@ body {
 	}
 
 	.icon-container {
-		.row {
+		.fa-nbb-none {
+			border: 1px dotted black;
+		}
+		.nbb-fa-icons {
 			margin: 0;
 			i {
-				width:20px;
-				height:20px;
-				margin: 1px;
+				width: 24px;
+				height: 24px;
 				cursor: pointer;
-				line-height: 20px;
+				line-height: 24px;
 				text-align: center;
-				color: $gray-300;
+				color: $gray-800;
+				margin: 3px;
 
 				&:hover, &.selected {
 					background: $primary;
