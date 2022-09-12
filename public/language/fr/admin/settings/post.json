@@ -51,7 +51,7 @@
 	"signature.disable": "Désactiver les signatures",
 	"signature.no-links": "Désactiver les liens en signature",
 	"signature.no-images": "Désactiver les images en signature ",
-	"signature.hide-duplicates": "Hide duplicate signatures in topics",
+	"signature.hide-duplicates": "Masquer les signatures en double dans les sujets",
 	"signature.max-length": "Longueur maximum des signatures",
 	"composer": "Paramètres Composer",
 	"composer-help": "Les réglages suivants permettent de choisir les fonctionnalités et/ou l'apparence du composeur de message affiché\n\t\t\t\ttaux utilisateurs quand ils créent de nouveaux sujets ou répondent à des sujets existants.",

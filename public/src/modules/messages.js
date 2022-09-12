@@ -101,6 +101,11 @@ define('messages', ['bootbox', 'translator', 'storage', 'alerts', 'hooks'], func
 			params.delete('register');
 		}
 
+		if (params.has('lang') && params.get('lang') === config.defaultLang) {
+			console.info(`The "lang" parameter was passed in to set the language to "${params.get('lang')}", but that is already the forum default language.`);
+			params.delete('lang');
+		}
+
 		const qs = params.toString();
 		ajaxify.updateHistory(ajaxify.currentPage + (qs ? `?${qs}` : '') + document.location.hash, true);
 	}

@@ -9,7 +9,6 @@ require('jquery-form');
 window.utils = require('./utils');
 require('timeago');
 
-const Visibility = require('visibilityjs');
 const Benchpress = require('benchpressjs');
 Benchpress.setGlobal('config', config);
 
@@ -19,7 +18,11 @@ require('./ajaxify');
 
 app = window.app || {};
 
-app.isFocused = true;
+Object.defineProperty(app, 'isFocused', {
+	get() {
+		return document.visibilityState === 'visible';
+	}
+});
 app.currentRoom = null;
 app.widgets = {};
 app.flags = {};
@@ -93,10 +96,6 @@ if (document.readyState === 'loading') {
 		$('body').on('click', '#new_topic', function (e) {
 			e.preventDefault();
 			app.newTopic();
-		});
-
-		Visibility.change(function (event, state) {
-			app.isFocused = state === 'visible';
 		});
 
 		registerServiceWorker();
