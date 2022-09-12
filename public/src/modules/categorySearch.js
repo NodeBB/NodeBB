@@ -61,7 +61,7 @@ define('categorySearch', ['alerts'], function (alerts) {
 
 		el.on('hide.bs.dropdown', function () {
 			if (toggleVisibility) {
-				el.find('.dropdown-toggle').css({ visibility: 'visible' });
+				el.find('.dropdown-toggle').css({ visibility: 'inherit' });
 				searchEl.addClass('hidden');
 			}
 
