@@ -176,6 +176,7 @@
     display: none!important;
 }
 
+// for backwards compat, replace with float-start, float-end respectively
 .pull-left {
 	float: left!important;
 }

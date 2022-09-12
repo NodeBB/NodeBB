@@ -74,7 +74,7 @@
 							{{{ end }}}
 
 							<td>
-								<div class="btn-group pull-right">
+								<div class="btn-group float-end">
 									<button class="btn btn-success btn-sm" data-action="accept"><i class="fa fa-check"></i></button>
 									<button class="btn btn-danger btn-sm" data-action="delete"><i class="fa fa-times"></i></button>
 									{{{ each users.customActions }}}
@@ -117,7 +117,7 @@
 							<td class ="invited-by"><!-- IF @first -->{invites.username}<!-- ENDIF @first --></td>
 							<td>{invites.invitations.email}</td>
 							<td>{invites.invitations.username}
-								<div class="btn-group pull-right">
+								<div class="btn-group float-end">
 									<button class="btn btn-danger btn-sm" data-action="delete"><i class="fa fa-times"></i></button>
 								</div>
 							</td>

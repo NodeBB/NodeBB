@@ -1,6 +1,6 @@
 <!-- IMPORT partials/breadcrumbs.tpl -->
 <div class="clearfix">
-	<div class="pull-right">
+	<div class="float-end">
 		<div class="btn-group">
 			<button id="new-folder" class="btn btn-primary"><i class="fa fa-folder"></i> [[admin/manage/uploads:new-folder]]</button>
 		</div>

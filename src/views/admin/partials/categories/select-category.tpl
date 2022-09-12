@@ -16,7 +16,7 @@
 					<a class="dropdown-item" role="menuitem">{categories.level}
 						<span component="category-markup">
 							<div class="category-item d-inline-block">
-								<div role="presentation" class="icon pull-left" style="{function.generateCategoryBackground}">
+								<div role="presentation" class="icon float-start" style="{function.generateCategoryBackground}">
 									<i class="fa fa-fw {./icon}"></i>
 								</div>
 								{./name}

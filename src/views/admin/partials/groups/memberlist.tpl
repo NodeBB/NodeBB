@@ -29,7 +29,7 @@
 			<a href="{config.relative_path}/user/{group.members.userslug}">{group.members.username}</a> <i title="[[groups:owner]]" class="user-owner-icon fa fa-star text-warning <!-- IF !group.members.isOwner -->invisible<!-- ENDIF !group.members.isOwner -->"></i>
 
 			<!-- IF group.isOwner -->
-			<div class="owner-controls btn-group pull-right">
+			<div class="owner-controls btn-group float-end">
 				<a class="btn btn-sm" href="#" data-ajaxify="false" data-action="toggleOwnership" title="[[groups:details.grant]]">
 					<i class="fa fa-star"></i>
 				</a>

@@ -3,7 +3,7 @@
 		<h4><!-- IF admins.icon --><i class="fa {admins.icon}"></i> <!-- ENDIF admins.icon -->[[admin/manage/admins-mods:administrators]]</h4>
 		<div class="administrator-area">
 		<!-- BEGIN admins.members -->
-			<div class="badge text-bg-light m-1 p-1 pull-left" data-uid="{admins.members.uid}">
+			<div class="badge text-bg-light m-1 p-1 float-start" data-uid="{admins.members.uid}">
 				<!-- IF admins.members.picture -->
 				<img class="avatar avatar-sm" src="{admins.members.picture}" alt="" />
 				<!-- ELSE -->
@@ -21,7 +21,7 @@
 		<h4><!-- IF globalMods.icon --><i class="fa {globalMods.icon}"></i> <!-- ENDIF globalMods.icon -->[[admin/manage/admins-mods:global-moderators]]</h4>
 		<div class="global-moderator-area">
 		<!-- BEGIN globalMods.members -->
-			<div class="badge text-bg-light  m-1 p-1 pull-left" data-uid="{globalMods.members.uid}">
+			<div class="badge text-bg-light  m-1 p-1 float-start" data-uid="{globalMods.members.uid}">
 				<!-- IF globalMods.members.picture -->
 				<img class="avatar avatar-sm" src="{globalMods.members.picture}" alt="" />
 				<!-- ELSE -->
@@ -54,7 +54,7 @@
 			<h4>{{{ if categoryMods.icon }}}<i class="fa {categoryMods.icon}"></i> {{{ end }}}{categoryMods.name} {{{ if categoryMods.subCategoryCount }}}<small><a href="{config.relative_path}/admin/manage/admins-mods?cid={categoryMods.cid}#moderators-title">[[admin/manage/admins-mods:subcategories, {categoryMods.subCategoryCount}]]</a></small>{{{ else }}}{{{ end }}}{{{if categoryMods.disabled}}}<span class="badge badge-primary">[[admin/manage/admins-mods:disabled]]</span>{{{end}}}</h4>
 			<div class="moderator-area" data-cid="{categoryMods.cid}">
 				{{{ each categoryMods.moderators }}}
-					<div class="badge text-bg-light m-1 p-1 pull-left" data-uid="{categoryMods.moderators.uid}">
+					<div class="badge text-bg-light m-1 p-1 float-start" data-uid="{categoryMods.moderators.uid}">
 						{{{ if  categoryMods.moderators.picture }}}
 						<img class="avatar avatar-sm" src="{categoryMods.moderators.picture}" alt="" />
 						{{{ else }}}

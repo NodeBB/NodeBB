@@ -145,7 +145,7 @@
 			</div>
 			<hr />
 			<div class="edit-privileges-selector">
-				<label class="form-label" class="pull-left">[[admin/manage/privileges:edit-privileges]]</label>
+				<label class="form-label" class="float-start">[[admin/manage/privileges:edit-privileges]]</label>
 				<!-- IMPORT partials/category-selector.tpl -->
 			</div>
 		</div>

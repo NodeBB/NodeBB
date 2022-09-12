@@ -105,7 +105,7 @@
 						<div class="card mb-3 pointer" data-container-html='<div class="card"><h5 class="card-header">\{{title}}</h5><div class="card-body">\{{body}}</div></div>'>
 							<div class="card-header">
 								[[admin/extend/widgets:container.panel-header]]
-								<div class="pull-right color-selector">
+								<div class="float-end color-selector">
 									<button data-class="text-bg-primary" class="btn btn-sm btn-primary">&nbsp;&nbsp;</button>
 									<button data-class="" class="btn btn-sm btn-secondary">&nbsp;&nbsp;</button>
 									<button data-class="text-bg-success" class="btn btn-sm btn-success">&nbsp;&nbsp;</button>
@@ -121,7 +121,7 @@
 
 						<div class="alert alert-info pointer" data-container-html='<div class="alert alert-info">\{{body}}</div>'>
 							[[admin/extend/widgets:container.alert]]
-							<div class="pull-right color-selector">
+							<div class="float-end color-selector">
 								<button data-class="alert-success" class="btn btn-sm btn-success">&nbsp;&nbsp;</button>
 								<button data-class="alert-info" class="btn btn-sm btn-info">&nbsp;&nbsp;</button>
 								<button data-class="alert-warning" class="btn btn-sm btn-warning">&nbsp;&nbsp;</button>

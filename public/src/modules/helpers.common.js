@@ -113,8 +113,8 @@ module.exports = function (utils, Benchpress, relative_path) {
 		category.children.forEach(function (child) {
 			if (child && !child.isSection) {
 				const link = child.link ? child.link : (relative_path + '/category/' + child.slug);
-				html += '<span class="category-children-item pull-left">' +
-					'<div role="presentation" class="icon pull-left" style="' + generateCategoryBackground(child) + '">' +
+				html += '<span class="category-children-item float-start">' +
+					'<div role="presentation" class="icon float-start" style="' + generateCategoryBackground(child) + '">' +
 					'<i class="fa fa-fw ' + child.icon + '"></i>' +
 					'</div>' +
 					'<a href="' + link + '"><small>' + child.name + '</small></a></span>';

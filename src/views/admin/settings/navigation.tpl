@@ -19,7 +19,7 @@
 			<li data-index="{enabled.index}" class="card card-body text-bg-light border-0 <!-- IF !enabled.selected -->hidden<!-- ENDIF !enabled.selected -->">
 				<form>
 					<div class="row">
-						<div class="col-sm-12 text-end">
+						<div class="col-sm-12 text-end mb-3">
 							{{{ if enabled.enabled }}}
 							<button class="btn btn-warning toggle">[[admin/settings/navigation:btn.disable]]</button>
 							{{{ else }}}
@@ -114,7 +114,7 @@
 			<div class="card-body">
 				<ul id="available">
 					<li data-id="custom" class="clearfix">
-						<div data-id="custom" class="drag-item alert alert-success pull-left">
+						<div data-id="custom" class="drag-item alert alert-success float-start">
 							<i class="fa fa-fw fa-plus-circle"></i>
 						</div>
 						<p>
@@ -123,7 +123,7 @@
 					</li>
 					{{{ each available }}}
 					<li data-id="{@index}" class="clearfix">
-						<div data-id="{@index}" class="drag-item alert <!-- IF available.core -->alert-warning<!-- ELSE -->alert-info<!-- ENDIF available.core --> pull-left">
+						<div data-id="{@index}" class="drag-item alert <!-- IF available.core -->alert-warning<!-- ELSE -->alert-info<!-- ENDIF available.core --> float-start">
 							<i class="fa fa-fw <!-- IF available.iconClass -->{available.iconClass}<!-- ELSE -->fa-navicon<!-- ENDIF available.iconClass -->"></i>
 						</div>
 						<p>

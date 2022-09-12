@@ -195,7 +195,7 @@ define('admin/extend/plugins', [
 				}
 				let html = '';
 				activePlugins.forEach(function (plugin) {
-					html += '<li class="">' + plugin + '<span class="pull-right"><i class="fa fa-chevron-up"></i><i class="fa fa-chevron-down"></i></span></li>';
+					html += '<li class="">' + plugin + '<span class="float-end"><i class="fa fa-chevron-up"></i><i class="fa fa-chevron-down"></i></span></li>';
 				});
 				if (!activePlugins.length) {
 					translator.translate('[[admin/extend/plugins:none-active]]', function (text) {

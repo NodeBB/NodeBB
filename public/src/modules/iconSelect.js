@@ -28,6 +28,7 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 				backdrop: true,
 				show: false,
 				message: html,
+				size: 'large',
 				title: 'Select an Icon',
 				buttons: {
 					noIcon: {
