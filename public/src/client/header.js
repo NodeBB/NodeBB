@@ -43,12 +43,11 @@ define('forum/header', [
 		if (env === 'xs' || env === 'sm' || utils.isTouchDevice()) {
 			return;
 		}
-		$('#header-menu #main-nav li[title]').each(function () {
-			$(this).tooltip({
-				placement: 'bottom',
-				trigger: 'hover',
-				title: $(this).attr('title'),
-			});
+
+		$('#header-menu #main-nav').tooltip({
+			selector: '.nav-item',
+			placement: 'bottom',
+			trigger: 'hover',
 		});
 	}
 

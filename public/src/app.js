@@ -238,25 +238,14 @@ if (document.readyState === 'loading') {
 	}
 
 	app.createUserTooltips = function (els, placement) {
-		if (isTouchDevice) {
-			return;
-		}
-		els = els || $('body');
-		els.find('.avatar,img[title].teaser-pic,img[title].user-img,div.user-icon,span.user-icon').one('mouseenter', function (ev) {
-			const $this = $(this);
-			const title = $this.attr('title');
-			if (!title) {
-				return;
-			}
-			// perf: create tooltips on demand
-			$this.tooltip({
-				placement: placement || $this.attr('title-placement') || 'top',
-				title: $this.attr('title'),
+		if (!isTouchDevice) {
+			els = els || $('body');
+			els.tooltip({
+				selector: '.avatar',
+				placement: placement || 'top',
 				container: '#content',
 			});
-			// this will cause the tooltip to show up
-			$this.trigger(ev);
-		});
+		}
 	};
 
 	app.createStatusTooltips = function () {
