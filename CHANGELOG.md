@@ -1,15 +1,113 @@
+#### v2.5.2 (2022-09-04)
+
+##### Chores
+
+*  incrementing version number - v2.5.1 (ce3aa950)
+*  update changelog for v2.5.1 (2b2fd4f3)
+
+##### Bug Fixes
+
+*  registration regression, closes #10875 (f6f37dc1)
+
+##### Other Changes
+
+*  fix lint error (b45e2413)
+
+##### Tests
+
+*  disable nbbpm test temporarily (1dc79d76)
+
+#### v2.5.1 (2022-09-02)
+
+##### Chores
+
+*  incrementing version number - v2.5.0 (01d276cb)
+*  update changelog for v2.5.0 (1076285d)
+
+##### Bug Fixes
+
+*  missing escape on ACP category backgroundImage property (67cb7035)
+* **deps:**  temporarily add back old textcomplete dependencies so emoji plugin can import them (61d1e9e0)
+
+#### v2.5.0 (2022-09-01)
+
+##### Breaking Changes
+
+*  reduce nodebb.min.js size by around 800kb (b7addffc)
+
+##### Chores
+
+* **i18n:**
+  *  fallback strings for new resources: nodebb.admin-settings-reputation (e20433ec)
+  *  fallback strings for new resources: nodebb.admin-settings-post (fcbbb4d6)
+  *  fallback strings for new resources: nodebb.admin-advanced-cache (90fc50e1)
+*  move @textcomplete and its modules to composer-default (3cbb7a3d)
+*  remove client-side js file for tpl that no longer exists (bc2ea860)
+*  incrementing version number - v2.4.5 (dd3e1a28)
+*  update changelog for v2.4.5 (d505cc47)
+
+* **deps:**
+  *  update dependency eslint to v8.22.0 (#10835) (8fce68d3)
+  *  update mongo docker tag to v3.7 (8afaed22)
+  *  update docker/setup-qemu-action action to v2 (4aecf399)
+  *  update redis docker tag to v2.8.23 (#10811) (269382e0)
+  *  update redis docker tag to v2.8.23 (#10811) (59fd0efe)
+
+##### Documentation Changes
+
+* **openapi:**  v3 spec for new user export routes (70652ad4)
+
+##### New Features
+
+*  remove visibilityjs (#10870) (19207325)
+*  introduce ACP defined option to rescind notif or do nothing on flag resolve/reject (15b1561f)
+*  allow v3 api to handle 202 and 204 response codes as well. (0cda5aa3)
+*  don't show signatures again in pagination mode in same topic (0a6900fc)
+*  setting to show signatures only once in topics, closes #10071 (aba420a3)
+*  add event type to topic event component (bcb94ede)
+*  allow plugins to add to admin cache list (#10833) (a9bbb586)
+
+##### Bug Fixes
+
+* **deps:**
+  *  update dependency compare-versions to v4.1.4 (884d4075)
+  *  update dependency mongodb to v4.9.0 (e51004e2)
+  *  update dependency lru-cache to v7.14.0 (d8a52f81)
+  *  bump composer-default to v9 (81f8d84f)
+  *  remove textcomplete in favour of @textcomplete/core (same package, just refactored) (b7bcc367)
+  *  update dependency nodebb-theme-persona to v12.1.1 (#10838) (444b4d57)
+  *  update dependency ace-builds to v1.9.5 (4c44d125)
+  *  update dependency lru-cache to v7.13.2 (4ddc0c7a)
+  *  update dependency nodemailer to v6.7.8 (dd385184)
+  *  pin dependency @isaacs/ttlcache to 1.2.0 (150a7488)
+  *  update dependency nodebb-plugin-composer-default to v8.0.1 (#10819) (9a7dd3a3)
+  *  update dependency nodebb-plugin-composer-default to v8.0.1 (#10819) (69c87c2c)
+*  empty thread tools container on open (a088eb19)
+*  add dropup handler to thread tools menu, updated how post tools menu adds dropup handler (c1936e87)
+*  empty thread tools container on open (df36d967)
+*  add dropup handler to thread tools menu, updated how post tools menu adds dropup handler (3dd3cd82)
+*  removing duplicate session rerolling code (as it is in passport@^0.6 now) (65b3996a)
+*  don't crash if post is undefined (e06e526e)
+*  return at least one in sizeCalculation (#10832) (3975fa2e)
+
+##### Refactors
+
+*  remove console.log (a2d0cd16)
+*  move export generation logic to v3 controller, GET/HEAD routes for exports (d0570518)
+*  use group.slug on acp group urls closes #8277 (14c79763)
+
+##### Tests
+
+*  have some build tests not pollute build folder (7c5a915d)
+*  User.hidePrivateData (b424ba46)
+*  passport0.6 (#10638) (33458701)
+
 #### v2.4.5 (2022-08-22)
 
 ##### Chores
 
 *  incrementing version number - v2.4.4 (d5525c87)
 *  update changelog for v2.4.4 (77e492b8)
-*  incrementing version number - v2.4.3 (9c647c6c)
-*  incrementing version number - v2.4.2 (3aa7b855)
-*  incrementing version number - v2.4.1 (60cbd148)
-*  incrementing version number - v2.4.0 (4834cde3)
-*  incrementing version number - v2.3.1 (d2425942)
-*  incrementing version number - v2.3.0 (046ea120)
 
 ##### Bug Fixes
 
@@ -22,11 +120,6 @@
 
 *  incrementing version number - v2.4.3 (9c647c6c)
 *  update changelog for v2.4.3 (06da15a5)
-*  incrementing version number - v2.4.2 (3aa7b855)
-*  incrementing version number - v2.4.1 (60cbd148)
-*  incrementing version number - v2.4.0 (4834cde3)
-*  incrementing version number - v2.3.1 (d2425942)
-*  incrementing version number - v2.3.0 (046ea120)
 
 ##### Bug Fixes
 
@@ -38,10 +131,6 @@
 
 *  incrementing version number - v2.4.2 (3aa7b855)
 *  update changelog for v2.4.2 (ba7a3466)
-*  incrementing version number - v2.4.1 (60cbd148)
-*  incrementing version number - v2.4.0 (4834cde3)
-*  incrementing version number - v2.3.1 (d2425942)
-*  incrementing version number - v2.3.0 (046ea120)
 
 ##### Bug Fixes
 
@@ -53,9 +142,6 @@
 
 *  incrementing version number - v2.4.1 (60cbd148)
 *  update changelog for v2.4.1 (4b6baabb)
-*  incrementing version number - v2.4.0 (4834cde3)
-*  incrementing version number - v2.3.1 (d2425942)
-*  incrementing version number - v2.3.0 (046ea120)
 
 ##### Documentation Changes
 
@@ -80,8 +166,6 @@
   *  update docker/setup-buildx-action action to v2 (371ac032)
 *  incrementing version number - v2.4.0 (4834cde3)
 *  update changelog for v2.4.0 (c4714ff7)
-*  incrementing version number - v2.3.1 (d2425942)
-*  incrementing version number - v2.3.0 (046ea120)
 
 ##### Bug Fixes
 
@@ -99,7 +183,6 @@
 *  opt-out of dependabot, due to conflicts with renovate (70d60289)
 *  incrementing version number - v2.3.1 (d2425942)
 *  update changelog for v2.3.1 (2f487175)
-*  incrementing version number - v2.3.0 (046ea120)
 * **i18n:**
   *  fallback strings for new resources: nodebb.admin-settings-email (cdaa8f21)
   *  fallback strings for new resources: nodebb.admin-settings-email (3e56c547)

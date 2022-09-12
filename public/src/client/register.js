@@ -2,7 +2,7 @@
 
 
 define('forum/register', [
-	'translator', 'slugify', 'api', 'bootbox', 'forum/login', 'jquery-form', 'zxcvbn',
+	'translator', 'slugify', 'api', 'bootbox', 'forum/login', 'zxcvbn', 'jquery-form',
 ], function (translator, slugify, api, bootbox, Login, zxcvbn) {
 	const Register = {};
 	let validationError = false;
