@@ -225,8 +225,8 @@ if (document.readyState === 'loading') {
 
 	function highlightNavigationLink() {
 		$('#main-nav li')
-			.removeClass('active')
 			.find('a')
+			.removeClass('active')
 			.filter(function (i, a) {
 				return $(a).attr('href') !== '#' && window.location.hostname === a.hostname &&
 					(
@@ -234,7 +234,6 @@ if (document.readyState === 'loading') {
 						window.location.pathname.startsWith(a.pathname + '/')
 					);
 			})
-			.parent()
 			.addClass('active');
 	}
 
