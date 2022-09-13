@@ -219,13 +219,13 @@ body {
 
 [component="category-selector"] {
 	.category-item > .icon {
-		min-width: 23px;
-		min-height: 23px;
+		width: 22px;
+		height: 22px;
 		font-size: 10px;
 		line-height: 12px;
 		padding: 5px;
-		margin-right: 5px;
 		border-radius: 50%;
+		display: inline-block;
 	}
 
 	.category-dropdown-menu {

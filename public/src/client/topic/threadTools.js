@@ -16,6 +16,8 @@ define('forum/topic/threadTools', [
 	ThreadTools.init = function (tid, topicContainer) {
 		renderMenu(topicContainer);
 
+		$('.topic-main-buttons [title]').tooltip();
+
 		// function topicCommand(method, path, command, onComplete) {
 		topicContainer.on('click', '[component="topic/delete"]', function () {
 			topicCommand('del', '/state', 'delete');
