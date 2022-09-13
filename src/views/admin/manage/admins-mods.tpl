@@ -1,5 +1,5 @@
 <div class="admins-mods">
-	<div class="mb-3">
+	<div class="mb-5">
 		<h4><!-- IF admins.icon --><i class="fa {admins.icon}"></i> <!-- ENDIF admins.icon -->[[admin/manage/admins-mods:administrators]]</h4>
 		<div class="administrator-area">
 		<!-- BEGIN admins.members -->
@@ -17,7 +17,7 @@
 		<input id="admin-search" class="form-control" placeholder="[[admin/manage/admins-mods:add-administrator]]" />
 	</div>
 
-	<div class="mb-3">
+	<div class="mb-5">
 		<h4><!-- IF globalMods.icon --><i class="fa {globalMods.icon}"></i> <!-- ENDIF globalMods.icon -->[[admin/manage/admins-mods:global-moderators]]</h4>
 		<div class="global-moderator-area">
 		<!-- BEGIN globalMods.members -->
@@ -50,7 +50,7 @@
 		{{{ end }}}
 
 		{{{ each categoryMods }}}
-		<div class="categories category-wrapper mb-2">
+		<div class="categories category-wrapper mb-4">
 			<h4>{{{ if categoryMods.icon }}}<i class="fa {categoryMods.icon}"></i> {{{ end }}}{categoryMods.name} {{{ if categoryMods.subCategoryCount }}}<small><a href="{config.relative_path}/admin/manage/admins-mods?cid={categoryMods.cid}#moderators-title">[[admin/manage/admins-mods:subcategories, {categoryMods.subCategoryCount}]]</a></small>{{{ else }}}{{{ end }}}{{{if categoryMods.disabled}}}<span class="badge badge-primary">[[admin/manage/admins-mods:disabled]]</span>{{{end}}}</h4>
 			<div class="moderator-area" data-cid="{categoryMods.cid}">
 				{{{ each categoryMods.moderators }}}
