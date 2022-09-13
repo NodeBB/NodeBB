@@ -57,20 +57,20 @@
 							<tr>
 								<td colspan="3"></td>
 								<td colspan="{privileges.keys.groups.length}">
-									<div class="btn-toolbar justify-content-end">
-										<button type="button" class="btn btn-outline-secondary float-end" data-ajaxify="false" data-action="search.group">
+									<div class="btn-toolbar justify-content-end gap-1">
+										<button type="button" class="btn btn-sm btn-outline-secondary" data-ajaxify="false" data-action="search.group">
 											<i class="fa fa-users"></i>
 											[[admin/manage/categories:privileges.search-group]]
 										</button>
-										<button type="button" class="btn btn-outline-secondary float-end" data-ajaxify="false" data-action="copyPrivilegesFrom">
+										<button type="button" class="btn btn-sm btn-outline-secondary" data-ajaxify="false" data-action="copyPrivilegesFrom">
 											<i class="fa fa-copy"></i>
 											[[admin/manage/categories:privileges.copy-from-category]]
 										</button>
-										<button type="button" class="btn btn-outline-secondary float-end" data-ajaxify="false" data-action="copyToChildren">
+										<button type="button" class="btn btn-sm btn-outline-secondary" data-ajaxify="false" data-action="copyToChildren">
 											<i class="fa fa-copy"></i>
 											[[admin/manage/categories:privileges.copy-to-children]]
 										</button>
-										<button type="button" class="btn btn-outline-secondary float-end" data-ajaxify="false" data-action="copyToAll">
+										<button type="button" class="btn btn-sm btn-outline-secondary" data-ajaxify="false" data-action="copyToAll">
 											<i class="fa fa-copy"></i>
 											[[admin/manage/categories:privileges.copy-privileges-to-all-categories]]
 										</button>
@@ -131,12 +131,12 @@
 							<tr>
 								<td colspan="3"></td>
 								<td colspan="{privileges.keys.users.length}">
-									<div class="btn-toolbar justify-content-end"></div>
-										<button type="button" class="btn btn-outline-secondary float-end" data-ajaxify="false" data-action="search.user">
+									<div class="btn-toolbar justify-content-end">
+										<button type="button" class="btn btn-sm btn-outline-secondary" data-ajaxify="false" data-action="search.user">
 											<i class="fa fa-user"></i>
 											[[admin/manage/categories:privileges.search-user]]
 										</button>
-									</td>
+									</div>
 								</td>
 							</tr>
 						</tfoot>

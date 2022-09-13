@@ -49,7 +49,7 @@
 								<td colspan="3"></td>
 								<td colspan="{privileges.keys.groups.length}">
 									<div class="btn-toolbar justify-content-end">
-										<button type="button" class="btn btn-outline-secondary float-end" data-ajaxify="false" data-action="search.group">
+										<button type="button" class="btn btn-sm btn-outline-secondary" data-ajaxify="false" data-action="search.group">
 											<i class="fa fa-users"></i>
 											[[admin/manage/categories:privileges.search-group]]
 										</button>
@@ -113,7 +113,7 @@
 								<td colspan="3"></td>
 								<td colspan="{privileges.keys.users.length}">
 									<div class="btn-toolbar justify-content-end">
-										<button type="button" class="btn btn-outline-secondary float-end" data-ajaxify="false" data-action="search.user">
+										<button type="button" class="btn btn-sm btn-outline-secondary" data-ajaxify="false" data-action="search.user">
 											<i class="fa fa-user"></i>
 											[[admin/manage/categories:privileges.search-user]]
 										</button>
