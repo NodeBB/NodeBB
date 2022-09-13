@@ -36,7 +36,7 @@ define('admin/manage/privileges', [
 		Privileges.setupPrivilegeTable();
 
 		highlightRow();
-		$('.privilege-filters button:last-child').click();
+		$('.privilege-filters button:first-child').click();
 	};
 
 	Privileges.setupPrivilegeTable = function () {
@@ -133,7 +133,7 @@ define('admin/manage/privileges', [
 			throwConfirmModal('copyToAllGroup', Privileges.copyPrivilegesToAllCategories.bind(null, cid, groupName));
 		});
 
-		$privTableCon.on('click', '.privilege-filters > button', filterPrivileges);
+		$privTableCon.on('click', '.privilege-filters button', filterPrivileges);
 
 		mousetrap.bind('ctrl+s', function (ev) {
 			throwConfirmModal('save', Privileges.commit);

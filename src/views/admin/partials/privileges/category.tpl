@@ -2,13 +2,15 @@
 					<table class="table table-striped privilege-table">
 						<thead>
 							<tr class="privilege-table-header">
-								<th class="privilege-filters btn-toolbar" colspan="100">
+								<th class="privilege-filters" colspan="100">
+									<div class="btn-toolbar justify-content-end gap-1">
+									<button type="button" data-filter="3,5" class="btn btn-outline-secondary">[[admin/manage/categories:privileges.section-viewing]]</button>
+									<button type="button" data-filter="6,15" class="btn btn-outline-secondary">[[admin/manage/categories:privileges.section-posting]]</button>
+									<button type="button" data-filter="16,18" class="btn btn-outline-secondary">[[admin/manage/categories:privileges.section-moderation]]</button>
 									<!-- IF privileges.columnCountGroupOther -->
-									<button type="button" data-filter="19,99" class="btn btn-outline-secondary float-end">[[admin/manage/categories:privileges.section-other]]</button>
+									<button type="button" data-filter="19,99" class="btn btn-outline-secondary">[[admin/manage/categories:privileges.section-other]]</button>
 									<!-- END -->
-									<button type="button" data-filter="16,18" class="btn btn-outline-secondary float-end">[[admin/manage/categories:privileges.section-moderation]]</button>
-									<button type="button" data-filter="6,15" class="btn btn-outline-secondary float-end">[[admin/manage/categories:privileges.section-posting]]</button>
-									<button type="button" data-filter="3,5" class="btn btn-outline-secondary float-end">[[admin/manage/categories:privileges.section-viewing]]</button>
+									</div>
 								</th>
 							</tr><tr><!-- zebrastripe reset --></tr>
 							<tr>
@@ -85,13 +87,15 @@
 					<table class="table table-striped privilege-table">
 						<thead>
 							<tr class="privilege-table-header">
-								<th class="privilege-filters btn-toolbar" colspan="100">
+								<th class="privilege-filters" colspan="100">
+									<div class="btn-toolbar justify-content-end gap-1">
+									<button type="button" data-filter="3,5" class="btn btn-outline-secondary">[[admin/manage/categories:privileges.section-viewing]]</button>
+									<button type="button" data-filter="6,15" class="btn btn-outline-secondary">[[admin/manage/categories:privileges.section-posting]]</button>
+									<button type="button" data-filter="16,18" class="btn btn-outline-secondary">[[admin/manage/categories:privileges.section-moderation]]</button>
 									<!-- IF privileges.columnCountUserOther -->
-									<button type="button" data-filter="19,99" class="btn btn-outline-secondary float-end">[[admin/manage/categories:privileges.section-other]]</button>
+									<button type="button" data-filter="19,99" class="btn btn-outline-secondary">[[admin/manage/categories:privileges.section-other]]</button>
 									<!-- END -->
-									<button type="button" data-filter="16,18" class="btn btn-outline-secondary float-end">[[admin/manage/categories:privileges.section-moderation]]</button>
-									<button type="button" data-filter="6,15" class="btn btn-outline-secondary float-end">[[admin/manage/categories:privileges.section-posting]]</button>
-									<button type="button" data-filter="3,5" class="btn btn-outline-secondary float-end">[[admin/manage/categories:privileges.section-viewing]]</button>
+									</div>
 								</th>
 							</tr><tr><!-- zebrastripe reset --></tr>
 							<tr>
