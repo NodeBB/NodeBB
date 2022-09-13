@@ -6,7 +6,7 @@
 					[[admin/manage/categories:privileges.description]]
 				</p>
 
-				<div class="lead">
+				<div class="lead mb-3">
 					[[admin/manage/categories:privileges.category-selector]]
 					<!-- IMPORT partials/category-selector.tpl -->
 				</div>

@@ -191,9 +191,7 @@ define('admin/manage/privileges', [
 				$('.privilege-table-container').html(html);
 				Privileges.exposeAssumedPrivileges();
 				document.querySelectorAll('.privilege-filters').forEach((con, i) => {
-					// Three buttons, placed in reverse order
-					const lastIdx = $('.privilege-filters').first().find('button').length - 1;
-					const idx = btnIndices[i] === undefined ? lastIdx : btnIndices[i];
+					const idx = btnIndices[i] === undefined ? 0 : btnIndices[i];
 					con.querySelectorAll('button')[idx].click();
 				});
 
