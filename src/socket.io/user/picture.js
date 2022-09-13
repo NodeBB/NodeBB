@@ -23,21 +23,35 @@ module.exports = function (SocketUser) {
 			throw new Error('[[error:invalid-data]]');
 		}
 
-		const [list, uploaded] = await Promise.all([
+		const [list, userObj] = await Promise.all([
 			plugins.hooks.fire('filter:user.listPictures', {
 				uid: data.uid,
 				pictures: [],
 			}),
-			user.getUserField(data.uid, 'uploadedpicture'),
+			user.getUserData(data.uid),
 		]);
 
-		if (uploaded) {
+		if (userObj.uploadedpicture) {
 			list.pictures.push({
 				type: 'uploaded',
-				url: uploaded,
+				url: userObj.uploadedpicture,
 				text: '[[user:uploaded_picture]]',
 			});
 		}
+
+		// Normalize list into "user object" format
+		list.pictures = list.pictures.map(({ type, url, text }) => ({
+			type,
+			username: text,
+			picture: url,
+		}));
+
+		list.pictures.unshift({
+			type: 'default',
+			'icon:text': userObj['icon:text'],
+			'icon:bgColor': userObj['icon:bgColor'],
+			username: '[[user:default_picture]]',
+		});
 
 		return list.pictures;
 	};

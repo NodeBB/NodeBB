@@ -292,7 +292,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 		/**
 		 * userObj requires:
 		 *   - uid, picture, icon:bgColor, icon:text (getUserField w/ "picture" should return all 4), username
-		 * size: one of "xs", "sm", "md", "lg", or "xl" (required), or an integer
+		 * size: a picture size in the form of a value with units (e.g. 64px, 4rem, etc.)
 		 * rounded: true or false (optional, default false)
 		 * classNames: additional class names to prepend (optional, default none)
 		 * component: overrides the default component (optional, default none)
@@ -309,18 +309,10 @@ module.exports = function (utils, Benchpress, relative_path) {
 			'data-uid="' + userObj.uid + '"',
 			'loading="lazy"',
 		];
-		const styles = [];
+		const styles = [`--avatar-size: ${size};`];
 		classNames = classNames || '';
 
-		// Validate sizes, handle integers, otherwise fall back to `avatar-sm`
-		if (['xs', 'sm', 'sm2x', 'md', 'lg', 'xl'].includes(size)) {
-			classNames += ' avatar-' + size;
-		} else if (!isNaN(parseInt(size, 10))) {
-			styles.push('width: ' + size + 'px;', 'height: ' + size + 'px;', 'line-height: ' + size + 'px;', 'font-size: ' + (parseInt(size, 10) / 16) + 'rem;');
-		} else {
-			classNames += ' avatar-sm';
-		}
-		attributes.unshift('class="avatar ' + classNames + (rounded ? ' avatar-rounded' : '') + '"');
+		attributes.unshift(`class="avatar ${classNames}${rounded ? ' avatar-rounded' : ''}"`);
 
 		// Component override
 		if (component) {
