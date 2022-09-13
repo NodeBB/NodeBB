@@ -67,7 +67,7 @@
         "helmet": "5.1.1",
         "html-to-text": "8.2.1",
         "ipaddr.js": "2.0.1",
-        "jquery": "3.6.0",
+        "jquery": "3.6.1",
         "jquery-deserialize": "2.0.0",
         "jquery-form": "4.3.0",
         "jquery-serializeobject": "1.0.0",
