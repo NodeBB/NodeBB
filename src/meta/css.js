@@ -218,9 +218,14 @@ CSS.buildBundle = async function (target, fork) {
 
 	const data = await getBundleMetadata(target);
 	const minify = process.env.NODE_ENV !== 'development';
-	const bundle = await minifier.css.bundle(data.imports, data.paths, minify, fork);
+	const [ltr, rtl] = await Promise.all([
+		minifier.css.bundle(data.imports, data.paths, minify, fork, 'ltr'),
+		minifier.css.bundle(data.imports, data.paths, minify, fork, 'rtl'),
+	]);
 
-	const filename = `${target}.css`;
-	await fs.promises.writeFile(path.join(__dirname, '../../build/public', filename), bundle.code);
-	return bundle.code;
+	await Promise.all([
+		fs.promises.writeFile(path.join(__dirname, '../../build/public', `${target}.css`), ltr.code),
+		fs.promises.writeFile(path.join(__dirname, '../../build/public', `${target}-rtl.css`), rtl.code),
+	]);
+	return [ltr.code, rtl.code];
 };

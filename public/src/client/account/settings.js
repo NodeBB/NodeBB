@@ -83,16 +83,7 @@ define('forum/account/settings', [
 			}
 
 			if (languageChanged && parseInt(app.user.uid, 10) === parseInt(ajaxify.data.theirid, 10)) {
-				translator.translate('[[language:dir]]', config.userLang, function (translated) {
-					const htmlEl = $('html');
-					htmlEl.attr('data-dir', translated);
-					htmlEl.css('direction', translated);
-				});
-
-				translator.switchTimeagoLanguage(utils.userLangToTimeagoCode(config.userLang), function () {
-					overrides.overrideTimeago();
-					ajaxify.refresh();
-				});
+				window.location.reload();
 			}
 		});
 	}
@@ -127,11 +118,14 @@ define('forum/account/settings', [
 		if (skinName === currentSkin) {
 			return;
 		}
-
+		const langDir = $('html').attr('data-dir');
 		const linkEl = document.createElement('link');
 		linkEl.rel = 'stylesheet';
 		linkEl.type = 'text/css';
-		linkEl.href = config.relative_path + '/assets/client' + (skinName ? '-' + skinName : '') + '.css';
+		linkEl.href = config.relative_path +
+			'/assets/client' + (skinName ? '-' + skinName : '') +
+			(langDir === 'rtl' ? '-rtl' : '') +
+			'.css';
 		linkEl.onload = function () {
 			clientEl.parentNode.removeChild(clientEl);
 

@@ -9,6 +9,7 @@ const sass = require('sass');
 const postcss = require('postcss');
 const autoprefixer = require('autoprefixer');
 const clean = require('postcss-clean');
+const rtlcss = require('rtlcss');
 
 const fork = require('./debugFork');
 require('../file'); // for graceful-fs
@@ -231,6 +232,9 @@ actions.buildCSS = async function buildCSS(data) {
 	});
 
 	const postcssArgs = [autoprefixer];
+	if (data.direction === 'rtl') {
+		postcssArgs.push(rtlcss());
+	}
 	if (data.minify) {
 		postcssArgs.push(clean({
 			processImportFrom: ['local'],
@@ -243,12 +247,13 @@ actions.buildCSS = async function buildCSS(data) {
 };
 
 Minifier.css = {};
-Minifier.css.bundle = async function (source, paths, minify, fork) {
+Minifier.css.bundle = async function (source, paths, minify, fork, direction) {
 	return await executeAction({
 		act: 'buildCSS',
 		source: source,
 		paths: paths,
 		minify: minify,
+		direction: direction,
 	}, fork);
 };
 
