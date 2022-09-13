@@ -2,15 +2,14 @@
 	position: fixed;
 	bottom: 10%;
 	right: 2rem;
-	z-index: 1;
+	z-index: $zindex-modal;
 }
 
-// TODO: port to bootstrap5 scss
-// @media screen and (min-width: $screen-sm-min) {
-// 	.tool-modal {
-// 		max-width: 33%;
-// 	}
-// }
+@include media-breakpoint-up(sm) {
+	.tool-modal {
+		max-width: 33%;
+	}
+}
 
 .topic-thumbs-modal {
 	img.media-object {
