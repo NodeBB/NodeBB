@@ -22,7 +22,7 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="clearfix float-end text-right">
+                <div class="clearfix float-end text-end">
                     <div class="btn-group category-tools">
                         <button class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" type="button"><i class="fa fa-fw fa-ellipsis-h"></i></button>
                         <ul class="dropdown-menu dropdown-menu-end">

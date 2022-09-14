@@ -96,13 +96,13 @@
 				<thead>
 					<tr>
 						<th><input component="user/select/all" type="checkbox"/></th>
-						<th class="text-right text-muted">[[admin/manage/users:users.uid]]</th>
+						<th class="text-end text-muted">[[admin/manage/users:users.uid]]</th>
 						<th class="text-muted">[[admin/manage/users:users.username]]</th>
 						<th class="text-muted">[[admin/manage/users:users.email]]</th>
 						<th class="text-muted">[[admin/manage/users:users.ip]]</th>
-						<th data-sort="postcount" class="text-right pointer">[[admin/manage/users:users.postcount]] {{{if sort_postcount}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
-						<th data-sort="reputation" class="text-right pointer">[[admin/manage/users:users.reputation]] {{{if sort_reputation}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
-						<th data-sort="flags" class="text-right pointer">[[admin/manage/users:users.flags]] {{{if sort_flags}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
+						<th data-sort="postcount" class="text-end pointer">[[admin/manage/users:users.postcount]] {{{if sort_postcount}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
+						<th data-sort="reputation" class="text-end pointer">[[admin/manage/users:users.reputation]] {{{if sort_reputation}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
+						<th data-sort="flags" class="text-end pointer">[[admin/manage/users:users.flags]] {{{if sort_flags}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
 						<th data-sort="joindate" class="pointer">[[admin/manage/users:users.joined]] {{{if sort_joindate}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
 						<th data-sort="lastonline" class="pointer">[[admin/manage/users:users.last-online]] {{{if sort_lastonline}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
 					</tr>
@@ -111,7 +111,7 @@
 					<!-- BEGIN users -->
 					<tr class="user-row">
 						<th><input component="user/select/single" data-uid="{users.uid}" type="checkbox"/></th>
-						<td class="text-right">{users.uid}</td>
+						<td class="text-end">{users.uid}</td>
 						<td>
 							<i title="[[admin/manage/users:users.banned]]" class="ban fa fa-gavel text-danger<!-- IF !users.banned --> hidden<!-- ENDIF !users.banned -->"></i>
 							<i class="administrator fa fa-shield text-success<!-- IF !users.administrator --> hidden<!-- ENDIF !users.administrator -->"></i>
@@ -128,9 +128,9 @@
 							{{{ end }}}
 						</td>
 						<td>{users.ip}</td>
-						<td class="text-right">{users.postcount}</td>
-						<td class="text-right">{users.reputation}</td>
-						<td class="text-right"><!-- IF users.flags -->{users.flags}<!-- ELSE -->0<!-- ENDIF users.flags --></td>
+						<td class="text-end">{users.postcount}</td>
+						<td class="text-end">{users.reputation}</td>
+						<td class="text-end"><!-- IF users.flags -->{users.flags}<!-- ELSE -->0<!-- ENDIF users.flags --></td>
 						<td><span class="timeago" title="{users.joindateISO}"></span></td>
 						<td><span class="timeago" title="{users.lastonlineISO}"></span></td>
 					</tr>

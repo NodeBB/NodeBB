@@ -15,8 +15,8 @@
 		<thead>
 			<tr>
 				<th>[[admin/manage/uploads:filename]]</th>
-				<!-- IF showPids --><th class="text-right">[[admin/manage/uploads:usage]]</th><!-- END -->
-				<th class="text-right">[[admin/manage/uploads:size/filecount]]</th>
+				<!-- IF showPids --><th class="text-end">[[admin/manage/uploads:usage]]</th><!-- END -->
+				<th class="text-end">[[admin/manage/uploads:size/filecount]]</th>
 				<th></th>
 			</tr>
 		</thead>
@@ -36,7 +36,7 @@
 				<!-- ENDIF files.isFile -->
 
 				<!-- IF showPids -->
-				<td class="col-md-3 text-right">
+				<td class="col-md-3 text-end">
 					{{{ each ../inPids }}}
 					<a target="_blank" href="{config.relative_path}/post/{@value}"><span class="label label-default">{@value}</span></a>
 					{{{ end }}}
@@ -46,9 +46,9 @@
 				</td>
 				<!-- END -->
 
-				<td class="col-md-2 text-right"><!-- IF files.isFile -->{files.sizeHumanReadable}<!-- ELSE -->[[admin/manage/uploads:filecount, {files.fileCount}]]<!-- ENDIF files.isFile --></td>
+				<td class="col-md-2 text-end"><!-- IF files.isFile -->{files.sizeHumanReadable}<!-- ELSE -->[[admin/manage/uploads:filecount, {files.fileCount}]]<!-- ENDIF files.isFile --></td>
 
-				<td role="button" class="col-md-1 text-right"><i class="delete fa fa-fw fa-trash-o <!-- IF !files.isFile --> hidden<!-- ENDIF !files.isFile -->"></i></td>
+				<td role="button" class="col-md-1 text-end"><i class="delete fa fa-fw fa-trash-o <!-- IF !files.isFile --> hidden<!-- ENDIF !files.isFile -->"></i></td>
 			</tr>
 			<!-- END files -->
 		</tbody>

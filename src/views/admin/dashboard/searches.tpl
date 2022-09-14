@@ -15,7 +15,7 @@
 				{{{ each searches }}}
 				<tr>
 					<td>{searches.value}</a></td>
-					<td class="text-right">{searches.score}</td>
+					<td class="text-end">{searches.score}</td>
 				</tr>
 				{{{ end }}}
 			</tbody>
