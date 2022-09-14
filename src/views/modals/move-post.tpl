@@ -1,5 +1,5 @@
 <div class="card tool-modal shadow">
-	<h5 class="card-header text-bg-primary">
+	<h5 class="card-header">
 		[[topic:thread_tools.move-posts]]
 	</h5>
 	<div class="card-body">
