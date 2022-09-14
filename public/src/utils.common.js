@@ -517,31 +517,6 @@ const utils = {
 		return 'ontouchstart' in document.documentElement;
 	},
 
-	findBootstrapEnvironment: function () {
-		// http://stackoverflow.com/questions/14441456/how-to-detect-which-device-view-youre-on-using-twitter-bootstrap-api
-		const envs = ['xs', 'sm', 'md', 'lg'];
-		const $el = $('<div>');
-
-		$el.appendTo($('body'));
-
-		for (let i = envs.length - 1; i >= 0; i -= 1) {
-			const env = envs[i];
-
-			$el.addClass('hidden-' + env);
-			if ($el.is(':hidden')) {
-				$el.remove();
-				return env;
-			}
-		}
-	},
-
-	isMobile: function () {
-		const env = utils.findBootstrapEnvironment();
-		return ['xs', 'sm'].some(function (targetEnv) {
-			return targetEnv === env;
-		});
-	},
-
 	getHoursArray: function () {
 		const currentHour = new Date().getHours();
 		const labels = [];
