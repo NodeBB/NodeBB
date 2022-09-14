@@ -41,6 +41,7 @@ define('accounts/picture', [
 					title: '[[user:change_picture]]',
 					message: html,
 					show: true,
+					size: 'large',
 					buttons: {
 						close: {
 							label: '[[global:close]]',
@@ -69,7 +70,7 @@ define('accounts/picture', [
 				function updateImages() {
 					// Check to see which one is the active picture
 					if (!ajaxify.data.picture) {
-						modal.find('.list-group-item .user-icon').parents('.list-group-item').addClass('active');
+						modal.find('[data-type="default"]').addClass('active');
 					} else {
 						modal.find('.list-group-item img').each(function () {
 							if (this.getAttribute('src') === ajaxify.data.picture) {
