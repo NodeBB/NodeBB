@@ -68,6 +68,8 @@
 
 @mixin user-icon-style($size: 32px, $font-size: 1.5rem, $border-radius: inherit){
 	border-radius: $border-radius;
+	width: $size;
+	height: $size;
 	line-height: $size;
 	font-size: $font-size;
 }

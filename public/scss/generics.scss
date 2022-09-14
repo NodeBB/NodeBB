@@ -80,9 +80,7 @@
 	@include user-icon;
 
 	$size: var(--avatar-size);
-	width: $size;
-	height: $size;
-	@include user-icon-style($line-height-base, calc($size * 0.6));
+	@include user-icon-style($size, calc($size * 0.6));
 
 	&.avatar-rounded {
 		border-radius: 50%;
