@@ -14,13 +14,7 @@
 							<span class="badge bg-info">{events.type}</span>
 							<span class="badge bg-info">uid {events.uid}</span>
 							<!-- IF events.ip --><span class="badge bg-info">{events.ip}</span><!-- END -->
-							<a href="{config.relative_path}/user/{events.user.userslug}" target="_blank">
-								<!-- IF events.user.picture -->
-								<img class="avatar avatar-xs" src="{events.user.picture}" alt="" />
-								<!-- ELSE -->
-								<div class="avatar avatar-xs" style="background-color: {events.user.icon:bgColor};">{events.user.icon:text}</div>
-								<!-- ENDIF events.user.picture -->
-							</a>
+							<a href="{config.relative_path}/user/{events.user.userslug}" target="_blank">{buildAvatar(events.user, "24px", true)}</a>
 							<a href="{config.relative_path}/user/{events.user.userslug}" target="_blank">{events.user.username}</a>
 							<span class="float-end delete-event ms-2 pointer"><i class="fa fa-trash-o"></i></span>
 							<span class="float-end">{events.timestampISO}</span>

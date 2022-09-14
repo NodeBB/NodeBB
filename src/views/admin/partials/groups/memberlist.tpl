@@ -17,13 +17,7 @@
 	<!-- BEGIN group.members -->
 	<tr data-uid="{group.members.uid}">
 		<td>
-			<a href="{config.relative_path}/user/{group.members.userslug}">
-				<!-- IF group.members.picture -->
-				<img class="avatar avatar-sm avatar-rounded" src="{group.members.picture}" alt="" />
-				<!-- ELSE -->
-				<div class="avatar avatar-sm avatar-rounded" style="background-color: {group.members.icon:bgColor};">{group.members.icon:text}</div>
-				<!-- ENDIF group.members.picture -->
-			</a>
+			<a href="{config.relative_path}/user/{group.members.userslug}">{buildAvatar(group.members, "24px", true)}</a>
 		</td>
 		<td class="member-name">
 			<a href="{config.relative_path}/user/{group.members.userslug}">{group.members.username}</a> <i title="[[groups:owner]]" class="user-owner-icon fa fa-star text-warning <!-- IF !group.members.isOwner -->invisible<!-- ENDIF !group.members.isOwner -->"></i>

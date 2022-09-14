@@ -4,11 +4,7 @@
 		<div class="administrator-area">
 		<!-- BEGIN admins.members -->
 			<div class="badge text-bg-light m-1 p-1 float-start" data-uid="{admins.members.uid}">
-				<!-- IF admins.members.picture -->
-				<img class="avatar avatar-sm" src="{admins.members.picture}" alt="" />
-				<!-- ELSE -->
-				<div class="avatar avatar-sm" style="background-color: {admins.members.icon:bgColor};">{admins.members.icon:text}</div>
-				<!-- ENDIF admins.members.picture -->
+				{buildAvatar(admins.members, "24px", true)}
 				<a href="{config.relative_path}/user/{admins.members.userslug}">{admins.members.username}</a>
 				<i class="mx-1 remove-user-icon fa fa-times" role="button"></i>
 			</div>
@@ -22,11 +18,7 @@
 		<div class="global-moderator-area">
 		<!-- BEGIN globalMods.members -->
 			<div class="badge text-bg-light  m-1 p-1 float-start" data-uid="{globalMods.members.uid}">
-				<!-- IF globalMods.members.picture -->
-				<img class="avatar avatar-sm" src="{globalMods.members.picture}" alt="" />
-				<!-- ELSE -->
-				<div class="avatar avatar-sm" style="background-color: {globalMods.members.icon:bgColor};">{globalMods.members.icon:text}</div>
-				<!-- ENDIF globalMods.members.picture -->
+				{buildAvatar(globalMods.members, "24px", true)}
 				<a href="{config.relative_path}/user/{globalMods.members.userslug}">{globalMods.members.username}</a>
 				<i class="mx-1 remove-user-icon fa fa-times" role="button"></i>
 			</div>
@@ -55,11 +47,7 @@
 			<div class="moderator-area" data-cid="{categoryMods.cid}">
 				{{{ each categoryMods.moderators }}}
 					<div class="badge text-bg-light m-1 p-1 float-start" data-uid="{categoryMods.moderators.uid}">
-						{{{ if  categoryMods.moderators.picture }}}
-						<img class="avatar avatar-sm" src="{categoryMods.moderators.picture}" alt="" />
-						{{{ else }}}
-						<div class="avatar avatar-sm" style="background-color: {categoryMods.moderators.icon:bgColor};">{categoryMods.moderators.icon:text}</div>
-						{{{ end }}}
+						{buildAvatar(categoryMods.moderators, "24px", true)}
 						<a href="{config.relative_path}/user/{categoryMods.moderators.userslug}">{categoryMods.moderators.username}</a>
 						<i class="mx-1 remove-user-icon fa fa-times" role="button"></i>
 					</div>

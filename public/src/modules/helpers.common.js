@@ -207,7 +207,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 
 			if (event.user) {
 				if (!event.user.system) {
-					html += `<span><a href="${relative_path}/user/${event.user.userslug}">${buildAvatar(event.user, 'xs', true)}&nbsp;${event.user.username}</a></span>&nbsp;`;
+					html += `<span><a href="${relative_path}/user/${event.user.userslug}">${buildAvatar(event.user, '16px', true)}&nbsp;${event.user.username}</a></span>&nbsp;`;
 				} else {
 					html += `<span class="timeline-text">[[global:system-user]]</span>&nbsp;`;
 				}

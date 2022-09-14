@@ -57,11 +57,7 @@
 								{users.ip}
 								{{{ each users.ipMatch }}}
 								<br>
-								<!-- IF users.ipMatch.picture -->
-								<img src="{users.ipMatch.picture}" class="user-img" alt="" />
-								<!-- ELSE -->
-								<div class="user-img avatar avatar-sm" style="background-color: {users.ipMatch.icon:bgColor};">{users.ipMatch.icon:text}</div>
-								<!-- ENDIF users.ipMatch.picture -->
+								{buildAvatar(users.ipMatch, "24px", true)}
 								<a href="{config.relative_path}/uid/{users.ipMatch.uid}">{users.ipMatch.username}</a>
 								{{{ end }}}
 							</td>
