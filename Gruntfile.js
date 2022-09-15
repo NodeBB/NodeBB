@@ -59,11 +59,6 @@ module.exports = function (grunt) {
 			.concat(pluginList.map(p => `node_modules/${p}/+(public|static|scss)/**/*.scss`))
 			.concat(pluginList.map(p => `node_modules/${p}/+(public|static)/**/*.css`));
 
-		const styleUpdated_Admin = pluginList.map(p => `node_modules/${p}/*.scss`)
-			.concat(pluginList.map(p => `node_modules/${p}/*.css`))
-			.concat(pluginList.map(p => `node_modules/${p}/+(public|static|scss)/**/*.scss`))
-			.concat(pluginList.map(p => `node_modules/${p}/+(public|static)/**/*.css`));
-
 		const clientUpdated = pluginList.map(p => `node_modules/${p}/+(public|static)/**/*.js`);
 		const serverUpdated = pluginList.map(p => `node_modules/${p}/*.js`)
 			.concat(pluginList.map(p => `node_modules/${p}/+(lib|src)/**/*.js`));
@@ -72,19 +67,10 @@ module.exports = function (grunt) {
 		const langUpdated = pluginList.map(p => `node_modules/${p}/+(public|static|languages)/**/*.json`);
 
 		grunt.config(['watch'], {
-			styleUpdated_Client: {
+			styleUpdated: {
 				files: [
 					'public/scss/**/*.scss',
 					...styleUpdated_Client,
-				],
-				options: {
-					interval: 1000,
-				},
-			},
-			styleUpdated_Admin: {
-				files: [
-					'public/scss/**/*.scss',
-					...styleUpdated_Admin,
 				],
 				options: {
 					interval: 1000,
@@ -168,16 +154,14 @@ module.exports = function (grunt) {
 	grunt.event.removeAllListeners('watch');
 	grunt.event.on('watch', (action, filepath, target) => {
 		let compiling;
-		if (target === 'styleUpdated_Client') {
-			compiling = 'clientCSS';
-		} else if (target === 'styleUpdated_Admin') {
-			compiling = 'acpCSS';
+		if (target === 'styleUpdated') {
+			compiling = ['clientCSS', 'acpCSS'];
 		} else if (target === 'clientUpdated') {
-			compiling = 'js';
+			compiling = ['js'];
 		} else if (target === 'templatesUpdated') {
-			compiling = 'tpl';
+			compiling = ['tpl'];
 		} else if (target === 'langUpdated') {
-			compiling = 'lang';
+			compiling = ['lang'];
 		} else if (target === 'serverUpdated') {
 			// empty require cache
 			const paths = ['./src/meta/build.js', './src/meta/index.js'];
@@ -185,7 +169,7 @@ module.exports = function (grunt) {
 			return run();
 		}
 
-		require('./src/meta/build').build([compiling], { webpack: false }, (err) => {
+		require('./src/meta/build').build(compiling, { webpack: false }, (err) => {
 			if (err) {
 				winston.error(err.stack);
 			}
