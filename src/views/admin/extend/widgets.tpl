@@ -91,10 +91,10 @@
 						<div class="pointer" style="padding: 20px; border: 1px dotted #dedede; margin-bottom: 20px;" data-container-html=" ">
 							[[admin/extend/widgets:containers.none]]
 						</div>
-						<div class="card card-body bg-light rounded-0 border-0 shadow-none mb-3 pointer" data-container-html='<div class="card card-body bg-light rounded-0 border-0 shadow-none mb-3">\{{body}}</div>'>
+						<div class="card card-header p-3 rounded-0 border-0 shadow-none mb-3 pointer" data-container-html='<div class="card card-header p-3 rounded-0 border-0 shadow-none mb-3">\{{body}}</div>'>
 							[[admin/extend/widgets:container.well]]
 						</div>
-						<div class="card card-body bg-light rounded-0 border-0 shadow-none p-5 mb-3 pointer" data-container-html='<div class="card card-body bg-light rounded-0 border-0 shadow-none p-5 mb-3">\{{body}}</div>'>
+						<div class="card card-header rounded-0 border-0 shadow-none p-5 mb-3 pointer" data-container-html='<div class="card card-header rounded-0 border-0 shadow-none p-5 mb-3">\{{body}}</div>'>
 							[[admin/extend/widgets:container.jumbotron]]
 						</div>
 						<div class="card mb-3" data-container-html='<div class="card"><div class="card-body">\{{body}}</div></div>'>
