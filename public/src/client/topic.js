@@ -76,11 +76,13 @@ define('forum/topic', [
 		if (config.topicSearchEnabled) {
 			require(['mousetrap', 'search'], function (mousetrap, search) {
 				mousetrap.bind(['command+f', 'ctrl+f'], function (e) {
-					if (ajaxify.data.template.topic) {
-						e.preventDefault();
-						$('#search-fields input').val('in:topic-' + ajaxify.data.tid + ' ');
-						search.showAndFocusInput();
-					}
+					e.preventDefault();
+					$('#search-fields input').val('in:topic-' + ajaxify.data.tid + ' ');
+					search.showAndFocusInput();
+				});
+
+				hooks.onPage('action:ajaxify.cleanup', () => {
+					mousetrap.unbind(['command+f', 'ctrl+f']);
 				});
 			});
 		}
