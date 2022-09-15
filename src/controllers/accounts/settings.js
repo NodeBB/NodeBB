@@ -60,7 +60,7 @@ settingsController.get = async function (req, res, next) {
 		{ name: 'Default', value: '' },
 	];
 	userData.bootswatchSkinOptions.push(
-		...meta.css.supportedSkins.map(skin => ({ name: _.capitalize(skin), value: skin}))
+		...meta.css.supportedSkins.map(skin => ({ name: _.capitalize(skin), value: skin }))
 	);
 
 	userData.bootswatchSkinOptions.forEach((skin) => {
