@@ -101,22 +101,22 @@ describe('minifier', () => {
 	});
 
 	const styles = [
-		'@import (inline) "./1.css";',
-		'@import "./2.less";',
+		'@import "./1";',
+		'@import "./2.scss";',
 	].join('\n');
 	const paths = [
 		path.resolve(__dirname, './files'),
 	];
 	it('.css.bundle() should concat styles', (done) => {
-		minifier.css.bundle(styles, paths, false, false, (err, bundle) => {
+		minifier.css.bundle(styles, paths, false, false, 'ltr', (err, bundle) => {
 			assert.ifError(err);
-			assert.strictEqual(bundle.code, '.help { margin: 10px; } .yellow { background: yellow; }\n.help {\n  display: block;\n}\n.help .blue {\n  background: blue;\n}\n');
+			assert.strictEqual(bundle.code, '.help {\n  margin: 10px;\n}\n\n.yellow {\n  background: yellow;\n}\n\n.help {\n  display: block;\n}\n.help .blue {\n  background: blue;\n}');
 			done();
 		});
 	});
 
 	it('.css.bundle() should minify styles', (done) => {
-		minifier.css.bundle(styles, paths, true, false, (err, bundle) => {
+		minifier.css.bundle(styles, paths, true, false, 'ltr', (err, bundle) => {
 			assert.ifError(err);
 			assert.strictEqual(bundle.code, '.help{margin:10px}.yellow{background:#ff0}.help{display:block}.help .blue{background:#00f}');
 			done();
@@ -175,7 +175,6 @@ describe('Build', () => {
 			assert.ifError(err);
 			const filename = path.join(__dirname, '../build/public/client.css');
 			assert(file.existsSync(filename));
-			assert(fs.readFileSync(filename).toString().startsWith('/*! normalize.css'));
 			done();
 		});
 	});
@@ -185,12 +184,6 @@ describe('Build', () => {
 			assert.ifError(err);
 			const filename = path.join(__dirname, '../build/public/admin.css');
 			assert(file.existsSync(filename));
-			const adminCSS = fs.readFileSync(filename).toString();
-			if (global.env === 'production') {
-				assert(adminCSS.startsWith('@charset "UTF-8";') || adminCSS.startsWith('@import url'));
-			} else {
-				assert(adminCSS.startsWith('.recent-replies'));
-			}
 			done();
 		});
 	});
