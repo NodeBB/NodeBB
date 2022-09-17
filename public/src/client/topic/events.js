@@ -158,7 +158,7 @@ define('forum/topic/events', [
 			hooks.fire('action:posts.edited', data);
 		}
 
-		if (data.topic.tags && tagsUpdated(data.topic.tags)) {
+		if (data.topic.tags && data.topic.tagsupdated) {
 			Benchpress.render('partials/topic/tags', { tags: data.topic.tags }).then(function (html) {
 				const tags = $('.tags');
 
@@ -169,19 +169,6 @@ define('forum/topic/events', [
 		}
 
 		postTools.removeMenu(components.get('post', 'pid', data.post.pid));
-	}
-
-	function tagsUpdated(tags) {
-		if (tags.length !== $('.tags').first().children().length) {
-			return true;
-		}
-
-		for (let i = 0; i < tags.length; i += 1) {
-			if (!$('.tags .tag-item[data-tag="' + tags[i].value + '"]').length) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	function onPostPurged(postData) {
