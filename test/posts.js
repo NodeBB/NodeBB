@@ -425,6 +425,7 @@ describe('Post\'s', () => {
 				cid: cid,
 				title: 'topic to edit',
 				content: 'A post to edit',
+				tags: ['nodebb'],
 			}, (err, data) => {
 				assert.ifError(err);
 				pid = data.postData.pid;
