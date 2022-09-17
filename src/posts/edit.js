@@ -29,7 +29,9 @@ module.exports = function (Posts) {
 			throw new Error('[[error:no-post]]');
 		}
 
-		const topicData = await topics.getTopicFields(postData.tid, ['cid', 'mainPid', 'title', 'timestamp', 'scheduled', 'slug']);
+		const topicData = await topics.getTopicFields(postData.tid, [
+			'cid', 'mainPid', 'title', 'timestamp', 'scheduled', 'slug', 'tags',
+		]);
 
 		await scheduledTopicCheck(data, topicData);
 
@@ -53,7 +55,10 @@ module.exports = function (Posts) {
 		]);
 
 		await Posts.setPostFields(data.pid, result.post);
-		const contentChanged = data.content !== oldContent;
+		const contentChanged = data.content !== oldContent ||
+			topic.renamed ||
+			topic.tagsupdated;
+
 		if (meta.config.enablePostHistory === 1 && contentChanged) {
 			await Posts.diffs.save({
 				pid: data.pid,
@@ -61,6 +66,7 @@ module.exports = function (Posts) {
 				oldContent: oldContent,
 				newContent: data.content,
 				edited: editPostData.edited,
+				topic,
 			});
 		}
 		await Posts.uploads.sync(data.pid);
@@ -109,6 +115,7 @@ module.exports = function (Posts) {
 				title: validator.escape(String(topicData.title)),
 				isMainPost: false,
 				renamed: false,
+				tagsupdated: false,
 			};
 		}
 
@@ -124,15 +131,16 @@ module.exports = function (Posts) {
 			newTopicData.slug = `${tid}/${slugify(title) || 'topic'}`;
 		}
 
-		data.tags = data.tags || [];
+		const tagsupdated = Array.isArray(data.tags) &&
+			!_.isEqual(data.tags, topicData.tags.map(tag => tag.value));
 
-		if (data.tags.length) {
+		if (tagsupdated) {
 			const canTag = await privileges.categories.can('topics:tag', topicData.cid, data.uid);
 			if (!canTag) {
 				throw new Error('[[error:no-privileges]]');
 			}
+			await topics.validateTags(data.tags, topicData.cid, data.uid, tid);
 		}
-		await topics.validateTags(data.tags, topicData.cid, data.uid, tid);
 
 		const results = await plugins.hooks.fire('filter:topic.edit', {
 			req: data.req,
@@ -140,7 +148,9 @@ module.exports = function (Posts) {
 			data: data,
 		});
 		await db.setObject(`topic:${tid}`, results.topic);
-		await topics.updateTopicTags(tid, data.tags);
+		if (tagsupdated) {
+			await topics.updateTopicTags(tid, data.tags);
+		}
 		const tags = await topics.getTopicTagsObjects(tid);
 
 		if (rescheduling(data, topicData)) {
@@ -149,7 +159,7 @@ module.exports = function (Posts) {
 
 		newTopicData.tags = data.tags;
 		newTopicData.oldTitle = topicData.title;
-		const renamed = translator.escape(validator.escape(String(title))) !== topicData.title;
+		const renamed = title && translator.escape(validator.escape(String(title))) !== topicData.title;
 		plugins.hooks.fire('action:topic.edit', { topic: newTopicData, uid: data.uid });
 		return {
 			tid: tid,
@@ -160,8 +170,10 @@ module.exports = function (Posts) {
 			slug: newTopicData.slug || topicData.slug,
 			isMainPost: true,
 			renamed: renamed,
-			rescheduled: rescheduling(data, topicData),
+			tagsupdated: tagsupdated,
 			tags: tags,
+			oldTags: topicData.tags,
+			rescheduled: rescheduling(data, topicData),
 		};
 	}
 
