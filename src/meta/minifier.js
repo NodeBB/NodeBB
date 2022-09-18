@@ -231,29 +231,39 @@ actions.buildCSS = async function buildCSS(data) {
 		loadPaths: data.paths,
 	});
 
-	const postcssArgs = [autoprefixer];
-	if (data.direction === 'rtl') {
-		postcssArgs.push(rtlcss());
+	async function processScss(direction) {
+		const postcssArgs = [autoprefixer];
+		if (direction === 'rtl') {
+			postcssArgs.unshift(rtlcss());
+		}
+		if (data.minify) {
+			postcssArgs.push(clean({
+				processImportFrom: ['local'],
+			}));
+		}
+		return await postcss(postcssArgs).process(scssOutput.css.toString(), {
+			from: undefined,
+		});
 	}
-	if (data.minify) {
-		postcssArgs.push(clean({
-			processImportFrom: ['local'],
-		}));
-	}
-	const result = await postcss(postcssArgs).process(scssOutput.css.toString(), {
-		from: undefined,
-	});
-	return { code: result.css };
+
+	const [ltrresult, rtlresult] = await Promise.all([
+		processScss('ltr'),
+		processScss('rtl'),
+	]);
+
+	return {
+		ltr: { code: ltrresult.css },
+		rtl: { code: rtlresult.css },
+	};
 };
 
 Minifier.css = {};
-Minifier.css.bundle = async function (source, paths, minify, fork, direction) {
+Minifier.css.bundle = async function (source, paths, minify, fork) {
 	return await executeAction({
 		act: 'buildCSS',
 		source: source,
 		paths: paths,
 		minify: minify,
-		direction: direction,
 	}, fork);
 };
 

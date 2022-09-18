@@ -126,7 +126,7 @@
 		</div>
 		<div class="col-md-3">
 			<div component="group-selector" class="btn-group">
-				<button type="button" class="btn btn-default dropdown-toggle w-100" data-bs-toggle="dropdown">
+				<button type="button" class="btn btn-outline-secondary dropdown-toggle w-100" data-bs-toggle="dropdown">
 					<span component="group-selector-selected">{group.displayName}</span> <span class="caret"></span>
 				</button>
 				<div component="group-selector-search" class="hidden position-absolute w-100">

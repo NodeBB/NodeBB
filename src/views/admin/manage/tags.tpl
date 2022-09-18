@@ -58,8 +58,8 @@
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<button type="button" class="close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
 					<h4 class="modal-title">[[admin/manage/tags:create]]</h4>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
 				</div>
 				<div class="modal-body">
 					<form>

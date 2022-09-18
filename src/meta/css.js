@@ -52,7 +52,7 @@ const buildImports = {
 			'@import "fontawesome";',
 			'@import "admin/admin";',
 			source,
-			'@import "jquery-ui.scss";',
+			'@import "jquery-ui";',
 			'@import "@adactive/bootstrap-tagsinput/src/bootstrap-tagsinput";',
 			'@import "../public/vendor/mdl/material";',
 		].join('\n');
@@ -218,10 +218,7 @@ CSS.buildBundle = async function (target, fork) {
 
 	const data = await getBundleMetadata(target);
 	const minify = process.env.NODE_ENV !== 'development';
-	const [ltr, rtl] = await Promise.all([
-		minifier.css.bundle(data.imports, data.paths, minify, fork, 'ltr'),
-		minifier.css.bundle(data.imports, data.paths, minify, fork, 'rtl'),
-	]);
+	const { ltr, rtl } = await minifier.css.bundle(data.imports, data.paths, minify, fork);
 
 	await Promise.all([
 		fs.promises.writeFile(path.join(__dirname, '../../build/public', `${target}.css`), ltr.code),

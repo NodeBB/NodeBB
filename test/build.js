@@ -110,7 +110,7 @@ describe('minifier', () => {
 	it('.css.bundle() should concat styles', (done) => {
 		minifier.css.bundle(styles, paths, false, false, 'ltr', (err, bundle) => {
 			assert.ifError(err);
-			assert.strictEqual(bundle.code, '.help {\n  margin: 10px;\n}\n\n.yellow {\n  background: yellow;\n}\n\n.help {\n  display: block;\n}\n.help .blue {\n  background: blue;\n}');
+			assert.strictEqual(bundle.ltr.code, '.help {\n  margin: 10px;\n}\n\n.yellow {\n  background: yellow;\n}\n\n.help {\n  display: block;\n}\n.help .blue {\n  background: blue;\n}');
 			done();
 		});
 	});
@@ -118,7 +118,7 @@ describe('minifier', () => {
 	it('.css.bundle() should minify styles', (done) => {
 		minifier.css.bundle(styles, paths, true, false, 'ltr', (err, bundle) => {
 			assert.ifError(err);
-			assert.strictEqual(bundle.code, '.help{margin:10px}.yellow{background:#ff0}.help{display:block}.help .blue{background:#00f}');
+			assert.strictEqual(bundle.ltr.code, '.help{margin:10px}.yellow{background:#ff0}.help{display:block}.help .blue{background:#00f}');
 			done();
 		});
 	});

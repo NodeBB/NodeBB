@@ -48,7 +48,7 @@
 					<!-- IF ../error -->
 					<li data-plugin-id="{../id}" class="clearfix">
 						<div class="float-end">
-							<button class="btn btn-default disabled"><i class="fa fa-exclamation-triangle"></i> [[admin/extend/plugins:plugin-item.unknown]]</button>
+							<button class="btn btn-outline-secondary disabled"><i class="fa fa-exclamation-triangle"></i> [[admin/extend/plugins:plugin-item.unknown]]</button>
 							<button data-action="toggleInstall" data-installed="1" class="btn btn-danger"><i class="fa fa-trash-o"></i> [[admin/extend/plugins:plugin-item.uninstall]]</button>
 						</div>
 
