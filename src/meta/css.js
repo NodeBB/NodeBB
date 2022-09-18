@@ -200,9 +200,9 @@ async function getBundleMetadata(target) {
 		target === 'client' ? '' : filterGetImports(plugins.acpScssFiles, '.scss'),
 	]);
 
-	async function filterGetImports(files, prefix, extension) {
+	async function filterGetImports(files, extension) {
 		const filteredFiles = await filterMissingFiles(files);
-		return await getImports(filteredFiles, prefix, extension);
+		return await getImports(filteredFiles, extension);
 	}
 
 	let imports = `${cssImports}\n${scssImports}\n${acpScssImports}`;
