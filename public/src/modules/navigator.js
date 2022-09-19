@@ -47,7 +47,6 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 		thumb = $('.scroller-thumb');
 		thumbText = thumb.find('.thumb-text');
 
-
 		$(window).off('scroll', navigator.delayedUpdate).on('scroll', navigator.delayedUpdate);
 
 		paginationBlockEl.find('.dropdown-menu').off('click').on('click', function (e) {
@@ -331,6 +330,8 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 		return parts[1] + '/' + parts[2] + '/' + parts[3] + (index ? '/' + index : '');
 	}
 
+	navigator.getCount = () => count;
+
 	navigator.setCount = function (value) {
 		value = parseInt(value, 10);
 		if (value === count) {
@@ -438,6 +439,13 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 		}
 
 		toggle(!!count);
+	};
+
+	navigator.getIndex = () => index;
+
+	navigator.setIndex = (newIndex) => {
+		index = newIndex + 1;
+		navigator.updateTextAndProgressBar();
 	};
 
 	navigator.updateTextAndProgressBar = function () {
