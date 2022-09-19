@@ -561,11 +561,13 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 		navigator.scrollToElement(scrollTo, highlight, duration, topicIndex);
 	};
 
-	navigator.scrollToElement = function (scrollTo, highlight, duration, newIndex = null) {
+	navigator.scrollToElement = async (scrollTo, highlight, duration, newIndex = null) => {
 		if (!scrollTo.length) {
 			navigator.scrollActive = false;
 			return;
 		}
+
+		await hooks.fire('filter:navigator.scroll', { scrollTo, highlight, duration, newIndex });
 
 		const postHeight = scrollTo.outerHeight(true);
 		const navbarHeight = components.get('navbar').outerHeight(true);
@@ -584,6 +586,8 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 				// Re-enable onScroll behaviour
 				setTimeout(() => { // fixes race condition from jQuery — onAnimateComplete called too quickly
 					$(window).on('scroll', navigator.delayedUpdate);
+
+					hooks.fire('action:navigator.scrolled', { scrollTo, highlight, duration, newIndex });
 				}, 50);
 			}
 			function onAnimateComplete() {
