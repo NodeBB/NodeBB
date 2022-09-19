@@ -1,17 +1,28 @@
+#### v2.5.2 (2022-09-04)
+
+##### Chores
+
+*  incrementing version number - v2.5.1 (ce3aa950)
+*  update changelog for v2.5.1 (2b2fd4f3)
+
+##### Bug Fixes
+
+*  registration regression, closes #10875 (f6f37dc1)
+
+##### Other Changes
+
+*  fix lint error (b45e2413)
+
+##### Tests
+
+*  disable nbbpm test temporarily (1dc79d76)
+
 #### v2.5.1 (2022-09-02)
 
 ##### Chores
 
 *  incrementing version number - v2.5.0 (01d276cb)
 *  update changelog for v2.5.0 (1076285d)
-*  incrementing version number - v2.4.5 (dd3e1a28)
-*  incrementing version number - v2.4.4 (d5525c87)
-*  incrementing version number - v2.4.3 (9c647c6c)
-*  incrementing version number - v2.4.2 (3aa7b855)
-*  incrementing version number - v2.4.1 (60cbd148)
-*  incrementing version number - v2.4.0 (4834cde3)
-*  incrementing version number - v2.3.1 (d2425942)
-*  incrementing version number - v2.3.0 (046ea120)
 
 ##### Bug Fixes
 
@@ -34,15 +45,7 @@
 *  remove client-side js file for tpl that no longer exists (bc2ea860)
 *  incrementing version number - v2.4.5 (dd3e1a28)
 *  update changelog for v2.4.5 (d505cc47)
-*  incrementing version number - v2.4.4 (d5525c87)
-*  incrementing version number - v2.4.3 (9c647c6c)
-*  incrementing version number - v2.4.2 (3aa7b855)
-*  update changelog for v2.4.1 (20a661e1)
-*  incrementing version number - v2.4.1 (fecf31bd)
-*  incrementing version number - v2.4.1 (60cbd148)
-*  incrementing version number - v2.4.0 (4834cde3)
-*  incrementing version number - v2.3.1 (d2425942)
-*  incrementing version number - v2.3.0 (046ea120)
+
 * **deps:**
   *  update dependency eslint to v8.22.0 (#10835) (8fce68d3)
   *  update mongo docker tag to v3.7 (8afaed22)
@@ -105,12 +108,6 @@
 
 *  incrementing version number - v2.4.4 (d5525c87)
 *  update changelog for v2.4.4 (77e492b8)
-*  incrementing version number - v2.4.3 (9c647c6c)
-*  incrementing version number - v2.4.2 (3aa7b855)
-*  incrementing version number - v2.4.1 (60cbd148)
-*  incrementing version number - v2.4.0 (4834cde3)
-*  incrementing version number - v2.3.1 (d2425942)
-*  incrementing version number - v2.3.0 (046ea120)
 
 ##### Bug Fixes
 
@@ -123,11 +120,6 @@
 
 *  incrementing version number - v2.4.3 (9c647c6c)
 *  update changelog for v2.4.3 (06da15a5)
-*  incrementing version number - v2.4.2 (3aa7b855)
-*  incrementing version number - v2.4.1 (60cbd148)
-*  incrementing version number - v2.4.0 (4834cde3)
-*  incrementing version number - v2.3.1 (d2425942)
-*  incrementing version number - v2.3.0 (046ea120)
 
 ##### Bug Fixes
 
@@ -139,10 +131,6 @@
 
 *  incrementing version number - v2.4.2 (3aa7b855)
 *  update changelog for v2.4.2 (ba7a3466)
-*  incrementing version number - v2.4.1 (60cbd148)
-*  incrementing version number - v2.4.0 (4834cde3)
-*  incrementing version number - v2.3.1 (d2425942)
-*  incrementing version number - v2.3.0 (046ea120)
 
 ##### Bug Fixes
 
@@ -154,9 +142,6 @@
 
 *  incrementing version number - v2.4.1 (60cbd148)
 *  update changelog for v2.4.1 (4b6baabb)
-*  incrementing version number - v2.4.0 (4834cde3)
-*  incrementing version number - v2.3.1 (d2425942)
-*  incrementing version number - v2.3.0 (046ea120)
 
 ##### Documentation Changes
 
@@ -181,8 +166,6 @@
   *  update docker/setup-buildx-action action to v2 (371ac032)
 *  incrementing version number - v2.4.0 (4834cde3)
 *  update changelog for v2.4.0 (c4714ff7)
-*  incrementing version number - v2.3.1 (d2425942)
-*  incrementing version number - v2.3.0 (046ea120)
 
 ##### Bug Fixes
 
@@ -200,7 +183,6 @@
 *  opt-out of dependabot, due to conflicts with renovate (70d60289)
 *  incrementing version number - v2.3.1 (d2425942)
 *  update changelog for v2.3.1 (2f487175)
-*  incrementing version number - v2.3.0 (046ea120)
 * **i18n:**
   *  fallback strings for new resources: nodebb.admin-settings-email (cdaa8f21)
   *  fallback strings for new resources: nodebb.admin-settings-email (3e56c547)

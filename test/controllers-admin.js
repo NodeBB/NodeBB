@@ -241,8 +241,7 @@ describe('Admin Controllers', () => {
 			done();
 		});
 	});
-	/*
-	TODO: renable after nbbpm is fixed
+
 	it('should load /admin/extend/plugins', function (done) {
 		this.timeout(50000);
 		request(`${nconf.get('url')}/api/admin/extend/plugins`, { jar: jar, json: true }, (err, res, body) => {
@@ -254,7 +253,7 @@ describe('Admin Controllers', () => {
 			done();
 		});
 	});
-	*/
+
 	it('should load /admin/manage/users', (done) => {
 		request(`${nconf.get('url')}/api/admin/manage/users`, { jar: jar, json: true }, (err, res, body) => {
 			assert.ifError(err);

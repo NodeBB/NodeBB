@@ -58,6 +58,7 @@ define('forum/topic/diffs', ['api', 'bootbox', 'alerts', 'forum/topic/images'], 
 				posts: [data],
 			}, function ($html) {
 				$postContainer.empty().append($html);
+				$postContainer.find('.timeago').timeago();
 			});
 		}).catch(alerts.error);
 	};
