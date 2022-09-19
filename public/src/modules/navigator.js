@@ -446,6 +446,7 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 	navigator.setIndex = (newIndex) => {
 		index = newIndex + 1;
 		navigator.updateTextAndProgressBar();
+		setThumbToIndex(index);
 	};
 
 	navigator.updateTextAndProgressBar = function () {
