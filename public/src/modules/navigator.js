@@ -581,9 +581,9 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 		function animateScroll() {
 			function reenableScroll() {
 				// Re-enable onScroll behaviour
-				$(window).on('scroll', navigator.delayedUpdate);
-				const scrollToRect = scrollTo.get(0).getBoundingClientRect();
-				navigator.update(scrollToRect.top);
+				setTimeout(() => { // fixes race condition from jQuery — onAnimateComplete called too quickly
+					$(window).on('scroll', navigator.delayedUpdate);
+				}, 50);
 			}
 			function onAnimateComplete() {
 				if (done) {
