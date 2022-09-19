@@ -552,15 +552,15 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 
 	navigator.scrollToPostIndex = function (postIndex, highlight, duration) {
 		const scrollTo = components.get('post', 'index', postIndex);
-		navigator.scrollToElement(scrollTo, highlight, duration);
+		navigator.scrollToElement(scrollTo, highlight, duration, postIndex);
 	};
 
 	navigator.scrollToTopicIndex = function (topicIndex, highlight, duration) {
 		const scrollTo = $('[component="category/topic"][data-index="' + topicIndex + '"]');
-		navigator.scrollToElement(scrollTo, highlight, duration);
+		navigator.scrollToElement(scrollTo, highlight, duration, topicIndex);
 	};
 
-	navigator.scrollToElement = function (scrollTo, highlight, duration) {
+	navigator.scrollToElement = function (scrollTo, highlight, duration, newIndex = null) {
 		if (!scrollTo.length) {
 			navigator.scrollActive = false;
 			return;
@@ -594,8 +594,13 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 
 				navigator.scrollActive = false;
 				highlightPost();
-				$('body').scrollTop($('body').scrollTop() - 1);
-				$('html').scrollTop($('html').scrollTop() - 1);
+
+				const scrollToRect = scrollTo.get(0).getBoundingClientRect();
+				if (!newIndex) {
+					navigator.update(scrollToRect.top);
+				} else {
+					navigator.setIndex(newIndex);
+				}
 			}
 
 			let scrollTop = 0;
