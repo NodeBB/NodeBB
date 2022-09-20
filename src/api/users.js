@@ -459,11 +459,10 @@ usersAPI.generateExport = async (caller, { uid, type }) => {
 	});
 	child.on('exit', async () => {
 		await db.deleteObjectField('locks', `export:${uid}${type}`);
-		const userData = await user.getUserFields(uid, ['username', 'userslug']);
-		const { displayname } = userData;
+		const { displayname } = await user.getUserFields(uid, ['username']);
 		const n = await notifications.create({
 			bodyShort: `[[notifications:${type}-exported, ${displayname}]]`,
-			path: `/api/user/${userData.userslug}/export/${type}`,
+			path: `/api/v3/users/${uid}/exports/${type}`,
 			nid: `${type}:export:${uid}`,
 			from: uid,
 		});
