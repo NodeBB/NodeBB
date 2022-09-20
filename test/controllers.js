@@ -7,8 +7,10 @@ const request = require('request');
 const requestAsync = require('request-promise-native');
 const fs = require('fs');
 const path = require('path');
+const util = require('util');
 
 const db = require('./mocks/databasemock');
+const api = require('../src/api');
 const categories = require('../src/categories');
 const topics = require('../src/topics');
 const posts = require('../src/posts');
@@ -20,6 +22,8 @@ const privileges = require('../src/privileges');
 const plugins = require('../src/plugins');
 const utils = require('../src/utils');
 const helpers = require('./helpers');
+
+const sleep = util.promisify(setTimeout);
 
 describe('Controllers', () => {
 	let tid;
@@ -1476,30 +1480,41 @@ describe('Controllers', () => {
 			});
 		});
 
-		it('should export users posts', (done) => {
-			request(`${nconf.get('url')}/api/user/foo/export/posts`, { jar: jar }, (err, res, body) => {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 200);
-				assert(body);
-				done();
+		describe('user data export routes', () => {
+			before(async () => {
+				const types = ['profile', 'uploads', 'posts'];
+				await Promise.all(types.map(async (type) => {
+					await api.users.generateExport({ uid: fooUid, ip: '127.0.0.1' }, { uid: fooUid, type });
+				}));
+				await sleep(5000);
 			});
-		});
 
-		it('should export users uploads', (done) => {
-			request(`${nconf.get('url')}/api/user/foo/export/uploads`, { jar: jar }, (err, res, body) => {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 200);
-				assert(body);
-				done();
+			it('should export users posts', (done) => {
+				console.log(`${nconf.get('url')}/api/v3/users/${fooUid}/exports/posts`);
+				request(`${nconf.get('url')}/api/v3/users/${fooUid}/exports/posts`, { jar: jar }, (err, res, body) => {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					assert(body);
+					done();
+				});
 			});
-		});
 
-		it('should export users profile', (done) => {
-			request(`${nconf.get('url')}/api/user/foo/export/profile`, { jar: jar }, (err, res, body) => {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 200);
-				assert(body);
-				done();
+			it('should export users uploads', (done) => {
+				request(`${nconf.get('url')}/api/v3/users/${fooUid}/exports/uploads`, { jar: jar }, (err, res, body) => {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					assert(body);
+					done();
+				});
+			});
+
+			it('should export users profile', (done) => {
+				request(`${nconf.get('url')}/api/v3/users/${fooUid}/exports/profile`, { jar: jar }, (err, res, body) => {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					assert(body);
+					done();
+				});
 			});
 		});
 
