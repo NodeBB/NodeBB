@@ -7,7 +7,7 @@ const db = require('../database');
 const meta = require('../meta');
 const plugins = require('../plugins');
 const translator = require('../translator');
-
+const topics = require('../topics');
 
 module.exports = function (Posts) {
 	const Diffs = {};
@@ -38,16 +38,24 @@ module.exports = function (Posts) {
 	};
 
 	Diffs.save = async function (data) {
-		const { pid, uid, oldContent, newContent, edited } = data;
+		const { pid, uid, oldContent, newContent, edited, topic } = data;
 		const editTimestamp = edited || Date.now();
-		const patch = diff.createPatch('', newContent, oldContent);
+		const diffData = {
+			uid: uid,
+			pid: pid,
+		};
+		if (oldContent !== newContent) {
+			diffData.patch = diff.createPatch('', newContent, oldContent);
+		}
+		if (topic.renamed) {
+			diffData.title = topic.oldTitle;
+		}
+		if (topic.tagsupdated && Array.isArray(topic.oldTags)) {
+			diffData.tags = topic.oldTags.map(tag => tag && tag.value).filter(Boolean).join(',');
+		}
 		await Promise.all([
 			db.listPrepend(`post:${pid}:diffs`, editTimestamp),
-			db.setObject(`diff:${pid}.${editTimestamp}`, {
-				uid: uid,
-				pid: pid,
-				patch: patch,
-			}),
+			db.setObject(`diff:${pid}.${editTimestamp}`, diffData),
 		]);
 	};
 
@@ -71,6 +79,8 @@ module.exports = function (Posts) {
 			content: post.content,
 			req: req,
 			timestamp: since,
+			title: post.topic.title,
+			tags: post.topic.tags.map(tag => tag.value),
 		});
 	};
 
@@ -130,6 +140,16 @@ module.exports = function (Posts) {
 		// Replace content with re-constructed content from that point in time
 		post[0].content = diffs.reduce(applyPatch, validator.unescape(post[0].content));
 
+		const titleDiffs = diffs.filter(d => d.hasOwnProperty('title') && d.title);
+		if (titleDiffs.length && post[0].topic) {
+			post[0].topic.title = validator.unescape(String(titleDiffs[titleDiffs.length - 1].title));
+		}
+		const tagDiffs = diffs.filter(d => d.hasOwnProperty('tags') && d.tags);
+		if (tagDiffs.length && post[0].topic) {
+			const tags = tagDiffs[tagDiffs.length - 1].tags.split(',').map(tag => ({ value: tag }));
+			post[0].topic.tags = await topics.getTagData(tags);
+		}
+
 		return post[0];
 	}
 
@@ -144,9 +164,12 @@ module.exports = function (Posts) {
 	}
 
 	function applyPatch(content, aDiff) {
-		const result = diff.applyPatch(content, aDiff.patch, {
-			fuzzFactor: 1,
-		});
-		return typeof result === 'string' ? result : content;
+		if (aDiff && aDiff.patch) {
+			const result = diff.applyPatch(content, aDiff.patch, {
+				fuzzFactor: 1,
+			});
+			return typeof result === 'string' ? result : content;
+		}
+		return content;
 	}
 };

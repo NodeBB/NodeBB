@@ -151,7 +151,7 @@ define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, t
 
 			const taskbarEl = $('<li></li>')
 				.addClass(data.options.className)
-				.html('<a href="#"' + (data.options.image ? ' style="background-image: url(\'' + data.options.image + '\'); background-size: cover;"' : '') + '>' +
+				.html('<a href="#"' + (data.options.image ? ' style="background-image: url(\'' + data.options.image.replace(/&#x2F;/g, '/') + '\'); background-size: cover;"' : '') + '>' +
 					(data.options.icon ? '<i class="fa ' + data.options.icon + '"></i> ' : '') +
 					'<span aria-label="' + title + '" component="taskbar/title">' + title + '</span>' +
 					'</a>')
@@ -186,7 +186,7 @@ define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, t
 				element.find('i').attr('class', 'fa fa-' + value);
 				break;
 			case 'image':
-				element.find('a').css('background-image', value ? 'url("' + value + '")' : '');
+				element.find('a').css('background-image', value ? 'url("' + value.replace(/&#x2F;/g, '/') + '")' : '');
 				break;
 			case 'background-color':
 				element.find('a').css('background-color', value);

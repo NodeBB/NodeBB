@@ -165,7 +165,11 @@ module.exports = function (middleware) {
 			return controllers.helpers.notAllowed(req, res);
 		}
 
-		const uid = await user.getUidByUserslug(req.params.userslug);
+		if (!['uid', 'userslug'].some(param => req.params.hasOwnProperty(param))) {
+			return controllers.helpers.notAllowed(req, res);
+		}
+
+		const uid = req.params.uid || await user.getUidByUserslug(req.params.userslug);
 		let allowed = await privileges.users.canEdit(req.uid, uid);
 		if (allowed) {
 			return next();

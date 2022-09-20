@@ -194,8 +194,11 @@ describe('API', async () => {
 		const socketAdmin = require('../src/socket.io/admin');
 		// export data for admin user
 		await socketUser.exportProfile({ uid: adminUid }, { uid: adminUid });
+		await wait(2000);
 		await socketUser.exportPosts({ uid: adminUid }, { uid: adminUid });
+		await wait(2000);
 		await socketUser.exportUploads({ uid: adminUid }, { uid: adminUid });
+		await wait(2000);
 		await socketAdmin.user.exportUsersCSV({ uid: adminUid }, {});
 		// wait for export child process to complete
 		await wait(5000);
