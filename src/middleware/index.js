@@ -24,6 +24,7 @@ const controllers = {
 
 const delayCache = cacheCreate({
 	ttl: 1000 * 60,
+	max: 200,
 });
 
 const middleware = module.exports;
