@@ -120,7 +120,7 @@ pkgInstall.installAll = () => {
 				command = `cnpm install ${prod ? ' --production' : ''}`;
 				break;
 			default:
-				command += prod ? ' --production' : '';
+				command += prod ? ' --omit=dev' : '';
 				break;
 		}
 	}
