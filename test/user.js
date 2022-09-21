@@ -1202,8 +1202,10 @@ describe('User', () => {
 					assert.ifError(err);
 					assert(data);
 					assert(Array.isArray(data));
-					assert.equal(data[0].type, 'uploaded');
-					assert.equal(data[0].text, '[[user:uploaded_picture]]');
+					assert.equal(data[0].type, 'default');
+					assert.equal(data[0].username, '[[user:default_picture]]');
+					assert.equal(data[1].type, 'uploaded');
+					assert.equal(data[1].username, '[[user:uploaded_picture]]');
 					done();
 				});
 			});
