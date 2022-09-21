@@ -38,6 +38,10 @@ module.exports = {
 		poll: 500,
 		aggregateTimeout: 250,
 	},
+	performance: {
+		maxEntrypointSize: 512000,
+		maxAssetSize: 1024000,
+	},
 	resolve: {
 		symlinks: false,
 		modules: [
