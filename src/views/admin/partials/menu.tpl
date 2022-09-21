@@ -168,7 +168,7 @@
 			{{{ end }}}
 
 			<li class="reconnect-spinner">
-				<a href="#" id="reconnect" class="hide" title="[[admin/menu:connection-lost, {title}]]">
+				<a href="#" id="reconnect" class="hide" title="[[admin/menu:connection-lost, {title}]]" data-bs-toggle="tooltip" data-bs-placement="bottom">
 					<i class="fa fa-check"></i>
 				</a>
 			</li>
