@@ -26,10 +26,10 @@
 	"hsts.preload": "Allow preloading of HSTS header",
 	"hsts.help": "If enabled, an HSTS header will be set for this site. You can elect to include subdomains and preloading flags in your header. If in doubt, you can leave these unchecked. <a href=\"%1\">More information <i class=\"fa fa-external-link\"></i></a>",
 	"traffic-management": "ניהול תעבורה",
-	"traffic.help": "NodeBB uses a module that automatically denies requests in high-traffic situations. You can tune these settings here, although the defaults are a good starting point.",
-	"traffic.enable": "Enable Traffic Management",
+	"traffic.help": "NodeBB משתמש במודול שדוחה אוטומטית בקשות במצבים עם תעבורה גבוהה. אתה יכול לכוונן את ההגדרות האלה כאן, למרות שברירות המחדל הן נקודת התחלה טובה.",
+	"traffic.enable": "הפעל ניהול תעבורה",
 	"traffic.event-lag": "Event Loop Lag Threshold (in milliseconds)",
-	"traffic.event-lag-help": "Lowering this value decreases wait times for page loads, but will also show the \"excessive load\" message to more users. (Restart required)",
+	"traffic.event-lag-help": "הורדת ערך זה מקטינה את זמני ההמתנה לטעינת הדפים, אך גם תציג את ההודעה \"עומס מופרז\" ליותר משתמשים. (אתחול נדרש)",
 	"traffic.lag-check-interval": "מרווח זמן בין בדיקות (במילישניות)",
 	"traffic.lag-check-interval-help": "Lowering this value causes NodeBB to become more sensitive to spikes in load, but may also cause the check to become too sensitive. (Restart required)",
 
