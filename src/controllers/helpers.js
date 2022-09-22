@@ -376,6 +376,7 @@ helpers.setCategoryTeaser = function (category) {
 			url: `${nconf.get('relative_path')}/post/${post.pid}`,
 			timestampISO: post.timestampISO,
 			pid: post.pid,
+			index: post.index,
 			topic: post.topic,
 			user: post.user,
 		};
