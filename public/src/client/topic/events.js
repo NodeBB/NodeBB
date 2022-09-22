@@ -138,7 +138,7 @@ define('forum/topic/events', [
 		if (data.post.changed) {
 			editedPostEl.fadeOut(250, function () {
 				editedPostEl.html(translator.unescape(data.post.content));
-				editedPostEl.find('img:not(.not-responsive)').addClass('img-responsive');
+				editedPostEl.find('img:not(.not-responsive)').addClass('img-fluid');
 				images.wrapImagesInLinks(editedPostEl.parent());
 				posts.addBlockquoteEllipses(editedPostEl.parent());
 				editedPostEl.fadeIn(250);

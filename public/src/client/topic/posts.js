@@ -286,7 +286,7 @@ define('forum/topic/posts', [
 		images.wrapImagesInLinks(posts);
 		hideDuplicateSignatures(posts);
 		Posts.showBottomPostBar();
-		posts.find('[component="post/content"] img:not(.not-responsive)').addClass('img-responsive');
+		posts.find('[component="post/content"] img:not(.not-responsive)').addClass('img-fluid');
 		Posts.addBlockquoteEllipses(posts);
 		hidePostToolsForDeletedPosts(posts);
 		addNecroPostMessage();

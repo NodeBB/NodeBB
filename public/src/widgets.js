@@ -37,7 +37,7 @@ module.exports.render = function (template) {
 		area = $('#content [widget-area="' + location + '"],#content [data-widget-area="' + location + '"]').eq(0);
 		if (html && area.length) {
 			area.html(html);
-			area.find('img:not(.not-responsive)').addClass('img-responsive');
+			area.find('img:not(.not-responsive)').addClass('img-fluid');
 		}
 
 		if (widgetsAtLocation.length) {

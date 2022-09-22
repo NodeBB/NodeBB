@@ -166,7 +166,7 @@ define('forum/chats', [
 					html = $(html);
 					el.prepend(html);
 					html.find('.timeago').timeago();
-					html.find('img:not(.not-responsive)').addClass('img-responsive');
+					html.find('img:not(.not-responsive)').addClass('img-fluid');
 					el.scrollTop((el[0].scrollHeight - previousHeight) + currentScrollTop);
 					loading = false;
 				});

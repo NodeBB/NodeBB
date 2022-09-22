@@ -101,7 +101,7 @@ define('forum/post-queue', [
 			return false;
 		});
 
-		$('[component="post/content"] img:not(.not-responsive)').addClass('img-responsive');
+		$('[component="post/content"] img:not(.not-responsive)').addClass('img-fluid');
 	};
 
 	function confirmReject(msg) {

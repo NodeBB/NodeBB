@@ -10,7 +10,7 @@ define('forum/account/posts', ['forum/account/header', 'forum/infinitescroll', '
 	AccountPosts.init = function () {
 		header.init();
 
-		$('[component="post/content"] img:not(.not-responsive)').addClass('img-responsive');
+		$('[component="post/content"] img:not(.not-responsive)').addClass('img-fluid');
 
 		AccountPosts.handleInfiniteScroll('account/posts');
 	};
@@ -43,7 +43,7 @@ define('forum/account/posts', ['forum/account/header', 'forum/infinitescroll', '
 	function onPostsLoaded(posts, callback) {
 		app.parseAndTranslate(template, 'posts', { posts: posts }, function (html) {
 			$('[component="posts"]').append(html);
-			html.find('img:not(.not-responsive)').addClass('img-responsive');
+			html.find('img:not(.not-responsive)').addClass('img-fluid');
 			html.find('.timeago').timeago();
 			utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 			hooks.fire('action:posts.loaded', { posts: posts });

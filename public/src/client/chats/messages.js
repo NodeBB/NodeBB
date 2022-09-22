@@ -76,7 +76,7 @@ define('forum/chats/messages', [
 		const isAtBottom = messages.isAtBottom(chatContentEl);
 		newMessage.appendTo(chatContentEl);
 		newMessage.find('.timeago').timeago();
-		newMessage.find('img:not(.not-responsive)').addClass('img-responsive');
+		newMessage.find('img:not(.not-responsive)').addClass('img-fluid');
 		if (isAtBottom) {
 			messages.scrollToBottom(chatContentEl);
 		}

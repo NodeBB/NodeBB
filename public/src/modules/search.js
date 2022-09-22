@@ -337,7 +337,7 @@ define('search', ['translator', 'storage', 'hooks', 'alerts'], function (transla
 			});
 		});
 
-		$('.search-result-text').find('img:not(.not-responsive)').addClass('img-responsive');
+		$('.search-result-text').find('img:not(.not-responsive)').addClass('img-fluid');
 	};
 
 	return Search;
