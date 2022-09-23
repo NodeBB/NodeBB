@@ -181,6 +181,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 	}
 
 	function renderTopicEvents(index, sort) {
+		console.warn('[renderTopicEvents] deprecated, use a partial at partials/topic/event.tpl');
 		if (sort === 'most_votes') {
 			return '';
 		}
