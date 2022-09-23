@@ -26,7 +26,7 @@ define('forum/flags/detail', [
 						return memo;
 					}, {});
 
-					api.put(`/flags/${ajaxify.data.flagId}`, data).then((history) => {
+					api.put(`/flags/${ajaxify.data.flagId}`, data).then(({ history }) => {
 						alerts.success('[[flags:updated]]');
 						Detail.reloadHistory(history);
 					}).catch(alerts.error);
