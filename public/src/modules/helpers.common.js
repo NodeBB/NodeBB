@@ -18,8 +18,6 @@ module.exports = function (utils, Benchpress, relative_path) {
 		spawnPrivilegeStates,
 		localeToHTML,
 		renderTopicImage,
-		renderTopicEvents,
-		renderEvents,
 		renderDigestAvatar,
 		userAgentIcons,
 		buildAvatar,
@@ -178,50 +176,6 @@ module.exports = function (utils, Benchpress, relative_path) {
 			return '<img src="' + topicObj.thumb + '" class="img-circle user-img" title="' + topicObj.user.username + '" />';
 		}
 		return '<img component="user/picture" data-uid="' + topicObj.user.uid + '" src="' + topicObj.user.picture + '" class="user-img" title="' + topicObj.user.username + '" />';
-	}
-
-	function renderTopicEvents(index, sort) {
-		console.warn('[renderTopicEvents] deprecated, use a partial at partials/topic/event.tpl');
-		if (sort === 'most_votes') {
-			return '';
-		}
-		const start = this.posts[index].eventStart;
-		const end = this.posts[index].eventEnd;
-		const events = this.events.filter(event => event.timestamp >= start && event.timestamp < end);
-		if (!events.length) {
-			return '';
-		}
-
-		return renderEvents.call(this, events);
-	}
-
-	function renderEvents(events) {
-		return events.reduce((html, event) => {
-			html += `<li component="topic/event" class="timeline-event" data-topic-event-id="${event.id}" data-topic-event-type="${event.type}">
-				<div class="timeline-badge">
-					<i class="fa ${event.icon || 'fa-circle'}"></i>
-				</div>
-				<span class="timeline-text">
-					${event.href ? `<a href="${relative_path}${event.href}">${event.text}</a>` : event.text}&nbsp;
-				</span>
-			`;
-
-			if (event.user) {
-				if (!event.user.system) {
-					html += `<span><a href="${relative_path}/user/${event.user.userslug}">${buildAvatar(event.user, '16px', true)}&nbsp;${event.user.username}</a></span>&nbsp;`;
-				} else {
-					html += `<span class="timeline-text">[[global:system-user]]</span>&nbsp;`;
-				}
-			}
-
-			html += `<span class="timeago timeline-text" title="${event.timestampISO}"></span>`;
-
-			if (this.privileges.isAdminOrMod) {
-				html += `&nbsp;<span component="topic/event/delete" data-topic-event-id="${event.id}" data-topic-event-type="${event.type} class="timeline-text pointer" title="[[topic:delete-event]]"><i class="fa fa-trash"></i></span>`;
-			}
-
-			return html;
-		}, '');
 	}
 
 	function renderDigestAvatar(block) {
