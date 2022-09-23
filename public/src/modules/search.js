@@ -15,6 +15,7 @@ define('search', ['translator', 'storage', 'hooks', 'alerts'], function (transla
 		const searchFields = $('#search-fields');
 		const searchInput = $('#search-fields input');
 		const quickSearchContainer = $('#quick-search-container');
+		const toggleVisibility = searchFields.is(':hidden');
 
 		$('#search-form .advanced-search-link').off('mousedown').on('mousedown', function () {
 			ajaxify.go('/search');
@@ -23,14 +24,18 @@ define('search', ['translator', 'storage', 'hooks', 'alerts'], function (transla
 		$('#search-form').off('submit').on('submit', function () {
 			searchInput.blur();
 		});
-		searchInput.off('blur').on('blur', function dismissSearch() {
-			setTimeout(function () {
-				if (!searchInput.is(':focus')) {
-					searchFields.addClass('hidden');
-					searchButton.removeClass('hidden');
-				}
-			}, 200);
-		});
+
+		if (toggleVisibility) {
+			searchInput.off('blur').on('blur', function dismissSearch() {
+				setTimeout(function () {
+					if (!searchInput.is(':focus')) {
+						searchFields.addClass('hidden');
+						searchButton.removeClass('hidden');
+					}
+				}, 200);
+			});
+		}
+
 		searchInput.off('focus');
 
 		const searchElements = {
