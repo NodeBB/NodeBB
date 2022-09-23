@@ -52,7 +52,7 @@ define('forum/header', [
 	}
 
 	function handleLogout() {
-		$('#header-menu .container').on('click', '[component="user/logout"]', function () {
+		$('body').on('click', '[component="user/logout"]', function () {
 			require(['logout'], function (logout) {
 				logout();
 			});
