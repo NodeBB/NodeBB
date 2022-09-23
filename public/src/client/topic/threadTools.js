@@ -119,6 +119,14 @@ define('forum/topic/threadTools', [
 			});
 		});
 
+		topicContainer.on('click', '[component="topic/merge"]', function () {
+			require(['forum/topic/merge'], function (merge) {
+				merge.init(function () {
+					merge.addTopic(ajaxify.data.tid);
+				});
+			});
+		});
+
 		topicContainer.on('click', '[component="topic/move-posts"]', function () {
 			require(['forum/topic/move-post'], function (movePosts) {
 				movePosts.init();
