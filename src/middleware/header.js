@@ -151,7 +151,8 @@ middleware.renderHeader = async function renderHeader(req, res, data) {
 	const hookReturn = await plugins.hooks.fire('filter:middleware.renderHeader', {
 		req: req,
 		res: res,
-		templateValues: templateValues,
+		templateValues: templateValues, // TODO: deprecate
+		templateData: templateValues,
 		data: data,
 	});
 
@@ -234,7 +235,8 @@ middleware.renderFooter = async function renderFooter(req, res, templateValues) 
 	const data = await plugins.hooks.fire('filter:middleware.renderFooter', {
 		req: req,
 		res: res,
-		templateValues: templateValues,
+		templateValues: templateValues, // TODO: deprecate
+		templateData: templateValues,
 	});
 
 	const scripts = await plugins.hooks.fire('filter:scripts.get', []);

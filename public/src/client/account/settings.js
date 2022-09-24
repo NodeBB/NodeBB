@@ -2,8 +2,8 @@
 
 
 define('forum/account/settings', [
-	'forum/account/header', 'components', 'translator', 'api', 'alerts',
-], function (header, components, translator, api, alerts) {
+	'forum/account/header', 'components', 'api', 'alerts', 'hooks',
+], function (header, components, api, alerts, hooks) {
 	const AccountSettings = {};
 
 	// If page skin is changed but not saved, switch the skin back
@@ -116,6 +116,7 @@ define('forum/account/settings', [
 
 		// Stop execution if skin didn't change
 		if (skinName === currentSkin) {
+			hooks.fire('action:skin.change', { skin: skinName, currentSkin });
 			return;
 		}
 		const langDir = $('html').attr('data-dir');
@@ -132,10 +133,19 @@ define('forum/account/settings', [
 			// Update body class with proper skin name
 			$('body').removeClass(currentSkinClassName.join(' '));
 			$('body').addClass('skin-' + (skinName || 'noskin'));
+			hooks.fire('action:skin.change', { skin: skinName, currentSkin });
 		};
 
 		document.head.appendChild(linkEl);
 	}
+
+	AccountSettings.changeSkin = async function (skin) {
+		if (app.user.uid) {
+			await api.put(`/users/${app.user.uid}/settings`, { settings: { bootswatchSkin: skin } });
+		}
+		config.bootswatchSkin = skin;
+		reskin(skin);
+	};
 
 	return AccountSettings;
 });
