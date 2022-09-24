@@ -22,7 +22,7 @@ define('forum/topic/move-post', [
 
 			$('body').append(moveModal);
 
-			moveModal.find('.close,#move_posts_cancel').on('click', closeMoveModal);
+			moveModal.find('#move_posts_cancel').on('click', closeMoveModal);
 			moveModal.find('#topicId').on('keyup', utils.debounce(checkMoveButtonEnable, 200));
 			postSelect.init(onPostToggled);
 			showPostsSelected();

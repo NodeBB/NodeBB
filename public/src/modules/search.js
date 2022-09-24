@@ -171,7 +171,7 @@ define('search', ['translator', 'storage', 'hooks', 'alerts'], function (transla
 		}, 500));
 
 		let mousedownOnResults = false;
-		quickSearchResults.on('mousedown', function () {
+		quickSearchResults.on('mousedown', '.quick-search-results > *', function () {
 			$(window).one('mouseup', function () {
 				quickSearchResults.addClass('hidden');
 			});

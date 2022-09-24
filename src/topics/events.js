@@ -28,7 +28,7 @@ Events._types = {
 		text: '[[topic:pinned-by]]',
 	},
 	unpin: {
-		icon: 'fa-thumb-tack',
+		icon: 'fa-thumb-tack fa-rotate-90',
 		text: '[[topic:unpinned-by]]',
 	},
 	lock: {

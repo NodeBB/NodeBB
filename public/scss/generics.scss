@@ -3,16 +3,27 @@
 	@include pointer;
 }
 
-#move_thread_modal .category-list {
-	height: 500px;
-	overflow-y: auto;
-	overflow-x: hidden;
-}
-
 .topic-watch-dropdown {
 	.help-text {
 		margin-left: 20px;
 	}
+}
+
+[component="category-selector"], .category-dropdown-container {
+	#category-dropdown-check:checked + .dropdown-menu {
+		display: block;
+	}
+}
+
+.category-dropdown-container.right .category-dropdown-menu {
+	--bs-position: end;
+}
+
+.category-dropdown-menu {
+	max-height: 500px;
+	min-height: 300px;
+	overflow-y: auto;
+	overflow-x: hidden;
 }
 
 .category-list {
