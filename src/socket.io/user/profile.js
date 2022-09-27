@@ -48,32 +48,4 @@ module.exports = function (SocketUser) {
 		await user.blocks[isBlocked ? 'remove' : 'add'](data.blockeeUid, data.blockerUid);
 		return !isBlocked;
 	};
-
-	SocketUser.exportProfile = async function (socket, data) {
-		await doExport(socket, data, 'profile');
-	};
-
-	SocketUser.exportPosts = async function (socket, data) {
-		await doExport(socket, data, 'posts');
-	};
-
-	SocketUser.exportUploads = async function (socket, data) {
-		await doExport(socket, data, 'uploads');
-	};
-
-	async function doExport(socket, data, type) {
-		sockets.warnDeprecated(socket, 'POST /api/v3/users/:uid/exports/:type');
-
-		if (!socket.uid) {
-			throw new Error('[[error:invalid-uid]]');
-		}
-
-		if (!data || parseInt(data.uid, 10) <= 0) {
-			throw new Error('[[error:invalid-data]]');
-		}
-
-		await user.isAdminOrSelf(socket.uid, data.uid);
-
-		api.users.generateExport(socket, { type, ...data });
-	}
 };
