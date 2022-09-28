@@ -10,7 +10,8 @@ define('forum/topic/threadTools', [
 	'hooks',
 	'bootbox',
 	'alerts',
-], function (components, translator, handleBack, posts, api, hooks, bootbox, alerts) {
+	'bootstrap',
+], function (components, translator, handleBack, posts, api, hooks, bootbox, alerts, bootstrap) {
 	const ThreadTools = {};
 
 	ThreadTools.init = function (tid, topicContainer) {
@@ -365,11 +366,12 @@ define('forum/topic/threadTools', [
 			unfollow: '[[topic:not-watching]]',
 			ignore: '[[topic:ignoring]]',
 		};
-		// TODO: doesnt work on bs5
+
 		translator.translate(titles[state], function (translatedTitle) {
-			$('[component="topic/watch"]')
-				.attr('title', translatedTitle)
-				.tooltip();
+			const tooltip = bootstrap.Tooltip.getInstance('[component="topic/watch"]');
+			if (tooltip) {
+				tooltip.setContent({ '.tooltip-inner': translatedTitle });
+			}
 		});
 
 		let menu = components.get('topic/following/menu');

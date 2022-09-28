@@ -2,8 +2,8 @@
 
 
 define('forum/topic/votes', [
-	'components', 'translator', 'api', 'hooks', 'bootbox', 'alerts',
-], function (components, translator, api, hooks, bootbox, alerts) {
+	'components', 'translator', 'api', 'hooks', 'bootbox', 'alerts', 'bootstrap',
+], function (components, translator, api, hooks, bootbox, alerts, bootstrap) {
 	const Votes = {};
 
 	Votes.addVoteHandler = function () {
@@ -32,7 +32,13 @@ define('forum/topic/votes', [
 
 	function createTooltip(el, data) {
 		function doCreateTooltip(title) {
-			el.attr('title', title).tooltip('fixTitle').tooltip('show');
+			const tooltip = bootstrap.Tooltip.getInstance(el);
+			if (tooltip) {
+				tooltip.setContent({ '.tooltip-inner': title });
+			} else {
+				el.attr('title', title);
+				(new bootstrap.Tooltip(el)).show();
+			}
 			el.parent().find('.tooltip').css('display', '');
 		}
 		let usernames = data.usernames
