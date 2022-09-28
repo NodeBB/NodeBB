@@ -218,16 +218,6 @@ body {
 }
 
 [component="category-selector"] {
-	.category-item > .icon {
-		width: 22px;
-		height: 22px;
-		font-size: 10px;
-		line-height: 12px;
-		padding: 5px;
-		border-radius: 50%;
-		display: inline-block;
-	}
-
 	.category-dropdown-menu {
 		max-height: 500px;
 		overflow-y: auto;

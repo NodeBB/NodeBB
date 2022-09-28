@@ -16,9 +16,7 @@
 					<a class="dropdown-item" role="menuitem">{categories.level}
 						<span component="category-markup">
 							<div class="category-item d-inline-block">
-								<span role="presentation" class="icon" style="{function.generateCategoryBackground}">
-									<i class="fa fa-fw {./icon}"></i>
-								</span>
+								{buildCategoryIcon(@value, "24px", "rounded-circle")}
 								{./name}
 							</div>
 						</span>

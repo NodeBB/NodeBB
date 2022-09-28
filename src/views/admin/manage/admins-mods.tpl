@@ -43,7 +43,8 @@
 
 		{{{ each categoryMods }}}
 		<div class="categories category-wrapper mb-4">
-			<h4>{{{ if categoryMods.icon }}}<i class="fa {categoryMods.icon}"></i> {{{ end }}}{categoryMods.name} {{{ if categoryMods.subCategoryCount }}}<small><a href="{config.relative_path}/admin/manage/admins-mods?cid={categoryMods.cid}#moderators-title">[[admin/manage/admins-mods:subcategories, {categoryMods.subCategoryCount}]]</a></small>{{{ else }}}{{{ end }}}{{{if categoryMods.disabled}}}<span class="badge badge-primary">[[admin/manage/admins-mods:disabled]]</span>{{{end}}}</h4>
+			<div class="float-start me-1">{buildCategoryIcon(@value, "24px", "rounded-circle")}</div>
+			<h4>{categoryMods.name} {{{ if categoryMods.subCategoryCount }}}<small><a href="{config.relative_path}/admin/manage/admins-mods?cid={categoryMods.cid}#moderators-title">[[admin/manage/admins-mods:subcategories, {categoryMods.subCategoryCount}]]</a></small>{{{ else }}}{{{ end }}}{{{if categoryMods.disabled}}}<span class="badge bg-warning">[[admin/manage/admins-mods:disabled]]</span>{{{end}}}</h4>
 			<div class="moderator-area" data-cid="{categoryMods.cid}">
 				{{{ each categoryMods.moderators }}}
 					<div class="badge text-bg-light m-1 p-1 float-start" data-uid="{categoryMods.moderators.uid}">

@@ -1,5 +1,5 @@
 <ul data-cid="{cid}">
-<!-- BEGIN categories -->
+{{{ each categories }}}
     <li data-cid="{categories.cid}" data-parent-cid="{categories.parentCid}" data-name="{categories.name}" <!-- IF categories.disabled -->class="disabled"<!-- ENDIF categories.disabled -->>
         <div class="row category-row">
             <div class="col-md-9">
@@ -8,14 +8,8 @@
                         <i class="fa fa-chevron-down"></i>
                     </div>
                     <div class="information">
-                        <div class="icon" style="
-                            color: {categories.color};
-                            background-color: {categories.bgColor};
-                            <!-- IF categories.backgroundImage -->
-                            background-image: url('{categories.backgroundImage}');
-                            <!-- ENDIF categories.backgroundImage -->
-                        ">
-                            <i data-name="icon" value="{categories.icon}" class="fa {categories.icon}"></i>
+                        <div class="float-start me-1">
+                        {buildCategoryIcon(@value, "24px", "rounded-circle")}
                         </div>
                         <h5 class="category-header"><a href="{config.relative_path}/admin/manage/categories/{categories.cid}">{categories.name}</a> {{{ if categories.link }}}<small><a class="text-muted" href="{categories.link}"><i class="fa fa-link"></i> {categories.link}</a></small>{{{ end }}}</h5>
                     </div>
@@ -56,5 +50,5 @@
 	    <a href="{config.relative_path}/admin/manage/categories?cid={categories.cid}&page={categories.showMorePage}" class="btn btn-outline-secondary">[[category:x-more-categories, {../subCategoriesLeft}]]</a>
     </li>
 	{{{ end }}}
-<!-- END categories -->
+{{{ end }}}
 </ul>

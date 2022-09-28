@@ -11,6 +11,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 		stringify,
 		escape,
 		stripTags,
+		buildCategoryIcon,
 		generateCategoryBackground,
 		generateChildrenCategories,
 		generateTopicClass,
@@ -77,6 +78,14 @@ module.exports = function (utils, Benchpress, relative_path) {
 
 	function stripTags(str) {
 		return utils.stripHTMLTags(str);
+	}
+
+	function buildCategoryIcon(category, size, rounded) {
+		if (!category) {
+			return '';
+		}
+
+		return `<span class="icon d-inline-flex justify-content-center align-items-center align-middle ${rounded}" style="${generateCategoryBackground(category)} width:${size}; height: ${size};">${category.icon ? `<i class="fa fa-fw ${category.icon}"></i>` : ''}</span>`;
 	}
 
 	function generateCategoryBackground(category) {
