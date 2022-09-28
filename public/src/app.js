@@ -287,28 +287,6 @@ if (document.readyState === 'loading') {
 		});
 	};
 
-	app.enableTopicSearch = function (options) {
-		console.warn('[deprecated] app.enableTopicSearch is deprecated, please use search.enableQuickSearch(options)');
-		require(['search'], function (search) {
-			search.enableQuickSearch(options);
-		});
-	};
-
-	app.handleSearch = function (searchOptions) {
-		console.warn('[deprecated] app.handleSearch is deprecated, please use search.init(options)');
-		require(['search'], function (search) {
-			search.init(searchOptions);
-		});
-	};
-
-	app.prepareSearch = function () {
-		console.warn('[deprecated] app.prepareSearch is deprecated, please use search.showAndFocusInput()');
-		require(['search'], function (search) {
-			search.showAndFocusInput();
-		});
-	};
-
-
 	app.updateUserStatus = function (el, status) {
 		if (!el.length) {
 			return;

@@ -11,18 +11,22 @@ define('search', ['translator', 'storage', 'hooks', 'alerts'], function (transla
 		}
 
 		searchOptions = searchOptions || { in: config.searchDefaultInQuick || 'titles' };
-		const searchButton = $('#search-button');
-		const searchFields = $('#search-fields');
-		const searchInput = $('#search-fields input');
-		const quickSearchContainer = $('#quick-search-container');
-		const toggleVisibility = searchFields.is(':hidden');
-
-		$('#search-form .advanced-search-link').off('mousedown').on('mousedown', function () {
-			ajaxify.go('/search');
+		const searchForm = $('[component="search/form"]');
+		searchForm.each((index, form) => {
+			init($(form), searchOptions);
 		});
+	};
 
-		$('#search-form').off('submit').on('submit', function () {
-			searchInput.blur();
+	function init(searchForm, searchOptions) {
+		const searchButton = searchForm.find('[component="search/button"]');
+		const searchFields = searchForm.find('[component="search/fields"]');
+		const searchInput = searchFields.find('input[name="query"]');
+
+		const quickSearchContainer = searchFields.find('#quick-search-container');
+		const toggleVisibility = searchFields.hasClass('hidden');
+
+		searchForm.find('.advanced-search-link').off('mousedown').on('mousedown', function () {
+			ajaxify.go('/search');
 		});
 
 		if (toggleVisibility) {
@@ -63,8 +67,8 @@ define('search', ['translator', 'storage', 'hooks', 'alerts'], function (transla
 			return false;
 		});
 
-		$('#search-form').off('submit').on('submit', function () {
-			const input = $(this).find('input');
+		searchForm.off('submit').on('submit', function () {
+			const input = $(this).find('input[name="query"]');
 			const data = Search.getSearchPreferences();
 			data.term = input.val();
 			data.in = searchOptions.in;
@@ -74,11 +78,12 @@ define('search', ['translator', 'storage', 'hooks', 'alerts'], function (transla
 			});
 			Search.query(data, function () {
 				input.val('');
+				searchInput.trigger('blur');
 			});
 
 			return false;
 		});
-	};
+	}
 
 	Search.enableQuickSearch = function (options) {
 		if (!config.searchEnabled || !app.user.privileges['search:content']) {
@@ -217,9 +222,9 @@ define('search', ['translator', 'storage', 'hooks', 'alerts'], function (transla
 	};
 
 	Search.showAndFocusInput = function () {
-		$('#search-fields').removeClass('hidden');
-		$('#search-button').addClass('hidden');
-		$('#search-fields input').focus();
+		$('[component="search/fields"]').removeClass('hidden');
+		$('[component="search/button]').addClass('hidden');
+		$('[component="search/fields"] input[name="query"]').trigger('focus');
 	};
 
 	Search.query = function (data, callback) {
