@@ -1,6 +1,6 @@
 'use strict';
 
-define('forum/header/unread', function () {
+define('forum/header/unread', ['hooks'], function (hooks) {
 	const unread = {};
 	const watchStates = {
 		ignoring: 1,
@@ -89,6 +89,8 @@ define('forum/header/unread', function () {
 			.attr('data-content', count > 99 ? '99+' : count);
 
 		$('#mobile-menu [data-unread-url="' + url + '"]').attr('data-content', count > 99 ? '99+' : count);
+
+		hooks.fire('action:unread.updateCount', { url, count });
 	}
 	unread.updateUnreadTopicCount = updateUnreadTopicCount;
 
