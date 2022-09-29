@@ -43,6 +43,7 @@
 	"header.notifications": "Notifications",
 	"header.search": "Search",
 	"header.profile": "Profile",
+	"header.account": "Account",
 	"header.navigation": "Navigation",
 
 	"notifications.loading": "Loading Notifications",
