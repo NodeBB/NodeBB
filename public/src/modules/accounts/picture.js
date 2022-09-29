@@ -21,7 +21,7 @@ define('accounts/picture', [
 				return memo || cur.type === 'uploaded';
 			}, false);
 
-			app.parseAndTranslate('partials/modals/change_picture_modal', {
+			app.parseAndTranslate('modals/change-picture', {
 				pictures: pictures,
 				uploaded: uploaded,
 				icon: { text: ajaxify.data['icon:text'], bgColor: ajaxify.data['icon:bgColor'] },

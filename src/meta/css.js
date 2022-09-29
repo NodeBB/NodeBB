@@ -35,9 +35,7 @@ const buildImports = {
 			'@import "jquery-ui";',
 			'@import "@adactive/bootstrap-tagsinput/src/bootstrap-tagsinput";',
 			'@import "cropperjs/dist/cropper";',
-			'@import "flags";',
-			'@import "global";',
-			'@import "modals";',
+			'@import "client";',
 		].join('\n');
 	},
 	admin: function (source) {
