@@ -160,9 +160,9 @@ define('forum/topic/events', [
 
 		if (data.topic.tags && data.topic.tagsupdated) {
 			Benchpress.render('partials/topic/tags', { tags: data.topic.tags }).then(function (html) {
-				const tags = $('.tags');
-
+				const tags = $('[data-pid="' + data.post.pid + '"] .tags');
 				tags.fadeOut(250, function () {
+					tags.toggleClass('hidden', data.topic.tags.length === 0);
 					tags.html(html).fadeIn(250);
 				});
 			});
