@@ -288,7 +288,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 		let output = '';
 
 		if (userObj.picture) {
-			return '<img ' + attributes.join(' ') + ' src="' + userObj.picture + '" style="' + styles.join(' ') + '" />';
+			output += '<img ' + attributes.join(' ') + ' src="' + userObj.picture + '" style="' + styles.join(' ') + '" onError="this.remove();" />';
 		}
 
 		styles.push('background-color: ' + userObj['icon:bgColor'] + ';');
