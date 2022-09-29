@@ -267,32 +267,31 @@ module.exports = function (utils, Benchpress, relative_path) {
 			userObj = this;
 		}
 
-		const attributes = [
-			'alt="' + userObj.username + '"',
-			'title="' + userObj.username + '"',
-			'data-uid="' + userObj.uid + '"',
-			'loading="lazy"',
-		];
+		const attributes = new Map([
+			['alt', userObj.username],
+			['title', userObj.username],
+			['data-uid', userObj.uid],
+			['loading', 'lazy'],
+		]);
 		const styles = [`--avatar-size: ${size};`];
+		const attr2String = attributes => Array.from(attributes).reduce((output, [prop, value]) => {
+			output += ` ${prop}="${value}"`;
+			return output;
+		}, '');
 		classNames = classNames || '';
 
-		attributes.unshift(`class="avatar ${classNames}${rounded ? ' avatar-rounded' : ''}"`);
-
-		// Component override -- FIXME
-		if (component) {
-			attributes.push('component="' + component + '"');
-		} else {
-			attributes.push('component="avatar/' + (userObj.picture ? 'picture' : 'icon') + '"');
-		}
+		attributes.set('class', `avatar ${classNames}${rounded ? ' avatar-rounded' : ''}`);
 
 		let output = '';
 
 		if (userObj.picture) {
-			output += '<img ' + attributes.join(' ') + ' src="' + userObj.picture + '" style="' + styles.join(' ') + '" onError="this.remove();" />';
+			attributes.set('component', component || 'avatar/picture');
+			output += '<img ' + attr2String(attributes) + ' src="' + userObj.picture + '" style="' + styles.join(' ') + '" onError="this.remove();" />';
 		}
 
+		attributes.set('component', component || 'avatar/icon');
 		styles.push('background-color: ' + userObj['icon:bgColor'] + ';');
-		output += '<span ' + attributes.join(' ') + ' style="' + styles.join(' ') + '">' + userObj['icon:text'] + '</span>';
+		output += '<span ' + attr2String(attributes) + ' style="' + styles.join(' ') + '">' + userObj['icon:text'] + '</span>';
 
 		return output;
 	}
