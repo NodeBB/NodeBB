@@ -31,8 +31,8 @@ define('forum/topic/votes', [
 	}
 
 	function createTooltip(el, data) {
+		const tooltip = bootstrap.Tooltip.getInstance(el);
 		function doCreateTooltip(title) {
-			const tooltip = bootstrap.Tooltip.getInstance(el);
 			if (tooltip) {
 				tooltip.setContent({ '.tooltip-inner': title });
 			} else {
@@ -44,6 +44,10 @@ define('forum/topic/votes', [
 		let usernames = data.usernames
 			.filter(name => name !== '[[global:former_user]]');
 		if (!usernames.length) {
+			if (tooltip) {
+				tooltip.dispose();
+			}
+			el.attr('title', '');
 			return;
 		}
 		if (usernames.length + data.otherCount > 6) {
