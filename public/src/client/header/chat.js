@@ -1,6 +1,6 @@
 'use strict';
 
-define('forum/header/chat', ['components'], function (components) {
+define('forum/header/chat', ['components', 'hooks'], function (components, hooks) {
 	const chat = {};
 
 	chat.prepareDOM = function () {
@@ -31,6 +31,7 @@ define('forum/header/chat', ['components'], function (components) {
 			components.get('chat/icon')
 				.toggleClass('unread-count', count > 0)
 				.attr('data-content', count > 99 ? '99+' : count);
+			hooks.fire('action:chat.updateCount', { count });
 		});
 	};
 
