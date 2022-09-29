@@ -278,19 +278,23 @@ module.exports = function (utils, Benchpress, relative_path) {
 
 		attributes.unshift(`class="avatar ${classNames}${rounded ? ' avatar-rounded' : ''}"`);
 
-		// Component override
+		// Component override -- FIXME
 		if (component) {
 			attributes.push('component="' + component + '"');
 		} else {
 			attributes.push('component="avatar/' + (userObj.picture ? 'picture' : 'icon') + '"');
 		}
 
+		let output = '';
+
 		if (userObj.picture) {
 			return '<img ' + attributes.join(' ') + ' src="' + userObj.picture + '" style="' + styles.join(' ') + '" />';
 		}
 
 		styles.push('background-color: ' + userObj['icon:bgColor'] + ';');
-		return '<span ' + attributes.join(' ') + ' style="' + styles.join(' ') + '">' + userObj['icon:text'] + '</span>';
+		output += '<span ' + attributes.join(' ') + ' style="' + styles.join(' ') + '">' + userObj['icon:text'] + '</span>';
+
+		return output;
 	}
 
 	function register() {

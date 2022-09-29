@@ -99,6 +99,10 @@
 	&.avatar-rounded {
 		border-radius: 50%;
 	}
+
+	&+.avatar {
+		display: none;
+	}
 }
 
 .ban-modal {
