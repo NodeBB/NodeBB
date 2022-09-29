@@ -62,7 +62,7 @@ define('accounts/picture', [
 				});
 				modal.on('change', 'input[type="radio"][name="icon:bgColor"]', (e) => {
 					const value = e.target.value;
-					modal.find('.user-icon').css('background-color', value);
+					modal.find('[component="avatar/icon"]').css('background-color', value);
 				});
 
 				handleImageUpload(modal);
