@@ -313,14 +313,16 @@ define('forum/topic/posts', [
 		});
 	};
 
-	function addNecroPostMessage() {
+	async function addNecroPostMessage() {
 		const necroThreshold = ajaxify.data.necroThreshold * 24 * 60 * 60 * 1000;
 		if (!necroThreshold || (config.topicPostSort !== 'newest_to_oldest' && config.topicPostSort !== 'oldest_to_newest')) {
 			return;
 		}
-
+		const height = $(document).height();
+		const scrollTop = $(window).scrollTop();
+		let updateScrollTop = false;
 		const postEls = $('[component="post"]').toArray();
-		postEls.forEach(function (post) {
+		await Promise.all(postEls.map(async function (post) {
 			post = $(post);
 			const prev = post.prev('[component="post"]');
 			if (post.is(':has(.necro-post)') || !prev.length) {
@@ -348,12 +350,15 @@ define('forum/topic/posts', [
 				$.timeago.settings.strings.prefixAgo = prefixAgo;
 				$.timeago.settings.strings.suffixFromNow = suffixFromNow;
 				$.timeago.settings.strings.prefixFromNow = prefixFromNow;
-				app.parseAndTranslate('partials/topic/necro-post', { text: translationText }, function (html) {
-					html.attr('data-necro-post-index', prev.attr('data-index'));
-					html.insertBefore(post);
-				});
+				const html = await app.parseAndTranslate('partials/topic/necro-post', { text: translationText });
+				html.attr('data-necro-post-index', prev.attr('data-index'));
+				html.insertBefore(post);
+				updateScrollTop = true;
 			}
-		});
+		}));
+		if (updateScrollTop && scrollTop > 0) {
+			$(window).scrollTop(scrollTop + ($(document).height() - height));
+		}
 	}
 
 	function hideDuplicateSignatures(posts) {
