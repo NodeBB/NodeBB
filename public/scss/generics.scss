@@ -29,6 +29,18 @@
 	min-height: 200px;
 }
 
+.bootstrap-tagsinput {
+	background-color: $input-bg;
+	padding: $input-padding-y $input-padding-x;
+	width: 100%;
+	input {
+		&::placeholder{
+			color: $input-placeholder-color;
+		}
+		color: $input-color;
+	}
+}
+
 .category-list {
 	padding: 0;
 

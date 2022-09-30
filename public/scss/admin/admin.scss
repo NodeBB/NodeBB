@@ -75,11 +75,6 @@ body {
 		background: $primary !important;
 	}
 
-	.user-img {
-		width:24px;
-		height:24px;
-	}
-
 	.nodebb-logo {
 		img {
 			height: 31px;
@@ -176,6 +171,22 @@ body {
 	/* Allows the autocomplete dropbox to appear on top of a modal's backdrop */
 	.ui-autocomplete {
 		z-index: $zindex-popover;
+	}
+
+	.bootstrap-tagsinput {
+		width: 100%;
+		border: 0;
+		box-shadow: none;
+		padding-left: 0;
+
+		input {
+			width: 100%;
+			margin-left: 1px;
+			margin-top: 9px;
+			border-bottom: 1px dotted #ccc !important;
+			padding-bottom: 5px;
+			padding-left: 0;
+		}
 	}
 }
 
