@@ -172,6 +172,10 @@ paths:
     $ref: 'write/admin/analytics.yaml'
   /admin/analytics/{set}:
     $ref: 'write/admin/analytics/set.yaml'
+  /admin/chats:
+    $ref: 'write/admin/chats.yaml'
+  /admin/chats/{roomId}:
+    $ref: 'write/admin/chats/roomId.yaml'
   /files/:
     $ref: 'write/files.yaml'
   /files/folder:

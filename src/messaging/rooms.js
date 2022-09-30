@@ -21,6 +21,12 @@ module.exports = function (Messaging) {
 
 	Messaging.getRoomsData = async (roomIds) => {
 		const roomData = await db.getObjects(roomIds.map(roomId => `chat:room:${roomId}`));
+
+		const userCounts = await db.sortedSetsCard(roomIds.map(roomId => `chat:room:${roomId}:uids`));
+		userCounts.forEach((count, idx) => {
+			roomData[idx].userCount = count;
+		});
+
 		modifyRoomData(roomData);
 		return roomData;
 	};
@@ -47,6 +53,7 @@ module.exports = function (Messaging) {
 
 		await Promise.all([
 			db.setObject(`chat:room:${roomId}`, room),
+			db.sortedSetAdd('chat:rooms', now, roomId),
 			db.sortedSetAdd(`chat:room:${roomId}:uids`, now, uid),
 		]);
 		await Promise.all([
@@ -57,6 +64,24 @@ module.exports = function (Messaging) {
 		await Messaging.addSystemMessage('user-join', uid, roomId);
 
 		return roomId;
+	};
+
+	Messaging.deleteRooms = async (roomIds) => {
+		// warning: uid:<uid>:chat:room:<roomId>:mids is left behind, along with each message:<mid> obj
+		// deleting them from db requires iterating through all messages; not performant
+		if (!roomIds) {
+			throw new Error('[[error:invalid-data]]');
+		}
+
+		if (!Array.isArray(roomIds)) {
+			roomIds = [roomIds];
+		}
+
+		await Promise.all(roomIds.map(async (roomId) => {
+			const uids = await db.getSortedSetMembers(`chat:room:${roomId}:uids`);
+			await Messaging.leaveRoom(uids, roomId);
+			await db.delete(`chat:room:${roomId}`);
+		}));
 	};
 
 	Messaging.isUserInRoom = async (uid, roomId) => {

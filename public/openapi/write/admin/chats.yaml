@@ -1,0 +1,46 @@
+get:
+  tags:
+    - admin
+  summary: get chat rooms
+  description: This operation returns all chat rooms managed by NodeBB. **For privacy reasons**, only chat room metadata is shown.
+  parameters:
+    - in: query
+      name: perPage
+      schema:
+        type: number
+      description: The number of chat rooms displayed per page
+      example: 20
+    - in: query
+      name: page
+      schema:
+        type: number
+      description: The page number
+      example: 1
+  responses:
+    '200':
+      description: Chat rooms retrieved
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  rooms:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        owner:
+                          type: number
+                        roomId:
+                          type: number
+                        userCount:
+                          type: number
+                        roomName:
+                          type: string
+                        groupChat:
+                          type: boolean

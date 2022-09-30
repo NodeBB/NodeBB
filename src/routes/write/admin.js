@@ -15,5 +15,8 @@ module.exports = function () {
 	setupApiRoute(router, 'get', '/analytics', [...middlewares], controllers.write.admin.getAnalyticsKeys);
 	setupApiRoute(router, 'get', '/analytics/:set', [...middlewares], controllers.write.admin.getAnalyticsData);
 
+	setupApiRoute(router, 'get', '/chats', [...middlewares], controllers.write.admin.chats.getRooms);
+	setupApiRoute(router, 'delete', '/chats/:roomId', [...middlewares, middleware.assert.room], controllers.write.admin.chats.deleteRoom);
+
 	return router;
 };

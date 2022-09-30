@@ -1,8 +1,11 @@
 'use strict';
 
+const db = require('../../database');
 const meta = require('../../meta');
 const privileges = require('../../privileges');
 const analytics = require('../../analytics');
+const messaging = require('../../messaging');
+const events = require('../../events');
 
 const helpers = require('../helpers');
 
@@ -39,4 +42,29 @@ Admin.getAnalyticsData = async (req, res) => {
 	}
 	const getStats = req.query.units === 'days' ? analytics.getDailyStatsForSet : analytics.getHourlyStatsForSet;
 	helpers.formatApiResponse(200, res, await getStats(`analytics:${req.params.set}`, parseInt(req.query.until, 10) || Date.now(), req.query.amount));
+};
+
+Admin.chats = {};
+
+Admin.chats.getRooms = async (req, res) => {
+	const page = (isFinite(req.query.page) && parseInt(req.query.page, 10)) || 1;
+	const perPage = (isFinite(req.query.perPage) && parseInt(req.query.perPage, 10)) || 20;
+	const start = Math.max(0, page - 1) * perPage;
+	const stop = start + perPage;
+	const roomIds = await db.getSortedSetRevRange('chat:rooms', start, stop);
+
+	helpers.formatApiResponse(200, res, {
+		rooms: await messaging.getRoomsData(roomIds),
+	});
+};
+
+Admin.chats.deleteRoom = async (req, res) => {
+	await messaging.deleteRooms([req.params.roomId]);
+
+	events.log({
+		type: 'chat-room-deleted',
+		uid: req.uid,
+		ip: req.ip,
+	});
+	helpers.formatApiResponse(200, res);
 };
