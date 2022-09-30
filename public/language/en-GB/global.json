@@ -45,6 +45,7 @@
 	"header.profile": "Profile",
 	"header.account": "Account",
 	"header.navigation": "Navigation",
+	"header.manage": "Manage",
 
 	"notifications.loading": "Loading Notifications",
 	"chats.loading": "Loading Chats",
