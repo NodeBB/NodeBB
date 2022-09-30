@@ -120,7 +120,7 @@
         "sanitize-html": "2.7.2",
         "semver": "7.3.7",
         "serve-favicon": "2.5.0",
-        "sharp": "0.31.0",
+        "sharp": "0.31.1",
         "sitemap": "7.1.1",
         "slideout": "1.0.1",
         "socket.io": "4.5.2",
