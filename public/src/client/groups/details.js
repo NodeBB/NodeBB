@@ -141,8 +141,8 @@ define('forum/groups/details', [
 		const labelColorValueEl = settingsFormEl.find('[name="labelColor"]');
 		const textColorValueEl = settingsFormEl.find('[name="textColor"]');
 		const iconBtn = settingsFormEl.find('[data-action="icon-select"]');
-		const previewEl = settingsFormEl.find('.label');
-		const previewElText = settingsFormEl.find('.label-text');
+		const previewEl = settingsFormEl.find('.badge');
+		const previewElText = settingsFormEl.find('.badge-text');
 		const previewIcon = previewEl.find('i');
 		const userTitleEl = settingsFormEl.find('[name="userTitle"]');
 		const userTitleEnabledEl = settingsFormEl.find('[name="userTitleEnabled"]');
