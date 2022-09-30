@@ -30,9 +30,8 @@
 }
 
 .bootstrap-tagsinput {
-	background-color: $input-bg;
-	padding: $input-padding-y $input-padding-x;
-	width: 100%;
+	@extend .form-control;
+	box-shadow: none;
 	input {
 		&::placeholder{
 			color: $input-placeholder-color;
