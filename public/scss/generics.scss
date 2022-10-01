@@ -164,6 +164,17 @@
 	display: none;
 }
 
+.hover-parent {
+	.hover-display {
+		display: none!important;
+	}
+	&:hover {
+		.hover-display {
+			display: block!important;
+		}
+	}
+}
+
 // some classes that are used commonly in themes from bs3
 .hidden, .hide {
     display: none!important;
