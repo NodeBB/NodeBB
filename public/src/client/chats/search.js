@@ -1,7 +1,9 @@
 'use strict';
 
 
-define('forum/chats/search', ['components', 'api', 'alerts'], function (components, api, alerts) {
+define('forum/chats/search', [
+	'components', 'api', 'alerts', 'helpers',
+], function (components, api, alerts, helpers) {
 	const search = {};
 
 	search.init = function () {
@@ -11,7 +13,7 @@ define('forum/chats/search', ['components', 'api', 'alerts'], function (componen
 	function doSearch() {
 		const username = components.get('chat/search').val();
 		if (!username) {
-			return $('[component="chat/search/list"]').empty();
+			return $('[component="chat/search/list"]').translateHtml('<li><a href="#" class="dropdown-item">[[admin/menu:search.start-typing]]</a></li>');
 		}
 
 		api.get('/api/users', {
@@ -31,7 +33,7 @@ define('forum/chats/search', ['components', 'api', 'alerts'], function (componen
 		});
 
 		if (!data.users.length) {
-			return chatsListEl.translateHtml('<li><div><span>[[users:no-users-found]]</span></div></li>');
+			return chatsListEl.translateHtml('<li><a href="#" class="dropdown-item">[[users:no-users-found]]</a></li>');
 		}
 
 		data.users.forEach(function (userObj) {
@@ -44,10 +46,8 @@ define('forum/chats/search', ['components', 'api', 'alerts'], function (componen
 
 	function displayUser(chatsListEl, userObj) {
 		function createUserImage() {
-			return (userObj.picture ?
-				'<img src="' + userObj.picture + '" title="' + userObj.username + '" />' :
-				'<div class="user-icon" style="background-color: ' + userObj['icon:bgColor'] + '">' + userObj['icon:text'] + '</div>') +
-				'<i class="fa fa-circle status ' + userObj.status + '"></i> ' + userObj.username;
+			const img = helpers.buildAvatar(userObj, '24px', true);
+			return `<a href="#" class="dropdown-item">${img} ${userObj.username}<a>`;
 		}
 
 		const chatEl = $('<li component="chat/search/user"></li>')
