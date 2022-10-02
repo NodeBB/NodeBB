@@ -337,7 +337,7 @@ define('search', ['translator', 'storage', 'hooks', 'alerts'], function (transla
 			});
 
 			result.html(result.html().replace(regex, function (match, p1) {
-				return '<strong class="search-match">' + p1 + '</strong>';
+				return '<strong class="search-match fw-bold text-decoration-underline">' + p1 + '</strong>';
 			}));
 
 			nested.forEach(function (nestedEl, i) {
