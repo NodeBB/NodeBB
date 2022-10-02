@@ -175,6 +175,10 @@
 	}
 }
 
+.border-muted {
+	border-color: $text-muted!important;
+}
+
 // some classes that are used commonly in themes from bs3
 .hidden, .hide {
     display: none!important;
