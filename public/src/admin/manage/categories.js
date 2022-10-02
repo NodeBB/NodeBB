@@ -202,7 +202,7 @@ define('admin/manage/categories', [
 			// this makes sure order is correct when drag & drop is used on pages > 1
 			const baseIndex = (ajaxify.data.pagination.currentPage - 1) * ajaxify.data.categoriesPerPage;
 			modified[cid] = {
-				order: baseIndex + e.newIndex + 1,
+				order: baseIndex + e.newIndex,
 			};
 
 			if (isCategoryUpdate) {
@@ -263,7 +263,11 @@ define('admin/manage/categories', [
 				categories: categories,
 				parentCategory: parentCategory,
 			}, function (html) {
-				container.append(html);
+				if (container.find('.category-row').length) {
+					container.find('.category-row').after(html);
+				} else {
+					container.append(html);
+				}
 
 				// Disable expand toggle
 				if (!categories.length) {

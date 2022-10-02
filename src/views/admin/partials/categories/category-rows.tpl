@@ -49,11 +49,12 @@
                 </div>
             </div>
         </div>
+
+        <ul class="list-unstyled has-more-categories {{{ if !../hasMoreSubCategories}}}hidden{{{ end }}}">
+            <li>
+                <a href="{config.relative_path}/admin/manage/categories?cid={categories.cid}&page={categories.showMorePage}" class="btn btn-outline-secondary">[[category:x-more-categories, {../subCategoriesLeft}]]</a>
+            </li>
+        </ul>
     </li>
-    {{{ if ../hasMoreSubCategories}}}
-    <li>
-	    <a href="{config.relative_path}/admin/manage/categories?cid={categories.cid}&page={categories.showMorePage}" class="btn btn-default">[[category:x-more-categories, {../subCategoriesLeft}]]</a>
-    </li>
-	{{{ end }}}
-<!-- END categories -->
+{{{ end }}}
 </ul>
