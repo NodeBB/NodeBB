@@ -212,11 +212,17 @@ define('admin/manage/categories', [
 				const oldParentCid = parseInt(e.from.getAttribute('data-cid'), 10);
 				const newParentCid = parseInt(e.to.getAttribute('data-cid'), 10);
 				if (oldParentCid !== newParentCid) {
-					document.querySelector(`.categories li[data-cid="${newParentCid}"] .toggle`).classList.toggle('hide', false);
+					const toggle = document.querySelector(`.categories li[data-cid="${newParentCid}"] .toggle`);
+					if (toggle) {
+						toggle.classList.toggle('hide', false);
+					}
 
 					const children = document.querySelectorAll(`.categories li[data-cid="${oldParentCid}"] ul[data-cid] li[data-cid]`);
 					if (!children.length) {
-						document.querySelector(`.categories li[data-cid="${oldParentCid}"] .toggle`).classList.toggle('hide', true);
+						const toggle = document.querySelector(`.categories li[data-cid="${oldParentCid}"] .toggle`);
+						if (toggle) {
+							toggle.classList.toggle('hide', true);
+						}
 					}
 
 					e.item.dataset.parentCid = newParentCid;
