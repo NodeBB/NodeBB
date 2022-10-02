@@ -163,7 +163,7 @@ app.onDomReady();
 			// need to preload the compiled alert template
 			// otherwise it can be unloaded when rebuild & restart is run
 			// the client can't fetch the template file, resulting in an error
-			benchpress.render('alert', {}).then(function () {
+			benchpress.render('partials/toast', {}).then(function () {
 				$('.rebuild-and-restart').off('click').on('click', function () {
 					bootbox.confirm('[[admin/admin:alert.confirm-rebuild-and-restart]]', function (confirm) {
 						if (confirm) {
