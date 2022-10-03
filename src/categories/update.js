@@ -108,7 +108,7 @@ module.exports = function (Categories) {
 		if (currentIndex === -1) {
 			throw new Error('[[error:no-category]]');
 		}
-		// moves cid to index order-1 in the array
+		// moves cid to index order - 1 in the array
 		if (childrenCids.length > 1) {
 			childrenCids.splice(Math.max(0, order - 1), 0, childrenCids.splice(currentIndex, 1)[0]);
 		}

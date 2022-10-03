@@ -421,6 +421,22 @@ describe('Categories', () => {
 			assert.equal(data.icon, updateData[cid].icon);
 		});
 
+		it('should properly order categories', async () => {
+			const p1 = await Categories.create({ name: 'p1', description: 'd', parentCid: 0, order: 1 });
+			const c1 = await Categories.create({ name: 'c1', description: 'd1', parentCid: p1.cid, order: 1 });
+			const c2 = await Categories.create({ name: 'c2', description: 'd2', parentCid: p1.cid, order: 2 });
+			const c3 = await Categories.create({ name: 'c3', description: 'd3', parentCid: p1.cid, order: 3 });
+			// move c1 to second place
+			await apiCategories.update({ uid: adminUid }, { [c1.cid]: { order: 2 } });
+			let cids = await db.getSortedSetRange(`cid:${p1.cid}:children`, 0, -1);
+			assert.deepStrictEqual(cids.map(Number), [c2.cid, c1.cid, c3.cid]);
+
+			// move c3 to front
+			await apiCategories.update({ uid: adminUid }, { [c3.cid]: { order: 1 } });
+			cids = await db.getSortedSetRange(`cid:${p1.cid}:children`, 0, -1);
+			assert.deepStrictEqual(cids.map(Number), [c3.cid, c2.cid, c1.cid]);
+		});
+
 		it('should not remove category from parent if parent is set again to same category', async () => {
 			const parentCat = await Categories.create({ name: 'parent', description: 'poor parent' });
 			const updateData = {};

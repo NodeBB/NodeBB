@@ -202,7 +202,7 @@ define('admin/manage/categories', [
 			// this makes sure order is correct when drag & drop is used on pages > 1
 			const baseIndex = (ajaxify.data.pagination.currentPage - 1) * ajaxify.data.categoriesPerPage;
 			modified[cid] = {
-				order: baseIndex + e.newIndex,
+				order: baseIndex + e.newIndex + 1,
 			};
 
 			if (isCategoryUpdate) {
