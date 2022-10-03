@@ -247,7 +247,7 @@ define('forum/chats', [
 		let modal;
 
 		buttonEl.on('click', function () {
-			app.parseAndTranslate('partials/modals/manage_room', {}, function (html) {
+			app.parseAndTranslate('modals/manage-room', {}, function (html) {
 				modal = bootbox.dialog({
 					title: '[[modules:chat.manage-room]]',
 					message: html,
@@ -325,7 +325,7 @@ define('forum/chats', [
 			}
 		}
 
-		app.parseAndTranslate('partials/modals/manage_room_users', data, function (html) {
+		app.parseAndTranslate('partials/chats/manage-room-users', data, function (html) {
 			listEl.html(html);
 		});
 	};
@@ -334,7 +334,7 @@ define('forum/chats', [
 		let modal;
 
 		buttonEl.on('click', function () {
-			app.parseAndTranslate('partials/modals/rename_room', {
+			app.parseAndTranslate('modals/rename-room', {
 				name: roomName || ajaxify.data.roomName,
 			}, function (html) {
 				modal = bootbox.dialog({

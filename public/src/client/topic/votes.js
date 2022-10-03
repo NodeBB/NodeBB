@@ -100,7 +100,7 @@ define('forum/topic/votes', [
 				return alerts.error(err);
 			}
 
-			app.parseAndTranslate('partials/modals/votes_modal', data, function (html) {
+			app.parseAndTranslate('modals/votes', data, function (html) {
 				const dialog = bootbox.dialog({
 					title: '[[global:voters]]',
 					message: html,

@@ -172,7 +172,7 @@ define('accounts/picture', [
 
 		modal.find('[data-action="upload-url"]').on('click', function () {
 			modal.modal('hide');
-			app.parseAndTranslate('partials/modals/upload_picture_from_url_modal', {}, function (uploadModal) {
+			app.parseAndTranslate('modals/upload-picture-from-url', {}, function (uploadModal) {
 				uploadModal.modal('show');
 
 				uploadModal.find('.upload-btn').on('click', function () {

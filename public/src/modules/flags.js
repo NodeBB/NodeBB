@@ -8,7 +8,7 @@ define('flags', ['hooks', 'components', 'api', 'alerts'], function (hooks, compo
 	let flagReason;
 
 	Flag.showFlagModal = function (data) {
-		app.parseAndTranslate('partials/modals/flag_modal', data, function (html) {
+		app.parseAndTranslate('modals/flag', data, function (html) {
 			flagModal = html;
 			flagModal.on('hidden.bs.modal', function () {
 				flagModal.remove();
