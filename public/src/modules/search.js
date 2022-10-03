@@ -223,7 +223,7 @@ define('search', ['translator', 'storage', 'hooks', 'alerts'], function (transla
 
 	Search.showAndFocusInput = function () {
 		$('[component="search/fields"]').removeClass('hidden');
-		$('[component="search/button]').addClass('hidden');
+		$('[component="search/button"]').addClass('hidden');
 		$('[component="search/fields"] input[name="query"]').trigger('focus');
 	};
 
