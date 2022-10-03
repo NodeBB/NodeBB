@@ -165,12 +165,15 @@
 }
 
 .hover-parent {
-	.hover-display {
+	.hover-d-block, .hover-d-flex {
 		display: none!important;
 	}
 	&:hover {
-		.hover-display {
+		.hover-d-block {
 			display: block!important;
+		}
+		.hover-d-flex {
+			display: flex!important;
 		}
 	}
 }
