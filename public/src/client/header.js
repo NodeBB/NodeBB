@@ -48,6 +48,7 @@ define('forum/header', [
 			selector: '.nav-item',
 			placement: 'bottom',
 			trigger: 'hover',
+			container: 'body',
 		});
 	}
 
