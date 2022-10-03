@@ -1,5 +1,5 @@
 <ul data-cid="{cid}">
-<!-- BEGIN categories -->
+{{{ each categories }}}
     <li data-cid="{categories.cid}" data-parent-cid="{categories.parentCid}" data-name="{categories.name}" <!-- IF categories.disabled -->class="disabled"<!-- ENDIF categories.disabled -->>
         <div class="row category-row">
             <div class="col-md-9">
