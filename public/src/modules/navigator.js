@@ -570,7 +570,7 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 		await hooks.fire('filter:navigator.scroll', { scrollTo, highlight, duration, newIndex });
 
 		const postHeight = scrollTo.outerHeight(true);
-		const navbarHeight = components.get('navbar').outerHeight(true);
+		const navbarHeight = components.get('navbar').outerHeight(true) || 0;
 		const topicHeaderHeight = $('.topic-header').outerHeight(true) || 0;
 		const viewportHeight = $(window).height();
 

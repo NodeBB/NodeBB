@@ -6,16 +6,6 @@
 *  bring back treding plugins (8aa1596d)
 *  incrementing version number - v2.5.2 (babcd17e)
 *  update changelog for v2.5.2 (84b6a7c7)
-*  incrementing version number - v2.5.1 (ce3aa950)
-*  incrementing version number - v2.5.0 (01d276cb)
-*  incrementing version number - v2.4.5 (dd3e1a28)
-*  incrementing version number - v2.4.4 (d5525c87)
-*  incrementing version number - v2.4.3 (9c647c6c)
-*  incrementing version number - v2.4.2 (3aa7b855)
-*  incrementing version number - v2.4.1 (60cbd148)
-*  incrementing version number - v2.4.0 (4834cde3)
-*  incrementing version number - v2.3.1 (d2425942)
-*  incrementing version number - v2.3.0 (046ea120)
 
 ##### New Features
 
