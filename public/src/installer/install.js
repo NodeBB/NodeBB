@@ -3,6 +3,7 @@
 'use strict';
 
 const $ = require('jquery');
+require('bootstrap');
 const zxcvbn = require('zxcvbn');
 const utils = require('../utils');
 const slugify = require('../modules/slugify');
@@ -35,7 +36,7 @@ $('document').ready(function () {
 			$('.input-row.active').removeClass('active');
 			parent.addClass('active').removeClass('error');
 
-			const help = parent.find('.help-text');
+			const help = parent.find('.form-text');
 			help.html(help.attr('data-help'));
 		});
 
@@ -63,7 +64,7 @@ $('document').ready(function () {
 	function activate(type, el) {
 		const field = el.val();
 		const parent = el.parents('.input-row');
-		const help = parent.children('.help-text');
+		const help = parent.children('.form-text');
 
 		function validateUsername(field) {
 			if (!utils.isUserNameValid(field) || !slugify(field)) {
