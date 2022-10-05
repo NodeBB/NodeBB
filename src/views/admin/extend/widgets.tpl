@@ -99,12 +99,12 @@
 						</div>
 						<div class="card mb-3" data-container-html='<div class="card"><div class="card-body">\{{body}}</div></div>'>
 							<div class="card-body pointer">
-								[[admin/extend/widgets:container.panel]]
+								[[admin/extend/widgets:container.card]]
 							</div>
 						</div>
 						<div class="card mb-3 pointer" data-container-html='<div class="card"><h5 class="card-header">\{{title}}</h5><div class="card-body">\{{body}}</div></div>'>
 							<div class="card-header">
-								[[admin/extend/widgets:container.panel-header]]
+								[[admin/extend/widgets:container.card-header]]
 								<div class="float-end color-selector">
 									<button data-class="text-bg-primary" class="btn btn-sm btn-primary">&nbsp;&nbsp;</button>
 									<button data-class="" class="btn btn-sm btn-secondary">&nbsp;&nbsp;</button>
@@ -115,7 +115,7 @@
 								</div>
 							</div>
 							<div class="card-body">
-								[[admin/extend/widgets:container.panel-body]]
+								[[admin/extend/widgets:container.card-body]]
 							</div>
 						</div>
 
