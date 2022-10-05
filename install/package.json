@@ -3,7 +3,7 @@
     "license": "GPL-3.0",
     "description": "NodeBB Forum",
     "version": "2.5.3",
-    "homepage": "http://www.nodebb.org",
+    "homepage": "https://www.nodebb.org",
     "repository": {
         "type": "git",
         "url": "https://github.com/NodeBB/NodeBB/"
@@ -170,11 +170,6 @@
         "node": ">=12"
     },
     "maintainers": [
-        {
-            "name": "Andrew Rodrigues",
-            "email": "andrew@nodebb.org",
-            "url": "https://github.com/psychobunny"
-        },
         {
             "name": "Julian Lam",
             "email": "julian@nodebb.org",
