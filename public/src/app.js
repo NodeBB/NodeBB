@@ -150,41 +150,6 @@ if (document.readyState === 'loading') {
 		return single ? result.pop() : result;
 	}
 
-	app.logout = function (redirect) {
-		console.warn('[deprecated] app.logout is deprecated, please use logout module directly');
-		require(['logout'], function (logout) {
-			logout(redirect);
-		});
-	};
-
-	app.alert = function (params) {
-		console.warn('[deprecated] app.alert is deprecated, please use alerts.alert');
-		require(['alerts'], function (alerts) {
-			alerts.alert(params);
-		});
-	};
-
-	app.removeAlert = function (id) {
-		console.warn('[deprecated] app.removeAlert is deprecated, please use alerts.remove');
-		require(['alerts'], function (alerts) {
-			alerts.remove(id);
-		});
-	};
-
-	app.alertSuccess = function (message, timeout) {
-		console.warn('[deprecated] app.alertSuccess is deprecated, please use alerts.success');
-		require(['alerts'], function (alerts) {
-			alerts.success(message, timeout);
-		});
-	};
-
-	app.alertError = function (message, timeout) {
-		console.warn('[deprecated] app.alertError is deprecated, please use alerts.error');
-		require(['alerts'], function (alerts) {
-			alerts.error(message, timeout);
-		});
-	};
-
 	app.enterRoom = function (room, callback) {
 		callback = callback || function () { };
 		if (socket && app.user.uid && app.currentRoom !== room) {
@@ -277,20 +242,6 @@ if (document.readyState === 'loading') {
 		utils.addCommasToNumbers($('.formatted-number'));
 		app.createUserTooltips($('#content'));
 		app.createStatusTooltips();
-	};
-
-	app.openChat = function (roomId, uid) {
-		console.warn('[deprecated] app.openChat is deprecated, please use chat.openChat');
-		require(['chat'], function (chat) {
-			chat.openChat(roomId, uid);
-		});
-	};
-
-	app.newChat = function (touid, callback) {
-		console.warn('[deprecated] app.newChat is deprecated, please use chat.newChat');
-		require(['chat'], function (chat) {
-			chat.newChat(touid, callback);
-		});
 	};
 
 	app.toggleNavbar = function (state) {
