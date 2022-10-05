@@ -49,6 +49,7 @@ define('forum/header', [
 			placement: 'bottom',
 			trigger: 'hover',
 			container: 'body',
+			animation: false,
 		});
 	}
 

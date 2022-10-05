@@ -199,6 +199,7 @@ app = window.app || {};
 
 		reconnectEl.addClass('active').removeClass('hide').tooltip({
 			placement: 'bottom',
+			animation: false,
 		});
 	}
 

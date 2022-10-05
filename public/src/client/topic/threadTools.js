@@ -19,6 +19,7 @@ define('forum/topic/threadTools', [
 
 		$('.topic-main-buttons [title]').tooltip({
 			container: '#content',
+			animation: false,
 		});
 
 		// function topicCommand(method, path, command, onComplete) {

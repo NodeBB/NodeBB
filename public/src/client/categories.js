@@ -24,6 +24,7 @@ define('forum/categories', ['components', 'categorySelector', 'hooks'], function
 
 		$('.category-header').tooltip({
 			placement: 'bottom',
+			animation: false,
 		});
 	};
 

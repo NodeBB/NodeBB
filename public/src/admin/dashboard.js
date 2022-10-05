@@ -43,7 +43,9 @@ define('admin/dashboard', [
 
 		isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-		$('[data-bs-toggle="tooltip"]').tooltip();
+		$('[data-bs-toggle="tooltip"]').tooltip({
+			animation: false,
+		});
 
 		setupRealtimeButton();
 		setupGraphs(function () {

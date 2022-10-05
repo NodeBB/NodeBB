@@ -243,6 +243,7 @@ if (document.readyState === 'loading') {
 				selector: '.avatar',
 				placement: placement || 'top',
 				container: '#content',
+				animation: false,
 			});
 		}
 	};
@@ -252,6 +253,18 @@ if (document.readyState === 'loading') {
 			$('body').tooltip({
 				selector: '.fa-circle.status',
 				placement: 'top',
+				container: '#content',
+				animation: false,
+			});
+
+			$('#content').on('inserted.bs.tooltip', function (ev) {
+				const target = $(ev.target);
+				if (target.attr('component') === 'user/status') {
+					const newTitle = target.attr('data-new-title');
+					if (newTitle) {
+						$('.tooltip .tooltip-inner').text(newTitle);
+					}
+				}
 			});
 		}
 	};
@@ -296,8 +309,7 @@ if (document.readyState === 'loading') {
 			translator.translate('[[global:' + status + ']]', function (translated) {
 				el.removeClass('online offline dnd away')
 					.addClass(status)
-					.attr('title', translated)
-					.attr('data-original-title', translated);
+					.attr('data-new-title', translated)
 			});
 		});
 	};
