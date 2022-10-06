@@ -14,8 +14,14 @@ defaults:
   run:
     shell: bash
 
+permissions:
+  contents: read
+
 jobs:
   test:
+    permissions:
+      checks: write  # for coverallsapp/github-action to create new checks
+      contents: read  # for actions/checkout to fetch code
     name: Lint and test
     strategy:
       fail-fast: false
@@ -194,6 +200,8 @@ jobs:
           parallel: true
 
   finish:
+    permissions:
+      checks: write  # for coverallsapp/github-action to create new checks
     needs: test
     runs-on: ubuntu-latest
     steps:
