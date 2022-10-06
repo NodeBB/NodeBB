@@ -138,10 +138,9 @@ module.exports = function (grunt) {
 		});
 		const build = require('./src/meta/build');
 		if (!grunt.option('skip')) {
-			await build.build(true, { webpack: false });
+			await build.build(true, { watch: true });
 		}
 		run();
-		await build.webpack({ watch: true });
 		done();
 	});
 

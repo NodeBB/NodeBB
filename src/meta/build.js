@@ -77,19 +77,35 @@ async function beforeBuild(targets) {
 
 const allTargets = Object.keys(targetHandlers).filter(name => typeof targetHandlers[name] === 'function');
 
-async function buildTargets(targets, parallel) {
+async function buildTargets(targets, parallel, options) {
 	const length = Math.max(...targets.map(name => name.length));
-
-	if (parallel) {
+	const jsTargets = targets.filter(target => targetHandlers.javascript.includes(target));
+	const otherTargets = targets.filter(target => !targetHandlers.javascript.includes(target));
+	async function buildJSTargets() {
 		await Promise.all(
-			targets.map(
+			jsTargets.map(
 				target => step(target, parallel, `${_.padStart(target, length)} `)
 			)
 		);
+		// run webpack after jstargets are done, no need to wait for css/templates etc.
+		if (options.webpack || options.watch) {
+			await exports.webpack(options);
+		}
+	}
+	if (parallel) {
+		await Promise.all([
+			buildJSTargets(),
+			...otherTargets.map(
+				target => step(target, parallel, `${_.padStart(target, length)} `)
+			),
+		]);
 	} else {
 		for (const target of targets) {
 			// eslint-disable-next-line no-await-in-loop
 			await step(target, parallel, `${_.padStart(target, length)} `);
+		}
+		if (options.webpack || options.watch) {
+			await exports.webpack(options);
 		}
 	}
 }
@@ -175,11 +191,7 @@ exports.build = async function (targets, options) {
 		}
 
 		const startTime = Date.now();
-		await buildTargets(targets, !series);
-
-		if (options.webpack) {
-			await exports.webpack(options);
-		}
+		await buildTargets(targets, !series, options);
 
 		const totalTime = (Date.now() - startTime) / 1000;
 		await cacheBuster.write();
