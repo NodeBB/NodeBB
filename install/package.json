@@ -36,7 +36,7 @@
         "autoprefixer": "10.4.12",
         "bcryptjs": "2.4.3",
         "benchpressjs": "2.4.3",
-        "body-parser": "1.20.0",
+        "body-parser": "1.20.1",
         "bootbox": "5.5.3",
         "bootstrap": "3.4.1",
         "chalk": "4.1.2",
