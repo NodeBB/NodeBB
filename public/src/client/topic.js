@@ -78,8 +78,9 @@ define('forum/topic', [
 				require(['search'], function (search) {
 					mousetrap.bind(['command+f', 'ctrl+f'], function (e) {
 						e.preventDefault();
-						$('[component="search/fields"] input[name="query"]').val('in:topic-' + ajaxify.data.tid + ' ');
-						search.showAndFocusInput();
+						const form = $('[component="navbar"] [component="search/form"]');
+						form.find('[component="search/fields"] input[name="query"]').val('in:topic-' + ajaxify.data.tid + ' ');
+						search.showAndFocusInput(form);
 					});
 
 					hooks.onPage('action:ajaxify.cleanup', () => {

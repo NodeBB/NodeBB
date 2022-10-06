@@ -63,7 +63,7 @@ define('search', ['translator', 'storage', 'hooks', 'alerts'], function (transla
 			}
 			e.stopPropagation();
 
-			Search.showAndFocusInput();
+			Search.showAndFocusInput(searchForm);
 			return false;
 		});
 
@@ -221,10 +221,10 @@ define('search', ['translator', 'storage', 'hooks', 'alerts'], function (transla
 		});
 	};
 
-	Search.showAndFocusInput = function () {
-		$('[component="search/fields"]').removeClass('hidden');
-		$('[component="search/button"]').addClass('hidden');
-		$('[component="search/fields"] input[name="query"]').trigger('focus');
+	Search.showAndFocusInput = function (form) {
+		form.find('[component="search/fields"]').removeClass('hidden');
+		form.find('[component="search/button"]').addClass('hidden');
+		form.find('[component="search/fields"] input[name="query"]').trigger('focus');
 	};
 
 	Search.query = function (data, callback) {
