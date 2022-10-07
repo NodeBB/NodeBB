@@ -26,6 +26,13 @@ if (!fs.existsSync(logDir)) {
 	mkdirp.sync(path.dirname(outputLogFilePath));
 }
 
+// Create/update file with limited permissions
+if (!file.existsSync(outputLogFilePath)) {
+	fs.closeSync(fs.openSync(outputLogFilePath, 'w', 0o640));
+} else {
+	fs.chmodSync(outputLogFilePath, 0o640);
+}
+
 const output = logrotate({ file: outputLogFilePath, size: '1m', keep: 3, compress: true });
 const silent = nconf.get('silent') === 'false' ? false : nconf.get('silent') !== false;
 let numProcs;
