@@ -1,21 +1,23 @@
 'use strict';
 
+const fs = require('fs');
+const ip = require('ip');
+const path = require('path');
+const less = require('less');
 const winston = require('winston');
 const express = require('express');
 const bodyParser = require('body-parser');
-const fs = require('fs');
-const path = require('path');
 const childProcess = require('child_process');
-const less = require('less');
 
-const webpack = require('webpack');
 const nconf = require('nconf');
+const webpack = require('webpack');
 
-const Benchpress = require('benchpressjs');
 const mkdirp = require('mkdirp');
+const Benchpress = require('benchpressjs');
 const { paths } = require('../src/constants');
 
 const app = express();
+
 let server;
 
 const formats = [
@@ -95,7 +97,7 @@ async function runWebpack() {
 
 function launchExpress(port) {
 	server = app.listen(port, () => {
-		winston.info('Web installer listening on http://%s:%s', '0.0.0.0', port);
+		winston.info('Web installer listening on http://%s:%s', ip.address(), port);
 	});
 }
 
