@@ -1,10 +1,11 @@
 'use strict';
 
-const winston = require('winston');
+const ip = require('ip');
 const async = require('async');
 const nconf = require('nconf');
-const session = require('express-session');
 const semver = require('semver');
+const winston = require('winston');
+const session = require('express-session');
 
 const connection = require('./postgres/connection');
 
@@ -14,7 +15,7 @@ postgresModule.questions = [
 	{
 		name: 'postgres:host',
 		description: 'Host IP or address of your PostgreSQL instance',
-		default: nconf.get('postgres:host') || '127.0.0.1',
+		default: nconf.get('postgres:host') || ip.address(),
 	},
 	{
 		name: 'postgres:port',

@@ -1,5 +1,6 @@
 'use strict';
 
+const ip = require('ip');
 const nconf = require('nconf');
 const semver = require('semver');
 const session = require('express-session');
@@ -12,7 +13,7 @@ redisModule.questions = [
 	{
 		name: 'redis:host',
 		description: 'Host IP or address of your Redis instance',
-		default: nconf.get('redis:host') || '127.0.0.1',
+		default: nconf.get('redis:host') || ip.address(),
 	},
 	{
 		name: 'redis:port',

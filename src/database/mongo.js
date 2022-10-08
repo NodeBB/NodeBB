@@ -2,11 +2,12 @@
 'use strict';
 
 
-const winston = require('winston');
+const ip = require('ip');
 const nconf = require('nconf');
 const semver = require('semver');
 const prompt = require('prompt');
 const utils = require('../utils');
+const winston = require('winston');
 
 let client;
 
@@ -28,7 +29,7 @@ mongoModule.questions = [
 	{
 		name: 'mongo:host',
 		description: 'Host IP or address of your MongoDB instance',
-		default: nconf.get('mongo:host') || '127.0.0.1',
+		default: nconf.get('mongo:host') || ip.address(),
 		ask: isUriNotSpecified,
 	},
 	{
