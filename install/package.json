@@ -59,7 +59,7 @@
         "daemon": "1.1.0",
         "diff": "5.1.0",
         "esbuild": "0.15.10",
-        "express": "4.18.1",
+        "express": "4.18.2",
         "express-session": "1.17.3",
         "express-useragent": "1.0.15",
         "file-loader": "6.2.0",
