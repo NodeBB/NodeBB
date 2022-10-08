@@ -1,8 +1,8 @@
 {
 	"post-cache": "Post-Cache",
-	"group-cache": "Group Cache",
-	"local-cache": "Local Cache",
-	"object-cache": "Object Cache",
+	"group-cache": "Gruppen-Cache",
+	"local-cache": "Lokaler Cache",
+	"object-cache": "Objekt-Cache",
 	"percent-full": "%1% Voll",
 	"post-cache-size": "Post-Cache-Größe",
 	"items-in-cache": "Elemente im Cache"
