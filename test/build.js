@@ -39,7 +39,7 @@ describe('minifier', () => {
 			files: scripts,
 			destPath: destPath,
 			filename: 'concatenated.js',
-		}, false, false, (err) => {
+		}, false, (err) => {
 			assert.ifError(err);
 
 			assert(file.existsSync(destPath));
@@ -58,45 +58,6 @@ describe('minifier', () => {
 				'\n'
 			);
 			done();
-		});
-	});
-	it('.js.bundle() should minify scripts', (done) => {
-		const destPath = path.resolve(__dirname, '../test/build/minified.js');
-
-		minifier.js.bundle({
-			files: scripts,
-			destPath: destPath,
-			filename: 'minified.js',
-		}, true, false, (err) => {
-			assert.ifError(err);
-
-			assert(file.existsSync(destPath));
-
-			assert.strictEqual(
-				fs.readFileSync(destPath).toString(),
-				'(function(n,o){n.doStuff=function(){o.body.innerHTML="Stuff has been done"}})(window,document);function foo(n,o){return\'The person known as "\'+n+\'" is \'+o+" years old"}' +
-				'\n//# sourceMappingURL=minified.js.map'
-			);
-			done();
-		});
-	});
-
-	it('.js.minifyBatch() should minify each script', (done) => {
-		minifier.js.minifyBatch(scripts, false, (err) => {
-			assert.ifError(err);
-
-			assert(file.existsSync(scripts[0].destPath));
-			assert(file.existsSync(scripts[1].destPath));
-
-			fs.readFile(scripts[0].destPath, (err, buffer) => {
-				assert.ifError(err);
-				assert.strictEqual(
-					buffer.toString(),
-					'(function(n,o){n.doStuff=function(){o.body.innerHTML="Stuff has been done"}})(window,document);' +
-					'\n//# sourceMappingURL=1.js.map'
-				);
-				done();
-			});
 		});
 	});
 
