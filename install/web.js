@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const fs = require('fs');
 const path = require('path');
 const childProcess = require('child_process');
-const sass = require('sass');
+const sass = require('../src/utils').getSass();
 
 const webpack = require('webpack');
 const nconf = require('nconf');

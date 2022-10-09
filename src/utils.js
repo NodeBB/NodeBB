@@ -29,4 +29,13 @@ utils.generateUUID = function () {
 	return rnd.join('-');
 };
 
+utils.getSass = function () {
+	try {
+		const sass = require('sass-embedded');
+		return sass;
+	} catch (_err) {
+		return require('sass');
+	}
+};
+
 module.exports = utils;

@@ -240,7 +240,7 @@ async function saveRenderedCss(data) {
 	if (!data.customCSS) {
 		return;
 	}
-	const sass = require('sass');
+	const sass = require('../utils').getSass();
 	const scssOutput = await sass.compileStringAsync(data.customCSS, {});
 	data.renderedCustomCSS = scssOutput.css.toString();
 }
