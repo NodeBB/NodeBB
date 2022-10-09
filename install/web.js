@@ -6,7 +6,6 @@ const bodyParser = require('body-parser');
 const fs = require('fs');
 const path = require('path');
 const childProcess = require('child_process');
-const sass = require('../src/utils').getSass();
 
 const webpack = require('webpack');
 const nconf = require('nconf');
@@ -14,6 +13,7 @@ const nconf = require('nconf');
 const Benchpress = require('benchpressjs');
 const mkdirp = require('mkdirp');
 const { paths } = require('../src/constants');
+const sass = require('../src/utils').getSass();
 
 const app = express();
 let server;

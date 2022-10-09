@@ -4,11 +4,11 @@ const fs = require('fs');
 const os = require('os');
 const async = require('async');
 const winston = require('winston');
-const sass = require('../utils').getSass();
 const postcss = require('postcss');
 const autoprefixer = require('autoprefixer');
 const clean = require('postcss-clean');
 const rtlcss = require('rtlcss');
+const sass = require('../utils').getSass();
 
 const fork = require('./debugFork');
 require('../file'); // for graceful-fs
@@ -158,7 +158,7 @@ Minifier.js.bundle = async function (data, fork) {
 };
 
 actions.buildCSS = async function buildCSS(data) {
-	const scssOutput = sass.compileString(data.source, {
+	const scssOutput = await sass.compileStringAsync(data.source, {
 		loadPaths: data.paths,
 	});
 
