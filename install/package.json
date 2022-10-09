@@ -166,6 +166,9 @@
         "nyc": "15.1.0",
         "smtp-server": "3.11.0"
     },
+    "optionalDependencies": {
+        "sass-embedded": "1.55.0"
+    },
     "bugs": {
         "url": "https://github.com/NodeBB/NodeBB/issues"
     },
