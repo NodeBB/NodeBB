@@ -1,8 +1,8 @@
 'use strict';
 
 define('forum/flags/detail', [
-	'components', 'translator', 'benchpress', 'forum/account/header', 'accounts/delete', 'api', 'bootbox', 'alerts',
-], function (components, translator, Benchpress, AccountHeader, AccountsDelete, api, bootbox, alerts) {
+	'components', 'translator', 'benchpress', 'accounts/moderate', 'accounts/delete', 'api', 'bootbox', 'alerts',
+], function (components, translator, Benchpress, AccountModerate, AccountsDelete, api, bootbox, alerts) {
 	const Detail = {};
 
 	Detail.init = function () {
@@ -66,19 +66,19 @@ define('forum/flags/detail', [
 					break;
 
 				case 'ban':
-					AccountHeader.banAccount(uid, ajaxify.refresh);
+					AccountModerate.banAccount(uid, ajaxify.refresh);
 					break;
 
 				case 'unban':
-					AccountHeader.unbanAccount(uid);
+					AccountModerate.unbanAccount(uid);
 					break;
 
 				case 'mute':
-					AccountHeader.muteAccount(uid, ajaxify.refresh);
+					AccountModerate.muteAccount(uid, ajaxify.refresh);
 					break;
 
 				case 'unmute':
-					AccountHeader.unmuteAccount(uid);
+					AccountModerate.unmuteAccount(uid);
 					break;
 
 				case 'delete-account':
