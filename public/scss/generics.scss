@@ -86,7 +86,7 @@
 @mixin user-icon() {
 	display: inline-block;
 	text-align: center;
-	color: $gray-200;
+	color: $white;
 	font-weight: normal;
 	vertical-align: middle;
 	overflow: hidden;	/* stops alt text from overflowing past boundaries if image does not load */
