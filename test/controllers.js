@@ -600,6 +600,74 @@ describe('Controllers', () => {
 				assert.strictEqual(res.headers.location, `${nconf.get('relative_path')}/`);
 			});
 		});
+
+		describe('abort behaviour', () => {
+			let jar;
+			let token;
+
+			beforeEach(async () => {
+				jar = await helpers.registerUser({
+					username: utils.generateUUID().slice(0, 10),
+					password: utils.generateUUID(),
+				});
+				token = await helpers.getCsrfToken(jar);
+			});
+
+			it('should terminate the session and send user back to index if interstitials remain', async () => {
+				const res = await requestAsync(`${nconf.get('url')}/register/abort`, {
+					method: 'post',
+					jar,
+					json: true,
+					followRedirect: false,
+					simple: false,
+					resolveWithFullResponse: true,
+					headers: {
+						'x-csrf-token': token,
+					},
+				});
+
+				assert.strictEqual(res.statusCode, 302);
+				assert.strictEqual(res.headers['set-cookie'][0], 'express.sid=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax');
+				assert.strictEqual(res.headers.location, `${nconf.get('relative_path')}/`);
+			});
+
+			it('should preserve the session and send user back to user profile if no interstitials remain (e.g. GDPR OK + email change cancellation)', async () => {
+				// Submit GDPR consent
+				await requestAsync(`${nconf.get('url')}/register/complete`, {
+					method: 'post',
+					jar,
+					json: true,
+					followRedirect: false,
+					simple: false,
+					resolveWithFullResponse: true,
+					headers: {
+						'x-csrf-token': token,
+					},
+					form: {
+						gdpr_agree_data: 'on',
+						gdpr_agree_email: 'on',
+					},
+				});
+
+				// Start email change flow
+				await requestAsync(`${nconf.get('url')}/me/edit/email`, { jar });
+
+				const res = await requestAsync(`${nconf.get('url')}/register/abort`, {
+					method: 'post',
+					jar,
+					json: true,
+					followRedirect: false,
+					simple: false,
+					resolveWithFullResponse: true,
+					headers: {
+						'x-csrf-token': token,
+					},
+				});
+
+				assert.strictEqual(res.statusCode, 302);
+				assert(res.headers.location.match(/\/uid\/\d+$/));
+			});
+		});
 	});
 
 	it('should load /robots.txt', (done) => {

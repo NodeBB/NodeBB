@@ -209,18 +209,22 @@ authenticationController.registerComplete = async function (req, res) {
 	}
 };
 
-authenticationController.registerAbort = function (req, res) {
+authenticationController.registerAbort = async (req, res) => {
 	if (req.uid) {
-		// Clear interstitial data and continue on...
-		delete req.session.registration;
-		res.redirect(nconf.get('relative_path') + (req.session.returnTo || '/'));
-	} else {
-		// End the session and redirect to home
-		req.session.destroy(() => {
-			res.clearCookie(nconf.get('sessionKey'), meta.configs.cookie.get());
-			res.redirect(`${nconf.get('relative_path')}/`);
-		});
+		// Email is the only cancelable interstitial
+		delete req.session.registration.updateEmail;
+
+		const { interstitials } = await user.interstitials.get(req, req.session.registration);
+		if (!interstitials.length) {
+			return res.redirect(nconf.get('relative_path') + (req.session.returnTo || '/'));
+		}
 	}
+
+	// End the session and redirect to home
+	req.session.destroy(() => {
+		res.clearCookie(nconf.get('sessionKey'), meta.configs.cookie.get());
+		res.redirect(`${nconf.get('relative_path')}/`);
+	});
 };
 
 authenticationController.login = async (req, res, next) => {
