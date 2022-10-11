@@ -25,15 +25,10 @@ async function registerAndLoginUser(req, res, userData) {
 		userData.updateEmail = true;
 	}
 
-	const data = await plugins.hooks.fire('filter:register.interstitial', {
-		req,
-		userData,
-		interstitials: [],
-	});
+	const data = await user.interstitials.get(req, userData);
 
 	// If interstitials are found, save registration attempt into session and abort
 	const deferRegistration = data.interstitials.length;
-
 	if (deferRegistration) {
 		userData.register = true;
 		req.session.registration = userData;
@@ -45,6 +40,7 @@ async function registerAndLoginUser(req, res, userData) {
 		res.json({ next: `${nconf.get('relative_path')}/register/complete` });
 		return;
 	}
+
 	const queue = await user.shouldQueueUser(req.ip);
 	const result = await plugins.hooks.fire('filter:register.shouldQueue', { req: req, res: res, userData: userData, queue: queue });
 	if (result.queue) {
@@ -140,12 +136,7 @@ async function addToApprovalQueue(req, userData) {
 authenticationController.registerComplete = async function (req, res) {
 	try {
 		// For the interstitials that respond, execute the callback with the form body
-		const data = await plugins.hooks.fire('filter:register.interstitial', {
-			req,
-			userData: req.session.registration,
-			interstitials: [],
-		});
-
+		const data = await user.interstitials.get(req, req.session.registration);
 		const callbacks = data.interstitials.reduce((memo, cur) => {
 			if (cur.hasOwnProperty('callback') && typeof cur.callback === 'function') {
 				req.body.files = req.files;
