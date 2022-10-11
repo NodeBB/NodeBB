@@ -185,6 +185,9 @@ define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, t
 			case 'background-color':
 				element.find('a').css('background-color', value);
 				break;
+			case 'color':
+				element.find('a').css('color', value);
+				break;
 		}
 	};
 
