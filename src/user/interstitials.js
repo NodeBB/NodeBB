@@ -14,6 +14,12 @@ const sleep = util.promisify(setTimeout);
 
 const Interstitials = module.exports;
 
+Interstitials.get = async (req, userData) => plugins.hooks.fire('filter:register.interstitial', {
+	req,
+	userData,
+	interstitials: [],
+});
+
 Interstitials.email = async (data) => {
 	if (!data.userData) {
 		throw new Error('[[error:invalid-data]]');
