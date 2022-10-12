@@ -63,8 +63,8 @@
 				</div>
 				<div class="modal-body">
 					<form>
-						<div class="form-group">
-							<label for="create-tag-name">[[admin/manage/tags:name]]</label>
+						<div class="mb-3">
+							<label class="form-label" for="create-tag-name">[[admin/manage/tags:name]]</label>
 							<input type="text" class="form-control" id="create-tag-name" placeholder="[[admin/manage/tags:name]]" />
 						</div>
 					</form>
