@@ -215,14 +215,14 @@ async function isOwner(caller, groupName) {
 	if (typeof groupName !== 'string') {
 		throw new Error('[[error:invalid-group-name]]');
 	}
-	const [isAdmin, isGlobalModerator, isOwner, group] = await Promise.all([
-		user.isAdministrator(caller.uid),
+	const [hasAdminPrivilege, isGlobalModerator, isOwner, group] = await Promise.all([
+		privileges.admin.can('admin:groups', caller.uid),
 		user.isGlobalModerator(caller.uid),
 		groups.ownership.isOwner(caller.uid, groupName),
 		groups.getGroupData(groupName),
 	]);
 
-	const check = isOwner || isAdmin || (isGlobalModerator && !group.system);
+	const check = isOwner || hasAdminPrivilege || (isGlobalModerator && !group.system);
 	if (!check) {
 		throw new Error('[[error:no-privileges]]');
 	}
