@@ -60,51 +60,6 @@
 
 		<!-- IMPORT partials/paginator.tpl -->
 	</div>
-
-	<div class="modal fade" id="create-modal">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4 class="modal-title">[[admin/manage/groups:create]]</h4>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-				</div>
-				<div class="modal-body">
-					<div class="alert alert-danger hide" id="create-modal-error"></div>
-					<form>
-						<div class="form-group">
-							<label for="create-group-name">[[admin/manage/groups:name]]</label>
-							<input type="text" class="form-control" id="create-group-name" placeholder="[[admin/manage/groups:name]]" />
-						</div>
-						<div class="form-group">
-							<label for="create-group-desc">[[admin/manage/groups:description]]</label>
-							<input type="text" class="form-control" id="create-group-desc" placeholder="[[admin/manage/groups:description-placeholder]]" />
-						</div>
-						<div class="form-group">
-							<label>
-								<input id="create-group-private" name="private" type="checkbox" checked>
-								<strong>[[admin/manage/groups:private]]</strong>
-							</label>
-						</div>
-						<div class="form-group">
-							<label>
-								<input id="create-group-hidden" name="hidden" type="checkbox">
-								<strong>[[admin/manage/groups:hidden]]</strong>
-							</label>
-						</div>
-
-					</form>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-						[[global:close]]
-					</button>
-					<button type="button" class="btn btn-primary" id="create-modal-go">
-						[[admin/manage/groups:create-button]]
-					</button>
-				</div>
-			</div>
-		</div>
-	</div>
 </div>
 
 <button id="create" class="floating-button mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
