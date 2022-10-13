@@ -210,8 +210,7 @@ app.onDomReady();
 				slideout.close();
 
 				env = utils.findBootstrapEnvironment();
-
-				if (env === 'md' || env === 'lg') {
+				if (['xxl', 'xl', 'lg'].includes(env)) {
 					slideout.disableTouch();
 					$('#header').css({
 						position: 'relative',
