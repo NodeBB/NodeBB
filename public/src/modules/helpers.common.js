@@ -85,7 +85,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 			return '';
 		}
 
-		return `<span class="icon d-inline-flex justify-content-center align-items-center align-middle ${rounded}" style="${generateCategoryBackground(category)} width:${size}; height: ${size};">${category.icon ? `<i class="fa fa-fw ${category.icon}"></i>` : ''}</span>`;
+		return `<span class="icon d-inline-flex justify-content-center align-items-center align-middle ${rounded}" style="${generateCategoryBackground(category)} width:${size}; height: ${size}; font-size: ${parseInt(size, 10) / 2}px;">${category.icon ? `<i class="fa fa-fw ${category.icon}"></i>` : ''}</span>`;
 	}
 
 	function generateCategoryBackground(category) {
