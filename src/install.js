@@ -342,6 +342,14 @@ async function createAdmin() {
 		try {
 			User.isPasswordValid(results.password);
 		} catch (err) {
+			const [namespace, key] = err.message.slice(2, -2).split(':', 2);
+			if (namespace && key && err.message.startsWith('[[') && err.message.endsWith(']]')) {
+				const lang = require(path.join(__dirname, `../public/language/en-GB/${namespace}`));
+				if (lang && lang[key]) {
+					err.message = lang[key];
+				}
+			}
+
 			winston.warn(`Password error, please try again. ${err.message}`);
 			return await retryPassword(results);
 		}

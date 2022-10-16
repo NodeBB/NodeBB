@@ -27,14 +27,6 @@ JS.scripts = {
 	modules: { },
 };
 
-async function linkIfLinux(srcPath, destPath) {
-	if (process.platform === 'win32') {
-		await fs.promises.copyFile(srcPath, destPath);
-	} else {
-		await file.link(srcPath, destPath, true);
-	}
-}
-
 const basePath = path.resolve(__dirname, '../..');
 
 async function linkModules() {
@@ -55,7 +47,7 @@ async function linkModules() {
 		if (stats.isDirectory()) {
 			await file.linkDirs(srcPath, destPath, true);
 		} else {
-			await linkIfLinux(srcPath, destPath);
+			await fs.promises.copyFile(srcPath, destPath);
 		}
 	}));
 }
