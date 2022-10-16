@@ -97,7 +97,8 @@ async function runWebpack() {
 
 function launchExpress(port) {
 	server = app.listen(port, () => {
-		winston.info('Web installer listening on http://%s:%s', ip.address(), port);
+		winston.info('Web installer listening on http://%s:%s', '0.0.0.0', port);
+		winston.info('Visit the Web installer your NodeBB instance on http://%s:%s', ip.address(), port,);
 	});
 }
 
