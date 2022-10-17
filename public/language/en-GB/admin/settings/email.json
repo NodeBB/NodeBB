@@ -5,6 +5,8 @@
 	"from": "From Name",
 	"from-help": "The from name to display in the email.",
 
+	"confirmation-settings": "Confirmation",
+
 	"smtp-transport": "SMTP Transport",
 	"smtp-transport.enabled": "Enable SMTP Transport",
 	"smtp-transport-help": "You can select from a list of well-known services or enter a custom one.",
