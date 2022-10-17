@@ -8,7 +8,7 @@
 				<label for="emailConfirmInterval">[[admin/settings/user:email-confirm-interval]]</label>
 				<input class="form-control" data-field="emailConfirmInterval" type="number" id="emailConfirmInterval" placeholder="Default: 10"
 					value="10" />
-				<label for="emailConfirmInterval">[[admin/settings/user:email-confirm-email2]]</label>
+				<label for="emailConfirmInterval">[[admin/settings/user:email-confirm-interval2]]</label>
 			</div>
 
 			<div class="form-group">
