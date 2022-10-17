@@ -1,7 +1,7 @@
 {
 	"authentication": "Overenie",
 	"email-confirm-interval": "Používateľ nesmie požiadať o znovu odoslanie potvrdzujúceho e-mailu do",
-	"email-confirm-email2": "minút uplynulo",
+	"email-confirm-interval2": "minút uplynulo",
 	"allow-login-with": "Povoliť prihlásenie pomocou",
 	"allow-login-with.username-email": "Používateľské meno alebo e-mail",
 	"allow-login-with.username": "Iba používateľské meno",

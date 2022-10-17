@@ -1,7 +1,7 @@
 {
 	"authentication": "Hitelesítés",
 	"email-confirm-interval": "A felhasználó nem küldetheti újra az emailt ameddig nem telt el",
-	"email-confirm-email2": "perc",
+	"email-confirm-interval2": "perc",
 	"allow-login-with": "Bejelentkezés engedélyezése ezzel:",
 	"allow-login-with.username-email": "Felhasználónév vagy email cím",
 	"allow-login-with.username": "Csak felhasználónév",
