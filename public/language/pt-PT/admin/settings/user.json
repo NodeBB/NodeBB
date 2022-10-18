@@ -1,7 +1,7 @@
 {
 	"authentication": "Autenticação",
 	"email-confirm-interval": "User may not resend a confirmation email until",
-	"email-confirm-email2": "minutes have elapsed",
+	"email-confirm-interval2": "minutes have elapsed",
 	"allow-login-with": "Permitir início de sessão com",
 	"allow-login-with.username-email": "Nome de Utilizador ou E-mail",
 	"allow-login-with.username": "Nome de Utilizador Apenas",

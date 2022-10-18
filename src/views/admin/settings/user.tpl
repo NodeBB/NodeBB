@@ -13,7 +13,7 @@
 					value="10" />
 				</div>
 				<div class="col-auto">
-					<label class="form-label" for="emailConfirmInterval">[[admin/settings/user:email-confirm-email2]]</label>
+					<label class="form-label" for="emailConfirmInterval">[[admin/settings/user:email-confirm-interval2]]</label>
 				</div>
 			</div>
 
