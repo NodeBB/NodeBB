@@ -90,7 +90,7 @@ describe('email confirmation (library methods)', () => {
 
 			assert(isFinite(expiry));
 			assert(expiry > 0);
-			assert(expiry <= meta.config.emailConfirmInterval * 24 * 60 * 60 * 1000);
+			assert(expiry <= meta.config.emailConfirmExpiry * 24 * 60 * 60 * 1000);
 		});
 	});
 
