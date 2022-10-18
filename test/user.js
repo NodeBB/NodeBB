@@ -1759,11 +1759,6 @@ describe('User', () => {
 			meta.config.allowAccountDelete = oldValue;
 		});
 
-		it('should send email confirm', async () => {
-			await User.email.expireValidation(testUid);
-			await socketUser.emailConfirm({ uid: testUid }, {});
-		});
-
 		it('should send reset email', (done) => {
 			socketUser.reset.send({ uid: 0 }, 'john@example.com', (err) => {
 				assert.ifError(err);

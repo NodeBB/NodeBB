@@ -1,7 +1,7 @@
 {
 	"authentication": "验证",
 	"email-confirm-interval": "用户无法重新发送电子邮箱激活直到",
-	"email-confirm-email2": "分钟已经过",
+	"email-confirm-interval2": "分钟已经过",
 	"allow-login-with": "允许使用何种登录名",
 	"allow-login-with.username-email": "用户名或者邮箱",
 	"allow-login-with.username": "仅限用户名",

@@ -1,7 +1,7 @@
 {
 	"authentication": "Authentifizierung",
 	"email-confirm-interval": "Der Benutzer kann für ",
-	"email-confirm-email2": "  Minuten keine Bestätigungsmail erneut senden.",
+	"email-confirm-interval2": "  Minuten keine Bestätigungsmail erneut senden.",
 	"allow-login-with": "Erlaube Login mit",
 	"allow-login-with.username-email": "Benutzername oder E-Mail",
 	"allow-login-with.username": "Nur Benutzername",

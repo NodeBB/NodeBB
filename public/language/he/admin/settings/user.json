@@ -1,7 +1,7 @@
 {
 	"authentication": "אימות",
 	"email-confirm-interval": "המשתמש לא יוכל לשלוח הודעת אישור מייל עד שיחלוף",
-	"email-confirm-email2": "דקות",
+	"email-confirm-interval2": "דקות",
 	"allow-login-with": "אפשר התחברות עם",
 	"allow-login-with.username-email": "שם משתמש או סיסמא",
 	"allow-login-with.username": "שם משתמש בלבד",

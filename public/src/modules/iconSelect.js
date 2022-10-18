@@ -45,7 +45,7 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 						label: 'Select',
 						className: 'btn-primary',
 						callback: function () {
-							const iconClass = $('.bootbox .selected').attr('class');
+							const iconClass = $('.bootbox .selected').attr('class') || `fa fa-${$('.bootbox #fa-filter').val()}`;
 							const categoryIconClass = $('<div></div>').addClass(iconClass).removeClass('fa').removeClass('selected')
 								.attr('class');
 							const searchElVal = picker.find('input').val();
