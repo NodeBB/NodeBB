@@ -93,6 +93,49 @@ describe('email confirmation (library methods)', () => {
 			assert(expiry <= meta.config.emailConfirmInterval * 24 * 60 * 60 * 1000);
 		});
 	});
+
+	describe('expireValidation', () => {
+		it('should invalidate any confirmation in-progress', async () => {
+			const email = 'test@example.org';
+			await user.email.sendValidationEmail(uid, {
+				email,
+			});
+			await user.email.expireValidation(uid);
+
+			assert.strictEqual(await user.email.isValidationPending(uid), false);
+			assert.strictEqual(await user.email.isValidationPending(uid, email), false);
+			assert.strictEqual(await user.email.canSendValidation(uid, email), true);
+		});
+	});
+
+	describe('canSendValidation', () => {
+		it('should return true if no validation is pending', async () => {
+			const ok = await user.email.canSendValidation(uid, 'test@example.com');
+
+			assert(ok);
+		});
+
+		it('should return false if it has been too soon to re-send confirmation', async () => {
+			const email = 'test@example.org';
+			await user.email.sendValidationEmail(uid, {
+				email,
+			});
+			const ok = await user.email.canSendValidation(uid, 'test@example.com');
+
+			assert.strictEqual(ok, false);
+		});
+
+		it('should return true if it has been long enough to re-send confirmation', async () => {
+			const email = 'test@example.org';
+			await user.email.sendValidationEmail(uid, {
+				email,
+			});
+			await db.pexpire(`confirm:byUid:${uid}`, 1000);
+			const ok = await user.email.canSendValidation(uid, 'test@example.com');
+
+			assert(ok);
+		});
+	});
 });
 
 describe('email confirmation (v3 api)', () => {
