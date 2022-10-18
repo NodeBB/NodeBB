@@ -15,7 +15,7 @@
 						</div>
 
 						<div class="mb-3">{{{if ../length}}}{../length}{{{else}}}{../itemCount}{{{end}}} / {{{if ../max}}}{../max}{{{else}}}{../maxSize}{{{end}}}</div>
-						<div class="progress mb-3">
+						<div class="progress mb-3" style="height:20px;">
 							<div class="progress-bar" role="progressbar" aria-valuenow="{../percentFull}" aria-valuemin="0" aria-valuemax="100" style="width: {../percentFull}%;">
 								[[admin/advanced/cache:percent-full, {../percentFull}]]
 							</div>
