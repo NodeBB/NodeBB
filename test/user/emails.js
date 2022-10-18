@@ -81,7 +81,7 @@ describe.only('email confirmation (library methods)', () => {
 			assert.strictEqual(expiry, null);
 		});
 
-		it('should return a number smaller than configured expiry if validation available', async () => {
+		it.only('should return a number smaller than configured expiry if validation available', async () => {
 			const email = 'test@example.org';
 			await user.email.sendValidationEmail(uid, {
 				email,
@@ -89,7 +89,8 @@ describe.only('email confirmation (library methods)', () => {
 			const expiry = await user.email.getValidationExpiry(uid);
 
 			assert(isFinite(expiry));
-			assert(expiry <= 1000 * 60 * 60 * 24);
+			assert(expiry > 0);
+			assert(expiry <= meta.config.emailConfirmInterval * 60 * 1000);
 		});
 	});
 });
