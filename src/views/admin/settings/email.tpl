@@ -29,29 +29,6 @@
 			<p class="form-text">[[admin/settings/email:require-email-address-warning]]</p>
 
 			<div class="checkbox mb-3">
-				<label for="sendValidationEmail" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" id="sendValidationEmail" data-field="sendValidationEmail" name="sendValidationEmail" />
-					<span class="mdl-switch__label">[[admin/settings/email:send-validation-email]]</span>
-				</label>
-			</div>
-
-			<div class="checkbox mb-3">
-				<label for="includeUnverifiedEmails" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" id="includeUnverifiedEmails" data-field="includeUnverifiedEmails" name="includeUnverifiedEmails" />
-					<span class="mdl-switch__label">[[admin/settings/email:include-unverified-emails]]</span>
-				</label>
-			</div>
-			<p class="form-text">[[admin/settings/email:include-unverified-warning]]</p>
-
-			<div class="checkbox mb-3">
-				<label for="emailPrompt" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" id="emailPrompt" data-field="emailPrompt" name="emailPrompt" />
-					<span class="mdl-switch__label">[[admin/settings/email:prompt]]</span>
-				</label>
-			</div>
-			<p class="form-text">[[admin/settings/email:prompt-help]]</p>
-
-			<div class="checkbox mb-3">
 				<label for="sendEmailToBanned" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" id="sendEmailToBanned" data-field="sendEmailToBanned" name="sendEmailToBanned" />
 					<span class="mdl-switch__label">[[admin/settings/email:sendEmailToBanned]]</span>
@@ -68,9 +45,55 @@
 	</div>
 </div>
 
-<div class="row mb-4">
-	<div class="col-sm-2 col-12 settings-header">[[admin/settings/email:subscriptions]]</div>
-	<div class="col-sm-10 col-12">
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/email:confirmation-settings]]</div>
+	<div class="col-sm-10 col-xs-12">
+		<div class="row mb-3 align-items-center">
+			<div class="col-auto">
+				<label class="form-label" for="emailConfirmInterval">[[admin/settings/user:email-confirm-interval]]</label>
+			</div>
+			<div class="col-auto">
+				<input class="form-control" data-field="emailConfirmInterval" type="number" id="emailConfirmInterval" placeholder="Default: 10"
+				value="10" />
+			</div>
+			<div class="col-auto">
+				<label class="form-label" for="emailConfirmInterval">[[admin/settings/user:email-confirm-interval2]]</label>
+			</div>
+		</div>
+
+		<div class="mb-3">
+			<label for="emailConfirmExpiry">[[admin/settings/email:confirmation.expiry]]</label>
+			<input class="form-control" data-field="emailConfirmExpiry" type="number" id="emailConfirmExpiry" placeholder="24" />
+		</div>
+
+		<div class="checkbox mb-3">
+			<label for="sendValidationEmail" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+				<input class="mdl-switch__input" type="checkbox" id="sendValidationEmail" data-field="sendValidationEmail" name="sendValidationEmail" />
+				<span class="mdl-switch__label">[[admin/settings/email:send-validation-email]]</span>
+			</label>
+		</div>
+
+		<div class="checkbox mb-3">
+			<label for="includeUnverifiedEmails" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+				<input class="mdl-switch__input" type="checkbox" id="includeUnverifiedEmails" data-field="includeUnverifiedEmails" name="includeUnverifiedEmails" />
+				<span class="mdl-switch__label">[[admin/settings/email:include-unverified-emails]]</span>
+			</label>
+		</div>
+		<p class="form-text">[[admin/settings/email:include-unverified-warning]]</p>
+
+		<div class="checkbox mb-3">
+			<label for="emailPrompt" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+				<input class="mdl-switch__input" type="checkbox" id="emailPrompt" data-field="emailPrompt" name="emailPrompt" />
+				<span class="mdl-switch__label">[[admin/settings/email:prompt]]</span>
+			</label>
+		</div>
+		<p class="form-text">[[admin/settings/email:prompt-help]]</p>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/email:subscriptions]]</div>
+	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="checkbox mb-3">
 				<label for="disableEmailSubscriptions" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">

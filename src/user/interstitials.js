@@ -48,10 +48,10 @@ Interstitials.email = async (data) => {
 		callback: async (userData, formData) => {
 			// Validate and send email confirmation
 			if (userData.uid) {
-				const [isPasswordCorrect, canEdit, current, { allowed, error }] = await Promise.all([
+				const [isPasswordCorrect, canEdit, { email: current, 'email:confirmed': confirmed }, { allowed, error }] = await Promise.all([
 					user.isPasswordCorrect(userData.uid, formData.password, data.req.ip),
 					privileges.users.canEdit(data.req.uid, userData.uid),
-					user.getUserField(userData.uid, 'email'),
+					user.getUserFields(userData.uid, ['email', 'email:confirmed']),
 					plugins.hooks.fire('filter:user.saveEmail', {
 						uid: userData.uid,
 						email: formData.email,
@@ -70,8 +70,13 @@ Interstitials.email = async (data) => {
 						throw new Error(error);
 					}
 
+					// Handle errors when setting to same email (unconfirmed accts only)
 					if (formData.email === current) {
-						throw new Error('[[error:email-nochange]]');
+						if (confirmed) {
+							throw new Error('[[error:email-nochange]]');
+						} else if (await user.email.canSendValidation(userData.uid, current)) {
+							throw new Error(`[[error:confirm-email-already-sent, ${meta.config.emailConfirmInterval}]]`);
+						}
 					}
 
 					// Admins editing will auto-confirm, unless editing their own email
