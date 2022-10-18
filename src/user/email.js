@@ -116,7 +116,7 @@ UserEmail.sendValidationEmail = async function (uid, options) {
 		return;
 	}
 
-	if (!await UserEmail.canSendValidation(uid, options.email)) {
+	if (!options.force && !await UserEmail.canSendValidation(uid, options.email)) {
 		throw new Error(`[[error:confirm-email-already-sent, ${emailConfirmInterval}]]`);
 	}
 
