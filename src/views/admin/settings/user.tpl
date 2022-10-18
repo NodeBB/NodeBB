@@ -4,13 +4,6 @@
 	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/user:authentication]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<form role="form">
-			<div class="form-group form-inline">
-				<label for="emailConfirmInterval">[[admin/settings/user:email-confirm-interval]]</label>
-				<input class="form-control" data-field="emailConfirmInterval" type="number" id="emailConfirmInterval" placeholder="Default: 10"
-					value="10" />
-				<label for="emailConfirmInterval">[[admin/settings/user:email-confirm-interval2]]</label>
-			</div>
-
 			<div class="form-group">
 				<label for="allowLoginWith">[[admin/settings/user:allow-login-with]]</label>
 				<select id="allowLoginWith" class="form-control" data-field="allowLoginWith">

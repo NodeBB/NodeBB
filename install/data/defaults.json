@@ -146,6 +146,7 @@
     "maximumRelatedTopics": 0,
     "disableEmailSubscriptions": 0,
     "emailConfirmInterval": 10,
+    "emailConfirmExpiry": 24,
     "removeEmailNotificationImages": 0,
     "sendValidationEmail": 1,
     "includeUnverifiedEmails": 0,

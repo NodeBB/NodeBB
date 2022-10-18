@@ -38,12 +38,7 @@ define('messages', ['bootbox', 'translator', 'storage', 'alerts', 'hooks'], func
 			msg.message = message || '[[error:email-not-confirmed]]';
 			msg.clickfn = function () {
 				alerts.remove('email_confirm');
-				socket.emit('user.emailConfirm', {}, function (err) {
-					if (err) {
-						return alerts.error(err);
-					}
-					alerts.success('[[notifications:email-confirm-sent]]');
-				});
+				ajaxify.go('/me/edit/email');
 			};
 			alerts.alert(msg);
 		} else if (!app.user['email:confirmed'] && app.user.isEmailConfirmSent) {
