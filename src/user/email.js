@@ -68,6 +68,19 @@ UserEmail.expireValidation = async (uid) => {
 	]);
 };
 
+UserEmail.canSendValidation = async (uid, email) => {
+	const pending = UserEmail.isValidationPending(uid, email);
+	if (!pending) {
+		return true;
+	}
+
+	const ttl = await UserEmail.getValidationExpiry(uid);
+	const max = meta.config.emailConfirmExpiry * 60 * 60 * 1000;
+	const interval = meta.config.emailConfirmInterval * 60 * 1000;
+
+	return ttl + interval < max;
+};
+
 UserEmail.sendValidationEmail = async function (uid, options) {
 	/*
 	 * Options:
@@ -93,7 +106,7 @@ UserEmail.sendValidationEmail = async function (uid, options) {
 	const confirm_code = utils.generateUUID();
 	const confirm_link = `${nconf.get('url')}/confirm/${confirm_code}`;
 
-	const emailInterval = meta.config.emailConfirmInterval;
+	const { emailConfirmInterval, emailConfirmExpiry } = meta.config;
 
 	// If no email passed in (default), retrieve email from uid
 	if (!options.email || !options.email.length) {
@@ -102,12 +115,9 @@ UserEmail.sendValidationEmail = async function (uid, options) {
 	if (!options.email) {
 		return;
 	}
-	let sent = false;
-	if (!options.force) {
-		sent = await UserEmail.isValidationPending(uid, options.email);
-	}
-	if (sent) {
-		throw new Error(`[[error:confirm-email-already-sent, ${emailInterval}]]`);
+
+	if (!await UserEmail.canSendValidation(uid, options.email)) {
+		throw new Error(`[[error:confirm-email-already-sent, ${emailConfirmInterval}]]`);
 	}
 
 	const username = await user.getUserField(uid, 'username');
@@ -124,13 +134,13 @@ UserEmail.sendValidationEmail = async function (uid, options) {
 
 	await UserEmail.expireValidation(uid);
 	await db.set(`confirm:byUid:${uid}`, confirm_code);
-	await db.pexpireAt(`confirm:byUid:${uid}`, Date.now() + (emailInterval * 60 * 1000));
+	await db.pexpire(`confirm:byUid:${uid}`, emailConfirmExpiry * 24 * 60 * 60 * 1000);
 
 	await db.setObject(`confirm:${confirm_code}`, {
 		email: options.email.toLowerCase(),
 		uid: uid,
 	});
-	await db.expireAt(`confirm:${confirm_code}`, Math.floor((Date.now() / 1000) + (60 * 60 * 24)));
+	await db.pexpire(`confirm:${confirm_code}`, emailConfirmExpiry * 24 * 60 * 60 * 1000);
 
 	winston.verbose(`[user/email] Validation email for uid ${uid} sent to ${options.email}`);
 	events.log({

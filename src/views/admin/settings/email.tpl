@@ -50,9 +50,13 @@
 	<div class="col-sm-10 col-xs-12">
 		<div class="form-group form-inline">
 			<label for="emailConfirmInterval">[[admin/settings/user:email-confirm-interval]]</label>
-			<input class="form-control" data-field="emailConfirmInterval" type="number" id="emailConfirmInterval" placeholder="Default: 10"
-				value="10" />
+			<input class="form-control" data-field="emailConfirmInterval" type="number" id="emailConfirmInterval" placeholder="10" />
 			<label for="emailConfirmInterval">[[admin/settings/user:email-confirm-interval2]]</label>
+		</div>
+
+		<div class="form-group">
+			<label for="emailConfirmExpiry">[[admin/settings/email:confirmation.expiry]]</label>
+			<input class="form-control" data-field="emailConfirmExpiry" type="number" id="emailConfirmExpiry" placeholder="24" />
 		</div>
 
 		<div class="checkbox">

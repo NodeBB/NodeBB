@@ -68,10 +68,8 @@ Interstitials.email = async (data) => {
 					if (formData.email === current) {
 						if (confirmed) {
 							throw new Error('[[error:email-nochange]]');
-						} else if (await user.email.isValidationPending(userData.uid, current)) {
-							let remaining = await user.email.getValidationExpiry(userData.uid); // ms
-							remaining = Math.ceil(remaining / 1000 / 60); // ms to minutes
-							throw new Error(`[[error:confirm-email-already-sent, ${remaining}]]`);
+						} else if (await user.email.canSendValidation(userData.uid, current)) {
+							throw new Error(`[[error:confirm-email-already-sent, ${meta.config.emailConfirmInterval}]]`);
 						}
 					}
 

@@ -6,6 +6,7 @@
 	"from-help": "The from name to display in the email.",
 
 	"confirmation-settings": "Confirmation",
+	"confirmation.expiry": "Hours to keep email confirmation link valid",
 
 	"smtp-transport": "SMTP Transport",
 	"smtp-transport.enabled": "Enable SMTP Transport",

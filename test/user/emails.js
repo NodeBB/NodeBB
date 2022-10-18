@@ -14,7 +14,7 @@ const groups = require('../../src/groups');
 const plugins = require('../../src/plugins');
 const utils = require('../../src/utils');
 
-describe.only('email confirmation (library methods)', () => {
+describe('email confirmation (library methods)', () => {
 	let uid;
 	async function dummyEmailerHook(data) {
 		// pretend to handle sending emails
@@ -81,7 +81,7 @@ describe.only('email confirmation (library methods)', () => {
 			assert.strictEqual(expiry, null);
 		});
 
-		it.only('should return a number smaller than configured expiry if validation available', async () => {
+		it('should return a number smaller than configured expiry if validation available', async () => {
 			const email = 'test@example.org';
 			await user.email.sendValidationEmail(uid, {
 				email,
@@ -90,7 +90,7 @@ describe.only('email confirmation (library methods)', () => {
 
 			assert(isFinite(expiry));
 			assert(expiry > 0);
-			assert(expiry <= meta.config.emailConfirmInterval * 60 * 1000);
+			assert(expiry <= meta.config.emailConfirmInterval * 24 * 60 * 60 * 1000);
 		});
 	});
 });
