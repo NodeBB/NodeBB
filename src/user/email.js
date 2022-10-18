@@ -49,7 +49,7 @@ UserEmail.isValidationPending = async (uid, email) => {
 
 	if (email) {
 		const confirmObj = await db.getObject(`confirm:${code}`);
-		return confirmObj && email === confirmObj.email;
+		return !!(confirmObj && email === confirmObj.email);
 	}
 
 	return !!code;
