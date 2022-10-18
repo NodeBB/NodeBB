@@ -1,7 +1,7 @@
 {
 	"authentication": "認証",
 	"email-confirm-interval": "ユーザーが確認するまでEメールを再送信しない",
-	"email-confirm-interval2": "分経過",
+	"email-confirm-interval2": "minutes have elapsed",
 	"allow-login-with": "ログインを許可",
 	"allow-login-with.username-email": "ユーザー名または電子メール",
 	"allow-login-with.username": "ユーザー名のみ",

@@ -1,7 +1,7 @@
 {
 	"authentication": "Autentisering ",
 	"email-confirm-interval": "Brukeren kan ikke sende en bekreftelses-e-post på nytt før",
-	"email-confirm-interval2": "minutter har gått",
+	"email-confirm-interval2": "minutes have elapsed",
 	"allow-login-with": "Tillat innlogging med",
 	"allow-login-with.username-email": "Brukernavn eller e-post",
 	"allow-login-with.username": "Kun brukernavn",

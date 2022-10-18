@@ -5,6 +5,9 @@
 	"from": "发送者",
 	"from-help": "用于邮件中显示的发送者",
 
+	"confirmation-settings": "Confirmation",
+	"confirmation.expiry": "Hours to keep email confirmation link valid",
+
 	"smtp-transport": "SMTP 通信",
 	"smtp-transport.enabled": "启用 SMTP 通信",
 	"smtp-transport-help": "您可以从列表中选取一个已知的服务或自定义。",

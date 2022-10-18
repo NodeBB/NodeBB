@@ -5,6 +5,9 @@
 	"from": "포럼 메일 발신자 이름",
 	"from-help": "이메일에 표시할 발신자 이름",
 
+	"confirmation-settings": "Confirmation",
+	"confirmation.expiry": "Hours to keep email confirmation link valid",
+
 	"smtp-transport": "SMTP Transport",
 	"smtp-transport.enabled": "Enable SMTP Transport",
 	"smtp-transport-help": "자주 사용되는 서비스 목록 중에 하나를 선택하거나 직접 입력할 수 있습니다.",

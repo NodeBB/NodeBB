@@ -1,7 +1,7 @@
 {
 	"authentication": "Autentifikācija",
 	"email-confirm-interval": "Lietotājs nevar atkārtoti nosūtīt apstiprinājuma e-pastu pirms",
-	"email-confirm-interval2": "minūtes nav pagājušas",
+	"email-confirm-interval2": "minutes have elapsed",
 	"allow-login-with": "Ielogoties",
 	"allow-login-with.username-email": "Ar lietotājvārdu vai e-pasta adresi",
 	"allow-login-with.username": "Tikai ar lietotājvārdu",

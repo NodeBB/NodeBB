@@ -5,6 +5,9 @@
 	"from": "Tên Người Gửi",
 	"from-help": "Tên người gửi hiển thị trong email.",
 
+	"confirmation-settings": "Confirmation",
+	"confirmation.expiry": "Hours to keep email confirmation link valid",
+
 	"smtp-transport": "Truyền Tải SMTP",
 	"smtp-transport.enabled": "Bật truyền tải SMTP",
 	"smtp-transport-help": "Bạn có thể chọn từ danh sách các dịch vụ nổi bật hoặc nhập một dịch vụ tùy chỉnh.",
