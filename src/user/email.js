@@ -55,6 +55,11 @@ UserEmail.isValidationPending = async (uid, email) => {
 	return !!code;
 };
 
+UserEmail.getValidationExpiry = async (uid) => {
+	const pending = await UserEmail.isValidationPending(uid);
+	return pending ? db.ttl(`confirm:byUid:${uid}`) : null;
+};
+
 UserEmail.expireValidation = async (uid) => {
 	const code = await db.get(`confirm:byUid:${uid}`);
 	await db.deleteAll([
