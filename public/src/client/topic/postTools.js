@@ -331,22 +331,11 @@ define('forum/topic/postTools', [
 			}
 		});
 
-		if (content) {
-			const bounds = document.createRange();
-			bounds.selectNodeContents(content);
-			const range = selection.getRangeAt(0).cloneRange();
-			if (range.compareBoundaryPoints(Range.START_TO_START, bounds) < 0) {
-				range.setStart(bounds.startContainer, bounds.startOffset);
-			}
-			if (range.compareBoundaryPoints(Range.END_TO_END, bounds) > 0) {
-				range.setEnd(bounds.endContainer, bounds.endOffset);
-			}
-			bounds.detach();
-			selectedText = range.toString();
+		if (content && selection) {
+			selectedText = selection.toString();
 			const postEl = $(content).parents('[component="post"]');
 			selectedPid = postEl.attr('data-pid');
 			username = await getUserSlug($(content));
-			range.detach();
 		}
 		return { text: selectedText, pid: selectedPid, username: username };
 	}

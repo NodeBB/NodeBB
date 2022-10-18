@@ -126,6 +126,15 @@
 	}
 }
 
+blockquote {
+	font-style: italic;
+	border-left: 4px solid $primary;
+	padding: 1rem;
+	p:last-child {
+		margin-bottom: 0;
+	}
+}
+
 .necro-post {
 	text-align: center;
 	text-transform: uppercase;
