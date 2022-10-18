@@ -64,8 +64,15 @@ Interstitials.email = async (data) => {
 						throw new Error(error);
 					}
 
-					if (confirmed && formData.email === current) {
-						throw new Error('[[error:email-nochange]]');
+					// Handle errors when setting to same email (unconfirmed accts only)
+					if (formData.email === current) {
+						if (confirmed) {
+							throw new Error('[[error:email-nochange]]');
+						} else if (await user.email.isValidationPending(userData.uid, current)) {
+							let remaining = await user.email.getValidationExpiry(userData.uid); // ms
+							remaining = Math.ceil(remaining / 1000 / 60); // ms to minutes
+							throw new Error(`[[error:confirm-email-already-sent, ${remaining}]]`);
+						}
 					}
 
 					// Admins editing will auto-confirm, unless editing their own email
