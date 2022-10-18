@@ -16,6 +16,7 @@ const db = require('../database');
 const userController = require('../controllers/user');
 const privileges = require('../privileges');
 const utils = require('../utils');
+const sockets = require('.');
 
 const SocketUser = module.exports;
 
@@ -23,6 +24,16 @@ require('./user/profile')(SocketUser);
 require('./user/status')(SocketUser);
 require('./user/picture')(SocketUser);
 require('./user/registration')(SocketUser);
+
+SocketUser.emailConfirm = async function (socket) {
+	sockets.warnDeprecated(socket, 'HTTP 302 /me/edit/email');
+
+	if (!socket.uid) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	return await user.email.sendValidationEmail(socket.uid);
+};
 
 // Password Reset
 SocketUser.reset = {};
