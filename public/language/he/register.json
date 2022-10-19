@@ -1,5 +1,5 @@
 {
-    "register": "הרשם",
+    "register": "הרשמה",
     "cancel_registration": "בטל רישום",
     "help.email": "כברירת מחדל, כתובת האימייל שלך לא גלויה למשתמשים אחרים",
     "help.username_restrictions": "שם משתמש ייחודי בין %1 ל %2 תווים. משתמשים אחרים יכולים לציין את שמך באמצעות @<span id='yourUsername'>שם המשתמש שלך</span>.",

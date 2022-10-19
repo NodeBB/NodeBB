@@ -1,7 +1,7 @@
 {
 	"authentication": "Authentification",
 	"email-confirm-interval": "Les utilisateurs ne peuvent pas demander un e-mail de vérification avant",
-	"email-confirm-interval2": "minutes se sont écoulées",
+	"email-confirm-interval2": "minutes have elapsed",
 	"allow-login-with": "Autoriser l'identification avec",
 	"allow-login-with.username-email": "Nom d'utilisateur ou e-mail",
 	"allow-login-with.username": "Nom d'utilisateur uniquement",

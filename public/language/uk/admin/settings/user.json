@@ -1,7 +1,7 @@
 {
 	"authentication": "Аутентифікація",
 	"email-confirm-interval": "Користувач не може повторно надіслати підтвердження електронної пошти поки не мине",
-	"email-confirm-interval2": "хвилин",
+	"email-confirm-interval2": "minutes have elapsed",
 	"allow-login-with": "Дозволити вхід використовуючи",
 	"allow-login-with.username-email": "Ім'я користувача або електронну пошту",
 	"allow-login-with.username": "Тільки ім'я користувача",

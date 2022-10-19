@@ -5,6 +5,9 @@
 	"from": "名前から",
 	"from-help": "メールからの名前が表示されます。",
 
+	"confirmation-settings": "Confirmation",
+	"confirmation.expiry": "Hours to keep email confirmation link valid",
+
 	"smtp-transport": "SMTP Transport",
 	"smtp-transport.enabled": "Enable SMTP Transport",
 	"smtp-transport-help": "You can select from a list of well-known services or enter a custom one.",

@@ -1,7 +1,7 @@
 {
 	"authentication": "Удостоверяване",
 	"email-confirm-interval": "Потребителят не може да изпраща повторно е-писмото за потвърждение, преди да са минали",
-	"email-confirm-interval2": "минути",
+	"email-confirm-interval2": "минути са изминали",
 	"allow-login-with": "Позволяване на вписването чрез",
 	"allow-login-with.username-email": "Потребителско име или е-поща",
 	"allow-login-with.username": "Само потребителско име",

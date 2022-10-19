@@ -24,8 +24,8 @@
 	"flags.limit-per-target-help": "Bir gönderi veya kullanıcı birden çok kez şikayet edildiğinde, her ek şikayet bir \"rapor\" olarak kabul edilir ve orijinal şikayete eklenir. Bir öğenin alabileceği rapor sayısını sınırlamak için bu seçeneği sıfırdan farklı bir sayıya ayarlayın.",
   	"flags.auto-flag-on-downvote-threshold": "Bir iletinin otomatik olarak raporlanması için alması gereken eksi oy sayısı ( Otomatik şikayet özelliğini iptal etmek için buraya 0 giriniz, varsayılan: 0)",
 	"flags.auto-resolve-on-ban": "Bir kullanıcı forumdan yasaklandığında otomatik olarak şikayetlerini çözülmüş say",
-	"flags.action-on-resolve": "Do the following when a flag is resolved",
-	"flags.action-on-reject": "Do the following when a flag is rejected",
-	"flags.action.nothing": "Do nothing",
-	"flags.action.rescind": "Rescind the notification send to moderators/administrators"
+	"flags.action-on-resolve": "Bir şikayet çözümlendiğinde şunu yap",
+	"flags.action-on-reject": "Bir şikayet reddedildiğinde şunu yap",
+	"flags.action.nothing": "Hiçbir şey yapma",
+	"flags.action.rescind": "Moderatör ve Adminlere gönderilen bildirimleri iptal et"
 }

@@ -5,6 +5,9 @@
 	"from": "Jméno – od",
 	"from-help": "Zobrazené jméno v e-mailu v – Od",
 
+	"confirmation-settings": "Confirmation",
+	"confirmation.expiry": "Hours to keep email confirmation link valid",
+
 	"smtp-transport": "Přenos SMTP",
 	"smtp-transport.enabled": "Enable SMTP Transport",
 	"smtp-transport-help": "Ze seznamu můžete vybrat známé služby nebo zadat vlastní.",

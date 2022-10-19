@@ -67,7 +67,7 @@
 					<input class="mdl-switch__input" id="enableLiveReload" type="checkbox" data-field="enableLiveReload" checked />
 					<span class="mdl-switch__label">
 						[[admin/appearance/customise:custom-css.livereload]]
-						<small>[[admin/appearance/customise:custom-css.livereload.description]]</small>
+						<div class="form-text">[[admin/appearance/customise:custom-css.livereload.description]]</div>
 					</span>
 				</label>
 			</div>
