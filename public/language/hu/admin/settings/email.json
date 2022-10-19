@@ -5,6 +5,9 @@
 	"from": "Feladó neve",
 	"from-help": "Az emailben megjelenített feladói név.",
 
+	"confirmation-settings": "Confirmation",
+	"confirmation.expiry": "Hours to keep email confirmation link valid",
+
 	"smtp-transport": "SMTP beállítások",
 	"smtp-transport.enabled": "Enable SMTP Transport",
 	"smtp-transport-help": "Válogathatsz a jól ismert szolgáltatások listájából vagy megadhatsz sajátot.",

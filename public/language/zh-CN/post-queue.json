@@ -18,14 +18,14 @@
 	"remove": "移除",
 	"notify": "Notify",
 	"notify-user": "Notify User",
-	"confirm-reject": "Do you want to reject this post?",
-	"bulk-actions": "Bulk Actions",
+	"confirm-reject": "你想要拒绝这个帖子吗？",
+	"bulk-actions": "批量操作",
 	"accept-all": "全部同意",
 	"accept-selected": "同意选中项",
 	"reject-all": "全部拒绝",
-	"reject-all-confirm": "Do you want to reject all posts?",
+	"reject-all-confirm": "你想要拒绝所有帖子吗？",
 	"reject-selected": "拒绝选中项",
-	"reject-selected-confirm": "Do you want to reject %1 selected posts?",
-	"bulk-accept-success": "%1 posts accepted",
-	"bulk-reject-success": "%1 posts rejected"
+	"reject-selected-confirm": "您确定要拒绝%1个选择的帖子吗？",
+	"bulk-accept-success": "%1个帖子已接受",
+	"bulk-reject-success": "%1个帖子已拒绝"
 }
