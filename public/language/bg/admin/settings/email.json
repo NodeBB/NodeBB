@@ -5,8 +5,8 @@
 	"from": "Име за полето „От“",
 	"from-help": "Името на изпращача, което да бъде показано в е-писмото.",
 
-	"confirmation-settings": "Confirmation",
-	"confirmation.expiry": "Hours to keep email confirmation link valid",
+	"confirmation-settings": "Потвърждение",
+	"confirmation.expiry": "Продължителност на давността на връзката за потвърждаване, в часове",
 
 	"smtp-transport": "Транспорт чрез SMTP",
 	"smtp-transport.enabled": "Включване на транспорта чрез SMTP",
