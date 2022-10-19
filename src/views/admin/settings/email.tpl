@@ -46,8 +46,8 @@
 </div>
 
 <div class="row">
-	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/email:confirmation-settings]]</div>
-	<div class="col-sm-10 col-xs-12">
+	<div class="col-sm-2 col-12 settings-header">[[admin/settings/email:confirmation-settings]]</div>
+	<div class="col-sm-10 col-12">
 		<div class="row mb-3 align-items-center">
 			<div class="col-auto">
 				<label class="form-label" for="emailConfirmInterval">[[admin/settings/user:email-confirm-interval]]</label>
@@ -92,8 +92,8 @@
 </div>
 
 <div class="row">
-	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/email:subscriptions]]</div>
-	<div class="col-sm-10 col-xs-12">
+	<div class="col-sm-2 col-12 settings-header">[[admin/settings/email:subscriptions]]</div>
+	<div class="col-sm-10 col-12">
 		<form>
 			<div class="checkbox mb-3">
 				<label for="disableEmailSubscriptions" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
