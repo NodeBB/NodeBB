@@ -5,12 +5,12 @@ on:
     branches:
       - master
       - develop
-	  - bootstrap5
+      - bootstrap5
   pull_request:
     branches:
       - master
       - develop
-	  - bootstrap5
+	    - bootstrap5
 
 defaults:
   run:
