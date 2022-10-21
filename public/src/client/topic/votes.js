@@ -37,7 +37,9 @@ define('forum/topic/votes', [
 				tooltip.setContent({ '.tooltip-inner': title });
 			} else {
 				el.attr('title', title);
-				(new bootstrap.Tooltip(el)).show();
+				(new bootstrap.Tooltip(el, {
+					container: '#content',
+				})).show();
 			}
 			el.parent().find('.tooltip').css('display', '');
 		}
