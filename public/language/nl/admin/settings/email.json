@@ -5,6 +5,9 @@
 	"from": "From Naam",
 	"from-help": "De from naam om te tonen in de e-mail.",
 
+	"confirmation-settings": "Confirmation",
+	"confirmation.expiry": "Hours to keep email confirmation link valid",
+
 	"smtp-transport": "SMTP Transport",
 	"smtp-transport.enabled": "Enable SMTP Transport",
 	"smtp-transport-help": "Je kunt een bekende dienst uit de lijst selecteren of vul een aangepaste dienst in.",
