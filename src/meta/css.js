@@ -52,7 +52,6 @@ const buildImports = {
 			'@import "admin/admin";',
 			source,
 			'@import "jquery-ui";',
-			'@import "../public/vendor/mdl/material";',
 		].join('\n');
 	},
 };
