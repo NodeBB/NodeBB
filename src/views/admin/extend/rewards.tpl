@@ -76,7 +76,5 @@
 		<i class="material-icons">add</i>
 	</button>
 
-	<button id="save" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored primary">
-		<i class="material-icons">save</i>
-	</button>
+	<!-- IMPORT admin/partials/save_button.tpl -->
 </div>
