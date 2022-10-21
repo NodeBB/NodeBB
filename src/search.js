@@ -81,6 +81,7 @@ async function searchInContent(data) {
 
 	const metadata = await plugins.hooks.fire('filter:search.inContent', {
 		pids: allPids,
+		data: data,
 	});
 
 	if (data.returnIds) {
