@@ -6,18 +6,14 @@
 	</div>
 	<div class="col-sm-10 col-12">
 		<form>
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="stripEXIFData">
-					<span class="mdl-switch__label"><strong>[[admin/settings/uploads:strip-exif-data]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="stripEXIFData">
+				<label class="form-check-label">[[admin/settings/uploads:strip-exif-data]]</label>
 			</div>
 
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="privateUploads">
-					<span class="mdl-switch__label"><strong>[[admin/settings/uploads:private]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="privateUploads">
+				<label class="form-check-label">[[admin/settings/uploads:private]]</label>
 			</div>
 
 			<div class="mb-3">
@@ -82,11 +78,9 @@
 				</p>
 			</div>
 
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="allowTopicsThumbnail">
-					<span class="mdl-switch__label"><strong>[[admin/settings/uploads:allow-topic-thumbnails]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="allowTopicsThumbnail">
+				<label class="form-check-label">[[admin/settings/uploads:allow-topic-thumbnails]]</label>
 			</div>
 
 			<div class="mb-3">
@@ -127,11 +121,9 @@
 		[[admin/settings/uploads:orphans]]
 	</div>
 	<div class="col-sm-10 col-12">
-		<div class="checkbox mb-3">
-			<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-				<input class="mdl-switch__input" type="checkbox" data-field="preserveOrphanedUploads">
-				<span class="mdl-switch__label"><strong>[[admin/settings/uploads:preserve-orphaned-uploads]]</strong></span>
-			</label>
+		<div class="form-check">
+			<input class="form-check-input" type="checkbox" data-field="preserveOrphanedUploads">
+			<label class="form-check-label">[[admin/settings/uploads:preserve-orphaned-uploads]]</label>
 		</div>
 
 		<div class="row">
@@ -150,18 +142,14 @@
 	</div>
 	<div class="col-sm-10 col-12">
 		<form>
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="allowProfileImageUploads">
-					<span class="mdl-switch__label"><strong>[[admin/settings/uploads:allow-profile-image-uploads]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="allowProfileImageUploads">
+				<label class="form-check-label">[[admin/settings/uploads:allow-profile-image-uploads]]</label>
 			</div>
 
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="profile:convertProfileImageToPNG">
-					<span class="mdl-switch__label"><strong>[[admin/settings/uploads:convert-profile-image-png]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="profile:convertProfileImageToPNG">
+				<label class="form-check-label">[[admin/settings/uploads:convert-profile-image-png]]</label>
 			</div>
 
 			<div class="mb-3">
@@ -196,11 +184,9 @@
 				</p>
 			</div>
 
-			<div class="checkbox">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="profile:keepAllUserImages">
-					<span class="mdl-switch__label"><strong>[[admin/settings/uploads:keep-all-user-images]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="profile:keepAllUserImages">
+				<label class="form-check-label">[[admin/settings/uploads:keep-all-user-images]]</label>
 			</div>
 		</form>
 	</div>

@@ -20,26 +20,20 @@
 				<input type="text" class="form-control input-lg" id="email:from_name" data-field="email:from_name" placeholder="NodeBB" />
 			</div>
 
-			<div class="checkbox mb-3">
-				<label for="requireEmailAddress" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" id="requireEmailAddress" data-field="requireEmailAddress" name="requireEmailAddress" />
-					<span class="mdl-switch__label">[[admin/settings/email:require-email-address]]</span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" id="requireEmailAddress" data-field="requireEmailAddress" name="requireEmailAddress" />
+				<label for="requireEmailAddress" class="form-check-label">[[admin/settings/email:require-email-address]]</label>
 			</div>
 			<p class="form-text">[[admin/settings/email:require-email-address-warning]]</p>
 
-			<div class="checkbox mb-3">
-				<label for="sendEmailToBanned" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" id="sendEmailToBanned" data-field="sendEmailToBanned" name="sendEmailToBanned" />
-					<span class="mdl-switch__label">[[admin/settings/email:sendEmailToBanned]]</span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" id="sendEmailToBanned" data-field="sendEmailToBanned" name="sendEmailToBanned" />
+				<label for="sendEmailToBanned" class="form-check-label">[[admin/settings/email:sendEmailToBanned]]</label>
 			</div>
 
-			<div class="checkbox">
-				<label for="removeEmailNotificationImages" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" id="removeEmailNotificationImages" data-field="removeEmailNotificationImages" name="removeEmailNotificationImages" />
-					<span class="mdl-switch__label">[[admin/settings/email:notifications.remove-images]]</span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" id="removeEmailNotificationImages" data-field="removeEmailNotificationImages" name="removeEmailNotificationImages" />
+				<label for="removeEmailNotificationImages" class="form-check-label">[[admin/settings/email:notifications.remove-images]]</label>
 			</div>
 		</form>
 	</div>
@@ -66,26 +60,20 @@
 			<input class="form-control" data-field="emailConfirmExpiry" type="number" id="emailConfirmExpiry" placeholder="24" />
 		</div>
 
-		<div class="checkbox mb-3">
-			<label for="sendValidationEmail" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-				<input class="mdl-switch__input" type="checkbox" id="sendValidationEmail" data-field="sendValidationEmail" name="sendValidationEmail" />
-				<span class="mdl-switch__label">[[admin/settings/email:send-validation-email]]</span>
-			</label>
+		<div class="form-check">
+			<input class="form-check-input" type="checkbox" id="sendValidationEmail" data-field="sendValidationEmail" name="sendValidationEmail" />
+			<label for="sendValidationEmail" class="form-check-label">[[admin/settings/email:send-validation-email]]</label>
 		</div>
 
-		<div class="checkbox mb-3">
-			<label for="includeUnverifiedEmails" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-				<input class="mdl-switch__input" type="checkbox" id="includeUnverifiedEmails" data-field="includeUnverifiedEmails" name="includeUnverifiedEmails" />
-				<span class="mdl-switch__label">[[admin/settings/email:include-unverified-emails]]</span>
-			</label>
+		<div class="form-check">
+			<input class="form-check-input" type="checkbox" id="includeUnverifiedEmails" data-field="includeUnverifiedEmails" name="includeUnverifiedEmails" />
+			<label for="includeUnverifiedEmails" class="form-check-label">[[admin/settings/email:include-unverified-emails]]</label>
 		</div>
 		<p class="form-text">[[admin/settings/email:include-unverified-warning]]</p>
 
-		<div class="checkbox mb-3">
-			<label for="emailPrompt" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-				<input class="mdl-switch__input" type="checkbox" id="emailPrompt" data-field="emailPrompt" name="emailPrompt" />
-				<span class="mdl-switch__label">[[admin/settings/email:prompt]]</span>
-			</label>
+		<div class="form-check">
+			<input class="form-check-input" type="checkbox" id="emailPrompt" data-field="emailPrompt" name="emailPrompt" />
+			<label for="emailPrompt" class="form-check-label">[[admin/settings/email:prompt]]</label>
 		</div>
 		<p class="form-text">[[admin/settings/email:prompt-help]]</p>
 	</div>
@@ -95,11 +83,9 @@
 	<div class="col-sm-2 col-12 settings-header">[[admin/settings/email:subscriptions]]</div>
 	<div class="col-sm-10 col-12">
 		<form>
-			<div class="checkbox mb-3">
-				<label for="disableEmailSubscriptions" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" id="disableEmailSubscriptions" data-field="disableEmailSubscriptions" name="disableEmailSubscriptions" />
-					<span class="mdl-switch__label">[[admin/settings/email:subscriptions.disable]]</span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" id="disableEmailSubscriptions" data-field="disableEmailSubscriptions" name="disableEmailSubscriptions" />
+				<label for="disableEmailSubscriptions" class="form-check-label">[[admin/settings/email:subscriptions.disable]]</label>
 			</div>
 
 			<div class="mb-3">
@@ -120,18 +106,14 @@
 			[[admin/settings/email:smtp-transport-help]]
 		</div>
 		<form>
-			<div class="checkbox mb-3">
-				<label for="email:smtpTransport:enabled" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" id="email:smtpTransport:enabled" data-field="email:smtpTransport:enabled" name="email:smtpTransport:enabled" />
-					<span class="mdl-switch__label">[[admin/settings/email:smtp-transport.enabled]]</span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" id="email:smtpTransport:enabled" data-field="email:smtpTransport:enabled" name="email:smtpTransport:enabled" />
+				<label for="email:smtpTransport:enabled" class="form-check-label">[[admin/settings/email:smtp-transport.enabled]]</label>
 			</div>
 			<div class="mb-3">
-				<div class="checkbox">
-					<label for="email:smtpTransport:pool" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-						<input class="mdl-switch__input" type="checkbox" id="email:smtpTransport:pool" data-field="email:smtpTransport:pool" name="email:smtpTransport:pool" />
-						<span class="mdl-switch__label">[[admin/settings/email:smtp-transport.pool]]</span>
-					</label>
+				<div class="form-check">
+					<input class="form-check-input" type="checkbox" id="email:smtpTransport:pool" data-field="email:smtpTransport:pool" name="email:smtpTransport:pool" />
+					<label for="email:smtpTransport:pool" class="form-check-label">[[admin/settings/email:smtp-transport.pool]]</label>
 				</div>
 				<p class="form-text">
 					[[admin/settings/email:smtp-transport.pool-help]]

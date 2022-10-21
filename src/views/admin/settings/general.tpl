@@ -22,11 +22,9 @@
 				</p>
 			</div>
 
-			<div class="checkbox mb-3">
-				<label for="showSiteTitle" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input type="checkbox" class="mdl-switch__input" id="showSiteTitle" data-field="showSiteTitle" name="showSiteTitle" />
-					<span class="mdl-switch__label">[[admin/settings/general:title.show-in-header]]</span>
-				</label>
+			<div class="form-check">
+				<input type="checkbox" class="form-check-input" id="showSiteTitle" data-field="showSiteTitle" name="showSiteTitle" />
+				<label for="showSiteTitle" class="form-check-label">[[admin/settings/general:title.show-in-header]]</label>
 			</div>
 			<div class="mb-3">
 				<label class="form-label" for="browserTitle">[[admin/settings/general:browser-title]]</label>
@@ -185,11 +183,9 @@
 	<div class="col-sm-2 col-12 settings-header">[[admin/settings/general:outgoing-links]]</div>
 	<div class="col-sm-10 col-12">
 		<form>
-			<div class="checkbox mb-3">
-				<label for="useOutgoingLinksPage" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input type="checkbox" class="mdl-switch__input" id="useOutgoingLinksPage" data-field="useOutgoingLinksPage">
-					<span class="mdl-switch__label"><strong>[[admin/settings/general:outgoing-links.warning-page]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input type="checkbox" class="form-check-input" id="useOutgoingLinksPage" data-field="useOutgoingLinksPage">
+				<label for="useOutgoingLinksPage" class="form-check-label">[[admin/settings/general:outgoing-links.warning-page]]</label>
 			</div>
 
 			<div class="mb-3">

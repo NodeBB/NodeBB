@@ -4,11 +4,9 @@
 	<div class="col-sm-2 col-12 settings-header">[[admin/settings/advanced:maintenance-mode]]</div>
 	<div class="col-sm-10 col-12">
 		<form>
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="maintenanceMode">
-					<span class="mdl-switch__label"><strong>[[admin/settings/advanced:maintenance-mode]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="maintenanceMode">
+				<label class="form-check-label">[[admin/settings/advanced:maintenance-mode]]</label>
 			</div>
 			<p class="form-text">
 				[[admin/settings/advanced:maintenance-mode.help]]
@@ -66,11 +64,9 @@
 				<label class="form-label" for="access-control-allow-headers">[[admin/settings/advanced:headers.acah]]</label>
 				<input class="form-control" id="access-control-allow-headers" type="text" placeholder="" data-field="access-control-allow-headers" />
 			</div>
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="cross-origin-embedder-policy" id="cross-origin-embedder-policy">
-					<span class="mdl-switch__label"><strong>[[admin/settings/advanced:headers.coep]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="cross-origin-embedder-policy" id="cross-origin-embedder-policy">
+				<label class="form-check-label">[[admin/settings/advanced:headers.coep]]</label>
 			</div>
 			<p class="form-text">[[admin/settings/advanced:headers.coep-help]]</p>
 			<div class="mb-3">
@@ -98,27 +94,21 @@
 	<div class="col-sm-2 col-12 settings-header">[[admin/settings/advanced:hsts]]</div>
 	<div class="col-sm-10 col-12">
 		<form>
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="hsts-enabled" checked>
-					<span class="mdl-switch__label"><strong>[[admin/settings/advanced:hsts.enabled]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="hsts-enabled" checked>
+				<label class="form-check-label">[[admin/settings/advanced:hsts.enabled]]</label>
 			</div>
 			<div class="mb-3">
 				<label class="form-label" for="hsts-maxage">[[admin/settings/advanced:hsts.maxAge]]</label>
 				<input class="form-control" id="hsts-maxage" type="number" placeholder="31536000" data-field="hsts-maxage" />
 			</div>
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="hsts-subdomains" checked>
-					<span class="mdl-switch__label"><strong>[[admin/settings/advanced:hsts.subdomains]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="hsts-subdomains" checked>
+				<label class="form-check-label">[[admin/settings/advanced:hsts.subdomains]]</label>
 			</div>
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="hsts-preload">
-					<span class="mdl-switch__label"><strong>[[admin/settings/advanced:hsts.preload]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="hsts-preload">
+				<label class="form-check-label">[[admin/settings/advanced:hsts.preload]]</label>
 			</div>
 			<p class="form-text">
 				[[admin/settings/advanced:hsts.help, https:\/\/hstspreload.org\/]]
@@ -134,11 +124,9 @@
 			[[admin/settings/advanced:traffic.help]]
 		</p>
 		<form>
-			<div class="mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="eventLoopCheckEnabled">
-					<input class="mdl-switch__input" id="eventLoopCheckEnabled" type="checkbox" data-field="eventLoopCheckEnabled" checked />
-					<span class="mdl-switch__label">[[admin/settings/advanced:traffic.enable]]</span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" id="eventLoopCheckEnabled" type="checkbox" data-field="eventLoopCheckEnabled" checked />
+				<label class="form-check-label" for="eventLoopCheckEnabled">[[admin/settings/advanced:traffic.enable]]</label>
 			</div>
 			<div class="mb-3">
 				<label class="form-label" for="eventLoopLagThreshold">[[admin/settings/advanced:traffic.event-lag]]</label>
@@ -197,11 +185,9 @@
 				<p class="form-text">
 					[[admin/settings/advanced:compression.help]]
 				</p>
-				<div class="checkbox">
-					<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-						<input class="mdl-switch__input" type="checkbox" data-field="useCompression">
-						<span class="mdl-switch__label"><strong>[[admin/settings/advanced:compression.enable]]</strong></span>
-					</label>
+				<div class="form-check">
+					<input class="form-check-input" type="checkbox" data-field="useCompression">
+					<label class="form-check-label">[[admin/settings/advanced:compression.enable]]</label>
 				</div>
 			</div>
 		</form>

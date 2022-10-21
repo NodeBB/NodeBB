@@ -15,11 +15,9 @@
 
 			<br />
 			<form class="form">
-				<div class="mb-3">
-					<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="useCustomCSS">
-						<input class="mdl-switch__input" id="useCustomCSS" type="checkbox" data-field="useCustomCSS" />
-						<span class="mdl-switch__label">[[admin/appearance/customise:custom-css.enable]]</span>
-					</label>
+				<div class="form-check">
+					<input class="form-check-input" id="useCustomCSS" type="checkbox" data-field="useCustomCSS" />
+					<label class="form-check-label" for="useCustomCSS">[[admin/appearance/customise:custom-css.enable]]</label>
 				</div>
 			</form>
 		</div>
@@ -33,11 +31,9 @@
 
 			<br />
 			<form class="form">
-				<div class="mb-3">
-					<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="useCustomJS">
-						<input class="mdl-switch__input" id="useCustomJS" type="checkbox" data-field="useCustomJS" />
-						<span class="mdl-switch__label">[[admin/appearance/customise:custom-js.enable]]</span>
-					</label>
+				<div class="form-check">
+					<input class="form-check-input" id="useCustomJS" type="checkbox" data-field="useCustomJS" />
+					<label class="form-check-label" for="useCustomJS">[[admin/appearance/customise:custom-js.enable]]</label>
 				</div>
 			</form>
 		</div>
@@ -52,24 +48,18 @@
 
 			<br />
 			<form class="form">
-				<div class="mb-3">
-					<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="useCustomHTML">
-						<input class="mdl-switch__input" id="useCustomHTML" type="checkbox" data-field="useCustomHTML" />
-						<span class="mdl-switch__label">[[admin/appearance/customise:custom-header.enable]]</span>
-					</label>
+				<div class="form-check">
+					<input class="form-check-input" id="useCustomHTML" type="checkbox" data-field="useCustomHTML" />
+					<label class="form-check-label" for="useCustomHTML">[[admin/appearance/customise:custom-header.enable]]</label>
 				</div>
 			</form>
 		</div>
 
 		<form class="form">
-			<div class="mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="enableLiveReload">
-					<input class="mdl-switch__input" id="enableLiveReload" type="checkbox" data-field="enableLiveReload" checked />
-					<span class="mdl-switch__label">
-						[[admin/appearance/customise:custom-css.livereload]]
-						<div class="form-text">[[admin/appearance/customise:custom-css.livereload.description]]</div>
-					</span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" id="enableLiveReload" type="checkbox" data-field="enableLiveReload" checked />
+				<label class="form-check-label" for="enableLiveReload">[[admin/appearance/customise:custom-css.livereload]]</label>
+				<div class="form-text">[[admin/appearance/customise:custom-css.livereload.description]]</div>
 			</div>
 		</form>
 	</div>

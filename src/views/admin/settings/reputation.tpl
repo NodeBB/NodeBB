@@ -5,23 +5,17 @@
 	<div class="col-sm-2 col-12 settings-header">[[admin/settings/reputation:reputation]]</div>
 	<div class="col-sm-10 col-12">
 		<form>
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input type="checkbox" class="mdl-switch__input" data-field="reputation:disabled">
-					<span class="mdl-switch__label"><strong>[[admin/settings/reputation:disable]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input type="checkbox" class="form-check-input" data-field="reputation:disabled">
+				<label class="form-check-label">[[admin/settings/reputation:disable]]</label>
 			</div>
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input type="checkbox" class="mdl-switch__input" data-field="downvote:disabled">
-					<span class="mdl-switch__label"><strong>[[admin/settings/reputation:disable-down-voting]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input type="checkbox" class="form-check-input" data-field="downvote:disabled">
+				<label class="form-check-label">[[admin/settings/reputation:disable-down-voting]]</label>
 			</div>
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input type="checkbox" class="mdl-switch__input" data-field="votesArePublic">
-					<span class="mdl-switch__label"><strong>[[admin/settings/reputation:votes-are-public]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input type="checkbox" class="form-check-input" data-field="votesArePublic">
+				<label class="form-check-label">[[admin/settings/reputation:votes-are-public]]</label>
 			</div>
 		</form>
 	</div>
@@ -123,11 +117,9 @@
 					</div>
 				</div>
 			</div>
-			<div class="checkbox">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input type="checkbox" class="mdl-switch__input" data-field="flags:autoResolveOnBan">
-					<span class="mdl-switch__label"><strong>[[admin/settings/reputation:flags.auto-resolve-on-ban]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input type="checkbox" class="form-check-input" data-field="flags:autoResolveOnBan">
+				<label class="form-check-label">[[admin/settings/reputation:flags.auto-resolve-on-ban]]</label>
 			</div>
 		</form>
 	</div>

@@ -5,11 +5,9 @@
 	<div class="col-sm-10 col-12">
 		<form>
 			<div class="mb-3">
-				<div class="checkbox">
-					<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-						<input type="checkbox" class="mdl-switch__input" id="cookieConsentEnabled" data-field="cookieConsentEnabled">
-						<span class="mdl-switch__label"><strong>[[admin/settings/cookies:consent.enabled]]</strong></span>
-					</label>
+				<div class="form-check">
+					<input type="checkbox" class="form-check-input" id="cookieConsentEnabled" data-field="cookieConsentEnabled">
+					<label class="form-check-label">[[admin/settings/cookies:consent.enabled]]</label>
 				</div>
 			</div>
 			<div class="mb-3">

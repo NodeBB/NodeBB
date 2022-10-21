@@ -21,11 +21,9 @@
 					<p class="form-text">[[user:custom_route_help]]</p>
 				</div>
 
-				<div class="checkbox mb-3">
-					<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-						<input class="mdl-switch__input" type="checkbox" data-field="allowUserHomePage">
-						<span class="mdl-switch__label"><strong>[[admin/settings/homepage:allow-user-home-pages]]</strong></span>
-					</label>
+				<div class="form-check">
+					<input class="form-check-input" type="checkbox" data-field="allowUserHomePage">
+					<label class="form-check-label">[[admin/settings/homepage:allow-user-home-pages]]</label>
 				</div>
 				<div>
 					<label class="form-label" for="homePageTitle">[[admin/settings/homepage:home-page-title]]</label>

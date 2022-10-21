@@ -7,11 +7,8 @@
 				<div class="card">
 					<div class="card-header">[[admin/advanced/cache:{@key}-cache]]</div>
 					<div class="card-body">
-						<div class="checkbox mb-3" data-name="{@key}">
-							<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-								<input class="mdl-switch__input" type="checkbox" {{{if caches.enabled}}}checked{{{end}}}>
-								<span class="mdl-switch__label"></span>
-							</label>
+						<div class="form-check" data-name="{@key}">
+							<input class="form-check-input" type="checkbox" {{{if caches.enabled}}}checked{{{end}}}>
 						</div>
 
 						<div class="mb-3">{{{if ../length}}}{../length}{{{else}}}{../itemCount}{{{end}}} / {{{if ../max}}}{../max}{{{else}}}{../maxSize}{{{end}}}</div>

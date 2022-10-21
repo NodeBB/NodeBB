@@ -124,22 +124,18 @@
 				<div class="row">
 					<div class="col-lg-6">
 						<div class="form-group">
-							<div class="checkbox">
-								<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-									<input type="checkbox" class="mdl-switch__input" id="cid-{category.cid}-isSection" data-name="isSection" <!-- IF category.isSection -->checked<!-- ENDIF category.isSection --> />
-									<span class="mdl-switch__label"><strong>[[admin/manage/categories:is-section]]</strong></span>
-								</label>
+							<div class="form-check">
+								<input type="checkbox" class="form-check-input" id="cid-{category.cid}-isSection" data-name="isSection" <!-- IF category.isSection -->checked<!-- ENDIF category.isSection --> />
+								<label class="form-check-label">[[admin/manage/categories:is-section]]</label>
 							</div>
 						</div>
 					</div>
 					{{{ if postQueueEnabled }}}
 					<div class="col-lg-6">
 						<div class="form-group">
-							<div class="checkbox">
-								<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-									<input type="checkbox" class="mdl-switch__input" data-name="postQueue" {{{ if category.postQueue }}}checked{{{ end }}} />
-									<span class="mdl-switch__label"><strong>[[admin/manage/categories:post-queue]]</strong></span>
-								</label>
+							<div class="form-check">
+								<input type="checkbox" class="form-check-input" data-name="postQueue" {{{ if category.postQueue }}}checked{{{ end }}} />
+								<label class="form-check-label">[[admin/manage/categories:post-queue]]</label>
 							</div>
 						</div>
 					</div>
