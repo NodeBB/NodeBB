@@ -4,11 +4,9 @@
 	<div class="col-sm-2 col-12 settings-header">[[admin/settings/group:general]]</div>
 	<div class="col-sm-10 col-12">
 		<form role="form">
-			<div class="checkbox">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="allowPrivateGroups">
-					<span class="mdl-switch__label"><strong>[[admin/settings/group:private-groups]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="allowPrivateGroups">
+				<label class="form-check-label">[[admin/settings/group:private-groups]]</label>
 			</div>
 
 			<p class="form-text">
@@ -18,11 +16,9 @@
 				[[admin/settings/group:private-groups.warning]]
 			</p>
 
-			<div class="checkbox">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="allowMultipleBadges">
-					<span class="mdl-switch__label"><strong>[[admin/settings/group:allow-multiple-badges]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="allowMultipleBadges">
+				<label class="form-check-label">[[admin/settings/group:allow-multiple-badges]]</label>
 			</div>
 
 			<p class="form-text">

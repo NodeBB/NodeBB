@@ -14,18 +14,14 @@
 	<div class="col-sm-2 col-12 settings-header">[[admin/settings/web-crawler:sitemap-feed-settings]]</div>
 	<div class="col-sm-10 col-12">
 		<form>
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="feeds:disableRSS">
-					<span class="mdl-switch__label"><strong>[[admin/settings/web-crawler:disable-rss-feeds]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="feeds:disableRSS">
+				<label class="form-check-label">[[admin/settings/web-crawler:disable-rss-feeds]]</label>
 			</div>
 
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="feeds:disableSitemap">
-					<span class="mdl-switch__label"><strong>[[admin/settings/web-crawler:disable-sitemap-xml]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="feeds:disableSitemap">
+				<label class="form-check-label">[[admin/settings/web-crawler:disable-sitemap-xml]]</label>
 			</div>
 
 			<div class="mb-3">

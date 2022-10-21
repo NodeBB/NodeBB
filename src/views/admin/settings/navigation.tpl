@@ -83,18 +83,14 @@
 						</div>
 					</div>
 
-					<div class="checkbox">
-						<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-							<input class="mdl-switch__input" type="checkbox" name="targetBlank" <!-- IF enabled.targetBlank -->checked<!-- ENDIF enabled.targetBlank -->/>
-							<span class="mdl-switch__label"><strong>[[admin/settings/navigation:open-new-window]]</strong></span>
-						</label>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" name="targetBlank" <!-- IF enabled.targetBlank -->checked<!-- ENDIF enabled.targetBlank -->/>
+						<label class="form-check-label">[[admin/settings/navigation:open-new-window]]</label>
 					</div>
 
-					<div class="checkbox">
-						<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-							<input class="mdl-switch__input" type="checkbox" name="dropdown" {{{ if enabled.dropdown }}}checked{{{ end }}}/>
-							<span class="mdl-switch__label"><strong>[[admin/settings/navigation:dropdown]]</strong></span>
-						</label>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" name="dropdown" {{{ if enabled.dropdown }}}checked{{{ end }}}/>
+						<label class="form-check-label">[[admin/settings/navigation:dropdown]]</label>
 					</div>
 					<div>
 						<p class="form-text">

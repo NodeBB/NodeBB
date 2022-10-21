@@ -19,54 +19,38 @@
 	<div class="col-sm-2 col-12 settings-header">[[admin/settings/user:account-settings]]</div>
 	<div class="col-sm-10 col-12">
 		<form>
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="gdpr_enabled">
-					<span class="mdl-switch__label"><strong>[[admin/settings/user:gdpr_enabled]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="gdpr_enabled">
+				<label class="form-check-label">[[admin/settings/user:gdpr_enabled]]</label>
 				<p class="form-text">[[admin/settings/user:gdpr_enabled_help]]</p>
 			</div>
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="username:disableEdit">
-					<span class="mdl-switch__label"><strong>[[admin/settings/user:disable-username-changes]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="username:disableEdit">
+				<label class="form-check-label">[[admin/settings/user:disable-username-changes]]</label>
 			</div>
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="email:disableEdit">
-					<span class="mdl-switch__label"><strong>[[admin/settings/user:disable-email-changes]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="email:disableEdit">
+				<label class="form-check-label">[[admin/settings/user:disable-email-changes]]</label>
 			</div>
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="password:disableEdit">
-					<span class="mdl-switch__label"><strong>[[admin/settings/user:disable-password-changes]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="password:disableEdit">
+				<label class="form-check-label">[[admin/settings/user:disable-password-changes]]</label>
 			</div>
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="allowAccountDelete" checked>
-					<span class="mdl-switch__label"><strong>[[admin/settings/user:allow-account-deletion]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="allowAccountDelete" checked>
+				<label class="form-check-label">[[admin/settings/user:allow-account-deletion]]</label>
 			</div>
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="hideFullname">
-					<span class="mdl-switch__label"><strong>[[admin/settings/user:hide-fullname]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="hideFullname">
+				<label class="form-check-label">[[admin/settings/user:hide-fullname]]</label>
 			</div>
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="hideEmail">
-					<span class="mdl-switch__label"><strong>[[admin/settings/user:hide-email]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="hideEmail">
+				<label class="form-check-label">[[admin/settings/user:hide-email]]</label>
 			</div>
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="showFullnameAsDisplayName">
-					<span class="mdl-switch__label"><strong>[[admin/settings/user:show-fullname-as-displayname]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="showFullnameAsDisplayName">
+				<label class="form-check-label">[[admin/settings/user:show-fullname-as-displayname]]</label>
 			</div>
 		</form>
 	</div>
@@ -76,11 +60,9 @@
 	<div class="col-sm-2 col-12 settings-header">[[admin/settings/user:themes]]</div>
 	<div class="col-sm-10 col-12">
 		<form>
-			<div class="checkbox">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="disableCustomUserSkins">
-					<span class="mdl-switch__label"><strong>[[admin/settings/user:disable-user-skins]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="disableCustomUserSkins">
+				<label class="form-check-label">[[admin/settings/user:disable-user-skins]]</label>
 			</div>
 		</form>
 	</div>
@@ -183,18 +165,14 @@
 				</p>
 			</div>
 
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="showAverageApprovalTime">
-					<span class="mdl-switch__label"><strong>[[admin/settings/user:registration-queue-show-average-time]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="showAverageApprovalTime">
+				<label class="form-check-label">[[admin/settings/user:registration-queue-show-average-time]]</label>
 			</div>
 
-			<div class="checkbox mb-3">
-				<label for="requireEmailAddress" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" id="requireEmailAddress" data-field="requireEmailAddress" name="requireEmailAddress" />
-					<span class="mdl-switch__label">[[admin/settings/email:require-email-address]]</span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" id="requireEmailAddress" data-field="requireEmailAddress" name="requireEmailAddress" />
+				<label for="requireEmailAddress" class="form-check-label">[[admin/settings/email:require-email-address]]</label>
 			</div>
 			<p class="form-text">[[admin/settings/email:require-email-address-warning]]</p>
 
@@ -262,46 +240,34 @@
 	<div class="col-sm-2 col-12 settings-header">[[admin/settings/user:default-user-settings]]</div>
 	<div class="col-sm-10 col-12">
 		<form>
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="showemail">
-					<span class="mdl-switch__label"><strong>[[admin/settings/user:show-email]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="showemail">
+				<label class="form-check-label">[[admin/settings/user:show-email]]</label>
 			</div>
 
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="showfullname">
-					<span class="mdl-switch__label"><strong>[[admin/settings/user:show-fullname]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="showfullname">
+				<label class="form-check-label">[[admin/settings/user:show-fullname]]</label>
 			</div>
 
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="restrictChat">
-					<span class="mdl-switch__label"><strong>[[admin/settings/user:restrict-chat]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="restrictChat">
+				<label class="form-check-label">[[admin/settings/user:restrict-chat]]</label>
 			</div>
 
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="openOutgoingLinksInNewTab">
-					<span class="mdl-switch__label"><strong>[[admin/settings/user:outgoing-new-tab]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="openOutgoingLinksInNewTab">
+				<label class="form-check-label">[[admin/settings/user:outgoing-new-tab]]</label>
 			</div>
 
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="topicSearchEnabled">
-					<span class="mdl-switch__label"><strong>[[admin/settings/user:topic-search]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="topicSearchEnabled">
+				<label class="form-check-label">[[admin/settings/user:topic-search]]</label>
 			</div>
 
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="updateUrlWithPostIndex">
-					<span class="mdl-switch__label"><strong>[[admin/settings/user:update-url-with-post-index]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="updateUrlWithPostIndex">
+				<label class="form-check-label">[[admin/settings/user:update-url-with-post-index]]</label>
 			</div>
 
 			<div class="mb-3">
@@ -315,18 +281,14 @@
 				</select>
 			</div>
 
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="followTopicsOnCreate">
-					<span class="mdl-switch__label"><strong>[[admin/settings/user:follow-created-topics]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="followTopicsOnCreate">
+				<label class="form-check-label">[[admin/settings/user:follow-created-topics]]</label>
 			</div>
 
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="followTopicsOnReply">
-					<span class="mdl-switch__label"><strong>[[admin/settings/user:follow-replied-topics]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="followTopicsOnReply">
+				<label class="form-check-label">[[admin/settings/user:follow-replied-topics]]</label>
 			</div>
 
 			<div class="mb-3">

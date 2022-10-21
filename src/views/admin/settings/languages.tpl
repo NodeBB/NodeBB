@@ -20,11 +20,9 @@
 
 		<form class="row">
 			<div class="form-group col-sm-6">
-				<div class="checkbox">
-					<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-						<input class="mdl-switch__input" type="checkbox" data-field="autoDetectLang" <!-- IF autoDetectLang -->checked<!-- ENDIF autoDetectLang -->/>
-						<span class="mdl-switch__label">[[admin/settings/languages:auto-detect]]</span>
-					</label>
+				<div class="formcheck">
+					<input class="form-check-input" type="checkbox" data-field="autoDetectLang" <!-- IF autoDetectLang -->checked<!-- ENDIF autoDetectLang -->/>
+					<label class="form-check-label">[[admin/settings/languages:auto-detect]]</label>
 				</div>
 			</div>
 		</form>

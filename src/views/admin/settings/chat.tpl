@@ -5,20 +5,16 @@
 	<div class="col-sm-2 col-12 settings-header">[[admin/settings/chat:chat-settings]]</div>
 	<div class="col-sm-10 col-12">
 		<div class="mb-3">
-			<div class="checkbox">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input type="checkbox" class="mdl-switch__input" id="disableChat" data-field="disableChat">
-					<span class="mdl-switch__label"><strong>[[admin/settings/chat:disable]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input type="checkbox" class="form-check-input" id="disableChat" data-field="disableChat">
+				<label class="form-check-label">[[admin/settings/chat:disable]]</label>
 			</div>
 		</div>
 
 		<div class="mb-3">
-			<div class="checkbox">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input type="checkbox" class="mdl-switch__input" id="disableChatMessageEditing" data-field="disableChatMessageEditing">
-					<span class="mdl-switch__label"><strong>[[admin/settings/chat:disable-editing]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input type="checkbox" class="form-check-input" id="disableChatMessageEditing" data-field="disableChatMessageEditing">
+				<label class="form-check-label">[[admin/settings/chat:disable-editing]]</label>
 			</div>
 			<p class="form-text">[[admin/settings/chat:disable-editing-help]]</p>
 		</div>

@@ -120,11 +120,9 @@
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="mb-3">
-						<div class="checkbox">
-							<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-								<input class="mdl-switch__input" type="checkbox" data-field="postQueue">
-								<span class="mdl-switch__label"><strong>[[admin/settings/post:restrictions.post-queue]]</strong></span>
-							</label>
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" data-field="postQueue">
+							<label class="form-check-label">[[admin/settings/post:restrictions.post-queue]]</label>
 						</div>
 						<p class="form-text">
 							[[admin/settings/post:restrictions.post-queue-help]]
@@ -193,11 +191,9 @@
 					<option value="first">[[admin/settings/post:teaser.first]]</option>
 				</select>
 			</div>
-			<div class="checkbox">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="showPostPreviewsOnHover">
-					<span class="mdl-switch__label"><strong>[[admin/settings/post:showPostPreviewsOnHover]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="showPostPreviewsOnHover">
+				<label class="form-check-label">[[admin/settings/post:showPostPreviewsOnHover]]</label>
 			</div>
 		</form>
 	</div>
@@ -227,11 +223,9 @@
 				<label class="form-label" for="recentMaxTopics">[[admin/settings/post:recent.max-topics]]</label>
 				<input id="recentMaxTopics" type="text" class="form-control" value="200" data-field="recentMaxTopics">
 			</div>
-			<div class="checkbox">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="disableRecentCategoryFilter">
-					<span class="mdl-switch__label"><strong>[[admin/settings/post:recent.categoryFilter.disable]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="disableRecentCategoryFilter">
+				<label class="form-check-label">[[admin/settings/post:recent.categoryFilter.disable]]</label>
 			</div>
 		</form>
 	</div>
@@ -241,29 +235,21 @@
 	<div class="col-sm-2 col-12 settings-header">[[admin/settings/post:signature]]</div>
 	<div class="col-sm-10 col-12">
 		<form>
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="disableSignatures">
-					<span class="mdl-switch__label"><strong>[[admin/settings/post:signature.disable]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="disableSignatures">
+				<label class="form-check-label">[[admin/settings/post:signature.disable]]</label>
 			</div>
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="signatures:disableLinks">
-					<span class="mdl-switch__label"><strong>[[admin/settings/post:signature.no-links]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="signatures:disableLinks">
+				<label class="form-check-label">[[admin/settings/post:signature.no-links]]</label>
 			</div>
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="signatures:disableImages">
-					<span class="mdl-switch__label"><strong>[[admin/settings/post:signature.no-images]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="signatures:disableImages">
+				<label class="form-check-label">[[admin/settings/post:signature.no-images]]</label>
 			</div>
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="signatures:hideDuplicates">
-					<span class="mdl-switch__label"><strong>[[admin/settings/post:signature.hide-duplicates]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="signatures:hideDuplicates">
+				<label class="form-check-label">[[admin/settings/post:signature.hide-duplicates]]</label>
 			</div>
 			<div>
 				<label class="form-label" for="maximumSignatureLength">[[admin/settings/post:signature.max-length]]</label>
@@ -280,27 +266,21 @@
 			<p>
 				[[admin/settings/post:composer-help]]
 			</p>
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="composer:showHelpTab">
-					<input class="mdl-switch__input" type="checkbox" id="composer:showHelpTab" data-field="composer:showHelpTab" checked />
-					<span class="mdl-switch__label">[[admin/settings/post:composer.show-help]]</span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" id="composer:showHelpTab" data-field="composer:showHelpTab" checked />
+				<label class="form-check-label" for="composer:showHelpTab">[[admin/settings/post:composer.show-help]]</label>
 			</div>
-			<div class="checkbox mb-3">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="composer:allowPluginHelp">
-					<input class="mdl-switch__input" type="checkbox" id="composer:allowPluginHelp" data-field="composer:allowPluginHelp" checked />
-					<span class="mdl-switch__label">[[admin/settings/post:composer.enable-plugin-help]]</span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" id="composer:allowPluginHelp" data-field="composer:allowPluginHelp" checked />
+				<label class="form-check-label" for="composer:allowPluginHelp">[[admin/settings/post:composer.enable-plugin-help]]</label>
 			</div>
 			<div class="mb-3">
 				<label class="form-label" for="composer:customHelpText">[[admin/settings/post:composer.custom-help]]</label>
 				<textarea class="form-control" id="composer:customHelpText" data-field="composer:customHelpText" rows="5"></textarea>
 			</div>
-			<div class="checkbox">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="enablePostHistory">
-					<input class="mdl-switch__input" type="checkbox" id="enablePostHistory" data-field="enablePostHistory" checked />
-					<span class="mdl-switch__label">[[admin/settings/post:enable-post-history]]</span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" id="enablePostHistory" data-field="enablePostHistory" checked />
+				<label class="form-check-label" for="enablePostHistory">[[admin/settings/post:enable-post-history]]</label>
 			</div>
 		</form>
 	</div>
@@ -310,12 +290,10 @@
 	<div class="col-sm-2 col-12 settings-header">[[admin/settings/post:backlinks]]</div>
 	<div class="col-sm-10 col-12">
 		<form>
-			<div class="checkbox">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="topicBacklinks">
-					<span class="mdl-switch__label"><strong>[[admin/settings/post:backlinks.enabled]]</strong></span>
-					<p class="form-text">[[admin/settings/post:backlinks.help]]</p>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="topicBacklinks">
+				<label class="form-check-label">[[admin/settings/post:backlinks.enabled]]</label>
+				<p class="form-text">[[admin/settings/post:backlinks.help]]</p>
 			</div>
 		</form>
 	</div>
@@ -325,11 +303,9 @@
 	<div class="col-sm-2 col-12 settings-header">[[admin/settings/post:ip-tracking]]</div>
 	<div class="col-sm-10 col-12">
 		<form>
-			<div class="checkbox">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="trackIpPerPost">
-					<span class="mdl-switch__label"><strong>[[admin/settings/post:ip-tracking.each-post]]</strong></span>
-				</label>
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" data-field="trackIpPerPost">
+				<label class="form-check-label">[[admin/settings/post:ip-tracking.each-post]]</label>
 			</div>
 		</form>
 	</div>

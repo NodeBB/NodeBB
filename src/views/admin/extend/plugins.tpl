@@ -89,11 +89,9 @@
 
 		<div class="card">
 			<div class="card-body">
-				<div class="checkbox">
-					<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-						<input id="plugin-submit-usage" class="mdl-switch__input" type="checkbox" data-field="submitPluginUsage" <!-- IF submitPluginUsage -->checked<!-- ENDIF submitPluginUsage -->/>
-						<span class="mdl-switch__label">[[admin/extend/plugins:submit-anonymous-usage]]</span>
-					</label>
+				<div class="form-check">
+					<input id="plugin-submit-usage" class="form-check-input" type="checkbox" data-field="submitPluginUsage" <!-- IF submitPluginUsage -->checked<!-- ENDIF submitPluginUsage -->/>
+					<label for="plugin-submit-usage" class="form-check-label">[[admin/extend/plugins:submit-anonymous-usage]]</label>
 				</div>
 			</div>
 		</div>

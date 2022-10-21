@@ -5,10 +5,10 @@
 			<div class="col-sm-10 col-12">
 				<div class="form-group" id="postSharingNetworks">
 					<!-- BEGIN posts -->
-					<div class="checkbox mb-3">
-						<label for="{posts.id}" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-							<input type="checkbox" class="mdl-switch__input" id="{posts.id}" data-field="{posts.id}" name="{posts.id}" <!-- IF posts.activated -->checked<!-- ENDIF posts.activated --> />
-							<span class="mdl-switch__label"><i class="fa {posts.class}"></i> {posts.name}</span>
+					<div class="form-check">
+						<input type="checkbox" class="form-check-input" id="{posts.id}" data-field="{posts.id}" name="{posts.id}" <!-- IF posts.activated -->checked<!-- ENDIF posts.activated --> />
+						<label for="{posts.id}" class="form-check-label">
+							<i class="fa {posts.class}"></i> {posts.name}
 						</label>
 					</div>
 					<!-- END posts -->

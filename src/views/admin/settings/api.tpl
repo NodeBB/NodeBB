@@ -13,11 +13,9 @@
 	<div class="row mb-4">
 		<div class="col-sm-2 col-12 settings-header">[[admin/settings/api:settings]]</div>
 		<div class="col-sm-10 col-12">
-			<div class="checkbox">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input id="requireHttps" class="mdl-switch__input" type="checkbox" name="requireHttps" />
-					<span class="mdl-switch__label">[[admin/settings/api:require-https]]</span>
-				</label>
+			<div class="form-check">
+				<input id="requireHttps" class="form-check-input" type="checkbox" name="requireHttps" />
+				<label class="form-check-label">[[admin/settings/api:require-https]]</label>
 			</div>
 			<p class="form-text">[[admin/settings/api:require-https-caveat]]</p>
 		</div>
