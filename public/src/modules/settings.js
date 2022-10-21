@@ -552,6 +552,7 @@ define('settings', ['hooks', 'alerts'], function (hooks, alerts) {
 					} else {
 						alerts.alert({
 							title: '[[admin/admin:changes-saved]]',
+							message: '[[admin/admin:changes-saved-message]]',
 							type: 'success',
 							timeout: 2500,
 						});
