@@ -33,11 +33,6 @@ body {
 		font-size: 35px;
 	}
 
-	label {
-		font-weight: 700;
-		height: auto;
-	}
-
 	.btn {
 		border-radius: 0;
 	}
@@ -253,24 +248,8 @@ body {
 	}
 }
 
-.mdl-switch.is-checked .mdl-switch__ripple-container {
-	cursor: pointer !important;
-}
-
-.mdl-switch.is-checked .mdl-switch__thumb {
-	background: $primary !important;
-}
-
-.mdl-switch.is-checked .mdl-switch__track {
-	background: lighten($primary, 20%) !important;
-}
-
 * > .checkbox:first-child {
 	margin-top: 0px;
-}
-
-[class^="col-"] .mdl-switch__label {
-	padding-right: 15px;
 }
 
 .ui-selectable-helper {
