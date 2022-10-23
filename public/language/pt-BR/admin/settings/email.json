@@ -5,6 +5,9 @@
 	"from": "Por Nome (From)",
 	"from-help": "O nome que será mostrado em \"De\" no e-mail.",
 
+	"confirmation-settings": "Confirmation",
+	"confirmation.expiry": "Hours to keep email confirmation link valid",
+
 	"smtp-transport": "Trasporte por SMTP",
 	"smtp-transport.enabled": "Enable SMTP Transport",
 	"smtp-transport-help": "Você pode escolher entre uma lista de serviços conhecidos ou adicionar um personalizado.",
