@@ -10,7 +10,6 @@ define('admin/manage/groups', [
 	const Groups = {};
 
 	Groups.init = function () {
-
 		handleCreate();
 
 		handleSearch();

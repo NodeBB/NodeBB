@@ -4,9 +4,6 @@ const user = require('../../user');
 const privileges = require('../../privileges');
 const plugins = require('../../plugins');
 
-const sockets = require('..');
-const api = require('../../api');
-
 module.exports = function (SocketUser) {
 	SocketUser.updateCover = async function (socket, data) {
 		if (!socket.uid) {
