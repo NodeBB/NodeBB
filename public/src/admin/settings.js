@@ -52,7 +52,6 @@ define('admin/settings', ['uploader', 'mousetrap', 'hooks', 'alerts'], function 
 				if (field.is('input') && inputType === 'checkbox') {
 					const checked = parseInt(app.config[key], 10) === 1;
 					field.prop('checked', checked);
-					field.parents('.mdl-switch').toggleClass('is-checked', checked);
 				} else if (field.is('textarea') || field.is('select') || (field.is('input') && defaultInputs.indexOf(inputType) !== -1)) {
 					field.val(app.config[key]);
 				}

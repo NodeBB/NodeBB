@@ -10,6 +10,8 @@
 @import "./manage/tags";
 @import "./manage/groups";
 @import "./appearance/customise";
+@import "./appearance/themes";
+@import "./appearance/skins";
 @import "./extend/plugins";
 @import "./extend/rewards";
 @import "./extend/widgets";
@@ -273,13 +275,7 @@ form small {
 }
 
 #save {
-	width: 64px;
-	height: 64px;
-	transition: background-color 500ms linear;
-
-	i {
-		font-size: 1.5em;
-	}
+	@include floating-button;
 
 	&.saved {
 		background-color: $success;

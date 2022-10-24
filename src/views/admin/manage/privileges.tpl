@@ -24,8 +24,8 @@
 </div>
 
 <div class="floating-button">
-	<button id="discard" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" style="display: none;">
-		<i class="material-icons">undo</i>
+	<button id="discard" class="btn btn-primary position-fixed bottom-0 end-0 px-3 py-2 mb-4 me-4 rounded-circle" type="button">
+		<i class="fa fa-rotate-left"></i>
 	</button>
 
 	<!-- IMPORT admin/partials/save_button.tpl -->

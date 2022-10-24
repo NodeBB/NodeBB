@@ -33,4 +33,8 @@
 			}
 		}
 	}
+
+	#discard {
+		@include floating-button;
+	}
 }
