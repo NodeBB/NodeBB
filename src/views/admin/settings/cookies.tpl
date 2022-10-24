@@ -5,7 +5,7 @@
 	<div class="col-sm-10 col-12">
 		<form>
 			<div class="mb-3">
-				<div class="form-check">
+				<div class="form-check form-switch">
 					<input type="checkbox" class="form-check-input" id="cookieConsentEnabled" data-field="cookieConsentEnabled">
 					<label class="form-check-label">[[admin/settings/cookies:consent.enabled]]</label>
 				</div>

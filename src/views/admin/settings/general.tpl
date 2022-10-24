@@ -22,7 +22,7 @@
 				</p>
 			</div>
 
-			<div class="form-check">
+			<div class="form-check form-switch">
 				<input type="checkbox" class="form-check-input" id="showSiteTitle" data-field="showSiteTitle" name="showSiteTitle" />
 				<label for="showSiteTitle" class="form-check-label">[[admin/settings/general:title.show-in-header]]</label>
 			</div>
@@ -183,7 +183,7 @@
 	<div class="col-sm-2 col-12 settings-header">[[admin/settings/general:outgoing-links]]</div>
 	<div class="col-sm-10 col-12">
 		<form>
-			<div class="form-check">
+			<div class="form-check form-switch">
 				<input type="checkbox" class="form-check-input" id="useOutgoingLinksPage" data-field="useOutgoingLinksPage">
 				<label for="useOutgoingLinksPage" class="form-check-label">[[admin/settings/general:outgoing-links.warning-page]]</label>
 			</div>

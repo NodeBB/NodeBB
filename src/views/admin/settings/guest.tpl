@@ -4,7 +4,7 @@
 	<div class="col-sm-2 col-12 settings-header">[[admin/settings/guest:settings]]</div>
 	<div class="col-sm-10 col-12">
 		<form role="form" class="mb-3">
-			<div class="form-check">
+			<div class="form-check form-switch">
 				<input class="form-check-input" type="checkbox" data-field="allowGuestHandles">
 				<label class="form-check-label">[[admin/settings/guest:handles.enabled]]</label>
 			</div>
@@ -13,13 +13,13 @@
 			</p>
 		</form>
 		<form role="form" class="mb-3">
-			<div class="form-check">
+			<div class="form-check form-switch">
 				<input class="form-check-input" type="checkbox" data-field="guestsIncrementTopicViews">
 				<label class="form-check-label">[[admin/settings/guest:topic-views.enabled]]</label>
 			</div>
 		</form>
 		<form role="form" class="mb-3">
-			<div class="form-check">
+			<div class="form-check form-switch">
 				<input class="form-check-input" type="checkbox" data-field="allowGuestReplyNotifications">
 				<label class="form-check-label">[[admin/settings/guest:reply-notifications.enabled]]</label>
 			</div>

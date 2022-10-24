@@ -5,15 +5,15 @@
 	<div class="col-sm-2 col-12 settings-header">[[admin/settings/reputation:reputation]]</div>
 	<div class="col-sm-10 col-12">
 		<form>
-			<div class="form-check">
+			<div class="form-check form-switch">
 				<input type="checkbox" class="form-check-input" data-field="reputation:disabled">
 				<label class="form-check-label">[[admin/settings/reputation:disable]]</label>
 			</div>
-			<div class="form-check">
+			<div class="form-check form-switch">
 				<input type="checkbox" class="form-check-input" data-field="downvote:disabled">
 				<label class="form-check-label">[[admin/settings/reputation:disable-down-voting]]</label>
 			</div>
-			<div class="form-check">
+			<div class="form-check form-switch">
 				<input type="checkbox" class="form-check-input" data-field="votesArePublic">
 				<label class="form-check-label">[[admin/settings/reputation:votes-are-public]]</label>
 			</div>
@@ -117,7 +117,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="form-check">
+			<div class="form-check form-switch">
 				<input type="checkbox" class="form-check-input" data-field="flags:autoResolveOnBan">
 				<label class="form-check-label">[[admin/settings/reputation:flags.auto-resolve-on-ban]]</label>
 			</div>
