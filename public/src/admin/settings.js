@@ -84,14 +84,6 @@ define('admin/settings', ['uploader', 'mousetrap', 'hooks', 'alerts'], function 
 					saveBtn.get(0).classList.toggle('saved', false);
 				}, 5000);
 
-				alerts.alert({
-					alert_id: 'config_status',
-					timeout: 2500,
-					title: '[[admin/admin:changes-saved]]',
-					message: '[[admin/admin:changes-saved-message]]',
-					type: 'success',
-				});
-
 				hooks.fire('action:admin.settingsSaved');
 			});
 		});

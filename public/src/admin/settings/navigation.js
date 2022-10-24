@@ -145,7 +145,11 @@ define('admin/settings/navigation', [
 			if (err) {
 				alerts.error(err);
 			} else {
-				alerts.success('Successfully saved navigation');
+				const saveBtn = document.getElementById('save');
+				saveBtn.classList.toggle('saved', true);
+				setTimeout(() => {
+					saveBtn.classList.toggle('saved', false);
+				}, 5000);
 			}
 		});
 	}

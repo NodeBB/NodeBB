@@ -550,12 +550,11 @@ define('settings', ['hooks', 'alerts'], function (hooks, alerts) {
 							timeout: 2500,
 						});
 					} else {
-						alerts.alert({
-							title: '[[admin/admin:changes-saved]]',
-							message: '[[admin/admin:changes-saved-message]]',
-							type: 'success',
-							timeout: 2500,
-						});
+						const saveBtn = document.getElementById('save');
+						saveBtn.classList.toggle('saved', true);
+						setTimeout(() => {
+							saveBtn.classList.toggle('saved', false);
+						}, 5000);
 					}
 				});
 			}
