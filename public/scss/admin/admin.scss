@@ -271,3 +271,21 @@ form small {
     border-right: 4px solid transparent;
     border-left: 4px solid transparent;
 }
+
+#save {
+	width: 64px;
+	height: 64px;
+	transition: background-color 250ms linear;
+
+	i {
+		font-size: 1.5em;
+	}
+
+	&.saved {
+		background-color: $success;
+
+		i {
+			@include fa-icon-solid($fa-var-check);
+		}
+	}
+}

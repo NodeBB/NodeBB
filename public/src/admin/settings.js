@@ -79,6 +79,11 @@ define('admin/settings', ['uploader', 'mousetrap', 'hooks', 'alerts'], function 
 
 				app.flags._unsaved = false;
 
+				saveBtn.get(0).classList.toggle('saved', true);
+				setTimeout(() => {
+					saveBtn.get(0).classList.toggle('saved', false);
+				}, 5000);
+
 				alerts.alert({
 					alert_id: 'config_status',
 					timeout: 2500,
