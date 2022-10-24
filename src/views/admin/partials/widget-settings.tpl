@@ -10,7 +10,7 @@
 
 <!-- IMPORT admin/partials/widgets/show_hide_groups.tpl -->
 
-<div class="form-check">
+<div class="form-check form-switch">
 	<input class="form-check-input" type="checkbox" name="hide-mobile" id="hide-mobile-check"/>
 	<label class="form-check-label" for="hide-mobile-check">[[admin/extend/widgets:hide-on-mobile]]</label>
 </div>

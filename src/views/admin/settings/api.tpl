@@ -13,7 +13,7 @@
 	<div class="row mb-4">
 		<div class="col-sm-2 col-12 settings-header">[[admin/settings/api:settings]]</div>
 		<div class="col-sm-10 col-12">
-			<div class="form-check">
+			<div class="form-check form-switch">
 				<input id="requireHttps" class="form-check-input" type="checkbox" name="requireHttps" />
 				<label class="form-check-label">[[admin/settings/api:require-https]]</label>
 			</div>

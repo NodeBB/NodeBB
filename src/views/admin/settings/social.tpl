@@ -5,7 +5,7 @@
 			<div class="col-sm-10 col-12">
 				<div class="form-group" id="postSharingNetworks">
 					<!-- BEGIN posts -->
-					<div class="form-check">
+					<div class="form-check form-switch">
 						<input type="checkbox" class="form-check-input" id="{posts.id}" data-field="{posts.id}" name="{posts.id}" <!-- IF posts.activated -->checked<!-- ENDIF posts.activated --> />
 						<label for="{posts.id}" class="form-check-label">
 							<i class="fa {posts.class}"></i> {posts.name}

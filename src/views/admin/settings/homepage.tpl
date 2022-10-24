@@ -21,7 +21,7 @@
 					<p class="form-text">[[user:custom_route_help]]</p>
 				</div>
 
-				<div class="form-check">
+				<div class="form-check form-switch">
 					<input class="form-check-input" type="checkbox" data-field="allowUserHomePage">
 					<label class="form-check-label">[[admin/settings/homepage:allow-user-home-pages]]</label>
 				</div>
