@@ -143,7 +143,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 		}
 
 		if (groupObj.isPending && groupObj.name !== 'administrators') {
-			return `<button class="btn btn-warning ${btnClass} disabled"><i class="fa fa-clock-o"></i> [[groups:membership.invitation-pending]]</button>`;
+			return `<button class="btn btn-warning disabled ${btnClass}"><i class="fa fa-clock-o"></i> [[groups:membership.invitation-pending]]</button>`;
 		} else if (groupObj.isInvited) {
 			return `<button class="btn btn-link" data-action="rejectInvite" data-group="${groupObj.displayName}">[[groups:membership.reject]]</button><button class="btn btn-success" data-action="acceptInvite" data-group="${groupObj.name}"><i class="fa fa-plus"></i> [[groups:membership.accept-invitation]]</button>`;
 		} else if (!groupObj.disableJoinRequests && groupObj.name !== 'administrators') {

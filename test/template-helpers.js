@@ -114,13 +114,13 @@ describe('helpers', () => {
 
 	it('should show leave button if isMember and group is not administrators', (done) => {
 		const btn = helpers.membershipBtn({ displayName: 'some group', name: 'some group', isMember: true });
-		assert.equal(btn, '<button class="btn btn-danger" data-action="leave" data-group="some group"><i class="fa fa-times"></i> [[groups:membership.leave-group]]</button>');
+		assert.equal(btn, '<button class="btn btn-danger " data-action="leave" data-group="some group" ><i class="fa fa-times"></i> [[groups:membership.leave-group]]</button>');
 		done();
 	});
 
 	it('should show pending button if isPending and group is not administrators', (done) => {
 		const btn = helpers.membershipBtn({ displayName: 'some group', name: 'some group', isPending: true });
-		assert.equal(btn, '<button class="btn btn-warning disabled"><i class="fa fa-clock-o"></i> [[groups:membership.invitation-pending]]</button>');
+		assert.equal(btn, '<button class="btn btn-warning disabled "><i class="fa fa-clock-o"></i> [[groups:membership.invitation-pending]]</button>');
 		done();
 	});
 
