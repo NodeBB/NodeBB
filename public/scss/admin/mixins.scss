@@ -5,13 +5,3 @@
 	text-transform: uppercase;
 	font-weight: 700;
 }
-
-@mixin floating-button {
-	width: 64px;
-	height: 64px;
-	transition: background-color 500ms linear;
-
-	i {
-		font-size: 1.5em;
-	}
-}
