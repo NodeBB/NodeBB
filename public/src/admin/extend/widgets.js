@@ -127,16 +127,14 @@ define('admin/extend/widgets', [
 
 			socket.emit('admin.widgets.set', saveData, function (err) {
 				if (err) {
-					alerts.error(err);
+					return alerts.error(err);
 				}
 
-				alerts.alert({
-					alert_id: 'admin:widgets',
-					type: 'success',
-					title: '[[admin/extend/widgets:alert.updated]]',
-					message: '[[admin/extend/widgets:alert.update-success]]',
-					timeout: 2500,
-				});
+				const saveBtn = document.getElementById('save');
+				saveBtn.classList.toggle('saved', true);
+				setTimeout(() => {
+					saveBtn.classList.toggle('saved', false);
+				}, 5000);
 			});
 		}
 
