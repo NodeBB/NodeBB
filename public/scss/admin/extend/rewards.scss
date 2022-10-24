@@ -43,3 +43,10 @@
 		}
 	}
 }
+
+#new {
+	@include floating-button;
+
+	bottom: calc(64px + $spacer);
+	background-color: $success;
+}

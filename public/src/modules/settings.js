@@ -490,9 +490,6 @@ define('settings', ['hooks', 'alerts'], function (hooks, alerts) {
 				});
 
 				$(formEl).deserialize(values);
-				$(formEl).find('input[type="checkbox"]').each(function () {
-					$(this).parents('.mdl-switch').toggleClass('is-checked', $(this).is(':checked'));
-				});
 				hooks.fire('action:admin.settingsLoaded');
 
 				// Handle unsaved changes

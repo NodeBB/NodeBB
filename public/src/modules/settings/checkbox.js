@@ -15,7 +15,6 @@ define('settings/checkbox', function () {
 		},
 		set: function (element, value) {
 			element.prop('checked', value);
-			element.closest('.mdl-switch').toggleClass('is-checked', element.is(':checked'));
 		},
 		get: function (element, trim, empty) {
 			const value = element.prop('checked');

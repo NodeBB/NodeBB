@@ -14,10 +14,10 @@
 					<!-- BEGIN tags -->
 					<div class="tag-row" data-tag="{tags.valueEscaped}">
 						<div>
-							<span class="mdl-chip mdl-chip--contact tag-item" data-tag="{tags.valueEscaped}">
-							    <span class="mdl-chip__contact mdl-color--light-blue mdl-color-text--white tag-topic-count">{tags.score}</span>
-							    <span class="mdl-chip__text">{tags.valueEscaped}</span>
-							</span>
+							<button disabled class="rounded-3 btn btn-light">
+								{tags.valueEscaped}
+								<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-secondary">{tags.score} <span class="visually-hidden">[[tags:tags]]</span>
+							</button>
 						</div>
 					</div>
 					<!-- END tags -->

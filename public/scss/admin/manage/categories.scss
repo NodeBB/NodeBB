@@ -97,3 +97,9 @@ div.categories {
 		}
 	}
 }
+
+.page-admin-categories {
+	[data-action="create"] {
+		@include floating-button;
+	}
+}

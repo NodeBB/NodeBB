@@ -20,6 +20,6 @@
 <div>
     <!-- IMPORT partials/paginator.tpl -->
 </div>
-<button data-action="create" class="floating-button mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
-    <i class="material-icons">add</i>
+<button data-action="create" class="btn btn-primary position-fixed bottom-0 end-0 px-3 py-2 mb-4 me-4 rounded-circle" type="button">
+    <i class="fa fa-fw fa-plus"></i>
 </button>
