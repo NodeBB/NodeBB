@@ -627,7 +627,7 @@ describe('Controllers', () => {
 				});
 
 				assert.strictEqual(res.statusCode, 302);
-				assert.strictEqual(res.headers['set-cookie'][0], 'express.sid=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax');
+				assert.strictEqual(res.headers['set-cookie'][0], `express.sid=; Path=${nconf.get('relative_path') || '/'}; Expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax`);
 				assert.strictEqual(res.headers.location, `${nconf.get('relative_path')}/`);
 			});
 
