@@ -86,15 +86,16 @@ module.exports = function (middleware) {
 			}
 			return next();
 		}
-		if (parseInt(req.uid, 10) > 0 || !meta.config.autoDetectLang) {
-			return next();
+
+		if (meta.config.autoDetectLang && req.uid === 0) {
+			const langs = await listCodes();
+			const lang = req.acceptsLanguages(langs);
+			if (!lang) {
+				return next();
+			}
+			req.query.lang = lang;
 		}
-		const langs = await listCodes();
-		const lang = req.acceptsLanguages(langs);
-		if (!lang) {
-			return next();
-		}
-		req.query.lang = lang;
+
 		next();
 	});
 

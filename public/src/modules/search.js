@@ -97,13 +97,13 @@ define('search', ['translator', 'storage', 'hooks', 'alerts'], function (transla
 		const filterCategoryEl = quickSearchResults.find('.filter-category');
 
 		function updateCategoryFilterName() {
-			if (ajaxify.data.template.category) {
+			if (ajaxify.data.template.category && ajaxify.data.cid) {
 				translator.translate('[[search:search-in-category, ' + ajaxify.data.name + ']]', function (translated) {
 					const name = $('<div></div>').html(translated).text();
 					filterCategoryEl.find('.name').text(name);
 				});
 			}
-			filterCategoryEl.toggleClass('hidden', !ajaxify.data.template.category);
+			filterCategoryEl.toggleClass('hidden', !(ajaxify.data.template.category && ajaxify.data.cid));
 		}
 
 		function doSearch() {
@@ -111,7 +111,7 @@ define('search', ['translator', 'storage', 'hooks', 'alerts'], function (transla
 			options.searchOptions.term = inputEl.val();
 			updateCategoryFilterName();
 
-			if (ajaxify.data.template.category) {
+			if (ajaxify.data.template.category && ajaxify.data.cid) {
 				if (filterCategoryEl.find('input[type="checkbox"]').is(':checked')) {
 					options.searchOptions.categories = [ajaxify.data.cid];
 					options.searchOptions.searchChildren = true;
