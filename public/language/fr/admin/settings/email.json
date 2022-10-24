@@ -6,7 +6,7 @@
 	"from-help": "Le nom de l’expéditeur à afficher dans l'e-mail",
 
 	"confirmation-settings": "Confirmation",
-	"confirmation.expiry": "Hours to keep email confirmation link valid",
+	"confirmation.expiry": "Heures de validité du lien de confirmation par e-mail",
 
 	"smtp-transport": "Protocole SMTP",
 	"smtp-transport.enabled": "Activer l'envoi via SMTP",
