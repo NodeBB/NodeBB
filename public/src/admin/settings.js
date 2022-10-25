@@ -77,12 +77,7 @@ define('admin/settings', ['uploader', 'mousetrap', 'hooks', 'alerts'], function 
 				}
 
 				app.flags._unsaved = false;
-
-				saveBtn.get(0).classList.toggle('saved', true);
-				setTimeout(() => {
-					saveBtn.get(0).classList.toggle('saved', false);
-				}, 5000);
-
+				Settings.toggleSaveSuccess(saveBtn);
 				hooks.fire('action:admin.settingsSaved');
 			});
 		});
@@ -109,6 +104,16 @@ define('admin/settings', ['uploader', 'mousetrap', 'hooks', 'alerts'], function 
 		setTimeout(function () {
 			hooks.fire('action:admin.settingsLoaded');
 		}, 0);
+	};
+
+	Settings.toggleSaveSuccess = function (saveBtn) {
+		const saveBtnEl = saveBtn.get(0);
+		if (saveBtnEl) {
+			saveBtnEl.classList.toggle('saved', true);
+			setTimeout(() => {
+				saveBtnEl.classList.toggle('saved', false);
+			}, 5000);
+		}
 	};
 
 	function handleUploads() {

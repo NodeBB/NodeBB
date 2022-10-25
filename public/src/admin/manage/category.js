@@ -8,7 +8,8 @@ define('admin/manage/category', [
 	'api',
 	'bootbox',
 	'alerts',
-], function (uploader, iconSelect, categorySelector, Benchpress, api, bootbox, alerts) {
+	'admin/settings',
+], function (uploader, iconSelect, categorySelector, Benchpress, api, bootbox, alerts, settings) {
 	const Category = {};
 	let updateHash = {};
 
@@ -54,14 +55,9 @@ define('admin/manage/category', [
 			}
 
 			const cid = ajaxify.data.category.cid;
-			api.put('/categories/' + cid, updateHash).then((res) => {
+			api.put('/categories/' + cid, updateHash).then(() => {
 				app.flags._unsaved = false;
-				alerts.alert({
-					title: 'Updated Categories',
-					message: 'Category "' + res.name + '" was successfully updated.',
-					type: 'success',
-					timeout: 5000,
-				});
+				settings.toggleSaveSuccess($('#save'));
 				updateHash = {};
 			}).catch(alerts.error);
 
