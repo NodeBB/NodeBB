@@ -12,7 +12,7 @@ define('admin/manage/privileges', [
 	'admin/settings',
 ], function (
 	api, autocomplete, bootbox, alerts, translator,
-	categorySelector, mousetrap, checkboxRowSelector, settings,
+	categorySelector, mousetrap, checkboxRowSelector, settings
 ) {
 	const Privileges = {};
 

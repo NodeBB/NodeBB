@@ -13,7 +13,7 @@ define('admin/manage/group', [
 	'admin/settings',
 ], function (
 	memberList, iconSelect, translator, categorySelector, groupSearch,
-	slugify, api, bootbox, alerts, settings,
+	slugify, api, bootbox, alerts, settings
 ) {
 	const Groups = {};
 
