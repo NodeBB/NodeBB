@@ -9,7 +9,11 @@ define('admin/manage/privileges', [
 	'categorySelector',
 	'mousetrap',
 	'admin/modules/checkboxRowSelector',
-], function (api, autocomplete, bootbox, alerts, translator, categorySelector, mousetrap, checkboxRowSelector) {
+	'admin/settings',
+], function (
+	api, autocomplete, bootbox, alerts, translator,
+	categorySelector, mousetrap, checkboxRowSelector, settings,
+) {
 	const Privileges = {};
 
 	let cid;
@@ -170,7 +174,7 @@ define('admin/manage/privileges', [
 					alerts.error(result.reason);
 				});
 			} else {
-				alerts.success('[[admin/manage/privileges:alert.saved]]');
+				settings.toggleSaveSuccess($('#save'));
 			}
 		});
 	};
