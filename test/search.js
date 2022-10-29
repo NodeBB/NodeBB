@@ -216,6 +216,7 @@ describe('Search', () => {
 	it('should not find anything', (done) => {
 		search.search({
 			query: 'xxxxxxxxxxxxxx',
+			searchIn: 'titles',
 		}, (err, data) => {
 			assert.ifError(err);
 			assert(Array.isArray(data.posts));

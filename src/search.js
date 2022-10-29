@@ -15,7 +15,6 @@ const search = module.exports;
 
 search.search = async function (data) {
 	const start = process.hrtime();
-	data.searchIn = data.searchIn || 'titlesposts';
 	data.sortBy = data.sortBy || 'relevance';
 
 	let result;
