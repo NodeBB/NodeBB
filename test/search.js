@@ -183,7 +183,7 @@ describe('Search', () => {
 	it('should fail if searchIn is wrong', (done) => {
 		search.search({
 			query: 'plug',
-			searchIn: 'invalidfilter',
+			searchIn: '',
 		}, (err) => {
 			assert.equal(err.message, '[[error:unknown-search-filter]]');
 			done();
