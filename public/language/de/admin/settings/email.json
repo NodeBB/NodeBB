@@ -5,8 +5,8 @@
 	"from": "Name des Absenders",
 	"from-help": "Der Name des Absenders, welcher in der E-Mail angezeigt werden soll.",
 
-	"confirmation-settings": "Confirmation",
-	"confirmation.expiry": "Hours to keep email confirmation link valid",
+	"confirmation-settings": "Konfirmation",
+	"confirmation.expiry": "Stunden, um den E-Mail-Bestätigungslink gültig zu halten",
 
 	"smtp-transport": "SMTP Konfiguration",
 	"smtp-transport.enabled": "SMTP-Transport aktivieren",

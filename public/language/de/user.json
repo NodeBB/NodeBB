@@ -195,5 +195,5 @@
     "emailUpdate.optional": "<strong>Dieses Feld ist optional</strong>. Du bist nicht verpflichtet, deine E-Mail-Adresse anzugeben, doch ohne eine validierte E-Mail-Adresse kannst du dein Konto nicht wiederherstellen oder dich mit deiner E-Mail-Adresse anmelden.",
     "emailUpdate.required": "<strong>Dieses Feld ist erforderlich</strong>.",
     "emailUpdate.change-instructions": "An die eingegebene E-Mail-Adresse wird eine Bestätigungs-E-Mail mit einem eindeutigen Link gesendet. Durch den Zugriff auf diesen Link wird dein Eigentum an der E-Mail-Adresse bestätigt und diese wird in deinem Konto aktiv. Du kannst deine E-Mail-Adresse jederzeit auf deiner Kontoseite aktualisieren.",
-    "emailUpdate.password-challenge": "Please enter your password in order to verify account ownership."
+    "emailUpdate.password-challenge": "Bitte gib dein Passwort ein, um dein Konto zu verifizieren."
 }
