@@ -122,13 +122,13 @@ body {
 		.nbb-fa-icons {
 			margin: 0;
 			i {
-				width: 24px;
-				height: 24px;
+				width: 36px;
+				height: 36px;
 				cursor: pointer;
-				line-height: 24px;
+				line-height: 36px;
 				text-align: center;
 				color: $gray-800;
-				margin: 3px;
+				margin: 4px;
 
 				&:hover, &.selected {
 					background: $primary;

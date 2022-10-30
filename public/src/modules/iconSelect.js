@@ -6,7 +6,6 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 
 	iconSelect.init = function (el, onModified) {
 		onModified = onModified || function () {};
-		const doubleSize = el.hasClass('fa-2x');
 		let selected = el.attr('class').replace('fa-2x', '').replace('fa', '').replace(/\s+/g, '');
 
 		$('#icons .selected').removeClass('selected');
@@ -21,7 +20,7 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 
 		Benchpress.render('partials/fontawesome', {}).then(function (html) {
 			html = $(html);
-			html.find('.nbb-fa-icons').prepend($('<i class="fa fa-nbb-none"></i>'));
+			html.find('.nbb-fa-icons').prepend($('<i class="fa fa-xl fa-nbb-none"></i>'));
 
 			const picker = bootbox.dialog({
 				onEscape: true,
@@ -35,7 +34,7 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 						label: 'No Icon',
 						className: 'btn-default',
 						callback: function () {
-							el.attr('class', 'fa ' + (doubleSize ? 'fa-2x ' : ''));
+							el.attr('class', 'fa fa-xl');
 							el.val('');
 							el.attr('value', '');
 
@@ -47,12 +46,16 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 						className: 'btn-primary',
 						callback: function () {
 							const iconClass = $('.bootbox .selected').attr('class') || `fa fa-${$('.bootbox #fa-filter').val()}`;
-							const categoryIconClass = $('<div></div>').addClass(iconClass).removeClass('fa').removeClass('selected')
+							const categoryIconClass = $('<div></div>')
+								.addClass(iconClass)
+								.removeClass('fa')
+								.removeClass('selected')
+								.removeClass('fa-xl')
 								.attr('class');
 							const searchElVal = picker.find('input').val();
 
 							if (categoryIconClass) {
-								el.attr('class', 'fa ' + (doubleSize ? 'fa-2x ' : '') + categoryIconClass);
+								el.attr('class', 'fa fa-2x ' + categoryIconClass);
 								el.val(categoryIconClass);
 								el.attr('value', categoryIconClass);
 							} else if (searchElVal) {
@@ -73,14 +76,15 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 
 				if (selected) {
 					modalEl.find('.' + selected).addClass('selected');
-					searchEl.val(selected.replace('fa-', ''));
+					searchEl.val(selected.replace(/fa-(solid|regular|brands|light|thin|duotone) /, '').replace('fa-xl', '').replace('fa-', ''));
 				}
 			}).modal('show');
 
 			picker.on('shown.bs.modal', function () {
 				const modalEl = $(this);
 				const searchEl = modalEl.find('input');
-				const icons = modalEl.find('.nbb-fa-icons i');
+				const iconContainer = modalEl.find('.nbb-fa-icons');
+				let icons = modalEl.find('.nbb-fa-icons i');
 				const submitEl = modalEl.find('button.btn-primary');
 
 				function changeSelection(newSelection) {
@@ -100,19 +104,22 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 				searchEl.selectRange(0, searchEl.val().length);
 
 				modalEl.find('.icon-container').on('click', 'i', function () {
-					searchEl.val($(this).attr('class').replace('fa fa-', '').replace('selected', ''));
+					searchEl.val($(this).attr('class')
+						.replace(/fa-(solid|regular|brands|light|thin|duotone) /, '')
+						.replace('fa fa-xl fa-', '')
+						.replace('selected', ''));
 					changeSelection($(this));
 				});
 
-				searchEl.on('keyup', function (e) {
+				searchEl.on('keyup', async function (e) {
 					if (e.keyCode !== 13) {
 						// Filter
-						icons.show();
-						icons.each(function (idx, el) {
-							if (!el.className.match(new RegExp('^fa fa-.*' + searchEl.val() + '.*$'))) {
-								$(el).hide();
-							}
+						const iconData = await iconSelect.findIcons(searchEl.val());
+						icons.remove();
+						iconData.forEach((iconData) => {
+							iconContainer.append($(`<i class="fa fa-xl fa-${iconData.style} fa-${iconData.id}" data-label="${iconData.label}"></i>`));
 						});
+						icons = modalEl.find('.nbb-fa-icons i');
 						changeSelection();
 					} else {
 						submitEl.click();
@@ -120,6 +127,40 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 				});
 			});
 		});
+	};
+	iconSelect.findIcons = async function (searchString) {
+		const request = await fetch('https://api.fontawesome.com', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				query: `query {
+					search(version: "6.2.0", query: "${searchString}", first: 200) {
+						id,
+						label,
+						familyStylesByLicense {
+							free {
+								style
+							}
+						}
+					}
+				}`,
+			}),
+		});
+		const response = await request.json();
+		const icons = response.data.search.filter(icon => icon.familyStylesByLicense.free.length > 0).flatMap((icon) => {
+			const result = [];
+			icon.familyStylesByLicense.free.forEach((style) => {
+				result.push({
+					id: icon.id,
+					label: `${icon.label} (${style.style})`,
+					style: style.style,
+				});
+			});
+			return result;
+		});
+		return icons;
 	};
 
 	return iconSelect;
