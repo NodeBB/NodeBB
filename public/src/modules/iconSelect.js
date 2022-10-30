@@ -306,6 +306,7 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 				const iconContainer = modalEl.find('.nbb-fa-icons');
 				let icons = modalEl.find('.nbb-fa-icons i');
 				const submitEl = modalEl.find('button.btn-primary');
+				let lastSearch = '';
 
 				function changeSelection(newSelection) {
 					modalEl.find('i.selected').removeClass('selected');
@@ -332,11 +333,12 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 				});
 
 				searchEl.on('keyup', async function (e) {
-					if (e.keyCode !== 13) {
+					if (e.code !== 'Enter' && searchEl.val() !== lastSearch) {
+						lastSearch = searchEl.val();
 						// Search
 						let iconData;
-						if (searchEl.val().length) {
-							iconData = await iconSelect.findIcons(searchEl.val());
+						if (lastSearch.length) {
+							iconData = await iconSelect.findIcons(lastSearch);
 						} else {
 							iconData = initialIcons;
 						}
@@ -346,7 +348,7 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 						});
 						icons = modalEl.find('.nbb-fa-icons i');
 						changeSelection();
-					} else {
+					} else if (e.code === 'Enter') {
 						submitEl.click();
 					}
 				});
