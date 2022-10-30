@@ -349,7 +349,7 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 						icons = modalEl.find('.nbb-fa-icons i');
 						changeSelection();
 					} else if (e.code === 'Enter') {
-						submitEl.click();
+						submitEl.trigger('click');
 					}
 				});
 			});
