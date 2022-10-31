@@ -332,22 +332,24 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 					changeSelection($(this));
 				});
 
-				searchEl.on('keyup', async function (e) {
+				searchEl.on('keyup', function (e) {
 					if (e.code !== 'Enter' && searchEl.val() !== lastSearch) {
 						lastSearch = searchEl.val();
-						// Search
-						let iconData;
-						if (lastSearch.length) {
-							iconData = await iconSelect.findIcons(lastSearch);
-						} else {
-							iconData = initialIcons;
-						}
-						icons.remove();
-						iconData.forEach((iconData) => {
-							iconContainer.append($(`<i class="fa fa-xl fa-${iconData.style} fa-${iconData.id}" data-label="${iconData.label}"></i>`));
-						});
-						icons = modalEl.find('.nbb-fa-icons i');
-						changeSelection();
+						utils.debounce(async () => {
+							// Search
+							let iconData;
+							if (lastSearch.length) {
+								iconData = await iconSelect.findIcons(lastSearch);
+							} else {
+								iconData = initialIcons;
+							}
+							icons.remove();
+							iconData.forEach((iconData) => {
+								iconContainer.append($(`<i class="fa fa-xl fa-${iconData.style} fa-${iconData.id}" data-label="${iconData.label}"></i>`));
+							});
+							icons = modalEl.find('.nbb-fa-icons i');
+							changeSelection();
+						}, 200)();
 					} else if (e.code === 'Enter') {
 						submitEl.trigger('click');
 					}
