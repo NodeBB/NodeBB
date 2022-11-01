@@ -3,9 +3,6 @@
 	bottom: 10%;
 	right: 2rem;
 	z-index: $zindex-modal;
-	.category-dropdown-menu {
-		min-height: 300px;
-	}
 }
 
 @include media-breakpoint-up(sm) {

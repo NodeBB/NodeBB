@@ -1,6 +1,6 @@
 'use strict';
 
-define('categorySearch', ['alerts'], function (alerts) {
+define('categorySearch', ['alerts', 'bootstrap'], function (alerts, bootstrap) {
 	const categorySearch = {};
 
 	categorySearch.init = function (el, options) {
@@ -96,6 +96,11 @@ define('categorySearch', ['alerts'], function (alerts) {
 					.html(html.find('[component="category/list"]').html());
 				el.find('[component="category/list"] [component="category/no-matches"]')
 					.toggleClass('hidden', !!categories.length);
+
+				const bsDropdown = bootstrap.Dropdown.getInstance(el.find('.dropdown-toggle').get(0));
+				if (bsDropdown) {
+					bsDropdown.update();
+				}
 			});
 		}
 	};
