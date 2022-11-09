@@ -33,7 +33,7 @@
         "ace-builds": "1.12.3",
         "archiver": "5.3.1",
         "async": "3.2.4",
-        "autoprefixer": "10.4.12",
+        "autoprefixer": "10.4.13",
         "bcryptjs": "2.4.3",
         "benchpressjs": "2.4.3",
         "body-parser": "1.20.1",
