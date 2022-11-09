@@ -1,3 +1,28 @@
+#### v2.5.7 (2022-10-14)
+
+##### Chores
+
+*  incrementing version number - v2.5.6 (c7bd7dbf)
+*  update changelog for v2.5.6 (e92238d0)
+*  incrementing version number - v2.5.5 (3509ed94)
+*  incrementing version number - v2.5.4 (e83260ca)
+*  incrementing version number - v2.5.3 (7e922936)
+*  incrementing version number - v2.5.2 (babcd17e)
+*  incrementing version number - v2.5.1 (ce3aa950)
+*  incrementing version number - v2.5.0 (01d276cb)
+*  incrementing version number - v2.4.5 (dd3e1a28)
+*  incrementing version number - v2.4.4 (d5525c87)
+*  incrementing version number - v2.4.3 (9c647c6c)
+*  incrementing version number - v2.4.2 (3aa7b855)
+*  incrementing version number - v2.4.1 (60cbd148)
+*  incrementing version number - v2.4.0 (4834cde3)
+*  incrementing version number - v2.3.1 (d2425942)
+*  incrementing version number - v2.3.0 (046ea120)
+
+##### Performance Improvements
+
+*  speed up build (dd4e9cce)
+
 #### v2.5.6 (2022-10-13)
 
 ##### Chores

@@ -814,6 +814,7 @@ describe('User', () => {
 	describe('profile methods', () => {
 		let uid;
 		let jar;
+		let csrf_token;
 
 		before(async () => {
 			const newUid = await User.create({ username: 'updateprofile', email: 'update@me.com', password: '123456' });
@@ -822,7 +823,7 @@ describe('User', () => {
 			await User.setUserField(uid, 'email', 'update@me.com');
 			await User.email.confirmByUid(uid);
 
-			({ jar } = await helpers.loginUser('updateprofile', '123456'));
+			({ jar, csrf_token } = await helpers.loginUser('updateprofile', '123456'));
 		});
 
 		it('should return error if not logged in', async () => {
@@ -1287,7 +1288,7 @@ describe('User', () => {
 
 			// Accessing this page will mark the user's account as needing an updated email, below code undo's.
 			await requestAsync({
-				uri: `${nconf.get('url')}/register/abort`,
+				uri: `${nconf.get('url')}/register/abort?_csrf=${csrf_token}`,
 				jar,
 				method: 'POST',
 				simple: false,
@@ -1757,11 +1758,6 @@ describe('User', () => {
 				assert.strictEqual(err.message, '[[error:account-deletion-disabled]]');
 			}
 			meta.config.allowAccountDelete = oldValue;
-		});
-
-		it('should send email confirm', async () => {
-			await User.email.expireValidation(testUid);
-			await socketUser.emailConfirm({ uid: testUid }, {});
 		});
 
 		it('should send reset email', (done) => {

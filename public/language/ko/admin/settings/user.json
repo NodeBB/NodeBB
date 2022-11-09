@@ -1,7 +1,7 @@
 {
 	"authentication": "인증",
 	"email-confirm-interval": "사용자는",
-	"email-confirm-email2": "분이 지나기 전까지 인증 메일 재요청이 불가능합니다.",
+	"email-confirm-interval2": "분이 지나기 전까지 인증 메일 재요청이 불가능합니다.",
 	"allow-login-with": "로그인 허용 수단",
 	"allow-login-with.username-email": "사용자명 또는 이메일",
 	"allow-login-with.username": "사용자명",

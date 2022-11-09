@@ -267,6 +267,10 @@ program
 		].join('\n')}`);
 	})
 	.action((scripts, options) => {
+		if (program.opts().dev) {
+			process.env.NODE_ENV = 'development';
+			global.env = 'development';
+		}
 		require('./upgrade').upgrade(scripts.length ? scripts : true, options);
 	});
 

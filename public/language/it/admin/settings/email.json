@@ -5,6 +5,9 @@
 	"from": "Da Nome",
 	"from-help": "Il nome da visualizzare nell'email.",
 
+	"confirmation-settings": "Conferma",
+	"confirmation.expiry": "Ore per mantenere valido il link di conferma dell'email",
+
 	"smtp-transport": "Trasporto SMTP",
 	"smtp-transport.enabled": "Abilita trasporto SMTP",
 	"smtp-transport-help": "Puoi selezionare da un elenco di servizi noti o inserirne uno personalizzato.",
