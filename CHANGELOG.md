@@ -7,21 +7,6 @@
 *  add bootstrap5 to test runner for now (be5d6d29)
 *  incrementing version number - v2.5.7 (5836bf4a)
 *  update changelog for v2.5.7 (17e948ab)
-*  incrementing version number - v2.5.6 (c7bd7dbf)
-*  incrementing version number - v2.5.5 (3509ed94)
-*  incrementing version number - v2.5.4 (e83260ca)
-*  incrementing version number - v2.5.3 (7e922936)
-*  incrementing version number - v2.5.2 (babcd17e)
-*  incrementing version number - v2.5.1 (ce3aa950)
-*  incrementing version number - v2.5.0 (01d276cb)
-*  incrementing version number - v2.4.5 (dd3e1a28)
-*  incrementing version number - v2.4.4 (d5525c87)
-*  incrementing version number - v2.4.3 (9c647c6c)
-*  incrementing version number - v2.4.2 (3aa7b855)
-*  incrementing version number - v2.4.1 (60cbd148)
-*  incrementing version number - v2.4.0 (4834cde3)
-*  incrementing version number - v2.3.1 (d2425942)
-*  incrementing version number - v2.3.0 (046ea120)
 
 ##### New Features
 
@@ -57,20 +42,6 @@
 
 *  incrementing version number - v2.5.6 (c7bd7dbf)
 *  update changelog for v2.5.6 (e92238d0)
-*  incrementing version number - v2.5.5 (3509ed94)
-*  incrementing version number - v2.5.4 (e83260ca)
-*  incrementing version number - v2.5.3 (7e922936)
-*  incrementing version number - v2.5.2 (babcd17e)
-*  incrementing version number - v2.5.1 (ce3aa950)
-*  incrementing version number - v2.5.0 (01d276cb)
-*  incrementing version number - v2.4.5 (dd3e1a28)
-*  incrementing version number - v2.4.4 (d5525c87)
-*  incrementing version number - v2.4.3 (9c647c6c)
-*  incrementing version number - v2.4.2 (3aa7b855)
-*  incrementing version number - v2.4.1 (60cbd148)
-*  incrementing version number - v2.4.0 (4834cde3)
-*  incrementing version number - v2.3.1 (d2425942)
-*  incrementing version number - v2.3.0 (046ea120)
 
 ##### Performance Improvements
 
@@ -82,19 +53,6 @@
 
 *  incrementing version number - v2.5.5 (3509ed94)
 *  update changelog for v2.5.5 (e7d0040d)
-*  incrementing version number - v2.5.4 (e83260ca)
-*  incrementing version number - v2.5.3 (7e922936)
-*  incrementing version number - v2.5.2 (babcd17e)
-*  incrementing version number - v2.5.1 (ce3aa950)
-*  incrementing version number - v2.5.0 (01d276cb)
-*  incrementing version number - v2.4.5 (dd3e1a28)
-*  incrementing version number - v2.4.4 (d5525c87)
-*  incrementing version number - v2.4.3 (9c647c6c)
-*  incrementing version number - v2.4.2 (3aa7b855)
-*  incrementing version number - v2.4.1 (60cbd148)
-*  incrementing version number - v2.4.0 (4834cde3)
-*  incrementing version number - v2.3.1 (d2425942)
-*  incrementing version number - v2.3.0 (046ea120)
 
 ##### Bug Fixes
 
@@ -108,18 +66,6 @@
 *  up plugins (b91ef6dd)
 *  incrementing version number - v2.5.4 (e83260ca)
 *  update changelog for v2.5.4 (aabf073c)
-*  incrementing version number - v2.5.3 (7e922936)
-*  incrementing version number - v2.5.2 (babcd17e)
-*  incrementing version number - v2.5.1 (ce3aa950)
-*  incrementing version number - v2.5.0 (01d276cb)
-*  incrementing version number - v2.4.5 (dd3e1a28)
-*  incrementing version number - v2.4.4 (d5525c87)
-*  incrementing version number - v2.4.3 (9c647c6c)
-*  incrementing version number - v2.4.2 (3aa7b855)
-*  incrementing version number - v2.4.1 (60cbd148)
-*  incrementing version number - v2.4.0 (4834cde3)
-*  incrementing version number - v2.3.1 (d2425942)
-*  incrementing version number - v2.3.0 (046ea120)
 
 #### v2.5.4 (2022-10-11)
 
@@ -128,17 +74,6 @@
 *  🤔 (7240e8ce)
 *  incrementing version number - v2.5.3 (7e922936)
 *  update changelog for v2.5.3 (fdf240f6)
-*  incrementing version number - v2.5.2 (babcd17e)
-*  incrementing version number - v2.5.1 (ce3aa950)
-*  incrementing version number - v2.5.0 (01d276cb)
-*  incrementing version number - v2.4.5 (dd3e1a28)
-*  incrementing version number - v2.4.4 (d5525c87)
-*  incrementing version number - v2.4.3 (9c647c6c)
-*  incrementing version number - v2.4.2 (3aa7b855)
-*  incrementing version number - v2.4.1 (60cbd148)
-*  incrementing version number - v2.4.0 (4834cde3)
-*  incrementing version number - v2.3.1 (d2425942)
-*  incrementing version number - v2.3.0 (046ea120)
 
 ##### Continuous Integration
 
