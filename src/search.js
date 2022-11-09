@@ -15,7 +15,6 @@ const search = module.exports;
 
 search.search = async function (data) {
 	const start = process.hrtime();
-	data.searchIn = data.searchIn || 'titlesposts';
 	data.sortBy = data.sortBy || 'relevance';
 
 	let result;
@@ -27,6 +26,10 @@ search.search = async function (data) {
 		result = await categories.search(data);
 	} else if (data.searchIn === 'tags') {
 		result = await topics.searchAndLoadTags(data);
+	} else if (data.searchIn) {
+		result = await plugins.hooks.fire('filter:search.searchIn', {
+			data,
+		});
 	} else {
 		throw new Error('[[error:unknown-search-filter]]');
 	}
@@ -108,6 +111,7 @@ async function searchInContent(data) {
 	returnData.posts = await posts.getPostSummaryByPids(metadata.pids, data.uid, {});
 	await plugins.hooks.fire('filter:search.contentGetResult', { result: returnData, data: data });
 	delete metadata.pids;
+	delete metadata.data;
 	return Object.assign(returnData, metadata);
 }
 
