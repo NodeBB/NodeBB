@@ -1237,8 +1237,10 @@ describe('Controllers', () => {
 
 	describe('account pages', () => {
 		let jar;
+		let csrf_token;
+
 		before(async () => {
-			({ jar } = await helpers.loginUser('foo', 'barbar'));
+			({ jar, csrf_token } = await helpers.loginUser('foo', 'barbar'));
 		});
 
 		it('should redirect to account page with logged in user', (done) => {
@@ -1802,7 +1804,7 @@ describe('Controllers', () => {
 			assert.strictEqual(res.body, '/register/complete');
 
 			await requestAsync({
-				uri: `${nconf.get('url')}/register/abort`,
+				uri: `${nconf.get('url')}/register/abort?_csrf=${csrf_token}`,
 				method: 'post',
 				jar,
 				simple: false,
