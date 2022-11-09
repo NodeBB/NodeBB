@@ -10,11 +10,11 @@
 	"list.email-spam": "Frequency: %1 Appears: %2",
 	"list.ip-spam": "Frequency: %1 Appears: %2",
 
-	"invitations": "Invitations",
+	"invitations": "Invitasjoner",
 	"invitations.description": "Below is a complete list of invitations sent. Use ctrl-f to search through the list by email or username. <br><br>The username will be displayed to the right of the emails for users who have redeemed their invitations.",
 	"invitations.inviter-username": "Inviter Username",
 	"invitations.invitee-email": "Invitee Email",
 	"invitations.invitee-username": "Invitee Username (if registered)",
 
-	"invitations.confirm-delete": "Are you sure you wish to delete this invitation?"
+	"invitations.confirm-delete": "Er du sikker på at du ønsker å slette denne invitasjonen?"
 } 

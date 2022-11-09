@@ -29,11 +29,15 @@ searchController.search = async function (req, res, next) {
 		'search:tags': privileges.global.can('search:tags', req.uid),
 	});
 	req.query.in = req.query.in || meta.config.searchDefaultIn || 'titlesposts';
-	const allowed = (req.query.in === 'users' && userPrivileges['search:users']) ||
+	let allowed = (req.query.in === 'users' && userPrivileges['search:users']) ||
 					(req.query.in === 'tags' && userPrivileges['search:tags']) ||
 					(req.query.in === 'categories') ||
 					(['titles', 'titlesposts', 'posts'].includes(req.query.in) && userPrivileges['search:content']);
-
+	({ allowed } = await plugins.hooks.fire('filter:search.isAllowed', {
+		uid: req.uid,
+		query: req.query,
+		allowed,
+	}));
 	if (!allowed) {
 		return helpers.notAllowed(req, res);
 	}
