@@ -479,7 +479,7 @@ describe('API', async () => {
 					const affectedPaths = ['GET /api/user/{userslug}/edit/email'];
 					if (affectedPaths.includes(`${method.toUpperCase()} ${path}`)) {
 						await request({
-							uri: `${nconf.get('url')}/register/abort`,
+							uri: `${nconf.get('url')}/register/abort?_csrf=${csrfToken}`,
 							method: 'POST',
 							jar,
 							simple: false,
