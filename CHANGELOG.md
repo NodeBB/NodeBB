@@ -1,3 +1,56 @@
+#### v2.5.8 (2022-11-09)
+
+##### Chores
+
+*  really fix indents this time (c2024f34)
+*  fix indents (d50512e7)
+*  add bootstrap5 to test runner for now (be5d6d29)
+*  incrementing version number - v2.5.7 (5836bf4a)
+*  update changelog for v2.5.7 (17e948ab)
+*  incrementing version number - v2.5.6 (c7bd7dbf)
+*  incrementing version number - v2.5.5 (3509ed94)
+*  incrementing version number - v2.5.4 (e83260ca)
+*  incrementing version number - v2.5.3 (7e922936)
+*  incrementing version number - v2.5.2 (babcd17e)
+*  incrementing version number - v2.5.1 (ce3aa950)
+*  incrementing version number - v2.5.0 (01d276cb)
+*  incrementing version number - v2.4.5 (dd3e1a28)
+*  incrementing version number - v2.4.4 (d5525c87)
+*  incrementing version number - v2.4.3 (9c647c6c)
+*  incrementing version number - v2.4.2 (3aa7b855)
+*  incrementing version number - v2.4.1 (60cbd148)
+*  incrementing version number - v2.4.0 (4834cde3)
+*  incrementing version number - v2.3.1 (d2425942)
+*  incrementing version number - v2.3.0 (046ea120)
+
+##### New Features
+
+*  new search hooks (b5d38bc6)
+*  add search data to filter:search.inContent (e3f21562)
+
+##### Bug Fixes
+
+*  pass csrf_token into calls to /register/abort, #11017 (2f9d8c35)
+*  check for csrf token on /register/abort, + theme changes for v2.x branches of themes (55a197a7)
+*  upgrade script to work from 0.x to 2.x (a31ba824)
+*  #10519, image height in emails (673261ff)
+*  fallback language strings for #10987 (b9c8c02f)
+*  #10993, apply autoLocale middleware to guests only (6f673f80)
+*  check cid as well as template (9227b82e)
+*  revert breaking change, add back SocketUser.emailConfirm (9ee30fe7)
+*  in appropriately named language key `email-confirm-email2` (09f3ac65)
+*  correctly pass dev flag to package installer (7672194c)
+*  use `--omit=dev` flag for npm instead of `--production` (09cfd0bd)
+
+##### Refactors
+
+*  use utils.debounce (d264c6ac)
+
+##### Tests
+
+*  fix tests again (06d15391)
+*  fix test (c833d3cd)
+
 #### v2.5.7 (2022-10-14)
 
 ##### Chores
