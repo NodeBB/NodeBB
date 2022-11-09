@@ -165,7 +165,7 @@ define('forum/groups/details', [
 
 		// If the user title changes, update that too
 		userTitleEl.on('keyup', function () {
-			previewElText.translateText((this.value || settingsFormEl.find('#name').val()));
+			previewElText.translateText((userTitleEl.val()));
 		});
 
 		// Disable user title customisation options if the the user title itself is disabled
