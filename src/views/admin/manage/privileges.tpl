@@ -24,7 +24,7 @@
 </div>
 
 <div class="floating-button">
-	<button id="discard" class="btn btn-primary position-fixed bottom-0 end-0 px-3 py-2 mb-4 me-4 rounded-circle fs-4" type="button" style="width: 64px; height: 64px;">
+	<button id="discard" class="btn btn-primary position-fixed end-0 px-3 py-2 mb-4 me-4 rounded-circle fs-4" type="button" style="width: 64px; height: 64px; bottom: 5rem;">
 		<i class="fa fa-rotate-left"></i>
 	</button>
 
