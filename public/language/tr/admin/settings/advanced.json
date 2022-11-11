@@ -3,6 +3,7 @@
 	"maintenance-mode.help": "Forum bakım modundayken, tüm istekler statik bir bekletme sayfasına yönlendirilir. Yöneticiler bu yönlendirmeden muaftır ve siteye normal olarak erişebilirler.",
 	"maintenance-mode.status": "Bakım Modu Durum Kodu",
 	"maintenance-mode.message": "Bakım Mesajı",
+	"maintenance-mode.groups-exempt-from-maintenance-mode": "Select groups that should be exempt from maintenance mode",
 	"headers": "Başlıklar",
 	"headers.allow-from": "NodeBB'yi bir iFrame'e yerleştirmek için ALLOW-FROM'u ayarla",
 	"headers.csp-frame-ancestors": "NodeBB'yi bir iFrame'e yerleştirmek için Content-Security-Policy frame-ancestors başlığını ayarla",

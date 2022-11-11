@@ -3,6 +3,7 @@
 	"maintenance-mode.help": "Quando il forum è in modalità manutenzione, tutte le richieste saranno reindirizzate ad una pagina di attesa statica. Gli amministratori sono esenti da questo reindirizzamento e sono in grado di accedere al sito normalmente.",
 	"maintenance-mode.status": "Codice stato modalità manutenzione",
 	"maintenance-mode.message": "Messaggio di manutenzione",
+	"maintenance-mode.groups-exempt-from-maintenance-mode": "Select groups that should be exempt from maintenance mode",
 	"headers": "Intestazioni",
 	"headers.allow-from": "Imposta ALLOW-FROM per posizionare NodeBBB in un iFrame",
 	"headers.csp-frame-ancestors": "Imposta l'intestazione Content-Security-Policy frame-ancestors su Place NodeBB in un iFrame",

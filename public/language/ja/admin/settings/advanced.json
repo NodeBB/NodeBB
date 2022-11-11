@@ -3,6 +3,7 @@
 	"maintenance-mode.help": "フォーラムがメンテナンスモードの場合、すべてのリクエストは静的な一時ページにリダイレクトされます。管理者はこのリダイレクトから免除され、通常のサイトにアクセスできます。",
 	"maintenance-mode.status": "Maintenance Mode Status Code",
 	"maintenance-mode.message": "メンテナンスメッセージ",
+	"maintenance-mode.groups-exempt-from-maintenance-mode": "Select groups that should be exempt from maintenance mode",
 	"headers": "ヘッダー",
 	"headers.allow-from": "NodeBBをインラインフレーム内に配置するようALLOW-FROMを設定する",
 	"headers.csp-frame-ancestors": "Set Content-Security-Policy frame-ancestors header to Place NodeBB in an iFrame",

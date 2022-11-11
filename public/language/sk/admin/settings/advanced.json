@@ -3,6 +3,7 @@
 	"maintenance-mode.help": "Ak je fórum v režime údržby, všetky požiadavky budú presmerované na statickú stránku. Administrátori sú vylúčení z tohto presmerovania a majú prístup na stránku normálne.",
 	"maintenance-mode.status": "Maintenance Mode Status Code",
 	"maintenance-mode.message": "Správa údržby",
+	"maintenance-mode.groups-exempt-from-maintenance-mode": "Select groups that should be exempt from maintenance mode",
 	"headers": "Hlavičky",
 	"headers.allow-from": "Nastavte ALLOW-FROM pro umístění NodeBB do iFrame",
 	"headers.csp-frame-ancestors": "Set Content-Security-Policy frame-ancestors header to Place NodeBB in an iFrame",

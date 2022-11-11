@@ -3,6 +3,7 @@
 	"maintenance-mode.help": "כאשר הפורום נמצא במצב תחזוקה, כל הבקשות יופנו לדף אחזקה סטטי. מנהלים לא יגיעו להפניה זו, והם יוכלו לגשת לאתר כרגיל.",
 	"maintenance-mode.status": "קוד מצב תחזוקה",
 	"maintenance-mode.message": "הודעת תחזוקה",
+	"maintenance-mode.groups-exempt-from-maintenance-mode": "Select groups that should be exempt from maintenance mode",
 	"headers": "כותרות",
 	"headers.allow-from": "הגדר ALLOW-FROM למקם NodeBB ב- iFrame",
 	"headers.csp-frame-ancestors": "הגדר את מדיניות האבטחה (Content-Security-Policy) עבור ההטמעה (frame-ancestors) של NodeBB בתוך Iframe",

@@ -96,6 +96,8 @@ paths:
     $ref: 'read/admin/settings/user.yaml'
   /api/admin/settings/post:
     $ref: 'read/admin/settings/post.yaml'
+  /api/admin/settings/advanced:
+    $ref: 'read/admin/settings/advanced.yaml'
   /api/admin/manage/categories:
     $ref: 'read/admin/manage/categories.yaml'
   "/api/admin/manage/categories/{category_id}":
