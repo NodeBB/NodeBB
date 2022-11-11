@@ -274,8 +274,16 @@ module.exports = function (Groups) {
 
 	async function updateConfig(oldName, newName) {
 		if (meta.config.groupsExemptFromPostQueue.includes(oldName)) {
-			meta.config.groupsExemptFromPostQueue.splice(meta.config.groupsExemptFromPostQueue.indexOf(oldName), 1, newName);
+			meta.config.groupsExemptFromPostQueue.splice(
+				meta.config.groupsExemptFromPostQueue.indexOf(oldName), 1, newName
+			);
 			await meta.configs.set('groupsExemptFromPostQueue', meta.config.groupsExemptFromPostQueue);
+		}
+		if (meta.config.groupsExemptFromMaintenanceMode.includes(oldName)) {
+			meta.config.groupsExemptFromMaintenanceMode.splice(
+				meta.config.groupsExemptFromMaintenanceMode.indexOf(oldName), 1, newName
+			);
+			await meta.configs.set('groupsExemptFromMaintenanceMode', meta.config.groupsExemptFromMaintenanceMode);
 		}
 	}
 };
