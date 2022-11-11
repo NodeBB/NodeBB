@@ -3,6 +3,7 @@
 	"maintenance-mode.help": "Amikor a fórum karbantartási módban van, minden kérés átirányításra kerül egy statikus feltartóztató oldalra. Az adminisztrátorok kivételnek számítanak ez alól, és szokásos módon hozzáférhetnek az oldalhoz.",
 	"maintenance-mode.status": "Karbantartási mód HTTP státuszkódja",
 	"maintenance-mode.message": "A karbantartás üzenete",
+	"maintenance-mode.groups-exempt-from-maintenance-mode": "Select groups that should be exempt from maintenance mode",
 	"headers": "Fejlécek",
 	"headers.allow-from": "ALLOW-FROM beállítása, hogy a NodeBB egy iFrame-be kerüljön",
 	"headers.csp-frame-ancestors": "Content-Security-Policy frame-ancestors header to Place NodeBB in an iFrame",

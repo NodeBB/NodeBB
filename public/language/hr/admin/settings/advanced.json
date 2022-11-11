@@ -3,6 +3,7 @@
 	"maintenance-mode.help": "Kada je forum u stanju održavanja,svi zahtjevi će biti preusmjereni statičnoj stranici.Administratori su izuzeti od ovog preusmjerenja i mogu normalno koristiti stranicu.",
 	"maintenance-mode.status": "Maintenance Mode Status Code",
 	"maintenance-mode.message": "Poruka održavanja",
+	"maintenance-mode.groups-exempt-from-maintenance-mode": "Select groups that should be exempt from maintenance mode",
 	"headers": "Zaglavlje",
 	"headers.allow-from": "Izaberi ALLOW-FROM da bi ste postavili NodeBB u iFrame.",
 	"headers.csp-frame-ancestors": "Set Content-Security-Policy frame-ancestors header to Place NodeBB in an iFrame",

@@ -3,6 +3,7 @@
 	"maintenance-mode.help": "當論壇處在維護模式時，所有請求將被重導向到一個靜態頁面。管理員不受重導向限制，並可正常訪問網站。",
 	"maintenance-mode.status": "維護模式狀態碼",
 	"maintenance-mode.message": "維護訊息",
+	"maintenance-mode.groups-exempt-from-maintenance-mode": "Select groups that should be exempt from maintenance mode",
 	"headers": "標題",
 	"headers.allow-from": "設定 ALLOW-FROM 來放置 NodeBB 於 iFrame 中",
 	"headers.csp-frame-ancestors": "Set Content-Security-Policy frame-ancestors header to Place NodeBB in an iFrame",

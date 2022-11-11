@@ -3,6 +3,7 @@
 	"maintenance-mode.help": "Ko je forum v načinu vzdrževanja, bodo vse zahteve preusmerjene na statično stran za shranjevanje. Skrbniki so izvzeti iz te preusmeritve in lahko normalno dostopajo do spletnega mesta.",
 	"maintenance-mode.status": "Koda stanja načina vzdrževanja",
 	"maintenance-mode.message": "Sporočilo o vzdrževanju",
+	"maintenance-mode.groups-exempt-from-maintenance-mode": "Select groups that should be exempt from maintenance mode",
 	"headers": "Glave",
 	"headers.allow-from": "Set ALLOW-FROM to Place NodeBB in an iFrame",
 	"headers.csp-frame-ancestors": "Set Content-Security-Policy frame-ancestors header to Place NodeBB in an iFrame",

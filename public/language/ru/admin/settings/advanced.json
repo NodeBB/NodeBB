@@ -3,6 +3,7 @@
 	"maintenance-mode.help": "Когда включен режим техобслуживания, все запросы перенаправляются на специальную страницу-заглушку. Только администраторы сохраняют обычный доступ к форуму.",
 	"maintenance-mode.status": "Код состояния HTTP для страницы-заглушки",
 	"maintenance-mode.message": "Сообщение для пользователей",
+	"maintenance-mode.groups-exempt-from-maintenance-mode": "Select groups that should be exempt from maintenance mode",
 	"headers": "Заголовки",
 	"headers.allow-from": "Опция ALLOW-FROM для использования NodeBB через iFrame",
 	"headers.csp-frame-ancestors": "Set Content-Security-Policy frame-ancestors header to Place NodeBB in an iFrame",

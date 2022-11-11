@@ -3,6 +3,7 @@
 	"maintenance-mode.help": "Quando o fórum está em modo de manutenção, todas as solicitações serão redirecionadas para uma página estática. Administradores não sofrem este redirecionamento e podem acessar o site normalmente.",
 	"maintenance-mode.status": "Código de Status de Modo de Mautenção",
 	"maintenance-mode.message": "Mensagem de Manutenção",
+	"maintenance-mode.groups-exempt-from-maintenance-mode": "Select groups that should be exempt from maintenance mode",
 	"headers": "Cabeçalhos",
 	"headers.allow-from": "Defina ALLOW-FROM para Colocar o NodeBB em um iFrame",
 	"headers.csp-frame-ancestors": "Define o cabeçalho de Content-Security-Policy frame-ancestors para Colocar o NodeBB em um iFrame",

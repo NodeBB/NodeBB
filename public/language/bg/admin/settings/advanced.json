@@ -3,6 +3,7 @@
 	"maintenance-mode.help": "Когато форумът е в режим на профилактика, всички заявки ще бъдат пренасочвани към статична страница за изчакване, с изключение на администраторите, които ще могат да използват уеб сайта нормално.",
 	"maintenance-mode.status": "Код на състоянието за режима на профилактика",
 	"maintenance-mode.message": "Съобщение за профилактиката",
+	"maintenance-mode.groups-exempt-from-maintenance-mode": "Select groups that should be exempt from maintenance mode",
 	"headers": "Заглавни части",
 	"headers.allow-from": "Задайте „ALLOW-FROM“, за да поставите NodeBB в „iFrame“",
 	"headers.csp-frame-ancestors": "Задайте заглавката „Content-Security-Policy frame-ancestors“ за да поставите NodeBB „iFrame“",
