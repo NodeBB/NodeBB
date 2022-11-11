@@ -4,6 +4,7 @@ const util = require('util');
 const nconf = require('nconf');
 const meta = require('../meta');
 const user = require('../user');
+const groups = require('../groups');
 const helpers = require('./helpers');
 
 module.exports = function (middleware) {
@@ -20,8 +21,12 @@ module.exports = function (middleware) {
 			return next();
 		}
 
-		const isAdmin = await user.isAdministrator(req.uid);
-		if (isAdmin) {
+		const [isAdmin, isMemberOfExempt] = await Promise.all([
+			user.isAdministrator(req.uid),
+			groups.isMemberOfAny(req.uid, meta.config.groupsExemptFromMaintenanceMode),
+		]);
+
+		if (isAdmin || isMemberOfExempt) {
 			return next();
 		}
 

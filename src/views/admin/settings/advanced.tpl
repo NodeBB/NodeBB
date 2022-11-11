@@ -19,6 +19,14 @@
 				<label class="form-label" for="maintenanceModeMessage">[[admin/settings/advanced:maintenance-mode.message]]</label>
 				<textarea id="maintenanceModeMessage" class="form-control" data-field="maintenanceModeMessage"></textarea>
 			</div>
+			<div class="form-group">
+				<label for="groupsExemptFromMaintenanceMode">[[admin/settings/advanced:maintenance-mode.groups-exempt-from-maintenance-mode]]</label>
+				<select id="groupsExemptFromMaintenanceMode" class="form-control" multiple data-field="groupsExemptFromMaintenanceMode">
+					{{{ each groupsExemptFromMaintenanceMode }}}
+					<option value="{groupsExemptFromMaintenanceMode.displayName}">{groupsExemptFromMaintenanceMode.displayName}</option>
+					{{{ end }}}
+				</select>
+			</div>
 		</form>
 	</div>
 </div>
