@@ -26,11 +26,11 @@ rewards.checkConditionAndRewardUser = async function (params) {
 };
 
 async function isConditionActive(condition) {
-	return await db.isSetMember('conditions:active', condition);
+	return db.isSetMember('conditions:active', condition);
 }
 
 async function getIDsByCondition(condition) {
-	return await db.getSetMembers(`condition:${condition}:rewards`);
+	return db.getSetMembers(`condition:${condition}:rewards`);
 }
 
 async function filterCompletedRewards(uid, rewards) {
@@ -52,11 +52,11 @@ async function filterCompletedRewards(uid, rewards) {
 }
 
 async function getRewardDataByIDs(ids) {
-	return await db.getObjects(ids.map(id => `rewards:id:${id}`));
+	return db.getObjects(ids.map(id => `rewards:id:${id}`));
 }
 
 async function getRewardsByRewardData(rewards) {
-	return await db.getObjects(rewards.map(reward => `rewards:id:${reward.id}:rewards`));
+	return db.getObjects(rewards.map(reward => `rewards:id:${reward.id}:rewards`));
 }
 
 async function checkCondition(reward, method) {

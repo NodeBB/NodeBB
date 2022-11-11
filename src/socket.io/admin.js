@@ -97,7 +97,7 @@ SocketAdmin.deleteAllEvents = function (socket, data, callback) {
 SocketAdmin.getSearchDict = async function (socket) {
 	const settings = await user.getSettings(socket.uid);
 	const lang = settings.userLang || meta.config.defaultLang || 'en-GB';
-	return await getAdminSearchDict(lang);
+	return getAdminSearchDict(lang);
 };
 
 SocketAdmin.deleteAllSessions = function (socket, data, callback) {

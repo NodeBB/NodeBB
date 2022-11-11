@@ -22,7 +22,7 @@ module.exports = function (Posts) {
 		const count = parseInt(stop, 10) === -1 ? stop : stop - start + 1;
 		let pids = await db.getSortedSetRevRangeByScore('posts:pid', start, count, '+inf', min);
 		pids = await privileges.posts.filter('topics:read', pids, uid);
-		return await Posts.getPostSummaryByPids(pids, uid, { stripTags: true });
+		return Posts.getPostSummaryByPids(pids, uid, { stripTags: true });
 	};
 
 	Posts.getRecentPosterUids = async function (start, stop) {

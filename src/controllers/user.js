@@ -57,7 +57,7 @@ userController.getUserDataByField = async function (callerUid, field, fieldValue
 	if (!uid) {
 		return null;
 	}
-	return await userController.getUserDataByUID(callerUid, uid);
+	return userController.getUserDataByUID(callerUid, uid);
 };
 
 userController.getUserDataByUID = async function (callerUid, uid) {

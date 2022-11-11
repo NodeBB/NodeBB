@@ -21,7 +21,7 @@ module.exports = function (User) {
 
 	User.delete = async (callerUid, uid) => {
 		await User.deleteContent(callerUid, uid);
-		return await User.deleteAccount(uid);
+		return User.deleteAccount(uid);
 	};
 
 	User.deleteContent = async function (callerUid, uid) {

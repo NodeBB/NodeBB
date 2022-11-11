@@ -61,7 +61,7 @@ Themes.get = async () => {
 async function getThemes(themePath) {
 	let dirs = await fs.promises.readdir(themePath);
 	dirs = dirs.filter(dir => themeNamePattern.test(dir) || dir.startsWith('@'));
-	return await Promise.all(dirs.map(async (dir) => {
+	return Promise.all(dirs.map(async (dir) => {
 		try {
 			const dirpath = path.join(themePath, dir);
 			const stat = await fs.promises.stat(dirpath);

@@ -174,16 +174,16 @@ Plugins.list = async function (matching) {
 		const body = await request(url, {
 			json: true,
 		});
-		return await Plugins.normalise(body);
+		return Plugins.normalise(body);
 	} catch (err) {
 		winston.error(`Error loading ${url}`, err);
-		return await Plugins.normalise([]);
+		return Plugins.normalise([]);
 	}
 };
 
 Plugins.listTrending = async () => {
 	const url = `${nconf.get('registry') || 'https://packages.nodebb.org'}/api/v1/analytics/top/week`;
-	return await request(url, {
+	return request(url, {
 		json: true,
 	});
 };

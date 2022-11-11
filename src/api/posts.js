@@ -254,23 +254,23 @@ postsAPI.move = async function (caller, data) {
 };
 
 postsAPI.upvote = async function (caller, data) {
-	return await apiHelpers.postCommand(caller, 'upvote', 'voted', 'notifications:upvoted_your_post_in', data);
+	return apiHelpers.postCommand(caller, 'upvote', 'voted', 'notifications:upvoted_your_post_in', data);
 };
 
 postsAPI.downvote = async function (caller, data) {
-	return await apiHelpers.postCommand(caller, 'downvote', 'voted', '', data);
+	return apiHelpers.postCommand(caller, 'downvote', 'voted', '', data);
 };
 
 postsAPI.unvote = async function (caller, data) {
-	return await apiHelpers.postCommand(caller, 'unvote', 'voted', '', data);
+	return apiHelpers.postCommand(caller, 'unvote', 'voted', '', data);
 };
 
 postsAPI.bookmark = async function (caller, data) {
-	return await apiHelpers.postCommand(caller, 'bookmark', 'bookmarked', '', data);
+	return apiHelpers.postCommand(caller, 'bookmark', 'bookmarked', '', data);
 };
 
 postsAPI.unbookmark = async function (caller, data) {
-	return await apiHelpers.postCommand(caller, 'unbookmark', 'bookmarked', '', data);
+	return apiHelpers.postCommand(caller, 'unbookmark', 'bookmarked', '', data);
 };
 
 async function diffsPrivilegeCheck(pid, uid) {
@@ -320,7 +320,7 @@ postsAPI.getDiffs = async (caller, data) => {
 
 postsAPI.loadDiff = async (caller, data) => {
 	await diffsPrivilegeCheck(data.pid, caller.uid);
-	return await posts.diffs.load(data.pid, data.since, caller.uid);
+	return posts.diffs.load(data.pid, data.since, caller.uid);
 };
 
 postsAPI.restoreDiff = async (caller, data) => {

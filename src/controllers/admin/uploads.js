@@ -83,7 +83,7 @@ function buildBreadcrumbs(currentFolder) {
 }
 
 async function filesToData(currentDir, files) {
-	return await Promise.all(files.map(file => getFileData(currentDir, file)));
+	return Promise.all(files.map(file => getFileData(currentDir, file)));
 }
 
 async function getFileData(currentDir, file) {

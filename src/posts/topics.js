@@ -9,7 +9,7 @@ module.exports = function (Posts) {
 	Posts.getPostsFromSet = async function (set, start, stop, uid, reverse) {
 		const pids = await Posts.getPidsFromSet(set, start, stop, reverse);
 		const posts = await Posts.getPostsByPids(pids, uid);
-		return await user.blocks.filter(uid, posts);
+		return user.blocks.filter(uid, posts);
 	};
 
 	Posts.isMain = async function (pids) {
@@ -23,7 +23,7 @@ module.exports = function (Posts) {
 
 	Posts.getTopicFields = async function (pid, fields) {
 		const tid = await Posts.getPostField(pid, 'tid');
-		return await topics.getTopicFields(tid, fields);
+		return topics.getTopicFields(tid, fields);
 	};
 
 	Posts.generatePostPath = async function (pid, uid) {

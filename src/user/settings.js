@@ -12,12 +12,12 @@ const languages = require('../languages');
 module.exports = function (User) {
 	User.getSettings = async function (uid) {
 		if (parseInt(uid, 10) <= 0) {
-			return await onSettingsLoaded(0, {});
+			return onSettingsLoaded(0, {});
 		}
 		let settings = await db.getObject(`user:${uid}:settings`);
 		settings = settings || {};
 		settings.uid = uid;
-		return await onSettingsLoaded(uid, settings);
+		return onSettingsLoaded(uid, settings);
 	};
 
 	User.getMultipleUserSettings = async function (uids) {
@@ -32,7 +32,7 @@ module.exports = function (User) {
 			userSettings.uid = uids[index];
 			return userSettings;
 		});
-		return await Promise.all(settings.map(s => onSettingsLoaded(s.uid, s)));
+		return Promise.all(settings.map(s => onSettingsLoaded(s.uid, s)));
 	};
 
 	async function onSettingsLoaded(uid, settings) {
@@ -151,7 +151,7 @@ module.exports = function (User) {
 		const result = await plugins.hooks.fire('filter:user.saveSettings', { uid: uid, settings: settings, data: data });
 		await db.setObject(`user:${uid}:settings`, result.settings);
 		await User.updateDigestSetting(uid, data.dailyDigestFreq);
-		return await User.getSettings(uid);
+		return User.getSettings(uid);
 	};
 
 	User.updateDigestSetting = async function (uid, dailyDigestFreq) {

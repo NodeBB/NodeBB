@@ -12,11 +12,11 @@ const flags = require('../flags');
 
 module.exports = function (Posts) {
 	Posts.delete = async function (pid, uid) {
-		return await deleteOrRestore('delete', pid, uid);
+		return deleteOrRestore('delete', pid, uid);
 	};
 
 	Posts.restore = async function (pid, uid) {
-		return await deleteOrRestore('restore', pid, uid);
+		return deleteOrRestore('restore', pid, uid);
 	};
 
 	async function deleteOrRestore(type, pid, uid) {

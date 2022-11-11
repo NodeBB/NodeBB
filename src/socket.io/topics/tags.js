@@ -53,7 +53,7 @@ module.exports = function (SocketTopics) {
 	};
 
 	SocketTopics.searchAndLoadTags = async function (socket, data) {
-		return await searchTags(socket.uid, topics.searchAndLoadTags, data);
+		return searchTags(socket.uid, topics.searchAndLoadTags, data);
 	};
 
 	async function searchTags(uid, method, data) {
@@ -68,7 +68,7 @@ module.exports = function (SocketTopics) {
 			}
 		}
 		data.cids = await categories.getCidsByPrivilege('categories:cid', uid, 'topics:read');
-		return await method(data);
+		return method(data);
 	}
 
 	SocketTopics.loadMoreTags = async function (socket, data) {

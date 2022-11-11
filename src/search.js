@@ -201,7 +201,7 @@ async function getCategories(cids, data) {
 		return null;
 	}
 
-	return await db.getObjectsFields(cids.map(cid => `category:${cid}`), categoryFields);
+	return db.getObjectsFields(cids.map(cid => `category:${cid}`), categoryFields);
 }
 
 function filterByPostcount(posts, postCount, repliesFilter) {
@@ -281,7 +281,7 @@ async function getSearchCids(data) {
 	}
 
 	if (data.categories.includes('all')) {
-		return await categories.getCidsByPrivilege('categories:cid', data.uid, 'read');
+		return categories.getCidsByPrivilege('categories:cid', data.uid, 'read');
 	}
 
 	const [watchedCids, childrenCids] = await Promise.all([
@@ -295,7 +295,7 @@ async function getWatchedCids(data) {
 	if (!data.categories.includes('watched')) {
 		return [];
 	}
-	return await user.getWatchedCategories(data.uid);
+	return user.getWatchedCategories(data.uid);
 }
 
 async function getChildrenCids(data) {
@@ -303,14 +303,14 @@ async function getChildrenCids(data) {
 		return [];
 	}
 	const childrenCids = await Promise.all(data.categories.map(cid => categories.getChildrenCids(cid)));
-	return await privileges.categories.filterCids('find', _.uniq(_.flatten(childrenCids)), data.uid);
+	return privileges.categories.filterCids('find', _.uniq(_.flatten(childrenCids)), data.uid);
 }
 
 async function getSearchUids(data) {
 	if (!data.postedBy) {
 		return [];
 	}
-	return await user.getUidsByUsernames(Array.isArray(data.postedBy) ? data.postedBy : [data.postedBy]);
+	return user.getUidsByUsernames(Array.isArray(data.postedBy) ? data.postedBy : [data.postedBy]);
 }
 
 require('./promisify')(search);

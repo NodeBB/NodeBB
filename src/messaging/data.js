@@ -20,7 +20,7 @@ module.exports = function (Messaging) {
 		const keys = mids.map(mid => `message:${mid}`);
 		const messages = await db.getObjects(keys, fields);
 
-		return await Promise.all(messages.map(
+		return Promise.all(messages.map(
 			async (message, idx) => modifyMessage(message, fields, parseInt(mids[idx], 10))
 		));
 	};

@@ -63,7 +63,7 @@ privsPosts.get = async function (pids, uid) {
 
 privsPosts.can = async function (privilege, pid, uid) {
 	const cid = await posts.getCidByPid(pid);
-	return await privsCategories.can(privilege, cid, uid);
+	return privsCategories.can(privilege, cid, uid);
 };
 
 privsPosts.filter = async function (privilege, pids, uid) {
@@ -211,7 +211,7 @@ privsPosts.canMove = async function (pid, uid) {
 	if (isMain) {
 		throw new Error('[[error:cant-move-mainpost]]');
 	}
-	return await isAdminOrMod(pid, uid);
+	return isAdminOrMod(pid, uid);
 };
 
 privsPosts.canPurge = async function (pid, uid) {
@@ -230,5 +230,5 @@ async function isAdminOrMod(pid, uid) {
 		return false;
 	}
 	const cid = await posts.getCidByPid(pid);
-	return await privsCategories.isAdminOrMod(cid, uid);
+	return privsCategories.isAdminOrMod(cid, uid);
 }

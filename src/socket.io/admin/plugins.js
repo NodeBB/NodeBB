@@ -33,7 +33,7 @@ Plugins.toggleInstall = async function (socket, data) {
 };
 
 Plugins.getActive = async function () {
-	return await plugins.getActive();
+	return plugins.getActive();
 };
 
 Plugins.orderActivePlugins = async function (socket, data) {
@@ -45,5 +45,5 @@ Plugins.orderActivePlugins = async function (socket, data) {
 };
 
 Plugins.upgrade = async function (socket, data) {
-	return await plugins.upgrade(data.id, data.version);
+	return plugins.upgrade(data.id, data.version);
 };

@@ -276,7 +276,7 @@ Analytics.getSummary = async function () {
 };
 
 Analytics.getCategoryAnalytics = async function (cid) {
-	return await utils.promiseParallel({
+	return utils.promiseParallel({
 		'pageviews:hourly': Analytics.getHourlyStatsForSet(`analytics:pageviews:byCid:${cid}`, Date.now(), 24),
 		'pageviews:daily': Analytics.getDailyStatsForSet(`analytics:pageviews:byCid:${cid}`, Date.now(), 30),
 		'topics:daily': Analytics.getDailyStatsForSet(`analytics:topics:byCid:${cid}`, Date.now(), 7),
@@ -285,14 +285,14 @@ Analytics.getCategoryAnalytics = async function (cid) {
 };
 
 Analytics.getErrorAnalytics = async function () {
-	return await utils.promiseParallel({
+	return utils.promiseParallel({
 		'not-found': Analytics.getDailyStatsForSet('analytics:errors:404', Date.now(), 7),
 		toobusy: Analytics.getDailyStatsForSet('analytics:errors:503', Date.now(), 7),
 	});
 };
 
 Analytics.getBlacklistAnalytics = async function () {
-	return await utils.promiseParallel({
+	return utils.promiseParallel({
 		daily: Analytics.getDailyStatsForSet('analytics:blacklist', Date.now(), 7),
 		hourly: Analytics.getHourlyStatsForSet('analytics:blacklist', Date.now(), 24),
 	});

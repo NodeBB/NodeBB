@@ -32,7 +32,7 @@ module.exports = function (Posts) {
 	};
 
 	Posts.getPostsData = async function (pids) {
-		return await Posts.getPostsFields(pids, []);
+		return Posts.getPostsFields(pids, []);
 	};
 
 	Posts.getPostField = async function (pid, field) {

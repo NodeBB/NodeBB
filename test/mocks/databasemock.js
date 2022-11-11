@@ -70,6 +70,8 @@ if (nconf.get('isCluster') === undefined) {
 
 const dbType = nconf.get('database');
 const testDbConfig = nconf.get('test_database');
+console.log('DATABASE', dbType);
+('TEST DB CONFIG', testDbConfig);
 const productionDbConfig = nconf.get(dbType);
 
 if (!testDbConfig) {

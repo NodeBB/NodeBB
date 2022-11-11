@@ -32,7 +32,7 @@ SocketUser.emailConfirm = async function (socket) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
-	return await user.email.sendValidationEmail(socket.uid);
+	return user.email.sendValidationEmail(socket.uid);
 };
 
 // Password Reset
@@ -100,21 +100,21 @@ SocketUser.isFollowing = async function (socket, data) {
 		return false;
 	}
 
-	return await user.isFollowing(socket.uid, data.uid);
+	return user.isFollowing(socket.uid, data.uid);
 };
 
 SocketUser.getUnreadCount = async function (socket) {
 	if (!socket.uid) {
 		return 0;
 	}
-	return await topics.getTotalUnread(socket.uid, '');
+	return topics.getTotalUnread(socket.uid, '');
 };
 
 SocketUser.getUnreadChatCount = async function (socket) {
 	if (!socket.uid) {
 		return 0;
 	}
-	return await messaging.getUnreadCount(socket.uid);
+	return messaging.getUnreadCount(socket.uid);
 };
 
 SocketUser.getUnreadCounts = async function (socket) {
@@ -134,15 +134,15 @@ SocketUser.getUnreadCounts = async function (socket) {
 };
 
 SocketUser.getUserByUID = async function (socket, uid) {
-	return await userController.getUserDataByField(socket.uid, 'uid', uid);
+	return userController.getUserDataByField(socket.uid, 'uid', uid);
 };
 
 SocketUser.getUserByUsername = async function (socket, username) {
-	return await userController.getUserDataByField(socket.uid, 'username', username);
+	return userController.getUserDataByField(socket.uid, 'username', username);
 };
 
 SocketUser.getUserByEmail = async function (socket, email) {
-	return await userController.getUserDataByField(socket.uid, 'email', email);
+	return userController.getUserDataByField(socket.uid, 'email', email);
 };
 
 SocketUser.setModerationNote = async function (socket, data) {
@@ -183,7 +183,7 @@ SocketUser.gdpr.check = async function (socket, data) {
 	if (!isAdmin) {
 		data.uid = socket.uid;
 	}
-	return await db.getObjectField(`user:${data.uid}`, 'gdpr_consent');
+	return db.getObjectField(`user:${data.uid}`, 'gdpr_consent');
 };
 
 require('../promisify')(SocketUser);

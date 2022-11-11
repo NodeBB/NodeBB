@@ -48,7 +48,7 @@ async function registerAndLoginUser(req, res, userData) {
 	const queue = await user.shouldQueueUser(req.ip);
 	const result = await plugins.hooks.fire('filter:register.shouldQueue', { req: req, res: res, userData: userData, queue: queue });
 	if (result.queue) {
-		return await addToApprovalQueue(req, userData);
+		return addToApprovalQueue(req, userData);
 	}
 
 	const uid = await user.create(userData);

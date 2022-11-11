@@ -21,7 +21,7 @@ module.exports = function (module) {
 		if (!key) {
 			return;
 		}
-		return await module.client.rpop(key);
+		return module.client.rpop(key);
 	};
 
 	module.listRemoveAll = async function (key, value) {
@@ -48,10 +48,10 @@ module.exports = function (module) {
 		if (!key) {
 			return;
 		}
-		return await module.client.lrange(key, start, stop);
+		return module.client.lrange(key, start, stop);
 	};
 
 	module.listLength = async function (key) {
-		return await module.client.llen(key);
+		return module.client.llen(key);
 	};
 };

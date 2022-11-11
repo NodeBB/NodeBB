@@ -75,7 +75,7 @@ module.exports = function (Topics) {
 
 		plugins.hooks.fire('action:topic.fork', { tid: tid, fromTid: fromTid, uid: uid });
 
-		return await Topics.getTopicData(tid);
+		return Topics.getTopicData(tid);
 	};
 
 	Topics.movePostToTopic = async function (callerUid, pid, tid, forceScheduled = false) {

@@ -94,7 +94,7 @@ privsCategories.get = async function (cid, uid) {
 	const privData = _.zipObject(privs, combined);
 	const isAdminOrMod = isAdministrator || isModerator;
 
-	return await plugins.hooks.fire('filter:privileges.categories.get', {
+	return plugins.hooks.fire('filter:privileges.categories.get', {
 		...privData,
 		cid: cid,
 		uid: uid,
@@ -159,7 +159,7 @@ privsCategories.filterCids = async function (privilege, cids, uid) {
 };
 
 privsCategories.getBase = async function (privilege, cids, uid) {
-	return await utils.promiseParallel({
+	return utils.promiseParallel({
 		categories: categories.getCategoriesFields(cids, ['disabled']),
 		allowedTo: helpers.isAllowedTo(privilege, uid, cids),
 		view_deleted: helpers.isAllowedTo('posts:view_deleted', uid, cids),
@@ -210,10 +210,10 @@ privsCategories.canMoveAllTopics = async function (currentCid, targetCid, uid) {
 
 privsCategories.userPrivileges = async function (cid, uid) {
 	const userPrivilegeList = await privsCategories.getUserPrivilegeList();
-	return await helpers.userOrGroupPrivileges(cid, uid, userPrivilegeList);
+	return helpers.userOrGroupPrivileges(cid, uid, userPrivilegeList);
 };
 
 privsCategories.groupPrivileges = async function (cid, groupName) {
 	const groupPrivilegeList = await privsCategories.getGroupPrivilegeList();
-	return await helpers.userOrGroupPrivileges(cid, groupName, groupPrivilegeList);
+	return helpers.userOrGroupPrivileges(cid, groupName, groupPrivilegeList);
 };

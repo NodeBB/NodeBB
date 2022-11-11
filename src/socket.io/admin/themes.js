@@ -6,7 +6,7 @@ const widgets = require('../../widgets');
 const Themes = module.exports;
 
 Themes.getInstalled = async function () {
-	return await meta.themes.get();
+	return meta.themes.get();
 };
 
 Themes.set = async function (socket, data) {

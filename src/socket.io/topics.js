@@ -25,7 +25,7 @@ SocketTopics.postcount = async function (socket, tid) {
 	if (!canRead) {
 		throw new Error('[[no-privileges]]');
 	}
-	return await topics.getTopicField(tid, 'postcount');
+	return topics.getTopicField(tid, 'postcount');
 };
 
 SocketTopics.bookmark = async function (socket, data) {
@@ -66,7 +66,7 @@ SocketTopics.isFollowed = async function (socket, tid) {
 
 SocketTopics.isModerator = async function (socket, tid) {
 	const cid = await topics.getTopicField(tid, 'cid');
-	return await user.isModerator(socket.uid, cid);
+	return user.isModerator(socket.uid, cid);
 };
 
 SocketTopics.getMyNextPostIndex = async function (socket, data) {
@@ -115,14 +115,14 @@ SocketTopics.getMyNextPostIndex = async function (socket, data) {
 		}
 		return 0;
 	}
-	return await posts.getPidIndex(userPidsInTopic[0], data.tid, data.sort);
+	return posts.getPidIndex(userPidsInTopic[0], data.tid, data.sort);
 };
 
 SocketTopics.getPostCountInTopic = async function (socket, tid) {
 	if (!socket.uid || !tid) {
 		return 0;
 	}
-	return await db.sortedSetScore(`tid:${tid}:posters`, socket.uid);
+	return db.sortedSetScore(`tid:${tid}:posters`, socket.uid);
 };
 
 require('../promisify')(SocketTopics);

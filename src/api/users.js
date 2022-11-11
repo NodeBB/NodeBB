@@ -22,7 +22,7 @@ usersAPI.create = async function (caller, data) {
 		throw new Error('[[error:invalid-data]]');
 	}
 	const uid = await user.create(data);
-	return await user.getUserData(uid);
+	return user.getUserData(uid);
 };
 
 usersAPI.update = async function (caller, data) {
@@ -117,7 +117,7 @@ usersAPI.updateSettings = async function (caller, data) {
 	const payload = { ...defaults, ...current, ...data.settings };
 	delete payload.uid;
 
-	return await user.saveSettings(data.uid, payload);
+	return user.saveSettings(data.uid, payload);
 };
 
 usersAPI.changePassword = async function (caller, data) {
@@ -393,7 +393,7 @@ usersAPI.search = async function (caller, data) {
 	) {
 		throw new Error('[[error:no-privileges]]');
 	}
-	return await user.search({
+	return user.search({
 		query: data.query,
 		searchBy: data.searchBy || 'username',
 		page: data.page || 1,

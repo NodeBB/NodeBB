@@ -21,12 +21,12 @@ module.exports = function (module) {
 
 	module.getSortedSetIntersect = async function (params) {
 		params.method = 'zrange';
-		return await getSortedSetRevIntersect(params);
+		return getSortedSetRevIntersect(params);
 	};
 
 	module.getSortedSetRevIntersect = async function (params) {
 		params.method = 'zrevrange';
-		return await getSortedSetRevIntersect(params);
+		return getSortedSetRevIntersect(params);
 	};
 
 	async function getSortedSetRevIntersect(params) {

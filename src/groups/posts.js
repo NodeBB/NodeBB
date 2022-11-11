@@ -39,6 +39,6 @@ module.exports = function (Groups) {
 	Groups.getLatestMemberPosts = async function (groupName, max, uid) {
 		let pids = await db.getSortedSetRevRange(`group:${groupName}:member:pids`, 0, max - 1);
 		pids = await privileges.posts.filter('topics:read', pids, uid);
-		return await posts.getPostSummaryByPids(pids, uid, { stripTags: false });
+		return posts.getPostSummaryByPids(pids, uid, { stripTags: false });
 	};
 };

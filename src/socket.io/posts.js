@@ -75,14 +75,14 @@ SocketPosts.getPostSummaryByPid = async function (socket, data) {
 };
 
 SocketPosts.getCategory = async function (socket, pid) {
-	return await posts.getCidByPid(pid);
+	return posts.getCidByPid(pid);
 };
 
 SocketPosts.getPidIndex = async function (socket, data) {
 	if (!data) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	return await posts.getPidIndex(data.pid, data.tid, data.topicPostSort);
+	return posts.getPidIndex(data.pid, data.tid, data.topicPostSort);
 };
 
 SocketPosts.getReplies = async function (socket, pid) {
@@ -176,7 +176,7 @@ SocketPosts.editQueuedContent = async function (socket, data) {
 	}
 	await posts.editQueuedContent(socket.uid, data);
 	if (data.content) {
-		return await plugins.hooks.fire('filter:parse.post', { postData: data });
+		return plugins.hooks.fire('filter:parse.post', { postData: data });
 	}
 	return { postData: data };
 };

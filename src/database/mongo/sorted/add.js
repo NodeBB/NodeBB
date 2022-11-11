@@ -9,7 +9,7 @@ module.exports = function (module) {
 			return;
 		}
 		if (Array.isArray(score) && Array.isArray(value)) {
-			return await sortedSetAddBulk(key, score, value);
+			return sortedSetAddBulk(key, score, value);
 		}
 		if (!utils.isNumber(score)) {
 			throw new Error(`[[error:invalid-score, ${score}]]`);
@@ -20,7 +20,7 @@ module.exports = function (module) {
 			await module.client.collection('objects').updateOne({ _key: key, value: value }, { $set: { score: parseFloat(score) } }, { upsert: true });
 		} catch (err) {
 			if (err && err.message.startsWith('E11000 duplicate key error')) {
-				return await module.sortedSetAdd(key, score, value);
+				return module.sortedSetAdd(key, score, value);
 			}
 			throw err;
 		}

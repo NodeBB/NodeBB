@@ -102,7 +102,7 @@ module.exports = function (Posts) {
 		if (!cid) {
 			throw new Error('[[error:invalid-cid]]');
 		}
-		return await categories.getCategoryField(cid, 'postQueue');
+		return categories.getCategoryField(cid, 'postQueue');
 	}
 
 	function getType(data) {
@@ -193,7 +193,7 @@ module.exports = function (Posts) {
 			topic.url = `${url}/topic/${data.tid}`;
 		}
 		const { app } = require('../webserver');
-		return await app.renderAsync('emails/partials/post-queue-body', {
+		return app.renderAsync('emails/partials/post-queue-body', {
 			content: content,
 			category: category,
 			user: userData,
@@ -205,7 +205,7 @@ module.exports = function (Posts) {
 		if (type === 'topic') {
 			return data.cid;
 		} else if (type === 'reply') {
-			return await topics.getTopicField(data.tid, 'cid');
+			return topics.getTopicField(data.tid, 'cid');
 		}
 		return null;
 	}
@@ -272,7 +272,7 @@ module.exports = function (Posts) {
 	};
 
 	Posts.getFromQueue = async function (id) {
-		return await getParsedObject(id);
+		return getParsedObject(id);
 	};
 
 	async function getParsedObject(id) {

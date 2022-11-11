@@ -6,7 +6,7 @@ const categories = require('../../categories');
 const Categories = module.exports;
 
 Categories.getNames = async function () {
-	return await categories.getAllCategoryFields(['cid', 'name']);
+	return categories.getAllCategoryFields(['cid', 'name']);
 };
 
 Categories.copyPrivilegesToChildren = async function (socket, data) {
@@ -27,7 +27,7 @@ async function copyPrivilegesToChildrenRecursive(parentCid, category, group, fil
 }
 
 Categories.copySettingsFrom = async function (socket, data) {
-	return await categories.copySettingsFrom(data.fromCid, data.toCid, data.copyParent);
+	return categories.copySettingsFrom(data.fromCid, data.toCid, data.copyParent);
 };
 
 Categories.copyPrivilegesFrom = async function (socket, data) {

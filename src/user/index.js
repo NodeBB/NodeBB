@@ -42,7 +42,7 @@ require('./blocks')(User);
 require('./uploads')(User);
 
 User.exists = async function (uids) {
-	return await (
+	return (
 		Array.isArray(uids) ?
 			db.isSortedSetMembers('users:joindate', uids) :
 			db.isSortedSetMember('users:joindate', uids)
@@ -58,14 +58,14 @@ User.getUidsFromSet = async function (set, start, stop) {
 	if (set === 'users:online') {
 		const count = parseInt(stop, 10) === -1 ? stop : stop - start + 1;
 		const now = Date.now();
-		return await db.getSortedSetRevRangeByScore(set, start, count, '+inf', now - (meta.config.onlineCutoff * 60000));
+		return db.getSortedSetRevRangeByScore(set, start, count, '+inf', now - (meta.config.onlineCutoff * 60000));
 	}
-	return await db.getSortedSetRevRange(set, start, stop);
+	return db.getSortedSetRevRange(set, start, stop);
 };
 
 User.getUsersFromSet = async function (set, uid, start, stop) {
 	const uids = await User.getUidsFromSet(set, start, stop);
-	return await User.getUsers(uids, uid);
+	return User.getUsers(uids, uid);
 };
 
 User.getUsersWithFields = async function (uids, fields, uid) {
@@ -98,18 +98,18 @@ User.getUidByUsername = async function (username) {
 	if (!username) {
 		return 0;
 	}
-	return await db.sortedSetScore('username:uid', username);
+	return db.sortedSetScore('username:uid', username);
 };
 
 User.getUidsByUsernames = async function (usernames) {
-	return await db.sortedSetScores('username:uid', usernames);
+	return db.sortedSetScores('username:uid', usernames);
 };
 
 User.getUidByUserslug = async function (userslug) {
 	if (!userslug) {
 		return 0;
 	}
-	return await db.sortedSetScore('userslug:uid', userslug);
+	return db.sortedSetScore('userslug:uid', userslug);
 };
 
 User.getUsernamesByUids = async function (uids) {
@@ -119,25 +119,25 @@ User.getUsernamesByUids = async function (uids) {
 
 User.getUsernameByUserslug = async function (slug) {
 	const uid = await User.getUidByUserslug(slug);
-	return await User.getUserField(uid, 'username');
+	return User.getUserField(uid, 'username');
 };
 
 User.getUidByEmail = async function (email) {
-	return await db.sortedSetScore('email:uid', email.toLowerCase());
+	return db.sortedSetScore('email:uid', email.toLowerCase());
 };
 
 User.getUidsByEmails = async function (emails) {
 	emails = emails.map(email => email && email.toLowerCase());
-	return await db.sortedSetScores('email:uid', emails);
+	return db.sortedSetScores('email:uid', emails);
 };
 
 User.getUsernameByEmail = async function (email) {
 	const uid = await db.sortedSetScore('email:uid', String(email).toLowerCase());
-	return await User.getUserField(uid, 'username');
+	return User.getUserField(uid, 'username');
 };
 
 User.isModerator = async function (uid, cid) {
-	return await privileges.users.isModerator(uid, cid);
+	return privileges.users.isModerator(uid, cid);
 };
 
 User.isModeratorOfAnyCategory = async function (uid) {
@@ -146,15 +146,15 @@ User.isModeratorOfAnyCategory = async function (uid) {
 };
 
 User.isAdministrator = async function (uid) {
-	return await privileges.users.isAdministrator(uid);
+	return privileges.users.isAdministrator(uid);
 };
 
 User.isGlobalModerator = async function (uid) {
-	return await privileges.users.isGlobalModerator(uid);
+	return privileges.users.isGlobalModerator(uid);
 };
 
 User.getPrivileges = async function (uid) {
-	return await utils.promiseParallel({
+	return utils.promiseParallel({
 		isAdmin: User.isAdministrator(uid),
 		isGlobalModerator: User.isGlobalModerator(uid),
 		isModeratorOfAnyCategory: User.isModeratorOfAnyCategory(uid),
@@ -201,7 +201,7 @@ async function isSelfOrMethod(callerUid, uid, method) {
 
 User.getAdminsandGlobalMods = async function () {
 	const results = await groups.getMembersOfGroups(['administrators', 'Global Moderators']);
-	return await User.getUsersData(_.union(...results));
+	return User.getUsersData(_.union(...results));
 };
 
 User.getAdminsandGlobalModsandModerators = async function () {
@@ -210,7 +210,7 @@ User.getAdminsandGlobalModsandModerators = async function () {
 		groups.getMembers('Global Moderators', 0, -1),
 		User.getModeratorUids(),
 	]);
-	return await User.getUsersData(_.union(...results));
+	return User.getUsersData(_.union(...results));
 };
 
 User.getFirstAdminUid = async function () {

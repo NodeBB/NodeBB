@@ -104,7 +104,7 @@ const templateToData = {
 			};
 
 			if (!sort || !map[sort]) {
-				return await topics.getTopicsFromSet(set, req.uid, start, stop);
+				return topics.getTopicsFromSet(set, req.uid, start, stop);
 			}
 			const sortSet = map[sort];
 			let tids = await db.getSortedSetRevRange(set, 0, -1);
@@ -237,10 +237,10 @@ async function getPostsFromUserSet(template, req, res, next) {
 
 async function getItemData(sets, data, req, start, stop) {
 	if (data.getTopics) {
-		return await data.getTopics(sets, req, start, stop);
+		return data.getTopics(sets, req, start, stop);
 	}
 	const method = data.type === 'topics' ? topics.getTopicsFromSet : posts.getPostSummariesFromSet;
-	return await method(sets, req.uid, start, stop);
+	return method(sets, req.uid, start, stop);
 }
 
 async function getItemCount(sets, data, settings) {
@@ -248,7 +248,7 @@ async function getItemCount(sets, data, settings) {
 		return 0;
 	}
 	if (data.getItemCount) {
-		return await data.getItemCount(sets);
+		return data.getItemCount(sets);
 	}
-	return await db.sortedSetsCardSum(sets);
+	return db.sortedSetsCardSum(sets);
 }

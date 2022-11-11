@@ -2439,7 +2439,7 @@ describe('Topic\'s', () => {
 
 		async function getTopic(tid) {
 			const topicData = await topics.getTopicData(tid);
-			return await topics.getTopicWithPosts(topicData, `tid:${topicData.tid}:posts`, adminUid, 0, 19, false);
+			return topics.getTopicWithPosts(topicData, `tid:${topicData.tid}:posts`, adminUid, 0, 19, false);
 		}
 
 		before((done) => {

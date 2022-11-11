@@ -35,7 +35,7 @@ privsTopics.get = async function (tid, uid) {
 	const deletable = (privData['topics:delete'] && (isOwner || isModerator)) || isAdministrator;
 	const mayReply = privsTopics.canViewDeletedScheduled(topicData, {}, false, privData['topics:schedule']);
 
-	return await plugins.hooks.fire('filter:privileges.topics.get', {
+	return plugins.hooks.fire('filter:privileges.topics.get', {
 		'topics:reply': (privData['topics:reply'] && ((!topicData.locked && mayReply) || isModerator)) || isAdministrator,
 		'topics:read': privData['topics:read'] || isAdministrator,
 		'topics:schedule': privData['topics:schedule'] || isAdministrator,
@@ -62,7 +62,7 @@ privsTopics.get = async function (tid, uid) {
 
 privsTopics.can = async function (privilege, tid, uid) {
 	const cid = await topics.getTopicField(tid, 'cid');
-	return await privsCategories.can(privilege, cid, uid);
+	return privsCategories.can(privilege, cid, uid);
 };
 
 privsTopics.filterTids = async function (privilege, tids, uid) {
@@ -155,7 +155,7 @@ privsTopics.canDelete = async function (tid, uid) {
 };
 
 privsTopics.canEdit = async function (tid, uid) {
-	return await privsTopics.isOwnerOrAdminOrMod(tid, uid);
+	return privsTopics.isOwnerOrAdminOrMod(tid, uid);
 };
 
 privsTopics.isOwnerOrAdminOrMod = async function (tid, uid) {
@@ -171,7 +171,7 @@ privsTopics.isAdminOrMod = async function (tid, uid) {
 		return false;
 	}
 	const cid = await topics.getTopicField(tid, 'cid');
-	return await privsCategories.isAdminOrMod(cid, uid);
+	return privsCategories.isAdminOrMod(cid, uid);
 };
 
 privsTopics.canViewDeletedScheduled = function (topic, privileges = {}, viewDeleted = false, viewScheduled = false) {

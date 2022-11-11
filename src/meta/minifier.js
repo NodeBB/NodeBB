@@ -131,12 +131,12 @@ if (process.env.minifier_child) {
 
 async function executeAction(action, fork) {
 	if (fork && (pool.length - free.length) < Minifier.maxThreads) {
-		return await forkAction(action);
+		return forkAction(action);
 	}
 	if (typeof actions[action.act] !== 'function') {
 		throw new Error('Unknown action');
 	}
-	return await actions[action.act](action);
+	return actions[action.act](action);
 }
 
 actions.concat = async function concat(data) {
@@ -210,7 +210,7 @@ async function minifyAndSave(data) {
 
 Minifier.js = {};
 Minifier.js.bundle = async function (data, minify, fork) {
-	return await executeAction({
+	return executeAction({
 		act: minify ? 'minifyJS' : 'concat',
 		files: data.files,
 		filename: data.filename,
@@ -219,7 +219,7 @@ Minifier.js.bundle = async function (data, minify, fork) {
 };
 
 Minifier.js.minifyBatch = async function (scripts, fork) {
-	return await executeAction({
+	return executeAction({
 		act: 'minifyJS_batch',
 		files: scripts,
 	}, fork);
@@ -245,7 +245,7 @@ actions.buildCSS = async function buildCSS(data) {
 
 Minifier.css = {};
 Minifier.css.bundle = async function (source, paths, minify, fork) {
-	return await executeAction({
+	return executeAction({
 		act: 'buildCSS',
 		source: source,
 		paths: paths,

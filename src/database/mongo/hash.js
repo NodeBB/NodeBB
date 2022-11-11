@@ -27,7 +27,7 @@ module.exports = function (module) {
 			}
 		} catch (err) {
 			if (err && err.message.startsWith('E11000 duplicate key error')) {
-				return await module.setObject(key, data);
+				return module.setObject(key, data);
 			}
 			throw err;
 		}
@@ -62,7 +62,7 @@ module.exports = function (module) {
 			}
 		} catch (err) {
 			if (err && err.message.startsWith('E11000 duplicate key error')) {
-				return await module.setObjectBulk(data);
+				return module.setObjectBulk(data);
 			}
 			throw err;
 		}
@@ -89,7 +89,7 @@ module.exports = function (module) {
 	};
 
 	module.getObjects = async function (keys, fields = []) {
-		return await module.getObjectsFields(keys, fields);
+		return module.getObjectsFields(keys, fields);
 	};
 
 	module.getObjectField = async function (key, field) {
@@ -212,11 +212,11 @@ module.exports = function (module) {
 	};
 
 	module.incrObjectField = async function (key, field) {
-		return await module.incrObjectFieldBy(key, field, 1);
+		return module.incrObjectFieldBy(key, field, 1);
 	};
 
 	module.decrObjectField = async function (key, field) {
-		return await module.incrObjectFieldBy(key, field, -1);
+		return module.incrObjectFieldBy(key, field, -1);
 	};
 
 	module.incrObjectFieldBy = async function (key, field, value) {
@@ -256,7 +256,7 @@ module.exports = function (module) {
 			// https://jira.mongodb.org/browse/SERVER-14322
 			// https://docs.mongodb.org/manual/reference/command/findAndModify/#upsert-and-unique-index
 			if (err && err.message.startsWith('E11000 duplicate key error')) {
-				return await module.incrObjectFieldBy(key, field, value);
+				return module.incrObjectFieldBy(key, field, value);
 			}
 			throw err;
 		}

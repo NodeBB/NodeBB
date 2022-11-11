@@ -92,7 +92,7 @@ middleware.renderHeader = async (req, res, data) => {
 		data,
 	}));
 
-	return await req.app.renderAsync('admin/header', templateValues);
+	return req.app.renderAsync('admin/header', templateValues);
 };
 
 async function getAdminScripts() {
@@ -111,7 +111,7 @@ async function getLatestVersion() {
 }
 
 middleware.renderFooter = async function (req, res, data) {
-	return await req.app.renderAsync('admin/footer', data);
+	return req.app.renderAsync('admin/footer', data);
 };
 
 middleware.checkPrivileges = helpers.try(async (req, res, next) => {

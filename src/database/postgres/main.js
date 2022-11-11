@@ -143,7 +143,7 @@ DO UPDATE SET "data" = $2::TEXT`,
 			return;
 		}
 
-		return await module.transaction(async (client) => {
+		return module.transaction(async (client) => {
 			await helpers.ensureLegacyObjectType(client, key, 'string');
 			const res = await client.query({
 				name: 'increment',
@@ -239,6 +239,6 @@ SELECT "expireAt"::TEXT
 	};
 
 	module.pttl = async function (key) {
-		return await getExpire(key) - Date.now();
+		return getExpire(key) - Date.now();
 	};
 };

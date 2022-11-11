@@ -36,7 +36,7 @@ rewards.delete = async function (data) {
 };
 
 rewards.get = async function () {
-	return await utils.promiseParallel({
+	return utils.promiseParallel({
 		active: getActiveRewards(),
 		conditions: plugins.hooks.fire('filter:rewards.conditions', []),
 		conditionals: plugins.hooks.fire('filter:rewards.conditionals', []),

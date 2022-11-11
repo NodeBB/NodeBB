@@ -26,7 +26,7 @@ exports.processSortedSet = async function (setKey, process, options) {
 
 	// use the fast path if possible
 	if (db.processSortedSet && typeof options.doneIf !== 'function' && !utils.isNumber(options.alwaysStartAt)) {
-		return await db.processSortedSet(setKey, process, options);
+		return db.processSortedSet(setKey, process, options);
 	}
 
 	// custom done condition

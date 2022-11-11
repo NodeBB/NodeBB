@@ -86,7 +86,7 @@ async function fallback(namespace) {
 
 async function initDict(language) {
 	const namespaces = await getAdminNamespaces();
-	return await Promise.all(namespaces.map(ns => buildNamespace(language, ns)));
+	return Promise.all(namespaces.map(ns => buildNamespace(language, ns)));
 }
 
 async function buildNamespace(language, namespace) {
@@ -94,7 +94,7 @@ async function buildNamespace(language, namespace) {
 	try {
 		const translations = await translator.getTranslation(namespace);
 		if (!translations || !Object.keys(translations).length) {
-			return await fallback(namespace);
+			return fallback(namespace);
 		}
 		// join all translations into one string separated by newlines
 		let str = Object.keys(translations).map(key => translations[key]).join('\n');

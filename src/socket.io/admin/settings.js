@@ -6,7 +6,7 @@ const events = require('../../events');
 const Settings = module.exports;
 
 Settings.get = async function (socket, data) {
-	return await meta.settings.get(data.hash);
+	return meta.settings.get(data.hash);
 };
 
 Settings.set = async function (socket, data) {

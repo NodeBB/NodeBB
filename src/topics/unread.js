@@ -186,7 +186,7 @@ module.exports = function (Topics) {
 		}
 		const cids = params.cid || await user.getWatchedCategories(params.uid);
 		const keys = cids.map(cid => `cid:${cid}:tids:lastposttime`);
-		return await db.getSortedSetRevRangeByScoreWithScores(keys, 0, -1, '+inf', params.cutoff);
+		return db.getSortedSetRevRangeByScoreWithScores(keys, 0, -1, '+inf', params.cutoff);
 	}
 
 	async function getFollowedTids(params) {
@@ -211,7 +211,7 @@ module.exports = function (Topics) {
 
 		const userScores = _.zipObject(params.tids, results);
 
-		return await async.filter(params.tids, async tid => await doesTidHaveUnblockedUnreadPosts(tid, {
+		return async.filter(params.tids, async tid => await doesTidHaveUnblockedUnreadPosts(tid, {
 			blockedUids: params.blockedUids,
 			topicTimestamp: topicScores[tid],
 			userLastReadTimestamp: userScores[tid],
@@ -341,7 +341,7 @@ module.exports = function (Topics) {
 			return { tid: tid, read: read, index: index };
 		});
 
-		return await async.map(result, async (data) => {
+		return async.map(result, async (data) => {
 			if (data.read) {
 				return true;
 			}

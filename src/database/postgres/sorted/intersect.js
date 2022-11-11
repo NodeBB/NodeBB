@@ -28,12 +28,12 @@ SELECT COUNT(*) c
 
 	module.getSortedSetIntersect = async function (params) {
 		params.sort = 1;
-		return await getSortedSetIntersect(params);
+		return getSortedSetIntersect(params);
 	};
 
 	module.getSortedSetRevIntersect = async function (params) {
 		params.sort = -1;
-		return await getSortedSetIntersect(params);
+		return getSortedSetIntersect(params);
 	};
 
 	async function getSortedSetIntersect(params) {

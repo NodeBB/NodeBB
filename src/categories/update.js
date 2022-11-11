@@ -44,13 +44,13 @@ module.exports = function (Categories) {
 
 	async function updateCategoryField(cid, key, value) {
 		if (key === 'parentCid') {
-			return await updateParent(cid, value);
+			return updateParent(cid, value);
 		} else if (key === 'tagWhitelist') {
-			return await updateTagWhitelist(cid, value);
+			return updateTagWhitelist(cid, value);
 		} else if (key === 'name') {
-			return await updateName(cid, value);
+			return updateName(cid, value);
 		} else if (key === 'order') {
-			return await updateOrder(cid, value);
+			return updateOrder(cid, value);
 		}
 
 		await db.setObjectField(`category:${cid}`, key, value);

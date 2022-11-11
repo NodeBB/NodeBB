@@ -14,7 +14,7 @@ module.exports = function (SocketUser) {
 		}
 		await user.isAdminOrGlobalModOrSelf(socket.uid, data.uid);
 		await user.checkMinReputation(socket.uid, data.uid, 'min:rep:cover-picture');
-		return await user.updateCoverPicture(data);
+		return user.updateCoverPicture(data);
 	};
 
 	SocketUser.uploadCroppedPicture = async function (socket, data) {
@@ -24,7 +24,7 @@ module.exports = function (SocketUser) {
 
 		await user.checkMinReputation(socket.uid, data.uid, 'min:rep:profile-picture');
 		data.callerUid = socket.uid;
-		return await user.uploadCroppedPicture(data);
+		return user.uploadCroppedPicture(data);
 	};
 
 	SocketUser.removeCover = async function (socket, data) {

@@ -71,7 +71,7 @@ Groups.getGroupsFromSet = async function (set, start, stop) {
 		groupNames = groupNames.map(name => name.split(':')[1]);
 	}
 
-	return await Groups.getGroupsAndMembers(groupNames);
+	return Groups.getGroupsAndMembers(groupNames);
 };
 
 Groups.getGroupsBySort = async function (sort, start, stop) {
@@ -81,7 +81,7 @@ Groups.getGroupsBySort = async function (sort, start, stop) {
 	} else if (sort === 'date') {
 		set = 'groups:visible:createtime';
 	}
-	return await Groups.getGroupsFromSet(set, start, stop);
+	return Groups.getGroupsFromSet(set, start, stop);
 };
 
 Groups.getNonPrivilegeGroups = async function (set, start, stop) {
@@ -92,7 +92,7 @@ Groups.getNonPrivilegeGroups = async function (set, start, stop) {
 };
 
 Groups.getGroups = async function (set, start, stop) {
-	return await db.getSortedSetRevRange(set, start, stop);
+	return db.getSortedSetRevRange(set, start, stop);
 };
 
 Groups.getGroupsAndMembers = async function (groupNames) {
@@ -149,7 +149,7 @@ Groups.get = async function (groupName, options) {
 };
 
 Groups.getOwners = async function (groupName) {
-	return await db.getSetMembers(`group:${groupName}:owners`);
+	return db.getSetMembers(`group:${groupName}:owners`);
 };
 
 Groups.getOwnersAndMembers = async function (groupName, uid, start, stop) {
@@ -204,19 +204,19 @@ Groups.getByGroupslug = async function (slug, options) {
 	if (!groupName) {
 		throw new Error('[[error:no-group]]');
 	}
-	return await Groups.get(groupName, options);
+	return Groups.get(groupName, options);
 };
 
 Groups.getGroupNameByGroupSlug = async function (slug) {
-	return await db.getObjectField('groupslug:groupname', slug);
+	return db.getObjectField('groupslug:groupname', slug);
 };
 
 Groups.isPrivate = async function (groupName) {
-	return await isFieldOn(groupName, 'private');
+	return isFieldOn(groupName, 'private');
 };
 
 Groups.isHidden = async function (groupName) {
-	return await isFieldOn(groupName, 'hidden');
+	return isFieldOn(groupName, 'hidden');
 };
 
 async function isFieldOn(groupName, field) {
@@ -239,9 +239,9 @@ Groups.exists = async function (name) {
 
 Groups.existsBySlug = async function (slug) {
 	if (Array.isArray(slug)) {
-		return await db.isObjectFields('groupslug:groupname', slug);
+		return db.isObjectFields('groupslug:groupname', slug);
 	}
-	return await db.isObjectField('groupslug:groupname', slug);
+	return db.isObjectField('groupslug:groupname', slug);
 };
 
 require('../promisify')(Groups);

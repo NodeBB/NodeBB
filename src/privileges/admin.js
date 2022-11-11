@@ -157,7 +157,7 @@ privsAdmin.get = async function (uid) {
 	const privData = _.zipObject(userPrivilegeList, combined);
 
 	privData.superadmin = isAdministrator;
-	return await plugins.hooks.fire('filter:privileges.admin.get', privData);
+	return plugins.hooks.fire('filter:privileges.admin.get', privData);
 };
 
 privsAdmin.can = async function (privilege, uid) {
@@ -169,7 +169,7 @@ privsAdmin.can = async function (privilege, uid) {
 };
 
 privsAdmin.canGroup = async function (privilege, groupName) {
-	return await groups.isMember(groupName, `cid:0:privileges:groups:${privilege}`);
+	return groups.isMember(groupName, `cid:0:privileges:groups:${privilege}`);
 };
 
 privsAdmin.give = async function (privileges, groupName) {
@@ -190,10 +190,10 @@ privsAdmin.rescind = async function (privileges, groupName) {
 
 privsAdmin.userPrivileges = async function (uid) {
 	const userPrivilegeList = await privsAdmin.getUserPrivilegeList();
-	return await helpers.userOrGroupPrivileges(0, uid, userPrivilegeList);
+	return helpers.userOrGroupPrivileges(0, uid, userPrivilegeList);
 };
 
 privsAdmin.groupPrivileges = async function (groupName) {
 	const groupPrivilegeList = await privsAdmin.getGroupPrivilegeList();
-	return await helpers.userOrGroupPrivileges(0, groupName, groupPrivilegeList);
+	return helpers.userOrGroupPrivileges(0, groupName, groupPrivilegeList);
 };

@@ -19,7 +19,7 @@ module.exports = function (module) {
 			/* eslint-disable no-await-in-loop */
 			const query = { _key: otherSets[i], value: { $in: items.map(i => i.value) } };
 			if (i === otherSets.length - 1) {
-				return await objects.countDocuments(query);
+				return objects.countDocuments(query);
 			}
 			items = await objects.find(query, { projection: { _id: 0, value: 1 } }).batchSize(items.length + 1).toArray();
 		}
@@ -43,12 +43,12 @@ module.exports = function (module) {
 
 	module.getSortedSetIntersect = async function (params) {
 		params.sort = 1;
-		return await getSortedSetRevIntersect(params);
+		return getSortedSetRevIntersect(params);
 	};
 
 	module.getSortedSetRevIntersect = async function (params) {
 		params.sort = -1;
-		return await getSortedSetRevIntersect(params);
+		return getSortedSetRevIntersect(params);
 	};
 
 	async function getSortedSetRevIntersect(params) {
@@ -67,18 +67,18 @@ module.exports = function (module) {
 
 		const simple = params.weights.filter(w => w === 1).length === 1 && params.limit !== 0;
 		if (params.counts.minCount < 25000 && simple) {
-			return await intersectSingle(params);
+			return intersectSingle(params);
 		} else if (simple) {
-			return await intersectBatch(params);
+			return intersectBatch(params);
 		}
-		return await intersectAggregate(params);
+		return intersectAggregate(params);
 	}
 
 	async function intersectSingle(params) {
 		const objects = module.client.collection('objects');
 		const sortSet = params.sets[params.weights.indexOf(1)];
 		if (sortSet === params.counts.smallestSet) {
-			return await intersectBatch(params);
+			return intersectBatch(params);
 		}
 
 		const cursorSmall = objects.find({ _key: params.counts.smallestSet }, {

@@ -58,5 +58,5 @@ connection.connect = async function (options) {
 	const connString = connection.getConnectionString(options);
 	const connOptions = connection.getConnectionOptions(options);
 
-	return await mongoClient.connect(connString, connOptions);
+	return mongoClient.connect(connString, connOptions);
 };

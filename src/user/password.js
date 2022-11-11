@@ -12,7 +12,7 @@ module.exports = function (User) {
 			return password;
 		}
 
-		return await Password.hash(nconf.get('bcrypt_rounds') || 12, password);
+		return Password.hash(nconf.get('bcrypt_rounds') || 12, password);
 	};
 
 	User.isPasswordCorrect = async function (uid, password, ip) {

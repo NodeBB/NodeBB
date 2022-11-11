@@ -36,7 +36,7 @@ require('./merge')(Topics);
 Topics.events = require('./events');
 
 Topics.exists = async function (tids) {
-	return await db.exists(
+	return db.exists(
 		Array.isArray(tids) ? tids.map(tid => `topic:${tid}`) : `topic:${tids}`
 	);
 };
@@ -55,7 +55,7 @@ Topics.getTopics = async function (tids, options) {
 	}
 
 	tids = await privileges.topics.filterTids('topics:read', tids, uid);
-	return await Topics.getTopicsByTids(tids, options);
+	return Topics.getTopicsByTids(tids, options);
 };
 
 Topics.getTopicsByTids = async function (tids, options) {
@@ -215,7 +215,7 @@ async function getDeleter(topicData) {
 	if (!parseInt(topicData.deleterUid, 10)) {
 		return null;
 	}
-	return await user.getUserFields(topicData.deleterUid, ['username', 'userslug', 'picture']);
+	return user.getUserFields(topicData.deleterUid, ['username', 'userslug', 'picture']);
 }
 
 async function getMerger(topicData) {
@@ -248,7 +248,7 @@ Topics.getMainPids = async function (tids) {
 
 Topics.getMainPosts = async function (tids, uid) {
 	const mainPids = await Topics.getMainPids(tids);
-	return await getMainPosts(mainPids, uid);
+	return getMainPosts(mainPids, uid);
 };
 
 async function getMainPosts(mainPids, uid) {
@@ -259,7 +259,7 @@ async function getMainPosts(mainPids, uid) {
 			post.index = 0;
 		}
 	});
-	return await Topics.addPostData(postData, uid);
+	return Topics.addPostData(postData, uid);
 }
 
 Topics.isLocked = async function (tid) {

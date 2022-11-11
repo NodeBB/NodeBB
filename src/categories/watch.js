@@ -35,7 +35,7 @@ module.exports = function (Categories) {
 
 	Categories.getIgnorers = async function (cid, start, stop) {
 		const count = (stop === -1) ? -1 : (stop - start + 1);
-		return await db.getSortedSetRevRangeByScore(`cid:${cid}:uid:watch:state`, start, count, Categories.watchStates.ignoring, Categories.watchStates.ignoring);
+		return db.getSortedSetRevRangeByScore(`cid:${cid}:uid:watch:state`, start, count, Categories.watchStates.ignoring, Categories.watchStates.ignoring);
 	};
 
 	Categories.filterIgnoringUids = async function (cid, uids) {

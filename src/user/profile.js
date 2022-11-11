@@ -46,11 +46,11 @@ module.exports = function (User) {
 			data[field] = data[field].trim();
 
 			if (field === 'email') {
-				return await updateEmail(updateUid, data.email);
+				return updateEmail(updateUid, data.email);
 			} else if (field === 'username') {
-				return await updateUsername(updateUid, data.username);
+				return updateUsername(updateUid, data.username);
 			} else if (field === 'fullname') {
-				return await updateFullname(updateUid, data.fullname);
+				return updateFullname(updateUid, data.fullname);
 			}
 			updateData[field] = data[field];
 		}));
@@ -66,7 +66,7 @@ module.exports = function (User) {
 			oldData: oldData,
 		});
 
-		return await User.getUserFields(updateUid, [
+		return User.getUserFields(updateUid, [
 			'email', 'username', 'userslug',
 			'picture', 'icon:text', 'icon:bgColor',
 		]);

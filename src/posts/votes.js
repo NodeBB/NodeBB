@@ -27,7 +27,7 @@ module.exports = function (Posts) {
 		putVoteInProgress(pid, uid);
 
 		try {
-			return await toggleVote('upvote', pid, uid);
+			return toggleVote('upvote', pid, uid);
 		} finally {
 			clearVoteProgress(pid, uid);
 		}
@@ -52,7 +52,7 @@ module.exports = function (Posts) {
 
 		putVoteInProgress(pid, uid);
 		try {
-			return await toggleVote('downvote', pid, uid);
+			return toggleVote('downvote', pid, uid);
 		} finally {
 			clearVoteProgress(pid, uid);
 		}
@@ -66,7 +66,7 @@ module.exports = function (Posts) {
 		putVoteInProgress(pid, uid);
 		try {
 			const voteStatus = await Posts.hasVoted(pid, uid);
-			return await unvote(pid, uid, 'unvote', voteStatus);
+			return unvote(pid, uid, 'unvote', voteStatus);
 		} finally {
 			clearVoteProgress(pid, uid);
 		}
@@ -95,7 +95,7 @@ module.exports = function (Posts) {
 	};
 
 	Posts.getUpvotedUidsByPids = async function (pids) {
-		return await db.getSetsMembers(pids.map(pid => `pid:${pid}:upvote`));
+		return db.getSetsMembers(pids.map(pid => `pid:${pid}:upvote`));
 	};
 
 	function voteInProgress(pid, uid) {
@@ -119,7 +119,7 @@ module.exports = function (Posts) {
 	async function toggleVote(type, pid, uid) {
 		const voteStatus = await Posts.hasVoted(pid, uid);
 		await unvote(pid, uid, type, voteStatus);
-		return await vote(type, false, pid, uid, voteStatus);
+		return vote(type, false, pid, uid, voteStatus);
 	}
 
 	async function unvote(pid, uid, type, voteStatus) {
@@ -136,7 +136,7 @@ module.exports = function (Posts) {
 			return;
 		}
 
-		return await vote(voteStatus.upvoted ? 'downvote' : 'upvote', true, pid, uid, voteStatus);
+		return vote(voteStatus.upvoted ? 'downvote' : 'upvote', true, pid, uid, voteStatus);
 	}
 
 	async function checkVoteLimitation(pid, uid, type) {
@@ -276,7 +276,7 @@ module.exports = function (Posts) {
 		}
 
 		if (parseInt(topicData.mainPid, 10) !== parseInt(postData.pid, 10)) {
-			return await db.sortedSetAdd(`tid:${postData.tid}:posts:votes`, postData.votes, postData.pid);
+			return db.sortedSetAdd(`tid:${postData.tid}:posts:votes`, postData.votes, postData.pid);
 		}
 		const promises = [
 			topics.setTopicFields(postData.tid, {

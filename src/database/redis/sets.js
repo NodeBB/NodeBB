@@ -64,27 +64,27 @@ module.exports = function (module) {
 	};
 
 	module.getSetMembers = async function (key) {
-		return await module.client.smembers(key);
+		return module.client.smembers(key);
 	};
 
 	module.getSetsMembers = async function (keys) {
 		const batch = module.client.batch();
 		keys.forEach(k => batch.smembers(String(k)));
-		return await helpers.execBatch(batch);
+		return helpers.execBatch(batch);
 	};
 
 	module.setCount = async function (key) {
-		return await module.client.scard(key);
+		return module.client.scard(key);
 	};
 
 	module.setsCount = async function (keys) {
 		const batch = module.client.batch();
 		keys.forEach(k => batch.scard(String(k)));
-		return await helpers.execBatch(batch);
+		return helpers.execBatch(batch);
 	};
 
 	module.setRemoveRandom = async function (key) {
-		return await module.client.spop(key);
+		return module.client.spop(key);
 	};
 
 	return module;

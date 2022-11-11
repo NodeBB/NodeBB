@@ -81,7 +81,7 @@ module.exports = function (Posts) {
 	};
 
 	Posts.uploads.list = async function (pid) {
-		return await db.getSortedSetMembers(`post:${pid}:uploads`);
+		return db.getSortedSetMembers(`post:${pid}:uploads`);
 	};
 
 	Posts.uploads.listWithSizes = async function (pid) {
@@ -144,7 +144,7 @@ module.exports = function (Posts) {
 		}
 
 		const keys = filePaths.map(fileObj => `upload:${md5(fileObj.path.replace('-resized', ''))}:pids`);
-		return await Promise.all(keys.map(k => db.getSortedSetRange(k, 0, -1)));
+		return Promise.all(keys.map(k => db.getSortedSetRange(k, 0, -1)));
 	};
 
 	Posts.uploads.associate = async function (pid, filePaths) {

@@ -340,7 +340,7 @@ Flags.getFlagIdByTarget = async function (type, id) {
 			throw new Error('[[error:invalid-data]]');
 	}
 
-	return await method(id, 'flagId');
+	return method(id, 'flagId');
 };
 
 async function modifyNotes(notes) {
@@ -408,7 +408,7 @@ Flags.create = async function (type, id, uid, reason, timestamp, forceFlag = fal
 			Flags.update(flagId, uid, { state: 'open' }),
 		]);
 
-		return await Flags.get(flagId);
+		return Flags.get(flagId);
 	}
 
 	const flagId = await db.incrObjectField('global', 'nextFlagId');
@@ -542,7 +542,7 @@ Flags.addReport = async function (flagId, type, id, uid, reason, timestamp) {
 };
 
 Flags.exists = async function (type, id, uid) {
-	return await db.isSortedSetMember('flags:hash', [type, id, uid].join(':'));
+	return db.isSortedSetMember('flags:hash', [type, id, uid].join(':'));
 };
 
 Flags.canView = async (flagId, uid) => {
@@ -610,27 +610,27 @@ Flags.getTarget = async function (type, id, uid) {
 
 Flags.targetExists = async function (type, id) {
 	if (type === 'post') {
-		return await posts.exists(id);
+		return posts.exists(id);
 	} else if (type === 'user') {
-		return await user.exists(id);
+		return user.exists(id);
 	}
 	throw new Error('[[error:invalid-data]]');
 };
 
 Flags.targetFlagged = async function (type, id) {
-	return await db.sortedSetScore('flags:byTarget', [type, id].join(':')) >= 1;
+	return db.sortedSetScore('flags:byTarget', [type, id].join(':')) >= 1;
 };
 
 Flags.getTargetUid = async function (type, id) {
 	if (type === 'post') {
-		return await posts.getPostField(id, 'uid');
+		return posts.getPostField(id, 'uid');
 	}
 	return id;
 };
 
 Flags.getTargetCid = async function (type, id) {
 	if (type === 'post') {
-		return await posts.getCidByPid(id);
+		return posts.getCidByPid(id);
 	}
 	return null;
 };
@@ -859,7 +859,7 @@ Flags.notify = async function (flagObj, uid, notifySelf = false) {
 };
 
 async function mergeBanHistory(history, targetUid, uids) {
-	return await mergeBanMuteHistory(history, uids, {
+	return mergeBanMuteHistory(history, uids, {
 		set: `uid:${targetUid}:bans:timestamp`,
 		label: '[[user:banned]]',
 		reasonDefault: '[[user:info.banned-no-reason]]',
@@ -868,7 +868,7 @@ async function mergeBanHistory(history, targetUid, uids) {
 }
 
 async function mergeMuteHistory(history, targetUid, uids) {
-	return await mergeBanMuteHistory(history, uids, {
+	return mergeBanMuteHistory(history, uids, {
 		set: `uid:${targetUid}:mutes:timestamp`,
 		label: '[[user:muted]]',
 		reasonDefault: '[[user:info.muted-no-reason]]',

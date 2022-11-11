@@ -26,13 +26,13 @@ module.exports = function (Categories) {
 		}
 
 		const sets = cids.map(cid => `cid:${cid}:read_by_uid`);
-		return await db.isMemberOfSets(sets, uid);
+		return db.isMemberOfSets(sets, uid);
 	};
 
 	Categories.hasReadCategory = async function (cid, uid) {
 		if (parseInt(uid, 10) <= 0) {
 			return false;
 		}
-		return await db.isSetMember(`cid:${cid}:read_by_uid`, uid);
+		return db.isSetMember(`cid:${cid}:read_by_uid`, uid);
 	};
 };

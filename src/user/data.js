@@ -142,7 +142,7 @@ module.exports = function (User) {
 	};
 
 	User.getUsersData = async function (uids) {
-		return await User.getUsersFields(uids, []);
+		return User.getUsersFields(uids, []);
 	};
 
 	User.hidePrivateData = async function (users, callerUID) {
@@ -268,7 +268,7 @@ module.exports = function (User) {
 			}
 		}));
 
-		return await plugins.hooks.fire('filter:users.get', users);
+		return plugins.hooks.fire('filter:users.get', users);
 	}
 
 	function parseDisplayName(user, uidToSettings) {
@@ -341,11 +341,11 @@ module.exports = function (User) {
 	};
 
 	User.incrementUserFieldBy = async function (uid, field, value) {
-		return await incrDecrUserFieldBy(uid, field, value, 'increment');
+		return incrDecrUserFieldBy(uid, field, value, 'increment');
 	};
 
 	User.decrementUserFieldBy = async function (uid, field, value) {
-		return await incrDecrUserFieldBy(uid, field, -value, 'decrement');
+		return incrDecrUserFieldBy(uid, field, -value, 'decrement');
 	};
 
 	async function incrDecrUserFieldBy(uid, field, value, type) {

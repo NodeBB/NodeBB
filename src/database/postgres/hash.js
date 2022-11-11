@@ -110,7 +110,7 @@ module.exports = function (module) {
 			return null;
 		}
 		if (fields.length) {
-			return await module.getObjectFields(key, fields);
+			return module.getObjectFields(key, fields);
 		}
 		const res = await module.pool.query({
 			name: 'getObject',
@@ -133,7 +133,7 @@ SELECT h."data"
 			return [];
 		}
 		if (fields.length) {
-			return await module.getObjectsFields(keys, fields);
+			return module.getObjectsFields(keys, fields);
 		}
 		const res = await module.pool.query({
 			name: 'getObjects',
@@ -178,7 +178,7 @@ SELECT h."data"->>$2::TEXT f
 			return null;
 		}
 		if (!Array.isArray(fields) || !fields.length) {
-			return await module.getObject(key);
+			return module.getObject(key);
 		}
 		const res = await module.pool.query({
 			name: 'getObjectFields',
@@ -213,7 +213,7 @@ SELECT (SELECT jsonb_object_agg(f, d."value")
 		}
 
 		if (!Array.isArray(fields) || !fields.length) {
-			return await module.getObjects(keys);
+			return module.getObjects(keys);
 		}
 		const res = await module.pool.query({
 			name: 'getObjectsFields',
@@ -329,11 +329,11 @@ SELECT (h."data" ? $2::TEXT AND h."data"->>$2::TEXT IS NOT NULL) b
 	};
 
 	module.incrObjectField = async function (key, field) {
-		return await module.incrObjectFieldBy(key, field, 1);
+		return module.incrObjectFieldBy(key, field, 1);
 	};
 
 	module.decrObjectField = async function (key, field) {
-		return await module.incrObjectFieldBy(key, field, -1);
+		return module.incrObjectFieldBy(key, field, -1);
 	};
 
 	module.incrObjectFieldBy = async function (key, field, value) {
@@ -343,7 +343,7 @@ SELECT (h."data" ? $2::TEXT AND h."data"->>$2::TEXT IS NOT NULL) b
 			return null;
 		}
 
-		return await module.transaction(async (client) => {
+		return module.transaction(async (client) => {
 			if (Array.isArray(key)) {
 				await helpers.ensureLegacyObjectsType(client, key, 'hash');
 			} else {

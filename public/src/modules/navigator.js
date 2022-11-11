@@ -100,7 +100,7 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 	let lastNextIndex = 0;
 	async function gotoMyNextPost() {
 		async function getNext(startIndex) {
-			return await socket.emit('topics.getMyNextPostIndex', {
+			return socket.emit('topics.getMyNextPostIndex', {
 				tid: ajaxify.data.tid,
 				index: Math.max(1, startIndex),
 				sort: config.topicPostSort,

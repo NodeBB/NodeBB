@@ -57,9 +57,9 @@ exports.post = async function (req, res) {
 		const shouldQueue = await posts.shouldQueue(req.uid, data);
 		if (shouldQueue) {
 			delete data.req;
-			return await posts.addToQueue(data);
+			return posts.addToQueue(data);
 		}
-		return await postFn(data);
+		return postFn(data);
 	}
 
 	try {

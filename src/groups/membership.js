@@ -8,19 +8,19 @@ const cache = require('../cache');
 
 module.exports = function (Groups) {
 	Groups.getMembers = async function (groupName, start, stop) {
-		return await db.getSortedSetRevRange(`group:${groupName}:members`, start, stop);
+		return db.getSortedSetRevRange(`group:${groupName}:members`, start, stop);
 	};
 
 	Groups.getMemberUsers = async function (groupNames, start, stop) {
 		async function get(groupName) {
 			const uids = await Groups.getMembers(groupName, start, stop);
-			return await user.getUsersFields(uids, ['uid', 'username', 'picture', 'userslug']);
+			return user.getUsersFields(uids, ['uid', 'username', 'picture', 'userslug']);
 		}
-		return await Promise.all(groupNames.map(name => get(name)));
+		return Promise.all(groupNames.map(name => get(name)));
 	};
 
 	Groups.getMembersOfGroups = async function (groupNames) {
-		return await db.getSortedSetsMembers(groupNames.map(name => `group:${name}:members`));
+		return db.getSortedSetsMembers(groupNames.map(name => `group:${name}:members`));
 	};
 
 	Groups.isMember = async function (uid, groupName) {

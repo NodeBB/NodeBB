@@ -35,7 +35,7 @@ module.exports = function (Topics) {
 			.map(tag => utils.cleanUpTag(tag, meta.config.maximumTagLength))
 			.filter(tag => tag && tag.length >= (meta.config.minimumTagLength || 3));
 
-		return await filterCategoryTags(tags, cid);
+		return filterCategoryTags(tags, cid);
 	};
 
 	Topics.updateCategoryTagsCount = async function (cids, tags) {
@@ -245,22 +245,22 @@ module.exports = function (Topics) {
 	};
 
 	Topics.getTags = async function (start, stop) {
-		return await getFromSet('tags:topic:count', start, stop);
+		return getFromSet('tags:topic:count', start, stop);
 	};
 
 	Topics.getCategoryTags = async function (cids, start, stop) {
 		if (Array.isArray(cids)) {
-			return await db.getSortedSetRevUnion({
+			return db.getSortedSetRevUnion({
 				sets: cids.map(cid => `cid:${cid}:tags`),
 				start,
 				stop,
 			});
 		}
-		return await db.getSortedSetRevRange(`cid:${cids}:tags`, start, stop);
+		return db.getSortedSetRevRange(`cid:${cids}:tags`, start, stop);
 	};
 
 	Topics.getCategoryTagsData = async function (cids, start, stop) {
-		return await getFromSet(
+		return getFromSet(
 			Array.isArray(cids) ? cids.map(cid => `cid:${cid}:tags`) : `cid:${cids}:tags`,
 			start,
 			stop
@@ -283,7 +283,7 @@ module.exports = function (Topics) {
 		const payload = await plugins.hooks.fire('filter:tags.getAll', {
 			tags: tags,
 		});
-		return await Topics.getTagData(payload.tags);
+		return Topics.getTagData(payload.tags);
 	}
 
 	Topics.getTagData = async function (tags) {

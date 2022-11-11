@@ -27,7 +27,7 @@ module.exports = function (User) {
 		}
 
 		try {
-			return await create(data);
+			return create(data);
 		} finally {
 			await db.deleteObjectFields('locks', [data.username, data.email]);
 		}

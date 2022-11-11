@@ -82,11 +82,11 @@ async function incrementProfileViews(req, userData) {
 }
 
 async function getLatestPosts(callerUid, userData) {
-	return await getPosts(callerUid, userData, 'pids');
+	return getPosts(callerUid, userData, 'pids');
 }
 
 async function getBestPosts(callerUid, userData) {
-	return await getPosts(callerUid, userData, 'pids:votes');
+	return getPosts(callerUid, userData, 'pids:votes');
 }
 
 async function getPosts(callerUid, userData, setSuffix) {

@@ -12,41 +12,41 @@ const helpers = require('./helpers');
 const privsUsers = module.exports;
 
 privsUsers.isAdministrator = async function (uid) {
-	return await isGroupMember(uid, 'administrators');
+	return isGroupMember(uid, 'administrators');
 };
 
 privsUsers.isGlobalModerator = async function (uid) {
-	return await isGroupMember(uid, 'Global Moderators');
+	return isGroupMember(uid, 'Global Moderators');
 };
 
 async function isGroupMember(uid, groupName) {
-	return await groups[Array.isArray(uid) ? 'isMembers' : 'isMember'](uid, groupName);
+	return groups[Array.isArray(uid) ? 'isMembers' : 'isMember'](uid, groupName);
 }
 
 privsUsers.isModerator = async function (uid, cid) {
 	if (Array.isArray(cid)) {
-		return await isModeratorOfCategories(cid, uid);
+		return isModeratorOfCategories(cid, uid);
 	} else if (Array.isArray(uid)) {
-		return await isModeratorsOfCategory(cid, uid);
+		return isModeratorsOfCategory(cid, uid);
 	}
-	return await isModeratorOfCategory(cid, uid);
+	return isModeratorOfCategory(cid, uid);
 };
 
 async function isModeratorOfCategories(cids, uid) {
 	if (parseInt(uid, 10) <= 0) {
-		return await filterIsModerator(cids, uid, cids.map(() => false));
+		return filterIsModerator(cids, uid, cids.map(() => false));
 	}
 
 	const isGlobalModerator = await privsUsers.isGlobalModerator(uid);
 	if (isGlobalModerator) {
-		return await filterIsModerator(cids, uid, cids.map(() => true));
+		return filterIsModerator(cids, uid, cids.map(() => true));
 	}
 	const uniqueCids = _.uniq(cids);
 	const isAllowed = await helpers.isAllowedTo('moderate', uid, uniqueCids);
 
 	const cidToIsAllowed = _.zipObject(uniqueCids, isAllowed);
 	const isModerator = cids.map(cid => cidToIsAllowed[cid]);
-	return await filterIsModerator(cids, uid, isModerator);
+	return filterIsModerator(cids, uid, isModerator);
 }
 
 async function isModeratorsOfCategory(cid, uids) {
@@ -56,7 +56,7 @@ async function isModeratorsOfCategory(cid, uids) {
 		groups.isMembersOfGroupList(uids, `cid:${cid}:privileges:groups:moderate`),
 	]);
 	const isModerator = uids.map((uid, idx) => check1[idx] || check2[idx] || check3[idx]);
-	return await filterIsModerator(cid, uids, isModerator);
+	return filterIsModerator(cid, uids, isModerator);
 }
 
 async function isModeratorOfCategory(cid, uid) {

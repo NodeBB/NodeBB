@@ -74,11 +74,11 @@ module.exports = function (Topics) {
 	}
 
 	Topics.isFollowing = async function (tids, uid) {
-		return await isIgnoringOrFollowing('followers', tids, uid);
+		return isIgnoringOrFollowing('followers', tids, uid);
 	};
 
 	Topics.isIgnoring = async function (tids, uid) {
-		return await isIgnoringOrFollowing('ignorers', tids, uid);
+		return isIgnoringOrFollowing('ignorers', tids, uid);
 	};
 
 	Topics.getFollowData = async function (tids, uid) {
@@ -111,15 +111,15 @@ module.exports = function (Topics) {
 			return tids.map(() => false);
 		}
 		const keys = tids.map(tid => `tid:${tid}:${set}`);
-		return await db.isMemberOfSets(keys, uid);
+		return db.isMemberOfSets(keys, uid);
 	}
 
 	Topics.getFollowers = async function (tid) {
-		return await db.getSetMembers(`tid:${tid}:followers`);
+		return db.getSetMembers(`tid:${tid}:followers`);
 	};
 
 	Topics.getIgnorers = async function (tid) {
-		return await db.getSetMembers(`tid:${tid}:ignorers`);
+		return db.getSetMembers(`tid:${tid}:ignorers`);
 	};
 
 	Topics.filterIgnoringUids = async function (tid, uids) {

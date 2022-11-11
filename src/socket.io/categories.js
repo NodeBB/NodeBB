@@ -10,13 +10,13 @@ const SocketCategories = module.exports;
 require('./categories/search')(SocketCategories);
 
 SocketCategories.getRecentReplies = async function (socket, cid) {
-	return await categories.getRecentReplies(cid, socket.uid, 4);
+	return categories.getRecentReplies(cid, socket.uid, 4);
 };
 
 SocketCategories.get = async function (socket) {
 	async function getCategories() {
 		const cids = await categories.getCidsByPrivilege('categories:cid', socket.uid, 'find');
-		return await categories.getCategoriesData(cids);
+		return categories.getCategoriesData(cids);
 	}
 	const [isAdmin, categoriesData] = await Promise.all([
 		user.isAdministrator(socket.uid),
@@ -83,15 +83,15 @@ SocketCategories.loadMore = async function (socket, data) {
 };
 
 SocketCategories.getTopicCount = async function (socket, cid) {
-	return await categories.getCategoryField(cid, 'topic_count');
+	return categories.getCategoryField(cid, 'topic_count');
 };
 
 SocketCategories.getCategoriesByPrivilege = async function (socket, privilege) {
-	return await categories.getCategoriesByPrivilege('categories:cid', socket.uid, privilege);
+	return categories.getCategoriesByPrivilege('categories:cid', socket.uid, privilege);
 };
 
 SocketCategories.getMoveCategories = async function (socket, data) {
-	return await SocketCategories.getSelectCategories(socket, data);
+	return SocketCategories.getSelectCategories(socket, data);
 };
 
 SocketCategories.getSelectCategories = async function (socket) {
@@ -106,17 +106,17 @@ SocketCategories.setWatchState = async function (socket, data) {
 	if (!data || !data.cid || !data.state) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	return await ignoreOrWatch(async (uid, cids) => {
+	return ignoreOrWatch(async (uid, cids) => {
 		await user.setCategoryWatchState(uid, cids, categories.watchStates[data.state]);
 	}, socket, data);
 };
 
 SocketCategories.watch = async function (socket, data) {
-	return await ignoreOrWatch(user.watchCategory, socket, data);
+	return ignoreOrWatch(user.watchCategory, socket, data);
 };
 
 SocketCategories.ignore = async function (socket, data) {
-	return await ignoreOrWatch(user.ignoreCategory, socket, data);
+	return ignoreOrWatch(user.ignoreCategory, socket, data);
 };
 
 async function ignoreOrWatch(fn, socket, data) {
@@ -144,7 +144,7 @@ async function ignoreOrWatch(fn, socket, data) {
 }
 
 SocketCategories.isModerator = async function (socket, cid) {
-	return await user.isModerator(socket.uid, cid);
+	return user.isModerator(socket.uid, cid);
 };
 
 SocketCategories.loadMoreSubCategories = async function (socket, data) {

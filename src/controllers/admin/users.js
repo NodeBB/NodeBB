@@ -71,9 +71,9 @@ async function getUsers(req, res) {
 
 	async function getCount(set) {
 		if (Array.isArray(set)) {
-			return await db.sortedSetIntersectCard(set);
+			return db.sortedSetIntersectCard(set);
 		}
-		return await db.sortedSetCard(set);
+		return db.sortedSetCard(set);
 	}
 
 	async function getUids(set) {
@@ -162,7 +162,7 @@ usersController.search = async function (req, res) {
 
 async function loadUserInfo(callerUid, uids) {
 	async function getIPs() {
-		return await Promise.all(uids.map(uid => db.getSortedSetRevRange(`uid:${uid}:ip`, 0, -1)));
+		return Promise.all(uids.map(uid => db.getSortedSetRevRange(`uid:${uid}:ip`, 0, -1)));
 	}
 	const [isAdmin, userData, lastonline, ips] = await Promise.all([
 		user.isAdministrator(uids),

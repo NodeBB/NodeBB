@@ -178,7 +178,7 @@ SocketGroups.search = async (socket, data) => {
 		return groupData;
 	}
 	data.options.filterHidden = data.options.filterHidden || !await user.isAdministrator(socket.uid);
-	return await groups.search(data.query, data.options);
+	return groups.search(data.query, data.options);
 };
 
 SocketGroups.loadMore = async (socket, data) => {
@@ -201,7 +201,7 @@ SocketGroups.searchMembers = async (socket, data) => {
 	if (!await privileges.global.can('search:users', socket.uid)) {
 		throw new Error('[[error:no-privileges]]');
 	}
-	return await groups.searchMembers({
+	return groups.searchMembers({
 		uid: socket.uid,
 		query: data.query,
 		groupName: data.groupName,
@@ -245,7 +245,7 @@ SocketGroups.cover.update = async (socket, data) => {
 		throw new Error('[[error:invalid-data]]');
 	}
 	await canModifyGroup(socket.uid, data.groupName);
-	return await groups.updateCover(socket.uid, {
+	return groups.updateCover(socket.uid, {
 		groupName: data.groupName,
 		imageData: data.imageData,
 		position: data.position,

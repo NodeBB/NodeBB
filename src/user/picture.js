@@ -41,7 +41,7 @@ module.exports = function (User) {
 
 		try {
 			if (!data.imageData && data.position) {
-				return await User.updateCoverPosition(data.uid, data.position);
+				return User.updateCoverPosition(data.uid, data.position);
 			}
 
 			validateUpload(data, meta.config.maximumCoverImageSize, ['image/png', 'image/jpeg', 'image/bmp']);

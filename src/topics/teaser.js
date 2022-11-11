@@ -110,9 +110,9 @@ module.exports = function (Topics) {
 			return teasers;
 		}
 
-		return await Promise.all(teasers.map(async (postData) => {
+		return Promise.all(teasers.map(async (postData) => {
 			if (blockedUids.includes(parseInt(postData.uid, 10))) {
-				return await getPreviousNonBlockedPost(postData, blockedUids);
+				return getPreviousNonBlockedPost(postData, blockedUids);
 			}
 			return postData;
 		}));
@@ -154,7 +154,7 @@ module.exports = function (Topics) {
 			return [];
 		}
 		const topics = await Topics.getTopicsFields(tids, ['tid', 'postcount', 'teaserPid', 'mainPid']);
-		return await Topics.getTeasers(topics, uid);
+		return Topics.getTeasers(topics, uid);
 	};
 
 	Topics.getTeaser = async function (tid, uid) {

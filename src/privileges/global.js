@@ -55,7 +55,7 @@ privsGlobal.init = async () => {
 privsGlobal.list = async function () {
 	async function getLabels() {
 		const labels = Array.from(_privilegeMap.values()).map(data => data.label);
-		return await utils.promiseParallel({
+		return utils.promiseParallel({
 			users: plugins.hooks.fire('filter:privileges.global.list_human', labels.slice()),
 			groups: plugins.hooks.fire('filter:privileges.global.groups.list_human', labels.slice()),
 		});
@@ -89,7 +89,7 @@ privsGlobal.get = async function (uid) {
 	const combined = userPrivileges.map(allowed => allowed || isAdministrator);
 	const privData = _.zipObject(userPrivilegeList, combined);
 
-	return await plugins.hooks.fire('filter:privileges.global.get', privData);
+	return plugins.hooks.fire('filter:privileges.global.get', privData);
 };
 
 privsGlobal.can = async function (privilege, uid) {
@@ -101,12 +101,12 @@ privsGlobal.can = async function (privilege, uid) {
 };
 
 privsGlobal.canGroup = async function (privilege, groupName) {
-	return await groups.isMember(groupName, `cid:0:privileges:groups:${privilege}`);
+	return groups.isMember(groupName, `cid:0:privileges:groups:${privilege}`);
 };
 
 privsGlobal.filterUids = async function (privilege, uids) {
 	const privCategories = require('./categories');
-	return await privCategories.filterUids(privilege, 0, uids);
+	return privCategories.filterUids(privilege, 0, uids);
 };
 
 privsGlobal.give = async function (privileges, groupName) {
@@ -127,10 +127,10 @@ privsGlobal.rescind = async function (privileges, groupName) {
 
 privsGlobal.userPrivileges = async function (uid) {
 	const userPrivilegeList = await privsGlobal.getUserPrivilegeList();
-	return await helpers.userOrGroupPrivileges(0, uid, userPrivilegeList);
+	return helpers.userOrGroupPrivileges(0, uid, userPrivilegeList);
 };
 
 privsGlobal.groupPrivileges = async function (groupName) {
 	const groupPrivilegeList = await privsGlobal.getGroupPrivilegeList();
-	return await helpers.userOrGroupPrivileges(0, groupName, groupPrivilegeList);
+	return helpers.userOrGroupPrivileges(0, groupName, groupPrivilegeList);
 };

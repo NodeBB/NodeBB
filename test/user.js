@@ -134,7 +134,7 @@ describe('User', () => {
 			let err;
 			async function tryCreate(data) {
 				try {
-					return await User.create(data);
+					return User.create(data);
 				} catch (_err) {
 					err = _err;
 				}
@@ -159,7 +159,7 @@ describe('User', () => {
 			let err;
 			async function tryCreate(data) {
 				try {
-					return await User.create(data);
+					return User.create(data);
 				} catch (_err) {
 					err = _err;
 				}

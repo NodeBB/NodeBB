@@ -22,7 +22,7 @@ module.exports = function (Groups) {
 		try {
 			// Position only? That's fine
 			if (!data.imageData && !data.file && data.position) {
-				return await Groups.updateCoverPosition(data.groupName, data.position);
+				return Groups.updateCoverPosition(data.groupName, data.position);
 			}
 			const type = data.file ? data.file.type : image.mimeFromBase64(data.imageData);
 			if (!type || !allowedTypes.includes(type)) {

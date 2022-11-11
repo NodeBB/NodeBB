@@ -79,7 +79,7 @@ sitemap.getPages = async function () {
 
 async function getSitemapCategories() {
 	const cids = await categories.getCidsByPrivilege('categories:cid', 0, 'find');
-	return await categories.getCategoriesFields(cids, ['slug']);
+	return categories.getCategoriesFields(cids, ['slug']);
 }
 
 sitemap.getCategories = async function () {

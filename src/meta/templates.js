@@ -34,13 +34,13 @@ async function processImports(paths, templatePath, source) {
 	if (paths[partial] && templatePath !== partial) {
 		const partialSource = await fs.promises.readFile(paths[partial], 'utf8');
 		source = source.replace(regex, partialSource);
-		return await processImports(paths, templatePath, source);
+		return processImports(paths, templatePath, source);
 	}
 
 	winston.warn(`[meta/templates] Partial not loaded: ${matches[1]}`);
 	source = source.replace(regex, '');
 
-	return await processImports(paths, templatePath, source);
+	return processImports(paths, templatePath, source);
 }
 Templates.processImports = processImports;
 
@@ -108,7 +108,7 @@ async function compileTemplate(filename, source) {
 
 	source = await processImports(paths, filename, source);
 	const compiled = await Benchpress.precompile(source, { filename });
-	return await fs.promises.writeFile(path.join(viewsPath, filename.replace(/\.tpl$/, '.js')), compiled);
+	return fs.promises.writeFile(path.join(viewsPath, filename.replace(/\.tpl$/, '.js')), compiled);
 }
 Templates.compileTemplate = compileTemplate;
 

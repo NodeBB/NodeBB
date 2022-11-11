@@ -9,7 +9,7 @@ module.exports = function (Messaging) {
 			return 0;
 		}
 
-		return await db.sortedSetCard(`uid:${uid}:chat:rooms:unread`);
+		return db.sortedSetCard(`uid:${uid}:chat:rooms:unread`);
 	};
 
 	Messaging.pushUnreadCount = async (uid) => {
@@ -34,6 +34,6 @@ module.exports = function (Messaging) {
 			return;
 		}
 		const keys = uids.map(uid => `uid:${uid}:chat:rooms:unread`);
-		return await db.sortedSetsAdd(keys, Date.now(), roomId);
+		return db.sortedSetsAdd(keys, Date.now(), roomId);
 	};
 };

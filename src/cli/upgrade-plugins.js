@@ -64,7 +64,7 @@ async function getInstalledPlugins() {
 		}
 	});
 
-	return await getModuleVersions(checklist);
+	return getModuleVersions(checklist);
 }
 
 async function getCurrentVersion() {

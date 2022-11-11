@@ -122,7 +122,7 @@ exports.postCommand = async function (caller, command, eventName, notification, 
 		data: data,
 		uid: caller.uid,
 	});
-	return await executeCommand(caller, command, eventName, notification, filteredData.data);
+	return executeCommand(caller, command, eventName, notification, filteredData.data);
 };
 
 async function executeCommand(caller, command, eventName, notification, data) {

@@ -115,7 +115,7 @@ apiController.loadConfig = async function (req) {
 	// Overrides based on privilege
 	config.disableChatMessageEditing = isAdminOrGlobalMod ? false : config.disableChatMessageEditing;
 
-	return await plugins.hooks.fire('filter:config.get', config);
+	return plugins.hooks.fire('filter:config.get', config);
 };
 
 apiController.getConfig = async function (req, res) {

@@ -37,7 +37,7 @@ module.exports = function (module) {
 
 	module.scan = async function (params) {
 		const match = helpers.buildMatchQuery(params.match);
-		return await module.client.collection('objects').distinct(
+		return module.client.collection('objects').distinct(
 			'_key', { _key: { $regex: new RegExp(match) } }
 		);
 	};
@@ -145,6 +145,6 @@ module.exports = function (module) {
 	};
 
 	module.pttl = async function (key) {
-		return await module.getObjectField(key, 'expireAt') - Date.now();
+		return module.getObjectField(key, 'expireAt') - Date.now();
 	};
 };

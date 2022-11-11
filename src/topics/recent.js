@@ -14,7 +14,7 @@ module.exports = function (Topics) {
 	};
 
 	Topics.getRecentTopics = async function (cid, uid, start, stop, filter) {
-		return await Topics.getSortedTopics({
+		return Topics.getSortedTopics({
 			cids: cid,
 			uid: uid,
 			start: start,
@@ -39,7 +39,7 @@ module.exports = function (Topics) {
 		}
 
 		const count = parseInt(stop, 10) === -1 ? stop : stop - start + 1;
-		return await db.getSortedSetRevRangeByScore(set, start, count, '+inf', Date.now() - since);
+		return db.getSortedSetRevRangeByScore(set, start, count, '+inf', Date.now() - since);
 	};
 
 	Topics.updateLastPostTimeFromLastPid = async function (tid) {

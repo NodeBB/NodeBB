@@ -128,7 +128,7 @@ function escape(value) {
 }
 
 async function getAllData(uid, callerUID) {
-	return await utils.promiseParallel({
+	return utils.promiseParallel({
 		userData: user.getUserData(uid),
 		isTargetAdmin: user.isAdministrator(uid),
 		userSettings: user.getSettings(uid),
@@ -225,7 +225,7 @@ async function getProfileMenu(uid, callerUID) {
 		});
 	}
 
-	return await plugins.hooks.fire('filter:user.profileMenu', {
+	return plugins.hooks.fire('filter:user.profileMenu', {
 		uid: uid,
 		callerUID: callerUID,
 		links: links,

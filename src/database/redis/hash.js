@@ -82,7 +82,7 @@ module.exports = function (module) {
 	};
 
 	module.getObjects = async function (keys, fields = []) {
-		return await module.getObjectsFields(keys, fields);
+		return module.getObjectsFields(keys, fields);
 	};
 
 	module.getObjectField = async function (key, field) {
@@ -94,7 +94,7 @@ module.exports = function (module) {
 		if (cachedData[key]) {
 			return cachedData[key].hasOwnProperty(field) ? cachedData[key][field] : null;
 		}
-		return await module.client.hget(key, String(field));
+		return module.client.hget(key, String(field));
 	};
 
 	module.getObjectFields = async function (key, fields) {
@@ -149,11 +149,11 @@ module.exports = function (module) {
 	};
 
 	module.getObjectKeys = async function (key) {
-		return await module.client.hkeys(key);
+		return module.client.hkeys(key);
 	};
 
 	module.getObjectValues = async function (key) {
-		return await module.client.hvals(key);
+		return module.client.hvals(key);
 	};
 
 	module.isObjectField = async function (key, field) {
@@ -196,11 +196,11 @@ module.exports = function (module) {
 	};
 
 	module.incrObjectField = async function (key, field) {
-		return await module.incrObjectFieldBy(key, field, 1);
+		return module.incrObjectFieldBy(key, field, 1);
 	};
 
 	module.decrObjectField = async function (key, field) {
-		return await module.incrObjectFieldBy(key, field, -1);
+		return module.incrObjectFieldBy(key, field, -1);
 	};
 
 	module.incrObjectFieldBy = async function (key, field, value) {

@@ -54,12 +54,12 @@ module.exports = function (Topics) {
 	};
 
 	Topics.getTopicsData = async function (tids) {
-		return await Topics.getTopicsFields(tids, []);
+		return Topics.getTopicsFields(tids, []);
 	};
 
 	Topics.getCategoryData = async function (tid) {
 		const cid = await Topics.getTopicField(tid, 'cid');
-		return await categories.getCategoryData(cid);
+		return categories.getCategoryData(cid);
 	};
 
 	Topics.setTopicField = async function (tid, field, value) {

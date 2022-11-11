@@ -130,7 +130,7 @@ async function getBundleMetadata(target) {
 
 	async function filterGetImports(files, prefix, extension) {
 		const filteredFiles = await filterMissingFiles(files);
-		return await getImports(filteredFiles, prefix, extension);
+		return getImports(filteredFiles, prefix, extension);
 	}
 
 	let imports = `${skinImport}\n${cssImports}\n${lessImports}\n${acpLessImports}`;

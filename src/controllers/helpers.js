@@ -248,12 +248,12 @@ helpers.buildTitle = function (pageTitle) {
 
 helpers.getCategories = async function (set, uid, privilege, selectedCid) {
 	const cids = await categories.getCidsByPrivilege(set, uid, privilege);
-	return await getCategoryData(cids, uid, selectedCid, Object.values(categories.watchStates), privilege);
+	return getCategoryData(cids, uid, selectedCid, Object.values(categories.watchStates), privilege);
 };
 
 helpers.getCategoriesByStates = async function (uid, selectedCid, states, privilege = 'topics:read') {
 	const cids = await categories.getAllCidsFromSet('categories:cid');
-	return await getCategoryData(cids, uid, selectedCid, states, privilege);
+	return getCategoryData(cids, uid, selectedCid, states, privilege);
 };
 
 async function getCategoryData(cids, uid, selectedCid, states, privilege) {
@@ -516,7 +516,7 @@ helpers.generateError = async (statusCode, message, res) => {
 		const { req } = res;
 		const settings = req.query.lang ? null : await user.getSettings(req.uid);
 		const language = String(req.query.lang || settings.userLang || meta.config.defaultLang);
-		return await translator.translate(message, language);
+		return translator.translate(message, language);
 	}
 	if (message && message.startsWith('[[')) {
 		message = await translateMessage(message);

@@ -76,6 +76,6 @@ module.exports = function (Categories) {
 
 	async function getChildrenCids(cids, uid) {
 		const childrenCids = await Promise.all(cids.map(cid => Categories.getChildrenCids(cid)));
-		return await privileges.categories.filterCids('find', _.flatten(childrenCids), uid);
+		return privileges.categories.filterCids('find', _.flatten(childrenCids), uid);
 	}
 };

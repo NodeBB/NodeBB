@@ -51,11 +51,11 @@ pluginsController.get = async function (req, res) {
 };
 
 async function getCompatiblePlugins() {
-	return await getPlugins(true);
+	return getPlugins(true);
 }
 
 async function getAllPlugins() {
-	return await getPlugins(false);
+	return getPlugins(false);
 }
 
 async function getPlugins(matching) {

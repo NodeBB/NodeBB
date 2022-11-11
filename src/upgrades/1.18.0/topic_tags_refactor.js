@@ -10,7 +10,7 @@ module.exports = {
 		const { progress } = this;
 
 		async function getTopicsTags(tids) {
-			return await db.getSetsMembers(
+			return db.getSetsMembers(
 				tids.map(tid => `topic:${tid}:tags`),
 			);
 		}

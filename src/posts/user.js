@@ -49,7 +49,7 @@ module.exports = function (Posts) {
 			userData.signature = signature;
 			userData.custom_profile_info = customProfileInfo.profile;
 
-			return await plugins.hooks.fire('filter:posts.modifyUserInfo', userData);
+			return plugins.hooks.fire('filter:posts.modifyUserInfo', userData);
 		}));
 		const hookResult = await plugins.hooks.fire('filter:posts.getUserInfoForPosts', { users: result });
 		return hookResult.users;
@@ -69,7 +69,7 @@ module.exports = function (Posts) {
 		if (!Array.isArray(groupTitleArray) || !groupTitleArray.length) {
 			return null;
 		}
-		return await groups.isMemberOfGroups(uid, groupTitleArray);
+		return groups.isMemberOfGroups(uid, groupTitleArray);
 	}
 
 	async function parseSignature(userData, uid, signatureUids) {
@@ -111,7 +111,7 @@ module.exports = function (Posts) {
 			uid: uid,
 			uids: uids,
 		});
-		return await user.getUsersFields(result.uids, _.uniq(result.fields));
+		return user.getUsersFields(result.uids, _.uniq(result.fields));
 	}
 
 	Posts.isOwner = async function (pids, uid) {
@@ -131,7 +131,7 @@ module.exports = function (Posts) {
 			return pids.map(() => false);
 		}
 		const cids = await Posts.getCidsByPids(pids);
-		return await user.isModerator(uid, cids);
+		return user.isModerator(uid, cids);
 	};
 
 	Posts.changeOwner = async function (pids, toUid) {

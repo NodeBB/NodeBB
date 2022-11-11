@@ -17,7 +17,7 @@ module.exports = function (Categories) {
 		}
 		let pids = await db.getSortedSetRevRange(`cid:${cid}:pids`, 0, count - 1);
 		pids = await privileges.posts.filter('topics:read', pids, uid);
-		return await posts.getPostSummaryByPids(pids, uid, { stripTags: true });
+		return posts.getPostSummaryByPids(pids, uid, { stripTags: true });
 	};
 
 	Categories.updateRecentTid = async function (cid, tid) {

@@ -18,12 +18,12 @@ module.exports = function (module) {
 
 	module.getSortedSetUnion = async function (params) {
 		params.method = 'zrange';
-		return await module.sortedSetUnion(params);
+		return module.sortedSetUnion(params);
 	};
 
 	module.getSortedSetRevUnion = async function (params) {
 		params.method = 'zrevrange';
-		return await module.sortedSetUnion(params);
+		return module.sortedSetUnion(params);
 	};
 
 	module.sortedSetUnion = async function (params) {

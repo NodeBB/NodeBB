@@ -362,7 +362,7 @@ Emailer.sendViaFallback = async (data) => {
 
 Emailer.renderAndTranslate = async (template, params, lang) => {
 	const html = await app.renderAsync(`emails/${template}`, params);
-	return await translator.translate(html, lang);
+	return translator.translate(html, lang);
 };
 
 require('./promisify')(Emailer, ['transports']);

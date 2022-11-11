@@ -113,7 +113,7 @@ mongoModule.info = async function (db) {
 
 	async function getServerStatus() {
 		try {
-			return await db.command({ serverStatus: 1 });
+			return db.command({ serverStatus: 1 });
 		} catch (err) {
 			serverStatusError = err.message;
 			// Override mongo error with more human-readable error
@@ -170,7 +170,7 @@ mongoModule.info = async function (db) {
 
 async function getCollectionStats(db) {
 	const items = await db.listCollections().toArray();
-	return await Promise.all(items.map(collection => db.collection(collection.name).stats()));
+	return Promise.all(items.map(collection => db.collection(collection.name).stats()));
 }
 
 mongoModule.close = function (callback) {

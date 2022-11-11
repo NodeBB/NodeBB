@@ -10,7 +10,7 @@ const topics = require('../topics');
 module.exports = function (Posts) {
 	Posts.getCidByPid = async function (pid) {
 		const tid = await Posts.getPostField(pid, 'tid');
-		return await topics.getTopicField(tid, 'cid');
+		return topics.getTopicField(tid, 'cid');
 	};
 
 	Posts.getCidsByPids = async function (pids) {
@@ -28,7 +28,7 @@ module.exports = function (Posts) {
 		}
 
 		if (!Array.isArray(cid) || cid.length === 1) {
-			return await filterPidsBySingleCid(pids, cid);
+			return filterPidsBySingleCid(pids, cid);
 		}
 		const pidsArr = await Promise.all(cid.map(c => Posts.filterPidsByCid(pids, c)));
 		return _.union(...pidsArr);

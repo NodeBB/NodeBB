@@ -89,7 +89,7 @@ module.exports = function (Plugins) {
 
 	Plugins.toggleInstall = async function (id, version) {
 		pubsub.publish('plugins:toggleInstall', { hostname: os.hostname(), id: id, version: version });
-		return await toggleInstall(id, version);
+		return toggleInstall(id, version);
 	};
 
 	const runPackageManagerCommandAsync = util.promisify(runPackageManagerCommand);
@@ -127,7 +127,7 @@ module.exports = function (Plugins) {
 
 	Plugins.upgrade = async function (id, version) {
 		pubsub.publish('plugins:upgrade', { hostname: os.hostname(), id: id, version: version });
-		return await upgrade(id, version);
+		return upgrade(id, version);
 	};
 
 	async function upgrade(id, version) {
@@ -151,14 +151,14 @@ module.exports = function (Plugins) {
 		if (nconf.get('plugins:active')) {
 			return nconf.get('plugins:active').includes(id);
 		}
-		return await db.isSortedSetMember('plugins:active', id);
+		return db.isSortedSetMember('plugins:active', id);
 	};
 
 	Plugins.getActive = async function () {
 		if (nconf.get('plugins:active')) {
 			return nconf.get('plugins:active');
 		}
-		return await db.getSortedSetRange('plugins:active', 0, -1);
+		return db.getSortedSetRange('plugins:active', 0, -1);
 	};
 
 	Plugins.autocomplete = async (fragment) => {

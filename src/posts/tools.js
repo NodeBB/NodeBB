@@ -6,11 +6,11 @@ module.exports = function (Posts) {
 	Posts.tools = {};
 
 	Posts.tools.delete = async function (uid, pid) {
-		return await togglePostDelete(uid, pid, true);
+		return togglePostDelete(uid, pid, true);
 	};
 
 	Posts.tools.restore = async function (uid, pid) {
-		return await togglePostDelete(uid, pid, false);
+		return togglePostDelete(uid, pid, false);
 	};
 
 	async function togglePostDelete(uid, pid, isDelete) {

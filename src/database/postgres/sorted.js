@@ -13,19 +13,19 @@ module.exports = function (module) {
 	require('./sorted/intersect')(module);
 
 	module.getSortedSetRange = async function (key, start, stop) {
-		return await getSortedSetRange(key, start, stop, 1, false);
+		return getSortedSetRange(key, start, stop, 1, false);
 	};
 
 	module.getSortedSetRevRange = async function (key, start, stop) {
-		return await getSortedSetRange(key, start, stop, -1, false);
+		return getSortedSetRange(key, start, stop, -1, false);
 	};
 
 	module.getSortedSetRangeWithScores = async function (key, start, stop) {
-		return await getSortedSetRange(key, start, stop, 1, true);
+		return getSortedSetRange(key, start, stop, 1, true);
 	};
 
 	module.getSortedSetRevRangeWithScores = async function (key, start, stop) {
-		return await getSortedSetRange(key, start, stop, -1, true);
+		return getSortedSetRange(key, start, stop, -1, true);
 	};
 
 	async function getSortedSetRange(key, start, stop, sort, withScores) {
@@ -88,19 +88,19 @@ OFFSET $2::INTEGER`,
 	}
 
 	module.getSortedSetRangeByScore = async function (key, start, count, min, max) {
-		return await getSortedSetRangeByScore(key, start, count, min, max, 1, false);
+		return getSortedSetRangeByScore(key, start, count, min, max, 1, false);
 	};
 
 	module.getSortedSetRevRangeByScore = async function (key, start, count, max, min) {
-		return await getSortedSetRangeByScore(key, start, count, min, max, -1, false);
+		return getSortedSetRangeByScore(key, start, count, min, max, -1, false);
 	};
 
 	module.getSortedSetRangeByScoreWithScores = async function (key, start, count, min, max) {
-		return await getSortedSetRangeByScore(key, start, count, min, max, 1, true);
+		return getSortedSetRangeByScore(key, start, count, min, max, 1, true);
 	};
 
 	module.getSortedSetRevRangeByScoreWithScores = async function (key, start, count, max, min) {
-		return await getSortedSetRangeByScore(key, start, count, min, max, -1, true);
+		return getSortedSetRangeByScore(key, start, count, min, max, -1, true);
 	};
 
 	async function getSortedSetRangeByScore(key, start, count, min, max, sort, withScores) {
@@ -272,7 +272,7 @@ SELECT (SELECT r
 			return [];
 		}
 
-		return await getSortedSetRank('ASC', keys, values);
+		return getSortedSetRank('ASC', keys, values);
 	};
 
 	module.sortedSetsRevRanks = async function (keys, values) {
@@ -280,7 +280,7 @@ SELECT (SELECT r
 			return [];
 		}
 
-		return await getSortedSetRank('DESC', keys, values);
+		return getSortedSetRank('DESC', keys, values);
 	};
 
 	module.sortedSetRanks = async function (key, values) {
@@ -288,7 +288,7 @@ SELECT (SELECT r
 			return [];
 		}
 
-		return await getSortedSetRank('ASC', new Array(values.length).fill(key), values);
+		return getSortedSetRank('ASC', new Array(values.length).fill(key), values);
 	};
 
 	module.sortedSetRevRanks = async function (key, values) {
@@ -296,7 +296,7 @@ SELECT (SELECT r
 			return [];
 		}
 
-		return await getSortedSetRank('DESC', new Array(values.length).fill(key), values);
+		return getSortedSetRank('DESC', new Array(values.length).fill(key), values);
 	};
 
 	module.sortedSetScore = async function (key, value) {
@@ -482,7 +482,7 @@ SELECT "_key" k,
 		value = helpers.valueToString(value);
 		increment = parseFloat(increment);
 
-		return await module.transaction(async (client) => {
+		return module.transaction(async (client) => {
 			await helpers.ensureLegacyObjectType(client, key, 'zset');
 			const res = await client.query({
 				name: 'sortedSetIncrBy',
@@ -500,15 +500,15 @@ RETURNING "score" s`,
 
 	module.sortedSetIncrByBulk = async function (data) {
 		// TODO: perf single query?
-		return await Promise.all(data.map(item => module.sortedSetIncrBy(item[0], item[1], item[2])));
+		return Promise.all(data.map(item => module.sortedSetIncrBy(item[0], item[1], item[2])));
 	};
 
 	module.getSortedSetRangeByLex = async function (key, min, max, start, count) {
-		return await sortedSetLex(key, min, max, 1, start, count);
+		return sortedSetLex(key, min, max, 1, start, count);
 	};
 
 	module.getSortedSetRevRangeByLex = async function (key, max, min, start, count) {
-		return await sortedSetLex(key, min, max, -1, start, count);
+		return sortedSetLex(key, min, max, -1, start, count);
 	};
 
 	module.sortedSetLexCount = async function (key, min, max) {

@@ -95,7 +95,7 @@ Configs.init = async function () {
 };
 
 Configs.list = async function () {
-	return await Configs.getFields([]);
+	return Configs.getFields([]);
 };
 
 Configs.get = async function (field) {

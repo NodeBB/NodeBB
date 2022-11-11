@@ -37,7 +37,7 @@ module.exports = function (Categories) {
 	};
 
 	Categories.getCategoriesData = async function (cids) {
-		return await Categories.getCategoriesFields(cids, []);
+		return Categories.getCategoriesFields(cids, []);
 	};
 
 	Categories.getCategoryField = async function (cid, field) {
@@ -52,7 +52,7 @@ module.exports = function (Categories) {
 
 	Categories.getAllCategoryFields = async function (fields) {
 		const cids = await Categories.getAllCidsFromSet('categories:cid');
-		return await Categories.getCategoriesFields(cids, fields);
+		return Categories.getCategoriesFields(cids, fields);
 	};
 
 	Categories.setCategoryField = async function (cid, field, value) {

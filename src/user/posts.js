@@ -95,15 +95,15 @@ module.exports = function (User) {
 	};
 
 	User.incrementUserPostCountBy = async function (uid, value) {
-		return await incrementUserFieldAndSetBy(uid, 'postcount', 'users:postcount', value);
+		return incrementUserFieldAndSetBy(uid, 'postcount', 'users:postcount', value);
 	};
 
 	User.incrementUserReputationBy = async function (uid, value) {
-		return await incrementUserFieldAndSetBy(uid, 'reputation', 'users:reputation', value);
+		return incrementUserFieldAndSetBy(uid, 'reputation', 'users:reputation', value);
 	};
 
 	User.incrementUserFlagsBy = async function (uid, value) {
-		return await incrementUserFieldAndSetBy(uid, 'flags', 'users:flags', value);
+		return incrementUserFieldAndSetBy(uid, 'flags', 'users:flags', value);
 	};
 
 	async function incrementUserFieldAndSetBy(uid, field, set, value) {
@@ -121,6 +121,6 @@ module.exports = function (User) {
 	}
 
 	User.getPostIds = async function (uid, start, stop) {
-		return await db.getSortedSetRevRange(`uid:${uid}:posts`, start, stop);
+		return db.getSortedSetRevRange(`uid:${uid}:posts`, start, stop);
 	};
 };

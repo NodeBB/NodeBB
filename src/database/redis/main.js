@@ -57,7 +57,7 @@ module.exports = function (module) {
 	};
 
 	module.get = async function (key) {
-		return await module.client.get(key);
+		return module.client.get(key);
 	};
 
 	module.set = async function (key, value) {
@@ -65,7 +65,7 @@ module.exports = function (module) {
 	};
 
 	module.increment = async function (key) {
-		return await module.client.incr(key);
+		return module.client.incr(key);
 	};
 
 	module.rename = async function (oldKey, newKey) {
@@ -102,10 +102,10 @@ module.exports = function (module) {
 	};
 
 	module.ttl = async function (key) {
-		return await module.client.ttl(key);
+		return module.client.ttl(key);
 	};
 
 	module.pttl = async function (key) {
-		return await module.client.pttl(key);
+		return module.client.pttl(key);
 	};
 };

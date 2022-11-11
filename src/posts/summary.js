@@ -62,7 +62,7 @@ module.exports = function (Posts) {
 	};
 
 	async function parsePosts(posts, options) {
-		return await Promise.all(posts.map(async (post) => {
+		return Promise.all(posts.map(async (post) => {
 			if (!post.content || !options.parse) {
 				post.content = post.content ? validator.escape(String(post.content)) : post.content;
 				return post;

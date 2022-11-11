@@ -49,32 +49,32 @@ async function isAllowedToCids(privilege, uidOrGroupName, cids) {
 
 	// Group handling
 	if (isNaN(parseInt(uidOrGroupName, 10)) && (uidOrGroupName || '').length) {
-		return await checkIfAllowedGroup(uidOrGroupName, groupKeys);
+		return checkIfAllowedGroup(uidOrGroupName, groupKeys);
 	}
 
 	// User handling
 	if (parseInt(uidOrGroupName, 10) <= 0) {
-		return await isSystemGroupAllowedToCids(privilege, uidOrGroupName, cids);
+		return isSystemGroupAllowedToCids(privilege, uidOrGroupName, cids);
 	}
 
 	const userKeys = cids.map(cid => `cid:${cid}:privileges:${privilege}`);
-	return await checkIfAllowedUser(uidOrGroupName, userKeys, groupKeys);
+	return checkIfAllowedUser(uidOrGroupName, userKeys, groupKeys);
 }
 
 async function isAllowedToPrivileges(privileges, uidOrGroupName, cid) {
 	const groupKeys = privileges.map(privilege => `cid:${cid}:privileges:groups:${privilege}`);
 	// Group handling
 	if (isNaN(parseInt(uidOrGroupName, 10)) && (uidOrGroupName || '').length) {
-		return await checkIfAllowedGroup(uidOrGroupName, groupKeys);
+		return checkIfAllowedGroup(uidOrGroupName, groupKeys);
 	}
 
 	// User handling
 	if (parseInt(uidOrGroupName, 10) <= 0) {
-		return await isSystemGroupAllowedToPrivileges(privileges, uidOrGroupName, cid);
+		return isSystemGroupAllowedToPrivileges(privileges, uidOrGroupName, cid);
 	}
 
 	const userKeys = privileges.map(privilege => `cid:${cid}:privileges:${privilege}`);
-	return await checkIfAllowedUser(uidOrGroupName, userKeys, groupKeys);
+	return checkIfAllowedUser(uidOrGroupName, userKeys, groupKeys);
 }
 
 async function checkIfAllowedUser(uid, userKeys, groupKeys) {
@@ -95,12 +95,12 @@ async function checkIfAllowedGroup(groupName, groupKeys) {
 
 async function isSystemGroupAllowedToCids(privilege, uid, cids) {
 	const groupKeys = cids.map(cid => `cid:${cid}:privileges:groups:${privilege}`);
-	return await groups.isMemberOfGroups(uidToSystemGroup[uid], groupKeys);
+	return groups.isMemberOfGroups(uidToSystemGroup[uid], groupKeys);
 }
 
 async function isSystemGroupAllowedToPrivileges(privileges, uid, cid) {
 	const groupKeys = privileges.map(privilege => `cid:${cid}:privileges:groups:${privilege}`);
-	return await groups.isMemberOfGroups(uidToSystemGroup[uid], groupKeys);
+	return groups.isMemberOfGroups(uidToSystemGroup[uid], groupKeys);
 }
 
 helpers.getUserPrivileges = async function (cid, userPrivileges) {

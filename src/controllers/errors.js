@@ -100,7 +100,7 @@ exports.handleErrors = async function handleErrors(err, req, res, next) { // esl
 
 async function getErrorHandlers(cases) {
 	try {
-		return await plugins.hooks.fire('filter:error.handle', {
+		return plugins.hooks.fire('filter:error.handle', {
 			cases: cases,
 		});
 	} catch (err) {

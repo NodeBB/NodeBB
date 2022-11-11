@@ -84,9 +84,9 @@ module.exports = function (Categories) {
 		}
 		const set = await Categories.buildTopicsSortedSet(data);
 		if (Array.isArray(set)) {
-			return await db.sortedSetIntersectCard(set);
+			return db.sortedSetIntersectCard(set);
 		} else if (data.targetUid && set) {
-			return await db.sortedSetCard(set);
+			return db.sortedSetCard(set);
 		}
 		return data.category.topic_count;
 	};
@@ -134,7 +134,7 @@ module.exports = function (Categories) {
 	};
 
 	Categories.getAllTopicIds = async function (cid, start, stop) {
-		return await db.getSortedSetRange([`cid:${cid}:tids:pinned`, `cid:${cid}:tids`], start, stop);
+		return db.getSortedSetRange([`cid:${cid}:tids:pinned`, `cid:${cid}:tids`], start, stop);
 	};
 
 	Categories.getPinnedTids = async function (data) {
@@ -151,7 +151,7 @@ module.exports = function (Categories) {
 		]);
 		const pinnedTids = canSchedule ? allPinnedTids : await filterScheduledTids(allPinnedTids);
 
-		return await topics.tools.checkPinExpiry(pinnedTids);
+		return topics.tools.checkPinExpiry(pinnedTids);
 	};
 
 	Categories.modifyTopicsByPrivilege = function (topics, privileges) {

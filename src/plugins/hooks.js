@@ -156,7 +156,7 @@ async function fireFilterHook(hook, hookList, params) {
 		}
 
 		if (hookObj.method.constructor && hookObj.method.constructor.name === 'AsyncFunction') {
-			return await hookObj.method(params);
+			return hookObj.method(params);
 		}
 		return new Promise((resolve, reject) => {
 			let resolved = false;

@@ -25,7 +25,7 @@ UserNotifications.get = async function (uid) {
 		read = await getNotificationsFromSet(`uid:${uid}:notifications:read`, uid, 0, 49 - unread.length);
 	}
 
-	return await plugins.hooks.fire('filter:user.notifications.get', {
+	return plugins.hooks.fire('filter:user.notifications.get', {
 		uid,
 		read: read.filter(Boolean),
 		unread: unread,
@@ -58,7 +58,7 @@ UserNotifications.getAll = async function (uid, filter) {
 	});
 
 	await deleteUserNids(deleteNids, uid);
-	return await filterNotifications(nids, filter);
+	return filterNotifications(nids, filter);
 };
 
 async function deleteUserNids(nids, uid) {
@@ -70,7 +70,7 @@ async function deleteUserNids(nids, uid) {
 
 async function getNotificationsFromSet(set, uid, start, stop) {
 	const nids = await db.getSortedSetRevRange(set, start, stop);
-	return await UserNotifications.getNotifications(nids, uid);
+	return UserNotifications.getNotifications(nids, uid);
 }
 
 UserNotifications.getNotifications = async function (nids, uid) {
@@ -117,11 +117,11 @@ UserNotifications.getUnreadInterval = async function (uid, interval) {
 	}
 	const min = Date.now() - times[interval];
 	const nids = await db.getSortedSetRevRangeByScore(`uid:${uid}:notifications:unread`, 0, 20, '+inf', min);
-	return await UserNotifications.getNotifications(nids, uid);
+	return UserNotifications.getNotifications(nids, uid);
 };
 
 UserNotifications.getDailyUnread = async function (uid) {
-	return await UserNotifications.getUnreadInterval(uid, 'day');
+	return UserNotifications.getUnreadInterval(uid, 'day');
 };
 
 UserNotifications.getUnreadCount = async function (uid) {

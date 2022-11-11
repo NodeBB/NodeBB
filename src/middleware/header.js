@@ -155,7 +155,7 @@ middleware.renderHeader = async function renderHeader(req, res, data) {
 		data: data,
 	});
 
-	return await req.app.renderAsync('header', hookReturn.templateValues);
+	return req.app.renderAsync('header', hookReturn.templateValues);
 };
 
 async function appendUnreadCounts({ uid, navigation, unreadData, query }) {
@@ -245,7 +245,7 @@ middleware.renderFooter = async function renderFooter(req, res, templateValues) 
 	data.templateValues.customJS = data.templateValues.useCustomJS ? meta.config.customJS : '';
 	data.templateValues.isSpider = req.uid === -1;
 
-	return await req.app.renderAsync('footer', data.templateValues);
+	return req.app.renderAsync('footer', data.templateValues);
 };
 
 function modifyTitle(obj) {

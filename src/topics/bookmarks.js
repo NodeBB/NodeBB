@@ -11,14 +11,14 @@ module.exports = function (Topics) {
 		if (parseInt(uid, 10) <= 0) {
 			return null;
 		}
-		return await db.sortedSetScore(`tid:${tid}:bookmarks`, uid);
+		return db.sortedSetScore(`tid:${tid}:bookmarks`, uid);
 	};
 
 	Topics.getUserBookmarks = async function (tids, uid) {
 		if (parseInt(uid, 10) <= 0) {
 			return tids.map(() => null);
 		}
-		return await db.sortedSetsScore(tids.map(tid => `tid:${tid}:bookmarks`), uid);
+		return db.sortedSetsScore(tids.map(tid => `tid:${tid}:bookmarks`), uid);
 	};
 
 	Topics.setUserBookmark = async function (tid, uid, index) {
@@ -26,7 +26,7 @@ module.exports = function (Topics) {
 	};
 
 	Topics.getTopicBookmarks = async function (tid) {
-		return await db.getSortedSetRangeWithScores(`tid:${tid}:bookmarks`, 0, -1);
+		return db.getSortedSetRangeWithScores(`tid:${tid}:bookmarks`, 0, -1);
 	};
 
 	Topics.updateTopicBookmarks = async function (tid, pids) {

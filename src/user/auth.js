@@ -23,7 +23,7 @@ module.exports = function (User) {
 		}
 		const attempts = await db.increment(`loginAttempts:${uid}`);
 		if (attempts <= meta.config.loginAttempts) {
-			return await db.pexpire(`loginAttempts:${uid}`, 1000 * 60 * 60);
+			return db.pexpire(`loginAttempts:${uid}`, 1000 * 60 * 60);
 		}
 		// Lock out the account
 		await db.set(`lockout:${uid}`, '');

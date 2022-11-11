@@ -52,9 +52,9 @@ uploadsController.uploadPost = async function (req, res) {
 	await uploadsController.upload(req, res, async (uploadedFile) => {
 		const isImage = uploadedFile.type.match(/image./);
 		if (isImage) {
-			return await uploadAsImage(req, uploadedFile);
+			return uploadAsImage(req, uploadedFile);
 		}
-		return await uploadAsFile(req, uploadedFile);
+		return uploadAsFile(req, uploadedFile);
 	});
 };
 
@@ -67,7 +67,7 @@ async function uploadAsImage(req, uploadedFile) {
 	await image.stripEXIF(uploadedFile.path);
 
 	if (plugins.hooks.hasListeners('filter:uploadImage')) {
-		return await plugins.hooks.fire('filter:uploadImage', {
+		return plugins.hooks.fire('filter:uploadImage', {
 			image: uploadedFile,
 			uid: req.uid,
 			folder: 'files',
@@ -126,7 +126,7 @@ uploadsController.uploadThumb = async function (req, res) {
 		return helpers.formatApiResponse(503, res, new Error('[[error:topic-thumbnails-are-disabled]]'));
 	}
 
-	return await uploadsController.upload(req, res, async (uploadedFile) => {
+	return uploadsController.upload(req, res, async (uploadedFile) => {
 		if (!uploadedFile.type.match(/image./)) {
 			throw new Error('[[error:invalid-file]]');
 		}
@@ -140,20 +140,20 @@ uploadsController.uploadThumb = async function (req, res) {
 			});
 		}
 		if (plugins.hooks.hasListeners('filter:uploadImage')) {
-			return await plugins.hooks.fire('filter:uploadImage', {
+			return plugins.hooks.fire('filter:uploadImage', {
 				image: uploadedFile,
 				uid: req.uid,
 				folder: 'files',
 			});
 		}
 
-		return await uploadsController.uploadFile(req.uid, uploadedFile);
+		return uploadsController.uploadFile(req.uid, uploadedFile);
 	});
 };
 
 uploadsController.uploadFile = async function (uid, uploadedFile) {
 	if (plugins.hooks.hasListeners('filter:uploadFile')) {
-		return await plugins.hooks.fire('filter:uploadFile', {
+		return plugins.hooks.fire('filter:uploadFile', {
 			file: uploadedFile,
 			uid: uid,
 			folder: 'files',
@@ -175,7 +175,7 @@ uploadsController.uploadFile = async function (uid, uploadedFile) {
 		throw new Error(`[[error:invalid-file-type, ${allowed.join('&#44; ')}]]`);
 	}
 
-	return await saveFileToLocal(uid, 'files', uploadedFile);
+	return saveFileToLocal(uid, 'files', uploadedFile);
 };
 
 async function saveFileToLocal(uid, folder, uploadedFile) {

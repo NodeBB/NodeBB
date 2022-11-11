@@ -35,7 +35,7 @@ flagsApi.update = async (caller, data) => {
 	delete data.flagId;
 
 	await flags.update(flagId, caller.uid, data);
-	return await flags.getHistory(flagId);
+	return flags.getHistory(flagId);
 };
 
 flagsApi.appendNote = async (caller, data) => {

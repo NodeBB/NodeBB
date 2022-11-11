@@ -16,11 +16,11 @@ module.exports = function (Topics) {
 	Topics.tools = topicTools;
 
 	topicTools.delete = async function (tid, uid) {
-		return await toggleDelete(tid, uid, true);
+		return toggleDelete(tid, uid, true);
 	};
 
 	topicTools.restore = async function (tid, uid) {
-		return await toggleDelete(tid, uid, false);
+		return toggleDelete(tid, uid, false);
 	};
 
 	async function toggleDelete(tid, uid, isDelete) {
@@ -85,11 +85,11 @@ module.exports = function (Topics) {
 	};
 
 	topicTools.lock = async function (tid, uid) {
-		return await toggleLock(tid, uid, true);
+		return toggleLock(tid, uid, true);
 	};
 
 	topicTools.unlock = async function (tid, uid) {
-		return await toggleLock(tid, uid, false);
+		return toggleLock(tid, uid, false);
 	};
 
 	async function toggleLock(tid, uid, lock) {
@@ -111,11 +111,11 @@ module.exports = function (Topics) {
 	}
 
 	topicTools.pin = async function (tid, uid) {
-		return await togglePin(tid, uid, true);
+		return togglePin(tid, uid, true);
 	};
 
 	topicTools.unpin = async function (tid, uid) {
-		return await togglePin(tid, uid, false);
+		return togglePin(tid, uid, false);
 	};
 
 	topicTools.setPinExpiry = async (tid, expiry, uid) => {

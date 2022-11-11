@@ -20,7 +20,7 @@ async function getActiveIds() {
 	if (nconf.get('plugins:active')) {
 		return nconf.get('plugins:active');
 	}
-	return await db.getSortedSetRange('plugins:active', 0, -1);
+	return db.getSortedSetRange('plugins:active', 0, -1);
 }
 
 Data.getPluginPaths = async function () {
@@ -81,7 +81,7 @@ function parseLicense(packageData) {
 
 Data.getActive = async function () {
 	const pluginPaths = await Data.getPluginPaths();
-	return await Promise.all(pluginPaths.map(p => Data.loadPluginInfo(p)));
+	return Promise.all(pluginPaths.map(p => Data.loadPluginInfo(p)));
 };
 
 
@@ -164,7 +164,7 @@ async function resolveModulePath(basePath, modulePath) {
 		return;
 	}
 
-	return await resolveModulePath(dirPath, modulePath);
+	return resolveModulePath(dirPath, modulePath);
 }
 
 

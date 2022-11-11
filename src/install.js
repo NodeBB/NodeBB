@@ -294,7 +294,7 @@ async function createAdministrator() {
 		console.log('Administrator found, skipping Admin setup');
 		return;
 	}
-	return await createAdmin();
+	return createAdmin();
 }
 
 async function createAdmin() {
@@ -336,7 +336,7 @@ async function createAdmin() {
 
 		if (results['password:confirm'] !== results.password) {
 			winston.warn('Passwords did not match, please try again');
-			return await retryPassword(results);
+			return retryPassword(results);
 		}
 
 		try {
@@ -351,7 +351,7 @@ async function createAdmin() {
 			}
 
 			winston.warn(`Password error, please try again. ${err.message}`);
-			return await retryPassword(results);
+			return retryPassword(results);
 		}
 
 		const adminUid = await User.create({
@@ -375,7 +375,7 @@ async function createAdmin() {
 		originalResults['password:confirm'] = results['password:confirm'];
 
 		// Send back to success to handle
-		return await success(originalResults);
+		return success(originalResults);
 	}
 
 	// Add the password questions
@@ -383,7 +383,7 @@ async function createAdmin() {
 
 	if (!install.values) {
 		const results = await prompt.get(questions);
-		return await success(results);
+		return success(results);
 	}
 	// If automated setup did not provide a user password, generate one,
 	// it will be shown to the user upon setup completion
@@ -399,7 +399,7 @@ async function createAdmin() {
 		'password:confirm': install.values['admin:password:confirm'] || nconf.get('admin:password') || password,
 	};
 
-	return await success(results);
+	return success(results);
 }
 
 async function createGlobalModeratorsGroup() {

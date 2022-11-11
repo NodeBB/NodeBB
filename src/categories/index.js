@@ -25,7 +25,7 @@ require('./watch')(Categories);
 require('./search')(Categories);
 
 Categories.exists = async function (cids) {
-	return await db.exists(
+	return db.exists(
 		Array.isArray(cids) ? cids.map(cid => `category:${cid}`) : `category:${cids}`
 	);
 };
@@ -80,22 +80,22 @@ Categories.getAllCidsFromSet = async function (key) {
 
 Categories.getAllCategories = async function (uid) {
 	const cids = await Categories.getAllCidsFromSet('categories:cid');
-	return await Categories.getCategories(cids, uid);
+	return Categories.getCategories(cids, uid);
 };
 
 Categories.getCidsByPrivilege = async function (set, uid, privilege) {
 	const cids = await Categories.getAllCidsFromSet(set);
-	return await privileges.categories.filterCids(privilege, cids, uid);
+	return privileges.categories.filterCids(privilege, cids, uid);
 };
 
 Categories.getCategoriesByPrivilege = async function (set, uid, privilege) {
 	const cids = await Categories.getCidsByPrivilege(set, uid, privilege);
-	return await Categories.getCategories(cids, uid);
+	return Categories.getCategories(cids, uid);
 };
 
 Categories.getModerators = async function (cid) {
 	const uids = await Categories.getModeratorUids([cid]);
-	return await user.getUsersFields(uids[0], ['uid', 'username', 'userslug', 'picture']);
+	return user.getUsersFields(uids[0], ['uid', 'username', 'userslug', 'picture']);
 };
 
 Categories.getModeratorUids = async function (cids) {
@@ -358,12 +358,12 @@ Categories.getTree = function (categories, parentCid) {
 
 Categories.buildForSelect = async function (uid, privilege, fields) {
 	const cids = await Categories.getCidsByPrivilege('categories:cid', uid, privilege);
-	return await getSelectData(cids, fields);
+	return getSelectData(cids, fields);
 };
 
 Categories.buildForSelectAll = async function (fields) {
 	const cids = await Categories.getAllCidsFromSet('categories:cid');
-	return await getSelectData(cids, fields);
+	return getSelectData(cids, fields);
 };
 
 async function getSelectData(cids, fields) {

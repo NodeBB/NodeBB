@@ -13,7 +13,7 @@ module.exports = function (Messaging) {
 			throw new Error('[[error:not-allowed]]');
 		}
 
-		return await Messaging.addMessage(data);
+		return Messaging.addMessage(data);
 	};
 
 	Messaging.checkContent = async (content) => {

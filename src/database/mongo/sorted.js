@@ -16,19 +16,19 @@ module.exports = function (module) {
 	require('./sorted/intersect')(module);
 
 	module.getSortedSetRange = async function (key, start, stop) {
-		return await getSortedSetRange(key, start, stop, '-inf', '+inf', 1, false);
+		return getSortedSetRange(key, start, stop, '-inf', '+inf', 1, false);
 	};
 
 	module.getSortedSetRevRange = async function (key, start, stop) {
-		return await getSortedSetRange(key, start, stop, '-inf', '+inf', -1, false);
+		return getSortedSetRange(key, start, stop, '-inf', '+inf', -1, false);
 	};
 
 	module.getSortedSetRangeWithScores = async function (key, start, stop) {
-		return await getSortedSetRange(key, start, stop, '-inf', '+inf', 1, true);
+		return getSortedSetRange(key, start, stop, '-inf', '+inf', 1, true);
 	};
 
 	module.getSortedSetRevRangeWithScores = async function (key, start, stop) {
-		return await getSortedSetRange(key, start, stop, '-inf', '+inf', -1, true);
+		return getSortedSetRange(key, start, stop, '-inf', '+inf', -1, true);
 	};
 
 	async function getSortedSetRange(key, start, stop, min, max, sort, withScores) {
@@ -84,7 +84,7 @@ module.exports = function (module) {
 
 		let result = [];
 		async function doQuery(_key, fields, skip, limit) {
-			return await module.client.collection('objects').find({ ...query, ...{ _key: _key } }, { projection: fields })
+			return module.client.collection('objects').find({ ...query, ...{ _key: _key } }, { projection: fields })
 				.sort({ score: sort })
 				.skip(skip)
 				.limit(limit)
@@ -118,19 +118,19 @@ module.exports = function (module) {
 	}
 
 	module.getSortedSetRangeByScore = async function (key, start, count, min, max) {
-		return await getSortedSetRangeByScore(key, start, count, min, max, 1, false);
+		return getSortedSetRangeByScore(key, start, count, min, max, 1, false);
 	};
 
 	module.getSortedSetRevRangeByScore = async function (key, start, count, max, min) {
-		return await getSortedSetRangeByScore(key, start, count, min, max, -1, false);
+		return getSortedSetRangeByScore(key, start, count, min, max, -1, false);
 	};
 
 	module.getSortedSetRangeByScoreWithScores = async function (key, start, count, min, max) {
-		return await getSortedSetRangeByScore(key, start, count, min, max, 1, true);
+		return getSortedSetRangeByScore(key, start, count, min, max, 1, true);
 	};
 
 	module.getSortedSetRevRangeByScoreWithScores = async function (key, start, count, max, min) {
-		return await getSortedSetRangeByScore(key, start, count, min, max, -1, true);
+		return getSortedSetRangeByScore(key, start, count, min, max, -1, true);
 	};
 
 	async function getSortedSetRangeByScore(key, start, count, min, max, sort, withScores) {
@@ -138,7 +138,7 @@ module.exports = function (module) {
 			return [];
 		}
 		const stop = (parseInt(count, 10) === -1) ? -1 : (start + count - 1);
-		return await getSortedSetRange(key, start, stop, min, max, sort, withScores);
+		return getSortedSetRange(key, start, stop, min, max, sort, withScores);
 	}
 
 	module.sortedSetCount = async function (key, min, max) {
@@ -172,7 +172,7 @@ module.exports = function (module) {
 			return [];
 		}
 		const promises = keys.map(k => module.sortedSetCard(k));
-		return await Promise.all(promises);
+		return Promise.all(promises);
 	};
 
 	module.sortedSetsCardSum = async function (keys) {
@@ -185,11 +185,11 @@ module.exports = function (module) {
 	};
 
 	module.sortedSetRank = async function (key, value) {
-		return await getSortedSetRank(false, key, value);
+		return getSortedSetRank(false, key, value);
 	};
 
 	module.sortedSetRevRank = async function (key, value) {
-		return await getSortedSetRank(true, key, value);
+		return getSortedSetRank(true, key, value);
 	};
 
 	async function getSortedSetRank(reverse, key, value) {
@@ -202,7 +202,7 @@ module.exports = function (module) {
 			return null;
 		}
 
-		return await module.client.collection('objects').countDocuments({
+		return module.client.collection('objects').countDocuments({
 			$or: [
 				{
 					_key: key,
@@ -218,11 +218,11 @@ module.exports = function (module) {
 	}
 
 	module.sortedSetsRanks = async function (keys, values) {
-		return await sortedSetsRanks(module.sortedSetRank, keys, values);
+		return sortedSetsRanks(module.sortedSetRank, keys, values);
 	};
 
 	module.sortedSetsRevRanks = async function (keys, values) {
-		return await sortedSetsRanks(module.sortedSetRevRank, keys, values);
+		return sortedSetsRanks(module.sortedSetRevRank, keys, values);
 	};
 
 	async function sortedSetsRanks(method, keys, values) {
@@ -234,15 +234,15 @@ module.exports = function (module) {
 			data[i] = { key: keys[i], value: values[i] };
 		}
 		const promises = data.map(item => method(item.key, item.value));
-		return await Promise.all(promises);
+		return Promise.all(promises);
 	}
 
 	module.sortedSetRanks = async function (key, values) {
-		return await sortedSetRanks(false, key, values);
+		return sortedSetRanks(false, key, values);
 	};
 
 	module.sortedSetRevRanks = async function (key, values) {
-		return await sortedSetRanks(true, key, values);
+		return sortedSetRanks(true, key, values);
 	};
 
 	async function sortedSetRanks(reverse, key, values) {
@@ -417,7 +417,7 @@ module.exports = function (module) {
 			// https://jira.mongodb.org/browse/SERVER-14322
 			// https://docs.mongodb.org/manual/reference/command/findAndModify/#upsert-and-unique-index
 			if (err && err.message.startsWith('E11000 duplicate key error')) {
-				return await module.sortedSetIncrBy(key, increment, value);
+				return module.sortedSetIncrBy(key, increment, value);
 			}
 			throw err;
 		}
@@ -446,11 +446,11 @@ module.exports = function (module) {
 	};
 
 	module.getSortedSetRangeByLex = async function (key, min, max, start, count) {
-		return await sortedSetLex(key, min, max, 1, start, count);
+		return sortedSetLex(key, min, max, 1, start, count);
 	};
 
 	module.getSortedSetRevRangeByLex = async function (key, max, min, start, count) {
-		return await sortedSetLex(key, min, max, -1, start, count);
+		return sortedSetLex(key, min, max, -1, start, count);
 	};
 
 	module.sortedSetLexCount = async function (key, min, max) {

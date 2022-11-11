@@ -141,7 +141,7 @@ define('hooks', [], () => {
 			}
 		}));
 
-		return await Promise.resolve(data);
+		return Promise.resolve(data);
 	};
 
 	Hooks.fire = (hookName, data) => {

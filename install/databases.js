@@ -24,17 +24,17 @@ async function getDatabaseConfig(config) {
 		if (config['redis:host'] && config['redis:port']) {
 			return config;
 		}
-		return await prompt.get(questions.redis);
+		return prompt.get(questions.redis);
 	} else if (config.database === 'mongo') {
 		if ((config['mongo:host'] && config['mongo:port']) || config['mongo:uri']) {
 			return config;
 		}
-		return await prompt.get(questions.mongo);
+		return prompt.get(questions.mongo);
 	} else if (config.database === 'postgres') {
 		if (config['postgres:host'] && config['postgres:port']) {
 			return config;
 		}
-		return await prompt.get(questions.postgres);
+		return prompt.get(questions.postgres);
 	}
 	throw new Error(`unknown database : ${config.database}`);
 }

@@ -297,21 +297,21 @@ module.exports = function (Topics) {
 	}
 
 	Topics.getTitleByPid = async function (pid) {
-		return await Topics.getTopicFieldByPid('title', pid);
+		return Topics.getTopicFieldByPid('title', pid);
 	};
 
 	Topics.getTopicFieldByPid = async function (field, pid) {
 		const tid = await posts.getPostField(pid, 'tid');
-		return await Topics.getTopicField(tid, field);
+		return Topics.getTopicField(tid, field);
 	};
 
 	Topics.getTopicDataByPid = async function (pid) {
 		const tid = await posts.getPostField(pid, 'tid');
-		return await Topics.getTopicData(tid);
+		return Topics.getTopicData(tid);
 	};
 
 	Topics.getPostCount = async function (tid) {
-		return await db.getObjectField(`topic:${tid}`, 'postcount');
+		return db.getObjectField(`topic:${tid}`, 'postcount');
 	};
 
 	async function getPostReplies(pids, callerUid) {

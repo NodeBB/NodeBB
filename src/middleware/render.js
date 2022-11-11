@@ -120,7 +120,7 @@ module.exports = function (middleware) {
 		} else {
 			str = '';
 		}
-		return await translate(str, getLang(req, res));
+		return translate(str, getLang(req, res));
 	}
 
 	function getLang(req, res) {

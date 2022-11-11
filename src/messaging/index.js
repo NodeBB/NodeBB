@@ -103,7 +103,7 @@ Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 		users: Promise.all(roomIds.map(async (roomId) => {
 			let uids = await db.getSortedSetRevRange(`chat:room:${roomId}:uids`, 0, 9);
 			uids = uids.filter(_uid => _uid && parseInt(_uid, 10) !== parseInt(uid, 10));
-			return await user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'lastonline']);
+			return user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'lastonline']);
 		})),
 		teasers: Promise.all(roomIds.map(async roomId => Messaging.getTeaser(uid, roomId))),
 	});
@@ -129,7 +129,7 @@ Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 
 	results.roomData = results.roomData.filter(Boolean);
 	const ref = { rooms: results.roomData, nextStart: stop + 1 };
-	return await plugins.hooks.fire('filter:messaging.getRecentChats', {
+	return plugins.hooks.fire('filter:messaging.getRecentChats', {
 		rooms: ref.rooms,
 		nextStart: ref.nextStart,
 		uid: uid,

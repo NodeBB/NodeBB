@@ -10,7 +10,7 @@ module.exports = function (Groups) {
 		if (!(parseInt(uid, 10) > 0)) {
 			return false;
 		}
-		return await db.isSetMember(`group:${groupName}:owners`, uid);
+		return db.isSetMember(`group:${groupName}:owners`, uid);
 	};
 
 	Groups.ownership.isOwners = async function (uids, groupName) {
@@ -18,7 +18,7 @@ module.exports = function (Groups) {
 			return [];
 		}
 
-		return await db.isSetMembers(`group:${groupName}:owners`, uids);
+		return db.isSetMembers(`group:${groupName}:owners`, uids);
 	};
 
 	Groups.ownership.grant = async function (toUid, groupName) {

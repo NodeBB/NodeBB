@@ -74,12 +74,12 @@ async function getNotices() {
 		});
 	}
 
-	return await plugins.hooks.fire('filter:admin.notices', notices);
+	return plugins.hooks.fire('filter:admin.notices', notices);
 }
 
 async function getLatestVersion() {
 	try {
-		return await versions.getLatestVersion();
+		return versions.getLatestVersion();
 	} catch (err) {
 		winston.error(`[acp] Failed to fetch latest version\n${err.stack}`);
 	}

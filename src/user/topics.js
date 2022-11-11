@@ -4,7 +4,7 @@ const db = require('../database');
 
 module.exports = function (User) {
 	User.getIgnoredTids = async function (uid, start, stop) {
-		return await db.getSortedSetRevRange(`uid:${uid}:ignored_tids`, start, stop);
+		return db.getSortedSetRevRange(`uid:${uid}:ignored_tids`, start, stop);
 	};
 
 	User.addTopicIdToUser = async function (uid, tid, timestamp) {

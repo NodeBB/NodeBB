@@ -9,7 +9,7 @@ module.exports = function (module) {
 			return;
 		}
 		if (Array.isArray(score) && Array.isArray(value)) {
-			return await sortedSetAddMulti(key, score, value);
+			return sortedSetAddMulti(key, score, value);
 		}
 		if (!utils.isNumber(score)) {
 			throw new Error(`[[error:invalid-score, ${score}]]`);

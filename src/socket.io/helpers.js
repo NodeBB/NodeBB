@@ -60,7 +60,7 @@ async function notifyUids(uid, uids, type, result) {
 }
 
 async function getWatchStates(uids, tid, cid) {
-	return await utils.promiseParallel({
+	return utils.promiseParallel({
 		topicFollowed: db.isSetMembers(`tid:${tid}:followers`, uids),
 		topicIgnored: db.isSetMembers(`tid:${tid}:ignorers`, uids),
 		categoryWatchStates: categories.getUidsWatchStates(cid, uids),

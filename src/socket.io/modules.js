@@ -33,7 +33,7 @@ SocketModules.chats.getRaw = async function (socket, data) {
 		throw new Error('[[error:not-allowed]]');
 	}
 
-	return await Messaging.getMessageField(data.mid, 'content');
+	return Messaging.getMessageField(data.mid, 'content');
 };
 
 SocketModules.chats.isDnD = async function (socket, uid) {
@@ -76,7 +76,7 @@ SocketModules.chats.loadRoom = async function (socket, data) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	return await Messaging.loadRoom(socket.uid, data);
+	return Messaging.loadRoom(socket.uid, data);
 };
 
 SocketModules.chats.getUsersInRoom = async function (socket, data) {
@@ -217,14 +217,14 @@ SocketModules.chats.getRecentChats = async function (socket, data) {
 	}
 	const start = parseInt(data.after, 10);
 	const stop = start + 9;
-	return await Messaging.getRecentChats(socket.uid, data.uid, start, stop);
+	return Messaging.getRecentChats(socket.uid, data.uid, start, stop);
 };
 
 SocketModules.chats.hasPrivateChat = async function (socket, uid) {
 	if (socket.uid <= 0 || uid <= 0) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	return await Messaging.hasPrivateChat(socket.uid, uid);
+	return Messaging.hasPrivateChat(socket.uid, uid);
 };
 
 SocketModules.chats.getMessages = async function (socket, data) {
@@ -234,7 +234,7 @@ SocketModules.chats.getMessages = async function (socket, data) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	return await Messaging.getMessages({
+	return Messaging.getMessages({
 		callerUid: socket.uid,
 		uid: data.uid,
 		roomId: data.roomId,
@@ -248,7 +248,7 @@ SocketModules.chats.getIP = async function (socket, mid) {
 	if (!allowed) {
 		throw new Error('[[error:no-privilege]]');
 	}
-	return await Messaging.getMessageField(mid, 'ip');
+	return Messaging.getMessageField(mid, 'ip');
 };
 
 require('../promisify')(SocketModules);

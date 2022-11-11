@@ -24,7 +24,7 @@ function requireSharp() {
 image.isFileTypeAllowed = async function (path) {
 	const plugins = require('./plugins');
 	if (plugins.hooks.hasListeners('filter:image.isFileTypeAllowed')) {
-		return await plugins.hooks.fire('filter:image.isFileTypeAllowed', path);
+		return plugins.hooks.fire('filter:image.isFileTypeAllowed', path);
 	}
 	const sharp = require('sharp');
 	await sharp(path, {
@@ -133,7 +133,7 @@ image.checkDimensions = async function (path) {
 };
 
 image.convertImageToBase64 = async function (path) {
-	return await fs.promises.readFile(path, 'base64');
+	return fs.promises.readFile(path, 'base64');
 };
 
 image.mimeFromBase64 = function (imageData) {
@@ -164,7 +164,7 @@ image.sizeFromBase64 = function (imageData) {
 
 image.uploadImage = async function (filename, folder, imageData) {
 	if (plugins.hooks.hasListeners('filter:uploadImage')) {
-		return await plugins.hooks.fire('filter:uploadImage', {
+		return plugins.hooks.fire('filter:uploadImage', {
 			image: imageData,
 			uid: imageData.uid,
 			folder: folder,

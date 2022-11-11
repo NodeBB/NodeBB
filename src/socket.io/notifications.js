@@ -7,13 +7,13 @@ const SocketNotifs = module.exports;
 
 SocketNotifs.get = async function (socket, data) {
 	if (data && Array.isArray(data.nids) && socket.uid) {
-		return await user.notifications.getNotifications(data.nids, socket.uid);
+		return user.notifications.getNotifications(data.nids, socket.uid);
 	}
-	return await user.notifications.get(socket.uid);
+	return user.notifications.get(socket.uid);
 };
 
 SocketNotifs.getCount = async function (socket) {
-	return await user.notifications.getUnreadCount(socket.uid);
+	return user.notifications.getUnreadCount(socket.uid);
 };
 
 SocketNotifs.deleteAll = async function (socket) {

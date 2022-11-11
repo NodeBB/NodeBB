@@ -45,7 +45,7 @@ groupsAPI.update = async function (caller, data) {
 	delete data.slug;
 	await groups.update(groupName, data);
 
-	return await groups.getGroupData(data.name || groupName);
+	return groups.getGroupData(data.name || groupName);
 };
 
 groupsAPI.delete = async function (caller, data) {

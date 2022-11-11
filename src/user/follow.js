@@ -60,11 +60,11 @@ module.exports = function (User) {
 	}
 
 	User.getFollowing = async function (uid, start, stop) {
-		return await getFollow(uid, 'following', start, stop);
+		return getFollow(uid, 'following', start, stop);
 	};
 
 	User.getFollowers = async function (uid, start, stop) {
-		return await getFollow(uid, 'followers', start, stop);
+		return getFollow(uid, 'followers', start, stop);
 	};
 
 	async function getFollow(uid, type, start, stop) {
@@ -78,13 +78,13 @@ module.exports = function (User) {
 			start: start,
 			stop: stop,
 		});
-		return await User.getUsers(data.uids, uid);
+		return User.getUsers(data.uids, uid);
 	}
 
 	User.isFollowing = async function (uid, theirid) {
 		if (parseInt(uid, 10) <= 0 || parseInt(theirid, 10) <= 0) {
 			return false;
 		}
-		return await db.isSortedSetMember(`following:${uid}`, theirid);
+		return db.isSortedSetMember(`following:${uid}`, theirid);
 	};
 };

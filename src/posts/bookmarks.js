@@ -5,11 +5,11 @@ const plugins = require('../plugins');
 
 module.exports = function (Posts) {
 	Posts.bookmark = async function (pid, uid) {
-		return await toggleBookmark('bookmark', pid, uid);
+		return toggleBookmark('bookmark', pid, uid);
 	};
 
 	Posts.unbookmark = async function (pid, uid) {
-		return await toggleBookmark('unbookmark', pid, uid);
+		return toggleBookmark('unbookmark', pid, uid);
 	};
 
 	async function toggleBookmark(type, pid, uid) {
@@ -61,8 +61,8 @@ module.exports = function (Posts) {
 
 		if (Array.isArray(pid)) {
 			const sets = pid.map(pid => `pid:${pid}:users_bookmarked`);
-			return await db.isMemberOfSets(sets, uid);
+			return db.isMemberOfSets(sets, uid);
 		}
-		return await db.isSetMember(`pid:${pid}:users_bookmarked`, uid);
+		return db.isSetMember(`pid:${pid}:users_bookmarked`, uid);
 	};
 };

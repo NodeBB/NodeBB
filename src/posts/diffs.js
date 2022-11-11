@@ -30,11 +30,11 @@ module.exports = function (Posts) {
 		// Pass those made after `since`, and create keys
 		const keys = timestamps.filter(t => (parseInt(t, 10) || 0) > since)
 			.map(t => `diff:${pid}.${t}`);
-		return await db.getObjects(keys);
+		return db.getObjects(keys);
 	};
 
 	Diffs.list = async function (pid) {
-		return await db.getListRange(`post:${pid}:diffs`, 0, -1);
+		return db.getListRange(`post:${pid}:diffs`, 0, -1);
 	};
 
 	Diffs.save = async function (data) {
@@ -73,7 +73,7 @@ module.exports = function (Posts) {
 		since = getValidatedTimestamp(since);
 		const post = await postDiffLoad(pid, since, uid);
 
-		return await Posts.edit({
+		return Posts.edit({
 			uid: uid,
 			pid: pid,
 			content: post.content,

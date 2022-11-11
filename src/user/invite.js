@@ -20,11 +20,11 @@ module.exports = function (User) {
 	};
 
 	User.getInvitesNumber = async function (uid) {
-		return await db.setCount(`invitation:uid:${uid}`);
+		return db.setCount(`invitation:uid:${uid}`);
 	};
 
 	User.getInvitingUsers = async function () {
-		return await db.getSetMembers('invitation:uids');
+		return db.getSetMembers('invitation:uids');
 	};
 
 	User.getAllInvites = async function () {

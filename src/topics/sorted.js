@@ -73,7 +73,7 @@ module.exports = function (Topics) {
 		const method = params.sort === 'old' ?
 			'getSortedSetIntersect' :
 			'getSortedSetRevIntersect';
-		return await db[method]({
+		return db[method]({
 			sets: sets,
 			start: 0,
 			stop: meta.config.recentMaxTopics - 1,
@@ -85,7 +85,7 @@ module.exports = function (Topics) {
 		if (params.tags.length) {
 			return _.intersection(...await Promise.all(params.tags.map(async (tag) => {
 				const sets = params.cids.map(cid => `cid:${cid}:tag:${tag}:topics`);
-				return await db.getSortedSetRevRange(sets, 0, -1);
+				return db.getSortedSetRevRange(sets, 0, -1);
 			})));
 		}
 
@@ -181,7 +181,7 @@ module.exports = function (Topics) {
 			if (params.cids || filter === 'watched' || meta.config.disableRecentCategoryFilter) {
 				return [];
 			}
-			return await categories.isIgnored(topicCids, uid);
+			return categories.isIgnored(topicCids, uid);
 		}
 		const [ignoredCids, filtered] = await Promise.all([
 			getIgnoredCids(),

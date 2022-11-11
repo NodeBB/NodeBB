@@ -22,12 +22,12 @@ SELECT COUNT(DISTINCT z."value") c
 
 	module.getSortedSetUnion = async function (params) {
 		params.sort = 1;
-		return await getSortedSetUnion(params);
+		return getSortedSetUnion(params);
 	};
 
 	module.getSortedSetRevUnion = async function (params) {
 		params.sort = -1;
-		return await getSortedSetUnion(params);
+		return getSortedSetUnion(params);
 	};
 
 	async function getSortedSetUnion(params) {

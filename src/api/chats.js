@@ -35,7 +35,7 @@ chatsAPI.create = async function (caller, data) {
 	await Promise.all(data.uids.map(async uid => messaging.canMessageUser(caller.uid, uid)));
 	const roomId = await messaging.newRoom(caller.uid, data.uids);
 
-	return await messaging.getRoomData(roomId);
+	return messaging.getRoomData(roomId);
 };
 
 chatsAPI.post = async (caller, data) => {

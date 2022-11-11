@@ -92,11 +92,11 @@ module.exports = function (Groups) {
 	}
 
 	Groups.isInvited = async function (uids, groupName) {
-		return await checkInvitePending(uids, `group:${groupName}:invited`);
+		return checkInvitePending(uids, `group:${groupName}:invited`);
 	};
 
 	Groups.isPending = async function (uids, groupName) {
-		return await checkInvitePending(uids, `group:${groupName}:pending`);
+		return checkInvitePending(uids, `group:${groupName}:pending`);
 	};
 
 	async function checkInvitePending(uids, set) {
@@ -112,6 +112,6 @@ module.exports = function (Groups) {
 		if (!groupName) {
 			return [];
 		}
-		return await db.getSetMembers(`group:${groupName}:pending`);
+		return db.getSetMembers(`group:${groupName}:pending`);
 	};
 };
