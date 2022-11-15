@@ -112,7 +112,7 @@ define('admin/settings/email', ['ace/ace', 'alerts', 'admin/settings'], function
 		const enabledEl = document.getElementById('email:smtpTransport:enabled');
 		if (enabledEl) {
 			if (!enabledEl.checked) {
-				enabledEl.closest('label').classList.toggle('is-checked', true);
+				$('label[for="email:smtpTransport:enabled"]').toggleClass('is-checked', true);
 				enabledEl.checked = true;
 				alerts.alert({
 					message: '[[admin/settings/email:smtp-transport.auto-enable-toast]]',
