@@ -153,7 +153,7 @@
         "@commitlint/config-angular": "17.2.0",
         "coveralls": "3.1.1",
         "eslint": "8.27.0",
-        "eslint-config-nodebb": "0.1.1",
+        "eslint-config-nodebb": "0.2.1",
         "eslint-plugin-import": "2.26.0",
         "grunt": "1.5.3",
         "grunt-contrib-watch": "1.1.0",
