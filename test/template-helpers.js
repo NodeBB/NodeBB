@@ -148,7 +148,19 @@ describe('helpers', () => {
 			read: true,
 		};
 		const html = helpers.spawnPrivilegeStates('guests', privs);
-		assert.equal(html, '<td class="text-center" data-privilege="find" data-value="true"><input autocomplete="off" type="checkbox" checked /></td><td class="text-center" data-privilege="read" data-value="true"><input autocomplete="off" type="checkbox" checked /></td>');
+		assert.equal(html, `
+				<td data-privilege="find" data-value="true">
+					<div class="form-check text-center">
+						<input class="form-check-input float-none" autocomplete="off" type="checkbox" checked />
+					</div>
+				</td>
+\t\t\t
+				<td data-privilege="read" data-value="true">
+					<div class="form-check text-center">
+						<input class="form-check-input float-none" autocomplete="off" type="checkbox" checked />
+					</div>
+				</td>
+			`);
 		done();
 	});
 
