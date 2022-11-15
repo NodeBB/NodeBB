@@ -45,8 +45,9 @@ define('admin/manage/privileges', [
 
 	Privileges.setupPrivilegeTable = function () {
 		$('.privilege-table-container').on('change', 'input[type="checkbox"]:not(.checkbox-helper)', function () {
+			const checkboxEl = this;
 			const $checkboxEl = $(this);
-			const $wrapperEl = $checkboxEl.parent();
+			const $wrapperEl = $checkboxEl.parents('[data-privilege]');
 			const columnNo = $wrapperEl.index() + 1;
 			const privilege = $wrapperEl.attr('data-privilege');
 			const state = $checkboxEl.prop('checked');
@@ -63,6 +64,7 @@ define('admin/manage/privileges', [
 					bootbox.confirm('[[admin/manage/privileges:alert.confirm-moderate]]', function (confirm) {
 						if (confirm) {
 							$wrapperEl.attr('data-delta', delta);
+							Privileges.applyDeltaState(checkboxEl, delta);
 							Privileges.exposeSingleAssumedPriv(columnNo, sourceGroupName);
 						} else {
 							$checkboxEl.prop('checked', !$checkboxEl.prop('checked'));
@@ -72,6 +74,7 @@ define('admin/manage/privileges', [
 					bootbox.confirm('[[admin/manage/privileges:alert.confirm-admins-mods]]', function (confirm) {
 						if (confirm) {
 							$wrapperEl.attr('data-delta', delta);
+							Privileges.applyDeltaState(checkboxEl, delta);
 							Privileges.exposeSingleAssumedPriv(columnNo, sourceGroupName);
 						} else {
 							$checkboxEl.prop('checked', !$checkboxEl.prop('checked'));
@@ -79,6 +82,7 @@ define('admin/manage/privileges', [
 					});
 				} else {
 					$wrapperEl.attr('data-delta', delta);
+					Privileges.applyDeltaState(checkboxEl, delta);
 					Privileges.exposeSingleAssumedPriv(columnNo, sourceGroupName);
 				}
 				checkboxRowSelector.updateState($checkboxEl);
@@ -90,6 +94,15 @@ define('admin/manage/privileges', [
 		Privileges.exposeAssumedPrivileges();
 		checkboxRowSelector.updateAll();
 		Privileges.addEvents(); // events with confirmation modals
+	};
+
+	Privileges.applyDeltaState = (checkboxEl, delta) => {
+		['bg-success', 'bg-opacity-75', 'border-success'].forEach((className) => {
+			checkboxEl.classList.toggle(className, delta === true);
+		});
+		['bg-danger', 'bg-opacity-50', 'border-danger'].forEach((className) => {
+			checkboxEl.classList.toggle(className, delta === false);
+		});
 	};
 
 	Privileges.addEvents = function () {
@@ -332,7 +345,7 @@ define('admin/manage/privileges', [
 	function getPrivilegesFromRow(sourceGroupName) {
 		const privs = [];
 		$(`.privilege-table tr[data-group-name="${sourceGroupName}"] td input[type="checkbox"]:not(.checkbox-helper)`)
-			.parent()
+			.parents('[data-privilege]')
 			.each(function (idx, el) {
 				if ($(el).find('input').prop('checked')) {
 					privs.push(el.getAttribute('data-privilege'));

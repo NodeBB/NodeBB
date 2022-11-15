@@ -48,7 +48,11 @@
 										</ul>
 									</div>
 								</td>
-								<td class="text-center"><input autocomplete="off" type="checkbox" class="checkbox-helper"></td>
+								<td class="">
+									<div class="form-check text-center">
+										<input autocomplete="off" type="checkbox" class="form-check-input float-none checkbox-helper">
+									</div>
+								</td>
 								{function.spawnPrivilegeStates, privileges.groups.name, ../privileges}
 							</tr>
 							<!-- END privileges.groups -->
