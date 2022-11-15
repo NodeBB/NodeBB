@@ -10,6 +10,7 @@ window.utils = require('./utils');
 require('timeago');
 
 const Benchpress = require('benchpressjs');
+
 Benchpress.setGlobal('config', config);
 
 require('./sockets');
@@ -21,7 +22,7 @@ app = window.app || {};
 Object.defineProperty(app, 'isFocused', {
 	get() {
 		return document.visibilityState === 'visible';
-	}
+	},
 });
 app.currentRoom = null;
 app.widgets = {};
@@ -148,7 +149,7 @@ if (document.readyState === 'loading') {
 		}
 		const result = await Promise.all(modules.map(requireModule));
 		return single ? result.pop() : result;
-	}
+	};
 
 	app.enterRoom = function (room, callback) {
 		callback = callback || function () { };
@@ -260,7 +261,7 @@ if (document.readyState === 'loading') {
 			translator.translate('[[global:' + status + ']]', function (translated) {
 				el.removeClass('online offline dnd away')
 					.addClass(status)
-					.attr('data-new-title', translated)
+					.attr('data-new-title', translated);
 			});
 		});
 	};

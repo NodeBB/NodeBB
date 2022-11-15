@@ -2,9 +2,9 @@
 
 require('../app');
 
-// scripts-admin.js contains javascript files
+// scripts-admin.js is generated during build, it contains javascript files
 // from plugins that add files to "acpScripts" block in plugin.json
-// eslint-disable-next-line import/no-unresolved
+// eslint-disable-next-line
 require('../../scripts-admin');
 
 app.onDomReady();

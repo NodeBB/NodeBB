@@ -1,3 +1,5 @@
+/* eslint-disable import/first */
+
 export * from 'ace-builds';
 
 // only import the modes and theme we use

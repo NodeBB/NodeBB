@@ -11,7 +11,8 @@ define('forum/account/header', [
 	'api',
 	'bootbox',
 	'alerts',
-], function (coverPhoto, pictureCropper, components, translator, AccountsDelete, AccountsModerate, api, bootbox, alerts) {
+], function (coverPhoto, pictureCropper, components, translator,
+	AccountsDelete, AccountsModerate, api, bootbox, alerts) {
 	const AccountHeader = {};
 	let isAdminOrSelfOrGlobalMod;
 
