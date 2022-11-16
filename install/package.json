@@ -2,7 +2,7 @@
     "name": "nodebb",
     "license": "GPL-3.0",
     "description": "NodeBB Forum",
-    "version": "2.5.7",
+    "version": "2.5.8",
     "homepage": "http://www.nodebb.org",
     "repository": {
         "type": "git",
@@ -165,6 +165,9 @@
         "mockdate": "3.0.5",
         "nyc": "15.1.0",
         "smtp-server": "3.11.0"
+    },
+    "resolutions": {
+        "timeago/jquery": "3.6.0"
     },
     "bugs": {
         "url": "https://github.com/NodeBB/NodeBB/issues"

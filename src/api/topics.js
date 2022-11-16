@@ -40,13 +40,19 @@ topicsAPI.create = async function (caller, data) {
 	const payload = { ...data };
 	payload.tags = payload.tags || [];
 	apiHelpers.setDefaultPostData(caller, payload);
+	const isScheduling = parseInt(data.timestamp, 10) > payload.timestamp;
+	if (isScheduling) {
+		if (await privileges.categories.can('topics:schedule', data.cid, caller.uid)) {
+			payload.timestamp = parseInt(data.timestamp, 10);
+		} else {
+			throw new Error('[[error:no-privileges]]');
+		}
+	}
 
-	// Blacklist & Post Queue
 	await meta.blacklist.test(caller.ip);
 	const shouldQueue = await posts.shouldQueue(caller.uid, payload);
 	if (shouldQueue) {
-		const queueObj = await posts.addToQueue(payload);
-		return queueObj;
+		return await posts.addToQueue(payload);
 	}
 
 	const result = await topics.post(payload);
@@ -66,12 +72,10 @@ topicsAPI.reply = async function (caller, data) {
 	const payload = { ...data };
 	apiHelpers.setDefaultPostData(caller, payload);
 
-	// Blacklist & Post Queue
 	await meta.blacklist.test(caller.ip);
 	const shouldQueue = await posts.shouldQueue(caller.uid, payload);
 	if (shouldQueue) {
-		const queueObj = await posts.addToQueue(payload);
-		return queueObj;
+		return await posts.addToQueue(payload);
 	}
 
 	const postData = await topics.reply(payload); // postData seems to be a subset of postObj, refactor?
