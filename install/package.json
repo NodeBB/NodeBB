@@ -166,6 +166,9 @@
         "nyc": "15.1.0",
         "smtp-server": "3.11.0"
     },
+    "resolutions": {
+        "timeago/jquery": "3.6.0"
+    },
     "bugs": {
         "url": "https://github.com/NodeBB/NodeBB/issues"
     },
