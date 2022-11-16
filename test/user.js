@@ -24,6 +24,7 @@ const file = require('../src/file');
 const socketUser = require('../src/socket.io/user');
 const apiUser = require('../src/api/users');
 const utils = require('../src/utils');
+const privileges = require('../src/privileges');
 
 describe('User', () => {
 	let userData;
@@ -1436,6 +1437,32 @@ describe('User', () => {
 			assert.strictEqual(membership.get('verified-users'), true);
 			assert.strictEqual(membership.get('unverified-users'), false);
 		});
+
+		it('should be able to post in category for banned users', async () => {
+			const { cid } = await Categories.create({
+				name: 'Test Category',
+				description: 'A test',
+				order: 1,
+			});
+			const testUid = await User.create({ username: userData.username });
+			await User.bans.ban(testUid);
+			let _err;
+			try {
+				await Topics.post({ title: 'banned topic', content: 'tttttttttttt', cid: cid, uid: testUid });
+			} catch (err) {
+				_err = err;
+			}
+			assert.strictEqual(_err && _err.message, '[[error:no-privileges]]');
+
+			await Promise.all([
+				privileges.categories.give(['groups:topics:create', 'groups:topics:reply'], cid, 'banned-users'),
+				privileges.categories.rescind(['groups:topics:create', 'groups:topics:reply'], cid, 'registered-users'),
+			]);
+
+			const result = await Topics.post({ title: 'banned topic', content: 'tttttttttttt', cid: cid, uid: testUid });
+			assert(result);
+			assert.strictEqual(result.topicData.title, 'banned topic');
+		});
 	});
 
 	describe('Digest.getSubscribers', () => {
@@ -1901,7 +1928,7 @@ describe('User', () => {
 
 		it('should get unread count for user', async () => {
 			const count = await socketUser.getUnreadCount({ uid: testUid });
-			assert.strictEqual(count, 2);
+			assert.strictEqual(count, 3);
 		});
 
 		it('should get unread chat count 0 for guest', async () => {
@@ -1924,15 +1951,15 @@ describe('User', () => {
 			assert.deepStrictEqual(counts, {
 				unreadChatCount: 0,
 				unreadCounts: {
-					'': 2,
-					new: 2,
-					unreplied: 2,
+					'': 3,
+					new: 3,
+					unreplied: 3,
 					watched: 0,
 				},
-				unreadNewTopicCount: 2,
+				unreadNewTopicCount: 3,
 				unreadNotificationCount: 0,
-				unreadTopicCount: 2,
-				unreadUnrepliedTopicCount: 2,
+				unreadTopicCount: 3,
+				unreadUnrepliedTopicCount: 3,
 				unreadWatchedTopicCount: 0,
 			});
 		});
