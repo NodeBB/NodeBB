@@ -188,5 +188,4 @@ require('./mongo/transaction').default(mongoModule);
 require('../promisify').promisify(mongoModule, ['client', 'sessionStore']);
 
 
-
 export default mongoModule;

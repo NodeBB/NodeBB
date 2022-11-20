@@ -5,9 +5,7 @@ import path from 'path';import winston from 'winston';
 const _ = require('lodash');
 import nconf from 'nconf';
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const file = require('../file');
 const { paths } = require('../constants');
 
@@ -90,11 +88,13 @@ Data.getStaticDirectories = async function (pluginData) {
 	const validMappedPath = /^[\w\-_]+$/;
 
 	if (!pluginData.staticDirs) {
+		console.log('NOT STATIC DIRS!!!!!!');
 		return;
 	}
 
 	const dirs = Object.keys(pluginData.staticDirs);
 	if (!dirs.length) {
+		console.log('NOT DIRRSSS!!!');
 		return;
 	}
 
@@ -157,6 +157,7 @@ async function resolveModulePath(basePath, modulePath) {
 	const currentPath = path.join(basePath, modulePath);
 	const exists = await file.exists(currentPath);
 	if (exists) {
+		console.log('CURRENT PATHS!!!');
 		return currentPath;
 	}
 	if (!isNodeModule.test(modulePath)) {
@@ -169,7 +170,6 @@ async function resolveModulePath(basePath, modulePath) {
 		winston.warn(`[plugins] File not found: ${currentPath} (Ignoring)`);
 		return;
 	}
-
 	return await resolveModulePath(dirPath, modulePath);
 }
 
@@ -194,6 +194,7 @@ Data.getScripts = async function getScripts(pluginData, target) {
 	if (scripts.length) {
 		winston.verbose(`[plugins] Found ${scripts.length} js file(s) for plugin ${pluginData.id}`);
 	}
+
 	return scripts;
 };
 
@@ -259,6 +260,8 @@ Data.getLanguageData = async function getLanguageData(pluginData) {
 		languages.push(language);
 		namespaces.push(namespace);
 	});
+	console.log('LANGUAGES', languages);
+	console.log('NAMESPACES', namespaces);
 	return {
 		languages: _.uniq(languages),
 		namespaces: _.uniq(namespaces),

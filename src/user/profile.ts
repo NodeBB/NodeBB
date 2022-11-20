@@ -8,11 +8,9 @@ import winston from 'winston';
 const utils = require('../utils');
 const slugify = require('../slugify');
 import meta from '../meta';
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const groups = require('../groups');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 
 export default  function (User) {
 	User.updateProfile = async function (uid, data, extraFields) {
@@ -111,11 +109,11 @@ export default  function (User) {
 			}
 		}
 
-		if (data.username.length < meta.config.minimumUsernameLength) {
+		if (data.username.length < meta.configs.minimumUsernameLength) {
 			throw new Error('[[error:username-too-short]]');
 		}
 
-		if (data.username.length > meta.config.maximumUsernameLength) {
+		if (data.username.length > meta.configs.maximumUsernameLength) {
 			throw new Error('[[error:username-too-long]]');
 		}
 
@@ -156,8 +154,8 @@ export default  function (User) {
 		if (!data.aboutme) {
 			return;
 		}
-		if (data.aboutme !== undefined && data.aboutme.length > meta.config.maximumAboutMeLength) {
-			throw new Error(`[[error:about-me-too-long, ${meta.config.maximumAboutMeLength}]]`);
+		if (data.aboutme !== undefined && data.aboutme.length > meta.configs.maximumAboutMeLength) {
+			throw new Error(`[[error:about-me-too-long, ${meta.configs.maximumAboutMeLength}]]`);
 		}
 
 		await User.checkMinReputation(callerUid, data.uid, 'min:rep:aboutme');
@@ -168,8 +166,8 @@ export default  function (User) {
 			return;
 		}
 		const signature = data.signature.replace(/\r\n/g, '\n');
-		if (signature.length > meta.config.maximumSignatureLength) {
-			throw new Error(`[[error:signature-too-long, ${meta.config.maximumSignatureLength}]]`);
+		if (signature.length > meta.configs.maximumSignatureLength) {
+			throw new Error(`[[error:signature-too-long, ${meta.configs.maximumSignatureLength}]]`);
 		}
 		await User.checkMinReputation(callerUid, data.uid, 'min:rep:signature');
 	}
@@ -217,7 +215,7 @@ export default  function (User) {
 			groupTitles = [data.groupTitle];
 			checkTitle(data.groupTitle);
 		}
-		if (!meta.config.allowMultipleBadges && groupTitles.length > 1) {
+		if (!meta.configs.allowMultipleBadges && groupTitles.length > 1) {
 			data.groupTitle = JSON.stringify(groupTitles[0]);
 		}
 	}

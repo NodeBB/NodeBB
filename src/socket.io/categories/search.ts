@@ -92,7 +92,7 @@ export default  function (SocketCategories) {
 
 		const allRootCids = await categories.getAllCidsFromSet(`cid:${parentCid}:children`);
 		const rootCids = await privileges.categories.filterCids('find', allRootCids, uid);
-		const pageCids = rootCids.slice(0, meta.config.categoriesPerPage);
+		const pageCids = rootCids.slice(0, meta.configs.categoriesPerPage);
 		resultCids = pageCids;
 		await getCidsRecursive(pageCids);
 		return resultCids;

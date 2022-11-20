@@ -7,7 +7,7 @@
 
 import path from 'path';import nconf from 'nconf';
 
-const file = require('../file');
+import file from '../file';
 import user from '../user';
 const groups = require('../groups');
 const topics = require('../topics');

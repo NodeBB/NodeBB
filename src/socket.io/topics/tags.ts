@@ -12,7 +12,7 @@ export default  function (SocketTopics) {
 			throw new Error('[[error:invalid-data]]');
 		}
 
-		const systemTags = (meta.config.systemTags || '').split(',');
+		const systemTags = (meta.configs.systemTags || '').split(',');
 		const [tagWhitelist, isPrivileged] = await Promise.all([
 			categories.getTagWhitelist([data.cid]),
 			user.isPrivileged(socket.uid),
@@ -29,7 +29,7 @@ export default  function (SocketTopics) {
 			throw new Error('[[error:invalid-data]]');
 		}
 
-		const systemTags = (meta.config.systemTags || '').split(',');
+		const systemTags = (meta.configs.systemTags || '').split(',');
 		const isPrivileged = await user.isPrivileged(socket.uid);
 		return isPrivileged || !systemTags.includes(String(data.tag).trim());
 	};

@@ -4,9 +4,7 @@
 const async = require('async');
 const _ = require('lodash');
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 import user from '../user';
 const posts = require('../posts');
 const notifications = require('../notifications');
@@ -14,7 +12,7 @@ const categories = require('../categories');
 const privileges = require('../privileges');
 import meta from '../meta';
 const utils = require('../utils');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 
 export default  function (Topics) {
 	Topics.getTotalUnread = async function (uid: string, filter: string) {
@@ -49,7 +47,7 @@ export default  function (Topics) {
 	};
 
 	Topics.unreadCutoff = async function (uid: string) {
-		const cutoff = Date.now() - (meta.config.unreadCutoff * 86400000);
+		const cutoff = Date.now() - (meta.configs.unreadCutoff * 86400000);
 		const data = await plugins.hooks.fire('filter:topics.unreadCutoff', { uid: uid, cutoff: cutoff });
 		return parseInt(data.cutoff, 10);
 	};

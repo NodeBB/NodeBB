@@ -21,8 +21,8 @@ const Plugins  = {} as any;
 require('./install').default(Plugins);
 require('./load').default(Plugins);
 require('./usage').default(Plugins);
-Plugins.data = require('./data').default;
-Plugins.hooks = require('./hooks').default;
+Plugins.data = require('./data');
+Plugins.hooks = require('./hooks');
 
 Plugins.getPluginPaths = Plugins.data.getPluginPaths;
 Plugins.loadPluginInfo = Plugins.data.loadPluginInfo;

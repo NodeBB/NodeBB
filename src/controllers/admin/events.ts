@@ -1,6 +1,6 @@
 'use strict';
 
-import { primaryDB as db } from '../../database';
+import db from '../../database';
 const events = require('../../events');
 const pagination = require('../../pagination');
 

@@ -3,11 +3,11 @@
 import path from 'path';
 import nconf from 'nconf';
 
-import { primaryDB as db } from '../database';
+import db from '../database';
 
 
 const image = require('../image');
-const file = require('../file');
+import file from '../file';
 
 export default  function (Groups) {
 	const allowedTypes = ['image/png', 'image/jpeg', 'image/bmp'];

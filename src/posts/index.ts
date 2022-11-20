@@ -2,13 +2,11 @@
 
 const _ = require('lodash');
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const utils = require('../utils');
 import user from '../user';
 const privileges = require('../privileges');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 
 const Posts  = {} as any;
 

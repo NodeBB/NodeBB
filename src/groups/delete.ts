@@ -1,8 +1,8 @@
 'use strict';
 
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const slugify = require('../slugify');
-import { primaryDB as db } from '../database';
+import db from '../database';
 
 
 const batch = require('../batch');

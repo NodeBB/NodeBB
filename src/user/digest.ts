@@ -3,14 +3,12 @@
 import winston from 'winston';
 import nconf from 'nconf';
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const batch = require('../batch');
 import meta from '../meta';
 const user = require('./index');
 const topics = require('../topics');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const emailer = require('../emailer');
 const utils = require('../utils');
 
@@ -19,7 +17,7 @@ const Digest  = {} as any;
 const baseUrl = nconf.get('base_url');
 
 Digest.execute = async function (payload) {
-	const digestsDisabled = meta.config.disableEmailSubscriptions === 1;
+	const digestsDisabled = meta.configs.disableEmailSubscriptions === 1;
 	if (digestsDisabled) {
 		winston.info(`[user/jobs] Did not send digests (${payload.interval}) because subscription system is disabled.`);
 		return;
@@ -90,7 +88,7 @@ Digest.send = async function (data) {
 	let errorLogged = false;
 	await batch.processArray(data.subscribers, async (uids) => {
 		let userData = await user.getUsersFields(uids, ['uid', 'email', 'email:confirmed', 'username', 'userslug', 'lastonline']);
-		userData = userData.filter(u => u && u.email && (meta.config.includeUnverifiedEmails || u['email:confirmed']));
+		userData = userData.filter(u => u && u.email && (meta.configs.includeUnverifiedEmails || u['email:confirmed']));
 		if (!userData.length) {
 			return;
 		}
@@ -212,3 +210,5 @@ async function getTermTopics(term, uid) {
 	});
 	return { top, popular, recent };
 }
+
+export default Digest;

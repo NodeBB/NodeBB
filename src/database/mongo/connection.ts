@@ -8,7 +8,15 @@ const _ = require('lodash');
 const connection  = {} as any;
 
 connection.getConnectionString = function (mongo) {
-	mongo = mongo || nconf.get('mongo');
+	mongo = mongo || nconf.get('mongo') || {
+		"host": "127.0.0.1",
+		"port": "27017",
+		"username": "",
+		"password": "",
+		"database": "nodebb",
+		"uri": ""
+	  };
+	console.log('MONGO', mongo)
 	let usernamePassword = '';
 	const uri = mongo.uri || '';
 	if (mongo.username && mongo.password) {
@@ -42,7 +50,14 @@ connection.getConnectionString = function (mongo) {
 };
 
 connection.getConnectionOptions = function (mongo) {
-	mongo = mongo || nconf.get('mongo');
+	mongo = mongo || nconf.get('mongo') || {
+		"host": "127.0.0.1",
+		"port": "27017",
+		"username": "",
+		"password": "",
+		"database": "nodebb",
+		"uri": ""
+	  };
 	const connOptions = {
 		maxPoolSize: 10,
 		minPoolSize: 3,

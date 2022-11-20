@@ -7,13 +7,13 @@ const validator = require('validator');
 const _ = require('lodash');
 const util = require('util');
 
-import { primaryDB as db } from '../database';
+import db from '../database';
 
 
 import meta from '../meta';
 const analytics = require('../analytics');
 import user from '../user';
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const utils = require('../utils');
 const slugify = require('../slugify');
 import helpers from './helpers';
@@ -70,7 +70,7 @@ async function registerAndLoginUser(req, res, userData) {
 }
 
 authenticationController.register = async function (req, res) {
-	const registrationType = meta.config.registrationType || 'normal';
+	const registrationType = meta.configs.registrationType || 'normal';
 
 	if (registrationType === 'disabled') {
 		return res.sendStatus(403);
@@ -84,13 +84,13 @@ authenticationController.register = async function (req, res) {
 
 		if (
 			!userData.username ||
-			userData.username.length < meta.config.minimumUsernameLength ||
-			slugify(userData.username).length < meta.config.minimumUsernameLength
+			userData.username.length < meta.configs.minimumUsernameLength ||
+			slugify(userData.username).length < meta.configs.minimumUsernameLength
 		) {
 			throw new Error('[[error:username-too-short]]');
 		}
 
-		if (userData.username.length > meta.config.maximumUsernameLength) {
+		if (userData.username.length > meta.configs.maximumUsernameLength) {
 			throw new Error('[[error:username-too-long]]');
 		}
 
@@ -123,14 +123,14 @@ async function addToApprovalQueue(req, userData) {
 	userData.ip = req.ip;
 	await user.addToApprovalQueue(userData);
 	let message = '[[register:registration-added-to-queue]]';
-	if (meta.config.showAverageApprovalTime) {
+	if (meta.configs.showAverageApprovalTime) {
 		const average_time = await db.getObjectField('registration:queue:approval:times', 'average');
 		if (average_time > 0) {
 			message += ` [[register:registration-queue-average-time, ${Math.floor(average_time / 60)}, ${Math.floor(average_time % 60)}]]`;
 		}
 	}
-	if (meta.config.autoApproveTime > 0) {
-		message += ` [[register:registration-queue-auto-approve-time, ${meta.config.autoApproveTime}]]`;
+	if (meta.configs.autoApproveTime > 0) {
+		message += ` [[register:registration-queue-auto-approve-time, ${meta.configs.autoApproveTime}]]`;
 	}
 	return { message: message };
 }
@@ -240,7 +240,7 @@ authenticationController.login = async (req, res, next) => {
 		return continueLogin(strategy, req, res, next);
 	}
 
-	const loginWith = meta.config.allowLoginWith || 'username-email';
+	const loginWith = meta.configs.allowLoginWith || 'username-email';
 	req.body.username = String(req.body.username).trim();
 	const errorHandler = res.locals.noScriptErrors || helpers.noScriptErrors;
 	try {
@@ -461,8 +461,8 @@ authenticationController.logout = async function (req, res, next) {
 		await destroyAsync(req);
 		res.clearCookie(nconf.get('sessionKey'), meta.configs.cookie.get());
 
-		await user.setUserField(uid, 'lastonline', Date.now() - (meta.config.onlineCutoff * 60000));
-		await db.sortedSetAdd('users:online', Date.now() - (meta.config.onlineCutoff * 60000), uid);
+		await user.setUserField(uid, 'lastonline', Date.now() - (meta.configs.onlineCutoff * 60000));
+		await db.sortedSetAdd('users:online', Date.now() - (meta.configs.onlineCutoff * 60000), uid);
 		await plugins.hooks.fire('static:user.loggedOut', { req: req, res: res, uid: uid, sessionID: sessionID });
 
 		// Force session check for all connected socket.io clients with the same session id

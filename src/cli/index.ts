@@ -9,11 +9,13 @@ require('../../require-main');
 const packageInstall = require('./package-install').default;
 const { paths } = require('../constants');
 
+
 try {
 	fs.accessSync(paths.currentPackage, fs.constants.R_OK); // throw on missing package.json
 	try { // handle missing node_modules/ directory
 		fs.accessSync(paths.nodeModules, fs.constants.R_OK);
 	} catch (e: any) {
+		console.log('ANY ERROR!!!', e);
 		if (e.code === 'ENOENT') {
 			// run package installation just to sync up node_modules/ with existing package.json
 		//	packageInstall.installAll();
@@ -43,7 +45,6 @@ try {
 	checkVersion('lodash');
 	checkVersion('lru-cache');
 } catch (e: any) {
-	console.log('ERROR', e);
 	if (['ENOENT', 'DEP_WRONG_VERSION', 'MODULE_NOT_FOUND'].includes(e.code)) {
 		console.warn('Dependencies outdated or not yet installed.');
 		console.log('Installing them now...\n');
@@ -69,7 +70,7 @@ const file = require('../file').default;
 const prestart = require('../prestart');
 
 program.configureHelp(require('./colors'));
-
+console.log('LAUNCHING PROGRAM!!!');
 program
 	.name('./nodebb')
 	.description('Welcome to NodeBB')
@@ -79,7 +80,7 @@ program
 	.option('--config <value>', 'Specify a config file', 'config.json')
 	.option('-d, --dev', 'Development mode, including verbose logging', false)
 	.option('-l, --log', 'Log subprocess output to console', false);
-
+console.log('BOOM LAUNCH!!!');
 // provide a yargs object ourselves
 // otherwise yargs will consume `--help` or `help`
 // and `nconf` will exit with useless usage info
@@ -103,19 +104,20 @@ prestart.versionCheck();
 if (!configExists && (process as any).argv[2] !== 'setup') {
 	const { webInstall } = require('./setup');
 	webInstall();
-	// @ts-ignore
-	return;
 }
 
 (process as any).env.CONFIG = configFile;
 
 // running commands
+console.log('COMMAND START!!');
 program
 	.command('start')
 	.description('Start the NodeBB server')
 	.action(() => {
 		require('./running').start(program.opts());
 	});
+
+console.log('COMMAND SLOG!!');
 program
 	.command('slog', null, {
 		noHelp: true,
@@ -325,5 +327,6 @@ if ((process as any).argv.length === 2) {
 }
 
 program.executables = false;
+console.log('BOOM!!!!');
 
 program.parse();

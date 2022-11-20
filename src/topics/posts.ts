@@ -5,13 +5,11 @@ const _ = require('lodash');
 const validator = require('validator');
 import nconf from 'nconf';
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 import user from '../user';
 const posts = require('../posts');
 import meta from '../meta';
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const utils = require('../utils');
 
 const backlinkRegex = new RegExp(`(?:${nconf.get('url').replace('/', '\\/')}|\b|\\s)\\/topic\\/(\\d+).default(?:\\/\\w+)?`, 'g');
@@ -143,7 +141,7 @@ export default  function (Topics) {
 				postObj.selfPost = parseInt(uid, 10) > 0 && parseInt(uid, 10) === postObj.uid;
 
 				// Username override for guests, if enabled
-				if (meta.config.allowGuestHandles && postObj.uid === 0 && postObj.handle) {
+				if (meta.configs.allowGuestHandles && postObj.uid === 0 && postObj.handle) {
 					postObj.user.username = validator.escape(String(postObj.handle));
 					postObj.user.displayname = postObj.user.username;
 				}

@@ -7,8 +7,8 @@ export default  {
 	timestamp: Date.UTC(2018, 4, 28),
 	method: async function () {
 		const privileges = require('../../privileges');
-		const allowGuestSearching = parseInt(meta.config.allowGuestSearching, 10) === 1;
-		const allowGuestUserSearching = parseInt(meta.config.allowGuestUserSearching, 10) === 1;
+		const allowGuestSearching = parseInt(meta.configs.allowGuestSearching, 10) === 1;
+		const allowGuestUserSearching = parseInt(meta.configs.allowGuestUserSearching, 10) === 1;
 
 		await privileges.global.give(['groups:search:content', 'groups:search:users', 'groups:search:tags'], 'registered-users');
 		const guestPrivs : any[] = [];

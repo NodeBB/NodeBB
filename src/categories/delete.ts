@@ -5,7 +5,7 @@ import { primaryDB as db } from '../database';
 
 
 const batch = require('../batch');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const topics = require('../topics');
 const groups = require('../groups');
 const privileges = require('../privileges');

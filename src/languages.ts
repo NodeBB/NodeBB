@@ -6,8 +6,8 @@ const { paths } = require('./constants');
 const plugins = require('./plugins');
 
 const Languages  = {} as any;
-const languagesPath = path.join(__dirname, '../build/public/language');
-
+console.log('BUILDING LANGUAGE HERE 1');
+const languagesPath = path.join(__dirname, '../../public/language');
 const files = fs.readdirSync(path.join(paths.nodeModules,  '/timeago/locales'));
 Languages.timeagoCodes = files.filter(f => f.startsWith('jquery.timeago')).map(f => f.split('.')[2]);
 
@@ -84,3 +84,4 @@ Languages.userTimeagoCode = async function (userLang) {
 };
 
 require('./promisify').promisify(Languages);
+export default Languages;

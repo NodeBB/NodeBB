@@ -85,20 +85,20 @@ topicsController.get = async function getTopic(req, res, next) {
 	topicData.tagWhitelist = categories.filterTagWhitelist(topicData.tagWhitelist, userPrivileges.isAdminOrMod);
 
 	topicData.privileges = userPrivileges;
-	topicData.topicStaleDays = meta.config.topicStaleDays;
+	topicData.topicStaleDays = meta.configs.topicStaleDays;
 	topicData['reputation:disabled'] = meta.config['reputation:disabled'];
 	topicData['downvote:disabled'] = meta.config['downvote:disabled'];
 	topicData['feeds:disableRSS'] = meta.config['feeds:disableRSS'] || 0;
 	topicData['signatures:hideDuplicates'] = meta.config['signatures:hideDuplicates'];
-	topicData.bookmarkThreshold = meta.config.bookmarkThreshold;
-	topicData.necroThreshold = meta.config.necroThreshold;
-	topicData.postEditDuration = meta.config.postEditDuration;
-	topicData.postDeleteDuration = meta.config.postDeleteDuration;
+	topicData.bookmarkThreshold = meta.configs.bookmarkThreshold;
+	topicData.necroThreshold = meta.configs.necroThreshold;
+	topicData.postEditDuration = meta.configs.postEditDuration;
+	topicData.postDeleteDuration = meta.configs.postDeleteDuration;
 	topicData.scrollToMyPost = settings.scrollToMyPost;
 	topicData.updateUrlWithPostIndex = settings.updateUrlWithPostIndex;
-	topicData.allowMultipleBadges = meta.config.allowMultipleBadges === 1;
-	topicData.privateUploads = meta.config.privateUploads === 1;
-	topicData.showPostPreviewsOnHover = meta.config.showPostPreviewsOnHover === 1;
+	topicData.allowMultipleBadges = meta.configs.allowMultipleBadges === 1;
+	topicData.privateUploads = meta.configs.privateUploads === 1;
+	topicData.showPostPreviewsOnHover = meta.configs.showPostPreviewsOnHover === 1;
 	topicData.rssFeedUrl = `${relative_path}/topic/${topicData.tid}.rss`;
 	if (req.loggedIn) {
 		topicData.rssFeedUrl += `?uid=${req.uid}&token=${rssToken}`;
@@ -149,11 +149,11 @@ function calculateStartStop(page: number, postIndex: number, settings) {
 }
 
 async function incrementViewCount(req, tid: string) {
-	const allow = req.uid > 0 || (meta.config.guestsIncrementTopicViews && req.uid === 0);
+	const allow = req.uid > 0 || (meta.configs.guestsIncrementTopicViews && req.uid === 0);
 	if (allow) {
 		req.session.tids_viewed = req.session.tids_viewed || {};
 		const now = Date.now();
-		const interval = meta.config.incrementTopicViewsInterval * 60000;
+		const interval = meta.configs.incrementTopicViewsInterval * 60000;
 		if (!req.session.tids_viewed[tid] || req.session.tids_viewed[tid] < now - interval) {
 			await topics.increaseViewCount(tid);
 			req.session.tids_viewed[tid] = now;

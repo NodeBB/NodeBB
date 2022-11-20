@@ -1,10 +1,8 @@
 'use strict';
 
 import meta from '../meta';
-const plugins = require('../plugins');
-import { primaryDB as db } from '../database';
-
-
+import plugins  from '../plugins';
+import db from '../database';
 import user from '../user';
 
 export default  function (Messaging) {
@@ -23,7 +21,7 @@ export default  function (Messaging) {
 			throw new Error('[[error:invalid-chat-message]]');
 		}
 
-		const maximumChatMessageLength = meta.config.maximumChatMessageLength || 1000;
+		const maximumChatMessageLength = meta.configs.maximumChatMessageLength || 1000;
 		content = String(content).trim();
 		let { length } = content;
 		({ content, length } = await plugins.hooks.fire('filter:messaging.checkContent', { content, length }));

@@ -10,7 +10,7 @@ import { primaryDB as db } from '../database';
 const posts = require('../posts');
 const topics = require('../topics');
 const privileges = require('../privileges');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const batch = require('../batch');
 
 export default  function (Categories) {

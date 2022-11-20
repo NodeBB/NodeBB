@@ -4,17 +4,8 @@
 const _ = require('lodash');
 
 import meta from '../meta';
-const plugins = require('../plugins');
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const groups = require('../groups');
-const utils = require('../utils');
-
-export default  function (User) {
-	const filterFnMap = {
-		online: user => user.status !== 'offline' && (Date.now() - user.lastonline < 300000),
-		flagged: user => parseInt(user.flags, 10) > 0,
 		verified: user => !!user['email:confirmed'],
 		unverified: user => !user['email:confirmed'],
 	} as any;
@@ -55,7 +46,7 @@ export default  function (User) {
 		} as any;
 
 		if (paginate) {
-			const resultsPerPage = data.resultsPerPage || meta.config.userSearchResultsPerPage;
+			const resultsPerPage = data.resultsPerPage || meta.configs.userSearchResultsPerPage;
 			const start = Math.max(0, page - 1) * resultsPerPage;
 			const stop = start + resultsPerPage;
 			searchResult.pageCount = Math.ceil(uids.length / resultsPerPage);
@@ -76,7 +67,7 @@ export default  function (User) {
 		const min = query;
 		const max = query.substr(0, query.length - 1) + String.fromCharCode(query.charCodeAt(query.length - 1) + 1);
 
-		const resultsPerPage = meta.config.userSearchResultsPerPage;
+		const resultsPerPage = meta.configs.userSearchResultsPerPage;
 		hardCap = hardCap || resultsPerPage * 10;
 
 		const data = await db.getSortedSetRangeByLex(`${searchBy}:sorted`, min, max, 0, hardCap);

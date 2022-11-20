@@ -2,11 +2,9 @@
 
 const _ = require('lodash');
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const categories = require('../categories');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 
 export default  function (User) {
 	User.setCategoryWatchState = async function (uid, cids, state) {

@@ -1,9 +1,7 @@
 
 'use strict';
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const plugins = require('../plugins');
 const posts = require('../posts');
 

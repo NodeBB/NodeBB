@@ -1,7 +1,7 @@
 'use strict';
 
 const async = require('async');
-import { primaryDB as db } from '../../database';
+import db from '../../database';
 import meta from '../../meta';
 
 export default  {
@@ -21,7 +21,7 @@ export default  {
 						return next(err);
 					}
 					async.eachSeries(data.groups, (group, next) => {
-						if (group.name === 'guests' && parseInt(meta.config.allowGuestUploads, 10) !== 1) {
+						if (group.name === 'guests' && parseInt(meta.configs.allowGuestUploads, 10) !== 1) {
 							return next();
 						}
 						if (group.privileges['groups:read']) {

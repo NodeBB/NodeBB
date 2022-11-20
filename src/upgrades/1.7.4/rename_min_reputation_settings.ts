@@ -1,6 +1,6 @@
 'use strict';
 
-import { primaryDB as db } from '../../database';
+import db from '../../database';
 
 export default  {
 	name: 'Rename privileges:downvote and privileges:flag to min:rep:downvote, min:rep:flag respectively',

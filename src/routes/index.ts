@@ -8,7 +8,7 @@ const chalk = require('chalk');
 import meta from '../meta';
 const controllers = require('../controllers');
 const controllerHelpers = require('../controllers/helpers');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 
 const authRoutes = require('./authentication');
 const writeRoutes = require('./write');

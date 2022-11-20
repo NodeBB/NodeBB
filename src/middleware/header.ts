@@ -4,7 +4,7 @@ const util = require('util');
 
 const user = require('../user');
 const plugins = require('../plugins');
-const helpers = require('./helpers');
+import helpers from './helpers';
 
 const controllers = {
 	api: require('../controllers/api'),

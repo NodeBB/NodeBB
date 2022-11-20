@@ -3,7 +3,7 @@
 import nconf from 'nconf';
 const _ = require('lodash');
 
-import { primaryDB as db } from '../../database';
+import db from '../../database';
 import user from '../../user';
 const posts = require('../../posts');
 import categories from '../../categories';const plugins = require('../../plugins');

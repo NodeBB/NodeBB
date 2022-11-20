@@ -6,7 +6,7 @@ const validator = require('validator');
 
 const groups = require('../groups');
 import user from '../user';
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const translator = require('../translator');
 
 const helpers  = {} as any;

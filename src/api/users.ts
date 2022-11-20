@@ -12,7 +12,7 @@ import meta from '../meta';
 const flags = require('../flags');
 const privileges = require('../privileges');
 const notifications = require('../notifications');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const events = require('../events');
 const translator = require('../translator');
 const sockets = require('../socket.io');
@@ -311,7 +311,7 @@ async function processDeletion({ uid, method, password, caller }) {
 	const isSelf = parseInt(uid, 10) === parseInt(caller.uid, 10);
 	const isAdmin = await user.isAdministrator(caller.uid);
 
-	if (isSelf && meta.config.allowAccountDelete !== 1) {
+	if (isSelf && meta.configs.allowAccountDelete !== 1) {
 		throw new Error('[[error:account-deletion-disabled]]');
 	} else if (!isSelf && !isAdmin) {
 		throw new Error('[[error:no-privileges]]');

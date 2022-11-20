@@ -28,21 +28,21 @@ describe('authentication', () => {
 	});
 
 	it('should allow login with email for uid 1', async () => {
-		const oldValue = meta.config.allowLoginWith;
-		meta.config.allowLoginWith = 'username-email';
+		const oldValue = meta.configs.allowLoginWith;
+		meta.configs.allowLoginWith = 'username-email';
 		const { res } = await helpers.loginUser('regular@nodebb.org', 'regularpwd');
 		assert.strictEqual(res.statusCode, 200);
-		meta.config.allowLoginWith = oldValue;
+		meta.configs.allowLoginWith = oldValue;
 	});
 
 	it('second user should fail to login with email since email is not confirmed', async () => {
-		const oldValue = meta.config.allowLoginWith;
-		meta.config.allowLoginWith = 'username-email';
+		const oldValue = meta.configs.allowLoginWith;
+		meta.configs.allowLoginWith = 'username-email';
 		const uid = await user.create({ username: '2nduser', password: '2ndpassword', email: '2nduser@nodebb.org' });
 		const { res, body } = await helpers.loginUser('2nduser@nodebb.org', '2ndpassword');
 		assert.strictEqual(res.statusCode, 403);
 		assert.strictEqual(body, '[[error:invalid-login-credentials]]');
-		meta.config.allowLoginWith = oldValue;
+		meta.configs.allowLoginWith = oldValue;
 	});
 
 	it('should fail to create user if username is too short', (done) => {
@@ -312,7 +312,7 @@ describe('authentication', () => {
 	});
 
 	it('should fail to register if registraton is disabled', (done) => {
-		meta.config.registrationType = 'disabled';
+		meta.configs.registrationType = 'disabled';
 		helpers.registerUser({
 			username: 'someuser',
 			password: 'somepassword',
@@ -325,12 +325,12 @@ describe('authentication', () => {
 	});
 
 	it('should return error if invitation is not valid', (done) => {
-		meta.config.registrationType = 'invite-only';
+		meta.configs.registrationType = 'invite-only';
 		helpers.registerUser({
 			username: 'someuser',
 			password: 'somepassword',
 		}, (err, jar, response, body) => {
-			meta.config.registrationType = 'normal';
+			meta.configs.registrationType = 'normal';
 			assert.ifError(err);
 			assert.equal(response.statusCode, 400);
 			assert.equal(body, '[[register:invite.error-invite-only]]');
@@ -371,14 +371,14 @@ describe('authentication', () => {
 	});
 
 	it('should queue user if ip is used before', (done) => {
-		meta.config.registrationApprovalType = 'admin-approval-ip';
+		meta.configs.registrationApprovalType = 'admin-approval-ip';
 		helpers.registerUser({
 			email: 'another@user.com',
 			username: 'anotheruser',
 			password: 'anotherpwd',
 			gdpr_consent: 1,
 		}, (err, jar, response, body) => {
-			meta.config.registrationApprovalType = 'normal';
+			meta.configs.registrationApprovalType = 'normal';
 			assert.ifError(err);
 			assert.equal(response.statusCode, 200);
 			assert.equal(body.message, '[[register:registration-added-to-queue]]');
@@ -397,9 +397,9 @@ describe('authentication', () => {
 	});
 
 	it('should fail to login if login type is username and an email is sent', (done) => {
-		meta.config.allowLoginWith = 'username';
+		meta.configs.allowLoginWith = 'username';
 		helpers.loginUser('ginger@nodebb.org', '123456', (err, data) => {
-			meta.config.allowLoginWith = 'username-email';
+			meta.configs.allowLoginWith = 'username-email';
 			assert.ifError(err);
 			assert.equal(data.res.statusCode, 400);
 			assert.equal(data.body, '[[error:wrong-login-type-username]]');
@@ -491,7 +491,7 @@ describe('authentication', () => {
 	});
 
 	it('should lockout account on 3 failed login attempts', (done) => {
-		meta.config.loginAttempts = 3;
+		meta.configs.loginAttempts = 3;
 		let uid;
 		async.waterfall([
 			function (next) {
@@ -511,7 +511,7 @@ describe('authentication', () => {
 				helpers.loginUser('lockme', 'abcdef', next);
 			},
 			function (data, next) {
-				meta.config.loginAttempts = 5;
+				meta.configs.loginAttempts = 5;
 				assert.equal(data.res.statusCode, 403);
 				assert.equal(data.body, '[[error:account-locked]]');
 				helpers.loginUser('lockme', 'abcdef', next);

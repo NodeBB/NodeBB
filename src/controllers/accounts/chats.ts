@@ -9,7 +9,7 @@ import helpers from '../helpers';
 const chatsController  = {} as any;
 
 chatsController.get = async function (req, res, next) {
-	if (meta.config.disableChat) {
+	if (meta.configs.disableChat) {
 		return next();
 	}
 

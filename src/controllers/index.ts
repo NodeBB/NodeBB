@@ -5,7 +5,7 @@ const validator = require('validator');
 
 import meta from '../meta';
 import user from '../user';
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const privileges = require('../privileges');
 import helpers from './helpers';
 
@@ -56,8 +56,8 @@ Controllers.reset = async function (req, res) {
 			valid: valid,
 			displayExpiryNotice: req.session.passwordExpired,
 			code: code,
-			minimumPasswordLength: meta.config.minimumPasswordLength,
-			minimumPasswordStrength: meta.config.minimumPasswordStrength,
+			minimumPasswordLength: meta.configs.minimumPasswordLength,
+			minimumPasswordStrength: meta.configs.minimumPasswordStrength,
 			breadcrumbs: helpers.buildBreadcrumbs([
 				{
 					text: '[[reset_password:reset_password]]',
@@ -95,8 +95,8 @@ Controllers.reset = async function (req, res) {
 Controllers.login = async function (req, res) {
 	const data = { loginFormEntry: [] } as any;
 	const loginStrategies = require('../routes/authentication').getLoginStrategies();
-	const registrationType = meta.config.registrationType || 'normal';
-	const allowLoginWith = (meta.config.allowLoginWith || 'username-email');
+	const registrationType = meta.configs.registrationType || 'normal';
+	const allowLoginWith = (meta.configs.allowLoginWith || 'username-email');
 
 	let errorText;
 	if (req.query.error === 'csrf-invalid') {
@@ -140,7 +140,7 @@ Controllers.login = async function (req, res) {
 };
 
 Controllers.register = async function (req, res, next) {
-	const registrationType = meta.config.registrationType || 'normal';
+	const registrationType = meta.configs.registrationType || 'normal';
 
 	if (registrationType === 'disabled') {
 		return setImmediate(next);
@@ -172,10 +172,10 @@ Controllers.register = async function (req, res, next) {
 			alternate_logins: !!loginStrategies.length,
 			authentication: loginStrategies,
 
-			minimumUsernameLength: meta.config.minimumUsernameLength,
-			maximumUsernameLength: meta.config.maximumUsernameLength,
-			minimumPasswordLength: meta.config.minimumPasswordLength,
-			minimumPasswordStrength: meta.config.minimumPasswordStrength,
+			minimumUsernameLength: meta.configs.minimumUsernameLength,
+			maximumUsernameLength: meta.configs.maximumUsernameLength,
+			minimumPasswordLength: meta.configs.minimumPasswordLength,
+			minimumPasswordStrength: meta.configs.minimumPasswordStrength,
 			breadcrumbs: helpers.buildBreadcrumbs([{
 				text: '[[register:register]]',
 			}]),
@@ -251,13 +251,13 @@ Controllers.robots = function (req, res) {
 
 Controllers.manifest = async function (req, res) {
 	const manifest = {
-		name: meta.config.title || 'NodeBB',
-		short_name: meta.config['title:short'] || meta.config.title || 'NodeBB',
+		name: meta.configs.title || 'NodeBB',
+		short_name: meta.config['title:short'] || meta.configs.title || 'NodeBB',
 		start_url: nconf.get('url'),
 		display: 'standalone',
 		orientation: 'portrait',
-		theme_color: meta.config.themeColor || '#ffffff',
-		background_color: meta.config.backgroundColor || '#ffffff',
+		theme_color: meta.configs.themeColor || '#ffffff',
+		background_color: meta.configs.backgroundColor || '#ffffff',
 		icons: [],
 	} as any;
 
@@ -337,7 +337,7 @@ Controllers.outgoing = function (req, res, next) {
 
 	res.render('outgoing', {
 		outgoing: validator.escape(String(url)),
-		title: meta.config.title,
+		title: meta.configs.title,
 		breadcrumbs: helpers.buildBreadcrumbs([{
 			text: '[[notifications:outgoing_link]]',
 		}]),
@@ -345,12 +345,12 @@ Controllers.outgoing = function (req, res, next) {
 };
 
 Controllers.termsOfUse = async function (req, res, next) {
-	if (!meta.config.termsOfUse) {
+	if (!meta.configs.termsOfUse) {
 		return next();
 	}
 	const termsOfUse = await plugins.hooks.fire('filter:parse.post', {
 		postData: {
-			content: meta.config.termsOfUse || '',
+			content: meta.configs.termsOfUse || '',
 		},
 	});
 	res.render('tos', {

@@ -32,3 +32,4 @@ navigation.get = async function (uid: string) {
 };
 
 require('../promisify').promisify(navigation);
+export default navigation;

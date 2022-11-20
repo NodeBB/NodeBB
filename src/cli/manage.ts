@@ -7,10 +7,10 @@ import nconf from 'nconf';
 
 import { build } from '../meta/build';
 
-import { primaryDB as db } from '../database';
+import db from '../database';
 
 
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const events = require('../events');
 const analytics = require('../analytics');
 const reset = require('./reset');
@@ -39,11 +39,13 @@ async function install(plugin) {
 		await plugins.toggleInstall(plugin, suggested.version);
 
 		process.exit(0);
-	} catch (err) {
+	} catch (err: any) {
 		winston.error(`An error occurred during plugin installation\n${err.stack}`);
 		process.exit(1);
 	}
 }
+
+export { build };
 
 export async function activate(plugin) {
 	if (themeNamePattern.test(plugin)) {

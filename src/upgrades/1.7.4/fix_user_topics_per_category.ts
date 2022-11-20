@@ -1,7 +1,7 @@
 'use strict';
 
 const batch = require('../../batch');
-import { primaryDB as db } from '../../database';
+import db from '../../database';
 
 export default  {
 	name: 'Fix topics in categories per user if they were moved',

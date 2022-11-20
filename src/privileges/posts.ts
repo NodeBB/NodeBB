@@ -8,7 +8,7 @@ const posts = require('../posts');
 const topics = require('../topics');
 import user from '../user';
 import helpers from './helpers';
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const utils = require('../utils');
 const privsCategories = require('./categories');
 const privsTopics = require('./topics');
@@ -131,18 +131,18 @@ privsPosts.canEdit = async function (pid, uid) {
 
 	if (
 		!results.isMod &&
-		meta.config.postEditDuration &&
-		(Date.now() - results.postData.timestamp > meta.config.postEditDuration * 1000)
+		meta.configs.postEditDuration &&
+		(Date.now() - results.postData.timestamp > meta.configs.postEditDuration * 1000)
 	) {
-		return { flag: false, message: `[[error:post-edit-duration-expired, ${meta.config.postEditDuration}]]` };
+		return { flag: false, message: `[[error:post-edit-duration-expired, ${meta.configs.postEditDuration}]]` };
 	}
 	if (
 		!results.isMod &&
-		meta.config.newbiePostEditDuration > 0 &&
-		meta.config.newbiePostDelayThreshold > results.userData.reputation &&
-		Date.now() - results.postData.timestamp > meta.config.newbiePostEditDuration * 1000
+		meta.configs.newbiePostEditDuration > 0 &&
+		meta.configs.newbiePostDelayThreshold > results.userData.reputation &&
+		Date.now() - results.postData.timestamp > meta.configs.newbiePostEditDuration * 1000
 	) {
-		return { flag: false, message: `[[error:post-edit-duration-expired, ${meta.config.newbiePostEditDuration}]]` };
+		return { flag: false, message: `[[error:post-edit-duration-expired, ${meta.configs.newbiePostEditDuration}]]` };
 	}
 
 	const isLocked = await topics.isLocked(results.postData.tid);
@@ -179,9 +179,9 @@ privsPosts.canDelete = async function (pid, uid) {
 		return { flag: false, message: '[[error:topic-locked]]' };
 	}
 
-	const { postDeleteDuration } = meta.config;
+	const { postDeleteDuration } = meta.configs;
 	if (!results.isMod && postDeleteDuration && (Date.now() - postData.timestamp > postDeleteDuration * 1000)) {
-		return { flag: false, message: `[[error:post-delete-duration-expired, ${meta.config.postDeleteDuration}]]` };
+		return { flag: false, message: `[[error:post-delete-duration-expired, ${meta.configs.postDeleteDuration}]]` };
 	}
 	const { deleterUid } = postData;
 	const flag = results['posts:delete'] && ((results.isOwner && (deleterUid === 0 || deleterUid === postData.uid)) || results.isMod);

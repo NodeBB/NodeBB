@@ -8,8 +8,7 @@ const cproc = require('child_process');
 const util = require('util');
 const request = require('request-promise-native');
 
-import { primaryDB as db } from '../database';
-
+import db from '../database';
 import meta from '../meta';
 const pubsub = require('../pubsub').default;
 const { paths } = require('../constants');

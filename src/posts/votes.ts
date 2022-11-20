@@ -1,13 +1,11 @@
 'use strict';
 
 import meta from '../meta';
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const flags = require('../flags');
 import user from '../user';
 const topics = require('../topics');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const privileges = require('../privileges');
 const translator = require('../translator');
 

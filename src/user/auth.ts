@@ -4,9 +4,7 @@ import winston from 'winston';
 const validator = require('validator');
 const util = require('util');
 const _ = require('lodash');
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 import meta from '../meta';
 const events = require('../events');
 const batch = require('../batch');
@@ -24,12 +22,12 @@ export default function (User) {
 			throw new Error('[[error:account-locked]]');
 		}
 		const attempts = await db.increment(`loginAttempts:${uid}`);
-		if (attempts <= meta.config.loginAttempts) {
+		if (attempts <= meta.configs.loginAttempts) {
 			return await db.pexpire(`loginAttempts:${uid}`, 1000 * 60 * 60);
 		}
 		// Lock out the account
 		await db.set(`lockout:${uid}`, '');
-		const duration = 1000 * 60 * meta.config.lockoutDuration;
+		const duration = 1000 * 60 * meta.configs.lockoutDuration;
 
 		await db.delete(`loginAttempts:${uid}`);
 		await db.pexpire(`lockout:${uid}`, duration);
@@ -114,7 +112,7 @@ export default function (User) {
 		}
 		await cleanExpiredSessions(uid);
 		await db.sortedSetAdd(`uid:${uid}:sessions`, Date.now(), sessionId);
-		await revokeSessionsAboveThreshold(uid, meta.config.maxUserSessions);
+		await revokeSessionsAboveThreshold(uid, meta.configs.maxUserSessions);
 	};
 
 	async function revokeSessionsAboveThreshold(uid: string, maxUserSessions: number) {

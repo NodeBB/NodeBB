@@ -6,7 +6,7 @@ const _ = require('lodash');
 import { primaryDB as db } from '../database';
 
 
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const privileges = require('../privileges');
 const utils = require('../utils');
 const slugify = require('../slugify');

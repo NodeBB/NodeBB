@@ -5,7 +5,7 @@ import nconf from 'nconf';
 const validator = require('validator');
 const qs = require('querystring');
 
-import { primaryDB as db } from '../database';
+import db from '../database';
 
 
 const privileges = require('../privileges');

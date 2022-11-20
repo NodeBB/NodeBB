@@ -12,8 +12,8 @@ import nconf from 'nconf';
 const _ = require('lodash');
 const Benchpress = require('benchpressjs');
 
-const plugins = require('../plugins');
-const file = require('../file');
+import plugins from '../plugins';
+import file from '../file';
 const { themeNamePattern, paths } = require('../constants');
 
 const viewsPath = nconf.get('views_dir');

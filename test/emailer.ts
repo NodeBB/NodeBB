@@ -188,9 +188,9 @@ describe('emailer', () => {
 				method,
 			});
 
-			meta.config.sendEmailToBanned = 1;
+			meta.configs.sendEmailToBanned = 1;
 			await Emailer.send('test', recipientUid, {});
-			meta.config.sendEmailToBanned = 0;
+			meta.configs.sendEmailToBanned = 0;
 			await user.bans.unban(recipientUid);
 
 			Plugins.hooks.unregister('emailer-test', 'filter:email.send', method);

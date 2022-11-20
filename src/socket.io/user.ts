@@ -8,13 +8,11 @@ const sleep = util.promisify(setTimeout);
 import user from '../user';
 const topics = require('../topics');
 const messaging = require('../messaging');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 import meta from '../meta';
 const events = require('../events');
 const emailer = require('../emailer');
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const userController = require('../controllers/user');
 const privileges = require('../privileges');
 const utils = require('../utils');

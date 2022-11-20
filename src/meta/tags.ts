@@ -3,7 +3,7 @@
 import nconf from 'nconf';
 import winston from 'winston';
 
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const Meta = require('./index');
 const utils = require('../utils');
 
@@ -30,20 +30,20 @@ Tags.parse = async (req, data, meta, link) => {
 		content: 'yes',
 	}, {
 		property: 'og:site_name',
-		content: Meta.config.title || 'NodeBB',
+		content: meta.configs.title || 'NodeBB',
 	}, {
 		name: 'msapplication-badge',
 		content: `frequency=30; polling-uri=${url}/sitemap.xml`,
 		noEscape: true,
 	}, {
 		name: 'theme-color',
-		content: Meta.config.themeColor || '#ffffff',
+		content: meta.configs.themeColor || '#ffffff',
 	}];
 
-	if (Meta.config.keywords) {
+	if (meta.configs.keywords) {
 		defaultTags.push({
 			name: 'keywords',
-			content: Meta.config.keywords,
+			content: meta.configs.keywords,
 		});
 	}
 
@@ -73,7 +73,7 @@ Tags.parse = async (req, data, meta, link) => {
 		defaultLinks.push({
 			rel: 'search',
 			type: 'application/opensearchdescription+xml',
-			title: utils.escapeHTML(String(Meta.config.title || Meta.config.browserTitle || 'NodeBB')),
+			title: utils.escapeHTML(String(meta.configs.title || meta.configs.browserTitle || 'NodeBB')),
 			href: `${relative_path}/osd.xml`,
 		});
 	}
@@ -166,11 +166,11 @@ Tags.parse = async (req, data, meta, link) => {
 
 	await addSiteOGImage(meta);
 
-	addIfNotExists(meta, 'property', 'og:title', Meta.config.title || 'NodeBB');
+	addIfNotExists(meta, 'property', 'og:title', meta.configs.title || 'NodeBB');
 	const ogUrl = url + (req.originalUrl !== '/' ? stripRelativePath(req.originalUrl) : '');
 	addIfNotExists(meta, 'property', 'og:url', ogUrl);
-	addIfNotExists(meta, 'name', 'description', Meta.config.description);
-	addIfNotExists(meta, 'property', 'og:description', Meta.config.description);
+	addIfNotExists(meta, 'name', 'description', meta.configs.description);
+	addIfNotExists(meta, 'property', 'og:description', meta.configs.description);
 
 	link = results.links.links.concat(link || []).map((tag) => {
 		if (!tag.noEscape) {

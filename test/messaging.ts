@@ -72,8 +72,8 @@ describe('Messaging Library', () => {
 		({ jar: mocks.users.baz.jar, csrf_token: mocks.users.baz.csrf } = await util.promisify(helpers.loginUser).default('baz', 'quuxquux'));
 		({ jar: mocks.users.herp.jar, csrf_token: mocks.users.herp.csrf } = await util.promisify(helpers.loginUser).default('herp', 'derpderp'));
 
-		chatMessageDelay = meta.config.chatMessageDelay;
-		meta.config.chatMessageDelay = 0;
+		chatMessageDelay = meta.configs.chatMessageDelay;
+		meta.configs.chatMessageDelay = 0;
 	});
 
 	after(() => {
@@ -121,8 +121,8 @@ describe('Messaging Library', () => {
 		});
 
 		it('should return rate limit error on second try', async () => {
-			const oldValue = meta.config.chatMessageDelay;
-			meta.config.chatMessageDelay = 1000;
+			const oldValue = meta.configs.chatMessageDelay;
+			meta.configs.chatMessageDelay = 1000;
 
 			await callv3API('post', '/chats', {
 				uids: [mocks.users.baz.uid],
@@ -135,7 +135,7 @@ describe('Messaging Library', () => {
 			assert.equal(statusCode, 400);
 			assert.equal(body.status.code, 'bad-request');
 			assert.equal(body.status.message, await translator.translate('[[error:too-many-messages]]'));
-			meta.config.chatMessageDelay = oldValue;
+			meta.configs.chatMessageDelay = oldValue;
 		});
 
 		it('should create a new chat room', async () => {
@@ -194,11 +194,11 @@ describe('Messaging Library', () => {
 		});
 
 		it('should fail to add users to room if max is reached', async () => {
-			meta.config.maximumUsersInChatRoom = 2;
+			meta.configs.maximumUsersInChatRoom = 2;
 			const { statusCode, body } = await callv3API('post', `/chats/${roomId}/users`, { uids: [mocks.users.bar.uid] }, 'foo');
 			assert.strictEqual(statusCode, 400);
 			assert.equal(body.status.message, await translator.translate('[[error:cant-add-more-users-to-chat-room]]'));
-			meta.config.maximumUsersInChatRoom = 0;
+			meta.configs.maximumUsersInChatRoom = 0;
 		});
 
 		it('should fail to add users to room if user does not exist', async () => {
@@ -359,14 +359,14 @@ describe('Messaging Library', () => {
 
 		it('should fail to send second message due to rate limit', async () => {
 			const socketMock = { uid: mocks.users.foo.uid };
-			const oldValue = meta.config.chatMessageDelay;
-			meta.config.chatMessageDelay = 1000;
+			const oldValue = meta.configs.chatMessageDelay;
+			meta.configs.chatMessageDelay = 1000;
 
 			await callv3API('post', `/chats/${roomId}`, { roomId: roomId, message: 'first chat message' }, 'foo');
 			const { body } = await callv3API('post', `/chats/${roomId}`, { roomId: roomId, message: 'first chat message' }, 'foo');
 			const { status } = body;
 			assert.equal(status.message, await translator.translate('[[error:too-many-messages]]'));
-			meta.config.chatMessageDelay = oldValue;
+			meta.configs.chatMessageDelay = oldValue;
 		});
 
 		it('should return invalid-data error', (done) => {
@@ -400,14 +400,14 @@ describe('Messaging Library', () => {
 
 
 		it('should notify offline users of message', async () => {
-			meta.config.notificationSendDelay = 0.1;
+			meta.configs.notificationSendDelay = 0.1;
 
 			const { body } = await callv3API('post', '/chats', { uids: [mocks.users.baz.uid] }, 'foo');
 			const { roomId } = body.response;
 			assert(roomId);
 
 			await callv3API('post', `/chats/${roomId}/users`, { uids: [mocks.users.herp.uid] }, 'foo');
-			await db.sortedSetAdd('users:online', Date.now() - ((meta.config.onlineCutoff * 60000) + 50000), mocks.users.herp.uid);
+			await db.sortedSetAdd('users:online', Date.now() - ((meta.configs.onlineCutoff * 60000) + 50000), mocks.users.herp.uid);
 
 			await callv3API('post', `/chats/${roomId}`, { roomId: roomId, message: 'second chat message **bold** text' }, 'foo');
 			await sleep(3000);
@@ -736,11 +736,11 @@ describe('Messaging Library', () => {
 
 		describe('disabled via ACP', () => {
 			before(async () => {
-				meta.config.disableChatMessageEditing = true;
+				meta.configs.disableChatMessageEditing = true;
 			});
 
 			after(async () => {
-				meta.config.disableChatMessageEditing = false;
+				meta.configs.disableChatMessageEditing = false;
 			});
 
 			it('should error out for regular users', async () => {
@@ -769,7 +769,7 @@ describe('Messaging Library', () => {
 
 	describe('controller', () => {
 		it('should 404 if chat is disabled', async () => {
-			meta.config.disableChat = 1;
+			meta.configs.disableChat = 1;
 			const response = await request(`${nconf.get('url')}/user/baz/chats`, {
 				resolveWithFullResponse: true,
 				simple: false,
@@ -779,7 +779,7 @@ describe('Messaging Library', () => {
 		});
 
 		it('should 500 for guest with no privilege error', async () => {
-			meta.config.disableChat = 0;
+			meta.configs.disableChat = 0;
 			const response = await request(`${nconf.get('url')}/api/user/baz/chats`, {
 				resolveWithFullResponse: true,
 				simple: false,

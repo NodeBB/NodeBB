@@ -4,9 +4,7 @@
 const validator = require('validator');
 
 import meta from '../meta';
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const plugins = require('../plugins');
 const notifications = require('../notifications');
 const languages = require('../languages');
@@ -41,8 +39,8 @@ export default  function (User) {
 		const data = await plugins.hooks.fire('filter:user.getSettings', { uid: uid, settings: settings });
 		settings = data.settings;
 
-		const defaultTopicsPerPage = meta.config.topicsPerPage;
-		const defaultPostsPerPage = meta.config.postsPerPage;
+		const defaultTopicsPerPage = meta.configs.topicsPerPage;
+		const defaultPostsPerPage = meta.configs.postsPerPage;
 
 		settings.showemail = parseInt(getSetting(settings, 'showemail', 0), 10) === 1;
 		settings.showfullname = parseInt(getSetting(settings, 'showfullname', 0), 10) === 1;
@@ -50,16 +48,16 @@ export default  function (User) {
 		settings.dailyDigestFreq = getSetting(settings, 'dailyDigestFreq', 'off');
 		settings.usePagination = parseInt(getSetting(settings, 'usePagination', 0), 10) === 1;
 		settings.topicsPerPage = Math.min(
-			meta.config.maxTopicsPerPage,
+			meta.configs.maxTopicsPerPage,
 			settings.topicsPerPage ? parseInt(settings.topicsPerPage, 10) : defaultTopicsPerPage,
 			defaultTopicsPerPage
 		);
 		settings.postsPerPage = Math.min(
-			meta.config.maxPostsPerPage,
+			meta.configs.maxPostsPerPage,
 			settings.postsPerPage ? parseInt(settings.postsPerPage, 10) : defaultPostsPerPage,
 			defaultPostsPerPage
 		);
-		settings.userLang = settings.userLang || meta.config.defaultLang || 'en-GB';
+		settings.userLang = settings.userLang || meta.configs.defaultLang || 'en-GB';
 		settings.acpLang = settings.acpLang || settings.userLang;
 		settings.topicPostSort = getSetting(settings, 'topicPostSort', 'oldest_to_newest');
 		settings.categoryTopicSort = getSetting(settings, 'categoryTopicSort', 'newest_to_oldest');
@@ -92,7 +90,7 @@ export default  function (User) {
 	}
 
 	User.saveSettings = async function (uid, data) {
-		const maxPostsPerPage = meta.config.maxPostsPerPage || 20;
+		const maxPostsPerPage = meta.configs.maxPostsPerPage || 20;
 		if (
 			!data.postsPerPage ||
 			parseInt(data.postsPerPage, 10) <= 1 ||
@@ -101,7 +99,7 @@ export default  function (User) {
 			throw new Error(`[[error:invalid-pagination-value, 2, ${maxPostsPerPage}]]`);
 		}
 
-		const maxTopicsPerPage = meta.config.maxTopicsPerPage || 20;
+		const maxTopicsPerPage = meta.configs.maxTopicsPerPage || 20;
 		if (
 			!data.topicsPerPage ||
 			parseInt(data.topicsPerPage, 10) <= 1 ||
@@ -117,7 +115,7 @@ export default  function (User) {
 		if (data.acpLang && !languageCodes.includes(data.acpLang)) {
 			throw new Error('[[error:invalid-language]]');
 		}
-		data.userLang = data.userLang || meta.config.defaultLang;
+		data.userLang = data.userLang || meta.configs.defaultLang;
 
 		plugins.hooks.fire('action:user.saveSettings', { uid: uid, settings: data });
 
@@ -129,8 +127,8 @@ export default  function (User) {
 			usePagination: data.usePagination,
 			topicsPerPage: Math.min(data.topicsPerPage, parseInt(maxTopicsPerPage, 10) || 20),
 			postsPerPage: Math.min(data.postsPerPage, parseInt(maxPostsPerPage, 10) || 20),
-			userLang: data.userLang || meta.config.defaultLang,
-			acpLang: data.acpLang || meta.config.defaultLang,
+			userLang: data.userLang || meta.configs.defaultLang,
+			acpLang: data.acpLang || meta.configs.defaultLang,
 			followTopicsOnCreate: data.followTopicsOnCreate,
 			followTopicsOnReply: data.followTopicsOnReply,
 			restrictChat: data.restrictChat,

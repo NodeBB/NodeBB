@@ -9,7 +9,7 @@ import helpers from './helpers';
 
 export default  function (middleware) {
 	middleware.maintenanceMode = helpers.try(async (req, res, next) => {
-		if (!meta.config.maintenanceMode) {
+		if (!meta.configs.maintenanceMode) {
 			return next();
 		}
 
@@ -23,18 +23,18 @@ export default  function (middleware) {
 
 		const [isAdmin, isMemberOfExempt] = await Promise.all([
 			user.isAdministrator(req.uid),
-			groups.isMemberOfAny(req.uid, meta.config.groupsExemptFromMaintenanceMode),
+			groups.isMemberOfAny(req.uid, meta.configs.groupsExemptFromMaintenanceMode),
 		]);
 
 		if (isAdmin || isMemberOfExempt) {
 			return next();
 		}
 
-		res.status(meta.config.maintenanceModeStatus);
+		res.status(meta.configs.maintenanceModeStatus);
 
 		const data = {
-			site_title: meta.config.title || 'NodeBB',
-			message: meta.config.maintenanceModeMessage,
+			site_title: meta.configs.title || 'NodeBB',
+			message: meta.configs.maintenanceModeMessage,
 		} as any;
 
 		if (res.locals.isAPI) {

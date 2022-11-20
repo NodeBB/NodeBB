@@ -14,7 +14,7 @@ const utils = { ...require('../../public/src/utils.common') };
 
 utils.getLanguage = function () {
 	const meta = require('./meta');
-	return meta.config && meta.config.defaultLang ? meta.config.defaultLang : 'en-GB';
+	return meta.config && meta.configs.defaultLang ? meta.configs.defaultLang : 'en-GB';
 };
 
 utils.generateUUID = function () {

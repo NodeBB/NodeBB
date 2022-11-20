@@ -1,13 +1,11 @@
 
 'use strict';
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const posts = require('../posts');
 const categories = require('../categories');
 const privileges = require('../privileges');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 import meta from '../meta';
 
 export default  function (Topics) {
@@ -16,10 +14,10 @@ export default  function (Topics) {
 			title = title.trim();
 		}
 
-		if (title.length < meta.config.minimumTitleLength) {
-			throw new Error(`[[error:title-too-short, ${meta.config.minimumTitleLength}]]`);
-		} else if (title.length > meta.config.maximumTitleLength) {
-			throw new Error(`[[error:title-too-long, ${meta.config.maximumTitleLength}]]`);
+		if (title.length < meta.configs.minimumTitleLength) {
+			throw new Error(`[[error:title-too-short, ${meta.configs.minimumTitleLength}]]`);
+		} else if (title.length > meta.configs.maximumTitleLength) {
+			throw new Error(`[[error:title-too-long, ${meta.configs.maximumTitleLength}]]`);
 		}
 
 		if (!pids || !pids.length) {

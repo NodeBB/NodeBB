@@ -5,7 +5,7 @@ import user from '../user';
 const topics = require('../topics');
 const posts = require('../posts');
 const privileges = require('../privileges');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const socketHelpers = require('../socket.io/helpers');
 const websockets = require('../socket.io');
 const events = require('../events');

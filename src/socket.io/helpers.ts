@@ -2,9 +2,7 @@
 
 const _ = require('lodash');
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const websockets = require('./index');
 import user from '../user';
 const posts = require('../posts');
@@ -12,7 +10,7 @@ const topics = require('../topics');
 const categories = require('../categories');
 const privileges = require('../privileges');
 const notifications = require('../notifications');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const utils = require('../utils');
 const batch = require('../batch');
 

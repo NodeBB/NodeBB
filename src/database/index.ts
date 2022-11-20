@@ -12,9 +12,7 @@ if (!databaseName) {
 }
 
 // @ts-ignore
-const primaryDB = require(`./${databaseName}`).default;
-
-
+const primaryDB = require(`./${databaseName}`).default || {};
 primaryDB.parseIntFields = function (data, intFields, requestedFields) {
 	intFields.forEach((field) => {
 		if (!requestedFields || !requestedFields.length || requestedFields.includes(field)) {
@@ -39,4 +37,4 @@ primaryDB.initSessionStore = async function () {
 	primaryDB.sessionStore = await sessionStoreDB.createSessionStore(sessionStoreConfig);
 };
 
-export { primaryDB };
+export default primaryDB;

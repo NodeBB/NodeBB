@@ -15,7 +15,7 @@ import helpers from './helpers';
 const tagsController  = {} as any;
 
 tagsController.getTag = async function (req, res) {
-	const tag = validator.escape(utils.cleanUpTag(req.params.tag, meta.config.maximumTagLength));
+	const tag = validator.escape(utils.cleanUpTag(req.params.tag, meta.configs.maximumTagLength));
 	const page = parseInt(req.query.page, 10) || 1;
 	const cid = Array.isArray(req.query.cid) || !req.query.cid ? req.query.cid : [req.query.cid];
 

@@ -2,7 +2,7 @@
 
 import meta from '../meta';
 import user from '../user';
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const privileges = require('../privileges');
 
 const sockets = require('../socket.io');
@@ -54,9 +54,9 @@ export default  function (Messaging) {
 
 		const isAdminOrGlobalMod = await user.isAdminOrGlobalMod(uid);
 
-		if (meta.config.disableChat) {
+		if (meta.configs.disableChat) {
 			throw new Error('[[error:chat-disabled]]');
-		} else if (!isAdminOrGlobalMod && meta.config.disableChatMessageEditing) {
+		} else if (!isAdminOrGlobalMod && meta.configs.disableChatMessageEditing) {
 			throw new Error('[[error:chat-message-editing-disabled]]');
 		}
 

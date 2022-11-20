@@ -5,7 +5,7 @@ const validator = require('validator');
 import user from '../user';
 import meta from '../meta';
 const messaging = require('../messaging');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 
 // const websockets = require('../socket.io');
 const socketHelpers = require('../socket.io/helpers');
@@ -16,7 +16,7 @@ function rateLimitExceeded(caller) {
 	const session = caller.request ? caller.request.session : caller.session; // socket vs req
 	const now = Date.now();
 	session.lastChatMessageTime = session.lastChatMessageTime || 0;
-	if (now - session.lastChatMessageTime < meta.config.chatMessageDelay) {
+	if (now - session.lastChatMessageTime < meta.configs.chatMessageDelay) {
 		return true;
 	}
 	session.lastChatMessageTime = now;
@@ -86,7 +86,7 @@ chatsAPI.users = async (caller, data) => {
 
 chatsAPI.invite = async (caller, data) => {
 	const userCount = await messaging.getUserCountInRoom(data.roomId);
-	const maxUsers = meta.config.maximumUsersInChatRoom;
+	const maxUsers = meta.configs.maximumUsersInChatRoom;
 	if (maxUsers && userCount >= maxUsers) {
 		throw new Error('[[error:cant-add-more-users-to-chat-room]]');
 	}

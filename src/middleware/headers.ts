@@ -7,7 +7,7 @@ const _ = require('lodash');
 import meta from '../meta';
 const languages = require('../languages');
 import helpers from './helpers';
-const plugins = require('../plugins');
+import plugins from '../plugins';
 
 export default  function (middleware) {
 	middleware.addHeaders = helpers.try((req, res, next) => {
@@ -86,12 +86,12 @@ export default  function (middleware) {
 		if (req.query.lang) {
 			const langs = await listCodes();
 			if (!langs.includes(req.query.lang)) {
-				req.query.lang = meta.config.defaultLang;
+				req.query.lang = meta.configs.defaultLang;
 			}
 			return next();
 		}
 
-		if (meta.config.autoDetectLang && req.uid === 0) {
+		if (meta.configs.autoDetectLang && req.uid === 0) {
 			const langs = await listCodes();
 			const lang = req.acceptsLanguages(langs);
 			if (!lang) {
@@ -104,7 +104,7 @@ export default  function (middleware) {
 	});
 
 	async function listCodes() {
-		const defaultLang = meta.config.defaultLang || 'en-GB';
+		const defaultLang = meta.configs.defaultLang || 'en-GB';
 		try {
 			const codes = await languages.listCodes();
 			return _.uniq([defaultLang, ...codes]);

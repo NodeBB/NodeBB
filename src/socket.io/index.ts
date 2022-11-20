@@ -1,24 +1,54 @@
 'use strict';
 
 const os = require('os');
+<<<<<<< HEAD
+<<<<<<<< HEAD:src/socket.io/index.ts
 import nconf from 'nconf';
+========
+const nconf = require('nconf');
+>>>>>>>> 30e0c6374 (feat(typescript): typescript migration process):src/socket.io/index.js
+=======
+import nconf from 'nconf';
+>>>>>>> 30e0c6374 (feat(typescript): typescript migration process)
 import winston from 'winston';
 const util = require('util');
 const validator = require('validator');
 const cookieParser = require('cookie-parser')(nconf.get('secret'));
 
+<<<<<<< HEAD
+<<<<<<<< HEAD:src/socket.io/index.ts
 import { primaryDB as db } from '../database';
 
 
 import user from '../user';
 import meta from '../meta';
+========
+const db = require('../database');
+import user from '../user';
+>>>>>>>> 30e0c6374 (feat(typescript): typescript migration process):src/socket.io/index.js
 const logger = require('../logger');
 const plugins = require('../plugins');
 const ratelimit = require('../middleware/ratelimit');
 
 const Namespaces = Object.create(null, {});
 
+<<<<<<<< HEAD:src/socket.io/index.ts
 const Sockets  = {} as any;
+========
+const Sockets = {};
+>>>>>>>> 30e0c6374 (feat(typescript): typescript migration process):src/socket.io/index.js
+=======
+import db from '../database';
+import user from '../user';
+import meta from '../meta';
+const logger = require('../logger');
+import plugins from '../plugins';
+const ratelimit = require('../middleware/ratelimit');
+
+const Namespaces  = {} as any;
+
+const Sockets  = {} as any;
+>>>>>>> 30e0c6374 (feat(typescript): typescript migration process)
 
 Sockets.init = async function (server) {
 	const SocketIO = require('socket.io').Server;
@@ -166,7 +196,15 @@ async function onMessage(socket, payload) {
 				callback(err ? { message: err.message } : null, result);
 			});
 		}
+<<<<<<< HEAD
+<<<<<<<< HEAD:src/socket.io/index.ts
 	} catch (err: any) {
+========
+	} catch (err:any) {
+>>>>>>>> 30e0c6374 (feat(typescript): typescript migration process):src/socket.io/index.js
+=======
+	} catch (err: any) {
+>>>>>>> 30e0c6374 (feat(typescript): typescript migration process)
 		winston.error(`${eventName}\n${err.stack ? err.stack : err.message}`);
 		callback({ message: err.message });
 	}
@@ -185,7 +223,15 @@ function requireModules() {
 }
 
 async function checkMaintenance(socket) {
+<<<<<<< HEAD
+<<<<<<<< HEAD:src/socket.io/index.ts
+========
+	import meta from '../meta';
+>>>>>>>> 30e0c6374 (feat(typescript): typescript migration process):src/socket.io/index.js
 	if (!meta.config.maintenanceMode) {
+=======
+	if (!meta.configs.maintenanceMode) {
+>>>>>>> 30e0c6374 (feat(typescript): typescript migration process)
 		return;
 	}
 	const isAdmin = await user.isAdministrator(socket.uid);
@@ -193,7 +239,11 @@ async function checkMaintenance(socket) {
 		return;
 	}
 	const validator = require('validator');
+<<<<<<< HEAD
 	throw new Error(`[[pages:maintenance.text, ${validator.escape(String(meta.config.title || 'NodeBB'))}]]`);
+=======
+	throw new Error(`[[pages:maintenance.text, ${validator.escape(String(meta.configs.title || 'NodeBB'))}]]`);
+>>>>>>> 30e0c6374 (feat(typescript): typescript migration process)
 }
 
 const getSessionAsync = util.promisify(

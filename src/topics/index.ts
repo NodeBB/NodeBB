@@ -3,12 +3,10 @@
 const _ = require('lodash');
 const validator = require('validator');
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const posts = require('../posts');
 const utils = require('../utils');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 import meta from '../meta';
 import user from '../user';
 const categories = require('../categories');
@@ -82,7 +80,7 @@ Topics.getTopicsByTids = async function (tids: string[], options) {
 		}
 
 		async function loadShowfullnameSettings() {
-			if (meta.config.hideFullname) {
+			if (meta.configs.hideFullname) {
 				return uids.map(() => ({ showfullname: false }));
 			}
 			const data = await db.getObjectsFields(uids.map((uid: string) => `user:${uid}:settings`), ['showfullname']);

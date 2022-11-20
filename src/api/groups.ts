@@ -96,7 +96,7 @@ groupsAPI.join = async function (caller, data) {
 	}
 
 	const isSelf = parseInt(caller.uid, 10) === parseInt(data.uid, 10);
-	if (!meta.config.allowPrivateGroups && isSelf) {
+	if (!meta.configs.allowPrivateGroups && isSelf) {
 		// all groups are public!
 		await groups.join(groupName, data.uid);
 		logGroupEvent(caller, 'group-join', {

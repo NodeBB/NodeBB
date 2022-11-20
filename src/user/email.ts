@@ -7,9 +7,7 @@ import winston from 'winston';
 const user = require('./index');
 const utils = require('../utils');
 const plugins = require('../plugins');
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 import meta from '../meta';
 const emailer = require('../emailer');
 const groups = require('../groups');
@@ -77,8 +75,8 @@ UserEmail.canSendValidation = async (uid, email) => {
 	}
 
 	const ttl = await UserEmail.getValidationExpiry(uid);
-	const max = meta.config.emailConfirmExpiry * 60 * 60 * 1000;
-	const interval = meta.config.emailConfirmInterval * 60 * 1000;
+	const max = meta.configs.emailConfirmExpiry * 60 * 60 * 1000;
+	const interval = meta.configs.emailConfirmInterval * 60 * 1000;
 
 	return ttl + interval < max;
 };
@@ -91,7 +89,7 @@ UserEmail.sendValidationEmail = async function (uid, options) {
 	 * - template, changes the template used for email sending
 	 */
 
-	if (meta.config.sendValidationEmail !== 1) {
+	if (meta.configs.sendValidationEmail !== 1) {
 		winston.verbose(`[user/email] Validation email for uid ${uid} not sent due to config settings`);
 		return;
 	}
@@ -108,7 +106,7 @@ UserEmail.sendValidationEmail = async function (uid, options) {
 	const confirm_code = utils.generateUUID();
 	const confirm_link = `${nconf.get('url')}/confirm/${confirm_code}`;
 
-	const { emailConfirmInterval, emailConfirmExpiry } = meta.config;
+	const { emailConfirmInterval, emailConfirmExpiry } = meta.configs;
 
 	// If no email passed in (default), retrieve email from uid
 	if (!options.email || !options.email.length) {
@@ -212,3 +210,5 @@ UserEmail.confirmByUid = async function (uid: string) {
 	]);
 	await plugins.hooks.fire('action:user.email.confirmed', { uid: uid, email: currentEmail });
 };
+
+export default UserEmail;

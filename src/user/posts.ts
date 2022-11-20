@@ -1,8 +1,6 @@
 'use strict';
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 import meta from '../meta';
 const privileges = require('../privileges');
 
@@ -43,20 +41,20 @@ export default  function (User) {
 			}
 		}
 
-		if (now - userData.joindate < meta.config.initialPostDelay * 1000) {
-			throw new Error(`[[error:user-too-new, ${meta.config.initialPostDelay}]]`);
+		if (now - userData.joindate < meta.configs.initialPostDelay * 1000) {
+			throw new Error(`[[error:user-too-new, ${meta.configs.initialPostDelay}]]`);
 		}
 
 		const lasttime = userData[field] || 0;
 
 		if (
-			meta.config.newbiePostDelay > 0 &&
-			meta.config.newbiePostDelayThreshold > userData.reputation &&
-			now - lasttime < meta.config.newbiePostDelay * 1000
+			meta.configs.newbiePostDelay > 0 &&
+			meta.configs.newbiePostDelayThreshold > userData.reputation &&
+			now - lasttime < meta.configs.newbiePostDelay * 1000
 		) {
-			throw new Error(`[[error:too-many-posts-newbie, ${meta.config.newbiePostDelay}, ${meta.config.newbiePostDelayThreshold}]]`);
-		} else if (now - lasttime < meta.config.postDelay * 1000) {
-			throw new Error(`[[error:too-many-posts, ${meta.config.postDelay}]]`);
+			throw new Error(`[[error:too-many-posts-newbie, ${meta.configs.newbiePostDelay}, ${meta.configs.newbiePostDelayThreshold}]]`);
+		} else if (now - lasttime < meta.configs.postDelay * 1000) {
+			throw new Error(`[[error:too-many-posts, ${meta.configs.postDelay}]]`);
 		}
 	}
 

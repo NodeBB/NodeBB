@@ -1,9 +1,9 @@
 'use strict';
 
 import meta from '../meta';
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const slugify = require('../slugify');
-import { primaryDB as db } from '../database';
+import db from '../database';
 
 
 
@@ -82,7 +82,7 @@ export default  function (Groups) {
 			throw new Error('[[error:invalid-group-name]]');
 		}
 
-		if (!Groups.isPrivilegeGroup(name) && name.length > meta.config.maximumGroupNameLength) {
+		if (!Groups.isPrivilegeGroup(name) && name.length > meta.configs.maximumGroupNameLength) {
 			throw new Error('[[error:group-name-too-long]]');
 		}
 

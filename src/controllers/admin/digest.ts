@@ -17,7 +17,7 @@ digestController.get = async function (req, res) {
 	res.render('admin/manage/digest', {
 		title: '[[admin/menu:manage/digest]]',
 		delivery: delivery.users,
-		default: meta.config.dailyDigestFreq,
+		default: meta.configs.dailyDigestFreq,
 		pagination: pagination.create(page, pageCount),
 	});
 };

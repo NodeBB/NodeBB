@@ -9,7 +9,7 @@ import winston from 'winston';
 import meta from '../meta';
 const controllers = require('../controllers');
 const helpers = require('../controllers/helpers');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 
 let loginStrategies : any[] = [];
 

@@ -2,12 +2,12 @@
 
 const _ = require('lodash');
 
-import { primaryDB as db } from '../database';
+import db from '../database';
 
 
 import user from '../user';
 const slugify = require('../slugify');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const notifications = require('../notifications');
 
 export default  function (Groups) {

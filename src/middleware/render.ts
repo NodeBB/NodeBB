@@ -7,13 +7,7 @@ const jsesc = require('jsesc');
 const winston = require('winston');
 const semver = require('semver');
 
-const navigation = require('../navigation');
 const translator = require('../translator');
-const privileges = require('../privileges');
-const languages = require('../languages');
-const plugins = require('../plugins');
-const user = require('../user');
-const topics = require('../topics');
 const messaging = require('../messaging');
 const flags = require('../flags');
 const meta = require('../meta');
@@ -22,6 +16,11 @@ const utils = require('../utils');
 const helpers = require('./helpers');
 const versions = require('../admin/versions');
 const controllersHelpers = require('../controllers/helpers');
+import plugins from '../plugins';
+import privileges from '../privileges';
+import user from '../user';
+import languages from '../languages';
+import navigation from '../navigation';
 
 const relative_path = nconf.get('relative_path');
 
@@ -142,7 +141,7 @@ export default  function (middleware) {
 			config: res.locals.config,
 			relative_path,
 			bodyClass: options.bodyClass,
-		};
+		} as any;
 
 		templateValues.configJSON = jsesc(JSON.stringify(res.locals.config), { isScriptContext: true });
 
@@ -272,7 +271,7 @@ export default  function (middleware) {
 			latestVersion: results.latestVersion,
 			upgradeAvailable: results.latestVersion && semver.gt(results.latestVersion, version),
 			showManageMenu: results.privileges.superadmin || ['categories', 'privileges', 'users', 'admins-mods', 'groups', 'tags', 'settings'].some(priv => results.privileges[`admin:${priv}`]),
-		};
+		} as any;
 
 		templateValues.template = { name: res.locals.template };
 		templateValues.template[res.locals.template] = true;
@@ -471,7 +470,7 @@ export default  function (middleware) {
 	async function getLatestVersion() {
 		try {
 			return await versions.getLatestVersion();
-		} catch (err) {
+		} catch (err: any) {
 			winston.error(`[acp] Failed to fetch latest version${err.stack}`);
 		}
 		return null;

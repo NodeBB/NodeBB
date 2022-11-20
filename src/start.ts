@@ -19,7 +19,7 @@ start.start = async function () {
 		await db.checkCompatibility();
 
 		const meta = require('./meta').default;
-		await meta.config.init();
+		await meta.configs.init();
 
 		if (nconf.get('runJobs')) {
 			await runUpgrades();

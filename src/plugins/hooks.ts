@@ -2,9 +2,8 @@
 
 const util = require('util');
 import winston from 'winston';
-import plugins from '.';
-import utils from '../utils';
-import als from '../als';
+const plugins = require('.');
+const utils = require('../utils');
 
 const Hooks  = {} as any;
 

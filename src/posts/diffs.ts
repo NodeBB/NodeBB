@@ -3,11 +3,9 @@
 const validator = require('validator');
 const diff = require('diff');
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 import meta from '../meta';
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const translator = require('../translator');
 const topics = require('../topics');
 
@@ -15,7 +13,7 @@ export default  function (Posts) {
 	const Diffs  = {} as any;
 	Posts.diffs = Diffs;
 	Diffs.exists = async function (pid) {
-		if (meta.config.enablePostHistory !== 1) {
+		if (meta.configs.enablePostHistory !== 1) {
 			return false;
 		}
 

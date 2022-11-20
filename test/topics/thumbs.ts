@@ -41,7 +41,7 @@ describe('Topic thumbs', () => {
 	}
 
 	before(async () => {
-		meta.config.allowTopicsThumbnail = 1;
+		meta.configs.allowTopicsThumbnail = 1;
 
 		adminUid = await user.create({ username: 'admin', password: '123456' });
 		fooUid = await user.create({ username: 'foo', password: '123456' });
@@ -380,7 +380,7 @@ describe('Topic thumbs', () => {
 		});
 
 		it('should fail if thumbnails are not enabled', (done) => {
-			meta.config.allowTopicsThumbnail = 0;
+			meta.configs.allowTopicsThumbnail = 0;
 
 			helpers.uploadFile(`${nconf.get('url')}/api/v3/topics/${uuid}/thumbs`, path.join(__dirname, '../files/test.png'), {}, adminJar, adminCSRF, (err, res, body) => {
 				assert.ifError(err);
@@ -392,7 +392,7 @@ describe('Topic thumbs', () => {
 		});
 
 		it('should fail if file is not image', (done) => {
-			meta.config.allowTopicsThumbnail = 1;
+			meta.configs.allowTopicsThumbnail = 1;
 
 			helpers.uploadFile(`${nconf.get('url')}/api/v3/topics/${uuid}/thumbs`, path.join(__dirname, '../files/503.html'), {}, adminJar, adminCSRF, (err, res, body) => {
 				assert.ifError(err);

@@ -163,13 +163,13 @@ Emailer.registerApp = (expressApp) => {
 	app = expressApp;
 
 	let logo = null;
-	if (meta.config.hasOwnProperty('brand:emailLogo')) {
+	if (meta.configs.hasOwnProperty('brand:emailLogo')) {
 		logo = (!meta.config['brand:emailLogo'].startsWith('http') ? nconf.get('url') : '') + meta.config['brand:emailLogo'];
 	}
 
 	Emailer._defaultPayload = {
 		url: nconf.get('url'),
-		site_title: meta.config.title || 'NodeBB',
+		site_title: meta.configs.title || 'NodeBB',
 		logo: {
 			src: logo,
 			height: meta.config['brand:emailLogo:height'],
@@ -226,7 +226,7 @@ Emailer.send = async (template, uid, params) => {
 
 	({ template, userData, params } = await Plugins.hooks.fire('filter:email.prepare', { template, uid, userData, params }));
 
-	if (!meta.config.sendEmailToBanned && template !== 'banned') {
+	if (!meta.configs.sendEmailToBanned && template !== 'banned') {
 		if (userData.banned) {
 			winston.warn(`[emailer/send] User ${userData.username} (uid: ${uid}) is banned; not sending email due to system config.`);
 			return;
@@ -241,7 +241,7 @@ Emailer.send = async (template, uid, params) => {
 	}
 
 	const allowedTpls = ['verify-email', 'welcome', 'registration_accepted', 'reset', 'reset_notify'];
-	if (!meta.config.includeUnverifiedEmails && !userData['email:confirmed'] && !allowedTpls.includes(template)) {
+	if (!meta.configs.includeUnverifiedEmails && !userData['email:confirmed'] && !allowedTpls.includes(template)) {
 		if ((process as any).env.NODE_ENV === 'development') {
 			winston.warn(`uid : ${uid} (${userData.email}) has not confirmed email, not sending "${template}" email.`);
 		}
@@ -267,7 +267,7 @@ Emailer.send = async (template, uid, params) => {
 };
 
 Emailer.sendToEmail = async (template, email, language, params) => {
-	const lang = language || meta.config.defaultLang || 'en-GB';
+	const lang = language || meta.configs.defaultLang || 'en-GB';
 	const unsubscribable = ['digest', 'notification'];
 
 	// Digests and notifications can be one-click unsubbed
@@ -315,7 +315,7 @@ Emailer.sendToEmail = async (template, email, language, params) => {
 		to: email,
 		from: meta.config['email:from'] || `no-reply@${getHostname()}`,
 		from_name: meta.config['email:from_name'] || 'NodeBB',
-		subject: `[${meta.config.title}] ${_.unescape(subject)}`,
+		subject: `[${meta.configs.title}] ${_.unescape(subject)}`,
 		html: html,
 		plaintext: htmlToText(html, {
 			tags: { img: { format: 'skip' } },

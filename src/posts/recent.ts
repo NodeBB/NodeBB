@@ -2,9 +2,7 @@
 
 const _ = require('lodash');
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const privileges = require('../privileges');
 
 

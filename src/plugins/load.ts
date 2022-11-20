@@ -9,63 +9,73 @@ const _ = require('lodash');
 import meta from '../meta';
 const { themeNamePattern } = require('../constants');
 
-export default  function (Plugins) {
+export default function (Plugins) {
 	async function registerPluginAssets(pluginData, fields?) {
 		function add(dest, arr) {
 			dest.push(...(arr || []));
 		}
-
 		const handlers = {
-			staticDirs: function (next) {
-				Plugins.data.getStaticDirectories(pluginData, next);
+			staticDirs: async function (next) {
+				await Plugins.data.getStaticDirectories(pluginData, next);
+
 			},
-			cssFiles: function (next) {
-				Plugins.data.getFiles(pluginData, 'css', next);
+			cssFiles: async function (next) {
+				const data = await Plugins.data.getFiles(pluginData, 'css', next);
+
+
 			},
-			scssFiles: function (next) {
+			scssFiles: async function (next) {
 				Plugins.data.getFiles(pluginData, 'scss', next);
+
+
 			},
-			acpScssFiles: function (next) {
+			acpScssFiles: async function (next) {
 				Plugins.data.getFiles(pluginData, 'acpScss', next);
+
+
 			},
-			clientScripts: function (next) {
+			clientScripts: async function (next) {
 				Plugins.data.getScripts(pluginData, 'client', next);
+
+
 			},
-			acpScripts: function (next) {
+			acpScripts: async function (next) {
 				Plugins.data.getScripts(pluginData, 'acp', next);
+
 			},
-			modules: function (next) {
+			modules: async function (next) {
 				Plugins.data.getModules(pluginData, next);
 			},
-			languageData: function (next) {
-				Plugins.data.getLanguageData(pluginData, next);
+			languageData: async function (next) {
+			  	Plugins.data.getLanguageData(pluginData, next);
+
 			},
 		} as any;
-
-		let methods  = {} as any;
+		let methods = {} as any;
 		if (Array.isArray(fields)) {
+
 			fields.forEach((field) => {
 				methods[field] = handlers[field];
 			});
 		} else {
 			methods = handlers;
-		}
 
-		const results = await async.parallel(methods);
-
-		Object.assign(Plugins.staticDirs, results.staticDirs || {});
-		add(Plugins.cssFiles, results.cssFiles);
-		add(Plugins.scssFiles, results.scssFiles);
-		add(Plugins.acpScssFiles, results.acpScssFiles);
-		add(Plugins.clientScripts, results.clientScripts);
-		add(Plugins.acpScripts, results.acpScripts);
-		Object.assign(meta.js.scripts.modules, results.modules || {});
-		if (results.languageData) {
-			Plugins.languageData.languages = _.union(Plugins.languageData.languages, results.languageData.languages);
-			Plugins.languageData.namespaces = _.union(Plugins.languageData.namespaces, results.languageData.namespaces);
-			pluginData.languageData = results.languageData;
 		}
-		Plugins.pluginsData[pluginData.id] = pluginData;
+		async.parallel(methods).then(results => {
+			Object.assign(Plugins.staticDirs, results.staticDirs || {});
+			add(Plugins.cssFiles, results.cssFiles);
+			add(Plugins.scssFiles, results.scssFiles);
+			add(Plugins.acpScssFiles, results.acpScssFiles);
+			add(Plugins.clientScripts, results.clientScripts);
+			add(Plugins.acpScripts, results.acpScripts);
+			Object.assign(meta.js.scripts.modules, results.modules || {});
+			if (results.languageData) {
+				Plugins.languageData.languages = _.union(Plugins.languageData.languages, results.languageData.languages);
+				Plugins.languageData.namespaces = _.union(Plugins.languageData.namespaces, results.languageData.namespaces);
+				pluginData.languageData = results.languageData;
+			}
+			Plugins.pluginsData[pluginData.id] = pluginData;
+		});
 	}
 
 	Plugins.prepareForBuild = async function (targets) {
@@ -95,7 +105,7 @@ export default  function (Plugins) {
 					Plugins.languageData.languages = [];
 					Plugins.languageData.namespaces = [];
 					break;
-			// do nothing for modules and staticDirs
+				// do nothing for modules and staticDirs
 			}
 		});
 

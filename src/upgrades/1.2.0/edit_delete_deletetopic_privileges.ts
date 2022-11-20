@@ -3,7 +3,7 @@
 'use strict';
 
 import winston from 'winston';
-import { primaryDB as db } from '../../database';
+import db from '../../database';
 
 export default  {
 	name: 'Granting edit/delete/delete topic on existing categories',

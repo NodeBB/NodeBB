@@ -2,7 +2,7 @@
 
 
 import winston from 'winston';
-import { primaryDB as db } from '../../database';
+import db from '../../database';
 
 export default  {
 	name: 'Dismiss flags from deleted topics',

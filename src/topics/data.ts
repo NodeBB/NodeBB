@@ -2,13 +2,11 @@
 
 const validator = require('validator');
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const categories = require('../categories');
 const utils = require('../utils');
 const translator = require('../translator');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 
 const intFields = [
 	'tid', 'cid', 'uid', 'mainPid', 'postcount',

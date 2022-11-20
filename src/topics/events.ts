@@ -1,14 +1,12 @@
 'use strict';
 
 const _ = require('lodash');
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 import meta from '../meta';
 import user from '../user';
 const posts = require('../posts');
 const categories = require('../categories');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const translator = require('../translator');
 const privileges = require('../privileges');
 
@@ -131,7 +129,7 @@ async function modifyEvent({ tid, uid, eventIds, timestamps, events }) {
 	]);
 
 	// Remove backlink events if backlinks are disabled
-	if (meta.config.topicBacklinks !== 1) {
+	if (meta.configs.topicBacklinks !== 1) {
 		events = events.filter(event => event.type !== 'backlink');
 	} else {
 		// remove backlinks that we dont have read permission

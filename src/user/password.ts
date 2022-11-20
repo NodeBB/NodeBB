@@ -3,9 +3,7 @@
 
 import nconf from 'nconf';
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const Password = require('../password');
 
 export default  function (User) {

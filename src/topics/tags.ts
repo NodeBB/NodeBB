@@ -5,13 +5,11 @@ const async = require('async');
 const validator = require('validator');
 const _ = require('lodash');
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 import meta from '../meta';
 import user from '../user';
 const categories = require('../categories');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const utils = require('../utils');
 const batch = require('../batch');
 const cache = require('../cache');
@@ -34,8 +32,8 @@ export default  function (Topics) {
 	Topics.filterTags = async function (tags, cid: string) {
 		const result = await plugins.hooks.fire('filter:tags.filter', { tags: tags, cid: cid });
 		tags = _.uniq(result.tags)
-			.map((tag: string) => utils.cleanUpTag(tag, meta.config.maximumTagLength))
-			.filter((tag: string) => tag && tag.length >= (meta.config.minimumTagLength || 3));
+			.map((tag: string) => utils.cleanUpTag(tag, meta.configs.maximumTagLength))
+			.filter((tag: string) => tag && tag.length >= (meta.configs.minimumTagLength || 3));
 
 		return await filterCategoryTags(tags, cid);
 	};
@@ -83,7 +81,7 @@ export default  function (Topics) {
 
 		const addedTags = tags.filter(tag => !currentTags.includes(tag));
 		const removedTags = currentTags.filter((tag: string) => !tags.includes(tag));
-		const systemTags = (meta.config.systemTags || '').split(',');
+		const systemTags = (meta.configs.systemTags || '').split(',');
 
 		if (!isPrivileged && systemTags.length && addedTags.length && addedTags.some(tag => systemTags.includes(tag))) {
 			throw new Error('[[error:cant-use-system-tag]]');
@@ -107,7 +105,7 @@ export default  function (Topics) {
 		if (!tag) {
 			throw new Error('[[error:invalid-tag]]');
 		}
-		if (tag.length < (meta.config.minimumTagLength || 3)) {
+		if (tag.length < (meta.configs.minimumTagLength || 3)) {
 			throw new Error('[[error:tag-too-short]]');
 		}
 		const isMember = await db.isSortedSetMember('tags:topic:count', tag);
@@ -135,7 +133,7 @@ export default  function (Topics) {
 		if (!newTagName || tag === newTagName) {
 			return;
 		}
-		newTagName = utils.cleanUpTag(newTagName, meta.config.maximumTagLength);
+		newTagName = utils.cleanUpTag(newTagName, meta.configs.maximumTagLength);
 
 		await Topics.createEmptyTag(newTagName);
 		const allCids = {} as any;
@@ -514,7 +512,7 @@ export default  function (Topics) {
 			return result.topics;
 		}
 
-		let maximumTopics = meta.config.maximumRelatedTopics;
+		let maximumTopics = meta.configs.maximumRelatedTopics;
 		if (maximumTopics === 0 || !topicData.tags || !topicData.tags.length) {
 			return [];
 		}

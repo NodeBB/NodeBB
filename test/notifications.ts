@@ -441,14 +441,14 @@ describe('Notifications', () => {
 	});
 
 	it('should send welcome notification', (done) => {
-		meta.config.welcomeNotification = 'welcome to the forums';
+		meta.configs.welcomeNotification = 'welcome to the forums';
 		user.notifications.sendWelcomeNotification(uid, (err) => {
 			assert.ifError(err);
 			user.notifications.sendWelcomeNotification(uid, (err) => {
 				assert.ifError(err);
 				setTimeout(() => {
 					user.notifications.getAll(uid, '', (err, data) => {
-						meta.config.welcomeNotification = '';
+						meta.configs.welcomeNotification = '';
 						assert.ifError(err);
 						assert(data.includes(`welcome_${uid}`), data);
 						done();

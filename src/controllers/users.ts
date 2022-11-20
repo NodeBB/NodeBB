@@ -3,7 +3,7 @@
 import user from '../user';
 import meta from '../meta';
 
-import { primaryDB as db } from '../database';
+import db from '../database';
 
 
 const pagination = require('../pagination');
@@ -125,7 +125,7 @@ usersController.getUsers = async function (set, uid: string, query) {
 	}
 
 	const page = parseInt(query.page, 10) || 1;
-	const resultsPerPage = meta.config.userSearchResultsPerPage;
+	const resultsPerPage = meta.configs.userSearchResultsPerPage;
 	const start = Math.max(0, page - 1) * resultsPerPage;
 	const stop = start + resultsPerPage - 1;
 
@@ -192,9 +192,9 @@ usersController.getUsersAndCount = async function (set: string, uid: string, sta
 };
 
 async function render(req, res, data) {
-	const { registrationType } = meta.config;
+	const { registrationType } = meta.configs;
 
-	data.maximumInvites = meta.config.maximumInvites;
+	data.maximumInvites = meta.configs.maximumInvites;
 	data.inviteOnly = registrationType === 'invite-only' || registrationType === 'admin-invite-only';
 	data.adminInviteOnly = registrationType === 'admin-invite-only';
 	data.invites = await user.getInvitesNumber(req.uid);

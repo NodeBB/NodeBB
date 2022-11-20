@@ -3,10 +3,9 @@
 import winston from 'winston';
 
 const categories = require('../categories');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const slugify = require('../slugify');
-import { primaryDB } from '../database';
-
+import db from '../database';
 import user from '../user';
 const batch = require('../batch');
 import meta from '../meta';
@@ -15,7 +14,7 @@ const cache = require('../cache');
 
 export default  function (Groups) {
 	Groups.update = async function (groupName, values) {
-		const exists = await primaryDB.exists(`group:${groupName}`);
+		const exists = await db.exists(`group:${groupName}`);
 		if (!exists) {
 			throw new Error('[[error:no-group]]');
 		}
@@ -82,7 +81,7 @@ export default  function (Groups) {
 			payload.memberPostCids = cidsArray.filter((cid) => validCids.includes(cid)).join(',') || '';
 		}
 
-		await primaryDB.setObject(`group:${groupName}`, payload);
+		await db.setObject(`group:${groupName}`, payload);
 		await Groups.renameGroup(groupName, values.name);
 
 		plugins.hooks.fire('action:group.update', {
@@ -93,15 +92,15 @@ export default  function (Groups) {
 
 	async function updateVisibility(groupName, hidden) {
 		if (hidden) {
-			await primaryDB.sortedSetRemoveBulk([
+			await db.sortedSetRemoveBulk([
 				['groups:visible:createtime', groupName],
 				['groups:visible:memberCount', groupName],
 				['groups:visible:name', `${groupName.toLowerCase()}:${groupName}`],
 			]);
 			return;
 		}
-		const groupData = await primaryDB.getObjectFields(`group:${groupName}`, ['createtime', 'memberCount']);
-		await primaryDB.sortedSetAddBulk([
+		const groupData = await db.getObjectFields(`group:${groupName}`, ['createtime', 'memberCount']);
+		await db.sortedSetAddBulk([
 			['groups:visible:createtime', groupData.createtime, groupName],
 			['groups:visible:memberCount', groupData.memberCount, groupName],
 			['groups:visible:name', 0, `${groupName.toLowerCase()}:${groupName}`],
@@ -119,7 +118,7 @@ export default  function (Groups) {
 	async function showHide(groupName, hidden) {
 		hidden = hidden === 'hidden';
 		await Promise.all([
-			primaryDB.setObjectField(`group:${groupName}`, 'hidden', hidden ? 1 : 0),
+			db.setObjectField(`group:${groupName}`, 'hidden', hidden ? 1 : 0),
 			updateVisibility(groupName, hidden),
 		]);
 	}
@@ -130,7 +129,7 @@ export default  function (Groups) {
 		if (!currentlyPrivate || currentlyPrivate === isPrivate) {
 			return;
 		}
-		const pendingUids = await primaryDB.getSetMembers(`group:${groupName}:pending`);
+		const pendingUids = await db.getSetMembers(`group:${groupName}:pending`);
 		if (!pendingUids.length) {
 			return;
 		}
@@ -141,7 +140,7 @@ export default  function (Groups) {
 			/* eslint-disable no-await-in-loop */
 			await Groups.join(groupName, uid);
 		}
-		await primaryDB.delete(`group:${groupName}:pending`);
+		await db.delete(`group:${groupName}:pending`);
 	}
 
 	async function checkNameChange(currentName, newName) {
@@ -176,7 +175,7 @@ export default  function (Groups) {
 		if (oldName === newName || !newName || String(newName).length === 0) {
 			return;
 		}
-		const group = await primaryDB.getObject(`group:${oldName}`);
+		const group = await db.getObject(`group:${oldName}`);
 		if (!group) {
 			return;
 		}
@@ -190,21 +189,21 @@ export default  function (Groups) {
 		await updateNavigationItems(oldName, newName);
 		await updateWidgets(oldName, newName);
 		await updateConfig(oldName, newName);
-		await primaryDB.setObject(`group:${oldName}`, { name: newName, slug: slugify(newName) });
-		await primaryDB.deleteObjectField('groupslug:groupname', group.slug);
-		await primaryDB.setObjectField('groupslug:groupname', slugify(newName), newName);
+		await db.setObject(`group:${oldName}`, { name: newName, slug: slugify(newName) });
+		await db.deleteObjectField('groupslug:groupname', group.slug);
+		await db.setObjectField('groupslug:groupname', slugify(newName), newName);
 
-		const allGroups = await primaryDB.getSortedSetRange('groups:createtime', 0, -1);
+		const allGroups = await db.getSortedSetRange('groups:createtime', 0, -1);
 		const keys = allGroups.map(group => `group:${group}:members`);
 		await renameGroupsMember(keys, oldName, newName);
 		cache.del(keys);
 
-		await primaryDB.rename(`group:${oldName}`, `group:${newName}`);
-		await primaryDB.rename(`group:${oldName}:members`, `group:${newName}:members`);
-		await primaryDB.rename(`group:${oldName}:owners`, `group:${newName}:owners`);
-		await primaryDB.rename(`group:${oldName}:pending`, `group:${newName}:pending`);
-		await primaryDB.rename(`group:${oldName}:invited`, `group:${newName}:invited`);
-		await primaryDB.rename(`group:${oldName}:member:pids`, `group:${newName}:member:pids`);
+		await db.rename(`group:${oldName}`, `group:${newName}`);
+		await db.rename(`group:${oldName}:members`, `group:${newName}:members`);
+		await db.rename(`group:${oldName}:owners`, `group:${newName}:owners`);
+		await db.rename(`group:${oldName}:pending`, `group:${newName}:pending`);
+		await db.rename(`group:${oldName}:invited`, `group:${newName}:invited`);
+		await db.rename(`group:${oldName}:member:pids`, `group:${newName}:member:pids`);
 
 		await renameGroupsMember(['groups:createtime', 'groups:visible:createtime', 'groups:visible:memberCount'], oldName, newName);
 		await renameGroupsMember(['groups:visible:name'], `${oldName.toLowerCase()}:${oldName}`, `${newName.toLowerCase()}:${newName}`);
@@ -230,14 +229,14 @@ export default  function (Groups) {
 	}
 
 	async function renameGroupsMember(keys, oldName, newName) {
-		const isMembers = await primaryDB.isMemberOfSortedSets(keys, oldName);
+		const isMembers = await db.isMemberOfSortedSets(keys, oldName);
 		keys = keys.filter((key, index) => isMembers[index]);
 		if (!keys.length) {
 			return;
 		}
-		const scores = await primaryDB.sortedSetsScore(keys, oldName);
-		await primaryDB.sortedSetsRemove(keys, oldName);
-		await primaryDB.sortedSetsAdd(keys, scores, newName);
+		const scores = await db.sortedSetsScore(keys, oldName);
+		await db.sortedSetsRemove(keys, oldName);
+		await db.sortedSetsAdd(keys, scores, newName);
 	}
 
 	async function updateNavigationItems(oldName, newName) {
@@ -274,17 +273,17 @@ export default  function (Groups) {
 	}
 
 	async function updateConfig(oldName, newName) {
-		if (meta.config.groupsExemptFromPostQueue.includes(oldName)) {
-			meta.config.groupsExemptFromPostQueue.splice(
-				meta.config.groupsExemptFromPostQueue.indexOf(oldName), 1, newName
+		if (meta.configs.groupsExemptFromPostQueue.includes(oldName)) {
+			meta.configs.groupsExemptFromPostQueue.splice(
+				meta.configs.groupsExemptFromPostQueue.indexOf(oldName), 1, newName
 			);
-			await meta.configs.set('groupsExemptFromPostQueue', meta.config.groupsExemptFromPostQueue);
+			await meta.configs.set('groupsExemptFromPostQueue', meta.configs.groupsExemptFromPostQueue);
 		}
-		if (meta.config.groupsExemptFromMaintenanceMode.includes(oldName)) {
-			meta.config.groupsExemptFromMaintenanceMode.splice(
-				meta.config.groupsExemptFromMaintenanceMode.indexOf(oldName), 1, newName
+		if (meta.configs.groupsExemptFromMaintenanceMode.includes(oldName)) {
+			meta.configs.groupsExemptFromMaintenanceMode.splice(
+				meta.configs.groupsExemptFromMaintenanceMode.indexOf(oldName), 1, newName
 			);
-			await meta.configs.set('groupsExemptFromMaintenanceMode', meta.config.groupsExemptFromMaintenanceMode);
+			await meta.configs.set('groupsExemptFromMaintenanceMode', meta.configs.groupsExemptFromMaintenanceMode);
 		}
 	}
 };

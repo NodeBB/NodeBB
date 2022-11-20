@@ -280,7 +280,7 @@ describe('User', () => {
 	describe('.isReadyToPost()', () => {
 		it('should error when a user makes two posts in quick succession', (done) => {
 			meta.config = meta.config || {};
-			meta.config.postDelay = '10';
+			meta.configs.postDelay = '10';
 
 			async.series([
 				async.apply(Topics.post, {
@@ -316,8 +316,8 @@ describe('User', () => {
 		});
 
 		it('should error when a new user posts if the last post time is 10 < 30 seconds', (done) => {
-			meta.config.newbiePostDelay = 30;
-			meta.config.newbiePostDelayThreshold = 3;
+			meta.configs.newbiePostDelay = 30;
+			meta.configs.newbiePostDelayThreshold = 3;
 
 			User.setUserField(testUid, 'lastposttime', +new Date() - (20 * 1000), () => {
 				Topics.post({
@@ -963,7 +963,7 @@ describe('User', () => {
 		});
 
 		it('should let updating profile if current username is above max length and it is not being changed', async () => {
-			const maxLength = meta.config.maximumUsernameLength + 1;
+			const maxLength = meta.configs.maximumUsernameLength + 1;
 			const longName = new Array(maxLength).fill('a').join('');
 			const uid = await User.create({ username: longName });
 			await apiUser.update({ uid: uid }, { uid: uid, username: longName, email: 'verylong@name.com' });
@@ -1098,7 +1098,7 @@ describe('User', () => {
 		});
 
 		it('should return error if profile image uploads disabled', (done) => {
-			meta.config.allowProfileImageUploads = 0;
+			meta.configs.allowProfileImageUploads = 0;
 			const picture = {
 				path: path.join(nconf.get('base_dir'), 'test/files/test_copy.png'),
 				size: 7189,
@@ -1111,7 +1111,7 @@ describe('User', () => {
 				file: picture,
 			}, (err) => {
 				assert.equal(err.message, '[[error:profile-image-uploads-disabled]]');
-				meta.config.allowProfileImageUploads = 1;
+				meta.configs.allowProfileImageUploads = 1;
 				done();
 			});
 		});
@@ -1172,8 +1172,8 @@ describe('User', () => {
 			});
 
 			it('should error if file size is too big', (done) => {
-				const temp = meta.config.maximumProfileImageSize;
-				meta.config.maximumProfileImageSize = 1;
+				const temp = meta.configs.maximumProfileImageSize;
+				meta.configs.maximumProfileImageSize = 1;
 				User.uploadCroppedPicture({
 					callerUid: uid,
 					uid: 1,
@@ -1182,7 +1182,7 @@ describe('User', () => {
 					assert.equal('[[error:file-too-big, 1]]', err.message);
 
 					// Restore old value
-					meta.config.maximumProfileImageSize = temp;
+					meta.configs.maximumProfileImageSize = temp;
 					done();
 				});
 			});
@@ -1213,11 +1213,11 @@ describe('User', () => {
 
 			it('should get default profile avatar', (done) => {
 				assert.strictEqual(User.getDefaultAvatar(), '');
-				meta.config.defaultAvatar = 'https://path/to/default/avatar';
-				assert.strictEqual(User.getDefaultAvatar(), meta.config.defaultAvatar);
-				meta.config.defaultAvatar = '/path/to/default/avatar';
-				assert.strictEqual(User.getDefaultAvatar(), nconf.get('relative_path') + meta.config.defaultAvatar);
-				meta.config.defaultAvatar = '';
+				meta.configs.defaultAvatar = 'https://path/to/default/avatar';
+				assert.strictEqual(User.getDefaultAvatar(), meta.configs.defaultAvatar);
+				meta.configs.defaultAvatar = '/path/to/default/avatar';
+				assert.strictEqual(User.getDefaultAvatar(), nconf.get('relative_path') + meta.configs.defaultAvatar);
+				meta.configs.defaultAvatar = '';
 				done();
 			});
 
@@ -1566,11 +1566,11 @@ describe('User', () => {
 		});
 
 		it('should send digests', (done) => {
-			const oldValue = meta.config.includeUnverifiedEmails;
-			meta.config.includeUnverifiedEmails = true;
+			const oldValue = meta.configs.includeUnverifiedEmails;
+			meta.configs.includeUnverifiedEmails = true;
 			User.digest.execute({ interval: 'day' }, (err) => {
 				assert.ifError(err);
-				meta.config.includeUnverifiedEmails = oldValue;
+				meta.configs.includeUnverifiedEmails = oldValue;
 				done();
 			});
 		});
@@ -1776,8 +1776,8 @@ describe('User', () => {
 		});
 
 		it('should fail to delete user if account deletion is not allowed', async () => {
-			const oldValue = meta.config.allowAccountDelete;
-			meta.config.allowAccountDelete = 0;
+			const oldValue = meta.configs.allowAccountDelete;
+			meta.configs.allowAccountDelete = 0;
 			const uid = await User.create({ username: 'tobedeleted' });
 			try {
 				await apiUser.deleteAccount({ uid: uid }, { uid: uid });
@@ -1785,7 +1785,7 @@ describe('User', () => {
 			} catch (err: any) {
 				assert.strictEqual(err.message, '[[error:account-deletion-disabled]]');
 			}
-			meta.config.allowAccountDelete = oldValue;
+			meta.configs.allowAccountDelete = oldValue;
 		});
 
 		it('should send reset email', (done) => {
@@ -1991,8 +1991,8 @@ describe('User', () => {
 		let oldRegistrationApprovalType;
 		let adminUid;
 		before((done) => {
-			oldRegistrationApprovalType = meta.config.registrationApprovalType;
-			meta.config.registrationApprovalType = 'admin-approval';
+			oldRegistrationApprovalType = meta.configs.registrationApprovalType;
+			meta.configs.registrationApprovalType = 'admin-approval';
 			User.create({ username: 'admin', password: '123456' }, (err, uid) => {
 				assert.ifError(err);
 				adminUid = uid;
@@ -2001,7 +2001,7 @@ describe('User', () => {
 		});
 
 		after((done) => {
-			meta.config.registrationApprovalType = oldRegistrationApprovalType;
+			meta.configs.registrationApprovalType = oldRegistrationApprovalType;
 			done();
 		});
 
@@ -2206,14 +2206,14 @@ describe('User', () => {
 			});
 
 			it('should error if user is not admin and type is admin-invite-only', async () => {
-				meta.config.registrationType = 'admin-invite-only';
+				meta.configs.registrationType = 'admin-invite-only';
 				const { res } = await helpers.invite({ emails: 'invite1@test.com', groupsToJoin: [] }, inviterUid, jar, csrf_token);
 				assert.strictEqual(res.statusCode, 403);
 				assert.strictEqual(res.body.status.message, 'You do not have enough privileges for this action.');
 			});
 
 			it('should send invitation email (without groups to be joined)', async () => {
-				meta.config.registrationType = 'normal';
+				meta.configs.registrationType = 'normal';
 				const { res } = await helpers.invite({ emails: 'invite1@test.com', groupsToJoin: [] }, inviterUid, jar, csrf_token);
 				assert.strictEqual(res.statusCode, 200);
 			});
@@ -2251,11 +2251,11 @@ describe('User', () => {
 			});
 
 			it('should error if ouf of invitations', async () => {
-				meta.config.maximumInvites = 1;
+				meta.configs.maximumInvites = 1;
 				const { res } = await helpers.invite({ emails: 'invite6@test.com', groupsToJoin: [] }, inviterUid, jar, csrf_token);
 				assert.strictEqual(res.statusCode, 403);
 				assert.strictEqual(res.body.status.message, `You have invited the maximum amount of people (${5} out of ${1}).`);
-				meta.config.maximumInvites = 10;
+				meta.configs.maximumInvites = 10;
 			});
 
 			it('should send invitation email after maximumInvites increased', async () => {
@@ -2614,8 +2614,8 @@ describe('User', () => {
 		});
 
 		after((done) => {
-			meta.config.hideEmail = 0;
-			meta.config.hideFullname = 0;
+			meta.configs.hideEmail = 0;
+			meta.configs.hideFullname = 0;
 			done();
 		});
 
@@ -2664,8 +2664,8 @@ describe('User', () => {
 		});
 
 		it('should hide from guests (system-wide: hide, by-user: hide)', async () => {
-			meta.config.hideEmail = 1;
-			meta.config.hideFullname = 1;
+			meta.configs.hideEmail = 1;
+			meta.configs.hideFullname = 1;
 			// Explicitly set user's privacy settings to hide its email and fullname
 			const data = { uid: hidingUser.uid, settings: { showemail: 0, showfullname: 0 } };
 			await apiUser.updateSettings({ uid: hidingUser.uid }, data);
@@ -2691,8 +2691,8 @@ describe('User', () => {
 		});
 
 		it('should hide from guests (system-wide: show, by-user: hide)', async () => {
-			meta.config.hideEmail = 0;
-			meta.config.hideFullname = 0;
+			meta.configs.hideEmail = 0;
+			meta.configs.hideFullname = 0;
 
 			await assertPrivacy({ v3Api: false });
 		});
@@ -2715,8 +2715,8 @@ describe('User', () => {
 		});
 
 		it('should be visible to guests (system-wide: show, by-user: show)', async () => {
-			meta.config.hideEmail = 0;
-			meta.config.hideFullname = 0;
+			meta.configs.hideEmail = 0;
+			meta.configs.hideFullname = 0;
 
 			// Set user's individual privacy settings to show its email and fullname
 			const data = { uid: hidingUser.uid, settings: { showemail: 1, showfullname: 1 } };
@@ -2732,8 +2732,8 @@ describe('User', () => {
 
 		// System-wide "hide" prioritized over individual users' settings
 		it('should hide from guests (system-wide: hide, by-user: show)', async () => {
-			meta.config.hideEmail = 1;
-			meta.config.hideFullname = 1;
+			meta.configs.hideEmail = 1;
+			meta.configs.hideFullname = 1;
 
 			await assertPrivacy({ v3Api: false });
 		});
@@ -3032,11 +3032,11 @@ describe('User', () => {
 	it('should allow user to login even if password is weak', (done) => {
 		User.create({ username: 'weakpwd', password: '123456' }, (err) => {
 			assert.ifError(err);
-			const oldValue = meta.config.minimumPasswordStrength;
-			meta.config.minimumPasswordStrength = 3;
+			const oldValue = meta.configs.minimumPasswordStrength;
+			meta.configs.minimumPasswordStrength = 3;
 			helpers.loginUser('weakpwd', '123456', (err) => {
 				assert.ifError(err);
-				meta.config.minimumPasswordStrength = oldValue;
+				meta.configs.minimumPasswordStrength = oldValue;
 				done();
 			});
 		});

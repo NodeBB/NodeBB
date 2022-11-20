@@ -26,8 +26,8 @@ export default  function (SocketTopics) {
 		let start = Math.max(0, parseInt(data.after, 10));
 
 		const infScrollPostsPerPage = Math.max(0, Math.min(
-			meta.config.postsPerPage || 20,
-			parseInt(data.count, 10) || meta.config.postsPerPage || 20
+			meta.configs.postsPerPage || 20,
+			parseInt(data.count, 10) || meta.configs.postsPerPage || 20
 		));
 
 		if (data.direction === -1) {

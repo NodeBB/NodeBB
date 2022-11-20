@@ -7,7 +7,7 @@ import path from 'path';const util = require('util');
 
 import user from '../user';
 const privileges = require('../privileges');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 import helpers from './helpers';
 const auth = require('../routes/authentication');
 const writeRouter = require('../routes/write');

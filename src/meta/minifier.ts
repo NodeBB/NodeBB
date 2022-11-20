@@ -10,7 +10,7 @@ const clean = require('postcss-clean');
 const rtlcss = require('rtlcss');
 const sass = require('../utils').default.getSass();
 
-const fork = require('./debugFork');
+import fork from './debugFork';
 require('../file'); // for graceful-fs
 
 const Minifier  = {} as any;
@@ -47,9 +47,10 @@ Minifier.killAll = function () {
 
 function getChild() {
 	if (free.length) {
+		console.log('FREEEEEEEEE');
 		return free.shift();
 	}
-
+    console.log('FORKING', __filename);
 	const proc = fork(__filename, [], {
 		cwd: __dirname,
 		env: {
@@ -77,6 +78,7 @@ function forkAction(action) {
 	return new Promise((resolve, reject) => {
 		const proc = getChild();
 		proc.on('message', (message) => {
+			console.log('PROC MESSAGE', message);
 			freeChild(proc);
 
 			if (message.type === 'error') {
@@ -88,11 +90,12 @@ function forkAction(action) {
 			}
 		});
 		proc.on('error', (err) => {
+			console.log('PROC ERROR', err);
 			proc.kill();
 			removeChild(proc);
 			reject(err);
 		});
-
+        console.log('SENDING ACTION!!!', action);
 		proc.send({
 			type: 'action',
 			action: action,
@@ -131,6 +134,7 @@ if ((process as any).env.minifier_child) {
 
 async function executeAction(action, fork) {
 	if (fork && (pool.length - free.length) < Minifier.maxThreads) {
+		console.log('ACTIONS--->>>', actions);
 		return await forkAction(action);
 	}
 	if (typeof actions[action.act] !== 'function') {
@@ -158,6 +162,8 @@ Minifier.js.bundle = async function (data, fork) {
 };
 
 actions.buildCSS = async function buildCSS(data) {
+	console.log('COMPILING STRING ASYNC', data.source);
+	console.log('DATA PATHS', data.paths);
 	const scssOutput = await sass.compileStringAsync(data.source, {
 		loadPaths: data.paths,
 	});
@@ -181,6 +187,8 @@ actions.buildCSS = async function buildCSS(data) {
 		processScss('ltr'),
 		processScss('rtl'),
 	]);
+	console.log('LTRRESULT', ltrresult);
+	console.log('RTLRESULT', rtlresult);
 
 	return {
 		ltr: { code: ltrresult.css },
@@ -190,6 +198,7 @@ actions.buildCSS = async function buildCSS(data) {
 
 Minifier.css  = {} as any;
 Minifier.css.bundle = async function (source, paths, minify, fork) {
+	console.log('CSS BUNDLE!!!!!!');
 	return await executeAction({
 		act: 'buildCSS',
 		source: source,

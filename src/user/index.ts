@@ -4,21 +4,19 @@ const _ = require('lodash');
 
 const groups = require('../groups');
 const plugins = require('../plugins');
-import { primaryDB as db } from '../database';
-
-
-import privileges from '../privileges';
+import db from '../database';
+const privileges = require('../privileges');
 const categories = require('../categories');
 import meta from '../meta';
 const utils = require('../utils');
 
 const User = {} as any;
 
-User.email = require('./email');
-User.notifications = require('./notifications');
-User.reset = require('./reset');
-User.digest = require('./digest');
-User.interstitials = require('./interstitials');
+User.email = require('./email').default;
+User.notifications = require('./notifications').default;
+User.reset = require('./reset').default;
+User.digest = require('./digest').default;
+User.interstitials = require('./interstitials').default;
 
 require('./data').default(User);
 require('./auth').default(User);
@@ -60,7 +58,7 @@ User.getUidsFromSet = async function (set, start, stop) {
 	if (set === 'users:online') {
 		const count = parseInt(stop, 10) === -1 ? stop : stop - start + 1;
 		const now = Date.now();
-		return await db.getSortedSetRevRangeByScore(set, start, count, '+inf', now - (meta.config.onlineCutoff * 60000));
+		return await db.getSortedSetRevRangeByScore(set, start, count, '+inf', now - (meta.configs.onlineCutoff * 60000));
 	}
 	return await db.getSortedSetRevRange(set, start, stop);
 };
@@ -92,7 +90,7 @@ User.getStatus = function (userData) {
 	if (userData.uid <= 0) {
 		return 'offline';
 	}
-	const isOnline = (Date.now() - userData.lastonline) < (meta.config.onlineCutoff * 60000);
+	const isOnline = (Date.now() - userData.lastonline) < (meta.configs.onlineCutoff * 60000);
 	return isOnline ? (userData.status || 'online') : 'offline';
 };
 

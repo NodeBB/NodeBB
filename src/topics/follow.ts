@@ -1,12 +1,10 @@
 
 'use strict';
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const notifications = require('../notifications');
 const privileges = require('../privileges');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const utils = require('../utils');
 
 export default  function (Topics) {

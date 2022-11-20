@@ -138,7 +138,7 @@ function setupExpressApp(app) {
 		app.enable('minification');
 	}
 
-	if (meta.config.useCompression) {
+	if (meta.configs.useCompression) {
 		const compression = require('compression');
 		app.use(compression());
 	}
@@ -184,8 +184,8 @@ function setupExpressApp(app) {
 	app.use(middleware.autoLocale); // must be added after auth middlewares are added
 
 	const toobusy = require('toobusy-js');
-	toobusy.maxLag(meta.config.eventLoopLagThreshold);
-	toobusy.interval(meta.config.eventLoopInterval);
+	toobusy.maxLag(meta.configs.eventLoopLagThreshold);
+	toobusy.interval(meta.configs.eventLoopInterval);
 }
 
 function setupHelmet(app) {

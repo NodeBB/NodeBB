@@ -6,7 +6,7 @@ const _ = require('lodash');
 
 const topics = require('../topics');
 import user from '../user';
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const categories = require('../categories');
 const utils = require('../utils');
 

@@ -123,7 +123,6 @@ function welcome(req, res) {
 	});
     console.log('BOOMING!!!!');
 	const defaults = require('./data/defaults.json');
-    console.log('RENDERING!!!!');
 	res.render('install/index', {
 		url: nconf.get('url') || (`${req.protocol}://${req.get('host')}`),
 		launchUrl: launchUrl,
@@ -166,6 +165,7 @@ function install(req, res) {
 
 	winston.info('Starting setup process');
 	launchUrl = setupEnvVars.NODEBB_URL;
+    console.log('STARTING CHILD PROCESS!!!', __dirname);
 	const child = require('child_process').fork('build/app', ['--setup'], {
 		env: setupEnvVars,
 	});
@@ -254,7 +254,6 @@ async function compileSass() {
 				path.join(__dirname, '../../public/scss'),
 			],
 		});
-        console.log('BOOOMINGGGG!!!!');
 		await fs.promises.writeFile(path.join(__dirname, '../../public/installer.css'), scssOutput.css.toString());
 	} catch (err: any) {
 		winston.error(`Unable to compile SASS: \n${err.stack}`);

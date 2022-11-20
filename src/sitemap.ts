@@ -19,7 +19,7 @@ sitemap.maps = {
 };
 
 sitemap.render = async function () {
-	const topicsPerPage = meta.config.sitemapTopics;
+	const topicsPerPage = meta.configs.sitemapTopics;
 	const returnData = {
 		url: nconf.get('url'),
 		topics: [],
@@ -117,7 +117,7 @@ sitemap.getTopicPage = async function (page) {
 		return;
 	}
 
-	const numTopics = meta.config.sitemapTopics;
+	const numTopics = meta.configs.sitemapTopics;
 	const start = (parseInt(page, 10) - 1) * numTopics;
 	const stop = start + numTopics - 1;
 

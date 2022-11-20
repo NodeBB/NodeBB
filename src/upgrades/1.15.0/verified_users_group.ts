@@ -1,6 +1,6 @@
 'use strict';
 
-import { primaryDB as db } from '../../database';
+import db from '../../database';
 
 const batch = require('../../batch');
 import user from '../../user';
@@ -15,8 +15,8 @@ export default  {
 	method: async function () {
 		const { progress } = this as any;
 
-		const maxGroupLength = meta.config.maximumGroupNameLength;
-		meta.config.maximumGroupNameLength = 30;
+		const maxGroupLength = meta.configs.maximumGroupNameLength;
+		meta.configs.maximumGroupNameLength = 30;
 		const timestamp = await db.getObjectField('group:administrators', 'timestamp');
 		const verifiedExists = await groups.exists('verified-users');
 		if (!verifiedExists) {
@@ -43,7 +43,7 @@ export default  {
 			});
 		}
 		// restore setting
-		meta.config.maximumGroupNameLength = maxGroupLength;
+		meta.configs.maximumGroupNameLength = maxGroupLength;
 		await batch.processSortedSet('users:joindate', async (uids) => {
 			progress.incr(uids.length);
 			const userData = await user.getUsersFields(uids, ['uid', 'email:confirmed']);
@@ -83,7 +83,7 @@ async function updatePrivilges() {
 	//   remove chat, posting privs from "registered-users" group
 
 	// This config property has been removed from v1.18.0+, but is still present in old datasets
-	if (meta.config.requireEmailConfirmation) {
+	if (meta.configs.requireEmailConfirmation) {
 		const cids = await db.getSortedSetRevRange('categories:cid', 0, -1);
 		const canChat = await privileges.global.canGroup('chat', 'registered-users');
 		if (canChat) {

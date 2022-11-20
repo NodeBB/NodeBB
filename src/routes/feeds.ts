@@ -11,9 +11,7 @@ const categories = require('../categories');
 import meta from '../meta';
 const helpers = require('../controllers/helpers');
 const privileges = require('../privileges');
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const utils = require('../utils');
 const controllers404 = require('../controllers/404');
 
@@ -405,7 +403,7 @@ async function generateForTag(req, res)  {
 	}
 	const tag = validator.escape(String(req.params.tag));
 	const page = parseInt(req.query.page, 10) || 1;
-	const topicsPerPage = meta.config.topicsPerPage || 20;
+	const topicsPerPage = meta.configs.topicsPerPage || 20;
 	const start = Math.max(0, (page - 1) * topicsPerPage);
 	const stop = start + topicsPerPage - 1;
 	await sendTopicsFeed({

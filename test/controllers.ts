@@ -354,11 +354,11 @@ describe('Controllers', () => {
 				});
 				token = await helpers.getCsrfToken(jar);
 
-				meta.config.requireEmailAddress = 1;
+				meta.configs.requireEmailAddress = 1;
 			});
 
 			after(() => {
-				meta.config.requireEmailAddress = 0;
+				meta.configs.requireEmailAddress = 0;
 				plugins.hooks.unregister('emailer-test', 'filter:email.send');
 			});
 
@@ -391,7 +391,7 @@ describe('Controllers', () => {
 			});
 
 			it('gdpr interstitial should still apply if email requirement is disabled', async () => {
-				meta.config.requireEmailAddress = 0;
+				meta.configs.requireEmailAddress = 0;
 
 				const res = await requestAsync(`${nconf.get('url')}/api/register/complete`, {
 					jar,
@@ -724,7 +724,7 @@ describe('Controllers', () => {
 	});
 
 	it('should load /tos', (done) => {
-		meta.config.termsOfUse = 'please accept our tos';
+		meta.configs.termsOfUse = 'please accept our tos';
 		request(`${nconf.get('url')}/tos`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
@@ -734,8 +734,8 @@ describe('Controllers', () => {
 	});
 
 
-	it('should load 404 if meta.config.termsOfUse is empty', (done) => {
-		meta.config.termsOfUse = '';
+	it('should load 404 if meta.configs.termsOfUse is empty', (done) => {
+		meta.configs.termsOfUse = '';
 		request(`${nconf.get('url')}/tos`, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 404);
@@ -1271,11 +1271,11 @@ describe('Controllers', () => {
 
 	describe('maintenance mode', () => {
 		before((done) => {
-			meta.config.maintenanceMode = 1;
+			meta.configs.maintenanceMode = 1;
 			done();
 		});
 		after((done) => {
-			meta.config.maintenanceMode = 0;
+			meta.configs.maintenanceMode = 0;
 			done();
 		});
 
@@ -1306,13 +1306,13 @@ describe('Controllers', () => {
 		});
 
 		it('should return 200 if guests are allowed', (done) => {
-			const oldValue = meta.config.groupsExemptFromMaintenanceMode;
-			meta.config.groupsExemptFromMaintenanceMode.push('guests');
+			const oldValue = meta.configs.groupsExemptFromMaintenanceMode;
+			meta.configs.groupsExemptFromMaintenanceMode.push('guests');
 			request(`${nconf.get('url')}/api/recent`, { json: true }, (err, res, body) => {
 				assert.ifError(err);
 				assert.strictEqual(res.statusCode, 200);
 				assert(body);
-				meta.config.groupsExemptFromMaintenanceMode = oldValue;
+				meta.configs.groupsExemptFromMaintenanceMode = oldValue;
 				done();
 			});
 		});

@@ -4,9 +4,7 @@ const _ = require('lodash');
 const validator = require('validator');
 import nconf from 'nconf';
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 import user from '../user';
 import meta from '../meta';
 const groups = require('../groups');
@@ -14,7 +12,7 @@ const topics = require('../topics');
 const categories = require('../categories');
 const notifications = require('../notifications');
 const privileges = require('../privileges');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const utils = require('../utils');
 const cache = require('../cache');
 const socketHelpers = require('../socket.io/helpers');
@@ -83,13 +81,13 @@ export default  function (Posts) {
 	Posts.shouldQueue = async function (uid, data) {
 		const [userData, isMemberOfExempt, categoryQueueEnabled] = await Promise.all([
 			user.getUserFields(uid, ['uid', 'reputation', 'postcount']),
-			groups.isMemberOfAny(uid, meta.config.groupsExemptFromPostQueue),
+			groups.isMemberOfAny(uid, meta.configs.groupsExemptFromPostQueue),
 			isCategoryQueueEnabled(data),
 		]);
 
-		const shouldQueue = meta.config.postQueue && categoryQueueEnabled &&
+		const shouldQueue = meta.configs.postQueue && categoryQueueEnabled &&
 			!isMemberOfExempt &&
-			(!userData.uid || userData.reputation < meta.config.postQueueReputationThreshold || userData.postcount <= 0);
+			(!userData.uid || userData.reputation < meta.configs.postQueueReputationThreshold || userData.postcount <= 0);
 		const result = await plugins.hooks.fire('filter:post.shouldQueue', {
 			shouldQueue: !!shouldQueue,
 			uid: uid,

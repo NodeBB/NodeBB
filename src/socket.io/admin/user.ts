@@ -3,7 +3,7 @@
 const async = require('async');
 import winston from 'winston';
 
-import { primaryDB as db } from '../../database';
+import db from '../../database';
 const groups = require('../../groups');
 import user from '../../user';
 const events = require('../../events');

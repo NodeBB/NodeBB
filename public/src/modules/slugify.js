@@ -6,7 +6,7 @@
 		console.log('ONE!!!!');
 		define('slugify', ['xregexp'], factory);
 	} else if (typeof exports === 'object') {
-		module.exports = factory(require('xregexp'));
+	    factory(require('xregexp'));
 	} else {
 		console.log('THREE!!!');
 		window.slugify = factory(XRegExp);

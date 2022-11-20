@@ -1,6 +1,6 @@
 'use strict';
 
-import { primaryDB as db } from '../../database';
+import db from '../../database';
 import user from '../../user';
 const posts = require('../../posts');
 const privileges = require('../../privileges');
@@ -12,7 +12,7 @@ export default  function (SocketPosts) {
 			throw new Error('[[error:invalid-data]]');
 		}
 		const showDownvotes = !meta.config['downvote:disabled'];
-		const canSeeVotes = meta.config.votesArePublic || await privileges.categories.isAdminOrMod(data.cid, socket.uid);
+		const canSeeVotes = meta.configs.votesArePublic || await privileges.categories.isAdminOrMod(data.cid, socket.uid);
 		if (!canSeeVotes) {
 			throw new Error('[[error:no-privileges]]');
 		}

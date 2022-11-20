@@ -5,15 +5,13 @@ const async = require('async');
 import nconf from 'nconf';
 const validator = require('validator');
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 import meta from '../meta';
 const emailer = require('../emailer');
 const groups = require('../groups');
 const translator = require('../translator');
 const utils = require('../utils');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 
 export default  function (User) {
 	User.getInvites = async function (uid: string) {
@@ -55,13 +53,13 @@ export default  function (User) {
 		}
 
 		const data = await prepareInvitation(uid, email, groupsToJoin);
-		await emailer.sendToEmail('invitation', email, meta.config.defaultLang, data);
+		await emailer.sendToEmail('invitation', email, meta.configs.defaultLang, data);
 		plugins.hooks.fire('action:user.invite', { uid, email, groupsToJoin });
 	};
 
 	User.verifyInvitation = async function (query) {
 		if (!query.token) {
-			if (meta.config.registrationType.startsWith('admin-')) {
+			if (meta.configs.registrationType.startsWith('admin-')) {
 				throw new Error('[[register:invite.error-admin-only]]');
 			} else {
 				throw new Error('[[register:invite.error-invite-only]]');
@@ -156,7 +154,7 @@ export default  function (User) {
 		const token = utils.generateUUID();
 		const registerLink = `${nconf.get('url')}/register?token=${token}`;
 
-		const expireDays = meta.config.inviteExpiration;
+		const expireDays = meta.configs.inviteExpiration;
 		const expireIn = expireDays * 86400000;
 
 		await db.setAdd(`invitation:uid:${uid}`, email);
@@ -174,8 +172,8 @@ export default  function (User) {
 		await db.pexpireAt(`invitation:token:${token}`, Date.now() + expireIn);
 
 		const username = await User.getUserField(uid, 'username');
-		const title = meta.config.title || meta.config.browserTitle || 'NodeBB';
-		const subject = await translator.translate(`[[email:invite, ${title}]]`, meta.config.defaultLang);
+		const title = meta.configs.title || meta.configs.browserTitle || 'NodeBB';
+		const subject = await translator.translate(`[[email:invite, ${title}]]`, meta.configs.defaultLang);
 
 		return {
 			...emailer._defaultPayload, // Append default data to this email payload

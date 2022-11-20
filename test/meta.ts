@@ -401,13 +401,13 @@ describe('meta', () => {
 		});
 
 		it('should return 7 days in seconds', (done) => {
-			meta.config.loginDays = 7;
+			meta.configs.loginDays = 7;
 			assert(meta.getSessionTTLSeconds(), 604800);
 			done();
 		});
 
 		it('should return 2 days in seconds', (done) => {
-			meta.config.loginSeconds = 172800;
+			meta.configs.loginSeconds = 172800;
 			assert(meta.getSessionTTLSeconds(), 172800);
 			done();
 		});

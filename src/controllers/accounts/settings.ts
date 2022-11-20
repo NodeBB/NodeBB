@@ -11,7 +11,7 @@ const languages = require('../../languages');
 import meta from '../../meta';
 const plugins = require('../../plugins');
 const notifications = require('../../notifications');
-import { primaryDB as db } from '../../database';
+import db from '../../database';
 import helpers from '../helpers';
 const accountHelpers = require('./helpers').defualt;
 
@@ -47,7 +47,7 @@ settingsController.get = async function (req, res, next) {
 	userData.customSettings = data.customSettings;
 	userData.homePageRoutes = routes;
 	userData.notificationSettings = notificationSettings;
-	userData.disableEmailSubscriptions = meta.config.disableEmailSubscriptions;
+	userData.disableEmailSubscriptions = meta.configs.disableEmailSubscriptions;
 
 	userData.dailyDigestFreqOptions = [
 		{ value: 'off', name: '[[user:digest_off]]', selected: userData.settings.dailyDigestFreq === 'off' },
@@ -92,17 +92,17 @@ settingsController.get = async function (req, res, next) {
 
 	userData.categoryWatchState = { [userData.settings.categoryWatchState]: true };
 
-	userData.disableCustomUserSkins = meta.config.disableCustomUserSkins || 0;
+	userData.disableCustomUserSkins = meta.configs.disableCustomUserSkins || 0;
 
-	userData.allowUserHomePage = meta.config.allowUserHomePage === 1 ? 1 : 0;
+	userData.allowUserHomePage = meta.configs.allowUserHomePage === 1 ? 1 : 0;
 
-	userData.hideFullname = meta.config.hideFullname || 0;
-	userData.hideEmail = meta.config.hideEmail || 0;
+	userData.hideFullname = meta.configs.hideFullname || 0;
+	userData.hideEmail = meta.configs.hideEmail || 0;
 
 	userData.inTopicSearchAvailable = plugins.hooks.hasListeners('filter:topic.search');
 
-	userData.maxTopicsPerPage = meta.config.maxTopicsPerPage;
-	userData.maxPostsPerPage = meta.config.maxPostsPerPage;
+	userData.maxTopicsPerPage = meta.configs.maxTopicsPerPage;
+	userData.maxPostsPerPage = meta.configs.maxPostsPerPage;
 
 	userData.title = '[[pages:account/settings]]';
 	userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: `/user/${userData.userslug}` }, { text: '[[user:settings]]' }]);
@@ -193,7 +193,7 @@ async function getNotificationSettings(userData) {
 		} as any;
 	}
 
-	if (meta.config.disableChat) {
+	if (meta.configs.disableChat) {
 		results.types = results.types.filter((type: string) => type !== 'notificationType_new-chat');
 	}
 

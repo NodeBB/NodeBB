@@ -4,13 +4,11 @@
 import winston from 'winston';
 const _ = require('lodash');
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 import meta from '../meta';
 const notifications = require('../notifications');
 const privileges = require('../privileges');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const utils = require('../utils');
 
 const UserNotifications  = {} as any;
@@ -202,16 +200,16 @@ UserNotifications.sendTopicNotificationToFollowers = async function (uid, topicD
 };
 
 UserNotifications.sendWelcomeNotification = async function (uid: string) {
-	if (!meta.config.welcomeNotification) {
+	if (!meta.configs.welcomeNotification) {
 		return;
 	}
 
-	const path = meta.config.welcomeLink ? meta.config.welcomeLink : '#';
+	const path = meta.configs.welcomeLink ? meta.configs.welcomeLink : '#';
 	const notifObj = await notifications.create({
-		bodyShort: meta.config.welcomeNotification,
+		bodyShort: meta.configs.welcomeNotification,
 		path: path,
 		nid: `welcome_${uid}`,
-		from: meta.config.welcomeUid ? meta.config.welcomeUid : null,
+		from: meta.configs.welcomeUid ? meta.configs.welcomeUid : null,
 	});
 
 	await notifications.push(notifObj, [uid]);
@@ -233,3 +231,5 @@ UserNotifications.pushCount = async function (uid: string) {
 	const count = await UserNotifications.getUnreadCount(uid);
 	websockets.in(`uid_${uid}`).emit('event:notifications.updateCount', count);
 };
+
+export default UserNotifications;

@@ -2,14 +2,12 @@
 
 const _ = require('lodash');
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const topics = require('../topics');
 const categories = require('../categories');
 import user from '../user';
 const notifications = require('../notifications');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const flags = require('../flags');
 
 export default  function (Posts) {

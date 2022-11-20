@@ -1,6 +1,6 @@
 'use strict';
 
-import { primaryDB as db } from '../../database';
+import db from '../../database';
 
 export default  {
 	name: 'Remove duplicate image field for categories',

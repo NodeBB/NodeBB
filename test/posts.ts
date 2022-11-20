@@ -249,8 +249,8 @@ describe('Post\'s', () => {
 		});
 
 		it('should prevent downvoting more than total daily limit', async () => {
-			const oldValue = meta.config.downvotesPerDay;
-			meta.config.downvotesPerDay = 1;
+			const oldValue = meta.configs.downvotesPerDay;
+			meta.configs.downvotesPerDay = 1;
 			let err;
 			const p1 = await topics.reply({
 				uid: voteeUid,
@@ -263,12 +263,12 @@ describe('Post\'s', () => {
 				err = _err;
 			}
 			assert.equal(err.message, '[[error:too-many-downvotes-today, 1]]');
-			meta.config.downvotesPerDay = oldValue;
+			meta.configs.downvotesPerDay = oldValue;
 		});
 
 		it('should prevent downvoting target user more than total daily limit', async () => {
-			const oldValue = meta.config.downvotesPerUserPerDay;
-			meta.config.downvotesPerUserPerDay = 1;
+			const oldValue = meta.configs.downvotesPerUserPerDay;
+			meta.configs.downvotesPerUserPerDay = 1;
 			let err;
 			const p1 = await topics.reply({
 				uid: voteeUid,
@@ -281,7 +281,7 @@ describe('Post\'s', () => {
 				err = _err;
 			}
 			assert.equal(err.message, '[[error:too-many-downvotes-today-user, 1]]');
-			meta.config.downvotesPerUserPerDay = oldValue;
+			meta.configs.downvotesPerUserPerDay = oldValue;
 		});
 	});
 
@@ -464,29 +464,29 @@ describe('Post\'s', () => {
 			try {
 				await apiPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content', title: 'a' });
 			} catch (err: any) {
-				return assert.equal(err.message, `[[error:title-too-short, ${meta.config.minimumTitleLength}]]`);
+				return assert.equal(err.message, `[[error:title-too-short, ${meta.configs.minimumTitleLength}]]`);
 			}
 			assert(false);
 		});
 
 		it('should error if title is too long', async () => {
-			const longTitle = new Array(meta.config.maximumTitleLength + 2).join('a');
+			const longTitle = new Array(meta.configs.maximumTitleLength + 2).join('a');
 			try {
 				await apiPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content', title: longTitle });
 			} catch (err: any) {
-				return assert.equal(err.message, `[[error:title-too-long, ${meta.config.maximumTitleLength}]]`);
+				return assert.equal(err.message, `[[error:title-too-long, ${meta.configs.maximumTitleLength}]]`);
 			}
 			assert(false);
 		});
 
 		it('should error with too few tags', async () => {
-			const oldValue = meta.config.minimumTagsPerTopic;
-			meta.config.minimumTagsPerTopic = 1;
+			const oldValue = meta.configs.minimumTagsPerTopic;
+			meta.configs.minimumTagsPerTopic = 1;
 			try {
 				await apiPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content', tags: [] });
 			} catch (err: any) {
-				assert.equal(err.message, `[[error:not-enough-tags, ${meta.config.minimumTagsPerTopic}]]`);
-				meta.config.minimumTagsPerTopic = oldValue;
+				assert.equal(err.message, `[[error:not-enough-tags, ${meta.configs.minimumTagsPerTopic}]]`);
+				meta.configs.minimumTagsPerTopic = oldValue;
 				return;
 			}
 			assert(false);
@@ -494,13 +494,13 @@ describe('Post\'s', () => {
 
 		it('should error with too many tags', async () => {
 			const tags : any[] = [];
-			for (let i = 0; i < meta.config.maximumTagsPerTopic + 1; i += 1) {
+			for (let i = 0; i < meta.configs.maximumTagsPerTopic + 1; i += 1) {
 				tags.push(`tag${i}`);
 			}
 			try {
 				await apiPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content', tags: tags });
 			} catch (err: any) {
-				return assert.equal(err.message, `[[error:too-many-tags, ${meta.config.maximumTagsPerTopic}]]`);
+				return assert.equal(err.message, `[[error:too-many-tags, ${meta.configs.maximumTagsPerTopic}]]`);
 			}
 			assert(false);
 		});
@@ -509,17 +509,17 @@ describe('Post\'s', () => {
 			try {
 				await apiPosts.edit({ uid: voterUid }, { pid: pid, content: 'e' });
 			} catch (err: any) {
-				return assert.equal(err.message, `[[error:content-too-short, ${meta.config.minimumPostLength}]]`);
+				return assert.equal(err.message, `[[error:content-too-short, ${meta.configs.minimumPostLength}]]`);
 			}
 			assert(false);
 		});
 
 		it('should error if content is too long', async () => {
-			const longContent = new Array(meta.config.maximumPostLength + 2).join('a');
+			const longContent = new Array(meta.configs.maximumPostLength + 2).join('a');
 			try {
 				await apiPosts.edit({ uid: voterUid }, { pid: pid, content: longContent });
 			} catch (err: any) {
-				return assert.equal(err.message, `[[error:content-too-long, ${meta.config.maximumPostLength}]]`);
+				return assert.equal(err.message, `[[error:content-too-long, ${meta.configs.maximumPostLength}]]`);
 			}
 			assert(false);
 		});
@@ -541,13 +541,13 @@ describe('Post\'s', () => {
 		});
 
 		it('should disallow post editing for new users if post was made past the threshold for editing', async () => {
-			meta.config.newbiePostEditDuration = 1;
+			meta.configs.newbiePostEditDuration = 1;
 			await sleep(1000);
 			try {
 				await apiPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content again', title: 'edited title again', tags: ['edited-twice'] });
 			} catch (err: any) {
 				assert.equal(err.message, '[[error:post-edit-duration-expired, 1]]');
-				meta.config.newbiePostEditDuration = 3600;
+				meta.configs.newbiePostEditDuration = 3600;
 				return;
 			}
 			assert(false);
@@ -967,7 +967,7 @@ describe('Post\'s', () => {
 		let topicQueueId;
 		let jar;
 		before((done) => {
-			meta.config.postQueue = 1;
+			meta.configs.postQueue = 1;
 			user.create({ username: 'newuser' }, (err, _uid) => {
 				assert.ifError(err);
 				uid = _uid;
@@ -976,8 +976,8 @@ describe('Post\'s', () => {
 		});
 
 		after((done) => {
-			meta.config.postQueue = 0;
-			meta.config.groupsExemptFromPostQueue : any[] = [];
+			meta.configs.postQueue = 0;
+			meta.configs.groupsExemptFromPostQueue : any[] = [];
 			done();
 		});
 
@@ -1094,12 +1094,12 @@ describe('Post\'s', () => {
 		});
 
 		it('should bypass post queue if user is in exempt group', async () => {
-			const oldValue = meta.config.groupsExemptFromPostQueue;
-			meta.config.groupsExemptFromPostQueue = ['registered-users'];
+			const oldValue = meta.configs.groupsExemptFromPostQueue;
+			meta.configs.groupsExemptFromPostQueue = ['registered-users'];
 			const uid = await user.create({ username: 'mergeexemptuser' });
 			const result = await apiTopics.create({ uid: uid, emit: () => {} }, { title: 'should not be queued', content: 'topic content', cid: cid });
 			assert.strictEqual(result.title, 'should not be queued');
-			meta.config.groupsExemptFromPostQueue = oldValue;
+			meta.configs.groupsExemptFromPostQueue = oldValue;
 		});
 
 		it('should update queued post\'s topic if target topic is merged', async () => {
@@ -1212,7 +1212,7 @@ describe('Post\'s', () => {
 			});
 
 			it('should not show backlink events if the feature is disabled', async () => {
-				meta.config.topicBacklinks = 0;
+				meta.configs.topicBacklinks = 0;
 
 				await topics.post({
 					uid: 1,

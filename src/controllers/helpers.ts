@@ -10,7 +10,7 @@ const translator = require('../translator');
 import user from '../user';
 const privileges = require('../privileges');
 const categories = require('../categories');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 import meta from '../meta';
 const middlewareHelpers = require('../middleware/helpers');
 const utils = require('../utils');
@@ -202,7 +202,7 @@ helpers.buildCategoryBreadcrumbs = async function (cid: string) {
 		}
 		cid = data.parentCid;
 	}
-	if (meta.config.homePageRoute && meta.config.homePageRoute !== 'categories') {
+	if (meta.configs.homePageRoute && meta.configs.homePageRoute !== 'categories') {
 		breadcrumbs.unshift({
 			text: '[[global:header.categories]]',
 			url: `${relative_path}/categories`,
@@ -238,9 +238,9 @@ helpers.buildBreadcrumbs = function (crumbs: Array<any>) {
 };
 
 helpers.buildTitle = function (pageTitle: string) {
-	const titleLayout = meta.config.titleLayout || '{pageTitle} | {browserTitle}';
+	const titleLayout = meta.configs.titleLayout || '{pageTitle} | {browserTitle}';
 
-	const browserTitle = validator.escape(String(meta.config.browserTitle || meta.config.title || 'NodeBB'));
+	const browserTitle = validator.escape(String(meta.configs.browserTitle || meta.configs.title || 'NodeBB'));
 	pageTitle = pageTitle || '';
 	const title = titleLayout.replace('{pageTitle}', () => pageTitle).replace('{browserTitle}', () => browserTitle);
 	return title;
@@ -518,7 +518,7 @@ helpers.generateError = async (statusCode, message: string, res) => {
 	async function translateMessage(message) {
 		const { req } = res;
 		const settings = req.query.lang ? null : await user.getSettings(req.uid);
-		const language = String(req.query.lang || settings.userLang || meta.config.defaultLang);
+		const language = String(req.query.lang || settings.userLang || meta.configs.defaultLang);
 		return await translator.translate(message, language);
 	}
 	if (message && message.startsWith('[[')) {

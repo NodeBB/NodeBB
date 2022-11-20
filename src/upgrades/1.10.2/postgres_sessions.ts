@@ -1,7 +1,7 @@
 'use strict';
 
 import nconf from 'nconf';
-import { primaryDB as db } from '../../database';
+import db from '../../database';
 
 export default  {
 	name: 'Optimize PostgreSQL sessions',

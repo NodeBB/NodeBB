@@ -3,7 +3,7 @@
 import nconf from 'nconf';
 
 import user from '../user';
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const topics = require('../topics');
 const posts = require('../posts');
 import helpers from './helpers';

@@ -83,11 +83,11 @@ describe('Upload Controllers', () => {
 		});
 
 		it('should fail if the user exceeds the upload rate limit threshold', (done) => {
-			const oldValue = meta.config.allowedFileExtensions;
-			meta.config.allowedFileExtensions = 'png,jpg,bmp,html';
+			const oldValue = meta.configs.allowedFileExtensions;
+			meta.configs.allowedFileExtensions = 'png,jpg,bmp,html';
 			require('../src/middleware/uploads').clearCache();
 			// why / 2? see: helpers.uploadFile for a weird quirk where we actually upload 2 files per upload in our tests.
-			const times = (meta.config.uploadRateLimitThreshold / 2) + 1;
+			const times = (meta.configs.uploadRateLimitThreshold / 2) + 1;
 			async.timesSeries(times, (i, next) => {
 				helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/503.html'), {}, jar, csrf_token, (err, res, body) => {
 					if (i + 1 >= times) {
@@ -104,7 +104,7 @@ describe('Upload Controllers', () => {
 					next(err);
 				});
 			}, (err) => {
-				meta.config.allowedFileExtensions = oldValue;
+				meta.configs.allowedFileExtensions = oldValue;
 				assert.ifError(err);
 				done();
 			});
@@ -116,7 +116,7 @@ describe('Upload Controllers', () => {
 		let csrf_token;
 
 		before(async () => {
-			meta.config.uploadRateLimitThreshold = 1000;
+			meta.configs.uploadRateLimitThreshold = 1000;
 			({ jar, csrf_token } = await helpers.loginUser('regular', 'zugzug'));
 			await privileges.global.give(['groups:upload:post:file'], 'registered-users');
 		});
@@ -166,9 +166,9 @@ describe('Upload Controllers', () => {
 		});
 
 		it('should resize and upload an image to a post', (done) => {
-			const oldValue = meta.config.resizeImageWidth;
-			meta.config.resizeImageWidth = 10;
-			meta.config.resizeImageWidthThreshold = 10;
+			const oldValue = meta.configs.resizeImageWidth;
+			meta.configs.resizeImageWidth = 10;
+			meta.configs.resizeImageWidthThreshold = 10;
 			helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
@@ -176,17 +176,17 @@ describe('Upload Controllers', () => {
 				assert(Array.isArray(body.response.images));
 				assert(body.response.images[0].url);
 				assert(body.response.images[0].url.match(/\/assets\/uploads\/files\/\d+-test-resized\.png/));
-				meta.config.resizeImageWidth = oldValue;
-				meta.config.resizeImageWidthThreshold = 1520;
+				meta.configs.resizeImageWidth = oldValue;
+				meta.configs.resizeImageWidthThreshold = 1520;
 				done();
 			});
 		});
 
 		it('should upload a file to a post', (done) => {
-			const oldValue = meta.config.allowedFileExtensions;
-			meta.config.allowedFileExtensions = 'png,jpg,bmp,html';
+			const oldValue = meta.configs.allowedFileExtensions;
+			meta.configs.allowedFileExtensions = 'png,jpg,bmp,html';
 			helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/503.html'), {}, jar, csrf_token, (err, res, body) => {
-				meta.config.allowedFileExtensions = oldValue;
+				meta.configs.allowedFileExtensions = oldValue;
 				assert.ifError(err);
 				assert.strictEqual(res.statusCode, 200);
 				assert(body && body.status && body.response && body.response.images);
@@ -545,7 +545,7 @@ describe('Upload Controllers', () => {
 					await fs.utimes(`${nconf.get('upload_path')}/files/${filename}`, p30d, p30d);
 				}));
 
-				_orphanExpiryDays = meta.config.orphanExpiryDays;
+				_orphanExpiryDays = meta.configs.orphanExpiryDays;
 			});
 
 			it('should not touch orphans if not configured to do so', async () => {
@@ -556,7 +556,7 @@ describe('Upload Controllers', () => {
 			});
 
 			it('should not touch orphans if they are newer than the configured expiry', async () => {
-				meta.config.orphanExpiryDays = 60;
+				meta.configs.orphanExpiryDays = 60;
 				await posts.uploads.cleanOrphans();
 				const orphans = await posts.uploads.getOrphans();
 
@@ -564,7 +564,7 @@ describe('Upload Controllers', () => {
 			});
 
 			it('should delete orphans older than the configured number of days', async () => {
-				meta.config.orphanExpiryDays = 7;
+				meta.configs.orphanExpiryDays = 7;
 				await posts.uploads.cleanOrphans();
 				const orphans = await posts.uploads.getOrphans();
 
@@ -573,7 +573,7 @@ describe('Upload Controllers', () => {
 
 			after(async () => {
 				await emptyUploadsFolder();
-				meta.config.orphanExpiryDays = _orphanExpiryDays;
+				meta.configs.orphanExpiryDays = _orphanExpiryDays;
 			});
 		});
 	});

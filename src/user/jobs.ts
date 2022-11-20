@@ -2,9 +2,7 @@
 
 import winston from 'winston';
 const cronJob = require('cron').CronJob;
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 import meta from '../meta';
 
 const jobs  = {} as any;
@@ -13,7 +11,7 @@ export default  function (User) {
 	User.startJobs = function () {
 		winston.verbose('[user/jobs] (Re-)starting jobs...');
 
-		let { digestHour } = meta.config;
+		let { digestHour = undefined } = meta.configs || {};
 
 		// Fix digest hour if invalid
 		if (isNaN(digestHour)) {
@@ -41,9 +39,11 @@ export default  function (User) {
 				if (name === 'digest.weekly') {
 					const counter = await db.increment('biweeklydigestcounter');
 					if (counter % 2) {
+						console.log('DIGEST', User);
 						await User.digest.execute({ interval: 'biweek' });
 					}
 				}
+				console.log('DIGEST', User);
 				await User.digest.execute({ interval: term });
 			} catch (err: any) {
 				winston.error(err.stack);

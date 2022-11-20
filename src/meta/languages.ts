@@ -11,15 +11,19 @@ const rimraf = require('rimraf');
 
 const rimrafAsync = util.promisify(rimraf);
 
-const file = require('../file');
-const Plugins = require('../plugins');
-const { paths } = require('../constants');
+import file from '../file';
+import Plugins from '../plugins';
+import { paths } from '../constants';
 
-const buildLanguagesPath = path.join(paths.baseDir, 'build/public/language');
-const coreLanguagesPath = path.join(paths.baseDir, 'public/language');
+console.log('BUILDING LANGUAGE!!!!');
+console.log('baseDir', paths.baseDir);
+const buildLanguagesPath = path.join(paths.baseDir, '../build/public/language');
+const coreLanguagesPath = path.join(paths.baseDir, '../public/language');
 
 async function getTranslationMetadata() {
+	console.log('GETTING TRANSLATION METADATA!!!');
 	const paths = await file.walk(coreLanguagesPath);
+	console.log('PATHS INITIALIZED!!!!');
 	let languages : any[] = [];
 	let namespaces : any[] = [];
 
@@ -136,7 +140,11 @@ async function assignFileToTranslations(translations, path) {
 }
 
 export const build = async function buildLanguages() {
+	console.log('BUILDING LANGUAGES PATH!!!!');
 	await rimrafAsync(buildLanguagesPath);
+	console.log('BUILT LANGUAGE PATH!!!!');
 	const data = await getTranslationMetadata();
+	console.log('BUILDING TRANSLATIONS DATA');
 	await buildTranslations(data);
+	console.log('BUILT TRANSLATIONS DATA');
 };

@@ -5,9 +5,7 @@ const _ = require('lodash');
 import nconf from 'nconf';
 import path from 'path';const validator = require('validator');
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const file = require('../file');
 const plugins = require('../plugins');
 const posts = require('../posts');
@@ -39,7 +37,7 @@ Thumbs.get = async function (tids: string[]) {
 		singular = true;
 	}
 
-	if (!meta.config.allowTopicsThumbnail || !tids.length) {
+	if (!meta.configs.allowTopicsThumbnail || !tids.length) {
 		return singular ? [] : tids.map(() => []);
 	}
 

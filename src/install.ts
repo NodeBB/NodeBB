@@ -13,6 +13,12 @@ import utils from './utils';
 import file from './file';
 import upgrade from './upgr\ade';
 
+import utils from './utils';
+import file from './file';
+import upgrade from './upgrade';
+import meta from './meta';
+
+
 const install  = {} as any;
 const questions  = {} as any;
 
@@ -200,6 +206,14 @@ async function completeConfigSetup(config) {
 		config.package_manager = nconf.get('package_manager');
 	}
 	nconf.overrides(config);
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+	const { default: { default: db } } = require('./database');
+	console.log('REQUIRE DATABASE', require('./database'));
+=======
+>>>>>>> 960a321fe (fixing runtime errors wip)
+>>>>>>> 30e0c6374 (feat(typescript): typescript migration process)
 	await db.init();
 	if (db.hasOwnProperty('createIndices')) {
 		await db.createIndices();
@@ -227,8 +241,12 @@ async function completeConfigSetup(config) {
 	// ref: https://github.com/indexzero/nconf/issues/300
 	delete config.type;
 
+<<<<<<< HEAD
 	const meta = require('./meta').default;
 	await meta.config.set('submitPluginUsage', config.submitPluginUsage === 'yes' ? 1 : 0);
+=======
+	await meta.configs.set('submitPluginUsage', config.submitPluginUsage === 'yes' ? 1 : 0);
+>>>>>>> 30e0c6374 (feat(typescript): typescript migration process)
 	delete config.submitPluginUsage;
 
 	await install.save(config);
@@ -244,7 +262,14 @@ async function setupDefaultConfigs() {
 }
 
 async function enableDefaultTheme() {
+<<<<<<< HEAD
 	const meta = require('./meta').default;
+=======
+<<<<<<< HEAD
+	const meta = require('./meta');
+=======
+>>>>>>> 960a321fe (fixing runtime errors wip)
+>>>>>>> 30e0c6374 (feat(typescript): typescript migration process)
 
 	const id = await meta.config.get('theme:id');
 	if (id) {
@@ -346,6 +371,10 @@ async function createAdmin() {
 		} catch (err: any) {
 			const [namespace, key] = err.message.slice(2, -2).split(':', 2);
 			if (namespace && key && err.message.startsWith('[[') && err.message.endsWith(']]')) {
+<<<<<<< HEAD
+=======
+			    console.log('NAMESPACE!!!!');
+>>>>>>> 30e0c6374 (feat(typescript): typescript migration process)
 				const lang = require(path.join(__dirname, `../../public/language/en-GB/${namespace}`));
 				if (lang && lang[key]) {
 					err.message = lang[key];
@@ -438,6 +467,13 @@ async function giveGlobalPrivileges() {
 
 async function createCategories() {
 	const Categories = require('./categories');
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+	const db = require('./database');
+=======
+>>>>>>> 960a321fe (fixing runtime errors wip)
+>>>>>>> 30e0c6374 (feat(typescript): typescript migration process)
 	const cids = await db.getSortedSetRange('categories:cid', 0, -1);
 	if (Array.isArray(cids) && cids.length) {
 		console.log(`Categories OK. Found ${cids.length} categories.`);

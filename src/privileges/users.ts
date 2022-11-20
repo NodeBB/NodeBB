@@ -5,9 +5,9 @@ const _ = require('lodash');
 
 import user from '../user';
 import meta from '../meta';
-import groups from '../groups';
-import plugins from '../plugins';
-import helpers from './helpers';
+const groups = require('../groups');
+const plugins = require('../plugins');
+const helpers = require('./helpers').defualt;
 
 const privsUsers  = {} as any;
 

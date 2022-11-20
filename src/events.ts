@@ -173,3 +173,5 @@ events.deleteAll = async function () {
 };
 
 require('./promisify').promisify(events);
+
+export default events;

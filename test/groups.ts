@@ -621,9 +621,9 @@ describe('Groups', () => {
 		});
 
 		it('should fail to add user to admin group', async () => {
-			const oldValue = meta.config.allowPrivateGroups;
+			const oldValue = meta.configs.allowPrivateGroups;
 			try {
-				meta.config.allowPrivateGroups = false;
+				meta.configs.allowPrivateGroups = false;
 				const newUid = await User.create({ username: 'newadmin' });
 				await apiGroups.join({ uid: newUid }, { slug: ['test', 'administrators'], uid: newUid }, 1);
 				const isMember = await Groups.isMember(newUid, 'administrators');
@@ -631,7 +631,7 @@ describe('Groups', () => {
 			} catch (err: any) {
 				assert.strictEqual(err.message, '[[error:no-group]]');
 			}
-			meta.config.allowPrivateGroups = oldValue;
+			meta.configs.allowPrivateGroups = oldValue;
 		});
 
 		it('should fail to add user to group if group name is invalid', (done) => {
@@ -709,8 +709,8 @@ describe('Groups', () => {
 
 		it('should fail to add user to system group', async () => {
 			const uid = await User.create({ username: 'eviluser' });
-			const oldValue = meta.config.allowPrivateGroups;
-			meta.config.allowPrivateGroups = 0;
+			const oldValue = meta.configs.allowPrivateGroups;
+			meta.configs.allowPrivateGroups = 0;
 			async function test(groupName) {
 				let err;
 				try {
@@ -728,7 +728,7 @@ describe('Groups', () => {
 				// eslint-disable-next-line no-await-in-loop
 				await test(g);
 			}
-			meta.config.allowPrivateGroups = oldValue;
+			meta.configs.allowPrivateGroups = oldValue;
 		});
 
 		it('should allow admins to join private groups', async () => {
@@ -843,7 +843,7 @@ describe('Groups', () => {
 		});
 
 		it('should join test group', async () => {
-			meta.config.allowPrivateGroups = 0;
+			meta.configs.allowPrivateGroups = 0;
 			await apiGroups.join({ uid: adminUid }, { slug: 'test', uid: adminUid });
 			const isMember = await Groups.isMember(adminUid, 'Test');
 			assert(isMember);
@@ -874,7 +874,7 @@ describe('Groups', () => {
 		});
 
 		it('should fail to join if group is private and join requests are disabled', async () => {
-			meta.config.allowPrivateGroups = 1;
+			meta.configs.allowPrivateGroups = 1;
 			try {
 				await apiGroups.join({ uid: testUid }, { slug: 'privatenojoin', uid: testUid });
 				assert(false);

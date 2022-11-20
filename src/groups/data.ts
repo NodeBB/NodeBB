@@ -3,10 +3,10 @@
 const validator = require('validator');
 import nconf from 'nconf';
 
-import { primaryDB as db } from '../database';
+import db from '../database';
 
 
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const utils = require('../utils');
 const translator = require('../translator');
 

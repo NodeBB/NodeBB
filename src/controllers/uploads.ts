@@ -5,8 +5,8 @@ const validator = require('validator');
 
 import user from '../user';
 import meta from '../meta';
-const file = require('../file');
-const plugins = require('../plugins');
+import file from '../file';
+import plugins from '../plugins';
 const image = require('../image');
 const privileges = require('../privileges');
 
@@ -77,7 +77,7 @@ async function uploadAsImage(req, uploadedFile) {
 	let fileObj = await uploadsController.uploadFile(req.uid, uploadedFile);
 	// sharp can't save svgs skip resize for them
 	const isSVG = uploadedFile.type === 'image/svg+xml';
-	if (isSVG || meta.config.resizeImageWidth === 0 || meta.config.resizeImageWidthThreshold === 0) {
+	if (isSVG || meta.configs.resizeImageWidth === 0 || meta.configs.resizeImageWidthThreshold === 0) {
 		return fileObj;
 	}
 
@@ -101,8 +101,8 @@ async function uploadAsFile(req, uploadedFile: string) {
 async function resizeImage(fileObj) {
 	const imageData = await image.size(fileObj.path);
 	if (
-		imageData.width < meta.config.resizeImageWidthThreshold ||
-		meta.config.resizeImageWidth > meta.config.resizeImageWidthThreshold
+		imageData.width < meta.configs.resizeImageWidthThreshold ||
+		meta.configs.resizeImageWidth > meta.configs.resizeImageWidthThreshold
 	) {
 		return fileObj;
 	}
@@ -110,8 +110,8 @@ async function resizeImage(fileObj) {
 	await image.resizeImage({
 		path: fileObj.path,
 		target: file.appendToFileName(fileObj.path, '-resized'),
-		width: meta.config.resizeImageWidth,
-		quality: meta.config.resizeImageQuality,
+		width: meta.configs.resizeImageWidth,
+		quality: meta.configs.resizeImageQuality,
 	});
 	// Return the resized version to the composer/postData
 	fileObj.url = file.appendToFileName(fileObj.url, '-resized');
@@ -120,7 +120,7 @@ async function resizeImage(fileObj) {
 }
 
 uploadsController.uploadThumb = async function (req, res) {
-	if (!meta.config.allowTopicsThumbnail) {
+	if (!meta.configs.allowTopicsThumbnail) {
 		deleteTempFiles(req.files.files);
 		return helpers.formatApiResponse(503, res, new Error('[[error:topic-thumbnails-are-disabled]]'));
 	}
@@ -132,10 +132,10 @@ uploadsController.uploadThumb = async function (req, res) {
 		await image.isFileTypeAllowed(uploadedFile.path);
 		const dimensions = await image.checkDimensions(uploadedFile.path);
 
-		if (dimensions.width > parseInt(meta.config.topicThumbSize, 10)) {
+		if (dimensions.width > parseInt(meta.configs.topicThumbSize, 10)) {
 			await image.resizeImage({
 				path: uploadedFile.path,
-				width: meta.config.topicThumbSize,
+				width: meta.configs.topicThumbSize,
 			});
 		}
 		if (plugins.hooks.hasListeners('filter:uploadImage')) {
@@ -163,8 +163,8 @@ uploadsController.uploadFile = async function (uid: string, uploadedFile) {
 		throw new Error('[[error:invalid-file]]');
 	}
 
-	if (uploadedFile.size > meta.config.maximumFileSize * 1024) {
-		throw new Error(`[[error:file-too-big, ${meta.config.maximumFileSize}]]`);
+	if (uploadedFile.size > meta.configs.maximumFileSize * 1024) {
+		throw new Error(`[[error:file-too-big, ${meta.configs.maximumFileSize}]]`);
 	}
 
 	const allowed = file.allowedExtensions();

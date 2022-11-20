@@ -2,7 +2,7 @@
 
 'use strict';
 
-import { primaryDB as db } from '../../database';
+import db from '../../database';
 
 export default  {
 	name: 'Change the schema of simple keys so they don\'t use value field (mongodb only)',

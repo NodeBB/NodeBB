@@ -79,7 +79,7 @@ groupsController.details = async function (req, res, next) {
 		posts: posts,
 		isAdmin: isAdmin,
 		isGlobalMod: isGlobalMod,
-		allowPrivateGroups: meta.config.allowPrivateGroups,
+		allowPrivateGroups: meta.configs.allowPrivateGroups,
 		breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[pages:groups]]', url: '/groups' }, { text: groupData.displayName }]),
 	});
 };

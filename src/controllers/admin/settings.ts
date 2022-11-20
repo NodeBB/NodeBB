@@ -58,12 +58,12 @@ settingsController.advanced = async (req, res) => {
 settingsController.languages = async function (req, res) {
 	const languageData = await languages.list();
 	languageData.forEach((language) => {
-		language.selected = language.code === meta.config.defaultLang;
+		language.selected = language.code === meta.configs.defaultLang;
 	});
 
 	res.render('admin/settings/languages', {
 		languages: languageData,
-		autoDetectLang: meta.config.autoDetectLang,
+		autoDetectLang: meta.configs.autoDetectLang,
 	});
 };
 

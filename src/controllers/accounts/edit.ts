@@ -18,19 +18,19 @@ editController.get = async function (req, res, next) {
 	if (!userData) {
 		return next();
 	}
-	userData.maximumSignatureLength = meta.config.maximumSignatureLength;
-	userData.maximumAboutMeLength = meta.config.maximumAboutMeLength;
-	userData.maximumProfileImageSize = meta.config.maximumProfileImageSize;
+	userData.maximumSignatureLength = meta.configs.maximumSignatureLength;
+	userData.maximumAboutMeLength = meta.configs.maximumAboutMeLength;
+	userData.maximumProfileImageSize = meta.configs.maximumProfileImageSize;
 	userData.allowProfilePicture = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:profile-picture'];
 	userData.allowCoverPicture = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:cover-picture'];
-	userData.allowProfileImageUploads = meta.config.allowProfileImageUploads;
+	userData.allowProfileImageUploads = meta.configs.allowProfileImageUploads;
 	userData.allowedProfileImageExtensions = user.getAllowedProfileImageExtensions().map((ext) => `.${ext}`).join(', ');
-	userData.allowMultipleBadges = meta.config.allowMultipleBadges === 1;
-	userData.allowAccountDelete = meta.config.allowAccountDelete === 1;
+	userData.allowMultipleBadges = meta.configs.allowMultipleBadges === 1;
+	userData.allowAccountDelete = meta.configs.allowAccountDelete === 1;
 	userData.allowWebsite = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:website'];
 	userData.allowAboutMe = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:aboutme'];
 	userData.allowSignature = canUseSignature && (!userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:signature']);
-	userData.profileImageDimension = meta.config.profileImageDimension;
+	userData.profileImageDimension = meta.configs.profileImageDimension;
 	userData.defaultAvatar = user.getDefaultAvatar();
 
 	userData.groups = userData.groups.filter((g) => g && g.userTitleEnabled && !groups.isPrivilegeGroup(g.name) && g.name !== 'registered-users');
@@ -109,8 +109,8 @@ async function renderRoute(name: string, req, res, next) {
 	}
 
 	if (name === 'password') {
-		userData.minimumPasswordLength = meta.config.minimumPasswordLength;
-		userData.minimumPasswordStrength = meta.config.minimumPasswordStrength;
+		userData.minimumPasswordLength = meta.configs.minimumPasswordLength;
+		userData.minimumPasswordStrength = meta.configs.minimumPasswordStrength;
 	}
 
 	userData.title = `[[pages:account/edit/${name}, ${userData.username}]]`;

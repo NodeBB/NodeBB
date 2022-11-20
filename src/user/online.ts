@@ -1,10 +1,8 @@
 'use strict';
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const topics = require('../topics');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 import meta from '../meta';
 
 export default  function (User) {
@@ -39,7 +37,7 @@ export default  function (User) {
 		const isArray = Array.isArray(uid);
 		uid = isArray ? uid : [uid] as string[];
 		const lastonline = await db.sortedSetScores('users:online', uid);
-		const isOnline = (uid as string[]).map((uid, index) => (now - lastonline[index]) < (meta.config.onlineCutoff * 60000));
+		const isOnline = (uid as string[]).map((uid, index) => (now - lastonline[index]) < (meta.configs.onlineCutoff * 60000));
 		return isArray ? isOnline : isOnline[0];
 	};
 };

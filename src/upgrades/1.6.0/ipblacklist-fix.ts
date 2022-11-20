@@ -1,6 +1,6 @@
 'use strict';
 
-import { primaryDB as db } from '../../database';
+import db from '../../database';
 
 export default  {
 	name: 'Changing ip blacklist storage to object',

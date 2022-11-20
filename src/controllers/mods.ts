@@ -4,7 +4,7 @@ import user from '../user';
 const posts = require('../posts');
 const flags = require('../flags');
 const analytics = require('../analytics');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const pagination = require('../pagination');
 const privileges = require('../privileges');
 const utils = require('../utils');

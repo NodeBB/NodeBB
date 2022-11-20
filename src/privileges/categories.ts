@@ -7,7 +7,7 @@ const categories = require('../categories');
 import user from '../user';
 const groups = require('../groups');
 import helpers from './helpers';
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const utils = require('../utils');
 
 const privsCategories  = {} as any;

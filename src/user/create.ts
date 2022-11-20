@@ -3,12 +3,10 @@
 const zxcvbn = require('zxcvbn');
 import winston from 'winston';
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const utils = require('../utils');
 const slugify = require('../slugify');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const groups = require('../groups');
 import meta from '../meta';
 const analytics = require('../analytics');
@@ -102,7 +100,7 @@ export default  function (User) {
 			groups.join(['registered-users', 'unverified-users'], userData.uid),
 			User.notifications.sendWelcomeNotification(userData.uid),
 			storePassword(userData.uid, data.password),
-			User.updateDigestSetting(userData.uid, meta.config.dailyDigestFreq),
+			User.updateDigestSetting(userData.uid, meta.configs.dailyDigestFreq),
 		]);
 
 		if (data.email && isFirstUser) {
@@ -114,7 +112,7 @@ export default  function (User) {
 			await User.email.sendValidationEmail(userData.uid, {
 				email: data.email,
 				template: 'welcome',
-				subject: `[[email:welcome-to, ${meta.config.title || meta.config.browserTitle || 'NodeBB'}]]`,
+				subject: `[[email:welcome-to, ${meta.configs.title || meta.configs.browserTitle || 'NodeBB'}]]`,
 			}).catch(err => winston.error(`[user.create] Validation email failed to send\n[emailer.send] ${err.stack}`));
 		}
 		if (userNameChanged) {
@@ -160,14 +158,14 @@ export default  function (User) {
 	};
 
 	User.isPasswordValid = function (password, minStrength) {
-		minStrength = (minStrength || minStrength === 0) ? minStrength : meta.config.minimumPasswordStrength;
+		minStrength = (minStrength || minStrength === 0) ? minStrength : meta.configs.minimumPasswordStrength;
 
 		// Sanity checks: Checks if defined and is string
 		if (!password || !utils.isPasswordValid(password)) {
 			throw new Error('[[error:invalid-password]]');
 		}
 
-		if (password.length < meta.config.minimumPasswordLength) {
+		if (password.length < meta.configs.minimumPasswordLength) {
 			throw new Error('[[reset_password:password_too_short]]');
 		}
 

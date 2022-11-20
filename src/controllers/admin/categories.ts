@@ -41,7 +41,7 @@ categoriesController.get = async function (req, res, next) {
 		category: data.category,
 		selectedCategory: selectedData.selectedCategory,
 		customClasses: data.customClasses,
-		postQueueEnabled: !!meta.config.postQueue,
+		postQueueEnabled: !!meta.configs.postQueue,
 	});
 };
 
@@ -74,16 +74,16 @@ categoriesController.getAll = async function (req, res) {
 	let tree = categories.getTree(result.categories, rootParent);
 	const cidsCount = rootCid && tree[0] ? tree[0].children.length : tree.length;
 
-	const pageCount = Math.max(1, Math.ceil(cidsCount / meta.config.categoriesPerPage));
+	const pageCount = Math.max(1, Math.ceil(cidsCount / meta.configs.categoriesPerPage));
 	const page = Math.min(parseInt(req.query.page, 10) || 1, pageCount);
-	const start = Math.max(0, (page - 1) * meta.config.categoriesPerPage);
-	const stop = start + meta.config.categoriesPerPage;
+	const start = Math.max(0, (page - 1) * meta.configs.categoriesPerPage);
+	const stop = start + meta.configs.categoriesPerPage;
 
 	function trim(c) {
 		if (c.children) {
 			c.subCategoriesLeft = Math.max(0, c.children.length - c.subCategoriesPerPage);
 			c.hasMoreSubCategories = c.children.length > c.subCategoriesPerPage;
-			c.showMorePage = Math.ceil(c.subCategoriesPerPage / meta.config.categoriesPerPage);
+			c.showMorePage = Math.ceil(c.subCategoriesPerPage / meta.configs.categoriesPerPage);
 			c.children = c.children.slice(0, c.subCategoriesPerPage);
 			c.children.forEach((c) => trim(c));
 		}
@@ -106,7 +106,7 @@ categoriesController.getAll = async function (req, res) {
 		selectedCategory: selectedCategory,
 		breadcrumbs: crumbs,
 		pagination: pagination.create(page, pageCount, req.query),
-		categoriesPerPage: meta.config.categoriesPerPage,
+		categoriesPerPage: meta.configs.categoriesPerPage,
 	});
 };
 

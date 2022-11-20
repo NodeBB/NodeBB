@@ -3,14 +3,12 @@
 const validator = require('validator');
 const _ = require('lodash');
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 import meta from '../meta';
 const topics = require('../topics');
 import user from '../user';
 const privileges = require('../privileges');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const pubsub = require('../pubsub').default;
 const utils = require('../utils');
 const slugify = require('../slugify');
@@ -61,7 +59,7 @@ export default  function (Posts) {
 			topic.renamed ||
 			topic.tagsupdated;
 
-		if (meta.config.enablePostHistory === 1 && contentChanged) {
+		if (meta.configs.enablePostHistory === 1 && contentChanged) {
 			await Posts.diffs.save({
 				pid: data.pid,
 				uid: data.uid,

@@ -1,6 +1,6 @@
 'use strict';
 
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const posts = require('../posts');
 
 export default  function (Topics) {

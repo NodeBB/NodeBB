@@ -45,7 +45,7 @@ pluginsController.get = async function (req, res) {
 		download: compatible.filter((plugin) => !plugin.installed),
 		incompatible: all.filter((plugin) => !compatiblePkgNames.includes(plugin.name)),
 		trending: trendingPlugins,
-		submitPluginUsage: meta.config.submitPluginUsage,
+		submitPluginUsage: meta.configs.submitPluginUsage,
 		version: nconf.get('version'),
 	});
 };

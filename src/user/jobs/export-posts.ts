@@ -18,7 +18,7 @@ const prestart = require('../../prestart');
 prestart.loadConfig(configFile);
 prestart.setupWinston();
 
-import { primaryDB as db } from '../../database';
+import db from '../../database';
 const batch = require('../../batch');
 
 (process as any).on('message', async (msg: any) => {

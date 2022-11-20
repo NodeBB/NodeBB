@@ -32,12 +32,12 @@ const Logger  = {} as any;
 
 Logger.init = function (app) {
 	opts.express.app = app;
-	/* Open log file stream & initialize express logging if meta.config.logger* variables are set */
+	/* Open log file stream & initialize express logging if meta.configs.logger* variables are set */
 	Logger.setup();
 };
 
 Logger.setup = function () {
-	Logger.setup_one('loggerPath', meta.config.loggerPath);
+	Logger.setup_one('loggerPath', meta.configs.loggerPath);
 };
 
 Logger.setup_one = function (key, value) {
@@ -56,7 +56,7 @@ Logger.setup_one_log = function (value) {
 	 * If logging is currently enabled, create a stream.
 	 * Otherwise, close the current stream
 	 */
-	if (meta.config.loggerStatus > 0 || meta.config.loggerIOStatus) {
+	if (meta.configs.loggerStatus > 0 || meta.configs.loggerIOStatus) {
 		const stream = Logger.open(value);
 		if (stream) {
 			opts.streams.log.f = stream;
@@ -129,7 +129,7 @@ Logger.expressLogger = function (req, res, next) {
 	 *
 	 * This hijack allows us to turn logger on/off dynamically within express
 	 */
-	if (meta.config.loggerStatus > 0) {
+	if (meta.configs.loggerStatus > 0) {
 		return opts.express.ofn(req, res, next);
 	}
 	return next();
@@ -203,7 +203,7 @@ Logger.io_one = function (socket, uid) {
 		};
 	}
 
-	if (socket && meta.config.loggerIOStatus > 0) {
+	if (socket && meta.configs.loggerIOStatus > 0) {
 		// courtesy of: http://stackoverflow.com/a/9674248
 		socket.oEmit = socket.emit;
 		const { emit } = socket;

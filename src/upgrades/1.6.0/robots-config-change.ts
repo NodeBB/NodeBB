@@ -1,6 +1,6 @@
 'use strict';
 
-import { primaryDB as db } from '../../database';
+import db from '../../database';
 
 export default  {
 	name: 'Fix incorrect robots.txt schema',

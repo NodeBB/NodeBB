@@ -5,7 +5,7 @@ import nconf from 'nconf';
 import path from 'path';const crypto = require('crypto');
 const fs = require('fs').promises;
 
-import { primaryDB as db } from '../../database';
+import db from '../../database';
 const api = require('../../api');
 const groups = require('../../groups');
 import meta from '../../meta';
@@ -212,7 +212,7 @@ Users.invite = async (req, res) => {
 		return helpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
 	}
 
-	const { registrationType } = meta.config;
+	const { registrationType } = meta.configs;
 	const isAdmin = await user.isAdministrator(req.uid);
 	if (registrationType === 'admin-invite-only' && !isAdmin) {
 		return helpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
@@ -224,7 +224,7 @@ Users.invite = async (req, res) => {
 		return helpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
 	}
 
-	const max = meta.config.maximumInvites;
+	const max = meta.configs.maximumInvites;
 	const emailsArr = emails.split(',').map((email: string) => email.trim()).filter(Boolean);
 
 	for (const email of emailsArr) {

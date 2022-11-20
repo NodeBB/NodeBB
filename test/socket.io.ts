@@ -551,14 +551,14 @@ describe('socket.io', () => {
 	});
 
 	it('should error with invalid interval', async () => {
-		const oldValue = meta.config.dailyDigestFreq;
-		meta.config.dailyDigestFreq = 'off';
+		const oldValue = meta.configs.dailyDigestFreq;
+		meta.configs.dailyDigestFreq = 'off';
 		try {
 			await socketAdmin.digest.resend({ uid: adminUid }, { action: 'resend-' });
 		} catch (err: any) {
 			assert.strictEqual(err.message, '[[error:digest-not-enabled]]');
 		}
-		meta.config.dailyDigestFreq = oldValue;
+		meta.configs.dailyDigestFreq = oldValue;
 	});
 
 	it('should get logs', (done) => {
@@ -628,8 +628,8 @@ describe('socket.io', () => {
 		import * as fs from 'fs';
 		import path from 'path';
 		it('should enable logging', (done) => {
-			meta.config.loggerStatus = 1;
-			meta.config.loggerIOStatus = 1;
+			meta.configs.loggerStatus = 1;
+			meta.configs.loggerIOStatus = 1;
 			const loggerPath = path.join(__dirname, '..', 'logs', 'logger.log');
 			logger.monitorConfig({ io: index.server }, { key: 'loggerPath', value: loggerPath });
 			setTimeout(() => {
@@ -645,8 +645,8 @@ describe('socket.io', () => {
 		});
 
 		after((done) => {
-			meta.config.loggerStatus = 0;
-			meta.config.loggerIOStatus = 0;
+			meta.configs.loggerStatus = 0;
+			meta.configs.loggerIOStatus = 0;
 			done();
 		});
 	});

@@ -658,12 +658,12 @@ describe('Admin Controllers', () => {
 	});
 
 	it('should load /recent in maintenance mode', (done) => {
-		meta.config.maintenanceMode = 1;
+		meta.configs.maintenanceMode = 1;
 		request(`${nconf.get('url')}/api/recent`, { jar: jar, json: true }, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
-			meta.config.maintenanceMode = 0;
+			meta.configs.maintenanceMode = 0;
 			done();
 		});
 	});

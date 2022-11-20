@@ -5,12 +5,12 @@ import * as fs from 'fs';
 const chalk = require('chalk');
 import nconf from 'nconf';
 
-import { primaryDB as db } from '../database';
+import db from '../database';
 
 
 const events = require('../events');
 import meta from '../meta';
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const widgets = require('../widgets');
 const privileges = require('../privileges');
 const { paths, pluginNamePattern, themeNamePattern } = require('../constants');

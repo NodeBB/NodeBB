@@ -5,7 +5,7 @@ const nconf = require('nconf');
 
 import user from '../user';
 import meta from '../meta';
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const privileges = require('../privileges');
 const helpers = require('./helpers');
 
@@ -55,8 +55,8 @@ middleware.checkPrivileges = helpers.try(async (req, res, next) => {
 
 	// Reject if they need to re-login (due to ACP timeout), otherwise extend logout timer
 	const loginTime = req.session.meta ? req.session.meta.datetime : 0;
-	const adminReloginDuration = meta.config.adminReloginDuration * 60000;
-	const disabled = meta.config.adminReloginDuration === 0;
+	const adminReloginDuration = meta.configs.adminReloginDuration * 60000;
+	const disabled = meta.configs.adminReloginDuration === 0;
 	if (disabled || (loginTime && parseInt(loginTime, 10) > Date.now() - adminReloginDuration)) {
 		const timeLeft = parseInt(loginTime, 10) - (Date.now() - adminReloginDuration);
 		if (req.session.meta && timeLeft < Math.min(60000, adminReloginDuration)) {

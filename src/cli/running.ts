@@ -9,11 +9,6 @@ const { paths } = require('../constants');
 
 const cwd = paths.baseDir;
 
-const child = fork(paths.loader, (process as any).argv.slice(3), {
-	env: (process as any).env,
-	cwd,
-});
-
 function getRunningPid(callback: Function) {
 	fs.readFile(paths.pidfile, {
 		encoding: 'utf-8',
@@ -61,6 +56,10 @@ export function start(options) {
 	}
 
 	// Spawn a new NodeBB process
+	const child = fork(paths.loader, (process as any).argv.slice(3), {
+		env: (process as any).env,
+		cwd,
+	});
 	if (options.log) {
 		childProcess.spawn('tail', ['-F', './logs/output.log'], {
 			stdio: 'inherit',
@@ -114,6 +113,7 @@ export function status() {
 
 export function log() {
 	console.log(`${chalk.red('\nHit ') + chalk.bold('Ctrl-C ') + chalk.red('to exit\n')}\n`);
+	// @ts-ignore
 	child(process as any).spawn('tail', ['-F', './logs/output.log'], {
 		stdio: 'inherit',
 		cwd,

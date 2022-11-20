@@ -4,11 +4,9 @@ const validator = require('validator');
 import nconf from 'nconf';
 const _ = require('lodash');
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 import meta from '../meta';
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const utils = require('../utils');
 
 const relative_path = nconf.get('relative_path');
@@ -166,10 +164,10 @@ export default  function (User) {
 			const isSelf = parseInt(callerUID, 10) === parseInt(_userData.uid, 10);
 			const privilegedOrSelf = isAdmin || isGlobalModerator || isSelf;
 
-			if (!privilegedOrSelf && (!userSettings[idx].showemail || meta.config.hideEmail)) {
+			if (!privilegedOrSelf && (!userSettings[idx].showemail || meta.configs.hideEmail)) {
 				_userData.email = '';
 			}
-			if (!privilegedOrSelf && (!userSettings[idx].showfullname || meta.config.hideFullname)) {
+			if (!privilegedOrSelf && (!userSettings[idx].showfullname || meta.configs.hideFullname)) {
 				_userData.fullname = '';
 			}
 			return _userData;
@@ -180,7 +178,7 @@ export default  function (User) {
 
 	async function modifyUserData(users, requestedFields, fieldsToRemove) {
 		let uidToSettings  = {} as any;
-		if (meta.config.showFullnameAsDisplayName) {
+		if (meta.configs.showFullnameAsDisplayName) {
 			const uids = users.map(user => user.uid);
 			uidToSettings = _.zipObject(uids, await db.getObjectsFields(
 				uids.map(uid => `user:${uid}:settings`),
@@ -221,7 +219,7 @@ export default  function (User) {
 			} else if (user.uploadedpicture) {
 				user.uploadedpicture = user.uploadedpicture.startsWith('http') ? user.uploadedpicture : relative_path + user.uploadedpicture;
 			}
-			if (meta.config.defaultAvatar && !user.picture) {
+			if (meta.configs.defaultAvatar && !user.picture) {
 				user.picture = User.getDefaultAvatar();
 			}
 
@@ -234,7 +232,7 @@ export default  function (User) {
 			}
 
 			// User Icons
-			if (requestedFields.includes('picture') && user.username && parseInt(user.uid, 10) && !meta.config.defaultAvatar) {
+			if (requestedFields.includes('picture') && user.username && parseInt(user.uid, 10) && !meta.configs.defaultAvatar) {
 				const iconBackgrounds = await User.getIconBackgrounds(user.uid);
 				let bgColor = await User.getUserField(user.uid, 'icon:bgColor');
 				if (!iconBackgrounds.includes(bgColor)) {
@@ -274,7 +272,7 @@ export default  function (User) {
 	}
 
 	function parseDisplayName(user, uidToSettings) {
-		let showfullname = parseInt(meta.config.showfullname, 10) === 1;
+		let showfullname = parseInt(meta.configs.showfullname, 10) === 1;
 		if (uidToSettings[user.uid]) {
 			if (parseInt(uidToSettings[user.uid].showfullname, 10) === 0) {
 				showfullname = false;
@@ -284,7 +282,7 @@ export default  function (User) {
 		}
 
 		user.displayname = validator.escape(String(
-			meta.config.showFullnameAsDisplayName && showfullname && user.fullname ?
+			meta.configs.showFullnameAsDisplayName && showfullname && user.fullname ?
 				user.fullname :
 				user.username
 		));
@@ -308,7 +306,7 @@ export default  function (User) {
 				user.groupTitleArray = [];
 			}
 		}
-		if (!meta.config.allowMultipleBadges && user.groupTitleArray.length) {
+		if (!meta.configs.allowMultipleBadges && user.groupTitleArray.length) {
 			user.groupTitleArray = [user.groupTitleArray[0]];
 		}
 	}
@@ -325,10 +323,10 @@ export default  function (User) {
 	};
 
 	User.getDefaultAvatar = function () {
-		if (!meta.config.defaultAvatar) {
+		if (!meta.configs.defaultAvatar) {
 			return '';
 		}
-		return meta.config.defaultAvatar.startsWith('http') ? meta.config.defaultAvatar : relative_path + meta.config.defaultAvatar;
+		return meta.configs.defaultAvatar.startsWith('http') ? meta.configs.defaultAvatar : relative_path + meta.configs.defaultAvatar;
 	};
 
 	User.setUserField = async function (uid, field, value) {

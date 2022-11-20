@@ -3,12 +3,10 @@
 
 const validator = require('validator');
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 import user from '../user';
 const privileges = require('../privileges');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 import meta from '../meta';
 const utils = require('../utils');
 
@@ -191,7 +189,7 @@ Messaging.getLatestUndeletedMessage = async (uid, roomId) => {
 };
 
 Messaging.canMessageUser = async (uid, toUid) => {
-	if (meta.config.disableChat || uid <= 0) {
+	if (meta.configs.disableChat || uid <= 0) {
 		throw new Error('[[error:chat-disabled]]');
 	}
 
@@ -231,7 +229,7 @@ Messaging.canMessageUser = async (uid, toUid) => {
 };
 
 Messaging.canMessageRoom = async (uid, roomId) => {
-	if (meta.config.disableChat || uid <= 0) {
+	if (meta.configs.disableChat || uid <= 0) {
 		throw new Error('[[error:chat-disabled]]');
 	}
 

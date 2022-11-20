@@ -6,15 +6,13 @@ import path from 'path';import nconf from 'nconf';
 const util = require('util');
 const rimrafAsync = util.promisify(require('rimraf'));
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const posts = require('../posts');
 const flags = require('../flags');
 const topics = require('../topics');
 const groups = require('../groups');
 const messaging = require('../messaging');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const batch = require('../batch');
 
 export default  function (User) {

@@ -1,8 +1,6 @@
 'use strict';
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const notifications = require('../notifications');
 const Messaging = require('../messaging');
 const utils = require('../utils');

@@ -3,13 +3,11 @@
 
 const _ = require('lodash');
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 import meta from '../meta';
 import user from '../user';
 const posts = require('../posts');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const utils = require('../utils');
 
 export default  function (Topics) {
@@ -18,10 +16,10 @@ export default  function (Topics) {
 			return [];
 		}
 		let uid = options;
-		let { teaserPost } = meta.config;
+		let { teaserPost } = meta.configs;
 		if (typeof options === 'object') {
 			uid = options.uid;
-			teaserPost = options.teaserPost || meta.config.teaserPost;
+			teaserPost = options.teaserPost || meta.configs.teaserPost;
 		}
 
 		const counts : any[] = [];

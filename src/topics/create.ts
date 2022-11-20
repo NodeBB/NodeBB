@@ -3,12 +3,10 @@
 
 const _ = require('lodash');
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const utils = require('../utils');
 const slugify = require('../slugify');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const analytics = require('../analytics');
 import user from '../user';
 import meta from '../meta';
@@ -195,7 +193,7 @@ export default  function (Topics) {
 			user.setUserField(uid, 'lastonline', Date.now());
 		}
 
-		if (parseInt(uid, 10) || meta.config.allowGuestReplyNotifications) {
+		if (parseInt(uid, 10) || meta.configs.allowGuestReplyNotifications) {
 			const { displayname } = postData.user;
 
 			Topics.notifyFollowers(postData, uid, {
@@ -248,11 +246,11 @@ export default  function (Topics) {
 	}
 
 	Topics.checkTitle = function (title) {
-		check(title, meta.config.minimumTitleLength, meta.config.maximumTitleLength, 'title-too-short', 'title-too-long');
+		check(title, meta.configs.minimumTitleLength, meta.configs.maximumTitleLength, 'title-too-short', 'title-too-long');
 	};
 
 	Topics.checkContent = function (content) {
-		check(content, meta.config.minimumPostLength, meta.config.maximumPostLength, 'content-too-short', 'content-too-long');
+		check(content, meta.configs.minimumPostLength, meta.configs.maximumPostLength, 'content-too-short', 'content-too-long');
 	};
 
 	function check(item, min, max, minError, maxError) {
@@ -269,8 +267,8 @@ export default  function (Topics) {
 	}
 
 	async function guestHandleValid(data) {
-		if (meta.config.allowGuestHandles && parseInt(data.uid, 10) === 0 && data.handle) {
-			if (data.handle.length > meta.config.maximumUsernameLength) {
+		if (meta.configs.allowGuestHandles && parseInt(data.uid, 10) === 0 && data.handle) {
+			if (data.handle.length > meta.configs.maximumUsernameLength) {
 				throw new Error('[[error:guest-handle-invalid]]');
 			}
 			const exists = await user.existsBySlug(slugify(data.handle));

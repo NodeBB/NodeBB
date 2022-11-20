@@ -5,7 +5,7 @@ import winston from 'winston';
 import user from '../user';
 const notifications = require('../notifications');
 const sockets = require('../socket.io');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 import meta from '../meta';
 
 export default  function (Messaging) {
@@ -53,7 +53,7 @@ export default  function (Messaging) {
 			} catch (err: any) {
 				winston.error(`[messaging/notifications] Unabled to send notification\n${err.stack}`);
 			}
-		}, meta.config.notificationSendDelay * 1000);
+		}, meta.configs.notificationSendDelay * 1000);
 	};
 
 	async function sendNotifications(fromuid, uids, roomId, messageObj) {

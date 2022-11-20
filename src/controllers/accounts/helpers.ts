@@ -3,7 +3,7 @@
 const validator = require('validator');
 import nconf from 'nconf';
 
-import { primaryDB as db } from '../../database';
+import db from '../../database';
 import user from '../../user';
 const groups = require('../../groups');
 const plugins = require('../../plugins');
@@ -76,7 +76,7 @@ helpers.getUserDataByUserSlug = async function (userslug: string, callerUID: str
 	userData.hasPrivateChat = results.hasPrivateChat;
 	userData.showHidden = results.canEdit; // remove in v1.19.0
 	userData.groups = Array.isArray(results.groups) && results.groups.length ? results.groups[0] : [];
-	userData.disableSignatures = meta.config.disableSignatures === 1;
+	userData.disableSignatures = meta.configs.disableSignatures === 1;
 	userData['reputation:disabled'] = meta.config['reputation:disabled'] === 1;
 	userData['downvote:disabled'] = meta.config['downvote:disabled'] === 1;
 	userData['email:confirmed'] = !!userData['email:confirmed'];
@@ -208,7 +208,7 @@ async function getProfileMenu(uid: string, callerUID: string) {
 		},
 	}];
 
-	if (meta.config.gdpr_enabled) {
+	if (meta.configs.gdpr_enabled) {
 		links.push({
 			id: 'consent',
 			route: 'consent',

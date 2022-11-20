@@ -63,6 +63,7 @@ module.exports =function (grunt) {
 			.concat(pluginList.map(p => `node_modules/${p}/+(lib|src)/**/*.js`));
 
 		const templatesUpdated = pluginList.map(p => `node_modules/${p}/+(public|static|templates)/**/*.tpl`);
+		console.log('LANG UPDATED!!!!!!');
 		const langUpdated = pluginList.map(p => `node_modules/${p}/+(public|static|languages)/**/*.json`);
 
 		grunt.config(['watch'], {

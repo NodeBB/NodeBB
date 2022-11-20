@@ -54,7 +54,7 @@ file.appendToFileName = function (filename, string) {
 
 file.allowedExtensions = function () {
 	const meta = require('./meta');
-	let allowedExtensions = (meta.config.allowedFileExtensions || '').trim();
+	let allowedExtensions = (meta.configs.allowedFileExtensions || '').trim();
 	if (!allowedExtensions) {
 		return [];
 	}
@@ -146,11 +146,14 @@ file.typeToExtension = function (type) {
 
 // Adapted from http://stackoverflow.com/questions/5827612/node-js-fs-readdir-recursive-directory-search
 file.walk = async function (dir) {
+	console.log('READING DIR!!!!', dir);
 	const subdirs = await fs.promises.readdir(dir);
+    console.log('SUBDIRS!!!', subdirs);
 	const files = await Promise.all(subdirs.map(async (subdir) => {
 		const res = path.resolve(dir, subdir);
 		return (await fs.promises.stat(res)).isDirectory() ? file.walk(res) : res;
 	}));
+	console.log('RESOLVED!!!');
 	return files.reduce((a, f) => a.concat(f), []);
 };
 

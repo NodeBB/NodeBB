@@ -2,7 +2,7 @@
 'use strict';
 
 
-import { primaryDB as db } from '../../database';
+import db from '../../database';
 const batch = require('../../batch');
 const posts = require('../../posts');
 const topics = require('../../topics');

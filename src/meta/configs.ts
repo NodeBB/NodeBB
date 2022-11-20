@@ -4,18 +4,16 @@
 import nconf from 'nconf';
 import path from 'path';
 import winston from 'winston';
-import { primaryDB as primaryDB } from '../database';
-console.log('PRIMARY DB', primaryDB);
+import primaryDb from '../database';
 const pubsub = require('../pubsub').default;
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const utils = require('../utils');
-import * as Meta  from './';
+import Meta  from './';
 const cacheBuster = require('./cacheBuster');
 const defaults = require('../../../install/data/defaults.json');
 
 const Configs  = {} as any;
 
-// @ts-ignore
 Meta.config  = {} as any;
 
 // called after data is loaded from db
@@ -108,9 +106,9 @@ Configs.get = async function (field) {
 Configs.getFields = async function (fields) {
 	let values;
 	if (fields.length) {
-		values = await primaryDB.getObjectFields('config', fields);
+		values = await primaryDb.getObjectFields('config', fields);
 	} else {
-		values = await primaryDB.getObject('config');
+		values = await primaryDb.getObject('config');
 	}
 
 	values = { ...defaults, ...(values ? deserialize(values) : {}) };
@@ -135,19 +133,19 @@ Configs.set = async function (field, value) {
 Configs.setMultiple = async function (data) {
 	await processConfig(data);
 	data = serialize(data);
-	await primaryDB.setObject('config', data);
+	await primaryDb.setObject('config', data);
 	updateConfig(deserialize(data));
 };
 
 Configs.setOnEmpty = async function (values) {
-	const data = await primaryDB.getObject('config');
+	const data = await primaryDb.getObject('config');
 	values = serialize(values);
 	const config = { ...values, ...(data ? serialize(data) : {}) };
-	await primaryDB.setObject('config', config);
+	await primaryDb.setObject('config', config);
 };
 
 Configs.remove = async function (field) {
-	await primaryDB.deleteObjectField('config', field);
+	await primaryDb.deleteObjectField('config', field);
 };
 
 Configs.registerHooks = () => {
@@ -193,7 +191,6 @@ Configs.registerHooks = () => {
 Configs.cookie = {
 	get: () => {
 		const cookie  = {} as any;
-                                        // @ts-ignore
 		if (nconf.get('cookieDomain') || Meta.config.cookieDomain) {
 			                                         // @ts-ignore
 			cookie.domain = nconf.get('cookieDomain') || Meta.config.cookieDomain;

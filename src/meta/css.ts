@@ -4,15 +4,14 @@ import winston from 'winston';
 import nconf from 'nconf';
 import * as fs from 'fs';
 const util = require('util');
-import path from 'path';import { AnyObject } from '../interfaces';
+import path from 'path';
+import { AnyObject } from '../interfaces';
 const rimraf = require('rimraf');
 
 const rimrafAsync = util.promisify(rimraf);
 
 const plugins = require('../plugins');
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const file = require('../file');
 const minifier = require('./minifier');
 
@@ -44,7 +43,7 @@ const buildImports = {
 		console.log('SOURCE', source);
 		return [
 			'@import "admin/vars";',
-			'@import "bootswatch/dist/materia/variables";',
+			'@import "bootswatch/dist/materia/_variables";',
 			'@import "bootstrap/scss/bootstrap";',
 			'@import "bootswatch/dist/materia/bootswatch";',
 			'@import "mixins";',
@@ -169,7 +168,7 @@ async function getImports(files, extension) {
 
 async function getBundleMetadata(target) {
 	const paths = [
-		path.join(__dirname, '../../node_modules'),
+		path.join(__dirname, '../../../node_modules'),
 		path.join(__dirname, '../../../public/scss'),
 		path.join(__dirname, '../../../public/vendor/fontawesome/scss'),
 	];
@@ -213,13 +212,17 @@ async function getBundleMetadata(target) {
 
 CSS.buildBundle = async function (target, fork) {
 	if (target === 'client') {
+		console.log('CLIENT TARGET', target);
 		await rimrafAsync(path.join(__dirname, '../../build/public/client*'));
 	}
+	console.log('BUILDING METADATA TARGET');
 
 	const data = await getBundleMetadata(target);
+	console.log('MINIFYING!!!');
 	const minify = (process as any).env.NODE_ENV !== 'development';
 	const { ltr, rtl } = await minifier.css.bundle(data.imports, data.paths, minify, fork);
-
+	console.log('LTR-->>>>', ltr);
+	console.log('RTL--->>>', rtl);
 	await Promise.all([
 		fs.promises.writeFile(path.join(__dirname, '../../build/public', `${target}.css`), ltr.code),
 		fs.promises.writeFile(path.join(__dirname, '../../build/public', `${target}-rtl.css`), rtl.code),

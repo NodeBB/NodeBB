@@ -1,13 +1,11 @@
 'use strict';
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 
 import user from '../user';
 const posts = require('../posts');
 const categories = require('../categories');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const batch = require('../batch');
 
 

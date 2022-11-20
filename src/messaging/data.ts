@@ -2,12 +2,10 @@
 
 const validator = require('validator');
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 import user from '../user';
 const utils = require('../utils');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 
 const intFields = ['timestamp', 'edited', 'fromuid', 'roomId', 'deleted', 'system'];
 

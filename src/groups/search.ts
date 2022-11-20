@@ -1,9 +1,7 @@
 'use strict';
 
 import user from '../user';
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 
 export default  function (Groups) {
 	Groups.search = async function (query, options) {

@@ -1,10 +1,8 @@
 'use strict';
 
-import { primaryDB as db } from '../database';
-console.log('PRIMARY DB', db);
 import user from '../user';
 
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const slugify = require('../slugify').default;
 const Groups  = {} as any;
 

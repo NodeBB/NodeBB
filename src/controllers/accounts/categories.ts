@@ -20,10 +20,10 @@ categoriesController.get = async function (req, res, next) {
 		categories.buildForSelect(userData.uid, 'find', ['descriptionParsed', 'depth', 'slug']),
 	]);
 
-	const pageCount = Math.max(1, Math.ceil(allCategoriesData.length / meta.config.categoriesPerPage));
+	const pageCount = Math.max(1, Math.ceil(allCategoriesData.length / meta.configs.categoriesPerPage));
 	const page = Math.min(parseInt(req.query.page, 10) || 1, pageCount);
-	const start = Math.max(0, (page - 1) * meta.config.categoriesPerPage);
-	const stop = start + meta.config.categoriesPerPage - 1;
+	const start = Math.max(0, (page - 1) * meta.configs.categoriesPerPage);
+	const stop = start + meta.configs.categoriesPerPage - 1;
 	const categoriesData = allCategoriesData.slice(start, stop + 1);
 
 

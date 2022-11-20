@@ -3,7 +3,7 @@
 'use strict';
 
 import winston from 'winston';
-import { primaryDB as db } from '../../database';
+import db from '../../database';
 
 export default  {
 	name: 'Giving topics:read privs to any group/user that was previously allowed to Find & Access Category',

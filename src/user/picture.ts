@@ -4,9 +4,7 @@ import winston from 'winston';
 const mime = require('mime');
 import path from 'path';import nconf from 'nconf';
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const file = require('../file');
 const image = require('../image');
 import meta from '../meta';
@@ -45,7 +43,7 @@ export default  function (User) {
 				return await User.updateCoverPosition(data.uid, data.position);
 			}
 
-			validateUpload(data, meta.config.maximumCoverImageSize, ['image/png', 'image/jpeg', 'image/bmp']);
+			validateUpload(data, meta.configs.maximumCoverImageSize, ['image/png', 'image/jpeg', 'image/bmp']);
 
 			picture.path = await image.writeImageDataToTempFile(data.imageData);
 
@@ -71,12 +69,12 @@ export default  function (User) {
 	// uploads a image file as profile picture
 	User.uploadCroppedPictureFile = async function (data) {
 		const userPhoto = data.file;
-		if (!meta.config.allowProfileImageUploads) {
+		if (!meta.configs.allowProfileImageUploads) {
 			throw new Error('[[error:profile-image-uploads-disabled]]');
 		}
 
-		if (userPhoto.size > meta.config.maximumProfileImageSize * 1024) {
-			throw new Error(`[[error:file-too-big, ${meta.config.maximumProfileImageSize}]]`);
+		if (userPhoto.size > meta.configs.maximumProfileImageSize * 1024) {
+			throw new Error(`[[error:file-too-big, ${meta.configs.maximumProfileImageSize}]]`);
 		}
 
 		if (!userPhoto.type || !User.getAllowedImageTypes().includes(userPhoto.type)) {
@@ -92,8 +90,8 @@ export default  function (User) {
 
 		await image.resizeImage({
 			path: newPath,
-			width: meta.config.profileImageDimension,
-			height: meta.config.profileImageDimension,
+			width: meta.configs.profileImageDimension,
+			height: meta.configs.profileImageDimension,
 		});
 
 		const filename = generateProfileImageFilename(data.uid, extension);
@@ -120,11 +118,11 @@ export default  function (User) {
 		} as any;
 
 		try {
-			if (!meta.config.allowProfileImageUploads) {
+			if (!meta.configs.allowProfileImageUploads) {
 				throw new Error('[[error:profile-image-uploads-disabled]]');
 			}
 
-			validateUpload(data, meta.config.maximumProfileImageSize, User.getAllowedImageTypes());
+			validateUpload(data, meta.configs.maximumProfileImageSize, User.getAllowedImageTypes());
 
 			const extension = file.typeToExtension(image.mimeFromBase64(data.imageData));
 			if (!extension) {
@@ -136,8 +134,8 @@ export default  function (User) {
 
 			await image.resizeImage({
 				path: picture.path,
-				width: meta.config.profileImageDimension,
-				height: meta.config.profileImageDimension,
+				width: meta.configs.profileImageDimension,
+				height: meta.configs.profileImageDimension,
 			});
 
 			const filename = generateProfileImageFilename(data.uid, extension);

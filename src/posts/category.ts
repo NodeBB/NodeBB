@@ -4,9 +4,7 @@
 
 const _ = require('lodash');
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const topics = require('../topics');
 
 export default  function (Posts) {

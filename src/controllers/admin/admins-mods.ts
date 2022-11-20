@@ -2,7 +2,7 @@
 
 const _ = require('lodash');
 
-import { primaryDB as db } from '../../database';
+import db from '../../database';
 const groups = require('../../groups');
 import categories from '../../categories';import user from '../../user';
 import meta from '../../meta';
@@ -16,10 +16,10 @@ AdminsMods.get = async function (req, res) {
 
 	const cidsCount = await db.sortedSetCard(`cid:${rootCid}:children`);
 
-	const pageCount = Math.max(1, Math.ceil(cidsCount / meta.config.categoriesPerPage));
+	const pageCount = Math.max(1, Math.ceil(cidsCount / meta.configs.categoriesPerPage));
 	const page = Math.min(parseInt(req.query.page, 10) || 1, pageCount);
-	const start = Math.max(0, (page - 1) * meta.config.categoriesPerPage);
-	const stop = start + meta.config.categoriesPerPage - 1;
+	const start = Math.max(0, (page - 1) * meta.configs.categoriesPerPage);
+	const stop = start + meta.configs.categoriesPerPage - 1;
 
 	const cids = await db.getSortedSetRange(`cid:${rootCid}:children`, start, stop);
     // @ts-ignore

@@ -85,6 +85,7 @@ export default  function (module) {
 
 		let result : any[] = [];
 		async function doQuery(_key, fields, skip: number, limit: number) {
+			console.log('MODULE', module);
 			return await module.client.collection('objects').find({ ...query, ...{ _key: _key } }, { projection: fields })
 				.sort({ score: sort })
 				.skip(skip)
@@ -155,7 +156,7 @@ export default  function (module) {
 			query.score = query.score || {};
 			query.score.$lte = max;
 		}
-		console.log('MODULE CLIENT', module.client);
+		console.log('MODULE', module);
 		const count = await module.client.collection('objects').countDocuments(query);
 		return count || 0;
 	};
@@ -164,11 +165,7 @@ export default  function (module) {
 		if (!key) {
 			return 0;
 		}
-		console.log('MODULE CLIENT', module.client);
 		const count = await module.client.collection('objects').countDocuments({ _key: key });
-		return parseInt(count, 10) || 0;
-	};
-
 	module.sortedSetsCard = async function (keys: string[]) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return [];
@@ -204,7 +201,7 @@ export default  function (module) {
 		if (score === null) {
 			return null;
 		}
-		console.log('MODULE CLIENT', module.client);
+		console.log('MODULE', module);
 
 		return await module.client.collection('objects').countDocuments({
 			$or: [
@@ -269,7 +266,7 @@ export default  function (module) {
 			return null;
 		}
 		value = helpers.valueToString(value);
-		console.log('MODULE CLIENT', module.client);
+		console.log('MODULE', module);
 		const result = await module.client.collection('objects').findOne({ _key: key, value: value }, { projection: { _id: 0, _key: 0, value: 0 } });
 		return result ? result.score : null;
 	};
@@ -279,7 +276,7 @@ export default  function (module) {
 			return [];
 		}
 		value = helpers.valueToString(value);
-		console.log('MODULE CLIENT', module.client);
+		console.log('MODULE', module);
 		const result = await module.client.collection('objects').find({ _key: { $in: keys }, value: value }, { projection: { _id: 0, value: 0 } }).toArray();
 		const map  = {} as any;
 		result.forEach((item) => {
@@ -299,7 +296,7 @@ export default  function (module) {
 			return [];
 		}
 		values = values.map(helpers.valueToString);
-		console.log('MODULE CLIENT', module.client);
+		console.log('MODULE', module);
 		const result = await module.client.collection('objects').find({ _key: key, value: { $in: values } }, { projection: { _id: 0, _key: 0 } }).toArray();
 
 		const valueToScore  = {} as any;
@@ -317,7 +314,7 @@ export default  function (module) {
 			return;
 		}
 		value = helpers.valueToString(value);
-		console.log('MODULE CLIENT', module.client);
+		console.log('MODULE', module);
 		const result = await module.client.collection('objects').findOne({
 			_key: key, value: value,
 		}, {
@@ -334,7 +331,7 @@ export default  function (module) {
 			return [];
 		}
 		values = values.map(helpers.valueToString);
-		console.log('MODULE CLIENT', module.client);
+		console.log('MODULE', module);
 		const results = await module.client.collection('objects').find({
 			_key: key, value: { $in: values },
 		}, {
@@ -356,7 +353,7 @@ export default  function (module) {
 			return [];
 		}
 		value = helpers.valueToString(value);
-		console.log('MODULE CLIENT', module.client);
+		console.log('MODULE', module);
 		const results = await module.client.collection('objects').find({
 			_key: { $in: keys }, value: value,
 		}, {
@@ -387,7 +384,7 @@ export default  function (module) {
 		if (arrayOfKeys) {
 			projection._key = 1;
 		}
-		console.log('MODULE CLIENT', module.client);
+		console.log('MODULE', module);
 		const data = await module.client.collection('objects').find({
 			_key: arrayOfKeys ? { $in: keys } : keys[0],
 		}, { projection: projection }).toArray();
@@ -411,8 +408,8 @@ export default  function (module) {
 		const data  = {} as any;
 		value = helpers.valueToString(value);
 		data.score = parseFloat(increment);
-		console.log('MODULE CLIENT', module.client);
 		try {
+			console.log('MODULE', module);
 			const result = await module.client.collection('objects').findOneAndUpdate({
 				_key: key,
 				value: value,
@@ -436,7 +433,7 @@ export default  function (module) {
 	};
 
 	module.sortedSetIncrByBulk = async function (data) {
-		console.log('MODULE CLIENT', module.client);
+		console.log('MODULE', module);
 		const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
 		data.forEach((item) => {
 			bulk.find({ _key: item[0], value: helpers.valueToString(item[2]) })
@@ -444,7 +441,7 @@ export default  function (module) {
 				.update({ $inc: { score: parseFloat(item[1]) } });
 		});
 		await bulk.execute();
-		console.log('MODULE CLIENT', module.client);
+		console.log('MODULE', module);
 		const result = await module.client.collection('objects').find({
 			_key: { $in: _.uniq(data.map((i) => i[0])) },
 			value: { $in: _.uniq(data.map((i) => i[2])) },
@@ -477,8 +474,7 @@ export default  function (module) {
 		start = start !== undefined ? start : 0;
 		count = count !== undefined ? count : 0;
 		buildLexQuery(query, min, max);
-		console.log('MODULE CLIENT', module.client);
-
+		console.log('MODULE', module);
 		const data = await module.client.collection('objects').find(query, { projection: { _id: 0, value: 1 } })
 			.sort({ value: sort })
 			.skip(start)
@@ -491,7 +487,7 @@ export default  function (module) {
 	module.sortedSetRemoveRangeByLex = async function (key: string, min: number, max: number) {
 		const query = { _key: key };
 		buildLexQuery(query, min, max);
-		console.log('MODULE CLIENT', module.client);
+		console.log('MODULE', module);
 		await module.client.collection('objects').deleteMany(query);
 	};
 
@@ -530,7 +526,7 @@ export default  function (module) {
 		} catch (err: any) {
 			return [];
 		}
-		console.log('MODULE CLIENT', module.client);
+		console.log('MODULE', module);
 		const cursor = module.client.collection('objects').find({
 			_key: params.key, value: { $regex: regex },
 		}, { projection: project });
@@ -554,7 +550,8 @@ export default  function (module) {
 		if (!options.withScores) {
 			project.score = 0;
 		}
-		console.log('MODULE CLIENT', module.client);
+		console.log('MODULE', module);
+
 		const cursor = await module.client.collection('objects').find({ _key: setKey }, { projection: project })
 			.sort({ score: 1 })
 			.batchSize(options.batch);

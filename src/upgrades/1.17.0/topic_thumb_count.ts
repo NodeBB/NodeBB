@@ -1,7 +1,7 @@
 'use strict';
 
 const _ = require('lodash');
-import { primaryDB as db } from '../../database';
+import db from '../../database';
 const batch = require('../../batch');
 
 export default  {

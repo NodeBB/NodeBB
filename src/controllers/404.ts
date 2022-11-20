@@ -5,7 +5,7 @@ import winston from 'winston';
 const validator = require('validator');
 
 import meta from '../meta';
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const middleware = require('../middleware');
 const helpers = require('../middleware/helpers');
 

@@ -3,11 +3,11 @@
 
 const validator = require('validator');
 
-import { primaryDB as db } from '../database';
+import db from '../database';
 
 
 import meta from '../meta';
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const search = require('../search');
 const categories = require('../categories');
 const pagination = require('../pagination');
@@ -30,7 +30,7 @@ searchController.search = async function (req, res, next) {
 		'search:content': privileges.global.can('search:content', req.uid),
 		'search:tags': privileges.global.can('search:tags', req.uid),
 	});
-	req.query.in = req.query.in || meta.config.searchDefaultIn || 'titlesposts';
+	req.query.in = req.query.in || meta.configs.searchDefaultIn || 'titlesposts';
 	let allowed = (req.query.in === 'users' && userPrivileges['search:users']) ||
 					(req.query.in === 'tags' && userPrivileges['search:tags']) ||
 					(req.query.in === 'categories') ||
@@ -63,7 +63,7 @@ searchController.search = async function (req, res, next) {
 		repliesFilter: req.query.repliesFilter,
 		timeRange: req.query.timeRange,
 		timeFilter: req.query.timeFilter,
-		sortBy: req.query.sortBy || meta.config.searchDefaultSortBy || '',
+		sortBy: req.query.sortBy || meta.configs.searchDefaultSortBy || '',
 		sortDirection: req.query.sortDirection,
 		page: page,
 		itemsPerPage: req.query.itemsPerPage,
@@ -96,8 +96,8 @@ searchController.search = async function (req, res, next) {
 	searchData.showAsTopics = req.query.showAs === 'topics';
 	searchData.title = '[[global:header.search]]';
 
-	searchData.searchDefaultSortBy = meta.config.searchDefaultSortBy || '';
-	searchData.searchDefaultIn = meta.config.searchDefaultIn || 'titlesposts';
+	searchData.searchDefaultSortBy = meta.configs.searchDefaultSortBy || '';
+	searchData.searchDefaultIn = meta.configs.searchDefaultIn || 'titlesposts';
 	searchData.privileges = userPrivileges;
 
 	res.render('search', searchData);

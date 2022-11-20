@@ -9,13 +9,13 @@ Digest.resend = async (socket, data) => {
 	const { uid } = data;
 	const interval = data.action.startsWith('resend-') ? data.action.slice(7) : await userDigest.getUsersInterval(uid);
 
-	if (!interval && meta.config.dailyDigestFreq === 'off') {
+	if (!interval && meta.configs.dailyDigestFreq === 'off') {
 		throw new Error('[[error:digest-not-enabled]]');
 	}
 
 	if (uid) {
 		await userDigest.execute({
-			interval: interval || meta.config.dailyDigestFreq,
+			interval: interval || meta.configs.dailyDigestFreq,
 			subscribers: [uid],
 		});
 	} else {

@@ -5,14 +5,14 @@ import winston from 'winston';
 const cronJob = require('cron').CronJob;
 import { primaryDB as db } from '../database';
 
-
+import db from '../database';
 import meta from '../meta';
 const emailer = require('../emailer');
 const notifications = require('../notifications');
 const groups = require('../groups');
 const utils = require('../utils');
 const slugify = require('../slugify');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 
 export default  function (User) {
 	new cronJob('0 * * * *', (() => {
@@ -77,7 +77,7 @@ export default  function (User) {
 		await plugins.hooks.fire('filter:register.complete', { uid: uid });
 		await emailer.send('registration_accepted', uid, {
 			username: username,
-			subject: `[[email:welcome-to, ${meta.config.title || meta.config.browserTitle || 'NodeBB'}]]`,
+			subject: `[[email:welcome-to, ${meta.configs.title || meta.configs.browserTitle || 'NodeBB'}]]`,
 			template: 'registration_accepted',
 			uid: uid,
 		}).catch((err: Error) => winston.error(`[emailer.send] ${err.stack}`));
@@ -107,7 +107,7 @@ export default  function (User) {
 	}
 
 	User.shouldQueueUser = async function (ip: string) {
-		const { registrationApprovalType } = meta.config;
+		const { registrationApprovalType } = meta.configs;
 		if (registrationApprovalType === 'admin-approval') {
 			return true;
 		} else if (registrationApprovalType === 'admin-approval-ip') {
@@ -155,12 +155,12 @@ export default  function (User) {
 	}
 
 	User.autoApprove = async function () {
-		if (meta.config.autoApproveTime <= 0) {
+		if (meta.configs.autoApproveTime <= 0) {
 			return;
 		}
 		const users = await db.getSortedSetRevRangeWithScores('registration:queue', 0, -1);
 		const now = Date.now();
-		for (const user of users.filter((user) => now - user.score >= meta.config.autoApproveTime * 3600000)) {
+		for (const user of users.filter((user) => now - user.score >= meta.configs.autoApproveTime * 3600000)) {
 			// eslint-disable-next-line no-await-in-loop
 			await User.acceptRegistration(user.value);
 		}

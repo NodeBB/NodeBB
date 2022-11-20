@@ -39,7 +39,7 @@ unreadController.get = async function (req, res) {
 	const baseUrl = isDisplayedAsHome ? '' : 'unread';
 
 	if (isDisplayedAsHome) {
-		data.title = meta.config.homePageTitle || '[[pages:home]]';
+		data.title = meta.configs.homePageTitle || '[[pages:home]]';
 	} else {
 		data.title = '[[pages:unread]]';
 		data.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[unread:title]]' }]);

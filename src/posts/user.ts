@@ -4,14 +4,12 @@ const async = require('async');
 const validator = require('validator');
 const _ = require('lodash');
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 import user from '../user';
 const topics = require('../topics');
 const groups = require('../groups');
 import meta from '../meta';
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const privileges = require('../privileges');
 
 export default  function (Posts) {
@@ -29,7 +27,7 @@ export default  function (Posts) {
 			userData.fullname = userSettings[index].showfullname ? validator.escape(String(userData.fullname || '')) : undefined;
 			userData.selectedGroups = [];
 
-			if (meta.config.hideFullname) {
+			if (meta.configs.hideFullname) {
 				userData.fullname = undefined;
 			}
 		});
@@ -58,7 +56,7 @@ export default  function (Posts) {
 	};
 
 	Posts.overrideGuestHandle = function (postData, handle) {
-		if (meta.config.allowGuestHandles && postData && postData.user && parseInt(postData.uid, 10) === 0 && handle) {
+		if (meta.configs.allowGuestHandles && postData && postData.user && parseInt(postData.uid, 10) === 0 && handle) {
 			postData.user.username = validator.escape(String(handle));
 			if (postData.user.hasOwnProperty('fullname')) {
 				postData.user.fullname = postData.user.username;
@@ -75,7 +73,7 @@ export default  function (Posts) {
 	}
 
 	async function parseSignature(userData, uid, signatureUids) {
-		if (!userData.signature || !signatureUids.has(userData.uid) || meta.config.disableSignatures) {
+		if (!userData.signature || !signatureUids.has(userData.uid) || meta.configs.disableSignatures) {
 			return '';
 		}
 		const result = await Posts.parseSignature(userData, uid);

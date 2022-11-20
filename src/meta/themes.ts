@@ -6,9 +6,7 @@ const _ = require('lodash');
 import * as fs from 'fs';
 
 const file = require('../file');
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const Meta = require('./index');
 const events = require('../events');
 const utils = require('../utils');
@@ -146,6 +144,7 @@ Themes.set = async (data) => {
 };
 
 Themes.setupPaths = async () => {
+	console.log('META.THEMES', Meta);
 	const data = await utils.promiseParallel({
 		themesData: Themes.get(),
 		currentThemeId: Meta.configs.get('theme:id'),

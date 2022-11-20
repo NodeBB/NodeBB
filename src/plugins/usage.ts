@@ -19,7 +19,7 @@ export default  function (Plugins) {
 
 	Plugins.submitUsageData = function (callback) {
 		callback = callback || function () {};
-		if (!meta.config.submitPluginUsage || !Plugins.loadedPlugins.length || global.env !== 'production') {
+		if (!meta.configs.submitPluginUsage || !Plugins.loadedPlugins.length || global.env !== 'production') {
 			return callback();
 		}
 

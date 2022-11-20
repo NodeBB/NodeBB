@@ -4,7 +4,7 @@ import { primaryDB as db } from '../database';
 
 
 const topics = require('../topics');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 import meta from '../meta';
 const privileges = require('../privileges');
 import user from '../user';
@@ -96,7 +96,7 @@ export default  function (Categories) {
 	Categories.buildTopicsSortedSet = async function (data) {
 		const { cid } = data;
 		let set : string | string[] = `cid:${cid}:tids`;
-		const sort = data.sort || (data.settings && data.settings.categoryTopicSort) || meta.config.categoryTopicSort || 'newest_to_oldest';
+		const sort = data.sort || (data.settings && data.settings.categoryTopicSort) || meta.configs.categoryTopicSort || 'newest_to_oldest';
 
 		if (sort === 'most_posts') {
 			set = `cid:${cid}:tids:posts`;

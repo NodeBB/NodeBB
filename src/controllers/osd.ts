@@ -3,7 +3,7 @@
 const xml = require('xml');
 import nconf from 'nconf';
 
-const plugins = require('../plugins');
+import plugins from '../plugins';
 import meta from '../meta';
 
 export const handle = function (req, res, next) {
@@ -23,8 +23,8 @@ function generateXML() {
 					'xmlns:moz': 'http://www.mozilla.org/2006/browser/search/',
 				},
 			},
-			{ ShortName: trimToLength(String(meta.config.title || meta.config.browserTitle || 'NodeBB'), 16) },
-			{ Description: trimToLength(String(meta.config.description || ''), 1024) },
+			{ ShortName: trimToLength(String(meta.configs.title || meta.configs.browserTitle || 'NodeBB'), 16) },
+			{ Description: trimToLength(String(meta.configs.description || ''), 1024) },
 			{ InputEncoding: 'UTF-8' },
 			{
 				Image: [

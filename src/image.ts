@@ -102,7 +102,7 @@ image.size = async function (path) {
 };
 
 image.stripEXIF = async function (path) {
-	if (!meta.config.stripEXIFData || path.endsWith('.gif') || path.endsWith('.svg')) {
+	if (!meta.configs.stripEXIFData || path.endsWith('.gif') || path.endsWith('.svg')) {
 		return;
 	}
 	try {
@@ -124,7 +124,7 @@ image.checkDimensions = async function (path) {
 	const meta = require('./meta');
 	const result = await image.size(path);
 
-	if (result.width > meta.config.rejectImageWidth || result.height > meta.config.rejectImageHeight) {
+	if (result.width > meta.configs.rejectImageWidth || result.height > meta.configs.rejectImageHeight) {
 		throw new Error('[[error:invalid-image-dimensions]]');
 	}
 

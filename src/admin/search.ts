@@ -5,7 +5,7 @@ import path from 'path';const sanitizeHTML = require('sanitize-html');
 import nconf from 'nconf';
 import winston from 'winston';
 
-const file = require('../file');
+import file from '../file';
 const { Translator } = require('../translator');
 
 function filterDirectories(directories) {

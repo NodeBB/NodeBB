@@ -1,7 +1,7 @@
 'use strict';
 
 const webserver = require('../webserver');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const groups = require('../groups');
 const index = require('./index');
 

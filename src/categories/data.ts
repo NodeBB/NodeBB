@@ -6,7 +6,7 @@ import { primaryDB as db } from '../database';
 
 
 import meta from '../meta';
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const utils = require('../utils');
 
 const intFields = [

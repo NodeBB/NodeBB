@@ -190,7 +190,7 @@ async function pushToUids(uids, notification) {
 			notification['cta-type'] = notification.type;
 		}
 		let body = notification.bodyLong || '';
-		if (meta.config.removeEmailNotificationImages) {
+		if (meta.configs.removeEmailNotificationImages) {
 			body = body.replace(/<img[^>]*>/, '');
 		}
 		body = posts.relativeToAbsolute(body, posts.urlRegex);

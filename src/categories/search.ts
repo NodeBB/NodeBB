@@ -3,7 +3,7 @@
 const _ = require('lodash');
 
 const privileges = require('../privileges');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 import { primaryDB as db } from '../database';
 
 

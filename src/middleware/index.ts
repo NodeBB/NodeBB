@@ -7,7 +7,7 @@ import nconf from 'nconf';
 const toobusy = require('toobusy-js');
 const util = require('util');
 
-const plugins = require('../plugins');
+import plugins from '../plugins';
 import meta from '../meta';
 import user from '../user';
 const groups = require('../groups');
@@ -155,12 +155,12 @@ async function expose(exposedField, method, field, req, res, next) {
 }
 
 middleware.privateUploads = function privateUploads(req, res, next) {
-	if (req.loggedIn || !meta.config.privateUploads) {
+	if (req.loggedIn || !meta.configs.privateUploads) {
 		return next();
 	}
 
 	if (req.path.startsWith(`${nconf.get('relative_path')}/assets/uploads/files`)) {
-		const extensions = (meta.config.privateUploadsExtensions || '').split(',').filter(Boolean);
+		const extensions = (meta.configs.privateUploadsExtensions || '').split(',').filter(Boolean);
 		let ext = path.extname(req.path);
 		ext = ext ? ext.replace(/^\./, '') : ext;
 		if (!extensions.length || extensions.includes(ext)) {
@@ -171,7 +171,7 @@ middleware.privateUploads = function privateUploads(req, res, next) {
 };
 
 middleware.busyCheck = function busyCheck(req, res, next) {
-	if (global.env === 'production' && meta.config.eventLoopCheckEnabled && toobusy()) {
+	if (global.env === 'production' && meta.configs.eventLoopCheckEnabled && toobusy()) {
 		analytics.increment('errors:503');
 		res.status(503).type('text/html').sendFile(path.join(__dirname, '../../../public/503.html'));
 	} else {

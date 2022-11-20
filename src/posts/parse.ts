@@ -7,7 +7,7 @@ const sanitize = require('sanitize-html');
 const _ = require('lodash');
 
 import meta from '../meta';
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const translator = require('../translator');
 const utils = require('../utils');
 

@@ -2,9 +2,7 @@
 
 const _ = require('lodash');
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const posts = require('../posts');
 const topics = require('../topics');
 import user from '../user';
@@ -35,7 +33,7 @@ SocketTopics.bookmark = async function (socket, data) {
 		throw new Error('[[error:invalid-data]]');
 	}
 	const postcount = await topics.getTopicField(data.tid, 'postcount');
-	if (data.index > meta.config.bookmarkThreshold && postcount > meta.config.bookmarkThreshold) {
+	if (data.index > meta.configs.bookmarkThreshold && postcount > meta.configs.bookmarkThreshold) {
 		await topics.setUserBookmark(data.tid, socket.uid, data.index);
 	}
 };

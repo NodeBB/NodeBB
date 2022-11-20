@@ -4,7 +4,7 @@ import nconf from 'nconf';
 import winston from 'winston';
 const validator = require('validator');
 const translator = require('../translator');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const middleware = require('../middleware');
 const middlewareHelpers = require('../middleware/helpers');
 import helpers from './helpers';

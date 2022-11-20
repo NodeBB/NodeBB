@@ -2,9 +2,7 @@
 'use strict';
 
 const plugins = require('../plugins');
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 
 export default  function (User) {
 	User.follow = async function (uid, followuid) {

@@ -4,10 +4,10 @@
 const _ = require('lodash');
 
 import user from '../user';
-import groups from '../groups';
-import helpers from './helpers';
-import plugins from '../plugins';
-import utils from '../utils';
+const groups = require('../groups');
+const helpers = require('./helpers').defualt;
+const plugins = require('../plugins');
+const utils = require('../utils');
 
 const privsGlobal  = {} as any;
 

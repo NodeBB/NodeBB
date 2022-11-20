@@ -2,7 +2,7 @@
 
 import nconf from 'nconf';
 
-import { primaryDB as db } from '../../database';
+import db from '../../database';
 import meta from '../../meta';
 const topics = require('../../topics');
 const batch = require('../../batch');

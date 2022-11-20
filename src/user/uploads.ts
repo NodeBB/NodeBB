@@ -4,11 +4,9 @@ import path from 'path';import nconf from 'nconf';
 import winston from 'winston';
 const crypto = require('crypto');
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const posts = require('../posts');
-const file = require('../file');
+import file from '../file';
 const batch = require('../batch');
 
 const md5 = filename => crypto.createHash('md5').update(filename).digest('hex');

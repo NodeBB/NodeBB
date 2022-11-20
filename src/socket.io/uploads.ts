@@ -29,7 +29,7 @@ uploads.upload = async function (socket, data) {
 
 	try {
 		const maxSize = data.params.method === 'user.uploadCroppedPicture' ?
-			meta.config.maximumProfileImageSize : meta.config.maximumCoverImageSize;
+			meta.configs.maximumProfileImageSize : meta.configs.maximumCoverImageSize;
 		const size = image.sizeFromBase64(socketUploads[method].imageData);
 
 		if (size > maxSize * 1024) {

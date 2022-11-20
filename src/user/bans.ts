@@ -4,9 +4,7 @@ import winston from 'winston';
 
 import meta from '../meta';
 const emailer = require('../emailer');
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const groups = require('../groups');
 const privileges = require('../privileges');
 
@@ -52,7 +50,7 @@ export default  function (User) {
 
 		// Email notification of ban
 		const username = await User.getUserField(uid, 'username');
-		const siteTitle = meta.config.title || 'NodeBB';
+		const siteTitle = meta.configs.title || 'NodeBB';
 
 		const data = {
 			subject: `[[email:banned.subject, ${siteTitle}]]`,

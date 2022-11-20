@@ -8,9 +8,7 @@ const groups = require('../groups');
 const utils = require('../utils');
 const batch = require('../batch');
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 import meta from '../meta';
 const emailer = require('../emailer');
 const Password = require('../password');
@@ -113,7 +111,7 @@ UserReset.commit = async function (code, password) {
 };
 
 UserReset.updateExpiry = async function (uid: string) {
-	const expireDays = meta.config.passwordExpiryDays;
+	const expireDays = meta.configs.passwordExpiryDays;
 	if (expireDays > 0) {
 		const oneDay = 1000 * 60 * 60 * 24;
 		const expiry = Date.now() + (oneDay * expireDays);
@@ -165,3 +163,5 @@ async function cleanTokensAndUids(tokens, uids) {
 		db.sortedSetRemove('reset:issueDate:uid', uids),
 	]);
 }
+
+export default UserReset;

@@ -61,7 +61,7 @@ recentController.getData = async function (req, url: string, sort) {
 	const baseUrl = isDisplayedAsHome ? '' : url;
 
 	if (isDisplayedAsHome) {
-		data.title = meta.config.homePageTitle || '[[pages:home]]';
+		data.title = meta.configs.homePageTitle || '[[pages:home]]';
 	} else {
 		data.title = `[[pages:${url}]]`;
 		data.breadcrumbs = helpers.buildBreadcrumbs([{ text: `[[${url}:title]]` }]);

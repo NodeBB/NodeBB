@@ -1,8 +1,6 @@
 'use strict';
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const sockets = require('../socket.io');
 
 export default  function (Messaging) {

@@ -210,8 +210,8 @@ describe('Topic\'s', () => {
 			});
 			await privileges.categories.give(['groups:topics:create'], categoryObj.cid, 'guests');
 			await privileges.categories.give(['groups:topics:reply'], categoryObj.cid, 'guests');
-			const oldValue = meta.config.allowGuestHandles;
-			meta.config.allowGuestHandles = 1;
+			const oldValue = meta.configs.allowGuestHandles;
+			meta.configs.allowGuestHandles = 1;
 			const result = await helpers.request('post', `/api/v3/topics`, {
 				form: {
 					title: 'just a title',
@@ -239,7 +239,7 @@ describe('Topic\'s', () => {
 			assert.strictEqual(replyResult.body.response.content, 'a reply by guest');
 			assert.strictEqual(replyResult.body.response.user.username, 'guest124');
 			assert.strictEqual(replyResult.body.response.user.displayname, 'guest124');
-			meta.config.allowGuestHandles = oldValue;
+			meta.configs.allowGuestHandles = oldValue;
 		});
 	});
 
@@ -1292,7 +1292,7 @@ describe('Topic\'s', () => {
 
 		it('should 404 if page is out of bounds', (done) => {
 			const meta = require('../src/meta');
-			meta.config.usePagination = 1;
+			meta.configs.usePagination = 1;
 			request(`${nconf.get('url')}/topic/${topicData.slug}?page=100`, (err, response) => {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 404);
@@ -1889,7 +1889,7 @@ describe('Topic\'s', () => {
 
 		it('should return related topics', (done) => {
 			const meta = require('../src/meta');
-			meta.config.maximumRelatedTopics = 2;
+			meta.configs.maximumRelatedTopics = 2;
 			const topicData = {
 				tags: [{ value: 'javascript' }],
 			};
@@ -1897,7 +1897,7 @@ describe('Topic\'s', () => {
 				assert.ifError(err);
 				assert(Array.isArray(data));
 				assert.equal(data[0].title, 'topic title 2');
-				meta.config.maximumRelatedTopics = 0;
+				meta.configs.maximumRelatedTopics = 0;
 				done();
 			});
 		});
@@ -1980,29 +1980,29 @@ describe('Topic\'s', () => {
 		});
 
 		it('should respect minTags', async () => {
-			const oldValue = meta.config.minimumTagsPerTopic;
-			meta.config.minimumTagsPerTopic = 2;
+			const oldValue = meta.configs.minimumTagsPerTopic;
+			meta.configs.minimumTagsPerTopic = 2;
 			let err;
 			try {
 				await topics.post({ uid: adminUid, tags: ['tag4'], title: 'tag topic', content: 'topic 1 content', cid: topic.categoryId });
 			} catch (_err: any) {
 				err = _err;
 			}
-			assert.equal(err.message, `[[error:not-enough-tags, ${meta.config.minimumTagsPerTopic}]]`);
-			meta.config.minimumTagsPerTopic = oldValue;
+			assert.equal(err.message, `[[error:not-enough-tags, ${meta.configs.minimumTagsPerTopic}]]`);
+			meta.configs.minimumTagsPerTopic = oldValue;
 		});
 
 		it('should respect maxTags', async () => {
-			const oldValue = meta.config.maximumTagsPerTopic;
-			meta.config.maximumTagsPerTopic = 2;
+			const oldValue = meta.configs.maximumTagsPerTopic;
+			meta.configs.maximumTagsPerTopic = 2;
 			let err;
 			try {
 				await topics.post({ uid: adminUid, tags: ['tag1', 'tag2', 'tag3'], title: 'tag topic', content: 'topic 1 content', cid: topic.categoryId });
 			} catch (_err: any) {
 				err = _err;
 			}
-			assert.equal(err.message, `[[error:too-many-tags, ${meta.config.maximumTagsPerTopic}]]`);
-			meta.config.maximumTagsPerTopic = oldValue;
+			assert.equal(err.message, `[[error:too-many-tags, ${meta.configs.maximumTagsPerTopic}]]`);
+			meta.configs.maximumTagsPerTopic = oldValue;
 		});
 
 		it('should respect minTags per category', async () => {
@@ -2091,8 +2091,8 @@ describe('Topic\'s', () => {
 		});
 
 		it('should not allow regular user to use system tags', async () => {
-			const oldValue = meta.config.systemTags;
-			meta.config.systemTags = 'moved,locked';
+			const oldValue = meta.configs.systemTags;
+			meta.configs.systemTags = 'moved,locked';
 			let err;
 			try {
 				await topics.post({
@@ -2106,12 +2106,12 @@ describe('Topic\'s', () => {
 				err = _err;
 			}
 			assert.strictEqual(err.message, '[[error:cant-use-system-tag]]');
-			meta.config.systemTags = oldValue;
+			meta.configs.systemTags = oldValue;
 		});
 
 		it('should allow admin user to use system tags', async () => {
-			const oldValue = meta.config.systemTags;
-			meta.config.systemTags = 'moved,locked';
+			const oldValue = meta.configs.systemTags;
+			meta.configs.systemTags = 'moved,locked';
 			const result = await topics.post({
 				uid: adminUid,
 				tags: ['locked'],
@@ -2120,12 +2120,12 @@ describe('Topic\'s', () => {
 				cid: categoryObj.cid,
 			});
 			assert.strictEqual(result.topicData.tags[0].value, 'locked');
-			meta.config.systemTags = oldValue;
+			meta.configs.systemTags = oldValue;
 		});
 
 		it('should not error if regular user edits topic after admin adds system tags', async () => {
-			const oldValue = meta.config.systemTags;
-			meta.config.systemTags = 'moved,locked';
+			const oldValue = meta.configs.systemTags;
+			meta.configs.systemTags = 'moved,locked';
 			const result = await topics.post({
 				uid: fooUid,
 				tags: ['one', 'two'],
@@ -2147,7 +2147,7 @@ describe('Topic\'s', () => {
 			});
 			const tags = await topics.getTopicTags(result.topicData.tid);
 			assert.deepStrictEqual(tags.sort(), ['moved', 'one', 'two']);
-			meta.config.systemTags = oldValue;
+			meta.configs.systemTags = oldValue;
 		});
 	});
 
@@ -2260,7 +2260,7 @@ describe('Topic\'s', () => {
 		});
 
 		after((done) => {
-			meta.config.teaserPost = '';
+			meta.configs.teaserPost = '';
 			done();
 		});
 
@@ -2282,7 +2282,7 @@ describe('Topic\'s', () => {
 		});
 
 		it('should get teasers with first posts', (done) => {
-			meta.config.teaserPost = 'first';
+			meta.configs.teaserPost = 'first';
 			topics.getTeasers([topic1.topicData, topic2.topicData], 1, (err, teasers) => {
 				assert.ifError(err);
 				assert.equal(2, teasers.length);
@@ -2309,7 +2309,7 @@ describe('Topic\'s', () => {
 		});
 
 		it('should get teasers with last posts', (done) => {
-			meta.config.teaserPost = 'last-post';
+			meta.configs.teaserPost = 'last-post';
 			topics.reply({ uid: adminUid, content: 'reply 1 content', tid: topic1.topicData.tid }, (err, result) => {
 				assert.ifError(err);
 				topic1.topicData.teaserPid = result.pid;

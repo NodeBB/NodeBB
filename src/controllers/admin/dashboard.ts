@@ -7,7 +7,7 @@ const _ = require('lodash');
 const validator = require('validator');
 
 const versions = require('../../admin/versions');
-import { primaryDB as db } from '../../database';
+import db from '../../database';
 import meta from '../../meta';
 const analytics = require('../../analytics');
 const plugins = require('../../plugins');
@@ -259,7 +259,7 @@ dashboardController.getLogins = async (req, res) => {
 	} as any;
 
 	// List recent sessions
-	const start = Date.now() - (1000 * 60 * 60 * 24 * meta.config.loginDays);
+	const start = Date.now() - (1000 * 60 * 60 * 24 * meta.configs.loginDays);
 	const uids = await db.getSortedSetRangeByScore('users:online', 0, 500, start, Date.now());
 	const usersData = await user.getUsersData(uids);
 	let sessions = await Promise.all(uids.map(async (uid: string) => {
@@ -278,7 +278,7 @@ dashboardController.getLogins = async (req, res) => {
 		stats,
 		summary,
 		sessions,
-		loginDays: meta.config.loginDays,
+		loginDays: meta.configs.loginDays,
 	});
 };
 

@@ -2,12 +2,10 @@
 
 const validator = require('validator');
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const posts = require('../posts');
 const privileges = require('../privileges');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 import meta from '../meta';
 const topics = require('../topics');
 import user from '../user';
@@ -165,8 +163,8 @@ async function sendQueueNotification(type, targetUid, path, notificationText?) {
 		bodyShort: notificationText ? `[[notifications:${type}, ${notificationText}]]` : `[[notifications:${type}]]`,
 		path: path,
 	} as any;
-	if (parseInt(meta.config.postQueueNotificationUid, 10) > 0) {
-		notifData.from = meta.config.postQueueNotificationUid;
+	if (parseInt(meta.configs.postQueueNotificationUid, 10) > 0) {
+		notifData.from = meta.configs.postQueueNotificationUid;
 	}
 	const notifObj = await notifications.create(notifData);
 	await notifications.push(notifObj, [targetUid]);

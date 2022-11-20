@@ -37,7 +37,7 @@ Email.test = async function (socket, data) {
 			await userEmail.sendValidationEmail(socket.uid, {
 				force: 1,
 				template: data.template,
-				subject: data.template === 'welcome' ? `[[email:welcome-to, ${meta.config.title || meta.config.browserTitle || 'NodeBB'}]]` : undefined,
+				subject: data.template === 'welcome' ? `[[email:welcome-to, ${meta.configs.title || meta.configs.browserTitle || 'NodeBB'}]]` : undefined,
 			});
 			break;
 

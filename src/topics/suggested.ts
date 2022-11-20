@@ -3,9 +3,7 @@
 
 const _ = require('lodash');
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 import user from '../user';
 const privileges = require('../privileges');
 const search = require('../search');

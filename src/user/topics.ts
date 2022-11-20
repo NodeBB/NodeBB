@@ -1,8 +1,6 @@
 'use strict';
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 
 export default  function (User) {
 	User.getIgnoredTids = async function (uid, start, stop) {

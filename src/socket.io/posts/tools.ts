@@ -2,7 +2,7 @@
 
 import nconf from 'nconf';
 
-import { primaryDB as db } from '../../database';
+import db from '../../database';
 const posts = require('../../posts');
 const flags = require('../../flags');
 const events = require('../../events');

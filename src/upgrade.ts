@@ -6,8 +6,10 @@ const semver = require('semver');
 const readline = require('readline');
 import winston from 'winston';
 const chalk = require('chalk');
-import plugins from './plugins';
-import { primaryDB as db } from './database';
+
+const plugins = require('./plugins').default;
+console.log('REQUIRE PLUGINS', require('./plugins'));
+const db = require('./database').default;
 const file = require('./file').default;
 const { paths } = require('./constants');
 /*

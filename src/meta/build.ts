@@ -7,14 +7,13 @@ const _ = require('lodash');
 import path from 'path';const mkdirp = require('mkdirp');
 const chalk = require('chalk');
 import * as fs from 'fs';
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
+import meta from '../meta';
+import plugins from '../plugins';
 
 const cacheBuster = require('./cacheBuster');
 const { aliases } = require('./aliases');
 
-let meta;
 
 const targetHandlers = {
 	'plugin static dirs': async function () {
@@ -39,7 +38,9 @@ const targetHandlers = {
 		await meta.css.buildBundle('client', parallel);
 	},
 	'admin control panel styles': async function (parallel) {
+		console.log('BUILDING ADMIN CONTROL PANEL STYLES!!!!!');
 		await meta.css.buildBundle('admin', parallel);
+		console.log('BUILT ADMIN CONTROL PANEL STYLES!!!');
 	},
 	styles: [
 		'client side styles',
@@ -49,7 +50,9 @@ const targetHandlers = {
 		await meta.templates.compile();
 	},
 	languages: async function () {
+		console.log('LANGUAGES BUILDING!!!!!!!!!');
 		await meta.languages.build();
+		console.log('LANGUAGES BUILT!!!!!!!!!');
 	},
 };
 
@@ -66,9 +69,7 @@ async function beforeBuild(targets) {
 	(process as any).stdout.write(`${chalk.green('  started')}\n`);
 	try {
 		await db.init();
-		meta = require('./index');
 		await meta.themes.setupPaths();
-		const plugins = require('../plugins');
 		await plugins.prepareForBuild(targets);
 		await mkdirp(path.join(__dirname, '../../build/public'));
 	} catch (err: any) {
@@ -83,6 +84,8 @@ async function buildTargets(targets, parallel, options) {
 	const length = Math.max(...targets.map(name => name.length));
 	const jsTargets = targets.filter(target => targetHandlers.javascript.includes(target));
 	const otherTargets = targets.filter(target => !targetHandlers.javascript.includes(target));
+	console.log('JS TARGETS', jsTargets);
+	console.log('OTHER TARGETS', otherTargets);
 	async function buildJSTargets() {
 		await Promise.all(
 			jsTargets.map(
@@ -193,12 +196,14 @@ export const build = async function (targets, options) {
 		}
 
 		const startTime = Date.now();
+		console.log('BUILDING TARGETS!!!', targets);
 		await buildTargets(targets, !series, options);
-
+		console.log('BUILT TARGETS');
 		const totalTime = (Date.now() - startTime) / 1000;
 		await cacheBuster.write();
 		winston.info(`[build] Asset compilation successful. Completed in ${totalTime}sec.`);
 	} catch (err: any) {
+		console.log('ERROR', err);
 		winston.error(`[build] Encountered error during build step\n${err.stack ? err.stack : err}`);
 		throw err;
 	}

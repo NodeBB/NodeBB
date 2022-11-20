@@ -3,7 +3,7 @@
 import nconf from 'nconf';
 const validator = require('validator');
 
-import { primaryDB as db } from '../../database';
+import db from '../../database';
 import user from '../../user';
 const groups = require('../../groups');
 import meta from '../../meta';
@@ -53,9 +53,9 @@ groupsController.get = async function (req, res, next) {
 	res.render('admin/manage/group', {
 		group: group,
 		groupNames: groupNameData,
-		allowPrivateGroups: meta.config.allowPrivateGroups,
-		maximumGroupNameLength: meta.config.maximumGroupNameLength,
-		maximumGroupTitleLength: meta.config.maximumGroupTitleLength,
+		allowPrivateGroups: meta.configs.allowPrivateGroups,
+		maximumGroupNameLength: meta.configs.maximumGroupNameLength,
+		maximumGroupTitleLength: meta.configs.maximumGroupTitleLength,
 	});
 };
 

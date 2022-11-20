@@ -4,12 +4,10 @@ import winston from 'winston';
 const _ = require('lodash');
 const Benchpress = require('benchpressjs');
 
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const groups = require('../groups');
 const translator = require('../translator');
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const apiController = require('../controllers/api');
 import meta from '../meta';
 
@@ -62,7 +60,7 @@ async function renderWidget(widget, uid, options) {
 		config = await apiController.loadConfig(options.req);
 	}
 
-	const userLang = config.userLang || meta.config.defaultLang || 'en-GB';
+	const userLang = config.userLang || meta.configs.defaultLang || 'en-GB';
 	const templateData = _.assign({ }, options.templateData, { config: config });
 	const data = await plugins.hooks.fire(`filter:widget.render:${widget.widget}`, {
 		uid: uid,

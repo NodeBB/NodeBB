@@ -136,9 +136,9 @@ describe('API', async () => {
 				timestamp: Date.now(),
 			}],
 		});
-		meta.config.allowTopicsThumbnail = 1;
-		meta.config.termsOfUse = 'I, for one, welcome our new test-driven overlords';
-		meta.config.chatMessageDelay = 0;
+		meta.configs.allowTopicsThumbnail = 1;
+		meta.configs.termsOfUse = 'I, for one, welcome our new test-driven overlords';
+		meta.configs.chatMessageDelay = 0;
 
 		// Create a category
 		const testCategory = await categories.create({ name: 'test' });

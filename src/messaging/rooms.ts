@@ -2,11 +2,9 @@
 
 const validator = require('validator');
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 import user from '../user';
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const privileges = require('../privileges');
 import meta from '../meta';
 
@@ -251,8 +249,8 @@ export default  function (Messaging) {
 		room.canReply = canReply;
 		room.groupChat = room.hasOwnProperty('groupChat') ? room.groupChat : users.length > 2;
 		room.usernames = Messaging.generateUsernames(users, uid);
-		room.maximumUsersInChatRoom = meta.config.maximumUsersInChatRoom;
-		room.maximumChatMessageLength = meta.config.maximumChatMessageLength;
+		room.maximumUsersInChatRoom = meta.configs.maximumUsersInChatRoom;
+		room.maximumChatMessageLength = meta.configs.maximumChatMessageLength;
 		room.showUserInput = !room.maximumUsersInChatRoom || room.maximumUsersInChatRoom > 2;
 		room.isAdminOrGlobalMod = isAdminOrGlobalMod;
 

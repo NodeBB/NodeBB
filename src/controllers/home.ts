@@ -2,12 +2,12 @@
 
 const url = require('url');
 
-const plugins = require('../plugins');
+import plugins from '../plugins';
 import meta from '../meta';
 import user from '../user';
 
 function adminHomePageRoute() {
-	return ((meta.config.homePageRoute === 'custom' ? meta.config.homePageCustom : meta.config.homePageRoute) || 'categories').replace(/^\//, '');
+	return ((meta.configs.homePageRoute === 'custom' ? meta.configs.homePageCustom : meta.configs.homePageRoute) || 'categories').replace(/^\//, '');
 }
 
 async function getUserHomeRoute(uid: string) {
@@ -26,7 +26,7 @@ export async function rewrite(req, res, next) {
 		return next();
 	}
 	let route = adminHomePageRoute();
-	if (meta.config.allowUserHomePage) {
+	if (meta.configs.allowUserHomePage) {
 		route = await getUserHomeRoute(req.uid);
 	}
 

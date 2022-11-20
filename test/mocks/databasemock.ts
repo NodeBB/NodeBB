@@ -69,7 +69,7 @@ if (nconf.get('isCluster') === undefined) {
 }
 
 const dbType = nconf.get('database');
-const testDbConfig = nconf.get('test_database').default.default;
+const testDbConfig = nconf.get('test_database');
 const productionDbConfig = nconf.get(dbType);
 
 if (!testDbConfig) {
@@ -126,7 +126,7 @@ nconf.set(dbType, testDbConfig);
 winston.info('database config %s', dbType, testDbConfig);
 winston.info(`environment ${global.env}`);
 
-const db = require('../../src/database').default.default;
+const db = require('../../src/database');
 
 export default  db;
 
@@ -188,10 +188,10 @@ async function setupMockDefaults() {
 	await setupDefaultConfigs(meta);
 
 	await meta.configs.init();
-	meta.config.postDelay = 0;
-	meta.config.initialPostDelay = 0;
-	meta.config.newbiePostDelay = 0;
-	meta.config.autoDetectLang = 0;
+	meta.configs.postDelay = 0;
+	meta.configs.initialPostDelay = 0;
+	meta.configs.newbiePostDelay = 0;
+	meta.configs.autoDetectLang = 0;
 
 	require('../../src/groups').cache.reset();
 	require('../../src/posts/cache').reset();

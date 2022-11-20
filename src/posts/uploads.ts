@@ -10,13 +10,11 @@ const validator = require('validator');
 const cronJob = require('cron').CronJob;
 const chalk = require('chalk');
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const image = require('../image');
 import user from '../user';
 const topics = require('../topics');
-const file = require('../file');
+import file from '../file';
 import meta from '../meta';
 
 export default  function (Posts) {
@@ -112,8 +110,8 @@ export default  function (Posts) {
 
 	Posts.uploads.cleanOrphans = async () => {
 		const now = Date.now();
-		const expiration = now - (1000 * 60 * 60 * 24 * meta.config.orphanExpiryDays);
-		const days = meta.config.orphanExpiryDays;
+		const expiration = now - (1000 * 60 * 60 * 24 * meta.configs.orphanExpiryDays);
+		const days = meta.configs.orphanExpiryDays;
 		if (!days) {
 			return [];
 		}
@@ -182,7 +180,7 @@ export default  function (Posts) {
 
 		await Promise.all(promises);
 
-		if (!meta.config.preserveOrphanedUploads) {
+		if (!meta.configs.preserveOrphanedUploads) {
 			const deletePaths = (await Promise.all(
 				filePaths.map(async filePath => (await Posts.uploads.isOrphan(filePath) ? filePath : false))
 			)).filter(Boolean);

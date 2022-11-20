@@ -8,7 +8,7 @@ import { primaryDB as db } from '../database';
 
 import user from '../user';
 const groups = require('../groups');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const privileges = require('../privileges');
 const cache = require('../cache');
 import meta from '../meta';
@@ -180,7 +180,7 @@ Categories.getTagWhitelist = async function (cids) {
 
 // remove system tags from tag whitelist for non privileged user
 Categories.filterTagWhitelist = function (tagWhitelist, isAdminOrMod) {
-	const systemTags = (meta.config.systemTags || '').split(',');
+	const systemTags = (meta.configs.systemTags || '').split(',');
 	if (!isAdminOrMod && systemTags.length) {
 		return tagWhitelist.filter(tag => !systemTags.includes(tag));
 	}

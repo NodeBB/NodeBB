@@ -2,9 +2,7 @@
 
 const util = require('util');
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const plugins = require('../plugins');
 
 const rewards  = {} as any;

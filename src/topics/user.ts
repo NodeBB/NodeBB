@@ -1,8 +1,6 @@
 'use strict';
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 
 export default  function (Topics) {
 	Topics.isOwner = async function (tid: string, uid: string | number) {

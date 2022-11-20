@@ -1,8 +1,6 @@
 'use strict';
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const groups = require('.');
 const privileges = require('../privileges');
 const posts = require('../posts');

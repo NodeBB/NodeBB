@@ -268,13 +268,13 @@ describe('upload methods', () => {
 		});
 
 		it('should leave the images behind if `preserveOrphanedUploads` is enabled', async () => {
-			meta.config.preserveOrphanedUploads = 1;
+			meta.configs.preserveOrphanedUploads = 1;
 
 			await posts.purge(postData.pid, uid);
 			assert.strictEqual(await file.exists(path.resolve(nconf.get('upload_path'), 'files', 'abracadabra.png')), true);
 			assert.strictEqual(await file.exists(path.resolve(nconf.get('upload_path'), 'files', 'test.bmp')), true);
 
-			delete meta.config.preserveOrphanedUploads;
+			delete meta.configs.preserveOrphanedUploads;
 		});
 
 		it('should leave images behind if they are used in another post', async () => {

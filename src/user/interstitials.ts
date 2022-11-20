@@ -4,12 +4,10 @@ import winston from 'winston';
 const util = require('util');
 
 const user = require('.');
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 import meta from '../meta';
 const privileges = require('../privileges');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const utils = require('../utils');
 
 const sleep = util.promisify(setTimeout);
@@ -44,7 +42,7 @@ Interstitials.email = async (data) => {
 		template: 'partials/email_update',
 		data: {
 			email,
-			requireEmailAddress: meta.config.requireEmailAddress,
+			requireEmailAddress: meta.configs.requireEmailAddress,
 			issuePasswordChallenge: !!data.userData.uid && hasPassword,
 		},
 		callback: async (userData, formData) => {
@@ -77,7 +75,7 @@ Interstitials.email = async (data) => {
 						if (confirmed) {
 							throw new Error('[[error:email-nochange]]');
 						} else if (await user.email.canSendValidation(userData.uid, current)) {
-							throw new Error(`[[error:confirm-email-already-sent, ${meta.config.emailConfirmInterval}]]`);
+							throw new Error(`[[error:confirm-email-already-sent, ${meta.configs.emailConfirmInterval}]]`);
 						}
 					}
 
@@ -102,7 +100,7 @@ Interstitials.email = async (data) => {
 						throw new Error('[[error:no-privileges]]');
 					}
 				} else {
-					if (meta.config.requireEmailAddress) {
+					if (meta.configs.requireEmailAddress) {
 						throw new Error('[[error:invalid-email]]');
 					}
 
@@ -120,7 +118,7 @@ Interstitials.email = async (data) => {
 					error: '[[error:invalid-email]]',
 				});
 
-				if (!allowed || (meta.config.requireEmailAddress && !(formData.email && formData.email.length))) {
+				if (!allowed || (meta.configs.requireEmailAddress && !(formData.email && formData.email.length))) {
 					throw new Error(error);
 				}
 
@@ -136,7 +134,7 @@ Interstitials.email = async (data) => {
 };
 
 Interstitials.gdpr = async function (data) {
-	if (!meta.config.gdpr_enabled || (data.userData && data.userData.gdpr_consent)) {
+	if (!meta.configs.gdpr_enabled || (data.userData && data.userData.gdpr_consent)) {
 		return data;
 	}
 	if (!data.userData) {
@@ -153,8 +151,8 @@ Interstitials.gdpr = async function (data) {
 	data.interstitials.push({
 		template: 'partials/gdpr_consent',
 		data: {
-			digestFrequency: meta.config.dailyDigestFreq,
-			digestEnabled: meta.config.dailyDigestFreq !== 'off',
+			digestFrequency: meta.configs.dailyDigestFreq,
+			digestEnabled: meta.configs.dailyDigestFreq !== 'off',
 		},
 		callback: function (userData, formData, next) {
 			if (formData.gdpr_agree_data === 'on' && formData.gdpr_agree_email === 'on') {
@@ -171,7 +169,7 @@ Interstitials.tou = async function (data) {
 	if (!data.userData) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	if (!meta.config.termsOfUse || data.userData.acceptTos) {
+	if (!meta.configs.termsOfUse || data.userData.acceptTos) {
 		// no ToS or ToS accepted, nothing to do
 		return data;
 	}
@@ -185,7 +183,7 @@ Interstitials.tou = async function (data) {
 
 	const termsOfUse = await plugins.hooks.fire('filter:parse.post', {
 		postData: {
-			content: meta.config.termsOfUse || '',
+			content: meta.configs.termsOfUse || '',
 		},
 	});
 
@@ -204,3 +202,5 @@ Interstitials.tou = async function (data) {
 	});
 	return data;
 };
+
+export default Interstitials;

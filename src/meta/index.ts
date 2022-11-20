@@ -13,7 +13,7 @@ const Meta = {} as any;
 
 Meta.reloadRequired = false;
 
-Meta.config = require('./configs').default;
+Meta.configs = require('./configs').default;
 Meta.themes = require('./themes').default;
 Meta.js = require('./js').default;
 Meta.css = require('./css').default;
@@ -24,7 +24,7 @@ Meta.tags = require('./tags').default;
 Meta.dependencies = require('./dependencies').default;
 Meta.templates = require('./templates').default;
 Meta.blacklist = require('./blacklist').default;
-Meta.languages = require('./languages').default;
+Meta.languages = require('./languages');
 
 
 /* Assorted */
@@ -65,8 +65,8 @@ function restart() {
 }
 
 Meta.getSessionTTLSeconds = function () {
-	const ttlDays = 60 * 60 * 24 * Meta.config.loginDays;
-	const ttlSeconds = Meta.config.loginSeconds;
+	const ttlDays = 60 * 60 * 24 * Meta.configs.loginDays;
+	const ttlSeconds = Meta.configs.loginSeconds;
 	const ttl = ttlSeconds || ttlDays || 1209600; // Default to 14 days
 	return ttl;
 };

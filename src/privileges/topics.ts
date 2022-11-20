@@ -8,7 +8,7 @@ const topics = require('../topics');
 import user from '../user';
 import helpers from './helpers';
 const categories = require('../categories');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const privsCategories = require('./categories');
 
 const privsTopics  = {} as any;
@@ -142,10 +142,10 @@ privsTopics.canDelete = async function (tid, uid) {
 		return true;
 	}
 
-	const { preventTopicDeleteAfterReplies } = meta.config;
+	const { preventTopicDeleteAfterReplies } = meta.configs;
 	if (!isModerator && preventTopicDeleteAfterReplies && (topicData.postcount - 1) >= preventTopicDeleteAfterReplies) {
 		const langKey = preventTopicDeleteAfterReplies > 1 ?
-			`[[error:cant-delete-topic-has-replies, ${meta.config.preventTopicDeleteAfterReplies}]]` :
+			`[[error:cant-delete-topic-has-replies, ${meta.configs.preventTopicDeleteAfterReplies}]]` :
 			'[[error:cant-delete-topic-has-reply]]';
 		throw new Error(langKey);
 	}

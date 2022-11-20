@@ -5,9 +5,7 @@ import winston from 'winston';
 import meta from '../meta';
 import user from '../user';
 const events = require('../events');
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const privileges = require('../privileges');
 const websockets = require('./index');
 const index = require('./index');
@@ -98,7 +96,7 @@ SocketAdmin.deleteAllEvents = function (socket, data, callback) {
 
 SocketAdmin.getSearchDict = async function (socket) {
 	const settings = await user.getSettings(socket.uid);
-	const lang = settings.userLang || meta.config.defaultLang || 'en-GB';
+	const lang = settings.userLang || meta.configs.defaultLang || 'en-GB';
 	return await getAdminSearchDict(lang);
 };
 

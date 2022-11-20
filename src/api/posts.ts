@@ -43,7 +43,7 @@ postsAPI.get = async function (caller, data) {
 };
 
 postsAPI.edit = async function (caller, data) {
-	if (!data || !data.pid || (meta.config.minimumPostLength !== 0 && !data.content)) {
+	if (!data || !data.pid || (meta.configs.minimumPostLength !== 0 && !data.content)) {
 		throw new Error('[[error:invalid-data]]');
 	}
 	if (!caller.uid) {
@@ -52,14 +52,14 @@ postsAPI.edit = async function (caller, data) {
 	// Trim and remove HTML (latter for composers that send in HTML, like redactor)
 	const contentLen = utils.stripHTMLTags(data.content).trim().length;
 
-	if (data.title && data.title.length < meta.config.minimumTitleLength) {
-		throw new Error(`[[error:title-too-short, ${meta.config.minimumTitleLength}]]`);
-	} else if (data.title && data.title.length > meta.config.maximumTitleLength) {
-		throw new Error(`[[error:title-too-long, ${meta.config.maximumTitleLength}]]`);
-	} else if (meta.config.minimumPostLength !== 0 && contentLen < meta.config.minimumPostLength) {
-		throw new Error(`[[error:content-too-short, ${meta.config.minimumPostLength}]]`);
-	} else if (contentLen > meta.config.maximumPostLength) {
-		throw new Error(`[[error:content-too-long, ${meta.config.maximumPostLength}]]`);
+	if (data.title && data.title.length < meta.configs.minimumTitleLength) {
+		throw new Error(`[[error:title-too-short, ${meta.configs.minimumTitleLength}]]`);
+	} else if (data.title && data.title.length > meta.configs.maximumTitleLength) {
+		throw new Error(`[[error:title-too-long, ${meta.configs.maximumTitleLength}]]`);
+	} else if (meta.configs.minimumPostLength !== 0 && contentLen < meta.configs.minimumPostLength) {
+		throw new Error(`[[error:content-too-short, ${meta.configs.minimumPostLength}]]`);
+	} else if (contentLen > meta.configs.maximumPostLength) {
+		throw new Error(`[[error:content-too-long, ${meta.configs.maximumPostLength}]]`);
 	}
 
 	data.uid = caller.uid;

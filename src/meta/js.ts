@@ -7,18 +7,18 @@ const rimraf = require('rimraf');
 
 const rimrafAsync = util.promisify(rimraf);
 
-const file = require('../file');
-const plugins = require('../plugins');
-const minifier = require('./minifier');
+import file from '../file';
+import plugins from '../plugins';
+import minifier from './minifier';
 
 const JS  = {} as any;
 
 JS.scripts = {
 	base: [
-		'node_modules/@adactive/bootstrap-tagsinput/src/bootstrap-tagsinput.js',
-		'node_modules/jquery-serializeobject/jquery.serializeObject.js',
-		'node_modules/jquery-deserialize/src/jquery.deserialize.js',
-		'public/vendor/bootbox/wrapper.js',
+		'../node_modules/@adactive/bootstrap-tagsinput/src/bootstrap-tagsinput.js',
+		'../node_modules/jquery-serializeobject/jquery.serializeObject.js',
+		'../node_modules/jquery-deserialize/src/jquery.deserialize.js',
+		'../public/vendor/bootbox/wrapper.js',
 	],
 
 	// plugins add entries into this object,

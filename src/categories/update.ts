@@ -7,7 +7,7 @@ import meta from '../meta';
 const utils = require('../utils');
 const slugify = require('../slugify');
 const translator = require('../translator');
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const cache = require('../cache');
 
 export default  function (Categories) {
@@ -90,7 +90,7 @@ export default  function (Categories) {
 	}
 
 	async function updateTagWhitelist(cid, tags) {
-		tags = tags.split(',').map(tag => utils.cleanUpTag(tag, meta.config.maximumTagLength))
+		tags = tags.split(',').map(tag => utils.cleanUpTag(tag, meta.configs.maximumTagLength))
 			.filter(Boolean);
 		await db.delete(`cid:${cid}:tag:whitelist`);
 		const scores = tags.map((tag, index) => index);

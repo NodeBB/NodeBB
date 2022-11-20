@@ -3,7 +3,7 @@
 import path from 'path';
 import nconf from 'nconf';
 
-import { primaryDB as db } from '../../database';
+import db from '../../database';
 import helpers from '../helpers';
 import meta from '../../meta';
 const pagination = require('../../pagination');
@@ -32,7 +32,7 @@ uploadsController.get = async function (req, res, next) {
 	}));
 	const pageCount = Math.ceil(itemCount / itemsPerPage);
 	userData.pagination = pagination.create(page, pageCount, req.query);
-	userData.privateUploads = meta.config.privateUploads === 1;
+	userData.privateUploads = meta.configs.privateUploads === 1;
 	userData.title = `[[pages:account/uploads, ${userData.username}]]`;
 	userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: `/user/${userData.userslug}` }, { text: '[[global:uploads]]' }]);
 	res.render('account/uploads', userData);

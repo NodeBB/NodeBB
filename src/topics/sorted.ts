@@ -3,14 +3,12 @@
 
 const _ = require('lodash');
 
-import { primaryDB as db } from '../database';
-
-
+import db from '../database';
 const privileges = require('../privileges');
 import user from '../user';
 const categories = require('../categories');
 import meta from '../meta';
-const plugins = require('../plugins');
+import plugins from '../plugins';
 
 export default  function (Topics) {
 	Topics.getSortedTopics = async function (params) {
@@ -32,7 +30,7 @@ export default  function (Topics) {
 		}
 		data.tids = await getTids(params);
 		data.tids = await sortTids(data.tids, params);
-		data.tids = await filterTids(data.tids.slice(0, meta.config.recentMaxTopics), params);
+		data.tids = await filterTids(data.tids.slice(0, meta.configs.recentMaxTopics), params);
 		data.topicCount = data.tids.length;
 		data.topics = await getTopics(data.tids, params);
 		data.nextStart = params.stop + 1;
@@ -57,9 +55,9 @@ export default  function (Topics) {
 		} else if (params.tags.length) {
 			tids = await getTagTids(params);
 		} else if (params.sort === 'old') {
-			tids = await db.getSortedSetRange(`topics:recent`, 0, meta.config.recentMaxTopics - 1);
+			tids = await db.getSortedSetRange(`topics:recent`, 0, meta.configs.recentMaxTopics - 1);
 		} else {
-			tids = await db.getSortedSetRevRange(`topics:${params.sort}`, 0, meta.config.recentMaxTopics - 1);
+			tids = await db.getSortedSetRevRange(`topics:${params.sort}`, 0, meta.configs.recentMaxTopics - 1);
 		}
 
 		return tids;
@@ -78,7 +76,7 @@ export default  function (Topics) {
 		return await db[method]({
 			sets: sets,
 			start: 0,
-			stop: meta.config.recentMaxTopics - 1,
+			stop: meta.configs.recentMaxTopics - 1,
 			weights: sets.map((s, index) => (index ? 0 : 1)),
 		});
 	}
@@ -106,7 +104,7 @@ export default  function (Topics) {
 		const method = params.sort === 'old' ?
 			'getSortedSetRange' :
 			'getSortedSetRevRange';
-		const tids = await db[method](sets, 0, meta.config.recentMaxTopics - 1);
+		const tids = await db[method](sets, 0, meta.configs.recentMaxTopics - 1);
 		return pinnedTids.concat(tids);
 	}
 
@@ -180,7 +178,7 @@ export default  function (Topics) {
 		const topicCids = _.uniq(topicData.map((topic) => topic.cid)).filter(Boolean);
 
 		async function getIgnoredCids() {
-			if (params.cids || filter === 'watched' || meta.config.disableRecentCategoryFilter) {
+			if (params.cids || filter === 'watched' || meta.configs.disableRecentCategoryFilter) {
 				return [];
 			}
 			return await categories.isIgnored(topicCids, uid);

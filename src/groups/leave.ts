@@ -1,10 +1,10 @@
 'use strict';
 
-import { primaryDB as db } from '../database';
+import db from '../database';
 
 
 import user from '../user';
-const plugins = require('../plugins');
+import plugins from '../plugins';
 const cache = require('../cache');
 
 export default  function (Groups) {

@@ -1,10 +1,9 @@
 'use strict';
 import helpers from '../helpers';
-import utils from '../../../utils';
-
 
 
 export default function (module) {
+	const utils = require('../../../utils');
 
 	module.sortedSetAdd = async function (key, score: Array<number> | number | string, value: Array<number> | number) {
 		if (!key) {
