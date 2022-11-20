@@ -1,8 +1,8 @@
 'use strict';
 
-const db = require('../../database');
+import db from '../../database';
 
-module.exports = {
+export default  {
 	// you should use spaces
 	// the underscores are there so you can double click to select the whole thing
 	name: 'User_friendly_upgrade_script_name',

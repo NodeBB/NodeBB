@@ -18,9 +18,9 @@ define('categoryFilter', ['categorySearch', 'api', 'hooks'], function (categoryS
 		let selectedCids = [];
 		let initialCids = [];
 		if (Array.isArray(options.selectedCids)) {
-			selectedCids = options.selectedCids.map(cid => parseInt(cid, 10));
+			selectedCids = options.selectedCids.map((cid) => parseInt(cid, 10));
 		} else if (Array.isArray(ajaxify.data.selectedCids)) {
-			selectedCids = ajaxify.data.selectedCids.map(cid => parseInt(cid, 10));
+			selectedCids = ajaxify.data.selectedCids.map((cid) => parseInt(cid, 10));
 		}
 		initialCids = selectedCids.slice();
 

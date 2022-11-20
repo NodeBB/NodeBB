@@ -234,7 +234,7 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 		if (selected) {
 			try {
 				$('#icons .nbb-fa-icons .fa.' + selected).addClass('selected');
-			} catch (err) {
+			} catch (err:any) {
 				selected = '';
 			}
 		}

@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (utils, load, warn) {
+module.exports =function (utils, load, warn) {
 	const assign = Object.assign || jQuery.extend;
 
 	function escapeHTML(str) {

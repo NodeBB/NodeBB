@@ -1,0 +1,58 @@
+<!-- IMPORT partials/breadcrumbs.tpl -->
+<div class="clearfix">
+	<div class="float-end">
+		<div class="btn-group">
+			<button id="new-folder" class="btn btn-primary"><i class="fa fa-folder"></i> [[admin/manage/uploads:new-folder]]</button>
+		</div>
+		<div class="btn-group">
+			<button id="upload" class="btn btn-success"><i class="fa fa-upload"></i> [[global:upload]]</button>
+		</div>
+	</div>
+</div>
+
+<div class="table-responsive">
+	<table class="table table-striped users-table">
+		<thead>
+			<tr>
+				<th>[[admin/manage/uploads:filename]]</th>
+				<!-- IF showPids --><th class="text-end">[[admin/manage/uploads:usage]]</th><!-- END -->
+				<th class="text-end">[[admin/manage/uploads:size/filecount]]</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- BEGIN files -->
+			<tr data-path="{files.path}">
+				<!-- IF files.isDirectory -->
+				<td class="col-md-6" role="button">
+					<i class="fa fa-fw fa-folder-o"></i> <a href="{config.relative_path}/admin/manage/uploads?dir={files.path}">{files.name}</a>
+				</td>
+				<!-- ENDIF files.isDirectory -->
+
+				<!-- IF files.isFile -->
+				<td class="col-md-6">
+					<i class="fa fa-fw fa-file-text-o"></i> <a href="{config.relative_path}{files.url}" target="_blank">{files.name}</a>
+				</td>
+				<!-- ENDIF files.isFile -->
+
+				<!-- IF showPids -->
+				<td class="col-md-3 text-end">
+					{{{ each ../inPids }}}
+					<a target="_blank" href="{config.relative_path}/post/{@value}"><span class="label label-default">{@value}</span></a>
+					{{{ end }}}
+					<!-- IF !../inPids.length -->
+					<span class="label label-danger">[[admin/manage/uploads:orphaned]]</span>
+					<!-- END -->
+				</td>
+				<!-- END -->
+
+				<td class="col-md-2 text-end"><!-- IF files.isFile -->{files.sizeHumanReadable}<!-- ELSE -->[[admin/manage/uploads:filecount, {files.fileCount}]]<!-- ENDIF files.isFile --></td>
+
+				<td role="button" class="col-md-1 text-end"><i class="delete fa fa-fw fa-trash-o <!-- IF !files.isFile --> hidden<!-- ENDIF !files.isFile -->"></i></td>
+			</tr>
+			<!-- END files -->
+		</tbody>
+	</table>
+</div>
+
+<!-- IMPORT partials/paginator.tpl -->

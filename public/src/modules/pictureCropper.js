@@ -181,7 +181,7 @@ define('pictureCropper', ['alerts'], function (alerts) {
 			imageData = data.imageType ?
 				cropperTool.getCroppedCanvas().toDataURL(data.imageType) :
 				cropperTool.getCroppedCanvas().toDataURL();
-		} catch (err) {
+		} catch (err:any) {
 			const corsErrors = [
 				'The operation is insecure.',
 				'Failed to execute \'toDataURL\' on \'HTMLCanvasElement\': Tainted canvases may not be exported.',

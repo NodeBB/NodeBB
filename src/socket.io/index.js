@@ -2,20 +2,20 @@
 
 const os = require('os');
 const nconf = require('nconf');
-const winston = require('winston');
+import winston from 'winston';
 const util = require('util');
 const validator = require('validator');
 const cookieParser = require('cookie-parser')(nconf.get('secret'));
 
 const db = require('../database');
-const user = require('../user');
+import user from '../user';
 const logger = require('../logger');
 const plugins = require('../plugins');
 const ratelimit = require('../middleware/ratelimit');
 
 const Namespaces = {};
 
-const Sockets = module.exports;
+const Sockets = {};
 
 Sockets.init = async function (server) {
 	requireModules();
@@ -164,7 +164,7 @@ async function onMessage(socket, payload) {
 				callback(err ? { message: err.message } : null, result);
 			});
 		}
-	} catch (err) {
+	} catch (err:any) {
 		winston.error(`${eventName}\n${err.stack ? err.stack : err.message}`);
 		callback({ message: err.message });
 	}
@@ -183,7 +183,7 @@ function requireModules() {
 }
 
 async function checkMaintenance(socket) {
-	const meta = require('../meta');
+	import meta from '../meta';
 	if (!meta.config.maintenanceMode) {
 		return;
 	}

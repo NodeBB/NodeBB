@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports.render = function (template) {
+module.export const render = function (template) {
 	if (template.match(/^admin/)) {
 		return;
 	}

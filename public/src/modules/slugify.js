@@ -5,7 +5,7 @@
 	if (typeof define === 'function' && define.amd) {
 		define('slugify', ['xregexp'], factory);
 	} else if (typeof exports === 'object') {
-		module.exports = factory(require('xregexp'));
+	    factory(require('xregexp'));
 	} else {
 		window.slugify = factory(XRegExp);
 	}

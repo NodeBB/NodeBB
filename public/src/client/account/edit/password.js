@@ -34,7 +34,7 @@ define('forum/account/edit/password', [
 
 				showSuccess(password_notify);
 				passwordvalid = true;
-			} catch (err) {
+			} catch (err:any) {
 				showError(password_notify, err.message);
 			}
 		}

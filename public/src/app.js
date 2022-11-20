@@ -142,7 +142,7 @@ if (document.readyState === 'loading') {
 				} else {
 					_module = await import(/* webpackChunkName: "modules/[request]" */ 'modules/' + moduleName);
 				}
-			} catch (err) {
+			} catch (err:any) {
 				console.warn(`error loading ${moduleName}\n${err.stack}`);
 			}
 			return _module && _module.default ? _module.default : _module;

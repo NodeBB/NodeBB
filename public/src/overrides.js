@@ -113,7 +113,7 @@ if (typeof window !== 'undefined') {
 				const dtFormat = new Intl.DateTimeFormat(userLang, options);
 				formatFn = dtFormat.format;
 			}
-		} catch (err) {
+		} catch (err:any) {
 			console.error(err);
 		}
 

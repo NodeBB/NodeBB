@@ -275,7 +275,7 @@ define('forum/category/tools', [
 		if (!ajaxify.data.topics || !ajaxify.data.template.category) {
 			return;
 		}
-		const numPinned = ajaxify.data.topics.filter(topic => topic.pinned).length;
+		const numPinned = ajaxify.data.topics.filter((topic) => topic.pinned).length;
 		if ((!app.user.isAdmin && !app.user.isMod) || numPinned < 2) {
 			return;
 		}

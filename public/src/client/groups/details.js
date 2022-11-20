@@ -183,7 +183,7 @@ define('forum/groups/details', [
 
 		const cidSelector = categorySelector.init($('.member-post-cids-selector [component="category-selector"]'), {
 			onSelect: function (selectedCategory) {
-				let cids = ($('#memberPostCids').val() || '').split(',').map(cid => parseInt(cid, 10));
+				let cids = ($('#memberPostCids').val() || '').split(',').map((cid) => parseInt(cid, 10));
 				cids.push(selectedCategory.cid);
 				cids = cids.filter((cid, index, array) => array.indexOf(cid) === index);
 				$('#memberPostCids').val(cids.join(','));

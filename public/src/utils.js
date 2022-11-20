@@ -81,4 +81,4 @@ utils.generateUUID = function () {
 	return uuid.split(/[:/]/g).pop().toLowerCase(); // remove prefixes
 };
 
-module.exports = utils;
+module.exports =utils;

@@ -318,7 +318,7 @@ define('forum/chats', [
 		if (!data) {
 			try {
 				data = await api.get(`/chats/${roomId}/users`, {});
-			} catch (err) {
+			} catch (err:any) {
 				translator.translate('[[error:invalid-data]]', function (translated) {
 					listEl.find('li').text(translated);
 				});

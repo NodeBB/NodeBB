@@ -150,7 +150,7 @@ define('forum/register', [
 			}
 
 			showSuccess(password_notify, successIcon);
-		} catch (err) {
+		} catch (err:any) {
 			showError(password_notify, err.message);
 		}
 

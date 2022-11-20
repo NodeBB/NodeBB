@@ -7,8 +7,7 @@
 
 require('../../require-main');
 
-const path = require('path');
-const nconf = require('nconf');
+import path from 'path';const nconf = require('nconf');
 const url = require('url');
 const util = require('util');
 
@@ -16,7 +15,7 @@ process.env.NODE_ENV = process.env.TEST_ENV || 'production';
 global.env = process.env.NODE_ENV || 'production';
 
 
-const winston = require('winston');
+import winston from 'winston';
 const packageInfo = require('../../package.json');
 
 winston.add(new winston.transports.Console({
@@ -27,11 +26,11 @@ winston.add(new winston.transports.Console({
 }));
 
 try {
-	const fs = require('fs');
+	import * as fs from 'fs';
 	const configJSON = fs.readFileSync(path.join(__dirname, '../../config.json'), 'utf-8');
 	winston.info('configJSON');
 	winston.info(configJSON);
-} catch (err) {
+} catch (err:any) {
 	console.error(err.stack);
 	throw err;
 }
@@ -128,7 +127,7 @@ winston.info(`environment ${global.env}`);
 
 const db = require('../../src/database');
 
-module.exports = db;
+module.exports =db;
 
 before(async function () {
 	this.timeout(30000);

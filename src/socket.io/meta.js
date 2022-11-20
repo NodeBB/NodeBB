@@ -1,7 +1,7 @@
 'use strict';
 
 
-const user = require('../user');
+import user from '../user';
 const topics = require('../topics');
 
 const SocketMeta = {
@@ -60,4 +60,4 @@ function leaveCurrentRoom(socket) {
 	}
 }
 
-module.exports = SocketMeta;
+module.exports =SocketMeta;

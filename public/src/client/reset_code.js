@@ -31,7 +31,7 @@ define('forum/reset_code', ['alerts', 'zxcvbn'], function (alerts, zxcvbn) {
 
 					window.location.href = config.relative_path + '/login';
 				});
-			} catch (err) {
+			} catch (err:any) {
 				$('#notice').removeClass('hidden');
 				$('#notice strong').translateText(err.message);
 			}

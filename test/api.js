@@ -2,8 +2,7 @@
 
 const _ = require('lodash');
 const assert = require('assert');
-const path = require('path');
-const fs = require('fs');
+import path from 'path';import * as fs from 'fs';
 const SwaggerParser = require('@apidevtools/swagger-parser');
 const request = require('request-promise-native');
 const nconf = require('nconf');

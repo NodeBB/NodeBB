@@ -3,12 +3,12 @@
 const request = require('request');
 const requestAsync = require('request-promise-native');
 const nconf = require('nconf');
-const fs = require('fs');
-const winston = require('winston');
+import * as fs from 'fs';
+import winston from 'winston';
 
 const utils = require('../../src/utils');
 
-const helpers = module.exports;
+const helpers = {};
 
 helpers.getCsrfToken = async (jar) => {
 	const { csrf_token: token } = await requestAsync({
