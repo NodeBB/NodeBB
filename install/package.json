@@ -56,7 +56,7 @@
         "connect-redis": "6.1.3",
         "cookie-parser": "1.4.6",
         "cron": "2.1.0",
-        "cropperjs": "1.5.12",
+        "cropperjs": "1.5.13",
         "csurf": "1.11.0",
         "daemon": "1.1.0",
         "diff": "5.1.0",
