@@ -205,7 +205,7 @@ export default  function (Posts) {
 		await Promise.all(promises);
 
 		const parentPids = _.uniq(postsWithParents.map(p => p.toPid));
-		const counts = db.sortedSetsCard(parentPids.map(pid => `pid:${pid}:replies`));
+		const counts = await db.sortedSetsCard(parentPids.map(pid => `pid:${pid}:replies`));
 		await db.setObjectBulk(parentPids.map((pid, index) => [`post:${pid}`, { replies: counts[index] }]));
 	}
 
