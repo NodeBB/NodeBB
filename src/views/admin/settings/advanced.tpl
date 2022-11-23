@@ -121,7 +121,7 @@
 			</div>
 			<div class="form-group">
 				<label for="hsts-maxage">[[admin/settings/advanced:hsts.maxAge]]</label>
-				<input class="form-control" id="hsts-maxage" type="number" placeholder="31536000" data-field="hsts-maxage" /><br />
+				<input class="form-control" id="hsts-maxage" type="text" pattern="\d+" placeholder="31536000" data-field="hsts-maxage" /><br />
 			</div>
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
