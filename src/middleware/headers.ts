@@ -57,6 +57,10 @@ export default  function (middleware) {
 			});
 		}
 
+		if (meta.config['permissions-policy']) {
+			headers['Permissions-Policy'] = meta.config['permissions-policy'];
+		}
+
 		if (meta.config['access-control-allow-credentials']) {
 			headers['Access-Control-Allow-Credentials'] = meta.config['access-control-allow-credentials'];
 		}

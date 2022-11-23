@@ -94,6 +94,12 @@
 					<option value="cross-origin">cross-origin</option>
 				</select>
 			</div>
+
+			<div class="form-group">
+				<label for="permissions-policy">[[admin/settings/advanced:headers.permissions-policy]]</label>
+				<input class="form-control" id="permissions-policy" type="text" placeholder="" data-field="permissions-policy"  >
+				<p class="help-block">[[admin/settings/advanced:headers.permissions-policy-help]]</p>
+			</div>
 		</form>
 	</div>
 </div>
