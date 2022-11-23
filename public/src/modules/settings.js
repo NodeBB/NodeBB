@@ -517,6 +517,12 @@ define('settings', ['hooks', 'alerts'], function (hooks, alerts) {
 		save: function (hash, formEl, callback) {
 			formEl = $(formEl);
 
+			const controls = formEl.get(0).querySelectorAll('input[name][pattern]');
+			const ok = Settings.check(controls);
+			if (!ok) {
+				return;
+			}
+
 			if (formEl.length) {
 				const values = helper.serializeForm(formEl);
 
@@ -558,6 +564,26 @@ define('settings', ['hooks', 'alerts'], function (hooks, alerts) {
 					}
 				});
 			}
+		},
+		check: function (controls) {
+			const onTrigger = (e) => {
+				const wrapper = e.target.closest('.form-group');
+				if (wrapper) {
+					wrapper.classList.add('has-error');
+				}
+
+				e.target.removeEventListener('invalid', onTrigger);
+			};
+
+			return Array.prototype.map.call(controls, (controlEl) => {
+				const wrapper = controlEl.closest('.form-group');
+				if (wrapper) {
+					wrapper.classList.remove('has-error');
+				}
+
+				controlEl.addEventListener('invalid', onTrigger);
+				return controlEl.reportValidity();
+			}).every(Boolean);
 		},
 	};
 
