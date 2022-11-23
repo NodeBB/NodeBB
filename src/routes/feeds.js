@@ -307,7 +307,11 @@ async function generateForRecentPosts(req, res, next) {
 	if (meta.config['feeds:disableRSS']) {
 		return next();
 	}
-	const postData = await posts.getRecentPosts(req.uid, 0, 19, 'month');
+	const page = parseInt(req.query.page, 10) || 1;
+	const postsPerPage = 20;
+	const start = Math.max(0, (page - 1) * postsPerPage);
+	const stop = start + postsPerPage - 1;
+	const postData = await posts.getRecentPosts(req.uid, start, stop, 'month');
 	const feed = generateForPostsFeed({
 		title: 'Recent Posts',
 		description: 'A list of recent posts',
@@ -323,11 +327,14 @@ async function generateForCategoryRecentPosts(req, res) {
 		return controllers404.handle404(req, res);
 	}
 	const cid = req.params.category_id;
-
+	const page = parseInt(req.query.page, 10) || 1;
+	const topicsPerPage = 20;
+	const start = Math.max(0, (page - 1) * topicsPerPage);
+	const stop = start + topicsPerPage - 1;
 	const [userPrivileges, category, postData] = await Promise.all([
 		privileges.categories.get(cid, req.uid),
 		categories.getCategoryData(cid),
-		categories.getRecentReplies(cid, req.uid || req.query.uid || 0, 20),
+		categories.getRecentReplies(cid, req.uid || req.query.uid || 0, start, stop),
 	]);
 
 	if (!category) {

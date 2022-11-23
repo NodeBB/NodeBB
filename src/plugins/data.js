@@ -106,6 +106,11 @@ Data.getStaticDirectories = async function (pluginData) {
 			return;
 		}
 		const dirPath = await resolveModulePath(pluginData.path, pluginData.staticDirs[route]);
+		if (!dirPath) {
+			winston.warn(`[plugins/${pluginData.id}] Invalid mapped path specified: ${
+				route} => ${pluginData.staticDirs[route]}`);
+			return;
+		}
 		try {
 			const stats = await fs.promises.stat(dirPath);
 			if (!stats.isDirectory()) {

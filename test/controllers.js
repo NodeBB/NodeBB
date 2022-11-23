@@ -1233,6 +1233,18 @@ describe('Controllers', () => {
 				done();
 			});
 		});
+
+		it('should return 200 if guests are allowed', (done) => {
+			const oldValue = meta.config.groupsExemptFromMaintenanceMode;
+			meta.config.groupsExemptFromMaintenanceMode.push('guests');
+			request(`${nconf.get('url')}/api/recent`, { json: true }, (err, res, body) => {
+				assert.ifError(err);
+				assert.strictEqual(res.statusCode, 200);
+				assert(body);
+				meta.config.groupsExemptFromMaintenanceMode = oldValue;
+				done();
+			});
+		});
 	});
 
 	describe('account pages', () => {

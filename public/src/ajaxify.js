@@ -44,9 +44,7 @@ ajaxify.widgets = { render: render };
 			quiet = true;
 		}
 
-		app.leaveCurrentRoom();
-
-		$(window).off('scroll');
+		ajaxify.cleanup(url, ajaxify.data.template.name);
 
 		if ($('#content').hasClass('ajaxifying') && apiXHR) {
 			apiXHR.abort();
@@ -454,6 +452,12 @@ ajaxify.widgets = { render: render };
 			console.error('Unable to load template: ' + template);
 			callback(new Error('[[error:unable-to-load-template]]'));
 		});
+	};
+
+	ajaxify.cleanup = (url, tpl_url) => {
+		app.leaveCurrentRoom();
+		$(window).off('scroll');
+		hooks.fire('action:ajaxify.cleanup', { url, tpl_url });
 	};
 
 	require(['translator', 'benchpress'], function (translator, Benchpress) {

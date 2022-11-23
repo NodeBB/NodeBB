@@ -269,7 +269,11 @@ define('admin/manage/categories', [
 				categories: categories,
 				parentCategory: parentCategory,
 			}, function (html) {
-				container.append(html);
+				if (container.find('.category-row').length) {
+					container.find('.category-row').after(html);
+				} else {
+					container.append(html);
+				}
 
 				// Disable expand toggle
 				if (!categories.length) {

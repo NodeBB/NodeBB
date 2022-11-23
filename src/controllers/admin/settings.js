@@ -48,6 +48,13 @@ settingsController.post = async (req, res) => {
 	});
 };
 
+settingsController.advanced = async (req, res) => {
+	const groupData = await groups.getNonPrivilegeGroups('groups:createtime', 0, -1);
+	res.render('admin/settings/advanced', {
+		groupsExemptFromMaintenanceMode: groupData,
+	});
+};
+
 settingsController.languages = async function (req, res) {
 	const languageData = await languages.list();
 	languageData.forEach((language) => {

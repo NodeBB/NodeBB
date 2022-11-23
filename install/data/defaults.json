@@ -25,6 +25,7 @@
     "postQueue": 0,
     "postQueueReputationThreshold": 0,
     "groupsExemptFromPostQueue": ["administrators", "Global Moderators"],
+    "groupsExemptFromMaintenanceMode": ["administrators", "Global Moderators"],
     "minimumPostLength": 8,
     "maximumPostLength": 32767,
     "systemTags": "",

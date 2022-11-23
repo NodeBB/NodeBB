@@ -21,6 +21,14 @@
 				<label for="maintenanceModeMessage">[[admin/settings/advanced:maintenance-mode.message]]</label>
 				<textarea id="maintenanceModeMessage" class="form-control" data-field="maintenanceModeMessage"></textarea>
 			</div>
+			<div class="form-group">
+				<label for="groupsExemptFromMaintenanceMode">[[admin/settings/advanced:maintenance-mode.groups-exempt-from-maintenance-mode]]</label>
+				<select id="groupsExemptFromMaintenanceMode" class="form-control" multiple data-field="groupsExemptFromMaintenanceMode">
+					{{{ each groupsExemptFromMaintenanceMode }}}
+					<option value="{groupsExemptFromMaintenanceMode.displayName}">{groupsExemptFromMaintenanceMode.displayName}</option>
+					{{{ end }}}
+				</select>
+			</div>
 		</form>
 	</div>
 </div>
@@ -90,6 +98,12 @@
 					<option value="cross-origin">cross-origin</option>
 				</select>
 				<br />
+			</div>
+
+			<div class="form-group">
+				<label for="permissions-policy">[[admin/settings/advanced:headers.permissions-policy]]</label>
+				<input class="form-control" id="permissions-policy" type="text" placeholder="" data-field="permissions-policy"  >
+				<p class="help-block">[[admin/settings/advanced:headers.permissions-policy-help]]</p>
 			</div>
 		</form>
 	</div>

@@ -47,7 +47,6 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 		thumb = $('.scroller-thumb');
 		thumbText = thumb.find('.thumb-text');
 
-
 		$(window).off('scroll', navigator.delayedUpdate).on('scroll', navigator.delayedUpdate);
 
 		paginationBlockEl.find('.dropdown-menu').off('click').on('click', function (e) {
@@ -331,6 +330,8 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 		return parts[1] + '/' + parts[2] + '/' + parts[3] + (index ? '/' + index : '');
 	}
 
+	navigator.getCount = () => count;
+
 	navigator.setCount = function (value) {
 		value = parseInt(value, 10);
 		if (value === count) {
@@ -440,6 +441,14 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 		toggle(!!count);
 	};
 
+	navigator.getIndex = () => index;
+
+	navigator.setIndex = (newIndex) => {
+		index = newIndex + 1;
+		navigator.updateTextAndProgressBar();
+		setThumbToIndex(index);
+	};
+
 	navigator.updateTextAndProgressBar = function () {
 		if (!utils.isNumber(index)) {
 			return;
@@ -544,19 +553,21 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 
 	navigator.scrollToPostIndex = function (postIndex, highlight, duration) {
 		const scrollTo = components.get('post', 'index', postIndex);
-		navigator.scrollToElement(scrollTo, highlight, duration);
+		navigator.scrollToElement(scrollTo, highlight, duration, postIndex);
 	};
 
 	navigator.scrollToTopicIndex = function (topicIndex, highlight, duration) {
 		const scrollTo = $('[component="category/topic"][data-index="' + topicIndex + '"]');
-		navigator.scrollToElement(scrollTo, highlight, duration);
+		navigator.scrollToElement(scrollTo, highlight, duration, topicIndex);
 	};
 
-	navigator.scrollToElement = function (scrollTo, highlight, duration) {
+	navigator.scrollToElement = async (scrollTo, highlight, duration, newIndex = null) => {
 		if (!scrollTo.length) {
 			navigator.scrollActive = false;
 			return;
 		}
+
+		await hooks.fire('filter:navigator.scroll', { scrollTo, highlight, duration, newIndex });
 
 		const postHeight = scrollTo.outerHeight(true);
 		const navbarHeight = components.get('navbar').outerHeight(true) || 0;
@@ -573,9 +584,11 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 		function animateScroll() {
 			function reenableScroll() {
 				// Re-enable onScroll behaviour
-				$(window).on('scroll', navigator.delayedUpdate);
-				const scrollToRect = scrollTo.get(0).getBoundingClientRect();
-				navigator.update(scrollToRect.top);
+				setTimeout(() => { // fixes race condition from jQuery — onAnimateComplete called too quickly
+					$(window).on('scroll', navigator.delayedUpdate);
+
+					hooks.fire('action:navigator.scrolled', { scrollTo, highlight, duration, newIndex });
+				}, 50);
 			}
 			function onAnimateComplete() {
 				if (done) {
@@ -586,8 +599,13 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 
 				navigator.scrollActive = false;
 				highlightPost();
-				$('body').scrollTop($('body').scrollTop() - 1);
-				$('html').scrollTop($('html').scrollTop() - 1);
+
+				const scrollToRect = scrollTo.get(0).getBoundingClientRect();
+				if (!newIndex) {
+					navigator.update(scrollToRect.top);
+				} else {
+					navigator.setIndex(newIndex);
+				}
 			}
 
 			let scrollTop = 0;

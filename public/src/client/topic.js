@@ -73,17 +73,39 @@ define('forum/topic', [
 	};
 
 	function handleTopicSearch() {
-		if (config.topicSearchEnabled) {
-			require(['mousetrap', 'search'], function (mousetrap, search) {
-				mousetrap.bind(['command+f', 'ctrl+f'], function (e) {
-					if (ajaxify.data.template.topic) {
+		require(['mousetrap'], (mousetrap) => {
+			if (config.topicSearchEnabled) {
+				require(['search'], function (search) {
+					mousetrap.bind(['command+f', 'ctrl+f'], function (e) {
 						e.preventDefault();
 						$('#search-fields input').val('in:topic-' + ajaxify.data.tid + ' ');
 						search.showAndFocusInput();
-					}
+					});
+
+					hooks.onPage('action:ajaxify.cleanup', () => {
+						mousetrap.unbind(['command+f', 'ctrl+f']);
+					});
 				});
+			}
+
+			mousetrap.bind('j', () => {
+				const index = navigator.getIndex();
+				const count = navigator.getCount();
+				if (index === count) {
+					return;
+				}
+
+				navigator.scrollToIndex(index, true, 0);
 			});
-		}
+
+			mousetrap.bind('k', () => {
+				const index = navigator.getIndex();
+				if (index === 1) {
+					return;
+				}
+				navigator.scrollToIndex(index - 2, true, 0);
+			});
+		});
 	}
 
 	Topic.toTop = function () {

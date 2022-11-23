@@ -12,7 +12,7 @@
 	"downvotes-per-user-per-day": "Downvotes per user per day (set to 0 for unlimited downvotes)",
 	"min-rep-chat": "Minimum reputation to send chat messages",
 	"min-rep-flag": "Minimum omdømme for å flagge innlegg",
-	"min-rep-website": "Minimum reputation to add \"Website\" to user profile",
+	"min-rep-website": "Minimum omdømme som kreves for å legge \"Nettsted\" til brukerprofil",
 	"min-rep-aboutme": "Minimum reputation to add \"About me\" to user profile",
 	"min-rep-signature": "Minimum reputation to add \"Signature\" to user profile",
 	"min-rep-profile-picture": "Minimum reputation to add \"Profile Picture\" to user profile",

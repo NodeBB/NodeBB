@@ -212,7 +212,7 @@ describe('Upload Controllers', () => {
 				assert.ifError(err);
 				assert.strictEqual(res.statusCode, 500);
 				assert(body && body.status && body.status.message);
-				assert(body.status.message.startsWith('Input file has corrupt header: pngload: end of stream'));
+				assert.strictEqual(body.status.message, 'Input file contains unsupported image format');
 				done();
 			});
 		});

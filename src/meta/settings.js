@@ -95,6 +95,7 @@ Settings.set = async function (hash, values, quiet) {
 	plugins.hooks.fire('action:settings.set', {
 		plugin: hash,
 		settings: { ...values, ...sortedListData }, // Add back sorted list data to values hash
+		quiet,
 	});
 
 	pubsub.publish(`action:settings.set.${hash}`, values);

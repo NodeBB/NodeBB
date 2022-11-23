@@ -10,7 +10,7 @@ const SocketCategories = module.exports;
 require('./categories/search')(SocketCategories);
 
 SocketCategories.getRecentReplies = async function (socket, cid) {
-	return await categories.getRecentReplies(cid, socket.uid, 4);
+	return await categories.getRecentReplies(cid, socket.uid, 0, 4);
 };
 
 SocketCategories.get = async function (socket) {
