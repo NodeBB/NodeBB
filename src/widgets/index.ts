@@ -214,11 +214,13 @@ widgets.reset = async function () {
 
 widgets.resetTemplate = async function (template) {
 	const area = await db.getObject(`widgets:${template}.tpl`);
-	const toBeDrafted = _.flatMap(Object.values(area), value => JSON.parse(value));
-	await db.delete(`widgets:${template}.tpl`);
-	let draftWidgets = await db.getObjectField('widgets:global', 'drafts');
-	draftWidgets = JSON.parse(draftWidgets).concat(toBeDrafted);
-	await db.setObjectField('widgets:global', 'drafts', JSON.stringify(draftWidgets));
+	if (area) {
+		const toBeDrafted = _.flatMap(Object.values(area), value => JSON.parse(value));
+		await db.delete(`widgets:${template}.tpl`);
+		let draftWidgets = await db.getObjectField('widgets:global', 'drafts');
+		draftWidgets = JSON.parse(draftWidgets).concat(toBeDrafted);
+		await db.setObjectField('widgets:global', 'drafts', JSON.stringify(draftWidgets));
+	}
 };
 
 widgets.resetTemplates = async function (templates) {
