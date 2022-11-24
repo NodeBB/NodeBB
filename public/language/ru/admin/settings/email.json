@@ -40,6 +40,7 @@
 	"subscriptions.disable": "Отключить новостные рассылки",
 	"subscriptions.hour": "Час отправки",
 	"subscriptions.hour-help": "Введите число, соответствующее номеру часа (например, <code>0</code> для полуночи, <code>17</code> для 17:00). Имейте в виду, что время определяется по часовому поясу сервера.<br /> Текущее время сервера: <span id=\"serverTime\"></span><br /> Следующая рассылка запланирована на  <span id=\"nextDigestTime\"></span>",
+	"subscriptions.hour-hint": "a number between 0 and 24",
 	"notifications.remove-images": "Удалить изображения из уведомлений по электронной почте",
 	"require-email-address": "Require new users to specify an email address",
 	"require-email-address-warning": "By default, users can opt-out of entering an email address by leaving the field blank. Enabling this option means they have to enter an email address in order to proceed with registration. <strong>It does not ensure user will enter a real email address, nor even an address they own.</strong>",
