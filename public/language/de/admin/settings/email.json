@@ -40,6 +40,7 @@
 	"subscriptions.disable": "Deaktivierung der Email Zusammenfassungen",
 	"subscriptions.hour": "Sende Zeit",
 	"subscriptions.hour-help": "Bitte geben Sie eine Nummer ein, welche die Stunde repräsentiert zu welcher geplante Emails versandt werden sollen (z.B. <code>0</code> für Mitternacht, <code>17</code> für 5 Uhr Nachmittags). Beachten Sie, dass die Zeit auf der Serverzeit basiert und daher nicht umbedingt mit ihrer Systemzeit übereinstimmen muss.<br>Die ungefähre Serverzeit ist: <span id=\"serverTime\"></span><br>Die nächste tägliche Sendung ist um <span id=\"nextDigestTime\"></span> geplant",
+	"subscriptions.hour-hint": "a number between 0 and 24",
 	"notifications.remove-images": "Bilder aus E-Mail-Benachrichtigungen entfernen",
 	"require-email-address": "Neue Benutzer auffordern, eine E-Mail-Adresse anzugeben",
 	"require-email-address-warning": "Standardmäßig können Benutzer die Eingabe einer E-Mail-Adresse ablehnen, indem sie das Feld leer lassen. Wenn Du diese Option aktivierst, musst Du eine E-Mail-Adresse eingeben, um mit der Registrierung fortzufahren.<strong>Es stellt nicht sicher, dass der Benutzer eine echte E-Mail-Adresse eingibt, noch nicht einmal eine Adresse, die ihm gehört.</strong>",

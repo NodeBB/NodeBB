@@ -40,6 +40,7 @@
 	"subscriptions.disable": "Tắt thông báo email",
 	"subscriptions.hour": "Giờ Thông Báo",
 	"subscriptions.hour-help": "Vui lòng nhập một số đại diện cho giờ để gửi thông báo email đã lên lịch (VD: <code>0</code> cho nửa đêm, <code>17</code> cho 5h chiều). Hãy nhớ rằng đây là giờ theo chính máy chủ và có thể không khớp chính xác với đồng hồ hệ thống của bạn.<br /> Thời gian máy chủ gần đúng là: <span id=\"serverTime\"></span><br /> Thông báo hàng ngày kế tiếp được lên lịch để gửi <span id=\"nextDigestTime\"></span>",
+	"subscriptions.hour-hint": "a number between 0 and 24",
 	"notifications.remove-images": "Xóa hình ảnh khỏi thông báo email",
 	"require-email-address": "Bắt buộc người dùng mới phải điền địa chỉ email",
 	"require-email-address-warning": "Theo mặc định, người dùng có thể từ chối nhập địa chỉ email bằng cách để trống trường. Bật tùy chọn này có nghĩa là họ phải nhập địa chỉ email để tiến hành đăng ký. <strong>Nó không đảm bảo người dùng sẽ nhập địa chỉ email thực, thậm chí cả địa chỉ mà họ sở hữu.</strong>",
