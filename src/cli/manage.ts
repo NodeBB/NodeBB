@@ -14,7 +14,36 @@ const plugins = require('../plugins');
 const events = require('../events');
 const analytics = require('../analytics');
 const reset = require('./reset');
-const { pluginNamePattern, themeNamePattern } = require('../constants');
+const { pluginNamePattern, themeNamePattern, paths } = require('../constants');
+
+async function install(plugin) {
+	try {
+		await db.init();
+		if (!pluginNamePattern.test(plugin)) {
+			// Allow omission of `nodebb-plugin-`
+			plugin = `nodebb-plugin-${plugin}`;
+		}
+
+		plugin = await plugins.autocomplete(plugin);
+
+		const isInstalled = await plugins.isInstalled(plugin);
+		if (isInstalled) {
+			throw new Error('plugin already installed');
+		}
+		const nbbVersion = require(paths.currentPackage).version;
+		const suggested = await plugins.suggest(plugin, nbbVersion);
+		if (!suggested.version) {
+			throw new Error(suggested.message);
+		}
+		winston.info('Installing Plugin `%s@%s`', plugin, suggested.version);
+		await plugins.toggleInstall(plugin, suggested.version);
+
+		process.exit(0);
+	} catch (err) {
+		winston.error(`An error occurred during plugin installation\n${err.stack}`);
+		process.exit(1);
+	}
+}
 
 export async function activate(plugin) {
 	if (themeNamePattern.test(plugin)) {
@@ -165,5 +194,4 @@ export async function buildWrapper(targets, options) {
 		(process as any).exit(1);
 	}
 }
-
 
