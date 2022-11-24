@@ -3,7 +3,7 @@
 		<div class="col-xs-4">
 			<div class="form-group">
 				<label for="length">[[admin/manage/users:temp-ban.length]]</label>
-				<input class="form-control" id="length" name="length" type="number" min="0" value="1" />
+				<input class="form-control" id="length" name="length" type="text" inputmode="numeric" pattern="\d+" value="1" />
 			</div>
 		</div>
 		<div class="col-xs-8">

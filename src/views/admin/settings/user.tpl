@@ -179,7 +179,7 @@
 			</div>
 			<div class="form-group">
 				<label for="autoApproveTime">[[admin/settings/user:registration-queue-auto-approve-time]]</label>
-				<input id="autoApproveTime" type="number" class="form-control" data-field="autoApproveTime" placeholder="0">
+				<input id="autoApproveTime" type="text" inputmode="numeric" pattern="\d+" class="form-control" data-field="autoApproveTime" placeholder="0">
 				<p class="help-block">
 					[[admin/settings/user:registration-queue-auto-approve-time-help]]
 				</p>
@@ -201,14 +201,14 @@
 
 			<div class="form-group">
 				<label for="maximumInvites">[[admin/settings/user:max-invites]]</label>
-				<input id="maximumInvites" type="number" class="form-control" data-field="maximumInvites" placeholder="0">
+				<input id="maximumInvites" type="text" inputmode="numeric" pattern="\d+" class="form-control" data-field="maximumInvites" placeholder="0">
 				<p class="help-block">
 					[[admin/settings/user:max-invites-help]]
 				</p>
 			</div>
 			<div class="form-group">
 				<label for="inviteExpiration">[[admin/settings/user:invite-expiration]]</label>
-				<input id="inviteExpiration" type="number" class="form-control" data-field="inviteExpiration" placeholder="7">
+				<input id="inviteExpiration" type="text" inputmode="numeric" pattern="\d+" class="form-control" data-field="inviteExpiration" placeholder="7">
 				<p class="help-block">
 					[[admin/settings/user:invite-expiration-help]]
 				</p>
