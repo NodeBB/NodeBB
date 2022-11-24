@@ -40,6 +40,7 @@
 	"subscriptions.disable": "Minden email összefoglalás letiltása",
 	"subscriptions.hour": "Összefoglalások küldési időpontja",
 	"subscriptions.hour-help": "Kérjük adj meg egy számot, ami azt az órát jelenti, amikor az ütemezett összefoglalókat kiküldi a rendszer (<code>0</code> az éjfél, <code>17</code> a délután 5 óra). Tartsd észben, hogy ez az időpont a szerver idejét veszi figyelembe és előfordulhat, hogy nem egyezik meg a Te gépeden jelzett idővel. A becsült szerver idő jelenleg: <span id=\"serverTime\"></span><br /> A következő napi összefoglalás tervezett kiküldési ideje <span id=\"nextDigestTime\"></span>",
+	"subscriptions.hour-hint": "a number between 0 and 24",
 	"notifications.remove-images": "Képek eltávolítása az email értesítésekből",
 	"require-email-address": "Require new users to specify an email address",
 	"require-email-address-warning": "By default, users can opt-out of entering an email address by leaving the field blank. Enabling this option means they have to enter an email address in order to proceed with registration. <strong>It does not ensure user will enter a real email address, nor even an address they own.</strong>",
