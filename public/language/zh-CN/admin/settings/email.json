@@ -40,6 +40,7 @@
 	"subscriptions.disable": "禁用电子邮件摘要",
 	"subscriptions.hour": "摘要小时",
 	"subscriptions.hour-help": "请输入一个代表小时的数字来发送计划的电子邮件摘要 (例如，对于午夜，<code>0</code>，对于下午5:00，<code>17</code>)。 请记住，这是根据服务器本身的时间，可能与您的系统时钟不完全匹配。<br />服务器的大致时间为：<span id =\"serverTime\"></ span><br /> 下一个每日摘要被计划在<span id =\"nextDigestTime\"></span>发送",
+	"subscriptions.hour-hint": "a number between 0 and 24",
 	"notifications.remove-images": "从电子邮件通知中删除图像",
 	"require-email-address": "要求新用户指定电子邮箱地址",
 	"require-email-address-warning": "默认情况下，用户可以通过将该字段留空来选择不输入电子邮件地址。启用此选项意味着他们必须输入电子邮件地址才能继续注册。<strong>它不能确保用户输入真实的电子邮件地址，甚至也不能确保他们拥有该地址。</strong>",
