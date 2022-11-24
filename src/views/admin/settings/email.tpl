@@ -50,13 +50,13 @@
 	<div class="col-sm-10 col-xs-12">
 		<div class="form-group form-inline">
 			<label for="emailConfirmInterval">[[admin/settings/user:email-confirm-interval]]</label>
-			<input class="form-control" data-field="emailConfirmInterval" type="number" id="emailConfirmInterval" placeholder="10" />
+			<input class="form-control" data-field="emailConfirmInterval" type="text" inputmode="numeric" pattern="\d+" id="emailConfirmInterval" placeholder="10" />
 			<label for="emailConfirmInterval">[[admin/settings/user:email-confirm-interval2]]</label>
 		</div>
 
 		<div class="form-group">
 			<label for="emailConfirmExpiry">[[admin/settings/email:confirmation.expiry]]</label>
-			<input class="form-control" data-field="emailConfirmExpiry" type="number" id="emailConfirmExpiry" placeholder="24" />
+			<input class="form-control" data-field="emailConfirmExpiry" type="text" inputmode="numeric" pattern="\d+" id="emailConfirmExpiry" placeholder="24" />
 		</div>
 
 		<div class="checkbox">
@@ -97,7 +97,7 @@
 
 			<div class="form-group">
 				<label for="digestHour"><strong>[[admin/settings/email:subscriptions.hour]]</strong></label>
-				<input type="number" class="form-control input-lg" id="digestHour" data-field="digestHour" placeholder="17" min="0" max="24" />
+				<input type="text" inputmode="numeric" pattern="\d{1,2}" class="form-control input-lg" id="digestHour" data-field="digestHour" placeholder="17" title="[[admin/settings/email:subscriptions.hour-hint]]" />
 				<p class="help-block">
 					[[admin/settings/email:subscriptions.hour-help]]
 				</p>
