@@ -87,6 +87,15 @@ module.exports = function (Plugins) {
 		throw new Error('[[error:plugin-not-whitelisted]]');
 	};
 
+	Plugins.suggest = async function (pluginId, nbbVersion) {
+		const body = await request({
+			method: 'GET',
+			url: `https://packages.nodebb.org/api/v1/suggest?package=${encodeURIComponent(pluginId)}&version=${encodeURIComponent(nbbVersion)}`,
+			json: true,
+		});
+		return body;
+	};
+
 	Plugins.toggleInstall = async function (id, version) {
 		pubsub.publish('plugins:toggleInstall', { hostname: os.hostname(), id: id, version: version });
 		return await toggleInstall(id, version);
