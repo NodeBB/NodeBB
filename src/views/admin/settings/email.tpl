@@ -40,24 +40,17 @@
 </div>
 
 <div class="row">
-	<div class="col-sm-2 col-12 settings-header">[[admin/settings/email:confirmation-settings]]</div>
-	<div class="col-sm-10 col-12">
-		<div class="row mb-3 align-items-center">
-			<div class="col-auto">
-				<label class="form-label" for="emailConfirmInterval">[[admin/settings/user:email-confirm-interval]]</label>
-			</div>
-			<div class="col-auto">
-				<input class="form-control" data-field="emailConfirmInterval" type="number" id="emailConfirmInterval" placeholder="Default: 10"
-				value="10" />
-			</div>
-			<div class="col-auto">
-				<label class="form-label" for="emailConfirmInterval">[[admin/settings/user:email-confirm-interval2]]</label>
-			</div>
+	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/email:confirmation-settings]]</div>
+	<div class="col-sm-10 col-xs-12">
+		<div class="form-group form-inline">
+			<label for="emailConfirmInterval">[[admin/settings/user:email-confirm-interval]]</label>
+			<input class="form-control" data-field="emailConfirmInterval" type="text" inputmode="numeric" pattern="\d+" id="emailConfirmInterval" placeholder="10" />
+			<label for="emailConfirmInterval">[[admin/settings/user:email-confirm-interval2]]</label>
 		</div>
 
 		<div class="mb-3">
 			<label for="emailConfirmExpiry">[[admin/settings/email:confirmation.expiry]]</label>
-			<input class="form-control" data-field="emailConfirmExpiry" type="number" id="emailConfirmExpiry" placeholder="24" />
+			<input class="form-control" data-field="emailConfirmExpiry" type="text" inputmode="numeric" pattern="\d+" id="emailConfirmExpiry" placeholder="24" />
 		</div>
 
 		<div class="form-check form-switch">
@@ -88,10 +81,10 @@
 				<label for="disableEmailSubscriptions" class="form-check-label">[[admin/settings/email:subscriptions.disable]]</label>
 			</div>
 
-			<div class="mb-3">
-				<label class="form-label" for="digestHour">[[admin/settings/email:subscriptions.hour]]</label>
-				<input type="number" class="form-control input-lg" id="digestHour" data-field="digestHour" placeholder="17" min="0" max="24" />
-				<p class="form-text">
+			<div class="form-group">
+				<label for="digestHour"><strong>[[admin/settings/email:subscriptions.hour]]</strong></label>
+				<input type="text" inputmode="numeric" pattern="\d{1,2}" class="form-control input-lg" id="digestHour" data-field="digestHour" placeholder="17" title="[[admin/settings/email:subscriptions.hour-hint]]" />
+				<p class="help-block">
 					[[admin/settings/email:subscriptions.hour-help]]
 				</p>
 			</div>

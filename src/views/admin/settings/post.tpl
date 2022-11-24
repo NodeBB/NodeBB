@@ -154,45 +154,24 @@
 	<div class="col-sm-2 col-12 settings-header">[[admin/settings/post:timestamp]]</div>
 	<div class="col-sm-10 col-12">
 		<form>
-			<div class="mb-3">
-				<label class="form-label" for="timeagoCutoff">[[admin/settings/post:timestamp.cut-off]]</label>
-				<input type="number" class="form-control" id="timeagoCutoff" data-field="timeagoCutoff"  />
-				<p class="form-text">
+				<label for="timeagoCutoff">[[admin/settings/post:timestamp.cut-off]]</label>
+				<input type="text" inputmode="numeric" pattern="\d+" class="form-control" id="timeagoCutoff" data-field="timeagoCutoff"  />
+				<p class="help-block">
 					[[admin/settings/post:timestamp.cut-off-help]]
 				</p>
 			</div>
-			<div class="mb-3">
-				<label class="form-label" for="necroThreshold">[[admin/settings/post:timestamp.necro-threshold]]</label>
-				<input type="number" class="form-control" id="necroThreshold" data-field="necroThreshold"  />
-				<p class="form-text">
+			<div class="form-group">
+				<label for="necroThreshold">[[admin/settings/post:timestamp.necro-threshold]]</label>
+				<input type="text" inputmode="numeric" pattern="\d+" class="form-control" id="necroThreshold" data-field="necroThreshold"  />
+				<p class="help-block">
 					[[admin/settings/post:timestamp.necro-threshold-help]]
 				</p>
 			</div>
-			<div class="mb-3">
-				<label class="form-label" for="incrementTopicViewsInterval">[[admin/settings/post:timestamp.topic-views-interval]]</label>
-				<input type="number" class="form-control" id="incrementTopicViewsInterval" data-field="incrementTopicViewsInterval"  />
-				<p class="form-text">
+			<div class="form-group">
+				<label for="incrementTopicViewsInterval">[[admin/settings/post:timestamp.topic-views-interval]]</label>
+				<input type="text" inputmode="numeric" pattern="\d+" class="form-control" id="incrementTopicViewsInterval" data-field="incrementTopicViewsInterval"  />
+				<p class="help-block">
 					[[admin/settings/post:timestamp.topic-views-interval-help]]
-				</p>
-			</div>
-		</form>
-	</div>
-</div>
-
-<div class="row mb-4">
-	<div class="col-sm-2 col-12 settings-header">Teaser</div>
-	<div class="col-sm-10 col-12">
-		<form>
-			<div class="mb-3">
-				<label class="form-label" for="teaserPost">[[admin/settings/post:teaser]]</label>
-				<select id="teaserPost" class="form-select" data-field="teaserPost">
-					<option value="last-post">[[admin/settings/post:teaser.last-post]]</option>
-					<option value="last-reply">[[admin/settings/post:teaser.last-reply]]</option>
-					<option value="first">[[admin/settings/post:teaser.first]]</option>
-				</select>
-			</div>
-			<div class="form-check form-switch">
-				<input class="form-check-input" type="checkbox" data-field="showPostPreviewsOnHover">
 				<label class="form-check-label">[[admin/settings/post:showPostPreviewsOnHover]]</label>
 			</div>
 		</form>

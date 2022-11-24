@@ -157,10 +157,10 @@
 					[[admin/settings/user:registration-approval-type.help, {config.relative_path}]]
 				</p>
 			</div>
-			<div class="mb-3">
-				<label class="form-label" for="autoApproveTime">[[admin/settings/user:registration-queue-auto-approve-time]]</label>
-				<input id="autoApproveTime" type="number" class="form-control" data-field="autoApproveTime" placeholder="0">
-				<p class="form-text">
+			<div class="form-group">
+				<label for="autoApproveTime">[[admin/settings/user:registration-queue-auto-approve-time]]</label>
+				<input id="autoApproveTime" type="text" inputmode="numeric" pattern="\d+" class="form-control" data-field="autoApproveTime" placeholder="0">
+				<p class="help-block">
 					[[admin/settings/user:registration-queue-auto-approve-time-help]]
 				</p>
 			</div>
@@ -176,17 +176,17 @@
 			</div>
 			<p class="form-text">[[admin/settings/email:require-email-address-warning]]</p>
 
-			<div class="mb-3">
-				<label class="form-label" for="maximumInvites">[[admin/settings/user:max-invites]]</label>
-				<input id="maximumInvites" type="number" class="form-control" data-field="maximumInvites" placeholder="0">
-				<p class="form-text">
+			<div class="form-group">
+				<label for="maximumInvites">[[admin/settings/user:max-invites]]</label>
+				<input id="maximumInvites" type="text" inputmode="numeric" pattern="\d+" class="form-control" data-field="maximumInvites" placeholder="0">
+				<p class="help-block">
 					[[admin/settings/user:max-invites-help]]
 				</p>
 			</div>
-			<div class="mb-3">
-				<label class="form-label" for="inviteExpiration">[[admin/settings/user:invite-expiration]]</label>
-				<input id="inviteExpiration" type="number" class="form-control" data-field="inviteExpiration" placeholder="7">
-				<p class="form-text">
+			<div class="form-group">
+				<label for="inviteExpiration">[[admin/settings/user:invite-expiration]]</label>
+				<input id="inviteExpiration" type="text" inputmode="numeric" pattern="\d+" class="form-control" data-field="inviteExpiration" placeholder="7">
+				<p class="help-block">
 					[[admin/settings/user:invite-expiration-help]]
 				</p>
 			</div>

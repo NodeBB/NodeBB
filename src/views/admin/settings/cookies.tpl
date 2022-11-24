@@ -51,10 +51,10 @@
 				</p>
 			</div>
 
-			<div class="mb-3">
-				<label class="form-label" for="maxUserSessions">[[admin/settings/cookies:max-user-sessions]]</label>
-				<input class="form-control" id="maxUserSessions" type="number" placeholder="10" data-field="maxUserSessions" />
-				<p class="form-text">
+			<div class="form-group">
+				<label for="maxUserSessions">[[admin/settings/cookies:max-user-sessions]]</label>
+				<input class="form-control" id="maxUserSessions" type="text" inputmode="numeric" pattern="\d+" placeholder="10" data-field="maxUserSessions" /><br />
+				<p class="help-block">
 					[[admin/settings/cookies:blank-default]]
 				</p>
 			</div>

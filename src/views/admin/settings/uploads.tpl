@@ -127,10 +127,10 @@
 		</div>
 
 		<div class="row">
-			<div class="mb-3 col-sm-6">
-				<label class="form-label" for="orphanExpiryDays">[[admin/settings/uploads:orphanExpiryDays]]</label>
-				<input id="orphanExpiryDays" type="number" min="0" placeholder="0" class="form-control" data-field="orphanExpiryDays" />
-				<p class="form-text">[[admin/settings/uploads:orphanExpiryDays-help]]</p>
+			<div class="form-group col-sm-6">
+				<label for="orphanExpiryDays">[[admin/settings/uploads:orphanExpiryDays]]</label>
+				<input id="orphanExpiryDays" type="text" inputmode="numeric" pattern="\d+" placeholder="0" class="form-control" data-field="orphanExpiryDays" />
+				<p class="help-block">[[admin/settings/uploads:orphanExpiryDays-help]]</p>
 			</div>
 		</div>
 	</div>
