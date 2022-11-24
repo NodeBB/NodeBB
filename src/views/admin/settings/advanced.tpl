@@ -121,7 +121,7 @@
 			</div>
 			<div class="form-group">
 				<label for="hsts-maxage">[[admin/settings/advanced:hsts.maxAge]]</label>
-				<input class="form-control" id="hsts-maxage" type="text" pattern="\d+" placeholder="31536000" data-field="hsts-maxage" /><br />
+				<input class="form-control" id="hsts-maxage" type="text" inputmode="numeric" pattern="\d+" placeholder="31536000" data-field="hsts-maxage" /><br />
 			</div>
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
@@ -157,14 +157,14 @@
 			</div>
 			<div class="form-group">
 				<label for="eventLoopLagThreshold">[[admin/settings/advanced:traffic.event-lag]]</label>
-				<input class="form-control" id="eventLoopLagThreshold" type="number" data-field="eventLoopLagThreshold" placeholder="Default: 70" step="10" min="10" value="70" />
+				<input class="form-control" id="eventLoopLagThreshold" type="text" inputmode="numeric" pattern="\d+" data-field="eventLoopLagThreshold" placeholder="Default: 70" step="10" min="10" value="70" />
 				<p class="help-block">
 					[[admin/settings/advanced:traffic.event-lag-help]]
 				</p>
 			</div>
 			<div class="form-group">
 				<label for="eventLoopInterval">[[admin/settings/advanced:traffic.lag-check-interval]]</label>
-				<input class="form-control" id="eventLoopInterval" type="number" data-field="eventLoopInterval" placeholder="Default: 500" value="500" step="50" />
+				<input class="form-control" id="eventLoopInterval" type="text" inputmode="numeric" pattern="\d+" data-field="eventLoopInterval" placeholder="Default: 500" value="500" step="50" />
 				<p class="help-block">
 					[[admin/settings/advanced:traffic.lag-check-interval-help]]
 				</p>
