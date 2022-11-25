@@ -40,7 +40,6 @@
 	"subscriptions.disable": "Deaktiver e-postsammendrag",
 	"subscriptions.hour": "Digest Hour",
 	"subscriptions.hour-help": "Skriv inn et tall som representerer den timen planlagte e-postsammendrag skal sendes ut (f.eks. <code>0</code> for midnatt, <code>17</code> for 17:00). Husk at denne tiden forholder seg til serverens tid, og kan avvike fra din systemklokke.<br /> Den omtrentlige servertiden er:<span id=\"serverTime\"></span><br /> Det neste daglige sammendraget er planlagt utsendt <span id=\"nextDigestTime\"></span>",
-	"subscriptions.hour-hint": "a number between 0 and 24",
 	"notifications.remove-images": "Remove images from email notifications",
 	"require-email-address": "Krev at nye brukere legger til en e-postadresse",
 	"require-email-address-warning": "Som standard, kan brukere velge bort å fylle ut e-postadresse ved å la feltet stå tomt. Å skru på dette valget innebærer at de må legge inn en e-postadresse for å kunne fortsette registreringen. <strong>Dette sikrer ikke at brukeren vil legge inn en gyldig e-postadresse, heller ikke en e-postadresse de eier.</strong>",
