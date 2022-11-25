@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/settings', ['uploader', 'mousetrap', 'hooks', 'alerts'], function (uploader, mousetrap, hooks, alerts) {
+define('admin/settings', ['uploader', 'mousetrap', 'hooks', 'alerts', 'settings'], function (uploader, mousetrap, hooks, alerts, settings) {
 	const Settings = {};
 
 	Settings.populateTOC = function () {
@@ -64,6 +64,11 @@ define('admin/settings', ['uploader', 'mousetrap', 'hooks', 'alerts'], function 
 
 		saveBtn.off('click').on('click', function (e) {
 			e.preventDefault();
+
+			const ok = settings.check(document.querySelectorAll('#content [data-field]'));
+			if (!ok) {
+				return;
+			}
 
 			saveFields(fields, function onFieldsSaved(err) {
 				if (err) {
