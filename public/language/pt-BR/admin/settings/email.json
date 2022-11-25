@@ -40,7 +40,6 @@
 	"subscriptions.disable": "Desabilitar resumos por email",
 	"subscriptions.hour": "Hora de Envio dos Resumos",
 	"subscriptions.hour-help": "Por favor, entre um número representando a hora para enviar os resumos agendados via e-mail (por exemplo: <code>0</code> para meia-noite, <code>17</code> para 5:00pm). Tenha em mente que esta é a hora de acordo com o servidor e pode não combinar exatamente com o relógio do seu sistema.<br /> O horário aproximado do servidor é: <span id=\"serverTime\"></span><br /> O próximo resumo diário está agendado para ser enviado <span id=\"nextDigestTime\"></span>",
-	"subscriptions.hour-hint": "a number between 0 and 24",
 	"notifications.remove-images": "Remover imagens de notificações por e-mail",
 	"require-email-address": "Require new users to specify an email address",
 	"require-email-address-warning": "By default, users can opt-out of entering an email address by leaving the field blank. Enabling this option means they have to enter an email address in order to proceed with registration. <strong>It does not ensure user will enter a real email address, nor even an address they own.</strong>",

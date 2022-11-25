@@ -40,7 +40,6 @@
 	"subscriptions.disable": "Zakázat e-mailové odběry",
 	"subscriptions.hour": "Hodina přehledu",
 	"subscriptions.hour-help": "Zadejte číslo odpovídající hodině, kdy mají být odeslány přehledové e-maily (tj. <code>0</code> pro půlnoc, <code>17</code> pro 5:00pm).  Mějte na paměti, že tato hodina závisí na hodinách samotného serveru a nemusí tak souhlasit se systémovými hodinami. <br />Přibližný čas serveru je: <span id=\"serverTime\"></span>.<br />Další odeslání přehledů je plánováno na <span id=\"nextDigestTime\"></span>.",
-	"subscriptions.hour-hint": "a number between 0 and 24",
 	"notifications.remove-images": "Remove images from email notifications",
 	"require-email-address": "Require new users to specify an email address",
 	"require-email-address-warning": "By default, users can opt-out of entering an email address by leaving the field blank. Enabling this option means they have to enter an email address in order to proceed with registration. <strong>It does not ensure user will enter a real email address, nor even an address they own.</strong>",
