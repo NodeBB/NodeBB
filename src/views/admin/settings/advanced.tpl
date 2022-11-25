@@ -114,7 +114,7 @@
 			</div>
 			<div class="form-group">
 				<label for="hsts-maxage">[[admin/settings/advanced:hsts.maxAge]]</label>
-				<input class="form-control" id="hsts-maxage" type="text" pattern="\d+" placeholder="31536000" data-field="hsts-maxage" /><br />
+				<input class="form-control" id="hsts-maxage" type="number" placeholder="31536000" data-field="hsts-maxage" /><br />
 			</div>
 			<div class="form-check form-switch">
 				<input class="form-check-input" type="checkbox" data-field="hsts-subdomains" checked>
