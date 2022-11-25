@@ -66,7 +66,7 @@ define('admin/settings', ['uploader', 'mousetrap', 'hooks', 'alerts', 'settings'
 		saveBtn.off('click').on('click', function (e) {
 			e.preventDefault();
 
-			const ok = settings.check(document.querySelectorAll('#content [data-field][pattern]'));
+			const ok = settings.check(document.querySelectorAll('#content [data-field]'));
 			if (!ok) {
 				return;
 			}

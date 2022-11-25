@@ -517,7 +517,8 @@ define('settings', ['hooks', 'alerts'], function (hooks, alerts) {
 		save: function (hash, formEl, callback) {
 			formEl = $(formEl);
 
-			const controls = formEl.get(0).querySelectorAll('input[name][pattern]');
+			const controls = formEl.get(0).elements;
+			console.log(controls);
 			const ok = Settings.check(controls);
 			if (!ok) {
 				return;
