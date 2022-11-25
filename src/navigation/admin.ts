@@ -4,7 +4,9 @@ const validator = require('validator');
 import winston from 'winston';
 
 const plugins = require('../plugins');
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 const pubsub = require('../pubsub').default;
 
 const admin  = {} as any;

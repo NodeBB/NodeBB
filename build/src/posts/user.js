@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -15,7 +38,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const async = require('async');
 const validator = require('validator');
 const _ = require('lodash');
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const user_1 = __importDefault(require("../user"));
 const topics = require('../topics');
 const groups = require('../groups');
@@ -176,9 +200,9 @@ function default_1(Posts) {
                 postsByUser[post.uid].push(post);
             });
             yield Promise.all([
-                database_1.default.setObjectField(pids.map(pid => `post:${pid}`), 'uid', toUid),
-                database_1.default.sortedSetRemoveBulk(bulkRemove),
-                database_1.default.sortedSetAddBulk(bulkAdd),
+                db.setObjectField(pids.map(pid => `post:${pid}`), 'uid', toUid),
+                db.sortedSetRemoveBulk(bulkRemove),
+                db.sortedSetAddBulk(bulkAdd),
                 user_1.default.incrementUserReputationBy(toUid, repChange),
                 handleMainPidOwnerChange(postData, toUid),
                 updateTopicPosters(postData, toUid),
@@ -210,9 +234,9 @@ function default_1(Posts) {
             const postsByTopic = _.groupBy(postData, p => parseInt(p.tid, 10));
             yield async.eachOf(postsByTopic, (posts, tid) => __awaiter(this, void 0, void 0, function* () {
                 const postsByUser = _.groupBy(posts, p => parseInt(p.uid, 10));
-                yield database_1.default.sortedSetIncrBy(`tid:${tid}:posters`, posts.length, toUid);
+                yield db.sortedSetIncrBy(`tid:${tid}:posters`, posts.length, toUid);
                 yield async.eachOf(postsByUser, (posts, uid) => __awaiter(this, void 0, void 0, function* () {
-                    yield database_1.default.sortedSetIncrBy(`tid:${tid}:posters`, -posts.length, uid);
+                    yield db.sortedSetIncrBy(`tid:${tid}:posters`, -posts.length, uid);
                 }));
             }));
         });
@@ -240,9 +264,9 @@ function default_1(Posts) {
                 postsByUser[post.uid].push(post);
             });
             yield Promise.all([
-                database_1.default.setObjectField(mainPosts.map(p => `topic:${p.tid}`), 'uid', toUid),
-                database_1.default.sortedSetRemoveBulk(bulkRemove),
-                database_1.default.sortedSetAddBulk(bulkAdd),
+                db.setObjectField(mainPosts.map(p => `topic:${p.tid}`), 'uid', toUid),
+                db.sortedSetRemoveBulk(bulkRemove),
+                db.sortedSetAddBulk(bulkAdd),
                 user_1.default.incrementUserFieldBy(toUid, 'topiccount', mainPosts.length),
                 reduceTopicCounts(postsByUser),
             ]);

@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -13,7 +36,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const _ = require('lodash');
-const database_1 = __importDefault(require("../../database"));
+const database = __importStar(require("../../database"));
+const db = database;
 const groups = require('../../groups');
 const categories_1 = __importDefault(require("../../categories"));
 const user_1 = __importDefault(require("../../user"));
@@ -24,12 +48,12 @@ const AdminsMods = {};
 AdminsMods.get = function (req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const rootCid = parseInt(req.query.cid, 10) || 0;
-        const cidsCount = yield database_1.default.sortedSetCard(`cid:${rootCid}:children`);
+        const cidsCount = yield db.sortedSetCard(`cid:${rootCid}:children`);
         const pageCount = Math.max(1, Math.ceil(cidsCount / meta_1.default.config.categoriesPerPage));
         const page = Math.min(parseInt(req.query.page, 10) || 1, pageCount);
         const start = Math.max(0, (page - 1) * meta_1.default.config.categoriesPerPage);
         const stop = start + meta_1.default.config.categoriesPerPage - 1;
-        const cids = yield database_1.default.getSortedSetRange(`cid:${rootCid}:children`, start, stop);
+        const cids = yield db.getSortedSetRange(`cid:${rootCid}:children`, start, stop);
         // @ts-ignore
         const selectedCategory = rootCid ? yield categories_1.default.getCategoryData(rootCid) : null;
         // @ts-ignore
@@ -55,7 +79,7 @@ function getModeratorsOfCategories(categoryData) {
         const [moderatorUids, childrenCounts] = yield Promise.all([
             // @ts-ignore
             categories_1.default.getModeratorUids(categoryData.map((c) => c.cid)),
-            database_1.default.sortedSetsCard(categoryData.map((c) => `cid:${c.cid}:children`)),
+            db.sortedSetsCard(categoryData.map((c) => `cid:${c.cid}:children`)),
         ]);
         const uids = _.uniq(_.flatten(moderatorUids));
         const moderatorData = yield user_1.default.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture']);

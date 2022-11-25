@@ -12,7 +12,9 @@ const plugins = require('../plugins');
 import meta from '../meta';
 const events = require('../events');
 const emailer = require('../emailer');
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 const userController = require('../controllers/user');
 const privileges = require('../privileges');
 const utils = require('../utils');

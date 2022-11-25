@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -22,7 +45,8 @@ const categories = require('../categories');
 const meta_1 = __importDefault(require("../meta"));
 const helpers = require('../controllers/helpers');
 const privileges = require('../privileges');
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const utils = require('../utils');
 const controllers404 = require('../controllers/404');
 const terms = {
@@ -57,7 +81,7 @@ function validateTokenIfRequiresLogin(requiresLogin, cid, req, res) {
         if (uid <= 0 || !token) {
             return helpers.notAllowed(req, res);
         }
-        const userToken = yield database_1.default.getObjectField(`user:${uid}`, 'rss_token');
+        const userToken = yield db.getObjectField(`user:${uid}`, 'rss_token');
         if (userToken !== token) {
             yield user_1.default.auth.logAttempt(uid, req.ip);
             return helpers.notAllowed(req, res);
@@ -124,7 +148,7 @@ function generateForCategory(req, res, next) {
         const [userPrivileges, category, tids] = yield Promise.all([
             privileges.categories.get(cid, req.uid),
             categories.getCategoryData(cid),
-            database_1.default.getSortedSetRevIntersect({
+            db.getSortedSetRevIntersect({
                 sets: ['topics:tid', `cid:${cid}:tids:lastposttime`],
                 start: 0,
                 stop: 25,
@@ -155,7 +179,7 @@ function generateForTopics(req, res, next) {
         }
         let token = null;
         if (req.query.token && req.query.uid) {
-            token = yield database_1.default.getObjectField(`user:${req.query.uid}`, 'rss_token');
+            token = yield db.getObjectField(`user:${req.query.uid}`, 'rss_token');
         }
         yield sendTopicsFeed({
             uid: token && token === req.query.token ? req.query.uid : req.uid,
@@ -213,7 +237,7 @@ function generateSorted(options, req, res, next) {
         const term = terms[req.params.term] || options.term;
         let token = null;
         if (req.query.token && req.query.uid) {
-            token = yield database_1.default.getObjectField(`user:${req.query.uid}`, 'rss_token');
+            token = yield db.getObjectField(`user:${req.query.uid}`, 'rss_token');
         }
         const uid = token && token === req.query.token ? req.query.uid : req.uid;
         const params = {

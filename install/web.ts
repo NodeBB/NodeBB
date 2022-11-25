@@ -123,13 +123,13 @@ function welcome(req, res) {
 	});
 
 	const defaults = require('./data/defaults.json');
-
+    
 	res.render('install/index', {
 		url: nconf.get('url') || (`${req.protocol}://${req.get('host')}`),
 		launchUrl: launchUrl,
-		skipGeneralSetup: !!nconf.get('url'),
+		skipGeneralSetup: true,
 		databases: databases,
-		skipDatabaseSetup: !!nconf.get('database'),
+		skipDatabaseSetup: true,
 		error: error,
 		success: success,
 		values: req.body,
@@ -140,9 +140,9 @@ function welcome(req, res) {
 }
 
 function install(req, res) {
-	if (installing) {
-		return welcome(req, res);
-	}
+	// if (installing) {
+	// 	return welcome(req, res);
+	// }
 	req.setTimeout(0);
 	installing = true;
 
@@ -166,7 +166,6 @@ function install(req, res) {
 
 	winston.info('Starting setup process');
 	launchUrl = setupEnvVars.NODEBB_URL;
-    console.log('STARTING CHILD PROCESS!!!', __dirname);
 	const child = require('child_process').fork('build/app', ['--setup'], {
 		env: setupEnvVars,
 	});
@@ -186,7 +185,6 @@ async function launch(req, res) {
 		server.close();
 		req.setTimeout(0);
 		let child;
-
 		if (!nconf.get('launchCmd')) {
 			child = childProcess.spawn('node', ['loader.js'], {
 				detached: true,
@@ -206,8 +204,8 @@ async function launch(req, res) {
 		}
 
 		const filesToDelete = [
-			path.join(__dirname, '../public', 'installer.css'),
-			path.join(__dirname, '../public', 'bootstrap.min.css'),
+			path.join(__dirname, '../../public', 'installer.css'),
+			path.join(__dirname, '../../public', 'bootstrap.min.css'),
 			path.join(__dirname, '../build/public', 'installer.min.js'),
 		];
 		try {
@@ -256,7 +254,7 @@ async function compileSass() {
 				path.join(__dirname, '../../public/scss'),
 			],
 		});
-
+        console.log('BOOOMINGGGG!!!!');
 		await fs.promises.writeFile(path.join(__dirname, '../../public/installer.css'), scssOutput.css.toString());
 	} catch (err: any) {
 		winston.error(`Unable to compile SASS: \n${err.stack}`);

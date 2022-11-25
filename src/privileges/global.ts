@@ -4,10 +4,10 @@
 const _ = require('lodash');
 
 import user from '../user';
-const groups = require('../groups');
-const helpers = require('./helpers').defualt;
-const plugins = require('../plugins');
-const utils = require('../utils');
+import groups from '../groups';
+import helpers from './helpers';
+import plugins from '../plugins';
+import utils from '../utils';
 
 const privsGlobal  = {} as any;
 
@@ -134,3 +134,5 @@ privsGlobal.groupPrivileges = async function (groupName) {
 	const groupPrivilegeList = await privsGlobal.getGroupPrivilegeList();
 	return await helpers.userOrGroupPrivileges(0, groupName, groupPrivilegeList);
 };
+
+export default privsGlobal;

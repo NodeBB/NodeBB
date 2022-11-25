@@ -2,7 +2,9 @@
 
 const validator = require('validator');
 
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 import meta from '../meta';
 const plugins = require('../plugins');
 const utils = require('../utils');

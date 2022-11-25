@@ -7,9 +7,8 @@ const path = require('path');
 const { fork } = require('child_process');
 const logrotate = require('logrotate-stream');
 const mkdirp = require('mkdirp');
-
-const file = require('./build/src/file').default;
-const pkg = require('./package.json');
+import file from './src/file';
+const pkg = require('../package.json');
 
 const pathToConfig = path.resolve(__dirname, process.env.CONFIG || 'config.json');
 
@@ -207,7 +206,6 @@ fs.open(pathToConfig, 'r', (err) => {
 	}
 
 	if (nconf.get('daemon') !== 'false' && nconf.get('daemon') !== false) {
-		console.log('FILE EXISTS SYNC', file);
 		if (file.existsSync(pidFilePath)) {
 			let pid = 0;
 			try {

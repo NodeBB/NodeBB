@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -13,7 +36,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const _ = require('lodash');
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const user_1 = __importDefault(require("../user"));
 const groups = require('../groups');
 const plugins = require('../plugins');
@@ -33,7 +57,7 @@ require('./watch').default(Categories);
 require('./search').default(Categories);
 Categories.exists = function (cids) {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield database_1.default.exists(Array.isArray(cids) ? cids.map((cid) => `category:${cid}`) : `category:${cids}`);
+        return yield db.exists(Array.isArray(cids) ? cids.map((cid) => `category:${cid}`) : `category:${cids}`);
     });
 };
 Categories.getCategoryById = function (data) {
@@ -72,7 +96,7 @@ Categories.getAllCidsFromSet = function (key) {
         if (cids) {
             return cids.slice();
         }
-        cids = yield database_1.default.getSortedSetRange(key, 0, -1);
+        cids = yield db.getSortedSetRange(key, 0, -1);
         cids = cids.map((cid) => parseInt(cid, 10));
         cache.set(key, cids);
         return cids.slice();
@@ -165,7 +189,7 @@ Categories.getTagWhitelist = function (cids) {
             return cids.map((cid) => cachedData[cid]);
         }
         const keys = nonCachedCids.map((cid) => `cid:${cid}:tag:whitelist`);
-        const data = yield database_1.default.getSortedSetsMembers(keys);
+        const data = yield db.getSortedSetsMembers(keys);
         nonCachedCids.forEach((cid, index) => {
             cachedData[cid] = data[index];
             cache.set(`cid:${cid}:tag:whitelist`, data[index]);
@@ -257,7 +281,7 @@ Categories.getChildrenCids = function (rootCid) {
         let allCids = [];
         function recursive(keys) {
             return __awaiter(this, void 0, void 0, function* () {
-                let childrenCids = yield database_1.default.getSortedSetRange(keys, 0, -1);
+                let childrenCids = yield db.getSortedSetRange(keys, 0, -1);
                 childrenCids = childrenCids.filter((cid) => !allCids.includes(parseInt(cid, 10)));
                 if (!childrenCids.length) {
                     return;

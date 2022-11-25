@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -18,7 +41,8 @@ const nconf_1 = __importDefault(require("nconf"));
 const validator = require('validator');
 const _ = require('lodash');
 const util = require('util');
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const meta_1 = __importDefault(require("../meta"));
 const analytics = require('../analytics');
 const user_1 = __importDefault(require("../user"));
@@ -118,7 +142,7 @@ function addToApprovalQueue(req, userData) {
         yield user_1.default.addToApprovalQueue(userData);
         let message = '[[register:registration-added-to-queue]]';
         if (meta_1.default.config.showAverageApprovalTime) {
-            const average_time = yield database_1.default.getObjectField('registration:queue:approval:times', 'average');
+            const average_time = yield db.getObjectField('registration:queue:approval:times', 'average');
             if (average_time > 0) {
                 message += ` [[register:registration-queue-average-time, ${Math.floor(average_time / 60)}, ${Math.floor(average_time % 60)}]]`;
             }
@@ -362,10 +386,10 @@ authenticationController.onSuccessfulLogin = function (req, uid) {
                 user_1.default.updateLastOnlineTime(uid),
                 user_1.default.updateOnlineUsers(uid),
                 analytics.increment('logins'),
-                database_1.default.incrObjectFieldBy('global', 'loginCount', 1),
+                db.incrObjectFieldBy('global', 'loginCount', 1),
             ]);
             if (uid > 0) {
-                yield database_1.default.setObjectField(`uid:${uid}:sessionUUID:sessionId`, uuid, req.sessionID);
+                yield db.setObjectField(`uid:${uid}:sessionUUID:sessionId`, uuid, req.sessionID);
             }
             // Force session check for all connected socket.io clients with the same session id
             sockets.in(`sess_${req.sessionID}`).emit('checkSession', uid);
@@ -432,7 +456,7 @@ authenticationController.logout = function (req, res, next) {
             yield destroyAsync(req);
             res.clearCookie(nconf_1.default.get('sessionKey'), meta_1.default.configs.cookie.get());
             yield user_1.default.setUserField(uid, 'lastonline', Date.now() - (meta_1.default.config.onlineCutoff * 60000));
-            yield database_1.default.sortedSetAdd('users:online', Date.now() - (meta_1.default.config.onlineCutoff * 60000), uid);
+            yield db.sortedSetAdd('users:online', Date.now() - (meta_1.default.config.onlineCutoff * 60000), uid);
             yield plugins.hooks.fire('static:user.loggedOut', { req: req, res: res, uid: uid, sessionID: sessionID });
             // Force session check for all connected socket.io clients with the same session id
             sockets.in(`sess_${sessionID}`).emit('checkSession', 0);

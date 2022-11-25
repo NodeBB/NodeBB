@@ -41,7 +41,8 @@ const winston_1 = __importDefault(require("winston"));
 const _ = require('lodash');
 const fs = __importStar(require("fs"));
 const file = require('../file');
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const Meta = require('./index');
 const events = require('../events');
 const utils = require('../utils');
@@ -115,9 +116,9 @@ Themes.set = (data) => __awaiter(void 0, void 0, void 0, function* () {
     switch (data.type) {
         case 'local': {
             const current = yield Meta.configs.get('theme:id');
-            yield database_1.default.sortedSetRemove('plugins:active', current);
-            const numPlugins = yield database_1.default.sortedSetCard('plugins:active');
-            yield database_1.default.sortedSetAdd('plugins:active', numPlugins, data.id);
+            yield db.sortedSetRemove('plugins:active', current);
+            const numPlugins = yield db.sortedSetCard('plugins:active');
+            yield db.sortedSetAdd('plugins:active', numPlugins, data.id);
             if (current !== data.id) {
                 const pathToThemeJson = path_1.default.join(nconf_1.default.get('themes_path'), data.id, 'theme.json');
                 if (!pathToThemeJson.startsWith(nconf_1.default.get('themes_path'))) {
@@ -127,9 +128,9 @@ Themes.set = (data) => __awaiter(void 0, void 0, void 0, function* () {
                 config = JSON.parse(config);
                 const activePluginsConfig = nconf_1.default.get('plugins:active');
                 if (!activePluginsConfig) {
-                    yield database_1.default.sortedSetRemove('plugins:active', current);
-                    const numPlugins = yield database_1.default.sortedSetCard('plugins:active');
-                    yield database_1.default.sortedSetAdd('plugins:active', numPlugins, data.id);
+                    yield db.sortedSetRemove('plugins:active', current);
+                    const numPlugins = yield db.sortedSetCard('plugins:active');
+                    yield db.sortedSetAdd('plugins:active', numPlugins, data.id);
                 }
                 else if (!activePluginsConfig.includes(data.id)) {
                     // This prevents changing theme when configuration doesn't include it, but allows it otherwise

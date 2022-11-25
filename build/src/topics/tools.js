@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -13,7 +36,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const _ = require('lodash');
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const topics = require('.');
 const categories = require('../categories');
 const user_1 = __importDefault(require("../user"));
@@ -173,8 +197,8 @@ function default_1(Topics) {
                 Topics.events.log(tid, { type: pin ? 'pin' : 'unpin', uid }),
             ];
             if (pin) {
-                promises.push(database_1.default.sortedSetAdd(`cid:${topicData.cid}:tids:pinned`, Date.now(), tid));
-                promises.push(database_1.default.sortedSetsRemove([
+                promises.push(db.sortedSetAdd(`cid:${topicData.cid}:tids:pinned`, Date.now(), tid));
+                promises.push(db.sortedSetsRemove([
                     `cid:${topicData.cid}:tids`,
                     `cid:${topicData.cid}:tids:posts`,
                     `cid:${topicData.cid}:tids:votes`,
@@ -182,9 +206,9 @@ function default_1(Topics) {
                 ], tid));
             }
             else {
-                promises.push(database_1.default.sortedSetRemove(`cid:${topicData.cid}:tids:pinned`, tid));
+                promises.push(db.sortedSetRemove(`cid:${topicData.cid}:tids:pinned`, tid));
                 promises.push(Topics.deleteTopicField(tid, 'pinExpiry'));
-                promises.push(database_1.default.sortedSetAddBulk([
+                promises.push(db.sortedSetAddBulk([
                     [`cid:${topicData.cid}:tids`, topicData.lastposttime, tid],
                     [`cid:${topicData.cid}:tids:posts`, topicData.postcount, tid],
                     [`cid:${topicData.cid}:tids:votes`, parseInt(topicData.votes, 10) || 0, tid],
@@ -212,7 +236,7 @@ function default_1(Topics) {
             if (!isAdminOrMod) {
                 throw new Error('[[error:no-privileges]]');
             }
-            const pinnedTids = yield database_1.default.getSortedSetRange(`cid:${cid}:tids:pinned`, 0, -1);
+            const pinnedTids = yield db.getSortedSetRange(`cid:${cid}:tids:pinned`, 0, -1);
             const currentIndex = pinnedTids.indexOf(String(tid));
             if (currentIndex === -1) {
                 return;
@@ -222,7 +246,7 @@ function default_1(Topics) {
             if (pinnedTids.length > 1) {
                 pinnedTids.splice(Math.max(0, newOrder), 0, pinnedTids.splice(currentIndex, 1)[0]);
             }
-            yield database_1.default.sortedSetAdd(`cid:${cid}:tids:pinned`, pinnedTids.map((tid, index) => index), pinnedTids);
+            yield db.sortedSetAdd(`cid:${cid}:tids:pinned`, pinnedTids.map((tid, index) => index), pinnedTids);
         });
     };
     topicTools.move = function (tid, data) {
@@ -236,7 +260,7 @@ function default_1(Topics) {
                 throw new Error('[[error:cant-move-topic-to-same-category]]');
             }
             const tags = yield Topics.getTopicTags(tid);
-            yield database_1.default.sortedSetsRemove([
+            yield db.sortedSetsRemove([
                 `cid:${topicData.cid}:tids`,
                 `cid:${topicData.cid}:tids:pinned`,
                 `cid:${topicData.cid}:tids:posts`,
@@ -263,7 +287,7 @@ function default_1(Topics) {
                 bulk.push([`cid:${cid}:tids:votes`, votes, tid]);
                 bulk.push([`cid:${cid}:tids:views`, topicData.viewcount, tid]);
             }
-            yield database_1.default.sortedSetAddBulk(bulk);
+            yield db.sortedSetAddBulk(bulk);
             const oldCid = topicData.cid;
             yield categories.moveRecentReplies(tid, oldCid, cid);
             yield Promise.all([

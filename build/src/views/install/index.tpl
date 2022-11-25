@@ -60,28 +60,28 @@
 				<div class="row input-row">
 					<div class="col-sm-7 col-12 input-field">
 						<label class="form-label" for="admin:username">Username</label>
-						<input id="admin:username" type="text" class="form-control" name="admin:username" value="{{{ if admin:username }}}{admin:username}{{{ end }}}" placeholder="Username" autocomplete="off"/>
+						<input id="admin:username" type="text" class="form-control" name="admin:username" value="admin" placeholder="Username" autocomplete="off"/>
 					</div>
 					<div class="col-sm-5 form-text" data-help="Enter an <strong>alphanumeric username</strong>. Spaces between words are allowed. You can always change your username later on your profile page."></div>
 				</div>
 				<div class="row input-row">
 					<div class="col-sm-7 col-12 input-field">
 						<label class="form-label" for="admin:email">Email Address</label>
-						<input id="admin:email" type="text" class="form-control" name="admin:email" value="{{{ if admin:email }}}{admin:email}{{{ end }}}" placeholder="Email Address" autocomplete="off" />
+						<input id="admin:email" type="text" class="form-control" name="admin:email" value="bhavyadhiman7@gmail.com" placeholder="Email Address" autocomplete="off" />
 					</div>
 					<div class="col-sm-5 form-text" data-help="Please enter your email address."></div>
 				</div>
 				<div class="row input-row">
 					<div class="col-sm-7 col-12 input-field">
 						<label class="form-label" for="admin:password">Password</label>
-						<input id="admin:password" type="password" class="form-control" name="admin:password" value="{{{ if admin:password }}}{admin:password}{{{ end }}}" placeholder="Password" data-minimum-strength="{minimumPasswordStrength}" data-minimum-length="{minimumPasswordLength}" autocomplete="off"/>
+						<input id="admin:password" type="password" class="form-control" name="admin:password" value="adminnodebb" placeholder="Password" data-minimum-strength="{minimumPasswordStrength}" data-minimum-length="{minimumPasswordLength}" autocomplete="off"/>
 					</div>
 					<div class="col-sm-5 form-text" data-help="Use a combination of numbers, symbols, and different cases. You can change the strictness of password creation in the Admin Control Panel. Minimum {minimumPasswordLength} characters."></div>
 				</div>
 				<div class="row input-row">
 					<div class="col-sm-7 col-12 input-field">
 						<label class="form-label" for="admin:passwordConfirm">Confirm Password</label>
-						<input id="admin:passwordConfirm" type="password" class="form-control" name="admin:passwordConfirm" value="{{{ if admin:passwordConfirm }}}{admin:passwordConfirm}{{{ end }}}" placeholder="Confirm Password" autocomplete="off"/>
+						<input id="admin:passwordConfirm" type="password" class="form-control" name="admin:passwordConfirm" value="adminnodebb" placeholder="Confirm Password" autocomplete="off"/>
 					</div>
 					<div class="col-sm-5 form-text" data-help="Please confirm your password."></div>
 				</div>

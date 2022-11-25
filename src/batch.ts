@@ -3,7 +3,11 @@
 
 const util = require('util');
 
-const db = require('./database');
+import * as database from './database';      
+    
+const db = database as any;
+console.log('DATABASE', db);
+
 const utils = require('./utils');
 
 const DEFAULT_BATCH_SIZE = 100;
@@ -19,13 +23,16 @@ export const processSortedSet = async function (setKey, process, options) {
 
 	// Progress bar handling (upgrade scripts)
 	if (options.progress) {
+			// @ts-ignore
 		options.progress.total = await db.sortedSetCard(setKey);
 	}
 
 	options.batch = options.batch || DEFAULT_BATCH_SIZE;
 
 	// use the fast path if possible
+	// @ts-ignore
 	if (db.processSortedSet && typeof options.doneIf !== 'function' && !utils.isNumber(options.alwaysStartAt)) {
+			// @ts-ignore
 		return await db.processSortedSet(setKey, process, options);
 	}
 

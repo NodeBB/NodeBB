@@ -5,9 +5,9 @@ const _ = require('lodash');
 
 import user from '../user';
 import meta from '../meta';
-const groups = require('../groups');
-const plugins = require('../plugins');
-const helpers = require('./helpers').defualt;
+import groups from '../groups';
+import plugins from '../plugins';
+import helpers from './helpers';
 
 const privsUsers  = {} as any;
 
@@ -152,3 +152,5 @@ async function hasGlobalPrivilege(privilege, uid) {
 	payload = await plugins.hooks.fire(`filter:user.has${privilegeName}Privilege`, payload);
 	return payload[`can${privilegeName}`];
 }
+
+export default privsUsers;

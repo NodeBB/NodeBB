@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -13,14 +36,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const validator = require('validator');
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const user_1 = __importDefault(require("../user"));
 const plugins = require('../plugins');
 const privileges = require('../privileges');
 const meta_1 = __importDefault(require("../meta"));
 function default_1(Messaging) {
     Messaging.getRoomData = (roomId) => __awaiter(this, void 0, void 0, function* () {
-        const data = yield database_1.default.getObject(`chat:room:${roomId}`);
+        const data = yield db.getObject(`chat:room:${roomId}`);
         if (!data) {
             throw new Error('[[error:no-chat-room]]');
         }
@@ -28,7 +52,7 @@ function default_1(Messaging) {
         return data;
     });
     Messaging.getRoomsData = (roomIds) => __awaiter(this, void 0, void 0, function* () {
-        const roomData = yield database_1.default.getObjects(roomIds.map(roomId => `chat:room:${roomId}`));
+        const roomData = yield db.getObjects(roomIds.map(roomId => `chat:room:${roomId}`));
         modifyRoomData(roomData);
         return roomData;
     });
@@ -45,14 +69,14 @@ function default_1(Messaging) {
     }
     Messaging.newRoom = (uid, toUids) => __awaiter(this, void 0, void 0, function* () {
         const now = Date.now();
-        const roomId = yield database_1.default.incrObjectField('global', 'nextChatRoomId');
+        const roomId = yield db.incrObjectField('global', 'nextChatRoomId');
         const room = {
             owner: uid,
             roomId: roomId,
         };
         yield Promise.all([
-            database_1.default.setObject(`chat:room:${roomId}`, room),
-            database_1.default.sortedSetAdd(`chat:room:${roomId}:uids`, now, uid),
+            db.setObject(`chat:room:${roomId}`, room),
+            db.sortedSetAdd(`chat:room:${roomId}:uids`, now, uid),
         ]);
         yield Promise.all([
             Messaging.addUsersToRoom(uid, toUids, roomId),
@@ -63,18 +87,18 @@ function default_1(Messaging) {
         return roomId;
     });
     Messaging.isUserInRoom = (uid, roomId) => __awaiter(this, void 0, void 0, function* () {
-        const inRoom = yield database_1.default.isSortedSetMember(`chat:room:${roomId}:uids`, uid);
+        const inRoom = yield db.isSortedSetMember(`chat:room:${roomId}:uids`, uid);
         const data = yield plugins.hooks.fire('filter:messaging.isUserInRoom', { uid: uid, roomId: roomId, inRoom: inRoom });
         return data.inRoom;
     });
-    Messaging.roomExists = (roomId) => __awaiter(this, void 0, void 0, function* () { return database_1.default.exists(`chat:room:${roomId}:uids`); });
-    Messaging.getUserCountInRoom = (roomId) => __awaiter(this, void 0, void 0, function* () { return database_1.default.sortedSetCard(`chat:room:${roomId}:uids`); });
+    Messaging.roomExists = (roomId) => __awaiter(this, void 0, void 0, function* () { return db.exists(`chat:room:${roomId}:uids`); });
+    Messaging.getUserCountInRoom = (roomId) => __awaiter(this, void 0, void 0, function* () { return db.sortedSetCard(`chat:room:${roomId}:uids`); });
     Messaging.isRoomOwner = (uids, roomId) => __awaiter(this, void 0, void 0, function* () {
         const isArray = Array.isArray(uids);
         if (!isArray) {
             uids = [uids];
         }
-        const owner = yield database_1.default.getObjectField(`chat:room:${roomId}`, 'owner');
+        const owner = yield db.getObjectField(`chat:room:${roomId}`, 'owner');
         const isOwners = uids.map(uid => parseInt(uid, 10) === parseInt(owner, 10));
         const result = yield Promise.all(isOwners.map((isOwner, index) => __awaiter(this, void 0, void 0, function* () {
             const payload = yield plugins.hooks.fire('filter:messaging.isRoomOwner', { uid: uids[index], roomId, owner, isOwner });
@@ -91,7 +115,7 @@ function default_1(Messaging) {
             }
             const now = Date.now();
             const timestamps = payload.uids.map(() => now);
-            yield database_1.default.sortedSetAdd(`chat:room:${payload.roomId}:uids`, timestamps, payload.uids);
+            yield db.sortedSetAdd(`chat:room:${payload.roomId}:uids`, timestamps, payload.uids);
             yield updateGroupChatField([payload.roomId]);
             yield Promise.all(payload.uids.map(uid => Messaging.addSystemMessage('user-join', uid, payload.roomId)));
         });
@@ -114,10 +138,10 @@ function default_1(Messaging) {
     };
     function updateGroupChatField(roomIds) {
         return __awaiter(this, void 0, void 0, function* () {
-            const userCounts = yield database_1.default.sortedSetsCard(roomIds.map(roomId => `chat:room:${roomId}:uids`));
+            const userCounts = yield db.sortedSetsCard(roomIds.map(roomId => `chat:room:${roomId}:uids`));
             const groupChats = roomIds.filter((roomId, index) => userCounts[index] > 2);
             const privateChats = roomIds.filter((roomId, index) => userCounts[index] <= 2);
-            yield database_1.default.setObjectBulk([
+            yield db.setObjectBulk([
                 ...groupChats.map(id => [`chat:room:${id}`, { groupChat: 1 }]),
                 ...privateChats.map(id => [`chat:room:${id}`, { groupChat: 0 }]),
             ]);
@@ -130,8 +154,8 @@ function default_1(Messaging) {
             .map(uid => `uid:${uid}:chat:rooms`)
             .concat(uids.map(uid => `uid:${uid}:chat:rooms:unread`));
         yield Promise.all([
-            database_1.default.sortedSetRemove(`chat:room:${roomId}:uids`, uids),
-            database_1.default.sortedSetsRemove(keys, roomId),
+            db.sortedSetRemove(`chat:room:${roomId}:uids`, uids),
+            db.sortedSetsRemove(keys, roomId),
         ]);
         yield Promise.all(uids.map(uid => Messaging.addSystemMessage('user-leave', uid, roomId)));
         yield updateOwner(roomId);
@@ -142,8 +166,8 @@ function default_1(Messaging) {
         roomIds = roomIds.filter((roomId, index) => isInRoom[index]);
         const roomKeys = roomIds.map(roomId => `chat:room:${roomId}:uids`);
         yield Promise.all([
-            database_1.default.sortedSetsRemove(roomKeys, uid),
-            database_1.default.sortedSetRemove([
+            db.sortedSetsRemove(roomKeys, uid),
+            db.sortedSetRemove([
                 `uid:${uid}:chat:rooms`,
                 `uid:${uid}:chat:rooms:unread`,
             ], roomIds),
@@ -154,12 +178,12 @@ function default_1(Messaging) {
     });
     function updateOwner(roomId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const uids = yield database_1.default.getSortedSetRange(`chat:room:${roomId}:uids`, 0, 0);
+            const uids = yield db.getSortedSetRange(`chat:room:${roomId}:uids`, 0, 0);
             const newOwner = uids[0] || 0;
-            yield database_1.default.setObjectField(`chat:room:${roomId}`, 'owner', newOwner);
+            yield db.setObjectField(`chat:room:${roomId}`, 'owner', newOwner);
         });
     }
-    Messaging.getUidsInRoom = (roomId, start, stop) => __awaiter(this, void 0, void 0, function* () { return database_1.default.getSortedSetRevRange(`chat:room:${roomId}:uids`, start, stop); });
+    Messaging.getUidsInRoom = (roomId, start, stop) => __awaiter(this, void 0, void 0, function* () { return db.getSortedSetRevRange(`chat:room:${roomId}:uids`, start, stop); });
     Messaging.getUsersInRoom = (roomId, start, stop) => __awaiter(this, void 0, void 0, function* () {
         const uids = yield Messaging.getUidsInRoom(roomId, start, stop);
         const [users, isOwners] = yield Promise.all([
@@ -189,7 +213,7 @@ function default_1(Messaging) {
             if (!isOwner) {
                 throw new Error('[[error:no-privileges]]');
             }
-            yield database_1.default.setObjectField(`chat:room:${payload.roomId}`, 'roomName', payload.newName);
+            yield db.setObjectField(`chat:room:${payload.roomId}`, 'roomName', payload.newName);
             yield Messaging.addSystemMessage(`room-rename, ${payload.newName.replace(',', '&#44;')}`, payload.uid, payload.roomId);
             plugins.hooks.fire('action:chat.renameRoom', {
                 roomId: payload.roomId,
@@ -198,7 +222,7 @@ function default_1(Messaging) {
         });
     };
     Messaging.canReply = (roomId, uid) => __awaiter(this, void 0, void 0, function* () {
-        const inRoom = yield database_1.default.isSortedSetMember(`chat:room:${roomId}:uids`, uid);
+        const inRoom = yield db.isSortedSetMember(`chat:room:${roomId}:uids`, uid);
         const data = yield plugins.hooks.fire('filter:messaging.canReply', { uid: uid, roomId: roomId, inRoom: inRoom, canReply: inRoom });
         return data.canReply;
     });

@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -14,7 +37,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const validator = require('validator');
 const meta_1 = __importDefault(require("../meta"));
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const plugins = require('../plugins');
 const notifications = require('../notifications');
 const languages = require('../languages');
@@ -24,7 +48,7 @@ function default_1(User) {
             if (parseInt(uid, 10) <= 0) {
                 return yield onSettingsLoaded(0, {});
             }
-            let settings = yield database_1.default.getObject(`user:${uid}:settings`);
+            let settings = yield db.getObject(`user:${uid}:settings`);
             settings = settings || {};
             settings.uid = uid;
             return yield onSettingsLoaded(uid, settings);
@@ -36,7 +60,7 @@ function default_1(User) {
                 return [];
             }
             const keys = uids.map(uid => `user:${uid}:settings`);
-            let settings = yield database_1.default.getObjects(keys);
+            let settings = yield db.getObjects(keys);
             settings = settings.map((userSettings, index) => {
                 userSettings = userSettings || {};
                 userSettings.uid = uids[index];
@@ -141,16 +165,16 @@ function default_1(User) {
                 }
             });
             const result = yield plugins.hooks.fire('filter:user.saveSettings', { uid: uid, settings: settings, data: data });
-            yield database_1.default.setObject(`user:${uid}:settings`, result.settings);
+            yield db.setObject(`user:${uid}:settings`, result.settings);
             yield User.updateDigestSetting(uid, data.dailyDigestFreq);
             return yield User.getSettings(uid);
         });
     };
     User.updateDigestSetting = function (uid, dailyDigestFreq) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield database_1.default.sortedSetsRemove(['digest:day:uids', 'digest:week:uids', 'digest:month:uids'], uid);
+            yield db.sortedSetsRemove(['digest:day:uids', 'digest:week:uids', 'digest:month:uids'], uid);
             if (['day', 'week', 'biweek', 'month'].includes(dailyDigestFreq)) {
-                yield database_1.default.sortedSetAdd(`digest:${dailyDigestFreq}:uids`, Date.now(), uid);
+                yield db.sortedSetAdd(`digest:${dailyDigestFreq}:uids`, Date.now(), uid);
             }
         });
     };
@@ -159,7 +183,7 @@ function default_1(User) {
             if (parseInt(uid, 10) <= 0) {
                 return;
             }
-            yield database_1.default.setObjectField(`user:${uid}:settings`, key, value);
+            yield db.setObjectField(`user:${uid}:settings`, key, value);
         });
     };
 }

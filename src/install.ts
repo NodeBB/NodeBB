@@ -6,8 +6,12 @@ import path from 'path';const prompt = require('prompt');
 import winston from 'winston';
 import nconf from 'nconf';
 const _ = require('lodash');
-
+import { primaryDB as db } from './database';
+import Groups from './groups';
+import privileges from './privileges';
 import utils from './utils';
+import file from './file';
+import upgrade from './upgrade';
 
 const install  = {} as any;
 const questions  = {} as any;
@@ -196,11 +200,9 @@ async function completeConfigSetup(config) {
 		config.package_manager = nconf.get('package_manager');
 	}
 	nconf.overrides(config);
-	const { default: { default: db } } = require('./database');
-	console.log('REQUIRE DATABASE', require('./database'));
-	await db.init();
-	if (db.hasOwnProperty('createIndices')) {
-		await db.createIndices();
+	await db.default.init();
+	if (db.default.hasOwnProperty('createIndices')) {
+		await db.default.createIndices();
 	}
 
 	// Sanity-check/fix url/port
@@ -234,7 +236,7 @@ async function completeConfigSetup(config) {
 
 async function setupDefaultConfigs() {
 	console.log('Populating database with default configs, if not already set...');
-	const meta = require('./meta');
+	const meta = require('./meta').default;
 	const defaults = require(path.join(__dirname, '../', 'install/data/defaults.json'));
 
 	await meta.config.setOnEmpty(defaults);
@@ -242,7 +244,7 @@ async function setupDefaultConfigs() {
 }
 
 async function enableDefaultTheme() {
-	const meta = require('./meta');
+	const meta = require('./meta').default;
 
 	const id = await meta.config.get('theme:id');
 	if (id) {
@@ -259,7 +261,7 @@ async function enableDefaultTheme() {
 }
 
 async function createDefaultUserGroups() {
-	const groups = require('./groups');
+	const groups = require('./groups').default;
 	async function createGroup(name) {
 		await groups.create({
 			name: name,
@@ -288,7 +290,7 @@ async function createDefaultUserGroups() {
 }
 
 async function createAdministrator() {
-	const Groups = require('./groups');
+	console.log('GROUPS', Groups);
 	const memberCount = await Groups.getMemberCount('administrators');
 	if (memberCount > 0) {
 		console.log('Administrator found, skipping Admin setup');
@@ -403,12 +405,11 @@ async function createAdmin() {
 }
 
 async function createGlobalModeratorsGroup() {
-	const groups = require('./groups');
-	const exists = await groups.exists('Global Moderators');
+	const exists = await Groups.exists('Global Moderators');
 	if (exists) {
 		winston.info('Global Moderators group found, skipping creation!');
 	} else {
-		await groups.create({
+		await Groups.create({
 			name: 'Global Moderators',
 			userTitle: 'Global Moderator',
 			description: 'Forum wide moderators',
@@ -417,16 +418,16 @@ async function createGlobalModeratorsGroup() {
 			disableJoinRequests: 1,
 		});
 	}
-	await groups.show('Global Moderators');
+	await Groups.show('Global Moderators');
 }
 
 async function giveGlobalPrivileges() {
-	const privileges = require('./privileges');
 	const defaultPrivileges = [
 		'groups:chat', 'groups:upload:post:image', 'groups:signature', 'groups:search:content',
 		'groups:search:users', 'groups:search:tags', 'groups:view:users', 'groups:view:tags', 'groups:view:groups',
 		'groups:local:login',
 	];
+	console.log('PRIVILEGES', privileges);
 	await privileges.global.give(defaultPrivileges, 'registered-users');
 	await privileges.global.give(defaultPrivileges.concat([
 		'groups:ban', 'groups:upload:post:file', 'groups:view:users:info',
@@ -437,8 +438,7 @@ async function giveGlobalPrivileges() {
 
 async function createCategories() {
 	const Categories = require('./categories');
-	const db = require('./database');
-	const cids = await db.getSortedSetRange('categories:cid', 0, -1);
+	const cids = await db.default.getSortedSetRange('categories:cid', 0, -1);
 	if (Array.isArray(cids) && cids.length) {
 		console.log(`Categories OK. Found ${cids.length} categories.`);
 		return;
@@ -456,9 +456,8 @@ async function createCategories() {
 }
 
 async function createMenuItems() {
-	const db = require('./database');
 
-	const exists = await db.exists('navigation:enabled');
+	const exists = await db.default.exists('navigation:enabled');
 	if (exists) {
 		return;
 	}
@@ -468,12 +467,12 @@ async function createMenuItems() {
 }
 
 async function createWelcomePost() {
-	const db = require('./database');
+    
 	const Topics = require('./topics');
 
 	const [content, numTopics] = await Promise.all([
 		fs.promises.readFile(path.join(__dirname, '../', 'install/data/welcome.md'), 'utf8'),
-		db.getObjectField('global', 'topicCount'),
+		db.default.getObjectField('global', 'topicCount'),
 	]);
 
 	if (!parseInt(numTopics, 10)) {
@@ -517,25 +516,26 @@ async function enableDefaultPlugins() {
 
 	winston.info('[install/enableDefaultPlugins] activating default plugins', defaultEnabled);
 
-	const db = require('./database');
+    
+
 	const order = defaultEnabled.map((plugin, index) => index);
-	await db.sortedSetAdd('plugins:active', order, defaultEnabled);
+	await db.default.sortedSetAdd('plugins:active', order, defaultEnabled);
 }
 
 async function setCopyrightWidget() {
-	const db = require('./database');
+    
+
 	const [footerJSON, footer] = await Promise.all([
 		fs.promises.readFile(path.join(__dirname, '../', 'install/data/footer.json'), 'utf8'),
-		db.getObjectField('widgets:global', 'footer'),
+		db.default.getObjectField('widgets:global', 'footer'),
 	]);
 
 	if (!footer && footerJSON) {
-		await db.setObjectField('widgets:global', 'footer', footerJSON);
+		await db.default.setObjectField('widgets:global', 'footer', footerJSON);
 	}
 }
 
 async function copyFavicon() {
-	const file = require('./file');
 	const pathToIco = path.join(nconf.get('upload_path'), 'system', 'favicon.ico');
 	const defaultIco = path.join(nconf.get('base_dir'), 'public', 'favicon.ico');
 	const targetExists = await file.exists(pathToIco);
@@ -551,7 +551,6 @@ async function copyFavicon() {
 }
 
 async function checkUpgrade() {
-	const upgrade = require('./upgrade');
 	try {
 		await upgrade.check();
 	} catch (err: any) {

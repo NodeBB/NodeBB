@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -15,14 +38,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const nconf_1 = __importDefault(require("nconf"));
 const path_1 = __importDefault(require("path"));
 const winston_1 = __importDefault(require("winston"));
-const database_1 = __importDefault(require("../database"));
+const database_1 = require("../database");
+console.log('PRIMARY DB', database_1.primaryDB);
 const pubsub = require('../pubsub').default;
 const plugins = require('../plugins');
 const utils = require('../utils');
-const Meta = require('./index');
+const Meta = __importStar(require("./"));
 const cacheBuster = require('./cacheBuster');
 const defaults = require('../../../install/data/defaults.json');
 const Configs = {};
+// @ts-ignore
 Meta.config = {};
 // called after data is loaded from db
 function deserialize(config) {
@@ -109,6 +134,7 @@ Configs.init = function () {
         const config = yield Configs.list();
         const buster = yield cacheBuster.read();
         config['cache-buster'] = `v=${buster || Date.now()}`;
+        // @ts-ignore
         Meta.config = config;
     });
 };
@@ -127,10 +153,10 @@ Configs.getFields = function (fields) {
     return __awaiter(this, void 0, void 0, function* () {
         let values;
         if (fields.length) {
-            values = yield database_1.default.getObjectFields('config', fields);
+            values = yield database_1.primaryDB.default.getObjectFields('config', fields);
         }
         else {
-            values = yield database_1.default.getObject('config');
+            values = yield database_1.primaryDB.default.getObject('config');
         }
         values = Object.assign(Object.assign({}, defaults), (values ? deserialize(values) : {}));
         if (!fields.length) {
@@ -154,21 +180,21 @@ Configs.setMultiple = function (data) {
     return __awaiter(this, void 0, void 0, function* () {
         yield processConfig(data);
         data = serialize(data);
-        yield database_1.default.setObject('config', data);
+        yield database_1.primaryDB.default.setObject('config', data);
         updateConfig(deserialize(data));
     });
 };
 Configs.setOnEmpty = function (values) {
     return __awaiter(this, void 0, void 0, function* () {
-        const data = yield database_1.default.getObject('config');
+        const data = yield database_1.primaryDB.default.getObject('config');
         values = serialize(values);
         const config = Object.assign(Object.assign({}, values), (data ? serialize(data) : {}));
-        yield database_1.default.setObject('config', config);
+        yield database_1.primaryDB.default.setObject('config', config);
     });
 };
 Configs.remove = function (field) {
     return __awaiter(this, void 0, void 0, function* () {
-        yield database_1.default.deleteObjectField('config', field);
+        yield database_1.primaryDB.default.deleteObjectField('config', field);
     });
 };
 Configs.registerHooks = () => {
@@ -208,7 +234,9 @@ Configs.registerHooks = () => {
 Configs.cookie = {
     get: () => {
         const cookie = {};
+        // @ts-ignore
         if (nconf_1.default.get('cookieDomain') || Meta.config.cookieDomain) {
+            // @ts-ignore
             cookie.domain = nconf_1.default.get('cookieDomain') || Meta.config.cookieDomain;
         }
         if (nconf_1.default.get('secure')) {
@@ -289,9 +317,11 @@ function updateConfig(config) {
     pubsub.publish('config:update', config);
 }
 function updateLocalConfig(config) {
+    // @ts-ignore
     Object.assign(Meta.config, config);
 }
 pubsub.on('config:update', (config) => {
+    // @ts-ignore
     if (typeof config === 'object' && Meta.config) {
         updateLocalConfig(config);
     }

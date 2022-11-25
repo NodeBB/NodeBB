@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -15,7 +38,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const validator = require('validator');
 const nconf_1 = __importDefault(require("nconf"));
 const _ = require('lodash');
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const meta_1 = __importDefault(require("../meta"));
 const plugins = require('../plugins');
 const utils = require('../utils');
@@ -71,7 +95,7 @@ function default_1(User) {
                 // Never allow password retrieval via this method
                 fields = fields.filter(value => value !== 'password');
             }
-            const users = yield database_1.default.getObjectsFields(uniqueUids.map(uid => `user:${uid}`), fields);
+            const users = yield db.getObjectsFields(uniqueUids.map(uid => `user:${uid}`), fields);
             const result = yield plugins.hooks.fire('filter:user.getFields', {
                 uids: uniqueUids,
                 users: users,
@@ -176,13 +200,13 @@ function default_1(User) {
             let uidToSettings = {};
             if (meta_1.default.config.showFullnameAsDisplayName) {
                 const uids = users.map(user => user.uid);
-                uidToSettings = _.zipObject(uids, yield database_1.default.getObjectsFields(uids.map(uid => `user:${uid}:settings`), ['showfullname']));
+                uidToSettings = _.zipObject(uids, yield db.getObjectsFields(uids.map(uid => `user:${uid}:settings`), ['showfullname']));
             }
             yield Promise.all(users.map((user) => __awaiter(this, void 0, void 0, function* () {
                 if (!user) {
                     return;
                 }
-                database_1.default.parseIntFields(user, intFields, requestedFields);
+                db.parseIntFields(user, intFields, requestedFields);
                 if (user.hasOwnProperty('username')) {
                     parseDisplayName(user, uidToSettings);
                     user.username = validator.escape(user.username ? user.username.toString() : '');
@@ -311,7 +335,7 @@ function default_1(User) {
     };
     User.setUserFields = function (uid, data) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield database_1.default.setObject(`user:${uid}`, data);
+            yield db.setObject(`user:${uid}`, data);
             for (const [field, value] of Object.entries(data)) {
                 plugins.hooks.fire('action:user.set', { uid, field, value, type: 'set' });
             }
@@ -329,7 +353,7 @@ function default_1(User) {
     };
     function incrDecrUserFieldBy(uid, field, value, type) {
         return __awaiter(this, void 0, void 0, function* () {
-            const newValue = yield database_1.default.incrObjectFieldBy(`user:${uid}`, field, value);
+            const newValue = yield db.incrObjectFieldBy(`user:${uid}`, field, value);
             plugins.hooks.fire('action:user.set', { uid: uid, field: field, value: newValue, type: type });
             return newValue;
         });

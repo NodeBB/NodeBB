@@ -1,10 +1,11 @@
 'use strict';
 
+import { primaryDB as db } from '../database';
+console.log('PRIMARY DB', db);
 import user from '../user';
-import db from '../database';
-const plugins = require('../plugins');
-const slugify = require('../slugify');
 
+const plugins = require('../plugins');
+const slugify = require('../slugify').default;
 const Groups  = {} as any;
 
 require('./data').default(Groups);
@@ -63,9 +64,9 @@ Groups.isPrivilegeGroup = function (groupName) {
 Groups.getGroupsFromSet = async function (set, start, stop) {
 	let groupNames;
 	if (set === 'groups:visible:name') {
-		groupNames = await db.getSortedSetRangeByLex(set, '-', '+', start, stop - start + 1);
+		groupNames = await db.default.getSortedSetRangeByLex(set, '-', '+', start, stop - start + 1);
 	} else {
-		groupNames = await db.getSortedSetRevRange(set, start, stop);
+		groupNames = await db.default.getSortedSetRevRange(set, start, stop);
 	}
 	if (set === 'groups:visible:name') {
 		groupNames = groupNames.map(name => name.split(':')[1]);
@@ -85,14 +86,14 @@ Groups.getGroupsBySort = async function (sort, start, stop) {
 };
 
 Groups.getNonPrivilegeGroups = async function (set, start, stop) {
-	let groupNames = await db.getSortedSetRevRange(set, start, stop);
+	let groupNames = await db.default.getSortedSetRevRange(set, start, stop);
 	groupNames = groupNames.concat(Groups.ephemeralGroups).filter(groupName => !Groups.isPrivilegeGroup(groupName));
 	const groupsData = await Groups.getGroupsData(groupNames);
 	return groupsData.filter(Boolean);
 };
 
 Groups.getGroups = async function (set, start, stop) {
-	return await db.getSortedSetRevRange(set, start, stop);
+	return await db.default.getSortedSetRevRange(set, start, stop);
 };
 
 Groups.getGroupsAndMembers = async function (groupNames) {
@@ -149,11 +150,11 @@ Groups.get = async function (groupName, options) {
 };
 
 Groups.getOwners = async function (groupName) {
-	return await db.getSetMembers(`group:${groupName}:owners`);
+	return await db.default.getSetMembers(`group:${groupName}:owners`);
 };
 
 Groups.getOwnersAndMembers = async function (groupName, uid, start, stop) {
-	const ownerUids = await db.getSetMembers(`group:${groupName}:owners`);
+	const ownerUids = await db.default.getSetMembers(`group:${groupName}:owners`);
 	const countToReturn = stop - start + 1;
 	const ownerUidsOnPage = ownerUids.slice(start, stop !== -1 ? stop + 1 : undefined);
 	const owners = await user.getUsers(ownerUidsOnPage, uid);
@@ -200,7 +201,7 @@ Groups.getOwnersAndMembers = async function (groupName, uid, start, stop) {
 
 Groups.getByGroupslug = async function (slug, options) {
 	options = options || {};
-	const groupName = await db.getObjectField('groupslug:groupname', slug);
+	const groupName = await db.default.getObjectField('groupslug:groupname', slug);
 	if (!groupName) {
 		throw new Error('[[error:no-group]]');
 	}
@@ -208,7 +209,7 @@ Groups.getByGroupslug = async function (slug, options) {
 };
 
 Groups.getGroupNameByGroupSlug = async function (slug) {
-	return await db.getObjectField('groupslug:groupname', slug);
+	return await db.default.getObjectField('groupslug:groupname', slug);
 };
 
 Groups.isPrivate = async function (groupName) {
@@ -220,28 +221,28 @@ Groups.isHidden = async function (groupName) {
 };
 
 async function isFieldOn(groupName, field) {
-	const value = await db.getObjectField(`group:${groupName}`, field);
+	const value = await db.default.getObjectField(`group:${groupName}`, field);
 	return parseInt(value, 10) === 1;
 }
 
 Groups.exists = async function (name) {
 	if (Array.isArray(name)) {
 		const slugs = name.map(groupName => slugify(groupName));
-		const isMembersOfRealGroups = await db.isSortedSetMembers('groups:createtime', name);
+		const isMembersOfRealGroups = await db.default.isSortedSetMembers('groups:createtime', name);
 		const isMembersOfEphemeralGroups = slugs.map(slug => Groups.ephemeralGroups.includes(slug));
 		return name.map((n, index) => isMembersOfRealGroups[index] || isMembersOfEphemeralGroups[index]);
 	}
 	const slug = slugify(name);
-	const isMemberOfRealGroups = await db.isSortedSetMember('groups:createtime', name);
+	const isMemberOfRealGroups = await db.default.isSortedSetMember('groups:createtime', name);
 	const isMemberOfEphemeralGroups = Groups.ephemeralGroups.includes(slug);
 	return isMemberOfRealGroups || isMemberOfEphemeralGroups;
 };
 
 Groups.existsBySlug = async function (slug) {
 	if (Array.isArray(slug)) {
-		return await db.isObjectFields('groupslug:groupname', slug);
+		return await db.default.isObjectFields('groupslug:groupname', slug);
 	}
-	return await db.isObjectField('groupslug:groupname', slug);
+	return await db.default.isObjectField('groupslug:groupname', slug);
 };
 
 require('../promisify').promisify(Groups);

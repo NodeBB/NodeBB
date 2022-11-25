@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -21,7 +44,8 @@ const mime = require('mime');
 const validator = require('validator');
 const cronJob = require('cron').CronJob;
 const chalk = require('chalk');
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const image = require('../image');
 const user_1 = __importDefault(require("../user"));
 const topics = require('../topics');
@@ -87,13 +111,13 @@ function default_1(Posts) {
     };
     Posts.uploads.list = function (pid) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield database_1.default.getSortedSetMembers(`post:${pid}:uploads`);
+            return yield db.getSortedSetMembers(`post:${pid}:uploads`);
         });
     };
     Posts.uploads.listWithSizes = function (pid) {
         return __awaiter(this, void 0, void 0, function* () {
             const paths = yield Posts.uploads.list(pid);
-            const sizes = (yield database_1.default.getObjects(paths.map(path => `upload:${md5(path)}`))) || [];
+            const sizes = (yield db.getObjects(paths.map(path => `upload:${md5(path)}`))) || [];
             return sizes.map((sizeObj, idx) => (Object.assign(Object.assign({}, sizeObj), { name: paths[idx] })));
         });
     };
@@ -128,7 +152,7 @@ function default_1(Posts) {
     });
     Posts.uploads.isOrphan = function (filePath) {
         return __awaiter(this, void 0, void 0, function* () {
-            const length = yield database_1.default.sortedSetCard(`upload:${md5(filePath)}:pids`);
+            const length = yield db.sortedSetCard(`upload:${md5(filePath)}:pids`);
             return length === 0;
         });
     };
@@ -139,7 +163,7 @@ function default_1(Posts) {
                 filePaths = [filePaths];
             }
             const keys = filePaths.map(fileObj => `upload:${md5(fileObj.path.replace('-resized', ''))}:pids`);
-            return yield Promise.all(keys.map(k => database_1.default.getSortedSetRange(k, 0, -1)));
+            return yield Promise.all(keys.map(k => db.getSortedSetRange(k, 0, -1)));
         });
     };
     Posts.uploads.associate = function (pid, filePaths) {
@@ -154,8 +178,8 @@ function default_1(Posts) {
             const scores = filePaths.map(() => now);
             const bulkAdd = filePaths.map(path => [`upload:${md5(path)}:pids`, now, pid]);
             yield Promise.all([
-                database_1.default.sortedSetAdd(`post:${pid}:uploads`, scores, filePaths),
-                database_1.default.sortedSetAddBulk(bulkAdd),
+                db.sortedSetAdd(`post:${pid}:uploads`, scores, filePaths),
+                db.sortedSetAddBulk(bulkAdd),
                 Posts.uploads.saveSize(filePaths),
             ]);
         });
@@ -169,13 +193,13 @@ function default_1(Posts) {
             }
             const bulkRemove = filePaths.map(path => [`upload:${md5(path)}:pids`, pid]);
             const promises = [
-                database_1.default.sortedSetRemove(`post:${pid}:uploads`, filePaths),
-                database_1.default.sortedSetRemoveBulk(bulkRemove),
+                db.sortedSetRemove(`post:${pid}:uploads`, filePaths),
+                db.sortedSetRemoveBulk(bulkRemove),
             ];
             yield Promise.all(promises);
             if (!meta_1.default.config.preserveOrphanedUploads) {
                 const deletePaths = (yield Promise.all(filePaths.map((filePath) => __awaiter(this, void 0, void 0, function* () { return ((yield Posts.uploads.isOrphan(filePath)) ? filePath : false); })))).filter(Boolean);
-                const uploaderUids = (yield database_1.default.getObjectsFields(deletePaths.map(path => `upload:${md5(path)}`, ['uid']))).map(o => (o ? o.uid || null : null));
+                const uploaderUids = (yield db.getObjectsFields(deletePaths.map(path => `upload:${md5(path)}`, ['uid']))).map(o => (o ? o.uid || null : null));
                 yield Promise.all(uploaderUids.map((uid, idx) => (uid && isFinite(uid) ? user_1.default.deleteUpload(uid, uid, deletePaths[idx]) : null)).filter(Boolean));
                 yield Posts.uploads.deleteFromDisk(deletePaths);
             }
@@ -203,7 +227,7 @@ function default_1(Posts) {
         yield Promise.all(filePaths.map((fileName) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const size = yield image.size(_getFullPath(fileName));
-                yield database_1.default.setObject(`upload:${md5(fileName)}`, {
+                yield db.setObject(`upload:${md5(fileName)}`, {
                     width: size.width,
                     height: size.height,
                 });

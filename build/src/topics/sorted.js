@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -13,7 +36,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const _ = require('lodash');
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const privileges = require('../privileges');
 const user_1 = __importDefault(require("../user"));
 const categories = require('../categories');
@@ -60,7 +84,7 @@ function default_1(Topics) {
                 }
             }
             else if (params.filter === 'watched') {
-                tids = yield database_1.default.getSortedSetRevRange(`uid:${params.uid}:followed_tids`, 0, -1);
+                tids = yield db.getSortedSetRevRange(`uid:${params.uid}:followed_tids`, 0, -1);
             }
             else if (params.cids) {
                 tids = yield getCidTids(params);
@@ -69,10 +93,10 @@ function default_1(Topics) {
                 tids = yield getTagTids(params);
             }
             else if (params.sort === 'old') {
-                tids = yield database_1.default.getSortedSetRange(`topics:recent`, 0, meta_1.default.config.recentMaxTopics - 1);
+                tids = yield db.getSortedSetRange(`topics:recent`, 0, meta_1.default.config.recentMaxTopics - 1);
             }
             else {
-                tids = yield database_1.default.getSortedSetRevRange(`topics:${params.sort}`, 0, meta_1.default.config.recentMaxTopics - 1);
+                tids = yield db.getSortedSetRevRange(`topics:${params.sort}`, 0, meta_1.default.config.recentMaxTopics - 1);
             }
             return tids;
         });
@@ -88,7 +112,7 @@ function default_1(Topics) {
             const method = params.sort === 'old' ?
                 'getSortedSetIntersect' :
                 'getSortedSetRevIntersect';
-            return yield database_1.default[method]({
+            return yield db[method]({
                 sets: sets,
                 start: 0,
                 stop: meta_1.default.config.recentMaxTopics - 1,
@@ -101,7 +125,7 @@ function default_1(Topics) {
             if (params.tags.length) {
                 return _.intersection(...yield Promise.all(params.tags.map((tag) => __awaiter(this, void 0, void 0, function* () {
                     const sets = params.cids.map((cid) => `cid:${cid}:tag:${tag}:topics`);
-                    return yield database_1.default.getSortedSetRevRange(sets, 0, -1);
+                    return yield db.getSortedSetRevRange(sets, 0, -1);
                 }))));
             }
             const sets = [];
@@ -115,12 +139,12 @@ function default_1(Topics) {
                 }
                 pinnedSets.push(`cid:${cid}:tids:pinned`);
             });
-            let pinnedTids = yield database_1.default.getSortedSetRevRange(pinnedSets, 0, -1);
+            let pinnedTids = yield db.getSortedSetRevRange(pinnedSets, 0, -1);
             pinnedTids = yield Topics.tools.checkPinExpiry(pinnedTids);
             const method = params.sort === 'old' ?
                 'getSortedSetRange' :
                 'getSortedSetRevRange';
-            const tids = yield database_1.default[method](sets, 0, meta_1.default.config.recentMaxTopics - 1);
+            const tids = yield db[method](sets, 0, meta_1.default.config.recentMaxTopics - 1);
             return pinnedTids.concat(tids);
         });
     }

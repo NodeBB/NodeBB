@@ -4,7 +4,9 @@
 
 const _ = require('lodash');
 
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 const topics = require('../topics');
 
 export default  function (Posts) {

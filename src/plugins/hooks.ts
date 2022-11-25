@@ -2,8 +2,9 @@
 
 const util = require('util');
 import winston from 'winston';
-const plugins = require('.');
-const utils = require('../utils');
+import plugins from '.';
+import utils from '../utils';
+import als from '../als';
 
 const Hooks  = {} as any;
 
@@ -108,6 +109,8 @@ Hooks.unregister = function (id, hook, method) {
 };
 
 Hooks.fire = async function (hook, params) {
+	console.log('HOOK', hook);
+	console.log('PARAMS', params);
 	const hookList = plugins.loadedHooks[hook];
 	const hookType = hook.split(':')[0];
 	if (global.env === 'development' && hook !== 'action:plugins.firehook' && hook !== 'filter:plugins.firehook') {
@@ -120,10 +123,10 @@ Hooks.fire = async function (hook, params) {
 	}
 	let deleteCaller = false;
 	if (params && typeof params === 'object' && !Array.isArray(params) && !params.hasOwnProperty('caller')) {
-		const als = require('../als');
 		params.caller = als.getStore();
 		deleteCaller = true;
 	}
+	console.log('HOOK TYPE TO METHOD', hookTypeToMethod);
 	const result = await hookTypeToMethod[hookType](hook, hookList, params);
 
 	if (hook !== 'action:plugins.firehook' && hook !== 'filter:plugins.firehook') {
@@ -273,3 +276,5 @@ async function fireResponseHook(hook, hookList, params) {
 		}
 	}
 }
+
+export default Hooks;

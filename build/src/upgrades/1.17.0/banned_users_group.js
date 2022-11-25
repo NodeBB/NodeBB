@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,12 +31,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const batch = require('../../batch');
-const database_1 = __importDefault(require("../../database"));
+const database = __importStar(require("../../database"));
+const db = database;
 const groups = require('../../groups');
 const now = Date.now();
 exports.default = {
@@ -22,7 +43,7 @@ exports.default = {
     method: function () {
         return __awaiter(this, void 0, void 0, function* () {
             const { progress } = this;
-            const timestamp = yield database_1.default.getObjectField('group:administrators', 'timestamp');
+            const timestamp = yield db.getObjectField('group:administrators', 'timestamp');
             const bannedExists = yield groups.exists('banned-users');
             if (!bannedExists) {
                 yield groups.create({
@@ -37,8 +58,8 @@ exports.default = {
             }
             yield batch.processSortedSet('users:banned', (uids) => __awaiter(this, void 0, void 0, function* () {
                 progress.incr(uids.length);
-                yield database_1.default.sortedSetAdd('group:banned-users:members', uids.map(() => now), uids);
-                yield database_1.default.sortedSetRemove([
+                yield db.sortedSetAdd('group:banned-users:members', uids.map(() => now), uids);
+                yield db.sortedSetRemove([
                     'group:registered-users:members',
                     'group:verified-users:members',
                     'group:unverified-users:members',
@@ -48,16 +69,16 @@ exports.default = {
                 batch: 500,
                 progress: this.progress,
             });
-            const bannedCount = yield database_1.default.sortedSetCard('group:banned-users:members');
-            const registeredCount = yield database_1.default.sortedSetCard('group:registered-users:members');
-            const verifiedCount = yield database_1.default.sortedSetCard('group:verified-users:members');
-            const unverifiedCount = yield database_1.default.sortedSetCard('group:unverified-users:members');
-            const globalModCount = yield database_1.default.sortedSetCard('group:Global Moderators:members');
-            yield database_1.default.setObjectField('group:banned-users', 'memberCount', bannedCount);
-            yield database_1.default.setObjectField('group:registered-users', 'memberCount', registeredCount);
-            yield database_1.default.setObjectField('group:verified-users', 'memberCount', verifiedCount);
-            yield database_1.default.setObjectField('group:unverified-users', 'memberCount', unverifiedCount);
-            yield database_1.default.setObjectField('group:Global Moderators', 'memberCount', globalModCount);
+            const bannedCount = yield db.sortedSetCard('group:banned-users:members');
+            const registeredCount = yield db.sortedSetCard('group:registered-users:members');
+            const verifiedCount = yield db.sortedSetCard('group:verified-users:members');
+            const unverifiedCount = yield db.sortedSetCard('group:unverified-users:members');
+            const globalModCount = yield db.sortedSetCard('group:Global Moderators:members');
+            yield db.setObjectField('group:banned-users', 'memberCount', bannedCount);
+            yield db.setObjectField('group:registered-users', 'memberCount', registeredCount);
+            yield db.setObjectField('group:verified-users', 'memberCount', verifiedCount);
+            yield db.setObjectField('group:unverified-users', 'memberCount', unverifiedCount);
+            yield db.setObjectField('group:Global Moderators', 'memberCount', globalModCount);
         });
     },
 };

@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,12 +31,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const _ = require('lodash');
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const plugins = require('../plugins');
 const Meta = require('./index');
 const pubsub = require('../pubsub').default;
@@ -26,15 +47,15 @@ Settings.get = function (hash) {
             return _.cloneDeep(cached);
         }
         const [data, sortedLists] = yield Promise.all([
-            database_1.default.getObject(`settings:${hash}`),
-            database_1.default.getSetMembers(`settings:${hash}:sorted-lists`),
+            db.getObject(`settings:${hash}`),
+            db.getSetMembers(`settings:${hash}:sorted-lists`),
         ]);
         const values = data || {};
         yield Promise.all(sortedLists.map((list) => __awaiter(this, void 0, void 0, function* () {
-            const members = yield database_1.default.getSortedSetRange(`settings:${hash}:sorted-list:${list}`, 0, -1);
+            const members = yield db.getSortedSetRange(`settings:${hash}:sorted-list:${list}`, 0, -1);
             const keys = members.map(order => `settings:${hash}:sorted-list:${list}:${order}`);
             values[list] = [];
-            const objects = yield database_1.default.getObjects(keys);
+            const objects = yield db.getObjects(keys);
             objects.forEach((obj) => {
                 values[list].push(obj);
             });
@@ -64,15 +85,15 @@ Settings.set = function (hash, values, quiet) {
         const sortedLists = Object.keys(sortedListData);
         if (sortedLists.length) {
             // Remove provided (but empty) sorted lists from the hash set
-            yield database_1.default.setRemove(`settings:${hash}:sorted-lists`, sortedLists.filter(list => !sortedListData[list].length));
-            yield database_1.default.setAdd(`settings:${hash}:sorted-lists`, sortedLists);
+            yield db.setRemove(`settings:${hash}:sorted-lists`, sortedLists.filter(list => !sortedListData[list].length));
+            yield db.setAdd(`settings:${hash}:sorted-lists`, sortedLists);
             yield Promise.all(sortedLists.map((list) => __awaiter(this, void 0, void 0, function* () {
-                const numItems = yield database_1.default.sortedSetCard(`settings:${hash}:sorted-list:${list}`);
+                const numItems = yield db.sortedSetCard(`settings:${hash}:sorted-list:${list}`);
                 const deleteKeys = [`settings:${hash}:sorted-list:${list}`];
                 for (let x = 0; x < numItems; x++) {
                     deleteKeys.push(`settings:${hash}:sorted-list:${list}:${x}`);
                 }
-                yield database_1.default.deleteAll(deleteKeys);
+                yield db.deleteAll(deleteKeys);
             })));
             const sortedSetData = [];
             const objectData = [];
@@ -84,12 +105,12 @@ Settings.set = function (hash, values, quiet) {
                 });
             });
             yield Promise.all([
-                database_1.default.sortedSetAddBulk(sortedSetData),
-                database_1.default.setObjectBulk(objectData),
+                db.sortedSetAddBulk(sortedSetData),
+                db.setObjectBulk(objectData),
             ]);
         }
         if (Object.keys(values).length) {
-            yield database_1.default.setObject(`settings:${hash}`, values);
+            yield db.setObject(`settings:${hash}`, values);
         }
         cache.del(`settings:${hash}`);
         plugins.hooks.fire('action:settings.set', {

@@ -2,12 +2,12 @@
 
 const privileges  = {} as any;
 
-privileges.global = require('./global');
-privileges.admin = require('./admin');
-privileges.categories = require('./categories');
-privileges.topics = require('./topics');
-privileges.posts = require('./posts');
-privileges.users = require('./users');
+privileges.global = require('./global').default;
+privileges.admin = require('./admin').default;
+privileges.categories = require('./categories').default;
+privileges.topics = require('./topics').default;
+privileges.posts = require('./posts').default;
+privileges.users = require('./users').default;
 
 privileges.init = async () => {
 	await privileges.global.init();

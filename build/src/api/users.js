@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -14,7 +37,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const validator = require('validator');
 const winston_1 = __importDefault(require("winston"));
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const user_1 = __importDefault(require("../user"));
 const groups = require('../groups');
 const meta_1 = __importDefault(require("../meta"));
@@ -118,7 +142,7 @@ usersAPI.updateSettings = function (caller, data) {
             acpLang: defaults.acpLang,
         };
         // load raw settings without parsing values to booleans
-        const current = yield database_1.default.getObject(`user:${data.uid}:settings`);
+        const current = yield db.getObject(`user:${data.uid}:settings`);
         const payload = Object.assign(Object.assign(Object.assign({}, defaults), current), data.settings);
         delete payload.uid;
         return yield user_1.default.saveSettings(data.uid, payload);
@@ -177,7 +201,7 @@ usersAPI.ban = function (caller, data) {
             throw new Error('[[error:cant-ban-other-admins]]');
         }
         const banData = yield user_1.default.bans.ban(data.uid, data.until, data.reason);
-        yield database_1.default.setObjectField(`uid:${data.uid}:ban:${banData.timestamp}`, 'fromUid', caller.uid);
+        yield db.setObjectField(`uid:${data.uid}:ban:${banData.timestamp}`, 'fromUid', caller.uid);
         if (!data.reason) {
             data.reason = yield translator.translate('[[user:info.banned-no-reason]]');
         }
@@ -236,7 +260,7 @@ usersAPI.mute = function (caller, data) {
             throw new Error('[[error:cant-mute-other-admins]]');
         }
         const reason = data.reason || '[[user:info.muted-no-reason]]';
-        yield database_1.default.setObject(`user:${data.uid}`, {
+        yield db.setObject(`user:${data.uid}`, {
             mutedUntil: data.until,
             mutedReason: reason,
         });
@@ -251,8 +275,8 @@ usersAPI.mute = function (caller, data) {
         if (data.reason) {
             muteData.reason = reason;
         }
-        yield database_1.default.sortedSetAdd(`uid:${data.uid}:mutes:timestamp`, now, muteKey);
-        yield database_1.default.setObject(muteKey, muteData);
+        yield db.sortedSetAdd(`uid:${data.uid}:mutes:timestamp`, now, muteKey);
+        yield db.setObject(muteKey, muteData);
         yield events.log({
             type: 'user-mute',
             uid: caller.uid,
@@ -274,7 +298,7 @@ usersAPI.unmute = function (caller, data) {
         if (!(yield privileges.users.hasMutePrivilege(caller.uid))) {
             throw new Error('[[error:no-privileges]]');
         }
-        yield database_1.default.deleteObjectFields(`user:${data.uid}`, ['mutedUntil', 'mutedReason']);
+        yield db.deleteObjectFields(`user:${data.uid}`, ['mutedUntil', 'mutedReason']);
         yield events.log({
             type: 'user-unmute',
             uid: caller.uid,
@@ -436,7 +460,7 @@ usersAPI.changePicture = (caller, data) => __awaiter(void 0, void 0, void 0, fun
     }, ['picture', 'icon:bgColor']);
 });
 usersAPI.generateExport = (caller, { uid, type }) => __awaiter(void 0, void 0, void 0, function* () {
-    const count = yield database_1.default.incrObjectField('locks', `export:${uid}${type}`);
+    const count = yield db.incrObjectField('locks', `export:${uid}${type}`);
     if (count > 1) {
         throw new Error('[[error:already-exporting]]');
     }
@@ -446,10 +470,10 @@ usersAPI.generateExport = (caller, { uid, type }) => __awaiter(void 0, void 0, v
     child.send({ uid });
     child.on('error', (err) => __awaiter(void 0, void 0, void 0, function* () {
         winston_1.default.error(err.stack);
-        yield database_1.default.deleteObjectField('locks', `export:${uid}${type}`);
+        yield db.deleteObjectField('locks', `export:${uid}${type}`);
     }));
     child.on('exit', () => __awaiter(void 0, void 0, void 0, function* () {
-        yield database_1.default.deleteObjectField('locks', `export:${uid}${type}`);
+        yield db.deleteObjectField('locks', `export:${uid}${type}`);
         const { displayname } = yield user_1.default.getUserFields(uid, ['username']);
         const n = yield notifications.create({
             bodyShort: `[[notifications:${type}-exported, ${displayname}]]`,

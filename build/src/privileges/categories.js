@@ -216,3 +216,4 @@ privsCategories.groupPrivileges = function (cid, groupName) {
         return yield helpers.userOrGroupPrivileges(cid, groupName, groupPrivilegeList);
     });
 };
+exports.default = privsCategories;

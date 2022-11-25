@@ -5,7 +5,8 @@ const async = require('async');
 const crypto = require('crypto');
 import nconf from 'nconf';
 const batch = require('../../batch');
-import db from '../../database';
+import * as database from '../../database';
+const db = database as any;
 
 export default  {
 	name: 'Hash all IP addresses stored in Recent IPs zset',

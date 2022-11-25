@@ -5,7 +5,9 @@ import winston from 'winston';
 import meta from '../meta';
 import user from '../user';
 const events = require('../events');
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 const privileges = require('../privileges');
 const websockets = require('./index');
 const index = require('./index');

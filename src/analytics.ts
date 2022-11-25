@@ -9,7 +9,8 @@ const _ = require('lodash');
 
 const sleep = util.promisify(setTimeout);
 
-const db = require('./database');
+import * as database from './database';
+const db = database as any;
 const utils = require('./utils');
 const plugins = require('./plugins');
 const meta = require('./meta');
@@ -110,7 +111,7 @@ Analytics.pageView = async function (payload) {
 			hash = crypto.createHash('sha1').update(payload.ip + secret).digest('hex');
 			ipCache.set(payload.ip + secret, hash);
 		}
-
+        // @ts-ignore
 		const score = await db.sortedSetScore('ip:recent', hash);
 		if (!score) {
 			local.uniqueIPCount += 1;
@@ -119,6 +120,7 @@ Analytics.pageView = async function (payload) {
 		today.setHours(today.getHours(), 0, 0, 0);
 		if (!score || score < today.getTime()) {
 			local.uniquevisitors += 1;
+			// @ts-ignore
 			await db.sortedSetAdd('ip:recent', Date.now(), hash);
 		}
 	}

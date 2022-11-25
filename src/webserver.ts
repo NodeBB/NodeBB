@@ -22,7 +22,9 @@ const detector = require('spider-detector');
 const helmet = require('helmet');
 
 const Benchpress = require('benchpressjs');
-const db = require('./database');
+import * as database from './database';      
+    
+const db = database as any;
 const analytics = require('./analytics');
 const file = require('./file');
 const emailer = require('./emailer');

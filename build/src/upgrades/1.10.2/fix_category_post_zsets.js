@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,11 +31,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const database_1 = __importDefault(require("../../database"));
+const database = __importStar(require("../../database"));
+const db = database;
 const posts = require('../../posts');
 const topics = require('../../topics');
 const batch = require('../../batch');
@@ -22,15 +43,15 @@ exports.default = {
     method: function () {
         return __awaiter(this, void 0, void 0, function* () {
             const { progress } = this;
-            const cids = yield database_1.default.getSortedSetRange('categories:cid', 0, -1);
+            const cids = yield db.getSortedSetRange('categories:cid', 0, -1);
             const keys = cids.map((cid) => `cid:${cid}:pids`);
             yield batch.processSortedSet('posts:pid', (postData) => __awaiter(this, void 0, void 0, function* () {
                 const pids = postData.map(p => p.value);
                 const topicData = yield posts.getPostsFields(pids, ['tid']);
                 const categoryData = yield topics.getTopicsFields(topicData.map((t) => t.tid), ['cid']);
-                yield database_1.default.sortedSetRemove(keys, pids);
+                yield db.sortedSetRemove(keys, pids);
                 const bulkAdd = postData.map((p, i) => ([`cid:${categoryData[i].cid}:pids`, p.score, p.value]));
-                yield database_1.default.sortedSetAddBulk(bulkAdd);
+                yield db.sortedSetAddBulk(bulkAdd);
                 progress.incr(postData.length);
             }), {
                 batch: 500,

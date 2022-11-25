@@ -3,10 +3,12 @@
 /* global XRegExp */
 (function (factory) {
 	if (typeof define === 'function' && define.amd) {
+		console.log('ONE!!!!');
 		define('slugify', ['xregexp'], factory);
 	} else if (typeof exports === 'object') {
-	    factory(require('xregexp'));
+		module.exports = factory(require('xregexp'));
 	} else {
+		console.log('THREE!!!');
 		window.slugify = factory(XRegExp);
 	}
 }(function (XRegExp) {

@@ -40,7 +40,8 @@ const path_1 = __importDefault(require("path"));
 const winston_1 = __importDefault(require("winston"));
 const validator = require('validator');
 const { baseDir } = require('../constants').paths;
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const plugins = require('../plugins');
 const batch = require('../batch');
 function default_1(User) {
@@ -56,12 +57,12 @@ function default_1(User) {
             if (ip) {
                 bulk.push([`ip:${ip}:uid`, now, uid]);
             }
-            yield database_1.default.sortedSetAddBulk(bulk);
+            yield db.sortedSetAddBulk(bulk);
         });
     };
     User.getIPs = function (uid, stop) {
         return __awaiter(this, void 0, void 0, function* () {
-            const ips = yield database_1.default.getSortedSetRevRange(`uid:${uid}:ip`, 0, stop);
+            const ips = yield db.getSortedSetRevRange(`uid:${uid}:ip`, 0, stop);
             return ips.map((ip) => validator.escape(String(ip)));
         });
     };
@@ -94,7 +95,7 @@ function default_1(User) {
                 let userIPs = '';
                 let ips = [];
                 if (showIps) {
-                    ips = yield database_1.default.getSortedSetsMembers(uids.map(uid => `uid:${uid}:ip`));
+                    ips = yield db.getSortedSetsMembers(uids.map(uid => `uid:${uid}:ip`));
                 }
                 let line = '';
                 usersData.forEach((user, index) => {

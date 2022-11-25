@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -15,7 +38,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const meta_1 = __importDefault(require("../meta"));
 const plugins = require('../plugins');
 const slugify = require('../slugify');
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 function default_1(Groups) {
     Groups.create = function (data) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -49,20 +73,20 @@ function default_1(Groups) {
                 disableLeave: disableLeave,
             };
             yield plugins.hooks.fire('filter:group.create', { group: groupData, data: data });
-            yield database_1.default.sortedSetAdd('groups:createtime', groupData.createtime, groupData.name);
-            yield database_1.default.setObject(`group:${groupData.name}`, groupData);
+            yield db.sortedSetAdd('groups:createtime', groupData.createtime, groupData.name);
+            yield db.setObject(`group:${groupData.name}`, groupData);
             if (data.hasOwnProperty('ownerUid')) {
-                yield database_1.default.setAdd(`group:${groupData.name}:owners`, data.ownerUid);
-                yield database_1.default.sortedSetAdd(`group:${groupData.name}:members`, timestamp, data.ownerUid);
+                yield db.setAdd(`group:${groupData.name}:owners`, data.ownerUid);
+                yield db.sortedSetAdd(`group:${groupData.name}:members`, timestamp, data.ownerUid);
             }
             if (!isHidden && !isSystem) {
-                yield database_1.default.sortedSetAddBulk([
+                yield db.sortedSetAddBulk([
                     ['groups:visible:createtime', timestamp, groupData.name],
                     ['groups:visible:memberCount', groupData.memberCount, groupData.name],
                     ['groups:visible:name', 0, `${groupData.name.toLowerCase()}:${groupData.name}`],
                 ]);
             }
-            yield database_1.default.setObjectField('groupslug:groupname', groupData.slug, groupData.name);
+            yield db.setObjectField('groupslug:groupname', groupData.slug, groupData.name);
             groupData = yield Groups.getGroupData(groupData.name);
             plugins.hooks.fire('action:group.create', { group: groupData });
             return groupData;

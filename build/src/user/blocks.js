@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,11 +31,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const plugins = require('../plugins');
 const cacheCreate = require('../cache/lru').default;
 function default_1(User) {
@@ -62,7 +83,7 @@ function default_1(User) {
             const cachedData = {};
             const unCachedUids = User.blocks._cache.getUnCachedKeys(uids, cachedData);
             if (unCachedUids.length) {
-                const unCachedData = yield database_1.default.getSortedSetsMembers(unCachedUids.map(uid => `uid:${uid}:blocked_uids`));
+                const unCachedData = yield db.getSortedSetsMembers(unCachedUids.map(uid => `uid:${uid}:blocked_uids`));
                 unCachedUids.forEach((uid, index) => {
                     cachedData[uid] = (unCachedData[index] || []).map(uid => parseInt(uid, 10));
                     User.blocks._cache.set(uid, cachedData[uid]);
@@ -75,7 +96,7 @@ function default_1(User) {
     User.blocks.add = function (targetUid, uid) {
         return __awaiter(this, void 0, void 0, function* () {
             yield User.blocks.applyChecks('block', targetUid, uid);
-            yield database_1.default.sortedSetAdd(`uid:${uid}:blocked_uids`, Date.now(), targetUid);
+            yield db.sortedSetAdd(`uid:${uid}:blocked_uids`, Date.now(), targetUid);
             yield User.incrementUserFieldBy(uid, 'blocksCount', 1);
             User.blocks._cache.del(parseInt(uid, 10));
             plugins.hooks.fire('action:user.blocks.add', { uid: uid, targetUid: targetUid });
@@ -84,7 +105,7 @@ function default_1(User) {
     User.blocks.remove = function (targetUid, uid) {
         return __awaiter(this, void 0, void 0, function* () {
             yield User.blocks.applyChecks('unblock', targetUid, uid);
-            yield database_1.default.sortedSetRemove(`uid:${uid}:blocked_uids`, targetUid);
+            yield db.sortedSetRemove(`uid:${uid}:blocked_uids`, targetUid);
             yield User.decrementUserFieldBy(uid, 'blocksCount', 1);
             User.blocks._cache.del(parseInt(uid, 10));
             plugins.hooks.fire('action:user.blocks.remove', { uid: uid, targetUid: targetUid });

@@ -4,7 +4,9 @@ import winston from 'winston';
 const validator = require('validator');
 const cronJob = require('cron').CronJob;
 
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 const analytics = require('../analytics');
 
 const Errors  = {} as any;

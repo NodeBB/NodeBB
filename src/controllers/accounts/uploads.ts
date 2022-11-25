@@ -3,7 +3,8 @@
 import path from 'path';
 import nconf from 'nconf';
 
-import db from '../../database';
+import * as database from '../../database';
+const db = database as any;
 import helpers from '../helpers';
 import meta from '../../meta';
 const pagination = require('../../pagination');

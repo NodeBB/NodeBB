@@ -7,7 +7,8 @@ const _ = require('lodash');
 import path from 'path';const mkdirp = require('mkdirp');
 const chalk = require('chalk');
 import * as fs from 'fs';
-import db from '../database';
+import { primaryDB as db } from '../database';
+
 
 
 const cacheBuster = require('./cacheBuster');
@@ -64,7 +65,7 @@ const aliasMap = Object.keys(aliases).reduce((prev, key) => {
 async function beforeBuild(targets) {
 	(process as any).stdout.write(`${chalk.green('  started')}\n`);
 	try {
-		await db.init();
+		await db.default.init();
 		meta = require('./index');
 		await meta.themes.setupPaths();
 		const plugins = require('../plugins');

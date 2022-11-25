@@ -1,7 +1,8 @@
 'use strict';
 
 const async = require('async');
-import db from '../../database';
+import * as database from '../../database';
+const db = database as any;
 const batch = require('../../batch');
 const topics = require('../../topics');
 

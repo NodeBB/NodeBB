@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -15,7 +38,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const winston_1 = __importDefault(require("winston"));
 const meta_1 = __importDefault(require("../meta"));
 const emailer = require('../emailer');
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const groups = require('../groups');
 const privileges = require('../privileges');
 function default_1(User) {
@@ -44,15 +68,15 @@ function default_1(User) {
             const systemGroups = groups.systemGroups.filter((group) => group !== groups.BANNED_USERS);
             yield groups.leave(systemGroups, uid);
             yield groups.join(groups.BANNED_USERS, uid);
-            yield database_1.default.sortedSetAdd('users:banned', now, uid);
-            yield database_1.default.sortedSetAdd(`uid:${uid}:bans:timestamp`, now, banKey);
-            yield database_1.default.setObject(banKey, banData);
+            yield db.sortedSetAdd('users:banned', now, uid);
+            yield db.sortedSetAdd(`uid:${uid}:bans:timestamp`, now, banKey);
+            yield db.setObject(banKey, banData);
             yield User.setUserField(uid, 'banned:expire', banData.expire);
             if (until > now) {
-                yield database_1.default.sortedSetAdd('users:banned:expire', until, uid);
+                yield db.sortedSetAdd('users:banned:expire', until, uid);
             }
             else {
-                yield database_1.default.sortedSetRemove('users:banned:expire', uid);
+                yield db.sortedSetRemove('users:banned:expire', uid);
             }
             // Email notification of ban
             const username = yield User.getUserField(uid, 'username');
@@ -71,7 +95,7 @@ function default_1(User) {
         return __awaiter(this, void 0, void 0, function* () {
             uids = Array.isArray(uids) ? uids : [uids];
             const userData = yield User.getUsersFields(uids, ['email:confirmed']);
-            yield database_1.default.setObject(uids.map(uid => `user:${uid}`), { 'banned:expire': 0 });
+            yield db.setObject(uids.map(uid => `user:${uid}`), { 'banned:expire': 0 });
             /* eslint-disable no-await-in-loop */
             for (const user of userData) {
                 const systemGroupsToJoin = [
@@ -82,7 +106,7 @@ function default_1(User) {
                 // An unbanned user would lost its previous "Global Moderator" status
                 yield groups.join(systemGroupsToJoin, user.uid);
             }
-            yield database_1.default.sortedSetRemove(['users:banned', 'users:banned:expire'], uids);
+            yield db.sortedSetRemove(['users:banned', 'users:banned:expire'], uids);
         });
     };
     User.bans.isBanned = function (uids) {
@@ -139,11 +163,11 @@ function default_1(User) {
             if (parseInt(uid, 10) <= 0) {
                 return '';
             }
-            const keys = yield database_1.default.getSortedSetRevRange(`uid:${uid}:bans:timestamp`, 0, 0);
+            const keys = yield db.getSortedSetRevRange(`uid:${uid}:bans:timestamp`, 0, 0);
             if (!keys.length) {
                 return '';
             }
-            const banObj = yield database_1.default.getObject(keys[0]);
+            const banObj = yield db.getObject(keys[0]);
             return banObj && banObj.reason ? banObj.reason : '';
         });
     };

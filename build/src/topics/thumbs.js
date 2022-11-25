@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -16,7 +39,8 @@ const _ = require('lodash');
 const nconf_1 = __importDefault(require("nconf"));
 const path_1 = __importDefault(require("path"));
 const validator = require('validator');
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const file = require('../file');
 const plugins = require('../plugins');
 const posts = require('../posts');
@@ -27,7 +51,7 @@ Thumbs.exists = function (id, path) {
     return __awaiter(this, void 0, void 0, function* () {
         const isDraft = validator.isUUID(String(id));
         const set = `${isDraft ? 'draft' : 'topic'}:${id}:thumbs`;
-        return database_1.default.isSortedSetMember(set, path);
+        return db.isSortedSetMember(set, path);
     });
 };
 Thumbs.load = function (topicData) {
@@ -72,7 +96,7 @@ function getThumbs(set) {
         if (cached !== undefined) {
             return cached.slice();
         }
-        const thumbs = yield database_1.default.getSortedSetRange(set, 0, -1);
+        const thumbs = yield db.getSortedSetRange(set, 0, -1);
         cache.set(set, thumbs);
         return thumbs.slice();
     });
@@ -83,15 +107,15 @@ Thumbs.associate = function ({ id, path, score }) {
         const isDraft = validator.isUUID(String(id));
         const isLocal = !path.startsWith('http');
         const set = `${isDraft ? 'draft' : 'topic'}:${id}:thumbs`;
-        const numThumbs = yield database_1.default.sortedSetCard(set);
+        const numThumbs = yield db.sortedSetCard(set);
         // Normalize the path to allow for changes in upload_path (and so upload_url can be appended if needed)
         if (isLocal) {
             path = path.replace(nconf_1.default.get('upload_path'), '');
         }
         const topics = require('.');
-        yield database_1.default.sortedSetAdd(set, isFinite(score) ? score : numThumbs, path);
+        yield db.sortedSetAdd(set, isFinite(score) ? score : numThumbs, path);
         if (!isDraft) {
-            const numThumbs = yield database_1.default.sortedSetCard(set);
+            const numThumbs = yield db.sortedSetCard(set);
             yield topics.setTopicField(id, 'numThumbs', numThumbs);
         }
         cache.del(set);
@@ -106,7 +130,7 @@ Thumbs.migrate = function (uuid, id) {
     return __awaiter(this, void 0, void 0, function* () {
         // Converts the draft thumb zset to the topic zset (combines thumbs if applicable)
         const set = `draft:${uuid}:thumbs`;
-        const thumbs = yield database_1.default.getSortedSetRangeWithScores(set, 0, -1);
+        const thumbs = yield db.getSortedSetRangeWithScores(set, 0, -1);
         yield Promise.all(thumbs.map((thumb) => __awaiter(this, void 0, void 0, function* () {
             return yield Thumbs.associate({
                 id,
@@ -114,7 +138,7 @@ Thumbs.migrate = function (uuid, id) {
                 score: thumb.score,
             });
         })));
-        yield database_1.default.delete(set);
+        yield db.delete(set);
         cache.del(set);
     });
 };
@@ -130,7 +154,7 @@ Thumbs.delete = function (id, relativePaths) {
         }
         const absolutePaths = relativePaths.map(relativePath => path_1.default.join(nconf_1.default.get('upload_path'), relativePath));
         const [associated, existsOnDisk] = yield Promise.all([
-            database_1.default.isSortedSetMembers(set, relativePaths),
+            db.isSortedSetMembers(set, relativePaths),
             Promise.all(absolutePaths.map((absolutePath) => __awaiter(this, void 0, void 0, function* () { return file.exists(absolutePath); }))),
         ]);
         const toRemove = [];
@@ -143,7 +167,7 @@ Thumbs.delete = function (id, relativePaths) {
                 toDelete.push(absolutePaths[idx]);
             }
         });
-        yield database_1.default.sortedSetRemove(set, toRemove);
+        yield db.sortedSetRemove(set, toRemove);
         if (isDraft && toDelete.length) { // drafts only; post upload dissociation handles disk deletion for topics
             yield Promise.all(toDelete.map((absolutePath) => __awaiter(this, void 0, void 0, function* () { return file.delete(absolutePath); })));
         }
@@ -151,7 +175,7 @@ Thumbs.delete = function (id, relativePaths) {
             const topics = require('.');
             const mainPid = (yield topics.getMainPids([id]))[0];
             yield Promise.all([
-                database_1.default.incrObjectFieldBy(`topic:${id}`, 'numThumbs', -toRemove.length),
+                db.incrObjectFieldBy(`topic:${id}`, 'numThumbs', -toRemove.length),
                 Promise.all(toRemove.map((relativePath) => __awaiter(this, void 0, void 0, function* () { return posts.uploads.dissociate(mainPid, relativePath.slice(1)); }))),
             ]);
         }
@@ -160,6 +184,6 @@ Thumbs.delete = function (id, relativePaths) {
 Thumbs.deleteAll = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const isDraft = validator.isUUID(String(id));
     const set = `${isDraft ? 'draft' : 'topic'}:${id}:thumbs`;
-    const thumbs = yield database_1.default.getSortedSetRange(set, 0, -1);
+    const thumbs = yield db.getSortedSetRange(set, 0, -1);
     yield Thumbs.delete(id, thumbs);
 });

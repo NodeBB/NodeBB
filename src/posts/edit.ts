@@ -3,7 +3,9 @@
 const validator = require('validator');
 const _ = require('lodash');
 
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 import meta from '../meta';
 const topics = require('../topics');
 import user from '../user';

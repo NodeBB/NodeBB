@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -14,7 +37,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const _ = require('lodash');
 const meta_1 = __importDefault(require("../meta"));
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const plugins = require('../plugins');
 const user_1 = __importDefault(require("../user"));
 const topics = require('../topics');
@@ -36,7 +60,7 @@ function default_1(Posts) {
             if (data.toPid && !utils.isNumber(data.toPid)) {
                 throw new Error('[[error:invalid-pid]]');
             }
-            const pid = yield database_1.default.incrObjectField('global', 'nextPid');
+            const pid = yield db.incrObjectField('global', 'nextPid');
             let postData = {
                 pid: pid,
                 uid: uid,
@@ -55,12 +79,12 @@ function default_1(Posts) {
             }
             let result = yield plugins.hooks.fire('filter:post.create', { post: postData, data: data });
             postData = result.post;
-            yield database_1.default.setObject(`post:${postData.pid}`, postData);
+            yield db.setObject(`post:${postData.pid}`, postData);
             const topicData = yield topics.getTopicFields(tid, ['cid', 'pinned']);
             postData.cid = topicData.cid;
             yield Promise.all([
-                database_1.default.sortedSetAdd('posts:pid', timestamp, postData.pid),
-                database_1.default.incrObjectField('global', 'postCount'),
+                db.sortedSetAdd('posts:pid', timestamp, postData.pid),
+                db.incrObjectField('global', 'postCount'),
                 user_1.default.onNewPostMade(postData),
                 topics.onNewPostMade(postData),
                 categories.onNewPostMade(topicData.cid, topicData.pinned, postData),
@@ -80,8 +104,8 @@ function default_1(Posts) {
                 return;
             }
             yield Promise.all([
-                database_1.default.sortedSetAdd(`pid:${postData.toPid}:replies`, timestamp, postData.pid),
-                database_1.default.incrObjectField(`post:${postData.toPid}`, 'replies'),
+                db.sortedSetAdd(`pid:${postData.toPid}:replies`, timestamp, postData.pid),
+                db.incrObjectField(`post:${postData.toPid}`, 'replies'),
             ]);
         });
     }

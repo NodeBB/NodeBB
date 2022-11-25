@@ -12,10 +12,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const database_1 = require("../database");
+console.log('PRIMARY DB', database_1.primaryDB);
 const user_1 = __importDefault(require("../user"));
-const database_1 = __importDefault(require("../database"));
 const plugins = require('../plugins');
-const slugify = require('../slugify');
+const slugify = require('../slugify').default;
 const Groups = {};
 require('./data').default(Groups);
 require('./create').default(Groups);
@@ -66,10 +67,10 @@ Groups.getGroupsFromSet = function (set, start, stop) {
     return __awaiter(this, void 0, void 0, function* () {
         let groupNames;
         if (set === 'groups:visible:name') {
-            groupNames = yield database_1.default.getSortedSetRangeByLex(set, '-', '+', start, stop - start + 1);
+            groupNames = yield database_1.primaryDB.default.getSortedSetRangeByLex(set, '-', '+', start, stop - start + 1);
         }
         else {
-            groupNames = yield database_1.default.getSortedSetRevRange(set, start, stop);
+            groupNames = yield database_1.primaryDB.default.getSortedSetRevRange(set, start, stop);
         }
         if (set === 'groups:visible:name') {
             groupNames = groupNames.map(name => name.split(':')[1]);
@@ -91,7 +92,7 @@ Groups.getGroupsBySort = function (sort, start, stop) {
 };
 Groups.getNonPrivilegeGroups = function (set, start, stop) {
     return __awaiter(this, void 0, void 0, function* () {
-        let groupNames = yield database_1.default.getSortedSetRevRange(set, start, stop);
+        let groupNames = yield database_1.primaryDB.default.getSortedSetRevRange(set, start, stop);
         groupNames = groupNames.concat(Groups.ephemeralGroups).filter(groupName => !Groups.isPrivilegeGroup(groupName));
         const groupsData = yield Groups.getGroupsData(groupNames);
         return groupsData.filter(Boolean);
@@ -99,7 +100,7 @@ Groups.getNonPrivilegeGroups = function (set, start, stop) {
 };
 Groups.getGroups = function (set, start, stop) {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield database_1.default.getSortedSetRevRange(set, start, stop);
+        return yield database_1.primaryDB.default.getSortedSetRevRange(set, start, stop);
     });
 };
 Groups.getGroupsAndMembers = function (groupNames) {
@@ -155,12 +156,12 @@ Groups.get = function (groupName, options) {
 };
 Groups.getOwners = function (groupName) {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield database_1.default.getSetMembers(`group:${groupName}:owners`);
+        return yield database_1.primaryDB.default.getSetMembers(`group:${groupName}:owners`);
     });
 };
 Groups.getOwnersAndMembers = function (groupName, uid, start, stop) {
     return __awaiter(this, void 0, void 0, function* () {
-        const ownerUids = yield database_1.default.getSetMembers(`group:${groupName}:owners`);
+        const ownerUids = yield database_1.primaryDB.default.getSetMembers(`group:${groupName}:owners`);
         const countToReturn = stop - start + 1;
         const ownerUidsOnPage = ownerUids.slice(start, stop !== -1 ? stop + 1 : undefined);
         const owners = yield user_1.default.getUsers(ownerUidsOnPage, uid);
@@ -209,7 +210,7 @@ Groups.getOwnersAndMembers = function (groupName, uid, start, stop) {
 Groups.getByGroupslug = function (slug, options) {
     return __awaiter(this, void 0, void 0, function* () {
         options = options || {};
-        const groupName = yield database_1.default.getObjectField('groupslug:groupname', slug);
+        const groupName = yield database_1.primaryDB.default.getObjectField('groupslug:groupname', slug);
         if (!groupName) {
             throw new Error('[[error:no-group]]');
         }
@@ -218,7 +219,7 @@ Groups.getByGroupslug = function (slug, options) {
 };
 Groups.getGroupNameByGroupSlug = function (slug) {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield database_1.default.getObjectField('groupslug:groupname', slug);
+        return yield database_1.primaryDB.default.getObjectField('groupslug:groupname', slug);
     });
 };
 Groups.isPrivate = function (groupName) {
@@ -233,7 +234,7 @@ Groups.isHidden = function (groupName) {
 };
 function isFieldOn(groupName, field) {
     return __awaiter(this, void 0, void 0, function* () {
-        const value = yield database_1.default.getObjectField(`group:${groupName}`, field);
+        const value = yield database_1.primaryDB.default.getObjectField(`group:${groupName}`, field);
         return parseInt(value, 10) === 1;
     });
 }
@@ -241,12 +242,12 @@ Groups.exists = function (name) {
     return __awaiter(this, void 0, void 0, function* () {
         if (Array.isArray(name)) {
             const slugs = name.map(groupName => slugify(groupName));
-            const isMembersOfRealGroups = yield database_1.default.isSortedSetMembers('groups:createtime', name);
+            const isMembersOfRealGroups = yield database_1.primaryDB.default.isSortedSetMembers('groups:createtime', name);
             const isMembersOfEphemeralGroups = slugs.map(slug => Groups.ephemeralGroups.includes(slug));
             return name.map((n, index) => isMembersOfRealGroups[index] || isMembersOfEphemeralGroups[index]);
         }
         const slug = slugify(name);
-        const isMemberOfRealGroups = yield database_1.default.isSortedSetMember('groups:createtime', name);
+        const isMemberOfRealGroups = yield database_1.primaryDB.default.isSortedSetMember('groups:createtime', name);
         const isMemberOfEphemeralGroups = Groups.ephemeralGroups.includes(slug);
         return isMemberOfRealGroups || isMemberOfEphemeralGroups;
     });
@@ -254,9 +255,9 @@ Groups.exists = function (name) {
 Groups.existsBySlug = function (slug) {
     return __awaiter(this, void 0, void 0, function* () {
         if (Array.isArray(slug)) {
-            return yield database_1.default.isObjectFields('groupslug:groupname', slug);
+            return yield database_1.primaryDB.default.isObjectFields('groupslug:groupname', slug);
         }
-        return yield database_1.default.isObjectField('groupslug:groupname', slug);
+        return yield database_1.primaryDB.default.isObjectField('groupslug:groupname', slug);
     });
 };
 require('../promisify').promisify(Groups);

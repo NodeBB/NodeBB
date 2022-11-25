@@ -14,8 +14,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const util = require('util');
 const winston_1 = __importDefault(require("winston"));
-const plugins = require('.');
-const utils = require('../utils');
+const _1 = __importDefault(require("."));
+const utils_1 = __importDefault(require("../utils"));
+const als_1 = __importDefault(require("../als"));
 const Hooks = {};
 Hooks._deprecated = new Map([
     ['filter:email.send', {
@@ -46,8 +47,8 @@ Hooks._deprecated = new Map([
 ]);
 Hooks.internals = {
     _register: function (data) {
-        plugins.loadedHooks[data.hook] = plugins.loadedHooks[data.hook] || [];
-        plugins.loadedHooks[data.hook].push(data);
+        _1.default.loadedHooks[data.hook] = _1.default.loadedHooks[data.hook] || [];
+        _1.default.loadedHooks[data.hook].push(data);
     },
 };
 const hookTypeToMethod = {
@@ -94,7 +95,7 @@ Hooks.register = function (id, data) {
             }
             // Couldn't find method by path, aborting
             return null;
-        }, plugins.libraries[data.id]);
+        }, _1.default.libraries[data.id]);
         // Write the actual method reference to the hookObj
         data.method = method;
         Hooks.internals._register(data);
@@ -107,12 +108,14 @@ Hooks.register = function (id, data) {
     }
 };
 Hooks.unregister = function (id, hook, method) {
-    const hooks = plugins.loadedHooks[hook] || [];
-    plugins.loadedHooks[hook] = hooks.filter(hookData => hookData && hookData.id !== id && hookData.method !== method);
+    const hooks = _1.default.loadedHooks[hook] || [];
+    _1.default.loadedHooks[hook] = hooks.filter(hookData => hookData && hookData.id !== id && hookData.method !== method);
 };
 Hooks.fire = function (hook, params) {
     return __awaiter(this, void 0, void 0, function* () {
-        const hookList = plugins.loadedHooks[hook];
+        console.log('HOOK', hook);
+        console.log('PARAMS', params);
+        const hookList = _1.default.loadedHooks[hook];
         const hookType = hook.split(':')[0];
         if (global.env === 'development' && hook !== 'action:plugins.firehook' && hook !== 'filter:plugins.firehook') {
             winston_1.default.verbose(`[plugins/fireHook] ${hook}`);
@@ -123,10 +126,10 @@ Hooks.fire = function (hook, params) {
         }
         let deleteCaller = false;
         if (params && typeof params === 'object' && !Array.isArray(params) && !params.hasOwnProperty('caller')) {
-            const als = require('../als');
-            params.caller = als.getStore();
+            params.caller = als_1.default.getStore();
             deleteCaller = true;
         }
+        console.log('HOOK TYPE TO METHOD', hookTypeToMethod);
         const result = yield hookTypeToMethod[hookType](hook, hookList, params);
         if (hook !== 'action:plugins.firehook' && hook !== 'filter:plugins.firehook') {
             const payload = yield Hooks.fire('filter:plugins.firehook', { hook: hook, params: result || params });
@@ -141,7 +144,7 @@ Hooks.fire = function (hook, params) {
     });
 };
 Hooks.hasListeners = function (hook) {
-    return !!(plugins.loadedHooks[hook] && plugins.loadedHooks[hook].length > 0);
+    return !!(_1.default.loadedHooks[hook] && _1.default.loadedHooks[hook].length > 0);
 };
 function fireFilterHook(hook, hookList, params) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -175,7 +178,7 @@ function fireFilterHook(hook, hookList, params) {
                         else
                             _resolve(result);
                     });
-                    if (utils.isPromise(returned)) {
+                    if (utils_1.default.isPromise(returned)) {
                         returned.then(payload => _resolve(payload), err => reject(err));
                         return;
                     }
@@ -279,3 +282,4 @@ function fireResponseHook(hook, hookList, params) {
         }
     });
 }
+exports.default = Hooks;

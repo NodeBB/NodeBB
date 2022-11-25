@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -12,7 +35,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const database_1 = __importDefault(require("../../database"));
+const database = __importStar(require("../../database"));
+const db = database;
 const batch = require('../../batch');
 const user_1 = __importDefault(require("../../user"));
 const groups = require('../../groups');
@@ -27,7 +51,7 @@ exports.default = {
             const { progress } = this;
             const maxGroupLength = meta_1.default.config.maximumGroupNameLength;
             meta_1.default.config.maximumGroupNameLength = 30;
-            const timestamp = yield database_1.default.getObjectField('group:administrators', 'timestamp');
+            const timestamp = yield db.getObjectField('group:administrators', 'timestamp');
             const verifiedExists = yield groups.exists('verified-users');
             if (!verifiedExists) {
                 yield groups.create({
@@ -59,18 +83,18 @@ exports.default = {
                 const userData = yield user_1.default.getUsersFields(uids, ['uid', 'email:confirmed']);
                 const verified = userData.filter(u => parseInt(u['email:confirmed'], 10) === 1);
                 const unverified = userData.filter(u => parseInt(u['email:confirmed'], 10) !== 1);
-                yield database_1.default.sortedSetAdd('group:verified-users:members', verified.map(() => now), verified.map(u => u.uid));
-                yield database_1.default.sortedSetAdd('group:unverified-users:members', unverified.map(() => now), unverified.map(u => u.uid));
+                yield db.sortedSetAdd('group:verified-users:members', verified.map(() => now), verified.map(u => u.uid));
+                yield db.sortedSetAdd('group:unverified-users:members', unverified.map(() => now), unverified.map(u => u.uid));
             }), {
                 batch: 500,
                 progress: this.progress,
             });
-            yield database_1.default.delete('users:notvalidated');
+            yield db.delete('users:notvalidated');
             yield updatePrivilges();
-            const verifiedCount = yield database_1.default.sortedSetCard('group:verified-users:members');
-            const unverifiedCount = yield database_1.default.sortedSetCard('group:unverified-users:members');
-            yield database_1.default.setObjectField('group:verified-users', 'memberCount', verifiedCount);
-            yield database_1.default.setObjectField('group:unverified-users', 'memberCount', unverifiedCount);
+            const verifiedCount = yield db.sortedSetCard('group:verified-users:members');
+            const unverifiedCount = yield db.sortedSetCard('group:unverified-users:members');
+            yield db.setObjectField('group:verified-users', 'memberCount', verifiedCount);
+            yield db.setObjectField('group:unverified-users', 'memberCount', unverifiedCount);
         });
     },
 };
@@ -81,7 +105,7 @@ function updatePrivilges() {
         //   remove chat, posting privs from "registered-users" group
         // This config property has been removed from v1.18.0+, but is still present in old datasets
         if (meta_1.default.config.requireEmailConfirmation) {
-            const cids = yield database_1.default.getSortedSetRevRange('categories:cid', 0, -1);
+            const cids = yield db.getSortedSetRevRange('categories:cid', 0, -1);
             const canChat = yield privileges.global.canGroup('chat', 'registered-users');
             if (canChat) {
                 yield privileges.global.give(['groups:chat'], 'verified-users');

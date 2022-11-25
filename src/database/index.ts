@@ -11,6 +11,7 @@ if (!databaseName) {
 	(process as any).exit();
 }
 
+
 const primaryDB = require(`./${databaseName}`);
 
 primaryDB.parseIntFields = function (data, intFields, requestedFields) {
@@ -35,4 +36,4 @@ primaryDB.initSessionStore = async function () {
 	primaryDB.sessionStore = await sessionStoreDB.createSessionStore(sessionStoreConfig);
 };
 
-export default primaryDB;
+export { primaryDB };

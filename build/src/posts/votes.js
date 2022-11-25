@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -13,7 +36,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const meta_1 = __importDefault(require("../meta"));
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const flags = require('../flags');
 const user_1 = __importDefault(require("../user"));
 const topics = require('../topics');
@@ -87,7 +111,7 @@ function default_1(Posts) {
             if (parseInt(uid, 10) <= 0) {
                 return { upvoted: false, downvoted: false };
             }
-            const hasVoted = yield database_1.default.isMemberOfSets([`pid:${pid}:upvote`, `pid:${pid}:downvote`], uid);
+            const hasVoted = yield db.isMemberOfSets([`pid:${pid}:upvote`, `pid:${pid}:downvote`], uid);
             return { upvoted: hasVoted[0], downvoted: hasVoted[1] };
         });
     };
@@ -99,7 +123,7 @@ function default_1(Posts) {
             }
             const upvoteSets = pids.map(pid => `pid:${pid}:upvote`);
             const downvoteSets = pids.map(pid => `pid:${pid}:downvote`);
-            const data = yield database_1.default.isMemberOfSets(upvoteSets.concat(downvoteSets), uid);
+            const data = yield db.isMemberOfSets(upvoteSets.concat(downvoteSets), uid);
             return {
                 upvotes: data.slice(0, pids.length),
                 downvotes: data.slice(pids.length, pids.length * 2),
@@ -108,7 +132,7 @@ function default_1(Posts) {
     };
     Posts.getUpvotedUidsByPids = function (pids) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield database_1.default.getSetsMembers(pids.map(pid => `pid:${pid}:upvote`));
+            return yield db.getSetsMembers(pids.map(pid => `pid:${pid}:upvote`));
         });
     };
     function voteInProgress(pid, uid) {
@@ -155,7 +179,7 @@ function default_1(Posts) {
             const [reputation, targetUid, votedPidsToday] = yield Promise.all([
                 user_1.default.getUserField(uid, 'reputation'),
                 Posts.getPostField(pid, 'uid'),
-                database_1.default.getSortedSetRevRangeByScore(`uid:${uid}:${type}`, 0, -1, '+inf', Date.now() - oneDay),
+                db.getSortedSetRevRangeByScore(`uid:${uid}:${type}`, 0, -1, '+inf', Date.now() - oneDay),
             ]);
             if (reputation < meta_1.default.config[`min:rep:${type}`]) {
                 throw new Error(`[[error:not-enough-reputation-to-${type}, ${meta_1.default.config[`min:rep:${type}`]}]]`);
@@ -182,16 +206,16 @@ function default_1(Posts) {
             }
             const now = Date.now();
             if (type === 'upvote' && !unvote) {
-                yield database_1.default.sortedSetAdd(`uid:${uid}:upvote`, now, pid);
+                yield db.sortedSetAdd(`uid:${uid}:upvote`, now, pid);
             }
             else {
-                yield database_1.default.sortedSetRemove(`uid:${uid}:upvote`, pid);
+                yield db.sortedSetRemove(`uid:${uid}:upvote`, pid);
             }
             if (type === 'upvote' || unvote) {
-                yield database_1.default.sortedSetRemove(`uid:${uid}:downvote`, pid);
+                yield db.sortedSetRemove(`uid:${uid}:downvote`, pid);
             }
             else {
-                yield database_1.default.sortedSetAdd(`uid:${uid}:downvote`, now, pid);
+                yield db.sortedSetAdd(`uid:${uid}:downvote`, now, pid);
             }
             const postData = yield Posts.getPostFields(pid, ['pid', 'uid', 'tid']);
             const newReputation = yield user_1.default.incrementUserReputationBy(postData.uid, type === 'upvote' ? 1 : -1);
@@ -233,15 +257,15 @@ function default_1(Posts) {
         return __awaiter(this, void 0, void 0, function* () {
             const notType = (type === 'upvote' ? 'downvote' : 'upvote');
             if (unvote) {
-                yield database_1.default.setRemove(`pid:${postData.pid}:${type}`, uid);
+                yield db.setRemove(`pid:${postData.pid}:${type}`, uid);
             }
             else {
-                yield database_1.default.setAdd(`pid:${postData.pid}:${type}`, uid);
+                yield db.setAdd(`pid:${postData.pid}:${type}`, uid);
             }
-            yield database_1.default.setRemove(`pid:${postData.pid}:${notType}`, uid);
+            yield db.setRemove(`pid:${postData.pid}:${notType}`, uid);
             const [upvotes, downvotes] = yield Promise.all([
-                database_1.default.setCount(`pid:${postData.pid}:upvote`),
-                database_1.default.setCount(`pid:${postData.pid}:downvote`),
+                db.setCount(`pid:${postData.pid}:upvote`),
+                db.setCount(`pid:${postData.pid}:downvote`),
             ]);
             postData.upvotes = upvotes;
             postData.downvotes = downvotes;
@@ -263,7 +287,7 @@ function default_1(Posts) {
             }
             yield Promise.all([
                 updateTopicVoteCount(postData),
-                database_1.default.sortedSetAdd('posts:votes', postData.votes, postData.pid),
+                db.sortedSetAdd('posts:votes', postData.votes, postData.pid),
                 Posts.setPostFields(postData.pid, {
                     upvotes: postData.upvotes,
                     downvotes: postData.downvotes,
@@ -277,24 +301,24 @@ function default_1(Posts) {
             const topicData = yield topics.getTopicFields(postData.tid, ['mainPid', 'cid', 'pinned']);
             if (postData.uid) {
                 if (postData.votes !== 0) {
-                    yield database_1.default.sortedSetAdd(`cid:${topicData.cid}:uid:${postData.uid}:pids:votes`, postData.votes, postData.pid);
+                    yield db.sortedSetAdd(`cid:${topicData.cid}:uid:${postData.uid}:pids:votes`, postData.votes, postData.pid);
                 }
                 else {
-                    yield database_1.default.sortedSetRemove(`cid:${topicData.cid}:uid:${postData.uid}:pids:votes`, postData.pid);
+                    yield db.sortedSetRemove(`cid:${topicData.cid}:uid:${postData.uid}:pids:votes`, postData.pid);
                 }
             }
             if (parseInt(topicData.mainPid, 10) !== parseInt(postData.pid, 10)) {
-                return yield database_1.default.sortedSetAdd(`tid:${postData.tid}:posts:votes`, postData.votes, postData.pid);
+                return yield db.sortedSetAdd(`tid:${postData.tid}:posts:votes`, postData.votes, postData.pid);
             }
             const promises = [
                 topics.setTopicFields(postData.tid, {
                     upvotes: postData.upvotes,
                     downvotes: postData.downvotes,
                 }),
-                database_1.default.sortedSetAdd('topics:votes', postData.votes, postData.tid),
+                db.sortedSetAdd('topics:votes', postData.votes, postData.tid),
             ];
             if (!topicData.pinned) {
-                promises.push(database_1.default.sortedSetAdd(`cid:${topicData.cid}:tids:votes`, postData.votes, postData.tid));
+                promises.push(db.sortedSetAdd(`cid:${topicData.cid}:tids:votes`, postData.votes, postData.tid));
             }
             yield Promise.all(promises);
         });

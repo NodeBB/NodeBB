@@ -10,7 +10,9 @@ const validator = require('validator');
 const cronJob = require('cron').CronJob;
 const chalk = require('chalk');
 
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 const image = require('../image');
 import user from '../user';
 const topics = require('../topics');

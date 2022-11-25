@@ -1,7 +1,8 @@
 'use strict';
 
 import nconf from 'nconf';
-import db from '../../database';
+import * as database from '../../database';
+const db = database as any;
 
 export default  {
 	name: 'Optimize PostgreSQL sessions',

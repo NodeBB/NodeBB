@@ -1,6 +1,8 @@
 'use strict';
 
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 
 export default  function (User) {
 	User.getIgnoredTids = async function (uid, start, stop) {

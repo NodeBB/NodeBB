@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -16,7 +39,8 @@ const winston_1 = __importDefault(require("winston"));
 const validator = require('validator');
 const util = require('util');
 const _ = require('lodash');
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const meta_1 = __importDefault(require("../meta"));
 const events = require('../events');
 const batch = require('../batch');
@@ -28,19 +52,19 @@ function default_1(User) {
             if (!(parseInt(uid, 10) > 0)) {
                 return;
             }
-            const exists = yield database_1.default.exists(`lockout:${uid}`);
+            const exists = yield db.exists(`lockout:${uid}`);
             if (exists) {
                 throw new Error('[[error:account-locked]]');
             }
-            const attempts = yield database_1.default.increment(`loginAttempts:${uid}`);
+            const attempts = yield db.increment(`loginAttempts:${uid}`);
             if (attempts <= meta_1.default.config.loginAttempts) {
-                return yield database_1.default.pexpire(`loginAttempts:${uid}`, 1000 * 60 * 60);
+                return yield db.pexpire(`loginAttempts:${uid}`, 1000 * 60 * 60);
             }
             // Lock out the account
-            yield database_1.default.set(`lockout:${uid}`, '');
+            yield db.set(`lockout:${uid}`, '');
             const duration = 1000 * 60 * meta_1.default.config.lockoutDuration;
-            yield database_1.default.delete(`loginAttempts:${uid}`);
-            yield database_1.default.pexpire(`lockout:${uid}`, duration);
+            yield db.delete(`loginAttempts:${uid}`);
+            yield db.pexpire(`lockout:${uid}`, duration);
             yield events.log({
                 type: 'account-locked',
                 uid: uid,
@@ -54,7 +78,7 @@ function default_1(User) {
             if (!(parseInt(uid, 10) > 0)) {
                 return;
             }
-            const _token = yield database_1.default.getObjectField(`user:${uid}`, 'rss_token');
+            const _token = yield db.getObjectField(`user:${uid}`, 'rss_token');
             const token = _token || utils.generateUUID();
             if (!_token) {
                 yield User.setUserField(uid, 'rss_token', token);
@@ -64,23 +88,23 @@ function default_1(User) {
     };
     User.auth.clearLoginAttempts = function (uid) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield database_1.default.delete(`loginAttempts:${uid}`);
+            yield db.delete(`loginAttempts:${uid}`);
         });
     };
     User.auth.resetLockout = function (uid) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield database_1.default.deleteAll([
+            yield db.deleteAll([
                 `loginAttempts:${uid}`,
                 `lockout:${uid}`,
             ]);
         });
     };
-    const getSessionFromStore = util.promisify((sid, callback) => database_1.default.sessionStore.get(sid, (err, sessObj) => callback(err, sessObj || null)));
-    const sessionStoreDestroy = util.promisify((sid, callback) => database_1.default.sessionStore.destroy(sid, (err) => callback(err)));
+    const getSessionFromStore = util.promisify((sid, callback) => db.sessionStore.get(sid, (err, sessObj) => callback(err, sessObj || null)));
+    const sessionStoreDestroy = util.promisify((sid, callback) => db.sessionStore.destroy(sid, (err) => callback(err)));
     User.auth.getSessions = function (uid, curSessionId) {
         return __awaiter(this, void 0, void 0, function* () {
             yield cleanExpiredSessions(uid);
-            const sids = yield database_1.default.getSortedSetRevRange(`uid:${uid}:sessions`, 0, 19);
+            const sids = yield db.getSortedSetRevRange(`uid:${uid}:sessions`, 0, 19);
             let sessions = yield Promise.all(sids.map((sid) => getSessionFromStore(sid)));
             sessions = sessions.map((sessObj, idx) => {
                 if (sessObj && sessObj.meta) {
@@ -95,7 +119,7 @@ function default_1(User) {
     };
     function cleanExpiredSessions(uid) {
         return __awaiter(this, void 0, void 0, function* () {
-            const uuidMapping = yield database_1.default.getObject(`uid:${uid}:sessionUUID:sessionId`);
+            const uuidMapping = yield db.getObject(`uid:${uid}:sessionUUID:sessionId`);
             if (!uuidMapping) {
                 return;
             }
@@ -112,8 +136,8 @@ function default_1(User) {
                     expiredSids.push(sid);
                 }
             })));
-            yield database_1.default.deleteObjectFields(`uid:${uid}:sessionUUID:sessionId`, expiredUUIDs);
-            yield database_1.default.sortedSetRemove(`uid:${uid}:sessions`, expiredSids);
+            yield db.deleteObjectFields(`uid:${uid}:sessionUUID:sessionId`, expiredUUIDs);
+            yield db.sortedSetRemove(`uid:${uid}:sessions`, expiredSids);
         });
     }
     User.auth.addSession = function (uid, sessionId) {
@@ -122,13 +146,13 @@ function default_1(User) {
                 return;
             }
             yield cleanExpiredSessions(uid);
-            yield database_1.default.sortedSetAdd(`uid:${uid}:sessions`, Date.now(), sessionId);
+            yield db.sortedSetAdd(`uid:${uid}:sessions`, Date.now(), sessionId);
             yield revokeSessionsAboveThreshold(uid, meta_1.default.config.maxUserSessions);
         });
     };
     function revokeSessionsAboveThreshold(uid, maxUserSessions) {
         return __awaiter(this, void 0, void 0, function* () {
-            const activeSessions = yield database_1.default.getSortedSetRange(`uid:${uid}:sessions`, 0, -1);
+            const activeSessions = yield db.getSortedSetRange(`uid:${uid}:sessions`, 0, -1);
             if (activeSessions.length > maxUserSessions) {
                 const sessionsToRevoke = activeSessions.slice(0, activeSessions.length - maxUserSessions);
                 yield Promise.all(sessionsToRevoke.map((sessionId) => User.auth.revokeSession(sessionId, uid)));
@@ -140,10 +164,10 @@ function default_1(User) {
             winston_1.default.verbose(`[user.auth] Revoking session ${sessionId} for user ${uid}`);
             const sessionObj = yield getSessionFromStore(sessionId);
             if (sessionObj && sessionObj.meta && sessionObj.meta.uuid) {
-                yield database_1.default.deleteObjectField(`uid:${uid}:sessionUUID:sessionId`, sessionObj.meta.uuid);
+                yield db.deleteObjectField(`uid:${uid}:sessionUUID:sessionId`, sessionObj.meta.uuid);
             }
             yield Promise.all([
-                database_1.default.sortedSetRemove(`uid:${uid}:sessions`, sessionId),
+                db.sortedSetRemove(`uid:${uid}:sessions`, sessionId),
                 sessionStoreDestroy(sessionId),
             ]);
         });
@@ -151,7 +175,7 @@ function default_1(User) {
     User.auth.revokeAllSessions = function (uids, except) {
         return __awaiter(this, void 0, void 0, function* () {
             uids = Array.isArray(uids) ? uids : [uids];
-            const sids = yield database_1.default.getSortedSetsMembers(uids.map(uid => `uid:${uid}:sessions`));
+            const sids = yield db.getSortedSetsMembers(uids.map(uid => `uid:${uid}:sessions`));
             const promises = [];
             uids.forEach((uid, index) => {
                 const ids = sids[index].filter((id) => id !== except);
@@ -167,9 +191,9 @@ function default_1(User) {
             yield batch.processSortedSet('users:joindate', (uids) => __awaiter(this, void 0, void 0, function* () {
                 const sessionKeys = uids.map((uid) => `uid:${uid}:sessions`);
                 const sessionUUIDKeys = uids.map((uid) => `uid:${uid}:sessionUUID:sessionId`);
-                const sids = _.flatten(yield database_1.default.getSortedSetRange(sessionKeys, 0, -1));
+                const sids = _.flatten(yield db.getSortedSetRange(sessionKeys, 0, -1));
                 yield Promise.all([
-                    database_1.default.deleteAll(sessionKeys.concat(sessionUUIDKeys)),
+                    db.deleteAll(sessionKeys.concat(sessionUUIDKeys)),
                     ...sids.map((sid) => sessionStoreDestroy(sid)),
                 ]);
             }), { batch: 1000 });

@@ -3,7 +3,9 @@
 import meta from '../meta';
 const plugins = require('../plugins');
 const slugify = require('../slugify');
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 
 export default  function (Groups) {
 	Groups.create = async function (data) {

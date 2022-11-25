@@ -30,7 +30,6 @@ nconf.argv().env({
 import winston from 'winston';
 import path from 'path';
 const file = require('./src/file').default;
-console.log('FILE', file);
 
 (process as any).env.NODE_ENV = (process as any).env.NODE_ENV || 'production';
 global.env = (process as any).env.NODE_ENV || 'production';

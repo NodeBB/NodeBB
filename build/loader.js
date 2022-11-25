@@ -1,4 +1,8 @@
 'use strict';
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
 const nconf = require('nconf');
 const fs = require('fs');
 const url = require('url');
@@ -6,8 +10,8 @@ const path = require('path');
 const { fork } = require('child_process');
 const logrotate = require('logrotate-stream');
 const mkdirp = require('mkdirp');
-const file = require('./build/src/file').default;
-const pkg = require('./package.json');
+const file_1 = __importDefault(require("./src/file"));
+const pkg = require('../package.json');
 const pathToConfig = path.resolve(__dirname, process.env.CONFIG || 'config.json');
 nconf.argv().env().file({
     file: pathToConfig,
@@ -171,8 +175,7 @@ fs.open(pathToConfig, 'r', (err) => {
         return;
     }
     if (nconf.get('daemon') !== 'false' && nconf.get('daemon') !== false) {
-        console.log('FILE EXISTS SYNC', file);
-        if (file.existsSync(pidFilePath)) {
+        if (file_1.default.existsSync(pidFilePath)) {
             let pid = 0;
             try {
                 pid = fs.readFileSync(pidFilePath, { encoding: 'utf-8' });

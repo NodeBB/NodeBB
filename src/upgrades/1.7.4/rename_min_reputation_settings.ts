@@ -1,6 +1,7 @@
 'use strict';
 
-import db from '../../database';
+import * as database from '../../database';
+const db = database as any;
 
 export default  {
 	name: 'Rename privileges:downvote and privileges:flag to min:rep:downvote, min:rep:flag respectively',

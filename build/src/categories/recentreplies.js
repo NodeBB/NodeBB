@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -14,7 +37,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const winston_1 = __importDefault(require("winston"));
 const _ = require('lodash');
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const posts = require('../posts');
 const topics = require('../topics');
 const privileges = require('../privileges');
@@ -29,7 +53,7 @@ function default_1(Categories) {
                 stop = start - 1;
                 start = 0;
             }
-            let pids = yield database_1.default.getSortedSetRevRange(`cid:${cid}:pids`, start, stop);
+            let pids = yield db.getSortedSetRevRange(`cid:${cid}:pids`, start, stop);
             pids = yield privileges.posts.filter('topics:read', pids, uid);
             return yield posts.getPostSummaryByPids(pids, uid, { stripTags: true });
         });
@@ -37,18 +61,18 @@ function default_1(Categories) {
     Categories.updateRecentTid = function (cid, tid) {
         return __awaiter(this, void 0, void 0, function* () {
             const [count, numRecentReplies] = yield Promise.all([
-                database_1.default.sortedSetCard(`cid:${cid}:recent_tids`),
-                database_1.default.getObjectField(`category:${cid}`, 'numRecentReplies'),
+                db.sortedSetCard(`cid:${cid}:recent_tids`),
+                db.getObjectField(`category:${cid}`, 'numRecentReplies'),
             ]);
             if (count >= numRecentReplies) {
-                const data = yield database_1.default.getSortedSetRangeWithScores(`cid:${cid}:recent_tids`, 0, count - numRecentReplies);
+                const data = yield db.getSortedSetRangeWithScores(`cid:${cid}:recent_tids`, 0, count - numRecentReplies);
                 const shouldRemove = !(data.length === 1 && count === 1 && data[0].value === String(tid));
                 if (data.length && shouldRemove) {
-                    yield database_1.default.sortedSetsRemoveRangeByScore([`cid:${cid}:recent_tids`], '-inf', data[data.length - 1].score);
+                    yield db.sortedSetsRemoveRangeByScore([`cid:${cid}:recent_tids`], '-inf', data[data.length - 1].score);
                 }
             }
             if (numRecentReplies > 0) {
-                yield database_1.default.sortedSetAdd(`cid:${cid}:recent_tids`, Date.now(), tid);
+                yield db.sortedSetAdd(`cid:${cid}:recent_tids`, Date.now(), tid);
             }
             yield plugins.hooks.fire('action:categories.updateRecentTid', { cid: cid, tid: tid });
         });
@@ -60,7 +84,7 @@ function default_1(Categories) {
             let index = 0;
             do {
                 /* eslint-disable no-await-in-loop */
-                const pids = yield database_1.default.getSortedSetRevRange(`cid:${cid}:pids`, index, index);
+                const pids = yield db.getSortedSetRevRange(`cid:${cid}:pids`, index, index);
                 if (!pids.length) {
                     return;
                 }
@@ -94,7 +118,7 @@ function default_1(Categories) {
             else {
                 keys = categoriesToLoad.map(c => `cid:${c.cid}:recent_tids`);
             }
-            const results = yield database_1.default.getSortedSetsMembers(keys);
+            const results = yield db.getSortedSetsMembers(keys);
             let tids = _.uniq(_.flatten(results).filter(Boolean));
             tids = yield privileges.topics.filterTids('topics:read', tids, uid);
             const topics = yield getTopics(tids, uid);
@@ -186,10 +210,10 @@ function default_1(Categories) {
                 const postsToReAdd = postData.filter(p => !p.deleted && !topicDeleted);
                 const timestamps = postsToReAdd.map(p => p && p.timestamp);
                 yield Promise.all([
-                    database_1.default.sortedSetRemove(`cid:${oldCid}:pids`, pids),
-                    database_1.default.sortedSetAdd(`cid:${cid}:pids`, timestamps, postsToReAdd.map(p => p.pid)),
-                    database_1.default.sortedSetRemoveBulk(bulkRemove),
-                    database_1.default.sortedSetAddBulk(bulkAdd),
+                    db.sortedSetRemove(`cid:${oldCid}:pids`, pids),
+                    db.sortedSetAdd(`cid:${cid}:pids`, timestamps, postsToReAdd.map(p => p.pid)),
+                    db.sortedSetRemoveBulk(bulkRemove),
+                    db.sortedSetAddBulk(bulkAdd),
                 ]);
             }), { batch: 500 });
         });
@@ -201,8 +225,8 @@ function default_1(Categories) {
                 return;
             }
             yield Promise.all([
-                database_1.default.incrObjectFieldBy(`category:${oldCid}`, 'post_count', -postCount),
-                database_1.default.incrObjectFieldBy(`category:${newCid}`, 'post_count', postCount),
+                db.incrObjectFieldBy(`category:${oldCid}`, 'post_count', -postCount),
+                db.incrObjectFieldBy(`category:${newCid}`, 'post_count', postCount),
             ]);
         });
     }

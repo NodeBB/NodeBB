@@ -29,7 +29,6 @@ nconf_1.default.argv().env({
 const winston_1 = __importDefault(require("winston"));
 const path_1 = __importDefault(require("path"));
 const file = require('./src/file').default;
-console.log('FILE', file);
 process.env.NODE_ENV = process.env.NODE_ENV || 'production';
 global.env = process.env.NODE_ENV || 'production';
 // Alternate configuration file support

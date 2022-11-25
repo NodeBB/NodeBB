@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -13,7 +36,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const validator = require('validator');
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const user_1 = __importDefault(require("../user"));
 const privileges = require('../privileges');
 const plugins = require('../plugins');
@@ -27,7 +51,7 @@ require('./edit').default(Messaging);
 require('./rooms').default(Messaging);
 require('./unread').default(Messaging);
 require('./notifications').default(Messaging);
-Messaging.messageExists = (mid) => __awaiter(void 0, void 0, void 0, function* () { return database_1.default.exists(`message:${mid}`); });
+Messaging.messageExists = (mid) => __awaiter(void 0, void 0, void 0, function* () { return db.exists(`message:${mid}`); });
 Messaging.getMessages = (params) => __awaiter(void 0, void 0, void 0, function* () {
     const isNew = params.isNew || false;
     const start = params.hasOwnProperty('start') ? params.start : 0;
@@ -37,7 +61,7 @@ Messaging.getMessages = (params) => __awaiter(void 0, void 0, void 0, function* 
     if (!ok) {
         return;
     }
-    const mids = yield database_1.default.getSortedSetRevRange(`uid:${params.uid}:chat:room:${params.roomId}:mids`, start, stop);
+    const mids = yield db.getSortedSetRevRange(`uid:${params.uid}:chat:room:${params.roomId}:mids`, start, stop);
     if (!mids.length) {
         return [];
     }
@@ -82,7 +106,7 @@ Messaging.parse = (message, fromuid, uid, roomId, isNew) => __awaiter(void 0, vo
 });
 Messaging.isNewSet = (uid, roomId, timestamp) => __awaiter(void 0, void 0, void 0, function* () {
     const setKey = `uid:${uid}:chat:room:${roomId}:mids`;
-    const messages = yield database_1.default.getSortedSetRevRangeWithScores(setKey, 0, 0);
+    const messages = yield db.getSortedSetRevRangeWithScores(setKey, 0, 0);
     if (messages && messages.length) {
         return parseInt(timestamp, 10) > parseInt(messages[0].score, 10) + Messaging.newMessageCutoff;
     }
@@ -93,12 +117,12 @@ Messaging.getRecentChats = (callerUid, uid, start, stop) => __awaiter(void 0, vo
     if (!ok) {
         return null;
     }
-    const roomIds = yield database_1.default.getSortedSetRevRange(`uid:${uid}:chat:rooms`, start, stop);
+    const roomIds = yield db.getSortedSetRevRange(`uid:${uid}:chat:rooms`, start, stop);
     const results = yield utils.promiseParallel({
         roomData: Messaging.getRoomsData(roomIds),
-        unread: database_1.default.isSortedSetMembers(`uid:${uid}:chat:rooms:unread`, roomIds),
+        unread: db.isSortedSetMembers(`uid:${uid}:chat:rooms:unread`, roomIds),
         users: Promise.all(roomIds.map((roomId) => __awaiter(void 0, void 0, void 0, function* () {
-            let uids = yield database_1.default.getSortedSetRevRange(`chat:room:${roomId}:uids`, 0, 9);
+            let uids = yield db.getSortedSetRevRange(`chat:room:${roomId}:uids`, 0, 9);
             uids = uids.filter(_uid => _uid && parseInt(_uid, 10) !== parseInt(uid, 10));
             return yield user_1.default.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'lastonline']);
         }))),
@@ -159,7 +183,7 @@ Messaging.getLatestUndeletedMessage = (uid, roomId) => __awaiter(void 0, void 0,
     let mids;
     while (!done) {
         /* eslint-disable no-await-in-loop */
-        mids = yield database_1.default.getSortedSetRevRange(`uid:${uid}:chat:room:${roomId}:mids`, index, index);
+        mids = yield db.getSortedSetRevRange(`uid:${uid}:chat:room:${roomId}:mids`, index, index);
         if (mids.length) {
             const states = yield Messaging.getMessageFields(mids[0], ['deleted', 'system']);
             done = !states.deleted && !states.system;
@@ -242,8 +266,8 @@ Messaging.hasPrivateChat = (uid, withUid) => __awaiter(void 0, void 0, void 0, f
         return 0;
     }
     const results = yield utils.promiseParallel({
-        myRooms: database_1.default.getSortedSetRevRange(`uid:${uid}:chat:rooms`, 0, -1),
-        theirRooms: database_1.default.getSortedSetRevRange(`uid:${withUid}:chat:rooms`, 0, -1),
+        myRooms: db.getSortedSetRevRange(`uid:${uid}:chat:rooms`, 0, -1),
+        theirRooms: db.getSortedSetRevRange(`uid:${withUid}:chat:rooms`, 0, -1),
     });
     const roomIds = results.myRooms.filter(roomId => roomId && results.theirRooms.includes(roomId));
     if (!roomIds.length) {
@@ -269,7 +293,7 @@ Messaging.canViewMessage = (mids, roomId, uid) => __awaiter(void 0, void 0, void
         mids = [mids];
         single = true;
     }
-    const canView = yield database_1.default.isSortedSetMembers(`uid:${uid}:chat:room:${roomId}:mids`, mids);
+    const canView = yield db.isSortedSetMembers(`uid:${uid}:chat:room:${roomId}:mids`, mids);
     return single ? canView.pop() : canView;
 });
 require('../promisify').promisify(Messaging);

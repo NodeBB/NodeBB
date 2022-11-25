@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,12 +31,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const async = require('async');
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const batch = require('../batch');
 const plugins = require('../plugins');
 const topics = require('../topics');
@@ -28,7 +49,7 @@ function default_1(Categories) {
                     yield topics.purgePostsAndTopic(tid, uid);
                 }));
             }), { alwaysStartAt: 0 });
-            const pinnedTids = yield database_1.default.getSortedSetRevRange(`cid:${cid}:tids:pinned`, 0, -1);
+            const pinnedTids = yield db.getSortedSetRevRange(`cid:${cid}:tids:pinned`, 0, -1);
             yield async.eachLimit(pinnedTids, 10, (tid) => __awaiter(this, void 0, void 0, function* () {
                 yield topics.purgePostsAndTopic(tid, uid);
             }));
@@ -43,10 +64,10 @@ function default_1(Categories) {
             if (categoryData && categoryData.name) {
                 bulkRemove.push(['categories:name', `${categoryData.name.slice(0, 200).toLowerCase()}:${cid}`]);
             }
-            yield database_1.default.sortedSetRemoveBulk(bulkRemove);
+            yield db.sortedSetRemoveBulk(bulkRemove);
             yield removeFromParent(cid);
             yield deleteTags(cid);
-            yield database_1.default.deleteAll([
+            yield db.deleteAll([
                 `cid:${cid}:tids`,
                 `cid:${cid}:tids:pinned`,
                 `cid:${cid}:tids:posts`,
@@ -69,7 +90,7 @@ function default_1(Categories) {
         return __awaiter(this, void 0, void 0, function* () {
             const [parentCid, children] = yield Promise.all([
                 Categories.getCategoryField(cid, 'parentCid'),
-                database_1.default.getSortedSetRange(`cid:${cid}:children`, 0, -1),
+                db.getSortedSetRange(`cid:${cid}:children`, 0, -1),
             ]);
             const bulkAdd = [];
             const childrenKeys = children.map((cid) => {
@@ -77,9 +98,9 @@ function default_1(Categories) {
                 return `category:${cid}`;
             });
             yield Promise.all([
-                database_1.default.sortedSetRemove(`cid:${parentCid}:children`, cid),
-                database_1.default.setObjectField(childrenKeys, 'parentCid', 0),
-                database_1.default.sortedSetAddBulk(bulkAdd),
+                db.sortedSetRemove(`cid:${parentCid}:children`, cid),
+                db.setObjectField(childrenKeys, 'parentCid', 0),
+                db.sortedSetAddBulk(bulkAdd),
             ]);
             cache.del([
                 'categories:cid',
@@ -94,9 +115,9 @@ function default_1(Categories) {
     }
     function deleteTags(cid) {
         return __awaiter(this, void 0, void 0, function* () {
-            const tags = yield database_1.default.getSortedSetMembers(`cid:${cid}:tags`);
-            yield database_1.default.deleteAll(tags.map(tag => `cid:${cid}:tag:${tag}:topics`));
-            yield database_1.default.delete(`cid:${cid}:tags`);
+            const tags = yield db.getSortedSetMembers(`cid:${cid}:tags`);
+            yield db.deleteAll(tags.map(tag => `cid:${cid}:tag:${tag}:topics`));
+            yield db.delete(`cid:${cid}:tags`);
         });
     }
 }

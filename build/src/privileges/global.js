@@ -14,10 +14,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const _ = require('lodash');
 const user_1 = __importDefault(require("../user"));
-const groups = require('../groups');
-const helpers = require('./helpers').defualt;
-const plugins = require('../plugins');
-const utils = require('../utils');
+const groups_1 = __importDefault(require("../groups"));
+const helpers_1 = __importDefault(require("./helpers"));
+const plugins_1 = __importDefault(require("../plugins"));
+const utils_1 = __importDefault(require("../utils"));
 const privsGlobal = {};
 /**
  * Looking to add a new global privilege via plugin/theme? Attach a hook to
@@ -42,8 +42,8 @@ const _privilegeMap = new Map([
     ['mute', { label: '[[admin/manage/privileges:mute]]' }],
     ['view:users:info', { label: '[[admin/manage/privileges:view-users-info]]' }],
 ]);
-privsGlobal.getUserPrivilegeList = () => __awaiter(void 0, void 0, void 0, function* () { return yield plugins.hooks.fire('filter:privileges.global.list', Array.from(_privilegeMap.keys())); });
-privsGlobal.getGroupPrivilegeList = () => __awaiter(void 0, void 0, void 0, function* () { return yield plugins.hooks.fire('filter:privileges.global.groups.list', Array.from(_privilegeMap.keys()).map(privilege => `groups:${privilege}`)); });
+privsGlobal.getUserPrivilegeList = () => __awaiter(void 0, void 0, void 0, function* () { return yield plugins_1.default.hooks.fire('filter:privileges.global.list', Array.from(_privilegeMap.keys())); });
+privsGlobal.getGroupPrivilegeList = () => __awaiter(void 0, void 0, void 0, function* () { return yield plugins_1.default.hooks.fire('filter:privileges.global.groups.list', Array.from(_privilegeMap.keys()).map(privilege => `groups:${privilege}`)); });
 privsGlobal.getPrivilegeList = () => __awaiter(void 0, void 0, void 0, function* () {
     const [user, group] = yield Promise.all([
         privsGlobal.getUserPrivilegeList(),
@@ -53,7 +53,7 @@ privsGlobal.getPrivilegeList = () => __awaiter(void 0, void 0, void 0, function*
 });
 privsGlobal.init = () => __awaiter(void 0, void 0, void 0, function* () {
     privsGlobal._coreSize = _privilegeMap.size;
-    yield plugins.hooks.fire('static:privileges.global.init', {
+    yield plugins_1.default.hooks.fire('static:privileges.global.init', {
         privileges: _privilegeMap,
     });
 });
@@ -62,20 +62,20 @@ privsGlobal.list = function () {
         function getLabels() {
             return __awaiter(this, void 0, void 0, function* () {
                 const labels = Array.from(_privilegeMap.values()).map(data => data.label);
-                return yield utils.promiseParallel({
-                    users: plugins.hooks.fire('filter:privileges.global.list_human', labels.slice()),
-                    groups: plugins.hooks.fire('filter:privileges.global.groups.list_human', labels.slice()),
+                return yield utils_1.default.promiseParallel({
+                    users: plugins_1.default.hooks.fire('filter:privileges.global.list_human', labels.slice()),
+                    groups: plugins_1.default.hooks.fire('filter:privileges.global.groups.list_human', labels.slice()),
                 });
             });
         }
-        const keys = yield utils.promiseParallel({
+        const keys = yield utils_1.default.promiseParallel({
             users: privsGlobal.getUserPrivilegeList(),
             groups: privsGlobal.getGroupPrivilegeList(),
         });
-        const payload = yield utils.promiseParallel({
+        const payload = yield utils_1.default.promiseParallel({
             labels: getLabels(),
-            users: helpers.getUserPrivileges(0, keys.users),
-            groups: helpers.getGroupPrivileges(0, keys.groups),
+            users: helpers_1.default.getUserPrivileges(0, keys.users),
+            groups: helpers_1.default.getGroupPrivileges(0, keys.groups),
         });
         payload.keys = keys;
         payload.columnCountUserOther = keys.users.length - privsGlobal._coreSize;
@@ -87,26 +87,26 @@ privsGlobal.get = function (uid) {
     return __awaiter(this, void 0, void 0, function* () {
         const userPrivilegeList = yield privsGlobal.getUserPrivilegeList();
         const [userPrivileges, isAdministrator] = yield Promise.all([
-            helpers.isAllowedTo(userPrivilegeList, uid, 0),
+            helpers_1.default.isAllowedTo(userPrivilegeList, uid, 0),
             user_1.default.isAdministrator(uid),
         ]);
         const combined = userPrivileges.map(allowed => allowed || isAdministrator);
         const privData = _.zipObject(userPrivilegeList, combined);
-        return yield plugins.hooks.fire('filter:privileges.global.get', privData);
+        return yield plugins_1.default.hooks.fire('filter:privileges.global.get', privData);
     });
 };
 privsGlobal.can = function (privilege, uid) {
     return __awaiter(this, void 0, void 0, function* () {
         const [isAdministrator, isUserAllowedTo] = yield Promise.all([
             user_1.default.isAdministrator(uid),
-            helpers.isAllowedTo(privilege, uid, [0]),
+            helpers_1.default.isAllowedTo(privilege, uid, [0]),
         ]);
         return isAdministrator || isUserAllowedTo[0];
     });
 };
 privsGlobal.canGroup = function (privilege, groupName) {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield groups.isMember(groupName, `cid:0:privileges:groups:${privilege}`);
+        return yield groups_1.default.isMember(groupName, `cid:0:privileges:groups:${privilege}`);
     });
 };
 privsGlobal.filterUids = function (privilege, uids) {
@@ -117,8 +117,8 @@ privsGlobal.filterUids = function (privilege, uids) {
 };
 privsGlobal.give = function (privileges, groupName) {
     return __awaiter(this, void 0, void 0, function* () {
-        yield helpers.giveOrRescind(groups.join, privileges, 0, groupName);
-        plugins.hooks.fire('action:privileges.global.give', {
+        yield helpers_1.default.giveOrRescind(groups_1.default.join, privileges, 0, groupName);
+        plugins_1.default.hooks.fire('action:privileges.global.give', {
             privileges: privileges,
             groupNames: Array.isArray(groupName) ? groupName : [groupName],
         });
@@ -126,8 +126,8 @@ privsGlobal.give = function (privileges, groupName) {
 };
 privsGlobal.rescind = function (privileges, groupName) {
     return __awaiter(this, void 0, void 0, function* () {
-        yield helpers.giveOrRescind(groups.leave, privileges, 0, groupName);
-        plugins.hooks.fire('action:privileges.global.rescind', {
+        yield helpers_1.default.giveOrRescind(groups_1.default.leave, privileges, 0, groupName);
+        plugins_1.default.hooks.fire('action:privileges.global.rescind', {
             privileges: privileges,
             groupNames: Array.isArray(groupName) ? groupName : [groupName],
         });
@@ -136,12 +136,13 @@ privsGlobal.rescind = function (privileges, groupName) {
 privsGlobal.userPrivileges = function (uid) {
     return __awaiter(this, void 0, void 0, function* () {
         const userPrivilegeList = yield privsGlobal.getUserPrivilegeList();
-        return yield helpers.userOrGroupPrivileges(0, uid, userPrivilegeList);
+        return yield helpers_1.default.userOrGroupPrivileges(0, uid, userPrivilegeList);
     });
 };
 privsGlobal.groupPrivileges = function (groupName) {
     return __awaiter(this, void 0, void 0, function* () {
         const groupPrivilegeList = yield privsGlobal.getGroupPrivilegeList();
-        return yield helpers.userOrGroupPrivileges(0, groupName, groupPrivilegeList);
+        return yield helpers_1.default.userOrGroupPrivileges(0, groupName, groupPrivilegeList);
     });
 };
+exports.default = privsGlobal;

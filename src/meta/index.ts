@@ -72,5 +72,5 @@ Meta.getSessionTTLSeconds = function () {
 };
 
 require('../promisify').promisify(Meta);
-
+console.log('METAAA', Meta);
 export default Meta;

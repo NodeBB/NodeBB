@@ -4,7 +4,10 @@ const validator = require('validator');
 import winston from 'winston';
 const cronJob = require('cron').CronJob;
 
-import db from '../database';
+// 
+import { primaryDB as database } from '../database';
+const db = database as any;
+
 import meta from '../meta';
 const emailer = require('../emailer');
 const notifications = require('../notifications');
@@ -30,19 +33,19 @@ export default  function (User) {
 			hashedPassword: hashedPassword,
 		} as any;
 		const results = await plugins.hooks.fire('filter:user.addToApprovalQueue', { data: data, userData: userData });
-		await db.setObject(`registration:queue:name:${userData.username}`, results.data);
-		await db.sortedSetAdd('registration:queue', Date.now(), userData.username);
+		await db.default.setObject(`registration:queue:name:${userData.username}`, results.data);
+		await db.default.sortedSetAdd('registration:queue', Date.now(), userData.username);
 		await sendNotificationToAdmins(userData.username);
 	};
 
 	async function canQueue(userData) {
 		await User.isDataValid(userData);
-		const usernames = await db.getSortedSetRange('registration:queue', 0, -1);
+		const usernames = await db.default.getSortedSetRange('registration:queue', 0, -1);
 		if (usernames.includes(userData.username)) {
 			throw new Error('[[error:username-taken]]');
 		}
 		const keys = usernames.filter(Boolean).map((username: string) => `registration:queue:name:${username}`);
-		const data = await db.getObjectsFields(keys, ['email']);
+		const data = await db.default.getObjectsFields(keys, ['email']);
 		const emails = data.map((data) => data && data.email).filter(Boolean);
 		if (userData.email && emails.includes(userData.email)) {
 			throw new Error('[[error:email-taken]]');
@@ -61,11 +64,11 @@ export default  function (User) {
 	}
 
 	User.acceptRegistration = async function (username: string) {
-		const userData = await db.getObject(`registration:queue:name:${username}`);
+		const userData = await db.default.getObject(`registration:queue:name:${username}`);
 		if (!userData) {
 			throw new Error('[[error:invalid-data]]');
 		}
-		const creation_time = await db.sortedSetScore('registration:queue', username);
+		const creation_time = await db.default.sortedSetScore('registration:queue', username);
 		const uid = await User.create(userData);
 		await User.setUserFields(uid, {
 			password: userData.hashedPassword,
@@ -80,9 +83,9 @@ export default  function (User) {
 			template: 'registration_accepted',
 			uid: uid,
 		}).catch((err: Error) => winston.error(`[emailer.send] ${err.stack}`));
-		const total = await db.incrObjectFieldBy('registration:queue:approval:times', 'totalTime', Math.floor((Date.now() - creation_time) / 60000));
-		const counter = await db.incrObjectField('registration:queue:approval:times', 'counter');
-		await db.setObjectField('registration:queue:approval:times', 'average', total / counter);
+		const total = await db.default.incrObjectFieldBy('registration:queue:approval:times', 'totalTime', Math.floor((Date.now() - creation_time) / 60000));
+		const counter = await db.default.incrObjectField('registration:queue:approval:times', 'counter');
+		await db.default.setObjectField('registration:queue:approval:times', 'average', total / counter);
 		return uid;
 	};
 
@@ -100,8 +103,8 @@ export default  function (User) {
 
 	async function removeFromQueue(username: string) {
 		await Promise.all([
-			db.sortedSetRemove('registration:queue', username),
-			db.delete(`registration:queue:name:${username}`),
+			db.default.sortedSetRemove('registration:queue', username),
+			db.default.delete(`registration:queue:name:${username}`),
 		]);
 	}
 
@@ -110,16 +113,16 @@ export default  function (User) {
 		if (registrationApprovalType === 'admin-approval') {
 			return true;
 		} else if (registrationApprovalType === 'admin-approval-ip') {
-			const count = await db.sortedSetCard(`ip:${ip}:uid`);
+			const count = await db.default.sortedSetCard(`ip:${ip}:uid`);
 			return !!count;
 		}
 		return false;
 	};
 
 	User.getRegistrationQueue = async function (start: number, stop: number) {
-		const data = await db.getSortedSetRevRangeWithScores('registration:queue', start, stop);
+		const data = await db.default.getSortedSetRevRangeWithScores('registration:queue', start, stop);
 		const keys = data.filter(Boolean).map((user) => `registration:queue:name:${user.value}`);
-		let users = await db.getObjects(keys);
+		let users = await db.default.getObjects(keys);
 		users = users.filter(Boolean).map((user, index: number) => {
 			user.timestampISO = utils.toISOString(data[index].score);
 			user.email = validator.escape(String(user.email));
@@ -157,7 +160,7 @@ export default  function (User) {
 		if (meta.config.autoApproveTime <= 0) {
 			return;
 		}
-		const users = await db.getSortedSetRevRangeWithScores('registration:queue', 0, -1);
+		const users = await db.default.getSortedSetRevRangeWithScores('registration:queue', 0, -1);
 		const now = Date.now();
 		for (const user of users.filter((user) => now - user.score >= meta.config.autoApproveTime * 3600000)) {
 			// eslint-disable-next-line no-await-in-loop

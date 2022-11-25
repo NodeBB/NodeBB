@@ -8,7 +8,7 @@ const plugins = require('../../plugins');
 cacheController.get = async function (req, res) {
 	const postCache = require('../../posts/cache');
 	const groupCache = require('../../groups').cache;
-	const { objectCache } = require('../../database');
+	const { objectCache } = require('../../database').default.default;
 	const localCache = require('../../cache');
 
 	function getInfo(cache) {

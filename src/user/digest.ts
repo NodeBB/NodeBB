@@ -3,7 +3,9 @@
 import winston from 'winston';
 import nconf from 'nconf';
 
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 const batch = require('../batch');
 import meta from '../meta';
 const user = require('./index');

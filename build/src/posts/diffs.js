@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -14,7 +37,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const validator = require('validator');
 const diff = require('diff');
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const meta_1 = __importDefault(require("../meta"));
 const plugins = require('../plugins');
 const translator = require('../translator');
@@ -27,7 +51,7 @@ function default_1(Posts) {
             if (meta_1.default.config.enablePostHistory !== 1) {
                 return false;
             }
-            const numDiffs = yield database_1.default.listLength(`post:${pid}:diffs`);
+            const numDiffs = yield db.listLength(`post:${pid}:diffs`);
             return !!numDiffs;
         });
     };
@@ -40,12 +64,12 @@ function default_1(Posts) {
             // Pass those made after `since`, and create keys
             const keys = timestamps.filter((t) => (parseInt(t, 10) || 0) > since)
                 .map((t) => `diff:${pid}.${t}`);
-            return yield database_1.default.getObjects(keys);
+            return yield db.getObjects(keys);
         });
     };
     Diffs.list = function (pid) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield database_1.default.getListRange(`post:${pid}:diffs`, 0, -1);
+            return yield db.getListRange(`post:${pid}:diffs`, 0, -1);
         });
     };
     Diffs.save = function (data) {
@@ -66,8 +90,8 @@ function default_1(Posts) {
                 diffData.tags = topic.oldTags.map(tag => tag && tag.value).filter(Boolean).join(',');
             }
             yield Promise.all([
-                database_1.default.listPrepend(`post:${pid}:diffs`, editTimestamp),
-                database_1.default.setObject(`diff:${pid}.${editTimestamp}`, diffData),
+                db.listPrepend(`post:${pid}:diffs`, editTimestamp),
+                db.setObject(`diff:${pid}.${editTimestamp}`, diffData),
             ]);
         });
     };
@@ -109,8 +133,8 @@ function default_1(Posts) {
             if (timestamp === String(post[0].timestamp)) {
                 // Deleting oldest diff, so history rewrite is not needed
                 return Promise.all([
-                    database_1.default.delete(`diff:${pid}.${timestamps[lastTimestampIndex]}`),
-                    database_1.default.listRemoveAll(`post:${pid}:diffs`, timestamps[lastTimestampIndex]),
+                    db.delete(`diff:${pid}.${timestamps[lastTimestampIndex]}`),
+                    db.listRemoveAll(`post:${pid}:diffs`, timestamps[lastTimestampIndex]),
                 ]);
             }
             if (timestampIndex === 0 || timestampIndex === -1) {
@@ -129,11 +153,11 @@ function default_1(Posts) {
                 const timestampToUpdate = newContentIndex + 1;
                 const newContent = newContentIndex < 0 ? postContent : versionContents[timestamps[newContentIndex]];
                 const patch = diff.createPatch('', newContent, versionContents[timestamps[i]]);
-                yield database_1.default.setObject(`diff:${pid}.${timestamps[timestampToUpdate]}`, { patch });
+                yield db.setObject(`diff:${pid}.${timestamps[timestampToUpdate]}`, { patch });
             }
             return Promise.all([
-                database_1.default.delete(`diff:${pid}.${timestamp}`),
-                database_1.default.listRemoveAll(`post:${pid}:diffs`, timestamp),
+                db.delete(`diff:${pid}.${timestamp}`),
+                db.listRemoveAll(`post:${pid}:diffs`, timestamp),
             ]);
         });
     };

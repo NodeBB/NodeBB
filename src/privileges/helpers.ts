@@ -178,6 +178,7 @@ helpers.giveOrRescind = async function (method, privileges, cids, members) {
 				groupKeys.push(`cid:${cid}:privileges:${privilege}`);
 			});
 		});
+		console.log('METHDD', method);
 		/* eslint-disable no-await-in-loop */
 		await method(groupKeys, member);
 	}

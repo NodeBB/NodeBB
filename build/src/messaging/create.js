@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -14,7 +37,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const meta_1 = __importDefault(require("../meta"));
 const plugins = require('../plugins');
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const user_1 = __importDefault(require("../user"));
 function default_1(Messaging) {
     Messaging.sendMessage = (data) => __awaiter(this, void 0, void 0, function* () {
@@ -41,7 +65,7 @@ function default_1(Messaging) {
         }
     });
     Messaging.addMessage = (data) => __awaiter(this, void 0, void 0, function* () {
-        const mid = yield database_1.default.incrObjectField('global', 'nextMid');
+        const mid = yield db.incrObjectField('global', 'nextMid');
         const timestamp = data.timestamp || Date.now();
         let message = {
             content: String(data.content),
@@ -55,9 +79,9 @@ function default_1(Messaging) {
             message.ip = data.ip;
         }
         message = yield plugins.hooks.fire('filter:messaging.save', message);
-        yield database_1.default.setObject(`message:${mid}`, message);
+        yield db.setObject(`message:${mid}`, message);
         const isNewSet = yield Messaging.isNewSet(data.uid, data.roomId, timestamp);
-        let uids = yield database_1.default.getSortedSetRange(`chat:room:${data.roomId}:uids`, 0, -1);
+        let uids = yield db.getSortedSetRange(`chat:room:${data.roomId}:uids`, 0, -1);
         uids = yield user_1.default.blocks.filterUids(data.uid, uids);
         yield Promise.all([
             Messaging.addRoomToUsers(data.roomId, uids, timestamp),
@@ -88,14 +112,14 @@ function default_1(Messaging) {
             return;
         }
         const keys = uids.map(uid => `uid:${uid}:chat:rooms`);
-        yield database_1.default.sortedSetsAdd(keys, timestamp, roomId);
+        yield db.sortedSetsAdd(keys, timestamp, roomId);
     });
     Messaging.addMessageToUsers = (roomId, uids, mid, timestamp) => __awaiter(this, void 0, void 0, function* () {
         if (!uids.length) {
             return;
         }
         const keys = uids.map(uid => `uid:${uid}:chat:room:${roomId}:mids`);
-        yield database_1.default.sortedSetsAdd(keys, timestamp, mid);
+        yield db.sortedSetsAdd(keys, timestamp, mid);
     });
 }
 exports.default = default_1;

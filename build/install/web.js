@@ -121,9 +121,9 @@ function welcome(req, res) {
     res.render('install/index', {
         url: nconf.get('url') || (`${req.protocol}://${req.get('host')}`),
         launchUrl: launchUrl,
-        skipGeneralSetup: !!nconf.get('url'),
+        skipGeneralSetup: true,
         databases: databases,
-        skipDatabaseSetup: !!nconf.get('database'),
+        skipDatabaseSetup: true,
         error: error,
         success: success,
         values: req.body,
@@ -133,16 +133,15 @@ function welcome(req, res) {
     });
 }
 function install(req, res) {
-    if (installing) {
-        return welcome(req, res);
-    }
+    // if (installing) {
+    // 	return welcome(req, res);
+    // }
     req.setTimeout(0);
     installing = true;
     const database = nconf.get('database') || req.body.database || 'mongo';
     const setupEnvVars = Object.assign(Object.assign({}, process.env), { NODEBB_URL: nconf.get('url') || req.body.url || (`${req.protocol}://${req.get('host')}`), NODEBB_PORT: nconf.get('port') || 4567, NODEBB_ADMIN_USERNAME: nconf.get('admin:username') || req.body['admin:username'], NODEBB_ADMIN_PASSWORD: nconf.get('admin:password') || req.body['admin:password'], NODEBB_ADMIN_EMAIL: nconf.get('admin:email') || req.body['admin:email'], NODEBB_DB: database, NODEBB_DB_HOST: nconf.get(`${database}:host`) || req.body[`${database}:host`], NODEBB_DB_PORT: nconf.get(`${database}:port`) || req.body[`${database}:port`], NODEBB_DB_USER: nconf.get(`${database}:username`) || req.body[`${database}:username`], NODEBB_DB_PASSWORD: nconf.get(`${database}:password`) || req.body[`${database}:password`], NODEBB_DB_NAME: nconf.get(`${database}:database`) || req.body[`${database}:database`], NODEBB_DB_SSL: nconf.get(`${database}:ssl`) || req.body[`${database}:ssl`], defaultPlugins: JSON.stringify(nconf.get('defaultplugins') || nconf.get('defaultPlugins') || []) });
     winston.info('Starting setup process');
     launchUrl = setupEnvVars.NODEBB_URL;
-    console.log('STARTING CHILD PROCESS!!!', __dirname);
     const child = require('child_process').fork('build/app', ['--setup'], {
         env: setupEnvVars,
     });
@@ -178,8 +177,8 @@ function launch(req, res) {
                 });
             }
             const filesToDelete = [
-                path.join(__dirname, '../public', 'installer.css'),
-                path.join(__dirname, '../public', 'bootstrap.min.css'),
+                path.join(__dirname, '../../public', 'installer.css'),
+                path.join(__dirname, '../../public', 'bootstrap.min.css'),
                 path.join(__dirname, '../build/public', 'installer.min.js'),
             ];
             try {
@@ -224,6 +223,7 @@ function compileSass() {
                     path.join(__dirname, '../../public/scss'),
                 ],
             });
+            console.log('BOOOMINGGGG!!!!');
             yield fs.promises.writeFile(path.join(__dirname, '../../public/installer.css'), scssOutput.css.toString());
         }
         catch (err) {

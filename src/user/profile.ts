@@ -8,7 +8,9 @@ import winston from 'winston';
 const utils = require('../utils');
 const slugify = require('../slugify');
 import meta from '../meta';
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 const groups = require('../groups');
 const plugins = require('../plugins');
 

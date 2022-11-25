@@ -17,8 +17,7 @@ const winston_1 = __importDefault(require("winston"));
 const path_1 = __importDefault(require("path"));
 const nconf_1 = __importDefault(require("nconf"));
 const build_1 = require("../meta/build");
-const { install } = require('../../install/web');
-console.log('WEB INSTALL::::', install);
+const { default: { install } } = require('../../install/web');
 function setup(initConfig) {
     return __awaiter(this, void 0, void 0, function* () {
         const { paths } = require('../constants');

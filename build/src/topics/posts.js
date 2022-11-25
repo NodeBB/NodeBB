@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -15,7 +38,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const _ = require('lodash');
 const validator = require('validator');
 const nconf_1 = __importDefault(require("nconf"));
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const user_1 = __importDefault(require("../user"));
 const posts = require('../posts');
 const meta_1 = __importDefault(require("../meta"));
@@ -101,7 +125,7 @@ function default_1(Topics) {
                 lastPost.eventStart = reverse ? topicData.timestamp : lastPost.timestamp;
                 lastPost.eventEnd = reverse ? lastPost.timestamp : Date.now();
                 if (lastPost.index) {
-                    const nextPost = yield database_1.default[reverse ? 'getSortedSetRevRangeWithScores' : 'getSortedSetRangeWithScores'](set, lastPost.index, lastPost.index);
+                    const nextPost = yield db[reverse ? 'getSortedSetRevRangeWithScores' : 'getSortedSetRangeWithScores'](set, lastPost.index, lastPost.index);
                     if (reverse) {
                         lastPost.eventStart = nextPost.length ? nextPost[0].score : lastPost.eventStart;
                     }
@@ -222,7 +246,7 @@ function default_1(Topics) {
             let index = 0;
             do {
                 /* eslint-disable no-await-in-loop */
-                const pids = yield database_1.default.getSortedSetRevRange(`tid:${tid}:posts`, index, index);
+                const pids = yield db.getSortedSetRevRange(`tid:${tid}:posts`, index, index);
                 if (!pids.length) {
                     return null;
                 }
@@ -244,27 +268,27 @@ function default_1(Topics) {
                 const upvotes = parseInt(postData.upvotes, 10) || 0;
                 const downvotes = parseInt(postData.downvotes, 10) || 0;
                 const votes = upvotes - downvotes;
-                yield database_1.default.sortedSetsAdd([
+                yield db.sortedSetsAdd([
                     `tid:${tid}:posts`, `tid:${tid}:posts:votes`,
                 ], [postData.timestamp, votes], postData.pid);
             }
             yield Topics.increasePostCount(tid);
-            yield database_1.default.sortedSetIncrBy(`tid:${tid}:posters`, 1, postData.uid);
-            const posterCount = yield database_1.default.sortedSetCard(`tid:${tid}:posters`);
+            yield db.sortedSetIncrBy(`tid:${tid}:posters`, 1, postData.uid);
+            const posterCount = yield db.sortedSetCard(`tid:${tid}:posters`);
             yield Topics.setTopicField(tid, 'postercount', posterCount);
             yield Topics.updateTeaser(tid);
         });
     };
     Topics.removePostFromTopic = function (tid, postData) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield database_1.default.sortedSetsRemove([
+            yield db.sortedSetsRemove([
                 `tid:${tid}:posts`,
                 `tid:${tid}:posts:votes`,
             ], postData.pid);
             yield Topics.decreasePostCount(tid);
-            yield database_1.default.sortedSetIncrBy(`tid:${tid}:posters`, -1, postData.uid);
-            yield database_1.default.sortedSetsRemoveRangeByScore([`tid:${tid}:posters`], '-inf', 0);
-            const posterCount = yield database_1.default.sortedSetCard(`tid:${tid}:posters`);
+            yield db.sortedSetIncrBy(`tid:${tid}:posters`, -1, postData.uid);
+            yield db.sortedSetsRemoveRangeByScore([`tid:${tid}:posters`], '-inf', 0);
+            const posterCount = yield db.sortedSetCard(`tid:${tid}:posters`);
             yield Topics.setTopicField(tid, 'postercount', posterCount);
             yield Topics.updateTeaser(tid);
         });
@@ -273,7 +297,7 @@ function default_1(Topics) {
         return __awaiter(this, void 0, void 0, function* () {
             let [mainPid, pids] = yield Promise.all([
                 Topics.getTopicField(tid, 'mainPid'),
-                database_1.default.getSortedSetRange(`tid:${tid}:posts`, 0, -1),
+                db.getSortedSetRange(`tid:${tid}:posts`, 0, -1),
             ]);
             if (parseInt(mainPid, 10)) {
                 pids = [mainPid].concat(pids);
@@ -299,8 +323,8 @@ function default_1(Topics) {
     };
     function incrementFieldAndUpdateSortedSet(tid, field, by, set) {
         return __awaiter(this, void 0, void 0, function* () {
-            const value = yield database_1.default.incrObjectFieldBy(`topic:${tid}`, field, by);
-            yield database_1.default[Array.isArray(set) ? 'sortedSetsAdd' : 'sortedSetAdd'](set, value, tid);
+            const value = yield db.incrObjectFieldBy(`topic:${tid}`, field, by);
+            yield db[Array.isArray(set) ? 'sortedSetsAdd' : 'sortedSetAdd'](set, value, tid);
         });
     }
     Topics.getTitleByPid = function (pid) {
@@ -322,13 +346,13 @@ function default_1(Topics) {
     };
     Topics.getPostCount = function (tid) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield database_1.default.getObjectField(`topic:${tid}`, 'postcount');
+            return yield db.getObjectField(`topic:${tid}`, 'postcount');
         });
     };
     function getPostReplies(pids, callerUid) {
         return __awaiter(this, void 0, void 0, function* () {
             const keys = pids.map(pid => `pid:${pid}:replies`);
-            const arrayOfReplyPids = yield database_1.default.getSortedSetsMembers(keys);
+            const arrayOfReplyPids = yield db.getSortedSetsMembers(keys);
             const uniquePids = _.uniq(_.flatten(arrayOfReplyPids));
             let replyData = yield posts.getPostsFields(uniquePids, ['pid', 'uid', 'timestamp']);
             const result = yield plugins.hooks.fire('filter:topics.getPostReplies', {
@@ -381,13 +405,13 @@ function default_1(Topics) {
         let add = _.uniq(matches.map(match => match[1]).map(tid => parseInt(tid, 10)));
         const now = Date.now();
         const topicsExist = yield Topics.exists(add);
-        const current = (yield database_1.default.getSortedSetMembers(`pid:${pid}:backlinks`)).map((tid) => parseInt(tid, 10));
+        const current = (yield db.getSortedSetMembers(`pid:${pid}:backlinks`)).map((tid) => parseInt(tid, 10));
         const remove = current.filter((tid) => !add.includes(tid));
         add = add.filter((_tid, idx) => topicsExist[idx] && !current.includes(_tid) && tid !== _tid);
         // Remove old backlinks
-        yield database_1.default.sortedSetRemove(`pid:${pid}:backlinks`, remove);
+        yield db.sortedSetRemove(`pid:${pid}:backlinks`, remove);
         // Add new backlinks
-        yield database_1.default.sortedSetAdd(`pid:${pid}:backlinks`, add.map(() => now), add);
+        yield db.sortedSetAdd(`pid:${pid}:backlinks`, add.map(() => now), add);
         yield Promise.all(add.map((tid) => __awaiter(this, void 0, void 0, function* () {
             yield Topics.events.log(tid, {
                 uid,

@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -13,7 +36,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const _ = require('lodash');
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const meta_1 = __importDefault(require("../meta"));
 const user_1 = __importDefault(require("../user"));
 const posts = require('../posts');
@@ -85,11 +109,11 @@ Events.get = (tid, uid, reverse = false) => __awaiter(void 0, void 0, void 0, fu
     if (!(yield topics.exists(tid))) {
         throw new Error('[[error:no-topic]]');
     }
-    let eventIds = yield database_1.default.getSortedSetRangeWithScores(`topic:${tid}:events`, 0, -1);
+    let eventIds = yield db.getSortedSetRangeWithScores(`topic:${tid}:events`, 0, -1);
     const keys = eventIds.map(obj => `topicEvent:${obj.value}`);
     const timestamps = eventIds.map(obj => obj.score);
     eventIds = eventIds.map(obj => obj.value);
-    let events = yield database_1.default.getObjects(keys);
+    let events = yield db.getObjects(keys);
     events = yield modifyEvent({ tid, uid, eventIds, timestamps, events });
     if (reverse) {
         events.reverse();
@@ -175,10 +199,10 @@ Events.log = (tid, payload) => __awaiter(void 0, void 0, void 0, function* () {
     else if (!(yield topics.exists(tid))) {
         throw new Error('[[error:no-topic]]');
     }
-    const eventId = yield database_1.default.incrObjectField('global', 'nextTopicEventId');
+    const eventId = yield db.incrObjectField('global', 'nextTopicEventId');
     yield Promise.all([
-        database_1.default.setObject(`topicEvent:${eventId}`, payload),
-        database_1.default.sortedSetAdd(`topic:${tid}:events`, timestamp, eventId),
+        db.setObject(`topicEvent:${eventId}`, payload),
+        db.sortedSetAdd(`topic:${tid}:events`, timestamp, eventId),
     ]);
     let events = yield modifyEvent({
         eventIds: [eventId],
@@ -190,17 +214,17 @@ Events.log = (tid, payload) => __awaiter(void 0, void 0, void 0, function* () {
 });
 Events.purge = (tid, eventIds = []) => __awaiter(void 0, void 0, void 0, function* () {
     if (eventIds.length) {
-        const isTopicEvent = yield database_1.default.isSortedSetMembers(`topic:${tid}:events`, eventIds);
+        const isTopicEvent = yield db.isSortedSetMembers(`topic:${tid}:events`, eventIds);
         eventIds = eventIds.filter((id, index) => isTopicEvent[index]);
         yield Promise.all([
-            database_1.default.sortedSetRemove(`topic:${tid}:events`, eventIds),
-            database_1.default.deleteAll(eventIds.map(id => `topicEvent:${id}`)),
+            db.sortedSetRemove(`topic:${tid}:events`, eventIds),
+            db.deleteAll(eventIds.map(id => `topicEvent:${id}`)),
         ]);
     }
     else {
         const keys = [`topic:${tid}:events`];
-        const eventIds = yield database_1.default.getSortedSetRange(keys[0], 0, -1);
+        const eventIds = yield db.getSortedSetRange(keys[0], 0, -1);
         keys.push(...eventIds.map(id => `topicEvent:${id}`));
-        yield database_1.default.deleteAll(keys);
+        yield db.deleteAll(keys);
     }
 });

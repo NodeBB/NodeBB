@@ -40,7 +40,8 @@ const path_1 = __importDefault(require("path"));
 const winston_1 = __importDefault(require("winston"));
 const _ = require('lodash');
 const nconf_1 = __importDefault(require("nconf"));
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const file = require('../file');
 const { paths } = require('../constants');
 const Data = {};
@@ -52,7 +53,7 @@ function getActiveIds() {
         if (nconf_1.default.get('plugins:active')) {
             return nconf_1.default.get('plugins:active');
         }
-        return yield database_1.default.getSortedSetRange('plugins:active', 0, -1);
+        return yield db.getSortedSetRange('plugins:active', 0, -1);
     });
 }
 Data.getPluginPaths = function () {
@@ -274,3 +275,4 @@ Data.getLanguageData = function getLanguageData(pluginData) {
         };
     });
 };
+exports.default = Data;

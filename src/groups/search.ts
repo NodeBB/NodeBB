@@ -1,7 +1,9 @@
 'use strict';
 
 import user from '../user';
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 
 export default  function (Groups) {
 	Groups.search = async function (query, options) {

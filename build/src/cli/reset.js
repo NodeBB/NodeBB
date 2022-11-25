@@ -41,7 +41,8 @@ const winston_1 = __importDefault(require("winston"));
 const fs = __importStar(require("fs"));
 const chalk = require('chalk');
 const nconf_1 = __importDefault(require("nconf"));
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const events = require('../events');
 const meta_1 = __importDefault(require("../meta"));
 const plugins = require('../plugins');
@@ -112,7 +113,7 @@ const reset = function (options) {
             process.exit(0);
         }
         try {
-            yield database_1.default.init();
+            yield db.init();
             for (const task of tasks) {
                 /* eslint-disable no-await-in-loop */
                 yield task();
@@ -168,9 +169,9 @@ function resetPlugin(pluginId) {
                 winston_1.default.error('Cannot reset plugins while plugin state is set in the configuration (config.json, environmental variables or terminal arguments), please modify the configuration instead');
                 process.exit(1);
             }
-            const isActive = yield database_1.default.isSortedSetMember('plugins:active', pluginId);
+            const isActive = yield db.isSortedSetMember('plugins:active', pluginId);
             if (isActive) {
-                yield database_1.default.sortedSetRemove('plugins:active', pluginId);
+                yield db.sortedSetRemove('plugins:active', pluginId);
                 yield events.log({
                     type: 'plugin-deactivate',
                     text: pluginId,
@@ -194,7 +195,7 @@ function resetPlugins() {
             winston_1.default.error('Cannot reset plugins while plugin state is set in the configuration (config.json, environmental variables or terminal arguments), please modify the configuration instead');
             process.exit(1);
         }
-        yield database_1.default.delete('plugins:active');
+        yield db.delete('plugins:active');
         winston_1.default.info('[reset] All Plugins De-activated');
     });
 }

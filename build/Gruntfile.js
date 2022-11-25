@@ -25,7 +25,7 @@ env.NODE_ENV = env.NODE_ENV || 'development';
 const configFile = path_1.default.resolve(__dirname, nconf.any(['config', 'CONFIG']) || 'config.json');
 const prestart = require('./src/prestart');
 prestart.loadConfig(configFile);
-const db = require('./src/database');
+const db = require('./src/database').default.default;
 const plugins = require('./src/plugins');
 module.exports = function (grunt) {
     const args = [];

@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -29,7 +52,8 @@ const winston_1 = __importDefault(require("winston"));
 const _ = require('lodash');
 const validator = require('validator');
 const versions = require('../../admin/versions');
-const database_1 = __importDefault(require("../../database"));
+const database = __importStar(require("../../database"));
+const db = database;
 const meta_1 = __importDefault(require("../../meta"));
 const analytics = require('../../analytics');
 const plugins = require('../../plugins');
@@ -176,12 +200,12 @@ function getStatsForSet(set, field) {
         };
         const now = Date.now();
         const results = yield utils.promiseParallel({
-            yesterday: database_1.default.sortedSetCount(set, now - (terms.day * 2), '+inf'),
-            today: database_1.default.sortedSetCount(set, now - terms.day, '+inf'),
-            lastweek: database_1.default.sortedSetCount(set, now - (terms.week * 2), '+inf'),
-            thisweek: database_1.default.sortedSetCount(set, now - terms.week, '+inf'),
-            lastmonth: database_1.default.sortedSetCount(set, now - (terms.month * 2), '+inf'),
-            thismonth: database_1.default.sortedSetCount(set, now - terms.month, '+inf'),
+            yesterday: db.sortedSetCount(set, now - (terms.day * 2), '+inf'),
+            today: db.sortedSetCount(set, now - terms.day, '+inf'),
+            lastweek: db.sortedSetCount(set, now - (terms.week * 2), '+inf'),
+            thisweek: db.sortedSetCount(set, now - terms.week, '+inf'),
+            lastmonth: db.sortedSetCount(set, now - (terms.month * 2), '+inf'),
+            thismonth: db.sortedSetCount(set, now - terms.month, '+inf'),
             alltime: getGlobalField(field),
         });
         return calculateDeltas(results);
@@ -232,13 +256,13 @@ function calculateDeltas(results) {
 }
 function getGlobalField(field) {
     return __awaiter(this, void 0, void 0, function* () {
-        const count = yield database_1.default.getObjectField('global', field);
+        const count = yield db.getObjectField('global', field);
         return parseInt(count, 10) || 0;
     });
 }
 function getLastRestart() {
     return __awaiter(this, void 0, void 0, function* () {
-        const lastrestart = yield database_1.default.getObject('lastrestart');
+        const lastrestart = yield db.getObject('lastrestart');
         if (!lastrestart) {
             return null;
         }
@@ -250,7 +274,7 @@ function getLastRestart() {
 }
 function getPopularSearches() {
     return __awaiter(this, void 0, void 0, function* () {
-        const searches = yield database_1.default.getSortedSetRevRangeWithScores('searches:all', 0, 9);
+        const searches = yield db.getSortedSetRevRangeWithScores('searches:all', 0, 9);
         return searches.map((s) => ({ value: validator.escape(String(s.value)), score: s.score }));
     });
 }
@@ -268,7 +292,7 @@ dashboardController.getLogins = (req, res) => __awaiter(void 0, void 0, void 0, 
     };
     // List recent sessions
     const start = Date.now() - (1000 * 60 * 60 * 24 * meta_1.default.config.loginDays);
-    const uids = yield database_1.default.getSortedSetRangeByScore('users:online', 0, 500, start, Date.now());
+    const uids = yield db.getSortedSetRangeByScore('users:online', 0, 500, start, Date.now());
     const usersData = yield user_1.default.getUsersData(uids);
     let sessions = yield Promise.all(uids.map((uid) => __awaiter(void 0, void 0, void 0, function* () {
         const sessions = yield user_1.default.auth.getSessions(uid);
@@ -302,7 +326,7 @@ dashboardController.getUsers = (req, res) => __awaiter(void 0, void 0, void 0, f
     // List of users registered within time frame
     const end = parseInt(req.query.until, 10) || Date.now();
     const start = end - (1000 * 60 * 60 * (req.query.units === 'days' ? 24 : 1) * (req.query.count || (req.query.units === 'days' ? 30 : 24)));
-    const uids = yield database_1.default.getSortedSetRangeByScore('users:joindate', 0, 500, start, end);
+    const uids = yield db.getSortedSetRangeByScore('users:joindate', 0, 500, start, end);
     const users = yield user_1.default.getUsersData(uids);
     res.render('admin/dashboard/users', {
         set: 'registrations',
@@ -327,7 +351,7 @@ dashboardController.getTopics = (req, res) => __awaiter(void 0, void 0, void 0, 
     // List of topics created within time frame
     const end = parseInt(req.query.until, 10) || Date.now();
     const start = end - (1000 * 60 * 60 * (req.query.units === 'days' ? 24 : 1) * (req.query.count || (req.query.units === 'days' ? 30 : 24)));
-    const tids = yield database_1.default.getSortedSetRangeByScore('topics:tid', 0, 500, start, end);
+    const tids = yield db.getSortedSetRangeByScore('topics:tid', 0, 500, start, end);
     const topicData = yield topics.getTopicsByTids(tids);
     res.render('admin/dashboard/topics', {
         set: 'topics',
@@ -338,7 +362,7 @@ dashboardController.getTopics = (req, res) => __awaiter(void 0, void 0, void 0, 
     });
 });
 dashboardController.getSearches = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const searches = yield database_1.default.getSortedSetRevRangeWithScores('searches:all', 0, 99);
+    const searches = yield db.getSortedSetRevRangeWithScores('searches:all', 0, 99);
     res.render('admin/dashboard/searches', {
         searches: searches.map((s) => ({ value: validator.escape(String(s.value)), score: s.score })),
     });

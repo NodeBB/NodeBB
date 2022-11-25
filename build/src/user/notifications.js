@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -14,7 +37,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const winston_1 = __importDefault(require("winston"));
 const _ = require('lodash');
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const meta_1 = __importDefault(require("../meta"));
 const notifications = require('../notifications');
 const privileges = require('../privileges');
@@ -45,18 +69,18 @@ function filterNotifications(nids, filter) {
             return nids;
         }
         const keys = nids.map(nid => `notifications:${nid}`);
-        const notifications = yield database_1.default.getObjectsFields(keys, ['nid', 'type']);
+        const notifications = yield db.getObjectsFields(keys, ['nid', 'type']);
         return notifications.filter(n => n && n.nid && n.type === filter).map(n => n.nid);
     });
 }
 UserNotifications.getAll = function (uid, filter) {
     return __awaiter(this, void 0, void 0, function* () {
-        let nids = yield database_1.default.getSortedSetRevRange([
+        let nids = yield db.getSortedSetRevRange([
             `uid:${uid}:notifications:unread`,
             `uid:${uid}:notifications:read`,
         ], 0, -1);
         nids = _.uniq(nids);
-        const exists = yield database_1.default.isSortedSetMembers('notifications', nids);
+        const exists = yield db.isSortedSetMembers('notifications', nids);
         const deleteNids = [];
         nids = nids.filter((nid, index) => {
             if (!nid || !exists[index]) {
@@ -70,7 +94,7 @@ UserNotifications.getAll = function (uid, filter) {
 };
 function deleteUserNids(nids, uid) {
     return __awaiter(this, void 0, void 0, function* () {
-        yield database_1.default.sortedSetRemove([
+        yield db.sortedSetRemove([
             `uid:${uid}:notifications:read`,
             `uid:${uid}:notifications:unread`,
         ], nids);
@@ -78,7 +102,7 @@ function deleteUserNids(nids, uid) {
 }
 function getNotificationsFromSet(set, uid, start, stop) {
     return __awaiter(this, void 0, void 0, function* () {
-        const nids = yield database_1.default.getSortedSetRevRange(set, start, stop);
+        const nids = yield db.getSortedSetRevRange(set, start, stop);
         return yield UserNotifications.getNotifications(nids, uid);
     });
 }
@@ -89,7 +113,7 @@ UserNotifications.getNotifications = function (nids, uid) {
         }
         const [notifObjs, hasRead] = yield Promise.all([
             notifications.getMultiple(nids),
-            database_1.default.isSortedSetMembers(`uid:${uid}:notifications:read`, nids),
+            db.isSortedSetMembers(`uid:${uid}:notifications:read`, nids),
         ]);
         const deletedNids = [];
         let notificationData = notifObjs.filter((notification, index) => {
@@ -123,7 +147,7 @@ UserNotifications.getUnreadInterval = function (uid, interval) {
             return [];
         }
         const min = Date.now() - times[interval];
-        const nids = yield database_1.default.getSortedSetRevRangeByScore(`uid:${uid}:notifications:unread`, 0, 20, '+inf', min);
+        const nids = yield db.getSortedSetRevRangeByScore(`uid:${uid}:notifications:unread`, 0, 20, '+inf', min);
         return yield UserNotifications.getNotifications(nids, uid);
     });
 };
@@ -137,10 +161,10 @@ UserNotifications.getUnreadCount = function (uid) {
         if (parseInt(uid, 10) <= 0) {
             return 0;
         }
-        let nids = yield database_1.default.getSortedSetRevRange(`uid:${uid}:notifications:unread`, 0, 99);
+        let nids = yield db.getSortedSetRevRange(`uid:${uid}:notifications:unread`, 0, 99);
         nids = yield notifications.filterExists(nids);
         const keys = nids.map(nid => `notifications:${nid}`);
-        const notifData = yield database_1.default.getObjectsFields(keys, ['mergeId']);
+        const notifData = yield db.getObjectsFields(keys, ['mergeId']);
         const mergeIds = notifData.map(n => n.mergeId);
         // Collapse any notifications with identical mergeIds
         let count = mergeIds.reduce((count, mergeId, idx, arr) => {
@@ -156,12 +180,12 @@ UserNotifications.getUnreadCount = function (uid) {
 };
 UserNotifications.getUnreadByField = function (uid, field, values) {
     return __awaiter(this, void 0, void 0, function* () {
-        const nids = yield database_1.default.getSortedSetRevRange(`uid:${uid}:notifications:unread`, 0, 99);
+        const nids = yield db.getSortedSetRevRange(`uid:${uid}:notifications:unread`, 0, 99);
         if (!nids.length) {
             return [];
         }
         const keys = nids.map(nid => `notifications:${nid}`);
-        const notifData = yield database_1.default.getObjectsFields(keys, ['nid', field]);
+        const notifData = yield db.getObjectsFields(keys, ['nid', field]);
         const valuesSet = new Set(values.map(value => String(value)));
         return notifData.filter(n => n && n[field] && valuesSet.has(String(n[field]))).map(n => n.nid);
     });
@@ -171,7 +195,7 @@ UserNotifications.deleteAll = function (uid) {
         if (parseInt(uid, 10) <= 0) {
             return;
         }
-        yield database_1.default.deleteAll([
+        yield db.deleteAll([
             `uid:${uid}:notifications:unread`,
             `uid:${uid}:notifications:read`,
         ]);
@@ -180,7 +204,7 @@ UserNotifications.deleteAll = function (uid) {
 UserNotifications.sendTopicNotificationToFollowers = function (uid, topicData, postData) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let followers = yield database_1.default.getSortedSetRange(`followers:${uid}`, 0, -1);
+            let followers = yield db.getSortedSetRange(`followers:${uid}`, 0, -1);
             followers = yield privileges.categories.filterUids('read', topicData.cid, followers);
             if (!followers.length) {
                 return;

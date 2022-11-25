@@ -4,7 +4,9 @@
 import winston from 'winston';
 const _ = require('lodash');
 
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 import meta from '../meta';
 const notifications = require('../notifications');
 const privileges = require('../privileges');

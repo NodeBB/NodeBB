@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,12 +31,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const batch = require('../../batch');
-const database_1 = __importDefault(require("../../database"));
+const database = __importStar(require("../../database"));
+const db = database;
 exports.default = {
     name: 'Add votes to topics',
     timestamp: Date.UTC(2017, 11, 8),
@@ -23,9 +44,9 @@ exports.default = {
             batch.processSortedSet('topics:tid', (tids) => __awaiter(this, void 0, void 0, function* () {
                 yield Promise.all(tids.map((tid) => __awaiter(this, void 0, void 0, function* () {
                     progress.incr();
-                    const topicData = yield database_1.default.getObjectFields(`topic:${tid}`, ['mainPid', 'cid', 'pinned']);
+                    const topicData = yield db.getObjectFields(`topic:${tid}`, ['mainPid', 'cid', 'pinned']);
                     if (topicData.mainPid && topicData.cid) {
-                        const postData = yield database_1.default.getObject(`post:${topicData.mainPid}`);
+                        const postData = yield db.getObject(`post:${topicData.mainPid}`);
                         if (postData) {
                             const upvotes = parseInt(postData.upvotes, 10) || 0;
                             const downvotes = parseInt(postData.downvotes, 10) || 0;
@@ -35,11 +56,11 @@ exports.default = {
                             };
                             const votes = upvotes - downvotes;
                             yield Promise.all([
-                                database_1.default.setObject(`topic:${tid}`, data),
-                                database_1.default.sortedSetAdd('topics:votes', votes, tid),
+                                db.setObject(`topic:${tid}`, data),
+                                db.sortedSetAdd('topics:votes', votes, tid),
                             ]);
                             if (parseInt(topicData.pinned, 10) !== 1) {
-                                yield database_1.default.sortedSetAdd(`cid:${topicData.cid}:tids:votes`, votes, tid);
+                                yield db.sortedSetAdd(`cid:${topicData.cid}:tids:votes`, votes, tid);
                             }
                         }
                     }

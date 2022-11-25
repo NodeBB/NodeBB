@@ -100,9 +100,8 @@ prestart.loadConfig(configFile);
 prestart.versionCheck();
 
 if (!configExists && (process as any).argv[2] !== 'setup') {
-	const data = require('./setup');
-	console.log('DATA', data);
-//	data();
+	const { webInstall } = require('./setup');
+	webInstall();
 	// @ts-ignore
 	return;
 }

@@ -1,7 +1,8 @@
 'use strict';
 
 const async = require('async');
-import db from '../../database';
+import * as database from '../../database';
+const db = database as any;
 import meta from '../../meta';
 
 export default  {

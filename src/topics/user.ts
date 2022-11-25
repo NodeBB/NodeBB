@@ -1,6 +1,8 @@
 'use strict';
 
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 
 export default  function (Topics) {
 	Topics.isOwner = async function (tid: string, uid: string | number) {

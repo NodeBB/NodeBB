@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,13 +31,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const validator = require('validator');
 const _ = require('lodash');
-const database_1 = __importDefault(require("./database"));
+const database = __importStar(require("./database"));
+const db = database;
 const batch = require('./batch');
 const user = require('./user');
 const utils = require('./utils');
@@ -91,15 +112,15 @@ events.types = [
  */
 events.log = function (data) {
     return __awaiter(this, void 0, void 0, function* () {
-        const eid = yield database_1.default.incrObjectField('global', 'nextEid');
+        const eid = yield db.incrObjectField('global', 'nextEid');
         data.timestamp = Date.now();
         data.eid = eid;
         yield Promise.all([
-            database_1.default.sortedSetsAdd([
+            db.sortedSetsAdd([
                 'events:time',
                 `events:time:${data.type}`,
             ], data.timestamp, eid),
-            database_1.default.setObject(`event:${eid}`, data),
+            db.setObject(`event:${eid}`, data),
         ]);
         plugins.hooks.fire('action:events.log', { data: data });
     });
@@ -113,8 +134,8 @@ events.getEvents = function (filter, start, stop, from, to) {
         if (to === undefined) {
             to = Date.now();
         }
-        const eids = yield database_1.default.getSortedSetRevRangeByScore(`events:time${filter ? `:${filter}` : ''}`, start, stop - start + 1, to, from);
-        let eventsData = yield database_1.default.getObjects(eids.map(eid => `event:${eid}`));
+        const eids = yield db.getSortedSetRevRangeByScore(`events:time${filter ? `:${filter}` : ''}`, start, stop - start + 1, to, from);
+        let eventsData = yield db.getObjects(eids.map(eid => `event:${eid}`));
         eventsData = eventsData.filter(Boolean);
         yield addUserData(eventsData, 'uid', 'user');
         yield addUserData(eventsData, 'targetUid', 'targetUser');
@@ -162,11 +183,11 @@ function addUserData(eventsData, field, objectName) {
 events.deleteEvents = function (eids) {
     return __awaiter(this, void 0, void 0, function* () {
         const keys = eids.map(eid => `event:${eid}`);
-        const eventData = yield database_1.default.getObjectsFields(keys, ['type']);
+        const eventData = yield db.getObjectsFields(keys, ['type']);
         const sets = _.uniq(['events:time'].concat(eventData.map(e => `events:time:${e.type}`)));
         yield Promise.all([
-            database_1.default.deleteAll(keys),
-            database_1.default.sortedSetRemove(sets, eids),
+            db.deleteAll(keys),
+            db.sortedSetRemove(sets, eids),
         ]);
     });
 };

@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -14,7 +37,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const async = require('async');
 const _ = require('lodash');
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const user_1 = __importDefault(require("../user"));
 const posts = require('../posts');
 const notifications = require('../notifications');
@@ -102,15 +126,15 @@ function default_1(Topics) {
                 getFollowedTids(params),
                 user_1.default.getIgnoredTids(params.uid, 0, -1),
                 getCategoryTids(params),
-                database_1.default.getSortedSetRevRangeByScoreWithScores(`uid:${params.uid}:tids_read`, 0, -1, '+inf', params.cutoff),
-                database_1.default.getSortedSetRevRangeWithScores(`uid:${params.uid}:tids_unread`, 0, -1),
+                db.getSortedSetRevRangeByScoreWithScores(`uid:${params.uid}:tids_read`, 0, -1, '+inf', params.cutoff),
+                db.getSortedSetRevRangeWithScores(`uid:${params.uid}:tids_unread`, 0, -1),
             ]);
             const userReadTimes = _.mapValues(_.keyBy(userScores, 'value'), 'score');
             const isTopicsFollowed = {};
             followedTids.forEach((t) => {
                 isTopicsFollowed[t.value] = true;
             });
-            const unreadFollowed = yield database_1.default.isSortedSetMembers(`uid:${params.uid}:followed_tids`, tids_unread.map((t) => t.value));
+            const unreadFollowed = yield db.isSortedSetMembers(`uid:${params.uid}:followed_tids`, tids_unread.map((t) => t.value));
             tids_unread.forEach((t, i) => {
                 isTopicsFollowed[t.value] = unreadFollowed[i];
             });
@@ -174,18 +198,18 @@ function default_1(Topics) {
             }
             const cids = params.cid || (yield user_1.default.getWatchedCategories(params.uid));
             const keys = cids.map((cid) => `cid:${cid}:tids:lastposttime`);
-            return yield database_1.default.getSortedSetRevRangeByScoreWithScores(keys, 0, -1, '+inf', params.cutoff);
+            return yield db.getSortedSetRevRangeByScoreWithScores(keys, 0, -1, '+inf', params.cutoff);
         });
     }
     function getFollowedTids(params) {
         return __awaiter(this, void 0, void 0, function* () {
-            let tids = yield database_1.default.getSortedSetMembers(`uid:${params.uid}:followed_tids`);
+            let tids = yield db.getSortedSetMembers(`uid:${params.uid}:followed_tids`);
             const filterCids = params.cid && params.cid.map((cid) => parseInt(cid, 10));
             if (filterCids) {
                 const topicData = yield Topics.getTopicsFields(tids, ['tid', 'cid']);
                 tids = topicData.filter((t) => filterCids.includes(t.cid)).map((t) => t.tid);
             }
-            const scores = yield database_1.default.sortedSetScores('topics:recent', tids);
+            const scores = yield db.sortedSetScores('topics:recent', tids);
             const data = tids.map((tid, index) => ({ value: String(tid), score: scores[index] }));
             return data.filter((item) => item.score > params.cutoff);
         });
@@ -196,7 +220,7 @@ function default_1(Topics) {
                 return params.tids;
             }
             const topicScores = _.mapValues(_.keyBy(params.recentTids, 'value'), 'score');
-            const results = yield database_1.default.sortedSetScores(`uid:${params.uid}:tids_read`, params.tids);
+            const results = yield db.sortedSetScores(`uid:${params.uid}:tids_read`, params.tids);
             const userScores = _.zipObject(params.tids, results);
             return yield async.filter(params.tids, (tid) => __awaiter(this, void 0, void 0, function* () {
                 return yield doesTidHaveUnblockedUnreadPosts(tid, {
@@ -222,7 +246,7 @@ function default_1(Topics) {
             }
             while (!done) {
                 /* eslint-disable no-await-in-loop */
-                const pidsSinceLastVisit = yield database_1.default.getSortedSetRangeByScore(`tid:${tid}:posts`, start, count, userLastReadTimestamp, '+inf');
+                const pidsSinceLastVisit = yield db.getSortedSetRangeByScore(`tid:${tid}:posts`, start, count, userLastReadTimestamp, '+inf');
                 if (!pidsSinceLastVisit.length) {
                     return hasUnblockedUnread;
                 }
@@ -265,7 +289,7 @@ function default_1(Topics) {
             }
             const [topicScores, userScores] = yield Promise.all([
                 Topics.getTopicsFields(tids, ['tid', 'lastposttime', 'scheduled']),
-                database_1.default.sortedSetScores(`uid:${uid}:tids_read`, tids),
+                db.sortedSetScores(`uid:${uid}:tids_read`, tids),
             ]);
             const topics = topicScores.filter((t, i) => t.lastposttime && (!userScores[i] || userScores[i] < t.lastposttime));
             tids = topics.map((t) => t.tid);
@@ -276,8 +300,8 @@ function default_1(Topics) {
             const scores = topics.map((topic) => (topic.scheduled ? topic.lastposttime : now));
             const [topicData] = yield Promise.all([
                 Topics.getTopicsFields(tids, ['cid']),
-                database_1.default.sortedSetAdd(`uid:${uid}:tids_read`, scores, tids),
-                database_1.default.sortedSetRemove(`uid:${uid}:tids_unread`, tids),
+                db.sortedSetAdd(`uid:${uid}:tids_read`, scores, tids),
+                db.sortedSetRemove(`uid:${uid}:tids_unread`, tids),
             ]);
             const cids = _.uniq(topicData.map((t) => t && t.cid).filter(Boolean));
             yield categories.markAsRead(cids, uid);
@@ -288,10 +312,10 @@ function default_1(Topics) {
     Topics.markAllRead = function (uid) {
         return __awaiter(this, void 0, void 0, function* () {
             const cutoff = yield Topics.unreadCutoff(uid);
-            const tids = yield database_1.default.getSortedSetRevRangeByScore('topics:recent', 0, -1, '+inf', cutoff);
+            const tids = yield db.getSortedSetRevRangeByScore('topics:recent', 0, -1, '+inf', cutoff);
             Topics.markTopicNotificationsRead(tids, uid);
             yield Topics.markAsRead(tids, uid);
-            yield database_1.default.delete(`uid:${uid}:tids_unread`);
+            yield db.delete(`uid:${uid}:tids_unread`);
         });
     };
     Topics.markTopicNotificationsRead = function (tids, uid) {
@@ -316,9 +340,9 @@ function default_1(Topics) {
                 return tids.map(() => false);
             }
             const [topicScores, userScores, tids_unread, blockedUids] = yield Promise.all([
-                database_1.default.sortedSetScores('topics:recent', tids),
-                database_1.default.sortedSetScores(`uid:${uid}:tids_read`, tids),
-                database_1.default.sortedSetScores(`uid:${uid}:tids_unread`, tids),
+                db.sortedSetScores('topics:recent', tids),
+                db.sortedSetScores(`uid:${uid}:tids_read`, tids),
+                db.sortedSetScores(`uid:${uid}:tids_unread`, tids),
                 user_1.default.blocks.list(uid),
             ]);
             const cutoff = yield Topics.unreadCutoff(uid);
@@ -356,8 +380,8 @@ function default_1(Topics) {
             if (!exists) {
                 throw new Error('[[error:no-topic]]');
             }
-            yield database_1.default.sortedSetRemove(`uid:${uid}:tids_read`, tid);
-            yield database_1.default.sortedSetAdd(`uid:${uid}:tids_unread`, Date.now(), tid);
+            yield db.sortedSetRemove(`uid:${uid}:tids_read`, tid);
+            yield db.sortedSetAdd(`uid:${uid}:tids_unread`, Date.now(), tid);
         });
     };
     Topics.filterNewTids = function (tids, uid) {
@@ -365,13 +389,13 @@ function default_1(Topics) {
             if (parseInt(uid, 10) <= 0) {
                 return [];
             }
-            const scores = yield database_1.default.sortedSetScores(`uid:${uid}:tids_read`, tids);
+            const scores = yield db.sortedSetScores(`uid:${uid}:tids_read`, tids);
             return tids.filter((tid, index) => tid && !scores[index]);
         });
     };
     Topics.filterUnrepliedTids = function (tids) {
         return __awaiter(this, void 0, void 0, function* () {
-            const scores = yield database_1.default.sortedSetScores('topics:posts', tids);
+            const scores = yield db.sortedSetScores('topics:posts', tids);
             return tids.filter((tid, index) => tid && scores[index] !== null && scores[index] <= 1);
         });
     };

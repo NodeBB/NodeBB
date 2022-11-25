@@ -44,7 +44,7 @@ const path_1 = __importDefault(require("path"));
 const mkdirp = require('mkdirp');
 const chalk = require('chalk');
 const fs = __importStar(require("fs"));
-const database_1 = __importDefault(require("../database"));
+const database_1 = require("../database");
 const cacheBuster = require('./cacheBuster');
 const { aliases } = require('./aliases');
 let meta;
@@ -112,7 +112,7 @@ function beforeBuild(targets) {
     return __awaiter(this, void 0, void 0, function* () {
         process.stdout.write(`${chalk.green('  started')}\n`);
         try {
-            yield database_1.default.init();
+            yield database_1.primaryDB.default.init();
             meta = require('./index');
             yield meta.themes.setupPaths();
             const plugins = require('../plugins');

@@ -4,7 +4,9 @@ import winston from 'winston';
 const validator = require('validator');
 const util = require('util');
 const _ = require('lodash');
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 import meta from '../meta';
 const events = require('../events');
 const batch = require('../batch');

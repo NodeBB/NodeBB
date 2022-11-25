@@ -4,7 +4,9 @@
 const validator = require('validator');
 
 import meta from '../meta';
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 const plugins = require('../plugins');
 const notifications = require('../notifications');
 const languages = require('../languages');

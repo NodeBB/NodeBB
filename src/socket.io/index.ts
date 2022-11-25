@@ -7,7 +7,9 @@ const util = require('util');
 const validator = require('validator');
 const cookieParser = require('cookie-parser')(nconf.get('secret'));
 
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 import user from '../user';
 import meta from '../meta';
 const logger = require('../logger');

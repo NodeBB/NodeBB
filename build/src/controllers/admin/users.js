@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -15,7 +38,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const validator = require('validator');
 const user_1 = __importDefault(require("../../user"));
 const meta_1 = __importDefault(require("../../meta"));
-const database_1 = __importDefault(require("../../database"));
+const database = __importStar(require("../../database"));
+const db = database;
 const path_1 = __importDefault(require("path"));
 const pagination = require('../../pagination');
 const events = require('../../events');
@@ -80,9 +104,9 @@ function getUsers(req, res) {
         function getCount(set) {
             return __awaiter(this, void 0, void 0, function* () {
                 if (Array.isArray(set)) {
-                    return yield database_1.default.sortedSetIntersectCard(set);
+                    return yield db.sortedSetIntersectCard(set);
                 }
-                return yield database_1.default.sortedSetCard(set);
+                return yield db.sortedSetCard(set);
             });
         }
         function getUids(set) {
@@ -90,7 +114,7 @@ function getUsers(req, res) {
                 let uids = [];
                 if (Array.isArray(set)) {
                     const weights = set.map((s, index) => (index ? 0 : 1));
-                    uids = yield database_1.default[reverse ? 'getSortedSetRevIntersect' : 'getSortedSetIntersect']({
+                    uids = yield db[reverse ? 'getSortedSetRevIntersect' : 'getSortedSetIntersect']({
                         sets: set,
                         start: start,
                         stop: stop,
@@ -98,7 +122,7 @@ function getUsers(req, res) {
                     });
                 }
                 else {
-                    uids = yield database_1.default[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, stop);
+                    uids = yield db[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, stop);
                 }
                 return uids;
             });
@@ -146,7 +170,7 @@ usersController.search = function (req, res) {
                     if (!query.endsWith('*')) {
                         query += '*';
                     }
-                    const data = yield database_1.default.getSortedSetScan({
+                    const data = yield db.getSortedSetScan({
                         key: `${searchBy}:sorted`,
                         match: query,
                         limit: hardCap || (resultsPerPage * 10),
@@ -174,13 +198,13 @@ function loadUserInfo(callerUid, uids) {
     return __awaiter(this, void 0, void 0, function* () {
         function getIPs() {
             return __awaiter(this, void 0, void 0, function* () {
-                return yield Promise.all(uids.map(uid => database_1.default.getSortedSetRevRange(`uid:${uid}:ip`, 0, -1)));
+                return yield Promise.all(uids.map(uid => db.getSortedSetRevRange(`uid:${uid}:ip`, 0, -1)));
             });
         }
         const [isAdmin, userData, lastonline, ips] = yield Promise.all([
             user_1.default.isAdministrator(uids),
             user_1.default.getUsersWithFields(uids, userFields, callerUid),
-            database_1.default.sortedSetScores('users:online', uids),
+            db.sortedSetScores('users:online', uids),
             getIPs(),
         ]);
         userData.forEach((user, index) => {
@@ -204,7 +228,7 @@ usersController.registrationQueue = function (req, res) {
         const start = (page - 1) * 20;
         const stop = start + itemsPerPage - 1;
         const data = yield utils.promiseParallel({
-            registrationQueueCount: database_1.default.sortedSetCard('registration:queue'),
+            registrationQueueCount: db.sortedSetCard('registration:queue'),
             users: user_1.default.getRegistrationQueue(start, stop),
             customHeaders: plugins.hooks.fire('filter:admin.registrationQueue.customHeaders', { headers: [] }),
             invites: getInvites(),
@@ -226,7 +250,7 @@ function getInvites() {
         });
         function getUsernamesByEmails(emails) {
             return __awaiter(this, void 0, void 0, function* () {
-                const uids = yield database_1.default.sortedSetScores('email:uid', emails.map(email => String(email).toLowerCase()));
+                const uids = yield db.sortedSetScores('email:uid', emails.map(email => String(email).toLowerCase()));
                 const usernames = yield user_1.default.getUsersFields(uids, ['username']);
                 return usernames.map(user => user.username);
             });
@@ -255,7 +279,7 @@ function render(req, res, data) {
         filterBy.forEach((filter) => {
             data[`filterBy_${validator.escape(String(filter))}`] = true;
         });
-        data.userCount = parseInt(yield database_1.default.getObjectField('global', 'userCount'), 10);
+        data.userCount = parseInt(yield db.getObjectField('global', 'userCount'), 10);
         if (data.adminInviteOnly) {
             data.showInviteButton = yield privileges.users.isAdministrator(req.uid);
         }

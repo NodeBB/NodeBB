@@ -30,6 +30,10 @@ const chalk = require('chalk');
 const fork = require('../meta/debugFork').default;
 const { paths } = require('../constants');
 const cwd = paths.baseDir;
+const child = fork(paths.loader, process.argv.slice(3), {
+    env: process.env,
+    cwd,
+});
 function getRunningPid(callback) {
     fs.readFile(paths.pidfile, {
         encoding: 'utf-8',
@@ -76,11 +80,6 @@ function start(options) {
         ].join('\n')}`);
     }
     // Spawn a new NodeBB process
-    const child = fork(paths.loader, process.argv.slice(3), {
-        env: process.env,
-        cwd,
-    });
-    console.log('CHILD', child);
     if (options.log) {
         childProcess.spawn('tail', ['-F', './logs/output.log'], {
             stdio: 'inherit',
@@ -136,9 +135,9 @@ exports.status = status;
 function log() {
     console.log(`${chalk.red('\nHit ') + chalk.bold('Ctrl-C ') + chalk.red('to exit\n')}\n`);
     // @ts-ignore
-    child(process).spawn('tail', ['-F', './logs/output.log'], {
-        stdio: 'inherit',
-        cwd,
-    });
+    // child(process as any).spawn('tail', ['-F', './logs/output.log'], {
+    // 	stdio: 'inherit',
+    // 	cwd,
+    // });
 }
 exports.log = log;

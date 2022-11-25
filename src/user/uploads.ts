@@ -4,7 +4,9 @@ import path from 'path';import nconf from 'nconf';
 import winston from 'winston';
 const crypto = require('crypto');
 
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 const posts = require('../posts');
 const file = require('../file');
 const batch = require('../batch');

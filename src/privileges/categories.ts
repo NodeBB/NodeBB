@@ -217,3 +217,5 @@ privsCategories.groupPrivileges = async function (cid, groupName) {
 	const groupPrivilegeList = await privsCategories.getGroupPrivilegeList();
 	return await helpers.userOrGroupPrivileges(cid, groupName, groupPrivilegeList);
 };
+
+export default privsCategories;

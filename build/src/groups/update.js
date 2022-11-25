@@ -16,7 +16,7 @@ const winston_1 = __importDefault(require("winston"));
 const categories = require('../categories');
 const plugins = require('../plugins');
 const slugify = require('../slugify');
-const database_1 = __importDefault(require("../database"));
+const database_1 = require("../database");
 const user_1 = __importDefault(require("../user"));
 const batch = require('../batch');
 const meta_1 = __importDefault(require("../meta"));
@@ -24,7 +24,7 @@ const cache = require('../cache');
 function default_1(Groups) {
     Groups.update = function (groupName, values) {
         return __awaiter(this, void 0, void 0, function* () {
-            const exists = yield database_1.default.exists(`group:${groupName}`);
+            const exists = yield database_1.primaryDB.default.exists(`group:${groupName}`);
             if (!exists) {
                 throw new Error('[[error:no-group]]');
             }
@@ -77,7 +77,7 @@ function default_1(Groups) {
                 const cidsArray = values.memberPostCids.split(',').map((cid) => parseInt(cid.trim(), 10)).filter(Boolean);
                 payload.memberPostCids = cidsArray.filter((cid) => validCids.includes(cid)).join(',') || '';
             }
-            yield database_1.default.setObject(`group:${groupName}`, payload);
+            yield database_1.primaryDB.default.setObject(`group:${groupName}`, payload);
             yield Groups.renameGroup(groupName, values.name);
             plugins.hooks.fire('action:group.update', {
                 name: groupName,
@@ -88,15 +88,15 @@ function default_1(Groups) {
     function updateVisibility(groupName, hidden) {
         return __awaiter(this, void 0, void 0, function* () {
             if (hidden) {
-                yield database_1.default.sortedSetRemoveBulk([
+                yield database_1.primaryDB.default.sortedSetRemoveBulk([
                     ['groups:visible:createtime', groupName],
                     ['groups:visible:memberCount', groupName],
                     ['groups:visible:name', `${groupName.toLowerCase()}:${groupName}`],
                 ]);
                 return;
             }
-            const groupData = yield database_1.default.getObjectFields(`group:${groupName}`, ['createtime', 'memberCount']);
-            yield database_1.default.sortedSetAddBulk([
+            const groupData = yield database_1.primaryDB.default.getObjectFields(`group:${groupName}`, ['createtime', 'memberCount']);
+            yield database_1.primaryDB.default.sortedSetAddBulk([
                 ['groups:visible:createtime', groupData.createtime, groupName],
                 ['groups:visible:memberCount', groupData.memberCount, groupName],
                 ['groups:visible:name', 0, `${groupName.toLowerCase()}:${groupName}`],
@@ -117,7 +117,7 @@ function default_1(Groups) {
         return __awaiter(this, void 0, void 0, function* () {
             hidden = hidden === 'hidden';
             yield Promise.all([
-                database_1.default.setObjectField(`group:${groupName}`, 'hidden', hidden ? 1 : 0),
+                database_1.primaryDB.default.setObjectField(`group:${groupName}`, 'hidden', hidden ? 1 : 0),
                 updateVisibility(groupName, hidden),
             ]);
         });
@@ -129,7 +129,7 @@ function default_1(Groups) {
             if (!currentlyPrivate || currentlyPrivate === isPrivate) {
                 return;
             }
-            const pendingUids = yield database_1.default.getSetMembers(`group:${groupName}:pending`);
+            const pendingUids = yield database_1.primaryDB.default.getSetMembers(`group:${groupName}:pending`);
             if (!pendingUids.length) {
                 return;
             }
@@ -138,7 +138,7 @@ function default_1(Groups) {
                 /* eslint-disable no-await-in-loop */
                 yield Groups.join(groupName, uid);
             }
-            yield database_1.default.delete(`group:${groupName}:pending`);
+            yield database_1.primaryDB.default.delete(`group:${groupName}:pending`);
         });
     }
     function checkNameChange(currentName, newName) {
@@ -172,7 +172,7 @@ function default_1(Groups) {
             if (oldName === newName || !newName || String(newName).length === 0) {
                 return;
             }
-            const group = yield database_1.default.getObject(`group:${oldName}`);
+            const group = yield database_1.primaryDB.default.getObject(`group:${oldName}`);
             if (!group) {
                 return;
             }
@@ -184,19 +184,19 @@ function default_1(Groups) {
             yield updateNavigationItems(oldName, newName);
             yield updateWidgets(oldName, newName);
             yield updateConfig(oldName, newName);
-            yield database_1.default.setObject(`group:${oldName}`, { name: newName, slug: slugify(newName) });
-            yield database_1.default.deleteObjectField('groupslug:groupname', group.slug);
-            yield database_1.default.setObjectField('groupslug:groupname', slugify(newName), newName);
-            const allGroups = yield database_1.default.getSortedSetRange('groups:createtime', 0, -1);
+            yield database_1.primaryDB.default.setObject(`group:${oldName}`, { name: newName, slug: slugify(newName) });
+            yield database_1.primaryDB.default.deleteObjectField('groupslug:groupname', group.slug);
+            yield database_1.primaryDB.default.setObjectField('groupslug:groupname', slugify(newName), newName);
+            const allGroups = yield database_1.primaryDB.default.getSortedSetRange('groups:createtime', 0, -1);
             const keys = allGroups.map(group => `group:${group}:members`);
             yield renameGroupsMember(keys, oldName, newName);
             cache.del(keys);
-            yield database_1.default.rename(`group:${oldName}`, `group:${newName}`);
-            yield database_1.default.rename(`group:${oldName}:members`, `group:${newName}:members`);
-            yield database_1.default.rename(`group:${oldName}:owners`, `group:${newName}:owners`);
-            yield database_1.default.rename(`group:${oldName}:pending`, `group:${newName}:pending`);
-            yield database_1.default.rename(`group:${oldName}:invited`, `group:${newName}:invited`);
-            yield database_1.default.rename(`group:${oldName}:member:pids`, `group:${newName}:member:pids`);
+            yield database_1.primaryDB.default.rename(`group:${oldName}`, `group:${newName}`);
+            yield database_1.primaryDB.default.rename(`group:${oldName}:members`, `group:${newName}:members`);
+            yield database_1.primaryDB.default.rename(`group:${oldName}:owners`, `group:${newName}:owners`);
+            yield database_1.primaryDB.default.rename(`group:${oldName}:pending`, `group:${newName}:pending`);
+            yield database_1.primaryDB.default.rename(`group:${oldName}:invited`, `group:${newName}:invited`);
+            yield database_1.primaryDB.default.rename(`group:${oldName}:member:pids`, `group:${newName}:member:pids`);
             yield renameGroupsMember(['groups:createtime', 'groups:visible:createtime', 'groups:visible:memberCount'], oldName, newName);
             yield renameGroupsMember(['groups:visible:name'], `${oldName.toLowerCase()}:${oldName}`, `${newName.toLowerCase()}:${newName}`);
             plugins.hooks.fire('action:group.rename', {
@@ -220,14 +220,14 @@ function default_1(Groups) {
     }
     function renameGroupsMember(keys, oldName, newName) {
         return __awaiter(this, void 0, void 0, function* () {
-            const isMembers = yield database_1.default.isMemberOfSortedSets(keys, oldName);
+            const isMembers = yield database_1.primaryDB.default.isMemberOfSortedSets(keys, oldName);
             keys = keys.filter((key, index) => isMembers[index]);
             if (!keys.length) {
                 return;
             }
-            const scores = yield database_1.default.sortedSetsScore(keys, oldName);
-            yield database_1.default.sortedSetsRemove(keys, oldName);
-            yield database_1.default.sortedSetsAdd(keys, scores, newName);
+            const scores = yield database_1.primaryDB.default.sortedSetsScore(keys, oldName);
+            yield database_1.primaryDB.default.sortedSetsRemove(keys, oldName);
+            yield database_1.primaryDB.default.sortedSetsAdd(keys, scores, newName);
         });
     }
     function updateNavigationItems(oldName, newName) {

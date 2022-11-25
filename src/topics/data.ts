@@ -2,7 +2,9 @@
 
 const validator = require('validator');
 
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 const categories = require('../categories');
 const utils = require('../utils');
 const translator = require('../translator');

@@ -43,7 +43,8 @@ const path_1 = __importDefault(require("path"));
 const rimraf = require('rimraf');
 const rimrafAsync = util.promisify(rimraf);
 const plugins = require('../plugins');
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const file = require('../file');
 const minifier = require('./minifier');
 const CSS = {};
@@ -204,7 +205,7 @@ function getBundleMetadata(target) {
         }
         let themeData = null;
         if (target === 'client') {
-            themeData = (yield database_1.default.getObjectFields('config', ['theme:type', 'theme:id', 'bootswatchSkin']));
+            themeData = (yield db.getObjectFields('config', ['theme:type', 'theme:id', 'bootswatchSkin']));
             const themeId = (themeData['theme:id'] || 'nodebb-theme-persona');
             const baseThemePath = path_1.default.join(nconf_1.default.get('themes_path'), (themeData['theme:type'] && themeData['theme:type'] === 'local' ? themeId : 'nodebb-theme-persona'));
             paths.unshift(baseThemePath);

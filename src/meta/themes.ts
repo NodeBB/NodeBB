@@ -6,7 +6,9 @@ const _ = require('lodash');
 import * as fs from 'fs';
 
 const file = require('../file');
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 const Meta = require('./index');
 const events = require('../events');
 const utils = require('../utils');

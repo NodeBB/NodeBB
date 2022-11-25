@@ -2,7 +2,9 @@
 
 import winston from 'winston';
 const cronJob = require('cron').CronJob;
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 import meta from '../meta';
 
 const jobs  = {} as any;

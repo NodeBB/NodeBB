@@ -6,10 +6,8 @@ const semver = require('semver');
 const readline = require('readline');
 import winston from 'winston';
 const chalk = require('chalk');
-
-const plugins = require('./plugins').default;
-console.log('REQUIRE PLUGINS', require('./plugins'));
-const db = require('./database').default;
+import plugins from './plugins';
+import { primaryDB as db } from './database';
 const file = require('./file').default;
 const { paths } = require('./constants');
 /*
@@ -83,7 +81,7 @@ Upgrade.appendPluginScripts = async function (files) {
 Upgrade.check = async function () {
 	// Throw 'schema-out-of-date' if not all upgrade scripts have run
 	const files = await Upgrade.getAll();
-	const executed = await db.getSortedSetRange('schemaLog', 0, -1);
+	const executed = await db.default.getSortedSetRange('schemaLog', 0, -1);
 	const remainder = files.filter(name => !executed.includes(path.basename(name, '.js')));
 	if (remainder.length > 0) {
 		throw new Error('schema-out-of-date');
@@ -94,7 +92,7 @@ Upgrade.run = async function () {
 	console.log('\nParsing upgrade scripts... ');
 
 	const [completed, available] = await Promise.all([
-		db.getSortedSetRange('schemaLog', 0, -1),
+		db.default.getSortedSetRange('schemaLog', 0, -1),
 		Upgrade.getAll(),
 	]);
 
@@ -121,8 +119,8 @@ Upgrade.runParticular = async function (names) {
 Upgrade.process = async function (files, skipCount) {
 	console.log(`${chalk.green('OK')} | ${chalk.cyan(`${files.length} script(s) found`)}${skipCount > 0 ? chalk.cyan(`, ${skipCount} skipped`) : ''}`);
 	const [schemaDate, schemaLogCount] = await Promise.all([
-		db.get('schemaDate'),
-		db.sortedSetCard('schemaLog'),
+		db.default.get('schemaDate'),
+		db.default.sortedSetCard('schemaLog'),
 	]);
 
 	for (const file of files) {
@@ -145,7 +143,7 @@ Upgrade.process = async function (files, skipCount) {
 		if ((!schemaDate && !schemaLogCount) || (scriptExport.timestamp <= schemaDate && semver.lt(version, '1.5.0'))) {
 			(process as any).stdout.write(chalk.grey(' skipped\n'));
 
-			await db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'));
+			await db.default.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'));
 			// eslint-disable-next-line no-continue
 			continue;
 		}
@@ -169,7 +167,7 @@ Upgrade.process = async function (files, skipCount) {
 		(process as any).stdout.write(chalk.green(` OK (${upgradeDuration} seconds)\n`));
 
 		// Record success in schemaLog
-		await db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'));
+		await db.default.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'));
 	}
 
 	console.log(chalk.green('Schema update complete!\n'));

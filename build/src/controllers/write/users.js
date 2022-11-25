@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -17,7 +40,8 @@ const nconf_1 = __importDefault(require("nconf"));
 const path_1 = __importDefault(require("path"));
 const crypto = require('crypto');
 const fs = require('fs').promises;
-const database_1 = __importDefault(require("../../database"));
+const database = __importStar(require("../../database"));
+const db = database;
 const api = require('../../api');
 const groups = require('../../groups');
 const meta_1 = __importDefault(require("../../meta"));
@@ -152,14 +176,14 @@ Users.deleteToken = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 const getSessionAsync = util.promisify((sid, callback) => {
-    database_1.default.sessionStore.get(sid, (err, sessionObj) => callback(err, sessionObj || null));
+    db.sessionStore.get(sid, (err, sessionObj) => callback(err, sessionObj || null));
 });
 Users.revokeSession = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // Only admins or global mods (besides the user themselves) can revoke sessions
     if (parseInt(req.params.uid, 10) !== req.uid && !(yield user_1.default.isAdminOrGlobalMod(req.uid))) {
         return helpers_1.default.formatApiResponse(404, res);
     }
-    const sids = yield database_1.default.getSortedSetRange(`uid:${req.params.uid}:sessions`, 0, -1);
+    const sids = yield db.getSortedSetRange(`uid:${req.params.uid}:sessions`, 0, -1);
     let _id;
     for (const sid of sids) {
         /* eslint-disable no-await-in-loop */
@@ -229,7 +253,7 @@ Users.listEmails = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     ]);
     const isSelf = req.uid === parseInt(req.params.uid, 10);
     if (isSelf || isPrivileged || showemail) {
-        const emails = yield database_1.default.getSortedSetRangeByScore('email:uid', 0, 500, req.params.uid, req.params.uid);
+        const emails = yield db.getSortedSetRangeByScore('email:uid', 0, 500, req.params.uid, req.params.uid);
         helpers_1.default.formatApiResponse(200, res, { emails });
     }
     else {
@@ -240,7 +264,7 @@ Users.getEmail = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const [isPrivileged, { showemail }, exists] = yield Promise.all([
         user_1.default.isPrivileged(req.uid),
         user_1.default.getSettings(req.params.uid),
-        database_1.default.isSortedSetMember('email:uid', req.params.email.toLowerCase()),
+        db.isSortedSetMember('email:uid', req.params.email.toLowerCase()),
     ]);
     const isSelf = req.uid === parseInt(req.params.uid, 10);
     if (exists && (isSelf || isPrivileged || showemail)) {
@@ -260,7 +284,7 @@ Users.confirmEmail = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         return helpers_1.default.notAllowed(req, res);
     }
     if (pending) { // has active confirmation request
-        const code = yield database_1.default.get(`confirm:byUid:${req.params.uid}`);
+        const code = yield db.get(`confirm:byUid:${req.params.uid}`);
         yield user_1.default.email.confirmByCode(code, req.session.id);
         helpers_1.default.formatApiResponse(200, res);
     }

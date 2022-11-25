@@ -4,7 +4,8 @@
 const async = require('async');
 const groups = require('../../groups');
 const privileges = require('../../privileges');
-import db from '../../database';
+import * as database from '../../database';
+const db = database as any;
 
 export default  {
 	name: 'Give category access privileges to spiders system group',

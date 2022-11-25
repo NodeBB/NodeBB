@@ -4,7 +4,9 @@ const _ = require('lodash');
 import winston from 'winston';
 const validator = require('validator');
 
-const db = require('./database');
+import * as database from './database';      
+    
+const db = database as any;
 const user = require('./user');
 const groups = require('./groups');
 const meta = require('./meta');

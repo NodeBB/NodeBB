@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -18,7 +41,8 @@ const path_1 = __importDefault(require("path"));
 const nconf_1 = __importDefault(require("nconf"));
 const util = require('util');
 const rimrafAsync = util.promisify(require('rimraf'));
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const posts = require('../posts');
 const flags = require('../flags');
 const topics = require('../topics');
@@ -66,7 +90,7 @@ function default_1(User) {
     }
     function deleteUploads(callerUid, uid) {
         return __awaiter(this, void 0, void 0, function* () {
-            const uploads = yield database_1.default.getSortedSetMembers(`uid:${uid}:uploads`);
+            const uploads = yield db.getSortedSetMembers(`uid:${uid}:uploads`);
             yield User.deleteUpload(callerUid, uid, uploads);
         });
     }
@@ -74,7 +98,7 @@ function default_1(User) {
         return __awaiter(this, void 0, void 0, function* () {
             let deleteIds = [];
             yield batch.processSortedSet('post:queue', (ids) => __awaiter(this, void 0, void 0, function* () {
-                const data = yield database_1.default.getObjects(ids.map(id => `post:queue:${id}`));
+                const data = yield db.getObjects(ids.map(id => `post:queue:${id}`));
                 const userQueuedIds = data.filter((d) => parseInt(d.uid, 10) === parseInt(uid, 10)).map((d) => d.id);
                 deleteIds = deleteIds.concat(userQueuedIds);
             }), { batch: 500 });
@@ -83,7 +107,7 @@ function default_1(User) {
     }
     function removeFromSortedSets(uid) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield database_1.default.sortedSetsRemove([
+            yield db.sortedSetsRemove([
                 'users:joindate',
                 'users:postcount',
                 'users:reputation',
@@ -105,7 +129,7 @@ function default_1(User) {
             }
             deletesInProgress[uid] = 'user.deleteAccount';
             yield removeFromSortedSets(uid);
-            const userData = yield database_1.default.getObject(`user:${uid}`);
+            const userData = yield db.getObject(`user:${uid}`);
             if (!userData || !userData.username) {
                 delete deletesInProgress[uid];
                 throw new Error('[[error:no-user]]');
@@ -148,10 +172,10 @@ function default_1(User) {
                 bulkRemove.push(['fullname:sorted', `${userData.fullname.toLowerCase()}:${uid}`]);
             }
             yield Promise.all([
-                database_1.default.sortedSetRemoveBulk(bulkRemove),
-                database_1.default.decrObjectField('global', 'userCount'),
-                database_1.default.deleteAll(keys),
-                database_1.default.setRemove('invitation:uids', uid),
+                db.sortedSetRemoveBulk(bulkRemove),
+                db.decrObjectField('global', 'userCount'),
+                db.deleteAll(keys),
+                db.setRemove('invitation:uids', uid),
                 deleteUserIps(uid),
                 deleteUserFromFollowers(uid),
                 deleteImages(uid),
@@ -159,7 +183,7 @@ function default_1(User) {
                 flags.resolveFlag('user', uid, uid),
                 User.reset.cleanByUid(uid),
             ]);
-            yield database_1.default.deleteAll([`followers:${uid}`, `following:${uid}`, `user:${uid}`]);
+            yield db.deleteAll([`followers:${uid}`, `following:${uid}`, `user:${uid}`]);
             delete deletesInProgress[uid];
             return userData;
         });
@@ -167,8 +191,8 @@ function default_1(User) {
     function deleteVotes(uid) {
         return __awaiter(this, void 0, void 0, function* () {
             const [upvotedPids, downvotedPids] = yield Promise.all([
-                database_1.default.getSortedSetRange(`uid:${uid}:upvote`, 0, -1),
-                database_1.default.getSortedSetRange(`uid:${uid}:downvote`, 0, -1),
+                db.getSortedSetRange(`uid:${uid}:upvote`, 0, -1),
+                db.getSortedSetRange(`uid:${uid}:downvote`, 0, -1),
             ]);
             const pids = _.uniq(upvotedPids.concat(downvotedPids).filter(Boolean));
             yield async.eachSeries(pids, (pid) => __awaiter(this, void 0, void 0, function* () {
@@ -178,40 +202,40 @@ function default_1(User) {
     }
     function deleteChats(uid) {
         return __awaiter(this, void 0, void 0, function* () {
-            const roomIds = yield database_1.default.getSortedSetRange(`uid:${uid}:chat:rooms`, 0, -1);
+            const roomIds = yield db.getSortedSetRange(`uid:${uid}:chat:rooms`, 0, -1);
             const userKeys = roomIds.map(roomId => `uid:${uid}:chat:room:${roomId}:mids`);
             yield Promise.all([
                 messaging.leaveRooms(uid, roomIds),
-                database_1.default.deleteAll(userKeys),
+                db.deleteAll(userKeys),
             ]);
         });
     }
     function deleteUserIps(uid) {
         return __awaiter(this, void 0, void 0, function* () {
-            const ips = yield database_1.default.getSortedSetRange(`uid:${uid}:ip`, 0, -1);
-            yield database_1.default.sortedSetsRemove(ips.map(ip => `ip:${ip}:uid`), uid);
-            yield database_1.default.delete(`uid:${uid}:ip`);
+            const ips = yield db.getSortedSetRange(`uid:${uid}:ip`, 0, -1);
+            yield db.sortedSetsRemove(ips.map(ip => `ip:${ip}:uid`), uid);
+            yield db.delete(`uid:${uid}:ip`);
         });
     }
     function deleteUserFromFollowers(uid) {
         return __awaiter(this, void 0, void 0, function* () {
             const [followers, following] = yield Promise.all([
-                database_1.default.getSortedSetRange(`followers:${uid}`, 0, -1),
-                database_1.default.getSortedSetRange(`following:${uid}`, 0, -1),
+                db.getSortedSetRange(`followers:${uid}`, 0, -1),
+                db.getSortedSetRange(`following:${uid}`, 0, -1),
             ]);
             function updateCount(uids, name, fieldName) {
                 return __awaiter(this, void 0, void 0, function* () {
                     yield async.each(uids, (uid) => __awaiter(this, void 0, void 0, function* () {
-                        let count = yield database_1.default.sortedSetCard(name + uid);
+                        let count = yield db.sortedSetCard(name + uid);
                         count = parseInt(count, 10) || 0;
-                        yield database_1.default.setObjectField(`user:${uid}`, fieldName, count);
+                        yield db.setObjectField(`user:${uid}`, fieldName, count);
                     }));
                 });
             }
             const followingSets = followers.map(uid => `following:${uid}`);
             const followerSets = following.map(uid => `followers:${uid}`);
             yield Promise.all([
-                database_1.default.sortedSetsRemove(followerSets.concat(followingSets), uid),
+                db.sortedSetsRemove(followerSets.concat(followingSets), uid),
                 updateCount(following, 'followers:', 'followerCount'),
                 updateCount(followers, 'following:', 'followingCount'),
             ]);

@@ -3,7 +3,8 @@
 'use strict';
 
 import winston from 'winston';
-import db from '../../database';
+import * as database from '../../database';
+const db = database as any;
 
 export default  {
 	name: 'Giving topics:read privs to any group/user that was previously allowed to Find & Access Category',

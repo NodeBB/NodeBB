@@ -4,7 +4,9 @@ const _ = require('lodash');
 
 const privileges = require('../privileges');
 const plugins = require('../plugins');
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 
 export default  function (Categories) {
 	Categories.search = async function (data) {

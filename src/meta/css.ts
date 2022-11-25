@@ -10,7 +10,9 @@ const rimraf = require('rimraf');
 const rimrafAsync = util.promisify(rimraf);
 
 const plugins = require('../plugins');
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 const file = require('../file');
 const minifier = require('./minifier');
 

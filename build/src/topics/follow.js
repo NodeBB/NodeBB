@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,11 +31,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const notifications = require('../notifications');
 const privileges = require('../privileges');
 const plugins = require('../plugins');
@@ -85,14 +106,14 @@ function default_1(Topics) {
     }
     function addToSets(set1, set2, tid, uid) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield database_1.default.setAdd(set1, uid);
-            yield database_1.default.sortedSetAdd(set2, Date.now(), tid);
+            yield db.setAdd(set1, uid);
+            yield db.sortedSetAdd(set2, Date.now(), tid);
         });
     }
     function removeFromSets(set1, set2, tid, uid) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield database_1.default.setRemove(set1, uid);
-            yield database_1.default.sortedSetRemove(set2, tid);
+            yield db.setRemove(set1, uid);
+            yield db.sortedSetRemove(set2, tid);
         });
     }
     Topics.isFollowing = function (tids, uid) {
@@ -115,7 +136,7 @@ function default_1(Topics) {
             }
             const keys = [];
             tids.forEach(tid => keys.push(`tid:${tid}:followers`, `tid:${tid}:ignorers`));
-            const data = yield database_1.default.isMemberOfSets(keys, uid);
+            const data = yield db.isMemberOfSets(keys, uid);
             const followData = [];
             for (let i = 0; i < data.length; i += 2) {
                 followData.push({
@@ -135,22 +156,22 @@ function default_1(Topics) {
                 return tids.map(() => false);
             }
             const keys = tids.map(tid => `tid:${tid}:${set}`);
-            return yield database_1.default.isMemberOfSets(keys, uid);
+            return yield db.isMemberOfSets(keys, uid);
         });
     }
     Topics.getFollowers = function (tid) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield database_1.default.getSetMembers(`tid:${tid}:followers`);
+            return yield db.getSetMembers(`tid:${tid}:followers`);
         });
     };
     Topics.getIgnorers = function (tid) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield database_1.default.getSetMembers(`tid:${tid}:ignorers`);
+            return yield db.getSetMembers(`tid:${tid}:ignorers`);
         });
     };
     Topics.filterIgnoringUids = function (tid, uids) {
         return __awaiter(this, void 0, void 0, function* () {
-            const isIgnoring = yield database_1.default.isSetMembers(`tid:${tid}:ignorers`, uids);
+            const isIgnoring = yield db.isSetMembers(`tid:${tid}:ignorers`, uids);
             const readingUids = uids.filter((uid, index) => uid && !isIgnoring[index]);
             return readingUids;
         });
@@ -160,7 +181,7 @@ function default_1(Topics) {
             if (parseInt(uid, 10) <= 0) {
                 return [];
             }
-            const scores = yield database_1.default.sortedSetScores(`uid:${uid}:followed_tids`, tids);
+            const scores = yield db.sortedSetScores(`uid:${uid}:followed_tids`, tids);
             return tids.filter((tid, index) => tid && !!scores[index]);
         });
     };
@@ -169,7 +190,7 @@ function default_1(Topics) {
             if (parseInt(uid, 10) <= 0) {
                 return tids;
             }
-            const scores = yield database_1.default.sortedSetScores(`uid:${uid}:ignored_tids`, tids);
+            const scores = yield db.sortedSetScores(`uid:${uid}:ignored_tids`, tids);
             return tids.filter((tid, index) => tid && !scores[index]);
         });
     };

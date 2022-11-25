@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -18,7 +41,8 @@ const Benchpress = require('benchpressjs');
 const plugins = require('../plugins');
 const groups = require('../groups');
 const translator = require('../translator');
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const apiController = require('../controllers/api');
 const meta_1 = __importDefault(require("../meta"));
 const widgets = {};
@@ -106,7 +130,7 @@ widgets.checkVisibility = function (data, uid) {
 widgets.getWidgetDataForTemplates = function (templates) {
     return __awaiter(this, void 0, void 0, function* () {
         const keys = templates.map(tpl => `widgets:${tpl}`);
-        const data = yield database_1.default.getObjects(keys);
+        const data = yield db.getObjects(keys);
         const returnData = {};
         templates.forEach((template, index) => {
             returnData[template] = returnData[template] || {};
@@ -132,7 +156,7 @@ widgets.getWidgetDataForTemplates = function (templates) {
 };
 widgets.getArea = function (template, location) {
     return __awaiter(this, void 0, void 0, function* () {
-        const result = yield database_1.default.getObjectField(`widgets:${template}`, location);
+        const result = yield db.getObjectField(`widgets:${template}`, location);
         if (!result) {
             return [];
         }
@@ -160,7 +184,7 @@ widgets.setArea = function (area) {
         if (!area.location || !area.template) {
             throw new Error('Missing location and template data');
         }
-        yield database_1.default.setObjectField(`widgets:${area.template}`, area.location, JSON.stringify(area.widgets));
+        yield db.setObjectField(`widgets:${area.template}`, area.location, JSON.stringify(area.widgets));
     });
 };
 widgets.setAreas = function (areas) {
@@ -173,7 +197,7 @@ widgets.setAreas = function (areas) {
             templates[area.template] = templates[area.template] || {};
             templates[area.template][area.location] = JSON.stringify(area.widgets);
         });
-        yield database_1.default.setObjectBulk(Object.keys(templates).map(tpl => [`widgets:${tpl}`, templates[tpl]]));
+        yield db.setObjectBulk(Object.keys(templates).map(tpl => [`widgets:${tpl}`, templates[tpl]]));
     });
 };
 widgets.reset = function () {
@@ -204,12 +228,12 @@ widgets.reset = function () {
 };
 widgets.resetTemplate = function (template) {
     return __awaiter(this, void 0, void 0, function* () {
-        const area = yield database_1.default.getObject(`widgets:${template}.tpl`);
+        const area = yield db.getObject(`widgets:${template}.tpl`);
         const toBeDrafted = _.flatMap(Object.values(area), value => JSON.parse(value));
-        yield database_1.default.delete(`widgets:${template}.tpl`);
-        let draftWidgets = yield database_1.default.getObjectField('widgets:global', 'drafts');
+        yield db.delete(`widgets:${template}.tpl`);
+        let draftWidgets = yield db.getObjectField('widgets:global', 'drafts');
         draftWidgets = JSON.parse(draftWidgets).concat(toBeDrafted);
-        yield database_1.default.setObjectField('widgets:global', 'drafts', JSON.stringify(draftWidgets));
+        yield db.setObjectField('widgets:global', 'drafts', JSON.stringify(draftWidgets));
     });
 };
 widgets.resetTemplates = function (templates) {

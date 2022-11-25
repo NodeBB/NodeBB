@@ -2,7 +2,9 @@
 
 const _ = require('lodash');
 const plugins = require('./plugins');
-const db = require('./database');
+import * as database from './database';      
+    
+const db = database as any;
 
 const social  = {} as any;
 
@@ -26,6 +28,7 @@ social.getPostSharing = async function () {
 		},
 	] as any[];
 	networks = await plugins.hooks.fire('filter:social.posts', networks);
+	// @ts-ignore
 	const activated = await db.getSetMembers('social:posts.activated');
 	networks.forEach((network) => {
 		network.activated = activated.includes(network.id);
@@ -42,10 +45,12 @@ social.getActivePostSharing = async function () {
 
 social.setActivePostSharingNetworks = async function (networkIDs) {
 	social.postSharing = null;
+		// @ts-ignore
 	await db.delete('social:posts.activated');
 	if (!networkIDs.length) {
 		return;
 	}
+	// @ts-ignore
 	await db.setAdd('social:posts.activated', networkIDs);
 };
 

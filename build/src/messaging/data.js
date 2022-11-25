@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -13,7 +36,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const validator = require('validator');
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const user_1 = __importDefault(require("../user"));
 const utils = require('../utils');
 const plugins = require('../plugins');
@@ -25,7 +49,7 @@ function default_1(Messaging) {
             return [];
         }
         const keys = mids.map(mid => `message:${mid}`);
-        const messages = yield database_1.default.getObjects(keys, fields);
+        const messages = yield db.getObjects(keys, fields);
         return yield Promise.all(messages.map((message, idx) => __awaiter(this, void 0, void 0, function* () { return modifyMessage(message, fields, parseInt(mids[idx], 10)); })));
     });
     Messaging.getMessageField = (mid, field) => __awaiter(this, void 0, void 0, function* () {
@@ -37,10 +61,10 @@ function default_1(Messaging) {
         return messages ? messages[0] : null;
     });
     Messaging.setMessageField = (mid, field, content) => __awaiter(this, void 0, void 0, function* () {
-        yield database_1.default.setObjectField(`message:${mid}`, field, content);
+        yield db.setObjectField(`message:${mid}`, field, content);
     });
     Messaging.setMessageFields = (mid, data) => __awaiter(this, void 0, void 0, function* () {
-        yield database_1.default.setObject(`message:${mid}`, data);
+        yield db.setObject(`message:${mid}`, data);
     });
     Messaging.getMessagesData = (mids, uid, roomId, isNew) => __awaiter(this, void 0, void 0, function* () {
         let messages = yield Messaging.getMessagesFields(mids, []);
@@ -98,9 +122,9 @@ function default_1(Messaging) {
         else if (messages.length === 1) {
             // For single messages, we don't know the context, so look up the previous message and compare
             const key = `uid:${uid}:chat:room:${roomId}:mids`;
-            const index = yield database_1.default.sortedSetRank(key, messages[0].messageId);
+            const index = yield db.sortedSetRank(key, messages[0].messageId);
             if (index > 0) {
-                const mid = yield database_1.default.getSortedSetRange(key, index - 1, index - 1);
+                const mid = yield db.getSortedSetRange(key, index - 1, index - 1);
                 const fields = yield Messaging.getMessageFields(mid, ['fromuid', 'timestamp']);
                 if ((messages[0].timestamp > fields.timestamp + Messaging.newMessageCutoff) ||
                     (messages[0].fromuid !== fields.fromuid)) {
@@ -130,7 +154,7 @@ exports.default = default_1;
 function modifyMessage(message, fields, mid) {
     return __awaiter(this, void 0, void 0, function* () {
         if (message) {
-            database_1.default.parseIntFields(message, intFields, fields);
+            db.parseIntFields(message, intFields, fields);
             if (message.hasOwnProperty('timestamp')) {
                 message.timestampISO = utils.toISOString(message.timestamp);
             }

@@ -4,16 +4,18 @@
 import nconf from 'nconf';
 import path from 'path';
 import winston from 'winston';
-import primaryDb from '../database';
+import { primaryDB as primaryDb } from '../database';
+console.log('PRIMARY DB', primaryDb);
 const pubsub = require('../pubsub').default;
 const plugins = require('../plugins');
 const utils = require('../utils');
-const Meta = require('./index');
+import * as Meta  from './';
 const cacheBuster = require('./cacheBuster');
 const defaults = require('../../../install/data/defaults.json');
 
 const Configs  = {} as any;
 
+// @ts-ignore
 Meta.config  = {} as any;
 
 // called after data is loaded from db
@@ -90,6 +92,7 @@ Configs.init = async function () {
 	const config = await Configs.list();
 	const buster = await cacheBuster.read();
 	config['cache-buster'] = `v=${buster || Date.now()}`;
+	// @ts-ignore
 	Meta.config = config;
 };
 
@@ -105,9 +108,9 @@ Configs.get = async function (field) {
 Configs.getFields = async function (fields) {
 	let values;
 	if (fields.length) {
-		values = await primaryDb.getObjectFields('config', fields);
+		values = await primaryDb.default.getObjectFields('config', fields);
 	} else {
-		values = await primaryDb.getObject('config');
+		values = await primaryDb.default.getObject('config');
 	}
 
 	values = { ...defaults, ...(values ? deserialize(values) : {}) };
@@ -132,19 +135,19 @@ Configs.set = async function (field, value) {
 Configs.setMultiple = async function (data) {
 	await processConfig(data);
 	data = serialize(data);
-	await primaryDb.setObject('config', data);
+	await primaryDb.default.setObject('config', data);
 	updateConfig(deserialize(data));
 };
 
 Configs.setOnEmpty = async function (values) {
-	const data = await primaryDb.getObject('config');
+	const data = await primaryDb.default.getObject('config');
 	values = serialize(values);
 	const config = { ...values, ...(data ? serialize(data) : {}) };
-	await primaryDb.setObject('config', config);
+	await primaryDb.default.setObject('config', config);
 };
 
 Configs.remove = async function (field) {
-	await primaryDb.deleteObjectField('config', field);
+	await primaryDb.default.deleteObjectField('config', field);
 };
 
 Configs.registerHooks = () => {
@@ -190,8 +193,9 @@ Configs.registerHooks = () => {
 Configs.cookie = {
 	get: () => {
 		const cookie  = {} as any;
-
+                                        // @ts-ignore
 		if (nconf.get('cookieDomain') || Meta.config.cookieDomain) {
+			                                         // @ts-ignore
 			cookie.domain = nconf.get('cookieDomain') || Meta.config.cookieDomain;
 		}
 
@@ -275,10 +279,12 @@ function updateConfig(config) {
 }
 
 function updateLocalConfig(config) {
+	// @ts-ignore
 	Object.assign(Meta.config, config);
 }
 
 pubsub.on('config:update', (config) => {
+	// @ts-ignore
 	if (typeof config === 'object' && Meta.config) {
 		updateLocalConfig(config);
 	}

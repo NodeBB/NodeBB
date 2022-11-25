@@ -1,6 +1,7 @@
 'use strict';
 
-import db from '../../database';
+import * as database from '../../database';
+const db = database as any;
 import user from '../../user';
 const topics = require('../../topics');
 

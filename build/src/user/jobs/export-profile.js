@@ -48,19 +48,20 @@ const configFile = path_1.default.resolve(__dirname, '../../../', nconf_1.defaul
 const prestart = require('../../prestart');
 prestart.loadConfig(configFile);
 prestart.setupWinston();
-const database_1 = __importDefault(require("../../database"));
+const database = __importStar(require("../../database"));
+const db = database;
 const batch = require('../../batch');
 process.on('message', (msg) => __awaiter(void 0, void 0, void 0, function* () {
     if (msg && msg.uid) {
-        yield database_1.default.init();
-        yield database_1.default.initSessionStore();
+        yield db.init();
+        yield db.initSessionStore();
         const targetUid = msg.uid;
         const profileFile = `${targetUid}_profile.json`;
         const profilePath = path_1.default.join(__dirname, '../../../build/export', profileFile);
         const user = require('../index');
         const [userData, userSettings, ips, sessions, usernames, emails, bookmarks, watchedTopics, upvoted, downvoted, following,] = yield Promise.all([
-            database_1.default.getObject(`user:${targetUid}`),
-            database_1.default.getObject(`user:${targetUid}:settings`),
+            db.getObject(`user:${targetUid}`),
+            db.getObject(`user:${targetUid}:settings`),
             user.getIPs(targetUid, 9),
             user.auth.getSessions(targetUid),
             user.getHistory(`user:${targetUid}:usernames`),
@@ -91,7 +92,7 @@ process.on('message', (msg) => __awaiter(void 0, void 0, void 0, function* () {
             downvoted: downvoted,
             following: following,
         }, null, 4));
-        yield database_1.default.close();
+        yield db.close();
         process.exit(0);
     }
 }));
@@ -100,7 +101,7 @@ function getRoomMessages(uid, roomId) {
         const batch = require('../../batch');
         let data = [];
         yield batch.processSortedSet(`uid:${uid}:chat:room:${roomId}:mids`, (mids) => __awaiter(this, void 0, void 0, function* () {
-            const messageData = yield database_1.default.getObjects(mids.map(mid => `message:${mid}`));
+            const messageData = yield db.getObjects(mids.map(mid => `message:${mid}`));
             data = data.concat(messageData
                 .filter((m) => m && m.fromuid === uid && !m.system)
                 .map((m) => ({ content: m.content, timestamp: m.timestamp })));
@@ -120,7 +121,7 @@ function getSetData(set, keyPrefix, uid) {
             else if (keyPrefix === 'topic:') {
                 ids = yield privileges.topics.filterTids('topics:read', ids, uid);
             }
-            let objData = yield database_1.default.getObjects(ids.map(id => keyPrefix + id));
+            let objData = yield db.getObjects(ids.map(id => keyPrefix + id));
             if (keyPrefix === 'post:') {
                 objData = objData.map((o) => _.pick(o, ['pid', 'content', 'timestamp']));
             }

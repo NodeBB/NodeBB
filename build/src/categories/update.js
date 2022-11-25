@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -12,7 +35,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const meta_1 = __importDefault(require("../meta"));
 const utils = require('../utils');
 const slugify = require('../slugify');
@@ -66,7 +90,7 @@ function default_1(Categories) {
             else if (key === 'order') {
                 return yield updateOrder(cid, value);
             }
-            yield database_1.default.setObjectField(`category:${cid}`, key, value);
+            yield db.setObjectField(`category:${cid}`, key, value);
             if (key === 'description') {
                 yield Categories.parseDescription(cid, value);
             }
@@ -88,9 +112,9 @@ function default_1(Categories) {
                 return;
             }
             yield Promise.all([
-                database_1.default.sortedSetRemove(`cid:${oldParent}:children`, cid),
-                database_1.default.sortedSetAdd(`cid:${newParent}:children`, categoryData.order, cid),
-                database_1.default.setObjectField(`category:${cid}`, 'parentCid', newParent),
+                db.sortedSetRemove(`cid:${oldParent}:children`, cid),
+                db.sortedSetAdd(`cid:${newParent}:children`, categoryData.order, cid),
+                db.setObjectField(`category:${cid}`, 'parentCid', newParent),
             ]);
             cache.del([
                 `cid:${oldParent}:children`,
@@ -104,17 +128,17 @@ function default_1(Categories) {
         return __awaiter(this, void 0, void 0, function* () {
             tags = tags.split(',').map(tag => utils.cleanUpTag(tag, meta_1.default.config.maximumTagLength))
                 .filter(Boolean);
-            yield database_1.default.delete(`cid:${cid}:tag:whitelist`);
+            yield db.delete(`cid:${cid}:tag:whitelist`);
             const scores = tags.map((tag, index) => index);
-            yield database_1.default.sortedSetAdd(`cid:${cid}:tag:whitelist`, scores, tags);
+            yield db.sortedSetAdd(`cid:${cid}:tag:whitelist`, scores, tags);
             cache.del(`cid:${cid}:tag:whitelist`);
         });
     }
     function updateOrder(cid, order) {
         return __awaiter(this, void 0, void 0, function* () {
             const parentCid = yield Categories.getCategoryField(cid, 'parentCid');
-            yield database_1.default.sortedSetsAdd('categories:cid', order, cid);
-            const childrenCids = yield database_1.default.getSortedSetRange(`cid:${parentCid}:children`, 0, -1);
+            yield db.sortedSetsAdd('categories:cid', order, cid);
+            const childrenCids = yield db.getSortedSetRange(`cid:${parentCid}:children`, 0, -1);
             const currentIndex = childrenCids.indexOf(String(cid));
             if (currentIndex === -1) {
                 throw new Error('[[error:no-category]]');
@@ -124,8 +148,8 @@ function default_1(Categories) {
                 childrenCids.splice(Math.max(0, order - 1), 0, childrenCids.splice(currentIndex, 1)[0]);
             }
             // recalculate orders from array indices
-            yield database_1.default.sortedSetAdd(`cid:${parentCid}:children`, childrenCids.map((cid, index) => index + 1), childrenCids);
-            yield database_1.default.setObjectBulk(childrenCids.map((cid, index) => [`category:${cid}`, { order: index + 1 }]));
+            yield db.sortedSetAdd(`cid:${parentCid}:children`, childrenCids.map((cid, index) => index + 1), childrenCids);
+            yield db.setObjectBulk(childrenCids.map((cid, index) => [`category:${cid}`, { order: index + 1 }]));
             cache.del([
                 'categories:cid',
                 `cid:${parentCid}:children`,
@@ -142,9 +166,9 @@ function default_1(Categories) {
     function updateName(cid, newName) {
         return __awaiter(this, void 0, void 0, function* () {
             const oldName = yield Categories.getCategoryField(cid, 'name');
-            yield database_1.default.sortedSetRemove('categories:name', `${oldName.slice(0, 200).toLowerCase()}:${cid}`);
-            yield database_1.default.sortedSetAdd('categories:name', 0, `${newName.slice(0, 200).toLowerCase()}:${cid}`);
-            yield database_1.default.setObjectField(`category:${cid}`, 'name', newName);
+            yield db.sortedSetRemove('categories:name', `${oldName.slice(0, 200).toLowerCase()}:${cid}`);
+            yield db.sortedSetAdd('categories:name', 0, `${newName.slice(0, 200).toLowerCase()}:${cid}`);
+            yield db.setObjectField(`category:${cid}`, 'name', newName);
         });
     }
 }

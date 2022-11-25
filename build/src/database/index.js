@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.primaryDB = void 0;
 const nconf_1 = __importDefault(require("nconf"));
 nconf_1.default.set('database', 'mongo');
 const databaseName = nconf_1.default.get('database');
@@ -21,6 +22,7 @@ if (!databaseName) {
     process.exit();
 }
 const primaryDB = require(`./${databaseName}`);
+exports.primaryDB = primaryDB;
 primaryDB.parseIntFields = function (data, intFields, requestedFields) {
     intFields.forEach((field) => {
         if (!requestedFields || !requestedFields.length || requestedFields.includes(field)) {
@@ -42,4 +44,3 @@ primaryDB.initSessionStore = function () {
         primaryDB.sessionStore = yield sessionStoreDB.createSessionStore(sessionStoreConfig);
     });
 };
-exports.default = primaryDB;

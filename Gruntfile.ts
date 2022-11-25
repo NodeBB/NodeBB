@@ -18,7 +18,7 @@ const prestart = require('./src/prestart');
 
 prestart.loadConfig(configFile);
 
-const db = require('./src/database');
+const db = require('./src/database').default.default;
 const plugins = require('./src/plugins');
 
 module.exports =function (grunt) {

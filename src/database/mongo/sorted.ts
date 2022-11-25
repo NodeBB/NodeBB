@@ -4,8 +4,8 @@ const _ = require('lodash');
 const utils = require('../../utils');
 
 export default  function (module) {
-	const helpers = require('./helpers').defualt;
-	const dbHelpers = require('../helpers').defualt;
+	const helpers = require('./helpers').default;
+	const dbHelpers = require('../helpers').default;
 
 	const util = require('util');
 	const sleep = util.promisify(setTimeout);

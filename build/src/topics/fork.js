@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -12,7 +35,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const posts = require('../posts');
 const categories = require('../categories');
 const privileges = require('../privileges');
@@ -70,7 +94,7 @@ function default_1(Topics) {
                     upvotes: postData.upvotes,
                     downvotes: postData.downvotes,
                 }),
-                database_1.default.sortedSetsAdd(['topics:votes', `cid:${cid}:tids:votes`], postData.votes, tid),
+                db.sortedSetsAdd(['topics:votes', `cid:${cid}:tids:votes`], postData.votes, tid),
                 Topics.events.log(fromTid, { type: 'fork', uid, href: `/topic/${tid}`, timestamp: postData.timestamp }),
             ]);
             plugins.hooks.fire('action:topic.fork', { tid: tid, fromTid: fromTid, uid: uid });
@@ -119,10 +143,10 @@ function default_1(Topics) {
                 return;
             }
             if (!topicData[0].pinned) {
-                yield database_1.default.sortedSetIncrBy(`cid:${topicData[0].cid}:tids:posts`, -1, postData.tid);
+                yield db.sortedSetIncrBy(`cid:${topicData[0].cid}:tids:posts`, -1, postData.tid);
             }
             if (!topicData[1].pinned) {
-                yield database_1.default.sortedSetIncrBy(`cid:${topicData[1].cid}:tids:posts`, 1, toTid);
+                yield db.sortedSetIncrBy(`cid:${topicData[1].cid}:tids:posts`, 1, toTid);
             }
             if (topicData[0].cid === topicData[1].cid) {
                 yield categories.updateRecentTidForCid(topicData[0].cid);
@@ -134,14 +158,14 @@ function default_1(Topics) {
                 `cid:${topicData[0].cid}:uid:${postData.uid}:pids:votes`,
             ];
             const tasks = [
-                database_1.default.incrObjectFieldBy(`category:${topicData[0].cid}`, 'post_count', -1),
-                database_1.default.incrObjectFieldBy(`category:${topicData[1].cid}`, 'post_count', 1),
-                database_1.default.sortedSetRemove(removeFrom, postData.pid),
-                database_1.default.sortedSetAdd(`cid:${topicData[1].cid}:pids`, postData.timestamp, postData.pid),
-                database_1.default.sortedSetAdd(`cid:${topicData[1].cid}:uid:${postData.uid}:pids`, postData.timestamp, postData.pid),
+                db.incrObjectFieldBy(`category:${topicData[0].cid}`, 'post_count', -1),
+                db.incrObjectFieldBy(`category:${topicData[1].cid}`, 'post_count', 1),
+                db.sortedSetRemove(removeFrom, postData.pid),
+                db.sortedSetAdd(`cid:${topicData[1].cid}:pids`, postData.timestamp, postData.pid),
+                db.sortedSetAdd(`cid:${topicData[1].cid}:uid:${postData.uid}:pids`, postData.timestamp, postData.pid),
             ];
             if (postData.votes > 0 || postData.votes < 0) {
-                tasks.push(database_1.default.sortedSetAdd(`cid:${topicData[1].cid}:uid:${postData.uid}:pids:votes`, postData.votes, postData.pid));
+                tasks.push(db.sortedSetAdd(`cid:${topicData[1].cid}:uid:${postData.uid}:pids:votes`, postData.votes, postData.pid));
             }
             yield Promise.all(tasks);
             yield Promise.all([

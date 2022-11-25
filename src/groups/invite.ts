@@ -2,7 +2,9 @@
 
 const _ = require('lodash');
 
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 import user from '../user';
 const slugify = require('../slugify');
 const plugins = require('../plugins');

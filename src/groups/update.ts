@@ -5,7 +5,8 @@ import winston from 'winston';
 const categories = require('../categories');
 const plugins = require('../plugins');
 const slugify = require('../slugify');
-import db from '../database';
+import { primaryDB } from '../database';
+
 import user from '../user';
 const batch = require('../batch');
 import meta from '../meta';
@@ -14,7 +15,7 @@ const cache = require('../cache');
 
 export default  function (Groups) {
 	Groups.update = async function (groupName, values) {
-		const exists = await db.exists(`group:${groupName}`);
+		const exists = await primaryDB.default.exists(`group:${groupName}`);
 		if (!exists) {
 			throw new Error('[[error:no-group]]');
 		}
@@ -81,7 +82,7 @@ export default  function (Groups) {
 			payload.memberPostCids = cidsArray.filter((cid) => validCids.includes(cid)).join(',') || '';
 		}
 
-		await db.setObject(`group:${groupName}`, payload);
+		await primaryDB.default.setObject(`group:${groupName}`, payload);
 		await Groups.renameGroup(groupName, values.name);
 
 		plugins.hooks.fire('action:group.update', {
@@ -92,15 +93,15 @@ export default  function (Groups) {
 
 	async function updateVisibility(groupName, hidden) {
 		if (hidden) {
-			await db.sortedSetRemoveBulk([
+			await primaryDB.default.sortedSetRemoveBulk([
 				['groups:visible:createtime', groupName],
 				['groups:visible:memberCount', groupName],
 				['groups:visible:name', `${groupName.toLowerCase()}:${groupName}`],
 			]);
 			return;
 		}
-		const groupData = await db.getObjectFields(`group:${groupName}`, ['createtime', 'memberCount']);
-		await db.sortedSetAddBulk([
+		const groupData = await primaryDB.default.getObjectFields(`group:${groupName}`, ['createtime', 'memberCount']);
+		await primaryDB.default.sortedSetAddBulk([
 			['groups:visible:createtime', groupData.createtime, groupName],
 			['groups:visible:memberCount', groupData.memberCount, groupName],
 			['groups:visible:name', 0, `${groupName.toLowerCase()}:${groupName}`],
@@ -118,7 +119,7 @@ export default  function (Groups) {
 	async function showHide(groupName, hidden) {
 		hidden = hidden === 'hidden';
 		await Promise.all([
-			db.setObjectField(`group:${groupName}`, 'hidden', hidden ? 1 : 0),
+			primaryDB.default.setObjectField(`group:${groupName}`, 'hidden', hidden ? 1 : 0),
 			updateVisibility(groupName, hidden),
 		]);
 	}
@@ -129,7 +130,7 @@ export default  function (Groups) {
 		if (!currentlyPrivate || currentlyPrivate === isPrivate) {
 			return;
 		}
-		const pendingUids = await db.getSetMembers(`group:${groupName}:pending`);
+		const pendingUids = await primaryDB.default.getSetMembers(`group:${groupName}:pending`);
 		if (!pendingUids.length) {
 			return;
 		}
@@ -140,7 +141,7 @@ export default  function (Groups) {
 			/* eslint-disable no-await-in-loop */
 			await Groups.join(groupName, uid);
 		}
-		await db.delete(`group:${groupName}:pending`);
+		await primaryDB.default.delete(`group:${groupName}:pending`);
 	}
 
 	async function checkNameChange(currentName, newName) {
@@ -175,7 +176,7 @@ export default  function (Groups) {
 		if (oldName === newName || !newName || String(newName).length === 0) {
 			return;
 		}
-		const group = await db.getObject(`group:${oldName}`);
+		const group = await primaryDB.default.getObject(`group:${oldName}`);
 		if (!group) {
 			return;
 		}
@@ -189,21 +190,21 @@ export default  function (Groups) {
 		await updateNavigationItems(oldName, newName);
 		await updateWidgets(oldName, newName);
 		await updateConfig(oldName, newName);
-		await db.setObject(`group:${oldName}`, { name: newName, slug: slugify(newName) });
-		await db.deleteObjectField('groupslug:groupname', group.slug);
-		await db.setObjectField('groupslug:groupname', slugify(newName), newName);
+		await primaryDB.default.setObject(`group:${oldName}`, { name: newName, slug: slugify(newName) });
+		await primaryDB.default.deleteObjectField('groupslug:groupname', group.slug);
+		await primaryDB.default.setObjectField('groupslug:groupname', slugify(newName), newName);
 
-		const allGroups = await db.getSortedSetRange('groups:createtime', 0, -1);
+		const allGroups = await primaryDB.default.getSortedSetRange('groups:createtime', 0, -1);
 		const keys = allGroups.map(group => `group:${group}:members`);
 		await renameGroupsMember(keys, oldName, newName);
 		cache.del(keys);
 
-		await db.rename(`group:${oldName}`, `group:${newName}`);
-		await db.rename(`group:${oldName}:members`, `group:${newName}:members`);
-		await db.rename(`group:${oldName}:owners`, `group:${newName}:owners`);
-		await db.rename(`group:${oldName}:pending`, `group:${newName}:pending`);
-		await db.rename(`group:${oldName}:invited`, `group:${newName}:invited`);
-		await db.rename(`group:${oldName}:member:pids`, `group:${newName}:member:pids`);
+		await primaryDB.default.rename(`group:${oldName}`, `group:${newName}`);
+		await primaryDB.default.rename(`group:${oldName}:members`, `group:${newName}:members`);
+		await primaryDB.default.rename(`group:${oldName}:owners`, `group:${newName}:owners`);
+		await primaryDB.default.rename(`group:${oldName}:pending`, `group:${newName}:pending`);
+		await primaryDB.default.rename(`group:${oldName}:invited`, `group:${newName}:invited`);
+		await primaryDB.default.rename(`group:${oldName}:member:pids`, `group:${newName}:member:pids`);
 
 		await renameGroupsMember(['groups:createtime', 'groups:visible:createtime', 'groups:visible:memberCount'], oldName, newName);
 		await renameGroupsMember(['groups:visible:name'], `${oldName.toLowerCase()}:${oldName}`, `${newName.toLowerCase()}:${newName}`);
@@ -229,14 +230,14 @@ export default  function (Groups) {
 	}
 
 	async function renameGroupsMember(keys, oldName, newName) {
-		const isMembers = await db.isMemberOfSortedSets(keys, oldName);
+		const isMembers = await primaryDB.default.isMemberOfSortedSets(keys, oldName);
 		keys = keys.filter((key, index) => isMembers[index]);
 		if (!keys.length) {
 			return;
 		}
-		const scores = await db.sortedSetsScore(keys, oldName);
-		await db.sortedSetsRemove(keys, oldName);
-		await db.sortedSetsAdd(keys, scores, newName);
+		const scores = await primaryDB.default.sortedSetsScore(keys, oldName);
+		await primaryDB.default.sortedSetsRemove(keys, oldName);
+		await primaryDB.default.sortedSetsAdd(keys, scores, newName);
 	}
 
 	async function updateNavigationItems(oldName, newName) {

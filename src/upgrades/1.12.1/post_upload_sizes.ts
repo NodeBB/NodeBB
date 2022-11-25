@@ -2,7 +2,8 @@
 
 const batch = require('../../batch');
 const posts = require('../../posts');
-import db from '../../database';
+import * as database from '../../database';
+const db = database as any;
 
 export default  {
 	name: 'Calculate image sizes of all uploaded images',

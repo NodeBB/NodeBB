@@ -232,3 +232,5 @@ async function isAdminOrMod(pid, uid) {
 	const cid = await posts.getCidByPid(pid);
 	return await privsCategories.isAdminOrMod(cid, uid);
 }
+
+export default privsPosts;

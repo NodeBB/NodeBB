@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -14,7 +37,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const validator = require('validator');
 const nconf_1 = __importDefault(require("nconf"));
-const database_1 = __importDefault(require("../../database"));
+const database = __importStar(require("../../database"));
+const db = database;
 const user_1 = __importDefault(require("../../user"));
 const groups = require('../../groups');
 const plugins = require('../../plugins');
@@ -149,18 +173,18 @@ function getCounts(userData, callerUID) {
         // @ts-ignore
         const cids = yield categories_1.default.getCidsByPrivilege('categories:cid', callerUID, 'topics:read');
         const promises = {
-            posts: database_1.default.sortedSetsCardSum(cids.map((c) => `cid:${c}:uid:${uid}:pids`)),
-            best: Promise.all(cids.map((c) => __awaiter(this, void 0, void 0, function* () { return database_1.default.sortedSetCount(`cid:${c}:uid:${uid}:pids:votes`, 1, '+inf'); }))),
-            controversial: Promise.all(cids.map((c) => __awaiter(this, void 0, void 0, function* () { return database_1.default.sortedSetCount(`cid:${c}:uid:${uid}:pids:votes`, '-inf', -1); }))),
-            topics: database_1.default.sortedSetsCardSum(cids.map((c) => `cid:${c}:uid:${uid}:tids`)),
+            posts: db.sortedSetsCardSum(cids.map((c) => `cid:${c}:uid:${uid}:pids`)),
+            best: Promise.all(cids.map((c) => __awaiter(this, void 0, void 0, function* () { return db.sortedSetCount(`cid:${c}:uid:${uid}:pids:votes`, 1, '+inf'); }))),
+            controversial: Promise.all(cids.map((c) => __awaiter(this, void 0, void 0, function* () { return db.sortedSetCount(`cid:${c}:uid:${uid}:pids:votes`, '-inf', -1); }))),
+            topics: db.sortedSetsCardSum(cids.map((c) => `cid:${c}:uid:${uid}:tids`)),
         };
         if (userData.isAdmin || userData.isSelf) {
-            promises.ignored = database_1.default.sortedSetCard(`uid:${uid}:ignored_tids`);
-            promises.watched = database_1.default.sortedSetCard(`uid:${uid}:followed_tids`);
-            promises.upvoted = database_1.default.sortedSetCard(`uid:${uid}:upvote`);
-            promises.downvoted = database_1.default.sortedSetCard(`uid:${uid}:downvote`);
-            promises.bookmarks = database_1.default.sortedSetCard(`uid:${uid}:bookmarks`);
-            promises.uploaded = database_1.default.sortedSetCard(`uid:${uid}:uploads`);
+            promises.ignored = db.sortedSetCard(`uid:${uid}:ignored_tids`);
+            promises.watched = db.sortedSetCard(`uid:${uid}:followed_tids`);
+            promises.upvoted = db.sortedSetCard(`uid:${uid}:upvote`);
+            promises.downvoted = db.sortedSetCard(`uid:${uid}:downvote`);
+            promises.bookmarks = db.sortedSetCard(`uid:${uid}:bookmarks`);
+            promises.uploaded = db.sortedSetCard(`uid:${uid}:uploads`);
             promises.categoriesWatched = user_1.default.getWatchedCategories(uid);
             promises.blocks = user_1.default.getUserField(userData.uid, 'blocksCount');
         }

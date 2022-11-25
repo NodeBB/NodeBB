@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -13,7 +36,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const validator = require('validator');
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const meta_1 = __importDefault(require("../meta"));
 const plugins = require('../plugins');
 const utils = require('../utils');
@@ -29,7 +53,7 @@ function default_1(Categories) {
                 return [];
             }
             const keys = cids.map((cid) => `category:${cid}`);
-            const categories = yield database_1.default.getObjects(keys, fields);
+            const categories = yield db.getObjects(keys, fields);
             const result = yield plugins.hooks.fire('filter:category.getFields', {
                 cids: cids,
                 categories: categories,
@@ -71,12 +95,12 @@ function default_1(Categories) {
     };
     Categories.setCategoryField = function (cid, field, value) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield database_1.default.setObjectField(`category:${cid}`, field, value);
+            yield db.setObjectField(`category:${cid}`, field, value);
         });
     };
     Categories.incrementCategoryFieldBy = function (cid, field, value) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield database_1.default.incrObjectFieldBy(`category:${cid}`, field, value);
+            yield db.incrObjectFieldBy(`category:${cid}`, field, value);
         });
     };
 }
@@ -98,7 +122,7 @@ function modifyCategory(category, fields) {
     defaultIntField(category, fields, 'minTags', 'minimumTagsPerTopic');
     defaultIntField(category, fields, 'maxTags', 'maximumTagsPerTopic');
     defaultIntField(category, fields, 'postQueue', 'postQueue');
-    database_1.default.parseIntFields(category, intFields, fields);
+    db.parseIntFields(category, intFields, fields);
     const escapeFields = ['name', 'color', 'bgColor', 'backgroundImage', 'imageClass', 'class', 'link'];
     escapeFields.forEach((field) => {
         if (category.hasOwnProperty(field)) {

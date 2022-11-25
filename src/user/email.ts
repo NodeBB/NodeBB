@@ -7,7 +7,9 @@ import winston from 'winston';
 const user = require('./index');
 const utils = require('../utils');
 const plugins = require('../plugins');
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 import meta from '../meta';
 const emailer = require('../emailer');
 const groups = require('../groups');

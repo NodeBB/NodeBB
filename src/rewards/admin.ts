@@ -1,7 +1,9 @@
 'use strict';
 
 const plugins = require('../plugins');
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 const utils = require('../utils');
 
 const rewards  = {} as any;

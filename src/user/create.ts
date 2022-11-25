@@ -3,7 +3,9 @@
 const zxcvbn = require('zxcvbn');
 import winston from 'winston';
 
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 const utils = require('../utils');
 const slugify = require('../slugify');
 const plugins = require('../plugins');

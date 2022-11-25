@@ -80,7 +80,7 @@ let utils;
 let winston;
 function init() {
     return __awaiter(this, void 0, void 0, function* () {
-        db = require('../database');
+        db = require('../database').default.default;
         yield db.init();
         user = require('../user');
         groups = require('../groups');

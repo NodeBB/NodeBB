@@ -49,10 +49,11 @@ const configFile = path_1.default.resolve(__dirname, '../../../', nconf_1.defaul
 const prestart = require('../../prestart');
 prestart.loadConfig(configFile);
 prestart.setupWinston();
-const database_1 = __importDefault(require("../../database"));
+const database = __importStar(require("../../database"));
+const db = database;
 process.on('message', (msg) => __awaiter(void 0, void 0, void 0, function* () {
     if (msg && msg.uid) {
-        yield database_1.default.init();
+        yield db.init();
         const targetUid = msg.uid;
         const archivePath = path_1.default.join(__dirname, '../../../build/export', `${targetUid}_uploads.zip`);
         const rootDirectory = path_1.default.join(__dirname, '../../../../public/uploads/');
@@ -85,7 +86,7 @@ process.on('message', (msg) => __awaiter(void 0, void 0, void 0, function* () {
         });
         const output = fs.createWriteStream(archivePath);
         output.on('close', () => __awaiter(void 0, void 0, void 0, function* () {
-            yield database_1.default.close();
+            yield db.close();
             process.exit(0);
         }));
         archive.pipe(output);

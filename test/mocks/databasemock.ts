@@ -69,7 +69,7 @@ if (nconf.get('isCluster') === undefined) {
 }
 
 const dbType = nconf.get('database');
-const testDbConfig = nconf.get('test_database');
+const testDbConfig = nconf.get('test_database').default.default;
 const productionDbConfig = nconf.get(dbType);
 
 if (!testDbConfig) {
@@ -126,7 +126,7 @@ nconf.set(dbType, testDbConfig);
 winston.info('database config %s', dbType, testDbConfig);
 winston.info(`environment ${global.env}`);
 
-const db = require('../../src/database');
+const db = require('../../src/database').default.default;
 
 export default  db;
 

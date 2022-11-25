@@ -3,7 +3,9 @@
 
 const _ = require('lodash');
 
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 const privileges = require('../privileges');
 import user from '../user';
 const categories = require('../categories');

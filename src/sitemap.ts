@@ -3,7 +3,9 @@
 const { SitemapStream, streamToPromise } = require('sitemap');
 import nconf from 'nconf';
 
-const db = require('./database');
+import * as database from './database';      
+    
+const db = database as any;
 const categories = require('./categories');
 const topics = require('./topics');
 const privileges = require('./privileges');

@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -12,7 +35,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const user_1 = __importDefault(require("../user"));
 const posts = require('../posts');
 const categories = require('../categories');
@@ -35,7 +59,7 @@ function default_1(Topics) {
                 Topics.getTopicField(tid, 'cid'),
                 Topics.getPids(tid),
             ]);
-            yield database_1.default.sortedSetRemove(`cid:${cid}:pids`, pids);
+            yield db.sortedSetRemove(`cid:${cid}:pids`, pids);
             yield categories.updateRecentTidForCid(cid);
         });
     }
@@ -49,7 +73,7 @@ function default_1(Topics) {
             postData = postData.filter(post => post && !post.deleted);
             const pidsToAdd = postData.map(post => post.pid);
             const scores = postData.map(post => post.timestamp);
-            yield database_1.default.sortedSetAdd(`cid:${cid}:pids`, scores, pidsToAdd);
+            yield db.sortedSetAdd(`cid:${cid}:pids`, scores, pidsToAdd);
             yield categories.updateRecentTidForCid(cid);
         });
     }
@@ -86,7 +110,7 @@ function default_1(Topics) {
             deletedTopic.tags = tags;
             yield deleteFromFollowersIgnorers(tid);
             yield Promise.all([
-                database_1.default.deleteAll([
+                db.deleteAll([
                     `tid:${tid}:followers`,
                     `tid:${tid}:ignorers`,
                     `tid:${tid}:posts`,
@@ -94,7 +118,7 @@ function default_1(Topics) {
                     `tid:${tid}:bookmarks`,
                     `tid:${tid}:posters`,
                 ]),
-                database_1.default.sortedSetsRemove([
+                db.sortedSetsRemove([
                     'topics:tid',
                     'topics:recent',
                     'topics:posts',
@@ -109,25 +133,25 @@ function default_1(Topics) {
                 reduceCounters(tid),
             ]);
             plugins.hooks.fire('action:topic.purge', { topic: deletedTopic, uid: uid });
-            yield database_1.default.delete(`topic:${tid}`);
+            yield db.delete(`topic:${tid}`);
         });
     };
     function deleteFromFollowersIgnorers(tid) {
         return __awaiter(this, void 0, void 0, function* () {
             const [followers, ignorers] = yield Promise.all([
-                database_1.default.getSetMembers(`tid:${tid}:followers`),
-                database_1.default.getSetMembers(`tid:${tid}:ignorers`),
+                db.getSetMembers(`tid:${tid}:followers`),
+                db.getSetMembers(`tid:${tid}:ignorers`),
             ]);
             const followerKeys = followers.map(uid => `uid:${uid}:followed_tids`);
             const ignorerKeys = ignorers.map(uid => `uid:${uid}ignored_tids`);
-            yield database_1.default.sortedSetsRemove(followerKeys.concat(ignorerKeys), tid);
+            yield db.sortedSetsRemove(followerKeys.concat(ignorerKeys), tid);
         });
     }
     function deleteTopicFromCategoryAndUser(tid) {
         return __awaiter(this, void 0, void 0, function* () {
             const topicData = yield Topics.getTopicFields(tid, ['cid', 'uid']);
             yield Promise.all([
-                database_1.default.sortedSetsRemove([
+                db.sortedSetsRemove([
                     `cid:${topicData.cid}:tids`,
                     `cid:${topicData.cid}:tids:pinned`,
                     `cid:${topicData.cid}:tids:posts`,
@@ -146,13 +170,13 @@ function default_1(Topics) {
     function reduceCounters(tid) {
         return __awaiter(this, void 0, void 0, function* () {
             const incr = -1;
-            yield database_1.default.incrObjectFieldBy('global', 'topicCount', incr);
+            yield db.incrObjectFieldBy('global', 'topicCount', incr);
             const topicData = yield Topics.getTopicFields(tid, ['cid', 'postcount']);
             const postCountChange = incr * topicData.postcount;
             yield Promise.all([
-                database_1.default.incrObjectFieldBy('global', 'postCount', postCountChange),
-                database_1.default.incrObjectFieldBy(`category:${topicData.cid}`, 'post_count', postCountChange),
-                database_1.default.incrObjectFieldBy(`category:${topicData.cid}`, 'topic_count', incr),
+                db.incrObjectFieldBy('global', 'postCount', postCountChange),
+                db.incrObjectFieldBy(`category:${topicData.cid}`, 'post_count', postCountChange),
+                db.incrObjectFieldBy(`category:${topicData.cid}`, 'topic_count', incr),
             ]);
         });
     }

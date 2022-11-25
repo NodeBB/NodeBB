@@ -188,3 +188,4 @@ privsTopics.canViewDeletedScheduled = function (topic, privileges = {}, viewDele
     }
     return true;
 };
+exports.default = privsTopics;

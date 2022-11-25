@@ -16,7 +16,7 @@ cacheController.get = function (req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const postCache = require('../../posts/cache');
         const groupCache = require('../../groups').cache;
-        const { objectCache } = require('../../database');
+        const { objectCache } = require('../../database').default.default;
         const localCache = require('../../cache');
         function getInfo(cache) {
             return {

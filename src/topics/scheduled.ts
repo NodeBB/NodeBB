@@ -4,7 +4,9 @@ const _ = require('lodash');
 import winston from 'winston';
 const { CronJob } = require('cron');
 
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 const posts = require('../posts');
 const socketHelpers = require('../socket.io/helpers');
 const topics = require('./index');

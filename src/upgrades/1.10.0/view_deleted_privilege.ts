@@ -3,7 +3,8 @@
 'use strict';
 
 const groups = require('../../groups');
-import db from '../../database';
+import * as database from '../../database';
+const db = database as any;
 
 export default  {
 	name: 'Give deleted post viewing privilege to moderators on all categories',

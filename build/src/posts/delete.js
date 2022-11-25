@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -13,7 +36,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const _ = require('lodash');
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const topics = require('../topics');
 const categories = require('../categories');
 const user_1 = __importDefault(require("../user"));
@@ -46,8 +70,8 @@ function default_1(Posts) {
                 topics.updateLastPostTimeFromLastPid(postData.tid),
                 topics.updateTeaser(postData.tid),
                 isDeleting ?
-                    database_1.default.sortedSetRemove(`cid:${topicData.cid}:pids`, pid) :
-                    database_1.default.sortedSetAdd(`cid:${topicData.cid}:pids`, postData.timestamp, pid),
+                    db.sortedSetRemove(`cid:${topicData.cid}:pids`, pid) :
+                    db.sortedSetAdd(`cid:${topicData.cid}:pids`, postData.timestamp, pid),
             ]);
             yield categories.updateRecentTidForCid(postData.cid);
             plugins.hooks.fire(`action:post.${type}`, { post: _.clone(postData), uid: uid });
@@ -90,14 +114,14 @@ function default_1(Posts) {
                 deleteFromGroups(pids),
                 deleteDiffs(pids),
                 deleteFromUploads(pids),
-                database_1.default.sortedSetsRemove(['posts:pid', 'posts:votes', 'posts:flagged'], pids),
+                db.sortedSetsRemove(['posts:pid', 'posts:votes', 'posts:flagged'], pids),
             ]);
             yield resolveFlags(postData, uid);
             // deprecated hook
             Promise.all(postData.map(p => plugins.hooks.fire('action:post.purge', { post: p, uid: uid })));
             // new hook
             plugins.hooks.fire('action:posts.purge', { posts: postData, uid: uid });
-            yield database_1.default.deleteAll(postData.map(p => `post:${p.pid}`));
+            yield db.deleteAll(postData.map(p => `post:${p.pid}`));
         });
     };
     function deleteFromTopicUserNotification(postData) {
@@ -110,7 +134,7 @@ function default_1(Posts) {
                 bulkRemove.push([`cid:${p.cid}:uid:${p.uid}:pids`, p.pid]);
                 bulkRemove.push([`cid:${p.cid}:uid:${p.uid}:pids:votes`, p.pid]);
             });
-            yield database_1.default.sortedSetRemoveBulk(bulkRemove);
+            yield db.sortedSetRemoveBulk(bulkRemove);
             const incrObjectBulk = [['global', { postCount: -postData.length }]];
             const postsByCategory = _.groupBy(postData, p => parseInt(p.cid, 10));
             for (const [cid, posts] of Object.entries(postsByCategory)) {
@@ -136,11 +160,11 @@ function default_1(Posts) {
                 for (const [uid, uidPosts] of Object.entries(postsByUid)) {
                     zsetIncrBulk.push([`tid:${tid}:posters`, -uidPosts.length, uid]);
                 }
-                topicTasks.push(database_1.default.sortedSetIncrByBulk(zsetIncrBulk));
+                topicTasks.push(db.sortedSetIncrByBulk(zsetIncrBulk));
             }
             yield Promise.all([
-                database_1.default.incrObjectFieldByBulk(incrObjectBulk),
-                database_1.default.sortedSetAddBulk(topicPostCountTasks),
+                db.incrObjectFieldByBulk(incrObjectBulk),
+                db.sortedSetAddBulk(topicPostCountTasks),
                 ...topicTasks,
                 user_1.default.updatePostCount(_.uniq(postData.map(p => p.uid))),
                 notifications.rescind(...postData.map(p => `new_post:tid:${p.tid}:pid:${p.pid}:uid:${p.uid}`)),
@@ -151,28 +175,28 @@ function default_1(Posts) {
         return __awaiter(this, void 0, void 0, function* () {
             const uniqCids = _.uniq(postData.map(p => p.cid));
             const sets = uniqCids.map((cid) => `cid:${cid}:pids`);
-            yield database_1.default.sortedSetRemove(sets, postData.map(p => p.pid));
+            yield db.sortedSetRemove(sets, postData.map(p => p.pid));
             yield Promise.all(uniqCids.map(categories.updateRecentTidForCid));
         });
     }
     function deleteFromUsersBookmarks(pids) {
         return __awaiter(this, void 0, void 0, function* () {
-            const arrayOfUids = yield database_1.default.getSetsMembers(pids.map(pid => `pid:${pid}:users_bookmarked`));
+            const arrayOfUids = yield db.getSetsMembers(pids.map(pid => `pid:${pid}:users_bookmarked`));
             const bulkRemove = [];
             pids.forEach((pid, index) => {
                 arrayOfUids[index].forEach((uid) => {
                     bulkRemove.push([`uid:${uid}:bookmarks`, pid]);
                 });
             });
-            yield database_1.default.sortedSetRemoveBulk(bulkRemove);
-            yield database_1.default.deleteAll(pids.map(pid => `pid:${pid}:users_bookmarked`));
+            yield db.sortedSetRemoveBulk(bulkRemove);
+            yield db.deleteAll(pids.map(pid => `pid:${pid}:users_bookmarked`));
         });
     }
     function deleteFromUsersVotes(pids) {
         return __awaiter(this, void 0, void 0, function* () {
             const [upvoters, downvoters] = yield Promise.all([
-                database_1.default.getSetsMembers(pids.map(pid => `pid:${pid}:upvote`)),
-                database_1.default.getSetsMembers(pids.map(pid => `pid:${pid}:downvote`)),
+                db.getSetsMembers(pids.map(pid => `pid:${pid}:upvote`)),
+                db.getSetsMembers(pids.map(pid => `pid:${pid}:downvote`)),
             ]);
             const bulkRemove = [];
             pids.forEach((pid, index) => {
@@ -184,8 +208,8 @@ function default_1(Posts) {
                 });
             });
             yield Promise.all([
-                database_1.default.sortedSetRemoveBulk(bulkRemove),
-                database_1.default.deleteAll([
+                db.sortedSetRemoveBulk(bulkRemove),
+                db.deleteAll([
                     ...pids.map(pid => `pid:${pid}:upvote`),
                     ...pids.map(pid => `pid:${pid}:downvote`),
                 ]),
@@ -194,32 +218,32 @@ function default_1(Posts) {
     }
     function deleteFromReplies(postData) {
         return __awaiter(this, void 0, void 0, function* () {
-            const arrayOfReplyPids = yield database_1.default.getSortedSetsMembers(postData.map(p => `pid:${p.pid}:replies`));
+            const arrayOfReplyPids = yield db.getSortedSetsMembers(postData.map(p => `pid:${p.pid}:replies`));
             const allReplyPids = _.flatten(arrayOfReplyPids);
             const promises = [
-                database_1.default.deleteObjectFields(allReplyPids.map(pid => `post:${pid}`), ['toPid']),
-                database_1.default.deleteAll(postData.map(p => `pid:${p.pid}:replies`)),
+                db.deleteObjectFields(allReplyPids.map(pid => `post:${pid}`), ['toPid']),
+                db.deleteAll(postData.map(p => `pid:${p.pid}:replies`)),
             ];
             const postsWithParents = postData.filter(p => parseInt(p.toPid, 10));
             const bulkRemove = postsWithParents.map(p => [`pid:${p.toPid}:replies`, p.pid]);
-            promises.push(database_1.default.sortedSetRemoveBulk(bulkRemove));
+            promises.push(db.sortedSetRemoveBulk(bulkRemove));
             yield Promise.all(promises);
             const parentPids = _.uniq(postsWithParents.map(p => p.toPid));
-            const counts = database_1.default.sortedSetsCard(parentPids.map(pid => `pid:${pid}:replies`));
-            yield database_1.default.setObjectBulk(parentPids.map((pid, index) => [`post:${pid}`, { replies: counts[index] }]));
+            const counts = db.sortedSetsCard(parentPids.map(pid => `pid:${pid}:replies`));
+            yield db.setObjectBulk(parentPids.map((pid, index) => [`post:${pid}`, { replies: counts[index] }]));
         });
     }
     function deleteFromGroups(pids) {
         return __awaiter(this, void 0, void 0, function* () {
-            const groupNames = yield database_1.default.getSortedSetMembers('groups:visible:createtime');
+            const groupNames = yield db.getSortedSetMembers('groups:visible:createtime');
             const keys = groupNames.map(groupName => `group:${groupName}:member:pids`);
-            yield database_1.default.sortedSetRemove(keys, pids);
+            yield db.sortedSetRemove(keys, pids);
         });
     }
     function deleteDiffs(pids) {
         return __awaiter(this, void 0, void 0, function* () {
             const timestamps = yield Promise.all(pids.map(pid => Posts.diffs.list(pid)));
-            yield database_1.default.deleteAll([
+            yield db.deleteAll([
                 ...pids.map(pid => `post:${pid}:diffs`),
                 ..._.flattenDeep(pids.map((pid, index) => timestamps[index].map((t) => `diff:${pid}.${t}`))),
             ]);

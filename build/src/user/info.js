@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,13 +31,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const _ = require('lodash');
 const validator = require('validator');
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const posts = require('../posts');
 const topics = require('../topics');
 const utils = require('../utils');
@@ -22,11 +43,11 @@ function default_1(User) {
     User.getLatestBanInfo = function (uid) {
         return __awaiter(this, void 0, void 0, function* () {
             // Simply retrieves the last record of the user's ban, even if they've been unbanned since then.
-            const record = yield database_1.default.getSortedSetRevRange(`uid:${uid}:bans:timestamp`, 0, 0);
+            const record = yield db.getSortedSetRevRange(`uid:${uid}:bans:timestamp`, 0, 0);
             if (!record.length) {
                 throw new Error('no-ban-info');
             }
-            const banInfo = yield database_1.default.getObject(record[0]);
+            const banInfo = yield db.getObject(record[0]);
             const expire = parseInt(banInfo.expire, 10);
             const expire_readable = utils.toISOString(expire);
             return {
@@ -43,13 +64,13 @@ function default_1(User) {
     User.getModerationHistory = function (uid) {
         return __awaiter(this, void 0, void 0, function* () {
             let [flags, bans, mutes] = yield Promise.all([
-                database_1.default.getSortedSetRevRangeWithScores(`flags:byTargetUid:${uid}`, 0, 19),
-                database_1.default.getSortedSetRevRange(`uid:${uid}:bans:timestamp`, 0, 19),
-                database_1.default.getSortedSetRevRange(`uid:${uid}:mutes:timestamp`, 0, 19),
+                db.getSortedSetRevRangeWithScores(`flags:byTargetUid:${uid}`, 0, 19),
+                db.getSortedSetRevRange(`uid:${uid}:bans:timestamp`, 0, 19),
+                db.getSortedSetRevRange(`uid:${uid}:mutes:timestamp`, 0, 19),
             ]);
             // Get pids from flag objects
             const keys = flags.map(flagObj => `flag:${flagObj.value}`);
-            const payload = yield database_1.default.getObjectsFields(keys, ['type', 'targetId']);
+            const payload = yield db.getObjectsFields(keys, ['type', 'targetId']);
             // Only pass on flag ids from posts
             flags = payload.reduce((memo, cur, idx) => {
                 if (cur.type === 'post') {
@@ -74,7 +95,7 @@ function default_1(User) {
     };
     User.getHistory = function (set) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield database_1.default.getSortedSetRevRangeWithScores(set, 0, -1);
+            const data = yield db.getSortedSetRevRangeWithScores(set, 0, -1);
             return data.map((set) => {
                 set.timestamp = set.score;
                 set.timestampISO = utils.toISOString(set.score);
@@ -107,7 +128,7 @@ function default_1(User) {
     }
     function formatBanMuteData(keys, noReasonLangKey) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield database_1.default.getObjects(keys);
+            const data = yield db.getObjects(keys);
             const uids = data.map((d) => d.fromUid);
             const usersData = yield User.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture']);
             return data.map((banObj, index) => {
@@ -123,9 +144,9 @@ function default_1(User) {
     }
     User.getModerationNotes = function (uid, start, stop) {
         return __awaiter(this, void 0, void 0, function* () {
-            const noteIds = yield database_1.default.getSortedSetRevRange(`uid:${uid}:moderation:notes`, start, stop);
+            const noteIds = yield db.getSortedSetRevRange(`uid:${uid}:moderation:notes`, start, stop);
             const keys = noteIds.map(id => `uid:${uid}:moderation:note:${id}`);
-            const notes = yield database_1.default.getObjects(keys);
+            const notes = yield db.getObjects(keys);
             const uids = [];
             const noteData = notes.map((note) => {
                 if (note) {
@@ -145,8 +166,8 @@ function default_1(User) {
         });
     };
     User.appendModerationNote = ({ uid, noteData }) => __awaiter(this, void 0, void 0, function* () {
-        yield database_1.default.sortedSetAdd(`uid:${uid}:moderation:notes`, noteData.timestamp, noteData.timestamp);
-        yield database_1.default.setObject(`uid:${uid}:moderation:note:${noteData.timestamp}`, noteData);
+        yield db.sortedSetAdd(`uid:${uid}:moderation:notes`, noteData.timestamp, noteData.timestamp);
+        yield db.setObject(`uid:${uid}:moderation:note:${noteData.timestamp}`, noteData);
     });
 }
 exports.default = default_1;

@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -12,7 +35,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const database_1 = __importDefault(require("../../database"));
+const database = __importStar(require("../../database"));
+const db = database;
 const batch = require('../../batch');
 const posts = require('../../posts');
 const user_1 = __importDefault(require("../../user"));
@@ -22,9 +46,9 @@ exports.default = {
     method: function () {
         return __awaiter(this, void 0, void 0, function* () {
             const { progress } = this;
-            let flags = yield database_1.default.getSortedSetRange('flags:datetime', 0, -1);
+            let flags = yield db.getSortedSetRange('flags:datetime', 0, -1);
             flags = flags.map(flagId => `flag:${flagId}`);
-            flags = yield database_1.default.getObjectsFields(flags, ['flagId', 'type', 'targetId', 'uid', 'description', 'datetime']);
+            flags = yield db.getObjectsFields(flags, ['flagId', 'type', 'targetId', 'uid', 'description', 'datetime']);
             progress.total = flags.length;
             yield batch.processArray(flags, (subset) => __awaiter(this, void 0, void 0, function* () {
                 progress.incr(subset.length);
@@ -38,7 +62,7 @@ exports.default = {
                             methods.push(user_1.default.setUserField.bind(user_1.default, flagObj.targetId, 'flagId', flagObj.flagId));
                             break;
                     }
-                    methods.push(database_1.default.sortedSetAdd.bind(database_1.default, `flag:${flagObj.flagId}:reports`, flagObj.datetime, String(flagObj.description).slice(0, 250)), database_1.default.sortedSetAdd.bind(database_1.default, `flag:${flagObj.flagId}:reporters`, flagObj.datetime, flagObj.uid));
+                    methods.push(db.sortedSetAdd.bind(db, `flag:${flagObj.flagId}:reports`, flagObj.datetime, String(flagObj.description).slice(0, 250)), db.sortedSetAdd.bind(db, `flag:${flagObj.flagId}:reporters`, flagObj.datetime, flagObj.uid));
                     yield Promise.all(methods.map((method) => __awaiter(this, void 0, void 0, function* () { return method(); })));
                 })));
             }), {

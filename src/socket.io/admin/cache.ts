@@ -2,7 +2,8 @@
 
 const SocketCache  = {} as any;
 
-import db from '../../database';
+import * as database from '../../database';
+const db = database as any;
 const plugins = require('../../plugins');
 
 SocketCache.clear = async function (socket, data) {

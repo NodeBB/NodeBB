@@ -4,7 +4,9 @@ const _ = require('lodash');
 const validator = require('validator');
 import nconf from 'nconf';
 
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 import user from '../user';
 import meta from '../meta';
 const groups = require('../groups');

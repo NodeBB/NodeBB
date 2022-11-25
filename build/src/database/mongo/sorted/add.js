@@ -13,8 +13,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const helpers_1 = __importDefault(require("../helpers"));
+const utils_1 = __importDefault(require("../../../utils"));
 function default_1(module) {
-    const utils = require('../../../utils');
     module.sortedSetAdd = function (key, score, value) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!key) {
@@ -23,7 +23,7 @@ function default_1(module) {
             if (Array.isArray(score) && Array.isArray(value)) {
                 return yield sortedSetAddBulk(key, score, value);
             }
-            if (!utils.isNumber(score)) {
+            if (!utils_1.default.isNumber(score)) {
                 throw new Error(`[[error:invalid-score, ${score}]]`);
             }
             value = helpers_1.default.valueToString(value);
@@ -47,7 +47,7 @@ function default_1(module) {
                 throw new Error('[[error:invalid-data]]');
             }
             for (let i = 0; i < scores.length; i += 1) {
-                if (!utils.isNumber(scores[i])) {
+                if (!utils_1.default.isNumber(scores[i])) {
                     throw new Error(`[[error:invalid-score, ${scores[i]}]]`);
                 }
             }
@@ -65,8 +65,8 @@ function default_1(module) {
                 return;
             }
             const isArrayOfScores = Array.isArray(scores);
-            if ((!isArrayOfScores && !utils.isNumber(scores)) ||
-                (isArrayOfScores && scores.map(s => utils.isNumber(s)).includes(false))) {
+            if ((!isArrayOfScores && !utils_1.default.isNumber(scores)) ||
+                (isArrayOfScores && scores.map(s => utils_1.default.isNumber(s)).includes(false))) {
                 throw new Error(`[[error:invalid-score, ${scores}]]`);
             }
             if (isArrayOfScores && scores.length !== keys.length) {
@@ -90,7 +90,7 @@ function default_1(module) {
             }
             const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
             data.forEach((item) => {
-                if (!utils.isNumber(item[1])) {
+                if (!utils_1.default.isNumber(item[1])) {
                     throw new Error(`[[error:invalid-score, ${item[1]}]]`);
                 }
                 bulk.find({ _key: item[0], value: String(item[2]) }).upsert().updateOne({ $set: { score: parseFloat(item[1]) } });

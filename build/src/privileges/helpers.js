@@ -183,6 +183,7 @@ helpers.giveOrRescind = function (method, privileges, cids, members) {
                     groupKeys.push(`cid:${cid}:privileges:${privilege}`);
                 });
             });
+            console.log('METHDD', method);
             /* eslint-disable no-await-in-loop */
             yield method(groupKeys, member);
         }

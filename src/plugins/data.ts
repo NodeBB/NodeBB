@@ -5,7 +5,9 @@ import path from 'path';import winston from 'winston';
 const _ = require('lodash');
 import nconf from 'nconf';
 
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 const file = require('../file');
 const { paths } = require('../constants');
 
@@ -262,3 +264,5 @@ Data.getLanguageData = async function getLanguageData(pluginData) {
 		namespaces: _.uniq(namespaces),
 	} as any;
 };
+
+export default Data;

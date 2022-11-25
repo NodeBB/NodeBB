@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -13,7 +36,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const async = require('async');
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const user_1 = __importDefault(require("../user"));
 function default_1(Topics) {
     Topics.getUserBookmark = function (tid, uid) {
@@ -21,7 +45,7 @@ function default_1(Topics) {
             if (parseInt(uid, 10) <= 0) {
                 return null;
             }
-            return yield database_1.default.sortedSetScore(`tid:${tid}:bookmarks`, uid);
+            return yield db.sortedSetScore(`tid:${tid}:bookmarks`, uid);
         });
     };
     Topics.getUserBookmarks = function (tids, uid) {
@@ -29,23 +53,23 @@ function default_1(Topics) {
             if (parseInt(uid, 10) <= 0) {
                 return tids.map(() => null);
             }
-            return yield database_1.default.sortedSetsScore(tids.map(tid => `tid:${tid}:bookmarks`), uid);
+            return yield db.sortedSetsScore(tids.map(tid => `tid:${tid}:bookmarks`), uid);
         });
     };
     Topics.setUserBookmark = function (tid, uid, index) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield database_1.default.sortedSetAdd(`tid:${tid}:bookmarks`, index, uid);
+            yield db.sortedSetAdd(`tid:${tid}:bookmarks`, index, uid);
         });
     };
     Topics.getTopicBookmarks = function (tid) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield database_1.default.getSortedSetRangeWithScores(`tid:${tid}:bookmarks`, 0, -1);
+            return yield db.getSortedSetRangeWithScores(`tid:${tid}:bookmarks`, 0, -1);
         });
     };
     Topics.updateTopicBookmarks = function (tid, pids) {
         return __awaiter(this, void 0, void 0, function* () {
             const maxIndex = yield Topics.getPostCount(tid);
-            const indices = yield database_1.default.sortedSetRanks(`tid:${tid}:posts`, pids);
+            const indices = yield db.sortedSetRanks(`tid:${tid}:posts`, pids);
             const postIndices = indices.map((i) => (i === null ? 0 : i + 1));
             const minIndex = Math.min(...postIndices);
             const bookmarks = yield Topics.getTopicBookmarks(tid);

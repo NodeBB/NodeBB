@@ -20,7 +20,7 @@ const os = require('os');
 const cproc = require('child_process');
 const util = require('util');
 const request = require('request-promise-native');
-const database_1 = __importDefault(require("../database"));
+const database_1 = require("../database");
 const meta_1 = __importDefault(require("../meta"));
 const pubsub = require('../pubsub').default;
 const { paths } = require('../constants');
@@ -69,11 +69,11 @@ function default_1(Plugins) {
             }
             const isActive = yield Plugins.isActive(id);
             if (isActive) {
-                yield database_1.default.sortedSetRemove('plugins:active', id);
+                yield database_1.primaryDB.default.sortedSetRemove('plugins:active', id);
             }
             else {
-                const count = yield database_1.default.sortedSetCard('plugins:active');
-                yield database_1.default.sortedSetAdd('plugins:active', count, id);
+                const count = yield database_1.primaryDB.default.sortedSetCard('plugins:active');
+                yield database_1.primaryDB.default.sortedSetAdd('plugins:active', count, id);
             }
             meta_1.default.reloadRequired = true;
             const hook = isActive ? 'deactivate' : 'activate';
@@ -161,7 +161,7 @@ function default_1(Plugins) {
             if (nconf_1.default.get('plugins:active')) {
                 return nconf_1.default.get('plugins:active').includes(id);
             }
-            return yield database_1.default.isSortedSetMember('plugins:active', id);
+            return yield database_1.primaryDB.default.isSortedSetMember('plugins:active', id);
         });
     };
     Plugins.getActive = function () {
@@ -169,7 +169,7 @@ function default_1(Plugins) {
             if (nconf_1.default.get('plugins:active')) {
                 return nconf_1.default.get('plugins:active');
             }
-            return yield database_1.default.getSortedSetRange('plugins:active', 0, -1);
+            return yield database_1.primaryDB.default.getSortedSetRange('plugins:active', 0, -1);
         });
     };
     Plugins.autocomplete = (fragment) => __awaiter(this, void 0, void 0, function* () {

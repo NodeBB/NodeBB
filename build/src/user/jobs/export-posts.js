@@ -48,11 +48,12 @@ const configFile = path_1.default.resolve(__dirname, '../../../', nconf_1.defaul
 const prestart = require('../../prestart');
 prestart.loadConfig(configFile);
 prestart.setupWinston();
-const database_1 = __importDefault(require("../../database"));
+const database = __importStar(require("../../database"));
+const db = database;
 const batch = require('../../batch');
 process.on('message', (msg) => __awaiter(void 0, void 0, void 0, function* () {
     if (msg && msg.uid) {
-        yield database_1.default.init();
+        yield db.init();
         const targetUid = msg.uid;
         const filePath = path_1.default.join(__dirname, '../../../build/export', `${targetUid}_posts.csv`);
         const posts = require('../../posts');
@@ -73,7 +74,7 @@ process.on('message', (msg) => __awaiter(void 0, void 0, void 0, function* () {
         const opts = { fields };
         const csv = yield json2csvAsync(payload, opts);
         yield fs.promises.writeFile(filePath, csv);
-        yield database_1.default.close();
+        yield db.close();
         process.exit(0);
     }
 }));

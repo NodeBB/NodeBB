@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -15,7 +38,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const async = require('async');
 const validator = require('validator');
 const _ = require('lodash');
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const meta_1 = __importDefault(require("../meta"));
 const user_1 = __importDefault(require("../user"));
 const categories = require('../categories');
@@ -31,7 +55,7 @@ function default_1(Topics) {
             }
             const cid = yield Topics.getTopicField(tid, 'cid');
             const topicSets = tags.map(tag => `tag:${tag}:topics`).concat(tags.map(tag => `cid:${cid}:tag:${tag}:topics`));
-            yield database_1.default.sortedSetsAdd(topicSets, timestamp, tid);
+            yield db.sortedSetsAdd(topicSets, timestamp, tid);
             yield Topics.updateCategoryTagsCount([cid], tags);
             yield Promise.all(tags.map(updateTagCount));
         });
@@ -48,7 +72,7 @@ function default_1(Topics) {
     Topics.updateCategoryTagsCount = function (cids, tags) {
         return __awaiter(this, void 0, void 0, function* () {
             yield Promise.all(cids.map((cid) => __awaiter(this, void 0, void 0, function* () {
-                const counts = yield database_1.default.sortedSetsCard(tags.map(tag => `cid:${cid}:tag:${tag}:topics`));
+                const counts = yield db.sortedSetsCard(tags.map(tag => `cid:${cid}:tag:${tag}:topics`));
                 const tagToCount = _.zipObject(tags, counts);
                 const set = `cid:${cid}:tags`;
                 const bulkAdd = tags.filter(tag => tagToCount[tag] > 0)
@@ -56,11 +80,11 @@ function default_1(Topics) {
                 const bulkRemove = tags.filter(tag => tagToCount[tag] <= 0)
                     .map(tag => [set, tag]);
                 yield Promise.all([
-                    database_1.default.sortedSetAddBulk(bulkAdd),
-                    database_1.default.sortedSetRemoveBulk(bulkRemove),
+                    db.sortedSetAddBulk(bulkAdd),
+                    db.sortedSetRemoveBulk(bulkRemove),
                 ]);
             })));
-            yield database_1.default.sortedSetsRemoveRangeByScore(cids.map((cid) => `cid:${cid}:tags`), '-inf', 0);
+            yield db.sortedSetsRemoveRangeByScore(cids.map((cid) => `cid:${cid}:tags`), '-inf', 0);
         });
     };
     Topics.validateTags = function (tags, cid, uid, tid = null) {
@@ -109,16 +133,16 @@ function default_1(Topics) {
             if (tag.length < (meta_1.default.config.minimumTagLength || 3)) {
                 throw new Error('[[error:tag-too-short]]');
             }
-            const isMember = yield database_1.default.isSortedSetMember('tags:topic:count', tag);
+            const isMember = yield db.isSortedSetMember('tags:topic:count', tag);
             if (!isMember) {
-                yield database_1.default.sortedSetAdd('tags:topic:count', 0, tag);
+                yield db.sortedSetAdd('tags:topic:count', 0, tag);
                 cache.del('tags:topic:count');
             }
             const allCids = yield categories.getAllCidsFromSet('categories:cid');
-            const isMembers = yield database_1.default.isMemberOfSortedSets(allCids.map((cid) => `cid:${cid}:tags`), tag);
+            const isMembers = yield db.isMemberOfSortedSets(allCids.map((cid) => `cid:${cid}:tags`), tag);
             const bulkAdd = allCids.filter((cid, index) => !isMembers[index])
                 .map((cid) => ([`cid:${cid}:tags`, 0, tag]));
-            yield database_1.default.sortedSetAddBulk(bulkAdd);
+            yield db.sortedSetAddBulk(bulkAdd);
         });
     };
     Topics.renameTags = function (data) {
@@ -141,13 +165,13 @@ function default_1(Topics) {
                 const topicData = yield Topics.getTopicsFields(tids, ['tid', 'cid', 'tags']);
                 const cids = topicData.map((t) => t.cid);
                 topicData.forEach((t) => { allCids[t.cid] = true; });
-                const scores = yield database_1.default.sortedSetScores(`tag:${tag}:topics`, tids);
+                const scores = yield db.sortedSetScores(`tag:${tag}:topics`, tids);
                 // update tag:<tag>:topics
-                yield database_1.default.sortedSetAdd(`tag:${newTagName}:topics`, scores, tids);
-                yield database_1.default.sortedSetRemove(`tag:${tag}:topics`, tids);
+                yield db.sortedSetAdd(`tag:${newTagName}:topics`, scores, tids);
+                yield db.sortedSetRemove(`tag:${tag}:topics`, tids);
                 // update cid:<cid>:tag:<tag>:topics
-                yield database_1.default.sortedSetAddBulk(topicData.map((t, index) => [`cid:${t.cid}:tag:${newTagName}:topics`, scores[index], t.tid]));
-                yield database_1.default.sortedSetRemove(cids.map((cid) => `cid:${cid}:tag:${tag}:topics`), tids);
+                yield db.sortedSetAddBulk(topicData.map((t, index) => [`cid:${t.cid}:tag:${newTagName}:topics`, scores[index], t.tid]));
+                yield db.sortedSetRemove(cids.map((cid) => `cid:${cid}:tag:${tag}:topics`), tids);
                 // update 'tags' field in topic hash
                 topicData.forEach((topic) => {
                     topic.tags = topic.tags.map((tagItem) => tagItem.value);
@@ -156,7 +180,7 @@ function default_1(Topics) {
                         topic.tags.splice(index, 1, newTagName);
                     }
                 });
-                yield database_1.default.setObjectBulk(topicData.map((t) => [`topic:${t.tid}`, { tags: t.tags.join(',') }]));
+                yield db.setObjectBulk(topicData.map((t) => [`topic:${t.tid}`, { tags: t.tags.join(',') }]));
             }), {});
             yield Topics.deleteTag(tag);
             yield updateTagCount(newTagName);
@@ -166,13 +190,13 @@ function default_1(Topics) {
     function updateTagCount(tag) {
         return __awaiter(this, void 0, void 0, function* () {
             const count = yield Topics.getTagTopicCount(tag);
-            yield database_1.default.sortedSetAdd('tags:topic:count', count || 0, tag);
+            yield db.sortedSetAdd('tags:topic:count', count || 0, tag);
             cache.del('tags:topic:count');
         });
     }
     Topics.getTagTids = function (tag, start, stop) {
         return __awaiter(this, void 0, void 0, function* () {
-            const tids = yield database_1.default.getSortedSetRevRange(`tag:${tag}:topics`, start, stop);
+            const tids = yield db.getSortedSetRevRange(`tag:${tag}:topics`, start, stop);
             const payload = yield plugins.hooks.fire('filter:topics.getTagTids', { tag, start, stop, tids });
             return payload.tids;
         });
@@ -180,7 +204,7 @@ function default_1(Topics) {
     Topics.getTagTidsByCids = function (tag, cids, start, stop) {
         return __awaiter(this, void 0, void 0, function* () {
             const keys = cids.map((cid) => `cid:${cid}:tag:${tag}:topics`);
-            const tids = yield database_1.default.getSortedSetRevRange(keys, start, stop);
+            const tids = yield db.getSortedSetRevRange(keys, start, stop);
             const payload = yield plugins.hooks.fire('filter:topics.getTagTidsByCids', { tag, cids, start, stop, tids });
             return payload.tids;
         });
@@ -189,10 +213,10 @@ function default_1(Topics) {
         return __awaiter(this, void 0, void 0, function* () {
             let count = 0;
             if (cids.length) {
-                count = yield database_1.default.sortedSetsCardSum(cids.map((cid) => `cid:${cid}:tag:${tag}:topics`));
+                count = yield db.sortedSetsCardSum(cids.map((cid) => `cid:${cid}:tag:${tag}:topics`));
             }
             else {
-                count = yield database_1.default.sortedSetCard(`tag:${tag}:topics`);
+                count = yield db.sortedSetCard(`tag:${tag}:topics`);
             }
             const payload = yield plugins.hooks.fire('filter:topics.getTagTopicCount', { tag, count, cids });
             return payload.count;
@@ -205,11 +229,11 @@ function default_1(Topics) {
             }
             yield removeTagsFromTopics(tags);
             const keys = tags.map(tag => `tag:${tag}:topics`);
-            yield database_1.default.deleteAll(keys);
-            yield database_1.default.sortedSetRemove('tags:topic:count', tags);
+            yield db.deleteAll(keys);
+            yield db.sortedSetRemove('tags:topic:count', tags);
             cache.del('tags:topic:count');
             const cids = yield categories.getAllCidsFromSet('categories:cid');
-            yield database_1.default.sortedSetRemove(cids.map((cid) => `cid:${cid}:tags`), tags);
+            yield db.sortedSetRemove(cids.map((cid) => `cid:${cid}:tags`), tags);
             const deleteKeys = [];
             tags.forEach((tag) => {
                 deleteKeys.push(`tag:${tag}`);
@@ -217,17 +241,17 @@ function default_1(Topics) {
                     deleteKeys.push(`cid:${cid}:tag:${tag}:topics`);
                 });
             });
-            yield database_1.default.deleteAll(deleteKeys);
+            yield db.deleteAll(deleteKeys);
         });
     };
     function removeTagsFromTopics(tags) {
         return __awaiter(this, void 0, void 0, function* () {
             yield async.eachLimit(tags, 50, (tag) => __awaiter(this, void 0, void 0, function* () {
-                const tids = yield database_1.default.getSortedSetRange(`tag:${tag}:topics`, 0, -1);
+                const tids = yield db.getSortedSetRange(`tag:${tag}:topics`, 0, -1);
                 if (!tids.length) {
                     return;
                 }
-                yield database_1.default.deleteObjectFields(tids.map((tid) => `topic:${tid}`), ['tags']);
+                yield db.deleteObjectFields(tids.map((tid) => `topic:${tid}`), ['tags']);
             }));
         });
     }
@@ -244,13 +268,13 @@ function default_1(Topics) {
     Topics.getCategoryTags = function (cids, start, stop) {
         return __awaiter(this, void 0, void 0, function* () {
             if (Array.isArray(cids)) {
-                return yield database_1.default.getSortedSetRevUnion({
+                return yield db.getSortedSetRevUnion({
                     sets: cids.map((cid) => `cid:${cid}:tags`),
                     start,
                     stop,
                 });
             }
-            return yield database_1.default.getSortedSetRevRange(`cid:${cids}:tags`, start, stop);
+            return yield db.getSortedSetRevRange(`cid:${cids}:tags`, start, stop);
         });
     };
     Topics.getCategoryTagsData = function (cids, start, stop) {
@@ -262,7 +286,7 @@ function default_1(Topics) {
         return __awaiter(this, void 0, void 0, function* () {
             let tags;
             if (Array.isArray(set)) {
-                tags = yield database_1.default.getSortedSetRevUnion({
+                tags = yield db.getSortedSetRevUnion({
                     sets: set,
                     start,
                     stop,
@@ -270,7 +294,7 @@ function default_1(Topics) {
                 });
             }
             else {
-                tags = yield database_1.default.getSortedSetRevRangeWithScores(set, start, stop);
+                tags = yield db.getSortedSetRevRangeWithScores(set, start, stop);
             }
             const payload = yield plugins.hooks.fire('filter:tags.getAll', {
                 tags: tags,
@@ -341,8 +365,8 @@ function default_1(Topics) {
                 bulkSet.push([`topic:${t.tid}`, { tags: topicTags.join(',') }]);
             });
             yield Promise.all([
-                database_1.default.sortedSetAddBulk(bulkAdd),
-                database_1.default.setObjectBulk(bulkSet),
+                db.sortedSetAddBulk(bulkAdd),
+                db.setObjectBulk(bulkSet),
             ]);
             yield Promise.all(tags.map(updateTagCount));
             yield Topics.updateCategoryTagsCount(_.uniq(topicData.map((t) => t.cid)), tags);
@@ -365,8 +389,8 @@ function default_1(Topics) {
                 bulkSet.push([`topic:${t.tid}`, { tags: topicTags.join(',') }]);
             });
             yield Promise.all([
-                database_1.default.sortedSetRemoveBulk(bulkRemove),
-                database_1.default.setObjectBulk(bulkSet),
+                db.sortedSetRemoveBulk(bulkRemove),
+                db.setObjectBulk(bulkSet),
             ]);
             yield Promise.all(tags.map(updateTagCount));
             yield Topics.updateCategoryTagsCount(_.uniq(topicData.map((t) => t.cid)), tags);
@@ -385,10 +409,10 @@ function default_1(Topics) {
             const topicData = yield Topics.getTopicFields(tid, ['cid', 'tags']);
             const { cid } = topicData;
             const tags = topicData.tags.map((tagItem) => tagItem.value);
-            yield database_1.default.deleteObjectField(`topic:${tid}`, 'tags');
+            yield db.deleteObjectField(`topic:${tid}`, 'tags');
             const sets = tags.map((tag) => `tag:${tag}:topics`)
                 .concat(tags.map((tag) => `cid:${cid}:tag:${tag}:topics`));
-            yield database_1.default.sortedSetsRemove(sets, tid);
+            yield db.sortedSetsRemove(sets, tid);
             yield Topics.updateCategoryTagsCount([cid], tags);
             yield Promise.all(tags.map(updateTagCount));
         });
@@ -430,7 +454,7 @@ function default_1(Topics) {
             if (cached !== undefined) {
                 return cached;
             }
-            const tags = yield database_1.default.getSortedSetRevRangeWithScores('tags:topic:count', 0, -1);
+            const tags = yield db.getSortedSetRevRangeWithScores('tags:topic:count', 0, -1);
             cache.set('tags:topic:count', tags);
             return tags;
         });
@@ -444,11 +468,11 @@ function default_1(Topics) {
             }
             let tags = [];
             if (Array.isArray(tagWhitelist[0]) && tagWhitelist[0].length) {
-                const scores = yield database_1.default.sortedSetScores(`cid:${data.cid}:tags`, tagWhitelist[0]);
+                const scores = yield db.sortedSetScores(`cid:${data.cid}:tags`, tagWhitelist[0]);
                 tags = tagWhitelist[0].map((tag, index) => ({ value: tag, score: scores[index] }));
             }
             else if (data.cids) {
-                tags = yield database_1.default.getSortedSetRevUnion({
+                tags = yield db.getSortedSetRevUnion({
                     sets: data.cids.map((cid) => `cid:${cid}:tags`),
                     start: 0,
                     stop: -1,

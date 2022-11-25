@@ -42,7 +42,12 @@ const prompt = require('prompt');
 const winston_1 = __importDefault(require("winston"));
 const nconf_1 = __importDefault(require("nconf"));
 const _ = require('lodash');
+const database_1 = require("./database");
+const groups_1 = __importDefault(require("./groups"));
+const privileges_1 = __importDefault(require("./privileges"));
 const utils_1 = __importDefault(require("./utils"));
+const file_1 = __importDefault(require("./file"));
+const upgrade_1 = __importDefault(require("./upgrade"));
 const install = {};
 const questions = {};
 questions.main = [
@@ -222,11 +227,9 @@ function completeConfigSetup(config) {
             config.package_manager = nconf_1.default.get('package_manager');
         }
         nconf_1.default.overrides(config);
-        const { default: { default: db } } = require('./database');
-        console.log('REQUIRE DATABASE', require('./database'));
-        yield db.init();
-        if (db.hasOwnProperty('createIndices')) {
-            yield db.createIndices();
+        yield database_1.primaryDB.default.init();
+        if (database_1.primaryDB.default.hasOwnProperty('createIndices')) {
+            yield database_1.primaryDB.default.createIndices();
         }
         // Sanity-check/fix url/port
         if (!/^http(?:s)?:\/\//.test(config.url)) {
@@ -254,7 +257,7 @@ function completeConfigSetup(config) {
 function setupDefaultConfigs() {
     return __awaiter(this, void 0, void 0, function* () {
         console.log('Populating database with default configs, if not already set...');
-        const meta = require('./meta');
+        const meta = require('./meta').default;
         const defaults = require(path_1.default.join(__dirname, '../', 'install/data/defaults.json'));
         yield meta.config.setOnEmpty(defaults);
         yield meta.config.init();
@@ -262,7 +265,7 @@ function setupDefaultConfigs() {
 }
 function enableDefaultTheme() {
     return __awaiter(this, void 0, void 0, function* () {
-        const meta = require('./meta');
+        const meta = require('./meta').default;
         const id = yield meta.config.get('theme:id');
         if (id) {
             console.log('Previous theme detected, skipping enabling default theme');
@@ -278,7 +281,7 @@ function enableDefaultTheme() {
 }
 function createDefaultUserGroups() {
     return __awaiter(this, void 0, void 0, function* () {
-        const groups = require('./groups');
+        const groups = require('./groups').default;
         function createGroup(name) {
             return __awaiter(this, void 0, void 0, function* () {
                 yield groups.create({
@@ -307,8 +310,8 @@ function createDefaultUserGroups() {
 }
 function createAdministrator() {
     return __awaiter(this, void 0, void 0, function* () {
-        const Groups = require('./groups');
-        const memberCount = yield Groups.getMemberCount('administrators');
+        console.log('GROUPS', groups_1.default);
+        const memberCount = yield groups_1.default.getMemberCount('administrators');
         if (memberCount > 0) {
             console.log('Administrator found, skipping Admin setup');
             return;
@@ -414,13 +417,12 @@ function createAdmin() {
 }
 function createGlobalModeratorsGroup() {
     return __awaiter(this, void 0, void 0, function* () {
-        const groups = require('./groups');
-        const exists = yield groups.exists('Global Moderators');
+        const exists = yield groups_1.default.exists('Global Moderators');
         if (exists) {
             winston_1.default.info('Global Moderators group found, skipping creation!');
         }
         else {
-            yield groups.create({
+            yield groups_1.default.create({
                 name: 'Global Moderators',
                 userTitle: 'Global Moderator',
                 description: 'Forum wide moderators',
@@ -429,30 +431,29 @@ function createGlobalModeratorsGroup() {
                 disableJoinRequests: 1,
             });
         }
-        yield groups.show('Global Moderators');
+        yield groups_1.default.show('Global Moderators');
     });
 }
 function giveGlobalPrivileges() {
     return __awaiter(this, void 0, void 0, function* () {
-        const privileges = require('./privileges');
         const defaultPrivileges = [
             'groups:chat', 'groups:upload:post:image', 'groups:signature', 'groups:search:content',
             'groups:search:users', 'groups:search:tags', 'groups:view:users', 'groups:view:tags', 'groups:view:groups',
             'groups:local:login',
         ];
-        yield privileges.global.give(defaultPrivileges, 'registered-users');
-        yield privileges.global.give(defaultPrivileges.concat([
+        console.log('PRIVILEGES', privileges_1.default);
+        yield privileges_1.default.global.give(defaultPrivileges, 'registered-users');
+        yield privileges_1.default.global.give(defaultPrivileges.concat([
             'groups:ban', 'groups:upload:post:file', 'groups:view:users:info',
         ]), 'Global Moderators');
-        yield privileges.global.give(['groups:view:users', 'groups:view:tags', 'groups:view:groups'], 'guests');
-        yield privileges.global.give(['groups:view:users', 'groups:view:tags', 'groups:view:groups'], 'spiders');
+        yield privileges_1.default.global.give(['groups:view:users', 'groups:view:tags', 'groups:view:groups'], 'guests');
+        yield privileges_1.default.global.give(['groups:view:users', 'groups:view:tags', 'groups:view:groups'], 'spiders');
     });
 }
 function createCategories() {
     return __awaiter(this, void 0, void 0, function* () {
         const Categories = require('./categories');
-        const db = require('./database');
-        const cids = yield db.getSortedSetRange('categories:cid', 0, -1);
+        const cids = yield database_1.primaryDB.default.getSortedSetRange('categories:cid', 0, -1);
         if (Array.isArray(cids) && cids.length) {
             console.log(`Categories OK. Found ${cids.length} categories.`);
             return;
@@ -467,8 +468,7 @@ function createCategories() {
 }
 function createMenuItems() {
     return __awaiter(this, void 0, void 0, function* () {
-        const db = require('./database');
-        const exists = yield db.exists('navigation:enabled');
+        const exists = yield database_1.primaryDB.default.exists('navigation:enabled');
         if (exists) {
             return;
         }
@@ -479,11 +479,10 @@ function createMenuItems() {
 }
 function createWelcomePost() {
     return __awaiter(this, void 0, void 0, function* () {
-        const db = require('./database');
         const Topics = require('./topics');
         const [content, numTopics] = yield Promise.all([
             fs.promises.readFile(path_1.default.join(__dirname, '../', 'install/data/welcome.md'), 'utf8'),
-            db.getObjectField('global', 'topicCount'),
+            database_1.primaryDB.default.getObjectField('global', 'topicCount'),
         ]);
         if (!parseInt(numTopics, 10)) {
             console.log('Creating welcome post!');
@@ -522,30 +521,27 @@ function enableDefaultPlugins() {
         }
         defaultEnabled = _.uniq(defaultEnabled);
         winston_1.default.info('[install/enableDefaultPlugins] activating default plugins', defaultEnabled);
-        const db = require('./database');
         const order = defaultEnabled.map((plugin, index) => index);
-        yield db.sortedSetAdd('plugins:active', order, defaultEnabled);
+        yield database_1.primaryDB.default.sortedSetAdd('plugins:active', order, defaultEnabled);
     });
 }
 function setCopyrightWidget() {
     return __awaiter(this, void 0, void 0, function* () {
-        const db = require('./database');
         const [footerJSON, footer] = yield Promise.all([
             fs.promises.readFile(path_1.default.join(__dirname, '../', 'install/data/footer.json'), 'utf8'),
-            db.getObjectField('widgets:global', 'footer'),
+            database_1.primaryDB.default.getObjectField('widgets:global', 'footer'),
         ]);
         if (!footer && footerJSON) {
-            yield db.setObjectField('widgets:global', 'footer', footerJSON);
+            yield database_1.primaryDB.default.setObjectField('widgets:global', 'footer', footerJSON);
         }
     });
 }
 function copyFavicon() {
     return __awaiter(this, void 0, void 0, function* () {
-        const file = require('./file');
         const pathToIco = path_1.default.join(nconf_1.default.get('upload_path'), 'system', 'favicon.ico');
         const defaultIco = path_1.default.join(nconf_1.default.get('base_dir'), 'public', 'favicon.ico');
-        const targetExists = yield file.exists(pathToIco);
-        const defaultExists = yield file.exists(defaultIco);
+        const targetExists = yield file_1.default.exists(pathToIco);
+        const defaultExists = yield file_1.default.exists(defaultIco);
         if (defaultExists && !targetExists) {
             try {
                 yield fs.promises.copyFile(defaultIco, pathToIco);
@@ -558,13 +554,12 @@ function copyFavicon() {
 }
 function checkUpgrade() {
     return __awaiter(this, void 0, void 0, function* () {
-        const upgrade = require('./upgrade');
         try {
-            yield upgrade.check();
+            yield upgrade_1.default.check();
         }
         catch (err) {
             if (err.message === 'schema-out-of-date') {
-                yield upgrade.run();
+                yield upgrade_1.default.run();
                 return;
             }
             throw err;

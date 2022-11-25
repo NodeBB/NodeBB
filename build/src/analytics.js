@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -19,7 +42,8 @@ const crypto = require('crypto');
 const util = require('util');
 const _ = require('lodash');
 const sleep = util.promisify(setTimeout);
-const db = require('./database');
+const database = __importStar(require("./database"));
+const db = database;
 const utils = require('./utils');
 const plugins = require('./plugins');
 const meta = require('./meta');
@@ -108,6 +132,7 @@ Analytics.pageView = function (payload) {
                 hash = crypto.createHash('sha1').update(payload.ip + secret).digest('hex');
                 ipCache.set(payload.ip + secret, hash);
             }
+            // @ts-ignore
             const score = yield db.sortedSetScore('ip:recent', hash);
             if (!score) {
                 local.uniqueIPCount += 1;
@@ -116,6 +141,7 @@ Analytics.pageView = function (payload) {
             today.setHours(today.getHours(), 0, 0, 0);
             if (!score || score < today.getTime()) {
                 local.uniquevisitors += 1;
+                // @ts-ignore
                 yield db.sortedSetAdd('ip:recent', Date.now(), hash);
             }
         }

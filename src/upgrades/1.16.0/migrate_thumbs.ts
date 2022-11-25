@@ -2,7 +2,8 @@
 
 import nconf from 'nconf';
 
-import db from '../../database';
+import * as database from '../../database';
+const db = database as any;
 import meta from '../../meta';
 const topics = require('../../topics');
 const batch = require('../../batch');

@@ -2,7 +2,8 @@
 
 const crypto = require('crypto');
 
-import db from '../../database';
+import * as database from '../../database';
+const db = database as any;
 const batch = require('../../batch');
 
 const md5 = filename => crypto.createHash('md5').update(filename).digest('hex');

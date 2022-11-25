@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -15,7 +38,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const async = require('async');
 const nconf_1 = __importDefault(require("nconf"));
 const validator = require('validator');
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const meta_1 = __importDefault(require("../meta"));
 const emailer = require('../emailer');
 const groups = require('../groups');
@@ -25,18 +49,18 @@ const plugins = require('../plugins');
 function default_1(User) {
     User.getInvites = function (uid) {
         return __awaiter(this, void 0, void 0, function* () {
-            const emails = yield database_1.default.getSetMembers(`invitation:uid:${uid}`);
+            const emails = yield db.getSetMembers(`invitation:uid:${uid}`);
             return emails.map(email => validator.escape(String(email)));
         });
     };
     User.getInvitesNumber = function (uid) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield database_1.default.setCount(`invitation:uid:${uid}`);
+            return yield db.setCount(`invitation:uid:${uid}`);
         });
     };
     User.getInvitingUsers = function () {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield database_1.default.getSetMembers('invitation:uids');
+            return yield db.getSetMembers('invitation:uids');
         });
     };
     User.getAllInvites = function () {
@@ -59,7 +83,7 @@ function default_1(User) {
                 // Silently drop the invitation if the invited email already exists locally
                 return true;
             }
-            const invitation_exists = yield database_1.default.exists(`invitation:uid:${uid}:invited:${email}`);
+            const invitation_exists = yield db.exists(`invitation:uid:${uid}:invited:${email}`);
             if (invitation_exists) {
                 throw new Error('[[error:email-invited]]');
             }
@@ -78,7 +102,7 @@ function default_1(User) {
                     throw new Error('[[register:invite.error-invite-only]]');
                 }
             }
-            const token = yield database_1.default.getObjectField(`invitation:token:${query.token}`, 'token');
+            const token = yield db.getObjectField(`invitation:token:${query.token}`, 'token');
             if (!token || token !== query.token) {
                 throw new Error('[[register:invite.error-invalid-data]]');
             }
@@ -89,7 +113,7 @@ function default_1(User) {
             if (!enteredEmail) {
                 return;
             }
-            const email = yield database_1.default.getObjectField(`invitation:token:${token}`, 'email');
+            const email = yield db.getObjectField(`invitation:token:${token}`, 'email');
             // "Confirm" user's email if registration completed with invited address
             if (email && email === enteredEmail) {
                 yield User.setUserField(uid, 'email', email);
@@ -99,7 +123,7 @@ function default_1(User) {
     };
     User.joinGroupsFromInvitation = function (uid, token) {
         return __awaiter(this, void 0, void 0, function* () {
-            let groupsToJoin = yield database_1.default.getObjectField(`invitation:token:${token}`, 'groupsToJoin');
+            let groupsToJoin = yield db.getObjectField(`invitation:token:${token}`, 'groupsToJoin');
             try {
                 groupsToJoin = JSON.parse(groupsToJoin);
             }
@@ -118,11 +142,11 @@ function default_1(User) {
             if (!invitedByUid) {
                 throw new Error('[[error:invalid-username]]');
             }
-            const token = yield database_1.default.get(`invitation:uid:${invitedByUid}:invited:${email}`);
+            const token = yield db.get(`invitation:uid:${invitedByUid}:invited:${email}`);
             yield Promise.all([
                 deleteFromReferenceList(invitedByUid, email),
-                database_1.default.setRemove(`invitation:invited:${email}`, token),
-                database_1.default.delete(`invitation:token:${token}`),
+                db.setRemove(`invitation:invited:${email}`, token),
+                db.delete(`invitation:token:${token}`),
             ]);
         });
     };
@@ -132,17 +156,17 @@ function default_1(User) {
                 const uids = yield User.getInvitingUsers();
                 yield Promise.all(uids.map(uid => deleteFromReferenceList(uid, registrationEmail)));
                 // Delete all invites to an email address if it has joined
-                const tokens = yield database_1.default.getSetMembers(`invitation:invited:${registrationEmail}`);
+                const tokens = yield db.getSetMembers(`invitation:invited:${registrationEmail}`);
                 const keysToDelete = [`invitation:invited:${registrationEmail}`].concat(tokens.map(token => `invitation:token:${token}`));
-                yield database_1.default.deleteAll(keysToDelete);
+                yield db.deleteAll(keysToDelete);
             }
             if (token) {
-                const invite = yield database_1.default.getObject(`invitation:token:${token}`);
+                const invite = yield db.getObject(`invitation:token:${token}`);
                 if (!invite) {
                     return;
                 }
                 yield deleteFromReferenceList(invite.inviter, invite.email);
-                yield database_1.default.deleteAll([
+                yield db.deleteAll([
                     `invitation:invited:${invite.email}`,
                     `invitation:token:${token}`,
                 ]);
@@ -152,12 +176,12 @@ function default_1(User) {
     function deleteFromReferenceList(uid, email) {
         return __awaiter(this, void 0, void 0, function* () {
             yield Promise.all([
-                database_1.default.setRemove(`invitation:uid:${uid}`, email),
-                database_1.default.delete(`invitation:uid:${uid}:invited:${email}`),
+                db.setRemove(`invitation:uid:${uid}`, email),
+                db.delete(`invitation:uid:${uid}:invited:${email}`),
             ]);
-            const count = yield database_1.default.setCount(`invitation:uid:${uid}`);
+            const count = yield db.setCount(`invitation:uid:${uid}`);
             if (count === 0) {
-                yield database_1.default.setRemove('invitation:uids', uid);
+                yield db.setRemove('invitation:uids', uid);
             }
         });
     }
@@ -171,19 +195,19 @@ function default_1(User) {
             const registerLink = `${nconf_1.default.get('url')}/register?token=${token}`;
             const expireDays = meta_1.default.config.inviteExpiration;
             const expireIn = expireDays * 86400000;
-            yield database_1.default.setAdd(`invitation:uid:${uid}`, email);
-            yield database_1.default.setAdd('invitation:uids', uid);
+            yield db.setAdd(`invitation:uid:${uid}`, email);
+            yield db.setAdd('invitation:uids', uid);
             // Referencing from uid and email to token
-            yield database_1.default.set(`invitation:uid:${uid}:invited:${email}`, token);
+            yield db.set(`invitation:uid:${uid}:invited:${email}`, token);
             // Keeping references for all invites to this email address
-            yield database_1.default.setAdd(`invitation:invited:${email}`, token);
-            yield database_1.default.setObject(`invitation:token:${token}`, {
+            yield db.setAdd(`invitation:invited:${email}`, token);
+            yield db.setObject(`invitation:token:${token}`, {
                 email,
                 token,
                 groupsToJoin: JSON.stringify(groupsToJoin),
                 inviter: uid,
             });
-            yield database_1.default.pexpireAt(`invitation:token:${token}`, Date.now() + expireIn);
+            yield db.pexpireAt(`invitation:token:${token}`, Date.now() + expireIn);
             const username = yield User.getUserField(uid, 'username');
             const title = meta_1.default.config.title || meta_1.default.config.browserTitle || 'NodeBB';
             const subject = yield translator.translate(`[[email:invite, ${title}]]`, meta_1.default.config.defaultLang);

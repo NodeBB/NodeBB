@@ -4,7 +4,9 @@ const validator = require('validator');
 import nconf from 'nconf';
 const _ = require('lodash');
 
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 import meta from '../meta';
 const plugins = require('../plugins');
 const utils = require('../utils');

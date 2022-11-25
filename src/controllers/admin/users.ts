@@ -4,7 +4,8 @@ const validator = require('validator');
 
 import user from '../../user';
 import meta from '../../meta';
-import db from '../../database';
+import * as database from '../../database';
+const db = database as any;
 import path from 'path';
 const pagination = require('../../pagination');
 const events = require('../../events');

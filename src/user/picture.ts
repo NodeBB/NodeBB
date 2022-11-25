@@ -4,7 +4,9 @@ import winston from 'winston';
 const mime = require('mime');
 import path from 'path';import nconf from 'nconf';
 
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 const file = require('../file');
 const image = require('../image');
 import meta from '../meta';

@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -12,7 +35,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const topics = require('../topics');
 const plugins = require('../plugins');
 const meta_1 = __importDefault(require("../meta"));
@@ -71,10 +95,10 @@ function default_1(Categories) {
             const reverse = direction === 'highest-to-lowest';
             if (Array.isArray(set)) {
                 const weights = set.map((s, index) => (index ? 0 : 1));
-                normalTids = yield database_1.default[reverse ? 'getSortedSetRevIntersect' : 'getSortedSetIntersect']({ sets: set, start: start, stop: stop, weights: weights });
+                normalTids = yield db[reverse ? 'getSortedSetRevIntersect' : 'getSortedSetIntersect']({ sets: set, start: start, stop: stop, weights: weights });
             }
             else {
-                normalTids = yield database_1.default[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, stop);
+                normalTids = yield db[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, stop);
             }
             normalTids = normalTids.filter(tid => !pinnedTids.includes(tid));
             return pinnedTidsOnPage.concat(normalTids);
@@ -91,10 +115,10 @@ function default_1(Categories) {
             }
             const set = yield Categories.buildTopicsSortedSet(data);
             if (Array.isArray(set)) {
-                return yield database_1.default.sortedSetIntersectCard(set);
+                return yield db.sortedSetIntersectCard(set);
             }
             else if (data.targetUid && set) {
-                return yield database_1.default.sortedSetCard(set);
+                return yield db.sortedSetCard(set);
             }
             return data.category.topic_count;
         });
@@ -144,7 +168,7 @@ function default_1(Categories) {
     };
     Categories.getAllTopicIds = function (cid, start, stop) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield database_1.default.getSortedSetRange([`cid:${cid}:tids:pinned`, `cid:${cid}:tids`], start, stop);
+            return yield db.getSortedSetRange([`cid:${cid}:tids:pinned`, `cid:${cid}:tids`], start, stop);
         });
     };
     Categories.getPinnedTids = function (data) {
@@ -157,7 +181,7 @@ function default_1(Categories) {
                 return result && result.pinnedTids;
             }
             const [allPinnedTids, canSchedule] = yield Promise.all([
-                database_1.default.getSortedSetRevRange(`cid:${data.cid}:tids:pinned`, data.start, data.stop),
+                db.getSortedSetRevRange(`cid:${data.cid}:tids:pinned`, data.start, data.stop),
                 privileges.categories.can('topics:schedule', data.cid, data.uid),
             ]);
             const pinnedTids = canSchedule ? allPinnedTids : yield filterScheduledTids(allPinnedTids);
@@ -187,11 +211,11 @@ function default_1(Categories) {
                 return;
             }
             const promises = [
-                database_1.default.sortedSetAdd(`cid:${cid}:pids`, postData.timestamp, postData.pid),
-                database_1.default.incrObjectField(`category:${cid}`, 'post_count'),
+                db.sortedSetAdd(`cid:${cid}:pids`, postData.timestamp, postData.pid),
+                db.incrObjectField(`category:${cid}`, 'post_count'),
             ];
             if (!pinned) {
-                promises.push(database_1.default.sortedSetIncrBy(`cid:${cid}:tids:posts`, 1, postData.tid));
+                promises.push(db.sortedSetIncrBy(`cid:${cid}:tids:posts`, 1, postData.tid));
             }
             yield Promise.all(promises);
             yield Categories.updateRecentTidForCid(cid);
@@ -199,7 +223,7 @@ function default_1(Categories) {
     };
     function filterScheduledTids(tids) {
         return __awaiter(this, void 0, void 0, function* () {
-            const scores = yield database_1.default.sortedSetScores('topics:scheduled', tids);
+            const scores = yield db.sortedSetScores('topics:scheduled', tids);
             const now = Date.now();
             return tids.filter((tid, index) => tid && (!scores[index] || scores[index] <= now));
         });

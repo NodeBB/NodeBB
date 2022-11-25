@@ -78,7 +78,7 @@ let utils;
 let winston;
 
 async function init() {
-	db = require('../database');
+	db = require('../database').default.default;
 	await db.init();
 
 	user = require('../user');

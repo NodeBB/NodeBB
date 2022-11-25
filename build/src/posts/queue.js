@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -15,7 +38,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const _ = require('lodash');
 const validator = require('validator');
 const nconf_1 = __importDefault(require("nconf"));
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const user_1 = __importDefault(require("../user"));
 const meta_1 = __importDefault(require("../meta"));
 const groups = require('../groups');
@@ -32,9 +56,9 @@ function default_1(Posts) {
         options = Object.assign({ metadata: true }, options); // defaults
         let postData = _.cloneDeep(cache.get('post-queue'));
         if (!postData) {
-            const ids = yield database_1.default.getSortedSetRange('post:queue', 0, -1);
+            const ids = yield db.getSortedSetRange('post:queue', 0, -1);
             const keys = ids.map(id => `post:queue:${id}`);
-            postData = yield database_1.default.getObjects(keys);
+            postData = yield db.getObjects(keys);
             postData.forEach((data) => {
                 if (data) {
                     data.data = JSON.parse(data.data);
@@ -158,8 +182,8 @@ function default_1(Posts) {
             };
             payload = yield plugins.hooks.fire('filter:post-queue.save', payload);
             payload.data = JSON.stringify(data);
-            yield database_1.default.sortedSetAdd('post:queue', now, id);
-            yield database_1.default.setObject(`post:queue:${id}`, payload);
+            yield db.sortedSetAdd('post:queue', now, id);
+            yield db.setObject(`post:queue:${id}`, payload);
             yield user_1.default.setUserField(data.uid, 'lastqueuetime', now);
             cache.del('post-queue');
             const cid = yield getCid(type, data);
@@ -257,8 +281,8 @@ function default_1(Posts) {
     function removeFromQueue(id) {
         return __awaiter(this, void 0, void 0, function* () {
             yield removeQueueNotification(id);
-            yield database_1.default.sortedSetRemove('post:queue', id);
-            yield database_1.default.delete(`post:queue:${id}`);
+            yield db.sortedSetRemove('post:queue', id);
+            yield db.delete(`post:queue:${id}`);
             cache.del('post-queue');
         });
     }
@@ -290,7 +314,7 @@ function default_1(Posts) {
     };
     function getParsedObject(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield database_1.default.getObject(`post:queue:${id}`);
+            const data = yield db.getObject(`post:queue:${id}`);
             if (!data) {
                 return null;
             }
@@ -337,7 +361,7 @@ function default_1(Posts) {
             if (editData.cid !== undefined) {
                 data.data.cid = editData.cid;
             }
-            yield database_1.default.setObjectField(`post:queue:${editData.id}`, 'data', JSON.stringify(data.data));
+            yield db.setObjectField(`post:queue:${editData.id}`, 'data', JSON.stringify(data.data));
             cache.del('post-queue');
         });
     };
@@ -376,7 +400,7 @@ function default_1(Posts) {
                 postData.forEach((post) => {
                     post.data.tid = newTid;
                 });
-                yield database_1.default.setObjectBulk(postData.map(p => [`post:queue:${p.id}`, { data: JSON.stringify(p.data) }]));
+                yield db.setObjectBulk(postData.map(p => [`post:queue:${p.id}`, { data: JSON.stringify(p.data) }]));
                 cache.del('post-queue');
             }
         });

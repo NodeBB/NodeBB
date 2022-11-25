@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -12,7 +35,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const database_1 = __importDefault(require("../../database"));
+const database = __importStar(require("../../database"));
+const db = database;
 const user_1 = __importDefault(require("../../user"));
 const posts = require('../../posts');
 const topics = require('../../topics');
@@ -73,13 +97,13 @@ const templateToData = {
             });
         },
         getTopics: (sets, req, start, stop) => __awaiter(void 0, void 0, void 0, function* () {
-            let pids = yield database_1.default.getSortedSetRevRangeByScore(sets, start, stop - start + 1, '+inf', 1);
+            let pids = yield db.getSortedSetRevRangeByScore(sets, start, stop - start + 1, '+inf', 1);
             pids = yield privileges.posts.filter('topics:read', pids, req.uid);
             const postObjs = yield posts.getPostSummaryByPids(pids, req.uid, { stripTags: false });
             return { posts: postObjs, nextStart: stop + 1 };
         }),
         getItemCount: (sets) => __awaiter(void 0, void 0, void 0, function* () {
-            const counts = yield Promise.all(sets.map(set => database_1.default.sortedSetCount(set, 1, '+inf')));
+            const counts = yield Promise.all(sets.map(set => db.sortedSetCount(set, 1, '+inf')));
             return counts.reduce((acc, val) => acc + val, 0);
         }),
     },
@@ -95,13 +119,13 @@ const templateToData = {
             });
         },
         getTopics: (sets, req, start, stop) => __awaiter(void 0, void 0, void 0, function* () {
-            let pids = yield database_1.default.getSortedSetRangeByScore(sets, start, stop - start + 1, '-inf', -1);
+            let pids = yield db.getSortedSetRangeByScore(sets, start, stop - start + 1, '-inf', -1);
             pids = yield privileges.posts.filter('topics:read', pids, req.uid);
             const postObjs = yield posts.getPostSummaryByPids(pids, req.uid, { stripTags: false });
             return { posts: postObjs, nextStart: stop + 1 };
         }),
         getItemCount: (sets) => __awaiter(void 0, void 0, void 0, function* () {
-            const counts = yield Promise.all(sets.map(set => database_1.default.sortedSetCount(set, '-inf', -1)));
+            const counts = yield Promise.all(sets.map(set => db.sortedSetCount(set, '-inf', -1)));
             return counts.reduce((acc, val) => acc + val, 0);
         }),
     },
@@ -126,8 +150,8 @@ const templateToData = {
                     return yield topics.getTopicsFromSet(set, req.uid, start, stop);
                 }
                 const sortSet = map[sort];
-                let tids = yield database_1.default.getSortedSetRevRange(set, 0, -1);
-                const scores = yield database_1.default.sortedSetScores(sortSet, tids);
+                let tids = yield db.getSortedSetRevRange(set, 0, -1);
+                const scores = yield db.sortedSetScores(sortSet, tids);
                 tids = tids.map((tid, i) => ({ tid: tid, score: scores[i] }))
                     .sort((a, b) => b.score - a.score)
                     .slice(start, stop + 1)
@@ -279,6 +303,6 @@ function getItemCount(sets, data, settings) {
         if (data.getItemCount) {
             return yield data.getItemCount(sets);
         }
-        return yield database_1.default.sortedSetsCardSum(sets);
+        return yield db.sortedSetsCardSum(sets);
     });
 }

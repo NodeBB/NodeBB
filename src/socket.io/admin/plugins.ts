@@ -4,7 +4,8 @@ import nconf from 'nconf';
 
 const plugins = require('../../plugins');
 const events = require('../../events');
-import db from '../../database';
+import * as database from '../../database';
+const db = database as any;
 
 const Plugins  = {} as any;
 

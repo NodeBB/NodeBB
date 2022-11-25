@@ -15,7 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const validator = require('validator');
 const winston_1 = __importDefault(require("winston"));
 const cronJob = require('cron').CronJob;
-const database_1 = __importDefault(require("../database"));
+// 
+const database_1 = require("../database");
+const db = database_1.primaryDB;
 const meta_1 = __importDefault(require("../meta"));
 const emailer = require('../emailer');
 const notifications = require('../notifications');
@@ -40,20 +42,20 @@ function default_1(User) {
                 hashedPassword: hashedPassword,
             };
             const results = yield plugins.hooks.fire('filter:user.addToApprovalQueue', { data: data, userData: userData });
-            yield database_1.default.setObject(`registration:queue:name:${userData.username}`, results.data);
-            yield database_1.default.sortedSetAdd('registration:queue', Date.now(), userData.username);
+            yield db.default.setObject(`registration:queue:name:${userData.username}`, results.data);
+            yield db.default.sortedSetAdd('registration:queue', Date.now(), userData.username);
             yield sendNotificationToAdmins(userData.username);
         });
     };
     function canQueue(userData) {
         return __awaiter(this, void 0, void 0, function* () {
             yield User.isDataValid(userData);
-            const usernames = yield database_1.default.getSortedSetRange('registration:queue', 0, -1);
+            const usernames = yield db.default.getSortedSetRange('registration:queue', 0, -1);
             if (usernames.includes(userData.username)) {
                 throw new Error('[[error:username-taken]]');
             }
             const keys = usernames.filter(Boolean).map((username) => `registration:queue:name:${username}`);
-            const data = yield database_1.default.getObjectsFields(keys, ['email']);
+            const data = yield db.default.getObjectsFields(keys, ['email']);
             const emails = data.map((data) => data && data.email).filter(Boolean);
             if (userData.email && emails.includes(userData.email)) {
                 throw new Error('[[error:email-taken]]');
@@ -74,11 +76,11 @@ function default_1(User) {
     }
     User.acceptRegistration = function (username) {
         return __awaiter(this, void 0, void 0, function* () {
-            const userData = yield database_1.default.getObject(`registration:queue:name:${username}`);
+            const userData = yield db.default.getObject(`registration:queue:name:${username}`);
             if (!userData) {
                 throw new Error('[[error:invalid-data]]');
             }
-            const creation_time = yield database_1.default.sortedSetScore('registration:queue', username);
+            const creation_time = yield db.default.sortedSetScore('registration:queue', username);
             const uid = yield User.create(userData);
             yield User.setUserFields(uid, {
                 password: userData.hashedPassword,
@@ -93,9 +95,9 @@ function default_1(User) {
                 template: 'registration_accepted',
                 uid: uid,
             }).catch((err) => winston_1.default.error(`[emailer.send] ${err.stack}`));
-            const total = yield database_1.default.incrObjectFieldBy('registration:queue:approval:times', 'totalTime', Math.floor((Date.now() - creation_time) / 60000));
-            const counter = yield database_1.default.incrObjectField('registration:queue:approval:times', 'counter');
-            yield database_1.default.setObjectField('registration:queue:approval:times', 'average', total / counter);
+            const total = yield db.default.incrObjectFieldBy('registration:queue:approval:times', 'totalTime', Math.floor((Date.now() - creation_time) / 60000));
+            const counter = yield db.default.incrObjectField('registration:queue:approval:times', 'counter');
+            yield db.default.setObjectField('registration:queue:approval:times', 'average', total / counter);
             return uid;
         });
     };
@@ -116,8 +118,8 @@ function default_1(User) {
     function removeFromQueue(username) {
         return __awaiter(this, void 0, void 0, function* () {
             yield Promise.all([
-                database_1.default.sortedSetRemove('registration:queue', username),
-                database_1.default.delete(`registration:queue:name:${username}`),
+                db.default.sortedSetRemove('registration:queue', username),
+                db.default.delete(`registration:queue:name:${username}`),
             ]);
         });
     }
@@ -128,7 +130,7 @@ function default_1(User) {
                 return true;
             }
             else if (registrationApprovalType === 'admin-approval-ip') {
-                const count = yield database_1.default.sortedSetCard(`ip:${ip}:uid`);
+                const count = yield db.default.sortedSetCard(`ip:${ip}:uid`);
                 return !!count;
             }
             return false;
@@ -136,9 +138,9 @@ function default_1(User) {
     };
     User.getRegistrationQueue = function (start, stop) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield database_1.default.getSortedSetRevRangeWithScores('registration:queue', start, stop);
+            const data = yield db.default.getSortedSetRevRangeWithScores('registration:queue', start, stop);
             const keys = data.filter(Boolean).map((user) => `registration:queue:name:${user.value}`);
-            let users = yield database_1.default.getObjects(keys);
+            let users = yield db.default.getObjects(keys);
             users = users.filter(Boolean).map((user, index) => {
                 user.timestampISO = utils.toISOString(data[index].score);
                 user.email = validator.escape(String(user.email));
@@ -177,7 +179,7 @@ function default_1(User) {
             if (meta_1.default.config.autoApproveTime <= 0) {
                 return;
             }
-            const users = yield database_1.default.getSortedSetRevRangeWithScores('registration:queue', 0, -1);
+            const users = yield db.default.getSortedSetRevRangeWithScores('registration:queue', 0, -1);
             const now = Date.now();
             for (const user of users.filter((user) => now - user.score >= meta_1.default.config.autoApproveTime * 3600000)) {
                 // eslint-disable-next-line no-await-in-loop

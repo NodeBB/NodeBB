@@ -19,7 +19,8 @@ const prestart = require('../../prestart');
 prestart.loadConfig(configFile);
 prestart.setupWinston();
 
-import db from '../../database';
+import * as database from '../../database';
+const db = database as any;
 
 (process as any).on('message', async (msg: any) => {
 	if (msg && msg.uid) {

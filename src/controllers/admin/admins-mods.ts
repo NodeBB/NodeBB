@@ -2,7 +2,8 @@
 
 const _ = require('lodash');
 
-import db from '../../database';
+import * as database from '../../database';
+const db = database as any;
 const groups = require('../../groups');
 import categories from '../../categories';import user from '../../user';
 import meta from '../../meta';

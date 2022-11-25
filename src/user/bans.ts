@@ -4,7 +4,9 @@ import winston from 'winston';
 
 import meta from '../meta';
 const emailer = require('../emailer');
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 const groups = require('../groups');
 const privileges = require('../privileges');
 

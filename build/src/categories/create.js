@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,13 +31,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const async = require('async');
 const _ = require('lodash');
-const database_1 = __importDefault(require("../database"));
+const database = __importStar(require("../database"));
+const db = database;
 const plugins = require('../plugins');
 const privileges = require('../privileges');
 const utils = require('../utils');
@@ -25,8 +46,8 @@ function default_1(Categories) {
         return __awaiter(this, void 0, void 0, function* () {
             const parentCid = data.parentCid ? data.parentCid : 0;
             const [cid, firstChild] = yield Promise.all([
-                database_1.default.incrObjectField('global', 'nextCid'),
-                database_1.default.getSortedSetRangeWithScores(`cid:${parentCid}:children`, 0, 0),
+                db.incrObjectField('global', 'nextCid'),
+                db.getSortedSetRangeWithScores(`cid:${parentCid}:children`, 0, 0),
             ]);
             data.name = String(data.name || `Category ${cid}`);
             const slug = `${cid}/${slugify(data.name)}`;
@@ -85,11 +106,11 @@ function default_1(Categories) {
                 guestPrivileges: guestPrivileges,
             });
             category = result.category;
-            yield database_1.default.setObject(`category:${category.cid}`, category);
+            yield db.setObject(`category:${category.cid}`, category);
             if (!category.descriptionParsed) {
                 yield Categories.parseDescription(category.cid, category.description);
             }
-            yield database_1.default.sortedSetAddBulk([
+            yield db.sortedSetAddBulk([
                 ['categories:cid', category.order, category.cid],
                 [`cid:${parentCid}:children`, category.order, category.cid],
                 ['categories:name', 0, `${data.name.slice(0, 200).toLowerCase()}:${category.cid}`],
@@ -139,8 +160,8 @@ function default_1(Categories) {
     Categories.copySettingsFrom = function (fromCid, toCid, copyParent) {
         return __awaiter(this, void 0, void 0, function* () {
             const [source, destination] = yield Promise.all([
-                database_1.default.getObject(`category:${fromCid}`),
-                database_1.default.getObject(`category:${toCid}`),
+                db.getObject(`category:${fromCid}`),
+                db.getObject(`category:${toCid}`),
             ]);
             if (!source) {
                 throw new Error('[[error:invalid-cid]]');
@@ -148,8 +169,8 @@ function default_1(Categories) {
             const oldParent = parseInt(destination.parentCid, 10) || 0;
             const newParent = parseInt(source.parentCid, 10) || 0;
             if (copyParent && newParent !== parseInt(toCid, 10)) {
-                yield database_1.default.sortedSetRemove(`cid:${oldParent}:children`, toCid);
-                yield database_1.default.sortedSetAdd(`cid:${newParent}:children`, source.order, toCid);
+                yield db.sortedSetRemove(`cid:${oldParent}:children`, toCid);
+                yield db.sortedSetAdd(`cid:${newParent}:children`, source.order, toCid);
                 cache.del([
                     `cid:${oldParent}:children`,
                     `cid:${oldParent}:children:all`,
@@ -177,7 +198,7 @@ function default_1(Categories) {
                 destination: destination,
                 copyParent: copyParent,
             });
-            yield database_1.default.setObject(`category:${toCid}`, destination);
+            yield db.setObject(`category:${toCid}`, destination);
             yield copyTagWhitelist(fromCid, toCid);
             yield Categories.copyPrivilegesFrom(fromCid, toCid);
             return destination;
@@ -185,9 +206,9 @@ function default_1(Categories) {
     };
     function copyTagWhitelist(fromCid, toCid) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield database_1.default.getSortedSetRangeWithScores(`cid:${fromCid}:tag:whitelist`, 0, -1);
-            yield database_1.default.delete(`cid:${toCid}:tag:whitelist`);
-            yield database_1.default.sortedSetAdd(`cid:${toCid}:tag:whitelist`, data.map((item) => item.score), data.map((item) => item.value));
+            const data = yield db.getSortedSetRangeWithScores(`cid:${fromCid}:tag:whitelist`, 0, -1);
+            yield db.delete(`cid:${toCid}:tag:whitelist`);
+            yield db.sortedSetAdd(`cid:${toCid}:tag:whitelist`, data.map((item) => item.score), data.map((item) => item.value));
             cache.del(`cid:${toCid}:tag:whitelist`);
         });
     }
@@ -222,7 +243,7 @@ function default_1(Categories) {
         return __awaiter(this, void 0, void 0, function* () {
             const toGroups = privileges.map(privilege => `group:cid:${toCid}:privileges:${privilege}:members`);
             const fromGroups = privileges.map(privilege => `group:cid:${fromCid}:privileges:${privilege}:members`);
-            const currentMembers = yield database_1.default.getSortedSetsMembers(toGroups.concat(fromGroups));
+            const currentMembers = yield db.getSortedSetsMembers(toGroups.concat(fromGroups));
             const copyGroups = _.uniq(_.flatten(currentMembers));
             yield async.each(copyGroups, (group) => __awaiter(this, void 0, void 0, function* () {
                 yield copyPrivilegesByGroup(privileges, fromCid, toCid, group);
@@ -234,8 +255,8 @@ function default_1(Categories) {
             const fromGroups = privilegeList.map(privilege => `group:cid:${fromCid}:privileges:${privilege}:members`);
             const toGroups = privilegeList.map(privilege => `group:cid:${toCid}:privileges:${privilege}:members`);
             const [fromChecks, toChecks] = yield Promise.all([
-                database_1.default.isMemberOfSortedSets(fromGroups, group),
-                database_1.default.isMemberOfSortedSets(toGroups, group),
+                db.isMemberOfSortedSets(fromGroups, group),
+                db.isMemberOfSortedSets(toGroups, group),
             ]);
             const givePrivs = privilegeList.filter((priv, index) => fromChecks[index] && !toChecks[index]);
             const rescindPrivs = privilegeList.filter((priv, index) => !fromChecks[index] && toChecks[index]);

@@ -1,4 +1,27 @@
 'use strict';
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -15,8 +38,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const _ = require('lodash');
 const groups = require('../groups');
 const plugins = require('../plugins');
-const database_1 = __importDefault(require("../database"));
-const privileges = require('../privileges');
+const database = __importStar(require("../database"));
+const db = database;
+const privileges_1 = __importDefault(require("../privileges"));
 const categories = require('../categories');
 const meta_1 = __importDefault(require("../meta"));
 const utils = require('../utils');
@@ -51,8 +75,8 @@ require('./uploads').default(User);
 User.exists = function (uids) {
     return __awaiter(this, void 0, void 0, function* () {
         return yield (Array.isArray(uids) ?
-            database_1.default.isSortedSetMembers('users:joindate', uids) :
-            database_1.default.isSortedSetMember('users:joindate', uids));
+            db.isSortedSetMembers('users:joindate', uids) :
+            db.isSortedSetMember('users:joindate', uids));
     });
 };
 User.existsBySlug = function (userslug) {
@@ -66,9 +90,9 @@ User.getUidsFromSet = function (set, start, stop) {
         if (set === 'users:online') {
             const count = parseInt(stop, 10) === -1 ? stop : stop - start + 1;
             const now = Date.now();
-            return yield database_1.default.getSortedSetRevRangeByScore(set, start, count, '+inf', now - (meta_1.default.config.onlineCutoff * 60000));
+            return yield db.getSortedSetRevRangeByScore(set, start, count, '+inf', now - (meta_1.default.config.onlineCutoff * 60000));
         }
-        return yield database_1.default.getSortedSetRevRange(set, start, stop);
+        return yield db.getSortedSetRevRange(set, start, stop);
     });
 };
 User.getUsersFromSet = function (set, uid, start, stop) {
@@ -108,12 +132,12 @@ User.getUidByUsername = function (username) {
         if (!username) {
             return 0;
         }
-        return yield database_1.default.sortedSetScore('username:uid', username);
+        return yield db.sortedSetScore('username:uid', username);
     });
 };
 User.getUidsByUsernames = function (usernames) {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield database_1.default.sortedSetScores('username:uid', usernames);
+        return yield db.sortedSetScores('username:uid', usernames);
     });
 };
 User.getUidByUserslug = function (userslug) {
@@ -121,7 +145,7 @@ User.getUidByUserslug = function (userslug) {
         if (!userslug) {
             return 0;
         }
-        return yield database_1.default.sortedSetScore('userslug:uid', userslug);
+        return yield db.sortedSetScore('userslug:uid', userslug);
     });
 };
 User.getUsernamesByUids = function (uids) {
@@ -138,24 +162,24 @@ User.getUsernameByUserslug = function (slug) {
 };
 User.getUidByEmail = function (email) {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield database_1.default.sortedSetScore('email:uid', email.toLowerCase());
+        return yield db.sortedSetScore('email:uid', email.toLowerCase());
     });
 };
 User.getUidsByEmails = function (emails) {
     return __awaiter(this, void 0, void 0, function* () {
         emails = emails.map(email => email && email.toLowerCase());
-        return yield database_1.default.sortedSetScores('email:uid', emails);
+        return yield db.sortedSetScores('email:uid', emails);
     });
 };
 User.getUsernameByEmail = function (email) {
     return __awaiter(this, void 0, void 0, function* () {
-        const uid = yield database_1.default.sortedSetScore('email:uid', String(email).toLowerCase());
+        const uid = yield db.sortedSetScore('email:uid', String(email).toLowerCase());
         return yield User.getUserField(uid, 'username');
     });
 };
 User.isModerator = function (uid, cid) {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield privileges.users.isModerator(uid, cid);
+        return yield privileges_1.default.users.isModerator(uid, cid);
     });
 };
 User.isModeratorOfAnyCategory = function (uid) {
@@ -166,12 +190,12 @@ User.isModeratorOfAnyCategory = function (uid) {
 };
 User.isAdministrator = function (uid) {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield privileges.users.isAdministrator(uid);
+        return yield privileges_1.default.users.isAdministrator(uid);
     });
 };
 User.isGlobalModerator = function (uid) {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield privileges.users.isGlobalModerator(uid);
+        return yield privileges_1.default.users.isGlobalModerator(uid);
     });
 };
 User.getPrivileges = function (uid) {
@@ -245,7 +269,7 @@ User.getAdminsandGlobalModsandModerators = function () {
 };
 User.getFirstAdminUid = function () {
     return __awaiter(this, void 0, void 0, function* () {
-        return (yield database_1.default.getSortedSetRange('group:administrators:members', 0, 0))[0];
+        return (yield db.getSortedSetRange('group:administrators:members', 0, 0))[0];
     });
 };
 User.getModeratorUids = function () {

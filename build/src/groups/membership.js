@@ -13,13 +13,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const _ = require('lodash');
-const database_1 = __importDefault(require("../database"));
+const database_1 = require("../database");
 const user_1 = __importDefault(require("../user"));
 const cache = require('../cache');
 function default_1(Groups) {
     Groups.getMembers = function (groupName, start, stop) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield database_1.default.getSortedSetRevRange(`group:${groupName}:members`, start, stop);
+            return yield database_1.primaryDB.default.getSortedSetRevRange(`group:${groupName}:members`, start, stop);
         });
     };
     Groups.getMemberUsers = function (groupNames, start, stop) {
@@ -35,7 +35,7 @@ function default_1(Groups) {
     };
     Groups.getMembersOfGroups = function (groupNames) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield database_1.default.getSortedSetsMembers(groupNames.map(name => `group:${name}:members`));
+            return yield database_1.primaryDB.default.getSortedSetsMembers(groupNames.map(name => `group:${name}:members`));
         });
     };
     Groups.isMember = function (uid, groupName) {
@@ -48,7 +48,7 @@ function default_1(Groups) {
             if (isMember !== undefined) {
                 return isMember;
             }
-            isMember = yield database_1.default.isSortedSetMember(`group:${groupName}:members`, uid);
+            isMember = yield database_1.primaryDB.default.isSortedSetMember(`group:${groupName}:members`, uid);
             Groups.cache.set(cacheKey, isMember);
             return isMember;
         });
@@ -66,7 +66,7 @@ function default_1(Groups) {
             if (!nonCachedUids.length) {
                 return uids.map(uid => cachedData[`${uid}:${groupName}`]);
             }
-            const isMembers = yield database_1.default.isSortedSetMembers(`group:${groupName}:members`, nonCachedUids);
+            const isMembers = yield database_1.primaryDB.default.isSortedSetMembers(`group:${groupName}:members`, nonCachedUids);
             nonCachedUids.forEach((uid, index) => {
                 cachedData[`${uid}:${groupName}`] = isMembers[index];
                 Groups.cache.set(`${uid}:${groupName}`, isMembers[index]);
@@ -85,7 +85,7 @@ function default_1(Groups) {
                 return groups.map(groupName => cachedData[`${uid}:${groupName}`]);
             }
             const nonCachedGroupsMemberSets = nonCachedGroups.map(groupName => `group:${groupName}:members`);
-            const isMembers = yield database_1.default.isMemberOfSortedSets(nonCachedGroupsMemberSets, uid);
+            const isMembers = yield database_1.primaryDB.default.isMemberOfSortedSets(nonCachedGroupsMemberSets, uid);
             nonCachedGroups.forEach((groupName, index) => {
                 cachedData[`${uid}:${groupName}`] = isMembers[index];
                 Groups.cache.set(`${uid}:${groupName}`, isMembers[index]);
@@ -112,7 +112,7 @@ function default_1(Groups) {
     };
     Groups.getMemberCount = function (groupName) {
         return __awaiter(this, void 0, void 0, function* () {
-            const count = yield database_1.default.getObjectField(`group:${groupName}`, 'memberCount');
+            const count = yield database_1.primaryDB.default.getObjectField(`group:${groupName}`, 'memberCount');
             return parseInt(count, 10);
         });
     };
@@ -172,7 +172,7 @@ function default_1(Groups) {
             if (!nonCachedKeys.length) {
                 return isArray ? keys.map(groupName => cachedData[groupName]) : cachedData[keys[0]];
             }
-            const groupMembers = yield database_1.default.getSortedSetsMembers(nonCachedKeys.map(name => `group:${name}:members`));
+            const groupMembers = yield database_1.primaryDB.default.getSortedSetsMembers(nonCachedKeys.map(name => `group:${name}:members`));
             nonCachedKeys.forEach((groupName, index) => {
                 cachedData[groupName] = groupMembers[index];
                 cache.set(`group:${groupName}:members`, groupMembers[index]);

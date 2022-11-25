@@ -8,7 +8,9 @@ const groups = require('../groups');
 const utils = require('../utils');
 const batch = require('../batch');
 
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 import meta from '../meta';
 const emailer = require('../emailer');
 const Password = require('../password');

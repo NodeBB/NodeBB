@@ -18,9 +18,8 @@ const semver = require('semver');
 const readline = require('readline');
 const winston_1 = __importDefault(require("winston"));
 const chalk = require('chalk');
-const plugins = require('./plugins').default;
-console.log('REQUIRE PLUGINS', require('./plugins'));
-const db = require('./database').default;
+const plugins_1 = __importDefault(require("./plugins"));
+const database_1 = require("./database");
 const file = require('./file').default;
 const { paths } = require('./constants');
 /*
@@ -69,7 +68,7 @@ Upgrade.getAll = function () {
 Upgrade.appendPluginScripts = function (files) {
     return __awaiter(this, void 0, void 0, function* () {
         // Find all active plugins
-        const activePlugins = yield plugins.getActive();
+        const activePlugins = yield plugins_1.default.getActive();
         activePlugins.forEach((plugin) => {
             const configPath = path_1.default.join(paths.nodeModules, plugin, 'plugin.json');
             try {
@@ -93,7 +92,7 @@ Upgrade.check = function () {
     return __awaiter(this, void 0, void 0, function* () {
         // Throw 'schema-out-of-date' if not all upgrade scripts have run
         const files = yield Upgrade.getAll();
-        const executed = yield db.getSortedSetRange('schemaLog', 0, -1);
+        const executed = yield database_1.primaryDB.default.getSortedSetRange('schemaLog', 0, -1);
         const remainder = files.filter(name => !executed.includes(path_1.default.basename(name, '.js')));
         if (remainder.length > 0) {
             throw new Error('schema-out-of-date');
@@ -104,7 +103,7 @@ Upgrade.run = function () {
     return __awaiter(this, void 0, void 0, function* () {
         console.log('\nParsing upgrade scripts... ');
         const [completed, available] = yield Promise.all([
-            db.getSortedSetRange('schemaLog', 0, -1),
+            database_1.primaryDB.default.getSortedSetRange('schemaLog', 0, -1),
             Upgrade.getAll(),
         ]);
         let skipped = 0;
@@ -131,8 +130,8 @@ Upgrade.process = function (files, skipCount) {
     return __awaiter(this, void 0, void 0, function* () {
         console.log(`${chalk.green('OK')} | ${chalk.cyan(`${files.length} script(s) found`)}${skipCount > 0 ? chalk.cyan(`, ${skipCount} skipped`) : ''}`);
         const [schemaDate, schemaLogCount] = yield Promise.all([
-            db.get('schemaDate'),
-            db.sortedSetCard('schemaLog'),
+            database_1.primaryDB.default.get('schemaDate'),
+            database_1.primaryDB.default.sortedSetCard('schemaLog'),
         ]);
         for (const file of files) {
             /* eslint-disable no-await-in-loop */
@@ -151,7 +150,7 @@ Upgrade.process = function (files, skipCount) {
             // For backwards compatibility, cross-reference with schemaDate (if found). If a script's date is older, skip it
             if ((!schemaDate && !schemaLogCount) || (scriptExport.timestamp <= schemaDate && semver.lt(version, '1.5.0'))) {
                 process.stdout.write(chalk.grey(' skipped\n'));
-                yield db.sortedSetAdd('schemaLog', Date.now(), path_1.default.basename(file, '.js'));
+                yield database_1.primaryDB.default.sortedSetAdd('schemaLog', Date.now(), path_1.default.basename(file, '.js'));
                 // eslint-disable-next-line no-continue
                 continue;
             }
@@ -173,7 +172,7 @@ Upgrade.process = function (files, skipCount) {
             const upgradeDuration = ((Date.now() - upgradeStart) / 1000).toFixed(2);
             process.stdout.write(chalk.green(` OK (${upgradeDuration} seconds)\n`));
             // Record success in schemaLog
-            yield db.sortedSetAdd('schemaLog', Date.now(), path_1.default.basename(file, '.js'));
+            yield database_1.primaryDB.default.sortedSetAdd('schemaLog', Date.now(), path_1.default.basename(file, '.js'));
         }
         console.log(chalk.green('Schema update complete!\n'));
     });

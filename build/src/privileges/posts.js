@@ -220,3 +220,4 @@ function isAdminOrMod(pid, uid) {
         return yield privsCategories.isAdminOrMod(cid, uid);
     });
 }
+exports.default = privsPosts;

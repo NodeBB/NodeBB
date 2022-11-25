@@ -3,7 +3,9 @@
 import user from '../user';
 import meta from '../meta';
 
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 const pagination = require('../pagination');
 const privileges = require('../privileges');
 const helpers = require('./helpers').defualt;

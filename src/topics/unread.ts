@@ -4,7 +4,9 @@
 const async = require('async');
 const _ = require('lodash');
 
-import db from '../database';
+import * as database from '../database';
+const db = database as any;
+
 import user from '../user';
 const posts = require('../posts');
 const notifications = require('../notifications');
