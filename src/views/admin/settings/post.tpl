@@ -155,21 +155,21 @@
 	<div class="col-sm-10 col-12">
 		<form>
 				<label for="timeagoCutoff">[[admin/settings/post:timestamp.cut-off]]</label>
-				<input type="text" inputmode="numeric" pattern="\d+" class="form-control" id="timeagoCutoff" data-field="timeagoCutoff"  />
+				<input type="number" class="form-control" id="timeagoCutoff" data-field="timeagoCutoff"  />
 				<p class="help-block">
 					[[admin/settings/post:timestamp.cut-off-help]]
 				</p>
 			</div>
 			<div class="form-group">
 				<label for="necroThreshold">[[admin/settings/post:timestamp.necro-threshold]]</label>
-				<input type="text" inputmode="numeric" pattern="\d+" class="form-control" id="necroThreshold" data-field="necroThreshold"  />
+				<input type="number" class="form-control" id="necroThreshold" data-field="necroThreshold"  />
 				<p class="help-block">
 					[[admin/settings/post:timestamp.necro-threshold-help]]
 				</p>
 			</div>
 			<div class="form-group">
 				<label for="incrementTopicViewsInterval">[[admin/settings/post:timestamp.topic-views-interval]]</label>
-				<input type="text" inputmode="numeric" pattern="\d+" class="form-control" id="incrementTopicViewsInterval" data-field="incrementTopicViewsInterval"  />
+				<input type="number" class="form-control" id="incrementTopicViewsInterval" data-field="incrementTopicViewsInterval"  />
 				<p class="help-block">
 					[[admin/settings/post:timestamp.topic-views-interval-help]]
 				<label class="form-check-label">[[admin/settings/post:showPostPreviewsOnHover]]</label>
