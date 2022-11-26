@@ -5,8 +5,8 @@ const _ = require('lodash');
 import nconf from 'nconf';
 import path from 'path';const validator = require('validator');
 
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 const file = require('../file');
 const plugins = require('../plugins');
@@ -161,3 +161,5 @@ Thumbs.deleteAll = async (id: string) => {
 	const thumbs = await db.getSortedSetRange(set, 0, -1);
 	await Thumbs.delete(id, thumbs);
 };
+
+export default Thumbs;

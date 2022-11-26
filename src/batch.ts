@@ -3,10 +3,9 @@
 
 const util = require('util');
 
-import * as database from './database';      
+import { primaryDB as db } from './database';      
     
-const db = database as any;
-console.log('DATABASE', db);
+
 
 const utils = require('./utils');
 

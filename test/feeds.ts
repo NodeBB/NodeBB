@@ -12,7 +12,7 @@ const groups = require('../src/groups');
 const user = require('../src/user');
 const meta = require('../src/meta');
 const privileges = require('../src/privileges');
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 
 describe('feeds', () => {
 	let tid;

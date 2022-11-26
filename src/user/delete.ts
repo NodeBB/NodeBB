@@ -6,8 +6,8 @@ import path from 'path';import nconf from 'nconf';
 const util = require('util');
 const rimrafAsync = util.promisify(require('rimraf'));
 
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 const posts = require('../posts');
 const flags = require('../flags');

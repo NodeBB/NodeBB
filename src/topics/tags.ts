@@ -5,8 +5,8 @@ const async = require('async');
 const validator = require('validator');
 const _ = require('lodash');
 
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 import meta from '../meta';
 import user from '../user';

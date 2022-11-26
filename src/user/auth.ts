@@ -4,8 +4,8 @@ import winston from 'winston';
 const validator = require('validator');
 const util = require('util');
 const _ = require('lodash');
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 import meta from '../meta';
 const events = require('../events');

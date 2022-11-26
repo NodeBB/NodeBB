@@ -1,7 +1,8 @@
 'use strict';
+import helpers from './helpers';
+
 
 export default  function (module) {
-	const helpers = require('./helpers').defualt;
 
 	module.setAdd = async function (key: string, value: string | string[]) {
 		if (!Array.isArray(value)) {

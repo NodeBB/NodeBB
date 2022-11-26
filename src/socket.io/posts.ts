@@ -2,8 +2,8 @@
 
 const validator = require('validator');
 
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 const posts = require('../posts');
 const privileges = require('../privileges');

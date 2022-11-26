@@ -7,7 +7,7 @@ const translator = require('../translator');
 const plugins = require('../plugins');
 const middleware = require('../middleware');
 const middlewareHelpers = require('../middleware/helpers');
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 
 export const handleURIErrors = async function handleURIErrors(err: Error, req, res, next: Function) {
 	// Handle cases where malformed URIs are passed in

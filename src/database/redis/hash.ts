@@ -1,7 +1,7 @@
 'use strict';
+import helpers from './helpers';
 
 export default  function (module:  any) {
-	const helpers = require('./helpers').defualt;
 	const cache = require('../cache').default('redis');
 
 	module.objectCache = cache;

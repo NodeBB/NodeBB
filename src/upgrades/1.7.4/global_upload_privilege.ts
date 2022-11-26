@@ -4,8 +4,7 @@
 const async = require('async');
 const groups = require('../../groups');
 const privileges = require('../../privileges');
-import * as database from '../../database';
-const db = database as any;
+import { primaryDB as db } from '../../database';
 
 export default  {
 	name: 'Give upload privilege to registered-users globally if it is given on a category',

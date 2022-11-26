@@ -6,7 +6,7 @@ import user from '../user';
 const plugins = require('../plugins');
 const topics = require('../topics');
 const posts = require('../posts');
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 
 export const get = async function (req, res, callback: Function) {
 	res.locals.metaTags = {

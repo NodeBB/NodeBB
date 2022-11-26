@@ -9,7 +9,7 @@ const user = require('../src/user');
 const groups = require('../src/groups');
 const utils = require('../src/utils');
 
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 
 describe('Middlewares', () => {
 	describe('expose', () => {

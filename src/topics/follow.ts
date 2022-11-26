@@ -1,8 +1,8 @@
 
 'use strict';
 
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 const notifications = require('../notifications');
 const privileges = require('../privileges');

@@ -7,7 +7,7 @@ import meta from '../meta';
 import user from '../user';
 const plugins = require('../plugins');
 const privileges = require('../privileges');
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 
 const Controllers  = {} as any;
 

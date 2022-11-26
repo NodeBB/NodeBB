@@ -3,7 +3,7 @@
 const express = require('express');
 
 const uploadsController = require('../controllers/uploads');
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 
 export default  function (app, middleware, controllers) {
 	const middlewares = [middleware.authenticateRequest];

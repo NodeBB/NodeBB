@@ -1,15 +1,16 @@
 'use strict';
 
 const async = require('async');
-import * as database from '../../database';
-const db = database as any;
+import { primaryDB as db } from '../../database';
 
 
 export default  {
 	name: 'Chat room hashes',
 	timestamp: Date.UTC(2015, 11, 23),
 	method: function (callback) {
+		console.log('CALLING DB METHOD');
 		db.getObjectField('global', 'nextChatRoomId', (err, nextChatRoomId) => {
+			console.log('ERROR:::', err);
 			if (err) {
 				return callback(err);
 			}
@@ -21,6 +22,7 @@ export default  {
 					if (err) {
 						return next(err);
 					}
+					console.log('UIDS:::', uids);
 					if (!Array.isArray(uids) || !uids.length || !uids[0]) {
 						currentChatRoomId += 1;
 						return next();

@@ -4,9 +4,7 @@ import nconf from 'nconf';
 
 const plugins = require('../../plugins');
 const events = require('../../events');
-import * as database from '../../database';
-const db = database as any;
-
+import { primaryDB as db } from '../../database';
 const Plugins  = {} as any;
 
 Plugins.toggleActive = async function (socket, plugin_id) {

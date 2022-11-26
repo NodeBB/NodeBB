@@ -7,8 +7,8 @@ const util = require('util');
 const validator = require('validator');
 const cookieParser = require('cookie-parser')(nconf.get('secret'));
 
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 import user from '../user';
 import meta from '../meta';
@@ -21,12 +21,11 @@ const Namespaces  = {} as any;
 const Sockets  = {} as any;
 
 Sockets.init = async function (server) {
-	requireModules();
-
 	const SocketIO = require('socket.io').Server;
 	const io = new SocketIO({
 		path: `${nconf.get('relative_path')}/socket.io`,
 	});
+	console.log('SOCKETS INITED!!!');
 
 	if (nconf.get('isCluster')) {
 		if (nconf.get('redis')) {
@@ -38,7 +37,7 @@ Sockets.init = async function (server) {
 	}
 
 	io.use(authorize);
-
+    console.log('CONNNECTION!!!!');
 	io.on('connection', onConnection);
 
 	const opts = {
@@ -59,7 +58,7 @@ Sockets.init = async function (server) {
 		} as any;
 		winston.info(`[socket.io] Restricting access to origin: ${origins}`);
 	}
-
+    console.log('SERVER:::', server);
 	io.listen(server, opts);
 	Sockets.server = io;
 };
@@ -279,3 +278,5 @@ Sockets.warnDeprecated = (socket, replacement) => {
 	// @ts-ignore
 	winston.warn(`[deprecated]\n ${new Error('-').stack.split('\n').slice(2, 5).join('\n')}\n     use ${replacement}`);
 };
+
+export default Sockets;

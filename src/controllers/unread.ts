@@ -8,7 +8,7 @@ import meta from '../meta';
 const pagination = require('../pagination');
 import user from '../user';
 const topics = require('../topics');
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 
 const unreadController  = {} as any;
 const relative_path = nconf.get('relative_path');

@@ -4,8 +4,8 @@ const _ = require('lodash');
 
 const privileges = require('../privileges');
 const plugins = require('../plugins');
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 
 export default  function (Categories) {

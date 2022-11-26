@@ -43,6 +43,7 @@ try {
 	checkVersion('lodash');
 	checkVersion('lru-cache');
 } catch (e: any) {
+	console.log('ERROR', e);
 	if (['ENOENT', 'DEP_WRONG_VERSION', 'MODULE_NOT_FOUND'].includes(e.code)) {
 		console.warn('Dependencies outdated or not yet installed.');
 		console.log('Installing them now...\n');
@@ -189,6 +190,8 @@ program
 	.option('-s, --series', 'Run builds in series without extra processes')
 	.option('-w, --webpack', 'Bundle assets with webpack', true)
 	.action((targets, options) => {
+		console.log('TARGETS', targets);
+		console.log('OPTIONS', options);
 		if (program.opts().dev) {
 			(process as any).env.NODE_ENV = 'development';
 			global.env = 'development';

@@ -4,8 +4,7 @@
 
 const privileges = require('../../privileges');
 const groups = require('../../groups');
-import * as database from '../../database';
-const db = database as any;
+import { primaryDB as db } from '../../database';
 
 export default  {
 	name: 'Give mods explicit privileges',

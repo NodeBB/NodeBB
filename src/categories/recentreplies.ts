@@ -4,8 +4,8 @@
 import winston from 'winston';
 const _ = require('lodash');
 
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 const posts = require('../posts');
 const topics = require('../topics');

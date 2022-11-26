@@ -4,8 +4,8 @@
 import nconf from 'nconf';
 import path from 'path';
 import winston from 'winston';
-import { primaryDB as primaryDb } from '../database';
-console.log('PRIMARY DB', primaryDb);
+import { primaryDB as primaryDB } from '../database';
+console.log('PRIMARY DB', primaryDB);
 const pubsub = require('../pubsub').default;
 const plugins = require('../plugins');
 const utils = require('../utils');
@@ -108,9 +108,9 @@ Configs.get = async function (field) {
 Configs.getFields = async function (fields) {
 	let values;
 	if (fields.length) {
-		values = await primaryDb.default.getObjectFields('config', fields);
+		values = await primaryDB.getObjectFields('config', fields);
 	} else {
-		values = await primaryDb.default.getObject('config');
+		values = await primaryDB.getObject('config');
 	}
 
 	values = { ...defaults, ...(values ? deserialize(values) : {}) };
@@ -135,19 +135,19 @@ Configs.set = async function (field, value) {
 Configs.setMultiple = async function (data) {
 	await processConfig(data);
 	data = serialize(data);
-	await primaryDb.default.setObject('config', data);
+	await primaryDB.setObject('config', data);
 	updateConfig(deserialize(data));
 };
 
 Configs.setOnEmpty = async function (values) {
-	const data = await primaryDb.default.getObject('config');
+	const data = await primaryDB.getObject('config');
 	values = serialize(values);
 	const config = { ...values, ...(data ? serialize(data) : {}) };
-	await primaryDb.default.setObject('config', config);
+	await primaryDB.setObject('config', config);
 };
 
 Configs.remove = async function (field) {
-	await primaryDb.default.deleteObjectField('config', field);
+	await primaryDB.deleteObjectField('config', field);
 };
 
 Configs.registerHooks = () => {

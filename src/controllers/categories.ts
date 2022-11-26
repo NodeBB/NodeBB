@@ -6,7 +6,7 @@ const _ = require('lodash');
 const categories = require('../categories');
 import meta from '../meta';
 const pagination = require('../pagination');
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 const privileges = require('../privileges');
 
 const categoriesController  = {} as any;

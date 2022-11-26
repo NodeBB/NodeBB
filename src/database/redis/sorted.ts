@@ -1,8 +1,10 @@
 'use strict';
 
+import helpers from './helpers';
+
+
 export default  function (module) {
 	const utils = require('../../utils');
-	const helpers = require('./helpers').defualt;
 	const dbHelpers = require('../helpers').defualt;
 
 	require('./sorted/add').default(module);

@@ -6,7 +6,7 @@ const _ = require('lodash');
 
 import meta from '../meta';
 const languages = require('../languages');
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 const plugins = require('../plugins');
 
 export default  function (middleware) {

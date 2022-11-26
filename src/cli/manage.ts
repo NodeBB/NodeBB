@@ -7,8 +7,8 @@ import nconf from 'nconf';
 
 import { build } from '../meta/build';
 
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 const plugins = require('../plugins');
 const events = require('../events');

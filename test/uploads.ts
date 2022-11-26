@@ -17,7 +17,7 @@ const groups = require('../src/groups');
 const privileges = require('../src/privileges');
 const meta = require('../src/meta');
 const socketUser = require('../src/socket.io/user');
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 const file = require('../src/file');
 const image = require('../src/image');
 

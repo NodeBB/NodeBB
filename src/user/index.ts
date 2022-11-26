@@ -4,8 +4,8 @@ const _ = require('lodash');
 
 const groups = require('../groups');
 const plugins = require('../plugins');
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 import privileges from '../privileges';
 const categories = require('../categories');

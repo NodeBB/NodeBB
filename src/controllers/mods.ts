@@ -8,7 +8,7 @@ const plugins = require('../plugins');
 const pagination = require('../pagination');
 const privileges = require('../privileges');
 const utils = require('../utils');
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 
 const modsController  = {} as any;
 modsController.flags = {} as any;

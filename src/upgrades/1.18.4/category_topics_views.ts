@@ -1,7 +1,6 @@
 'use strict';
 
-import * as database from '../../database';
-const db = database as any;
+import { primaryDB as db } from '../../database';
 const batch = require('../../batch');
 const topics = require('../../topics');
 

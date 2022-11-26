@@ -13,7 +13,7 @@ const util = require('util');
 const wait = util.promisify(setTimeout);
 
 const db = require('./mocks/databasemock');
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 const meta = require('../src/meta');
 const user = require('../src/user');
 const groups = require('../src/groups');

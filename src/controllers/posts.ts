@@ -4,7 +4,7 @@ const querystring = require('querystring');
 
 import posts from '../posts';
 const privileges = require('../privileges');
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 
 const postsController  = {} as any;
 

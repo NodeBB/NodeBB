@@ -3,12 +3,12 @@
 import user from '../user';
 import meta from '../meta';
 
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 const pagination = require('../pagination');
 const privileges = require('../privileges');
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 const api = require('../api');
 const utils = require('../utils');
 

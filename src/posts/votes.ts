@@ -1,8 +1,8 @@
 'use strict';
 
 import meta from '../meta';
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 const flags = require('../flags');
 import user from '../user';

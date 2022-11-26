@@ -5,8 +5,8 @@ import * as fs from 'fs';
 const chalk = require('chalk');
 import nconf from 'nconf';
 
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 const events = require('../events');
 import meta from '../meta';

@@ -4,7 +4,7 @@ const _ = require('lodash');
 const plugins = require('./plugins');
 import * as database from './database';      
     
-const db = database as any;
+
 
 const social  = {} as any;
 

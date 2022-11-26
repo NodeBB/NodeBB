@@ -12,8 +12,8 @@ const plugins = require('../plugins');
 import meta from '../meta';
 const events = require('../events');
 const emailer = require('../emailer');
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 const userController = require('../controllers/user');
 const privileges = require('../privileges');

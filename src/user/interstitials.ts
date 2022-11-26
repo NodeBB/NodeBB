@@ -4,8 +4,8 @@ import winston from 'winston';
 const util = require('util');
 
 const user = require('.');
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 import meta from '../meta';
 const privileges = require('../privileges');

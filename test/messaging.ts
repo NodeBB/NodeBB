@@ -13,7 +13,7 @@ const meta = require('../src/meta');
 const User = require('../src/user');
 const Groups = require('../src/groups');
 const Messaging = require('../src/messaging');
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 const socketModules = require('../src/socket.io/modules');
 const utils = require('../src/utils');
 const translator = require('../src/translator');

@@ -3,8 +3,8 @@
 const _ = require('lodash');
 
 import meta from '../meta';
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 const plugins = require('../plugins');
 import user from '../user';

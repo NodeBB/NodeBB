@@ -11,8 +11,8 @@ const categories = require('../categories');
 import meta from '../meta';
 const helpers = require('../controllers/helpers');
 const privileges = require('../privileges');
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 const utils = require('../utils');
 const controllers404 = require('../controllers/404');

@@ -1,7 +1,8 @@
 'use strict';
+import helpers from './helpers';
+
 
 export default  function (module) {
-	const helpers = require('./helpers').defualt;
 	const util = require('util');
 	const Cursor = require('pg-cursor');
 	Cursor.prototype.readAsync = util.promisify(Cursor.prototype.read);

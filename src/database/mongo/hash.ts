@@ -1,7 +1,8 @@
 'use strict';
+import helpers from './helpers';
+
 
 export default  function (module) {
-	const helpers = require('./helpers').default;
 	const cache = require('../cache').default('mongo');
 
 	module.objectCache = cache;

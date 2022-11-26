@@ -82,3 +82,5 @@ helpers.tryRoute = function (controller, handler) {
 	}
 	return controller;
 };
+
+export default helpers;

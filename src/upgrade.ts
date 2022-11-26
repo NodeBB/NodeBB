@@ -22,11 +22,17 @@ const { paths } = require('./constants');
 const Upgrade  = {} as any;
 
 Upgrade.getAll = async function () {
+	console.log('GETTING FILES!!!');
 	let files = await file.walk(path.join(__dirname, './upgrades'));
-
+    console.log('FILES FETCHED!!!');
 	// Sort the upgrade scripts based on version
-	files = files.filter(file => path.basename(file) !== 'TEMPLATE').sort((a: any, b: any) => {
-		const versionA = path.dirname(a).split(path.sep).pop();
+	files = files.filter(file => { 
+		console.log('FETCHING BASENAME', file);
+		path.basename(file) !== 'TEMPLATE'
+	}).sort((a, b) => {
+		console.log('A', a);
+		console.log('B', b);
+ 		const versionA = path.dirname(a).split(path.sep).pop();
 		const versionB = path.dirname(b).split(path.sep).pop();
 		const semverCompare = semver.compare(versionA, versionB);
 		if (semverCompare) {
@@ -81,7 +87,7 @@ Upgrade.appendPluginScripts = async function (files) {
 Upgrade.check = async function () {
 	// Throw 'schema-out-of-date' if not all upgrade scripts have run
 	const files = await Upgrade.getAll();
-	const executed = await db.default.getSortedSetRange('schemaLog', 0, -1);
+	const executed = await db.getSortedSetRange('schemaLog', 0, -1);
 	const remainder = files.filter(name => !executed.includes(path.basename(name, '.js')));
 	if (remainder.length > 0) {
 		throw new Error('schema-out-of-date');
@@ -92,7 +98,7 @@ Upgrade.run = async function () {
 	console.log('\nParsing upgrade scripts... ');
 
 	const [completed, available] = await Promise.all([
-		db.default.getSortedSetRange('schemaLog', 0, -1),
+		db.getSortedSetRange('schemaLog', 0, -1),
 		Upgrade.getAll(),
 	]);
 
@@ -119,8 +125,8 @@ Upgrade.runParticular = async function (names) {
 Upgrade.process = async function (files, skipCount) {
 	console.log(`${chalk.green('OK')} | ${chalk.cyan(`${files.length} script(s) found`)}${skipCount > 0 ? chalk.cyan(`, ${skipCount} skipped`) : ''}`);
 	const [schemaDate, schemaLogCount] = await Promise.all([
-		db.default.get('schemaDate'),
-		db.default.sortedSetCard('schemaLog'),
+		db.get('schemaDate'),
+		db.sortedSetCard('schemaLog'),
 	]);
 
 	for (const file of files) {
@@ -143,7 +149,7 @@ Upgrade.process = async function (files, skipCount) {
 		if ((!schemaDate && !schemaLogCount) || (scriptExport.timestamp <= schemaDate && semver.lt(version, '1.5.0'))) {
 			(process as any).stdout.write(chalk.grey(' skipped\n'));
 
-			await db.default.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'));
+			await db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'));
 			// eslint-disable-next-line no-continue
 			continue;
 		}
@@ -167,7 +173,7 @@ Upgrade.process = async function (files, skipCount) {
 		(process as any).stdout.write(chalk.green(` OK (${upgradeDuration} seconds)\n`));
 
 		// Record success in schemaLog
-		await db.default.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'));
+		await db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'));
 	}
 
 	console.log(chalk.green('Schema update complete!\n'));
@@ -195,7 +201,7 @@ Upgrade.incrementProgress = function (value) {
 		}
 
 		readline.cursorTo((process as any).stdout, 0);
-		(process as any).stdout.write(`    [${filled ? new Array(filled).join('#') : ''}${new Array(unfilled).join(' ')}] (${this.current}/${this.total || '??'}) ${percentage} `);
+		(process as any).stdout.write(`[${filled ? new Array(filled).join('#') : ''}${new Array(unfilled).join(' ')}] (${this.current}/${this.total || '??'}) ${percentage} `);
 	}
 };
 

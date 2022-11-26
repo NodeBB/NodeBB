@@ -2,8 +2,8 @@
 
 const plugins = require('../plugins');
 const slugify = require('../slugify');
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 const batch = require('../batch');
 

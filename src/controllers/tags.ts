@@ -10,7 +10,7 @@ const topics = require('../topics');
 const privileges = require('../privileges');
 const pagination = require('../pagination');
 const utils = require('../utils');
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 
 const tagsController  = {} as any;
 

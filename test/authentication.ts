@@ -13,7 +13,7 @@ const user = require('../src/user');
 const utils = require('../src/utils');
 const meta = require('../src/meta');
 const privileges = require('../src/privileges');
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 
 describe('authentication', () => {
 	const jar = request.jar();

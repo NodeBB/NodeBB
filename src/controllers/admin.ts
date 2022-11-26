@@ -1,7 +1,7 @@
 'use strict';
 
 const privileges = require('../privileges');
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 
 const adminController = {
 	dashboard: require('./admin/dashboard'),

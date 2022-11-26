@@ -3,8 +3,8 @@
 import winston from 'winston';
 import nconf from 'nconf';
 
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 const batch = require('../batch');
 import meta from '../meta';

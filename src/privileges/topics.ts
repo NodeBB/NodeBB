@@ -6,7 +6,7 @@ const _ = require('lodash');
 import meta from '../meta';
 const topics = require('../topics');
 import user from '../user';
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 const categories = require('../categories');
 const plugins = require('../plugins');
 const privsCategories = require('./categories');

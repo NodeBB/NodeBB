@@ -3,8 +3,7 @@
 'use strict';
 
 import winston from 'winston';
-import * as database from '../../database';
-const db = database as any;
+import { primaryDB as db } from '../../database';
 
 export default  {
 	name: 'Granting edit/delete/delete topic on existing categories',

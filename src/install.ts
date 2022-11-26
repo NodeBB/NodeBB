@@ -11,7 +11,7 @@ import Groups from './groups';
 import privileges from './privileges';
 import utils from './utils';
 import file from './file';
-import upgrade from './upgrade';
+import upgrade from './upgr\ade';
 
 const install  = {} as any;
 const questions  = {} as any;
@@ -200,9 +200,9 @@ async function completeConfigSetup(config) {
 		config.package_manager = nconf.get('package_manager');
 	}
 	nconf.overrides(config);
-	await db.default.init();
-	if (db.default.hasOwnProperty('createIndices')) {
-		await db.default.createIndices();
+	await db.init();
+	if (db.hasOwnProperty('createIndices')) {
+		await db.createIndices();
 	}
 
 	// Sanity-check/fix url/port
@@ -438,7 +438,7 @@ async function giveGlobalPrivileges() {
 
 async function createCategories() {
 	const Categories = require('./categories');
-	const cids = await db.default.getSortedSetRange('categories:cid', 0, -1);
+	const cids = await db.getSortedSetRange('categories:cid', 0, -1);
 	if (Array.isArray(cids) && cids.length) {
 		console.log(`Categories OK. Found ${cids.length} categories.`);
 		return;
@@ -457,7 +457,7 @@ async function createCategories() {
 
 async function createMenuItems() {
 
-	const exists = await db.default.exists('navigation:enabled');
+	const exists = await db.exists('navigation:enabled');
 	if (exists) {
 		return;
 	}
@@ -472,7 +472,7 @@ async function createWelcomePost() {
 
 	const [content, numTopics] = await Promise.all([
 		fs.promises.readFile(path.join(__dirname, '../', 'install/data/welcome.md'), 'utf8'),
-		db.default.getObjectField('global', 'topicCount'),
+		db.getObjectField('global', 'topicCount'),
 	]);
 
 	if (!parseInt(numTopics, 10)) {
@@ -519,7 +519,7 @@ async function enableDefaultPlugins() {
     
 
 	const order = defaultEnabled.map((plugin, index) => index);
-	await db.default.sortedSetAdd('plugins:active', order, defaultEnabled);
+	await db.sortedSetAdd('plugins:active', order, defaultEnabled);
 }
 
 async function setCopyrightWidget() {
@@ -527,11 +527,11 @@ async function setCopyrightWidget() {
 
 	const [footerJSON, footer] = await Promise.all([
 		fs.promises.readFile(path.join(__dirname, '../', 'install/data/footer.json'), 'utf8'),
-		db.default.getObjectField('widgets:global', 'footer'),
+		db.getObjectField('widgets:global', 'footer'),
 	]);
 
 	if (!footer && footerJSON) {
-		await db.default.setObjectField('widgets:global', 'footer', footerJSON);
+		await db.setObjectField('widgets:global', 'footer', footerJSON);
 	}
 }
 

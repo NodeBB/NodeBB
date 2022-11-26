@@ -114,10 +114,9 @@ export function status() {
 
 export function log() {
 	console.log(`${chalk.red('\nHit ') + chalk.bold('Ctrl-C ') + chalk.red('to exit\n')}\n`);
-	// @ts-ignore
-	// child(process as any).spawn('tail', ['-F', './logs/output.log'], {
-	// 	stdio: 'inherit',
-	// 	cwd,
-	// });
+	child(process as any).spawn('tail', ['-F', './logs/output.log'], {
+		stdio: 'inherit',
+		cwd,
+	});
 }
 

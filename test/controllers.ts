@@ -20,7 +20,7 @@ const translator = require('../src/translator');
 const privileges = require('../src/privileges');
 const plugins = require('../src/plugins');
 const utils = require('../src/utils');
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 
 const sleep = util.promisify(setTimeout);
 

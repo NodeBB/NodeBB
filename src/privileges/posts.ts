@@ -7,7 +7,7 @@ import meta from '../meta';
 const posts = require('../posts');
 const topics = require('../topics');
 import user from '../user';
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 const plugins = require('../plugins');
 const utils = require('../utils');
 const privsCategories = require('./categories');

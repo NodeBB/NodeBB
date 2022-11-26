@@ -22,9 +22,9 @@ const detector = require('spider-detector');
 const helmet = require('helmet');
 
 const Benchpress = require('benchpressjs');
-import * as database from './database';      
+import { primaryDB as db } from './database';      
     
-const db = database as any;
+
 const analytics = require('./analytics');
 const file = require('./file');
 const emailer = require('./emailer');
@@ -37,7 +37,7 @@ const privileges = require('./privileges');
 const routes = require('./routes');
 const auth = require('./routes/authentication');
 
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 
 if (nconf.get('ssl')) {
 	server = require('https').createServer({
@@ -46,6 +46,7 @@ if (nconf.get('ssl')) {
 	}, app);
 } else {
 	server = require('http').createServer(app);
+	console.log('SERVER', server);
 }
 
 
@@ -327,3 +328,5 @@ export const testSocket = async function (socketPath) {
 };
 
 require('./promisify').promisify(exports);
+
+export default server;

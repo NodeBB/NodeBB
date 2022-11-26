@@ -7,8 +7,8 @@ const Benchpress = require('benchpressjs');
 const plugins = require('../plugins');
 const groups = require('../groups');
 const translator = require('../translator');
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 const apiController = require('../controllers/api');
 import meta from '../meta';

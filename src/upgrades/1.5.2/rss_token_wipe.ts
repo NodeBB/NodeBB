@@ -2,8 +2,7 @@
 
 const async = require('async');
 const batch = require('../../batch');
-import * as database from '../../database';
-const db = database as any;
+import { primaryDB as db } from '../../database';
 
 export default  {
 	name: 'Wipe all existing RSS tokens',

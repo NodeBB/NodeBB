@@ -4,8 +4,7 @@
 const async = require('async');
 
 const privileges = require('../../privileges');
-import * as database from '../../database';
-const db = database as any;
+import { primaryDB as db } from '../../database';
 
 export default  {
 	name: 'Give vote privilege to registered-users on all categories',

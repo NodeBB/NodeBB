@@ -6,8 +6,8 @@ const cron = require('cron').CronJob;
 import nconf from 'nconf';
 const _ = require('lodash');
 
-import * as database from './database';
-const db = database as any;
+import { primaryDB as db } from './database';
+
 const User = require('./user');
 const posts = require('./posts');
 const groups = require('./groups');

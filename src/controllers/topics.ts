@@ -10,7 +10,7 @@ const topics = require('../topics');
 const categories = require('../categories');
 const posts = require('../posts');
 const privileges = require('../privileges');
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 const pagination = require('../pagination');
 const utils = require('../utils');
 const analytics = require('../analytics');

@@ -3,8 +3,8 @@
 const _ = require('lodash');
 const validator = require('validator');
 
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 const posts = require('../posts');
 const utils = require('../utils');
@@ -29,13 +29,13 @@ require('./posts').default(Topics);
 require('./follow').default(Topics);
 require('./tags').default(Topics);
 require('./teaser').default(Topics);
-Topics.scheduled = require('./scheduled');
+Topics.scheduled = require('./scheduled').default;
 require('./suggested').default(Topics);
 require('./tools').default(Topics);
 Topics.thumbs = require('./thumbs');
 require('./bookmarks').default(Topics);
 require('./merge').default(Topics);
-Topics.events = require('./events');
+Topics.events = require('./events').default;
 
 Topics.exists = async function (tids: string[]) {
 	return await db.exists(

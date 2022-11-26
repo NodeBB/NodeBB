@@ -3,8 +3,8 @@
 import path from 'path';
 import nconf from 'nconf';
 
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 const image = require('../image');
 const file = require('../file');

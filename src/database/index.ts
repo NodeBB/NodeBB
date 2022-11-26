@@ -11,8 +11,9 @@ if (!databaseName) {
 	(process as any).exit();
 }
 
+// @ts-ignore
+const primaryDB = require(`./${databaseName}`).default;
 
-const primaryDB = require(`./${databaseName}`);
 
 primaryDB.parseIntFields = function (data, intFields, requestedFields) {
 	intFields.forEach((field) => {
@@ -28,11 +29,13 @@ primaryDB.initSessionStore = async function () {
 
 	if (nconf.get('session_store')) {
 		sessionStoreDB = require(`./${sessionStoreConfig.name}`);
+		console.log('sessionStoreDb', sessionStoreDB);
 	} else if (nconf.get('redis')) {
 		// if redis is specified, use it as session store over others
 		sessionStoreDB = require('./redis');
-	}
+		console.log('sessionStoreDb', sessionStoreDB);
 
+	}
 	primaryDB.sessionStore = await sessionStoreDB.createSessionStore(sessionStoreConfig);
 };
 

@@ -19,7 +19,7 @@ const privileges = require('../src/privileges');
 const meta = require('../src/meta');
 const User = require('../src/user');
 const groups = require('../src/groups');
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 const socketPosts = require('../src/socket.io/posts');
 const socketTopics = require('../src/socket.io/topics');
 const apiTopics = require('../src/api/topics');

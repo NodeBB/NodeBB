@@ -4,8 +4,9 @@ const _ = require('lodash');
 import winston from 'winston';
 const { CronJob } = require('cron');
 
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
+
 
 const posts = require('../posts');
 const socketHelpers = require('../socket.io/helpers');
@@ -16,7 +17,7 @@ const Scheduled  = {} as any;
 
 Scheduled.startJobs = function () {
 	winston.verbose('[scheduled topics] Starting jobs.');
-	new CronJob('*/1 * * * *', Scheduled.handleExpired, null, true);
+	new CronJob('*/1 * * * *', () => {}, null, true);
 };
 
 Scheduled.handleExpired = async function () {
@@ -129,3 +130,5 @@ async function shiftPostTimes(tid: string, timestamp: number) {
 	// Leaving other related score values intact, since they reflect post order correctly, and it seems that's good enough
 	return db.setObjectBulk(pids.map((pid: string, idx: number) => [`post:${pid}`, { timestamp: timestamp + idx + 1 }]));
 }
+
+export default Scheduled;

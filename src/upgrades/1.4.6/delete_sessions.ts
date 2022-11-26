@@ -1,8 +1,7 @@
 'use strict';
 
 import nconf from 'nconf';
-import * as database from '../../database';
-const db = database as any;
+import { primaryDB as db } from '../../database';
 const batch = require('../../batch');
 
 export default  {

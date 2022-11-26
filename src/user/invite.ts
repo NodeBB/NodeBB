@@ -5,8 +5,8 @@ const async = require('async');
 import nconf from 'nconf';
 const validator = require('validator');
 
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 import meta from '../meta';
 const emailer = require('../emailer');

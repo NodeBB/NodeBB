@@ -5,8 +5,8 @@ const _ = require('lodash');
 
 import meta from '../meta';
 const plugins = require('../plugins');
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 const groups = require('../groups');
 const utils = require('../utils');

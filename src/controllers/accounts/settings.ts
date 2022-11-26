@@ -11,8 +11,7 @@ const languages = require('../../languages');
 import meta from '../../meta';
 const plugins = require('../../plugins');
 const notifications = require('../../notifications');
-import * as database from '../../database';
-const db = database as any;
+import { primaryDB as db } from '../../database';
 import helpers from '../helpers';
 const accountHelpers = require('./helpers').defualt;
 

@@ -10,8 +10,8 @@ const validator = require('validator');
 const cronJob = require('cron').CronJob;
 const chalk = require('chalk');
 
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 const image = require('../image');
 import user from '../user';

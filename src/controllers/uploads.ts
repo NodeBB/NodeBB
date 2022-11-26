@@ -10,7 +10,7 @@ const plugins = require('../plugins');
 const image = require('../image');
 const privileges = require('../privileges');
 
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 
 const uploadsController  = {} as any;
 

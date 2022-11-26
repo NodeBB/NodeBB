@@ -3,8 +3,8 @@
 
 const validator = require('validator');
 
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 import meta from '../meta';
 const plugins = require('../plugins');
@@ -13,7 +13,7 @@ const categories = require('../categories');
 const pagination = require('../pagination');
 const privileges = require('../privileges');
 const utils = require('../utils');
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 
 const searchController  = {} as any;
 

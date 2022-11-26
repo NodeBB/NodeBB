@@ -3,8 +3,7 @@
 const validator = require('validator');
 import nconf from 'nconf';
 
-import * as database from '../../database';
-const db = database as any;
+import { primaryDB as db } from '../../database';
 import user from '../../user';
 const groups = require('../../groups');
 const plugins = require('../../plugins');

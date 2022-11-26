@@ -4,8 +4,8 @@
 const validator = require('validator');
 const _ = require('lodash');
 
-import * as database  from './database';
-const db = database as any;
+import { primaryDB as db }  from './database';
+
 const batch = require('./batch');
 const user = require('./user');
 const utils = require('./utils');

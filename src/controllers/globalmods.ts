@@ -4,7 +4,7 @@ import user from '../user';
 import meta from '../meta';
 const analytics = require('../analytics');
 const usersController = require('./admin/users');
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 
 const globalModsController  = {} as any;
 

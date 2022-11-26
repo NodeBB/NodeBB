@@ -4,8 +4,8 @@ const validator = require('validator');
 import nconf from 'nconf';
 const _ = require('lodash');
 
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 import meta from '../meta';
 const plugins = require('../plugins');

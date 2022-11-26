@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import path from 'path';const mkdirp = require('mkdirp');
 import winston from 'winston';
 
-const filePath = path.join(__dirname, '../../build/cache-buster');
+const filePath = path.join(__dirname, '../../../build/cache-buster');
 
 let cached;
 

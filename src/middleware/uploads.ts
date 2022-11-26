@@ -2,7 +2,7 @@
 
 const cacheCreate = require('../cache/ttl').default;
 import meta from '../meta';
-const helpers = require('./helpers').default;
+import helpers from './helpers';
 import user from '../user';
 
 console.log('ttl', meta.config);

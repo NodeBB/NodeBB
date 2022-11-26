@@ -19,7 +19,7 @@ const db = require('./mocks/databasemock');
 const user = require('../src/user');
 const groups = require('../src/groups');
 const categories = require('../src/categories');
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 const meta = require('../src/meta');
 const events = require('../src/events');
 

@@ -7,8 +7,8 @@ const validator = require('validator');
 const _ = require('lodash');
 const util = require('util');
 
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 import meta from '../meta';
 const analytics = require('../analytics');
@@ -16,7 +16,7 @@ import user from '../user';
 const plugins = require('../plugins');
 const utils = require('../utils');
 const slugify = require('../slugify');
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 const privileges = require('../privileges');
 const sockets = require('../socket.io');
 

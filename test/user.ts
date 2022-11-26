@@ -17,7 +17,7 @@ const Posts = require('../src/posts');
 const Password = require('../src/password');
 const groups = require('../src/groups');
 const messaging = require('../src/messaging');
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 const meta = require('../src/meta');
 const file = require('../src/file');
 const socketUser = require('../src/socket.io/user');

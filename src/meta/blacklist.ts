@@ -5,8 +5,8 @@ import winston from 'winston';
 const _ = require('lodash');
 const validator = require('validator');
 
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 const pubsub = require('../pubsub').default;
 const plugins = require('../plugins');

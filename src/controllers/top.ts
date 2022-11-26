@@ -4,7 +4,7 @@
 import nconf from 'nconf';
 const validator = require('validator');
 
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 const recentController = require('./recent');
 
 const topController  = {} as any;

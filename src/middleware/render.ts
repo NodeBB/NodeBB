@@ -9,7 +9,7 @@ import meta from '../meta';
 const translator = require('../translator');
 const widgets = require('../widgets');
 const utils = require('../utils');
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 
 const relative_path = nconf.get('relative_path');
 

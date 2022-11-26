@@ -7,8 +7,7 @@ const _ = require('lodash');
 const validator = require('validator');
 
 const versions = require('../../admin/versions');
-import * as database from '../../database';
-const db = database as any;
+import { primaryDB as db } from '../../database';
 import meta from '../../meta';
 const analytics = require('../../analytics');
 const plugins = require('../../plugins');

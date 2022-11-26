@@ -9,7 +9,7 @@ const cache = require('../cache');
 
 export default  function (Groups) {
 	Groups.getMembers = async function (groupName, start, stop) {
-		return await primaryDB.default.getSortedSetRevRange(`group:${groupName}:members`, start, stop);
+		return await primaryDB.getSortedSetRevRange(`group:${groupName}:members`, start, stop);
 	};
 
 	Groups.getMemberUsers = async function (groupNames, start, stop) {
@@ -21,7 +21,7 @@ export default  function (Groups) {
 	};
 
 	Groups.getMembersOfGroups = async function (groupNames) {
-		return await primaryDB.default.getSortedSetsMembers(groupNames.map(name => `group:${name}:members`));
+		return await primaryDB.getSortedSetsMembers(groupNames.map(name => `group:${name}:members`));
 	};
 
 	Groups.isMember = async function (uid, groupName) {
@@ -34,7 +34,7 @@ export default  function (Groups) {
 		if (isMember !== undefined) {
 			return isMember;
 		}
-		isMember = await primaryDB.default.isSortedSetMember(`group:${groupName}:members`, uid);
+		isMember = await primaryDB.isSortedSetMember(`group:${groupName}:members`, uid);
 		Groups.cache.set(cacheKey, isMember);
 		return isMember;
 	};
@@ -55,7 +55,7 @@ export default  function (Groups) {
 			return uids.map(uid => cachedData[`${uid}:${groupName}`]);
 		}
 
-		const isMembers = await primaryDB.default.isSortedSetMembers(`group:${groupName}:members`, nonCachedUids);
+		const isMembers = await primaryDB.isSortedSetMembers(`group:${groupName}:members`, nonCachedUids);
 		nonCachedUids.forEach((uid, index) => {
 			cachedData[`${uid}:${groupName}`] = isMembers[index];
 			Groups.cache.set(`${uid}:${groupName}`, isMembers[index]);
@@ -74,7 +74,7 @@ export default  function (Groups) {
 			return groups.map(groupName => cachedData[`${uid}:${groupName}`]);
 		}
 		const nonCachedGroupsMemberSets = nonCachedGroups.map(groupName => `group:${groupName}:members`);
-		const isMembers = await primaryDB.default.isMemberOfSortedSets(nonCachedGroupsMemberSets, uid);
+		const isMembers = await primaryDB.isMemberOfSortedSets(nonCachedGroupsMemberSets, uid);
 		nonCachedGroups.forEach((groupName, index) => {
 			cachedData[`${uid}:${groupName}`] = isMembers[index];
 			Groups.cache.set(`${uid}:${groupName}`, isMembers[index]);
@@ -101,7 +101,7 @@ export default  function (Groups) {
 	};
 
 	Groups.getMemberCount = async function (groupName) {
-		const count = await primaryDB.default.getObjectField(`group:${groupName}`, 'memberCount');
+		const count = await primaryDB.getObjectField(`group:${groupName}`, 'memberCount');
 		return parseInt(count, 10);
 	};
 
@@ -165,7 +165,7 @@ export default  function (Groups) {
 		if (!nonCachedKeys.length) {
 			return isArray ? keys.map(groupName => cachedData[groupName]) : cachedData[keys[0]];
 		}
-		const groupMembers = await primaryDB.default.getSortedSetsMembers(nonCachedKeys.map(name => `group:${name}:members`));
+		const groupMembers = await primaryDB.getSortedSetsMembers(nonCachedKeys.map(name => `group:${name}:members`));
 
 		nonCachedKeys.forEach((groupName, index) => {
 			cachedData[groupName] = groupMembers[index];

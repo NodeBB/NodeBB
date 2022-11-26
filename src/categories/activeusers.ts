@@ -3,8 +3,8 @@
 const _ = require('lodash');
 
 const posts = require('../posts');
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 
 export default  function (Categories) {

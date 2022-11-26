@@ -3,7 +3,6 @@
 import nconf from 'nconf';
 const util = require('util');
 import winston from 'winston';
-import { AnyObject } from '../../interfaces';
 const { EventEmitter } = require('events');
 const connection = require('./connection');
 

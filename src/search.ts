@@ -2,9 +2,9 @@
 
 const _ = require('lodash');
 
-import * as database from './database';      
+import { primaryDB  as db } from './database';      
     
-const db = database as any;
+
 const posts = require('./posts');
 import topics from './topics';
 const categories = require('./categories');

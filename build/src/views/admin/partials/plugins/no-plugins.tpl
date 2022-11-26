@@ -1,1 +1,0 @@
-<div class="alert alert-info no-plugins hide">[[admin/extend/plugins:none-found]]</div>

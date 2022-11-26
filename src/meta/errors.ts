@@ -4,8 +4,8 @@ import winston from 'winston';
 const validator = require('validator');
 const cronJob = require('cron').CronJob;
 
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 const analytics = require('../analytics');
 

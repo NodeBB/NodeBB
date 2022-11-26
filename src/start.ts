@@ -2,6 +2,10 @@
 
 import nconf from 'nconf';
 import winston from 'winston';
+import { primaryDB as db } from './database';
+import sockets from './socket.io';	
+import webserver from './webserver';
+
 
 const start  = {} as any;
 
@@ -11,7 +15,6 @@ start.start = async function () {
 	addProcessHandlers();
 
 	try {
-		const db = require('./database').default;
 		await db.init();
 		await db.checkCompatibility();
 
@@ -30,15 +33,13 @@ start.start = async function () {
 
 		await db.initSessionStore();
 
-		const webserver = require('./webserver').default;
-		const sockets = require('./socket.io').default;
-		await sockets.init(webserver.server);
+    	await sockets.init(webserver);
 
 		if (nconf.get('runJobs')) {
 			require('./notifications').default.startJobs();
 			require('./user').default.startJobs();
 			require('./plugins').default.startJobs();
-			require('./topics').default.scheduled.startJobs();
+		//	require('./topics').default.scheduled.startJobs();
 			await db.delete('locks');
 		}
 

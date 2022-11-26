@@ -10,7 +10,7 @@ const categories = require('../src/categories');
 const topics = require('../src/topics');
 const user = require('../src/user');
 const groups = require('../src/groups');
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 const meta = require('../src/meta');
 
 describe('Admin Controllers', () => {

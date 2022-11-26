@@ -121,9 +121,9 @@ function welcome(req, res) {
 			questions: questions,
 		};
 	});
-
+    console.log('BOOMING!!!!');
 	const defaults = require('./data/defaults.json');
-    
+    console.log('RENDERING!!!!');
 	res.render('install/index', {
 		url: nconf.get('url') || (`${req.protocol}://${req.get('host')}`),
 		launchUrl: launchUrl,

@@ -2,8 +2,8 @@
 
 import meta from '../meta';
 const plugins = require('../plugins');
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 import user from '../user';
 

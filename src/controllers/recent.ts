@@ -7,7 +7,7 @@ import user from '../user';
 const categories = require('../categories');
 const topics = require('../topics');
 import meta from '../meta';
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 const pagination = require('../pagination');
 const privileges = require('../privileges');
 

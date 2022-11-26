@@ -6,7 +6,7 @@ import * as fs from 'fs';
 import path from 'path';import nconf from 'nconf';
 
 const db = require('./mocks/databasemock');
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 const Groups = require('../src/groups');
 const User = require('../src/user');
 const socketGroups = require('../src/socket.io/groups');

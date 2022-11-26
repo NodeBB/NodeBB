@@ -12,7 +12,7 @@ const plugins = require('../plugins');
 
 const authRoutes = require('./authentication');
 const writeRoutes = require('./write');
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 
 const { setupPageRoute } = helpers;
 

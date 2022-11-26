@@ -6,8 +6,8 @@ import path from 'path';import winston from 'winston';
 const validator = require('validator');
 
 const { baseDir } = require('../constants').paths;
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 const plugins = require('../plugins');
 const batch = require('../batch');

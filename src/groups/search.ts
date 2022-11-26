@@ -1,8 +1,8 @@
 'use strict';
 
 import user from '../user';
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 
 export default  function (Groups) {

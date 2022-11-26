@@ -11,7 +11,7 @@ const plugins = require('../plugins');
 const privileges = require('../privileges');
 const utils = require('../utils');
 const versions = require('../admin/versions');
-const helpers = require('./helpers').default;
+import helpers from './helpers';
 
 const controllers = {
 	api: require('../controllers/api'),

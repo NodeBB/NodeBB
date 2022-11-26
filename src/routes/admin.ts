@@ -1,6 +1,6 @@
 'use strict';
 
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 
 export default  function (app, name, middleware, controllers) {
 	const middlewares = [middleware.pluginHooks];

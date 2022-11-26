@@ -65,7 +65,7 @@ const aliasMap = Object.keys(aliases).reduce((prev, key) => {
 async function beforeBuild(targets) {
 	(process as any).stdout.write(`${chalk.green('  started')}\n`);
 	try {
-		await db.default.init();
+		await db.init();
 		meta = require('./index');
 		await meta.themes.setupPaths();
 		const plugins = require('../plugins');

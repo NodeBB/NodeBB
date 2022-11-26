@@ -5,7 +5,7 @@ import nconf from 'nconf';
 import meta from '../meta';
 import user from '../user';
 const groups = require('../groups');
-const helpers = require('./helpers').default;
+import helpers from './helpers';
 
 export default  function (middleware) {
 	middleware.maintenanceMode = helpers.try(async (req, res, next) => {

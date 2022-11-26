@@ -2,8 +2,7 @@
 
 const async = require('async');
 
-import * as database from '../../database';
-const db = database as any;
+import { primaryDB as db } from '../../database';
 
 export default  {
 	name: 'New sorted set cid:<cid>:tids:lastposttime',

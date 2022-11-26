@@ -21,7 +21,7 @@ const apiPosts = require('../src/api/posts');
 const apiTopics = require('../src/api/topics');
 const meta = require('../src/meta');
 const file = require('../src/file');
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 
 describe('Post\'s', () => {
 	let voterUid;

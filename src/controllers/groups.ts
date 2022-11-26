@@ -6,7 +6,7 @@ import nconf from 'nconf';
 import meta from '../meta';
 const groups = require('../groups');
 import user from '../user';
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 const pagination = require('../pagination');
 const privileges = require('../privileges');
 

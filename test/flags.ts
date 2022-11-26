@@ -9,7 +9,7 @@ const util = require('util');
 const sleep = util.promisify(setTimeout);
 
 const db = require('./mocks/databasemock');
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 
 const Flags = require('../src/flags');
 const Categories = require('../src/categories');

@@ -62,10 +62,10 @@ export default  function (Plugins) {
 		}
 		const isActive = await Plugins.isActive(id);
 		if (isActive) {
-			await db.default.sortedSetRemove('plugins:active', id);
+			await db.sortedSetRemove('plugins:active', id);
 		} else {
-			const count = await db.default.sortedSetCard('plugins:active');
-			await db.default.sortedSetAdd('plugins:active', count, id);
+			const count = await db.sortedSetCard('plugins:active');
+			await db.sortedSetAdd('plugins:active', count, id);
 		}
 		meta.reloadRequired = true;
 		const hook = isActive ? 'deactivate' : 'activate';
@@ -151,14 +151,14 @@ export default  function (Plugins) {
 		if (nconf.get('plugins:active')) {
 			return nconf.get('plugins:active').includes(id);
 		}
-		return await db.default.isSortedSetMember('plugins:active', id);
+		return await db.isSortedSetMember('plugins:active', id);
 	};
 
 	Plugins.getActive = async function () {
 		if (nconf.get('plugins:active')) {
 			return nconf.get('plugins:active');
 		}
-		return await db.default.getSortedSetRange('plugins:active', 0, -1);
+		return await db.getSortedSetRange('plugins:active', 0, -1);
 	};
 
 	Plugins.autocomplete = async (fragment) => {

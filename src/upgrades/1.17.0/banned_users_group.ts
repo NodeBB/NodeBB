@@ -1,8 +1,7 @@
 'use strict';
 
 const batch = require('../../batch');
-import * as database from '../../database';
-const db = database as any;
+import { primaryDB as db } from '../../database';
 const groups = require('../../groups');
 
 const now = Date.now();

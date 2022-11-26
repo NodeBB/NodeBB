@@ -1,7 +1,6 @@
 'use strict';
 
-import * as database from '../../database';
-const db = database as any;
+import { primaryDB as db } from '../../database';
 import user from '../../user';
 import helpers from '../helpers';
 const accountHelpers = require('./helpers').defualt;

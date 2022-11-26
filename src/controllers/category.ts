@@ -5,15 +5,15 @@ import nconf from 'nconf';
 const validator = require('validator');
 const qs = require('querystring');
 
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 const privileges = require('../privileges');
 import user from '../user';
 const categories = require('../categories');
 import meta from '../meta';
 const pagination = require('../pagination');
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 const utils = require('../utils');
 const translator = require('../translator');
 const analytics = require('../analytics');

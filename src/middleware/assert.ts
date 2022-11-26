@@ -16,7 +16,7 @@ const messaging = require('../messaging');
 const flags = require('../flags');
 const slugify = require('../slugify');
 
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 const controllerHelpers = require('../controllers/helpers');
 
 const Assert  = {} as any;

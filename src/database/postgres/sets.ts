@@ -1,9 +1,10 @@
 'use strict';
 
 const _ = require('lodash');
+import helpers from './helpers';
+
 
 export default  function (module) {
-	const helpers = require('./helpers').defualt;
 
 	module.setAdd = async function (key: string, value) {
 		if (!Array.isArray(value)) {

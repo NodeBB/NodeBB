@@ -1,6 +1,6 @@
 'use strict';
 
-const helpers = require('./helpers').defualt;
+import helpers from './helpers';
 
 const { setupPageRoute } = helpers;
 

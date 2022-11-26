@@ -9,8 +9,8 @@ const _ = require('lodash');
 
 const sleep = util.promisify(setTimeout);
 
-import * as database from './database';
-const db = database as any;
+import { primaryDB as db } from './database';
+
 const utils = require('./utils');
 const plugins = require('./plugins');
 const meta = require('./meta');

@@ -3,8 +3,8 @@
 const async = require('async');
 const _ = require('lodash');
 
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 const plugins = require('../plugins');
 const privileges = require('../privileges');

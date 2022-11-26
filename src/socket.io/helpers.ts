@@ -2,8 +2,8 @@
 
 const _ = require('lodash');
 
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 const websockets = require('./index');
 import user from '../user';

@@ -3,8 +3,8 @@
 const validator = require('validator');
 const diff = require('diff');
 
-import * as database from '../database';
-const db = database as any;
+import { primaryDB as db } from '../database';
+
 
 import meta from '../meta';
 const plugins = require('../plugins');

@@ -3,8 +3,7 @@
 import path from 'path';const fs = require('fs').promises;
 import nconf from 'nconf';
 
-import * as database from '../../database';
-const db = database as any;
+import { primaryDB as db } from '../../database';
 const batch = require('../../batch');
 const file = require('../../file');
 

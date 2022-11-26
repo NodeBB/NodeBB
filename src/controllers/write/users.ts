@@ -5,8 +5,7 @@ import nconf from 'nconf';
 import path from 'path';const crypto = require('crypto');
 const fs = require('fs').promises;
 
-import * as database from '../../database';
-const db = database as any;
+import { primaryDB as db } from '../../database';
 const api = require('../../api');
 const groups = require('../../groups');
 import meta from '../../meta';

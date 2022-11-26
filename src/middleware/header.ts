@@ -17,9 +17,7 @@ const translator = require('../translator');
 const privileges = require('../privileges');
 const languages = require('../languages');
 const utils = require('../utils');
-const helpers = require('./helpers').default;
-
-console.log('HELPERS,,,', helpers);
+import helpers from './helpers';
 
 const controllers = {
 	api: require('../controllers/api'),
@@ -29,6 +27,9 @@ const controllers = {
 const middleware  = {} as any;
 
 const relative_path = nconf.get('relative_path');
+
+
+console.log('HELPERS.TRY', helpers.try);
 
 middleware.buildHeader = helpers.try(async (req, res, next) => {
 	res.locals.renderHeader = true;
