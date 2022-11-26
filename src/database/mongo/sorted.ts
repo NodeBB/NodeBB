@@ -165,6 +165,7 @@ export default  function (module) {
 		if (!key) {
 			return 0;
 		}
+		console.log('MODULE CLIENT', module.client);
 		const count = await module.client.collection('objects').countDocuments({ _key: key });
 	module.sortedSetsCard = async function (keys: string[]) {
 		if (!Array.isArray(keys) || !keys.length) {

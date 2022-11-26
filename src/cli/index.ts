@@ -45,6 +45,7 @@ try {
 	checkVersion('lodash');
 	checkVersion('lru-cache');
 } catch (e: any) {
+	console.log('ERROR', e);
 	if (['ENOENT', 'DEP_WRONG_VERSION', 'MODULE_NOT_FOUND'].includes(e.code)) {
 		console.warn('Dependencies outdated or not yet installed.');
 		console.log('Installing them now...\n');

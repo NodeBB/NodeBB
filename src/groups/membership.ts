@@ -5,11 +5,11 @@ const _ = require('lodash');
 import db from '../database';
 import user from '../user';
 const cache = require('../cache');
-import primaryDB from '../database';
+import db from '../database';
 
 export default  function (Groups) {
 	Groups.getMembers = async function (groupName, start, stop) {
-		return await primaryDB.getSortedSetRevRange(`group:${groupName}:members`, start, stop);
+		return await db.getSortedSetRevRange(`group:${groupName}:members`, start, stop);
 	};
 
 	Groups.getMemberUsers = async function (groupNames, start, stop) {
@@ -21,7 +21,7 @@ export default  function (Groups) {
 	};
 
 	Groups.getMembersOfGroups = async function (groupNames) {
-		return await primaryDB.getSortedSetsMembers(groupNames.map(name => `group:${name}:members`));
+		return await db.getSortedSetsMembers(groupNames.map(name => `group:${name}:members`));
 	};
 
 	Groups.isMember = async function (uid, groupName) {
@@ -34,15 +34,7 @@ export default  function (Groups) {
 		if (isMember !== undefined) {
 			return isMember;
 		}
-<<<<<<< HEAD
-		isMember = await primaryDB.isSortedSetMember(`group:${groupName}:members`, uid);
-=======
-<<<<<<< HEAD
 		isMember = await db.isSortedSetMember(`group:${groupName}:members`, uid);
-=======
-		isMember = await primaryDB.isSortedSetMember(`group:${groupName}:members`, uid);
->>>>>>> 960a321fe (fixing runtime errors wip)
->>>>>>> 30e0c6374 (feat(typescript): typescript migration process)
 		Groups.cache.set(cacheKey, isMember);
 		return isMember;
 	};
@@ -63,15 +55,8 @@ export default  function (Groups) {
 			return uids.map(uid => cachedData[`${uid}:${groupName}`]);
 		}
 
-<<<<<<< HEAD
-		const isMembers = await primaryDB.isSortedSetMembers(`group:${groupName}:members`, nonCachedUids);
-=======
-<<<<<<< HEAD
+
 		const isMembers = await db.isSortedSetMembers(`group:${groupName}:members`, nonCachedUids);
-=======
-		const isMembers = await primaryDB.isSortedSetMembers(`group:${groupName}:members`, nonCachedUids);
->>>>>>> 960a321fe (fixing runtime errors wip)
->>>>>>> 30e0c6374 (feat(typescript): typescript migration process)
 		nonCachedUids.forEach((uid, index) => {
 			cachedData[`${uid}:${groupName}`] = isMembers[index];
 			Groups.cache.set(`${uid}:${groupName}`, isMembers[index]);
@@ -90,15 +75,7 @@ export default  function (Groups) {
 			return groups.map(groupName => cachedData[`${uid}:${groupName}`]);
 		}
 		const nonCachedGroupsMemberSets = nonCachedGroups.map(groupName => `group:${groupName}:members`);
-<<<<<<< HEAD
-		const isMembers = await primaryDB.isMemberOfSortedSets(nonCachedGroupsMemberSets, uid);
-=======
-<<<<<<< HEAD
 		const isMembers = await db.isMemberOfSortedSets(nonCachedGroupsMemberSets, uid);
-=======
-		const isMembers = await primaryDB.isMemberOfSortedSets(nonCachedGroupsMemberSets, uid);
->>>>>>> 960a321fe (fixing runtime errors wip)
->>>>>>> 30e0c6374 (feat(typescript): typescript migration process)
 		nonCachedGroups.forEach((groupName, index) => {
 			cachedData[`${uid}:${groupName}`] = isMembers[index];
 			Groups.cache.set(`${uid}:${groupName}`, isMembers[index]);
@@ -125,15 +102,8 @@ export default  function (Groups) {
 	};
 
 	Groups.getMemberCount = async function (groupName) {
-<<<<<<< HEAD
-		const count = await primaryDB.getObjectField(`group:${groupName}`, 'memberCount');
-=======
-<<<<<<< HEAD
+
 		const count = await db.getObjectField(`group:${groupName}`, 'memberCount');
-=======
-		const count = await primaryDB.getObjectField(`group:${groupName}`, 'memberCount');
->>>>>>> 960a321fe (fixing runtime errors wip)
->>>>>>> 30e0c6374 (feat(typescript): typescript migration process)
 		return parseInt(count, 10);
 	};
 
@@ -197,15 +167,7 @@ export default  function (Groups) {
 		if (!nonCachedKeys.length) {
 			return isArray ? keys.map(groupName => cachedData[groupName]) : cachedData[keys[0]];
 		}
-<<<<<<< HEAD
-		const groupMembers = await primaryDB.getSortedSetsMembers(nonCachedKeys.map(name => `group:${name}:members`));
-=======
-<<<<<<< HEAD
 		const groupMembers = await db.getSortedSetsMembers(nonCachedKeys.map(name => `group:${name}:members`));
-=======
-		const groupMembers = await primaryDB.getSortedSetsMembers(nonCachedKeys.map(name => `group:${name}:members`));
->>>>>>> 960a321fe (fixing runtime errors wip)
->>>>>>> 30e0c6374 (feat(typescript): typescript migration process)
 
 		nonCachedKeys.forEach((groupName, index) => {
 			cachedData[groupName] = groupMembers[index];

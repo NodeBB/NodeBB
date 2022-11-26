@@ -1,43 +1,27 @@
 'use strict';
 
 const os = require('os');
-<<<<<<< HEAD
-<<<<<<<< HEAD:src/socket.io/index.ts
+
 import nconf from 'nconf';
-========
-const nconf = require('nconf');
->>>>>>>> 30e0c6374 (feat(typescript): typescript migration process):src/socket.io/index.js
-=======
-import nconf from 'nconf';
->>>>>>> 30e0c6374 (feat(typescript): typescript migration process)
 import winston from 'winston';
 const util = require('util');
 const validator = require('validator');
 const cookieParser = require('cookie-parser')(nconf.get('secret'));
-
-<<<<<<< HEAD
-<<<<<<<< HEAD:src/socket.io/index.ts
-import { primaryDB as db } from '../database';
+import db from '../database';
 
 
 import user from '../user';
 import meta from '../meta';
-========
-const db = require('../database');
+import db from '../database';
 import user from '../user';
->>>>>>>> 30e0c6374 (feat(typescript): typescript migration process):src/socket.io/index.js
-const logger = require('../logger');
-const plugins = require('../plugins');
+import logger from '../logger';
+import plugins from '../plugins';
 const ratelimit = require('../middleware/ratelimit');
 
 const Namespaces = Object.create(null, {});
 
-<<<<<<<< HEAD:src/socket.io/index.ts
 const Sockets  = {} as any;
-========
-const Sockets = {};
->>>>>>>> 30e0c6374 (feat(typescript): typescript migration process):src/socket.io/index.js
-=======
+
 import db from '../database';
 import user from '../user';
 import meta from '../meta';
@@ -48,7 +32,63 @@ const ratelimit = require('../middleware/ratelimit');
 const Namespaces  = {} as any;
 
 const Sockets  = {} as any;
->>>>>>> 30e0c6374 (feat(typescript): typescript migration process)
+
+const cookieParserAsync = util.promisify((req, callback) => cookieParser(req, {}, err => callback(err)));
+
+
+async function authorize(socket, callback?) {
+	const { request } = socket;
+
+	if (!request) {
+		return callback(new Error('[[error:not-authorized]]'));
+	}
+
+	await cookieParserAsync(request);
+
+	const { sessionId } = await plugins.hooks.fire('filter:sockets.sessionId', {
+		sessionId: request.signedCookies ? request.signedCookies[nconf.get('sessionKey')] : null,
+		request: request,
+	});
+
+	const sessionData = await getSessionAsync(sessionId);
+
+	if (sessionData && sessionData.passport && sessionData.passport.user) {
+		request.session = sessionData;
+		socket.uid = parseInt(sessionData.passport.user, 10);
+	} else {
+		socket.uid = 0;
+	}
+	request.uid = socket.uid;
+	callback();
+}
+
+const getSessionAsync = util.promisify(
+	(sid, callback) => db.sessionStore.get(sid, (err, sessionObj) => callback(err, sessionObj || null))
+);
+
+async function validateSession(socket, errorMsg) {
+	const req = socket.request;
+	const { sessionId } = await plugins.hooks.fire('filter:sockets.sessionId', {
+		sessionId: req.signedCookies ? req.signedCookies[nconf.get('sessionKey')] : null,
+		request: req,
+	});
+
+	if (!sessionId) {
+		return;
+	}
+
+	const sessionData = await getSessionAsync(sessionId);
+
+	if (!sessionData) {
+		throw new Error(errorMsg);
+	}
+
+	await plugins.hooks.fire('static:sockets.validateSession', {
+		req: req,
+		socket: socket,
+		session: sessionData,
+	});
+}
 
 Sockets.init = async function (server) {
 	const SocketIO = require('socket.io').Server;
@@ -196,15 +236,7 @@ async function onMessage(socket, payload) {
 				callback(err ? { message: err.message } : null, result);
 			});
 		}
-<<<<<<< HEAD
-<<<<<<<< HEAD:src/socket.io/index.ts
 	} catch (err: any) {
-========
-	} catch (err:any) {
->>>>>>>> 30e0c6374 (feat(typescript): typescript migration process):src/socket.io/index.js
-=======
-	} catch (err: any) {
->>>>>>> 30e0c6374 (feat(typescript): typescript migration process)
 		winston.error(`${eventName}\n${err.stack ? err.stack : err.message}`);
 		callback({ message: err.message });
 	}
@@ -223,83 +255,15 @@ function requireModules() {
 }
 
 async function checkMaintenance(socket) {
-<<<<<<< HEAD
-<<<<<<<< HEAD:src/socket.io/index.ts
-========
-	import meta from '../meta';
->>>>>>>> 30e0c6374 (feat(typescript): typescript migration process):src/socket.io/index.js
+
 	if (!meta.config.maintenanceMode) {
-=======
-	if (!meta.configs.maintenanceMode) {
->>>>>>> 30e0c6374 (feat(typescript): typescript migration process)
-		return;
-	}
 	const isAdmin = await user.isAdministrator(socket.uid);
 	if (isAdmin) {
 		return;
 	}
 	const validator = require('validator');
-<<<<<<< HEAD
+
 	throw new Error(`[[pages:maintenance.text, ${validator.escape(String(meta.config.title || 'NodeBB'))}]]`);
-=======
-	throw new Error(`[[pages:maintenance.text, ${validator.escape(String(meta.configs.title || 'NodeBB'))}]]`);
->>>>>>> 30e0c6374 (feat(typescript): typescript migration process)
-}
-
-const getSessionAsync = util.promisify(
-	(sid, callback) => db.sessionStore.get(sid, (err, sessionObj) => callback(err, sessionObj || null))
-);
-
-async function validateSession(socket, errorMsg) {
-	const req = socket.request;
-	const { sessionId } = await plugins.hooks.fire('filter:sockets.sessionId', {
-		sessionId: req.signedCookies ? req.signedCookies[nconf.get('sessionKey')] : null,
-		request: req,
-	});
-
-	if (!sessionId) {
-		return;
-	}
-
-	const sessionData = await getSessionAsync(sessionId);
-
-	if (!sessionData) {
-		throw new Error(errorMsg);
-	}
-
-	await plugins.hooks.fire('static:sockets.validateSession', {
-		req: req,
-		socket: socket,
-		session: sessionData,
-	});
-}
-
-const cookieParserAsync = util.promisify((req, callback) => cookieParser(req, {}, err => callback(err)));
-
-async function authorize(socket, callback?) {
-	const { request } = socket;
-
-	if (!request) {
-		return callback(new Error('[[error:not-authorized]]'));
-	}
-
-	await cookieParserAsync(request);
-
-	const { sessionId } = await plugins.hooks.fire('filter:sockets.sessionId', {
-		sessionId: request.signedCookies ? request.signedCookies[nconf.get('sessionKey')] : null,
-		request: request,
-	});
-
-	const sessionData = await getSessionAsync(sessionId);
-
-	if (sessionData && sessionData.passport && sessionData.passport.user) {
-		request.session = sessionData;
-		socket.uid = parseInt(sessionData.passport.user, 10);
-	} else {
-		socket.uid = 0;
-	}
-	request.uid = socket.uid;
-	callback();
 }
 
 Sockets.in = function (room) {

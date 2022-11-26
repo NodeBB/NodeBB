@@ -207,6 +207,7 @@ async function completeConfigSetup(config) {
 	}
 	nconf.overrides(config);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 	const { default: { default: db } } = require('./database');
@@ -214,6 +215,8 @@ async function completeConfigSetup(config) {
 =======
 >>>>>>> 960a321fe (fixing runtime errors wip)
 >>>>>>> 30e0c6374 (feat(typescript): typescript migration process)
+=======
+>>>>>>> c67c86115 (fixing runtime errors wip)
 	await db.init();
 	if (db.hasOwnProperty('createIndices')) {
 		await db.createIndices();
@@ -468,12 +471,15 @@ async function giveGlobalPrivileges() {
 async function createCategories() {
 	const Categories = require('./categories');
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 	const db = require('./database');
 =======
 >>>>>>> 960a321fe (fixing runtime errors wip)
 >>>>>>> 30e0c6374 (feat(typescript): typescript migration process)
+=======
+>>>>>>> c67c86115 (fixing runtime errors wip)
 	const cids = await db.getSortedSetRange('categories:cid', 0, -1);
 	if (Array.isArray(cids) && cids.length) {
 		console.log(`Categories OK. Found ${cids.length} categories.`);
