@@ -53,6 +53,7 @@ define('forum/account/blocks', [
 		$.get(config.relative_path + '/api/' + ajaxify.currentPage)
 			.done(function (payload) {
 				app.parseAndTranslate('account/blocks', 'users', payload, function (html) {
+					html.find('.timeago').timeago();
 					$('#users-container').html(html);
 					$('#users-container').siblings('div.alert')[html.length ? 'hide' : 'show']();
 				});

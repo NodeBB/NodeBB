@@ -1,0 +1,192 @@
+
+.pointer {
+	@include pointer;
+}
+
+.topic-watch-dropdown {
+	.help-text {
+		margin-left: 20px;
+	}
+}
+
+[component="category-selector"], .category-dropdown-container {
+	#category-dropdown-check:checked + .dropdown-menu {
+		display: block;
+	}
+}
+
+.category-dropdown-container.right .category-dropdown-menu {
+	--bs-position: end;
+}
+
+.category-dropdown-menu {
+	max-height: 500px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+.moderator-tools .dropdown-menu {
+	min-height: 200px;
+}
+
+.bootstrap-tagsinput {
+	@extend .form-control;
+	box-shadow: none;
+	input {
+		&::placeholder{
+			color: $input-placeholder-color;
+		}
+		color: $input-color;
+	}
+}
+
+.category-list {
+	padding: 0;
+
+	li {
+		@include inline-block;
+		@include pointer;
+		padding: 0.5em;
+		margin: 0.25em;
+		@include border-radius(3px);
+
+		&.disabled {
+			background-color: $gray-600!important;
+			opacity: 0.5;
+		}
+	}
+}
+
+.user-list {
+	padding-left: 2rem;
+	padding-top: 1rem;
+
+	li {
+		@include pointer;
+		display: inline-block;
+		list-style-type: none;
+		padding: 0.5rem 1rem;
+
+		&:hover {
+			background: $gray-300;
+		}
+
+		.avatar  {
+			float: left;
+			margin-right: 1rem;
+		}
+
+		span {
+			vertical-align: middle;
+			display: inline-block;
+		}
+	}
+}
+
+@mixin user-icon() {
+	display: inline-block;
+	text-align: center;
+	color: $white;
+	font-weight: normal;
+	vertical-align: middle;
+	overflow: hidden;	/* stops alt text from overflowing past boundaries if image does not load */
+	white-space: nowrap;
+
+	&:before {
+		content: '';
+		display: inline-block;
+		height: 100%;
+		vertical-align: middle;
+	}
+}
+
+.avatar {
+	/* Contains the user icon class as a mixin, so there's no need to include that in the template */
+	@include user-icon;
+
+	$size: var(--avatar-size);
+	@include user-icon-style($size, calc($size * 0.6));
+
+	&.avatar-rounded {
+		border-radius: 50%;
+	}
+
+	&+.avatar {
+		display: none;
+	}
+}
+
+#crop-picture-modal {
+	#cropped-image {
+		max-width: 100%;
+	}
+
+	.cropper-container.cropper-bg {
+		max-width: 100%;
+	}
+}
+
+blockquote {
+	font-style: italic;
+	border-left: 4px solid $primary;
+	padding: 1rem;
+	p:last-child {
+		margin-bottom: 0;
+	}
+}
+
+.necro-post {
+	text-align: center;
+	text-transform: uppercase;
+}
+
+.timeline-event {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	.timeline-badge {
+		padding: 1rem;
+	}
+}
+
+.imagedrop {
+	position: absolute;
+	text-align: center;
+	font-size: 24px;
+	color: $gray-600;
+	width: 100%;
+	display: none;
+}
+
+.hover-parent {
+	.hover-d-block, .hover-d-flex {
+		display: none!important;
+	}
+	&:hover {
+		.hover-d-block {
+			display: block!important;
+		}
+		.hover-d-flex {
+			display: flex!important;
+		}
+	}
+}
+
+.border-muted {
+	border-color: $text-muted!important;
+}
+
+// some classes that are used commonly in themes from bs3
+.hidden, .hide {
+    display: none!important;
+}
+
+// for backwards compat, replace with float-start, float-end respectively
+.pull-left {
+	float: left!important;
+}
+
+.pull-right {
+	float: right!important;
+}

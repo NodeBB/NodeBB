@@ -78,8 +78,9 @@ define('forum/topic', [
 				require(['search'], function (search) {
 					mousetrap.bind(['command+f', 'ctrl+f'], function (e) {
 						e.preventDefault();
-						$('#search-fields input').val('in:topic-' + ajaxify.data.tid + ' ');
-						search.showAndFocusInput();
+						const form = $('[component="navbar"] [component="search/form"]');
+						form.find('[component="search/fields"] input[name="query"]').val('in:topic-' + ajaxify.data.tid + ' ');
+						search.showAndFocusInput(form);
 					});
 
 					hooks.onPage('action:ajaxify.cleanup', () => {
@@ -88,7 +89,11 @@ define('forum/topic', [
 				});
 			}
 
-			mousetrap.bind('j', () => {
+			mousetrap.bind('j', (e) => {
+				if (e.target.classList.contains('mousetrap')) {
+					return;
+				}
+
 				const index = navigator.getIndex();
 				const count = navigator.getCount();
 				if (index === count) {
@@ -98,7 +103,11 @@ define('forum/topic', [
 				navigator.scrollToIndex(index, true, 0);
 			});
 
-			mousetrap.bind('k', () => {
+			mousetrap.bind('k', (e) => {
+				if (e.target.classList.contains('mousetrap')) {
+					return;
+				}
+
 				const index = navigator.getIndex();
 				if (index === 1) {
 					return;

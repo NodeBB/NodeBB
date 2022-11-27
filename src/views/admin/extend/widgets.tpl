@@ -1,28 +1,25 @@
 <div id="widgets" class="row">
 	<div class="col-md-8" id="active-widgets">
-		<ul class="nav nav-pills">
-
-			<li role="presentation" class="dropdown">
-				<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-				<span class="selected-template">{templates.0.template}</span> <span class="caret"></span>
-				</a>
-				<ul class="dropdown-menu">
-					{{{ each templates }}}
-					<li><a href="#" data-template="{../template}" data-toggle="pill">{../template}</a></li>
-					{{{ end }}}
-				</ul>
-			</li>
-		</ul>
+		<div class="dropdown mb-3">
+			<button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+			<span class="selected-template">{templates.0.template}</span> <span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu">
+				{{{ each templates }}}
+				<li><a class="dropdown-item" href="#" data-template="{../template}" data-toggle="pill">{../template}</a></li>
+				{{{ end }}}
+			</ul>
+		</div>
 
 		<div class="row">
-			<div class="col-xs-12">
+			<div class="col-12">
 				<div class="tab-content">
 				{{{ each templates }}}
 					<div class="tab-pane <!-- IF @first -->active<!-- ENDIF @first -->" data-template="{../template}">
 					{{{ each templates.areas }}}
 						<div class="area" data-template="{templates.template}" data-location="{../location}">
 							<h4>{../name} <small>{templates.template} / {../location}</small></h4>
-							<div class="well widget-area">
+							<div class="card card-body text-bg-light widget-area">
 
 							</div>
 						</div>
@@ -35,9 +32,9 @@
 	</div>
 
 	<div class="col-md-4">
-		<div class="panel panel-default">
-			<div class="panel-heading">[[admin/extend/widgets:available]]</div>
-			<div class="panel-body">
+		<div class="card mb-3">
+			<div class="card-header">[[admin/extend/widgets:available]]</div>
+			<div class="card-body">
 				<div class="available-widgets">
 					<p>[[admin/extend/widgets:explanation]]</p>
 					<!-- IF !availableWidgets.length -->
@@ -52,13 +49,13 @@
 					</p>
 					<div class="row">
 						<!-- BEGIN availableWidgets -->
-						<div class="col-xs-12">
-							<div data-widget="{availableWidgets.widget}" class="panel widget-panel panel-default pointer hide">
-								<div class="panel-heading">
+						<div class="col-12">
+							<div data-widget="{availableWidgets.widget}" class="card widget-panel  pointer hide">
+								<div class="card-header">
 									<strong>{availableWidgets.name}</strong>
 									<small><br />{availableWidgets.description}</small>
 								</div>
-								<div class="panel-body hidden">
+								<div class="card-body hidden">
 									<form>
 										{availableWidgets.content}
 									</form>
@@ -70,13 +67,13 @@
 
 					<div class="btn-group" component="clone">
 						<button type="button" class="btn btn-primary" component="clone/button">[[admin/extend/widgets:clone-from]] ...</button>
-						<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+						<button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
 							<span class="caret"></span>
 						</button>
-						<ul class="dropdown-menu pull-right">
+						<ul class="dropdown-menu dropdown-menu-end">
 							<!-- BEGIN templates -->
 							<!-- IF !@first -->
-							<li><a href="#">{templates.template}</a></li>
+							<li><a class="dropdown-item" href="#">{templates.template}</a></li>
 							<!-- END -->
 							<!-- END templates -->
 						</ul>
@@ -84,50 +81,51 @@
 				</div>
 			</div>
 		</div>
-		<div class="panel panel-default">
-			<div class="panel-heading">[[admin/extend/widgets:containers.available]]</div>
-			<div class="panel-body">
+
+		<div class="card">
+			<div class="card-header">[[admin/extend/widgets:containers.available]]</div>
+			<div class="card-body">
 				<p>[[admin/extend/widgets:containers.explanation]]</p>
 				<div class="available-containers">
 					<div class="containers">
 						<div class="pointer" style="padding: 20px; border: 1px dotted #dedede; margin-bottom: 20px;" data-container-html=" ">
 							[[admin/extend/widgets:containers.none]]
 						</div>
-						<div class="well pointer" data-container-html='<div class="well">\{{body}}</div>'>
+						<div class="card card-header p-3 rounded-0 border-0 shadow-none mb-3 pointer" data-container-html='<div class="card card-header p-3 rounded-0 border-0 shadow-none mb-3">\{{body}}</div>'>
 							[[admin/extend/widgets:container.well]]
 						</div>
-						<div class="jumbotron pointer" data-container-html='<div class="jumbotron">\{{body}}</div>'>
+						<div class="card card-header rounded-0 border-0 shadow-none p-5 mb-3 pointer" data-container-html='<div class="card card-header rounded-0 border-0 shadow-none p-5 mb-3">\{{body}}</div>'>
 							[[admin/extend/widgets:container.jumbotron]]
 						</div>
-						<div class="panel" data-container-html='<div class="panel panel-default"><div class="panel-body">\{{body}}</div></div>'>
-							<div class="panel-body pointer">
-								[[admin/extend/widgets:container.panel]]
+						<div class="card mb-3" data-container-html='<div class="card"><div class="card-body">\{{body}}</div></div>'>
+							<div class="card-body pointer">
+								[[admin/extend/widgets:container.card]]
 							</div>
 						</div>
-						<div class="panel panel-default pointer" data-container-html='<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">\{{title}}</h3></div><div class="panel-body">\{{body}}</div></div>'>
-							<div class="panel-heading">
-								[[admin/extend/widgets:container.panel-header]]
-								<div class="pull-right color-selector">
-									<button data-class="panel-default" class="btn btn-xs">&nbsp;&nbsp;</button>
-									<button data-class="panel-primary" class="btn btn-xs btn-primary">&nbsp;&nbsp;</button>
-									<button data-class="panel-success" class="btn btn-xs btn-success">&nbsp;&nbsp;</button>
-									<button data-class="panel-info" class="btn btn-xs btn-info">&nbsp;&nbsp;</button>
-									<button data-class="panel-warning" class="btn btn-xs btn-warning">&nbsp;&nbsp;</button>
-									<button data-class="panel-danger" class="btn btn-xs btn-danger">&nbsp;&nbsp;</button>
+						<div class="card mb-3 pointer" data-container-html='<div class="card"><h5 class="card-header">\{{title}}</h5><div class="card-body">\{{body}}</div></div>'>
+							<div class="card-header">
+								[[admin/extend/widgets:container.card-header]]
+								<div class="float-end color-selector">
+									<button data-class="text-bg-primary" class="btn btn-sm btn-primary">&nbsp;&nbsp;</button>
+									<button data-class="" class="btn btn-sm btn-secondary">&nbsp;&nbsp;</button>
+									<button data-class="text-bg-success" class="btn btn-sm btn-success">&nbsp;&nbsp;</button>
+									<button data-class="text-bg-info" class="btn btn-sm btn-info">&nbsp;&nbsp;</button>
+									<button data-class="text-bg-warning" class="btn btn-sm btn-warning">&nbsp;&nbsp;</button>
+									<button data-class="text-bg-danger" class="btn btn-sm btn-danger">&nbsp;&nbsp;</button>
 								</div>
 							</div>
-							<div class="panel-body">
-								[[admin/extend/widgets:container.panel-body]]
+							<div class="card-body">
+								[[admin/extend/widgets:container.card-body]]
 							</div>
 						</div>
 
 						<div class="alert alert-info pointer" data-container-html='<div class="alert alert-info">\{{body}}</div>'>
 							[[admin/extend/widgets:container.alert]]
-							<div class="pull-right color-selector">
-								<button data-class="alert-success" class="btn btn-xs btn-success">&nbsp;&nbsp;</button>
-								<button data-class="alert-info" class="btn btn-xs btn-info">&nbsp;&nbsp;</button>
-								<button data-class="alert-warning" class="btn btn-xs btn-warning">&nbsp;&nbsp;</button>
-								<button data-class="alert-danger" class="btn btn-xs btn-danger">&nbsp;&nbsp;</button>
+							<div class="float-end color-selector">
+								<button data-class="alert-success" class="btn btn-sm btn-success">&nbsp;&nbsp;</button>
+								<button data-class="alert-info" class="btn btn-sm btn-info">&nbsp;&nbsp;</button>
+								<button data-class="alert-warning" class="btn btn-sm btn-warning">&nbsp;&nbsp;</button>
+								<button data-class="alert-danger" class="btn btn-sm btn-danger">&nbsp;&nbsp;</button>
 							</div>
 						</div>
 					</div>
@@ -137,6 +135,4 @@
 	</div>
 </div>
 
-<button id="save" class="floating-button mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
-	<i class="material-icons">save</i>
-</button>
+<!-- IMPORT admin/partials/save_button.tpl -->

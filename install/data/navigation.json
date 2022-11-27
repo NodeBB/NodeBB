@@ -4,7 +4,7 @@
 		"title": "[[global:header.categories]]",
 		"enabled": true,
 		"iconClass": "fa-list",
-		"textClass": "visible-xs-inline",
+		"textClass": "d-lg-none",
 		"text": "[[global:header.categories]]"
 	},
 	{
@@ -13,7 +13,7 @@
 		"title": "[[global:header.unread]]",
 		"enabled": true,
 		"iconClass": "fa-inbox",
-		"textClass": "visible-xs-inline",
+		"textClass": "d-lg-none",
 		"text": "[[global:header.unread]]",
 		"groups": ["registered-users"]
 	},
@@ -22,7 +22,7 @@
 		"title": "[[global:header.recent]]",
 		"enabled": true,
 		"iconClass": "fa-clock-o",
-		"textClass": "visible-xs-inline",
+		"textClass": "d-lg-none",
 		"text": "[[global:header.recent]]"
 	},
 	{
@@ -30,7 +30,7 @@
 		"title": "[[global:header.tags]]",
 		"enabled": true,
 		"iconClass": "fa-tags",
-		"textClass": "visible-xs-inline",
+		"textClass": "d-lg-none",
 		"text": "[[global:header.tags]]"
 	},
 	{
@@ -38,7 +38,7 @@
 		"title": "[[global:header.popular]]",
 		"enabled": true,
 		"iconClass": "fa-fire",
-		"textClass": "visible-xs-inline",
+		"textClass": "d-lg-none",
 		"text": "[[global:header.popular]]"
 	},
 	{
@@ -46,7 +46,7 @@
 		"title": "[[global:header.users]]",
 		"enabled": true,
 		"iconClass": "fa-user",
-		"textClass": "visible-xs-inline",
+		"textClass": "d-lg-none",
 		"text": "[[global:header.users]]"
 	},
 	{
@@ -54,7 +54,7 @@
 		"title": "[[global:header.groups]]",
 		"enabled": true,
 		"iconClass": "fa-group",
-		"textClass": "visible-xs-inline",
+		"textClass": "d-lg-none",
 		"text": "[[global:header.groups]]"
 	},
 	{
@@ -62,7 +62,7 @@
 		"title": "[[global:header.admin]]",
 		"enabled": true,
 		"iconClass": "fa-cogs",
-		"textClass": "visible-xs-inline",
+		"textClass": "d-lg-none",
 		"text": "[[global:header.admin]]",
 		"groups": ["administrators"]
 	}

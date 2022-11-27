@@ -198,7 +198,7 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 			$(window).off('mousemove', mousemove);
 			if (mouseDragging) {
 				navigator.scrollToIndex(index - 1, true, 0);
-				paginationBlockEl.find('[data-toggle="dropdown"]').trigger('click');
+				paginationBlockEl.find('[data-bs-toggle="dropdown"]').trigger('click');
 			}
 			clearRenderInterval();
 			mouseDragging = false;
@@ -269,7 +269,7 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 			if (isNavigating) {
 				navigator.scrollToIndex(index - 1, true, 0);
 				isNavigating = false;
-				paginationBlockEl.find('[data-toggle="dropdown"]').trigger('click');
+				paginationBlockEl.find('[data-bs-toggle="dropdown"]').trigger('click');
 			}
 		});
 	}
@@ -373,12 +373,7 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 		}
 	};
 
-	navigator.update = function (threshold) {
-		/*
-			The "threshold" is defined as the distance from the top of the page to
-			a spot where a user is expecting to begin reading.
-		*/
-		threshold = typeof threshold === 'number' ? threshold : undefined;
+	navigator.update = function () {
 		let newIndex = index;
 		const els = $(navigator.selector);
 		if (els.length) {
@@ -415,21 +410,8 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 			newIndex = count;
 		}
 
-		// If a threshold is undefined, try to determine one based on new index
-		if (threshold === undefined && ajaxify.data.template.topic) {
-			if (atTop) {
-				threshold = 0;
-			} else {
-				const anchorEl = components.get('post/anchor', index - 1);
-				if (anchorEl.length) {
-					const anchorRect = anchorEl.get(0).getBoundingClientRect();
-					threshold = anchorRect.top;
-				}
-			}
-		}
-
 		if (typeof navigator.callback === 'function') {
-			navigator.callback(newIndex, count, threshold);
+			navigator.callback(newIndex, count);
 		}
 
 		if (newIndex !== index) {
@@ -445,6 +427,9 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 
 	navigator.setIndex = (newIndex) => {
 		index = newIndex + 1;
+		if (typeof navigator.callback === 'function') {
+			navigator.callback(index, count);
+		}
 		navigator.updateTextAndProgressBar();
 		setThumbToIndex(index);
 	};

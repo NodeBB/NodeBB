@@ -33,20 +33,21 @@ utils.addCommasToNumbers = function (elements) {
 
 utils.findBootstrapEnvironment = function () {
 	// http://stackoverflow.com/questions/14441456/how-to-detect-which-device-view-youre-on-using-twitter-bootstrap-api
-	const envs = ['xs', 'sm', 'md', 'lg'];
-	const $el = $('<div>');
-
-	$el.appendTo($('body'));
-
+	const envs = ['xs', 'sm', 'md', 'lg', 'xl', 'xxl'];
+	const el = document.createElement('div');
+	document.body.appendChild(el);
+	let curEnv = envs[0];
 	for (let i = envs.length - 1; i >= 0; i -= 1) {
 		const env = envs[i];
-
-		$el.addClass('hidden-' + env);
-		if ($el.is(':hidden')) {
-			$el.remove();
-			return env;
+		el.classList.add(`d-${env}-none`);
+		if (window.getComputedStyle(el).display === 'none') {
+			curEnv = env;
+			break;
 		}
 	}
+
+	document.body.removeChild(el);
+	return curEnv;
 };
 
 utils.isMobile = function () {

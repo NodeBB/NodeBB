@@ -7,7 +7,7 @@ define('forum/post-queue', [
 	const PostQueue = {};
 
 	PostQueue.init = function () {
-		$('[data-toggle="tooltip"]').tooltip();
+		$('[data-bs-toggle="tooltip"]').tooltip();
 
 		categoryFilter.init($('[component="category/dropdown"]'), {
 			privilege: 'moderate',
@@ -101,7 +101,7 @@ define('forum/post-queue', [
 			return false;
 		});
 
-		$('[component="post/content"] img:not(.not-responsive)').addClass('img-responsive');
+		$('[component="post/content"] img:not(.not-responsive)').addClass('img-fluid');
 	};
 
 	function confirmReject(msg) {

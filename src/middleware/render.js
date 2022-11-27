@@ -102,7 +102,7 @@ module.exports = function (middleware) {
 		next();
 	};
 
-	async function renderContent(render, tpl, req, res, options) {
+	function renderContent(render, tpl, req, res, options) {
 		return new Promise((resolve, reject) => {
 			render.call(res, tpl, options, async (err, str) => {
 				if (err) reject(err);

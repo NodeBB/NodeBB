@@ -195,6 +195,7 @@ function addCoreRoutes(app, router, middleware, mounts) {
 	// Skins
 	meta.css.supportedSkins.forEach((skin) => {
 		app.use(`${relativePath}/assets/client-${skin}.css`, middleware.buildSkinAsset);
+		app.use(`${relativePath}/assets/client-${skin}-rtl.css`, middleware.buildSkinAsset);
 	});
 
 	app.use(controllers['404'].handle404);

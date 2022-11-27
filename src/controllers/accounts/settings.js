@@ -56,26 +56,12 @@ settingsController.get = async function (req, res, next) {
 		{ value: 'biweek', name: '[[user:digest_biweekly]]', selected: userData.settings.dailyDigestFreq === 'biweek' },
 		{ value: 'month', name: '[[user:digest_monthly]]', selected: userData.settings.dailyDigestFreq === 'month' },
 	];
-
 	userData.bootswatchSkinOptions = [
 		{ name: 'Default', value: '' },
-		{ name: 'Cerulean', value: 'cerulean' },
-		{ name: 'Cosmo', value: 'cosmo' },
-		{ name: 'Cyborg', value: 'cyborg' },
-		{ name: 'Darkly', value: 'darkly' },
-		{ name: 'Flatly', value: 'flatly' },
-		{ name: 'Journal', value: 'journal' },
-		{ name: 'Lumen', value: 'lumen' },
-		{ name: 'Paper', value: 'paper' },
-		{ name: 'Readable', value: 'readable' },
-		{ name: 'Sandstone', value: 'sandstone' },
-		{ name: 'Simplex', value: 'simplex' },
-		{ name: 'Slate', value: 'slate' },
-		{ name: 'Spacelab', value: 'spacelab' },
-		{ name: 'Superhero', value: 'superhero' },
-		{ name: 'United', value: 'united' },
-		{ name: 'Yeti', value: 'yeti' },
 	];
+	userData.bootswatchSkinOptions.push(
+		...meta.css.supportedSkins.map(skin => ({ name: _.capitalize(skin), value: skin }))
+	);
 
 	userData.bootswatchSkinOptions.forEach((skin) => {
 		skin.selected = skin.value === userData.settings.bootswatchSkin;

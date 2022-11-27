@@ -121,14 +121,13 @@ async function getBundleScriptList(target) {
 JS.buildBundle = async function (target, fork) {
 	const filename = `scripts-${target}.js`;
 	const files = await getBundleScriptList(target);
-	const minify = false; // webpack will minify in prod
 	const filePath = path.join(__dirname, '../../build/public', filename);
 
 	await minifier.js.bundle({
 		files: files,
 		filename: filename,
 		destPath: filePath,
-	}, minify, fork);
+	}, fork);
 };
 
 JS.killMinifier = function () {

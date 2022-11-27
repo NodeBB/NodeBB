@@ -1,11 +1,11 @@
 <div class="row">
-	<div class="col-xs-12">
-		<div class="registration panel panel-primary">
-			<div class="panel-heading">
+	<div class="col-12">
+		<div class="registration card mb-3">
+			<div class="card-header text-bg-primary">
 				[[admin/manage/registration:queue]]
 			</div>
 			<!-- IF !users.length -->
-			<p class="panel-body">
+			<p class="card-body">
 				[[admin/manage/registration:description, {config.relative_path}/admin/settings/user#user-registration]]
 			</p>
 			<!-- ENDIF !users.length -->
@@ -57,11 +57,7 @@
 								{users.ip}
 								{{{ each users.ipMatch }}}
 								<br>
-								<!-- IF users.ipMatch.picture -->
-								<img src="{users.ipMatch.picture}" class="user-img" alt="" />
-								<!-- ELSE -->
-								<div class="user-img avatar avatar-sm" style="background-color: {users.ipMatch.icon:bgColor};">{users.ipMatch.icon:text}</div>
-								<!-- ENDIF users.ipMatch.picture -->
+								{buildAvatar(users.ipMatch, "24px", true)}
 								<a href="{config.relative_path}/uid/{users.ipMatch.uid}">{users.ipMatch.username}</a>
 								{{{ end }}}
 							</td>
@@ -74,11 +70,11 @@
 							{{{ end }}}
 
 							<td>
-								<div class="btn-group pull-right">
-									<button class="btn btn-success btn-xs" data-action="accept"><i class="fa fa-check"></i></button>
-									<button class="btn btn-danger btn-xs" data-action="delete"><i class="fa fa-times"></i></button>
+								<div class="btn-group float-end">
+									<button class="btn btn-success btn-sm" data-action="accept"><i class="fa fa-check"></i></button>
+									<button class="btn btn-danger btn-sm" data-action="delete"><i class="fa fa-times"></i></button>
 									{{{ each users.customActions }}}
-									<button id="{users.customActions.id}" title="{users.customActions.title}" class="btn btn-xs {users.customActions.class}">
+									<button id="{users.customActions.id}" title="{users.customActions.title}" class="btn btn-sm {users.customActions.class}">
 										<i class="fa {users.customActions.icon}"></i>
 									</button>
 									{{{ end }}}
@@ -93,11 +89,11 @@
 			<!-- IMPORT partials/paginator.tpl -->
 		</div>
 
-		<div class="invitations panel panel-success">
-			<div class="panel-heading">
+		<div class="invitations card">
+			<div class="card-header text-bg-success">
 				[[admin/manage/registration:invitations]]
 			</div>
-			<p class="panel-body">
+			<p class="card-body">
 				[[admin/manage/registration:invitations.description]]
 			</p>
 			<div class="table-responsive">
@@ -117,8 +113,8 @@
 							<td class ="invited-by"><!-- IF @first -->{invites.username}<!-- ENDIF @first --></td>
 							<td>{invites.invitations.email}</td>
 							<td>{invites.invitations.username}
-								<div class="btn-group pull-right">
-									<button class="btn btn-danger btn-xs" data-action="delete"><i class="fa fa-times"></i></button>
+								<div class="btn-group float-end">
+									<button class="btn btn-danger btn-sm" data-action="delete"><i class="fa fa-times"></i></button>
 								</div>
 							</td>
 						</tr>

@@ -10,7 +10,11 @@ define('admin/manage/group', [
 	'api',
 	'bootbox',
 	'alerts',
-], function (memberList, iconSelect, translator, categorySelector, groupSearch, slugify, api, bootbox, alerts) {
+	'admin/settings',
+], function (
+	memberList, iconSelect, translator, categorySelector, groupSearch,
+	slugify, api, bootbox, alerts, settings
+) {
 	const Groups = {};
 
 	Groups.init = function () {
@@ -104,8 +108,7 @@ define('admin/manage/group', [
 				if (groupName !== newName) {
 					ajaxify.go('admin/manage/groups/' + encodeURIComponent(newName), undefined, true);
 				}
-
-				alerts.success('[[admin/manage/groups:edit.save-success]]');
+				settings.toggleSaveSuccess($('#save'));
 			}).catch(alerts.error);
 			return false;
 		});

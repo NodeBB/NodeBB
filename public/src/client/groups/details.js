@@ -67,7 +67,7 @@ define('forum/groups/details', [
 
 		handleMemberInvitations();
 
-		components.get('groups/activity').find('.content img:not(.not-responsive)').addClass('img-responsive');
+		components.get('groups/activity').find('.content img:not(.not-responsive)').addClass('img-fluid');
 
 		detailsPage.on('click', '[data-action]', function () {
 			const btnEl = $(this);
@@ -141,8 +141,8 @@ define('forum/groups/details', [
 		const labelColorValueEl = settingsFormEl.find('[name="labelColor"]');
 		const textColorValueEl = settingsFormEl.find('[name="textColor"]');
 		const iconBtn = settingsFormEl.find('[data-action="icon-select"]');
-		const previewEl = settingsFormEl.find('.label');
-		const previewElText = settingsFormEl.find('.label-text');
+		const previewEl = settingsFormEl.find('.badge');
+		const previewElText = settingsFormEl.find('.badge-text');
 		const previewIcon = previewEl.find('i');
 		const userTitleEl = settingsFormEl.find('[name="userTitle"]');
 		const userTitleEnabledEl = settingsFormEl.find('[name="userTitleEnabled"]');
@@ -165,7 +165,7 @@ define('forum/groups/details', [
 
 		// If the user title changes, update that too
 		userTitleEl.on('keyup', function () {
-			previewElText.translateText((this.value || settingsFormEl.find('#name').val()));
+			previewElText.translateText((userTitleEl.val()));
 		});
 
 		// Disable user title customisation options if the the user title itself is disabled

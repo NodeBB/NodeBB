@@ -1,5 +1,5 @@
 					<li id="{../id}" data-plugin-id="{../id}" class="clearfix">
-						<div class="pull-right">
+						<div class="float-end">
 							<button data-action="toggleActive" class="btn btn-success hidden"><i class="fa fa-power-off"></i> [[admin/extend/plugins:plugin-item.activate]]</button>
 							<button data-action="toggleInstall" data-installed="0" class="btn btn-success"><i class="fa fa-download"></i> [[admin/extend/plugins:plugin-item.install]]</button>
 						</div>

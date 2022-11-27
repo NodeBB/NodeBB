@@ -2,8 +2,8 @@
     "name": "nodebb",
     "license": "GPL-3.0",
     "description": "NodeBB Forum",
-    "version": "2.6.0",
-    "homepage": "http://www.nodebb.org",
+    "version": "3.0.0-alpha.2",
+    "homepage": "https://www.nodebb.org",
     "repository": {
         "type": "git",
         "url": "https://github.com/NodeBB/NodeBB/"
@@ -30,6 +30,7 @@
     "dependencies": {
         "@adactive/bootstrap-tagsinput": "0.8.2",
         "@isaacs/ttlcache": "1.2.1",
+        "@popperjs/core": "2.11.6",
         "ace-builds": "1.13.1",
         "archiver": "5.3.1",
         "async": "3.2.4",
@@ -38,7 +39,8 @@
         "benchpressjs": "2.4.3",
         "body-parser": "1.20.1",
         "bootbox": "6.0.0",
-        "bootstrap": "3.4.1",
+        "bootstrap": "5.2.3",
+        "bootswatch": "5.2.2",
         "chalk": "4.1.2",
         "chart.js": "2.9.4",
         "cli-graph": "3.2.2",
@@ -87,22 +89,20 @@
         "morgan": "1.10.0",
         "mousetrap": "1.6.5",
         "multiparty": "4.2.3",
-        "@nodebb/bootswatch": "3.4.2",
         "nconf": "0.12.0",
-        "nodebb-plugin-2factor": "5.1.1",
-        "nodebb-plugin-composer-default": "9.2.4",
-        "nodebb-plugin-dbsearch": "5.1.5",
-        "nodebb-plugin-emoji": "4.0.6",
-        "nodebb-plugin-emoji-android": "3.0.0",
-        "nodebb-plugin-markdown": "10.1.1",
-        "nodebb-plugin-mentions": "3.0.12",
-        "nodebb-plugin-spam-be-gone": "1.0.2",
+        "nodebb-plugin-2factor": "6.0.3",
+        "nodebb-plugin-composer-default": "10.0.16",
+        "nodebb-plugin-dbsearch": "6.0.0",
+        "nodebb-plugin-emoji": "5.0.3",
+        "nodebb-plugin-emoji-android": "4.0.0",
+        "nodebb-plugin-markdown": "11.0.2",
+        "nodebb-plugin-mentions": "4.0.2",
+        "nodebb-plugin-spam-be-gone": "2.0.4",
         "nodebb-rewards-essentials": "0.2.1",
-        "nodebb-theme-lavender": "6.0.0",
-        "nodebb-theme-persona": "12.1.12",
-        "nodebb-theme-slick": "2.0.2",
-        "nodebb-theme-vanilla": "12.1.19",
-        "nodebb-widget-essentials": "6.0.0",
+        "nodebb-theme-lavender": "7.0.2",
+        "nodebb-theme-peace": "2.0.8",
+        "nodebb-theme-persona": "13.0.28",
+        "nodebb-widget-essentials": "7.0.2",
         "nodemailer": "6.8.0",
         "nprogress": "0.2.0",
         "passport": "0.6.0",
@@ -119,7 +119,9 @@
         "request-promise-native": "1.0.9",
         "rimraf": "3.0.2",
         "rss": "1.2.2",
+        "rtlcss": "4.0.0",
         "sanitize-html": "2.7.3",
+        "sass": "1.54.9",
         "semver": "7.3.8",
         "serve-favicon": "2.5.0",
         "sharp": "0.31.2",
@@ -137,7 +139,6 @@
         "timeago": "1.6.7",
         "tinycon": "0.6.8",
         "toobusy-js": "0.5.1",
-        "uglify-es": "3.3.9",
         "validator": "13.7.0",
         "webpack": "5.75.0",
         "webpack-merge": "5.8.0",
@@ -166,6 +167,9 @@
         "nyc": "15.1.0",
         "smtp-server": "3.11.0"
     },
+    "optionalDependencies": {
+        "sass-embedded": "1.55.0"
+    },
     "resolutions": {
         "*/jquery": "3.6.1"
     },
@@ -176,11 +180,6 @@
         "node": ">=12"
     },
     "maintainers": [
-        {
-            "name": "Andrew Rodrigues",
-            "email": "andrew@nodebb.org",
-            "url": "https://github.com/psychobunny"
-        },
         {
             "name": "Julian Lam",
             "email": "julian@nodebb.org",

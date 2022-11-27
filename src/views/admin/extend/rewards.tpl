@@ -4,34 +4,34 @@
 		{{{ each active }}}
 		<li data-rid="{active.rid}" data-id="{active.id}">
 			<div class="row">
-				<div class="col-xs-12 col-sm-12 col-lg-8">
-					<form class="main inline-block">
-						<div class="well inline-block if-block">
-							<label for="condition-if-users">[[admin/extend/rewards:condition-if-users]]</label><br />
-							<select id="condition-if-users" class="form-control" name="condition" data-selected="{active.condition}">
+				<div class="col-12 col-lg-8">
+					<form class="main d-inline-block">
+						<div class="card card-body d-inline-block if-block">
+							<label class="form-label" for="condition-if-users">[[admin/extend/rewards:condition-if-users]]</label>
+							<select id="condition-if-users" class="form-select" name="condition" data-selected="{active.condition}">
 								{{{ each conditions }}}
 								<option value="{conditions.condition}">{conditions.name}</option>
 								{{{ end }}}
 							</select>
 						</div>
-						<div class="well inline-block this-block">
-							<label for="condition-is">[[admin/extend/rewards:condition-is]]</label><br />
+						<div class="card card-body d-inline-block this-block">
+							<label class="form-label" for="condition-is">[[admin/extend/rewards:condition-is]]</label>
 							<div class="row">
-								<div class="col-xs-4">
-									<select id="condition-is" class="form-control" name="conditional" data-selected="{active.conditional}">
+								<div class="col-4">
+									<select id="condition-is" class="form-select" name="conditional" data-selected="{active.conditional}">
 										{{{ each  conditionals }}}
 										<option value="{conditionals.conditional}">{conditionals.name}</option>
 										{{{ end }}}
 									</select>
 								</div>
-								<div class="col-xs-8">
+								<div class="col-8">
 									<input class="form-control" type="text" name="value" value="{active.value}" />
 								</div>
 							</div>
 						</div>
-						<div class="well inline-block then-block">
-							<label for="condition-then">[[admin/extend/rewards:condition-then]]</label><br />
-							<select id="condition-then" class="form-control" name="rid" data-selected="{active.rid}">
+						<div class="card card-body d-inline-block then-block">
+							<label class="form-label" for="condition-then">[[admin/extend/rewards:condition-then]]</label>
+							<select id="condition-then" class="form-select" name="rid" data-selected="{active.rid}">
 								<!-- BEGIN ../../rewards -->
 								<option value="{rewards.rid}">{rewards.name}</option>
 								<!-- END ../../rewards -->
@@ -39,24 +39,24 @@
 						</div>
 					</form>
 				</div>
-				<div class="col-xs-12 col-sm-12 col-lg-4">
-					<form class="rewards inline-block">
-						<div class="inputs well inline-block reward-block"></div>
+				<div class="col-12 col-lg-4">
+					<form class="rewards d-inline-block">
+						<div class="inputs card card-body d-inline-block reward-block"></div>
 					</form>
 				</div>
 			</div>
 
-			<div class="pull-left">
-				<div class="panel-body inline-block">
+			<div class="float-start">
+				<div class="card-body d-inline-block">
 					<form class="main">
-						<label for="claimable">[[admin/extend/rewards:max-claims]] <small>[[admin/extend/rewards:zero-infinite]]</small></label><br />
+						<label class="form-label" for="claimable">[[admin/extend/rewards:max-claims]] <small>[[admin/extend/rewards:zero-infinite]]</small></label>
 						<input id="claimable" class="form-control" type="text" name="claimable" value="{active.claimable}" placeholder="1" />
 					</form>
 				</div>
 			</div>
 
-			<div class="pull-right">
-				<div class="panel-body inline-block">
+			<div class="float-end">
+				<div class="card-body d-inline-block">
 					<button class="btn btn-danger delete">[[admin/extend/rewards:delete]]</button>
 					<!-- IF active.disabled -->
 					<button class="btn btn-success toggle">[[admin/extend/rewards:enable]]</button>
@@ -72,11 +72,9 @@
 </div>
 
 <div class="floating-button">
-	<button id="new" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" >
-		<i class="material-icons">add</i>
+	<button id="new" class="btn btn-primary position-fixed end-0 px-3 py-2 mb-4 me-4 rounded-circle fs-4" type="button" style="width: 64px; height: 64px;">
+		<i class="fa fa-fw fa-plus"></i>
 	</button>
 
-	<button id="save" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored primary">
-		<i class="material-icons">save</i>
-	</button>
+	<!-- IMPORT admin/partials/save_button.tpl -->
 </div>

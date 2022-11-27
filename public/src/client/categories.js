@@ -24,6 +24,7 @@ define('forum/categories', ['components', 'categorySelector', 'hooks'], function
 
 		$('.category-header').tooltip({
 			placement: 'bottom',
+			animation: false,
 		});
 	};
 
@@ -46,7 +47,7 @@ define('forum/categories', ['components', 'categorySelector', 'hooks'], function
 		const recentPosts = category.find('[component="category/posts"]');
 
 		app.parseAndTranslate('partials/categories/lastpost', 'posts', { posts: [post] }, function (html) {
-			html.find('.post-content img:not(.not-responsive)').addClass('img-responsive');
+			html.find('.post-content img:not(.not-responsive)').addClass('img-fluid');
 			html.hide();
 			if (recentPosts.length === 0) {
 				html.appendTo(category);
@@ -56,7 +57,6 @@ define('forum/categories', ['components', 'categorySelector', 'hooks'], function
 
 			html.fadeIn();
 
-			app.createUserTooltips(html);
 			html.find('.timeago').timeago();
 
 			if (category.find('[component="category/posts"]').length > parseInt(numRecentReplies, 10)) {

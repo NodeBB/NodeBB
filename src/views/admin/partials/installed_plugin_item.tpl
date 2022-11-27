@@ -1,6 +1,6 @@
 					<!-- IF !../error -->
 					<li id="{../id}" data-plugin-index="{@index}" data-plugin-id="{../id}" data-version="{../version}" class="clearfix <!-- IF ../active -->active<!-- ENDIF ../active -->">
-						<div class="pull-right controls">
+						<div class="float-end controls">
 							{{{ if ../installed }}}
 								<!-- IF ../isTheme -->
 								<a href="{config.relative_path}/admin/appearance/themes" class="btn btn-info">[[admin/extend/plugins:plugin-item.themes]]</a>
@@ -30,7 +30,7 @@
 						<small>[[admin/extend/plugins:plugin-item.installed]] <strong class="currentVersion">{../version}</strong> | [[admin/extend/plugins:plugin-item.latest]] <strong class="latestVersion">{../latest}</strong></small>
 
 						<!-- IF ../outdated -->
-						<button data-action="upgrade" class="btn btn-success btn-xs"><i class="fa fa-download"></i> [[admin/extend/plugins:plugin-item.upgrade]]</button>
+						<button data-action="upgrade" class="btn btn-success btn-sm"><i class="fa fa-download"></i> [[admin/extend/plugins:plugin-item.upgrade]]</button>
 						<p>
 							<!-- IF ../isCompatible -->
 							<i class="fa fa-check text-success"></i> [[admin/extend/plugins:plugin-item.compatible, {version}]]
@@ -47,8 +47,8 @@
 					<!-- ENDIF !../error -->
 					<!-- IF ../error -->
 					<li data-plugin-id="{../id}" class="clearfix">
-						<div class="pull-right">
-							<button class="btn btn-default disabled"><i class="fa fa-exclamation-triangle"></i> [[admin/extend/plugins:plugin-item.unknown]]</button>
+						<div class="float-end">
+							<button class="btn btn-outline-secondary disabled"><i class="fa fa-exclamation-triangle"></i> [[admin/extend/plugins:plugin-item.unknown]]</button>
 							<button data-action="toggleInstall" data-installed="1" class="btn btn-danger"><i class="fa fa-trash-o"></i> [[admin/extend/plugins:plugin-item.uninstall]]</button>
 						</div>
 

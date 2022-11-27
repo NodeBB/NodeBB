@@ -43,7 +43,9 @@
 	"header.notifications": "Notifications",
 	"header.search": "Search",
 	"header.profile": "Profile",
+	"header.account": "Account",
 	"header.navigation": "Navigation",
+	"header.manage": "Manage",
 
 	"notifications.loading": "Loading Notifications",
 	"chats.loading": "Loading Chats",
@@ -108,6 +110,7 @@
 
 	"moderator_tools": "Moderator Tools",
 
+	"status": "Status",
 	"online": "Online",
 	"away": "Away",
 	"dnd": "Do not disturb",

@@ -162,7 +162,7 @@ app = window.app || {};
 			const reconnectEl = $('#reconnect');
 			const reconnectAlert = $('#reconnect-alert');
 
-			reconnectEl.tooltip('destroy');
+			reconnectEl.tooltip('dispose');
 			reconnectEl.html('<i class="fa fa-check text-success"></i>');
 			reconnectAlert.addClass('hide');
 			reconnecting = false;
@@ -199,6 +199,7 @@ app = window.app || {};
 
 		reconnectEl.addClass('active').removeClass('hide').tooltip({
 			placement: 'bottom',
+			animation: false,
 		});
 	}
 

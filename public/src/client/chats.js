@@ -166,7 +166,7 @@ define('forum/chats', [
 					html = $(html);
 					el.prepend(html);
 					html.find('.timeago').timeago();
-					html.find('img:not(.not-responsive)').addClass('img-responsive');
+					html.find('img:not(.not-responsive)').addClass('img-fluid');
 					el.scrollTop((el[0].scrollHeight - previousHeight) + currentScrollTop);
 					loading = false;
 				});
@@ -247,7 +247,7 @@ define('forum/chats', [
 		let modal;
 
 		buttonEl.on('click', function () {
-			app.parseAndTranslate('partials/modals/manage_room', {}, function (html) {
+			app.parseAndTranslate('modals/manage-room', {}, function (html) {
 				modal = bootbox.dialog({
 					title: '[[modules:chat.manage-room]]',
 					message: html,
@@ -294,7 +294,7 @@ define('forum/chats', [
 			bootbox.confirm({
 				size: 'small',
 				title: '[[modules:chat.leave]]',
-				message: '<p>[[modules:chat.leave-prompt]]</p><p class="help-block">[[modules:chat.leave-help]]</p>',
+				message: '<p>[[modules:chat.leave-prompt]]</p><p class="form-text">[[modules:chat.leave-help]]</p>',
 				callback: function (ok) {
 					if (ok) {
 						api.delete(`/chats/${roomId}/users/${app.user.uid}`, {}).then(() => {
@@ -325,7 +325,7 @@ define('forum/chats', [
 			}
 		}
 
-		app.parseAndTranslate('partials/modals/manage_room_users', data, function (html) {
+		app.parseAndTranslate('partials/chats/manage-room-users', data, function (html) {
 			listEl.html(html);
 		});
 	};
@@ -334,7 +334,7 @@ define('forum/chats', [
 		let modal;
 
 		buttonEl.on('click', function () {
-			app.parseAndTranslate('partials/modals/rename_room', {
+			app.parseAndTranslate('modals/rename-room', {
 				name: roomName || ajaxify.data.roomName,
 			}, function (html) {
 				modal = bootbox.dialog({

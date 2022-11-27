@@ -107,7 +107,7 @@
 	"thread_tools.purge": "Purge Topic",
 	"thread_tools.purge_confirm" : "Are you sure you want to purge this topic?",
 	"thread_tools.merge_topics": "Merge Topics",
-	"thread_tools.merge": "Merge",
+	"thread_tools.merge": "Merge Topic",
 
 	"topic_move_success": "This topic will be moved to \"%1\" shortly. Click here to undo.",
 	"topic_move_multiple_success": "These topics will be moved to \"%1\" shortly. Click here to undo.",
@@ -140,7 +140,7 @@
 	"post_moved": "Post moved!",
 	"fork_topic": "Fork Topic",
 	"enter-new-topic-title": "Enter new topic title",
-	"fork_topic_instruction": "Click the posts you want to fork",
+	"fork_topic_instruction": "Click the posts you want to fork, enter a title for the new topic and click fork topic",
 	"fork_no_pids": "No posts selected!",
 	"no-posts-selected": "No posts selected!",
 	"x-posts-selected": "%1 post(s) selected",
@@ -155,6 +155,7 @@
 	"merge-new-title-for-topic": "New title for topic",
 	"topic-id": "Topic ID",
 	"move_posts_instruction": "Click the posts you want to move then enter a topic ID or go to the target topic",
+	"move_topic_instruction": "Select the target category and then click move",
 	"change_owner_instruction": "Click the posts you want to assign to another user",
 
 	"composer.title_placeholder": "Enter your topic title here...",

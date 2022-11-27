@@ -1,32 +1,32 @@
 <div class="row">
-	<form role="form" class="category">
-		<div class="">
-			<p>
-				[[admin/manage/categories:privileges.description]]
-			</p>
+	<div class="col-12">
+		<form role="form" class="category">
+			<div class="">
+				<p>
+					[[admin/manage/categories:privileges.description]]
+				</p>
 
-			<div class="lead">
-				[[admin/manage/categories:privileges.category-selector]]
-				<!-- IMPORT partials/category-selector.tpl -->
-			</div>
+				<div class="lead mb-3">
+					[[admin/manage/categories:privileges.category-selector]]
+					<!-- IMPORT partials/category-selector.tpl -->
+				</div>
 
-			<div class="privilege-table-container">
-				{{{ if cid }}}
-				<!-- IMPORT admin/partials/privileges/category.tpl -->
-				{{{ else }}}
-				<!-- IMPORT admin/partials/privileges/global.tpl -->
-				{{{ end }}}
+				<div class="privilege-table-container">
+					{{{ if cid }}}
+					<!-- IMPORT admin/partials/privileges/category.tpl -->
+					{{{ else }}}
+					<!-- IMPORT admin/partials/privileges/global.tpl -->
+					{{{ end }}}
+				</div>
 			</div>
-		</div>
-	</form>
+		</form>
+	</div>
 </div>
 
 <div class="floating-button">
-	<button id="discard" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" style="display: none;">
-		<i class="material-icons">undo</i>
+	<button id="discard" class="btn btn-primary position-fixed end-0 px-3 py-2 mb-4 me-4 rounded-circle fs-4" type="button" style="width: 64px; height: 64px; bottom: 5rem;">
+		<i class="fa fa-rotate-left"></i>
 	</button>
 
-	<button id="save" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored primary">
-		<i class="material-icons">save</i>
-	</button>
+	<!-- IMPORT admin/partials/save_button.tpl -->
 </div>

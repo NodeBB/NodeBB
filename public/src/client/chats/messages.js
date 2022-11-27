@@ -19,12 +19,12 @@ define('forum/chats/messages', [
 		inputEl.removeAttr('data-mid');
 		messages.updateRemainingLength(inputEl.parent());
 		const payload = { roomId, message, mid };
-		// TODO: move this to success callback of api.post/put call?
-		hooks.fire('action:chat.sent', payload);
 		({ roomId, message, mid } = await hooks.fire('filter:chat.send', payload));
 
 		if (!mid) {
-			api.post(`/chats/${roomId}`, { message }).catch((err) => {
+			api.post(`/chats/${roomId}`, { message }).then(() => {
+				hooks.fire('action:chat.sent', { roomId, message, mid });
+			}).catch((err) => {
 				inputEl.val(message);
 				messages.updateRemainingLength(inputEl.parent());
 				if (err.message === '[[error:email-not-confirmed-chat]]') {
@@ -40,7 +40,9 @@ define('forum/chats/messages', [
 				});
 			});
 		} else {
-			api.put(`/chats/${roomId}/messages/${mid}`, { message }).catch((err) => {
+			api.put(`/chats/${roomId}/messages/${mid}`, { message }).then(() => {
+				hooks.fire('action:chat.edited', { roomId, message, mid });
+			}).catch((err) => {
 				inputEl.val(message);
 				inputEl.attr('data-mid', mid);
 				messages.updateRemainingLength(inputEl.parent());
@@ -76,7 +78,7 @@ define('forum/chats/messages', [
 		const isAtBottom = messages.isAtBottom(chatContentEl);
 		newMessage.appendTo(chatContentEl);
 		newMessage.find('.timeago').timeago();
-		newMessage.find('img:not(.not-responsive)').addClass('img-responsive');
+		newMessage.find('img:not(.not-responsive)').addClass('img-fluid');
 		if (isAtBottom) {
 			messages.scrollToBottom(chatContentEl);
 		}

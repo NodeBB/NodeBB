@@ -46,7 +46,6 @@ module.exports = function (User) {
 		let userData = {
 			username: data.username,
 			userslug: data.userslug,
-			email: data.email || '',
 			joindate: timestamp,
 			lastonline: timestamp,
 			status: 'online',
@@ -104,13 +103,14 @@ module.exports = function (User) {
 			User.updateDigestSetting(userData.uid, meta.config.dailyDigestFreq),
 		]);
 
-		if (userData.email && isFirstUser) {
+		if (data.email && isFirstUser) {
+			await User.setUserField(uid, 'email', data.email);
 			await User.email.confirmByUid(userData.uid);
 		}
 
-		if (userData.email && userData.uid > 1) {
+		if (data.email && userData.uid > 1) {
 			await User.email.sendValidationEmail(userData.uid, {
-				email: userData.email,
+				email: data.email,
 				template: 'welcome',
 				subject: `[[email:welcome-to, ${meta.config.title || meta.config.browserTitle || 'NodeBB'}]]`,
 			}).catch(err => winston.error(`[user.create] Validation email failed to send\n[emailer.send] ${err.stack}`));

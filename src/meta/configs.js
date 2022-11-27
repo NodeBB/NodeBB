@@ -240,12 +240,9 @@ async function saveRenderedCss(data) {
 	if (!data.customCSS) {
 		return;
 	}
-	const less = require('less');
-	const lessObject = await less.render(data.customCSS, {
-		compress: true,
-		javascriptEnabled: false,
-	});
-	data.renderedCustomCSS = lessObject.css;
+	const sass = require('../utils').getSass();
+	const scssOutput = await sass.compileStringAsync(data.customCSS, {});
+	data.renderedCustomCSS = scssOutput.css.toString();
 }
 
 async function getLogoSize(data) {

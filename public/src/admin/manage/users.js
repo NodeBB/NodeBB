@@ -166,7 +166,7 @@ define('admin/manage/users', [
 				return false; // specifically to keep the menu open
 			}
 
-			Benchpress.render('admin/partials/temporary-ban', {}).then(function (html) {
+			Benchpress.render('modals/temporary-ban', {}).then(function (html) {
 				bootbox.dialog({
 					className: 'ban-modal',
 					title: '[[user:ban_account]]',

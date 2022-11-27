@@ -2,8 +2,8 @@
 
 
 define('forum/topic/votes', [
-	'components', 'translator', 'api', 'hooks', 'bootbox', 'alerts',
-], function (components, translator, api, hooks, bootbox, alerts) {
+	'components', 'translator', 'api', 'hooks', 'bootbox', 'alerts', 'bootstrap',
+], function (components, translator, api, hooks, bootbox, alerts, bootstrap) {
 	const Votes = {};
 
 	Votes.addVoteHandler = function () {
@@ -31,13 +31,25 @@ define('forum/topic/votes', [
 	}
 
 	function createTooltip(el, data) {
+		const tooltip = bootstrap.Tooltip.getInstance(el);
 		function doCreateTooltip(title) {
-			el.attr('title', title).tooltip('fixTitle').tooltip('show');
+			if (tooltip) {
+				tooltip.setContent({ '.tooltip-inner': title });
+			} else {
+				el.attr('title', title);
+				(new bootstrap.Tooltip(el, {
+					container: '#content',
+				})).show();
+			}
 			el.parent().find('.tooltip').css('display', '');
 		}
 		let usernames = data.usernames
 			.filter(name => name !== '[[global:former_user]]');
 		if (!usernames.length) {
+			if (tooltip) {
+				tooltip.dispose();
+			}
+			el.attr('title', '');
 			return;
 		}
 		if (usernames.length + data.otherCount > 6) {
@@ -90,7 +102,7 @@ define('forum/topic/votes', [
 				return alerts.error(err);
 			}
 
-			app.parseAndTranslate('partials/modals/votes_modal', data, function (html) {
+			app.parseAndTranslate('modals/votes', data, function (html) {
 				const dialog = bootbox.dialog({
 					title: '[[global:voters]]',
 					message: html,

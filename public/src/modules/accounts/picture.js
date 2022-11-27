@@ -21,7 +21,7 @@ define('accounts/picture', [
 				return memo || cur.type === 'uploaded';
 			}, false);
 
-			app.parseAndTranslate('partials/modals/change_picture_modal', {
+			app.parseAndTranslate('modals/change-picture', {
 				pictures: pictures,
 				uploaded: uploaded,
 				icon: { text: ajaxify.data['icon:text'], bgColor: ajaxify.data['icon:bgColor'] },
@@ -41,6 +41,7 @@ define('accounts/picture', [
 					title: '[[user:change_picture]]',
 					message: html,
 					show: true,
+					size: 'large',
 					buttons: {
 						close: {
 							label: '[[global:close]]',
@@ -61,7 +62,7 @@ define('accounts/picture', [
 				});
 				modal.on('change', 'input[type="radio"][name="icon:bgColor"]', (e) => {
 					const value = e.target.value;
-					modal.find('.user-icon').css('background-color', value);
+					modal.find('[component="avatar/icon"]').css('background-color', value);
 				});
 
 				handleImageUpload(modal);
@@ -69,7 +70,7 @@ define('accounts/picture', [
 				function updateImages() {
 					// Check to see which one is the active picture
 					if (!ajaxify.data.picture) {
-						modal.find('.list-group-item .user-icon').parents('.list-group-item').addClass('active');
+						modal.find('[data-type="default"]').addClass('active');
 					} else {
 						modal.find('.list-group-item img').each(function () {
 							if (this.getAttribute('src') === ajaxify.data.picture) {
@@ -171,7 +172,7 @@ define('accounts/picture', [
 
 		modal.find('[data-action="upload-url"]').on('click', function () {
 			modal.modal('hide');
-			app.parseAndTranslate('partials/modals/upload_picture_from_url_modal', {}, function (uploadModal) {
+			app.parseAndTranslate('modals/upload-picture-from-url', {}, function (uploadModal) {
 				uploadModal.modal('show');
 
 				uploadModal.find('.upload-btn').on('click', function () {

@@ -13,123 +13,125 @@
 </head>
 
 <body>
-	<nav class="navbar navbar-default">
+	<nav class="navbar navbar-expand-lg bg-light">
 		<div class="container-fluid">
-			<div class="navbar-header">
-				<a class="navbar-brand" href="#">NodeBB</a>
+			<a class="navbar-brand" href="#">NodeBB</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu" aria-controls="navbar-menu" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbar-menu">
+				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+					<li class="nav-item"><a class="nav-link active" href="/">Installer</a></li>
+					<li class="nav-item"><a class="nav-link" href="https://docs.nodebb.org" target="_blank">Get Help</a></li>
+					<li class="nav-item"><a class="nav-link" href="https://community.nodebb.org" target="_blank">Community</a></li>
+				</ul>
 			</div>
-
-			<ul class="nav navbar-nav">
-				<li class="active"><a href="/">Installer</a></li>
-				<li><a href="https://docs.nodebb.org" target="_blank">Get Help</a></li>
-				<li><a href="https://community.nodebb.org" target="_blank">Community</a></li>
-			</ul>
 		</div>
 	</nav>
-	<!-- IF !installing -->
-	<div class="container <!-- IF success -->hide<!-- ENDIF success -->">
+	{{{ if !installing }}}
+	<div class="container {{{ if success }}}hide{{{ end }}}">
 		<p>
 			<h1>Welcome to the NodeBB Installer</h1>
 			You are just a few steps away from launching your own NodeBB forum!
 		</p>
-		<form id="install" action="/" method="post">
-			<!-- IF !skipGeneralSetup -->
+		<form id="install" action="/" method="post" autocomplete="off">
+			{{{ if !skipGeneralSetup }}}
 			<div class="general">
 				<p>
-					<h1><small>General Instance Setup</small></h1>
+					<h2><small>General Instance Setup</small></h2>
 					<hr />
 				</p>
 
 				<div class="row input-row">
-					<div class="col-sm-7 col-xs-12 input-field">
-						<label for="install:url">Web Address (URL)</label>
-						<input id="install:url" type="text" class="form-control" name="url" value="<!-- IF url -->{url}<!-- ENDIF url -->" placeholder="http://localhost:4567" />
+					<div class="col-sm-7 col-12 input-field">
+						<label class="form-label" for="install:url">Web Address (URL)</label>
+						<input id="install:url" type="text" class="form-control" name="url" value="{{{ if url }}}{url}{{{ end }}}" placeholder="http://localhost:4567" />
 					</div>
-					<div class="col-sm-5 help-text" data-help="This is the address that resolves to your NodeBB forum. If no port is specified, <code>4567</code> will be used."></div>
+					<div class="col-sm-5 form-text" data-help="This is the address that resolves to your NodeBB forum. If no port is specified, <code>4567</code> will be used."></div>
 				</div>
 			</div>
-			<!-- END -->
+			{{{ end }}}
 			<div class="admin">
 				<p>
-					<h1><small>Create an Administrator account</small></h1>
+					<h2><small>Create an Administrator account</small></h2>
 					<hr />
 				</p>
 
 				<div class="row input-row">
-					<div class="col-sm-7 col-xs-12 input-field">
-						<label for="admin:username">Username</label>
-						<input id="admin:username" type="text" class="form-control" name="admin:username" value="<!-- IF admin:username -->{admin:username}<!-- ENDIF admin:username -->" placeholder="Username" />
+					<div class="col-sm-7 col-12 input-field">
+						<label class="form-label" for="admin:username">Username</label>
+						<input id="admin:username" type="text" class="form-control" name="admin:username" value="{{{ if admin:username }}}{admin:username}{{{ end }}}" placeholder="Username" autocomplete="off"/>
 					</div>
-					<div class="col-sm-5 help-text" data-help="Enter an <strong>alphanumeric username</strong>. Spaces between words are allowed. You can always change your username later on your profile page."></div>
+					<div class="col-sm-5 form-text" data-help="Enter an <strong>alphanumeric username</strong>. Spaces between words are allowed. You can always change your username later on your profile page."></div>
 				</div>
 				<div class="row input-row">
-					<div class="col-sm-7 col-xs-12 input-field">
-						<label for="admin:email">Email Address</label>
-						<input id="admin:email" type="text" class="form-control" name="admin:email" value="<!-- IF admin:email -->{admin:email}<!-- ENDIF admin:email -->" placeholder="Email Address" />
+					<div class="col-sm-7 col-12 input-field">
+						<label class="form-label" for="admin:email">Email Address</label>
+						<input id="admin:email" type="text" class="form-control" name="admin:email" value="{{{ if admin:email }}}{admin:email}{{{ end }}}" placeholder="Email Address" autocomplete="off" />
 					</div>
-					<div class="col-sm-5 help-text" data-help="Please enter your email address."></div>
+					<div class="col-sm-5 form-text" data-help="Please enter your email address."></div>
 				</div>
 				<div class="row input-row">
-					<div class="col-sm-7 col-xs-12 input-field">
-						<label for="admin:password">Password</label>
-						<input id="admin:password" type="password" class="form-control" name="admin:password" value="<!-- IF admin:password -->{admin:password}<!-- ENDIF admin:password -->" placeholder="Password" data-minimum-strength="{minimumPasswordStrength}" data-minimum-length="{minimumPasswordLength}" />
+					<div class="col-sm-7 col-12 input-field">
+						<label class="form-label" for="admin:password">Password</label>
+						<input id="admin:password" type="password" class="form-control" name="admin:password" value="{{{ if admin:password }}}{admin:password}{{{ end }}}" placeholder="Password" data-minimum-strength="{minimumPasswordStrength}" data-minimum-length="{minimumPasswordLength}" autocomplete="off"/>
 					</div>
-					<div class="col-sm-5 help-text" data-help="Use a combination of numbers, symbols, and different cases. You can change the strictness of password creation in the Admin Control Panel. Minimum {minimumPasswordLength} characters."></div>
+					<div class="col-sm-5 form-text" data-help="Use a combination of numbers, symbols, and different cases. You can change the strictness of password creation in the Admin Control Panel. Minimum {minimumPasswordLength} characters."></div>
 				</div>
 				<div class="row input-row">
-					<div class="col-sm-7 col-xs-12 input-field">
-						<label for="admin:passwordConfirm">Confirm Password</label>
-						<input id="admin:passwordConfirm" type="password" class="form-control" name="admin:passwordConfirm" value="<!-- IF admin:passwordConfirm -->{admin:passwordConfirm}<!-- ENDIF admin:passwordConfirm -->" placeholder="Confirm Password" />
+					<div class="col-sm-7 col-12 input-field">
+						<label class="form-label" for="admin:passwordConfirm">Confirm Password</label>
+						<input id="admin:passwordConfirm" type="password" class="form-control" name="admin:passwordConfirm" value="{{{ if admin:passwordConfirm }}}{admin:passwordConfirm}{{{ end }}}" placeholder="Confirm Password" autocomplete="off"/>
 					</div>
-					<div class="col-sm-5 help-text" data-help="Please confirm your password."></div>
+					<div class="col-sm-5 form-text" data-help="Please confirm your password."></div>
 				</div>
 			</div>
 
-			<!-- IF error -->
+			{{{ if error }}}
 			<a id="database-error"></a>
-			<!-- ENDIF error -->
+			{{{ end }}}
 
-			<!-- IF !skipDatabaseSetup -->
+			{{{ if !skipDatabaseSetup }}}
 			<div class="database">
 				<p>
-					<h1><small>Configure your database</small></h1>
+					<h2><small>Configure your database</small></h2>
 					<hr />
 				</p>
 
 				<div class="row input-row">
-					<div class="col-sm-7 col-xs-12 input-field">
-						<label for="install:database">Database Type</label>
-						<select id="install:database" class="form-control" name="database">
+					<div class="col-sm-7 col-12 input-field">
+						<label class="form-label" for="install:database">Database Type</label>
+						<select id="install:database" class="form-select" name="database">
 							<option value="mongo">MongoDB</option>
 							<option value="redis">Redis</option>
 							<option value="postgres">PostgreSQL</option>
 						</select>
 					</div>
-					<div class="col-sm-5 help-text" data-help="Leave the fields blank to use the default settings."><!-- IF error -->There was an error connecting to your database. Please try again.<!-- ENDIF error --></div>
+					<div class="col-sm-5 form-text" data-help="Leave the fields blank to use the default settings.">{{{ if error }}}There was an error connecting to your database. Please try again.{{{ end }}}</div>
 				</div>
 
 				<div id="database-config"></div>
 			</div>
-			<!-- ENDIF !skipDatabaseSetup -->
+			{{{ end }}}
 
-			<button id="submit" type="submit" class="btn btn-lg btn-success">Install NodeBB <i class="working hide"></i></button>
+			<button id="submit" type="submit" class="btn btn btn-success">Install NodeBB <i class="working hide"></i></button>
 		</form>
 	</div>
-	<!-- ENDIF !installing -->
+	{{{ end }}}
 
-	<!-- IF installing -->
+	{{{ if installing }}}
 	<div id="installing" class="container">
 		<p>
 			<h1>Hang tight! Your NodeBB is being installed.</h1>
 		</p>
 	</div>
-	<!-- ENDIF installing -->
+	{{{ end }}}
 
-	<div class="container <!-- IF !success -->hide<!-- ENDIF !success -->">
+	<div class="container {{{ if !success }}}hide{{{ end }}}">
 		<p>
 			<h1>Congratulations! Your NodeBB has been set-up.</h1>
 
-			<button id="launch" data-url="{launchUrl}" class="btn btn-lg btn-success">Launch NodeBB <i class="working hide"></i></button>
+			<button id="launch" data-url="{launchUrl}" class="btn btn btn-success">Launch NodeBB <i class="working hide"></i></button>
 		</p>
 	</div>
 
@@ -138,9 +140,9 @@
 		<div data-database="{databases.name}">
 			 {{{ each databases.questions }}}
 				<div class="row input-row">
-					<div class="col-sm-7 col-xs-12 input-field">
-						<label for="{databases.questions.name}">{databases.questions.description}</label>
-						<input id="{databases.questions.name}" type="<!-- IF hidden -->password<!-- ELSE -->text<!-- ENDIF hidden -->" class="form-control" name="{databases.questions.name}" placeholder="{databases.questions.default}" value="{databases.questions.default}" />
+					<div class="col-sm-7 col-12 input-field">
+						<label class="form-label" for="{databases.questions.name}">{databases.questions.description}</label>
+						<input id="{databases.questions.name}" type="{{{ if hidden }}}password{{{ else }}}text{{{ end }}}" class="form-control" name="{databases.questions.name}" placeholder="{databases.questions.default}" value="{databases.questions.default}" />
 					</div>
 				</div>
 			{{{ end }}}

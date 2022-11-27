@@ -371,11 +371,14 @@ helpers.trimChildren = function (category) {
 
 helpers.setCategoryTeaser = function (category) {
 	if (Array.isArray(category.posts) && category.posts.length && category.posts[0]) {
+		const post = category.posts[0];
 		category.teaser = {
-			url: `${nconf.get('relative_path')}/post/${category.posts[0].pid}`,
-			timestampISO: category.posts[0].timestampISO,
-			pid: category.posts[0].pid,
-			topic: category.posts[0].topic,
+			url: `${nconf.get('relative_path')}/post/${post.pid}`,
+			timestampISO: post.timestampISO,
+			pid: post.pid,
+			index: post.index,
+			topic: post.topic,
+			user: post.user,
 		};
 	}
 };

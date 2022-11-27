@@ -9,7 +9,7 @@ define('admin/appearance/customise', ['admin/settings', 'ace/ace'], function (Se
 			$('#customJS').text($('#customJS-holder').val());
 			$('#customHTML').text($('#customHTML-holder').val());
 
-			initACE('customCSS', 'less', '#customCSS-holder');
+			initACE('customCSS', 'scss', '#customCSS-holder');
 			initACE('customJS', 'javascript', '#customJS-holder');
 			initACE('customHTML', 'html', '#customHTML-holder');
 

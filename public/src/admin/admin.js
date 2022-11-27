@@ -2,9 +2,9 @@
 
 require('../app');
 
-// scripts-admin.js contains javascript files
+// scripts-admin.js is generated during build, it contains javascript files
 // from plugins that add files to "acpScripts" block in plugin.json
-// eslint-disable-next-line import/no-unresolved
+// eslint-disable-next-line
 require('../../scripts-admin');
 
 app.onDomReady();
@@ -163,7 +163,7 @@ app.onDomReady();
 			// need to preload the compiled alert template
 			// otherwise it can be unloaded when rebuild & restart is run
 			// the client can't fetch the template file, resulting in an error
-			benchpress.render('alert', {}).then(function () {
+			benchpress.render('partials/toast', {}).then(function () {
 				$('.rebuild-and-restart').off('click').on('click', function () {
 					bootbox.confirm('[[admin/admin:alert.confirm-rebuild-and-restart]]', function (confirm) {
 						if (confirm) {
@@ -210,8 +210,7 @@ app.onDomReady();
 				slideout.close();
 
 				env = utils.findBootstrapEnvironment();
-
-				if (env === 'md' || env === 'lg') {
+				if (['xxl', 'xl', 'lg'].includes(env)) {
 					slideout.disableTouch();
 					$('#header').css({
 						position: 'relative',

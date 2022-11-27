@@ -93,7 +93,6 @@ define('chat', [
 				app.parseAndTranslate('partials/chats/dropdown', { rooms: rooms }, function (html) {
 					chatsListEl.find('*').not('.navigation-link').remove();
 					chatsListEl.prepend(html);
-					app.createUserTooltips(chatsListEl, 'right');
 					chatsListEl.off('click').on('click', '[data-roomid]', function (ev) {
 						if ($(ev.target).parents('.user-link').length) {
 							return;
@@ -245,7 +244,7 @@ define('chat', [
 				scrollStop.apply(chatModal.find('[component="chat/messages"]'));
 
 				chatModal.find('#chat-close-btn').on('click', function () {
-					module.close(chatModal);
+					module.close(uuid);
 				});
 
 				function gotoChats() {
@@ -255,7 +254,7 @@ define('chat', [
 					});
 
 					ajaxify.go('user/' + app.user.userslug + '/chats/' + chatModal.attr('data-roomid'));
-					module.close(chatModal);
+					module.close(uuid);
 				}
 
 				chatModal.find('.modal-header').on('dblclick', gotoChats);
@@ -333,8 +332,8 @@ define('chat', [
 		}, 20);
 	};
 
-	module.close = function (chatModal) {
-		const uuid = chatModal.attr('data-uuid');
+	module.close = function (uuid) {
+		const chatModal = $('.chat-modal[data-uuid="' + uuid + '"]');
 		clearInterval(chatModal.attr('intervalId'));
 		chatModal.attr('intervalId', 0);
 		chatModal.remove();
@@ -349,12 +348,6 @@ define('chat', [
 			uuid: uuid,
 			modal: chatModal,
 		});
-	};
-
-	// TODO: see taskbar.js:44
-	module.closeByUUID = function (uuid) {
-		const chatModal = $('.chat-modal[data-uuid="' + uuid + '"]');
-		module.close(chatModal);
 	};
 
 	module.center = function (chatModal) {
@@ -402,7 +395,7 @@ define('chat', [
 
 		$(window).on('resize', resize);
 		$(window).one('action:ajaxify.start', function () {
-			module.close(modalEl);
+			module.close(modalEl.attr('data-uuid'));
 			$(window).off('resize', resize);
 		});
 	};

@@ -10,6 +10,7 @@ window.utils = require('./utils');
 require('timeago');
 
 const Benchpress = require('benchpressjs');
+
 Benchpress.setGlobal('config', config);
 
 require('./sockets');
@@ -21,7 +22,7 @@ app = window.app || {};
 Object.defineProperty(app, 'isFocused', {
 	get() {
 		return document.visibilityState === 'visible';
-	}
+	},
 });
 app.currentRoom = null;
 app.widgets = {};
@@ -148,41 +149,6 @@ if (document.readyState === 'loading') {
 		}
 		const result = await Promise.all(modules.map(requireModule));
 		return single ? result.pop() : result;
-	}
-
-	app.logout = function (redirect) {
-		console.warn('[deprecated] app.logout is deprecated, please use logout module directly');
-		require(['logout'], function (logout) {
-			logout(redirect);
-		});
-	};
-
-	app.alert = function (params) {
-		console.warn('[deprecated] app.alert is deprecated, please use alerts.alert');
-		require(['alerts'], function (alerts) {
-			alerts.alert(params);
-		});
-	};
-
-	app.removeAlert = function (id) {
-		console.warn('[deprecated] app.removeAlert is deprecated, please use alerts.remove');
-		require(['alerts'], function (alerts) {
-			alerts.remove(id);
-		});
-	};
-
-	app.alertSuccess = function (message, timeout) {
-		console.warn('[deprecated] app.alertSuccess is deprecated, please use alerts.success');
-		require(['alerts'], function (alerts) {
-			alerts.success(message, timeout);
-		});
-	};
-
-	app.alertError = function (message, timeout) {
-		console.warn('[deprecated] app.alertError is deprecated, please use alerts.error');
-		require(['alerts'], function (alerts) {
-			alerts.error(message, timeout);
-		});
 	};
 
 	app.enterRoom = function (room, callback) {
@@ -224,8 +190,8 @@ if (document.readyState === 'loading') {
 
 	function highlightNavigationLink() {
 		$('#main-nav li')
-			.removeClass('active')
 			.find('a')
+			.removeClass('active')
 			.filter(function (i, a) {
 				return $(a).attr('href') !== '#' && window.location.hostname === a.hostname &&
 					(
@@ -233,26 +199,19 @@ if (document.readyState === 'loading') {
 						window.location.pathname.startsWith(a.pathname + '/')
 					);
 			})
-			.parent()
 			.addClass('active');
 	}
 
 	app.createUserTooltips = function (els, placement) {
-		if (isTouchDevice) {
-			return;
-		}
-		els = els || $('body');
-		els.find('.avatar,img[title].teaser-pic,img[title].user-img,div.user-icon,span.user-icon').one('mouseenter', function (ev) {
-			const $this = $(this);
-			// perf: create tooltips on demand
-			$this.tooltip({
-				placement: placement || $this.attr('title-placement') || 'top',
-				title: $this.attr('title'),
+		if (!isTouchDevice) {
+			els = els || $('body');
+			els.tooltip({
+				selector: '.avatar',
+				placement: placement || 'top',
 				container: '#content',
+				animation: false,
 			});
-			// this will cause the tooltip to show up
-			$this.trigger(ev);
-		});
+		}
 	};
 
 	app.createStatusTooltips = function () {
@@ -260,6 +219,18 @@ if (document.readyState === 'loading') {
 			$('body').tooltip({
 				selector: '.fa-circle.status',
 				placement: 'top',
+				container: '#content',
+				animation: false,
+			});
+
+			$('#content').on('inserted.bs.tooltip', function (ev) {
+				const target = $(ev.target);
+				if (target.attr('component') === 'user/status') {
+					const newTitle = target.attr('data-new-title');
+					if (newTitle) {
+						$('.tooltip .tooltip-inner').text(newTitle);
+					}
+				}
 			});
 		}
 	};
@@ -274,48 +245,12 @@ if (document.readyState === 'loading') {
 		app.createStatusTooltips();
 	};
 
-	app.openChat = function (roomId, uid) {
-		console.warn('[deprecated] app.openChat is deprecated, please use chat.openChat');
-		require(['chat'], function (chat) {
-			chat.openChat(roomId, uid);
-		});
-	};
-
-	app.newChat = function (touid, callback) {
-		console.warn('[deprecated] app.newChat is deprecated, please use chat.newChat');
-		require(['chat'], function (chat) {
-			chat.newChat(touid, callback);
-		});
-	};
-
 	app.toggleNavbar = function (state) {
 		require(['components'], (components) => {
 			const navbarEl = components.get('navbar');
 			navbarEl[state ? 'show' : 'hide']();
 		});
 	};
-
-	app.enableTopicSearch = function (options) {
-		console.warn('[deprecated] app.enableTopicSearch is deprecated, please use search.enableQuickSearch(options)');
-		require(['search'], function (search) {
-			search.enableQuickSearch(options);
-		});
-	};
-
-	app.handleSearch = function (searchOptions) {
-		console.warn('[deprecated] app.handleSearch is deprecated, please use search.init(options)');
-		require(['search'], function (search) {
-			search.init(searchOptions);
-		});
-	};
-
-	app.prepareSearch = function () {
-		console.warn('[deprecated] app.prepareSearch is deprecated, please use search.showAndFocusInput()');
-		require(['search'], function (search) {
-			search.showAndFocusInput();
-		});
-	};
-
 
 	app.updateUserStatus = function (el, status) {
 		if (!el.length) {
@@ -326,8 +261,7 @@ if (document.readyState === 'loading') {
 			translator.translate('[[global:' + status + ']]', function (translated) {
 				el.removeClass('online offline dnd away')
 					.addClass(status)
-					.attr('title', translated)
-					.attr('data-original-title', translated);
+					.attr('data-new-title', translated);
 			});
 		});
 	};

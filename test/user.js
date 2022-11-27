@@ -89,7 +89,7 @@ describe('User', () => {
 			const validationPending = await User.email.isValidationPending(uid, email);
 			assert.strictEqual(validationPending, true);
 
-			assert.equal(data.email, '&lt;h1&gt;test&lt;&#x2F;h1&gt;@gmail.com');
+			assert.equal(data.email, '');
 			assert.strictEqual(data.profileviews, 0);
 			assert.strictEqual(data.reputation, 0);
 			assert.strictEqual(data.postcount, 0);
@@ -1204,8 +1204,10 @@ describe('User', () => {
 					assert.ifError(err);
 					assert(data);
 					assert(Array.isArray(data));
-					assert.equal(data[0].type, 'uploaded');
-					assert.equal(data[0].text, '[[user:uploaded_picture]]');
+					assert.equal(data[0].type, 'default');
+					assert.equal(data[0].username, '[[user:default_picture]]');
+					assert.equal(data[1].type, 'uploaded');
+					assert.equal(data[1].username, '[[user:uploaded_picture]]');
 					done();
 				});
 			});
@@ -2637,6 +2639,7 @@ describe('User', () => {
 			await assertPrivacy({ v3Api: false, jar: regularUserJar, emailOnly: true });
 
 			// Let's confirm for afterwards
+			await User.setUserField(hidingUser.uid, 'email', 'should@be.hidden');
 			await User.email.confirmByUid(hidingUser.uid);
 		});
 

@@ -1,10 +1,9 @@
 <div class="row dashboard">
-	<div class="col-xs-12">
-		<a class="btn btn-link" href="{config.relative_path}/admin/dashboard">
+	<div class="col-12">
+		<a class="btn btn-primary mb-3" href="{config.relative_path}/admin/dashboard">
 			<i class="fa fa-chevron-left"></i>
 			[[admin/dashboard:back-to-dashboard]]
 		</a>
-
 
 		<table class="table table-striped search-list">
 			<tbody>
@@ -16,7 +15,7 @@
 				{{{ each searches }}}
 				<tr>
 					<td>{searches.value}</a></td>
-					<td class="text-right">{searches.score}</td>
+					<td class="text-end">{searches.score}</td>
 				</tr>
 				{{{ end }}}
 			</tbody>

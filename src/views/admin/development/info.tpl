@@ -1,10 +1,10 @@
 <div class="info">
-	<div class="panel panel-default">
-		<div class="panel-heading">
-			<h3 class="panel-title">[[admin/development/info:you-are-on, {host}, {port}]] &bull; [[admin/development/info:ip, {ip}]]</h3>
-		</div>
+	<div class="card">
+		<h5 class="card-header">
+			[[admin/development/info:you-are-on, {host}, {port}]] &bull; [[admin/development/info:ip, {ip}]]
+		</h5>
 
-		<div class="panel-body">
+		<div class="card-body">
 			<span>[[admin/development/info:nodes-responded, {nodeCount}, {timeout}]]</span>
 
 			<table class="table table-striped">
@@ -57,13 +57,12 @@
 		</div>
 	</div>
 
-	<div class="panel panel-default">
-		<div class="panel-heading">
-			<h3 class="panel-title">[[admin/development/info:info]]</h3>
-		</div>
-
-		<div class="panel-body">
-			<div class="highlight">
+	<div class="card">
+		<h5 class="card-header">
+			[[admin/development/info:info]]
+		</h5>
+		<div class="card-body">
+			<div class="p-3 text-bg-light border border-secondary rounded">
 				<pre>{infoJSON}</pre>
 			</div>
 		</div>
