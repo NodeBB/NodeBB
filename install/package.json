@@ -37,7 +37,7 @@
         "bcryptjs": "2.4.3",
         "benchpressjs": "2.4.3",
         "body-parser": "1.20.1",
-        "bootbox": "5.5.3",
+        "bootbox": "6.0.0",
         "bootstrap": "3.4.1",
         "chalk": "4.1.2",
         "chart.js": "2.9.4",
