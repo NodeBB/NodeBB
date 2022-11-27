@@ -12,6 +12,7 @@ module.exports =function (utils, Benchpress, relative_path) {
 		escape,
 		stripTags,
 		buildCategoryIcon,
+		buildCategoryLabel,
 		generateCategoryBackground,
 		generateChildrenCategories,
 		generateTopicClass,
@@ -86,6 +87,17 @@ module.exports =function (utils, Benchpress, relative_path) {
 		}
 
 		return `<span class="icon d-inline-flex justify-content-center align-items-center align-middle ${rounded}" style="${generateCategoryBackground(category)} width:${size}; height: ${size}; font-size: ${parseInt(size, 10) / 2}px;">${category.icon ? `<i class="fa fa-fw ${category.icon}"></i>` : ''}</span>`;
+	}
+
+	function buildCategoryLabel(category) {
+		if (!category) {
+			return '';
+		}
+
+		return `<span class="badge px-1" style="${generateCategoryBackground(category)}">
+			${category.icon ? `<i class="fa fa-fw ${category.icon}"></i>` : ''}
+			${category.name}
+		</span>`;
 	}
 
 	function generateCategoryBackground(category) {
