@@ -38,7 +38,7 @@
         "bcryptjs": "2.4.3",
         "benchpressjs": "2.4.3",
         "body-parser": "1.20.1",
-        "bootbox": "https://github.com/makeusabrew/bootbox.git#v6-wip",
+        "bootbox": "6.0.0",
         "bootstrap": "5.2.3",
         "bootswatch": "5.2.2",
         "chalk": "4.1.2",
