@@ -16,7 +16,7 @@ const logger = require('../logger');
 const plugins = require('../plugins');
 const ratelimit = require('../middleware/ratelimit');
 
-const Namespaces  = {} as any;
+const Namespaces = Object.create(null, {});
 
 const Sockets  = {} as any;
 
