@@ -109,8 +109,13 @@ privsAdmin.resolve = (path) => {
 		return privsAdmin.routeMap[path];
 	}
 
-	const found = Object.entries(privsAdmin.routePrefixMap).find(entry => path.startsWith(entry[0]));
-	return found ? found[1] : undefined;
+	const found = Object.entries(privsAdmin.routePrefixMap)
+		.filter(entry => path.startsWith(entry[0]))
+		.sort((entry1, entry2) => entry2[0].length - entry1[0].length);
+	if (!found.length) {
+		return undefined;
+	}
+	return found[0][1]; // [0] is path [1] is privilege
 };
 
 privsAdmin.list = async function (uid) {
