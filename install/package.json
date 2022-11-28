@@ -58,7 +58,7 @@
         "csurf": "1.11.0",
         "daemon": "1.1.0",
         "diff": "5.1.0",
-        "esbuild": "0.15.15",
+        "esbuild": "0.15.16",
         "express": "4.18.2",
         "express-session": "1.17.3",
         "express-useragent": "1.0.15",
