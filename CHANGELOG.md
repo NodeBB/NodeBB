@@ -1,3 +1,20 @@
+#### v1.19.11 (2022-11-28)
+
+##### Chores
+
+*  up version, closes #10812 (a06c05c2)
+*  update composer-default (9fffce87)
+
+##### New Features
+
+*  store topic title and tags in diffs (#10900) (175d5342)
+
+##### Bug Fixes
+
+*  prototype vulnerability in socket.io onMessage (963bfff3)
+*  use admin:groups priv for groups (#10960) (65284c14)
+*  broken flag history on flag update (98be0420)
+
 #### v1.19.6 (2022-04-13)
 
 ##### Chores
