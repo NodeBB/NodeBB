@@ -205,7 +205,8 @@ define('forum/topic', [
 
 	function addDropupHandler() {
 		// Locate all dropdowns
-		const target = $('#content .dropdown-menu').parent();
+		const topicEl = components.get('topic');
+		const target = topicEl.find('.dropdown-menu').parent();
 		$(target).on('shown.bs.dropdown', function () {
 			const dropdownEl = this.querySelector('.dropdown-menu');
 			if (dropdownEl.innerHTML) {
