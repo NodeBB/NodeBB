@@ -1,3 +1,40 @@
+#### v2.6.1 (2022-11-28)
+
+##### Chores
+
+*  incrementing version number - v2.6.0 (e7fcf482)
+*  update changelog for v2.6.0 (eedd84ae)
+*  incrementing version number - v2.5.8 (dec0e7de)
+*  incrementing version number - v2.5.7 (5836bf4a)
+*  incrementing version number - v2.5.6 (c7bd7dbf)
+*  incrementing version number - v2.5.5 (3509ed94)
+*  incrementing version number - v2.5.4 (e83260ca)
+*  incrementing version number - v2.5.3 (7e922936)
+*  incrementing version number - v2.5.2 (babcd17e)
+*  incrementing version number - v2.5.1 (ce3aa950)
+*  incrementing version number - v2.5.0 (01d276cb)
+*  incrementing version number - v2.4.5 (dd3e1a28)
+*  incrementing version number - v2.4.4 (d5525c87)
+*  incrementing version number - v2.4.3 (9c647c6c)
+*  incrementing version number - v2.4.2 (3aa7b855)
+*  incrementing version number - v2.4.1 (60cbd148)
+*  incrementing version number - v2.4.0 (4834cde3)
+*  incrementing version number - v2.3.1 (d2425942)
+*  incrementing version number - v2.3.0 (046ea120)
+
+##### Documentation Changes
+
+*  remote extraneous lines from changelog (8a15e58d)
+
+##### Bug Fixes
+
+*  prototype vulnerability in socket.io onMessage (48d14392)
+*  #11066, fix custom privilege/path in routePrefixMap (0e495f9e)
+
+##### Refactors
+
+*  not deprecated on 2.x (91c2e5ac)
+
 #### v2.6.0 (2022-11-23)
 
 ##### Chores
