@@ -30,7 +30,7 @@ define('forum/header', [
 					.removeClass('away online dnd offline')
 					.addClass(status);
 				$('[component="header/usercontrol"] [data-status]').each(function () {
-					$(this).find('span').toggleClass('bold', $(this).attr('data-status') === status);
+					$(this).find('span').toggleClass('fw-bold', $(this).attr('data-status') === status);
 				});
 				app.user.status = status;
 			});
