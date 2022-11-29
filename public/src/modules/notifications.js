@@ -13,16 +13,20 @@ define('notifications', [
 
 	let unreadNotifs = {};
 
-	const _addShortTimeagoString = ({ notifications: notifs }) => new Promise((resolve) => {
+	const _addTimeagoString = ({ notifications: notifs }) => new Promise((resolve) => {
+		for (let i = 0; i < notifs.length; i += 1) {
+			notifs[i].timeagoLong = $.timeago(new Date(parseInt(notifs[i].datetime, 10)));
+		}
 		translator.toggleTimeagoShorthand(function () {
 			for (let i = 0; i < notifs.length; i += 1) {
 				notifs[i].timeago = $.timeago(new Date(parseInt(notifs[i].datetime, 10)));
+				notifs[i].timeagoShort = notifs[i].timeago;
 			}
 			translator.toggleTimeagoShorthand();
 			resolve({ notifications: notifs });
 		});
 	});
-	hooks.on('filter:notifications.load', _addShortTimeagoString);
+	hooks.on('filter:notifications.load', _addTimeagoString);
 
 	Notifications.loadNotifications = function (notifList, callback) {
 		callback = callback || function () {};
@@ -56,11 +60,14 @@ define('notifications', [
 					components.get('notifications').on('click', '.mark-all-read', Notifications.markAllRead);
 
 					notifList.on('click', '.mark-read', function () {
-						const liEl = $(this).parents('li');
+						const $this = $(this);
+						const liEl = $this.parents('li');
 						const unread = liEl.hasClass('unread');
 						const nid = liEl.attr('data-nid');
 						markNotification(nid, unread, function () {
 							liEl.toggleClass('unread');
+							$this.find('.unread').toggleClass('hidden', unread);
+							$this.find('.read').toggleClass('hidden', !unread);
 						});
 						return false;
 					});
