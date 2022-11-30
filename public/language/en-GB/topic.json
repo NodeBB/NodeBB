@@ -54,6 +54,16 @@
 	"backlink": "Referenced by",
 	"forked-by": "Forked by",
 
+	"x-locked": "locked this topic",
+	"x-unlocked": "unlocked this topic",
+	"x-pinned": "pinned this topic",
+	"x-unpinned": "unpinned this topic",
+	"x-deleted": "deleted this topic",
+	"x-restored": "restored this topic",
+	"x-moved-from": "moved this topic from %1",
+	"x-backlink": "referenced this topic",
+	"x-forked": "forked this topic",
+
 	"bookmark_instructions" : "Click here to return to the last read post in this thread.",
 
 	"flag-post": "Flag this post",
