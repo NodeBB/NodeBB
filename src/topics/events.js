@@ -26,32 +26,26 @@ Events._types = {
 	pin: {
 		icon: 'fa-thumb-tack',
 		text: '[[topic:pinned-by]]',
-		'x-text': '[[topic:x-pinned]]',
 	},
 	unpin: {
 		icon: 'fa-thumb-tack fa-rotate-90',
 		text: '[[topic:unpinned-by]]',
-		'x-text': '[[topic:x-unpinned]]',
 	},
 	lock: {
 		icon: 'fa-lock',
 		text: '[[topic:locked-by]]',
-		'x-text': '[[topic:x-locked]]',
 	},
 	unlock: {
 		icon: 'fa-unlock',
 		text: '[[topic:unlocked-by]]',
-		'x-text': '[[topic:x-unlocked]]',
 	},
 	delete: {
 		icon: 'fa-trash',
 		text: '[[topic:deleted-by]]',
-		'x-text': '[[topic:x-deleted]]',
 	},
 	restore: {
 		icon: 'fa-trash-o',
 		text: '[[topic:restored-by]]',
-		'x-text': '[[topic:x-restored]]',
 	},
 	move: {
 		icon: 'fa-arrow-circle-right',
@@ -65,12 +59,10 @@ Events._types = {
 	backlink: {
 		icon: 'fa-link',
 		text: '[[topic:backlink]]',
-		'x-text': '[[topic:x-backlink]]',
 	},
 	fork: {
 		icon: 'fa-code-fork',
 		text: '[[topic:forked-by]]',
-		'x-text': '[[topic:x-forked]]',
 	},
 };
 
