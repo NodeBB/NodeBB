@@ -61,7 +61,7 @@ define('notifications', [
 
 					notifList.on('click', '.mark-read', function () {
 						const $this = $(this);
-						const liEl = $this.parents('li');
+						const liEl = $this.parents('li[data-nid]');
 						const unread = liEl.hasClass('unread');
 						const nid = liEl.attr('data-nid');
 						markNotification(nid, unread, function () {
@@ -138,7 +138,7 @@ define('notifications', [
 
 		notifIcon.toggleClass('unread-count', count > 0);
 		notifIcon.attr('data-content', count > 99 ? '99+' : count);
-
+		components.get('notifications/count').toggleClass('hidden', count <= 0).text(count);
 		const payload = {
 			count: count,
 			updateFavicon: true,
