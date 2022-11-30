@@ -130,15 +130,13 @@ define('notifications', [
 	Notifications.updateNotifCount = function (count) {
 		const notifIcon = components.get('notifications/icon');
 		count = Math.max(0, count);
-		if (count > 0) {
-			notifIcon.removeClass('fa-bell-o').addClass('fa-bell');
-		} else {
-			notifIcon.removeClass('fa-bell').addClass('fa-bell-o');
-		}
+		notifIcon.toggleClass('fa-bell', count > 0)
+			.toggleClass('fa-bell-o', count <= 0);
 
+		const countText = count > 99 ? '99+' : count;
 		notifIcon.toggleClass('unread-count', count > 0);
-		notifIcon.attr('data-content', count > 99 ? '99+' : count);
-		components.get('notifications/count').toggleClass('hidden', count <= 0).text(count);
+		notifIcon.attr('data-content', countText);
+		components.get('notifications/count').toggleClass('hidden', count <= 0).text(countText);
 		const payload = {
 			count: count,
 			updateFavicon: true,
@@ -146,7 +144,7 @@ define('notifications', [
 		hooks.fire('action:notification.updateCount', payload);
 
 		if (payload.updateFavicon) {
-			Tinycon.setBubble(count > 99 ? '99+' : count);
+			Tinycon.setBubble(countText);
 		}
 
 		if (navigator.setAppBadge) { // feature detection

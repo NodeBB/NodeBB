@@ -28,9 +28,16 @@ define('forum/header/chat', ['components', 'hooks'], function (components, hooks
 		socket.on('event:chats.roomRename', onRoomRename);
 
 		socket.on('event:unread.updateChatCount', function (count) {
+			const chatIcon = components.get('chat/icon');
+			count = Math.max(0, count);
+			chatIcon.toggleClass('fa-comment', count > 0)
+				.toggleClass('fa-comment-o', count <= 0);
+
+			const countText = count > 99 ? '99+' : count;
 			components.get('chat/icon')
 				.toggleClass('unread-count', count > 0)
-				.attr('data-content', count > 99 ? '99+' : count);
+				.attr('data-content', countText);
+			components.get('chat/count').toggleClass('hidden', count <= 0).text(countText);
 			hooks.fire('action:chat.updateCount', { count });
 		});
 	};
