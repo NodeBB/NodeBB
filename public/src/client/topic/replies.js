@@ -34,7 +34,7 @@ define('forum/topic/replies', ['forum/topic/posts', 'hooks', 'alerts'], function
 					hideReplies: config.hasOwnProperty('showNestedReplies') ? !config.showNestedReplies : true,
 				};
 				app.parseAndTranslate('topic', 'posts', tplData, function (html) {
-					const repliesEl = $('<div>', { component: 'post/replies' }).html(html).hide();
+					const repliesEl = $('<ul>', { component: 'post/replies', class: 'list-unstyled' }).html(html).hide();
 					if (button.attr('data-target-component')) {
 						post.find('[component="' + button.attr('data-target-component') + '"]').html(repliesEl);
 					} else {
