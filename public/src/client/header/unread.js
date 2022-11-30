@@ -83,11 +83,11 @@ define('forum/header/unread', ['hooks'], function (hooks) {
 		if (!utils.isNumber(count)) {
 			return;
 		}
-
-		$('a[href="' + config.relative_path + url + '"].navigation-link i')
+		const navLink = $('a[href="' + config.relative_path + url + '"].navigation-link');
+		navLink.find('i')
 			.toggleClass('unread-count', count > 0)
 			.attr('data-content', count > 99 ? '99+' : count);
-
+		navLink.find('[component="navigation/count"]').toggleClass('hidden', count <= 0).text(count);
 		$('#mobile-menu [data-unread-url="' + url + '"]').attr('data-content', count > 99 ? '99+' : count);
 
 		hooks.fire('action:unread.updateCount', { url, count });
