@@ -84,20 +84,13 @@
 }
 
 @mixin user-icon() {
-	display: inline-block;
-	text-align: center;
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
 	color: $white;
 	font-weight: normal;
-	vertical-align: middle;
 	overflow: hidden;	/* stops alt text from overflowing past boundaries if image does not load */
 	white-space: nowrap;
-
-	&:before {
-		content: '';
-		display: inline-block;
-		height: 100%;
-		vertical-align: middle;
-	}
 }
 
 .avatar {
