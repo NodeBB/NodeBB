@@ -67,7 +67,7 @@
 	"composer.schedule-time": "Time",
 	"composer.cancel-scheduling": "Cancel Scheduling",
 	"composer.set-schedule-date": "Set Date",
-
+	"composer.discard-all-drafts": "Discard All",
 
 	"bootbox.ok": "OK",
 	"bootbox.cancel": "Cancel",

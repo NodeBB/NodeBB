@@ -46,9 +46,11 @@
 	"header.account": "Account",
 	"header.navigation": "Navigation",
 	"header.manage": "Manage",
+	"header.drafts": "Drafts",
 
 	"notifications.loading": "Loading Notifications",
 	"chats.loading": "Loading Chats",
+	"drafts.loading": "Loading Drafts",
 
 	"motd.welcome": "Welcome to NodeBB, the discussion platform of the future.",
 
