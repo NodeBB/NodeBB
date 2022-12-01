@@ -9,6 +9,7 @@ define('forum/topic', [
 	'forum/topic/posts',
 	'navigator',
 	'sort',
+	'quickreply',
 	'components',
 	'storage',
 	'hooks',
@@ -16,7 +17,7 @@ define('forum/topic', [
 	'alerts',
 ], function (
 	infinitescroll, threadTools, postTools,
-	events, posts, navigator, sort,
+	events, posts, navigator, sort, quickreply,
 	components, storage, hooks, api, alerts
 ) {
 	const Topic = {};
@@ -62,7 +63,7 @@ define('forum/topic', [
 		addDropupHandler();
 		addRepliesHandler();
 		addPostsPreviewHandler();
-
+		setupQuickReply();
 		handleBookmark(tid);
 
 		$(window).on('scroll', utils.debounce(updateTopicTitle, 250));
@@ -290,6 +291,12 @@ define('forum/topic', [
 			clearTimeout(timeoutId);
 			$('#post-tooltip').remove();
 		});
+	}
+
+	function setupQuickReply() {
+		if (config.enableQuickReply) {
+			quickreply.init();
+		}
 	}
 
 	function updateTopicTitle() {
