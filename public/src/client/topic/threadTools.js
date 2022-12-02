@@ -187,23 +187,31 @@ define('forum/topic/threadTools', [
 	};
 
 	function renderMenu(container) {
-		container.on('show.bs.dropdown', '.thread-tools', function () {
-			const $this = $(this);
-			const dropdownMenu = $this.find('.dropdown-menu');
-			if (dropdownMenu.html()) {
-				return;
-			}
+		container = container.get(0);
+		if (!container) {
+			return;
+		}
 
-			socket.emit('topics.loadTopicTools', { tid: ajaxify.data.tid, cid: ajaxify.data.cid }, function (err, data) {
-				if (err) {
-					return alerts.error(err);
+		container.querySelectorAll('.thread-tools').forEach((toolsEl) => {
+			toolsEl.addEventListener('show.bs.dropdown', (e) => {
+				const dropdownMenu = e.target.nextElementSibling;
+				if (!dropdownMenu) {
+					return;
 				}
-				app.parseAndTranslate('partials/topic/topic-menu-list', data, function (html) {
-					dropdownMenu.html(html);
-					hooks.fire('action:topic.tools.load', {
-						element: dropdownMenu,
+
+				socket.emit('topics.loadTopicTools', { tid: ajaxify.data.tid, cid: ajaxify.data.cid }, function (err, data) {
+					if (err) {
+						return alerts.error(err);
+					}
+					app.parseAndTranslate('partials/topic/topic-menu-list', data, function (html) {
+						$(dropdownMenu).html(html);
+						hooks.fire('action:topic.tools.load', {
+							element: $(dropdownMenu),
+						});
 					});
 				});
+			}, {
+				once: true,
 			});
 		});
 	}
