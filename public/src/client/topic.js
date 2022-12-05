@@ -7,6 +7,7 @@ define('forum/topic', [
 	'forum/topic/postTools',
 	'forum/topic/events',
 	'forum/topic/posts',
+	'forum/topic/glance',
 	'navigator',
 	'sort',
 	'quickreply',
@@ -17,7 +18,7 @@ define('forum/topic', [
 	'alerts',
 ], function (
 	infinitescroll, threadTools, postTools,
-	events, posts, navigator, sort, quickreply,
+	events, posts, glance, navigator, sort, quickreply,
 	components, storage, hooks, api, alerts
 ) {
 	const Topic = {};
@@ -65,6 +66,7 @@ define('forum/topic', [
 		addPostsPreviewHandler();
 		setupQuickReply();
 		handleBookmark(tid);
+		glance.init();
 
 		$(window).on('scroll', utils.debounce(updateTopicTitle, 250));
 

@@ -8,6 +8,11 @@ define('forum/infinitescroll', ['hooks', 'alerts'], function (hooks, alerts) {
 	let loadingMore = false;
 	let container;
 	let scrollTimeout = 0;
+	let glance;
+
+	require(['forum/topic/glance'], (_glance) => {
+		glance = _glance;
+	});
 
 	scroll.init = function (el, cb) {
 		const $body = $('body');
@@ -39,7 +44,8 @@ define('forum/infinitescroll', ['hooks', 'alerts'], function (hooks, alerts) {
 	function onScroll() {
 		const bsEnv = utils.findBootstrapEnvironment();
 		const mobileComposerOpen = (bsEnv === 'xs' || bsEnv === 'sm') && $('html').hasClass('composing');
-		if (loadingMore || mobileComposerOpen) {
+		const glanceActive = glance.isActive();
+		if (loadingMore || mobileComposerOpen || glanceActive) {
 			return;
 		}
 		const currentScrollTop = $(window).scrollTop();
