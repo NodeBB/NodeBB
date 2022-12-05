@@ -414,6 +414,8 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 			navigator.callback(newIndex, count);
 		}
 
+		hooks.fire('action:navigator.update', { newIndex });
+
 		if (newIndex !== index) {
 			index = newIndex;
 			navigator.updateTextAndProgressBar();
