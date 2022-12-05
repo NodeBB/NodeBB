@@ -187,6 +187,7 @@ async function getBundleMetadata(target) {
 		const themeId = (themeData['theme:id'] || 'nodebb-theme-persona');
 		const baseThemePath = path.join(nconf.get('themes_path'), (themeData['theme:type'] && themeData['theme:type'] === 'local' ? themeId : 'nodebb-theme-persona'));
 		paths.unshift(baseThemePath);
+		paths.unshift(`${baseThemePath}/node_modules`);
 
 		themeData.bootswatchSkin = skin || themeData.bootswatchSkin;
 	}
