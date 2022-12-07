@@ -56,6 +56,14 @@ privsAdmin.routeMap = {
 	'extend/plugins': 'admin:settings',
 	'extend/widgets': 'admin:settings',
 	'extend/rewards': 'admin:settings',
+	// uploads
+	'category/uploadpicture': 'admin:categories',
+	uploadfavicon: 'admin:settings',
+	uploadTouchIcon: 'admin:settings',
+	uploadMaskableIcon: 'admin:settings',
+	uploadlogo: 'admin:settings',
+	uploadOgImage: 'admin:settings',
+	uploadDefaultAvatar: 'admin:settings',
 };
 privsAdmin.routePrefixMap = {
 	'manage/categories/': 'admin:categories',
