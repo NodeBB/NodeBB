@@ -79,6 +79,7 @@
 	display: -webkit-box;
 	-webkit-box-orient: vertical;
 	-webkit-line-clamp: $lines;
+	white-space: initial;
 }
 
 @for $i from 1 through 6 {
