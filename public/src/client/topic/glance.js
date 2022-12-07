@@ -112,6 +112,7 @@ function toggle(state) {
 	topicEl.classList[state ? 'add' : 'remove']('minimal');
 
 	if (state) {
+		app.flags._glance = true;
 		generatePlaceholders();
 		registerScrollEvent();
 	} else {
@@ -119,6 +120,7 @@ function toggle(state) {
 		deregisterScrollEvent();
 
 		navigator.scrollToIndex(navigator.getIndex() - 1, true, 0);
+		delete app.flags._glance;
 	}
 }
 
