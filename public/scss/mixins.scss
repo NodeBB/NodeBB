@@ -73,3 +73,16 @@
 	line-height: $size;
 	font-size: $font-size;
 }
+
+@mixin line-clamp($lines) {
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: $lines;
+}
+
+@for $i from 1 through 6 {
+	.line-clamp-#{$i} {
+		@include line-clamp($i);
+	}
+}
