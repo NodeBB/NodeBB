@@ -66,7 +66,7 @@ define('forum/topic', [
 		addPostsPreviewHandler();
 		setupQuickReply();
 		handleBookmark(tid);
-		glance.init();
+		glance.default();
 
 		$(window).on('scroll', utils.debounce(updateTopicTitle, 250));
 

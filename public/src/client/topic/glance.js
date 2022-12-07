@@ -10,7 +10,7 @@ let trackBottom;
 let trackHeight;
 let knobEl;
 
-export function init() {
+export default function init() {
 	const topicEl = document.querySelector('[component="topic"]');
 	const navigatorEl = document.querySelector('[component="topic/navigator"]');
 
@@ -24,7 +24,7 @@ export function init() {
 	console.debug('[glance] At-a-glance navigator enabled.');
 }
 
-export function isActive() {
+function isActive() {
 	const topicEl = document.querySelector('[component="topic"]');
 	return ajaxify.data.template.topic && topicEl && topicEl.classList.contains('minimal');
 }
@@ -105,8 +105,8 @@ function onKnobMove(e) {
 function toggle(state) {
 	const topicEl = document.querySelector('[component="topic"]');
 
-	if (!state) {
-		state = !isActive();
+	if (state === undefined) {
+		state = app.flags._glance !== true;
 	}
 
 	topicEl.classList[state ? 'add' : 'remove']('minimal');
