@@ -3,7 +3,7 @@
 import { render } from 'benchpress';
 import { loadMore } from 'forum/infinitescroll';
 import * as navigator from 'navigator';
-import { onPage } from 'hooks';
+import { onPage, one as once } from 'hooks';
 
 let trackTop;
 let trackBottom;
@@ -18,15 +18,16 @@ export default function init() {
 		return;
 	}
 
+	navigatorEl.classList.toggle('d-sm-flex', true);
 	enableButtons();
 	({ knobEl } = enableKnob());
 
-	console.debug('[glance] At-a-glance navigator enabled.');
-}
+	once('action:ajaxify.cleanup', () => {
+		console.log('start');
+		navigatorEl.classList.toggle('d-sm-flex', false);
+	});
 
-function isActive() {
-	const topicEl = document.querySelector('[component="topic"]');
-	return ajaxify.data.template.topic && topicEl && topicEl.classList.contains('minimal');
+	console.debug('[glance] At-a-glance navigator enabled.');
 }
 
 function enableButtons() {
