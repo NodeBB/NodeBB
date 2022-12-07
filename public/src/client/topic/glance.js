@@ -15,14 +15,13 @@ export function init() {
 	const navigatorEl = document.querySelector('[component="topic/navigator"]');
 
 	if (!ajaxify.data.template.topic || !topicEl || !navigatorEl) {
-		console.warn('[glance] Cannot init — not in topic or can\'t find topic element');
 		return;
 	}
 
 	enableButtons();
 	({ knobEl } = enableKnob());
 
-	console.debug('[glance] init');
+	console.debug('[glance] At-a-glance navigator enabled.');
 }
 
 export function isActive() {
