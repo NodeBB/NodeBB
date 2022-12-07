@@ -85,9 +85,14 @@ define('chat', [
 				return room.teaser;
 			});
 
+			for (let i = 0; i < rooms.length; i += 1) {
+				rooms[i].teaser.timeagoLong = $.timeago(new Date(parseInt(rooms[i].teaser.timestamp, 10)));
+			}
+
 			translator.toggleTimeagoShorthand(function () {
 				for (let i = 0; i < rooms.length; i += 1) {
 					rooms[i].teaser.timeago = $.timeago(new Date(parseInt(rooms[i].teaser.timestamp, 10)));
+					rooms[i].teaser.timeagoShort = rooms[i].teaser.timeago;
 				}
 				translator.toggleTimeagoShorthand();
 				app.parseAndTranslate('partials/chats/dropdown', { rooms: rooms }, function (html) {
