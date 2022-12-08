@@ -1,0 +1,12 @@
+{
+    "username-email": "Օգտանուն / Էլ. փոստ",
+    "username": "Օգտանուն",
+    "remember_me": "Հիշե՞լ ինձ։",
+    "forgot_password": "Մոռացե՞լ եք գաղտնաբառը։",
+    "alternative_logins": "Մուտքի այլ եղանակներ",
+    "failed_login_attempt": "Մուտքը չհաջողվեց",
+    "login_successful": "Դուք բարեհաջող մուտք գործեցիք։",
+    "dont_have_account": "Չունե՞ք հաշիվ։",
+    "logged-out-due-to-inactivity": "Դուք դուրս եք գրվել ադմինիստրատորի ղեկավարման վահանակից՝ ակտիվություն չցուցաբերելու պատճառով",
+    "caps-lock-enabled": "Caps Lock-ը միացված է"
+}

@@ -1,0 +1,11 @@
+{
+	"alert.confirm-rebuild-and-restart": "Վստա՞հ եք, որ ցանկանում եք վերակառուցել ու վերագործարկել NodeBB-ն։",
+	"alert.confirm-restart": "Վստա՞հ եք, որ ցանկանում եք վերագործարկել NodeBB-ն։",
+
+	"acp-title": "%1 | NodeBB Կառավարման Վահանակ",
+	"settings-header-contents": "Պարունակություն",
+	"changes-saved": "Փոփոխությունները պահպանված են",
+	"changes-saved-message": "Կարգավորումների փոփոխությունները պահպանված են",
+	"changes-not-saved": "Փոփոխությունները պահպանված չեն",
+	"changes-not-saved-message": "Փոփոխությունների պահպանման հետ խնդիր կա (%1)"
+}
