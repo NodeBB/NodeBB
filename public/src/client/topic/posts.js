@@ -296,8 +296,8 @@ define('forum/topic/posts', [
 		if (config.topicPostSort === 'most_votes') {
 			return;
 		}
-		const html = helpers.renderEvents.call(ajaxify.data, events);
-		translator.translate(html, (translated) => {
+		const event = events[0];
+		app.parseAndTranslate('partials/topic/event', event).then(function (translated) {
 			if (config.topicPostSort === 'oldest_to_newest') {
 				$('[component="topic"]').append(translated);
 			} else if (config.topicPostSort === 'newest_to_oldest') {
