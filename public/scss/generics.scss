@@ -156,12 +156,18 @@ blockquote {
 	.hover-d-block, .hover-d-flex {
 		display: none!important;
 	}
+	.hover-visible {
+		visibility: hidden;
+	}
 	&:hover {
 		.hover-d-block {
 			display: block!important;
 		}
 		.hover-d-flex {
 			display: flex!important;
+		}
+		.hover-visible {
+			visibility: visible;
 		}
 	}
 }
