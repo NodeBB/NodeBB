@@ -4,11 +4,12 @@ import { render } from 'benchpress';
 import { loadMore } from 'forum/infinitescroll';
 import * as navigator from 'navigator';
 import { onPage, one as once } from 'hooks';
+import { translate } from 'translator';
 
 let trackTop;
 let trackBottom;
 let trackHeight;
-let knobEl;
+let handleEl;
 
 export default function init() {
 	const topicEl = document.querySelector('[component="topic"]');
@@ -20,7 +21,7 @@ export default function init() {
 
 	navigatorEl.classList.toggle('d-sm-flex', true);
 	enableButtons();
-	({ knobEl } = enableKnob());
+	({ handleEl } = enableHandle());
 
 	once('action:ajaxify.cleanup', () => {
 		navigatorEl.classList.toggle('d-sm-flex', false);
@@ -48,26 +49,27 @@ function enableButtons() {
 	});
 }
 
-function enableKnob() {
-	const knobEl = document.querySelector('[component="topic/navigator"] .knob');
+function enableHandle() {
+	const handleEl = document.querySelector('[component="topic/navigator"] .handle');
 	let active = false;
 
 	updateTrackPosition();
+	updateHandleText();
 	window.addEventListener('resize', updateTrackPosition);
 
 	onPage('action:navigator.update', ({ newIndex }) => {
 		if (!active) {
-			repositionKnob(newIndex);
+			repositionHandle(newIndex);
 		}
 	});
 
 	onPage('action:navigator.scrolled', ({ newIndex }) => {
 		if (!active) {
-			repositionKnob(newIndex);
+			repositionHandle(newIndex);
 		}
 	});
 
-	knobEl.addEventListener('mousedown', (e) => {
+	handleEl.addEventListener('mousedown', (e) => {
 		// Only respond to left click
 		if (e.buttons !== 1) {
 			return;
@@ -75,36 +77,51 @@ function enableKnob() {
 
 		toggle(true);
 		active = true;
-		document.addEventListener('mousemove', onKnobMove);
+		document.addEventListener('mousemove', onHandleMove);
 		document.addEventListener('mouseup', () => {
 			toggle(false);
-			document.removeEventListener('mousemove', onKnobMove);
+			document.removeEventListener('mousemove', onHandleMove);
 			active = false;
 		}, {
 			once: true,
 		});
 	});
 
-	return { knobEl };
+	return { handleEl };
 }
 
-function repositionKnob(index) {
-	// Updates the position of the knob on the track based on viewport
+function repositionHandle(index) {
+	// Updates the position of the handle on the track based on viewport
 	if (!index) {
-		index = navigator.getIndex();
+		index = navigator.getIndex() - 1;
+	} else {
+		index -= 1;
+	}
+
+	updateHandleText();
+
+	if (index === 0) {
+		handleEl.style.top = 0;
+		return;
 	}
 
 	const percentage = index / ajaxify.data.postcount;
-	knobEl.style.top = `${trackHeight * percentage}px`;
+	handleEl.style.top = `${trackHeight * percentage}px`;
 }
 
-function onKnobMove(e) {
+async function updateHandleText() {
+	const index = navigator.getIndex();
+	const text = await translate(`[[topic:navigator.index, ${index}, ${ajaxify.data.postcount}]]`);
+	handleEl.querySelector('.meta').innerText = text;
+}
+
+function onHandleMove(e) {
 	const top = Math.min(trackBottom, Math.max(trackTop, e.clientY)) - trackTop;
 	const percentage = top / trackHeight;
 
 	const documentHeight = document.documentElement.scrollHeight - window.innerHeight;
 
-	knobEl.style.top = `${top}px`;
+	handleEl.style.top = `${top}px`;
 	window.scrollTo(0, documentHeight * percentage);
 }
 

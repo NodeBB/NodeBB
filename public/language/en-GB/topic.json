@@ -222,5 +222,7 @@
 	"last-post": "Last post",
 	"go-to-my-next-post": "Go to my next post",
 	"no-more-next-post": "You don't have more posts in this topic",
-	"post-quick-reply": "Quick reply"
+	"post-quick-reply": "Quick reply",
+
+	"navigator.index": "Post %1 of %2"
 }
