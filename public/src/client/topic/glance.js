@@ -23,11 +23,16 @@ export default function init() {
 	({ knobEl } = enableKnob());
 
 	once('action:ajaxify.cleanup', () => {
-		console.log('start');
 		navigatorEl.classList.toggle('d-sm-flex', false);
+		window.removeEventListener('resize', updateTrackPosition);
 	});
 
 	console.debug('[glance] At-a-glance navigator enabled.');
+}
+
+function updateTrackPosition() {
+	const trackEl = document.querySelector('[component="topic/navigator"] .track');
+	({ top: trackTop, bottom: trackBottom, height: trackHeight } = trackEl.getBoundingClientRect());
 }
 
 function enableButtons() {
@@ -44,11 +49,11 @@ function enableButtons() {
 }
 
 function enableKnob() {
-	const trackEl = document.querySelector('[component="topic/navigator"] .track');
 	const knobEl = document.querySelector('[component="topic/navigator"] .knob');
 	let active = false;
 
-	({ top: trackTop, bottom: trackBottom, height: trackHeight } = trackEl.getBoundingClientRect());
+	updateTrackPosition();
+	window.addEventListener('resize', updateTrackPosition);
 
 	onPage('action:navigator.update', ({ newIndex }) => {
 		if (!active) {
