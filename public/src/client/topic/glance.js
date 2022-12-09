@@ -22,6 +22,7 @@ export default function init() {
 	navigatorEl.classList.toggle('d-sm-flex', true);
 	enableButtons();
 	({ handleEl } = enableHandle());
+	updateUnreadIndicator();
 
 	once('action:ajaxify.cleanup', () => {
 		navigatorEl.classList.toggle('d-sm-flex', false);
@@ -90,6 +91,13 @@ function enableHandle() {
 	return { handleEl };
 }
 
+function updateUnreadIndicator() {
+	const unreadEl = document.querySelector('[component="topic/navigator"] .unread');
+	const percentage = 1 - (ajaxify.data.bookmark / ajaxify.data.postcount);
+
+	unreadEl.style.height = `${trackHeight * percentage}px`;
+}
+
 function repositionHandle(index) {
 	// Updates the position of the handle on the track based on viewport
 	if (!index) {
@@ -99,6 +107,7 @@ function repositionHandle(index) {
 	}
 
 	updateHandleText();
+	updateUnreadIndicator();
 
 	if (index === 0) {
 		handleEl.style.top = 0;
