@@ -63,7 +63,7 @@
         "express-session": "1.17.3",
         "express-useragent": "1.0.15",
         "file-loader": "6.2.0",
-        "fs-extra": "10.1.0",
+        "fs-extra": "11.1.0",
         "graceful-fs": "4.2.10",
         "helmet": "5.1.1",
         "html-to-text": "8.2.1",
