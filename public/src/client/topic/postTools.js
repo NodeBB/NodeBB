@@ -31,32 +31,41 @@ define('forum/topic/postTools', [
 	};
 
 	function renderMenu() {
-		$('[component="topic"]').on('show.bs.dropdown', '.moderator-tools', function () {
-			const $this = $(this);
-			const dropdownMenu = $this.find('.dropdown-menu');
-			if (dropdownMenu.html()) {
-				return;
-			}
-			const postEl = $this.parents('[data-pid]');
-			const pid = postEl.attr('data-pid');
-			const index = parseInt(postEl.attr('data-index'), 10);
+		const container = document.querySelector('[component="topic"]');
+		if (!container) {
+			return;
+		}
 
-			socket.emit('posts.loadPostTools', { pid: pid, cid: ajaxify.data.cid }, async (err, data) => {
-				if (err) {
-					return alerts.error(err);
+		container.querySelectorAll('.moderator-tools').forEach((toolsEl) => {
+			toolsEl.addEventListener('show.bs.dropdown', (e) => {
+				const dropdownMenu = e.target.nextElementSibling;
+				if (!dropdownMenu) {
+					return;
 				}
-				data.posts.display_move_tools = data.posts.display_move_tools && index !== 0;
 
-				const html = await app.parseAndTranslate('partials/topic/post-menu-list', data);
-				const clipboard = require('clipboard');
+				const postEl = e.target.closest('[data-pid]');
+				const pid = postEl.getAttribute('data-pid');
+				const index = parseInt(postEl.getAttribute('data-index'), 10);
 
-				dropdownMenu.html(html);
+				socket.emit('posts.loadPostTools', { pid: pid, cid: ajaxify.data.cid }, async (err, data) => {
+					if (err) {
+						return alerts.error(err);
+					}
+					data.posts.display_move_tools = data.posts.display_move_tools && index !== 0;
 
-				new clipboard('[data-clipboard-text]');
+					const html = await app.parseAndTranslate('partials/topic/post-menu-list', data);
+					const clipboard = require('clipboard');
 
-				hooks.fire('action:post.tools.load', {
-					element: dropdownMenu,
+					$(dropdownMenu).html(html);
+
+					new clipboard('[data-clipboard-text]');
+
+					hooks.fire('action:post.tools.load', {
+						element: $(dropdownMenu),
+					});
 				});
+			}, {
+				once: true,
 			});
 		});
 	}
