@@ -101,13 +101,15 @@ async function updateUnreadIndicator() {
 	const percentage = 1 - (index / ajaxify.data.postcount);
 	unreadEl.style.height = `${trackHeight * percentage}px`;
 
-	const metaEl = unreadEl.querySelector('.meta');
+	const anchorEl = unreadEl.querySelector('.meta a');
 	const remaining = ajaxify.data.postcount - index;
 	if (remaining > 0) {
 		const text = await translate(`[[topic:navigator.unread, ${remaining}]]`);
-		metaEl.innerText = text;
+		anchorEl.href = `${config.relative_path}/topic/${ajaxify.data.slug}/${Math.min(index + 1, ajaxify.data.postcount)}`;
+		anchorEl.innerText = text;
 	} else {
-		metaEl.innerText = '';
+		anchorEl.href = ajaxify.data.url;
+		anchorEl.innerText = '';
 	}
 }
 
