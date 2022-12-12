@@ -22,7 +22,13 @@ module.exports = function (Topics) {
 	};
 
 	Topics.setUserBookmark = async function (tid, uid, index) {
-		await db.sortedSetAdd(`tid:${tid}:bookmarks`, index, uid);
+		if (parseInt(uid, 10) <= 0) {
+			return;
+		}
+		const currentIndex = await db.sortedSetScore(`tid:${tid}:bookmarks`, uid);
+		if (!currentIndex || index > currentIndex) {
+			await db.sortedSetAdd(`tid:${tid}:bookmarks`, index, uid);
+		}
 	};
 
 	Topics.getTopicBookmarks = async function (tid) {
