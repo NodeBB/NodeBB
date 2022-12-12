@@ -168,7 +168,6 @@ function onHandleMove(e) {
 
 	handleEl.style.top = `${top}px`;
 	window.scrollTo(0, documentHeight * percentage);
-	getIndexFromTrack();
 }
 
 function toggle(state) {
