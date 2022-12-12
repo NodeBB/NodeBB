@@ -91,9 +91,13 @@ function enableHandle() {
 	return { handleEl };
 }
 
-function updateUnreadIndicator() {
+function updateUnreadIndicator(index) {
+	if (ajaxify.data.postcount < ajaxify.data.bookmarkThreshold) {
+		return;
+	}
+
 	const unreadEl = document.querySelector('[component="topic/navigator"] .unread');
-	const percentage = 1 - (ajaxify.data.bookmark / ajaxify.data.postcount);
+	const percentage = 1 - (Math.max(index, ajaxify.data.bookmark) / ajaxify.data.postcount);
 
 	unreadEl.style.height = `${trackHeight * percentage}px`;
 }
@@ -107,7 +111,7 @@ function repositionHandle(index) {
 	}
 
 	updateHandleText();
-	updateUnreadIndicator();
+	updateUnreadIndicator(index);
 
 	if (index === 0) {
 		handleEl.style.top = 0;
