@@ -143,9 +143,10 @@ async function updateHandleText() {
 	const indexEl = handleEl.querySelector('.meta .index');
 	const timestampEl = handleEl.querySelector('.meta .timestamp');
 
-	const { timestampISO } = await socket.emit('posts.getPostSummaryByIndex', { tid, index: index - 1 });
 	const text = await translate(`[[topic:navigator.index, ${index}, ${ajaxify.data.postcount}]]`);
 	indexEl.innerText = text;
+
+	const { timestampISO } = await socket.emit('posts.getPostSummaryByIndex', { tid, index: index - 1 });
 	timestampEl.title = timestampISO;
 	$(timestampEl).timeago();
 }
