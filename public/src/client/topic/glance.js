@@ -95,12 +95,21 @@ function enableHandle() {
 	return { handleEl };
 }
 
+function getIndexFromTrack() {
+	const { top: handleTop } = handleEl.getBoundingClientRect();
+	const delta = handleTop - trackTop;
+	const percentage = delta / trackHeight;
+	const index = Math.floor(ajaxify.data.postcount * percentage);
+
+	return index;
+}
+
 async function updateUnreadIndicator() {
 	if (ajaxify.data.postcount <= ajaxify.data.bookmarkThreshold) {
 		return;
 	}
 
-	const index = Math.max(navigator.getIndex(), ajaxify.data.bookmark);
+	const index = Math.max(getIndexFromTrack(), ajaxify.data.bookmark);
 	const unreadEl = document.querySelector('[component="topic/navigator"] .unread');
 	const percentage = 1 - (index / ajaxify.data.postcount);
 	unreadEl.style.height = `${trackHeight * percentage}px`;
@@ -120,7 +129,7 @@ async function updateUnreadIndicator() {
 function repositionHandle(index) {
 	// Updates the position of the handle on the track based on viewport
 	if (!index) {
-		index = navigator.getIndex() - 1;
+		index = getIndexFromTrack();
 	} else {
 		index -= 1;
 	}
@@ -138,7 +147,7 @@ function repositionHandle(index) {
 }
 
 async function updateHandleText() {
-	const index = navigator.getIndex();
+	const index = getIndexFromTrack() + 1;
 	const { tid } = ajaxify.data;
 	const indexEl = handleEl.querySelector('.meta .index');
 	const timestampEl = handleEl.querySelector('.meta .timestamp');
@@ -159,6 +168,7 @@ function onHandleMove(e) {
 
 	handleEl.style.top = `${top}px`;
 	window.scrollTo(0, documentHeight * percentage);
+	getIndexFromTrack();
 }
 
 function toggle(state) {
@@ -178,7 +188,7 @@ function toggle(state) {
 		removePlaceholders();
 		deregisterScrollEvent();
 
-		navigator.scrollToIndex(navigator.getIndex() - 1, true, 0);
+		navigator.scrollToIndex(getIndexFromTrack(), true, 0);
 		delete app.flags._glance;
 	}
 }
