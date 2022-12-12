@@ -76,7 +76,7 @@ function enableHandle() {
 			return;
 		}
 
-		const tUpdateHandleText = utils.throttle(updateHandleText, 250);
+		const tUpdateHandleText = utils.debounce(updateHandleText, 250);
 
 		toggle(true);
 		active = true;
