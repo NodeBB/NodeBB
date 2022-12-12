@@ -2,7 +2,7 @@
 
 import { render } from 'benchpress';
 import { loadMore } from 'forum/infinitescroll';
-import * as navigator from 'navigator';
+import { scrollToIndex } from 'navigator';
 import { onPage, one as once } from 'hooks';
 import { translate } from 'translator';
 
@@ -187,7 +187,7 @@ function toggle(state) {
 		removePlaceholders();
 		deregisterScrollEvent();
 
-		navigator.scrollToIndex(getIndexFromTrack(), true, 0);
+		scrollToIndex(getIndexFromTrack(), true, 0);
 		delete app.flags._glance;
 	}
 }
