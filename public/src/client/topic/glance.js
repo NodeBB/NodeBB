@@ -22,6 +22,7 @@ export default function init() {
 	navigatorEl.classList.toggle('d-sm-flex', true);
 	enableButtons();
 	({ handleEl } = enableHandle());
+	updateHandleText();
 	updateUnreadIndicator();
 
 	once('action:ajaxify.cleanup', () => {
@@ -55,7 +56,6 @@ function enableHandle() {
 	let active = false;
 
 	updateTrackPosition();
-	updateHandleText();
 	window.addEventListener('resize', updateTrackPosition);
 
 	onPage('action:navigator.update', ({ newIndex }) => {
@@ -76,12 +76,16 @@ function enableHandle() {
 			return;
 		}
 
+		const tUpdateHandleText = utils.throttle(updateHandleText, 250);
+
 		toggle(true);
 		active = true;
 		document.addEventListener('mousemove', onHandleMove);
+		document.addEventListener('mousemove', tUpdateHandleText);
 		document.addEventListener('mouseup', () => {
 			toggle(false);
 			document.removeEventListener('mousemove', onHandleMove);
+			document.removeEventListener('mousemove', tUpdateHandleText);
 			active = false;
 		}, {
 			once: true,
@@ -92,7 +96,7 @@ function enableHandle() {
 }
 
 async function updateUnreadIndicator() {
-	if (ajaxify.data.postcount < ajaxify.data.bookmarkThreshold) {
+	if (ajaxify.data.postcount <= ajaxify.data.bookmarkThreshold) {
 		return;
 	}
 
@@ -135,8 +139,15 @@ function repositionHandle(index) {
 
 async function updateHandleText() {
 	const index = navigator.getIndex();
+	const { tid } = ajaxify.data;
+	const indexEl = handleEl.querySelector('.meta .index');
+	const timestampEl = handleEl.querySelector('.meta .timestamp');
+
+	const { timestampISO } = await socket.emit('posts.getPostSummaryByIndex', { tid, index: index - 1 });
 	const text = await translate(`[[topic:navigator.index, ${index}, ${ajaxify.data.postcount}]]`);
-	handleEl.querySelector('.meta').innerText = text;
+	indexEl.innerText = text;
+	timestampEl.title = timestampISO;
+	$(timestampEl).timeago();
 }
 
 function onHandleMove(e) {
