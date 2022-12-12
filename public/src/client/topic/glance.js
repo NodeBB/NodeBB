@@ -91,15 +91,26 @@ function enableHandle() {
 	return { handleEl };
 }
 
-function updateUnreadIndicator(index) {
+async function updateUnreadIndicator() {
 	if (ajaxify.data.postcount < ajaxify.data.bookmarkThreshold) {
 		return;
 	}
 
+	const index = Math.max(navigator.getIndex(), ajaxify.data.bookmark);
 	const unreadEl = document.querySelector('[component="topic/navigator"] .unread');
-	const percentage = 1 - (Math.max(index, ajaxify.data.bookmark) / ajaxify.data.postcount);
-
+	const percentage = 1 - (index / ajaxify.data.postcount);
 	unreadEl.style.height = `${trackHeight * percentage}px`;
+
+	const anchorEl = unreadEl.querySelector('.meta a');
+	const remaining = ajaxify.data.postcount - index;
+	if (remaining > 0) {
+		const text = await translate(`[[topic:navigator.unread, ${remaining}]]`);
+		anchorEl.href = `${config.relative_path}/topic/${ajaxify.data.slug}/${Math.min(index + 1, ajaxify.data.postcount)}`;
+		anchorEl.innerText = text;
+	} else {
+		anchorEl.href = ajaxify.data.url;
+		anchorEl.innerText = '';
+	}
 }
 
 function repositionHandle(index) {
@@ -111,7 +122,7 @@ function repositionHandle(index) {
 	}
 
 	updateHandleText();
-	updateUnreadIndicator(index);
+	updateUnreadIndicator();
 
 	if (index === 0) {
 		handleEl.style.top = 0;

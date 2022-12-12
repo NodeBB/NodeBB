@@ -358,14 +358,16 @@ define('forum/topic', [
 			)
 		) {
 			if (app.user.uid) {
+				ajaxify.data.bookmark = index + 1;
+
 				socket.emit('topics.bookmark', {
 					tid: ajaxify.data.tid,
 					index: index,
 				}, function (err) {
 					if (err) {
+						ajaxify.data.bookmark = currentBookmark;
 						return alerts.error(err);
 					}
-					ajaxify.data.bookmark = index + 1;
 				});
 			} else {
 				storage.setItem(bookmarkKey, index);
