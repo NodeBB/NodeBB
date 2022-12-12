@@ -439,15 +439,15 @@ const utils = {
 		return !utils.isAbsoluteUrl(url);
 	},
 
-	makeNumberHumanReadable: function (num) {
+	makeNumberHumanReadable: function (num, toFixed = 1) {
 		const n = parseInt(num, 10);
 		if (!n) {
 			return num;
 		}
 		if (n > 999999) {
-			return (n / 1000000).toFixed(1) + 'm';
+			return (n / 1000000).toFixed(toFixed) + 'm';
 		} else if (n > 999) {
-			return (n / 1000).toFixed(1) + 'k';
+			return (n / 1000).toFixed(toFixed) + 'k';
 		}
 		return n;
 	},
