@@ -9,6 +9,7 @@ const pagination = require('../pagination');
 const user = require('../user');
 const topics = require('../topics');
 const helpers = require('./helpers');
+const privileges = require('../privileges');
 
 const unreadController = module.exports;
 const relative_path = nconf.get('relative_path');
@@ -17,9 +18,10 @@ unreadController.get = async function (req, res) {
 	const { cid } = req.query;
 	const filter = req.query.filter || '';
 
-	const [categoryData, userSettings, isPrivileged] = await Promise.all([
+	const [categoryData, userSettings, canPost, isPrivileged] = await Promise.all([
 		helpers.getSelectedCategory(cid),
 		user.getSettings(req.uid),
+		privileges.categories.canPostTopic(req.uid),
 		user.isPrivileged(req.uid),
 	]);
 
@@ -53,6 +55,7 @@ unreadController.get = async function (req, res) {
 		req.query.page = Math.max(1, Math.min(data.pageCount, page));
 		return helpers.redirect(res, `/unread?${querystring.stringify(req.query)}`);
 	}
+	data.canPost = canPost;
 	data.showSelect = true;
 	data.showTopicTools = isPrivileged;
 	data.allCategoriesUrl = `${baseUrl}${helpers.buildQueryString(req.query, 'cid', '')}`;

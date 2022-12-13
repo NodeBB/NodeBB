@@ -4,7 +4,6 @@
 const nconf = require('nconf');
 
 const user = require('../user');
-const categories = require('../categories');
 const topics = require('../topics');
 const meta = require('../meta');
 const helpers = require('./helpers');
@@ -37,7 +36,7 @@ recentController.getData = async function (req, url, sort) {
 		user.getSettings(req.uid),
 		helpers.getSelectedCategory(cid),
 		user.auth.getFeedToken(req.uid),
-		canPostTopic(req.uid),
+		privileges.categories.canPostTopic(req.uid),
 		user.isPrivileged(req.uid),
 	]);
 
@@ -90,10 +89,5 @@ recentController.getData = async function (req, url, sort) {
 	return data;
 };
 
-async function canPostTopic(uid) {
-	let cids = await categories.getAllCidsFromSet('categories:cid');
-	cids = await privileges.categories.filterCids('topics:create', cids, uid);
-	return cids.length > 0;
-}
 
 require('../promisify')(recentController, ['get']);
