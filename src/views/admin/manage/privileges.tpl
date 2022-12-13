@@ -8,7 +8,7 @@
 
 				<div class="lead mb-3">
 					[[admin/manage/categories:privileges.category-selector]]
-					<!-- IMPORT partials/category-selector.tpl -->
+					<!-- IMPORT admin/partials/category-selector.tpl -->
 				</div>
 
 				<div class="privilege-table-container">

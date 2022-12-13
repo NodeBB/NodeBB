@@ -105,7 +105,7 @@
 							<input id="memberPostCids" type="text" class="form-control" value="{group.memberPostCids}">
 						</div>
 						<div class="col-md-3 member-post-cids-selector">
-							<!-- IMPORT partials/category-selector.tpl -->
+							<!-- IMPORT admin/partials/category-selector.tpl -->
 						</div>
 					</div>
 				</div>
@@ -146,7 +146,7 @@
 			<hr />
 			<div class="edit-privileges-selector">
 				<label class="form-label" class="float-start">[[admin/manage/privileges:edit-privileges]]</label>
-				<!-- IMPORT partials/category-selector.tpl -->
+				<!-- IMPORT admin/partials/category-selector.tpl -->
 			</div>
 		</div>
 	</form>
