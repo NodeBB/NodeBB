@@ -1,3 +1,62 @@
+#### v2.7.0 (2022-12-14)
+
+##### Chores
+
+*  added stub file in hy (9ee8502d)
+*  incrementing version number - v2.6.1 (7e52a7a5)
+*  update changelog for v2.6.1 (b5ce7e8e)
+*  incrementing version number - v2.6.0 (e7fcf482)
+*  incrementing version number - v2.5.8 (dec0e7de)
+*  incrementing version number - v2.5.7 (5836bf4a)
+*  incrementing version number - v2.5.6 (c7bd7dbf)
+*  incrementing version number - v2.5.5 (3509ed94)
+*  incrementing version number - v2.5.4 (e83260ca)
+*  incrementing version number - v2.5.3 (7e922936)
+*  incrementing version number - v2.5.2 (babcd17e)
+*  incrementing version number - v2.5.1 (ce3aa950)
+*  incrementing version number - v2.5.0 (01d276cb)
+*  incrementing version number - v2.4.5 (dd3e1a28)
+*  incrementing version number - v2.4.4 (d5525c87)
+*  incrementing version number - v2.4.3 (9c647c6c)
+*  incrementing version number - v2.4.2 (3aa7b855)
+*  incrementing version number - v2.4.1 (60cbd148)
+*  incrementing version number - v2.4.0 (4834cde3)
+*  incrementing version number - v2.3.1 (d2425942)
+*  incrementing version number - v2.3.0 (046ea120)
+* **deps:**
+  *  update dependency lint-staged to v13.1.0 (#11082) (693d4783)
+  *  update dependency eslint to v8.29.0 (#11074) (eab5b754)
+  *  update dependency lint-staged to v13.0.4 (#11064) (f947ac6d)
+* **i18n:**
+  *  fallback strings for new resources: nodebb.admin-settings-email (0e319a58)
+  *  fallback strings for new resources: nodebb.admin-settings-email (9676b192)
+
+##### New Features
+
+*  update transifex config (for use with new cli) (f11094cb)
+*  integrating basic client-side form validity checking in settings v1 and v2 (dadbcd73)
+*  add ./nodebb install <plugin_name> (4efc19d5)
+
+##### Bug Fixes
+
+* **deps:**
+  *  update dependency nodebb-theme-lavender to v6.0.1 (#11081) (df3f1c5e)
+  *  update dependency esbuild to v0.16.3 (#11083) (85d38158)
+  *  update dependency html-to-text to v9 (#11075) (d8e9738d)
+  *  update dependency ace-builds to v1.13.2 (#11080) (35be4594)
+  *  update dependency fs-extra to v11 (#11072) (aafb7f6e)
+  *  update dependency esbuild to v0.15.16 (#11069) (7bc4b836)
+  *  update dependency mongodb to v4.12.1 (#11062) (e14d4abc)
+*  relax selectors for client-side form validation so that all form elements are checked (43e7c988)
+*  change hsts-maxage back to numeric input type, change API token uid input to numeric text type (db8d3a94)
+*  replace input type number with text/pattern (45ae31f8)
+*  categories.js not showing custom privileges (#10856) (8c4d6bbe)
+*  #11077, add admin uploads paths to priv mapping (07a02125)
+
+##### Tests
+
+*  dont try to load admin upload routes (c2bb2b30)
+
 #### v2.6.1 (2022-11-28)
 
 ##### Chores
