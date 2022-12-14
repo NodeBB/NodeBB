@@ -1,0 +1,12 @@
+{
+    "administrators": "Ադմինիստրատորներ",
+    "global-moderators": "Ընդհանուր մոդերատորներ",
+    "moderators": "Մոդերատորներ ",
+    "no-global-moderators": "Ընդհանուր մոդերատորներ չկան",
+    "no-sub-categories": "Ենթակատեգորիաներ չկան",
+    "subcategories": " %1 ենթակատեգորիաներ",
+    "no-moderators": "Մոդերատորներ չկան",
+    "add-administrator": "Ավելացնել ադմինիստրատոր",
+    "add-global-moderator": "Ավելացնել ընդհանուր մոդերատոր",
+    "add-moderator": "Ավելացնել Մոդերատոր"
+}

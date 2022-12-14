@@ -1,0 +1,13 @@
+{
+	"eu-consent": "ԵՄ համաձայնությունը",
+	"consent.enabled": "Միացված է",
+	"consent.message": "Ծանուցման հաղորդագրություն",
+	"consent.acceptance": "Ընդունման հաղորդագրություն",
+	"consent.link-text": "Policy Link Text",
+	"consent.link-url": "Քաղաքականության հղման URL",
+	"consent.blank-localised-default": "Թողեք դատարկ՝ NodeBB տեղայնացված հիմնական օգտագործման համար",
+	"settings": "Կարգավորումներ",
+	"cookie-domain": "Աշխատաշրջանի cookie տիրույթ",
+	"max-user-sessions": "Առավելագույն ակտիվ նստաշրջանները մեկ օգտատերի համար",
+	"blank-default": " Թողնել դատարկ հիմնականի համար "
+}

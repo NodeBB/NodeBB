@@ -173,11 +173,16 @@ program
 	});
 
 program
-	.command('install')
-	.description('Launch the NodeBB web installer for configuration setup')
-	.action(() => {
-		require('./setup').webInstall();
+	.command('install [plugin]')
+	.description('Launch the NodeBB web installer for configuration setup or install a plugin')
+	.action((plugin) => {
+		if (plugin) {
+			require('./manage').install(plugin);
+		} else {
+			require('./setup').webInstall();
+		}
 	});
+
 program
 	.command('build [targets...]')
 	.description(`Compile static assets ${chalk.red('(JS, CSS, templates, languages)')}`)

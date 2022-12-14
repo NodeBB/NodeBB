@@ -1,0 +1,10 @@
+{
+	"crawlability-settings": "Crawlability կարգավորումներ",
+	"robots-txt": "Պատվերով Robots.txt Թողնել դատարկ հիմնականի համար ",
+	"sitemap-feed-settings": "Կայքի քարտեզ և լրահոսի կարգավորումներ",
+	"disable-rss-feeds": "Անջատել RSS Feeds",
+	"disable-sitemap-xml": "Անջատել Sitemap.xml",
+	"sitemap-topics": "Կայքի քարտեզում ցուցադրվող թեմաների քանակը",
+	"clear-sitemap-cache": "Մաքրել կայքի քարտեզի քեշը",
+	"view-sitemap": "Դիտել կայքի քարտեզը"
+}

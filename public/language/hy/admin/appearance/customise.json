@@ -1,0 +1,16 @@
+{
+	"custom-css": "Հատուկ CSS/LESS",
+	"custom-css.description": "Մուտքագրեք ձեր սեփական CSS/LESS հայտարարագրերն այստեղ, որոնք կկիրառվեն բոլոր մյուս ոճերից հետո:",
+	"custom-css.enable": "Միացնել Custom CSS/LESS-ը",
+
+	"custom-js": "Custom Javascript",
+	"custom-js.description": "Մուտքագրեք ձեր սեփական javascript-ն այստեղ: Այն կկատարվի էջն ամբողջությամբ բեռնվելուց հետո:",
+	"custom-js.enable": "Միացնել Custom Javascript-ը",
+
+	"custom-header": "Պատվերով վերնագիր",
+	"custom-header.description": "Մուտքագրեք հատուկ HTML-ն այստեղ (օրինակ՝ Meta Tags և այլն), որը կկցվի &lt;head&gt; ձեր ֆորումի նշագրման բաժինը: Սկրիպտի պիտակները թույլատրվում են, բայց չեն խրախուսվում, քանի որ հասանելի է Custom Javascript ներդիրը:",
+	"custom-header.enable": "Միացնել հատուկ Վերնագիրը",
+
+	"custom-css.livereload": "Միացնել Live Reload-ը",
+	"custom-css.livereload.description": "Միացրեք սա՝ ձեր հաշվի տակ գտնվող յուրաքանչյուր սարքի բոլոր աշխատաշրջանները ստիպելու համար թարմացնել, երբ սեղմեք «Պահել» կոճակը"
+}

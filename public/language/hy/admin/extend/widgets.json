@@ -1,0 +1,30 @@
+{
+	"available": "Հասանելի վիդջեթներ",
+	"explanation": "Բացվող ընտրացանկից ընտրեք վիջեթ, այնուհետև քաշեք և թողեք այն ձախ կողմում գտնվող ձևանմուշի վիդջեթի տարածք:",
+	"none-installed": "Վիջեթներ չեն գտնվել: Ակտիվացրեք վիջեթի հիմնական հավելվածը plugins կառավարման վահանակում:",
+	"clone-from": "Կլոնավորել վիջեթներ-ից",
+	"containers.available": "Առկա Containers",
+	"containers.explanation": "Քաշեք և թողեք ցանկացած ակտիվ վիջեթի վերևում",
+	"containers.none": "None",
+	"container.well": "Well",
+	"container.jumbotron": "Jumbotron",
+	"container.panel": "Panel",
+	"container.panel-header": "Panel-ի վերնագիր",
+	"container.panel-body": "Panel Body",
+	"container.alert": "Զգուշացում",
+
+	"alert.confirm-delete": "Վստա՞հ եք, որ ցանկանում եք ջնջել այս վիջեթը:",
+	"alert.updated": "Վիջեթները թարմացվել են",
+	"alert.update-success": "Վիջեթները հաջողությամբ թարմացվեցին",
+	"alert.clone-success": "Վիդջեթները հաջողությամբ կլոնավորվեցին",
+
+	"error.select-clone": "Խնդրում ենք ընտրել էջ, որտեղից կլոնավորվել",
+
+	"title": "Վերնագիր",
+	"title.placeholder": "Վերնագիր (ցուցադրված է միայն որոշ կոնտեյներների վրա)",
+	"container": "Կոնտեյներ",
+	"container.placeholder": "Քաշեք և գցեք կոնտեյներ կամ մուտքագրեք HTML այստեղ:",
+	"show-to-groups": "Ցույց տալ խմբերին ",
+	"hide-from-groups": "Թաքցնել խմբերից",
+	"hide-on-mobile": "Թաքցնել բջջայինի վրա"
+}

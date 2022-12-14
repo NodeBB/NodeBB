@@ -21,7 +21,7 @@
 	"headers.coop": "Cross-Origin-Opener-Policy",
 	"headers.corp": "Cross-Origin-Resource-Policy",
 	"headers.permissions-policy": "Permissions-Policy",
-	"headers.permissions-policy-help": "Allows setting permissions policy header, for example \"geolocation=*, camera=()\", see <a href=\"https://github.com/w3c/webappsec-permissions-policy/blob/main/permissions-policy-explainer.md\">this</a> for more info.",
+	"headers.permissions-policy-help": "Consente di impostare l'intestazione dei criteri di autorizzazione, ad esempio \"geolocation=*, camera=()\", guardare <a href=\"https://github.com/w3c/webappsec-permissions-policy/blob/main/permissions-policy-explainer.md\">questo</a> per maggiori informazioni.",
 	"hsts": "Rigorosa sicurezza trasporto",
 	"hsts.enabled": "Abilita HSTS (consigliato)",
 	"hsts.maxAge": "Età massima HSTS",
