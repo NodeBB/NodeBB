@@ -102,7 +102,7 @@
         "nodebb-theme-persona": "12.1.12",
         "nodebb-theme-slick": "2.0.2",
         "nodebb-theme-vanilla": "12.1.19",
-        "nodebb-widget-essentials": "6.0.0",
+        "nodebb-widget-essentials": "6.0.1",
         "nodemailer": "6.8.0",
         "nprogress": "0.2.0",
         "passport": "0.6.0",
