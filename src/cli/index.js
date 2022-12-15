@@ -175,9 +175,10 @@ program
 program
 	.command('install [plugin]')
 	.description('Launch the NodeBB web installer for configuration setup or install a plugin')
-	.action((plugin) => {
+	.option('-f, --force', 'Force plugin installation even if it may be incompatible with currently installed NodeBB version')
+	.action((plugin, options) => {
 		if (plugin) {
-			require('./manage').install(plugin);
+			require('./manage').install(plugin, options);
 		} else {
 			require('./setup').webInstall();
 		}
