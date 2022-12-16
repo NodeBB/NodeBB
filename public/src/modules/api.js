@@ -61,20 +61,20 @@ async function xhr(options, cb) {
 }
 
 export function get(route, payload, onSuccess) {
-	call({
+	return call({
 		url: route + (payload && Object.keys(payload).length ? ('?' + $.param(payload)) : ''),
 	}, onSuccess);
 }
 
 export function head(route, payload, onSuccess) {
-	call({
+	return call({
 		url: route + (payload && Object.keys(payload).length ? ('?' + $.param(payload)) : ''),
 		method: 'head',
 	}, onSuccess);
 }
 
 export function post(route, payload, onSuccess) {
-	call({
+	return call({
 		url: route,
 		method: 'post',
 		data: JSON.stringify(payload || {}),
@@ -86,7 +86,7 @@ export function post(route, payload, onSuccess) {
 }
 
 export function patch(route, payload, onSuccess) {
-	call({
+	return call({
 		url: route,
 		method: 'patch',
 		data: JSON.stringify(payload || {}),
@@ -98,7 +98,7 @@ export function patch(route, payload, onSuccess) {
 }
 
 export function put(route, payload, onSuccess) {
-	call({
+	return call({
 		url: route,
 		method: 'put',
 		data: JSON.stringify(payload || {}),
@@ -110,7 +110,7 @@ export function put(route, payload, onSuccess) {
 }
 
 export function del(route, payload, onSuccess) {
-	call({
+	return call({
 		url: route,
 		method: 'delete',
 		data: JSON.stringify(payload),
