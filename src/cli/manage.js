@@ -14,7 +14,10 @@ const analytics = require('../analytics');
 const reset = require('./reset');
 const { pluginNamePattern, themeNamePattern, paths } = require('../constants');
 
-async function install(plugin) {
+async function install(plugin, options) {
+	if (!options) {
+		options = {};
+	}
 	try {
 		await db.init();
 		if (!pluginNamePattern.test(plugin)) {
@@ -31,7 +34,11 @@ async function install(plugin) {
 		const nbbVersion = require(paths.currentPackage).version;
 		const suggested = await plugins.suggest(plugin, nbbVersion);
 		if (!suggested.version) {
-			throw new Error(suggested.message);
+			if (!options.force) {
+				throw new Error(suggested.message);
+			}
+			winston.warn(`${suggested.message} Proceeding with installation anyway due to force option being provided`);
+			suggested.version = 'latest';
 		}
 		winston.info('Installing Plugin `%s@%s`', plugin, suggested.version);
 		await plugins.toggleInstall(plugin, suggested.version);
