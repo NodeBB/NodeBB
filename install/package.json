@@ -119,7 +119,7 @@
         "request-promise-native": "1.0.9",
         "rimraf": "3.0.2",
         "rss": "1.2.2",
-        "sanitize-html": "2.7.3",
+        "sanitize-html": "2.8.0",
         "semver": "7.3.8",
         "serve-favicon": "2.5.0",
         "sharp": "0.31.2",
