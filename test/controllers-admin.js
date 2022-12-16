@@ -832,7 +832,18 @@ describe('Admin Controllers', () => {
 						});
 					});
 				}
-				for (const route of Object.keys(privileges.admin.routeMap)) {
+				const uploadRoutes = [
+					'category/uploadpicture',
+					'uploadfavicon',
+					'uploadTouchIcon',
+					'uploadMaskableIcon',
+					'uploadlogo',
+					'uploadOgImage',
+					'uploadDefaultAvatar',
+				];
+				const adminRoutes = Object.keys(privileges.admin.routeMap)
+					.filter(route => !uploadRoutes.includes(route));
+				for (const route of adminRoutes) {
 					/* eslint-disable no-await-in-loop */
 					await privileges.admin.rescind([privileges.admin.routeMap[route]], uid);
 					let res = await makeRequest(`${nconf.get('url')}/api/admin/${route}`);
@@ -845,7 +856,7 @@ describe('Admin Controllers', () => {
 					await privileges.admin.rescind([privileges.admin.routeMap[route]], uid);
 				}
 
-				for (const route of Object.keys(privileges.admin.routeMap)) {
+				for (const route of adminRoutes) {
 					/* eslint-disable no-await-in-loop */
 					await privileges.admin.rescind([privileges.admin.routeMap[route]], uid);
 					let res = await makeRequest(`${nconf.get('url')}/api/admin`);
