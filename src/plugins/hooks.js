@@ -33,6 +33,11 @@ Hooks._deprecated = new Map([
 		since: 'v2.2.0',
 		until: 'v3.0.0',
 	}],
+	['filter:flags.getFilters', {
+		new: 'filter:flags.init',
+		since: 'v2.7.0',
+		until: 'v3.0.0',
+	}],
 ]);
 
 Hooks.internals = {
