@@ -81,7 +81,7 @@ middleware.checkPrivileges = helpers.try(async (req, res, next) => {
 	}
 
 	if (res.locals.isAPI) {
-		res.status(401).json({});
+		controllers.helpers.formatApiResponse(401, res);
 	} else {
 		res.redirect(`${nconf.get('relative_path')}/login?local=1`);
 	}
