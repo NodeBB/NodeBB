@@ -1,6 +1,6 @@
 'use strict';
 
-define('api', ['hooks'], (hooks) => {
+define('api', ['hooks', 'bootbox'], (hooks, bootbox) => {
 	const api = {};
 	const baseUrl = config.relative_path + '/api/v3';
 
@@ -40,8 +40,19 @@ define('api', ['hooks'], (hooks) => {
 
 		return new Promise((resolve, reject) => {
 			doAjax(function (err, data) {
-				if (err) reject(err);
-				else resolve(data);
+				if (err) {
+					if (err.message === 'A valid login session was not found. Please log in and try again.') {
+						return bootbox.confirm('[[error:api.reauth-required]]', (ok) => {
+							if (ok) {
+								ajaxify.go('login');
+							}
+						});
+					}
+
+					return reject(err);
+				}
+
+				resolve(data);
 			});
 		});
 	}
