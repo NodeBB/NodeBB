@@ -283,7 +283,7 @@ define('forum/chats', [
 		modal.on('click', '[data-action="kick"]', function () {
 			const uid = parseInt(this.getAttribute('data-uid'), 10);
 
-			api.delete(`/chats/${roomId}/users/${uid}`, {}).then((body) => {
+			api.del(`/chats/${roomId}/users/${uid}`, {}).then((body) => {
 				Chats.refreshParticipantsList(roomId, modal, body);
 			}).catch(alerts.error);
 		});
@@ -297,7 +297,7 @@ define('forum/chats', [
 				message: '<p>[[modules:chat.leave-prompt]]</p><p class="form-text">[[modules:chat.leave-help]]</p>',
 				callback: function (ok) {
 					if (ok) {
-						api.delete(`/chats/${roomId}/users/${app.user.uid}`, {}).then(() => {
+						api.del(`/chats/${roomId}/users/${app.user.uid}`, {}).then(() => {
 							// Return user to chats page. If modal, close modal.
 							const modal = buttonEl.parents('.chat-modal');
 							if (modal.length) {
@@ -399,7 +399,7 @@ define('forum/chats', [
 
 	Chats.leave = function (el) {
 		const roomId = el.attr('data-roomid');
-		api.delete(`/chats/${roomId}/users/${app.user.uid}`, {}).then(() => {
+		api.del(`/chats/${roomId}/users/${app.user.uid}`, {}).then(() => {
 			if (parseInt(roomId, 10) === parseInt(ajaxify.data.roomId, 10)) {
 				ajaxify.go('user/' + ajaxify.data.userslug + '/chats');
 			} else {

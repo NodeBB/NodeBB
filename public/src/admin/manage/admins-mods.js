@@ -114,7 +114,7 @@ define('admin/manage/admins-mods', [
 
 			bootbox.confirm('[[admin/manage/users:alerts.confirm-remove-moderator]]', function (confirm) {
 				if (confirm) {
-					api.delete(`/categories/${cid}/moderator/${uid}`, {}, function (err) {
+					api.del(`/categories/${cid}/moderator/${uid}`, {}, function (err) {
 						if (err) {
 							return alerts.error(err);
 						}

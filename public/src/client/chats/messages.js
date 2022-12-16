@@ -195,7 +195,7 @@ define('forum/chats/messages', [
 					return;
 				}
 
-				api.delete(`/chats/${roomId}/messages/${messageId}`, {}).then(() => {
+				api.del(`/chats/${roomId}/messages/${messageId}`, {}).then(() => {
 					components.get('chat/message', messageId).toggleClass('deleted', true);
 				}).catch(alerts.error);
 			});

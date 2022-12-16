@@ -52,7 +52,7 @@ define('forum/topic/delete-posts', [
 
 	function deletePosts(btn, route) {
 		btn.attr('disabled', true);
-		Promise.all(postSelect.pids.map(pid => api.delete(route(pid), {})))
+		Promise.all(postSelect.pids.map(pid => api.del(route(pid), {})))
 			.then(closeModal)
 			.catch(alerts.error)
 			.finally(() => {

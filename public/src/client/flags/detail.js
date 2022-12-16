@@ -50,7 +50,7 @@ define('forum/flags/detail', [
 					const datetime = parseInt(this.closest('[data-datetime]').getAttribute('data-datetime'), 10);
 					bootbox.confirm('[[flags:delete-note-confirm]]', function (ok) {
 						if (ok) {
-							api.delete(`/flags/${ajaxify.data.flagId}/notes/${datetime}`, {}).then((payload) => {
+							api.del(`/flags/${ajaxify.data.flagId}/notes/${datetime}`, {}).then((payload) => {
 								alerts.success('[[flags:note-deleted]]');
 								Detail.reloadNotes(payload.notes);
 								Detail.reloadHistory(payload.history);
@@ -126,7 +126,7 @@ define('forum/flags/detail', [
 				case 'delete-flag': {
 					bootbox.confirm('[[flags:delete-flag-confirm]]', function (ok) {
 						if (ok) {
-							api.delete(`/flags/${ajaxify.data.flagId}`, {}).then(() => {
+							api.del(`/flags/${ajaxify.data.flagId}`, {}).then(() => {
 								alerts.success('[[flags:flag-deleted]]');
 								ajaxify.go('flags');
 							}).catch(alerts.error);
