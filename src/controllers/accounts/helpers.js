@@ -42,6 +42,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 	);
 
 	userData = await user.hidePrivateData(userData, callerUID);
+	userData.emailHidden = !userSettings.showemail;
 	userData.emailClass = userSettings.showemail ? 'hide' : '';
 
 	// If email unconfirmed, hide from result set
