@@ -1,24 +1,30 @@
 'use strict';
 
+import validator from 'validator';
+import db from '../database';
+import user from '../user';
+import privileges from '../privileges';
+import plugins from '../plugins';
+import meta from '../meta';
+import utils from '../utils';
 
-const validator = require('validator');
+const Messaging = {} as any;
 
-const db = require('../database');
-const user = require('../user');
-const privileges = require('../privileges');
-const plugins = require('../plugins');
-const meta = require('../meta');
-const utils = require('../utils');
+import data from './data';
+import create from './create';
+import deleteMessage from './delete';
+import edit from './edit';
+import rooms from './rooms';
+import unread from './unread';
+import notifications from './notifications';
 
-const Messaging = module.exports;
-
-require('./data')(Messaging);
-require('./create')(Messaging);
-require('./delete')(Messaging);
-require('./edit')(Messaging);
-require('./rooms')(Messaging);
-require('./unread')(Messaging);
-require('./notifications')(Messaging);
+data(Messaging);
+create(Messaging);
+deleteMessage(Messaging);
+edit(Messaging);
+rooms(Messaging);
+unread(Messaging);
+notifications(Messaging);
 
 Messaging.messageExists = async mid => db.exists(`message:${mid}`);
 
@@ -303,4 +309,6 @@ Messaging.canViewMessage = async (mids, roomId, uid) => {
 	return single ? canView.pop() : canView;
 };
 
-require('../promisify')(Messaging);
+import promisify from '../promisify';
+promisify(Messaging);
+export default Messaging

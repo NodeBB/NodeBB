@@ -1,9 +1,9 @@
 'use strict';
 
-const meta = require('../../meta');
-const userDigest = require('../../user/digest');
+import meta from '../../meta';
+import userDigest from '../../user/digest';
 
-const Digest = module.exports;
+const Digest  = {} as any;
 
 Digest.resend = async (socket, data) => {
 	const { uid } = data;
@@ -22,3 +22,5 @@ Digest.resend = async (socket, data) => {
 		await userDigest.execute({ interval: interval });
 	}
 };
+
+export default Digest;

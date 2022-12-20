@@ -1,18 +1,21 @@
 'use strict';
 
-const winston = require('winston');
+import winston from 'winston';
+import categories from '../categories';
+import plugins from '../plugins';
+import slugify from '../slugify';
+import db from '../database';
+import user from '../user';
+import * as  batch from '../batch';
+import meta from '../meta';
+import cache from '../cache';
+import admin from '../widgets/admin';
+import widgets from '../widgets';
+import navigation from '../navigation/admin';
 
-const categories = require('../categories');
-const plugins = require('../plugins');
-const slugify = require('../slugify');
-const db = require('../database');
-const user = require('../user');
-const batch = require('../batch');
-const meta = require('../meta');
-const cache = require('../cache');
 
 
-module.exports = function (Groups) {
+export default function (Groups) {
 	Groups.update = async function (groupName, values) {
 		const exists = await db.exists(`group:${groupName}`);
 		if (!exists) {
@@ -37,7 +40,7 @@ module.exports = function (Groups) {
 			icon: values.icon || '',
 			labelColor: values.labelColor || '#000000',
 			textColor: values.textColor || '#ffffff',
-		};
+		} as any;
 
 		if (values.hasOwnProperty('userTitle')) {
 			payload.userTitle = values.userTitle || '';
@@ -240,7 +243,6 @@ module.exports = function (Groups) {
 	}
 
 	async function updateNavigationItems(oldName, newName) {
-		const navigation = require('../navigation/admin');
 		const navItems = await navigation.get();
 		navItems.forEach((navItem) => {
 			if (navItem && Array.isArray(navItem.groups) && navItem.groups.includes(oldName)) {
@@ -252,8 +254,7 @@ module.exports = function (Groups) {
 	}
 
 	async function updateWidgets(oldName, newName) {
-		const admin = require('../widgets/admin');
-		const widgets = require('../widgets');
+
 
 		const data = await admin.get();
 

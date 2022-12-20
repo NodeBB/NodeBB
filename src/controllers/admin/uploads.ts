@@ -1,19 +1,18 @@
 'use strict';
 
-const path = require('path');
-const nconf = require('nconf');
-const fs = require('fs');
-
-const meta = require('../../meta');
-const posts = require('../../posts');
-const file = require('../../file');
-const image = require('../../image');
-const plugins = require('../../plugins');
-const pagination = require('../../pagination');
+import path from 'path';
+import nconf from 'nconf';
+import fs from 'fs';
+import meta from '../../meta';
+import posts from '../../posts';
+import file from '../../file';
+import image from '../../image';
+import plugins from '../../plugins';
+import pagination from '../../pagination';
 
 const allowedImageTypes = ['image/png', 'image/jpeg', 'image/pjpeg', 'image/jpg', 'image/gif', 'image/svg+xml'];
 
-const uploadsController = module.exports;
+const uploadsController = {} as any;
 
 uploadsController.get = async function (req, res, next) {
 	const currentFolder = path.join(nconf.get('upload_path'), req.query.dir || '');
@@ -33,7 +32,7 @@ uploadsController.get = async function (req, res, next) {
 		files = await filesToData(currentFolder, files);
 
 		// Float directories to the top
-		files.sort((a, b) => {
+		files.sort((a: any, b: any) => {
 			if (a.isDirectory && !b.isDirectory) {
 				return -1;
 			} else if (!a.isDirectory && b.isDirectory) {
@@ -48,7 +47,7 @@ uploadsController.get = async function (req, res, next) {
 		// Add post usage info if in /files
 		if (['files', '/files', '/files/'].includes(req.query.dir)) {
 			const usage = await posts.uploads.getUsage(files);
-			files.forEach((file, idx) => {
+			files.forEach((file: any, idx) => {
 				file.inPids = usage[idx].map(pid => parseInt(pid, 10));
 			});
 		}
@@ -59,7 +58,7 @@ uploadsController.get = async function (req, res, next) {
 			breadcrumbs: buildBreadcrumbs(currentFolder),
 			pagination: pagination.create(page, Math.ceil(itemCount / itemsPerPage), req.query),
 		});
-	} catch (err) {
+	} catch (err: any) {
 		next(err);
 	}
 };
@@ -113,8 +112,7 @@ uploadsController.uploadCategoryPicture = async function (req, res, next) {
 
 	try {
 		params = JSON.parse(req.body.params);
-	} catch (e) {
-		file.delete(uploadedFile.path);
+} catch (e: any) {		file.delete(uploadedFile.path);
 		return next(new Error('[[error:invalid-json]]'));
 	}
 
@@ -132,7 +130,7 @@ uploadsController.uploadFavicon = async function (req, res, next) {
 		try {
 			const imageObj = await file.saveFileToLocal('favicon.ico', 'system', uploadedFile.path);
 			res.json([{ name: uploadedFile.name, url: imageObj.url }]);
-		} catch (err) {
+		} catch (err: any) {
 			next(err);
 		} finally {
 			file.delete(uploadedFile.path);
@@ -159,7 +157,7 @@ uploadsController.uploadTouchIcon = async function (req, res, next) {
 				});
 			}
 			res.json([{ name: uploadedFile.name, url: imageObj.url }]);
-		} catch (err) {
+		} catch (err: any) {
 			next(err);
 		} finally {
 			file.delete(uploadedFile.path);
@@ -176,7 +174,7 @@ uploadsController.uploadMaskableIcon = async function (req, res, next) {
 		try {
 			const imageObj = await file.saveFileToLocal('maskableicon-orig.png', 'system', uploadedFile.path);
 			res.json([{ name: uploadedFile.name, url: imageObj.url }]);
-		} catch (err) {
+		} catch (err: any) {
 			next(err);
 		} finally {
 			file.delete(uploadedFile.path);
@@ -193,15 +191,14 @@ uploadsController.uploadFile = async function (req, res, next) {
 	let params;
 	try {
 		params = JSON.parse(req.body.params);
-	} catch (e) {
-		file.delete(uploadedFile.path);
+} catch (e: any) {		file.delete(uploadedFile.path);
 		return next(new Error('[[error:invalid-json]]'));
 	}
 
 	try {
 		const data = await file.saveFileToLocal(uploadedFile.name, params.folder, uploadedFile.path);
 		res.json([{ url: data.url }]);
-	} catch (err) {
+	} catch (err: any) {
 		next(err);
 	} finally {
 		file.delete(uploadedFile.path);
@@ -265,9 +262,11 @@ async function uploadImage(filename, folder, uploadedFile, req, res, next) {
 			});
 		}
 		res.json([{ name: uploadedFile.name, url: imageData.url.startsWith('http') ? imageData.url : nconf.get('relative_path') + imageData.url }]);
-	} catch (err) {
+	} catch (err: any) {
 		next(err);
 	} finally {
 		file.delete(uploadedFile.path);
 	}
 }
+
+export default uploadsController;

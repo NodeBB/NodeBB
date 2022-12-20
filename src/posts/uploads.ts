@@ -1,23 +1,23 @@
 'use strict';
 
-const nconf = require('nconf');
-const fs = require('fs').promises;
-const crypto = require('crypto');
-const path = require('path');
-const winston = require('winston');
-const mime = require('mime');
-const validator = require('validator');
-const cronJob = require('cron').CronJob;
-const chalk = require('chalk');
+import nconf from 'nconf';
+import { promises as fs } from 'fs';
+import crypto from 'crypto';
+import path from 'path';
+import winston from 'winston';
+import mime from 'mime';
+import validator from 'validator';
+import {  CronJob } from 'cron';
+const cronJob = CronJob;
+import chalk from 'chalk';
+import db from '../database';
+import image from '../image';
+import user from '../user';
+import topics from '../topics';
+import file from '../file';
+import meta from '../meta';
 
-const db = require('../database');
-const image = require('../image');
-const user = require('../user');
-const topics = require('../topics');
-const file = require('../file');
-const meta = require('../meta');
-
-module.exports = function (Posts) {
+export default function (Posts) {
 	Posts.uploads = {};
 
 	const md5 = filename => crypto.createHash('md5').update(filename).digest('hex');
@@ -37,7 +37,7 @@ module.exports = function (Posts) {
 			if (orphans.length) {
 				winston.info(`[posts/uploads] Deleting ${orphans.length} orphaned uploads...`);
 				orphans.forEach((relPath) => {
-					process.stdout.write(`${chalk.red('  - ')} ${relPath}`);
+					(process as any).stdout.write(`${chalk.red('  - ')} ${relPath}`);
 				});
 			}
 		}, null, true);
@@ -221,7 +221,7 @@ module.exports = function (Posts) {
 					width: size.width,
 					height: size.height,
 				});
-			} catch (err) {
+			} catch (err: any) {
 				winston.error(`[posts/uploads] Error while saving post upload sizes (${fileName}): ${err.message}`);
 			}
 		}));

@@ -1,16 +1,19 @@
 
 'use strict';
 
-const util = require('util');
+import util from 'util';
 
-const db = require('./database');
-const utils = require('./utils');
+import db from './database';
+
+import utils from './utils';
+import promisify from './promisify';
+
 
 const DEFAULT_BATCH_SIZE = 100;
 
 const sleep = util.promisify(setTimeout);
 
-exports.processSortedSet = async function (setKey, process, options) {
+export const processSortedSet = async function (setKey, process, options , callback?) {
 	options = options || {};
 
 	if (typeof process !== 'function') {
@@ -35,7 +38,7 @@ exports.processSortedSet = async function (setKey, process, options) {
 	let start = 0;
 	let stop = options.batch - 1;
 
-	if (process && process.constructor && process.constructor.name !== 'AsyncFunction') {
+	if (process && (process as any).constructor && (process as any).constructor.name !== 'AsyncFunction') {
 		process = util.promisify(process);
 	}
 
@@ -56,7 +59,7 @@ exports.processSortedSet = async function (setKey, process, options) {
 	}
 };
 
-exports.processArray = async function (array, process, options) {
+export const processArray = async function (array, process, options) {
 	options = options || {};
 
 	if (!Array.isArray(array) || !array.length) {
@@ -68,7 +71,7 @@ exports.processArray = async function (array, process, options) {
 
 	const batch = options.batch || DEFAULT_BATCH_SIZE;
 	let start = 0;
-	if (process && process.constructor && process.constructor.name !== 'AsyncFunction') {
+	if (process && (process as any).constructor && (process as any).constructor.name !== 'AsyncFunction') {
 		process = util.promisify(process);
 	}
 
@@ -89,4 +92,5 @@ exports.processArray = async function (array, process, options) {
 	}
 };
 
-require('./promisify')(exports);
+promisify({ processArray });
+promisify({ processSortedSet });

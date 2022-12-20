@@ -1,19 +1,17 @@
 'use strict';
 
-const nconf = require('nconf');
-const winston = require('winston');
-const path = require('path');
-const express = require('express');
-const chalk = require('chalk');
-
-const meta = require('../meta');
-const controllers = require('../controllers');
-const controllerHelpers = require('../controllers/helpers');
-const plugins = require('../plugins');
-
-const authRoutes = require('./authentication');
-const writeRoutes = require('./write');
-const helpers = require('./helpers');
+import nconf from 'nconf';
+import winston from 'winston';
+import path from 'path';
+import express from 'express';
+import chalk from 'chalk';
+import meta from '../meta';
+import controllers from '../controllers';
+import controllerHelpers from '../controllers/helpers';
+import plugins from '../plugins';
+import authRoutes from './authentication';
+import writeRoutes from './write';
+import helpers from './helpers';
 
 const { setupPageRoute } = helpers;
 
@@ -23,7 +21,7 @@ const _mounts = {
 	api: require('./api'),
 	admin: require('./admin'),
 	feed: require('./feeds'),
-};
+} as any;
 
 _mounts.main = (app, middleware, controllers) => {
 	const loginRegisterMiddleware = [middleware.redirectToAccountIfLoggedIn];
@@ -101,8 +99,8 @@ _mounts.groups = (app, name, middleware, controllers) => {
 	setupPageRoute(app, `/${name}/:slug/members`, middlewares, controllers.groups.members);
 };
 
-module.exports = async function (app, middleware) {
-	const router = express.Router();
+export default  async function (app, middleware) {
+	const router: any = express.Router();
 	router.render = function (...args) {
 		app.render(...args);
 	};
@@ -163,7 +161,7 @@ function addCoreRoutes(app, router, middleware, mounts) {
 	const relativePath = nconf.get('relative_path');
 	app.use(relativePath || '/', router);
 
-	if (process.env.NODE_ENV === 'development') {
+	if ((process as any).env.NODE_ENV === 'development') {
 		require('./debug')(app, middleware, controllers);
 	}
 

@@ -1,9 +1,13 @@
 'use strict';
 
-const batch = require('../../batch');
-const db = require('../../database');
+import * as batch from '../../batch';
 
-module.exports = {
+
+import db from '../../database';
+
+
+
+export const obj = {
 	name: 'Convert old notification digest settings',
 	timestamp: Date.UTC(2017, 10, 15),
 	method: async function () {

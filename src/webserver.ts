@@ -1,56 +1,68 @@
 
 'use strict';
 
-const fs = require('fs');
-const util = require('util');
-const path = require('path');
-const os = require('os');
-const nconf = require('nconf');
-const express = require('express');
-const chalk = require('chalk');
+import fs from 'fs';
+import util from 'util';
+import path from 'path';
+import os from 'os';
+import nconf from 'nconf';
+import express from 'express';
+import chalk from 'chalk';
 
-const app = express();
-app.renderAsync = util.promisify((tpl, data, callback) => app.render(tpl, data, callback));
-let server;
-const winston = require('winston');
-const flash = require('connect-flash');
-const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
-const session = require('express-session');
-const useragent = require('express-useragent');
-const favicon = require('serve-favicon');
-const detector = require('spider-detector');
-const helmet = require('helmet');
+const expressApp = express();
+(expressApp as any).renderAsync = util.promisify((tpl, data, callback) => expressApp.render(tpl, data, callback));
+let appServer: any;
+import winston from 'winston';
+import flash from 'connect-flash';
+import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import session from 'express-session';
+import useragent from 'express-useragent';
+import favicon from 'serve-favicon';
+import detector from 'spider-detector';
+import helmet from 'helmet';
 
-const Benchpress = require('benchpressjs');
-const db = require('./database');
-const analytics = require('./analytics');
-const file = require('./file');
-const emailer = require('./emailer');
-const meta = require('./meta');
-const logger = require('./logger');
-const plugins = require('./plugins');
-const flags = require('./flags');
-const topicEvents = require('./topics/events');
-const privileges = require('./privileges');
-const routes = require('./routes');
-const auth = require('./routes/authentication');
+import Benchpress from 'benchpressjs';
+import db from './database';
 
-const helpers = require('./helpers');
+import analytics from './analytics';
+import file from './file';
+import emailer from './emailer';
+import meta from './meta';
+import logger from './logger';
+import plugins from './plugins';
+import flags from './flags';
+import topicEvents from './topics/events';
+import privileges from './privileges';
+import routes from './routes';
+import auth from './routes/authentication';
+import middleware from './middleware';
+import compression from 'compression';
+import net from 'net';
+import toobusy from 'toobusy-js';
+import * as pingController from './controllers/ping';
+import appServerHttps from 'https';
+import appServerHttp from 'http';
+import als from './als';
+import controllerHelpers from './controllers/helpers';
+
+
+
+
 
 if (nconf.get('ssl')) {
-	server = require('https').createServer({
+	appServerHttps.createServer({
 		key: fs.readFileSync(nconf.get('ssl').key),
 		cert: fs.readFileSync(nconf.get('ssl').cert),
-	}, app);
+	}, expressApp);
 } else {
-	server = require('http').createServer(app);
+	appServerHttp.createServer(expressApp);
 }
 
-module.exports.server = server;
-module.exports.app = app;
+export const server =  nconf.get('ssl') ? appServerHttps : appServerHttp;
+export const app = expressApp;
 
-server.on('error', (err) => {
+appServer.on('error', (err) => {
 	if (err.code === 'EADDRINUSE') {
 		winston.error(`NodeBB address in use, exiting...\n${err.stack}`);
 	} else {
@@ -60,9 +72,9 @@ server.on('error', (err) => {
 	throw err;
 });
 
-// see https://github.com/isaacs/server-destroy/blob/master/index.js
+// see https://github.com/isaacs/appServer-destroy/blob/master/index.js
 const connections = {};
-server.on('connection', (conn) => {
+appServer.on('connection', (conn) => {
 	const key = `${conn.remoteAddress}:${conn.remotePort}`;
 	connections[key] = conn;
 	conn.on('close', () => {
@@ -70,41 +82,44 @@ server.on('connection', (conn) => {
 	});
 });
 
-exports.destroy = function (callback) {
-	server.close(callback);
-	for (const connection of Object.values(connections)) {
+export const destroy = function (callback) {
+	appServer.close(callback);
+	for (const connection of Object.values(connections) as any) {
 		connection.destroy();
 	}
 };
 
-exports.listen = async function () {
-	emailer.registerApp(app);
-	setupExpressApp(app);
-	helpers.register();
-	logger.init(app);
+export const listen = async function () {
+	emailer.registerexpressApp(expressApp);
+	setupExpressexpressApp(expressApp);
+	controllerHelpers.register();
+	logger.init(expressApp);
 	await initializeNodeBB();
 	winston.info('🎉 NodeBB Ready');
 
-	require('./socket.io').server.emit('event:nodebb.ready', {
+	require('./socket.io').appServer.emit('event:nodebb.ready', {
 		'cache-buster': meta.config['cache-buster'],
 		hostname: os.hostname(),
 	});
 
 	plugins.hooks.fire('action:nodebb.ready');
 
-	await listen();
+	await listen2();
 };
 
 async function initializeNodeBB() {
-	const middleware = require('./middleware');
 	await meta.themes.setupPaths();
-	await plugins.init(app, middleware);
+	await plugins.init(expressApp, middleware);		
+	notifications.startJobs();
+	user.startJobs();
+	plugins.startJobs();
+	topics.scheduled.startJobs();
 	await plugins.hooks.fire('static:assets.prepare', {});
-	await plugins.hooks.fire('static:app.preload', {
-		app: app,
+	await plugins.hooks.fire('static:expressApp.preload', {
+		expressApp: expressApp,
 		middleware: middleware,
 	});
-	await routes(app, middleware);
+	await routes(expressApp, middleware);
 	await privileges.init();
 	await meta.blacklist.load();
 	await flags.init();
@@ -112,36 +127,33 @@ async function initializeNodeBB() {
 	await topicEvents.init();
 }
 
-function setupExpressApp(app) {
-	const middleware = require('./middleware');
-	const pingController = require('./controllers/ping');
+function setupExpressexpressApp(expressApp) {
 
 	const relativePath = nconf.get('relative_path');
 	const viewsDir = nconf.get('views_dir');
 
-	app.engine('tpl', (filepath, data, next) => {
+	expressApp.engine('tpl', (filepath, data, next) => {
 		filepath = filepath.replace(/\.tpl$/, '.js');
 
 		Benchpress.__express(filepath, data, next);
 	});
-	app.set('view engine', 'tpl');
-	app.set('views', viewsDir);
-	app.set('json spaces', global.env === 'development' ? 4 : 0);
-	app.use(flash());
+	expressApp.set('view engine', 'tpl');
+	expressApp.set('views', viewsDir);
+	expressApp.set('json spaces', (global as any).env === 'development' ? 4 : 0);
+	expressApp.use(flash());
 
-	app.enable('view cache');
+	expressApp.enable('view cache');
 
-	if (global.env !== 'development') {
-		app.enable('cache');
-		app.enable('minification');
+	if ((global as any).env !== 'development') {
+		expressApp.enable('cache');
+		expressApp.enable('minification');
 	}
 
 	if (meta.config.useCompression) {
-		const compression = require('compression');
-		app.use(compression());
+		expressApp.use(compression());
 	}
 	if (relativePath) {
-		app.use((req, res, next) => {
+		expressApp.use((req, res, next) => {
 			if (!req.path.startsWith(relativePath)) {
 				return require('./controllers/helpers').redirect(res, req.path);
 			}
@@ -149,19 +161,19 @@ function setupExpressApp(app) {
 		});
 	}
 
-	app.get(`${relativePath}/ping`, pingController.ping);
-	app.get(`${relativePath}/sping`, pingController.ping);
+	expressApp.get(`${relativePath}/ping`, pingController.ping);
+	expressApp.get(`${relativePath}/sping`, pingController.ping);
 
-	setupFavicon(app);
+	setupFavicon(expressApp);
 
-	app.use(`${relativePath}/apple-touch-icon`, middleware.routeTouchIcon);
+	expressApp.use(`${relativePath}/expressApple-touch-icon`, middleware.routeTouchIcon);
 
-	configureBodyParser(app);
+	configureBodyParser(expressApp);
 
-	app.use(cookieParser(nconf.get('secret')));
-	app.use(useragent.express());
-	app.use(detector.middleware());
-	app.use(session({
+	expressApp.use(cookieParser(nconf.get('secret')));
+	expressApp.use(useragent.express());
+	expressApp.use(detector.middleware());
+	expressApp.use(session({
 		store: db.sessionStore,
 		secret: nconf.get('secret'),
 		key: nconf.get('sessionKey'),
@@ -170,29 +182,27 @@ function setupExpressApp(app) {
 		saveUninitialized: nconf.get('sessionSaveUninitialized') || false,
 	}));
 
-	setupHelmet(app);
+	setupHelmet(expressApp);
 
-	app.use(middleware.addHeaders);
-	app.use(middleware.processRender);
-	auth.initialize(app, middleware);
-	const als = require('./als');
-	app.use((req, res, next) => {
+	expressApp.use(middleware.addHeaders);
+	expressApp.use(middleware.processRender);
+	auth.initialize(expressApp, middleware);
+	expressApp.use((req, res, next) => {
 		als.run({ uid: req.uid }, next);
 	});
-	app.use(middleware.autoLocale); // must be added after auth middlewares are added
+	expressApp.use(middleware.autoLocale); // must be added after auth middlewares are added
 
-	const toobusy = require('toobusy-js');
 	toobusy.maxLag(meta.config.eventLoopLagThreshold);
 	toobusy.interval(meta.config.eventLoopInterval);
 }
 
-function setupHelmet(app) {
+function setupHelmet(expressApp) {
 	const options = {
 		contentSecurityPolicy: false, // defaults are too restrive and break plugins that load external assets... 🔜
 		crossOriginOpenerPolicy: { policy: meta.config['cross-origin-opener-policy'] },
 		crossOriginResourcePolicy: { policy: meta.config['cross-origin-resource-policy'] },
 		referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
-	};
+	} as any;
 
 	if (!meta.config['cross-origin-embedder-policy']) {
 		options.crossOriginEmbedderPolicy = false;
@@ -205,27 +215,27 @@ function setupHelmet(app) {
 		};
 	}
 
-	app.use(helmet(options));
+	expressApp.use(helmet(options));
 }
 
 
-function setupFavicon(app) {
+function setupFavicon(expressApp) {
 	let faviconPath = meta.config['brand:favicon'] || 'favicon.ico';
 	faviconPath = path.join(nconf.get('base_dir'), 'public', faviconPath.replace(/assets\/uploads/, 'uploads'));
 	if (file.existsSync(faviconPath)) {
-		app.use(nconf.get('relative_path'), favicon(faviconPath));
+		expressApp.use(nconf.get('relative_path'), favicon(faviconPath));
 	}
 }
 
-function configureBodyParser(app) {
+function configureBodyParser(expressApp) {
 	const urlencodedOpts = nconf.get('bodyParser:urlencoded') || {};
 	if (!urlencodedOpts.hasOwnProperty('extended')) {
 		urlencodedOpts.extended = true;
 	}
-	app.use(bodyParser.urlencoded(urlencodedOpts));
+	expressApp.use(bodyParser.urlencoded(urlencodedOpts));
 
 	const jsonOpts = nconf.get('bodyParser:json') || {};
-	app.use(bodyParser.json(jsonOpts));
+	expressApp.use(bodyParser.json(jsonOpts));
 }
 
 function setupCookie() {
@@ -236,7 +246,7 @@ function setupCookie() {
 	return cookie;
 }
 
-async function listen() {
+async function listen2() {
 	let port = nconf.get('port');
 	const isSocket = isNaN(port) && !Array.isArray(port);
 	const socketPath = isSocket ? nconf.get('port') : '';
@@ -244,7 +254,7 @@ async function listen() {
 	if (Array.isArray(port)) {
 		if (!port.length) {
 			winston.error('[startup] empty ports array in config.json');
-			process.exit();
+			(process as any).exit();
 		}
 
 		winston.warn('[startup] If you want to start nodebb on multiple ports please use loader.js');
@@ -252,16 +262,16 @@ async function listen() {
 		port = port[0];
 		if (!port) {
 			winston.error('[startup] Invalid port, exiting');
-			process.exit();
+			(process as any).exit();
 		}
 	}
 	port = parseInt(port, 10);
 	if ((port !== 80 && port !== 443) || nconf.get('trust_proxy') === true) {
 		winston.info('🤝 Enabling \'trust proxy\'');
-		app.enable('trust proxy');
+		expressApp.enable('trust proxy');
 	}
 
-	if ((port === 80 || port === 443) && process.env.NODE_ENV !== 'development') {
+	if ((port === 80 || port === 443) && (process as any).env.NODE_ENV !== 'development') {
 		winston.info('Using ports 80 and 443 is not recommend; use a proxy instead. See README.md');
 	}
 
@@ -270,17 +280,17 @@ async function listen() {
 	let oldUmask;
 
 	if (isSocket) {
-		oldUmask = process.umask('0000');
+		oldUmask = (process as any).umask('0000');
 		try {
-			await exports.testSocket(socketPath);
-		} catch (err) {
+			await testSocket(socketPath);
+		} catch (err: any) {
 			winston.error(`[startup] NodeBB was unable to secure domain socket access (${socketPath})\n${err.stack}`);
 			throw err;
 		}
 	}
 
-	return new Promise((resolve, reject) => {
-		server.listen(...args.concat([function (err) {
+	return new Promise<void>((resolve, reject) => {
+		appServer.listen(...args.concat([function (err) {
 			const onText = `${isSocket ? socketPath : `${bind_address}:${port}`}`;
 			if (err) {
 				winston.error(`[startup] NodeBB was unable to listen on: ${chalk.yellow(onText)}`);
@@ -290,26 +300,24 @@ async function listen() {
 			winston.info(`📡 NodeBB is now listening on: ${chalk.yellow(onText)}`);
 			winston.info(`🔗 Canonical URL: ${chalk.yellow(nconf.get('url'))}`);
 			if (oldUmask) {
-				process.umask(oldUmask);
+				(process as any).umask(oldUmask);
 			}
 			resolve();
 		}]));
 	});
 }
 
-exports.testSocket = async function (socketPath) {
+export const testSocket = async function (socketPath) {
 	if (typeof socketPath !== 'string') {
 		throw new Error(`invalid socket path : ${socketPath}`);
 	}
-	const net = require('net');
-	const file = require('./file');
 	const exists = await file.exists(socketPath);
 	if (!exists) {
 		return;
 	}
-	return new Promise((resolve, reject) => {
+	return new Promise<void>((resolve, reject) => {
 		const testSocket = new net.Socket();
-		testSocket.on('error', (err) => {
+		testSocket.on('error', (err: any) => {
 			if (err.code !== 'ECONNREFUSED') {
 				return reject(err);
 			}
@@ -325,4 +333,8 @@ exports.testSocket = async function (socketPath) {
 	});
 };
 
-require('./promisify')(exports);
+import promisify from './promisify';
+import notifications from './notifications';
+import topics from './topics';
+import user from './user';
+promisify(exports);

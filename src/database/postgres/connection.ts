@@ -1,10 +1,12 @@
 'use strict';
 
-const nconf = require('nconf');
-const winston = require('winston');
-const _ = require('lodash');
+import nconf from 'nconf';
+import winston from 'winston';
+import _ from 'lodash';
+import { Pool } from 'pg';
 
-const connection = module.exports;
+
+const connection  = {} as any;
 
 connection.getConnectionOptions = function (postgres) {
 	postgres = postgres || nconf.get('postgres');
@@ -34,11 +36,12 @@ connection.getConnectionOptions = function (postgres) {
 };
 
 connection.connect = async function (options) {
-	const { Pool } = require('pg');
 	const connOptions = connection.getConnectionOptions(options);
 	const db = new Pool(connOptions);
 	await db.connect();
 	return db;
 };
 
-require('../../promisify')(connection);
+import promisify from '../../promisify';
+promisify(connection);
+export default connection;

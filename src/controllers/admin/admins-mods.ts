@@ -1,16 +1,15 @@
 'use strict';
 
-const _ = require('lodash');
+import _ from 'lodash';
+import db from '../../database';
+import groups from '../../groups';
+import categories from '../../categories';
+import user from '../../user';
+import meta from '../../meta';
+import pagination from '../../pagination';
+import categoriesController from './categories';
 
-const db = require('../../database');
-const groups = require('../../groups');
-const categories = require('../../categories');
-const user = require('../../user');
-const meta = require('../../meta');
-const pagination = require('../../pagination');
-const categoriesController = require('./categories');
-
-const AdminsMods = module.exports;
+const AdminsMods = {} as any;
 
 AdminsMods.get = async function (req, res) {
 	const rootCid = parseInt(req.query.cid, 10) || 0;
@@ -59,3 +58,5 @@ async function getModeratorsOfCategories(categoryData) {
 	});
 	return categoryData;
 }
+
+export default AdminsMods;

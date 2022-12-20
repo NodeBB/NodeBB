@@ -1,8 +1,22 @@
 'use strict';
 
-const { Command, Option } = require('commander');
+import user from '../user';
+import groups from '../groups';
+import privileges from '../privileges';
+import privHelpers from '../privileges/helpers';
+import utils from '../utils';
+import winston from 'winston';
+import * as webserver from '../webserver';
+const viewsDir = nconf.get('views_dir');
+import nconf from 'nconf';
+import Benchpress from 'benchpressjs';
+import meta from '../meta';
+import emailer from '../emailer';
+import db from '../database';
 
-module.exports = () => {
+import { Command, Option } from 'commander';
+
+export default  () => {
 	const userCmd = new Command('user')
 		.description('Manage users')
 		.arguments('[command]');
@@ -66,37 +80,21 @@ module.exports = () => {
 	return userCmd;
 };
 
-let db;
-let user;
-let groups;
-let privileges;
-let privHelpers;
-let utils;
-let winston;
-
 async function init() {
-	db = require('../database');
 	await db.init();
-
-	user = require('../user');
-	groups = require('../groups');
-	privileges = require('../privileges');
-	privHelpers = require('../privileges/helpers');
-	utils = require('../utils');
-	winston = require('winston');
 }
 
 async function execute(cmd, args) {
 	await init();
 	try {
 		await cmd(...args);
-	} catch (err) {
+	} catch (err: any) {
 		const userError = err.name === 'UserError';
 		winston.error(`[userCmd/${cmd.name}] ${userError ? `${err.message}` : 'Command failed.'}`, userError ? '' : err);
-		process.exit(1);
+		(process as any).exit(1);
 	}
 
-	process.exit();
+	(process as any).exit();
 }
 
 function UserCmdHelpers() {
@@ -111,24 +109,17 @@ function UserCmdHelpers() {
 	}
 
 	async function setupApp() {
-		const nconf = require('nconf');
-		const Benchpress = require('benchpressjs');
-
-		const meta = require('../meta');
 		await meta.configs.init();
 
-		const webserver = require('../webserver');
-		const viewsDir = nconf.get('views_dir');
 
 		webserver.app.engine('tpl', (filepath, data, next) => {
 			filepath = filepath.replace(/\.tpl$/, '.js');
 
-			Benchpress.__express(filepath, data, next);
+			(Benchpress as any).__express(filepath, data, next);
 		});
 		webserver.app.set('view engine', 'tpl');
 		webserver.app.set('views', viewsDir);
 
-		const emailer = require('../emailer');
 		emailer.registerApp(webserver.app);
 	}
 

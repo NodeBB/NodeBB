@@ -1,10 +1,10 @@
 'use strict';
 
-const nconf = require('nconf');
-const util = require('util');
-const winston = require('winston');
-const { EventEmitter } = require('events');
-const connection = require('./connection');
+import nconf from 'nconf';
+import util from 'util';
+import winston from 'winston';
+import { EventEmitter } from 'events';
+import connection from './connection';
 
 let channelName;
 const PubSub = function () {
@@ -22,7 +22,7 @@ const PubSub = function () {
 			try {
 				const msg = JSON.parse(message);
 				self.emit(msg.event, msg.data);
-			} catch (err) {
+			} catch (err: any) {
 				winston.error(err.stack);
 			}
 		});
@@ -46,4 +46,4 @@ PubSub.prototype.publish = function (event, data) {
 	}
 };
 
-module.exports = new PubSub();
+export default new PubSub();

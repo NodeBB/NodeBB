@@ -1,9 +1,9 @@
 'use strict';
 
-const db = require('../database');
-const plugins = require('../plugins');
+import db from '../database';
+import plugins from '../plugins';
 
-module.exports = function (Groups) {
+export default function (Groups) {
 	Groups.ownership = {};
 
 	Groups.ownership.isOwner = async function (uid, groupName) {

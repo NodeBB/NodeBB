@@ -1,10 +1,10 @@
 
 'use strict';
 
-const plugins = require('../plugins');
-const db = require('../database');
+import plugins from '../plugins';
+import db from '../database';
 
-module.exports = function (User) {
+export default function (User) {
 	User.follow = async function (uid, followuid) {
 		await toggleFollow('follow', uid, followuid);
 	};

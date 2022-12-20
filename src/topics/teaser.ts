@@ -1,16 +1,15 @@
 
 'use strict';
 
-const _ = require('lodash');
+import _ from 'lodash';
+import db from '../database';
+import meta from '../meta';
+import user from '../user';
+import posts from '../posts';
+import plugins from '../plugins';
+import utils from '../utils';
 
-const db = require('../database');
-const meta = require('../meta');
-const user = require('../user');
-const posts = require('../posts');
-const plugins = require('../plugins');
-const utils = require('../utils');
-
-module.exports = function (Topics) {
+export default function (Topics) {
 	Topics.getTeasers = async function (topics, options) {
 		if (!Array.isArray(topics) || !topics.length) {
 			return [];
@@ -172,3 +171,4 @@ module.exports = function (Topics) {
 		}
 	};
 };
+

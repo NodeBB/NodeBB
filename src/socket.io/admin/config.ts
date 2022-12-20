@@ -1,12 +1,12 @@
 'use strict';
 
-const meta = require('../../meta');
-const plugins = require('../../plugins');
-const logger = require('../../logger');
-const events = require('../../events');
-const index = require('../index');
+import meta from '../../meta';
+import plugins from '../../plugins';
+import logger from '../../logger';
+import events from '../../events';
+import index from '../index';
 
-const Config = module.exports;
+const Config  = {} as any;
 
 Config.set = async function (socket, data) {
 	if (!data) {
@@ -22,7 +22,7 @@ Config.setMultiple = async function (socket, data) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	const changes = {};
+	const changes = {} as any;
 	const newData = meta.configs.serialize(data);
 	const oldData = meta.configs.serialize(meta.config);
 	Object.keys(newData).forEach((key) => {
@@ -48,3 +48,5 @@ Config.setMultiple = async function (socket, data) {
 Config.remove = async function (socket, key) {
 	await meta.configs.remove(key);
 };
+
+export default Config;

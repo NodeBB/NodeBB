@@ -1,13 +1,15 @@
 'use strict';
 
-const winston = require('winston');
-const cronJob = require('cron').CronJob;
-const db = require('../database');
-const meta = require('../meta');
+import winston from 'winston';
+import { CronJob }  from 'cron';
+const cronJob = CronJob;
+import db from '../database';
+import meta from '../meta';
+
 
 const jobs = {};
 
-module.exports = function (User) {
+export default function (User) {
 	User.startJobs = function () {
 		winston.verbose('[user/jobs] (Re-)starting jobs...');
 
@@ -43,7 +45,7 @@ module.exports = function (User) {
 					}
 				}
 				await User.digest.execute({ interval: term });
-			} catch (err) {
+			} catch (err: any) {
 				winston.error(err.stack);
 			}
 		}), null, true);

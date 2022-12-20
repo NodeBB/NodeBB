@@ -1,10 +1,14 @@
 'use strict';
 
-const db = require('../../database');
+import db from '../../database';
 
-const batch = require('../../batch');
 
-module.exports = {
+
+import * as batch from '../../batch';
+
+
+
+export const obj = {
 	name: 'Remove uid:<uid>:ignored:cids',
 	timestamp: Date.UTC(2018, 11, 11),
 	method: function (callback) {

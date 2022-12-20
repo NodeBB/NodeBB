@@ -1,11 +1,12 @@
 'use strict';
 
-const db = require('../database');
-const topics = require('../topics');
-const plugins = require('../plugins');
-const meta = require('../meta');
+import db from '../database';
+import topics from '../topics';
+import plugins from '../plugins';
+import meta from '../meta';
 
-module.exports = function (User) {
+
+export default function (User) {
 	User.updateLastOnlineTime = async function (uid) {
 		if (!(parseInt(uid, 10) > 0)) {
 			return;

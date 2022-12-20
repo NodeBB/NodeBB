@@ -1,21 +1,20 @@
 'use strict';
 
-const os = require('os');
-const winston = require('winston');
-const _ = require('lodash');
+import os from 'os';
+import winston from 'winston';
+import _ from 'lodash';
+import meta from '../meta';
+import languages from '../languages';
+import helpers from './helpers';
+import plugins from '../plugins';
 
-const meta = require('../meta');
-const languages = require('../languages');
-const helpers = require('./helpers');
-const plugins = require('../plugins');
-
-module.exports = function (middleware) {
+export default function (middleware) {
 	middleware.addHeaders = helpers.try((req, res, next) => {
 		const headers = {
 			'X-Powered-By': encodeURI(meta.config['powered-by'] || 'NodeBB'),
 			'Access-Control-Allow-Methods': encodeURI(meta.config['access-control-allow-methods'] || ''),
 			'Access-Control-Allow-Headers': encodeURI(meta.config['access-control-allow-headers'] || ''),
-		};
+		} as any;
 
 		if (meta.config['csp-frame-ancestors']) {
 			headers['Content-Security-Policy'] = `frame-ancestors ${meta.config['csp-frame-ancestors']}`;
@@ -42,7 +41,7 @@ module.exports = function (middleware) {
 			originsRegex = originsRegex.map((origin) => {
 				try {
 					origin = new RegExp(origin.trim());
-				} catch (err) {
+				} catch (err: any) {
 					winston.error(`[middleware.addHeaders] Invalid RegExp For access-control-allow-origin ${origin}`);
 					origin = null;
 				}
@@ -65,7 +64,7 @@ module.exports = function (middleware) {
 			headers['Access-Control-Allow-Credentials'] = meta.config['access-control-allow-credentials'];
 		}
 
-		if (process.env.NODE_ENV === 'development') {
+		if ((process as any).env.NODE_ENV === 'development') {
 			headers['X-Upstream-Hostname'] = os.hostname();
 		}
 
@@ -108,7 +107,7 @@ module.exports = function (middleware) {
 		try {
 			const codes = await languages.listCodes();
 			return _.uniq([defaultLang, ...codes]);
-		} catch (err) {
+		} catch (err: any) {
 			winston.error(`[middleware/autoLocale] Could not retrieve languages codes list! ${err.stack}`);
 			return [defaultLang];
 		}

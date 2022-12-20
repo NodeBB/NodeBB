@@ -1,14 +1,13 @@
 
 'use strict';
 
-const _ = require('lodash');
+import _ from 'lodash';
+import db from '../database';
+import user from '../user';
+import privileges from '../privileges';
+import search from '../search';
 
-const db = require('../database');
-const user = require('../user');
-const privileges = require('../privileges');
-const search = require('../search');
-
-module.exports = function (Topics) {
+export default function (Topics) {
 	Topics.getSuggestedTopics = async function (tid, uid, start, stop, cutoff = 0) {
 		let tids;
 		tid = parseInt(tid, 10);

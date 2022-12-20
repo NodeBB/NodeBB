@@ -1,17 +1,20 @@
 
 'use strict';
 
-const winston = require('winston');
-const _ = require('lodash');
+import winston from 'winston';
+import _ from 'lodash';
 
-const db = require('../database');
-const meta = require('../meta');
-const notifications = require('../notifications');
-const privileges = require('../privileges');
-const plugins = require('../plugins');
-const utils = require('../utils');
+import db from '../database';
+import meta from '../meta';
 
-const UserNotifications = module.exports;
+import notifications from '../notifications';
+import privileges from '../privileges';
+import plugins from '../plugins';
+import utils from '../utils';
+import websockets from '../socket.io';
+
+
+const UserNotifications = {} as any;
 
 UserNotifications.get = async function (uid) {
 	if (parseInt(uid, 10) <= 0) {
@@ -194,7 +197,7 @@ UserNotifications.sendTopicNotificationToFollowers = async function (uid, topicD
 		});
 
 		await notifications.push(notifObj, followers);
-	} catch (err) {
+	} catch (err: any) {
 		winston.error(err.stack);
 	}
 };
@@ -227,7 +230,8 @@ UserNotifications.sendNameChangeNotification = async function (uid, username) {
 };
 
 UserNotifications.pushCount = async function (uid) {
-	const websockets = require('../socket.io');
 	const count = await UserNotifications.getUnreadCount(uid);
 	websockets.in(`uid_${uid}`).emit('event:notifications.updateCount', count);
 };
+
+export default UserNotifications;

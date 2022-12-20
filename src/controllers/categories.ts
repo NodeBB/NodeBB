@@ -1,15 +1,14 @@
 'use strict';
 
-const nconf = require('nconf');
-const _ = require('lodash');
+import nconf from 'nconf';
+import _ from 'lodash';
+import categories from '../categories';
+import meta from '../meta';
+import pagination from '../pagination';
+import helpers from './helpers';
+import privileges from '../privileges';
 
-const categories = require('../categories');
-const meta = require('../meta');
-const pagination = require('../pagination');
-const helpers = require('./helpers');
-const privileges = require('../privileges');
-
-const categoriesController = module.exports;
+const categoriesController = {} as any;
 
 categoriesController.list = async function (req, res) {
 	res.locals.metaTags = [{
@@ -39,7 +38,7 @@ categoriesController.list = async function (req, res) {
 		selectCategoryLabel: '[[pages:categories]]',
 		categories: tree,
 		pagination: pagination.create(page, pageCount, req.query),
-	};
+	} as any;
 
 	data.categories.forEach((category) => {
 		if (category) {
@@ -59,3 +58,5 @@ categoriesController.list = async function (req, res) {
 
 	res.render('categories', data);
 };
+
+export default categoriesController;

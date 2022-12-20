@@ -1,9 +1,9 @@
 'use strict';
 
-const validator = require('validator');
-const plugins = require('../../plugins');
+import validator from 'validator';
+import plugins from '../../plugins';
 
-const hooksController = module.exports;
+const hooksController = {} as any;
 
 hooksController.get = function (req, res) {
 	const hooks = [];
@@ -30,3 +30,5 @@ hooksController.get = function (req, res) {
 
 	res.render('admin/advanced/hooks', { hooks: hooks });
 };
+
+export default hooksController;

@@ -1,14 +1,27 @@
 'use strict';
 
-const winston = require('winston');
-const async = require('async');
-const nconf = require('nconf');
-const session = require('express-session');
-const semver = require('semver');
+import winston from 'winston';
+import async from 'async';
+import nconf from 'nconf';
+import session from 'express-session';
+import semver from 'semver';
+import connection from './postgres/connection';
+import main from './postgres/main';
+import hash from  './postgres/hash';
+import sets from './postgres/sets';
+import sorted from './postgres/sets';
+import list from './postgres/list';
+import transaction from './postgres/transaction';
+//@ts-ignore	
+import postgresPkg from 'pg/package.json';
+import meta from '../meta';
+import connectPgSimple from 'connect-pg-simple';
+import { Pool } from 'pg';
 
-const connection = require('./postgres/connection');
 
-const postgresModule = module.exports;
+
+
+const postgresModule = {} as any;
 
 postgresModule.questions = [
 	{
@@ -46,7 +59,6 @@ postgresModule.questions = [
 ];
 
 postgresModule.init = async function () {
-	const { Pool } = require('pg');
 	const connOptions = connection.getConnectionOptions();
 	const pool = new Pool(connOptions);
 	postgresModule.pool = pool;
@@ -54,7 +66,7 @@ postgresModule.init = async function () {
 	const client = await pool.connect();
 	try {
 		await checkUpgrade(client);
-	} catch (err) {
+	} catch (err: any) {
 		winston.error(`NodeBB could not connect to your PostgreSQL database. PostgreSQL returned the following error: ${err.message}`);
 		throw err;
 	} finally {
@@ -290,10 +302,9 @@ PARALLEL SAFE`);
 }
 
 postgresModule.createSessionStore = async function (options) {
-	const meta = require('../meta');
 
 	function done(db) {
-		const sessionStore = require('connect-pg-simple')(session);
+		const sessionStore = connectPgSimple(session);
 		return new sessionStore({
 			pool: db,
 			ttl: meta.getSessionTTLSeconds(),
@@ -348,7 +359,6 @@ postgresModule.createIndices = function (callback) {
 };
 
 postgresModule.checkCompatibility = function (callback) {
-	const postgresPkg = require('pg/package.json');
 	postgresModule.checkCompatibilityVersion(postgresPkg.version, callback);
 };
 
@@ -380,11 +390,13 @@ postgresModule.close = async function () {
 	await postgresModule.pool.end();
 };
 
-require('./postgres/main')(postgresModule);
-require('./postgres/hash')(postgresModule);
-require('./postgres/sets')(postgresModule);
-require('./postgres/sorted')(postgresModule);
-require('./postgres/list')(postgresModule);
-require('./postgres/transaction')(postgresModule);
+main(postgresModule);
+hash(postgresModule);
+sets(postgresModule);
+sorted(postgresModule);
+list(postgresModule);
+transaction(postgresModule);
 
-require('../promisify')(postgresModule, ['client', 'sessionStore', 'pool', 'transaction']);
+import promisify from '../promisify';
+promisify(postgresModule, ['client', 'sessionStore', 'pool', 'transaction']);
+export default postgresModule;

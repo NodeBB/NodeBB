@@ -1,8 +1,8 @@
 'use strict';
 
-const db = require('../database');
+import db from '../database';
 
-module.exports = function (Categories) {
+export default function (Categories) {
 	Categories.markAsRead = async function (cids, uid) {
 		if (!Array.isArray(cids) || !cids.length || parseInt(uid, 10) <= 0) {
 			return;

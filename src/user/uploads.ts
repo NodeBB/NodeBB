@@ -1,14 +1,14 @@
 'use strict';
 
-const path = require('path');
-const nconf = require('nconf');
-const winston = require('winston');
-const crypto = require('crypto');
+import path from 'path';
+import nconf from 'nconf';
+import winston from 'winston';
+import crypto from 'crypto';
 
-const db = require('../database');
-const posts = require('../posts');
-const file = require('../file');
-const batch = require('../batch');
+import db from '../database';
+import posts from '../posts';
+import file from '../file';
+import * as  batch from '../batch';
 
 const md5 = filename => crypto.createHash('md5').update(filename).digest('hex');
 const _getFullPath = relativePath => path.resolve(nconf.get('upload_path'), relativePath);
@@ -27,7 +27,7 @@ const _validatePath = async (relativePaths) => {
 	}
 };
 
-module.exports = function (User) {
+export default function (User) {
 	User.associateUpload = async (uid, relativePath) => {
 		await _validatePath(relativePath);
 		await Promise.all([

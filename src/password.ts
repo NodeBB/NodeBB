@@ -1,17 +1,17 @@
 'use strict';
 
-const path = require('path');
-const crypto = require('crypto');
-const util = require('util');
+import path from 'path';
+import crypto from 'crypto';
+import util from 'util';
 
-const bcrypt = require('bcryptjs');
+import bcrypt from 'bcryptjs';
 
-const fork = require('./meta/debugFork');
+import fork from './meta/debugFork';
 
 function forkChild(message, callback) {
 	const child = fork(path.join(__dirname, 'password'));
 
-	child.on('message', (msg) => {
+	child.on('message', (msg: any) => {
 		callback(msg.err ? new Error(msg.err) : null, msg.result);
 	});
 	child.on('error', (err) => {
@@ -24,12 +24,12 @@ function forkChild(message, callback) {
 
 const forkChildAsync = util.promisify(forkChild);
 
-exports.hash = async function (rounds, password) {
+export const hash = async function (rounds, password) {
 	password = crypto.createHash('sha512').update(password).digest('hex');
 	return await forkChildAsync({ type: 'hash', rounds: rounds, password: password });
 };
 
-exports.compare = async function (password, hash, shaWrapped) {
+export const compareFn = async function (password, hash, shaWrapped) {
 	const fakeHash = await getFakeHash();
 
 	if (shaWrapped) {
@@ -44,12 +44,12 @@ async function getFakeHash() {
 	if (fakeHashCache) {
 		return fakeHashCache;
 	}
-	fakeHashCache = await exports.hash(12, Math.random().toString());
+	fakeHashCache = await hash(12, Math.random().toString());
 	return fakeHashCache;
 }
 
 // child process
-process.on('message', (msg) => {
+(process as any).on('message', (msg) => {
 	if (msg.type === 'hash') {
 		tryMethod(hashPassword, msg);
 	} else if (msg.type === 'compare') {
@@ -60,11 +60,11 @@ process.on('message', (msg) => {
 async function tryMethod(method, msg) {
 	try {
 		const result = await method(msg);
-		process.send({ result: result });
-	} catch (err) {
-		process.send({ err: err.message });
+		(process as any).send({ result: result });
+	} catch (err: any) {
+		(process as any).send({ err: err.message });
 	} finally {
-		process.disconnect();
+		(process as any).disconnect();
 	}
 }
 
@@ -78,4 +78,5 @@ async function compare(msg) {
 	return await bcrypt.compare(String(msg.password || ''), String(msg.hash || ''));
 }
 
-require('./promisify')(exports);
+import promisify from './promisify';
+promisify(exports);

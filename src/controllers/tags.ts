@@ -1,18 +1,17 @@
 'use strict';
 
-const validator = require('validator');
-const nconf = require('nconf');
+import validator from 'validator';
+import nconf from 'nconf';
+import meta from '../meta';
+import user from '../user';
+import categories from '../categories';
+import topics from '../topics';
+import privileges from '../privileges';
+import pagination from '../pagination';
+import utils from '../utils';
+import helpers from './helpers';
 
-const meta = require('../meta');
-const user = require('../user');
-const categories = require('../categories');
-const topics = require('../topics');
-const privileges = require('../privileges');
-const pagination = require('../pagination');
-const utils = require('../utils');
-const helpers = require('./helpers');
-
-const tagsController = module.exports;
+const tagsController = {} as any;
 
 tagsController.getTag = async function (req, res) {
 	const tag = validator.escape(utils.cleanUpTag(req.params.tag, meta.config.maximumTagLength));
@@ -24,7 +23,7 @@ tagsController.getTag = async function (req, res) {
 		tag: tag,
 		breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[tags:tags]]', url: '/tags' }, { text: tag }]),
 		title: `[[pages:tag, ${tag}]]`,
-	};
+	} as any;
 	const [settings, cids, categoryData, canPost, isPrivileged] = await Promise.all([
 		user.getSettings(req.uid),
 		cid || categories.getCidsByPrivilege('categories:cid', req.uid, 'topics:read'),
@@ -83,3 +82,5 @@ tagsController.getTags = async function (req, res) {
 		title: '[[pages:tags]]',
 	});
 };
+
+export default tagsController;

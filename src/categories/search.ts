@@ -1,19 +1,18 @@
 'use strict';
 
-const _ = require('lodash');
+import _ from 'lodash';
+import privileges from '../privileges';
+import plugins from '../plugins';
+import db from '../database';
 
-const privileges = require('../privileges');
-const plugins = require('../plugins');
-const db = require('../database');
-
-module.exports = function (Categories) {
+export default function (Categories) {
 	Categories.search = async function (data) {
 		const query = data.query || '';
 		const page = data.page || 1;
 		const uid = data.uid || 0;
 		const paginate = data.hasOwnProperty('paginate') ? data.paginate : true;
 
-		const startTime = process.hrtime();
+		const startTime = (process as any).hrtime();
 
 		let cids = await findCids(query, data.hardCap);
 
@@ -26,7 +25,7 @@ module.exports = function (Categories) {
 
 		const searchResult = {
 			matchCount: cids.length,
-		};
+		} as any;
 
 		if (paginate) {
 			const resultsPerPage = data.resultsPerPage || 50;
@@ -57,7 +56,7 @@ module.exports = function (Categories) {
 			}
 			return c1.order - c2.order;
 		});
-		searchResult.timing = (process.elapsedTimeSince(startTime) / 1000).toFixed(2);
+		searchResult.timing = ((process as any).elapsedTimeSince(startTime) / 1000).toFixed(2);
 		searchResult.categories = categoryData.filter(c => cids.includes(c.cid));
 		return searchResult;
 	};

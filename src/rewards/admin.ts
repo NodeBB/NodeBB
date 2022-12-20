@@ -1,10 +1,10 @@
 'use strict';
 
-const plugins = require('../plugins');
-const db = require('../database');
-const utils = require('../utils');
+import plugins from '../plugins';
+import db from '../database';
+import utils from '../utils';
 
-const rewards = module.exports;
+const rewards = {} as any;
 
 rewards.save = async function (data) {
 	async function save(data) {
@@ -78,4 +78,7 @@ async function getActiveRewards() {
 	return rewardData.filter(Boolean);
 }
 
-require('../promisify')(rewards);
+import promisify from '../promisify';
+promisify(rewards);
+
+export default rewards;

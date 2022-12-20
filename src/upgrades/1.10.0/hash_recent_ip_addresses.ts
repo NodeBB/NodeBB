@@ -1,13 +1,19 @@
 'use strict';
 
 
-const async = require('async');
-const crypto = require('crypto');
-const nconf = require('nconf');
-const batch = require('../../batch');
-const db = require('../../database');
+import async from 'async';
+import crypto from 'crypto';
 
-module.exports = {
+
+import nconf from 'nconf';
+import * as batch from '../../batch';
+
+
+import db from '../../database';
+
+
+
+export const obj = {
 	name: 'Hash all IP addresses stored in Recent IPs zset',
 	timestamp: Date.UTC(2018, 5, 22),
 	method: function (callback) {

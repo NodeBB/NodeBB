@@ -1,18 +1,17 @@
 'use strict';
 
-const nconf = require('nconf');
+import nconf from 'nconf';
+import db from '../../database';
+import posts from '../../posts';
+import flags from '../../flags';
+import events from '../../events';
+import privileges from '../../privileges';
+import plugins from '../../plugins';
+import social from '../../social';
+import user from '../../user';
+import utils from '../../utils';
 
-const db = require('../../database');
-const posts = require('../../posts');
-const flags = require('../../flags');
-const events = require('../../events');
-const privileges = require('../../privileges');
-const plugins = require('../../plugins');
-const social = require('../../social');
-const user = require('../../user');
-const utils = require('../../utils');
-
-module.exports = function (SocketPosts) {
+export default function (SocketPosts) {
 	SocketPosts.loadPostTools = async function (socket, data) {
 		if (!data || !data.pid || !data.cid) {
 			throw new Error('[[error:invalid-data]]');

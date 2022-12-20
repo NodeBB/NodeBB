@@ -1,10 +1,14 @@
 'use strict';
 
-const db = require('../../database');
-const batch = require('../../batch');
-const user = require('../../user');
+import db from '../../database';
 
-module.exports = {
+
+import * as batch from '../../batch';
+
+
+import user from '../../user';
+
+export const obj = {
 	name: 'Clean up old notifications and hash data',
 	timestamp: Date.UTC(2019, 9, 7),
 	method: async function () {

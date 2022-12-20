@@ -2,11 +2,15 @@
 
 'use strict';
 
-const db = require('../../database');
+import db from '../../database';
 
-const batch = require('../../batch');
 
-module.exports = {
+
+import * as batch from '../../batch';
+
+
+
+export const obj = {
 	name: 'add filters to events',
 	timestamp: Date.UTC(2018, 9, 4),
 	method: async function () {

@@ -1,17 +1,37 @@
 'use strict';
 
-const fs = require('fs');
-const url = require('url');
-const path = require('path');
-const prompt = require('prompt');
-const winston = require('winston');
-const nconf = require('nconf');
-const _ = require('lodash');
+import fs from 'fs';
+import url from 'url';
+import path from 'path';
+import prompt from 'prompt';
+import winston from 'winston';
+import nconf from 'nconf';
+import _ from 'lodash';
+import upgrade from './upgrade';
+import utils from './utils';
+import redis from './database/redis';
+import mongo from './database/mongo';
+import postgres from './database/postgres';
+import configureDatabases from '../install/databases';
+import db from './database';
+import meta from './meta';
+import groups from './groups';
+import navigation from './navigation';
+import User from './user';
+import Groups from './groups';
+import privileges from './privileges';
+import { defaults, data } from 'autoprefixer';
+import Categories from './categories';
+import file from './file';
+import Topics from './topics';
 
-const utils = require('./utils');
+const  { redisQuestions } = redis;
+const { mongoQuestions } = mongo;
+const { postgresQuestions } = postgres;
 
-const install = module.exports;
-const questions = {};
+
+const install = {} as any;
+const questions = {} as any;
 
 questions.main = [
 	{
@@ -65,14 +85,14 @@ function checkSetupFlagEnv() {
 	};
 
 	// Set setup values from env vars (if set)
-	const envKeys = Object.keys(process.env);
+	const envKeys = Object.keys((process as any).env);
 	if (Object.keys(envConfMap).some(key => envKeys.includes(key))) {
 		winston.info('[install/checkSetupFlagEnv] checking env vars for setup info...');
 		setupVal = setupVal || {};
 
-		Object.entries(process.env).forEach(([evName, evValue]) => { // get setup values from env
+		Object.entries((process as any).env).forEach(([evName, evValue]) => { // get setup values from env
 			if (evName.startsWith('NODEBB_DB_')) {
-				setupVal[`${process.env.NODEBB_DB}:${envConfMap[evName]}`] = evValue;
+				setupVal[`${(process as any).env.NODEBB_DB}:${envConfMap[evName]}`] = evValue;
 			} else if (evName.startsWith('NODEBB_')) {
 				setupVal[envConfMap[evName]] = evValue;
 			}
@@ -89,7 +109,7 @@ function checkSetupFlagEnv() {
 			const setupJSON = JSON.parse(nconf.get('setup'));
 			setupVal = { ...setupVal, ...setupJSON };
 		}
-	} catch (err) {
+	} catch (err: any) {
 		winston.error('[install/checkSetupFlagEnv] invalid json in nconf.get(\'setup\'), ignoring setup values from json');
 	}
 
@@ -111,7 +131,7 @@ function checkSetupFlagEnv() {
 				winston.error('  admin:email');
 			}
 
-			process.exit();
+			(process as any).exit();
 		}
 	} else if (nconf.get('database')) {
 		install.values = install.values || {};
@@ -123,8 +143,7 @@ function checkCIFlag() {
 	let ciVals;
 	try {
 		ciVals = JSON.parse(nconf.get('ci'));
-	} catch (e) {
-		ciVals = undefined;
+} catch (e: any) {		ciVals = undefined;
 	}
 
 	if (ciVals && ciVals instanceof Object) {
@@ -142,13 +161,12 @@ function checkCIFlag() {
 				winston.error('  database');
 			}
 
-			process.exit();
+			(process as any).exit();
 		}
 	}
 }
 
 async function setupConfig() {
-	const configureDatabases = require('../install/databases');
 
 	// prompt prepends "prompt: " to questions, let's clear that.
 	prompt.start();
@@ -159,9 +177,7 @@ async function setupConfig() {
 
 	if (install.values) {
 		// Use provided values, fall back to defaults
-		const redisQuestions = require('./database/redis').questions;
-		const mongoQuestions = require('./database/mongo').questions;
-		const postgresQuestions = require('./database/postgres').questions;
+
 		const allQuestions = [
 			...questions.main,
 			...questions.optional,
@@ -197,7 +213,7 @@ async function completeConfigSetup(config) {
 		config.package_manager = nconf.get('package_manager');
 	}
 	nconf.overrides(config);
-	const db = require('./database');
+
 	await db.init();
 	if (db.hasOwnProperty('createIndices')) {
 		await db.createIndices();
@@ -219,13 +235,11 @@ async function completeConfigSetup(config) {
 		urlObj.path = '';
 		urlObj.pathname = '';
 	}
-
 	config.url = url.format(urlObj);
 
 	// ref: https://github.com/indexzero/nconf/issues/300
 	delete config.type;
 
-	const meta = require('./meta');
 	await meta.configs.set('submitPluginUsage', config.submitPluginUsage === 'yes' ? 1 : 0);
 	delete config.submitPluginUsage;
 
@@ -234,16 +248,13 @@ async function completeConfigSetup(config) {
 
 async function setupDefaultConfigs() {
 	console.log('Populating database with default configs, if not already set...');
-	const meta = require('./meta');
-	const defaults = require(path.join(__dirname, '../', 'install/data/defaults.json'));
+	path.join(__dirname, '../', 'install/data/defaults.json');
 
 	await meta.configs.setOnEmpty(defaults);
 	await meta.configs.init();
 }
 
 async function enableDefaultTheme() {
-	const meta = require('./meta');
-
 	const id = await meta.configs.get('theme:id');
 	if (id) {
 		console.log('Previous theme detected, skipping enabling default theme');
@@ -259,7 +270,6 @@ async function enableDefaultTheme() {
 }
 
 async function createDefaultUserGroups() {
-	const groups = require('./groups');
 	async function createGroup(name) {
 		await groups.create({
 			name: name,
@@ -288,7 +298,6 @@ async function createDefaultUserGroups() {
 }
 
 async function createAdministrator() {
-	const Groups = require('./groups');
 	const memberCount = await Groups.getMemberCount('administrators');
 	if (memberCount > 0) {
 		console.log('Administrator found, skipping Admin setup');
@@ -298,8 +307,6 @@ async function createAdministrator() {
 }
 
 async function createAdmin() {
-	const User = require('./user');
-	const Groups = require('./groups');
 	let password;
 
 	winston.warn('No administrators have been detected, running initial user setup\n');
@@ -341,10 +348,10 @@ async function createAdmin() {
 
 		try {
 			User.isPasswordValid(results.password);
-		} catch (err) {
+		} catch (err: any) {
 			const [namespace, key] = err.message.slice(2, -2).split(':', 2);
 			if (namespace && key && err.message.startsWith('[[') && err.message.endsWith(']]')) {
-				const lang = require(path.join(__dirname, `../public/language/en-GB/${namespace}`));
+				const lang = path.join(__dirname, `../public/language/en-GB/${namespace}`);
 				if (lang && lang[key]) {
 					err.message = lang[key];
 				}
@@ -403,7 +410,6 @@ async function createAdmin() {
 }
 
 async function createGlobalModeratorsGroup() {
-	const groups = require('./groups');
 	const exists = await groups.exists('Global Moderators');
 	if (exists) {
 		winston.info('Global Moderators group found, skipping creation!');
@@ -421,7 +427,6 @@ async function createGlobalModeratorsGroup() {
 }
 
 async function giveGlobalPrivileges() {
-	const privileges = require('./privileges');
 	const defaultPrivileges = [
 		'groups:chat', 'groups:upload:post:image', 'groups:signature', 'groups:search:content',
 		'groups:search:users', 'groups:search:tags', 'groups:view:users', 'groups:view:tags', 'groups:view:groups',
@@ -436,8 +441,6 @@ async function giveGlobalPrivileges() {
 }
 
 async function createCategories() {
-	const Categories = require('./categories');
-	const db = require('./database');
 	const cids = await db.getSortedSetRange('categories:cid', 0, -1);
 	if (Array.isArray(cids) && cids.length) {
 		console.log(`Categories OK. Found ${cids.length} categories.`);
@@ -456,21 +459,15 @@ async function createCategories() {
 }
 
 async function createMenuItems() {
-	const db = require('./database');
 
 	const exists = await db.exists('navigation:enabled');
 	if (exists) {
 		return;
 	}
-	const navigation = require('./navigation/admin');
-	const data = require('../install/data/navigation.json');
 	await navigation.save(data);
 }
 
 async function createWelcomePost() {
-	const db = require('./database');
-	const Topics = require('./topics');
-
 	const [content, numTopics] = await Promise.all([
 		fs.promises.readFile(path.join(__dirname, '../', 'install/data/welcome.md'), 'utf8'),
 		db.getObjectField('global', 'topicCount'),
@@ -507,8 +504,7 @@ async function enableDefaultPlugins() {
 		try {
 			customDefaults = Array.isArray(customDefaults) ? customDefaults : JSON.parse(customDefaults);
 			defaultEnabled = defaultEnabled.concat(customDefaults);
-		} catch (e) {
-			// Invalid value received
+	} catch (e: any) {			// Invalid value received
 			winston.info('[install/enableDefaultPlugins] Invalid defaultPlugins value received. Ignoring.');
 		}
 	}
@@ -516,14 +512,11 @@ async function enableDefaultPlugins() {
 	defaultEnabled = _.uniq(defaultEnabled);
 
 	winston.info('[install/enableDefaultPlugins] activating default plugins', defaultEnabled);
-
-	const db = require('./database');
 	const order = defaultEnabled.map((plugin, index) => index);
 	await db.sortedSetAdd('plugins:active', order, defaultEnabled);
 }
 
 async function setCopyrightWidget() {
-	const db = require('./database');
 	const [footerJSON, footer] = await Promise.all([
 		fs.promises.readFile(path.join(__dirname, '../', 'install/data/footer.json'), 'utf8'),
 		db.getObjectField('widgets:global', 'footer'),
@@ -535,7 +528,6 @@ async function setCopyrightWidget() {
 }
 
 async function copyFavicon() {
-	const file = require('./file');
 	const pathToIco = path.join(nconf.get('upload_path'), 'system', 'favicon.ico');
 	const defaultIco = path.join(nconf.get('base_dir'), 'public', 'favicon.ico');
 	const targetExists = await file.exists(pathToIco);
@@ -544,17 +536,16 @@ async function copyFavicon() {
 	if (defaultExists && !targetExists) {
 		try {
 			await fs.promises.copyFile(defaultIco, pathToIco);
-		} catch (err) {
+		} catch (err: any) {
 			winston.error(`Cannot copy favicon.ico\n${err.stack}`);
 		}
 	}
 }
 
 async function checkUpgrade() {
-	const upgrade = require('./upgrade');
 	try {
 		await upgrade.check();
-	} catch (err) {
+	} catch (err: any) {
 		if (err.message === 'schema-out-of-date') {
 			await upgrade.run();
 			return;
@@ -586,10 +577,10 @@ install.setup = async function () {
 			...adminInfo,
 		};
 		return data;
-	} catch (err) {
+	} catch (err: any) {
 		if (err) {
 			winston.warn(`NodeBB Setup Aborted.\n ${err.stack}`);
-			process.exit(1);
+			(process as any).exit(1);
 		}
 	}
 };
@@ -603,8 +594,8 @@ install.save = async function (server_conf) {
 
 	let currentConfig = {};
 	try {
-		currentConfig = require(serverConfigPath);
-	} catch (err) {
+		currentConfig  = require(serverConfigPath);
+	} catch (err: any) {
 		if (err.code !== 'MODULE_NOT_FOUND') {
 			throw err;
 		}
@@ -616,3 +607,5 @@ install.save = async function (server_conf) {
 		file: serverConfigPath,
 	});
 };
+
+export default install;

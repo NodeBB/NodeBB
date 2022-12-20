@@ -1,11 +1,12 @@
 'use strict';
 
-module.exports = {
+import meta from '../../meta';
+import privileges from '../../privileges';
+
+export const obj = {
 	name: 'Give global search privileges',
 	timestamp: Date.UTC(2018, 4, 28),
 	method: async function () {
-		const meta = require('../../meta');
-		const privileges = require('../../privileges');
 		const allowGuestSearching = parseInt(meta.config.allowGuestSearching, 10) === 1;
 		const allowGuestUserSearching = parseInt(meta.config.allowGuestUserSearching, 10) === 1;
 

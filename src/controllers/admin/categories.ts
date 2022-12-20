@@ -1,16 +1,16 @@
 'use strict';
 
-const _ = require('lodash');
-const nconf = require('nconf');
-const categories = require('../../categories');
-const analytics = require('../../analytics');
-const plugins = require('../../plugins');
-const translator = require('../../translator');
-const meta = require('../../meta');
-const helpers = require('../helpers');
-const pagination = require('../../pagination');
+import _ from 'lodash';
+import nconf from 'nconf';
+import categories from '../../categories';
+import analytics from '../../analytics';
+import plugins from '../../plugins';
+import translator from '../../translator';
+import meta from '../../meta';
+import helpers from '../helpers';
+import pagination from '../../pagination';
 
-const categoriesController = module.exports;
+const categoriesController = {} as any;
 
 categoriesController.get = async function (req, res, next) {
 	const [categoryData, parent, selectedData] = await Promise.all([
@@ -141,3 +141,5 @@ categoriesController.getAnalytics = async function (req, res) {
 		analytics: analyticsData,
 	});
 };
+
+export default categoriesController;

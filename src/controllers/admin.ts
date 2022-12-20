@@ -1,35 +1,52 @@
 'use strict';
 
-const privileges = require('../privileges');
-const helpers = require('./helpers');
+import privileges from '../privileges';
+import helpers from './helpers';
+import dashboard from './admin/dashboard';
+import categories from './admin/categories';
+import adminPrivileges from './admin/privileges';
+import adminsMods from './admin/admins-mods';
+import tags from './admin/tags';
+import groups from './admin/groups';
+import digest from './admin/digest';
+import appearance from './admin/appearance';
+import 	widgets from './admin/widgets';
+import 	rewards from './admin/rewards';
+import events from './admin/events';
+import hooks from './admin/hooks';
+import logs from './admin/logs';
+import errors from './admin/errors';
+import database from './admin/database';
+import cache from './admin/cache';
+import plugins from './admin/plugins';
+import settings from './admin/settings';
+import logger from './admin/logger';
+import themes from './admin/themes';
+import users from './admin/users';
+import uploads from './admin/uploads';
+import info from './admin/info';
 
 const adminController = {
-	dashboard: require('./admin/dashboard'),
-	categories: require('./admin/categories'),
-	privileges: require('./admin/privileges'),
-	adminsMods: require('./admin/admins-mods'),
-	tags: require('./admin/tags'),
-	groups: require('./admin/groups'),
-	digest: require('./admin/digest'),
-	appearance: require('./admin/appearance'),
-	extend: {
-		widgets: require('./admin/widgets'),
-		rewards: require('./admin/rewards'),
-	},
-	events: require('./admin/events'),
-	hooks: require('./admin/hooks'),
-	logs: require('./admin/logs'),
-	errors: require('./admin/errors'),
-	database: require('./admin/database'),
-	cache: require('./admin/cache'),
-	plugins: require('./admin/plugins'),
-	settings: require('./admin/settings'),
-	logger: require('./admin/logger'),
-	themes: require('./admin/themes'),
-	users: require('./admin/users'),
-	uploads: require('./admin/uploads'),
-	info: require('./admin/info'),
-};
+	dashboard, 
+	categories,
+	privileges,
+	adminsMods,
+	groups,
+	digest,
+	appearance,
+	events,
+	hooks,
+	errors,
+	database,
+	plugins,
+	adminPrivileges,
+	settings,
+	logger,
+	themes,
+	users,
+	uploads,
+	info,
+} as any;
 
 adminController.routeIndex = async (req, res) => {
 	const privilegeSet = await privileges.admin.get(req.uid);
@@ -55,4 +72,4 @@ adminController.routeIndex = async (req, res) => {
 	return helpers.notAllowed(req, res);
 };
 
-module.exports = adminController;
+export default adminController;

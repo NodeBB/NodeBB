@@ -1,21 +1,22 @@
 
 'use strict';
 
-const nconf = require('nconf');
-const path = require('path');
-const winston = require('winston');
+import nconf from 'nconf';
+import path from 'path';
+import winston from 'winston';
+import db from '../database';
+import pubsub from '../pubsub';
+import plugins from '../plugins';
+import utils from '../utils';
+import Meta from './index';
+import * as cacheBuster from './cacheBuster';
+//@ts-ignore
+import defaults from '../../install/data/defaults.json';
+import sass from '../utils';
+import image from '../image';
 
-const db = require('../database');
-const pubsub = require('../pubsub');
-const plugins = require('../plugins');
-const utils = require('../utils');
-const Meta = require('./index');
-const cacheBuster = require('./cacheBuster');
-const defaults = require('../../install/data/defaults.json');
 
-const Configs = module.exports;
-
-Meta.config = {};
+const Configs = {} as any;
 
 // called after data is loaded from db
 function deserialize(config) {
@@ -44,7 +45,7 @@ function deserialize(config) {
 		} else if (Array.isArray(defaults[key]) && !Array.isArray(config[key])) {
 			try {
 				deserialized[key] = JSON.parse(config[key] || '[]');
-			} catch (err) {
+			} catch (err: any) {
 				winston.error(err.stack);
 				deserialized[key] = defaults[key];
 			}
@@ -190,7 +191,7 @@ Configs.registerHooks = () => {
 
 Configs.cookie = {
 	get: () => {
-		const cookie = {};
+		const cookie = {} as any;
 
 		if (nconf.get('cookieDomain') || Meta.config.cookieDomain) {
 			cookie.domain = nconf.get('cookieDomain') || Meta.config.cookieDomain;
@@ -240,20 +241,19 @@ async function saveRenderedCss(data) {
 	if (!data.customCSS) {
 		return;
 	}
-	const sass = require('../utils').getSass();
+	sass.getSass();
 	const scssOutput = await sass.compileStringAsync(data.customCSS, {});
 	data.renderedCustomCSS = scssOutput.css.toString();
 }
 
 async function getLogoSize(data) {
-	const image = require('../image');
 	if (!data['brand:logo']) {
 		return;
 	}
 	let size;
 	try {
 		size = await image.size(path.join(nconf.get('upload_path'), 'system', 'site-logo-x50.png'));
-	} catch (err) {
+	} catch (err: any) {
 		if (err.code === 'ENOENT') {
 			// For whatever reason the x50 logo wasn't generated, gracefully error out
 			winston.warn('[logo] The email-safe logo doesn\'t seem to have been created, please re-upload your site logo.');
@@ -284,3 +284,6 @@ pubsub.on('config:update', (config) => {
 		updateLocalConfig(config);
 	}
 });
+
+Meta.config = Configs;
+export default Configs;

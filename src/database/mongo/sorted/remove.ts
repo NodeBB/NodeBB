@@ -1,7 +1,7 @@
 'use strict';
+import helpers from '../helpers';
 
-module.exports = function (module) {
-	const helpers = require('../helpers');
+export default function (module) {
 
 	module.sortedSetRemove = async function (key, value) {
 		if (!key) {
@@ -37,7 +37,7 @@ module.exports = function (module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return;
 		}
-		const query = { _key: { $in: keys } };
+		const query = { _key: { $in: keys } } as any;
 		if (keys.length === 1) {
 			query._key = keys[0];
 		}

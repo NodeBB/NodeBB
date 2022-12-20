@@ -2,10 +2,10 @@
 
 'use strict';
 
-const groups = require('../../groups');
-const db = require('../../database');
+import groups from '../../groups';
+import db from '../../database';
 
-module.exports = {
+export const obj = {
 	name: 'Give deleted post viewing privilege to moderators on all categories',
 	timestamp: Date.UTC(2018, 5, 8),
 	method: async function () {

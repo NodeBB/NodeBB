@@ -1,22 +1,21 @@
 
 'use strict';
 
-const _ = require('lodash');
+import _ from 'lodash';
+import db from '../database';
+import privileges from '../privileges';
+import user from '../user';
+import categories from '../categories';
+import meta from '../meta';
+import plugins from '../plugins';
 
-const db = require('../database');
-const privileges = require('../privileges');
-const user = require('../user');
-const categories = require('../categories');
-const meta = require('../meta');
-const plugins = require('../plugins');
-
-module.exports = function (Topics) {
+export default function (Topics) {
 	Topics.getSortedTopics = async function (params) {
 		const data = {
 			nextStart: 0,
 			topicCount: 0,
 			topics: [],
-		};
+		} as any;
 
 		params.term = params.term || 'alltime';
 		params.sort = params.sort || 'recent';

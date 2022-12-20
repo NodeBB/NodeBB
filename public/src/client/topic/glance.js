@@ -11,7 +11,7 @@ let trackBottom;
 let trackHeight;
 let handleEl;
 
-export default function init() {
+module.exports =  function init() {
 	const topicEl = document.querySelector('[component="topic"]');
 	const navigatorEl = document.querySelector('[component="topic/navigator"]');
 

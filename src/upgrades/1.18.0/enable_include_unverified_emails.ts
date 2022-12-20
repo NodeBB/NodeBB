@@ -1,8 +1,7 @@
 'use strict';
 
-const meta = require('../../meta');
-
-module.exports = {
+import meta from '../../meta';
+export const obj = {
 	name: 'Enable setting to include unverified emails for all mailings',
 	// remember, month is zero-indexed (so January is 0, December is 11)
 	timestamp: Date.UTC(2021, 5, 18),

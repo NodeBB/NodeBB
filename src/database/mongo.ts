@@ -2,17 +2,28 @@
 'use strict';
 
 
-const winston = require('winston');
-const nconf = require('nconf');
-const semver = require('semver');
-const prompt = require('prompt');
-const utils = require('../utils');
+import winston from 'winston';
+import nconf from 'nconf';
+import semver from 'semver';
+import prompt from 'prompt';
+import utils from '../utils';
+import main from './mongo/main';
+import hash from  './mongo/hash';
+import sets from './mongo/sets';
+import sorted from './mongo/sets';
+import list from './mongo/list';
+import transaction from './mongo/transaction';
+import MongoStore from 'connect-mongo';
+import meta from '../meta';
+//@ts-ignore
+import mongoPkg from 'mongodb/package.json';
+
 
 let client;
 
-const connection = require('./mongo/connection');
+import connection from './mongo/connection';
 
-const mongoModule = module.exports;
+const mongoModule = {} as any;
 
 function isUriNotSpecified() {
 	return !prompt.history('mongo:uri').value;
@@ -65,9 +76,6 @@ mongoModule.init = async function () {
 };
 
 mongoModule.createSessionStore = async function (options) {
-	const MongoStore = require('connect-mongo');
-	const meta = require('../meta');
-
 	const store = MongoStore.create({
 		clientPromise: connection.connect(options),
 		ttl: meta.getSessionTTLSeconds(),
@@ -91,7 +99,6 @@ mongoModule.createIndices = async function () {
 };
 
 mongoModule.checkCompatibility = function (callback) {
-	const mongoPkg = require('mongodb/package.json');
 	mongoModule.checkCompatibilityVersion(mongoPkg.version, callback);
 };
 
@@ -114,7 +121,7 @@ mongoModule.info = async function (db) {
 	async function getServerStatus() {
 		try {
 			return await db.command({ serverStatus: 1 });
-		} catch (err) {
+		} catch (err: any) {
 			serverStatusError = err.message;
 			// Override mongo error with more human-readable error
 			if (err.name === 'MongoError' && err.codeName === 'Unauthorized') {
@@ -178,11 +185,14 @@ mongoModule.close = function (callback) {
 	client.close(err => callback(err));
 };
 
-require('./mongo/main')(mongoModule);
-require('./mongo/hash')(mongoModule);
-require('./mongo/sets')(mongoModule);
-require('./mongo/sorted')(mongoModule);
-require('./mongo/list')(mongoModule);
-require('./mongo/transaction')(mongoModule);
+main(mongoModule);
+hash(mongoModule);
+sets(mongoModule);
+sorted(mongoModule);
+list(mongoModule);
+transaction(mongoModule);
 
-require('../promisify')(mongoModule, ['client', 'sessionStore']);
+import promisify from '../promisify';
+promisify(mongoModule, ['client', 'sessionStore']);
+
+export default mongoModule;

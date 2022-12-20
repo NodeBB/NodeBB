@@ -1,10 +1,10 @@
 'use strict';
 
-const async = require('async');
-const db = require('../../database');
+import async from 'async';
+import db from '../../database';
 
 
-module.exports = {
+export const obj = {
 	name: 'Chat room hashes',
 	timestamp: Date.UTC(2015, 11, 23),
 	method: function (callback) {

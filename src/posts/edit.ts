@@ -1,20 +1,19 @@
 'use strict';
 
-const validator = require('validator');
-const _ = require('lodash');
+import validator from 'validator';
+import _ from 'lodash';
+import db from '../database';
+import meta from '../meta';
+import topics from '../topics';
+import user from '../user';
+import privileges from '../privileges';
+import plugins from '../plugins';
+import pubsub from '../pubsub';
+import utils from '../utils';
+import slugify from '../slugify';
+import translator from '../translator';
 
-const db = require('../database');
-const meta = require('../meta');
-const topics = require('../topics');
-const user = require('../user');
-const privileges = require('../privileges');
-const plugins = require('../plugins');
-const pubsub = require('../pubsub');
-const utils = require('../utils');
-const slugify = require('../slugify');
-const translator = require('../translator');
-
-module.exports = function (Posts) {
+export default function (Posts) {
 	pubsub.on('post:edit', (pid) => {
 		require('./cache').del(pid);
 	});
@@ -36,7 +35,7 @@ module.exports = function (Posts) {
 		await scheduledTopicCheck(data, topicData);
 
 		const oldContent = postData.content; // for diffing purposes
-		const editPostData = getEditPostData(data, topicData, postData);
+		const editPostData: any = getEditPostData(data, topicData, postData);
 
 		if (data.handle) {
 			editPostData.handle = data.handle;
@@ -125,7 +124,7 @@ module.exports = function (Posts) {
 			uid: postData.uid,
 			mainPid: data.pid,
 			timestamp: rescheduling(data, topicData) ? data.timestamp : topicData.timestamp,
-		};
+		} as any;
 		if (title) {
 			newTopicData.title = title;
 			newTopicData.slug = `${tid}/${slugify(title) || 'topic'}`;
@@ -195,7 +194,7 @@ module.exports = function (Posts) {
 		const editPostData = {
 			content: data.content,
 			editor: data.uid,
-		};
+		} as any;
 
 		// For posts in scheduled topics, if edited before, use edit timestamp
 		editPostData.edited = topicData.scheduled ? (postData.edited || postData.timestamp) + 1 : Date.now();

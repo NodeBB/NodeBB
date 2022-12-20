@@ -1,13 +1,12 @@
 'use strict';
 
-const posts = require('../../posts');
-const privileges = require('../../privileges');
+import posts from '../../posts';
+import privileges from '../../privileges';
+import api from '../../api';
+import helpers from '../helpers';
+import * as apiHelpers from '../../api/helpers';
 
-const api = require('../../api');
-const helpers = require('../helpers');
-const apiHelpers = require('../../api/helpers');
-
-const Posts = module.exports;
+const Posts = {} as any;
 
 Posts.get = async (req, res) => {
 	helpers.formatApiResponse(200, res, await api.posts.get(req, { pid: req.params.pid }));
@@ -114,3 +113,5 @@ Posts.deleteDiff = async (req, res) => {
 
 	helpers.formatApiResponse(200, res, await api.posts.getDiffs(req, { ...req.params }));
 };
+
+export default Posts;

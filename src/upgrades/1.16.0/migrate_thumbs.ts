@@ -1,13 +1,17 @@
 'use strict';
 
-const nconf = require('nconf');
+import nconf from 'nconf';
 
-const db = require('../../database');
-const meta = require('../../meta');
-const topics = require('../../topics');
-const batch = require('../../batch');
+import db from '../../database';
 
-module.exports = {
+
+import meta from '../../meta';
+import topics from '../../topics';
+import * as batch from '../../batch';
+
+
+
+export const obj = {
 	name: 'Migrate existing topic thumbnails to new format',
 	timestamp: Date.UTC(2020, 11, 11),
 	method: async function () {

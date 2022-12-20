@@ -1,12 +1,11 @@
 'use strict';
 
-const validator = require('validator');
-
-const db = require('../database');
-const categories = require('../categories');
-const utils = require('../utils');
-const translator = require('../translator');
-const plugins = require('../plugins');
+import validator from 'validator';
+import db from '../database';
+import categories from '../categories';
+import utils from '../utils';
+import translator from '../translator';
+import plugins from '../plugins';
 
 const intFields = [
 	'tid', 'cid', 'uid', 'mainPid', 'postcount',
@@ -15,7 +14,7 @@ const intFields = [
 	'deleterUid',
 ];
 
-module.exports = function (Topics) {
+export default function (Topics) {
 	Topics.getTopicsFields = async function (tids, fields) {
 		if (!Array.isArray(tids) || !tids.length) {
 			return [];

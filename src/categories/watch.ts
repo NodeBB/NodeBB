@@ -1,9 +1,9 @@
 'use strict';
 
-const db = require('../database');
-const user = require('../user');
+import db from '../database';
+import user from '../user';
 
-module.exports = function (Categories) {
+export default function (Categories) {
 	Categories.watchStates = {
 		ignoring: 1,
 		notwatching: 2,

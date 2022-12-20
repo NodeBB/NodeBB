@@ -1,20 +1,19 @@
 'use strict';
 
-const path = require('path');
-const winston = require('winston');
-const fs = require('fs');
-const chalk = require('chalk');
-const nconf = require('nconf');
+import path from 'path';
+import winston from 'winston';
+import fs from 'fs';
+import chalk from 'chalk';
+import nconf from 'nconf';
+import db from '../database';
+import events from '../events';
+import meta from '../meta';
+import plugins from '../plugins';
+import widgets from '../widgets';
+import privileges from '../privileges';
+import { paths, pluginNamePattern, themeNamePattern } from '../constants';
 
-const db = require('../database');
-const events = require('../events');
-const meta = require('../meta');
-const plugins = require('../plugins');
-const widgets = require('../widgets');
-const privileges = require('../privileges');
-const { paths, pluginNamePattern, themeNamePattern } = require('../constants');
-
-exports.reset = async function (options) {
+export const reset = async function (options) {
 	const map = {
 		theme: async function () {
 			let themeId = options.theme;
@@ -71,7 +70,7 @@ exports.reset = async function (options) {
 			'         Prefix is optional, e.g. ./nodebb reset -p markdown, ./nodebb reset -t harmony',
 		].join('\n'));
 
-		process.exit(0);
+		(process as any).exit(0);
 	}
 
 	try {
@@ -81,10 +80,10 @@ exports.reset = async function (options) {
 			await task();
 		}
 		winston.info('[reset] Reset complete. Please run `./nodebb build` to rebuild assets.');
-		process.exit(0);
-	} catch (err) {
+		(process as any).exit(0);
+	} catch (err: any) {
 		winston.error(`[reset] Errors were encountered during reset -- ${err.message}`);
-		process.exit(1);
+		(process as any).exit(1);
 	}
 };
 
@@ -97,7 +96,7 @@ async function resetSettings() {
 async function resetTheme(themeId) {
 	try {
 		await fs.promises.access(path.join(paths.nodeModules, themeId, 'package.json'));
-	} catch (err) {
+	} catch (err: any) {
 		winston.warn('[reset] Theme `%s` is not installed on this forum', themeId);
 		throw new Error('theme-not-found');
 	}
@@ -117,11 +116,11 @@ async function resetThemeTo(themeId) {
 	winston.info(`[reset] Theme reset to ${themeId} and default skin`);
 }
 
-async function resetPlugin(pluginId) {
+async function resetPlugin(pluginId?) {
 	try {
 		if (nconf.get('plugins:active')) {
 			winston.error('Cannot reset plugins while plugin state is set in the configuration (config.json, environmental variables or terminal arguments), please modify the configuration instead');
-			process.exit(1);
+			(process as any).exit(1);
 		}
 		const isActive = await db.isSortedSetMember('plugins:active', pluginId);
 		if (isActive) {
@@ -135,7 +134,7 @@ async function resetPlugin(pluginId) {
 			winston.warn('[reset] Plugin `%s` was not active on this forum', pluginId);
 			winston.info('[reset] No action taken.');
 		}
-	} catch (err) {
+	} catch (err: any) {
 		winston.error(`[reset] Could not disable plugin: ${pluginId} encountered error %s\n${err.stack}`);
 		throw err;
 	}
@@ -144,7 +143,7 @@ async function resetPlugin(pluginId) {
 async function resetPlugins() {
 	if (nconf.get('plugins:active')) {
 		winston.error('Cannot reset plugins while plugin state is set in the configuration (config.json, environmental variables or terminal arguments), please modify the configuration instead');
-		process.exit(1);
+		(process as any).exit(1);
 	}
 	await db.delete('plugins:active');
 	winston.info('[reset] All Plugins De-activated');

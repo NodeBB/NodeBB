@@ -1,12 +1,11 @@
 'use strict';
 
-const json2csvAsync = require('json2csv').parseAsync;
+import { parseAsync as json2csvAsync } from 'json2csv';
+import meta from '../../meta';
+import analytics from '../../analytics';
+import utils from '../../utils';
 
-const meta = require('../../meta');
-const analytics = require('../../analytics');
-const utils = require('../../utils');
-
-const errorsController = module.exports;
+const errorsController = {} as any;
 
 errorsController.get = async function (req, res) {
 	const data = await utils.promiseParallel({
@@ -23,3 +22,5 @@ errorsController.export = async function (req, res) {
 	const csv = await json2csvAsync(data, opts);
 	res.set('Content-Type', 'text/csv').set('Content-Disposition', 'attachment; filename="404.csv"').send(csv);
 };
+
+export default errorsController;

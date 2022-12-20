@@ -1,21 +1,24 @@
 'use strict';
 
-const _ = require('lodash');
-const nconf = require('nconf');
-const db = require('../database');
-const meta = require('../meta');
-const user = require('../user');
-const posts = require('../posts');
-const categories = require('../categories');
-const plugins = require('../plugins');
-const translator = require('../translator');
-const privileges = require('../privileges');
-const utils = require('../utils');
-const helpers = require('../helpers');
+import _ from 'lodash';
+import nconf from 'nconf';
+import db from '../database';
+import meta from '../meta';
+import user from '../user';
+import posts from '../posts';
+import categories from '../categories';
+import plugins from '../plugins';
+import translator from '../translator';
+import privileges from '../privileges';
+import utils from '../utils';
+import helpers from '../helpers';
+import topics from '.';
+
+
 
 const relative_path = nconf.get('relative_path');
 
-const Events = module.exports;
+const Events = {} as any;
 
 /**
  * Note: Plugins!
@@ -112,7 +115,6 @@ function renderTimeago(event) {
 }
 
 Events.get = async (tid, uid, reverse = false) => {
-	const topics = require('.');
 
 	if (!await topics.exists(tid)) {
 		throw new Error('[[error:no-topic]]');
@@ -147,7 +149,7 @@ async function getCategoryInfo(cids) {
 	return _.zipObject(uniqCids, catData);
 }
 
-async function modifyEvent({ tid, uid, eventIds, timestamps, events }) {
+async function modifyEvent({ tid, uid, eventIds, timestamps, events }: any) {
 	// Add posts from post queue
 	const isPrivileged = await user.isPrivileged(uid);
 	if (isPrivileged) {
@@ -211,7 +213,6 @@ async function modifyEvent({ tid, uid, eventIds, timestamps, events }) {
 }
 
 Events.log = async (tid, payload) => {
-	const topics = require('.');
 	const { type } = payload;
 	const timestamp = payload.timestamp || Date.now();
 
@@ -254,3 +255,5 @@ Events.purge = async (tid, eventIds = []) => {
 		await db.deleteAll(keys);
 	}
 };
+
+export default Events;

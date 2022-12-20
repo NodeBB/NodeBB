@@ -1,16 +1,14 @@
 'use strict';
 
-const path = require('path');
+import path from 'path';
+import nconf from 'nconf';
+import db from '../../database';
+import helpers from '../helpers';
+import meta from '../../meta';
+import pagination from '../../pagination';
+import accountHelpers from './helpers';
 
-const nconf = require('nconf');
-
-const db = require('../../database');
-const helpers = require('../helpers');
-const meta = require('../../meta');
-const pagination = require('../../pagination');
-const accountHelpers = require('./helpers');
-
-const uploadsController = module.exports;
+const uploadsController = {} as any;
 
 uploadsController.get = async function (req, res, next) {
 	const userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, req.query);
@@ -38,3 +36,5 @@ uploadsController.get = async function (req, res, next) {
 	userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: `/user/${userData.userslug}` }, { text: '[[global:uploads]]' }]);
 	res.render('account/uploads', userData);
 };
+
+export default uploadsController;

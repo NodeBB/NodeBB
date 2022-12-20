@@ -1,10 +1,10 @@
 'use strict';
 
-const user = require('../../user');
-const authenticationController = require('../authentication');
-const helpers = require('../helpers');
+import user from '../../user';
+import authenticationController from '../authentication';
+import helpers from '../helpers';
 
-const Utilities = module.exports;
+const Utilities = {} as any;
 
 Utilities.ping = {};
 Utilities.ping.get = (req, res) => {
@@ -31,3 +31,5 @@ Utilities.login = (req, res) => {
 
 	authenticationController.login(req, res);
 };
+
+export default Utilities;

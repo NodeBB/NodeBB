@@ -1,16 +1,17 @@
 'use strict';
 
-const winston = require('winston');
-const mime = require('mime');
-const path = require('path');
-const nconf = require('nconf');
+import winston from 'winston';
+import mime from 'mime';
+import path from 'path';
+import nconf from 'nconf';
 
-const db = require('../database');
-const file = require('../file');
-const image = require('../image');
-const meta = require('../meta');
+import db from '../database';
+import file from '../file';
+import image from '../image';
+import meta from '../meta';
 
-module.exports = function (User) {
+
+export default function (User) {
 	User.getAllowedProfileImageExtensions = function () {
 		const exts = User.getAllowedImageTypes().map(type => mime.getExtension(type));
 		if (exts.includes('jpeg')) {
@@ -37,7 +38,7 @@ module.exports = function (User) {
 		const picture = {
 			name: 'profileCover',
 			uid: data.uid,
-		};
+		} as any;
 
 		try {
 			if (!data.imageData && data.position) {
@@ -116,7 +117,7 @@ module.exports = function (User) {
 		const picture = {
 			name: 'profileAvatar',
 			uid: data.uid,
-		};
+		} as any;
 
 		try {
 			if (!meta.config.allowProfileImageUploads) {

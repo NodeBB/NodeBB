@@ -1,24 +1,25 @@
 'use strict';
 
-const _ = require('lodash');
-const winston = require('winston');
-const validator = require('validator');
+import _ from 'lodash';
+import winston from 'winston';
+import validator from 'validator';
 
-const db = require('./database');
-const user = require('./user');
-const groups = require('./groups');
-const meta = require('./meta');
-const notifications = require('./notifications');
-const analytics = require('./analytics');
-const categories = require('./categories');
-const topics = require('./topics');
-const posts = require('./posts');
-const privileges = require('./privileges');
-const plugins = require('./plugins');
-const utils = require('./utils');
-const batch = require('./batch');
+import db from './database';
 
-const Flags = module.exports;
+import user from './user';
+import groups from './groups';
+import meta from './meta';
+import notifications from './notifications';
+import analytics from './analytics';
+import categories from './categories';
+import topics from './topics';
+import posts from './posts';
+import privileges from './privileges';
+import plugins from './plugins';
+import utils from './utils';
+import * as batch from './batch';
+
+const Flags = {} as any;
 
 Flags._states = new Map([
 	['open', {
@@ -96,7 +97,7 @@ Flags.init = async function () {
 	try {
 		({ filters: Flags._filters } = await plugins.hooks.fire('filter:flags.getFilters', hookData));
 		({ filters: Flags._filters, states: Flags._states } = await plugins.hooks.fire('filter:flags.init', hookData));
-	} catch (err) {
+	} catch (err: any) {
 		winston.error(`[flags/init] Could not retrieve filters\n${err.stack}`);
 		Flags._filters = {};
 	}
@@ -548,6 +549,7 @@ Flags.addReport = async function (flagId, type, id, uid, reason, timestamp) {
 		['flags:hash', flagId, [type, id, uid].join(':')],
 	]);
 
+
 	plugins.hooks.fire('action:flags.addReport', { flagId, type, id, uid, reason, timestamp });
 };
 
@@ -793,8 +795,9 @@ Flags.appendNote = async function (flagId, uid, note, datetime) {
 	if (datetime) {
 		try {
 			await Flags.deleteNote(flagId, datetime);
-		} catch (e) {
+		} catch (e: any) {
 			// Do not throw if note doesn't exist
+			// @ts-ignore
 			if (!e.message === '[[error:invalid-data]]') {
 				throw e;
 			}
@@ -953,4 +956,6 @@ async function mergeUsernameEmailChanges(history, targetUid, uids) {
 	}, []));
 }
 
-require('./promisify')(Flags);
+import promisify from './promisify';
+promisify(Flags);
+export default Flags;

@@ -1,8 +1,10 @@
 'use strict';
 
-const db = require('../../database');
+import db from '../../database';
 
-module.exports = {
+
+
+export const obj = {
 	name: 'Fix incorrect robots.txt schema',
 	timestamp: Date.UTC(2017, 6, 10),
 	method: async function () {

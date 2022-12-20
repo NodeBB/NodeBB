@@ -1,16 +1,15 @@
 'use strict';
 
-const semver = require('semver');
-const async = require('async');
-const winston = require('winston');
-const nconf = require('nconf');
-const _ = require('lodash');
+import semver from 'semver';
+import async from 'async';
+import winston from 'winston';
+import nconf from 'nconf';
+import _ from 'lodash';
+import meta from '../meta';
+import { themeNamePattern } from '../constants';
 
-const meta = require('../meta');
-const { themeNamePattern } = require('../constants');
-
-module.exports = function (Plugins) {
-	async function registerPluginAssets(pluginData, fields) {
+export default function (Plugins) {
+	async function registerPluginAssets(pluginData, fields?) {
 		function add(dest, arr) {
 			dest.push(...(arr || []));
 		}
@@ -108,7 +107,7 @@ module.exports = function (Plugins) {
 		let pluginData;
 		try {
 			pluginData = await Plugins.data.loadPluginInfo(pluginPath);
-		} catch (err) {
+		} catch (err: any) {
 			if (err.message === '[[error:parse-error]]') {
 				return;
 			}
@@ -122,7 +121,7 @@ module.exports = function (Plugins) {
 		try {
 			registerHooks(pluginData);
 			await registerPluginAssets(pluginData);
-		} catch (err) {
+		} catch (err: any) {
 			winston.error(err.stack);
 			winston.verbose(`[plugins] Could not load plugin : ${pluginData.id}`);
 			return;
@@ -163,7 +162,7 @@ module.exports = function (Plugins) {
 			if (Array.isArray(pluginData.hooks)) {
 				pluginData.hooks.forEach(hook => Plugins.hooks.register(pluginData.id, hook));
 			}
-		} catch (err) {
+		} catch (err: any) {
 			winston.warn(`[plugins] Unable to load library for: ${pluginData.id}`);
 			throw err;
 		}

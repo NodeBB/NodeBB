@@ -1,11 +1,12 @@
 'use strict';
+import helpers from './helpers';
+import * as cache from '../cache';
 
-module.exports = function (module) {
-	const helpers = require('./helpers');
 
-	const cache = require('../cache').create('mongo');
+export default function (module) {
+	const cacheCreate = (cache as any).create('mongo');
 
-	module.objectCache = cache;
+	module.objectCache = cacheCreate;
 
 	module.setObject = async function (key, data) {
 		const isArray = Array.isArray(key);
@@ -25,14 +26,14 @@ module.exports = function (module) {
 			} else {
 				await module.client.collection('objects').updateOne({ _key: key }, { $set: writeData }, { upsert: true });
 			}
-		} catch (err) {
+		} catch (err: any) {
 			if (err && err.message.startsWith('E11000 duplicate key error')) {
 				return await module.setObject(key, data);
 			}
 			throw err;
 		}
 
-		cache.del(key);
+		cacheCreate.del(key);
 	};
 
 	module.setObjectBulk = async function (...args) {
@@ -60,14 +61,14 @@ module.exports = function (module) {
 			if (bulk) {
 				await bulk.execute();
 			}
-		} catch (err) {
+		} catch (err: any) {
 			if (err && err.message.startsWith('E11000 duplicate key error')) {
 				return await module.setObjectBulk(data);
 			}
 			throw err;
 		}
 
-		cache.del(data.map(item => item[0]));
+		cacheCreate.del(data.map(item => item[0]));
 	};
 
 	module.setObjectField = async function (key, field, value) {
@@ -97,7 +98,7 @@ module.exports = function (module) {
 			return null;
 		}
 		const cachedData = {};
-		cache.getUnCachedKeys([key], cachedData);
+		cacheCreate.getUnCachedKeys([key], cachedData);
 		if (cachedData[key]) {
 			return cachedData[key].hasOwnProperty(field) ? cachedData[key][field] : null;
 		}
@@ -122,7 +123,7 @@ module.exports = function (module) {
 			return [];
 		}
 		const cachedData = {};
-		const unCachedKeys = cache.getUnCachedKeys(keys, cachedData);
+		const unCachedKeys = cacheCreate.getUnCachedKeys(keys, cachedData);
 		let data = [];
 		if (unCachedKeys.length >= 1) {
 			data = await module.client.collection('objects').find(
@@ -135,7 +136,7 @@ module.exports = function (module) {
 		const map = helpers.toMap(data);
 		unCachedKeys.forEach((key) => {
 			cachedData[key] = map[key] || null;
-			cache.set(key, cachedData[key]);
+			cacheCreate.set(key, cachedData[key]);
 		});
 
 		if (!Array.isArray(fields) || !fields.length) {
@@ -208,7 +209,7 @@ module.exports = function (module) {
 			await module.client.collection('objects').updateOne({ _key: key }, { $unset: data });
 		}
 
-		cache.del(key);
+		cacheCreate.del(key);
 	};
 
 	module.incrObjectField = async function (key, field) {
@@ -235,7 +236,7 @@ module.exports = function (module) {
 				bulk.find({ _key: key }).upsert().update({ $inc: increment });
 			});
 			await bulk.execute();
-			cache.del(key);
+			cacheCreate.del(key);
 			const result = await module.getObjectsFields(key, [field]);
 			return result.map(data => data && data[field]);
 		}
@@ -248,9 +249,9 @@ module.exports = function (module) {
 				returnDocument: 'after',
 				upsert: true,
 			});
-			cache.del(key);
+			cacheCreate.del(key);
 			return result && result.value ? result.value[field] : null;
-		} catch (err) {
+		} catch (err: any) {
 			// if there is duplicate key error retry the upsert
 			// https://github.com/NodeBB/NodeBB/issues/4467
 			// https://jira.mongodb.org/browse/SERVER-14322
@@ -277,6 +278,6 @@ module.exports = function (module) {
 			bulk.find({ _key: item[0] }).upsert().update({ $inc: increment });
 		});
 		await bulk.execute();
-		cache.del(data.map(item => item[0]));
+		cacheCreate.del(data.map(item => item[0]));
 	};
 };

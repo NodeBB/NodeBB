@@ -1,8 +1,10 @@
 'use strict';
 
-const privileges = require('../../privileges');
+import privileges from '../../privileges';
 
-module.exports = {
+
+
+export const obj = {
 	name: 'Give registered users signature privilege',
 	timestamp: Date.UTC(2018, 1, 28),
 	method: function (callback) {

@@ -1,19 +1,23 @@
 'use strict';
 
-const _ = require('lodash');
-const utils = require('../../utils');
+import _ from 'lodash';
+import utils from '../../utils';
+import helpers from './helpers';
+import dbHelpers from '../helpers';
+import util from 'util';
+import  add from './sorted/add';
+import remove from './sorted/remove';
+import union from './sorted/union';
+import intersect from './sorted/intersect';
+import * as batch from '../../batch';
 
-module.exports = function (module) {
-	const helpers = require('./helpers');
-	const dbHelpers = require('../helpers');
 
-	const util = require('util');
+export default function (module) {
 	const sleep = util.promisify(setTimeout);
-
-	require('./sorted/add')(module);
-	require('./sorted/remove')(module);
-	require('./sorted/union')(module);
-	require('./sorted/intersect')(module);
+	add(module);
+    remove(module);
+	union(module);
+	intersect(module);
 
 	module.getSortedSetRange = async function (key, start, stop) {
 		return await getSortedSetRange(key, start, stop, '-inf', '+inf', 1, false);
@@ -39,7 +43,7 @@ module.exports = function (module) {
 		if ((start < 0 && start > stop) || (isArray && !key.length)) {
 			return [];
 		}
-		const query = { _key: key };
+		const query = { _key: key } as any;
 		if (isArray) {
 			if (key.length > 1) {
 				query._key = { $in: key };
@@ -60,7 +64,7 @@ module.exports = function (module) {
 			query.score = max;
 		}
 
-		const fields = { _id: 0, _key: 0 };
+		const fields = { _id: 0, _key: 0 } as any;
 		if (!withScores) {
 			fields.score = 0;
 		}
@@ -82,7 +86,7 @@ module.exports = function (module) {
 			limit = 0;
 		}
 
-		let result = [];
+		let result = [] as any[];
 		async function doQuery(_key, fields, skip, limit) {
 			return await module.client.collection('objects').find({ ...query, ...{ _key: _key } }, { projection: fields })
 				.sort({ score: sort })
@@ -93,7 +97,6 @@ module.exports = function (module) {
 
 		if (isArray && key.length > 100) {
 			const batches = [];
-			const batch = require('../../batch');
 			const batchSize = Math.ceil(key.length / Math.ceil(key.length / 100));
 			await batch.processArray(key, async currentBatch => batches.push(currentBatch), { batch: batchSize });
 			const batchData = await Promise.all(batches.map(
@@ -146,7 +149,7 @@ module.exports = function (module) {
 			return;
 		}
 
-		const query = { _key: key };
+		const query = { _key: key } as any;
 		if (min !== '-inf') {
 			query.score = { $gte: min };
 		}
@@ -372,7 +375,7 @@ module.exports = function (module) {
 			return [];
 		}
 		const arrayOfKeys = keys.length > 1;
-		const projection = { _id: 0, value: 1 };
+		const projection = { _id: 0, value: 1 } as any;
 		if (arrayOfKeys) {
 			projection._key = 1;
 		}
@@ -396,7 +399,7 @@ module.exports = function (module) {
 		if (!key) {
 			return;
 		}
-		const data = {};
+		const data = {} as any;
 		value = helpers.valueToString(value);
 		data.score = parseFloat(increment);
 
@@ -411,7 +414,7 @@ module.exports = function (module) {
 				upsert: true,
 			});
 			return result && result.value ? result.value.score : null;
-		} catch (err) {
+		} catch (err: any) {
 			// if there is duplicate key error retry the upsert
 			// https://github.com/NodeBB/NodeBB/issues/4467
 			// https://jira.mongodb.org/browse/SERVER-14322
@@ -503,7 +506,7 @@ module.exports = function (module) {
 	}
 
 	module.getSortedSetScan = async function (params) {
-		const project = { _id: 0, value: 1 };
+		const project = { _id: 0, value: 1 } as any;
 		if (params.withScores) {
 			project.score = 1;
 		}
@@ -512,7 +515,7 @@ module.exports = function (module) {
 		let regex;
 		try {
 			regex = new RegExp(match);
-		} catch (err) {
+		} catch (err: any) {
 			return [];
 		}
 
@@ -534,7 +537,7 @@ module.exports = function (module) {
 	module.processSortedSet = async function (setKey, processFn, options) {
 		let done = false;
 		const ids = [];
-		const project = { _id: 0, _key: 0 };
+		const project = { _id: 0, _key: 0 } as any;
 
 		if (!options.withScores) {
 			project.score = 0;

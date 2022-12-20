@@ -1,14 +1,14 @@
 'use strict';
 
 
-const async = require('async');
-const path = require('path');
-const nconf = require('nconf');
-const fs = require('fs');
-const meta = require('../../meta');
-const image = require('../../image');
+import async from 'async';
+import path from 'path';
+import nconf from 'nconf';
+import fs from 'fs';
+import meta from '../../meta';
+import image from '../../image';
 
-module.exports = {
+export const obj = {
 	name: 'Generate email logo for use in email header',
 	timestamp: Date.UTC(2017, 6, 17),
 	method: function (callback) {

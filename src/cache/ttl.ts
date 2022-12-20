@@ -1,12 +1,13 @@
 'use strict';
 
-module.exports = function (opts) {
-	const TTLCache = require('@isaacs/ttlcache');
-	const pubsub = require('../pubsub');
+import TTLCache from '@isaacs/ttlcache';
+import pubsub from '../pubsub';
+
+export default function (opts) {
 
 	const ttlCache = new TTLCache(opts);
 
-	const cache = {};
+	const cache = {} as any;
 	cache.name = opts.name;
 	cache.hits = 0;
 	cache.misses = 0;
@@ -34,7 +35,7 @@ module.exports = function (opts) {
 		if (!cache.enabled) {
 			return;
 		}
-		const opts = {};
+		const opts = {} as any;
 		if (ttl) {
 			opts.ttl = ttl;
 		}

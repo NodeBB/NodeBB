@@ -1,13 +1,13 @@
 'use strict';
 
-const meta = require('../../meta');
-const userDigest = require('../../user/digest');
-const userEmail = require('../../user/email');
-const notifications = require('../../notifications');
-const emailer = require('../../emailer');
-const utils = require('../../utils');
+import meta from '../../meta';
+import userDigest from '../../user/digest';
+import userEmail from '../../user/email';
+import notifications from '../../notifications';
+import emailer from '../../emailer';
+import utils from '../../utils';
 
-const Email = module.exports;
+const Email  = {} as any;
 
 Email.test = async function (socket, data) {
 	const payload = {
@@ -66,3 +66,5 @@ Email.test = async function (socket, data) {
 			break;
 	}
 };
+
+export default Email;

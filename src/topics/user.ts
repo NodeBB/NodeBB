@@ -1,8 +1,8 @@
 'use strict';
 
-const db = require('../database');
+import db from '../database';
 
-module.exports = function (Topics) {
+export default function (Topics) {
 	Topics.isOwner = async function (tid, uid) {
 		uid = parseInt(uid, 10);
 		if (uid <= 0) {

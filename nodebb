@@ -2,4 +2,5 @@
 
 'use strict';
 
-require('./src/cli');
+console.log('SERIOUSLY?');
+require('./build/src/cli');

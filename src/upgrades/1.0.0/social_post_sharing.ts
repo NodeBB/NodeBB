@@ -1,14 +1,13 @@
 'use strict';
 
-const async = require('async');
-const db = require('../../database');
+import async from 'async';
+import db from '../../database';
+import social from '../../social';
 
-
-module.exports = {
+export const  obj = {
 	name: 'Social: Post Sharing',
 	timestamp: Date.UTC(2016, 1, 25),
 	method: function (callback) {
-		const social = require('../../social');
 		async.parallel([
 			function (next) {
 				social.setActivePostSharingNetworks(['facebook', 'google', 'twitter'], next);

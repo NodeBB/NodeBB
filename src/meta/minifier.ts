@@ -1,19 +1,21 @@
 'use strict';
 
-const fs = require('fs');
-const os = require('os');
-const async = require('async');
-const winston = require('winston');
-const postcss = require('postcss');
-const autoprefixer = require('autoprefixer');
-const clean = require('postcss-clean');
-const rtlcss = require('rtlcss');
-const sass = require('../utils').getSass();
+import fs from 'fs';
+import os from 'os';
+import async from 'async';
+import winston from 'winston';
+import postcss from 'postcss';
+import autoprefixer from 'autoprefixer';
+import clean from 'postcss-clean';
+import rtlcss from 'rtlcss';
+import sassUtils from '../utils';
+import fork from './debugFork';
 
-const fork = require('./debugFork');
-require('../file'); // for graceful-fs
+const sass = sassUtils.getSass();
 
-const Minifier = module.exports;
+import '../file'; // for graceful-fs
+
+const Minifier = {} as any;
 
 const pool = [];
 const free = [];
@@ -26,7 +28,7 @@ Object.defineProperty(Minifier, 'maxThreads', {
 	},
 	set: function (val) {
 		maxThreads = val;
-		if (!process.env.minifier_child) {
+		if (!(process as any).env.minifier_child) {
 			winston.verbose(`[minifier] utilizing a maximum of ${maxThreads} additional threads`);
 		}
 	},
@@ -100,14 +102,14 @@ function forkAction(action) {
 	});
 }
 
-const actions = {};
+const actions = {} as any;
 
-if (process.env.minifier_child) {
-	process.on('message', async (message) => {
+if ((process as any).env.minifier_child) {
+	(process as any).on('message', async (message: any) => {
 		if (message.type === 'action') {
 			const { action } = message;
 			if (typeof actions[action.act] !== 'function') {
-				process.send({
+				(process as any).send({
 					type: 'error',
 					message: 'Unknown action',
 				});
@@ -115,12 +117,12 @@ if (process.env.minifier_child) {
 			}
 			try {
 				const result = await actions[action.act](action);
-				process.send({
+				(process as any).send({
 					type: 'end',
 					result: result,
 				});
-			} catch (err) {
-				process.send({
+			} catch (err: any) {
+				(process as any).send({
 					type: 'error',
 					message: err.stack || err.message || 'unknown error',
 				});
@@ -198,4 +200,7 @@ Minifier.css.bundle = async function (source, paths, minify, fork) {
 	}, fork);
 };
 
-require('../promisify')(exports);
+import promisify from '../promisify';
+promisify(Minifier(exports));
+
+export default Minifier;

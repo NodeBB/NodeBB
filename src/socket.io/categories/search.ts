@@ -1,14 +1,13 @@
 'use strict';
 
-const _ = require('lodash');
+import _ from 'lodash';
+import meta from '../../meta';
+import categories from '../../categories';
+import privileges from '../../privileges';
+import controllersHelpers from '../../controllers/helpers';
+import plugins from '../../plugins';
 
-const meta = require('../../meta');
-const categories = require('../../categories');
-const privileges = require('../../privileges');
-const controllersHelpers = require('../../controllers/helpers');
-const plugins = require('../../plugins');
-
-module.exports = function (SocketCategories) {
+export default function (SocketCategories) {
 	// used by categorySearch module
 	SocketCategories.categorySearch = async function (socket, data) {
 		let cids = [];

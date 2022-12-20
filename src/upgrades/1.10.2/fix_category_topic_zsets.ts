@@ -2,17 +2,21 @@
 
 'use strict';
 
-const db = require('../../database');
+import db from '../../database';
 
-const batch = require('../../batch');
 
-module.exports = {
+
+import * as batch from '../../batch';
+import topics from '../../topics';
+
+
+
+export const obj = {
 	name: 'Fix category topic zsets',
 	timestamp: Date.UTC(2018, 9, 11),
 	method: async function () {
 		const { progress } = this;
 
-		const topics = require('../../topics');
 		await batch.processSortedSet('topics:tid', async (tids) => {
 			for (const tid of tids) {
 				progress.incr();

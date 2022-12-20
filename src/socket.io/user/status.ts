@@ -1,9 +1,9 @@
 'use strict';
 
-const user = require('../../user');
-const websockets = require('../index');
+import user from '../../user';
+import websockets from '../index';
 
-module.exports = function (SocketUser) {
+export default function (SocketUser) {
 	SocketUser.checkStatus = async function (socket, uid) {
 		if (!socket.uid) {
 			throw new Error('[[error:invalid-uid]]');
@@ -22,7 +22,7 @@ module.exports = function (SocketUser) {
 			throw new Error('[[error:invalid-user-status]]');
 		}
 
-		const userData = { status: status };
+		const userData = { status: status } as any;
 		if (status !== 'offline') {
 			userData.lastonline = Date.now();
 		}

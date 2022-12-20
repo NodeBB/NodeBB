@@ -1,12 +1,23 @@
 'use strict';
 
-const privileges = module.exports;
-privileges.global = require('./global');
-privileges.admin = require('./admin');
-privileges.categories = require('./categories');
-privileges.topics = require('./topics');
-privileges.posts = require('./posts');
-privileges.users = require('./users');
+const privileges = {} as any;
+
+import global from './global';
+import admin from './admin';
+import categories from './categories';
+import topics from './topics';
+import posts from './posts';
+import users from './users';
+
+
+Object.assign(privileges, {
+	global,
+	admin,
+	categories,
+	topics,
+	posts,
+	users,
+});
 
 privileges.init = async () => {
 	await privileges.global.init();
@@ -14,4 +25,7 @@ privileges.init = async () => {
 	await privileges.categories.init();
 };
 
-require('../promisify')(privileges);
+import promisify from '../promisify';
+promisify(privileges);
+
+export default privileges;

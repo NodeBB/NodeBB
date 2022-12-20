@@ -1,7 +1,7 @@
 'use strict';
 
-const meta = require('./meta');
-const pubsub = require('./pubsub');
+import meta from './meta';
+import pubsub from './pubsub';
 
 function expandObjBy(obj1, obj2) {
 	let changed = false;
@@ -72,7 +72,7 @@ function Settings(hash, version, defCfg, callback, forceUpdate, reset) {
 	pubsub.on(`action:settings.set.${hash}`, (data) => {
 		try {
 			self.cfg._ = JSON.parse(data._);
-		} catch (err) {}
+		} catch (err: any) {}
 	});
 }
 
@@ -237,4 +237,4 @@ Settings.prototype.checkStructure = function (callback, force) {
 	return this;
 };
 
-module.exports = Settings;
+export default Settings;

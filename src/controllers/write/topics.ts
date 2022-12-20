@@ -1,16 +1,14 @@
 'use strict';
 
-const validator = require('validator');
+import validator from 'validator';
+import api from '../../api';
+import topics from '../../topics';
+import privileges from '../../privileges';
+import helpers from '../helpers';
+import middleware from '../../middleware';
+import uploadsController from '../uploads';
 
-const api = require('../../api');
-const topics = require('../../topics');
-const privileges = require('../../privileges');
-
-const helpers = require('../helpers');
-const middleware = require('../../middleware');
-const uploadsController = require('../uploads');
-
-const Topics = module.exports;
+const Topics = {} as any;
 
 Topics.get = async (req, res) => {
 	helpers.formatApiResponse(200, res, await api.topics.get(req, req.params));
@@ -219,3 +217,5 @@ Topics.deleteEvent = async (req, res) => {
 	await topics.events.purge(req.params.tid, [req.params.eventId]);
 	helpers.formatApiResponse(200, res);
 };
+
+export default Topics;

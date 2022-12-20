@@ -1,9 +1,9 @@
 'use strict';
 
-const db = require('../database');
-const user = require('../user');
+import db from '../database';
+import user from '../user';
 
-module.exports = function (Groups) {
+export default function (Groups) {
 	Groups.getUsersFromSet = async function (set, fields) {
 		const uids = await db.getSetMembers(set);
 
@@ -51,7 +51,7 @@ module.exports = function (Groups) {
 		]);
 		const ownGroups = privateGroups.filter((group, index) => ownership[index]);
 
-		let inviteGroups = [];
+		let inviteGroups = [] as any[];
 		if (isAdmin) {
 			inviteGroups = inviteGroups.concat(adminModGroups).concat(privateGroups);
 		} else if (isGlobalMod) {

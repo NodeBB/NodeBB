@@ -1,16 +1,15 @@
 
 'use strict';
 
-const _ = require('lodash');
+import _ from 'lodash';
+import categories from '../categories';
+import user from '../user';
+import groups from '../groups';
+import helpers from './helpers';
+import plugins from '../plugins';
+import utils from '../utils';
 
-const categories = require('../categories');
-const user = require('../user');
-const groups = require('../groups');
-const helpers = require('./helpers');
-const plugins = require('../plugins');
-const utils = require('../utils');
-
-const privsCategories = module.exports;
+const privsCategories = {} as any;
 
 /**
  * Looking to add a new category privilege via plugin/theme? Attach a hook to
@@ -55,7 +54,7 @@ privsCategories.init = async () => {
 
 // Method used in admin/category controller to show all users/groups with privs in that given cid
 privsCategories.list = async function (cid) {
-	let labels = Array.from(_privilegeMap.values()).map(data => data.label);
+	let labels: any = Array.from(_privilegeMap.values()).map(data => data.label);
 	labels = await utils.promiseParallel({
 		users: plugins.hooks.fire('filter:privileges.list_human', labels.slice()),
 		groups: plugins.hooks.fire('filter:privileges.groups.list_human', labels.slice()),
@@ -224,3 +223,5 @@ privsCategories.groupPrivileges = async function (cid, groupName) {
 	const groupPrivilegeList = await privsCategories.getGroupPrivilegeList();
 	return await helpers.userOrGroupPrivileges(cid, groupName, groupPrivilegeList);
 };
+
+export default privsCategories;

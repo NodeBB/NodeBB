@@ -2,12 +2,16 @@
 'use strict';
 
 
-const db = require('../../database');
-const batch = require('../../batch');
-const posts = require('../../posts');
-const topics = require('../../topics');
+import db from '../../database';
 
-module.exports = {
+
+import * as batch from '../../batch';
+
+
+import posts from '../../posts';
+import topics from '../../topics';
+
+export const obj = {
 	name: 'Create zsets for user posts per category',
 	timestamp: Date.UTC(2019, 5, 23),
 	method: async function () {

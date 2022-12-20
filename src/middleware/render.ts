@@ -1,31 +1,30 @@
 'use strict';
 
-const _ = require('lodash');
-const nconf = require('nconf');
-const validator = require('validator');
-const jsesc = require('jsesc');
-const winston = require('winston');
-const semver = require('semver');
-
-const navigation = require('../navigation');
-const translator = require('../translator');
-const privileges = require('../privileges');
-const languages = require('../languages');
-const plugins = require('../plugins');
-const user = require('../user');
-const topics = require('../topics');
-const messaging = require('../messaging');
-const flags = require('../flags');
-const meta = require('../meta');
-const widgets = require('../widgets');
-const utils = require('../utils');
-const helpers = require('./helpers');
-const versions = require('../admin/versions');
-const controllersHelpers = require('../controllers/helpers');
+import _ from 'lodash';
+import nconf from 'nconf';
+import validator from 'validator';
+import jsesc from 'jsesc';
+import winston from 'winston';
+import semver from 'semver';
+import navigation from '../navigation';
+import translator from '../translator';
+import privileges from '../privileges';
+import languages from '../languages';
+import plugins from '../plugins';
+import user from '../user';
+import topics from '../topics';
+import messaging from '../messaging';
+import flags from '../flags';
+import meta from '../meta';
+import widgets from '../widgets';
+import utils from '../utils';
+import helpers from './helpers';
+import * as versions from '../admin/versions';
+import controllersHelpers from '../controllers/helpers';
 
 const relative_path = nconf.get('relative_path');
 
-module.exports = function (middleware) {
+export default function (middleware) {
 	middleware.processRender = function processRender(req, res, next) {
 		// res.render post-processing, modified from here: https://gist.github.com/mrlannigan/5051687
 		const { render } = res;
@@ -78,7 +77,7 @@ module.exports = function (middleware) {
 					if (req.route && req.route.path === '/api/') {
 						options.title = '[[pages:home]]';
 					}
-					req.app.set('json spaces', global.env === 'development' || req.query.pretty ? 4 : 0);
+					req.app.set('json spaces', (global as any).env === 'development' || req.query.pretty ? 4 : 0);
 					return res.json(options);
 				}
 				const optionsString = JSON.stringify(options).replace(/<\//g, '<\\/');
@@ -107,7 +106,7 @@ module.exports = function (middleware) {
 
 			try {
 				await renderMethod(template, options, fn);
-			} catch (err) {
+			} catch (err: any) {
 				next(err);
 			}
 		};
@@ -143,7 +142,7 @@ module.exports = function (middleware) {
 			relative_path,
 			bodyClass: options.bodyClass,
 			widgets: options.widgets,
-		};
+		} as any;
 
 		templateValues.configJSON = jsesc(JSON.stringify(res.locals.config), { isScriptContext: true });
 
@@ -266,14 +265,14 @@ module.exports = function (middleware) {
 			authentication: results.custom_header.authentication,
 			scripts: results.scripts,
 			'cache-buster': meta.config['cache-buster'] || '',
-			env: !!process.env.NODE_ENV,
+			env: !!(process as any).env.NODE_ENV,
 			title: `${acpPath || 'Dashboard'} | NodeBB Admin Control Panel`,
 			bodyClass: options.bodyClass,
 			version: version,
 			latestVersion: results.latestVersion,
 			upgradeAvailable: results.latestVersion && semver.gt(results.latestVersion, version),
 			showManageMenu: results.privileges.superadmin || ['categories', 'privileges', 'users', 'admins-mods', 'groups', 'tags', 'settings'].some(priv => results.privileges[`admin:${priv}`]),
-		};
+		} as any;
 
 		templateValues.template = { name: res.locals.template };
 		templateValues.template[res.locals.template] = true;
@@ -471,8 +470,9 @@ module.exports = function (middleware) {
 
 	async function getLatestVersion() {
 		try {
+			//@ts-ignore
 			return await versions.getLatestVersion();
-		} catch (err) {
+		} catch (err: any) {
 			winston.error(`[acp] Failed to fetch latest version${err.stack}`);
 		}
 		return null;

@@ -1,11 +1,10 @@
 'use strict';
 
-const _ = require('lodash');
+import _ from 'lodash';
+import posts from '../posts';
+import db from '../database';
 
-const posts = require('../posts');
-const db = require('../database');
-
-module.exports = function (Categories) {
+export default function (Categories) {
 	Categories.getActiveUsers = async function (cids) {
 		if (!Array.isArray(cids)) {
 			cids = [cids];

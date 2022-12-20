@@ -1,16 +1,16 @@
 'use strict';
 
-const nconf = require('nconf');
+import nconf from 'nconf';
+import * as winston from 'winston';
+const databaseName = nconf.get('database') || 'mongo';
 
-const databaseName = nconf.get('database');
-const winston = require('winston');
 
 if (!databaseName) {
 	winston.error(new Error('Database type not set! Run ./nodebb setup'));
-	process.exit();
+	(process as any).exit();
 }
 
-const primaryDB = require(`./${databaseName}`);
+const primaryDB = require(`./${databaseName}`).default;
 
 primaryDB.parseIntFields = function (data, intFields, requestedFields) {
 	intFields.forEach((field) => {
@@ -25,13 +25,13 @@ primaryDB.initSessionStore = async function () {
 	let sessionStoreDB = primaryDB;
 
 	if (nconf.get('session_store')) {
-		sessionStoreDB = require(`./${sessionStoreConfig.name}`);
+		sessionStoreDB = require(`./${sessionStoreConfig.name}`).default;
 	} else if (nconf.get('redis')) {
 		// if redis is specified, use it as session store over others
-		sessionStoreDB = require('./redis');
+		sessionStoreDB =  require('./redis');
 	}
 
 	primaryDB.sessionStore = await sessionStoreDB.createSessionStore(sessionStoreConfig);
 };
 
-module.exports = primaryDB;
+export default primaryDB;

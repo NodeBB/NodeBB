@@ -1,20 +1,19 @@
 
 'use strict';
 
-const async = require('async');
-const _ = require('lodash');
+import async from 'async';
+import _ from 'lodash';
+import db from '../database';
+import user from '../user';
+import posts from '../posts';
+import notifications from '../notifications';
+import categories from '../categories';
+import privileges from '../privileges';
+import meta from '../meta';
+import utils from '../utils';
+import plugins from '../plugins';
 
-const db = require('../database');
-const user = require('../user');
-const posts = require('../posts');
-const notifications = require('../notifications');
-const categories = require('../categories');
-const privileges = require('../privileges');
-const meta = require('../meta');
-const utils = require('../utils');
-const plugins = require('../plugins');
-
-module.exports = function (Topics) {
+export default function (Topics) {
 	Topics.getTotalUnread = async function (uid, filter) {
 		filter = filter || '';
 		const counts = await Topics.getUnreadTids({ cid: 0, uid: uid, count: true });
@@ -26,7 +25,7 @@ module.exports = function (Topics) {
 			showSelect: true,
 			nextStart: 0,
 			topics: [],
-		};
+		} as any;
 		let tids = await Topics.getUnreadTids(params);
 		unreadTopics.topicCount = tids.length;
 

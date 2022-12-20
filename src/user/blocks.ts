@@ -1,10 +1,10 @@
 'use strict';
 
-const db = require('../database');
-const plugins = require('../plugins');
-const cacheCreate = require('../cache/lru');
+import db from '../database';
+import plugins from '../plugins';
+import cacheCreate from '../cache/lru';
 
-module.exports = function (User) {
+export default function (User) {
 	User.blocks = {
 		_cache: cacheCreate({
 			name: 'user:blocks',

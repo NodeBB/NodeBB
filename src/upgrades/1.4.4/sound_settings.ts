@@ -1,15 +1,14 @@
 'use strict';
 
-const async = require('async');
-const db = require('../../database');
+import async from 'async';
+import db from '../../database';
+import meta from '../../meta';
+import * as batch from '../../batch';
 
-
-module.exports = {
+export const obj = {
 	name: 'Update global and user sound settings',
 	timestamp: Date.UTC(2017, 1, 25),
 	method: function (callback) {
-		const meta = require('../../meta');
-		const batch = require('../../batch');
 
 		const map = {
 			'notification.mp3': 'Default | Deedle-dum',

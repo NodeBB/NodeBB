@@ -1,9 +1,8 @@
 'use strict';
+import helpers from '../helpers';
+import utils from '../../../utils';
 
-module.exports = function (module) {
-	const helpers = require('../helpers');
-	const utils = require('../../../utils');
-
+export default function (module) {
 	module.sortedSetAdd = async function (key, score, value) {
 		if (!key) {
 			return;
@@ -18,7 +17,7 @@ module.exports = function (module) {
 
 		try {
 			await module.client.collection('objects').updateOne({ _key: key, value: value }, { $set: { score: parseFloat(score) } }, { upsert: true });
-		} catch (err) {
+		} catch (err: any) {
 			if (err && err.message.startsWith('E11000 duplicate key error')) {
 				return await module.sortedSetAdd(key, score, value);
 			}

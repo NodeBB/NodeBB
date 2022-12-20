@@ -1,12 +1,18 @@
 'use strict';
 
-const batch = require('../../batch');
-const db = require('../../database');
-const groups = require('../../groups');
+import * as batch from '../../batch';
+
+
+import db from '../../database';
+
+
+import groups from '../../groups';
+
+
 
 const now = Date.now();
 
-module.exports = {
+export const obj = {
 	name: 'Move banned users to banned-users group',
 	timestamp: Date.UTC(2020, 11, 13),
 	method: async function () {

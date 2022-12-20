@@ -1,19 +1,18 @@
 'use strict';
 
-const winston = require('winston');
-const validator = require('validator');
-const slugify = require('../slugify');
+import winston from 'winston';
+import validator from 'validator';
+import slugify from '../slugify';
+import meta from '../meta';
 
-const meta = require('../meta');
-
-const helpers = module.exports;
+const helpers = {} as any;
 
 helpers.try = function (middleware) {
 	if (middleware && middleware.constructor && middleware.constructor.name === 'AsyncFunction') {
 		return async function (req, res, next) {
 			try {
 				await middleware(req, res, next);
-			} catch (err) {
+			} catch (err: any) {
 				next(err);
 			}
 		};
@@ -21,19 +20,19 @@ helpers.try = function (middleware) {
 	return function (req, res, next) {
 		try {
 			middleware(req, res, next);
-		} catch (err) {
+		} catch (err: any) {
 			next(err);
 		}
 	};
 };
 
-helpers.buildBodyClass = function (req, res, templateData = {}) {
+helpers.buildBodyClass = function (req, res, templateData = {} as any) {
 	const clean = req.path.replace(/^\/api/, '').replace(/^\/|\/$/g, '');
 	const parts = clean.split('/').slice(0, 3);
 	parts.forEach((p, index) => {
 		try {
 			p = slugify(decodeURIComponent(p));
-		} catch (err) {
+		} catch (err: any) {
 			winston.error(`Error decoding URI: ${p}`);
 			winston.error(err.stack);
 			p = '';
@@ -66,3 +65,5 @@ helpers.buildBodyClass = function (req, res, templateData = {}) {
 	}
 	return parts.join(' ');
 };
+
+export default helpers;

@@ -1,14 +1,12 @@
 'use strict';
 
-const path = require('path');
+import path from 'path';
+import nconf from 'nconf';
+import db from '../database';
+import image from '../image';
+import file from '../file';
 
-const nconf = require('nconf');
-
-const db = require('../database');
-const image = require('../image');
-const file = require('../file');
-
-module.exports = function (Groups) {
+export default function (Groups) {
 	const allowedTypes = ['image/png', 'image/jpeg', 'image/bmp'];
 	Groups.updateCoverPosition = async function (groupName, position) {
 		if (!groupName) {

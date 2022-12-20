@@ -1,44 +1,73 @@
 'use strict';
 
-const nconf = require('nconf');
-const validator = require('validator');
+import nconf from 'nconf';
+import validator from 'validator';
+import meta from '../meta';
+import user from '../user';
+import plugins from '../plugins';
+import privileges from '../privileges';
+import helpers from './helpers';
+import * as ping from './ping';
+import home from './home';
+import topics from './topics';
+import posts from './posts';
+import categories from './categories';
+import category from './category';
+import unread from './unread';
+import recent from './recent';
+import popular from './popular';
+import top from './top';
+import tags from './tags';
+import search from './search';
+import users from './users';
+import groups from './groups';
+import accounts from './accounts';
+import authentication from './authentication';
+import api from './api';
+import admin from './admin';
+import globalMods from './globalmods';
+import mods from './mods';
+import sitemap from './sitemap';
+import * as osd from './osd';
+import * as errors from './errors';
+import * as composer from './composer';
+import write from './write';
+import getLoginStrategies from '../routes/authentication';
+import { parse as parseUrl } from 'url';
+import authenticationRoute from '../routes/authentication';
+const loginStrategies = authenticationRoute.getLoginStrategies();
 
-const meta = require('../meta');
-const user = require('../user');
-const plugins = require('../plugins');
-const privileges = require('../privileges');
-const helpers = require('./helpers');
 
-const Controllers = module.exports;
+const Controllers = {} as any;
 
-Controllers.ping = require('./ping');
-Controllers.home = require('./home');
-Controllers.topics = require('./topics');
-Controllers.posts = require('./posts');
-Controllers.categories = require('./categories');
-Controllers.category = require('./category');
-Controllers.unread = require('./unread');
-Controllers.recent = require('./recent');
-Controllers.popular = require('./popular');
-Controllers.top = require('./top');
-Controllers.tags = require('./tags');
-Controllers.search = require('./search');
-Controllers.user = require('./user');
-Controllers.users = require('./users');
-Controllers.groups = require('./groups');
-Controllers.accounts = require('./accounts');
-Controllers.authentication = require('./authentication');
-Controllers.api = require('./api');
-Controllers.admin = require('./admin');
-Controllers.globalMods = require('./globalmods');
-Controllers.mods = require('./mods');
-Controllers.sitemap = require('./sitemap');
-Controllers.osd = require('./osd');
-Controllers['404'] = require('./404');
-Controllers.errors = require('./errors');
-Controllers.composer = require('./composer');
-
-Controllers.write = require('./write');
+Controllers.write  = write;
+Controllers.ping = ping;
+Controllers.home = home;
+Controllers.topics = topics;
+Controllers.posts = posts;
+Controllers.categories = categories;
+Controllers.category = category;
+Controllers.unread = unread;
+Controllers.recent = recent;
+Controllers.popular = popular;
+Controllers.top = top;
+Controllers.tags = tags;
+Controllers.search = search;
+Controllers.user = user;
+Controllers.users = users;
+Controllers.groups = groups;
+Controllers.accounts = accounts;
+Controllers.authentication = authentication;
+Controllers.api = api;
+Controllers.admin = admin;
+Controllers.globalMods = globalMods;
+Controllers.mods = mods;
+Controllers.sitemap = sitemap;
+Controllers.osd = osd;
+Controllers['404'] = 404;
+Controllers.errors = errors;
+Controllers.composer = composer;
+Controllers.write = write;
 
 Controllers.reset = async function (req, res) {
 	if (meta.config['password:disableEdit']) {
@@ -93,8 +122,7 @@ Controllers.reset = async function (req, res) {
 };
 
 Controllers.login = async function (req, res) {
-	const data = { loginFormEntry: [] };
-	const loginStrategies = require('../routes/authentication').getLoginStrategies();
+	const data = { loginFormEntry: [] } as any;
 	const registrationType = meta.config.registrationType || 'normal';
 	const allowLoginWith = (meta.config.allowLoginWith || 'username-email');
 
@@ -155,8 +183,7 @@ Controllers.register = async function (req, res, next) {
 		if (registrationType === 'invite-only' || registrationType === 'admin-invite-only') {
 			try {
 				await user.verifyInvitation(req.query);
-			} catch (e) {
-				return res.render('400', {
+		} catch (e: any) {				return res.render('400', {
 					error: e.message,
 				});
 			}
@@ -166,7 +193,6 @@ Controllers.register = async function (req, res, next) {
 			req.session.returnTo = returnTo;
 		}
 
-		const loginStrategies = require('../routes/authentication').getLoginStrategies();
 		res.render('register', {
 			'register_window:spansize': loginStrategies.length ? 'col-md-6' : 'col-md-12',
 			alternate_logins: !!loginStrategies.length,
@@ -183,7 +209,7 @@ Controllers.register = async function (req, res, next) {
 			error: req.flash('error')[0] || errorText,
 			title: '[[pages:register]]',
 		});
-	} catch (err) {
+	} catch (err: any) {
 		next(err);
 	}
 };
@@ -214,7 +240,7 @@ Controllers.registerInterstitial = async function (req, res, next) {
 			sections,
 			errors,
 		});
-	} catch (err) {
+	} catch (err: any) {
 		next(err);
 	}
 };
@@ -222,8 +248,7 @@ Controllers.registerInterstitial = async function (req, res, next) {
 Controllers.confirmEmail = async (req, res, next) => {
 	try {
 		await user.email.confirmByCode(req.params.code, req.session.id);
-	} catch (e) {
-		if (e.message === '[[error:invalid-data]]') {
+} catch (e: any) {		if (e.message === '[[error:invalid-data]]') {
 			return next();
 		}
 
@@ -259,7 +284,7 @@ Controllers.manifest = async function (req, res) {
 		theme_color: meta.config.themeColor || '#ffffff',
 		background_color: meta.config.backgroundColor || '#ffffff',
 		icons: [],
-	};
+	} as any; 
 
 	if (meta.config['brand:touchIcon']) {
 		manifest.icons.push({
@@ -329,7 +354,7 @@ Controllers.outgoing = function (req, res, next) {
 		'http', 'https', 'ftp', 'ftps', 'mailto', 'news', 'irc', 'gopher',
 		'nntp', 'feed', 'telnet', 'mms', 'rtsp', 'svn', 'tel', 'fax', 'xmpp', 'webcal',
 	];
-	const parsed = require('url').parse(url);
+	const parsed = parseUrl(url);
 
 	if (!url || !parsed.protocol || !allowedProtocols.includes(parsed.protocol.slice(0, -1))) {
 		return next();
@@ -357,3 +382,5 @@ Controllers.termsOfUse = async function (req, res, next) {
 		termsOfUse: termsOfUse.postData.content,
 	});
 };
+
+export default Controllers;

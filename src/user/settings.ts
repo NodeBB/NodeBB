@@ -1,15 +1,16 @@
 
 'use strict';
 
-const validator = require('validator');
+import validator from 'validator';
 
-const meta = require('../meta');
-const db = require('../database');
-const plugins = require('../plugins');
-const notifications = require('../notifications');
-const languages = require('../languages');
+import meta from '../meta';
 
-module.exports = function (User) {
+import db from '../database';
+import plugins from '../plugins';
+import notifications from '../notifications';
+import languages from '../languages';
+
+export default function (User) {
 	User.getSettings = async function (uid) {
 		if (parseInt(uid, 10) <= 0) {
 			return await onSettingsLoaded(0, {});

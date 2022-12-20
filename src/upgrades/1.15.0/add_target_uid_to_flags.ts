@@ -1,10 +1,14 @@
 'use strict';
 
-const db = require('../../database');
-const batch = require('../../batch');
-const posts = require('../../posts');
+import db from '../../database';
 
-module.exports = {
+
+import * as batch from '../../batch';
+
+
+import posts from '../../posts';
+
+export const obj = {
 	name: 'Add target uid to flag objects',
 	timestamp: Date.UTC(2020, 7, 22),
 	method: async function () {

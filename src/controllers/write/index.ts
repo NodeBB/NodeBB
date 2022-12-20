@@ -1,14 +1,27 @@
 'use strict';
 
-const Write = module.exports;
+const Write = {} as any;
 
-Write.users = require('./users');
-Write.groups = require('./groups');
-Write.categories = require('./categories');
-Write.topics = require('./topics');
-Write.posts = require('./posts');
-Write.chats = require('./chats');
-Write.flags = require('./flags');
-Write.admin = require('./admin');
-Write.files = require('./files');
-Write.utilities = require('./utilities');
+import users from './users';
+import groups from './groups';
+import categories from './categories';
+import topics from './topics';
+import posts from './posts';
+import chats from './chats';
+import admin from './admin';
+import files from './files';
+import utilities from './utilities';
+import flags from './flags';
+
+Write.users = users;
+Write.groups = groups;
+Write.categories = categories;
+Write.topics = topics;
+Write.posts = posts;
+Write.chats = chats;
+Write.flags = flags;
+Write.admin = admin;
+Write.files = files;
+Write.utilities = utilities;
+
+export default Write;

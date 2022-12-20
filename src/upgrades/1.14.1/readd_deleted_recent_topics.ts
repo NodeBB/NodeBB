@@ -1,10 +1,9 @@
 'use strict';
 
-const db = require('../../database');
+import db from '../../database';
+import * as batch from '../../batch';
 
-const batch = require('../../batch');
-
-module.exports = {
+export const obj = {
 	name: 'Re-add deleted topics to topics:recent',
 	timestamp: Date.UTC(2018, 9, 11),
 	method: async function () {

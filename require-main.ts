@@ -4,6 +4,7 @@
 // this allows plugins to use `require.main.require` to reference NodeBB modules
 // without worrying about multiple parent modules
 if (require.main !== module) {
+	//@ts-ignore
 	require.main.require = function (path) {
 		return require(path);
 	};

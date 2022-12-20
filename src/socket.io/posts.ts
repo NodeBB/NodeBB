@@ -1,22 +1,23 @@
 'use strict';
 
-const validator = require('validator');
+import validator from 'validator';
+import db from '../database';
+import posts from '../posts';
+import privileges from '../privileges';
+import plugins from '../plugins';
+import meta from '../meta';
+import topics from '../topics';
+import user from '../user';
+import notifications from '../notifications';
+import utils from '../utils';
+import events from '../events';
+import votes from './posts/votes';
+import tools from './posts/tools';
 
-const db = require('../database');
-const posts = require('../posts');
-const privileges = require('../privileges');
-const plugins = require('../plugins');
-const meta = require('../meta');
-const topics = require('../topics');
-const user = require('../user');
-const notifications = require('../notifications');
-const utils = require('../utils');
-const events = require('../events');
+const SocketPosts = {} as any;
 
-const SocketPosts = module.exports;
-
-require('./posts/votes')(SocketPosts);
-require('./posts/tools')(SocketPosts);
+votes(SocketPosts);
+tools(SocketPosts);
 
 SocketPosts.getRawPost = async function (socket, pid) {
 	const canRead = await privileges.posts.can('topics:read', pid, socket.uid);
@@ -128,7 +129,7 @@ async function logQueueEvent(socket, result, type) {
 		ip: socket.ip,
 		content: result.data.content,
 		targetUid: result.uid,
-	};
+	} as any;
 	if (result.type === 'topic') {
 		eventData.cid = result.data.cid;
 		eventData.title = result.data.title;
@@ -156,13 +157,13 @@ async function canEditQueue(socket, data, action) {
 	}
 }
 
-async function sendQueueNotification(type, targetUid, path, notificationText) {
+async function sendQueueNotification(type, targetUid, path, notificationText?) {
 	const notifData = {
 		type: type,
 		nid: `${type}-${targetUid}-${path}`,
 		bodyShort: notificationText ? `[[notifications:${type}, ${notificationText}]]` : `[[notifications:${type}]]`,
 		path: path,
-	};
+	} as any;
 	if (parseInt(meta.config.postQueueNotificationUid, 10) > 0) {
 		notifData.from = meta.config.postQueueNotificationUid;
 	}
@@ -181,4 +182,7 @@ SocketPosts.editQueuedContent = async function (socket, data) {
 	return { postData: data };
 };
 
-require('../promisify')(SocketPosts);
+import promisify from '../promisify';
+promisify(SocketPosts);
+
+export default SocketPosts;

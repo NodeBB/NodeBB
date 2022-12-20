@@ -1,9 +1,13 @@
 'use strict';
 
-const batch = require('../../batch');
-const db = require('../../database');
+import * as batch from '../../batch';
 
-module.exports = {
+
+import db from '../../database';
+
+
+
+export const obj = {
 	name: 'Fix topics in categories per user if they were moved',
 	timestamp: Date.UTC(2018, 0, 22),
 	method: async function () {

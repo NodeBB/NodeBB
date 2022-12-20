@@ -1,14 +1,19 @@
 'use strict';
 
-module.exports = function (module) {
-	const utils = require('../../utils');
-	const helpers = require('./helpers');
-	const dbHelpers = require('../helpers');
+import utils from '../../utils';
+import helpers from './helpers';
+import dbHelpers from '../helpers';
 
-	require('./sorted/add')(module);
-	require('./sorted/remove')(module);
-	require('./sorted/union')(module);
-	require('./sorted/intersect')(module);
+import add from './sorted/add';
+import remove from './sorted/remove';
+import sorted from './sorted/union';
+import intersect from './sorted/intersect';
+
+export default function (module) {
+	add(module);
+	remove(module);
+	sorted(module);
+	intersect(module);
 
 	module.getSortedSetRange = async function (key, start, stop) {
 		return await sortedSetRange('zrange', key, start, stop, '-inf', '+inf', false);
@@ -265,7 +270,7 @@ module.exports = function (module) {
 		return await sortedSetLex('zlexcount', false, key, min, max);
 	};
 
-	async function sortedSetLex(method, reverse, key, min, max, start, count) {
+	async function sortedSetLex(method, reverse, key, min, max, start?, count?) {
 		let minmin;
 		let maxmax;
 		if (reverse) {
@@ -292,7 +297,7 @@ module.exports = function (module) {
 	module.getSortedSetScan = async function (params) {
 		let cursor = '0';
 
-		const returnData = [];
+		const returnData = [] as any[];
 		let done = false;
 		const seen = {};
 		do {

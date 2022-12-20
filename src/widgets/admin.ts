@@ -1,11 +1,11 @@
 'use strict';
 
-const webserver = require('../webserver');
-const plugins = require('../plugins');
-const groups = require('../groups');
-const index = require('./index');
+import * as webserver from '../webserver';
+import plugins from '../plugins';
+import groups from '../groups';
+import index from './index';
 
-const admin = module.exports;
+const admin = {} as any;
 
 admin.get = async function () {
 	const [areas, availableWidgets] = await Promise.all([
@@ -54,6 +54,7 @@ async function getAvailableWidgets() {
 async function renderAdminTemplate() {
 	const groupsData = await groups.getNonPrivilegeGroups('groups:createtime', 0, -1);
 	groupsData.sort((a, b) => b.system - a.system);
+	//@ts-ignore
 	return await webserver.app.renderAsync('admin/partials/widget-settings', { groups: groupsData });
 }
 
@@ -81,4 +82,7 @@ function buildTemplatesFromAreas(areas) {
 	return templates;
 }
 
-require('../promisify')(admin);
+import promisify from '../promisify';
+promisify(admin);
+
+export default admin;

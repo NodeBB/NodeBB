@@ -1,19 +1,20 @@
 'use strict';
 
-const os = require('os');
-const fs = require('fs');
-const path = require('path');
-const crypto = require('crypto');
-const winston = require('winston');
+import os from 'os';
+import fs from 'fs';
+import path from 'path';
+import crypto from 'crypto';
+import winston from 'winston';
 
-const file = require('./file');
-const plugins = require('./plugins');
-const meta = require('./meta');
+import file from './file';
+import plugins from './plugins';
+import meta from './meta';
+import sharp from 'sharp';
 
-const image = module.exports;
+
+const image = {} as any;
 
 function requireSharp() {
-	const sharp = require('sharp');
 	if (os.platform() === 'win32') {
 		// https://github.com/lovell/sharp/issues/1259
 		sharp.cache(false);
@@ -22,11 +23,9 @@ function requireSharp() {
 }
 
 image.isFileTypeAllowed = async function (path) {
-	const plugins = require('./plugins');
 	if (plugins.hooks.hasListeners('filter:image.isFileTypeAllowed')) {
 		return await plugins.hooks.fire('filter:image.isFileTypeAllowed', path);
 	}
-	const sharp = require('sharp');
 	await sharp(path, {
 		failOnError: true,
 	}).metadata();
@@ -116,15 +115,13 @@ image.stripEXIF = async function (path) {
 		const buffer = await fs.promises.readFile(path);
 		const sharp = requireSharp();
 		await sharp(buffer, { failOnError: true }).rotate().toFile(path);
-	} catch (err) {
+	} catch (err: any) {
 		winston.error(err.stack);
 	}
 };
 
 image.checkDimensions = async function (path) {
-	const meta = require('./meta');
 	const result = await image.size(path);
-
 	if (result.width > meta.config.rejectImageWidth || result.height > meta.config.rejectImageHeight) {
 		throw new Error('[[error:invalid-image-dimensions]]');
 	}
@@ -179,4 +176,6 @@ image.uploadImage = async function (filename, folder, imageData) {
 	};
 };
 
-require('./promisify')(image);
+import promisify from './promisify';
+promisify(image);
+export default image;

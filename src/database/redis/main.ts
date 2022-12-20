@@ -1,7 +1,8 @@
 'use strict';
+import helpers from './helpers';
 
-module.exports = function (module) {
-	const helpers = require('./helpers');
+
+export default function (module) {
 
 	module.flushdb = async function () {
 		await module.client.send_command('flushdb', []);
@@ -71,7 +72,7 @@ module.exports = function (module) {
 	module.rename = async function (oldKey, newKey) {
 		try {
 			await module.client.rename(oldKey, newKey);
-		} catch (err) {
+		} catch (err: any) {
 			if (err && err.message !== 'ERR no such key') {
 				throw err;
 			}

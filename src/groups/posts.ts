@@ -1,11 +1,11 @@
 'use strict';
 
-const db = require('../database');
-const groups = require('.');
-const privileges = require('../privileges');
-const posts = require('../posts');
+import db from '../database';
+import groups from '.';
+import privileges from '../privileges';
+import posts from '../posts';
 
-module.exports = function (Groups) {
+export default function (Groups) {
 	Groups.onNewPostMade = async function (postData) {
 		if (!parseInt(postData.uid, 10)) {
 			return;

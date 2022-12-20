@@ -1,16 +1,16 @@
 'use strict';
 
-const db = require('../../database');
+import db from '../../database';
+import user from '../../user';
+import meta from '../../meta';
+import * as batch from '../../batch';
 
-module.exports = {
+
+export const obj = {
 	name: 'Update global and user language keys',
 	timestamp: Date.UTC(2016, 10, 22),
 	method: async function () {
 		const { progress } = this;
-		const user = require('../../user');
-		const meta = require('../../meta');
-		const batch = require('../../batch');
-
 		const defaultLang = await meta.configs.get('defaultLang');
 		if (defaultLang) {
 			const newLanguage = defaultLang.replace('_', '-').replace('@', '-x-');

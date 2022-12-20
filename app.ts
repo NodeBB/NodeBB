@@ -19,35 +19,40 @@
 
 'use strict';
 
-require('./require-main');
+import './require-main';
 
-const nconf = require('nconf');
+import nconf from 'nconf';
 
 nconf.argv().env({
 	separator: '__',
 });
 
-const winston = require('winston');
-const path = require('path');
+import winston from 'winston';
+import path from 'path';
+import file from './src/file';
+import web from './install/web';
+import * as Upgrade from './src/cli/upgrade';
+import manage from './src/cli/manage';
+import * as Reset from './src/cli/reset';
+import * as Running from './src/cli/running';
+import Setup from './src/cli/setup';
 
-const file = require('./src/file');
-
-process.env.NODE_ENV = process.env.NODE_ENV || 'production';
-global.env = process.env.NODE_ENV || 'production';
+(process as any).env.NODE_ENV = (process as any).env.NODE_ENV || 'production';
+(global as any).env = (process as any).env.NODE_ENV || 'production';
 
 // Alternate configuration file support
 const configFile = path.resolve(__dirname, nconf.any(['config', 'CONFIG']) || 'config.json');
 
 const configExists = file.existsSync(configFile) || (nconf.get('url') && nconf.get('secret') && nconf.get('database'));
 
-const prestart = require('./src/prestart');
+import * as prestart from './src/prestart';
 
 prestart.loadConfig(configFile);
 prestart.setupWinston();
 prestart.versionCheck();
 winston.verbose('* using configuration stored in: %s', configFile);
 
-if (!process.send) {
+if (!(process as any).send) {
 	// If run using `node app`, log GNU copyright info along with server info
 	winston.info(`NodeBB v${nconf.get('version')} Copyright (C) 2013-${(new Date()).getFullYear()} NodeBB Inc.`);
 	winston.info('This program comes with ABSOLUTELY NO WARRANTY.');
@@ -56,13 +61,13 @@ if (!process.send) {
 }
 
 if (nconf.get('setup') || nconf.get('install')) {
-	require('./src/cli/setup').setup();
+	Setup.setup();
 } else if (!configExists) {
-	require('./install/web').install(nconf.get('port'));
+	web.install(nconf.get('port'));
 } else if (nconf.get('upgrade')) {
-	require('./src/cli/upgrade').upgrade(true);
+	Upgrade.upgrade(true);
 } else if (nconf.get('reset')) {
-	require('./src/cli/reset').reset({
+	Reset.reset({
 		theme: nconf.get('t'),
 		plugin: nconf.get('p'),
 		widgets: nconf.get('w'),
@@ -70,13 +75,14 @@ if (nconf.get('setup') || nconf.get('install')) {
 		all: nconf.get('a'),
 	});
 } else if (nconf.get('activate')) {
-	require('./src/cli/manage').activate(nconf.get('activate'));
+	manage.activate(nconf.get('activate'));
 } else if (nconf.get('plugins') && typeof nconf.get('plugins') !== 'object') {
-	require('./src/cli/manage').listPlugins();
+	manage.listPlugins();
 } else if (nconf.get('build')) {
-	require('./src/cli/manage').build(nconf.get('build'));
+	manage.buildWrapper(nconf.get('build'));
 } else if (nconf.get('events')) {
-	require('./src/cli/manage').listEvents();
+	manage.listEvents();
 } else {
-	require('./src/start').start();
+	require('./src/cli/manage')
+	Running.start();
 }

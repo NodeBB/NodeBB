@@ -1,15 +1,14 @@
 'use strict';
 
-const db = require('../database');
+import db from '../database';
+import user from '../user';
+import posts from '../posts';
+import categories from '../categories';
+import plugins from '../plugins';
+import * as  batch from '../batch';
 
-const user = require('../user');
-const posts = require('../posts');
-const categories = require('../categories');
-const plugins = require('../plugins');
-const batch = require('../batch');
 
-
-module.exports = function (Topics) {
+export default function (Topics) {
 	Topics.delete = async function (tid, uid) {
 		await removeTopicPidsFromCid(tid);
 		await Topics.setTopicFields(tid, {

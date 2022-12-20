@@ -1,13 +1,13 @@
 'use strict';
 
-const user = require('../../user');
-const categories = require('../../categories');
-const accountHelpers = require('./helpers');
-const helpers = require('../helpers');
-const pagination = require('../../pagination');
-const meta = require('../../meta');
+import user from '../../user';
+import categories from '../../categories';
+import accountHelpers from './helpers';
+import helpers from '../helpers';
+import pagination from '../../pagination';
+import meta from '../../meta';
 
-const categoriesController = module.exports;
+const categoriesController = {} as any;
 
 categoriesController.get = async function (req, res, next) {
 	const userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, req.query);
@@ -42,3 +42,5 @@ categoriesController.get = async function (req, res, next) {
 	userData.pagination = pagination.create(page, pageCount, req.query);
 	res.render('account/categories', userData);
 };
+
+export default categoriesController;

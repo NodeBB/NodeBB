@@ -1,15 +1,16 @@
 
 'use strict';
 
-const _ = require('lodash');
+import _ from 'lodash';
 
-const meta = require('../meta');
-const plugins = require('../plugins');
-const db = require('../database');
-const groups = require('../groups');
-const utils = require('../utils');
+import meta from '../meta';
 
-module.exports = function (User) {
+import plugins from '../plugins';
+import db from '../database';
+import groups from '../groups';
+import utils from '../utils';
+
+export default function (User) {
 	const filterFnMap = {
 		online: user => user.status !== 'offline' && (Date.now() - user.lastonline < 300000),
 		flagged: user => parseInt(user.flags, 10) > 0,
@@ -32,7 +33,7 @@ module.exports = function (User) {
 		const uid = data.uid || 0;
 		const paginate = data.hasOwnProperty('paginate') ? data.paginate : true;
 
-		const startTime = process.hrtime();
+		const startTime = (process as any).hrtime();
 
 		let uids = [];
 		if (searchBy === 'ip') {
@@ -50,7 +51,7 @@ module.exports = function (User) {
 
 		const searchResult = {
 			matchCount: uids.length,
-		};
+		} as any;
 
 		if (paginate) {
 			const resultsPerPage = data.resultsPerPage || meta.config.userSearchResultsPerPage;
@@ -61,7 +62,7 @@ module.exports = function (User) {
 		}
 
 		const userData = await User.getUsers(uids, uid);
-		searchResult.timing = (process.elapsedTimeSince(startTime) / 1000).toFixed(2);
+		searchResult.timing = ((process as any).elapsedTimeSince(startTime) / 1000).toFixed(2);
 		searchResult.users = userData.filter(user => user && user.uid > 0);
 		return searchResult;
 	};

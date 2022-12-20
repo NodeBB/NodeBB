@@ -1,9 +1,9 @@
 'use strict';
 
-const path = require('path');
-const fs = require('fs');
+import path from 'path';
+import fs from 'fs';
 
-const Logs = module.exports;
+const Logs = {} as any;
 
 Logs.path = path.resolve(__dirname, '../../logs/output.log');
 
@@ -14,3 +14,5 @@ Logs.get = async function () {
 Logs.clear = async function () {
 	await fs.promises.truncate(Logs.path, 0);
 };
+
+export default Logs;

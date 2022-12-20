@@ -1,10 +1,12 @@
 'use strict';
 
-const async = require('async');
-const db = require('../../database');
+import async from 'async';
+import db from '../../database';
 
 
-module.exports = {
+
+
+export const obj = {
 	name: 'Category recent tids',
 	timestamp: Date.UTC(2016, 8, 22),
 	method: function (callback) {

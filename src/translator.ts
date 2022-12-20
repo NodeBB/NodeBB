@@ -1,12 +1,15 @@
 'use strict';
 
-const winston = require('winston');
+import winston from 'winston';
+import languages from './languages';
+//@ts-ignore
+import translator from '../../public/src/modules/translator.common';
+import utils from './utils';
 
 function warn(msg) {
 	winston.warn(msg);
 }
 
-module.exports = require('../public/src/modules/translator.common')(require('./utils'), (lang, namespace) => {
-	const languages = require('./languages');
-	return languages.get(lang, namespace);
-}, warn);
+export default translator(utils, (lang, namespace) => languages.get(lang, namespace), warn);
+
+

@@ -1,13 +1,17 @@
 'use strict';
 
-const async = require('async');
-const privileges = require('../../privileges');
+import async from 'async';
+import privileges from '../../privileges';
+import meta from '../../meta';
 
-module.exports = {
+
+
+
+export const obj = {
 	name: 'Global view privileges',
 	timestamp: Date.UTC(2019, 0, 5),
 	method: function (callback) {
-		const meta = require('../../meta');
+
 
 		const tasks = [
 			async.apply(privileges.global.give, ['groups:view:users', 'groups:view:tags', 'groups:view:groups'], 'registered-users'),

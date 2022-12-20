@@ -1,17 +1,16 @@
 'use strict';
 
-const _ = require('lodash');
+import _ from 'lodash';
+import meta from '../meta';
+import db from '../database';
+import plugins from '../plugins';
+import user from '../user';
+import topics from '../topics';
+import categories from '../categories';
+import groups from '../groups';
+import utils from '../utils';
 
-const meta = require('../meta');
-const db = require('../database');
-const plugins = require('../plugins');
-const user = require('../user');
-const topics = require('../topics');
-const categories = require('../categories');
-const groups = require('../groups');
-const utils = require('../utils');
-
-module.exports = function (Posts) {
+export default function (Posts) {
 	Posts.create = async function (data) {
 		// This is an internal method, consider using Topics.reply instead
 		const { uid } = data;
@@ -35,7 +34,7 @@ module.exports = function (Posts) {
 			tid: tid,
 			content: content,
 			timestamp: timestamp,
-		};
+		} as any;
 
 		if (data.toPid) {
 			postData.toPid = data.toPid;

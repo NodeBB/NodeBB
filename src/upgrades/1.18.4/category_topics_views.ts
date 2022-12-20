@@ -1,10 +1,14 @@
 'use strict';
 
-const db = require('../../database');
-const batch = require('../../batch');
-const topics = require('../../topics');
+import db from '../../database';
 
-module.exports = {
+
+import * as batch from '../../batch';
+
+
+import topics from '../../topics';
+
+export const obj = {
 	name: 'Category topics sorted sets by views',
 	timestamp: Date.UTC(2021, 8, 28),
 	method: async function () {

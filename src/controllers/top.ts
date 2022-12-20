@@ -1,13 +1,12 @@
 
 'use strict';
 
-const nconf = require('nconf');
-const validator = require('validator');
+import nconf from 'nconf';
+import validator from 'validator';
+import helpers from './helpers';
+import recentController from './recent';
 
-const helpers = require('./helpers');
-const recentController = require('./recent');
-
-const topController = module.exports;
+const topController = {} as any;
 
 topController.get = async function (req, res, next) {
 	const data = await recentController.getData(req, 'top', 'votes');
@@ -26,3 +25,5 @@ topController.get = async function (req, res, next) {
 	}
 	res.render('top', data);
 };
+
+export default topController;

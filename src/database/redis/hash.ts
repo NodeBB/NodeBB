@@ -1,11 +1,11 @@
 'use strict';
+import helpers from './helpers';
+import * as cache from '../cache';
 
-module.exports = function (module) {
-	const helpers = require('./helpers');
+export default function (module) {
+	const cacheCreate  = cache.create('redis');
 
-	const cache = require('../cache').create('redis');
-
-	module.objectCache = cache;
+	module.objectCache = cacheCreate;
 
 	module.setObject = async function (key, data) {
 		if (!key || !data) {
@@ -33,7 +33,7 @@ module.exports = function (module) {
 			await module.client.hmset(key, data);
 		}
 
-		cache.del(key);
+		cacheCreate.del(key);
 	};
 
 	module.setObjectBulk = async function (...args) {
@@ -54,7 +54,7 @@ module.exports = function (module) {
 			}
 		});
 		await helpers.execBatch(batch);
-		cache.del(data.map(item => item[0]));
+		cacheCreate.del(data.map(item => item[0]));
 	};
 
 	module.setObjectField = async function (key, field, value) {
@@ -69,7 +69,7 @@ module.exports = function (module) {
 			await module.client.hset(key, field, value);
 		}
 
-		cache.del(key);
+		cacheCreate.del(key);
 	};
 
 	module.getObject = async function (key, fields = []) {
@@ -90,7 +90,7 @@ module.exports = function (module) {
 			return null;
 		}
 		const cachedData = {};
-		cache.getUnCachedKeys([key], cachedData);
+		cacheCreate.getUnCachedKeys([key], cachedData);
 		if (cachedData[key]) {
 			return cachedData[key].hasOwnProperty(field) ? cachedData[key][field] : null;
 		}
@@ -111,9 +111,9 @@ module.exports = function (module) {
 		}
 
 		const cachedData = {};
-		const unCachedKeys = cache.getUnCachedKeys(keys, cachedData);
+		const unCachedKeys = cacheCreate.getUnCachedKeys(keys, cachedData);
 
-		let data = [];
+		let data = [] as any[];
 		if (unCachedKeys.length > 1) {
 			const batch = module.client.batch();
 			unCachedKeys.forEach(k => batch.hgetall(k));
@@ -132,7 +132,7 @@ module.exports = function (module) {
 
 		unCachedKeys.forEach((key, i) => {
 			cachedData[key] = data[i] || null;
-			cache.set(key, cachedData[key]);
+			cacheCreate.set(key, cachedData[key]);
 		});
 
 		if (!Array.isArray(fields) || !fields.length) {
@@ -173,7 +173,7 @@ module.exports = function (module) {
 			return;
 		}
 		await module.client.hdel(key, field);
-		cache.del(key);
+		cacheCreate.del(key);
 	};
 
 	module.deleteObjectFields = async function (key, fields) {
@@ -192,7 +192,7 @@ module.exports = function (module) {
 			await module.client.hdel(key, fields);
 		}
 
-		cache.del(key);
+		cacheCreate.del(key);
 	};
 
 	module.incrObjectField = async function (key, field) {
@@ -216,7 +216,7 @@ module.exports = function (module) {
 		} else {
 			result = await module.client.hincrby(key, field, value);
 		}
-		cache.del(key);
+		cacheCreate.del(key);
 		return Array.isArray(result) ? result.map(value => parseInt(value, 10)) : parseInt(result, 10);
 	};
 
@@ -232,6 +232,6 @@ module.exports = function (module) {
 			}
 		});
 		await helpers.execBatch(batch);
-		cache.del(data.map(item => item[0]));
+		cacheCreate.del(data.map(item => item[0]));
 	};
 };

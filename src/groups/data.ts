@@ -1,19 +1,19 @@
 'use strict';
 
-const validator = require('validator');
-const nconf = require('nconf');
-
-const db = require('../database');
-const plugins = require('../plugins');
-const utils = require('../utils');
-const translator = require('../translator');
+import validator from 'validator';
+import nconf from 'nconf';
+import db from '../database';
+import plugins from '../plugins';
+import utils from '../utils';
+import translator from '../translator';
+import coverPhoto from '../coverPhoto';
 
 const intFields = [
 	'createtime', 'memberCount', 'hidden', 'system', 'private',
 	'userTitleEnabled', 'disableJoinRequests', 'disableLeave',
 ];
 
-module.exports = function (Groups) {
+export default function (Groups) {
 	Groups.getGroupsFields = async function (groupNames, fields) {
 		if (!Array.isArray(groupNames) || !groupNames.length) {
 			return [];
@@ -84,13 +84,13 @@ function modifyGroup(group, fields) {
 		if (group['cover:url']) {
 			group['cover:url'] = group['cover:url'].startsWith('http') ? group['cover:url'] : (nconf.get('relative_path') + group['cover:url']);
 		} else {
-			group['cover:url'] = require('../coverPhoto').getDefaultGroupCover(group.name);
+			group['cover:url'] .getDefaultGroupCover(group.name);
 		}
 
 		if (group['cover:thumb:url']) {
 			group['cover:thumb:url'] = group['cover:thumb:url'].startsWith('http') ? group['cover:thumb:url'] : (nconf.get('relative_path') + group['cover:thumb:url']);
 		} else {
-			group['cover:thumb:url'] = require('../coverPhoto').getDefaultGroupCover(group.name);
+			group['cover:thumb:url'] = coverPhoto.getDefaultGroupCover(group.name);
 		}
 
 		group['cover:position'] = validator.escape(String(group['cover:position'] || '50% 50%'));

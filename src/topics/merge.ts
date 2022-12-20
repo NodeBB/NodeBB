@@ -1,9 +1,9 @@
 'use strict';
 
-const plugins = require('../plugins');
-const posts = require('../posts');
+import plugins from '../plugins';
+import posts from '../posts';
 
-module.exports = function (Topics) {
+export default function (Topics) {
 	Topics.merge = async function (tids, uid, options) {
 		options = options || {};
 
@@ -21,7 +21,7 @@ module.exports = function (Topics) {
 		}
 
 		const otherTids = tids.sort((a, b) => a - b)
-			.filter(tid => tid && parseInt(tid, 10) !== parseInt(mergeIntoTid, 10));
+			.filter(tid => tid && parseInt(tid, 10) !== parseInt(mergeIntoTid as any, 10));
 
 		for (const tid of otherTids) {
 			/* eslint-disable no-await-in-loop */

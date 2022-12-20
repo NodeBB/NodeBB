@@ -1,26 +1,30 @@
 'use strict';
 
-const os = require('os');
-const nconf = require('nconf');
-const winston = require('winston');
-const util = require('util');
-const validator = require('validator');
-const cookieParser = require('cookie-parser')(nconf.get('secret'));
+import os from 'os';
+import nconf from 'nconf';
+import winston from 'winston';
+import util from 'util';
+import validator from 'validator';
+import cookieParserPkg from 'cookie-parser';
+import db from '../database';
+import user from '../user';
+import logger from '../logger';
+import plugins from '../plugins';
+import ratelimit from '../middleware/ratelimit';
+import socketIO from 'socket.io';
+import als from '../als';
+import meta from '../meta';
 
-const db = require('../database');
-const user = require('../user');
-const logger = require('../logger');
-const plugins = require('../plugins');
-const ratelimit = require('../middleware/ratelimit');
+const cookieParser = cookieParserPkg(nconf.get('secret'));
 
 const Namespaces = Object.create(null);
 
-const Sockets = module.exports;
+const Sockets = {} as any;
 
 Sockets.init = async function (server) {
 	requireModules();
 
-	const SocketIO = require('socket.io').Server;
+	const SocketIO = socketIO.Server;
 	const io = new SocketIO({
 		path: `${nconf.get('relative_path')}/socket.io`,
 	});
@@ -41,13 +45,13 @@ Sockets.init = async function (server) {
 	const opts = {
 		transports: nconf.get('socket.io:transports') || ['polling', 'websocket'],
 		cookie: false,
-	};
+	} as any;
 	/*
 	 * Restrict socket.io listener to cookie domain. If none is set, infer based on url.
 	 * Production only so you don't get accidentally locked out.
 	 * Can be overridden via config (socket.io:origins)
 	 */
-	if (process.env.NODE_ENV !== 'development' || nconf.get('socket.io:cors')) {
+	if ((process as any).env.NODE_ENV !== 'development' || nconf.get('socket.io:cors')) {
 		const origins = nconf.get('socket.io:origins');
 		opts.cors = nconf.get('socket.io:cors') || {
 			origin: origins,
@@ -69,7 +73,6 @@ function onConnection(socket) {
 	onConnect(socket);
 	socket.onAny((event, ...args) => {
 		const payload = { data: [event].concat(args) };
-		const als = require('../als');
 		als.run({ uid: socket.uid }, onMessage, socket, payload);
 	});
 
@@ -86,7 +89,7 @@ function onDisconnect(socket) {
 async function onConnect(socket) {
 	try {
 		await validateSession(socket, '[[error:invalid-session]]');
-	} catch (e) {
+	} catch (e: any) {
 		if (e.message === '[[error:invalid-session]]') {
 			socket.emit('event:invalid_session');
 		}
@@ -130,7 +133,7 @@ async function onMessage(socket, payload) {
 	}, Namespaces);
 
 	if (!methodToCall || typeof methodToCall !== 'function') {
-		if (process.env.NODE_ENV === 'development') {
+		if ((process as any).env.NODE_ENV === 'development') {
 			winston.warn(`[socket.io] Unrecognized message: ${eventName}`);
 		}
 		const escapedName = validator.escape(String(eventName));
@@ -164,7 +167,7 @@ async function onMessage(socket, payload) {
 				callback(err ? { message: err.message } : null, result);
 			});
 		}
-	} catch (err) {
+	} catch (err: any) {
 		winston.error(`${eventName}\n${err.stack ? err.stack : err.message}`);
 		callback({ message: err.message });
 	}
@@ -178,12 +181,11 @@ function requireModules() {
 	];
 
 	modules.forEach((module) => {
-		Namespaces[module] = require(`./${module}`);
+		Namespaces[module] =  require(`./${module}`);
 	});
 }
 
 async function checkMaintenance(socket) {
-	const meta = require('../meta');
 	if (!meta.config.maintenanceMode) {
 		return;
 	}
@@ -191,7 +193,6 @@ async function checkMaintenance(socket) {
 	if (isAdmin) {
 		return;
 	}
-	const validator = require('validator');
 	throw new Error(`[[pages:maintenance.text, ${validator.escape(String(meta.config.title || 'NodeBB'))}]]`);
 }
 
@@ -239,7 +240,7 @@ async function authorize(socket, callback) {
 		request: request,
 	});
 
-	const sessionData = await getSessionAsync(sessionId);
+	const sessionData: any = await getSessionAsync(sessionId);
 
 	if (sessionData && sessionData.passport && sessionData.passport.user) {
 		request.session = sessionData;
@@ -276,3 +277,5 @@ Sockets.warnDeprecated = (socket, replacement) => {
 	}
 	winston.warn(`[deprecated]\n ${new Error('-').stack.split('\n').slice(2, 5).join('\n')}\n     use ${replacement}`);
 };
+
+export default Sockets;

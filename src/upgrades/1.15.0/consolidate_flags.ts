@@ -1,11 +1,15 @@
 'use strict';
 
-const db = require('../../database');
-const batch = require('../../batch');
-const posts = require('../../posts');
-const user = require('../../user');
+import db from '../../database';
 
-module.exports = {
+
+import * as batch from '../../batch';
+
+
+import posts from '../../posts';
+import user from '../../user';
+
+export const obj = {
 	name: 'Consolidate multiple flags reports, going forward',
 	timestamp: Date.UTC(2020, 6, 16),
 	method: async function () {

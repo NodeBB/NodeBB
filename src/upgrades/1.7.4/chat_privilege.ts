@@ -1,9 +1,11 @@
 'use strict';
 
 
-const groups = require('../../groups');
+import groups from '../../groups';
 
-module.exports = {
+
+
+export const obj = {
 	name: 'Give chat privilege to registered-users',
 	timestamp: Date.UTC(2017, 11, 18),
 	method: function (callback) {

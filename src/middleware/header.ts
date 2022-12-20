@@ -1,16 +1,15 @@
 'use strict';
 
-const util = require('util');
-
-const user = require('../user');
-const plugins = require('../plugins');
-const helpers = require('./helpers');
+import util from 'util';
+import user from '../user';
+import plugins from '../plugins';
+import helpers from './helpers';
 
 const controllers = {
 	api: require('../controllers/api'),
-};
+} as any;
 
-const middleware = module.exports;
+const middleware = {} as any;
 
 middleware.buildHeader = helpers.try(async (req, res, next) => {
 	res.locals.renderHeader = true;
@@ -36,3 +35,5 @@ middleware.buildHeader = helpers.try(async (req, res, next) => {
 });
 
 middleware.buildHeaderAsync = util.promisify(middleware.buildHeader);
+
+export default middleware;

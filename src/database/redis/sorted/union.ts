@@ -1,8 +1,9 @@
 
 'use strict';
+import helpers from '../helpers';
 
-module.exports = function (module) {
-	const helpers = require('../helpers');
+
+export default function (module) {
 	module.sortedSetUnionCard = async function (keys) {
 		const tempSetName = `temp_${Date.now()}`;
 		if (!keys.length) {

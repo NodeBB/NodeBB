@@ -1,17 +1,18 @@
 
 'use strict';
 
-const path = require('path');
-const util = require('util');
-const semver = require('semver');
-const readline = require('readline');
-const winston = require('winston');
-const chalk = require('chalk');
+import path from 'path';
+import util from 'util';
+import semver from 'semver';
+import readline from 'readline';
+import winston from 'winston';
+import chalk from 'chalk';
 
-const plugins = require('./plugins');
-const db = require('./database');
-const file = require('./file');
-const { paths } = require('./constants');
+import plugins from './plugins';
+import db from './database';
+
+import file from './file';
+import { paths } from './constants';
 /*
  * Need to write an upgrade script for NodeBB? Cool.
  *
@@ -21,7 +22,7 @@ const { paths } = require('./constants');
  * 3. Add your script under the "method" property
  */
 
-const Upgrade = module.exports;
+const Upgrade = {} as any;
 
 Upgrade.getAll = async function () {
 	let files = await file.walk(path.join(__dirname, './upgrades'));
@@ -71,8 +72,7 @@ Upgrade.appendPluginScripts = async function (files) {
 					files.push(path.join(path.dirname(configPath), script));
 				});
 			}
-		} catch (e) {
-			if (e.code !== 'MODULE_NOT_FOUND') {
+	} catch (e: any) {			if (e.code !== 'MODULE_NOT_FOUND') {
 				winston.error(e.stack);
 			}
 		}
@@ -139,11 +139,11 @@ Upgrade.process = async function (files, skipCount) {
 			date: date,
 		};
 
-		process.stdout.write(`${chalk.white('  → ') + chalk.gray(`[${[date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/')}] `) + scriptExport.name}...`);
+		(process as any).stdout.write(`${chalk.white('  → ') + chalk.gray(`[${[date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/')}] `) + scriptExport.name}...`);
 
 		// For backwards compatibility, cross-reference with schemaDate (if found). If a script's date is older, skip it
 		if ((!schemaDate && !schemaLogCount) || (scriptExport.timestamp <= schemaDate && semver.lt(version, '1.5.0'))) {
-			process.stdout.write(chalk.grey(' skipped\n'));
+			(process as any).stdout.write(chalk.grey(' skipped\n'));
 
 			await db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'));
 			// eslint-disable-next-line no-continue
@@ -161,12 +161,12 @@ Upgrade.process = async function (files, skipCount) {
 			await scriptExport.method.bind({
 				progress: progress,
 			})();
-		} catch (err) {
+		} catch (err: any) {
 			console.error('Error occurred');
 			throw err;
 		}
 		const upgradeDuration = ((Date.now() - upgradeStart) / 1000).toFixed(2);
-		process.stdout.write(chalk.green(` OK (${upgradeDuration} seconds)\n`));
+		(process as any).stdout.write(chalk.green(` OK (${upgradeDuration} seconds)\n`));
 
 		// Record success in schemaLog
 		await db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'));
@@ -178,7 +178,7 @@ Upgrade.process = async function (files, skipCount) {
 Upgrade.incrementProgress = function (value) {
 	// Newline on first invocation
 	if (this.current === 0) {
-		process.stdout.write('\n');
+		(process as any).stdout.write('\n');
 	}
 
 	this.current += value || 1;
@@ -187,7 +187,7 @@ Upgrade.incrementProgress = function (value) {
 
 	if (this.counter > step || this.current >= this.total) {
 		this.counter -= step;
-		let percentage = 0;
+		let percentage: number | string = 0;
 		let filled = 0;
 		let unfilled = 15;
 		if (this.total) {
@@ -196,9 +196,12 @@ Upgrade.incrementProgress = function (value) {
 			unfilled = Math.max(0, 15 - filled);
 		}
 
-		readline.cursorTo(process.stdout, 0);
-		process.stdout.write(`    [${filled ? new Array(filled).join('#') : ''}${new Array(unfilled).join(' ')}] (${this.current}/${this.total || '??'}) ${percentage} `);
+		readline.cursorTo((process as any).stdout, 0);
+		(process as any).stdout.write(`    [${filled ? new Array(filled).join('#') : ''}${new Array(unfilled).join(' ')}] (${this.current}/${this.total || '??'}) ${percentage} `);
 	}
 };
 
-require('./promisify')(Upgrade);
+import promisify from './promisify';
+promisify(Upgrade);
+
+export default Upgrade;

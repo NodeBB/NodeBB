@@ -1,36 +1,42 @@
 'use strict';
 
-module.exports = function (module) {
-	module.sortedSetUnionCard = async function (keys) {
+export default function (module) {
+	module.sortedSetIntersectCard = async function (keys) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return 0;
 		}
 
 		const res = await module.pool.query({
-			name: 'sortedSetUnionCard',
+			name: 'sortedSetIntersectCard',
 			text: `
-SELECT COUNT(DISTINCT z."value") c
-  FROM "legacy_object_live" o
- INNER JOIN "legacy_zset" z
-         ON o."_key" = z."_key"
-        AND o."type" = z."type"
- WHERE o."_key" = ANY($1::TEXT[])`,
+WITH A AS (SELECT z."value" v,
+                  COUNT(*) c
+             FROM "legacy_object_live" o
+            INNER JOIN "legacy_zset" z
+                    ON o."_key" = z."_key"
+                   AND o."type" = z."type"
+            WHERE o."_key" = ANY($1::TEXT[])
+            GROUP BY z."value")
+SELECT COUNT(*) c
+  FROM A
+ WHERE A.c = array_length($1::TEXT[], 1)`,
 			values: [keys],
 		});
-		return res.rows[0].c;
+
+		return parseInt(res.rows[0].c, 10);
 	};
 
-	module.getSortedSetUnion = async function (params) {
+	module.getSortedSetIntersect = async function (params) {
 		params.sort = 1;
-		return await getSortedSetUnion(params);
+		return await getSortedSetIntersect(params);
 	};
 
-	module.getSortedSetRevUnion = async function (params) {
+	module.getSortedSetRevIntersect = async function (params) {
 		params.sort = -1;
-		return await getSortedSetUnion(params);
+		return await getSortedSetIntersect(params);
 	};
 
-	async function getSortedSetUnion(params) {
+	async function getSortedSetIntersect(params) {
 		const { sets } = params;
 		const start = params.hasOwnProperty('start') ? params.start : 0;
 		const stop = params.hasOwnProperty('stop') ? params.stop : -1;
@@ -44,16 +50,17 @@ SELECT COUNT(DISTINCT z."value") c
 			weights.push(1);
 		}
 
-		let limit = stop - start + 1;
+		let limit: any = stop - start + 1;
 		if (limit <= 0) {
 			limit = null;
 		}
 
 		const res = await module.pool.query({
-			name: `getSortedSetUnion${aggregate}${params.sort > 0 ? 'Asc' : 'Desc'}WithScores`,
+			name: `getSortedSetIntersect${aggregate}${params.sort > 0 ? 'Asc' : 'Desc'}WithScores`,
 			text: `
 WITH A AS (SELECT z."value",
-                  ${aggregate}(z."score" * k."weight") "score"
+                  ${aggregate}(z."score" * k."weight") "score",
+                  COUNT(*) c
              FROM UNNEST($1::TEXT[], $2::NUMERIC[]) k("_key", "weight")
             INNER JOIN "legacy_object_live" o
                     ON o."_key" = k."_key"
@@ -64,6 +71,7 @@ WITH A AS (SELECT z."value",
 SELECT A."value",
        A."score"
   FROM A
+ WHERE c = array_length($1::TEXT[], 1)
  ORDER BY A."score" ${params.sort > 0 ? 'ASC' : 'DESC'}
  LIMIT $4::INTEGER
 OFFSET $3::INTEGER`,
@@ -78,6 +86,7 @@ OFFSET $3::INTEGER`,
 		} else {
 			res.rows = res.rows.map(r => r.value);
 		}
+
 		return res.rows;
 	}
 };

@@ -1,18 +1,19 @@
 'use strict';
 
-const winston = require('winston');
-const nconf = require('nconf');
+import winston from 'winston';
+import nconf from 'nconf';
 
-const db = require('../database');
-const batch = require('../batch');
-const meta = require('../meta');
-const user = require('./index');
-const topics = require('../topics');
-const plugins = require('../plugins');
-const emailer = require('../emailer');
-const utils = require('../utils');
+import db from '../database';
+import * as  batch from '../batch';
+import meta from '../meta';
 
-const Digest = module.exports;
+import user from './index';
+import topics from '../topics';
+import plugins from '../plugins';
+import emailer from '../emailer';
+import utils from '../utils';
+
+const Digest = {} as any;
 
 const baseUrl = nconf.get('base_url');
 
@@ -36,7 +37,7 @@ Digest.execute = async function (payload) {
 			subscribers: subscribers,
 		});
 		winston.info(`[user/jobs] Digest (${payload.interval}) complete.`);
-	} catch (err) {
+	} catch (err: any) {
 		winston.error(`[user/jobs] Could not send digests (${payload.interval})\n${err.stack}`);
 		throw err;
 	}
@@ -157,7 +158,7 @@ Digest.getDeliveryTimes = async (start, stop) => {
 	]);
 
 	// Populate user data
-	let userData = await user.getUsersFields(uids, ['username', 'picture']);
+	let userData: any = await user.getUsersFields(uids, ['username', 'picture']);
 	userData = userData.map((user, idx) => {
 		user.lastDelivery = scores[idx] ? new Date(scores[idx]).toISOString() : '[[admin/manage/digest:null]]';
 		user.setting = settings[idx];
@@ -210,3 +211,5 @@ async function getTermTopics(term, uid) {
 	});
 	return { top, popular, recent };
 }
+
+export default Digest;

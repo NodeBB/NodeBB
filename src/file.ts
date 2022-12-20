@@ -1,18 +1,19 @@
 'use strict';
 
-const fs = require('fs');
-const nconf = require('nconf');
-const path = require('path');
-const winston = require('winston');
-const mkdirp = require('mkdirp');
-const mime = require('mime');
-const graceful = require('graceful-fs');
-
-const slugify = require('./slugify');
+import fs from 'fs';
+import nconf from 'nconf';
+import path from 'path';
+import winston from 'winston';
+import mkdirp from 'mkdirp';
+import mime from 'mime';
+import graceful from 'graceful-fs';
+import slugify from './slugify';
+import meta from './meta';
+import promisify from './promisify';
 
 graceful.gracefulify(fs);
 
-const file = module.exports;
+const file = {} as any;
 
 file.saveFileToLocal = async function (filename, folder, tempPath) {
 	/*
@@ -54,7 +55,6 @@ file.appendToFileName = function (filename, string) {
 };
 
 file.allowedExtensions = function () {
-	const meta = require('./meta');
 	let allowedExtensions = (meta.config.allowedFileExtensions || '').trim();
 	if (!allowedExtensions) {
 		return [];
@@ -78,7 +78,7 @@ file.allowedExtensions = function () {
 file.exists = async function (path) {
 	try {
 		await fs.promises.stat(path);
-	} catch (err) {
+	} catch (err: any) {
 		if (err.code === 'ENOENT') {
 			return false;
 		}
@@ -90,7 +90,7 @@ file.exists = async function (path) {
 file.existsSync = function (path) {
 	try {
 		fs.statSync(path);
-	} catch (err) {
+	} catch (err: any) {
 		if (err.code === 'ENOENT') {
 			return false;
 		}
@@ -106,7 +106,7 @@ file.delete = async function (path) {
 	}
 	try {
 		await fs.promises.unlink(path);
-	} catch (err) {
+	} catch (err: any) {
 		if (err.code === 'ENOENT') {
 			winston.verbose(`[file] Attempted to delete non-existent file: ${path}`);
 			return;
@@ -117,11 +117,11 @@ file.delete = async function (path) {
 };
 
 file.link = async function link(filePath, destPath, relative) {
-	if (relative && process.platform !== 'win32') {
+	if (relative && (process as any).platform !== 'win32') {
 		filePath = path.relative(path.dirname(destPath), filePath);
 	}
 
-	if (process.platform === 'win32') {
+	if ((process as any).platform === 'win32') {
 		await fs.promises.link(filePath, destPath);
 	} else {
 		await fs.promises.symlink(filePath, destPath, 'file');
@@ -129,11 +129,11 @@ file.link = async function link(filePath, destPath, relative) {
 };
 
 file.linkDirs = async function linkDirs(sourceDir, destDir, relative) {
-	if (relative && process.platform !== 'win32') {
+	if (relative && (process as any).platform !== 'win32') {
 		sourceDir = path.relative(path.dirname(destDir), sourceDir);
 	}
 
-	const type = (process.platform === 'win32') ? 'junction' : 'dir';
+	const type = ((process as any).platform === 'win32') ? 'junction' : 'dir';
 	await fs.promises.symlink(sourceDir, destDir, type);
 };
 
@@ -155,4 +155,5 @@ file.walk = async function (dir) {
 	return files.reduce((a, f) => a.concat(f), []);
 };
 
-require('./promisify')(file);
+promisify(file);
+export default file;

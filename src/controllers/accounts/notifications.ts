@@ -1,11 +1,11 @@
 'use strict';
 
-const user = require('../../user');
-const helpers = require('../helpers');
-const plugins = require('../../plugins');
-const pagination = require('../../pagination');
+import user from '../../user';
+import helpers from '../helpers';
+import plugins from '../../plugins';
+import pagination from '../../pagination';
 
-const notificationsController = module.exports;
+const notificationsController = {} as any;
 
 notificationsController.get = async function (req, res, next) {
 	const regularFilters = [
@@ -70,3 +70,5 @@ notificationsController.get = async function (req, res, next) {
 		breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[pages:notifications]]' }]),
 	});
 };
+
+export default notificationsController;

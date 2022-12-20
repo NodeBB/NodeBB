@@ -1,15 +1,15 @@
 'use strict';
 
-const nconf = require('nconf');
-const winston = require('winston');
-const validator = require('validator');
-const translator = require('../translator');
-const plugins = require('../plugins');
-const middleware = require('../middleware');
-const middlewareHelpers = require('../middleware/helpers');
-const helpers = require('./helpers');
+import nconf from 'nconf';
+import winston from 'winston';
+import validator from 'validator';
+import translator from '../translator';
+import plugins from '../plugins';
+import middleware from '../middleware';
+import middlewareHelpers from '../middleware/helpers';
+import helpers from './helpers';
 
-exports.handleURIErrors = async function handleURIErrors(err, req, res, next) {
+export const handleURIErrors = async function handleURIErrors(err, req, res, next) {
 	// Handle cases where malformed URIs are passed in
 	if (err instanceof URIError) {
 		const cleanPath = req.path.replace(new RegExp(`^${nconf.get('relative_path')}`), '');
@@ -38,7 +38,7 @@ exports.handleURIErrors = async function handleURIErrors(err, req, res, next) {
 
 // this needs to have four arguments or express treats it as `(req, res, next)`
 // don't remove `next`!
-exports.handleErrors = async function handleErrors(err, req, res, next) { // eslint-disable-line no-unused-vars
+export const handleErrors = async function handleErrors(err, req, res, next) { // eslint-disable-line no-unused-vars
 	const cases = {
 		EBADCSRFTOKEN: function () {
 			winston.error(`${req.method} ${req.originalUrl}\n${err.message}`);
@@ -90,7 +90,7 @@ exports.handleErrors = async function handleErrors(err, req, res, next) { // esl
 		} else {
 			await defaultHandler();
 		}
-	} catch (_err) {
+	} catch (_err: any) {
 		winston.error(`${req.method} ${req.originalUrl}\n${_err.stack}`);
 		if (!res.headersSent) {
 			res.status(500).send(_err.message);
@@ -103,7 +103,7 @@ async function getErrorHandlers(cases) {
 		return await plugins.hooks.fire('filter:error.handle', {
 			cases: cases,
 		});
-	} catch (err) {
+	} catch (err: any) {
 		// Assume defaults
 		winston.warn(`[errors/handle] Unable to retrieve plugin handlers for errors: ${err.message}`);
 		return { cases };

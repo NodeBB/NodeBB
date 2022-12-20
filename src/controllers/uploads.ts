@@ -1,26 +1,23 @@
 'use strict';
 
-const path = require('path');
-const nconf = require('nconf');
-const validator = require('validator');
+import path from 'path';
+import nconf from 'nconf';
+import validator from 'validator';
+import user from '../user';
+import meta from '../meta';
+import file from '../file';
+import plugins from '../plugins';
+import image from '../image';
+import privileges from '../privileges';
+import helpers from './helpers';
 
-const user = require('../user');
-const meta = require('../meta');
-const file = require('../file');
-const plugins = require('../plugins');
-const image = require('../image');
-const privileges = require('../privileges');
-
-const helpers = require('./helpers');
-
-const uploadsController = module.exports;
+const uploadsController = {} as any;
 
 uploadsController.upload = async function (req, res, filesIterator) {
 	let files;
 	try {
 		files = req.files.files;
-	} catch (e) {
-		return helpers.formatApiResponse(400, res);
+} catch (e: any) {		return helpers.formatApiResponse(400, res);
 	}
 
 	// These checks added because of odd behaviour by request: https://github.com/request/request/issues/2445
@@ -41,7 +38,7 @@ uploadsController.upload = async function (req, res, filesIterator) {
 		helpers.formatApiResponse(200, res, { images });
 
 		return images;
-	} catch (err) {
+	} catch (err: any) {
 		return helpers.formatApiResponse(500, res, err);
 	} finally {
 		deleteTempFiles(files);
@@ -200,4 +197,7 @@ function deleteTempFiles(files) {
 	files.forEach(fileObj => file.delete(fileObj.path));
 }
 
-require('../promisify')(uploadsController, ['upload', 'uploadPost', 'uploadThumb']);
+import promisify from '../promisify';
+promisify(uploadsController, ['upload', 'uploadPost', 'uploadThumb']);
+
+export default uploadsController;

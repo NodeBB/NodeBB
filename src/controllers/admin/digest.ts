@@ -1,10 +1,10 @@
 'use strict';
 
-const meta = require('../../meta');
-const digest = require('../../user/digest');
-const pagination = require('../../pagination');
+import meta from '../../meta';
+import digest from '../../user/digest';
+import pagination from '../../pagination';
 
-const digestController = module.exports;
+const digestController = {} as any;
 
 digestController.get = async function (req, res) {
 	const page = parseInt(req.query.page, 10) || 1;
@@ -21,3 +21,5 @@ digestController.get = async function (req, res) {
 		pagination: pagination.create(page, pageCount),
 	});
 };
+
+export default digestController;

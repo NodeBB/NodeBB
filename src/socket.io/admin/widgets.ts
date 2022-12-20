@@ -1,8 +1,8 @@
 'use strict';
 
-const widgets = require('../../widgets');
+import widgets from '../../widgets';
 
-const Widgets = module.exports;
+const Widgets  = {} as any;
 
 Widgets.set = async function (socket, data) {
 	if (!Array.isArray(data)) {
@@ -10,3 +10,5 @@ Widgets.set = async function (socket, data) {
 	}
 	await widgets.setAreas(data);
 };
+
+export default Widgets;

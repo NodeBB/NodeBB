@@ -1,15 +1,13 @@
-'use strict';
+'use strict'
+import nconf from 'nconf';
+import winston from 'winston';
+import validator from 'validator';
+import meta from '../meta';
+import plugins from '../plugins';
+import middleware from '../middleware';
+import helpers from '../middleware/helpers';
 
-const nconf = require('nconf');
-const winston = require('winston');
-const validator = require('validator');
-
-const meta = require('../meta');
-const plugins = require('../plugins');
-const middleware = require('../middleware');
-const helpers = require('../middleware/helpers');
-
-exports.handle404 = function handle404(req, res) {
+export const handle404 = function handle404(req, res) {
 	const relativePath = nconf.get('relative_path');
 	const isClientScript = new RegExp(`^${relativePath}\\/assets\\/src\\/.+\\.js(\\?v=\\w+)?$`);
 
@@ -33,18 +31,18 @@ exports.handle404 = function handle404(req, res) {
 		meta.errors.log404(req.path || '');
 		res.sendStatus(404);
 	} else if (req.accepts('html')) {
-		if (process.env.NODE_ENV === 'development') {
+		if ((process as any).env.NODE_ENV === 'development') {
 			winston.warn(`Route requested but not found: ${req.url}`);
 		}
 
 		meta.errors.log404(req.path.replace(/^\/api/, '') || '');
-		exports.send404(req, res);
+		send404(req, res);
 	} else {
 		res.status(404).type('txt').send('Not found');
 	}
 };
 
-exports.send404 = async function (req, res) {
+export const send404 = async function (req, res) {
 	res.status(404);
 	const path = String(req.path || '');
 	if (res.locals.isAPI) {

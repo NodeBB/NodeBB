@@ -1,14 +1,14 @@
 'use strict';
 
-const db = require('../../database');
+import db from '../../database';
+import * as batch from '../../batch';
+import posts from '../../posts';
+import flags from '../../flags';
 
-module.exports = {
+export const obj = {
 	name: 'Migrating flags to new schema',
 	timestamp: Date.UTC(2016, 11, 7),
 	method: async function () {
-		const batch = require('../../batch');
-		const posts = require('../../posts');
-		const flags = require('../../flags');
 		const { progress } = this;
 
 		await batch.processSortedSet('posts:pid', async (ids) => {
@@ -42,7 +42,7 @@ module.exports = {
 							history = history.filter(event => event.type === 'notes')[0];
 							await flags.appendNote(flagObj.flagId, history.uid, post['flag:notes'], history.timestamp);
 						}
-					} catch (err) {
+					} catch (err: any) {
 						if (err.message !== '[[error:post-already-flagged]]') {
 							throw err;
 						}

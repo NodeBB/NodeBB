@@ -1,12 +1,11 @@
 'use strict';
 
-module.exports = function (opts) {
-	const LRU = require('lru-cache');
-	const pubsub = require('../pubsub');
+import LRU from 'lru-cache';
+import pubsub from '../pubsub';
+import winston from 'winston';
+import chalk from 'chalk';
 
-	// lru-cache@7 deprecations
-	const winston = require('winston');
-	const chalk = require('chalk');
+export default function (opts) {
 
 	// sometimes we kept passing in `length` with no corresponding `maxSize`.
 	// This is now enforced in v7; drop superfluous property
@@ -30,7 +29,7 @@ module.exports = function (opts) {
 
 	const lruCache = new LRU(opts);
 
-	const cache = {};
+	const cache = {} as any;
 	cache.name = opts.name;
 	cache.hits = 0;
 	cache.misses = 0;
@@ -61,7 +60,7 @@ module.exports = function (opts) {
 		if (!cache.enabled) {
 			return;
 		}
-		const opts = {};
+		const opts = {} as any;
 		if (ttl) {
 			opts.ttl = ttl;
 		}

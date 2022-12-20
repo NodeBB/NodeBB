@@ -1,9 +1,9 @@
 'use strict';
 
-const _ = require('lodash');
-const chalk = require('chalk');
+import _ from 'lodash';
+import chalk from 'chalk';
 
-const aliases = {
+export const aliases = {
 	'plugin static dirs': ['staticdirs'],
 	'requirejs modules': ['rjs', 'modules'],
 	'client js bundle': ['clientjs', 'clientscript', 'clientscripts'],
@@ -20,9 +20,7 @@ const aliases = {
 	languages: ['lang', 'i18n'],
 };
 
-exports.aliases = aliases;
-
-function buildTargets() {
+export function buildTargets() {
 	let length = 0;
 	const output = Object.keys(aliases).map((name) => {
 		const arr = aliases[name];
@@ -32,7 +30,7 @@ function buildTargets() {
 
 		return [name, arr.join(', ')];
 	}).map(tuple => `     ${chalk.magenta(_.padEnd(`"${tuple[0]}"`, length + 2))}  |  ${tuple[1]}`).join('\n');
-	process.stdout.write(
+	(process as any).stdout.write(
 		'\n\n  Build targets:\n' +
 		`${chalk.green(`\n     ${_.padEnd('Target', length + 2)}  |  Aliases`)}` +
 		`${chalk.blue('\n     ------------------------------------------------------\n')}` +
@@ -40,4 +38,3 @@ function buildTargets() {
 	);
 }
 
-exports.buildTargets = buildTargets;

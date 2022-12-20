@@ -1,9 +1,18 @@
 'use strict';
 
-const nconf = require('nconf');
-const winston = require('winston');
+import nconf from 'nconf';
+import winston from 'winston';
+import * as webserver from './webserver';
+import sockets from './socket.io';
+import db from './database';
+import meta from './meta';
+import upgrade from './upgrade';
+import notifications from './notifications';
+import plugins from './plugins';
+import topics from './topics';
+import user from './user';
 
-const start = module.exports;
+const start = {} as any;
 
 start.start = async function () {
 	printStartupInfo();
@@ -11,15 +20,13 @@ start.start = async function () {
 	addProcessHandlers();
 
 	try {
-		const db = require('./database');
+
 		await db.init();
 		await db.checkCompatibility();
-
-		const meta = require('./meta');
 		await meta.configs.init();
 
 		if (nconf.get('runJobs')) {
-			await runUpgrades();
+	       await runUpgrades();
 		}
 
 		if (nconf.get('dep-check') === undefined || nconf.get('dep-check') !== false) {
@@ -30,26 +37,25 @@ start.start = async function () {
 
 		await db.initSessionStore();
 
-		const webserver = require('./webserver');
-		const sockets = require('./socket.io');
+
 		await sockets.init(webserver.server);
 
 		if (nconf.get('runJobs')) {
-			require('./notifications').startJobs();
-			require('./user').startJobs();
-			require('./plugins').startJobs();
-			require('./topics').scheduled.startJobs();
+			notifications.startJobs();
+			user.startJobs();
+			plugins.startJobs();
+			topics.scheduled.startJobs();
 			await db.delete('locks');
 		}
 
 		await webserver.listen();
 
-		if (process.send) {
-			process.send({
+		if ((process as any).send) {
+			(process as any).send({
 				action: 'listening',
 			});
 		}
-	} catch (err) {
+	} catch (err: any) {
 		switch (err.message) {
 			case 'dependencies-out-of-date':
 				winston.error('One or more of NodeBB\'s dependent packages are out-of-date. Please run the following command to update them:');
@@ -65,15 +71,14 @@ start.start = async function () {
 		}
 
 		// Either way, bad stuff happened. Abort start.
-		process.exit();
+		(process as any).exit();
 	}
 };
 
 async function runUpgrades() {
-	const upgrade = require('./upgrade');
 	try {
 		await upgrade.check();
-	} catch (err) {
+	} catch (err: any) {
 		if (err && err.message === 'schema-out-of-date') {
 			await upgrade.run();
 		} else {
@@ -94,23 +99,25 @@ function printStartupInfo() {
 	}
 }
 
+import benchpressjs from 'benchpressjs';
+import translator from './translator';
+
+
 function addProcessHandlers() {
-	process.on('SIGTERM', shutdown);
-	process.on('SIGINT', shutdown);
-	process.on('SIGHUP', restart);
-	process.on('uncaughtException', (err) => {
+	(process as any).on('SIGTERM', shutdown);
+	(process as any).on('SIGINT', shutdown);
+	(process as any).on('SIGHUP', restart);
+	(process as any).on('uncaughtException', (err) => {
 		winston.error(err.stack);
 
 		require('./meta').js.killMinifier();
 		shutdown(1);
 	});
-	process.on('message', (msg) => {
+	(process as any).on('message', (msg) => {
 		if (msg && Array.isArray(msg.compiling)) {
 			if (msg.compiling.includes('tpl')) {
-				const benchpressjs = require('benchpressjs');
 				benchpressjs.flush();
 			} else if (msg.compiling.includes('lang')) {
-				const translator = require('./translator');
 				translator.flush();
 			}
 		}
@@ -118,9 +125,9 @@ function addProcessHandlers() {
 }
 
 function restart() {
-	if (process.send) {
+	if ((process as any).send) {
 		winston.info('[app] Restarting...');
-		process.send({
+		(process as any).send({
 			action: 'restart',
 		});
 	} else {
@@ -139,9 +146,11 @@ async function shutdown(code) {
 		await require('./database').close();
 		winston.info('[app] Database connection closed.');
 		winston.info('[app] Shutdown complete.');
-		process.exit(code || 0);
-	} catch (err) {
+		(process as any).exit(code || 0);
+	} catch (err: any) {
 		winston.error(err.stack);
-		return process.exit(code || 0);
+		return (process as any).exit(code || 0);
 	}
 }
+
+export default start;

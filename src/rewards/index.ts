@@ -1,11 +1,10 @@
 'use strict';
 
-const util = require('util');
+import util from 'util';
+import db from '../database';
+import plugins from '../plugins';
 
-const db = require('../database');
-const plugins = require('../plugins');
-
-const rewards = module.exports;
+const rewards = {} as any;
 
 rewards.checkConditionAndRewardUser = async function (params) {
 	const { uid, condition, method } = params;
@@ -77,4 +76,7 @@ async function giveRewards(uid, rewards) {
 	}
 }
 
-require('../promisify')(rewards);
+import promisify from '../promisify';
+promisify(rewards);
+
+export default rewards;

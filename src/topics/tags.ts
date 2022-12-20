@@ -1,20 +1,19 @@
 
 'use strict';
 
-const async = require('async');
-const validator = require('validator');
-const _ = require('lodash');
+import async from 'async';
+import validator from 'validator';
+import _ from 'lodash';
+import db from '../database';
+import meta from '../meta';
+import user from '../user';
+import categories from '../categories';
+import plugins from '../plugins';
+import utils from '../utils';
+import * as  batch from '../batch';
+import cache from '../cache';
 
-const db = require('../database');
-const meta = require('../meta');
-const user = require('../user');
-const categories = require('../categories');
-const plugins = require('../plugins');
-const utils = require('../utils');
-const batch = require('../batch');
-const cache = require('../cache');
-
-module.exports = function (Topics) {
+export default function (Topics) {
 	Topics.createTags = async function (tags, tid, timestamp) {
 		if (!Array.isArray(tags) || !tags.length) {
 			return;

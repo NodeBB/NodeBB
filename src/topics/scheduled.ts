@@ -1,16 +1,15 @@
 'use strict';
 
-const _ = require('lodash');
-const winston = require('winston');
-const { CronJob } = require('cron');
+import _ from 'lodash';
+import winston from 'winston';
+import { CronJob } from 'cron';
+import db from '../database';
+import posts from '../posts';
+import socketHelpers from '../socket.io/helpers';
+import topics from './index';
+import user from '../user';
 
-const db = require('../database');
-const posts = require('../posts');
-const socketHelpers = require('../socket.io/helpers');
-const topics = require('./index');
-const user = require('../user');
-
-const Scheduled = module.exports;
+const Scheduled = {} as any;
 
 Scheduled.startJobs = function () {
 	winston.verbose('[scheduled topics] Starting jobs.');
@@ -114,7 +113,7 @@ async function updateUserLastposttimes(uids, topicsData) {
 		tstampByUid[tD.uid] = tstampByUid[tD.uid] ? tstampByUid[tD.uid].concat(tD.lastposttime) : [tD.lastposttime];
 	});
 	tstampByUid = Object.fromEntries(
-		Object.entries(tstampByUid).map(uidTimestamp => [uidTimestamp[0], Math.max(...uidTimestamp[1])])
+		Object.entries(tstampByUid).map((uidTimestamp: any) => [uidTimestamp[0], Math.max(...uidTimestamp[1])])
 	);
 
 	const uidsToUpdate = uids.filter((uid, idx) => tstampByUid[uid] > lastposttimes[idx]);
@@ -126,3 +125,5 @@ async function shiftPostTimes(tid, timestamp) {
 	// Leaving other related score values intact, since they reflect post order correctly, and it seems that's good enough
 	return db.setObjectBulk(pids.map((pid, idx) => [`post:${pid}`, { timestamp: timestamp + idx + 1 }]));
 }
+
+export default Scheduled;

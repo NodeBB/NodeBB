@@ -1,14 +1,14 @@
 'use strict';
 
-const user = require('../../user');
-const meta = require('../../meta');
-const helpers = require('../helpers');
-const groups = require('../../groups');
-const accountHelpers = require('./helpers');
-const privileges = require('../../privileges');
-const file = require('../../file');
+import user from '../../user';
+import meta from '../../meta';
+import helpers from '../helpers';
+import groups from '../../groups';
+import accountHelpers from './helpers';
+import privileges from '../../privileges';
+import file from '../../file';
 
-const editController = module.exports;
+const editController = {} as any;
 
 editController.get = async function (req, res, next) {
 	const [userData, canUseSignature] = await Promise.all([
@@ -100,7 +100,7 @@ editController.email = async function (req, res, next) {
 };
 
 async function renderRoute(name, req, res, next) {
-	const userData = await getUserData(req, next);
+	const userData = await getUserData(req);
 	if (!userData) {
 		return next();
 	}
@@ -161,9 +161,11 @@ editController.uploadPicture = async function (req, res, next) {
 			name: userPhoto.name,
 			url: image.url,
 		}]);
-	} catch (err) {
+	} catch (err: any) {
 		next(err);
 	} finally {
 		await file.delete(userPhoto.path);
 	}
 };
+
+export default editController;

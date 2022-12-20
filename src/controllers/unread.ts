@@ -1,17 +1,16 @@
 
 'use strict';
 
-const nconf = require('nconf');
-const querystring = require('querystring');
+import nconf from 'nconf';
+import querystring from 'querystring';
+import meta from '../meta';
+import pagination from '../pagination';
+import user from '../user';
+import topics from '../topics';
+import helpers from './helpers';
+import privileges from '../privileges';
 
-const meta = require('../meta');
-const pagination = require('../pagination');
-const user = require('../user');
-const topics = require('../topics');
-const helpers = require('./helpers');
-const privileges = require('../privileges');
-
-const unreadController = module.exports;
+const unreadController = {} as any;
 const relative_path = nconf.get('relative_path');
 
 unreadController.get = async function (req, res) {
@@ -75,7 +74,9 @@ unreadController.unreadTotal = async function (req, res, next) {
 	try {
 		const unreadCount = await topics.getTotalUnread(req.uid, filter);
 		res.json(unreadCount);
-	} catch (err) {
+	} catch (err: any) {
 		next(err);
 	}
 };
+
+export default unreadController;

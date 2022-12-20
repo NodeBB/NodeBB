@@ -1,12 +1,11 @@
 'use strict';
 
-const _ = require('lodash');
+import _ from 'lodash';
+import db from '../database';
+import privileges from '../privileges';
 
-const db = require('../database');
-const privileges = require('../privileges');
 
-
-module.exports = function (Posts) {
+export default function (Posts) {
 	const terms = {
 		day: 86400000,
 		week: 604800000,

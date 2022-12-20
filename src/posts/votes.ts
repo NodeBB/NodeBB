@@ -1,15 +1,15 @@
 'use strict';
 
-const meta = require('../meta');
-const db = require('../database');
-const flags = require('../flags');
-const user = require('../user');
-const topics = require('../topics');
-const plugins = require('../plugins');
-const privileges = require('../privileges');
-const translator = require('../translator');
+import meta from '../meta';
+import db from '../database';
+import flags from '../flags';
+import user from '../user';
+import topics from '../topics';
+import plugins from '../plugins';
+import privileges from '../privileges';
+import translator from '../translator';
 
-module.exports = function (Posts) {
+export default function (Posts) {
 	const votesInProgress = {};
 
 	Posts.upvote = async function (pid, uid) {

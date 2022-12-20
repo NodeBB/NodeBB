@@ -1,7 +1,7 @@
 'use strict';
 
-const EventEmitter = require('events');
-const nconf = require('nconf');
+import EventEmitter from 'events';
+import nconf from 'nconf';
 
 let real;
 let noCluster;
@@ -28,17 +28,17 @@ function get() {
 			return real;
 		}
 		singleHost = new EventEmitter();
-		if (!process.send) {
+		if (!(process as any).send) {
 			singleHost.publish = singleHost.emit.bind(singleHost);
 		} else {
 			singleHost.publish = function (event, data) {
-				process.send({
+				(process as any).send({
 					action: 'pubsub',
 					event: event,
 					data: data,
 				});
 			};
-			process.on('message', (message) => {
+			(process as any).on('message', (message: any) => {
 				if (message && typeof message === 'object' && message.action === 'pubsub') {
 					singleHost.emit(message.event, message.data);
 				}
@@ -46,7 +46,7 @@ function get() {
 		}
 		pubsub = singleHost;
 	} else if (nconf.get('redis')) {
-		pubsub = require('./database/redis/pubsub');
+		pubsub =  require('./database/redis/pubsub').default;
 	} else {
 		throw new Error('[[error:redis-required-for-pubsub]]');
 	}
@@ -55,8 +55,8 @@ function get() {
 	return pubsub;
 }
 
-module.exports = {
-	publish: function (event, data) {
+export default  {
+	publish: function (event, data?) {
 		get().publish(event, data);
 	},
 	on: function (event, callback) {

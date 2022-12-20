@@ -1,19 +1,18 @@
 'use strict';
 
-const path = require('path');
-const nconf = require('nconf');
-const winston = require('winston');
-const _ = require('lodash');
-const fs = require('fs');
+import path from 'path';
+import nconf from 'nconf';
+import winston from 'winston';
+import _ from 'lodash';
+import fs from 'fs';
+import file from '../file';
+import db from '../database';
+import Meta from './index';
+import events from '../events';
+import utils from '../utils';
+import { themeNamePattern } from '../constants';
 
-const file = require('../file');
-const db = require('../database');
-const Meta = require('./index');
-const events = require('../events');
-const utils = require('../utils');
-const { themeNamePattern } = require('../constants');
-
-const Themes = module.exports;
+const Themes = {} as any;
 
 Themes.get = async () => {
 	const themePath = nconf.get('themes_path');
@@ -45,7 +44,7 @@ Themes.get = async () => {
 			}
 
 			return configObj;
-		} catch (err) {
+		} catch (err: any) {
 			if (err.code === 'ENOENT') {
 				return false;
 			}
@@ -75,7 +74,7 @@ async function getThemes(themePath) {
 
 			const themes = await getThemes(path.join(themePath, dir));
 			return themes.map(theme => path.join(dir, theme));
-		} catch (err) {
+		} catch (err: any) {
 			if (err.code === 'ENOENT') {
 				return false;
 			}
@@ -99,7 +98,7 @@ Themes.set = async (data) => {
 					throw new Error('[[error:invalid-theme-id]]');
 				}
 
-				let config = await fs.promises.readFile(pathToThemeJson, 'utf8');
+				let config: any = await fs.promises.readFile(pathToThemeJson, 'utf8');
 				config = JSON.parse(config);
 				const activePluginsConfig = nconf.get('plugins:active');
 				if (!activePluginsConfig) {
@@ -152,7 +151,7 @@ Themes.setupPaths = async () => {
 
 	const themeId = data.currentThemeId || 'nodebb-theme-harmony';
 
-	if (process.env.NODE_ENV === 'development') {
+	if ((process as any).env.NODE_ENV === 'development') {
 		winston.info(`[themes] Using theme ${themeId}`);
 	}
 
@@ -179,3 +178,5 @@ Themes.setPath = function (themeObj) {
 	nconf.set('theme_templates_path', themePath);
 	nconf.set('theme_config', path.join(nconf.get('themes_path'), themeObj.id, 'theme.json'));
 };
+
+export default Themes;

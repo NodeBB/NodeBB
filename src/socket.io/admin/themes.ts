@@ -1,9 +1,9 @@
 'use strict';
 
-const meta = require('../../meta');
-const widgets = require('../../widgets');
+import meta from '../../meta';
+import widgets from '../../widgets';
 
-const Themes = module.exports;
+const Themes  = {} as any;
 
 Themes.getInstalled = async function () {
 	return await meta.themes.get();
@@ -22,3 +22,5 @@ Themes.set = async function (socket, data) {
 
 	await meta.themes.set(data);
 };
+
+export default Themes;

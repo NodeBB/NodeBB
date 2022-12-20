@@ -1,9 +1,9 @@
 'use strict';
 
-const user = require('../user');
-const notifications = require('../notifications');
+import user from '../user';
+import notifications from '../notifications';
 
-const SocketNotifs = module.exports;
+const SocketNotifs = {} as any;
 
 SocketNotifs.get = async function (socket, data) {
 	if (data && Array.isArray(data.nids) && socket.uid) {
@@ -39,4 +39,7 @@ SocketNotifs.markAllRead = async function (socket) {
 	user.notifications.pushCount(socket.uid);
 };
 
-require('../promisify')(SocketNotifs);
+import promisify from '../promisify';
+promisify(SocketNotifs);
+
+export default SocketNotifs;

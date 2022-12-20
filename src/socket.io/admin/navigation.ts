@@ -1,9 +1,11 @@
 'use strict';
 
-const navigationAdmin = require('../../navigation/admin');
+import navigationAdmin from '../../navigation/admin';
 
-const SocketNavigation = module.exports;
+const SocketNavigation  = {} as any;
 
 SocketNavigation.save = async function (socket, data) {
 	await navigationAdmin.save(data);
 };
+
+export default SocketNavigation;

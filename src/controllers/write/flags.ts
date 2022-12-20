@@ -1,11 +1,11 @@
 'use strict';
 
-const user = require('../../user');
-const flags = require('../../flags');
-const api = require('../../api');
-const helpers = require('../helpers');
+import user from '../../user';
+import flags from '../../flags';
+import api from '../../api';
+import helpers from '../helpers';
 
-const Flags = module.exports;
+const Flags = {} as any;
 
 Flags.create = async (req, res) => {
 	const flagObj = await api.flags.create(req, { ...req.body });
@@ -51,3 +51,5 @@ Flags.deleteNote = async (req, res) => {
 
 	helpers.formatApiResponse(200, res, payload);
 };
+
+export default Flags;

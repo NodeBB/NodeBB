@@ -1,13 +1,12 @@
 'use strict';
 
-const winston = require('winston');
+import winston from 'winston';
+import db from '../database';
+import user from '../user';
+import plugins from '../plugins';
+import cache from '../cache';
 
-const db = require('../database');
-const user = require('../user');
-const plugins = require('../plugins');
-const cache = require('../cache');
-
-module.exports = function (Groups) {
+export default function (Groups) {
 	Groups.join = async function (groupNames, uid) {
 		if (!groupNames) {
 			throw new Error('[[error:invalid-data]]');
@@ -81,7 +80,7 @@ module.exports = function (Groups) {
 					name: groupName,
 					hidden: 1,
 				});
-			} catch (err) {
+			} catch (err: any) {
 				if (err && err.message !== '[[error:group-already-exists]]') {
 					winston.error(`[groups.join] Could not create new hidden group (${groupName})\n${err.stack}`);
 					throw err;

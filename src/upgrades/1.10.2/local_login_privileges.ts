@@ -1,11 +1,12 @@
 'use strict';
 
-module.exports = {
+import meta from '../../meta';
+import privileges from '../../privileges';
+
+export const obj = {
 	name: 'Give global local login privileges',
 	timestamp: Date.UTC(2018, 8, 28),
 	method: function (callback) {
-		const meta = require('../../meta');
-		const privileges = require('../../privileges');
 		const allowLocalLogin = parseInt(meta.config.allowLocalLogin, 10) !== 0;
 
 		if (allowLocalLogin) {

@@ -1,20 +1,21 @@
 'use strict';
 
-const _ = require('lodash');
+import _ from 'lodash';
 
-const db = require('./database');
-const posts = require('./posts');
-const topics = require('./topics');
-const categories = require('./categories');
-const user = require('./user');
-const plugins = require('./plugins');
-const privileges = require('./privileges');
-const utils = require('./utils');
+import db from './database';
 
-const search = module.exports;
+import posts from './posts';
+import topics from './topics';
+import categories from './categories';
+import user from './user';
+import plugins from './plugins';
+import privileges from './privileges';
+import utils from './utils';
+
+const search = {} as any;
 
 search.search = async function (data) {
-	const start = process.hrtime();
+	const start = (process as any).hrtime();
 	data.sortBy = data.sortBy || 'relevance';
 
 	let result;
@@ -34,7 +35,7 @@ search.search = async function (data) {
 		throw new Error('[[error:unknown-search-filter]]');
 	}
 
-	result.time = (process.elapsedTimeSince(start) / 1000).toFixed(2);
+	result.time = ((process as any).elapsedTimeSince(start) / 1000).toFixed(2);
 	return result;
 };
 
@@ -313,4 +314,7 @@ async function getSearchUids(data) {
 	return await user.getUidsByUsernames(Array.isArray(data.postedBy) ? data.postedBy : [data.postedBy]);
 }
 
-require('./promisify')(search);
+import promisify from './promisify';
+promisify(search);
+
+export default search;

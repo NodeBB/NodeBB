@@ -1,10 +1,9 @@
 'use strict';
 
-const api = require('../../api');
+import api from '../../api';
+import helpers from '../helpers';
 
-const helpers = require('../helpers');
-
-const Groups = module.exports;
+const Groups = {} as any;
 
 Groups.exists = async (req, res) => {
 	helpers.formatApiResponse(200, res);
@@ -47,3 +46,5 @@ Groups.rescind = async (req, res) => {
 	await api.groups.rescind(req, req.params);
 	helpers.formatApiResponse(200, res);
 };
+
+export default Groups;

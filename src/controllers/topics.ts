@@ -1,20 +1,21 @@
 'use strict';
 
-const nconf = require('nconf');
-const qs = require('querystring');
+import nconf from 'nconf';
+import qs from 'querystring';
+import user from '../user';
+import meta from '../meta';
+import topics from '../topics';
+import categories from '../categories';
+import posts from '../posts';
+import privileges from '../privileges';
+import helpers from './helpers';
+import pagination from '../pagination';
+import utils from '../utils';
+import analytics from '../analytics';
+import path from 'path';
 
-const user = require('../user');
-const meta = require('../meta');
-const topics = require('../topics');
-const categories = require('../categories');
-const posts = require('../posts');
-const privileges = require('../privileges');
-const helpers = require('./helpers');
-const pagination = require('../pagination');
-const utils = require('../utils');
-const analytics = require('../analytics');
 
-const topicsController = module.exports;
+const topicsController = {} as any;
 
 const url = nconf.get('url');
 const relative_path = nconf.get('relative_path');
@@ -196,7 +197,7 @@ async function addOldCategory(topicData, userPrivileges) {
 
 async function addTags(topicData, req, res) {
 	const postIndex = parseInt(req.params.post_index, 10) || 0;
-	const postAtIndex = topicData.posts.find(p => parseInt(p.index, 10) === parseInt(Math.max(0, postIndex - 1), 10));
+	const postAtIndex = topicData.posts.find(p => parseInt(p.index, 10) === parseInt(String(Math.max(0, postIndex - 1)), 10));
 	let description = '';
 	if (postAtIndex && postAtIndex.content) {
 		description = utils.stripHTMLTags(utils.decodeHTMLEntities(postAtIndex.content));
@@ -274,7 +275,6 @@ async function addOGImageTags(res, topicData, postAtIndex) {
 		return upload;
 	});
 	if (topicData.thumbs) {
-		const path = require('path');
 		const thumbs = topicData.thumbs.filter(
 			t => t && images.every(img => path.normalize(img.name) !== path.normalize(url + t.url))
 		);
@@ -372,3 +372,5 @@ topicsController.pagination = async function (req, res, next) {
 
 	res.json({ pagination: paginationData });
 };
+
+export default topicsController;

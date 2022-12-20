@@ -1,16 +1,15 @@
 'use strict';
 
 
-const winston = require('winston');
-const db = require('../../database');
+import winston from 'winston';
+import db from '../../database';
+import posts from '../../posts';
+import topics from '../../topics';
 
-module.exports = {
+export const obj = {
 	name: 'Dismiss flags from deleted topics',
 	timestamp: Date.UTC(2016, 3, 29),
 	method: async function () {
-		const posts = require('../../posts');
-		const topics = require('../../topics');
-
 		const pids = await db.getSortedSetRange('posts:flagged', 0, -1);
 		const postData = await posts.getPostsFields(pids, ['tid']);
 		const tids = postData.map(t => t.tid);

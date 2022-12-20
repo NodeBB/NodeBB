@@ -1,16 +1,15 @@
 'use strict';
 
-const async = require('async');
-const _ = require('lodash');
+import async from 'async';
+import _ from 'lodash';
+import db from '../database';
+import plugins from '../plugins';
+import privileges from '../privileges';
+import utils from '../utils';
+import slugify from '../slugify';
+import cache from '../cache';
 
-const db = require('../database');
-const plugins = require('../plugins');
-const privileges = require('../privileges');
-const utils = require('../utils');
-const slugify = require('../slugify');
-const cache = require('../cache');
-
-module.exports = function (Categories) {
+export default function (Categories) {
 	Categories.create = async function (data) {
 		const parentCid = data.parentCid ? data.parentCid : 0;
 		const [cid, firstChild] = await Promise.all([
@@ -44,7 +43,7 @@ module.exports = function (Categories) {
 			imageClass: 'cover',
 			isSection: 0,
 			subCategoriesPerPage: 10,
-		};
+		} as any;
 
 		if (data.backgroundImage) {
 			category.backgroundImage = data.backgroundImage;

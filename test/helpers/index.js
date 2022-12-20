@@ -8,7 +8,7 @@ const winston = require('winston');
 
 const utils = require('../../src/utils');
 
-const helpers = module.exports;
+const helpers  = {} as any;
 
 helpers.getCsrfToken = async (jar) => {
 	const { csrf_token: token } = await requestAsync({

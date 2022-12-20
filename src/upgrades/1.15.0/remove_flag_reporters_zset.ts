@@ -1,9 +1,13 @@
 'use strict';
 
-const db = require('../../database');
-const batch = require('../../batch');
+import db from '../../database';
 
-module.exports = {
+
+import * as batch from '../../batch';
+
+
+
+export const obj = {
 	name: 'Remove flag reporters sorted set',
 	timestamp: Date.UTC(2020, 6, 31),
 	method: async function () {

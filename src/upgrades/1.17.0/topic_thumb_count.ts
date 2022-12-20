@@ -1,10 +1,14 @@
 'use strict';
 
-const _ = require('lodash');
-const db = require('../../database');
-const batch = require('../../batch');
+import _ from 'lodash';
+import db from '../../database';
 
-module.exports = {
+
+import * as batch from '../../batch';
+
+
+
+export const obj = {
 	name: 'Store number of thumbs a topic has in the topic object',
 	timestamp: Date.UTC(2021, 1, 7),
 	method: async function () {

@@ -1,13 +1,12 @@
 'use strict';
 
-const validator = require('validator');
-const winston = require('winston');
+import validator from 'validator';
+import winston from 'winston';
+import plugins from '../plugins';
+import db from '../database';
+import pubsub from '../pubsub';
 
-const plugins = require('../plugins');
-const db = require('../database');
-const pubsub = require('../pubsub');
-
-const admin = module.exports;
+const admin = {} as any;
 let cache = null;
 
 pubsub.on('admin:navigation:save', () => {
@@ -69,7 +68,7 @@ admin.get = async function () {
 		if (item.hasOwnProperty('groups')) {
 			try {
 				item.groups = JSON.parse(item.groups);
-			} catch (err) {
+			} catch (err: any) {
 				winston.error(err.stack);
 				item.groups = [];
 			}
@@ -101,4 +100,7 @@ async function getAvailable() {
 	return navItems;
 }
 
-require('../promisify')(admin);
+import promisify from '../promisify';
+promisify(admin);
+
+export default admin;

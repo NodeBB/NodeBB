@@ -2,12 +2,11 @@
 'use strict';
 
 
-const _ = require('lodash');
+import _ from 'lodash';
+import db from '../database';
+import topics from '../topics';
 
-const db = require('../database');
-const topics = require('../topics');
-
-module.exports = function (Posts) {
+export default function (Posts) {
 	Posts.getCidByPid = async function (pid) {
 		const tid = await Posts.getPostField(pid, 'tid');
 		return await topics.getTopicField(tid, 'cid');
@@ -39,3 +38,4 @@ module.exports = function (Posts) {
 		return pids.filter((pid, index) => pid && isMembers[index]);
 	}
 };
+

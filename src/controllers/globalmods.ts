@@ -1,12 +1,12 @@
 'use strict';
 
-const user = require('../user');
-const meta = require('../meta');
-const analytics = require('../analytics');
-const usersController = require('./admin/users');
-const helpers = require('./helpers');
+import user from '../user';
+import meta from '../meta';
+import analytics from '../analytics';
+import usersController from './admin/users';
+import helpers from './helpers';
 
-const globalModsController = module.exports;
+const globalModsController = {} as any;
 
 globalModsController.ipBlacklist = async function (req, res, next) {
 	const isAdminOrGlobalMod = await user.isAdminOrGlobalMod(req.uid);
@@ -34,3 +34,4 @@ globalModsController.registrationQueue = async function (req, res, next) {
 	}
 	await usersController.registrationQueue(req, res);
 };
+export default globalModsController;

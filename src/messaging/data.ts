@@ -1,15 +1,14 @@
 'use strict';
 
-const validator = require('validator');
-
-const db = require('../database');
-const user = require('../user');
-const utils = require('../utils');
-const plugins = require('../plugins');
+import validator from 'validator';
+import db from '../database';
+import user from '../user';
+import utils from '../utils';
+import plugins from '../plugins';
 
 const intFields = ['timestamp', 'edited', 'fromuid', 'roomId', 'deleted', 'system'];
 
-module.exports = function (Messaging) {
+export default function (Messaging) {
 	Messaging.newMessageCutoff = 1000 * 60 * 3;
 
 	Messaging.getMessagesFields = async (mids, fields) => {

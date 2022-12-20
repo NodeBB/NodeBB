@@ -1,16 +1,15 @@
 'use strict';
 
-const express = require('express');
-const nconf = require('nconf');
+import express from 'express';
+import nconf from 'nconf';
+import { promises as fs } from 'fs';
+import path from 'path';
 
-const fs = require('fs').promises;
-const path = require('path');
-
-module.exports = function (app) {
+export default function (app) {
 	const router = express.Router();
 
 	router.get('/test', async (req, res) => {
-		res.redirect(404);
+		res.redirect(404 as any);
 	});
 
 	// Redoc

@@ -1,9 +1,9 @@
 'use strict';
 
-const fs = require('fs').promises;
-const helpers = require('../helpers');
+import { promises as fs } from 'fs';
+import helpers from '../helpers';
 
-const Files = module.exports;
+const Files = {} as any;
 
 Files.delete = async (req, res) => {
 	await fs.unlink(res.locals.cleanedPath);
@@ -14,3 +14,5 @@ Files.createFolder = async (req, res) => {
 	await fs.mkdir(res.locals.folderPath);
 	helpers.formatApiResponse(200, res);
 };
+
+export default Files;

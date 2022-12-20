@@ -1,22 +1,20 @@
 'use strict';
 
+import nconf from 'nconf';
+import validator from 'validator';
+import qs from 'querystring';
+import db from '../database';
+import privileges from '../privileges';
+import user from '../user';
+import categories from '../categories';
+import meta from '../meta';
+import pagination from '../pagination';
+import helpers from './helpers';
+import utils from '../utils';
+import translator from '../translator';
+import analytics from '../analytics';
 
-const nconf = require('nconf');
-const validator = require('validator');
-const qs = require('querystring');
-
-const db = require('../database');
-const privileges = require('../privileges');
-const user = require('../user');
-const categories = require('../categories');
-const meta = require('../meta');
-const pagination = require('../pagination');
-const helpers = require('./helpers');
-const utils = require('../utils');
-const translator = require('../translator');
-const analytics = require('../analytics');
-
-const categoryController = module.exports;
+const categoryController = {} as any;
 
 const url = nconf.get('url');
 const relative_path = nconf.get('relative_path');
@@ -62,7 +60,7 @@ categoryController.get = async function (req, res, next) {
 	if (!userSettings.usePagination) {
 		topicIndex = Math.max(0, topicIndex - (Math.ceil(userSettings.topicsPerPage / 2) - 1));
 	} else if (!req.query.page) {
-		const index = Math.max(parseInt((topicIndex || 0), 10), 0);
+		const index = Math.max(parseInt(String(topicIndex || 0), 10), 0);
 		currentPage = Math.ceil((index + 1) / userSettings.topicsPerPage);
 		topicIndex = 0;
 	}
@@ -204,3 +202,5 @@ function addTags(categoryData, res) {
 		});
 	}
 }
+
+export default categoryController;

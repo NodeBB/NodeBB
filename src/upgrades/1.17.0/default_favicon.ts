@@ -1,11 +1,10 @@
 'use strict';
 
-const nconf = require('nconf');
-const path = require('path');
-const fs = require('fs');
-const file = require('../../file');
+import nconf from 'nconf';
+import path from 'path';import fs from 'fs';
+import file from '../../file';
 
-module.exports = {
+export const obj = {
 	name: 'Store default favicon if it does not exist',
 	timestamp: Date.UTC(2021, 2, 9),
 	method: async function () {

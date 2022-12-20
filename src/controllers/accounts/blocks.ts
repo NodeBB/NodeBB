@@ -1,12 +1,12 @@
 'use strict';
 
-const helpers = require('../helpers');
-const accountHelpers = require('./helpers');
-const pagination = require('../../pagination');
-const user = require('../../user');
-const plugins = require('../../plugins');
+import helpers from '../helpers';
+import accountHelpers from './helpers';
+import pagination from '../../pagination';
+import user from '../../user';
+import plugins from '../../plugins';
 
-const blocksController = module.exports;
+const blocksController = {} as any;
 
 blocksController.getBlocks = async function (req, res, next) {
 	const page = parseInt(req.query.page, 10) || 1;
@@ -37,3 +37,5 @@ blocksController.getBlocks = async function (req, res, next) {
 
 	res.render('account/blocks', userData);
 };
+
+export default blocksController;

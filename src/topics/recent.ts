@@ -1,11 +1,11 @@
 
 'use strict';
 
-const db = require('../database');
-const plugins = require('../plugins');
-const posts = require('../posts');
+import db from '../database';
+import plugins from '../plugins';
+import posts from '../posts';
 
-module.exports = function (Topics) {
+export default function (Topics) {
 	const terms = {
 		day: 86400000,
 		week: 604800000,

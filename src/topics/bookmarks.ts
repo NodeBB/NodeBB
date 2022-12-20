@@ -1,12 +1,11 @@
 
 'use strict';
 
-const async = require('async');
+import async from 'async';
+import db from '../database';
+import user from '../user';
 
-const db = require('../database');
-const user = require('../user');
-
-module.exports = function (Topics) {
+export default function (Topics) {
 	Topics.getUserBookmark = async function (tid, uid) {
 		if (parseInt(uid, 10) <= 0) {
 			return null;
@@ -67,3 +66,4 @@ module.exports = function (Topics) {
 		});
 	};
 };
+

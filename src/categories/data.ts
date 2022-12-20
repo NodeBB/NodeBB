@@ -1,11 +1,10 @@
 'use strict';
 
-const validator = require('validator');
-
-const db = require('../database');
-const meta = require('../meta');
-const plugins = require('../plugins');
-const utils = require('../utils');
+import validator from 'validator';
+import db from '../database';
+import meta from '../meta';
+import plugins from '../plugins';
+import utils from '../utils';
 
 const intFields = [
 	'cid', 'parentCid', 'disabled', 'isSection', 'order',
@@ -13,7 +12,7 @@ const intFields = [
 	'minTags', 'maxTags', 'postQueue', 'subCategoriesPerPage',
 ];
 
-module.exports = function (Categories) {
+export default function (Categories) {
 	Categories.getCategoriesFields = async function (cids, fields) {
 		if (!Array.isArray(cids) || !cids.length) {
 			return [];

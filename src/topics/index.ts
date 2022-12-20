@@ -1,39 +1,63 @@
 'use strict';
 
-const _ = require('lodash');
-const validator = require('validator');
+import _ from 'lodash';
+import validator from 'validator';
+console.log(0);
+import db from '../database';
+console.log('D 1');
+import posts from '../posts';
+console.log('P 2');
+import utils from '../utils';
+import plugins from '../plugins';
+import meta from '../meta';
+import user from '../user';
+import categories from '../categories';
+import privileges from '../privileges';
+import social from '../social';
 
-const db = require('../database');
-const posts = require('../posts');
-const utils = require('../utils');
-const plugins = require('../plugins');
-const meta = require('../meta');
-const user = require('../user');
-const categories = require('../categories');
-const privileges = require('../privileges');
-const social = require('../social');
+const Topics = {} as any;
 
-const Topics = module.exports;
+import data from './data';
+import create from './create';
+import deleteTopic from './delete';
+import sorted from './sorted';
+import unread from './unread';
+import recent from './recent';
+import userFn from './user';
+import fork from './fork';
+console.log(1);
+import postsFn from './posts';
+console.log(2);
+import follow from './follow';
+import tags from './tags';
+import teaser from './teaser';
+import suggested from './suggested';
+import tools from './tools';
+import bookmarks from './bookmarks';
+import merge from './merge';
+import scheduled from './scheduled';
+import thumbs from './thumbs';
+import events from './events';
 
-require('./data')(Topics);
-require('./create')(Topics);
-require('./delete')(Topics);
-require('./sorted')(Topics);
-require('./unread')(Topics);
-require('./recent')(Topics);
-require('./user')(Topics);
-require('./fork')(Topics);
-require('./posts')(Topics);
-require('./follow')(Topics);
-require('./tags')(Topics);
-require('./teaser')(Topics);
-Topics.scheduled = require('./scheduled');
-require('./suggested')(Topics);
-require('./tools')(Topics);
-Topics.thumbs = require('./thumbs');
-require('./bookmarks')(Topics);
-require('./merge')(Topics);
-Topics.events = require('./events');
+data(Topics);
+create(Topics);
+deleteTopic(Topics);
+sorted(Topics);
+unread(Topics);
+recent(Topics);
+userFn(Topics);
+fork(Topics);
+postsFn(Topics);
+follow(Topics);
+tags(Topics);
+teaser(Topics);
+Topics.scheduled = scheduled;
+suggested(Topics);
+tools(Topics);
+Topics.thumbs = thumbs;
+bookmarks(Topics);
+merge(Topics);
+Topics.events = events;
 
 Topics.exists = async function (tids) {
 	return await db.exists(
@@ -287,4 +311,7 @@ Topics.search = async function (tid, term) {
 	return Array.isArray(result) ? result : result.ids;
 };
 
-require('../promisify')(Topics);
+import promisify from '../promisify';
+promisify(Topics);
+
+export default Topics;

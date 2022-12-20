@@ -1,16 +1,15 @@
 'use strict';
 
-const validator = require('validator');
+import validator from 'validator';
+import privileges from '../privileges';
+import events from '../events';
+import groups from '../groups';
+import user from '../user';
+import meta from '../meta';
+import notifications from '../notifications';
+import slugify from '../slugify';
 
-const privileges = require('../privileges');
-const events = require('../events');
-const groups = require('../groups');
-const user = require('../user');
-const meta = require('../meta');
-const notifications = require('../notifications');
-const slugify = require('../slugify');
-
-const groupsAPI = module.exports;
+const groupsAPI = {}  as any;
 
 groupsAPI.create = async function (caller, data) {
 	if (!caller.uid) {
@@ -236,3 +235,5 @@ function logGroupEvent(caller, event, additional) {
 		...additional,
 	});
 }
+
+export default groupsAPI;

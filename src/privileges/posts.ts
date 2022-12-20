@@ -1,19 +1,18 @@
 
 'use strict';
 
-const _ = require('lodash');
+import _ from 'lodash';
+import meta from '../meta';
+import posts from '../posts';
+import topics from '../topics';
+import user from '../user';
+import helpers from './helpers';
+import plugins from '../plugins';
+import utils from '../utils';
+import privsCategories from './categories';
+import privsTopics from './topics';
 
-const meta = require('../meta');
-const posts = require('../posts');
-const topics = require('../topics');
-const user = require('../user');
-const helpers = require('./helpers');
-const plugins = require('../plugins');
-const utils = require('../utils');
-const privsCategories = require('./categories');
-const privsTopics = require('./topics');
-
-const privsPosts = module.exports;
+const privsPosts = {} as any;
 
 privsPosts.get = async function (pids, uid) {
 	if (!Array.isArray(pids) || !pids.length) {
@@ -34,7 +33,7 @@ privsPosts.get = async function (pids, uid) {
 	});
 
 	const isModerator = _.zipObject(uniqueCids, results.isModerator);
-	const privData = {};
+	const privData = {} as any;
 	privData['topics:read'] = _.zipObject(uniqueCids, results['topics:read']);
 	privData.read = _.zipObject(uniqueCids, results.read);
 	privData['posts:edit'] = _.zipObject(uniqueCids, results['posts:edit']);
@@ -232,3 +231,5 @@ async function isAdminOrMod(pid, uid) {
 	const cid = await posts.getCidByPid(pid);
 	return await privsCategories.isAdminOrMod(cid, uid);
 }
+
+export default privsPosts;

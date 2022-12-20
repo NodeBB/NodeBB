@@ -1,11 +1,13 @@
 'use strict';
 
-const util = require('util');
-const winston = require('winston');
-const plugins = require('.');
-const utils = require('../utils');
+import util from 'util';
+import winston from 'winston';
+import plugins from '.';
+import utils from '../utils';
+import als from '../als';
 
-const Hooks = module.exports;
+
+const Hooks = {} as any;
 
 Hooks._deprecated = new Map([
 	['filter:email.send', {
@@ -115,7 +117,7 @@ Hooks.unregister = function (id, hook, method) {
 Hooks.fire = async function (hook, params) {
 	const hookList = plugins.loadedHooks[hook];
 	const hookType = hook.split(':')[0];
-	if (global.env === 'development' && hook !== 'action:plugins.firehook' && hook !== 'filter:plugins.firehook') {
+	if ((global as any).env === 'development' && hook !== 'action:plugins.firehook' && hook !== 'filter:plugins.firehook') {
 		winston.verbose(`[plugins/fireHook] ${hook}`);
 	}
 
@@ -125,7 +127,6 @@ Hooks.fire = async function (hook, params) {
 	}
 	let deleteCaller = false;
 	if (params && typeof params === 'object' && !Array.isArray(params) && !params.hasOwnProperty('caller')) {
-		const als = require('../als');
 		params.caller = als.getStore();
 		deleteCaller = true;
 	}
@@ -154,7 +155,7 @@ async function fireFilterHook(hook, hookList, params) {
 
 	async function fireMethod(hookObj, params) {
 		if (typeof hookObj.method !== 'function') {
-			if (global.env === 'development') {
+			if ((global as any).env === 'development') {
 				winston.warn(`[plugins] Expected method for hook '${hook}' in plugin '${hookObj.id}' not found, skipping.`);
 			}
 			return params;
@@ -203,7 +204,7 @@ async function fireActionHook(hook, hookList, params) {
 	}
 	for (const hookObj of hookList) {
 		if (typeof hookObj.method !== 'function') {
-			if (global.env === 'development') {
+			if ((global as any).env === 'development') {
 				winston.warn(`[plugins] Expected method for hook '${hook}' in plugin '${hookObj.id}' not found, skipping.`);
 			}
 		} else {
@@ -222,7 +223,7 @@ async function fireStaticHook(hook, hookList, params) {
 
 	for (const hookObj of hookList) {
 		if (typeof hookObj.method !== 'function') {
-			if (global.env === 'development') {
+			if ((global as any).env === 'development') {
 				winston.warn(`[plugins] Expected method for hook '${hook}' in plugin '${hookObj.id}' not found, skipping.`);
 			}
 		} else {
@@ -234,7 +235,7 @@ async function fireStaticHook(hook, hookList, params) {
 			try {
 				// eslint-disable-next-line
 				await timeout(hookFn(params), 5000, 'timeout');
-			} catch (err) {
+			} catch (err: any) {
 				if (err && err.message === 'timeout') {
 					winston.warn(`[plugins] Callback timed out, hook '${hook}' in plugin '${hookObj.id}'`);
 				} else {
@@ -265,7 +266,7 @@ async function fireResponseHook(hook, hookList, params) {
 	}
 	for (const hookObj of hookList) {
 		if (typeof hookObj.method !== 'function') {
-			if (global.env === 'development') {
+			if ((global as any).env === 'development') {
 				winston.warn(`[plugins] Expected method for hook '${hook}' in plugin '${hookObj.id}' not found, skipping.`);
 			}
 		} else {
@@ -278,3 +279,5 @@ async function fireResponseHook(hook, hookList, params) {
 		}
 	}
 }
+
+export default Hooks;

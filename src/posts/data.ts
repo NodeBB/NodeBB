@@ -1,8 +1,8 @@
 'use strict';
 
-const db = require('../database');
-const plugins = require('../plugins');
-const utils = require('../utils');
+import db from '../database';
+import plugins from '../plugins';
+import utils from '../utils';
 
 const intFields = [
 	'uid', 'pid', 'tid', 'deleted', 'timestamp',
@@ -10,7 +10,7 @@ const intFields = [
 	'replies', 'bookmarks',
 ];
 
-module.exports = function (Posts) {
+export default function (Posts) {
 	Posts.getPostsFields = async function (pids, fields) {
 		if (!Array.isArray(pids) || !pids.length) {
 			return [];

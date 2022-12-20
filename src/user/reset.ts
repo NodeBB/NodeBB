@@ -1,19 +1,20 @@
 'use strict';
 
-const nconf = require('nconf');
-const winston = require('winston');
+import nconf from 'nconf';
+import winston from 'winston';
 
-const user = require('./index');
-const groups = require('../groups');
-const utils = require('../utils');
-const batch = require('../batch');
+import user from './index';
+import groups from '../groups';
+import utils from '../utils';
+import * as  batch from '../batch';
 
-const db = require('../database');
-const meta = require('../meta');
-const emailer = require('../emailer');
-const Password = require('../password');
+import db from '../database';
+import meta from '../meta';
 
-const UserReset = module.exports;
+import emailer from '../emailer';
+import * as Password from '../password';
+
+const UserReset = {} as any;
 
 const twoHours = 7200000;
 
@@ -78,7 +79,7 @@ UserReset.commit = async function (code, password) {
 		`user:${uid}`,
 		['password', 'passwordExpiry', 'password:shaWrapped']
 	);
-	const ok = await Password.compare(password, userData.password, !!parseInt(userData['password:shaWrapped'], 10));
+	const ok = await Password.compareFn(password, userData.password, !!parseInt(userData['password:shaWrapped'], 10));
 	if (ok) {
 		throw new Error('[[error:reset-same-password]]');
 	}
@@ -140,7 +141,7 @@ UserReset.cleanByUid = async function (uid) {
 
 	await batch.processSortedSet('reset:issueDate', async (tokens) => {
 		const results = await db.getObjectFields('reset:uid', tokens);
-		for (const [code, result] of Object.entries(results)) {
+		for (const [code, result] of Object.entries(results) as any) {
 			if (parseInt(result, 10) === uid) {
 				tokensToClean.push(code);
 			}
@@ -163,3 +164,5 @@ async function cleanTokensAndUids(tokens, uids) {
 		db.sortedSetRemove('reset:issueDate:uid', uids),
 	]);
 }
+
+export default UserReset;

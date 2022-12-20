@@ -1,13 +1,13 @@
 'use strict';
 
-const winston = require('winston');
-const validator = require('validator');
-const cronJob = require('cron').CronJob;
+import winston from 'winston';
+import validator from 'validator';
+import {  CronJob } from 'cron';
+const cronJob = CronJob;
+import db from '../database';
+import analytics from '../analytics';
 
-const db = require('../database');
-const analytics = require('../analytics');
-
-const Errors = module.exports;
+const Errors = {} as any;
 
 let counters = {};
 
@@ -28,7 +28,7 @@ Errors.writeData = async function () {
 			/* eslint-disable no-await-in-loop */
 			await db.sortedSetIncrBy('errors:404', _counters[key], key);
 		}
-	} catch (err) {
+	} catch (err: any) {
 		winston.error(err.stack);
 	}
 };
@@ -54,3 +54,5 @@ Errors.get = async function (escape) {
 Errors.clear = async function () {
 	await db.delete('errors:404');
 };
+
+export default Errors;

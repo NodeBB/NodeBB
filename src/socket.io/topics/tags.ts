@@ -1,13 +1,13 @@
 'use strict';
 
-const meta = require('../../meta');
-const user = require('../../user');
-const topics = require('../../topics');
-const categories = require('../../categories');
-const privileges = require('../../privileges');
-const utils = require('../../utils');
+import meta from '../../meta';
+import user from '../../user';
+import topics from '../../topics';
+import categories from '../../categories';
+import privileges from '../../privileges';
+import utils from '../../utils';
 
-module.exports = function (SocketTopics) {
+export default function (SocketTopics) {
 	SocketTopics.isTagAllowed = async function (socket, data) {
 		if (!data || !utils.isNumber(data.cid) || !data.tag) {
 			throw new Error('[[error:invalid-data]]');

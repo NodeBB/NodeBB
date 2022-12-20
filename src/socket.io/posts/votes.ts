@@ -1,12 +1,12 @@
 'use strict';
 
-const db = require('../../database');
-const user = require('../../user');
-const posts = require('../../posts');
-const privileges = require('../../privileges');
-const meta = require('../../meta');
+import db from '../../database';
+import user from '../../user';
+import posts from '../../posts';
+import privileges from '../../privileges';
+import meta from '../../meta';
 
-module.exports = function (SocketPosts) {
+export default function (SocketPosts) {
 	SocketPosts.getVoters = async function (socket, data) {
 		if (!data || !data.pid || !data.cid) {
 			throw new Error('[[error:invalid-data]]');

@@ -1,20 +1,20 @@
 'use strict';
 
-const winston = require('winston');
-const nconf = require('nconf');
-const fs = require('fs');
-const util = require('util');
-const path = require('path');
-const rimraf = require('rimraf');
+import winston from 'winston';
+import nconf from 'nconf';
+import fs from 'fs';
+import util from 'util';
+import path from 'path';
+import rimraf from 'rimraf';
+import plugins from '../plugins';
+import db from '../database';
+import file from '../file';
+import minifier from './minifier';
 
 const rimrafAsync = util.promisify(rimraf);
 
-const plugins = require('../plugins');
-const db = require('../database');
-const file = require('../file');
-const minifier = require('./minifier');
 
-const CSS = module.exports;
+const CSS = {} as any;
 
 CSS.supportedSkins = [
 	'cerulean', 'cosmo', 'cyborg', 'darkly', 'flatly', 'journal', 'litera',
@@ -216,7 +216,7 @@ CSS.buildBundle = async function (target, fork) {
 	}
 
 	const data = await getBundleMetadata(target);
-	const minify = process.env.NODE_ENV !== 'development';
+	const minify = (process as any).env.NODE_ENV !== 'development';
 	const { ltr, rtl } = await minifier.css.bundle(data.imports, data.paths, minify, fork);
 
 	await Promise.all([
@@ -225,3 +225,5 @@ CSS.buildBundle = async function (target, fork) {
 	]);
 	return [ltr.code, rtl.code];
 };
+
+export default CSS;

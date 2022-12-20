@@ -1,9 +1,13 @@
 'use strict';
 
-const db = require('../../database');
-const batch = require('../../batch');
+import db from '../../database';
 
-module.exports = {
+
+import * as batch from '../../batch';
+
+
+
+export const obj = {
 	name: 'Clean flag byCid zsets',
 	timestamp: Date.UTC(2019, 8, 24),
 	method: async function () {

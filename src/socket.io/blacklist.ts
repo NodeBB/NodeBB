@@ -1,11 +1,11 @@
 
 'use strict';
 
-const user = require('../user');
-const meta = require('../meta');
-const events = require('../events');
+import user from '../user';
+import meta from '../meta';
+import events from '../events';
 
-const SocketBlacklist = module.exports;
+const SocketBlacklist = {} as any;
 
 SocketBlacklist.validate = async function (socket, data) {
 	return meta.blacklist.validate(data.rules);
@@ -33,4 +33,7 @@ async function blacklist(socket, method, rule) {
 	});
 }
 
-require('../promisify')(SocketBlacklist);
+import promisify from '../promisify';
+promisify(SocketBlacklist);
+
+export default SocketBlacklist;

@@ -1,11 +1,11 @@
 'use strict';
 
-const meta = require('../meta');
-const plugins = require('../plugins');
-const slugify = require('../slugify');
-const db = require('../database');
+import meta from '../meta';
+import plugins from '../plugins';
+import slugify from '../slugify';
+import db from '../database';
 
-module.exports = function (Groups) {
+export default function (Groups) {
 	Groups.create = async function (data) {
 		const isSystem = isSystemGroup(data);
 		const timestamp = data.timestamp || Date.now();

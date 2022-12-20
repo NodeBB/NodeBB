@@ -1,9 +1,11 @@
 'use strict';
 
 
-const db = require('../../database');
+import db from '../../database';
 
-module.exports = {
+
+
+export const obj = {
 	name: 'Upgrading config urls to use assets route',
 	timestamp: Date.UTC(2017, 1, 28),
 	method: async function () {

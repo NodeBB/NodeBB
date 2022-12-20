@@ -1,7 +1,13 @@
 'use strict';
+//@ts-ignore
+import commonHelpers from '../../public/src/modules/helpers.common';
+import utils from './utils';
+import benchpressjs from 'benchpressjs';
+import nconf from 'nconf';
 
-module.exports = require('../public/src/modules/helpers.common')(
-	require('./utils'),
-	require('benchpressjs'),
-	require('nconf').get('relative_path'),
+export default commonHelpers(
+	utils,
+	benchpressjs,
+	nconf.get('relative_path'),
 );
+

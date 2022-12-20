@@ -1,22 +1,23 @@
 'use strict';
 
-const cronJob = require('cron').CronJob;
-const winston = require('winston');
-const nconf = require('nconf');
-const crypto = require('crypto');
-const util = require('util');
-const _ = require('lodash');
+import { CronJob }  from 'cron';
+const cronJob = CronJob;import winston from 'winston';
+import nconf from 'nconf';
+import crypto from 'crypto';
+import util from 'util';
+import _ from 'lodash';
 
 const sleep = util.promisify(setTimeout);
 
-const db = require('./database');
-const utils = require('./utils');
-const plugins = require('./plugins');
-const meta = require('./meta');
-const pubsub = require('./pubsub');
-const cacheCreate = require('./cache/lru');
+import db from './database';
 
-const Analytics = module.exports;
+import utils from './utils';
+import plugins from './plugins';
+import meta from './meta';
+import pubsub from './pubsub';
+import cacheCreate from './cache/lru';
+
+const Analytics = {} as any;
 
 const secret = nconf.get('secret');
 
@@ -194,7 +195,7 @@ Analytics.writeData = async function () {
 
 	try {
 		await Promise.all(dbQueue);
-	} catch (err) {
+	} catch (err: any) {
 		winston.error(`[analytics] Encountered error while writing analytics to data store\n${err.stack}`);
 	}
 };
@@ -298,4 +299,7 @@ Analytics.getBlacklistAnalytics = async function () {
 	});
 };
 
-require('./promisify')(Analytics);
+import promisify from './promisify';
+promisify(Analytics);
+
+export default Analytics;

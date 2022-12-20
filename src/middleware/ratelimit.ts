@@ -1,8 +1,8 @@
 'use strict';
 
-const winston = require('winston');
+import winston from 'winston';
 
-const ratelimit = module.exports;
+const ratelimit = {} as any;
 
 const allowedCalls = 100;
 const timeframe = 10000;
@@ -30,3 +30,5 @@ ratelimit.isFlooding = function (socket) {
 	socket.lastCallTime = now;
 	return false;
 };
+
+export default ratelimit;

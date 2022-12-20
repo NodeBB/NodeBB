@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (utils, Benchpress, relative_path) {
+module.exports =  function (utils, Benchpress, relative_path) {
 	Benchpress.setGlobal('true', true);
 	Benchpress.setGlobal('false', false);
 

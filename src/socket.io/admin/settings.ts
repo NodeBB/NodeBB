@@ -1,9 +1,9 @@
 'use strict';
 
-const meta = require('../../meta');
-const events = require('../../events');
+import meta from '../../meta';
+import events from '../../events';
 
-const Settings = module.exports;
+const Settings  = {} as any;
 
 Settings.get = async function (socket, data) {
 	return await meta.settings.get(data.hash);
@@ -22,3 +22,5 @@ Settings.set = async function (socket, data) {
 Settings.clearSitemapCache = async function () {
 	require('../../sitemap').clearCache();
 };
+
+export default Settings;

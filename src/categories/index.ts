@@ -1,28 +1,38 @@
 
 'use strict';
 
-const _ = require('lodash');
+import _ from 'lodash';
+import db from '../database';
+import user from '../user';
+import groups from '../groups';
+import plugins from '../plugins';
+import privileges from '../privileges';
+import cache from '../cache';
+import meta from '../meta';
 
-const db = require('../database');
-const user = require('../user');
-const groups = require('../groups');
-const plugins = require('../plugins');
-const privileges = require('../privileges');
-const cache = require('../cache');
-const meta = require('../meta');
+const Categories = {} as any;
+import data from './data';
+import create from './create';
+import deleteCategory from './delete';
+import topics from './topics';
+import unread from './unread';
+import activeUsers from './activeusers';
+import recentReplies from './recentreplies';
+import update from './update';
+import watch from './watch';
+import search from './search';
+import promisify from '../promisify';
 
-const Categories = module.exports;
-
-require('./data')(Categories);
-require('./create')(Categories);
-require('./delete')(Categories);
-require('./topics')(Categories);
-require('./unread')(Categories);
-require('./activeusers')(Categories);
-require('./recentreplies')(Categories);
-require('./update')(Categories);
-require('./watch')(Categories);
-require('./search')(Categories);
+data(Categories);
+create(Categories);
+deleteCategory(Categories);
+topics(Categories);
+unread(Categories);
+activeUsers(Categories);
+recentReplies(Categories);
+update(Categories);
+watch(Categories);
+search(Categories);
 
 Categories.exists = async function (cids) {
 	return await db.exists(
@@ -257,7 +267,7 @@ Categories.getParentCids = async function (currentCid) {
 };
 
 Categories.getChildrenCids = async function (rootCid) {
-	let allCids = [];
+	let allCids: number[] = [];
 	async function recursive(keys) {
 		let childrenCids = await db.getSortedSetRange(keys, 0, -1);
 
@@ -313,7 +323,7 @@ Categories.getTree = function (categories, parentCid) {
 		}
 	});
 
-	const tree = [];
+	const tree = [] as any[];
 
 	categories.forEach((category) => {
 		if (category) {
@@ -406,4 +416,5 @@ Categories.buildForSelectCategories = function (categories, fields, parentCid) {
 	return categoriesData.map(category => _.pick(category, pickFields));
 };
 
-require('../promisify')(Categories);
+promisify(Categories);
+export default Categories;

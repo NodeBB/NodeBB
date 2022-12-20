@@ -1,10 +1,10 @@
 'use strict';
 
-const groups = require('../../groups');
-const helpers = require('../helpers');
-const accountHelpers = require('./helpers');
+import groups from '../../groups';
+import helpers from '../helpers';
+import accountHelpers from './helpers';
 
-const groupsController = module.exports;
+const groupsController = {} as any;
 
 groupsController.get = async function (req, res, next) {
 	const userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, req.query);
@@ -23,3 +23,5 @@ groupsController.get = async function (req, res, next) {
 	userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: `/user/${userData.userslug}` }, { text: '[[global:header.groups]]' }]);
 	res.render('account/groups', userData);
 };
+
+export default groupsController;

@@ -1,19 +1,19 @@
 'use strict';
 
-const winston = require('winston');
-const express = require('express');
-const bodyParser = require('body-parser');
-const fs = require('fs');
-const path = require('path');
-const childProcess = require('child_process');
-
-const webpack = require('webpack');
-const nconf = require('nconf');
-
-const Benchpress = require('benchpressjs');
-const mkdirp = require('mkdirp');
-const { paths } = require('../src/constants');
-const sass = require('../src/utils').getSass();
+import winston from 'winston';
+import express from 'express';
+import bodyParser from 'body-parser';
+import fs from 'fs';
+import path from 'path';
+import childProcess from 'child_process';
+import webpack from 'webpack';
+import nconf from 'nconf';
+import Benchpress from 'benchpressjs';
+import mkdirp from 'mkdirp';
+import { paths } from '../src/constants';
+import sass from '../src/utils';;
+import util from 'util';
+import webpackCfg from '../webpack.installer';
 
 const app = express();
 let server;
@@ -22,13 +22,15 @@ const formats = [
 	winston.format.colorize(),
 ];
 
-const timestampFormat = winston.format((info) => {
+const timestampFormat: any = winston.format((info) => {
 	const dateString = `${new Date().toISOString()} [${global.process.pid}]`;
 	info.level = `${dateString} - ${info.level}`;
 	return info;
 });
 formats.push(timestampFormat());
+//@ts-ignore
 formats.push(winston.format.splat());
+//@ts-ignore
 formats.push(winston.format.simple());
 
 winston.configure({
@@ -45,7 +47,7 @@ winston.configure({
 	],
 });
 
-const web = module.exports;
+const web  = {} as any;
 let installing = false;
 let success = false;
 let error = false;
@@ -80,14 +82,13 @@ web.install = async function (port) {
 		]);
 		setupRoutes();
 		launchExpress(port);
-	} catch (err) {
+	} catch (err: any) {
 		winston.error(err.stack);
 	}
 };
 
 async function runWebpack() {
-	const util = require('util');
-	const webpackCfg = require('../webpack.installer');
+
 	const compiler = webpack(webpackCfg);
 	const webpackRun = util.promisify(compiler.run).bind(compiler);
 	await webpackRun();
@@ -202,7 +203,7 @@ async function launch(req, res) {
 			child = childProcess.exec(nconf.get('launchCmd'), {
 				detached: true,
 				stdio: ['ignore', 'ignore', 'ignore'],
-			});
+			} as any);
 		}
 
 		const filesToDelete = [
@@ -216,13 +217,13 @@ async function launch(req, res) {
 					filename => fs.promises.unlink(filename)
 				)
 			);
-		} catch (err) {
+		} catch (err: any) {
 			console.log(err.stack);
 		}
 
 		child.unref();
 		process.exit(0);
-	} catch (err) {
+	} catch (err: any) {
 		winston.error(err.stack);
 		throw err;
 	}
@@ -258,7 +259,7 @@ async function compileSass() {
 		});
 
 		await fs.promises.writeFile(path.join(__dirname, '../public/installer.css'), scssOutput.css.toString());
-	} catch (err) {
+	} catch (err: any) {
 		winston.error(`Unable to compile SASS: \n${err.stack}`);
 		throw err;
 	}
@@ -276,7 +277,7 @@ async function loadDefaults() {
 	try {
 		// eslint-disable-next-line no-bitwise
 		await fs.promises.access(setupDefaultsPath, fs.constants.F_OK | fs.constants.R_OK);
-	} catch (err) {
+	} catch (err: any) {
 		// setup.json not found or inaccessible, proceed with no defaults
 		if (err.code !== 'ENOENT') {
 			throw err;
@@ -289,3 +290,5 @@ async function loadDefaults() {
 		file: setupDefaultsPath,
 	});
 }
+
+export default web;

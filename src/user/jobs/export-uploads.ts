@@ -1,28 +1,30 @@
 'use strict';
 
-const nconf = require('nconf');
+import nconf from 'nconf';
 
 nconf.argv().env({
 	separator: '__',
 });
 
-const fs = require('fs');
-const path = require('path');
-const archiver = require('archiver');
-const winston = require('winston');
+import fs from 'fs';
+import path from 'path';
+import archiver from 'archiver';
+import winston from 'winston';
 
-process.env.NODE_ENV = process.env.NODE_ENV || 'production';
+(process as any).env.NODE_ENV = (process as any).env.NODE_ENV || 'production';
 
 // Alternate configuration file support
 const configFile = path.resolve(__dirname, '../../../', nconf.any(['config', 'CONFIG']) || 'config.json');
-const prestart = require('../../prestart');
+import * as prestart from '../../prestart';
+import user from '../index';
+
 
 prestart.loadConfig(configFile);
 prestart.setupWinston();
 
-const db = require('../../database');
+import db from '../../database';
 
-process.on('message', async (msg) => {
+(process as any).on('message', async (msg: any) => {
 	if (msg && msg.uid) {
 		await db.init();
 
@@ -31,7 +33,6 @@ process.on('message', async (msg) => {
 		const archivePath = path.join(__dirname, '../../../build/export', `${targetUid}_uploads.zip`);
 		const rootDirectory = path.join(__dirname, '../../../public/uploads/');
 
-		const user = require('../index');
 
 		const archive = archiver('zip', {
 			zlib: { level: 9 }, // Sets the compression level.
@@ -67,7 +68,7 @@ process.on('message', async (msg) => {
 		const output = fs.createWriteStream(archivePath);
 		output.on('close', async () => {
 			await db.close();
-			process.exit(0);
+			(process as any).exit(0);
 		});
 
 		archive.pipe(output);

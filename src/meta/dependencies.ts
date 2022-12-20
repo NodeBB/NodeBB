@@ -1,16 +1,15 @@
 'use strict';
 
-const path = require('path');
-const fs = require('fs');
+import path from 'path';
+import fs from 'fs';
+import semver from 'semver';
+import winston from 'winston';
+import chalk from 'chalk';
+//@ts-ignore
+import pkg from '../../package.json';
+import { paths, pluginNamePattern } from '../constants';
 
-const semver = require('semver');
-const winston = require('winston');
-const chalk = require('chalk');
-
-const pkg = require('../../package.json');
-const { paths, pluginNamePattern } = require('../constants');
-
-const Dependencies = module.exports;
+const Dependencies = {} as any;
 
 let depsMissing = false;
 let depsOutdated = false;
@@ -24,7 +23,7 @@ Dependencies.check = async function () {
 
 	if (depsMissing) {
 		throw new Error('dependencies-missing');
-	} else if (depsOutdated && global.env !== 'development') {
+	} else if (depsOutdated && (global as any).env !== 'development') {
 		throw new Error('dependencies-out-of-date');
 	}
 };
@@ -36,7 +35,7 @@ Dependencies.checkModule = async function (moduleName) {
 
 		const satisfies = Dependencies.doesSatisfy(pkgData, pkg.dependencies[moduleName]);
 		return satisfies;
-	} catch (err) {
+	} catch (err: any) {
 		if (err.code === 'ENOENT' && pluginNamePattern.test(moduleName)) {
 			winston.warn(`[meta/dependencies] Bundled plugin ${moduleName} not found, skipping dependency check.`);
 			return true;
@@ -48,8 +47,7 @@ Dependencies.checkModule = async function (moduleName) {
 Dependencies.parseModuleData = function (moduleName, pkgData) {
 	try {
 		pkgData = JSON.parse(pkgData);
-	} catch (e) {
-		winston.warn(`[${chalk.red('missing')}] ${chalk.bold(moduleName)} is a required dependency but could not be found\n`);
+} catch (e: any) {		winston.warn(`[${chalk.red('missing')}] ${chalk.bold(moduleName)} is a required dependency but could not be found\n`);
 		depsMissing = true;
 		return null;
 	}
@@ -69,3 +67,5 @@ Dependencies.doesSatisfy = function (moduleData, packageJSONVersion) {
 	}
 	return satisfies;
 };
+
+export default Dependencies;

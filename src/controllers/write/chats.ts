@@ -1,11 +1,10 @@
 'use strict';
 
-const api = require('../../api');
-const messaging = require('../../messaging');
+import api from '../../api';
+import messaging from '../../messaging';
+import helpers from '../helpers';
 
-const helpers = require('../helpers');
-
-const Chats = module.exports;
+const Chats = {} as any;
 
 Chats.list = async (req, res) => {
 	const page = (isFinite(req.query.page) && parseInt(req.query.page, 10)) || 1;
@@ -127,3 +126,5 @@ Chats.messages.restore = async (req, res) => {
 
 	helpers.formatApiResponse(200, res);
 };
+
+export default Chats;

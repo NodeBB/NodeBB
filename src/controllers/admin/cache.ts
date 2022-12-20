@@ -1,16 +1,15 @@
 'use strict';
 
-const cacheController = module.exports;
+const cacheController = {} as any;
 
-const utils = require('../../utils');
-const plugins = require('../../plugins');
+import utils from '../../utils';
+import plugins from '../../plugins';
+import postCache from '../../posts/cache';
+import group from '../../groups';
+import db from '../../database';
+import localCache from '../../cache';
 
 cacheController.get = async function (req, res) {
-	const postCache = require('../../posts/cache');
-	const groupCache = require('../../groups').cache;
-	const { objectCache } = require('../../database');
-	const localCache = require('../../cache');
-
 	function getInfo(cache) {
 		return {
 			length: cache.length,
@@ -29,11 +28,11 @@ cacheController.get = async function (req, res) {
 	}
 	let caches = {
 		post: postCache,
-		group: groupCache,
+		group: group.groupCache,
 		local: localCache,
-	};
-	if (objectCache) {
-		caches.object = objectCache;
+	} as any;
+	if (db.objectCache) {
+		caches.object = db.objectCache;
 	}
 	caches = await plugins.hooks.fire('filter:admin.cache.get', caches);
 	for (const [key, value] of Object.entries(caches)) {
@@ -45,10 +44,10 @@ cacheController.get = async function (req, res) {
 
 cacheController.dump = async function (req, res, next) {
 	let caches = {
-		post: require('../../posts/cache'),
-		object: require('../../database').objectCache,
-		group: require('../../groups').cache,
-		local: require('../../cache'),
+		post: postCache,
+		object: db.objectCache,
+		group: group.groupCache,
+		local: localCache,
 	};
 	caches = await plugins.hooks.fire('filter:admin.cache.get', caches);
 	if (!caches[req.query.name]) {
@@ -65,3 +64,5 @@ cacheController.dump = async function (req, res, next) {
 		res.end();
 	});
 };
+
+export default cacheController;

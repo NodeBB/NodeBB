@@ -2,20 +2,47 @@
 
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
+import * as prestart from '../prestart';
+import yargs from 'yargs';
+import fs from 'fs';
+import path from 'path';
+import { paths } from '../constants';
+import nconf from 'nconf';
 
+const opts = yargs((process as any).argv.slice(2)).help(false).exitProcess(false);
+nconf.argv(opts).env({
+	separator: '__',
+});
+
+(process as any).env.NODE_ENV = (process as any).env.NODE_ENV || 'production';
+(global as any).env = (process as any).env.NODE_ENV || 'production';
+
+prestart.setupWinston();
+
+// Alternate configuration file support
+const configFile = path.resolve(paths.baseDir, nconf.get('config') || 'config.json');
+const configExists = fs.existsSync(configFile) || (nconf.get('url') && nconf.get('secret') && nconf.get('database'));
+
+prestart.loadConfig(configFile);
+prestart.versionCheck();
+
+// used for calling the file
 require('../../require-main');
 
-const packageInstall = require('./package-install');
-const { paths } = require('../constants');
+import packageInstall from './package-install';
+import semver from 'semver';
+//@ts-ignore
+import defaultPackage from '../../install/package.json';
+import chalk from 'chalk';
+import { program } from 'commander';
+import manage from './manage';
+
 
 try {
 	fs.accessSync(paths.currentPackage, fs.constants.R_OK); // throw on missing package.json
 	try { // handle missing node_modules/ directory
 		fs.accessSync(paths.nodeModules, fs.constants.R_OK);
-	} catch (e) {
-		if (e.code === 'ENOENT') {
+} catch (e: any) {		if (e.code === 'ENOENT') {
 			// run package installation just to sync up node_modules/ with existing package.json
 			packageInstall.installAll();
 		} else {
@@ -24,13 +51,12 @@ try {
 	}
 	fs.accessSync(path.join(paths.nodeModules, 'semver/package.json'), fs.constants.R_OK);
 
-	const semver = require('semver');
-	const defaultPackage = require('../../install/package.json');
+
 
 	const checkVersion = function (packageName) {
 		const { version } = JSON.parse(fs.readFileSync(path.join(paths.nodeModules, packageName, 'package.json'), 'utf8'));
 		if (!semver.satisfies(version, defaultPackage.dependencies[packageName])) {
-			const e = new TypeError(`Incorrect dependency version: ${packageName}`);
+			const e: any = new TypeError(`Incorrect dependency version: ${packageName}`);
 			e.code = 'DEP_WRONG_VERSION';
 			throw e;
 		}
@@ -42,7 +68,7 @@ try {
 	checkVersion('chalk');
 	checkVersion('lodash');
 	checkVersion('lru-cache');
-} catch (e) {
+} catch (e: any) {
 	if (['ENOENT', 'DEP_WRONG_VERSION', 'MODULE_NOT_FOUND'].includes(e.code)) {
 		console.warn('Dependencies outdated or not yet installed.');
 		console.log('Installing them now...\n');
@@ -51,28 +77,18 @@ try {
 		packageInstall.preserveExtraneousPlugins();
 		packageInstall.installAll();
 
-		const chalk = require('chalk');
 		console.log(`${chalk.green('OK')}\n`);
 	} else {
 		throw e;
 	}
 }
 
-const chalk = require('chalk');
-const nconf = require('nconf');
-const { program } = require('commander');
-const yargs = require('yargs');
-
-const pkg = require('../../install/package.json');
-const file = require('../file');
-const prestart = require('../prestart');
-
 program.configureHelp(require('./colors'));
 
 program
 	.name('./nodebb')
 	.description('Welcome to NodeBB')
-	.version(pkg.version)
+	.version(defaultPackage.version)
 	.option('--json-logging', 'Output to logs in JSON format', false)
 	.option('--log-level <level>', 'Default logging level to use', 'info')
 	.option('--config <value>', 'Specify a config file', 'config.json')
@@ -82,29 +98,15 @@ program
 // provide a yargs object ourselves
 // otherwise yargs will consume `--help` or `help`
 // and `nconf` will exit with useless usage info
-const opts = yargs(process.argv.slice(2)).help(false).exitProcess(false);
-nconf.argv(opts).env({
-	separator: '__',
-});
 
-process.env.NODE_ENV = process.env.NODE_ENV || 'production';
-global.env = process.env.NODE_ENV || 'production';
 
-prestart.setupWinston();
-
-// Alternate configuration file support
-const configFile = path.resolve(paths.baseDir, nconf.get('config') || 'config.json');
-const configExists = file.existsSync(configFile) || (nconf.get('url') && nconf.get('secret') && nconf.get('database'));
-
-prestart.loadConfig(configFile);
-prestart.versionCheck();
-
-if (!configExists && process.argv[2] !== 'setup') {
+if (!configExists && (process as any).argv[2] !== 'setup') {
 	require('./setup').webInstall();
+	// @ts-ignore
 	return;
 }
 
-process.env.CONFIG = configFile;
+(process as any).env.CONFIG = configFile;
 
 // running commands
 program
@@ -127,8 +129,8 @@ program
 	})
 	.description('Start NodeBB in verbose development mode')
 	.action(() => {
-		process.env.NODE_ENV = 'development';
-		global.env = 'development';
+		(process as any).env.NODE_ENV = 'development';
+		(global as any).env = 'development';
 		require('./running').start({ ...program.opts(), dev: true });
 	});
 program
@@ -162,11 +164,11 @@ program
 	.description('Run the NodeBB setup script, or setup with an initial config')
 	.option('--skip-build', 'Run setup without building assets')
 	.action((initConfig) => {
+		console.log('INIT CONFIG', initConfig);
 		if (initConfig) {
 			try {
 				initConfig = JSON.parse(initConfig);
-			} catch (e) {
-				console.warn(chalk.red('Invalid JSON passed as initial config value.'));
+		} catch (e: any) {				console.warn(chalk.red('Invalid JSON passed as initial config value.'));
 				console.log('If you meant to pass in an initial config value, please try again.\n');
 
 				throw e;
@@ -181,7 +183,7 @@ program
 	.option('-f, --force', 'Force plugin installation even if it may be incompatible with currently installed NodeBB version')
 	.action((plugin, options) => {
 		if (plugin) {
-			require('./manage').install(plugin, options);
+			manage.install(plugin);
 		} else {
 			require('./setup').webInstall();
 		}
@@ -193,11 +195,12 @@ program
 	.option('-s, --series', 'Run builds in series without extra processes')
 	.option('-w, --webpack', 'Bundle assets with webpack', true)
 	.action((targets, options) => {
+		console.log('HEYYYYY!!!!!!!!!!!');
 		if (program.opts().dev) {
-			process.env.NODE_ENV = 'development';
-			global.env = 'development';
+			(process as any).env.NODE_ENV = 'development';
+			(global as any).env = 'development';
 		}
-		require('./manage').build(targets.length ? targets : true, options);
+		manage.buildWrapper(targets.length ? targets : true, options);
 	})
 	.on('--help', () => {
 		require('../meta/aliases').buildTargets();
@@ -206,25 +209,25 @@ program
 	.command('activate [plugin]')
 	.description('Activate a plugin for the next startup of NodeBB (nodebb-plugin- prefix is optional)')
 	.action((plugin) => {
-		require('./manage').activate(plugin);
+		manage.activate(plugin);
 	});
 program
 	.command('plugins')
 	.action(() => {
-		require('./manage').listPlugins();
+		manage.listPlugins();
 	})
 	.description('List all installed plugins');
 program
 	.command('events [count]')
 	.description('Outputs the most recent administrative events recorded by NodeBB')
 	.action((count) => {
-		require('./manage').listEvents(count);
+		manage.listEvents(count);
 	});
 program
 	.command('info')
 	.description('Outputs various system info')
 	.action(() => {
-		require('./manage').info();
+		manage.info();
 	});
 
 // reset
@@ -246,10 +249,10 @@ resetCommand
 
 		require('./reset').reset(options, (err) => {
 			if (err) {
-				return process.exit(1);
+				return (process as any).exit(1);
 			}
 
-			process.exit(0);
+			(process as any).exit(0);
 		});
 	});
 
@@ -277,8 +280,8 @@ program
 	})
 	.action((scripts, options) => {
 		if (program.opts().dev) {
-			process.env.NODE_ENV = 'development';
-			global.env = 'development';
+			(process as any).env.NODE_ENV = 'development';
+			(global as any).env = 'development';
 		}
 		require('./upgrade').upgrade(scripts.length ? scripts : true, options);
 	});
@@ -295,7 +298,7 @@ program
 				throw err;
 			}
 			console.log(chalk.green('OK'));
-			process.exit();
+			(process as any).exit();
 		});
 	});
 
@@ -307,7 +310,7 @@ program
 			return program.help();
 		}
 
-		const command = program.commands.find(command => command._name === name);
+		const command = program.commands.find(command => (command as any)._name === name);
 		if (command) {
 			command.help();
 		} else {
@@ -316,10 +319,10 @@ program
 		}
 	});
 
-if (process.argv.length === 2) {
+if ((process as any).argv.length === 2) {
 	program.help();
 }
 
-program.executables = false;
+(program as any).executables = false;
 
 program.parse();

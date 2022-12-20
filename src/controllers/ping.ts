@@ -1,13 +1,13 @@
 'use strict';
 
-const nconf = require('nconf');
-const db = require('../database');
+import nconf from 'nconf';
+import db from '../database';
 
-module.exports.ping = async function (req, res, next) {
+export const ping = async function (req, res, next) {
 	try {
 		await db.getObject('config');
 		res.status(200).send(req.path === `${nconf.get('relative_path')}/sping` ? 'healthy' : '200');
-	} catch (err) {
+	} catch (err: any) {
 		next(err);
 	}
 };

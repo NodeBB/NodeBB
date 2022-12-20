@@ -1,28 +1,31 @@
 'use strict';
 
-const nconf = require('nconf');
+import nconf from 'nconf';
 
 nconf.argv().env({
 	separator: '__',
 });
 
-const fs = require('fs');
-const path = require('path');
-const _ = require('lodash');
+import fs from 'fs';
+import path from 'path';
+import _ from 'lodash';
+import * as prestart from '../../prestart';
 
-process.env.NODE_ENV = process.env.NODE_ENV || 'production';
+
+(process as any).env.NODE_ENV = (process as any).env.NODE_ENV || 'production';
 
 // Alternate configuration file support
 const configFile = path.resolve(__dirname, '../../../', nconf.any(['config', 'CONFIG']) || 'config.json');
-const prestart = require('../../prestart');
 
 prestart.loadConfig(configFile);
 prestart.setupWinston();
 
-const db = require('../../database');
-const batch = require('../../batch');
+import db from '../../database';
+import * as batch from '../../batch';
+import user from '../index';
+import privileges from '../../privileges';
 
-process.on('message', async (msg) => {
+(process as any).on('message', async (msg: any) => {
 	if (msg && msg.uid) {
 		await db.init();
 		await db.initSessionStore();
@@ -32,7 +35,6 @@ process.on('message', async (msg) => {
 		const profileFile = `${targetUid}_profile.json`;
 		const profilePath = path.join(__dirname, '../../../build/export', profileFile);
 
-		const user = require('../index');
 		const [
 			userData,
 			userSettings,
@@ -82,12 +84,11 @@ process.on('message', async (msg) => {
 		}, null, 4));
 
 		await db.close();
-		process.exit(0);
+		(process as any).exit(0);
 	}
 });
 
 async function getRoomMessages(uid, roomId) {
-	const batch = require('../../batch');
 	let data = [];
 	await batch.processSortedSet(`uid:${uid}:chat:room:${roomId}:mids`, async (mids) => {
 		const messageData = await db.getObjects(mids.map(mid => `message:${mid}`));
@@ -101,8 +102,6 @@ async function getRoomMessages(uid, roomId) {
 }
 
 async function getSetData(set, keyPrefix, uid) {
-	const privileges = require('../../privileges');
-	const batch = require('../../batch');
 	let data = [];
 	await batch.processSortedSet(set, async (ids) => {
 		if (keyPrefix === 'post:') {

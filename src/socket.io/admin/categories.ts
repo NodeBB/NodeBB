@@ -1,9 +1,9 @@
 'use strict';
 
 
-const categories = require('../../categories');
+import categories from '../../categories';
 
-const Categories = module.exports;
+const Categories  = {} as any;
 
 Categories.getNames = async function () {
 	return await categories.getAllCategoryFields(['cid', 'name']);
@@ -42,3 +42,5 @@ Categories.copyPrivilegesToAllCategories = async function (socket, data) {
 		await categories.copyPrivilegesFrom(data.cid, toCid, data.group, data.filter);
 	}
 };
+
+export default Categories;

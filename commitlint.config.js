@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = {
+module.exports =  {
 	extends: ['@commitlint/config-angular'],
 	rules: {
 		'header-max-length': [1, 'always', 72],

@@ -1,9 +1,13 @@
 'use strict';
 
-const db = require('../../database');
-const privileges = require('../../privileges');
+import db from '../../database';
 
-module.exports = {
+
+import privileges from '../../privileges';
+
+
+
+export const obj = {
 	name: 'Add "schedule" to default privileges of admins and gmods for existing categories',
 	timestamp: Date.UTC(2021, 2, 11),
 	method: async () => {

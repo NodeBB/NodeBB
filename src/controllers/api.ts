@@ -1,16 +1,15 @@
 'use strict';
 
-const validator = require('validator');
-const nconf = require('nconf');
+import validator from 'validator';
+import nconf from 'nconf';
+import meta from '../meta';
+import user from '../user';
+import categories from '../categories';
+import plugins from '../plugins';
+import translator from '../translator';
+import languages from '../languages';
 
-const meta = require('../meta');
-const user = require('../user');
-const categories = require('../categories');
-const plugins = require('../plugins');
-const translator = require('../translator');
-const languages = require('../languages');
-
-const apiController = module.exports;
+const apiController = {} as any;
 
 const relative_path = nconf.get('relative_path');
 const upload_url = nconf.get('upload_url');
@@ -84,7 +83,7 @@ apiController.loadConfig = async function (req) {
 		iconBackgrounds: await user.getIconBackgrounds(req.uid),
 		emailPrompt: meta.config.emailPrompt,
 		useragent: req.useragent,
-	};
+	} as any;
 
 	let settings = config;
 	let isAdminOrGlobalMod;
@@ -128,4 +127,7 @@ apiController.getModerators = async function (req, res) {
 	res.json({ moderators: moderators });
 };
 
-require('../promisify')(apiController, ['getConfig', 'getObject', 'getModerators']);
+import promisify from '../promisify';
+promisify(apiController, ['getConfig', 'getObject', 'getModerators']);
+
+export default apiController;

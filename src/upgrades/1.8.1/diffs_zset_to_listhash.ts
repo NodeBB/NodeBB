@@ -1,11 +1,15 @@
 'use strict';
 
-const async = require('async');
-const db = require('../../database');
-const batch = require('../../batch');
+import async from 'async';
+import db from '../../database';
 
 
-module.exports = {
+import * as batch from '../../batch';
+
+
+
+
+export const obj = {
 	name: 'Reformatting post diffs to be stored in lists and hash instead of single zset',
 	timestamp: Date.UTC(2018, 2, 15),
 	method: function (callback) {

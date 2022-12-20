@@ -1,16 +1,15 @@
 'use strict';
 
-const validator = require('validator');
-const diff = require('diff');
+import validator from 'validator';
+import diff from 'diff';
+import db from '../database';
+import meta from '../meta';
+import plugins from '../plugins';
+import translator from '../translator';
+import topics from '../topics';
 
-const db = require('../database');
-const meta = require('../meta');
-const plugins = require('../plugins');
-const translator = require('../translator');
-const topics = require('../topics');
-
-module.exports = function (Posts) {
-	const Diffs = {};
+export default function (Posts) {
+	const Diffs = {} as any;
 	Posts.diffs = Diffs;
 	Diffs.exists = async function (pid) {
 		if (meta.config.enablePostHistory !== 1) {
@@ -43,7 +42,7 @@ module.exports = function (Posts) {
 		const diffData = {
 			uid: uid,
 			pid: pid,
-		};
+		} as any;
 		if (oldContent !== newContent) {
 			diffData.patch = diff.createPatch('', newContent, oldContent);
 		}

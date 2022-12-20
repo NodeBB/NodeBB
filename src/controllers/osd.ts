@@ -1,12 +1,11 @@
 'use strict';
 
-const xml = require('xml');
-const nconf = require('nconf');
+import xml from 'xml';
+import nconf from 'nconf';
+import plugins from '../plugins';
+import meta from '../meta';
 
-const plugins = require('../plugins');
-const meta = require('../meta');
-
-module.exports.handle = function (req, res, next) {
+export const handle = function (req, res, next) {
 	if (plugins.hooks.hasListeners('filter:search.query')) {
 		res.type('application/opensearchdescription+xml').send(generateXML());
 	} else {

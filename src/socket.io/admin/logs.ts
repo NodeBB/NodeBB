@@ -1,8 +1,8 @@
 'use strict';
 
-const meta = require('../../meta');
+import meta from '../../meta';
 
-const Logs = module.exports;
+const Logs  = {} as any;
 
 Logs.get = async function () {
 	return await meta.logs.get();
@@ -11,3 +11,5 @@ Logs.get = async function () {
 Logs.clear = async function () {
 	await meta.logs.clear();
 };
+
+export default Logs;

@@ -1,12 +1,12 @@
 'use strict';
 
-const messaging = require('../../messaging');
-const meta = require('../../meta');
-const user = require('../../user');
-const privileges = require('../../privileges');
-const helpers = require('../helpers');
+import messaging from '../../messaging';
+import meta from '../../meta';
+import user from '../../user';
+import privileges from '../../privileges';
+import helpers from '../helpers';
 
-const chatsController = module.exports;
+const chatsController = {} as any;
 
 chatsController.get = async function (req, res, next) {
 	if (meta.config.disableChat) {
@@ -63,3 +63,5 @@ chatsController.redirectToChat = async function (req, res, next) {
 	const roomid = parseInt(req.params.roomid, 10);
 	helpers.redirect(res, `/user/${userslug}/chats${roomid ? `/${roomid}` : ''}`);
 };
+
+export default chatsController;

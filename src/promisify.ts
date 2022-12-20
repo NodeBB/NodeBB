@@ -1,15 +1,15 @@
 'use strict';
 
-const util = require('util');
+import util from 'util';
 
-module.exports = function (theModule, ignoreKeys) {
+export default function (theModule, ignoreKeys?) {
 	ignoreKeys = ignoreKeys || [];
 	function isCallbackedFunction(func) {
 		if (typeof func !== 'function') {
 			return false;
 		}
 		const str = func.toString().split('\n')[0];
-		return str.includes('callback)');
+		return str.includes('callback');
 	}
 
 	function isAsyncFunction(fn) {

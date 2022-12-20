@@ -1,11 +1,11 @@
 'use strict';
 
-const categories = require('../categories');
-const privileges = require('../privileges');
-const user = require('../user');
-const topics = require('../topics');
+import categories from '../categories';
+import privileges from '../privileges';
+import user from '../user';
+import topics from '../topics';
 
-const SocketCategories = module.exports;
+const SocketCategories = {} as any;
 
 require('./categories/search')(SocketCategories);
 
@@ -164,4 +164,7 @@ SocketCategories.loadMoreSubCategories = async function (socket, data) {
 	return category.children.slice(start, start + category.subCategoriesPerPage);
 };
 
-require('../promisify')(SocketCategories);
+import promisify from '../promisify';
+promisify(SocketCategories);
+
+export default SocketCategories;

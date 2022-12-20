@@ -1,10 +1,10 @@
 'use strict';
 
-const db = require('../../database');
-const events = require('../../events');
-const pagination = require('../../pagination');
+import db from '../../database';
+import events from '../../events';
+import pagination from '../../pagination';
 
-const eventsController = module.exports;
+const eventsController = {} as any;
 
 eventsController.get = async function (req, res) {
 	const page = parseInt(req.query.page, 10) || 1;
@@ -13,8 +13,8 @@ eventsController.get = async function (req, res) {
 	const stop = start + itemsPerPage - 1;
 
 	// Limit by date
-	let from = req.query.start ? new Date(req.query.start) || undefined : undefined;
-	let to = req.query.end ? new Date(req.query.end) || undefined : new Date();
+	let from: any = req.query.start ? new Date(req.query.start) || undefined : undefined;
+	let to: any = req.query.end ? new Date(req.query.end) || undefined : new Date();
 	from = from && from.setHours(0, 0, 0, 0); // setHours returns a unix timestamp (Number, not Date)
 	to = to && to.setHours(23, 59, 59, 999); // setHours returns a unix timestamp (Number, not Date)
 
@@ -42,3 +42,5 @@ eventsController.get = async function (req, res) {
 		query: req.query,
 	});
 };
+
+export default eventsController;

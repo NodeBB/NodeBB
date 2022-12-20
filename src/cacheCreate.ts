@@ -1,3 +1,3 @@
 'use strict';
 
-module.exports = require('./cache/lru');
+export * from './cache/lru';

@@ -1,13 +1,14 @@
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
-const sanitizeHTML = require('sanitize-html');
-const nconf = require('nconf');
-const winston = require('winston');
+import fs from 'fs';
+import path from 'path';
+import sanitizeHTML from 'sanitize-html';
+import nconf from 'nconf';
+import winston from 'winston';
 
-const file = require('../file');
-const { Translator } = require('../translator');
+import file from '../file';
+import Translator from '../translator';
+
 
 function filterDirectories(directories) {
 	return directories.map(
@@ -113,7 +114,7 @@ async function buildNamespace(language, namespace) {
 			translations: `${str}\n${title}`,
 			title: title,
 		};
-	} catch (err) {
+	} catch (err: any) {
 		winston.error(err.stack);
 		return {
 			namespace: namespace,
@@ -124,7 +125,7 @@ async function buildNamespace(language, namespace) {
 
 const cache = {};
 
-async function getDictionary(language) {
+async function getLatestVersionDictionary(language) {
 	if (cache[language]) {
 		return cache[language];
 	}
@@ -134,9 +135,13 @@ async function getDictionary(language) {
 	return params;
 }
 
-module.exports.getDictionary = getDictionary;
-module.exports.filterDirectories = filterDirectories;
-module.exports.simplify = simplify;
-module.exports.sanitize = sanitize;
+const obj  = {
+	getLatestVersionDictionary,
+	filterDirectories,
+	simplify,
+	sanitize
+};
+import promisify from '../promisify';
+promisify(obj);
 
-require('../promisify')(module.exports);
+export default obj;

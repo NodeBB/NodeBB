@@ -1,12 +1,12 @@
 'use strict';
 
-const groups = require('../groups');
-const user = require('../user');
-const utils = require('../utils');
-const events = require('../events');
-const privileges = require('../privileges');
+import groups from '../groups';
+import user from '../user';
+import utils from '../utils';
+import events from '../events';
+import privileges from '../privileges';
 
-const SocketGroups = module.exports;
+const SocketGroups = {} as any;
 
 SocketGroups.before = async (socket, method, data) => {
 	if (!data) {
@@ -288,4 +288,6 @@ function logGroupEvent(socket, event, additional) {
 	});
 }
 
-require('../promisify')(SocketGroups);
+import promisify from '../promisify';
+promisify(SocketGroups);
+export default SocketGroups;

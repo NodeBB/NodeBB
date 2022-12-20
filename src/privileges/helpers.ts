@@ -1,15 +1,14 @@
 
 'use strict';
 
-const _ = require('lodash');
-const validator = require('validator');
+import _ from 'lodash';
+import validator from 'validator';
+import groups from '../groups';
+import user from '../user';
+import plugins from '../plugins';
+import translator from '../translator';
 
-const groups = require('../groups');
-const user = require('../user');
-const plugins = require('../plugins');
-const translator = require('../translator');
-
-const helpers = module.exports;
+const helpers = {} as any;
 
 const uidToSystemGroup = {
 	0: 'guests',
@@ -189,4 +188,7 @@ helpers.userOrGroupPrivileges = async function (cid, uidOrGroup, privilegeList) 
 	return _.zipObject(privilegeList, isMembers);
 };
 
-require('../promisify')(helpers);
+import promisify from '../promisify';
+promisify(helpers);
+
+export default helpers;

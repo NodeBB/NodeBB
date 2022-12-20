@@ -1,13 +1,16 @@
 'use strict';
 
-const db = require('../../database');
+import db from '../../database';
+import * as batch from '../../batch';
+import posts from '../../posts';
 
-module.exports = {
+
+
+export const obj = {
 	name: 'Store downvoted posts in user votes sorted set',
 	timestamp: Date.UTC(2022, 1, 4),
 	method: async function () {
-		const batch = require('../../batch');
-		const posts = require('../../posts');
+
 		const { progress } = this;
 
 		await batch.processSortedSet('posts:pid', async (pids) => {

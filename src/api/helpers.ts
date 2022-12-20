@@ -1,24 +1,26 @@
 'use strict';
 
-const url = require('url');
-const user = require('../user');
-const topics = require('../topics');
-const posts = require('../posts');
-const privileges = require('../privileges');
-const plugins = require('../plugins');
-const socketHelpers = require('../socket.io/helpers');
-const websockets = require('../socket.io');
-const events = require('../events');
+import url from 'url';
+import user from '../user';
+import topics from '../topics';
+import posts from '../posts';
+import privileges from '../privileges';
+import plugins from '../plugins';
+import socketHelpers from '../socket.io/helpers';
+import websockets from '../socket.io';
+import events from '../events';
 
-exports.setDefaultPostData = function (reqOrSocket, data) {
+
+
+export const setDefaultPostData = function (reqOrSocket, data) {
 	data.uid = reqOrSocket.uid;
-	data.req = exports.buildReqObject(reqOrSocket, { ...data });
+	data.req =  buildReqObject(reqOrSocket, { ...data });
 	data.timestamp = Date.now();
 	data.fromQueue = false;
 };
 
 // creates a slimmed down version of the request object
-exports.buildReqObject = (req, payload) => {
+export const buildReqObject = (req, payload?) => {
 	req = req || {};
 	const headers = req.headers || (req.request && req.request.headers) || {};
 	const encrypted = req.connection ? !!req.connection.encrypted : false;
@@ -45,7 +47,7 @@ exports.buildReqObject = (req, payload) => {
 	};
 };
 
-exports.doTopicAction = async function (action, event, caller, { tids }) {
+export const doTopicAction = async function (action, event, caller, { tids }: any) {
 	if (!Array.isArray(tids)) {
 		throw new Error('[[error:invalid-tid]]');
 	}
@@ -85,7 +87,7 @@ async function logTopicAction(action, req, tid, title) {
 	});
 }
 
-exports.postCommand = async function (caller, command, eventName, notification, data) {
+export const postCommand = async function (caller, command, eventName, notification, data) {
 	if (!caller.uid) {
 		throw new Error('[[error:not-logged-in]]');
 	}

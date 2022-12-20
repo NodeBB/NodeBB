@@ -1,14 +1,13 @@
 'use strict';
 
-const _ = require('lodash');
-const validator = require('validator');
+import _ from 'lodash';
+import validator from 'validator';
+import db from '../database';
+import posts from '../posts';
+import topics from '../topics';
+import utils from '../utils';
 
-const db = require('../database');
-const posts = require('../posts');
-const topics = require('../topics');
-const utils = require('../utils');
-
-module.exports = function (User) {
+export default function (User) {
 	User.getLatestBanInfo = async function (uid) {
 		// Simply retrieves the last record of the user's ban, even if they've been unbanned since then.
 		const record = await db.getSortedSetRevRange(`uid:${uid}:bans:timestamp`, 0, 0);

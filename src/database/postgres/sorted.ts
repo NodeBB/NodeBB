@@ -1,16 +1,23 @@
 'use strict';
 
-module.exports = function (module) {
-	const helpers = require('./helpers');
-	const util = require('util');
-	const Cursor = require('pg-cursor');
-	Cursor.prototype.readAsync = util.promisify(Cursor.prototype.read);
+import helpers from './helpers';
+import util from 'util';
+import Cursor from 'pg-cursor'
+
+import add from './sorted/add';
+import remove from './sorted/remove';
+import sorted from './sorted/union';
+import intersect from './sorted/intersect';
+
+export default function (module) {
+;
+	(Cursor as any).prototype.readAsync = util.promisify(Cursor.prototype.read);
 	const sleep = util.promisify(setTimeout);
 
-	require('./sorted/add')(module);
-	require('./sorted/remove')(module);
-	require('./sorted/union')(module);
-	require('./sorted/intersect')(module);
+	add(module);
+	remove(module);
+	sorted(module);
+	intersect(module);
 
 	module.getSortedSetRange = async function (key, start, stop) {
 		return await getSortedSetRange(key, start, stop, 1, false);
@@ -651,7 +658,7 @@ SELECT z."value", z."score"
  WHERE o."_key" = $1::TEXT
  ORDER BY z."score" ASC, z."value" ASC`, [setKey]));
 
-		if (process && process.constructor && process.constructor.name !== 'AsyncFunction') {
+		if (process && (process as any).constructor && (process as any).constructor.name !== 'AsyncFunction') {
 			process = util.promisify(process);
 		}
 
@@ -670,7 +677,7 @@ SELECT z."value", z."score"
 			}
 			try {
 				await process(rows);
-			} catch (err) {
+			} catch (err: any) {
 				await client.release();
 				throw err;
 			}

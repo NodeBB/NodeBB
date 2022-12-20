@@ -1,10 +1,11 @@
 'use strict';
 
-const _ = require('lodash');
-const plugins = require('./plugins');
-const db = require('./database');
+import _ from 'lodash';
+import plugins from './plugins';
+import db from './database';
 
-const social = module.exports;
+
+const social = {} as any;
 
 social.postSharing = null;
 
@@ -27,7 +28,7 @@ social.getPostSharing = async function () {
 	];
 	networks = await plugins.hooks.fire('filter:social.posts', networks);
 	const activated = await db.getSetMembers('social:posts.activated');
-	networks.forEach((network) => {
+	networks.forEach((network: any) => {
 		network.activated = activated.includes(network.id);
 	});
 
@@ -49,4 +50,7 @@ social.setActivePostSharingNetworks = async function (networkIDs) {
 	await db.setAdd('social:posts.activated', networkIDs);
 };
 
-require('./promisify')(social);
+import promisify from './promisify';
+promisify(social);
+
+export default social;

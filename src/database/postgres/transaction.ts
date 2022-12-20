@@ -1,13 +1,13 @@
 'use strict';
 
-module.exports = function (module) {
+export default function (module) {
 	module.transaction = async function (perform, txClient) {
 		let res;
 		if (txClient) {
 			await txClient.query(`SAVEPOINT nodebb_subtx`);
 			try {
 				res = await perform(txClient);
-			} catch (err) {
+			} catch (err: any) {
 				await txClient.query(`ROLLBACK TO SAVEPOINT nodebb_subtx`);
 				throw err;
 			}
@@ -21,7 +21,7 @@ module.exports = function (module) {
 			await client.query('BEGIN');
 			res = await perform(client);
 			await client.query('COMMIT');
-		} catch (err) {
+		} catch (err: any) {
 			await client.query('ROLLBACK');
 			throw err;
 		} finally {

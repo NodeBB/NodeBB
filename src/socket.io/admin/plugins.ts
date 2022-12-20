@@ -1,12 +1,11 @@
 'use strict';
 
-const nconf = require('nconf');
+import nconf from 'nconf';
+import plugins from '../../plugins';
+import events from '../../events';
+import db from '../../database';
 
-const plugins = require('../../plugins');
-const events = require('../../events');
-const db = require('../../database');
-
-const Plugins = module.exports;
+const Plugins  = {} as any;
 
 Plugins.toggleActive = async function (socket, plugin_id) {
 	require('../../posts/cache').reset();
@@ -47,3 +46,5 @@ Plugins.orderActivePlugins = async function (socket, data) {
 Plugins.upgrade = async function (socket, data) {
 	return await plugins.upgrade(data.id, data.version);
 };
+
+export default Plugins;

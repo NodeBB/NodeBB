@@ -1,7 +1,8 @@
 'use strict';
 
-const helpers = module.exports;
-const utils = require('../../utils');
+import utils from '../../utils';
+
+const helpers = {} as any;
 
 helpers.noop = function () {};
 
@@ -65,3 +66,5 @@ helpers.buildMatchQuery = function (match) {
 	}
 	return _match;
 };
+
+export default helpers;

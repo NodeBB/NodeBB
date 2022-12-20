@@ -1,20 +1,19 @@
 'use strict';
 
 
-const nconf = require('nconf');
-
-const user = require('../user');
-const meta = require('../meta');
-const plugins = require('../plugins');
-const privileges = require('../privileges');
-const helpers = require('./helpers');
+import nconf from 'nconf';
+import user from '../user';
+import meta from '../meta';
+import plugins from '../plugins';
+import privileges from '../privileges';
+import helpers from './helpers';
 
 const controllers = {
 	api: require('../controllers/api'),
 	helpers: require('../controllers/helpers'),
-};
+} as any;
 
-const middleware = module.exports;
+const middleware = {} as any;
 
 middleware.buildHeader = helpers.try(async (req, res, next) => {
 	res.locals.renderAdminHeader = true;
@@ -86,3 +85,5 @@ middleware.checkPrivileges = helpers.try(async (req, res, next) => {
 		res.redirect(`${nconf.get('relative_path')}/login?local=1`);
 	}
 });
+
+export default middleware;

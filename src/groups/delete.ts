@@ -1,11 +1,11 @@
 'use strict';
 
-const plugins = require('../plugins');
-const slugify = require('../slugify');
-const db = require('../database');
-const batch = require('../batch');
+import plugins from '../plugins';
+import slugify from '../slugify';
+import db from '../database';
+import * as  batch from '../batch';
 
-module.exports = function (Groups) {
+export default function (Groups) {
 	Groups.destroy = async function (groupNames) {
 		if (!Array.isArray(groupNames)) {
 			groupNames = [groupNames];

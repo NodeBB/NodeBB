@@ -1,8 +1,8 @@
 'use strict';
 
-const privileges = require('../privileges');
+import privileges from '../privileges';
 
-module.exports = function (Posts) {
+export default function (Posts) {
 	Posts.tools = {};
 
 	Posts.tools.delete = async function (uid, pid) {

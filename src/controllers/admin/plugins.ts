@@ -1,11 +1,11 @@
 'use strict';
 
-const nconf = require('nconf');
-const winston = require('winston');
-const plugins = require('../../plugins');
-const meta = require('../../meta');
+import nconf from 'nconf';
+import winston from 'winston';
+import plugins from '../../plugins';
+import meta from '../../meta';
 
-const pluginsController = module.exports;
+const pluginsController = {} as any;
 
 pluginsController.get = async function (req, res) {
 	const [compatible, all, trending] = await Promise.all([
@@ -62,8 +62,10 @@ async function getPlugins(matching) {
 	try {
 		const pluginsData = await plugins.list(matching);
 		return pluginsData || [];
-	} catch (err) {
+	} catch (err: any) {
 		winston.error(err.stack);
 		return [];
 	}
 }
+
+export default pluginsController;

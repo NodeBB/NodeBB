@@ -1,10 +1,10 @@
 'use strict';
 
-const user = require('../../user');
-const helpers = require('../helpers');
-const accountHelpers = require('./helpers');
+import user from '../../user';
+import helpers from '../helpers';
+import accountHelpers from './helpers';
 
-const sessionController = module.exports;
+const sessionController = {} as any;
 
 sessionController.get = async function (req, res, next) {
 	const userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, req.query);
@@ -18,3 +18,5 @@ sessionController.get = async function (req, res, next) {
 
 	res.render('account/sessions', userData);
 };
+
+export default sessionController;

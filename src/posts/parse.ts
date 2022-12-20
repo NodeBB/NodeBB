@@ -1,15 +1,21 @@
 'use strict';
 
-const nconf = require('nconf');
-const url = require('url');
-const winston = require('winston');
-const sanitize = require('sanitize-html');
-const _ = require('lodash');
+import nconf from 'nconf';
+import url from 'url';
+import winston from 'winston';
+import sanitize from 'sanitize-html';
+import _ from 'lodash';
+import meta from '../meta';
+console.log('M 1', meta);
+import plugins from '../plugins';
+console.log('P 2');
+import translator from '../translator';
+console.log('T 3');
+import utils from '../utils';
+console.log('U 4');
+import cache from './cache';
+console.log('C 5');
 
-const meta = require('../meta');
-const plugins = require('../plugins');
-const translator = require('../translator');
-const utils = require('../utils');
 
 let sanitizeConfig = {
 	allowedTags: sanitize.defaults.allowedTags.concat([
@@ -36,7 +42,7 @@ let sanitizeConfig = {
 	},
 };
 
-module.exports = function (Posts) {
+export default function (Posts) {
 	Posts.urlRegex = {
 		regex: /href="([^"]+)"/g,
 		length: 6,
@@ -52,7 +58,6 @@ module.exports = function (Posts) {
 			return postData;
 		}
 		postData.content = String(postData.content || '');
-		const cache = require('./cache');
 		const pid = String(postData.pid);
 		const cachedContent = cache.get(pid);
 		if (postData.pid && cachedContent !== undefined) {
@@ -98,7 +103,7 @@ module.exports = function (Posts) {
 						absolute +
 						content.slice(current.index + regex.length + current[1].length);
 					}
-				} catch (err) {
+				} catch (err: any) {
 					winston.verbose(err.messsage);
 				}
 			}

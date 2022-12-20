@@ -1,22 +1,22 @@
 'use strict';
+import nconf from 'nconf';
+import semver from 'semver';
+import winston from 'winston';
+import _ from 'lodash';
+import validator from 'validator';
+import * as versions from '../../admin/versions';
+import db from '../../database';
+import meta from '../../meta';
+import analytics from '../../analytics';
+import plugins from '../../plugins';
+import user from '../../user';
+import topics from '../../topics';
+import utils from '../../utils';
+import emailer from '../../emailer';
+import cache from '../../cache';
 
-const nconf = require('nconf');
-const semver = require('semver');
-const winston = require('winston');
-const _ = require('lodash');
-const validator = require('validator');
 
-const versions = require('../../admin/versions');
-const db = require('../../database');
-const meta = require('../../meta');
-const analytics = require('../../analytics');
-const plugins = require('../../plugins');
-const user = require('../../user');
-const topics = require('../../topics');
-const utils = require('../../utils');
-const emailer = require('../../emailer');
-
-const dashboardController = module.exports;
+const dashboardController = {} as any;
 
 dashboardController.get = async function (req, res) {
 	const [stats, notices, latestVersion, lastrestart, isAdmin, popularSearches] = await Promise.all([
@@ -34,10 +34,11 @@ dashboardController.get = async function (req, res) {
 		lookupFailed: latestVersion === null,
 		latestVersion: latestVersion,
 		upgradeAvailable: latestVersion && semver.gt(latestVersion, version),
+		// @ts-ignore
 		currentPrerelease: versions.isPrerelease.test(version),
 		notices: notices,
 		stats: stats,
-		canRestart: !!process.send,
+		canRestart: !!(process as any).send,
 		lastrestart: lastrestart,
 		showSystemControls: isAdmin,
 		popularSearches: popularSearches,
@@ -58,7 +59,7 @@ async function getNotices() {
 			tooltip: '[[admin/dashboard:search-plugin-tooltip]]',
 			link: '/admin/extend/plugins',
 		},
-	];
+	] as any[];
 
 	if (emailer.fallbackNotFound) {
 		notices.push({
@@ -67,7 +68,7 @@ async function getNotices() {
 		});
 	}
 
-	if (global.env !== 'production') {
+	if ((global as any).env !== 'production') {
 		notices.push({
 			done: false,
 			notDoneText: '[[admin/dashboard:running-in-development]]',
@@ -79,8 +80,9 @@ async function getNotices() {
 
 async function getLatestVersion() {
 	try {
+		// @ts-ignore
 		return await versions.getLatestVersion();
-	} catch (err) {
+	} catch (err: any) {
 		winston.error(`[acp] Failed to fetch latest version\n${err.stack}`);
 	}
 	return null;
@@ -92,7 +94,7 @@ dashboardController.getAnalytics = async (req, res, next) => {
 	const validSets = ['uniquevisitors', 'pageviews', 'pageviews:registered', 'pageviews:bot', 'pageviews:guest'];
 	const until = req.query.until ? new Date(parseInt(req.query.until, 10)) : Date.now();
 	const count = req.query.count || (req.query.units === 'hours' ? 24 : 30);
-	if (isNaN(until) || !validUnits.includes(req.query.units)) {
+	if (isNaN(until as number) || !validUnits.includes(req.query.units)) {
 		return next(new Error('[[error:invalid-data]]'));
 	}
 
@@ -121,7 +123,6 @@ dashboardController.getAnalytics = async (req, res, next) => {
 };
 
 async function getStats() {
-	const cache = require('../../cache');
 	const cachedStats = cache.get('admin:stats');
 	if (cachedStats !== undefined) {
 		return cachedStats;
@@ -342,3 +343,5 @@ dashboardController.getSearches = async (req, res) => {
 		searches: searches.map(s => ({ value: validator.escape(String(s.value)), score: s.score })),
 	});
 };
+
+export default dashboardController;

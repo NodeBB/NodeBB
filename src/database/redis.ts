@@ -1,12 +1,23 @@
 'use strict';
 
-const nconf = require('nconf');
-const semver = require('semver');
-const session = require('express-session');
+import nconf from 'nconf';
+import semver from 'semver';
+import session from 'express-session';
+import connection from './redis/connection';
+import main from './redis/main';
+import hash from  './redis/hash';
+import sets from './redis/sets';
+import sorted from './redis/sets';
+import list from './redis/list';
+import transaction from './redis/transaction';	
+import meta from '../meta';
+import redisAdapter from '@socket.io/redis-adapter';
+import connectRedis from 'connect-redis';
 
-const connection = require('./redis/connection');
 
-const redisModule = module.exports;
+
+
+const redisModule = {} as any;
 
 redisModule.questions = [
 	{
@@ -39,8 +50,7 @@ redisModule.init = async function () {
 };
 
 redisModule.createSessionStore = async function (options) {
-	const meta = require('../meta');
-	const sessionStore = require('connect-redis')(session);
+	const sessionStore = connectRedis(session as any);
 	const client = await connection.connect(options);
 	const store = new sessionStore({
 		client: client,
@@ -72,7 +82,7 @@ redisModule.info = async function (cxn) {
 	redisModule.client = redisModule.client || cxn;
 	const data = await cxn.info();
 	const lines = data.toString().split('\r\n').sort();
-	const redisData = {};
+	const redisData = {} as any;
 	lines.forEach((line) => {
 		const parts = line.split(':');
 		if (parts[1]) {
@@ -101,19 +111,21 @@ redisModule.info = async function (cxn) {
 };
 
 redisModule.socketAdapter = async function () {
-	const redisAdapter = require('@socket.io/redis-adapter');
 	const pub = await connection.connect(nconf.get('redis'));
 	const sub = await connection.connect(nconf.get('redis'));
+	//@ts-ignore
 	return redisAdapter(pub, sub, {
 		key: `db:${nconf.get('redis:database')}:adapter_key`,
 	});
 };
 
-require('./redis/main')(redisModule);
-require('./redis/hash')(redisModule);
-require('./redis/sets')(redisModule);
-require('./redis/sorted')(redisModule);
-require('./redis/list')(redisModule);
-require('./redis/transaction')(redisModule);
+main(redisModule);
+hash(redisModule);
+sets(redisModule);
+sorted(redisModule);
+list(redisModule);
+transaction(redisModule);
 
-require('../promisify')(redisModule, ['client', 'sessionStore']);
+import promisify from '../promisify';
+promisify(redisModule, ['client', 'sessionStore']);
+export default redisModule;

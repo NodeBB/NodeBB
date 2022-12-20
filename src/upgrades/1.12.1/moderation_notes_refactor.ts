@@ -2,10 +2,14 @@
 
 'use strict';
 
-const db = require('../../database');
-const batch = require('../../batch');
+import db from '../../database';
 
-module.exports = {
+
+import * as batch from '../../batch';
+
+
+
+export const obj = {
 	name: 'Update moderation notes to hashes',
 	timestamp: Date.UTC(2019, 3, 5),
 	method: async function () {

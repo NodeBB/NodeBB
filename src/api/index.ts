@@ -1,11 +1,18 @@
 'use strict';
+import users from './users';
+import groups from './groups';
+import topics from './topics';
+import posts from './posts';
+import chats from './chats';
+import categories from './categories';
+import flags from './flags';
 
-module.exports = {
-	users: require('./users'),
-	groups: require('./groups'),
-	topics: require('./topics'),
-	posts: require('./posts'),
-	chats: require('./chats'),
-	categories: require('./categories'),
-	flags: require('./flags'),
+export default {
+	users,
+	groups,
+	topics,
+	posts,
+	chats,
+	categories,
+	flags,
 };

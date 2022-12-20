@@ -1,15 +1,23 @@
 
 'use strict';
 
-const _ = require('lodash');
+import _ from 'lodash';
+console.log(0);
+import user from '../user';
+console.log('U 1');
+import groups from '../groups';
+console.log('G 2');
+import helpers from './helpers';
+console.log('H 3');
+import plugins from '../plugins';
+console.log('P 4');
+import utils from '../utils';
+console.log('U 5');
+import privCategories from './categories';
+console.log('P 6');
 
-const user = require('../user');
-const groups = require('../groups');
-const helpers = require('./helpers');
-const plugins = require('../plugins');
-const utils = require('../utils');
 
-const privsGlobal = module.exports;
+const privsGlobal = {} as any;
 
 /**
  * Looking to add a new global privilege via plugin/theme? Attach a hook to
@@ -105,7 +113,6 @@ privsGlobal.canGroup = async function (privilege, groupName) {
 };
 
 privsGlobal.filterUids = async function (privilege, uids) {
-	const privCategories = require('./categories');
 	return await privCategories.filterUids(privilege, 0, uids);
 };
 
@@ -134,3 +141,5 @@ privsGlobal.groupPrivileges = async function (groupName) {
 	const groupPrivilegeList = await privsGlobal.getGroupPrivilegeList();
 	return await helpers.userOrGroupPrivileges(0, groupName, groupPrivilegeList);
 };
+
+export default privsGlobal;

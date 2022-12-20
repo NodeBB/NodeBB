@@ -1,17 +1,16 @@
 
 'use strict';
 
-const winston = require('winston');
-const _ = require('lodash');
+import winston from 'winston';
+import _ from 'lodash';
+import db from '../database';
+import posts from '../posts';
+import topics from '../topics';
+import privileges from '../privileges';
+import plugins from '../plugins';
+import * as  batch from '../batch';
 
-const db = require('../database');
-const posts = require('../posts');
-const topics = require('../topics');
-const privileges = require('../privileges');
-const plugins = require('../plugins');
-const batch = require('../batch');
-
-module.exports = function (Categories) {
+export default function (Categories) {
 	Categories.getRecentReplies = async function (cid, uid, start, stop) {
 		// backwards compatibility, treat start as count
 		if (stop === undefined && start > 0) {
@@ -71,7 +70,7 @@ module.exports = function (Categories) {
 			return;
 		}
 		const categoriesToLoad = categoryData.filter(c => c && c.numRecentReplies && parseInt(c.numRecentReplies, 10) > 0);
-		let keys = [];
+		let keys = [] as any[];
 		if (plugins.hooks.hasListeners('filter:categories.getRecentTopicReplies')) {
 			const result = await plugins.hooks.fire('filter:categories.getRecentTopicReplies', {
 				categories: categoriesToLoad,
@@ -144,7 +143,7 @@ module.exports = function (Categories) {
 				if (category.posts.length) {
 					return;
 				}
-				const posts = [];
+				const posts = [] as any[];
 				getPostsRecursive(category, posts);
 
 				posts.sort((a, b) => b.pid - a.pid);
@@ -174,8 +173,8 @@ module.exports = function (Categories) {
 		await batch.processArray(pids, async (pids) => {
 			const postData = await posts.getPostsFields(pids, ['pid', 'deleted', 'uid', 'timestamp', 'upvotes', 'downvotes']);
 
-			const bulkRemove = [];
-			const bulkAdd = [];
+			const bulkRemove = [] as any[];
+			const bulkAdd = [] as any[];
 			postData.forEach((post) => {
 				bulkRemove.push([`cid:${oldCid}:uid:${post.uid}:pids`, post.pid]);
 				bulkRemove.push([`cid:${oldCid}:uid:${post.uid}:pids:votes`, post.pid]);

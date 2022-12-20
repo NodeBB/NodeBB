@@ -1,7 +1,5 @@
 'use strict';
 
-const db = require('../../database');
-
 module.exports = {
 	// you should use spaces
 	// the underscores are there so you can double click to select the whole thing

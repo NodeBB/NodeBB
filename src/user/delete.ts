@@ -1,22 +1,22 @@
 'use strict';
 
-const async = require('async');
-const _ = require('lodash');
-const path = require('path');
-const nconf = require('nconf');
-const util = require('util');
+import async from 'async';
+import _ from 'lodash';
+import path from 'path';
+import nconf from 'nconf';
+import util from 'util';
 const rimrafAsync = util.promisify(require('rimraf'));
 
-const db = require('../database');
-const posts = require('../posts');
-const flags = require('../flags');
-const topics = require('../topics');
-const groups = require('../groups');
-const messaging = require('../messaging');
-const plugins = require('../plugins');
-const batch = require('../batch');
+import db from '../database';
+import posts from '../posts';
+import flags from '../flags';
+import topics from '../topics';
+import groups from '../groups';
+import messaging from '../messaging';
+import plugins from '../plugins';
+import * as  batch from '../batch';
 
-module.exports = function (User) {
+export default function (User) {
 	const deletesInProgress = {};
 
 	User.delete = async (callerUid, uid) => {

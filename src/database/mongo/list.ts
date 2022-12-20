@@ -1,7 +1,24 @@
 'use strict';
+import helpers from './helpers';
 
-module.exports = function (module) {
-	const helpers = require('./helpers');
+
+
+export default function (module) {
+	async function listPush(key, values, position?) {
+		values = values.map(helpers.valueToString);
+		await module.client.collection('objects').updateOne({
+			_key: key,
+		}, {
+			$push: {
+				array: {
+					$each: values,
+					...(position || {}),
+				},
+			},
+		}, {
+			upsert: true,
+		});
+	}
 
 	module.listPrepend = async function (key, value) {
 		if (!key) {
@@ -25,21 +42,6 @@ module.exports = function (module) {
 		await listPush(key, value);
 	};
 
-	async function listPush(key, values, position) {
-		values = values.map(helpers.valueToString);
-		await module.client.collection('objects').updateOne({
-			_key: key,
-		}, {
-			$push: {
-				array: {
-					$each: values,
-					...(position || {}),
-				},
-			},
-		}, {
-			upsert: true,
-		});
-	}
 
 	module.listRemoveLast = async function (key) {
 		if (!key) {

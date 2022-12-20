@@ -1,9 +1,9 @@
 'use strict';
 
-const db = require('../database');
-const sockets = require('../socket.io');
+import db from '../database';
+import sockets from '../socket.io';
 
-module.exports = function (Messaging) {
+export default function (Messaging) {
 	Messaging.getUnreadCount = async (uid) => {
 		if (parseInt(uid, 10) <= 0) {
 			return 0;

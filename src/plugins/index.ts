@@ -1,29 +1,37 @@
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
-const winston = require('winston');
-const semver = require('semver');
-const nconf = require('nconf');
-const chalk = require('chalk');
-const request = require('request-promise-native');
+import fs from 'fs';
+import path from 'path';
+import winston from 'winston';
+import semver from 'semver';
+import nconf from 'nconf';
+import chalk from 'chalk';
+import request from 'request-promise-native';
+import user from '../user';
+import posts from '../posts';
+import meta from '../meta';
+import { pluginNamePattern, themeNamePattern, paths } from '../constants';
+import controllers from '../controllers';
 
-const user = require('../user');
-const posts = require('../posts');
-const meta = require('../meta');
-
-const { pluginNamePattern, themeNamePattern, paths } = require('../constants');
 
 let app;
 let middleware;
 
-const Plugins = module.exports;
+const Plugins = {} as any;
 
-require('./install')(Plugins);
-require('./load')(Plugins);
-require('./usage')(Plugins);
-Plugins.data = require('./data');
-Plugins.hooks = require('./hooks');
+import install from './install';
+import load from './load';
+import usage from './usage';
+
+install(Plugins);
+load(Plugins);
+usage(Plugins);
+
+import data from './data';
+import hooks from './hooks';
+
+Plugins.data = data;
+Plugins.hooks = hooks;
 
 Plugins.getPluginPaths = Plugins.data.getPluginPaths;
 Plugins.loadPluginInfo = Plugins.data.loadPluginInfo;
@@ -50,9 +58,8 @@ Plugins.requireLibrary = function (pluginData) {
 	// Plugins should define their entry point in the standard `main` property of `package.json`
 	try {
 		libraryPath = pluginData.path;
-		Plugins.libraries[pluginData.id] = require(libraryPath);
-	} catch (e) {
-		// DEPRECATED: @1.15.0, remove in version >=1.17
+		Plugins.libraries[pluginData.id] =  require(libraryPath);
+} catch (e: any) {		// DEPRECATED: @1.15.0, remove in version >=1.17
 		// for backwards compatibility
 		// if that fails, fall back to `pluginData.library`
 		if (pluginData.library) {
@@ -60,7 +67,7 @@ Plugins.requireLibrary = function (pluginData) {
 			winston.verbose(`[plugins/${pluginData.id}] See https://github.com/NodeBB/NodeBB/issues/8686`);
 
 			libraryPath = path.join(pluginData.path, pluginData.library);
-			Plugins.libraries[pluginData.id] = require(libraryPath);
+			Plugins.libraries[pluginData.id] =  require(libraryPath);
 		} else {
 			throw e;
 		}
@@ -79,12 +86,12 @@ Plugins.init = async function (nbbApp, nbbMiddleware) {
 		middleware = nbbMiddleware;
 	}
 
-	if (global.env === 'development') {
+	if ((global as any).env === 'development') {
 		winston.verbose('[plugins] Initializing plugins system');
 	}
 
 	await Plugins.reload();
-	if (global.env === 'development') {
+	if ((global as any).env === 'development') {
 		winston.info('[plugins] Plugins OK');
 	}
 
@@ -148,7 +155,6 @@ Plugins.reload = async function () {
 };
 
 Plugins.reloadRoutes = async function (params) {
-	const controllers = require('../controllers');
 	await Plugins.hooks.fire('static:app.load', { app: app, router: params.router, middleware: middleware, controllers: controllers });
 	winston.verbose('[plugins] All plugins reloaded and rerouted');
 };
@@ -175,7 +181,7 @@ Plugins.list = async function (matching) {
 			json: true,
 		});
 		return await Plugins.normalise(body);
-	} catch (err) {
+	} catch (err: any) {
 		winston.error(`Error loading ${url}`, err);
 		return await Plugins.normalise([]);
 	}
@@ -234,7 +240,7 @@ Plugins.normalise = async function (apiReturn) {
 		pluginMap[plugin.id].outdated = semver.gt(pluginMap[plugin.id].latest, pluginMap[plugin.id].version);
 	});
 
-	const pluginArray = Object.values(pluginMap);
+	const pluginArray: any[] = Object.values(pluginMap);
 
 	pluginArray.sort((a, b) => {
 		if (a.name > b.name) {
@@ -266,7 +272,7 @@ Plugins.showInstalled = async function () {
 			pluginData.installed = true;
 			pluginData.error = false;
 			return pluginData;
-		} catch (err) {
+		} catch (err: any) {
 			winston.error(err.stack);
 		}
 	}
@@ -309,7 +315,7 @@ async function isDirectory(dirPath) {
 	try {
 		const stats = await fs.promises.stat(dirPath);
 		return stats.isDirectory();
-	} catch (err) {
+	} catch (err: any) {
 		if (err.code !== 'ENOENT') {
 			throw err;
 		}
@@ -317,4 +323,7 @@ async function isDirectory(dirPath) {
 	}
 }
 
-require('../promisify')(Plugins);
+import promisify from '../promisify';
+promisify(Plugins);
+
+export default Plugins;

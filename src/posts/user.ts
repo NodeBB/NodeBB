@@ -1,18 +1,17 @@
 'use strict';
 
-const async = require('async');
-const validator = require('validator');
-const _ = require('lodash');
+import async from 'async';
+import validator from 'validator';
+import _ from 'lodash';
+import db from '../database';
+import user from '../user';
+import topics from '../topics';
+import groups from '../groups';
+import meta from '../meta';
+import plugins from '../plugins';
+import privileges from '../privileges';
 
-const db = require('../database');
-const user = require('../user');
-const topics = require('../topics');
-const groups = require('../groups');
-const meta = require('../meta');
-const plugins = require('../plugins');
-const privileges = require('../privileges');
-
-module.exports = function (Posts) {
+export default function (Posts) {
 	Posts.getUserInfoForPosts = async function (uids, uid) {
 		const [userData, userSettings, signatureUids] = await Promise.all([
 			getUserData(uids, uid),

@@ -1,19 +1,19 @@
 'use strict';
 
-const validator = require('validator');
-const winston = require('winston');
-const cronJob = require('cron').CronJob;
+import validator from 'validator';
+import winston from 'winston';
+import { CronJob }  from 'cron';
+const cronJob = CronJob;
+import db from '../database';
+import meta from '../meta';
+import emailer from '../emailer';
+import notifications from '../notifications';
+import groups from '../groups';
+import utils from '../utils';
+import slugify from '../slugify';
+import plugins from '../plugins';
 
-const db = require('../database');
-const meta = require('../meta');
-const emailer = require('../emailer');
-const notifications = require('../notifications');
-const groups = require('../groups');
-const utils = require('../utils');
-const slugify = require('../slugify');
-const plugins = require('../plugins');
-
-module.exports = function (User) {
+export default function (User) {
 	new cronJob('0 * * * *', (() => {
 		User.autoApprove();
 	}), null, true);

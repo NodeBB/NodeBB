@@ -1,31 +1,46 @@
 'use strict';
 
-const _ = require('lodash');
+import _ from 'lodash';
+import db from '../database';
+import utils from '../utils';
+import user from '../user';
+import privileges from '../privileges';
+import plugins from '../plugins';
 
-const db = require('../database');
-const utils = require('../utils');
-const user = require('../user');
-const privileges = require('../privileges');
-const plugins = require('../plugins');
+const Posts = {} as any;
 
-const Posts = module.exports;
+import data from './data';
+import create from './create';
+import deletePost from './delete';
+import edit from './edit';
+import parse from './parse';
+import topics from './topics';
+import category from './category';
+import summary from './summary';
+import recent from './recent';
+import tools from './tools';
+import bookmarks from './bookmarks';
+import queue from './queue';
+import diffs from './diffs';
+import uploads from './uploads';
+import votes from './votes';
 
-require('./data')(Posts);
-require('./create')(Posts);
-require('./delete')(Posts);
-require('./edit')(Posts);
-require('./parse')(Posts);
-require('./user')(Posts);
-require('./topics')(Posts);
-require('./category')(Posts);
-require('./summary')(Posts);
-require('./recent')(Posts);
-require('./tools')(Posts);
-require('./votes')(Posts);
-require('./bookmarks')(Posts);
-require('./queue')(Posts);
-require('./diffs')(Posts);
-require('./uploads')(Posts);
+data(Posts);
+create(Posts);
+deletePost(Posts);
+edit(Posts);
+parse(Posts);
+user(Posts);
+topics(Posts);
+category(Posts);
+summary(Posts);
+recent(Posts);
+tools(Posts);
+votes(Posts);
+bookmarks(Posts);
+queue(Posts);
+diffs(Posts);
+uploads(Posts);
 
 Posts.exists = async function (pids) {
 	return await db.exists(
@@ -101,4 +116,7 @@ Posts.modifyPostByPrivilege = function (post, privileges) {
 	}
 };
 
-require('../promisify')(Posts);
+import promisify from '../promisify';
+promisify(Posts);
+
+export default Posts;

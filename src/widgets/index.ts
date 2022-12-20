@@ -1,17 +1,18 @@
 'use strict';
 
-const winston = require('winston');
-const _ = require('lodash');
-const Benchpress = require('benchpressjs');
+import winston from 'winston';
+import _ from 'lodash';
+import Benchpress from 'benchpressjs';
 
-const plugins = require('../plugins');
-const groups = require('../groups');
-const translator = require('../translator');
-const db = require('../database');
-const apiController = require('../controllers/api');
-const meta = require('../meta');
+import plugins from '../plugins';
+import groups from '../groups';
+import translator from '../translator';
+import db from '../database';
+import apiController from '../controllers/api';
+import meta from '../meta';
 
-const widgets = module.exports;
+
+const widgets = {} as any;
 
 widgets.render = async function (uid, options) {
 	if (!options.template) {
@@ -120,7 +121,7 @@ widgets.getWidgetDataForTemplates = async function (templates) {
 			if (templateWidgetData && templateWidgetData[location]) {
 				try {
 					returnData[template][location] = parseWidgetData(templateWidgetData[location]);
-				} catch (err) {
+				} catch (err: any) {
 					winston.error(`can not parse widget data. template:  ${template} location: ${location}`);
 					returnData[template][location] = [];
 				}
@@ -228,4 +229,7 @@ widgets.resetTemplates = async function (templates) {
 	}
 };
 
-require('../promisify')(widgets);
+import promisify from '../promisify';
+promisify(widgets);
+
+export default widgets;

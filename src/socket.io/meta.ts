@@ -1,12 +1,12 @@
 'use strict';
 
 
-const user = require('../user');
-const topics = require('../topics');
+import user from '../user';
+import topics from '../topics';
 
 const SocketMeta = {
 	rooms: {},
-};
+} as any;
 
 SocketMeta.reconnected = function (socket, data, callback) {
 	callback = callback || function () {};
@@ -60,4 +60,4 @@ function leaveCurrentRoom(socket) {
 	}
 }
 
-module.exports = SocketMeta;
+export default SocketMeta;

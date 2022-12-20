@@ -1,8 +1,10 @@
 'use strict';
 
-const db = require('../../database');
+import db from '../../database';
 
-module.exports = {
+
+
+export const obj = {
 	name: 'Changing ip blacklist storage to object',
 	timestamp: Date.UTC(2017, 8, 7),
 	method: async function () {

@@ -1,12 +1,12 @@
+
 'use strict';
 
-const querystring = require('querystring');
+import querystring from 'querystring';
+import posts from '../posts';
+import privileges from '../privileges';
+import helpers from './helpers';
 
-const posts = require('../posts');
-const privileges = require('../privileges');
-const helpers = require('./helpers');
-
-const postsController = module.exports;
+const postsController = {} as any;
 
 postsController.redirectToPost = async function (req, res, next) {
 	const pid = parseInt(req.params.pid, 10);
@@ -37,3 +37,5 @@ postsController.getRecentPosts = async function (req, res) {
 	const data = await posts.getRecentPosts(req.uid, start, stop, req.params.term);
 	res.json(data);
 };
+
+export default postsController;

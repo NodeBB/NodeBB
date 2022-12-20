@@ -1,19 +1,20 @@
 
 'use strict';
 
-const nconf = require('nconf');
-const winston = require('winston');
+import nconf from 'nconf';
+import winston from 'winston';
 
-const user = require('./index');
-const utils = require('../utils');
-const plugins = require('../plugins');
-const db = require('../database');
-const meta = require('../meta');
-const emailer = require('../emailer');
-const groups = require('../groups');
-const events = require('../events');
+import user from './index';
+import utils from '../utils';
+import plugins from '../plugins';
+import db from '../database';
+import meta from '../meta';
 
-const UserEmail = module.exports;
+import emailer from '../emailer';
+import groups from '../groups';
+import events from '../events';
+
+const UserEmail = {} as any;
 
 UserEmail.exists = async function (email) {
 	const uid = await user.getUidByEmail(email.toLowerCase());
@@ -210,3 +211,5 @@ UserEmail.confirmByUid = async function (uid) {
 	]);
 	await plugins.hooks.fire('action:user.email.confirmed', { uid: uid, email: currentEmail });
 };
+
+export default UserEmail;

@@ -1,10 +1,10 @@
 'use strict';
 
-const helpers = require('./helpers');
+import helpers from './helpers';
 
 const { setupPageRoute } = helpers;
 
-module.exports = function (app, name, middleware, controllers) {
+export default function (app, name, middleware, controllers) {
 	const middlewares = [middleware.exposeUid, middleware.canViewUsers];
 	const accountMiddlewares = [
 		middleware.exposeUid,

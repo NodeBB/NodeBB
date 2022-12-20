@@ -2,10 +2,14 @@
 
 'use strict';
 
-const db = require('../../database');
-const batch = require('../../batch');
+import db from '../../database';
 
-module.exports = {
+
+import * as batch from '../../batch';
+
+
+
+export const obj = {
 	name: 'Upgrade bans to hashes',
 	timestamp: Date.UTC(2018, 8, 24),
 	method: async function () {
@@ -39,7 +43,7 @@ module.exports = {
 							uid: uid,
 							timestamp: ban.score,
 							expire: parseInt(ban.value, 10),
-						};
+						} as any;
 						if (reasonData) {
 							data.reason = reasonData.value;
 						}

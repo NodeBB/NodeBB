@@ -1,13 +1,14 @@
 'use strict';
 
-const router = require('express').Router();
-const middleware = require('../../middleware');
-const controllers = require('../../controllers');
-const routeHelpers = require('../helpers');
+import { Router } from 'express';
+import middleware from '../../middleware';
+import controllers from '../../controllers';
+import routeHelpers from '../helpers';
 
 const { setupApiRoute } = routeHelpers;
+const router = Router();
 
-module.exports = function () {
+export default function () {
 	// The "ping" routes are mounted at root level, but for organizational purposes, the controllers are in `utilities.js`
 
 	setupApiRoute(router, 'post', '/login', [middleware.checkRequired.bind(null, ['username', 'password'])], controllers.write.utilities.login);

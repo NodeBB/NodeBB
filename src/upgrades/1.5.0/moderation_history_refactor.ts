@@ -1,11 +1,13 @@
 'use strict';
 
-const async = require('async');
-const db = require('../../database');
-const batch = require('../../batch');
+import async from 'async';
+import db from '../../database';
+import * as batch from '../../batch';
 
 
-module.exports = {
+
+
+export const obj = {
 	name: 'Update moderation notes to zset',
 	timestamp: Date.UTC(2017, 2, 22),
 	method: function (callback) {

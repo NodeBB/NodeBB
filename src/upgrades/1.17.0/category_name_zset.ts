@@ -1,9 +1,13 @@
 'use strict';
 
-const db = require('../../database');
-const batch = require('../../batch');
+import db from '../../database';
 
-module.exports = {
+
+import * as batch from '../../batch';
+
+
+
+export const obj = {
 	name: 'Create category name sorted set',
 	timestamp: Date.UTC(2021, 0, 27),
 	method: async function () {

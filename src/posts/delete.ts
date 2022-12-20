@@ -1,16 +1,15 @@
 'use strict';
 
-const _ = require('lodash');
+import _ from 'lodash';
+import db from '../database';
+import topics from '../topics';
+import categories from '../categories';
+import user from '../user';
+import notifications from '../notifications';
+import plugins from '../plugins';
+import flags from '../flags';
 
-const db = require('../database');
-const topics = require('../topics');
-const categories = require('../categories');
-const user = require('../user');
-const notifications = require('../notifications');
-const plugins = require('../plugins');
-const flags = require('../flags');
-
-module.exports = function (Posts) {
+export default function (Posts) {
 	Posts.delete = async function (pid, uid) {
 		return await deleteOrRestore('delete', pid, uid);
 	};
@@ -105,10 +104,10 @@ module.exports = function (Posts) {
 		});
 		await db.sortedSetRemoveBulk(bulkRemove);
 
-		const incrObjectBulk = [['global', { postCount: -postData.length }]];
+		const incrObjectBulk = [['global', { postCount: -postData.length }]] as any[];
 
 		const postsByCategory = _.groupBy(postData, p => parseInt(p.cid, 10));
-		for (const [cid, posts] of Object.entries(postsByCategory)) {
+		for (const [cid, posts] of Object.entries(postsByCategory) as any[]) {
 			incrObjectBulk.push([`category:${cid}`, { post_count: -posts.length }]);
 		}
 
@@ -116,7 +115,7 @@ module.exports = function (Posts) {
 		const topicPostCountTasks = [];
 		const topicTasks = [];
 		const zsetIncrBulk = [];
-		for (const [tid, posts] of Object.entries(postsByTopic)) {
+		for (const [tid, posts] of Object.entries(postsByTopic) as any[] ) {
 			incrObjectBulk.push([`topic:${tid}`, { postcount: -posts.length }]);
 			if (posts.length && posts[0]) {
 				const topicData = posts[0].topic;
@@ -129,7 +128,7 @@ module.exports = function (Posts) {
 			topicTasks.push(topics.updateTeaser(tid));
 			topicTasks.push(topics.updateLastPostTimeFromLastPid(tid));
 			const postsByUid = _.groupBy(posts, p => parseInt(p.uid, 10));
-			for (const [uid, uidPosts] of Object.entries(postsByUid)) {
+			for (const [uid, uidPosts] of Object.entries(postsByUid) as any[]) {
 				zsetIncrBulk.push([`tid:${tid}:posters`, -uidPosts.length, uid]);
 			}
 			topicTasks.push(db.sortedSetIncrByBulk(zsetIncrBulk));

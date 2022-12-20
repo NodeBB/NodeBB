@@ -1,20 +1,19 @@
 'use strict';
 
-const nconf = require('nconf');
-const _ = require('lodash');
+import nconf from 'nconf';
+import _ from 'lodash';
+import db from '../../database';
+import user from '../../user';
+import posts from '../../posts';
+import categories from '../../categories';
+import plugins from '../../plugins';
+import meta from '../../meta';
+import privileges from '../../privileges';
+import accountHelpers from './helpers';
+import helpers from '../helpers';
+import utils from '../../utils';
 
-const db = require('../../database');
-const user = require('../../user');
-const posts = require('../../posts');
-const categories = require('../../categories');
-const plugins = require('../../plugins');
-const meta = require('../../meta');
-const privileges = require('../../privileges');
-const accountHelpers = require('./helpers');
-const helpers = require('../helpers');
-const utils = require('../../utils');
-
-const profileController = module.exports;
+const profileController = {} as any;
 
 profileController.get = async function (req, res, next) {
 	const lowercaseSlug = req.params.userslug.toLowerCase();
@@ -164,3 +163,5 @@ function addMetaTags(res, userData) {
 		);
 	}
 }
+
+export default profileController;

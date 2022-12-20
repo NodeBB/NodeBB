@@ -1,12 +1,15 @@
 'use strict';
 
-const db = require('../../database');
+import db from '../../database';
+import meta from '../../meta';
 
-module.exports = {
+
+
+
+export const obj = {
 	name: 'Remove allow from uri setting',
 	timestamp: Date.UTC(2020, 8, 6),
 	method: async function () {
-		const meta = require('../../meta');
 		if (meta.config['allow-from-uri']) {
 			await db.setObjectField('config', 'csp-frame-ancestors', meta.config['allow-from-uri']);
 		}

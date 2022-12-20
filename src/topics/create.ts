@@ -1,21 +1,20 @@
 
 'use strict';
 
-const _ = require('lodash');
+import _ from 'lodash';
+import db from '../database';
+import utils from '../utils';
+import slugify from '../slugify';
+import plugins from '../plugins';
+import analytics from '../analytics';
+import user from '../user';
+import meta from '../meta';
+import posts from '../posts';
+import privileges from '../privileges';
+import categories from '../categories';
+import translator from '../translator';
 
-const db = require('../database');
-const utils = require('../utils');
-const slugify = require('../slugify');
-const plugins = require('../plugins');
-const analytics = require('../analytics');
-const user = require('../user');
-const meta = require('../meta');
-const posts = require('../posts');
-const privileges = require('../privileges');
-const categories = require('../categories');
-const translator = require('../translator');
-
-module.exports = function (Topics) {
+export default function (Topics) {
 	Topics.create = async function (data) {
 		// This is an internal method, consider using Topics.post instead
 		const timestamp = data.timestamp || Date.now();
@@ -33,7 +32,7 @@ module.exports = function (Topics) {
 			lastposttime: 0,
 			postcount: 0,
 			viewcount: 0,
-		};
+		} as any;
 
 		if (Array.isArray(data.tags) && data.tags.length) {
 			topicData.tags = data.tags.join(',');

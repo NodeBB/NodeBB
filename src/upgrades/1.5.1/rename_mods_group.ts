@@ -1,13 +1,14 @@
 'use strict';
 
-const async = require('async');
-const winston = require('winston');
+import async from 'async';
+import winston from 'winston';
+import * as batch from '../../batch';
+import groups from '../../groups';
 
-const batch = require('../../batch');
-const groups = require('../../groups');
 
 
-module.exports = {
+
+export const obj = {
 	name: 'rename user mod privileges group',
 	timestamp: Date.UTC(2017, 4, 26),
 	method: function (callback) {

@@ -1,16 +1,16 @@
 'use strict';
 
-const nconf = require('nconf');
-const request = require('request');
-const winston = require('winston');
-const crypto = require('crypto');
-const cronJob = require('cron').CronJob;
+import nconf from 'nconf';
+import request from 'request';
+import winston from 'winston';
+import crypto from 'crypto';
+import {  CronJob } from 'cron';
+const cronJob = CronJob;
+//@ts-ignore
+import pkg from '../../package.json';
+import meta from '../meta';
 
-const pkg = require('../../package.json');
-
-const meta = require('../meta');
-
-module.exports = function (Plugins) {
+export default function (Plugins) {
 	Plugins.startJobs = function () {
 		new cronJob('0 0 0 * * *', (() => {
 			Plugins.submitUsageData();
@@ -19,7 +19,7 @@ module.exports = function (Plugins) {
 
 	Plugins.submitUsageData = function (callback) {
 		callback = callback || function () {};
-		if (!meta.config.submitPluginUsage || !Plugins.loadedPlugins.length || global.env !== 'production') {
+		if (!meta.config.submitPluginUsage || !Plugins.loadedPlugins.length || (global as any).env !== 'production') {
 			return callback();
 		}
 

@@ -1,13 +1,15 @@
 'use strict';
 
-const path = require('path');
+import path from 'path';
+import fs from 'fs';
+import cproc from 'child_process';
+import { paths, pluginNamePattern } from '../constants';
+import nconf from 'nconf';
+import _ from 'lodash';
 
-const fs = require('fs');
-const cproc = require('child_process');
 
-const { paths, pluginNamePattern } = require('../constants');
 
-const pkgInstall = module.exports;
+const pkgInstall = {} as any;
 
 function sortDependencies(dependencies) {
 	return Object.entries(dependencies)
@@ -23,8 +25,7 @@ pkgInstall.updatePackageFile = () => {
 
 	try {
 		oldPackageContents = JSON.parse(fs.readFileSync(paths.currentPackage, 'utf8'));
-	} catch (e) {
-		if (e.code !== 'ENOENT') {
+} catch (e: any) {		if (e.code !== 'ENOENT') {
 			throw e;
 		} else {
 			// No local package.json, copy from install/package.json
@@ -33,7 +34,6 @@ pkgInstall.updatePackageFile = () => {
 		}
 	}
 
-	const _ = require('lodash');
 	const defaultPackageContents = JSON.parse(fs.readFileSync(paths.installPackage, 'utf8'));
 
 	let dependencies = {};
@@ -70,7 +70,6 @@ pkgInstall.getPackageManager = () => {
 			return packageManager.groups.packageManager;
 		}
 		fs.accessSync(path.join(paths.nodeModules, 'nconf/package.json'), fs.constants.R_OK);
-		const nconf = require('nconf');
 		if (!Object.keys(nconf.stores).length) {
 			// Quick & dirty nconf setup for when you cannot rely on nconf having been required already
 			const configFile = path.resolve(__dirname, '../../', nconf.any(['config', 'CONFIG']) || 'config.json');
@@ -87,8 +86,7 @@ pkgInstall.getPackageManager = () => {
 		}
 
 		return nconf.get('package_manager') || 'npm';
-	} catch (e) {
-		// nconf not installed or other unexpected error/exception
+} catch (e: any) {		// nconf not installed or other unexpected error/exception
 		return getPackageManagerByLockfile() || 'npm';
 	}
 };
@@ -103,10 +101,10 @@ function getPackageManagerByLockfile() {
 }
 
 pkgInstall.installAll = () => {
-	const prod = process.env.NODE_ENV !== 'development';
+	const prod = (process as any).env.NODE_ENV !== 'development';
 	let command = 'npm install';
 
-	const supportedPackageManagerList = exports.supportedPackageManager; // load config from src/cli/package-install.js
+	const supportedPackageManagerList = pkgInstall.supportedPackageManager; // load config from src/cli/package-install.js
 	const packageManager = pkgInstall.getPackageManager();
 	if (supportedPackageManagerList.indexOf(packageManager) >= 0) {
 		switch (packageManager) {
@@ -130,7 +128,7 @@ pkgInstall.installAll = () => {
 			cwd: path.join(__dirname, '../../'),
 			stdio: [0, 1, 2],
 		});
-	} catch (e) {
+	} catch (e: any) {
 		console.log('Error installing dependencies!');
 		console.log(`message: ${e.message}`);
 		console.log(`stdout: ${e.stdout}`);
@@ -143,8 +141,7 @@ pkgInstall.preserveExtraneousPlugins = () => {
 	// Skip if `node_modules/` is not found or inaccessible
 	try {
 		fs.accessSync(paths.nodeModules, fs.constants.R_OK);
-	} catch (e) {
-		return;
+} catch (e: any) {		return;
 	}
 
 	const packages = fs.readdirSync(paths.nodeModules)
@@ -172,3 +169,5 @@ pkgInstall.preserveExtraneousPlugins = () => {
 
 	fs.writeFileSync(paths.currentPackage, JSON.stringify(packageContents, null, 4));
 };
+
+export default pkgInstall;

@@ -1,19 +1,20 @@
 'use strict';
 
-const user = require('../user');
-const topics = require('../topics');
-const posts = require('../posts');
-const meta = require('../meta');
-const privileges = require('../privileges');
+import  user from '../user';
+import topics from '../topics';
+import posts from '../posts';
+import meta from '../meta';
 
-const apiHelpers = require('./helpers');
+import privileges from '../privileges';
+
+import * as apiHelpers from './helpers';
 
 const { doTopicAction } = apiHelpers;
 
-const websockets = require('../socket.io');
-const socketHelpers = require('../socket.io/helpers');
+import websockets from '../socket.io';
+import socketHelpers from '../socket.io/helpers';
 
-const topicsAPI = module.exports;
+const topicsAPI = {} as any;
 
 topicsAPI.get = async function (caller, data) {
 	const [userPrivileges, topic] = await Promise.all([
@@ -152,3 +153,5 @@ topicsAPI.ignore = async function (caller, data) {
 topicsAPI.unfollow = async function (caller, data) {
 	await topics.unfollow(data.tid, caller.uid);
 };
+
+export default topicsAPI;

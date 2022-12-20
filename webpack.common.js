@@ -16,7 +16,7 @@ if (relativePath === undefined) {
 	relativePath = urlObject.pathname !== '/' ? urlObject.pathname.replace(/\/+$/, '') : '';
 }
 
-module.exports = {
+module.exports =  {
 	plugins: [],
 	entry: {
 		nodebb: './build/public/src/client.js',

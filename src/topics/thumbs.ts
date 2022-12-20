@@ -1,19 +1,20 @@
 
 'use strict';
 
-const _ = require('lodash');
-const nconf = require('nconf');
-const path = require('path');
-const validator = require('validator');
+import _ from 'lodash';
+import nconf from 'nconf';
+import path from 'path';
+import validator from 'validator';
+import db from '../database';
+import file from '../file';
+import plugins from '../plugins';
+import posts from '../posts';
+import meta from '../meta';
+import cache from '../cache';
+import topics from '.';
 
-const db = require('../database');
-const file = require('../file');
-const plugins = require('../plugins');
-const posts = require('../posts');
-const meta = require('../meta');
-const cache = require('../cache');
 
-const Thumbs = module.exports;
+const Thumbs = {} as any;
 
 Thumbs.exists = async function (id, path) {
 	const isDraft = validator.isUUID(String(id));
@@ -80,7 +81,6 @@ Thumbs.associate = async function ({ id, path, score }) {
 	if (isLocal) {
 		path = path.replace(nconf.get('upload_path'), '');
 	}
-	const topics = require('.');
 	await db.sortedSetAdd(set, isFinite(score) ? score : numThumbs, path);
 	if (!isDraft) {
 		const numThumbs = await db.sortedSetCard(set);
@@ -143,7 +143,6 @@ Thumbs.delete = async function (id, relativePaths) {
 	}
 
 	if (toRemove.length && !isDraft) {
-		const topics = require('.');
 		const mainPid = (await topics.getMainPids([id]))[0];
 
 		await Promise.all([
@@ -160,3 +159,5 @@ Thumbs.deleteAll = async (id) => {
 	const thumbs = await db.getSortedSetRange(set, 0, -1);
 	await Thumbs.delete(id, thumbs);
 };
+
+export default Thumbs;

@@ -1,8 +1,8 @@
 'use strict';
 
-const cacheCreate = require('../cache/lru');
+import cacheCreate from '../cache/lru';
 
-module.exports = function (Groups) {
+export default function (Groups) {
 	Groups.cache = cacheCreate({
 		name: 'group',
 		max: 40000,

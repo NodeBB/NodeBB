@@ -1,10 +1,14 @@
 'use strict';
 
-const batch = require('../../batch');
-const posts = require('../../posts');
-const db = require('../../database');
+import * as batch from '../../batch';
 
-module.exports = {
+
+import posts from '../../posts';
+import db from '../../database';
+
+
+
+export const obj = {
 	name: 'Calculate image sizes of all uploaded images',
 	timestamp: Date.UTC(2019, 2, 16),
 	method: async function () {

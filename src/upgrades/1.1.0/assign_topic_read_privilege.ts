@@ -2,15 +2,15 @@
 
 'use strict';
 
-const winston = require('winston');
-const db = require('../../database');
+import winston from 'winston';
+import db from '../../database';
+import groupsAPI from '../../groups';
+import privilegesAPI from '../../privileges';
 
-module.exports = {
+export const obj = {
 	name: 'Giving topics:read privs to any group/user that was previously allowed to Find & Access Category',
 	timestamp: Date.UTC(2016, 4, 28),
 	method: async function () {
-		const groupsAPI = require('../../groups');
-		const privilegesAPI = require('../../privileges');
 
 		const cids = await db.getSortedSetRange('categories:cid', 0, -1);
 		for (const cid of cids) {

@@ -1,6 +1,6 @@
 'use strict';
 
-const helpers = module.exports;
+const helpers  = {} as any;
 
 helpers.noop = function () {};
 
@@ -28,3 +28,5 @@ helpers.zsetToObjectArray = function (data) {
 	}
 	return objects;
 };
+
+export default helpers;

@@ -1,16 +1,17 @@
 
 'use strict';
 
-const validator = require('validator');
-const _ = require('lodash');
+import validator from 'validator';
+import _ from 'lodash';
 
-const db = require('./database');
-const batch = require('./batch');
-const user = require('./user');
-const utils = require('./utils');
-const plugins = require('./plugins');
+import db from './database';
 
-const events = module.exports;
+import * as batch from './batch';
+import user from './user';
+import utils from './utils';
+import plugins from './plugins';
+
+const events = {} as any;
 
 events.types = [
 	'plugin-activate',
@@ -171,4 +172,7 @@ events.deleteAll = async function () {
 	}, { alwaysStartAt: 0, batch: 500 });
 };
 
-require('./promisify')(events);
+import promisify from './promisify';
+promisify(events);
+
+export default events;

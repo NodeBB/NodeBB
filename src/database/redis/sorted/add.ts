@@ -1,9 +1,8 @@
 'use strict';
+import helpers from '../helpers';
+import utils from '../../../utils';
 
-module.exports = function (module) {
-	const helpers = require('../helpers');
-	const utils = require('../../../utils');
-
+export default function (module) {
 	module.sortedSetAdd = async function (key, score, value) {
 		if (!key) {
 			return;

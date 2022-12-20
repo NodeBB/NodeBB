@@ -1,16 +1,15 @@
 'use strict';
 
-const user = require('../user');
-const meta = require('../meta');
+import user from '../user';
+import meta from '../meta';
+import db from '../database';
+import pagination from '../pagination';
+import privileges from '../privileges';
+import helpers from './helpers';
+import api from '../api';
+import utils from '../utils';
 
-const db = require('../database');
-const pagination = require('../pagination');
-const privileges = require('../privileges');
-const helpers = require('./helpers');
-const api = require('../api');
-const utils = require('../utils');
-
-const usersController = module.exports;
+const usersController = {} as any;
 
 usersController.index = async function (req, res, next) {
 	const section = req.query.section || 'joindate';
@@ -116,7 +115,7 @@ usersController.getUsers = async function (set, uid, query) {
 		setToData[set] = { title: '', crumb: '' };
 	}
 
-	const breadcrumbs = [{ text: setToData[set].crumb }];
+	const breadcrumbs = [{ text: setToData[set].crumb }] as any[];
 
 	if (set !== 'users:joindate') {
 		breadcrumbs.unshift({ text: '[[global:users]]', url: '/users' });
@@ -210,3 +209,5 @@ async function render(req, res, data) {
 	res.append('X-Total-Count', data.userCount);
 	res.render('users', data);
 }
+
+export default usersController;

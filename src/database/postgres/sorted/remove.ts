@@ -1,7 +1,8 @@
 'use strict';
+import helpers from '../helpers';
 
-module.exports = function (module) {
-	const helpers = require('../helpers');
+
+export default function (module) {
 
 	module.sortedSetRemove = async function (key, value) {
 		if (!key) {

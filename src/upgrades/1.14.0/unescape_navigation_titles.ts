@@ -1,13 +1,13 @@
 'use strict';
 
-const db = require('../../database');
+import db from '../../database';
+import translator from '../../translator'; 
 
-module.exports = {
+export const obj = {
 	name: 'Unescape navigation titles',
 	timestamp: Date.UTC(2020, 5, 26),
 	method: async function () {
 		const data = await db.getSortedSetRangeWithScores('navigation:enabled', 0, -1);
-		const translator = require('../../translator');
 		const order = [];
 		const items = [];
 		data.forEach((item) => {

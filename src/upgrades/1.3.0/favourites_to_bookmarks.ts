@@ -1,13 +1,13 @@
 'use strict';
 
-const db = require('../../database');
+import db from '../../database';
+import * as batch from '../../batch';
 
-module.exports = {
+export const obj = {
 	name: 'Favourites to Bookmarks',
 	timestamp: Date.UTC(2016, 9, 8),
 	method: async function () {
 		const { progress } = this;
-		const batch = require('../../batch');
 
 		async function upgradePosts() {
 			await batch.processSortedSet('posts:pid', async (ids) => {

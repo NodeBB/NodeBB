@@ -1,8 +1,8 @@
 'use strict';
 
-const topics = require('../../topics');
+import topics from '../../topics';
 
-const Tags = module.exports;
+const Tags  = {} as any;
 
 Tags.create = async function (socket, data) {
 	if (!data) {
@@ -27,3 +27,5 @@ Tags.deleteTags = async function (socket, data) {
 
 	await topics.deleteTags(data.tags);
 };
+
+export default Tags;

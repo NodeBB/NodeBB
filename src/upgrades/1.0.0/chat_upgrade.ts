@@ -1,11 +1,11 @@
 'use strict';
 
 
-const async = require('async');
-const winston = require('winston');
-const db = require('../../database');
+import async from 'async';
+import winston from 'winston';
+import db from '../../database';
 
-module.exports = {
+export const obj = {
 	name: 'Upgrading chats',
 	timestamp: Date.UTC(2015, 11, 15),
 	method: function (callback) {

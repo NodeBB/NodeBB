@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (module) {
+export default function (module) {
 	// TODO
 	module.transaction = function (perform, callback) {
 		perform(module.client, callback);

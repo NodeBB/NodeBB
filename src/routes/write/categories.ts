@@ -1,13 +1,14 @@
 'use strict';
 
-const router = require('express').Router();
-const middleware = require('../../middleware');
-const controllers = require('../../controllers');
-const routeHelpers = require('../helpers');
+import { Router } from 'express';
+import middleware from '../../middleware';
+import controllers from '../../controllers';
+import routeHelpers from '../helpers';
 
 const { setupApiRoute } = routeHelpers;
+const router = Router();
 
-module.exports = function () {
+export default function () {
 	const middlewares = [middleware.ensureLoggedIn];
 
 	setupApiRoute(router, 'post', '/', [...middlewares, middleware.checkRequired.bind(null, ['name'])], controllers.write.categories.create);

@@ -1,14 +1,13 @@
 'use strict';
 
-const validator = require('validator');
+import validator from 'validator';
+import db from '../database';
+import user from '../user';
+import plugins from '../plugins';
+import privileges from '../privileges';
+import meta from '../meta';
 
-const db = require('../database');
-const user = require('../user');
-const plugins = require('../plugins');
-const privileges = require('../privileges');
-const meta = require('../meta');
-
-module.exports = function (Messaging) {
+export default function (Messaging) {
 	Messaging.getRoomData = async (roomId) => {
 		const data = await db.getObject(`chat:room:${roomId}`);
 		if (!data) {

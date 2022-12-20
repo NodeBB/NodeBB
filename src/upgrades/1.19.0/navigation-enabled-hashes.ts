@@ -1,8 +1,10 @@
 'use strict';
 
-const db = require('../../database');
+import db from '../../database';
 
-module.exports = {
+
+
+export const obj = {
 	name: 'Upgrade navigation items to hashes',
 	timestamp: Date.UTC(2021, 11, 13),
 	method: async function () {

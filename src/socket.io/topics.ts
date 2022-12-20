@@ -1,24 +1,30 @@
 'use strict';
 
-const _ = require('lodash');
+import _ from 'lodash';
+import db from '../database';
+import posts from '../posts';
+import topics from '../topics';
+import user from '../user';
+import meta from '../meta';
+import privileges from '../privileges';
+import cache from '../cache';
+import events from '../events';
 
-const db = require('../database');
-const posts = require('../posts');
-const topics = require('../topics');
-const user = require('../user');
-const meta = require('../meta');
-const privileges = require('../privileges');
-const cache = require('../cache');
-const events = require('../events');
+const SocketTopics = {} as any;
 
-const SocketTopics = module.exports;
+import unread from './topics/unread';
+import move from './topics/move';
+import tools from './topics/tools';
+import infinitescroll from './topics/infinitescroll';
+import tags from './topics/tags';
+import merge from './topics/merge';
 
-require('./topics/unread')(SocketTopics);
-require('./topics/move')(SocketTopics);
-require('./topics/tools')(SocketTopics);
-require('./topics/infinitescroll')(SocketTopics);
-require('./topics/tags')(SocketTopics);
-require('./topics/merge')(SocketTopics);
+unread(SocketTopics);
+move(SocketTopics);
+tools(SocketTopics);
+infinitescroll(SocketTopics);
+tags(SocketTopics);
+merge(SocketTopics);
 
 SocketTopics.postcount = async function (socket, tid) {
 	const canRead = await privileges.topics.can('topics:read', tid, socket.uid);
@@ -128,4 +134,7 @@ SocketTopics.getPostCountInTopic = async function (socket, tid) {
 	return await db.sortedSetScore(`tid:${tid}:posters`, socket.uid);
 };
 
-require('../promisify')(SocketTopics);
+import promisify from '../promisify';
+promisify(SocketTopics);
+
+export default SocketTopics;

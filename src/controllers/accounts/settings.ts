@@ -1,21 +1,20 @@
 'use strict';
 
-const nconf = require('nconf');
-const winston = require('winston');
-const _ = require('lodash');
-const jwt = require('jsonwebtoken');
-const util = require('util');
+import nconf from 'nconf';
+import winston from 'winston';
+import _ from 'lodash';
+import jwt from 'jsonwebtoken';
+import util from 'util';
+import user from '../../user';
+import languages from '../../languages';
+import meta from '../../meta';
+import plugins from '../../plugins';
+import notifications from '../../notifications';
+import db from '../../database';
+import helpers from '../helpers';
+import accountHelpers from './helpers';
 
-const user = require('../../user');
-const languages = require('../../languages');
-const meta = require('../../meta');
-const plugins = require('../../plugins');
-const notifications = require('../../notifications');
-const db = require('../../database');
-const helpers = require('../helpers');
-const accountHelpers = require('./helpers');
-
-const settingsController = module.exports;
+const settingsController = {} as any;
 
 settingsController.get = async function (req, res, next) {
 	const userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, req.query);
@@ -129,7 +128,7 @@ const doUnsubscribe = async (payload) => {
 
 settingsController.unsubscribe = async (req, res) => {
 	try {
-		const payload = await jwtVerifyAsync(req.params.token);
+		const payload: any = await jwtVerifyAsync(req.params.token);
 		if (!payload || !unsubscribable.includes(payload.template)) {
 			return;
 		}
@@ -137,7 +136,7 @@ settingsController.unsubscribe = async (req, res) => {
 		res.render('unsubscribe', {
 			payload,
 		});
-	} catch (err) {
+	} catch (err: any) {
 		res.render('unsubscribe', {
 			error: err.message,
 		});
@@ -151,13 +150,13 @@ settingsController.unsubscribePost = async function (req, res) {
 		if (!payload || !unsubscribable.includes(payload.template)) {
 			return res.sendStatus(404);
 		}
-	} catch (err) {
+	} catch (err: any) {
 		return res.sendStatus(403);
 	}
 	try {
 		await doUnsubscribe(payload);
 		res.sendStatus(200);
-	} catch (err) {
+	} catch (err: any) {
 		winston.error(`[settings/unsubscribe] One-click unsubscribe failed with error: ${err.message}`);
 		res.sendStatus(500);
 	}
@@ -227,3 +226,5 @@ async function getHomePageRoutes(userData) {
 
 	return routes;
 }
+
+export default settingsController;

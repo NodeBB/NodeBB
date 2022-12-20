@@ -1,20 +1,22 @@
 'use strict';
 
-const validator = require('validator');
-const nconf = require('nconf');
+import validator from 'validator';
+import nconf from 'nconf';
+import db from '../../database';
+import user from '../../user';
+import groups from '../../groups';
+import plugins from '../../plugins';
+import meta from '../../meta';
+import utils from '../../utils';
+import privileges from '../../privileges';
+import translator from '../../translator';
+import messaging from '../../messaging';
+import categories from '../../categories';
+import promisify from '../../promisify';
 
-const db = require('../../database');
-const user = require('../../user');
-const groups = require('../../groups');
-const plugins = require('../../plugins');
-const meta = require('../../meta');
-const utils = require('../../utils');
-const privileges = require('../../privileges');
-const translator = require('../../translator');
-const messaging = require('../../messaging');
-const categories = require('../../categories');
 
-const helpers = module.exports;
+
+const helpers = {} as any;
 
 helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {}) {
 	const uid = await user.getUidByUserslug(userslug);
@@ -109,7 +111,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 	if (userData['cover:url']) {
 		userData['cover:url'] = userData['cover:url'].startsWith('http') ? userData['cover:url'] : (nconf.get('relative_path') + userData['cover:url']);
 	} else {
-		userData['cover:url'] = require('../../coverPhoto').getDefaultProfileCover(userData.uid);
+		userData['cover:url']  = require('../../coverPhoto').default.getDefaultProfileCover(userData.uid);
 	}
 
 	userData['cover:position'] = validator.escape(String(userData['cover:position'] || '50% 50%'));
@@ -160,7 +162,7 @@ async function getCounts(userData, callerUID) {
 		best: Promise.all(cids.map(async c => db.sortedSetCount(`cid:${c}:uid:${uid}:pids:votes`, 1, '+inf'))),
 		controversial: Promise.all(cids.map(async c => db.sortedSetCount(`cid:${c}:uid:${uid}:pids:votes`, '-inf', -1))),
 		topics: db.sortedSetsCardSum(cids.map(c => `cid:${c}:uid:${uid}:tids`)),
-	};
+	} as any;
 	if (userData.isAdmin || userData.isSelf) {
 		promises.ignored = db.sortedSetCard(`uid:${uid}:ignored_tids`);
 		promises.watched = db.sortedSetCard(`uid:${uid}:followed_tids`);
@@ -267,4 +269,6 @@ function filterLinks(links, states) {
 	});
 }
 
-require('../../promisify')(helpers);
+promisify(helpers);
+
+export default helpers;

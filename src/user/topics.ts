@@ -1,8 +1,8 @@
 'use strict';
 
-const db = require('../database');
+import db from '../database';
 
-module.exports = function (User) {
+export default function (User) {
 	User.getIgnoredTids = async function (uid, start, stop) {
 		return await db.getSortedSetRevRange(`uid:${uid}:ignored_tids`, start, stop);
 	};

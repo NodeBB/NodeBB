@@ -1,9 +1,8 @@
 'use strict';
 
-const crypto = require('crypto');
-const meta = require('../../meta');
-
-module.exports = {
+import crypto from 'crypto';
+import meta from '../../meta';
+export const obj = {
 	name: 'Clearing stale digest templates that were accidentally saved as custom',
 	timestamp: Date.UTC(2017, 8, 6),
 	method: async function () {

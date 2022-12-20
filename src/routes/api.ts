@@ -1,11 +1,12 @@
 'use strict';
 
-const express = require('express');
+import express from 'express';
+import uploadsController from '../controllers/uploads';
+import helpers from './helpers';
+import multipart from 'connect-multiparty';
 
-const uploadsController = require('../controllers/uploads');
-const helpers = require('./helpers');
 
-module.exports = function (app, middleware, controllers) {
+export default function (app, middleware, controllers) {
 	const middlewares = [middleware.authenticateRequest];
 	const router = express.Router();
 	app.use('/api', router);
@@ -23,7 +24,6 @@ module.exports = function (app, middleware, controllers) {
 	router.get('/topic/teaser/:topic_id', [...middlewares], helpers.tryRoute(controllers.topics.teaser));
 	router.get('/topic/pagination/:topic_id', [...middlewares], helpers.tryRoute(controllers.topics.pagination));
 
-	const multipart = require('connect-multiparty');
 	const multipartMiddleware = multipart();
 	const postMiddlewares = [
 		middleware.maintenanceMode,

@@ -1,15 +1,16 @@
 'use strict';
 
-const nconf = require('nconf');
-const url = require('url');
-const winston = require('winston');
-const path = require('path');
-const chalk = require('chalk');
+import nconf from 'nconf';
+import url from 'url';
+import winston from 'winston';
+import path from 'path';
+import chalk from 'chalk';
+import semver from 'semver';
+//@ts-ignore
+import pkg from '../../install/package.json';
+import { paths } from './constants';
 
-const pkg = require('../package.json');
-const { paths } = require('./constants');
-
-function setupWinston() {
+export function setupWinston() {
 	if (!winston.format) {
 		return;
 	}
@@ -24,7 +25,7 @@ function setupWinston() {
 		formats.push(winston.format.json());
 	} else {
 		const timestampFormat = winston.format((info) => {
-			const dateString = `${new Date().toISOString()} [${nconf.get('port')}/${global.process.pid}]`;
+			const dateString = `${new Date().toISOString()} [${nconf.get('port')}/${(global as any).process.pid}]`;
 			info.level = `${dateString} - ${info.level}`;
 			return info;
 		});
@@ -34,7 +35,7 @@ function setupWinston() {
 	}
 
 	winston.configure({
-		level: nconf.get('log-level') || (process.env.NODE_ENV === 'production' ? 'info' : 'verbose'),
+		level: nconf.get('log-level') || ((process as any).env.NODE_ENV === 'production' ? 'info' : 'verbose'),
 		format: winston.format.combine.apply(null, formats),
 		transports: [
 			new winston.transports.Console({
@@ -44,11 +45,10 @@ function setupWinston() {
 	});
 }
 
-function loadConfig(configFile) {
+export function loadConfig(configFile) {
 	nconf.file({
 		file: configFile,
 	});
-
 	nconf.defaults({
 		base_dir: paths.baseDir,
 		themes_path: paths.nodeModules,
@@ -85,7 +85,6 @@ function loadConfig(configFile) {
 	if (!nconf.get('sessionKey')) {
 		nconf.set('sessionKey', 'express.sid');
 	}
-
 	if (nconf.get('url')) {
 		nconf.set('url', nconf.get('url').replace(/\/$/, ''));
 		nconf.set('url_parsed', url.parse(nconf.get('url')));
@@ -108,10 +107,9 @@ function loadConfig(configFile) {
 	}
 }
 
-function versionCheck() {
-	const version = process.version.slice(1);
+export function versionCheck() {
+	const version = (process as any).version.slice(1);
 	const range = pkg.engines.node;
-	const semver = require('semver');
 	const compatible = semver.satisfies(version, range);
 
 	if (!compatible) {
@@ -120,6 +118,5 @@ function versionCheck() {
 	}
 }
 
-exports.setupWinston = setupWinston;
-exports.loadConfig = loadConfig;
-exports.versionCheck = versionCheck;
+
+

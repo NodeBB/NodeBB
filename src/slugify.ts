@@ -1,3 +1,5 @@
 'use strict';
+//@ts-ignore
+import slugify from '../../public/src/modules/slugify';
 
-module.exports = require('../public/src/modules/slugify');
+export default slugify;

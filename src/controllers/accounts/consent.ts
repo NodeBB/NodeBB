@@ -1,11 +1,11 @@
 'use strict';
 
-const db = require('../../database');
-const meta = require('../../meta');
-const helpers = require('../helpers');
-const accountHelpers = require('./helpers');
+import db from '../../database';
+import meta from '../../meta';
+import helpers from '../helpers';
+import accountHelpers from './helpers';
 
-const consentController = module.exports;
+const consentController = {} as any;
 
 consentController.get = async function (req, res, next) {
 	if (!meta.config.gdpr_enabled) {
@@ -28,3 +28,5 @@ consentController.get = async function (req, res, next) {
 
 	res.render('account/consent', userData);
 };
+
+export default consentController;

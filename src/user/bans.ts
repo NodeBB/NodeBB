@@ -1,14 +1,15 @@
 'use strict';
 
-const winston = require('winston');
+import winston from 'winston';
 
-const meta = require('../meta');
-const emailer = require('../emailer');
-const db = require('../database');
-const groups = require('../groups');
-const privileges = require('../privileges');
+import meta from '../meta';
 
-module.exports = function (User) {
+import emailer from '../emailer';
+import db from '../database';
+import groups from '../groups';
+import privileges from '../privileges';
+
+export default function (User) {
 	User.bans = {};
 
 	User.bans.ban = async function (uid, until, reason) {
@@ -29,7 +30,7 @@ module.exports = function (User) {
 			uid: uid,
 			timestamp: now,
 			expire: until > now ? until : 0,
-		};
+		} as any;
 		if (reason) {
 			banData.reason = reason;
 		}

@@ -1,8 +1,10 @@
 'use strict';
 
-const db = require('../../database');
+import db from '../../database';
 
-module.exports = {
+
+
+export const obj = {
 	name: 'Add default settings for notification delivery types',
 	timestamp: Date.UTC(2018, 1, 14),
 	method: async function () {

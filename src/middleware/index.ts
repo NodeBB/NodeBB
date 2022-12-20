@@ -1,25 +1,32 @@
 'use strict';
 
-const async = require('async');
-const path = require('path');
-const csrf = require('csurf');
-const validator = require('validator');
-const nconf = require('nconf');
-const toobusy = require('toobusy-js');
-const util = require('util');
+import async from 'async';
+import path from 'path';
+import csrf from 'csurf';
+import validator from 'validator';
+import nconf from 'nconf';
+import toobusy from 'toobusy-js';
+import util from 'util';
+import plugins from '../plugins';
+import meta from '../meta';
+import user from '../user';
+import groups from '../groups';
+import analytics from '../analytics';
+import privileges from '../privileges';
+import cacheCreate from '../cache/lru';
+import helpers from './helpers';
+import render from './render';
+import maintenance from './maintenance';
+import * as uploads from './uploads';
+import headers from './headers';
+import exposeMiddleware from './expose';
+import assert from './assert';
+import api from '../controllers/api';
 
-const plugins = require('../plugins');
-const meta = require('../meta');
-const user = require('../user');
-const groups = require('../groups');
-const analytics = require('../analytics');
-const privileges = require('../privileges');
-const cacheCreate = require('../cache/lru');
-const helpers = require('./helpers');
 
 const controllers = {
-	api: require('../controllers/api'),
-	helpers: require('../controllers/helpers'),
+	api,
+	helpers,
 };
 
 const delayCache = cacheCreate({
@@ -27,7 +34,7 @@ const delayCache = cacheCreate({
 	max: 200,
 });
 
-const middleware = module.exports;
+const middleware = {} as any;
 
 const relative_path = nconf.get('relative_path');
 
@@ -54,17 +61,21 @@ middleware.ensureLoggedIn = (req, res, next) => {
 	setImmediate(next);
 };
 
+import admin from './admin';
+import header from './header';
+
 Object.assign(middleware, {
-	admin: require('./admin'),
-	...require('./header'),
+	admin,
+	...header,
 });
-require('./render')(middleware);
-require('./maintenance')(middleware);
-require('./user')(middleware);
-middleware.uploads = require('./uploads');
-require('./headers')(middleware);
-require('./expose')(middleware);
-middleware.assert = require('./assert');
+
+render(middleware);
+maintenance(middleware);
+user(middleware);
+middleware.uploads = uploads;
+headers(middleware);
+exposeMiddleware(middleware);
+middleware.assert = assert;
 
 middleware.stripLeadingSlashes = function stripLeadingSlashes(req, res, next) {
 	const target = req.originalUrl.replace(relative_path, '');
@@ -104,7 +115,7 @@ middleware.pluginHooks = helpers.try(async (req, res, next) => {
 
 middleware.validateFiles = function validateFiles(req, res, next) {
 	if (!Array.isArray(req.files.files) || !req.files.files.length) {
-		return next(new Error(['[[error:invalid-files]]']));
+		return next(new Error(['[[error:invalid-files]]'] as any));
 	}
 
 	next();
@@ -172,7 +183,7 @@ middleware.privateUploads = function privateUploads(req, res, next) {
 };
 
 middleware.busyCheck = function busyCheck(req, res, next) {
-	if (global.env === 'production' && meta.config.eventLoopCheckEnabled && toobusy()) {
+	if ((global as any).env === 'production' && meta.config.eventLoopCheckEnabled && toobusy()) {
 		analytics.increment('errors:503');
 		res.status(503).type('text/html').sendFile(path.join(__dirname, '../../public/503.html'));
 	} else {
@@ -184,7 +195,7 @@ middleware.applyBlacklist = async function applyBlacklist(req, res, next) {
 	try {
 		await meta.blacklist.test(req.ip);
 		next();
-	} catch (err) {
+	} catch (err: any) {
 		next(err);
 	}
 };
@@ -234,7 +245,7 @@ middleware.validateAuth = helpers.try(async (req, res, next) => {
 			strategy: res.locals.strategy,
 		});
 		next();
-	} catch (err) {
+	} catch (err: any) {
 		const regenerateSession = util.promisify(cb => req.session.regenerate(cb));
 		await regenerateSession();
 		req.uid = 0;
@@ -253,3 +264,5 @@ middleware.checkRequired = function (fields, req, res, next) {
 
 	controllers.helpers.formatApiResponse(400, res, new Error(`[[error:required-parameters-missing, ${missing.join(' ')}]]`));
 };
+
+export default middleware;

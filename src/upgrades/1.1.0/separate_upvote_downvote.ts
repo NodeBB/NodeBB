@@ -1,16 +1,17 @@
 'use strict';
 
 
-const async = require('async');
-const winston = require('winston');
-const db = require('../../database');
+import async from 'async';
+import winston from 'winston';
+import db from '../../database';
+import * as batch from '../../batch';
+import posts from '../../posts';
 
-module.exports = {
+export const obj = {
 	name: 'Store upvotes/downvotes separately',
 	timestamp: Date.UTC(2016, 5, 13),
 	method: function (callback) {
-		const batch = require('../../batch');
-		const posts = require('../../posts');
+
 		let count = 0;
 		const { progress } = this;
 
@@ -29,7 +30,7 @@ module.exports = {
 					if (err) {
 						return next(err);
 					}
-					const data = {};
+					const data = {} as any;
 
 					if (parseInt(results.upvotes, 10) > 0) {
 						data.upvotes = results.upvotes;

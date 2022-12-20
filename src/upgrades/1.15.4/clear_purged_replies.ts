@@ -1,11 +1,15 @@
 'use strict';
 
-const _ = require('lodash');
-const db = require('../../database');
+import _ from 'lodash';
+import db from '../../database';
 
-const batch = require('../../batch');
 
-module.exports = {
+
+import * as batch from '../../batch';
+
+
+
+export const obj = {
 	name: 'Clear purged replies and toPid',
 	timestamp: Date.UTC(2020, 10, 26),
 	method: async function () {

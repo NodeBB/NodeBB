@@ -1,16 +1,17 @@
 'use strict';
 
-const os = require('os');
-const nconf = require('nconf');
+import os from 'os';
+import nconf from 'nconf';
+import topics from '../../topics';
+import pubsub from '../../pubsub';
+import utils from '../../utils';
+import Sockets from '../index';
 
-const topics = require('../../topics');
-const pubsub = require('../../pubsub');
-const utils = require('../../utils');
 
-const stats = {};
-const totals = {};
+const stats = {} as any;
+const totals = {} as any;
 
-const SocketRooms = module.exports;
+const SocketRooms  = {} as any;
 
 SocketRooms.stats = stats;
 SocketRooms.totals = totals;
@@ -28,7 +29,6 @@ pubsub.on('sync:stats:end', (data) => {
 });
 
 pubsub.on('sync:stats:guests', (eventId) => {
-	const Sockets = require('../index');
 	const guestCount = Sockets.getCountInRoom('online_guests');
 	pubsub.publish(eventId, guestCount);
 });
@@ -64,7 +64,7 @@ SocketRooms.getAll = async function () {
 		category: 0,
 	};
 
-	for (const instance of Object.values(stats)) {
+	for (const instance of Object.values(stats) as any) {
 		totals.onlineGuestCount += instance.onlineGuestCount;
 		totals.onlineRegisteredCount += instance.onlineRegisteredCount;
 		totals.socketCount += instance.socketCount;
@@ -112,7 +112,6 @@ SocketRooms.getOnlineUserCount = function (io) {
 };
 
 SocketRooms.getLocalStats = function () {
-	const Sockets = require('../index');
 	const io = Sockets.server;
 
 	const socketData = {
@@ -157,4 +156,7 @@ SocketRooms.getLocalStats = function () {
 	return socketData;
 };
 
-require('../../promisify')(SocketRooms);
+import promisify from '../../promisify';
+promisify(SocketRooms);
+
+export default SocketRooms;

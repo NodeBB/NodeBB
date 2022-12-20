@@ -1,11 +1,15 @@
 'use strict';
 
-const async = require('async');
-const db = require('../../database');
-const batch = require('../../batch');
-const topics = require('../../topics');
+import async from 'async';
+import db from '../../database';
 
-module.exports = {
+
+import * as batch from '../../batch';
+
+
+import topics from '../../topics';
+
+export const obj = {
 	name: 'Create category tags sorted sets',
 	timestamp: Date.UTC(2020, 10, 23),
 	method: async function () {

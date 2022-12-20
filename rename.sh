@@ -1,3 +1,3 @@
-for f in src/**/**/*.js; do
+for f in src/user/**/*.js; do
   git mv "$f" "${f%.js}.ts"
 done

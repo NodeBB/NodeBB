@@ -1,11 +1,15 @@
 'use strict';
 
-const db = require('../../database');
+import db from '../../database';
 
-const batch = require('../../batch');
-const user = require('../../user');
 
-module.exports = {
+
+import * as batch from '../../batch';
+
+
+import user from '../../user';
+
+export const obj = {
 	name: 'Record first entry in username/email history',
 	timestamp: Date.UTC(2018, 7, 28),
 	method: async function () {

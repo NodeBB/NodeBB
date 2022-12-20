@@ -1,18 +1,17 @@
 'use strict';
 
-const _ = require('lodash');
+import _ from 'lodash';
+import db from '../database';
+import topics from '.';
+import categories from '../categories';
+import user from '../user';
+import plugins from '../plugins';
+import privileges from '../privileges';
+import utils from '../utils';
 
-const db = require('../database');
-const topics = require('.');
-const categories = require('../categories');
-const user = require('../user');
-const plugins = require('../plugins');
-const privileges = require('../privileges');
-const utils = require('../utils');
 
-
-module.exports = function (Topics) {
-	const topicTools = {};
+export default function (Topics) {
+	const topicTools = {} as any;
 	Topics.tools = topicTools;
 
 	topicTools.delete = async function (tid, uid) {

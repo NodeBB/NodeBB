@@ -1,9 +1,11 @@
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
-const mkdirp = require('mkdirp');
-const winston = require('winston');
+import fs from 'fs';
+import path from 'path';
+import mkdirp from 'mkdirp';
+import winston from 'winston';
+import promisify from '../promisify';
+
 
 const filePath = path.join(__dirname, '../../build/cache-buster');
 
@@ -14,12 +16,16 @@ function generate() {
 	return (Math.random() * 1e18).toString(32).slice(0, 11);
 }
 
-exports.write = async function write() {
+export const write = async function write() {
 	await mkdirp(path.dirname(filePath));
 	await fs.promises.writeFile(filePath, generate());
 };
 
-exports.read = async function read() {
+promisify({
+	write
+});
+
+export const read = async function read() {
 	if (cached) {
 		return cached;
 	}
@@ -32,10 +38,12 @@ exports.read = async function read() {
 
 		cached = buster;
 		return cached;
-	} catch (err) {
+	} catch (err: any) {
 		winston.warn('[cache-buster] could not read cache buster', err);
 		return generate();
 	}
 };
+promisify({
+  read
+});
 
-require('../promisify')(exports);

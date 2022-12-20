@@ -1,8 +1,10 @@
 'use strict';
 
-const db = require('../../database');
+import db from '../../database';
 
-module.exports = {
+
+
+export const obj = {
 	name: 'Rename privileges:downvote and privileges:flag to min:rep:downvote, min:rep:flag respectively',
 	timestamp: Date.UTC(2018, 0, 12),
 	method: function (callback) {

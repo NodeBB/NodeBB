@@ -1,11 +1,11 @@
 'use strict';
 
-const nconf = require('nconf');
-const validator = require('validator');
-const admin = require('./admin');
-const groups = require('../groups');
+import nconf from 'nconf';
+import validator from 'validator';
+import admin from './admin';
+import groups from '../groups';
 
-const navigation = module.exports;
+const navigation = {} as any;
 
 const relative_path = nconf.get('relative_path');
 
@@ -31,4 +31,7 @@ navigation.get = async function (uid) {
 	return data.filter((navItem, i) => pass[i]);
 };
 
-require('../promisify')(navigation);
+import promisify from '../promisify';
+promisify(navigation);
+
+export default navigation;

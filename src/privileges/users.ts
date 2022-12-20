@@ -1,15 +1,15 @@
 
 'use strict';
 
-const _ = require('lodash');
+import _ from 'lodash';
+import user from '../user';
+import meta from '../meta';
+import groups from '../groups';
+import plugins from '../plugins';
+import helpers from './helpers';
+import privsGlobal from './global';
 
-const user = require('../user');
-const meta = require('../meta');
-const groups = require('../groups');
-const plugins = require('../plugins');
-const helpers = require('./helpers');
-
-const privsUsers = module.exports;
+const privsUsers = {} as any;
 
 privsUsers.isAdministrator = async function (uid) {
 	return await isGroupMember(uid, 'administrators');
@@ -95,7 +95,6 @@ privsUsers.canEdit = async function (callerUid, uid) {
 };
 
 privsUsers.canBanUser = async function (callerUid, uid) {
-	const privsGlobal = require('./global');
 	const [canBan, isTargetAdmin] = await Promise.all([
 		privsGlobal.can('ban', callerUid),
 		privsUsers.isAdministrator(uid),
@@ -110,7 +109,6 @@ privsUsers.canBanUser = async function (callerUid, uid) {
 };
 
 privsUsers.canMuteUser = async function (callerUid, uid) {
-	const privsGlobal = require('./global');
 	const [canMute, isTargetAdmin] = await Promise.all([
 		privsGlobal.can('mute', callerUid),
 		privsUsers.isAdministrator(uid),
@@ -145,10 +143,12 @@ privsUsers.hasMutePrivilege = async uid => await hasGlobalPrivilege('mute', uid)
 privsUsers.hasInvitePrivilege = async uid => await hasGlobalPrivilege('invite', uid);
 
 async function hasGlobalPrivilege(privilege, uid) {
-	const privsGlobal = require('./global');
+
 	const privilegeName = privilege.split('-').map(word => word.slice(0, 1).toUpperCase() + word.slice(1)).join('');
 	let payload = { uid };
 	payload[`can${privilegeName}`] = await privsGlobal.can(privilege, uid);
 	payload = await plugins.hooks.fire(`filter:user.has${privilegeName}Privilege`, payload);
 	return payload[`can${privilegeName}`];
 }
+
+export default privsUsers;

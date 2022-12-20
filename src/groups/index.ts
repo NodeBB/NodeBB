@@ -1,26 +1,42 @@
 'use strict';
 
-const user = require('../user');
-const db = require('../database');
-const plugins = require('../plugins');
-const slugify = require('../slugify');
+import user from '../user';
+import db from '../database';
+import plugins from '../plugins';
+import slugify from '../slugify';
 
-const Groups = module.exports;
+const Groups = {} as any;
 
-require('./data')(Groups);
-require('./create')(Groups);
-require('./delete')(Groups);
-require('./update')(Groups);
-require('./invite')(Groups);
-require('./membership')(Groups);
-require('./ownership')(Groups);
-require('./search')(Groups);
-require('./cover')(Groups);
-require('./posts')(Groups);
-require('./user')(Groups);
-require('./join')(Groups);
-require('./leave')(Groups);
-require('./cache')(Groups);
+import data from './data';
+import create from './create';
+import deleteGroup from './delete';
+import update from './update';
+import invite from './invite';
+import membership from './membership';
+import ownership from './ownership';
+import search from './search';
+import conver from './cover';
+import posts from './posts';
+import cover from './cover';
+import userFn from './user';
+import join from './join';
+import leave from './leave';
+import cache from './cache';
+
+data(Groups);
+create(Groups);
+deleteGroup(Groups);
+update(Groups);
+invite(Groups);
+membership(Groups);
+ownership(Groups);
+search(Groups);
+cover(Groups);
+posts(Groups);
+userFn(Groups);
+join(Groups);
+leave(Groups);
+cache(Groups);
 
 Groups.BANNED_USERS = 'banned-users';
 
@@ -244,4 +260,6 @@ Groups.existsBySlug = async function (slug) {
 	return await db.isObjectField('groupslug:groupname', slug);
 };
 
-require('../promisify')(Groups);
+import promisify from '../promisify';
+promisify(Groups);
+export default Groups;

@@ -1,26 +1,27 @@
 'use strict';
 
-const winston = require('winston');
-const nconf = require('nconf');
-const Benchpress = require('benchpressjs');
-const nodemailer = require('nodemailer');
-const wellKnownServices = require('nodemailer/lib/well-known/services');
-const { htmlToText } = require('html-to-text');
-const url = require('url');
-const path = require('path');
-const fs = require('fs');
-const _ = require('lodash');
-const jwt = require('jsonwebtoken');
+import winston from 'winston';
+import nconf from 'nconf';
+import Benchpress from 'benchpressjs';
+import nodemailer from 'nodemailer';
+// @ts-ignore
+import wellKnownServices from 'nodemailer/lib/well-known/services';
+import { htmlToText } from 'html-to-text';
+import url from 'url';
+import path from 'path';
+import fs from 'fs';
+import _ from 'lodash';
+import jwt from 'jsonwebtoken';
 
-const User = require('./user');
-const Plugins = require('./plugins');
-const meta = require('./meta');
-const translator = require('./translator');
-const pubsub = require('./pubsub');
-const file = require('./file');
+import User from './user';
+import Plugins from './plugins';
+import meta from './meta';
+import translator from './translator';
+import pubsub from './pubsub';
+import file from './file';
 
 const viewsDir = nconf.get('views_dir');
-const Emailer = module.exports;
+const Emailer = {} as any;
 
 let prevConfig;
 let app;
@@ -90,7 +91,7 @@ const buildCustomTemplates = async (config) => {
 
 		Benchpress.flush();
 		winston.verbose('[emailer] Built custom email templates');
-	} catch (err) {
+	} catch (err: any) {
 		winston.error(`[emailer] Failed to build custom email templates\n${err.stack}`);
 	}
 };
@@ -122,7 +123,7 @@ Emailer.setupFallbackTransport = (config) => {
 		const smtpOptions = {
 			name: getHostname(),
 			pool: config['email:smtpTransport:pool'],
-		};
+		} as any;
 
 		if (config['email:smtpTransport:user'] || config['email:smtpTransport:pass']) {
 			smtpOptions.auth = {
@@ -235,7 +236,7 @@ Emailer.send = async (template, uid, params) => {
 	}
 
 	if (!userData || !userData.email) {
-		if (process.env.NODE_ENV === 'development') {
+		if ((process as any).env.NODE_ENV === 'development') {
 			winston.warn(`uid : ${uid} has no email, not sending "${template}" email.`);
 		}
 		return;
@@ -243,7 +244,7 @@ Emailer.send = async (template, uid, params) => {
 
 	const allowedTpls = ['verify-email', 'welcome', 'registration_accepted', 'reset', 'reset_notify'];
 	if (!meta.config.includeUnverifiedEmails && !userData['email:confirmed'] && !allowedTpls.includes(template)) {
-		if (process.env.NODE_ENV === 'development') {
+		if ((process as any).env.NODE_ENV === 'development') {
 			winston.warn(`uid : ${uid} (${userData.email}) has not confirmed email, not sending "${template}" email.`);
 		}
 		return;
@@ -275,7 +276,7 @@ Emailer.sendToEmail = async (template, email, language, params) => {
 	let payload = {
 		template: template,
 		uid: params.uid,
-	};
+	} as any;
 
 	if (unsubscribable.includes(template)) {
 		if (template === 'notification') {
@@ -339,7 +340,7 @@ Emailer.sendToEmail = async (template, email, language, params) => {
 		} else {
 			await Emailer.sendViaFallback(data);
 		}
-	} catch (err) {
+	} catch (err: any) {
 		if (err.code === 'ENOENT' && usingFallback) {
 			Emailer.fallbackNotFound = true;
 			throw new Error('[[error:sendmail-not-found]]');
@@ -365,4 +366,7 @@ Emailer.renderAndTranslate = async (template, params, lang) => {
 	return await translator.translate(html, lang);
 };
 
-require('./promisify')(Emailer, ['transports']);
+import promisify from './promisify';
+promisify(Emailer, ['transports']);
+
+export default Emailer;

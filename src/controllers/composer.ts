@@ -1,14 +1,13 @@
 'use strict';
 
-const nconf = require('nconf');
+import nconf from 'nconf';
+import user from '../user';
+import plugins from '../plugins';
+import topics from '../topics';
+import posts from '../posts';
+import helpers from './helpers';
 
-const user = require('../user');
-const plugins = require('../plugins');
-const topics = require('../topics');
-const posts = require('../posts');
-const helpers = require('./helpers');
-
-exports.get = async function (req, res, callback) {
+export const get = async function (req, res, callback) {
 	res.locals.metaTags = {
 		...res.locals.metaTags,
 		name: 'robots',
@@ -39,7 +38,7 @@ exports.get = async function (req, res, callback) {
 	}
 };
 
-exports.post = async function (req, res) {
+export const post = async function (req, res) {
 	const { body } = req;
 	const data = {
 		uid: req.uid,
@@ -47,7 +46,7 @@ exports.post = async function (req, res) {
 		timestamp: Date.now(),
 		content: body.content,
 		fromQueue: false,
-	};
+	} as any;
 	req.body.noscript = 'true';
 
 	if (!data.content) {
@@ -83,7 +82,7 @@ exports.post = async function (req, res) {
 		user.updateOnlineUsers(uid);
 		const path = result.pid ? `/post/${result.pid}` : `/topic/${result.topicData.slug}`;
 		res.redirect(nconf.get('relative_path') + path);
-	} catch (err) {
+	} catch (err: any) {
 		helpers.noScriptErrors(req, res, err.message, 400);
 	}
 };

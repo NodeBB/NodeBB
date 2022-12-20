@@ -1,14 +1,14 @@
 
 'use strict';
 
-const db = require('../database');
-const posts = require('../posts');
-const categories = require('../categories');
-const privileges = require('../privileges');
-const plugins = require('../plugins');
-const meta = require('../meta');
+import db from '../database';
+import posts from '../posts';
+import categories from '../categories';
+import privileges from '../privileges';
+import plugins from '../plugins';
+import meta from '../meta';
 
-module.exports = function (Topics) {
+export default function (Topics) {
 	Topics.createTopicFromPosts = async function (uid, title, pids, fromTid) {
 		if (title) {
 			title = title.trim();

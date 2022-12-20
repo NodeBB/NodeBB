@@ -1,11 +1,11 @@
 'use strict';
 
-const db = require('../database');
-const user = require('../user');
-const plugins = require('../plugins');
-const cache = require('../cache');
+import db from '../database';
+import user from '../user';
+import plugins from '../plugins';
+import cache from '../cache';
 
-module.exports = function (Groups) {
+export default function (Groups) {
 	Groups.leave = async function (groupNames, uid) {
 		if (Array.isArray(groupNames) && !groupNames.length) {
 			return;
@@ -38,7 +38,7 @@ module.exports = function (Groups) {
 		const emptyPrivilegeGroups = groupData.filter(g => g && Groups.isPrivilegeGroup(g.name) && g.memberCount === 0);
 		const visibleGroups = groupData.filter(g => g && !g.hidden);
 
-		const promises = [];
+		const promises = [] as any[];
 		if (emptyPrivilegeGroups.length) {
 			promises.push(Groups.destroy, emptyPrivilegeGroups);
 		}

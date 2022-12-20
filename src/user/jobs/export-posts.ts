@@ -1,35 +1,37 @@
 'use strict';
 
-const nconf = require('nconf');
+import nconf from 'nconf';
 
 nconf.argv().env({
 	separator: '__',
 });
 
-const fs = require('fs');
-const path = require('path');
-const json2csvAsync = require('json2csv').parseAsync;
+import fs from 'fs';
+import path from 'path';
+import json2csvPkg from 'json2csv';
 
-process.env.NODE_ENV = process.env.NODE_ENV || 'production';
+const json2csvAsync = json2csvPkg.parseAsync; 
+
+(process as any).env.NODE_ENV = (process as any).env.NODE_ENV || 'production';
 
 // Alternate configuration file support
 const configFile = path.resolve(__dirname, '../../../', nconf.any(['config', 'CONFIG']) || 'config.json');
-const prestart = require('../../prestart');
+import * as prestart from '../../prestart';
 
 prestart.loadConfig(configFile);
 prestart.setupWinston();
 
-const db = require('../../database');
-const batch = require('../../batch');
+import db from '../../database';
+import * as batch from '../../batch';
+import posts from '../../posts';
 
-process.on('message', async (msg) => {
+
+(process as any).on('message', async (msg: any) => {
 	if (msg && msg.uid) {
 		await db.init();
 
 		const targetUid = msg.uid;
 		const filePath = path.join(__dirname, '../../../build/export', `${targetUid}_posts.csv`);
-
-		const posts = require('../../posts');
 
 		let payload = [];
 		await batch.processSortedSet(`uid:${targetUid}:posts`, async (pids) => {
@@ -51,6 +53,6 @@ process.on('message', async (msg) => {
 		await fs.promises.writeFile(filePath, csv);
 
 		await db.close();
-		process.exit(0);
+		(process as any).exit(0);
 	}
 });

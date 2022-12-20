@@ -1,45 +1,75 @@
 'use strict';
 
-const _ = require('lodash');
+import _ from 'lodash';
 
-const groups = require('../groups');
-const plugins = require('../plugins');
-const db = require('../database');
-const privileges = require('../privileges');
-const categories = require('../categories');
-const meta = require('../meta');
-const utils = require('../utils');
+import groups from '../groups';
+import plugins from '../plugins';
+import db from '../database';
+import privileges from '../privileges';
+import categories from '../categories';
+import meta from '../meta';
 
-const User = module.exports;
+import utils from '../utils';
 
-User.email = require('./email');
-User.notifications = require('./notifications');
-User.reset = require('./reset');
-User.digest = require('./digest');
-User.interstitials = require('./interstitials');
+const User = {} as any;
 
-require('./data')(User);
-require('./auth')(User);
-require('./bans')(User);
-require('./create')(User);
-require('./posts')(User);
-require('./topics')(User);
-require('./categories')(User);
-require('./follow')(User);
-require('./profile')(User);
-require('./admin')(User);
-require('./delete')(User);
-require('./settings')(User);
-require('./search')(User);
-require('./jobs')(User);
-require('./picture')(User);
-require('./approval')(User);
-require('./invite')(User);
-require('./password')(User);
-require('./info')(User);
-require('./online')(User);
-require('./blocks')(User);
-require('./uploads')(User);
+import email from './email';
+import notifications from './notifications';
+import reset from './reset';
+import digest from './digest';
+import interstitials from './interstitials';
+
+User.email = email;
+User.notifications = notifications;
+User.reset = reset;
+User.digest = digest;
+User.interstitials = interstitials;
+
+import data from './data';
+import auth from './auth';
+import bans from './bans';
+import create from './create';
+import posts from './posts';
+import topics from './topics';
+import categoriesUser from './categories';
+import follow from './follow';
+import admin from './admin';
+import deleteUser from './delete';
+import profile from './profile';
+import settings from './settings';
+import search from './search';
+import jobs from './jobs';
+import picture from './picture';
+import approval from './approval';
+import invite from './invite';
+import password from './password';
+import info from './info';
+import online from './online';
+import blocks from './blocks';
+import uploads from './uploads';
+
+data(User);
+auth(User);
+bans(User);
+create(User);
+posts(User);
+topics(User);
+categoriesUser(User);
+follow(User);
+profile(User);
+admin(User);
+deleteUser(User);
+settings(User);
+search(User);
+jobs(User);
+picture(User);
+approval(User);
+invite(User);
+password(User);
+info(User);
+online(User);
+blocks(User);
+uploads(User);
 
 User.exists = async function (uids) {
 	return await (
@@ -245,4 +275,7 @@ User.addInterstitials = function (callback) {
 	callback();
 };
 
-require('../promisify')(User);
+import promisify from '../promisify';
+promisify(User);
+
+export default User;

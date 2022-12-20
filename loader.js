@@ -8,7 +8,7 @@ const { fork } = require('child_process');
 const logrotate = require('logrotate-stream');
 const mkdirp = require('mkdirp');
 
-const file = require('./src/file');
+const file = require('./build/src/file');
 const pkg = require('./package.json');
 
 const pathToConfig = path.resolve(__dirname, process.env.CONFIG || 'config.json');

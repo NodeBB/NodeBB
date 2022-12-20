@@ -1,14 +1,18 @@
 'use strict';
 
-const path = require('path');
-const fs = require('fs').promises;
-const nconf = require('nconf');
+import path from 'path';
+import { promises as fs } from 'fs';
+import nconf from 'nconf';
 
-const db = require('../../database');
-const batch = require('../../batch');
-const file = require('../../file');
+import db from '../../database';
 
-module.exports = {
+
+import * as batch from '../../batch';
+
+
+import file from '../../file';
+
+export const obj = {
 	name: 'Clean up leftover topic thumb sorted sets and files for since-purged topics',
 	timestamp: Date.UTC(2022, 1, 7),
 	method: async function () {

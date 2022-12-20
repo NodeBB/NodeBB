@@ -1,13 +1,13 @@
 'use strict';
 
-const socketUser = require('./user');
-const socketGroup = require('./groups');
-const image = require('../image');
-const meta = require('../meta');
+import socketUser from './user';
+import socketGroup from './groups';
+import image from '../image';
+import meta from '../meta';
 
 const inProgress = {};
 
-const uploads = module.exports;
+const uploads = {} as any;
 
 uploads.upload = async function (socket, data) {
 	const methodToFunc = {
@@ -42,7 +42,7 @@ uploads.upload = async function (socket, data) {
 		const result = await methodToFunc[data.params.method](socket, data.params);
 		delete socketUploads[method];
 		return result;
-	} catch (err) {
+	} catch (err: any) {
 		delete inProgress[socket.id];
 		throw err;
 	}
@@ -51,3 +51,5 @@ uploads.upload = async function (socket, data) {
 uploads.clear = function (sid) {
 	delete inProgress[sid];
 };
+
+export default uploads;

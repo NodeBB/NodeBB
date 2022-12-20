@@ -1,11 +1,15 @@
 'use strict';
 
-const db = require('../../database');
+import db from '../../database';
 
-const batch = require('../../batch');
-const user = require('../../user');
 
-module.exports = {
+
+import * as batch from '../../batch';
+
+
+import user from '../../user';
+
+export const obj = {
 	name: 'Create fullname search set',
 	timestamp: Date.UTC(2020, 8, 11),
 	method: async function () {

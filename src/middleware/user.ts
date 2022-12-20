@@ -1,17 +1,16 @@
 'use strict';
 
-const winston = require('winston');
-const passport = require('passport');
-const nconf = require('nconf');
-const path = require('path');
-const util = require('util');
-
-const user = require('../user');
-const privileges = require('../privileges');
-const plugins = require('../plugins');
-const helpers = require('./helpers');
-const auth = require('../routes/authentication');
-const writeRouter = require('../routes/write');
+import winston from 'winston';
+import passport from 'passport';
+import nconf from 'nconf';
+import path from 'path';
+import util from 'util';
+import user from '../user';
+import privileges from '../privileges';
+import plugins from '../plugins';
+import helpers from './helpers';
+import auth from '../routes/authentication';
+import writeRouter from '../routes/write';
 
 const controllers = {
 	helpers: require('../controllers/helpers'),
@@ -31,7 +30,7 @@ const passportAuthenticateAsync = function (req, res) {
 	});
 };
 
-module.exports = function (middleware) {
+export default function (middleware) {
 	async function authenticate(req, res) {
 		async function finishLogin(req, user) {
 			const loginAsync = util.promisify(req.login).bind(req);
@@ -50,7 +49,7 @@ module.exports = function (middleware) {
 		if (req.loggedIn) {
 			return true;
 		} else if (req.headers.hasOwnProperty('authorization')) {
-			const user = await passportAuthenticateAsync(req, res);
+			const user: any = await passportAuthenticateAsync(req, res);
 			if (!user) { return true; }
 
 			if (user.hasOwnProperty('uid')) {

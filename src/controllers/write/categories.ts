@@ -1,12 +1,11 @@
 'use strict';
 
-const privileges = require('../../privileges');
-const categories = require('../../categories');
-const api = require('../../api');
+import privileges from '../../privileges';
+import categories from '../../categories';
+import api from '../../api';
+import helpers from '../helpers';
 
-const helpers = require('../helpers');
-
-const Categories = module.exports;
+const Categories = {} as any;
 
 const hasAdminPrivilege = async (uid) => {
 	const ok = await privileges.admin.can(`admin:categories`, uid);
@@ -80,3 +79,5 @@ Categories.setModerator = async (req, res) => {
 	});
 	helpers.formatApiResponse(200, res);
 };
+
+export default Categories;

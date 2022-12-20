@@ -1,8 +1,10 @@
 'use strict';
 
-const db = require('../../database');
+import db from '../../database';
 
-module.exports = {
+
+
+export const obj = {
 	name: 'Disable plugin metrics for existing installs',
 	timestamp: Date.UTC(2019, 4, 21),
 	method: async function (callback) {

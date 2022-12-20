@@ -1,10 +1,14 @@
 'use strict';
 
-const async = require('async');
-const batch = require('../../batch');
-const db = require('../../database');
+import async from 'async';
+import * as batch from '../../batch';
 
-module.exports = {
+
+import db from '../../database';
+
+
+
+export const obj = {
 	name: 'Wipe all existing RSS tokens',
 	timestamp: Date.UTC(2017, 6, 5),
 	method: function (callback) {

@@ -1,17 +1,17 @@
 
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
-const winston = require('winston');
-const validator = require('validator');
+import fs from 'fs';
+import path from 'path';
+import winston from 'winston';
+import validator from 'validator';
+import { paths } from '../constants';
+import db from '../database';
+import plugins from '../plugins';
+import * as  batch from '../batch';
+const { baseDir } = paths;
 
-const { baseDir } = require('../constants').paths;
-const db = require('../database');
-const plugins = require('../plugins');
-const batch = require('../batch');
-
-module.exports = function (User) {
+export default function (User) {
 	User.logIP = async function (uid, ip) {
 		if (!(parseInt(uid, 10) > 0)) {
 			return;

@@ -1,10 +1,10 @@
 'use strict';
 
-const user = require('../user');
-const privileges = require('../privileges');
-const accountHelpers = require('./accounts/helpers');
+import user from '../user';
+import privileges from '../privileges';
+import accountHelpers from './accounts/helpers';
 
-const userController = module.exports;
+const userController = {} as any;
 
 userController.getCurrentUser = async function (req, res) {
 	if (!req.loggedIn) {
@@ -76,6 +76,9 @@ userController.getUserDataByUID = async function (callerUid, uid) {
 	return userData;
 };
 
-require('../promisify')(userController, [
+import promisify from '../promisify';
+promisify(userController, [
 	'getCurrentUser', 'getUserByUID', 'getUserByUsername', 'getUserByEmail',
 ]);
+
+export default userController;

@@ -1,16 +1,15 @@
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
-const winston = require('winston');
-const _ = require('lodash');
-const nconf = require('nconf');
+import fs from 'fs';
+import path from 'path';
+import winston from 'winston';
+import _ from 'lodash';
+import nconf from 'nconf';
+import db from '../database';
+import file from '../file';
+import { paths } from '../constants';
 
-const db = require('../database');
-const file = require('../file');
-const { paths } = require('../constants');
-
-const Data = module.exports;
+const Data = {} as any;
 
 const basePath = path.join(__dirname, '../../');
 
@@ -57,7 +56,7 @@ Data.loadPluginInfo = async function (pluginPath) {
 		pluginData.repository = packageData.repository;
 		pluginData.nbbpm = packageData.nbbpm;
 		pluginData.path = pluginPath;
-	} catch (err) {
+	} catch (err: any) {
 		const pluginDir = path.basename(pluginPath);
 
 		winston.error(`[plugins/${pluginDir}] Error in plugin.json or package.json!${err.stack}`);
@@ -73,8 +72,7 @@ function parseLicense(packageData) {
 			name: licenseData.name,
 			text: licenseData.licenseText,
 		};
-	} catch (e) {
-		// No license matched
+} catch (e: any) {		// No license matched
 		return null;
 	}
 }
@@ -120,7 +118,7 @@ Data.getStaticDirectories = async function (pluginData) {
 			}
 
 			staticDirs[`${pluginData.id}/${route}`] = dirPath;
-		} catch (err) {
+		} catch (err: any) {
 			if (err.code === 'ENOENT') {
 				winston.warn(`[plugins/${pluginData.id}] Mapped path '${
 					route} => ${dirPath}' not found.`);
@@ -263,3 +261,5 @@ Data.getLanguageData = async function getLanguageData(pluginData) {
 		namespaces: _.uniq(namespaces),
 	};
 };
+
+export default Data;

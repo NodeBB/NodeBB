@@ -1,19 +1,20 @@
 
 'use strict';
 
-const async = require('async');
-const nconf = require('nconf');
-const validator = require('validator');
+import async from 'async';
+import nconf from 'nconf';
+import validator from 'validator';
 
-const db = require('../database');
-const meta = require('../meta');
-const emailer = require('../emailer');
-const groups = require('../groups');
-const translator = require('../translator');
-const utils = require('../utils');
-const plugins = require('../plugins');
+import db from '../database';
+import meta from '../meta';
 
-module.exports = function (User) {
+import emailer from '../emailer';
+import groups from '../groups';
+import translator from '../translator';
+import utils from '../utils';
+import plugins from '../plugins';
+
+export default function (User) {
 	User.getInvites = async function (uid) {
 		const emails = await db.getSetMembers(`invitation:uid:${uid}`);
 		return emails.map(email => validator.escape(String(email)));
@@ -88,8 +89,7 @@ module.exports = function (User) {
 
 		try {
 			groupsToJoin = JSON.parse(groupsToJoin);
-		} catch (e) {
-			return;
+	} catch (e: any) {			return;
 		}
 
 		if (!groupsToJoin || groupsToJoin.length < 1) {

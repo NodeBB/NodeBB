@@ -1,9 +1,13 @@
 'use strict';
 
-const db = require('../../database');
-const batch = require('../../batch');
+import db from '../../database';
 
-module.exports = {
+
+import * as batch from '../../batch';
+
+
+
+export const obj = {
 	name: 'Store tags in topic hash',
 	timestamp: Date.UTC(2021, 8, 9),
 	method: async function () {
@@ -19,7 +23,7 @@ module.exports = {
 			const tags = await getTopicsTags(tids);
 
 			const topicsWithTags = tids.map((tid, i) => {
-				const topic = { tid: tid };
+				const topic = { tid: tid } as any;
 				topic.tags = tags[i];
 				return topic;
 			}).filter(t => t && t.tags.length);

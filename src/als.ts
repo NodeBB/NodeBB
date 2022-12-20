@@ -1,7 +1,7 @@
 'use strict';
 
-const { AsyncLocalStorage } = require('async_hooks');
+import { AsyncLocalStorage } from 'async_hooks';
 
 const asyncLocalStorage = new AsyncLocalStorage();
 
-module.exports = asyncLocalStorage;
+export default  asyncLocalStorage;

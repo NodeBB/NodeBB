@@ -1,24 +1,25 @@
 'use strict';
 
-const _ = require('lodash');
-const validator = require('validator');
-const nconf = require('nconf');
+import _ from 'lodash';
+import validator from 'validator';
+import nconf from 'nconf';
+import db from '../database';
+import user from '../user';
+import meta from '../meta';
+import groups from '../groups';
+import topics from '../topics';
+import categories from '../categories';
+import notifications from '../notifications';
+import privileges from '../privileges';
+import plugins from '../plugins';
+import utils from '../utils';
+import cache from '../cache';
+import socketHelpers from '../socket.io/helpers';
+import { app } from '../webserver';
 
-const db = require('../database');
-const user = require('../user');
-const meta = require('../meta');
-const groups = require('../groups');
-const topics = require('../topics');
-const categories = require('../categories');
-const notifications = require('../notifications');
-const privileges = require('../privileges');
-const plugins = require('../plugins');
-const utils = require('../utils');
-const cache = require('../cache');
-const socketHelpers = require('../socket.io/helpers');
 
-module.exports = function (Posts) {
-	Posts.getQueuedPosts = async (filter = {}, options = {}) => {
+export default function (Posts) {
+	Posts.getQueuedPosts = async (filter = {} as any, options = {} as any) => {
 		options = { metadata: true, ...options }; // defaults
 		let postData = _.cloneDeep(cache.get('post-queue'));
 		if (!postData) {
@@ -187,12 +188,12 @@ module.exports = function (Posts) {
 			userData.url = `${url}/uid/${userData.uid}`;
 		}
 
-		const topic = { cid: cid, title: data.title, tid: data.tid };
+		const topic = { cid: cid, title: data.title, tid: data.tid } as any;
 		if (type === 'reply') {
 			topic.title = await topics.getTopicField(data.tid, 'title');
 			topic.url = `${url}/topic/${data.tid}`;
 		}
-		const { app } = require('../webserver');
+		//@ts-ignore
 		return await app.renderAsync('emails/partials/post-queue-body', {
 			content: content,
 			category: category,

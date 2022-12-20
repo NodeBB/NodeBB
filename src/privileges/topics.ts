@@ -1,17 +1,16 @@
 
 'use strict';
 
-const _ = require('lodash');
+import _ from 'lodash';
+import meta from '../meta';
+import topics from '../topics';
+import user from '../user';
+import helpers from './helpers';
+import categories from '../categories';
+import plugins from '../plugins';
+import privsCategories from './categories';
 
-const meta = require('../meta');
-const topics = require('../topics');
-const user = require('../user');
-const helpers = require('./helpers');
-const categories = require('../categories');
-const plugins = require('../plugins');
-const privsCategories = require('./categories');
-
-const privsTopics = module.exports;
+const privsTopics = {} as any;
 
 privsTopics.get = async function (tid, uid) {
 	uid = parseInt(uid, 10);
@@ -174,7 +173,7 @@ privsTopics.isAdminOrMod = async function (tid, uid) {
 	return await privsCategories.isAdminOrMod(cid, uid);
 };
 
-privsTopics.canViewDeletedScheduled = function (topic, privileges = {}, viewDeleted = false, viewScheduled = false) {
+privsTopics.canViewDeletedScheduled = function (topic, privileges = {} as any, viewDeleted = false, viewScheduled = false) {
 	if (!topic) {
 		return false;
 	}
@@ -190,3 +189,5 @@ privsTopics.canViewDeletedScheduled = function (topic, privileges = {}, viewDele
 
 	return true;
 };
+
+export default privsTopics;

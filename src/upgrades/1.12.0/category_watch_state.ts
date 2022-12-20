@@ -2,11 +2,15 @@
 
 'use strict';
 
-const db = require('../../database');
-const batch = require('../../batch');
-const categories = require('../../categories');
+import db from '../../database';
 
-module.exports = {
+
+import * as batch from '../../batch';
+
+
+import categories from '../../categories';
+
+export const obj = {
 	name: 'Update category watch data',
 	timestamp: Date.UTC(2018, 11, 13),
 	method: async function () {

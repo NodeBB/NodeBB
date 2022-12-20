@@ -1,9 +1,9 @@
 'use strict';
 
-const db = require('../../database');
+import db from '../../database';
 
 
-module.exports = {
+export const obj = {
 	name: 'Adding theme to active plugins sorted set',
 	timestamp: Date.UTC(2015, 11, 23),
 	method: async function () {

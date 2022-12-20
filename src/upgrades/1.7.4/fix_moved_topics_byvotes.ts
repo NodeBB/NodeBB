@@ -1,9 +1,13 @@
 'use strict';
 
-const batch = require('../../batch');
-const db = require('../../database');
+import * as batch from '../../batch';
 
-module.exports = {
+
+import db from '../../database';
+
+
+
+export const obj = {
 	name: 'Fix sort by votes for moved topics',
 	timestamp: Date.UTC(2018, 0, 8),
 	method: async function () {

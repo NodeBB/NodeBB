@@ -1,9 +1,9 @@
 'use strict';
 
-const db = require('../database');
-const plugins = require('../plugins');
+import db from '../database';
+import plugins from '../plugins';
 
-module.exports = function (Posts) {
+export default function (Posts) {
 	Posts.bookmark = async function (pid, uid) {
 		return await toggleBookmark('bookmark', pid, uid);
 	};

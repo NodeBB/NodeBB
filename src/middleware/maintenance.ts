@@ -1,13 +1,13 @@
 'use strict';
 
-const util = require('util');
-const nconf = require('nconf');
-const meta = require('../meta');
-const user = require('../user');
-const groups = require('../groups');
-const helpers = require('./helpers');
+import util from 'util';
+import nconf from 'nconf';
+import meta from '../meta';
+import user from '../user';
+import groups from '../groups';
+import helpers from './helpers';
 
-module.exports = function (middleware) {
+export default function (middleware) {
 	middleware.maintenanceMode = helpers.try(async (req, res, next) => {
 		if (!meta.config.maintenanceMode) {
 			return next();

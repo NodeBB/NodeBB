@@ -1,13 +1,16 @@
 'use strict';
 
-const winston = require('winston');
-const meta = require('../../meta');
-const plugins = require('../../plugins');
-const middleware = require('../../middleware');
-const writeControllers = require('../../controllers/write');
-const helpers = require('../../controllers/helpers');
+import winston from 'winston';
+import meta from '../../meta';
+import plugins from '../../plugins';
+import middleware from '../../middleware';
+import writeControllers from '../../controllers/write';
+import helpers from '../../controllers/helpers';
+import { Router } from 'express';
 
-const Write = module.exports;
+const pluginRouter = Router;
+
+const Write  = {} as any;
 
 Write.reload = async (params) => {
 	const { router } = params;
@@ -51,12 +54,12 @@ Write.reload = async (params) => {
 	 * below hook. The hooks added to the passed-in router will be mounted to
 	 * `/api/v3/plugins`.
 	 */
-	const pluginRouter = require('express').Router();
 	await plugins.hooks.fire('static:api.routes', {
 		router: pluginRouter,
 		middleware,
 		helpers,
 	});
+	//@ts-ignore
 	winston.info(`[api] Adding ${pluginRouter.stack.length} route(s) to \`api/v3/plugins\``);
 	router.use('/api/v3/plugins', pluginRouter);
 
@@ -71,3 +74,5 @@ Write.cleanup = (req) => {
 		req.session.destroy();
 	}
 };
+
+export default Write;

@@ -1,15 +1,18 @@
 'use strict';
 
-const prompt = require('prompt');
-const winston = require('winston');
+import prompt from 'prompt';
+import winston from 'winston';
+import redis from '../src/database/redis';
+import mongo from '../src/database/mongo';
+import postgres from '../src/database/postgres';
 
 const questions = {
-	redis: require('../src/database/redis').questions,
-	mongo: require('../src/database/mongo').questions,
-	postgres: require('../src/database/postgres').questions,
+	redis: redis.questions,
+	mongo: mongo.questions,
+	postgres: postgres.questions,
 };
 
-module.exports = async function (config) {
+export default async function (config) {
 	winston.info(`\nNow configuring ${config.database} database:`);
 	const databaseConfig = await getDatabaseConfig(config);
 	return saveDatabaseConfig(config, databaseConfig);

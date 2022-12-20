@@ -1,16 +1,16 @@
 'use strict';
 
-const user = require('../user');
-const posts = require('../posts');
-const flags = require('../flags');
-const analytics = require('../analytics');
-const plugins = require('../plugins');
-const pagination = require('../pagination');
-const privileges = require('../privileges');
-const utils = require('../utils');
-const helpers = require('./helpers');
+import user from '../user';
+import posts from '../posts';
+import flags from '../flags';
+import analytics from '../analytics';
+import plugins from '../plugins';
+import pagination from '../pagination';
+import privileges from '../privileges';
+import utils from '../utils';
+import helpers from './helpers';
 
-const modsController = module.exports;
+const modsController = {} as any;
 modsController.flags = {};
 
 modsController.flags.list = async function (req, res) {
@@ -181,7 +181,7 @@ modsController.postQueue = async function (req, res, next) {
 	const start = (page - 1) * postsPerPage;
 	const stop = start + postsPerPage - 1;
 	postData = postData.slice(start, stop + 1);
-	const crumbs = [{ text: '[[pages:post-queue]]', url: id ? '/post-queue' : undefined }];
+	const crumbs = [{ text: '[[pages:post-queue]]', url: id ? '/post-queue' : undefined }] as any[];
 	if (id && postData.length) {
 		const text = postData[0].data.tid ? '[[post-queue:reply]]' : '[[post-queue:topic]]';
 		crumbs.push({ text: text });
@@ -198,3 +198,5 @@ modsController.postQueue = async function (req, res, next) {
 		singlePost: !!id,
 	});
 };
+
+export default modsController;

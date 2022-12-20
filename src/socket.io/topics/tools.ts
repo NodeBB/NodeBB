@@ -1,10 +1,10 @@
 'use strict';
 
-const topics = require('../../topics');
-const privileges = require('../../privileges');
-const plugins = require('../../plugins');
+import topics from '../../topics';
+import privileges from '../../privileges';
+import plugins from '../../plugins';
 
-module.exports = function (SocketTopics) {
+export default function (SocketTopics) {
 	SocketTopics.loadTopicTools = async function (socket, data) {
 		if (!socket.uid) {
 			throw new Error('[[error:no-privileges]]');

@@ -1,9 +1,13 @@
 'use strict';
 
-const db = require('../../database');
-const privileges = require('../../privileges');
+import db from '../../database';
 
-module.exports = {
+
+import privileges from '../../privileges';
+
+
+
+export const obj = {
 	name: 'Removing file upload privilege if file uploads were disabled (`allowFileUploads`)',
 	timestamp: Date.UTC(2020, 4, 21),
 	method: async () => {

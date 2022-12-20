@@ -1,10 +1,12 @@
 'use strict';
 
-const admin = require('../../rewards/admin');
+import admin from '../../rewards/admin';
 
-const rewardsController = module.exports;
+const rewardsController = {} as any;
 
 rewardsController.get = async function (req, res) {
 	const data = await admin.get();
 	res.render('admin/extend/rewards', data);
 };
+
+export default rewardsController;

@@ -1,14 +1,14 @@
 'use strict';
 
-const db = require('../database');
-const meta = require('../meta');
-const utils = require('../utils');
-const slugify = require('../slugify');
-const translator = require('../translator');
-const plugins = require('../plugins');
-const cache = require('../cache');
+import db from '../database';
+import meta from '../meta';
+import utils from '../utils';
+import slugify from '../slugify';
+import translator from '../translator';
+import plugins from '../plugins';
+import cache from '../cache';
 
-module.exports = function (Categories) {
+export default function (Categories) {
 	Categories.update = async function (modified) {
 		const cids = Object.keys(modified);
 		await Promise.all(cids.map(cid => updateCategory(cid, modified[cid])));

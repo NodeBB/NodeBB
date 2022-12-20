@@ -1,14 +1,13 @@
 'use strict';
 
-const _ = require('lodash');
+import _ from 'lodash';
+import db from '../database';
+import user from '../user';
+import slugify from '../slugify';
+import plugins from '../plugins';
+import notifications from '../notifications';
 
-const db = require('../database');
-const user = require('../user');
-const slugify = require('../slugify');
-const plugins = require('../plugins');
-const notifications = require('../notifications');
-
-module.exports = function (Groups) {
+export default function (Groups) {
 	Groups.requestMembership = async function (groupName, uid) {
 		await inviteOrRequestMembership(groupName, uid, 'request');
 		const { displayname } = await user.getUserFields(uid, ['username']);
@@ -45,7 +44,7 @@ module.exports = function (Groups) {
 		if (!Array.isArray(groupNames)) {
 			groupNames = [groupNames];
 		}
-		const sets = [];
+		const sets = [] as any[];
 		groupNames.forEach(groupName => sets.push(`group:${groupName}:pending`, `group:${groupName}:invited`));
 		await db.setsRemove(sets, uid);
 	};

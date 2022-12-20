@@ -1,22 +1,26 @@
 'use strict';
 
-const async = require('async');
-const winston = require('winston');
-const cron = require('cron').CronJob;
-const nconf = require('nconf');
-const _ = require('lodash');
+import async from 'async';
+import winston from 'winston';
+import { CronJob } from 'cron';
+const cron = CronJob;
+import nconf from 'nconf';
+import _ from 'lodash';
 
-const db = require('./database');
-const User = require('./user');
-const posts = require('./posts');
-const groups = require('./groups');
-const meta = require('./meta');
-const batch = require('./batch');
-const plugins = require('./plugins');
-const utils = require('./utils');
-const emailer = require('./emailer');
+import db from './database';
 
-const Notifications = module.exports;
+import User from './user';
+import posts from './posts';
+import groups from './groups';
+import meta from './meta';
+import * as batch from './batch';
+import plugins from './plugins';
+import utils from './utils';
+import emailer from './emailer';
+import websockets from './socket.io';
+
+
+const Notifications = {} as any;
 
 Notifications.baseTypes = [
 	'notificationType_upvote',
@@ -71,9 +75,7 @@ Notifications.getMultiple = async function (nids) {
 
 	notifications.forEach((notification, index) => {
 		if (notification) {
-			if (notification.path && !notification.path.startsWith('http')) {
-				notification.path = nconf.get('relative_path') + notification.path;
-			}
+			if (notification.path && !notification.relative_path + notification.path)
 			notification.datetimeISO = utils.toISOString(notification.datetime);
 
 			if (notification.bodyLong) {
@@ -154,6 +156,7 @@ Notifications.push = async function (notification, uids) {
 	setTimeout(() => {
 		batch.processArray(uids, async (uids) => {
 			await pushToUids(uids, notification);
+			// @ts-ignore
 		}, { interval: 1000, batch: 500 }, (err) => {
 			if (err) {
 				winston.error(err.stack);
@@ -175,7 +178,6 @@ async function pushToUids(uids, notification) {
 			db.sortedSetsRemove(readKeys, notification.nid),
 		]);
 		await db.sortedSetsRemoveRangeByScore(unreadKeys.concat(readKeys), '-inf', cutoff);
-		const websockets = require('./socket.io');
 		if (websockets.server) {
 			uids.forEach((uid) => {
 				websockets.in(`uid_${uid}`).emit('event:new_notification', notification);
@@ -246,7 +248,7 @@ async function pushToUids(uids, notification) {
 	await Promise.all([
 		sendNotification(results.uidsToNotify),
 		sendEmail(results.uidsToEmail),
-	]);
+	]);module
 	plugins.hooks.fire('action:notification.pushed', {
 		notification: notification,
 		uids: results.uidsToNotify,
@@ -285,12 +287,6 @@ Notifications.markRead = async function (nid, uid) {
 		return;
 	}
 	await Notifications.markReadMultiple([nid], uid);
-};
-
-Notifications.markUnread = async function (nid, uid) {
-	if (!(parseInt(uid, 10) > 0) || !nid) {
-		return;
-	}
 	const notification = await db.getObject(`notifications:${nid}`);
 	if (!notification) {
 		throw new Error('[[error:no-notification]]');
@@ -350,7 +346,7 @@ Notifications.prune = async function () {
 			const read = uids.map(uid => `uid:${uid}:notifications:read`);
 			await db.sortedSetsRemoveRangeByScore(unread.concat(read), '-inf', cutoffTime);
 		}, { batch: 500, interval: 100 });
-	} catch (err) {
+	} catch (err: any) {
 		if (err) {
 			winston.error(`Encountered error pruning notifications\n${err.stack}`);
 		}
@@ -444,4 +440,7 @@ Notifications.merge = async function (notifications) {
 	return data && data.notifications;
 };
 
-require('./promisify')(Notifications);
+import promisify from './promisify';
+promisify(Notifications);
+
+export default Notifications;

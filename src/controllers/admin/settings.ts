@@ -1,19 +1,17 @@
 'use strict';
 
-const validator = require('validator');
+import validator from 'validator';
+import meta from '../../meta';
+import emailer from '../../emailer';
+import notifications from '../../notifications';
+import groups from '../../groups';
+import languages from '../../languages';
+import navigationAdmin from '../../navigation/admin';
+import social from '../../social';
+import helpers from '../helpers';
+import translator from '../../translator';
 
-const meta = require('../../meta');
-const emailer = require('../../emailer');
-const notifications = require('../../notifications');
-const groups = require('../../groups');
-const languages = require('../../languages');
-const navigationAdmin = require('../../navigation/admin');
-const social = require('../../social');
-
-const helpers = require('../helpers');
-const translator = require('../../translator');
-
-const settingsController = module.exports;
+const settingsController = {} as any;
 
 settingsController.get = async function (req, res) {
 	const term = req.params.term || 'general';
@@ -108,3 +106,5 @@ settingsController.social = async function (req, res) {
 		posts: posts,
 	});
 };
+
+export default settingsController;

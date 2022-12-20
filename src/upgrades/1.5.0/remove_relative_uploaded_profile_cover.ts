@@ -1,9 +1,11 @@
 'use strict';
 
-const db = require('../../database');
-const batch = require('../../batch');
+import db from '../../database';
+import * as batch from '../../batch';
 
-module.exports = {
+
+
+export const obj = {
 	name: 'Remove relative_path from uploaded profile cover urls',
 	timestamp: Date.UTC(2017, 3, 26),
 	method: async function () {

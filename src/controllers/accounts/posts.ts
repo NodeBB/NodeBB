@@ -1,18 +1,18 @@
 'use strict';
 
-const db = require('../../database');
-const user = require('../../user');
-const posts = require('../../posts');
-const topics = require('../../topics');
-const categories = require('../../categories');
-const privileges = require('../../privileges');
-const pagination = require('../../pagination');
-const helpers = require('../helpers');
-const accountHelpers = require('./helpers');
-const plugins = require('../../plugins');
-const utils = require('../../utils');
+import db from '../../database';
+import user from '../../user';
+import posts from '../../posts';
+import topics from '../../topics';
+import categories from '../../categories';
+import privileges from '../../privileges';
+import pagination from '../../pagination';
+import helpers from '../helpers';
+import accountHelpers from './helpers';
+import plugins from '../../plugins';
+import utils from '../../utils';
 
-const postsController = module.exports;
+const postsController = {} as any;
 
 const templateToData = {
 	'account/bookmarks': {
@@ -252,3 +252,5 @@ async function getItemCount(sets, data, settings) {
 	}
 	return await db.sortedSetsCardSum(sets);
 }
+
+export default postsController;

@@ -1,15 +1,22 @@
 'use strict';
 
-const os = require('os');
-const winston = require('winston');
-const nconf = require('nconf');
-const _ = require('lodash');
-const path = require('path');
-const mkdirp = require('mkdirp');
-const chalk = require('chalk');
+import os from 'os';
+import winston from 'winston';
+import nconf from 'nconf';
+import _ from 'lodash';
+import path from 'path';
+import mkdirp from 'mkdirp';
+import chalk from 'chalk';
+import * as cacheBuster from './cacheBuster';
+import { aliases } from './aliases';
+import db from '../database';
+import plugins from '../plugins';	
+import webpack from 'webpack';
+import fs from 'fs';
+import util from 'util';
+import promisify from '../promisify';
 
-const cacheBuster = require('./cacheBuster');
-const { aliases } = require('./aliases');
+
 
 let meta;
 
@@ -59,21 +66,19 @@ const aliasMap = Object.keys(aliases).reduce((prev, key) => {
 	return prev;
 }, {});
 
-async function beforeBuild(targets) {
-	const db = require('../database');
-	process.stdout.write(`${chalk.green('  started')}\n`);
+export async function beforeBuild(targets) {
+	(process as any).stdout.write(`${chalk.green('  started')}\n`);
 	try {
 		await db.init();
-		meta = require('./index');
 		await meta.themes.setupPaths();
-		const plugins = require('../plugins');
 		await plugins.prepareForBuild(targets);
 		await mkdirp(path.join(__dirname, '../../build/public'));
-	} catch (err) {
+	} catch (err: any) {
 		winston.error(`[build] Encountered error preparing for build\n${err.stack}`);
 		throw err;
 	}
 }
+
 
 const allTargets = Object.keys(targetHandlers).filter(name => typeof targetHandlers[name] === 'function');
 
@@ -89,7 +94,7 @@ async function buildTargets(targets, parallel, options) {
 		);
 		// run webpack after jstargets are done, no need to wait for css/templates etc.
 		if (options.webpack || options.watch) {
-			await exports.webpack(options);
+			await webpack(options);
 		}
 	}
 	if (parallel) {
@@ -105,7 +110,7 @@ async function buildTargets(targets, parallel, options) {
 			await step(target, parallel, `${_.padStart(target, length)} `);
 		}
 		if (options.webpack || options.watch) {
-			await exports.webpack(options);
+			await webpack(options);
 		}
 	}
 }
@@ -118,13 +123,13 @@ async function step(target, parallel, targetStr) {
 		const time = (Date.now() - startTime) / 1000;
 
 		winston.info(`[build] ${targetStr} build completed in ${time}sec`);
-	} catch (err) {
+	} catch (err: any) {
 		winston.error(`[build] ${targetStr} build failed`);
 		throw err;
 	}
 }
 
-exports.build = async function (targets, options) {
+export const build = async function (targets, options) {
 	if (!options) {
 		options = {};
 	}
@@ -196,23 +201,18 @@ exports.build = async function (targets, options) {
 		const totalTime = (Date.now() - startTime) / 1000;
 		await cacheBuster.write();
 		winston.info(`[build] Asset compilation successful. Completed in ${totalTime}sec.`);
-	} catch (err) {
+	} catch (err: any) {
 		winston.error(`[build] Encountered error during build step\n${err.stack ? err.stack : err}`);
 		throw err;
 	}
 };
 
 function getWebpackConfig() {
-	return require(process.env.NODE_ENV !== 'development' ? '../../webpack.prod' : '../../webpack.dev');
+	return require((process as any).env.NODE_ENV !== 'development' ? '../../webpack.prod' : '../../webpack.dev');
 }
 
-exports.webpack = async function (options) {
+export const webpackFn = async function (options) {
 	winston.info(`[build] ${(options.watch ? 'Watching' : 'Bundling')} with Webpack.`);
-	const webpack = require('webpack');
-	const fs = require('fs');
-	const util = require('util');
-	const plugins = require('../plugins/data');
-
 	const activePlugins = (await plugins.getActive()).map(p => p.id);
 	if (!activePlugins.includes('nodebb-plugin-composer-default')) {
 		activePlugins.push('nodebb-plugin-composer-default');
@@ -240,7 +240,7 @@ exports.webpack = async function (options) {
 			const statsJson = stats.toJson();
 			winston.info(`[build] ${(options.watch ? 'Watching' : 'Bundling')} took ${statsJson.time} ms`);
 		}
-	} catch (err) {
+	} catch (err: any) {
 		console.error(err.stack || err);
 		if (err.details) {
 			console.error(err.details);
@@ -248,8 +248,7 @@ exports.webpack = async function (options) {
 	}
 };
 
-exports.buildAll = async function () {
-	await exports.build(allTargets, { webpack: true });
+export const buildAll = async function () {
+	await build(allTargets, { webpack: true });
 };
 
-require('../promisify')(exports);

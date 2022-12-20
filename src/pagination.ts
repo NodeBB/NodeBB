@@ -1,9 +1,9 @@
 'use strict';
 
-const qs = require('querystring');
-const _ = require('lodash');
+import qs from 'querystring';
+import _ from 'lodash';
 
-const pagination = module.exports;
+const pagination = {} as any;
 
 pagination.create = function (currentPage, pageCount, queryObj) {
 	if (pageCount <= 1) {
@@ -40,7 +40,7 @@ pagination.create = function (currentPage, pageCount, queryObj) {
 
 	delete queryObj._;
 
-	const pages = pagesToShow.map((page) => {
+	const pages: any[] = pagesToShow.map((page) => {
 		queryObj.page = page;
 		return { page: page, active: page === currentPage, qs: qs.stringify(queryObj) };
 	});
@@ -53,7 +53,7 @@ pagination.create = function (currentPage, pageCount, queryObj) {
 		}
 	}
 
-	const data = { rel: [], pages: pages, currentPage: currentPage, pageCount: pageCount };
+	const data = { rel: [], pages: pages, currentPage: currentPage, pageCount: pageCount } as any;
 	queryObj.page = previous;
 	data.prev = { page: previous, active: currentPage > 1, qs: qs.stringify(queryObj) };
 	queryObj.page = next;
@@ -79,3 +79,5 @@ pagination.create = function (currentPage, pageCount, queryObj) {
 	}
 	return data;
 };
+
+export default pagination;

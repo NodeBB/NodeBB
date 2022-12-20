@@ -2,14 +2,15 @@
 
 'use strict';
 
-const crypto = require('crypto');
+import crypto from 'crypto';
+import db from '../../database';
+import * as batch from '../../batch';
 
-const db = require('../../database');
-const batch = require('../../batch');
+
 
 const md5 = filename => crypto.createHash('md5').update(filename).digest('hex');
 
-module.exports = {
+export const obj = {
 	name: 'Rename object and sorted sets used in post uploads',
 	timestamp: Date.UTC(2022, 1, 10),
 	method: async function () {

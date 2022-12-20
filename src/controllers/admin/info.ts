@@ -1,17 +1,17 @@
 'use strict';
 
-const os = require('os');
-const winston = require('winston');
-const nconf = require('nconf');
-const { exec } = require('child_process');
+import os from 'os';
+import winston from 'winston';
+import nconf from 'nconf';
+import { exec } from 'child_process';
+import pubsub from '../../pubsub';
+import rooms from '../../socket.io/admin/rooms';
+import { promisify } from 'util';
 
-const pubsub = require('../../pubsub');
-const rooms = require('../../socket.io/admin/rooms');
-
-const infoController = module.exports;
+const infoController = {} as any;
 
 let info = {};
-let previousUsage = process.cpuUsage();
+let previousUsage = (process as any).cpuUsage();
 let usageStartDate = Date.now();
 
 infoController.get = function (req, res) {
@@ -53,7 +53,7 @@ pubsub.on('sync:node:info:start', async () => {
 		const data = await getNodeInfo();
 		data.id = `${os.hostname()}:${nconf.get('port')}`;
 		pubsub.publish('sync:node:info:end', { data: data, id: data.id });
-	} catch (err) {
+	} catch (err: any) {
 		winston.error(err.stack);
 	}
 });
@@ -66,11 +66,11 @@ async function getNodeInfo() {
 	const data = {
 		process: {
 			port: nconf.get('port'),
-			pid: process.pid,
-			title: process.title,
-			version: process.version,
-			memoryUsage: process.memoryUsage(),
-			uptime: process.uptime(),
+			pid: (process as any).pid,
+			title: (process as any).title,
+			version: (process as any).version,
+			memoryUsage: (process as any).memoryUsage(),
+			uptime: (process as any).uptime(),
 			cpuUsage: getCpuUsage(),
 		},
 		os: {
@@ -89,7 +89,7 @@ async function getNodeInfo() {
 			runJobs: nconf.get('runJobs'),
 			jobsDisabled: nconf.get('jobsDisabled'),
 		},
-	};
+	} as any;
 
 	data.process.memoryUsage.humanReadable = (data.process.memoryUsage.rss / (1024 * 1024 * 1024)).toFixed(3);
 	data.process.uptimeHumanReadable = humanReadableUptime(data.process.uptime);
@@ -106,7 +106,7 @@ async function getNodeInfo() {
 }
 
 function getCpuUsage() {
-	const newUsage = process.cpuUsage();
+	const newUsage = (process as any).cpuUsage();
 	const diff = (newUsage.user + newUsage.system) - (previousUsage.user + previousUsage.system);
 	const now = Date.now();
 	const result = diff / ((now - usageStartDate) * 1000) * 100;
@@ -135,10 +135,12 @@ async function getGitInfo() {
 			callback(null, stdout ? stdout.replace(/\n$/, '') : 'no-git-info');
 		});
 	}
-	const getAsync = require('util').promisify(get);
+	const getAsync = promisify(get);
 	const [hash, branch] = await Promise.all([
 		getAsync('git rev-parse HEAD'),
 		getAsync('git rev-parse --abbrev-ref HEAD'),
-	]);
+	]) as [any, any];
 	return { hash: hash, hashShort: hash.slice(0, 6), branch: branch };
 }
+
+export default infoController;

@@ -1,10 +1,9 @@
 'use strict';
 
-const url = require('url');
-
-const plugins = require('../plugins');
-const meta = require('../meta');
-const user = require('../user');
+import url from 'url';
+import plugins from '../plugins';
+import meta from '../meta';
+import user from '../user';
 
 function adminHomePageRoute() {
 	return ((meta.config.homePageRoute === 'custom' ? meta.config.homePageCustom : meta.config.homePageRoute) || 'categories').replace(/^\//, '');
@@ -21,19 +20,19 @@ async function getUserHomeRoute(uid) {
 	return route;
 }
 
-async function rewrite(req, res, next) {
+async function rewriteFn(req, res, next) {
 	if (req.path !== '/' && req.path !== '/api/' && req.path !== '/api') {
 		return next();
 	}
 	let route = adminHomePageRoute();
 	if (meta.config.allowUserHomePage) {
-		route = await getUserHomeRoute(req.uid, next);
+		route = await getUserHomeRoute(req.uid);
 	}
 
 	let parsedUrl;
 	try {
 		parsedUrl = url.parse(route, true);
-	} catch (err) {
+	} catch (err: any) {
 		return next(err);
 	}
 
@@ -49,7 +48,7 @@ async function rewrite(req, res, next) {
 	next();
 }
 
-exports.rewrite = rewrite;
+export const rewrite = rewriteFn;
 
 function pluginHook(req, res, next) {
 	const hook = `action:homepage.get:${res.locals.homePageRoute}`;
@@ -61,4 +60,4 @@ function pluginHook(req, res, next) {
 	});
 }
 
-exports.pluginHook = pluginHook;
+export default { pluginHook };

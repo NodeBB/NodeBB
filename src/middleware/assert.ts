@@ -5,22 +5,20 @@
  * payload and throw an error otherwise.
  */
 
-const path = require('path');
-const nconf = require('nconf');
+import path from 'path';
+import nconf from 'nconf';
+import file from '../file';
+import user from '../user';
+import groups from '../groups';
+import topics from '../topics';
+import posts from '../posts';
+import messaging from '../messaging';
+import flags from '../flags';
+import slugify from '../slugify';
+import helpers from './helpers';
+import controllerHelpers from '../controllers/helpers';
 
-const file = require('../file');
-const user = require('../user');
-const groups = require('../groups');
-const topics = require('../topics');
-const posts = require('../posts');
-const messaging = require('../messaging');
-const flags = require('../flags');
-const slugify = require('../slugify');
-
-const helpers = require('./helpers');
-const controllerHelpers = require('../controllers/helpers');
-
-const Assert = module.exports;
+const Assert = {} as any;
 
 Assert.user = helpers.try(async (req, res, next) => {
 	if (!await user.exists(req.params.uid)) {
@@ -139,3 +137,5 @@ Assert.message = helpers.try(async (req, res, next) => {
 
 	next();
 });
+
+export default Assert;

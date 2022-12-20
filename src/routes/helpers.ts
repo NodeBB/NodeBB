@@ -1,9 +1,9 @@
 'use strict';
 
-const helpers = module.exports;
-const winston = require('winston');
-const middleware = require('../middleware');
-const controllerHelpers = require('../controllers/helpers');
+const helpers = {} as any;
+import winston from 'winston';
+import middleware from '../middleware';
+import controllerHelpers from '../controllers/helpers';
 
 // router, name, middleware(deprecated), middlewares(optional), controller
 helpers.setupPageRoute = function (...args) {
@@ -71,7 +71,7 @@ helpers.tryRoute = function (controller, handler) {
 		return async function (req, res, next) {
 			try {
 				await controller(req, res, next);
-			} catch (err) {
+			} catch (err: any) {
 				if (handler) {
 					return handler(err, res);
 				}
@@ -82,3 +82,5 @@ helpers.tryRoute = function (controller, handler) {
 	}
 	return controller;
 };
+
+export default helpers;

@@ -1,18 +1,19 @@
 
 'use strict';
 
-const _ = require('lodash');
-const validator = require('validator');
-const winston = require('winston');
+import _ from 'lodash';
+import validator from 'validator';
+import winston from 'winston';
 
-const utils = require('../utils');
-const slugify = require('../slugify');
-const meta = require('../meta');
-const db = require('../database');
-const groups = require('../groups');
-const plugins = require('../plugins');
+import utils from '../utils';
+import slugify from '../slugify';
+import meta from '../meta';
 
-module.exports = function (User) {
+import db from '../database';
+import groups from '../groups';
+import plugins from '../plugins';
+
+export default function (User) {
 	User.updateProfile = async function (uid, data, extraFields) {
 		let fields = [
 			'username', 'email', 'fullname', 'website', 'location',
@@ -95,7 +96,7 @@ module.exports = function (User) {
 		}
 	}
 
-	async function isUsernameAvailable(data, uid) {
+	async function isUsernameAvailable(data, uid?) {
 		if (!data.username) {
 			return;
 		}

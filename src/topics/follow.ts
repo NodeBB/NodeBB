@@ -1,13 +1,13 @@
 
 'use strict';
 
-const db = require('../database');
-const notifications = require('../notifications');
-const privileges = require('../privileges');
-const plugins = require('../plugins');
-const utils = require('../utils');
+import db from '../database';
+import notifications from '../notifications';
+import privileges from '../privileges';
+import plugins from '../plugins';
+import utils from '../utils';
 
-module.exports = function (Topics) {
+export default function (Topics) {
 	Topics.toggleFollow = async function (tid, uid) {
 		const exists = await Topics.exists(tid);
 		if (!exists) {

@@ -1,17 +1,16 @@
 'use strict';
 
-const db = require('../database');
-const notifications = require('../notifications');
-const Messaging = require('../messaging');
-const utils = require('../utils');
-const server = require('./index');
-const user = require('../user');
-const privileges = require('../privileges');
+import db from '../database';
+import notifications from '../notifications';
+import Messaging from '../messaging';
+import utils from '../utils';
+import server from './index';
+import user from '../user';
+import privileges from '../privileges';
+import sockets from '.';
+import api from '../api';
 
-const sockets = require('.');
-const api = require('../api');
-
-const SocketModules = module.exports;
+const SocketModules = {} as any;
 
 SocketModules.chats = {};
 SocketModules.settings = {};
@@ -251,4 +250,7 @@ SocketModules.chats.getIP = async function (socket, mid) {
 	return await Messaging.getMessageField(mid, 'ip');
 };
 
-require('../promisify')(SocketModules);
+import promisify from '../promisify';
+promisify(SocketModules);
+
+export default SocketModules;

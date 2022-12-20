@@ -1,12 +1,11 @@
 'use strict';
 
-const meta = require('../../meta');
-const privileges = require('../../privileges');
-const analytics = require('../../analytics');
+import meta from '../../meta';
+import privileges from '../../privileges';
+import analytics from '../../analytics';
+import helpers from '../helpers';
 
-const helpers = require('../helpers');
-
-const Admin = module.exports;
+const Admin = {} as any;
 
 Admin.updateSetting = async (req, res) => {
 	const ok = await privileges.admin.can('admin:settings', req.uid);
@@ -40,3 +39,5 @@ Admin.getAnalyticsData = async (req, res) => {
 	const getStats = req.query.units === 'days' ? analytics.getDailyStatsForSet : analytics.getHourlyStatsForSet;
 	helpers.formatApiResponse(200, res, await getStats(`analytics:${req.params.set}`, parseInt(req.query.until, 10) || Date.now(), req.query.amount));
 };
+
+export default Admin;

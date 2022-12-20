@@ -1,10 +1,10 @@
 'use strict';
 
-const nconf = require('nconf');
-const Redis = require('ioredis');
-const winston = require('winston');
+import nconf from 'nconf';
+import Redis from 'ioredis';
+import winston from 'winston';
 
-const connection = module.exports;
+const connection  = {} as any;
 
 connection.connect = async function (options) {
 	return new Promise((resolve, reject) => {
@@ -59,4 +59,6 @@ connection.connect = async function (options) {
 	});
 };
 
-require('../../promisify')(connection);
+import promisify from '../../promisify';
+promisify(connection);
+export default connection;

@@ -1,14 +1,14 @@
 'use strict';
 
-const async = require('async');
-const user = require('../../user');
-const topics = require('../../topics');
-const categories = require('../../categories');
-const privileges = require('../../privileges');
-const socketHelpers = require('../helpers');
-const events = require('../../events');
+import async from 'async';
+import user from '../../user';
+import topics from '../../topics';
+import categories from '../../categories';
+import privileges from '../../privileges';
+import socketHelpers from '../helpers';
+import events from '../../events';
 
-module.exports = function (SocketTopics) {
+export default function (SocketTopics) {
 	SocketTopics.move = async function (socket, data) {
 		if (!data || !Array.isArray(data.tids) || !data.cid) {
 			throw new Error('[[error:invalid-data]]');

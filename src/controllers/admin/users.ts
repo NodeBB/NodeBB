@@ -1,17 +1,19 @@
 'use strict';
 
-const validator = require('validator');
+import validator from 'validator';
+import user from '../../user';
+import meta from '../../meta';
+import db from '../../database';
+import pagination from '../../pagination';
+import events from '../../events';
+import plugins from '../../plugins';
+import privileges from '../../privileges';
+import utils from '../../utils';
+import path from 'path';
+import * as constants from '../../constants';
+const { paths: { baseDir } } = constants;
 
-const user = require('../../user');
-const meta = require('../../meta');
-const db = require('../../database');
-const pagination = require('../../pagination');
-const events = require('../../events');
-const plugins = require('../../plugins');
-const privileges = require('../../privileges');
-const utils = require('../../utils');
-
-const usersController = module.exports;
+const usersController = {} as any;
 
 const userFields = [
 	'uid', 'username', 'userslug', 'email', 'postcount', 'joindate', 'banned',
@@ -260,8 +262,6 @@ usersController.getCSV = async function (req, res, next) {
 		uid: req.uid,
 		ip: req.ip,
 	});
-	const path = require('path');
-	const { baseDir } = require('../../constants').paths;
 	res.sendFile('users.csv', {
 		root: path.join(baseDir, 'build/export'),
 		headers: {
@@ -278,3 +278,5 @@ usersController.getCSV = async function (req, res, next) {
 		}
 	});
 };
+
+export default usersController;

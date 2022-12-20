@@ -2,11 +2,17 @@
 
 'use strict';
 
-const db = require('../../database');
-const privileges = require('../../privileges');
-const groups = require('../../groups');
+import db from '../../database';
 
-module.exports = {
+
+import privileges from '../../privileges';
+
+
+import groups from '../../groups';
+
+
+
+export const obj = {
 	name: 'give mod info privilege',
 	timestamp: Date.UTC(2019, 9, 8),
 	method: async function () {

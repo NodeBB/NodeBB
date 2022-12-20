@@ -1,12 +1,16 @@
 'use strict';
 
-const db = require('../../database');
+import db from '../../database';
+import meta from '../../meta';
 
-module.exports = {
+
+
+
+export const obj = {
 	name: 'Update registration type',
 	timestamp: Date.UTC(2019, 5, 4),
 	method: function (callback) {
-		const meta = require('../../meta');
+
 		const registrationType = meta.config.registrationType || 'normal';
 		if (registrationType === 'admin-approval' || registrationType === 'admin-approval-ip') {
 			db.setObject('config', {

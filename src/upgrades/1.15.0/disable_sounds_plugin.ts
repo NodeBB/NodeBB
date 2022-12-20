@@ -1,8 +1,10 @@
 'use strict';
 
-const db = require('../../database');
+import db from '../../database';
 
-module.exports = {
+
+
+export const obj = {
 	name: 'Disable nodebb-plugin-soundpack-default',
 	timestamp: Date.UTC(2020, 8, 6),
 	method: async function () {

@@ -128,7 +128,7 @@ winston.info(`environment ${global.env}`);
 
 const db = require('../../src/database');
 
-module.exports = db;
+module.exports =  db;
 
 before(async function () {
 	this.timeout(30000);

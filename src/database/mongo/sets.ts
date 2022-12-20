@@ -1,8 +1,10 @@
 'use strict';
 
-module.exports = function (module) {
-	const _ = require('lodash');
-	const helpers = require('./helpers');
+import _ from 'lodash';
+import helpers from './helpers';
+
+export default function (module) {
+
 
 	module.setAdd = async function (key, value) {
 		if (!Array.isArray(value)) {
@@ -50,7 +52,7 @@ module.exports = function (module) {
 		}
 		try {
 			await bulk.execute();
-		} catch (err) {
+		} catch (err: any) {
 			if (err && err.message.startsWith('E11000 duplicate key error')) {
 				return await module.setsAdd(keys, value);
 			}

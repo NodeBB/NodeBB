@@ -1,9 +1,9 @@
 'use strict';
 
-const user = require('../../user');
-const plugins = require('../../plugins');
+import user from '../../user';
+import plugins from '../../plugins';
 
-module.exports = function (SocketUser) {
+export default function (SocketUser) {
 	SocketUser.removeUploadedPicture = async function (socket, data) {
 		if (!socket.uid || !data || !data.uid) {
 			throw new Error('[[error:invalid-data]]');

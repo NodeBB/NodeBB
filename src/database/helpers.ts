@@ -1,6 +1,6 @@
 'use strict';
 
-const helpers = module.exports;
+const helpers = {} as any;
 
 helpers.mergeBatch = function (batchData, start, stop, sort) {
 	function getFirst() {
@@ -19,10 +19,12 @@ helpers.mergeBatch = function (batchData, start, stop, sort) {
 	let item = null;
 	const result = [];
 	do {
-		item = getFirst(batchData);
+		item = getFirst();
 		if (item) {
 			result.push(item);
 		}
 	} while (item && (result.length < (stop - start + 1) || stop === -1));
 	return result;
 };
+
+export default helpers;

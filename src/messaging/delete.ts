@@ -1,8 +1,7 @@
 'use strict';
+import sockets from '../socket.io';
 
-const sockets = require('../socket.io');
-
-module.exports = function (Messaging) {
+export default function (Messaging) {
 	Messaging.deleteMessage = async (mid, uid) => await doDeleteRestore(mid, 1, uid);
 	Messaging.restoreMessage = async (mid, uid) => await doDeleteRestore(mid, 0, uid);
 

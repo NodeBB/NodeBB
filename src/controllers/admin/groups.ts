@@ -1,17 +1,16 @@
 'use strict';
 
-const nconf = require('nconf');
-const validator = require('validator');
+import nconf from 'nconf';
+import validator from 'validator';
+import db from '../../database';
+import user from '../../user';
+import groups from '../../groups';
+import meta from '../../meta';
+import pagination from '../../pagination';
+import events from '../../events';
+import slugify from '../../slugify';
 
-const db = require('../../database');
-const user = require('../../user');
-const groups = require('../../groups');
-const meta = require('../../meta');
-const pagination = require('../../pagination');
-const events = require('../../events');
-const slugify = require('../../slugify');
-
-const groupsController = module.exports;
+const groupsController = {} as any;
 
 groupsController.list = async function (req, res) {
 	const page = parseInt(req.query.page, 10) || 1;
@@ -96,3 +95,5 @@ groupsController.getCSV = async function (req, res) {
 	res.setHeader('Content-Type', 'text/csv');
 	res.end(csvContent);
 };
+
+export default groupsController;

@@ -1,16 +1,16 @@
 'use strict';
 
 
-const async = require('async');
-const winston = require('winston');
-const db = require('../../database');
+import async from 'async';
+import winston from 'winston';
+import db from '../../database';
+import * as batch from '../../batch';
+import topics from '../../topics';
 
-module.exports = {
+export const obj = {
 	name: 'Users post count per tid',
 	timestamp: Date.UTC(2016, 3, 19),
 	method: function (callback) {
-		const batch = require('../../batch');
-		const topics = require('../../topics');
 		let count = 0;
 		batch.processSortedSet('topics:tid', (tids, next) => {
 			winston.verbose(`upgraded ${count} topics`);

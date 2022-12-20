@@ -1,19 +1,20 @@
 'use strict';
 
-const async = require('async');
-const passport = require('passport');
-const passportLocal = require('passport-local').Strategy;
-const BearerStrategy = require('passport-http-bearer').Strategy;
-const winston = require('winston');
+import async from 'async';
+import passport from 'passport';
+import { Strategy as passportLocal } from 'passport-local';
+import { Strategy as BearerStrategy } from 'passport-http-bearer';
+import winston from 'winston';
+import meta from '../meta';
+import controllers from '../controllers';
+import helpers from '../controllers/helpers';
+import plugins from '../plugins';
+import multipart from 'connect-multiparty';
 
-const meta = require('../meta');
-const controllers = require('../controllers');
-const helpers = require('../controllers/helpers');
-const plugins = require('../plugins');
 
 let loginStrategies = [];
 
-const Auth = module.exports;
+const Auth = {} as any;
 
 Auth.initialize = function (app, middleware) {
 	app.use(passport.initialize());
@@ -81,7 +82,7 @@ Auth.reloadRoutes = async function (params) {
 	// Additional logins via SSO plugins
 	try {
 		loginStrategies = await plugins.hooks.fire('filter:auth.init', loginStrategies);
-	} catch (err) {
+	} catch (err: any) {
 		winston.error(`[authentication] ${err.stack}`);
 	}
 	loginStrategies = loginStrategies || [];
@@ -91,7 +92,7 @@ Auth.reloadRoutes = async function (params) {
 				let opts = {
 					scope: strategy.scope,
 					prompt: strategy.prompt || undefined,
-				};
+				} as any;
 
 				if (strategy.checkState !== false) {
 					req.session.ssoState = req.csrfToken && req.csrfToken();
@@ -151,7 +152,6 @@ Auth.reloadRoutes = async function (params) {
 		});
 	});
 
-	const multipart = require('connect-multiparty');
 	const multipartMiddleware = multipart();
 	const middlewares = [multipartMiddleware, Auth.middleware.applyCSRF, Auth.middleware.applyBlacklist];
 
@@ -171,3 +171,5 @@ passport.deserializeUser((uid, done) => {
 		uid: uid,
 	});
 });
+
+export default Auth;

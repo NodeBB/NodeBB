@@ -1,10 +1,10 @@
 'use strict';
 
-const db = require('../../database');
-const user = require('../../user');
-const topics = require('../../topics');
+import db from '../../database';
+import user from '../../user';
+import topics from '../../topics';
 
-module.exports = function (SocketTopics) {
+export default function (SocketTopics) {
 	SocketTopics.markAsRead = async function (socket, tids) {
 		if (!Array.isArray(tids) || socket.uid <= 0) {
 			throw new Error('[[error:invalid-data]]');

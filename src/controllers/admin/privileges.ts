@@ -1,9 +1,9 @@
 'use strict';
 
-const categories = require('../../categories');
-const privileges = require('../../privileges');
+import categories from '../../categories';
+import privileges from '../../privileges';
 
-const privilegesController = module.exports;
+const privilegesController = {} as any;
 
 privilegesController.get = async function (req, res) {
 	const cid = req.params.cid ? parseInt(req.params.cid, 10) || 0 : 0;
@@ -27,7 +27,7 @@ privilegesController.get = async function (req, res) {
 	}];
 
 	let selectedCategory;
-	categoriesData.forEach((category) => {
+	categoriesData.forEach((category: any) => {
 		if (category) {
 			category.selected = category.cid === (!isAdminPriv ? cid : 'admin');
 
@@ -50,3 +50,5 @@ privilegesController.get = async function (req, res) {
 		isAdminPriv,
 	});
 };
+
+export default privilegesController;

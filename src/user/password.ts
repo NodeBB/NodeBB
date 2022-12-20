@@ -1,12 +1,12 @@
 'use strict';
 
 
-const nconf = require('nconf');
+import nconf from 'nconf';
 
-const db = require('../database');
-const Password = require('../password');
+import db from '../database';
+import * as Password from '../password';
 
-module.exports = function (User) {
+export default function (User) {
 	User.hashPassword = async function (password) {
 		if (!password) {
 			return password;
@@ -28,12 +28,11 @@ module.exports = function (User) {
 
 		try {
 			User.isPasswordValid(password, 0);
-		} catch (e) {
-			return false;
+	} catch (e: any) {			return false;
 		}
 
 		await User.auth.logAttempt(uid, ip);
-		const ok = await Password.compare(password, hashedPassword, !!parseInt(shaWrapped, 10));
+		const ok = await Password.compareFn(password, hashedPassword, !!parseInt(shaWrapped, 10));
 		if (ok) {
 			await User.auth.clearLoginAttempts(uid);
 		}

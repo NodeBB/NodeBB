@@ -1,12 +1,12 @@
 'use strict';
 
-const db = require('../../database');
-const user = require('../../user');
-const helpers = require('../helpers');
-const accountHelpers = require('./helpers');
-const pagination = require('../../pagination');
+import db from '../../database';
+import user from '../../user';
+import helpers from '../helpers';
+import accountHelpers from './helpers';
+import pagination from '../../pagination';
 
-const infoController = module.exports;
+const infoController = {} as any;
 
 infoController.get = async function (req, res, next) {
 	const userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, req.query);
@@ -52,3 +52,5 @@ async function getNotes(userData, start, stop) {
 	]);
 	return { notes: notes, count: count };
 }
+
+export default infoController;

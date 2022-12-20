@@ -1,16 +1,16 @@
 'use strict';
 
-const async = require('async');
-const db = require('../../database');
+import async from 'async';
+import db from '../../database';
+import * as batch from '../../batch';
 
-
-module.exports = {
+export const obj = {
 	name: 'New sorted set posts:votes',
 	timestamp: Date.UTC(2017, 1, 27),
 	method: function (callback) {
 		const { progress } = this;
 
-		require('../../batch').processSortedSet('posts:pid', (pids, next) => {
+		batch.processSortedSet('posts:pid', (pids, next) => {
 			async.each(pids, (pid, next) => {
 				db.getObjectFields(`post:${pid}`, ['upvotes', 'downvotes'], (err, postData) => {
 					if (err || !postData) {

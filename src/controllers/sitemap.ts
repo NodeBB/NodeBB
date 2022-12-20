@@ -1,9 +1,9 @@
 'use strict';
 
-const sitemap = require('../sitemap');
-const meta = require('../meta');
+import sitemap from '../sitemap';
+import meta from '../meta';
 
-const sitemapController = module.exports;
+const sitemapController = {} as any;
 
 sitemapController.render = async function (req, res, next) {
 	if (meta.config['feeds:disableSitemap']) {
@@ -38,3 +38,5 @@ async function sendSitemap(method, res, callback) {
 	res.header('Content-Type', 'application/xml');
 	res.send(xml);
 }
+
+export default sitemapController;

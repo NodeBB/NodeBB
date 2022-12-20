@@ -1,12 +1,12 @@
 'use strict';
 
 
-const nconf = require('nconf');
-const meta = require('./meta');
+import nconf from 'nconf';
+import meta from './meta';
 
 const relative_path = nconf.get('relative_path');
 
-const coverPhoto = module.exports;
+const coverPhoto = {} as any;
 
 coverPhoto.getDefaultGroupCover = function (groupName) {
 	return getCover('groups', groupName);
@@ -38,3 +38,5 @@ function getCover(type, id) {
 
 	return defaultCover;
 }
+
+export default coverPhoto;

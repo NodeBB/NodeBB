@@ -1,12 +1,12 @@
 'use strict';
 
 
-const async = require('async');
-const groups = require('../../groups');
-const privileges = require('../../privileges');
-const db = require('../../database');
+import async from 'async';
+import groups from '../../groups';
+import privileges from '../../privileges';
+import db from '../../database';
 
-module.exports = {
+export const obj = {
 	name: 'Give category access privileges to spiders system group',
 	timestamp: Date.UTC(2018, 0, 31),
 	method: function (callback) {

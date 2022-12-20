@@ -1,16 +1,15 @@
 'use strict';
 
-const validator = require('validator');
-const nconf = require('nconf');
+import validator from 'validator';
+import nconf from 'nconf';
+import meta from '../meta';
+import groups from '../groups';
+import user from '../user';
+import helpers from './helpers';
+import pagination from '../pagination';
+import privileges from '../privileges';
 
-const meta = require('../meta');
-const groups = require('../groups');
-const user = require('../user');
-const helpers = require('./helpers');
-const pagination = require('../pagination');
-const privileges = require('../privileges');
-
-const groupsController = module.exports;
+const groupsController = {} as any;
 
 groupsController.list = async function (req, res) {
 	const sort = req.query.sort || 'alpha';
@@ -118,3 +117,5 @@ groupsController.members = async function (req, res, next) {
 		breadcrumbs: breadcrumbs,
 	});
 };
+
+export default groupsController;

@@ -1,16 +1,17 @@
+
 'use strict';
+import async from 'async';
+import winston from 'winston';
+import db from '../../database';
+import groups from '../../groups';
+import user from '../../user';
+import events from '../../events';
+import translator from '../../translator';
+import sockets from '..';
+import notifications from '../../notifications';
 
-const async = require('async');
-const winston = require('winston');
 
-const db = require('../../database');
-const groups = require('../../groups');
-const user = require('../../user');
-const events = require('../../events');
-const translator = require('../../translator');
-const sockets = require('..');
-
-const User = module.exports;
+const User  = {} as any;
 
 User.makeAdmins = async function (socket, uids) {
 	if (!Array.isArray(uids)) {
@@ -150,7 +151,6 @@ User.exportUsersCSV = async function (socket) {
 			if (socket.emit) {
 				socket.emit('event:export-users-csv');
 			}
-			const notifications = require('../../notifications');
 			const n = await notifications.create({
 				bodyShort: '[[notifications:users-csv-exported]]',
 				path: '/api/admin/users/csv',
@@ -158,8 +158,10 @@ User.exportUsersCSV = async function (socket) {
 				from: socket.uid,
 			});
 			await notifications.push(n, [socket.uid]);
-		} catch (err) {
+		} catch (err: any) {
 			winston.error(err.stack);
 		}
 	}, 0);
 };
+
+export default User;

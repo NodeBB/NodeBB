@@ -1,14 +1,13 @@
 'use strict';
 
-const _ = require('lodash');
+import _ from 'lodash';
+import db from '../database';
+import plugins from '../plugins';
+import Meta from './index';
+import pubsub from '../pubsub';
+import cache from '../cache';
 
-const db = require('../database');
-const plugins = require('../plugins');
-const Meta = require('./index');
-const pubsub = require('../pubsub');
-const cache = require('../cache');
-
-const Settings = module.exports;
+const Settings = {} as any;
 
 Settings.get = async function (hash) {
 	const cached = cache.get(`settings:${hash}`);
@@ -125,3 +124,5 @@ Settings.setOnEmpty = async function (hash, values) {
 		await Settings.set(hash, empty);
 	}
 };
+
+export default Settings;

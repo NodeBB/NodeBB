@@ -1,15 +1,15 @@
 'use strict';
 
 
-const async = require('async');
-const winston = require('winston');
-const db = require('../../database');
+import async from 'async';
+import winston from 'winston';
+import db from '../../database';
+import * as batch from '../../batch';
 
-module.exports = {
+export const obj = {
 	name: 'Removing best posts with negative scores',
 	timestamp: Date.UTC(2016, 7, 5),
 	method: function (callback) {
-		const batch = require('../../batch');
 		batch.processSortedSet('users:joindate', (ids, next) => {
 			async.each(ids, (id, next) => {
 				winston.verbose(`processing uid ${id}`);

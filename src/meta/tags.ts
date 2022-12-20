@@ -1,13 +1,12 @@
 'use strict';
 
-const nconf = require('nconf');
-const winston = require('winston');
+import nconf from 'nconf';
+import winston from 'winston';
+import plugins from '../plugins';
+import Meta from './index';
+import utils from '../utils';
 
-const plugins = require('../plugins');
-const Meta = require('./index');
-const utils = require('../utils');
-
-const Tags = module.exports;
+const Tags = {} as any;
 
 const url = nconf.get('url');
 const relative_path = nconf.get('relative_path');
@@ -67,7 +66,7 @@ Tags.parse = async (req, data, meta, link) => {
 		rel: 'manifest',
 		href: `${relative_path}/manifest.webmanifest`,
 		crossorigin: `use-credentials`,
-	}];
+	}] as any[];
 
 	if (plugins.hooks.hasListeners('filter:search.query')) {
 		defaultLinks.push({
@@ -267,3 +266,5 @@ async function addSiteOGImage(meta) {
 		}
 	});
 }
+
+export default Tags;

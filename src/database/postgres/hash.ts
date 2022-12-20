@@ -1,7 +1,7 @@
 'use strict';
+import helpers from './helpers';
 
-module.exports = function (module) {
-	const helpers = require('./helpers');
+export default function (module) {
 
 	module.setObject = async function (key, data) {
 		if (!key || !data) {

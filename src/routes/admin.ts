@@ -1,8 +1,10 @@
 'use strict';
 
-const helpers = require('./helpers');
+import helpers from './helpers';
+import multipart from 'connect-multiparty';
 
-module.exports = function (app, name, middleware, controllers) {
+
+export default function (app, name, middleware, controllers) {
 	const middlewares = [middleware.pluginHooks];
 
 	helpers.setupAdminPageRoute(app, `/${name}`, middlewares, controllers.admin.routeIndex);
@@ -68,7 +70,6 @@ function apiRoutes(router, name, middleware, controllers) {
 	router.get(`/api/${name}/analytics`, middleware.ensureLoggedIn, helpers.tryRoute(controllers.admin.dashboard.getAnalytics));
 	router.get(`/api/${name}/advanced/cache/dump`, middleware.ensureLoggedIn, helpers.tryRoute(controllers.admin.cache.dump));
 
-	const multipart = require('connect-multiparty');
 	const multipartMiddleware = multipart();
 
 	const middlewares = [multipartMiddleware, middleware.validateFiles, middleware.applyCSRF, middleware.ensureLoggedIn];

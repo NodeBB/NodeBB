@@ -1,8 +1,10 @@
 'use strict';
 
-const db = require('../../database');
+import db from '../../database';
 
-module.exports = {
+
+
+export const obj = {
 	name: 'Set default allowed file extensions',
 	timestamp: Date.UTC(2017, 3, 14),
 	method: function (callback) {

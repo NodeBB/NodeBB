@@ -1,15 +1,17 @@
 'use strict';
 
-const request = require('request');
+import request from 'request';
 
-const meta = require('../meta');
+import meta  from '../meta';
 
 let versionCache = '';
 let versionCacheLastModified = '';
+import promisify from '../promisify';
 
-const isPrerelease = /^v?\d+\.\d+\.\d+-.+$/;
 
-function getLatestVersion(callback) {
+export const isPrereleaseRegex = /^v?\d+\.\d+\.\d+-.+$/;
+
+export function isPrerelease(callback) {
 	const headers = {
 		Accept: 'application/vnd.github.v3+json',
 		'User-Agent': encodeURIComponent(`NodeBB Admin Control Panel/${meta.config.title}`),
@@ -46,7 +48,6 @@ function getLatestVersion(callback) {
 	});
 }
 
-exports.getLatestVersion = getLatestVersion;
-exports.isPrerelease = isPrerelease;
+promisify({ isPrerelease });
+promisify({ isPrereleaseRegex });
 
-require('../promisify')(exports);

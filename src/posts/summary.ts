@@ -1,16 +1,15 @@
 
 'use strict';
 
-const validator = require('validator');
-const _ = require('lodash');
+import validator from 'validator';
+import _ from 'lodash';
+import topics from '../topics';
+import user from '../user';
+import plugins from '../plugins';
+import categories from '../categories';
+import utils from '../utils';
 
-const topics = require('../topics');
-const user = require('../user');
-const plugins = require('../plugins');
-const categories = require('../categories');
-const utils = require('../utils');
-
-module.exports = function (Posts) {
+export default function (Posts) {
 	Posts.getPostSummaryByPids = async function (pids, uid, options) {
 		if (!Array.isArray(pids) || !pids.length) {
 			return [];

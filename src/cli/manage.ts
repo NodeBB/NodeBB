@@ -1,20 +1,22 @@
 'use strict';
 
-const winston = require('winston');
-const childProcess = require('child_process');
-const CliGraph = require('cli-graph');
-const chalk = require('chalk');
-const nconf = require('nconf');
+import winston from 'winston';
+import child from 'child_process';
+import CliGraph from 'cli-graph';
+import chalk from 'chalk';
+import nconf from 'nconf';
+import { build } from '../meta/build';
+import db from '../database';
+import plugins from '../plugins';
+import events from '../events';
+import analytics from '../analytics';
+import * as reset from './reset';
+import { pluginNamePattern, themeNamePattern, paths } from '../constants';
+//@ts-ignore
+import { version } from '../../package.json';
 
-const build = require('../meta/build');
-const db = require('../database');
-const plugins = require('../plugins');
-const events = require('../events');
-const analytics = require('../analytics');
-const reset = require('./reset');
-const { pluginNamePattern, themeNamePattern, paths } = require('../constants');
 
-async function install(plugin, options) {
+async function install(plugin, options?) {
 	if (!options) {
 		options = {};
 	}
@@ -31,7 +33,7 @@ async function install(plugin, options) {
 		if (isInstalled) {
 			throw new Error('plugin already installed');
 		}
-		const nbbVersion = require(paths.currentPackage).version;
+		const nbbVersion =  require(paths.currentPackage).default.version;
 		const suggested = await plugins.suggest(plugin, nbbVersion);
 		if (!suggested.version) {
 			if (!options.force) {
@@ -43,10 +45,10 @@ async function install(plugin, options) {
 		winston.info('Installing Plugin `%s@%s`', plugin, suggested.version);
 		await plugins.toggleInstall(plugin, suggested.version);
 
-		process.exit(0);
-	} catch (err) {
+		(process as any).exit(0);
+	} catch (err: any) {
 		winston.error(`An error occurred during plugin installation\n${err.stack}`);
-		process.exit(1);
+		(process as any).exit(1);
 	}
 }
 
@@ -55,7 +57,7 @@ async function activate(plugin) {
 		await reset.reset({
 			theme: plugin,
 		});
-		process.exit();
+		(process as any).exit();
 	}
 	try {
 		await db.init();
@@ -73,11 +75,11 @@ async function activate(plugin) {
 		const isActive = await plugins.isActive(plugin);
 		if (isActive) {
 			winston.info('Plugin `%s` already active', plugin);
-			process.exit(0);
+			(process as any).exit(0);
 		}
 		if (nconf.get('plugins:active')) {
 			winston.error('Cannot activate plugins while plugin state configuration is set, please change your active configuration (config.json, environmental variables or terminal arguments) instead');
-			process.exit(1);
+			(process as any).exit(1);
 		}
 		const numPlugins = await db.sortedSetCard('plugins:active');
 		winston.info('Activating plugin `%s`', plugin);
@@ -87,10 +89,10 @@ async function activate(plugin) {
 			text: plugin,
 		});
 
-		process.exit(0);
-	} catch (err) {
+		(process as any).exit(0);
+	} catch (err: any) {
 		winston.error(`An error occurred during plugin activation\n${err.stack}`);
-		process.exit(1);
+		(process as any).exit(1);
 	}
 }
 
@@ -116,16 +118,16 @@ async function listPlugins() {
 	combined.sort((a, b) => (a.id > b.id ? 1 : -1));
 
 	// Pretty output
-	process.stdout.write('Active plugins:\n');
+	(process as any).stdout.write('Active plugins:\n');
 	combined.forEach((plugin) => {
-		process.stdout.write(`\t* ${plugin.id}${plugin.version ? `@${plugin.version}` : ''} (`);
-		process.stdout.write(plugin.installed ? chalk.green('installed') : chalk.red('not installed'));
-		process.stdout.write(', ');
-		process.stdout.write(plugin.active ? chalk.green('enabled') : chalk.yellow('disabled'));
-		process.stdout.write(')\n');
+		(process as any).stdout.write(`\t* ${plugin.id}${plugin.version ? `@${plugin.version}` : ''} (`);
+		(process as any).stdout.write(plugin.installed ? chalk.green('installed') : chalk.red('not installed'));
+		(process as any).stdout.write(', ');
+		(process as any).stdout.write(plugin.active ? chalk.green('enabled') : chalk.yellow('disabled'));
+		(process as any).stdout.write(')\n');
 	});
 
-	process.exit();
+	(process as any).exit();
 }
 
 async function listEvents(count = 10) {
@@ -135,17 +137,16 @@ async function listEvents(count = 10) {
 	eventData.forEach((event) => {
 		console.log(`  * ${chalk.green(String(event.timestampISO))} ${chalk.yellow(String(event.type))}${event.text ? ` ${event.text}` : ''} (uid: ${event.uid ? event.uid : 0})`);
 	});
-	process.exit();
+	(process as any).exit();
 }
 
 async function info() {
 	console.log('');
-	const { version } = require('../../package.json');
 	console.log(`  version:  ${version}`);
 
-	console.log(`  Node ver: ${process.version}`);
-
-	const hash = childProcess.execSync('git rev-parse HEAD');
+	console.log(`  Node ver: ${(process as any).version}`);
+    // @ts-ignore
+	const hash = child(process as any).execSync('git rev-parse HEAD');
 	console.log(`  git hash: ${hash}`);
 
 	console.log(`  database: ${nconf.get('database')}`);
@@ -182,28 +183,31 @@ async function info() {
 	const max = Math.max(...analyticsData);
 
 	analyticsData.forEach((point, idx) => {
+		// @ts-ignore
 		graph.addPoint(idx + 1, Math.round(point / max * 10));
 	});
 
 	console.log('');
 	console.log(graph.toString());
 	console.log(`Pageviews, last 24h (min: ${min}  max: ${max})`);
-	process.exit();
+	(process as any).exit();
 }
 
-async function buildWrapper(targets, options) {
+async function buildWrapper(targets, options?) {
 	try {
-		await build.build(targets, options);
-		process.exit(0);
-	} catch (err) {
+		await build(targets, options);
+		(process as any).exit(0);
+	} catch (err: any) {
 		winston.error(err.stack);
-		process.exit(1);
+		(process as any).exit(1);
 	}
 }
 
-exports.build = buildWrapper;
-exports.install = install;
-exports.activate = activate;
-exports.listPlugins = listPlugins;
-exports.listEvents = listEvents;
-exports.info = info;
+export default {
+	buildWrapper,
+	install,
+	activate,
+	listPlugins,
+	listEvents,
+	info
+};

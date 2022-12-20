@@ -1,9 +1,9 @@
 'use strict';
 
-const path = require('path');
-const nconf = require('nconf');
+import path from 'path';
+import nconf from 'nconf';
 
-module.exports = function (app, middleware, controllers) {
+export default function (app, middleware, controllers) {
 	app.get('/sitemap.xml', controllers.sitemap.render);
 	app.get('/sitemap/pages.xml', controllers.sitemap.getPages);
 	app.get('/sitemap/categories.xml', controllers.sitemap.getCategories);

@@ -1,17 +1,18 @@
 'use strict';
 
-const zxcvbn = require('zxcvbn');
-const winston = require('winston');
+import zxcvbn from 'zxcvbn';
+import winston from 'winston';
 
-const db = require('../database');
-const utils = require('../utils');
-const slugify = require('../slugify');
-const plugins = require('../plugins');
-const groups = require('../groups');
-const meta = require('../meta');
-const analytics = require('../analytics');
+import db from '../database';
+import utils from '../utils';
+import slugify from '../slugify';
+import plugins from '../plugins';
+import groups from '../groups';
+import meta from '../meta';
 
-module.exports = function (User) {
+import analytics from '../analytics';
+
+export default function (User) {
 	User.create = async function (data) {
 		data.username = data.username.trim();
 		data.userslug = slugify(data.username);
@@ -49,7 +50,7 @@ module.exports = function (User) {
 			joindate: timestamp,
 			lastonline: timestamp,
 			status: 'online',
-		};
+		} as any;
 		['picture', 'fullname', 'location', 'birthday'].forEach((field) => {
 			if (data[field]) {
 				userData[field] = data[field];

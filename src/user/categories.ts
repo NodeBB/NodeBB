@@ -1,12 +1,12 @@
 'use strict';
 
-const _ = require('lodash');
+import _ from 'lodash';
 
-const db = require('../database');
-const categories = require('../categories');
-const plugins = require('../plugins');
+import db from '../database';
+import categories from '../categories';
+import plugins from '../plugins';
 
-module.exports = function (User) {
+export default function (User) {
 	User.setCategoryWatchState = async function (uid, cids, state) {
 		if (!(parseInt(uid, 10) > 0)) {
 			return;

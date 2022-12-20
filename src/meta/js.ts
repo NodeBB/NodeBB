@@ -1,18 +1,20 @@
 'use strict';
 
-const path = require('path');
-const fs = require('fs');
-const util = require('util');
-const mkdirp = require('mkdirp');
-const rimraf = require('rimraf');
+import path from 'path';
+import fs from 'fs';
+import util from 'util';
+import mkdirp from 'mkdirp';
+import rimraf from 'rimraf';
+import file from '../file';
+import plugins from '../plugins';
+import minifier from './minifier';
+import fse from 'fs-extra';
+
 
 const rimrafAsync = util.promisify(rimraf);
 
-const file = require('../file');
-const plugins = require('../plugins');
-const minifier = require('./minifier');
 
-const JS = module.exports;
+const JS = {} as any;
 
 JS.scripts = {
 	base: [
@@ -65,8 +67,6 @@ async function clearModules() {
 
 JS.buildModules = async function () {
 	await clearModules();
-
-	const fse = require('fs-extra');
 	await fse.copy(
 		path.join(__dirname, `../../public/src`),
 		path.join(__dirname, `../../build/public/src`)
@@ -133,3 +133,5 @@ JS.buildBundle = async function (target, fork) {
 JS.killMinifier = function () {
 	minifier.killAll();
 };
+
+export default JS;

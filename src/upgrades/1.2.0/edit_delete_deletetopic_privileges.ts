@@ -2,15 +2,15 @@
 
 'use strict';
 
-const winston = require('winston');
-const db = require('../../database');
+import winston from 'winston';
+import db from '../../database';
+import groupsAPI from '../../groups';
+import privilegesAPI from '../../privileges';
 
-module.exports = {
+export const obj = {
 	name: 'Granting edit/delete/delete topic on existing categories',
 	timestamp: Date.UTC(2016, 7, 7),
 	method: async function () {
-		const groupsAPI = require('../../groups');
-		const privilegesAPI = require('../../privileges');
 
 		const cids = await db.getSortedSetRange('categories:cid', 0, -1);
 

@@ -1,16 +1,18 @@
 'use strict';
 
-const router = require('express').Router();
-const middleware = require('../../middleware');
-const controllers = require('../../controllers');
-const routeHelpers = require('../helpers');
+import { Router } from 'express';
+import middleware from '../../middleware';
+import controllers from '../../controllers';
+import routeHelpers from '../helpers';
+import multipart from 'connect-multiparty';
+
+const router = Router();
 
 const { setupApiRoute } = routeHelpers;
 
-module.exports = function () {
+export default function () {
 	const middlewares = [middleware.ensureLoggedIn];
 
-	const multipart = require('connect-multiparty');
 	const multipartMiddleware = multipart();
 
 	setupApiRoute(router, 'post', '/', [middleware.checkRequired.bind(null, ['cid', 'title', 'content'])], controllers.write.topics.create);

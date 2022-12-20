@@ -1,8 +1,10 @@
 'use strict';
 
-const db = require('../../database');
+import db from '../../database';
 
-module.exports = {
+
+
+export const obj = {
 	name: 'Flatten navigation data',
 	timestamp: Date.UTC(2018, 1, 17),
 	method: async function () {

@@ -1,28 +1,33 @@
 'use strict';
 
-const util = require('util');
-const winston = require('winston');
+import util from 'util';
+import winston from 'winston';
+import user from '../user';
+import topics from '../topics';
+import messaging from '../messaging';
+import plugins from '../plugins';
+import meta from '../meta';
+import events from '../events';
+import emailer from '../emailer';
+import db from '../database';
+import userController from '../controllers/user';
+import privileges from '../privileges';
+import utils from '../utils';
 
 const sleep = util.promisify(setTimeout);
 
-const user = require('../user');
-const topics = require('../topics');
-const messaging = require('../messaging');
-const plugins = require('../plugins');
-const meta = require('../meta');
-const events = require('../events');
-const emailer = require('../emailer');
-const db = require('../database');
-const userController = require('../controllers/user');
-const privileges = require('../privileges');
-const utils = require('../utils');
 
-const SocketUser = module.exports;
+const SocketUser = {} as any;
 
-require('./user/profile')(SocketUser);
-require('./user/status')(SocketUser);
-require('./user/picture')(SocketUser);
-require('./user/registration')(SocketUser);
+import profile from './user/profile';
+import status from './user/status';
+import picture from './user/picture'; 
+import registration from './user/registration';
+
+profile(SocketUser);
+status(SocketUser);
+picture(SocketUser);
+registration(SocketUser);
 
 // Password Reset
 SocketUser.reset = {};
@@ -48,7 +53,7 @@ SocketUser.reset.send = async function (socket, email) {
 		await user.reset.send(email);
 		await logEvent('[[success:success]]');
 		await sleep(2500 + ((Math.random() * 500) - 250));
-	} catch (err) {
+	} catch (err: any) {
 		await logEvent(err.message);
 		await sleep(2500 + ((Math.random() * 500) - 250));
 		const internalErrors = ['[[error:invalid-email]]', '[[error:reset-rate-limited]]'];
@@ -175,4 +180,7 @@ SocketUser.gdpr.check = async function (socket, data) {
 	return await db.getObjectField(`user:${data.uid}`, 'gdpr_consent');
 };
 
-require('../promisify')(SocketUser);
+import promisify from '../promisify';
+promisify(SocketUser);
+
+export default SocketUser;

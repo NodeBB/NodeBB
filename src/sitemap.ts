@@ -1,17 +1,18 @@
 'use strict';
 
-const { SitemapStream, streamToPromise } = require('sitemap');
-const nconf = require('nconf');
+import { SitemapStream, streamToPromise } from 'sitemap';
+import nconf from 'nconf';
 
-const db = require('./database');
-const categories = require('./categories');
-const topics = require('./topics');
-const privileges = require('./privileges');
-const meta = require('./meta');
-const plugins = require('./plugins');
-const utils = require('./utils');
+import db from './database';
 
-const sitemap = module.exports;
+import categories from './categories';
+import topics from './topics';
+import privileges from './privileges';
+import meta from './meta';
+import plugins from './plugins';
+import utils from './utils';
+
+const sitemap = {} as any;
 sitemap.maps = {
 	topics: [],
 };
@@ -21,7 +22,7 @@ sitemap.render = async function () {
 	const returnData = {
 		url: nconf.get('url'),
 		topics: [],
-	};
+	} as any;
 	const [topicCount, categories, pages] = await Promise.all([
 		db.getObjectField('global', 'topicCount'),
 		getSitemapCategories(),
@@ -177,4 +178,7 @@ sitemap.clearCache = function () {
 	});
 };
 
-require('./promisify')(sitemap);
+import promisify from './promisify';
+promisify(sitemap);
+
+export default sitemap;

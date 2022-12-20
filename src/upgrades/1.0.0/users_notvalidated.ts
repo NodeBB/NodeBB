@@ -1,15 +1,16 @@
 'use strict';
 
 
-const async = require('async');
-const winston = require('winston');
-const db = require('../../database');
+import async from 'async';
+import winston from 'winston';
+import db from '../../database';
+import * as batch from '../../batch';
 
-module.exports = {
+
+export const obj = {
 	name: 'Creating users:notvalidated',
 	timestamp: Date.UTC(2016, 0, 20),
 	method: function (callback) {
-		const batch = require('../../batch');
 		const now = Date.now();
 		batch.processSortedSet('users:joindate', (ids, next) => {
 			async.eachSeries(ids, (id, next) => {

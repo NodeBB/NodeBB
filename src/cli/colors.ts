@@ -4,8 +4,8 @@
 // to include color styling in the output
 // so the CLI looks nice
 
-const { Command } = require('commander');
-const chalk = require('chalk');
+import { Command } from 'commander';
+import chalk from 'chalk';
 
 const colors = [
 	// depth = 0, top-level command
@@ -31,7 +31,7 @@ function getControlCharacterSpaces(term) {
 
 // get depth of command
 // 0 = top, 1 = subcommand of top, etc
-Command.prototype.depth = function () {
+(Command.prototype as any).depth = function () {
 	if (this._depth === undefined) {
 		let depth = 0;
 		let { parent } = this;
@@ -42,7 +42,7 @@ Command.prototype.depth = function () {
 	return this._depth;
 };
 
-module.exports = {
+export default  {
 	commandUsage(cmd) {
 		const depth = cmd.depth();
 

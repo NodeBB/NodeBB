@@ -1,21 +1,23 @@
 'use strict';
 
-const nconf = require('nconf');
-const validator = require('validator');
-const querystring = require('querystring');
-const _ = require('lodash');
-const chalk = require('chalk');
+import nconf from 'nconf';
+import validator from 'validator';
+import querystring from 'querystring';
+import _ from 'lodash';
+import chalk from 'chalk';
+import translator from '../translator';
+import user from '../user';
+import privileges from '../privileges';
+import categories from '../categories';
+import plugins from '../plugins';
+import meta from '../meta';
+import middlewareHelpers from '../middleware/helpers';
+import utils from '../utils';
+import middleware from '../middleware';
 
-const translator = require('../translator');
-const user = require('../user');
-const privileges = require('../privileges');
-const categories = require('../categories');
-const plugins = require('../plugins');
-const meta = require('../meta');
-const middlewareHelpers = require('../middleware/helpers');
-const utils = require('../utils');
 
-const helpers = module.exports;
+
+const helpers = {} as any;
 
 const relative_path = nconf.get('relative_path');
 const url = nconf.get('url');
@@ -27,7 +29,6 @@ helpers.noScriptErrors = async function (req, res, error, httpStatus) {
 		}
 		return res.status(httpStatus).json(error);
 	}
-	const middleware = require('../middleware');
 	const httpStatusString = httpStatus.toString();
 	await middleware.buildHeaderAsync(req, res);
 	res.status(httpStatus).render(httpStatusString, {
@@ -143,7 +144,6 @@ helpers.notAllowed = async function (req, res, error) {
 				});
 			}
 		} else {
-			const middleware = require('../middleware');
 			await middleware.buildHeaderAsync(req, res);
 			res.status(403).render('403', {
 				path: req.path,
@@ -482,10 +482,10 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 		const returnPayload = await helpers.generateError(statusCode, message, res);
 		returnPayload.response = response;
 
-		if (global.env === 'development') {
+		if ((global as any).env === 'development') {
 			returnPayload.stack = payload.stack;
-			process.stdout.write(`[${chalk.yellow('api')}] Exception caught, error with stack trace follows:\n`);
-			process.stdout.write(payload.stack);
+			(process as any).stdout.write(`[${chalk.yellow('api')}] Exception caught, error with stack trace follows:\n`);
+			(process as any).stdout.write(payload.stack);
 		}
 		res.status(statusCode).json(returnPayload);
 	} else if (!payload) {
@@ -496,7 +496,7 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 };
 
 async function generateBannedResponse(res) {
-	const response = {};
+	const response = {} as any;
 	const [reason, expiry] = await Promise.all([
 		user.bans.getReason(res.req.uid),
 		user.getUserField(res.req.uid, 'banned:expire'),
@@ -574,4 +574,6 @@ helpers.generateError = async (statusCode, message, res) => {
 	return payload;
 };
 
-require('../promisify')(helpers);
+import promisify from '../promisify';
+promisify(helpers);
+export default helpers;

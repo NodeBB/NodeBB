@@ -1,9 +1,9 @@
 'use strict';
 
-const SocketCache = module.exports;
+const SocketCache  = {} as any;
 
-const db = require('../../database');
-const plugins = require('../../plugins');
+import db from '../../database';
+import plugins from '../../plugins';
 
 SocketCache.clear = async function (socket, data) {
 	let caches = {
@@ -32,3 +32,5 @@ SocketCache.toggle = async function (socket, data) {
 	}
 	caches[data.name].enabled = data.enabled;
 };
+
+export default SocketCache;

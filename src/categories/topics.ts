@@ -1,13 +1,13 @@
 'use strict';
 
-const db = require('../database');
-const topics = require('../topics');
-const plugins = require('../plugins');
-const meta = require('../meta');
-const privileges = require('../privileges');
-const user = require('../user');
+import db from '../database';
+import topics from '../topics';
+import plugins from '../plugins';
+import meta from '../meta';
+import privileges from '../privileges';
+import user from '../user';
 
-module.exports = function (Categories) {
+export default function (Categories) {
 	Categories.getCategoryTopics = async function (data) {
 		let results = await plugins.hooks.fire('filter:category.topics.prepare', data);
 		const tids = await Categories.getTopicIds(results);
@@ -93,7 +93,7 @@ module.exports = function (Categories) {
 
 	Categories.buildTopicsSortedSet = async function (data) {
 		const { cid } = data;
-		let set = `cid:${cid}:tids`;
+		let set: any = `cid:${cid}:tids`;
 		const sort = data.sort || (data.settings && data.settings.categoryTopicSort) || meta.config.categoryTopicSort || 'newest_to_oldest';
 
 		if (sort === 'most_posts') {

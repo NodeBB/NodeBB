@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (module) {
+export default function (module) {
 	module.sortedSetUnionCard = async function (keys) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return 0;
@@ -33,7 +33,7 @@ module.exports = function (module) {
 			limit = 0;
 		}
 
-		const aggregate = {};
+		const aggregate = {} as any;
 		if (params.aggregate) {
 			aggregate[`$${params.aggregate.toLowerCase()}`] = '$score';
 		} else {
@@ -44,7 +44,7 @@ module.exports = function (module) {
 			{ $match: { _key: { $in: params.sets } } },
 			{ $group: { _id: { value: '$value' }, totalScore: aggregate } },
 			{ $sort: { totalScore: params.sort } },
-		];
+		] as any[];
 
 		if (params.start) {
 			pipeline.push({ $skip: params.start });
@@ -54,7 +54,7 @@ module.exports = function (module) {
 			pipeline.push({ $limit: limit });
 		}
 
-		const project = { _id: 0, value: '$_id.value' };
+		const project = { _id: 0, value: '$_id.value' } as any;
 		if (params.withScores) {
 			project.score = '$totalScore';
 		}

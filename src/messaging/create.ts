@@ -1,11 +1,11 @@
 'use strict';
 
-const meta = require('../meta');
-const plugins = require('../plugins');
-const db = require('../database');
-const user = require('../user');
+import meta from '../meta';
+import plugins from '../plugins';
+import db from '../database';
+import user from '../user';
 
-module.exports = function (Messaging) {
+export default function (Messaging) {
 	Messaging.sendMessage = async (data) => {
 		await Messaging.checkContent(data.content);
 		const inRoom = await Messaging.isUserInRoom(data.uid, data.roomId);
@@ -43,8 +43,8 @@ module.exports = function (Messaging) {
 			roomId: data.roomId,
 			deleted: 0,
 			system: data.system || 0,
-		};
-
+		} as any;
+ 
 		if (data.ip) {
 			message.ip = data.ip;
 		}

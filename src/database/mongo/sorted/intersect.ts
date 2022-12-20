@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (module) {
+export default function (module) {
 	module.sortedSetIntersectCard = async function (keys) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return 0;
@@ -25,7 +25,7 @@ module.exports = function (module) {
 		}
 	};
 
-	async function countSets(sets, limit) {
+	async function countSets(sets, limit?) {
 		const objects = module.client.collection('objects');
 		const counts = await Promise.all(
 			sets.map(s => objects.countDocuments({ _key: s }, {
@@ -88,7 +88,7 @@ module.exports = function (module) {
 			cursorSmall.batchSize(params.counts.minCount + 1);
 		}
 		let items = await cursorSmall.toArray();
-		const project = { _id: 0, value: 1 };
+		const project = { _id: 0, value: 1 } as any;
 		if (params.withScores) {
 			project.score = 1;
 		}
@@ -114,7 +114,7 @@ module.exports = function (module) {
 	}
 
 	async function intersectBatch(params) {
-		const project = { _id: 0, value: 1 };
+		const project = { _id: 0, value: 1 } as any;
 		if (params.withScores) {
 			project.score = 1;
 		}
@@ -126,11 +126,11 @@ module.exports = function (module) {
 			.batchSize(batchSize);
 
 		const otherSets = params.sets.filter(s => s !== sortSet);
-		let inters = [];
+		let inters = [] as any[];
 		let done = false;
 		while (!done) {
 			/* eslint-disable no-await-in-loop */
-			const items = [];
+			const items = [] as any[];
 			while (items.length < batchSize) {
 				const nextItem = await cursor.next();
 				if (!nextItem) {
@@ -161,14 +161,14 @@ module.exports = function (module) {
 	}
 
 	async function intersectAggregate(params) {
-		const aggregate = {};
+		const aggregate = {} as any;
 
 		if (params.aggregate) {
 			aggregate[`$${params.aggregate.toLowerCase()}`] = '$score';
 		} else {
 			aggregate.$sum = '$score';
 		}
-		const pipeline = [{ $match: { _key: { $in: params.sets } } }];
+		const pipeline = [{ $match: { _key: { $in: params.sets } } }] as any[];
 
 		params.weights.forEach((weight, index) => {
 			if (weight !== 1) {
@@ -203,7 +203,7 @@ module.exports = function (module) {
 			pipeline.push({ $limit: params.limit });
 		}
 
-		const project = { _id: 0, value: '$_id.value' };
+		const project = { _id: 0, value: '$_id.value' } as any;
 		if (params.withScores) {
 			project.score = '$totalScore';
 		}

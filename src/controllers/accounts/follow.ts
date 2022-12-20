@@ -1,11 +1,11 @@
 'use strict';
 
-const user = require('../../user');
-const helpers = require('../helpers');
-const accountHelpers = require('./helpers');
-const pagination = require('../../pagination');
+import user from '../../user';
+import helpers from '../helpers';
+import accountHelpers from './helpers';
+import pagination from '../../pagination';
 
-const followController = module.exports;
+const followController = {} as any;
 
 followController.getFollowing = async function (req, res, next) {
 	await getFollow('account/following', 'following', req, res, next);
@@ -39,3 +39,5 @@ async function getFollow(tpl, name, req, res, next) {
 
 	res.render(tpl, userData);
 }
+
+export default followController;

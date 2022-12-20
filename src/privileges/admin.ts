@@ -1,15 +1,14 @@
 
 'use strict';
 
-const _ = require('lodash');
+import _ from 'lodash';
+import user from '../user';
+import groups from '../groups';
+import helpers from './helpers';
+import plugins from '../plugins';
+import utils from '../utils';
 
-const user = require('../user');
-const groups = require('../groups');
-const helpers = require('./helpers');
-const plugins = require('../plugins');
-const utils = require('../utils');
-
-const privsAdmin = module.exports;
+const privsAdmin = {} as any;
 
 /**
  * Looking to add a new admin privilege via plugin/theme? Attach a hook to
@@ -147,7 +146,7 @@ privsAdmin.list = async function (uid) {
 	const keys = {
 		users: userPrivilegeList,
 		groups: groupPrivilegeList,
-	};
+	} as any;
 
 	const payload = await utils.promiseParallel({
 		labels,
@@ -210,3 +209,5 @@ privsAdmin.groupPrivileges = async function (groupName) {
 	const groupPrivilegeList = await privsAdmin.getGroupPrivilegeList();
 	return await helpers.userOrGroupPrivileges(0, groupName, groupPrivilegeList);
 };
+
+export default privsAdmin;

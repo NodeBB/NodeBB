@@ -1,13 +1,14 @@
 'use strict';
 
-const validator = require('validator');
-const nconf = require('nconf');
-const _ = require('lodash');
+import validator from 'validator';
+import nconf from 'nconf';
+import _ from 'lodash';
 
-const db = require('../database');
-const meta = require('../meta');
-const plugins = require('../plugins');
-const utils = require('../utils');
+import db from '../database';
+import meta from '../meta';
+
+import plugins from '../plugins';
+import utils from '../utils';
 
 const relative_path = nconf.get('relative_path');
 
@@ -18,7 +19,7 @@ const intFields = [
 	'blocksCount', 'passwordExpiry', 'mutedUntil',
 ];
 
-module.exports = function (User) {
+export default function (User) {
 	const fieldWhitelist = [
 		'uid', 'username', 'userslug', 'email', 'email:confirmed', 'joindate',
 		'lastonline', 'picture', 'icon:bgColor', 'fullname', 'location', 'birthday', 'website',
@@ -115,7 +116,7 @@ module.exports = function (User) {
 	function uidsToUsers(uids, uniqueUids, usersData) {
 		const uidToUser = _.zipObject(uniqueUids, usersData);
 		const users = uids.map((uid) => {
-			const user = uidToUser[uid] || { ...User.guestData };
+			const user: any = uidToUser[uid] || { ...User.guestData };
 			if (!parseInt(user.uid, 10)) {
 				user.username = (user.hasOwnProperty('oldUid') && parseInt(user.oldUid, 10)) ? '[[global:former_user]]' : '[[global:guest]]';
 				user.displayname = user.username;
@@ -291,7 +292,7 @@ module.exports = function (User) {
 	function parseGroupTitle(user) {
 		try {
 			user.groupTitleArray = JSON.parse(user.groupTitle);
-		} catch (err) {
+		} catch (err: any) {
 			if (user.groupTitle) {
 				user.groupTitleArray = [user.groupTitle];
 			} else {

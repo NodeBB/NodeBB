@@ -4,14 +4,14 @@
  * Logger module: ability to dynamically turn on/off logging for http requests & socket.io events
  */
 
-const fs = require('fs');
-const path = require('path');
-const winston = require('winston');
-const util = require('util');
-const morgan = require('morgan');
+import fs from 'fs';
+import path from 'path';
+import winston from 'winston';
+import util from 'util';
+import morgan from 'morgan';
 
-const file = require('./file');
-const meta = require('./meta');
+import file from './file';
+import meta from './meta';
 
 
 const opts = {
@@ -24,12 +24,12 @@ const opts = {
 		ofn: null,
 	},
 	streams: {
-		log: { f: process.stdout },
+		log: { f: (process as any).stdout },
 	},
 };
 
 /* -- Logger -- */
-const Logger = module.exports;
+const Logger = {} as any;
 
 Logger.init = function (app) {
 	opts.express.app = app;
@@ -62,7 +62,7 @@ Logger.setup_one_log = function (value) {
 		if (stream) {
 			opts.streams.log.f = stream;
 		} else {
-			opts.streams.log.f = process.stdout;
+			opts.streams.log.f = (process as any).stdout;
 		}
 	} else {
 		Logger.close(opts.streams.log);
@@ -92,13 +92,13 @@ Logger.open = function (value) {
 			});
 		}
 	} else {
-		stream = process.stdout;
+		stream = (process as any).stdout;
 	}
 	return stream;
 };
 
 Logger.close = function (stream) {
-	if (stream.f !== process.stdout && stream.f) {
+	if (stream.f !== (process as any).stdout && stream.f) {
 		stream.end();
 	}
 	stream.f = null;
@@ -116,7 +116,7 @@ Logger.monitorConfig = function (socket, data) {
 Logger.express_open = function () {
 	if (opts.express.set !== 1) {
 		opts.express.set = 1;
-		opts.express.app.use(Logger.expressLogger);
+		(opts.express.app as any).use(Logger.expressLogger);
 	}
 	/*
 	 * Always initialize "ofn" (original function) with the original logger function
@@ -144,7 +144,7 @@ Logger.prepare_io_string = function (_type, _uid, _args) {
 	 */
 	try {
 		return `io: ${_uid} ${_type} ${util.inspect(Array.prototype.slice.call(_args), { depth: 3 })}\n`;
-	} catch (err) {
+	} catch (err: any) {
 		winston.info('Logger.prepare_io_string: Failed', err);
 		return 'error';
 	}
@@ -198,7 +198,7 @@ Logger.io_one = function (socket, uid) {
 
 			try {
 				method.apply(socket, args);
-			} catch (err) {
+			} catch (err: any) {
 				winston.info(errorMsg, err);
 			}
 		};
@@ -215,3 +215,5 @@ Logger.io_one = function (socket, uid) {
 		socket.onevent = override($onevent, 'on', 'Logger.io_one: $emit.apply: Failed');
 	}
 };
+
+export default Logger;

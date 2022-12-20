@@ -1,12 +1,13 @@
 'use strict';
 
-const cacheCreate = require('../cache/lru');
-const meta = require('../meta');
+import cacheCreate from '../cache/lru';
+import Meta from '../meta';
 
-module.exports = cacheCreate({
+export default cacheCreate({
 	name: 'post',
-	maxSize: meta.config.postCacheSize,
+	//@ts-ignore
+	maxSize: Meta.config.postCacheSize,
 	sizeCalculation: function (n) { return n.length || 1; },
 	ttl: 0,
-	enabled: global.env === 'production',
+	enabled: (global as any).env === 'production',
 });

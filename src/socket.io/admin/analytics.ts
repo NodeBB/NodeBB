@@ -1,9 +1,9 @@
 'use strict';
 
-const analytics = require('../../analytics');
-const utils = require('../../utils');
+import analytics from  '../../analytics';
+import utils from '../../utils';
 
-const Analytics = module.exports;
+const Analytics  = {} as any;
 
 Analytics.get = async function (socket, data) {
 	if (!data || !data.graph || !data.units) {
@@ -34,3 +34,5 @@ Analytics.get = async function (socket, data) {
 		return result;
 	}
 };
+
+export default Analytics;

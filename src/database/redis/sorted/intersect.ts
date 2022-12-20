@@ -1,8 +1,9 @@
 
 'use strict';
+import helpers from '../helpers';
 
-module.exports = function (module) {
-	const helpers = require('../helpers');
+
+export default function (module) {
 	module.sortedSetIntersectCard = async function (keys) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return 0;

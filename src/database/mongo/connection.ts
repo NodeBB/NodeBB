@@ -1,11 +1,12 @@
 'use strict';
 
-const nconf = require('nconf');
+import nconf from 'nconf';
+import winston from 'winston';
+import _ from 'lodash';
+import mongoClient from 'mongodb';
 
-const winston = require('winston');
-const _ = require('lodash');
 
-const connection = module.exports;
+const connection = {} as any;
 
 connection.getConnectionString = function (mongo) {
 	mongo = mongo || nconf.get('mongo');
@@ -53,10 +54,9 @@ connection.getConnectionOptions = function (mongo) {
 };
 
 connection.connect = async function (options) {
-	const mongoClient = require('mongodb').MongoClient;
-
 	const connString = connection.getConnectionString(options);
 	const connOptions = connection.getConnectionOptions(options);
 
-	return await mongoClient.connect(connString, connOptions);
+	return await (mongoClient as any).connect(connString, connOptions);
 };
+export default connection;

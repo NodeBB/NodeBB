@@ -1,15 +1,22 @@
 'use strict';
 
-const db = require('../../database');
+import db from '../../database';
 
-const batch = require('../../batch');
-const user = require('../../user');
-const groups = require('../../groups');
-const meta = require('../../meta');
-const privileges = require('../../privileges');
+
+
+import * as batch from '../../batch';
+
+
+import user from '../../user';
+import groups from '../../groups';
+
+
+import meta from '../../meta';import privileges from '../../privileges';
+
+
 
 const now = Date.now();
-module.exports = {
+export const obj = {
 	name: 'Create verified/unverified user groups',
 	timestamp: Date.UTC(2020, 9, 13),
 	method: async function () {

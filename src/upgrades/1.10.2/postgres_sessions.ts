@@ -1,9 +1,11 @@
 'use strict';
 
-const nconf = require('nconf');
-const db = require('../../database');
+import nconf from 'nconf';
+import db from '../../database';
 
-module.exports = {
+
+
+export const obj = {
 	name: 'Optimize PostgreSQL sessions',
 	timestamp: Date.UTC(2018, 9, 1),
 	method: function (callback) {

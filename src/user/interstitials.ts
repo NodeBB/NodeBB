@@ -1,18 +1,19 @@
 'use strict';
 
-const winston = require('winston');
-const util = require('util');
+import winston from 'winston';
+import util from 'util';
 
-const user = require('.');
-const db = require('../database');
-const meta = require('../meta');
-const privileges = require('../privileges');
-const plugins = require('../plugins');
-const utils = require('../utils');
+import user from '.';
+import db from '../database';
+import meta from '../meta';
+
+import privileges from '../privileges';
+import plugins from '../plugins';
+import utils from '../utils';
 
 const sleep = util.promisify(setTimeout);
 
-const Interstitials = module.exports;
+const Interstitials = {} as any;
 
 Interstitials.get = async (req, userData) => plugins.hooks.fire('filter:register.interstitial', {
 	req,
@@ -202,3 +203,5 @@ Interstitials.tou = async function (data) {
 	});
 	return data;
 };
+
+export default Interstitials;

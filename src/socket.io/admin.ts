@@ -1,36 +1,58 @@
 'use strict';
 
-const winston = require('winston');
+import winston from 'winston';
+import meta from '../meta';
+import user from '../user';
+import events from '../events';
+import db from '../database';
+import privileges from '../privileges';
+import websockets from './index';
+import index from './index';
+import search from '../admin/search';
 
-const meta = require('../meta');
-const user = require('../user');
-const events = require('../events');
-const db = require('../database');
-const privileges = require('../privileges');
-const websockets = require('./index');
-const index = require('./index');
-const getAdminSearchDict = require('../admin/search').getDictionary;
+const getAdminSearchDict = search.getLatestVersionDictionary;
 
-const SocketAdmin = module.exports;
-SocketAdmin.user = require('./admin/user');
-SocketAdmin.categories = require('./admin/categories');
-SocketAdmin.settings = require('./admin/settings');
-SocketAdmin.tags = require('./admin/tags');
-SocketAdmin.rewards = require('./admin/rewards');
-SocketAdmin.navigation = require('./admin/navigation');
-SocketAdmin.rooms = require('./admin/rooms');
-SocketAdmin.social = require('./admin/social');
-SocketAdmin.themes = require('./admin/themes');
-SocketAdmin.plugins = require('./admin/plugins');
-SocketAdmin.widgets = require('./admin/widgets');
-SocketAdmin.config = require('./admin/config');
-SocketAdmin.settings = require('./admin/settings');
-SocketAdmin.email = require('./admin/email');
-SocketAdmin.analytics = require('./admin/analytics');
-SocketAdmin.logs = require('./admin/logs');
-SocketAdmin.errors = require('./admin/errors');
-SocketAdmin.digest = require('./admin/digest');
-SocketAdmin.cache = require('./admin/cache');
+const SocketAdmin = {} as any;
+
+import adminUser from './admin/user';
+import categories from './admin/categories';
+import adminSettings from './admin/settings';
+import tags from './admin/tags';
+import rewards from './admin/rewards';
+import navigation from './admin/navigation';
+import rooms from './admin/rooms';
+import social from './admin/social';
+import plugins from './admin/plugins';
+import widgets from './admin/widgets';
+import config from './admin/config';
+import settings from './admin/settings';
+import email from './admin/email';
+import analytics from './admin/analytics';
+import logs from './admin/logs';
+import errors from './admin/errors';
+import digest from './admin/digest';
+import cache from './admin/cache';
+
+Object.assign(SocketAdmin, { 
+	user,
+	categories,
+	settings,
+	tags,
+	rewards,
+	navigation,
+	rooms,
+	social,
+	plugins,
+	widgets,
+	config,
+	adminSettings,
+	email,
+	analytics,
+	logs,
+	errors,
+	digest,
+	cache,
+});
 
 SocketAdmin.before = async function (socket, method) {
 	const isAdmin = await user.isAdministrator(socket.uid);
@@ -118,4 +140,7 @@ SocketAdmin.getServerTime = function (socket, data, callback) {
 	});
 };
 
-require('../promisify')(SocketAdmin);
+import promisify from '../promisify';
+promisify(SocketAdmin);
+
+export default SocketAdmin;

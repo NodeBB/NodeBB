@@ -1,12 +1,16 @@
 'use strict';
 
-const privileges = require('../../privileges');
+import privileges from '../../privileges';
+import meta from '../../meta';
 
-module.exports = {
+
+
+
+export const obj = {
 	name: 'Group create global privilege',
 	timestamp: Date.UTC(2019, 0, 4),
 	method: function (callback) {
-		const meta = require('../../meta');
+
 		if (parseInt(meta.config.allowGroupCreation, 10) === 1) {
 			privileges.global.give(['groups:group:create'], 'registered-users', callback);
 		} else {

@@ -1,9 +1,9 @@
 'use strict';
 
-const user = require('../user');
-const flags = require('../flags');
+import user from '../user';
+import flags from '../flags';
 
-const flagsApi = module.exports;
+const flagsApi = {} as any;
 
 flagsApi.create = async (caller, data) => {
 	const required = ['type', 'id', 'reason'];
@@ -49,7 +49,7 @@ flagsApi.appendNote = async (caller, data) => {
 			if (note.uid !== caller.uid) {
 				throw new Error('[[error:no-privileges]]');
 			}
-		} catch (e) {
+		} catch (e: any) {
 			// Okay if not does not exist in database
 			if (e.message !== '[[error:invalid-data]]') {
 				throw e;
@@ -82,3 +82,5 @@ flagsApi.deleteNote = async (caller, data) => {
 	]);
 	return { notes: notes, history: history };
 };
+
+export default flagsApi;

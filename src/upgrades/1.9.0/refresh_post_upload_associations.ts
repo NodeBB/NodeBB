@@ -1,9 +1,9 @@
 'use strict';
 
-const async = require('async');
-const posts = require('../../posts');
+import async from 'async';
+import posts from '../../posts';
 
-module.exports = {
+export const obj = {
 	name: 'Refresh post-upload associations',
 	timestamp: Date.UTC(2018, 3, 16),
 	method: function (callback) {

@@ -1,19 +1,19 @@
 'use strict';
 
-const rss = require('rss');
-const nconf = require('nconf');
-const validator = require('validator');
-
-const posts = require('../posts');
-const topics = require('../topics');
-const user = require('../user');
-const categories = require('../categories');
-const meta = require('../meta');
-const helpers = require('../controllers/helpers');
-const privileges = require('../privileges');
-const db = require('../database');
-const utils = require('../utils');
-const controllers404 = require('../controllers/404');
+import rss from 'rss';
+import nconf from 'nconf';
+import validator from 'validator';
+import posts from '../posts';
+import topics from '../topics';
+import user from '../user';
+import categories from '../categories';
+import meta from '../meta';
+import helpers from '../controllers/helpers';
+import privileges from '../privileges';
+import db from '../database';
+import utils from '../utils';
+//@ts-ignore
+import controllers404 from '../controllers/404';
 
 const terms = {
 	daily: 'day',
@@ -22,7 +22,7 @@ const terms = {
 	alltime: 'alltime',
 };
 
-module.exports = function (app, middleware) {
+export default function (app, middleware) {
 	app.get('/topic/:topic_id.rss', middleware.maintenanceMode, generateForTopic);
 	app.get('/category/:category_id.rss', middleware.maintenanceMode, generateForCategory);
 	app.get('/topics.rss', middleware.maintenanceMode, generateForTopics);
@@ -225,7 +225,7 @@ async function generateSorted(options, req, res, next) {
 		stop: 19,
 		term: term,
 		sort: options.sort,
-	};
+	} as any;
 
 	const { cid } = req.query;
 	if (cid) {
@@ -247,7 +247,7 @@ async function generateSorted(options, req, res, next) {
 	sendFeed(feed, res);
 }
 
-async function sendTopicsFeed(options, set, res, timestampField) {
+async function sendTopicsFeed(options, set, res, timestampField?) {
 	const start = options.hasOwnProperty('start') ? options.start : 0;
 	const stop = options.hasOwnProperty('stop') ? options.stop : 19;
 	const topicData = await topics.getTopicsFromSet(set, options.uid, start, stop);
@@ -273,7 +273,7 @@ async function generateTopicsFeed(feedOptions, feedTopics, timestampField) {
 			title: utils.stripHTMLTags(topicData.title, utils.tags),
 			url: `${nconf.get('url')}/topic/${topicData.slug}`,
 			date: new Date(topicData[timestampField]).toUTCString(),
-		};
+		} as any;
 
 		if (topicData.deleted) {
 			return;

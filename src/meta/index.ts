@@ -1,37 +1,33 @@
 'use strict';
 
-const winston = require('winston');
-const os = require('os');
-const nconf = require('nconf');
-
-const pubsub = require('../pubsub');
-const slugify = require('../slugify');
-
-const Meta = module.exports;
+const Meta = {} as any;
+import winston from 'winston';
+import os from 'os';
+import nconf from 'nconf';
+import pubsub from '../pubsub';
+import slugify from '../slugify';
+import user from '../user';
+import groups from '../groups';
+import promisify from '../promisify';
 
 Meta.reloadRequired = false;
-
-Meta.configs = require('./configs');
-Meta.themes = require('./themes');
-Meta.js = require('./js');
-Meta.css = require('./css');
-Meta.settings = require('./settings');
-Meta.logs = require('./logs');
-Meta.errors = require('./errors');
-Meta.tags = require('./tags');
-Meta.dependencies = require('./dependencies');
-Meta.templates = require('./templates');
-Meta.blacklist = require('./blacklist');
-Meta.languages = require('./languages');
-
+Meta.themes = require('./themes').default;
+Meta.js =  require('./js').default;
+Meta.css = require('./css').default;
+Meta.settings = require('./settings').default;
+Meta.logs = require('./logs').default;
+Meta.errors = require('./errors').default;
+Meta.tags = require('./tags').default;
+Meta.dependencies = require('./dependencies').default;
+Meta.templates = require('./templates').default;
+Meta.blacklist = require('./blacklist').default;
+Meta.languages = require('./languages').default;
 
 /* Assorted */
 Meta.userOrGroupExists = async function (slug) {
 	if (!slug) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	const user = require('../user');
-	const groups = require('../groups');
 	slug = slugify(slug);
 	const [userExists, groupExists] = await Promise.all([
 		user.existsBySlug(slug),
@@ -54,8 +50,8 @@ Meta.restart = function () {
 };
 
 function restart() {
-	if (process.send) {
-		process.send({
+	if ((process as any).send) {
+		(process as any).send({
 			action: 'restart',
 		});
 	} else {
@@ -70,4 +66,5 @@ Meta.getSessionTTLSeconds = function () {
 	return ttl;
 };
 
-require('../promisify')(Meta);
+promisify(Meta);
+export default Meta;

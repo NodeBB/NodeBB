@@ -1,12 +1,18 @@
 'use strict';
 
 
-const async = require('async');
-const groups = require('../../groups');
-const privileges = require('../../privileges');
-const db = require('../../database');
+import async from 'async';
+import groups from '../../groups';
 
-module.exports = {
+
+import privileges from '../../privileges';
+
+
+import db from '../../database';
+
+
+
+export const obj = {
 	name: 'Give upload privilege to registered-users globally if it is given on a category',
 	timestamp: Date.UTC(2018, 0, 3),
 	method: function (callback) {

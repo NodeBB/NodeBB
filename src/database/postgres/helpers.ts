@@ -1,6 +1,6 @@
 'use strict';
 
-const helpers = module.exports;
+const helpers = {} as any;
 
 helpers.valueToString = function (value) {
 	return String(value);
@@ -95,3 +95,5 @@ SELECT "_key", "type"
 };
 
 helpers.noop = function () {};
+
+export default helpers;

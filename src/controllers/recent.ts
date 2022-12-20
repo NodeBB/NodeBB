@@ -1,16 +1,15 @@
 
 'use strict';
 
-const nconf = require('nconf');
+import nconf from 'nconf';
+import user from '../user';
+import topics from '../topics';
+import meta from '../meta';
+import helpers from './helpers';
+import pagination from '../pagination';
+import privileges from '../privileges';
 
-const user = require('../user');
-const topics = require('../topics');
-const meta = require('../meta');
-const helpers = require('./helpers');
-const pagination = require('../pagination');
-const privileges = require('../privileges');
-
-const recentController = module.exports;
+const recentController = {} as any;
 const relative_path = nconf.get('relative_path');
 
 recentController.get = async function (req, res, next) {
@@ -90,4 +89,6 @@ recentController.getData = async function (req, url, sort) {
 };
 
 
-require('../promisify')(recentController, ['get']);
+import promisify from '../promisify';
+promisify(recentController, ['get']);
+export default recentController;

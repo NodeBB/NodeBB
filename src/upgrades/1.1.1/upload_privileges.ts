@@ -1,15 +1,17 @@
 'use strict';
 
-const async = require('async');
-const db = require('../../database');
+import async from 'async';
+import db from '../../database';
 
 
-module.exports = {
+import privilegesAPI from '../../privileges';
+import meta from '../../meta';
+
+
+export const obj = {
 	name: 'Giving upload privileges',
 	timestamp: Date.UTC(2016, 6, 12),
 	method: function (callback) {
-		const privilegesAPI = require('../../privileges');
-		const meta = require('../../meta');
 
 		db.getSortedSetRange('categories:cid', 0, -1, (err, cids) => {
 			if (err) {

@@ -1,19 +1,18 @@
 
 'use strict';
 
-const validator = require('validator');
+import validator from 'validator';
+import db from '../database';
+import meta from '../meta';
+import plugins from '../plugins';
+import search from '../search';
+import categories from '../categories';
+import pagination from '../pagination';
+import privileges from '../privileges';
+import utils from '../utils';
+import helpers from './helpers';
 
-const db = require('../database');
-const meta = require('../meta');
-const plugins = require('../plugins');
-const search = require('../search');
-const categories = require('../categories');
-const pagination = require('../pagination');
-const privileges = require('../privileges');
-const utils = require('../utils');
-const helpers = require('./helpers');
-
-const searchController = module.exports;
+const searchController = {} as any;
 
 searchController.search = async function (req, res, next) {
 	if (!plugins.hooks.hasListeners('filter:search.query')) {
@@ -143,3 +142,5 @@ async function buildCategories(uid, searchOnly) {
 		{ value: 'watched', text: '[[category:watched-categories]]' },
 	].concat(categoriesData);
 }
+
+export default searchController;

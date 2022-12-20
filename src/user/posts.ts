@@ -1,10 +1,11 @@
 'use strict';
 
-const db = require('../database');
-const meta = require('../meta');
-const privileges = require('../privileges');
+import db from '../database';
+import meta from '../meta';
 
-module.exports = function (User) {
+import privileges from '../privileges';
+
+export default function (User) {
 	User.isReadyToPost = async function (uid, cid) {
 		await isReady(uid, cid, 'lastposttime');
 	};
@@ -32,7 +33,7 @@ module.exports = function (User) {
 
 		const now = Date.now();
 		if (userData.mutedUntil > now) {
-			let muteLeft = ((userData.mutedUntil - now) / (1000 * 60));
+			let muteLeft: number | string = ((userData.mutedUntil - now) / (1000 * 60));
 			if (muteLeft > 60) {
 				muteLeft = (muteLeft / 60).toFixed(0);
 				throw new Error(`[[error:user-muted-for-hours, ${muteLeft}]]`);

@@ -1,10 +1,10 @@
 'use strict';
 
-const topics = require('../../topics');
-const privileges = require('../../privileges');
-const events = require('../../events');
+import topics from '../../topics';
+import privileges from '../../privileges';
+import events from '../../events';
 
-module.exports = function (SocketTopics) {
+export default function (SocketTopics) {
 	SocketTopics.merge = async function (socket, data) {
 		if (!data || !Array.isArray(data.tids)) {
 			throw new Error('[[error:invalid-data]]');

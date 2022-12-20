@@ -1,12 +1,12 @@
 'use strict';
 
-const categories = require('../categories');
-const events = require('../events');
-const user = require('../user');
-const groups = require('../groups');
-const privileges = require('../privileges');
+import categories from '../categories';
+import events from '../events';
+import user from '../user';
+import groups from '../groups';
+import privileges from '../privileges';
 
-const categoriesAPI = module.exports;
+const categoriesAPI = {} as any;
 
 categoriesAPI.get = async function (caller, data) {
 	const [userPrivileges, category] = await Promise.all([
@@ -100,3 +100,5 @@ categoriesAPI.setPrivilege = async (caller, data) => {
 		target: data.member,
 	});
 };
+
+export default categoriesAPI;

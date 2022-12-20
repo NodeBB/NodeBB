@@ -1,16 +1,15 @@
 'use strict';
 
-const validator = require('validator');
+import validator from 'validator';
+import user from '../user';
+import meta from '../meta';
+import messaging from '../messaging';
+import plugins from '../plugins';
 
-const user = require('../user');
-const meta = require('../meta');
-const messaging = require('../messaging');
-const plugins = require('../plugins');
+// const websockets from '../socket.io';
+import socketHelpers from '../socket.io/helpers';
 
-// const websockets = require('../socket.io');
-const socketHelpers = require('../socket.io/helpers');
-
-const chatsAPI = module.exports;
+const chatsAPI = {} as any;
 
 function rateLimitExceeded(caller) {
 	const session = caller.request ? caller.request.session : caller.session; // socket vs req
@@ -118,3 +117,5 @@ chatsAPI.kick = async (caller, data) => {
 	delete data.uids;
 	return chatsAPI.users(caller, data);
 };
+
+export default chatsAPI;

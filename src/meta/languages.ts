@@ -1,20 +1,19 @@
 'use strict';
 
-const _ = require('lodash');
-const nconf = require('nconf');
-const path = require('path');
-const fs = require('fs');
-const util = require('util');
-let mkdirp = require('mkdirp');
+import _ from 'lodash';
+import nconf from 'nconf';
+import path from 'path';
+import fs from 'fs';
+import util from 'util';
+import mkdirpPkg from 'mkdirp';
 
-mkdirp = mkdirp.hasOwnProperty('native') ? mkdirp : util.promisify(mkdirp);
-const rimraf = require('rimraf');
-
+const mkdirp = mkdirpPkg.hasOwnProperty('native') ? mkdirpPkg : util.promisify(mkdirpPkg);
+import rimraf from 'rimraf';
 const rimrafAsync = util.promisify(rimraf);
 
-const file = require('../file');
-const Plugins = require('../plugins');
-const { paths } = require('../constants');
+import file from '../file';
+import Plugins from '../plugins';
+import { paths } from '../constants';
 
 const buildLanguagesPath = path.join(paths.baseDir, 'build/public/language');
 const coreLanguagesPath = path.join(paths.baseDir, 'public/language');
@@ -45,7 +44,7 @@ async function getTranslationMetadata() {
 	languages = _.union(languages, Plugins.languageData.languages).sort().filter(Boolean);
 	namespaces = _.union(namespaces, Plugins.languageData.namespaces).sort().filter(Boolean);
 	const configLangs = nconf.get('languages');
-	if (process.env.NODE_ENV === 'development' && Array.isArray(configLangs) && configLangs.length) {
+	if ((process as any).env.NODE_ENV === 'development' && Array.isArray(configLangs) && configLangs.length) {
 		languages = configLangs;
 	}
 	// save a list of languages to `${buildLanguagesPath}/metadata.json`
@@ -60,7 +59,7 @@ async function getTranslationMetadata() {
 }
 
 async function writeLanguageFile(language, namespace, translations) {
-	const dev = process.env.NODE_ENV === 'development';
+	const dev = (process as any).env.NODE_ENV === 'development';
 	const filePath = path.join(buildLanguagesPath, language, `${namespace}.json`);
 
 	await mkdirp(path.dirname(filePath));
@@ -129,14 +128,14 @@ async function assignFileToTranslations(translations, path) {
 	try {
 		const fileData = await fs.promises.readFile(path, 'utf8');
 		Object.assign(translations, JSON.parse(fileData));
-	} catch (err) {
+	} catch (err: any) {
 		if (err.code !== 'ENOENT') {
 			throw err;
 		}
 	}
 }
 
-exports.build = async function buildLanguages() {
+export const build = async function buildLanguages() {
 	await rimrafAsync(buildLanguagesPath);
 	const data = await getTranslationMetadata();
 	await buildTranslations(data);

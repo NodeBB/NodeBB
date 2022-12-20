@@ -1,16 +1,15 @@
 'use strict';
 
-const ipaddr = require('ipaddr.js');
-const winston = require('winston');
-const _ = require('lodash');
-const validator = require('validator');
+import ipaddr from 'ipaddr.js';
+import winston from 'winston';
+import _ from 'lodash';
+import validator from 'validator';
+import db from '../database';
+import pubsub from '../pubsub';
+import plugins from '../plugins';
+import analytics from '../analytics';
 
-const db = require('../database');
-const pubsub = require('../pubsub');
-const plugins = require('../plugins');
-const analytics = require('../analytics');
-
-const Blacklist = module.exports;
+const Blacklist = {} as any;
 Blacklist._rules = {};
 
 Blacklist.load = async function () {
@@ -56,7 +55,7 @@ Blacklist.test = async function (clientIp) {
 	let addr;
 	try {
 		addr = ipaddr.parse(clientIp);
-	} catch (err) {
+	} catch (err: any) {
 		winston.error(`[meta/blacklist] Error parsing client IP : ${clientIp}`);
 		throw err;
 	}
@@ -75,12 +74,12 @@ Blacklist.test = async function (clientIp) {
 		try {
 			// To return test failure, pass back an error in callback
 			await plugins.hooks.fire('filter:blacklist.test', { ip: clientIp });
-		} catch (err) {
+		} catch (err: any) {
 			analytics.increment('blacklist');
 			throw err;
 		}
 	} else {
-		const err = new Error('[[error:blacklisted-ip]]');
+		const err: any = new Error('[[error:blacklisted-ip]]');
 		err.code = 'blacklisted-ip';
 
 		analytics.increment('blacklist');
@@ -90,10 +89,10 @@ Blacklist.test = async function (clientIp) {
 
 Blacklist.validate = function (rules) {
 	rules = (rules || '').split('\n');
-	const ipv4 = [];
-	const ipv6 = [];
-	const cidr = [];
-	const invalid = [];
+	const ipv4 = [] as any[];
+	const ipv6 = [] as any[];
+	const cidr = [] as any[];
+	const invalid = [] as any[];
 	let duplicateCount = 0;
 
 	const inlineCommentMatch = /#.*$/;
@@ -117,15 +116,13 @@ Blacklist.validate = function (rules) {
 		let isRange = false;
 		try {
 			addr = ipaddr.parse(rule);
-		} catch (e) {
-			// Do nothing
+	} catch (e: any) {			// Do nothing
 		}
 
 		try {
 			addr = ipaddr.parseCIDR(rule);
 			isRange = true;
-		} catch (e) {
-			// Do nothing
+	} catch (e: any) {			// Do nothing
 		}
 
 		if (!addr || whitelist.includes(rule)) {

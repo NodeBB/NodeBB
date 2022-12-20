@@ -1,12 +1,16 @@
 'use strict';
 
 
-const async = require('async');
+import async from 'async';
 
-const privileges = require('../../privileges');
-const db = require('../../database');
+import privileges from '../../privileges';
 
-module.exports = {
+
+import db from '../../database';
+
+
+
+export const obj = {
 	name: 'Give vote privilege to registered-users on all categories',
 	timestamp: Date.UTC(2018, 0, 9),
 	method: function (callback) {

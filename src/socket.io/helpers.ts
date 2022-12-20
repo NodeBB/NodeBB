@@ -1,20 +1,19 @@
 'use strict';
 
-const _ = require('lodash');
+import _ from 'lodash';
+import db from '../database';
+import websockets from './index';
+import user from '../user';
+import posts from '../posts';
+import topics from '../topics';
+import categories from '../categories';
+import privileges from '../privileges';
+import notifications from '../notifications';
+import plugins from '../plugins';
+import utils from '../utils';
+import * as  batch from '../batch';
 
-const db = require('../database');
-const websockets = require('./index');
-const user = require('../user');
-const posts = require('../posts');
-const topics = require('../topics');
-const categories = require('../categories');
-const privileges = require('../privileges');
-const notifications = require('../notifications');
-const plugins = require('../plugins');
-const utils = require('../utils');
-const batch = require('../batch');
-
-const SocketHelpers = module.exports;
+const SocketHelpers = {} as any;
 
 SocketHelpers.notifyNew = async function (uid, type, result) {
 	let uids = await user.getUidsFromSet('users:online', 0, -1);
@@ -196,4 +195,7 @@ SocketHelpers.emitToUids = async function (event, data, uids) {
 	uids.forEach(toUid => websockets.in(`uid_${toUid}`).emit(event, data));
 };
 
-require('../promisify')(SocketHelpers);
+import promisify from '../promisify';
+promisify(SocketHelpers);
+
+export default SocketHelpers;

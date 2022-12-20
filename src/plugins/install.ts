@@ -1,19 +1,18 @@
 'use strict';
 
-const winston = require('winston');
-const path = require('path');
-const fs = require('fs').promises;
-const nconf = require('nconf');
-const os = require('os');
-const cproc = require('child_process');
-const util = require('util');
-const request = require('request-promise-native');
-
-const db = require('../database');
-const meta = require('../meta');
-const pubsub = require('../pubsub');
-const { paths } = require('../constants');
-const pkgInstall = require('../cli/package-install');
+import winston from 'winston';
+import path from 'path';
+import { promises as fs } from 'fs';
+import nconf from 'nconf';
+import os from 'os';
+import cproc from 'child_process';
+import util from 'util';
+import request from 'request-promise-native';
+import db from '../database';
+import meta from '../meta';
+import pubsub from '../pubsub';
+import { paths } from '../constants';
+import pkgInstall from '../cli/package-install';
 
 const packageManager = pkgInstall.getPackageManager();
 let packageManagerExecutable = packageManager;
@@ -36,11 +35,11 @@ const packageManagerCommands = {
 	},
 };
 
-if (process.platform === 'win32') {
+if ((process as any).platform === 'win32') {
 	packageManagerExecutable += '.cmd';
 }
 
-module.exports = function (Plugins) {
+export default function (Plugins) {
 	if (nconf.get('isPrimary')) {
 		pubsub.on('plugins:toggleInstall', (data) => {
 			if (data.hostname !== os.hostname()) {
@@ -151,7 +150,7 @@ module.exports = function (Plugins) {
 		try {
 			const stats = await fs.stat(pluginDir);
 			return stats.isDirectory();
-		} catch (err) {
+		} catch (err: any) {
 			return false;
 		}
 	};

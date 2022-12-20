@@ -1,12 +1,12 @@
 'use strict';
 
-const topics = require('../../topics');
-const privileges = require('../../privileges');
-const meta = require('../../meta');
-const utils = require('../../utils');
-const social = require('../../social');
+import topics from '../../topics';
+import privileges from '../../privileges';
+import meta from '../../meta';
+import utils from '../../utils';
+import social from '../../social';
 
-module.exports = function (SocketTopics) {
+export default function (SocketTopics) {
 	SocketTopics.loadMore = async function (socket, data) {
 		if (!data || !data.tid || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0) {
 			throw new Error('[[error:invalid-data]]');

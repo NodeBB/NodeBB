@@ -2,17 +2,20 @@
 
 'use strict';
 
-const db = require('../../database');
+import db from '../../database';
+// @ts-ignore
+import configJSONModule from '../../../config.json';
 
-module.exports = {
+
+export const obj = {
 	name: 'Change the schema of simple keys so they don\'t use value field (mongodb only)',
 	timestamp: Date.UTC(2017, 11, 18),
 	method: async function () {
 		let configJSON;
 		try {
-			configJSON = require('../../../config.json') || { [process.env.database]: true, database: process.env.database };
-		} catch (err) {
-			configJSON = { [process.env.database]: true, database: process.env.database };
+			configJSON = configJSONModule || { [(process as any).env.database]: true, database: (process as any).env.database };
+		} catch (err: any) {
+			configJSON = { [(process as any).env.database]: true, database: (process as any).env.database };
 		}
 		const isMongo = configJSON.hasOwnProperty('mongo') && configJSON.database === 'mongo';
 		const { progress } = this;

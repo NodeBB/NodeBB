@@ -1,17 +1,18 @@
 'use strict';
 
-const winston = require('winston');
-const path = require('path');
-const nconf = require('nconf');
+import winston from 'winston';
+import path from 'path';
+import nconf from 'nconf';
+import web from '../../install/web';
+import { paths } from '../constants';
+// import install from '../install';
+import * as build from '../meta/build';
+import * as prestart from '../prestart';
+//@ts-ignore
+import pkg from '../../package.json';
 
-const { install } = require('../../install/web');
+async function setup(initConfig?) {
 
-async function setup(initConfig) {
-	const { paths } = require('../constants');
-	const install = require('../install');
-	const build = require('../meta/build');
-	const prestart = require('../prestart');
-	const pkg = require('../../package.json');
 
 	winston.info('NodeBB Setup Triggered via Command Line');
 
@@ -19,8 +20,8 @@ async function setup(initConfig) {
 	console.log('\nThis looks like a new installation, so you\'ll have to answer a few questions about your environment before we can proceed.');
 	console.log('Press enter to accept the default setting (shown in brackets).');
 
-	install.values = initConfig;
-	const data = await install.setup();
+	web.values = initConfig;
+	const data = await web.setup();
 	let configFile = paths.config;
 	if (nconf.get('config')) {
 		configFile = path.resolve(paths.baseDir, nconf.get('config'));
@@ -33,8 +34,8 @@ async function setup(initConfig) {
 	}
 
 	let separator = '     ';
-	if (process.stdout.columns > 10) {
-		for (let x = 0, cols = process.stdout.columns - 10; x < cols; x += 1) {
+	if ((process as any).stdout.columns > 10) {
+		for (let x = 0, cols = (process as any).stdout.columns - 10; x < cols; x += 1) {
 			separator += '=';
 		}
 	}
@@ -50,11 +51,15 @@ async function setup(initConfig) {
 
 	// If I am a child process, notify the parent of the returned data before exiting (useful for notifying
 	// hosts of auto-generated username/password during headless setups)
-	if (process.send) {
-		process.send(data);
+	if ((process as any).send) {
+		(process as any).send(data);
 	}
-	process.exit();
+	(process as any).exit();
 }
 
-exports.setup = setup;
-exports.webInstall = install;
+export default {
+	setup,
+	webInstall: web,
+}
+
+

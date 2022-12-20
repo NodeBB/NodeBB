@@ -1,21 +1,20 @@
 'use strict';
 
-const validator = require('validator');
-const _ = require('lodash');
+import validator from 'validator';
+import _ from 'lodash';
+import utils from '../utils';
+import user from '../user';
+import posts from '../posts';
+import topics from '../topics';
+import groups from '../groups';
+import meta from '../meta';
+import events from '../events';
+import privileges from '../privileges';
+import * as apiHelpers from './helpers';
+import websockets from '../socket.io';
+import socketHelpers from '../socket.io/helpers';
 
-const utils = require('../utils');
-const user = require('../user');
-const posts = require('../posts');
-const topics = require('../topics');
-const groups = require('../groups');
-const meta = require('../meta');
-const events = require('../events');
-const privileges = require('../privileges');
-const apiHelpers = require('./helpers');
-const websockets = require('../socket.io');
-const socketHelpers = require('../socket.io/helpers');
-
-const postsAPI = module.exports;
+const postsAPI = {} as any;
 
 postsAPI.get = async function (caller, data) {
 	const [userPrivileges, post, voted] = await Promise.all([
@@ -333,3 +332,5 @@ postsAPI.restoreDiff = async (caller, data) => {
 	const edit = await posts.diffs.restore(data.pid, data.since, caller.uid, apiHelpers.buildReqObject(caller));
 	websockets.in(`topic_${edit.topic.tid}`).emit('event:post_edited', edit);
 };
+
+export default postsAPI;

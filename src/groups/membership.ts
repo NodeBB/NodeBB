@@ -1,12 +1,11 @@
 'use strict';
 
-const _ = require('lodash');
+import _ from 'lodash';
+import db from '../database';
+import user from '../user';
+import cache from '../cache';
 
-const db = require('../database');
-const user = require('../user');
-const cache = require('../cache');
-
-module.exports = function (Groups) {
+export default function (Groups) {
 	Groups.getMembers = async function (groupName, start, stop) {
 		return await db.getSortedSetRevRange(`group:${groupName}:members`, start, stop);
 	};

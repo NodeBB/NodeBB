@@ -1,9 +1,9 @@
 'use strict';
 
-const user = require('../../user');
-const events = require('../../events');
+import user from '../../user';
+import events from '../../events';
 
-module.exports = function (SocketUser) {
+export default function (SocketUser) {
 	SocketUser.acceptRegistration = async function (socket, data) {
 		const isAdminOrGlobalMod = await user.isAdminOrGlobalMod(socket.uid);
 		if (!isAdminOrGlobalMod) {

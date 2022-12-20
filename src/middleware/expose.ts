@@ -5,11 +5,11 @@
  * into `res.locals` for use in middlewares and/or controllers down the line
  */
 
-const user = require('../user');
-const privileges = require('../privileges');
-const utils = require('../utils');
+import user from '../user';
+import privileges from '../privileges';
+import utils from '../utils';
 
-module.exports = function (middleware) {
+export default function (middleware) {
 	middleware.exposeAdmin = async (req, res, next) => {
 		// Unlike `requireAdmin`, this middleware just checks the uid, and sets `isAdmin` in `res.locals`
 		res.locals.isAdmin = false;

@@ -1,25 +1,28 @@
 'use strict';
 
-const nconf = require('nconf');
-const db = require('../../database');
-const batch = require('../../batch');
+import nconf from 'nconf';
+import db from '../../database';
+//@ts-ignore
+import cJSON from '../../../config.json';
+import * as batch from '../../batch';
+import connection from '../../database/redis/connection';
 
-module.exports = {
+
+export const obj = {
 	name: 'Delete accidentally long-lived sessions',
 	timestamp: Date.UTC(2017, 3, 16),
 	method: async function () {
 		let configJSON;
 		try {
-			configJSON = require('../../../config.json') || { [process.env.database]: true };
-		} catch (err) {
-			configJSON = { [process.env.database]: true };
+			configJSON = cJSON || { [(process as any).env.database]: true };
+		} catch (err: any) {
+			configJSON = { [(process as any).env.database]: true };
 		}
 
 		const isRedisSessionStore = configJSON.hasOwnProperty('redis');
 		const { progress } = this;
 
 		if (isRedisSessionStore) {
-			const connection = require('../../database/redis/connection');
 			const client = await connection.connect(nconf.get('redis'));
 			const sessionKeys = await client.keys('sess:*');
 			progress.total = sessionKeys.length;

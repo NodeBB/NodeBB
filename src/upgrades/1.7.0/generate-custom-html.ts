@@ -1,9 +1,10 @@
 'use strict';
 
-const db = require('../../database');
-const meta = require('../../meta');
+import db from '../../database';
 
-module.exports = {
+
+import meta from '../../meta';
+export const obj = {
 	name: 'Generate customHTML block from old customJS setting',
 	timestamp: Date.UTC(2017, 9, 12),
 	method: function (callback) {
@@ -12,7 +13,7 @@ module.exports = {
 				return callback(err);
 			}
 
-			let newJS = [];
+			let newJS = [] as any;
 
 			// Forgive me for parsing HTML with regex...
 			const scriptMatch = /^<script\s?(?!async|deferred)?>([\s\S]+?)<\/script>/m;

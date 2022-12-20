@@ -1,25 +1,23 @@
 'use strict';
 
-const util = require('util');
-let mkdirp = require('mkdirp');
+import util from 'util';
+import mkdirpPkg from 'mkdirp';
 
-mkdirp = mkdirp.hasOwnProperty('native') ? mkdirp : util.promisify(mkdirp);
-const rimraf = require('rimraf');
-const winston = require('winston');
-const path = require('path');
-const fs = require('fs');
-
-const nconf = require('nconf');
-const _ = require('lodash');
-const Benchpress = require('benchpressjs');
-
-const plugins = require('../plugins');
-const file = require('../file');
-const { themeNamePattern, paths } = require('../constants');
+const mkdirp = mkdirpPkg.hasOwnProperty('native') ? mkdirpPkg : util.promisify(mkdirpPkg);
+import rimraf from 'rimraf';
+import winston from 'winston';
+import path from 'path';
+import fs from 'fs';
+import nconf from 'nconf';
+import _ from 'lodash';
+import Benchpress from 'benchpressjs';
+import plugins from '../plugins';
+import file from '../file';
+import { themeNamePattern, paths } from '../constants';
 
 const viewsPath = nconf.get('views_dir');
 
-const Templates = module.exports;
+const Templates = {} as any;
 
 async function processImports(paths, templatePath, source) {
 	const regex = /<!-- IMPORT (.+?) -->/;
@@ -55,14 +53,14 @@ async function getTemplateDirs(activePlugins) {
 		return path.join(paths.nodeModules, id, plugins.pluginsData[id].templates || 'templates');
 	}).filter(Boolean);
 
-	let themeConfig = require(nconf.get('theme_config'));
+	let themeConfig = nconf.get('theme_config');
 	let theme = themeConfig.baseTheme;
 
 	let themePath;
 	let themeTemplates = [];
 	while (theme) {
 		themePath = path.join(nconf.get('themes_path'), theme);
-		themeConfig = require(path.join(themePath, 'theme.json'));
+		themeConfig = path.join(themePath, 'theme.json');
 
 		themeTemplates.push(path.join(themePath, themeConfig.templates || 'templates'));
 		theme = themeConfig.baseTheme;
@@ -137,3 +135,5 @@ async function compile() {
 	winston.verbose('[meta/templates] Successfully compiled templates.');
 }
 Templates.compile = compile;
+
+export default Templates;

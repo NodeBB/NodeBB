@@ -1,13 +1,15 @@
 'use strict';
 
-const router = require('express').Router();
-const middleware = require('../../middleware');
-const controllers = require('../../controllers');
-const routeHelpers = require('../helpers');
+import { Router } from 'express';
+import middleware from '../../middleware';
+import controllers from '../../controllers';
+import routeHelpers from '../helpers';
+
+const router = Router();
 
 const { setupApiRoute } = routeHelpers;
 
-module.exports = function () {
+export default function () {
 	const middlewares = [middleware.ensureLoggedIn, middleware.canChat];
 
 	setupApiRoute(router, 'get', '/', [...middlewares], controllers.write.chats.list);

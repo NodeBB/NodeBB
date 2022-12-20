@@ -1,24 +1,23 @@
 'use strict';
 
-const winston = require('winston');
-const passport = require('passport');
-const nconf = require('nconf');
-const validator = require('validator');
-const _ = require('lodash');
-const util = require('util');
+import winston from 'winston';
+import passport from 'passport';
+import nconf from 'nconf';
+import validator from 'validator';
+import _ from 'lodash';
+import util from 'util';
+import db from '../database';
+import meta from '../meta';
+import analytics from '../analytics';
+import user from '../user';
+import plugins from '../plugins';
+import utils from '../utils';
+import slugify from '../slugify';
+import helpers from './helpers';
+import privileges from '../privileges';
+import sockets from '../socket.io';
 
-const db = require('../database');
-const meta = require('../meta');
-const analytics = require('../analytics');
-const user = require('../user');
-const plugins = require('../plugins');
-const utils = require('../utils');
-const slugify = require('../slugify');
-const helpers = require('./helpers');
-const privileges = require('../privileges');
-const sockets = require('../socket.io');
-
-const authenticationController = module.exports;
+const authenticationController = {} as any;
 
 async function registerAndLoginUser(req, res, userData) {
 	if (!userData.hasOwnProperty('email')) {
@@ -112,7 +111,7 @@ authenticationController.register = async function (req, res) {
 			}
 			res.json(data);
 		}
-	} catch (err) {
+	} catch (err: any) {
 		helpers.noScriptErrors(req, res, err.message, 400);
 	}
 };
@@ -153,7 +152,7 @@ authenticationController.registerComplete = async function (req, res) {
 			return memo;
 		}, []);
 
-		const done = function (data) {
+		const done = function (data?) {
 			delete req.session.registration;
 			const relative_path = nconf.get('relative_path');
 			if (data && data.message) {
@@ -203,7 +202,7 @@ authenticationController.registerComplete = async function (req, res) {
 			await user.setUserFields(uid, payload);
 			done();
 		}
-	} catch (err) {
+	} catch (err: any) {
 		delete req.session.registration;
 		res.redirect(`${nconf.get('relative_path')}/?register=${encodeURIComponent(err.message)}`);
 	}
@@ -243,7 +242,7 @@ authenticationController.login = async (req, res, next) => {
 	const errorHandler = res.locals.noScriptErrors || helpers.noScriptErrors;
 	try {
 		await plugins.hooks.fire('filter:login.check', { req: req, res: res, userData: req.body });
-	} catch (err) {
+	} catch (err: any) {
 		return errorHandler(req, res, err.message, 403);
 	}
 	try {
@@ -260,13 +259,13 @@ authenticationController.login = async (req, res, next) => {
 		} else {
 			errorHandler(req, res, `[[error:wrong-login-type-${loginWith}]]`, 400);
 		}
-	} catch (err) {
+	} catch (err: any) {
 		return errorHandler(req, res, err.message, 500);
 	}
 };
 
 function continueLogin(strategy, req, res, next) {
-	passport.authenticate(strategy, async (err, userData, info) => {
+	(passport as any).authenticate(strategy, async (err, userData, info) => {
 		if (err) {
 			plugins.hooks.fire('action:login.continue', { req, strategy, userData, error: err });
 			return helpers.noScriptErrors(req, res, err.data || err.message, 403);
@@ -390,7 +389,7 @@ authenticationController.onSuccessfulLogin = async function (req, uid) {
 		sockets.in(`sess_${req.sessionID}`).emit('checkSession', uid);
 
 		plugins.hooks.fire('action:user.loggedIn', { uid: uid, req: req });
-	} catch (err) {
+	} catch (err: any) {
 		req.session.destroy();
 		throw err;
 	}
@@ -436,7 +435,7 @@ authenticationController.localLogin = async function (req, username, password, n
 		}
 
 		next(null, userData, '[[success:authentication-successful]]');
-	} catch (err) {
+	} catch (err: any) {
 		next(err);
 	}
 };
@@ -474,7 +473,7 @@ authenticationController.logout = async function (req, res, next) {
 			return res.redirect(payload.next);
 		}
 		res.status(200).send(payload);
-	} catch (err) {
+	} catch (err: any) {
 		next(err);
 	}
 };
@@ -486,10 +485,10 @@ async function getBanError(uid) {
 		if (!banInfo.reason) {
 			banInfo.reason = '[[user:info.banned-no-reason]]';
 		}
-		const err = new Error(banInfo.reason);
+		const err: any = new Error(banInfo.reason);
 		err.data = banInfo;
 		return err;
-	} catch (err) {
+	} catch (err: any) {
 		if (err.message === 'no-ban-info') {
 			return new Error('[[error:user-banned]]');
 		}
@@ -497,4 +496,7 @@ async function getBanError(uid) {
 	}
 }
 
-require('../promisify')(authenticationController, ['register', 'registerComplete', 'registerAbort', 'login', 'localLogin', 'logout']);
+import promisify from '../promisify';
+promisify(authenticationController, ['register', 'registerComplete', 'registerAbort', 'login', 'localLogin', 'logout']);
+
+export default authenticationController;

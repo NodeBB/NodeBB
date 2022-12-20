@@ -1,22 +1,20 @@
 'use strict';
 
-const util = require('util');
-const nconf = require('nconf');
-const path = require('path');
-const crypto = require('crypto');
-const fs = require('fs').promises;
+import util from 'util';
+import nconf from 'nconf';
+import path from 'path';
+import crypto from 'crypto';
+import { promises as fs } from 'fs';
+import db from '../../database';
+import api from '../../api';
+import groups from '../../groups';
+import meta from '../../meta';
+import privileges from '../../privileges';
+import user from '../../user';
+import utils from '../../utils';
+import helpers from '../helpers';
 
-const db = require('../../database');
-const api = require('../../api');
-const groups = require('../../groups');
-const meta = require('../../meta');
-const privileges = require('../../privileges');
-const user = require('../../user');
-const utils = require('../../utils');
-
-const helpers = require('../helpers');
-
-const Users = module.exports;
+const Users = {} as any;
 
 const exportMetadata = new Map([
 	['posts', ['csv', 'text/csv']],
@@ -181,7 +179,7 @@ Users.revokeSession = async (req, res) => {
 	let _id;
 	for (const sid of sids) {
 		/* eslint-disable no-await-in-loop */
-		const sessionObj = await getSessionAsync(sid);
+		const sessionObj: any = await getSessionAsync(sid);
 		if (sessionObj && sessionObj.meta && sessionObj.meta.uuid === req.params.uuid) {
 			_id = sid;
 			break;
@@ -316,8 +314,7 @@ const prepareExport = async (req, res) => {
 		res.set('ETag', `"${crypto.createHash('md5').update(String(stat.mtimeMs)).digest('hex')}"`);
 		res.status(204);
 		return true;
-	} catch (e) {
-		res.status(404);
+} catch (e: any) {		res.status(404);
 		return false;
 	}
 };
@@ -354,3 +351,5 @@ Users.generateExportsByType = async (req, res) => {
 	await api.users.generateExport(req, req.params);
 	helpers.formatApiResponse(202, res);
 };
+
+export default Users;

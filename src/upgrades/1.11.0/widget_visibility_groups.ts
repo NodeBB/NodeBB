@@ -1,11 +1,12 @@
 'use strict';
+import widgetAdmin from '../../widgets/admin';
+import widgets from '../../widgets';
 
-module.exports = {
+export const obj = {
 	name: 'Widget visibility groups',
 	timestamp: Date.UTC(2018, 10, 10),
 	method: async function () {
-		const widgetAdmin = require('../../widgets/admin');
-		const widgets = require('../../widgets');
+
 		const areas = await widgetAdmin.getAreas();
 		for (const area of areas) {
 			if (area.data.length) {

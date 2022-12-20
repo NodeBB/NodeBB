@@ -1,21 +1,21 @@
 'use strict';
 
-const validator = require('validator');
-const winston = require('winston');
+import validator from 'validator';
+import winston from 'winston';
+import db from '../database';
+import user from '../user';
+import groups from '../groups';
+import meta from '../meta';
+import child from 'child_process';
+import flags from '../flags';
+import privileges from '../privileges';
+import notifications from '../notifications';
+import plugins from '../plugins';
+import events from '../events';
+import translator from '../translator';
+import sockets from '../socket.io';
 
-const db = require('../database');
-const user = require('../user');
-const groups = require('../groups');
-const meta = require('../meta');
-const flags = require('../flags');
-const privileges = require('../privileges');
-const notifications = require('../notifications');
-const plugins = require('../plugins');
-const events = require('../events');
-const translator = require('../translator');
-const sockets = require('../socket.io');
-
-const usersAPI = module.exports;
+const usersAPI = {} as any;
 
 usersAPI.create = async function (caller, data) {
 	if (!data) {
@@ -91,7 +91,7 @@ usersAPI.deleteAccount = async function (caller, { uid, password }) {
 
 usersAPI.deleteMany = async function (caller, data) {
 	if (await canDeleteUids(data.uids)) {
-		await Promise.all(data.uids.map(uid => processDeletion({ uid, method: 'delete', caller })));
+		await Promise.all(data.uids.map(uid => processDeletion({ uid, method: 'delete', caller } as any)));
 	}
 };
 
@@ -244,7 +244,7 @@ usersAPI.mute = async function (caller, data) {
 		uid: data.uid,
 		timestamp: now,
 		expire: data.until,
-	};
+	} as any;
 	if (data.reason) {
 		muteData.reason = reason;
 	}
@@ -448,16 +448,15 @@ usersAPI.generateExport = async (caller, { uid, type }) => {
 	if (count > 1) {
 		throw new Error('[[error:already-exporting]]');
 	}
-
-	const child = require('child_process').fork(`./src/user/jobs/export-${type}.js`, [], {
-		env: process.env,
+	(child as any).fork(`./src/user/jobs/export-${type}.js`, [], {
+		env: (process as any).env,
 	});
-	child.send({ uid });
-	child.on('error', async (err) => {
+	(child as any).send({ uid });
+	(child as any).on('error', async (err) => {
 		winston.error(err.stack);
 		await db.deleteObjectField('locks', `export:${uid}${type}`);
 	});
-	child.on('exit', async () => {
+	(child as any).on('exit', async () => {
 		await db.deleteObjectField('locks', `export:${uid}${type}`);
 		const { displayname } = await user.getUserFields(uid, ['username']);
 		const n = await notifications.create({
@@ -475,3 +474,5 @@ usersAPI.generateExport = async (caller, { uid, type }) => {
 		});
 	});
 };
+
+export default usersAPI;

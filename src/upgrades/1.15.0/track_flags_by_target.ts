@@ -1,8 +1,10 @@
 'use strict';
 
-const db = require('../../database');
+import db from '../../database';
 
-module.exports = {
+
+
+export const obj = {
 	name: 'New sorted set for tracking flags by target',
 	timestamp: Date.UTC(2020, 6, 15),
 	method: async () => {

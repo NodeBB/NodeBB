@@ -1,15 +1,15 @@
 'use strict';
 
-const async = require('async');
-const db = require('../database');
-const batch = require('../batch');
-const plugins = require('../plugins');
-const topics = require('../topics');
-const groups = require('../groups');
-const privileges = require('../privileges');
-const cache = require('../cache');
+import async from 'async';
+import db from '../database';
+import * as  batch from '../batch';
+import plugins from '../plugins';
+import topics from '../topics';
+import groups from '../groups';
+import privileges from '../privileges';
+import cache from '../cache';
 
-module.exports = function (Categories) {
+export default function (Categories) {
 	Categories.purge = async function (cid, uid) {
 		await batch.processSortedSet(`cid:${cid}:tids`, async (tids) => {
 			await async.eachLimit(tids, 10, async (tid) => {
@@ -60,7 +60,7 @@ module.exports = function (Categories) {
 			db.getSortedSetRange(`cid:${cid}:children`, 0, -1),
 		]);
 
-		const bulkAdd = [];
+		const bulkAdd = [] as any[];
 		const childrenKeys = children.map((cid) => {
 			bulkAdd.push(['cid:0:children', cid, cid]);
 			return `category:${cid}`;

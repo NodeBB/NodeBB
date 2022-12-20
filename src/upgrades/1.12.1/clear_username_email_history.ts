@@ -1,10 +1,12 @@
 'use strict';
 
-const async = require('async');
-const db = require('../../database');
-const user = require('../../user');
+import async from 'async';
+import db from '../../database';
 
-module.exports = {
+
+import user from '../../user';
+
+export const obj = {
 	name: 'Delete username email history for deleted users',
 	timestamp: Date.UTC(2019, 2, 25),
 	method: function (callback) {

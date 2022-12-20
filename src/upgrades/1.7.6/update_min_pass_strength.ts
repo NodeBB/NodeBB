@@ -1,8 +1,10 @@
 'use strict';
 
-const db = require('../../database');
+import db from '../../database';
 
-module.exports = {
+
+
+export const obj = {
 	name: 'Revising minimum password strength to 1 (from 0)',
 	timestamp: Date.UTC(2018, 1, 21),
 	method: async function () {

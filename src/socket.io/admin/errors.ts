@@ -1,9 +1,11 @@
 'use strict';
 
-const meta = require('../../meta');
+import meta from '../../meta';
 
-const Errors = module.exports;
+const Errors  = {} as any;
 
 Errors.clear = async function () {
 	await meta.errors.clear();
 };
+
+export default Errors;

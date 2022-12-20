@@ -1,8 +1,8 @@
 'use strict';
 
-const meta = require('../../meta');
+import meta from '../../meta';
 
-module.exports = {
+export const obj = {
 	name: 'Re-enable username login',
 	timestamp: Date.UTC(2021, 10, 23),
 	method: async () => {

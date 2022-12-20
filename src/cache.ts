@@ -1,8 +1,8 @@
 'use strict';
 
-const cacheCreate = require('./cache/lru');
+import cacheCreate from './cache/lru';
 
-module.exports = cacheCreate({
+export default  cacheCreate({
 	name: 'local',
 	max: 40000,
 	ttl: 0,

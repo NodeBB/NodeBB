@@ -1,14 +1,13 @@
 'use strict';
 
-const winston = require('winston');
+import winston from 'winston';
+import user from '../user';
+import notifications from '../notifications';
+import sockets from '../socket.io';
+import plugins from '../plugins';
+import meta from '../meta';
 
-const user = require('../user');
-const notifications = require('../notifications');
-const sockets = require('../socket.io');
-const plugins = require('../plugins');
-const meta = require('../meta');
-
-module.exports = function (Messaging) {
+export default function (Messaging) {
 	Messaging.notifyQueue = {}; // Only used to notify a user of a new chat message, see Messaging.notifyUser
 
 	Messaging.notifyUsersInRoom = async (fromUid, roomId, messageObj) => {
@@ -20,7 +19,7 @@ module.exports = function (Messaging) {
 			fromUid: fromUid,
 			message: messageObj,
 			uids: uids,
-		};
+		} as any;
 		data = await plugins.hooks.fire('filter:messaging.notify', data);
 		if (!data || !data.uids || !data.uids.length) {
 			return;
@@ -50,7 +49,7 @@ module.exports = function (Messaging) {
 		queueObj.timeout = setTimeout(async () => {
 			try {
 				await sendNotifications(fromUid, uids, roomId, queueObj.message);
-			} catch (err) {
+			} catch (err: any) {
 				winston.error(`[messaging/notifications] Unabled to send notification\n${err.stack}`);
 			}
 		}, meta.config.notificationSendDelay * 1000);
