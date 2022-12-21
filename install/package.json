@@ -68,7 +68,7 @@
         "helmet": "5.1.1",
         "html-to-text": "9.0.3",
         "ipaddr.js": "2.0.1",
-        "jquery": "3.6.2",
+        "jquery": "3.6.3",
         "jquery-deserialize": "2.0.0",
         "jquery-form": "4.3.0",
         "jquery-serializeobject": "1.0.0",
@@ -167,7 +167,7 @@
         "smtp-server": "3.11.0"
     },
     "resolutions": {
-        "*/jquery": "3.6.2"
+        "*/jquery": "3.6.3"
     },
     "bugs": {
         "url": "https://github.com/NodeBB/NodeBB/issues"
