@@ -1,0 +1,25 @@
+{
+	"icon": "Պատկեր",
+	"change-icon": "փոփոխություն ",
+	"route": "Ուղեգիծ",
+	"tooltip": "Գործիքների հուշում.",
+	"text": "Տեքստ",
+	"text-class": "Տեքստի դաս՝ ընտրովի ",
+	"class": "Դասը՝ ընտրովի",
+	"id": "ID: ընտրովի ",
+
+	"properties": "Հատկություններ",
+	"groups": "Խմբեր",
+	"open-new-window": "Բացել նոր պատուհանում",
+	"dropdown": "Բացվող",
+	"dropdown-placeholder": "Տեղադրեք ձեր բացվող ընտրացանկի տարրերը ստորև, այսինքն՝ &lt;li&gt;&lt;a href&#x3D;&quot;https://myforum.com&quot;&gt;Հղում 1&lt;/a&gt;&lt;/li&gt;",
+
+	"btn.delete": "Ջնջել",
+	"btn.disable": "Անջատել",
+	"btn.enable": "Միացնել",
+
+	"available-menu-items": "Մենյուի առկա տարրեր",
+	"custom-route": "Հատուկ ուղեգիծ",
+	"core": "միջուկը",
+	"plugin": "պլագին"
+}

@@ -141,6 +141,7 @@ modsController.flags.detail = async function (req, res, next) {
 
 			return memo;
 		}, {}),
+		states: Object.fromEntries(flags._states),
 		title: `[[pages:flag-details, ${req.params.flagId}]]`,
 		privileges: results.privileges,
 		breadcrumbs: helpers.buildBreadcrumbs([

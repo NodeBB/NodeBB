@@ -1,0 +1,19 @@
+{
+    "title": "Վերջինները",
+    "day": "օր",
+    "week": "շաբաթ",
+    "month": "ամիս",
+    "year": "Տարի",
+    "alltime": "Ամբողջ ժամանակ",
+    "no_recent_topics": "Վերջին թեմաներ չկան։",
+    "no_popular_topics": "Հանրաճանաչ թեմաներ չկան։",
+    "there-is-a-new-topic": "Առկա է նոր թեմա",
+    "there-is-a-new-topic-and-a-new-post": "There is a new topic and a new post.",
+    "there-is-a-new-topic-and-new-posts": "Կա նոր թեմա և %1 նոր գրառում:",
+    "there-are-new-topics": "Առկա են %1 նոր թեմաներ:",
+    "there-are-new-topics-and-a-new-post": "Առկա են %1 նոր թեմաներ և նոր գրառում:",
+    "there-are-new-topics-and-new-posts": "Առկա են %1 նոր թեմաներ և %2 նոր գրառումներ:",
+    "there-is-a-new-post": "Առկա է նոր գրառում։",
+    "there-are-new-posts": "Առկա են %1 նոր գրառումներ:",
+    "click-here-to-reload": "Սեղմեք այստեղ՝ վերաբեռնելու համար:"
+}

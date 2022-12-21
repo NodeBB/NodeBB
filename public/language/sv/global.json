@@ -46,7 +46,7 @@
     "alert.success": "Lyckat",
     "alert.error": "Fel",
     "alert.banned": "Bannlyst",
-    "alert.banned.message": "You have just been banned, your access is now restricted.",
+    "alert.banned.message": "Du har precis blivit bannlyst, du har nu begränsad tillgång.",
     "alert.unbanned": "Unbanned",
     "alert.unbanned.message": "Your ban has been lifted.",
     "alert.unfollow": "Du följer inte längre %1!",

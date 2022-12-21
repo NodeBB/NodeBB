@@ -47,6 +47,7 @@ privsCategories.getPrivilegeList = async () => {
 };
 
 privsCategories.init = async () => {
+	privsCategories._coreSize = _privilegeMap.size;
 	await plugins.hooks.fire('static:privileges.categories.init', {
 		privileges: _privilegeMap,
 	});
@@ -72,8 +73,8 @@ privsCategories.list = async function (cid) {
 	});
 	payload.keys = keys;
 
-	payload.columnCountUserOther = payload.labels.users.length - labels.users.length;
-	payload.columnCountGroupOther = payload.labels.groups.length - labels.groups.length;
+	payload.columnCountUserOther = payload.labels.users.length - privsCategories._coreSize;
+	payload.columnCountGroupOther = payload.labels.groups.length - privsCategories._coreSize;
 
 	return payload;
 };
