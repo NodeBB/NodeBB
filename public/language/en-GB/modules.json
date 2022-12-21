@@ -44,6 +44,7 @@
 	"composer.compose": "Compose",
 	"composer.show_preview": "Show Preview",
 	"composer.hide_preview": "Hide Preview",
+	"composer.help": "Help",
 	"composer.user_said_in": "%1 said in %2:",
 	"composer.user_said": "%1 said:",
 	"composer.discard": "Are you sure you wish to discard this post?",
