@@ -1,3 +1,42 @@
+#### v2.7.0 (2022-12-14)
+
+##### Chores
+
+*  added stub file in hy (9ee8502d)
+* **deps:**
+  *  update dependency lint-staged to v13.1.0 (#11082) (693d4783)
+  *  update dependency eslint to v8.29.0 (#11074) (eab5b754)
+  *  update dependency lint-staged to v13.0.4 (#11064) (f947ac6d)
+* **i18n:**
+  *  fallback strings for new resources: nodebb.admin-settings-email (0e319a58)
+  *  fallback strings for new resources: nodebb.admin-settings-email (9676b192)
+
+##### New Features
+
+*  update transifex config (for use with new cli) (f11094cb)
+*  integrating basic client-side form validity checking in settings v1 and v2 (dadbcd73)
+*  add ./nodebb install <plugin_name> (4efc19d5)
+
+##### Bug Fixes
+
+* **deps:**
+  *  update dependency nodebb-theme-lavender to v6.0.1 (#11081) (df3f1c5e)
+  *  update dependency esbuild to v0.16.3 (#11083) (85d38158)
+  *  update dependency html-to-text to v9 (#11075) (d8e9738d)
+  *  update dependency ace-builds to v1.13.2 (#11080) (35be4594)
+  *  update dependency fs-extra to v11 (#11072) (aafb7f6e)
+  *  update dependency esbuild to v0.15.16 (#11069) (7bc4b836)
+  *  update dependency mongodb to v4.12.1 (#11062) (e14d4abc)
+*  relax selectors for client-side form validation so that all form elements are checked (43e7c988)
+*  change hsts-maxage back to numeric input type, change API token uid input to numeric text type (db8d3a94)
+*  replace input type number with text/pattern (45ae31f8)
+*  categories.js not showing custom privileges (#10856) (8c4d6bbe)
+*  #11077, add admin uploads paths to priv mapping (07a02125)
+
+##### Tests
+
+*  dont try to load admin upload routes (c2bb2b30)
+
 #### v2.6.1 (2022-11-28)
 
 ##### Chores

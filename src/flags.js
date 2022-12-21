@@ -20,15 +20,24 @@ const batch = require('./batch');
 
 const Flags = module.exports;
 
-Flags._constants = {
-	states: ['open', 'wip', 'resolved', 'rejected'],
-	state_class: {
-		open: 'info',
-		wip: 'warning',
-		resolved: 'success',
-		rejected: 'danger',
-	},
-};
+Flags._states = new Map([
+	['open', {
+		label: '[[flags:state-open]]',
+		class: 'danger',
+	}],
+	['wip', {
+		label: '[[flags:state-wip]]',
+		class: 'warning',
+	}],
+	['resolved', {
+		label: '[[flags:state-resolved]]',
+		class: 'success',
+	}],
+	['rejected', {
+		label: '[[flags:state-rejected]]',
+		class: 'secondary',
+	}],
+]);
 
 Flags.init = async function () {
 	// Query plugins for custom filter strategies and merge into core filter strategies
@@ -78,14 +87,15 @@ Flags.init = async function () {
 				}
 			},
 		},
+		states: Flags._states,
 		helpers: {
 			prepareSets: prepareSets,
 		},
 	};
 
 	try {
-		const data = await plugins.hooks.fire('filter:flags.getFilters', hookData);
-		Flags._filters = data.filters;
+		({ filters: Flags._filters } = await plugins.hooks.fire('filter:flags.getFilters', hookData));
+		({ filters: Flags._filters, states: Flags._states } = await plugins.hooks.fire('filter:flags.init', hookData));
 	} catch (err) {
 		winston.error(`[flags/init] Could not retrieve filters\n${err.stack}`);
 		Flags._filters = {};
@@ -197,7 +207,7 @@ Flags.list = async function (data) {
 			heat: reportCounts[idx],
 			...flagObj,
 		};
-		flagObj.labelClass = Flags._constants.state_class[flagObj.state];
+		flagObj.labelClass = Flags._states.get(flagObj.state).class;
 
 		return Object.assign(flagObj, {
 			target_readable: `${flagObj.type.charAt(0).toUpperCase() + flagObj.type.slice(1)} ${flagObj.targetId}`,
@@ -674,7 +684,7 @@ Flags.update = async function (flagId, uid, changeset) {
 		if (current[prop] === changeset[prop]) {
 			delete changeset[prop];
 		} else if (prop === 'state') {
-			if (!Flags._constants.states.includes(changeset[prop])) {
+			if (!Flags._states.has(changeset[prop])) {
 				delete changeset[prop];
 			} else {
 				tasks.push(db.sortedSetAdd(`flags:byState:${changeset[prop]}`, now, flagId));
