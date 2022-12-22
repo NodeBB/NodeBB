@@ -260,7 +260,12 @@ module.exports = function (Topics) {
 	};
 
 	Topics.markAsUnreadForAll = async function (tid) {
+		const now = Date.now();
+		const cid = await Topics.getTopicField(tid, 'cid');
 		await Topics.markCategoryUnreadForAll(tid);
+		await Topics.updateRecent(tid, now);
+		await db.sortedSetAdd(`cid:${cid}:tids:lastposttime`, now, tid);
+		await Topics.setTopicField(tid, 'lastposttime', now);
 	};
 
 	Topics.markAsRead = async function (tids, uid) {
