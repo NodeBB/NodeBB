@@ -142,6 +142,7 @@ module.exports = function (middleware) {
 			config: res.locals.config,
 			relative_path,
 			bodyClass: options.bodyClass,
+			widgets: options.widgets,
 		};
 
 		templateValues.configJSON = jsesc(JSON.stringify(res.locals.config), { isScriptContext: true });
