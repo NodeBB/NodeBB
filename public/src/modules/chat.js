@@ -296,7 +296,7 @@ define('chat', [
 				Chats.addSendHandlers(chatModal.attr('data-roomid'), chatModal.find('.chat-input'), chatModal.find('[data-action="send"]'));
 				Chats.addMemberHandler(chatModal.attr('data-roomid'), chatModal.find('[data-action="members"]'));
 
-				Chats.createAutoComplete(chatModal.find('[component="chat/input"]'));
+				Chats.createAutoComplete(chatModal.attr('data-roomid'), chatModal.find('[component="chat/input"]'));
 
 				Chats.addScrollHandler(chatModal.attr('data-roomid'), data.uid, chatModal.find('.chat-content'));
 				Chats.addScrollBottomHandler(chatModal.find('.chat-content'));
@@ -348,6 +348,9 @@ define('chat', [
 		if (chatModal.attr('data-mobile')) {
 			module.disableMobileBehaviour(chatModal);
 		}
+		require(['forum/chats'], function (chats) {
+			chats.destroyAutoComplete(chatModal.attr('data-roomid'));
+		});
 
 		hooks.fire('action:chat.closed', {
 			uuid: uuid,

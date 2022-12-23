@@ -23,9 +23,14 @@ define('forum/chats', [
 ) {
 	const Chats = {
 		initialised: false,
+		activeAutocomplete: {},
 	};
 
 	let newMessage = false;
+
+	$(window).on('action:ajaxify.start', function () {
+		Chats.destroyAutoComplete(ajaxify.data.roomId);
+	});
 
 	Chats.init = function () {
 		const env = utils.findBootstrapEnvironment();
@@ -40,7 +45,7 @@ define('forum/chats', [
 		Chats.addEventListeners();
 		Chats.setActive();
 
-		if (env === 'md' || env === 'lg') {
+		if (env === 'md' || env === 'lg' || env === 'xl' || env === 'xxl') {
 			Chats.addHotkeys();
 		}
 
@@ -69,7 +74,7 @@ define('forum/chats', [
 		Chats.addScrollBottomHandler($('.chat-content'));
 		Chats.addCharactersLeftHandler($('[component="chat/main-wrapper"]'));
 		Chats.addIPHandler($('[component="chat/main-wrapper"]'));
-		Chats.createAutoComplete($('[component="chat/input"]'));
+		Chats.createAutoComplete(ajaxify.data.roomId, $('[component="chat/input"]'));
 		Chats.addUploadHandler({
 			dragDropAreaEl: $('.chats-full'),
 			pasteEl: $('[component="chat/input"]'),
@@ -303,6 +308,7 @@ define('forum/chats', [
 							if (modal.length) {
 								chatModule.close(modal);
 							} else {
+								Chats.destroyAutoComplete(roomId);
 								ajaxify.go('chats');
 							}
 						}).catch(alerts.error);
@@ -373,7 +379,7 @@ define('forum/chats', [
 		});
 	};
 
-	Chats.createAutoComplete = function (element) {
+	Chats.createAutoComplete = function (roomId, element) {
 		if (!element.length) {
 			return;
 		}
@@ -388,12 +394,20 @@ define('forum/chats', [
 					top: 'inherit',
 				},
 				placement: 'top',
+				className: `chat-autocomplete-dropdown-${roomId} dropdown-menu textcomplete-dropdown`,
 			},
 		};
 
 		$(window).trigger('chat:autocomplete:init', data);
 		if (data.strategies.length) {
-			autocomplete.setup(data);
+			Chats.activeAutocomplete[roomId] = autocomplete.setup(data);
+		}
+	};
+
+	Chats.destroyAutoComplete = function (roomId) {
+		if (Chats.activeAutocomplete[roomId]) {
+			Chats.activeAutocomplete[roomId].destroy();
+			delete Chats.activeAutocomplete[roomId];
 		}
 	};
 
@@ -405,7 +419,7 @@ define('forum/chats', [
 			} else {
 				el.remove();
 			}
-
+			Chats.destroyAutoComplete(roomId);
 			const modal = chatModule.getModal(roomId);
 			if (modal.length) {
 				chatModule.close(modal);
@@ -418,7 +432,7 @@ define('forum/chats', [
 		if (!roomid) {
 			roomid = '';
 		}
-
+		Chats.destroyAutoComplete(ajaxify.data.roomId);
 		const url = 'user/' + ajaxify.data.userslug + '/chats/' + roomid + window.location.search;
 		if (self.fetch) {
 			fetch(config.relative_path + '/api/' + url, { credentials: 'include' })
