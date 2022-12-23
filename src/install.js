@@ -250,7 +250,7 @@ async function enableDefaultTheme() {
 		return;
 	}
 
-	const defaultTheme = nconf.get('defaultTheme') || 'nodebb-theme-persona';
+	const defaultTheme = nconf.get('defaultTheme') || 'nodebb-theme-harmony';
 	console.log(`Enabling default theme: ${defaultTheme}`);
 	await meta.themes.set({
 		type: 'local',
@@ -530,7 +530,7 @@ async function setCopyrightWidget() {
 	]);
 
 	if (!footer && footerJSON) {
-		await db.setObjectField('widgets:global', 'footer', footerJSON);
+		await db.setObjectField('widgets:global', 'sidebar-footer', footerJSON);
 	}
 }
 
