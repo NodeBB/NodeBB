@@ -61,9 +61,6 @@ profileController.get = async function (req, res, next) {
 
 	addMetaTags(res, userData);
 
-	userData.selectedGroup = userData.groups.filter(group => group && userData.groupTitleArray.includes(group.name))
-		.sort((a, b) => userData.groupTitleArray.indexOf(a.name) - userData.groupTitleArray.indexOf(b.name));
-
 	res.render('account/profile', userData);
 };
 

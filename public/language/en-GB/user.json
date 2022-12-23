@@ -45,6 +45,7 @@
 	"followers": "Followers",
 	"following": "Following",
 	"blocks": "Blocks",
+	"blocked-users": "Blocked users",
 	"block_toggle": "Toggle Block",
 	"block_user": "Block User",
 	"unblock_user": "Unblock User",
