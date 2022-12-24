@@ -31,7 +31,6 @@ const buildImports = {
 			'@import "@adactive/bootstrap-tagsinput/src/bootstrap-tagsinput";',
 			boostrapImport(themeData),
 			'@import "generics";',
-			'@import "responsive-utilities";',
 			source,
 			'@import "jquery-ui";',
 			'@import "cropperjs/dist/cropper";',
@@ -112,6 +111,8 @@ function boostrapImport(themeData) {
 
 		// Helpers
 		'@import "bootstrap/scss/helpers";',
+
+		'@import "responsive-utilities";',
 
 		// Utilities
 		'@import "bootstrap/scss/utilities/api";',
