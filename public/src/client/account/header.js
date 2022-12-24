@@ -54,6 +54,7 @@ define('forum/account/header', [
 		components.get('account/delete-all').on('click', () => AccountsDelete.purge(ajaxify.data.theirid));
 		components.get('account/flag').on('click', flagAccount);
 		components.get('account/block').on('click', toggleBlockAccount);
+		components.get('account/unblock').on('click', toggleBlockAccount);
 	};
 
 	function selectActivePill() {
@@ -119,7 +120,6 @@ define('forum/account/header', [
 	}
 
 	function toggleBlockAccount() {
-		const targetEl = this;
 		socket.emit('user.toggleBlock', {
 			blockeeUid: ajaxify.data.uid,
 			blockerUid: app.user.uid,
@@ -127,10 +127,8 @@ define('forum/account/header', [
 			if (err) {
 				return alerts.error(err);
 			}
-
-			translator.translate('[[user:' + (blocked ? 'unblock' : 'block') + '_user]]', function (label) {
-				$(targetEl).text(label);
-			});
+			components.get('account/block').toggleClass('hidden', blocked);
+			components.get('account/unblock').toggleClass('hidden', !blocked);
 		});
 
 		// Keep dropdown open
