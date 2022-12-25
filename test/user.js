@@ -349,6 +349,28 @@ describe('User', () => {
 				});
 			});
 		});
+
+		it('should only post 1 topic out of 10', async () => {
+			await User.create({ username: 'flooder', password: '123456' });
+			const { jar } = await helpers.loginUser('flooder', '123456');
+			const titles = new Array(10).fill('topic title');
+			const res = await Promise.allSettled(titles.map(async (title) => {
+				const { body } = await helpers.request('post', '/api/v3/topics', {
+					form: {
+						cid: testCid,
+						title: title,
+						content: 'the content',
+					},
+					jar: jar,
+					json: true,
+				});
+				return body.status;
+			}));
+			const failed = res.filter(res => res.value.code === 'bad-request');
+			const success = res.filter(res => res.value.code === 'ok');
+			assert.strictEqual(failed.length, 9);
+			assert.strictEqual(success.length, 1);
+		});
 	});
 
 	describe('.search()', () => {
@@ -1926,7 +1948,7 @@ describe('User', () => {
 
 		it('should get unread count for user', async () => {
 			const count = await socketUser.getUnreadCount({ uid: testUid });
-			assert.strictEqual(count, 3);
+			assert.strictEqual(count, 4);
 		});
 
 		it('should get unread chat count 0 for guest', async () => {
@@ -1949,15 +1971,15 @@ describe('User', () => {
 			assert.deepStrictEqual(counts, {
 				unreadChatCount: 0,
 				unreadCounts: {
-					'': 3,
-					new: 3,
-					unreplied: 3,
+					'': 4,
+					new: 4,
+					unreplied: 4,
 					watched: 0,
 				},
-				unreadNewTopicCount: 3,
+				unreadNewTopicCount: 4,
 				unreadNotificationCount: 0,
-				unreadTopicCount: 3,
-				unreadUnrepliedTopicCount: 3,
+				unreadTopicCount: 4,
+				unreadUnrepliedTopicCount: 4,
 				unreadWatchedTopicCount: 0,
 			});
 		});
