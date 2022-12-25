@@ -35,37 +35,32 @@ define('forum/topic/postTools', [
 		if (!container) {
 			return;
 		}
+		$('[component="topic"]').on('show.bs.dropdown', '.moderator-tools', function () {
+			const $this = $(this);
+			const dropdownMenu = $this.find('.dropdown-menu');
+			if (dropdownMenu.attr('data-loaded')) {
+				return;
+			}
+			const postEl = $this.parents('[data-pid]');
+			const pid = postEl.attr('data-pid');
+			const index = parseInt(postEl.attr('data-index'), 10);
 
-		container.querySelectorAll('.moderator-tools').forEach((toolsEl) => {
-			toolsEl.addEventListener('show.bs.dropdown', (e) => {
-				const dropdownMenu = e.target.nextElementSibling;
-				if (!dropdownMenu) {
-					return;
+			socket.emit('posts.loadPostTools', { pid: pid, cid: ajaxify.data.cid }, async (err, data) => {
+				if (err) {
+					return alerts.error(err);
 				}
+				data.posts.display_move_tools = data.posts.display_move_tools && index !== 0;
 
-				const postEl = e.target.closest('[data-pid]');
-				const pid = postEl.getAttribute('data-pid');
-				const index = parseInt(postEl.getAttribute('data-index'), 10);
+				const html = await app.parseAndTranslate('partials/topic/post-menu-list', data);
+				const clipboard = require('clipboard');
 
-				socket.emit('posts.loadPostTools', { pid: pid, cid: ajaxify.data.cid }, async (err, data) => {
-					if (err) {
-						return alerts.error(err);
-					}
-					data.posts.display_move_tools = data.posts.display_move_tools && index !== 0;
+				dropdownMenu.attr('data-loaded', 'true').html(html);
 
-					const html = await app.parseAndTranslate('partials/topic/post-menu-list', data);
-					const clipboard = require('clipboard');
+				new clipboard('[data-clipboard-text]');
 
-					$(dropdownMenu).html(html);
-
-					new clipboard('[data-clipboard-text]');
-
-					hooks.fire('action:post.tools.load', {
-						element: $(dropdownMenu),
-					});
+				hooks.fire('action:post.tools.load', {
+					element: dropdownMenu,
 				});
-			}, {
-				once: true,
 			});
 		});
 	}
