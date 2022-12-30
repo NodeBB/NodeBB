@@ -88,6 +88,7 @@
     "category-not-selected": "Kategori ikke valgt",
     "too-many-posts": "Du kan bare poste en gang per %1 sekund(er) – vennligst vent før du poster igjen",
     "too-many-posts-newbie": "Som ny bruker kan du bare poste en gang per %1. sekund(er), før du har opparbeidet %2 i omdømme – vennligst vent før du poster igjen",
+    "already-posting": "You are already posting",
     "tag-too-short": "Vennligst skriv et lengre emneord. Disse må være på minst %1 tegn",
     "tag-too-long": "Vennligst skriv et kortere emneord. Disse kan ikke være lengre enn %1 tegn",
     "not-enough-tags": "Ikke nok emneord. Emner må ha minst %1.",

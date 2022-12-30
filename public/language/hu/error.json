@@ -88,6 +88,7 @@
     "category-not-selected": "A kategória nincs kiválasztva.",
     "too-many-posts": "Csak %1 másodpercenként hozhatsz létre új bejegyzést - kérlek várj egy kicsit mielőtt új bejegyzést tennél közzé",
     "too-many-posts-newbie": "Új felhasználóként csak egyszer készíthetsz bejegyzést %1 másodpercen belül, amíg el nem éred a %2 szintet - kérlek várj egy kicsit mielőtt új bejegyzést tennél közzé",
+    "already-posting": "You are already posting",
     "tag-too-short": "Kérlek hosszabb címkét adj meg. A címke legalább %1 karaktert kell, hogy tartalmazzon",
     "tag-too-long": "Kérlek rövidebb címkét adj meg. A címkék nem lehetnek hosszabbak %1 karakternél",
     "not-enough-tags": "Nincs elég címke. A bejegyzésnek legalább %1 címkét kell tartalmaznia",

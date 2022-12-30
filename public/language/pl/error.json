@@ -88,6 +88,7 @@
     "category-not-selected": "Nie wybrano kategorii.",
     "too-many-posts": "Możesz publikować posty raz na %1 sekund – poczekaj, zanim dodasz kolejny post",
     "too-many-posts-newbie": "Jako nowy użytkownik możesz publikować posty raz na %1 sekund, dopóki nie zdobędziesz reputacji na poziomie %2 – poczekaj, zanim dodasz kolejny post",
+    "already-posting": "You are already posting",
     "tag-too-short": "Wprowadź dłuższy tag. Tagi muszą mieć przynajmniej %1 znak(-ów)",
     "tag-too-long": "Wprowadź krótszy tag. Tagi nie mogą mieć więcej niż %1 znak(-ów)",
     "not-enough-tags": "Zbyt mało tagów. Tematy muszą posiadać przynajmniej %1 tag(ów)",

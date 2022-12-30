@@ -88,6 +88,7 @@
     "category-not-selected": "Kategori bulunamadı. Lütfen bir kategori seçiniz. ",
     "too-many-posts": "%1 saniye içinde yalnızca bir ileti gönderebilirsiniz - lütfen tekrar ileti göndermeden önce bekleyiniz.",
     "too-many-posts-newbie": "Yeni bir kullanıcı olarak, %2 saygınlık puanı kazanana kadar %1 saniye içinde bir ileti gönderebilirsiniz - lütfen tekrar ileti göndermeden önce bekleyiniz.",
+    "already-posting": "You are already posting",
     "tag-too-short": "Lütfen daha uzun bir etiket girin. Etiketler en az %1 karakter içermelidir.",
     "tag-too-long": "Lütfen daha kısa bir etiket girin. Etiketler %1 karakterden uzun olamaz.",
     "not-enough-tags": "Yeterince etiket yok. Başlılar en az %1 etikete sahip olmalıdır",

@@ -88,6 +88,7 @@
     "category-not-selected": "Kategória nebola vybratá.",
     "too-many-posts": "Môžete uverejniť príspevok každých %1 sekúnd(y) - prosím počkajte pred opätovným zverejnením",
     "too-many-posts-newbie": "Ako nový užívateľ, môžete uverejniť príspevok raz za %1 sekúnd(y) pokiaľ nezískate %2 reputáciu - prosím, počkajte pred ďalším uverejnením",
+    "already-posting": "You are already posting",
     "tag-too-short": "Prosím, zadajte dlhšiu značku. Značky by mali obsahovať najmenej %1 znak(ov)",
     "tag-too-long": "Prosím, zadajte kratšiu značku. Značky nemôžu obsahovať viac ako %1 znak(ov)",
     "not-enough-tags": "Príliš malo značiek. Témy musia mať minimálne %1 značku(y)",
