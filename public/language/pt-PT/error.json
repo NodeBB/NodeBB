@@ -88,6 +88,7 @@
     "category-not-selected": "Categoria não selecionada.",
     "too-many-posts": "Só podes publicar a cada %1 segundo(s) - por favor espera até poderes publicar outra vez",
     "too-many-posts-newbie": "Como novo utilizador, só podes publicar a cada %1 segundo(s) até teres conquistado %2 de reputação - por favor espera até poderes publicar outra vez",
+    "already-posting": "You are already posting",
     "tag-too-short": "Por favor introduz um marcador maior. Os marcadores devem ter pelo menos %1 caracter(s)",
     "tag-too-long": "Por favor introduz um marcador mais curto. Os marcadores devem ter no máximo %1 caracter(es)",
     "not-enough-tags": "Não existem marcadores suficientes. Os tópicos devem ter pelo menos %1 marcador(es)",

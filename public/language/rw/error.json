@@ -88,6 +88,7 @@
     "category-not-selected": "Category not selected.",
     "too-many-posts": "Wemerewe kugira icyo ushyiraho rimwe mu masegonda (isegonda) %1. Ba utegerejeho gato kugirango wongere",
     "too-many-posts-newbie": "Nk'umuntu mushya, wemerewe gushyiraho ikintu rimwe mu masegonda (isegonda) %1 kugeza igihe ugize amanota agera kuri %2. Ba utegerejeho gato kugirango wongere",
+    "already-posting": "You are already posting",
     "tag-too-short": "Gerageza ukoreshe akamenyetso kagizwe n'inyuguti (cyangwa ibimenyetso) nibura zigera kuri %1",
     "tag-too-long": "Gerageza ukoreshe akamenyetso kagizwe n'inyuguti (cyangwa ibimenyetso) zitarenze %1",
     "not-enough-tags": "Nta tumenyetso turiho duhagije. Ibiganiro bigomba kugira utumenyetso (akamenyetso) nibura %1",

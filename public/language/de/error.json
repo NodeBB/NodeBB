@@ -88,6 +88,7 @@
     "category-not-selected": "Kategorie nicht ausgewählt",
     "too-many-posts": "Du kannst nur einen Beitrag innerhalb von %1 Sekunden erstellen - Bitte warte bevor Du erneut einen Beitrag erstellst.",
     "too-many-posts-newbie": "Als neuer Benutzer kannst du nur einmal alle %1 Sekunde(n) posten, bis du %2 Reputation erworben hast - bitte warte, bevor du erneut postest",
+    "already-posting": "You are already posting",
     "tag-too-short": "Bitte gebe ein längeres Schlagwort ein. Schlagworte sollten mindestens %1 Zeichen enthalten.",
     "tag-too-long": "Bitte gebe ein kürzeres Schlagwort ein. Schlagworte können nicht länger als %1 Zeichen sein.",
     "not-enough-tags": "Nicht genügend Schlagworte. Themen müssen mindestens %1 Schlagwort(e) enthalten",

@@ -88,6 +88,7 @@
     "category-not-selected": "Category not selected.",
     "too-many-posts": "يسمح لك بالنشر مرة كل %1 ثانية - يرجى الإنتظار قبل النشر مجدداً",
     "too-many-posts-newbie": "As a new user, you can only post once every %1 second(s) until you have earned %2 reputation - please wait before posting again",
+    "already-posting": "You are already posting",
     "tag-too-short": "Please enter a longer tag. Tags should contain at least %1 character(s)",
     "tag-too-long": "Please enter a shorter tag. Tags can't be longer than %1 character(s)",
     "not-enough-tags": "Not enough tags. Topics must have at least %1 tag(s)",

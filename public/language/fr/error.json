@@ -88,6 +88,7 @@
     "category-not-selected": "Aucune catégorie sélectionnée",
     "too-many-posts": "Vous ne pouvez poster que toutes les %1 seconde(s) - merci de patienter avant de publier à nouveau.",
     "too-many-posts-newbie": "En tant que nouvel utilisateur, vous ne pouvez poster que toutes les %1 seconde(s) jusqu'à ce que vous obteniez une réputation de %2 - patientez avant de publier de nouveau.",
+    "already-posting": "You are already posting",
     "tag-too-short": "Veuillez entrer un mot-clé plus long. Les mots-clés doivent contenir au moins %1 caractère(s).",
     "tag-too-long": "Veuillez entrer un mot-clé plus court. Les mot-clés ne peuvent excéder %1 caractère(s).",
     "not-enough-tags": "Pas assez de mots-clés. Les sujets doivent avoir au moins %1 mots-clé(s).",
