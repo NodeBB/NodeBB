@@ -1,3 +1,90 @@
+#### v2.8.0 (2022-12-21)
+
+##### Chores
+
+* **deps:**
+  *  update dependency jquery to v3.6.3 (#11107) (13a3faa0)
+  *  update dependency eslint to v8.30.0 (#11102) (485ee130)
+  *  update dependency mocha to v10.2.0 (#11094) (c4cc1e61)
+*  up jquery (3e8f5378)
+*  remove extraneous lines from changelog (e213dbc3)
+*  incrementing version number - v2.7.0 (96cc0617)
+*  update changelog for v2.7.0 (4701c96d)
+* **i18n:**
+  *  fallback strings for new resources: nodebb.admin-settings-email (717b3612)
+  *  fallback strings for new resources: nodebb.admin-settings-email (4f4b4800)
+
+##### New Features
+
+*  add force flag to plugin install in cli (#11089) (de31cb1a)
+*  integrating basic client-side form validity checking in settings v1 and v2 (33af2d9c)
+
+##### Bug Fixes
+
+* **deps:**
+  *  update dependency sharp to v0.31.3 (#11110) (ef500af8)
+  *  update dependency sanitize-html to v2.8.1 (#11109) (7ab46b78)
+  *  update dependency esbuild to v0.16.10 (#11104) (eb6a9c47)
+  *  update dependency mongodb to v4.13.0 (#11105) (05443dbe)
+  *  update dependency esbuild to v0.16.8 (#11101) (18ff6caa)
+  *  update dependency sanitize-html to v2.8.0 (#11098) (faaf09f7)
+  *  update dependency ace-builds to v1.14.0 (#11095) (cde44587)
+  *  update dependency nodebb-plugin-2factor to v5.1.2 (#11096) (5dda9a5b)
+  *  update dependency postcss to v8.4.20 (#11097) (0a5adb41)
+  *  update dependency compare-versions to v5.0.3 (#11092) (8b209f16)
+  *  update dependency html-to-text to v9.0.3 (#11093) (7bcfe38e)
+  *  update dependency @socket.io/redis-adapter to v8 (#11084) (7b9bbef5)
+  *  update dependency nodebb-widget-essentials to v6.0.1 (#11085) (7b48156c)
+  *  update dependency esbuild to v0.16.7 (#11086) (65ef722e)
+  *  update dependency esbuild to v0.16.3 (#11083) (4f67fc1a)
+  *  update dependency esbuild to v0.15.16 (#11069) (22493ffb)
+*  change hsts-maxage back to numeric input type, change API token uid input to numeric text type (896493db)
+*  replace input type number with text/pattern (2bc23a95)
+
+##### Refactors
+
+*  flag states so that they are not hardcoded, allow plugins to add additional states, deprecated filter:flags.getFilters hook, closes #11065 (9f531f95)
+*  remove debug log closes #11090 (06f4801e)
+
+#### v2.7.0 (2022-12-14)
+
+##### Chores
+
+*  added stub file in hy (9ee8502d)
+* **deps:**
+  *  update dependency lint-staged to v13.1.0 (#11082) (693d4783)
+  *  update dependency eslint to v8.29.0 (#11074) (eab5b754)
+  *  update dependency lint-staged to v13.0.4 (#11064) (f947ac6d)
+* **i18n:**
+  *  fallback strings for new resources: nodebb.admin-settings-email (0e319a58)
+  *  fallback strings for new resources: nodebb.admin-settings-email (9676b192)
+
+##### New Features
+
+*  update transifex config (for use with new cli) (f11094cb)
+*  integrating basic client-side form validity checking in settings v1 and v2 (dadbcd73)
+*  add ./nodebb install <plugin_name> (4efc19d5)
+
+##### Bug Fixes
+
+* **deps:**
+  *  update dependency nodebb-theme-lavender to v6.0.1 (#11081) (df3f1c5e)
+  *  update dependency esbuild to v0.16.3 (#11083) (85d38158)
+  *  update dependency html-to-text to v9 (#11075) (d8e9738d)
+  *  update dependency ace-builds to v1.13.2 (#11080) (35be4594)
+  *  update dependency fs-extra to v11 (#11072) (aafb7f6e)
+  *  update dependency esbuild to v0.15.16 (#11069) (7bc4b836)
+  *  update dependency mongodb to v4.12.1 (#11062) (e14d4abc)
+*  relax selectors for client-side form validation so that all form elements are checked (43e7c988)
+*  change hsts-maxage back to numeric input type, change API token uid input to numeric text type (db8d3a94)
+*  replace input type number with text/pattern (45ae31f8)
+*  categories.js not showing custom privileges (#10856) (8c4d6bbe)
+*  #11077, add admin uploads paths to priv mapping (07a02125)
+
+##### Tests
+
+*  dont try to load admin upload routes (c2bb2b30)
+
 #### v2.6.1 (2022-11-28)
 
 ##### Chores

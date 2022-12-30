@@ -518,7 +518,6 @@ define('settings', ['hooks', 'alerts'], function (hooks, alerts) {
 			formEl = $(formEl);
 
 			const controls = formEl.get(0).elements;
-			console.log(controls);
 			const ok = Settings.check(controls);
 			if (!ok) {
 				return;
