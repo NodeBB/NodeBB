@@ -88,6 +88,7 @@
     "category-not-selected": "Kategorija nije odabrana.",
     "too-many-posts": "Možete objavljivati svakih %1 skeundi, pričekajte prije ponovne objave",
     "too-many-posts-newbie": "Kao novi korisnik, možete objavljivati svakih %1 sekundi dok ne steknete reputaciju %2 - molimo pričekajte prije ponovne objave",
+    "already-posting": "You are already posting",
     "tag-too-short": "Unesite dužu oznaku. Oznake moraju sadržavati najmanje %1 znak(ova)",
     "tag-too-long": "Unesite kraću oznaku. Oznake me mogu imati više od %1 znak(ova)",
     "not-enough-tags": "Nema dovoljno oznaka. Teme moraju imate bar %1 oznaku",

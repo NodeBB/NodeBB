@@ -91,6 +91,22 @@ describe('socket.io', () => {
 		});
 	});
 
+	it('should return error for unknown event', (done) => {
+		io.emit('user.gdpr.__proto__.constructor.toString', (err) => {
+			assert(err);
+			assert.equal(err.message, '[[error:invalid-event, user.gdpr.__proto__.constructor.toString]]');
+			done();
+		});
+	});
+
+	it('should return error for unknown event', (done) => {
+		io.emit('constructor.toString', (err) => {
+			assert(err);
+			assert.equal(err.message, '[[error:invalid-event, constructor.toString]]');
+			done();
+		});
+	});
+
 	it('should get installed themes', (done) => {
 		const themes = ['nodebb-theme-lavender', 'nodebb-theme-persona', 'nodebb-theme-vanilla'];
 		io.emit('admin.themes.getInstalled', (err, data) => {

@@ -88,6 +88,7 @@
     "category-not-selected": "Category not selected.",
     "too-many-posts": "Te saate postitada %1 sekundi tagant - palun oodake enne uue postituse tegemist.",
     "too-many-posts-newbie": "Uue kasutajana saadte postitada vaid iga %1 sekundi tagant, seniks kuni olete teeninud vähemalt %2 reputatsiooni - palun oodake enne uue postituse tegemist.",
+    "already-posting": "You are already posting",
     "tag-too-short": "Palun sisestage pikem märksõna. Märksõna pikkus peab olema vähemalt %1 tähemärk(i).",
     "tag-too-long": "Palun sisestage lühem märksõna. Märksõna pikkus peab olema vähem kui %1 tähemärk(i).",
     "not-enough-tags": "Liiga vähe märksõnu. Teemadel peab olemalt vähemalt %1 märksõna",

@@ -88,6 +88,7 @@
     "category-not-selected": "Category not selected.",
     "too-many-posts": "Du kan højest skrive et indlæg hver %1 sekund(er) - venligst vent et øjeblik før næste indlæg",
     "too-many-posts-newbie": "Som ny bruger kan du kun skrive et indlæg engang hvert %1. sekund() indtil du har optjent %2 omdømme point - venligst vent et øjeblik før næste indlæg.",
+    "already-posting": "You are already posting",
     "tag-too-short": "Indtast et længere tag. Tags skal indeholde mindst %1 karakter(er).",
     "tag-too-long": "Indtast et længere tag. Tags kan ikke være længere end %1 karakter(er).",
     "not-enough-tags": "Ikke nok tags. Tråde skal have mindst %1 tag(s)",
