@@ -34,8 +34,8 @@ async function setup(initConfig?) {
 	}
 
 	let separator = '     ';
-	if ((process as any).stdout.columns > 10) {
-		for (let x = 0, cols = (process as any).stdout.columns - 10; x < cols; x += 1) {
+	if (process.stdout.columns > 10) {
+		for (let x = 0, cols = process.stdout.columns - 10; x < cols; x += 1) {
 			separator += '=';
 		}
 	}
@@ -51,10 +51,10 @@ async function setup(initConfig?) {
 
 	// If I am a child process, notify the parent of the returned data before exiting (useful for notifying
 	// hosts of auto-generated username/password during headless setups)
-	if ((process as any).send) {
-		(process as any).send(data);
+	if (process.send) {
+		process.send(data);
 	}
-	(process as any).exit();
+	process.exit();
 }
 
 export default {

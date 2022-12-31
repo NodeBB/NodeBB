@@ -3,7 +3,7 @@
 import nconf from 'nconf';
 import chalk from 'chalk';
 import packageInstall from './package-install';
-import { upgradePlugins } from './upgrade-plugins';	
+import { upgradePlugins } from './upgrade-plugins';
 import db from '../database';
 import meta from '../meta';
 import Upgrade from '../upgrade';
@@ -15,13 +15,13 @@ const steps = {
 		handler: function () {
 			packageInstall.updatePackageFile();
 			packageInstall.preserveExtraneousPlugins();
-			(process as any).stdout.write(chalk.green('  OK\n'));
+			process.stdout.write(chalk.green('  OK\n'));
 		},
 	},
 	install: {
 		message: 'Bringing base dependencies up to date...',
 		handler: function () {
-			(process as any).stdout.write(chalk.green('  started\n'));
+			process.stdout.write(chalk.green('  started\n'));
 			packageInstall.installAll();
 		},
 	},
@@ -53,7 +53,7 @@ async function runSteps(tasks) {
 		for (let i = 0; i < tasks.length; i++) {
 			const step = steps[tasks[i]];
 			if (step && step.message && step.handler) {
-				(process as any).stdout.write(`\n${chalk.bold(`${i + 1}. `)}${chalk.yellow(step.message)}`);
+				process.stdout.write(`\n${chalk.bold(`${i + 1}. `)}${chalk.yellow(step.message)}`);
 				/* eslint-disable-next-line */
 				await step.handler();
 			}
@@ -61,12 +61,12 @@ async function runSteps(tasks) {
 		const message = 'NodeBB Upgrade Complete!';
 		// some consoles will return undefined/zero columns,
 		// so just use 2 spaces in upgrade script if we can't get our column count
-		const { columns } = (process as any).stdout;
+		const { columns } = process.stdout;
 		const spaces = columns ? new Array(Math.floor(columns / 2) - (message.length / 2) + 1).join(' ') : '  ';
 
 		console.log(`\n\n${spaces}${chalk.green.bold(message)}\n`);
 
-		(process as any).exit();
+		process.exit();
 	} catch (err: any) {
 		console.error(`Error occurred during upgrade: ${err.stack}`);
 		throw err;
@@ -92,7 +92,7 @@ async function runUpgrade(upgrades, options?) {
 	db.init();
 	meta.configs.init();
 	Upgrade.runParticular(upgrades);
-	(process as any).exit(0);
+	process.exit(0);
 }
 
 export const upgrade = runUpgrade;

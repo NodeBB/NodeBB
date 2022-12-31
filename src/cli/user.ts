@@ -91,10 +91,10 @@ async function execute(cmd, args) {
 	} catch (err: any) {
 		const userError = err.name === 'UserError';
 		winston.error(`[userCmd/${cmd.name}] ${userError ? `${err.message}` : 'Command failed.'}`, userError ? '' : err);
-		(process as any).exit(1);
+		process.exit(1);
 	}
 
-	(process as any).exit();
+	process.exit();
 }
 
 function UserCmdHelpers() {

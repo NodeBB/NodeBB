@@ -18,7 +18,7 @@ export function getRunningPid(callback) {
 		pid = parseInt(pid as string, 10);
 
 		try {
-			(process as any).kill(pid, 0);
+			process.kill(pid, 0);
 			callback(null, pid);
 	} catch (e: any) {			callback(e);
 		}
@@ -27,9 +27,9 @@ export function getRunningPid(callback) {
 
 export function start(options?) {
 	if (options.dev) {
-		(process as any).env.NODE_ENV = 'development';
+		process.env.NODE_ENV = 'development';
 		fork(paths.loader, ['--no-daemon', '--no-silent'], {
-			env: (process as any).env,
+			env: process.env,
 			stdio: 'inherit',
 			cwd,
 		});
@@ -52,13 +52,13 @@ export function start(options?) {
 	}
 
 	// Spawn a new NodeBB process
-	const child = fork(paths.loader, (process as any).argv.slice(3), {
-		env: (process as any).env,
+	const child = fork(paths.loader, process.argv.slice(3), {
+		env: process.env,
 		cwd,
 	});
 	if (options.log) {
 		// @ts-ignore
-		child(process as any).spawn('tail', ['-F', './logs/output.log'], {
+		childprocess.spawn('tail', ['-F', './logs/output.log'], {
 			stdio: 'inherit',
 			cwd,
 		});
@@ -70,7 +70,7 @@ export function start(options?) {
 export function stop() {
 	getRunningPid((err, pid) => {
 		if (!err) {
-			(process as any).kill(pid, 'SIGTERM');
+			process.kill(pid, 'SIGTERM');
 			console.log('Stopping NodeBB. Goodbye!');
 		} else {
 			console.log('NodeBB is already stopped.');
@@ -82,7 +82,7 @@ function restart(options) {
 	getRunningPid((err, pid) => {
 		if (!err) {
 			console.log(chalk.bold('\nRestarting NodeBB'));
-			(process as any).kill(pid, 'SIGTERM');
+			process.kill(pid, 'SIGTERM');
 
 			options.silent = true;
 			start(options);
@@ -110,7 +110,7 @@ export function status() {
 
 export function log() {
 	console.log(`${chalk.red('\nHit ') + chalk.bold('Ctrl-C ') + chalk.red('to exit\n')}\n`);
-	// child(process as any).spawn('tail', ['-F', './logs/output.log'], {
+	// childprocess.spawn('tail', ['-F', './logs/output.log'], {
 	// 	stdio: 'inherit',
 	// 	cwd,
 	// });

@@ -2,93 +2,22 @@
 
 'use strict';
 
-import * as prestart from '../prestart';
-import yargs from 'yargs';
-import fs from 'fs';
 import path from 'path';
-import { paths } from '../constants';
-import nconf from 'nconf';
-
-const opts = yargs((process as any).argv.slice(2)).help(false).exitProcess(false);
-nconf.argv(opts).env({
-	separator: '__',
-});
-
-(process as any).env.NODE_ENV = (process as any).env.NODE_ENV || 'production';
-(global as any).env = (process as any).env.NODE_ENV || 'production';
-
-prestart.setupWinston();
-
-// Alternate configuration file support
-const configFile = path.resolve(paths.baseDir, nconf.get('config') || 'config.json');
-const configExists = fs.existsSync(configFile) || (nconf.get('url') && nconf.get('secret') && nconf.get('database'));
-
-prestart.loadConfig(configFile);
-prestart.versionCheck();
-
-// used for calling the file
-require('../../require-main');
-
-import packageInstall from './package-install';
-import semver from 'semver';
-//@ts-ignore
-import defaultPackage from '../../install/package.json';
 import chalk from 'chalk';
+import nconf from 'nconf';
 import { program } from 'commander';
-import manage from './manage';
+import yargs from 'yargs';
 
-
-try {
-	fs.accessSync(paths.currentPackage, fs.constants.R_OK); // throw on missing package.json
-	try { // handle missing node_modules/ directory
-		fs.accessSync(paths.nodeModules, fs.constants.R_OK);
-} catch (e: any) {		if (e.code === 'ENOENT') {
-			// run package installation just to sync up node_modules/ with existing package.json
-			packageInstall.installAll();
-		} else {
-			throw e;
-		}
-	}
-	fs.accessSync(path.join(paths.nodeModules, 'semver/package.json'), fs.constants.R_OK);
-
-
-
-	const checkVersion = function (packageName) {
-		const { version } = JSON.parse(fs.readFileSync(path.join(paths.nodeModules, packageName, 'package.json'), 'utf8'));
-		if (!semver.satisfies(version, defaultPackage.dependencies[packageName])) {
-			const e: any = new TypeError(`Incorrect dependency version: ${packageName}`);
-			e.code = 'DEP_WRONG_VERSION';
-			throw e;
-		}
-	};
-
-	checkVersion('nconf');
-	checkVersion('async');
-	checkVersion('commander');
-	checkVersion('chalk');
-	checkVersion('lodash');
-	checkVersion('lru-cache');
-} catch (e: any) {
-	if (['ENOENT', 'DEP_WRONG_VERSION', 'MODULE_NOT_FOUND'].includes(e.code)) {
-		console.warn('Dependencies outdated or not yet installed.');
-		console.log('Installing them now...\n');
-
-		packageInstall.updatePackageFile();
-		packageInstall.preserveExtraneousPlugins();
-		packageInstall.installAll();
-
-		console.log(`${chalk.green('OK')}\n`);
-	} else {
-		throw e;
-	}
-}
+import pkg from '../../../install/package.json';
+import file from '../file';
+import * as prestart from '../prestart';
 
 program.configureHelp(require('./colors'));
 
 program
 	.name('./nodebb')
 	.description('Welcome to NodeBB')
-	.version(defaultPackage.version)
+	.version(pkg.version)
 	.option('--json-logging', 'Output to logs in JSON format', false)
 	.option('--log-level <level>', 'Default logging level to use', 'info')
 	.option('--config <value>', 'Specify a config file', 'config.json')
@@ -98,15 +27,29 @@ program
 // provide a yargs object ourselves
 // otherwise yargs will consume `--help` or `help`
 // and `nconf` will exit with useless usage info
+const opts = yargs(process.argv.slice(2)).help(false).exitProcess(false);
+nconf.argv(opts).env({
+	separator: '__',
+});
 
+process.env.NODE_ENV = process.env.NODE_ENV || 'production';
+global.env = process.env.NODE_ENV || 'production';
 
-if (!configExists && (process as any).argv[2] !== 'setup') {
+prestart.setupWinston();
+
+// Alternate configuration file support
+const configFile = path.resolve(paths.baseDir, nconf.get('config') || 'config.json');
+const configExists = file.existsSync(configFile) || (nconf.get('url') && nconf.get('secret') && nconf.get('database'));
+
+prestart.loadConfig(configFile);
+prestart.versionCheck();
+
+if (!configExists && process.argv[2] !== 'setup') {
 	require('./setup').webInstall();
-	// @ts-ignore
 	return;
 }
 
-(process as any).env.CONFIG = configFile;
+process.env.CONFIG = configFile;
 
 // running commands
 program
@@ -129,8 +72,8 @@ program
 	})
 	.description('Start NodeBB in verbose development mode')
 	.action(() => {
-		(process as any).env.NODE_ENV = 'development';
-		(global as any).env = 'development';
+		process.env.NODE_ENV = 'development';
+		global.env = 'development';
 		require('./running').start({ ...program.opts(), dev: true });
 	});
 program
@@ -183,7 +126,7 @@ program
 	.option('-f, --force', 'Force plugin installation even if it may be incompatible with currently installed NodeBB version')
 	.action((plugin, options) => {
 		if (plugin) {
-			manage.install(plugin);
+			require('./manage').install(plugin, options);
 		} else {
 			require('./setup').webInstall();
 		}
@@ -197,10 +140,10 @@ program
 	.action((targets, options) => {
 		console.log('HEYYYYY!!!!!!!!!!!');
 		if (program.opts().dev) {
-			(process as any).env.NODE_ENV = 'development';
-			(global as any).env = 'development';
+			process.env.NODE_ENV = 'development';
+			global.env = 'development';
 		}
-		manage.buildWrapper(targets.length ? targets : true, options);
+		require('./manage').build(targets.length ? targets : true, options);
 	})
 	.on('--help', () => {
 		require('../meta/aliases').buildTargets();
@@ -209,25 +152,25 @@ program
 	.command('activate [plugin]')
 	.description('Activate a plugin for the next startup of NodeBB (nodebb-plugin- prefix is optional)')
 	.action((plugin) => {
-		manage.activate(plugin);
+		require('./manage').activate(plugin);
 	});
 program
 	.command('plugins')
 	.action(() => {
-		manage.listPlugins();
+		require('./manage').listPlugins();
 	})
 	.description('List all installed plugins');
 program
 	.command('events [count]')
 	.description('Outputs the most recent administrative events recorded by NodeBB')
 	.action((count) => {
-		manage.listEvents(count);
+		require('./manage').listEvents(count);
 	});
 program
 	.command('info')
 	.description('Outputs various system info')
 	.action(() => {
-		manage.info();
+		require('./manage').info();
 	});
 
 // reset
@@ -249,10 +192,10 @@ resetCommand
 
 		require('./reset').reset(options, (err) => {
 			if (err) {
-				return (process as any).exit(1);
+				return process.exit(1);
 			}
 
-			(process as any).exit(0);
+			process.exit(0);
 		});
 	});
 
@@ -280,8 +223,8 @@ program
 	})
 	.action((scripts, options) => {
 		if (program.opts().dev) {
-			(process as any).env.NODE_ENV = 'development';
-			(global as any).env = 'development';
+			process.env.NODE_ENV = 'development';
+			global.env = 'development';
 		}
 		require('./upgrade').upgrade(scripts.length ? scripts : true, options);
 	});
@@ -298,7 +241,7 @@ program
 				throw err;
 			}
 			console.log(chalk.green('OK'));
-			(process as any).exit();
+			process.exit();
 		});
 	});
 
@@ -310,7 +253,7 @@ program
 			return program.help();
 		}
 
-		const command = program.commands.find(command => (command as any)._name === name);
+		const command = program.commands.find(command => command._name === name);
 		if (command) {
 			command.help();
 		} else {
@@ -319,10 +262,10 @@ program
 		}
 	});
 
-if ((process as any).argv.length === 2) {
+if (process.argv.length === 2) {
 	program.help();
 }
 
-(program as any).executables = false;
+program.executables = false;
 
 program.parse();

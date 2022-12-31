@@ -70,7 +70,7 @@ export const reset = async function (options) {
 			'         Prefix is optional, e.g. ./nodebb reset -p markdown, ./nodebb reset -t harmony',
 		].join('\n'));
 
-		(process as any).exit(0);
+		process.exit(0);
 	}
 
 	try {
@@ -80,10 +80,10 @@ export const reset = async function (options) {
 			await task();
 		}
 		winston.info('[reset] Reset complete. Please run `./nodebb build` to rebuild assets.');
-		(process as any).exit(0);
+		process.exit(0);
 	} catch (err: any) {
 		winston.error(`[reset] Errors were encountered during reset -- ${err.message}`);
-		(process as any).exit(1);
+		process.exit(1);
 	}
 };
 
@@ -120,7 +120,7 @@ async function resetPlugin(pluginId?) {
 	try {
 		if (nconf.get('plugins:active')) {
 			winston.error('Cannot reset plugins while plugin state is set in the configuration (config.json, environmental variables or terminal arguments), please modify the configuration instead');
-			(process as any).exit(1);
+			process.exit(1);
 		}
 		const isActive = await db.isSortedSetMember('plugins:active', pluginId);
 		if (isActive) {
@@ -143,7 +143,7 @@ async function resetPlugin(pluginId?) {
 async function resetPlugins() {
 	if (nconf.get('plugins:active')) {
 		winston.error('Cannot reset plugins while plugin state is set in the configuration (config.json, environmental variables or terminal arguments), please modify the configuration instead');
-		(process as any).exit(1);
+		process.exit(1);
 	}
 	await db.delete('plugins:active');
 	winston.info('[reset] All Plugins De-activated');

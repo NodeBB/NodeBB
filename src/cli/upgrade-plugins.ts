@@ -16,7 +16,7 @@ const packageManager = pkgInstall.getPackageManager();
 let packageManagerExecutable = packageManager;
 const packageManagerInstallArgs = packageManager === 'yarn' ? ['add'] : ['install', '--save'];
 
-if ((process as any).platform === 'win32') {
+if (process.platform === 'win32') {
 	packageManagerExecutable += '.cmd';
 }
 
@@ -85,7 +85,7 @@ async function getSuggestedModules(nbbVersion, toCheck) {
 }
 
 async function checkPlugins() {
-	(process as any).stdout.write('Checking installed plugins and themes for updates... ');
+	process.stdout.write('Checking installed plugins and themes for updates... ');
 	const [plugins, nbbVersion] = await Promise.all([
 		getInstalledPlugins(),
 		getCurrentVersion(),
@@ -93,11 +93,11 @@ async function checkPlugins() {
 
 	const toCheck = Object.keys(plugins);
 	if (!toCheck.length) {
-		(process as any).stdout.write(chalk.green('  OK'));
+		process.stdout.write(chalk.green('  OK'));
 		return []; // no extraneous plugins installed
 	}
 	const suggestedModules = await getSuggestedModules(nbbVersion, toCheck);
-	(process as any).stdout.write(chalk.green('  OK'));
+	process.stdout.write(chalk.green('  OK'));
 
 	let current;
 	let suggested;
@@ -122,9 +122,9 @@ export const upgradePlugins = async function() {
 	try {
 		const found = await checkPlugins();
 		if (found && found.length) {
-			(process as any).stdout.write(`\n\nA total of ${chalk.bold(String(found.length))} package(s) can be upgraded:\n\n`);
+			process.stdout.write(`\n\nA total of ${chalk.bold(String(found.length))} package(s) can be upgraded:\n\n`);
 			found.forEach((suggestObj) => {
-				(process as any).stdout.write(`${chalk.yellow('  * ') + suggestObj.name} (${chalk.yellow(suggestObj.current)} -> ${chalk.green(suggestObj.suggested)})\n`);
+				process.stdout.write(`${chalk.yellow('  * ') + suggestObj.name} (${chalk.yellow(suggestObj.current)} -> ${chalk.green(suggestObj.suggested)})\n`);
 			});
 		} else {
 			console.log(chalk.green('\nAll packages up-to-date!'));
