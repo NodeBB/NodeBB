@@ -122,16 +122,13 @@ UserReset.updateExpiry = async function (uid) {
 };
 
 UserReset.clean = async function () {
-	const [tokens, uids] = await Promise.all([
-		db.getSortedSetRangeByScore('reset:issueDate', 0, -1, '-inf', Date.now() - twoHours),
-		db.getSortedSetRangeByScore('reset:issueDate:uid', 0, -1, '-inf', Date.now() - twoHours),
-	]);
-	if (!tokens.length && !uids.length) {
+	const tokens = await db.getSortedSetRangeByScore('reset:issueDate', 0, -1, '-inf', Date.now() - twoHours);
+	if (!tokens.length) {
 		return;
 	}
 
 	winston.verbose(`[UserReset.clean] Removing ${tokens.length} reset tokens from database`);
-	await cleanTokensAndUids(tokens, uids);
+	await cleanTokensAndUids(tokens);
 };
 
 UserReset.cleanByUid = async function (uid) {
@@ -153,13 +150,12 @@ UserReset.cleanByUid = async function (uid) {
 	}
 
 	winston.verbose(`[UserReset.cleanByUid] Found ${tokensToClean.length} token(s), removing...`);
-	await cleanTokensAndUids(tokensToClean, uid);
+	await cleanTokensAndUids(tokensToClean);
 };
 
-async function cleanTokensAndUids(tokens, uids) {
+async function cleanTokensAndUids(tokens) {
 	await Promise.all([
 		db.deleteObjectFields('reset:uid', tokens),
 		db.sortedSetRemove('reset:issueDate', tokens),
-		db.sortedSetRemove('reset:issueDate:uid', uids),
 	]);
 }
