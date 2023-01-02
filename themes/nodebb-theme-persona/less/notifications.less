@@ -1,0 +1,38 @@
+.notifications-list {
+	margin-top: 1em;
+	padding: 0;
+
+	li {
+		clear: both;
+		list-style-type: none;
+		padding: 1em;
+		margin-bottom: 0.5em;
+		.zebra;
+		.pointer;
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+
+		&.unread {
+			background: #fefbed;
+		}
+
+		.timestamp {
+			font-size: 0.8em;
+		}
+
+		a {
+			display: block;
+			.text-ellipsis;
+		}
+
+		p {
+			margin: 0 0 0 30px;
+		}
+
+		.user-img {
+			.user-icon-style(24px, 1rem, 50%);
+		}
+	}
+}

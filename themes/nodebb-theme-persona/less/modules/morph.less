@@ -1,0 +1,269 @@
+// modified from http://codepen.io/albebonv/pen/gIlrw
+
+.btn-morph {
+	display: inline-block;
+	width: 2em;
+	height: 2em;
+	background-color: #FFF;
+	color: #9e9e9e;
+	box-shadow: 0 0 5px rgba(0,0,0,0.2);
+	border-radius: 1em;
+	overflow: hidden;
+	transform: translateZ(0);
+	transition: all 0.5s ease;
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+.btn-morph:hover {
+	box-shadow: 0 0 10px rgba(0,0,0,0.4);
+}
+
+.btn-morph:active {
+	transform: scale(1.1,1.1);
+}
+
+.btn-morph:focus {
+	outline: 0;
+	border:none;
+	color: rgba(0, 0, 0, 0);
+}
+
+.btn-morph > span {
+	display: block;
+	position: relative;
+	width: 1em;
+	height: 1em;
+	transition: transform 0.5s ease;
+	overflow: hidden;
+	margin: 0.5em;
+}
+
+.btn-morph > span > span {
+	display: block;
+	background-color: #9e9e9e;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 1em;
+	height: 1em;
+	transition: all 0.5s ease;
+	border: 1px solid transparent;
+}
+
+header .btn-morph > span > span {
+	background-color: #e91e63;
+}
+
+.btn-morph.play > span {
+	transform: translate(1em,0) scale(1.6,1);
+}
+
+.btn-morph.play > span > span {
+	transform: rotate(-45deg) translate(-1em, -1em) scale(1,1);
+}
+
+.btn-morph.pause > span > span {
+	transform: scale(0.4,1) translate(-1.6em, 0);
+}
+
+.btn-morph.pause > span > span.s3 {
+	transform: scale(0.4,1) translate(1.6em, 0);
+}
+
+.btn-morph.stop > span {
+	transform: scale(0.8,0.8);
+}
+
+.btn-morph.menu > span > span {
+	transform: scale(1,0.2) translate(0,-3em);
+}
+
+.btn-morph.menu > span > span.s2 {
+	transform: scale(1,0.2) translate(0,0);
+}
+
+.btn-morph.menu > span > span.s3 {
+	transform: scale(1,0.2) translate(0,3em);
+}
+
+.btn-morph.close > span  {
+	transform: rotate(45deg);
+}
+
+.btn-morph.close > span > span , .btn-morph.plus > span > span {
+	transform: scale(0.8,0.1);
+}
+
+.btn-morph.close > span > span.s3 , .btn-morph.plus > span > span.s3 {
+	transform: scale(0.1,0.8);
+}
+
+.btn-morph.minus > span > span {
+	transform: scale(1,0.2);
+}
+
+.btn-morph.more > span > span {
+	transform: scale(0.2,0.2) translate(-3em,0);
+	border-radius: 2em;
+}
+
+.btn-morph.more > span > span.s2 {
+	transform: scale(0.2,0.2) translate(0,0);
+}
+
+.btn-morph.more > span > span.s3 {
+	transform: scale(0.2,0.2) translate(3em,0);
+}
+
+.btn-morph.topArrow > span > span {
+	width: 0.4em;
+	height: 1.8em;
+	transform: translate(0.8em,0.2em);
+}
+
+.btn-morph.topArrow > span > span.s2 {
+	transform-origin: 0 0;
+	height: 1.4em;
+	transform: translate(1em,0) rotate(45deg);
+}
+
+.btn-morph.topArrow > span > span.s3 {
+	transform-origin: 100% 0;
+	height: 1.4em;
+	transform: translate(0.6em,0) rotate(-45deg);
+}
+
+.btn-morph.bottomArrow > span > span {
+	width: 0.4em;
+	height: 1.8em;
+	transform: translate(0.8em,0);
+}
+
+.btn-morph.bottomArrow > span > span.s2 {
+	transform-origin: 100% 100%;
+	height: 1.4em;
+	transform: translate(0.6em,0.6em) rotate(45deg);
+}
+
+.btn-morph.bottomArrow > span > span.s3 {
+	transform-origin: 0 100%;
+	height: 1.4em;
+	transform: translate(1em,0.6em) rotate(-45deg);
+}
+
+.btn-morph.rightArrow > span > span {
+	width: 1.8em;
+	height: 0.4em;
+	transform: translate(0,0.8em);
+}
+
+.btn-morph.rightArrow > span > span.s2 {
+	transform-origin: 100% 0;
+	width: 1.4em;
+	transform: translate(0.6em,1em) rotate(45deg);
+}
+
+.btn-morph.rightArrow > span > span.s3 {
+	transform-origin: 100% 100%;
+	width: 1.4em;
+	transform: translate(0.6em,0.6em) rotate(-45deg);
+}
+
+.btn-morph.leftArrow > span > span {
+	width: 1.8em;
+	height: 0.4em;
+	transform: translate(0.2em,0.8em);
+}
+
+.btn-morph.leftArrow > span > span.s2 {
+	transform-origin: 0 100%;
+	width: 1.4em;
+	transform: translate(0,0.6em) rotate(45deg);
+}
+
+.btn-morph.leftArrow > span > span.s3 {
+	transform-origin: 0 0;
+	width: 1.4em;
+	transform: translate(0,1em) rotate(-45deg);
+}
+
+.btn-morph.checked > span > span {
+	width: 1em;
+	height: 0.4em;
+	transform-origin: 100% 100%;
+	transform: translate(-0.3em,1.4em) rotate(45deg);
+}
+
+.btn-morph.checked > span > span.s3 {
+	width: 1.8em;
+	transform-origin: 0 100%;
+	transform: translate(0.7em,1.4em) rotate(-45deg);
+}
+
+.btn-morph.heart > span > span {
+	width: 0.5em;
+	height: 0.85em;
+	top: 0.1em;
+	left: 0.5em;
+	transform-origin: 0 100%;
+	transform: rotate(-45deg);
+	border-radius: 0.5em 0.5em 0 0;
+}
+
+.btn-morph.heart > span > span.s3 {
+	transform-origin: 100% 100%;
+	left: 0em;
+	transform: rotate(45deg);
+}
+
+
+.drop {
+	display: block;
+	position: absolute;
+	background: #CCC;
+	border-radius: 100%;
+	transform: scale(0);
+	pointer-events: none;
+	width: 100%;
+	height: 100%;
+}
+
+.drop:before {
+	display: block;
+	position: absolute;
+	content: "";
+	background-color: @gray-lighter;
+	border-radius: 100%;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	transform: scale(0);
+}
+
+.drop.animate {
+	animation: drop 1s ease-out;
+}
+
+.drop.animate:before {
+	animation: drop2 1s ease-out;
+}
+
+@keyframes drop {
+  100% {
+  	opacity: 0;
+  	transform: scale(1.25);
+  }
+}
+
+@keyframes drop2 {
+  30% {
+  	opacity: 1;
+  	transform: scale(0);
+  }
+
+  100% {
+  	opacity: 0;
+  	transform: scale(1.25);
+  }
+}

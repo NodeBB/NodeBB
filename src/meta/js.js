@@ -24,7 +24,11 @@ JS.scripts = {
 
 	// plugins add entries into this object,
 	// they get linked into /build/public/src/modules
-	modules: { },
+	modules: {
+		"../admin/plugins/persona.js":"themes/nodebb-theme-persona/public/admin.js",
+		"persona/quickreply.js":"themes/nodebb-theme-persona/public/modules/quickreply.js",
+		"../client/account/theme.js":"themes/nodebb-theme-persona/public/settings.js"
+	},
 };
 
 const basePath = path.resolve(__dirname, '../..');

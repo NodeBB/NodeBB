@@ -1,0 +1,33 @@
+.persona-fab {
+	box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.156863), 0px 2px 10px 0px rgba(0, 0, 0, 0.117647);
+
+	background-color: @brand-primary;
+	border: none;
+	border-radius: 50%;
+	cursor: pointer;
+	line-height: 55.5px;
+	vertical-align: middle;
+	height: 55.5px;
+	width: 55.5px;
+}
+
+.btn-group.open .dropdown-toggle.persona-fab {
+	box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.156863), 0px 2px 10px 0px rgba(0, 0, 0, 0.117647);
+}
+
+.persona-fab.btn-morph {
+	padding: 0;
+
+	&.heart {
+		> span > span {
+			background-color: #E91E63;
+		}
+	}
+
+	&.plus {
+		background-color: @material-success;
+		> span > span {
+			background-color: white;
+		}
+	}
+}

@@ -1,0 +1,202 @@
+.group-label {
+	display: inline-block;
+	text-transform: uppercase;
+	vertical-align: -5px;
+	padding: 4px;
+	border-radius: 2px;
+	max-width: 150px;
+	overflow-x: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	line-height: 1.1;
+}
+
+.groups.details {
+	margin-top: 200px;
+
+	[component="groups/cover"] {
+		background-size: cover;
+		background-repeat: no-repeat;
+		min-height: 200px;
+		position: relative;
+		margin-bottom: 1em;
+		background-origin: content-box;
+		width: 100%;
+		top: calc(var(--panel-offset) - 20px);
+		position: absolute;
+		left: auto;
+		right: 0px;
+
+		&:hover {
+			.controls {
+				opacity: 0.8;
+			}
+		}
+
+		.controls {
+			text-align: center;
+			min-height: 200px;
+			line-height: 200px;
+			opacity: 0;
+			.transition(opacity .15s linear);
+			cursor: pointer;
+			pointer-events: none;
+
+			> * {
+				pointer-events: all;
+			}
+
+			.fa {
+				color: white;
+				background-color: #333;
+				opacity: 1;
+				margin: 15px;
+				padding: 5px;
+			}
+		}
+
+		&.active {
+			&:hover {
+				cursor: move;
+			}
+
+			.controls {
+				> * {
+					display: none;
+				}
+			}
+
+			.save {
+				display: inline-block;
+			}
+		}
+
+		&.saving {
+			.save {
+				display: none;
+			}
+
+			.indicator {
+				display: inline-block;
+			}
+		}
+
+		.save, .indicator {
+			display: inline-block;
+			position: absolute;
+			top: 1em;
+			right: 2em;
+			opacity: 1;
+			background-color: @brand-primary;
+			color: @gray-lighter;
+			padding: 0.5em;
+			font-weight: bold;
+
+			&:hover {
+				cursor: pointer;
+			}
+		}
+
+		.save {
+			display: none;
+		}
+
+		.indicator {
+			display: none;
+		}
+	}
+
+	[component="groups/members"] {
+		tbody {
+			max-height: 500px;
+			display:block;
+			overflow-y: auto;
+			.member-name {
+				width: 100%;
+			}
+		}
+	}
+
+	h1 {
+		overflow-wrap: break-word;
+		margin-top: 0;
+	}
+
+	.owner-controls {
+		margin-top: -6px;
+	}
+
+	.post-body {
+		.topic-title, p {
+			overflow-y: hidden;
+			display: block;
+		}
+	}
+
+	@media (min-width: @screen-md-min) {
+		margin-top: 300px;
+
+		[component="groups/cover"] {
+			min-height: 300px;
+
+			.controls {
+				min-height: 300px;
+				line-height: 300px;
+			}
+		}
+	}
+
+	.panel-title {
+		.label {
+			padding: .2em .3em .1em;
+		}
+	}
+
+	.options {
+		.user-title-option span.label {
+			.group-label;
+		}
+	}
+}
+
+.groups.list {
+	[component="groups/summary"] {
+		.panel-body {
+			min-height: 72px;
+		}
+
+		.list-cover {
+			display: block;
+			background-size: cover;
+			min-height: 125px;
+			background-position: 50% 50%;
+			.pointer;
+
+			h3 {
+				background-color: rgba(0,0,0,0.5);
+				display: inline-block;
+				padding: 0.25em 0.5em;
+				color: white;
+				font-weight: bold;
+				text-transform: capitalize;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+				overflow-x: hidden;
+				max-width: 100%;
+			}
+		}
+
+		.members {
+			padding-left: 0;
+
+			> li {
+				list-style-type: none;
+				display: inline-block;
+			}
+
+			.truncated {
+				vertical-align: bottom;
+			}
+		}
+	}
+}

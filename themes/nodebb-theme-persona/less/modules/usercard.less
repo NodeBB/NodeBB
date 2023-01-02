@@ -1,0 +1,65 @@
+.persona-usercard {
+	position: absolute;
+	background: #333;
+	top: -50%;
+	left: 0px;
+	box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.25), 0px 2px 10px 0px rgba(0, 0, 0, 0.25);
+	height: 150px;
+	width: 450px;
+	z-index: 1;
+	display: block;
+
+	a, a:hover, a:visited, a:active {
+		text-decoration: none;
+		color: white;
+	}
+
+	.usercard-picture {
+		width: 150px;
+		height: 150px;
+		float: left;
+		background-size: cover;
+		background-repeat: no-repeat;
+		font-size: 75px;
+		line-height: 140px;
+		text-align: center;
+	}
+
+	.usercard-body {
+		padding: 5px 15px;
+		float: left;
+
+		height: 150px;
+		width: 300px;
+		color: white;
+	}
+
+	.usercard-name {
+		font-size: 28px;
+	}
+
+	.usercard-username {
+		text-transform: uppercase;
+		font-size: 13px;
+	}
+
+	.usercard-info {
+		text-align: center;
+		font-size: 30px;
+		font-weight: 300;
+
+		small {
+			text-transform: uppercase;
+			font-size: 10px;
+			display: block;
+			margin-top: 15px;
+			font-weight: 400;
+		}
+	}
+
+	.persona-fab.btn-morph {
+		top: 75px;
+		right: 15px;
+		position: absolute;
+	}
+}

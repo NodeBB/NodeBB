@@ -1,0 +1,132 @@
+html[data-dir="rtl"] {
+	@import (less) "./bootstrap-flipped.css";
+
+	.home {
+		h4 {
+			text-align: right;
+		}
+	}
+
+	.container {
+		#main-nav {
+			float: right !important;
+		}
+
+		#logged-in-menu, #logged-out-menu {
+			float: left !important;
+		}
+	}
+
+	html[data-dir=rtl] .navbar .dropdown-menu {
+		left: 0;
+		right: auto;
+	}
+
+	.categories > li .card, .category > ul > li .card {
+		border-left: none;
+		border-right: 4px solid #ccc;
+	}
+
+	.categories > li .content .icon, .category > ul > li .content .avatar {
+		margin-left: 15px;
+		margin-right: 0px;
+	}
+
+	.categories .description, .categories .category-children {
+		margin-left: auto;
+		margin-right: 62px;
+	}
+
+	.page-user .posts-list .posts-list-item .user-img {
+		left: 0;
+	}
+
+	.slideout-menu .menu-section-list a, .slideout-menu .menu-section-list button {
+		text-align: right;
+	}
+
+	[component="chat/list"] {
+		.avatar-placeholder, .main-avatar {
+			right: 0;
+			left: auto;
+		}
+
+		.room-name, .teaser-content {
+			padding-right: 80px;
+			padding-left: 0;
+			text-align: right;
+		}
+
+	}
+
+	[component="chat/composer"] {
+		[component="chat/message/remaining"] {
+			right: auto;
+			left: 5.25em;
+		}
+
+		[data-action="send"] {
+			transform: scale(-1, 1);
+		}
+	}
+
+	.chats-full [component="chat/header"] .dropdown .avatar, .chat-modal [component="chat/header"] .dropdown .avatar {
+		margin-right: 0;
+		margin-left: 0.5em;
+	}
+
+	.chats-list > li .teaser-content, .chats-list > li .room-name {
+		padding-left: 0;
+		padding-right: 80px;
+	}
+
+	.chats-list > li {
+		.avatar-placeholder, .main-avatar {
+			left: auto;
+			right: 0;
+		}
+
+		.members {
+			right: 53px;
+			left: auto;
+			padding-left: 0;
+			padding-right: 1rem;
+		}
+	}
+
+	.slideout-menu .chat-list li .teaser-content, .slideout-menu .chat-list li .room-name {
+		padding-right: 60px;
+	}
+
+	.posts-list .posts-list-item {
+		.post-body {
+			border-right: none;
+			border-left: 2px solid @brand-primary;
+		}
+
+		.post-info {
+			left: inherit;
+			right: 100%;
+
+			.post-author {
+				padding-left: 0;
+				padding-right: 25px;
+			}
+		}
+
+		.user-img {
+			margin-right: -14px;
+			margin-left: 0;
+		}
+
+		.content {
+			padding-right: 0;
+			padding-left: 10px;
+		}
+	}
+
+	.persona-usercard {
+		left: inherit;
+		right: 0;
+	}
+}

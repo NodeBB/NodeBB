@@ -1,0 +1,160 @@
+@import "../keyframes";
+
+.modal-unfocused {
+	z-index: @zindex-modal - 5 !important;
+}
+
+.taskbar {
+	display: none;
+	left: 15px;
+	right: auto;
+
+	margin-top: 0;
+	.transition(.15s ease-in opacity);
+
+	background: none;
+	border: none;
+
+	&[data-active="1"] {
+		display: block;
+	}
+
+	&:hover {
+		-moz-opacity: 1;
+		opacity: 1;
+	}
+
+	&.navbar {
+		min-height: 32px;
+	}
+
+	.navbar-nav {
+		float: unset;
+		display: flex;
+		flex-direction: column;
+		padding-right: 15px;
+		padding-bottom: 15px;
+
+		li {
+			margin-top: 1rem;
+
+			&.new a {
+				-webkit-animation-name: bounceIn;
+  				animation-name: bounceIn;
+				-webkit-animation-duration: 1s;
+				animation-duration: 1s;
+				-webkit-animation-fill-mode: both;
+				animation-fill-mode: both;
+			}
+
+			&.active a {
+				&::after {
+					content: '\f06e';
+					font-family: "FontAwesome";
+					font-size: 13px;
+					background: black;
+					border-radius: 50%;
+					color: white;
+					position: absolute;
+					top: 0;
+					right: 0;
+					width: 20px;
+					height: 20px;
+				}
+			}
+
+			&.new a::after {
+				display: none;
+			}
+
+			a {
+				padding: 3px 15px;
+				font-size: 20px;
+
+				&.user-icon {
+					overflow: visible;
+				}
+
+				&:focus, &:hover {
+					color: @gray-lighter;
+				}
+
+				border-radius: 50%;
+				height: 50px;
+				width: 50px;
+
+				> span {
+					display: none;
+				}
+
+				-webkit-animation-name: bounceIn;
+  				animation-name: bounceIn;
+  				-webkit-animation-duration: 1s;
+				animation-duration: 1s;
+				-webkit-animation-fill-mode: both;
+				animation-fill-mode: both;
+			}
+
+			img {
+				max-width: 24px;
+				max-height: 24px;
+				margin-right: 1em;
+			}
+
+			&.pulse a {
+				-webkit-animation-name: bounceIn;
+  				animation-name: bounceIn;
+				-webkit-animation-duration: 1s;
+				animation-duration: 1s;
+				-webkit-animation-fill-mode: both;
+				animation-fill-mode: both;
+			}
+
+			&.taskbar-composer {
+				a, a:hover, a:focus, a:active {
+					background-color: #f44336;
+					background-size: cover;
+				}
+			}
+
+			&.taskbar-chat {
+				a, a:hover, a:focus, a:active {
+					background: @brand-primary;
+				}
+
+				&.new:after {
+					content: attr(data-content);
+					position: absolute;
+					left: 52px;
+					top: 0px;
+					font-size: 10px;
+					text-align: center;
+					border: 1px solid #890405;
+					color: #fff;
+					font-weight: bold;
+					min-width: 20px;
+					.border-radius(4px);
+					background: #c91106;
+					padding: 1px 2px;
+					font-family: @font-family-sans-serif;
+				}
+
+				&.new[data-content="0"]:after {
+					display: none;
+				}
+			}
+
+			&.taskbar-composer, &.taskbar-chat {
+				a {
+					text-align: center;
+
+					i {
+						font-size: 18px;
+						line-height: 42px;
+						color: #FFF;
+					}
+				}
+			}
+		}
+	}
+}

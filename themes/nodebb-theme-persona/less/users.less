@@ -1,0 +1,73 @@
+.users {
+
+	&.admin {
+		#users-container {
+			padding: 0;
+		}
+
+		.users-box{
+			display: inline-block;
+			margin-top: 20px;
+			text-align: center;
+			vertical-align: top;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			overflow: hidden;
+			height: auto;
+			max-width: 125px;
+
+			img {
+				width:80px;
+				height:80px;
+			}
+
+			a {
+				margin-bottom:5px;
+			}
+		}
+	}
+}
+
+.users-container {
+	padding: 0;
+	list-style-type: none;
+
+	li {
+		padding-bottom: 10px;
+	}
+
+	.users-box{
+		display: inline-block;
+		margin-top: 20px;
+		text-align: center;
+		vertical-align: top;
+		width: 104px;
+
+		a {
+			max-width: 94px;
+			text-overflow: ellipsis;
+			overflow: hidden;
+			white-space: nowrap;
+		}
+	}
+
+	.user-info {
+		>span {
+			max-width: 94px;
+			text-overflow: ellipsis;
+			overflow: hidden;
+			white-space: nowrap;
+			display: inline-block;
+		}
+	}
+
+	.user-img {
+		.user-icon-style(20px, 1rem, 50%);
+		vertical-align: middle;
+	}
+
+	.anon-user .avatar {
+		background: @gray-lighter;
+		color: white;
+	}
+}

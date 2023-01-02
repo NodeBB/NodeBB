@@ -70,3 +70,14 @@ package-lock.json
 *.mongodb
 link-plugins.sh
 test.sh
+
+# Theme ignore
+theme/*.css
+!theme/less/bootstrap-flipped.css
+theme/npm-debug.log
+theme/sftp-config.json
+theme/*.sublime-project
+theme/*.sublime-workspace
+theme/.idea
+theme/.vscode
+theme/node_modules/

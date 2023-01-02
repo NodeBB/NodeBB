@@ -1,0 +1,235 @@
+.categories, .category > ul {
+	list-style-type: none;
+	padding: 0;
+
+	> li {
+
+		padding-bottom: 10px;
+
+		@media (max-width: @screen-xs-max) {
+			border-top: 1px solid @gray-lighter;
+			&:last-child {
+				border-bottom: 1px solid @gray-lighter;
+			};
+		}
+
+		min-height: 53px;
+
+		.content {
+			padding: 10px 15px;
+
+			.icon {
+				font-size: 17px;
+				line-height: 17px;
+				padding: 13px;
+				border-radius: 50%;
+				margin-right: 15px;
+				min-width: 46px;
+				min-height: 46px;
+				margin-top: 2px;
+			}
+
+			img, .user-icon {
+				.user-icon-style(46px, 2.4rem, 50%);
+			}
+
+			h2 {
+				display: block;
+				word-wrap: break-word;
+				overflow: hidden;
+				font-size: 18px;
+				line-height: 22px;
+				margin: 0;
+				margin-left: 62px;
+
+				strong {
+					color: @gray-dark;
+				}
+			}
+		}
+
+		@media (max-width: 500px) {
+			.teaser {
+				position: absolute;
+				right: 4px;
+			}
+		}
+
+		.mobile-stat {
+			padding-left: 0px;
+			padding-top: 10px;
+			font-size: 16px;
+		}
+
+		.card {
+			border-left: 4px solid #ccc;
+			text-align: left;
+			margin-top: 10px;
+			overflow: hidden;
+			height: 53px;
+			font-size: 12px;
+			line-height: 14px;
+
+			> * {
+				padding-left: 20px;
+			}
+
+			img {
+				border-radius: 50%;
+				width: 24px;
+				height: 24px;
+			}
+
+			p {
+				margin: 0;
+				.emoji {
+					max-width: 12px;
+					max-height: 12px;
+				}
+			}
+
+			.post-content {
+				overflow: hidden;
+				blockquote {
+					display: none;
+				}
+			}
+
+			.user-icon {
+				display: inline-block;
+				.user-icon-style(24px, 1.5rem, 50%);
+			}
+		}
+
+		.category-children {
+			.category-children-item {
+				margin-right: 10px;
+				margin-bottom: 1px;
+			}
+			.icon {
+				min-width: 23px;
+				min-height: 23px;
+				font-size: 10px;
+				line-height: 12px;
+				padding: 5px;
+				margin-right: 5px;
+			}
+		}
+
+		[component="topic/header"] > i[component="topic/pinned"] {
+			color: @brand-danger;
+		}
+	}
+
+	&.ui-sortable > li .content h2 {
+		> [component="topic/pinned"] {
+			&:after {
+				position: absolute;
+				top: 0.5rem;
+				left: calc(62px + 2rem);
+				width: 4rem;
+				height: 3rem;
+				background: rgba(0, 0, 0, 0.5);
+				color: rgba(255, 255, 255, 0.9);
+				font-family: "FontAwesome";
+				content: "\f07d  \f255";
+				text-align: center;
+				font-size: 1.5rem;
+				padding-top: 0.66rem;
+				cursor: move;
+				opacity: 0;
+
+				-webkit-transition: opacity 100ms linear;
+				-moz-transition: opacity 100ms linear;
+				-ms-transition: opacity 100ms linear;
+				-o-transition: opacity 100ms linear;
+				transition: opacity 100ms linear;
+			}
+		}
+
+		&:hover {
+			> [component="topic/pinned"] {
+				&:after {
+					opacity: 1;
+				}
+			}
+		}
+	}
+}
+
+
+.category-header {
+	width: 100%;
+	height: 110px;
+	text-align: center;
+	margin: 0;
+	padding-top:25px;
+	.pointer;
+	margin-bottom: 10px;
+	overflow:hidden;
+
+	&:hover {
+		filter: brightness(115%);
+		-webkit-filter: brightness(115%);
+	}
+
+	.category-box {
+		height:90px;
+
+		.post-preview {
+			padding-left:10px;
+			padding-right:10px;
+			text-align:left;
+			img {
+				width:60px;
+				height:60px;
+				padding-right:5px;
+			}
+
+			p {
+				overflow: hidden;
+				text-overflow:ellipsis;
+				height:60px;
+			}
+		}
+	}
+}
+
+.category-header-image-auto {
+	-webkit-background-size: auto!important;
+	-moz-background-size: auto!important;
+	-o-background-size: auto!important;
+	background-size: auto!important;
+	background-position: 0% 0% !important;
+}
+
+.category-header-image-cover {
+	-webkit-background-size: cover!important;
+	-moz-background-size: cover!important;
+	-o-background-size: cover!important;
+	background-size: cover!important;
+	background-position: center!important;
+}
+
+.category-header-image-contain {
+	-webkit-background-size: contain!important;
+	-moz-background-size: contain!important;
+	-o-background-size: contain!important;
+	background-size: contain!important;
+	background-position: center!important;
+}
+
+
+.stats {
+	font-size: 20px;
+	text-align: center;
+	margin-top: 10px;
+	line-height: 22px;
+
+	small {
+		text-transform: uppercase;
+		color: @gray-light;
+		font-weight: 300;
+		font-size: 12px;
+	}
+}

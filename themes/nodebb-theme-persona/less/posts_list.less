@@ -1,0 +1,131 @@
+.posts-list {
+	list-style-type: none;
+	padding-left: 0px;
+
+	.posts-list-item {
+		@icon-radius: 14px;
+		width: 100%;
+		margin-bottom: 0px;
+
+		&.deleted {
+			-moz-opacity: 0.30;
+			opacity: 0.30;
+		}
+
+		&.scheduled {
+			opacity: 0.7;
+		}
+
+		.user-img {
+			.user-icon-style(@icon-radius * 2px, 1.5rem, 50%);
+			position: absolute;
+			top: 50%;
+			margin-top: -1 * @icon-radius;
+			margin-left: -1 * @icon-radius;
+		}
+
+		a {
+			span {
+				overflow: hidden;
+				height: 16px;
+				padding-left: 8px;
+			}
+		}
+
+		.topic-title {
+			color: @gray-dark;
+			font-weight: 900;
+			font-size: 125%;
+			text-decoration: underline;
+		}
+
+		.topic-category {
+			text-transform: uppercase;
+			font-size: 10px;
+			color: lighten(@gray-base, 65%);
+			margin-top: 6px;
+			margin-right: 10px;
+			margin-bottom: 25px;
+			display: inline-block;
+			margin-top: 10px;
+
+			a {
+				font-weight: 900;
+				color: @gray-light;
+			}
+		}
+
+		.content {
+			max-height: 240px;
+			position: relative;
+			clear: left;
+			display: block;
+			overflow: hidden;
+			padding-right: 10px;
+			margin-top: 5px;
+			clear: both;
+
+			h1, h2, h3, h4, h5, h6 {
+				margin: 0;
+				font-size: 100%;
+			}
+
+			blockquote {
+				font-size: 100%;
+				margin: 8px 0;
+				padding: 0 10px;
+			}
+
+			p {
+				margin: 0 0 2px;
+			}
+		}
+
+		.post-body {
+			border-right: 2px solid @brand-primary;
+			min-height: 100px;
+		}
+
+		.post-info {
+			position: absolute;
+			top: 50%;
+			left: 100%;
+			width: 175px;
+			height: 28px;
+			font-size: 10px;
+
+			> a {
+				position: relative;
+				.user-img {
+					margin-top: -3px;
+					text-align: center;
+					padding: 0;
+				}
+			}
+
+			.post-author {
+				padding-left: 25px;
+				color: lighten(@gray-base, 65%);
+
+				a {
+					color: @gray-light;
+					font-weight: 900;
+
+				}
+
+				text-transform: uppercase;
+			}
+		}
+	}
+}
+
+.posts-list.diffs .posts-list-item .content {
+	max-height: inherit;
+	overflow-y: none;
+}
+
+@media (max-width: @screen-sm-min) {
+	.posts-list .posts-list-item .post-info {
+		width: 100px;
+	}
+}

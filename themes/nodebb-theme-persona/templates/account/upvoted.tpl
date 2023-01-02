@@ -1,0 +1,1 @@
+<!-- IMPORT account/posts.tpl -->

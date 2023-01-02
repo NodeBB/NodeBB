@@ -1,0 +1,76 @@
+.page-register-complete {
+	.tos {
+		background: @body-bg;
+		color: @text-color;
+		max-height: 350px;
+		margin-top: 5px;
+		overflow-y: scroll;
+		padding: 15px;
+		font-size: 1.25rem;
+		line-height: 2rem;
+	}
+}
+
+.register-block {
+	margin-top: 15px;
+
+	.help-block {
+		font-size: 13px;
+	}
+
+	.register-success {
+		.form-control {
+			border-color: #5cb85c;
+			background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath fill='%235cb85c' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3E%3C/svg%3E");
+			padding-right: 2.25rem;
+		    background-repeat: no-repeat;
+		    background-position: center right .625rem;
+		    -webkit-background-size: 1.25rem 1.25rem;
+		    background-size: 1.25rem 1.25rem;
+		}
+
+		.register-feedback {
+			color: #5cb85c;
+			display: block;
+			margin-top: .25rem;
+		}
+	}
+
+	.register-danger {
+		.form-control {
+			border-color: #d9534f;
+			background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23d9534f' viewBox='-2 -2 7 7'%3E%3Cpath stroke='%23d9534f' d='M0 0l3 3m0-3L0 3'/%3E%3Ccircle r='.5'/%3E%3Ccircle cx='3' r='.5'/%3E%3Ccircle cy='3' r='.5'/%3E%3Ccircle cx='3' cy='3' r='.5'/%3E%3C/svg%3E");
+			padding-right: 2.25rem;
+		    background-repeat: no-repeat;
+		    background-position: center right .625rem;
+		    -webkit-background-size: 1.25rem 1.25rem;
+		    background-size: 1.25rem 1.25rem;
+		}
+
+		.register-feedback {
+			color: #d9534f;
+			display: block;
+			margin-top: .25rem;
+		}
+	}
+}
+
+.login-block {
+	margin-top: 15px;
+
+	#login {
+		margin-bottom: 10px;
+	}
+}
+
+.register-block, .login-block {
+	#caps-lock-warning {
+		margin-top: 10px;
+	}
+}
+
+@media (max-width: @screen-xs-max) {
+	.alt-login-block {
+		margin-bottom: 20px;
+	}
+}

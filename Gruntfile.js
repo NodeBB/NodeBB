@@ -49,9 +49,6 @@ module.exports = function (grunt) {
 			if (!pluginList.includes('nodebb-plugin-composer-default')) {
 				pluginList.push('nodebb-plugin-composer-default');
 			}
-			if (!pluginList.includes('nodebb-theme-persona')) {
-				pluginList.push('nodebb-theme-persona');
-			}
 		}
 
 		const styleUpdated_Client = pluginList.map(p => `node_modules/${p}/*.less`)

@@ -1,0 +1,172 @@
+.no-select {
+	.user-select(none);
+}
+
+.pointer {
+	cursor: pointer;
+	*cursor: hand;
+}
+
+.inline-block {
+	display: inline-block;
+	*display: inline;
+	zoom: 1;
+}
+
+.clear {
+	clear: both;
+}
+
+.zebra {
+	&:nth-child(even) {
+		background: rgba(191,191,191,0.2);
+	}
+
+	&:nth-child(odd) {
+		background: rgba(223,223,223,0.2);
+	}
+}
+
+.border-radius (@radius: 5px) {
+	-webkit-border-radius: @radius;
+	-moz-border-radius: @radius;
+	-ms-border-radius: @radius;
+	-o-border-radius: @radius;
+	border-radius: @radius;
+}
+
+.text-ellipsis {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.timeline-style {
+	> [component="post"], .timeline-event {
+		position: relative;	// for absolutely positioned pseudo-element, below
+		border-left: 2px solid lighten(@brand-primary, 30%);
+		margin-left: 2.5rem;
+
+		&:not(:last-child) {
+			padding-bottom: @post-padding;
+		}
+		&:not(:first-child) {
+			padding-top: @post-padding;
+		}
+
+		> div:not(.content) {
+			margin-left: -2.5rem;
+		}
+
+		.icon .avatar, .timeline-badge {
+			// Opaque ring
+			position: relative;
+			z-index: 1;
+			box-shadow: 0 0 0 .5rem @body-bg;
+		}
+	}
+
+	@media (max-width: @screen-sm-max) {
+		[component="post"] {
+			border: 0;
+			padding: @post-padding 0;
+
+			margin-left: initial;
+			> div:not(.content) {
+				margin-left: 0;
+			}
+		}
+
+		[component="post"]:last-child:after {
+			display: none;
+		}
+
+		.timeline-event {
+			margin-left: 1rem;
+
+			&:before, &+:not(.timeline-event):before {
+				content: '';
+				width: 1rem;
+				position: absolute;
+				top: 0;
+				left: calc(-0.5rem - 1px);
+				border-bottom: 2px solid lighten(@brand-primary, 30%);
+			}
+
+			&+:not(.timeline-event):before {
+				left: calc(.5rem + 1px);
+			}
+
+			&+.timeline-event:before {
+				display: none;
+			}
+
+			.timeline-text.timeago {
+				display: none;
+			}
+		}
+	}
+
+	@media (min-width: @screen-sm) {
+		.timeline-event {
+			[component="topic/event/delete"] {
+				visibility: hidden;
+			}
+
+			&:hover {
+				[component="topic/event/delete"] {
+					visibility: visible;
+
+					&:hover {
+						color: @brand-danger;
+					}
+				}
+			}
+		}
+	}
+
+	.necro-post {
+		border-left-style: dashed;
+	}
+
+	[component="post"]:last-child:after {
+		content: '';
+		width: 1rem;
+		position: absolute;
+		bottom: 0;
+		left: calc(-0.5rem - 1px);
+		border-bottom: 2px solid lighten(@brand-primary, 30%);
+	}
+
+	[component="topic/event"], [component="topic/necro-post"] {
+		&.timeline-event {
+			text-align: left;
+			justify-content: left;
+			font-size: 1em;
+
+			.timeline-badge {
+				float: left;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				flex-shrink: 0;
+
+				width: 32px;
+				height: 32px;
+				padding: 0;
+				margin-left: -17px;
+				margin-right: 17px;
+				color: lighten(@brand-primary, 30%);
+				background-color: @body-bg;
+				border: 2px solid lighten(@brand-primary, 30%);
+				border-radius: 50%;
+			}
+
+			.timeline-text {
+				line-height: 32px;
+				text-transform: initial;
+				color: rgba(127,127,127,.5);
+			}
+		}
+	}
+}

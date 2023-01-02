@@ -1,0 +1,18 @@
+.footer {
+	text-align: center;
+	-webkit-transition: opacity 200ms linear;
+	-moz-transition: opacity 200ms linear;
+	-ms-transition: opacity 200ms linear;
+	-o-transition: opacity 200ms linear;
+	transition: opacity 200ms linear;
+
+	.copyright {
+		padding-bottom: 10px;
+	}
+
+	&.ajaxifying {
+		-moz-opacity: 0.00;
+		opacity: 0.00;
+		-ms-filter:~"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+	}
+}

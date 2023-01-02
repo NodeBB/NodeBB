@@ -1,0 +1,83 @@
+@import "mixins";
+
+noscript {
+	.default {
+		list-style-type: none;
+		padding: 1em;
+		margin-bottom: 1em;
+		.zebra;
+	}
+
+	.categories {
+		li {
+			.default;
+
+			.icon {
+				float: left;
+				width: auto;
+				height: auto;
+				padding: 0;
+				margin: 0;
+				margin-right: 1em;
+			}
+
+			a {
+				font-size: 20px;
+			}
+		}
+	}
+
+	.topics {
+		li {
+			.default;
+		}
+
+		.timestamp {
+			float: right;
+			color: #999;
+			font-style: italic;
+			font-size: 12px;
+		}
+
+		.teaser {
+			margin-left: 16px;
+			margin-top: 8px;
+
+			img {
+				float: left;
+				width: 64px;
+				margin-right: 1em;
+			}
+
+			p {
+				color: #666;
+				font-size: 13px;
+				text-overflow: ellipsis;
+				overflow: hidden;
+				white-space: nowrap;
+				margin-left: 64px;
+				padding-top: 10px;
+			}
+		}
+	}
+
+	.posts {
+		li {
+			.default;
+
+			.profile {
+				text-align: center;
+
+				img {
+					width: 64px;
+				}
+
+				span {
+					font-weight: bold;
+					display: inline-block;
+					margin-top: 1em;
+				}
+			}
+		}
+	}
+}
