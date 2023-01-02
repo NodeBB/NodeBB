@@ -10,6 +10,7 @@ const config = path.join(baseDir, 'config.json');
 const currentPackage = path.join(baseDir, 'package.json');
 const installPackage = path.join(baseDir, 'install/package.json');
 const nodeModules = path.join(baseDir, 'node_modules');
+const themes = path.join(baseDir, 'themes');
 
 exports.paths = {
 	baseDir,
@@ -20,6 +21,7 @@ exports.paths = {
 	currentPackage,
 	installPackage,
 	nodeModules,
+	themes
 };
 
 exports.pluginNamePattern = /^(@[\w-]+\/)?nodebb-(theme|plugin|widget|rewards)-[\w-]+$/;

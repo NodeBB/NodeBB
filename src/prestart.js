@@ -51,7 +51,7 @@ function loadConfig(configFile) {
 
 	nconf.defaults({
 		base_dir: paths.baseDir,
-		themes_path: paths.nodeModules,
+		themes_path: paths.themes,
 		upload_path: 'public/uploads',
 		views_dir: path.join(paths.baseDir, 'build/public/templates'),
 		version: pkg.version,
@@ -73,7 +73,6 @@ function loadConfig(configFile) {
 	nconf.set('runJobs', nconf.get('isPrimary') && !nconf.get('jobsDisabled'));
 
 	// Ensure themes_path is a full filepath
-	nconf.set('themes_path', 'themes');
 	nconf.set('themes_path', path.resolve(paths.baseDir, nconf.get('themes_path')));
 	nconf.set('core_templates_path', path.join(paths.baseDir, 'src/views'));
 	nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-persona/templates'));
