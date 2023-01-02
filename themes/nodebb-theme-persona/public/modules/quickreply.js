@@ -18,11 +18,6 @@ define('persona/quickreply', [
 				style: {
 					'z-index': 100,
 				},
-				// listPosition: function(position) {
-				// 	this.$el.css(this._applyPlacement(position));
-				// this.$el.css('position', 'absolute');
-				// return this;
-				// }
 			},
 		};
 

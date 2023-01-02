@@ -21,7 +21,7 @@ exports.paths = {
 	currentPackage,
 	installPackage,
 	nodeModules,
-	themes
+	themes,
 };
 
 exports.pluginNamePattern = /^(@[\w-]+\/)?nodebb-(theme|plugin|widget|rewards)-[\w-]+$/;
