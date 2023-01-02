@@ -39,7 +39,7 @@ try {
 nconf.file({ file: path.join(__dirname, '../../config.json') });
 nconf.defaults({
 	base_dir: path.join(__dirname, '../..'),
-	themes_path: path.join(__dirname, '../../node_modules'),
+	themes_path: path.join(__dirname, '../../themes'),
 	upload_path: 'test/uploads',
 	views_dir: path.join(__dirname, '../../build/public/templates'),
 	relative_path: '',
