@@ -143,6 +143,8 @@ describe.only('locks', () => {
 		await assert.rejects(Promise.all([
 			socketUser.reset.send({ uid: 0 }, email),
 			socketUser.reset.send({ uid: 0 }, email),
-		]));
+		]), {
+			message: '[[error:reset-rate-limited]]',
+		});
 	});
 });

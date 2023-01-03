@@ -40,10 +40,21 @@ UserReset.generate = async function (uid) {
 };
 
 async function canGenerate(uid) {
+	await lockReset(uid, '[[error:reset-rate-limited]]');
+
 	const score = await db.sortedSetScore('reset:issueDate:uid', uid);
 	if (score > Date.now() - (1000 * 60)) {
 		throw new Error('[[error:reset-rate-limited]]');
 	}
+}
+
+async function lockReset(uid, error) {
+	const value = `reset${uid}`;
+	const count = await db.incrObjectField('locks', value);
+	if (count > 1) {
+		throw new Error(error);
+	}
+	return value;
 }
 
 UserReset.send = async function (email) {
@@ -150,7 +161,10 @@ UserReset.cleanByUid = async function (uid) {
 	}
 
 	winston.verbose(`[UserReset.cleanByUid] Found ${tokensToClean.length} token(s), removing...`);
-	await cleanTokensAndUids(tokensToClean);
+	await Promise.all([
+		cleanTokensAndUids(tokensToClean),
+		db.deleteObjectField('locks', `reset${uid}`),
+	]);
 };
 
 async function cleanTokensAndUids(tokens) {
