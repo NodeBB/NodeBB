@@ -88,6 +88,7 @@
     "category-not-selected": "Kategoria nuk është zgjedhur.",
     "too-many-posts": "Mund të postoni vetëm një herë në %1 sekond(a) - ju lutemi prisni përpara se të postoni përsëri",
     "too-many-posts-newbie": "Si përdorues i ri, ju mund të postoni vetëm një herë në %1 sekond(a) derisa të keni fituar %2 reputacion - ju lutemi prisni përpara se të postoni përsëri",
+    "already-posting": "You are already posting",
     "tag-too-short": "Ju lutemi vendosni një tag më të gjatë. Tag-et duhet të përmbajnë të paktën %1 karakter(e)",
     "tag-too-long": "Ju lutemi vendosni një tag më të shkurtër. Tag-et nuk mund të jenë më të gjata se %1 karakter(e)",
     "not-enough-tags": "Numër jo i mjaftueshëm i tag-eve. Temat duhet të kenë të paktën %1 tag(-e)",

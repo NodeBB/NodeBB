@@ -88,6 +88,7 @@
     "category-not-selected": "Category not selected.",
     "too-many-posts": "Objavljate lahko na %1 s - prosimo, počakajte pred novo objavo.",
     "too-many-posts-newbie": "Kot nov uporabnik lahko objavljate le na %1 s, dokler ne dosežete ugled vsaj %2 - prosimo, počakajte pred novo objavo.",
+    "already-posting": "You are already posting",
     "tag-too-short": "Prosimo, vnesite daljšo oznako. Obvezno število znakov: vsaj %1.",
     "tag-too-long": "Prosimo, vnesite krajšo oznako. Največje število znakov: %1.",
     "not-enough-tags": "Ni dovolj oznak. Obvezno število oznak: %1. ",

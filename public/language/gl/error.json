@@ -88,6 +88,7 @@
     "category-not-selected": "Categoría non seleccionada",
     "too-many-posts": "Só podes postear unha vez cada %1 segundo(s) - por favor agarda antes de publicar de novo.",
     "too-many-posts-newbie": "Como novo usuario, só podes publicar unha vez cada %1 segundo(s) ata que acades %2 de reputación -por favor, agarda para publicar de novo.",
+    "already-posting": "You are already posting",
     "tag-too-short": "Por favor, introduce unha etiqueta máis longa. As etiquetas deben conter %1 carácter(es) como mínimo.",
     "tag-too-long": "Por favor, introduce unha etiqueta máis curta. As etiquetas non poden conter máis de %1 carácter(es).",
     "not-enough-tags": "Non hai etiquetas dabondas. Os temas deben ter %1 etiqueta(s) como mínimo.",

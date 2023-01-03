@@ -88,6 +88,7 @@
     "category-not-selected": "Categorie niet geselecteerd ",
     "too-many-posts": "Het is slechts toegestaan iedere %1 seconde(n) een bericht te plaatsen - wacht even voordat opnieuw een bericht verzonden wordt",
     "too-many-posts-newbie": "Nieuwe gebruikersaccounts zoals deze zijn begrensd en mogen slechts iedere %1 seconde(n) berichten plaatsen, tot het moment dat %2 reputatie verdiend is - wacht daarom even met opnieuw een bericht te plaatsten",
+    "already-posting": "You are already posting",
     "tag-too-short": "Geef een tag op die uit meer tekens bestaat. Tags dienen uit minimaal %1 teken(s) te bestaan.",
     "tag-too-long": "Geef een kortere tag op. Tags mogen niet langer dan %1 teken(s) zijn",
     "not-enough-tags": "Niet genoeg labels. Onderwerp moeten tenminste %1 label(s) hebben",

@@ -88,6 +88,7 @@
     "category-not-selected": "Nebyla vybrána kategorie.",
     "too-many-posts": "Můžete přispívat jednou za %1 sekund - vyčkejte tedy, než vytvoříte další příspěvek",
     "too-many-posts-newbie": "Jako nový uživatel, můžete přispívat jednou za %1 sekund, dokud nezískáte pověst %2 - vyčkejte tedy, než vytvoříte další příspěvek",
+    "already-posting": "You are already posting",
     "tag-too-short": "Zadejte delší značku. Značky by měli mít alespoň %1 znaků",
     "tag-too-long": "Zadejte kratší značku. Značky nesmí být delší než %1 znaků",
     "not-enough-tags": "Málo značek. Téma musí obsahovat alespoň %1 značek",
