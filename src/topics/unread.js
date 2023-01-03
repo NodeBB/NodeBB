@@ -67,7 +67,7 @@ module.exports = function (Topics) {
 		}
 
 		const data = await getTids(params);
-		if (uid <= 0 || !data.tids || !data.tids.length) {
+		if (uid <= 0) {
 			return data;
 		}
 
