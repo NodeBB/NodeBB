@@ -17,6 +17,8 @@ const UserReset = module.exports;
 
 const twoHours = 7200000;
 
+UserReset.minSecondsBetweenEmails = 60;
+
 UserReset.validate = async function (code) {
 	const uid = await db.getObjectField('reset:uid', code);
 	if (!uid) {
@@ -39,14 +41,28 @@ UserReset.generate = async function (uid) {
 	return code;
 };
 
-async function canGenerate(uid) {
-	await lockReset(uid, '[[error:reset-rate-limited]]');
-
-	const score = await db.sortedSetScore('reset:issueDate:uid', uid);
-	if (score > Date.now() - (1000 * 60)) {
-		throw new Error('[[error:reset-rate-limited]]');
+UserReset.send = async function (email) {
+	const uid = await user.getUidByEmail(email);
+	if (!uid) {
+		throw new Error('[[error:invalid-email]]');
 	}
-}
+	await lockReset(uid, '[[error:reset-rate-limited]]');
+	try {
+		await canGenerate(uid);
+		await db.sortedSetAdd('reset:issueDate:uid', Date.now(), uid);
+		const code = await UserReset.generate(uid);
+		await emailer.send('reset', uid, {
+			reset_link: `${nconf.get('url')}/reset/${code}`,
+			subject: '[[email:password-reset-requested]]',
+			template: 'reset',
+			uid: uid,
+		}).catch(err => winston.error(`[emailer.send] ${err.stack}`));
+
+		return code;
+	}  finally {
+		db.deleteObjectField('locks', `reset${uid}`);
+	}
+};
 
 async function lockReset(uid, error) {
 	const value = `reset${uid}`;
@@ -57,23 +73,12 @@ async function lockReset(uid, error) {
 	return value;
 }
 
-UserReset.send = async function (email) {
-	const uid = await user.getUidByEmail(email);
-	if (!uid) {
-		throw new Error('[[error:invalid-email]]');
+async function canGenerate(uid) {
+	const score = await db.sortedSetScore('reset:issueDate:uid', uid);
+	if (score > Date.now() - (UserReset.minSecondsBetweenEmails * 1000)) {
+		throw new Error('[[error:reset-rate-limited]]');
 	}
-	await canGenerate(uid);
-	await db.sortedSetAdd('reset:issueDate:uid', Date.now(), uid);
-	const code = await UserReset.generate(uid);
-	await emailer.send('reset', uid, {
-		reset_link: `${nconf.get('url')}/reset/${code}`,
-		subject: '[[email:password-reset-requested]]',
-		template: 'reset',
-		uid: uid,
-	}).catch(err => winston.error(`[emailer.send] ${err.stack}`));
-
-	return code;
-};
+}
 
 UserReset.commit = async function (code, password) {
 	user.isPasswordValid(password);

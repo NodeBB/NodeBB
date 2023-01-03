@@ -147,4 +147,21 @@ describe.only('locks', () => {
 			message: '[[error:reset-rate-limited]]',
 		});
 	});
+
+	it('should properly unlock user reset', async() => {
+		const username = 'multiple';
+		const uid = await user.create({ username, password: '123456' });
+		const email = `${username}@nodebb.org`;
+		await user.setUserField(uid, 'email', email);
+		await user.email.confirmByUid(uid);
+		await user.reset.send(email);
+		await assert.rejects(user.reset.send(email), {
+			message: '[[error:reset-rate-limited]]'
+		});
+		user.reset.minSecondsBetweenEmails = 3;
+		const sleep = ms => new Promise(r => setTimeout(r, ms));
+		await sleep(4 * 1000); // wait 4 seconds
+		await user.reset.send(email);
+		user.reset.minSecondsBetweenEmails = 60;
+	});
 });
