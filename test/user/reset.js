@@ -148,7 +148,7 @@ describe.only('locks', () => {
 		});
 	});
 
-	it('should properly unlock user reset', async() => {
+	it('should properly unlock user reset', async () => {
 		const username = 'multiple';
 		const uid = await user.create({ username, password: '123456' });
 		const email = `${username}@nodebb.org`;
@@ -156,10 +156,11 @@ describe.only('locks', () => {
 		await user.email.confirmByUid(uid);
 		await user.reset.send(email);
 		await assert.rejects(user.reset.send(email), {
-			message: '[[error:reset-rate-limited]]'
+			message: '[[error:reset-rate-limited]]',
 		});
 		user.reset.minSecondsBetweenEmails = 3;
-		const sleep = ms => new Promise(r => setTimeout(r, ms));
+		const util = require('util');
+		const sleep = util.promisify(setTimeout);
 		await sleep(4 * 1000); // wait 4 seconds
 		await user.reset.send(email);
 		user.reset.minSecondsBetweenEmails = 60;

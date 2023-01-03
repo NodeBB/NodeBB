@@ -59,7 +59,7 @@ UserReset.send = async function (email) {
 		}).catch(err => winston.error(`[emailer.send] ${err.stack}`));
 
 		return code;
-	}  finally {
+	} finally {
 		db.deleteObjectField('locks', `reset${uid}`);
 	}
 };
