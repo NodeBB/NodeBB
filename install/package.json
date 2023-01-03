@@ -157,7 +157,7 @@
         "eslint-plugin-import": "2.26.0",
         "grunt": "1.5.3",
         "grunt-contrib-watch": "1.1.0",
-        "husky": "8.0.2",
+        "husky": "8.0.3",
         "jsdom": "20.0.3",
         "lint-staged": "13.1.0",
         "mocha": "10.2.0",
