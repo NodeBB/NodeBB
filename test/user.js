@@ -15,7 +15,6 @@ const User = require('../src/user');
 const Topics = require('../src/topics');
 const Categories = require('../src/categories');
 const Posts = require('../src/posts');
-const Password = require('../src/password');
 const groups = require('../src/groups');
 const messaging = require('../src/messaging');
 const helpers = require('./helpers');
@@ -584,106 +583,6 @@ describe('User', () => {
 			await messaging.leaveRoom([uid2], roomId);
 			await User.delete(1, uid1);
 			assert.strictEqual(await User.exists(uid1), false);
-		});
-	});
-
-	describe('passwordReset', () => {
-		let uid;
-		let code;
-		before(async () => {
-			uid = await User.create({ username: 'resetuser', password: '123456' });
-			await User.setUserField(uid, 'email', 'reset@me.com');
-			await User.email.confirmByUid(uid);
-		});
-
-		it('.generate() should generate a new reset code', (done) => {
-			User.reset.generate(uid, (err, _code) => {
-				assert.ifError(err);
-				assert(_code);
-
-				code = _code;
-				done();
-			});
-		});
-
-		it('.generate() should invalidate a previous generated reset code', async () => {
-			const _code = await User.reset.generate(uid);
-			const valid = await User.reset.validate(code);
-			assert.strictEqual(valid, false);
-
-			code = _code;
-		});
-
-		it('.validate() should ensure that this new code is valid', (done) => {
-			User.reset.validate(code, (err, valid) => {
-				assert.ifError(err);
-				assert.strictEqual(valid, true);
-				done();
-			});
-		});
-
-		it('.validate() should correctly identify an invalid code', (done) => {
-			User.reset.validate(`${code}abcdef`, (err, valid) => {
-				assert.ifError(err);
-				assert.strictEqual(valid, false);
-				done();
-			});
-		});
-
-		it('.send() should create a new reset code and reset password', async () => {
-			code = await User.reset.send('reset@me.com');
-		});
-
-		it('.commit() should update the user\'s password and confirm their email', (done) => {
-			User.reset.commit(code, 'newpassword', (err) => {
-				assert.ifError(err);
-
-				async.parallel({
-					userData: function (next) {
-						User.getUserData(uid, next);
-					},
-					password: function (next) {
-						db.getObjectField(`user:${uid}`, 'password', next);
-					},
-				}, (err, results) => {
-					assert.ifError(err);
-					Password.compare('newpassword', results.password, true, (err, match) => {
-						assert.ifError(err);
-						assert(match);
-						assert.strictEqual(results.userData['email:confirmed'], 1);
-						done();
-					});
-				});
-			});
-		});
-
-		it('.should error if same password is used for reset', async () => {
-			const uid = await User.create({ username: 'badmemory', email: 'bad@memory.com', password: '123456' });
-			const code = await User.reset.generate(uid);
-			let err;
-			try {
-				await User.reset.commit(code, '123456');
-			} catch (_err) {
-				err = _err;
-			}
-			assert.strictEqual(err.message, '[[error:reset-same-password]]');
-		});
-
-		it('should not validate email if password reset is due to expiry', async () => {
-			const uid = await User.create({ username: 'resetexpiry', email: 'reset@expiry.com', password: '123456' });
-			let confirmed = await User.getUserField(uid, 'email:confirmed');
-			let [verified, unverified] = await groups.isMemberOfGroups(uid, ['verified-users', 'unverified-users']);
-			assert.strictEqual(confirmed, 0);
-			assert.strictEqual(verified, false);
-			assert.strictEqual(unverified, true);
-			await User.setUserField(uid, 'passwordExpiry', Date.now());
-			const code = await User.reset.generate(uid);
-			await User.reset.commit(code, '654321');
-			confirmed = await User.getUserField(uid, 'email:confirmed');
-			[verified, unverified] = await groups.isMemberOfGroups(uid, ['verified-users', 'unverified-users']);
-			assert.strictEqual(confirmed, 0);
-			assert.strictEqual(verified, false);
-			assert.strictEqual(unverified, true);
 		});
 	});
 

@@ -733,7 +733,7 @@ describe('socket.io', () => {
 
 		it('should not generate code if rate limited', (done) => {
 			socketUser.reset.send({ uid: 0 }, 'regular@test.com', (err) => {
-				assert.ifError(err);
+				assert(err);
 
 				async.parallel({
 					count: async.apply(db.sortedSetCount.bind(db), 'reset:issueDate', 0, Date.now()),
