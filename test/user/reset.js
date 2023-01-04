@@ -149,11 +149,6 @@ describe.only('locks', () => {
 	});
 
 	it('should properly unlock user reset', async () => {
-		const username = 'multiple';
-		const uid = await user.create({ username, password: '123456' });
-		const email = `${username}@nodebb.org`;
-		await user.setUserField(uid, 'email', email);
-		await user.email.confirmByUid(uid);
 		await user.reset.send(email);
 		await assert.rejects(user.reset.send(email), {
 			message: '[[error:reset-rate-limited]]',
