@@ -40,37 +40,38 @@ helpers.request = async function (method, uri, options) {
 	});
 };
 
-helpers.loginUser = function (username, password, callback) {
+helpers.loginUser = async (username, password, payload = {}) => {
 	const jar = request.jar();
+	const form = { username, password, ...payload };
 
-	request({
+	const { statusCode, body: configBody } = await requestAsync({
 		url: `${nconf.get('url')}/api/config`,
 		json: true,
 		jar: jar,
-	}, (err, res, body) => {
-		if (err || res.statusCode !== 200) {
-			return callback(err || new Error('[[error:invalid-response]]'));
-		}
-		const { csrf_token } = body;
-		request.post(`${nconf.get('url')}/login`, {
-			form: {
-				username: username,
-				password: password,
-			},
-			json: true,
-			jar: jar,
-			headers: {
-				'x-csrf-token': csrf_token,
-			},
-		}, (err, res, body) => {
-			if (err) {
-				return callback(err || new Error('[[error:invalid-response]]'));
-			}
-			callback(null, { jar, res, body, csrf_token: csrf_token });
-		});
+		followRedirect: false,
+		simple: false,
+		resolveWithFullResponse: true,
 	});
-};
 
+	if (statusCode !== 200) {
+		throw new Error('[[error:invalid-response]]');
+	}
+
+	const { csrf_token } = configBody;
+	const res = await requestAsync.post(`${nconf.get('url')}/login`, {
+		form,
+		json: true,
+		jar: jar,
+		followRedirect: false,
+		simple: false,
+		resolveWithFullResponse: true,
+		headers: {
+			'x-csrf-token': csrf_token,
+		},
+	});
+
+	return { jar, res, body: res.body, csrf_token: csrf_token };
+};
 
 helpers.logoutUser = function (jar, callback) {
 	request({

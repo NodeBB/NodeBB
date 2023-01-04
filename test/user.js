@@ -2026,25 +2026,18 @@ describe('User', () => {
 			done();
 		});
 
-		it('should add user to approval queue', (done) => {
-			helpers.registerUser({
+		it('should add user to approval queue', async () => {
+			await helpers.registerUser({
 				username: 'rejectme',
 				password: '123456',
 				'password-confirm': '123456',
 				email: '<script>alert("ok")<script>reject@me.com',
 				gdpr_consent: true,
-			}, (err) => {
-				assert.ifError(err);
-				helpers.loginUser('admin', '123456', (err, data) => {
-					assert.ifError(err);
-					request(`${nconf.get('url')}/api/admin/manage/registration`, { jar: data.jar, json: true }, (err, res, body) => {
-						assert.ifError(err);
-						assert.equal(body.users[0].username, 'rejectme');
-						assert.equal(body.users[0].email, '&lt;script&gt;alert(&quot;ok&quot;)&lt;script&gt;reject@me.com');
-						done();
-					});
-				});
 			});
+			const { jar } = await helpers.loginUser('admin', '123456');
+			const { users } = await requestAsync(`${nconf.get('url')}/api/admin/manage/registration`, { jar, json: true });
+			assert.equal(users[0].username, 'rejectme');
+			assert.equal(users[0].email, '&lt;script&gt;alert(&quot;ok&quot;)&lt;script&gt;reject@me.com');
 		});
 
 		it('should fail to add user to queue if username is taken', (done) => {
@@ -2167,21 +2160,8 @@ describe('User', () => {
 			let csrf_token;
 			let jar;
 
-			before((done) => {
-				helpers.loginUser('notAnInviter', COMMON_PW, (err, data) => {
-					assert.ifError(err);
-					jar = data.jar;
-
-					request({
-						url: `${nconf.get('url')}/api/config`,
-						json: true,
-						jar: jar,
-					}, (err, response, body) => {
-						assert.ifError(err);
-						csrf_token = body.csrf_token;
-						done();
-					});
-				});
+			before(async () => {
+				({ jar, csrf_token } = await helpers.loginUser('notAnInviter', COMMON_PW));
 			});
 
 			it('should error if user does not have invite privilege', async () => {
@@ -2203,21 +2183,8 @@ describe('User', () => {
 			let csrf_token;
 			let jar;
 
-			before((done) => {
-				helpers.loginUser('inviter', COMMON_PW, (err, data) => {
-					assert.ifError(err);
-					jar = data.jar;
-
-					request({
-						url: `${nconf.get('url')}/api/config`,
-						json: true,
-						jar: jar,
-					}, (err, response, body) => {
-						assert.ifError(err);
-						csrf_token = body.csrf_token;
-						done();
-					});
-				});
+			before(async () => {
+				({ jar, csrf_token } = await helpers.loginUser('inviter', COMMON_PW));
 			});
 
 			it('should error with invalid data', async () => {
@@ -2305,21 +2272,8 @@ describe('User', () => {
 			let csrf_token;
 			let jar;
 
-			before((done) => {
-				helpers.loginUser('adminInvite', COMMON_PW, (err, data) => {
-					assert.ifError(err);
-					jar = data.jar;
-
-					request({
-						url: `${nconf.get('url')}/api/config`,
-						json: true,
-						jar: jar,
-					}, (err, response, body) => {
-						assert.ifError(err);
-						csrf_token = body.csrf_token;
-						done();
-					});
-				});
+			before(async () => {
+				({ jar, csrf_token } = await helpers.loginUser('adminInvite', COMMON_PW));
 			});
 
 			it('should escape email', async () => {
@@ -2456,21 +2410,8 @@ describe('User', () => {
 			let csrf_token;
 			let jar;
 
-			before((done) => {
-				helpers.loginUser('inviter', COMMON_PW, (err, data) => {
-					assert.ifError(err);
-					jar = data.jar;
-
-					request({
-						url: `${nconf.get('url')}/api/config`,
-						json: true,
-						jar: jar,
-					}, (err, response, body) => {
-						assert.ifError(err);
-						csrf_token = body.csrf_token;
-						done();
-					});
-				});
+			before(async () => {
+				({ jar, csrf_token } = await helpers.loginUser('inviter', COMMON_PW));
 			});
 
 			it('should show a list of groups for adding to an invite', async () => {
@@ -3049,17 +2990,12 @@ describe('User', () => {
 		});
 	});
 
-	it('should allow user to login even if password is weak', (done) => {
-		User.create({ username: 'weakpwd', password: '123456' }, (err) => {
-			assert.ifError(err);
-			const oldValue = meta.config.minimumPasswordStrength;
-			meta.config.minimumPasswordStrength = 3;
-			helpers.loginUser('weakpwd', '123456', (err) => {
-				assert.ifError(err);
-				meta.config.minimumPasswordStrength = oldValue;
-				done();
-			});
-		});
+	it('should allow user to login even if password is weak', async () => {
+		await User.create({ username: 'weakpwd', password: '123456' });
+		const oldValue = meta.config.minimumPasswordStrength;
+		meta.config.minimumPasswordStrength = 3;
+		await helpers.loginUser('weakpwd', '123456');
+		meta.config.minimumPasswordStrength = oldValue;
 	});
 
 	describe('User\'s', async () => {
