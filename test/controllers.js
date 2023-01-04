@@ -7,6 +7,9 @@ const request = require('request');
 const requestAsync = require('request-promise-native');
 const fs = require('fs');
 const path = require('path');
+const util = require('util');
+
+const sleep = util.promisify(setTimeout);
 
 const db = require('./mocks/databasemock');
 const categories = require('../src/categories');
@@ -1621,23 +1624,13 @@ describe('Controllers', () => {
 			});
 		});
 
-		it('should return false if user can not edit user', (done) => {
-			user.create({ username: 'regularJoe', password: 'barbar' }, (err) => {
-				assert.ifError(err);
-				helpers.loginUser('regularJoe', 'barbar', (err, data) => {
-					assert.ifError(err);
-					const { jar } = data;
-					request(`${nconf.get('url')}/api/user/foo/info`, { jar: jar, json: true }, (err, res) => {
-						assert.ifError(err);
-						assert.equal(res.statusCode, 403);
-						request(`${nconf.get('url')}/api/user/foo/edit`, { jar: jar, json: true }, (err, res) => {
-							assert.ifError(err);
-							assert.equal(res.statusCode, 403);
-							done();
-						});
-					});
-				});
-			});
+		it('should return false if user can not edit user', async () => {
+			await user.create({ username: 'regularJoe', password: 'barbar' });
+			const { jar } = await helpers.loginUser('regularJoe', 'barbar');
+			let { statusCode } = await requestAsync(`${nconf.get('url')}/api/user/foo/info`, { jar: jar, json: true, simple: false, resolveWithFullResponse: true });
+			assert.equal(statusCode, 403);
+			({ statusCode } = await requestAsync(`${nconf.get('url')}/api/user/foo/edit`, { jar: jar, json: true, simple: false, resolveWithFullResponse: true }));
+			assert.equal(statusCode, 403);
 		});
 
 		it('should load correct user', (done) => {
@@ -1693,22 +1686,18 @@ describe('Controllers', () => {
 			});
 		});
 
-		it('should increase profile view', (done) => {
-			helpers.loginUser('regularJoe', 'barbar', (err, data) => {
-				assert.ifError(err);
-				const { jar } = data;
-				request(`${nconf.get('url')}/api/user/foo`, { jar: jar }, (err, res) => {
-					assert.ifError(err);
-					assert.equal(res.statusCode, 200);
-					setTimeout(() => {
-						user.getUserField(fooUid, 'profileviews', (err, viewcount) => {
-							assert.ifError(err);
-							assert(viewcount > 0);
-							done();
-						});
-					}, 500);
-				});
+		it('should increase profile view', async () => {
+			const { jar } = await helpers.loginUser('regularJoe', 'barbar');
+			const { statusCode } = await requestAsync(`${nconf.get('url')}/api/user/foo`, {
+				jar: jar,
+				simple: false,
+				resolveWithFullResponse: true,
 			});
+			assert.equal(statusCode, 200);
+
+			await sleep(500);
+			const viewcount = await user.getUserField(fooUid, 'profileviews');
+			assert(viewcount > 0);
 		});
 
 		it('should parse about me', (done) => {
