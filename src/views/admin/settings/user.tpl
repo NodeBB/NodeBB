@@ -141,6 +141,13 @@
 					</p>
 				</div>
 			</div>
+
+			<div class="form-group">
+				<label for="sessionDuration">[[admin/settings/user:session-duration]]</label>
+				<input id="sessionDuration" type="number" step="60" min="0" class="form-control" data-field="sessionDuration">
+				<p class="help-block">[[admin/settings/user:session-duration-help]]</p>
+			</div>
+
 			<div class="form-group">
 				<label for="onlineCutoff">[[admin/settings/user:online-cutoff]]</label>
 				<input id="onlineCutoff" type="text" class="form-control" data-field="onlineCutoff">

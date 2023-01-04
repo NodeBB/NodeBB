@@ -294,8 +294,9 @@ function continueLogin(strategy, req, res, next) {
 			req.session.cookie.maxAge = duration;
 			req.session.cookie.expires = new Date(Date.now() + duration);
 		} else {
-			req.session.cookie.maxAge = false;
-			req.session.cookie.expires = false;
+			const duration = meta.config.sessionDuration * 1000;
+			req.session.cookie.maxAge = duration || false;
+			req.session.cookie.expires = duration ? new Date(Date.now() + duration) : false;
 		}
 
 		plugins.hooks.fire('action:login.continue', { req, strategy, userData, error: null });
