@@ -29,6 +29,8 @@
 	"session-time-days": "Dienas",
 	"session-time-seconds": "Sekundes",
 	"session-time-help": "These values are used to govern how long a user stays logged in when they check &quot;Remember Me&quot; on login. Note that only one of these values will be used. If there is no <i>seconds</i> value we fall back to <i>days</i>. If there is no <i>days</i> value we default to <i>14 days</i>.",
+	"session-duration": "Session length if \"Remember Me\" is not checked (seconds)",
+	"session-duration-help": "By default — or if set to <code>0</code> — a user will stay logged in for the duration of the session (e.g. however long the browser window/tab remains open). Set this value to explicitly invalidate the session after the specified number of seconds.",
 	"online-cutoff": "Minūtes, pēc kura lietotājs tiek uzskatīts par neaktīvu",
 	"online-cutoff-help": "Ja lietotājs šajā laikā neveic nekādas darbības, tas tiek uzskatīts par neaktīvu un nesaņem reāllaika atjauninājumus.",
 	"registration": "Reģistrācija",

@@ -29,6 +29,8 @@
 	"session-time-days": "일",
 	"session-time-seconds": "초",
 	"session-time-help": "사용자가 &quot;로그인 유지&quot; 항목을 활성화할 경우 해당 수치만큼 사용자의 로그인 상태를 유지합니다. 다음 값들 중 한 가지를 사용합니다. <i>초</i>에 해당되는 값이 없을 경우 <i>일</i>에 해당되는 값을 적용하고, <i>일</i>에 해당되는 값도 없을 경우 기본값인 <i>14일</i>을 적용합니다.",
+	"session-duration": "Session length if \"Remember Me\" is not checked (seconds)",
+	"session-duration-help": "By default — or if set to <code>0</code> — a user will stay logged in for the duration of the session (e.g. however long the browser window/tab remains open). Set this value to explicitly invalidate the session after the specified number of seconds.",
 	"online-cutoff": "사용자를 비접속 상태로 간주할 시간 (분)",
 	"online-cutoff-help": "해당 시간동안 사용자의 행동이 없을 경우 비접속 상태로 간주하고 실시간 업데이트를 적용하지 않습니다.",
 	"registration": "회원가입",

@@ -29,6 +29,8 @@
 	"session-time-days": "Nap",
 	"session-time-seconds": "Másodperc",
 	"session-time-help": "Ezek az értékek határozzák meg, hogy mennyi ideig maradjanak bejelentkezve, ha bekapcsolják az \"Emlékezzen rám\" lehetőséget bejelentkezésnél. Ha nincs <i>másodperc</i> érték megadva, akkor a nap értékét vesszük figyelembe. Ha nincs nap érték megadva, akkor az alapértelmezett <i>14 nap</i> kerül beállításra.",
+	"session-duration": "Session length if \"Remember Me\" is not checked (seconds)",
+	"session-duration-help": "By default — or if set to <code>0</code> — a user will stay logged in for the duration of the session (e.g. however long the browser window/tab remains open). Set this value to explicitly invalidate the session after the specified number of seconds.",
 	"online-cutoff": "Hány perc elteltével számítson egy felhasználó inaktívnak",
 	"online-cutoff-help": "Ha egy felhasználó nem csinál semmit az oldalon, akkor inaktívnak nyilvánítjuk és nem kapnak valós idejű frissítéseket.",
 	"registration": "Felhasználó regisztráció",
