@@ -34,7 +34,6 @@ const buildImports = {
 			source,
 			'@import "jquery-ui";',
 			'@import "cropperjs/dist/cropper";',
-			'@import "client";',
 		].join('\n');
 	},
 	admin: function (source) {
@@ -117,6 +116,8 @@ function boostrapImport(themeData) {
 		// Utilities
 		'@import "bootstrap/scss/utilities/api";',
 		// scss-docs-end import-stack
+
+		'@import "client";',
 		'@import "./theme";', // rest of the theme scss
 		bootswatchSkin ? `@import "bootswatch/dist/${bootswatchSkin}/bootswatch";` : '',
 	].join('\n');
