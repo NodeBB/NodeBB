@@ -42,6 +42,10 @@ helpers.buildBodyClass = function (req, res, templateData = {}) {
 		parts[index] = index ? `${parts[0]}-${p}` : `page-${p || 'home'}`;
 	});
 
+	if (templateData.template) {
+		parts.push(`template-${templateData.template.name.split('/').join('-')}`);
+	}
+
 	if (templateData.template && templateData.template.topic) {
 		parts.push(`page-topic-category-${templateData.category.cid}`);
 		parts.push(`page-topic-category-${slugify(templateData.category.name)}`);

@@ -49,7 +49,6 @@ profileController.get = async function (req, res, next) {
 	userData.bestPosts = bestPosts;
 	userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username }]);
 	userData.title = userData.username;
-	userData.allowCoverPicture = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:cover-picture'];
 
 	// Show email changed modal on first access after said change
 	userData.emailChanged = req.session.emailChanged;
