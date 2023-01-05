@@ -186,7 +186,7 @@ describe('authentication', () => {
 		});
 	});
 
-	describe.only('login', () => {
+	describe('login', () => {
 		let username;
 		let password;
 		let uid;
@@ -275,6 +275,22 @@ describe('authentication', () => {
 			assert.strictEqual(expiry.getUTCDate(), expected.getUTCDate());
 
 			meta.config.loginDays = _loginDays;
+		});
+
+		it('should ignore loginDays if loginSeconds is truthy', async () => {
+			const _loginSeconds = meta.config.loginSeconds;
+			meta.config.loginSeconds = 60;
+
+			const { res } = await helpers.loginUser(username, password, { remember: 'on' });
+
+			const expiry = getCookieExpiry(res);
+			const expected = new Date();
+			expected.setUTCSeconds(expected.getUTCSeconds() + meta.config.loginSeconds);
+
+			assert.strictEqual(expiry.getUTCDate(), expected.getUTCDate());
+			assert.strictEqual(expiry.getUTCMinutes(), expected.getUTCMinutes());
+
+			meta.config.loginSeconds = _loginSeconds;
 		});
 	});
 
