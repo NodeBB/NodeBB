@@ -1,4 +1,4 @@
-name: Lint and test
+name: Test
 
 on:
   push:
@@ -24,7 +24,7 @@ jobs:
     permissions:
       checks: write  # for coverallsapp/github-action to create new checks
       contents: read  # for actions/checkout to fetch code
-    name: Lint and test
+    name: Test
     strategy:
       fail-fast: false
       matrix:
@@ -39,11 +39,6 @@ jobs:
           # test under development once
           - database: mongo-dev
             test_env: development
-          # only run eslint once
-          - os: ubuntu-latest
-            node: 14
-            database: mongo-dev
-            lint: true
     runs-on: ${{ matrix.os }}
     env:
       TEST_ENV: ${{ matrix.test_env || 'production' }}
@@ -182,10 +177,6 @@ jobs:
             }
         run: |
           node app --setup="${SETUP}" --ci="${CI}"
-
-      - name: Run ESLint
-        if: matrix.lint
-        run: npm run lint
 
       - name: Node tests
         run: npm test

@@ -15,6 +15,7 @@ Controllers.ping = require('./ping');
 Controllers.home = require('./home');
 Controllers.topics = require('./topics');
 Controllers.posts = require('./posts');
+Controllers.career = require('./career');
 Controllers.categories = require('./categories');
 Controllers.category = require('./category');
 Controllers.unread = require('./unread');
@@ -179,7 +180,18 @@ Controllers.register = async function (req, res, next) {
 			breadcrumbs: helpers.buildBreadcrumbs([{
 				text: '[[register:register]]',
 			}]),
-			regFormEntry: [],
+			regFormEntry: [
+				{
+					label: 'Account Type',
+					styleName: 'account-type',
+					html: `
+						<select class="form-control" name="account-type" aria-label="Account Type">
+							<option value="student" selected>Student</option>
+							<option value="instructor">Instructor</option>
+						</select>
+					`,
+				},
+			],
 			error: req.flash('error')[0] || errorText,
 			title: '[[pages:register]]',
 		});

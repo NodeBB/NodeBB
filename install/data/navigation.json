@@ -65,5 +65,13 @@
 		"textClass": "visible-xs-inline",
 		"text": "[[global:header.admin]]",
 		"groups": ["administrators"]
+	},
+	{
+		"route": "/career",
+		"title": "Career",
+		"enabled": true,
+		"iconClass": "fa-briefcase",
+		"textClass": "visible-xs-inline",
+		"text": "Career"
 	}
 ]

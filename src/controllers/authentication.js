@@ -104,6 +104,11 @@ authenticationController.register = async function (req, res) {
 			throw new Error('[[error:password-too-long]]');
 		}
 
+		if (!userData['account-type'] ||
+			(userData['account-type'] !== 'student' && userData['account-type'] !== 'instructor')) {
+			throw new Error('Invalid account type');
+		}
+
 		user.isPasswordValid(userData.password);
 
 		res.locals.processLogin = true; // set it to false in plugin if you wish to just register only

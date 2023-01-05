@@ -46,6 +46,7 @@ module.exports = function (User) {
 		let userData = {
 			username: data.username,
 			userslug: data.userslug,
+			accounttype: data['account-type'],
 			email: data.email || '',
 			joindate: timestamp,
 			lastonline: timestamp,

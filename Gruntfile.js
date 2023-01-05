@@ -45,7 +45,6 @@ module.exports = function (grunt) {
 		if (!process.argv.includes('--core')) {
 			await db.init();
 			pluginList = await plugins.getActive();
-			addBaseThemes(pluginList);
 			if (!pluginList.includes('nodebb-plugin-composer-default')) {
 				pluginList.push('nodebb-plugin-composer-default');
 			}
@@ -72,6 +71,7 @@ module.exports = function (grunt) {
 			styleUpdated_Client: {
 				files: [
 					'public/less/**/*.less',
+					'themes/**/*.less',
 					...styleUpdated_Client,
 				],
 				options: {
@@ -81,6 +81,7 @@ module.exports = function (grunt) {
 			styleUpdated_Admin: {
 				files: [
 					'public/less/**/*.less',
+					'themes/**/*.less',
 					...styleUpdated_Admin,
 				],
 				options: {
@@ -116,6 +117,7 @@ module.exports = function (grunt) {
 			templatesUpdated: {
 				files: [
 					'src/views/**/*.tpl',
+					'themes/**/*.tpl',
 					...templatesUpdated,
 				],
 				options: {
@@ -191,24 +193,3 @@ module.exports = function (grunt) {
 		});
 	});
 };
-
-function addBaseThemes(pluginList) {
-	let themeId = pluginList.find(p => p.includes('nodebb-theme-'));
-	if (!themeId) {
-		return pluginList;
-	}
-	let baseTheme;
-	do {
-		try {
-			baseTheme = require(`${themeId}/theme`).baseTheme;
-		} catch (err) {
-			console.log(err);
-		}
-
-		if (baseTheme) {
-			pluginList.push(baseTheme);
-			themeId = baseTheme;
-		}
-	} while (baseTheme);
-	return pluginList;
-}

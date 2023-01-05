@@ -20,7 +20,7 @@ const intFields = [
 
 module.exports = function (User) {
 	const fieldWhitelist = [
-		'uid', 'username', 'userslug', 'email', 'email:confirmed', 'joindate',
+		'uid', 'username', 'userslug', 'email', 'email:confirmed', 'joindate', 'accounttype',
 		'lastonline', 'picture', 'icon:bgColor', 'fullname', 'location', 'birthday', 'website',
 		'aboutme', 'signature', 'uploadedpicture', 'profileviews', 'reputation',
 		'postcount', 'topiccount', 'lastposttime', 'banned', 'banned:expire',
