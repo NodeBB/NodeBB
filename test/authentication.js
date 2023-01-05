@@ -158,22 +158,6 @@ describe('authentication', () => {
 		});
 	});
 
-	it('should login a user', async () => {
-		const { jar, body: loginBody } = await helpers.loginUser('regular', 'regularpwd');
-		assert(loginBody);
-		const body = await requestAsync({
-			url: `${nconf.get('url')}/api/self`,
-			json: true,
-			jar,
-		});
-		assert(body);
-		assert.equal(body.username, 'regular');
-		assert.equal(body.email, 'regular@nodebb.org');
-		const sessions = await db.getObject(`uid:${regularUid}:sessionUUID:sessionId`);
-		assert(sessions);
-		assert(Object.keys(sessions).length > 0);
-	});
-
 	it('should regenerate the session identifier on successful login', async () => {
 		const matchRegexp = /express\.sid=s%3A(.+?);/;
 		const { hostname, path } = url.parse(nconf.get('url'));
@@ -199,6 +183,114 @@ describe('authentication', () => {
 					done();
 				});
 			});
+		});
+	});
+
+	describe('login', () => {
+		let username;
+		let password;
+		let uid;
+
+		function getCookieExpiry(res) {
+			assert(res.headers['set-cookie']);
+			assert.strictEqual(res.headers['set-cookie'][0].includes('Expires'), true);
+
+			const values = res.headers['set-cookie'][0].split(';');
+			return values.reduce((memo, cur) => {
+				if (!memo) {
+					const [name, value] = cur.split('=');
+					if (name === ' Expires') {
+						memo = new Date(value);
+					}
+				}
+
+				return memo;
+			}, undefined);
+		}
+
+		beforeEach(async () => {
+			([username, password] = [utils.generateUUID().slice(0, 10), utils.generateUUID()]);
+			uid = await user.create({ username, password });
+		});
+
+		it('should login a user', async () => {
+			const { jar, body: loginBody } = await helpers.loginUser(username, password);
+			assert(loginBody);
+			const body = await requestAsync({
+				url: `${nconf.get('url')}/api/self`,
+				json: true,
+				jar,
+			});
+			assert(body);
+			assert.equal(body.username, username);
+			const sessions = await db.getObject(`uid:${uid}:sessionUUID:sessionId`);
+			assert(sessions);
+			assert(Object.keys(sessions).length > 0);
+		});
+
+		it('should set a cookie that only lasts for the life of the browser session', async () => {
+			const { res } = await helpers.loginUser(username, password);
+
+			assert(res.headers);
+			assert(res.headers['set-cookie']);
+			assert.strictEqual(res.headers['set-cookie'][0].includes('Expires'), false);
+		});
+
+		it('should set a different expiry if sessionDuration is set', async () => {
+			const _sessionDuration = meta.config.sessionDuration;
+			const days = 1;
+			meta.config.sessionDuration = days * 24 * 60 * 60;
+
+			const { res } = await helpers.loginUser(username, password);
+
+			const expiry = getCookieExpiry(res);
+			const expected = new Date();
+			expected.setUTCDate(expected.getUTCDate() + days);
+
+			assert.strictEqual(expiry.getUTCDate(), expected.getUTCDate());
+
+			meta.config.sessionDuration = _sessionDuration;
+		});
+
+		it('should set a cookie that lasts for x days where x is loginDays setting, if asked to remember', async () => {
+			const { res } = await helpers.loginUser(username, password, { remember: 'on' });
+
+			const expiry = getCookieExpiry(res);
+			const expected = new Date();
+			expected.setUTCDate(expected.getUTCDate() + meta.config.loginDays);
+
+			assert.strictEqual(expiry.getUTCDate(), expected.getUTCDate());
+		});
+
+		it('should set the cookie expiry properly if loginDays setting is changed', async () => {
+			const _loginDays = meta.config.loginDays;
+			meta.config.loginDays = 5;
+
+			const { res } = await helpers.loginUser(username, password, { remember: 'on' });
+
+			const expiry = getCookieExpiry(res);
+			const expected = new Date();
+			expected.setUTCDate(expected.getUTCDate() + meta.config.loginDays);
+
+			assert.strictEqual(expiry.getUTCDate(), expected.getUTCDate());
+
+			meta.config.loginDays = _loginDays;
+		});
+
+		it('should ignore loginDays if loginSeconds is truthy', async () => {
+			const _loginSeconds = meta.config.loginSeconds;
+			meta.config.loginSeconds = 60;
+
+			const { res } = await helpers.loginUser(username, password, { remember: 'on' });
+
+			const expiry = getCookieExpiry(res);
+			const expected = new Date();
+			expected.setUTCSeconds(expected.getUTCSeconds() + meta.config.loginSeconds);
+
+			assert.strictEqual(expiry.getUTCDate(), expected.getUTCDate());
+			assert.strictEqual(expiry.getUTCMinutes(), expected.getUTCMinutes());
+
+			meta.config.loginSeconds = _loginSeconds;
 		});
 	});
 
