@@ -5,8 +5,8 @@
 	"from": "From Name",
 	"from-help": "The from name to display in the email.",
 
-	"confirmation-settings": "Confirmation",
-	"confirmation.expiry": "Hours to keep email confirmation link valid",
+	"confirmation-settings": "Onay",
+	"confirmation.expiry": "Onay linki kaç saat geçerli olacak",
 
 	"smtp-transport": "SMTP Transport",
 	"smtp-transport.enabled": "SMTP Aktarımını Etkinleştir",

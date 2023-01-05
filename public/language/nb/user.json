@@ -1,6 +1,6 @@
 {
     "banned": "Utestengt",
-    "muted": "Muted",
+    "muted": "Dempet",
     "offline": "Frakoblet",
     "deleted": "Slettet",
     "username": "Brukernavn",
@@ -43,7 +43,7 @@
     "followers": "Følgere",
     "following": "Følger",
     "blocks": "Blokkeringer",
-    "block_toggle": "Toggle Block",
+    "block_toggle": "Endre blokkering",
     "block_user": "Blokker bruker",
     "unblock_user": "Opphev blokkering av bruker",
     "aboutme": "Om meg",
@@ -157,10 +157,10 @@
     "info.banned-permanently": "Utestengt permanent",
     "info.banned-reason-label": "Årsak",
     "info.banned-no-reason": "ingen årsak oppgitt",
-    "info.mute-history": "Recent Mute History",
-    "info.no-mute-history": "This user has never been muted",
-    "info.muted-until": "Muted until %1",
-    "info.muted-expiry": "Expiry",
+    "info.mute-history": "Nylig dempet",
+    "info.no-mute-history": "Denne brukeren har ikke vært dempet",
+    "info.muted-until": "Dempet inntil %1",
+    "info.muted-expiry": "Utløper",
     "info.muted-no-reason": "Ingen grunn oppgitt.",
     "info.username-history": "Brukernavnhistorikk",
     "info.email-history": "E-post-historikk",
@@ -195,5 +195,5 @@
     "emailUpdate.optional": "<strong>Dette feltet er valgfritt</strong>. Du er ikke forpliktet til å oppgi e-postadressen din, men uten en validert e-postadresse vil du ikke kunne gjenopprette kontoen din eller logge på med e-postadressen din.",
     "emailUpdate.required": "<strong>Dette feltet er obligatorisk</strong>",
     "emailUpdate.change-instructions": "En bekreftelses-e-post med en unik lenke vil bli sendt til den angitte e-postadressen. Ved å klikke på lenken, vil du bekrefte at du eier e-postadressen, og den blir aktiv på kontoen din. Du kan når som helst oppdatere e-postadressen på brukerprofilen din.",
-    "emailUpdate.password-challenge": "Please enter your password in order to verify account ownership."
+    "emailUpdate.password-challenge": "Skriv inn passordet ditt for å verifisere eierskap."
 }

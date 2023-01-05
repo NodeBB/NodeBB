@@ -26,10 +26,10 @@
 	"filter-quick-mine": "Přiřazeno mě",
 	"filter-cid-all": "Všechny kategorie",
 	"apply-filters": "Použít filtry",
-	"more-filters": "More Filters",
-	"fewer-filters": "Fewer Filters",
+	"more-filters": "Další filtry",
+	"fewer-filters": "Méně filtrů",
 
-	"quick-actions": "Quick Actions",
+	"quick-actions": "Rychlé akce",
 	"flagged-user": "Označený uživatel",
 	"view-profile": "Zobrazit profil",
 	"start-new-chat": "Začít novou konverzaci",
@@ -62,7 +62,7 @@
 	"state-rejected": "Zamítnuto",
 	"no-assignee": "Nepřiřazeno",
 
-	"sort": "Sort by",
+	"sort": "Seřadit dle",
 	"sort-newest": "Newest first",
 	"sort-oldest": "Oldest first",
 	"sort-reports": "Most reports",
