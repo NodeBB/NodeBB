@@ -253,6 +253,24 @@ Users.getInviteGroups = async function (req, res) {
 	return helpers.formatApiResponse(200, res, userInviteGroups.map(group => group.displayName));
 };
 
+Users.addEmail = async (req, res) => {
+	const canManageUsers = await privileges.admin.can('admin:users', req.uid);
+	const skipConfirmation = canManageUsers && req.body.skipConfirmation;
+
+	if (skipConfirmation) {
+		await user.setUserField(req.params.uid, 'email', req.body.email);
+		await user.email.confirmByUid(req.params.uid);
+	} else {
+		await api.users.update(req, {
+			uid: req.params.uid,
+			email: req.body.email,
+		});
+	}
+
+	const emails = await db.getSortedSetRangeByScore('email:uid', 0, 500, req.params.uid, req.params.uid);
+	helpers.formatApiResponse(200, res, { emails });
+};
+
 Users.listEmails = async (req, res) => {
 	const [isPrivileged, { showemail }] = await Promise.all([
 		user.isPrivileged(req.uid),

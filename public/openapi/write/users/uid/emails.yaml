@@ -31,3 +31,54 @@ get:
                     items:
                       type: string
                       description: An email address
+post:
+  tags:
+    - users
+  summary: add email to user
+  description: |
+    This operation adds an email to the user account, optionally bypassing the confirmation step if requested.
+
+    **Note**: The confirmation bypass can only be called by super administrators or users with the `admin:users` privilege.
+  parameters:
+  - in: path
+    name: uid
+    schema:
+      type: integer
+    required: true
+    description: uid of the account to add the email
+    example: 1
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            email:
+              type: string
+              description: A single email address
+              example: test@example.org
+            skipConfirmation:
+              type: boolean
+              description: If truthy, will automatically confirm the user's email.
+              example: 1
+          required:
+            - email
+  responses:
+    '200':
+      description: email successfully added to user account
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  emails:
+                    type: array
+                    items:
+                      type: string
+                      description: An email address
