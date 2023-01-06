@@ -157,6 +157,7 @@ describe('email confirmation (v3 api)', () => {
 		await register({
 			username: 'fake-user',
 			password: 'derpioansdosa',
+			'account-type': 'student',
 			email: 'b@c.com',
 			gdpr_consent: true,
 		});
@@ -164,6 +165,7 @@ describe('email confirmation (v3 api)', () => {
 		({ body: userObj, jar } = await register({
 			username: 'email-test',
 			password: 'abcdef',
+			'account-type': 'student',
 			email: 'test@example.org',
 			gdpr_consent: true,
 		}));

@@ -2031,6 +2031,7 @@ describe('User', () => {
 				username: 'rejectme',
 				password: '123456',
 				'password-confirm': '123456',
+				'account-type': 'student',
 				email: '<script>alert("ok")<script>reject@me.com',
 				gdpr_consent: true,
 			}, (err) => {
@@ -2052,6 +2053,7 @@ describe('User', () => {
 				username: 'rejectme',
 				password: '123456',
 				'password-confirm': '123456',
+				'account-type': 'student',
 				email: '<script>alert("ok")<script>reject@me.com',
 				gdpr_consent: true,
 			}, (err, jar, res, body) => {
@@ -2066,6 +2068,7 @@ describe('User', () => {
 				username: 'rejectmenew',
 				password: '123456',
 				'password-confirm': '123456',
+				'account-type': 'student',
 				email: '<script>alert("ok")<script>reject@me.com',
 				gdpr_consent: true,
 			}, (err, jar, res, body) => {
@@ -2091,6 +2094,7 @@ describe('User', () => {
 				username: 'acceptme',
 				password: '123456',
 				'password-confirm': '123456',
+				'account-type': 'student',
 				email: 'accept@me.com',
 				gdpr_consent: true,
 			}, (err) => {
@@ -2115,6 +2119,7 @@ describe('User', () => {
 				username: 'invalidname\r\n',
 				password: '123456',
 				'password-confirm': '123456',
+				'account-type': 'student',
 				email: 'invalidtest@test.com',
 				gdpr_consent: true,
 			}, (err) => {
@@ -2431,6 +2436,7 @@ describe('User', () => {
 						username: 'invite5',
 						password: '123456',
 						'password-confirm': '123456',
+						'account-type': 'student',
 						email: email,
 						gdpr_consent: true,
 						token: token,

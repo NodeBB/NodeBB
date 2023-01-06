@@ -258,6 +258,8 @@ paths:
     $ref: 'read/category/category_id.yaml'
   "/api/category/{category_id}/{slug}/{topic_index}":
     $ref: 'read/category/category_id.yaml'
+  /api/career:
+    $ref: 'read/career.yaml'
   /api/self:
     $ref: 'read/self.yaml'
   /api/me:

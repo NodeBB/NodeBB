@@ -3,7 +3,6 @@
 const nconf = require('nconf');
 const validator = require('validator');
 
-
 const plugins = require('../plugins');
 const meta = require('../meta');
 const translator = require('../translator');

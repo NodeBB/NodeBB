@@ -325,7 +325,7 @@ describe('API', async () => {
 					return;
 				}
 
-				it('should have each path parameter defined in its context', () => {
+				it(`${_method.toUpperCase()} ${path}: should have each path parameter defined in its context`, () => {
 					method = _method;
 					if (!context[method].parameters) {
 						return;
@@ -336,7 +336,7 @@ describe('API', async () => {
 					assert(pathParams.every(param => schemaParams.includes(param)), `${method.toUpperCase()} ${path} has path parameters specified but not defined`);
 				});
 
-				it('should have examples when parameters are present', () => {
+				it(`${_method.toUpperCase()} ${path}: should have examples when parameters are present`, () => {
 					let { parameters } = context[method];
 					let testPath = path;
 
@@ -364,7 +364,7 @@ describe('API', async () => {
 					url = nconf.get('url') + (prefix || '') + testPath;
 				});
 
-				it('should contain a valid request body (if present) with application/json or multipart/form-data type if POST/PUT/DELETE', () => {
+				it(`${_method.toUpperCase()} ${path}: should contain a valid request body (if present) with application/json or multipart/form-data type if POST/PUT/DELETE`, () => {
 					if (['post', 'put', 'delete'].includes(method) && context[method].hasOwnProperty('requestBody')) {
 						const failMessage = `${method.toUpperCase()} ${path} has a malformed request body`;
 						assert(context[method].requestBody, failMessage);
@@ -382,7 +382,7 @@ describe('API', async () => {
 					}
 				});
 
-				it('should not error out when called', async () => {
+				it(`${_method.toUpperCase()} ${path}: should not error out when called`, async () => {
 					await setupData();
 
 					if (csrfToken) {
@@ -425,13 +425,13 @@ describe('API', async () => {
 					}
 				});
 
-				it('response status code should match one of the schema defined responses', () => {
+				it(`${_method.toUpperCase()} ${path}: response status code should match one of the schema defined responses`, () => {
 					// HACK: allow HTTP 418 I am a teapot, for now   👇
-					assert(context[method].responses.hasOwnProperty('418') || Object.keys(context[method].responses).includes(String(response.statusCode)), `${method.toUpperCase()} ${path} sent back unexpected HTTP status code: ${response.statusCode}`);
+					assert(context[method].responses.hasOwnProperty('418') || Object.keys(context[method].responses).includes(String(response.statusCode)), `${method.toUpperCase()} ${path} sent back unexpected HTTP status code: ${response.statusCode} ${JSON.stringify(response.body)}`);
 				});
 
 				// Recursively iterate through schema properties, comparing type
-				it('response body should match schema definition', () => {
+				it(`${_method.toUpperCase()} ${path}: response body should match schema definition`, async () => {
 					const http302 = context[method].responses['302'];
 					if (http302 && response.statusCode === 302) {
 						// Compare headers instead
@@ -464,7 +464,7 @@ describe('API', async () => {
 					// TODO someday: text/csv, binary file type checking?
 				});
 
-				it('should successfully re-login if needed', async () => {
+				it(`${_method.toUpperCase()} ${path}: should successfully re-login if needed`, async () => {
 					const reloginPaths = ['PUT /users/{uid}/password', 'DELETE /users/{uid}/sessions/{uuid}'];
 					if (reloginPaths.includes(`${method.toUpperCase()} ${path}`)) {
 						({ jar } = await helpers.loginUser('admin', '123456'));
@@ -481,7 +481,7 @@ describe('API', async () => {
 					}
 				});
 
-				it('should back out of a registration interstitial if needed', async () => {
+				it(`${_method.toUpperCase()} ${path}: should back out of a registration interstitial if needed`, async () => {
 					const affectedPaths = ['GET /api/user/{userslug}/edit/email'];
 					if (affectedPaths.includes(`${method.toUpperCase()} ${path}`)) {
 						await request({

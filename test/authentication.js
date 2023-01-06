@@ -107,6 +107,7 @@ describe('authentication', () => {
 					username: 'admin',
 					password: 'adminpwd',
 					'password-confirm': 'adminpwd',
+					'account-type': 'instructor',
 					userLang: 'it',
 					gdpr_consent: true,
 				},
@@ -316,6 +317,7 @@ describe('authentication', () => {
 		helpers.registerUser({
 			username: 'someuser',
 			password: 'somepassword',
+			'account-type': 'student',
 		}, (err, jar, response, body) => {
 			assert.ifError(err);
 			assert.equal(response.statusCode, 403);
@@ -329,6 +331,7 @@ describe('authentication', () => {
 		helpers.registerUser({
 			username: 'someuser',
 			password: 'somepassword',
+			'account-type': 'student',
 		}, (err, jar, response, body) => {
 			meta.config.registrationType = 'normal';
 			assert.ifError(err);
@@ -342,6 +345,7 @@ describe('authentication', () => {
 		helpers.registerUser({
 			username: '',
 			password: 'somepassword',
+			'account-type': 'student',
 		}, (err, jar, response, body) => {
 			assert.ifError(err);
 			assert.equal(response.statusCode, 400);
@@ -349,6 +353,7 @@ describe('authentication', () => {
 			helpers.registerUser({
 				username: 'a',
 				password: 'somepassword',
+				'account-type': 'student',
 			}, (err, jar, response, body) => {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 400);
@@ -362,10 +367,24 @@ describe('authentication', () => {
 		helpers.registerUser({
 			username: 'thisisareallylongusername',
 			password: '123456',
+			'account-type': 'student',
 		}, (err, jar, response, body) => {
 			assert.ifError(err);
 			assert.equal(response.statusCode, 400);
 			assert.equal(body, '[[error:username-too-long]]');
+			done();
+		});
+	});
+
+	it('should fail to register if account type is invalid', (done) => {
+		helpers.registerUser({
+			username: 'someuser',
+			password: '123456',
+			'account-type': 'invalidtype',
+		}, (err, jar, response, body) => {
+			assert.ifError(err);
+			assert.equal(response.statusCode, 400);
+			assert.equal(body, 'Invalid account type');
 			done();
 		});
 	});
@@ -376,6 +395,7 @@ describe('authentication', () => {
 			email: 'another@user.com',
 			username: 'anotheruser',
 			password: 'anotherpwd',
+			'account-type': 'student',
 			gdpr_consent: 1,
 		}, (err, jar, response, body) => {
 			meta.config.registrationApprovalType = 'normal';

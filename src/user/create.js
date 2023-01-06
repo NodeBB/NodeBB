@@ -18,6 +18,9 @@ module.exports = function (User) {
 		if (data.email !== undefined) {
 			data.email = String(data.email).trim();
 		}
+		if (data.accounttype !== undefined) {
+			data.accounttype = data.accounttype.trim();
+		}
 
 		await User.isDataValid(data);
 
@@ -46,7 +49,7 @@ module.exports = function (User) {
 		let userData = {
 			username: data.username,
 			userslug: data.userslug,
-			accounttype: data['account-type'],
+			accounttype: data.accounttype || 'student',
 			email: data.email || '',
 			joindate: timestamp,
 			lastonline: timestamp,

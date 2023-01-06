@@ -45,25 +45,19 @@ _mounts.main = (app, middleware, controllers) => {
 };
 
 _mounts.mod = (app, middleware, controllers) => {
-	const middlewares = [middleware.ensureLoggedIn];
-
-	setupPageRoute(app, '/flags', middlewares, controllers.mods.flags.list);
-	setupPageRoute(app, '/flags/:flagId', middlewares, controllers.mods.flags.detail);
-	setupPageRoute(app, '/post-queue/:id?', middlewares, controllers.mods.postQueue);
+	setupPageRoute(app, '/flags', [], controllers.mods.flags.list);
+	setupPageRoute(app, '/flags/:flagId', [], controllers.mods.flags.detail);
+	setupPageRoute(app, '/post-queue/:id?', [], controllers.mods.postQueue);
 };
 
 _mounts.globalMod = (app, middleware, controllers) => {
-	const middlewares = [middleware.ensureLoggedIn];
-
-	setupPageRoute(app, '/ip-blacklist', middlewares, controllers.globalMods.ipBlacklist);
-	setupPageRoute(app, '/registration-queue', middlewares, controllers.globalMods.registrationQueue);
+	setupPageRoute(app, '/ip-blacklist', [], controllers.globalMods.ipBlacklist);
+	setupPageRoute(app, '/registration-queue', [], controllers.globalMods.registrationQueue);
 };
 
 _mounts.topic = (app, name, middleware, controllers) => {
-	const middlewares = [middleware.ensureLoggedIn];
-
-	setupPageRoute(app, `/${name}/:topic_id/:slug/:post_index?`, middlewares, controllers.topics.get);
-	setupPageRoute(app, `/${name}/:topic_id/:slug?`, middlewares, controllers.topics.get);
+	setupPageRoute(app, `/${name}/:topic_id/:slug/:post_index?`, [], controllers.topics.get);
+	setupPageRoute(app, `/${name}/:topic_id/:slug?`, [], controllers.topics.get);
 };
 
 _mounts.post = (app, name, middleware, controllers) => {
@@ -78,23 +72,19 @@ _mounts.post = (app, name, middleware, controllers) => {
 };
 
 _mounts.tags = (app, name, middleware, controllers) => {
-	const middlewares = [middleware.ensureLoggedIn, middleware.privateTagListing];
-
-	setupPageRoute(app, `/${name}/:tag`, middlewares, controllers.tags.getTag);
-	setupPageRoute(app, `/${name}`, middlewares, controllers.tags.getTags);
+	setupPageRoute(app, `/${name}/:tag`, [middleware.privateTagListing], controllers.tags.getTag);
+	setupPageRoute(app, `/${name}`, [middleware.privateTagListing], controllers.tags.getTags);
 };
 
 _mounts.category = (app, name, middleware, controllers) => {
-	const middlewares = [middleware.ensureLoggedIn];
-
-	setupPageRoute(app, '/categories', middlewares, controllers.categories.list);
-	setupPageRoute(app, '/popular', middlewares, controllers.popular.get);
-	setupPageRoute(app, '/recent', middlewares, controllers.recent.get);
-	setupPageRoute(app, '/top', middlewares, controllers.top.get);
+	setupPageRoute(app, '/categories', [], controllers.categories.list);
+	setupPageRoute(app, '/popular', [], controllers.popular.get);
+	setupPageRoute(app, '/recent', [], controllers.recent.get);
+	setupPageRoute(app, '/top', [], controllers.top.get);
 	setupPageRoute(app, '/unread', [middleware.ensureLoggedIn], controllers.unread.get);
 
-	setupPageRoute(app, `/${name}/:category_id/:slug/:topic_index`, middlewares, controllers.category.get);
-	setupPageRoute(app, `/${name}/:category_id/:slug?`, middlewares, controllers.category.get);
+	setupPageRoute(app, `/${name}/:category_id/:slug/:topic_index`, [], controllers.category.get);
+	setupPageRoute(app, `/${name}/:category_id/:slug?`, [], controllers.category.get);
 };
 
 _mounts.career = (app, name, middleware, controllers) => {
@@ -104,13 +94,13 @@ _mounts.career = (app, name, middleware, controllers) => {
 };
 
 _mounts.users = (app, name, middleware, controllers) => {
-	const middlewares = [middleware.ensureLoggedIn, middleware.canViewUsers];
+	const middlewares = [middleware.canViewUsers];
 
 	setupPageRoute(app, `/${name}`, middlewares, controllers.users.index);
 };
 
 _mounts.groups = (app, name, middleware, controllers) => {
-	const middlewares = [middleware.ensureLoggedIn, middleware.canViewGroups];
+	const middlewares = [middleware.canViewGroups];
 
 	setupPageRoute(app, `/${name}`, middlewares, controllers.groups.list);
 	setupPageRoute(app, `/${name}/:slug`, middlewares, controllers.groups.details);

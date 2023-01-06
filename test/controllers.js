@@ -295,6 +295,7 @@ describe('Controllers', () => {
 			username: 'interstitial',
 			password: '123456',
 			'password-confirm': '123456',
+			'account-type': 'student',
 			email: 'test@me.com',
 		};
 
@@ -348,6 +349,7 @@ describe('Controllers', () => {
 				jar = await helpers.registerUser({
 					username: utils.generateUUID().slice(0, 10),
 					password: utils.generateUUID(),
+					'account-type': 'student'
 				});
 				token = await helpers.getCsrfToken(jar);
 
@@ -571,6 +573,7 @@ describe('Controllers', () => {
 				jar = await helpers.registerUser({
 					username: utils.generateUUID().slice(0, 10),
 					password: utils.generateUUID(),
+					'account-type': 'student',
 				});
 				token = await helpers.getCsrfToken(jar);
 			});
