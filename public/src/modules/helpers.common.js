@@ -89,12 +89,12 @@ module.exports = function (utils, Benchpress, relative_path) {
 		return `<span class="icon d-inline-flex justify-content-center align-items-center align-middle ${rounded}" style="${generateCategoryBackground(category)} width:${size}; height: ${size}; font-size: ${parseInt(size, 10) / 2}px;">${category.icon ? `<i class="fa fa-fw ${category.icon}"></i>` : ''}</span>`;
 	}
 
-	function buildCategoryLabel(category) {
+	function buildCategoryLabel(category, className = '') {
 		if (!category) {
 			return '';
 		}
 
-		return `<span class="badge px-1" style="${generateCategoryBackground(category)}">
+		return `<span class="badge px-1 ${className}" style="${generateCategoryBackground(category)}">
 			${category.icon ? `<i class="fa fa-fw ${category.icon}"></i>` : ''}
 			${category.name}
 		</span>`;
@@ -108,6 +108,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 
 		if (category.bgColor) {
 			style.push('background-color: ' + category.bgColor);
+			style.push(`border-color: ${category.bgColor}!important`);
 		}
 
 		if (category.color) {
