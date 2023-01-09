@@ -27,7 +27,7 @@ const buildImports = {
 	client: function (source, themeData) {
 		return [
 			boostrapImport(themeData),
-			'@import "mixins";',
+
 			'@import "fontawesome";',
 			'@import "@adactive/bootstrap-tagsinput/src/bootstrap-tagsinput";',
 			'@import "generics";',
@@ -67,7 +67,7 @@ function boostrapImport(themeData) {
 
 		// overrides for bs5 variables
 		'@import "./scss/overrides";', // this file is in the themes scss folder
-		'@import "../public/scss/overrides.scss";', // core scss overrides
+		'@import "overrides.scss";', // core scss overrides
 
 		// bs files
 		'@import "bootstrap/scss/variables";',
@@ -117,7 +117,8 @@ function boostrapImport(themeData) {
 		'@import "bootstrap/scss/utilities/api";',
 		// scss-docs-end import-stack
 
-		'@import "client";',
+		'@import "mixins";', // core mixins
+		'@import "client";', // core page styles
 		'@import "./theme";', // rest of the theme scss
 		bootswatchSkin ? `@import "bootswatch/dist/${bootswatchSkin}/bootswatch";` : '',
 	].join('\n');
