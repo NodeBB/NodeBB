@@ -26,10 +26,10 @@ CSS.supportedSkins = [
 const buildImports = {
 	client: function (source, themeData) {
 		return [
+			boostrapImport(themeData),
 			'@import "mixins";',
 			'@import "fontawesome";',
 			'@import "@adactive/bootstrap-tagsinput/src/bootstrap-tagsinput";',
-			boostrapImport(themeData),
 			'@import "generics";',
 			source,
 			'@import "jquery-ui";',
