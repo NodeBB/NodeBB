@@ -98,9 +98,8 @@ function enableHandle() {
 function getIndexFromTrack() {
 	const { top: handleTop } = handleEl.getBoundingClientRect();
 	const delta = handleTop - trackTop;
-	const percentage = delta / trackHeight;
+	const percentage = trackHeight > 0 ? delta / trackHeight : 0;
 	const index = Math.floor(ajaxify.data.postcount * percentage);
-
 	return index;
 }
 
