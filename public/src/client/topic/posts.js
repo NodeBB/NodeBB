@@ -10,8 +10,7 @@ define('forum/topic/posts', [
 	'components',
 	'translator',
 	'hooks',
-	'helpers',
-], function (pagination, infinitescroll, postTools, images, navigator, components, translator, hooks, helpers) {
+], function (pagination, infinitescroll, postTools, images, navigator, components, translator, hooks) {
 	const Posts = { };
 
 	Posts.signaturesShown = {};
