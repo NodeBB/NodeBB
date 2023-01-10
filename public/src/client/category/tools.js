@@ -286,6 +286,7 @@ define('forum/category/tools', [
 			});
 			let baseIndex = 0;
 			topicListEl.sortable({
+				axis: 'y',
 				handle: '[component="topic/pinned"]',
 				items: '[component="category/topic"].pinned',
 				start: function () {
