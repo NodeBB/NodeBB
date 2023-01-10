@@ -3,6 +3,7 @@
 import { render } from 'benchpress';
 import { loadMore } from 'forum/infinitescroll';
 import * as navigator from 'navigator';
+import { onNewPostsAddedToDom } from 'forum/topic/posts';
 import { onPage, one as once } from 'hooks';
 import { translate } from 'translator';
 
@@ -244,7 +245,7 @@ async function onScrollEnd() {
 
 		placeholderEl.replaceWith(el);
 	});
-
+	onNewPostsAddedToDom(elements);
 	done();
 }
 
