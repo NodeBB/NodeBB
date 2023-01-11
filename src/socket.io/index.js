@@ -123,7 +123,7 @@ async function onMessage(socket, payload) {
 	const parts = eventName.toString().split('.');
 	const namespace = parts[0];
 	const methodToCall = parts.reduce((prev, cur) => {
-		if (prev !== null && prev[cur]) {
+		if (prev !== null && prev[cur] && (!prev.hasOwnProperty || prev.hasOwnProperty(cur))) {
 			return prev[cur];
 		}
 		return null;
