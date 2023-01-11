@@ -1,0 +1,21 @@
+.icon-container {
+	.fa-nbb-none {
+		border: 1px dotted $black;
+	}
+	.nbb-fa-icons {
+		margin: 0;
+		i {
+			width: 36px;
+			height: 36px;
+			cursor: pointer;
+			line-height: 36px;
+			text-align: center;
+			color: $body-color;
+			margin: 4px;
+
+			&:hover, &.selected {
+				background: $component-active-bg;
+			}
+		}
+	}
+}
