@@ -10,10 +10,13 @@ define('forum/account/blocks', [
 
 	Blocks.init = function () {
 		header.init();
+		const blockListEl = $('[component="blocks/search/list"]');
 
 		$('#user-search').on('keyup', function () {
 			const username = this.value;
-
+			if (!username) {
+				return blockListEl.translateHtml('<li><a href="#" class="dropdown-item">[[admin/menu:search.start-typing]]</a></li>');
+			}
 			api.get('/api/users', {
 				query: username,
 				searchBy: 'username',
@@ -22,7 +25,9 @@ define('forum/account/blocks', [
 				if (err) {
 					return alerts.error(err);
 				}
-
+				if (!data.users.length) {
+					return blockListEl.translateHtml('<li><a href="#" class="dropdown-item">[[users:no-users-found]]</a></li>');
+				}
 				// Only show first 10 matches
 				if (data.matchCount > 10) {
 					data.users.length = 10;
