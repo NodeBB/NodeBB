@@ -28,7 +28,6 @@ const buildImports = {
 		return [
 			boostrapImport(themeData),
 
-			'@import "fontawesome";',
 			'@import "@adactive/bootstrap-tagsinput/src/bootstrap-tagsinput";',
 			'@import "generics";',
 			source,
@@ -117,6 +116,7 @@ function boostrapImport(themeData) {
 		'@import "bootstrap/scss/utilities/api";',
 		// scss-docs-end import-stack
 
+		'@import "fontawesome";',
 		'@import "mixins";', // core mixins
 		'@import "client";', // core page styles
 		'@import "./theme";', // rest of the theme scss
