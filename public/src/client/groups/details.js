@@ -125,11 +125,13 @@ define('forum/groups/details', [
 						toUid: uid,
 						groupName: groupName,
 					}, function (err) {
-						if (!err) {
-							ajaxify.refresh();
-						} else {
-							alerts.error(err);
+						if (err) {
+							return alerts.error(err);
 						}
+						if (action === 'rescindInvite' || action === 'accept' || action === 'reject') {
+							return userRow.remove();
+						}
+						ajaxify.refresh();
 					});
 					break;
 			}
@@ -213,12 +215,10 @@ define('forum/groups/details', [
 			});
 
 			api.put(`/groups/${ajaxify.data.group.slug}`, settings).then(() => {
-				if (settings.name) {
+				if (settings.name !== ajaxify.data.group.name) {
 					let pathname = window.location.pathname;
 					pathname = pathname.slice(1, pathname.lastIndexOf('/') + 1);
 					ajaxify.go(pathname + slugify(settings.name));
-				} else {
-					ajaxify.refresh();
 				}
 
 				alerts.success('[[groups:event.updated]]');
@@ -245,7 +245,12 @@ define('forum/groups/details', [
 		if (!ajaxify.data.group.isOwner) {
 			return;
 		}
-
+		async function updateList() {
+			const data = await api.get(`/api/groups/${ajaxify.data.group.slug}`);
+			const html = await app.parseAndTranslate('groups/details', 'group.invited', { group: data.group });
+			$('[component="groups/invited"] tbody tr').remove();
+			$('[component="groups/invited"] tbody').html(html);
+		}
 		const searchInput = $('[component="groups/members/invite"]');
 		require(['autocomplete'], function (autocomplete) {
 			autocomplete.user(searchInput, function (event, selected) {
@@ -256,7 +261,7 @@ define('forum/groups/details', [
 					if (err) {
 						return alerts.error(err);
 					}
-					ajaxify.refresh();
+					updateList();
 				});
 			});
 		});
@@ -273,7 +278,7 @@ define('forum/groups/details', [
 				if (err) {
 					return alerts.error(err);
 				}
-				ajaxify.refresh();
+				updateList();
 			});
 			return false;
 		});
