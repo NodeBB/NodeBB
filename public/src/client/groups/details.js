@@ -72,8 +72,8 @@ define('forum/groups/details', [
 		detailsPage.on('click', '[data-action]', function () {
 			const btnEl = $(this);
 			const userRow = btnEl.parents('[data-uid]');
-			const ownerFlagEl = userRow.find('.member-name > i');
-			const isOwner = !ownerFlagEl.hasClass('invisible');
+			const ownerFlagEl = userRow.find('[component="groups/owner/icon"]');
+			const isOwner = !!parseInt(userRow.attr('data-isowner'), 10);
 			const uid = userRow.attr('data-uid');
 			const action = btnEl.attr('data-action');
 
