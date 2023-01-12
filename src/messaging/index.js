@@ -141,7 +141,7 @@ Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 Messaging.generateUsernames = function (users, excludeUid) {
 	users = users.filter(u => u && parseInt(u.uid, 10) !== excludeUid);
 	const usernames = users.map(u => u.username);
-	if (users.length > 2) {
+	if (users.length > 3) {
 		return translator.compile(
 			'modules:chat.usernames-and-x-others',
 			usernames.slice(0, 2).join(', '),

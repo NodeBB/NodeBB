@@ -524,8 +524,8 @@ define('forum/chats', [
 			$('[data-roomid="' + ajaxify.data.roomId + '"]').toggleClass('unread', false);
 			$('.expanded-chat [component="chat/input"]').focus();
 		}
-		$('.chats-list li').removeClass('bg-info');
-		$('.chats-list li[data-roomid="' + ajaxify.data.roomId + '"]').addClass('bg-info');
+		$('.chats-list li').removeClass('active');
+		$('.chats-list li[data-roomid="' + ajaxify.data.roomId + '"]').addClass('active');
 
 		components.get('chat/nav-wrapper').attr('data-loaded', ajaxify.data.roomId ? '1' : '0');
 	};
