@@ -9,6 +9,7 @@ const privileges = require('../privileges');
 const plugins = require('../plugins');
 const meta = require('../meta');
 const utils = require('../utils');
+const translator = require('../translator');
 
 const Messaging = module.exports;
 
@@ -137,8 +138,18 @@ Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 	});
 };
 
-Messaging.generateUsernames = (users, excludeUid) => users.filter(user => user && parseInt(user.uid, 10) !== excludeUid)
-	.map(user => user.username).join(', ');
+Messaging.generateUsernames = function (users, excludeUid) {
+	users = users.filter(u => u && parseInt(u.uid, 10) !== excludeUid);
+	const usernames = users.map(u => u.username);
+	if (users.length > 2) {
+		return translator.compile(
+			'modules:chat.usernames-and-x-others',
+			usernames.slice(0, 2).join(', '),
+			usernames.length - 2
+		);
+	}
+	return usernames.join(', ');
+};
 
 Messaging.getTeaser = async (uid, roomId) => {
 	const mid = await Messaging.getLatestUndeletedMessage(uid, roomId);
