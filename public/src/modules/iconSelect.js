@@ -223,11 +223,7 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 	];
 	iconSelect.init = function (el, onModified) {
 		onModified = onModified || function () {};
-		let selected = el.attr('class')
-			.replace(/fa-(solid|regular|brands|light|thin|duotone|nodebb) /, '')
-			.replace('fa-2x', '')
-			.replace('fa', '')
-			.replace(/\s+/g, '');
+		let selected = cleanFAClass(el.attr('class'));
 
 		$('#icons .selected').removeClass('selected');
 
@@ -254,11 +250,10 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 						label: 'No Icon',
 						className: 'btn-default',
 						callback: function () {
-							el.attr('class', 'fa fa-xl');
+							el.removeClass(selected);
 							el.val('');
 							el.attr('value', '');
-
-							onModified(el);
+							onModified(el, '');
 						},
 					},
 					success: {
@@ -266,25 +261,15 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 						className: 'btn-primary',
 						callback: function () {
 							const iconClass = $('.bootbox .selected').attr('class') || `fa fa-${$('.bootbox #fa-filter').val()}`;
-							const categoryIconClass = $('<div></div>')
-								.addClass(iconClass)
-								.removeClass('fa')
-								.removeClass('selected')
-								.removeClass('fa-xl')
-								.attr('class');
-							const searchElVal = picker.find('input').val();
+							const newIconClass = cleanFAClass(iconClass);
 
-							if (categoryIconClass) {
-								el.attr('class', 'fa fa-2x ' + categoryIconClass);
-								el.val(categoryIconClass);
-								el.attr('value', categoryIconClass);
-							} else if (searchElVal) {
-								el.attr('class', searchElVal);
-								el.val(searchElVal);
-								el.attr('value', searchElVal);
+							if (newIconClass) {
+								el.removeClass(selected).addClass(newIconClass);
+								el.val(newIconClass);
+								el.attr('value', newIconClass);
 							}
 
-							onModified(el);
+							onModified(el, newIconClass);
 						},
 					},
 				},
@@ -296,7 +281,7 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 
 				if (selected) {
 					modalEl.find('.' + selected).addClass('selected');
-					searchEl.val(selected.replace(/fa-(solid|regular|brands|light|thin|duotone|nodebb) /, '').replace('fa-xl', '').replace('fa-', ''));
+					searchEl.val(selected.replace('fa-', ''));
 				}
 			}).modal('show');
 
@@ -325,10 +310,7 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 				searchEl.selectRange(0, searchEl.val().length);
 
 				modalEl.find('.icon-container').on('click', 'i', function () {
-					searchEl.val($(this).attr('class')
-						.replace(/fa-(solid|regular|brands|light|thin|duotone|nodebb) /, '')
-						.replace('fa fa-xl fa-', '')
-						.replace('selected', ''));
+					searchEl.val(cleanFAClass($(this).attr('class')).replace('fa-', ''));
 					changeSelection($(this));
 				});
 				const debouncedSearch = utils.debounce(async () => {
@@ -357,6 +339,16 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 			});
 		});
 	};
+
+	// turns "fa fa-2x fa-solid fa-heart" into "fa-heart"
+	function cleanFAClass(className) {
+		className = className.replace(/fa-(solid|regular|brands|light|thin|duotone|nodebb) /, '');
+		const filterNames = ['fa-2x', 'fa-xl', 'fa', 'fa-'];
+		return className.split(' ')
+			.filter(c => !filterNames.includes(c))
+			.filter(c => c && c.startsWith('fa-')).join('');
+	}
+
 	iconSelect.findIcons = async function (searchString) {
 		const request = await fetch('https://api.fontawesome.com', {
 			method: 'POST',
