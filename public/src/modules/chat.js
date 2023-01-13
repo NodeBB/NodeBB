@@ -16,21 +16,29 @@ define('chat', [
 			module.center(chatModal);
 			module.focusInput(chatModal);
 		}
-
-		if (module.modalExists(roomId)) {
-			loadAndCenter(module.getModal(roomId));
-		} else {
-			api.get(`/chats/${roomId}`, {
-				uid: uid || app.user.uid,
-			}).then((roomData) => {
-				roomData.users = roomData.users.filter(function (user) {
-					return user && parseInt(user.uid, 10) !== parseInt(app.user.uid, 10);
-				});
-				roomData.uid = uid || app.user.uid;
-				roomData.isSelf = true;
-				module.createModal(roomData, loadAndCenter);
-			}).catch(alerts.error);
-		}
+		hooks.fire('filter:chat.openChat', {
+			modal: true,
+			roomId: roomId,
+			uid: uid,
+		}).then((hookData) => {
+			if (!hookData.modal) {
+				return ajaxify.go(`/chats/${roomId}`);
+			}
+			if (module.modalExists(roomId)) {
+				loadAndCenter(module.getModal(roomId));
+			} else {
+				api.get(`/chats/${roomId}`, {
+					uid: uid || app.user.uid,
+				}).then((roomData) => {
+					roomData.users = roomData.users.filter(function (user) {
+						return user && parseInt(user.uid, 10) !== parseInt(app.user.uid, 10);
+					});
+					roomData.uid = uid || app.user.uid;
+					roomData.isSelf = true;
+					module.createModal(roomData, loadAndCenter);
+				}).catch(alerts.error);
+			}
+		});
 	};
 
 	module.newChat = function (touid, callback) {
@@ -122,24 +130,12 @@ define('chat', [
 		});
 	};
 
-
 	module.onChatMessageReceived = function (data) {
-		const isSelf = data.self === 1;
 		data.message.self = data.self;
 
 		newMessage = data.self === 0;
 		if (module.modalExists(data.roomId)) {
 			addMessageToModal(data);
-		} else if (!ajaxify.data.template.chats) {
-			api.get(`/chats/${data.roomId}`, {}).then((roomData) => {
-				roomData.users = roomData.users.filter(function (user) {
-					return user && parseInt(user.uid, 10) !== parseInt(app.user.uid, 10);
-				});
-				roomData.silent = true;
-				roomData.uid = app.user.uid;
-				roomData.isSelf = isSelf;
-				module.createModal(roomData);
-			}).catch(alerts.error);
 		}
 	};
 
