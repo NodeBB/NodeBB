@@ -14,6 +14,8 @@ const translator = require('../../translator');
 const messaging = require('../../messaging');
 const categories = require('../../categories');
 
+const relative_path = nconf.get('relative_path');
+
 const helpers = module.exports;
 
 helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {}) {
@@ -229,11 +231,18 @@ async function getProfileMenu(uid, callerUID) {
 		});
 	}
 
-	return await plugins.hooks.fire('filter:user.profileMenu', {
+	const data = await plugins.hooks.fire('filter:user.profileMenu', {
 		uid: uid,
 		callerUID: callerUID,
 		links: links,
 	});
+	const userslug = await user.getUserField(uid, 'userslug');
+	data.links.forEach((link) => {
+		if (!link.hasOwnProperty('url')) {
+			link.url = `${relative_path}/user/${userslug}/${link.route}`;
+		}
+	});
+	return data;
 }
 
 async function parseAboutMe(userData) {
