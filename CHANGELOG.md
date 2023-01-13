@@ -1,3 +1,37 @@
+#### v2.8.1 (2022-12-30)
+
+##### Chores
+
+*  fallbacks for new language string (8a69e740)
+*  remove extraneous lines from changelog (bbaf26ce)
+*  incrementing version number - v2.8.0 (8e77673d)
+*  update changelog for v2.8.0 (a5c2edb9)
+*  incrementing version number - v2.7.0 (96cc0617)
+*  incrementing version number - v2.6.1 (7e52a7a5)
+*  incrementing version number - v2.6.0 (e7fcf482)
+*  incrementing version number - v2.5.8 (dec0e7de)
+*  incrementing version number - v2.5.7 (5836bf4a)
+*  incrementing version number - v2.5.6 (c7bd7dbf)
+*  incrementing version number - v2.5.5 (3509ed94)
+*  incrementing version number - v2.5.4 (e83260ca)
+*  incrementing version number - v2.5.3 (7e922936)
+*  incrementing version number - v2.5.2 (babcd17e)
+*  incrementing version number - v2.5.1 (ce3aa950)
+*  incrementing version number - v2.5.0 (01d276cb)
+*  incrementing version number - v2.4.5 (dd3e1a28)
+*  incrementing version number - v2.4.4 (d5525c87)
+*  incrementing version number - v2.4.3 (9c647c6c)
+*  incrementing version number - v2.4.2 (3aa7b855)
+*  incrementing version number - v2.4.1 (60cbd148)
+*  incrementing version number - v2.4.0 (4834cde3)
+*  incrementing version number - v2.3.1 (d2425942)
+*  incrementing version number - v2.3.0 (046ea120)
+
+##### Bug Fixes
+
+*  vulnerability in socket.io nested namespaces (#11117) (586eed14)
+*  lock post/reply similar to user.create (1ea9481a)
+
 #### v2.8.0 (2022-12-21)
 
 ##### Chores

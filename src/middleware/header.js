@@ -34,10 +34,11 @@ middleware.buildHeader = helpers.try(async (req, res, next) => {
 	if (req.method === 'GET') {
 		await require('./index').applyCSRFasync(req, res);
 	}
+
+	({ req, locals: res.locals } = await plugins.hooks.fire('filter:middleware.buildHeader', { req: req, locals: res.locals }));
 	const [config, canLoginIfBanned] = await Promise.all([
 		controllers.api.loadConfig(req),
 		user.bans.canLoginIfBanned(req.uid),
-		plugins.hooks.fire('filter:middleware.buildHeader', { req: req, locals: res.locals }),
 	]);
 
 	if (!canLoginIfBanned && req.loggedIn) {
