@@ -59,18 +59,7 @@ define('notifications', [
 					});
 					components.get('notifications').on('click', '.mark-all-read', Notifications.markAllRead);
 
-					notifList.on('click', '.mark-read', function () {
-						const $this = $(this);
-						const liEl = $this.parents('li[data-nid]');
-						const unread = liEl.hasClass('unread');
-						const nid = liEl.attr('data-nid');
-						markNotification(nid, unread, function () {
-							liEl.toggleClass('unread');
-							$this.find('.unread').toggleClass('hidden', unread);
-							$this.find('.read').toggleClass('hidden', !unread);
-						});
-						return false;
-					});
+					Notifications.handleUnreadButton(notifList);
 
 					hooks.fire('action:notifications.loaded', {
 						notifications: notifs,
@@ -79,6 +68,21 @@ define('notifications', [
 					callback();
 				});
 			});
+		});
+	};
+
+	Notifications.handleUnreadButton = function (notifList) {
+		notifList.on('click', '.mark-read', function () {
+			const $this = $(this);
+			const liEl = $this.parents('li[data-nid]');
+			const unread = liEl.hasClass('unread');
+			const nid = liEl.attr('data-nid');
+			markNotification(nid, unread, function () {
+				liEl.toggleClass('unread');
+				$this.find('.unread').toggleClass('hidden', unread);
+				$this.find('.read').toggleClass('hidden', !unread);
+			});
+			return false;
 		});
 	};
 
@@ -98,6 +102,10 @@ define('notifications', [
 		if (!unreadNotifs[notifData.nid]) {
 			unreadNotifs[notifData.nid] = true;
 		}
+	};
+
+	Notifications.markNotification = function (nid, read, callback) {
+		markNotification(nid, read, callback);
 	};
 
 	function markNotification(nid, read, callback) {
