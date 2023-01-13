@@ -58,6 +58,12 @@ define('quickreply', [
 				handle: undefined,
 				content: replyMsg,
 			};
+			const replyLen = replyMsg.length;
+			if (replyLen < parseInt(config.minimumPostLength, 10)) {
+				return alerts.error('[[error:content-too-short, ' + config.minimumPostLength + ']]');
+			} else if (replyLen > parseInt(config.maximumPostLength, 10)) {
+				return alerts.error('[[error:content-too-long, ' + config.maximumPostLength + ']]');
+			}
 
 			ready = false;
 			api.post(`/topics/${ajaxify.data.tid}`, replyData, function (err, data) {
