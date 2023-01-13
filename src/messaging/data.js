@@ -114,15 +114,14 @@ module.exports = function (Messaging) {
 				const mid = await db.getSortedSetRange(key, index - 1, index - 1);
 				const fields = await Messaging.getMessageFields(mid, ['fromuid', 'timestamp']);
 				if ((messages[0].timestamp > fields.timestamp + Messaging.newMessageCutoff) ||
-					(messages[0].fromuid !== fields.fromuid)) {
+					(messages[0].fromuid !== fields.fromuid) ||
+					messages[0].system) {
 					// If it's been 5 minutes, this is a new set of messages
 					messages[0].newSet = true;
 				}
 			} else {
 				messages[0].newSet = true;
 			}
-		} else {
-			messages = [];
 		}
 
 		const data = await plugins.hooks.fire('filter:messaging.getMessages', {
