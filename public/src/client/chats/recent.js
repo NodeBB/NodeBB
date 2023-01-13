@@ -8,6 +8,7 @@ define('forum/chats/recent', ['alerts'], function (alerts) {
 		require(['forum/chats'], function (Chats) {
 			$('[component="chat/recent"]').on('click', '[component="chat/recent/room"]', function () {
 				Chats.switchChat($(this).attr('data-roomid'));
+				return false;
 			});
 
 			$('[component="chat/recent"]').on('scroll', function () {
