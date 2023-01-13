@@ -105,6 +105,7 @@
 	"user_posted_ago": "%1 posted %2",
 	"guest_posted_ago": "Guest posted %1",
 	"last_edited_by": "last edited by %1",
+	"edited-timestamp": "Edited %1",
 
 	"norecentposts": "No Recent Posts",
 	"norecenttopics": "No Recent Topics",
