@@ -113,16 +113,25 @@ define('accounts/picture', [
 		if (!picture && ajaxify.data.defaultAvatar) {
 			picture = ajaxify.data.defaultAvatar;
 		}
-		const pictureEl = $(`[component="avatar/picture"][data-uid=${ajaxify.data.uid}]`);
-		const iconEl = $(`[component="avatar/icon"][data-uid=${ajaxify.data.uid}]`);
-		pictureEl[picture ? 'show' : 'hide']();
-		iconEl[!picture ? 'show' : 'hide']();
+		const headerPictureEl = $(`[component="header/avatar"] [component="avatar/picture"]`);
+		const headerIconEl = $(`[component="header/avatar"] [component="avatar/icon"]`);
+
 		if (picture) {
-			pictureEl.attr('src', picture);
+			if (!headerPictureEl.length && headerIconEl.length) {
+				const img = $('<img/>');
+				$(headerIconEl[0].attributes).each(function () {
+					img.attr(this.nodeName, this.nodeValue);
+				});
+				img.attr('component', 'avatar/picture')
+					.attr('src', picture)
+					.insertBefore(headerIconEl);
+			}
+		} else {
+			headerPictureEl.remove();
 		}
 
 		if (iconBgColor) {
-			iconEl.css({
+			headerIconEl.css({
 				'background-color': iconBgColor,
 			});
 		}
