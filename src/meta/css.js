@@ -27,9 +27,7 @@ const buildImports = {
 	client: function (source, themeData) {
 		return [
 			boostrapImport(themeData),
-
 			'@import "@adactive/bootstrap-tagsinput/src/bootstrap-tagsinput";',
-			'@import "generics";',
 			source,
 			'@import "jquery-ui";',
 			'@import "cropperjs/dist/cropper";',
@@ -118,6 +116,7 @@ function boostrapImport(themeData) {
 
 		'@import "fontawesome";',
 		'@import "mixins";', // core mixins
+		'@import "generics";',
 		'@import "client";', // core page styles
 		'@import "./theme";', // rest of the theme scss
 		bootswatchSkin ? `@import "bootswatch/dist/${bootswatchSkin}/bootswatch";` : '',
