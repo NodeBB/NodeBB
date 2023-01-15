@@ -1,6 +1,9 @@
 
 .flex-1 {
-	flex: 1 1 0%;
+	flex: 1 1 0%!important;
+}
+.flex-0 {
+	flex: 0!important;
 }
 
 .pointer {
