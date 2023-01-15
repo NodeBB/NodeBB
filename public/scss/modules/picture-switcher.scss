@@ -1,14 +1,4 @@
 .picture-switcher {
-	img, .user-icon {
-		@include user-icon-style(46px, 2.4rem, 50%);
-	}
-
-	@include media-breakpoint-down(sm) {
-		img, .user-icon {
-			display: none;
-		}
-	}
-
 	h4 {
 		line-height: 46px;
 		margin: 0;

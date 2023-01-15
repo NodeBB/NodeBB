@@ -1,5 +1,5 @@
-<div class="row">
-	<div class="col-6 col-sm-8 col-md-6">
+<div class="row gy-2">
+	<div class="col-12 col-sm-8 col-md-6">
 		<div class="list-group">
 			{{{each pictures}}}
 			<button type="button" class="list-group-item d-flex p-3" data-type="{pictures.type}">
@@ -13,40 +13,21 @@
 			{{{end}}}
 		</div>
 	</div>
-	<div class="col-6 col-sm-4 col-md-6">
+	<div class="col-12 col-sm-4 col-md-6">
 		<div class="list-group">
-			<!-- IF allowProfileImageUploads -->
+			{{{ if allowProfileImageUploads }}}
 			<button type="button" class="list-group-item" data-action="upload">
-				<span class="hidden-xs hidden-sm">
-					[[user:upload_new_picture]]
-				</span>
-				<span class="visible-xs-inline visible-sm-inline">
-					<i class="fa fa-plus"></i>
-					<i class="fa fa-upload"></i>
-				</span>
+				[[user:upload_new_picture]]
 			</button>
-			<!-- ENDIF allowProfileImageUploads -->
+			{{{ end }}}
 			<button type="button" class="list-group-item" data-action="upload-url">
-				<span class="hidden-xs hidden-sm">
-					[[user:upload_new_picture_from_url]]
-				</span>
-				<span class="visible-xs-inline visible-sm-inline">
-					<i class="fa fa-plus"></i>
-					<i class="fa fa-link"></i>
-				</span>
+				[[user:upload_new_picture_from_url]]
 			</button>
-			<!-- IF uploaded -->
+			{{{ if uploaded }}}
 			<button type="button" class="list-group-item" data-action="remove-uploaded">
-				<span class="hidden-xs hidden-sm">
-					[[user:remove_uploaded_picture]]
-				</span>
-				<span class="visible-xs-inline visible-sm-inline">
-					<i class="fa fa-picture-o"></i>
-					<i class="fa fa-long-arrow-right"></i>
-					<i class="fa fa-trash-o"></i>
-				</span>
+				[[user:remove_uploaded_picture]]
 			</button>
-			<!-- ENDIF uploaded -->
+			{{{ end }}}
 		</div>
 	</div>
 </div>
