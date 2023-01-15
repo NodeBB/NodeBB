@@ -166,6 +166,10 @@ define('notifications', [
 				alerts.error(err);
 			}
 			unreadNotifs = {};
+			const notifEls = $('[component="notifications/list"] [data-nid]');
+			notifEls.removeClass('unread');
+			notifEls.find('.mark-read .unread').addClass('hidden');
+			notifEls.find('.mark-read .read').removeClass('hidden');
 		});
 	};
 
