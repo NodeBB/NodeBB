@@ -720,6 +720,9 @@ const utils = {
 			}
 		};
 	},
+	generateSaveId: function (uid) {
+		return ['composer', uid, Date.now()].join(':');
+	},
 };
 
 module.exports = utils;
