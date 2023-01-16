@@ -92,7 +92,11 @@ define('quickreply', [
 			e.preventDefault();
 
 			const textEl = components.get('topic/quickreply/text');
-			composer.newReply(ajaxify.data.tid, undefined, ajaxify.data.title, utils.escapeHTML(textEl.val()));
+			composer.newReply({
+				tid: ajaxify.data.tid,
+				title: ajaxify.data.title,
+				body: utils.escapeHTML(textEl.val()),
+			});
 			textEl.val('');
 		});
 	};
