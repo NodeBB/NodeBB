@@ -554,7 +554,7 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 			return;
 		}
 
-		await hooks.fire('filter:navigator.scroll', { scrollTo, highlight, duration, newIndex });
+		await hooks.fire('filter:navigator.scroll', { scrollTo, highlight, duration, newIndex: newIndex + 1 });
 
 		const postHeight = scrollTo.outerHeight(true);
 		const navbarHeight = components.get('navbar').outerHeight(true) || 0;
@@ -574,7 +574,7 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 				setTimeout(() => { // fixes race condition from jQuery — onAnimateComplete called too quickly
 					$(window).on('scroll', navigator.delayedUpdate);
 
-					hooks.fire('action:navigator.scrolled', { scrollTo, highlight, duration, newIndex });
+					hooks.fire('action:navigator.scrolled', { scrollTo, highlight, duration, newIndex: newIndex + 1 });
 				}, 50);
 			}
 			function onAnimateComplete() {

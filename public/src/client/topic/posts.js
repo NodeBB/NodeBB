@@ -205,7 +205,7 @@ define('forum/topic/posts', [
 
 		hooks.fire('action:posts.loading', { posts: data.posts, after: after, before: before });
 
-		app.parseAndTranslate('topic', 'posts', Object.assign({}, ajaxify.data, data), function (html) {
+		app.parseAndTranslate('topic', 'posts', Object.assign({}, ajaxify.data, data), async function (html) {
 			html = html.filter(function () {
 				const $this = $(this);
 				const pid = $this.attr('data-pid');
@@ -236,7 +236,7 @@ define('forum/topic/posts', [
 
 			hooks.fire('action:posts.loaded', { posts: data.posts });
 
-			Posts.onNewPostsAddedToDom(html);
+			await Posts.onNewPostsAddedToDom(html);
 
 			callback(html);
 		});
@@ -280,7 +280,7 @@ define('forum/topic/posts', [
 		});
 	};
 
-	Posts.onTopicPageLoad = function (posts) {
+	Posts.onTopicPageLoad = async function (posts) {
 		handlePrivateUploads(posts);
 		images.wrapImagesInLinks(posts);
 		hideDuplicateSignatures(posts);
@@ -288,7 +288,7 @@ define('forum/topic/posts', [
 		posts.find('[component="post/content"] img:not(.not-responsive)').addClass('img-fluid');
 		Posts.addBlockquoteEllipses(posts);
 		hidePostToolsForDeletedPosts(posts);
-		addNecroPostMessage();
+		await addNecroPostMessage();
 	};
 
 	Posts.addTopicEvents = function (events) {
@@ -403,8 +403,8 @@ define('forum/topic/posts', [
 		});
 	}
 
-	Posts.onNewPostsAddedToDom = function (posts) {
-		Posts.onTopicPageLoad(posts);
+	Posts.onNewPostsAddedToDom = async function (posts) {
+		await Posts.onTopicPageLoad(posts);
 		utils.addCommasToNumbers(posts.find('.formatted-number'));
 		utils.makeNumbersHumanReadable(posts.find('.human-readable-number'));
 		posts.find('.timeago').timeago();

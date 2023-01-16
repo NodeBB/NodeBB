@@ -35,7 +35,7 @@ define('forum/topic', [
 		}
 	});
 
-	Topic.init = function () {
+	Topic.init = async function () {
 		const tidChanged = !tid || parseInt(tid, 10) !== parseInt(ajaxify.data.tid, 10);
 		tid = ajaxify.data.tid;
 		currentUrl = ajaxify.currentPage;
@@ -46,7 +46,7 @@ define('forum/topic', [
 		if (tidChanged) {
 			posts.signaturesShown = {};
 		}
-		posts.onTopicPageLoad(components.get('post'));
+		await posts.onTopicPageLoad(components.get('post'));
 		navigator.init('[component="post"]', ajaxify.data.postcount, Topic.toTop, Topic.toBottom, utils.debounce(Topic.navigatorCallback, 500));
 
 		postTools.init(tid);

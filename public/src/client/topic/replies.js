@@ -33,7 +33,7 @@ define('forum/topic/replies', ['forum/topic/posts', 'hooks', 'alerts'], function
 					loggedIn: !!app.user.uid,
 					hideReplies: config.hasOwnProperty('showNestedReplies') ? !config.showNestedReplies : true,
 				};
-				app.parseAndTranslate('topic', 'posts', tplData, function (html) {
+				app.parseAndTranslate('topic', 'posts', tplData, async function (html) {
 					const repliesEl = $('<ul>', { component: 'post/replies', class: 'list-unstyled' }).html(html).hide();
 					if (button.attr('data-target-component')) {
 						post.find('[component="' + button.attr('data-target-component') + '"]').html(repliesEl);
@@ -42,7 +42,7 @@ define('forum/topic/replies', ['forum/topic/posts', 'hooks', 'alerts'], function
 					}
 
 					repliesEl.slideDown('fast');
-					posts.onNewPostsAddedToDom(html);
+					await posts.onNewPostsAddedToDom(html);
 					hooks.fire('action:posts.loaded', { posts: data });
 				});
 			});
@@ -63,7 +63,7 @@ define('forum/topic/replies', ['forum/topic/posts', 'hooks', 'alerts'], function
 		}
 		incrementCount(post, 1);
 		data.hideReplies = config.hasOwnProperty('showNestedReplies') ? !config.showNestedReplies : true;
-		app.parseAndTranslate('topic', 'posts', data, function (html) {
+		app.parseAndTranslate('topic', 'posts', data, async function (html) {
 			const replies = $('[component="post"][data-pid="' + post.toPid + '"] [component="post/replies"]').first();
 			if (replies.length) {
 				if (config.topicPostSort === 'newest_to_oldest') {
@@ -71,7 +71,7 @@ define('forum/topic/replies', ['forum/topic/posts', 'hooks', 'alerts'], function
 				} else {
 					replies.append(html);
 				}
-				posts.onNewPostsAddedToDom(html);
+				await posts.onNewPostsAddedToDom(html);
 			}
 		});
 	};

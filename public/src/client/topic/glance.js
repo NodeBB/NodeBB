@@ -22,8 +22,8 @@ export default function init() {
 
 	enableButtons();
 	({ handleEl } = enableHandle());
-	updateHandleText();
-	updateUnreadIndicator();
+	updateHandleText(ajaxify.data.postIndex);
+	updateUnreadIndicator(ajaxify.data.postIndex);
 
 	once('action:ajaxify.cleanup', () => {
 		window.removeEventListener('resize', updateTrackPosition);
@@ -102,12 +102,12 @@ function getIndexFromTrack() {
 	return index;
 }
 
-async function updateUnreadIndicator() {
+async function updateUnreadIndicator(index) {
 	if (ajaxify.data.postcount <= ajaxify.data.bookmarkThreshold) {
 		return;
 	}
 
-	const index = Math.max(getIndexFromTrack(), ajaxify.data.bookmark);
+	index = Math.max(index, ajaxify.data.bookmark);
 	const unreadEl = document.querySelector('[component="topic/navigator"] .unread');
 	const percentage = 1 - (index / ajaxify.data.postcount);
 	unreadEl.style.height = `${trackHeight * percentage}px`;
@@ -125,27 +125,13 @@ async function updateUnreadIndicator() {
 }
 
 function repositionHandle(index) {
-	// Updates the position of the handle on the track based on viewport
-	if (!index) {
-		index = getIndexFromTrack();
-	} else {
-		index -= 1;
-	}
-
-	updateHandleText();
-	updateUnreadIndicator();
-
-	if (index === 0) {
-		handleEl.style.top = 0;
-		return;
-	}
-
-	const percentage = index / ajaxify.data.postcount;
+	const percentage = Math.max(0, (index - 1) / ajaxify.data.postcount);
 	handleEl.style.top = `${trackHeight * percentage}px`;
+	updateHandleText(index);
+	updateUnreadIndicator(index);
 }
 
-async function updateHandleText() {
-	const index = getIndexFromTrack() + 1;
+async function updateHandleText(index) {
 	const { tid } = ajaxify.data;
 	const indexEl = handleEl.querySelector('.meta .index');
 	const timestampEl = handleEl.querySelector('.meta .timestamp');
@@ -243,7 +229,7 @@ async function onScrollEnd() {
 
 		placeholderEl.replaceWith(el);
 	});
-	onNewPostsAddedToDom(elements);
+	await onNewPostsAddedToDom(elements);
 	done();
 }
 
