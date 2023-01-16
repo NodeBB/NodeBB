@@ -20,14 +20,12 @@ export default function init() {
 		return;
 	}
 
-	navigatorEl.classList.toggle('d-sm-flex', true);
 	enableButtons();
 	({ handleEl } = enableHandle());
 	updateHandleText();
 	updateUnreadIndicator();
 
 	once('action:ajaxify.cleanup', () => {
-		navigatorEl.classList.toggle('d-sm-flex', false);
 		window.removeEventListener('resize', updateTrackPosition);
 	});
 
