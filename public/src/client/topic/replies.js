@@ -96,8 +96,8 @@ define('forum/topic/replies', ['forum/topic/posts', 'hooks', 'alerts'], function
 		}
 
 		if (!avatars.find('[data-uid="' + post.uid + '"]').length && count < 7) {
-			app.parseAndTranslate('topic', 'posts', { posts: [{ replies: { users: [post.user] } }] }, function (html) {
-				avatars.prepend(html.find('[component="post/reply-count/avatars"] [component="avatar/picture"]'));
+			app.parseAndTranslate('topic', 'posts', { posts: [{ replies: { hasMore: false, users: [post.user] } }] }, function (html) {
+				avatars.prepend(html.find('[component="post/reply-count/avatars"]').html());
 			});
 		}
 
