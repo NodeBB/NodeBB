@@ -57,11 +57,11 @@ function enableHandle() {
 	updateTrackPosition();
 	window.addEventListener('resize', updateTrackPosition);
 
-	onPage('action:navigator.update', ({ newIndex }) => {
+	onPage('action:navigator.update', utils.debounce(({ newIndex }) => {
 		if (!active) {
 			repositionHandle(newIndex);
 		}
-	});
+	}, 150));
 
 	onPage('action:navigator.scrolled', ({ newIndex }) => {
 		if (!active) {
@@ -104,6 +104,10 @@ function getIndexFromTrack() {
 	return index;
 }
 
+// https://stackoverflow.com/a/21696585/583363
+const isHidden = el => el.offsetParent === null;
+
+
 async function updateUnreadIndicator(index) {
 	if (ajaxify.data.postcount <= ajaxify.data.bookmarkThreshold) {
 		return;
@@ -111,6 +115,11 @@ async function updateUnreadIndicator(index) {
 
 	index = Math.max(index, ajaxify.data.bookmark);
 	const unreadEl = document.querySelector('[component="topic/navigator"] .unread');
+	const meta = unreadEl.querySelector('.meta');
+	if (isHidden(meta)) {
+		return;
+	}
+
 	const percentage = 1 - (index / ajaxify.data.postcount);
 	unreadEl.style.height = `${trackHeight * percentage}px`;
 
@@ -135,8 +144,13 @@ function repositionHandle(index) {
 
 async function updateHandleText(index) {
 	const { tid } = ajaxify.data;
-	const indexEl = handleEl.querySelector('.meta .index');
-	const timestampEl = handleEl.querySelector('.meta .timestamp');
+	const meta = handleEl.querySelector('.meta');
+	if (isHidden(meta)) {
+		return;
+	}
+
+	const indexEl = meta.querySelector('.index');
+	const timestampEl = meta.querySelector('.timestamp');
 
 	const text = await translate(`[[topic:navigator.index, ${index}, ${ajaxify.data.postcount}]]`);
 	indexEl.innerText = text;
