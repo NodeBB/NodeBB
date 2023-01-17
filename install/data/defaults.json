@@ -181,5 +181,6 @@
     "composer:showHelpTab": 1,
     "composer:allowPluginHelp": 1,
     "maxReconnectionAttempts": 5,
-    "reconnectionDelay": 1500
+    "reconnectionDelay": 1500,
+    "disableCustomUserSkins": 0
 }
