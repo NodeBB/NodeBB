@@ -218,11 +218,9 @@ async function onScrollEnd() {
 		});
 	});
 
-	let elements = await app.parseAndTranslate('topic', 'posts', data);
-	elements = Array.from(elements); // frickin' jquery
-	elements = elements.filter(el => el.nodeType === 1);
-
-	elements.forEach((el) => {
+	let jqueryElements = await app.parseAndTranslate('topic', 'posts', data);
+	jqueryElements = jqueryElements.filter((i, e) => e.nodeType === 1);
+	jqueryElements.each((i, el) => {
 		const index = el.getAttribute('data-index');
 		const placeholderEl = document.querySelector(`[component="post/placeholder"][data-index="${index}"]`);
 		if (!placeholderEl) {
@@ -231,7 +229,7 @@ async function onScrollEnd() {
 
 		placeholderEl.replaceWith(el);
 	});
-	await onNewPostsAddedToDom(elements);
+	await onNewPostsAddedToDom(jqueryElements);
 	done();
 }
 
