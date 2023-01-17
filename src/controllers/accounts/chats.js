@@ -27,9 +27,6 @@ chatsController.get = async function (req, res, next) {
 	}
 
 	if (!req.params.roomid) {
-		if (recentChats.rooms.length && recentChats.rooms[0]) {
-			return helpers.redirect(res, `/user/${req.params.userslug}/chats/${recentChats.rooms[0].roomId}`);
-		}
 		return res.render('chats', {
 			rooms: recentChats.rooms,
 			uid: uid,

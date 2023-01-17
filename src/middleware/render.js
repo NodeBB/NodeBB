@@ -7,6 +7,7 @@ const jsesc = require('jsesc');
 const winston = require('winston');
 const semver = require('semver');
 
+const db = require('../database');
 const navigation = require('../navigation');
 const translator = require('../translator');
 const privileges = require('../privileges');
@@ -158,6 +159,7 @@ module.exports = function (middleware) {
 			timeagoCode: languages.userTimeagoCode(res.locals.config.userLang),
 			browserTitle: translator.translate(controllersHelpers.buildTitle(translator.unescape(options.title))),
 			navigation: navigation.get(req.uid),
+			roomIds: db.getSortedSetRevRange(`uid:${req.uid}:chat:rooms`, 0, 0),
 		});
 
 		const unreadData = {
@@ -174,6 +176,7 @@ module.exports = function (middleware) {
 		results.user.privileges = results.privileges;
 		results.user.timeagoCode = results.timeagoCode;
 		results.user[results.user.status] = true;
+		results.user.lastRoomId = results.roomIds.length ? results.roomIds[0] : null;
 
 		results.user.email = String(results.user.email);
 		results.user['email:confirmed'] = results.user['email:confirmed'] === 1;
