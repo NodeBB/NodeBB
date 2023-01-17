@@ -75,7 +75,9 @@ function enableHandle() {
 			return;
 		}
 
-		const tUpdateHandleText = utils.debounce(updateHandleText, 250);
+		const tUpdateHandleText = utils.throttle(() => {
+			updateHandleText(getIndexFromTrack());
+		}, 250);
 
 		toggle(true);
 		active = true;
