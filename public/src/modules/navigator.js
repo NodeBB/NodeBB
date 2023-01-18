@@ -81,7 +81,7 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 				const index = parseInt(input.val(), 10);
 				const url = generateUrl(index);
 				input.val('');
-				$('.pagination-block .dropdown-toggle').trigger('click');
+				paginationBlockEl.find('.dopdown-menu.show').removeClass('show');
 				ajaxify.go(url);
 			}
 		});
@@ -198,7 +198,7 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 			$(window).off('mousemove', mousemove);
 			if (mouseDragging) {
 				navigator.scrollToIndex(index - 1, true, 0);
-				paginationBlockEl.find('[data-bs-toggle="dropdown"]').trigger('click');
+				paginationBlockEl.find('.dropdown-menu.show').removeClass('show');
 			}
 			clearRenderInterval();
 			mouseDragging = false;
@@ -269,7 +269,7 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 			if (isNavigating) {
 				navigator.scrollToIndex(index - 1, true, 0);
 				isNavigating = false;
-				paginationBlockEl.find('[data-bs-toggle="dropdown"]').trigger('click');
+				paginationBlockEl.find('.dropdown-menu.show').removeClass('show');
 			}
 		});
 	}
