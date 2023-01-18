@@ -24,5 +24,6 @@ topController.get = async function (req, res, next) {
 	if (req.loggedIn) {
 		data.rssFeedUrl += `?${feedQs}`;
 	}
+
 	res.render('top', data);
 };

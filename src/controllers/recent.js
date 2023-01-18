@@ -18,6 +18,7 @@ recentController.get = async function (req, res, next) {
 	if (!data) {
 		return next();
 	}
+
 	res.render('recent', data);
 };
 
