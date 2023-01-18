@@ -3,7 +3,9 @@
 const winston = require('winston');
 
 function warn(msg) {
-	winston.warn(msg);
+	if (global.env === 'development') {
+		winston.warn(msg);
+	}
 }
 
 module.exports = require('../public/src/modules/translator.common')(require('./utils'), (lang, namespace) => {
