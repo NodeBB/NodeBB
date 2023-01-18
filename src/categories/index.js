@@ -99,6 +99,10 @@ Categories.getModerators = async function (cid) {
 };
 
 Categories.getModeratorUids = async function (cids) {
+	// Only check active categories
+	const disabled = (await Categories.getCategoriesFields(cids, ['disabled'])).map(obj => obj.disabled);
+	cids = cids.filter((_, idx) => !disabled[idx]);
+
 	const groupNames = cids.reduce((memo, cid) => {
 		memo.push(`cid:${cid}:privileges:moderate`);
 		memo.push(`cid:${cid}:privileges:groups:moderate`);
