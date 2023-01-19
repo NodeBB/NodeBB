@@ -29,6 +29,8 @@
 	"session-time-days": "Ngày",
 	"session-time-seconds": "Giây",
 	"session-time-help": "Giá trị này dùng để điều chỉnh thời gian người dùng đăng nhập khi họ chọn &quot;Nhớ Tôi&quot; lúc đăng nhập. Lưu ý chỉ một trong những giá trị này sẽ được dùng. Nếu không có giá trị <i>giây</i> chúng tôi sẽ dùng <i>ngày</i>. Nếu không có <i>ngày</i> mặc định là <i>14 ngày</i>.",
+	"session-duration": "Session length if \"Remember Me\" is not checked (seconds)",
+	"session-duration-help": "By default — or if set to <code>0</code> — a user will stay logged in for the duration of the session (e.g. however long the browser window/tab remains open). Set this value to explicitly invalidate the session after the specified number of seconds.",
 	"online-cutoff": "Số phút sau khi người dùng được coi là không hoạt động",
 	"online-cutoff-help": "Nếu người dùng không thao tác trong khoảng thời gian này, được coi là không hoạt động và không nhận được cập nhật theo thời gian thực.",
 	"registration": "Đăng Ký Người Dùng",

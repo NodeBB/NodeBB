@@ -29,6 +29,8 @@
 	"session-time-days": "Dny",
 	"session-time-seconds": "Sekundy",
 	"session-time-help": "Tyto hodnoty jsou využity v rozhodujícím procesu, jak dlouho zůstane uživatel přihlášen při zaškrtnutí „Zapamatovat si mě”. Nezapomeňte, že bude použita jen jedna hodnota. Jestli není nastavena hodnota v <i>sekundách</i>, budou brány v potaz <i>dny</i>. Nebudou-li nastaveny <i>dny</i>, hodnota bude standardně <i>14 dní</i>.",
+	"session-duration": "Session length if \"Remember Me\" is not checked (seconds)",
+	"session-duration-help": "By default — or if set to <code>0</code> — a user will stay logged in for the duration of the session (e.g. however long the browser window/tab remains open). Set this value to explicitly invalidate the session after the specified number of seconds.",
 	"online-cutoff": "Počet minut, kdy je uživatel považován za neaktivního",
 	"online-cutoff-help": "Nebude-li uživatel vykonávat žádnou akci v tomto časovém rozpětí, bude považován za neaktivního a nebude docházet k automatickým aktualizacím.",
 	"registration": "Registrace uživatele",

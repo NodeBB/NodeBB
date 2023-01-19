@@ -91,6 +91,22 @@ describe('socket.io', () => {
 		});
 	});
 
+	it('should return error for unknown event', (done) => {
+		io.emit('user.gdpr.__proto__.constructor.toString', (err) => {
+			assert(err);
+			assert.equal(err.message, '[[error:invalid-event, user.gdpr.__proto__.constructor.toString]]');
+			done();
+		});
+	});
+
+	it('should return error for unknown event', (done) => {
+		io.emit('constructor.toString', (err) => {
+			assert(err);
+			assert.equal(err.message, '[[error:invalid-event, constructor.toString]]');
+			done();
+		});
+	});
+
 	it('should get installed themes', (done) => {
 		const themes = ['nodebb-theme-persona'];
 		io.emit('admin.themes.getInstalled', (err, data) => {
@@ -717,7 +733,7 @@ describe('socket.io', () => {
 
 		it('should not generate code if rate limited', (done) => {
 			socketUser.reset.send({ uid: 0 }, 'regular@test.com', (err) => {
-				assert.ifError(err);
+				assert(err);
 
 				async.parallel({
 					count: async.apply(db.sortedSetCount.bind(db), 'reset:issueDate', 0, Date.now()),

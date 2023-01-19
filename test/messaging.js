@@ -67,10 +67,10 @@ describe('Messaging Library', () => {
 		await Groups.join('administrators', mocks.users.foo.uid);
 		await User.setSetting(mocks.users.baz.uid, 'restrictChat', '1');
 
-		({ jar: mocks.users.foo.jar, csrf_token: mocks.users.foo.csrf } = await util.promisify(helpers.loginUser)('foo', 'barbar'));
-		({ jar: mocks.users.bar.jar, csrf_token: mocks.users.bar.csrf } = await util.promisify(helpers.loginUser)('bar', 'bazbaz'));
-		({ jar: mocks.users.baz.jar, csrf_token: mocks.users.baz.csrf } = await util.promisify(helpers.loginUser)('baz', 'quuxquux'));
-		({ jar: mocks.users.herp.jar, csrf_token: mocks.users.herp.csrf } = await util.promisify(helpers.loginUser)('herp', 'derpderp'));
+		({ jar: mocks.users.foo.jar, csrf_token: mocks.users.foo.csrf } = await helpers.loginUser('foo', 'barbar'));
+		({ jar: mocks.users.bar.jar, csrf_token: mocks.users.bar.csrf } = await helpers.loginUser('bar', 'bazbaz'));
+		({ jar: mocks.users.baz.jar, csrf_token: mocks.users.baz.csrf } = await helpers.loginUser('baz', 'quuxquux'));
+		({ jar: mocks.users.herp.jar, csrf_token: mocks.users.herp.csrf } = await helpers.loginUser('herp', 'derpderp'));
 
 		chatMessageDelay = meta.config.chatMessageDelay;
 		meta.config.chatMessageDelay = 0;
@@ -277,7 +277,7 @@ describe('Messaging Library', () => {
 
 		it('should change owner if owner is deleted', async () => {
 			const sender = await User.create({ username: 'deleted_chat_user', password: 'barbar' });
-			const { jar: senderJar, csrf_token: senderCsrf } = await util.promisify(helpers.loginUser)('deleted_chat_user', 'barbar');
+			const { jar: senderJar, csrf_token: senderCsrf } = await helpers.loginUser('deleted_chat_user', 'barbar');
 
 			const receiver = await User.create({ username: 'receiver' });
 			const { response } = await request(`${nconf.get('url')}/api/v3/chats`, {
@@ -851,7 +851,7 @@ describe('Messaging Library', () => {
 		});
 
 		it('should return 404 if user is not in room', async () => {
-			const data = await util.promisify(helpers.loginUser)('baz', 'quuxquux');
+			const data = await helpers.loginUser('baz', 'quuxquux');
 			const response = await request(`${nconf.get('url')}/api/user/baz/chats/${roomId}`, {
 				resolveWithFullResponse: true,
 				simple: false,

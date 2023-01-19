@@ -88,6 +88,7 @@
     "category-not-selected": "Category not selected.",
     "too-many-posts": "Anda hanya boleh mengirim sekali setiap %1 saat() - sila tunggu sebelum kiriman seterusnya",
     "too-many-posts-newbie": "Sebagai pengguna baru, anda hanya boleh mengirim sekali setiap %1 saat() sehinnga anda mendapat %2 reputasi - sila tunggu sebelum kiriman seterusnya",
+    "already-posting": "You are already posting",
     "tag-too-short": "Sila masukkan tag yang lebih panjang. Tag mesti mengandungi sekurang-kurangnya %1 aksara()",
     "tag-too-long": "Sila masukkan tag yang lebih pendek. Tag mesti mengandungi tidak lebih %1 aksara()",
     "not-enough-tags": "Tag tidak mencukupi. Topik memerlukan sekurang-kurangnya %1 tag()",

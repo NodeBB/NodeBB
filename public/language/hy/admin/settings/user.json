@@ -29,6 +29,8 @@
 	"session-time-days": "Օրեր",
 	"session-time-seconds": "Վայրկյաններ ",
 	"session-time-help": "Այս արժեքներն օգտագործվում են որոշելու համար, թե որքան ժամանակ է օգտվողը մնում մուտք գործած, երբ նա ստուգում է &laquo;Հիշիր ինձ&raquo; մուտքի վրա: Նշենք, որ այս արժեքներից միայն մեկը կօգտագործվի: Եթե վայրկյանների արժեք չկա, մենք վերադառնում ենք օրերի: Եթե օրերի արժեք չկա, մենք լռելյայն սահմանում ենք 14 օր:",
+	"session-duration": "Session length if \"Remember Me\" is not checked (seconds)",
+	"session-duration-help": "By default — or if set to <code>0</code> — a user will stay logged in for the duration of the session (e.g. however long the browser window/tab remains open). Set this value to explicitly invalidate the session after the specified number of seconds.",
 	"online-cutoff": "Րոպեներ անց Օգտագործողը համարվում է ոչ ակտիվ, ",
 	"online-cutoff-help": "Եթե օգտատերը այս տևողության համար որևէ գործողություններ չի կատարում, նա համարվում է ոչ ակտիվ և իրական ժամանակում թարմացումներ չի ստանում:",
 	"registration": "Օգտատերի գրանցում ",

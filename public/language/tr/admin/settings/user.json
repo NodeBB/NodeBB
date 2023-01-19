@@ -1,7 +1,7 @@
 {
 	"authentication": "Kimlik Doğrulama",
 	"email-confirm-interval": "Kullanıcı onay e-postasını tekrar gönderemez",
-	"email-confirm-interval2": "minutes have elapsed",
+	"email-confirm-interval2": "dakika geçti",
 	"allow-login-with": "Girişe izin ver:",
 	"allow-login-with.username-email": "Kullanıcı Adı veya E-posta",
 	"allow-login-with.username": "Sadece kullanıcı adı",
@@ -29,6 +29,8 @@
 	"session-time-days": "Gün",
 	"session-time-seconds": "Saniye",
 	"session-time-help": "Bu değerler, kullanıcının \"Beni Hatırla\" seçeneğini işaretlediğinde ne kadar süreyle oturumda kaldığını kontrol etmek için kullanılır. girişte. Bu değerlerden sadece birinin kullanılacağını unutmayın. <i>Saniye</i> değeri yoksa, <i>gün</i> dikkate alınır. <i>Gün</i> değeri yoksa, varsayılan değer <i>14 gün</i> olur.",
+	"session-duration": "Session length if \"Remember Me\" is not checked (seconds)",
+	"session-duration-help": "By default — or if set to <code>0</code> — a user will stay logged in for the duration of the session (e.g. however long the browser window/tab remains open). Set this value to explicitly invalidate the session after the specified number of seconds.",
 	"online-cutoff": "Kullanıcının atıl olarak değerlendirileceği dakika cinsinden geçen süre",
 	"online-cutoff-help": "Eğer kullanıcı bu süre içinde herhangi bir işlem yapmazsa, etkin olmayan olarak kabul edilir ve gerçek zamanlı güncellemeler almaz.",
 	"registration": "Kullanıcı Kaydı",

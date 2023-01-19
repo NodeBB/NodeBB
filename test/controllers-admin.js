@@ -4,6 +4,7 @@ const async = require('async');
 const assert = require('assert');
 const nconf = require('nconf');
 const request = require('request');
+const requestAsync = require('request-promise-native');
 
 const db = require('./mocks/databasemock');
 const categories = require('../src/categories');
@@ -65,17 +66,16 @@ describe('Admin Controllers', () => {
 		});
 	});
 
-	it('should 403 if user is not admin', (done) => {
-		helpers.loginUser('admin', 'barbar', (err, data) => {
-			assert.ifError(err);
-			jar = data.jar;
-			request(`${nconf.get('url')}/admin`, { jar: jar }, (err, res, body) => {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 403);
-				assert(body);
-				done();
-			});
+	it('should 403 if user is not admin', async () => {
+		({ jar } = await helpers.loginUser('admin', 'barbar'));
+		const { statusCode, body } = await requestAsync(`${nconf.get('url')}/admin`, {
+			jar: jar,
+			simple: false,
+			resolveWithFullResponse: true,
 		});
+
+		assert.equal(statusCode, 403);
+		assert(body);
 	});
 
 	it('should load admin dashboard', (done) => {

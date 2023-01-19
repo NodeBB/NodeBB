@@ -88,6 +88,7 @@
     "category-not-selected": "Chưa chọn category",
     "too-many-posts": "Bạn chỉ có đăng bài mới mỗi %1 giây - vui lòng đợi để tiếp tục đăng bài.",
     "too-many-posts-newbie": "Là người dùng mới, bạn chỉ có thể đăng %1 giây một lần cho đến khi bạn đạt được %2 danh tiếng - vui lòng đợi trước khi đăng lại",
+    "already-posting": "You are already posting",
     "tag-too-short": "Vui lòng nhập tag dài hơn. Tag phải có tối thiểu %1 ký tự.",
     "tag-too-long": "Vui lòng nhập tag ngắn hơn. Tag chỉ có thể có tối đa %1 ký tự.",
     "not-enough-tags": "Không đủ thẻ. Chủ đề phải có ít nhất %1 thẻ.",

@@ -88,6 +88,7 @@
     "category-not-selected": "カテゴリが選択されていません。",
     "too-many-posts": "あなたは%1秒間に一つの投稿しか許されます－少し待ってまた投稿してください",
     "too-many-posts-newbie": "あなたは%2評判を得ているまで、新しいユーザーとしては、一度だけごとに%1秒を投稿することができます - 再び投稿する前にお待ちください",
+    "already-posting": "You are already posting",
     "tag-too-short": "%1文字(s)以上でタグを入力してください。",
     "tag-too-long": "%1文字(s)以内でタグを入力してください。",
     "not-enough-tags": "タグが足りません。スレッドはせめて%1のタグ(s)が必要です。",

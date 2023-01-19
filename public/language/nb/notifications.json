@@ -1,8 +1,8 @@
 {
     "title": "Varsler",
     "no_notifs": "Du har ingen nye varsler",
-    "see_all": "All notifications",
-    "mark_all_read": "Mark all read",
+    "see_all": "Alle varslinger",
+    "mark_all_read": "Marker alle som lest",
     "back_to_home": "Tilbake til %1",
     "outgoing_link": "Utgående link",
     "outgoing_link_message": "Du forlater nå %1",

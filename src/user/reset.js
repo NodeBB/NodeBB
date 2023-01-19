@@ -17,6 +17,8 @@ const UserReset = module.exports;
 
 const twoHours = 7200000;
 
+UserReset.minSecondsBetweenEmails = 60;
+
 UserReset.validate = async function (code) {
 	const uid = await db.getObjectField('reset:uid', code);
 	if (!uid) {
@@ -39,30 +41,44 @@ UserReset.generate = async function (uid) {
 	return code;
 };
 
-async function canGenerate(uid) {
-	const score = await db.sortedSetScore('reset:issueDate:uid', uid);
-	if (score > Date.now() - (1000 * 60)) {
-		throw new Error('[[error:reset-rate-limited]]');
-	}
-}
-
 UserReset.send = async function (email) {
 	const uid = await user.getUidByEmail(email);
 	if (!uid) {
 		throw new Error('[[error:invalid-email]]');
 	}
-	await canGenerate(uid);
-	await db.sortedSetAdd('reset:issueDate:uid', Date.now(), uid);
-	const code = await UserReset.generate(uid);
-	await emailer.send('reset', uid, {
-		reset_link: `${nconf.get('url')}/reset/${code}`,
-		subject: '[[email:password-reset-requested]]',
-		template: 'reset',
-		uid: uid,
-	}).catch(err => winston.error(`[emailer.send] ${err.stack}`));
+	await lockReset(uid, '[[error:reset-rate-limited]]');
+	try {
+		await canGenerate(uid);
+		await db.sortedSetAdd('reset:issueDate:uid', Date.now(), uid);
+		const code = await UserReset.generate(uid);
+		await emailer.send('reset', uid, {
+			reset_link: `${nconf.get('url')}/reset/${code}`,
+			subject: '[[email:password-reset-requested]]',
+			template: 'reset',
+			uid: uid,
+		}).catch(err => winston.error(`[emailer.send] ${err.stack}`));
 
-	return code;
+		return code;
+	} finally {
+		db.deleteObjectField('locks', `reset${uid}`);
+	}
 };
+
+async function lockReset(uid, error) {
+	const value = `reset${uid}`;
+	const count = await db.incrObjectField('locks', value);
+	if (count > 1) {
+		throw new Error(error);
+	}
+	return value;
+}
+
+async function canGenerate(uid) {
+	const score = await db.sortedSetScore('reset:issueDate:uid', uid);
+	if (score > Date.now() - (UserReset.minSecondsBetweenEmails * 1000)) {
+		throw new Error('[[error:reset-rate-limited]]');
+	}
+}
 
 UserReset.commit = async function (code, password) {
 	user.isPasswordValid(password);
@@ -122,16 +138,13 @@ UserReset.updateExpiry = async function (uid) {
 };
 
 UserReset.clean = async function () {
-	const [tokens, uids] = await Promise.all([
-		db.getSortedSetRangeByScore('reset:issueDate', 0, -1, '-inf', Date.now() - twoHours),
-		db.getSortedSetRangeByScore('reset:issueDate:uid', 0, -1, '-inf', Date.now() - twoHours),
-	]);
-	if (!tokens.length && !uids.length) {
+	const tokens = await db.getSortedSetRangeByScore('reset:issueDate', 0, -1, '-inf', Date.now() - twoHours);
+	if (!tokens.length) {
 		return;
 	}
 
 	winston.verbose(`[UserReset.clean] Removing ${tokens.length} reset tokens from database`);
-	await cleanTokensAndUids(tokens, uids);
+	await cleanTokens(tokens);
 };
 
 UserReset.cleanByUid = async function (uid) {
@@ -153,13 +166,15 @@ UserReset.cleanByUid = async function (uid) {
 	}
 
 	winston.verbose(`[UserReset.cleanByUid] Found ${tokensToClean.length} token(s), removing...`);
-	await cleanTokensAndUids(tokensToClean, uid);
+	await Promise.all([
+		cleanTokens(tokensToClean),
+		db.deleteObjectField('locks', `reset${uid}`),
+	]);
 };
 
-async function cleanTokensAndUids(tokens, uids) {
+async function cleanTokens(tokens) {
 	await Promise.all([
 		db.deleteObjectFields('reset:uid', tokens),
 		db.sortedSetRemove('reset:issueDate', tokens),
-		db.sortedSetRemove('reset:issueDate:uid', uids),
 	]);
 }

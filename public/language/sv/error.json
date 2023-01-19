@@ -88,6 +88,7 @@
     "category-not-selected": "Kategori Ej vald.",
     "too-many-posts": "Du måste vänta minst %1 sekund(er) mellan varje inlägg",
     "too-many-posts-newbie": "Som ny användare måste du vänta %1 sekund(er) mellan varje inlägg tills dess du har %2 förtroende",
+    "already-posting": "You are already posting",
     "tag-too-short": "Fyll i en längre tagg. Taggar måste vara minst %1 tecken långa",
     "tag-too-long": "Fyll i en kortare tagg. Taggar kan ej vara längre än %1 tecken långa",
     "not-enough-tags": "Otillräckligt antal taggar. Ämnen måste ha minst %1 taggar",

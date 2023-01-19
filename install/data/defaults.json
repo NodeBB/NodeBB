@@ -4,6 +4,7 @@
     "defaultLang": "en-GB",
     "loginDays": 14,
     "loginSeconds": 0,
+    "sessionDuration": 0,
     "loginAttempts": 5,
     "lockoutDuration": 60,
     "adminReloginDuration": 60,

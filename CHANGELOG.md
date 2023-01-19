@@ -1,3 +1,28 @@
+#### v2.8.2 (2023-01-13)
+
+##### Chores
+
+*  incrementing version number - v2.8.1 (727f879e)
+*  update changelog for v2.8.1 (d17d4ec0)
+
+##### Bug Fixes
+
+*  move call to `filter:middleware.buildHeader` out of parallel so that req can be overridden by plugins prior to loading config (25ae58e8)
+
+#### v2.8.1 (2022-12-30)
+
+##### Chores
+
+*  fallbacks for new language string (8a69e740)
+*  remove extraneous lines from changelog (bbaf26ce)
+*  incrementing version number - v2.8.0 (8e77673d)
+*  update changelog for v2.8.0 (a5c2edb9)
+
+##### Bug Fixes
+
+*  vulnerability in socket.io nested namespaces (#11117) (586eed14)
+*  lock post/reply similar to user.create (1ea9481a)
+
 #### v2.8.0 (2022-12-21)
 
 ##### Chores

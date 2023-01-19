@@ -8,7 +8,7 @@
 	"section-general": "General",
 
 	"section-manage": "Manage",
-	"manage/categories": "Categories",
+	"manage/categories": "Kategorijos",
 	"manage/privileges": "Privileges",
 	"manage/tags": "Tags",
 	"manage/users": "Users",
@@ -27,7 +27,7 @@
 	"settings/reputation": "Reputation & Flags",
 	"settings/email": "Email",
 	"settings/user": "Users",
-	"settings/group": "Groups",
+	"settings/group": "Grupės",
 	"settings/guest": "Guests",
 	"settings/uploads": "Uploads",
 	"settings/languages": "Languages",
