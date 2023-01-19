@@ -188,6 +188,8 @@
 	"info.moderation-note.add": "Add note",
 
 	"sessions.description": "This page allows you to view any active sessions on this forum and revoke them if necessary. You can revoke your own session by logging out of your account.",
+	"revoke-session": "Revoke Session",
+	"browser-version-on-platform": "%1 %2 on %3",
 
 	"consent.title": "Your Rights &amp; Consent",
 	"consent.lead": "This community forum collects and processes your personal information.",
