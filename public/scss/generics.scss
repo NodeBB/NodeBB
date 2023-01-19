@@ -41,23 +41,6 @@
 	}
 }
 
-.category-list {
-	padding: 0;
-
-	li {
-		@include inline-block;
-		@include pointer;
-		padding: 0.5em;
-		margin: 0.25em;
-		@include border-radius(3px);
-
-		&.disabled {
-			background-color: $gray-600!important;
-			opacity: 0.5;
-		}
-	}
-}
-
 @mixin user-icon() {
 	display: inline-flex;
 	justify-content: center;
