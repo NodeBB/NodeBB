@@ -79,7 +79,8 @@ define('forum/topic/postTools', [
 	};
 
 	PostTools.removeMenu = function (postEl) {
-		postEl.find('[component="post/tools"] .dropdown-menu').html('');
+		postEl.find('[component="post/tools"] .dropdown-menu')
+			.removeAttr('data-loaded').html('');
 	};
 
 	PostTools.updatePostCount = function (postCount) {
