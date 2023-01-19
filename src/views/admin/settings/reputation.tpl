@@ -5,15 +5,15 @@
 	<div class="col-sm-2 col-12 settings-header">[[admin/settings/reputation:reputation]]</div>
 	<div class="col-sm-10 col-12">
 		<form>
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input type="checkbox" class="form-check-input" data-field="reputation:disabled">
 				<label class="form-check-label">[[admin/settings/reputation:disable]]</label>
 			</div>
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input type="checkbox" class="form-check-input" data-field="downvote:disabled">
 				<label class="form-check-label">[[admin/settings/reputation:disable-down-voting]]</label>
 			</div>
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input type="checkbox" class="form-check-input" data-field="votesArePublic">
 				<label class="form-check-label">[[admin/settings/reputation:votes-are-public]]</label>
 			</div>
@@ -47,7 +47,7 @@
 				<input type="text" class="form-control" placeholder="0" data-field="min:rep:downvote" id="min:rep:downvote">
 			</div>
 			<div class="mb-3">
-				<label for="downvotesPerDay">[[admin/settings/reputation:downvotes-per-day]]</label>
+				<label class="form-label" for="downvotesPerDay">[[admin/settings/reputation:downvotes-per-day]]</label>
 				<input type="text" class="form-control" placeholder="10" data-field="downvotesPerDay" id="downvotesPerDay">
 			</div>
 			<div class="mb-3">
