@@ -106,14 +106,14 @@
 		<form>
 			<div class="row">
 				<div class="col-sm-6">
-					<div class="form-group">
-						<label for="loginDays">[[admin/settings/user:session-time-days]]</label>
+					<div class="form-group mb-3">
+						<label class="form-label" for="loginDays">[[admin/settings/user:session-time-days]]</label>
 						<input id="loginDays" type="number" min="0" class="form-control" data-field="loginDays" placeholder="[[admin/settings/user:session-time-days]]" />
 					</div>
 				</div>
 				<div class="col-sm-6">
-					<div class="form-group">
-						<label for="loginSeconds">[[admin/settings/user:session-time-seconds]]</label>
+					<div class="form-group mb-3">
+						<label class="form-label" for="loginSeconds">[[admin/settings/user:session-time-seconds]]</label>
 						<input id="loginSeconds" type="number" min="0" step="60" class="form-control" data-field="loginSeconds" placeholder="[[admin/settings/user:session-time-seconds]]" />
 					</div>
 				</div>
@@ -126,15 +126,15 @@
 				</div>
 			</div>
 
-			<div class="form-group">
-				<label for="sessionDuration">[[admin/settings/user:session-duration]]</label>
+			<div class="form-group mb-3">
+				<label class="form-label" for="sessionDuration">[[admin/settings/user:session-duration]]</label>
 				<input id="sessionDuration" type="number" step="60" min="0" class="form-control" data-field="sessionDuration">
-				<p class="help-block">[[admin/settings/user:session-duration-help]]</p>
+				<p class="form-text">[[admin/settings/user:session-duration-help]]</p>
 			</div>
 
-			<div class="form-group">
-				<label for="onlineCutoff">[[admin/settings/user:online-cutoff]]</label>
-				<input id="onlineCutoff" type="text" class="form-control" data-field="onlineCutoff">
+			<div class="form-group mb-3">
+				<label class="form-label" for="onlineCutoff">[[admin/settings/user:online-cutoff]]</label>
+				<input id="onlineCutoff" type="number" min="0" class="form-control" data-field="onlineCutoff">
 				<p class="form-text">[[admin/settings/user:online-cutoff-help]]</p>
 			</div>
 		</form>
