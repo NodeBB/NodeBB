@@ -5,51 +5,56 @@ define('forum/topic/votes', [
 	'components', 'translator', 'api', 'hooks', 'bootbox', 'alerts', 'bootstrap',
 ], function (components, translator, api, hooks, bootbox, alerts, bootstrap) {
 	const Votes = {};
+	let _showTooltip = {};
 
 	Votes.addVoteHandler = function () {
+		_showTooltip = {};
 		components.get('topic').on('mouseenter', '[data-pid] [component="post/vote-count"]', loadDataAndCreateTooltip);
+		components.get('topic').on('mouseleave', '[data-pid] [component="post/vote-count"]', destroyTooltip);
 	};
 
-	function loadDataAndCreateTooltip(e) {
-		e.stopPropagation();
+	function destroyTooltip() {
+		const $this = $(this);
+		const pid = $this.parents('[data-pid]').attr('data-pid');
+		const tooltip = bootstrap.Tooltip.getInstance(this);
+		if (tooltip) {
+			tooltip.dispose();
+			$this.attr('title', '');
+		}
+		_showTooltip[pid] = false;
+	}
 
+	function loadDataAndCreateTooltip() {
 		const $this = $(this);
 		const el = $this.parent();
-		el.find('.tooltip').css('display', 'none');
 		const pid = el.parents('[data-pid]').attr('data-pid');
+		_showTooltip[pid] = true;
+		const tooltip = bootstrap.Tooltip.getInstance(this);
+		if (tooltip) {
+			tooltip.dispose();
+			$this.attr('title', '');
+		}
 
 		socket.emit('posts.getUpvoters', [pid], function (err, data) {
 			if (err) {
 				return alerts.error(err);
 			}
-
-			if (data.length) {
+			if (_showTooltip[pid] && data.length) {
 				createTooltip($this, data[0]);
 			}
 		});
-		return false;
 	}
 
 	function createTooltip(el, data) {
-		const tooltip = bootstrap.Tooltip.getInstance(el);
 		function doCreateTooltip(title) {
-			if (tooltip) {
-				tooltip.setContent({ '.tooltip-inner': title });
-			} else {
-				el.attr('title', title);
-				(new bootstrap.Tooltip(el, {
-					container: '#content',
-				})).show();
-			}
-			el.parent().find('.tooltip').css('display', '');
+			el.attr('title', title);
+			(new bootstrap.Tooltip(el, {
+				container: '#content',
+			})).show();
 		}
 		let usernames = data.usernames
 			.filter(name => name !== '[[global:former_user]]');
 		if (!usernames.length) {
-			if (tooltip) {
-				tooltip.dispose();
-			}
-			el.attr('title', '');
 			return;
 		}
 		if (usernames.length + data.otherCount > 6) {
