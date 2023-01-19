@@ -10,6 +10,10 @@
 	@include pointer;
 }
 
+.overscroll-behavior-contain {
+	overscroll-behavior: contain;
+}
+
 [component="category-selector"], .category-dropdown-container {
 	#category-dropdown-check:checked + .dropdown-menu {
 		display: block;
