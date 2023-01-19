@@ -199,7 +199,7 @@
 				<p class="form-text">
 					[[admin/settings/advanced:compression.help]]
 				</p>
-				<div class="form-check form-switch mb-3">
+				<div class="form-check form-switch">
 					<input class="form-check-input" type="checkbox" data-field="useCompression">
 					<label class="form-check-label">[[admin/settings/advanced:compression.enable]]</label>
 				</div>

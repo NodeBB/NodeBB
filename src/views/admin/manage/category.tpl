@@ -123,8 +123,8 @@
 				</div>
 				<div class="row">
 					<div class="col-lg-6">
-						<div class="form-group">
-							<div class="form-check form-switch mb-3">
+						<div class="form-group mb-3">
+							<div class="form-check form-switch">
 								<input type="checkbox" class="form-check-input" id="cid-{category.cid}-isSection" data-name="isSection" <!-- IF category.isSection -->checked<!-- ENDIF category.isSection --> />
 								<label class="form-check-label">[[admin/manage/categories:is-section]]</label>
 							</div>
@@ -132,8 +132,8 @@
 					</div>
 					{{{ if postQueueEnabled }}}
 					<div class="col-lg-6">
-						<div class="form-group">
-							<div class="form-check form-switch mb-3">
+						<div class="form-group mb-3">
+							<div class="form-check form-switch">
 								<input type="checkbox" class="form-check-input" data-name="postQueue" {{{ if category.postQueue }}}checked{{{ end }}} />
 								<label class="form-check-label">[[admin/manage/categories:post-queue]]</label>
 							</div>

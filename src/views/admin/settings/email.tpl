@@ -110,14 +110,10 @@
 				<input class="form-check-input" type="checkbox" id="email:smtpTransport:enabled" data-field="email:smtpTransport:enabled" name="email:smtpTransport:enabled" />
 				<label for="email:smtpTransport:enabled" class="form-check-label">[[admin/settings/email:smtp-transport.enabled]]</label>
 			</div>
-			<div class="mb-3">
-				<div class="form-check form-switch mb-3">
-					<input class="form-check-input" type="checkbox" id="email:smtpTransport:pool" data-field="email:smtpTransport:pool" name="email:smtpTransport:pool" />
-					<label for="email:smtpTransport:pool" class="form-check-label">[[admin/settings/email:smtp-transport.pool]]</label>
-				</div>
-				<p class="form-text">
-					[[admin/settings/email:smtp-transport.pool-help]]
-				</p>
+			<div class="form-check form-switch mb-3">
+				<input class="form-check-input" type="checkbox" id="email:smtpTransport:pool" data-field="email:smtpTransport:pool" name="email:smtpTransport:pool" />
+				<label for="email:smtpTransport:pool" class="form-check-label">[[admin/settings/email:smtp-transport.pool]]</label>
+				<p class="form-text">[[admin/settings/email:smtp-transport.pool-help]]</p>
 			</div>
 			<div class="mb-3">
 				<label class="form-label" for="email:smtpTransport:service">[[admin/settings/email:smtp-transport.service]]</label>

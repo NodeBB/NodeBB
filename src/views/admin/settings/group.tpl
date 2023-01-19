@@ -7,27 +7,21 @@
 			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="allowPrivateGroups">
 				<label class="form-check-label">[[admin/settings/group:private-groups]]</label>
+				<p class="form-text">[[admin/settings/group:private-groups.help]]</p>
+				<p class="form-text">[[admin/settings/group:private-groups.warning]]</p>
 			</div>
-
-			<p class="form-text">
-				[[admin/settings/group:private-groups.help]]
-			</p>
-			<p class="form-text">
-				[[admin/settings/group:private-groups.warning]]
-			</p>
 
 			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="allowMultipleBadges">
 				<label class="form-check-label">[[admin/settings/group:allow-multiple-badges]]</label>
+				<p class="form-text">[[admin/settings/group:allow-multiple-badges-help]]</p>
 			</div>
 
-			<p class="form-text">
-				[[admin/settings/group:allow-multiple-badges-help]]
-			</p>
 			<div class="mb-3">
 				<label class="form-label" for="maximumGroupNameLength">[[admin/settings/group:max-name-length]]</label>
 				<input id="maximumGroupNameLength" class="form-control" type="text" placeholder="255" data-field="maximumGroupNameLength" />
 			</div>
+
 			<div class="mb=3">
 				<label class="form-label" for="maximumGroupTitleLength">[[admin/settings/group:max-title-length]]</label>
 				<input id="maximumGroupTitleLength" class="form-control" type="text" placeholder="40" data-field="maximumGroupTitleLength" />
