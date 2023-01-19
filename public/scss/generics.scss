@@ -58,32 +58,6 @@
 	}
 }
 
-.user-list {
-	padding-left: 2rem;
-	padding-top: 1rem;
-
-	li {
-		@include pointer;
-		display: inline-block;
-		list-style-type: none;
-		padding: 0.5rem 1rem;
-
-		&:hover {
-			background: $gray-300;
-		}
-
-		.avatar  {
-			float: left;
-			margin-right: 1rem;
-		}
-
-		span {
-			vertical-align: middle;
-			display: inline-block;
-		}
-	}
-}
-
 @mixin user-icon() {
 	display: inline-flex;
 	justify-content: center;
