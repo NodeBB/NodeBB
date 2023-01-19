@@ -11,6 +11,7 @@ const cache = require('../cache');
 module.exports = function (Categories) {
 	Categories.update = async function (modified) {
 		const cids = Object.keys(modified);
+		console.log('updating', cids);
 		await Promise.all(cids.map(cid => updateCategory(cid, modified[cid])));
 		return cids;
 	};
