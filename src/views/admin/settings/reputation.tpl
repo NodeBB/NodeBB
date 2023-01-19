@@ -117,7 +117,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input type="checkbox" class="form-check-input" data-field="flags:autoResolveOnBan">
 				<label class="form-check-label">[[admin/settings/reputation:flags.auto-resolve-on-ban]]</label>
 			</div>

@@ -6,12 +6,12 @@
 	</div>
 	<div class="col-sm-10 col-12">
 		<form>
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="stripEXIFData">
 				<label class="form-check-label">[[admin/settings/uploads:strip-exif-data]]</label>
 			</div>
 
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="privateUploads">
 				<label class="form-check-label">[[admin/settings/uploads:private]]</label>
 			</div>
@@ -78,7 +78,7 @@
 				</p>
 			</div>
 
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="allowTopicsThumbnail">
 				<label class="form-check-label">[[admin/settings/uploads:allow-topic-thumbnails]]</label>
 			</div>
@@ -121,7 +121,7 @@
 		[[admin/settings/uploads:orphans]]
 	</div>
 	<div class="col-sm-10 col-12">
-		<div class="form-check form-switch">
+		<div class="form-check form-switch mb-3">
 			<input class="form-check-input" type="checkbox" data-field="preserveOrphanedUploads">
 			<label class="form-check-label">[[admin/settings/uploads:preserve-orphaned-uploads]]</label>
 		</div>
@@ -142,12 +142,12 @@
 	</div>
 	<div class="col-sm-10 col-12">
 		<form>
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="allowProfileImageUploads">
 				<label class="form-check-label">[[admin/settings/uploads:allow-profile-image-uploads]]</label>
 			</div>
 
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="profile:convertProfileImageToPNG">
 				<label class="form-check-label">[[admin/settings/uploads:convert-profile-image-png]]</label>
 			</div>
@@ -184,7 +184,7 @@
 				</p>
 			</div>
 
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="profile:keepAllUserImages">
 				<label class="form-check-label">[[admin/settings/uploads:keep-all-user-images]]</label>
 			</div>

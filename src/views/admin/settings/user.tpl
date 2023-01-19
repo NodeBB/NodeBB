@@ -19,36 +19,36 @@
 	<div class="col-sm-2 col-12 settings-header">[[admin/settings/user:account-settings]]</div>
 	<div class="col-sm-10 col-12">
 		<form>
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="gdpr_enabled">
 				<label class="form-check-label">[[admin/settings/user:gdpr_enabled]]</label>
 				<p class="form-text">[[admin/settings/user:gdpr_enabled_help]]</p>
 			</div>
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="username:disableEdit">
 				<label class="form-check-label">[[admin/settings/user:disable-username-changes]]</label>
 			</div>
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="email:disableEdit">
 				<label class="form-check-label">[[admin/settings/user:disable-email-changes]]</label>
 			</div>
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="password:disableEdit">
 				<label class="form-check-label">[[admin/settings/user:disable-password-changes]]</label>
 			</div>
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="allowAccountDelete" checked>
 				<label class="form-check-label">[[admin/settings/user:allow-account-deletion]]</label>
 			</div>
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="hideFullname">
 				<label class="form-check-label">[[admin/settings/user:hide-fullname]]</label>
 			</div>
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="hideEmail">
 				<label class="form-check-label">[[admin/settings/user:hide-email]]</label>
 			</div>
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="showFullnameAsDisplayName">
 				<label class="form-check-label">[[admin/settings/user:show-fullname-as-displayname]]</label>
 			</div>
@@ -60,7 +60,7 @@
 	<div class="col-sm-2 col-12 settings-header">[[admin/settings/user:themes]]</div>
 	<div class="col-sm-10 col-12">
 		<form>
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="disableCustomUserSkins">
 				<label class="form-check-label">[[admin/settings/user:disable-user-skins]]</label>
 			</div>
@@ -165,12 +165,12 @@
 				</p>
 			</div>
 
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="showAverageApprovalTime">
 				<label class="form-check-label">[[admin/settings/user:registration-queue-show-average-time]]</label>
 			</div>
 
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" id="requireEmailAddress" data-field="requireEmailAddress" name="requireEmailAddress" />
 				<label for="requireEmailAddress" class="form-check-label">[[admin/settings/email:require-email-address]]</label>
 			</div>
@@ -240,32 +240,32 @@
 	<div class="col-sm-2 col-12 settings-header">[[admin/settings/user:default-user-settings]]</div>
 	<div class="col-sm-10 col-12">
 		<form>
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="showemail">
 				<label class="form-check-label">[[admin/settings/user:show-email]]</label>
 			</div>
 
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="showfullname">
 				<label class="form-check-label">[[admin/settings/user:show-fullname]]</label>
 			</div>
 
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="restrictChat">
 				<label class="form-check-label">[[admin/settings/user:restrict-chat]]</label>
 			</div>
 
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="openOutgoingLinksInNewTab">
 				<label class="form-check-label">[[admin/settings/user:outgoing-new-tab]]</label>
 			</div>
 
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="topicSearchEnabled">
 				<label class="form-check-label">[[admin/settings/user:topic-search]]</label>
 			</div>
 
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="updateUrlWithPostIndex">
 				<label class="form-check-label">[[admin/settings/user:update-url-with-post-index]]</label>
 			</div>
@@ -281,12 +281,12 @@
 				</select>
 			</div>
 
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="followTopicsOnCreate">
 				<label class="form-check-label">[[admin/settings/user:follow-created-topics]]</label>
 			</div>
 
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="followTopicsOnReply">
 				<label class="form-check-label">[[admin/settings/user:follow-replied-topics]]</label>
 			</div>

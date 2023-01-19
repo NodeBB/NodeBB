@@ -83,12 +83,12 @@
 						</div>
 					</div>
 
-					<div class="form-check form-switch">
+					<div class="form-check form-switch mb-3">
 						<input class="form-check-input" type="checkbox" name="targetBlank" <!-- IF enabled.targetBlank -->checked<!-- ENDIF enabled.targetBlank -->/>
 						<label class="form-check-label">[[admin/settings/navigation:open-new-window]]</label>
 					</div>
 
-					<div class="form-check form-switch">
+					<div class="form-check form-switch mb-3">
 						<input class="form-check-input" type="checkbox" name="dropdown" {{{ if enabled.dropdown }}}checked{{{ end }}}/>
 						<label class="form-check-label">[[admin/settings/navigation:dropdown]]</label>
 					</div>

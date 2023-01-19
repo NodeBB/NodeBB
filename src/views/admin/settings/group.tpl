@@ -4,7 +4,7 @@
 	<div class="col-sm-2 col-12 settings-header">[[admin/settings/group:general]]</div>
 	<div class="col-sm-10 col-12">
 		<form role="form">
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="allowPrivateGroups">
 				<label class="form-check-label">[[admin/settings/group:private-groups]]</label>
 			</div>
@@ -16,7 +16,7 @@
 				[[admin/settings/group:private-groups.warning]]
 			</p>
 
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="allowMultipleBadges">
 				<label class="form-check-label">[[admin/settings/group:allow-multiple-badges]]</label>
 			</div>

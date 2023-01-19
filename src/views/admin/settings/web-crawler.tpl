@@ -14,12 +14,12 @@
 	<div class="col-sm-2 col-12 settings-header">[[admin/settings/web-crawler:sitemap-feed-settings]]</div>
 	<div class="col-sm-10 col-12">
 		<form>
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="feeds:disableRSS">
 				<label class="form-check-label">[[admin/settings/web-crawler:disable-rss-feeds]]</label>
 			</div>
 
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="feeds:disableSitemap">
 				<label class="form-check-label">[[admin/settings/web-crawler:disable-sitemap-xml]]</label>
 			</div>

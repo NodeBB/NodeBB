@@ -16,11 +16,11 @@
 						<label class="form-label" for="create-group-desc">[[admin/manage/groups:description]]</label>
 						<input type="text" class="form-control" id="create-group-desc" placeholder="[[admin/manage/groups:description-placeholder]]" />
 					</div>
-					<div class="form-check form-switch">
+					<div class="form-check form-switch mb-3">
 						<input class="form-check-input" id="create-group-private" name="private" type="checkbox" checked>
 						<label class="form-check-label" for="create-group-private">[[admin/manage/groups:private]]</label>
 					</div>
-					<div class="form-check form-switch">
+					<div class="form-check form-switch mb-3">
 						<input class="form-check-input" id="create-group-hidden" name="hidden" type="checkbox">
 						<label class="form-check-label" for="create-group-hidden">[[admin/manage/groups:hidden]]</label>
 					</div>

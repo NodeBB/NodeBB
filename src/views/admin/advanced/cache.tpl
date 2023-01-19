@@ -7,7 +7,7 @@
 				<div class="card">
 					<div class="card-header">[[admin/advanced/cache:{@key}-cache]]</div>
 					<div class="card-body">
-						<div class="form-check form-switch" data-name="{@key}">
+						<div class="form-check form-switch mb-3" data-name="{@key}">
 							<input class="form-check-input" type="checkbox" {{{if caches.enabled}}}checked{{{end}}}>
 						</div>
 

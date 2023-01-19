@@ -120,7 +120,7 @@
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="mb-3">
-						<div class="form-check form-switch">
+						<div class="form-check form-switch mb-3">
 							<input class="form-check-input" type="checkbox" data-field="postQueue">
 							<label class="form-check-label">[[admin/settings/post:restrictions.post-queue]]</label>
 						</div>
@@ -191,7 +191,7 @@
 					<option value="first">[[admin/settings/post:teaser.first]]</option>
 				</select>
 			</div>
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="showPostPreviewsOnHover">
 				<label class="form-check-label">[[admin/settings/post:showPostPreviewsOnHover]]</label>
 			</div>
@@ -223,7 +223,7 @@
 				<label class="form-label" for="recentMaxTopics">[[admin/settings/post:recent.max-topics]]</label>
 				<input id="recentMaxTopics" type="text" class="form-control" value="200" data-field="recentMaxTopics">
 			</div>
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="disableRecentCategoryFilter">
 				<label class="form-check-label">[[admin/settings/post:recent.categoryFilter.disable]]</label>
 			</div>
@@ -235,19 +235,19 @@
 	<div class="col-sm-2 col-12 settings-header">[[admin/settings/post:signature]]</div>
 	<div class="col-sm-10 col-12">
 		<form>
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="disableSignatures">
 				<label class="form-check-label">[[admin/settings/post:signature.disable]]</label>
 			</div>
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="signatures:disableLinks">
 				<label class="form-check-label">[[admin/settings/post:signature.no-links]]</label>
 			</div>
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="signatures:disableImages">
 				<label class="form-check-label">[[admin/settings/post:signature.no-images]]</label>
 			</div>
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="signatures:hideDuplicates">
 				<label class="form-check-label">[[admin/settings/post:signature.hide-duplicates]]</label>
 			</div>
@@ -266,11 +266,11 @@
 			<p>
 				[[admin/settings/post:composer-help]]
 			</p>
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" id="composer:showHelpTab" data-field="composer:showHelpTab" checked />
 				<label class="form-check-label" for="composer:showHelpTab">[[admin/settings/post:composer.show-help]]</label>
 			</div>
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" id="composer:allowPluginHelp" data-field="composer:allowPluginHelp" checked />
 				<label class="form-check-label" for="composer:allowPluginHelp">[[admin/settings/post:composer.enable-plugin-help]]</label>
 			</div>
@@ -278,7 +278,7 @@
 				<label class="form-label" for="composer:customHelpText">[[admin/settings/post:composer.custom-help]]</label>
 				<textarea class="form-control" id="composer:customHelpText" data-field="composer:customHelpText" rows="5"></textarea>
 			</div>
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" id="enablePostHistory" data-field="enablePostHistory" checked />
 				<label class="form-check-label" for="enablePostHistory">[[admin/settings/post:enable-post-history]]</label>
 			</div>
@@ -290,7 +290,7 @@
 	<div class="col-sm-2 col-12 settings-header">[[admin/settings/post:backlinks]]</div>
 	<div class="col-sm-10 col-12">
 		<form>
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="topicBacklinks">
 				<label class="form-check-label">[[admin/settings/post:backlinks.enabled]]</label>
 				<p class="form-text">[[admin/settings/post:backlinks.help]]</p>
@@ -303,7 +303,7 @@
 	<div class="col-sm-2 col-12 settings-header">[[admin/settings/post:ip-tracking]]</div>
 	<div class="col-sm-10 col-12">
 		<form>
-			<div class="form-check form-switch">
+			<div class="form-check form-switch mb-3">
 				<input class="form-check-input" type="checkbox" data-field="trackIpPerPost">
 				<label class="form-check-label">[[admin/settings/post:ip-tracking.each-post]]</label>
 			</div>
