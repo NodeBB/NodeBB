@@ -2,7 +2,7 @@
 <div class="row">
     <div class="col-lg-12">
         <div class="category btn-group">
-            <!-- IMPORT admin/partials/category-selector.tpl -->
+            <!-- IMPORT admin/partials/category/selector-dropdown-left.tpl -->
         </div>
         <div class="btn-group">
             <button id="collapse-all" class="btn btn-outline-secondary">[[admin/manage/categories:collapse-all]]</button>

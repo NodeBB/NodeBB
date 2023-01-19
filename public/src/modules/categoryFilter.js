@@ -9,7 +9,7 @@ define('categoryFilter', ['categorySearch', 'api', 'hooks'], function (categoryS
 		}
 		options = options || {};
 		options.states = options.states || ['watching', 'notwatching', 'ignoring'];
-		options.template = 'partials/category-filter';
+		options.template = 'partials/category/filter-dropdown-left';
 
 		hooks.fire('action:category.filter.options', { el: el, options: options });
 
@@ -91,7 +91,7 @@ define('categoryFilter', ['categorySearch', 'api', 'hooks'], function (categoryS
 			renderButton();
 		}
 		function renderButton(category) {
-			app.parseAndTranslate('partials/category-filter-content', {
+			app.parseAndTranslate('partials/category/filter-dropdown-content', {
 				selectedCategory: category,
 			}, function (html) {
 				el.find('button').replaceWith($('<div/>').html(html).find('button'));

@@ -2,7 +2,7 @@
 <div class="btn-toolbar justify-content-end">
 	{{{ if (!singlePost && posts.length) }}}
 	<div class="me-2">
-	<!-- IMPORT partials/category-filter-right.tpl -->
+	<!-- IMPORT partials/category/filter-dropdown-right.tpl -->
 	</div>
 	<div class="btn-group bottom-sheet" component="post-queue/bulk-actions">
 		<button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" autocomplete="off" aria-haspopup="true" aria-expanded="false">

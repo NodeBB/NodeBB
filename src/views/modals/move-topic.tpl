@@ -6,7 +6,7 @@
 		<p>
 			[[topic:move_topic_instruction]]
 		</p>
-		<!-- IMPORT partials/category-selector-right.tpl -->
+		<!-- IMPORT partials/category/selector-dropdown-right.tpl -->
 	</div>
 	<div class="card-footer text-end">
 		<button type="button" class="btn btn-sm btn-outline-secondary" id="move_topic_cancel">[[global:buttons.close]]</button>

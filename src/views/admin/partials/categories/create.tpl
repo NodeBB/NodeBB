@@ -5,12 +5,12 @@
 	</div>
 	<div class="mb-3" id="parentCidGroup">
 		<label class="form-label" for="parentCid">[[admin/manage/categories:optional-parent-category]]</label>
-		<!-- IMPORT admin/partials/category-selector.tpl -->
+		<!-- IMPORT admin/partials/category/selector-dropdown-left.tpl -->
 	</div>
 
 	<div class="mb-3" id="cloneFromCidGroup">
 		<label class="form-label" for="cloneFromCid">[[admin/manage/categories:optional-clone-settings]]</label>
-		<!-- IMPORT admin/partials/category-selector.tpl -->
+		<!-- IMPORT admin/partials/category/selector-dropdown-left.tpl -->
 		<label>
 			<input id="cloneChildren" name="cloneChildren" type="checkbox">
 			<strong>[[admin/manage/categories:clone-children]]</strong>

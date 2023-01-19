@@ -1,7 +1,7 @@
 <div class="category" data-cid="{category.cid}">
 	<div class="row mb-3">
 		<div class="d-flex col-12 justify-content-end">
-			<!-- IMPORT admin/partials/category-selector-right.tpl -->
+			<!-- IMPORT admin/partials/category/selector-dropdown-right.tpl -->
 		</div>
 	</div>
 

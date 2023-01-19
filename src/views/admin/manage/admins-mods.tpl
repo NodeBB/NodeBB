@@ -35,7 +35,7 @@
 
 		<!-- IMPORT partials/breadcrumbs.tpl -->
 		<div class="mb-3">
-		<!-- IMPORT admin/partials/category-selector.tpl -->
+		<!-- IMPORT admin/partials/category/selector-dropdown-left.tpl -->
 		</div>
 		{{{ if !categoryMods.length }}}
 		<div><p class="alert alert-info">[[admin/manage/admins-mods:no-sub-categories]]</p></div>
