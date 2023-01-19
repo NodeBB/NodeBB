@@ -8,11 +8,12 @@ define('forum/account/header', [
 	'translator',
 	'accounts/delete',
 	'accounts/moderate',
+	'accounts/picture',
 	'api',
 	'bootbox',
 	'alerts',
 ], function (coverPhoto, pictureCropper, components, translator,
-	AccountsDelete, AccountsModerate, api, bootbox, alerts) {
+	AccountsDelete, AccountsModerate, AccountsPicture, api, bootbox, alerts) {
 	const AccountHeader = {};
 	let isAdminOrSelfOrGlobalMod;
 
@@ -20,6 +21,8 @@ define('forum/account/header', [
 		isAdminOrSelfOrGlobalMod = ajaxify.data.isAdmin || ajaxify.data.isSelf || ajaxify.data.isGlobalModerator;
 
 		selectActivePill();
+
+		handleImageChange();
 
 		if (isAdminOrSelfOrGlobalMod) {
 			setupCoverPhoto();
@@ -65,6 +68,13 @@ define('forum/account/header', [
 				$(this).addClass('active');
 				return false;
 			}
+		});
+	}
+
+	function handleImageChange() {
+		$('[component="profile/change/picture"]').on('click', function () {
+			AccountsPicture.openChangeModal();
+			return false;
 		});
 	}
 
