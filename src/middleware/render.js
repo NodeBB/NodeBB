@@ -107,7 +107,7 @@ module.exports = function (middleware) {
 			}
 
 			try {
-				await renderMethod(template, options, fn);
+				await renderMethod(template, { ...res.locals.templateValues, ...options }, fn);
 			} catch (err) {
 				next(err);
 			}
@@ -144,7 +144,6 @@ module.exports = function (middleware) {
 			relative_path,
 			bodyClass: options.bodyClass,
 			widgets: options.widgets,
-			...(res.locals.templateValues || {}),
 		};
 
 		templateValues.configJSON = jsesc(JSON.stringify(res.locals.config), { isScriptContext: true });
@@ -277,7 +276,6 @@ module.exports = function (middleware) {
 			latestVersion: results.latestVersion,
 			upgradeAvailable: results.latestVersion && semver.gt(results.latestVersion, version),
 			showManageMenu: results.privileges.superadmin || ['categories', 'privileges', 'users', 'admins-mods', 'groups', 'tags', 'settings'].some(priv => results.privileges[`admin:${priv}`]),
-			...(res.locals.templateValues || {}),
 		};
 
 		templateValues.template = { name: res.locals.template };
