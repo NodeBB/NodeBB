@@ -27,7 +27,7 @@ widgets.render = async function (uid, options) {
 	const returnData = {};
 	locations.forEach((location, i) => {
 		if (Array.isArray(widgetData[i]) && widgetData[i].length) {
-			returnData[location] = widgetData[i].filter(Boolean);
+			returnData[location] = widgetData[i].filter(widget => widget && widget.html);
 		}
 	});
 

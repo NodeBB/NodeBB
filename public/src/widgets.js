@@ -9,17 +9,18 @@ module.exports.render = function (template) {
 
 	locations.forEach(function (location) {
 		let area = $('#content [widget-area="' + location + '"],#content [data-widget-area="' + location + '"]').eq(0);
-		if (area.length) {
+		const widgetsAtLocation = ajaxify.data.widgets[location] || [];
+		if (area.length || !widgetsAtLocation.length) {
 			return;
 		}
 
-		const widgetsAtLocation = ajaxify.data.widgets[location] || [];
 		let html = '';
-
 		widgetsAtLocation.forEach(function (widget) {
 			html += widget.html;
 		});
-
+		if (!html) {
+			return;
+		}
 		if (location === 'footer' && !$('#content [widget-area="footer"],#content [data-widget-area="footer"]').length) {
 			$('#content').append($('<div class="row"><div data-widget-area="footer" class="col-12"></div></div>'));
 		} else if (location === 'sidebar' && !$('#content [widget-area="sidebar"],#content [data-widget-area="sidebar"]').length) {
