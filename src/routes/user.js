@@ -5,11 +5,10 @@ const helpers = require('./helpers');
 const { setupPageRoute } = helpers;
 
 module.exports = function (app, name, middleware, controllers) {
-	const middlewares = [middleware.exposeUid, middleware.canViewUsers];
+	const middlewares = [middleware.exposeUid, middleware.canViewUsers, middleware.buildAccountData];
 	const accountMiddlewares = [
-		middleware.exposeUid,
+		...middlewares,
 		middleware.ensureLoggedIn,
-		middleware.canViewUsers,
 		middleware.checkAccountPermissions,
 	];
 
