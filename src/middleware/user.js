@@ -12,6 +12,7 @@ const plugins = require('../plugins');
 const helpers = require('./helpers');
 const auth = require('../routes/authentication');
 const writeRouter = require('../routes/write');
+const accountHelpers = require('../controllers/accounts/helpers');
 
 const controllers = {
 	helpers: require('../controllers/helpers'),
@@ -221,6 +222,11 @@ module.exports = function (middleware) {
 		}
 
 		res.status(403).render('403', { title: '[[global:403.title]]' });
+	};
+
+	middleware.buildAccountData = async (req, res, next) => {
+		res.locals.templateValues = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, req.query);
+		next();
 	};
 
 	middleware.registrationComplete = async function registrationComplete(req, res, next) {
