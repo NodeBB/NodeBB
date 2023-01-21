@@ -120,10 +120,11 @@ searchController.search = async function (req, res, next) {
 			),
 		},
 		categories: {
-			active: Array.isArray(data.categories) && data.categories.length,
+			active: !!(Array.isArray(data.categories) && data.categories.length),
 			label: '[[search:categories]]',
 		},
 	};
+
 	if (Array.isArray(searchData.selectedCids)) {
 		if (searchData.selectedCids.length > 1) {
 			searchData.filters.categories.label = `[[search:categories-x, ${searchData.selectedCids.length}]]`;

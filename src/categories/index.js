@@ -131,7 +131,6 @@ Categories.getModeratorUids = async function (cids) {
 
 		return _.uniq(sets.uids[index].concat(_.flatten(sets.groupNames[index].map(g => map[g]))));
 	});
-	console.log('what', moderatorUids);
 	return moderatorUids;
 };
 

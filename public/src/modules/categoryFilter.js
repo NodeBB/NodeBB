@@ -36,7 +36,7 @@ define('categoryFilter', ['categorySearch', 'api', 'hooks'], function (categoryS
 			if (changed) {
 				if (options.updateButton) {
 					options.updateButton({ el, changed: changed, selectedCids: selectedCids.slice() });
-				} else {
+				} else if (options.updateButton !== false) {
 					updateFilterButton(el, selectedCids);
 				}
 			}

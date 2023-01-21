@@ -37,7 +37,7 @@ define('forum/search', [
 
 		handleSavePreferences();
 
-		categoryFilterDropdown();
+		categoryFilterDropdown(ajaxify.data.selectedCids);
 
 		userFilterDropdown($('[component="user/filter"]'), ajaxify.data.userFilterSelected);
 
@@ -55,6 +55,9 @@ define('forum/search', [
 		});
 
 		fillOutForm();
+		updateTimeFilter();
+		updateReplyCountFilter();
+		updateSortFilter();
 	};
 
 	function updateUserFilter() {
@@ -206,7 +209,18 @@ define('forum/search', [
 
 	function handleSavePreferences() {
 		$('#save-preferences').on('click', function () {
-			storage.setItem('search-preferences', JSON.stringify(getSearchDataFromDOM()));
+			const data = getSearchDataFromDOM();
+			const fieldsToSave = [
+				'matchWords', 'in', 'showAs',
+				'replies', 'repliesFilter',
+				'timeFilter', 'timeRange',
+				'sortBy', 'sortDirection',
+			];
+			const saveData = {};
+			fieldsToSave.forEach((key) => {
+				saveData[key] = data[key];
+			});
+			storage.setItem('search-preferences', JSON.stringify(saveData));
 			alerts.success('[[search:search-preferences-saved]]');
 			return false;
 		});
@@ -215,24 +229,26 @@ define('forum/search', [
 			storage.removeItem('search-preferences');
 			const html = await app.parseAndTranslate('partials/search-filters', {});
 			$('[component="search/filters"]').replaceWith(html);
+			$('#search-in').val(ajaxify.data.searchDefaultIn);
+			$('#post-sort-by').val(ajaxify.data.searchDefaultSortBy);
+			$('#match-words-filter').val('all');
+			$('#show-results-as').val('posts');
 			// clearing dom removes all event handlers, reinitialize
 			userFilterDropdown($('[component="user/filter"]'), []);
+			categoryFilterDropdown([]);
 			alerts.success('[[search:search-preferences-cleared]]');
 			return false;
 		});
 	}
 
 
-	function categoryFilterDropdown() {
+	function categoryFilterDropdown(_selectedCids) {
 		ajaxify.data.allCategoriesUrl = '';
 		const dropdownEl = $('[component="category/filter"]');
 		categoryFilter.init(dropdownEl, {
-			selectedCids: ajaxify.data.selectedCids,
-			updateButton: function () {
-				// prevent categoryFilter module from updating the button
-			},
+			selectedCids: _selectedCids,
+			updateButton: false, // prevent categoryFilter module from updating the button
 			onHidden: async function (data) {
-				console.log(data);
 				const isActive = data.selectedCids.length > 0 && data.selectedCids[0] !== 'all';
 				let labelText = '[[search:categories]]';
 				ajaxify.data.selectedCids = data.selectedCids;
