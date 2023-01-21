@@ -9,9 +9,11 @@ define('forum/search', [
 	'api',
 	'translator',
 	'slugify',
-], function (searchModule, storage, hooks, alerts, api, translator, slugify) {
+	'categoryFilter',
+], function (searchModule, storage, hooks, alerts, api, translator, slugify, categoryFilter) {
 	const Search = {};
 	let selectedUsers = [];
+	let selectedCids = [];
 
 	Search.init = function () {
 		const searchIn = $('#search-in');
@@ -35,7 +37,7 @@ define('forum/search', [
 
 		handleSavePreferences();
 
-		enableAutoComplete();
+		categoryFilterDropdown();
 
 		userFilterDropdown($('[component="user/filter"]'), ajaxify.data.userFilterSelected);
 
@@ -110,7 +112,7 @@ define('forum/search', [
 		if (searchData.in === 'posts' || searchData.in === 'titlesposts' || searchData.in === 'titles') {
 			searchData.matchWords = form.find('#match-words-filter').val();
 			searchData.by = selectedUsers.length ? selectedUsers.map(u => u.username) : undefined;
-			searchData.categories = form.find('#posted-in-categories').val();
+			searchData.categories = selectedCids.length ? selectedCids : undefined;
 			searchData.searchChildren = form.find('#search-children').is(':checked');
 			searchData.hasTags = form.find('#has-tags').tagsinput('items');
 			searchData.replies = form.find('#reply-count').val();
@@ -220,6 +222,49 @@ define('forum/search', [
 		});
 	}
 
+
+	function categoryFilterDropdown() {
+		ajaxify.data.allCategoriesUrl = '';
+		const dropdownEl = $('[component="category/filter"]');
+		categoryFilter.init(dropdownEl, {
+			selectedCids: ajaxify.data.selectedCids,
+			updateButton: function () {
+				// prevent categoryFilter module from updating the button
+			},
+			onHidden: async function (data) {
+				console.log(data);
+				const isActive = data.selectedCids.length > 0 && data.selectedCids[0] !== 'all';
+				let labelText = '[[search:categories]]';
+				ajaxify.data.selectedCids = data.selectedCids;
+				selectedCids = data.selectedCids;
+				if (data.selectedCids.length === 1 && data.selectedCids[0] === 'watched') {
+					ajaxify.data.selectedCategory = { cid: 'watched' };
+					labelText = `[[search:categories-watched-categories]]`;
+				} else if (data.selectedCids.length === 1 && data.selectedCids[0] === 'all') {
+					ajaxify.data.selectedCategory = null;
+				} else if (data.selectedCids.length > 0) {
+					const categoryData = await api.get(`/categories/${data.selectedCids[0]}`);
+					ajaxify.data.selectedCategory = categoryData;
+					labelText = `[[search:categories-x, ${categoryData.name}]]`;
+				}
+				if (data.selectedCids.length > 1) {
+					labelText = `[[search:categories-x, ${data.selectedCids.length}]]`;
+				}
+
+				$('[component="category/filter/button"]').toggleClass(
+					'active-filter', isActive
+				).find('.filter-label').translateText(labelText);
+			},
+			localCategories: [
+				{
+					cid: 'watched',
+					name: '[[category:watched-categories]]',
+					icon: '',
+				},
+			],
+		});
+	}
+
 	function userFilterDropdown(el, _selectedUsers) {
 		selectedUsers = _selectedUsers;
 		async function renderSelectedUsers() {
@@ -284,28 +329,6 @@ define('forum/search', [
 		el.on('shown.bs.dropdown', function () {
 			el.find('[component="user/filter/search"]').trigger('focus');
 		});
-	}
-
-	function enableAutoComplete() {
-		// const userEl = $('#posted-by-user');
-		// userEl.tagsinput({
-		// 	tagClass: 'badge bg-info',
-		// 	confirmKeys: [13, 44],
-		// 	trimValue: true,
-		// });
-		// if (app.user.privileges['search:users']) {
-		// 	autocomplete.user(userEl.siblings('.bootstrap-tagsinput').find('input'));
-		// }
-
-		// const tagEl = $('#has-tags');
-		// tagEl.tagsinput({
-		// 	tagClass: 'badge bg-info',
-		// 	confirmKeys: [13, 44],
-		// 	trimValue: true,
-		// });
-		// if (app.user.privileges['search:tags']) {
-		// 	autocomplete.tag(tagEl.siblings('.bootstrap-tagsinput').find('input'));
-		// }
 	}
 
 	return Search;

@@ -18,9 +18,9 @@ define('categoryFilter', ['categorySearch', 'api', 'hooks'], function (categoryS
 		let selectedCids = [];
 		let initialCids = [];
 		if (Array.isArray(options.selectedCids)) {
-			selectedCids = options.selectedCids.map(cid => parseInt(cid, 10));
+			selectedCids = options.selectedCids.map(String);
 		} else if (Array.isArray(ajaxify.data.selectedCids)) {
-			selectedCids = ajaxify.data.selectedCids.map(cid => parseInt(cid, 10));
+			selectedCids = ajaxify.data.selectedCids.map(String);
 		}
 		initialCids = selectedCids.slice();
 
@@ -31,8 +31,14 @@ define('categoryFilter', ['categorySearch', 'api', 'hooks'], function (categoryS
 					changed = true;
 				}
 			});
+			initialCids = selectedCids.slice();
+
 			if (changed) {
-				updateFilterButton(el, selectedCids);
+				if (options.updateButton) {
+					options.updateButton({ el, changed: changed, selectedCids: selectedCids.slice() });
+				} else {
+					updateFilterButton(el, selectedCids);
+				}
 			}
 			if (options.onHidden) {
 				options.onHidden({ changed: changed, selectedCids: selectedCids.slice() });
@@ -56,21 +62,26 @@ define('categoryFilter', ['categorySearch', 'api', 'hooks'], function (categoryS
 			if (link && link !== '#' && link.length) {
 				return;
 			}
-			const cid = parseInt(categoryEl.attr('data-cid'), 10);
+			const cid = categoryEl.attr('data-cid');
 			const icon = categoryEl.find('[component="category/select/icon"]');
 
-			if (selectedCids.includes(cid)) {
-				selectedCids.splice(selectedCids.indexOf(cid), 1);
+			if (cid !== 'all') {
+				if (selectedCids.includes(cid)) {
+					selectedCids.splice(selectedCids.indexOf(cid), 1);
+				} else {
+					selectedCids.push(cid);
+				}
+				selectedCids.sort(function (a, b) {
+					return a - b;
+				});
 			} else {
-				selectedCids.push(cid);
+				el.find('[component="category/select/icon"]').addClass('invisible');
+				selectedCids = [cid];
 			}
-			selectedCids.sort(function (a, b) {
-				return a - b;
-			});
-			options.selectedCids = selectedCids;
 
+			options.selectedCids = selectedCids;
+			listEl.find('[data-cid="all"] i').toggleClass('invisible', !!selectedCids.length);
 			icon.toggleClass('invisible');
-			listEl.find('li[data-all="all"] i').toggleClass('invisible', !!selectedCids.length);
 			if (options.onSelect) {
 				options.onSelect({ cid: cid, selectedCids: selectedCids.slice() });
 			}

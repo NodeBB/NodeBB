@@ -71,9 +71,8 @@ searchController.search = async function (req, res, next) {
 		qs: req.query,
 	};
 
-	const [searchData, categoriesData] = await Promise.all([
+	const [searchData] = await Promise.all([
 		search.search(data),
-		buildCategories(req.uid, searchOnly),
 		recordSearch(data),
 	]);
 
@@ -86,8 +85,6 @@ searchController.search = async function (req, res, next) {
 		return res.json(searchData);
 	}
 
-	searchData.allCategories = categoriesData;
-	searchData.allCategoriesCount = Math.max(10, Math.min(15, categoriesData.length));
 
 	searchData.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[global:search]]' }]);
 	searchData.expandSearch = !req.query.term;
@@ -95,6 +92,12 @@ searchController.search = async function (req, res, next) {
 	searchData.showAsPosts = !req.query.showAs || req.query.showAs === 'posts';
 	searchData.showAsTopics = req.query.showAs === 'topics';
 	searchData.title = '[[global:header.search]]';
+	if (Array.isArray(data.categories)) {
+		searchData.selectedCids = data.categories.map(cid => validator.escape(String(cid)));
+		if (!searchData.selectedCids.includes('all') && searchData.selectedCids.length) {
+			searchData.selectedCategory = { cid: 0 };
+		}
+	}
 
 	searchData.filters = {
 		replies: {
@@ -116,7 +119,23 @@ searchController.search = async function (req, res, next) {
 				(Array.isArray(data.postedBy) ? data.postedBy : []).map(u => validator.escape(String(u))).join(', ')
 			),
 		},
+		categories: {
+			active: Array.isArray(data.categories) && data.categories.length,
+			label: '[[search:categories]]',
+		},
 	};
+	if (Array.isArray(searchData.selectedCids)) {
+		if (searchData.selectedCids.length > 1) {
+			searchData.filters.categories.label = `[[search:categories-x, ${searchData.selectedCids.length}]]`;
+		} else if (searchData.selectedCids.length === 1 && searchData.selectedCids[0] === 'watched') {
+			searchData.filters.categories.label = `[[search:categories-watched-categories]]`;
+		} else if (searchData.selectedCids.length === 1 && parseInt(searchData.selectedCids[0], 10)) {
+			const categoryData = await categories.getCategoryData(searchData.selectedCids[0]);
+			if (categoryData && categoryData.name) {
+				searchData.filters.categories.label = `[[search:categories-x, ${categoryData.name}]]`;
+			}
+		}
+	}
 	searchData.userFilterSelected = await getSelectedUsers(data.postedBy);
 	searchData.searchDefaultSortBy = meta.config.searchDefaultSortBy || '';
 	searchData.searchDefaultIn = meta.config.searchDefaultIn || 'titlesposts';
@@ -157,21 +176,4 @@ async function getSelectedUsers(postedBy) {
 	}
 	const uids = await user.getUidsByUsernames(postedBy);
 	return await user.getUsersFields(uids, ['username', 'userslug', 'picture']);
-}
-
-async function buildCategories(uid, searchOnly) {
-	if (searchOnly) {
-		return [];
-	}
-
-	const cids = await categories.getCidsByPrivilege('categories:cid', uid, 'read');
-	let categoriesData = await categories.getCategoriesData(cids);
-	categoriesData = categoriesData.filter(category => category && !category.link);
-	categoriesData = categories.getTree(categoriesData);
-	categoriesData = categories.buildForSelectCategories(categoriesData, ['text', 'value']);
-
-	return [
-		{ value: 'all', text: '[[unread:all_categories]]' },
-		{ value: 'watched', text: '[[category:watched-categories]]' },
-	].concat(categoriesData);
 }

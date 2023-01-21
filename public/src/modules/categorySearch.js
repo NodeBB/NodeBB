@@ -40,9 +40,6 @@ define('categorySearch', ['alerts', 'bootstrap'], function (alerts, bootstrap) {
 						renderList(categories);
 					});
 				} else if (!val && categoriesList) {
-					categoriesList.forEach(function (c) {
-						c.selected = options.selectedCids.includes(c.cid);
-					});
 					renderList(categoriesList);
 				}
 			}
@@ -87,6 +84,10 @@ define('categorySearch', ['alerts', 'bootstrap'], function (alerts, bootstrap) {
 		}
 
 		function renderList(categories) {
+			const selectedCids = options.selectedCids.map(String);
+			categoriesList.forEach(function (c) {
+				c.selected = selectedCids.includes(String(c.cid));
+			});
 			app.parseAndTranslate(options.template, {
 				categoryItems: categories.slice(0, 200),
 				selectedCategory: ajaxify.data.selectedCategory,
