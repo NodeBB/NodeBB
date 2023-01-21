@@ -8,8 +8,10 @@ const meta = require('../meta');
 const plugins = require('../plugins');
 const search = require('../search');
 const categories = require('../categories');
+const user = require('../user');
 const pagination = require('../pagination');
 const privileges = require('../privileges');
+const translator = require('../translator');
 const utils = require('../utils');
 const helpers = require('./helpers');
 
@@ -57,12 +59,12 @@ searchController.search = async function (req, res, next) {
 		categories: req.query.categories,
 		searchChildren: req.query.searchChildren,
 		hasTags: req.query.hasTags,
-		replies: req.query.replies,
-		repliesFilter: req.query.repliesFilter,
-		timeRange: req.query.timeRange,
-		timeFilter: req.query.timeFilter,
-		sortBy: req.query.sortBy || meta.config.searchDefaultSortBy || '',
-		sortDirection: req.query.sortDirection,
+		replies: validator.escape(String(req.query.replies || '')),
+		repliesFilter: validator.escape(String(req.query.repliesFilter || '')),
+		timeRange: validator.escape(String(req.query.timeRange || '')),
+		timeFilter: validator.escape(String(req.query.timeFilter || '')),
+		sortBy: validator.escape(String(req.query.sortBy || '')) || meta.config.searchDefaultSortBy || '',
+		sortDirection: validator.escape(String(req.query.sortDirection || '')),
 		page: page,
 		itemsPerPage: req.query.itemsPerPage,
 		uid: req.uid,
@@ -94,6 +96,28 @@ searchController.search = async function (req, res, next) {
 	searchData.showAsTopics = req.query.showAs === 'topics';
 	searchData.title = '[[global:header.search]]';
 
+	searchData.filters = {
+		replies: {
+			active: !!data.repliesFilter,
+			label: `[[search:replies-${data.repliesFilter}-count, ${data.replies}]]`,
+		},
+		time: {
+			active: !!(data.timeFilter && data.timeRange),
+			label: `[[search:time-${data.timeFilter}-than-${data.timeRange}]]`,
+		},
+		sort: {
+			active: !!(data.sortBy && data.sortBy !== 'relevance'),
+			label: `[[search:sort-by-${data.sortBy}-${data.sortDirection}]]`,
+		},
+		users: {
+			active: !!(data.postedBy),
+			label: translator.compile(
+				'search:posted-by-usernames',
+				(Array.isArray(data.postedBy) ? data.postedBy : []).map(u => validator.escape(String(u))).join(', ')
+			),
+		},
+	};
+	searchData.userFilterSelected = await getSelectedUsers(data.postedBy);
 	searchData.searchDefaultSortBy = meta.config.searchDefaultSortBy || '';
 	searchData.searchDefaultIn = meta.config.searchDefaultIn || 'titlesposts';
 	searchData.privileges = userPrivileges;
@@ -125,6 +149,14 @@ async function recordSearch(data) {
 			}, 5000);
 		}
 	}
+}
+
+async function getSelectedUsers(postedBy) {
+	if (!Array.isArray(postedBy)) {
+		return [];
+	}
+	const uids = await user.getUidsByUsernames(postedBy);
+	return await user.getUsersFields(uids, ['username', 'userslug', 'picture']);
 }
 
 async function buildCategories(uid, searchOnly) {
