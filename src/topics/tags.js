@@ -283,10 +283,10 @@ module.exports = function (Topics) {
 		const payload = await plugins.hooks.fire('filter:tags.getAll', {
 			tags: tags,
 		});
-		return await Topics.getTagData(payload.tags);
+		return Topics.getTagData(payload.tags);
 	}
 
-	Topics.getTagData = async function (tags) {
+	Topics.getTagData = function (tags) {
 		if (!tags.length) {
 			return [];
 		}
@@ -318,7 +318,7 @@ module.exports = function (Topics) {
 		const uniqueTopicTags = _.uniq(_.flatten(topicTags));
 
 		const tags = uniqueTopicTags.map(tag => ({ value: tag }));
-		const tagData = await Topics.getTagData(tags);
+		const tagData = Topics.getTagData(tags);
 		const tagDataMap = _.zipObject(uniqueTopicTags, tagData);
 
 		topicTags.forEach((tags, index) => {
@@ -494,7 +494,7 @@ module.exports = function (Topics) {
 		}
 		const tags = await Topics.searchTags(data);
 
-		const tagData = await Topics.getTagData(tags.map(tag => ({ value: tag.value })));
+		const tagData = Topics.getTagData(tags.map(tag => ({ value: tag.value })));
 
 		tagData.forEach((tag, index) => {
 			tag.score = tags[index].score;

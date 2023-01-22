@@ -13,6 +13,7 @@ define('forum/search', [
 ], function (searchModule, storage, hooks, alerts, api, translator, slugify, categoryFilter) {
 	const Search = {};
 	let selectedUsers = [];
+	let selectedTags = [];
 	let selectedCids = [];
 
 	Search.init = function () {
@@ -38,8 +39,8 @@ define('forum/search', [
 		handleSavePreferences();
 
 		categoryFilterDropdown(ajaxify.data.selectedCids);
-
 		userFilterDropdown($('[component="user/filter"]'), ajaxify.data.userFilterSelected);
+		tagFilterDropdown($('[component="tag/filter"]'), ajaxify.data.tagFilterSelected);
 
 		$('[component="search/filters"]').on('hidden.bs.dropdown', '.dropdown', function () {
 			const updateFns = {
@@ -47,6 +48,7 @@ define('forum/search', [
 				time: updateTimeFilter,
 				sort: updateSortFilter,
 				user: updateUserFilter,
+				tag: updateTagFilter,
 			};
 
 			if (updateFns[$(this).attr('data-filter-name')]) {
@@ -59,6 +61,19 @@ define('forum/search', [
 		updateReplyCountFilter();
 		updateSortFilter();
 	};
+
+	function updateTagFilter() {
+		const isActive = selectedTags.length > 0;
+		let labelText = '[[search:tags]]';
+		if (selectedTags.length) {
+			labelText = translator.compile(
+				'search:tags-x', selectedTags.map(u => u.valueEscaped).join(', ')
+			);
+		}
+		$('[component="tag/filter/button"]').toggleClass(
+			'active-filter', isActive
+		).find('.filter-label').translateText(labelText);
+	}
 
 	function updateUserFilter() {
 		const isActive = selectedUsers.length > 0;
@@ -117,7 +132,7 @@ define('forum/search', [
 			searchData.by = selectedUsers.length ? selectedUsers.map(u => u.username) : undefined;
 			searchData.categories = selectedCids.length ? selectedCids : undefined;
 			searchData.searchChildren = form.find('#search-children').is(':checked');
-			searchData.hasTags = form.find('#has-tags').tagsinput('items');
+			searchData.hasTags = selectedTags.length ? selectedTags.map(t => t.value) : undefined;
 			searchData.replies = form.find('#reply-count').val();
 			searchData.repliesFilter = form.find('#reply-count-filter').val();
 			searchData.timeFilter = form.find('#post-time-filter').val();
@@ -235,6 +250,7 @@ define('forum/search', [
 			$('#show-results-as').val('posts');
 			// clearing dom removes all event handlers, reinitialize
 			userFilterDropdown($('[component="user/filter"]'), []);
+			tagFilterDropdown($('[component="tag/filter"]'), []);
 			categoryFilterDropdown([]);
 			alerts.success('[[search:search-preferences-cleared]]');
 			return false;
@@ -310,17 +326,18 @@ define('forum/search', [
 				return;
 			}
 			result.users = result.users.slice(0, 20);
-			const html = await app.parseAndTranslate('partials/search-filters', 'userFilterResults', {
-				userFilterResults: result.users,
-			});
 			const uidToUser = {};
 			result.users.forEach((user) => {
 				uidToUser[user.uid] = user;
 			});
+
+			const html = await app.parseAndTranslate('partials/search-filters', 'userFilterResults', {
+				userFilterResults: result.users,
+			});
 			el.find('[component="user/filter/results"]').html(html);
 			el.find('[component="user/filter/results"] [data-uid]').on('click', async function () {
 				selectedUsers.push(uidToUser[$(this).attr('data-uid')]);
-				renderSelectedUsers();
+				await renderSelectedUsers();
 			});
 		}
 
@@ -344,6 +361,87 @@ define('forum/search', [
 
 		el.on('shown.bs.dropdown', function () {
 			el.find('[component="user/filter/search"]').trigger('focus');
+		});
+	}
+
+	function tagFilterDropdown(el, _selectedTags) {
+		selectedTags = _selectedTags;
+		async function renderSelectedTags() {
+			const html = await app.parseAndTranslate('partials/search-filters', 'tagFilterSelected', {
+				tagFilterSelected: selectedTags,
+			});
+			el.find('[component="tag/filter/selected"]').html(html);
+		}
+		function tagValueToObject(value) {
+			const escapedTag = utils.escapeHTML(value);
+			return {
+				value: value,
+				valueEscaped: escapedTag,
+				valueEncoded: encodeURIComponent(escapedTag),
+				class: escapedTag.replace(/\s/g, '-'),
+			};
+		}
+
+		async function doSearch() {
+			let result = { tags: [] };
+			const query = el.find('[component="tag/filter/search"]').val();
+			if (query && query.length > 1) {
+				if (app.user.privileges['search:tags']) {
+					result = await socket.emit('topics.searchAndLoadTags', { query: query });
+				} else {
+					result = {
+						tags: [tagValueToObject(query)],
+					};
+				}
+			}
+
+			if (!result.tags.length) {
+				el.find('[component="tag/filter/results"]').translateHtml(
+					'[[tags:no-tags-found]]'
+				);
+				return;
+			}
+			result.tags = result.tags.slice(0, 20);
+			const tagMap = {};
+			result.tags.forEach((tag) => {
+				tagMap[tag.valueEscaped] = tag;
+			});
+
+			const html = await app.parseAndTranslate('partials/search-filters', 'tagFilterResults', {
+				tagFilterResults: result.tags,
+			});
+			el.find('[component="tag/filter/results"]').html(html);
+			el.find('[component="tag/filter/results"] [data-tag]').on('click', async function () {
+				selectedTags.push(tagMap[$(this).attr('data-tag')]);
+				renderSelectedTags();
+			});
+		}
+
+		el.find('[component="tag/filter/search"]').on('keyup', utils.debounce(function () {
+			if (app.user.privileges['search:tags']) {
+				doSearch();
+			}
+		}, 1000));
+
+		el.on('click', '[component="tag/filter/delete"]', function () {
+			const deleteTag = $(this).attr('data-tag');
+			selectedTags = selectedTags.filter(tag => tag.valueEscaped !== deleteTag);
+			renderSelectedTags();
+		});
+
+		el.find('[component="tag/filter/search"]').on('keyup', (e) => {
+			if (e.key === 'Enter' && !app.user.privileges['search:tags']) {
+				const value = el.find('[component="tag/filter/search"]').val();
+				if (value && selectedTags.every(tag => tag.value !== value)) {
+					selectedTags.push(tagValueToObject(value));
+					renderSelectedTags();
+				}
+				el.find('[component="tag/filter/search"]').val('');
+			}
+		});
+
+		el.on('shown.bs.dropdown', function () {
+			el.find('[component="tag/filter/search"]').trigger('focus');
 		});
 	}
 

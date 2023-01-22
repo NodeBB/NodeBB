@@ -9,6 +9,7 @@ const plugins = require('../plugins');
 const search = require('../search');
 const categories = require('../categories');
 const user = require('../user');
+const topics = require('../topics');
 const pagination = require('../pagination');
 const privileges = require('../privileges');
 const translator = require('../translator');
@@ -116,28 +117,26 @@ searchController.search = async function (req, res, next) {
 			active: !!(data.postedBy),
 			label: translator.compile(
 				'search:posted-by-usernames',
-				(Array.isArray(data.postedBy) ? data.postedBy : []).map(u => validator.escape(String(u))).join(', ')
+				(Array.isArray(data.postedBy) ? data.postedBy : [])
+					.map(u => validator.escape(String(u))).join(', ')
+			),
+		},
+		tags: {
+			active: !!(Array.isArray(data.hasTags) && data.hasTags.length),
+			label: translator.compile(
+				'search:tags-x',
+				(Array.isArray(data.hasTags) ? data.hasTags : [])
+					.map(u => validator.escape(String(u))).join(', ')
 			),
 		},
 		categories: {
 			active: !!(Array.isArray(data.categories) && data.categories.length),
-			label: '[[search:categories]]',
+			label: await buildSelectedCategoryLabel(searchData.selectedCids),
 		},
 	};
 
-	if (Array.isArray(searchData.selectedCids)) {
-		if (searchData.selectedCids.length > 1) {
-			searchData.filters.categories.label = `[[search:categories-x, ${searchData.selectedCids.length}]]`;
-		} else if (searchData.selectedCids.length === 1 && searchData.selectedCids[0] === 'watched') {
-			searchData.filters.categories.label = `[[search:categories-watched-categories]]`;
-		} else if (searchData.selectedCids.length === 1 && parseInt(searchData.selectedCids[0], 10)) {
-			const categoryData = await categories.getCategoryData(searchData.selectedCids[0]);
-			if (categoryData && categoryData.name) {
-				searchData.filters.categories.label = `[[search:categories-x, ${categoryData.name}]]`;
-			}
-		}
-	}
 	searchData.userFilterSelected = await getSelectedUsers(data.postedBy);
+	searchData.tagFilterSelected = getSelectedTags(data.hasTags);
 	searchData.searchDefaultSortBy = meta.config.searchDefaultSortBy || '';
 	searchData.searchDefaultIn = meta.config.searchDefaultIn || 'titlesposts';
 	searchData.privileges = userPrivileges;
@@ -172,9 +171,34 @@ async function recordSearch(data) {
 }
 
 async function getSelectedUsers(postedBy) {
-	if (!Array.isArray(postedBy)) {
+	if (!Array.isArray(postedBy) || !postedBy.length) {
 		return [];
 	}
 	const uids = await user.getUidsByUsernames(postedBy);
 	return await user.getUsersFields(uids, ['username', 'userslug', 'picture']);
+}
+
+function getSelectedTags(hasTags) {
+	if (!Array.isArray(hasTags) || !hasTags.length) {
+		return [];
+	}
+	const tags = hasTags.map(tag => ({ value: tag }));
+	return topics.getTagData(tags);
+}
+
+async function buildSelectedCategoryLabel(selectedCids) {
+	let label = '[[search:categories]]';
+	if (Array.isArray(selectedCids)) {
+		if (selectedCids.length > 1) {
+			label = `[[search:categories-x, ${selectedCids.length}]]`;
+		} else if (selectedCids.length === 1 && selectedCids[0] === 'watched') {
+			label = `[[search:categories-watched-categories]]`;
+		} else if (selectedCids.length === 1 && parseInt(selectedCids[0], 10)) {
+			const categoryData = await categories.getCategoryData(selectedCids[0]);
+			if (categoryData && categoryData.name) {
+				label = `[[search:categories-x, ${categoryData.name}]]`;
+			}
+		}
+	}
+	return label;
 }
