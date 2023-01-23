@@ -866,7 +866,6 @@ describe('Categories', () => {
 				payload[cid] = { disabled: 1 };
 				await Categories.update(payload);
 				const uids = await Categories.getModeratorUids([cid, 2]);
-				console.log(uids);
 				assert(!uids[0].includes('1'));
 			});
 
