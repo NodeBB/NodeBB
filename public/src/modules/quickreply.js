@@ -2,15 +2,16 @@
 
 define('quickreply', [
 	'components', 'composer', 'composer/autocomplete', 'api',
-	'alerts', 'uploadHelpers', 'mousetrap',
+	'alerts', 'uploadHelpers', 'mousetrap', 'storage',
 ], function (
 	components, composer, autocomplete, api,
-	alerts, uploadHelpers, mousetrap
+	alerts, uploadHelpers, mousetrap, storage
 ) {
 	const QuickReply = {};
 
 	QuickReply.init = function () {
 		const element = components.get('topic/quickreply/text');
+		const qrDraftId = `qr:draft:tid:${ajaxify.data.tid}`;
 		const data = {
 			element: element,
 			strategies: [],
@@ -52,8 +53,8 @@ define('quickreply', [
 				return;
 			}
 
-			var replyMsg = components.get('topic/quickreply/text').val();
-			var replyData = {
+			const replyMsg = components.get('topic/quickreply/text').val();
+			const replyData = {
 				tid: ajaxify.data.tid,
 				handle: undefined,
 				content: replyMsg,
@@ -84,13 +85,28 @@ define('quickreply', [
 				}
 
 				components.get('topic/quickreply/text').val('');
+				storage.removeItem(qrDraftId);
 				autocomplete._active.core_qr.hide();
 			});
 		});
 
+		const draft = storage.getItem(qrDraftId);
+		if (draft) {
+			element.val(draft);
+		}
+
+		element.on('keyup', utils.debounce(function () {
+			const text = element.val();
+			if (text) {
+				storage.setItem(qrDraftId, text);
+			} else {
+				storage.removeItem(qrDraftId);
+			}
+		}, 1000));
+
 		components.get('topic/quickreply/expand').on('click', (e) => {
 			e.preventDefault();
-
+			storage.removeItem(qrDraftId);
 			const textEl = components.get('topic/quickreply/text');
 			composer.newReply({
 				tid: ajaxify.data.tid,
