@@ -826,7 +826,7 @@ describe('Categories', () => {
 			});
 		});
 
-		describe.only('Categories.getModeratorUids', () => {
+		describe('Categories.getModeratorUids', () => {
 			let cid;
 
 			before(async () => {
@@ -865,7 +865,7 @@ describe('Categories', () => {
 				const payload = {};
 				payload[cid] = { disabled: 1 };
 				await Categories.update(payload);
-				const uids = await Categories.getModeratorUids([1, 2]);
+				const uids = await Categories.getModeratorUids([cid, 2]);
 				assert(!uids[0].includes('1'));
 			});
 

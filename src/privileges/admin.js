@@ -66,6 +66,7 @@ privsAdmin.routeMap = {
 	uploadDefaultAvatar: 'admin:settings',
 };
 privsAdmin.routePrefixMap = {
+	'dashboard/': 'admin:dashboard',
 	'manage/categories/': 'admin:categories',
 	'manage/privileges/': 'admin:privileges',
 	'manage/groups/': 'admin:groups',
