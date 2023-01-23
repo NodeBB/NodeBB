@@ -107,6 +107,7 @@ describe('API', async () => {
 		if (setup) {
 			return;
 		}
+		console.log('IN SETUPDATA');
 
 		// Create sample users
 		const adminUid = await user.create({ username: 'admin', password: '123456', email: 'test@example.org' });
@@ -193,6 +194,7 @@ describe('API', async () => {
 		const socketUser = require('../src/socket.io/user');
 		const socketAdmin = require('../src/socket.io/admin');
 		// export data for admin user
+		console.log('STARTING EXPORTS');
 		await socketUser.exportProfile({ uid: adminUid }, { uid: adminUid });
 		await wait(2000);
 		await socketUser.exportPosts({ uid: adminUid }, { uid: adminUid });
@@ -201,7 +203,9 @@ describe('API', async () => {
 		await wait(2000);
 		await socketAdmin.user.exportUsersCSV({ uid: adminUid }, {});
 		// wait for export child process to complete
+		console.log('DONE, WAITING');
 		await wait(5000);
+		console.log('WAITED');
 
 		// Attach a search hook so /api/search is enabled
 		plugins.hooks.register('core', {
@@ -233,7 +237,8 @@ describe('API', async () => {
 		try {
 			// await SwaggerParser.validate(readApiPath);
 			// await SwaggerParser.validate(writeApiPath);
-			wait(7000);
+			wait(1000);
+			assert(true);
 		} catch (e) {
 			assert.ifError(e);
 		}
@@ -385,6 +390,7 @@ describe('API', async () => {
 				});
 
 				it('should not error out when called', async () => {
+					console.log('CALLING SETUPDATA');
 					await setupData();
 
 					if (csrfToken) {
