@@ -167,8 +167,7 @@
         "smtp-server": "3.11.0"
     },
     "resolutions": {
-        "*/jquery": "3.6.3",
-        "@apidevtools/json-schema-ref-parser": "9.0.9"
+        "*/jquery": "3.6.3"
     },
     "bugs": {
         "url": "https://github.com/NodeBB/NodeBB/issues"
