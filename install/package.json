@@ -149,8 +149,8 @@
     },
     "devDependencies": {
         "@apidevtools/swagger-parser": "9.0.1",
-        "@commitlint/cli": "17.4.1",
-        "@commitlint/config-angular": "17.4.0",
+        "@commitlint/cli": "17.4.2",
+        "@commitlint/config-angular": "17.4.2",
         "coveralls": "3.1.1",
         "eslint": "8.31.0",
         "eslint-config-nodebb": "0.2.1",
