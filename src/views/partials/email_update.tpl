@@ -1,4 +1,4 @@
-<div class="mb-3">
+<div>
 	<p>[[user:emailUpdate.intro]]</p>
 	{{{ if requireEmailAddress }}}
 	<p>[[user:emailUpdate.required]]</p>

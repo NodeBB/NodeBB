@@ -23,7 +23,7 @@
 
 <form role="form" method="post" action="{config.relative_path}/register/complete/?_csrf={config.csrf_token}" enctype="multipart/form-data">
 	{{{each sections}}}
-	<div class="row">
+	<div class="row mb-3">
 		<div class="col-12 col-sm-8 offset-sm-2">
 			<div class="card">
 				<div class="card-body">
