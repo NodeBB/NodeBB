@@ -307,18 +307,17 @@ async function isPrivilegedOrSelfAndPasswordMatch(caller, data) {
 async function processDeletion({ uid, method, password, caller }) {
 	const isTargetAdmin = await user.isAdministrator(uid);
 	const isSelf = parseInt(uid, 10) === parseInt(caller.uid, 10);
-	const isAdmin = await user.isAdministrator(caller.uid);
+	const hasAdminPrivilege = await privileges.admin.can('admin:users', caller.uid);
 
 	if (isSelf && meta.config.allowAccountDelete !== 1) {
 		throw new Error('[[error:account-deletion-disabled]]');
-	} else if (!isSelf && !isAdmin) {
+	} else if (!isSelf && !hasAdminPrivilege) {
 		throw new Error('[[error:no-privileges]]');
 	} else if (isTargetAdmin) {
 		throw new Error('[[error:cant-delete-admin]');
 	}
 
 	// Privilege checks -- only deleteAccount is available for non-admins
-	const hasAdminPrivilege = await privileges.admin.can('admin:users', caller.uid);
 	if (!hasAdminPrivilege && ['delete', 'deleteContent'].includes(method)) {
 		throw new Error('[[error:no-privileges]]');
 	}
