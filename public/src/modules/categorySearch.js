@@ -53,7 +53,9 @@ define('categorySearch', ['alerts', 'bootstrap'], function (alerts, bootstrap) {
 		});
 
 		el.on('shown.bs.dropdown', function () {
-			searchEl.find('input').focus();
+			if (!['xs', 'sm'].includes(utils.findBootstrapEnvironment())) {
+				searchEl.find('input').focus();
+			}
 		});
 
 		el.on('hide.bs.dropdown', function () {
