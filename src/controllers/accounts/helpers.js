@@ -28,6 +28,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 	if (!results.userData) {
 		throw new Error('[[error:invalid-uid]]');
 	}
+
 	await parseAboutMe(results.userData);
 
 	let { userData } = results;
@@ -37,6 +38,10 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 	const { isModerator } = results;
 	const { canViewInfo } = results;
 	const isSelf = parseInt(callerUID, 10) === parseInt(userData.uid, 10);
+
+	if (meta.config['reputation:disabled']) {
+		delete userData.reputation;
+	}
 
 	userData.age = Math.max(
 		0,

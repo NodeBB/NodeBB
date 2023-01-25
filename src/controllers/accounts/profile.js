@@ -8,7 +8,6 @@ const user = require('../../user');
 const posts = require('../../posts');
 const categories = require('../../categories');
 const plugins = require('../../plugins');
-const meta = require('../../meta');
 const privileges = require('../../privileges');
 const accountHelpers = require('./helpers');
 const helpers = require('../helpers');
@@ -39,10 +38,6 @@ profileController.get = async function (req, res, next) {
 		getBestPosts(req.uid, userData),
 		posts.parseSignature(userData, req.uid),
 	]);
-
-	if (meta.config['reputation:disabled']) {
-		delete userData.reputation;
-	}
 
 	userData.posts = latestPosts; // for backwards compat.
 	userData.latestPosts = latestPosts;
