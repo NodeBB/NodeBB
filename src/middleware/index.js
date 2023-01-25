@@ -151,7 +151,12 @@ async function expose(exposedField, method, field, req, res, next) {
 	if (!req.params.hasOwnProperty(field)) {
 		return next();
 	}
-	res.locals[exposedField] = await method(req.params[field]);
+	const value = await method(req.params[field]);
+	if (!value) {
+		next('route');
+	}
+
+	res.locals[exposedField] = value;
 	next();
 }
 
