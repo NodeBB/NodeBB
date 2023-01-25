@@ -90,7 +90,7 @@
         "mousetrap": "1.6.5",
         "multiparty": "4.2.3",
         "nconf": "0.12.0",
-        "nodebb-plugin-2factor": "6.0.3",
+        "nodebb-plugin-2factor": "7.0.0",
         "nodebb-plugin-composer-default": "10.0.34",
         "nodebb-plugin-dbsearch": "6.0.0",
         "nodebb-plugin-emoji": "5.0.3",
