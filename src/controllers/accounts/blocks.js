@@ -7,7 +7,7 @@ const plugins = require('../../plugins');
 
 const blocksController = module.exports;
 
-blocksController.getBlocks = async function (req, res, next) {
+blocksController.getBlocks = async function (req, res) {
 	const page = parseInt(req.query.page, 10) || 1;
 	const resultsPerPage = 50;
 	const start = Math.max(0, page - 1) * resultsPerPage;

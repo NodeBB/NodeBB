@@ -2,19 +2,17 @@
 
 const user = require('../../user');
 const helpers = require('../helpers');
-const accountHelpers = require('./helpers');
 
 const sessionController = module.exports;
 
-sessionController.get = async function (req, res, next) {
-	const userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, req.query);
-	if (!userData) {
-		return next();
-	}
+sessionController.get = async function (req, res) {
+	const { username, userslug } = await user.getUserFields(res.locals.uid, ['username', 'userslug']);
 
-	userData.sessions = await user.auth.getSessions(userData.uid, req.sessionID);
-	userData.title = '[[pages:account/sessions]]';
-	userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: `/user/${userData.userslug}` }, { text: '[[pages:account/sessions]]' }]);
+	const payload = {
+		sessions: await user.auth.getSessions(res.locals.uid, req.sessionID),
+		title: '[[pages:account/sessions]]',
+		breadcrumbs: helpers.buildBreadcrumbs([{ text: username, url: `/user/${userslug}` }, { text: '[[pages:account/sessions]]' }]),
+	};
 
-	res.render('account/sessions', userData);
+	res.render('account/sessions', payload);
 };

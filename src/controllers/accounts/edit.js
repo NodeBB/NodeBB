@@ -4,40 +4,47 @@ const user = require('../../user');
 const meta = require('../../meta');
 const helpers = require('../helpers');
 const groups = require('../../groups');
-const accountHelpers = require('./helpers');
 const privileges = require('../../privileges');
+const accountHelpers = require('./helpers');
 const file = require('../../file');
 
 const editController = module.exports;
 
-editController.get = async function (req, res, next) {
-	const [userData, canUseSignature] = await Promise.all([
+editController.get = async function (req, res) {
+	const [{
+		username,
+		userslug,
+		isSelf,
+		reputation,
+		groups: _groups,
+		groupTitleArray,
+		allowMultipleBadges,
+	}, canUseSignature] = await Promise.all([
 		accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, req.query),
 		privileges.global.can('signature', req.uid),
 	]);
-	if (!userData) {
-		return next();
+
+	const payload = {};
+	payload.maximumSignatureLength = meta.config.maximumSignatureLength;
+	payload.maximumAboutMeLength = meta.config.maximumAboutMeLength;
+	payload.maximumProfileImageSize = meta.config.maximumProfileImageSize;
+	payload.allowMultipleBadges = meta.config.allowMultipleBadges === 1;
+	payload.allowAccountDelete = meta.config.allowAccountDelete === 1;
+	payload.allowWebsite = !isSelf || !!meta.config['reputation:disabled'] || reputation >= meta.config['min:rep:website'];
+	payload.allowAboutMe = !isSelf || !!meta.config['reputation:disabled'] || reputation >= meta.config['min:rep:aboutme'];
+	payload.allowSignature = canUseSignature && (!isSelf || !!meta.config['reputation:disabled'] || reputation >= meta.config['min:rep:signature']);
+	payload.profileImageDimension = meta.config.profileImageDimension;
+	payload.defaultAvatar = user.getDefaultAvatar();
+
+	payload.groups = _groups.filter(g => g && g.userTitleEnabled && !groups.isPrivilegeGroup(g.name) && g.name !== 'registered-users');
+
+	if (!allowMultipleBadges) {
+		payload.groupTitle = groupTitleArray[0];
 	}
-	userData.maximumSignatureLength = meta.config.maximumSignatureLength;
-	userData.maximumAboutMeLength = meta.config.maximumAboutMeLength;
-	userData.maximumProfileImageSize = meta.config.maximumProfileImageSize;
-	userData.allowMultipleBadges = meta.config.allowMultipleBadges === 1;
-	userData.allowAccountDelete = meta.config.allowAccountDelete === 1;
-	userData.allowWebsite = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:website'];
-	userData.allowAboutMe = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:aboutme'];
-	userData.allowSignature = canUseSignature && (!userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:signature']);
-	userData.profileImageDimension = meta.config.profileImageDimension;
-	userData.defaultAvatar = user.getDefaultAvatar();
 
-	userData.groups = userData.groups.filter(g => g && g.userTitleEnabled && !groups.isPrivilegeGroup(g.name) && g.name !== 'registered-users');
-
-	if (!userData.allowMultipleBadges) {
-		userData.groupTitle = userData.groupTitleArray[0];
-	}
-
-	userData.groups.sort((a, b) => {
-		const i1 = userData.groupTitleArray.indexOf(a.name);
-		const i2 = userData.groupTitleArray.indexOf(b.name);
+	payload.groups.sort((a, b) => {
+		const i1 = groupTitleArray.indexOf(a.name);
+		const i2 = groupTitleArray.indexOf(b.name);
 		if (i1 === -1) {
 			return 1;
 		} else if (i2 === -1) {
@@ -45,24 +52,25 @@ editController.get = async function (req, res, next) {
 		}
 		return i1 - i2;
 	});
-	userData.groups.forEach((group) => {
+	payload.groups.forEach((group) => {
 		group.userTitle = group.userTitle || group.displayName;
-		group.selected = userData.groupTitleArray.includes(group.name);
+		group.selected = groupTitleArray.includes(group.name);
 	});
-	userData.groupSelectSize = Math.min(10, Math.max(5, userData.groups.length + 1));
+	payload.groupSelectSize = Math.min(10, Math.max(5, payload.groups.length + 1));
 
-	userData.title = `[[pages:account/edit, ${userData.username}]]`;
-	userData.breadcrumbs = helpers.buildBreadcrumbs([
+	payload.title = `[[pages:account/edit, ${username}]]`;
+	payload.breadcrumbs = helpers.buildBreadcrumbs([
 		{
-			text: userData.username,
-			url: `/user/${userData.userslug}`,
+			text: username,
+			url: `/user/${userslug}`,
 		},
 		{
 			text: '[[user:edit]]',
 		},
 	]);
-	userData.editButtons = [];
-	res.render('account/edit', userData);
+	payload.editButtons = [];
+
+	res.render('account/edit', payload);
 };
 
 editController.password = async function (req, res, next) {
@@ -95,46 +103,39 @@ editController.email = async function (req, res, next) {
 	helpers.redirect(res, '/register/complete');
 };
 
-async function renderRoute(name, req, res, next) {
-	const userData = await getUserData(req, next);
-	if (!userData) {
-		return next();
-	}
-	if (meta.config[`${name}:disableEdit`] && !userData.isAdmin) {
+async function renderRoute(name, req, res) {
+	const [isAdmin, { username, userslug }, hasPassword] = await Promise.all([
+		privileges.admin.can('admin:users', res.locals.uid),
+		user.getUserFields(res.locals.uid, ['username', 'userslug']),
+		user.hasPassword(res.locals.uid),
+	]);
+
+	if (meta.config[`${name}:disableEdit`] && !isAdmin) {
 		return helpers.notAllowed(req, res);
 	}
 
+	const payload = { hasPassword };
 	if (name === 'password') {
-		userData.minimumPasswordLength = meta.config.minimumPasswordLength;
-		userData.minimumPasswordStrength = meta.config.minimumPasswordStrength;
+		payload.minimumPasswordLength = meta.config.minimumPasswordLength;
+		payload.minimumPasswordStrength = meta.config.minimumPasswordStrength;
 	}
 
-	userData.title = `[[pages:account/edit/${name}, ${userData.username}]]`;
-	userData.breadcrumbs = helpers.buildBreadcrumbs([
+	payload.title = `[[pages:account/edit/${name}, ${username}]]`;
+	payload.breadcrumbs = helpers.buildBreadcrumbs([
 		{
-			text: userData.username,
-			url: `/user/${userData.userslug}`,
+			text: username,
+			url: `/user/${userslug}`,
 		},
 		{
 			text: '[[user:edit]]',
-			url: `/user/${userData.userslug}/edit`,
+			url: `/user/${userslug}/edit`,
 		},
 		{
 			text: `[[user:${name}]]`,
 		},
 	]);
 
-	res.render(`account/edit/${name}`, userData);
-}
-
-async function getUserData(req) {
-	const userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, req.query);
-	if (!userData) {
-		return null;
-	}
-
-	userData.hasPassword = await user.hasPassword(userData.uid);
-	return userData;
+	res.render(`account/edit/${name}`, payload);
 }
 
 editController.uploadPicture = async function (req, res, next) {
