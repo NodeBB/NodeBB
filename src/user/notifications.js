@@ -42,7 +42,7 @@ async function filterNotifications(nids, filter) {
 }
 
 UserNotifications.getAll = async function (uid, filter) {
-	const nids = getAllNids(uid);
+	const nids = await getAllNids(uid);
 	return await filterNotifications(nids, filter);
 };
 
