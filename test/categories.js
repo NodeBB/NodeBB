@@ -827,16 +827,17 @@ describe('Categories', () => {
 		});
 
 		describe('Categories.getModeratorUids', () => {
-			before((done) => {
-				async.series([
-					async.apply(groups.create, { name: 'testGroup' }),
-					async.apply(groups.join, 'cid:1:privileges:groups:moderate', 'testGroup'),
-					async.apply(groups.join, 'testGroup', 1),
-				], done);
+			let cid;
+
+			before(async () => {
+				({ cid } = await Categories.create({ name: 'foobar' }));
+				await groups.create({ name: 'testGroup' });
+				await groups.join(`cid:${cid}:privileges:groups:moderate`, 'testGroup');
+				await groups.join('testGroup', 1);
 			});
 
 			it('should retrieve all users with moderator bit in category privilege', (done) => {
-				Categories.getModeratorUids([1, 2], (err, uids) => {
+				Categories.getModeratorUids([cid, 2], (err, uids) => {
 					assert.ifError(err);
 					assert.strictEqual(uids.length, 2);
 					assert(uids[0].includes('1'));
@@ -851,7 +852,7 @@ describe('Categories', () => {
 					async.apply(groups.join, 'cid:1:privileges:groups:moderate', 'testGroup2'),
 					async.apply(groups.join, 'testGroup2', 1),
 					function (next) {
-						Categories.getModeratorUids([1, 2], (err, uids) => {
+						Categories.getModeratorUids([cid, 2], (err, uids) => {
 							assert.ifError(err);
 							assert(uids[0].includes('1'));
 							next();
@@ -860,10 +861,18 @@ describe('Categories', () => {
 				], done);
 			});
 
+			it('should not return moderators of disabled categories', async () => {
+				const payload = {};
+				payload[cid] = { disabled: 1 };
+				await Categories.update(payload);
+				const uids = await Categories.getModeratorUids([cid, 2]);
+				assert(!uids[0].includes('1'));
+			});
+
 			after((done) => {
 				async.series([
-					async.apply(groups.leave, 'cid:1:privileges:groups:moderate', 'testGroup'),
-					async.apply(groups.leave, 'cid:1:privileges:groups:moderate', 'testGroup2'),
+					async.apply(groups.leave, `cid:${cid}:privileges:groups:moderate`, 'testGroup'),
+					async.apply(groups.leave, `cid:${cid}:privileges:groups:moderate`, 'testGroup2'),
 					async.apply(groups.destroy, 'testGroup'),
 					async.apply(groups.destroy, 'testGroup2'),
 				], done);

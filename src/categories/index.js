@@ -99,6 +99,10 @@ Categories.getModerators = async function (cid) {
 };
 
 Categories.getModeratorUids = async function (cids) {
+	// Only check active categories
+	const disabled = (await Categories.getCategoriesFields(cids, ['disabled'])).map(obj => obj.disabled);
+	// cids = cids.filter((_, idx) => !disabled[idx]);
+
 	const groupNames = cids.reduce((memo, cid) => {
 		memo.push(`cid:${cid}:privileges:moderate`);
 		memo.push(`cid:${cid}:privileges:groups:moderate`);
@@ -120,9 +124,13 @@ Categories.getModeratorUids = async function (cids) {
 	const uniqGroups = _.uniq(_.flatten(sets.groupNames));
 	const groupUids = await groups.getMembersOfGroups(uniqGroups);
 	const map = _.zipObject(uniqGroups, groupUids);
-	const moderatorUids = cids.map(
-		(cid, index) => _.uniq(sets.uids[index].concat(_.flatten(sets.groupNames[index].map(g => map[g]))))
-	);
+	const moderatorUids = cids.map((cid, index) => {
+		if (disabled[index]) {
+			return [];
+		}
+
+		return _.uniq(sets.uids[index].concat(_.flatten(sets.groupNames[index].map(g => map[g]))));
+	});
 	return moderatorUids;
 };
 
