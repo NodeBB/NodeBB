@@ -154,6 +154,7 @@ async function expose(exposedField, method, field, req, res, next) {
 	const value = await method(String(req.params[field]).toLowerCase());
 	if (!value) {
 		next('route');
+		return;
 	}
 
 	res.locals[exposedField] = value;
