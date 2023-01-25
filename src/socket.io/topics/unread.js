@@ -1,6 +1,5 @@
 'use strict';
 
-const db = require('../../database');
 const user = require('../../user');
 const topics = require('../../topics');
 
