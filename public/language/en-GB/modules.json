@@ -73,6 +73,7 @@
 	"composer.set-schedule-date": "Set Date",
 	"composer.discard-all-drafts": "Discard all drafts",
 	"composer.no-drafts": "You have no drafts",
+	"composer.discard-draft-confirm": "Do you want to discard this draft?",
 
 	"bootbox.ok": "OK",
 	"bootbox.cancel": "Cancel",
