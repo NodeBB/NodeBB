@@ -40,24 +40,14 @@ async function linkModules() {
 	await Promise.all(Object.keys(modules).map(async (relPath) => {
 		const srcPath = path.join(__dirname, '../../', modules[relPath]);
 		const destPath = path.join(__dirname, '../../build/public/src/modules', relPath);
-		const destDir = path.dirname(destPath);
-
 		const [stats] = await Promise.all([
 			fs.promises.stat(srcPath),
-			mkdirp(destDir),
+			mkdirp(path.dirname(destPath)),
 		]);
-
 		if (stats.isDirectory()) {
 			await file.linkDirs(srcPath, destPath, true);
 		} else {
-			// Get the relative path to the destination directory
-			const relPath = path.relative(destDir, srcPath)
-				// and convert to a posix path
-				.split(path.sep).join(path.posix.sep);
-
-			// Instead of copying file, create a new file re-exporting it
-			// This way, imports in modules are resolved correctly
-			await fs.promises.writeFile(destPath, `export * from '${relPath}'`);
+			await fs.promises.copyFile(srcPath, destPath);
 		}
 	}));
 }
