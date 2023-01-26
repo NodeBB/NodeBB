@@ -1,7 +1,7 @@
 get:
   tags:
     - admin
-  summary: Get detailed user registration analytics
+  summary: Get detailed search analytics
   responses:
     "200":
       description: A JSON object containing popular searches.

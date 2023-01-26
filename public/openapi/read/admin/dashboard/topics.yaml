@@ -1,10 +1,10 @@
 get:
   tags:
     - admin
-  summary: Get detailed user registration analytics
+  summary: Get detailed topic creation analytics
   responses:
     "200":
-      description: A JSON object containing more detailed analytics related to user registrations.
+      description: A JSON object containing more detailed analytics related to topic creations.
       content:
         application/json:
           schema:
