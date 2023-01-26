@@ -74,6 +74,7 @@ define('forum/chats', [
 			dragDropAreaEl: $('.chats-full'),
 			pasteEl: $('[component="chat/input"]'),
 			uploadFormEl: $('[component="chat/upload"]'),
+			uploadBtnEl: $('[component="chat/upload/button"]'),
 			inputEl: $('[component="chat/input"]'),
 		});
 
@@ -87,6 +88,7 @@ define('forum/chats', [
 			dragDropAreaEl: options.dragDropAreaEl,
 			pasteEl: options.pasteEl,
 			uploadFormEl: options.uploadFormEl,
+			uploadBtnEl: options.uploadBtnEl,
 			route: '/api/post/upload', // using same route as post uploads
 			callback: function (uploads) {
 				const inputEl = options.inputEl;
