@@ -72,6 +72,8 @@ get:
                     type: number
                   inactiveCount:
                     type: number
+                  canChangeState:
+                    type: boolean
                   upgradeCount:
                     type: number
                   download:
