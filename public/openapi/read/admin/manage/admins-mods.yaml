@@ -97,11 +97,11 @@ get:
                           type: array
                           items:
                             $ref: ../../../components/schemas/UserObject.yaml#/UserObjectSlim
+                        subCategoryCount:
+                          type: number
                   selectedCategory:
-                    $ref: ../../../components/schemas/CategoryObject.yaml#/CategoryObject
-                  allPrivileges:
-                    type: array
-                    items:
-                      type: string
-                      description: A simple array containing user privilege names (used client-side when giving mod privilege)
+                    nullable: true
+                    anyOf:
+                      - $ref: ../../../components/schemas/CategoryObject.yaml#/CategoryObject
+              - $ref: ../../../components/schemas/Pagination.yaml#/Pagination
               - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps
