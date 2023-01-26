@@ -36,6 +36,27 @@ define('uploadHelpers', ['alerts'], function (alerts) {
 				},
 			});
 		}
+
+		if (options.uploadBtnEl) {
+			const fileInput = formEl.find('input[name="files[]"]');
+			options.uploadBtnEl.on('click', function () {
+				fileInput.trigger('click');
+			});
+			fileInput.on('change', function (e) {
+				const files = (e.target || {}).files ||
+					($(this).val() ? [{ name: $(this).val(), type: utils.fileMimeType($(this).val()) }] : null);
+				if (files) {
+					uploadHelpers.ajaxSubmit({
+						uploadForm: formEl,
+						upload: {
+							files: files,
+							fileNames: Array.from(files).map(f => f.name),
+						},
+						callback: options.callback,
+					});
+				}
+			});
+		}
 	};
 
 	uploadHelpers.handleDragDrop = function (options) {
