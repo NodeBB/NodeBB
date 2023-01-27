@@ -331,6 +331,17 @@ UserObjectFull:
       example:
         - administrators
         - Staff
+    muted:
+      type: boolean
+      description: Whether or not the user has been muted.
+    mutedUntil:
+      type: number
+      description: A UNIX timestamp representing the moment a muted state will be lifted.
+      nullable: true
+    mutedReason:
+      type: string
+      description: The admin-provided reason for being muted.
+      nullable: true
     'icon:text':
       type: string
       description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
@@ -357,6 +368,8 @@ UserObjectFull:
       type: string
     age:
       type: number
+    emailHidden:
+      type: boolean
     emailClass:
       type: string
     ips:
@@ -423,6 +436,8 @@ UserObjectFull:
     canEdit:
       type: boolean
     canBan:
+      type: boolean
+    canMute:
       type: boolean
     canFlag:
       type: boolean
