@@ -2,13 +2,13 @@
 	<div class="col-lg-9">
 		<div class="clearfix">
 			<ul id="active-navigation" class="nav">
-				<!-- BEGIN navigation -->
+				{{{ each navigation }}}
 				<li data-index="{navigation.index}" class="float-start nav-item {navigation.class} {{{ if navigation.selected }}} active {{{ end }}}">
 					<a href="#" title="{navigation.route}" id="{navigation.id}" class="nav-link p-3 {{{ if !navigation.enabled }}}text-muted{{{ end }}}">
 						<i class="nav-icon fa fa-fw {{{ if navigation.iconClass }}}{navigation.iconClass}{{{ end }}}"></i><i class="dropdown-icon fa fa-caret-down{{{ if !navigation.dropdown }}} hidden{{{ end }}}"></i>
 					</a>
 				</li>
-				<!-- END navigation -->
+				{{{ end }}}
 			</ul>
 		</div>
 
@@ -16,7 +16,7 @@
 
 		<ul id="enabled">
 			{{{ each enabled }}}
-			<li data-index="{enabled.index}" class="card card-body text-bg-light border-0 <!-- IF !enabled.selected -->hidden<!-- ENDIF !enabled.selected -->">
+			<li data-index="{enabled.index}" class="card card-body text-bg-light border-0 {{{ if !enabled.selected }}}hidden{{{ end }}}">
 				<form>
 					<div class="row">
 						<div class="col-sm-12 text-end mb-3">
@@ -33,7 +33,7 @@
 						<div class="col-sm-1">
 							<label class="form-label">[[admin/settings/navigation:icon]]</label>
 							<span class="iconPicker"><i class="fa fa-2x {enabled.iconClass}"></i>
-								<a class="change-icon-link <!-- IF enabled.iconClass -->hidden<!-- ENDIF enabled.iconClass -->" href="#">[[admin/settings/navigation:change-icon]]</a>
+								<a class="change-icon-link {{{ if enabled.iconClass }}}hidden{{{ end }}}" href="#">[[admin/settings/navigation:change-icon]]</a>
 								<input class="form-control" type="hidden" name="iconClass" value="{enabled.iconClass}" />
 							</span>
 						</div>
@@ -77,14 +77,14 @@
 
 							<select name="groups" class="form-select" size="10" multiple>
 								{{{ each enabled.groups }}}
-								<option value="{enabled.groups.displayName}"<!-- IF enabled.groups.selected --> selected<!-- ENDIF enabled.groups.selected -->>{enabled.groups.displayName}</option>
+								<option value="{enabled.groups.displayName}"{{{ if enabled.groups.selected }}} selected{{{ end }}}>{enabled.groups.displayName}</option>
 								{{{ end }}}
 							</select>
 						</div>
 					</div>
 
 					<div class="form-check form-switch mb-3">
-						<input class="form-check-input" type="checkbox" name="targetBlank" <!-- IF enabled.targetBlank -->checked<!-- ENDIF enabled.targetBlank -->/>
+						<input class="form-check-input" type="checkbox" name="targetBlank" {{{ if enabled.targetBlank }}}checked{{{ end }}}/>
 						<label class="form-check-label">[[admin/settings/navigation:open-new-window]]</label>
 					</div>
 
@@ -119,12 +119,12 @@
 					</li>
 					{{{ each available }}}
 					<li data-id="{@index}" class="clearfix">
-						<div data-id="{@index}" class="drag-item alert <!-- IF available.core -->alert-warning<!-- ELSE -->alert-info<!-- ENDIF available.core --> float-start">
-							<i class="fa fa-fw <!-- IF available.iconClass -->{available.iconClass}<!-- ELSE -->fa-navicon<!-- ENDIF available.iconClass -->"></i>
+						<div data-id="{@index}" class="drag-item alert {{{ if available.core }}}alert-warning{{{ else }}}alert-info{{{ end }}} float-start">
+							<i class="fa fa-fw {{{ if available.iconClass }}}{available.iconClass}{{{ else }}}fa-navicon{{{ end }}}"></i>
 						</div>
 						<p>
 							<strong>{available.text}</strong> {available.route} <br/>
-							<!-- IF available.core --> [[admin/settings/navigation:core]] <!-- ELSE --> [[admin/settings/navigation:plugin]] <!-- ENDIF available.core -->
+							{{{ if available.core }}} [[admin/settings/navigation:core]] {{{ else }}} [[admin/settings/navigation:plugin]] {{{ end }}}
 						</p>
 					</li>
 					{{{ end }}}

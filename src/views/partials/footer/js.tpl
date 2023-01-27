@@ -12,9 +12,9 @@
     }
 
     function prepareFooter() {
-        <!-- IF useCustomJS -->
+        {{{ if useCustomJS }}}
         {{customJS}}
-        <!-- ENDIF useCustomJS -->
+        {{{ end }}}
 
         $(document).ready(function () {
             app.coldLoad();

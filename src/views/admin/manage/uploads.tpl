@@ -15,42 +15,42 @@
 		<thead>
 			<tr>
 				<th>[[admin/manage/uploads:filename]]</th>
-				<!-- IF showPids --><th class="text-end">[[admin/manage/uploads:usage]]</th><!-- END -->
+				{{{ if showPids }}}<th class="text-end">[[admin/manage/uploads:usage]]</th>{{{ end }}}
 				<th class="text-end">[[admin/manage/uploads:size/filecount]]</th>
 				<th></th>
 			</tr>
 		</thead>
 		<tbody>
-			<!-- BEGIN files -->
+			{{{ each files }}}
 			<tr data-path="{files.path}">
-				<!-- IF files.isDirectory -->
+				{{{ if files.isDirectory }}}
 				<td class="col-md-6" role="button">
 					<i class="fa fa-fw fa-folder-o"></i> <a href="{config.relative_path}/admin/manage/uploads?dir={files.path}">{files.name}</a>
 				</td>
-				<!-- ENDIF files.isDirectory -->
+				{{{ end }}}
 
-				<!-- IF files.isFile -->
+				{{{ if files.isFile }}}
 				<td class="col-md-6">
 					<i class="fa fa-fw fa-file-text-o"></i> <a href="{config.relative_path}{files.url}" target="_blank">{files.name}</a>
 				</td>
-				<!-- ENDIF files.isFile -->
+				{{{ end }}}
 
-				<!-- IF showPids -->
+				{{{ if showPids }}}
 				<td class="col-md-3 text-end">
-					{{{ each ../inPids }}}
+					{{{ each ./inPids }}}
 					<a target="_blank" href="{config.relative_path}/post/{@value}"><span class="label label-default">{@value}</span></a>
 					{{{ end }}}
-					<!-- IF !../inPids.length -->
+					{{{ if !./inPids.length }}}
 					<span class="label label-danger">[[admin/manage/uploads:orphaned]]</span>
-					<!-- END -->
+					{{{ end }}}
 				</td>
-				<!-- END -->
+				{{{ end }}}
 
-				<td class="col-md-2 text-end"><!-- IF files.isFile -->{files.sizeHumanReadable}<!-- ELSE -->[[admin/manage/uploads:filecount, {files.fileCount}]]<!-- ENDIF files.isFile --></td>
+				<td class="col-md-2 text-end">{{{ if files.isFile }}}{files.sizeHumanReadable}{{{ else }}}[[admin/manage/uploads:filecount, {files.fileCount}]]{{{ end }}}</td>
 
-				<td role="button" class="col-md-1 text-end"><i class="delete fa fa-fw fa-trash-o <!-- IF !files.isFile --> hidden<!-- ENDIF !files.isFile -->"></i></td>
+				<td role="button" class="col-md-1 text-end"><i class="delete fa fa-fw fa-trash-o {{{ if !files.isFile }}} hidden{{{ end }}}"></i></td>
 			</tr>
-			<!-- END files -->
+			{{{ end }}}
 		</tbody>
 	</table>
 </div>

@@ -24,7 +24,7 @@
 					</tr>
 				</thead>
 				<tbody>
-				<!-- BEGIN info -->
+				{{{ each info }}}
 				<tr>
 					<td>{info.os.hostname}:{info.process.port}</td>
 					<td class="text-center">
@@ -50,7 +50,7 @@
 					<td>{info.os.load}</td>
 					<td>{info.process.uptimeHumanReadable}</td>
 				</tr>
-				<!-- END info -->
+				{{{ end }}}
 				</tbody>
 			</table>
 			</div>

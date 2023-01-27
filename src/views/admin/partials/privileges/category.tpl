@@ -7,9 +7,9 @@
 									<button type="button" data-filter="3,5" class="btn btn-outline-secondary">[[admin/manage/categories:privileges.section-viewing]]</button>
 									<button type="button" data-filter="6,15" class="btn btn-outline-secondary">[[admin/manage/categories:privileges.section-posting]]</button>
 									<button type="button" data-filter="16,18" class="btn btn-outline-secondary">[[admin/manage/categories:privileges.section-moderation]]</button>
-									<!-- IF privileges.columnCountGroupOther -->
+									{{{ if privileges.columnCountGroupOther }}}
 									<button type="button" data-filter="19,99" class="btn btn-outline-secondary">[[admin/manage/categories:privileges.section-other]]</button>
-									<!-- END -->
+									{{{ end }}}
 									</div>
 								</th>
 							</tr><tr><!-- zebrastripe reset --></tr>
@@ -22,8 +22,8 @@
 							</tr>
 						</thead>
 						<tbody>
-							<!-- BEGIN privileges.groups -->
-							<tr data-group-name="{privileges.groups.nameEscaped}" data-private="<!-- IF privileges.groups.isPrivate -->1<!-- ELSE -->0<!-- ENDIF privileges.groups.isPrivate -->">
+							{{{ each privileges.groups }}}
+							<tr data-group-name="{privileges.groups.nameEscaped}" data-private="{{{ if privileges.groups.isPrivate }}}1{{{ else }}}0{{{ end }}}">
 								<td>
 									{{{ if privileges.groups.isPrivate }}}
 										{{{ if (privileges.groups.name == "banned-users") }}}
@@ -55,7 +55,7 @@
 								</td>
 								{function.spawnPrivilegeStates, privileges.groups.name, ../privileges}
 							</tr>
-							<!-- END privileges.groups -->
+							{{{ end }}}
 						</tbody>
 						<tfoot>
 							<tr>
@@ -96,9 +96,9 @@
 									<button type="button" data-filter="3,5" class="btn btn-outline-secondary">[[admin/manage/categories:privileges.section-viewing]]</button>
 									<button type="button" data-filter="6,15" class="btn btn-outline-secondary">[[admin/manage/categories:privileges.section-posting]]</button>
 									<button type="button" data-filter="16,18" class="btn btn-outline-secondary">[[admin/manage/categories:privileges.section-moderation]]</button>
-									<!-- IF privileges.columnCountUserOther -->
+									{{{ if privileges.columnCountUserOther }}}
 									<button type="button" data-filter="19,99" class="btn btn-outline-secondary">[[admin/manage/categories:privileges.section-other]]</button>
-									<!-- END -->
+									{{{ end }}}
 									</div>
 								</th>
 							</tr><tr><!-- zebrastripe reset --></tr>
@@ -111,14 +111,14 @@
 							</tr>
 						</thead>
 						<tbody>
-							<!-- BEGIN privileges.users -->
+							{{{ each privileges.users }}}
 							<tr data-uid="{privileges.users.uid}"{{{ if privileges.users.banned }}} data-banned{{{ end }}}>
 								<td>
-									<!-- IF ../picture -->
+									{{{ if ./picture }}}
 									<img class="avatar avatar-sm" src="{privileges.users.picture}" title="{privileges.users.username}" alt="" />
-									<!-- ELSE -->
+									{{{ else }}}
 									<div class="avatar avatar-sm" style="background-color: {../icon:bgColor};">{../icon:text}</div>
-									<!-- ENDIF ../picture -->
+									{{{ end }}}
 								</td>
 								<td>
 									{{{ if privileges.users.banned }}}
@@ -129,7 +129,7 @@
 								<td class="text-center"><input autocomplete="off" type="checkbox" class="checkbox-helper"></td>
 								{function.spawnPrivilegeStates, privileges.users.username, ../privileges}
 							</tr>
-							<!-- END privileges.users -->
+							{{{ end }}}
 						</tbody>
 						<tfoot>
 							<tr>

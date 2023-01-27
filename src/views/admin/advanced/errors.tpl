@@ -55,13 +55,13 @@
 						<th>[[admin/advanced/errors:count]]</th>
 					</thead>
 					<tbody>
-						<!-- BEGIN not-found -->
+						{{{ each not-found }}}
 						<tr>
-							<td>{../value}</td>
-							<td>{../score}</td>
+							<td>{./value}</td>
+							<td>{./score}</td>
 						</tr>
-						<!-- END not-found -->
-						<!-- IF !not-found.length -->
+						{{{ end }}}
+						{{{ if !not-found.length }}}
 						<tr>
 							<td colspan="2">
 								<div class="alert alert-success">
@@ -69,7 +69,7 @@
 								</div>
 							</td>
 						</tr>
-						<!-- ENDIF !not-found.length -->
+						{{{ end }}}
 					</tbody>
 				</table>
 			</div>

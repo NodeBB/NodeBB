@@ -10,7 +10,7 @@
 			<a class="dropdown-item" role="menuitem">[[search:no-matches]]</a>
 		</li>
 		{{{each categories}}}
-		<li role="presentation" class="category <!-- IF categories.disabledClass -->disabled<!-- ENDIF categories.disabledClass -->" data-cid="{categories.cid}" data-name="{categories.name}" data-parent-cid="{categories.parentCid}">
+		<li role="presentation" class="category {{{ if categories.disabledClass }}}disabled{{{ end }}}" data-cid="{categories.cid}" data-name="{categories.name}" data-parent-cid="{categories.parentCid}">
 			<a class="dropdown-item" role="menuitem">{categories.level}
 				<span component="category-markup">
 					<div class="category-item d-inline-block">

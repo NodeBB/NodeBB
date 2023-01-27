@@ -61,11 +61,11 @@
 							<label class="form-label" for="cid-{category.cid}-class">
 								[[admin/manage/categories:custom-class]]
 							</label>
-							<input list="customClasses" id="cid-{category.cid}-class" type="text" class="form-control" placeholder="<!-- IF customClasses.length --><!-- BEGIN customClasses --><!-- IF @first -->{@value}<!-- ENDIF --><!-- END --><!-- ELSE -->col-md-6 col-6<!-- ENDIF -->" data-name="class" value="{category.class}" />
+							<input list="customClasses" id="cid-{category.cid}-class" type="text" class="form-control" placeholder="{{{ if customClasses.length }}}{{{ each customClasses }}}{{{ if @first }}}{@value}{{{ end }}}{{{ end }}}{{{ else }}}col-md-6 col-6{{{ end }}}" data-name="class" value="{category.class}" />
 							<datalist id="customClasses">
-								<!-- BEGIN customClasses -->
+								{{{ each customClasses }}}
 								<option>{@value}</option>
-								<!-- END customClasses -->
+								{{{ end }}}
 							</datalist>
 						</div>
 					</div>
@@ -125,7 +125,7 @@
 					<div class="col-lg-6">
 						<div class="form-group mb-3">
 							<div class="form-check form-switch">
-								<input type="checkbox" class="form-check-input" id="cid-{category.cid}-isSection" data-name="isSection" <!-- IF category.isSection -->checked<!-- ENDIF category.isSection --> />
+								<input type="checkbox" class="form-check-input" id="cid-{category.cid}-isSection" data-name="isSection" {{{ if category.isSection }}}checked{{{ end }}} />
 								<label class="form-check-label">[[admin/manage/categories:is-section]]</label>
 							</div>
 						</div>
@@ -148,9 +148,9 @@
 			<div class="card">
 				<div class="card-body">
 					<div class="category-preview" style="
-						<!-- IF category.backgroundImage -->background-image: url({category.backgroundImage});<!-- ENDIF category.backgroundImage -->
-						<!-- IF category.bgColor -->background-color: {category.bgColor};<!-- ENDIF category.bgColor -->
-						<!-- IF category.imageClass -->background-size: {category.imageClass};<!-- ENDIF category.imageClass -->
+						{{{ if category.backgroundImage }}}background-image: url({category.backgroundImage});{{{ end }}}
+						{{{ if category.bgColor }}}background-color: {category.bgColor};{{{ end }}}
+						{{{ if category.imageClass }}}background-size: {category.imageClass};{{{ end }}}
 						color: {category.color};
 					">
 						<div class="icon">
@@ -164,14 +164,14 @@
 								[[admin/manage/categories:upload-image]]
 							</button>
 						</div>
-						<!-- IF category.backgroundImage -->
+						{{{ if category.backgroundImage }}}
 						<div class="btn-group">
 							<button class="btn btn-warning delete-image">
 								<i data-name="icon" value="fa-times" class="fa fa-times"></i>
 								[[admin/manage/categories:delete-image]]
 							</button>
 						</div>
-						<!-- ENDIF category.backgroundImage -->
+						{{{ end }}}
 					</div>
 
 
@@ -185,11 +185,11 @@
 					<div class="mb-3">
 						<label class="form-label" for="cid-{category.cid}-parentCid">[[admin/manage/categories:parent-category]]</label>
 						<div class="d-grid">
-							<div class="btn-group <!-- IF !category.parent.name -->hide<!-- ENDIF !category.parent.name -->">
+							<div class="btn-group {{{ if !category.parent.name }}}hide{{{ end }}}">
 								<button type="button" class="btn btn-outline-secondary" data-action="changeParent" data-parentCid="{category.parent.cid}"><i class="fa {category.parent.icon}"></i> {category.parent.name}</button>
 								<button type="button" class="btn btn-warning" data-action="removeParent" data-parentCid="{category.parent.cid}"><i class="fa fa-times"></i></button>
 							</div>
-							<button type="button" class="btn btn-outline-secondary btn-block <!-- IF category.parent.name -->hide<!-- ENDIF category.parent.name -->" data-action="setParent">
+							<button type="button" class="btn btn-outline-secondary btn-block {{{ if category.parent.name }}}hide{{{ end }}}" data-action="setParent">
 								<i class="fa fa-sitemap"></i>
 								[[admin/manage/categories:parent-category-none]]
 							</button>
@@ -210,12 +210,12 @@
 					</div>
 					<hr />
 					<div class="d-grid gap-2">
-						<button data-action="toggle" data-disabled="{category.disabled}" class="btn btn-sm btn-block <!-- IF category.disabled -->btn-primary<!-- ELSE -->btn-danger<!-- ENDIF category.disabled -->">
-							<!-- IF category.disabled -->
+						<button data-action="toggle" data-disabled="{category.disabled}" class="btn btn-sm btn-block {{{ if category.disabled }}}btn-primary{{{ else }}}btn-danger{{{ end }}}">
+							{{{ if category.disabled }}}
 							[[admin/manage/categories:enable]]
-							<!-- ELSE -->
+							{{{ else }}}
 							[[admin/manage/categories:disable]]
-							<!-- ENDIF category.disabled -->
+							{{{ end }}}
 						</button>
 						<button class="btn btn-sm btn-danger btn-block purge">
 							<i class="fa fa-eraser"></i> [[admin/manage/categories:purge]]

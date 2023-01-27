@@ -13,7 +13,7 @@
 							<span class="badge bg-primary">#{events.eid}</span>
 							<span class="badge bg-info">{events.type}</span>
 							<span class="badge bg-info">uid {events.uid}</span>
-							<!-- IF events.ip --><span class="badge bg-info">{events.ip}</span><!-- END -->
+							{{{ if events.ip }}}<span class="badge bg-info">{events.ip}</span>{{{ end }}}
 							<a href="{config.relative_path}/user/{events.user.userslug}" target="_blank">{buildAvatar(events.user, "24px", true)}</a>
 							<a href="{config.relative_path}/user/{events.user.userslug}" target="_blank">{events.user.username}</a>
 							<span class="float-end delete-event ms-2 pointer"><i class="fa fa-trash-o"></i></span>
@@ -35,9 +35,9 @@
 					<div class="mb-3">
 						<label class="form-label" for="type">[[admin/advanced/events:filter-type]]</label>
 						<select id="type" name="type" class="form-select">
-							<!-- BEGIN types -->
-							<option value="{types.value}" <!-- IF types.selected -->selected<!-- ENDIF types.selected -->>{types.name} - ({types.count}) </option>
-							<!-- END types -->
+							{{{ each types }}}
+							<option value="{./value}" {{{ if ./selected }}}selected{{{ end }}}>{./name} - ({./count}) </option>
+							{{{ end }}}
 						</select>
 					</div>
 					<div class="mb-3">

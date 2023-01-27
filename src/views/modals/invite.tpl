@@ -5,8 +5,8 @@
 <div class="">
 	<label class="form-label" for="invite-modal-groups">[[users:groups-to-join]]</label>
 	<select id="invite-modal-groups" class="form-control" multiple size="5">
-		<!-- BEGIN groups -->
+		{{{ each groups }}}
 		<option value="{@value}">{@value}</option>
-		<!-- END groups -->
+		{{{ end }}}
 	</select>
 </div>

@@ -16,32 +16,32 @@
 			</tr>
 		</thead>
 		<tbody>
-			<!-- BEGIN stats -->
+			{{{ each stats }}}
 			<tr>
 				<td>
 					<strong>
-						{{{ if ../href }}}
-							<a href="{../href}">{../name}</a>
+						{{{ if ./href }}}
+							<a href="{./href}">{./name}</a>
 						{{{ else }}}
-							{../name}
+							{./name}
 						{{{ end }}}
 					</strong>
 				</td>
-				<td class="text-end formatted-number">{stats.yesterday}</td>
-				<td class="text-end formatted-number">{stats.today}</td>
-				<td class="{stats.dayTextClass}"><small>{stats.dayIncrease}%</small></td>
+				<td class="text-end formatted-number">{./yesterday}</td>
+				<td class="text-end formatted-number">{./today}</td>
+				<td class="{./dayTextClass}"><small>{./dayIncrease}%</small></td>
 
-				<td class="text-end formatted-number">{stats.lastweek}</td>
-				<td class="text-end formatted-number">{stats.thisweek}</td>
-				<td class="{stats.weekTextClass}"><small>{stats.weekIncrease}%</small></td>
+				<td class="text-end formatted-number">{./lastweek}</td>
+				<td class="text-end formatted-number">{./thisweek}</td>
+				<td class="{./weekTextClass}"><small>{./weekIncrease}%</small></td>
 
-				<td class="text-end formatted-number">{stats.lastmonth}</td>
-				<td class="text-end formatted-number">{stats.thismonth}</td>
-				<td class="{stats.monthTextClass}"><small>{stats.monthIncrease}%</small></td>
+				<td class="text-end formatted-number">{./lastmonth}</td>
+				<td class="text-end formatted-number">{./thismonth}</td>
+				<td class="{./monthTextClass}"><small>{./monthIncrease}%</small></td>
 
-				<td class="text-end formatted-number">{stats.alltime}</td>
+				<td class="text-end formatted-number">{./alltime}</td>
 			</tr>
-			<!-- END stats -->
+			{{{ end }}}
 		</tbody>
 	</table>
 </div>

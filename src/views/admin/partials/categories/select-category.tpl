@@ -11,7 +11,7 @@
 				<li component="category/no-matches" role="presentation" class="category hidden">
 					<a class="dropdown-item" role="menuitem">[[search:no-matches]]</a>
 				</li>
-				<!-- BEGIN categories -->
+				{{{ each categories }}}
 				<li role="presentation" class="category {{{if categories.disabledClass}}}disabled{{{end}}}" data-cid="{categories.cid}" data-name="{categories.name}">
 					<a class="dropdown-item" role="menuitem">{categories.level}
 						<span component="category-markup">
@@ -22,7 +22,7 @@
 						</span>
 					</a>
 				</li>
-				<!-- END categories -->
+				{{{ end }}}
 			</ul>
 		</div>
 	</div>

@@ -13,15 +13,15 @@
 			<th></th>
 		</thead>
 		<tbody>
-			<!-- BEGIN delivery -->
+			{{{ each delivery }}}
 			<tr>
-				<td>{buildAvatar(delivery, "24px", true)} <a href="{config.relative_path}/uid/{../uid}">{../username}</a></td>
-				<td>{{{if ../setting}}}{../setting}{{{else}}}<em>[[admin/manage/digest:default]]</em>{{{end}}}</td>
-				<td>{../lastDelivery}</td>
-				<td><button class="btn btn-sm btn-outline-secondary" data-action="resend" data-uid="{../uid}">[[admin/manage/digest:resend]]</button></td>
+				<td>{buildAvatar(delivery, "24px", true)} <a href="{config.relative_path}/uid/{./uid}">{./username}</a></td>
+				<td>{{{if ./setting}}}{./setting}{{{else}}}<em>[[admin/manage/digest:default]]</em>{{{end}}}</td>
+				<td>{./lastDelivery}</td>
+				<td><button class="btn btn-sm btn-outline-secondary" data-action="resend" data-uid="{./uid}">[[admin/manage/digest:resend]]</button></td>
 			</tr>
-			<!-- END delivery -->
-			<!-- IF !delivery.length -->
+			{{{ end }}}
+			{{{ if !delivery.length }}}
 			<tr>
 				<td colspan="4">
 					<div class="alert alert-success">
@@ -29,7 +29,7 @@
 					</div>
 				</td>
 			</tr>
-			<!-- ENDIF !delivery.length -->
+			{{{ end }}}
 		</tbody>
 		<tfoot>
 			<tr>

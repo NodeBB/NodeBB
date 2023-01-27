@@ -2,13 +2,13 @@
 	[[ip-blacklist:validate.x-valid, {valid.length}, {numRules}]]
 </p>
 
-<!-- IF invalid.length -->
+{{{ if invalid.length }}}
 <p>
 	[[ip-blacklist:validate.x-invalid, {invalid.length}]]
 </p>
 <ul>
-	<!-- BEGIN invalid -->
+	{{{ each invalid }}}
 	<li><code>{@value}</code></li>
-	<!-- END invalid -->
+	{{{ end }}}
 </ul>
-<!-- ENDIF invalid.length -->
+{{{ end }}}

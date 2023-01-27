@@ -313,13 +313,13 @@
 
 			<label class="form-label">[[admin/settings/user:default-notification-settings]]</label>
 
-			<!-- BEGIN notificationSettings -->
+			{{{ each notificationSettings }}}
 			<div class="row">
 				<div class="mb-3 col-7">
-					<label class="form-label">{notificationSettings.label}</label>
+					<label class="form-label">{./label}</label>
 				</div>
 				<div class="mb-3 col-5">
-					<select class="form-select" data-field="{notificationSettings.name}">
+					<select class="form-select" data-field="{./name}">
 						<option value="none">[[notifications:none]]</option>
 						<option value="notification">[[notifications:notification_only]]</option>
 						<option value="email">[[notifications:email_only]]</option>
@@ -327,8 +327,7 @@
 					</select>
 				</div>
 			</div>
-			<!-- END notificationSettings -->
-
+			{{{ end }}}
 		</form>
 	</div>
 </div>

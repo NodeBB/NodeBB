@@ -22,9 +22,9 @@
 					<span>[[admin/advanced/database:mongo.data-size]]</span> <span class="text-end">[[admin/advanced/database:x-gb, {mongo.dataSize}]]</span><br/>
 					<span>[[admin/advanced/database:mongo.storage-size]]</span> <span class="text-end">[[admin/advanced/database:x-gb, {mongo.storageSize}]]</span><br/>
 					<span>[[admin/advanced/database:mongo.index-size]]</span> <span class="text-end">[[admin/advanced/database:x-gb, {mongo.indexSize}]]</span><br/>
-					<!-- IF mongo.fileSize -->
+					{{{ if mongo.fileSize }}}
 					<span>[[admin/advanced/database:mongo.file-size]]</span> <span class="text-end">[[admin/advanced/database:x-gb, {mongo.fileSize}]]</span><br/>
-					<!-- ENDIF mongo.fileSize -->
+					{{{ end }}}
 					<hr/>
 					<span>[[admin/advanced/database:mongo.resident-memory]]</span> <span class="text-end">[[admin/advanced/database:x-gb, {mongo.mem.resident}]]</span><br/>
 					<span>[[admin/advanced/database:mongo.virtual-memory]]</span> <span class="text-end">[[admin/advanced/database:x-gb, {mongo.mem.virtual}]]</span><br/>

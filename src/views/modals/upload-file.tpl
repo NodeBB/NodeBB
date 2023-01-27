@@ -8,19 +8,19 @@
 			<div class="modal-body">
 				<form id="uploadForm" action="" method="post" enctype="multipart/form-data">
 					<div class="form-group">
-						<!-- IF description -->
+						{{{ if description }}}
 						<label for="fileInput">{description}</label>
-						<!-- ENDIF description -->
-						<input type="file" id="fileInput" name="files[]" <!-- IF accept -->accept="{accept}"<!-- ENDIF accept -->>
-						<!-- IF showHelp -->
+						{{{ end }}}
+						<input type="file" id="fileInput" name="files[]" {{{ if accept }}}accept="{accept}"{{{ end }}}>
+						{{{ if showHelp }}}
 						<p class="form-text">
-							<!-- IF accept -->
+							{{{ if accept }}}
 							[[global:allowed-file-types, {accept}]]
-							<!-- ENDIF accept -->
+							{{{ end }}}
 
-							<!-- IF fileSize --><span id="file-size-block">([[uploads:maximum-file-size, {fileSize}]])</span><!-- ENDIF fileSize -->
+							{{{ if fileSize }}}<span id="file-size-block">([[uploads:maximum-file-size, {fileSize}]])</span>{{{ end }}}
 						</p>
-						<!-- ENDIF showHelp -->
+						{{{ end }}}
 					</div>
 					<input type="hidden" id="params" name="params" />
 				</form>

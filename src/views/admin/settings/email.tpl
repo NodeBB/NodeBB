@@ -175,9 +175,9 @@
 		<div class="mb-3">
 			<label class="form-label" for="email-editor-selector">[[admin/settings/email:template.select]]</label>
 			<select id="email-editor-selector" class="form-select">
-				<!-- BEGIN emails -->
-				<option value="{emails.path}">{emails.path}</option>
-				<!-- END emails -->
+				{{{ each emails }}}
+				<option value="{./path}">{./path}</option>
+				{{{ end }}}
 			</select>
 		</div>
 		<div class="mb-3">
@@ -195,9 +195,9 @@
 		<div class="mb-3">
 			<label class="form-label" for="test-email">[[admin/settings/email:testing.select]]</label>
 			<select id="test-email" class="form-select">
-				<!-- BEGIN sendable -->
+				{{{ each sendable }}}
 				<option value="{@value}">{@value}</option>
-				<!-- END sendable -->
+				{{{ end }}}
 			</select>
 		</div>
 		<button class="btn btn-primary" type="button" data-action="email.test">[[admin/settings/email:testing.send]]</button>

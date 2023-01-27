@@ -77,31 +77,31 @@
 		</ul>
 	</section>
 
-	<!-- IF plugins.length -->
+	{{{ if plugins.length }}}
 	<section class="menu-section">
 		<h3 class="menu-section-title">[[admin/menu:section-plugins]]</h3>
 		<ul class="menu-section-list">
-			<!-- BEGIN plugins -->
+			{{{ each plugins }}}
 			<li>
-				<a href="{relative_path}/admin{plugins.route}">{plugins.name}</a>
+				<a href="{relative_path}/admin{./route}">{./name}</a>
 			</li>
-			<!-- END plugins -->
+			{{{ end }}}
 		</ul>
 	</section>
-	<!-- ENDIF plugins.length -->
+	{{{ end }}}
 
-	<!-- IF authentication.length -->
+	{{{ if authentication.length }}}
 	<section class="menu-section">
 		<h3 class="menu-section-title">[[admin/menu:section-social-auth]]</h3>
 		<ul class="menu-section-list">
-			<!-- BEGIN authentication -->
+			{{{ each authentication }}}
 			<li>
-				<a href="{relative_path}/admin{authentication.route}">{authentication.name}</a>
+				<a href="{relative_path}/admin{./route}">{./name}</a>
 			</li>
-			<!-- END authentication -->
+			{{{ end }}}
 		</ul>
 	</section>
-	<!-- ENDIF authentication.length -->
+	{{{ end }}}
 	{{{ end }}}
 
 	{{{ if user.privileges.superadmin }}}
@@ -114,9 +114,9 @@
 			<li><a href="{relative_path}/admin/advanced/cache">[[admin/menu:advanced/cache]]</a></li>
 			<li><a href="{relative_path}/admin/advanced/errors">[[admin/menu:advanced/errors]]</a></li>
 			<li><a href="{relative_path}/admin/advanced/logs">[[admin/menu:advanced/logs]]</a></li>
-			<!-- IF env -->
+			{{{ if env }}}
 			<li><a href="{relative_path}/admin/development/logger">[[admin/menu:development/logger]]</a></li>
-			<!-- ENDIF env -->
+			{{{ end }}}
 		</ul>
 	</section>
 	{{{ end }}}
@@ -253,34 +253,32 @@
 					<li><a class="dropdown-item" href="{relative_path}/admin/extend/rewards">[[admin/menu:extend/rewards]]</a></li>
 				</ul>
 			</li>
-			<!-- IF plugins.length -->
+			{{{ if plugins.length }}}
 			<li class="dropdown menu-item">
 				<a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false">[[admin/menu:section-plugins]]</a>
 				<ul class="dropdown-menu plugins-menu" role="menu">
 					<li class="dropdown-header">[[admin/menu:section-plugins]]</li>
-					<!-- BEGIN plugins -->
+					{{{ each plugins }}}
 					<li>
-						<a class="dropdown-item"  href="{relative_path}/admin{plugins.route}">{plugins.name}</a>
+						<a class="dropdown-item"  href="{relative_path}/admin{./route}">{./name}</a>
 					</li>
-					<!-- END plugins -->
-					<!-- IF authentication.length -->
+					{{{ end }}}
+					{{{ if authentication.length }}}
 					<li class="dropdown-divider"></li>
-					{{{if authentication.length}}}
 					<li class="dropdown-header">[[admin/menu:section-social-auth]]</li>
-					{{{each authentication}}}
+					{{{ each authentication }}}
 					<li>
-						<a class="dropdown-item" href="{relative_path}/admin{authentication.route}">{authentication.name}</a>
+						<a class="dropdown-item" href="{relative_path}/admin{./route}">{./name}</a>
 					</li>
-					{{{end}}}
-					{{{end}}}
-					<!-- ENDIF authentication.length -->
+					{{{ end }}}
+					{{{ end }}}
 					<li class="dropdown-divider"></li>
 					<li data-link="1">
 						<a class="dropdown-item" href="{relative_path}/admin/extend/plugins#download">[[admin/menu:extend/plugins.install]]</a>
 					</li>
 				</ul>
 			</li>
-			<!-- ENDIF plugins.length -->
+			{{{ end }}}
 			{{{ end }}}
 
 			{{{ if user.privileges.superadmin }}}
@@ -293,9 +291,9 @@
 					<li><a class="dropdown-item" href="{relative_path}/admin/advanced/cache">[[admin/menu:advanced/cache]]</a></li>
 					<li><a class="dropdown-item" href="{relative_path}/admin/advanced/errors">[[admin/menu:advanced/errors]]</a></li>
 					<li><a class="dropdown-item" href="{relative_path}/admin/advanced/logs">[[admin/menu:advanced/logs]]</a></li>
-					<!-- IF env -->
+					{{{ if env }}}
 					<li><a class="dropdown-item" href="{relative_path}/admin/development/logger">[[admin/menu:development/logger]]</a></li>
-					<!-- ENDIF env -->
+					{{{ end }}}
 				</ul>
 			</li>
 			{{{ end }}}

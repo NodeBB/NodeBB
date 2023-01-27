@@ -6,12 +6,12 @@
 					<p>[[admin/manage/tags:description]]</p>
 				</div>
 
-				<!-- IF !tags.length -->
+				{{{ if !tags.length }}}
 				[[admin/manage/tags:none]]
-				<!-- ENDIF !tags.length -->
+				{{{ end }}}
 
 				<div class="tag-list">
-					<!-- BEGIN tags -->
+					{{{ each tags }}}
 					<div class="tag-row" data-tag="{tags.valueEscaped}">
 						<div>
 							<button disabled class="rounded-3 btn btn-light">
@@ -20,7 +20,7 @@
 							</button>
 						</div>
 					</div>
-					<!-- END tags -->
+					{{{ end }}}
 				</div>
 			</div>
 		</div>

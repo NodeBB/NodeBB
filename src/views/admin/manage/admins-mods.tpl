@@ -1,28 +1,28 @@
 <div class="admins-mods">
 	<div class="mb-5">
-		<h4><!-- IF admins.icon --><i class="fa {admins.icon}"></i> <!-- ENDIF admins.icon -->[[admin/manage/admins-mods:administrators]]</h4>
+		<h4>{{{ if admins.icon }}}<i class="fa {admins.icon}"></i> {{{ end }}}[[admin/manage/admins-mods:administrators]]</h4>
 		<div class="administrator-area">
-		<!-- BEGIN admins.members -->
+		{{{ each admins.members }}}
 			<div class="badge text-bg-light m-1 p-1 float-start" data-uid="{admins.members.uid}">
 				{buildAvatar(admins.members, "24px", true)}
 				<a href="{config.relative_path}/user/{admins.members.userslug}">{admins.members.username}</a>
 				<i class="mx-1 remove-user-icon fa fa-times" role="button"></i>
 			</div>
-		<!-- END admins.members -->
+		{{{ end }}}
 		</div>
 		<input id="admin-search" class="form-control" placeholder="[[admin/manage/admins-mods:add-administrator]]" />
 	</div>
 
 	<div class="mb-5">
-		<h4><!-- IF globalMods.icon --><i class="fa {globalMods.icon}"></i> <!-- ENDIF globalMods.icon -->[[admin/manage/admins-mods:global-moderators]]</h4>
+		<h4>{{{ if globalMods.icon }}}<i class="fa {globalMods.icon}"></i> {{{ end }}}[[admin/manage/admins-mods:global-moderators]]</h4>
 		<div class="global-moderator-area">
-		<!-- BEGIN globalMods.members -->
+		{{{ each globalMods.members }}}
 			<div class="badge text-bg-light  m-1 p-1 float-start" data-uid="{globalMods.members.uid}">
 				{buildAvatar(globalMods.members, "24px", true)}
 				<a href="{config.relative_path}/user/{globalMods.members.userslug}">{globalMods.members.username}</a>
 				<i class="mx-1 remove-user-icon fa fa-times" role="button"></i>
 			</div>
-		<!-- END globalMods.members -->
+		{{{ end }}}
 		</div>
 
 		<div id="no-global-mods-warning" class="alert alert-info {{{ if globalMods.members.length }}}hidden{{{ end }}}">[[admin/manage/admins-mods:no-global-moderators]]</div>

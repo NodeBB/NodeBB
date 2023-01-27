@@ -51,9 +51,9 @@
 			<div class="tab-pane fade show active" id="installed">
 				<!-- IMPORT admin/partials/plugins/no-plugins.tpl -->
 				<ul class="installed">
-					<!-- BEGIN installed -->
+					{{{ each installed }}}
 					<!-- IMPORT admin/partials/installed_plugin_item.tpl -->
-					<!-- END installed -->
+					{{{ end }}}
 				</ul>
 			</div>
 			<div class="tab-pane fade" id="active">
@@ -71,9 +71,9 @@
 			<div class="tab-pane fade" id="download">
 				<!-- IMPORT admin/partials/plugins/no-plugins.tpl -->
 				<ul class="download">
-					<!-- BEGIN download -->
+					{{{ each download }}}
 					<!-- IMPORT admin/partials/download_plugin_item.tpl -->
-					<!-- END download -->
+					{{{ end }}}
 				</ul>
 			</div>
 		</div>
@@ -90,7 +90,7 @@
 		<div class="card">
 			<div class="card-body">
 				<div class="form-check">
-					<input id="plugin-submit-usage" class="form-check-input" type="checkbox" data-field="submitPluginUsage" <!-- IF submitPluginUsage -->checked<!-- ENDIF submitPluginUsage -->/>
+					<input id="plugin-submit-usage" class="form-check-input" type="checkbox" data-field="submitPluginUsage" {{{ if submitPluginUsage }}}checked{{{ end }}}/>
 					<label for="plugin-submit-usage" class="form-check-label">[[admin/extend/plugins:submit-anonymous-usage]]</label>
 				</div>
 			</div>

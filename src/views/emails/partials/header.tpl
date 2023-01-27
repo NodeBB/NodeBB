@@ -165,7 +165,7 @@
 			1. max-width for all clients except Desktop Windows Outlook, allowing the email to squish on narrow but never go wider than 600px.
 			2. MSO tags for Desktop Windows Outlook enforce a 600px width.
 		-->
-		<div style="max-width: 600px; margin: auto;<!-- IF rtl --> text-align: right; direction: rtl;<!-- END -->" class="email-container">
+		<div style="max-width: 600px; margin: auto;{{{ if rtl }}} text-align: right; direction: rtl;{{{ end }}}" class="email-container">
 			<!--[if mso]>
 			<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" align="center">
 			<tr>
@@ -176,11 +176,11 @@
 			<table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" width="100%" style="max-width: 600px;">
 				<tr>
 					<td style="padding: 20px 0; text-align: center">
-						<!-- IF logo.src -->
+						{{{ if logo.src }}}
 						<img src="{logo.src}" height="{logo.height}" width="{logo.width}" alt="{site_title}" border="0" style="height: {logo.height}px; width: {logo.width}px; background: #f6f6f6; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 15px; line-height: 20px; color: #333333;">
-						<!-- ELSE -->
+						{{{ else }}}
 						&nbsp;
-						<!-- ENDIF logo.src -->
+						{{{ end }}}
 					</td>
 				</tr>
 			</table>

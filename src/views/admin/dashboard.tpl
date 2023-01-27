@@ -70,21 +70,21 @@
 			<div class="card-header">[[admin/dashboard:control-panel]]</div>
 			<div class="card-body text-center">
 				<div class="d-grid gap-2 mb-2">
-					<button class="btn btn-block btn-warning restart"<!-- IF !canRestart --> disabled<!-- END -->>[[admin/dashboard:restart]]</button>
-					<button class="btn btn-block btn-danger rebuild-and-restart"<!-- IF !canRestart --> disabled<!-- END -->>[[admin/dashboard:rebuild-and-restart]]</button>
+					<button class="btn btn-block btn-warning restart"{{{ if !canRestart }}} disabled{{{ end }}}>[[admin/dashboard:restart]]</button>
+					<button class="btn btn-block btn-danger rebuild-and-restart"{{{ if !canRestart }}} disabled{{{ end }}}>[[admin/dashboard:rebuild-and-restart]]</button>
 				</div>
-				<!-- IF lastrestart -->
+				{{{ if lastrestart }}}
 				<p>
 					[[admin/dashboard:last-restarted-by]]<br />
 					<a href="{config.relative_path}/uid/{lastrestart.uid}"><span class="badge bg-info">{lastrestart.user.username}</span></a> <span class="timeago" title="{lastrestart.timestampISO}"></span>
 				</p>
-				<!-- ENDIF lastrestart -->
-				<p class="<!-- IF canRestart -->form-text<!-- ELSE -->alert alert-warning<!-- END -->">
-					<!-- IF canRestart -->
+				{{{ end }}}
+				<p class="{{{ if canRestart }}}form-text{{{ else }}}alert alert-warning{{{ end }}}">
+					{{{ if canRestart }}}
 					[[admin/dashboard:restart-warning]]
-					<!-- ELSE -->
+					{{{ else }}}
 					[[admin/dashboard:restart-disabled]]
-					<!-- END -->
+					{{{ end }}}
 				</p>
 				<p>
 					<a href="{config.relative_path}/admin/settings/advanced" class="btn btn-info btn-block" data-bs-placement="bottom" data-bs-toggle="tooltip" title="[[admin/dashboard:maintenance-mode-title]]">[[admin/dashboard:maintenance-mode]]</a>
@@ -106,26 +106,26 @@
 		<div class="card mb-3">
 			<div class="card-header">[[admin/dashboard:updates]]</div>
 			<div class="card-body">
-				<div class="alert <!-- IF lookupFailed -->alert-danger<!-- ELSE --><!-- IF upgradeAvailable -->alert-warning<!-- ELSE --><!-- IF currentPrerelease -->alert-info<!-- ELSE -->alert-success<!-- END --><!-- END --><!-- END --> version-check">
+				<div class="alert {{{ if lookupFailed }}}alert-danger{{{ else }}}{{{ if upgradeAvailable }}}alert-warning{{{ else }}}{{{ if currentPrerelease }}}alert-info{{{ else }}}alert-success{{{ end }}}{{{ end }}}{{{ end }}} version-check">
 					<p>[[admin/dashboard:running-version, {version}]]</p>
 					<p>
-					<!-- IF lookupFailed -->
+					{{{ if lookupFailed }}}
 					[[admin/dashboard:latest-lookup-failed]]
-					<!-- ELSE -->
-						<!-- IF upgradeAvailable -->
-							<!-- IF currentPrerelease -->
+					{{{ else }}}
+						{{{ if upgradeAvailable }}}
+							{{{ if currentPrerelease }}}
 							[[admin/dashboard:prerelease-upgrade-available, {latestVersion}]]
-							<!-- ELSE -->
+							{{{ else }}}
 							[[admin/dashboard:upgrade-available, {latestVersion}]]
-							<!-- END -->
-						<!-- ELSE -->
-							<!-- IF currentPrerelease -->
+							{{{ end }}}
+						{{{ else }}}
+							{{{ if currentPrerelease }}}
 							[[admin/dashboard:prerelease-warning]]
-							<!-- ELSE -->
+							{{{ else }}}
 							[[admin/dashboard:up-to-date]]
-							<!-- END -->
-						<!-- END -->
-					<!-- END -->
+							{{{ end }}}
+						{{{ end }}}
+					{{{ end }}}
 					</p>
 				</div>
 				<p>
@@ -137,17 +137,17 @@
 		<div class="card">
 			<div class="card-header">[[admin/dashboard:notices]]</div>
 			<div class="card-body">
-			<!-- BEGIN notices -->
+			{{{ each notices}}}
 				<div>
-					<!-- IF notices.done -->
-					<i class="fa fa-fw fa-check text-success"></i> {notices.doneText}
-					<!-- ELSE -->
-					<!-- IF notices.link --><a href="{config.relative_path}{notices.link}" data-bs-toggle="tooltip" title="{notices.tooltip}"><!-- ENDIF notices.link -->
-					<i class="fa fa-fw fa-times text-danger"></i> {notices.notDoneText}
-					<!-- IF notices.link --></a><!-- ENDIF notices.link -->
-					<!-- ENDIF notices.done -->
+					{{{ if ./done }}}
+					<i class="fa fa-fw fa-check text-success"></i> {./doneText}
+					{{{ else }}}
+					{{{ if ./link }}}<a href="{config.relative_path}{./link}" data-bs-toggle="tooltip" title="{./tooltip}">{{{ end }}}
+					<i class="fa fa-fw fa-times text-danger"></i> {./notDoneText}
+					{{{ if ./link }}}</a>{{{ end }}}
+					{{{ end }}}
 				</div>
-			<!-- END notices -->
+			{{{ end }}}
 			</div>
 		</div>
 	</div>

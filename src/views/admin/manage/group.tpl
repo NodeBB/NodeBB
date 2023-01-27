@@ -4,7 +4,7 @@
 			<div class="group-settings-form">
 				<fieldset class="mb-3">
 					<label class="form-label" for="change-group-name">[[admin/manage/groups:edit.name]]</label>
-					<input type="text" class="form-control" id="change-group-name" placeholder="Group Name" value="{group.displayName}" maxlength="{maximumGroupNameLength}" data-property <!-- IF group.system -->readonly<!-- ENDIF group.system -->/><br />
+					<input type="text" class="form-control" id="change-group-name" placeholder="Group Name" value="{group.displayName}" maxlength="{maximumGroupNameLength}" data-property {{{ if group.system }}}readonly{{{ end }}}/><br />
 				</fieldset>
 
 				<fieldset class="mb-3">
@@ -16,14 +16,14 @@
 					<div class="col-md-4">
 						<fieldset>
 							<label class="form-label" for="change-group-user-title">[[admin/manage/groups:edit.user-title]]</label>
-							<span id="group-label-preview" class="badge" style="color:<!-- IF group.textColor -->{group.textColor}<!-- ELSE -->#ffffff<!-- ENDIF group.textColor -->; background:<!-- IF group.labelColor -->{group.labelColor}<!-- ELSE -->#000000<!-- ENDIF group.labelColor -->;"><i id="group-icon-preview" class="fa {group.icon} <!-- IF !group.icon -->hidden<!-- ENDIF -->"></i> <span id="group-label-preview-text">{group.userTitle}</span></span>
+							<span id="group-label-preview" class="badge" style="color:{{{ if group.textColor }}}{group.textColor}{{{ else }}}#ffffff{{{ end }}}; background:{{{ if group.labelColor }}}{group.labelColor}{{{ else }}}#000000{{{ end }}};"><i id="group-icon-preview" class="fa {group.icon} {{{ if !group.icon }}}hidden{{{ end }}}"></i> <span id="group-label-preview-text">{group.userTitle}</span></span>
 							<input type="text" class="form-control" id="change-group-user-title" placeholder="The title of users if they are a member of this group" value="{group.userTitleEscaped}" maxlength="{maximumGroupTitleLength}" data-property /><br />
 						</fieldset>
 					</div>
 					<div class="col-md-2">
 						<fieldset>
 							<label class="form-label" id="group-icon-label" for="change-group-icon">[[admin/manage/groups:edit.icon]]</label><br/>
-							<i id="group-icon" class="fa fa-2x <!-- IF group.icon -->{group.icon}<!-- ENDIF group.icon -->" value="{group.icon}"></i><br />
+							<i id="group-icon" class="fa fa-2x {{{ if group.icon }}}{group.icon}{{{ end }}}" value="{group.icon}"></i><br />
 						</fieldset>
 					</div>
 					<div class="col-md-3">
@@ -44,7 +44,7 @@
 				<fieldset class="mb-3">
 					<div class="checkbox">
 						<label>
-							<input id="group-userTitleEnabled" name="userTitleEnabled" data-property type="checkbox"<!-- IF group.userTitleEnabled --> checked<!-- ENDIF group.userTitleEnabled -->> <strong>[[admin/manage/groups:edit.show-badge]]</strong>
+							<input id="group-userTitleEnabled" name="userTitleEnabled" data-property type="checkbox"{{{ if group.userTitleEnabled }}} checked{{{ end }}}> <strong>[[admin/manage/groups:edit.show-badge]]</strong>
 						</label>
 					</div>
 				</fieldset>
@@ -52,16 +52,16 @@
 				<fieldset class="mb-3">
 					<div class="checkbox">
 						<label>
-							<input id="group-private" name="private" data-property type="checkbox"<!-- IF group.private --> checked<!-- ENDIF group.private -->>
+							<input id="group-private" name="private" data-property type="checkbox"{{{ if group.private }}} checked{{{ end }}}>
 							<strong>[[groups:details.private]]</strong>
 							<p class="form-text">
 								[[admin/manage/groups:edit.private-details]]
 							</p>
-							<!-- IF !allowPrivateGroups -->
+							{{{ if !allowPrivateGroups }}}
 							<p class="form-text">
 								[[admin/manage/groups:edit.private-override]]
 							</p>
-							<!-- ENDIF !allowPrivateGroups -->
+							{{{ end }}}
 						</label>
 					</div>
 				</fieldset>
@@ -69,7 +69,7 @@
 				<fieldset class="mb-3">
 					<div class="checkbox">
 						<label>
-							<input id="group-disableJoinRequests" name="disableJoinRequests" data-property type="checkbox"<!-- IF group.disableJoinRequests --> checked<!-- ENDIF group.disableJoinRequests -->>
+							<input id="group-disableJoinRequests" name="disableJoinRequests" data-property type="checkbox"{{{ if group.disableJoinRequests }}} checked{{{ end }}}>
 							<strong>[[admin/manage/groups:edit.disable-join]]</strong>
 						</label>
 					</div>
@@ -87,7 +87,7 @@
 				<fieldset class="mb-3">
 					<div class="checkbox">
 						<label>
-							<input id="group-hidden" name="hidden" data-property type="checkbox"<!-- IF group.hidden --> checked<!-- ENDIF group.hidden -->>
+							<input id="group-hidden" name="hidden" data-property type="checkbox"{{{ if group.hidden }}} checked{{{ end }}}>
 							<strong>[[admin/manage/groups:edit.hidden]]</strong>
 							<p class="form-text">
 								[[admin/manage/groups:edit.hidden-details]]
@@ -136,11 +136,11 @@
 					<li component="group-no-matches" role="presentation" class="group hidden">
 						<a class="dropdown-item" role="menuitem">[[search:no-matches]]</a>
 					</li>
-					<!-- BEGIN groupNames -->
+					{{{ each groupNames }}}
 					<li role="presentation" class="group" data-name="{groupNames.displayName}">
 						<a class="dropdown-item" href="{config.relative_path}/admin/manage/groups/{groupNames.encodedName}" role="menuitem">{groupNames.displayName}</a>
 					</li>
-					<!-- END groupNames -->
+					{{{ end }}}
 				</ul>
 			</div>
 			<hr />

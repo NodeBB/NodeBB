@@ -6,7 +6,7 @@
 			</button>
 			<ul class="dropdown-menu">
 				{{{ each templates }}}
-				<li><a class="dropdown-item" href="#" data-template="{../template}" data-toggle="pill">{../template}</a></li>
+				<li><a class="dropdown-item" href="#" data-template="{./template}" data-toggle="pill">{./template}</a></li>
 				{{{ end }}}
 			</ul>
 		</div>
@@ -15,10 +15,10 @@
 			<div class="col-12">
 				<div class="tab-content">
 				{{{ each templates }}}
-					<div class="tab-pane <!-- IF @first -->active<!-- ENDIF @first -->" data-template="{../template}">
+					<div class="tab-pane {{{ if @first }}}active{{{ end }}}" data-template="{./template}">
 					{{{ each templates.areas }}}
-						<div class="area" data-template="{templates.template}" data-location="{../location}">
-							<h4>{../name} <small>{templates.template} / {../location}</small></h4>
+						<div class="area" data-template="{templates.template}" data-location="{./location}">
+							<h4>{./name} <small>{templates.template} / {./location}</small></h4>
 							<div class="card card-body text-bg-light widget-area">
 
 							</div>
@@ -37,32 +37,32 @@
 			<div class="card-body">
 				<div class="available-widgets">
 					<p>[[admin/extend/widgets:explanation]]</p>
-					<!-- IF !availableWidgets.length -->
+					{{{ if !availableWidgets.length }}}
 					<div class="alert alert-info">[[admin/extend/widgets:none-installed, {config.relative_path}/admin/extend/plugins]]</div>
-					<!-- ENDIF !availableWidgets.length -->
+					{{{ end }}}
 					<p>
 						<select id="widget-selector" class="form-control">
-							<!-- BEGIN availableWidgets -->
-							<option value="{availableWidgets.widget}">{availableWidgets.name}</option>
-							<!-- END availableWidgets -->
+							{{{ each availableWidgets }}}
+							<option value="{./widget}">{./name}</option>
+							{{{ end }}}
 						</select>
 					</p>
 					<div class="row">
-						<!-- BEGIN availableWidgets -->
+						{{{ each availableWidgets }}}
 						<div class="col-12">
-							<div data-widget="{availableWidgets.widget}" class="card widget-panel  pointer hide">
+							<div data-widget="{./widget}" class="card widget-panel  pointer hide">
 								<div class="card-header">
-									<strong>{availableWidgets.name}</strong>
-									<small><br />{availableWidgets.description}</small>
+									<strong>{./name}</strong>
+									<small><br />{./description}</small>
 								</div>
 								<div class="card-body hidden">
 									<form>
-										{availableWidgets.content}
+										{./content}
 									</form>
 								</div>
 							</div>
 						</div>
-						<!-- END availableWidgets -->
+						{{{ end }}}
 					</div>
 
 					<div class="btn-group" component="clone">
@@ -71,11 +71,11 @@
 							<span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu dropdown-menu-end">
-							<!-- BEGIN templates -->
-							<!-- IF !@first -->
-							<li><a class="dropdown-item" href="#">{templates.template}</a></li>
-							<!-- END -->
-							<!-- END templates -->
+							{{{ each templates }}}
+							{{{ if !@first }}}
+							<li><a class="dropdown-item" href="#">{./template}</a></li>
+							{{{ end }}}
+							{{{ end }}}
 						</ul>
 					</div>
 				</div>

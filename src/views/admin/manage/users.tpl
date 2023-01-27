@@ -85,12 +85,6 @@
 			<div id="user-notfound-notify" class="label label-danger {{{if !query}}}hidden{{{end}}} {{{if matchCount}}}hidden{{{end}}}">[[admin/manage/users:search.not-found]]</div>
 		</div>
 
-		<!-- IF inactive -->
-		<a href="{config.relative_path}/admin/manage/users/inactive?months=3&resultsPerPage={resultsPerPage}" class="btn btn-outline-secondary">[[admin/manage/users:inactive.3-months]]</a>
-		<a href="{config.relative_path}/admin/manage/users/inactive?months=6&resultsPerPage={resultsPerPage}" class="btn btn-outline-secondary">[[admin/manage/users:inactive.6-months]]</a>
-		<a href="{config.relative_path}/admin/manage/users/inactive?months=12&resultsPerPage={resultsPerPage}" class="btn btn-outline-secondary">[[admin/manage/users:inactive.12-months]]</a>
-		<!-- ENDIF inactive -->
-
 		<div class="table-responsive">
 			<table class="table table-striped users-table">
 				<thead>
@@ -108,19 +102,19 @@
 					</tr>
 				</thead>
 				<tbody>
-					<!-- BEGIN users -->
+					{{{ each users }}}
 					<tr class="user-row">
 						<th><input component="user/select/single" data-uid="{users.uid}" type="checkbox"/></th>
 						<td class="text-end">{users.uid}</td>
 						<td>
-							<i title="[[admin/manage/users:users.banned]]" class="ban fa fa-gavel text-danger<!-- IF !users.banned --> hidden<!-- ENDIF !users.banned -->"></i>
-							<i class="administrator fa fa-shield text-success<!-- IF !users.administrator --> hidden<!-- ENDIF !users.administrator -->"></i>
+							<i title="[[admin/manage/users:users.banned]]" class="ban fa fa-gavel text-danger{{{ if !users.banned }}} hidden{{{ end }}}"></i>
+							<i class="administrator fa fa-shield text-success{{{ if !users.administrator }}} hidden{{{ end }}}"></i>
 							<a href="{config.relative_path}/user/{users.userslug}"> {users.username}</a>
 						</td>
 						<td>
 							{{{ if ../email }}}
-							<i class="validated fa fa-check text-success<!-- IF !users.email:confirmed --> hidden<!-- ENDIF !users.email:confirmed -->" title="validated"></i>
-							<i class="notvalidated fa fa-check text-muted<!-- IF users.email:confirmed --> hidden<!-- ENDIF users.email:confirmed -->" title="not validated"></i>
+							<i class="validated fa fa-check text-success{{{ if !users.email:confirmed }}} hidden{{{ end }}}" title="validated"></i>
+							<i class="notvalidated fa fa-check text-muted{{{ if users.email:confirmed }}} hidden{{{ end }}}" title="not validated"></i>
 							{../email}
 							{{{ else }}}
 							<i class="notvalidated fa fa-check text-muted" title="not validated"></i>
@@ -130,11 +124,11 @@
 						<td>{users.ip}</td>
 						<td class="text-end">{users.postcount}</td>
 						<td class="text-end">{users.reputation}</td>
-						<td class="text-end"><!-- IF users.flags -->{users.flags}<!-- ELSE -->0<!-- ENDIF users.flags --></td>
+						<td class="text-end">{{{ if users.flags }}}{users.flags}{{{ else }}}0{{{ end }}}</td>
 						<td><span class="timeago" title="{users.joindateISO}"></span></td>
 						<td><span class="timeago" title="{users.lastonlineISO}"></span></td>
 					</tr>
-					<!-- END users -->
+					{{{ end }}}
 				</tbody>
 			</table>
 		</div>

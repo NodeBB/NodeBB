@@ -11,9 +11,9 @@
 			<div class="form-group col-sm-6">
 				<label class="form-label" for="language">[[admin/settings/languages:default-language]]</label>
 				<select id="language" data-field="defaultLang" class="form-select">
-					<!-- BEGIN languages -->
-					<option value="{languages.code}" <!-- IF languages.selected -->selected<!-- ENDIF languages.selected -->>{languages.name} ({languages.code})</option>
-					<!-- END languages -->
+					{{{ each languages }}}
+					<option value="{./code}" {{{ if ./selected }}}selected{{{ end }}}>{./name} ({./code})</option>
+					{{{ end }}}
 				</select>
 			</div>
 		</form>
@@ -21,7 +21,7 @@
 		<form class="row">
 			<div class="form-group col-sm-6">
 				<div class="formcheck">
-					<input class="form-check-input" type="checkbox" data-field="autoDetectLang" <!-- IF autoDetectLang -->checked<!-- ENDIF autoDetectLang -->/>
+					<input class="form-check-input" type="checkbox" data-field="autoDetectLang" {{{ if autoDetectLang }}}checked{{{ end }}}/>
 					<label class="form-check-label">[[admin/settings/languages:auto-detect]]</label>
 				</div>
 			</div>

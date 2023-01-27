@@ -1,21 +1,21 @@
 <p class="number-of-diffs">
-	<!-- IF numDiffs -->
+	{{{ if numDiffs }}}
 	[[topic:diffs.description, {numDiffs}]]
-	<!-- ELSE -->
+	{{{ else }}}
 	[[topic:diffs.no-revisions-description, {numDiffs}]]
-	<!-- END -->
+	{{{ end }}}
 </p>
-<!-- IF numDiffs -->
+{{{ if numDiffs }}}
 <div class="mb-3">
 	<select class="form-control">
-		{{{each diffs}}}
+		{{{ each diffs }}}
 		<option value="{../timestamp}">
-			{../pretty}
-			{{{ if ../username }}}[{../username}]{{{ end }}}
-			<!-- IF @first -->([[topic:diffs.current-revision]])<!-- END -->
-			<!-- IF @last -->([[topic:diffs.original-revision]])<!-- END -->
+			{./pretty}
+			{{{ if ./username }}}[{./username}]{{{ end }}}
+			{{{ if @first }}}([[topic:diffs.current-revision]]){{{ end }}}
+			{{{ if @last }}}([[topic:diffs.original-revision]]){{{ end }}}
 		</option>
-		{{{end}}}
+		{{{ end }}}
 	</select>
 
 	<hr />
@@ -33,4 +33,4 @@
 	{{{ end }}}
 
 </div>
-<!-- END -->
+{{{ end }}}

@@ -10,9 +10,9 @@
 				<div class="mb-3">
 					<label class="form-label" for="homePageRoute">[[admin/settings/homepage:home-page-route]]</label>
 					<select id="homePageRoute" class="form-select" data-field="homePageRoute">
-						<!-- BEGIN routes -->
-						<option value="{routes.route}">{routes.name}</option>
-						<!-- END routes -->
+						{{{ each routes }}}
+						<option value="{./route}">{./name}</option>
+						{{{ end }}}
 					</select>
 				</div>
 				<div id="homePageCustom" class="mb-3" style="display: none;">

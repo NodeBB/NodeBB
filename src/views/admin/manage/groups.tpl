@@ -18,25 +18,25 @@
 				</tr>
 			</thead>
 			<tbody>
-				<!-- BEGIN groups -->
-				<tr data-groupname="{groups.displayName}" data-name-encoded="{groups.nameEncoded}">
+				{{{ each groups }}}
+				<tr data-groupname="{./displayName}" data-name-encoded="{./nameEncoded}">
 					<td>
-						<a href="{config.relative_path}/admin/manage/groups/{groups.slug}">{groups.displayName}</a> ({groups.memberCount})
-						<p class="description">{groups.description}</p>
+						<a href="{config.relative_path}/admin/manage/groups/{./slug}">{./displayName}</a> ({./memberCount})
+						<p class="description">{./description}</p>
 					</td>
 					<td>
-						<span class="badge" style="color:{groups.textColor}; background-color: {groups.labelColor};"><!-- IF groups.icon --><i class="fa {groups.icon}"></i> <!-- ENDIF groups.icon -->{groups.userTitle}</span>
+						<span class="badge" style="color:{./textColor}; background-color: {./labelColor};">{{{ if ./icon }}}<i class="fa {./icon}"></i> {{{ end }}}{./userTitle}</span>
 					</td>
 					<td>
-						<!-- IF groups.system -->
+						{{{ if ./system }}}
 						<span class="badge bg-danger">[[admin/manage/groups:system]]</span>
-						<!-- ENDIF groups.system -->
-						<!-- IF groups.private -->
+						{{{ end }}}
+						{{{ if ./private }}}
 						<span class="badge bg-primary">[[admin/manage/groups:private]]</span>
-						<!-- ENDIF groups.private -->
-						<!-- IF groups.hidden -->
+						{{{ end }}}
+						{{{ if ./hidden }}}
 						<span class="badge bg-default">[[admin/manage/groups:hidden]]</span>
-						<!-- ENDIF groups.hidden -->
+						{{{ end }}}
 					</td>
 
 					<td class="text-end">
@@ -49,7 +49,7 @@
 						</div>
 					</td>
 				</tr>
-				<!-- END groups -->
+				{{{ end }}}
 			</tbody>
 			<tfoot>
 				<tr>

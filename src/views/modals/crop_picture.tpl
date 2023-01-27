@@ -31,7 +31,7 @@
 			</div>
 			<div class="modal-footer">
 				<button class="btn btn-outline-secondary" data-bs-dismiss="modal" aria-hidden="true">Close</button>
-				<button class="btn btn-primary upload-btn <!-- IF !allowSkippingCrop -->hidden<!-- ENDIF !allowSkippingCrop -->">[[user:upload_picture]]</button>
+				<button class="btn btn-primary upload-btn {{{ if !allowSkippingCrop }}}hidden{{{ end }}}">[[user:upload_picture]]</button>
 				<button class="btn btn-primary crop-btn">[[user:upload_cropped_picture]]</button>
 			</div>
 		</div>

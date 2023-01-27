@@ -140,9 +140,9 @@
 				<div class="mb-3">
 					<label class="form-label" for="groupsExemptFromPostQueue">[[admin/settings/post:restrictions.groups-exempt-from-post-queue]]</label>
 					<select id="groupsExemptFromPostQueue" class="form-select" multiple data-field="groupsExemptFromPostQueue">
-						<!-- BEGIN groupsExemptFromPostQueue -->
+						{{{ each groupsExemptFromPostQueue }}}
 						<option value="{groupsExemptFromPostQueue.displayName}">{groupsExemptFromPostQueue.displayName}</option>
-						<!-- END -->
+						{{{ end }}}
 					</select>
 				</div>
 			</div>

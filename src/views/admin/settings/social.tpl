@@ -4,14 +4,14 @@
 			<div class="col-sm-2 col-12 settings-header">[[admin/settings/social:post-sharing]]</div>
 			<div class="col-sm-10 col-12">
 				<div class="form-group" id="postSharingNetworks">
-					<!-- BEGIN posts -->
+					{{{ each posts }}}
 					<div class="form-check form-switch mb-3">
-						<input type="checkbox" class="form-check-input" id="{posts.id}" data-field="{posts.id}" name="{posts.id}" <!-- IF posts.activated -->checked<!-- ENDIF posts.activated --> />
+						<input type="checkbox" class="form-check-input" id="{posts.id}" data-field="{posts.id}" name="{posts.id}" {{{ if posts.activated }}}checked{{{ end }}} />
 						<label for="{posts.id}" class="form-check-label">
 							<i class="fa {posts.class}"></i> {posts.name}
 						</label>
 					</div>
-					<!-- END posts -->
+					{{{ end }}}
 					<p class="form-text">[[admin/settings/social:info-plugins-additional]]</p>
 				</div>
 			</div>

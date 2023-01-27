@@ -32,9 +32,9 @@
 						<div class="card card-body d-inline-block then-block">
 							<label class="form-label" for="condition-then">[[admin/extend/rewards:condition-then]]</label>
 							<select id="condition-then" class="form-select" name="rid" data-selected="{active.rid}">
-								<!-- BEGIN ../../rewards -->
+								{{{ each ../../rewards }}}
 								<option value="{rewards.rid}">{rewards.name}</option>
-								<!-- END ../../rewards -->
+								{{{ end }}}
 							</select>
 						</div>
 					</form>
@@ -58,11 +58,11 @@
 			<div class="float-end">
 				<div class="card-body d-inline-block">
 					<button class="btn btn-danger delete">[[admin/extend/rewards:delete]]</button>
-					<!-- IF active.disabled -->
+					{{{ if active.disabled }}}
 					<button class="btn btn-success toggle">[[admin/extend/rewards:enable]]</button>
-					<!-- ELSE -->
+					{{{ else }}}
 					<button class="btn btn-warning toggle">[[admin/extend/rewards:disable]]</button>
-					<!-- ENDIF active.disabled -->
+					{{{ end }}}
 				</div>
 			</div>
 			<div class="clearfix"></div>

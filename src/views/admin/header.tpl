@@ -19,9 +19,9 @@
 
 		<script type="text/javascript" src="{relative_path}/assets/admin.min.js?{cache-buster}"></script>
 
-		<!-- BEGIN scripts -->
-		<script type="text/javascript" src="{scripts.src}"></script>
-		<!-- END scripts -->
+		{{{ each scripts }}}
+		<script type="text/javascript" src="{./src}"></script>
+		{{{ end }}}
 	</head>
 
 	<body class="admin {bodyClass}">

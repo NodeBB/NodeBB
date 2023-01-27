@@ -1,10 +1,14 @@
-<h3>[[global:upvoters]] <small>({upvoteCount})</small></h3>
-{{{each upvoters}}}
-<a href="{config.relative_path}/user/{upvoters.userslug}">{buildAvatar(upvoters, "24px", true)}</a>
-{{{end}}}
-<!-- IF showDownvotes -->
-<h3>[[global:downvoters]] <small>({downvoteCount})</small></h3>
-{{{each downvoters}}}
-<a href="{config.relative_path}/user/{downvoters.userslug}">{buildAvatar(downvoters, "24px", true)}</a>
-{{{end}}}
-<!-- ENDIF showDownvotes -->
+<div class="mb-3">
+	<h4>[[global:upvoters]] <small>({upvoteCount})</small></h4>
+	{{{ each upvoters }}}
+	<a class="text-decoration-none" href="{config.relative_path}/user/{./userslug}">{buildAvatar(@value, "24px", true)}</a>
+	{{{ end }}}
+</div>
+{{{ if showDownvotes }}}
+<div>
+	<h4>[[global:downvoters]] <small>({downvoteCount})</small></h4>
+	{{{ each downvoters }}}
+	<a class="text-decoration-none" href="{config.relative_path}/user/{./userslug}">{buildAvatar(@value, "24px", true)}</a>
+	{{{ end }}}
+</div>
+{{{ end }}}
