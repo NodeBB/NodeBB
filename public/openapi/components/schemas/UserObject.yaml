@@ -451,7 +451,19 @@ UserObjectFull:
       type: number
     showHidden:
       type: boolean
+    allowProfilePicture:
+      type: boolean
+    allowCoverPicture:
+      type: boolean
+    allowProfileImageUploads:
+      type: number
+    allowedProfileImageExtensions:
+      type: string
     groups:
+      type: array
+      items:
+        $ref: ./GroupObject.yaml#/GroupFullObject
+    selectedGroup:
       type: array
       items:
         $ref: ./GroupObject.yaml#/GroupFullObject
