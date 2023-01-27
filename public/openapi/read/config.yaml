@@ -17,6 +17,8 @@ get:
                 type: string
               assetBaseUrl:
                 type: string
+              asset_base_url:
+                type: string
               siteTitle:
                 type: string
               browserTitle:
