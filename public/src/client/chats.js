@@ -480,9 +480,12 @@ define('forum/chats', [
 	Chats.addSocketListeners = function () {
 		socket.on('event:chats.receive', function (data) {
 			if (parseInt(data.roomId, 10) === parseInt(ajaxify.data.roomId, 10)) {
-				newMessage = data.self === 0;
+				if (!newMessage) {
+					newMessage = data.self === 0;
+				}
 				data.message.self = data.self;
-
+				data.message.timestamp = Math.min(Date.now(), data.message.timetamp);
+				data.message.timestampISO = utils.toISOString(data.message.timestamp);
 				messages.appendChatMessage($('.expanded-chat .chat-content'), data.message);
 			} else if (ajaxify.data.template.chats) {
 				const roomEl = $('[data-roomid=' + data.roomId + ']');

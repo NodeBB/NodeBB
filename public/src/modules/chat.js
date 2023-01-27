@@ -131,10 +131,13 @@ define('chat', [
 	};
 
 	module.onChatMessageReceived = function (data) {
-		data.message.self = data.self;
-
-		newMessage = data.self === 0;
+		if (!newMessage) {
+			newMessage = data.self === 0;
+		}
 		if (module.modalExists(data.roomId)) {
+			data.message.self = data.self;
+			data.message.timestamp = Math.min(Date.now(), data.message.timetamp);
+			data.message.timestampISO = utils.toISOString(data.message.timestamp);
 			addMessageToModal(data);
 		}
 	};
