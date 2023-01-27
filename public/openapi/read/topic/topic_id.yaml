@@ -393,6 +393,8 @@ get:
                     type: boolean
                   privateUploads:
                     type: boolean
+                  showPostPreviewsOnHover:
+                    type: boolean
                   rssFeedUrl:
                     type: string
                   postIndex:
