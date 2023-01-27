@@ -370,6 +370,8 @@ UserObjectFull:
       properties:
         best:
           type: number
+        controversial:
+          type: number
         blocks:
           type: number
         bookmarks:
