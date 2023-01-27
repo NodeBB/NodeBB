@@ -132,6 +132,7 @@ get:
                             mutedUntil:
                               type: number
                               description: A UNIX timestamp representing the moment a muted state will be lifted.
+                              nullable: true
                             icon:text:
                               type: string
                               description: A single-letter representation of a username. This is used in the
