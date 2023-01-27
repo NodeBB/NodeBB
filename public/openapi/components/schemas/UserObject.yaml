@@ -455,6 +455,9 @@ UserObjectFull:
             type: string
           route:
             type: string
+          url:
+            type: string
+            description: The relative path to the profile link route from the root of the forum
           name:
             type: string
           visibility:
