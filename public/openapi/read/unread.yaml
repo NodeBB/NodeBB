@@ -210,6 +210,8 @@ get:
                     type: string
                   selectCategoryIcon:
                     type: string
+                  showCategorySelectLabel:
+                    type: boolean
                   selectedCids:
                     type: array
                     items:
