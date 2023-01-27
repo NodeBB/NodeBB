@@ -330,6 +330,8 @@ get:
                         type: boolean
                       topics:read:
                         type: boolean
+                      topics:schedule:
+                        type: boolean
                       topics:tag:
                         type: boolean
                       topics:delete:
