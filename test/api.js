@@ -49,6 +49,13 @@ describe('API', async () => {
 					}, nconf.get('secret')))(),
 				},
 			],
+			'/api/confirm/{code}': [
+				{
+					in: 'path',
+					name: 'code',
+					example: '', // to be defined later...
+				},
+			],
 		},
 		post: {},
 		put: {},
@@ -110,12 +117,14 @@ describe('API', async () => {
 		}
 
 		// Create sample users
-		const adminUid = await user.create({ username: 'admin', password: '123456', email: 'test@example.org' });
-		const unprivUid = await user.create({ username: 'unpriv', password: '123456', email: 'unpriv@example.org' });
+		const adminUid = await user.create({ username: 'admin', password: '123456' });
+		const unprivUid = await user.create({ username: 'unpriv', password: '123456' });
+		const emailConfirmationUid = await user.create({ username: 'emailConf', email: 'emailConf@example.org' });
 		await user.setUserField(adminUid, 'email', 'test@example.org');
 		await user.setUserField(unprivUid, 'email', 'unpriv@example.org');
 		await user.email.confirmByUid(adminUid);
 		await user.email.confirmByUid(unprivUid);
+		mocks.get['/api/confirm/{code}'][0].example = await db.get(`confirm:byUid:${emailConfirmationUid}`);
 
 		for (let x = 0; x < 4; x++) {
 			// eslint-disable-next-line no-await-in-loop
