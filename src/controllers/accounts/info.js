@@ -15,7 +15,7 @@ infoController.get = async function (req, res) {
 
 	const [{ username, userslug }, isPrivileged] = await Promise.all([
 		user.getUserFields(res.locals.uid, ['username', 'userslug']),
-		user.isPrivileged(res.locals.uid),
+		user.isPrivileged(req.uid),
 	]);
 	const [history, sessions, usernames, emails, notes] = await Promise.all([
 		user.getModerationHistory(res.locals.uid),

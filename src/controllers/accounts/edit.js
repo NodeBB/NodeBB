@@ -105,7 +105,7 @@ editController.email = async function (req, res, next) {
 
 async function renderRoute(name, req, res) {
 	const [isAdmin, { username, userslug }, hasPassword] = await Promise.all([
-		privileges.admin.can('admin:users', res.locals.uid),
+		privileges.admin.can('admin:users', req.uid),
 		user.getUserFields(res.locals.uid, ['username', 'userslug']),
 		user.hasPassword(res.locals.uid),
 	]);
