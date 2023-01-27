@@ -269,3 +269,5 @@ get:
                     type: string
                   isWechat:
                     type: boolean
+              composer-default:
+                type: object
