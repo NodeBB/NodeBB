@@ -126,6 +126,12 @@ get:
                               type: array
                               items:
                                 type: string
+                            muted:
+                              type: boolean
+                              description: Whether or not the user has been muted.
+                            mutedUntil:
+                              type: number
+                              description: A UNIX timestamp representing the moment a muted state will be lifted.
                             icon:text:
                               type: string
                               description: A single-letter representation of a username. This is used in the
@@ -219,6 +225,19 @@ get:
                               type: number
                         selfPost:
                           type: boolean
+                        events:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                              id:
+                                type: number
+                              timestamp:
+                                type: number
+                              timestampISO:
+                                type: string
                         topicOwnerPost:
                           type: boolean
                         display_edit_tools:
