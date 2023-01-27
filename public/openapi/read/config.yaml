@@ -102,6 +102,8 @@ get:
                 type: string
               searchEnabled:
                 type: boolean
+              searchDefaultInQuick:
+                type: string
               bootswatchSkin:
                 type: string
               enablePostHistory:
