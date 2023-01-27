@@ -375,6 +375,8 @@ get:
                     type: number
                   feeds:disableRSS:
                     type: number
+                  signatures:hideDuplicates:
+                    type: number
                   bookmarkThreshold:
                     type: number
                   necroThreshold:
@@ -395,8 +397,6 @@ get:
                     type: string
                   postIndex:
                     type: number
-                  loggedInUser:
-                    $ref: ../../components/schemas/UserObject.yaml#/UserObject
               - type: object
                 description: Optional properties that may or may not be present (except for `tid`, which is always present, and is only here as a hack to pass validation)
                 properties:
@@ -406,6 +406,8 @@ get:
                   thumb:
                     type: string
                     description: An uploaded topic thumbnail
+                  loggedInUser:
+                    $ref: ../../components/schemas/UserObject.yaml#/UserObject
                 required:
                   - tid
               - $ref: ../../components/schemas/Pagination.yaml#/Pagination
