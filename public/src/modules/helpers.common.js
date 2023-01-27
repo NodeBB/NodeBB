@@ -23,6 +23,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 		renderDigestAvatar,
 		userAgentIcons,
 		buildAvatar,
+		increment,
 		register,
 		__escape: identity,
 	};
@@ -313,6 +314,10 @@ module.exports = function (utils, Benchpress, relative_path) {
 		output += '<span ' + attr2String(attributes) + ' style="' + styles.join(' ') + '">' + userObj['icon:text'] + '</span>';
 
 		return output;
+	}
+
+	function increment(value, inc) {
+		return value + parseInt(inc, 10);
 	}
 
 	function register() {
