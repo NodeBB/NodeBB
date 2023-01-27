@@ -13,6 +13,8 @@ get:
             allOf:
               - type: object
                 properties:
+                  canPost:
+                    type: boolean
                   showSelect:
                     type: boolean
                   showTopicTools:
@@ -205,6 +207,8 @@ get:
                         type: string
                     nullable: true
                   selectCategoryLabel:
+                    type: string
+                  selectCategoryIcon:
                     type: string
                   selectedCids:
                     type: array
