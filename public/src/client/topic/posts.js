@@ -234,9 +234,9 @@ define('forum/topic/posts', [
 			const removedEls = infinitescroll.removeExtra($('[component="post"]'), direction, Math.max(20, config.postsPerPage * 2));
 			removeNecroPostMessages(removedEls);
 
-			hooks.fire('action:posts.loaded', { posts: data.posts });
-
 			await Posts.onNewPostsAddedToDom(html);
+
+			hooks.fire('action:posts.loaded', { posts: data.posts });
 
 			callback(html);
 		});

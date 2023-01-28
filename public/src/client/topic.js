@@ -296,7 +296,7 @@ define('forum/topic', [
 	}
 
 	function setupQuickReply() {
-		if (config.enableQuickReply) {
+		if (config.enableQuickReply || config.theme.enableQuickReply) {
 			quickreply.init();
 		}
 	}
