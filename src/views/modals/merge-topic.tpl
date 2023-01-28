@@ -1,6 +1,6 @@
 <div class="tool-modal d-flex">
 	<div class="position-relative">
-		<div class="quick-search-container dropdown-menu d-block hidden p-2 hidden" style="right: 10px;">
+		<div class="quick-search-container dropdown-menu d-block p-2 hidden" style="right: 10px;">
 			<div class="text-center loading-indicator"><i class="fa fa-spinner fa-spin"></i></div>
 			<div class="quick-search-results-container"></div>
 		</div>
