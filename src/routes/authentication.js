@@ -10,6 +10,7 @@ const meta = require('../meta');
 const controllers = require('../controllers');
 const helpers = require('../controllers/helpers');
 const plugins = require('../plugins');
+const { generateToken } = require('../middleware/csrf');
 
 let loginStrategies = [];
 
@@ -108,7 +109,7 @@ Auth.reloadRoutes = async function (params) {
 				};
 
 				if (strategy.checkState !== false) {
-					req.session.ssoState = req.csrfToken && req.csrfToken();
+					req.session.ssoState = generateToken(req, true);
 					opts.state = req.session.ssoState;
 				}
 
