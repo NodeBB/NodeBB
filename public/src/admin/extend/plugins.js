@@ -248,7 +248,6 @@ define('admin/extend/plugins', [
 
 		populateUpgradeablePlugins();
 		populateActivePlugins();
-		searchInputEl.focus();
 	};
 
 	function confirmInstall(pluginID, callback) {
