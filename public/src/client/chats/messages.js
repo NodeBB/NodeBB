@@ -15,9 +15,10 @@ define('forum/chats/messages', [
 			return;
 		}
 
-		inputEl.val('');
+		inputEl.val('').trigger('input');
 		inputEl.removeAttr('data-mid');
 		messages.updateRemainingLength(inputEl.parent());
+		messages.updateTextAreaHeight();
 		const payload = { roomId, message, mid };
 		({ roomId, message, mid } = await hooks.fire('filter:chat.send', payload));
 
@@ -25,7 +26,7 @@ define('forum/chats/messages', [
 			api.post(`/chats/${roomId}`, { message }).then(() => {
 				hooks.fire('action:chat.sent', { roomId, message, mid });
 			}).catch((err) => {
-				inputEl.val(message);
+				inputEl.val(message).trigger('input');
 				messages.updateRemainingLength(inputEl.parent());
 				if (err.message === '[[error:email-not-confirmed-chat]]') {
 					return messagesModule.showEmailConfirmWarning(err.message);
@@ -43,7 +44,7 @@ define('forum/chats/messages', [
 			api.put(`/chats/${roomId}/messages/${mid}`, { message }).then(() => {
 				hooks.fire('action:chat.edited', { roomId, message, mid });
 			}).catch((err) => {
-				inputEl.val(message);
+				inputEl.val(message).trigger('input');
 				inputEl.attr('data-mid', mid);
 				messages.updateRemainingLength(inputEl.parent());
 				return alerts.error(err);
@@ -57,6 +58,17 @@ define('forum/chats/messages', [
 		parent.find('[component="chat/message/remaining"]').text(config.maximumChatMessageLength - element.val().length);
 		hooks.fire('action:chat.updateRemainingLength', {
 			parent: parent,
+		});
+	};
+
+	messages.updateTextAreaHeight = function () {
+		// https://stackoverflow.com/questions/454202/creating-a-textarea-with-auto-resize
+		const textarea = $('.expanded-chat [component="chat/input"]');
+		const scrollHeight = textarea.prop('scrollHeight');
+		textarea.css({ height: scrollHeight + 'px', 'overflow-y': 'hidden' });
+		textarea.on('input', function () {
+			textarea.css({ height: 0 });
+			textarea.css({ height: textarea.prop('scrollHeight') + 'px' });
 		});
 	};
 
@@ -140,7 +152,7 @@ define('forum/chats/messages', [
 				// By setting the `data-mid` attribute, I tell the chat code that I am editing a
 				// message, instead of posting a new one.
 				inputEl.attr('data-mid', messageId).addClass('editing');
-				inputEl.val(raw).focus();
+				inputEl.val(raw).trigger('input').focus();
 
 				hooks.fire('action:chat.prepEdit', {
 					inputEl: inputEl,

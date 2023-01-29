@@ -95,9 +95,9 @@ define('forum/chats', [
 				const inputEl = options.inputEl;
 				let text = inputEl.val();
 				uploads.forEach((upload) => {
-					text = text + (text ? '\n' : '') + (upload.isImage ? '!' : '') + `[${upload.filename}](${upload.url})`;
+					text = text + (!text.endsWith('\n') ? '\n' : '') + (upload.isImage ? '!' : '') + `[${upload.filename}](${upload.url})\n`;
 				});
-				inputEl.val(text);
+				inputEl.val(text).trigger('input');
 			},
 		});
 	};
@@ -363,12 +363,14 @@ define('forum/chats', [
 	};
 
 	Chats.addSendHandlers = function (roomId, inputEl, sendEl) {
-		inputEl.off('keypress').on('keypress', function (e) {
-			if (e.which === 13 && !e.shiftKey) {
-				messages.sendMessage(roomId, inputEl);
-				return false;
-			}
-		});
+		if (!utils.isMobile()) {
+			inputEl.off('keypress').on('keypress', function (e) {
+				if (e.which === 13 && !e.shiftKey) {
+					messages.sendMessage(roomId, inputEl);
+					return false;
+				}
+			});
+		}
 
 		sendEl.off('click').on('click', function () {
 			messages.sendMessage(roomId, inputEl);
@@ -526,6 +528,7 @@ define('forum/chats', [
 			if (!utils.isMobile()) {
 				$('.expanded-chat [component="chat/input"]').focus();
 			}
+			messages.updateTextAreaHeight();
 		}
 		$('.chats-list li').removeClass('active');
 		$('.chats-list li[data-roomid="' + ajaxify.data.roomId + '"]').addClass('active');
