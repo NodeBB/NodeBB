@@ -9,6 +9,7 @@ const categories = require('../categories');
 const plugins = require('../plugins');
 const translator = require('../translator');
 const languages = require('../languages');
+const { generateToken } = require('../middleware/csrf');
 
 const apiController = module.exports;
 
@@ -64,7 +65,7 @@ apiController.loadConfig = async function (req) {
 		'cache-buster': meta.config['cache-buster'] || '',
 		topicPostSort: meta.config.topicPostSort || 'oldest_to_newest',
 		categoryTopicSort: meta.config.categoryTopicSort || 'newest_to_oldest',
-		csrf_token: req.uid >= 0 && req.csrfToken && req.csrfToken(),
+		csrf_token: req.uid >= 0 ? generateToken(req) : undefined,
 		searchEnabled: plugins.hooks.hasListeners('filter:search.query'),
 		searchDefaultInQuick: meta.config.searchDefaultInQuick || 'titles',
 		bootswatchSkin: meta.config.bootswatchSkin || '',
