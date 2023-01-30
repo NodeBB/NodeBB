@@ -126,7 +126,7 @@ define('forum/account/settings', [
 		linkEl.href = config.relative_path +
 			'/assets/client' + (skinName ? '-' + skinName : '') +
 			(langDir === 'rtl' ? '-rtl' : '') +
-			'.css';
+			'.css?' + config['cache-buster'];
 		linkEl.onload = function () {
 			clientEl.parentNode.removeChild(clientEl);
 
