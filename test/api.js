@@ -468,7 +468,7 @@ describe('API', async () => {
 				});
 
 				it('should successfully re-login if needed', async () => {
-					const reloginPaths = ['PUT /users/{uid}/password', 'DELETE /users/{uid}/sessions/{uuid}'];
+					const reloginPaths = ['GET /api/user/{userslug}/edit/email', 'PUT /users/{uid}/password', 'DELETE /users/{uid}/sessions/{uuid}'];
 					if (reloginPaths.includes(`${method.toUpperCase()} ${path}`)) {
 						({ jar } = await helpers.loginUser('admin', '123456'));
 						const sessionUUIDs = await db.getObject('uid:1:sessionUUID:sessionId');
@@ -481,18 +481,6 @@ describe('API', async () => {
 							jar: jar,
 						});
 						csrfToken = config.csrf_token;
-					}
-				});
-
-				it('should back out of a registration interstitial if needed', async () => {
-					const affectedPaths = ['GET /api/user/{userslug}/edit/email'];
-					if (affectedPaths.includes(`${method.toUpperCase()} ${path}`)) {
-						await request({
-							uri: `${nconf.get('url')}/register/abort?_csrf=${csrfToken}`,
-							method: 'POST',
-							jar,
-							simple: false,
-						});
 					}
 				});
 			});
