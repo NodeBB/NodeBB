@@ -1,3 +1,26 @@
+FilterArray:
+  oneOf:
+    - type: array
+      items:
+        type: object
+        properties:
+          name:
+            type: string
+          filter:
+            type: string
+          selected:
+            type: boolean
+          count:
+            type: number
+        required:
+          - name
+          - filter
+    - type: array
+      items:
+        type: object
+        properties:
+          separator:
+            type: boolean
 get:
   tags:
     - notifications
@@ -69,42 +92,13 @@ get:
                         readClass:
                           type: string
                   filters:
-                    type: array
-                    items:
-                      type: object
-                      additionalProperties: {}
+                    $ref: '#/FilterArray'
                   regularFilters:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        name:
-                          type: string
-                        filter:
-                          type: string
-                        selected:
-                          type: boolean
-                      required:
-                        - name
-                        - filter
+                    $ref: '#/FilterArray'
                   moderatorFilters:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        name:
-                          type: string
-                        filter:
-                          type: string
+                    $ref: '#/FilterArray'
                   selectedFilter:
-                    type: object
-                    properties:
-                      name:
-                        type: string
-                      filter:
-                        type: string
-                      selected:
-                        type: boolean
+                    $ref: '#/FilterArray'
                   title:
                     type: string
               - $ref: ../components/schemas/Pagination.yaml#/Pagination
