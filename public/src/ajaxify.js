@@ -297,6 +297,11 @@ ajaxify.widgets = { render: render };
 		// Scroll back to top of page
 		if (!ajaxify.isCold()) {
 			window.scrollTo(0, 0);
+			// if on topic page, scroll to the correct post,
+			// this is here to avoid a flash of the wrong posts at the top of the page
+			if (ajaxify.data.template.topic && ajaxify.data.postIndex > 1) {
+				location.hash = String(ajaxify.data.postIndex - 1);
+			}
 		}
 		ajaxify.loadScript(tpl_url, function done() {
 			hooks.fire('action:ajaxify.end', { url: url, tpl_url: tpl_url, title: ajaxify.data.title });

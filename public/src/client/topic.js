@@ -135,7 +135,7 @@ define('forum/topic', [
 	};
 
 	function handleBookmark(tid) {
-		if (window.location.hash) {
+		if (window.location.hash && ajaxify.isCold()) {
 			const el = $(utils.escapeHTML(window.location.hash));
 			if (el.length) {
 				return navigator.scrollToElement(el, true, 0);
@@ -144,11 +144,7 @@ define('forum/topic', [
 		const bookmark = ajaxify.data.bookmark || storage.getItem('topic:' + tid + ':bookmark');
 		const postIndex = ajaxify.data.postIndex;
 
-		if (postIndex > 1) {
-			if (components.get('post/anchor', postIndex - 1).length) {
-				return navigator.scrollToPostIndex(postIndex - 1, true, 0);
-			}
-		} else if (bookmark && (
+		if ((!postIndex || postIndex <= 1) && bookmark && (
 			!config.usePagination ||
 			(config.usePagination && ajaxify.data.pagination.currentPage === 1)
 		) && ajaxify.data.postcount > ajaxify.data.bookmarkThreshold) {
