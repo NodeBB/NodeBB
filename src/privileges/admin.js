@@ -211,3 +211,8 @@ privsAdmin.groupPrivileges = async function (groupName) {
 	const groupPrivilegeList = await privsAdmin.getGroupPrivilegeList();
 	return await helpers.userOrGroupPrivileges(0, groupName, groupPrivilegeList);
 };
+
+privsAdmin.getUidsWithPrivilege = async function (privilege) {
+	const uidsByCid = await helpers.getUidsWithPrivilege([0], privilege);
+	return uidsByCid[0];
+};
