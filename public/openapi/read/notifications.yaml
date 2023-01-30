@@ -1,26 +1,3 @@
-FilterArray:
-  oneOf:
-    - type: array
-      items:
-        type: object
-        properties:
-          name:
-            type: string
-          filter:
-            type: string
-          selected:
-            type: boolean
-          count:
-            type: number
-        required:
-          - name
-          - filter
-    - type: array
-      items:
-        type: object
-        properties:
-          separator:
-            type: boolean
 get:
   tags:
     - notifications
@@ -92,13 +69,13 @@ get:
                         readClass:
                           type: string
                   filters:
-                    $ref: '#/FilterArray'
+                    $ref: ../components/schemas/NotificationFilters.yaml#/FiltersArray
                   regularFilters:
-                    $ref: '#/FilterArray'
+                    $ref: ../components/schemas/NotificationFilters.yaml#/FiltersArray
                   moderatorFilters:
-                    $ref: '#/FilterArray'
+                    $ref: ../components/schemas/NotificationFilters.yaml#/FiltersArray
                   selectedFilter:
-                    $ref: '#/FilterArray'
+                    $ref: ../components/schemas/NotificationFilters.yaml#/FiltersObject
                   title:
                     type: string
               - $ref: ../components/schemas/Pagination.yaml#/Pagination
