@@ -553,10 +553,10 @@ describe('API', async () => {
 
 						if (schema[prop].items) {
 							// Ensure the array items have a schema defined
-							assert(schema[prop].items.type || schema[prop].items.allOf, `"${prop}" is defined to be an array, but its items have no schema defined (path: ${method} ${path}, context: ${context})`);
+							assert(schema[prop].items.type || schema[prop].items.allOf || schema[prop].items.anyOf || schema[prop].items.oneOf, `"${prop}" is defined to be an array, but its items have no schema defined (path: ${method} ${path}, context: ${context})`);
 
 							// Compare types
-							if (schema[prop].items.type === 'object' || Array.isArray(schema[prop].items.allOf)) {
+							if (schema[prop].items.type === 'object' || Array.isArray(schema[prop].items.allOf || schema[prop].items.anyOf || schema[prop].items.oneOf)) {
 								response[prop].forEach((res) => {
 									compare(schema[prop].items, res, method, path, context ? [context, prop].join('.') : prop);
 								});
