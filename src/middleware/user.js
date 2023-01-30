@@ -182,6 +182,7 @@ module.exports = function (middleware) {
 		if (allowed) {
 			return next();
 		}
+
 		controllers.helpers.notAllowed(req, res);
 	});
 
