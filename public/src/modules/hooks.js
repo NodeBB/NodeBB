@@ -31,7 +31,6 @@ define('hooks', [], () => {
 
 	Hooks.logs.flush = () => {
 		if (Hooks.logs._collection && Hooks.logs._collection.size) {
-			console.groupCollapsed('[hooks] Changes to hooks on this page …');
 			Hooks.logs._collection.forEach((args) => {
 				console.debug.apply(console, args);
 			});
