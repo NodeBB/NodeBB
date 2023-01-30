@@ -141,7 +141,7 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 	}
 
 	function setThumbToIndex(index) {
-		if (!thumb.length || thumb.is(':hidden')) {
+		if (!thumb || !thumb.length || thumb.is(':hidden')) {
 			return;
 		}
 		const parent = thumb.parent();
