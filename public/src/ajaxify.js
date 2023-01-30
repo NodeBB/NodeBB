@@ -14,7 +14,11 @@ ajaxify.widgets = { render: render };
 
 	ajaxify.count = 0;
 	ajaxify.currentPage = null;
-
+	// disables scroll to top when back button is clicked
+	// https://developer.chrome.com/blog/history-api-scroll-restoration/
+	if ('scrollRestoration' in history) {
+		history.scrollRestoration = 'manual';
+	}
 	ajaxify.go = function (url, callback, quiet) {
 		// Automatically reconnect to socket and re-ajaxify on success
 		if (!socket.connected) {
