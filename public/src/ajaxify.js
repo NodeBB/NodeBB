@@ -300,7 +300,9 @@ ajaxify.widgets = { render: render };
 			// if on topic page, scroll to the correct post,
 			// this is here to avoid a flash of the wrong posts at the top of the page
 			if (ajaxify.data.template.topic && ajaxify.data.postIndex > 1) {
-				location.hash = String(ajaxify.data.postIndex - 1);
+				require(['navigator'], function (navigator) {
+					navigator.scrollToPostIndex(ajaxify.data.postIndex - 1, true, 0);
+				});
 			}
 		}
 		ajaxify.loadScript(tpl_url, function done() {
@@ -465,7 +467,7 @@ ajaxify.widgets = { render: render };
 		hooks.fire('action:ajaxify.cleanup', { url, tpl_url });
 	};
 
-	require(['translator', 'benchpress'], function (translator, Benchpress) {
+	require(['translator', 'benchpress', 'navigator'], function (translator, Benchpress) {
 		translator.translate('[[error:no-connection]]');
 		translator.translate('[[error:socket-reconnect-failed]]');
 		translator.translate(`[[global:reconnecting-message, ${config.siteTitle}]]`);
