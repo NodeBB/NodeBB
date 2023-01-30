@@ -528,7 +528,7 @@ define('forum/chats', [
 			if (!utils.isMobile()) {
 				$('.expanded-chat [component="chat/input"]').focus();
 			}
-			messages.updateTextAreaHeight();
+			messages.updateTextAreaHeight($(`[component="chat/messages"][data-roomid="${ajaxify.data.roomId}"]`));
 		}
 		$('.chats-list li').removeClass('active');
 		$('.chats-list li[data-roomid="' + ajaxify.data.roomId + '"]').addClass('active');

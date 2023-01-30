@@ -245,7 +245,7 @@ define('chat', [
 					});
 				});
 
-				scrollStop.apply(chatModal.find('[component="chat/messages"]'));
+				scrollStop.apply(chatModal.find('[component="chat/messages"] .chat-content'));
 
 				chatModal.find('#chat-close-btn').on('click', function () {
 					module.close(uuid);

@@ -14,11 +14,11 @@ define('forum/chats/messages', [
 		if (!message.trim().length) {
 			return;
 		}
-
+		const chatContent = inputEl.parents(`[component="chat/messages"][data-roomid="${roomId}"]`);
 		inputEl.val('').trigger('input');
 		inputEl.removeAttr('data-mid');
 		messages.updateRemainingLength(inputEl.parent());
-		messages.updateTextAreaHeight();
+		messages.updateTextAreaHeight(chatContent);
 		const payload = { roomId, message, mid };
 		({ roomId, message, mid } = await hooks.fire('filter:chat.send', payload));
 
@@ -61,14 +61,18 @@ define('forum/chats/messages', [
 		});
 	};
 
-	messages.updateTextAreaHeight = function () {
+	messages.updateTextAreaHeight = function (chatContentEl) {
 		// https://stackoverflow.com/questions/454202/creating-a-textarea-with-auto-resize
-		const textarea = $('.expanded-chat [component="chat/input"]');
+		const textarea = chatContentEl.find('[component="chat/input"]');
 		const scrollHeight = textarea.prop('scrollHeight');
 		textarea.css({ height: scrollHeight + 'px', 'overflow-y': 'hidden' });
 		textarea.on('input', function () {
+			const isAtBottom = messages.isAtBottom(chatContentEl.find('.chat-content'));
 			textarea.css({ height: 0 });
 			textarea.css({ height: textarea.prop('scrollHeight') + 'px' });
+			if (isAtBottom) {
+				messages.scrollToBottom(chatContentEl.find('.chat-content'));
+			}
 		});
 	};
 
