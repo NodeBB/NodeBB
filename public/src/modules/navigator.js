@@ -68,6 +68,8 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 		paginationBlockEl.find('.pagedown').off('click').on('click', navigator.scrollDown);
 		paginationBlockEl.find('.pagetop').off('click').on('click', navigator.toTop);
 		paginationBlockEl.find('.pagebottom').off('click').on('click', navigator.toBottom);
+		paginationBlockEl.find('.pageprev').off('click').on('click', pagination.previousPage);
+		paginationBlockEl.find('.pagenext').off('click').on('click', pagination.nextPage);
 		paginationBlockEl.find('#myNextPostBtn').off('click').on('click', gotoMyNextPost);
 
 		paginationBlockEl.find('input').on('keydown', function (e) {
@@ -441,7 +443,12 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 			return;
 		}
 		index = index > count ? count : index;
-		paginationTextEl.translateHtml('[[global:pagination.out_of, ' + index + ', ' + count + ']]');
+		if (config.usePagination) {
+			paginationTextEl.html(`<i class="fa fa-file"></i> ${ajaxify.data.pagination.currentPage} / ${ajaxify.data.pagination.pageCount}`);
+		} else {
+			paginationTextEl.html(`<i class="fa fa-pencil"></i> ${index} / ${count}`);
+		}
+
 		const fraction = (index - 1) / (count - 1 || 1);
 		paginationBlockMeterEl.val(fraction);
 		paginationBlockProgressEl.width((fraction * 100) + '%');
