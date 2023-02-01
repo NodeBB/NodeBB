@@ -23,8 +23,6 @@ get:
                     type: boolean
                   search_query:
                     type: string
-                  expandSearch:
-                    type: boolean
                   showAsPosts:
                     type: boolean
                   showAsTopics:

@@ -238,7 +238,9 @@ define('search', ['translator', 'storage', 'hooks', 'alerts'], function (transla
 
 	Search.api = function (data, callback) {
 		const apiURL = config.relative_path + '/api/search?' + createQueryString(data);
-		data.searchOnly = undefined;
+		if (data.hasOwnProperty('searchOnly')) {
+			delete data.searchOnly;
+		}
 		const searchURL = config.relative_path + '/search?' + createQueryString(data);
 		$.get(apiURL, function (result) {
 			result.url = searchURL;
@@ -248,7 +250,6 @@ define('search', ['translator', 'storage', 'hooks', 'alerts'], function (transla
 
 	function createQueryString(data) {
 		const searchIn = data.in || 'titles';
-		const postedBy = data.by || '';
 		let term = data.term.replace(/^[ ?#]*/, '');
 		try {
 			term = encodeURIComponent(term);
@@ -257,51 +258,10 @@ define('search', ['translator', 'storage', 'hooks', 'alerts'], function (transla
 		}
 
 		const query = {
+			...data,
 			term: term,
 			in: searchIn,
 		};
-
-		if (data.matchWords) {
-			query.matchWords = data.matchWords;
-		}
-
-		if (postedBy && postedBy.length && (searchIn === 'posts' || searchIn === 'titles' || searchIn === 'titlesposts')) {
-			query.by = postedBy;
-		}
-
-		if (data.categories && data.categories.length) {
-			query.categories = data.categories;
-			if (data.searchChildren) {
-				query.searchChildren = data.searchChildren;
-			}
-		}
-
-		if (data.hasTags && data.hasTags.length) {
-			query.hasTags = data.hasTags;
-		}
-
-		if (parseInt(data.replies, 10) > 0) {
-			query.replies = data.replies;
-			query.repliesFilter = data.repliesFilter || 'atleast';
-		}
-
-		if (data.timeRange) {
-			query.timeRange = data.timeRange;
-			query.timeFilter = data.timeFilter || 'newer';
-		}
-
-		if (data.sortBy) {
-			query.sortBy = data.sortBy;
-			query.sortDirection = data.sortDirection;
-		}
-
-		if (data.showAs) {
-			query.showAs = data.showAs;
-		}
-
-		if (data.searchOnly) {
-			query.searchOnly = data.searchOnly;
-		}
 
 		hooks.fire('action:search.createQueryString', {
 			query: query,

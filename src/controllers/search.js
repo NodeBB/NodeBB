@@ -88,8 +88,6 @@ searchController.search = async function (req, res, next) {
 
 
 	searchData.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[global:search]]' }]);
-	searchData.expandSearch = !req.query.term;
-
 	searchData.showAsPosts = !req.query.showAs || req.query.showAs === 'posts';
 	searchData.showAsTopics = req.query.showAs === 'topics';
 	searchData.title = '[[global:header.search]]';
@@ -148,25 +146,26 @@ const searches = {};
 
 async function recordSearch(data) {
 	const { query, searchIn } = data;
-	if (query) {
-		const cleanedQuery = String(query).trim().toLowerCase().slice(0, 255);
-		if (['titles', 'titlesposts', 'posts'].includes(searchIn) && cleanedQuery.length > 2) {
-			searches[data.uid] = searches[data.uid] || { timeoutId: 0, queries: [] };
-			searches[data.uid].queries.push(cleanedQuery);
-			if (searches[data.uid].timeoutId) {
-				clearTimeout(searches[data.uid].timeoutId);
-			}
-			searches[data.uid].timeoutId = setTimeout(async () => {
-				if (searches[data.uid] && searches[data.uid].queries) {
-					const copy = searches[data.uid].queries.slice();
-					const filtered = searches[data.uid].queries.filter(
-						q => !copy.find(query => query.startsWith(q) && query.length > q.length)
-					);
-					delete searches[data.uid];
-					await Promise.all(filtered.map(query => db.sortedSetIncrBy('searches:all', 1, query)));
-				}
-			}, 5000);
+	if (!query || parseInt(data.qs.composer, 10) === 1) {
+		return;
+	}
+	const cleanedQuery = String(query).trim().toLowerCase().slice(0, 255);
+	if (['titles', 'titlesposts', 'posts'].includes(searchIn) && cleanedQuery.length > 2) {
+		searches[data.uid] = searches[data.uid] || { timeoutId: 0, queries: [] };
+		searches[data.uid].queries.push(cleanedQuery);
+		if (searches[data.uid].timeoutId) {
+			clearTimeout(searches[data.uid].timeoutId);
 		}
+		searches[data.uid].timeoutId = setTimeout(async () => {
+			if (searches[data.uid] && searches[data.uid].queries) {
+				const copy = searches[data.uid].queries.slice();
+				const filtered = searches[data.uid].queries.filter(
+					q => !copy.find(query => query.startsWith(q) && query.length > q.length)
+				);
+				delete searches[data.uid];
+				await Promise.all(filtered.map(query => db.sortedSetIncrBy('searches:all', 1, query)));
+			}
+		}, 5000);
 	}
 }
 
