@@ -6,6 +6,13 @@ const {
 	generateToken,
 	csrfSynchronisedProtection,
 } = csrfSync({
+	getTokenFromRequest: (req) => {
+		if (req.headers['x-csrf-token']) {
+			return req.headers['x-csrf-token'];
+		} else if (req.query) {
+			return req.query._csrf;
+		}
+	},
 	size: 64,
 });
 
