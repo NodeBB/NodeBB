@@ -118,8 +118,11 @@ define('search', ['translator', 'storage', 'hooks', 'alerts'], function (transla
 				}
 			}
 
-			quickSearchResults.removeClass('hidden').find('.quick-search-results-container').html('');
-			quickSearchResults.find('.loading-indicator').removeClass('hidden');
+			if (!options.hideDuringSearch) {
+				quickSearchResults.removeClass('hidden').find('.quick-search-results-container').html('');
+				quickSearchResults.find('.loading-indicator').removeClass('hidden');
+			}
+
 			hooks.fire('action:search.quick.start', options);
 			options.searchOptions.searchOnly = 1;
 			Search.api(options.searchOptions, function (data) {
