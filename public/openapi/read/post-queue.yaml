@@ -162,6 +162,10 @@ get:
                                 titleRaw:
                                   type: string
                         - $ref: ../components/schemas/CategoryObject.yaml#/CategoryObject
+                  enabled:
+                    type: number
+                  singlePost:
+                    type: boolean
               - $ref: ../components/schemas/Pagination.yaml#/Pagination
               - $ref: ../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
               - $ref: ../components/schemas/CommonProps.yaml#/CommonProps
