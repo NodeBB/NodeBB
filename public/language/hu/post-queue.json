@@ -1,7 +1,10 @@
 
 {
 	"post-queue": "Hozzászólási várósor",
-	"description": "Nem várakozik egy bejegyzés sem a sorban. <br> Hogy bekapcsold ezt a funckiót, menj a <a href=\"%1\">Beállítások &rarr; Bejegyzés &rarr; Bejegyzés sor</a> és fogadd el a <strong>Bejegyzés sor</strong>. -t",
+	"no-queued-posts": "There are no posts in the post queue.",
+	"no-single-post": "The topic or post you are looking for is no longer in the queue. It has likely been approved or deleted already.",
+	"enabling-help": "To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
+	"back-to-list": "Back to Post Queue",
 	"user": "Felhasználó",
 	"category": "Kategória",
 	"title": "Cím",

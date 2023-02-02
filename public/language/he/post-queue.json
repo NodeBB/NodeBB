@@ -1,7 +1,10 @@
 
 {
 	"post-queue": "פוסטים ממתינים",
-	"description": "אין פוסטים בתור. <br> כדי לאפשר את תור ההרשמה, גשו ל<a href=\"%1\">הגדרות &rarr; פוסט &rarr; תור פוסטים</a> ואפשרו את <strong>תור פוסט</strong>.",
+	"no-queued-posts": "There are no posts in the post queue.",
+	"no-single-post": "The topic or post you are looking for is no longer in the queue. It has likely been approved or deleted already.",
+	"enabling-help": "To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
+	"back-to-list": "Back to Post Queue",
 	"user": "משתמש",
 	"category": "קטגוריה",
 	"title": "כותרת",

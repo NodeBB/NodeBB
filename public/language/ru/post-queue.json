@@ -1,7 +1,10 @@
 
 {
 	"post-queue": "Очередь на публикацию",
-	"description": "В очереди на публикацию нет сообщений. <br> Чтобы включить эту функцию, перейдите в <a href=\"%1\">Настройки &rarr; Сообщения &rarr; Очередь на публикацию</a> и включите <strong>Очередь на публикацию</strong>.",
+	"no-queued-posts": "There are no posts in the post queue.",
+	"no-single-post": "The topic or post you are looking for is no longer in the queue. It has likely been approved or deleted already.",
+	"enabling-help": "To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
+	"back-to-list": "Back to Post Queue",
 	"user": "Пользователь",
 	"category": "Категория",
 	"title": "Название",

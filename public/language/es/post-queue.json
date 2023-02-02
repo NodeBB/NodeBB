@@ -1,7 +1,10 @@
 
 {
 	"post-queue": "Cola de Mensajes",
-	"description": "No hay publicaciones en cola.<br>Para habilitar esta funcionalidad, ir a <a href=\"%1\">Ajustes/Publicar/Cola de Publicaciones</a>y habilitar <strong>Cola de publicaciones</strong>.",
+	"no-queued-posts": "There are no posts in the post queue.",
+	"no-single-post": "The topic or post you are looking for is no longer in the queue. It has likely been approved or deleted already.",
+	"enabling-help": "To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
+	"back-to-list": "Back to Post Queue",
 	"user": "Usuario",
 	"category": "Categoría",
 	"title": "Título",

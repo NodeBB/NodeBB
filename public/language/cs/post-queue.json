@@ -1,7 +1,10 @@
 
 {
 	"post-queue": "Fronta příspěvků",
-	"description": "Nejsou žádné příspěvky ve frontě. Pro povolení této funkčnosti, přejděte do <a href=\"%1\">Nastavení – Příspěvky – Fronta příspěvků</a> a povolte <strong>Fronta příspěvků</strong>.",
+	"no-queued-posts": "There are no posts in the post queue.",
+	"no-single-post": "The topic or post you are looking for is no longer in the queue. It has likely been approved or deleted already.",
+	"enabling-help": "To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
+	"back-to-list": "Back to Post Queue",
 	"user": "Uživatel",
 	"category": "Kategorie",
 	"title": "Název",

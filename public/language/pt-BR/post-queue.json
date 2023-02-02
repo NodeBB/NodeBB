@@ -1,7 +1,10 @@
 
 {
 	"post-queue": "Fila de Posts",
-	"description": "Não há posts na fila de posts. <br> Para habilitar essa função, vá até <a href=\"%1\">Configurações → Post → Fila de Posts</a> e habilite <strong>Fila de Posts</strong>.",
+	"no-queued-posts": "There are no posts in the post queue.",
+	"no-single-post": "The topic or post you are looking for is no longer in the queue. It has likely been approved or deleted already.",
+	"enabling-help": "To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
+	"back-to-list": "Back to Post Queue",
 	"user": "Usuário",
 	"category": "Categoria",
 	"title": "Título",
