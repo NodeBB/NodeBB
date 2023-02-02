@@ -4,6 +4,7 @@ const _ = require('lodash');
 
 const user = require('../user');
 const groups = require('../groups');
+const meta = require('../meta');
 const posts = require('../posts');
 const flags = require('../flags');
 const analytics = require('../analytics');
@@ -219,6 +220,7 @@ modsController.postQueue = async function (req, res, next) {
 		allCategoriesUrl: `post-queue${helpers.buildQueryString(req.query, 'cid', '')}`,
 		pagination: pagination.create(page, pageCount),
 		breadcrumbs: helpers.buildBreadcrumbs(crumbs),
+		enabled: meta.config.postQueue,
 		singlePost: !!id,
 	});
 };

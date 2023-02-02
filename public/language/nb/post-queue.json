@@ -1,7 +1,10 @@
 
 {
 	"post-queue": "Innleggskø",
-	"description": "Det er ingen innlegg i innleggskøen. <br> For å skru på denne funksjonen, gå til <a href=\"%1\">Innstillinger &rarr; Innlegg &rarr; Innleggskø</a> og skru på  <strong>Innleggskø</strong>.",
+	"no-queued-posts": "There are no posts in the post queue.",
+	"no-single-post": "The topic or post you are looking for is no longer in the queue. It has likely been approved or deleted already.",
+	"enabling-help": "To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
+	"back-to-list": "Back to Post Queue",
 	"user": "Bruker",
 	"category": "Kategori",
 	"title": "Tittel",

@@ -1,7 +1,10 @@
 
 {
 	"post-queue": "صف پست",
-	"description": "پستی در صف پست وجود ندارد. <br> برای فعال سازی این قابلیت، به <a href=\"%1\"> تنظیمات &rarr; پست &rarr; صف پست </a> بروید و <strong>صف پست</strong> را فعال کنید.",
+	"no-queued-posts": "There are no posts in the post queue.",
+	"no-single-post": "The topic or post you are looking for is no longer in the queue. It has likely been approved or deleted already.",
+	"enabling-help": "To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
+	"back-to-list": "Back to Post Queue",
 	"user": "User",
 	"category": "Category",
 	"title": "Title",

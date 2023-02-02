@@ -1,7 +1,10 @@
 
 {
 	"post-queue": "게시 대기열",
-	"description": "게시 대기열에 글이 없습니다. <br> 이 기능을 활성화하기 위해서는 <a href=\"%1\">설정 &rarr; 포스트 &rarr; 게시 대기열</a>로 이동해서 <strong>게시 대기열</strong> 기능을 활성화해주세요.",
+	"no-queued-posts": "There are no posts in the post queue.",
+	"no-single-post": "The topic or post you are looking for is no longer in the queue. It has likely been approved or deleted already.",
+	"enabling-help": "To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
+	"back-to-list": "Back to Post Queue",
 	"user": "사용자",
 	"category": "카테고리",
 	"title": "제목",

@@ -1,7 +1,10 @@
 
 {
 	"post-queue": "发布队列",
-	"description": "发布队列中暂无新帖。启用此特性，请前往设置&rarr;发布&rarr;发布队列，然后启用发布队列。",
+	"no-queued-posts": "There are no posts in the post queue.",
+	"no-single-post": "The topic or post you are looking for is no longer in the queue. It has likely been approved or deleted already.",
+	"enabling-help": "To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
+	"back-to-list": "Back to Post Queue",
 	"user": "用户",
 	"category": "版块",
 	"title": "标题",
