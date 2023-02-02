@@ -1,6 +1,9 @@
 'use strict';
 
+const _ = require('lodash');
+
 const user = require('../user');
+const groups = require('../groups');
 const posts = require('../posts');
 const flags = require('../flags');
 const analytics = require('../analytics');
@@ -110,7 +113,6 @@ modsController.flags.detail = async function (req, res, next) {
 		isAdminOrGlobalMod: user.isAdminOrGlobalMod(req.uid),
 		moderatedCids: user.getModeratedCids(req.uid),
 		flagData: flags.get(req.params.flagId),
-		assignees: user.getAdminsandGlobalModsandModerators(),
 		privileges: Promise.all(['global', 'admin'].map(async type => privileges[type].get(req.uid))),
 	});
 	results.privileges = { ...results.privileges[0], ...results.privileges[1] };
@@ -119,6 +121,28 @@ modsController.flags.detail = async function (req, res, next) {
 		return next(); // 404
 	}
 
+	async function getAssignees(flagData) {
+		let uids = [];
+		const [admins, globalMods] = await Promise.all([
+			groups.getMembers('administrators', 0, -1),
+			groups.getMembers('Global Moderators', 0, -1),
+		]);
+		if (flagData.type === 'user') {
+			uids = await privileges.admin.getUidsWithPrivilege('admin:users');
+			uids = _.uniq(admins.concat(uids));
+		} else if (flagData.type === 'post') {
+			const cid = await posts.getCidByPid(flagData.targetId);
+			if (!cid) {
+				return [];
+			}
+			uids = (await privileges.categories.getUidsWithPrivilege([cid], 'moderate'))[0];
+			uids = _.uniq(admins.concat(globalMods).concat(uids));
+		}
+		const userData = await user.getUsersData(uids);
+		return userData.filter(u => u && u.userslug);
+	}
+
+	const assignees = await getAssignees(results.flagData);
 	results.flagData.history = results.isAdminOrGlobalMod ? (await flags.getHistory(req.params.flagId)) : null;
 
 	if (results.flagData.type === 'user') {
@@ -128,7 +152,7 @@ modsController.flags.detail = async function (req, res, next) {
 	}
 
 	res.render('flags/detail', Object.assign(results.flagData, {
-		assignees: results.assignees,
+		assignees: assignees,
 		type_bool: ['post', 'user', 'empty'].reduce((memo, cur) => {
 			if (cur !== 'empty') {
 				memo[cur] = results.flagData.type === cur && (

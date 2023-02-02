@@ -70,6 +70,7 @@
 	"no-user": "User does not exist",
 	"no-teaser": "Teaser does not exist",
 	"no-flag": "Flag does not exist",
+	"no-chat-room": "Chat room does not exist",
 	"no-privileges": "You do not have enough privileges for this action.",
 
 	"category-disabled": "Category disabled",
@@ -182,6 +183,9 @@
 	"chat-deleted-already": "This chat message has already been deleted.",
 	"chat-restored-already": "This chat message has already been restored.",
 	"chat-room-does-not-exist": "Chat room does not exist.",
+	"cant-add-users-to-chat-room": "Can't add users to chat room.",
+	"cant-remove-users-from-chat-room": "Can't remove users from chat room.",
+	"chat-room-name-too-long": "Chat room name too long.",
 
 	"already-voting-for-this-post": "You have already voted for this post.",
 	"reputation-system-disabled": "Reputation system is disabled.",
