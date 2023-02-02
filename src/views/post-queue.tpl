@@ -39,7 +39,7 @@
 			{{{ else }}}
 			<div class="alert alert-info d-flex align-items-center">
 				<p class="mb-0 me-auto">[[post-queue:no-single-post]]</p>
-				<a class="btn btn-primary" href=".">[[post-queue:back-to-list]]</a>
+				<a class="btn btn-sm btn-primary" href=".">[[post-queue:back-to-list]]</a>
 			</div>
 			{{{ end }}}
 			{{{ end }}}
