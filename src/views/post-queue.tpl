@@ -1,6 +1,7 @@
 <!-- IMPORT partials/breadcrumbs.tpl -->
+
+{{{ if (!singlePost && posts.length) }}}
 <div class="btn-toolbar justify-content-end">
-	{{{ if (!singlePost && posts.length) }}}
 	<div class="me-2">
 	<!-- IMPORT partials/category/filter-dropdown-right.tpl -->
 	</div>
@@ -21,9 +22,11 @@
 			{{{ end }}}
 		</ul>
 	</div>
-	{{{ end }}}
 </div>
+
 <hr/>
+{{{ end }}}
+
 <div class="row">
 	<div class="col-12">
 		<div class="post-queue preventSlideout posts-list">
