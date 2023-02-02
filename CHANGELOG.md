@@ -1,3 +1,119 @@
+#### v2.8.5 (2023-01-27)
+
+##### Chores
+
+*  incrementing version number - v2.8.4 (a46b2bbc)
+*  update changelog for v2.8.4 (c13f0e21)
+*  incrementing version number - v2.8.3 (c20b20a7)
+*  incrementing version number - v2.8.2 (050e43f8)
+*  incrementing version number - v2.8.1 (727f879e)
+*  incrementing version number - v2.8.0 (8e77673d)
+*  incrementing version number - v2.7.0 (96cc0617)
+*  incrementing version number - v2.6.1 (7e52a7a5)
+*  incrementing version number - v2.6.0 (e7fcf482)
+*  incrementing version number - v2.5.8 (dec0e7de)
+*  incrementing version number - v2.5.7 (5836bf4a)
+*  incrementing version number - v2.5.6 (c7bd7dbf)
+*  incrementing version number - v2.5.5 (3509ed94)
+*  incrementing version number - v2.5.4 (e83260ca)
+*  incrementing version number - v2.5.3 (7e922936)
+*  incrementing version number - v2.5.2 (babcd17e)
+*  incrementing version number - v2.5.1 (ce3aa950)
+*  incrementing version number - v2.5.0 (01d276cb)
+*  incrementing version number - v2.4.5 (dd3e1a28)
+*  incrementing version number - v2.4.4 (d5525c87)
+*  incrementing version number - v2.4.3 (9c647c6c)
+*  incrementing version number - v2.4.2 (3aa7b855)
+*  incrementing version number - v2.4.1 (60cbd148)
+*  incrementing version number - v2.4.0 (4834cde3)
+*  incrementing version number - v2.3.1 (d2425942)
+*  incrementing version number - v2.3.0 (046ea120)
+
+##### Bug Fixes
+
+*  import resolution within plugin modules (#11219) (f6c96948)
+
+#### v2.8.4 (2023-01-26)
+
+##### Chores
+
+*  incrementing version number - v2.8.3 (c20b20a7)
+*  update changelog for v2.8.3 (eb2841ee)
+*  incrementing version number - v2.8.2 (050e43f8)
+*  incrementing version number - v2.8.1 (727f879e)
+*  incrementing version number - v2.8.0 (8e77673d)
+*  incrementing version number - v2.7.0 (96cc0617)
+*  incrementing version number - v2.6.1 (7e52a7a5)
+*  incrementing version number - v2.6.0 (e7fcf482)
+*  incrementing version number - v2.5.8 (dec0e7de)
+*  incrementing version number - v2.5.7 (5836bf4a)
+*  incrementing version number - v2.5.6 (c7bd7dbf)
+*  incrementing version number - v2.5.5 (3509ed94)
+*  incrementing version number - v2.5.4 (e83260ca)
+*  incrementing version number - v2.5.3 (7e922936)
+*  incrementing version number - v2.5.2 (babcd17e)
+*  incrementing version number - v2.5.1 (ce3aa950)
+*  incrementing version number - v2.5.0 (01d276cb)
+*  incrementing version number - v2.4.5 (dd3e1a28)
+*  incrementing version number - v2.4.4 (d5525c87)
+*  incrementing version number - v2.4.3 (9c647c6c)
+*  incrementing version number - v2.4.2 (3aa7b855)
+*  incrementing version number - v2.4.1 (60cbd148)
+*  incrementing version number - v2.4.0 (4834cde3)
+*  incrementing version number - v2.3.1 (d2425942)
+*  incrementing version number - v2.3.0 (046ea120)
+
+#### v2.8.3 (2023-01-25)
+
+##### Chores
+
+*  remove extraneous lines from changelog (48c9f447)
+*  incrementing version number - v2.8.2 (050e43f8)
+*  update changelog for v2.8.2 (66aa3169)
+*  incrementing version number - v2.8.1 (727f879e)
+*  incrementing version number - v2.8.0 (8e77673d)
+*  incrementing version number - v2.7.0 (96cc0617)
+*  incrementing version number - v2.6.1 (7e52a7a5)
+*  incrementing version number - v2.6.0 (e7fcf482)
+*  incrementing version number - v2.5.8 (dec0e7de)
+*  incrementing version number - v2.5.7 (5836bf4a)
+*  incrementing version number - v2.5.6 (c7bd7dbf)
+*  incrementing version number - v2.5.5 (3509ed94)
+*  incrementing version number - v2.5.4 (e83260ca)
+*  incrementing version number - v2.5.3 (7e922936)
+*  incrementing version number - v2.5.2 (babcd17e)
+*  incrementing version number - v2.5.1 (ce3aa950)
+*  incrementing version number - v2.5.0 (01d276cb)
+*  incrementing version number - v2.4.5 (dd3e1a28)
+*  incrementing version number - v2.4.4 (d5525c87)
+*  incrementing version number - v2.4.3 (9c647c6c)
+*  incrementing version number - v2.4.2 (3aa7b855)
+*  incrementing version number - v2.4.1 (60cbd148)
+*  incrementing version number - v2.4.0 (4834cde3)
+*  incrementing version number - v2.3.1 (d2425942)
+*  incrementing version number - v2.3.0 (046ea120)
+
+##### Bug Fixes
+
+*  import resolution within plugin modules (#11200) (89e059a0)
+*  #11195, allow users with admin:users privilege to delete users in acp (0bffd3d9)
+*  #11194, allow access to sub dashboard pages (7d04e952)
+*  #11136, tests, and returning the proper number of arrays (459bc523)
+*  #11136, only show mods of active categories when getModeratorUids is called (39e009c0)
+*  closes #11173, clear require cache if wrong dependency is installed (747cb1f0)
+* **deps:**
+  *  downgrade swagger-parser to v9 (00e48803)
+  *  pinning sub dependency json-schema-ref-parser to 9.0.9 (9c250b78)
+
+##### Reverts
+
+*  a788bd1344825ad4759e39d6e98d8bf3695bd639 (fecd84d1)
+*  9c250b78b05ca2abf31a79971ed0c60ca07664ec, fix: comment out broken test for now (a788bd13)
+
+##### Tests
+
+*  fix broken test (f295174e)
+
 #### v2.8.2 (2023-01-13)
 
 ##### Chores
