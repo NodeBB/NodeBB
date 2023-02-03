@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/notifications', ['components', 'alerts', 'notifications'], function (components, alerts, notifications) {
+define('forum/notifications', ['components', 'notifications'], function (components, notifications) {
 	const Notifications = {};
 
 	Notifications.init = function () {
