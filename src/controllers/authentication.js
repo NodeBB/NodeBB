@@ -339,7 +339,7 @@ authenticationController.doLogin = async function (req, uid) {
 		return;
 	}
 	const loginAsync = util.promisify(req.login).bind(req);
-	await loginAsync({ uid: uid }, { keepSessionInfo: req.res.locals !== false });
+	await loginAsync({ uid: uid }, { keepSessionInfo: req.res.locals.reroll !== false });
 	await authenticationController.onSuccessfulLogin(req, uid);
 };
 

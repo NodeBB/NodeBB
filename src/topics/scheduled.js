@@ -87,14 +87,15 @@ function unpin(tid, topicData) {
 }
 
 async function sendNotifications(uids, topicsData) {
-	const usernames = await Promise.all(uids.map(uid => user.getUserField(uid, 'username')));
-	const uidToUsername = Object.fromEntries(uids.map((uid, idx) => [uid, usernames[idx]]));
+	const userData = await user.getUsersData(uids);
+	const uidToUserData = Object.fromEntries(uids.map((uid, idx) => [uid, userData[idx]]));
 
-	const postsData = await posts.getPostsData(topicsData.map(({ mainPid }) => mainPid));
+	const postsData = await posts.getPostsData(topicsData.map(t => t && t.mainPid));
 	postsData.forEach((postData, idx) => {
-		postData.user = {};
-		postData.user.username = uidToUsername[postData.uid];
-		postData.topic = topicsData[idx];
+		if (postData) {
+			postData.user = uidToUserData[topicsData[idx].uid];
+			postData.topic = topicsData[idx];
+		}
 	});
 
 	return Promise.all(topicsData.map(
