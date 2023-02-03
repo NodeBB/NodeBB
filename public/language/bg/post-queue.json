@@ -1,10 +1,10 @@
 
 {
 	"post-queue": "Опашка за публикации",
-	"no-queued-posts": "There are no posts in the post queue.",
-	"no-single-post": "The topic or post you are looking for is no longer in the queue. It has likely been approved or deleted already.",
-	"enabling-help": "To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
-	"back-to-list": "Back to Post Queue",
+	"no-queued-posts": "В опашката за публикации няма нищо.",
+	"no-single-post": "Темата или публикацията, която търсите, вече не се намира в опашката. Вероятно или е била одобрена, или изтрита.",
+	"enabling-help": "За да включите тази функционалност, идете в <a href=\"%1\">Настройки &rarr; Публикуване &rarr; Опашка за публикации</a> и включете <strong>Опашката за публикации</strong>.",
+	"back-to-list": "Назад към Опашката за публикации",
 	"user": "Потребител",
 	"category": "Категория",
 	"title": "Заглавие",
