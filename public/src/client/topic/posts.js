@@ -14,6 +14,7 @@ define('forum/topic/posts', [
 	const Posts = { };
 
 	Posts.signaturesShown = {};
+	const $window = $(window);
 
 	Posts.onNewPost = function (data) {
 		if (
@@ -214,28 +215,27 @@ define('forum/topic/posts', [
 				return !isPost || index === -1 || (pid && $('[component="post"][data-pid="' + pid + '"]').length === 0);
 			});
 
+			const removedEls = infinitescroll.removeExtra($('[component="post"]'), direction, Math.max(20, config.postsPerPage * 2));
+
 			if (after) {
 				html.insertAfter(after);
 			} else if (before) {
 				// Save document height and position for future reference (about 5 lines down)
 				const height = $(document).height();
-				const scrollTop = $(window).scrollTop();
+				const scrollTop = $window.scrollTop();
 
 				html.insertBefore(before);
 
 				// Now restore the relative position the user was on prior to new post insertion
 				if (userScrolled || scrollTop > 0) {
-					$(window).scrollTop(scrollTop + ($(document).height() - height));
+					$window.scrollTop(scrollTop + ($(document).height() - height));
 				}
 			} else {
 				components.get('topic').append(html);
 			}
 
-			const removedEls = infinitescroll.removeExtra($('[component="post"]'), direction, Math.max(20, config.postsPerPage * 2));
-			removeNecroPostMessages(removedEls);
-
 			await Posts.onNewPostsAddedToDom(html);
-
+			removeNecroPostMessages(removedEls);
 			hooks.fire('action:posts.loaded', { posts: data.posts });
 
 			callback(html);
@@ -317,9 +317,8 @@ define('forum/topic/posts', [
 		if (!necroThreshold || (config.topicPostSort !== 'newest_to_oldest' && config.topicPostSort !== 'oldest_to_newest')) {
 			return;
 		}
-		const height = $(document).height();
-		const scrollTop = $(window).scrollTop();
-		let updateScrollTop = false;
+
+		const scrollTop = $window.scrollTop();
 		const postEls = $('[component="post"]').toArray();
 		await Promise.all(postEls.map(async function (post) {
 			post = $(post);
@@ -352,11 +351,13 @@ define('forum/topic/posts', [
 				const html = await app.parseAndTranslate('partials/topic/necro-post', { text: translationText });
 				html.attr('data-necro-post-index', prev.attr('data-index'));
 				html.insertBefore(post);
-				updateScrollTop = true;
 			}
 		}));
-		if (updateScrollTop && scrollTop > 0) {
-			$(window).scrollTop(scrollTop + ($(document).height() - height));
+		if (scrollTop > 0) {
+			const newScrollTop = $window.scrollTop();
+			if (newScrollTop < scrollTop) {
+				$window.scrollTop(scrollTop);
+			}
 		}
 	}
 
