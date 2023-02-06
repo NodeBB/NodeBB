@@ -6,10 +6,25 @@ define('forum/chats/recent', ['alerts'], function (alerts) {
 
 	recent.init = function () {
 		require(['forum/chats'], function (Chats) {
-			$('[component="chat/recent"]').on('click', '[component="chat/recent/room"]', function () {
-				Chats.switchChat($(this).attr('data-roomid'));
-				return false;
-			});
+			$('[component="chat/recent"]')
+				.on('click', '[component="chat/recent/room"]', function (e) {
+					e.stopPropagation();
+					e.preventDefault();
+					const roomId = this.getAttribute('data-roomid');
+					Chats.switchChat(roomId);
+				})
+				.on('click', '.mark-read', function (e) {
+					e.stopPropagation();
+					const chatEl = this.closest('[data-roomid]');
+					const unread = chatEl.classList.contains('unread');
+					if (unread) {
+						const roomId = chatEl.getAttribute('data-roomid');
+						socket.emit('modules.chats.markRead', roomId);
+						chatEl.classList.remove('unread');
+						this.querySelector('.unread').classList.add('hidden');
+						this.querySelector('.read').classList.remove('hidden');
+					}
+				});
 
 			$('[component="chat/recent"]').on('scroll', function () {
 				const $this = $(this);

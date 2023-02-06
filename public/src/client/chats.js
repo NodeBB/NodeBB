@@ -490,6 +490,12 @@ define('forum/chats', [
 
 				if (roomEl.length > 0) {
 					roomEl.addClass('unread');
+
+					const markEl = roomEl.find('.mark-read').get(0);
+					if (markEl) {
+						markEl.querySelector('.read').classList.add('hidden');
+						markEl.querySelector('.unread').classList.remove('hidden');
+					}
 				} else {
 					const recentEl = components.get('chat/recent');
 					app.parseAndTranslate('partials/chats/recent_room', {

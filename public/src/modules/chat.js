@@ -104,10 +104,12 @@ define('chat', [
 				}
 				translator.toggleTimeagoShorthand();
 				app.parseAndTranslate('partials/chats/dropdown', { rooms: rooms }, function (html) {
+					const listEl = chatsListEl.get(0);
+
 					chatsListEl.find('*').not('.navigation-link').remove();
 					chatsListEl.prepend(html);
 					chatsListEl.off('click').on('click', '[data-roomid]', function (ev) {
-						if ($(ev.target).parents('.user-link').length) {
+						if (['.user-link', '.mark-read'].some(className => ev.target.closest(className))) {
 							return;
 						}
 						const roomId = $(this).attr('data-roomid');
@@ -115,6 +117,24 @@ define('chat', [
 							module.openChat(roomId);
 						} else {
 							ajaxify.go('user/' + app.user.userslug + '/chats/' + roomId);
+						}
+					});
+
+					listEl.addEventListener('click', function (e) {
+						const subselector = e.target.closest('.mark-read');
+						if (!subselector) {
+							return;
+						}
+
+						e.stopPropagation();
+						const chatEl = e.target.closest('[data-roomid]');
+						const unread = chatEl.classList.contains('unread');
+						if (unread) {
+							const roomId = chatEl.getAttribute('data-roomid');
+							socket.emit('modules.chats.markRead', roomId);
+							chatEl.classList.remove('unread');
+							subselector.querySelector('.unread').classList.add('hidden');
+							subselector.querySelector('.read').classList.remove('hidden');
 						}
 					});
 
