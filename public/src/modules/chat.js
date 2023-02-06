@@ -120,30 +120,9 @@ define('chat', [
 						}
 					});
 
-					listEl.addEventListener('click', function (e) {
-						const subselector = e.target.closest('.mark-read');
-						if (!subselector) {
-							return;
-						}
-
-						e.stopPropagation();
-						const chatEl = e.target.closest('[data-roomid]');
-						const state = !chatEl.classList.contains('unread');
-						const roomId = chatEl.getAttribute('data-roomid');
-						api[state ? 'put' : 'del'](`/chats/${roomId}/state`, {}).catch((err) => {
-							alerts.error(err);
-
-							// Revert on failure
-							chatEl.classList[state ? 'remove' : 'add']('unread');
-							chatEl.querySelector('.unread').classList[state ? 'add' : 'remove']('hidden');
-							chatEl.querySelector('.read').classList[!state ? 'add' : 'remove']('hidden');
-						});
-
-						// Immediate feedback
-						chatEl.classList[state ? 'add' : 'remove']('unread');
-						chatEl.querySelector('.unread').classList[!state ? 'add' : 'remove']('hidden');
-						chatEl.querySelector('.read').classList[state ? 'add' : 'remove']('hidden');
-					});
+					console.log('removinga dding');
+					listEl.removeEventListener('click', onMarkReadClicked);
+					listEl.addEventListener('click', onMarkReadClicked);
 
 					$('[component="chats/mark-all-read"]').off('click').on('click', function () {
 						socket.emit('modules.chats.markAllRead', function (err) {
@@ -156,6 +135,31 @@ define('chat', [
 			});
 		});
 	};
+
+	function onMarkReadClicked(e) {
+		const subselector = e.target.closest('.mark-read');
+		if (!subselector) {
+			return;
+		}
+
+		e.stopPropagation();
+		const chatEl = e.target.closest('[data-roomid]');
+		const state = !chatEl.classList.contains('unread');
+		const roomId = chatEl.getAttribute('data-roomid');
+		api[state ? 'put' : 'del'](`/chats/${roomId}/state`, {}).catch((err) => {
+			alerts.error(err);
+
+			// Revert on failure
+			chatEl.classList[state ? 'remove' : 'add']('unread');
+			chatEl.querySelector('.unread').classList[state ? 'add' : 'remove']('hidden');
+			chatEl.querySelector('.read').classList[!state ? 'add' : 'remove']('hidden');
+		});
+
+		// Immediate feedback
+		chatEl.classList[state ? 'add' : 'remove']('unread');
+		chatEl.querySelector('.unread').classList[!state ? 'add' : 'remove']('hidden');
+		chatEl.querySelector('.read').classList[state ? 'add' : 'remove']('hidden');
+	}
 
 	module.onChatMessageReceived = function (data) {
 		if (!newMessage) {
