@@ -5,6 +5,7 @@ const validator = require('validator');
 const user = require('../user');
 const meta = require('../meta');
 const messaging = require('../messaging');
+const notifications = require('../notifications');
 const plugins = require('../plugins');
 
 // const websockets = require('../socket.io');
@@ -79,9 +80,24 @@ chatsAPI.mark = async (caller, data) => {
 		await messaging.markUnread([caller.uid], roomId);
 	} else {
 		await messaging.markRead(caller.uid, roomId);
+		socketHelpers.emitToUids('event:chats.markedAsRead', { roomId: roomId }, [caller.uid]);
+
+		const uidsInRoom = await messaging.getUidsInRoom(roomId, 0, -1);
+		if (!uidsInRoom.includes(String(caller.uid))) {
+			return;
+		}
+
+		// Mark notification read
+		const nids = uidsInRoom.filter(uid => parseInt(uid, 10) !== caller.uid)
+			.map(uid => `chat_${uid}_${roomId}`);
+
+		await notifications.markReadMultiple(nids, caller.uid);
+		await user.notifications.pushCount(caller.uid);
 	}
 
 	socketHelpers.emitToUids('event:chats.mark', { roomId, state }, [caller.uid]);
+	messaging.pushUnreadCount(caller.uid);
+
 	return messaging.loadRoom(caller.uid, { roomId });
 };
 

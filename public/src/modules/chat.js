@@ -131,10 +131,19 @@ define('chat', [
 						const unread = chatEl.classList.contains('unread');
 						if (unread) {
 							const roomId = chatEl.getAttribute('data-roomid');
-							socket.emit('modules.chats.markRead', roomId);
+							api.del(`/chats/${roomId}/state`, {}).catch((err) => {
+								alerts.error(err);
+
+								// Revert on failure
+								chatEl.classList.add('unread');
+								this.querySelector('.unread').classList.remove('hidden');
+								this.querySelector('.read').classList.add('hidden');
+							});
+
+							// Immediate feedback
 							chatEl.classList.remove('unread');
-							subselector.querySelector('.unread').classList.add('hidden');
-							subselector.querySelector('.read').classList.remove('hidden');
+							this.querySelector('.unread').classList.add('hidden');
+							this.querySelector('.read').classList.remove('hidden');
 						}
 					});
 
@@ -304,7 +313,7 @@ define('chat', [
 
 				chatModal.on('mousemove keypress click', function () {
 					if (newMessage) {
-						socket.emit('modules.chats.markRead', data.roomId);
+						api.del(`/chats/${data.roomId}/state`, {});
 						newMessage = false;
 					}
 				});
@@ -400,7 +409,7 @@ define('chat', [
 			taskbar.updateActive(uuid);
 			ChatsMessages.scrollToBottom(chatModal.find('.chat-content'));
 			module.focusInput(chatModal);
-			socket.emit('modules.chats.markRead', chatModal.attr('data-roomid'));
+			api.del(`/chats/${chatModal.attr('data-roomid')}/state`, {});
 
 			const env = utils.findBootstrapEnvironment();
 			if (env === 'xs' || env === 'sm') {

@@ -469,7 +469,7 @@ define('forum/chats', [
 	Chats.addGlobalEventListeners = function () {
 		$(window).on('mousemove keypress click', function () {
 			if (newMessage && ajaxify.data.roomId) {
-				socket.emit('modules.chats.markRead', ajaxify.data.roomId);
+				api.del(`/chats/${ajaxify.data.roomId}/state`, {});
 				newMessage = false;
 			}
 		});
@@ -530,7 +530,7 @@ define('forum/chats', [
 			const roomEls = document.querySelectorAll(`[component="chat/recent"] [data-roomid="${roomId}"], [component="chat/list"] [data-roomid="${roomId}"]`);
 
 			roomEls.forEach((roomEl) => {
-				roomEl.classList.add('unread');
+				roomEl.classList[state ? 'add' : 'remove']('unread');
 
 				const markEl = roomEl.querySelector('.mark-read');
 				if (markEl) {
@@ -543,8 +543,12 @@ define('forum/chats', [
 
 	Chats.setActive = function () {
 		if (ajaxify.data.roomId) {
-			socket.emit('modules.chats.markRead', ajaxify.data.roomId);
-			$('[data-roomid="' + ajaxify.data.roomId + '"]').toggleClass('unread', false);
+			const chatEl = document.querySelector(`[component="chat/recent"] [data-roomid="${ajaxify.data.roomId}"]`);
+			if (chatEl.classList.contains('unread')) {
+				api.del(`/chats/${ajaxify.data.roomId}/state`, {});
+				chatEl.classList.remove('unread');
+			}
+
 			if (!utils.isMobile()) {
 				$('.expanded-chat [component="chat/input"]').focus();
 			}

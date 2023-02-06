@@ -171,27 +171,13 @@ SocketModules.chats.canMessage = async function (socket, roomId) {
 };
 
 SocketModules.chats.markRead = async function (socket, roomId) {
+	sockets.warnDeprecated(socket, 'PUT/DELETE /api/v3/chats/:roomId/state');
+
 	if (!socket.uid || !roomId) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	const [uidsInRoom] = await Promise.all([
-		Messaging.getUidsInRoom(roomId, 0, -1),
-		Messaging.markRead(socket.uid, roomId),
-	]);
 
-	Messaging.pushUnreadCount(socket.uid);
-	server.in(`uid_${socket.uid}`).emit('event:chats.markedAsRead', { roomId: roomId });
-
-	if (!uidsInRoom.includes(String(socket.uid))) {
-		return;
-	}
-
-	// Mark notification read
-	const nids = uidsInRoom.filter(uid => parseInt(uid, 10) !== socket.uid)
-		.map(uid => `chat_${uid}_${roomId}`);
-
-	await notifications.markReadMultiple(nids, socket.uid);
-	await user.notifications.pushCount(socket.uid);
+	api.chats.mark(socket, { state: 0, roomId });
 };
 
 SocketModules.chats.markAllRead = async function (socket) {

@@ -56,7 +56,6 @@ Chats.rename = async (req, res) => {
 Chats.mark = async (req, res) => {
 	const state = req.method === 'PUT' ? 1 : 0;
 	const roomObj = await api.chats.mark(req, {
-		...req.body,
 		roomId: req.params.roomId,
 		state,
 	});
