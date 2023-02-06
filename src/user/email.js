@@ -39,7 +39,7 @@ UserEmail.remove = async function (uid, sessionId) {
 		db.sortedSetRemove('email:uid', email.toLowerCase()),
 		db.sortedSetRemove('email:sorted', `${email.toLowerCase()}:${uid}`),
 		user.email.expireValidation(uid),
-		user.auth.revokeAllSessions(uid, sessionId),
+		sessionId ? user.auth.revokeAllSessions(uid, sessionId) : Promise.resolve(),
 		events.log({ type: 'email-change', email, newEmail: '' }),
 	]);
 };
@@ -69,7 +69,7 @@ UserEmail.expireValidation = async (uid) => {
 };
 
 UserEmail.canSendValidation = async (uid, email) => {
-	const pending = UserEmail.isValidationPending(uid, email);
+	const pending = await UserEmail.isValidationPending(uid, email);
 	if (!pending) {
 		return true;
 	}
@@ -196,6 +196,20 @@ UserEmail.confirmByUid = async function (uid) {
 		throw new Error('[[error:invalid-email]]');
 	}
 
+	// If another uid has the same email throw error
+	const oldUid = await db.sortedSetScore('email:uid', currentEmail.toLowerCase());
+	if (oldUid && oldUid !== parseInt(uid, 10)) {
+		throw new Error('[[error:email-taken]]');
+	}
+
+	const confirmedEmails = await db.getSortedSetRangeByScore(`email:uid`, 0, -1, uid, uid);
+	if (confirmedEmails.length) {
+		// remove old email of user by uid
+		await db.sortedSetsRemoveRangeByScore([`email:uid`], uid, uid);
+		await db.sortedSetRemoveBulk(
+			confirmedEmails.map(email => [`email:sorted`, `${email.toLowerCase()}:${uid}`])
+		);
+	}
 	await Promise.all([
 		db.sortedSetAddBulk([
 			['email:uid', uid, currentEmail.toLowerCase()],
