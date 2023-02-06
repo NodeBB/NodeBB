@@ -73,6 +73,17 @@ chatsAPI.rename = async (caller, data) => {
 	});
 };
 
+chatsAPI.mark = async (caller, data) => {
+	const { roomId, state } = data;
+	if (state) {
+		await messaging.markUnread([caller.uid], roomId);
+	} else {
+		await messaging.markRead(caller.uid, roomId);
+	}
+
+	return messaging.loadRoom(caller.uid, { roomId });
+};
+
 chatsAPI.users = async (caller, data) => {
 	const [isOwner, users] = await Promise.all([
 		messaging.isRoomOwner(caller.uid, data.roomId),
