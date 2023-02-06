@@ -128,23 +128,21 @@ define('chat', [
 
 						e.stopPropagation();
 						const chatEl = e.target.closest('[data-roomid]');
-						const unread = chatEl.classList.contains('unread');
-						if (unread) {
-							const roomId = chatEl.getAttribute('data-roomid');
-							api.del(`/chats/${roomId}/state`, {}).catch((err) => {
-								alerts.error(err);
+						const state = !chatEl.classList.contains('unread');
+						const roomId = chatEl.getAttribute('data-roomid');
+						api[state ? 'put' : 'del'](`/chats/${roomId}/state`, {}).catch((err) => {
+							alerts.error(err);
 
-								// Revert on failure
-								chatEl.classList.add('unread');
-								this.querySelector('.unread').classList.remove('hidden');
-								this.querySelector('.read').classList.add('hidden');
-							});
+							// Revert on failure
+							chatEl.classList[state ? 'remove' : 'add']('unread');
+							chatEl.querySelector('.unread').classList[state ? 'add' : 'remove']('hidden');
+							chatEl.querySelector('.read').classList[!state ? 'add' : 'remove']('hidden');
+						});
 
-							// Immediate feedback
-							chatEl.classList.remove('unread');
-							this.querySelector('.unread').classList.add('hidden');
-							this.querySelector('.read').classList.remove('hidden');
-						}
+						// Immediate feedback
+						chatEl.classList[state ? 'add' : 'remove']('unread');
+						chatEl.querySelector('.unread').classList[!state ? 'add' : 'remove']('hidden');
+						chatEl.querySelector('.read').classList[state ? 'add' : 'remove']('hidden');
 					});
 
 					$('[component="chats/mark-all-read"]').off('click').on('click', function () {

@@ -1,10 +1,8 @@
 'use strict';
 
 const db = require('../database');
-const notifications = require('../notifications');
 const Messaging = require('../messaging');
 const utils = require('../utils');
-const server = require('./index');
 const user = require('../user');
 const privileges = require('../privileges');
 
