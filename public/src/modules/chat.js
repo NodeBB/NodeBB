@@ -120,7 +120,6 @@ define('chat', [
 						}
 					});
 
-					console.log('removinga dding');
 					listEl.removeEventListener('click', onMarkReadClicked);
 					listEl.addEventListener('click', onMarkReadClicked);
 
