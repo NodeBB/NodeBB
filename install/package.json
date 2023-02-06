@@ -155,7 +155,7 @@
         "eslint": "8.33.0",
         "eslint-config-nodebb": "0.2.1",
         "eslint-plugin-import": "2.27.5",
-        "grunt": "1.5.3",
+        "grunt": "1.6.1",
         "grunt-contrib-watch": "1.1.0",
         "husky": "8.0.3",
         "jsdom": "21.1.0",
