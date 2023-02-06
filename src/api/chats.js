@@ -81,6 +81,7 @@ chatsAPI.mark = async (caller, data) => {
 		await messaging.markRead(caller.uid, roomId);
 	}
 
+	socketHelpers.emitToUids('event:chats.mark', { roomId, state }, [caller.uid]);
 	return messaging.loadRoom(caller.uid, { roomId });
 };
 

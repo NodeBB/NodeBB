@@ -525,6 +525,20 @@ define('forum/chats', [
 
 			titleEl.text(data.newName);
 		});
+
+		socket.on('event:chats.mark', ({ roomId, state }) => {
+			const roomEls = document.querySelectorAll(`[component="chat/recent"] [data-roomid="${roomId}"], [component="chat/list"] [data-roomid="${roomId}"]`);
+
+			roomEls.forEach((roomEl) => {
+				roomEl.classList.add('unread');
+
+				const markEl = roomEl.querySelector('.mark-read');
+				if (markEl) {
+					markEl.querySelector('.read').classList[state ? 'add' : 'remove']('hidden');
+					markEl.querySelector('.unread').classList[state ? 'remove' : 'add']('hidden');
+				}
+			});
+		});
 	};
 
 	Chats.setActive = function () {
