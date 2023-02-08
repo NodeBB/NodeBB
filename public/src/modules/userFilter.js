@@ -60,9 +60,11 @@ define('userFilter', ['api', 'hooks', 'slugify'], function (api, hooks, slugify)
 			el.find('[component="user/filter/results"]').html(html);
 			console.log('render results');
 			el.find('[component="user/filter/results"] [data-uid]').on('click', async function () {
-				console.log('wtf?');
-				selectedUsers.push(uidToUser[$(this).attr('data-uid')]);
-				await onSelectionChange();
+				const clickedUid = parseInt($(this).attr('data-uid'), 10);
+				if (!selectedUsers.find(u => u.uid === clickedUid)) {
+					selectedUsers.push(uidToUser[$(this).attr('data-uid')]);
+					await onSelectionChange();
+				}
 			});
 		}
 
