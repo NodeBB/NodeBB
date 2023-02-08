@@ -1,30 +1,56 @@
 'use strict';
 
 define('forum/flags/list', [
-	'components', 'Chart', 'categoryFilter', 'autocomplete', 'api', 'alerts',
-], function (components, Chart, categoryFilter, autocomplete, api, alerts) {
+	'components', 'Chart', 'categoryFilter',
+	'autocomplete', 'api', 'alerts',
+	'userFilter',
+], function (
+	components, Chart, categoryFilter,
+	autocomplete, api, alerts,
+	userFilter
+) {
 	const Flags = {};
-
-	let selectedCids;
+	const selected = new Map([
+		['cids', []],
+		['assignee', []],
+		['targetUid', []],
+		['reporterId', []],
+	]);
 
 	Flags.init = function () {
 		Flags.enableFilterForm();
 		Flags.enableCheckboxes();
 		Flags.handleBulkActions();
 
-		selectedCids = [];
 		if (ajaxify.data.filters.hasOwnProperty('cid')) {
-			selectedCids = Array.isArray(ajaxify.data.filters.cid) ?
-				ajaxify.data.filters.cid : [ajaxify.data.filters.cid];
+			selected.set('cids', Array.isArray(ajaxify.data.filters.cid) ?
+				ajaxify.data.filters.cid : [ajaxify.data.filters.cid]);
 		}
 
 		categoryFilter.init($('[component="category/dropdown"]'), {
 			privilege: 'moderate',
-			selectedCids: selectedCids,
+			selectedCids: selected.get('cids'),
 			updateButton: function ({ selectedCids: cids }) {
-				selectedCids = cids;
+				selected.set('cids', cids);
 				applyFilters();
 			},
+		});
+
+		['assignee', 'targetUid', 'reporterId'].forEach((filter) => {
+			if (ajaxify.data.filters.hasOwnProperty('filter')) {
+				selected.set(filter, ajaxify.data.selected[filter]);
+			}
+			const filterEl = $(`[component="flags/filter/${filter}"]`);
+			userFilter.init(filterEl, {
+				selectedUsers: selected.get(filter),
+				template: 'partials/search-filters',
+				onSelect: function (_selectedUsers) {
+					selected.set(filter, _selectedUsers);
+				},
+				onHidden: function () {
+					applyFilters();
+				},
+			});
 		});
 
 		components.get('flags/list')
@@ -100,10 +126,19 @@ define('forum/flags/list', [
 		}
 
 		const payload = new FormData(formEl);
+
 		// cid is special comes from categoryFilter module
-		selectedCids.forEach(function (cid) {
+		selected.get('cids').forEach(function (cid) {
 			payload.append('cid', cid);
 		});
+
+		// these three fields are special; comes from userFilter module
+		['assignee', 'targetUid', 'reporterId'].forEach((filter) => {
+			selected.get(filter).forEach(({ uid }) => {
+				payload.append(filter, uid);
+			});
+		});
+
 		const length = Array.from(payload.values()).filter(Boolean);
 		const qs = new URLSearchParams(payload).toString();
 

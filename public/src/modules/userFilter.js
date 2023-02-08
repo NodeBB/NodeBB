@@ -13,7 +13,6 @@ define('userFilter', ['api', 'hooks', 'slugify'], function (api, hooks, slugify)
 		if (options.selectedUsers) {
 			selectedUsers = options.selectedUsers.map(u => ({ ...u }));
 		}
-
 		hooks.fire('action:user.filter.options', { el: el, options: options });
 
 		async function renderSelectedUsers() {
