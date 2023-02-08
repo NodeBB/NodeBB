@@ -134,13 +134,13 @@ UserEmail.sendValidationEmail = async function (uid, options) {
 
 	await UserEmail.expireValidation(uid);
 	await db.set(`confirm:byUid:${uid}`, confirm_code);
-	await db.pexpire(`confirm:byUid:${uid}`, emailConfirmExpiry * 24 * 60 * 60 * 1000);
+	await db.pexpire(`confirm:byUid:${uid}`, emailConfirmExpiry * 60 * 60 * 1000);
 
 	await db.setObject(`confirm:${confirm_code}`, {
 		email: options.email.toLowerCase(),
 		uid: uid,
 	});
-	await db.pexpire(`confirm:${confirm_code}`, emailConfirmExpiry * 24 * 60 * 60 * 1000);
+	await db.pexpire(`confirm:${confirm_code}`, emailConfirmExpiry * 60 * 60 * 1000);
 
 	winston.verbose(`[user/email] Validation email for uid ${uid} sent to ${options.email}`);
 	events.log({
