@@ -21,8 +21,9 @@ define('forum/flags/list', [
 		categoryFilter.init($('[component="category/dropdown"]'), {
 			privilege: 'moderate',
 			selectedCids: selectedCids,
-			onHidden: function (data) {
-				selectedCids = data.selectedCids;
+			updateButton: function ({ selectedCids: cids }) {
+				selectedCids = cids;
+				applyFilters();
 			},
 		});
 
@@ -63,7 +64,7 @@ define('forum/flags/list', [
 
 				formEl[name].value = value;
 
-				applyFilters(formEl);
+				applyFilters();
 			});
 		} else {
 			// Persona; parse ajaxify data to set form values to reflect current filters
@@ -75,7 +76,7 @@ define('forum/flags/list', [
 			$filtersEl.find('[name="sort"]').val(ajaxify.data.sort);
 
 			document.getElementById('apply-filters').addEventListener('click', function () {
-				applyFilters($filtersEl.get(0));
+				applyFilters();
 			});
 
 			$filtersEl.find('button[data-target="#more-filters"]').click((ev) => {
@@ -89,7 +90,15 @@ define('forum/flags/list', [
 		}
 	};
 
-	function applyFilters(formEl) {
+	function applyFilters() {
+		let formEl = components.get('flags/filters').get(0);
+		if (!formEl) {
+			return;
+		}
+		if (formEl.nodeName !== 'FORM') {
+			formEl = formEl.querySelector('form');
+		}
+
 		const payload = new FormData(formEl);
 		// cid is special comes from categoryFilter module
 		selectedCids.forEach(function (cid) {
