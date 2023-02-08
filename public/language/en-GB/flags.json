@@ -3,6 +3,7 @@
 	"reports": "Reports",
 	"first-reported": "First Reported",
 	"no-flags": "Hooray! No flags found.",
+	"x-flags-found": "%1 flag(s) found.",
 	"assignee": "Assignee",
 	"update": "Update",
 	"updated": "Updated",

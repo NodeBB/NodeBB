@@ -97,6 +97,7 @@ modsController.flags.list = async function (req, res) {
 
 	res.render('flags/list', {
 		flags: flagsData.flags,
+		count: flagsData.count,
 		analytics: analyticsData,
 		selectedCategory: selectData.selectedCategory,
 		hasFilter: hasFilter,
