@@ -337,8 +337,54 @@ dashboardController.getTopics = async (req, res) => {
 };
 
 dashboardController.getSearches = async (req, res) => {
-	const searches = await db.getSortedSetRevRangeWithScores('searches:all', 0, 99);
+	let start = 0;
+	let end = 0;
+	if (req.query.start) {
+		start = new Date(req.query.start);
+		start.setHours(24, 0, 0, 0);
+		end = new Date();
+		end.setHours(24, 0, 0, 0);
+	}
+	if (req.query.end) {
+		end = new Date(req.query.end);
+		end.setHours(24, 0, 0, 0);
+	}
+
+	let searches;
+	if (start && end && start <= end) {
+		const daysArr = [start];
+		const nextDay = new Date(start.getTime());
+		while (nextDay < end) {
+			nextDay.setDate(nextDay.getDate() + 1);
+			nextDay.setHours(0, 0, 0, 0);
+			daysArr.push(new Date(nextDay.getTime()));
+		}
+
+		const daysData = await Promise.all(
+			daysArr.map(async d => db.getSortedSetRevRangeWithScores(`searches:${d.getTime()}`, 0, -1))
+		);
+
+		const map = {};
+		daysData.forEach((d) => {
+			d.forEach((search) => {
+				if (!map[search.value]) {
+					map[search.value] = search.score;
+				} else {
+					map[search.value] += search.score;
+				}
+			});
+		});
+
+		searches = Object.keys(map)
+			.map(key => ({ value: key, score: map[key] }))
+			.sort((a, b) => b.score - a.score);
+	} else {
+		searches = await db.getSortedSetRevRangeWithScores('searches:all', 0, 99);
+	}
+
 	res.render('admin/dashboard/searches', {
 		searches: searches.map(s => ({ value: validator.escape(String(s.value)), score: s.score })),
+		startDate: validator.escape(String(req.query.start)),
+		endDate: validator.escape(String(req.query.end)),
 	});
 };
