@@ -7,11 +7,13 @@ define('forum/header/chat', ['components', 'hooks'], function (components, hooks
 		const chatsListEl = components.get('chat/list');
 
 		const chatsToggleEl = document.querySelector('[component="chat/dropdown"]');
-		if (chatsToggleEl) {
-			chatsToggleEl.addEventListener('show.bs.dropdown', () => {
-				requireAndCall('loadChatsDropdown', chatsListEl);
-			});
+		if (!chatsToggleEl) {
+			return;
 		}
+
+		chatsToggleEl.addEventListener('show.bs.dropdown', () => {
+			requireAndCall('loadChatsDropdown', chatsListEl);
+		});
 
 		if (chatsToggleEl.classList.contains('show')) {
 			requireAndCall('loadChatsDropdown', chatsListEl);
