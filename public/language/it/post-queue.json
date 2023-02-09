@@ -1,10 +1,10 @@
 
 {
 	"post-queue": "Coda post",
-	"no-queued-posts": "There are no posts in the post queue.",
-	"no-single-post": "The topic or post you are looking for is no longer in the queue. It has likely been approved or deleted already.",
-	"enabling-help": "To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
-	"back-to-list": "Back to Post Queue",
+	"no-queued-posts": "Non ci sono post nella coda dei post.",
+	"no-single-post": "La discussione o il post che si sta cercando non è più in coda. Probabilmente è già stato approvato o cancellato.",
+	"enabling-help": "Per abilitare questa funzione, vai in <a href=\"%1\">Impostazioni &rarr; Post &rarr; Coda Post</a> e attiva <strong>Coda Post</strong>.",
+	"back-to-list": "Torna alla coda dei post",
 	"user": "Utente",
 	"category": "Categoria",
 	"title": "Titolo",
