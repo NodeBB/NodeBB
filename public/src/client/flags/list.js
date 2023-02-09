@@ -44,7 +44,7 @@ define('forum/flags/list', [
 			userFilter.init(filterEl, {
 				selectedUsers: selected.get(filter),
 				template: 'partials/flags/filters',
-				selectedBlock: 'selected.assignee',
+				selectedBlock: `selected.${filter}`,
 				onSelect: function (_selectedUsers) {
 					selected.set(filter, _selectedUsers);
 				},
