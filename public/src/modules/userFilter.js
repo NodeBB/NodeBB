@@ -16,9 +16,16 @@ define('userFilter', ['api', 'hooks', 'slugify'], function (api, hooks, slugify)
 		hooks.fire('action:user.filter.options', { el: el, options: options });
 
 		async function renderSelectedUsers() {
-			const html = await app.parseAndTranslate(options.template, 'userFilterSelected', {
-				userFilterSelected: selectedUsers,
-			});
+			const block = options.selectedBlock || 'userFilterSelected';
+			const payload = {};
+			if (block.indexOf('.') !== -1) {
+				const split = block.split('.');
+				payload[split[0]] = {};
+				payload[split[0]][split[1]] = selectedUsers;
+			} else {
+				payload[block] = selectedUsers;
+			}
+			const html = await app.parseAndTranslate(options.template, block, payload);
 			el.find('[component="user/filter/selected"]').html(html);
 		}
 

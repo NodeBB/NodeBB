@@ -43,7 +43,8 @@ define('forum/flags/list', [
 			const filterEl = $(`[component="flags/filter/${filter}"]`);
 			userFilter.init(filterEl, {
 				selectedUsers: selected.get(filter),
-				template: 'partials/search-filters',
+				template: 'partials/flags/filters',
+				selectedBlock: 'selected.assignee',
 				onSelect: function (_selectedUsers) {
 					selected.set(filter, _selectedUsers);
 				},
