@@ -6,16 +6,16 @@ define('forum/header/chat', ['components', 'hooks'], function (components, hooks
 	chat.prepareDOM = function () {
 		const chatsListEl = components.get('chat/list');
 
-		const chatsToggleEl = document.querySelector('[component="chat/dropdown"]');
+		const chatsToggleEl = $('[component="chat/dropdown"]');
 		if (!chatsToggleEl) {
 			return;
 		}
 
-		chatsToggleEl.addEventListener('show.bs.dropdown', () => {
+		chatsToggleEl.on('show.bs.dropdown', () => {
 			requireAndCall('loadChatsDropdown', chatsListEl);
 		});
 
-		if (chatsToggleEl.classList.contains('show')) {
+		if (chatsToggleEl.parents('.dropdown').hasClass('show')) {
 			requireAndCall('loadChatsDropdown', chatsListEl);
 		}
 
