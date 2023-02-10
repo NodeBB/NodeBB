@@ -18,6 +18,9 @@ define('userFilter', ['api', 'hooks', 'slugify'], function (api, hooks, slugify)
 		async function renderSelectedUsers() {
 			const block = options.selectedBlock || 'userFilterSelected';
 			const payload = {};
+
+			// This allows `selectedBlock` to be a nested object via dot notation.
+			// It's hacky and only works one level.
 			if (block.indexOf('.') !== -1) {
 				const split = block.split('.');
 				payload[split[0]] = {};
@@ -25,6 +28,7 @@ define('userFilter', ['api', 'hooks', 'slugify'], function (api, hooks, slugify)
 			} else {
 				payload[block] = selectedUsers;
 			}
+
 			const html = await app.parseAndTranslate(options.template, block, payload);
 			el.find('[component="user/filter/selected"]').html(html);
 		}
