@@ -482,7 +482,7 @@ define('forum/chats', [
 					newMessage = data.self === 0;
 				}
 				data.message.self = data.self;
-				data.message.timestamp = Math.min(Date.now(), data.message.timetamp);
+				data.message.timestamp = Math.min(Date.now(), data.message.timestamp);
 				data.message.timestampISO = utils.toISOString(data.message.timestamp);
 				messages.appendChatMessage($('.expanded-chat .chat-content'), data.message);
 			} else if (ajaxify.data.template.chats) {

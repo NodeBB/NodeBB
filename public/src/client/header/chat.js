@@ -4,20 +4,21 @@ define('forum/header/chat', ['components', 'hooks'], function (components, hooks
 	const chat = {};
 
 	chat.prepareDOM = function () {
-		const chatsListEl = components.get('chat/list');
-
 		const chatsToggleEl = $('[component="chat/dropdown"]');
-		if (!chatsToggleEl) {
+		if (!chatsToggleEl.length) {
 			return;
 		}
 
-		chatsToggleEl.on('show.bs.dropdown', () => {
-			requireAndCall('loadChatsDropdown', chatsListEl);
+		chatsToggleEl.on('show.bs.dropdown', (ev) => {
+			requireAndCall('loadChatsDropdown', $(ev.target).parent().find('[component="chat/list"]'));
 		});
 
-		if (chatsToggleEl.parents('.dropdown').hasClass('show')) {
-			requireAndCall('loadChatsDropdown', chatsListEl);
-		}
+		chatsToggleEl.each((index, el) => {
+			const dropdownEl = $(el).parent().find('.dropdown-menu');
+			if (dropdownEl.hasClass('show')) {
+				requireAndCall('loadChatsDropdown', dropdownEl.find('[component="chat/list"]'));
+			}
+		});
 
 		socket.removeListener('event:chats.receive', onChatMessageReceived);
 		socket.on('event:chats.receive', onChatMessageReceived);
