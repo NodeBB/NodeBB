@@ -1,6 +1,6 @@
 'use strict';
 
-define('userFilter', ['api', 'hooks', 'slugify'], function (api, hooks, slugify) {
+define('userFilter', ['api', 'hooks', 'slugify', 'benchpress'], function (api, hooks, slugify, benchpress) {
 	const userFilter = {};
 
 	userFilter.init = function (el, options) {
@@ -9,6 +9,7 @@ define('userFilter', ['api', 'hooks', 'slugify'], function (api, hooks, slugify)
 		}
 		options = options || {};
 
+		let placeholderHtml;
 		let selectedUsers = [];
 		if (options.selectedUsers) {
 			selectedUsers = options.selectedUsers.map(u => ({ ...u }));
@@ -79,6 +80,10 @@ define('userFilter', ['api', 'hooks', 'slugify'], function (api, hooks, slugify)
 			});
 		}
 
+		el.find('[component="user/filter/search"]').on('keyup', () => {
+			el.find('[component="user/filter/results"]').html(placeholderHtml);
+		});
+
 		el.find('[component="user/filter/search"]').on('keyup', utils.debounce(function () {
 			if (app.user.privileges['search:users']) {
 				doSearch();
@@ -105,6 +110,11 @@ define('userFilter', ['api', 'hooks', 'slugify'], function (api, hooks, slugify)
 			if (options.onHidden) {
 				options.onHidden(selectedUsers);
 			}
+		});
+
+		// Pre-render placeholders for search
+		benchpress.render(options.placeholderTemplate || 'partials/userFilter-placeholders').then((html) => {
+			placeholderHtml = html;
 		});
 	};
 
