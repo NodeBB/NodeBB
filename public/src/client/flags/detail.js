@@ -141,24 +141,6 @@ define('forum/flags/detail', [
 					postAction('restore', api.put, `/posts/${ajaxify.data.target.pid}/state`);
 					break;
 
-				case 'prepare-edit': {
-					const selectedNoteEl = this.closest('[data-index]');
-					const index = selectedNoteEl.getAttribute('data-index');
-					const textareaEl = document.getElementById('note');
-					textareaEl.value = ajaxify.data.notes[index].content;
-					textareaEl.setAttribute('data-datetime', ajaxify.data.notes[index].datetime);
-
-					const siblings = selectedNoteEl.parentElement.children;
-					for (const el in siblings) {
-						if (siblings.hasOwnProperty(el)) {
-							siblings[el].classList.remove('editing');
-						}
-					}
-					selectedNoteEl.classList.add('editing');
-					textareaEl.focus();
-					break;
-				}
-
 				case 'delete-flag': {
 					bootbox.confirm('[[flags:delete-flag-confirm]]', function (ok) {
 						if (ok) {
