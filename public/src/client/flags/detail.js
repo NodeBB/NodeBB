@@ -33,6 +33,42 @@ define('forum/flags/detail', [
 					break;
 				}
 
+				case 'addEditNote': {
+					const noteEl = this.closest('[component="flag/note"]');
+					let datetime;
+					let value;
+					if (noteEl) {
+						datetime = noteEl.getAttribute('data-datetime');
+						const index = noteEl.getAttribute('data-index');
+						value = ajaxify.data.notes[index].content;
+					}
+
+					bootbox.prompt({
+						title: `[[flags:${datetime ? 'edit' : 'add'}-note]]`,
+						inputType: 'textarea',
+						rows: 3,
+						value,
+						callback: (result) => {
+							if (!result) {
+								return;
+							}
+
+							api.post(`/flags/${ajaxify.data.flagId}/notes`, {
+								note: result,
+								datetime,
+							}).then((payload) => {
+								alerts.success('[[flags:note-added]]');
+								Detail.reloadNotes(payload.notes);
+								Detail.reloadHistory(payload.history);
+							}).catch(alerts.error);
+						},
+						onShown: (e) => {
+							console.log(e);
+						},
+					});
+					break;
+				}
+
 				case 'appendNote':
 					api.post(`/flags/${ajaxify.data.flagId}/notes`, {
 						note: noteEl.value,
@@ -159,7 +195,6 @@ define('forum/flags/detail', [
 			wrapperEl.empty();
 			wrapperEl.html(html);
 			wrapperEl.find('span.timeago').timeago();
-			document.getElementById('note').value = '';
 		});
 	};
 
