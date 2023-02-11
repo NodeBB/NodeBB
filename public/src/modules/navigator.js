@@ -12,18 +12,14 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 	let renderPostIndex;
 	let isNavigating = false;
 	let firstMove = true;
-
+	let bsEnv = '';
 	navigator.scrollActive = false;
 
 	let paginationBlockEl = $('.pagination-block');
 	let paginationTextEl = paginationBlockEl.find('.pagination-text');
 	let paginationBlockMeterEl = paginationBlockEl.find('meter');
 	let paginationBlockProgressEl = paginationBlockEl.find('.progress-bar');
-	let thumb;
-	let thumbText;
-	let thumbIcon;
-	let thumbIconHeight;
-	let thumbIconHalfHeight;
+	let thumbs;
 
 	$(window).on('action:ajaxify.start', function () {
 		$(window).off('keydown', onKeyDown);
@@ -41,11 +37,8 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 		paginationBlockMeterEl = paginationBlockEl.find('meter');
 		paginationBlockProgressEl = paginationBlockEl.find('.progress-bar');
 
-		thumbIcon = $('.scroller-thumb-icon');
-		thumbIconHeight = thumbIcon.height();
-		thumbIconHalfHeight = thumbIconHeight / 2;
-		thumb = $('.scroller-thumb');
-		thumbText = thumb.find('.thumb-text');
+		thumbs = $('.scroller-thumb');
+		bsEnv = utils.findBootstrapEnvironment();
 
 		$(window).off('scroll', navigator.delayedUpdate).on('scroll', navigator.delayedUpdate);
 
@@ -54,9 +47,10 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 		});
 
 		paginationBlockEl.off('shown.bs.dropdown', '.wrapper').on('shown.bs.dropdown', '.wrapper', function () {
+			const el = $(this);
 			setTimeout(async function () {
-				if (utils.findBootstrapEnvironment() === 'lg') {
-					$('.pagination-block input').focus();
+				if (['lg', 'xl', 'xxl'].includes(utils.findBootstrapEnvironment())) {
+					el.find('input').trigger('focus');
 				}
 				const postCountInTopic = await socket.emit('topics.getPostCountInTopic', ajaxify.data.tid);
 				if (postCountInTopic > 0) {
@@ -131,9 +125,11 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 		}
 	}
 
-	function clampTop(newTop) {
+	function clampTop(thumb, newTop) {
 		const parent = thumb.parent();
 		const parentOffset = parent.offset();
+		const thumbIcon = thumb.find('.scroller-thumb-icon');
+		const thumbIconHeight = thumbIcon.height();
 		if (newTop < parentOffset.top) {
 			newTop = parentOffset.top;
 		} else if (newTop > parentOffset.top + parent.height() - thumbIconHeight) {
@@ -143,55 +139,128 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 	}
 
 	function setThumbToIndex(index) {
-		if (!thumb || !thumb.length || thumb.is(':hidden')) {
+		if (!thumbs || !thumbs.length || !thumbs.is(':visible')) {
 			return;
 		}
-		const parent = thumb.parent();
-		const parentOffset = parent.offset();
-		let percent = (index - 1) / ajaxify.data.postcount;
-		if (index === count) {
-			percent = 1;
-		}
-		const newTop = clampTop(parentOffset.top + ((parent.height() - thumbIconHeight) * percent));
 
-		const offset = { top: newTop, left: thumb.offset().left };
-		thumb.offset(offset);
-		thumbText.text(index + '/' + ajaxify.data.postcount);
+		thumbs.each((i, el) => {
+			const thumb = $(el);
+			if (thumb.is(':hidden')) {
+				return;
+			}
+
+			const parent = thumb.parent();
+			const parentOffset = parent.offset();
+			let percent = (index - 1) / ajaxify.data.postcount;
+			if (index === count) {
+				percent = 1;
+			}
+			const thumbIcon = thumb.find('.scroller-thumb-icon');
+			const thumbIconHeight = thumbIcon.height();
+			const newTop = clampTop(thumb, parentOffset.top + ((parent.height() - thumbIconHeight) * percent));
+
+			const offset = { top: newTop, left: thumb.offset().left };
+			thumb.offset(offset);
+			updateThumbTextToIndex(thumb, index);
+			updateThumbTimestampToIndex(thumb, index);
+		});
+
 		renderPost(index);
 	}
 
+	function updateThumbTextToIndex(thumb, index) {
+		if (bsEnv === 'xs' || bsEnv === 'sm' || bsEnv === 'md') {
+			thumb.find('.thumb-text').text(`${index}/${ajaxify.data.postcount}`);
+		} else {
+			thumb.find('.thumb-text').translateText(`[[topic:navigator.index, ${index}, ${ajaxify.data.postcount}]]`);
+		}
+	}
+
+	async function updateThumbTimestampToIndex(thumb, index) {
+		const el = thumb.find('.thumb-timestamp');
+		if (el.length) {
+			const timestamp = await getPostTimestampByIndex(index);
+			el.attr('title', utils.toISOString(timestamp)).timeago();
+		}
+	}
+
+	async function getPostTimestampByIndex(index) {
+		// load timestamp of post from DOM if it exists
+		// if not load from server
+		const postEl = $(`[component="post"][data-index=${index - 1}]`);
+		if (postEl.length) {
+			return parseInt(postEl.attr('data-timestamp'), 10);
+		}
+		return await socket.emit('posts.getPostTimestampByIndex', {
+			tid: ajaxify.data.tid,
+			index: index - 1,
+		});
+	}
+
+
 	function handleScrollNav() {
-		if (!thumb.length) {
+		if (!thumbs.length) {
 			return;
 		}
 
-		const parent = thumb.parent();
-		parent.on('click', function (ev) {
+		const parents = thumbs.parent();
+		parents.off('click').on('click', function (ev) {
 			if ($(ev.target).hasClass('scroller-container')) {
-				const index = calculateIndexFromY(ev.pageY);
+				const thumb = $(ev.target).find('.scroller-thumb');
+				const index = calculateIndexFromY(thumb, ev.pageY);
 				navigator.scrollToIndex(index - 1, true, 0);
 				return false;
 			}
 		});
 
-		function calculateIndexFromY(y) {
-			const newTop = clampTop(y - thumbIconHalfHeight);
+		function calculateIndexFromY(thumb, y) {
+			const parent = thumb.parent();
+			const thumbIcon = thumb.find('.scroller-thumb-icon');
+			const thumbIconHeight = thumbIcon.height();
+			const newTop = clampTop(thumb, y - (thumbIconHeight / 2));
 			const parentOffset = parent.offset();
 			const percent = (newTop - parentOffset.top) / (parent.height() - thumbIconHeight);
 			index = Math.max(1, Math.ceil(ajaxify.data.postcount * percent));
-			return index > ajaxify.data.postcount ? ajaxify.data.count : index;
+			return index > ajaxify.data.postcount ? ajaxify.data.postcount : index;
 		}
 
 		let mouseDragging = false;
 		hooks.on('action:ajaxify.end', function () {
 			renderPostIndex = null;
 		});
-		$('.pagination-block .dropdown-menu').parent().on('shown.bs.dropdown', function () {
-			setThumbToIndex(index);
-		});
+		paginationBlockEl.find('.dropdown-menu').parent()
+			.off('shown.bs.dropdown')
+			.on('shown.bs.dropdown', function () {
+				setThumbToIndex(index);
+			});
 
-		thumb.on('mousedown', function () {
+		// the thumb that's being dragged, there can be more than on on the DOM
+		let dragThumb = null;
+		const debounceUpdateThumbTimestamp = utils.debounce(updateThumbTimestampToIndex, 50);
+		function mousemove(ev) {
+			if (!dragThumb || !dragThumb.length) {
+				return;
+			}
+			const thumbIcon = dragThumb.find('.scroller-thumb-icon');
+			const thumbIconHeight = thumbIcon.height();
+			const newTop = clampTop(dragThumb, ev.pageY - (thumbIconHeight / 2));
+			dragThumb.offset({ top: newTop, left: dragThumb.offset().left });
+			const index = calculateIndexFromY(dragThumb, ev.pageY);
+			navigator.updateTextAndProgressBar();
+			updateThumbTextToIndex(dragThumb, index);
+			debounceUpdateThumbTimestamp(dragThumb, index);
+			if (firstMove) {
+				delayedRenderPost();
+			}
+			firstMove = false;
+			ev.stopPropagation();
+			return false;
+		}
+
+		thumbs.off('mousedown').on('mousedown', function () {
 			mouseDragging = true;
+			dragThumb = $(this);
+			dragThumb.addClass('active');
 			$(window).on('mousemove', mousemove);
 			firstMove = true;
 		});
@@ -205,20 +274,10 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 			clearRenderInterval();
 			mouseDragging = false;
 			firstMove = false;
-		}
-
-		function mousemove(ev) {
-			const newTop = clampTop(ev.pageY - thumbIconHalfHeight);
-			thumb.offset({ top: newTop, left: thumb.offset().left });
-			const index = calculateIndexFromY(ev.pageY);
-			navigator.updateTextAndProgressBar();
-			thumbText.text(index + '/' + ajaxify.data.postcount);
-			if (firstMove) {
-				delayedRenderPost();
+			if (dragThumb && dragThumb.length) {
+				dragThumb.removeClass('active');
 			}
-			firstMove = false;
-			ev.stopPropagation();
-			return false;
+			dragThumb = null;
 		}
 
 		function delayedRenderPost() {
@@ -231,48 +290,55 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 		$(window).off('mousemove', mousemove);
 		$(window).off('mouseup', mouseup).on('mouseup', mouseup);
 
-		thumb.on('touchstart', function (ev) {
-			isNavigating = true;
-			touchX = Math.min($(window).width(), Math.max(0, ev.touches[0].clientX));
-			touchY = Math.min($(window).height(), Math.max(0, ev.touches[0].clientY));
-			firstMove = true;
-		});
+		thumbs.each((i, el) => {
+			const thumb = $(el);
 
-		thumb.on('touchmove', function (ev) {
-			const windowWidth = $(window).width();
-			const windowHeight = $(window).height();
-			const deltaX = Math.abs(touchX - Math.min(windowWidth, Math.max(0, ev.touches[0].clientX)));
-			const deltaY = Math.abs(touchY - Math.min(windowHeight, Math.max(0, ev.touches[0].clientY)));
-			touchX = Math.min(windowWidth, Math.max(0, ev.touches[0].clientX));
-			touchY = Math.min(windowHeight, Math.max(0, ev.touches[0].clientY));
-
-			if (deltaY >= deltaX && firstMove) {
+			thumb.off('touchstart').on('touchstart', function (ev) {
 				isNavigating = true;
-				delayedRenderPost();
-			}
+				touchX = Math.min($(window).width(), Math.max(0, ev.touches[0].clientX));
+				touchY = Math.min($(window).height(), Math.max(0, ev.touches[0].clientY));
+				firstMove = true;
+			});
 
-			if (isNavigating && ev.cancelable) {
-				ev.preventDefault();
-				ev.stopPropagation();
-				const newTop = clampTop(touchY + $(window).scrollTop() - thumbIconHalfHeight);
-				thumb.offset({ top: newTop, left: thumb.offset().left });
-				const index = calculateIndexFromY(touchY + $(window).scrollTop());
-				navigator.updateTextAndProgressBar();
-				thumbText.text(index + '/' + ajaxify.data.postcount);
-				if (firstMove) {
-					renderPost(index);
+			thumb.off('touchmove').on('touchmove', function (ev) {
+				const windowWidth = $(window).width();
+				const windowHeight = $(window).height();
+				const deltaX = Math.abs(touchX - Math.min(windowWidth, Math.max(0, ev.touches[0].clientX)));
+				const deltaY = Math.abs(touchY - Math.min(windowHeight, Math.max(0, ev.touches[0].clientY)));
+				touchX = Math.min(windowWidth, Math.max(0, ev.touches[0].clientX));
+				touchY = Math.min(windowHeight, Math.max(0, ev.touches[0].clientY));
+
+				if (deltaY >= deltaX && firstMove) {
+					isNavigating = true;
+					delayedRenderPost();
 				}
-			}
-			firstMove = false;
-		});
 
-		thumb.on('touchend', function () {
-			clearRenderInterval();
-			if (isNavigating) {
-				navigator.scrollToIndex(index - 1, true, 0);
-				isNavigating = false;
-				paginationBlockEl.find('.dropdown-menu.show').removeClass('show');
-			}
+				if (isNavigating && ev.cancelable) {
+					ev.preventDefault();
+					ev.stopPropagation();
+					const thumbIcon = thumb.find('.scroller-thumb-icon');
+					const thumbIconHeight = thumbIcon.height();
+					const newTop = clampTop(thumb, touchY + $(window).scrollTop() - (thumbIconHeight / 2));
+					thumb.offset({ top: newTop, left: thumb.offset().left });
+					const index = calculateIndexFromY(thumb, touchY + $(window).scrollTop());
+					navigator.updateTextAndProgressBar();
+					updateThumbTextToIndex(thumb, index);
+					debounceUpdateThumbTimestamp(thumb, index);
+					if (firstMove) {
+						renderPost(index);
+					}
+				}
+				firstMove = false;
+			});
+
+			thumb.off('touchend').on('touchend', function () {
+				clearRenderInterval();
+				if (isNavigating) {
+					navigator.scrollToIndex(index - 1, true, 0);
+					isNavigating = false;
+					paginationBlockEl.find('.dropdown-menu.show').removeClass('show');
+				}
+			});
 		});
 	}
 
@@ -283,26 +349,19 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 		}
 	}
 
-	function renderPost(index, callback) {
-		callback = callback || function () {};
-		if (renderPostIndex === index || paginationBlockEl.find('.post-content').is(':hidden')) {
+	async function renderPost(index) {
+		if (!index || renderPostIndex === index || !paginationBlockEl.find('.post-content').is(':visible')) {
 			return;
 		}
 		renderPostIndex = index;
 
-		socket.emit('posts.getPostSummaryByIndex', { tid: ajaxify.data.tid, index: index - 1 }, function (err, postData) {
-			if (err) {
-				return alerts.error(err);
-			}
-			app.parseAndTranslate('partials/topic/navigation-post', { post: postData }, function (html) {
-				paginationBlockEl
-					.find('.post-content')
-					.html(html)
-					.find('.timeago').timeago();
-			});
+		const postData = await socket.emit('posts.getPostSummaryByIndex', { tid: ajaxify.data.tid, index: index - 1 });
 
-			callback();
-		});
+		const html = await app.parseAndTranslate('partials/topic/navigation-post', { post: postData });
+		paginationBlockEl
+			.find('.post-content')
+			.html(html)
+			.find('.timeago').timeago();
 	}
 
 	function handleKeys() {
