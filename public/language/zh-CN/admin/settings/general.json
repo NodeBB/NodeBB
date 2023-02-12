@@ -36,15 +36,15 @@
 	"outgoing-links": "站外链接",
 	"outgoing-links.warning-page": "使用站外链接警告页",
 	"search": "搜索",
-	"search-default-in": "Search In",
-	"search-default-in-quick": "Quick Search In",
+	"search-default-in": "在此搜索",
+	"search-default-in-quick": "在此快速搜索",
 	"search-default-sort-by": "排序",
 	"outgoing-links.whitelist": "添加域名到白名单以绕过警告页面",
 	"site-colors": "站点颜色元数据",
 	"theme-color": "主题色",
 	"background-color": "背景色",
 	"background-color-help": "当网站安装为 PWA 时用于启动屏幕背景的颜色",
-	"undo-timeout": "Undo Timeout",
+	"undo-timeout": "撤销超时",
 	"undo-timeout-help": "部分操作，例如移动主题，将允许版主在一定时间内撤销其操作。设置为 0 可完全禁用撤消。",
 	"topic-tools": "主题工具"
 }

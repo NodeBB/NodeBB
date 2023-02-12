@@ -2,7 +2,7 @@
     "tag": "标签设置",
     "link-to-manage": "管理标签",
     "system-tags": "系统标签",
-    "system-tags-help": "Only privileged users will be able to use these tags.",
+    "system-tags-help": "只有特权用户可以使用这些标签。",
     "min-per-topic": "每个主题的最少标签数",
     "max-per-topic": "每个主题的最多标签数",
     "min-length": "标签名称最小长度",
