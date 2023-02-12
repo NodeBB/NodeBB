@@ -22,6 +22,10 @@ define('quickreply', [
 			},
 		};
 
+		destroyAutoComplete();
+		$(window).one('action:ajaxify.start', () => {
+			destroyAutoComplete();
+		});
 		$(window).trigger('composer:autocomplete:init', data);
 		autocomplete._active.core_qr = autocomplete.setup(data);
 
@@ -116,6 +120,13 @@ define('quickreply', [
 			textEl.val('');
 		});
 	};
+
+	function destroyAutoComplete() {
+		if (autocomplete._active.core_qr) {
+			autocomplete._active.core_qr.destroy();
+			autocomplete._active.core_qr = null;
+		}
+	}
 
 	return QuickReply;
 });
