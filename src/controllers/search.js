@@ -2,6 +2,7 @@
 'use strict';
 
 const validator = require('validator');
+const _ = require('lodash');
 
 const db = require('../database');
 const meta = require('../meta');
@@ -163,7 +164,12 @@ async function recordSearch(data) {
 					q => !copy.find(query => query.startsWith(q) && query.length > q.length)
 				);
 				delete searches[data.uid];
-				await Promise.all(filtered.map(query => db.sortedSetIncrBy('searches:all', 1, query)));
+				const dayTimestamp = (new Date());
+				dayTimestamp.setHours(0, 0, 0, 0);
+				await Promise.all(_.uniq(filtered).map(async (query) => {
+					await db.sortedSetIncrBy('searches:all', 1, query);
+					await db.sortedSetIncrBy(`searches:${dayTimestamp.getTime()}`, 1, query);
+				}));
 			}
 		}, 5000);
 	}

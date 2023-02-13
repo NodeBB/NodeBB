@@ -1,6 +1,6 @@
 {
 	"custom-css": "自定义 CSS/LESS",
-	"custom-css.description": "在这里输入您想应用于所有其他风格的 CSS/LESS,",
+	"custom-css.description": "在这里输入您自己的 CSS/LESS 声明，它们将放在全部其他样式之后。 ",
 	"custom-css.enable": "启用自定义 CSS/LESS",
 
 	"custom-js": "自定义 Javascript",

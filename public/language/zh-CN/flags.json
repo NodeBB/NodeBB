@@ -6,7 +6,7 @@
 	"assignee": "受委托人",
 	"update": "更新",
 	"updated": "已更新",
-	"resolved": "Resolved",
+	"resolved": "已解决",
 	"target-purged": "被举报的内容已经被清除，不再可用。",
 
 	"graph-label": "日举报",
@@ -27,7 +27,7 @@
 	"filter-cid-all": "全部版块",
 	"apply-filters": "应用过滤器",
 	"more-filters": "更多过滤器",
-	"fewer-filters": "Fewer Filters",
+	"fewer-filters": "更少的过滤器",
 
 	"quick-actions": "快速操作",
 	"flagged-user": "被举报的用户",
@@ -38,7 +38,7 @@
 	"delete-post": "删除帖子",
 	"purge-post": "清除帖子",
 	"restore-post": "恢复帖子",
-	"delete": "Delete Flag",
+	"delete": "删除举报",
 
 	"user-view": "查看资料",
 	"user-edit": "编辑资料",
@@ -47,10 +47,10 @@
 	"add-note": "添加备注",
 	"no-notes": "没有共享的备注内容。",
 	"delete-note-confirm": "您确定要删除此举报备注吗？",
-	"delete-flag-confirm": "Are you sure you want to delete this flag?",
+	"delete-flag-confirm": "您确定您要删除此举报吗？",
 	"note-added": "备注已添加",
 	"note-deleted": "备注已删除",
-	"flag-deleted": "Flag Deleted",
+	"flag-deleted": "举报已删除",
 
 	"history": "账号 &amp; 举报历史",
 	"no-history": "没有举报历史。",
@@ -84,6 +84,6 @@
 	"bulk-actions": "批量操作",
 	"bulk-resolve": "处理举报",
 	"bulk-success": "已更新%1个举报",
-	"flagged-timeago-readable": "Flagged <span class=\"timeago\" title=\"%1\"></span> (%2)",
-  	"auto-flagged": "[Auto Flagged] Received %1 downvotes."
+	"flagged-timeago-readable": "被举报于 <span class=\\\"timeago\\\" title=\\\"%1\\\"></span> (%2) ",
+  	"auto-flagged": "【自动举报】收到 %1 个踩"
 }

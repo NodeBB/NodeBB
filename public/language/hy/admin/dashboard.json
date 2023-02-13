@@ -83,8 +83,11 @@
 	"back-to-dashboard": "Վերադառնալ կառավարման վահանակ",
 	"details.no-users": "Ընտրված ժամկետում ոչ մի օգտատեր չի միացել",
 	"details.no-topics": "Ընտրված ժամկետում ոչ մի թեմա չի տեղադրվել",
-	"details.no-searches": "Որոնումներ դեռ չեն կատարվել",
+	"details.no-searches": "No searches have been made within the selected timeframe",
 	"details.no-logins": "Ընտրված ժամկետում մուտքեր չեն գրանցվել",
 	"details.logins-static": "NodeBB-ն պահում է միայն %1 օրվա սեսիայի տվյալները, և այսպիսով, ստորև բերված աղյուսակը ցույց կտա միայն վերջին ակտիվ աշխատաշրջանները",
-	"details.logins-login-time": "Մուտք գործելու ժամանակը"
+	"details.logins-login-time": "Մուտք գործելու ժամանակը",
+	"start": "Start",
+	"end": "End",
+	"filter": "Filter"
 }

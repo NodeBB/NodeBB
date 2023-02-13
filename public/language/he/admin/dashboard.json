@@ -83,8 +83,11 @@
 	"back-to-dashboard": "חזרה ללוח מחוונים",
 	"details.no-users": "אין משתמש שהצטרף במסגרת הזמן שנבחרה",
 	"details.no-topics": "לא פורסמו נושאים במסגרת הזמן שנבחרה",
-	"details.no-searches": "עדיין לא בוצעו חיפושים",
+	"details.no-searches": "No searches have been made within the selected timeframe",
 	"details.no-logins": "לא נרשמו כניסות במסגרת הזמן שנבחרה",
 	"details.logins-static": "NodeBB שומר נתוני הפעלה עבור %1 ימים בלבד, ולכן טבלה זו תציג רק את הכניסות הפעילות האחרונות",
-	"details.logins-login-time": "זמן כניסה"
+	"details.logins-login-time": "זמן כניסה",
+	"start": "Start",
+	"end": "End",
+	"filter": "Filter"
 }

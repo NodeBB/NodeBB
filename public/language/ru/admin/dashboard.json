@@ -83,8 +83,11 @@
 	"back-to-dashboard": "Вернуться на Панель управления",
 	"details.no-users": "Никто не присоединился за выбранный отрезок времени",
 	"details.no-topics": "Сообщений за выбранный отрезок времени не было",
-	"details.no-searches": "Поисковых запросов еще не было",
+	"details.no-searches": "No searches have been made within the selected timeframe",
 	"details.no-logins": "Попыток входа за выбранный отрезок времени не было",
 	"details.logins-static": "NodeBB хранит данные о сессиях за %1 дней, так что таблица ниже покажет только недавние активные сессии",
-	"details.logins-login-time": "Время входа"
+	"details.logins-login-time": "Время входа",
+	"start": "Start",
+	"end": "End",
+	"filter": "Filter"
 }
