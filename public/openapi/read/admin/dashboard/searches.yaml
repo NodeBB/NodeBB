@@ -22,4 +22,12 @@ get:
                         score:
                           type: number
                           description: Number of times this string has been searched
+                  startDate:
+                    type: string
+                    description: A UNIX timestamp of the start date
+                    nullable: true
+                  endDate:
+                    type: string
+                    description: A UNIX timestamp of the end date
+                    nullable: true
               - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps
