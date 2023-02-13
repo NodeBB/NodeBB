@@ -120,7 +120,7 @@ describe('email confirmation (library methods)', () => {
 			await user.email.sendValidationEmail(uid, {
 				email,
 			});
-			const ok = await user.email.canSendValidation(uid, 'test@example.com');
+			const ok = await user.email.canSendValidation(uid, email);
 
 			assert.strictEqual(ok, false);
 		});
@@ -131,7 +131,7 @@ describe('email confirmation (library methods)', () => {
 				email,
 			});
 			await db.pexpire(`confirm:byUid:${uid}`, 1000);
-			const ok = await user.email.canSendValidation(uid, 'test@example.com');
+			const ok = await user.email.canSendValidation(uid, email);
 
 			assert(ok);
 		});

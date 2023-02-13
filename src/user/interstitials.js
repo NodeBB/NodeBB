@@ -42,6 +42,7 @@ Interstitials.email = async (data) => {
 		callback: async (userData, formData) => {
 			// Validate and send email confirmation
 			if (userData.uid) {
+				const isSelf = parseInt(userData.uid, 10) === parseInt(data.req.uid, 10);
 				const [isPasswordCorrect, canEdit, { email: current, 'email:confirmed': confirmed }, { allowed, error }] = await Promise.all([
 					user.isPasswordCorrect(userData.uid, formData.password, data.req.ip),
 					privileges.users.canEdit(data.req.uid, userData.uid),
@@ -68,13 +69,17 @@ Interstitials.email = async (data) => {
 					if (formData.email === current) {
 						if (confirmed) {
 							throw new Error('[[error:email-nochange]]');
-						} else if (await user.email.canSendValidation(userData.uid, current)) {
+						} else if (!await user.email.canSendValidation(userData.uid, current)) {
 							throw new Error(`[[error:confirm-email-already-sent, ${meta.config.emailConfirmInterval}]]`);
 						}
 					}
 
 					// Admins editing will auto-confirm, unless editing their own email
 					if (isAdminOrGlobalMod && userData.uid !== data.req.uid) {
+						if (!await user.email.available(formData.email)) {
+							throw new Error('[[error:email-taken]]');
+						}
+						await user.email.remove(userData.uid);
 						await user.setUserField(userData.uid, 'email', formData.email);
 						await user.email.confirmByUid(userData.uid);
 					} else if (canEdit) {
@@ -99,8 +104,8 @@ Interstitials.email = async (data) => {
 					}
 
 					if (current.length && (!hasPassword || (hasPassword && isPasswordCorrect) || isAdminOrGlobalMod)) {
-						// User explicitly clearing their email
-						await user.email.remove(userData.uid, data.req.session.id);
+						// User or admin explicitly clearing their email
+						await user.email.remove(userData.uid, isSelf ? data.req.session.id : null);
 					}
 				}
 			} else {
