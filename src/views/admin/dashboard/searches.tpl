@@ -20,7 +20,11 @@
 			</form>
 		</div>
 
-		<table class="table table-striped search-list">
+		<table class="table table-sm table-striped search-list">
+			<thead>
+				<th class="text-end">Count</th>
+				<th>Term</th>
+			</thead>
 			<tbody>
 				{{{ if !searches.length}}}
 				<tr>
@@ -29,8 +33,8 @@
 				{{{ end }}}
 				{{{ each searches }}}
 				<tr>
+					<td class="text-end" style="width: 1px;">{searches.score}</td>
 					<td>{searches.value}</a></td>
-					<td class="text-end">{searches.score}</td>
 				</tr>
 				{{{ end }}}
 			</tbody>
