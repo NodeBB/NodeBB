@@ -12,19 +12,32 @@ const db = require('./mocks/databasemock');
 const user = require('../src/user');
 const utils = require('../src/utils');
 const meta = require('../src/meta');
+const plugins = require('../src/plugins');
 const privileges = require('../src/privileges');
 const helpers = require('./helpers');
 
 describe('authentication', () => {
 	const jar = request.jar();
 	let regularUid;
+	const dummyEmailerHook = async (data) => {};
+
 	before((done) => {
+		// Attach an emailer hook so related requests do not error
+		plugins.hooks.register('authentication-test', {
+			hook: 'filter:email.send',
+			method: dummyEmailerHook,
+		});
+
 		user.create({ username: 'regular', password: 'regularpwd', email: 'regular@nodebb.org' }, (err, uid) => {
 			assert.ifError(err);
 			regularUid = uid;
 			assert.strictEqual(uid, 1);
 			done();
 		});
+	});
+
+	after(() => {
+		plugins.hooks.unregister('authentication-test', 'filter:email.send');
 	});
 
 	it('should allow login with email for uid 1', async () => {
