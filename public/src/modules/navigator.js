@@ -19,6 +19,7 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 	let paginationTextEl = paginationBlockEl.find('.pagination-text');
 	let paginationBlockMeterEl = paginationBlockEl.find('meter');
 	let paginationBlockProgressEl = paginationBlockEl.find('.progress-bar');
+	const paginationBlockUnreadEl = paginationBlockEl.find('.unread');
 	let thumbs;
 
 	$(window).on('action:ajaxify.start', function () {
@@ -84,6 +85,7 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 
 		if (ajaxify.data.template.topic) {
 			handleScrollNav();
+			updateUnreadIndicator(ajaxify.data.bookmark);
 		}
 
 		handleKeys();
@@ -344,6 +346,35 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 				}
 			});
 		});
+	}
+
+	async function updateUnreadIndicator(index) {
+		if (ajaxify.data.postcount <= ajaxify.data.bookmarkThreshold) {
+			return;
+		}
+
+		index = Math.max(index, ajaxify.data.bookmark);
+		// const meta = unreadEl.querySelector('.meta');
+		// if (isHidden(meta)) {
+		// 	return;
+		// }
+		const unreadEl = paginationBlockUnreadEl.get(0);
+		const trackEl = unreadEl.parentNode;
+		const trackHeight = trackEl.getBoundingClientRect().height;
+
+		const percentage = 1 - (index / ajaxify.data.postcount);
+		unreadEl.style.height = `${trackHeight * percentage}px`;
+
+		// const anchorEl = unreadEl.querySelector('.meta a');
+		// const remaining = ajaxify.data.postcount - index;
+		// if (remaining > 0) {
+		// 	const text = await translate(`[[topic:navigator.unread, ${remaining}]]`);
+		// 	anchorEl.href = `${config.relative_path}/topic/${ajaxify.data.slug}/${Math.min(index + 1, ajaxify.data.postcount)}`;
+		// 	anchorEl.innerText = text;
+		// } else {
+		// 	anchorEl.href = ajaxify.data.url;
+		// 	anchorEl.innerText = '';
+		// }
 	}
 
 	function clearRenderInterval() {
