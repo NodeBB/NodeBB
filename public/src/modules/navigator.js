@@ -257,7 +257,11 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 			return false;
 		}
 
-		thumbs.off('mousedown').on('mousedown', function () {
+		thumbs.off('mousedown').on('mousedown', function (e) {
+			if (e.originalEvent.button !== 0) {
+				return;
+			}
+
 			mouseDragging = true;
 			dragThumb = $(this);
 			dragThumb.addClass('active');
