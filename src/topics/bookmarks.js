@@ -28,10 +28,6 @@ module.exports = function (Topics) {
 		await db.sortedSetAdd(`tid:${tid}:bookmarks`, index, uid);
 	};
 
-	Topics.removeUserBookmark = async (tid, uid) => {
-		await db.sortedSetRemove(`tid:${tid}:bookmarks`, uid);
-	};
-
 	Topics.getTopicBookmarks = async function (tid) {
 		return await db.getSortedSetRangeWithScores(`tid:${tid}:bookmarks`, 0, -1);
 	};

@@ -378,7 +378,6 @@ module.exports = function (Topics) {
 				[`tid:${tid}:bookmarks`, uid],
 			]),
 			db.sortedSetAdd(`uid:${uid}:tids_unread`, Date.now(), tid),
-			Topics.removeUserBookmark(tid, uid),
 		]);
 	};
 
