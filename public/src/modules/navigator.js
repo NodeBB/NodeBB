@@ -360,9 +360,11 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts', 'trans
 		const percentage = 1 - (index / ajaxify.data.postcount);
 		unreadEl.style.height = `${trackHeight * percentage}px`;
 
+		const thumbEl = trackEl.querySelector('.scroller-thumb');
+		const thumbBottom = parseInt(thumbEl.style.top, 10) + parseInt(thumbEl.style.height, 10);
 		const anchorEl = unreadEl.querySelector('.meta a');
 		const remaining = ajaxify.data.postcount - index;
-		if (remaining > 0) {
+		if (remaining > 0 && (trackHeight - thumbBottom) > 50) {
 			const text = await translator.translate(`[[topic:navigator.unread, ${remaining}]]`);
 			anchorEl.href = `${config.relative_path}/topic/${ajaxify.data.slug}/${Math.min(index + 1, ajaxify.data.postcount)}`;
 			anchorEl.innerText = text;
