@@ -1,6 +1,6 @@
 'use strict';
 
-define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], function (pagination, components, hooks, alerts) {
+define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts', 'translator'], function (pagination, components, hooks, alerts, translator) {
 	const navigator = {};
 	let index = 0;
 	let count = 0;
@@ -86,7 +86,7 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 
 		if (ajaxify.data.template.topic) {
 			handleScrollNav();
-			updateUnreadIndicator(ajaxify.data.bookmark);
+			updateUnreadIndicator(ajaxify.data.postIndex);
 		}
 
 		handleKeys();
@@ -353,10 +353,6 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 		}
 
 		index = Math.max(index, ajaxify.data.bookmark);
-		// const meta = unreadEl.querySelector('.meta');
-		// if (isHidden(meta)) {
-		// 	return;
-		// }
 		const unreadEl = paginationBlockUnreadEl.get(0);
 		const trackEl = unreadEl.parentNode;
 		const trackHeight = trackEl.getBoundingClientRect().height;
@@ -364,16 +360,16 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 		const percentage = 1 - (index / ajaxify.data.postcount);
 		unreadEl.style.height = `${trackHeight * percentage}px`;
 
-		// const anchorEl = unreadEl.querySelector('.meta a');
-		// const remaining = ajaxify.data.postcount - index;
-		// if (remaining > 0) {
-		// 	const text = await translate(`[[topic:navigator.unread, ${remaining}]]`);
-		// 	anchorEl.href = `${config.relative_path}/topic/${ajaxify.data.slug}/${Math.min(index + 1, ajaxify.data.postcount)}`;
-		// 	anchorEl.innerText = text;
-		// } else {
-		// 	anchorEl.href = ajaxify.data.url;
-		// 	anchorEl.innerText = '';
-		// }
+		const anchorEl = unreadEl.querySelector('.meta a');
+		const remaining = ajaxify.data.postcount - index;
+		if (remaining > 0) {
+			const text = await translator.translate(`[[topic:navigator.unread, ${remaining}]]`);
+			anchorEl.href = `${config.relative_path}/topic/${ajaxify.data.slug}/${Math.min(index + 1, ajaxify.data.postcount)}`;
+			anchorEl.innerText = text;
+		} else {
+			anchorEl.href = ajaxify.data.url;
+			anchorEl.innerText = '';
+		}
 	}
 
 	function clearRenderInterval() {
@@ -514,6 +510,7 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 		if (newIndex !== index) {
 			index = newIndex;
 			navigator.updateTextAndProgressBar();
+			updateUnreadIndicator(index);
 			setThumbToIndex(index);
 		}
 

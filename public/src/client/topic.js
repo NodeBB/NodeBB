@@ -359,7 +359,7 @@ define('forum/topic', [
 			)
 		) {
 			if (app.user.uid) {
-				ajaxify.data.bookmark = index + 1;
+				ajaxify.data.bookmark = index;
 
 				socket.emit('topics.bookmark', {
 					tid: ajaxify.data.tid,
