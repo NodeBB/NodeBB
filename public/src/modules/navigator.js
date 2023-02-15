@@ -348,7 +348,7 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts', 'trans
 	}
 
 	async function updateUnreadIndicator(index) {
-		if (ajaxify.data.postcount <= ajaxify.data.bookmarkThreshold) {
+		if (!paginationBlockUnreadEl.length || ajaxify.data.postcount <= ajaxify.data.bookmarkThreshold) {
 			return;
 		}
 
