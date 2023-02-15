@@ -19,7 +19,7 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 	let paginationTextEl = paginationBlockEl.find('.pagination-text');
 	let paginationBlockMeterEl = paginationBlockEl.find('meter');
 	let paginationBlockProgressEl = paginationBlockEl.find('.progress-bar');
-	const paginationBlockUnreadEl = paginationBlockEl.find('.unread');
+	let paginationBlockUnreadEl = paginationBlockEl.find('.unread');
 	let thumbs;
 
 	$(window).on('action:ajaxify.start', function () {
@@ -37,6 +37,7 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 		paginationTextEl = paginationBlockEl.find('.pagination-text');
 		paginationBlockMeterEl = paginationBlockEl.find('meter');
 		paginationBlockProgressEl = paginationBlockEl.find('.progress-bar');
+		paginationBlockUnreadEl = paginationBlockEl.find('.unread');
 
 		thumbs = $('.scroller-thumb');
 		bsEnv = utils.findBootstrapEnvironment();
