@@ -372,8 +372,13 @@ module.exports = function (Topics) {
 		if (!exists) {
 			throw new Error('[[error:no-topic]]');
 		}
-		await db.sortedSetRemove(`uid:${uid}:tids_read`, tid);
-		await db.sortedSetAdd(`uid:${uid}:tids_unread`, Date.now(), tid);
+		await Promise.all([
+			db.sortedSetRemoveBulk([
+				[`uid:${uid}:tids_read`, tid],
+				[`tid:${tid}:bookmarks`, uid],
+			]),
+			db.sortedSetAdd(`uid:${uid}:tids_unread`, Date.now(), tid),
+		]);
 	};
 
 	Topics.filterNewTids = async function (tids, uid) {
