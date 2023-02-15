@@ -154,14 +154,10 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 
 			const parent = thumb.parent();
 			const parentOffset = parent.offset();
-			let percent = (index - 1) / ajaxify.data.postcount;
-			if (index === count) {
-				percent = 1;
-			}
 			const thumbIcon = thumb.find('.scroller-thumb-icon');
 			const thumbIconHeight = thumbIcon.height();
-			const newTop = clampTop(thumb, parentOffset.top + ((parent.height() - thumbIconHeight) * percent));
-
+			const gap = (parent.height() - thumbIconHeight) / (ajaxify.data.postcount - 1);
+			const newTop = clampTop(thumb, parentOffset.top + ((index - 1) * gap));
 			const offset = { top: newTop, left: thumb.offset().left };
 			thumb.offset(offset);
 			updateThumbTextToIndex(thumb, index);
@@ -305,6 +301,7 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 				touchX = Math.min($(window).width(), Math.max(0, ev.touches[0].clientX));
 				touchY = Math.min($(window).height(), Math.max(0, ev.touches[0].clientY));
 				firstMove = true;
+				thumb.addClass('active');
 			});
 
 			thumb.off('touchmove').on('touchmove', function (ev) {
@@ -341,6 +338,7 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts'], funct
 			thumb.off('touchend').on('touchend', function () {
 				clearRenderInterval();
 				if (isNavigating) {
+					thumb.removeClass('active');
 					navigator.scrollToIndex(index - 1, true, 0);
 					isNavigating = false;
 					paginationBlockEl.find('.dropdown-menu.show').removeClass('show');
