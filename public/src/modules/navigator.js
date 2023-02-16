@@ -4,6 +4,7 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts', 'trans
 	const navigator = {};
 	let index = 0;
 	let count = 0;
+	let remaining = 0;
 	let navigatorUpdateTimeoutId;
 
 	let renderPostIntervalId;
@@ -86,13 +87,14 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts', 'trans
 
 		if (ajaxify.data.template.topic) {
 			handleScrollNav();
+			remaining = ajaxify.data.postcount;
 			updateUnreadIndicator(ajaxify.data.postIndex);
 		}
 
 		handleKeys();
 
 		navigator.setCount(count);
-		navigator.update(0);
+		navigator.update();
 	};
 
 	let lastNextIndex = 0;
@@ -164,6 +166,7 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts', 'trans
 			updateThumbTimestampToIndex(thumb, index);
 		});
 
+		updateUnreadIndicator(index);
 		renderPost(index);
 	}
 
@@ -361,10 +364,12 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts', 'trans
 		unreadEl.style.height = `${trackHeight * percentage}px`;
 
 		const thumbEl = trackEl.querySelector('.scroller-thumb');
-		const thumbBottom = parseInt(thumbEl.style.top || 0, 10) + parseInt(thumbEl.style.height, 10);
+		const thumbHeight = parseInt(thumbEl.style.height, 10);
+		const thumbBottom = parseInt(thumbEl.style.top || 0, 10) + thumbHeight;
 		const anchorEl = unreadEl.querySelector('.meta a');
-		const remaining = ajaxify.data.postcount - index;
-		if (remaining > 0 && (trackHeight - thumbBottom) > 50) {
+		remaining = Math.min(remaining, ajaxify.data.postcount - index);
+
+		if (remaining > 0 && (trackHeight - thumbBottom) >= thumbHeight) {
 			const text = await translator.translate(`[[topic:navigator.unread, ${remaining}]]`);
 			anchorEl.href = `${config.relative_path}/topic/${ajaxify.data.slug}/${Math.min(index + 1, ajaxify.data.postcount)}`;
 			anchorEl.innerText = text;
@@ -503,16 +508,14 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts', 'trans
 			newIndex = count;
 		}
 
-		if (typeof navigator.callback === 'function') {
-			navigator.callback(newIndex, count);
-		}
-
-		hooks.fire('action:navigator.update', { newIndex });
+		hooks.fire('action:navigator.update', { newIndex, index });
 
 		if (newIndex !== index) {
+			if (typeof navigator.callback === 'function') {
+				navigator.callback(newIndex, count);
+			}
 			index = newIndex;
 			navigator.updateTextAndProgressBar();
-			updateUnreadIndicator(index);
 			setThumbToIndex(index);
 		}
 
@@ -687,9 +690,8 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts', 'trans
 				navigator.scrollActive = false;
 				highlightPost();
 
-				const scrollToRect = scrollTo.get(0).getBoundingClientRect();
 				if (!newIndex) {
-					navigator.update(scrollToRect.top);
+					navigator.update();
 				} else {
 					navigator.setIndex(newIndex);
 				}

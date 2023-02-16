@@ -7,7 +7,6 @@ define('forum/topic', [
 	'forum/topic/postTools',
 	'forum/topic/events',
 	'forum/topic/posts',
-	'forum/topic/glance',
 	'navigator',
 	'sort',
 	'quickreply',
@@ -18,7 +17,7 @@ define('forum/topic', [
 	'alerts',
 ], function (
 	infinitescroll, threadTools, postTools,
-	events, posts, glance, navigator, sort, quickreply,
+	events, posts, navigator, sort, quickreply,
 	components, storage, hooks, api, alerts
 ) {
 	const Topic = {};
@@ -47,7 +46,7 @@ define('forum/topic', [
 			posts.signaturesShown = {};
 		}
 		await posts.onTopicPageLoad(components.get('post'));
-		navigator.init('[component="post"]', ajaxify.data.postcount, Topic.toTop, Topic.toBottom, utils.debounce(Topic.navigatorCallback, 500));
+		navigator.init('[component="post"]', ajaxify.data.postcount, Topic.toTop, Topic.toBottom, Topic.navigatorCallback);
 
 		postTools.init(tid);
 		threadTools.init(tid, $('.topic'));
@@ -66,7 +65,6 @@ define('forum/topic', [
 		addPostsPreviewHandler();
 		setupQuickReply();
 		handleBookmark(tid);
-		glance.default();
 
 		$(window).on('scroll', utils.debounce(updateTopicTitle, 250));
 
@@ -329,7 +327,6 @@ define('forum/topic', [
 
 			updateUserBookmark(index);
 
-			Topic.replaceURLTimeout = 0;
 			if (ajaxify.data.updateUrlWithPostIndex && history.replaceState) {
 				let search = window.location.search || '';
 				if (!config.usePagination) {
