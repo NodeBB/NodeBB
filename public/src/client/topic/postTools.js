@@ -467,7 +467,7 @@ define('forum/topic/postTools', [
 		warning.modal();
 	}
 
-	const selectionChangeFn = utils.debounce(selectionChange, 100);
+	const selectionChangeFn = utils.debounce(selectionChange, 250);
 
 	function handleSelectionTooltip() {
 		if (!ajaxify.data.privileges['topics:reply']) {
@@ -475,15 +475,19 @@ define('forum/topic/postTools', [
 		}
 
 		hooks.onPage('action:posts.loaded', delayedTooltip);
-
-		$(document).off('selectionchange', selectionChangeFn).on('selectionchange', selectionChangeFn);
+		$(document).off('selectionchange');
+		$(document).on('selectionchange', function () {
+			const selectionEmpty = window.getSelection().toString() === '';
+			if (selectionEmpty) {
+				$('[component="selection/tooltip"]').addClass('hidden');
+			}
+		});
+		$(document).on('selectionchange', selectionChangeFn);
 	}
 
 	function selectionChange() {
 		const selectionEmpty = window.getSelection().toString() === '';
-		if (selectionEmpty) {
-			$('[component="selection/tooltip"]').addClass('hidden');
-		} else {
+		if (!selectionEmpty) {
 			delayedTooltip();
 		}
 	}
@@ -515,6 +519,7 @@ define('forum/topic/postTools', [
 
 			if (!selectionTooltip.length) {
 				selectionTooltip = await app.parseAndTranslate('partials/topic/selection-tooltip', ajaxify.data);
+				$('[component="selection/tooltip"]').remove();
 				selectionTooltip.addClass('hidden').appendTo('body');
 			}
 			selectionTooltip.off('click').on('click', '[component="selection/tooltip/quote"]', function () {
