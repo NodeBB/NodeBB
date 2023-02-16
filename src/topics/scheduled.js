@@ -63,7 +63,6 @@ Scheduled.reschedule = async function ({ cid, tid, timestamp, uid }) {
 	await Promise.all([
 		db.sortedSetsAdd([
 			'topics:scheduled',
-			'topics:recent',
 			`uid:${uid}:topics`,
 			'topics:tid',
 			`cid:${cid}:uid:${uid}:tids`,
