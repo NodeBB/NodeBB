@@ -3,6 +3,7 @@
 module.exports = function (utils, Benchpress, relative_path) {
 	Benchpress.setGlobal('true', true);
 	Benchpress.setGlobal('false', false);
+	const oneDayInMs = 24 * 60 * 60 * 1000;
 
 	const helpers = {
 		displayMenuItem,
@@ -24,6 +25,8 @@ module.exports = function (utils, Benchpress, relative_path) {
 		userAgentIcons,
 		buildAvatar,
 		increment,
+		generateRepliedTo,
+		generateWrote,
 		register,
 		__escape: identity,
 	};
@@ -318,6 +321,20 @@ module.exports = function (utils, Benchpress, relative_path) {
 
 	function increment(value, inc) {
 		return value + parseInt(inc, 10);
+	}
+
+	function generateRepliedTo(post, timeagoCutoff) {
+		const username = post.parent && post.parent.username ?
+			post.parent.username : '[[global:guest]]';
+		const isBeforeCutoff = post.timestamp < (Date.now() - (timeagoCutoff * oneDayInMs));
+		const langSuffix = isBeforeCutoff ? 'on' : 'ago';
+		return `[[topic:replied-to-user-${langSuffix}, ${post.pid}, ${relative_path}/post/${post.pid}, ${username}, ${post.timestampISO}]]`;
+	}
+
+	function generateWrote(post, timeagoCutoff) {
+		const isBeforeCutoff = post.timestamp < (Date.now() - (timeagoCutoff * oneDayInMs));
+		const langSuffix = isBeforeCutoff ? 'on' : 'ago';
+		return `[[topic:wrote-${langSuffix}, ${post.timestampISO}]]`;
 	}
 
 	function register() {
