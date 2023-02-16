@@ -355,7 +355,7 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts', 'trans
 			return;
 		}
 
-		index = Math.max(index, ajaxify.data.bookmark);
+		index = Math.max(index, Math.min(ajaxify.data.bookmark, ajaxify.data.postcount));
 		const unreadEl = paginationBlockUnreadEl.get(0);
 		const trackEl = unreadEl.parentNode;
 		const trackHeight = trackEl.getBoundingClientRect().height;
