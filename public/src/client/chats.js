@@ -554,8 +554,8 @@ define('forum/chats', [
 			}
 			messages.updateTextAreaHeight($(`[component="chat/messages"][data-roomid="${ajaxify.data.roomId}"]`));
 		}
-		$('.chats-list li').removeClass('active');
-		$('.chats-list li[data-roomid="' + ajaxify.data.roomId + '"]').addClass('active');
+		$('.chats-list [data-roomid]').removeClass('active');
+		$('.chats-list [data-roomid="' + ajaxify.data.roomId + '"]').addClass('active');
 
 		components.get('chat/nav-wrapper').attr('data-loaded', ajaxify.data.roomId ? '1' : '0');
 	};
