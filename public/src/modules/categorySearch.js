@@ -87,7 +87,7 @@ define('categorySearch', ['alerts', 'bootstrap'], function (alerts, bootstrap) {
 
 		function renderList(categories) {
 			const selectedCids = options.selectedCids.map(String);
-			categoriesList.forEach(function (c) {
+			categories.forEach(function (c) {
 				c.selected = selectedCids.includes(String(c.cid));
 			});
 			app.parseAndTranslate(options.template, {
