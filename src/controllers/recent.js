@@ -25,7 +25,7 @@ recentController.get = async function (req, res, next) {
 recentController.getData = async function (req, url, sort) {
 	const page = parseInt(req.query.page, 10) || 1;
 	let term = helpers.terms[req.query.term];
-	const { cid, tags } = req.query;
+	const { cid, tag } = req.query;
 	const filter = req.query.filter || '';
 
 	if (!term && req.query.term) {
@@ -33,9 +33,10 @@ recentController.getData = async function (req, url, sort) {
 	}
 	term = term || 'alltime';
 
-	const [settings, categoryData, rssToken, canPost, isPrivileged] = await Promise.all([
+	const [settings, categoryData, tagData, rssToken, canPost, isPrivileged] = await Promise.all([
 		user.getSettings(req.uid),
 		helpers.getSelectedCategory(cid),
+		helpers.getSelectedTag(tag),
 		user.auth.getFeedToken(req.uid),
 		privileges.categories.canPostTopic(req.uid),
 		user.isPrivileged(req.uid),
@@ -46,7 +47,7 @@ recentController.getData = async function (req, url, sort) {
 
 	const data = await topics.getSortedTopics({
 		cids: cid,
-		tags: tags,
+		tags: tag,
 		uid: req.uid,
 		start: start,
 		stop: stop,
@@ -73,6 +74,8 @@ recentController.getData = async function (req, url, sort) {
 	data.allCategoriesUrl = baseUrl + helpers.buildQueryString(req.query, 'cid', '');
 	data.selectedCategory = categoryData.selectedCategory;
 	data.selectedCids = categoryData.selectedCids;
+	data.selectedTag = tagData.selectedTag;
+	data.selectedTags = tagData.selectedTags;
 	data['feeds:disableRSS'] = meta.config['feeds:disableRSS'] || 0;
 	data.rssFeedUrl = `${relative_path}/${url}.rss`;
 	if (req.loggedIn) {

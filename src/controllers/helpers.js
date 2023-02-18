@@ -10,6 +10,7 @@ const translator = require('../translator');
 const user = require('../user');
 const privileges = require('../privileges');
 const categories = require('../categories');
+const topics = require('../topics');
 const plugins = require('../plugins');
 const meta = require('../meta');
 const middlewareHelpers = require('../middleware/helpers');
@@ -353,6 +354,24 @@ helpers.getSelectedCategory = async function (cids) {
 	return {
 		selectedCids: selectedCids,
 		selectedCategory: selectedCategories,
+	};
+};
+
+helpers.getSelectedTag = function (tags) {
+	if (tags && !Array.isArray(tags)) {
+		tags = [tags];
+	}
+	tags = tags || [];
+	const tagData = tags.map(t => validator.escape(String(t)));
+	let selectedTag = null;
+	if (tagData.length) {
+		selectedTag = {
+			label: tagData.join(', '),
+		};
+	}
+	return {
+		selectedTags: tagData,
+		selectedTag: selectedTag,
 	};
 };
 

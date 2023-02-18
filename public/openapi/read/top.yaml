@@ -59,6 +59,16 @@ get:
                     type: array
                     items:
                       type: number
+                  selectedTag:
+                    type: object
+                    properties:
+                      label:
+                        type: string
+                    nullable: true
+                  selectedTags:
+                    type: array
+                    items:
+                      type: string
                   feeds:disableRSS:
                     type: number
                   rssFeedUrl:

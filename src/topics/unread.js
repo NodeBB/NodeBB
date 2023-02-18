@@ -66,6 +66,10 @@ module.exports = function (Topics) {
 			params.cid = [params.cid];
 		}
 
+		if (params.tag && !Array.isArray(params.tag)) {
+			params.tag = [params.tag];
+		}
+
 		const data = await getTids(params);
 		if (uid <= 0) {
 			return data;
@@ -135,7 +139,7 @@ module.exports = function (Topics) {
 		});
 
 		tids = await privileges.topics.filterTids('topics:read', tids, params.uid);
-		const topicData = (await Topics.getTopicsFields(tids, ['tid', 'cid', 'uid', 'postcount', 'deleted', 'scheduled']))
+		const topicData = (await Topics.getTopicsFields(tids, ['tid', 'cid', 'uid', 'postcount', 'deleted', 'scheduled', 'tags']))
 			.filter(t => t.scheduled || !t.deleted);
 		const topicCids = _.uniq(topicData.map(topic => topic.cid)).filter(Boolean);
 
@@ -143,9 +147,13 @@ module.exports = function (Topics) {
 		const userCidState = _.zipObject(topicCids, categoryWatchState);
 
 		const filterCids = params.cid && params.cid.map(cid => parseInt(cid, 10));
+		const filterTags = params.tag && params.tag.map(tag => String(tag));
 
 		topicData.forEach((topic) => {
-			if (topic && topic.cid && (!filterCids || filterCids.includes(topic.cid)) && !blockedUids.includes(topic.uid)) {
+			if (topic && topic.cid &&
+				(!filterCids || filterCids.includes(topic.cid)) &&
+				(!filterTags || filterTags.every(tag => topic.tags.find(topicTag => topicTag.value === tag))) &&
+				!blockedUids.includes(topic.uid)) {
 				if (isTopicsFollowed[topic.tid] || userCidState[topic.cid] === categories.watchStates.watching) {
 					tidsByFilter[''].push(topic.tid);
 				}

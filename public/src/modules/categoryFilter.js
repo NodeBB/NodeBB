@@ -49,6 +49,10 @@ define('categoryFilter', ['categorySearch', 'api', 'hooks'], function (categoryS
 				const currentParams = utils.params();
 				if (selectedCids.length) {
 					currentParams.cid = selectedCids;
+				} else {
+					delete currentParams.cid;
+				}
+				if (Object.keys(currentParams).length) {
 					url += '?' + decodeURIComponent($.param(currentParams));
 				}
 				ajaxify.go(url);

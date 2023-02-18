@@ -5,9 +5,10 @@ define('topicList', [
 	'handleBack',
 	'topicSelect',
 	'categoryFilter',
+	'tagFilter',
 	'forum/category/tools',
 	'hooks',
-], function (infinitescroll, handleBack, topicSelect, categoryFilter, categoryTools, hooks) {
+], function (infinitescroll, handleBack, topicSelect, categoryFilter, tagFilter, categoryTools, hooks) {
 	const TopicList = {};
 	let templateName = '';
 
@@ -43,6 +44,8 @@ define('topicList', [
 		categoryFilter.init($('[component="category/dropdown"]'), {
 			states: states,
 		});
+
+		tagFilter.init($('[component="tag/filter"]'));
 
 		if (!config.usePagination) {
 			infinitescroll.init(TopicList.loadMoreTopics);

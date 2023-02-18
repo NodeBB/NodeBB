@@ -15,11 +15,12 @@ const unreadController = module.exports;
 const relative_path = nconf.get('relative_path');
 
 unreadController.get = async function (req, res) {
-	const { cid } = req.query;
+	const { cid, tag } = req.query;
 	const filter = req.query.filter || '';
 
-	const [categoryData, userSettings, canPost, isPrivileged] = await Promise.all([
+	const [categoryData, tagData, userSettings, canPost, isPrivileged] = await Promise.all([
 		helpers.getSelectedCategory(cid),
+		helpers.getSelectedTag(tag),
 		user.getSettings(req.uid),
 		privileges.categories.canPostTopic(req.uid),
 		user.isPrivileged(req.uid),
@@ -30,6 +31,7 @@ unreadController.get = async function (req, res) {
 	const stop = start + userSettings.topicsPerPage - 1;
 	const data = await topics.getUnreadTopics({
 		cid: cid,
+		tag: tag,
 		uid: req.uid,
 		start: start,
 		stop: stop,
@@ -64,6 +66,8 @@ unreadController.get = async function (req, res) {
 	data.selectCategoryLabel = '[[unread:mark_as_read]]';
 	data.selectCategoryIcon = 'fa-inbox';
 	data.showCategorySelectLabel = true;
+	data.selectedTag = tagData.selectedTag;
+	data.selectedTags = tagData.selectedTags;
 	data.filters = helpers.buildFilters(baseUrl, filter, req.query);
 	data.selectedFilter = data.filters.find(filter => filter && filter.selected);
 
