@@ -77,6 +77,7 @@ define('forum/account/edit/password', [
 							ajaxify.go('user/' + ajaxify.data.userslug + '/edit');
 						}
 					})
+					.catch(alerts.error)
 					.finally(() => {
 						btn.removeClass('disabled').find('i').addClass('hide');
 						currentPassword.val('');
