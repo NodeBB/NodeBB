@@ -10,6 +10,7 @@ const meta = require('../meta');
 const controllers = require('../controllers');
 const helpers = require('../controllers/helpers');
 const plugins = require('../plugins');
+const { generateToken } = require('../middleware/csrf');
 
 let loginStrategies = [];
 
@@ -94,7 +95,7 @@ Auth.reloadRoutes = async function (params) {
 				};
 
 				if (strategy.checkState !== false) {
-					req.session.ssoState = req.csrfToken && req.csrfToken();
+					req.session.ssoState = generateToken(req, true);
 					opts.state = req.session.ssoState;
 				}
 
@@ -157,7 +158,7 @@ Auth.reloadRoutes = async function (params) {
 
 	router.post('/register', middlewares, controllers.authentication.register);
 	router.post('/register/complete', middlewares, controllers.authentication.registerComplete);
-	router.post('/register/abort', Auth.middleware.applyCSRF, controllers.authentication.registerAbort);
+	router.post('/register/abort', middlewares, controllers.authentication.registerAbort);
 	router.post('/login', Auth.middleware.applyCSRF, Auth.middleware.applyBlacklist, controllers.authentication.login);
 	router.post('/logout', Auth.middleware.applyCSRF, controllers.authentication.logout);
 };

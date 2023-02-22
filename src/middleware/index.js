@@ -2,11 +2,11 @@
 
 const async = require('async');
 const path = require('path');
-const csrf = require('csurf');
 const validator = require('validator');
 const nconf = require('nconf');
 const toobusy = require('toobusy-js');
 const util = require('util');
+const { csrfSynchronisedProtection } = require('./csrf');
 
 const plugins = require('../plugins');
 const meta = require('../meta');
@@ -35,7 +35,7 @@ middleware.regexes = {
 	timestampedUpload: /^\d+-.+$/,
 };
 
-const csrfMiddleware = csrf();
+const csrfMiddleware = csrfSynchronisedProtection;
 
 middleware.applyCSRF = function (req, res, next) {
 	if (req.uid >= 0) {
