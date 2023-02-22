@@ -11,8 +11,6 @@ const {
 			return req.headers['x-csrf-token'];
 		} else if (req.body.csrf_token) {
 			return req.body.csrf_token;
-		} else if (req.query) {
-			return req.query._csrf;
 		}
 	},
 	size: 64,
