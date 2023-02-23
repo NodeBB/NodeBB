@@ -1885,10 +1885,13 @@ describe('Controllers', () => {
 			assert.strictEqual(res.body, '/register/complete');
 
 			await requestAsync({
-				uri: `${nconf.get('url')}/register/abort?_csrf=${csrf_token}`,
+				uri: `${nconf.get('url')}/register/abort`,
 				method: 'post',
 				jar,
 				simple: false,
+				headers: {
+					'x-csrf-token': csrf_token,
+				},
 			});
 		});
 
