@@ -1212,10 +1212,13 @@ describe('User', () => {
 
 			// Accessing this page will mark the user's account as needing an updated email, below code undo's.
 			await requestAsync({
-				uri: `${nconf.get('url')}/register/abort?_csrf=${csrf_token}`,
+				uri: `${nconf.get('url')}/register/abort`,
 				jar,
 				method: 'POST',
 				simple: false,
+				headers: {
+					'x-csrf-token': csrf_token,
+				},
 			});
 		});
 
