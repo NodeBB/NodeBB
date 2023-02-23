@@ -10,7 +10,6 @@ const translator = require('../translator');
 const user = require('../user');
 const privileges = require('../privileges');
 const categories = require('../categories');
-const topics = require('../topics');
 const plugins = require('../plugins');
 const meta = require('../meta');
 const middlewareHelpers = require('../middleware/helpers');
