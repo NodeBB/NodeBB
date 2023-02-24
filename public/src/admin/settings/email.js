@@ -9,14 +9,22 @@ define('admin/settings/email', ['ace/ace', 'alerts', 'admin/settings'], function
 		configureEmailTester();
 		configureEmailEditor();
 		handleDigestHourChange();
-		handleSmtpServiceChange();
 
-		$(window).on('action:admin.settingsLoaded action:admin.settingsSaved', handleDigestHourChange);
-		$(window).on('action:admin.settingsSaved', function () {
-			socket.emit('admin.user.restartJobs');
-		});
-		$('[id="email:smtpTransport:service"]').change(handleSmtpServiceChange);
+		$(window).off('action:admin.settingsLoaded', onSettingsLoaded)
+			.on('action:admin.settingsLoaded', onSettingsLoaded);
+		$(window).off('action:admin.settingsSaved', onSettingsSaved)
+			.on('action:admin.settingsSaved', onSettingsSaved);
 	};
+
+	function onSettingsLoaded() {
+		handleDigestHourChange();
+		handleSmtpServiceChange();
+	}
+
+	function onSettingsSaved() {
+		handleDigestHourChange();
+		socket.emit('admin.user.restartJobs');
+	}
 
 	function configureEmailTester() {
 		$('button[data-action="email.test"]').off('click').on('click', function () {
@@ -106,20 +114,26 @@ define('admin/settings/email', ['ace/ace', 'alerts', 'admin/settings'], function
 	}
 
 	function handleSmtpServiceChange() {
-		const isCustom = $('[id="email:smtpTransport:service"]').val() === 'nodebb-custom-smtp';
-		$('[id="email:smtpTransport:custom-service"]')[isCustom ? 'slideDown' : 'slideUp'](isCustom);
-
-		const enabledEl = document.getElementById('email:smtpTransport:enabled');
-		if (enabledEl) {
-			if (!enabledEl.checked) {
-				enabledEl.closest('label').classList.toggle('is-checked', true);
-				enabledEl.checked = true;
-				alerts.alert({
-					message: '[[admin/settings/email:smtp-transport.auto-enable-toast]]',
-					timeout: 5000,
-				});
-			}
+		function toggleCustomService() {
+			const isCustom = $('[id="email:smtpTransport:service"]').val() === 'nodebb-custom-smtp';
+			$('[id="email:smtpTransport:custom-service"]')[isCustom ? 'slideDown' : 'slideUp'](isCustom);
 		}
+		toggleCustomService();
+		$('[id="email:smtpTransport:service"]').change(function () {
+			toggleCustomService();
+
+			const enabledEl = document.getElementById('email:smtpTransport:enabled');
+			if (enabledEl) {
+				if (!enabledEl.checked) {
+					$('label[for="email:smtpTransport:enabled"]').toggleClass('is-checked', true);
+					enabledEl.checked = true;
+					alerts.alert({
+						message: '[[admin/settings/email:smtp-transport.auto-enable-toast]]',
+						timeout: 5000,
+					});
+				}
+			}
+		});
 	}
 
 	return module;
