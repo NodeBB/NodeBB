@@ -249,6 +249,10 @@ async function addTags(topicData, req, res) {
 			rel: 'canonical',
 			href: `${url}/topic/${topicData.slug}`,
 		},
+		{
+			rel: 'author',
+			href: `${url}/user/${postAtIndex.user.userslug}`,
+		},
 	];
 
 	if (!topicData['feeds:disableRSS']) {
