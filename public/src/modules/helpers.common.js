@@ -309,7 +309,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 
 		if (userObj.picture) {
 			attributes.set('component', component || 'avatar/picture');
-			output += '<img ' + attr2String(attributes) + ' src="' + userObj.picture + '" style="' + styles.join(' ') + '" onError="this.remove();" />';
+			output += '<img ' + attr2String(attributes) + ' src="' + userObj.picture + '" style="' + styles.join(' ') + '" onError="this.remove();" itemprop="image" />';
 		}
 
 		attributes.set('component', component || 'avatar/icon');
