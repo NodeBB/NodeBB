@@ -133,7 +133,7 @@
 					[[admin/settings/email:smtp-transport.gmail-warning2]]
 				</p>
 			</div>
-			<div class="mb-3 card card-body text-bg-light border-0" id="email:smtpTransport:custom-service" style="">
+			<div class="mb-3 card card-body text-bg-light border-0" id="email:smtpTransport:custom-service">
 				<h5>Custom Service</h5>
 				<div class="mb-3">
 					<label class="form-label" for="email:smtpTransport:host">[[admin/settings/email:smtp-transport.host]]</label>
