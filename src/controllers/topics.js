@@ -249,10 +249,6 @@ async function addTags(topicData, req, res) {
 			rel: 'canonical',
 			href: `${url}/topic/${topicData.slug}`,
 		},
-		{
-			rel: 'author',
-			href: `${url}/user/${postAtIndex.user.userslug}`,
-		},
 	];
 
 	if (!topicData['feeds:disableRSS']) {
@@ -267,6 +263,13 @@ async function addTags(topicData, req, res) {
 		res.locals.linkTags.push({
 			rel: 'up',
 			href: `${url}/category/${topicData.category.slug}`,
+		});
+	}
+
+	if (postAtIndex) {
+		res.locals.linkTags.push({
+			rel: 'author',
+			href: `${url}/user/${postAtIndex.user.userslug}`,
 		});
 	}
 }
