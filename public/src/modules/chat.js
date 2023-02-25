@@ -337,7 +337,7 @@ define('chat', [
 					dragDropAreaEl: chatModal.find('.modal-content'),
 					pasteEl: chatModal,
 					uploadFormEl: chatModal.find('[component="chat/upload"]'),
-					uploadBtnEl: $('[component="chat/upload/button"]'),
+					uploadBtnEl: chatModal.find('[component="chat/upload/button"]'),
 					inputEl: chatModal.find('[component="chat/input"]'),
 				});
 
