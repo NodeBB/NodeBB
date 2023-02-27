@@ -1,6 +1,7 @@
 'use strict';
 
 module.exports = {
+	admin: require('./admin'),
 	users: require('./users'),
 	groups: require('./groups'),
 	topics: require('./topics'),
