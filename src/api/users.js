@@ -443,6 +443,10 @@ usersAPI.changePicture = async (caller, data) => {
 };
 
 usersAPI.generateExport = async (caller, { uid, type }) => {
+	const validTypes = ['profile', 'posts', 'uploads'];
+	if (!validTypes.includes(type)) {
+		throw new Error('[[error:invalid-data]]');
+	}
 	const count = await db.incrObjectField('locks', `export:${uid}${type}`);
 	if (count > 1) {
 		throw new Error('[[error:already-exporting]]');

@@ -74,6 +74,6 @@ module.exports = function (SocketUser) {
 
 		await user.isAdminOrSelf(socket.uid, data.uid);
 
-		api.users.generateExport(socket, { type, ...data });
+		api.users.generateExport(socket, { type, uid: data.uid });
 	}
 };
