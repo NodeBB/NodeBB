@@ -147,8 +147,6 @@ describe('Messaging Library', () => {
 
 			roomId = body.response.roomId;
 			assert(roomId);
-
-			await util.promisify(socketModules.chats.canMessage)({ uid: mocks.users.foo.uid }, roomId);
 		});
 
 		it('should send a user-join system message when a chat room is created', async () => {

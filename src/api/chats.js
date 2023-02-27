@@ -7,8 +7,8 @@ const meta = require('../meta');
 const messaging = require('../messaging');
 const notifications = require('../notifications');
 const plugins = require('../plugins');
+const privileges = require('../privileges');
 
-// const websockets = require('../socket.io');
 const socketHelpers = require('../socket.io/helpers');
 
 const chatsAPI = module.exports;
@@ -28,7 +28,9 @@ chatsAPI.create = async function (caller, data) {
 	if (rateLimitExceeded(caller)) {
 		throw new Error('[[error:too-many-messages]]');
 	}
-
+	if (!data) {
+		throw new Error('[[error:invalid-data]]');
+	}
 	if (!data.uids || !Array.isArray(data.uids)) {
 		throw new Error(`[[error:wrong-parameter-type, uids, ${typeof data.uids}, Array]]`);
 	}
@@ -42,6 +44,9 @@ chatsAPI.create = async function (caller, data) {
 chatsAPI.post = async (caller, data) => {
 	if (rateLimitExceeded(caller)) {
 		throw new Error('[[error:too-many-messages]]');
+	}
+	if (!data || !data.roomId || !caller.uid) {
+		throw new Error('[[error:invalid-data]]');
 	}
 
 	({ data } = await plugins.hooks.fire('filter:messaging.send', {
@@ -64,6 +69,9 @@ chatsAPI.post = async (caller, data) => {
 };
 
 chatsAPI.rename = async (caller, data) => {
+	if (!data || !data.roomId || !data.name) {
+		throw new Error('[[error:invalid-data]]');
+	}
 	await messaging.renameRoom(caller.uid, data.roomId, data.name);
 	const uids = await messaging.getUidsInRoom(data.roomId, 0, -1);
 	const eventData = { roomId: data.roomId, newName: validator.escape(String(data.name)) };
@@ -75,6 +83,9 @@ chatsAPI.rename = async (caller, data) => {
 };
 
 chatsAPI.mark = async (caller, data) => {
+	if (!caller.uid || !data || !data.roomId) {
+		throw new Error('[[error:invalid-data]]');
+	}
 	const { roomId, state } = data;
 	if (state) {
 		await messaging.markUnread([caller.uid], roomId);
@@ -102,10 +113,14 @@ chatsAPI.mark = async (caller, data) => {
 };
 
 chatsAPI.users = async (caller, data) => {
-	const [isOwner, users] = await Promise.all([
+	const [isOwner, isUserInRoom, users] = await Promise.all([
 		messaging.isRoomOwner(caller.uid, data.roomId),
+		messaging.isUserInRoom(caller.uid, data.roomId),
 		messaging.getUsersInRoom(data.roomId, 0, -1),
 	]);
+	if (!isUserInRoom) {
+		throw new Error('[[error:no-privileges]]');
+	}
 	users.forEach((user) => {
 		user.canKick = (parseInt(user.uid, 10) !== parseInt(caller.uid, 10)) && isOwner;
 	});
@@ -113,6 +128,14 @@ chatsAPI.users = async (caller, data) => {
 };
 
 chatsAPI.invite = async (caller, data) => {
+	const canChat = await privileges.global.can('chat', caller.uid);
+	if (!canChat) {
+		throw new Error('[[error:no-privileges]]');
+	}
+	if (!data || !data.roomId) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
 	const userCount = await messaging.getUserCountInRoom(data.roomId);
 	const maxUsers = meta.config.maximumUsersInChatRoom;
 	if (maxUsers && userCount >= maxUsers) {
@@ -131,6 +154,9 @@ chatsAPI.invite = async (caller, data) => {
 };
 
 chatsAPI.kick = async (caller, data) => {
+	if (!data || !data.roomId) {
+		throw new Error('[[error:invalid-data]]');
+	}
 	const uidsExist = await user.exists(data.uids);
 	if (!uidsExist.every(Boolean)) {
 		throw new Error('[[error:no-user]]');
