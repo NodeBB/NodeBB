@@ -237,13 +237,17 @@ define('forum/topic', [
 			return;
 		}
 		let timeoutId = 0;
+		let destroyed = false;
 		const postCache = {};
-		$(window).one('action:ajaxify.start', function () {
+		function destroyTooltip() {
 			clearTimeout(timeoutId);
 			$('#post-tooltip').remove();
-		});
+			destroyed = true;
+		}
+		$(window).one('action:ajaxify.start', destroyTooltip);
 		$('[component="topic"]').on('mouseenter', '[component="post"] a, [component="topic/event"] a', async function () {
 			const link = $(this);
+			destroyed = false;
 
 			async function renderPost(pid) {
 				const postData = postCache[pid] || await socket.emit('posts.getPostSummaryByPid', { pid: pid });
@@ -251,6 +255,9 @@ define('forum/topic', [
 				if (postData && ajaxify.data.template.topic) {
 					postCache[pid] = postData;
 					const tooltip = await app.parseAndTranslate('partials/topic/post-preview', { post: postData });
+					if (destroyed) {
+						return;
+					}
 					tooltip.hide().find('.timeago').timeago();
 					tooltip.appendTo($('body')).fadeIn(300);
 					const postContent = link.parents('[component="topic"]').find('[component="post/content"]').first();
@@ -288,10 +295,7 @@ define('forum/topic', [
 					renderPost(topicData.mainPid);
 				}, 300);
 			}
-		}).on('mouseleave', '[component="post"] a, [component="topic/event"] a', function () {
-			clearTimeout(timeoutId);
-			$('#post-tooltip').remove();
-		});
+		}).on('mouseleave', '[component="post"] a, [component="topic/event"] a', destroyTooltip);
 	}
 
 	function setupQuickReply() {
