@@ -24,6 +24,14 @@ function rateLimitExceeded(caller) {
 	return false;
 }
 
+chatsAPI.list = async (caller, { page, perPage }) => {
+	const start = Math.max(0, page - 1) * perPage;
+	const stop = start + perPage;
+	const { rooms } = await messaging.getRecentChats(caller.uid, caller.uid, start, stop);
+
+	return { rooms };
+};
+
 chatsAPI.create = async function (caller, data) {
 	if (rateLimitExceeded(caller)) {
 		throw new Error('[[error:too-many-messages]]');
@@ -40,6 +48,8 @@ chatsAPI.create = async function (caller, data) {
 
 	return await messaging.getRoomData(roomId);
 };
+
+chatsAPI.get = async (caller, { uid, roomId }) => await messaging.loadRoom(caller.uid, { uid, roomId });
 
 chatsAPI.post = async (caller, data) => {
 	if (rateLimitExceeded(caller)) {
@@ -171,4 +181,36 @@ chatsAPI.kick = async (caller, data) => {
 
 	delete data.uids;
 	return chatsAPI.users(caller, data);
+};
+
+chatsAPI.listMessages = async (caller, { uid, roomId, start }) => {
+	const messages = await messaging.getMessages({
+		callerUid: caller.uid,
+		uid,
+		roomId,
+		start,
+		count: 50,
+	});
+
+	return { messages };
+};
+
+chatsAPI.getMessage = async (caller, { mid, roomId }) => {
+	const messages = await messaging.getMessagesData([mid], caller.uid, roomId, false);
+	return messages.pop();
+};
+
+chatsAPI.editMessage = async (caller, { mid, roomId, message }) => {
+	await messaging.canEdit(mid, caller.uid);
+	await messaging.editMessage(caller.uid, mid, roomId, message);
+};
+
+chatsAPI.deleteMessage = async (caller, { mid }) => {
+	await messaging.canDelete(mid, caller.uid);
+	await messaging.deleteMessage(mid, caller.uid);
+};
+
+chatsAPI.restoreMessage = async (caller, { mid }) => {
+	await messaging.canDelete(mid, caller.uid);
+	await messaging.restoreMessage(mid, caller.uid);
 };
