@@ -154,7 +154,7 @@ Auth.reloadRoutes = async function (params) {
 		}, Auth.middleware.validateAuth, (req, res, next) => {
 			async.waterfall([
 				async.apply(req.login.bind(req), res.locals.user, { keepSessionInfo: true }),
-				async.apply(controllers.authentication.onSuccessfulLogin, req, req.uid),
+				async.apply(controllers.authentication.onSuccessfulLogin, req, res.locals.user.uid),
 			], (err) => {
 				if (err) {
 					return next(err);

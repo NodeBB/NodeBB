@@ -132,11 +132,11 @@ modsController.flags.detail = async function (req, res, next) {
 			uids = _.uniq(admins.concat(uids));
 		} else if (flagData.type === 'post') {
 			const cid = await posts.getCidByPid(flagData.targetId);
-			if (!cid) {
-				return [];
+			uids = _.uniq(admins.concat(globalMods));
+			if (cid) {
+				const modUids = (await privileges.categories.getUidsWithPrivilege([cid], 'moderate'))[0];
+				uids = _.uniq(uids.concat(modUids));
 			}
-			uids = (await privileges.categories.getUidsWithPrivilege([cid], 'moderate'))[0];
-			uids = _.uniq(admins.concat(globalMods).concat(uids));
 		}
 		const userData = await user.getUsersData(uids);
 		return userData.filter(u => u && u.userslug);

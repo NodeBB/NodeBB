@@ -127,7 +127,7 @@ async function generateForCategory(req, res, next) {
 		db.getSortedSetRevIntersect({
 			sets: ['topics:tid', `cid:${cid}:tids:lastposttime`],
 			start: 0,
-			stop: 25,
+			stop: 24,
 			weights: [1, 0],
 		}),
 	]);

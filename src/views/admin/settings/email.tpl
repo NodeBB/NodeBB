@@ -150,7 +150,7 @@
 					[[admin/settings/email:smtp-transport.gmail-warning2]]
 				</p>
 			</div>
-			<div class="form-group well" id="email:smtpTransport:custom-service" style="display: none">
+			<div class="form-group well" id="email:smtpTransport:custom-service">
 				<h5>Custom Service</h5>
 
 				<label for="email:smtpTransport:host">[[admin/settings/email:smtp-transport.host]]</label>

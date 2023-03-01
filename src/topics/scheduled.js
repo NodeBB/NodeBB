@@ -60,6 +60,7 @@ Scheduled.pin = async function (tid, topicData) {
 };
 
 Scheduled.reschedule = async function ({ cid, tid, timestamp, uid }) {
+	const mainPid = await topics.getTopicField(tid, 'mainPid');
 	await Promise.all([
 		db.sortedSetsAdd([
 			'topics:scheduled',
@@ -67,6 +68,7 @@ Scheduled.reschedule = async function ({ cid, tid, timestamp, uid }) {
 			'topics:tid',
 			`cid:${cid}:uid:${uid}:tids`,
 		], timestamp, tid),
+		posts.setPostField(mainPid, 'timestamp', timestamp),
 		shiftPostTimes(tid, timestamp),
 	]);
 	return topics.updateLastPostTimeFromLastPid(tid);

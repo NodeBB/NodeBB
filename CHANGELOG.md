@@ -1,3 +1,54 @@
+#### v2.8.6 (2023-02-03)
+
+##### Chores
+
+* **i18n:**  fallback strings for new resources: nodebb.error (8335f90a)
+*  incrementing version number - v2.8.5 (bff5ce2d)
+*  update changelog for v2.8.5 (24e58c28)
+*  incrementing version number - v2.8.4 (a46b2bbc)
+*  incrementing version number - v2.8.3 (c20b20a7)
+*  incrementing version number - v2.8.2 (050e43f8)
+*  incrementing version number - v2.8.1 (727f879e)
+*  incrementing version number - v2.8.0 (8e77673d)
+*  incrementing version number - v2.7.0 (96cc0617)
+*  incrementing version number - v2.6.1 (7e52a7a5)
+*  incrementing version number - v2.6.0 (e7fcf482)
+*  incrementing version number - v2.5.8 (dec0e7de)
+*  incrementing version number - v2.5.7 (5836bf4a)
+*  incrementing version number - v2.5.6 (c7bd7dbf)
+*  incrementing version number - v2.5.5 (3509ed94)
+*  incrementing version number - v2.5.4 (e83260ca)
+*  incrementing version number - v2.5.3 (7e922936)
+*  incrementing version number - v2.5.2 (babcd17e)
+*  incrementing version number - v2.5.1 (ce3aa950)
+*  incrementing version number - v2.5.0 (01d276cb)
+*  incrementing version number - v2.4.5 (dd3e1a28)
+*  incrementing version number - v2.4.4 (d5525c87)
+*  incrementing version number - v2.4.3 (9c647c6c)
+*  incrementing version number - v2.4.2 (3aa7b855)
+*  incrementing version number - v2.4.1 (60cbd148)
+*  incrementing version number - v2.4.0 (4834cde3)
+*  incrementing version number - v2.3.1 (d2425942)
+*  incrementing version number - v2.3.0 (046ea120)
+
+##### New Features
+
+*  add sitemap filter hooks for categories/topic pages (bf92ee0e)
+*  closes #11241, add missing error lang keys (c241baf6)
+*  #11240, only show relevant users in flags assignee list (0713482b)
+
+##### Bug Fixes
+
+*  #11254, return check for reroll property (202378b9)
+*  closes #11249, notification uses displayname (705cd13a)
+*  wrong link to topics in acp dashboard (b5598a6e)
+*  https://github.com/NodeBB/NodeBB/issues/11239 (1d3c0e5a)
+*  notif filter selecte field (6d819b05)
+
+##### Other Changes
+
+*  remove unused (d68352cc)
+
 #### v2.8.5 (2023-01-27)
 
 ##### Chores
