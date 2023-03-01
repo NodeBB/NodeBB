@@ -15,7 +15,7 @@ define('forum/topic/replies', ['forum/topic/posts', 'hooks', 'alerts'], function
 			open.addClass('hidden');
 			loading.removeClass('hidden');
 
-			socket.emit('posts.getReplies', pid, function (err, data) {
+			socket.emit('posts.getReplies', pid, function (err, postData) {
 				loading.addClass('hidden');
 				if (err) {
 					open.removeClass('hidden');
@@ -23,10 +23,14 @@ define('forum/topic/replies', ['forum/topic/posts', 'hooks', 'alerts'], function
 				}
 
 				close.removeClass('hidden');
-
-				posts.modifyPostsByPrivileges(data);
+				postData.forEach((post, index) => {
+					if (post) {
+						post.index = index;
+					}
+				});
+				posts.modifyPostsByPrivileges(postData);
 				const tplData = {
-					posts: data,
+					posts: postData,
 					privileges: ajaxify.data.privileges,
 					'downvote:disabled': ajaxify.data['downvote:disabled'],
 					'reputation:disabled': ajaxify.data['reputation:disabled'],
@@ -43,7 +47,7 @@ define('forum/topic/replies', ['forum/topic/posts', 'hooks', 'alerts'], function
 
 					repliesEl.slideDown('fast');
 					await posts.onNewPostsAddedToDom(html);
-					hooks.fire('action:posts.loaded', { posts: data });
+					hooks.fire('action:posts.loaded', { posts: postData });
 				});
 			});
 		} else if (close.is(':not(.hidden)')) {
