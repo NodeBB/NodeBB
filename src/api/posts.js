@@ -333,3 +333,17 @@ postsAPI.restoreDiff = async (caller, data) => {
 	const edit = await posts.diffs.restore(data.pid, data.since, caller.uid, apiHelpers.buildReqObject(caller));
 	websockets.in(`topic_${edit.topic.tid}`).emit('event:post_edited', edit);
 };
+
+postsAPI.deleteDiff = async (caller, { pid, timestamp }) => {
+	const cid = await posts.getCidByPid(pid);
+	const [isAdmin, isModerator] = await Promise.all([
+		privileges.users.isAdministrator(caller.uid),
+		privileges.users.isModerator(caller.uid, cid),
+	]);
+
+	if (!(isAdmin || isModerator)) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	await posts.diffs.delete(pid, timestamp, caller.uid);
+};
