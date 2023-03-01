@@ -490,6 +490,10 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 			case '[[error:invalid-uid]]':
 				statusCode = 401;
 				break;
+
+			case '[[error:no-topic]]':
+				statusCode = 404;
+				break;
 		}
 
 		if (message.startsWith('[[error:required-parameters-missing, ')) {
