@@ -42,6 +42,7 @@ module.exports = function (middleware) {
 				}
 
 				options.loggedIn = req.uid > 0;
+				options.loggedInUser = await getLoggedInUser(req);
 				options.relative_path = relative_path;
 				options.template = { name: template, [template]: true };
 				options.url = (req.baseUrl + req.path.replace(/^\/api/, ''));
@@ -115,6 +116,19 @@ module.exports = function (middleware) {
 
 		next();
 	};
+
+	async function getLoggedInUser(req) {
+		if (req.user) {
+			return await user.getUserData(req.uid);
+		}
+		return {
+			uid: 0,
+			username: '[[global:guest]]',
+			picture: user.getDefaultAvatar(),
+			'icon:text': '?',
+			'icon:bgColor': '#aaa',
+		};
+	}
 
 	async function loadHeaderFooterData(req, res, options) {
 		if (res.locals.renderHeader) {
