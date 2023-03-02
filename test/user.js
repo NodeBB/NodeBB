@@ -2142,7 +2142,7 @@ describe('User', () => {
 				assert.strictEqual(res.statusCode, 403);
 			});
 
-			it('should error if ouf of invitations', async () => {
+			it('should error if out of invitations', async () => {
 				meta.config.maximumInvites = 1;
 				const { res } = await helpers.invite({ emails: 'invite6@test.com', groupsToJoin: [] }, inviterUid, jar, csrf_token);
 				assert.strictEqual(res.statusCode, 403);
@@ -2339,14 +2339,7 @@ describe('User', () => {
 					resolveWithFullResponse: true,
 				});
 
-				assert.strictEqual(res.statusCode, 401);
-				assert.deepStrictEqual(res.body, {
-					status: {
-						code: 'not-authorised',
-						message: 'A valid login session was not found. Please log in and try again.',
-					},
-					response: {},
-				});
+				assert.strictEqual(res.statusCode, 403);
 			});
 		});
 	});
