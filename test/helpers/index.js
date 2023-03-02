@@ -199,6 +199,7 @@ helpers.copyFile = function (source, target, callback) {
 };
 
 helpers.invite = async function (body, uid, jar, csrf_token) {
+	console.log('making call');
 	const res = await requestAsync.post(`${nconf.get('url')}/api/v3/users/${uid}/invites`, {
 		jar: jar,
 		// using "form" since client "api" module make requests with "application/x-www-form-urlencoded" content-type
@@ -209,6 +210,7 @@ helpers.invite = async function (body, uid, jar, csrf_token) {
 		simple: false,
 		resolveWithFullResponse: true,
 	});
+	console.log(res.statusCode, res.body);
 
 	res.body = JSON.parse(res.body);
 	return { res, body };
