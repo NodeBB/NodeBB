@@ -1,8 +1,8 @@
 {
-	"you-are-on": "You are on <strong>%1:%2</strong>",
-	"ip": "IP <strong>%1</strong>",
-	"nodes-responded": "%1 nodes responded within %2ms!",
-	"host": "host",
+	"you-are-on": "أنت في <strong> %1:%2 </strong>",
+	"ip": "رقم الآي بي <strong> %1 </strong>",
+	"nodes-responded": "عدد %1 نقطة/نقاط استجابوا خلال %2 جزء من الثانية.",
+	"host": "المضيف",
 	"primary": "primary / run jobs",
 	"pid": "pid",
 	"nodejs": "nodejs",
