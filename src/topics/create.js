@@ -82,9 +82,8 @@ module.exports = function (Topics) {
 
 		data.title = String(data.title).trim();
 		data.tags = data.tags || [];
-		if (data.content) {
-			data.content = utils.rtrim(data.content);
-		}
+		data.content = String(data.content || '').trimEnd();
+
 		Topics.checkTitle(data.title);
 		await Topics.validateTags(data.tags, data.cid, uid);
 		data.tags = await Topics.filterTags(data.tags, data.cid);
@@ -167,9 +166,8 @@ module.exports = function (Topics) {
 		data.cid = topicData.cid;
 
 		await guestHandleValid(data);
-		if (data.content) {
-			data.content = utils.rtrim(data.content);
-		}
+		data.content = String(data.content || '').trimEnd();
+
 		if (!data.fromQueue) {
 			await user.isReadyToPost(uid, data.cid);
 			Topics.checkContent(data.content);
