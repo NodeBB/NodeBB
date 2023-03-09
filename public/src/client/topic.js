@@ -88,7 +88,11 @@ define('forum/topic', [
 				});
 			}
 
-			mousetrap.bind('j', () => {
+			mousetrap.bind('j', (e) => {
+				if (e.target.classList.contains('mousetrap')) {
+					return;
+				}
+
 				const index = navigator.getIndex();
 				const count = navigator.getCount();
 				if (index === count) {
@@ -98,7 +102,11 @@ define('forum/topic', [
 				navigator.scrollToIndex(index, true, 0);
 			});
 
-			mousetrap.bind('k', () => {
+			mousetrap.bind('k', (e) => {
+				if (e.target.classList.contains('mousetrap')) {
+					return;
+				}
+
 				const index = navigator.getIndex();
 				if (index === 1) {
 					return;

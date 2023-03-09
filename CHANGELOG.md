@@ -1,3 +1,56 @@
+#### v2.8.7 (2023-03-01)
+
+##### Chores
+
+*  incrementing version number - v2.8.6 (af6ce447)
+*  update changelog for v2.8.6 (f3306d03)
+*  incrementing version number - v2.8.5 (bff5ce2d)
+*  incrementing version number - v2.8.4 (a46b2bbc)
+*  incrementing version number - v2.8.3 (c20b20a7)
+*  incrementing version number - v2.8.2 (050e43f8)
+*  incrementing version number - v2.8.1 (727f879e)
+*  incrementing version number - v2.8.0 (8e77673d)
+*  incrementing version number - v2.7.0 (96cc0617)
+*  incrementing version number - v2.6.1 (7e52a7a5)
+*  incrementing version number - v2.6.0 (e7fcf482)
+*  incrementing version number - v2.5.8 (dec0e7de)
+*  incrementing version number - v2.5.7 (5836bf4a)
+*  incrementing version number - v2.5.6 (c7bd7dbf)
+*  incrementing version number - v2.5.5 (3509ed94)
+*  incrementing version number - v2.5.4 (e83260ca)
+*  incrementing version number - v2.5.3 (7e922936)
+*  incrementing version number - v2.5.2 (babcd17e)
+*  incrementing version number - v2.5.1 (ce3aa950)
+*  incrementing version number - v2.5.0 (01d276cb)
+*  incrementing version number - v2.4.5 (dd3e1a28)
+*  incrementing version number - v2.4.4 (d5525c87)
+*  incrementing version number - v2.4.3 (9c647c6c)
+*  incrementing version number - v2.4.2 (3aa7b855)
+*  incrementing version number - v2.4.1 (60cbd148)
+*  incrementing version number - v2.4.0 (4834cde3)
+*  incrementing version number - v2.3.1 (d2425942)
+*  incrementing version number - v2.3.0 (046ea120)
+
+##### Documentation Changes
+
+*  update openapi spec to include info about passing in timestamps for topic creation, removing timestamp as valid request param for topic replying (40e7b86d)
+
+##### Bug Fixes
+
+*  display 25 topics on category feed (79155109)
+*  object destructuring overwriting type parameter (ec58700f)
+*  alert on page load (8cf4a6f6)
+*  show error alert if password change fails (3bd9a871)
+*  update main post timestamp when rescheduling (edd2fc38)
+*  show admins/globalmods if content is purged (326b9268)
+*  email expiry timestamps (e335d0f6)
+*  #11259, clean old emails when updating via admin (#11260) (845c8013)
+*  #11257, onSuccessfulLogin called with improper uid (7a5bcc21)
+
+##### Tests
+
+*  add dummy emailer hook in authentication test (1b29dbb6)
+
 #### v2.8.6 (2023-02-03)
 
 ##### Chores

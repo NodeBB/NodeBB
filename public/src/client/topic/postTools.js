@@ -41,7 +41,7 @@ define('forum/topic/postTools', [
 			const pid = postEl.attr('data-pid');
 			const index = parseInt(postEl.attr('data-index'), 10);
 
-			socket.emit('posts.loadPostTools', { pid: pid, cid: ajaxify.data.cid }, async (err, data) => {
+			socket.emit('posts.loadPostTools', { pid: pid }, async (err, data) => {
 				if (err) {
 					return alerts.error(err);
 				}
