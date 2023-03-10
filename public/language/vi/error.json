@@ -158,7 +158,7 @@
     "chat-restored-already": "Tin nhắn trò chuyện này đã được khôi phục.",
     "chat-room-does-not-exist": "Phòng trò chuyện không tồn tại.",
     "cant-add-users-to-chat-room": "Can't add users to chat room.",
-    "cant-remove-users-from-chat-room": "Can't remove users from chat room.",
+    "cant-remove-users-from-chat-room": "Không thể xóa người dùng khỏi phòng trò chuyện.",
     "chat-room-name-too-long": "Chat room name too long.",
     "already-voting-for-this-post": "Bạn đã bỏ phiếu cho bài viết này",
     "reputation-system-disabled": "Hệ thống đánh giá uy tính đã bị vô hiệu hóa.",

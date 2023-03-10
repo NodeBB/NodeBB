@@ -18,7 +18,7 @@
     "delete_account": "Xóa Tài Khoản",
     "delete_account_as_admin": "Xóa <strong>Tài Khoản</strong>",
     "delete_content": "Xóa <strong>Nội Dung</strong> Tài Khoản",
-    "delete_all": "Xóa<strong>Tài Khoản</strong> và <strong>Nội Dung</strong>",
+    "delete_all": "Xóa <strong>Tài Khoản</strong> và <strong>Nội Dung</strong>",
     "delete_account_confirm": "Bạn có chắc chắn muốn ẩn danh bài đăng và xóa tài khoản của mình không?<br /><strong>Không thể hoàn tác hành động này và bạn sẽ không thể khôi phục dữ liệu của mình</strong><br /><br />Nhập mật khẩu của bạn để xác nhận rằng bạn muốn hủy tài khoản này.",
     "delete_this_account_confirm": "Bạn có chắc muốn xóa tài khoản này trong khi vẫn để lại nội dung của nó?<br /><strong>Hành động này không thể hoàn tác, các bài viết sẽ được ẩn danh và bạn không thể khôi phục các liên kết bài viết với tài khoản đã xóa</strong><br /><br />",
     "delete_account_content_confirm": "Bạn có chắc chắn muốn xóa nội dung của tài khoản này không (bài viết/chủ đề/tải lên)? <br /><strong>Không thể hoàn tác hành động này và bạn sẽ không thể khôi phục bất kỳ dữ liệu nào</strong><br /><br />",
