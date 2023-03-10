@@ -996,6 +996,11 @@ describe('Sorted Set methods', () => {
 				done();
 			});
 		});
+
+		it('should return empty array if sets is empty', async () => {
+			const result = await db.getSortedSetRevUnion({ sets: [], start: 0, stop: -1 });
+			assert.deepStrictEqual(result, []);
+		});
 	});
 
 	describe('sortedSetIncrBy()', () => {

@@ -287,7 +287,7 @@ module.exports = function (Topics) {
 	}
 
 	Topics.getTagData = async function (tags) {
-		if (!tags.length) {
+		if (!tags || !tags.length) {
 			return [];
 		}
 		tags.forEach((tag) => {
