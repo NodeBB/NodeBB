@@ -1056,7 +1056,7 @@ describe('Post\'s', () => {
 
 		it('should not crash if id does not exist', (done) => {
 			socketPosts.reject({ uid: globalModUid }, { id: '123123123' }, (err) => {
-				assert.equal(err.message, '[[error:no-privileges]]');
+				assert.equal(err.message, '[[error:no-post]]');
 				done();
 			});
 		});
