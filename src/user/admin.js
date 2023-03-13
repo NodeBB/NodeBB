@@ -70,12 +70,11 @@ module.exports = function (User) {
 
 			let line = '';
 			usersData.forEach((user, index) => {
-				line += `${fields.map(field => {
-					if ( /^\d+$/.test(user[field])) {
-						return `'${user[field]}'`;
-					}
-					return user[field]
-				}).join(',')}`;
+				line += `${fields
+					.map((field) =>
+						isFinite(user[field]) ? `'${user[field]}'` : user[field]
+					)
+					.join(",")}`;
 				if (showIps) {
 					userIPs = ips[index] ? ips[index].join(',') : '';
 					line += `,"${userIPs}"\n`;
