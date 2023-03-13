@@ -1033,7 +1033,7 @@ describe('Post\'s', () => {
 
 		it('should prevent regular users from approving non existing posts', (done) => {
 			socketPosts.accept({ uid: uid }, { id: 123123 }, (err) => {
-				assert.equal(err.message, '[[error:no-privileges]]');
+				assert.equal(err.message, '[[error:no-post]]');
 				done();
 			});
 		});
