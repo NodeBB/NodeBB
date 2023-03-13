@@ -169,7 +169,13 @@ SocketPosts.notify = async function (socket, data) {
 };
 
 async function canEditQueue(socket, data, action) {
-	const canEditQueue = await posts.canEditQueue(socket.uid, data, action);
+	const [canEditQueue, queuedPost] = await Promise.all([
+		posts.canEditQueue(socket.uid, data, action),
+		posts.getFromQueue(data.id),
+	]);
+	if (!queuedPost) {
+		throw new Error('[[error:no-post]]');
+	}
 	if (!canEditQueue) {
 		throw new Error('[[error:no-privileges]]');
 	}
