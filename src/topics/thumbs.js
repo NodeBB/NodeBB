@@ -151,6 +151,9 @@ Thumbs.delete = async function (id, relativePaths) {
 			Promise.all(toRemove.map(async relativePath => posts.uploads.dissociate(mainPid, relativePath.slice(1)))),
 		]);
 	}
+	if (toRemove.length) {
+		cache.del(set);
+	}
 };
 
 Thumbs.deleteAll = async (id) => {
