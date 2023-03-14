@@ -82,6 +82,7 @@ describe('Topic thumbs', () => {
 			assert.deepStrictEqual(thumbs, [{
 				id: topicObj.topicData.tid,
 				name: 'test.png',
+				path: `${relativeThumbPaths[0]}`,
 				url: `${nconf.get('relative_path')}${nconf.get('upload_url')}${relativeThumbPaths[0]}`,
 			}]);
 		});
@@ -92,6 +93,7 @@ describe('Topic thumbs', () => {
 				[{
 					id: topicObj.topicData.tid,
 					name: 'test.png',
+					path: `${relativeThumbPaths[0]}`,
 					url: `${nconf.get('relative_path')}${nconf.get('upload_url')}${relativeThumbPaths[0]}`,
 				}],
 				[],
@@ -200,16 +202,19 @@ describe('Topic thumbs', () => {
 				{
 					id: tid,
 					name: 'test.png',
+					path: relativeThumbPaths[0],
 					url: `${nconf.get('relative_path')}${nconf.get('upload_url')}${relativeThumbPaths[0]}`,
 				},
 				{
 					id: tid,
 					name: 'example.org',
+					path: 'https://example.org',
 					url: 'https://example.org',
 				},
 				{
 					id: tid,
 					name: 'test2.png',
+					path: relativeThumbPaths[1],
 					url: `${nconf.get('relative_path')}${nconf.get('upload_url')}${relativeThumbPaths[1]}`,
 				},
 			]);

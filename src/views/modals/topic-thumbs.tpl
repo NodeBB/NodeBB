@@ -3,7 +3,7 @@
 	<div class="alert alert-info">[[modules:thumbs.modal.no-thumbs]]</div>
 	{{{ end }}}
 	{{{ each thumbs }}}
-	<div class="media" data-id="{./id}" data-path="{./url}">
+	<div class="media" data-id="{./id}" data-path="{./path}">
 		<div class="media-left">
 			<img class="media-object" src="{./url}" alt="" />
 		</div>
