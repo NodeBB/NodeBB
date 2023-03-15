@@ -37,15 +37,5 @@ put:
               status:
                 $ref: ../../../../components/schemas/Status.yaml#/Status
               response:
-                type: array
-                description: A list of the topic thumbnails in the new order
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                    name:
-                      type: string
-                    url:
-                      type: string
-                      description: Path to a topic thumbnail
+                type: object
+                properties: {}
