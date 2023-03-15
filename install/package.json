@@ -48,7 +48,7 @@
         "compare-versions": "5.0.3",
         "compression": "1.7.4",
         "connect-flash": "0.1.1",
-        "connect-mongo": "4.6.0",
+        "connect-mongo": "5.0.0",
         "connect-multiparty": "2.2.0",
         "connect-pg-simple": "8.0.0",
         "connect-redis": "6.1.3",
