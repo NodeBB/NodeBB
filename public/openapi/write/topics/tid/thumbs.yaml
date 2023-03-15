@@ -120,6 +120,8 @@ put:
                       type: string
                     name:
                       type: string
+                    path:
+                      type: string
                     url:
                       type: string
                       description: Path to a topic thumbnail
