@@ -67,7 +67,7 @@
         "file-loader": "6.2.0",
         "fs-extra": "11.1.0",
         "graceful-fs": "4.2.11",
-        "helmet": "5.1.1",
+        "helmet": "6.0.1",
         "html-to-text": "9.0.4",
         "ipaddr.js": "2.0.1",
         "jquery": "3.6.4",
