@@ -210,9 +210,15 @@ modsController.postQueue = async function (req, res, next) {
 		helpers.getSelectedCategory(cid),
 	]);
 
-	postData = postData.filter(p => p &&
-		(!categoriesData.selectedCids.length || categoriesData.selectedCids.includes(p.category.cid)) &&
-		(isAdmin || isGlobalMod || moderatedCids.includes(Number(p.category.cid)) || req.uid === p.user.uid));
+	postData = postData
+		.filter(p => p &&
+			(!categoriesData.selectedCids.length || categoriesData.selectedCids.includes(p.category.cid)) &&
+			(isAdmin || isGlobalMod || moderatedCids.includes(Number(p.category.cid)) || req.uid === p.user.uid))
+		.map((post) => {
+			const isSelf = post.user.uid === req.uid;
+			post.canAccept = !isSelf && (isAdmin || isGlobalMod || !!moderatedCids.length);
+			return post;
+		});
 
 	({ posts: postData } = await plugins.hooks.fire('filter:post-queue.get', {
 		posts: postData,
@@ -232,7 +238,7 @@ modsController.postQueue = async function (req, res, next) {
 		title: '[[pages:post-queue]]',
 		posts: postData,
 		isAdmin: isAdmin,
-		canAccept: isAdmin || isGlobalMod || !!moderatedCids.length,
+		canAccept: isAdmin || isGlobalMod,
 		...categoriesData,
 		allCategoriesUrl: `post-queue${helpers.buildQueryString(req.query, 'cid', '')}`,
 		pagination: pagination.create(page, pageCount),

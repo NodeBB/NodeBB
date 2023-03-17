@@ -102,7 +102,7 @@
 				</div>
 				<div class="card-footer text-end">
 					<div>
-						{{{ if canAccept }}}
+						{{{ if ./canAccept }}}
 						<button class="btn btn-danger btn-sm" data-action="reject"><i class="fa fa-fw fa-times"></i> [[post-queue:reject]]</button>
 						<button class="btn btn-info btn-sm" data-action="notify"><i class="fa fa-fw fa-bell-o"></i> [[post-queue:notify]]</button>
 						<button class="btn btn-success btn-sm" data-action="accept"><i class="fa fa-fw fa-check"></i> [[post-queue:accept]] </button>
