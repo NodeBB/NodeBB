@@ -29,19 +29,19 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        node: [14, 16, 18]
+        node: [16, 18]
         database: [mongo-dev, mongo, redis, postgres]
         include:
           # only run coverage once
           - os: ubuntu-latest
-            node: 14
+            node: 16
             coverage: true
           # test under development once
           - database: mongo-dev
             test_env: development
           # only run eslint once
           - os: ubuntu-latest
-            node: 14
+            node: 16
             database: mongo-dev
             lint: true
     runs-on: ${{ matrix.os }}
