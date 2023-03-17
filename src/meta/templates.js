@@ -1,9 +1,6 @@
 'use strict';
 
-const util = require('util');
-let mkdirp = require('mkdirp');
-
-mkdirp = mkdirp.hasOwnProperty('native') ? mkdirp : util.promisify(mkdirp);
+const mkdirp = require('mkdirp');
 const rimraf = require('rimraf');
 const winston = require('winston');
 const path = require('path');
@@ -113,9 +110,7 @@ async function compileTemplate(filename, source) {
 Templates.compileTemplate = compileTemplate;
 
 async function compile() {
-	const _rimraf = util.promisify(rimraf);
-
-	await _rimraf(viewsPath);
+	await rimraf(viewsPath);
 	await mkdirp(viewsPath);
 
 	let files = await plugins.getActive();

@@ -2,11 +2,8 @@
 
 const path = require('path');
 const fs = require('fs');
-const util = require('util');
 const mkdirp = require('mkdirp');
 const rimraf = require('rimraf');
-
-const rimrafAsync = util.promisify(rimraf);
 
 const file = require('../file');
 const plugins = require('../plugins');
@@ -69,7 +66,7 @@ async function clearModules() {
 		p => path.join(__dirname, '../../build/public/src', p)
 	);
 	await Promise.all(
-		builtPaths.map(builtPath => rimrafAsync(builtPath))
+		builtPaths.map(builtPath => rimraf(builtPath))
 	);
 }
 
@@ -86,7 +83,7 @@ JS.buildModules = async function () {
 };
 
 JS.linkStatics = async function () {
-	await rimrafAsync(path.join(__dirname, '../../build/public/plugins'));
+	await rimraf(path.join(__dirname, '../../build/public/plugins'));
 
 	await Promise.all(Object.keys(plugins.staticDirs).map(async (mappedPath) => {
 		const sourceDir = plugins.staticDirs[mappedPath];
