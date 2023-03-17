@@ -3,11 +3,8 @@
 const winston = require('winston');
 const nconf = require('nconf');
 const fs = require('fs');
-const util = require('util');
 const path = require('path');
 const rimraf = require('rimraf');
-
-const rimrafAsync = util.promisify(rimraf);
 
 const plugins = require('../plugins');
 const db = require('../database');
@@ -213,7 +210,7 @@ async function getBundleMetadata(target) {
 
 CSS.buildBundle = async function (target, fork) {
 	if (target === 'client') {
-		await rimrafAsync(path.join(__dirname, '../../build/public/client*'));
+		await rimraf(path.join(__dirname, '../../build/public/client*'), { glob: true });
 	}
 
 	const data = await getBundleMetadata(target);
