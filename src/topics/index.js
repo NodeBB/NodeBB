@@ -189,6 +189,8 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 		p.events = events.filter(
 			event => event.timestamp >= p.eventStart && event.timestamp < p.eventEnd
 		);
+		p.eventStart = undefined;
+		p.eventEnd = undefined;
 	});
 
 	topicData.category = category;

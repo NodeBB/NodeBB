@@ -384,7 +384,7 @@ dashboardController.getSearches = async (req, res) => {
 
 	res.render('admin/dashboard/searches', {
 		searches: searches.map(s => ({ value: validator.escape(String(s.value)), score: s.score })),
-		startDate: validator.escape(String(req.query.start)),
-		endDate: validator.escape(String(req.query.end)),
+		startDate: req.query.start ? validator.escape(String(req.query.start)) : null,
+		endDate: req.query.end ? validator.escape(String(req.query.end)) : null,
 	});
 };

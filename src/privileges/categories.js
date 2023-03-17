@@ -209,6 +209,12 @@ privsCategories.canMoveAllTopics = async function (currentCid, targetCid, uid) {
 	return isAdmin || !isModerators.includes(false);
 };
 
+privsCategories.canPostTopic = async function (uid) {
+	let cids = await categories.getAllCidsFromSet('categories:cid');
+	cids = await privsCategories.filterCids('topics:create', cids, uid);
+	return cids.length > 0;
+};
+
 privsCategories.userPrivileges = async function (cid, uid) {
 	const userPrivilegeList = await privsCategories.getUserPrivilegeList();
 	return await helpers.userOrGroupPrivileges(cid, uid, userPrivilegeList);

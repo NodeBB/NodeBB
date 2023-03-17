@@ -15,14 +15,14 @@ define('forum/topic/change-owner', [
 		if (modal) {
 			return;
 		}
-		app.parseAndTranslate('partials/change_owner_modal', {}, function (html) {
+		app.parseAndTranslate('modals/change-owner', {}, function (html) {
 			modal = html;
 
 			commit = modal.find('#change_owner_commit');
 
 			$('body').append(modal);
 
-			modal.find('.close,#change_owner_cancel').on('click', closeModal);
+			modal.find('#change_owner_cancel').on('click', closeModal);
 			modal.find('#username').on('keyup', checkButtonEnable);
 			postSelect.init(onPostToggled, {
 				allowMainPostSelect: true,

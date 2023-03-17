@@ -263,5 +263,6 @@
 	"api.429": "You have made too many requests, please try again later",
 	"api.500": "An unexpected error was encountered while attempting to service your request.",
 	"api.501": "The route you are trying to call is not implemented yet, please try again tomorrow",
-	"api.503": "The route you are trying to call is not currently available due to a server configuration"
+	"api.503": "The route you are trying to call is not currently available due to a server configuration",
+	"api.reauth-required": "The resource you are trying to access requires (re-)authentication."
 }

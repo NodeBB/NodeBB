@@ -7,7 +7,7 @@ define('forum/post-queue', [
 	const PostQueue = {};
 
 	PostQueue.init = function () {
-		$('[data-toggle="tooltip"]').tooltip();
+		$('[data-bs-toggle="tooltip"]').tooltip();
 
 		categoryFilter.init($('[component="category/dropdown"]'), {
 			privilege: 'moderate',
@@ -41,7 +41,8 @@ define('forum/post-queue', [
 			const id = parent.attr('data-id');
 			const listContainer = parent.get(0).parentNode;
 
-			if ((!['accept', 'reject', 'notify'].includes(action)) || (action === 'reject' && !await confirmReject('[[post-queue:confirm-reject]]'))) {
+			if ((!['accept', 'reject', 'notify'].includes(action)) ||
+				(action === 'reject' && !await confirmReject(ajaxify.data.canAccept ? '[[post-queue:confirm-reject]]' : '[[post-queue:confirm-remove]]'))) {
 				return;
 			}
 
@@ -101,7 +102,7 @@ define('forum/post-queue', [
 			return false;
 		});
 
-		$('[component="post/content"] img:not(.not-responsive)').addClass('img-responsive');
+		$('[component="post/content"] img:not(.not-responsive)').addClass('img-fluid');
 	};
 
 	function confirmReject(msg) {
@@ -162,7 +163,10 @@ define('forum/post-queue', [
 			}
 			const ids = queueEls.map((i, el) => $(el).attr('data-id')).get();
 			const showConfirm = bulkAction === 'reject-all' || bulkAction === 'reject-selected';
-			if (!ids.length || (showConfirm && !(await confirmReject(`[[post-queue:${bulkAction}-confirm, ${ids.length}]]`)))) {
+			const translationString = ajaxify.data.canAccept ?
+				`${bulkAction}-confirm` :
+				`${bulkAction.replace(/^reject/, 'remove')}-confirm`;
+			if (!ids.length || (showConfirm && !(await confirmReject(`[[post-queue:${translationString}, ${ids.length}]]`)))) {
 				return;
 			}
 			const action = bulkAction.split('-')[0];

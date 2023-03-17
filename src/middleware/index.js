@@ -24,6 +24,7 @@ const controllers = {
 
 const delayCache = cacheCreate({
 	ttl: 1000 * 60,
+	max: 200,
 });
 
 const middleware = module.exports;
@@ -150,7 +151,13 @@ async function expose(exposedField, method, field, req, res, next) {
 	if (!req.params.hasOwnProperty(field)) {
 		return next();
 	}
-	res.locals[exposedField] = await method(req.params[field]);
+	const value = await method(String(req.params[field]).toLowerCase());
+	if (!value) {
+		next('route');
+		return;
+	}
+
+	res.locals[exposedField] = value;
 	next();
 }
 
@@ -209,9 +216,9 @@ middleware.buildSkinAsset = helpers.try(async (req, res, next) => {
 	}
 
 	await plugins.prepareForBuild(['client side styles']);
-	const css = await meta.css.buildBundle(target[0], true);
+	const [ltr, rtl] = await meta.css.buildBundle(target[0], true);
 	require('../meta/minifier').killAll();
-	res.status(200).type('text/css').send(css);
+	res.status(200).type('text/css').send(req.originalUrl.includes('-rtl') ? rtl : ltr);
 });
 
 middleware.addUploadHeaders = function addUploadHeaders(req, res, next) {

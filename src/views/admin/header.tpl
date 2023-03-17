@@ -6,7 +6,6 @@
 		{{{each metaTags}}}{function.buildMetaTag}{{{end}}}
 		{{{each linkTags}}}{function.buildLinkTag}{{{end}}}
 		<link rel="stylesheet" type="text/css" href="{relative_path}/assets/admin.css?{cache-buster}" />
-		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
 		<script>
 			var config = JSON.parse('{{configJSON}}');
@@ -20,9 +19,9 @@
 
 		<script type="text/javascript" src="{relative_path}/assets/admin.min.js?{cache-buster}"></script>
 
-		<!-- BEGIN scripts -->
-		<script type="text/javascript" src="{scripts.src}"></script>
-		<!-- END scripts -->
+		{{{ each scripts }}}
+		<script type="text/javascript" src="{./src}"></script>
+		{{{ end }}}
 	</head>
 
 	<body class="admin {bodyClass}">

@@ -1,8 +1,5 @@
 'use strict';
 
-const path = require('path');
-const winston = require('winston');
-
 const user = require('../user');
 const privileges = require('../privileges');
 const accountHelpers = require('./accounts/helpers');
@@ -79,40 +76,6 @@ userController.getUserDataByUID = async function (callerUid, uid) {
 	return userData;
 };
 
-userController.exportPosts = async function (req, res, next) {
-	sendExport(`${res.locals.uid}_posts.csv`, 'text/csv', res, next);
-};
-
-userController.exportUploads = function (req, res, next) {
-	sendExport(`${res.locals.uid}_uploads.zip`, 'application/zip', res, next);
-};
-
-userController.exportProfile = async function (req, res, next) {
-	sendExport(`${res.locals.uid}_profile.json`, 'application/json', res, next);
-};
-
-// DEPRECATED; Remove in NodeBB v3.0.0
-function sendExport(filename, type, res, next) {
-	winston.warn(`[users/export] Access via page API is deprecated, use GET /api/v3/users/:uid/exports/:type instead.`);
-
-	res.sendFile(filename, {
-		root: path.join(__dirname, '../../build/export'),
-		headers: {
-			'Content-Type': type,
-			'Content-Disposition': `attachment; filename=${filename}`,
-		},
-	}, (err) => {
-		if (err) {
-			if (err.code === 'ENOENT') {
-				res.locals.isAPI = false;
-				return next();
-			}
-			return next(err);
-		}
-	});
-}
-
 require('../promisify')(userController, [
 	'getCurrentUser', 'getUserByUID', 'getUserByUsername', 'getUserByEmail',
-	'exportPosts', 'exportUploads', 'exportProfile',
 ]);

@@ -249,6 +249,7 @@ module.exports = function (Messaging) {
 		room.canReply = canReply;
 		room.groupChat = room.hasOwnProperty('groupChat') ? room.groupChat : users.length > 2;
 		room.usernames = Messaging.generateUsernames(users, uid);
+		room.chatWithMessage = await Messaging.generateChatWithMessage(users, uid);
 		room.maximumUsersInChatRoom = meta.config.maximumUsersInChatRoom;
 		room.maximumChatMessageLength = meta.config.maximumChatMessageLength;
 		room.showUserInput = !room.maximumUsersInChatRoom || room.maximumUsersInChatRoom > 2;

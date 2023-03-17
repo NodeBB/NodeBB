@@ -8,13 +8,13 @@
 	</div>
 	<p>
 		[[user:consent.email_intro]]
-		<!-- IF digestEnabled -->
+		{{{ if digestEnabled }}}
 		[[user:consent.digest_frequency, {digestFrequency}]]
-		<!-- ELSE -->
+		{{{ else }}}
 		[[user:consent.digest_off]]
-		<!-- END -->
+		{{{ end }}}
 	</p>
-	
+
 	<div class="checkbox">
 		<label>
 			<input type="checkbox" name="gdpr_agree_email" id="gdpr_agree_email"> <strong>[[register:gdpr_agree_email]]</strong>

@@ -5,9 +5,10 @@ define('topicList', [
 	'handleBack',
 	'topicSelect',
 	'categoryFilter',
+	'tagFilter',
 	'forum/category/tools',
 	'hooks',
-], function (infinitescroll, handleBack, topicSelect, categoryFilter, categoryTools, hooks) {
+], function (infinitescroll, handleBack, topicSelect, categoryFilter, tagFilter, categoryTools, hooks) {
 	const TopicList = {};
 	let templateName = '';
 
@@ -43,6 +44,8 @@ define('topicList', [
 		categoryFilter.init($('[component="category/dropdown"]'), {
 			states: states,
 		});
+
+		tagFilter.init($('[component="tag/filter"]'));
 
 		if (!config.usePagination) {
 			infinitescroll.init(TopicList.loadMoreTopics);
@@ -268,7 +271,6 @@ define('topicList', [
 			}
 
 			html.find('.timeago').timeago();
-			app.createUserTooltips(html);
 			utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 			hooks.fire('action:topics.loaded', { topics: topics, template: templateName });
 			callback();

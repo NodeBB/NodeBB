@@ -1,8 +1,8 @@
 'use strict';
 
 define('forum/flags/detail', [
-	'components', 'translator', 'benchpress', 'forum/account/header', 'accounts/delete', 'api', 'bootbox', 'alerts',
-], function (components, translator, Benchpress, AccountHeader, AccountsDelete, api, bootbox, alerts) {
+	'components', 'translator', 'benchpress', 'accounts/moderate', 'accounts/delete', 'api', 'bootbox', 'alerts',
+], function (components, translator, Benchpress, AccountModerate, AccountsDelete, api, bootbox, alerts) {
 	const Detail = {};
 
 	Detail.init = function () {
@@ -33,6 +33,42 @@ define('forum/flags/detail', [
 					break;
 				}
 
+				case 'addEditNote': {
+					const noteEl = this.closest('[component="flag/note"]');
+					let datetime;
+					let value;
+					if (noteEl) {
+						datetime = noteEl.getAttribute('data-datetime');
+						const index = noteEl.getAttribute('data-index');
+						value = ajaxify.data.notes[index].content;
+					}
+
+					bootbox.prompt({
+						title: `[[flags:${datetime ? 'edit' : 'add'}-note]]`,
+						inputType: 'textarea',
+						rows: 3,
+						value,
+						callback: (result) => {
+							if (!result) {
+								return;
+							}
+
+							api.post(`/flags/${ajaxify.data.flagId}/notes`, {
+								note: result,
+								datetime,
+							}).then((payload) => {
+								alerts.success('[[flags:note-added]]');
+								Detail.reloadNotes(payload.notes);
+								Detail.reloadHistory(payload.history);
+							}).catch(alerts.error);
+						},
+						onShown: (e) => {
+							console.log(e);
+						},
+					});
+					break;
+				}
+
 				case 'appendNote':
 					api.post(`/flags/${ajaxify.data.flagId}/notes`, {
 						note: noteEl.value,
@@ -50,7 +86,7 @@ define('forum/flags/detail', [
 					const datetime = parseInt(this.closest('[data-datetime]').getAttribute('data-datetime'), 10);
 					bootbox.confirm('[[flags:delete-note-confirm]]', function (ok) {
 						if (ok) {
-							api.delete(`/flags/${ajaxify.data.flagId}/notes/${datetime}`, {}).then((payload) => {
+							api.del(`/flags/${ajaxify.data.flagId}/notes/${datetime}`, {}).then((payload) => {
 								alerts.success('[[flags:note-deleted]]');
 								Detail.reloadNotes(payload.notes);
 								Detail.reloadHistory(payload.history);
@@ -66,19 +102,19 @@ define('forum/flags/detail', [
 					break;
 
 				case 'ban':
-					AccountHeader.banAccount(uid, ajaxify.refresh);
+					AccountModerate.banAccount(uid, ajaxify.refresh);
 					break;
 
 				case 'unban':
-					AccountHeader.unbanAccount(uid);
+					AccountModerate.unbanAccount(uid);
 					break;
 
 				case 'mute':
-					AccountHeader.muteAccount(uid, ajaxify.refresh);
+					AccountModerate.muteAccount(uid, ajaxify.refresh);
 					break;
 
 				case 'unmute':
-					AccountHeader.unmuteAccount(uid);
+					AccountModerate.unmuteAccount(uid);
 					break;
 
 				case 'delete-account':
@@ -105,28 +141,10 @@ define('forum/flags/detail', [
 					postAction('restore', api.put, `/posts/${ajaxify.data.target.pid}/state`);
 					break;
 
-				case 'prepare-edit': {
-					const selectedNoteEl = this.closest('[data-index]');
-					const index = selectedNoteEl.getAttribute('data-index');
-					const textareaEl = document.getElementById('note');
-					textareaEl.value = ajaxify.data.notes[index].content;
-					textareaEl.setAttribute('data-datetime', ajaxify.data.notes[index].datetime);
-
-					const siblings = selectedNoteEl.parentElement.children;
-					for (const el in siblings) {
-						if (siblings.hasOwnProperty(el)) {
-							siblings[el].classList.remove('editing');
-						}
-					}
-					selectedNoteEl.classList.add('editing');
-					textareaEl.focus();
-					break;
-				}
-
 				case 'delete-flag': {
 					bootbox.confirm('[[flags:delete-flag-confirm]]', function (ok) {
 						if (ok) {
-							api.delete(`/flags/${ajaxify.data.flagId}`, {}).then(() => {
+							api.del(`/flags/${ajaxify.data.flagId}`, {}).then(() => {
 								alerts.success('[[flags:flag-deleted]]');
 								ajaxify.go('flags');
 							}).catch(alerts.error);
@@ -159,7 +177,6 @@ define('forum/flags/detail', [
 			wrapperEl.empty();
 			wrapperEl.html(html);
 			wrapperEl.find('span.timeago').timeago();
-			document.getElementById('note').value = '';
 		});
 	};
 

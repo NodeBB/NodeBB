@@ -303,14 +303,17 @@ module.exports = function (Posts) {
 	}
 
 	Posts.editQueuedContent = async function (uid, editData) {
-		const canEditQueue = await Posts.canEditQueue(uid, editData, 'edit');
+		const [canEditQueue, data] = await Promise.all([
+			Posts.canEditQueue(uid, editData, 'edit'),
+			getParsedObject(editData.id),
+		]);
+		if (!data) {
+			throw new Error('[[error:no-post]]');
+		}
 		if (!canEditQueue) {
 			throw new Error('[[error:no-privileges]]');
 		}
-		const data = await getParsedObject(editData.id);
-		if (!data) {
-			return;
-		}
+
 		if (editData.content !== undefined) {
 			data.data.content = editData.content;
 		}

@@ -40,17 +40,11 @@ define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, t
 	taskbar.close = async function (moduleName, uuid) {
 		// Sends signal to the appropriate module's .close() fn (if present)
 		const btnEl = taskbar.tasklist.find('[data-module="' + module + '"][data-uuid="' + uuid + '"]');
-		let fnName = 'close';
-
-		// TODO: Refactor chat module to not take uuid in close instead of by jQuery element
-		if (moduleName === 'chat') {
-			fnName = 'closeByUUID';
-		}
 
 		if (btnEl.length) {
 			const module = await app.require(moduleName);
-			if (module && typeof module[fnName] === 'function') {
-				module[fnName](uuid);
+			if (module && typeof module.close === 'function') {
+				module.close(uuid);
 			}
 		}
 	};
@@ -190,6 +184,9 @@ define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, t
 				break;
 			case 'background-color':
 				element.find('a').css('background-color', value);
+				break;
+			case 'color':
+				element.find('a').css('color', value);
 				break;
 		}
 	};

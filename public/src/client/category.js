@@ -30,7 +30,7 @@ define('forum/category', [
 		sort.handleSort('categoryTopicSort', 'category/' + ajaxify.data.slug);
 
 		if (!config.usePagination) {
-			navigator.init('[component="category/topic"]', ajaxify.data.topic_count, Category.toTop, Category.toBottom, Category.navigatorCallback);
+			navigator.init('[component="category/topic"]', ajaxify.data.topic_count, Category.toTop, Category.toBottom);
 		} else {
 			navigator.disable();
 		}
@@ -105,7 +105,6 @@ define('forum/category', [
 					html.find('.timeago').timeago();
 					$('[component="category/subcategory/container"]').append(html);
 					utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
-					app.createUserTooltips(html);
 					ajaxify.data.nextSubCategoryStart += ajaxify.data.subCategoriesPerPage;
 					ajaxify.data.subCategoriesLeft -= data.length;
 					btn.toggleClass('hidden', ajaxify.data.subCategoriesLeft <= 0)
@@ -128,10 +127,6 @@ define('forum/category', [
 
 			navigator.scrollBottom(count - 1);
 		});
-	};
-
-	Category.navigatorCallback = function (topIndex, bottomIndex) {
-		return bottomIndex;
 	};
 
 	function loadTopicsAfter(after, direction, callback) {

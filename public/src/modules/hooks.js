@@ -25,15 +25,14 @@ define('hooks', [], () => {
 		if (Hooks.logs._collection) {
 			Hooks.logs._collection.add(args);
 		} else {
-			console.log.apply(console, args);
+			console.debug.apply(console, args);
 		}
 	};
 
 	Hooks.logs.flush = () => {
 		if (Hooks.logs._collection && Hooks.logs._collection.size) {
-			console.groupCollapsed('[hooks] Changes to hooks on this page …');
 			Hooks.logs._collection.forEach((args) => {
-				console.log.apply(console, args);
+				console.debug.apply(console, args);
 			});
 			console.groupEnd();
 		}

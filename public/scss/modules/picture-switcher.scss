@@ -1,0 +1,59 @@
+.picture-switcher {
+	h4 {
+		line-height: 46px;
+		margin: 0;
+	}
+
+	.modal-body .btn {
+		padding: 10px 5px;
+		font-size: 13px;
+	}
+
+	label {
+		vertical-align: top;
+		line-height: 26px;
+
+		> input[type="radio"] {
+			display: none;
+
+			&:checked {
+				+ span:before {
+					border-radius: 50%;
+					border: 2px solid $primary;
+					position: relative;
+					top: -4px;
+					left: -4px;
+				}
+			}
+
+			&[value="transparent"] {
+				&:checked + span:before {
+					padding-top: 2px;
+					padding-left: 2px;
+				}
+
+				+ span:before {
+					content: '\f05e';
+					font-family: FontAwesome;
+					color: $gray-200;
+					font-size: 28px;
+				}
+			}
+		}
+
+		span {
+			display: inline-block;
+			width: 24px;
+			height: 24px;
+			border-radius: 50%;
+			margin-right: .5em;
+
+			&:before {
+				content: '';
+				display: inline-block;
+				width: 32px;
+				height: 32px;
+			}
+		}
+	}
+}

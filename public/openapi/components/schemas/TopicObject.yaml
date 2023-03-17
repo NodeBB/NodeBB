@@ -265,6 +265,9 @@ TopicObjectSlim:
               name:
                 type: string
                 description: The topic thumbnail filename
+              path:
+                type: string
+                description: Path to topic thumbnail without upload_url prefix
               url:
                 type: string
                 description: Relative path to the topic thumbnail

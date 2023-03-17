@@ -111,6 +111,7 @@ apiController.loadConfig = async function (req) {
 	config.topicPostSort = settings.topicPostSort || config.topicPostSort;
 	config.categoryTopicSort = settings.categoryTopicSort || config.categoryTopicSort;
 	config.topicSearchEnabled = settings.topicSearchEnabled || false;
+	config.disableCustomUserSkins = meta.config.disableCustomUserSkins === 1;
 	config.bootswatchSkin = (meta.config.disableCustomUserSkins !== 1 && settings.bootswatchSkin && settings.bootswatchSkin !== '') ? settings.bootswatchSkin : '';
 
 	// Overrides based on privilege

@@ -4,6 +4,6 @@
 	</div>
 </div>
 
-<button id="revert_theme" class="floating-button mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
-	<i class="material-icons">undo</i>
+<button id="revert_theme" class="btn btn-primary position-fixed bottom-0 end-0 px-3 py-2 mb-4 me-4 rounded-circle fs-4" type="button" style="width: 64px; height: 64px;">
+	<i class="fa fa-fw fas fa-rotate-left"></i>
 </button>

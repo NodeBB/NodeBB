@@ -3,7 +3,7 @@
 	<div class="alert alert-info">[[modules:thumbs.modal.no-thumbs]]</div>
 	{{{ end }}}
 	{{{ each thumbs }}}
-	<div class="media" data-id="{./id}" data-path="{./url}">
+	<div class="media" data-id="{./id}" data-path="{./path}">
 		<div class="media-left">
 			<img class="media-object" src="{./url}" alt="" />
 		</div>
@@ -16,5 +16,5 @@
 	</div>
 	{{{ end }}}
 	<hr />
-	<p class="help-block">[[modules:thumbs.modal.resize-note, {config.thumbs.size}]]</p>
+	<p class="form-text">[[modules:thumbs.modal.resize-note, {config.thumbs.size}]]</p>
 </div>

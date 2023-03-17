@@ -88,7 +88,7 @@ describe('User', () => {
 			const validationPending = await User.email.isValidationPending(uid, email);
 			assert.strictEqual(validationPending, true);
 
-			assert.equal(data.email, '&lt;h1&gt;test&lt;&#x2F;h1&gt;@gmail.com');
+			assert.equal(data.email, '');
 			assert.strictEqual(data.profileviews, 0);
 			assert.strictEqual(data.reputation, 0);
 			assert.strictEqual(data.postcount, 0);
@@ -1125,8 +1125,10 @@ describe('User', () => {
 					assert.ifError(err);
 					assert(data);
 					assert(Array.isArray(data));
-					assert.equal(data[0].type, 'uploaded');
-					assert.equal(data[0].text, '[[user:uploaded_picture]]');
+					assert.equal(data[0].type, 'default');
+					assert.equal(data[0].username, '[[user:default_picture]]');
+					assert.equal(data[1].type, 'uploaded');
+					assert.equal(data[1].username, '[[user:uploaded_picture]]');
 					done();
 				});
 			});
@@ -1210,10 +1212,13 @@ describe('User', () => {
 
 			// Accessing this page will mark the user's account as needing an updated email, below code undo's.
 			await requestAsync({
-				uri: `${nconf.get('url')}/register/abort?_csrf=${csrf_token}`,
+				uri: `${nconf.get('url')}/register/abort`,
 				jar,
 				method: 'POST',
 				simple: false,
+				headers: {
+					'x-csrf-token': csrf_token,
+				},
 			});
 		});
 
@@ -2137,7 +2142,7 @@ describe('User', () => {
 				assert.strictEqual(res.statusCode, 403);
 			});
 
-			it('should error if ouf of invitations', async () => {
+			it('should error if out of invitations', async () => {
 				meta.config.maximumInvites = 1;
 				const { res } = await helpers.invite({ emails: 'invite6@test.com', groupsToJoin: [] }, inviterUid, jar, csrf_token);
 				assert.strictEqual(res.statusCode, 403);
@@ -2334,14 +2339,7 @@ describe('User', () => {
 					resolveWithFullResponse: true,
 				});
 
-				assert.strictEqual(res.statusCode, 401);
-				assert.deepStrictEqual(res.body, {
-					status: {
-						code: 'not-authorised',
-						message: 'A valid login session was not found. Please log in and try again.',
-					},
-					response: {},
-				});
+				assert.strictEqual(res.statusCode, 403);
 			});
 		});
 	});
@@ -2499,6 +2497,7 @@ describe('User', () => {
 			await assertPrivacy({ v3Api: false, jar: regularUserJar, emailOnly: true });
 
 			// Let's confirm for afterwards
+			await User.setUserField(hidingUser.uid, 'email', 'should@be.hidden');
 			await User.email.confirmByUid(hidingUser.uid);
 		});
 

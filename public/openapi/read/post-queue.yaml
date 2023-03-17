@@ -162,6 +162,10 @@ get:
                                 titleRaw:
                                   type: string
                         - $ref: ../components/schemas/CategoryObject.yaml#/CategoryObject
+                  isAdmin:
+                    type: boolean
+                  canAccept:
+                    type: boolean
                   enabled:
                     type: number
                   singlePost:

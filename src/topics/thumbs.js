@@ -52,6 +52,7 @@ Thumbs.get = async function (tids) {
 			const name = path.basename(thumb);
 			return hasTimestampPrefix.test(name) ? name.slice(14) : name;
 		})(),
+		path: thumb,
 		url: thumb.startsWith('http') ? thumb : path.posix.join(upload_url, thumb),
 	})));
 

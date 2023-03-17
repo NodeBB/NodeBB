@@ -169,16 +169,21 @@ define('admin/extend/rewards', ['alerts'], function (alerts) {
 
 		socket.emit('admin.rewards.save', activeRewards, function (err, result) {
 			if (err) {
-				alerts.error(err);
-			} else {
-				alerts.success('[[admin/extend/rewards:alert.save-success]]');
-				// newly added rewards are missing data-id, update to prevent rewards getting duplicated
-				$('#active li').each(function (index) {
-					if (!$(this).attr('data-id')) {
-						$(this).attr('data-id', result[index].id);
-					}
-				});
+				return alerts.error(err);
 			}
+
+			const saveBtn = document.getElementById('save');
+			saveBtn.classList.toggle('saved', true);
+			setTimeout(() => {
+				saveBtn.classList.toggle('saved', false);
+			}, 5000);
+
+			// newly added rewards are missing data-id, update to prevent rewards getting duplicated
+			$('#active li').each(function (index) {
+				if (!$(this).attr('data-id')) {
+					$(this).attr('data-id', result[index].id);
+				}
+			});
 		});
 	}
 

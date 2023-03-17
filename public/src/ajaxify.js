@@ -14,7 +14,11 @@ ajaxify.widgets = { render: render };
 
 	ajaxify.count = 0;
 	ajaxify.currentPage = null;
-
+	// disables scroll to top when back button is clicked
+	// https://developer.chrome.com/blog/history-api-scroll-restoration/
+	if ('scrollRestoration' in history) {
+		history.scrollRestoration = 'manual';
+	}
 	ajaxify.go = function (url, callback, quiet) {
 		// Automatically reconnect to socket and re-ajaxify on success
 		if (!socket.connected) {
@@ -297,6 +301,13 @@ ajaxify.widgets = { render: render };
 		// Scroll back to top of page
 		if (!ajaxify.isCold()) {
 			window.scrollTo(0, 0);
+			// if on topic page, scroll to the correct post,
+			// this is here to avoid a flash of the wrong posts at the top of the page
+			if (ajaxify.data.template.topic && ajaxify.data.postIndex > 1) {
+				require(['navigator'], function (navigator) {
+					navigator.scrollToPostIndex(ajaxify.data.postIndex - 1, true, 0);
+				});
+			}
 		}
 		ajaxify.loadScript(tpl_url, function done() {
 			hooks.fire('action:ajaxify.end', { url: url, tpl_url: tpl_url, title: ajaxify.data.title });
@@ -460,7 +471,7 @@ ajaxify.widgets = { render: render };
 		hooks.fire('action:ajaxify.cleanup', { url, tpl_url });
 	};
 
-	require(['translator', 'benchpress'], function (translator, Benchpress) {
+	require(['translator', 'benchpress', 'navigator'], function (translator, Benchpress) {
 		translator.translate('[[error:no-connection]]');
 		translator.translate('[[error:socket-reconnect-failed]]');
 		translator.translate(`[[global:reconnecting-message, ${config.siteTitle}]]`);

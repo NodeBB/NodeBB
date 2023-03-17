@@ -23,6 +23,7 @@ groupsController.list = async function (req, res) {
 	res.render('groups/list', {
 		groups: groupData,
 		allowGroupCreation: allowGroupCreation,
+		sort: validator.escape(String(sort)),
 		nextStart: 15,
 		title: '[[pages:groups]]',
 		breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[pages:groups]]' }]),

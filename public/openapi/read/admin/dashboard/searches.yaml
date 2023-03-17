@@ -1,7 +1,7 @@
 get:
   tags:
     - admin
-  summary: Get detailed user registration analytics
+  summary: Get detailed search analytics
   responses:
     "200":
       description: A JSON object containing popular searches.
@@ -22,4 +22,12 @@ get:
                         score:
                           type: number
                           description: Number of times this string has been searched
+                  startDate:
+                    type: string
+                    description: A UNIX timestamp of the start date
+                    nullable: true
+                  endDate:
+                    type: string
+                    description: A UNIX timestamp of the end date
+                    nullable: true
               - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

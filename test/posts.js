@@ -1033,7 +1033,7 @@ describe('Post\'s', () => {
 
 		it('should prevent regular users from approving non existing posts', (done) => {
 			socketPosts.accept({ uid: uid }, { id: 123123 }, (err) => {
-				assert.equal(err.message, '[[error:no-privileges]]');
+				assert.equal(err.message, '[[error:no-post]]');
 				done();
 			});
 		});
@@ -1056,7 +1056,7 @@ describe('Post\'s', () => {
 
 		it('should not crash if id does not exist', (done) => {
 			socketPosts.reject({ uid: globalModUid }, { id: '123123123' }, (err) => {
-				assert.equal(err.message, '[[error:no-privileges]]');
+				assert.equal(err.message, '[[error:no-post]]');
 				done();
 			});
 		});

@@ -2,8 +2,8 @@
 
 
 define('forum/account/settings', [
-	'forum/account/header', 'components', 'translator', 'api', 'alerts',
-], function (header, components, translator, api, alerts) {
+	'forum/account/header', 'components', 'api', 'alerts', 'hooks',
+], function (header, components, api, alerts, hooks) {
 	const AccountSettings = {};
 
 	// If page skin is changed but not saved, switch the skin back
@@ -83,16 +83,7 @@ define('forum/account/settings', [
 			}
 
 			if (languageChanged && parseInt(app.user.uid, 10) === parseInt(ajaxify.data.theirid, 10)) {
-				translator.translate('[[language:dir]]', config.userLang, function (translated) {
-					const htmlEl = $('html');
-					htmlEl.attr('data-dir', translated);
-					htmlEl.css('direction', translated);
-				});
-
-				translator.switchTimeagoLanguage(utils.userLangToTimeagoCode(config.userLang), function () {
-					overrides.overrideTimeago();
-					ajaxify.refresh();
-				});
+				window.location.reload();
 			}
 		});
 	}
@@ -125,23 +116,36 @@ define('forum/account/settings', [
 
 		// Stop execution if skin didn't change
 		if (skinName === currentSkin) {
+			hooks.fire('action:skin.change', { skin: skinName, currentSkin });
 			return;
 		}
-
+		const langDir = $('html').attr('data-dir');
 		const linkEl = document.createElement('link');
 		linkEl.rel = 'stylesheet';
 		linkEl.type = 'text/css';
-		linkEl.href = config.relative_path + '/assets/client' + (skinName ? '-' + skinName : '') + '.css';
+		linkEl.href = config.relative_path +
+			'/assets/client' + (skinName ? '-' + skinName : '') +
+			(langDir === 'rtl' ? '-rtl' : '') +
+			'.css?' + config['cache-buster'];
 		linkEl.onload = function () {
 			clientEl.parentNode.removeChild(clientEl);
 
 			// Update body class with proper skin name
 			$('body').removeClass(currentSkinClassName.join(' '));
 			$('body').addClass('skin-' + (skinName || 'noskin'));
+			hooks.fire('action:skin.change', { skin: skinName, currentSkin });
 		};
 
 		document.head.appendChild(linkEl);
 	}
+
+	AccountSettings.changeSkin = async function (skin) {
+		if (app.user.uid) {
+			await api.put(`/users/${app.user.uid}/settings`, { settings: { bootswatchSkin: skin } });
+		}
+		config.bootswatchSkin = skin;
+		reskin(skin);
+	};
 
 	return AccountSettings;
 });

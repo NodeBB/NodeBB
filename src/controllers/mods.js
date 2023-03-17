@@ -95,10 +95,27 @@ modsController.flags.list = async function (req, res) {
 		helpers.getSelectedCategory(filters.cid),
 	]);
 
+	// Send back information for userFilter module
+	const selected = {};
+	await Promise.all(['assignee', 'reporterId', 'targetUid'].map(async (filter) => {
+		let uids = filters[filter];
+		if (!uids) {
+			selected[filter] = [];
+			return;
+		}
+		if (!Array.isArray(uids)) {
+			uids = [uids];
+		}
+
+		selected[filter] = await user.getUsersFields(uids, ['username', 'userslug', 'picture']);
+	}));
+
 	res.render('flags/list', {
 		flags: flagsData.flags,
+		count: flagsData.count,
 		analytics: analyticsData,
 		selectedCategory: selectData.selectedCategory,
+		selected,
 		hasFilter: hasFilter,
 		filters: filters,
 		expanded: !!(filters.assignee || filters.reporterId || filters.targetUid),

@@ -43,7 +43,9 @@ define('admin/dashboard', [
 
 		isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-		$('[data-toggle="tooltip"]').tooltip();
+		$('[data-bs-toggle="tooltip"]').tooltip({
+			animation: false,
+		});
 
 		setupRealtimeButton();
 		setupGraphs(function () {
@@ -64,19 +66,19 @@ define('admin/dashboard', [
 
 		graphData.rooms = data;
 
-		const html = '<div class="text-center pull-left">' +
+		const html = '<div class="text-center float-start">' +
 						'<span class="formatted-number">' + data.onlineRegisteredCount + '</span>' +
 						'<div class="stat">[[admin/dashboard:active-users.users]]</div>' +
 					'</div>' +
-					'<div class="text-center pull-left">' +
+					'<div class="text-center float-start">' +
 						'<span class="formatted-number">' + data.onlineGuestCount + '</span>' +
 						'<div class="stat">[[admin/dashboard:active-users.guests]]</div>' +
 					'</div>' +
-					'<div class="text-center pull-left">' +
+					'<div class="text-center float-start">' +
 						'<span class="formatted-number">' + (data.onlineRegisteredCount + data.onlineGuestCount) + '</span>' +
 						'<div class="stat">[[admin/dashboard:active-users.total]]</div>' +
 					'</div>' +
-					'<div class="text-center pull-left">' +
+					'<div class="text-center float-start">' +
 						'<span class="formatted-number">' + data.socketCount + '</span>' +
 						'<div class="stat">[[admin/dashboard:active-users.connections]]</div>' +
 					'</div>';

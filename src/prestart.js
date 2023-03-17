@@ -75,7 +75,7 @@ function loadConfig(configFile) {
 	// Ensure themes_path is a full filepath
 	nconf.set('themes_path', path.resolve(paths.baseDir, nconf.get('themes_path')));
 	nconf.set('core_templates_path', path.join(paths.baseDir, 'src/views'));
-	nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-persona/templates'));
+	nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-harmony/templates'));
 
 	nconf.set('upload_path', path.resolve(nconf.get('base_dir'), nconf.get('upload_path')));
 	nconf.set('upload_url', '/assets/uploads');

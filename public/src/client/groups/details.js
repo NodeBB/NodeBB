@@ -67,13 +67,13 @@ define('forum/groups/details', [
 
 		handleMemberInvitations();
 
-		components.get('groups/activity').find('.content img:not(.not-responsive)').addClass('img-responsive');
+		components.get('groups/activity').find('.content img:not(.not-responsive)').addClass('img-fluid');
 
 		detailsPage.on('click', '[data-action]', function () {
 			const btnEl = $(this);
 			const userRow = btnEl.parents('[data-uid]');
-			const ownerFlagEl = userRow.find('.member-name > i');
-			const isOwner = !ownerFlagEl.hasClass('invisible');
+			const ownerFlagEl = userRow.find('[component="groups/owner/icon"]');
+			const isOwner = !!parseInt(userRow.attr('data-isowner'), 10);
 			const uid = userRow.attr('data-uid');
 			const action = btnEl.attr('data-action');
 
@@ -125,11 +125,13 @@ define('forum/groups/details', [
 						toUid: uid,
 						groupName: groupName,
 					}, function (err) {
-						if (!err) {
-							ajaxify.refresh();
-						} else {
-							alerts.error(err);
+						if (err) {
+							return alerts.error(err);
 						}
+						if (action === 'rescindInvite' || action === 'accept' || action === 'reject') {
+							return userRow.remove();
+						}
+						ajaxify.refresh();
 					});
 					break;
 			}
@@ -141,8 +143,8 @@ define('forum/groups/details', [
 		const labelColorValueEl = settingsFormEl.find('[name="labelColor"]');
 		const textColorValueEl = settingsFormEl.find('[name="textColor"]');
 		const iconBtn = settingsFormEl.find('[data-action="icon-select"]');
-		const previewEl = settingsFormEl.find('.label');
-		const previewElText = settingsFormEl.find('.label-text');
+		const previewEl = settingsFormEl.find('.badge');
+		const previewElText = settingsFormEl.find('.badge-text');
 		const previewIcon = previewEl.find('i');
 		const userTitleEl = settingsFormEl.find('[name="userTitle"]');
 		const userTitleEnabledEl = settingsFormEl.find('[name="userTitleEnabled"]');
@@ -165,7 +167,7 @@ define('forum/groups/details', [
 
 		// If the user title changes, update that too
 		userTitleEl.on('keyup', function () {
-			previewElText.translateText((this.value || settingsFormEl.find('#name').val()));
+			previewElText.translateText((userTitleEl.val()));
 		});
 
 		// Disable user title customisation options if the the user title itself is disabled
@@ -213,12 +215,10 @@ define('forum/groups/details', [
 			});
 
 			api.put(`/groups/${ajaxify.data.group.slug}`, settings).then(() => {
-				if (settings.name) {
+				if (settings.name !== ajaxify.data.group.name) {
 					let pathname = window.location.pathname;
 					pathname = pathname.slice(1, pathname.lastIndexOf('/') + 1);
 					ajaxify.go(pathname + slugify(settings.name));
-				} else {
-					ajaxify.refresh();
 				}
 
 				alerts.success('[[groups:event.updated]]');
@@ -245,7 +245,12 @@ define('forum/groups/details', [
 		if (!ajaxify.data.group.isOwner) {
 			return;
 		}
-
+		async function updateList() {
+			const data = await api.get(`/api/groups/${ajaxify.data.group.slug}`);
+			const html = await app.parseAndTranslate('groups/details', 'group.invited', { group: data.group });
+			$('[component="groups/invited"] tbody tr').remove();
+			$('[component="groups/invited"] tbody').html(html);
+		}
 		const searchInput = $('[component="groups/members/invite"]');
 		require(['autocomplete'], function (autocomplete) {
 			autocomplete.user(searchInput, function (event, selected) {
@@ -256,7 +261,7 @@ define('forum/groups/details', [
 					if (err) {
 						return alerts.error(err);
 					}
-					ajaxify.refresh();
+					updateList();
 				});
 			});
 		});
@@ -273,7 +278,7 @@ define('forum/groups/details', [
 				if (err) {
 					return alerts.error(err);
 				}
-				ajaxify.refresh();
+				updateList();
 			});
 			return false;
 		});

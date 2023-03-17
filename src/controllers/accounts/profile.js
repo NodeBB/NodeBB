@@ -8,7 +8,6 @@ const user = require('../../user');
 const posts = require('../../posts');
 const categories = require('../../categories');
 const plugins = require('../../plugins');
-const meta = require('../../meta');
 const privileges = require('../../privileges');
 const accountHelpers = require('./helpers');
 const helpers = require('../helpers');
@@ -40,16 +39,11 @@ profileController.get = async function (req, res, next) {
 		posts.parseSignature(userData, req.uid),
 	]);
 
-	if (meta.config['reputation:disabled']) {
-		delete userData.reputation;
-	}
-
 	userData.posts = latestPosts; // for backwards compat.
 	userData.latestPosts = latestPosts;
 	userData.bestPosts = bestPosts;
 	userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username }]);
 	userData.title = userData.username;
-	userData.allowCoverPicture = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:cover-picture'];
 
 	// Show email changed modal on first access after said change
 	userData.emailChanged = req.session.emailChanged;
@@ -60,9 +54,6 @@ profileController.get = async function (req, res, next) {
 	}
 
 	addMetaTags(res, userData);
-
-	userData.selectedGroup = userData.groups.filter(group => group && userData.groupTitleArray.includes(group.name))
-		.sort((a, b) => userData.groupTitleArray.indexOf(a.name) - userData.groupTitleArray.indexOf(b.name));
 
 	res.render('account/profile', userData);
 };

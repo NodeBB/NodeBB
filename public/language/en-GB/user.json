@@ -45,6 +45,7 @@
 	"followers": "Followers",
 	"following": "Following",
 	"blocks": "Blocks",
+	"blocked-users": "Blocked users",
 	"block_toggle": "Toggle Block",
 	"block_user": "Block User",
 	"unblock_user": "Unblock User",
@@ -71,6 +72,7 @@
 	"upload_new_picture": "Upload New Picture",
 	"upload_new_picture_from_url": "Upload New Picture From URL",
 	"current_password": "Current Password",
+	"new_password": "New Password",
 	"change_password": "Change Password",
 	"change_password_error": "Invalid Password!",
 	"change_password_error_wrong_current": "Your current password is not correct!",
@@ -186,6 +188,8 @@
 	"info.moderation-note.add": "Add note",
 
 	"sessions.description": "This page allows you to view any active sessions on this forum and revoke them if necessary. You can revoke your own session by logging out of your account.",
+	"revoke-session": "Revoke Session",
+	"browser-version-on-platform": "%1 %2 on %3",
 
 	"consent.title": "Your Rights &amp; Consent",
 	"consent.lead": "This community forum collects and processes your personal information.",

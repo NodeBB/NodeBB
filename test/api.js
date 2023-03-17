@@ -24,6 +24,7 @@ const plugins = require('../src/plugins');
 const flags = require('../src/flags');
 const messaging = require('../src/messaging');
 const utils = require('../src/utils');
+const api = require('../src/api');
 
 describe('API', async () => {
 	let readApi = false;
@@ -46,6 +47,13 @@ describe('API', async () => {
 						template: 'digest',
 						uid: 1,
 					}, nconf.get('secret')))(),
+				},
+			],
+			'/api/confirm/{code}': [
+				{
+					in: 'path',
+					name: 'code',
+					example: '', // to be defined later...
 				},
 			],
 		},
@@ -109,12 +117,14 @@ describe('API', async () => {
 		}
 
 		// Create sample users
-		const adminUid = await user.create({ username: 'admin', password: '123456', email: 'test@example.org' });
-		const unprivUid = await user.create({ username: 'unpriv', password: '123456', email: 'unpriv@example.org' });
+		const adminUid = await user.create({ username: 'admin', password: '123456' });
+		const unprivUid = await user.create({ username: 'unpriv', password: '123456' });
+		const emailConfirmationUid = await user.create({ username: 'emailConf', email: 'emailConf@example.org' });
 		await user.setUserField(adminUid, 'email', 'test@example.org');
 		await user.setUserField(unprivUid, 'email', 'unpriv@example.org');
 		await user.email.confirmByUid(adminUid);
 		await user.email.confirmByUid(unprivUid);
+		mocks.get['/api/confirm/{code}'][0].example = await db.get(`confirm:byUid:${emailConfirmationUid}`);
 
 		for (let x = 0; x < 4; x++) {
 			// eslint-disable-next-line no-await-in-loop
@@ -190,17 +200,10 @@ describe('API', async () => {
 			path: 'files/test.png',
 		});
 
-		const socketUser = require('../src/socket.io/user');
 		const socketAdmin = require('../src/socket.io/admin');
-		// export data for admin user
-		await socketUser.exportProfile({ uid: adminUid }, { uid: adminUid });
-		await wait(2000);
-		await socketUser.exportPosts({ uid: adminUid }, { uid: adminUid });
-		await wait(2000);
-		await socketUser.exportUploads({ uid: adminUid }, { uid: adminUid });
-		await wait(2000);
+		await Promise.all(['profile', 'posts', 'uploads'].map(async type => api.users.generateExport({ uid: adminUid }, { uid: adminUid, type })));
 		await socketAdmin.user.exportUsersCSV({ uid: adminUid }, {});
-		// wait for export child process to complete
+		// wait for export child processes to complete
 		await wait(5000);
 
 		// Attach a search hook so /api/search is enabled
@@ -303,7 +306,7 @@ describe('API', async () => {
 		});
 	});
 
-	// generateTests(readApi, Object.keys(readApi.paths));
+	generateTests(readApi, Object.keys(readApi.paths));
 	generateTests(writeApi, Object.keys(writeApi.paths), writeApi.servers[0].url);
 
 	function generateTests(api, paths, prefix) {
@@ -465,7 +468,7 @@ describe('API', async () => {
 				});
 
 				it('should successfully re-login if needed', async () => {
-					const reloginPaths = ['PUT /users/{uid}/password', 'DELETE /users/{uid}/sessions/{uuid}'];
+					const reloginPaths = ['GET /api/user/{userslug}/edit/email', 'PUT /users/{uid}/password', 'DELETE /users/{uid}/sessions/{uuid}'];
 					if (reloginPaths.includes(`${method.toUpperCase()} ${path}`)) {
 						({ jar } = await helpers.loginUser('admin', '123456'));
 						const sessionUUIDs = await db.getObject('uid:1:sessionUUID:sessionId');
@@ -478,18 +481,6 @@ describe('API', async () => {
 							jar: jar,
 						});
 						csrfToken = config.csrf_token;
-					}
-				});
-
-				it('should back out of a registration interstitial if needed', async () => {
-					const affectedPaths = ['GET /api/user/{userslug}/edit/email'];
-					if (affectedPaths.includes(`${method.toUpperCase()} ${path}`)) {
-						await request({
-							uri: `${nconf.get('url')}/register/abort?_csrf=${csrfToken}`,
-							method: 'POST',
-							jar,
-							simple: false,
-						});
 					}
 				});
 			});
@@ -562,10 +553,10 @@ describe('API', async () => {
 
 						if (schema[prop].items) {
 							// Ensure the array items have a schema defined
-							assert(schema[prop].items.type || schema[prop].items.allOf, `"${prop}" is defined to be an array, but its items have no schema defined (path: ${method} ${path}, context: ${context})`);
+							assert(schema[prop].items.type || schema[prop].items.allOf || schema[prop].items.anyOf || schema[prop].items.oneOf, `"${prop}" is defined to be an array, but its items have no schema defined (path: ${method} ${path}, context: ${context})`);
 
 							// Compare types
-							if (schema[prop].items.type === 'object' || Array.isArray(schema[prop].items.allOf)) {
+							if (schema[prop].items.type === 'object' || Array.isArray(schema[prop].items.allOf || schema[prop].items.anyOf || schema[prop].items.oneOf)) {
 								response[prop].forEach((res) => {
 									compare(schema[prop].items, res, method, path, context ? [context, prop].join('.') : prop);
 								});

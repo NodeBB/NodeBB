@@ -34,7 +34,10 @@ SocketTopics.bookmark = async function (socket, data) {
 	}
 	const postcount = await topics.getTopicField(data.tid, 'postcount');
 	if (data.index > meta.config.bookmarkThreshold && postcount > meta.config.bookmarkThreshold) {
-		await topics.setUserBookmark(data.tid, socket.uid, data.index);
+		const currentIndex = await db.sortedSetScore(`tid:${data.tid}:bookmarks`, socket.uid);
+		if (!currentIndex || (data.index > currentIndex && data.index <= postcount) || (currentIndex > postcount)) {
+			await topics.setUserBookmark(data.tid, socket.uid, data.index);
+		}
 	}
 };
 

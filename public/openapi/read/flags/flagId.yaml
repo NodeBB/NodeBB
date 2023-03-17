@@ -42,5 +42,39 @@ get:
                     additionalProperties:
                       description: "A list of global and admin privileges, and whether the calling user has (or has inherited) them"
                       type: boolean
+                  states:
+                    type: object
+                    properties:
+                      open:
+                        type: object
+                        properties:
+                          label:
+                            type: string
+                          class:
+                            type: string
+                      wip:
+                        type: object
+                        properties:
+                          label:
+                            type: string
+                          class:
+                            type: string
+                      resolved:
+                        type: object
+                        properties:
+                          label:
+                            type: string
+                          class:
+                            type: string
+                      rejected:
+                        type: object
+                        properties:
+                          label:
+                            type: string
+                          class:
+                            type: string
+                    additionalProperties:
+                      type: object
+                      description: Plugins are able to add additional flag states, and so their values would also be present here if so.
               - $ref: ../../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
               - $ref: ../../components/schemas/CommonProps.yaml#/CommonProps

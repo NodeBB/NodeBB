@@ -18,7 +18,7 @@ define('forum/topic/delete-posts', [
 			return;
 		}
 
-		app.parseAndTranslate('partials/delete_posts_modal', {}, function (html) {
+		app.parseAndTranslate('modals/delete-posts', {}, function (html) {
 			modal = html;
 
 			$('body').append(modal);
@@ -26,7 +26,7 @@ define('forum/topic/delete-posts', [
 			deleteBtn = modal.find('#delete_posts_confirm');
 			purgeBtn = modal.find('#purge_posts_confirm');
 
-			modal.find('.close,#delete_posts_cancel').on('click', closeModal);
+			modal.find('#delete_posts_cancel').on('click', closeModal);
 
 			postSelect.init(function () {
 				checkButtonEnable();
@@ -52,7 +52,7 @@ define('forum/topic/delete-posts', [
 
 	function deletePosts(btn, route) {
 		btn.attr('disabled', true);
-		Promise.all(postSelect.pids.map(pid => api.delete(route(pid), {})))
+		Promise.all(postSelect.pids.map(pid => api.del(route(pid), {})))
 			.then(closeModal)
 			.catch(alerts.error)
 			.finally(() => {
