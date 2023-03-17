@@ -88,11 +88,9 @@ describe('minifier', () => {
 describe('Build', () => {
 	const build = require('../src/meta/build');
 
-	before((done) => {
-		async.parallel([
-			async.apply(rimraf, path.join(__dirname, '../build/public')),
-			async.apply(db.sortedSetAdd, 'plugins:active', Date.now(), 'nodebb-plugin-markdown'),
-		], done);
+	before(async () => {
+		await rimraf(path.join(__dirname, '../build/public'));
+		await db.sortedSetAdd('plugins:active', Date.now(), 'nodebb-plugin-markdown');
 	});
 
 	it('should build plugin static dirs', (done) => {
