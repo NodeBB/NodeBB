@@ -22,6 +22,7 @@
 	"notify": "Notifier",
 	"notify-user": "Notifier l'utilisateur",
 	"confirm-reject": "Voulez vous réellement rejeter ce message ?",
+	"confirm-remove": "Do you want to remove this post?",
 	"bulk-actions": "Actions",
 	"accept-all": "Tout accepter",
 	"accept-selected": "Acceptation sélectionné",
@@ -29,6 +30,10 @@
 	"reject-all-confirm": "Voulez vous réellement rejeter tous ces messages ?",
 	"reject-selected": "Rejets sélectionnés",
 	"reject-selected-confirm": "Voulez vous réellement rejeter ces %1 messages ?",
+	"remove-all": "Remove all",
+	"remove-all-confirm": "Do you want to remove all posts?",
+	"remove-selected": "Remove Selected",
+	"remove-selected-confirm": "Do you want to remove %1 selected posts?",
 	"bulk-accept-success": "%1 messages acceptés",
 	"bulk-reject-success": "%1 messages rejetés"
 }

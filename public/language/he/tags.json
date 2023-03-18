@@ -1,5 +1,7 @@
 {
+    "all-tags": "All tags",
     "no_tag_topics": "אין פוסטים עם תגית זו.",
+    "no-tags-found": "No tags found",
     "tags": "תגיות",
     "enter_tags_here": "הכנס תגים כאן, כאשר כל אחד בין %1 ל%2 תווים.",
     "enter_tags_here_short": "הכנס תגיות",

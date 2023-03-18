@@ -1,7 +1,7 @@
 {
-	"custom-css": "Пользовательский CSS/LESS",
-	"custom-css.description": "Добавьте собственные стили CSS/LESS. Они будут применяться в последнюю очередь, после всех остальных.",
-	"custom-css.enable": "Включить пользовательский CSS/LESS",
+	"custom-css": "Custom CSS/SASS",
+	"custom-css.description": "Enter your own CSS/SASS declarations here, which will be applied after all other styles.",
+	"custom-css.enable": "Enable Custom CSS/SASS",
 
 	"custom-js": "Пользовательский JavaScript",
 	"custom-js.description": "Добавьте собственный JS-код. Он будет выполнен после полной загрузки страницы.",

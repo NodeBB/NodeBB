@@ -1,5 +1,6 @@
 {
     "register": "Cadastrar",
+    "already-have-account": "Already have an account?",
     "cancel_registration": "Cancelar Cadastro",
     "help.email": "Por padrão, seu e-mail ficará oculto ao público.",
     "help.username_restrictions": "Um nome de usuário único entre %1 e %2 caracteres. Os outros poderão te mencionar digitando @<span id='yourUsername'>usuário</span>.",

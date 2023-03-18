@@ -8,9 +8,9 @@
 	"containers.none": "Няма",
 	"container.well": "Кладенец",
 	"container.jumbotron": "Джъмботрон",
-	"container.panel": "Панел",
-	"container.panel-header": "Заглавна част на панел",
-	"container.panel-body": "Основна част на панел",
+	"container.card": "Карта",
+	"container.card-header": "Заглавна част на карта",
+	"container.card-body": "Основна част на карта",
 	"container.alert": "Предупреждение",
 
 	"alert.confirm-delete": "Наистина ли искате да изтриете джаджата?",

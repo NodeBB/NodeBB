@@ -8,9 +8,9 @@
 	"containers.none": "None",
 	"container.well": "Well",
 	"container.jumbotron": "Jumbotron",
-	"container.panel": "פאנל",
-	"container.panel-header": "כותרת פאנל",
-	"container.panel-body": "גוף הפאנל",
+	"container.card": "Card",
+	"container.card-header": "Card Header",
+	"container.card-body": "Card Body",
 	"container.alert": "התראה",
 
 	"alert.confirm-delete": "האם אתה בטוח שאתה רוצה למחוק את הוידג'ט?",

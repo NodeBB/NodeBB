@@ -22,6 +22,7 @@
 	"notify": "通知",
 	"notify-user": "通知用户",
 	"confirm-reject": "您想要拒绝这个帖子吗？",
+	"confirm-remove": "Do you want to remove this post?",
 	"bulk-actions": "批量操作",
 	"accept-all": "全部同意",
 	"accept-selected": "同意选中项",
@@ -29,6 +30,10 @@
 	"reject-all-confirm": "您想要拒绝全部帖子吗？",
 	"reject-selected": "拒绝选中项",
 	"reject-selected-confirm": "您确定要拒绝%1个选择的帖子吗？",
+	"remove-all": "Remove all",
+	"remove-all-confirm": "Do you want to remove all posts?",
+	"remove-selected": "Remove Selected",
+	"remove-selected-confirm": "Do you want to remove %1 selected posts?",
 	"bulk-accept-success": "%1个帖子已接受",
 	"bulk-reject-success": "%1个帖子已拒绝"
 }

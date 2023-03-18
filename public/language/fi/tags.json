@@ -1,5 +1,7 @@
 {
+    "all-tags": "All tags",
     "no_tag_topics": "Ei viimeisimpiä aiheita tällä tagilla.",
+    "no-tags-found": "No tags found",
     "tags": "Tagit",
     "enter_tags_here": "Syötä tagit tähän merkkien %1 ja %2 väliin.",
     "enter_tags_here_short": "Syötä tagit...",

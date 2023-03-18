@@ -1,5 +1,7 @@
 {
+    "all-tags": "All tags",
     "no_tag_topics": "Không có bài viết nào với thẻ này.",
+    "no-tags-found": "No tags found",
     "tags": "Thẻ",
     "enter_tags_here": "Nhập thẻ ở đây, mỗi thẻ phải có từ %1 tới %2 ký tự.",
     "enter_tags_here_short": "Nhập thẻ...",

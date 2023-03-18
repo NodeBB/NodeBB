@@ -49,6 +49,7 @@
     "account/watched_categories": "دسته بندی های پیگیری شده %1",
     "account/bookmarks": "%1 پست نشانک گذاری شده است",
     "account/settings": "تنظیمات کاربر",
+    "account/settings-of": "Changing settings of %1",
     "account/watched": "موضوع های دیده شده توسط \"%1\"",
     "account/ignored": "موضوع های نادیده گرفته شده توسط %1",
     "account/upvoted": "رای مثبت داده شده به پست ها توسط  %1",

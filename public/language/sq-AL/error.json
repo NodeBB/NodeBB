@@ -224,5 +224,6 @@
     "api.429": "Ju keni bërë shumë kërkesa, ju lutemi provoni përsëri më vonë",
     "api.500": "Një gabim i papritur u ndesh gjatë përpjekjes për të kryer kërkesën tuaj.",
     "api.501": "Itinerari që kërkoni nuk është zbatuar ende, ju lutemi provoni sërish nesër",
-    "api.503": "Itinerari që kërkoni nuk është aktualisht i disponueshëm për shkak të një konfigurimi të serverit"
+    "api.503": "Itinerari që kërkoni nuk është aktualisht i disponueshëm për shkak të një konfigurimi të serverit",
+    "api.reauth-required": "The resource you are trying to access requires (re-)authentication."
 }

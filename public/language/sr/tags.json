@@ -1,5 +1,7 @@
 {
+    "all-tags": "All tags",
     "no_tag_topics": "Нема тема са овом ознаком.",
+    "no-tags-found": "No tags found",
     "tags": "Ознаке",
     "enter_tags_here": "Овде унесите ознаке, од %1 до %2 знакова за сваку.",
     "enter_tags_here_short": "Унесите ознаке...",

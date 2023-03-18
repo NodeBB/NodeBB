@@ -22,6 +22,7 @@
 	"notify": "Bildirim yap",
 	"notify-user": "Kullanıcıyı uyar",
 	"confirm-reject": "Bu iletiyi reddetmek istediğinize emin misiniz?",
+	"confirm-remove": "Do you want to remove this post?",
 	"bulk-actions": "Toplu İşlemler",
 	"accept-all": "Hepsini Onayla",
 	"accept-selected": "Seçili Olanları Onayla",
@@ -29,6 +30,10 @@
 	"reject-all-confirm": "Tüm iletileri reddetmek istediğinize emin misiniz?",
 	"reject-selected": "Seçili Olanları Reddet",
 	"reject-selected-confirm": "Seçili olan %1 iletiyi reddetmek istediğinize emin misiniz?",
+	"remove-all": "Remove all",
+	"remove-all-confirm": "Do you want to remove all posts?",
+	"remove-selected": "Remove Selected",
+	"remove-selected-confirm": "Do you want to remove %1 selected posts?",
 	"bulk-accept-success": "%1 ileti onaylandı",
 	"bulk-reject-success": "%1 ileti reddedildi"
 }

@@ -39,6 +39,5 @@
 	"revert": "Revert",
 
 	"edit.no-users-found": "No Users Found",
-	"edit.confirm-remove-user": "Are you sure you want to remove this user?",
-	"edit.save-success": "Changes saved!"
+	"edit.confirm-remove-user": "Are you sure you want to remove this user?"
 }

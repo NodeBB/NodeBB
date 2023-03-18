@@ -22,6 +22,7 @@
 	"notify": "Տեղեկացնել",
 	"notify-user": "Տեղեկացնել օգտատիրոջը",
 	"confirm-reject": "Ցանկանու՞մ եք մերժել այս գրառումը:",
+	"confirm-remove": "Do you want to remove this post?",
 	"bulk-actions": "Զանգվածային գործողություններ",
 	"accept-all": "Ընդունել բոլորը ",
 	"accept-selected": "Ընդունել ընտրվածը",
@@ -29,6 +30,10 @@
 	"reject-all-confirm": "Ցանկանու՞մ եք մերժել բոլոր գրառումները:",
 	"reject-selected": "Մերժել ընտրվածը",
 	"reject-selected-confirm": "Ցանկանու՞մ եք մերժել %1 ընտրված գրառումները:",
+	"remove-all": "Remove all",
+	"remove-all-confirm": "Do you want to remove all posts?",
+	"remove-selected": "Remove Selected",
+	"remove-selected-confirm": "Do you want to remove %1 selected posts?",
 	"bulk-accept-success": "Ընդունված է %1 գրառում",
 	"bulk-reject-success": "%1 գրառում մերժվել է"
 }

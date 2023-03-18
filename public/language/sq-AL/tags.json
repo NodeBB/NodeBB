@@ -1,5 +1,7 @@
 {
+    "all-tags": "All tags",
     "no_tag_topics": "Nuk ka tema me këtë tag.",
+    "no-tags-found": "No tags found",
     "tags": "Tags",
     "enter_tags_here": "Futni këtu tags, ndërmjet %1 dhe %2 karaktere secila.",
     "enter_tags_here_short": "Vendos tags...",

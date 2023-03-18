@@ -1,5 +1,6 @@
 {
     "register": "Εγγραφή",
+    "already-have-account": "Already have an account?",
     "cancel_registration": "Cancel Registration",
     "help.email": "Από προεπιλογή, το email σου θα είναι κρυμμένο από την κοινή θέα.",
     "help.username_restrictions": "Ένα μοναδικό όνομα χρήστη μεταξύ %1 και %2 χαρακτήρων. Άλλα άτομα μπορούν να σε αναφέρουν με το @<span id='yourUsername'>username</span> σου.",

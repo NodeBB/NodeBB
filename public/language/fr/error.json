@@ -224,5 +224,6 @@
     "api.429": "Vous avez fait trop de demandes, veuillez réessayer plus tard",
     "api.500": "Une erreur inattendue s'est produite lors de la tentative de traitement de votre demande.",
     "api.501": "L'accès n'est pas encore fonctionnel, veuillez réessayer demain",
-    "api.503": "L'accès n'est pas disponible actuellement en raison d'une configuration de serveur"
+    "api.503": "L'accès n'est pas disponible actuellement en raison d'une configuration de serveur",
+    "api.reauth-required": "The resource you are trying to access requires (re-)authentication."
 }

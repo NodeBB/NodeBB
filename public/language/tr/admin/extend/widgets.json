@@ -8,9 +8,9 @@
 	"containers.none": "Kutucuk Yok",
 	"container.well": "Çukur",
 	"container.jumbotron": "Büyük Gösterim",
-	"container.panel": "Panel",
-	"container.panel-header": "Panel Başlığı",
-	"container.panel-body": "Panel Gövdesi",
+	"container.card": "Card",
+	"container.card-header": "Card Header",
+	"container.card-body": "Card Body",
 	"container.alert": "Uyarı",
 
 	"alert.confirm-delete": "Bu bileşeni silmek istediğinizden emin misiniz?",

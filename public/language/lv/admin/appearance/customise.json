@@ -1,7 +1,7 @@
 {
-	"custom-css": "Pielāgotais CSS/LESS",
-	"custom-css.description": "Šeit ievadi savas CSS / LESS deklarācijas, kuras piemēros pēc visiem citiem stiliem.",
-	"custom-css.enable": "Iespējot pielāgotu CSS/LESS",
+	"custom-css": "Custom CSS/SASS",
+	"custom-css.description": "Enter your own CSS/SASS declarations here, which will be applied after all other styles.",
+	"custom-css.enable": "Enable Custom CSS/SASS",
 
 	"custom-js": "Pielāgotais Javascript",
 	"custom-js.description": "Šeit ievadi savu javascript. Tas tiks palaists pēc lapas pilnīgas ielādes.",

@@ -39,6 +39,5 @@
 	"revert": "בטל שינויים",
 
 	"edit.no-users-found": "לא נמצאו משתמשים",
-	"edit.confirm-remove-user": "האם אתה בטוח שאתה רוצה להסיר משתמש זה?",
-	"edit.save-success": "השינויים נשמרו!"
+	"edit.confirm-remove-user": "האם אתה בטוח שאתה רוצה להסיר משתמש זה?"
 }

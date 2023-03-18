@@ -49,6 +49,7 @@
     "account/watched_categories": "%1 kullanıcısının takip ettiği kategoriler",
     "account/bookmarks": "%1 kullanıcısının yer imlerine eklenmiş iletiler",
     "account/settings": "Kullanıcı Ayarları",
+    "account/settings-of": "Changing settings of %1",
     "account/watched": "%1 tarafından takip edilen başlıklar",
     "account/ignored": "%1 tarafından yok sayılan başlıklar",
     "account/upvoted": "%1 tarafından artılanan iletiler",

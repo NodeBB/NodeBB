@@ -49,6 +49,7 @@
     "account/watched_categories": "%1's overvåkede kategorier",
     "account/bookmarks": "%1's bokmerkede innlegg",
     "account/settings": "Brukerinnstillinger",
+    "account/settings-of": "Changing settings of %1",
     "account/watched": "Innlegg overvåket av %1",
     "account/ignored": "Emner ignorert av %1",
     "account/upvoted": "Innlegg stemt opp av %1",

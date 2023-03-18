@@ -49,7 +49,6 @@
 	"alert.confirm-moderate": "<strong>Biztosan beállítod ezeket a moderációs jogosultságokat ennek a csoportnak?</strong> Ez a csoport nyilvános, a felhasználók szabadon beléphetnek.",
 	"alert.confirm-admins-mods": "<strong>Biztosan beállítod az &quot;Adminisztrátorok és moderátorok&quot; jogosultságot ennek a felhasználónak/csoportnak?</strong> Felhasználók ezzel a jogosultsággal képesek más felhasználókat különböző jogosultságokkal felruházni, <em>beleértve a szuper adminisztrátort is</em>",
 	"alert.confirm-save": "Erősítsd meg, hogy frissíteni szeretnéd ezeket a jogosultságokat",
-	"alert.saved": "Jogosultságok módosításai mentésre kerültek",
 	"alert.confirm-discard": "Biztosan el szeretnéd vetni ezeket a jogosultsági módosításokat?",
 	"alert.discarded": "Jogosultságok módosításai elvetve",
 	"alert.confirm-copyToAll": "Are you sure you wish to apply this set of <strong>%1</strong> to <strong>all categories</strong>?",

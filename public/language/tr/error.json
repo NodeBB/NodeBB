@@ -224,5 +224,6 @@
     "api.429": "Fazla sayıda istekte bulundunuz, lütfen daha sonra tekrar deneyiniz.",
     "api.500": "İsteğinizi gerçekleştirmeye çalışırken beklenmeyen bir hata ile karşılaşıldı.",
     "api.501": "Aramaya çalıştığınız rota henüz uygulanmadı, lütfen yarın tekrar deneyin",
-    "api.503": "Aramaya çalıştığınız rota sunucu yapılandırması nedeniyle şu anda kullanılamıyor"
+    "api.503": "Aramaya çalıştığınız rota sunucu yapılandırması nedeniyle şu anda kullanılamıyor",
+    "api.reauth-required": "The resource you are trying to access requires (re-)authentication."
 }

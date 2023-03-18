@@ -224,5 +224,6 @@
     "api.429": "您在短时间内发出了过多的请求，请稍后再试",
     "api.500": "在试图为您的请求提供服务时出现了一个意外的错误。",
     "api.501": "您试图调用的路由还没被实现，请明天重试",
-    "api.503": "您试图调用的路由因为服务器配置而目前不可用"
+    "api.503": "您试图调用的路由因为服务器配置而目前不可用",
+    "api.reauth-required": "The resource you are trying to access requires (re-)authentication."
 }

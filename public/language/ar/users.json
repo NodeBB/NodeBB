@@ -1,11 +1,12 @@
 {
+    "all-users": "All Users",
     "latest_users": "أحدث الأعضاء",
     "top_posters": "اﻷكثر مشاركة",
     "most_reputation": "أعلى سمعة",
     "most_flags": "معظم الأعلام",
     "search": "بحث",
     "enter_username": "أدخل اسم مستخدم للبحث",
-    "search-user-for-chat": "ابحث عن مستخدم لبدء محادثة ",
+    "search-user-for-chat": "Search for a user to start chat:",
     "load_more": "حمل المزيد",
     "users-found-search-took": "تم إيجاد %1 مستخدمـ(ين)! استغرق البحث %2 ثانية.",
     "filter-by": "تصفية بحسب",

@@ -49,6 +49,7 @@
     "account/watched_categories": "%1's Watched Categories",
     "account/bookmarks": "%1's Bookmarked Posts",
     "account/settings": "Bruger instillinger",
+    "account/settings-of": "Changing settings of %1",
     "account/watched": "Tråde fulgt af %1",
     "account/ignored": "Topics ignored by %1",
     "account/upvoted": "Indlæg syntes godt om af %1",

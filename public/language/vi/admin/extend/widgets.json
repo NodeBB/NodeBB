@@ -8,9 +8,9 @@
 	"containers.none": "Trống",
 	"container.well": "Tốt",
 	"container.jumbotron": "Khung Hiển Thị Lớn",
-	"container.panel": "Bảng",
-	"container.panel-header": "Tiêu Đề Bảng",
-	"container.panel-body": "Thân Bảng",
+	"container.card": "Card",
+	"container.card-header": "Card Header",
+	"container.card-body": "Card Body",
 	"container.alert": "Cảnh báo",
 
 	"alert.confirm-delete": "Bạn có chắc chắn muốn xóa tiện ích này không?",

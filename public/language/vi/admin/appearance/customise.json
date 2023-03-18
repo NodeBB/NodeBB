@@ -1,7 +1,7 @@
 {
-	"custom-css": "Tùy Chỉnh CSS/LESS",
-	"custom-css.description": "Nhập các khai báo CSS / LESS của bạn tại đây, nó sẽ được áp dụng sau tất cả các kiểu khác.",
-	"custom-css.enable": "Bật Tùy Chỉnh CSS/LESS",
+	"custom-css": "Custom CSS/SASS",
+	"custom-css.description": "Enter your own CSS/SASS declarations here, which will be applied after all other styles.",
+	"custom-css.enable": "Enable Custom CSS/SASS",
 
 	"custom-js": "Javascript tùy chỉnh",
 	"custom-js.description": "Nhập javascript của riêng bạn ở đây. Nó sẽ được thực hiện sau khi trang được tải hoàn toàn.",

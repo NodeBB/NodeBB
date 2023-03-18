@@ -8,9 +8,9 @@
 	"containers.none": "無",
 	"container.well": "Well",
 	"container.jumbotron": "超大屏幕",
-	"container.panel": "面板",
-	"container.panel-header": "面板標題",
-	"container.panel-body": "面板內容",
+	"container.card": "Card",
+	"container.card-header": "Card Header",
+	"container.card-body": "Card Body",
 	"container.alert": "警示",
 
 	"alert.confirm-delete": "確認刪除此小工具？",

@@ -39,6 +39,5 @@
 	"revert": "Rückgängig machen",
 
 	"edit.no-users-found": "Keine Benutzer gefunden",
-	"edit.confirm-remove-user": "Sind Sie sicher, dass Sie diesen Benutzer entfernen wollen?",
-	"edit.save-success": "Änderungen gespeichert!"
+	"edit.confirm-remove-user": "Sind Sie sicher, dass Sie diesen Benutzer entfernen wollen?"
 }

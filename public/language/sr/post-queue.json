@@ -22,6 +22,7 @@
 	"notify": "Обавештење",
 	"notify-user": "Обавести корисника",
 	"confirm-reject": "Да ли желите да одбаците ову објаву?",
+	"confirm-remove": "Do you want to remove this post?",
 	"bulk-actions": "Масовне радње",
 	"accept-all": "Прихвати све",
 	"accept-selected": "Прихвати изабрано",
@@ -29,6 +30,10 @@
 	"reject-all-confirm": "Да ли желите да одбаците све објаве?",
 	"reject-selected": "Одбаци изабрано",
 	"reject-selected-confirm": "Да ли желите да одбаците изабране објаве (укупно %1)?",
+	"remove-all": "Remove all",
+	"remove-all-confirm": "Do you want to remove all posts?",
+	"remove-selected": "Remove Selected",
+	"remove-selected-confirm": "Do you want to remove %1 selected posts?",
 	"bulk-accept-success": "Прихваћених објава: %1",
 	"bulk-reject-success": "Одбачених објава: %1"
 }

@@ -39,6 +39,5 @@
 	"revert": "元に戻す",
 
 	"edit.no-users-found": "ユーザーが見つかりません",
-	"edit.confirm-remove-user": "このユーザーを削除してもよろしいですか？",
-	"edit.save-success": "設定を保存しました。"
+	"edit.confirm-remove-user": "このユーザーを削除してもよろしいですか？"
 }

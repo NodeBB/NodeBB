@@ -49,6 +49,7 @@
     "account/watched_categories": "Категории, которые отслеживает %1",
     "account/bookmarks": "Закладки %1",
     "account/settings": "Настройки учётной записи",
+    "account/settings-of": "Changing settings of %1",
     "account/watched": "Темы, которые %1 отслеживает",
     "account/ignored": "Темы, которые %1 игнорирует",
     "account/upvoted": "Понравилось пользователю %1",

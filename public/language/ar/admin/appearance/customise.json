@@ -1,7 +1,7 @@
 {
-	"custom-css": "CSS/LESS مخصص",
-	"custom-css.description": "أدخل بياناتك ل CSS / LESS هنا، وسيتم تطبيقها بعد كل الأنماط الأخرى.",
-	"custom-css.enable": "تمكين CSS/LESS المخصصة",
+	"custom-css": "Custom CSS/SASS",
+	"custom-css.description": "Enter your own CSS/SASS declarations here, which will be applied after all other styles.",
+	"custom-css.enable": "Enable Custom CSS/SASS",
 
 	"custom-js": "Javascript مخصصة",
 	"custom-js.description": "أدخل Javascript الخاص بك هنا. سيتم تنفيذها بعد تحميل الصفحة بالكامل.",

@@ -1,5 +1,6 @@
 {
     "register": "Regisztráció",
+    "already-have-account": "Already have an account?",
     "cancel_registration": "Regisztráció megszakítása",
     "help.email": "Alapértelmezetten az e-mail címed rejtve van a nyilvánosság előtt.",
     "help.username_restrictions": "Egyedi felhasználói név %1 és %2 karakterek között. A többiek az alábbi módon említhetnek meg: @<span id='yourUsername'>becenév</span>.",

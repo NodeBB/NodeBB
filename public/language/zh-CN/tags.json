@@ -1,5 +1,7 @@
 {
+    "all-tags": "All tags",
     "no_tag_topics": "此标签还没有主题帖。",
+    "no-tags-found": "No tags found",
     "tags": "标签",
     "enter_tags_here": "在这里输入标签，每个标签 %1 到 %2 个字符。",
     "enter_tags_here_short": "输入标签...",

@@ -39,6 +39,5 @@
 	"revert": "重置",
 
 	"edit.no-users-found": "没有找到用户",
-	"edit.confirm-remove-user": "确认删除此用户吗？",
-	"edit.save-success": "设置已保存！"
+	"edit.confirm-remove-user": "确认删除此用户吗？"
 }

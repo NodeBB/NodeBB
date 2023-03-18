@@ -1,5 +1,7 @@
 {
+    "all-tags": "All tags",
     "no_tag_topics": "এই ট্যাগ সম্বলিত কোন টপিক নেই",
+    "no-tags-found": "No tags found",
     "tags": "ট্যাগসমূহ",
     "enter_tags_here": "Enter tags here, between %1 and %2 characters each.",
     "enter_tags_here_short": "ট্যাগ বসান",

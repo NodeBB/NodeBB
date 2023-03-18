@@ -49,7 +49,6 @@
 	"alert.confirm-moderate": "<strong>您确定要将审核权限授予此用户组吗？</strong>此用户组是公开的，任何用户都可以随意加入。",
 	"alert.confirm-admins-mods": "<strong>您确定您想要给予“管理员和版主”权限给此用户/用户组吗？</strong>有此权限的用户能够让其他用户升职或降职到特权位置，<em>包括超级管理员</em>",
 	"alert.confirm-save": "请验证您保存这些权限的目的",
-	"alert.saved": "权限修改已保存并应用",
 	"alert.confirm-discard": "您确定要取消权限修改吗？",
 	"alert.discarded": "权限修改已被丢弃",
 	"alert.confirm-copyToAll": "您确定您要将此设置<strong>%1</strong>应用到<strong>全部版块</strong>？",

@@ -49,6 +49,7 @@
     "account/watched_categories": "%1's Watched Categories",
     "account/bookmarks": "%1's Bookmarked Posts",
     "account/settings": "Käyttäjän asetukset",
+    "account/settings-of": "Changing settings of %1",
     "account/watched": "%1 seuraamat aiheet",
     "account/ignored": "%1 sivuuttamat aiheet",
     "account/upvoted": "%1 tykkäämät viestit",

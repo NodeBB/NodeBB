@@ -22,6 +22,7 @@
 	"notify": "Известяване",
 	"notify-user": "Известяване на потребителя",
 	"confirm-reject": "Искате ли да отхвърлите тази публикация?",
+	"confirm-remove": "Do you want to remove this post?",
 	"bulk-actions": "Групови действия",
 	"accept-all": "Приемане на всички",
 	"accept-selected": "Приемане на избраните",
@@ -29,6 +30,10 @@
 	"reject-all-confirm": "Наистина ли искате да отхвърлите всички публикации?",
 	"reject-selected": "Отхвърляне на избраните",
 	"reject-selected-confirm": "Наистина ли искате да отхвърлите %1 избрани публикации?",
+	"remove-all": "Remove all",
+	"remove-all-confirm": "Do you want to remove all posts?",
+	"remove-selected": "Remove Selected",
+	"remove-selected-confirm": "Do you want to remove %1 selected posts?",
 	"bulk-accept-success": "Одобрени публикации: %1",
 	"bulk-reject-success": "Отхвърлени публикации: %1"
 }

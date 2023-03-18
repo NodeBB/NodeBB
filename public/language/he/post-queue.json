@@ -22,6 +22,7 @@
 	"notify": "שלח הודעה",
 	"notify-user": "שלח התראה למשתמש",
 	"confirm-reject": "האם אתה בטוח שברצונך לדחות את הפוסט הזה?",
+	"confirm-remove": "Do you want to remove this post?",
 	"bulk-actions": "פעולות כמותיות",
 	"accept-all": "אשר הכל",
 	"accept-selected": "אשר פוסטים נבחרים",
@@ -29,6 +30,10 @@
 	"reject-all-confirm": "האם אתה בטוח שברצונך לדחות את כל הפוסטים?",
 	"reject-selected": "דחה פוסטים נבחרים",
 	"reject-selected-confirm": "האם אתה בטוח שברצונך לדחות את %1 הפוסטים שנבחרו?",
+	"remove-all": "Remove all",
+	"remove-all-confirm": "Do you want to remove all posts?",
+	"remove-selected": "Remove Selected",
+	"remove-selected-confirm": "Do you want to remove %1 selected posts?",
 	"bulk-accept-success": "%1 פוסטים אושרו",
 	"bulk-reject-success": "%1 פוסטים נדחו"
 }

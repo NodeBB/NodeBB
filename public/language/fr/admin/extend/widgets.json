@@ -8,9 +8,9 @@
 	"containers.none": "Aucun",
 	"container.well": "Well",
 	"container.jumbotron": "Jombotron",
-	"container.panel": "Panneau",
-	"container.panel-header": "En-tête de panneau",
-	"container.panel-body": "Corps de panneau",
+	"container.card": "Card",
+	"container.card-header": "Card Header",
+	"container.card-body": "Card Body",
 	"container.alert": "Alerte",
 
 	"alert.confirm-delete": "Êtes-vous sûr de vouloir supprimer ce widget ?",

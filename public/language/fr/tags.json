@@ -1,5 +1,7 @@
 {
+    "all-tags": "All tags",
     "no_tag_topics": "Il n'y a aucun sujet ayant ce mot-clé",
+    "no-tags-found": "No tags found",
     "tags": "Mots-clés",
     "enter_tags_here": "Entrez les mots-clés ici. Chaque mot doit faire entre %1 et %2 caractères.",
     "enter_tags_here_short": "Entrez des mots-clés...",

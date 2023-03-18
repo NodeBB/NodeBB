@@ -1,11 +1,12 @@
 {
+    "all-users": "All Users",
     "latest_users": "Posljednji korisnici",
     "top_posters": "Najviše objava",
     "most_reputation": "Najveća reputacija",
     "most_flags": "Najviše zastava",
     "search": "Pretraga",
     "enter_username": "Unesi korisničko ime za pretragu",
-    "search-user-for-chat": "Search a user to start chat",
+    "search-user-for-chat": "Search for a user to start chat:",
     "load_more": "Učitaj više",
     "users-found-search-took": "%1user(s) pronađeni! Pretraga je trajala %2 sekundi.",
     "filter-by": "Filtriraj po",

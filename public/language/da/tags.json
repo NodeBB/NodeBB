@@ -1,5 +1,7 @@
 {
+    "all-tags": "All tags",
     "no_tag_topics": "Der er ikke indlæg med dette tag.",
+    "no-tags-found": "No tags found",
     "tags": "Tags",
     "enter_tags_here": "Indsæt tags her, hver på mellem %1 og %2 karakterer.",
     "enter_tags_here_short": "Skriv tags",

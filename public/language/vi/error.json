@@ -224,5 +224,6 @@
     "api.429": "Bạn đã đưa ra quá nhiều yêu cầu, vui lòng thử lại sau",
     "api.500": "Đã xảy ra lỗi không mong muốn khi cố gắng thực hiện yêu cầu của bạn.",
     "api.501": "Định tuyến bạn đang cố gắng gọi chưa được triển khai, vui lòng thử lại vào ngày mai",
-    "api.503": "Định tuyến bạn đang cố gọi hiện không khả dụng do cấu hình máy chủ"
+    "api.503": "Định tuyến bạn đang cố gọi hiện không khả dụng do cấu hình máy chủ",
+    "api.reauth-required": "The resource you are trying to access requires (re-)authentication."
 }

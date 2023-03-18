@@ -1,5 +1,6 @@
 {
     "groups": "Csoportok",
+    "members": "Members",
     "view_group": "Csoport megtekintés",
     "owner": "Csoport tulajdonosa",
     "new_group": "Új csoport létrehozása",

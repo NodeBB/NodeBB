@@ -1,5 +1,7 @@
 {
+    "all-tags": "All tags",
     "no_tag_topics": "Teemasid, mis sisaldaksid seda märksõna, ei eksisteeri.",
+    "no-tags-found": "No tags found",
     "tags": "Märksõnad",
     "enter_tags_here": "Sisesta märksõnad siia, %1 kuni %2 tähemärki märksõna kohta.",
     "enter_tags_here_short": "Sisesta märksõnu...",

@@ -49,6 +49,7 @@
     "account/watched_categories": "%1's Watched Categories",
     "account/bookmarks": "%1's Bookmarked Posts",
     "account/settings": "User Settings",
+    "account/settings-of": "Changing settings of %1",
     "account/watched": "Topics watched by %1",
     "account/ignored": "Topics ignored by %1",
     "account/upvoted": "Posts upvoted by %1",

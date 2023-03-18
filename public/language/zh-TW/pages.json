@@ -49,6 +49,7 @@
     "account/watched_categories": "%1 關注的版面",
     "account/bookmarks": "%1 收藏的貼文",
     "account/settings": "使用者設定",
+    "account/settings-of": "Changing settings of %1",
     "account/watched": "主題已被 %1 關注",
     "account/ignored": "主題已被 %1 忽略",
     "account/upvoted": "貼文被 %1 點贊",

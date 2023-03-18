@@ -39,6 +39,5 @@
 	"revert": "Reverter",
 
 	"edit.no-users-found": "Nenhum Usuário Encontrado",
-	"edit.confirm-remove-user": "Tem certeza que deseja excluir este usuário?",
-	"edit.save-success": "Alterações salvas!"
+	"edit.confirm-remove-user": "Tem certeza que deseja excluir este usuário?"
 }

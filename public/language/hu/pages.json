@@ -49,6 +49,7 @@
     "account/watched_categories": "%1's Watched Categories",
     "account/bookmarks": "%1 könyvjelzőzött hozzászólásai",
     "account/settings": "Felhasználói beállítások",
+    "account/settings-of": "Changing settings of %1",
     "account/watched": "%1 által figyelt témakörök",
     "account/ignored": "%1 által mellőzött témakörök",
     "account/upvoted": "%1 által kedvelt témakörök",

@@ -1,5 +1,6 @@
 {
     "register": "Daftar",
+    "already-have-account": "Already have an account?",
     "cancel_registration": "Cancel Registration",
     "help.email": "Secara default, emailmu akan disembunyikan dari publik.",
     "help.username_restrictions": "Nama Pengguna yang unik antara %1 dan %2 karakter. Pengguna lain dapat menyebutmu dengan menggunakan @<span id='Nama Pengguna mu'>nama pengguna</span>.",

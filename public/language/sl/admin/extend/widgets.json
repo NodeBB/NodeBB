@@ -8,9 +8,9 @@
 	"containers.none": "Brez",
 	"container.well": "Well",
 	"container.jumbotron": "Jumbotron",
-	"container.panel": "plošča",
-	"container.panel-header": "Glava plošče",
-	"container.panel-body": "Panel Body",
+	"container.card": "Card",
+	"container.card-header": "Card Header",
+	"container.card-body": "Card Body",
 	"container.alert": "Opozorilo",
 
 	"alert.confirm-delete": "Ste prepričani, da želite izbrisati ta pripomoček?",

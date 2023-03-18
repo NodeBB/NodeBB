@@ -39,6 +39,5 @@
 	"revert": "Atgriezties",
 
 	"edit.no-users-found": "Nav lietotāju",
-	"edit.confirm-remove-user": "Vai tiešām vēlies izdzēst šo lietotāju?",
-	"edit.save-success": "Izmaiņas saglabātas"
+	"edit.confirm-remove-user": "Vai tiešām vēlies izdzēst šo lietotāju?"
 }
