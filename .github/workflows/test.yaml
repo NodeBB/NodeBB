@@ -50,7 +50,7 @@ jobs:
 
     services:
       postgres:
-        image: 'postgres:14-alpine'
+        image: 'postgres:15-alpine'
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
