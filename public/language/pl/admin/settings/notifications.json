@@ -3,5 +3,5 @@
 	"welcome-notification": "Powiadomienie powitalne",
 	"welcome-notification-link": "Łącze do komunikatu powitalnego",
 	"welcome-notification-uid": "Powiadomienie powitalne użytkownika (UID)",
-	"post-queue-notification-uid": "Post Queue User (UID)"
+	"post-queue-notification-uid": "Użytkownik kolejki pocztowej (UID)"
 }

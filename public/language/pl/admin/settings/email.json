@@ -5,8 +5,8 @@
 	"from": "Pole „Od”",
 	"from-help": "Nazwa „Od” widoczna w e-mailach",
 
-	"confirmation-settings": "Confirmation",
-	"confirmation.expiry": "Hours to keep email confirmation link valid",
+	"confirmation-settings": "Potwierdzenie",
+	"confirmation.expiry": "Czas ważności linku potwierdzającego e-mail",
 
 	"smtp-transport": "Transport SMTP",
 	"smtp-transport.enabled": "Enable SMTP Transport",
