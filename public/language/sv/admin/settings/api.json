@@ -11,6 +11,9 @@
 	"uid": "User ID",
 	"uid-help-text": "Specify a User ID to associate with this token. If the user ID is <code>0</code>, it will be considered a <em>master</em> token, which can assume the identity of other users based on the <code>_uid</code> parameter",
 	"description": "Beskrivning",
+	"last-seen-ago": "Last used <span class=\"timeago\" title=\"%1\"></span>.",
+	"last-seen-on": "Last used on <span class=\"timeago\" title=\"%1\"></span>.",
+	"last-seen-never": "This key has never been used.",
 	"no-description": "Ingen beskrivning finns.",
 	"token-on-save": "Token will be generated once form is saved"
 }

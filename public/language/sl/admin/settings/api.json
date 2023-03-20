@@ -11,6 +11,9 @@
 	"uid": "ID uporabnika",
 	"uid-help-text": "Določite ID uporabnika, ki ga želite povezati s tem žetonom. Če je ID uporabnika <code>0</code>, bo veljal za <em>glavni</em> žeton, ki lahko prevzame identiteto drugih uporabnikov na podlagi parametra <code>_uid</code>",
 	"description": "Opis",
+	"last-seen-ago": "Last used <span class=\"timeago\" title=\"%1\"></span>.",
+	"last-seen-on": "Last used on <span class=\"timeago\" title=\"%1\"></span>.",
+	"last-seen-never": "This key has never been used.",
 	"no-description": "Opis ni naveden.",
 	"token-on-save": "Žeton bo ustvarjen, ko bo obrazec shranjen"
 }

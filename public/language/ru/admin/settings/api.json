@@ -11,6 +11,9 @@
 	"uid": "ID пользователя",
 	"uid-help-text": "Укажите идентификатор пользователя, который нужно связать с этим токеном. Если идентификатор пользователя равен <code>0</code>, он будет считаться <em>главным</em> токеном, который может предполагать идентичность других пользователей на основе параметра <code>_uid</code>.",
 	"description": "Описание",
+	"last-seen-ago": "Last used <span class=\"timeago\" title=\"%1\"></span>.",
+	"last-seen-on": "Last used on <span class=\"timeago\" title=\"%1\"></span>.",
+	"last-seen-never": "This key has never been used.",
 	"no-description": "Описания нет.",
 	"token-on-save": "Токен будет сгенерирован после сохранения формы"
 }

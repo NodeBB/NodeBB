@@ -11,6 +11,9 @@
 	"uid": "ID Người Dùng",
 	"uid-help-text": "Ghi rõ ID người dùng liên kết với mã truy cập. Nếu ID người dùng là <code>0</code>, nó sẽ là môt mã truy cập <em>cao cấp</em>, có thể giả định danh tính của những người dùng khác dựa trên tham số <code>_uid</code>",
 	"description": "Mô tả",
+	"last-seen-ago": "Last used <span class=\"timeago\" title=\"%1\"></span>.",
+	"last-seen-on": "Last used on <span class=\"timeago\" title=\"%1\"></span>.",
+	"last-seen-never": "This key has never been used.",
 	"no-description": "Không có mô tả cụ thể.",
 	"token-on-save": "Mã truy cập sẽ được tạo sau khi biểu mẫu được lưu"
 }

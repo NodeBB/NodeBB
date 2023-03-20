@@ -11,6 +11,9 @@
 	"uid": "ID do Usuário",
 	"uid-help-text": "Especifique um ID de usuário para associar a este token. Se o ID do usuário for<code>0</code>, ele será considerada uma token <em>master</em>, que pode assumir a identidade de outros usuários com base no parâmetro <code>_uid</code>",
 	"description": "Descrição",
+	"last-seen-ago": "Last used <span class=\"timeago\" title=\"%1\"></span>.",
+	"last-seen-on": "Last used on <span class=\"timeago\" title=\"%1\"></span>.",
+	"last-seen-never": "This key has never been used.",
 	"no-description": "Nenhuma descrição especificada.",
 	"token-on-save": "O token será gerado assim que o formulário for salvo"
 }

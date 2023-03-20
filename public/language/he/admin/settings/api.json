@@ -11,6 +11,9 @@
 	"uid": "ID משתמש",
 	"uid-help-text": "ציין מזהה משתמש בכדי לשייך לטוקן זה. אם מזהה המשתמש הוא <code>0</code>, זה ייחשב כטוקן<em>ראשי</em>, שיכול לשער את זהותם של משתמשים אחרים על בסיס פרמטר<code>_uid</code> .",
 	"description": "תיאור",
+	"last-seen-ago": "Last used <span class=\"timeago\" title=\"%1\"></span>.",
+	"last-seen-on": "Last used on <span class=\"timeago\" title=\"%1\"></span>.",
+	"last-seen-never": "This key has never been used.",
 	"no-description": "לא צוין תיאור.",
 	"token-on-save": "טוקן יוצר לאחר שמירת הטופס"
 }
