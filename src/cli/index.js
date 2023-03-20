@@ -57,7 +57,7 @@ try {
 		packages.forEach((packageName) => {
 			const resolvedModule = require.resolve(packageName);
 			if (require.cache[resolvedModule]) {
-		 		delete require.cache[resolvedModule];
+				delete require.cache[resolvedModule];
 			}
 		});
 
