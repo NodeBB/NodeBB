@@ -9,3 +9,5 @@ const utils = module.exports;
 utils.log = async (token) => {
 	await db.sortedSetAdd('tokens:lastSeen', Date.now(), token);
 };
+
+utils.getLastSeen = async tokens => await db.sortedSetScores('tokens:lastSeen', tokens);

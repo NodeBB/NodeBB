@@ -9,6 +9,7 @@ const groups = require('../../groups');
 const languages = require('../../languages');
 const navigationAdmin = require('../../navigation/admin');
 const social = require('../../social');
+const api = require('../../api');
 
 const helpers = require('../helpers');
 const translator = require('../../translator');
@@ -107,4 +108,17 @@ settingsController.social = async function (req, res) {
 	res.render('admin/settings/social', {
 		posts: posts,
 	});
+};
+
+settingsController.api = async (req, res) => {
+	const { tokens } = await meta.settings.get('core.api');
+	const scores = await api.utils.getLastSeen(tokens.map(t => t.token));
+
+	const [lastSeen, lastSeenISO] = tokens.reduce((memo, cur, idx) => {
+		memo[0][cur.token] = scores[idx];
+		memo[1][cur.token] = new Date(scores[idx]).toISOString();
+		return memo;
+	}, [{}, {}]);
+
+	res.render('admin/settings/api', { lastSeen, lastSeenISO });
 };

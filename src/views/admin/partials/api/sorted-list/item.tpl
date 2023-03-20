@@ -10,7 +10,7 @@
                 <em>[[admin/settings/api:no-description]]</em>
                 {{{ end }}}
                 <br />
-                <small>{timestampISO}</small>
+                <small class="text-info">{./lastSeen}</small>
             </p>
         </div>
         <div class="col-3 text-end">
