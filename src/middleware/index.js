@@ -16,6 +16,7 @@ const analytics = require('../analytics');
 const privileges = require('../privileges');
 const cacheCreate = require('../cache/lru');
 const helpers = require('./helpers');
+const api = require('../api');
 
 const controllers = {
 	api: require('../controllers/api'),
@@ -112,6 +113,15 @@ middleware.validateFiles = function validateFiles(req, res, next) {
 
 middleware.prepareAPI = function prepareAPI(req, res, next) {
 	res.locals.isAPI = true;
+	next();
+};
+
+middleware.logApiUsage = async function logApiUsage(req, res, next) {
+	if (req.headers.hasOwnProperty('authorization')) {
+		const [, token] = req.headers.authorization.split(' ');
+		await api.utils.log(token);
+	}
+
 	next();
 };
 
