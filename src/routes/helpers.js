@@ -57,6 +57,7 @@ helpers.setupApiRoute = function (...args) {
 		middleware.maintenanceMode,
 		middleware.registrationComplete,
 		middleware.pluginHooks,
+		middleware.logApiUsage,
 		...middlewares,
 	];
 

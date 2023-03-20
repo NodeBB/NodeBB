@@ -10,4 +10,6 @@ module.exports = {
 	categories: require('./categories'),
 	flags: require('./flags'),
 	files: require('./files'),
+
+	utils: require('./utils'),
 };
