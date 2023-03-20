@@ -1,0 +1,24 @@
+get:
+  tags:
+    - admin
+  summary: Get API token settings
+  responses:
+    "200":
+      description: "A JSON object containing API tokens and settings"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  lastSeen:
+                    type: object
+                    description: A key-value set of API tokens and a UNIX timestamp of when it was last used
+                    properties: {}
+                    additionalProperties: {}
+                  lastSeenISO:
+                    type: object
+                    description: A key-value set of API tokens and an ISO 8601 formatted date string of when it was last used
+                    properties: {}
+                    additionalProperties: {}
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps
