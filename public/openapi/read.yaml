@@ -90,6 +90,8 @@ paths:
     $ref: 'read/admin/settings/homepage.yaml'
   /api/admin/settings/social:
     $ref: 'read/admin/settings/social.yaml'
+  /api/admin/settings/api:
+    $ref: 'read/admin/settings/api.yaml'
   /api/admin/settings/email:
     $ref: 'read/admin/settings/email.yaml'
   /api/admin/settings/user:
