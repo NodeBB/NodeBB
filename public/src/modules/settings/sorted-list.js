@@ -67,8 +67,8 @@ define('settings/sorted-list', [
 				// eslint-disable-next-line no-restricted-syntax
 				for (const { itemUUID, item } of items) {
 					// eslint-disable-next-line no-await-in-loop
-					await parse($container, itemUUID, item);
-					hooks.fire('action:settings.sorted-list.itemLoaded', { element: listEl.get(0) });
+					const element = await parse($container, itemUUID, item);
+					hooks.fire('action:settings.sorted-list.itemLoaded', { element });
 				}
 
 				hooks.fire('action:settings.sorted-list.loaded', {
@@ -157,7 +157,7 @@ define('settings/sorted-list', [
 				setupRemoveButton($container, itemUUID);
 				setupEditButton($container, itemUUID);
 				hooks.fire('action:settings.sorted-list.parse', { itemHtml });
-				resolve();
+				resolve(itemHtml.get(0));
 			});
 		});
 	}
