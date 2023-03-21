@@ -6,6 +6,7 @@
 	"enabling-help": "要启用此特性，跳转到<a href=\"%1\">设置&rarr;帖子&rarr;发帖队列</a>然后<strong>启用发帖队列</strong>。",
 	"back-to-list": "回到发帖队列",
 	"user": "用户",
+	"when": "When",
 	"category": "版块",
 	"title": "标题",
 	"content": "内容",

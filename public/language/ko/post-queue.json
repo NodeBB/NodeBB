@@ -6,6 +6,7 @@
 	"enabling-help": "To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
 	"back-to-list": "Back to Post Queue",
 	"user": "사용자",
+	"when": "When",
 	"category": "카테고리",
 	"title": "제목",
 	"content": "내용",
