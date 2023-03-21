@@ -58,7 +58,7 @@
     "users": "Utenti",
     "topics": "Discussioni",
     "posts": "Post",
-    "x-posts": "<span class=\"formatted-number\">%1</span> posts",
+    "x-posts": "<span class=\"formatted-number\">%1</span> post",
     "x-topics": "<span class=\"formatted-number\">%1</span> topics",
     "best": "Migliore",
     "controversial": "Controverso",

@@ -1,7 +1,7 @@
 {
-	"custom-css": "Custom CSS/SASS",
-	"custom-css.description": "Enter your own CSS/SASS declarations here, which will be applied after all other styles.",
-	"custom-css.enable": "Enable Custom CSS/SASS",
+	"custom-css": "CSS/SASS personalizzato",
+	"custom-css.description": "Inserisci qui le tue dichiarazioni CSS/SASS, che saranno applicate dopo tutti gli altri stili.",
+	"custom-css.enable": "Abilita CSS/SASS personalizzato",
 
 	"custom-js": "Javascript personalizzato",
 	"custom-js.description": "Inserisci qui il tuo javascript. Sarà eseguito dopo che la pagina è stata caricata completamente.",
