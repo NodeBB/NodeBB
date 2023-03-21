@@ -203,12 +203,14 @@ modsController.postQueue = async function (req, res, next) {
 	const postsPerPage = 20;
 
 	let postData = await posts.getQueuedPosts({ id: id });
-	const [isAdmin, isGlobalMod, moderatedCids, categoriesData] = await Promise.all([
+	let [isAdmin, isGlobalMod, moderatedCids, categoriesData, _privileges] = await Promise.all([
 		user.isAdministrator(req.uid),
 		user.isGlobalModerator(req.uid),
 		user.getModeratedCids(req.uid),
 		helpers.getSelectedCategory(cid),
+		Promise.all(['global', 'admin'].map(async type => privileges[type].get(req.uid))),
 	]);
+	_privileges = { ..._privileges[0], ..._privileges[1] };
 
 	postData = postData
 		.filter(p => p &&
@@ -245,5 +247,6 @@ modsController.postQueue = async function (req, res, next) {
 		breadcrumbs: helpers.buildBreadcrumbs(crumbs),
 		enabled: meta.config.postQueue,
 		singlePost: !!id,
+		privileges: _privileges,
 	});
 };

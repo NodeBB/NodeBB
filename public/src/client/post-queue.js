@@ -3,7 +3,11 @@
 
 define('forum/post-queue', [
 	'categoryFilter', 'categorySelector', 'api', 'alerts', 'bootbox',
-], function (categoryFilter, categorySelector, api, alerts, bootbox) {
+	'accounts/moderate', 'accounts/delete',
+], function (
+	categoryFilter, categorySelector, api, alerts, bootbox,
+	AccountModerate, AccountsDelete
+) {
 	const PostQueue = {};
 
 	PostQueue.init = function () {
@@ -13,61 +17,8 @@ define('forum/post-queue', [
 			privilege: 'moderate',
 		});
 
+		handleActions();
 		handleBulkActions();
-
-		$('.posts-list').on('click', '[data-action]', async function () {
-			function getMessage() {
-				return new Promise((resolve) => {
-					const modal = bootbox.dialog({
-						title: '[[post-queue:notify-user]]',
-						message: '<textarea class="form-control"></textarea>',
-						buttons: {
-							OK: {
-								label: '[[modules:bootbox.send]]',
-								callback: function () {
-									const val = modal.find('textarea').val();
-									if (val) {
-										resolve(val);
-									}
-								},
-							},
-						},
-					});
-				});
-			}
-
-			const parent = $(this).parents('[data-id]');
-			const action = $(this).attr('data-action');
-			const id = parent.attr('data-id');
-			const listContainer = parent.get(0).parentNode;
-
-			if ((!['accept', 'reject', 'notify'].includes(action)) ||
-				(action === 'reject' && !await confirmReject(ajaxify.data.canAccept ? '[[post-queue:confirm-reject]]' : '[[post-queue:confirm-remove]]'))) {
-				return;
-			}
-
-			socket.emit('posts.' + action, {
-				id: id,
-				message: action === 'notify' ? await getMessage() : undefined,
-			}, function (err) {
-				if (err) {
-					return alerts.error(err);
-				}
-				if (action === 'accept' || action === 'reject') {
-					parent.remove();
-				}
-
-				if (listContainer.childElementCount === 0) {
-					if (ajaxify.data.singlePost) {
-						ajaxify.go('/post-queue' + window.location.search);
-					} else {
-						ajaxify.refresh();
-					}
-				}
-			});
-			return false;
-		});
-
 		handleContentEdit('.post-content', '.post-content-editable', 'textarea');
 		handleContentEdit('.topic-title', '.topic-title-editable', 'input');
 
@@ -150,6 +101,106 @@ define('forum/post-queue', [
 				preview.removeClass('hidden');
 			});
 		});
+	}
+
+	function handleActions() {
+		const listEl = document.querySelector('.posts-list');
+		if (listEl) {
+			listEl.addEventListener('click', (e) => {
+				const subselector = e.target.closest('[data-action]');
+				if (subselector) {
+					const action = subselector.getAttribute('data-action');
+					const uid = subselector.closest('[data-uid]').getAttribute('data-uid');
+
+					switch (action) {
+						case 'ban':
+							AccountModerate.banAccount(uid, ajaxify.refresh);
+							break;
+
+						case 'unban':
+							AccountModerate.unbanAccount(uid);
+							break;
+
+						case 'mute':
+							AccountModerate.muteAccount(uid, ajaxify.refresh);
+							break;
+
+						case 'unmute':
+							AccountModerate.unmuteAccount(uid);
+							break;
+
+						case 'delete-account':
+							AccountsDelete.account(uid, ajaxify.refresh);
+							break;
+
+						case 'delete-content':
+							AccountsDelete.content(uid, ajaxify.refresh);
+							break;
+
+						case 'delete-all':
+							AccountsDelete.purge(uid, ajaxify.refresh);
+							break;
+
+						default:
+							handleQueueActions.call(e.target);
+							break;
+					}
+				}
+			});
+		}
+	}
+
+	async function handleQueueActions() {
+		function getMessage() {
+			return new Promise((resolve) => {
+				const modal = bootbox.dialog({
+					title: '[[post-queue:notify-user]]',
+					message: '<textarea class="form-control"></textarea>',
+					buttons: {
+						OK: {
+							label: '[[modules:bootbox.send]]',
+							callback: function () {
+								const val = modal.find('textarea').val();
+								if (val) {
+									resolve(val);
+								}
+							},
+						},
+					},
+				});
+			});
+		}
+
+		const parent = $(this).parents('[data-id]');
+		const action = $(this).attr('data-action');
+		const id = parent.attr('data-id');
+		const listContainer = parent.get(0).parentNode;
+
+		if ((!['accept', 'reject', 'notify'].includes(action)) ||
+			(action === 'reject' && !await confirmReject(ajaxify.data.canAccept ? '[[post-queue:confirm-reject]]' : '[[post-queue:confirm-remove]]'))) {
+			return;
+		}
+
+		socket.emit('posts.' + action, {
+			id: id,
+			message: action === 'notify' ? await getMessage() : undefined,
+		}, function (err) {
+			if (err) {
+				return alerts.error(err);
+			}
+			if (action === 'accept' || action === 'reject') {
+				parent.remove();
+			}
+
+			if (listContainer.childElementCount === 0) {
+				if (ajaxify.data.singlePost) {
+					ajaxify.go('/post-queue' + window.location.search);
+				} else {
+					ajaxify.refresh();
+				}
+			}
+		});
+		return false;
 	}
 
 	function handleBulkActions() {
