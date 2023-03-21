@@ -117,6 +117,8 @@
     "paginate_description": "ใช้การแบ่งหน้ากระทู้และข้อความแทนการเลื่อนต่อเรื่อยๆ",
     "topics_per_page": "จำนวนกระทู้ต่อหน้า",
     "posts_per_page": "จำนวนข้อความต่อหน้า",
+    "category-topic-sort": "Category topic sort",
+    "topic-post-sort": "Topic post sort",
     "max_items_per_page": "สูงสุด %1",
     "acp_language": "ภาษาในหน้าผู้ดูแลระบบ",
     "notifications": "Notifications",

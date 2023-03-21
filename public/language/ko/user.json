@@ -117,6 +117,8 @@
     "paginate_description": "주제와 게시물을 페이지로 정리 (기본: 무한 스크롤)",
     "topics_per_page": "페이지 당 화제 수",
     "posts_per_page": "페이지 당 포스트 수",
+    "category-topic-sort": "Category topic sort",
+    "topic-post-sort": "Topic post sort",
     "max_items_per_page": "최대 %1 ",
     "acp_language": "관리 페이지 언어",
     "notifications": "알림",

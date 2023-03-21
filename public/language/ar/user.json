@@ -117,6 +117,8 @@
     "paginate_description": "عرض المواضيع والردود موزعة على صفحات عوضاً عن التمرير اللانهائي.",
     "topics_per_page": "المواضيع في كل صفحة",
     "posts_per_page": "الردود في كل صفحة",
+    "category-topic-sort": "Category topic sort",
+    "topic-post-sort": "Topic post sort",
     "max_items_per_page": "أقصى %1",
     "acp_language": "لغة صفحة اﻻدارة",
     "notifications": "التنبيهات",

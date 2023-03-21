@@ -117,6 +117,8 @@
     "paginate_description": "Разделяне на темите и публикациите на страници, вместо да се превърта безкрайно",
     "topics_per_page": "Теми на страница",
     "posts_per_page": "Публикации на страница",
+    "category-topic-sort": "Category topic sort",
+    "topic-post-sort": "Topic post sort",
     "max_items_per_page": "Най-много %1",
     "acp_language": "Език на администраторската страница",
     "notifications": "Известия",

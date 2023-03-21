@@ -117,6 +117,8 @@
     "paginate_description": "Gör så att ämnen och inlägg visas som sidor istället för oändlig skroll",
     "topics_per_page": "Ämnen per sida",
     "posts_per_page": "Inlägg per sida",
+    "category-topic-sort": "Category topic sort",
+    "topic-post-sort": "Topic post sort",
     "max_items_per_page": "Maximalt %1",
     "acp_language": "Språk för administratörssida",
     "notifications": "Notifications",

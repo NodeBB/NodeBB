@@ -117,6 +117,8 @@
     "paginate_description": "Témakörök és hosszászólasok lapozása a végtelen görgetés helyett.",
     "topics_per_page": "Témakörök oldalanként",
     "posts_per_page": "Hozzászólások oldalanként",
+    "category-topic-sort": "Category topic sort",
+    "topic-post-sort": "Topic post sort",
     "max_items_per_page": "Maximum %1",
     "acp_language": "Adminisztrációs oldal nyelve",
     "notifications": "Értesítések",

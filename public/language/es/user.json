@@ -117,6 +117,8 @@
     "paginate_description": "Paginar hilos y mensajes en lugar de usar desplazamiento infinito",
     "topics_per_page": "Temas por página",
     "posts_per_page": "Post por página",
+    "category-topic-sort": "Category topic sort",
+    "topic-post-sort": "Topic post sort",
     "max_items_per_page": "Máximo %1",
     "acp_language": "Página de Lenguage del Administrador",
     "notifications": "Notifications",

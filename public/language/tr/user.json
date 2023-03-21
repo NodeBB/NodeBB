@@ -117,6 +117,8 @@
     "paginate_description": "Sonsuz yükleme yerine konu ve iletileri sayfalara böl",
     "topics_per_page": "Sayfa başına başlık sayısı",
     "posts_per_page": "Sayfa başına ileti sayısı",
+    "category-topic-sort": "Category topic sort",
+    "topic-post-sort": "Topic post sort",
     "max_items_per_page": "Maksimum %1",
     "acp_language": "Yönetici Sayfası Dili",
     "notifications": "Bildirimler",

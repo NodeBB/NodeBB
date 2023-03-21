@@ -117,6 +117,8 @@
     "paginate_description": "Uporabi oštevilčenje strani namesto neskončnega drsenja",
     "topics_per_page": "Število tem na stran",
     "posts_per_page": "Število objav na stran",
+    "category-topic-sort": "Category topic sort",
+    "topic-post-sort": "Topic post sort",
     "max_items_per_page": "Največ %1",
     "acp_language": "Jezik skrbniških strani",
     "notifications": "Obvestila",

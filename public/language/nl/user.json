@@ -117,6 +117,8 @@
     "paginate_description": "Blader door onderwerpen en berichten in plaats van oneindig scrollen.",
     "topics_per_page": "Onderwerpen per pagina",
     "posts_per_page": "Berichten per pagina",
+    "category-topic-sort": "Category topic sort",
+    "topic-post-sort": "Topic post sort",
     "max_items_per_page": "Maximaal %1",
     "acp_language": "Taal van Admin Pagina",
     "notifications": "Notificaties",

@@ -117,6 +117,8 @@
     "paginate_description": "ইনফাইনাইট স্ক্রলের বদলে টপিক ও পোস্টের জন্য পেজিনেশন ব্যাবহার করা হোক",
     "topics_per_page": "প্রতি পেজে কতগুলো টপিক থাকবে",
     "posts_per_page": "প্রতি পেইজে কতগুলো পোষ্ট থাকবে",
+    "category-topic-sort": "Category topic sort",
+    "topic-post-sort": "Topic post sort",
     "max_items_per_page": "Maximum %1",
     "acp_language": "Admin Page Language",
     "notifications": "Notifications",

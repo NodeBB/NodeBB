@@ -117,6 +117,8 @@
     "paginate_description": "Paginate topics and posts instead of using infinite scroll",
     "topics_per_page": "Topics per Page",
     "posts_per_page": "Posts per Page",
+    "category-topic-sort": "Category topic sort",
+    "topic-post-sort": "Topic post sort",
     "max_items_per_page": "Maximum %1",
     "acp_language": "Admin Page Language",
     "notifications": "Notifications",

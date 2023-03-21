@@ -117,6 +117,8 @@
     "paginate_description": "Разбивать темы и сообщения на страницы, а не выводить бесконечным списком",
     "topics_per_page": "Тем на странице",
     "posts_per_page": "Сообщений на странице",
+    "category-topic-sort": "Category topic sort",
+    "topic-post-sort": "Topic post sort",
     "max_items_per_page": "максимум %1",
     "acp_language": "Язык панели администратора",
     "notifications": "Уведомления",
