@@ -397,6 +397,9 @@ authenticationController.onSuccessfulLogin = async function (req, uid) {
 	}
 };
 
+const destroyAsync = util.promisify((req, callback) => req.session.destroy(callback));
+const logoutAsync = util.promisify((req, callback) => req.logout(callback));
+
 authenticationController.localLogin = async function (req, username, password, next) {
 	if (!username) {
 		return next(new Error('[[error:invalid-username]]'));
@@ -431,9 +434,17 @@ authenticationController.localLogin = async function (req, username, password, n
 			return next(new Error('[[error:local-login-disabled]]'));
 		}
 
-		const passwordMatch = await user.isPasswordCorrect(uid, password, req.ip);
-		if (!passwordMatch) {
-			return next(new Error('[[error:invalid-login-credentials]]'));
+		try {
+			const passwordMatch = await user.isPasswordCorrect(uid, password, req.ip);
+			if (!passwordMatch) {
+				return next(new Error('[[error:invalid-login-credentials]]'));
+			}
+		} catch (e) {
+			if (req.loggedIn) {
+				await logoutAsync(req);
+				await destroyAsync(req);
+			}
+			throw e;
 		}
 
 		next(null, userData, '[[success:authentication-successful]]');
@@ -441,9 +452,6 @@ authenticationController.localLogin = async function (req, username, password, n
 		next(err);
 	}
 };
-
-const destroyAsync = util.promisify((req, callback) => req.session.destroy(callback));
-const logoutAsync = util.promisify((req, callback) => req.logout(callback));
 
 authenticationController.logout = async function (req, res, next) {
 	if (!req.loggedIn || !req.sessionID) {
@@ -456,7 +464,6 @@ authenticationController.logout = async function (req, res, next) {
 	try {
 		await user.auth.revokeSession(sessionID, uid);
 		await logoutAsync(req);
-
 		await destroyAsync(req);
 		res.clearCookie(nconf.get('sessionKey'), meta.configs.cookie.get());
 
