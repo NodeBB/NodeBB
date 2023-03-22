@@ -26,7 +26,7 @@ module.exports = function (module) {
 
 	async function getSortedSetUnion(params) {
 		if (!Array.isArray(params.sets) || !params.sets.length) {
-			return;
+			return [];
 		}
 		let limit = params.stop - params.start + 1;
 		if (limit <= 0) {
