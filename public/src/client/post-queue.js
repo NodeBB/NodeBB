@@ -19,38 +19,13 @@ define('forum/post-queue', [
 
 		handleActions();
 		handleBulkActions();
-		handleContentEdit('.post-content', '.post-content-editable', 'textarea');
-		handleContentEdit('.topic-title', '.topic-title-editable', 'input');
+		handleContentEdit('[data-action="editContent"]', '.post-content-editable', 'textarea', '.post-content');
+		handleContentEdit('[data-action="editTitle"]', '.topic-title-editable', 'input', '.topic-title');
 
-		$('.posts-list').on('click', '.topic-category[data-editable]', function () {
-			const $this = $(this);
-			const id = $this.parents('[data-id]').attr('data-id');
-			categorySelector.modal({
-				onSubmit: function (selectedCategory) {
-					Promise.all([
-						api.get(`/categories/${selectedCategory.cid}`, {}),
-						socket.emit('posts.editQueuedContent', {
-							id: id,
-							cid: selectedCategory.cid,
-						}),
-					]).then(function (result) {
-						const category = result[0];
-						app.parseAndTranslate('post-queue', 'posts', {
-							posts: [{
-								category: category,
-							}],
-						}, function (html) {
-							if ($this.find('.category-text').length) {
-								$this.find('.category-text').text(html.find('.topic-category .category-text').text());
-							} else {
-								// for backwards compatibility, remove in 1.16.0
-								$this.replaceWith(html.find('.topic-category'));
-							}
-						});
-					}).catch(alerts.error);
-				},
-			});
-			return false;
+		$('.posts-list').on('click', '.topic-category[data-editable]', function (e) {
+			handleCategoryChange(this);
+			e.stopPropagation();
+			e.preventDefault();
 		});
 
 		$('[component="post/content"] img:not(.not-responsive)').addClass('img-fluid');
@@ -62,12 +37,13 @@ define('forum/post-queue', [
 		});
 	}
 
-	function handleContentEdit(displayClass, editableClass, inputSelector) {
-		$('.posts-list').on('click', displayClass, function () {
+	function handleContentEdit(triggerClass, editableClass, inputSelector, displayClass) {
+		$('.posts-list').on('click', triggerClass, function () {
 			const el = $(this);
-			const inputEl = el.parent().find(editableClass);
+			const inputEl = el.parents('[data-id]').find(editableClass);
+			const displayEl = el.parents('[data-id]').find(displayClass);
 			if (inputEl.length) {
-				el.addClass('hidden');
+				displayEl.addClass('hidden');
 				inputEl.removeClass('hidden').find(inputSelector).focus();
 			}
 		});
@@ -76,7 +52,7 @@ define('forum/post-queue', [
 			const textarea = $(this);
 			const preview = textarea.parent().parent().find(displayClass);
 			const id = textarea.parents('[data-id]').attr('data-id');
-			const titleEdit = displayClass === '.topic-title';
+			const titleEdit = triggerClass === '[data-action="editTitle"]';
 
 			socket.emit('posts.editQueuedContent', {
 				id: id,
@@ -87,12 +63,7 @@ define('forum/post-queue', [
 					return alerts.error(err);
 				}
 				if (titleEdit) {
-					if (preview.find('.title-text').length) {
-						preview.find('.title-text').text(data.postData.title);
-					} else {
-						// for backwards compatibility, remove in 1.16.0
-						preview.html(data.postData.title);
-					}
+					preview.find('.title-text').text(data.postData.title);
 				} else {
 					preview.html(data.postData.content);
 				}
@@ -101,6 +72,37 @@ define('forum/post-queue', [
 				preview.removeClass('hidden');
 			});
 		});
+	}
+
+	function handleCategoryChange(categoryEl) {
+		const $this = $(categoryEl);
+		const id = $this.parents('[data-id]').attr('data-id');
+		categorySelector.modal({
+			onSubmit: function (selectedCategory) {
+				Promise.all([
+					api.get(`/categories/${selectedCategory.cid}`, {}),
+					socket.emit('posts.editQueuedContent', {
+						id: id,
+						cid: selectedCategory.cid,
+					}),
+				]).then(function (result) {
+					const category = result[0];
+					app.parseAndTranslate('post-queue', 'posts', {
+						posts: [{
+							category: category,
+						}],
+					}, function (html) {
+						if ($this.find('.category-text').length) {
+							$this.find('.category-text').text(html.find('.topic-category .category-text').text());
+						} else {
+							// for backwards compatibility, remove in 1.16.0
+							$this.replaceWith(html.find('.topic-category'));
+						}
+					});
+				}).catch(alerts.error);
+			},
+		});
+		return false;
 	}
 
 	function handleActions() {
@@ -113,6 +115,12 @@ define('forum/post-queue', [
 					const uid = subselector.closest('[data-uid]').getAttribute('data-uid');
 
 					switch (action) {
+						case 'editCategory': {
+							const categoryEl = e.target.closest('[data-id]').querySelector('.topic-category');
+							handleCategoryChange(categoryEl);
+							break;
+						}
+
 						case 'ban':
 							AccountModerate.banAccount(uid, ajaxify.refresh);
 							break;
@@ -151,6 +159,7 @@ define('forum/post-queue', [
 	}
 
 	async function handleQueueActions() {
+		// accept, reject, notify
 		function getMessage() {
 			return new Promise((resolve) => {
 				const modal = bootbox.dialog({
