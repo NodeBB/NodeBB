@@ -13,7 +13,7 @@
 	"description": "Mô tả",
 	"last-seen-ago": "Last used <span class=\"timeago\" title=\"%1\"></span>.",
 	"last-seen-on": "Last used on <span class=\"timeago\" title=\"%1\"></span>.",
-	"last-seen-never": "This key has never been used.",
+	"last-seen-never": "Khóa này chưa bao giờ được dùng.",
 	"no-description": "Không có mô tả cụ thể.",
 	"token-on-save": "Mã truy cập sẽ được tạo sau khi biểu mẫu được lưu"
 }

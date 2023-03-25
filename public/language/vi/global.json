@@ -58,7 +58,7 @@
     "users": "Người dùng",
     "topics": "Chủ Đề",
     "posts": "Bài Viết",
-    "x-posts": "<span class=\"formatted-number\">%1</span> posts",
+    "x-posts": "<span class=\"formatted-number\">%1</span> bài đăng",
     "x-topics": "<span class=\"formatted-number\">%1</span> topics",
     "best": "Tốt",
     "controversial": "Gây tranh cãi",
