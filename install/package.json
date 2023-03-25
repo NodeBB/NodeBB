@@ -126,7 +126,7 @@
         "sass": "1.60.0",
         "semver": "7.3.8",
         "serve-favicon": "2.5.0",
-        "sharp": "0.31.3",
+        "sharp": "0.32.0",
         "sitemap": "7.1.1",
         "slideout": "1.0.1",
         "socket.io": "4.6.1",
