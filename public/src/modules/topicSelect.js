@@ -35,6 +35,15 @@ define('topicSelect', ['components'], function (components) {
 		select.toggleClass('fa-check-square-o', isSelected);
 		select.toggleClass('fa-square-o', !isSelected);
 		select.parents('[component="category/topic"]').toggleClass('selected', isSelected);
+		updateSelectedBadgeCount();
+	}
+
+	function updateSelectedBadgeCount() {
+		const badge = $('[component="topic/selected/badge"]');
+		if (badge.length) {
+			const count = topicsContainer.find('[component="category/topic"].selected').length;
+			badge.text(count > 0 ? count : '');
+		}
 	}
 
 	TopicSelect.getSelectedTids = function () {
