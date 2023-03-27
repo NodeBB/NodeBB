@@ -30,9 +30,7 @@ const output = logrotate({ file: outputLogFilePath, size: '1m', keep: 3, compres
 const silent = nconf.get('silent') === 'false' ? false : nconf.get('silent') !== false;
 let numProcs;
 const workers = [];
-const Loader = {
-	timesStarted: 0,
-};
+const Loader = {};
 const appPath = path.join(__dirname, 'app.js');
 
 Loader.init = function () {
@@ -57,21 +55,6 @@ Loader.displayStartupMessages = function () {
 
 Loader.addWorkerEvents = function (worker) {
 	worker.on('exit', (code, signal) => {
-		if (code !== 0) {
-			if (Loader.timesStarted < numProcs * 3) {
-				Loader.timesStarted += 1;
-				if (Loader.crashTimer) {
-					clearTimeout(Loader.crashTimer);
-				}
-				Loader.crashTimer = setTimeout(() => {
-					Loader.timesStarted = 0;
-				}, 10000);
-			} else {
-				console.log(`${numProcs * 3} restarts in 10 seconds, most likely an error on startup. Halting.`);
-				process.exit();
-			}
-		}
-
 		console.log(`[cluster] Child Process (${worker.pid}) has exited (code: ${code}, signal: ${signal})`);
 		if (!(worker.suicide || code === 0)) {
 			console.log('[cluster] Spinning up another process...');
