@@ -120,7 +120,12 @@ async function onMessage(socket, payload) {
 		return winston.warn('[socket.io] Empty method name');
 	}
 
-	const parts = eventName.toString().split('.');
+	if (typeof eventName !== 'string') {
+		const escapedName = validator.escape(String(eventName));
+		return callback({ message: `[[error:invalid-event, ${escapedName}]]` });
+	}
+
+	const parts = eventName.split('.');
 	const namespace = parts[0];
 	const methodToCall = parts.reduce((prev, cur) => {
 		if (prev !== null && prev[cur] && (!prev.hasOwnProperty || prev.hasOwnProperty(cur))) {
