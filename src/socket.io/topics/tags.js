@@ -73,11 +73,6 @@ module.exports = function (SocketTopics) {
 
 	// used by tag filter search
 	SocketTopics.tagFilterSearch = async function (socket, data) {
-		const allowed = await privileges.global.can('search:tags', socket.uid);
-		if (!allowed) {
-			throw new Error('[[error:no-privileges]]');
-		}
-
 		let cids = [];
 		if (Array.isArray(data.cids)) {
 			cids = await privileges.categories.filterCids('topics:read', data.cids, socket.uid);
@@ -87,6 +82,10 @@ module.exports = function (SocketTopics) {
 
 		let tags = [];
 		if (data.query) {
+			const allowed = await privileges.global.can('search:tags', socket.uid);
+			if (!allowed) {
+				throw new Error('[[error:no-privileges]]');
+			}
 			tags = await topics.searchTags({
 				query: data.query,
 				cid: cids.length === 1 ? cids[0] : null,
