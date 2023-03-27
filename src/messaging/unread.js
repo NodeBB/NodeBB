@@ -21,7 +21,6 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.markRead = async (uid, roomId) => {
-		console.log('mark read :)', uid, roomId);
 		await db.sortedSetRemove(`uid:${uid}:chat:rooms:unread`, roomId);
 	};
 
