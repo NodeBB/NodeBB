@@ -107,6 +107,15 @@ describe('socket.io', () => {
 		});
 	});
 
+	it('should return error for invalid eventName type', (done) => {
+		const eventName = ['topics.loadMoreTags'];
+		io.emit(eventName, (err) => {
+			const eventAsString = String(eventName);
+			assert.strictEqual(err.message, `[[error:invalid-event, ${eventAsString}]]`);
+			done();
+		});
+	});
+
 	it('should get installed themes', (done) => {
 		const themes = ['nodebb-theme-lavender', 'nodebb-theme-persona', 'nodebb-theme-vanilla'];
 		io.emit('admin.themes.getInstalled', (err, data) => {
