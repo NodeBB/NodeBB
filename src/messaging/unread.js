@@ -21,7 +21,16 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.markRead = async (uid, roomId) => {
+		console.log('mark read :)', uid, roomId);
 		await db.sortedSetRemove(`uid:${uid}:chat:rooms:unread`, roomId);
+	};
+
+	Messaging.hasRead = async (uids, roomId) => {
+		const isMembers = await db.isMemberOfSortedSets(
+			uids.map(uid => `uid:${uid}:chat:rooms:unread`),
+			roomId
+		);
+		return uids.map((uid, index) => !isMembers[index]);
 	};
 
 	Messaging.markAllRead = async (uid) => {

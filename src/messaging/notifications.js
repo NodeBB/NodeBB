@@ -57,8 +57,9 @@ module.exports = function (Messaging) {
 	};
 
 	async function sendNotifications(fromuid, uids, roomId, messageObj) {
-		const isOnline = await user.isOnline(uids);
-		uids = uids.filter((uid, index) => !isOnline[index] && parseInt(fromuid, 10) !== parseInt(uid, 10));
+		const hasRead = await Messaging.hasRead(uids, roomId);
+		uids = uids.filter((uid, index) => !hasRead[index] && parseInt(fromuid, 10) !== parseInt(uid, 10));
+		console.log('checking notif', uids, hasRead);
 		if (!uids.length) {
 			delete Messaging.notifyQueue[`${fromuid}:${roomId}`];
 			return;
