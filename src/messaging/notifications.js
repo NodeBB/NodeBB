@@ -60,6 +60,7 @@ module.exports = function (Messaging) {
 		const isOnline = await user.isOnline(uids);
 		uids = uids.filter((uid, index) => !isOnline[index] && parseInt(fromuid, 10) !== parseInt(uid, 10));
 		if (!uids.length) {
+			delete Messaging.notifyQueue[`${fromuid}:${roomId}`];
 			return;
 		}
 
