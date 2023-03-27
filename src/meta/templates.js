@@ -65,7 +65,6 @@ async function getTemplateDirs(activePlugins) {
 		theme = themeConfig.baseTheme;
 	}
 
-	themeTemplates.push(nconf.get('base_templates_path'));
 	themeTemplates = _.uniq(themeTemplates.reverse());
 
 	const coreTemplatesPath = nconf.get('core_templates_path');

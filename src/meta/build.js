@@ -70,7 +70,7 @@ async function beforeBuild(targets) {
 		await plugins.prepareForBuild(targets);
 		await mkdirp(path.join(__dirname, '../../build/public'));
 	} catch (err) {
-		winston.error(`[build] Encountered error preparing for build\n${err.stack}`);
+		winston.error(`[build] Encountered error preparing for build`);
 		throw err;
 	}
 }
@@ -197,7 +197,7 @@ exports.build = async function (targets, options) {
 		await cacheBuster.write();
 		winston.info(`[build] Asset compilation successful. Completed in ${totalTime}sec.`);
 	} catch (err) {
-		winston.error(`[build] Encountered error during build step\n${err.stack ? err.stack : err}`);
+		winston.error(`[build] Encountered error during build step`);
 		throw err;
 	}
 };

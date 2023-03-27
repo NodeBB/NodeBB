@@ -159,7 +159,7 @@ Themes.setupPaths = async () => {
 	const themeObj = data.themesData.find(themeObj => themeObj.id === themeId);
 
 	if (!themeObj) {
-		throw new Error('[[error:theme-not-found]]');
+		throw new Error('theme-not-found');
 	}
 
 	Themes.setPath(themeObj);
@@ -167,13 +167,16 @@ Themes.setupPaths = async () => {
 
 Themes.setPath = function (themeObj) {
 	// Theme's templates path
-	let themePath = nconf.get('base_templates_path');
+	let themePath;
 	const fallback = path.join(nconf.get('themes_path'), themeObj.id, 'templates');
 
 	if (themeObj.templates) {
 		themePath = path.join(nconf.get('themes_path'), themeObj.id, themeObj.templates);
 	} else if (file.existsSync(fallback)) {
 		themePath = fallback;
+	} else {
+		winston.error('[themes] Unable to resolve this theme\'s templates. Expected to be at "templates/" or defined in the "templates" property of "theme.json"');
+		throw new Error('theme-missing-templates');
 	}
 
 	nconf.set('theme_templates_path', themePath);
