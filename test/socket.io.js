@@ -110,8 +110,7 @@ describe('socket.io', () => {
 	it('should return error for invalid eventName type', (done) => {
 		const eventName = ['topics.loadMoreTags'];
 		io.emit(eventName, (err) => {
-			const eventAsString = String(eventName);
-			assert.strictEqual(err.message, `[[error:invalid-event, ${eventAsString}]]`);
+			assert.strictEqual(err.message, `[[error:invalid-event, object]]`);
 			done();
 		});
 	});
