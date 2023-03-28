@@ -1,6 +1,6 @@
 let active = false;
 
-export function start() {
+export async function start(process) {
 	if (active) {
 		return;
 	}
@@ -9,13 +9,11 @@ export function start() {
 
 	if (!document.startViewTransition) {
 		$('#footer, #content').removeClass('hide').addClass('ajaxifying');
+		await process();
 		return;
 	}
 
-	const { ready } = document.startViewTransition();
-	ready.then(() => {
-		console.log('ready!');
-	});
+	document.startViewTransition(process);
 }
 
 export function end() {

@@ -68,7 +68,6 @@ ajaxify.widgets = { render: render };
 		}
 
 		previousBodyClass = ajaxify.data.bodyClass;
-		transitions.start();
 
 		ajaxify.loadData(url, function (err, data) {
 			if (!err || (
@@ -84,8 +83,12 @@ ajaxify.widgets = { render: render };
 			}
 
 			retry = true;
-
-			renderTemplate(url, data.templateToRender || data.template.name, data, callback);
+			transitions.start(async () => {
+				await renderTemplate(url, data.templateToRender || data.template.name, data);
+				if (typeof callback === 'function') {
+					callback();
+				}
+			});
 		});
 
 		return true;
@@ -158,8 +161,12 @@ ajaxify.widgets = { render: render };
 					data.responseJSON.config = config;
 				}
 
-				transitions.start();
-				return renderTemplate(url, status.toString(), data.responseJSON || {}, callback);
+				transitions.start(async () => {
+					await renderTemplate(url, status.toString(), data.responseJSON || {});
+					if (typeof callback === 'function') {
+						callback();
+					}
+				});
 			} else if (status === 401) {
 				require(['alerts'], function (alerts) {
 					alerts.error('[[global:please_log_in]]');
@@ -187,29 +194,24 @@ ajaxify.widgets = { render: render };
 		}
 	}
 
-	function renderTemplate(url, tpl_url, data, callback) {
+	async function renderTemplate(url, tpl_url, data) {
 		hooks.fire('action:ajaxify.loadingTemplates', {});
-		require(['translator', 'benchpress'], function (translator, Benchpress) {
-			Benchpress.render(tpl_url, data)
-				.then(rendered => translator.translate(rendered))
-				.then(function (translated) {
-					translated = translator.unescape(translated);
-					$('body').removeClass(previousBodyClass).addClass(data.bodyClass);
-					$('#content').html(translated);
+		const [translator, Benchpress] = await app.require(['translator', 'benchpressjs']);
+		return Benchpress.render(tpl_url, data)
+			.then(rendered => translator.translate(rendered))
+			.then(function (translated) {
+				console.log('got here');
+				translated = translator.unescape(translated);
+				$('body').removeClass(previousBodyClass).addClass(data.bodyClass);
+				$('#content').html(translated);
 
-					ajaxify.end(url, tpl_url);
+				ajaxify.end(url, tpl_url);
+				transitions.end();
 
-					if (typeof callback === 'function') {
-						callback();
-					}
-
-					transitions.end();
-
-					// Only executed on ajaxify. Otherwise these'd be in ajaxify.end()
-					updateTitle(data.title);
-					updateTags();
-				});
-		});
+				// Only executed on ajaxify. Otherwise these'd be in ajaxify.end()
+				updateTitle(data.title);
+				updateTags();
+			});
 	}
 
 	function updateTitle(title) {
