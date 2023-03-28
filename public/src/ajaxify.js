@@ -2,6 +2,7 @@
 
 const hooks = require('./modules/hooks');
 const { render } = require('./widgets');
+const transitions = require('./modules/transitions');
 
 window.ajaxify = window.ajaxify || {};
 ajaxify.widgets = { render: render };
@@ -50,7 +51,7 @@ ajaxify.widgets = { render: render };
 
 		ajaxify.cleanup(url, ajaxify.data.template.name);
 
-		if ($('#content').hasClass('ajaxifying') && apiXHR) {
+		if (transitions.isActive() && apiXHR) {
 			apiXHR.abort();
 		}
 
@@ -67,7 +68,7 @@ ajaxify.widgets = { render: render };
 		}
 
 		previousBodyClass = ajaxify.data.bodyClass;
-		$('#footer, #content').removeClass('hide').addClass('ajaxifying');
+		transitions.start();
 
 		ajaxify.loadData(url, function (err, data) {
 			if (!err || (
@@ -157,7 +158,7 @@ ajaxify.widgets = { render: render };
 					data.responseJSON.config = config;
 				}
 
-				$('#footer, #content').removeClass('hide').addClass('ajaxifying');
+				transitions.start();
 				return renderTemplate(url, status.toString(), data.responseJSON || {}, callback);
 			} else if (status === 401) {
 				require(['alerts'], function (alerts) {
@@ -202,7 +203,7 @@ ajaxify.widgets = { render: render };
 						callback();
 					}
 
-					$('#content, #footer').removeClass('ajaxifying');
+					transitions.end();
 
 					// Only executed on ajaxify. Otherwise these'd be in ajaxify.end()
 					updateTitle(data.title);
