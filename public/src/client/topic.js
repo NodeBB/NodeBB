@@ -15,10 +15,12 @@ define('forum/topic', [
 	'hooks',
 	'api',
 	'alerts',
+	'bootbox',
 ], function (
 	infinitescroll, threadTools, postTools,
 	events, posts, navigator, sort, quickreply,
-	components, storage, hooks, api, alerts
+	components, storage, hooks, api, alerts,
+	bootbox
 ) {
 	const Topic = {};
 	let tid = 0;
@@ -65,6 +67,7 @@ define('forum/topic', [
 		addPostsPreviewHandler();
 		setupQuickReply();
 		handleBookmark(tid);
+		handleThumbs();
 
 		$(window).on('scroll', utils.debounce(updateTopicTitle, 250));
 
@@ -167,6 +170,28 @@ define('forum/topic', [
 				alerts.remove('bookmark');
 			}, 10000);
 		}
+	}
+
+	function handleThumbs() {
+		const listEl = document.querySelector('[component="topic/thumb/list"]');
+		if (!listEl) {
+			return;
+		}
+
+		listEl.addEventListener('click', (e) => {
+			const subselector = e.target.closest('a');
+			if (subselector) {
+				e.preventDefault();
+
+				const src = subselector.href;
+				bootbox.dialog({
+					size: 'lg',
+					onEscape: true,
+					backdrop: true,
+					message: `<div class="text-center mb-5"><img src="${src}" style="max-height: 66vh;" /></div>`,
+				});
+			}
+		});
 	}
 
 	function addBlockQuoteHandler() {
