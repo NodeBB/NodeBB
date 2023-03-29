@@ -78,9 +78,6 @@ define('topicList', [
 	}
 
 	TopicList.watchForNewPosts = function () {
-		$('#new-topics-alert').on('click', function () {
-			$(this).addClass('hide');
-		});
 		newPostCount = 0;
 		newTopicCount = 0;
 		TopicList.removeListeners();
@@ -150,36 +147,10 @@ define('topicList', [
 	}
 
 	function updateAlertText() {
-		let text = '';
-
-		if (newTopicCount === 0) {
-			if (newPostCount === 1) {
-				text = '[[recent:there-is-a-new-post]]';
-			} else if (newPostCount > 1) {
-				text = '[[recent:there-are-new-posts, ' + newPostCount + ']]';
-			}
-		} else if (newTopicCount === 1) {
-			if (newPostCount === 0) {
-				text = '[[recent:there-is-a-new-topic]]';
-			} else if (newPostCount === 1) {
-				text = '[[recent:there-is-a-new-topic-and-a-new-post]]';
-			} else if (newPostCount > 1) {
-				text = '[[recent:there-is-a-new-topic-and-new-posts, ' + newPostCount + ']]';
-			}
-		} else if (newTopicCount > 1) {
-			if (newPostCount === 0) {
-				text = '[[recent:there-are-new-topics, ' + newTopicCount + ']]';
-			} else if (newPostCount === 1) {
-				text = '[[recent:there-are-new-topics-and-a-new-post, ' + newTopicCount + ']]';
-			} else if (newPostCount > 1) {
-				text = '[[recent:there-are-new-topics-and-new-posts, ' + newTopicCount + ', ' + newPostCount + ']]';
-			}
+		if (newTopicCount > 0 || newPostCount > 0) {
+			$('#new-topics-alert').removeClass('hide').fadeIn('slow');
+			$('#category-no-topics').addClass('hide');
 		}
-
-		text += ' [[recent:click-here-to-reload]]';
-
-		$('#new-topics-alert').translateText(text).removeClass('hide').fadeIn('slow');
-		$('#category-no-topics').addClass('hide');
 	}
 
 	TopicList.loadMoreTopics = function (direction) {
