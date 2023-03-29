@@ -61,6 +61,7 @@ define('topicSelect', ['components'], function (components) {
 		if (topicsContainer) {
 			topicsContainer.find('[component="category/topic"].selected').removeClass('selected');
 			topicsContainer.find('[component="topic/select"]').toggleClass('fa-check-square-o', false).toggleClass('fa-square-o', true);
+			updateSelectedBadgeCount();
 		}
 	};
 

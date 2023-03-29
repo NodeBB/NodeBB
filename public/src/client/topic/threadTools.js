@@ -22,7 +22,7 @@ define('forum/topic/threadTools', [
 			animation: false,
 		});
 
-		observeTopicLabels();
+		ThreadTools.observeTopicLabels($('[component="topic/labels"]'));
 
 		// function topicCommand(method, path, command, onComplete) {
 		topicContainer.on('click', '[component="topic/delete"]', function () {
@@ -188,9 +188,8 @@ define('forum/topic/threadTools', [
 		}
 	};
 
-	function observeTopicLabels() {
+	ThreadTools.observeTopicLabels = function (labels) {
 		// show or hide topic/labels container depending on children visibility
-		const labels = $('[component="topic/labels"]');
 		const mut = new MutationObserver(function (mutations) {
 			const first = mutations[0];
 			if (first && first.attributeName === 'class') {
@@ -202,7 +201,7 @@ define('forum/topic/threadTools', [
 		labels.children().each((index, el) => {
 			mut.observe(el, { attributes: true });
 		});
-	}
+	};
 
 	function renderMenu(container) {
 		container = container.get(0);

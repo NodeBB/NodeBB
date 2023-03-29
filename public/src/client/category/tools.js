@@ -17,6 +17,10 @@ define('forum/category/tools', [
 
 		handlePinnedTopicSort();
 
+		$('[component="category/topic"]').each((index, el) => {
+			threadTools.observeTopicLabels($(el).find('[component="topic/labels"]'));
+		});
+
 		components.get('topic/delete').on('click', function () {
 			categoryCommand('del', '/state', 'delete', onDeletePurgeComplete);
 			return false;
