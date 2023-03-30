@@ -66,24 +66,6 @@ async function isInvited(socket, data) {
 	}
 }
 
-SocketGroups.accept = async (socket, data) => {
-	await isOwner(socket, data);
-	await groups.acceptMembership(data.groupName, data.toUid);
-	logGroupEvent(socket, 'group-accept-membership', {
-		groupName: data.groupName,
-		targetUid: data.toUid,
-	});
-};
-
-SocketGroups.reject = async (socket, data) => {
-	await isOwner(socket, data);
-	await groups.rejectMembership(data.groupName, data.toUid);
-	logGroupEvent(socket, 'group-reject-membership', {
-		groupName: data.groupName,
-		targetUid: data.toUid,
-	});
-};
-
 SocketGroups.acceptAll = async (socket, data) => {
 	await isOwner(socket, data);
 	await acceptRejectAll(SocketGroups.accept, socket, data);
@@ -98,7 +80,8 @@ async function acceptRejectAll(method, socket, data) {
 	if (typeof data.groupName !== 'string') {
 		throw new Error('[[error:invalid-group-name]]');
 	}
-	const uids = await groups.getPending(data.groupName);
+	const users = await groups.getPending(data.groupName);
+	const uids = users.map(u => u.uid);
 	await Promise.all(uids.map(async (uid) => {
 		await method(socket, { groupName: data.groupName, toUid: uid });
 	}));

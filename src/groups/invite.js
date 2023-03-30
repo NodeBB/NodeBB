@@ -9,6 +9,14 @@ const plugins = require('../plugins');
 const notifications = require('../notifications');
 
 module.exports = function (Groups) {
+	Groups.getPending = async function (groupName) {
+		return await Groups.getUsersFromSet(`group:${groupName}:pending`, ['username', 'userslug', 'picture']);
+	};
+
+	Groups.getInvites = async function (groupName) {
+		return await Groups.getUsersFromSet(`group:${groupName}:invited`, ['username', 'userslug', 'picture']);
+	};
+
 	Groups.requestMembership = async function (groupName, uid) {
 		await inviteOrRequestMembership(groupName, uid, 'request');
 		const { displayname } = await user.getUserFields(uid, ['username']);
@@ -107,11 +115,4 @@ module.exports = function (Groups) {
 		const map = _.zipObject(checkUids, isMembers);
 		return isArray ? uids.map(uid => !!map[uid]) : !!map[uids[0]];
 	}
-
-	Groups.getPending = async function (groupName) {
-		if (!groupName) {
-			return [];
-		}
-		return await db.getSetMembers(`group:${groupName}:pending`);
-	};
 };

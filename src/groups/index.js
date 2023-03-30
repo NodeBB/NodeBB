@@ -123,8 +123,8 @@ Groups.get = async function (groupName, options) {
 	const [groupData, members, pending, invited, isMember, isPending, isInvited, isOwner] = await Promise.all([
 		Groups.getGroupData(groupName),
 		Groups.getOwnersAndMembers(groupName, options.uid, 0, stop),
-		Groups.getUsersFromSet(`group:${groupName}:pending`, ['username', 'userslug', 'picture']),
-		Groups.getUsersFromSet(`group:${groupName}:invited`, ['username', 'userslug', 'picture']),
+		Groups.getPending(groupName),
+		Groups.getInvites(groupName),
 		Groups.isMember(options.uid, groupName),
 		Groups.isPending(options.uid, groupName),
 		Groups.isInvited(options.uid, groupName),
