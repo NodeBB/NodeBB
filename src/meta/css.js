@@ -4,7 +4,6 @@ const winston = require('winston');
 const nconf = require('nconf');
 const fs = require('fs');
 const path = require('path');
-const rimraf = require('rimraf');
 
 const plugins = require('../plugins');
 const db = require('../database');
@@ -210,7 +209,9 @@ async function getBundleMetadata(target) {
 
 CSS.buildBundle = async function (target, fork) {
 	if (target === 'client') {
-		await rimraf(path.join(__dirname, '../../build/public/client*'), { glob: true });
+		let files = await fs.promises.readdir(path.join(__dirname, '../../build/public'));
+		files = files.filter(f => f.match(/^client.*\.css$/));
+		await Promise.all(files.map(f => fs.promises.unlink(path.join(__dirname, '../../build/public', f))));
 	}
 
 	const data = await getBundleMetadata(target);
