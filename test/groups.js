@@ -944,7 +944,8 @@ describe('Groups', () => {
 			]);
 			await requestMembership(uid1, uid2);
 			await socketGroups.rejectAll({ uid: adminUid }, { groupName: 'PrivateCanJoin' });
-			const pending = await Groups.getPending('PrivateCanJoin');
+			let pending = await Groups.getPending('PrivateCanJoin');
+			pending = pending.map(u => u.uid);
 			assert.equal(pending.length, 0);
 			await requestMembership(uid1, uid2);
 			await socketGroups.acceptAll({ uid: adminUid }, { groupName: 'PrivateCanJoin' });

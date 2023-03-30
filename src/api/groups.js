@@ -206,9 +206,55 @@ groupsAPI.rescind = async (caller, data) => {
 
 	await groups.ownership.rescind(data.uid, groupName);
 	logGroupEvent(caller, 'group-owner-rescind', {
-		groupName: groupName,
+		groupName,
 		targetUid: data.uid,
 	});
+};
+
+groupsAPI.getPending = async (caller, { slug }) => {
+	const groupName = await groups.getGroupNameByGroupSlug(slug);
+	await isOwner(caller, groupName);
+
+	return await groups.getPending(groupName);
+};
+
+groupsAPI.accept = async (caller, { slug, uid }) => {
+	const groupName = await groups.getGroupNameByGroupSlug(slug);
+
+	await isOwner(caller, groupName);
+	const isPending = await groups.isPending(uid, groupName);
+	if (!isPending) {
+		throw new Error('[[error:group-user-not-pending]]');
+	}
+
+	await groups.acceptMembership(groupName, uid);
+	logGroupEvent(caller, 'group-accept-membership', {
+		groupName,
+		targetUid: uid,
+	});
+};
+
+groupsAPI.reject = async (caller, { slug, uid }) => {
+	const groupName = await groups.getGroupNameByGroupSlug(slug);
+
+	await isOwner(caller, groupName);
+	const isPending = await groups.isPending(uid, groupName);
+	if (!isPending) {
+		throw new Error('[[error:group-user-not-pending]]');
+	}
+
+	await groups.rejectMembership(groupName, uid);
+	logGroupEvent(caller, 'group-reject-membership', {
+		groupName,
+		targetUid: uid,
+	});
+};
+
+groupsAPI.getInvites = async (caller, { slug }) => {
+	const groupName = await groups.getGroupNameByGroupSlug(slug);
+	await isOwner(caller, groupName);
+
+	return await groups.getInvites(groupName);
 };
 
 async function isOwner(caller, groupName) {
