@@ -1,0 +1,106 @@
+post:
+  tags:
+    - group
+  summary: issue group invitation
+  description: |
+    This operation issues an invitation for a user to join a group.
+  parameters:
+    - in: path
+      name: slug
+      schema:
+        type: string
+      required: true
+      description: a group slug
+      example: invitations-only
+    - in: path
+      name: uid
+      schema:
+        type: number
+      required: true
+      description: a user id
+      example: 1
+  responses:
+    '200':
+      description: Membership invitation issued.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}
+put:
+  tags:
+    - group
+  summary: accept group invitation
+  description: |
+    This operation accepts an invitation to join a group.
+    > **N.B.** This route can only be called by the invited user.
+  parameters:
+    - in: path
+      name: slug
+      schema:
+        type: string
+      required: true
+      description: a group slug
+      example: invitations-only
+    - in: path
+      name: uid
+      schema:
+        type: number
+      required: true
+      description: a user id
+      example: 1
+  responses:
+    '200':
+      description: Membership invitation accepted.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}
+delete:
+  tags:
+    - group
+  summary: reject group invitation
+  description: |
+    This operation rejects an invitation to join a group.
+    > **N.B.** This route can be called by both the invited user and a group's owner.
+    > When called by the latter, the membership request is considered "rescinded", not "rejected"
+    > Functionally, however, they do the same thing, which is why the route is the same.
+  parameters:
+    - in: path
+      name: slug
+      schema:
+        type: string
+      required: true
+      description: a group slug
+      example: invitations-only
+    - in: path
+      name: uid
+      schema:
+        type: number
+      required: true
+      description: a user id
+      example: 1
+  responses:
+    '200':
+      description: Membership invitation declined.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}

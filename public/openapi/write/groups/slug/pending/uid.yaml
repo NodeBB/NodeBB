@@ -17,7 +17,7 @@ put:
         type: number
       required: true
       description: a user id
-      example: 2
+      example: 1
   responses:
     '200':
       description: Membership request approved.
@@ -50,7 +50,7 @@ delete:
         type: number
       required: true
       description: a user id
-      example: 3
+      example: 1
   responses:
     '200':
       description: Membership request rejected.

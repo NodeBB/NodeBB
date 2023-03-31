@@ -121,6 +121,18 @@ describe('API', async () => {
 					example: '', // to be defined later...
 				},
 			],
+			'/groups/{slug}/invites/{uid}': [
+				{
+					in: 'path',
+					name: 'slug',
+					example: 'invitations-only',
+				},
+				{
+					in: 'path',
+					name: 'uid',
+					example: '', // to be defined later...
+				},
+			],
 		},
 	};
 
@@ -163,20 +175,20 @@ describe('API', async () => {
 		});
 
 		// Create private groups for pending/invitations
-		const [pending1, pending2, invite1, invite2] = await Promise.all([
-			await user.create({ username: utils.generateUUID().slice(0, 8) }),
+		const [pending1, pending2, inviteUid] = await Promise.all([
 			await user.create({ username: utils.generateUUID().slice(0, 8) }),
 			await user.create({ username: utils.generateUUID().slice(0, 8) }),
 			await user.create({ username: utils.generateUUID().slice(0, 8) }),
 		]);
 		mocks.put['/groups/{slug}/pending/{uid}'][1].example = pending1;
 		mocks.delete['/groups/{slug}/pending/{uid}'][1].example = pending2;
+		mocks.delete['/groups/{slug}/invites/{uid}'][1].example = inviteUid;
 		await Promise.all(['private-group', 'invitations-only'].map(async (name) => {
 			await groups.create({ name, private: true });
 		}));
 		await groups.requestMembership('private-group', pending1);
 		await groups.requestMembership('private-group', pending2);
-		await groups.invite('invitations-only', [pending1, pending2]);
+		await groups.invite('invitations-only', inviteUid);
 
 		await meta.settings.set('core.api', {
 			tokens: [{
