@@ -88,7 +88,7 @@ define('forum/topic/replies', ['forum/topic/posts', 'hooks', 'alerts'], function
 		const replyCount = $('[component="post"][data-pid="' + post.toPid + '"]').find('[component="post/reply-count"]').first();
 		const countEl = replyCount.find('[component="post/reply-count/text"]');
 		const avatars = replyCount.find('[component="post/reply-count/avatars"]');
-		const count = Math.max(0, parseInt(countEl.attr('data-replies'), 10) + inc);
+		const count = Math.max(0, (parseInt(countEl.attr('data-replies'), 10) || 0) + inc);
 		const timestamp = replyCount.find('.timeago').attr('title', post.timestampISO);
 
 		countEl.attr('data-replies', count);
@@ -100,7 +100,9 @@ define('forum/topic/replies', ['forum/topic/posts', 'hooks', 'alerts'], function
 		}
 
 		if (!avatars.find('[data-uid="' + post.uid + '"]').length && count < 7) {
-			app.parseAndTranslate('topic', 'posts', { posts: [{ replies: { hasMore: false, users: [post.user] } }] }, function (html) {
+			app.parseAndTranslate('topic', 'posts', {
+				posts: [{ replies: { count: count, hasMore: false, users: [post.user] } }],
+			}, function (html) {
 				avatars.prepend(html.find('[component="post/reply-count/avatars"]').html());
 			});
 		}
