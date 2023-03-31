@@ -96,6 +96,12 @@ paths:
     $ref: 'write/groups/slug/membership/uid.yaml'
   /groups/{slug}/ownership/{uid}:
     $ref: 'write/groups/slug/ownership/uid.yaml'
+  /groups/{slug}/pending:
+    $ref: 'write/groups/slug/pending.yaml'
+  /groups/{slug}/pending/{uid}:
+    $ref: 'write/groups/slug/pending/uid.yaml'
+  /groups/{slug}/invites:
+    $ref: 'write/groups/slug/invites.yaml'
   /categories/:
     $ref: 'write/categories.yaml'
   /categories/{cid}:
