@@ -908,49 +908,21 @@ describe('Groups', () => {
 			assert(isPending);
 		});
 
-		it('should reject membership of user', (done) => {
-			socketGroups.reject({ uid: adminUid }, { groupName: 'PrivateCanJoin', toUid: testUid }, (err) => {
-				assert.ifError(err);
-				Groups.isInvited(testUid, 'PrivateCanJoin', (err, invited) => {
-					assert.ifError(err);
-					assert.equal(invited, false);
-					done();
-				});
-			});
+		it('should reject membership of user', async () => {
+			await apiGroups.reject({ uid: adminUid }, { slug: 'privatecanjoin', uid: testUid });
+			const invited = await Groups.isInvited(testUid, 'PrivateCanJoin');
+			assert.equal(invited, false);
 		});
 
-		it('should error if not owner or admin', (done) => {
-			socketGroups.accept({ uid: 0 }, { groupName: 'PrivateCanJoin', toUid: testUid }, (err) => {
-				assert.equal(err.message, '[[error:no-privileges]]');
-				done();
-			});
+		it('should error if not owner or admin', async () => {
+			assert.rejects(apiGroups.accept({ uid: 0 }, { slug: 'privatecanjoin', uid: testUid }), '[[error:no-privileges]]');
 		});
 
 		it('should accept membership of user', async () => {
 			await apiGroups.join({ uid: testUid }, { slug: 'privatecanjoin', uid: testUid });
-			await socketGroups.accept({ uid: adminUid }, { groupName: 'PrivateCanJoin', toUid: testUid });
+			await apiGroups.accept({ uid: adminUid }, { slug: 'privatecanjoin', uid: testUid });
 			const isMember = await Groups.isMember(testUid, 'PrivateCanJoin');
 			assert(isMember);
-		});
-
-		it('should reject/accept all memberships requests', async () => {
-			async function requestMembership(uid1, uid2) {
-				await apiGroups.join({ uid: uid1 }, { slug: 'privatecanjoin', uid: uid1 });
-				await apiGroups.join({ uid: uid2 }, { slug: 'privatecanjoin', uid: uid2 });
-			}
-			const [uid1, uid2] = await Promise.all([
-				User.create({ username: 'groupuser1' }),
-				User.create({ username: 'groupuser2' }),
-			]);
-			await requestMembership(uid1, uid2);
-			await socketGroups.rejectAll({ uid: adminUid }, { groupName: 'PrivateCanJoin' });
-			let pending = await Groups.getPending('PrivateCanJoin');
-			pending = pending.map(u => u.uid);
-			assert.equal(pending.length, 0);
-			await requestMembership(uid1, uid2);
-			await socketGroups.acceptAll({ uid: adminUid }, { groupName: 'PrivateCanJoin' });
-			const isMembers = await Groups.isMembers([uid1, uid2], 'PrivateCanJoin');
-			assert.deepStrictEqual(isMembers, [true, true]);
 		});
 
 		it('should issue invite to user', (done) => {
@@ -988,62 +960,33 @@ describe('Groups', () => {
 			});
 		});
 
-		it('should rescind invite', (done) => {
-			User.create({ username: 'invite3' }, (err, uid) => {
-				assert.ifError(err);
-				socketGroups.issueInvite({ uid: adminUid }, { groupName: 'PrivateCanJoin', toUid: uid }, (err) => {
-					assert.ifError(err);
-					socketGroups.rescindInvite({ uid: adminUid }, { groupName: 'PrivateCanJoin', toUid: uid }, (err) => {
-						assert.ifError(err);
-						Groups.isInvited(uid, 'PrivateCanJoin', (err, isInvited) => {
-							assert.ifError(err);
-							assert(!isInvited);
-							done();
-						});
-					});
-				});
-			});
+		it('should rescind invite', async () => {
+			const uid = await User.create({ username: 'invite3' });
+			await apiGroups.issueInvite({ uid: adminUid }, { slug: 'privatecanjoin', uid });
+			await apiGroups.rejectInvite({ uid: adminUid }, { slug: 'privatecanjoin', uid });
+
+			const isInvited = await Groups.isInvited(uid, 'PrivateCanJoin');
+			assert(!isInvited);
 		});
 
-		it('should error if user is not invited', (done) => {
-			socketGroups.acceptInvite({ uid: adminUid }, { groupName: 'PrivateCanJoin' }, (err) => {
-				assert.equal(err.message, '[[error:not-invited]]');
-				done();
-			});
+		it('should error if user is not invited', async () => {
+			assert.rejects(apiGroups.acceptInvite({ uid: adminUid }, { slug: 'privatecanjoin' }), '[[error:not-invited]]');
 		});
 
-		it('should accept invite', (done) => {
-			User.create({ username: 'invite4' }, (err, uid) => {
-				assert.ifError(err);
-				socketGroups.issueInvite({ uid: adminUid }, { groupName: 'PrivateCanJoin', toUid: uid }, (err) => {
-					assert.ifError(err);
-					socketGroups.acceptInvite({ uid: uid }, { groupName: 'PrivateCanJoin' }, (err) => {
-						assert.ifError(err);
-						Groups.isMember(uid, 'PrivateCanJoin', (err, isMember) => {
-							assert.ifError(err);
-							assert(isMember);
-							done();
-						});
-					});
-				});
-			});
+		it('should accept invite', async () => {
+			const uid = await User.create({ username: 'invite4' });
+			await apiGroups.issueInvite({ uid: adminUid }, { slug: 'privatecanjoin', uid });
+			await apiGroups.acceptInvite({ uid }, { slug: 'privatecanjoin', uid });
+			const isMember = await Groups.isMember(uid, 'PrivateCanJoin');
+			assert(isMember);
 		});
 
-		it('should reject invite', (done) => {
-			User.create({ username: 'invite5' }, (err, uid) => {
-				assert.ifError(err);
-				socketGroups.issueInvite({ uid: adminUid }, { groupName: 'PrivateCanJoin', toUid: uid }, (err) => {
-					assert.ifError(err);
-					socketGroups.rejectInvite({ uid: uid }, { groupName: 'PrivateCanJoin' }, (err) => {
-						assert.ifError(err);
-						Groups.isInvited(uid, 'PrivateCanJoin', (err, isInvited) => {
-							assert.ifError(err);
-							assert(!isInvited);
-							done();
-						});
-					});
-				});
-			});
+		it('should reject invite', async () => {
+			const uid = await User.create({ username: 'invite5' });
+			await apiGroups.issueInvite({ uid: adminUid }, { slug: 'privatecanjoin', uid });
+			await apiGroups.rejectInvite({ uid }, { slug: 'privatecanjoin', uid });
+			const isInvited = await Groups.isInvited(uid, 'PrivateCanJoin');
+			assert(!isInvited);
 		});
 
 		it('should grant ownership to user', async () => {

@@ -257,7 +257,54 @@ groupsAPI.getInvites = async (caller, { slug }) => {
 	return await groups.getInvites(groupName);
 };
 
-async function isOwner(caller, groupName) {
+groupsAPI.issueInvite = async (caller, { slug, uid }) => {
+	const groupName = await groups.getGroupNameByGroupSlug(slug);
+	await isOwner(caller, groupName);
+
+	await groups.invite(groupName, uid);
+	logGroupEvent(caller, 'group-invite', {
+		groupName,
+		targetUid: uid,
+	});
+};
+
+groupsAPI.acceptInvite = async (caller, { slug, uid }) => {
+	const groupName = await groups.getGroupNameByGroupSlug(slug);
+
+	// Can only be called by the invited user
+	const invited = await groups.isInvited(uid, groupName);
+	if (caller.uid !== parseInt(uid, 10)) {
+		throw new Error('[[error:not-allowed]]');
+	}
+	if (!invited) {
+		throw new Error('[[error:not-invited]]');
+	}
+
+	await groups.acceptMembership(groupName, uid);
+	logGroupEvent(caller, 'group-invite-accept', { groupName });
+};
+
+groupsAPI.rejectInvite = async (caller, { slug, uid }) => {
+	const groupName = await groups.getGroupNameByGroupSlug(slug);
+
+	// Can be called either by invited user, or group owner
+	const owner = await isOwner(caller, groupName, false);
+	const invited = await groups.isInvited(uid, groupName);
+
+	if (!owner && caller.uid !== parseInt(uid, 10)) {
+		throw new Error('[[error:not-allowed]]');
+	}
+	if (!invited) {
+		throw new Error('[[error:not-invited]]');
+	}
+
+	await groups.rejectMembership(groupName, uid);
+	if (!owner) {
+		logGroupEvent(caller, 'group-invite-reject', { groupName });
+	}
+};
+
+async function isOwner(caller, groupName, throwOnFalse = true) {
 	if (typeof groupName !== 'string') {
 		throw new Error('[[error:invalid-group-name]]');
 	}
@@ -269,9 +316,11 @@ async function isOwner(caller, groupName) {
 	]);
 
 	const check = isOwner || hasAdminPrivilege || (isGlobalModerator && !group.system);
-	if (!check) {
+	if (!check && throwOnFalse) {
 		throw new Error('[[error:no-privileges]]');
 	}
+
+	return check;
 }
 
 function logGroupEvent(caller, event, additional) {
