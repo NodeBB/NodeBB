@@ -112,10 +112,16 @@ define('forum/groups/details', [
 					api.del('/groups/' + ajaxify.data.group.slug + '/membership/' + (uid || app.user.uid), undefined).then(() => ajaxify.refresh()).catch(alerts.error);
 					break;
 
-				// TODO (14/10/2020): rewrite these to use api module and merge with above 2 case blocks
-				case 'accept': // intentional fall-throughs!
+				case 'accept':
+					api.put(`/groups/${ajaxify.data.group.slug}/pending/${uid}`).then(() => ajaxify.refresh()).catch(alerts.error);
+					break;
+
 				case 'reject':
-				case 'issueInvite':
+					api.del(`/groups/${ajaxify.data.group.slug}/pending/${uid}`).then(() => ajaxify.refresh()).catch(alerts.error);
+					break;
+
+				// TODO (14/10/2020): rewrite these to use api module and merge with above 2 case blocks
+				case 'issueInvite': // intentional fall-throughs!
 				case 'rescindInvite':
 				case 'acceptInvite':
 				case 'rejectInvite':
