@@ -145,22 +145,22 @@ define('forum/groups/details', [
 					}).catch(alerts.error);
 					break;
 
-				// TODO (14/10/2020): rewrite these to use api module and merge with above 2 case blocks
-				case 'acceptAll': // intentional fall-throughs!
-				case 'rejectAll':
-					socket.emit('groups.' + action, {
-						toUid: uid,
-						groupName: groupName,
-					}, function (err) {
-						if (err) {
-							return alerts.error(err);
-						}
-						if (action === 'rescindInvite' || action === 'accept' || action === 'reject') {
-							return userRow.remove();
-						}
+				case 'acceptAll': // falls throughs
+				case 'rejectAll': {
+					const listEl = document.querySelector('[component="groups/pending"]');
+					if (!listEl) {
+						return;
+					}
+
+					const method = action === 'acceptAll' ? 'put' : 'del';
+					let uids = Array.prototype.map.call(listEl.querySelectorAll('[data-uid]'), el => parseInt(el.getAttribute('data-uid'), 10));
+					uids = uids.filter((uid, idx) => uids.indexOf(uid) === idx);
+
+					Promise.all(uids.map(async uid => api[method](`/groups/${ajaxify.data.group.slug}/pending/${uid}`))).then(() => {
 						ajaxify.refresh();
-					});
+					}).catch(alerts.error);
 					break;
+				}
 			}
 		});
 	};

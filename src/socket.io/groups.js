@@ -56,36 +56,6 @@ async function isOwner(socket, data) {
 	}
 }
 
-SocketGroups.acceptAll = async (socket, data) => {
-	await isOwner(socket, data);
-	await acceptRejectAll(SocketGroups.accept, socket, data);
-};
-
-SocketGroups.rejectAll = async (socket, data) => {
-	await isOwner(socket, data);
-	await acceptRejectAll(SocketGroups.reject, socket, data);
-};
-
-async function acceptRejectAll(method, socket, data) {
-	if (typeof data.groupName !== 'string') {
-		throw new Error('[[error:invalid-group-name]]');
-	}
-	const users = await groups.getPending(data.groupName);
-	const uids = users.map(u => u.uid);
-	await Promise.all(uids.map(async (uid) => {
-		await method(socket, { groupName: data.groupName, toUid: uid });
-	}));
-}
-
-SocketGroups.issueInvite = async (socket, data) => {
-	await isOwner(socket, data);
-	await groups.invite(data.groupName, data.toUid);
-	logGroupEvent(socket, 'group-invite', {
-		groupName: data.groupName,
-		targetUid: data.toUid,
-	});
-};
-
 SocketGroups.issueMassInvite = async (socket, data) => {
 	await isOwner(socket, data);
 	if (!data || !data.usernames || !data.groupName) {

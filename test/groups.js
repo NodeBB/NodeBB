@@ -925,18 +925,11 @@ describe('Groups', () => {
 			assert(isMember);
 		});
 
-		it('should issue invite to user', (done) => {
-			User.create({ username: 'invite1' }, (err, uid) => {
-				assert.ifError(err);
-				socketGroups.issueInvite({ uid: adminUid }, { groupName: 'PrivateCanJoin', toUid: uid }, (err) => {
-					assert.ifError(err);
-					Groups.isInvited(uid, 'PrivateCanJoin', (err, isInvited) => {
-						assert.ifError(err);
-						assert(isInvited);
-						done();
-					});
-				});
-			});
+		it('should issue invite to user', async () => {
+			const uid = await User.create({ username: 'invite1' });
+			await apiGroups.issueInvite({ uid: adminUid }, { slug: 'privatecanjoin', uid });
+			const isInvited = await Groups.isInvited(uid, 'PrivateCanJoin');
+			assert(isInvited);
 		});
 
 		it('should fail with invalid data', (done) => {
