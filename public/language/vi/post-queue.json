@@ -1,8 +1,8 @@
 
 {
 	"post-queue": "Hàng Đợi Bài Đăng",
-	"no-queued-posts": "There are no posts in the post queue.",
-	"no-single-post": "The topic or post you are looking for is no longer in the queue. It has likely been approved or deleted already.",
+	"no-queued-posts": "Không có bài viết trong hàng đợi bài viết.",
+	"no-single-post": "Chủ đề hoặc bài đăng bạn đang tìm kiếm không còn trong hàng đợi. Nó có thể đã được phê duyệt hoặc xóa rồi.",
 	"enabling-help": "To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
 	"back-to-list": "Back to Post Queue",
 	"user": "Người dùng",
