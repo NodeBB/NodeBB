@@ -1,10 +1,10 @@
 {
-	"sign-in-with-twitter": "Sign in with Twitter",
-	"sign-up-with-twitter": "Sign up with Twitter",
-	"sign-in-with-github": "Sign in with Github",
-	"sign-up-with-github": "Sign up with Github",
-	"sign-in-with-google": "Sign in with Google",
-	"sign-up-with-google": "Sign up with Google",
-	"log-in-with-facebook": "Log in with Facebook",
-	"continue-with-facebook": "Continue with Facebook"
+	"sign-in-with-twitter": "تسجيل الدخول باستخدام تويتر",
+	"sign-up-with-twitter": "التسجيل باستخدام تويتر",
+	"sign-in-with-github": "تسجيل الدخول باستخدام جيت هب",
+	"sign-up-with-github": "التسجيل باستخدام جيت هب",
+	"sign-in-with-google": "تسجيل الدخول باستخدام قوقل",
+	"sign-up-with-google": "التسجيل باستخدام قوقل",
+	"log-in-with-facebook": "تسجيل الدخول باستخدام فيسبوك",
+	"continue-with-facebook": "التسجيل باستخدام فيسبوك"
 }
