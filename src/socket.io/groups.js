@@ -3,7 +3,6 @@
 const groups = require('../groups');
 const user = require('../user');
 const utils = require('../utils');
-const events = require('../events');
 const privileges = require('../privileges');
 
 const SocketGroups = module.exports;
@@ -13,48 +12,6 @@ SocketGroups.before = async (socket, method, data) => {
 		throw new Error('[[error:invalid-data]]');
 	}
 };
-
-SocketGroups.addMember = async (socket, data) => {
-	await isOwner(socket, data);
-	if (data.groupName === 'administrators' || groups.isPrivilegeGroup(data.groupName)) {
-		throw new Error('[[error:not-allowed]]');
-	}
-	if (!data.uid) {
-		throw new Error('[[error:invalid-data]]');
-	}
-	data.uid = !Array.isArray(data.uid) ? [data.uid] : data.uid;
-	if (data.uid.filter(uid => !(parseInt(uid, 10) > 0)).length) {
-		throw new Error('[[error:invalid-uid]]');
-	}
-	for (const uid of data.uid) {
-		// eslint-disable-next-line no-await-in-loop
-		await groups.join(data.groupName, uid);
-	}
-
-	logGroupEvent(socket, 'group-add-member', {
-		groupName: data.groupName,
-		targetUid: String(data.uid),
-	});
-};
-
-async function isOwner(socket, data) {
-	if (typeof data.groupName !== 'string') {
-		throw new Error('[[error:invalid-group-name]]');
-	}
-	const results = await utils.promiseParallel({
-		hasAdminPrivilege: privileges.admin.can('admin:groups', socket.uid),
-		isGlobalModerator: user.isGlobalModerator(socket.uid),
-		isOwner: groups.ownership.isOwner(socket.uid, data.groupName),
-		group: groups.getGroupData(data.groupName),
-	});
-
-	const isOwner = results.isOwner ||
-		results.hasAdminPrivilege ||
-		(results.isGlobalModerator && !results.group.system);
-	if (!isOwner) {
-		throw new Error('[[error:no-privileges]]');
-	}
-}
 
 SocketGroups.search = async (socket, data) => {
 	data.options = data.options || {};
@@ -164,15 +121,6 @@ async function canModifyGroup(uid, groupName) {
 	if (!(results.isOwner || results.hasAdminPrivilege || (results.isGlobalMod && !results.system))) {
 		throw new Error('[[error:no-privileges]]');
 	}
-}
-
-function logGroupEvent(socket, event, additional) {
-	events.log({
-		type: event,
-		uid: socket.uid,
-		ip: socket.ip,
-		...additional,
-	});
 }
 
 require('../promisify')(SocketGroups);

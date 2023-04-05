@@ -77,7 +77,7 @@ groupsAPI.join = async function (caller, data) {
 		throw new Error('[[error:no-group]]');
 	}
 
-	const isCallerAdmin = await user.isAdministrator(caller.uid);
+	const isCallerAdmin = await privileges.admin.can('admin:groups', caller.uid);
 	if (!isCallerAdmin && (
 		groups.systemGroups.includes(groupName) ||
 		groups.isPrivilegeGroup(groupName)
@@ -85,9 +85,8 @@ groupsAPI.join = async function (caller, data) {
 		throw new Error('[[error:not-allowed]]');
 	}
 
-	const [groupData, isCallerOwner, userExists] = await Promise.all([
+	const [groupData, userExists] = await Promise.all([
 		groups.getGroupData(groupName),
-		groups.ownership.isOwner(caller.uid, groupName),
 		user.exists(data.uid),
 	]);
 
@@ -110,9 +109,9 @@ groupsAPI.join = async function (caller, data) {
 		throw new Error('[[error:group-join-disabled]]');
 	}
 
-	if ((!groupData.private && isSelf) || isCallerAdmin || isCallerOwner) {
+	if ((!groupData.private && isSelf) || isCallerAdmin) {
 		await groups.join(groupName, data.uid);
-		logGroupEvent(caller, 'group-join', {
+		logGroupEvent(caller, `group-${isSelf ? 'join' : 'add-member'}`, {
 			groupName: groupName,
 			targetUid: data.uid,
 		});
