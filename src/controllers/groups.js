@@ -46,7 +46,7 @@ groupsController.details = async function (req, res, next) {
 	const [exists, isHidden, isAdmin, isGlobalMod] = await Promise.all([
 		groups.exists(groupName),
 		groups.isHidden(groupName),
-		user.isAdministrator(req.uid),
+		privileges.admin.can('admin:groups', req.uid),
 		user.isGlobalModerator(req.uid),
 	]);
 	if (!exists) {
