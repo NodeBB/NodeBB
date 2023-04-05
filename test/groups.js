@@ -973,22 +973,14 @@ describe('Groups', () => {
 			assert(!isOwner);
 		});
 
-		it('should fail to kick user with invalid data', (done) => {
-			socketGroups.kick({ uid: adminUid }, { groupName: 'PrivateCanJoin', uid: adminUid }, (err) => {
-				assert.equal(err.message, '[[error:cant-kick-self]]');
-				done();
-			});
+		it('should fail to kick user with invalid data', async () => {
+			assert.rejects(apiGroups.leave({ uid: adminUid }, { slug: 'privatecanjoin', uid: 8721632 }), '[[error:group-not-member]]');
 		});
 
-		it('should kick user from group', (done) => {
-			socketGroups.kick({ uid: adminUid }, { groupName: 'PrivateCanJoin', uid: testUid }, (err) => {
-				assert.ifError(err);
-				Groups.isMember(testUid, 'PrivateCanJoin', (err, isMember) => {
-					assert.ifError(err);
-					assert(!isMember);
-					done();
-				});
-			});
+		it('should kick user from group', async () => {
+			await apiGroups.leave({ uid: adminUid }, { slug: 'privatecanjoin', uid: testUid });
+			const isMember = await Groups.isMember(testUid, 'PrivateCanJoin');
+			assert(!isMember);
 		});
 
 		it('should fail to create group with invalid data', async () => {
@@ -1197,8 +1189,8 @@ describe('Groups', () => {
 			assert.strictEqual(err.message, '[[error:cant-remove-self-as-admin]]');
 		});
 
-		it('should not error if user is not member', async () => {
-			await apiGroups.leave({ uid: adminUid }, { uid: 3, slug: 'newgroup' });
+		it('should error if user is not member', async () => {
+			assert.rejects(apiGroups.leave({ uid: adminUid }, { uid: 3, slug: 'newgroup' }), '[[error:group-not-member]]');
 		});
 
 		it('should fail if trying to remove someone else from group', async () => {

@@ -158,7 +158,7 @@ groupsAPI.leave = async function (caller, data) {
 		throw new Error('[[error:invalid-uid]]');
 	}
 	if (!isMember) {
-		return;
+		throw new Error('[[error:group-not-member]]');
 	}
 
 	if (groupData.disableLeave && isSelf) {
@@ -183,7 +183,7 @@ groupsAPI.leave = async function (caller, data) {
 	const uids = await groups.getOwners(groupName);
 	await notifications.push(notification, uids);
 
-	logGroupEvent(caller, 'group-leave', {
+	logGroupEvent(caller, `group-${isSelf ? 'leave' : 'kick'}`, {
 		groupName: groupName,
 		targetUid: data.uid,
 	});
