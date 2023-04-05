@@ -56,20 +56,6 @@ async function isOwner(socket, data) {
 	}
 }
 
-SocketGroups.kick = async (socket, data) => {
-	await isOwner(socket, data);
-	if (socket.uid === parseInt(data.uid, 10)) {
-		throw new Error('[[error:cant-kick-self]]');
-	}
-
-	const isOwnerBit = await groups.ownership.isOwner(data.uid, data.groupName);
-	await groups.kick(data.uid, data.groupName, isOwnerBit);
-	logGroupEvent(socket, 'group-kick', {
-		groupName: data.groupName,
-		targetUid: data.uid,
-	});
-};
-
 SocketGroups.search = async (socket, data) => {
 	data.options = data.options || {};
 
