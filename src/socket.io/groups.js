@@ -56,27 +56,6 @@ async function isOwner(socket, data) {
 	}
 }
 
-SocketGroups.issueMassInvite = async (socket, data) => {
-	await isOwner(socket, data);
-	if (!data || !data.usernames || !data.groupName) {
-		throw new Error('[[error:invalid-data]]');
-	}
-	let usernames = String(data.usernames).split(',');
-	usernames = usernames.map(username => username && username.trim());
-
-	let uids = await user.getUidsByUsernames(usernames);
-	uids = uids.filter(uid => !!uid && parseInt(uid, 10));
-
-	await groups.invite(data.groupName, uids);
-
-	for (const uid of uids) {
-		logGroupEvent(socket, 'group-invite', {
-			groupName: data.groupName,
-			targetUid: uid,
-		});
-	}
-};
-
 SocketGroups.kick = async (socket, data) => {
 	await isOwner(socket, data);
 	if (socket.uid === parseInt(data.uid, 10)) {
