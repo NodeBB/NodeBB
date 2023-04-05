@@ -285,21 +285,22 @@ define('forum/groups/details', [
 			});
 		});
 
-		$('[component="groups/members/bulk-invite-button"]').on('click', function () {
-			const usernames = $('[component="groups/members/bulk-invite"]').val();
+		$('[component="groups/members/bulk-invite-button"]').on('click', async () => {
+			let usernames = $('[component="groups/members/bulk-invite"]').val();
 			if (!usernames) {
 				return false;
 			}
-			socket.emit('groups.issueMassInvite', {
-				usernames: usernames,
-				groupName: ajaxify.data.group.name,
-			}, function (err) {
-				if (err) {
-					return alerts.error(err);
-				}
+
+			// Filter out bad usernames
+			usernames = usernames.split(',').map(username => slugify(username));
+			usernames = await Promise.all(usernames.map(slug => api.head(`/users/bySlug/${slug}`).then(() => slug).catch(() => false)));
+			usernames = usernames.filter(Boolean);
+
+			const uids = await Promise.all(usernames.map(slug => api.get(`/users/bySlug/${slug}`).then(({ uid }) => uid)));
+
+			await Promise.all(uids.map(async uid => api.post(`/groups/${ajaxify.data.group.slug}/invites/${uid}`))).then(() => {
 				updateList();
-			});
-			return false;
+			}).catch(alerts.error);
 		});
 	}
 

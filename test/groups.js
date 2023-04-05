@@ -932,27 +932,6 @@ describe('Groups', () => {
 			assert(isInvited);
 		});
 
-		it('should fail with invalid data', (done) => {
-			socketGroups.issueMassInvite({ uid: adminUid }, { groupName: 'PrivateCanJoin', usernames: null }, (err) => {
-				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
-		});
-
-		it('should issue mass invite to users', (done) => {
-			User.create({ username: 'invite2' }, (err, uid) => {
-				assert.ifError(err);
-				socketGroups.issueMassInvite({ uid: adminUid }, { groupName: 'PrivateCanJoin', usernames: 'invite1, invite2' }, (err) => {
-					assert.ifError(err);
-					Groups.isInvited([adminUid, uid], 'PrivateCanJoin', (err, isInvited) => {
-						assert.ifError(err);
-						assert.deepStrictEqual(isInvited, [false, true]);
-						done();
-					});
-				});
-			});
-		});
-
 		it('should rescind invite', async () => {
 			const uid = await User.create({ username: 'invite3' });
 			await apiGroups.issueInvite({ uid: adminUid }, { slug: 'privatecanjoin', uid });
