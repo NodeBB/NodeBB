@@ -95,7 +95,7 @@
 	-webkit-box-orient: vertical;
 	-webkit-line-clamp: $lines;
 	white-space: initial;
-	max-height: calc(1.5em * $lines);
+	max-height: calc(1.25em * $lines);
 }
 
 @for $i from 1 through 6 {
