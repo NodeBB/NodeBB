@@ -134,6 +134,8 @@
     "group-already-requested": "A tagság kérelmed már be lett nyújtva",
     "group-join-disabled": "Most nem csatlakozhatsz ehhez a csoporthoz",
     "group-leave-disabled": "Most nem hagyhatod el ezt a csoportot",
+    "group-user-not-pending": "User does not have a pending request to join this group.",
+    "gorup-user-not-invited": "User has not been invited to join this group.",
     "post-already-deleted": "Ez a bejegyzés mát törlésre került",
     "post-already-restored": "Ez a bejegyzés már visszaállításra került",
     "topic-already-deleted": "Ezt a témakör már törlésre került",

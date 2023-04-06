@@ -134,6 +134,8 @@
     "group-already-requested": "已提交您的請求",
     "group-join-disabled": "您目前無法加入此群組",
     "group-leave-disabled": "您目前無法離開此群組",
+    "group-user-not-pending": "User does not have a pending request to join this group.",
+    "gorup-user-not-invited": "User has not been invited to join this group.",
     "post-already-deleted": "此貼文已被刪除",
     "post-already-restored": "此貼文已經恢復",
     "topic-already-deleted": "此主題已被刪除",

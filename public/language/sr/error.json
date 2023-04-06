@@ -134,6 +134,8 @@
     "group-already-requested": "Ваш захтев за чланство је већ поднесен",
     "group-join-disabled": "Тренутно нисте у могућности да се придружите овој групи",
     "group-leave-disabled": "Тренутно нисте у могућности да напустите ову групу",
+    "group-user-not-pending": "User does not have a pending request to join this group.",
+    "gorup-user-not-invited": "User has not been invited to join this group.",
     "post-already-deleted": "Ова порука је већ избрисана",
     "post-already-restored": "Ова порука је већ обновљена",
     "topic-already-deleted": "Ова тема је већ избрисана",

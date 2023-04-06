@@ -134,6 +134,8 @@
     "group-already-requested": "Ваша заявка на вступ вже подана",
     "group-join-disabled": "Ви не можете приєднатись до цієї групи зараз",
     "group-leave-disabled": "Ви не можете покинути цю групу зараз",
+    "group-user-not-pending": "User does not have a pending request to join this group.",
+    "gorup-user-not-invited": "User has not been invited to join this group.",
     "post-already-deleted": "Цей пост вже видалено",
     "post-already-restored": "Цей пост вже відновлено",
     "topic-already-deleted": "Ця тема вже була видалена",

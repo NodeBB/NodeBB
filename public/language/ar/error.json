@@ -134,6 +134,8 @@
     "group-already-requested": "سبق وتم تسجيل طلب العضوية",
     "group-join-disabled": "You are not able to join this group at this time",
     "group-leave-disabled": "You are not able to leave this group at this time",
+    "group-user-not-pending": "User does not have a pending request to join this group.",
+    "gorup-user-not-invited": "User has not been invited to join this group.",
     "post-already-deleted": "سبق وتم حذف هذا الرد",
     "post-already-restored": "سبق وتم إلغاء حذف هذا الرد",
     "topic-already-deleted": "سبق وتم حذف هذا الموضوع",

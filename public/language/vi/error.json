@@ -134,6 +134,8 @@
     "group-already-requested": "Yêu cầu tham gia của bạn đã được gửi.",
     "group-join-disabled": "Bạn không thể tham gia nhóm này vào lúc này",
     "group-leave-disabled": "Bạn không thể rời khỏi nhóm này vào lúc này",
+    "group-user-not-pending": "User does not have a pending request to join this group.",
+    "gorup-user-not-invited": "User has not been invited to join this group.",
     "post-already-deleted": "Bài viết này đã bị xóa",
     "post-already-restored": "Bài viết này đã được phục hồi",
     "topic-already-deleted": "Chủ đề này đã bị xóa",

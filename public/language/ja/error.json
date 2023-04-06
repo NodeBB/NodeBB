@@ -134,6 +134,8 @@
     "group-already-requested": "あなたのメンバーシップの要求が既に提出されました",
     "group-join-disabled": "You are not able to join this group at this time",
     "group-leave-disabled": "You are not able to leave this group at this time",
+    "group-user-not-pending": "User does not have a pending request to join this group.",
+    "gorup-user-not-invited": "User has not been invited to join this group.",
     "post-already-deleted": "この投稿が既に削除されました",
     "post-already-restored": "この投稿が既に復元されました",
     "topic-already-deleted": "このスレッドは既に削除されました",

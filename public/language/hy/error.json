@@ -134,6 +134,8 @@
     "group-already-requested": "Ձեր անդամակցության հարցումն արդեն ներկայացվել է",
     "group-join-disabled": "Դուք այս պահին չեք կարող միանալ այս խմբին",
     "group-leave-disabled": "Դուք այս պահին չեք կարող դուրս գալ այս խմբից",
+    "group-user-not-pending": "User does not have a pending request to join this group.",
+    "gorup-user-not-invited": "User has not been invited to join this group.",
     "post-already-deleted": "Այս գրառումն արդեն ջնջված է",
     "post-already-restored": "Այս գրառումն արդեն վերականգնվել է",
     "topic-already-deleted": "Այս թեման արդեն ջնջված է",

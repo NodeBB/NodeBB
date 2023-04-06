@@ -134,6 +134,8 @@
     "group-already-requested": "בקשת החברות שלכם כבר נשלחה",
     "group-join-disabled": "אינכם רשאים להצטרף לקבוצה כרגע",
     "group-leave-disabled": "אינכם רשאים לעזוב את הקבוצה כרגע",
+    "group-user-not-pending": "User does not have a pending request to join this group.",
+    "gorup-user-not-invited": "User has not been invited to join this group.",
     "post-already-deleted": "פוסט זה נמחק כבר",
     "post-already-restored": "פוסט זה כבר שוחזר",
     "topic-already-deleted": "נושא זה כבר נמחק",

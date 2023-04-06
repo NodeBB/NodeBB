@@ -134,6 +134,8 @@
     "group-already-requested": "Uw lidmaatschap aanvraag is al verstuurd",
     "group-join-disabled": "Je kunt op dit moment geen lid worden van deze groep",
     "group-leave-disabled": "Je kunt op dit moment de groep niet verlaten",
+    "group-user-not-pending": "User does not have a pending request to join this group.",
+    "gorup-user-not-invited": "User has not been invited to join this group.",
     "post-already-deleted": "Dit bericht is al verwijderd",
     "post-already-restored": "Dit bericht is al hersteld",
     "topic-already-deleted": "Dit onderwerp is al verwijderd",

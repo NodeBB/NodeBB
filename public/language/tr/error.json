@@ -134,6 +134,8 @@
     "group-already-requested": "Üyelik isteğiniz zaten gönderildi",
     "group-join-disabled": "Gruba şu anda katılamazsınız!",
     "group-leave-disabled": "Grubu şu anda terk edemezsiniz! ",
+    "group-user-not-pending": "User does not have a pending request to join this group.",
+    "gorup-user-not-invited": "User has not been invited to join this group.",
     "post-already-deleted": "İleti zaten silinmiş",
     "post-already-restored": "İleti zaten geri getirilmiş",
     "topic-already-deleted": "Başlık zaten silinmiş",

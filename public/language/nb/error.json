@@ -134,6 +134,8 @@
     "group-already-requested": "Forespørsel om medlemskap er allerede innsendt",
     "group-join-disabled": "Du kan ikke bli med i denne gruppen på dette tidspunktet",
     "group-leave-disabled": "Du kan ikke forlate denne gruppen på dette tidspunktet",
+    "group-user-not-pending": "User does not have a pending request to join this group.",
+    "gorup-user-not-invited": "User has not been invited to join this group.",
     "post-already-deleted": "Dette innlegget har blitt slettet",
     "post-already-restored": "Dette innlegget har allerede blitt gjenopprettet",
     "topic-already-deleted": "Dette emnet har allerede blitt slettet",

@@ -134,6 +134,8 @@
     "group-already-requested": "La tua richiesta di iscrizione è già stata inviata",
     "group-join-disabled": "Non sei in grado di iscriverti a questo gruppo in questo momento",
     "group-leave-disabled": "Non sei in grado di lasciare questo gruppo in questo momento.",
+    "group-user-not-pending": "User does not have a pending request to join this group.",
+    "gorup-user-not-invited": "User has not been invited to join this group.",
     "post-already-deleted": "Questo post è già stato eliminato",
     "post-already-restored": "Questo Post è già stato ripristinato",
     "topic-already-deleted": "Questo topic è già stato eliminato",

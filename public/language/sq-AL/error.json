@@ -134,6 +134,8 @@
     "group-already-requested": "Kërkesa juaj për anëtarësim është dorëzuar tashmë",
     "group-join-disabled": "Nuk mund t'i bashkohesh këtij grupi për momentin",
     "group-leave-disabled": "Nuk mund të largohesh nga ky grup në këtë moment",
+    "group-user-not-pending": "User does not have a pending request to join this group.",
+    "gorup-user-not-invited": "User has not been invited to join this group.",
     "post-already-deleted": "Ky postim tashmë është fshirë",
     "post-already-restored": "Ky postim tashmë është rikthyer",
     "topic-already-deleted": "Kjo temë tashmë është fshirë",

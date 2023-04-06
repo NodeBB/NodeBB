@@ -134,6 +134,8 @@
     "group-already-requested": "Seu pedido de filiação já foi enviado",
     "group-join-disabled": "Você não pode entrar neste grupo no momento",
     "group-leave-disabled": "Você não pode sair deste grupo no momento",
+    "group-user-not-pending": "User does not have a pending request to join this group.",
+    "gorup-user-not-invited": "User has not been invited to join this group.",
     "post-already-deleted": "Este post já foi deletado",
     "post-already-restored": "Este post já foi restaurado",
     "topic-already-deleted": "Esté tópico já foi deletado",

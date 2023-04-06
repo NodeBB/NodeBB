@@ -134,6 +134,8 @@
     "group-already-requested": "가입 요청이 이미 제출되었습니다.",
     "group-join-disabled": "현재 이 그룹에 가입할 수 없습니다.",
     "group-leave-disabled": "현재 이 그룹을 떠날 수 없습니다.",
+    "group-user-not-pending": "User does not have a pending request to join this group.",
+    "gorup-user-not-invited": "User has not been invited to join this group.",
     "post-already-deleted": "이미 삭제된 포스트입니다.",
     "post-already-restored": "이미 복원된 포스트입니다.",
     "topic-already-deleted": "이미 삭제된 화제입니다.",

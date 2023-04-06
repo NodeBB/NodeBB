@@ -134,6 +134,8 @@
     "group-already-requested": "Permintaan anda untuk menjadi telah pun dihantar",
     "group-join-disabled": "You are not able to join this group at this time",
     "group-leave-disabled": "You are not able to leave this group at this time",
+    "group-user-not-pending": "User does not have a pending request to join this group.",
+    "gorup-user-not-invited": "User has not been invited to join this group.",
     "post-already-deleted": "Kiriman ini telah dipadam",
     "post-already-restored": "Kiriman ini telah dipulihkan",
     "topic-already-deleted": "Topik ini telah dipadam",
