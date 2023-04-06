@@ -58,8 +58,7 @@ Events._types = {
 	},
 	'post-queue': {
 		icon: 'fa-history',
-		href: '/post-queue',
-		translation: async event => translateEventArgs(event, 'topic:user-queued-post', renderUser(event), `/post-queue`, renderTimeago(event)),
+		translation: async event => translateEventArgs(event, 'topic:user-queued-post', renderUser(event), `${relative_path}${event.href}`, renderTimeago(event)),
 	},
 	backlink: {
 		icon: 'fa-link',
@@ -154,6 +153,7 @@ async function modifyEvent({ tid, uid, eventIds, timestamps, events }) {
 		const queuedPosts = await posts.getQueuedPosts({ tid }, { metadata: false });
 		events.push(...queuedPosts.map(item => ({
 			type: 'post-queue',
+			href: `/post-queue/${item.id}`,
 			timestamp: item.data.timestamp || Date.now(),
 			uid: item.data.uid,
 		})));
