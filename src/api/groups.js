@@ -121,6 +121,8 @@ groupsAPI.join = async function (caller, data) {
 			groupName: groupName,
 			targetUid: data.uid,
 		});
+	} else {
+		throw new Error('[[error:not-allowed]]');
 	}
 };
 

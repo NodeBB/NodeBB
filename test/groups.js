@@ -10,6 +10,7 @@ const db = require('./mocks/databasemock');
 const helpers = require('./helpers');
 const Groups = require('../src/groups');
 const User = require('../src/user');
+const utils = require('../src/utils');
 const socketGroups = require('../src/socket.io/groups');
 const apiGroups = require('../src/api/groups');
 const meta = require('../src/meta');
@@ -730,6 +731,13 @@ describe('Groups', () => {
 				await test(g);
 			}
 			meta.config.allowPrivateGroups = oldValue;
+		});
+
+		it('should fail to add user to group if calling uid is non-self and non-admin', async () => {
+			const uid1 = await User.create({ username: utils.generateUUID().slice(0, 8) });
+			const uid2 = await User.create({ username: utils.generateUUID().slice(0, 8) });
+
+			assert.rejects(apiGroups.join({ uid: uid1 }, { slug: 'test', uid: uid2 }, '[[error:not-allowed]]'));
 		});
 
 		it('should allow admins to join private groups', async () => {
