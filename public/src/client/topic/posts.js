@@ -36,7 +36,7 @@ define('forum/topic/posts', [
 		Posts.modifyPostsByPrivileges(data.posts);
 
 		updatePostCounts(data.posts);
-
+		updateNavigatorLastPostTimestamp(data.posts[0]);
 		updatePostIndices(data.posts);
 
 		ajaxify.data.postcount += 1;
@@ -52,6 +52,10 @@ define('forum/topic/posts', [
 			replies.onNewPost(data);
 		});
 	};
+
+	function updateNavigatorLastPostTimestamp(post) {
+		$('.pagination-block .pagebottom .timeago').timeago('update', post.timestampISO);
+	}
 
 	Posts.modifyPostsByPrivileges = function (posts) {
 		posts.forEach(function (post) {
