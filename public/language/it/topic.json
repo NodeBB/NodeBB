@@ -6,7 +6,7 @@
     "post_is_deleted": "Questo post è eliminato!",
     "topic_is_deleted": "Questa discussione è stata eliminata",
     "profile": "Profilo",
-    "posted_by": "Postato da: %1",
+    "posted_by": "Postato da %1",
     "posted_by_guest": "Scritto da Ospite",
     "chat": "Chat",
     "notify_me": "Ricevi notifiche di nuove risposte in questa discussione",
@@ -150,11 +150,11 @@
     "merge-new-title-for-topic": "Nuovo titolo per la discussione",
     "topic-id": "ID discussione",
     "move_posts_instruction": "Clicca sui post da spostare, poi inserisci l'ID della discussione o vai alla discussione di destinazione",
-    "move_topic_instruction": "Select the target category and then click move",
+    "move_topic_instruction": "Seleziona la categoria di destinazione e fai clic su sposta",
     "change_owner_instruction": "Clicca sui post che vuoi assegnare ad un altro utente",
     "composer.title_placeholder": "Inserisci qui il titolo della discussione...",
     "composer.handle_placeholder": "Inserisci qui il tuo nome/nome utente ospite",
-    "composer.hide": "Hide",
+    "composer.hide": "Nascondi",
     "composer.discard": "Annulla",
     "composer.submit": "Invia",
     "composer.additional-options": "Opzioni aggiuntive",
@@ -201,6 +201,6 @@
     "go-to-my-next-post": "Vai al mio prossimo post",
     "no-more-next-post": "Non hai più post in questa discussione",
     "post-quick-reply": "Risposta rapida",
-    "navigator.index": "Post %1 of %2",
-    "navigator.unread": "%1 unread"
+    "navigator.index": "Post %1 di %2",
+    "navigator.unread": "%1 non letto"
 }
