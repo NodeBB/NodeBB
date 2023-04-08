@@ -3,16 +3,20 @@
 	bottom: 10%;
 	right: 2rem;
 	z-index: $zindex-modal;
-}
-
-@include media-breakpoint-up(sm) {
-	.tool-modal {
-		max-width: 33%;
+	[component="category-selector-selected"] span {
+		display: inline!important;
 	}
 }
 
-.topic-thumbs-modal {
-	img.media-object {
-		max-width: 20rem;
+@include media-breakpoint-down(md) {
+	.tool-modal {
+		margin: 0 $spacer;
+		right: 0;
+	}
+}
+
+@include media-breakpoint-up(md) {
+	.tool-modal {
+		max-width: 400px;
 	}
 }
