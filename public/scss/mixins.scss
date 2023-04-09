@@ -89,18 +89,22 @@
 	font-size: $font-size;
 }
 
-@mixin line-clamp($lines) {
+@mixin line-clamp($lines, $line-height: 1.5em) {
 	overflow: hidden;
 	display: -webkit-box;
 	-webkit-box-orient: vertical;
 	-webkit-line-clamp: $lines;
 	white-space: initial;
-	max-height: calc(1.25em * $lines);
+	max-height: calc($line-height * $lines);
 }
 
 @for $i from 1 through 6 {
 	.line-clamp-#{$i} {
-		@include line-clamp($i);
+		@include line-clamp($i, #{$line-height-base}em);
+	}
+	// use with elements that have `lh-sm` applied
+	.line-clamp-sm-#{$i} {
+		@include line-clamp($i, #{$line-height-sm}em);
 	}
 }
 
