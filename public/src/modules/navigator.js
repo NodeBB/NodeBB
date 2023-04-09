@@ -1,6 +1,8 @@
 'use strict';
 
-define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts', 'translator'], function (pagination, components, hooks, alerts, translator) {
+define('navigator', [
+	'forum/pagination', 'components', 'hooks', 'alerts', 'translator', 'storage',
+], function (pagination, components, hooks, alerts, translator, storage) {
 	const navigator = {};
 	let index = 0;
 	let count = 0;
@@ -354,8 +356,8 @@ define('navigator', ['forum/pagination', 'components', 'hooks', 'alerts', 'trans
 		if (!paginationBlockUnreadEl.length || ajaxify.data.postcount <= ajaxify.data.bookmarkThreshold) {
 			return;
 		}
-
-		index = Math.max(index, Math.min(ajaxify.data.bookmark, ajaxify.data.postcount));
+		const currentBookmark = ajaxify.data.bookmark || storage.getItem('topic:' + ajaxify.data.tid + ':bookmark');
+		index = Math.max(index, Math.min(currentBookmark, ajaxify.data.postcount));
 		const unreadEl = paginationBlockUnreadEl.get(0);
 		const trackEl = unreadEl.parentNode;
 		const trackHeight = trackEl.getBoundingClientRect().height;
