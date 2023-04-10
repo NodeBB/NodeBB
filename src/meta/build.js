@@ -5,7 +5,7 @@ const winston = require('winston');
 const nconf = require('nconf');
 const _ = require('lodash');
 const path = require('path');
-const mkdirp = require('mkdirp');
+const { mkdirp } = require('mkdirp');
 const chalk = require('chalk');
 
 const cacheBuster = require('./cacheBuster');

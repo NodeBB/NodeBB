@@ -4,7 +4,7 @@ const _ = require('lodash');
 const nconf = require('nconf');
 const path = require('path');
 const fs = require('fs');
-const mkdirp = require('mkdirp');
+const { mkdirp } = require('mkdirp');
 
 
 const file = require('../file');

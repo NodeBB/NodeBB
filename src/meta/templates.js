@@ -1,6 +1,6 @@
 'use strict';
 
-const mkdirp = require('mkdirp');
+const { mkdirp } = require('mkdirp');
 const winston = require('winston');
 const path = require('path');
 const fs = require('fs');

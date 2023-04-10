@@ -11,7 +11,7 @@ const webpack = require('webpack');
 const nconf = require('nconf');
 
 const Benchpress = require('benchpressjs');
-const mkdirp = require('mkdirp');
+const { mkdirp } = require('mkdirp');
 const { paths } = require('../src/constants');
 const sass = require('../src/utils').getSass();
 

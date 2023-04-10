@@ -210,7 +210,7 @@ async function setupMockDefaults() {
 	await fs.promises.rm('test/uploads', { recursive: true, force: true });
 
 
-	const mkdirp = require('mkdirp');
+	const { mkdirp } = require('mkdirp');
 
 	const folders = [
 		'test/uploads',
