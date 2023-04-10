@@ -5,8 +5,8 @@
 	"from": "Feladó neve",
 	"from-help": "Az emailben megjelenített feladói név.",
 
-	"confirmation-settings": "Confirmation",
-	"confirmation.expiry": "Hours to keep email confirmation link valid",
+	"confirmation-settings": "Megerősítés",
+	"confirmation.expiry": "Nyitvatartási idő az e-mail megerősítő link érvényességének megőrzéséhez",
 
 	"smtp-transport": "SMTP beállítások",
 	"smtp-transport.enabled": "Enable SMTP Transport",
