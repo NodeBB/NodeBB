@@ -5,7 +5,6 @@ const nconf = require('nconf');
 const path = require('path');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
-const rimraf = require('rimraf');
 
 
 const file = require('../file');
@@ -133,7 +132,7 @@ async function assignFileToTranslations(translations, path) {
 }
 
 exports.build = async function buildLanguages() {
-	await rimraf(buildLanguagesPath);
+	await fs.promises.rm(buildLanguagesPath, { recursive: true, force: true });
 	const data = await getTranslationMetadata();
 	await buildTranslations(data);
 };

@@ -206,8 +206,9 @@ async function setupMockDefaults() {
 		id: 'nodebb-theme-persona',
 	});
 
-	const rimraf = require('rimraf');
-	await rimraf('test/uploads');
+	const fs = require('fs');
+	await fs.promises.rm('test/uploads', { recursive: true, force: true });
+
 
 	const mkdirp = require('mkdirp');
 

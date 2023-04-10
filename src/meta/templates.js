@@ -1,7 +1,6 @@
 'use strict';
 
 const mkdirp = require('mkdirp');
-const rimraf = require('rimraf');
 const winston = require('winston');
 const path = require('path');
 const fs = require('fs');
@@ -109,7 +108,7 @@ async function compileTemplate(filename, source) {
 Templates.compileTemplate = compileTemplate;
 
 async function compile() {
-	await rimraf(viewsPath);
+	await fs.promises.rm(viewsPath, { recursive: true, force: true });
 	await mkdirp(viewsPath);
 
 	let files = await plugins.getActive();

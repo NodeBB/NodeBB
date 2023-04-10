@@ -4,7 +4,7 @@ const async = require('async');
 const _ = require('lodash');
 const path = require('path');
 const nconf = require('nconf');
-const rimraf = require('rimraf');
+const { rimraf } = require('rimraf');
 
 const db = require('../database');
 const posts = require('../posts');

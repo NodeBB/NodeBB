@@ -4,8 +4,6 @@ const path = require('path');
 const fs = require('fs');
 const assert = require('assert');
 const mkdirp = require('mkdirp');
-const rimraf = require('rimraf');
-const async = require('async');
 
 const db = require('./mocks/databasemock');
 const file = require('../src/file');
@@ -89,7 +87,7 @@ describe('Build', () => {
 	const build = require('../src/meta/build');
 
 	before(async () => {
-		await rimraf(path.join(__dirname, '../build/public'));
+		await fs.promises.rm(path.join(__dirname, '../build/public'), { recursive: true, force: true });
 		await db.sortedSetAdd('plugins:active', Date.now(), 'nodebb-plugin-markdown');
 	});
 
