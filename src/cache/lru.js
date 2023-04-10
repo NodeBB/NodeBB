@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function (opts) {
-	const LRU = require('lru-cache');
+	const { LRUCache } = require('lru-cache');
 	const pubsub = require('../pubsub');
 
 	// lru-cache@7 deprecations
@@ -28,7 +28,7 @@ module.exports = function (opts) {
 		}
 	});
 
-	const lruCache = new LRU(opts);
+	const lruCache = new LRUCache(opts);
 
 	const cache = {};
 	cache.name = opts.name;
