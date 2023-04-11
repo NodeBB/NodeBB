@@ -101,6 +101,7 @@
     "guest-upload-disabled": "Ngarkimi nga vizitorëve është i çaktivizuar",
     "cors-error": "Imazhi nuk mund të ngarkohet për shkak të konfigurimit të gabuar të CORS",
     "upload-ratelimit-reached": "Ju keni ngarkuar shumë materiale në të njëjtën kohë. Ju lutemi provoni sërish më vonë.",
+    "upload-error-fallback": "Unable to upload image — %1",
     "scheduling-to-past": "Ju lutemi zgjidhni një datë në të ardhmen.",
     "invalid-schedule-date": "Ju lutemi shkruani një datë dhe orë të vlefshme.",
     "cant-pin-scheduled": "Temat e planifikuara nuk mund të (ç)fiksohen.",

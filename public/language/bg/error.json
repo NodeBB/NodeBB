@@ -101,6 +101,7 @@
     "guest-upload-disabled": "Качването не е разрешено за гости",
     "cors-error": "Изображението не може да бъде качено поради неправилни настройки на CORS",
     "upload-ratelimit-reached": "Качили сте твърде много файлове наведнъж. Моля, опитайте отново по-късно.",
+    "upload-error-fallback": "Unable to upload image — %1",
     "scheduling-to-past": "Изберете дата в бъдещето.",
     "invalid-schedule-date": "Въведете правилна дата и час.",
     "cant-pin-scheduled": "Насрочените теми не могат да бъдат закачени или разкачени.",

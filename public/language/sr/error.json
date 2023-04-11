@@ -101,6 +101,7 @@
     "guest-upload-disabled": "Гостима је онемогућено отпремање",
     "cors-error": "Није могуће отпремити слику због погрешно конфигурисаног CORS",
     "upload-ratelimit-reached": "Отпремили сте превише датотека одједном. Покушајте поново касније.",
+    "upload-error-fallback": "Unable to upload image — %1",
     "scheduling-to-past": "Изаберите датум у будућности.",
     "invalid-schedule-date": "Унесите важећи датум и време.",
     "cant-pin-scheduled": "Планиране теме се не могу закачити/откачити.",

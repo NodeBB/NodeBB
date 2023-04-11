@@ -101,6 +101,7 @@
     "guest-upload-disabled": "Uploads für Gäste wurden deaktiviert.",
     "cors-error": "Das Hochladen von Bildern ist aufgrund von falsch konfigurierten CORS nicht möglich.",
     "upload-ratelimit-reached": "Sie haben zu viele Dateien auf einmal hochgeladen. Bitte versuchen Sie es später noch einmal.",
+    "upload-error-fallback": "Unable to upload image — %1",
     "scheduling-to-past": "Wählen Sie bitte ein Datum in der Zukunft.",
     "invalid-schedule-date": "Geben Sie bitte ein gültiges Datum und eine Uhrzeit ein.",
     "cant-pin-scheduled": "Geplante Themen können nicht (un)angeheftet werden.",

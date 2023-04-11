@@ -101,6 +101,7 @@
     "guest-upload-disabled": "אורחים אינם מאופשרים להעלות קבצים",
     "cors-error": "לא ניתן להעלות את התמונה עקב שגיאת CORS.",
     "upload-ratelimit-reached": "העלתם יותר מידי קבצים בפעם אחת. אנא נסו שוב במועד מאוחר יותר.",
+    "upload-error-fallback": "Unable to upload image — %1",
     "scheduling-to-past": "אנא בחרו תאריך עתידי.",
     "invalid-schedule-date": "אנא הזינו תאריך ושעה תקינים.",
     "cant-pin-scheduled": "נושא מתוזמן אינו יכול להיות (לא-) נעוץ.",

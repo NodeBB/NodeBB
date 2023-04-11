@@ -101,6 +101,7 @@
     "guest-upload-disabled": "O upload por visitantes foi desabilitado",
     "cors-error": "Não é possível fazer o upload da imagem devido ao CORS mal configurado",
     "upload-ratelimit-reached": "Você fez upload de muitos arquivos de uma vez. Por favor, tente novamente mais tarde.",
+    "upload-error-fallback": "Unable to upload image — %1",
     "scheduling-to-past": "Selecione uma data no futuro.",
     "invalid-schedule-date": "Por favor, insira uma data e hora válidas.",
     "cant-pin-scheduled": "Tópicos agendados não podem ser (des)fixados.",

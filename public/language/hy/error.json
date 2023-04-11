@@ -101,6 +101,7 @@
     "guest-upload-disabled": "Հյուրերի վերբեռնումն անջատված է",
     "cors-error": "Չհաջողվեց վերբեռնել նկարը սխալ կազմաձևված CORS-ի պատճառով",
     "upload-ratelimit-reached": "Դուք միանգամից չափազանց շատ ֆայլեր եք վերբեռնել: Խնդրում ենք փորձել ավելի ուշ.",
+    "upload-error-fallback": "Unable to upload image — %1",
     "scheduling-to-past": "Ընտրեք ամսաթիվ ապագայում:",
     "invalid-schedule-date": "Խնդրում ենք մուտքագրել վավեր ամսաթիվ և ժամ:",
     "cant-pin-scheduled": "Պլանավորված թեմաները չեն կարող (ապ)ամրացվել:",

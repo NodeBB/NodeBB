@@ -101,6 +101,7 @@
     "guest-upload-disabled": "Gjester har ikke tilgang til å laste opp filer",
     "cors-error": "Kunne ikke laste opp bilde på grunn av feilinstillt CORS",
     "upload-ratelimit-reached": "Du har lastet opp for mange filer samtidig. Vennligst prøv igjen senere.",
+    "upload-error-fallback": "Unable to upload image — %1",
     "scheduling-to-past": "Vennligst velg en dato i fremtiden.",
     "invalid-schedule-date": "Vennligst skriv inn en gyldig dato og tidspunkt.",
     "cant-pin-scheduled": "Planlagte tråder kan ikke bli (u)festet.",

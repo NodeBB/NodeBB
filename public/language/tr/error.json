@@ -101,6 +101,7 @@
     "guest-upload-disabled": "Ziyaretçilerin yükleme yapması devre dışı bırakıldı",
     "cors-error": "Yanlış yapılandırılmış CORS nedeniyle resim yüklenemiyor",
     "upload-ratelimit-reached": "Tek seferde çok sayıda dosya yüklediniz. Lütfen daha sonra tekrar deneyin.",
+    "upload-error-fallback": "Unable to upload image — %1",
     "scheduling-to-past": "Lütfen gelecekte bir tarih seçiniz.",
     "invalid-schedule-date": "Lütfen geçerli bir tarih ve saat seçiniz.",
     "cant-pin-scheduled": "Zamanlanmış konular sabitlenemez veya sabitliği kaldırılamaz. ",

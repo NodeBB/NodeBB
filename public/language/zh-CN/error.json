@@ -101,6 +101,7 @@
     "guest-upload-disabled": "未登录用户不允许上传",
     "cors-error": "由于CORS配置错误，无法上传图片。",
     "upload-ratelimit-reached": "您在短时间内上传了过多的文件，请稍后再试",
+    "upload-error-fallback": "Unable to upload image — %1",
     "scheduling-to-past": "请选择一个未来的日期。",
     "invalid-schedule-date": "请输入正确的日期",
     "cant-pin-scheduled": "定时主题不能被（取消）置顶。",
