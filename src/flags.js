@@ -770,6 +770,13 @@ Flags.getHistory = async function (flagId) {
 		};
 	});
 
+	// turn assignee uids into usernames
+	await Promise.all(history.map(async (entry) => {
+		if (entry.fields.hasOwnProperty('assignee')) {
+			entry.fields.assignee = await user.getUserField(entry.fields.assignee, 'username');
+		}
+	}));
+
 	// Append ban history and username change data
 	history = await mergeBanHistory(history, targetUid, uids);
 	history = await mergeMuteHistory(history, targetUid, uids);
