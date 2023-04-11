@@ -121,7 +121,7 @@
         "request-promise-native": "1.0.9",
         "rimraf": "5.0.0",
         "rss": "1.2.2",
-        "rtlcss": "4.0.0",
+        "rtlcss": "4.1.0",
         "sanitize-html": "2.10.0",
         "sass": "1.61.0",
         "semver": "7.3.8",
