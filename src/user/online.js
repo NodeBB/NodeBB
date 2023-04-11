@@ -27,9 +27,13 @@ module.exports = function (User) {
 		if (now - parseInt(userOnlineTime, 10) < 300000) {
 			return;
 		}
-		await db.sortedSetAdd('users:online', now, uid);
+		await User.onUserOnline(uid, now);
 		topics.pushUnreadCount(uid);
-		plugins.hooks.fire('action:user.online', { uid: uid, timestamp: now });
+	};
+
+	User.onUserOnline = async (uid, timestamp) => {
+		await db.sortedSetAdd('users:online', timestamp, uid);
+		plugins.hooks.fire('action:user.online', { uid, timestamp });
 	};
 
 	User.isOnline = async function (uid) {
