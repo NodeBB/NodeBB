@@ -1,3 +1,57 @@
+#### v2.8.11 (2023-04-11)
+
+##### Chores
+
+*  incrementing version number - v2.8.10 (5b7c3671)
+*  update changelog for v2.8.10 (188ec62f)
+*  incrementing version number - v2.8.9 (57f14e41)
+*  incrementing version number - v2.8.8 (b331b942)
+*  incrementing version number - v2.8.7 (3f8248d6)
+*  incrementing version number - v2.8.6 (af6ce447)
+*  incrementing version number - v2.8.5 (bff5ce2d)
+*  incrementing version number - v2.8.4 (a46b2bbc)
+*  incrementing version number - v2.8.3 (c20b20a7)
+*  incrementing version number - v2.8.2 (050e43f8)
+*  incrementing version number - v2.8.1 (727f879e)
+*  incrementing version number - v2.8.0 (8e77673d)
+*  incrementing version number - v2.7.0 (96cc0617)
+*  incrementing version number - v2.6.1 (7e52a7a5)
+*  incrementing version number - v2.6.0 (e7fcf482)
+*  incrementing version number - v2.5.8 (dec0e7de)
+*  incrementing version number - v2.5.7 (5836bf4a)
+*  incrementing version number - v2.5.6 (c7bd7dbf)
+*  incrementing version number - v2.5.5 (3509ed94)
+*  incrementing version number - v2.5.4 (e83260ca)
+*  incrementing version number - v2.5.3 (7e922936)
+*  incrementing version number - v2.5.2 (babcd17e)
+*  incrementing version number - v2.5.1 (ce3aa950)
+*  incrementing version number - v2.5.0 (01d276cb)
+*  incrementing version number - v2.4.5 (dd3e1a28)
+*  incrementing version number - v2.4.4 (d5525c87)
+*  incrementing version number - v2.4.3 (9c647c6c)
+*  incrementing version number - v2.4.2 (3aa7b855)
+*  incrementing version number - v2.4.1 (60cbd148)
+*  incrementing version number - v2.4.0 (4834cde3)
+*  incrementing version number - v2.3.1 (d2425942)
+*  incrementing version number - v2.3.0 (046ea120)
+
+##### Continuous Integration
+
+*  publish to ghcr instead of docker hub (c2756728)
+
+##### Documentation Changes
+
+*  update readme with new screenshot and updated copy for Harmony (67055006)
+
+##### Bug Fixes
+
+*  don't crash on objects with toString property (4d2d7689)
+*  fire action:user.online on user login (7397873d)
+
+##### Tests
+
+*  update socket.io test (e0b20658)
+
 #### v2.8.10 (2023-03-27)
 
 ##### Chores
