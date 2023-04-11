@@ -6,6 +6,7 @@ const user = require('../user');
 const groups = require('../groups');
 const meta = require('../meta');
 const posts = require('../posts');
+const db = require('../database');
 const flags = require('../flags');
 const analytics = require('../analytics');
 const plugins = require('../plugins');
@@ -134,10 +135,26 @@ modsController.flags.detail = async function (req, res, next) {
 		privileges: Promise.all(['global', 'admin'].map(async type => privileges[type].get(req.uid))),
 	});
 	results.privileges = { ...results.privileges[0], ...results.privileges[1] };
-
 	if (!results.flagData || (!(results.isAdminOrGlobalMod || !!results.moderatedCids.length))) {
 		return next(); // 404
 	}
+
+	// extra checks for plain moderators
+	if (!results.isAdminOrGlobalMod) {
+		if (results.flagData.type === 'user') {
+			return next();
+		}
+		if (results.flagData.type === 'post') {
+			const isFlagInModeratedCids = await db.isMemberOfSortedSets(
+				results.moderatedCids.map(cid => `flags:byCid:${cid}`),
+				results.flagData.flagId
+			);
+			if (!isFlagInModeratedCids.includes(true)) {
+				return next();
+			}
+		}
+	}
+
 
 	async function getAssignees(flagData) {
 		let uids = [];
@@ -161,7 +178,7 @@ modsController.flags.detail = async function (req, res, next) {
 	}
 
 	const assignees = await getAssignees(results.flagData);
-	results.flagData.history = results.isAdminOrGlobalMod ? (await flags.getHistory(req.params.flagId)) : null;
+	results.flagData.history = await flags.getHistory(req.params.flagId);
 
 	if (results.flagData.type === 'user') {
 		results.flagData.type_path = 'uid';
