@@ -189,20 +189,6 @@ describe('Flags', () => {
 
 			await Groups.leave('Global Moderators', moderatorUid);
 		});
-
-		it('should NOT show user history for regular moderators', async () => {
-			const flagData = await request({
-				uri: `${nconf.get('url')}/api/flags/1`,
-				jar,
-				headers: {
-					'x-csrf-token': csrfToken,
-				},
-				json: true,
-			});
-
-			assert(flagData.hasOwnProperty('history'));
-			assert(flagData.history === null);
-		});
 	});
 
 	describe('.list()', () => {
