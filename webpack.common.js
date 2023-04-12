@@ -34,6 +34,9 @@ module.exports = {
 			},
 		},
 	},
+	snapshot: {
+		managedPaths: [new RegExp(`^(.+?[\\\\/]node_modules)[\\\\/](?!${activePlugins.join('|')})`)],
+	},
 	watchOptions: {
 		poll: 500,
 		aggregateTimeout: 250,
