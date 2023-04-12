@@ -179,6 +179,7 @@
 	"composer.discard": "Discard",
 	"composer.submit": "Submit",
 	"composer.additional-options": "Additional Options",
+	"composer.post-later": "Post Later",
 	"composer.schedule": "Schedule",
 	"composer.replying_to": "Replying to %1",
 	"composer.new_topic": "New Topic",
