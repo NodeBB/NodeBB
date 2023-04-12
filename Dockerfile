@@ -11,7 +11,7 @@ COPY --chown=node:node install/package.json /usr/src/app/package.json
 
 USER node
 
-RUN npm install --only=prod && \
+RUN npm install --omit=dev && \
     npm cache clean --force
 
 COPY --chown=node:node . /usr/src/app
