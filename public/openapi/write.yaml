@@ -144,6 +144,10 @@ paths:
     $ref: 'write/topics/tid/events/eventId.yaml'
   /posts/{pid}:
     $ref: 'write/posts/pid.yaml'
+  /posts/{pid}/raw:
+    $ref: 'write/posts/pid/raw.yaml'
+  /posts/{pid}/summary:
+    $ref: 'write/posts/pid/summary.yaml'
   /posts/{pid}/state:
     $ref: 'write/posts/pid/state.yaml'
   /posts/{pid}/move:
