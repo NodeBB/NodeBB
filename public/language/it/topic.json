@@ -158,6 +158,7 @@
     "composer.discard": "Annulla",
     "composer.submit": "Invia",
     "composer.additional-options": "Opzioni aggiuntive",
+    "composer.post-later": "Post Later",
     "composer.schedule": "Pianifica",
     "composer.replying_to": "Rispondendo a %1",
     "composer.new_topic": "Nuova Discussione",

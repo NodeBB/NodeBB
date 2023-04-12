@@ -158,6 +158,7 @@
     "composer.discard": "취소",
     "composer.submit": "등록",
     "composer.additional-options": "Additional Options",
+    "composer.post-later": "Post Later",
     "composer.schedule": "예약",
     "composer.replying_to": "'%1'에 대한 답글",
     "composer.new_topic": "새 화제 생성",

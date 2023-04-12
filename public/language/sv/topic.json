@@ -158,6 +158,7 @@
     "composer.discard": "Avbryt",
     "composer.submit": "Skicka",
     "composer.additional-options": "Ytterligare val",
+    "composer.post-later": "Post Later",
     "composer.schedule": "Schemalägg",
     "composer.replying_to": "Svarar till %1",
     "composer.new_topic": "Nytt ämne",

@@ -158,6 +158,7 @@
     "composer.discard": "Vazgeç",
     "composer.submit": "Gönder",
     "composer.additional-options": "Ekstra seçenekler",
+    "composer.post-later": "Post Later",
     "composer.schedule": "Konu Zamanla",
     "composer.replying_to": "Yanıtlanan Başlık: %1",
     "composer.new_topic": "Yeni Başlık",

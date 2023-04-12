@@ -158,6 +158,7 @@
     "composer.discard": "Отменить",
     "composer.submit": "Отправить",
     "composer.additional-options": "Дополнительные Настройки",
+    "composer.post-later": "Post Later",
     "composer.schedule": "Запланировать",
     "composer.replying_to": "Ответ %1",
     "composer.new_topic": "Создать тему",

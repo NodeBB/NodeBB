@@ -158,6 +158,7 @@
     "composer.discard": "Annuleren",
     "composer.submit": "Verzenden",
     "composer.additional-options": "Additional Options",
+    "composer.post-later": "Post Later",
     "composer.schedule": "Schedule",
     "composer.replying_to": "Reactie op %1",
     "composer.new_topic": "Nieuw onderwerp",
