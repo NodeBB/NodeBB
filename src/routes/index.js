@@ -189,7 +189,6 @@ function addCoreRoutes(app, router, middleware, mounts) {
 		res.redirect(`${relativePath}/assets/uploads${req.path}?${meta.config['cache-buster']}`);
 	});
 	app.use(`${relativePath}/plugins`, (req, res) => {
-		winston.warn(`${chalk.bold.red('[deprecation]')} The \`/plugins\` shorthand prefix is deprecated, prefix with \`/assets/plugins\` instead (path: ${req.path})`);
 		res.redirect(`${relativePath}/assets/plugins${req.path}${req._parsedUrl.search || ''}`);
 	});
 
