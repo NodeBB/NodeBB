@@ -250,7 +250,7 @@ define('forum/topic', [
 			destroyed = false;
 
 			async function renderPost(pid) {
-				const postData = postCache[pid] || await socket.emit('posts.getPostSummaryByPid', { pid: pid });
+				const postData = postCache[pid] || await api.get(`/posts/${pid}/summary`);
 				$('#post-tooltip').remove();
 				if (postData && ajaxify.data.template.topic) {
 					postCache[pid] = postData;

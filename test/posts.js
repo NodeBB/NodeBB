@@ -838,37 +838,37 @@ describe('Post\'s', () => {
 			}
 		});
 
-		it('should fail to get raw post because of privilege', (done) => {
-			socketPosts.getRawPost({ uid: 0 }, pid, (err) => {
-				assert.equal(err.message, '[[error:no-privileges]]');
-				done();
-			});
+		it('should fail to get raw post because of privilege', async () => {
+			const content = await apiPosts.getRaw({ uid: 0 }, { pid });
+			assert.strictEqual(content, null);
 		});
 
-		it('should fail to get raw post because post is deleted', (done) => {
-			posts.setPostField(pid, 'deleted', 1, (err) => {
-				assert.ifError(err);
-				socketPosts.getRawPost({ uid: voterUid }, pid, (err) => {
-					assert.equal(err.message, '[[error:no-post]]');
-					done();
-				});
-			});
+		it('should fail to get raw post because post is deleted', async () => {
+			await posts.setPostField(pid, 'deleted', 1);
+			const content = await apiPosts.getRaw({ uid: voterUid }, { pid });
+			assert.strictEqual(content, null);
 		});
 
-		it('should get raw post content', (done) => {
-			posts.setPostField(pid, 'deleted', 0, (err) => {
-				assert.ifError(err);
-				socketPosts.getRawPost({ uid: voterUid }, pid, (err, postContent) => {
-					assert.ifError(err);
-					assert.equal(postContent, 'raw content');
-					done();
-				});
-			});
+		it('should allow privileged users to view the deleted post\'s raw content', async () => {
+			await posts.setPostField(pid, 'deleted', 1);
+			const content = await apiPosts.getRaw({ uid: globalModUid }, { pid });
+			assert.strictEqual(content, 'raw content');
+		});
+
+		it('should get raw post content', async () => {
+			await posts.setPostField(pid, 'deleted', 0);
+			const postContent = await apiPosts.getRaw({ uid: voterUid }, { pid });
+			assert.equal(postContent, 'raw content');
 		});
 
 		it('should get post', async () => {
 			const postData = await apiPosts.get({ uid: voterUid }, { pid });
 			assert(postData);
+		});
+
+		it('shold get post summary', async () => {
+			const summary = await apiPosts.getSummary({ uid: voterUid }, { pid });
+			assert(summary);
 		});
 
 		it('should get post category', (done) => {
