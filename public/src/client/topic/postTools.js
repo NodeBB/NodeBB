@@ -313,13 +313,9 @@ define('forum/topic/postTools', [
 			if (selectedNode.text && toPid && toPid === selectedNode.pid) {
 				return quote(selectedNode.text);
 			}
-			socket.emit('posts.getRawPost', toPid, function (err, post) {
-				if (err) {
-					return alerts.error(err);
-				}
 
-				quote(post);
-			});
+			const { content } = await api.get(`/posts/${toPid}/raw`);
+			quote(content);
 		});
 	}
 
