@@ -4,7 +4,6 @@ const nconf = require('nconf');
 const winston = require('winston');
 const path = require('path');
 const express = require('express');
-const chalk = require('chalk');
 
 const meta = require('../meta');
 const controllers = require('../controllers');
