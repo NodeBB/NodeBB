@@ -14,7 +14,7 @@ USER node
 RUN npm install --omit=dev
 
 
-FROM node:lts
+FROM --platform=$TARGETPLATFORM node:lts
 
 RUN mkdir -p /usr/src/app && \
     chown -R node:node /usr/src/app
@@ -23,15 +23,13 @@ WORKDIR /usr/src/app
 ARG NODE_ENV
 ENV NODE_ENV $NODE_ENV
 
-RUN if [ "$TARGETPLATFORM" != "$BUILDPLATFORM" ]; then \ 
-    npm install --omit=dev && \
-    npm rebuild && \
-    npm cache clean --force; fi
-
 COPY --chown=node:node --from=npm /usr/src/app /usr/src/app
 
 USER node
 
+RUN if [ "$TARGETPLATFORM" != "$BUILDPLATFORM" ]; then \ 
+    npm rebuild && \
+    npm cache clean --force; fi
 
 COPY --chown=node:node . /usr/src/app
 
