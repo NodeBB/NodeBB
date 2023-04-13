@@ -272,3 +272,13 @@ Sockets.getCountInRoom = function (room) {
 	const roomMap = Sockets.server.sockets.adapter.rooms.get(room);
 	return roomMap ? roomMap.size : 0;
 };
+
+Sockets.warnDeprecated = (socket, replacement) => {
+	if (socket.previousEvents && socket.emit) {
+		socket.emit('event:deprecated_call', {
+			eventName: socket.previousEvents[socket.previousEvents.length - 1],
+			replacement: replacement,
+		});
+	}
+	winston.warn(`[deprecated]\n ${new Error('-').stack.split('\n').slice(2, 5).join('\n')}\n     use ${replacement}`);
+};

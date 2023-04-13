@@ -13,10 +13,19 @@ const notifications = require('../notifications');
 const utils = require('../utils');
 const events = require('../events');
 
+const api = require('../api');
+const sockets = require('.');
+
 const SocketPosts = module.exports;
 
 require('./posts/votes')(SocketPosts);
 require('./posts/tools')(SocketPosts);
+
+SocketPosts.getRawPost = async function (socket, pid) {
+	sockets.warnDeprecated(socket, 'GET /api/v3/posts/:pid/raw');
+
+	return await api.posts.getRaw(socket, { pid });
+};
 
 SocketPosts.getPostSummaryByIndex = async function (socket, data) {
 	if (data.index < 0) {
@@ -63,19 +72,10 @@ SocketPosts.getPostTimestampByIndex = async function (socket, data) {
 };
 
 SocketPosts.getPostSummaryByPid = async function (socket, data) {
-	if (!data || !data.pid) {
-		throw new Error('[[error:invalid-data]]');
-	}
-	const { pid } = data;
-	const tid = await posts.getPostField(pid, 'tid');
-	const topicPrivileges = await privileges.topics.get(tid, socket.uid);
-	if (!topicPrivileges['topics:read']) {
-		throw new Error('[[error:no-privileges]]');
-	}
+	sockets.warnDeprecated(socket, 'GET /api/v3/posts/:pid/summary');
 
-	const postsData = await posts.getPostSummaryByPids([pid], socket.uid, { stripTags: false });
-	posts.modifyPostByPrivilege(postsData[0], topicPrivileges);
-	return postsData[0];
+	const { pid } = data;
+	return await api.posts.getSummary(socket, { pid });
 };
 
 SocketPosts.getCategory = async function (socket, pid) {
