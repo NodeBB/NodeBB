@@ -44,6 +44,18 @@ Posts.get = async (req, res) => {
 	helpers.formatApiResponse(200, res, post);
 };
 
+Posts.getIndex = async (req, res) => {
+	const { pid } = req.params;
+	const { sort } = req.body;
+
+	const index = await api.posts.getIndex(req, { pid, sort });
+	if (index === null) {
+		return helpers.formatApiResponse(404, res, new Error('[[error:no-post]]'));
+	}
+
+	helpers.formatApiResponse(200, res, { index });
+};
+
 Posts.getSummary = async (req, res) => {
 	const post = await api.posts.getSummary(req, { pid: req.params.pid });
 	if (!post) {
