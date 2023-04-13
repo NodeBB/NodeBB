@@ -23,6 +23,9 @@ WORKDIR /usr/src/app
 ARG NODE_ENV
 ENV NODE_ENV $NODE_ENV
 
+RUN npm rebuild && \
+    npm cache clean --force
+
 COPY --chown=node:node --from=npm /usr/src/app /usr/src/app
 
 USER node
