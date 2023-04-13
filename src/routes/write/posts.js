@@ -34,5 +34,8 @@ module.exports = function () {
 	setupApiRoute(router, 'put', '/:pid/diffs/:since', middlewares, controllers.write.posts.restoreDiff);
 	setupApiRoute(router, 'delete', '/:pid/diffs/:timestamp', middlewares, controllers.write.posts.deleteDiff);
 
+	// Shorthand route to access post routes by topic index
+	router.all('/+byIndex/:index*?', [middleware.checkRequired.bind(null, ['tid'])], controllers.write.posts.redirectByIndex);
+
 	return router;
 };
