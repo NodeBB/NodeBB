@@ -28,6 +28,8 @@ SocketPosts.getRawPost = async function (socket, pid) {
 };
 
 SocketPosts.getPostSummaryByIndex = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'GET /api/v3/posts/byIndex/:index/summary?tid=:tid');
+
 	if (data.index < 0) {
 		data.index = 0;
 	}
@@ -42,14 +44,7 @@ SocketPosts.getPostSummaryByIndex = async function (socket, data) {
 		return 0;
 	}
 
-	const topicPrivileges = await privileges.topics.get(data.tid, socket.uid);
-	if (!topicPrivileges['topics:read']) {
-		throw new Error('[[error:no-privileges]]');
-	}
-
-	const postsData = await posts.getPostSummaryByPids([pid], socket.uid, { stripTags: false });
-	posts.modifyPostByPrivilege(postsData[0], topicPrivileges);
-	return postsData[0];
+	return await api.posts.getSummary(socket, { pid });
 };
 
 SocketPosts.getPostTimestampByIndex = async function (socket, data) {
@@ -83,10 +78,16 @@ SocketPosts.getCategory = async function (socket, pid) {
 };
 
 SocketPosts.getPidIndex = async function (socket, data) {
+	sockets.warnDeprecated(socket, 'GET /api/v3/posts/:pid/index');
+
 	if (!data) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	return await posts.getPidIndex(data.pid, data.tid, data.topicPostSort);
+
+	return await api.posts.getIndex(socket, {
+		pid: data.pid,
+		sort: data.topicPostSort,
+	});
 };
 
 SocketPosts.getReplies = async function (socket, pid) {

@@ -879,35 +879,20 @@ describe('Post\'s', () => {
 			});
 		});
 
-		it('should error with invalid data', (done) => {
-			socketPosts.getPidIndex({ uid: voterUid }, null, (err) => {
-				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
+		it('should get pid index', async () => {
+			const index = await apiPosts.getIndex({ uid: voterUid }, { pid: pid, sort: 'oldest_to_newest' });
+			assert.strictEqual(index, 4);
 		});
 
-		it('should get pid index', (done) => {
-			socketPosts.getPidIndex({ uid: voterUid }, { pid: pid, tid: topicData.tid, topicPostSort: 'oldest_to_newest' }, (err, index) => {
-				assert.ifError(err);
-				assert.equal(index, 4);
-				done();
-			});
-		});
-
-		it('should get pid index in reverse', (done) => {
-			topics.reply({
+		it('should get pid index in reverse', async () => {
+			const postData = await topics.reply({
 				uid: voterUid,
 				tid: topicData.tid,
 				content: 'raw content',
-			}, (err, postData) => {
-				assert.ifError(err);
-
-				socketPosts.getPidIndex({ uid: voterUid }, { pid: postData.pid, tid: topicData.tid, topicPostSort: 'newest_to_oldest' }, (err, index) => {
-					assert.ifError(err);
-					assert.equal(index, 1);
-					done();
-				});
 			});
+
+			const index = await apiPosts.getIndex({ uid: voterUid }, { pid: postData.pid, sort: 'newest_to_oldest' });
+			assert.equal(index, 1);
 		});
 	});
 

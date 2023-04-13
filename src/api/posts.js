@@ -41,6 +41,16 @@ postsAPI.get = async function (caller, data) {
 	return post;
 };
 
+postsAPI.getIndex = async (caller, { pid, sort }) => {
+	const tid = await posts.getPostField(pid, 'tid');
+	const topicPrivileges = await privileges.topics.get(tid, caller.uid);
+	if (!topicPrivileges.read || !topicPrivileges['topics:read']) {
+		return null;
+	}
+
+	return await posts.getPidIndex(pid, tid, sort);
+};
+
 postsAPI.getSummary = async (caller, { pid }) => {
 	const tid = await posts.getPostField(pid, 'tid');
 	const topicPrivileges = await privileges.topics.get(tid, caller.uid);
