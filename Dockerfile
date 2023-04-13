@@ -1,8 +1,8 @@
 FROM --platform=$BUILDPLATFORM node:lts as npm
 
-RUN mkdir -p /usr/src/app && \
-    chown -R node:node /usr/src/app
-WORKDIR /usr/src/app
+RUN mkdir -p /usr/src/build && \
+    chown -R node:node /usr/src/build
+WORKDIR /usr/src/build
 
 ARG NODE_ENV
 ENV NODE_ENV $NODE_ENV
@@ -23,13 +23,12 @@ WORKDIR /usr/src/app
 ARG NODE_ENV
 ENV NODE_ENV $NODE_ENV
 
-COPY --chown=node:node --from=npm /usr/src/app /usr/src/app
+COPY --chown=node:node --from=npm /usr/src/build /usr/src/app
 
 USER node
 
-RUN if [ "$TARGETPLATFORM" != "$BUILDPLATFORM" ]; then \ 
-    npm rebuild && \
-    npm cache clean --force; fi
+RUN npm rebuild && \
+    npm cache clean --force
 
 COPY --chown=node:node . /usr/src/app
 
