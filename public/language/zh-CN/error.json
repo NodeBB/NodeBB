@@ -101,7 +101,7 @@
     "guest-upload-disabled": "未登录用户不允许上传",
     "cors-error": "由于CORS配置错误，无法上传图片。",
     "upload-ratelimit-reached": "您在短时间内上传了过多的文件，请稍后再试",
-    "upload-error-fallback": "Unable to upload image — %1",
+    "upload-error-fallback": "无法上传图片 — %1",
     "scheduling-to-past": "请选择一个未来的日期。",
     "invalid-schedule-date": "请输入正确的日期",
     "cant-pin-scheduled": "定时主题不能被（取消）置顶。",
@@ -135,8 +135,8 @@
     "group-already-requested": "已提交您的请求",
     "group-join-disabled": "您目前无法加入此群组",
     "group-leave-disabled": "您目前无法离开此群组",
-    "group-user-not-pending": "User does not have a pending request to join this group.",
-    "gorup-user-not-invited": "User has not been invited to join this group.",
+    "group-user-not-pending": "用户没有加入此用户组的待处理请求",
+    "gorup-user-not-invited": "用户尚未被邀请加入此用户组",
     "post-already-deleted": "此帖已被删除",
     "post-already-restored": "此帖已经恢复",
     "topic-already-deleted": "此主题已被删除",
@@ -228,5 +228,5 @@
     "api.500": "在试图为您的请求提供服务时出现了一个意外的错误。",
     "api.501": "您试图调用的路由还没被实现，请明天重试",
     "api.503": "您试图调用的路由因为服务器配置而目前不可用",
-    "api.reauth-required": "The resource you are trying to access requires (re-)authentication."
+    "api.reauth-required": "您试图访问的资源需要(重新)进行身份验证。"
 }
