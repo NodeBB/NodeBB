@@ -189,11 +189,25 @@ if (document.readyState === 'loading') {
 	};
 
 	function highlightNavigationLink() {
+		const pageParams = utils.params();
+		function queryMatch(search) {
+			const mySearchParams = new URLSearchParams(search);
+			// eslint-disable-next-line no-restricted-syntax
+			for (const [key, value] of mySearchParams) {
+				if (pageParams[key] === value) {
+					return true;
+				}
+			}
+			return false;
+		}
 		$('#main-nav li')
 			.find('a')
 			.removeClass('active')
 			.filter(function (i, a) {
-				return $(a).attr('href') !== '#' && window.location.hostname === a.hostname &&
+				const hasHref = $(a).attr('href') !== '#';
+				const removeByQueryString = a.search && hasHref && !queryMatch(a.search);
+				return hasHref && window.location.hostname === a.hostname &&
+					!removeByQueryString &&
 					(
 						window.location.pathname === a.pathname ||
 						window.location.pathname.startsWith(a.pathname + '/')
