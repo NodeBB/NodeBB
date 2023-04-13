@@ -23,7 +23,7 @@ WORKDIR /usr/src/app
 ARG NODE_ENV
 ENV NODE_ENV $NODE_ENV
 
-RUN if [ "$TARGETPLATFORM" != "$BUILDPLATFORM"]; then \ 
+RUN if [ "$TARGETPLATFORM" != "$BUILDPLATFORM" ]; then \ 
     npm install --omit=dev && \
     npm rebuild && \
     npm cache clean --force; fi
