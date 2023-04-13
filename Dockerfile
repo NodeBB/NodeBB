@@ -7,7 +7,7 @@ WORKDIR /usr/src/build
 ARG NODE_ENV
 ENV NODE_ENV $NODE_ENV
 
-COPY --chown=node:node install/package.json /usr/src/app/package.json
+COPY --chown=node:node install/package.json /usr/src/build/package.json
 
 USER node
 
