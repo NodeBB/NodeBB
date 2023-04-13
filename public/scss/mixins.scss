@@ -96,6 +96,9 @@
 	-webkit-line-clamp: $lines;
 	white-space: initial;
 	max-height: calc($line-height * $lines);
+	> p {
+		margin-bottom: $line-height;
+	}
 }
 
 @for $i from 1 through 6 {
