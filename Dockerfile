@@ -14,7 +14,7 @@ USER node
 RUN npm install --omit=dev
 
 
-FROM --platform=$TARGETPLATFORM node:lts
+FROM node:lts
 
 RUN mkdir -p /usr/src/app && \
     chown -R node:node /usr/src/app
