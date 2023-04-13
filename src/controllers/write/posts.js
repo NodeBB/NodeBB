@@ -1,10 +1,39 @@
 'use strict';
 
+const nconf = require('nconf');
+
+const db = require('../../database');
+const topics = require('../../topics');
 const posts = require('../../posts');
 const api = require('../../api');
 const helpers = require('../helpers');
 
 const Posts = module.exports;
+
+Posts.redirectByIndex = async (req, res, next) => {
+	const { tid } = req.query || req.body;
+
+	let { index } = req.params;
+	if (index < 0 || !isFinite(index)) {
+		index = 0;
+	}
+	index = parseInt(index, 10);
+
+	let pid;
+	if (index === 0) {
+		pid = await topics.getTopicField(tid, 'mainPid');
+	} else {
+		pid = await db.getSortedSetRange(`tid:${tid}:posts`, index - 1, index - 1);
+	}
+	pid = Array.isArray(pid) ? pid[0] : pid;
+	if (!pid) {
+		return next('route');
+	}
+
+	const path = req.path.split('/').slice(3).join('/');
+	const urlObj = new URL(nconf.get('url') + req.url);
+	res.redirect(308, nconf.get('relative_path') + encodeURI(`/api/v3/posts/${pid}/${path}${urlObj.search}`));
+};
 
 Posts.get = async (req, res) => {
 	const post = await api.posts.get(req, { pid: req.params.pid });
