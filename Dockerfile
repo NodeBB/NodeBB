@@ -1,4 +1,4 @@
-FROM node:lts
+FROM --platform=$BUILDPLATFORM node:lts as npm
 
 RUN mkdir -p /usr/src/app && \
     chown -R node:node /usr/src/app
@@ -11,8 +11,22 @@ COPY --chown=node:node install/package.json /usr/src/app/package.json
 
 USER node
 
-RUN npm install --omit=dev && \
-    npm cache clean --force
+RUN npm install --omit=dev
+
+
+FROM node:lts
+
+RUN mkdir -p /usr/src/app && \
+    chown -R node:node /usr/src/app
+WORKDIR /usr/src/app
+
+ARG NODE_ENV
+ENV NODE_ENV $NODE_ENV
+
+COPY --chown=node:node --from=npm /usr/src/app /usr/src/app
+
+USER node
+
 
 COPY --chown=node:node . /usr/src/app
 
