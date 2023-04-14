@@ -6,6 +6,7 @@ const meta = require('../meta');
 const user = require('../user');
 const groups = require('../groups');
 const helpers = require('./helpers');
+const controllerHelpers = require('../controllers/helpers');
 
 module.exports = function (middleware) {
 	middleware.maintenanceMode = helpers.try(async (req, res, next) => {
@@ -28,6 +29,10 @@ module.exports = function (middleware) {
 
 		if (isAdmin || isMemberOfExempt) {
 			return next();
+		}
+
+		if (req.originalUrl.startsWith(`${nconf.get('relative_path')}/api/v3/`)) {
+			return controllerHelpers.formatApiResponse(meta.config.maintenanceModeStatus, res);
 		}
 
 		res.status(meta.config.maintenanceModeStatus);
