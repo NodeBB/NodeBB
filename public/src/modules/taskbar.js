@@ -112,6 +112,10 @@ define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, t
 	};
 
 	taskbar.updateActive = function (uuid) {
+		if (!taskbar.tasklist) {
+			return;
+		}
+
 		const tasks = taskbar.tasklist.find('li');
 		tasks.removeClass('active');
 		tasks.filter('[data-uuid="' + uuid + '"]').addClass('active');
