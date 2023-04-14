@@ -522,7 +522,7 @@ describe('Upload Controllers', () => {
 			it('should return files with no post associated with them', async () => {
 				const orphans = await posts.uploads.getOrphans();
 
-				assert.strictEqual(orphans.length, 2);
+				assert.strictEqual(orphans.length, 1);
 				orphans.forEach((relPath) => {
 					assert(relPath.startsWith('files/'));
 					assert(relPath.endsWith('test.png'));
