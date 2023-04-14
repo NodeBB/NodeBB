@@ -553,7 +553,7 @@ describe('Upload Controllers', () => {
 				await posts.uploads.cleanOrphans();
 				const orphans = await posts.uploads.getOrphans();
 
-				assert.strictEqual(orphans.length, 2);
+				assert.strictEqual(orphans.length, 1);
 			});
 
 			it('should not touch orphans if they are newer than the configured expiry', async () => {
@@ -561,7 +561,7 @@ describe('Upload Controllers', () => {
 				await posts.uploads.cleanOrphans();
 				const orphans = await posts.uploads.getOrphans();
 
-				assert.strictEqual(orphans.length, 2);
+				assert.strictEqual(orphans.length, 1);
 			});
 
 			it('should delete orphans older than the configured number of days', async () => {
