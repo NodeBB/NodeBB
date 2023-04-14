@@ -83,33 +83,33 @@ describe('Upload Controllers', () => {
 			await privileges.global.give(['groups:upload:post:file'], 'registered-users');
 		});
 
-		// it('should fail if the user exceeds the upload rate limit threshold', (done) => {
-		// 	const oldValue = meta.config.allowedFileExtensions;
-		// 	meta.config.allowedFileExtensions = 'png,jpg,bmp,html';
-		// 	require('../src/middleware/uploads').clearCache();
-		// 	// why / 2? see: helpers.uploadFile for a weird quirk where we actually upload 2 files per upload in our tests.
-		// 	const times = (meta.config.uploadRateLimitThreshold / 2) + 1;
-		// 	async.timesSeries(times, (i, next) => {
-		// 		helpers.uploadFile(`${nconf.get('url')}/v3/api/post/upload`, path.join(__dirname, '../test/files/503.html'), {}, jar, csrf_token, (err, res, body) => {
-		// 			if (i + 1 >= times) {
-		// 				assert.strictEqual(res.statusCode, 500);
-		// 				assert.strictEqual(body.error, '[[error:upload-ratelimit-reached]]');
-		// 			} else {
-		// 				assert.ifError(err);
-		// 				assert.strictEqual(res.statusCode, 200);
-		// 				assert(body && body.status && body.response && body.response.images);
-		// 				assert(Array.isArray(body.response.images));
-		// 				assert(body.response.images[0].url);
-		// 			}
+		it('should fail if the user exceeds the upload rate limit threshold', (done) => {
+			const oldValue = meta.config.allowedFileExtensions;
+			meta.config.allowedFileExtensions = 'png,jpg,bmp,html';
+			require('../src/middleware/uploads').clearCache();
+			// why / 2? see: helpers.uploadFile for a weird quirk where we actually upload 2 files per upload in our tests.
+			const times = (meta.config.uploadRateLimitThreshold) + 1;
+			async.timesSeries(times, (i, next) => {
+				helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/503.html'), {}, jar, csrf_token, (err, res, body) => {
+					if (i + 1 >= times) {
+						assert.strictEqual(res.statusCode, 500);
+						assert.strictEqual(body.error, '[[error:upload-ratelimit-reached]]');
+					} else {
+						assert.ifError(err);
+						assert.strictEqual(res.statusCode, 200);
+						assert(body && body.status && body.response && body.response.images);
+						assert(Array.isArray(body.response.images));
+						assert(body.response.images[0].url);
+					}
 
-		// 			next(err);
-		// 		});
-		// 	}, (err) => {
-		// 		meta.config.allowedFileExtensions = oldValue;
-		// 		assert.ifError(err);
-		// 		done();
-		// 	});
-		// });
+					next(err);
+				});
+			}, (err) => {
+				meta.config.allowedFileExtensions = oldValue;
+				assert.ifError(err);
+				done();
+			});
+		});
 	});
 
 	describe('regular user uploads', () => {
