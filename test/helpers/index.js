@@ -120,8 +120,7 @@ helpers.connectSocketIO = function (res, callback) {
 helpers.uploadFile = function (uploadEndPoint, filePath, body, jar, csrf_token, callback) {
 	let formData = {
 		files: [
-			fs.createReadStream(filePath),
-			fs.createReadStream(filePath), // see https://github.com/request/request/issues/2445
+			fs.createReadStream(filePath)
 		],
 	};
 	formData = utils.merge(formData, body);
