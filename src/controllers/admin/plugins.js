@@ -15,8 +15,8 @@ pluginsController.get = async function (req, res) {
 	]);
 
 	const compatiblePkgNames = compatible.map(pkgData => pkgData.name);
-	const installedPlugins = compatible.filter(plugin => plugin && plugin.installed);
-	const activePlugins = all.filter(plugin => plugin && plugin.installed && plugin.active);
+	const installedPlugins = compatible.filter(plugin => plugin && (plugin.installed || (nconf.get('plugins:active') && plugin.active)));
+	const activePlugins = all.filter(plugin => plugin && (plugin.installed || nconf.get('plugins:active')) && plugin.active);
 
 	const trendingScores = trending.reduce((memo, cur) => {
 		memo[cur.label] = cur.value;
