@@ -121,7 +121,6 @@ helpers.uploadFile = function (uploadEndPoint, filePath, body, jar, csrf_token, 
 	let formData = {
 		files: [
 			fs.createReadStream(filePath),
-			fs.createReadStream(filePath), // see https://github.com/request/request/issues/2445
 		],
 	};
 	formData = utils.merge(formData, body);
