@@ -34,7 +34,7 @@ Object.defineProperty(Minifier, 'maxThreads', {
 	enumerable: true,
 });
 
-Minifier.maxThreads = os.cpus().length - 1;
+Minifier.maxThreads = Math.max(1, os.cpus().length - 1);
 
 Minifier.killAll = function () {
 	pool.forEach((child) => {
