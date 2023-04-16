@@ -104,11 +104,20 @@ middleware.pluginHooks = helpers.try(async (req, res, next) => {
 });
 
 middleware.validateFiles = function validateFiles(req, res, next) {
-	if (!Array.isArray(req.files.files) || !req.files.files.length) {
+	if (!req.files.files) {
 		return next(new Error(['[[error:invalid-files]]']));
 	}
 
-	next();
+	if (Array.isArray(req.files.files) && req.files.files.length) {
+		return next();
+	}
+
+	if (typeof req.files.files === 'object') {
+		req.files.files = [req.files.files];
+		return next();
+	}
+
+	return next(new Error(['[[error:invalid-files]]']));
 };
 
 middleware.prepareAPI = function prepareAPI(req, res, next) {

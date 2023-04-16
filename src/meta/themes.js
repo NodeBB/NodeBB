@@ -108,7 +108,7 @@ Themes.set = async (data) => {
 					await db.sortedSetAdd('plugins:active', numPlugins, data.id);
 				} else if (!activePluginsConfig.includes(data.id)) {
 					// This prevents changing theme when configuration doesn't include it, but allows it otherwise
-					winston.error('When defining active plugins in configuration, changing themes requires adding the new theme to the list of active plugins before updating it in the ACP');
+					winston.error(`When defining active plugins in configuration, changing themes requires adding the theme '${data.id}' to the list of active plugins before updating it in the ACP`);
 					throw new Error('[[error:theme-not-set-in-configuration]]');
 				}
 
