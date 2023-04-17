@@ -164,6 +164,8 @@ paths:
     $ref: 'write/posts/pid/diffs/since.yaml'
   /posts/{pid}/diffs/{timestamp}:
     $ref: 'write/posts/pid/diffs/timestamp.yaml'
+  /posts/{pid}/replies:
+    $ref: 'write/posts/pid/replies.yaml'
   /chats/:
     $ref: 'write/chats.yaml'
   /chats/{roomId}:

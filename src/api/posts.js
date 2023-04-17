@@ -386,3 +386,25 @@ postsAPI.deleteDiff = async (caller, { pid, timestamp }) => {
 
 	await posts.diffs.delete(pid, timestamp, caller.uid);
 };
+
+postsAPI.getReplies = async (caller, { pid }) => {
+	const { uid } = caller;
+	const canRead = await privileges.posts.can('topics:read', pid, caller.uid);
+	if (!canRead) {
+		return null;
+	}
+
+	const { topicPostSort } = await user.getSettings(uid);
+	const pids = await posts.getPidsFromSet(`pid:${pid}:replies`, 0, -1, topicPostSort === 'newest_to_oldest');
+
+	let [postData, postPrivileges] = await Promise.all([
+		posts.getPostsByPids(pids, uid),
+		privileges.posts.get(pids, uid),
+	]);
+	postData = await topics.addPostData(postData, uid);
+	postData.forEach((postData, index) => posts.modifyPostByPrivilege(postData, postPrivileges[index]));
+	postData = postData.filter((postData, index) => postData && postPrivileges[index].read);
+	postData = await user.blocks.filter(uid, postData);
+
+	return postData;
+};

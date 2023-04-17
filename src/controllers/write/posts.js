@@ -160,3 +160,12 @@ Posts.deleteDiff = async (req, res) => {
 
 	helpers.formatApiResponse(200, res, await api.posts.getDiffs(req, { ...req.params }));
 };
+
+Posts.getReplies = async (req, res) => {
+	const replies = await api.posts.getReplies(req, { ...req.params });
+	if (replies === null) {
+		return helpers.formatApiResponse(404, res, new Error('[[error:no-post]]'));
+	}
+
+	helpers.formatApiResponse(200, res, { replies });
+};
