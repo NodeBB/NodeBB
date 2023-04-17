@@ -4,7 +4,7 @@
 	right: 2rem;
 	z-index: $zindex-modal;
 	[component="category-selector-selected"] span {
-		display: inline!important;
+		display: inline-flex!important;
 	}
 }
 
