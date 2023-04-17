@@ -39,7 +39,7 @@
     "copy-ip": "复制IP",
     "ban-ip": "封禁 IP",
     "view-history": "编辑历史",
-    "wrote-ago": "wrote <a href=\"%1\" class=\"timeago text-muted\" title=\"%2\"></a>",
+    "wrote-ago": "编写",
     "wrote-on": "wrote on <a href=\"%1\" class=\"timeago text-muted\" title=\"%2\"></a>",
     "replied-to-user-ago": "replied to <a component=\"post/parent\" data-topid=\"%1\" href=\"%2\">%3</a> <a href=\"%4\" class=\"timeago text-muted\" title=\"%5\"></a>",
     "replied-to-user-on": "replied to <a component=\"post/parent\" data-topid=\"%1\" href=\"%2\">%3</a> on <a hrf=\"%4\" class=\"timeago text-muted\" title=\"%5\"></a>",
