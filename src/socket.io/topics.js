@@ -50,7 +50,7 @@ SocketTopics.createTopicFromPosts = async function (socket, data) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	const result = await topics.createTopicFromPosts(socket.uid, data.title, data.pids, data.fromTid);
+	const result = await topics.createTopicFromPosts(socket.uid, data.title, data.pids, data.fromTid, data.cid);
 	await events.log({
 		type: `topic-fork`,
 		uid: socket.uid,
