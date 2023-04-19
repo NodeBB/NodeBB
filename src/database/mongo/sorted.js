@@ -49,15 +49,15 @@ module.exports = function (module) {
 		}
 
 		if (min !== '-inf') {
-			query.score = { $gte: min };
+			query.score = { $gte: parseFloat(min) };
 		}
 		if (max !== '+inf') {
 			query.score = query.score || {};
-			query.score.$lte = max;
+			query.score.$lte = parseFloat(max);
 		}
 
 		if (max === min) {
-			query.score = max;
+			query.score = parseFloat(max);
 		}
 
 		const fields = { _id: 0, _key: 0 };

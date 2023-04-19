@@ -452,6 +452,12 @@ describe('Sorted Set methods', () => {
 				});
 			});
 		});
+
+		it('should return elements if min/max are numeric strings', async () => {
+			await db.sortedSetAdd('zsetstringminmax', [1, 2, 3, 4, 5], ['value1', 'value2', 'value3', 'value4', 'value5']);
+			const results = await db.getSortedSetRevRangeByScore('zsetstringminmax', 0, -1, '3', '3');
+			assert.deepStrictEqual(results, ['value3']);
+		});
 	});
 
 	describe('getSortedSetRevRangeByScore()', () => {
