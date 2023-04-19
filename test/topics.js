@@ -24,6 +24,7 @@ const helpers = require('./helpers');
 const socketPosts = require('../src/socket.io/posts');
 const socketTopics = require('../src/socket.io/topics');
 const apiTopics = require('../src/api/topics');
+const apiPosts = require('../src/api/posts');
 
 const requestType = util.promisify((type, url, opts, cb) => {
 	request[type](url, opts, (err, res, body) => cb(err, { res: res, body: body }));
@@ -274,29 +275,19 @@ describe('Topic\'s', () => {
 			});
 		});
 
-		it('should handle direct replies', (done) => {
-			topics.reply({ uid: topic.userId, content: 'test reply', tid: newTopic.tid, toPid: newPost.pid }, (err, result) => {
-				assert.equal(err, null, 'was created with error');
-				assert.ok(result);
+		it('should handle direct replies', async () => {
+			const result = await topics.reply({ uid: topic.userId, content: 'test reply', tid: newTopic.tid, toPid: newPost.pid });
+			assert.ok(result);
 
-				socketPosts.getReplies({ uid: 0 }, newPost.pid, (err, postData) => {
-					assert.ifError(err);
+			const postData = await apiPosts.getReplies({ uid: 0 }, { pid: newPost.pid });
+			assert.ok(postData);
 
-					assert.ok(postData);
-
-					assert.equal(postData.length, 1, 'should have 1 result');
-					assert.equal(postData[0].pid, result.pid, 'result should be the reply we added');
-
-					done();
-				});
-			});
+			assert.equal(postData.length, 1, 'should have 1 result');
+			assert.equal(postData[0].pid, result.pid, 'result should be the reply we added');
 		});
 
-		it('should error if pid is not a number', (done) => {
-			socketPosts.getReplies({ uid: 0 }, 'abc', (err) => {
-				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
+		it('should error if pid is not a number', async () => {
+			assert.rejects(apiPosts.getReplies({ uid: 0 }, { pid: 'abc' }, '[[error:invalid-data]]'));
 		});
 
 		it('should fail to create new reply with invalid user id', (done) => {
@@ -331,14 +322,14 @@ describe('Topic\'s', () => {
 			const result = await topics.post({ uid: fooUid, title: 'nested test', content: 'main post', cid: topic.categoryId });
 			const reply1 = await topics.reply({ uid: fooUid, content: 'reply post 1', tid: result.topicData.tid });
 			const reply2 = await topics.reply({ uid: fooUid, content: 'reply post 2', tid: result.topicData.tid, toPid: reply1.pid });
-			let replies = await socketPosts.getReplies({ uid: fooUid }, reply1.pid);
+			let replies = await apiPosts.getReplies({ uid: fooUid }, { pid: reply1.pid });
 			assert.strictEqual(replies.length, 1);
 			assert.strictEqual(replies[0].content, 'reply post 2');
 			let toPid = await posts.getPostField(reply2.pid, 'toPid');
 			assert.strictEqual(parseInt(toPid, 10), parseInt(reply1.pid, 10));
 			await posts.purge(reply1.pid, fooUid);
-			replies = await socketPosts.getReplies({ uid: fooUid }, reply1.pid);
-			assert.strictEqual(replies.length, 0);
+			replies = await apiPosts.getReplies({ uid: fooUid }, { pid: reply1.pid });
+			assert.strictEqual(replies, null);
 			toPid = await posts.getPostField(reply2.pid, 'toPid');
 			assert.strictEqual(toPid, null);
 		});
