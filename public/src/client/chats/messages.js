@@ -109,15 +109,14 @@ define('forum/chats/messages', [
 		function done(html) {
 			translator.translate(html, callback);
 		}
-
+		const tplData = {
+			messages: data,
+			isAdminOrGlobalMod: app.user.isAdmin || app.user.isGlobalMod,
+		};
 		if (Array.isArray(data)) {
-			Benchpress.render('partials/chats/message' + (Array.isArray(data) ? 's' : ''), {
-				messages: data,
-			}).then(done);
+			Benchpress.render('partials/chats/messages', tplData).then(done);
 		} else {
-			Benchpress.render('partials/chats/' + (data.system ? 'system-message' : 'message'), {
-				messages: data,
-			}).then(done);
+			Benchpress.render('partials/chats/' + (data.system ? 'system-message' : 'message'), tplData).then(done);
 		}
 	};
 
