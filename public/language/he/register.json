@@ -18,7 +18,7 @@
     "terms_of_use": "תנאי שימוש",
     "agree_to_terms_of_use": "אני מסכים לתנאי השימוש",
     "terms_of_use_error": "אתה מוכרח להסכים לתנאי השימוש",
-    "registration-added-to-queue": "בקשתך להרשמה נשלחה. במידה ובקשתך יאושר, ישלח אישור לכתובת האימייל שהכנסת.",
+    "registration-added-to-queue": "בקשתך להרשמה נשלחה. במידה ובקשתך יאושר, יישלח אישור לכתובת האימייל שהכנסת.",
     "registration-queue-average-time": "הזמן הממוצע לאישור משתמשים הוא %1 שעות ו-%2 דקות.",
     "registration-queue-auto-approve-time": "חשבונך יאושר תוך %1 שעות.",
     "interstitial.intro": "אנו מבקשים עוד מידע כדי לעדכן את חשבונך&hellip;",
