@@ -65,7 +65,7 @@ define('forum/chats/messages', [
 		// https://stackoverflow.com/questions/454202/creating-a-textarea-with-auto-resize
 		const textarea = chatContentEl.find('[component="chat/input"]');
 		const scrollHeight = textarea.prop('scrollHeight');
-		textarea.css({ height: scrollHeight + 'px', 'overflow-y': 'hidden' });
+		textarea.css({ height: scrollHeight + 'px' });
 		textarea.on('input', function () {
 			const isAtBottom = messages.isAtBottom(chatContentEl.find('.chat-content'));
 			textarea.css({ height: 0 });
