@@ -16,7 +16,7 @@
     "postDeleteDuration": 0,
     "enablePostHistory": 1,
     "topicBacklinks": 1,
-    "postCacheSize": 10485760,
+    "postCacheSize": 20971520,
     "disableChat": 0,
     "chatEditDuration": 0,
     "chatDeleteDuration": 0,
