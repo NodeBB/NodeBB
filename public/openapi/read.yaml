@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: NodeBB Read API
-  version: 1.15.0
+  version: 3.0.0
   contact:
     email: support@nodebb.org
   license:
