@@ -108,6 +108,8 @@ get:
                 type: boolean
               bootswatchSkin:
                 type: string
+              composer:showHelpTab:
+                type: boolean
               enablePostHistory:
                 type: boolean
               timeagoCutoff:

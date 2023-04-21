@@ -69,6 +69,7 @@ apiController.loadConfig = async function (req) {
 		searchEnabled: plugins.hooks.hasListeners('filter:search.query'),
 		searchDefaultInQuick: meta.config.searchDefaultInQuick || 'titles',
 		bootswatchSkin: meta.config.bootswatchSkin || '',
+		'composer:showHelpTab': meta.config['composer:showHelpTab'] === 1,
 		enablePostHistory: meta.config.enablePostHistory === 1,
 		timeagoCutoff: meta.config.timeagoCutoff !== '' ? Math.max(0, parseInt(meta.config.timeagoCutoff, 10)) : meta.config.timeagoCutoff,
 		timeagoCodes: languages.timeagoCodes,
