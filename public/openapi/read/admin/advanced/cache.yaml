@@ -39,6 +39,8 @@ get:
                             type: number
                           hits:
                             type: string
+                          hitsPerSecond:
+                            type: number
                           misses:
                             type: string
                           hitRatio:

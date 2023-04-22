@@ -11,25 +11,28 @@
 							<input class="form-check-input" type="checkbox" {{{if caches.enabled}}}checked{{{end}}}>
 						</div>
 
-						<div class="mb-3">{{{if ../length}}}{../length}{{{else}}}{../itemCount}{{{end}}} / {{{if ../max}}}{../max}{{{else}}}{../maxSize}{{{end}}}</div>
+						<div class="mb-3">{{{if ./length}}}{./length}{{{else}}}{./itemCount}{{{end}}} / {{{if ./max}}}{./max}{{{else}}}{./maxSize}{{{end}}}</div>
 						<div class="progress mb-3" style="height:20px;">
-							<div class="progress-bar" role="progressbar" aria-valuenow="{../percentFull}" aria-valuemin="0" aria-valuemax="100" style="width: {../percentFull}%;">
-								[[admin/advanced/cache:percent-full, {../percentFull}]]
+							<div class="progress-bar" role="progressbar" aria-valuenow="{./percentFull}" aria-valuemin="0" aria-valuemax="100" style="width: {./percentFull}%;">
+								[[admin/advanced/cache:percent-full, {./percentFull}]]
 							</div>
 						</div>
 						<div class="mb-2">
-							<label>Hits:</label> <span>{../hits}</span>
+							<label>Hits:</label> <span>{./hits}</span>
 						</div>
 						<div class="mb-2">
-							<label>Misses:</label> <span>{../misses}</span>
+							<label>Misses:</label> <span>{./misses}</span>
 						</div>
 						<div class="mb-2">
-							<label>Hit Ratio:</label> <span>{../hitRatio}</span>
+							<label>Hit Ratio:</label> <span>{./hitRatio}</span>
+						</div>
+						<div class="mb-2">
+							<label>Hits / Sec:</label> <span>{./hitsPerSecond}</span>
 						</div>
 
-						{{{if ../ttl}}}
+						{{{if ./ttl}}}
 						<div class="mb-2">
-							<label>TTL:</label> <span>{../ttl}</span>
+							<label>TTL:</label> <span>{./ttl}</span>
 						</div>
 						{{{end}}}
 						{{{if (@key == "post")}}}
