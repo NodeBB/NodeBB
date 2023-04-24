@@ -87,8 +87,7 @@ describe('Upload Controllers', () => {
 			const oldValue = meta.config.allowedFileExtensions;
 			meta.config.allowedFileExtensions = 'png,jpg,bmp,html';
 			require('../src/middleware/uploads').clearCache();
-			// why / 2? see: helpers.uploadFile for a weird quirk where we actually upload 2 files per upload in our tests.
-			const times = (meta.config.uploadRateLimitThreshold) + 1;
+			const times = meta.config.uploadRateLimitThreshold + 1;
 			async.timesSeries(times, (i, next) => {
 				helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/503.html'), {}, jar, csrf_token, (err, res, body) => {
 					if (i + 1 >= times) {
