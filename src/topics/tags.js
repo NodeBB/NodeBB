@@ -232,10 +232,15 @@ module.exports = function (Topics) {
 			if (!tids.length) {
 				return;
 			}
+			let topicsTags = await Topics.getTopicsTags(tids);
+			topicsTags = topicsTags.map(
+				topicTags => topicTags.filter(topicTag => topicTag && topicTag !== tag)
+			);
 
-			await db.deleteObjectFields(
-				tids.map(tid => `topic:${tid}`),
-				['tags'],
+			await db.setObjectBulk(
+				tids.map((tid, index) => ([
+					`topic:${tid}`, { tags: topicsTags[index].join(',') },
+				]))
 			);
 		});
 	}

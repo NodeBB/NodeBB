@@ -1932,6 +1932,14 @@ describe('Topic\'s', () => {
 			});
 		});
 
+		it('should only delete one tag from topic', async () => {
+			const result1 = await topics.post({ uid: adminUid, tags: ['deleteme1', 'deleteme2', 'deleteme3'], title: 'topic tagged with plugins', content: 'topic 1 content', cid: topic.categoryId });
+			await topics.deleteTag('deleteme2');
+			const topicData = await topics.getTopicData(result1.topicData.tid);
+			const tags = topicData.tags.map(t => t.value);
+			assert.deepStrictEqual(tags, ['deleteme1', 'deleteme3']);
+		});
+
 		it('should delete tag', (done) => {
 			topics.deleteTag('javascript', (err) => {
 				assert.ifError(err);
