@@ -391,7 +391,7 @@ define('forum/topic', [
 			currentUrl = newUrl;
 
 			if (index >= elementCount && app.user.uid) {
-				socket.emit('topics.markAsRead', [ajaxify.data.tid]);
+				api.put(`/topics/${ajaxify.data.tid}/read`);
 			}
 
 			updateUserBookmark(index);

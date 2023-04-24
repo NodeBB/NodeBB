@@ -142,6 +142,10 @@ paths:
     $ref: 'write/topics/tid/events.yaml'
   /topics/{tid}/events/{eventId}:
     $ref: 'write/topics/tid/events/eventId.yaml'
+  /topics/{tid}/read:
+    $ref: 'write/topics/tid/read.yaml'
+  /topics/{tid}/bump:
+    $ref: 'write/topics/tid/bump.yaml'
   /posts/{pid}:
     $ref: 'write/posts/pid.yaml'
   /posts/{pid}/index:

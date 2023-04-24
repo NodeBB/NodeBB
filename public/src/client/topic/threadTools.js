@@ -60,6 +60,28 @@ define('forum/topic/threadTools', [
 			return false;
 		});
 
+		topicContainer.on('click', '[component="topic/mark-unread"]', function () {
+			topicCommand('del', '/read', undefined, () => {
+				if (app.previousUrl && !app.previousUrl.match('^/topic')) {
+					ajaxify.go(app.previousUrl, function () {
+						handleBack.onBackClicked(true);
+					});
+				} else if (ajaxify.data.category) {
+					ajaxify.go('category/' + ajaxify.data.category.slug, handleBack.onBackClicked);
+				}
+
+				alerts.success('[[topic:mark_unread.success]]');
+			});
+		});
+
+		topicContainer.on('click', '[component="topic/mark-unread-for-all"]', function () {
+			const btn = $(this);
+			topicCommand('put', '/bump', undefined, () => {
+				alerts.success('[[topic:markAsUnreadForAll.success]]');
+				btn.parents('.thread-tools.open').find('.dropdown-toggle').trigger('click');
+			});
+		});
+
 		topicContainer.on('click', '[component="topic/event/delete"]', function () {
 			const eventId = $(this).attr('data-topic-event-id');
 			const eventEl = $(this).parents('[component="topic/event"]');
@@ -72,38 +94,6 @@ define('forum/topic/threadTools', [
 						.catch(alerts.error);
 				}
 			});
-		});
-
-		// todo: should also use topicCommand, but no write api call exists for this yet
-		topicContainer.on('click', '[component="topic/mark-unread"]', function () {
-			socket.emit('topics.markUnread', tid, function (err) {
-				if (err) {
-					return alerts.error(err);
-				}
-
-				if (app.previousUrl && !app.previousUrl.match('^/topic')) {
-					ajaxify.go(app.previousUrl, function () {
-						handleBack.onBackClicked(true);
-					});
-				} else if (ajaxify.data.category) {
-					ajaxify.go('category/' + ajaxify.data.category.slug, handleBack.onBackClicked);
-				}
-
-				alerts.success('[[topic:mark_unread.success]]');
-			});
-			return false;
-		});
-
-		topicContainer.on('click', '[component="topic/mark-unread-for-all"]', function () {
-			const btn = $(this);
-			socket.emit('topics.markAsUnreadForAll', [tid], function (err) {
-				if (err) {
-					return alerts.error(err);
-				}
-				alerts.success('[[topic:markAsUnreadForAll.success]]');
-				btn.parents('.thread-tools.open').find('.dropdown-toggle').trigger('click');
-			});
-			return false;
 		});
 
 		topicContainer.on('click', '[component="topic/move"]', function () {
