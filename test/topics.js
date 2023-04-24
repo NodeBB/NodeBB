@@ -1470,29 +1470,18 @@ describe('Topic\'s', () => {
 			});
 		});
 
-		it('should fail with invalid data', (done) => {
-			socketTopics.markUnread({ uid: adminUid }, null, (err) => {
-				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
+		it('should fail with invalid data', async () => {
+			assert.rejects(apiTopics.markUnread({ uid: adminUid }, null), '[[error:invalid-data]]');
 		});
 
-		it('should fail if topic does not exist', (done) => {
-			socketTopics.markUnread({ uid: adminUid }, 1231082, (err) => {
-				assert.equal(err.message, '[[error:no-topic]]');
-				done();
-			});
+		it('should fail if topic does not exist', async () => {
+			assert.rejects(apiTopics.markUnread({ uid: adminUid }, { tid: 1231082 }), '[[error:no-topic]]');
 		});
 
-		it('should mark topic unread', (done) => {
-			socketTopics.markUnread({ uid: adminUid }, tid, (err) => {
-				assert.ifError(err);
-				topics.hasReadTopic(tid, adminUid, (err, hasRead) => {
-					assert.ifError(err);
-					assert.equal(hasRead, false);
-					done();
-				});
-			});
+		it('should mark topic unread', async () => {
+			await apiTopics.markUnread({ uid: adminUid }, { tid });
+			const hasRead = await topics.hasReadTopic(tid, adminUid);
+			assert.equal(hasRead, false);
 		});
 
 		it('should fail with invalid data', (done) => {
@@ -1566,51 +1555,25 @@ describe('Topic\'s', () => {
 			});
 		});
 
-		it('should fail with invalid data', (done) => {
-			socketTopics.markAsUnreadForAll({ uid: adminUid }, null, (err) => {
-				assert.equal(err.message, '[[error:invalid-tid]]');
-				done();
-			});
+		it('should fail with invalid data', async () => {
+			assert.rejects(apiTopics.bump({ uid: adminUid }, null, '[[error:invalid-tid]]'));
 		});
 
-		it('should fail with invalid data', (done) => {
-			socketTopics.markAsUnreadForAll({ uid: 0 }, [tid], (err) => {
-				assert.equal(err.message, '[[error:no-privileges]]');
-				done();
-			});
+		it('should fail with invalid data', async () => {
+			assert.rejects(apiTopics.bump({ uid: 0 }, { tid: [tid] }, '[[error:no-privileges]]'));
 		});
 
-		it('should fail if user is not admin', (done) => {
-			socketTopics.markAsUnreadForAll({ uid: uid }, [tid], (err) => {
-				assert.equal(err.message, '[[error:no-privileges]]');
-				done();
-			});
+		it('should fail if user is not admin', async () => {
+			assert.rejects(apiTopics.bump({ uid: uid }, { tid }, '[[error:no-privileges]]'));
 		});
 
-		it('should fail if topic does not exist', (done) => {
-			socketTopics.markAsUnreadForAll({ uid: uid }, [12312313], (err) => {
-				assert.equal(err.message, '[[error:no-topic]]');
-				done();
-			});
-		});
+		it('should mark topic unread for everyone', async () => {
+			await apiTopics.bump({ uid: adminUid }, { tid });
+			const adminRead = await topics.hasReadTopic(tid, adminUid);
+			const regularRead = await topics.hasReadTopic(tid, uid);
 
-		it('should mark topic unread for everyone', (done) => {
-			socketTopics.markAsUnreadForAll({ uid: adminUid }, [tid], (err) => {
-				assert.ifError(err);
-				async.parallel({
-					adminRead: function (next) {
-						topics.hasReadTopic(tid, adminUid, next);
-					},
-					regularRead: function (next) {
-						topics.hasReadTopic(tid, uid, next);
-					},
-				}, (err, results) => {
-					assert.ifError(err);
-					assert.equal(results.adminRead, false);
-					assert.equal(results.regularRead, false);
-					done();
-				});
-			});
+			assert.equal(adminRead, false);
+			assert.equal(regularRead, false);
 		});
 
 		it('should not do anything if tids is empty array', (done) => {

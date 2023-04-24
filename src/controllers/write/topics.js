@@ -181,3 +181,21 @@ Topics.deleteEvent = async (req, res) => {
 
 	helpers.formatApiResponse(200, res);
 };
+
+Topics.markRead = async (req, res) => {
+	await api.topics.markRead(req, { ...req.params });
+
+	helpers.formatApiResponse(200, res);
+};
+
+Topics.markUnread = async (req, res) => {
+	await api.topics.markUnread(req, { ...req.params });
+
+	helpers.formatApiResponse(200, res);
+};
+
+Topics.bump = async (req, res) => {
+	await api.topics.bump(req, { ...req.params });
+
+	helpers.formatApiResponse(200, res);
+};

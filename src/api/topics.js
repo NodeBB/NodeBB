@@ -256,3 +256,27 @@ topicsAPI.deleteEvent = async (caller, { tid, eventId }) => {
 
 	await topics.events.purge(tid, [eventId]);
 };
+
+topicsAPI.markRead = async (caller, { tid }) => {
+	const hasMarked = await topics.markAsRead([tid], caller.uid);
+	const promises = [topics.markTopicNotificationsRead([tid], caller.uid)];
+	if (hasMarked) {
+		promises.push(topics.pushUnreadCount(caller.uid));
+	}
+	await Promise.all(promises);
+};
+
+topicsAPI.markUnread = async (caller, { tid }) => {
+	await topics.markUnread(tid, caller.uid);
+	topics.pushUnreadCount(caller.uid);
+};
+
+topicsAPI.bump = async (caller, { tid }) => {
+	const isAdminOrMod = await privileges.topics.isAdminOrMod(tid, caller.uid);
+	if (!isAdminOrMod) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	await topics.markAsUnreadForAll(tid);
+	topics.pushUnreadCount(caller.uid);
+};
