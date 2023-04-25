@@ -5,10 +5,10 @@ module.exports = function (module) {
 
 	module.flushdb = async function () {
 		module.db.exec(`
-PRAGMA writable_schema = 1;
-delete from sqlite_master where type in ('table', 'index', 'trigger');
-PRAGMA writable_schema = 0;
-VACUUM;		
+		PRAGMA writable_schema = 1;
+		delete from sqlite_master where type in ('table', 'index', 'trigger');
+		PRAGMA writable_schema = 0;
+		VACUUM;		
 		`);
 	};
 
@@ -33,20 +33,21 @@ VACUUM;
 		}
 
 		if (Array.isArray(key)) {
-			const [params, keyList] = helpers.listParams({}, key);
+			const [ params, keyList ] = helpers.listParams({}, key);
 			const rows = module.db.prepare(`
-				SELECT o."_key" k
-  				FROM "legacy_object_live" o
- 				WHERE o."_key" IN (${keyList})`).all(params);
+			SELECT o."_key" k
+			FROM "legacy_object_live" o
+			WHERE o."_key" IN (${keyList})`).all(params);
 			return key.map(k => rows.some(r => r.k === k));
 		} else {
-			const params = {key};
+			const params = { key };
 			const res = module.db.prepare(`
-				SELECT EXISTS(SELECT *
-						FROM "legacy_object_live"
-						 WHERE "_key" = @key
-						 LIMIT 1) e`).get(params);
-			return res.e;	
+				SELECT EXISTS(
+					SELECT *
+					FROM "legacy_object_live"
+					WHERE "_key" = @key
+					LIMIT 1) e`).get(params);
+			return !!res.e;	
 		}
 	};
 
@@ -72,7 +73,7 @@ VACUUM;
 			return;
 		}
 
-		const params = {key};
+		const params = { key };
 		module.db.prepare(`
 		DELETE FROM "legacy_object"
 		WHERE "_key" = @key`).run(params);
@@ -83,7 +84,7 @@ VACUUM;
 			return;
 		}
 
-		const [params, keyList] = helpers.listParams({}, keys);
+		const [ params, keyList ] = helpers.listParams({}, keys);
 		module.db.prepare(`
 		DELETE FROM "legacy_object"
 		WHERE "_key" IN (${keyList})`).run(params);
@@ -94,13 +95,13 @@ VACUUM;
 			return;
 		}
 
-		const params = {key};
+		const params = { key };
 		const res = module.db.prepare(`
 		SELECT s."data" t
-			FROM "legacy_object_live" o
+		FROM "legacy_object_live" o
 		INNER JOIN "legacy_string" s
-						ON o."_key" = s."_key"
-						AND o."type" = s."type"
+			 ON o."_key" = s."_key"
+			AND o."type" = s."type"
 		WHERE o."_key" = @key
 		LIMIT 1`).get(params);
 
@@ -114,7 +115,7 @@ VACUUM;
 
 		module.transaction((db) => {
 			helpers.ensureLegacyObjectType(db, key, 'string');
-			const params = {key, value};
+			const params = { key, value };
 			db.prepare(`
 			INSERT INTO "legacy_string" ("_key", "data")
 			VALUES (@key, @value)
@@ -130,7 +131,7 @@ VACUUM;
 
 		return module.transaction((db) => {
 			helpers.ensureLegacyObjectType(db, key, 'string');
-			const params = {key};
+			const params = { key };
 			db.prepare(`
 			INSERT INTO "legacy_string" ("_key", "data")
 			VALUES (@key, '1')
@@ -146,14 +147,14 @@ VACUUM;
 
 	module.rename = async function (oldKey, newKey) {
 		module.transaction((db) => {
-			const params = {oldKey, newKey};
+			const params = { oldKey, newKey };
 			db.prepare(`
 			DELETE FROM "legacy_object"
 			WHERE "_key" = @newKey`).run(params);
 			db.prepare(`
 			UPDATE "legacy_object"
-			SET "_key" = @oldKey
-			WHERE "_key" = @newKey`).run(params);
+			SET "_key" = @newKey
+			WHERE "_key" = @oldKey`).run(params);
 		});
 	};
 
@@ -164,10 +165,10 @@ VACUUM;
 			}
 			key = key[0];
 		}
-		const params = {key};
+		const params = { key };
 		const res = module.db.prepare(`
 		SELECT "type" t
-			FROM "legacy_object_live"
+		FROM "legacy_object_live"
 		WHERE "_key" = @key
 		LIMIT 1`).get(params);
 
@@ -175,12 +176,12 @@ VACUUM;
 	};
 
 	async function doExpire(key, date) {
-		const expireAt = date.toISOString().replace('T', ' ').replace(/\..*/, '');
-		const params = {key, expireAt};
+		const expireAt = date.toISOString().replace('T', ' ');
+		const params = { key, expireAt };
 		module.db.prepare(`
 		UPDATE "legacy_object"
-			SET "expireAt" = @expireAt
-		WHERE "_key" = @key`).params;
+		SET "expireAt" = @expireAt
+		WHERE "_key" = @key`).run(params);
 	}
 
 	module.expire = async function (key, seconds) {
@@ -200,14 +201,14 @@ VACUUM;
 	};
 
 	async function getExpire(key) {
-		const params = {key};
+		const params = { key };
 		const res = module.db.prepare(`
-		SELECT "expireAt"::TEXT
-			FROM "legacy_object"
+		SELECT "expireAt"
+		FROM "legacy_object"
 		WHERE "_key" = @key
 		LIMIT 1`).get(params);
 
-		return res ? new Date(res.expireAt).getTime() : null;
+		return res && res.expireAt ? new Date(res.expireAt).getTime() : null;
 	}
 
 	module.ttl = async function (key) {

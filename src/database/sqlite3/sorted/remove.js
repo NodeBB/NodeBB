@@ -3,26 +3,22 @@
 module.exports = function (module) {
 	const helpers = require('../helpers');
 
-	module.sortedSetRemove = async function (key, value) {
+	module.sortedSetRemove = async function (key, values) {
 		if (!key) {
 			return;
 		}
-		const isValueArray = Array.isArray(value);
-		if (!value || (isValueArray && !value.length)) {
+		if (!values || (Array.isArray(values) && !values.length)) {
 			return;
 		}
+		values = helpers.valuesToStrings(values);
 
 		if (!Array.isArray(key)) {
 			key = [key];
 		}
 
-		if (!isValueArray) {
-			value = [value];
-		}
-		value = value.map(helpers.valueToString);
 		const [params, keyList] = helpers.listParams({}, key);
-		const [, valueList] = helpers.listParams(params, value);
-		module.db.prepare(`
+		const [, valueList] = helpers.listParams(params, values, 'value');
+		const res = module.db.prepare(`
 		DELETE FROM "legacy_zset"
 		WHERE "_key" IN (${keyList})
 			AND "value" IN (${valueList})`).run(params);
@@ -35,7 +31,7 @@ module.exports = function (module) {
 
 		value = helpers.valueToString(value);
 
-		const [params, keyList] = helpers.listParams({value}, keys);
+		const [params, keyList] = helpers.listParams({ value }, keys);
 		module.db.prepare(`
 		DELETE FROM "legacy_zset"
 		WHERE "_key" IN (${keyList})
@@ -54,7 +50,7 @@ module.exports = function (module) {
 			max = null;
 		}
 
-		const [params, keyList] = helpers.listParams({min, max}, keys);
+		const [ params, keyList ] = helpers.listParams({ min, max }, keys);
 		module.db.prepare(`
 		DELETE FROM "legacy_zset"
 		WHERE "_key" IN (${keyList})
@@ -67,11 +63,11 @@ module.exports = function (module) {
 			return;
 		}
 		const params = {}, list = [];
-		for (const [key, value] of data) {
+		for (const [ key, value ] of data) {
 			const keyName = `key${list.length}`;
 			const valueName = `value${list.length}`;
 			params[keyName] = key;
-			params[valueName] = value;
+			params[valueName] = helpers.valueToString(value);
 			list.push(`(@${keyName},@${valueName})`);
 		}
 

@@ -5,8 +5,8 @@ const _ = require('lodash');
 module.exports = function (module) {
 	const helpers = require('./helpers');
 
-	module.setAdd = async function (key, value) {
-		const values = Array.isArray(value) ? value : [value];
+	module.setAdd = async function (key, values) {
+		values = helpers.valuesToStrings(values);
 		if (!values.length) {
 			return;
 		}
@@ -23,8 +23,8 @@ module.exports = function (module) {
 		});
 	};
 
-	module.setsAdd = async function (keys, value) {
-		const values = Array.isArray(value) ? value : [value];
+	module.setsAdd = async function (keys, values) {
+		values = helpers.valuesToStrings(values);
 		if (!Array.isArray(keys) || !keys.length) {
 			return;
 		}
@@ -46,9 +46,10 @@ module.exports = function (module) {
 		});
 	};
 
-	module.setRemove = async function (key, value) {
+	module.setRemove = async function (key, values) {
+		values = helpers.valuesToStrings(values);
 		const [params, keyList] = helpers.listParams({}, key);
-		const [, memberList] = helpers.listParams(params, value, 'member');
+		const [, memberList] = helpers.listParams(params, values, 'member');
 		module.db.prepare(`
 		DELETE FROM "legacy_set"
 		WHERE "_key" IN (${keyList})
@@ -59,7 +60,8 @@ module.exports = function (module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return;
 		}
-		const [params, keyList] = helpers.listParams({value}, keys);
+		value = helpers.valueToString(value);
+		const [ params, keyList ] = helpers.listParams({ value }, keys);
 		module.db.prepare(`
 		DELETE FROM "legacy_set"
 		WHERE "_key" IN (${keyList})
@@ -70,13 +72,13 @@ module.exports = function (module) {
 		if (!key) {
 			return false;
 		}
-
-		const params = {key, value};
+		value = helpers.valueToString(value);
+		const params = { key, value };
 		const res = module.db.prepare(`
 		SELECT 1
-			FROM "legacy_object_live" o
+		FROM "legacy_object_live" o
 		INNER JOIN "legacy_set" s
-				ON o."_key" = s."_key"
+			 ON o."_key" = s."_key"
 			AND o."type" = s."type"
 		WHERE o."_key" = @key
 			AND s."member" = @value`).get(params);
@@ -89,15 +91,15 @@ module.exports = function (module) {
 			return [];
 		}
 
-		values = values.map(helpers.valueToString);
+		values = helpers.valuesToStrings(values);
 
-		const [params, valueList] = helpers.listParams({key}, values);
+		const [ params, valueList ] = helpers.listParams({ key }, values);
 		const rows = module.db.prepare(`
 		SELECT s."member" m
-			FROM "legacy_object_live" o
+		FROM "legacy_object_live" o
 		INNER JOIN "legacy_set" s
-						ON o."_key" = s."_key"
-						AND o."type" = s."type"
+		 	 ON o."_key" = s."_key"
+			AND o."type" = s."type"
 		WHERE o."_key" = @key
 			AND s."member" IN (${valueList})`).all(params);
 
@@ -111,13 +113,13 @@ module.exports = function (module) {
 
 		value = helpers.valueToString(value);
 
-		const [params, keyList] = helpers.listParams({value}, sets);
+		const [ params, keyList ] = helpers.listParams({ value }, sets);
 		const rows = module.db.prepare(`
 		SELECT o."_key" k
-			FROM "legacy_object_live" o
+		FROM "legacy_object_live" o
 		INNER JOIN "legacy_set" s
-						ON o."_key" = s."_key"
-						AND o."type" = s."type"
+			 ON o."_key" = s."_key"
+			AND o."type" = s."type"
 		WHERE o."_key" IN (${keyList})
 			AND s."member" = @value`).all(params);
 
@@ -129,13 +131,13 @@ module.exports = function (module) {
 			return [];
 		}
 
-		const params = {key};
+		const params = { key };
 		const rows = module.db.prepare(`
 		SELECT s."member" m
-			FROM "legacy_object_live" o
+		FROM "legacy_object_live" o
 		INNER JOIN "legacy_set" s
-						ON o."_key" = s."_key"
-						AND o."type" = s."type"
+		 	 ON o."_key" = s."_key"
+			AND o."type" = s."type"
 		WHERE o."_key" = @key`).all(params);
 
 		return rows.map(r => r.m);
@@ -146,17 +148,16 @@ module.exports = function (module) {
 			return [];
 		}
 
-		const [params, keyList] = helpers.listParams({}, keys);
+		const [ params, keyList ] = helpers.listParams({}, keys);
 		const rows = module.db.prepare(`
 		SELECT o."_key" k, s."member" m
-			FROM "legacy_object_live" o
+		FROM "legacy_object_live" o
 		INNER JOIN "legacy_set" s
-						ON o."_key" = s."_key"
-						AND o."type" = s."type"
-		WHERE o."_key" IN (${keyList})
-		GROUP BY o."_key"`).all(params);
+			 ON o."_key" = s."_key"
+			AND o."type" = s."type"
+		WHERE o."_key" IN (${keyList})`).all(params);
 
-		return keys.map((key) => rows.filter(r => r.k === key).map(r => r.m));
+		return keys.map(k => rows.filter(r => r.k === k).map(r => r.m));
 	};
 
 	module.setCount = async function (key) {
@@ -164,51 +165,51 @@ module.exports = function (module) {
 			return 0;
 		}
 
-		const params = {key};
+		const params = { key };
 		const res = module.db.prepare(`
-SELECT COUNT(*) c
-  FROM "legacy_object_live" o
- INNER JOIN "legacy_set" s
-         ON o."_key" = s."_key"
-        AND o."type" = s."type"
- WHERE o."_key" = @key`).get(params);
+		SELECT COUNT(*) c
+  	FROM "legacy_object_live" o
+ 		INNER JOIN "legacy_set" s
+       ON o."_key" = s."_key"
+      AND o."type" = s."type"
+ 		WHERE o."_key" = @key`).get(params);
 
 		return res.c;
 	};
 
 	module.setsCount = async function (keys) {
-		const [params, keyList] = helpers.listParams({}, keys);
+		const [ params, keyList ] = helpers.listParams({}, keys);
 		const rows = module.db.prepare(`
-SELECT o."_key" k,
-       COUNT(*) c
-  FROM "legacy_object_live" o
- INNER JOIN "legacy_set" s
-         ON o."_key" = s."_key"
-        AND o."type" = s."type"
- WHERE o."_key" IN (${keyList})
- GROUP BY o."_key"`).all(params);
+		SELECT o."_key" k,
+       		 COUNT(*) c
+  	FROM "legacy_object_live" o
+ 		INNER JOIN "legacy_set" s
+       ON o."_key" = s."_key"
+      AND o."type" = s."type"
+ 		WHERE o."_key" IN (${keyList})
+ 		GROUP BY o."_key"`).all(params);
 
 		return keys.map(k => (rows.find(r => r.k === k) || { c: 0 }).c);
 	};
 
 	module.setRemoveRandom = async function (key) {
-		// TODO: use RETURNING when it becomes available to avoid race condition
-		const params = {key};
+		const params = { key };
 		const res = module.db.prepare(`
 		SELECT s."member" v
-			FROM "legacy_object_live" o
-				INNER JOIN "legacy_set" s
-							ON o."_key" = s."_key"
-							AND o."type" = s."type"
-				WHERE o."_key" = @key
-				ORDER BY RANDOM()
-				LIMIT 1`).get(params);
+		FROM "legacy_object_live" o
+		INNER JOIN "legacy_set" s
+			 ON o."_key" = s."_key"
+			AND o."type" = s."type"
+		WHERE o."_key" = @key
+		ORDER BY RANDOM()
+		LIMIT 1`).get(params);
+		let value = null;
 		if (res) {
-			params.value = res.v;
+			value = params.value = res.v;
 			module.db.prepare(`
-			DELETE FROM "legacy_set" s
-				WHERE s."_key" = @key
-					AND s."member" = @value			
+			DELETE FROM "legacy_set"
+				WHERE "_key" = @key
+					AND "member" = @value			
 			`).run(params);
 		}
 		return value;

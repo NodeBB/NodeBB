@@ -55,18 +55,18 @@ module.exports = function (module) {
 			limit = -1;
 		}
 
-		const [params, keyList] = helpers.listParams({limit, start}, key);
+		const [params, keyList] = helpers.listParams({ limit, start }, key);
 		let rows = module.db.prepare(`
-SELECT z."value",
-       z."score"
-  FROM "legacy_object_live" o
- INNER JOIN "legacy_zset" z
-         ON o."_key" = z."_key"
-        AND o."type" = z."type"
- WHERE o."_key" IN (${keyList})
- ORDER BY z."score" ${sort > 0 ? 'ASC' : 'DESC'}
- LIMIT @limit
-OFFSET @start`).all(params);
+		SELECT z."value",
+					 z."score"
+		FROM "legacy_object_live" o
+		INNER JOIN "legacy_zset" z
+			 ON o."_key" = z."_key"
+			AND o."type" = z."type"
+		WHERE o."_key" IN (${keyList})
+		ORDER BY z."score" ${sort > 0 ? 'ASC' : 'DESC'}
+		LIMIT @limit
+		OFFSET @start`).all(params);
 
 		if (reverse) {
 			rows.reverse();
@@ -109,20 +109,20 @@ OFFSET @start`).all(params);
 			max = null;
 		}
 
-		const [params, keyList] = helpers.listParams({count, start, min, max}, key);
+		const [ params, keyList ] = helpers.listParams({ count, start, min, max }, key);
 		let rows = module.db.prepare(`
-SELECT z."value",
-       z."score"
-  FROM "legacy_object_live" o
- INNER JOIN "legacy_zset" z
-         ON o."_key" = z."_key"
-        AND o."type" = z."type"
- WHERE o."_key" IN (${keyList})
-   AND (z."score" >= @min OR @min IS NULL)
-   AND (z."score" <= @max OR @max IS NULL)
- ORDER BY z."score" ${sort > 0 ? 'ASC' : 'DESC'}
- LIMIT @count
-OFFSET @start`).all(params);
+		SELECT z."value",
+       		 z."score"
+  	FROM "legacy_object_live" o
+ 		INNER JOIN "legacy_zset" z
+       ON o."_key" = z."_key"
+      AND o."type" = z."type"
+ 		WHERE o."_key" IN (${keyList})
+   		AND (z."score" >= @min OR @min IS NULL)
+   		AND (z."score" <= @max OR @max IS NULL)
+ 		ORDER BY z."score" ${sort > 0 ? 'ASC' : 'DESC'}
+ 		LIMIT @count
+		OFFSET @start`).all(params);
 
 		if (withScores) {
 			rows = rows.map(r => ({ value: r.value, score: parseFloat(r.score) }));
@@ -145,16 +145,16 @@ OFFSET @start`).all(params);
 			max = null;
 		}
 
-		const params = {key, min, max};
+		const params = { key, min, max };
 		const res = module.db.prepare(`
-SELECT COUNT(*) c
-  FROM "legacy_object_live" o
- INNER JOIN "legacy_zset" z
-         ON o."_key" = z."_key"
-        AND o."type" = z."type"
- WHERE o."_key" = @key
-   AND (z."score" >= @min OR @min IS NULL)
-   AND (z."score" <= @max OR @max IS NULL)`).get(params);
+		SELECT COUNT(*) c
+  	FROM "legacy_object_live" o
+ 		INNER JOIN "legacy_zset" z
+       ON o."_key" = z."_key"
+      AND o."type" = z."type"
+ 		WHERE o."_key" = @key
+   		AND (z."score" >= @min OR @min IS NULL)
+   		AND (z."score" <= @max OR @max IS NULL)`).get(params);
 
 		return res.c;
 	};
@@ -164,14 +164,14 @@ SELECT COUNT(*) c
 			return 0;
 		}
 
-		const params = {key};
+		const params = { key };
 		const res = module.db.prepare(`
-SELECT COUNT(*) c
-  FROM "legacy_object_live" o
- INNER JOIN "legacy_zset" z
-         ON o."_key" = z."_key"
-        AND o."type" = z."type"
- WHERE o."_key" = @key`).get(params);
+		SELECT COUNT(*) c
+  	FROM "legacy_object_live" o
+ 		INNER JOIN "legacy_zset" z
+       ON o."_key" = z."_key"
+      AND o."type" = z."type"
+ 		WHERE o."_key" = @key`).get(params);
 
 		return res.c;
 	};
@@ -181,16 +181,16 @@ SELECT COUNT(*) c
 			return [];
 		}
 
-		const [params, keyList] = helpers.listParams({}, keys);
+		const [ params, keyList ] = helpers.listParams({}, keys);
 		const rows = module.db.prepare(`
-SELECT o."_key" k,
-       COUNT(*) c
-  FROM "legacy_object_live" o
- INNER JOIN "legacy_zset" z
-         ON o."_key" = z."_key"
-        AND o."type" = z."type"
- WHERE o."_key" IN (${keyList})
- GROUP BY o."_key"`).all(params);
+		SELECT o."_key" k,
+       		 COUNT(*) c
+  	FROM "legacy_object_live" o
+ 		INNER JOIN "legacy_zset" z
+       ON o."_key" = z."_key"
+      AND o."type" = z."type"
+ 		WHERE o."_key" IN (${keyList})
+ 		GROUP BY o."_key"`).all(params);
 
 		return keys.map(k => (rows.find(r => r.k === k) || { c: 0 }).c);
 	};
@@ -223,8 +223,8 @@ SELECT o."_key" k,
 		SELECT z."_key" k, z."value" v
 		FROM "legacy_object_live" o
 		INNER JOIN "legacy_zset" z
-						ON o."_key" = z."_key"
-					 AND o."type" = z."type"
+			 ON o."_key" = z."_key"
+			AND o."type" = z."type"
 		WHERE o."_key" IN (${keyList})
 		ORDER BY o."_key" ASC, 
 						 z."score" ${sort},
@@ -277,13 +277,13 @@ SELECT o."_key" k,
 
 		value = helpers.valueToString(value);
 
-		const params = {key, value};
+		const params = { key, value };
 		const res = module.db.prepare(`
 		SELECT z."score" s
-			FROM "legacy_object_live" o
+		FROM "legacy_object_live" o
 		INNER JOIN "legacy_zset" z
-						ON o."_key" = z."_key"
-						AND o."type" = z."type"
+			 ON o."_key" = z."_key"
+			AND o."type" = z."type"
 		WHERE o."_key" = @key
 			AND z."value" = @value`).get(params);
 		
@@ -297,14 +297,14 @@ SELECT o."_key" k,
 
 		value = helpers.valueToString(value);
 
-		const [params, keyList] = helpers.listParams({value}, keys);
+		const [params, keyList] = helpers.listParams({ value }, keys);
 		const rows = module.db.prepare(`
 		SELECT o."_key" k,
-					z."score" s
-			FROM "legacy_object_live" o
+					 z."score" s
+		FROM "legacy_object_live" o
 		INNER JOIN "legacy_zset" z
-						ON o."_key" = z."_key"
-						AND o."type" = z."type"
+			 ON o."_key" = z."_key"
+			AND o."type" = z."type"
 		WHERE o."_key" IN (${keyList})
 			AND z."value" = @value`).all(params);
 
@@ -321,16 +321,16 @@ SELECT o."_key" k,
 		if (!values.length) {
 			return [];
 		}
-		values = values.map(helpers.valueToString);
+		values = helpers.valuesToStrings(values);
 
-		const [params, valueList] = helpers.listParams({key}, values, 'value');
+		const [params, valueList] = helpers.listParams({ key }, values, 'value');
 		const rows = module.db.prepare(`
 		SELECT z."value" v,
-					z."score" s
-			FROM "legacy_object_live" o
+					 z."score" s
+		FROM "legacy_object_live" o
 		INNER JOIN "legacy_zset" z
-						ON o."_key" = z."_key"
-						AND o."type" = z."type"
+		 	 ON o."_key" = z."_key"
+			AND o."type" = z."type"
 		WHERE o."_key" = @key
 			AND z."value" IN (${valueList})`).all(params);
 
@@ -347,13 +347,13 @@ SELECT o."_key" k,
 
 		value = helpers.valueToString(value);
 
-		const params = {key, value};
+		const params = { key, value };
 		const rows = module.db.prepare(`
 		SELECT 1
-			FROM "legacy_object_live" o
+		FROM "legacy_object_live" o
 		INNER JOIN "legacy_zset" z
-						ON o."_key" = z."_key"
-						AND o."type" = z."type"
+			 ON o."_key" = z."_key"
+			AND o."type" = z."type"
 		WHERE o."_key" = @key
 			AND z."value" = @value`).all(params);
 
@@ -368,15 +368,15 @@ SELECT o."_key" k,
 		if (!values.length) {
 			return [];
 		}
-		values = values.map(helpers.valueToString);
+		values = helpers.valuesToStrings(values);
 
-		const [params, valueList] = helpers.listParams({key}, values, 'value')
+		const [ params, valueList ] = helpers.listParams({ key }, values, 'value')
 		const rows = module.db.prepare(`
 		SELECT z."value" v
-			FROM "legacy_object_live" o
+		FROM "legacy_object_live" o
 		INNER JOIN "legacy_zset" z
-						ON o."_key" = z."_key"
-						AND o."type" = z."type"
+			 ON o."_key" = z."_key"
+			AND o."type" = z."type"
 		WHERE o."_key" = @key
 			AND z."value" IN (${valueList})`).all(params);
 
@@ -390,13 +390,13 @@ SELECT o."_key" k,
 
 		value = helpers.valueToString(value);
 
-		const [params, keyList] = helpers.listParams({value}, keys);
+		const [ params, keyList ] = helpers.listParams({ value }, keys);
 		const rows = module.db.prepare(`
 		SELECT o."_key" k
-			FROM "legacy_object_live" o
-				INNER JOIN "legacy_zset" z
-					ON o."_key" = z."_key"
-						AND o."type" = z."type"
+		FROM "legacy_object_live" o
+		INNER JOIN "legacy_zset" z
+			 ON o."_key" = z."_key"
+			AND o."type" = z."type"
 		WHERE o."_key" IN (${keyList})
 			AND z."value" = @value`).all(params);
 
@@ -413,13 +413,13 @@ SELECT o."_key" k,
 			return [];
 		}
 
-		const [params, keyList] = helpers.listParams({}, keys);
+		const [ params, keyList ] = helpers.listParams({}, keys);
 		const rows = module.db.prepare(`
 		SELECT z."_key" k, z."value" m
 		FROM "legacy_object_live" o
 		INNER JOIN "legacy_zset" z
-					  ON o."_key" = z."_key"
-					 AND o."type" = z."type"
+			 ON o."_key" = z."_key"
+			AND o."type" = z."type"
 		WHERE o."_key" IN (${keyList})
 		ORDER BY z."score" ASC`).all(params);
 
@@ -436,7 +436,7 @@ SELECT o."_key" k,
 
 		return module.transaction((db) => {
 			helpers.ensureLegacyObjectType(db, key, 'zset');
-			const params = {key, value, increment};
+			const params = { key, value, increment };
 			db.prepare(`
 			INSERT INTO "legacy_zset" ("_key", "value", "score")
 			VALUES (@key, @value, @increment)
@@ -470,10 +470,10 @@ SELECT o."_key" k,
 
 		const res = module.db.prepare(`
 		SELECT COUNT(*) c
-			FROM "legacy_object_live" o
+		FROM "legacy_object_live" o
 		INNER JOIN "legacy_zset" z
-						ON o."_key" = z."_key"
-						AND o."type" = z."type"
+			 ON o."_key" = z."_key"
+			AND o."type" = z."type"
 		WHERE ${q.where}`).get(q.params);
 
 		return res.c;
@@ -481,17 +481,17 @@ SELECT o."_key" k,
 
 	async function sortedSetLex(key, min, max, sort, start, count) {
 		start = start !== undefined ? start : 0;
-		count = count !== undefined ? count : 0;
+		count = count !== undefined ? count : -1;
 
 		const q = buildLexQuery(key, min, max);
 		q.params.start = start;
 		q.params.count = count;
 		const rows = module.db.prepare(`
 		SELECT z."value" v
-			FROM "legacy_object_live" o
+		FROM "legacy_object_live" o
 		INNER JOIN "legacy_zset" z
-						ON o."_key" = z."_key"
-						AND o."type" = z."type"
+			 ON o."_key" = z."_key"
+			AND o."type" = z."type"
 		WHERE ${q.where}
 		ORDER BY z."value" ${sort > 0 ? 'ASC' : 'DESC'}
 		LIMIT @count
@@ -502,12 +502,14 @@ SELECT o."_key" k,
 
 	module.sortedSetRemoveRangeByLex = async function (key, min, max) {
 		const q = buildLexQuery(key, min, max);
-		module.db.prepare(`
-		DELETE FROM "legacy_zset" z
-		USING "legacy_object_live" o
-		WHERE o."_key" = z."_key"
+		const res = module.db.prepare(`
+		DELETE FROM "legacy_zset" AS z
+		WHERE EXISTS (
+			SELECT * FROM "legacy_object_live" o
+			WHERE o."_key" = z."_key"
 			AND o."type" = z."type"
-			AND ${q.where}`).run(q.params);
+			AND ${q.where}
+		)`).run(q.params);
 	};
 
 	function buildLexQuery(key, min, max) {
@@ -519,34 +521,34 @@ SELECT o."_key" k,
 		if (min !== '-') {
 			if (min.match(/^\(/)) {
 				q.params.min = min.slice(1);
-				q.where += ` AND z."value" > @min COLLATE "C"`;
+				q.where += ` AND z."value" > @min`;
 			} else if (min.match(/^\[/)) {
 				q.params.min = min.slice(1);
-				q.where += ` AND z."value" >= @min COLLATE "C"`;
+				q.where += ` AND z."value" >= @min`;
 			} else {
 				q.params.min = min;
-				q.where += ` AND z."value" >= @min COLLATE "C"`;
+				q.where += ` AND z."value" >= @min`;
 			}
 		}
 
 		if (max !== '+') {
 			if (max.match(/^\(/)) {
 				q.params.max = max.slice(1);
-				q.where += ` AND z."value" < @max COLLATE "C"`;
+				q.where += ` AND z."value" < @max`;
 			} else if (max.match(/^\[/)) {
 				q.params.max = max.slice(1);
-				q.where += ` AND z."value" <= @max COLLATE "C"`;
+				q.where += ` AND z."value" <= @max`;
 			} else {
 				q.params.max = max;
-				q.where += ` AND z."value" <= @max COLLATE "C"`;
+				q.where += ` AND z."value" <= @max`;
 			}
 		}
 
 		return q;
 	}
 
-	module.getSortedSetScan = async function (params) {
-		let { match } = params;
+	module.getSortedSetScan = async function (options) {
+		let { match, key, limit, withScores } = options;
 		if (match.startsWith('*')) {
 			match = `%${match.substring(1)}`;
 		}
@@ -555,30 +557,36 @@ SELECT o."_key" k,
 			match = `${match.substring(0, match.length - 1)}%`;
 		}
 
+		if (!(limit >= 0)) {
+			limit = -1;
+		}
+
+		const params = { key, limit };
 		const rows = module.db.prepare(`
 		SELECT z."value",
-					z."score"
-			FROM "legacy_object_live" o
+					 z."score"
+		FROM "legacy_object_live" o
 		INNER JOIN "legacy_zset" z
-						ON o."_key" = z."_key"
-						AND o."type" = z."type"
+			 ON o."_key" = z."_key"
+			AND o."type" = z."type"
 		WHERE o."_key" = @key
 			AND z."value" LIKE '${match}'
-			LIMIT @limit`).all(params);
+		LIMIT @limit`).all(params);
 
-		return !params.withScores ? rows.map(r => r.value) : rows;
+		return !withScores ? rows.map(r => r.value) : rows;
 	};
 
 	module.processSortedSet = async function (setKey, process, options) {
 		const db = connection.connect(nconf.get('sqlite3'));
 		const batchSize = (options || {}).batch || 100;
-		const params = {key: setKey};
+		const params = { key: setKey };
 		const iterator = db.prepare(`
-		SELECT z."value", z."score"
-			FROM "legacy_object_live" o
+		SELECT z."value", 
+		       z."score"
+		FROM "legacy_object_live" o
 		INNER JOIN "legacy_zset" z
-						ON o."_key" = z."_key"
-						AND o."type" = z."type"
+			 ON o."_key" = z."_key"
+			AND o."type" = z."type"
 		WHERE o."_key" = @key
 		ORDER BY z."score" ASC, z."value" ASC`).iterate(params);
 
@@ -586,23 +594,16 @@ SELECT o."_key" k,
 			process = util.promisify(process);
 		}
 
-		let done = false;
-		while (!done) {
+		for (;;) {
 			/* eslint-disable no-await-in-loop */
 			let rows = [];
 			for (;;) {
 				const res = iterator.next();
-				if (res.done) {
+				if (res.done || rows.push(res.value) >= batchSize) {
 					break;
-				} else {
-					rows.push(value);
-					if (rows.length >= batchSize) {
-						break;
-					}
 				}
 			}
 			if (!rows.length) {
-				iterator.return();
 				return;
 			}
 

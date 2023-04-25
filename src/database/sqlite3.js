@@ -174,13 +174,13 @@ sqlite3Module.info = async function (db) {
 		db = connection.connect(nconf.get('sqlite3'));
 	}
 	sqlite3Module.db = sqlite3Module.db || db;
-	const res = db.exec(`
+	const res = db.prepare(`
 		SELECT true "sqlite3",
-			sqlite_version "version"
-	`);
+			sqlite_version() "version"
+	`).get();
 	return {
-		...res.rows[0],
-		raw: JSON.stringify(res.rows[0], null, 4),
+		...res,
+		raw: JSON.stringify(res, null, 4),
 	};
 };
 

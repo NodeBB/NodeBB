@@ -6,6 +6,23 @@ helpers.valueToString = function (value) {
 	return String(value);
 };
 
+helpers.valuesToStrings = function (values) {
+	if (!Array.isArray(values)) {
+		values = [values];
+	}	
+	return values.map(v => String(v));
+};
+
+helpers.aggregateScores = function (scores, method = 'SUM') {
+	if (method === 'SUM') {
+		return scores.reduce((t, s) => t + s, 0);
+	} else if (method === 'MAX') {
+		return Math.max.apply(null, scores);
+	} else if (method === 'MIN') {
+		return Math.min.apply(null, scores);
+	}
+};
+
 helpers.removeDuplicateValues = function (values, ...others) {
 	for (let i = 0; i < values.length; i++) {
 		if (values.lastIndexOf(values[i]) !== i) {
@@ -55,17 +72,17 @@ SELECT "type"
 
 helpers.ensureLegacyObjectsType = function (db, keys, type) {
 	db.exec(`
-DELETE FROM "legacy_object"
- WHERE "expireAt" IS NOT NULL
-   AND "expireAt" <= CURRENT_TIMESTAMP`);
+	DELETE FROM "legacy_object"
+ 	WHERE "expireAt" IS NOT NULL
+    AND "expireAt" <= CURRENT_TIMESTAMP`);
 
 	const insert = db.prepare(`
-INSERT INTO "legacy_object" ("_key", "type")
-VALUES (@key, @type)
+	INSERT INTO "legacy_object" ("_key", "type")
+	VALUES (@key, @type)
 	ON CONFLICT
 	DO NOTHING`);
 	const select = db.prepare(`
-SELECT "_key", "type"
+	SELECT "_key", "type"
 	FROM "legacy_object_live"
 	WHERE "_key" = @key`);
 	const invalid = [], missing = [];

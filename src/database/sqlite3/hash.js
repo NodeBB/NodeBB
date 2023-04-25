@@ -44,7 +44,7 @@ module.exports = function (module) {
 		if (Array.isArray(args[1])) {
 			console.warn('[deprecated] db.setObjectBulk(keys, data) usage is deprecated, please use db.setObjectBulk(data)');
 			// conver old format to new format for backwards compatibility
-			data = args[0].map((key, i) => [key, args[1][i]]);
+			data = args[0].map((key, i) => [ key, args[1][i] ]);
 		}
 		module.transaction((db) => {
 			data = data.filter((item) => {
@@ -63,11 +63,10 @@ module.exports = function (module) {
 			INSERT INTO "legacy_hash" ("_key", "data")
 			VALUES (@key, @data)
 			ON CONFLICT ("_key")
-			DO UPDATE SET "data" = @data
-			`);
+			DO UPDATE SET "data" = json_merge("legacy_hash"."data", @data)`);
 			for (const [i, key] of keys.entries()) {
 				const dataString = JSON.stringify(data[i][1]);
-				upsert.run({key, data:dataString});
+				upsert.run({ key, data:dataString });
 			}
 		});
 	};
@@ -77,20 +76,20 @@ module.exports = function (module) {
 			return;
 		}
 
-		module.transaction((db) => {
-			if (Array.isArray(key)) {
-				module.setObject(key, { [field]: value });
-			} else {
+		if (Array.isArray(key)) {
+			module.setObject(key, { [field]: value });
+		} else {
+			module.transaction((db) => {
 				helpers.ensureLegacyObjectType(db, key, 'hash');
 				const valueString = JSON.stringify(value);
-				const params = {key, field, value: valueString};
+				const params = { key, field, value: valueString };
 				db.prepare(`
 				INSERT INTO "legacy_hash" ("_key", "data")
 				VALUES (@key, json_set(NULL, @field, @value))
 				ON CONFLICT ("_key")
 				DO UPDATE SET "data" = json_set("legacy_hash"."data", @field, @value)`).run(params);
-			}
-		});
+			});	
+		}
 	};
 
 	module.getObject = async function (key, fields = []) {
@@ -102,10 +101,10 @@ module.exports = function (module) {
 		}
 		const res = module.db.prepare(`
 		SELECT h."data"
-			FROM "legacy_object_live" o
+		FROM "legacy_object_live" o
 		INNER JOIN "legacy_hash" h
-						ON o."_key" = h."_key"
-						AND o."type" = h."type"
+			 ON o."_key" = h."_key"
+			AND o."type" = h."type"
 		WHERE o."_key" = @key
 		LIMIT 1`).get({ key });
 
@@ -119,14 +118,14 @@ module.exports = function (module) {
 		if (fields.length) {
 			return module.getObjectsFields(keys, fields);
 		}
-		const [params, keyList] = helpers.listParams({}, keys);
+		const [ params, keyList ] = helpers.listParams({}, keys);
 		const rows = module.db.prepare(`
 		SELECT h."_key", h."data"
-			FROM "legacy_object_live" o
-				INNER JOIN "legacy_hash" h
-								ON o."_key" = h."_key"
-							AND o."type" = h."type"
-			WHERE o."_key" IN (${keyList})`).all(params);
+		FROM "legacy_object_live" o
+		INNER JOIN "legacy_hash" h
+			 ON o."_key" = h."_key"
+			AND o."type" = h."type"
+		WHERE o."_key" IN (${keyList})`).all(params);
 
 		return keys.map((key) => {
 			const row = rows.find(r => r._key === key);
@@ -139,15 +138,19 @@ module.exports = function (module) {
 			return null;
 		}
 
-		const params = {key, field};
+		if (Array.isArray(field)) {
+			return null;
+		}
+
+		const params = { key, field };
 		const res = module.db.prepare(`
-			SELECT json_get(h."data", @field) AS f
-				FROM "legacy_object_live" o
-				INNER JOIN "legacy_hash" h
-								ON o."_key" = h."_key"
-							 AND o."type" = h."type"
-				WHERE o."_key" = @key
-				LIMIT 1`).get(params);
+		SELECT json_get(h."data", @field) AS f
+		FROM "legacy_object_live" o
+		INNER JOIN "legacy_hash" h
+			 ON o."_key" = h."_key"
+			AND o."type" = h."type"
+		WHERE o."_key" = @key
+		LIMIT 1`).get(params);
 
 		return res ? JSON.parse(res.f) : null;
 	};
@@ -160,15 +163,15 @@ module.exports = function (module) {
 			return await module.getObject(key);
 		}
 
-		const [params, fieldList] = helpers.listParams({key}, fields);
+		const [ params, fieldList ] = helpers.listParams({ key }, fields);
 		const res = module.db.prepare(`
-			SELECT json_gather(h."data", ${fieldList}) AS d
-				FROM "legacy_object_live" o
-				INNER JOIN "legacy_hash" h
-								ON o."_key" = h."_key"
-							 AND o."type" = h."type"
-				WHERE o."_key" = @key
-				LIMIT 1`).get(params);
+		SELECT json_gather(h."data", ${fieldList}) AS d
+		FROM "legacy_object_live" o
+		INNER JOIN "legacy_hash" h
+			 ON o."_key" = h."_key"
+			AND o."type" = h."type"
+		WHERE o."_key" = @key
+		LIMIT 1`).get(params);
 
 		if (res) {
 			return JSON.parse(res.d);
@@ -190,8 +193,8 @@ module.exports = function (module) {
 		if (!Array.isArray(fields) || !fields.length) {
 			return await module.getObjects(keys);
 		}
-		const [params, keyList] = helpers.listParams({}, keys);
-		const [,fieldList] = helpers.listParams(params, fields, 'name');
+		const [ params, keyList ] = helpers.listParams({}, keys);
+		const [ , fieldList ] = helpers.listParams(params, fields, 'name');
 		const rows = module.db.prepare(`
 			SELECT h."_key" k, json_gather(h."data", ${fieldList}) as d
 				FROM "legacy_object_live" o
@@ -211,13 +214,13 @@ module.exports = function (module) {
 			return;
 		}
 
-		const params = {key};
+		const params = { key };
 		const res = module.db.prepare(`
 		SELECT json_keys(h."data") k
-			FROM "legacy_object_live" o
+		FROM "legacy_object_live" o
 		INNER JOIN "legacy_hash" h
-						ON o."_key" = h."_key"
-						AND o."type" = h."type"
+			 ON o."_key" = h."_key"
+			AND o."type" = h."type"
 		WHERE o."_key" = @key
 		LIMIT 1`).get(params);
 
@@ -234,15 +237,15 @@ module.exports = function (module) {
 			return;
 		}
 
-		const params = {key};
+		const params = { key };
 		const res = module.db.prepare(`
-SELECT h."data"
-  FROM "legacy_object_live" o
- INNER JOIN "legacy_hash" h
-         ON o."_key" = h."_key"
-        AND o."type" = h."type"
- WHERE o."_key" = @key
- LIMIT 1`).get(params);
+		SELECT h."data"
+  	FROM "legacy_object_live" o
+ 		INNER JOIN "legacy_hash" h
+       ON o."_key" = h."_key"
+      AND o."type" = h."type"
+ 		WHERE o."_key" = @key
+ 		LIMIT 1`).get(params);
 
 		if (res) {
 			const fields = JSON.parse(res.data);
@@ -274,11 +277,12 @@ SELECT h."data"
 		}
 
 		module.transaction((db) => {
-			const [params, keyList] = helpers.listParams({}, key);
+			const [ params, keyList ] = helpers.listParams({}, key);
 			const rows = db.prepare(`
-			SELECT "_key", "data"
-				FROM "legacy_hash"
-				WHERE "_key" IN (${keyList})`).all(params);
+			SELECT "_key", 
+			       "data"
+			FROM "legacy_hash"
+			WHERE "_key" IN (${keyList})`).all(params);
 			let update;
 			for (const row of rows) {
 				const cleared = JSON.parse(row.data);
@@ -293,7 +297,7 @@ SELECT h."data"
 								SET "data" = @data
 							WHERE "_key" = @key`);				
 					}
-					update.run({key:row._key, data:dataString});
+					update.run({ key:row._key, data: dataString });
 				}
 			}	
 		});
@@ -330,12 +334,13 @@ SELECT h."data"
 			ON CONFLICT ("_key")
 			DO UPDATE SET "data" = json_inc("legacy_hash"."data", @field, @value)`);
 			for (const key of keys) {
-				upsert.run({key, field, value});
+				upsert.run({ key, field, value });
 			}
-			const [params,keyList] = helpers.listParams({field}, keys);
+			const [ params, keyList ] = helpers.listParams({ field }, keys);
 			const rows = db.prepare(`
-			SELECT h."_key", json_get(h."data", @field) AS v
-				FROM "legacy_hash" h
+			SELECT h."_key", 
+			       json_get(h."data", @field) AS v
+			FROM "legacy_hash" h
 			WHERE h."_key" IN (${keyList})`).all(params);
 			const values = keys.map((key) => {
 				const row = rows.find(r => r._key === key);
@@ -352,7 +357,7 @@ SELECT h."data"
 		}
 		// TODO: perf?
 		await Promise.all(data.map(async (item) => {
-			for (const [field, value] of Object.entries(item[1])) {
+			for (const [ field, value ] of Object.entries(item[1])) {
 				// eslint-disable-next-line no-await-in-loop
 				await module.incrObjectFieldBy(item[0], field, value);
 			}

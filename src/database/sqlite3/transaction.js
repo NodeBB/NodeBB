@@ -10,6 +10,7 @@ module.exports = function (module) {
 			res = perform(db);
 			db.exec('COMMIT');
 		} catch (err) {
+			console.error(err);
 			db.exec('ROLLBACK');
 			throw err;
 		}

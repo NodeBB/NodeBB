@@ -70,11 +70,6 @@ function addFunctions(db) {
     }
     return JSON.stringify(array);
   });
-  db.function('json_array_remove_last', { deterministic: true }, (json, jsonAddendum) => {
-    const array = (json) ? JSON.parse(json) : [];
-    array.pop();
-    return JSON.stringify(array);
-  });
   db.function('json_array_remove', { deterministic: true }, (json, jsonRemoval) => {
     const array = (json) ? JSON.parse(json) : [];
     const removal = (jsonRemoval) ? JSON.parse(jsonRemoval) : [];

@@ -20,7 +20,7 @@ module.exports = function (module) {
 
 		module.transaction((db) => {
 			helpers.ensureLegacyObjectType(db, key, 'zset');
-			const params = {key, value, score};
+			const params = { key, value, score };
 			db.prepare(`
 			INSERT INTO "legacy_zset" ("_key", "value", "score")
 			VALUES (@key, @value, @score)
@@ -41,7 +41,7 @@ module.exports = function (module) {
 				throw new Error(`[[error:invalid-score, ${scores[i]}]]`);
 			}
 		}
-		values = values.map(helpers.valueToString);
+		values = helpers.valuesToStrings(values);
 		scores = scores.map(score => parseFloat(score));
 
 		helpers.removeDuplicateValues(values, scores);
@@ -56,7 +56,7 @@ module.exports = function (module) {
 			DO UPDATE SET "score" = @score`);
 			for (const [i, value] of values.entries()) {
 				const score = scores[i];
-				upsert.run({key, value, score});
+				upsert.run({ key, value, score });
 			}
 		});
 	}
@@ -116,10 +116,10 @@ module.exports = function (module) {
 			ON CONFLICT ("_key", "value")
 			DO UPDATE SET "score" = @score
 			`);
-			for (const [i, key] of keys.entries()) {
-				const value = values[i];
+			for (const [ i, key ] of keys.entries()) {
+				const value = helpers.valueToString(values[i]);
 				const score = scores[i];
-				upsert.run({key, value, score});
+				upsert.run({ key, value, score });
 			}
 		});
 	};
