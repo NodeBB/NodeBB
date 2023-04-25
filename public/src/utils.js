@@ -8,7 +8,7 @@ const utils = { ...require('./utils.common') };
 
 utils.getLanguage = function () {
 	let lang = 'en-GB';
-	if (typeof window === 'object' && window.config && window.utils) {
+	if (typeof window === 'object' && window.config) {
 		lang = utils.params().lang || window.config.userLang || window.config.defaultLang || 'en-GB';
 	}
 	return lang;
