@@ -53,6 +53,11 @@ describe('Test database', () => {
 					assert.equal(err.message, 'The `pg` package is out-of-date, please run `./nodebb setup` again.');
 					done();
 				});
+			} else if (dbName === 'sqlite3') {
+				db.checkCompatibilityVersion('7.0.0', (err) => {
+					assert.equal(err.message, 'The `better-sqlite3` package is out-of-date, please run `./nodebb setup` again.');
+					done();
+				});
 			}
 		});
 	});

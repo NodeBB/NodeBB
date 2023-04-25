@@ -7,6 +7,7 @@ const questions = {
 	redis: require('../src/database/redis').questions,
 	mongo: require('../src/database/mongo').questions,
 	postgres: require('../src/database/postgres').questions,
+	sqlite3: require('../src/database/sqlite3').questions,
 };
 
 module.exports = async function (config) {
@@ -35,6 +36,11 @@ async function getDatabaseConfig(config) {
 			return config;
 		}
 		return await prompt.get(questions.postgres);
+	} else if (config.database === 'sqlite3') {
+		if (config['sqlite3:path']) {
+			return config;
+		}
+		return await prompt.get(questions.sqlite3);
 	}
 	throw new Error(`unknown database : ${config.database}`);
 }
@@ -73,6 +79,10 @@ function saveDatabaseConfig(config, databaseConfig) {
 			password: databaseConfig['postgres:password'],
 			database: databaseConfig['postgres:database'],
 			ssl: databaseConfig['postgres:ssl'],
+		};
+	} else if (config.database === 'sqlite3') {
+		config.sqlite3 = {
+			path: databaseConfig['sqlite3:path'],
 		};
 	} else {
 		throw new Error(`unknown database : ${config.database}`);
