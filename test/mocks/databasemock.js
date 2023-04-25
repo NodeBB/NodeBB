@@ -115,7 +115,8 @@ if (!testDbConfig) {
 
 if (testDbConfig.database === productionDbConfig.database &&
 	testDbConfig.host === productionDbConfig.host &&
-	testDbConfig.port === productionDbConfig.port) {
+	testDbConfig.port === productionDbConfig.port && 
+	testDbConfig.path === productionDbConfig.path) {
 	const errorText = 'test_database has the same config as production db';
 	winston.error(errorText);
 	throw new Error(errorText);
@@ -206,9 +207,8 @@ async function setupMockDefaults() {
 		id: 'nodebb-theme-persona',
 	});
 
-	const fs = require('fs');
-	await fs.promises.rm('test/uploads', { recursive: true, force: true });
-
+	const { rimraf } = require('rimraf');
+	await rimraf('test/uploads');
 
 	const { mkdirp } = require('mkdirp');
 
