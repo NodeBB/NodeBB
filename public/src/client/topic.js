@@ -21,7 +21,7 @@ define('forum/topic', [
 	infinitescroll, threadTools, postTools,
 	events, posts, navigator, sort, quickreply,
 	components, storage, hooks, api, alerts,
-	bootbox, clipboard,
+	bootbox, clipboard
 ) {
 	const Topic = {};
 	let tid = 0;
