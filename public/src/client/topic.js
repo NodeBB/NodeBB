@@ -16,11 +16,12 @@ define('forum/topic', [
 	'api',
 	'alerts',
 	'bootbox',
+	'clipboard',
 ], function (
 	infinitescroll, threadTools, postTools,
 	events, posts, navigator, sort, quickreply,
 	components, storage, hooks, api, alerts,
-	bootbox
+	bootbox, clipboard,
 ) {
 	const Topic = {};
 	let tid = 0;
@@ -61,6 +62,7 @@ define('forum/topic', [
 		}
 
 		addBlockQuoteHandler();
+		addCodeBlockHandler();
 		addParentHandler();
 		addDropupHandler();
 		addRepliesHandler();
@@ -216,6 +218,29 @@ define('forum/topic', [
 			const collapsed = !blockQuote.hasClass('uncollapsed');
 			toggle.toggleClass('fa-angle-down', collapsed).toggleClass('fa-angle-up', !collapsed);
 		});
+	}
+
+	function addCodeBlockHandler() {
+		new clipboard('[component="copy/code/btn"]', {
+			text: function (trigger) {
+				const btn = $(trigger);
+				btn.find('i').removeClass('fa-copy').addClass('fa-check');
+				setTimeout(() => btn.find('i').removeClass('fa-check').addClass('fa-copy'), 2000);
+				return btn.parent().find('code').text();
+			},
+		});
+
+		function addCopyCodeButton() {
+			const codeBlocks = $('[component="topic"] [component="post/content"] code:not([data-button-added])');
+			const container = $('<div class="hover-parent position-relative"></div>');
+			const buttonDiv = $('<button component="copy/code/btn" class="hover-visible position-absolute end-0 top-0 btn btn-sm btn-outline-secondary"><i class="fa fa-fw fa-copy"></i></button>');
+			codeBlocks.parent().wrap(container).parent().append(buttonDiv);
+			codeBlocks.parent().parent().find('[component="copy/code/btn"]').translateAttr('title', '[[topic:copy-code]]');
+			codeBlocks.attr('data-button-added', 1);
+		}
+		hooks.registerPage('action:posts.loaded', addCopyCodeButton);
+		hooks.registerPage('action:topic.loaded', addCopyCodeButton);
+		hooks.registerPage('action:posts.edited', addCopyCodeButton);
 	}
 
 	function addParentHandler() {

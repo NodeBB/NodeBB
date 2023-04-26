@@ -39,6 +39,7 @@
 	"scheduled": "Scheduled",
 	"moved": "Moved",
 	"moved-from": "Moved from %1",
+	"copy-code": "Copy Code",
 	"copy-ip": "Copy IP",
 	"ban-ip": "Ban IP",
 	"view-history": "Edit History",
