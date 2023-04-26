@@ -178,17 +178,31 @@ define('forum/topic', [
 			return;
 		}
 
-		listEl.addEventListener('click', (e) => {
-			const subselector = e.target.closest('a');
-			if (subselector) {
+		listEl.addEventListener('click', async (e) => {
+			const clickedThumb = e.target.closest('a');
+			if (clickedThumb) {
+				const clickedThumbIndex = Array.from(clickedThumb.parentNode.children).indexOf(clickedThumb);
 				e.preventDefault();
+				const thumbs = ajaxify.data.thumbs.map(t => ({ ...t }));
+				thumbs.forEach((t, i) => {
+					t.selected = i === clickedThumbIndex;
+				});
+				const html = await app.parseAndTranslate('modals/topic-thumbs-view', {
+					src: clickedThumb.href,
+					thumbs: thumbs,
+				});
 
-				const src = subselector.href;
-				bootbox.dialog({
+				const modal = bootbox.dialog({
 					size: 'lg',
 					onEscape: true,
 					backdrop: true,
-					message: `<div class="text-center mb-5"><img src="${src}" style="max-height: 66vh;" /></div>`,
+					message: html,
+				});
+				modal.on('click', '[component="topic/thumb/select"]', function () {
+					$('[component="topic/thumb/select"]').removeClass('border-primary');
+					$(this).addClass('border-primary');
+					$('[component="topic/thumb/current"]')
+						.attr('src', $(this).attr('src'));
 				});
 			}
 		});
