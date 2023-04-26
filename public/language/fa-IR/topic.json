@@ -36,6 +36,7 @@
     "scheduled": "Scheduled",
     "moved": "منتقل شده",
     "moved-from": "Moved from %1",
+    "copy-code": "Copy Code",
     "copy-ip": "کپی IP",
     "ban-ip": "مسدود کردن IP",
     "view-history": "تاریخچه ویرایش",

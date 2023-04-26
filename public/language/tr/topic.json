@@ -36,6 +36,7 @@
     "scheduled": "Konu Zamanlandı",
     "moved": "Taşındı",
     "moved-from": "Şuradan taşındı: %1",
+    "copy-code": "Copy Code",
     "copy-ip": "IP Kopyala",
     "ban-ip": "IP Yasakla",
     "view-history": "Geçmişi Düzenle",

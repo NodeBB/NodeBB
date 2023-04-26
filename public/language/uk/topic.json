@@ -36,6 +36,7 @@
     "scheduled": "Scheduled",
     "moved": "Переміщена",
     "moved-from": "Moved from %1",
+    "copy-code": "Copy Code",
     "copy-ip": "Копіювати IP",
     "ban-ip": "Заблокувати IP",
     "view-history": "Редагувати історію",

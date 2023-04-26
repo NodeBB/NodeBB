@@ -36,6 +36,7 @@
     "scheduled": "Scheduled",
     "moved": "已移動",
     "moved-from": "Moved from %1",
+    "copy-code": "Copy Code",
     "copy-ip": "複製IP",
     "ban-ip": "禁用IP",
     "view-history": "編輯歷史",

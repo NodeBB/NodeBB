@@ -36,6 +36,7 @@
     "scheduled": "E planifikuar",
     "moved": "E lëvizur",
     "moved-from": "E lëvizur nga %1",
+    "copy-code": "Copy Code",
     "copy-ip": "Kopjoni IP-në",
     "ban-ip": "Pezulloni IP-në",
     "view-history": "Ndrysho historinë",

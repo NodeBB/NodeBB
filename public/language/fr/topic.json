@@ -36,6 +36,7 @@
     "scheduled": "Planifier",
     "moved": "Déplacé",
     "moved-from": "Déplacé de %1",
+    "copy-code": "Copy Code",
     "copy-ip": "Copier l'IP",
     "ban-ip": "Bannir l'IP",
     "view-history": "Éditer l'historique",

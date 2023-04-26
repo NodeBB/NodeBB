@@ -36,6 +36,7 @@
     "scheduled": "Scheduled",
     "moved": "Perkelta",
     "moved-from": "Moved from %1",
+    "copy-code": "Copy Code",
     "copy-ip": "Copy IP",
     "ban-ip": "Blokuoti IP",
     "view-history": "Edit History",

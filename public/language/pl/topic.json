@@ -36,6 +36,7 @@
     "scheduled": "Zaplanowany",
     "moved": "Przeniesiony",
     "moved-from": "Przeniesiony z %1",
+    "copy-code": "Copy Code",
     "copy-ip": "Kopiuj IP",
     "ban-ip": "Blokuj IP",
     "view-history": "Historia edycji",
