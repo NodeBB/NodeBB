@@ -8,9 +8,9 @@
 	"containers.none": "Nic",
 	"container.well": "Well",
 	"container.jumbotron": "Jumbotron",
-	"container.panel": "Panel",
-	"container.panel-header": "Hlavička panelu",
-	"container.panel-body": "Tělo panelu",
+	"container.card": "Card",
+	"container.card-header": "Card Header",
+	"container.card-body": "Card Body",
 	"container.alert": "Upozornění",
 
 	"alert.confirm-delete": "Jste si jist/a, že chcete smazat tuto miniaplikaci?",

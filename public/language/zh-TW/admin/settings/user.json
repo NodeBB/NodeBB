@@ -29,6 +29,8 @@
 	"session-time-days": "天",
 	"session-time-seconds": "秒",
 	"session-time-help": "這些值將用於控制使用者在登入時選中&quot;記住我&quot;後能夠保持登入的持續時間。注意以下數字中只有一個將被使用。若<i>秒</i>值為空我們將改為使用<i>天</i>。若<i>天</i>值為空我們將使用預設值<i>14天</i>。",
+	"session-duration": "Session length if \"Remember Me\" is not checked (seconds)",
+	"session-duration-help": "By default — or if set to <code>0</code> — a user will stay logged in for the duration of the session (e.g. however long the browser window/tab remains open). Set this value to explicitly invalidate the session after the specified number of seconds.",
 	"online-cutoff": "分鐘後認定使用者已離線",
 	"online-cutoff-help": "若使用者在此時間後未作出任何動作，他們將被視為不活躍狀態且不會收到即時更新。",
 	"registration": "使用者註冊",

@@ -1,0 +1,66 @@
+put:
+  tags:
+    - group
+  summary: approve pending membership
+  description: This operation approves a pending membership request for a group.
+  parameters:
+    - in: path
+      name: slug
+      schema:
+        type: string
+      required: true
+      description: a group slug
+      example: private-group
+    - in: path
+      name: uid
+      schema:
+        type: number
+      required: true
+      description: a user id
+      example: 1
+  responses:
+    '200':
+      description: Membership request approved.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}
+delete:
+  tags:
+    - group
+  summary: reject pending membership
+  description: This operation rejects a pending membership request for a group.
+  parameters:
+    - in: path
+      name: slug
+      schema:
+        type: string
+      required: true
+      description: a group slug
+      example: private-group
+    - in: path
+      name: uid
+      schema:
+        type: number
+      required: true
+      description: a user id
+      example: 1
+  responses:
+    '200':
+      description: Membership request rejected.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}

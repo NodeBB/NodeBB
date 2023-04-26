@@ -52,7 +52,6 @@ define('admin/settings', ['uploader', 'mousetrap', 'hooks', 'alerts', 'settings'
 				if (field.is('input') && inputType === 'checkbox') {
 					const checked = parseInt(app.config[key], 10) === 1;
 					field.prop('checked', checked);
-					field.parents('.mdl-switch').toggleClass('is-checked', checked);
 				} else if (field.is('textarea') || field.is('select') || (field.is('input') && defaultInputs.indexOf(inputType) !== -1)) {
 					field.val(app.config[key]);
 				}
@@ -83,15 +82,7 @@ define('admin/settings', ['uploader', 'mousetrap', 'hooks', 'alerts', 'settings'
 				}
 
 				app.flags._unsaved = false;
-
-				alerts.alert({
-					alert_id: 'config_status',
-					timeout: 2500,
-					title: '[[admin/admin:changes-saved]]',
-					message: '[[admin/admin:changes-saved-message]]',
-					type: 'success',
-				});
-
+				Settings.toggleSaveSuccess(saveBtn);
 				hooks.fire('action:admin.settingsSaved');
 			});
 		});
@@ -120,6 +111,16 @@ define('admin/settings', ['uploader', 'mousetrap', 'hooks', 'alerts', 'settings'
 		}, 0);
 	};
 
+	Settings.toggleSaveSuccess = function (saveBtn) {
+		const saveBtnEl = saveBtn.get(0);
+		if (saveBtnEl) {
+			saveBtnEl.classList.toggle('saved', true);
+			setTimeout(() => {
+				saveBtnEl.classList.toggle('saved', false);
+			}, 5000);
+		}
+	};
+
 	function handleUploads() {
 		$('#content input[data-action="upload"]').each(function () {
 			const uploadBtn = $(this);
@@ -140,6 +141,7 @@ define('admin/settings', ['uploader', 'mousetrap', 'hooks', 'alerts', 'settings'
 
 	function setupTagsInput() {
 		$('[data-field-type="tagsinput"]').tagsinput({
+			tagClass: 'badge bg-info',
 			confirmKeys: [13, 44],
 			trimValue: true,
 		});

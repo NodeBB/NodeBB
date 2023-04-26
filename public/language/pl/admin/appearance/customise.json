@@ -1,7 +1,7 @@
 {
-	"custom-css": "Własny CSS/LESS",
-	"custom-css.description": "Wprowadź tutaj własne deklaracje CSS/LESS, które będą użyte po wszystkich pozostałych stylach.",
-	"custom-css.enable": "Aktywuj własne CSS/LESS",
+	"custom-css": "Niestandardowe CSS/SASS",
+	"custom-css.description": "Wprowadź tutaj własne deklaracje CSS/SASS, które zostaną zastosowane w wszystkich innych stylach.",
+	"custom-css.enable": "Włącz niestandardowe CSS/SASS",
 
 	"custom-js": "Własny Javascript",
 	"custom-js.description": "Wprowadź własny kod javascript tutaj. Będzie użyty po pełnym załadowaniu strony.",

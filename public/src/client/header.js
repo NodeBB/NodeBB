@@ -30,7 +30,7 @@ define('forum/header', [
 					.removeClass('away online dnd offline')
 					.addClass(status);
 				$('[component="header/usercontrol"] [data-status]').each(function () {
-					$(this).find('span').toggleClass('bold', $(this).attr('data-status') === status);
+					$(this).toggleClass('selected', $(this).attr('data-status') === status);
 				});
 				app.user.status = status;
 			});
@@ -43,31 +43,18 @@ define('forum/header', [
 		if (env === 'xs' || env === 'sm' || utils.isTouchDevice()) {
 			return;
 		}
-		$('#header-menu li a[title]').each(function () {
-			$(this).tooltip({
-				placement: 'bottom',
-				trigger: 'hover',
-				title: $(this).attr('title'),
-			});
-		});
 
-
-		$('#search-form').tooltip({
+		$('#header-menu #main-nav').tooltip({
+			selector: '.nav-item',
 			placement: 'bottom',
 			trigger: 'hover',
-			title: $('#search-button i').attr('title'),
-		});
-
-
-		$('#user_dropdown').tooltip({
-			placement: 'bottom',
-			trigger: 'hover',
-			title: $('#user_dropdown').attr('title'),
+			container: 'body',
+			animation: false,
 		});
 	}
 
 	function handleLogout() {
-		$('#header-menu .container').on('click', '[component="user/logout"]', function () {
+		$('body').on('click', '[component="user/logout"]', function () {
 			require(['logout'], function (logout) {
 				logout();
 			});

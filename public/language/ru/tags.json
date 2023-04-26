@@ -1,5 +1,7 @@
 {
+    "all-tags": "All tags",
     "no_tag_topics": "Тем с такой меткой сейчас нет.",
+    "no-tags-found": "No tags found",
     "tags": "Метки",
     "enter_tags_here": "Добавьте метки здесь, от %1 до %2 символов каждая.",
     "enter_tags_here_short": "Введите метки...",

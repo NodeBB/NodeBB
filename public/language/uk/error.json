@@ -101,6 +101,7 @@
     "guest-upload-disabled": "Гостьове завантаження вимкнено.",
     "cors-error": "Неможливо завантажити зображення через неправильно налаштований CORS",
     "upload-ratelimit-reached": "You have uploaded too many files at one time. Please try again later.",
+    "upload-error-fallback": "Unable to upload image — %1",
     "scheduling-to-past": "Please select a date in the future.",
     "invalid-schedule-date": "Please enter a valid date and time.",
     "cant-pin-scheduled": "Scheduled topics cannot be (un)pinned.",
@@ -134,6 +135,8 @@
     "group-already-requested": "Ваша заявка на вступ вже подана",
     "group-join-disabled": "Ви не можете приєднатись до цієї групи зараз",
     "group-leave-disabled": "Ви не можете покинути цю групу зараз",
+    "group-user-not-pending": "User does not have a pending request to join this group.",
+    "gorup-user-not-invited": "User has not been invited to join this group.",
     "post-already-deleted": "Цей пост вже видалено",
     "post-already-restored": "Цей пост вже відновлено",
     "topic-already-deleted": "Ця тема вже була видалена",
@@ -224,5 +227,6 @@
     "api.429": "You have made too many requests, please try again later",
     "api.500": "An unexpected error was encountered while attempting to service your request.",
     "api.501": "The route you are trying to call is not implemented yet, please try again tomorrow",
-    "api.503": "The route you are trying to call is not currently available due to a server configuration"
+    "api.503": "The route you are trying to call is not currently available due to a server configuration",
+    "api.reauth-required": "The resource you are trying to access requires (re-)authentication."
 }

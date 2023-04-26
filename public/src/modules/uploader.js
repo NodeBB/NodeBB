@@ -6,7 +6,7 @@ define('uploader', ['jquery-form'], function () {
 
 	module.show = function (data, callback) {
 		const fileSize = data.hasOwnProperty('fileSize') && data.fileSize !== undefined ? parseInt(data.fileSize, 10) : false;
-		app.parseAndTranslate('partials/modals/upload_file_modal', {
+		app.parseAndTranslate('modals/upload-file', {
 			showHelp: data.hasOwnProperty('showHelp') && data.showHelp !== undefined ? data.showHelp : true,
 			fileSize: fileSize,
 			title: data.title || '[[global:upload_file]]',
@@ -72,7 +72,7 @@ define('uploader', ['jquery-form'], function () {
 			},
 			error: function (xhr) {
 				xhr = maybeParse(xhr);
-				showAlert(uploadModal, 'error', xhr.responseJSON ? (xhr.responseJSON.error || xhr.statusText) : 'error uploading, code : ' + xhr.status);
+				showAlert(uploadModal, 'error', xhr.responseJSON?.status?.message || `[[error:upload-error-fallback, ${xhr.status} ${xhr.statusText}]]`);
 			},
 			uploadProgress: function (event, position, total, percent) {
 				uploadModal.find('#upload-progress-bar').css('width', percent + '%');

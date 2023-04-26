@@ -1,5 +1,6 @@
 {
     "register": "Rexistrarse",
+    "already-have-account": "Already have an account?",
     "cancel_registration": "Cancelar rexistro",
     "help.email": "Por defecto, o teu correo electrónico está oculto ao público.",
     "help.username_restrictions": "O nome de usuario debe ter entre %1 e %2 caracteres. Os outros usuarios poden mencionarte escribindo @<span id='yourUsername'>usuario</span>.",

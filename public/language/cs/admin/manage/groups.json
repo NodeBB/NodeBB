@@ -39,6 +39,5 @@
 	"revert": "Zpět",
 
 	"edit.no-users-found": "Nenalezen žádný uživatel",
-	"edit.confirm-remove-user": "Jste si jist/a, že chcete vyřadit tohoto uživatele?",
-	"edit.save-success": "Změny byly uloženy."
+	"edit.confirm-remove-user": "Jste si jist/a, že chcete vyřadit tohoto uživatele?"
 }

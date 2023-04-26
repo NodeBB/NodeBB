@@ -8,9 +8,9 @@
 	"containers.none": "Ništa",
 	"container.well": "`",
 	"container.jumbotron": "Jumbotron",
-	"container.panel": "Ploča",
-	"container.panel-header": "Ploča zaglavlja",
-	"container.panel-body": "Tijelo ploče",
+	"container.card": "Card",
+	"container.card-header": "Card Header",
+	"container.card-body": "Card Body",
 	"container.alert": "Upozorenje",
 
 	"alert.confirm-delete": "Sigurni ste da želite obrisati ovaj widget?",

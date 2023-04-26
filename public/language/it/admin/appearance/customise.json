@@ -1,7 +1,7 @@
 {
-	"custom-css": "CSS/LESS personalizzato",
-	"custom-css.description": "Inserisci qui le tue dichiarazioni CSS /LESS, che saranno applicate dopo tutti gli altri stili.",
-	"custom-css.enable": "Abilita CSS/LESS personalizzati",
+	"custom-css": "CSS/SASS personalizzato",
+	"custom-css.description": "Inserisci qui le tue dichiarazioni CSS/SASS, che saranno applicate dopo tutti gli altri stili.",
+	"custom-css.enable": "Abilita CSS/SASS personalizzato",
 
 	"custom-js": "Javascript personalizzato",
 	"custom-js.description": "Inserisci qui il tuo javascript. Sarà eseguito dopo che la pagina è stata caricata completamente.",

@@ -39,6 +39,5 @@
 	"revert": "Povrati",
 
 	"edit.no-users-found": "Korisnik nije pronađen",
-	"edit.confirm-remove-user": "Sigurni ste da želite ukloniti ovog korisnika?",
-	"edit.save-success": "Promjene spremljene!"
+	"edit.confirm-remove-user": "Sigurni ste da želite ukloniti ovog korisnika?"
 }

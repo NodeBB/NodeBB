@@ -59,6 +59,8 @@ get:
                           type: string
                         selected:
                           type: boolean
+                        count:
+                          type: number
                   query:
                     additionalProperties:
                       description: An object containing the query string parameters, if any

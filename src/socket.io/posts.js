@@ -58,6 +58,25 @@ SocketPosts.getPostSummaryByIndex = async function (socket, data) {
 	return postsData[0];
 };
 
+SocketPosts.getPostTimestampByIndex = async function (socket, data) {
+	if (data.index < 0) {
+		data.index = 0;
+	}
+	let pid;
+	if (data.index === 0) {
+		pid = await topics.getTopicField(data.tid, 'mainPid');
+	} else {
+		pid = await db.getSortedSetRange(`tid:${data.tid}:posts`, data.index - 1, data.index - 1);
+	}
+	pid = Array.isArray(pid) ? pid[0] : pid;
+	const topicPrivileges = await privileges.topics.get(data.tid, socket.uid);
+	if (!topicPrivileges['topics:read']) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	return await posts.getPostField(pid, 'timestamp');
+};
+
 SocketPosts.getPostSummaryByPid = async function (socket, data) {
 	if (!data || !data.pid) {
 		throw new Error('[[error:invalid-data]]');
@@ -150,7 +169,13 @@ SocketPosts.notify = async function (socket, data) {
 };
 
 async function canEditQueue(socket, data, action) {
-	const canEditQueue = await posts.canEditQueue(socket.uid, data, action);
+	const [canEditQueue, queuedPost] = await Promise.all([
+		posts.canEditQueue(socket.uid, data, action),
+		posts.getFromQueue(data.id),
+	]);
+	if (!queuedPost) {
+		throw new Error('[[error:no-post]]');
+	}
 	if (!canEditQueue) {
 		throw new Error('[[error:no-privileges]]');
 	}

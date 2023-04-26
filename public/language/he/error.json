@@ -101,6 +101,7 @@
     "guest-upload-disabled": "אורחים אינם מאופשרים להעלות קבצים",
     "cors-error": "לא ניתן להעלות את התמונה עקב שגיאת CORS.",
     "upload-ratelimit-reached": "העלתם יותר מידי קבצים בפעם אחת. אנא נסו שוב במועד מאוחר יותר.",
+    "upload-error-fallback": "Unable to upload image — %1",
     "scheduling-to-past": "אנא בחרו תאריך עתידי.",
     "invalid-schedule-date": "אנא הזינו תאריך ושעה תקינים.",
     "cant-pin-scheduled": "נושא מתוזמן אינו יכול להיות (לא-) נעוץ.",
@@ -134,6 +135,8 @@
     "group-already-requested": "בקשת החברות שלכם כבר נשלחה",
     "group-join-disabled": "אינכם רשאים להצטרף לקבוצה כרגע",
     "group-leave-disabled": "אינכם רשאים לעזוב את הקבוצה כרגע",
+    "group-user-not-pending": "User does not have a pending request to join this group.",
+    "gorup-user-not-invited": "User has not been invited to join this group.",
     "post-already-deleted": "פוסט זה נמחק כבר",
     "post-already-restored": "פוסט זה כבר שוחזר",
     "topic-already-deleted": "נושא זה כבר נמחק",
@@ -224,5 +227,6 @@
     "api.429": "יותר מידי בקשות, אנא נסו שוב מאוחר יותר",
     "api.500": "שגיאה בלתי צפויה אירעה בעת ניסיון להגיש את בקשתכם.",
     "api.501": "הנתיב אליו אתם מנסים לתקשר עדיין לא מיושם, אנא נסו שוב מחר",
-    "api.503": "הנתיב אליו אתם מנסים לתקשר אינו זמין כעת עקב תצורת שרת"
+    "api.503": "הנתיב אליו אתם מנסים לתקשר אינו זמין כעת עקב תצורת שרת",
+    "api.reauth-required": "The resource you are trying to access requires (re-)authentication."
 }

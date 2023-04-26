@@ -97,6 +97,9 @@ nconf.argv(opts).env({
 	separator: '__',
 });
 
+process.env.NODE_ENV = process.env.NODE_ENV || 'production';
+global.env = process.env.NODE_ENV || 'production';
+
 prestart.setupWinston();
 
 // Alternate configuration file support

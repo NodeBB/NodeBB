@@ -1,7 +1,7 @@
 {
 	"authentication": "Xác thực",
 	"email-confirm-interval": "Người dùng không thể gửi lại email xác nhận cho đến khi",
-	"email-confirm-interval2": "minutes have elapsed",
+	"email-confirm-interval2": "phút đã trôi qua",
 	"allow-login-with": "Cho phép đăng nhập với",
 	"allow-login-with.username-email": "Tên Đăng Nhập hoặc Email",
 	"allow-login-with.username": "Chỉ Tên Đăng Nhập",
@@ -29,6 +29,8 @@
 	"session-time-days": "Ngày",
 	"session-time-seconds": "Giây",
 	"session-time-help": "Giá trị này dùng để điều chỉnh thời gian người dùng đăng nhập khi họ chọn &quot;Nhớ Tôi&quot; lúc đăng nhập. Lưu ý chỉ một trong những giá trị này sẽ được dùng. Nếu không có giá trị <i>giây</i> chúng tôi sẽ dùng <i>ngày</i>. Nếu không có <i>ngày</i> mặc định là <i>14 ngày</i>.",
+	"session-duration": "Thời lượng phiên nếu \"Ghi nhớ tôi\" không được chọn (giây)",
+	"session-duration-help": "Theo mặc định — hoặc nếu đặt thành <code>0</code> — người dùng sẽ duy trì trạng thái đăng nhập trong suốt thời gian của phiên (VD: cửa sổ/tab trình duyệt vẫn mở trong bao lâu). Đặt giá trị này để vô hiệu hóa rõ ràng phiên sau số giây đã chỉ định.",
 	"online-cutoff": "Số phút sau khi người dùng được coi là không hoạt động",
 	"online-cutoff-help": "Nếu người dùng không thao tác trong khoảng thời gian này, được coi là không hoạt động và không nhận được cập nhật theo thời gian thực.",
 	"registration": "Đăng Ký Người Dùng",

@@ -101,6 +101,7 @@
     "guest-upload-disabled": "비회원의 파일 업로드는 제한되어 있습니다.",
     "cors-error": "잘못 구성된 CORS로 인해 이미지를 업로드 할 수 없습니다.",
     "upload-ratelimit-reached": "한 번에 너무 많은 파일을 업로드하셨습니다. 나중에 다시 시도해주세요.",
+    "upload-error-fallback": "Unable to upload image — %1",
     "scheduling-to-past": "내일 이후의 날짜를 선택해주세요.",
     "invalid-schedule-date": "적합한 형식의 날짜와 시간을 입력해주세요.",
     "cant-pin-scheduled": "예약된 화제는 상단에 고정(해제)할 수 없습니다.",
@@ -134,6 +135,8 @@
     "group-already-requested": "가입 요청이 이미 제출되었습니다.",
     "group-join-disabled": "현재 이 그룹에 가입할 수 없습니다.",
     "group-leave-disabled": "현재 이 그룹을 떠날 수 없습니다.",
+    "group-user-not-pending": "User does not have a pending request to join this group.",
+    "gorup-user-not-invited": "User has not been invited to join this group.",
     "post-already-deleted": "이미 삭제된 포스트입니다.",
     "post-already-restored": "이미 복원된 포스트입니다.",
     "topic-already-deleted": "이미 삭제된 화제입니다.",
@@ -224,5 +227,6 @@
     "api.429": "요청이 너무 많습니다. 나중에 다시 시도하십시오.",
     "api.500": "요청을 처리하는 동안 예기치 않은 오류가 발생했습니다.",
     "api.501": "호출하려는 경로가 아직 구현되지 않았습니다. 내일 다시 시도하십시오.",
-    "api.503": "서버 구성으로 인해 호출하려는 경로를 현재 사용할 수 없습니다."
+    "api.503": "서버 구성으로 인해 호출하려는 경로를 현재 사용할 수 없습니다.",
+    "api.reauth-required": "The resource you are trying to access requires (re-)authentication."
 }

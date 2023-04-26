@@ -39,6 +39,5 @@
 	"revert": "Cofnij",
 
 	"edit.no-users-found": "Nie znaleziono użytkowników",
-	"edit.confirm-remove-user": "Jesteś pewny, że chcesz usunąć tego użytkownika?",
-	"edit.save-success": "Zmiany zapisane!"
+	"edit.confirm-remove-user": "Jesteś pewny, że chcesz usunąć tego użytkownika?"
 }

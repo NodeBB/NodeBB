@@ -1,5 +1,7 @@
 {
+    "all-tags": "All tags",
     "no_tag_topics": "Temų su šią žyma nėra.",
+    "no-tags-found": "No tags found",
     "tags": "Žymos",
     "enter_tags_here": "Įveskite žymas čia, tarp %1 ir %2 simbolių kiekvienam",
     "enter_tags_here_short": "Įveskite žymas...",

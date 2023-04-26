@@ -101,6 +101,7 @@
     "guest-upload-disabled": "Przesyłanie plików przez gości zostało wyłączone",
     "cors-error": "Nie można przesłać obrazu z powodu źle skonfigurowanego CORS",
     "upload-ratelimit-reached": "You have uploaded too many files at one time. Please try again later.",
+    "upload-error-fallback": "Unable to upload image — %1",
     "scheduling-to-past": "Please select a date in the future.",
     "invalid-schedule-date": "Please enter a valid date and time.",
     "cant-pin-scheduled": "Scheduled topics cannot be (un)pinned.",
@@ -134,6 +135,8 @@
     "group-already-requested": "Twoje podanie o członkostwo zostało już wysłane",
     "group-join-disabled": "Nie możesz teraz dołączyć do tej grupy",
     "group-leave-disabled": "Obecnie nie możesz opuścić tej grupy",
+    "group-user-not-pending": "User does not have a pending request to join this group.",
+    "gorup-user-not-invited": "User has not been invited to join this group.",
     "post-already-deleted": "Ten post został już skasowany",
     "post-already-restored": "Ten post został już przywrócony",
     "topic-already-deleted": "Ten temat został już skasowany",
@@ -224,5 +227,6 @@
     "api.429": "Został przekroczony limit żądań, proszę spróbuj ponownie później",
     "api.500": "Wystąpił nieoczekiwany błąd podczas próby obsługi Twojego żądania.",
     "api.501": "The route you are trying to call is not implemented yet, please try again tomorrow",
-    "api.503": "Ścieżka z którą próbujesz się połączyć, jest obecnie niedostępna z powodu konfiguracji serwera"
+    "api.503": "Ścieżka z którą próbujesz się połączyć, jest obecnie niedostępna z powodu konfiguracji serwera",
+    "api.reauth-required": "The resource you are trying to access requires (re-)authentication."
 }

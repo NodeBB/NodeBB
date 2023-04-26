@@ -8,9 +8,9 @@
 	"containers.none": "Żadna",
 	"container.well": "Well",
 	"container.jumbotron": "Jumbotron",
-	"container.panel": "Panel",
-	"container.panel-header": "Nagłówek panelu",
-	"container.panel-body": "Zawartość panelu",
+	"container.card": "Karta",
+	"container.card-header": "Nagłówek karty",
+	"container.card-body": "Treść karty",
 	"container.alert": "Alarm",
 
 	"alert.confirm-delete": "Czy na pewno chcesz usunąć ten widget?",

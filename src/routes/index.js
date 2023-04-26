@@ -4,7 +4,6 @@ const nconf = require('nconf');
 const winston = require('winston');
 const path = require('path');
 const express = require('express');
-const chalk = require('chalk');
 
 const meta = require('../meta');
 const controllers = require('../controllers');
@@ -75,14 +74,15 @@ _mounts.tags = (app, name, middleware, controllers) => {
 	setupPageRoute(app, `/${name}/:tag`, [middleware.privateTagListing], controllers.tags.getTag);
 	setupPageRoute(app, `/${name}`, [middleware.privateTagListing], controllers.tags.getTags);
 };
-
-_mounts.category = (app, name, middleware, controllers) => {
+_mounts.categories = (app, name, middleware, controllers) => {
 	setupPageRoute(app, '/categories', [], controllers.categories.list);
 	setupPageRoute(app, '/popular', [], controllers.popular.get);
 	setupPageRoute(app, '/recent', [], controllers.recent.get);
 	setupPageRoute(app, '/top', [], controllers.top.get);
 	setupPageRoute(app, '/unread', [middleware.ensureLoggedIn], controllers.unread.get);
+};
 
+_mounts.category = (app, name, middleware, controllers) => {
 	setupPageRoute(app, `/${name}/:category_id/:slug/:topic_index`, [], controllers.category.get);
 	setupPageRoute(app, `/${name}/:category_id/:slug?`, [], controllers.category.get);
 };
@@ -108,7 +108,7 @@ module.exports = async function (app, middleware) {
 	};
 
 	// Allow plugins/themes to mount some routes elsewhere
-	const remountable = ['admin', 'category', 'topic', 'post', 'users', 'user', 'groups', 'tags'];
+	const remountable = ['admin', 'categories', 'category', 'topic', 'post', 'users', 'user', 'groups', 'tags'];
 	const { mounts } = await plugins.hooks.fire('filter:router.add', {
 		mounts: remountable.reduce((memo, mount) => {
 			memo[mount] = mount;
@@ -188,13 +188,13 @@ function addCoreRoutes(app, router, middleware, mounts) {
 		res.redirect(`${relativePath}/assets/uploads${req.path}?${meta.config['cache-buster']}`);
 	});
 	app.use(`${relativePath}/plugins`, (req, res) => {
-		winston.warn(`${chalk.bold.red('[deprecation]')} The \`/plugins\` shorthand prefix is deprecated, prefix with \`/assets/plugins\` instead (path: ${req.path})`);
 		res.redirect(`${relativePath}/assets/plugins${req.path}${req._parsedUrl.search || ''}`);
 	});
 
 	// Skins
 	meta.css.supportedSkins.forEach((skin) => {
 		app.use(`${relativePath}/assets/client-${skin}.css`, middleware.buildSkinAsset);
+		app.use(`${relativePath}/assets/client-${skin}-rtl.css`, middleware.buildSkinAsset);
 	});
 
 	app.use(controllers['404'].handle404);

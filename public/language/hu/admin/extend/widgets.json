@@ -8,9 +8,9 @@
 	"containers.none": "Nincs",
 	"container.well": "Well",
 	"container.jumbotron": "Jumbotron",
-	"container.panel": "Panel",
-	"container.panel-header": "Panel fejléc",
-	"container.panel-body": "Panel test",
+	"container.card": "Kártya",
+	"container.card-header": "Card Header",
+	"container.card-body": "Card Body",
 	"container.alert": "Riasztás",
 
 	"alert.confirm-delete": "Biztosan szeretnéd törölni ezt a modult?",

@@ -11,6 +11,9 @@
 	"uid": "User ID",
 	"uid-help-text": "이 토큰과 연결할 User ID를 지정하세요. User ID가 <code>0</code>일 경우 <em>master</em> 토큰으로 간주되어 다른 사용자의 정보를 <code>_uid</code> 패러미터를 통해 알 수 있게 됩니다.",
 	"description": "설명",
+	"last-seen-ago": "Last used <span class=\"timeago\" title=\"%1\"></span>.",
+	"last-seen-on": "Last used on <span class=\"timeago\" title=\"%1\"></span>.",
+	"last-seen-never": "This key has never been used.",
 	"no-description": "설명 없음",
 	"token-on-save": "현재 설정 저장 후 토큰 생성"
 }

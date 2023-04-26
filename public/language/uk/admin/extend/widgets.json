@@ -8,9 +8,9 @@
 	"containers.none": "Ніякий",
 	"container.well": "Криниця",
 	"container.jumbotron": "Екран",
-	"container.panel": "Панель",
-	"container.panel-header": "Заголовок панелі",
-	"container.panel-body": "Тіло панелі",
+	"container.card": "Card",
+	"container.card-header": "Card Header",
+	"container.card-body": "Card Body",
 	"container.alert": "Тривога",
 
 	"alert.confirm-delete": "Ви впевнені, що бажаєте видалити цей віджет?",

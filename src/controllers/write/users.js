@@ -1,35 +1,15 @@
 'use strict';
 
-const util = require('util');
 const nconf = require('nconf');
 const path = require('path');
 const crypto = require('crypto');
-const fs = require('fs').promises;
 
-const db = require('../../database');
 const api = require('../../api');
-const groups = require('../../groups');
-const meta = require('../../meta');
-const privileges = require('../../privileges');
 const user = require('../../user');
-const utils = require('../../utils');
 
 const helpers = require('../helpers');
 
 const Users = module.exports;
-
-const exportMetadata = new Map([
-	['posts', ['csv', 'text/csv']],
-	['uploads', ['zip', 'application/zip']],
-	['profile', ['json', 'application/json']],
-]);
-
-const hasAdminPrivilege = async (uid, privilege) => {
-	const ok = await privileges.admin.can(`admin:${privilege}`, uid);
-	if (!ok) {
-		throw new Error('[[error:no-privileges]]');
-	}
-};
 
 Users.redirectBySlug = async (req, res) => {
 	const uid = await user.getUidByUserslug(req.params.userslug);
@@ -44,7 +24,6 @@ Users.redirectBySlug = async (req, res) => {
 };
 
 Users.create = async (req, res) => {
-	await hasAdminPrivilege(req.uid, 'users');
 	const userObj = await api.users.create(req, req.body);
 	helpers.formatApiResponse(200, res, userObj);
 };
@@ -54,9 +33,7 @@ Users.exists = async (req, res) => {
 };
 
 Users.get = async (req, res) => {
-	const userData = await user.getUserData(req.params.uid);
-	const publicUserData = await user.hidePrivateData(userData, req.uid);
-	helpers.formatApiResponse(200, res, publicUserData);
+	helpers.formatApiResponse(200, res, await api.users.get(req, { ...req.params }));
 };
 
 Users.update = async (req, res) => {
@@ -80,7 +57,6 @@ Users.deleteAccount = async (req, res) => {
 };
 
 Users.deleteMany = async (req, res) => {
-	await hasAdminPrivilege(req.uid, 'users');
 	await api.users.deleteMany(req, req.body);
 	helpers.formatApiResponse(200, res);
 };
@@ -131,137 +107,50 @@ Users.unmute = async (req, res) => {
 };
 
 Users.generateToken = async (req, res) => {
-	await hasAdminPrivilege(req.uid, 'settings');
-	if (parseInt(req.params.uid, 10) !== parseInt(req.user.uid, 10)) {
-		return helpers.formatApiResponse(401, res);
-	}
-
-	const settings = await meta.settings.get('core.api');
-	settings.tokens = settings.tokens || [];
-
-	const newToken = {
-		token: utils.generateUUID(),
-		uid: req.user.uid,
-		description: req.body.description || '',
-		timestamp: Date.now(),
-	};
-	settings.tokens.push(newToken);
-	await meta.settings.set('core.api', settings);
-	helpers.formatApiResponse(200, res, newToken);
+	const { description } = req.body;
+	const token = await api.users.generateToken(req, { description, ...req.params });
+	helpers.formatApiResponse(200, res, token);
 };
 
 Users.deleteToken = async (req, res) => {
-	await hasAdminPrivilege(req.uid, 'settings');
-	if (parseInt(req.params.uid, 10) !== parseInt(req.user.uid, 10)) {
-		return helpers.formatApiResponse(401, res);
-	}
-
-	const settings = await meta.settings.get('core.api');
-	const beforeLen = settings.tokens.length;
-	settings.tokens = settings.tokens.filter(tokenObj => tokenObj.token !== req.params.token);
-	if (beforeLen !== settings.tokens.length) {
-		await meta.settings.set('core.api', settings);
-		helpers.formatApiResponse(200, res);
-	} else {
-		helpers.formatApiResponse(404, res);
-	}
+	const ok = await api.users.deleteToken(req, { ...req.params });
+	helpers.formatApiResponse(ok ? 200 : 404, res);
 };
 
-const getSessionAsync = util.promisify((sid, callback) => {
-	db.sessionStore.get(sid, (err, sessionObj) => callback(err, sessionObj || null));
-});
-
 Users.revokeSession = async (req, res) => {
-	// Only admins or global mods (besides the user themselves) can revoke sessions
-	if (parseInt(req.params.uid, 10) !== req.uid && !await user.isAdminOrGlobalMod(req.uid)) {
-		return helpers.formatApiResponse(404, res);
-	}
-
-	const sids = await db.getSortedSetRange(`uid:${req.params.uid}:sessions`, 0, -1);
-	let _id;
-	for (const sid of sids) {
-		/* eslint-disable no-await-in-loop */
-		const sessionObj = await getSessionAsync(sid);
-		if (sessionObj && sessionObj.meta && sessionObj.meta.uuid === req.params.uuid) {
-			_id = sid;
-			break;
-		}
-	}
-
-	if (!_id) {
-		throw new Error('[[error:no-session-found]]');
-	}
-
-	await user.auth.revokeSession(_id, req.params.uid);
+	await api.users.revokeSession(req, { ...req.params });
 	helpers.formatApiResponse(200, res);
 };
 
 Users.invite = async (req, res) => {
 	const { emails, groupsToJoin = [] } = req.body;
 
-	if (!emails || !Array.isArray(groupsToJoin)) {
-		return helpers.formatApiResponse(400, res, new Error('[[error:invalid-data]]'));
-	}
-
-	// For simplicity, this API route is restricted to self-use only. This can change if needed.
-	if (parseInt(req.user.uid, 10) !== parseInt(req.params.uid, 10)) {
-		return helpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
-	}
-
-	const canInvite = await privileges.users.hasInvitePrivilege(req.uid);
-	if (!canInvite) {
-		return helpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
-	}
-
-	const { registrationType } = meta.config;
-	const isAdmin = await user.isAdministrator(req.uid);
-	if (registrationType === 'admin-invite-only' && !isAdmin) {
-		return helpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
-	}
-
-	const inviteGroups = (await groups.getUserInviteGroups(req.uid)).map(group => group.name);
-	const cannotInvite = groupsToJoin.some(group => !inviteGroups.includes(group));
-	if (groupsToJoin.length > 0 && cannotInvite) {
-		return helpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
-	}
-
-	const max = meta.config.maximumInvites;
-	const emailsArr = emails.split(',').map(email => email.trim()).filter(Boolean);
-
-	for (const email of emailsArr) {
-		/* eslint-disable no-await-in-loop */
-		let invites = 0;
-		if (max) {
-			invites = await user.getInvitesNumber(req.uid);
-		}
-		if (!isAdmin && max && invites >= max) {
-			return helpers.formatApiResponse(403, res, new Error(`[[error:invite-maximum-met, ${invites}, ${max}]]`));
+	try {
+		await api.users.invite(req, { emails, groupsToJoin, ...req.params });
+		helpers.formatApiResponse(200, res);
+	} catch (e) {
+		if (e.message.startsWith('[[error:invite-maximum-met')) {
+			return helpers.formatApiResponse(403, res, e);
 		}
 
-		await user.sendInvitationEmail(req.uid, email, groupsToJoin);
+		throw e;
 	}
-
-	return helpers.formatApiResponse(200, res);
 };
 
 Users.getInviteGroups = async function (req, res) {
-	if (parseInt(req.params.uid, 10) !== parseInt(req.user.uid, 10)) {
-		return helpers.formatApiResponse(401, res);
-	}
+	return helpers.formatApiResponse(200, res, await api.users.getInviteGroups(req, { ...req.params }));
+};
 
-	const userInviteGroups = await groups.getUserInviteGroups(req.params.uid);
-	return helpers.formatApiResponse(200, res, userInviteGroups.map(group => group.displayName));
+Users.addEmail = async (req, res) => {
+	const { email, skipConfirmation } = req.body;
+	const emails = await api.users.addEmail(req, { email, skipConfirmation, ...req.params });
+
+	helpers.formatApiResponse(200, res, { emails });
 };
 
 Users.listEmails = async (req, res) => {
-	const [isPrivileged, { showemail }] = await Promise.all([
-		user.isPrivileged(req.uid),
-		user.getSettings(req.params.uid),
-	]);
-	const isSelf = req.uid === parseInt(req.params.uid, 10);
-
-	if (isSelf || isPrivileged || showemail) {
-		const emails = await db.getSortedSetRangeByScore('email:uid', 0, 500, req.params.uid, req.params.uid);
+	const emails = await api.users.listEmails(req, { ...req.params });
+	if (emails) {
 		helpers.formatApiResponse(200, res, { emails });
 	} else {
 		helpers.formatApiResponse(204, res);
@@ -269,79 +158,38 @@ Users.listEmails = async (req, res) => {
 };
 
 Users.getEmail = async (req, res) => {
-	const [isPrivileged, { showemail }, exists] = await Promise.all([
-		user.isPrivileged(req.uid),
-		user.getSettings(req.params.uid),
-		db.isSortedSetMember('email:uid', req.params.email.toLowerCase()),
-	]);
-	const isSelf = req.uid === parseInt(req.params.uid, 10);
-
-	if (exists && (isSelf || isPrivileged || showemail)) {
-		helpers.formatApiResponse(204, res);
-	} else {
-		helpers.formatApiResponse(404, res);
-	}
+	const ok = await api.users.getEmail(req, { ...req.params });
+	helpers.formatApiResponse(ok ? 204 : 404, res);
 };
 
 Users.confirmEmail = async (req, res) => {
-	const [pending, current, canManage] = await Promise.all([
-		user.email.isValidationPending(req.params.uid, req.params.email),
-		user.getUserField(req.params.uid, 'email'),
-		privileges.admin.can('admin:users', req.uid),
-	]);
-
-	if (!canManage) {
-		return helpers.notAllowed(req, res);
-	}
-
-	if (pending) { // has active confirmation request
-		const code = await db.get(`confirm:byUid:${req.params.uid}`);
-		await user.email.confirmByCode(code, req.session.id);
-		helpers.formatApiResponse(200, res);
-	} else if (current && current === req.params.email) { // email in user hash (i.e. email passed into user.create)
-		await user.email.confirmByUid(req.params.uid);
-		helpers.formatApiResponse(200, res);
-	} else {
-		helpers.formatApiResponse(404, res);
-	}
-};
-
-const prepareExport = async (req, res) => {
-	const [extension] = exportMetadata.get(req.params.type);
-	const filename = `${req.params.uid}_${req.params.type}.${extension}`;
-	try {
-		const stat = await fs.stat(path.join(__dirname, '../../../build/export', filename));
-		const modified = new Date(stat.mtimeMs);
-		res.set('Last-Modified', modified.toUTCString());
-		res.set('ETag', `"${crypto.createHash('md5').update(String(stat.mtimeMs)).digest('hex')}"`);
-		res.status(204);
-		return true;
-	} catch (e) {
-		res.status(404);
-		return false;
-	}
+	const ok = await api.users.confirmEmail(req, {
+		sessionId: req.session.id,
+		...req.params,
+	});
+	helpers.formatApiResponse(ok ? 200 : 404, res);
 };
 
 Users.checkExportByType = async (req, res) => {
-	await prepareExport(req, res);
-	res.end();
+	const stat = await api.users.checkExportByType(req, { ...req.params });
+	const modified = new Date(stat.mtimeMs);
+	res.set('Last-Modified', modified.toUTCString());
+	res.set('ETag', `"${crypto.createHash('md5').update(String(stat.mtimeMs)).digest('hex')}"`);
+	res.sendStatus(204);
 };
 
-Users.getExportByType = async (req, res) => {
-	const [extension, mime] = exportMetadata.get(req.params.type);
-	const filename = `${req.params.uid}_${req.params.type}.${extension}`;
-
-	const exists = await prepareExport(req, res);
-	if (!exists) {
-		return res.end();
+Users.getExportByType = async (req, res, next) => {
+	const data = await api.users.getExportByType(req, ({ ...req.params }));
+	if (!data) {
+		return next();
 	}
 
 	res.status(200);
-	res.sendFile(filename, {
+	res.sendFile(data.filename, {
 		root: path.join(__dirname, '../../../build/export'),
 		headers: {
-			'Content-Type': mime,
-			'Content-Disposition': `attachment; filename=${filename}`,
+			'Content-Type': data.mime,
+			'Content-Disposition': `attachment; filename=${data.filename}`,
 		},
 	}, (err) => {
 		if (err) {

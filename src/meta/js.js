@@ -2,11 +2,7 @@
 
 const path = require('path');
 const fs = require('fs');
-const util = require('util');
-const mkdirp = require('mkdirp');
-const rimraf = require('rimraf');
-
-const rimrafAsync = util.promisify(rimraf);
+const { mkdirp } = require('mkdirp');
 
 const file = require('../file');
 const plugins = require('../plugins');
@@ -69,7 +65,7 @@ async function clearModules() {
 		p => path.join(__dirname, '../../build/public/src', p)
 	);
 	await Promise.all(
-		builtPaths.map(builtPath => rimrafAsync(builtPath))
+		builtPaths.map(builtPath => fs.promises.rm(builtPath, { recursive: true, force: true }))
 	);
 }
 
@@ -86,8 +82,7 @@ JS.buildModules = async function () {
 };
 
 JS.linkStatics = async function () {
-	await rimrafAsync(path.join(__dirname, '../../build/public/plugins'));
-
+	await fs.promises.rm(path.join(__dirname, '../../build/public/plugins'), { recursive: true, force: true });
 	await Promise.all(Object.keys(plugins.staticDirs).map(async (mappedPath) => {
 		const sourceDir = plugins.staticDirs[mappedPath];
 		const destDir = path.join(__dirname, '../../build/public/plugins', mappedPath);
@@ -131,14 +126,13 @@ async function getBundleScriptList(target) {
 JS.buildBundle = async function (target, fork) {
 	const filename = `scripts-${target}.js`;
 	const files = await getBundleScriptList(target);
-	const minify = false; // webpack will minify in prod
 	const filePath = path.join(__dirname, '../../build/public', filename);
 
 	await minifier.js.bundle({
 		files: files,
 		filename: filename,
 		destPath: filePath,
-	}, minify, fork);
+	}, fork);
 };
 
 JS.killMinifier = function () {

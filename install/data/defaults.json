@@ -4,6 +4,7 @@
     "defaultLang": "en-GB",
     "loginDays": 14,
     "loginSeconds": 0,
+    "sessionDuration": 0,
     "loginAttempts": 5,
     "lockoutDuration": 60,
     "adminReloginDuration": 60,
@@ -15,7 +16,7 @@
     "postDeleteDuration": 0,
     "enablePostHistory": 1,
     "topicBacklinks": 1,
-    "postCacheSize": 10485760,
+    "postCacheSize": 20971520,
     "disableChat": 0,
     "chatEditDuration": 0,
     "chatDeleteDuration": 0,
@@ -181,5 +182,6 @@
     "composer:showHelpTab": 1,
     "composer:allowPluginHelp": 1,
     "maxReconnectionAttempts": 5,
-    "reconnectionDelay": 1500
+    "reconnectionDelay": 1500,
+    "disableCustomUserSkins": 0
 }

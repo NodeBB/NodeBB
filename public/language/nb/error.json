@@ -101,6 +101,7 @@
     "guest-upload-disabled": "Gjester har ikke tilgang til å laste opp filer",
     "cors-error": "Kunne ikke laste opp bilde på grunn av feilinstillt CORS",
     "upload-ratelimit-reached": "Du har lastet opp for mange filer samtidig. Vennligst prøv igjen senere.",
+    "upload-error-fallback": "Unable to upload image — %1",
     "scheduling-to-past": "Vennligst velg en dato i fremtiden.",
     "invalid-schedule-date": "Vennligst skriv inn en gyldig dato og tidspunkt.",
     "cant-pin-scheduled": "Planlagte tråder kan ikke bli (u)festet.",
@@ -134,6 +135,8 @@
     "group-already-requested": "Forespørsel om medlemskap er allerede innsendt",
     "group-join-disabled": "Du kan ikke bli med i denne gruppen på dette tidspunktet",
     "group-leave-disabled": "Du kan ikke forlate denne gruppen på dette tidspunktet",
+    "group-user-not-pending": "User does not have a pending request to join this group.",
+    "gorup-user-not-invited": "User has not been invited to join this group.",
     "post-already-deleted": "Dette innlegget har blitt slettet",
     "post-already-restored": "Dette innlegget har allerede blitt gjenopprettet",
     "topic-already-deleted": "Dette emnet har allerede blitt slettet",
@@ -224,5 +227,6 @@
     "api.429": "Du har gjort for mange forespørsler. Prøv igjen senere.",
     "api.500": "En uventet feil oppstod mens vi prøvde å betjene forespørsel din.",
     "api.501": "Ruten du prøver å kalle er ikke implementert enda. Prøv igjen i morgen",
-    "api.503": "Ruten du prøver å kalle er for øyeblikket ikke tilgjengelig grunnet innstilling på serveren"
+    "api.503": "Ruten du prøver å kalle er for øyeblikket ikke tilgjengelig grunnet innstilling på serveren",
+    "api.reauth-required": "The resource you are trying to access requires (re-)authentication."
 }

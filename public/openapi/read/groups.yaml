@@ -101,6 +101,8 @@ get:
                           type: boolean
                   allowGroupCreation:
                     type: boolean
+                  sort:
+                    type: string
                   nextStart:
                     type: number
                   title:

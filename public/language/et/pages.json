@@ -49,6 +49,7 @@
     "account/watched_categories": "%1's Watched Categories",
     "account/bookmarks": "%1's Bookmarked Posts",
     "account/settings": "Kasutaja sätted",
+    "account/settings-of": "Changing settings of %1",
     "account/watched": "Teemasid jälgib %1 kasutajat",
     "account/ignored": "Topics ignored by %1",
     "account/upvoted": "Postitused %1 poolt heaks kiidetud",

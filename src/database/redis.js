@@ -2,7 +2,6 @@
 
 const nconf = require('nconf');
 const semver = require('semver');
-const session = require('express-session');
 
 const connection = require('./redis/connection');
 
@@ -40,7 +39,7 @@ redisModule.init = async function () {
 
 redisModule.createSessionStore = async function (options) {
 	const meta = require('../meta');
-	const sessionStore = require('connect-redis')(session);
+	const sessionStore = require('connect-redis').default;
 	const client = await connection.connect(options);
 	const store = new sessionStore({
 		client: client,

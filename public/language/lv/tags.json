@@ -1,5 +1,7 @@
 {
+    "all-tags": "All tags",
     "no_tag_topics": "Nav neviena temata ar šo birku",
+    "no-tags-found": "No tags found",
     "tags": "Birkas",
     "enter_tags_here": "Ievadīt birkas, katrai starp %1 un %2 rakstzīmēm",
     "enter_tags_here_short": "Ievadīt birkas...",

@@ -101,6 +101,7 @@
     "guest-upload-disabled": "Nahrávání od hostů nebylo povoleno",
     "cors-error": "Není možné nahrát obrázek díky špatně nakonfigurovanému „Cross-Origin Resource Sharing (CORS)”",
     "upload-ratelimit-reached": "You have uploaded too many files at one time. Please try again later.",
+    "upload-error-fallback": "Unable to upload image — %1",
     "scheduling-to-past": "Please select a date in the future.",
     "invalid-schedule-date": "Please enter a valid date and time.",
     "cant-pin-scheduled": "Scheduled topics cannot be (un)pinned.",
@@ -134,6 +135,8 @@
     "group-already-requested": "Váš požadavek o členství již byl odeslán",
     "group-join-disabled": "V tuto chvíli se nemůžete připojit k této skupině",
     "group-leave-disabled": "V tuto chvíli nemůžete opustit tuto skupinu",
+    "group-user-not-pending": "User does not have a pending request to join this group.",
+    "gorup-user-not-invited": "User has not been invited to join this group.",
     "post-already-deleted": "Tento příspěvek byl již odstraněn",
     "post-already-restored": "Tento příspěvek byl již obnoven",
     "topic-already-deleted": "Toto téma bylo již odstraněno",
@@ -224,5 +227,6 @@
     "api.429": "You have made too many requests, please try again later",
     "api.500": "An unexpected error was encountered while attempting to service your request.",
     "api.501": "The route you are trying to call is not implemented yet, please try again tomorrow",
-    "api.503": "The route you are trying to call is not currently available due to a server configuration"
+    "api.503": "The route you are trying to call is not currently available due to a server configuration",
+    "api.reauth-required": "The resource you are trying to access requires (re-)authentication."
 }

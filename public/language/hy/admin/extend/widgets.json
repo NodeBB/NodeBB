@@ -8,9 +8,9 @@
 	"containers.none": "None",
 	"container.well": "Well",
 	"container.jumbotron": "Jumbotron",
-	"container.panel": "Panel",
-	"container.panel-header": "Panel-ի վերնագիր",
-	"container.panel-body": "Panel Body",
+	"container.card": "Card",
+	"container.card-header": "Card Header",
+	"container.card-body": "Card Body",
 	"container.alert": "Զգուշացում",
 
 	"alert.confirm-delete": "Վստա՞հ եք, որ ցանկանում եք ջնջել այս վիջեթը:",

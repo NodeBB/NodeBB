@@ -78,6 +78,7 @@ module.exports = function (User) {
 		const email = await db.getObjectField(`invitation:token:${token}`, 'email');
 		// "Confirm" user's email if registration completed with invited address
 		if (email && email === enteredEmail) {
+			await User.setUserField(uid, 'email', email);
 			await User.email.confirmByUid(uid);
 		}
 	};

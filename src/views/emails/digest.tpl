@@ -17,20 +17,20 @@
 						<h1 style="margin: 0 0 10px 0; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 18px; line-height: 21px; color: #aaaaaa; font-weight: normal;">[[email:digest.title.{interval}]]</h1>
 					</td>
 				</tr>
-				<!-- IF notifications.length -->
+				{{{ if notifications.length }}}
 				<tr>
 					<td style="padding: 0px 40px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 15px; line-height: 20px; color: #555555;">
 						<ul style="margin: 0; padding: 0;">
-							<!-- BEGIN notifications -->
+							{{{ each notifications }}}
 							<li style="text-decoration: none; list-style-type: none; padding-bottom: 0.5em;">
 								<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
 									<tr>
 										<td style="padding: 16px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; width: 32px;">
-											<!-- IF notifications.image -->
+											{{{ if notifications.image }}}
 											<img style="vertical-align: middle; width: 32px; height: 32px; border-radius: 50%" src="{notifications.image}" alt="" />
-											<!-- ELSE -->
+											{{{ else }}}
 											<div style="vertical-align: middle; width: 32px; height: 32px; line-height: 32px; font-size: 16px; background-color: {notifications.user.icon:bgColor}; color: white; text-align: center; display: inline-block; border-radius: 50%">{notifications.user.icon:text}</div>
-											<!-- ENDIF notifications.image -->
+											{{{ end }}}
 										</td>
 										<td style="padding: 16px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; line-height: 16px; color: #333333;">
 											<p style="margin: 0;"><a style="text-decoration:none !important; text-decoration:none; color: #333333;" href="{notifications.notification_url}">{notifications.bodyShort}</a></p>
@@ -38,17 +38,17 @@
 									</tr>
 								</table>
 							</li>
-							<!-- END notifications -->
+							{{{ end }}}
 						</ul>
 					</td>
 				</tr>
-				<!-- ENDIF notifications.length -->
-				<!-- IF topTopics.length -->
+				{{{ end }}}
+				{{{ if topTopics.length }}}
 				<tr>
 					<td style="padding: 0px 40px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 15px; line-height: 20px; color: #555555;">
 						<h1 style="margin: 16px 0 24px 0; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 18px; line-height: 21px; color: #aaaaaa; font-weight: normal;">[[email:digest.top-topics, {site_title}]]</h1>
 						<ul style="margin: 0; padding: 0;">
-							<!-- BEGIN topTopics -->
+							{{{ each topTopics }}}
 							<li style="text-decoration: none; list-style-type: none; padding-bottom: 0.5em;">
 								<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
 									<tr>
@@ -70,20 +70,20 @@
 									</tr>
 								</table>
 							</li>
-							<!-- IF !@last -->
+							{{{ if !@last }}}
 							<li style="text-decoration: none; list-style-type: none; margin: 0px 64px 16px 64px; border-bottom: 1px solid #dddddd"></li>
-							<!-- END -->
-							<!-- END -->
+							{{{ end }}}
+							{{{ end }}}
 						</ul>
 					</td>
 				</tr>
-				<!-- END -->
-				<!-- IF popularTopics.length -->
+				{{{ end }}}
+				{{{ if popularTopics.length }}}
 				<tr>
 					<td style="padding: 0px 40px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 15px; line-height: 20px; color: #555555;">
 						<h1 style="margin: 16px 0 24px 0; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 18px; line-height: 21px; color: #aaaaaa; font-weight: normal;">[[email:digest.popular-topics, {site_title}]]</h1>
 						<ul style="margin: 0; padding: 0;">
-							<!-- BEGIN popularTopics -->
+							{{{ each popularTopics }}}
 							<li style="text-decoration: none; list-style-type: none; padding-bottom: 0.5em;">
 								<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
 									<tr>
@@ -105,20 +105,20 @@
 									</tr>
 								</table>
 							</li>
-							<!-- IF !@last -->
+							{{{ if !@last }}}
 							<li style="text-decoration: none; list-style-type: none; margin: 0px 64px 16px 64px; border-bottom: 1px solid #dddddd"></li>
-							<!-- END -->
-							<!-- END -->
+							{{{ end }}}
+							{{{ end }}}
 						</ul>
 					</td>
 				</tr>
-				<!-- END -->
-				<!-- IF recent.length -->
+				{{{ end }}}
+				{{{ if recent.length }}}
 				<tr>
 					<td style="padding: 0px 40px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 15px; line-height: 20px; color: #555555;">
 						<h1 style="margin: 16px 0 24px 0; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 18px; line-height: 21px; color: #aaaaaa; font-weight: normal;">[[email:digest.latest_topics, {site_title}]]</h1>
 						<ul style="margin: 0; padding: 0;">
-							<!-- BEGIN recent -->
+							{{{ each recent }}}
 							<li style="text-decoration: none; list-style-type: none; padding-bottom: 0.5em;">
 								<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
 									<tr>
@@ -140,14 +140,14 @@
 									</tr>
 								</table>
 							</li>
-							<!-- IF !@last -->
+							{{{ if !@last }}}
 							<li style="text-decoration: none; list-style-type: none; margin: 0px 64px 16px 64px; border-bottom: 1px solid #dddddd"></li>
-							<!-- END -->
-							<!-- END -->
+							{{{ end }}}
+							{{{ end }}}
 						</ul>
 					</td>
 				</tr>
-				<!-- END -->
+				{{{ end }}}
 				<tr>
 					<td style="padding: 32px 40px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 15px; line-height: 20px; color: #555555;">
 						<!-- Button : BEGIN -->

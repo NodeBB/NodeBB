@@ -193,11 +193,7 @@ Controllers.registerInterstitial = async function (req, res, next) {
 		return res.redirect(`${nconf.get('relative_path')}/register`);
 	}
 	try {
-		const data = await plugins.hooks.fire('filter:register.interstitial', {
-			req,
-			userData: req.session.registration,
-			interstitials: [],
-		});
+		const data = await user.interstitials.get(req, req.session.registration);
 
 		if (!data.interstitials.length) {
 			// No interstitials, redirect to home

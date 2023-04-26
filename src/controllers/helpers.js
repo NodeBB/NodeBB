@@ -356,6 +356,24 @@ helpers.getSelectedCategory = async function (cids) {
 	};
 };
 
+helpers.getSelectedTag = function (tags) {
+	if (tags && !Array.isArray(tags)) {
+		tags = [tags];
+	}
+	tags = tags || [];
+	const tagData = tags.map(t => validator.escape(String(t)));
+	let selectedTag = null;
+	if (tagData.length) {
+		selectedTag = {
+			label: tagData.join(', '),
+		};
+	}
+	return {
+		selectedTags: tagData,
+		selectedTag: selectedTag,
+	};
+};
+
 helpers.trimChildren = function (category) {
 	if (category && Array.isArray(category.children)) {
 		category.children = category.children.slice(0, category.subCategoriesPerPage);
@@ -371,11 +389,14 @@ helpers.trimChildren = function (category) {
 
 helpers.setCategoryTeaser = function (category) {
 	if (Array.isArray(category.posts) && category.posts.length && category.posts[0]) {
+		const post = category.posts[0];
 		category.teaser = {
-			url: `${nconf.get('relative_path')}/post/${category.posts[0].pid}`,
-			timestampISO: category.posts[0].timestampISO,
-			pid: category.posts[0].pid,
-			topic: category.posts[0].topic,
+			url: `${nconf.get('relative_path')}/post/${post.pid}`,
+			timestampISO: post.timestampISO,
+			pid: post.pid,
+			index: post.index,
+			topic: post.topic,
+			user: post.user,
 		};
 	}
 };
@@ -468,6 +489,10 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 
 			case '[[error:invalid-uid]]':
 				statusCode = 401;
+				break;
+
+			case '[[error:no-topic]]':
+				statusCode = 404;
 				break;
 		}
 

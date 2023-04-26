@@ -1,0 +1,22 @@
+.tool-modal {
+	position: fixed;
+	bottom: 10%;
+	right: 2rem;
+	z-index: $zindex-modal;
+	[component="category-selector-selected"] span {
+		display: inline-flex!important;
+	}
+}
+
+@include media-breakpoint-down(md) {
+	.tool-modal {
+		margin: 0 $spacer;
+		right: 0;
+	}
+}
+
+@include media-breakpoint-up(md) {
+	.tool-modal {
+		max-width: 400px;
+	}
+}

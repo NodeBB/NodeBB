@@ -24,6 +24,14 @@ module.exports = function (Messaging) {
 		await db.sortedSetRemove(`uid:${uid}:chat:rooms:unread`, roomId);
 	};
 
+	Messaging.hasRead = async (uids, roomId) => {
+		const isMembers = await db.isMemberOfSortedSets(
+			uids.map(uid => `uid:${uid}:chat:rooms:unread`),
+			roomId
+		);
+		return uids.map((uid, index) => !isMembers[index]);
+	};
+
 	Messaging.markAllRead = async (uid) => {
 		await db.delete(`uid:${uid}:chat:rooms:unread`);
 	};

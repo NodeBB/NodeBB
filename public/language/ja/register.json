@@ -1,5 +1,6 @@
 {
     "register": "登録",
+    "already-have-account": "Already have an account?",
     "cancel_registration": "登録をキャンセル",
     "help.email": "初期設定ではメールアドレスは公開されません。",
     "help.username_restrictions": "%1から%2 文字までのユニークなユーザー名.ツイッター（twitter）の@<span id='yourUsername'>username</span> 方式でメンションすることができます。",

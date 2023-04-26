@@ -101,6 +101,7 @@
     "guest-upload-disabled": "Հյուրերի վերբեռնումն անջատված է",
     "cors-error": "Չհաջողվեց վերբեռնել նկարը սխալ կազմաձևված CORS-ի պատճառով",
     "upload-ratelimit-reached": "Դուք միանգամից չափազանց շատ ֆայլեր եք վերբեռնել: Խնդրում ենք փորձել ավելի ուշ.",
+    "upload-error-fallback": "Unable to upload image — %1",
     "scheduling-to-past": "Ընտրեք ամսաթիվ ապագայում:",
     "invalid-schedule-date": "Խնդրում ենք մուտքագրել վավեր ամսաթիվ և ժամ:",
     "cant-pin-scheduled": "Պլանավորված թեմաները չեն կարող (ապ)ամրացվել:",
@@ -134,6 +135,8 @@
     "group-already-requested": "Ձեր անդամակցության հարցումն արդեն ներկայացվել է",
     "group-join-disabled": "Դուք այս պահին չեք կարող միանալ այս խմբին",
     "group-leave-disabled": "Դուք այս պահին չեք կարող դուրս գալ այս խմբից",
+    "group-user-not-pending": "User does not have a pending request to join this group.",
+    "gorup-user-not-invited": "User has not been invited to join this group.",
     "post-already-deleted": "Այս գրառումն արդեն ջնջված է",
     "post-already-restored": "Այս գրառումն արդեն վերականգնվել է",
     "topic-already-deleted": "Այս թեման արդեն ջնջված է",
@@ -224,5 +227,6 @@
     "api.429": "Դուք չափազանց շատ հարցումներ եք կատարել, խնդրում ենք փորձել ավելի ուշ",
     "api.500": "Ձեր հարցումը սպասարկելիս անսպասելի սխալ է տեղի ունեցել:",
     "api.501": "Ուղեգիծը, որով փորձում եք զանգահարել, դեռ չի իրականացվել, խնդրում ենք վաղը նորից փորձեք",
-    "api.503": "Երթուղին, որը փորձում եք զանգահարել, ներկայումս հասանելի չէ սերվերի կազմաձևման պատճառով"
+    "api.503": "Երթուղին, որը փորձում եք զանգահարել, ներկայումս հասանելի չէ սերվերի կազմաձևման պատճառով",
+    "api.reauth-required": "The resource you are trying to access requires (re-)authentication."
 }

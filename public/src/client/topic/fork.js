@@ -16,14 +16,14 @@ define('forum/topic/fork', ['components', 'postSelect', 'alerts'], function (com
 			return;
 		}
 
-		app.parseAndTranslate('partials/fork_thread_modal', {}, function (html) {
+		app.parseAndTranslate('modals/fork-topic', {}, function (html) {
 			forkModal = html;
 
 			forkCommit = forkModal.find('#fork_thread_commit');
 
 			$('body').append(forkModal);
 
-			forkModal.find('.close,#fork_thread_cancel').on('click', closeForkModal);
+			forkModal.find('#fork_thread_cancel').on('click', closeForkModal);
 			forkModal.find('#fork-title').on('keyup', checkForkButtonEnable);
 
 			postSelect.init(function () {

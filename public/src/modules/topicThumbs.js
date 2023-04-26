@@ -93,8 +93,8 @@ define('topicThumbs', [
 						return;
 					}
 
-					const id = ev.target.closest('.media[data-id]').getAttribute('data-id');
-					const path = ev.target.closest('.media[data-path]').getAttribute('data-path');
+					const id = ev.target.closest('[data-id]').getAttribute('data-id');
+					const path = ev.target.closest('[data-path]').getAttribute('data-path');
 					api.del(`/topics/${id}/thumbs`, {
 						path: path,
 					}).then(() => {

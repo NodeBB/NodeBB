@@ -11,6 +11,9 @@
 	"uid": "Օգտատիրոջ ID",
 	"uid-help-text": "Նշեք Օգտատիրոջ ID՝ այս նշանի հետ կապելու համար: Եթե օգտատիրոջ ID-ն 0 է, ապա այն կհամարվի հիմնական նշան, որը կարող է ենթադրել այլ օգտատերերի ինքնությունը՝ հիմնվելով _uid պարամետրի վրա:",
 	"description": "Նկարագրություն",
+	"last-seen-ago": "Last used <span class=\"timeago\" title=\"%1\"></span>.",
+	"last-seen-on": "Last used on <span class=\"timeago\" title=\"%1\"></span>.",
+	"last-seen-never": "This key has never been used.",
 	"no-description": "Ոչ մի նկարագրություն նշված չէ:",
 	"token-on-save": "Ձևաթուղթը կստեղծվի, երբ ձևը պահպանվի"
 }

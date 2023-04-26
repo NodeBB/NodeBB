@@ -42,6 +42,28 @@ async function filterNotifications(nids, filter) {
 }
 
 UserNotifications.getAll = async function (uid, filter) {
+	const nids = await getAllNids(uid);
+	return await filterNotifications(nids, filter);
+};
+
+UserNotifications.getAllWithCounts = async function (uid, filter) {
+	const nids = await getAllNids(uid);
+	const keys = nids.map(nid => `notifications:${nid}`);
+	let notifications = await db.getObjectsFields(keys, ['nid', 'type']);
+	const counts = {};
+	notifications.forEach((n) => {
+		if (n && n.type) {
+			counts[n.type] = counts[n.type] || 0;
+			counts[n.type] += 1;
+		}
+	});
+	if (filter) {
+		notifications = notifications.filter(n => n && n.nid && n.type === filter);
+	}
+	return { counts, nids: notifications.map(n => n.nid) };
+};
+
+async function getAllNids(uid) {
 	let nids = await db.getSortedSetRevRange([
 		`uid:${uid}:notifications:unread`,
 		`uid:${uid}:notifications:read`,
@@ -56,10 +78,9 @@ UserNotifications.getAll = async function (uid, filter) {
 		}
 		return nid && exists[index];
 	});
-
 	await deleteUserNids(deleteNids, uid);
-	return await filterNotifications(nids, filter);
-};
+	return nids;
+}
 
 async function deleteUserNids(nids, uid) {
 	await db.sortedSetRemove([

@@ -1,5 +1,7 @@
 {
+    "all-tags": "All tags",
     "no_tag_topics": "لا يوجد مواضيع بهذه الكلمة الدلالية.",
+    "no-tags-found": "No tags found",
     "tags": "الكلمات الدلالية",
     "enter_tags_here": "Enter tags here, between %1 and %2 characters each.",
     "enter_tags_here_short": "أدخل الكلمات الدلالية...",

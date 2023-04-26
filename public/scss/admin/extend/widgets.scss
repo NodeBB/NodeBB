@@ -1,0 +1,28 @@
+.page-admin-extend.page-admin-widgets {
+	[component="clone"] {
+		display: flex;
+		align-items: stretch;
+		align-content: stretch;
+
+		[component="clone/button"] {
+			flex-grow: 1;
+			text-align: left;
+		}
+
+		.dropdown-menu {
+			max-height: 300px;
+			overflow-y: scroll;
+			min-width: 250px;
+			border-radius: 0;
+		}
+	}
+	.container-hover {
+		.container-html {
+			// border: 1px solid red!important;
+			@extend .border;
+			@extend .border-2;
+			@extend .border-primary;
+		}
+	}
+
+}

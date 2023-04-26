@@ -111,8 +111,20 @@ put:
               status:
                 $ref: ../../../components/schemas/Status.yaml#/Status
               response:
-                type: object
-                properties: {}
+                type: array
+                description: A list of the topic thumbnails in the destination topic
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    path:
+                      type: string
+                    url:
+                      type: string
+                      description: Path to a topic thumbnail
 delete:
   tags:
     - topics

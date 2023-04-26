@@ -3,7 +3,7 @@
 	"maintenance-mode.help": "当论坛处在维护模式时，所有请求将被重定向到一个静态页面。管理员不受重定向限制，并可正常访问站点。",
 	"maintenance-mode.status": "维护模式状态码",
 	"maintenance-mode.message": "维护消息",
-	"maintenance-mode.groups-exempt-from-maintenance-mode": "Select groups that should be exempt from maintenance mode",
+	"maintenance-mode.groups-exempt-from-maintenance-mode": "选择从维护模式中豁免的用户组",
 	"headers": "标题",
 	"headers.allow-from": "设置 ALLOW-FROM 来放置 NodeBB 于 iFrame 中",
 	"headers.csp-frame-ancestors": "设置 Content-Security-Policy frame-ancestors 响应头来将 NodeBB 置于 iFrame 中",
@@ -17,11 +17,11 @@
 	"headers.acam": "Access-Control-Allow-Methods",
 	"headers.acah": "Access-Control-Allow-Headers",
 	"headers.coep": "Cross-Origin-Embedder-Policy",
-	"headers.coep-help": "When enabled (default), will set the header to <code>require-corp</code>",
+	"headers.coep-help": "启用时（默认），将设置这个标头为 <code>require-corp</code>",
 	"headers.coop": "Cross-Origin-Opener-Policy",
 	"headers.corp": "Cross-Origin-Resource-Policy",
 	"headers.permissions-policy": "Permissions-Policy",
-	"headers.permissions-policy-help": "Allows setting permissions policy header, for example \"geolocation=*, camera=()\", see <a href=\"https://github.com/w3c/webappsec-permissions-policy/blob/main/permissions-policy-explainer.md\">this</a> for more info.",
+	"headers.permissions-policy-help": "可以设置 Permissions-Policy 标头，例如  \"geolocation=*, camera=()\"，更多信息见<a href=\"https://github.com/w3c/webappsec-permissions-policy/blob/main/permissions-policy-explainer.md\">此链接</a>",
 	"hsts": "严格安全传输（HSTS）",
 	"hsts.enabled": "启用HSTS（推荐）",
 	"hsts.maxAge": "HSTS Max Age",
@@ -43,8 +43,8 @@
 
 	"analytics.settings": "分析设置",
 	"analytics.max-cache": "分析缓存最大值",
-	"analytics.max-cache-help": "On high-traffic installs, the cache could be exhausted continuously if there are more concurrent active users than the Max Cache value. (Restart required)",
+	"analytics.max-cache-help": "在大流量的服务器中，如果同时活跃的用户比这个缓存最大值要多，缓存可能会被持续耗尽。（需要重新启动）",
 	"compression.settings": "压缩设置",
 	"compression.enable": "启用压缩",
-	"compression.help": "This setting enables gzip compression. For a high-traffic website in production, the best way to put compression in place is to implement it at a reverse proxy level. You can enable it here for testing purposes."
+	"compression.help": "此设置启用 gzip 压缩。对大流量的生产环境网站，最佳的启用压缩的方法是在反向代理中实现。您可以出于测试目的启用这个设置。"
 }

@@ -2,8 +2,8 @@
 
 
 define('forum/users', [
-	'translator', 'benchpress', 'api', 'alerts', 'accounts/invite',
-], function (translator, Benchpress, api, alerts, AccountInvite) {
+	'benchpress', 'api', 'alerts', 'accounts/invite',
+], function (Benchpress, api, alerts, AccountInvite) {
 	const Users = {};
 
 	let searchResultCount = 0;
@@ -12,7 +12,9 @@ define('forum/users', [
 		app.enterRoom('user_list');
 
 		const section = utils.param('section') ? ('?section=' + utils.param('section')) : '';
-		$('.nav-pills li').removeClass('active').find('a[href="' + window.location.pathname + section + '"]').parent()
+		const navItems = $('[component="user/list/menu"]');
+		navItems.find('a').removeClass('active');
+		navItems.find('a[href="' + window.location.pathname + section + '"]')
 			.addClass('active');
 
 		Users.handleSearch();
@@ -97,7 +99,7 @@ define('forum/users', [
 		data.isAdminOrGlobalMod = app.user.isAdmin || app.user.isGlobalMod;
 		app.parseAndTranslate('users', 'users', data, function (html) {
 			$('#users-container').html(html);
-			html.find('span.timeago').timeago();
+			html.find('.timeago').timeago();
 			$('[component="user/search/icon"]').addClass('fa-search').removeClass('fa-spinner fa-spin');
 		});
 	}

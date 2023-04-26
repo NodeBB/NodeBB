@@ -23,6 +23,7 @@ groupsController.list = async function (req, res) {
 	res.render('groups/list', {
 		groups: groupData,
 		allowGroupCreation: allowGroupCreation,
+		sort: validator.escape(String(sort)),
 		nextStart: 15,
 		title: '[[pages:groups]]',
 		breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[pages:groups]]' }]),
@@ -45,7 +46,7 @@ groupsController.details = async function (req, res, next) {
 	const [exists, isHidden, isAdmin, isGlobalMod] = await Promise.all([
 		groups.exists(groupName),
 		groups.isHidden(groupName),
-		user.isAdministrator(req.uid),
+		privileges.admin.can('admin:groups', req.uid),
 		user.isGlobalModerator(req.uid),
 	]);
 	if (!exists) {

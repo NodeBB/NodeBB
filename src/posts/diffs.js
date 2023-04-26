@@ -147,7 +147,7 @@ module.exports = function (Posts) {
 		const tagDiffs = diffs.filter(d => d.hasOwnProperty('tags') && d.tags);
 		if (tagDiffs.length && post[0].topic) {
 			const tags = tagDiffs[tagDiffs.length - 1].tags.split(',').map(tag => ({ value: tag }));
-			post[0].topic.tags = await topics.getTagData(tags);
+			post[0].topic.tags = topics.getTagData(tags);
 		}
 
 		return post[0];

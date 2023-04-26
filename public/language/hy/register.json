@@ -1,5 +1,6 @@
 {
     "register": "Գրանցվել ",
+    "already-have-account": "Already have an account?",
     "cancel_registration": "Չեղարկել գրանցումը",
     "help.email": "Ձեր էլեկտրոնային փոստը չի արտացոլվի ուրիշներին",
     "help.username_restrictions": "Եզակի օգտվողի անուն %1-ից %2 նիշերի միջև: Մյուսները կարող են ձեզ նշել @<span id='yourUsername'>username</span>-ով:",

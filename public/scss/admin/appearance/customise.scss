@@ -1,0 +1,9 @@
+#customCSS, #customJS, #customHTML, #email-editor {
+	width: 100%;
+	height: 450px;
+	display: block;
+}
+// ACP text colour when searching through custom CSS or JS.
+.ace_search_field {
+ color: #000 !important;
+}

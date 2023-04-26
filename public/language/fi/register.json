@@ -1,5 +1,6 @@
 {
     "register": "Rekisteröidy",
+    "already-have-account": "Already have an account?",
     "cancel_registration": "Peruuta rekisteröinti",
     "help.email": "Oletuksena sähköpostiosoitettasi ei näytetä muille.",
     "help.username_restrictions": "Yksilöllisen käyttäjätunnuksen pitää olla %1-%2 merkkiä pitkä. Toiset voivat mainita sinut @<span id='yourUsername'>username</span>.",

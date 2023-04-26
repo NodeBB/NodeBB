@@ -39,6 +39,5 @@
 	"revert": "Povrni",
 
 	"edit.no-users-found": "Uporabnikov ni bilo mogoče najti",
-	"edit.confirm-remove-user": "Ste prepričani, da želite odstraniti tega uporabnika?",
-	"edit.save-success": "Spremembe so shranjene!"
+	"edit.confirm-remove-user": "Ste prepričani, da želite odstraniti tega uporabnika?"
 }

@@ -101,6 +101,7 @@
     "guest-upload-disabled": "Ngarkimi nga vizitorëve është i çaktivizuar",
     "cors-error": "Imazhi nuk mund të ngarkohet për shkak të konfigurimit të gabuar të CORS",
     "upload-ratelimit-reached": "Ju keni ngarkuar shumë materiale në të njëjtën kohë. Ju lutemi provoni sërish më vonë.",
+    "upload-error-fallback": "Unable to upload image — %1",
     "scheduling-to-past": "Ju lutemi zgjidhni një datë në të ardhmen.",
     "invalid-schedule-date": "Ju lutemi shkruani një datë dhe orë të vlefshme.",
     "cant-pin-scheduled": "Temat e planifikuara nuk mund të (ç)fiksohen.",
@@ -134,6 +135,8 @@
     "group-already-requested": "Kërkesa juaj për anëtarësim është dorëzuar tashmë",
     "group-join-disabled": "Nuk mund t'i bashkohesh këtij grupi për momentin",
     "group-leave-disabled": "Nuk mund të largohesh nga ky grup në këtë moment",
+    "group-user-not-pending": "User does not have a pending request to join this group.",
+    "gorup-user-not-invited": "User has not been invited to join this group.",
     "post-already-deleted": "Ky postim tashmë është fshirë",
     "post-already-restored": "Ky postim tashmë është rikthyer",
     "topic-already-deleted": "Kjo temë tashmë është fshirë",
@@ -224,5 +227,6 @@
     "api.429": "Ju keni bërë shumë kërkesa, ju lutemi provoni përsëri më vonë",
     "api.500": "Një gabim i papritur u ndesh gjatë përpjekjes për të kryer kërkesën tuaj.",
     "api.501": "Itinerari që kërkoni nuk është zbatuar ende, ju lutemi provoni sërish nesër",
-    "api.503": "Itinerari që kërkoni nuk është aktualisht i disponueshëm për shkak të një konfigurimi të serverit"
+    "api.503": "Itinerari që kërkoni nuk është aktualisht i disponueshëm për shkak të një konfigurimi të serverit",
+    "api.reauth-required": "The resource you are trying to access requires (re-)authentication."
 }

@@ -1,0 +1,118 @@
+@mixin no-select() {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+@mixin pointer() {
+	cursor: pointer;
+	*cursor: hand;
+}
+
+@mixin inline-block() {
+	display: inline-block;
+	*display: inline;
+	zoom: 1;
+}
+
+@mixin clear() {
+	clear: both;
+}
+
+@mixin zebra() {
+	&:nth-child(even) {
+		background: rgba(191,191,191,0.2);
+	}
+
+	&:nth-child(odd) {
+		background: rgba(223,223,223,0.2);
+	}
+}
+
+@mixin border-radius($radius: 5px){
+	-webkit-border-radius: $radius;
+	-moz-border-radius: $radius;
+	-ms-border-radius: $radius;
+	-o-border-radius: $radius;
+	border-radius: $radius;
+}
+
+@mixin text-ellipsis() {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+@mixin fix-lists() {
+	ul {
+		> li {
+			list-style-type: disc;
+
+			ul > li {
+				list-style-type: circle;
+
+				ul > li {
+					list-style-type: square;
+				}
+			}
+		}
+	}
+
+	ol,
+	ul {
+		padding-left: 2rem;
+	}
+
+	ol,
+	ul,
+	dl {
+		margin-top: 0;
+		margin-bottom: 1rem;
+	}
+
+	ol ol,
+	ul ul,
+	ol ul,
+	ul ol {
+		margin-bottom: 0;
+	}
+}
+
+@mixin user-icon-style($size: 32px, $font-size: 1.5rem, $border-radius: inherit){
+	border-radius: $border-radius;
+	width: $size;
+	height: $size;
+	line-height: $size;
+	font-size: $font-size;
+}
+
+@mixin line-clamp($lines, $line-height: 1.5em) {
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: $lines;
+	white-space: initial;
+	max-height: calc($line-height * $lines);
+	> p {
+		margin-bottom: $line-height;
+	}
+}
+
+@for $i from 1 through 6 {
+	.line-clamp-#{$i} {
+		@include line-clamp($i, #{$line-height-base}em);
+	}
+	// use with elements that have `lh-sm` applied
+	.line-clamp-sm-#{$i} {
+		@include line-clamp($i, #{$line-height-sm}em);
+	}
+}
+
+@each $color, $value in $grays {
+	.border-gray-#{$color} {
+		border-color: $value !important;
+	}
+}

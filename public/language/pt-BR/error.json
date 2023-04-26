@@ -37,7 +37,7 @@
     "email-invited": "O email já foi convidado",
     "email-not-confirmed": "Posting in some categories or topics is enabled once your email is confirmed, please click here to send a confirmation email.",
     "email-not-confirmed-chat": "Você não está habilitado a conversar até que seu email seja confirmado, por favor clique aqui para confirmar seu email.",
-    "email-not-confirmed-email-sent": "Your email has not been confirmed yet, please check your inbox for the confirmation email. You may not be able to post in some categories or chat until your email is confirmed.",
+    "email-not-confirmed-email-sent": "Seu email ainda não tem sido confirmado, por favor verifique seu inbox, para ver se recebeu o e-mail de confirmação. Não será possível comentar em algumas das discussões até confirmar seu e-mail.",
     "no-email-to-confirm": "Your account does not have an email set. An email is necessary for account recovery, and may be necessary for chatting and posting in some categories. Please click here to enter an email.",
     "user-doesnt-have-email": "User \"%1\" does not have an email set.",
     "email-confirm-failed": "Nós não pudemos confirmar seu email, por gentileza tente novamente mais tarde.",
@@ -101,6 +101,7 @@
     "guest-upload-disabled": "O upload por visitantes foi desabilitado",
     "cors-error": "Não é possível fazer o upload da imagem devido ao CORS mal configurado",
     "upload-ratelimit-reached": "Você fez upload de muitos arquivos de uma vez. Por favor, tente novamente mais tarde.",
+    "upload-error-fallback": "Unable to upload image — %1",
     "scheduling-to-past": "Selecione uma data no futuro.",
     "invalid-schedule-date": "Por favor, insira uma data e hora válidas.",
     "cant-pin-scheduled": "Tópicos agendados não podem ser (des)fixados.",
@@ -134,6 +135,8 @@
     "group-already-requested": "Seu pedido de filiação já foi enviado",
     "group-join-disabled": "Você não pode entrar neste grupo no momento",
     "group-leave-disabled": "Você não pode sair deste grupo no momento",
+    "group-user-not-pending": "User does not have a pending request to join this group.",
+    "gorup-user-not-invited": "User has not been invited to join this group.",
     "post-already-deleted": "Este post já foi deletado",
     "post-already-restored": "Este post já foi restaurado",
     "topic-already-deleted": "Esté tópico já foi deletado",
@@ -224,5 +227,6 @@
     "api.429": "You have made too many requests, please try again later",
     "api.500": "An unexpected error was encountered while attempting to service your request.",
     "api.501": "The route you are trying to call is not implemented yet, please try again tomorrow",
-    "api.503": "The route you are trying to call is not currently available due to a server configuration"
+    "api.503": "The route you are trying to call is not currently available due to a server configuration",
+    "api.reauth-required": "The resource you are trying to access requires (re-)authentication."
 }

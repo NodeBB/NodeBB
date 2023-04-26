@@ -24,17 +24,14 @@ NodeBB's theming engine is highly flexible and does not restrict your design cho
 [![](http://i.imgur.com/LmHtPhob.png)](http://i.imgur.com/LmHtPho.png)
 [![](http://i.imgur.com/paiJPJkb.jpg)](http://i.imgur.com/paiJPJk.jpg)
 
-Our minimalist "Persona" theme gets you going right away, no coding experience required.
+Our minimalist "Harmony" theme gets you going right away, no coding experience required.
 
-[![](http://i.imgur.com/HwNEXGu.png)](http://i.imgur.com/HwNEXGu.png)
-[![](http://i.imgur.com/II1byYs.png)](http://i.imgur.com/II1byYs.png)
-
-
+![Rendering of a NodeBB install on desktop and mobile devices](https://user-images.githubusercontent.com/923011/228570420-2a4db745-b20d-474a-a571-1b59259508ef.png)
 
 ## How can I follow along/contribute?
 
 * If you are a developer, feel free to check out the source and submit pull requests. We also have a wide array of [plugins](http://community.nodebb.org/category/7/nodebb-plugins) which would be a great starting point for learning the codebase.
-* If you are a designer, [NodeBB needs themes](http://community.nodebb.org/category/10/nodebb-themes)! NodeBB's theming system allows extension of the base templates as well as styling via LESS or CSS. NodeBB's base theme utilizes [Bootstrap 3](http://getbootstrap.com/) but themes can choose to use a different framework altogether.
+* If you are a designer, [NodeBB needs themes](http://community.nodebb.org/category/10/nodebb-themes)! NodeBB's theming system allows extension of the base templates as well as styling via SCSS or CSS. NodeBB's base theme utilizes [Bootstrap 5](http://getbootstrap.com/) as a frontend toolkit.
 * If you know languages other than English you can help us translate NodeBB. We use [Transifex](https://explore.transifex.com/nodebb/nodebb/) for internationalization.
 * Please don't forget to **like**, **follow**, and **star our repo**! Join our growing [community](http://community.nodebb.org) to keep up to date with the latest NodeBB development.
 
@@ -42,7 +39,7 @@ Our minimalist "Persona" theme gets you going right away, no coding experience r
 
 NodeBB requires the following software to be installed:
 
-* A version of Node.js at least 12 or greater ([installation/upgrade instructions](https://github.com/nodesource/distributions))
+* A version of Node.js at least 16 or greater ([installation/upgrade instructions](https://github.com/nodesource/distributions))
 * MongoDB, version 3.6 or greater **or** Redis, version 2.8.9 or greater
 * If you are using [clustering](https://docs.nodebb.org/configuring/scaling/) you need Redis installed and configured.
 * nginx, version 1.3.13 or greater (**only if** intending to use nginx to proxy requests to a NodeBB)
@@ -76,10 +73,10 @@ Interested in a sublicense agreement for use of NodeBB in a non-free/restrictive
 
 * [Demo](https://try.nodebb.org)
 * [Developer Community](http://community.nodebb.org)
-* [Documentation & Installation Instructions](http://docs.nodebb.org)
+* [Documentation & Installation Instructions](https://docs.nodebb.org)
 * [Help translate NodeBB](https://explore.transifex.com/nodebb/nodebb/)
-* [NodeBB Blog](http://blog.nodebb.org)
-* [Premium Hosting for NodeBB](http://www.nodebb.org/ "NodeBB")
+* [NodeBB Blog](https://nodebb.org/blog)
+* [Premium Hosting for NodeBB](https://www.nodebb.org/ "NodeBB")
 * Unofficial IRC community &ndash; channel `#nodebb` on Libera.chat
 * [Follow us on Twitter](http://www.twitter.com/NodeBB/ "NodeBB Twitter")
 * [Like us on Facebook](http://www.facebook.com/NodeBB/ "NodeBB Facebook")

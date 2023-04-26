@@ -1,5 +1,6 @@
 {
     "register": "Iyandike",
+    "already-have-account": "Already have an account?",
     "cancel_registration": "Cancel Registration",
     "help.email": "Ubusanzwe, email yawe ntabwo iba ibonwa na bose",
     "help.username_restrictions": "Izina rigomba kuba ryihariye kuri uru rubuga kandi rikaba rifite uburebure bw'inyuguti buva kuri %1 kugera kuri %2. Iryo zina ni ryo abantu bazajya bifashisha nka @<span id='yourUsername'>username</span> mu gihe bakoresheje izina ryawe mu byo banditse. ",

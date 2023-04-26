@@ -39,6 +39,5 @@
 	"revert": "Повернути",
 
 	"edit.no-users-found": "Користувачів не знайдено",
-	"edit.confirm-remove-user": "Ви точно бажаєте видалити цього користувача?",
-	"edit.save-success": "Зміни збережено!"
+	"edit.confirm-remove-user": "Ви точно бажаєте видалити цього користувача?"
 }

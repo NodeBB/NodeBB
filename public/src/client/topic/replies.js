@@ -15,7 +15,7 @@ define('forum/topic/replies', ['forum/topic/posts', 'hooks', 'alerts'], function
 			open.addClass('hidden');
 			loading.removeClass('hidden');
 
-			socket.emit('posts.getReplies', pid, function (err, data) {
+			socket.emit('posts.getReplies', pid, function (err, postData) {
 				loading.addClass('hidden');
 				if (err) {
 					open.removeClass('hidden');
@@ -23,18 +23,22 @@ define('forum/topic/replies', ['forum/topic/posts', 'hooks', 'alerts'], function
 				}
 
 				close.removeClass('hidden');
-
-				posts.modifyPostsByPrivileges(data);
+				postData.forEach((post, index) => {
+					if (post) {
+						post.index = index;
+					}
+				});
+				posts.modifyPostsByPrivileges(postData);
 				const tplData = {
-					posts: data,
+					posts: postData,
 					privileges: ajaxify.data.privileges,
 					'downvote:disabled': ajaxify.data['downvote:disabled'],
 					'reputation:disabled': ajaxify.data['reputation:disabled'],
 					loggedIn: !!app.user.uid,
 					hideReplies: config.hasOwnProperty('showNestedReplies') ? !config.showNestedReplies : true,
 				};
-				app.parseAndTranslate('topic', 'posts', tplData, function (html) {
-					const repliesEl = $('<div>', { component: 'post/replies' }).html(html).hide();
+				app.parseAndTranslate('topic', 'posts', tplData, async function (html) {
+					const repliesEl = $('<ul>', { component: 'post/replies', class: 'list-unstyled' }).html(html).hide();
 					if (button.attr('data-target-component')) {
 						post.find('[component="' + button.attr('data-target-component') + '"]').html(repliesEl);
 					} else {
@@ -42,8 +46,8 @@ define('forum/topic/replies', ['forum/topic/posts', 'hooks', 'alerts'], function
 					}
 
 					repliesEl.slideDown('fast');
-					posts.onNewPostsAddedToDom(html);
-					hooks.fire('action:posts.loaded', { posts: data });
+					await posts.onNewPostsAddedToDom(html);
+					hooks.fire('action:posts.loaded', { posts: postData });
 				});
 			});
 		} else if (close.is(':not(.hidden)')) {
@@ -63,7 +67,7 @@ define('forum/topic/replies', ['forum/topic/posts', 'hooks', 'alerts'], function
 		}
 		incrementCount(post, 1);
 		data.hideReplies = config.hasOwnProperty('showNestedReplies') ? !config.showNestedReplies : true;
-		app.parseAndTranslate('topic', 'posts', data, function (html) {
+		app.parseAndTranslate('topic', 'posts', data, async function (html) {
 			const replies = $('[component="post"][data-pid="' + post.toPid + '"] [component="post/replies"]').first();
 			if (replies.length) {
 				if (config.topicPostSort === 'newest_to_oldest') {
@@ -71,7 +75,7 @@ define('forum/topic/replies', ['forum/topic/posts', 'hooks', 'alerts'], function
 				} else {
 					replies.append(html);
 				}
-				posts.onNewPostsAddedToDom(html);
+				await posts.onNewPostsAddedToDom(html);
 			}
 		});
 	};
@@ -84,7 +88,7 @@ define('forum/topic/replies', ['forum/topic/posts', 'hooks', 'alerts'], function
 		const replyCount = $('[component="post"][data-pid="' + post.toPid + '"]').find('[component="post/reply-count"]').first();
 		const countEl = replyCount.find('[component="post/reply-count/text"]');
 		const avatars = replyCount.find('[component="post/reply-count/avatars"]');
-		const count = Math.max(0, parseInt(countEl.attr('data-replies'), 10) + inc);
+		const count = Math.max(0, (parseInt(countEl.attr('data-replies'), 10) || 0) + inc);
 		const timestamp = replyCount.find('.timeago').attr('title', post.timestampISO);
 
 		countEl.attr('data-replies', count);
@@ -96,8 +100,10 @@ define('forum/topic/replies', ['forum/topic/posts', 'hooks', 'alerts'], function
 		}
 
 		if (!avatars.find('[data-uid="' + post.uid + '"]').length && count < 7) {
-			app.parseAndTranslate('topic', 'posts', { posts: [{ replies: { users: [post.user] } }] }, function (html) {
-				avatars.prepend(html.find('[component="post/reply-count/avatars"] [component="avatar/picture"]'));
+			app.parseAndTranslate('topic', 'posts', {
+				posts: [{ replies: { count: count, hasMore: false, users: [post.user] } }],
+			}, function (html) {
+				avatars.prepend(html.find('[component="post/reply-count/avatars"]').html());
 			});
 		}
 

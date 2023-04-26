@@ -1,11 +1,8 @@
 'use strict';
 
 const posts = require('../../posts');
-const privileges = require('../../privileges');
-
 const api = require('../../api');
 const helpers = require('../helpers');
-const apiHelpers = require('../../api/helpers');
 
 const Posts = module.exports;
 
@@ -18,7 +15,6 @@ Posts.edit = async (req, res) => {
 		...req.body,
 		pid: req.params.pid,
 		uid: req.uid,
-		req: apiHelpers.buildReqObject(req),
 	});
 
 	helpers.formatApiResponse(200, res, editResult);
@@ -96,21 +92,7 @@ Posts.restoreDiff = async (req, res) => {
 };
 
 Posts.deleteDiff = async (req, res) => {
-	if (!parseInt(req.params.pid, 10)) {
-		throw new Error('[[error:invalid-data]]');
-	}
-
-	const cid = await posts.getCidByPid(req.params.pid);
-	const [isAdmin, isModerator] = await Promise.all([
-		privileges.users.isAdministrator(req.uid),
-		privileges.users.isModerator(req.uid, cid),
-	]);
-
-	if (!(isAdmin || isModerator)) {
-		return helpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
-	}
-
-	await posts.diffs.delete(req.params.pid, req.params.timestamp, req.uid);
+	await api.posts.deleteDiff(req, { ...req.params });
 
 	helpers.formatApiResponse(200, res, await api.posts.getDiffs(req, { ...req.params }));
 };

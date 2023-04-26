@@ -49,6 +49,7 @@
     "account/watched_categories": "%1's Դիտված կատեգորիաներ",
     "account/bookmarks": "%1-ի էջանշված գրառումները",
     "account/settings": "Օգտատիրոջ կարգավորումներ",
+    "account/settings-of": "Changing settings of %1",
     "account/watched": "Թեմաներ, որոնք դիտել է %1-ը",
     "account/ignored": "%1-ի կողմից անտեսված թեմաներ",
     "account/upvoted": "%1-ի կողմից քվեարկված գրառումները",

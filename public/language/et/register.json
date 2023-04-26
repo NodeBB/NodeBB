@@ -1,5 +1,6 @@
 {
     "register": "Registreeri",
+    "already-have-account": "Already have an account?",
     "cancel_registration": "Katkesta registreerimine",
     "help.email": "Algsättena peidetakse sinu e-mail avalikuse eest.",
     "help.username_restrictions": "Unikaalne kasutajanimi, mis on  %1 - %2 tähemärki pikk. Teised saavad sind postitustes mainida kasutades @<span id='yourUsername'>kasutajanime</span>.",

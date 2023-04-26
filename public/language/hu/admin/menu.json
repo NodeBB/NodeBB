@@ -4,7 +4,7 @@
 	"dashboard/logins": "Bejelentkezések",
 	"dashboard/users": "Felhasználók",
 	"dashboard/topics": "Témakörök",
-	"dashboard/searches": "Searches",
+	"dashboard/searches": "Keresések",
 	"section-general": "Általános",
 
 	"section-manage": "Kezelés",
@@ -76,7 +76,7 @@
 	"logout": "Kilépés",
 	"view-forum": "Fórum megtekintése",
 
-	"search.placeholder": "Search settings",
+	"search.placeholder": "Keresési beállítások",
 	"search.no-results": "Nincs eredmény...",
 	"search.search-forum": "<strong></strong> keresése a fórumon",
 	"search.keep-typing": "Gépelj többet az eredményekért...",

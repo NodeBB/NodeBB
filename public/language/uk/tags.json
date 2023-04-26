@@ -1,5 +1,7 @@
 {
+    "all-tags": "All tags",
     "no_tag_topics": "Немає теми з цим тегом.",
+    "no-tags-found": "No tags found",
     "tags": "Теги",
     "enter_tags_here": "Введіть тег сюди, між літерами %1 та %2 кожен",
     "enter_tags_here_short": "Введіть тег",

@@ -8,9 +8,9 @@
 	"containers.none": "없음",
 	"container.well": "Well",
 	"container.jumbotron": "Jumbotron",
-	"container.panel": "제어판",
-	"container.panel-header": "제어판 헤더",
-	"container.panel-body": "제어판 몸통",
+	"container.card": "Card",
+	"container.card-header": "Card Header",
+	"container.card-body": "Card Body",
 	"container.alert": "경고",
 
 	"alert.confirm-delete": "정말 이 위젯을 삭제하시겠습니까?",

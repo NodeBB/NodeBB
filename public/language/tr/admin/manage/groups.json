@@ -39,6 +39,5 @@
 	"revert": "Eski Haline Döndür",
 
 	"edit.no-users-found": "Kullanıcı Bulunamadı",
-	"edit.confirm-remove-user": "Bu kullanıcıyı kaldırmak istediğinizden emin misiniz?",
-	"edit.save-success": "Değişiklikler kaydedildi!"
+	"edit.confirm-remove-user": "Bu kullanıcıyı kaldırmak istediğinizden emin misiniz?"
 }

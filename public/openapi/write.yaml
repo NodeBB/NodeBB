@@ -4,22 +4,26 @@ info:
   description: >-
     # Overview
 
-    The following document outlines every route exposed by the NodeBB Write API. As of NodeBB v1.15.0, NodeBB will use these routes to make changes to the database (e.g. creating new posts, editing user profiles, etc.)
+    The following document outlines every route exposed by the NodeBB Write API.
+    Since NodeBB v1.15.0, NodeBB has used these routes to make changes to the database (e.g. creating new posts, editing user profiles, etc.)
 
     We invite you to build external integrations with NodeBB using this document as a guide.
 
     # History
 
-    Up until v1.15.0, NodeBB utilised the [WebSocket](https://en.wikipedia.org/wiki/WebSocket) protocol to communicate with the backend. However, it was decided in early 2020 that this usage of WebSocket &ndash; while functional &ndash; led to occasional wheel reinvention and disregarded an otherwise fully-featured technology (that is, REST).
+    Up until v1.15.0, NodeBB utilised the [WebSocket](https://en.wikipedia.org/wiki/WebSocket) protocol to communicate with the backend.
+    However, it was decided in early 2020 that this usage of WebSocket &mdash; while functional &mdash; led to occasional wheel reinvention and disregarded an otherwise fully-featured technology (that is, REST).
 
-    Years prior to this determination, many users of NodeBB had asked for a RESTful API to call against NodeBB, which led to the creation of [`nodebb-plugin-write-api`](https://github.com/NodeBB/nodebb-plugin-write-api). In tandem with the above decision, the Write API was merged into NodeBB core in late 2020.
+    Years prior to this determination, many users of NodeBB had asked for a RESTful API to call against NodeBB, which led to the creation of [`nodebb-plugin-write-api`](https://github.com/NodeBB/nodebb-plugin-write-api).
+    In tandem with the above decision, the Write API was merged into NodeBB core in late 2020.
 
-    v3 of the Write API (this document) achieves rough feature parity with v2 of the Write API plugin.
+    v3 of the Write API (this document) supercedes v2 of the Write API plugin, and is currently maintained.
 
     # Authentication
 
+    Similarly to the Read API, the Write API support both session-based (cookie) and Bearer token authentication.
     Please see the ["Authentication" section under the Read API](../read/#section/Overview/Authentication) for more information on how to authenticate against this API in order to make calls.
-  version: 1.19.0
+  version: 3.0.0
   contact:
     email: support@nodebb.org
   license:
@@ -96,6 +100,14 @@ paths:
     $ref: 'write/groups/slug/membership/uid.yaml'
   /groups/{slug}/ownership/{uid}:
     $ref: 'write/groups/slug/ownership/uid.yaml'
+  /groups/{slug}/pending:
+    $ref: 'write/groups/slug/pending.yaml'
+  /groups/{slug}/pending/{uid}:
+    $ref: 'write/groups/slug/pending/uid.yaml'
+  /groups/{slug}/invites:
+    $ref: 'write/groups/slug/invites.yaml'
+  /groups/{slug}/invites/{uid}:
+    $ref: 'write/groups/slug/invites/uid.yaml'
   /categories/:
     $ref: 'write/categories.yaml'
   /categories/{cid}:
@@ -150,6 +162,8 @@ paths:
     $ref: 'write/chats.yaml'
   /chats/{roomId}:
     $ref: 'write/chats/roomId.yaml'
+  /chats/{roomId}/state:
+    $ref: 'write/chats/roomId/state.yaml'
   /chats/{roomId}/users:
     $ref: 'write/chats/roomId/users.yaml'
   /chats/{roomId}/users/{uid}:

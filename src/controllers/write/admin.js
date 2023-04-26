@@ -1,42 +1,30 @@
 'use strict';
 
-const meta = require('../../meta');
-const privileges = require('../../privileges');
-const analytics = require('../../analytics');
-
+const api = require('../../api');
 const helpers = require('../helpers');
 
 const Admin = module.exports;
 
 Admin.updateSetting = async (req, res) => {
-	const ok = await privileges.admin.can('admin:settings', req.uid);
+	await api.admin.updateSetting(req, {
+		setting: req.params.setting,
+		value: req.body.value,
+	});
 
-	if (!ok) {
-		return helpers.formatApiResponse(403, res);
-	}
-
-	await meta.configs.set(req.params.setting, req.body.value);
 	helpers.formatApiResponse(200, res);
 };
 
 Admin.getAnalyticsKeys = async (req, res) => {
-	let keys = await analytics.getKeys();
-
-	// Sort keys alphabetically
-	keys = keys.sort((a, b) => (a < b ? -1 : 1));
-
-	helpers.formatApiResponse(200, res, { keys });
+	helpers.formatApiResponse(200, res, {
+		keys: await api.admin.getAnalyticsKeys(),
+	});
 };
 
 Admin.getAnalyticsData = async (req, res) => {
-	// Default returns views from past 24 hours, by hour
-	if (!req.query.amount) {
-		if (req.query.units === 'days') {
-			req.query.amount = 30;
-		} else {
-			req.query.amount = 24;
-		}
-	}
-	const getStats = req.query.units === 'days' ? analytics.getDailyStatsForSet : analytics.getHourlyStatsForSet;
-	helpers.formatApiResponse(200, res, await getStats(`analytics:${req.params.set}`, parseInt(req.query.until, 10) || Date.now(), req.query.amount));
+	helpers.formatApiResponse(200, res, await api.admin.getAnalyticsData(req, {
+		set: req.params.set,
+		until: parseInt(req.query.until, 10) || Date.now(),
+		amount: req.query.amount,
+		units: req.query.units,
+	}));
 };

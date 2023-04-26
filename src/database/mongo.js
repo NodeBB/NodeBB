@@ -173,9 +173,8 @@ async function getCollectionStats(db) {
 	return await Promise.all(items.map(collection => db.collection(collection.name).stats()));
 }
 
-mongoModule.close = function (callback) {
-	callback = callback || function () {};
-	client.close(err => callback(err));
+mongoModule.close = async function () {
+	await client.close();
 };
 
 require('./mongo/main')(mongoModule);

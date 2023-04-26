@@ -17,6 +17,10 @@ define('forum/category/tools', [
 
 		handlePinnedTopicSort();
 
+		$('[component="category/topic"]').each((index, el) => {
+			threadTools.observeTopicLabels($(el).find('[component="topic/labels"]'));
+		});
+
 		components.get('topic/delete').on('click', function () {
 			categoryCommand('del', '/state', 'delete', onDeletePurgeComplete);
 			return false;
@@ -247,20 +251,20 @@ define('forum/category/tools', [
 	function setDeleteState(data) {
 		const topic = getTopicEl(data.tid);
 		topic.toggleClass('deleted', data.isDeleted);
-		topic.find('[component="topic/locked"]').toggleClass('hide', !data.isDeleted);
+		topic.find('[component="topic/locked"]').toggleClass('hidden', !data.isDeleted);
 	}
 
 	function setPinnedState(data) {
 		const topic = getTopicEl(data.tid);
 		topic.toggleClass('pinned', data.isPinned);
-		topic.find('[component="topic/pinned"]').toggleClass('hide', !data.isPinned);
+		topic.find('[component="topic/pinned"]').toggleClass('hidden', !data.isPinned);
 		ajaxify.refresh();
 	}
 
 	function setLockedState(data) {
 		const topic = getTopicEl(data.tid);
 		topic.toggleClass('locked', data.isLocked);
-		topic.find('[component="topic/locked"]').toggleClass('hide', !data.isLocked);
+		topic.find('[component="topic/locked"]').toggleClass('hidden', !data.isLocked);
 	}
 
 	function onTopicMoved(data) {
@@ -286,6 +290,7 @@ define('forum/category/tools', [
 			});
 			let baseIndex = 0;
 			topicListEl.sortable({
+				axis: 'y',
 				handle: '[component="topic/pinned"]',
 				items: '[component="category/topic"].pinned',
 				start: function () {

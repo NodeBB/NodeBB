@@ -1,11 +1,12 @@
 {
+    "all-users": "All Users",
     "latest_users": "Neuste Benutzer",
     "top_posters": "Meiste Beiträge",
     "most_reputation": "Höchstes Ansehen",
     "most_flags": "Meiste Meldungen",
     "search": "Suchen",
     "enter_username": "Benutzer durchsuchen",
-    "search-user-for-chat": "Einen Benutzer suchen, um den Chat zu starten",
+    "search-user-for-chat": "Search for a user to start chat:",
     "load_more": "Mehr laden",
     "users-found-search-took": "%1 Benutzer gefunden! Die Suche dauerte %2 s.",
     "filter-by": "Filtern nach",

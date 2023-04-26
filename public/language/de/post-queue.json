@@ -1,8 +1,12 @@
 
 {
 	"post-queue": "Beitragswarteschlange",
-	"description": "Es gibt keine Beiträge in der Warteschlange. <br> Um dieses Feature zu aktivieren, gehe auf <a href=\"%1\">Einstellungen &rarr; Posts &rarr; Beitragswarteschlange</a> und aktiviere <strong>Beitragswarteschlange</strong>.",
+	"no-queued-posts": "There are no posts in the post queue.",
+	"no-single-post": "The topic or post you are looking for is no longer in the queue. It has likely been approved or deleted already.",
+	"enabling-help": "To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
+	"back-to-list": "Back to Post Queue",
 	"user": "Benutzer",
+	"when": "When",
 	"category": "Kategorie",
 	"title": "Titel",
 	"content": "Inhalt",
@@ -19,6 +23,7 @@
 	"notify": "Benachrichtigen",
 	"notify-user": "Benutzer benachrichtigen",
 	"confirm-reject": "Möchtest Du diesen Beitrag ablehnen?",
+	"confirm-remove": "Do you want to remove this post?",
 	"bulk-actions": "Massenaktionen",
 	"accept-all": "Alle akzeptieren",
 	"accept-selected": "Ausgewählte akzeptieren",
@@ -26,6 +31,10 @@
 	"reject-all-confirm": "Möchtest Du alle Beiträge ablehnen?",
 	"reject-selected": "Ausgewählte ablehnen",
 	"reject-selected-confirm": "Möchtest Du %1 ausgewählte Beiträge ablehnen?",
+	"remove-all": "Remove all",
+	"remove-all-confirm": "Do you want to remove all posts?",
+	"remove-selected": "Remove Selected",
+	"remove-selected-confirm": "Do you want to remove %1 selected posts?",
 	"bulk-accept-success": "%1 Beiträge akzeptiert",
 	"bulk-reject-success": "%1 Beiträge abgelehnt"
 }

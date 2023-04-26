@@ -119,4 +119,6 @@ get:
                     description: A category identifier
                   group:
                     type: string
+                  isAdminPriv:
+                    type: boolean
               - $ref: ../../../../components/schemas/CommonProps.yaml#/CommonProps

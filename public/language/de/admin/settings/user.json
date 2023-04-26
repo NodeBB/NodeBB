@@ -29,6 +29,8 @@
 	"session-time-days": "Tage",
 	"session-time-seconds": "Sekunden",
 	"session-time-help": "Diese Werte legen fest, wie lange ein Benutzer angemeldet bleibt, wenn er die Option &quot;Eingeloggt bleiben&quot; beim Login aktiviert. Beachte, dass nur einer dieser Werte verwendet wird. Wenn <i>Sekunden</i> nicht festgelegt wurden, greifen wir auf <i>Tage</i> zurück. Wenn <i>Tage</i> nicht festlegt wurden, werden standardmäßig <i>14 Tage</i> verwendet.",
+	"session-duration": "Session length if \"Remember Me\" is not checked (seconds)",
+	"session-duration-help": "By default — or if set to <code>0</code> — a user will stay logged in for the duration of the session (e.g. however long the browser window/tab remains open). Set this value to explicitly invalidate the session after the specified number of seconds.",
 	"online-cutoff": "Minuten nachdem der Benutzer als inaktiv betrachtet wird",
 	"online-cutoff-help": "Wenn der Benutzer für diese Dauer keine Aktionen ausführt, wird er als inaktiv betrachtet und erhält keine Echtzeit-Updates.",
 	"registration": "Benutzer Registrierung",

@@ -49,7 +49,6 @@
 	"alert.confirm-moderate": "<strong>Bist Du sicher, dass du dieser Gruppe das Moderationsrecht gewähren möchtest?</strong> Diese Gruppe ist öffentlich, und alle Benutzer können nach Belieben beitreten.",
 	"alert.confirm-admins-mods": "<strong>Bist Du sicher, dass du  \"Administrator & Moderator\" Rechte zu dieser Gruppe hinzufügen willst?</strong>Benutzer mit diesen Rechten können andere Benutzer in privilegierte Positionen heraufstufen und herabstufen, <em>super Administrator eingeschlossen!</em>",
 	"alert.confirm-save": "Bitte bestätige Deine Absicht, diese Rechte zu speichern",
-	"alert.saved": "Änderungen an Rechten gespeichert und angewendet",
 	"alert.confirm-discard": "Bist du sicher, dass du die Änderungen an den Rechten verwerfen möchtest?",
 	"alert.discarded": "Änderungen an Rechten verworfen",
 	"alert.confirm-copyToAll": "Bist Du dir sicher, dass Du die Rechte von <strong>%1</strong> auf <strong>alle Kategorien</strong> anwenden möchtest?",

@@ -1,5 +1,6 @@
 {
     "register": "Registruotis",
+    "already-have-account": "Already have an account?",
     "cancel_registration": "Cancel Registration",
     "help.email": "Pagal nutylėjimą, jūsų el. paštas nebus viešai matomas.",
     "help.username_restrictions": "Unikalus vartotojo vardas %1-%2 simbolių ilgio. Kiti vartotojai galės jus minėti @<span id='yourUsername'>vartotojas</span>.",

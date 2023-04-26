@@ -1,5 +1,7 @@
 {
+    "all-tags": "Wszystkie tagi",
     "no_tag_topics": "Nie ma tematów z tym tagiem",
+    "no-tags-found": "Nie znaleziono tagów",
     "tags": "Tagi",
     "enter_tags_here": "Wpisz tagi tutaj, każdy o długości od %1 do %2 znaków.",
     "enter_tags_here_short": "Wpisz tagi...",

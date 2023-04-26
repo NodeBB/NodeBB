@@ -191,6 +191,7 @@ Flags.list = async function (data) {
 		query: data.query,
 	});
 	flagIds = await Flags.sort(flagIds, data.sort);
+	const count = flagIds.length;
 
 	// Create subset for parsing based on page number (n=20)
 	const flagsPerPage = Math.abs(parseInt(filters.perPage, 10) || 1);
@@ -223,6 +224,7 @@ Flags.list = async function (data) {
 
 	return {
 		flags: payload.flags,
+		count,
 		page: payload.page,
 		pageCount: pageCount,
 	};
@@ -767,6 +769,13 @@ Flags.getHistory = async function (flagId) {
 			datetimeISO: utils.toISOString(entry.score),
 		};
 	});
+
+	// turn assignee uids into usernames
+	await Promise.all(history.map(async (entry) => {
+		if (entry.fields.hasOwnProperty('assignee')) {
+			entry.fields.assignee = await user.getUserField(entry.fields.assignee, 'username');
+		}
+	}));
 
 	// Append ban history and username change data
 	history = await mergeBanHistory(history, targetUid, uids);

@@ -29,6 +29,8 @@
 	"session-time-days": "Jours",
 	"session-time-seconds": "Secondes",
 	"session-time-help": "Ces valeurs permettent de définir la durée pendant laquelle un utilisateur reste connecté lorsqu'il consulte le lien \"Se souvenir de moi\". Notez que seulement une de ces valeurs sera utilisée. S'il n'y a pas de valeur en <i>secondes</i>, la valeur sera en <i>jours</i>. S'il n'y a pas de valeur en <i>jours</i>, la valeur sera par défaut est <i>14 jours</i>.",
+	"session-duration": "Session length if \"Remember Me\" is not checked (seconds)",
+	"session-duration-help": "By default — or if set to <code>0</code> — a user will stay logged in for the duration of the session (e.g. however long the browser window/tab remains open). Set this value to explicitly invalidate the session after the specified number of seconds.",
 	"online-cutoff": "Minutes après que l'utilisateur soit considéré comme inactif",
 	"online-cutoff-help": "Si l'utilisateur n'effectue aucune action pendant cette durée, il est considéré comme inactif et ne reçoit pas de mises à jour en temps réel.",
 	"registration": "Inscription des utilisateurs",

@@ -6,7 +6,6 @@ define('forum/tags', ['forum/infinitescroll', 'alerts'], function (infinitescrol
 
 	Tags.init = function () {
 		app.enterRoom('tags');
-		$('#tag-search').focus();
 		$('#tag-search').on('input propertychange', utils.debounce(function () {
 			if (!$('#tag-search').val().length) {
 				return resetSearch();

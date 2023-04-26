@@ -8,9 +8,9 @@
 	"containers.none": "Отсутствует",
 	"container.well": "Well",
 	"container.jumbotron": "Jumbotron",
-	"container.panel": "Панель",
-	"container.panel-header": "Заголовок панели",
-	"container.panel-body": "Тело панели",
+	"container.card": "Card",
+	"container.card-header": "Card Header",
+	"container.card-body": "Card Body",
 	"container.alert": "Уведомление",
 
 	"alert.confirm-delete": "Вы уверены, что хотите удалить этот виджет?",

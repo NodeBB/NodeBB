@@ -1,8 +1,12 @@
 
 {
 	"post-queue": "게시 대기열",
-	"description": "게시 대기열에 글이 없습니다. <br> 이 기능을 활성화하기 위해서는 <a href=\"%1\">설정 &rarr; 포스트 &rarr; 게시 대기열</a>로 이동해서 <strong>게시 대기열</strong> 기능을 활성화해주세요.",
+	"no-queued-posts": "There are no posts in the post queue.",
+	"no-single-post": "The topic or post you are looking for is no longer in the queue. It has likely been approved or deleted already.",
+	"enabling-help": "To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
+	"back-to-list": "Back to Post Queue",
 	"user": "사용자",
+	"when": "When",
 	"category": "카테고리",
 	"title": "제목",
 	"content": "내용",
@@ -19,6 +23,7 @@
 	"notify": "Notify",
 	"notify-user": "Notify User",
 	"confirm-reject": "Do you want to reject this post?",
+	"confirm-remove": "Do you want to remove this post?",
 	"bulk-actions": "Bulk Actions",
 	"accept-all": "Accept All",
 	"accept-selected": "Accept Selected",
@@ -26,6 +31,10 @@
 	"reject-all-confirm": "Do you want to reject all posts?",
 	"reject-selected": "Reject Selected",
 	"reject-selected-confirm": "Do you want to reject %1 selected posts?",
+	"remove-all": "Remove all",
+	"remove-all-confirm": "Do you want to remove all posts?",
+	"remove-selected": "Remove Selected",
+	"remove-selected-confirm": "Do you want to remove %1 selected posts?",
 	"bulk-accept-success": "%1 posts accepted",
 	"bulk-reject-success": "%1 posts rejected"
 }

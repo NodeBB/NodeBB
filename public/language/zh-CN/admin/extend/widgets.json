@@ -8,9 +8,9 @@
 	"containers.none": "无",
 	"container.well": "Well",
 	"container.jumbotron": "超大屏幕",
-	"container.panel": "面板",
-	"container.panel-header": "面板标题",
-	"container.panel-body": "面板内容",
+	"container.card": "卡",
+	"container.card-header": "卡标题",
+	"container.card-body": "卡内容",
 	"container.alert": "警报",
 
 	"alert.confirm-delete": "确认删除此窗口部件？",

@@ -11,7 +11,7 @@ define('settings/array', function () {
 	 */
 	function createRemoveButton(elements) {
 		const rm = $(helper.createElement('button', {
-			class: 'btn btn-xs btn-primary remove',
+			class: 'btn btn-sm btn-primary remove',
 			title: 'Remove Item',
 		}, '-'));
 		rm.click(function (event) {

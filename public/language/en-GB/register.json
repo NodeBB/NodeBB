@@ -1,5 +1,6 @@
 {
     "register": "Register",
+    "already-have-account": "Already have an account?",
     "cancel_registration": "Cancel Registration",
     "help.email": "By default, your email will be hidden from the public.",
     "help.username_restrictions": "A unique username between %1 and %2 characters. Others can mention you with @<span id='yourUsername'>username</span>.",

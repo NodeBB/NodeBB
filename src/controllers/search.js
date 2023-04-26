@@ -2,14 +2,18 @@
 'use strict';
 
 const validator = require('validator');
+const _ = require('lodash');
 
 const db = require('../database');
 const meta = require('../meta');
 const plugins = require('../plugins');
 const search = require('../search');
 const categories = require('../categories');
+const user = require('../user');
+const topics = require('../topics');
 const pagination = require('../pagination');
 const privileges = require('../privileges');
+const translator = require('../translator');
 const utils = require('../utils');
 const helpers = require('./helpers');
 
@@ -57,21 +61,20 @@ searchController.search = async function (req, res, next) {
 		categories: req.query.categories,
 		searchChildren: req.query.searchChildren,
 		hasTags: req.query.hasTags,
-		replies: req.query.replies,
-		repliesFilter: req.query.repliesFilter,
-		timeRange: req.query.timeRange,
-		timeFilter: req.query.timeFilter,
-		sortBy: req.query.sortBy || meta.config.searchDefaultSortBy || '',
-		sortDirection: req.query.sortDirection,
+		replies: validator.escape(String(req.query.replies || '')),
+		repliesFilter: validator.escape(String(req.query.repliesFilter || '')),
+		timeRange: validator.escape(String(req.query.timeRange || '')),
+		timeFilter: validator.escape(String(req.query.timeFilter || '')),
+		sortBy: validator.escape(String(req.query.sortBy || '')) || meta.config.searchDefaultSortBy || '',
+		sortDirection: validator.escape(String(req.query.sortDirection || '')),
 		page: page,
 		itemsPerPage: req.query.itemsPerPage,
 		uid: req.uid,
 		qs: req.query,
 	};
 
-	const [searchData, categoriesData] = await Promise.all([
+	const [searchData] = await Promise.all([
 		search.search(data),
-		buildCategories(req.uid, searchOnly),
 		recordSearch(data),
 	]);
 
@@ -84,16 +87,55 @@ searchController.search = async function (req, res, next) {
 		return res.json(searchData);
 	}
 
-	searchData.allCategories = categoriesData;
-	searchData.allCategoriesCount = Math.max(10, Math.min(20, categoriesData.length));
 
 	searchData.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[global:search]]' }]);
-	searchData.expandSearch = !req.query.term;
-
 	searchData.showAsPosts = !req.query.showAs || req.query.showAs === 'posts';
 	searchData.showAsTopics = req.query.showAs === 'topics';
 	searchData.title = '[[global:header.search]]';
+	if (Array.isArray(data.categories)) {
+		searchData.selectedCids = data.categories.map(cid => validator.escape(String(cid)));
+		if (!searchData.selectedCids.includes('all') && searchData.selectedCids.length) {
+			searchData.selectedCategory = { cid: 0 };
+		}
+	}
 
+	searchData.filters = {
+		replies: {
+			active: !!data.repliesFilter,
+			label: `[[search:replies-${data.repliesFilter}-count, ${data.replies}]]`,
+		},
+		time: {
+			active: !!(data.timeFilter && data.timeRange),
+			label: `[[search:time-${data.timeFilter}-than-${data.timeRange}]]`,
+		},
+		sort: {
+			active: !!(data.sortBy && data.sortBy !== 'relevance'),
+			label: `[[search:sort-by-${data.sortBy}-${data.sortDirection}]]`,
+		},
+		users: {
+			active: !!(data.postedBy),
+			label: translator.compile(
+				'search:posted-by-usernames',
+				(Array.isArray(data.postedBy) ? data.postedBy : [])
+					.map(u => validator.escape(String(u))).join(', ')
+			),
+		},
+		tags: {
+			active: !!(Array.isArray(data.hasTags) && data.hasTags.length),
+			label: translator.compile(
+				'search:tags-x',
+				(Array.isArray(data.hasTags) ? data.hasTags : [])
+					.map(u => validator.escape(String(u))).join(', ')
+			),
+		},
+		categories: {
+			active: !!(Array.isArray(data.categories) && data.categories.length),
+			label: await buildSelectedCategoryLabel(searchData.selectedCids),
+		},
+	};
+
+	searchData.userFilterSelected = await getSelectedUsers(data.postedBy);
+	searchData.tagFilterSelected = getSelectedTags(data.hasTags);
 	searchData.searchDefaultSortBy = meta.config.searchDefaultSortBy || '';
 	searchData.searchDefaultIn = meta.config.searchDefaultIn || 'titlesposts';
 	searchData.privileges = userPrivileges;
@@ -105,41 +147,63 @@ const searches = {};
 
 async function recordSearch(data) {
 	const { query, searchIn } = data;
-	if (query) {
-		const cleanedQuery = String(query).trim().toLowerCase().slice(0, 255);
-		if (['titles', 'titlesposts', 'posts'].includes(searchIn) && cleanedQuery.length > 2) {
-			searches[data.uid] = searches[data.uid] || { timeoutId: 0, queries: [] };
-			searches[data.uid].queries.push(cleanedQuery);
-			if (searches[data.uid].timeoutId) {
-				clearTimeout(searches[data.uid].timeoutId);
-			}
-			searches[data.uid].timeoutId = setTimeout(async () => {
-				if (searches[data.uid] && searches[data.uid].queries) {
-					const copy = searches[data.uid].queries.slice();
-					const filtered = searches[data.uid].queries.filter(
-						q => !copy.find(query => query.startsWith(q) && query.length > q.length)
-					);
-					delete searches[data.uid];
-					await Promise.all(filtered.map(query => db.sortedSetIncrBy('searches:all', 1, query)));
-				}
-			}, 5000);
+	if (!query || parseInt(data.qs.composer, 10) === 1) {
+		return;
+	}
+	const cleanedQuery = String(query).trim().toLowerCase().slice(0, 255);
+	if (['titles', 'titlesposts', 'posts'].includes(searchIn) && cleanedQuery.length > 2) {
+		searches[data.uid] = searches[data.uid] || { timeoutId: 0, queries: [] };
+		searches[data.uid].queries.push(cleanedQuery);
+		if (searches[data.uid].timeoutId) {
+			clearTimeout(searches[data.uid].timeoutId);
 		}
+		searches[data.uid].timeoutId = setTimeout(async () => {
+			if (searches[data.uid] && searches[data.uid].queries) {
+				const copy = searches[data.uid].queries.slice();
+				const filtered = searches[data.uid].queries.filter(
+					q => !copy.find(query => query.startsWith(q) && query.length > q.length)
+				);
+				delete searches[data.uid];
+				const dayTimestamp = (new Date());
+				dayTimestamp.setHours(0, 0, 0, 0);
+				await Promise.all(_.uniq(filtered).map(async (query) => {
+					await db.sortedSetIncrBy('searches:all', 1, query);
+					await db.sortedSetIncrBy(`searches:${dayTimestamp.getTime()}`, 1, query);
+				}));
+			}
+		}, 5000);
 	}
 }
 
-async function buildCategories(uid, searchOnly) {
-	if (searchOnly) {
+async function getSelectedUsers(postedBy) {
+	if (!Array.isArray(postedBy) || !postedBy.length) {
 		return [];
 	}
+	const uids = await user.getUidsByUsernames(postedBy);
+	return await user.getUsersFields(uids, ['username', 'userslug', 'picture']);
+}
 
-	const cids = await categories.getCidsByPrivilege('categories:cid', uid, 'read');
-	let categoriesData = await categories.getCategoriesData(cids);
-	categoriesData = categoriesData.filter(category => category && !category.link);
-	categoriesData = categories.getTree(categoriesData);
-	categoriesData = categories.buildForSelectCategories(categoriesData, ['text', 'value']);
+function getSelectedTags(hasTags) {
+	if (!Array.isArray(hasTags) || !hasTags.length) {
+		return [];
+	}
+	const tags = hasTags.map(tag => ({ value: tag }));
+	return topics.getTagData(tags);
+}
 
-	return [
-		{ value: 'all', text: '[[unread:all_categories]]' },
-		{ value: 'watched', text: '[[category:watched-categories]]' },
-	].concat(categoriesData);
+async function buildSelectedCategoryLabel(selectedCids) {
+	let label = '[[search:categories]]';
+	if (Array.isArray(selectedCids)) {
+		if (selectedCids.length > 1) {
+			label = `[[search:categories-x, ${selectedCids.length}]]`;
+		} else if (selectedCids.length === 1 && selectedCids[0] === 'watched') {
+			label = `[[search:categories-watched-categories]]`;
+		} else if (selectedCids.length === 1 && parseInt(selectedCids[0], 10)) {
+			const categoryData = await categories.getCategoryData(selectedCids[0]);
+			if (categoryData && categoryData.name) {
+				label = `[[search:categories-x, ${categoryData.name}]]`;
+			}
+		}
+	}
+	return label;
 }

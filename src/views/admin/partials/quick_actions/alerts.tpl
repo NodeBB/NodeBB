@@ -1,10 +1,10 @@
-<div class="alert <!-- IF upgradeAvailable -->alert-warning<!-- ELSE -->alert-info<!-- END --> well-sm">
+<div class="alert {{{ if upgradeAvailable }}}alert-warning{{{ else }}}alert-info{{{ end }}}">
 	<span>[[admin/menu:alerts.version, {version}]]</span>
-	<!-- IF upgradeAvailable -->
+	{{{ if upgradeAvailable }}}
 	<span style="margin-left: 10px">
 		<a href="https://docs.nodebb.org/configuring/upgrade/" target="_blank">
 			<u>[[admin/menu:alerts.upgrade, {latestVersion}]]</u>
 		</a>
 	</span>
-	<!-- END -->
+	{{{ end }}}
 </div>

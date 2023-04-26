@@ -116,13 +116,13 @@ describe('socket.io', () => {
 	});
 
 	it('should get installed themes', (done) => {
-		const themes = ['nodebb-theme-lavender', 'nodebb-theme-persona', 'nodebb-theme-vanilla'];
+		const themes = ['nodebb-theme-persona'];
 		io.emit('admin.themes.getInstalled', (err, data) => {
 			assert.ifError(err);
 			assert(data);
 			const installed = data.map(theme => theme.id);
 			themes.forEach((theme) => {
-				assert.notEqual(installed.indexOf(theme), -1);
+				assert(installed.includes(theme));
 			});
 			done();
 		});
@@ -741,7 +741,7 @@ describe('socket.io', () => {
 
 		it('should not generate code if rate limited', (done) => {
 			socketUser.reset.send({ uid: 0 }, 'regular@test.com', (err) => {
-				assert.ifError(err);
+				assert(err);
 
 				async.parallel({
 					count: async.apply(db.sortedSetCount.bind(db), 'reset:issueDate', 0, Date.now()),

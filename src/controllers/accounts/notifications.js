@@ -54,8 +54,14 @@ notificationsController.get = async function (req, res, next) {
 		return next();
 	}
 
-	const nids = await user.notifications.getAll(req.uid, selectedFilter.filter);
-	let notifications = await user.notifications.getNotifications(nids, req.uid);
+	const data = await user.notifications.getAllWithCounts(req.uid, selectedFilter.filter);
+	let notifications = await user.notifications.getNotifications(data.nids, req.uid);
+
+	allFilters.forEach((filterData) => {
+		if (filterData && filterData.filter) {
+			filterData.count = data.counts[filterData.filter] || 0;
+		}
+	});
 
 	const pageCount = Math.max(1, Math.ceil(notifications.length / itemsPerPage));
 	notifications = notifications.slice(start, stop + 1);

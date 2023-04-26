@@ -1,8 +1,12 @@
 
 {
 	"post-queue": "Fila de Posts",
-	"description": "Não há posts na fila de posts. <br> Para habilitar essa função, vá até <a href=\"%1\">Configurações → Post → Fila de Posts</a> e habilite <strong>Fila de Posts</strong>.",
+	"no-queued-posts": "There are no posts in the post queue.",
+	"no-single-post": "The topic or post you are looking for is no longer in the queue. It has likely been approved or deleted already.",
+	"enabling-help": "To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
+	"back-to-list": "Back to Post Queue",
 	"user": "Usuário",
+	"when": "When",
 	"category": "Categoria",
 	"title": "Título",
 	"content": "Conteúdo",
@@ -19,6 +23,7 @@
 	"notify": "Notify",
 	"notify-user": "Notify User",
 	"confirm-reject": "Do you want to reject this post?",
+	"confirm-remove": "Do you want to remove this post?",
 	"bulk-actions": "Bulk Actions",
 	"accept-all": "Accept All",
 	"accept-selected": "Accept Selected",
@@ -26,6 +31,10 @@
 	"reject-all-confirm": "Do you want to reject all posts?",
 	"reject-selected": "Reject Selected",
 	"reject-selected-confirm": "Do you want to reject %1 selected posts?",
+	"remove-all": "Remove all",
+	"remove-all-confirm": "Do you want to remove all posts?",
+	"remove-selected": "Remove Selected",
+	"remove-selected-confirm": "Do you want to remove %1 selected posts?",
 	"bulk-accept-success": "%1 posts accepted",
 	"bulk-reject-success": "%1 posts rejected"
 }

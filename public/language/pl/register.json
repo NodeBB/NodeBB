@@ -1,5 +1,6 @@
 {
     "register": "Rejestracja",
+    "already-have-account": "Posiadasz już konto?",
     "cancel_registration": "Anuluj rejestrację",
     "help.email": "Domyślnie Twój adres e-mail będzie ukryty.",
     "help.username_restrictions": "Unikalna nazwa użytkownika licząca od %1 do %2 znaków. Inni użytkownicy mogą Cię zawołać, pisząc @<span id='yourUsername'>nazwa użytkownika</span>.",

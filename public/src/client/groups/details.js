@@ -67,13 +67,13 @@ define('forum/groups/details', [
 
 		handleMemberInvitations();
 
-		components.get('groups/activity').find('.content img:not(.not-responsive)').addClass('img-responsive');
+		components.get('groups/activity').find('.content img:not(.not-responsive)').addClass('img-fluid');
 
 		detailsPage.on('click', '[data-action]', function () {
 			const btnEl = $(this);
 			const userRow = btnEl.parents('[data-uid]');
-			const ownerFlagEl = userRow.find('.member-name > i');
-			const isOwner = !ownerFlagEl.hasClass('invisible');
+			const ownerFlagEl = userRow.find('[component="groups/owner/icon"]');
+			const isOwner = !!parseInt(userRow.attr('data-isowner'), 10);
 			const uid = userRow.attr('data-uid');
 			const action = btnEl.attr('data-action');
 
@@ -112,26 +112,55 @@ define('forum/groups/details', [
 					api.del('/groups/' + ajaxify.data.group.slug + '/membership/' + (uid || app.user.uid), undefined).then(() => ajaxify.refresh()).catch(alerts.error);
 					break;
 
-				// TODO (14/10/2020): rewrite these to use api module and merge with above 2 case blocks
-				case 'accept': // intentional fall-throughs!
-				case 'reject':
-				case 'issueInvite':
-				case 'rescindInvite':
-				case 'acceptInvite':
-				case 'rejectInvite':
-				case 'acceptAll':
-				case 'rejectAll':
-					socket.emit('groups.' + action, {
-						toUid: uid,
-						groupName: groupName,
-					}, function (err) {
-						if (!err) {
-							ajaxify.refresh();
-						} else {
-							alerts.error(err);
-						}
-					});
+				case 'accept':
+					api.put(`/groups/${ajaxify.data.group.slug}/pending/${uid}`).then(() => ajaxify.refresh()).catch(alerts.error);
 					break;
+
+				case 'reject':
+					api.del(`/groups/${ajaxify.data.group.slug}/pending/${uid}`).then(() => ajaxify.refresh()).catch(alerts.error);
+					break;
+
+				case 'issueInvite':
+					api.post(`/groups/${ajaxify.data.group.slug}/invites/${uid}`).then(() => ajaxify.refresh()).catch(alerts.error);
+					break;
+
+				case 'acceptInvite':
+					api.put(`/groups/${ajaxify.data.group.slug}/invites/${app.user.uid}`).then(() => {
+						if (uid) {
+							userRow.remove();
+						} else {
+							ajaxify.refresh();
+						}
+					}).catch(alerts.error);
+					break;
+
+				case 'rescindInvite': // falls through
+				case 'rejectInvite':
+					api.del(`/groups/${ajaxify.data.group.slug}/invites/${uid || app.user.uid}`).then(() => {
+						if (uid) {
+							userRow.remove();
+						} else {
+							ajaxify.refresh();
+						}
+					}).catch(alerts.error);
+					break;
+
+				case 'acceptAll': // falls throughs
+				case 'rejectAll': {
+					const listEl = document.querySelector('[component="groups/pending"]');
+					if (!listEl) {
+						return;
+					}
+
+					const method = action === 'acceptAll' ? 'put' : 'del';
+					let uids = Array.prototype.map.call(listEl.querySelectorAll('[data-uid]'), el => parseInt(el.getAttribute('data-uid'), 10));
+					uids = uids.filter((uid, idx) => uids.indexOf(uid) === idx);
+
+					Promise.all(uids.map(async uid => api[method](`/groups/${ajaxify.data.group.slug}/pending/${uid}`))).then(() => {
+						ajaxify.refresh();
+					}).catch(alerts.error);
+					break;
+				}
 			}
 		});
 	};
@@ -141,8 +170,8 @@ define('forum/groups/details', [
 		const labelColorValueEl = settingsFormEl.find('[name="labelColor"]');
 		const textColorValueEl = settingsFormEl.find('[name="textColor"]');
 		const iconBtn = settingsFormEl.find('[data-action="icon-select"]');
-		const previewEl = settingsFormEl.find('.label');
-		const previewElText = settingsFormEl.find('.label-text');
+		const previewEl = settingsFormEl.find('.badge');
+		const previewElText = settingsFormEl.find('.badge-text');
 		const previewIcon = previewEl.find('i');
 		const userTitleEl = settingsFormEl.find('[name="userTitle"]');
 		const userTitleEnabledEl = settingsFormEl.find('[name="userTitleEnabled"]');
@@ -165,7 +194,7 @@ define('forum/groups/details', [
 
 		// If the user title changes, update that too
 		userTitleEl.on('keyup', function () {
-			previewElText.translateText((this.value || settingsFormEl.find('#name').val()));
+			previewElText.translateText((userTitleEl.val()));
 		});
 
 		// Disable user title customisation options if the the user title itself is disabled
@@ -213,12 +242,10 @@ define('forum/groups/details', [
 			});
 
 			api.put(`/groups/${ajaxify.data.group.slug}`, settings).then(() => {
-				if (settings.name) {
+				if (settings.name !== ajaxify.data.group.name) {
 					let pathname = window.location.pathname;
 					pathname = pathname.slice(1, pathname.lastIndexOf('/') + 1);
 					ajaxify.go(pathname + slugify(settings.name));
-				} else {
-					ajaxify.refresh();
 				}
 
 				alerts.success('[[groups:event.updated]]');
@@ -245,37 +272,35 @@ define('forum/groups/details', [
 		if (!ajaxify.data.group.isOwner) {
 			return;
 		}
-
+		async function updateList() {
+			const data = await api.get(`/api/groups/${ajaxify.data.group.slug}`);
+			const html = await app.parseAndTranslate('groups/details', 'group.invited', { group: data.group });
+			$('[component="groups/invited"] tbody tr').remove();
+			$('[component="groups/invited"] tbody').html(html);
+		}
 		const searchInput = $('[component="groups/members/invite"]');
 		require(['autocomplete'], function (autocomplete) {
 			autocomplete.user(searchInput, function (event, selected) {
-				socket.emit('groups.issueInvite', {
-					toUid: selected.item.user.uid,
-					groupName: ajaxify.data.group.name,
-				}, function (err) {
-					if (err) {
-						return alerts.error(err);
-					}
-					ajaxify.refresh();
-				});
+				api.post(`/groups/${ajaxify.data.group.slug}/invites/${selected.item.user.uid}`).then(() => updateList()).catch(alerts.error);
 			});
 		});
 
-		$('[component="groups/members/bulk-invite-button"]').on('click', function () {
-			const usernames = $('[component="groups/members/bulk-invite"]').val();
+		$('[component="groups/members/bulk-invite-button"]').on('click', async () => {
+			let usernames = $('[component="groups/members/bulk-invite"]').val();
 			if (!usernames) {
 				return false;
 			}
-			socket.emit('groups.issueMassInvite', {
-				usernames: usernames,
-				groupName: ajaxify.data.group.name,
-			}, function (err) {
-				if (err) {
-					return alerts.error(err);
-				}
-				ajaxify.refresh();
-			});
-			return false;
+
+			// Filter out bad usernames
+			usernames = usernames.split(',').map(username => slugify(username));
+			usernames = await Promise.all(usernames.map(slug => api.head(`/users/bySlug/${slug}`).then(() => slug).catch(() => false)));
+			usernames = usernames.filter(Boolean);
+
+			const uids = await Promise.all(usernames.map(slug => api.get(`/users/bySlug/${slug}`).then(({ uid }) => uid)));
+
+			await Promise.all(uids.map(async uid => api.post(`/groups/${ajaxify.data.group.slug}/invites/${uid}`))).then(() => {
+				updateList();
+			}).catch(alerts.error);
 		});
 	}
 

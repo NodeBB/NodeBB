@@ -8,9 +8,9 @@
 	"containers.none": "なし",
 	"container.well": "十分",
 	"container.jumbotron": "ジャンボトロン",
-	"container.panel": "パネル",
-	"container.panel-header": "パネルヘッダー",
-	"container.panel-body": "パネル本体",
+	"container.card": "Card",
+	"container.card-header": "Card Header",
+	"container.card-body": "Card Body",
 	"container.alert": "警告",
 
 	"alert.confirm-delete": "このウィジェットを削除してもよろしいですか？",

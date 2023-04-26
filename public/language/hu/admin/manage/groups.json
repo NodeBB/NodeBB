@@ -39,6 +39,5 @@
 	"revert": "Visszavonás",
 
 	"edit.no-users-found": "Nem található felhasználó",
-	"edit.confirm-remove-user": "Biztosan eltávolítod ezt a felhasználót?",
-	"edit.save-success": "Változtatások mentve!"
+	"edit.confirm-remove-user": "Biztosan eltávolítod ezt a felhasználót?"
 }

@@ -34,9 +34,16 @@ module.exports = {
 			},
 		},
 	},
+	snapshot: {
+		managedPaths: [new RegExp(`^(.+?[\\\\/]node_modules)[\\\\/](?!${activePlugins.join('|')})`)],
+	},
 	watchOptions: {
 		poll: 500,
 		aggregateTimeout: 250,
+	},
+	performance: {
+		maxEntrypointSize: 512000,
+		maxAssetSize: 1024000,
 	},
 	resolve: {
 		symlinks: false,

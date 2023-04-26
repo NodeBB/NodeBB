@@ -1,5 +1,6 @@
 {
     "register": "Regisztráció",
+    "already-have-account": "Already have an account?",
     "cancel_registration": "Regisztráció megszakítása",
     "help.email": "Alapértelmezetten az e-mail címed rejtve van a nyilvánosság előtt.",
     "help.username_restrictions": "Egyedi felhasználói név %1 és %2 karakterek között. A többiek az alábbi módon említhetnek meg: @<span id='yourUsername'>becenév</span>.",
@@ -22,7 +23,7 @@
     "registration-queue-auto-approve-time": "A fórum tagságod aktiválva lesz az elkövetkezendő %1 órában.",
     "interstitial.intro": "We'd like some additional information in order to update your account&hellip;",
     "interstitial.intro-new": "We'd like some additional information before we can create your account&hellip;",
-    "interstitial.errors-found": "Please review the entered information:",
+    "interstitial.errors-found": "Kérjük, tekintse át a megadott adatokat:",
     "gdpr_agree_data": "Hozzájárulok ahhoz, hogy személyes adataimat ez a weboldal gyűjtse és feldolgozza.",
     "gdpr_agree_email": "Hozzájárulok, hogy kapjak erről az oldalról összefoglalókat és értesítő emaileket.",
     "gdpr_consent_denied": "Hozzá kell járulnod ahhoz, hogy ez a feboldal megkapja a személyes információidat és emaileket küldhessen neked.",

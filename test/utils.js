@@ -2,6 +2,7 @@
 
 
 const assert = require('assert');
+const validator = require('validator');
 const { JSDOM } = require('jsdom');
 const slugify = require('../src/slugify');
 const db = require('./mocks/databasemock');
@@ -34,6 +35,7 @@ describe('Utility Methods', () => {
 		);
 		done();
 	});
+
 	it('should strip HTML tags', (done) => {
 		assert.strictEqual(utils.stripHTMLTags('<p>just <b>some</b> text</p>'), 'just some text');
 		assert.strictEqual(utils.stripHTMLTags('<p>just <b>some</b> text</p>', ['p']), 'just <b>some</b> text');
@@ -133,6 +135,15 @@ describe('Utility Methods', () => {
 		done();
 	});
 
+	it('should get language key', () => {
+		assert.strictEqual(utils.getLanguage(), 'en-GB');
+		global.window.utils = {};
+		global.window.config = { userLang: 'tr' };
+		assert.strictEqual(utils.getLanguage(), 'tr');
+		global.window.config = { defaultLang: 'de' };
+		assert.strictEqual(utils.getLanguage(), 'de');
+	});
+
 	it('should return true if string has language key', (done) => {
 		assert.equal(utils.hasLanguageKey('some text [[topic:title]] and [[user:reputaiton]]'), true);
 		done();
@@ -142,6 +153,43 @@ describe('Utility Methods', () => {
 		assert.equal(utils.hasLanguageKey('some text with no language keys'), false);
 		done();
 	});
+
+	it('should return bootstrap env', () => {
+		assert.strictEqual(utils.findBootstrapEnvironment(), 'xs');
+	});
+
+	it('should check if mobile', () => {
+		assert.strictEqual(utils.isMobile(), true);
+	});
+
+	it('should check password validity', () => {
+		global.ajaxify = {
+			data: {
+				minimumPasswordStrength: 1,
+				minimumPasswordLength: 6,
+			},
+		};
+		const zxcvbn = require('zxcvbn');
+
+		function check(pwd, expectedError) {
+			try {
+				utils.assertPasswordValidity(pwd, zxcvbn);
+				assert(false);
+			} catch (err) {
+				assert.strictEqual(err.message, expectedError);
+			}
+		}
+		check('123456', '[[user:weak_password]]');
+		check('', '[[user:change_password_error]]');
+		check('asd', '[[reset_password:password_too_short]]');
+		check(new Array(513).fill('a').join(''), '[[error:password-too-long]]');
+		utils.assertPasswordValidity('Yzsh31j!a', zxcvbn);
+	});
+
+	// it('should generate UUID', () => {
+	// TODO: add back when nodejs 18 is minimum
+	// assert(validator.isUUID(utils.generateUUID()));
+	// });
 
 	it('should shallow merge two objects', (done) => {
 		const a = { foo: 1, cat1: 'ginger' };

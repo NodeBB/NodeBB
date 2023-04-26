@@ -89,7 +89,7 @@
     "category-not-selected": "Aucune catégorie sélectionnée",
     "too-many-posts": "Vous ne pouvez poster que toutes les %1 seconde(s) - merci de patienter avant de publier à nouveau.",
     "too-many-posts-newbie": "En tant que nouvel utilisateur, vous ne pouvez poster que toutes les %1 seconde(s) jusqu'à ce que vous obteniez une réputation de %2 - patientez avant de publier de nouveau.",
-    "already-posting": "You are already posting",
+    "already-posting": "Vous pouvez poster",
     "tag-too-short": "Veuillez entrer un mot-clé plus long. Les mots-clés doivent contenir au moins %1 caractère(s).",
     "tag-too-long": "Veuillez entrer un mot-clé plus court. Les mot-clés ne peuvent excéder %1 caractère(s).",
     "not-enough-tags": "Pas assez de mots-clés. Les sujets doivent avoir au moins %1 mots-clé(s).",
@@ -101,6 +101,7 @@
     "guest-upload-disabled": "L'envoi de fichiers a été désactivé pour les invités",
     "cors-error": "Impossible d'envoyer l'image en raison d'une erreur de configuration CORS",
     "upload-ratelimit-reached": "Vous avez envoyé trop de fichiers à la fois. Veuillez réessayer plus tard.",
+    "upload-error-fallback": "Unable to upload image — %1",
     "scheduling-to-past": "Veuillez sélectionner une date ultérieure.",
     "invalid-schedule-date": "Veuillez saisir une date et une heure valide.",
     "cant-pin-scheduled": "Les sujets planifiés ne peuvent pas être (dé)épinglés.",
@@ -134,6 +135,8 @@
     "group-already-requested": "Votre demande d'adhésion a déjà été envoyée.",
     "group-join-disabled": "Vous ne pouvez pas rejoindre ce groupe pour le moment.",
     "group-leave-disabled": "Vous ne pouvez pas quitter ce groupe pour le moment.",
+    "group-user-not-pending": "User does not have a pending request to join this group.",
+    "gorup-user-not-invited": "User has not been invited to join this group.",
     "post-already-deleted": "Message déjà supprimé",
     "post-already-restored": "Message déjà restauré",
     "topic-already-deleted": "Sujet déjà supprimé",
@@ -224,5 +227,6 @@
     "api.429": "Vous avez fait trop de demandes, veuillez réessayer plus tard",
     "api.500": "Une erreur inattendue s'est produite lors de la tentative de traitement de votre demande.",
     "api.501": "L'accès n'est pas encore fonctionnel, veuillez réessayer demain",
-    "api.503": "L'accès n'est pas disponible actuellement en raison d'une configuration de serveur"
+    "api.503": "L'accès n'est pas disponible actuellement en raison d'une configuration de serveur",
+    "api.reauth-required": "The resource you are trying to access requires (re-)authentication."
 }

@@ -49,6 +49,7 @@
     "account/watched_categories": "%1's Watched Categories",
     "account/bookmarks": "%1's Bookmarked Posts",
     "account/settings": "Vartotojo nustatymai",
+    "account/settings-of": "Changing settings of %1",
     "account/watched": "Temos stebimos %1",
     "account/ignored": "Temos ignoruojamos %1",
     "account/upvoted": "Posts upvoted by %1",

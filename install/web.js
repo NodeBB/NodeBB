@@ -6,14 +6,14 @@ const bodyParser = require('body-parser');
 const fs = require('fs');
 const path = require('path');
 const childProcess = require('child_process');
-const less = require('less');
 
 const webpack = require('webpack');
 const nconf = require('nconf');
 
 const Benchpress = require('benchpressjs');
-const mkdirp = require('mkdirp');
+const { mkdirp } = require('mkdirp');
 const { paths } = require('../src/constants');
+const sass = require('../src/utils').getSass();
 
 const app = express();
 let server;
@@ -73,7 +73,7 @@ web.install = async function (port) {
 	try {
 		await Promise.all([
 			compileTemplate(),
-			compileLess(),
+			compileSass(),
 			runWebpack(),
 			copyCSS(),
 			loadDefaults(),
@@ -247,23 +247,28 @@ async function compileTemplate() {
 	]);
 }
 
-async function compileLess() {
+async function compileSass() {
 	try {
-		const installSrc = path.join(__dirname, '../public/less/install.less');
+		const installSrc = path.join(__dirname, '../public/scss/install.scss');
 		const style = await fs.promises.readFile(installSrc);
-		const css = await less.render(String(style), { filename: path.resolve(installSrc) });
-		await fs.promises.writeFile(path.join(__dirname, '../public/installer.css'), css.css);
+		const scssOutput = sass.compileString(String(style), {
+			loadPaths: [
+				path.join(__dirname, '../public/scss'),
+			],
+		});
+
+		await fs.promises.writeFile(path.join(__dirname, '../public/installer.css'), scssOutput.css.toString());
 	} catch (err) {
-		winston.error(`Unable to compile LESS: \n${err.stack}`);
+		winston.error(`Unable to compile SASS: \n${err.stack}`);
 		throw err;
 	}
 }
 
 async function copyCSS() {
-	const src = await fs.promises.readFile(
-		path.join(__dirname, '../node_modules/bootstrap/dist/css/bootstrap.min.css'), 'utf8'
+	await fs.promises.copyFile(
+		path.join(__dirname, '../node_modules/bootstrap/dist/css/bootstrap.min.css'),
+		path.join(__dirname, '../public/bootstrap.min.css'),
 	);
-	await fs.promises.writeFile(path.join(__dirname, '../public/bootstrap.min.css'), src);
 }
 
 async function loadDefaults() {

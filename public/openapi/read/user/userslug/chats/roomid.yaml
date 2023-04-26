@@ -298,6 +298,8 @@ get:
                               type: string
                         usernames:
                           type: string
+                        chatWithMessage:
+                          type: string
                   nextStart:
                     type: number
                   title:
@@ -311,4 +313,6 @@ get:
                       removed, etc.)
                   canViewInfo:
                     type: boolean
+                  chatWithMessage:
+                    type: string
               - $ref: ../../../../components/schemas/CommonProps.yaml#/CommonProps

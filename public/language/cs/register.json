@@ -1,5 +1,6 @@
 {
     "register": "Registrace",
+    "already-have-account": "Already have an account?",
     "cancel_registration": "Zrušit registraci",
     "help.email": "Ve výchozím nastavení bude váš e-mail skrytý.",
     "help.username_restrictions": "Jedinečné uživatelské jméno dlouhé %1 až %2 znaků. Ostatní uživatelé Vás mohou zmínit jako @<span id='yourUsername'>uživatelské jméno</span>.",

@@ -1,10 +1,6 @@
 'use strict';
 
-const util = require('util');
-let mkdirp = require('mkdirp');
-
-mkdirp = mkdirp.hasOwnProperty('native') ? mkdirp : util.promisify(mkdirp);
-const rimraf = require('rimraf');
+const { mkdirp } = require('mkdirp');
 const winston = require('winston');
 const path = require('path');
 const fs = require('fs');
@@ -68,7 +64,6 @@ async function getTemplateDirs(activePlugins) {
 		theme = themeConfig.baseTheme;
 	}
 
-	themeTemplates.push(nconf.get('base_templates_path'));
 	themeTemplates = _.uniq(themeTemplates.reverse());
 
 	const coreTemplatesPath = nconf.get('core_templates_path');
@@ -113,9 +108,7 @@ async function compileTemplate(filename, source) {
 Templates.compileTemplate = compileTemplate;
 
 async function compile() {
-	const _rimraf = util.promisify(rimraf);
-
-	await _rimraf(viewsPath);
+	await fs.promises.rm(viewsPath, { recursive: true, force: true });
 	await mkdirp(viewsPath);
 
 	let files = await plugins.getActive();

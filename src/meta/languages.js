@@ -4,13 +4,8 @@ const _ = require('lodash');
 const nconf = require('nconf');
 const path = require('path');
 const fs = require('fs');
-const util = require('util');
-let mkdirp = require('mkdirp');
+const { mkdirp } = require('mkdirp');
 
-mkdirp = mkdirp.hasOwnProperty('native') ? mkdirp : util.promisify(mkdirp);
-const rimraf = require('rimraf');
-
-const rimrafAsync = util.promisify(rimraf);
 
 const file = require('../file');
 const Plugins = require('../plugins');
@@ -137,7 +132,7 @@ async function assignFileToTranslations(translations, path) {
 }
 
 exports.build = async function buildLanguages() {
-	await rimrafAsync(buildLanguagesPath);
+	await fs.promises.rm(buildLanguagesPath, { recursive: true, force: true });
 	const data = await getTranslationMetadata();
 	await buildTranslations(data);
 };

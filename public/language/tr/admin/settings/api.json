@@ -11,6 +11,9 @@
 	"uid": "Kullanıcı ID",
 	"uid-help-text": "Bu jetonla ilişkilendirilecek bir Kullanıcı Kimliği belirtin. Kullanıcı kimliği 0 ise, diğer kullanıcıların kimliğini _uid parametresine göre üstlenebilen bir ana simge olarak kabul edilir.",
 	"description": "Açıklama",
+	"last-seen-ago": "Last used <span class=\"timeago\" title=\"%1\"></span>.",
+	"last-seen-on": "Last used on <span class=\"timeago\" title=\"%1\"></span>.",
+	"last-seen-never": "This key has never been used.",
 	"no-description": "Hiçbir açıklama belirtilmemiş.",
 	"token-on-save": "Form kaydedildikten sonra bir jeton oluşturulacak"
 }

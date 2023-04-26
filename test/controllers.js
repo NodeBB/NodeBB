@@ -7,8 +7,10 @@ const request = require('request');
 const requestAsync = require('request-promise-native');
 const fs = require('fs');
 const path = require('path');
+const util = require('util');
 
 const db = require('./mocks/databasemock');
+const api = require('../src/api');
 const categories = require('../src/categories');
 const topics = require('../src/topics');
 const posts = require('../src/posts');
@@ -20,6 +22,8 @@ const privileges = require('../src/privileges');
 const plugins = require('../src/plugins');
 const utils = require('../src/utils');
 const helpers = require('./helpers');
+
+const sleep = util.promisify(setTimeout);
 
 describe('Controllers', () => {
 	let tid;
@@ -594,6 +598,74 @@ describe('Controllers', () => {
 
 				assert.strictEqual(res.statusCode, 302);
 				assert.strictEqual(res.headers.location, `${nconf.get('relative_path')}/`);
+			});
+		});
+
+		describe('abort behaviour', () => {
+			let jar;
+			let token;
+
+			beforeEach(async () => {
+				jar = await helpers.registerUser({
+					username: utils.generateUUID().slice(0, 10),
+					password: utils.generateUUID(),
+				});
+				token = await helpers.getCsrfToken(jar);
+			});
+
+			it('should terminate the session and send user back to index if interstitials remain', async () => {
+				const res = await requestAsync(`${nconf.get('url')}/register/abort`, {
+					method: 'post',
+					jar,
+					json: true,
+					followRedirect: false,
+					simple: false,
+					resolveWithFullResponse: true,
+					headers: {
+						'x-csrf-token': token,
+					},
+				});
+
+				assert.strictEqual(res.statusCode, 302);
+				assert.strictEqual(res.headers['set-cookie'][0], `express.sid=; Path=${nconf.get('relative_path') || '/'}; Expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax`);
+				assert.strictEqual(res.headers.location, `${nconf.get('relative_path')}/`);
+			});
+
+			it('should preserve the session and send user back to user profile if no interstitials remain (e.g. GDPR OK + email change cancellation)', async () => {
+				// Submit GDPR consent
+				await requestAsync(`${nconf.get('url')}/register/complete`, {
+					method: 'post',
+					jar,
+					json: true,
+					followRedirect: false,
+					simple: false,
+					resolveWithFullResponse: true,
+					headers: {
+						'x-csrf-token': token,
+					},
+					form: {
+						gdpr_agree_data: 'on',
+						gdpr_agree_email: 'on',
+					},
+				});
+
+				// Start email change flow
+				await requestAsync(`${nconf.get('url')}/me/edit/email`, { jar });
+
+				const res = await requestAsync(`${nconf.get('url')}/register/abort`, {
+					method: 'post',
+					jar,
+					json: true,
+					followRedirect: false,
+					simple: false,
+					resolveWithFullResponse: true,
+					headers: {
+						'x-csrf-token': token,
+					},
+				});
+
+				assert.strictEqual(res.statusCode, 302);
+				assert(res.headers.location.match(/\/uid\/\d+$/));
 			});
 		});
 	});
@@ -1490,30 +1562,41 @@ describe('Controllers', () => {
 			});
 		});
 
-		it('should export users posts', (done) => {
-			request(`${nconf.get('url')}/api/user/foo/export/posts`, { jar: jar }, (err, res, body) => {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 200);
-				assert(body);
-				done();
+		describe('user data export routes', () => {
+			before(async () => {
+				const types = ['profile', 'uploads', 'posts'];
+				await Promise.all(types.map(async (type) => {
+					await api.users.generateExport({ uid: fooUid, ip: '127.0.0.1' }, { uid: fooUid, type });
+				}));
+				await sleep(5000);
 			});
-		});
 
-		it('should export users uploads', (done) => {
-			request(`${nconf.get('url')}/api/user/foo/export/uploads`, { jar: jar }, (err, res, body) => {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 200);
-				assert(body);
-				done();
+			it('should export users posts', (done) => {
+				console.log(`${nconf.get('url')}/api/v3/users/${fooUid}/exports/posts`);
+				request(`${nconf.get('url')}/api/v3/users/${fooUid}/exports/posts`, { jar: jar }, (err, res, body) => {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					assert(body);
+					done();
+				});
 			});
-		});
 
-		it('should export users profile', (done) => {
-			request(`${nconf.get('url')}/api/user/foo/export/profile`, { jar: jar }, (err, res, body) => {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 200);
-				assert(body);
-				done();
+			it('should export users uploads', (done) => {
+				request(`${nconf.get('url')}/api/v3/users/${fooUid}/exports/uploads`, { jar: jar }, (err, res, body) => {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					assert(body);
+					done();
+				});
+			});
+
+			it('should export users profile', (done) => {
+				request(`${nconf.get('url')}/api/v3/users/${fooUid}/exports/profile`, { jar: jar }, (err, res, body) => {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					assert(body);
+					done();
+				});
 			});
 		});
 
@@ -1621,23 +1704,13 @@ describe('Controllers', () => {
 			});
 		});
 
-		it('should return false if user can not edit user', (done) => {
-			user.create({ username: 'regularJoe', password: 'barbar' }, (err) => {
-				assert.ifError(err);
-				helpers.loginUser('regularJoe', 'barbar', (err, data) => {
-					assert.ifError(err);
-					const { jar } = data;
-					request(`${nconf.get('url')}/api/user/foo/info`, { jar: jar, json: true }, (err, res) => {
-						assert.ifError(err);
-						assert.equal(res.statusCode, 403);
-						request(`${nconf.get('url')}/api/user/foo/edit`, { jar: jar, json: true }, (err, res) => {
-							assert.ifError(err);
-							assert.equal(res.statusCode, 403);
-							done();
-						});
-					});
-				});
-			});
+		it('should return false if user can not edit user', async () => {
+			await user.create({ username: 'regularJoe', password: 'barbar' });
+			const { jar } = await helpers.loginUser('regularJoe', 'barbar');
+			let { statusCode } = await requestAsync(`${nconf.get('url')}/api/user/foo/info`, { jar: jar, json: true, simple: false, resolveWithFullResponse: true });
+			assert.equal(statusCode, 403);
+			({ statusCode } = await requestAsync(`${nconf.get('url')}/api/user/foo/edit`, { jar: jar, json: true, simple: false, resolveWithFullResponse: true }));
+			assert.equal(statusCode, 403);
 		});
 
 		it('should load correct user', (done) => {
@@ -1693,22 +1766,18 @@ describe('Controllers', () => {
 			});
 		});
 
-		it('should increase profile view', (done) => {
-			helpers.loginUser('regularJoe', 'barbar', (err, data) => {
-				assert.ifError(err);
-				const { jar } = data;
-				request(`${nconf.get('url')}/api/user/foo`, { jar: jar }, (err, res) => {
-					assert.ifError(err);
-					assert.equal(res.statusCode, 200);
-					setTimeout(() => {
-						user.getUserField(fooUid, 'profileviews', (err, viewcount) => {
-							assert.ifError(err);
-							assert(viewcount > 0);
-							done();
-						});
-					}, 500);
-				});
+		it('should increase profile view', async () => {
+			const { jar } = await helpers.loginUser('regularJoe', 'barbar');
+			const { statusCode } = await requestAsync(`${nconf.get('url')}/api/user/foo`, {
+				jar: jar,
+				simple: false,
+				resolveWithFullResponse: true,
 			});
+			assert.equal(statusCode, 200);
+
+			await sleep(500);
+			const viewcount = await user.getUserField(fooUid, 'profileviews');
+			assert(viewcount > 0);
 		});
 
 		it('should parse about me', (done) => {
@@ -1816,10 +1885,13 @@ describe('Controllers', () => {
 			assert.strictEqual(res.body, '/register/complete');
 
 			await requestAsync({
-				uri: `${nconf.get('url')}/register/abort?_csrf=${csrf_token}`,
+				uri: `${nconf.get('url')}/register/abort`,
 				method: 'post',
 				jar,
 				simple: false,
+				headers: {
+					'x-csrf-token': csrf_token,
+				},
 			});
 		});
 

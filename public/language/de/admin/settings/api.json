@@ -11,6 +11,9 @@
 	"uid": "Nutzer–ID",
 	"uid-help-text": "Gebe eine Benutzer-ID an, die diesem Token zugeordnet werden soll. Wenn die Benutzer-ID <code>0</code> ist, wird sie als <em>Master</em>-Token betrachtet, das basierend auf dem <code>_uid</code>-Parameter die Identität anderer Benutzer annehmen kann",
 	"description": "Beschreibung",
+	"last-seen-ago": "Last used <span class=\"timeago\" title=\"%1\"></span>.",
+	"last-seen-on": "Last used on <span class=\"timeago\" title=\"%1\"></span>.",
+	"last-seen-never": "This key has never been used.",
 	"no-description": "Keine Beschreibung angegeben.",
 	"token-on-save": "Token wird generiert, sobald das Formular gespeichert wird"
 }

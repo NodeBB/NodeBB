@@ -49,6 +49,7 @@
     "account/watched_categories": "%1 Categorías seguidas",
     "account/bookmarks": "%1's Mensajes marcados",
     "account/settings": "Preferencias",
+    "account/settings-of": "Changing settings of %1",
     "account/watched": "Temas seguidos por %1",
     "account/ignored": "Temas ignorados por %1",
     "account/upvoted": "Publicaciones votadas positivamente %1",

@@ -265,6 +265,13 @@ async function addTags(topicData, req, res) {
 			href: `${url}/category/${topicData.category.slug}`,
 		});
 	}
+
+	if (postAtIndex) {
+		res.locals.linkTags.push({
+			rel: 'author',
+			href: `${url}/user/${postAtIndex.user.userslug}`,
+		});
+	}
 }
 
 async function addOGImageTags(res, topicData, postAtIndex) {

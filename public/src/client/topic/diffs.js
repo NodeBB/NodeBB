@@ -109,7 +109,7 @@ define('forum/topic/diffs', ['api', 'bootbox', 'alerts', 'forum/topic/images'], 
 				params.unshift(blockName);
 			}
 
-			app.parseAndTranslate('partials/modals/post_history', ...params);
+			app.parseAndTranslate('modals/post-history', ...params);
 		});
 	}
 

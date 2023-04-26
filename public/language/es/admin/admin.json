@@ -4,8 +4,6 @@
 
 	"acp-title": "%1 | Panel de control de administrador NodeBB",
 	"settings-header-contents": "Contenidos",
-	"changes-saved": "Cambios guardados",
-	"changes-saved-message": "Tus cambios para la configuración de NodeBB han sido guardados.",
 	"changes-not-saved": "Cambios no guardados",
 	"changes-not-saved-message": "NodeBB ha encontrado un problema guardando tus cambios. (%1)"
 }

@@ -1,9 +1,9 @@
 <!-- IMPORT admin/partials/settings/header.tpl -->
 <div class="row logger">
 	<div class="col-lg-12">
-		<div class="panel panel-default">
-			<div class="panel-heading">[[admin/development/logger:logger-settings]]</div>
-			<div class="panel-body">
+		<div class="card">
+			<div class="card-header">[[admin/development/logger:logger-settings]]</div>
+			<div class="card-body">
 				<p>
 					[[admin/development/logger:description]]
 				</p>
@@ -14,7 +14,6 @@
 				<br/>
 
 				<form>
-
 					<label>
 						<input type="checkbox" data-field="loggerStatus"> <strong>[[admin/development/logger:enable-http]]</strong>
 					</label>

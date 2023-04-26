@@ -10,11 +10,19 @@ define('forum/topic/threadTools', [
 	'hooks',
 	'bootbox',
 	'alerts',
-], function (components, translator, handleBack, posts, api, hooks, bootbox, alerts) {
+	'bootstrap',
+], function (components, translator, handleBack, posts, api, hooks, bootbox, alerts, bootstrap) {
 	const ThreadTools = {};
 
 	ThreadTools.init = function (tid, topicContainer) {
 		renderMenu(topicContainer);
+
+		$('.topic-main-buttons [title]').tooltip({
+			container: '#content',
+			animation: false,
+		});
+
+		ThreadTools.observeTopicLabels($('[component="topic/labels"]'));
 
 		// function topicCommand(method, path, command, onComplete) {
 		topicContainer.on('click', '[component="topic/delete"]', function () {
@@ -117,6 +125,14 @@ define('forum/topic/threadTools', [
 			});
 		});
 
+		topicContainer.on('click', '[component="topic/merge"]', function () {
+			require(['forum/topic/merge'], function (merge) {
+				merge.init(function () {
+					merge.addTopic(ajaxify.data.tid);
+				});
+			});
+		});
+
 		topicContainer.on('click', '[component="topic/move-posts"]', function () {
 			require(['forum/topic/move-post'], function (movePosts) {
 				movePosts.init();
@@ -172,27 +188,47 @@ define('forum/topic/threadTools', [
 		}
 	};
 
-	function renderMenu(container) {
-		container.on('show.bs.dropdown', '.thread-tools', function () {
-			const $this = $(this);
-			const dropdownMenu = $this.find('.dropdown-menu');
-			if (dropdownMenu.html()) {
-				return;
+	ThreadTools.observeTopicLabels = function (labels) {
+		// show or hide topic/labels container depending on children visibility
+		const mut = new MutationObserver(function (mutations) {
+			const first = mutations[0];
+			if (first && first.attributeName === 'class') {
+				const visibleChildren = labels.children().filter((index, el) => !$(el).hasClass('hidden'));
+				labels.toggleClass('hidden', !visibleChildren.length);
 			}
+		});
 
-			dropdownMenu.toggleClass('hidden', true);
-			socket.emit('topics.loadTopicTools', { tid: ajaxify.data.tid, cid: ajaxify.data.cid }, function (err, data) {
-				if (err) {
-					return alerts.error(err);
+		labels.children().each((index, el) => {
+			mut.observe(el, { attributes: true });
+		});
+	};
+
+	function renderMenu(container) {
+		container = container.get(0);
+		if (!container) {
+			return;
+		}
+
+		container.querySelectorAll('.thread-tools').forEach((toolsEl) => {
+			toolsEl.addEventListener('show.bs.dropdown', (e) => {
+				const dropdownMenu = e.target.nextElementSibling;
+				if (!dropdownMenu) {
+					return;
 				}
-				app.parseAndTranslate('partials/topic/topic-menu-list', data, function (html) {
-					dropdownMenu.html(html);
-					dropdownMenu.toggleClass('hidden', false);
 
-					hooks.fire('action:topic.tools.load', {
-						element: dropdownMenu,
+				socket.emit('topics.loadTopicTools', { tid: ajaxify.data.tid, cid: ajaxify.data.cid }, function (err, data) {
+					if (err) {
+						return alerts.error(err);
+					}
+					app.parseAndTranslate('partials/topic/topic-menu-list', data, function (html) {
+						$(dropdownMenu).html(html);
+						hooks.fire('action:topic.tools.load', {
+							element: $(dropdownMenu),
+						});
 					});
 				});
+			}, {
+				once: true,
 			});
 		});
 	}
@@ -358,10 +394,12 @@ define('forum/topic/threadTools', [
 			unfollow: '[[topic:not-watching]]',
 			ignore: '[[topic:ignoring]]',
 		};
+
 		translator.translate(titles[state], function (translatedTitle) {
-			$('[component="topic/watch"] button')
-				.attr('title', translatedTitle)
-				.tooltip('fixTitle');
+			const tooltip = bootstrap.Tooltip.getInstance('[component="topic/watch"]');
+			if (tooltip) {
+				tooltip.setContent({ '.tooltip-inner': translatedTitle });
+			}
 		});
 
 		let menu = components.get('topic/following/menu');

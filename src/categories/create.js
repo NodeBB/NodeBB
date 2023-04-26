@@ -40,7 +40,7 @@ module.exports = function (Categories) {
 			order: order,
 			link: data.link || '',
 			numRecentReplies: 1,
-			class: (data.class ? data.class : 'col-md-3 col-xs-6'),
+			class: (data.class ? data.class : 'col-md-3 col-6'),
 			imageClass: 'cover',
 			isSection: 0,
 			subCategoriesPerPage: 10,

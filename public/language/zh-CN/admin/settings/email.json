@@ -5,8 +5,8 @@
 	"from": "发送者",
 	"from-help": "用于邮件中显示的发送者",
 
-	"confirmation-settings": "Confirmation",
-	"confirmation.expiry": "Hours to keep email confirmation link valid",
+	"confirmation-settings": "确认",
+	"confirmation.expiry": "验证邮件链接有效的小时数",
 
 	"smtp-transport": "SMTP 通信",
 	"smtp-transport.enabled": "启用 SMTP 通信",
@@ -14,9 +14,9 @@
 	"smtp-transport.service": "选择服务",
 	"smtp-transport.service-custom": "自定义",
 	"smtp-transport.service-help": "Select a service name above in order to use the known information about it. Alternatively, select &quot;Custom Service&quot; and enter the details below.",
-	"smtp-transport.gmail-warning1": "If you are using GMail as your email provider, you will have to generate an &quot;App Password&quot; in order for NodeBB to authenticate successfully. You can generate one at the <a href=\"https://myaccount.google.com/apppasswords\">App Passwords <i class=\"fa fa-external-link\"></i></a> page.",
-	"smtp-transport.gmail-warning2": "For more information about this workaround, <a href=\"https://nodemailer.com/usage/using-gmail/\">please consult this NodeMailer article <i class=\"fa fa-external-link\"></i></a> on the issue. An alternative would be to utilise a third-party emailer plugin such as SendGrid, Mailgun, etc. <a href=\"../extend/plugins\">Browse available plugins here</a>.",
-	"smtp-transport.auto-enable-toast": "It looks like you&apos;re configuring an SMTP transport. We enabled the \"SMTP Transport\" option for you.",
+	"smtp-transport.gmail-warning1": "如果您使用 GMail 作为您的邮件提供商，您需要生成一个“App 密码”让 NodeBB 可以正常鉴权。您可以在<a href=\"https://myaccount.google.com/apppasswords\">App 密码<i class=\"fa fa-external-link\"></i></a>页生成一个。",
+	"smtp-transport.gmail-warning2": "对此替代办法的更多信息，请查阅关于此问题的<a href=\"https://nodemailer.com/usage/using-gmail/\">NodeMailer 文章<i class=\"fa fa-external-link\"></i></a>。一个替代方法可能是使用一种第三方的邮件插件，例如 SendGrid，Mailgun，等等。<a href=\"../extend/plugins\">在此浏览可用的插件</a>。",
+	"smtp-transport.auto-enable-toast": "您似乎在配置一个 SMTP 通信。我们为您启用了 “SMTP 通信” 选项。",
 	"smtp-transport.host": "SMTP 主机名",
 	"smtp-transport.port": "SMTP 端口",
 	"smtp-transport.security": "连接安全设置",
@@ -45,7 +45,7 @@
 	"require-email-address-warning": "默认情况下，用户可以通过将该字段留空来选择不输入电子邮件地址。启用此选项意味着他们必须输入电子邮件地址才能继续注册。<strong>它不能确保用户输入真实的电子邮件地址，甚至也不能确保他们拥有该地址。</strong>",
 	"send-validation-email": "添加或更改电子邮件时发送验证电子邮件",
 	"include-unverified-emails": "向尚未明验证其电子邮箱的人发送电子邮件",
-	"include-unverified-warning": "By default, users with emails associated with their account have already been verified, but there are situations where this is not the case (e.g. SSO logins, grandfathered users, etc). <strong>Enable this setting at your own risk</strong> &ndash; sending emails to unverified addresses may be a violation of regional anti-spam laws.",
+	"include-unverified-warning": "默认情况下，账号有邮件地址关联的用户是已核实的用户，但有些情况下不是这样（例如，单点登录，遗留用户等等）。<strong>您自行承担启用此设置的风险</strong>——发送邮件给未核实的用户可能会违反地区性的反垃圾邮件法律。",
 	"prompt": "提示用户输入或验证他们的电子邮箱地址",
 	"prompt-help": "如果用户没有设置电子邮箱，或者他们的电子邮件未被验证，页面上将会显示警告。",
 	"sendEmailToBanned": "即使用户已被封禁也发送电子邮件"

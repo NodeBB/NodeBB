@@ -101,6 +101,7 @@
     "guest-upload-disabled": "Uploads für Gäste wurden deaktiviert.",
     "cors-error": "Das Hochladen von Bildern ist aufgrund von falsch konfigurierten CORS nicht möglich.",
     "upload-ratelimit-reached": "Sie haben zu viele Dateien auf einmal hochgeladen. Bitte versuchen Sie es später noch einmal.",
+    "upload-error-fallback": "Unable to upload image — %1",
     "scheduling-to-past": "Wählen Sie bitte ein Datum in der Zukunft.",
     "invalid-schedule-date": "Geben Sie bitte ein gültiges Datum und eine Uhrzeit ein.",
     "cant-pin-scheduled": "Geplante Themen können nicht (un)angeheftet werden.",
@@ -134,6 +135,8 @@
     "group-already-requested": "Deine Mitgliedsanfrage wurde bereits eingereicht",
     "group-join-disabled": "Du kannst dieser Gruppe zur Zeit nicht beitreten",
     "group-leave-disabled": "Du kannst diese Gruppe zur Zeit nicht verlassen",
+    "group-user-not-pending": "User does not have a pending request to join this group.",
+    "gorup-user-not-invited": "User has not been invited to join this group.",
     "post-already-deleted": "Dieser Beitrag ist bereits gelöscht worden",
     "post-already-restored": "Dieser Beitrag ist bereits wiederhergestellt worden",
     "topic-already-deleted": "Dieses Thema ist bereits gelöscht worden",
@@ -224,5 +227,6 @@
     "api.429": "Sie haben zu viele Anfragen gestellt, bitte versuchen Sie es später erneut",
     "api.500": "Beim Versuch, Ihre Anfrage zu bearbeiten, ist ein unerwarteter Fehler aufgetreten.",
     "api.501": "Die Route, die Sie anrufen möchten, ist noch nicht implementiert. Bitte versuchen Sie es morgen erneut",
-    "api.503": "Die Route, die Sie anrufen möchten, ist derzeit aufgrund einer Serverkonfiguration nicht verfügbar"
+    "api.503": "Die Route, die Sie anrufen möchten, ist derzeit aufgrund einer Serverkonfiguration nicht verfügbar",
+    "api.reauth-required": "The resource you are trying to access requires (re-)authentication."
 }

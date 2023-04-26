@@ -2,13 +2,16 @@
 
 
 const validator = require('validator');
-
+const nconf = require('nconf');
 const db = require('../database');
 const user = require('../user');
 const privileges = require('../privileges');
 const plugins = require('../plugins');
 const meta = require('../meta');
 const utils = require('../utils');
+const translator = require('../translator');
+
+const relative_path = nconf.get('relative_path');
 
 const Messaging = module.exports;
 
@@ -126,6 +129,9 @@ Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 			room.usernames = Messaging.generateUsernames(room.users, uid);
 		}
 	});
+	await Promise.all(results.roomData.map(async (room) => {
+		room.chatWithMessage = await Messaging.generateChatWithMessage(room.users, uid);
+	}));
 
 	results.roomData = results.roomData.filter(Boolean);
 	const ref = { rooms: results.roomData, nextStart: stop + 1 };
@@ -137,8 +143,40 @@ Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 	});
 };
 
-Messaging.generateUsernames = (users, excludeUid) => users.filter(user => user && parseInt(user.uid, 10) !== excludeUid)
-	.map(user => user.username).join(', ');
+Messaging.generateUsernames = function (users, excludeUid) {
+	users = users.filter(u => u && parseInt(u.uid, 10) !== excludeUid);
+	const usernames = users.map(u => u.username);
+	if (users.length > 3) {
+		return translator.compile(
+			'modules:chat.usernames-and-x-others',
+			usernames.slice(0, 2).join(', '),
+			usernames.length - 2
+		);
+	}
+	return usernames.join(', ');
+};
+
+Messaging.generateChatWithMessage = async function (users, excludeUid) {
+	users = users.filter(u => u && parseInt(u.uid, 10) !== excludeUid);
+	const usernames = users.map(u => `<a href="${relative_path}/uid/${u.uid}">${u.username}</a>`);
+	let compiled = '';
+	if (!users.length) {
+		return '[[modules:chat.no-users-in-room]]';
+	}
+	if (users.length > 3) {
+		compiled = translator.compile(
+			'modules:chat.chat-with-usernames-and-x-others',
+			usernames.slice(0, 2).join(', '),
+			usernames.length - 2
+		);
+	} else {
+		compiled = translator.compile(
+			'modules:chat.chat-with-usernames',
+			usernames.join(', '),
+		);
+	}
+	return utils.decodeHTMLEntities(await translator.translate(compiled));
+};
 
 Messaging.getTeaser = async (uid, roomId) => {
 	const mid = await Messaging.getLatestUndeletedMessage(uid, roomId);

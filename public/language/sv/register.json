@@ -1,5 +1,6 @@
 {
     "register": "Registrera",
+    "already-have-account": "Already have an account?",
     "cancel_registration": "Avbryt registrering",
     "help.email": "Som standard, är din e-postadress dold för allmänheten.",
     "help.username_restrictions": "Ett unikt användarnamn mellan %1 och %2 bokstäver. Andra kan nämna dig med @<span id='yourUsername'>användarnamn</span>.",

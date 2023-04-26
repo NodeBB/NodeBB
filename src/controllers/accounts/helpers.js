@@ -14,6 +14,8 @@ const translator = require('../../translator');
 const messaging = require('../../messaging');
 const categories = require('../../categories');
 
+const relative_path = nconf.get('relative_path');
+
 const helpers = module.exports;
 
 helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {}) {
@@ -26,6 +28,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 	if (!results.userData) {
 		throw new Error('[[error:invalid-uid]]');
 	}
+
 	await parseAboutMe(results.userData);
 
 	let { userData } = results;
@@ -36,12 +39,17 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 	const { canViewInfo } = results;
 	const isSelf = parseInt(callerUID, 10) === parseInt(userData.uid, 10);
 
+	if (meta.config['reputation:disabled']) {
+		delete userData.reputation;
+	}
+
 	userData.age = Math.max(
 		0,
 		userData.birthday ? Math.floor((new Date().getTime() - new Date(userData.birthday).getTime()) / 31536000000) : 0
 	);
 
 	userData = await user.hidePrivateData(userData, callerUID);
+	userData.emailHidden = !userSettings.showemail;
 	userData.emailClass = userSettings.showemail ? 'hide' : '';
 
 	// If email unconfirmed, hide from result set
@@ -76,7 +84,13 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 	userData.isFollowing = results.isFollowing;
 	userData.hasPrivateChat = results.hasPrivateChat;
 	userData.showHidden = results.canEdit; // remove in v1.19.0
+	userData.allowProfilePicture = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:profile-picture'];
+	userData.allowCoverPicture = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:cover-picture'];
+	userData.allowProfileImageUploads = meta.config.allowProfileImageUploads;
+	userData.allowedProfileImageExtensions = user.getAllowedProfileImageExtensions().map(ext => `.${ext}`).join(', ');
 	userData.groups = Array.isArray(results.groups) && results.groups.length ? results.groups[0] : [];
+	userData.selectedGroup = userData.groups.filter(group => group && userData.groupTitleArray.includes(group.name))
+		.sort((a, b) => userData.groupTitleArray.indexOf(a.name) - userData.groupTitleArray.indexOf(b.name));
 	userData.disableSignatures = meta.config.disableSignatures === 1;
 	userData['reputation:disabled'] = meta.config['reputation:disabled'] === 1;
 	userData['downvote:disabled'] = meta.config['downvote:disabled'] === 1;
@@ -225,11 +239,18 @@ async function getProfileMenu(uid, callerUID) {
 		});
 	}
 
-	return await plugins.hooks.fire('filter:user.profileMenu', {
+	const data = await plugins.hooks.fire('filter:user.profileMenu', {
 		uid: uid,
 		callerUID: callerUID,
 		links: links,
 	});
+	const userslug = await user.getUserField(uid, 'userslug');
+	data.links.forEach((link) => {
+		if (!link.hasOwnProperty('url')) {
+			link.url = `${relative_path}/user/${userslug}/${link.route}`;
+		}
+	});
+	return data;
 }
 
 async function parseAboutMe(userData) {

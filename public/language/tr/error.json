@@ -89,7 +89,7 @@
     "category-not-selected": "Kategori bulunamadı. Lütfen bir kategori seçiniz. ",
     "too-many-posts": "%1 saniye içinde yalnızca bir ileti gönderebilirsiniz - lütfen tekrar ileti göndermeden önce bekleyiniz.",
     "too-many-posts-newbie": "Yeni bir kullanıcı olarak, %2 saygınlık puanı kazanana kadar %1 saniye içinde bir ileti gönderebilirsiniz - lütfen tekrar ileti göndermeden önce bekleyiniz.",
-    "already-posting": "You are already posting",
+    "already-posting": "Halihazırda ileti gönderiyorsunuz...",
     "tag-too-short": "Lütfen daha uzun bir etiket girin. Etiketler en az %1 karakter içermelidir.",
     "tag-too-long": "Lütfen daha kısa bir etiket girin. Etiketler %1 karakterden uzun olamaz.",
     "not-enough-tags": "Yeterince etiket yok. Başlılar en az %1 etikete sahip olmalıdır",
@@ -101,6 +101,7 @@
     "guest-upload-disabled": "Ziyaretçilerin yükleme yapması devre dışı bırakıldı",
     "cors-error": "Yanlış yapılandırılmış CORS nedeniyle resim yüklenemiyor",
     "upload-ratelimit-reached": "Tek seferde çok sayıda dosya yüklediniz. Lütfen daha sonra tekrar deneyin.",
+    "upload-error-fallback": "Unable to upload image — %1",
     "scheduling-to-past": "Lütfen gelecekte bir tarih seçiniz.",
     "invalid-schedule-date": "Lütfen geçerli bir tarih ve saat seçiniz.",
     "cant-pin-scheduled": "Zamanlanmış konular sabitlenemez veya sabitliği kaldırılamaz. ",
@@ -134,6 +135,8 @@
     "group-already-requested": "Üyelik isteğiniz zaten gönderildi",
     "group-join-disabled": "Gruba şu anda katılamazsınız!",
     "group-leave-disabled": "Grubu şu anda terk edemezsiniz! ",
+    "group-user-not-pending": "User does not have a pending request to join this group.",
+    "gorup-user-not-invited": "User has not been invited to join this group.",
     "post-already-deleted": "İleti zaten silinmiş",
     "post-already-restored": "İleti zaten geri getirilmiş",
     "topic-already-deleted": "Başlık zaten silinmiş",
@@ -224,5 +227,6 @@
     "api.429": "Fazla sayıda istekte bulundunuz, lütfen daha sonra tekrar deneyiniz.",
     "api.500": "İsteğinizi gerçekleştirmeye çalışırken beklenmeyen bir hata ile karşılaşıldı.",
     "api.501": "Aramaya çalıştığınız rota henüz uygulanmadı, lütfen yarın tekrar deneyin",
-    "api.503": "Aramaya çalıştığınız rota sunucu yapılandırması nedeniyle şu anda kullanılamıyor"
+    "api.503": "Aramaya çalıştığınız rota sunucu yapılandırması nedeniyle şu anda kullanılamıyor",
+    "api.reauth-required": "The resource you are trying to access requires (re-)authentication."
 }

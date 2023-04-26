@@ -1,5 +1,6 @@
 {
     "register": "Regjistrohu",
+    "already-have-account": "Already have an account?",
     "cancel_registration": "Anulo regjistrimin",
     "help.email": "Si parazgjedhje, emaili juaj do të mbahet i fshihte nga publiku.",
     "help.username_restrictions": "Një emër përdoruesi unik midis %1 dhe %2 karaktereve. Të tjerët mund t'ju përmendin me @<span id='yourUsername'>username</span>.",

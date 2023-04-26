@@ -39,6 +39,5 @@
 	"revert": "Ritorno",
 
 	"edit.no-users-found": "Nessun utente trovato",
-	"edit.confirm-remove-user": "Sei sicuro di voler rimuovere questo utente?",
-	"edit.save-success": "Modifiche salvate!"
+	"edit.confirm-remove-user": "Sei sicuro di voler rimuovere questo utente?"
 }

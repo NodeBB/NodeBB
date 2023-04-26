@@ -29,6 +29,8 @@
 	"session-time-days": "ימים",
 	"session-time-seconds": "שניות",
 	"session-time-help": "ערכים אלו משמשים כדי להגדיר כמה זמן משתמשים יישארו מחוברים כאשר הם סימנו &quot;זכור אותי&quot; בהתחברות. שים לב שייעשה שימוש רק באחד מהערכים האלו. אם אין ערך <i>שניות</i> נשתמש בערך <i>ימים</i>. אם אין ערך <i>ימים</i> הערך יחזור לברירת מחדל <i>14 יום</i>.",
+	"session-duration": "Session length if \"Remember Me\" is not checked (seconds)",
+	"session-duration-help": "By default — or if set to <code>0</code> — a user will stay logged in for the duration of the session (e.g. however long the browser window/tab remains open). Set this value to explicitly invalidate the session after the specified number of seconds.",
 	"online-cutoff": "אחרי כמה דקות דקות המשתמש ייחשב ללא פעיל",
 	"online-cutoff-help": "אם משתמש אינו מבצע פעולות במשך זמן זה, הוא נחשב כלא פעיל ואינו מקבל עדכונים בזמן אמת.",
 	"registration": "רישום משתמש",

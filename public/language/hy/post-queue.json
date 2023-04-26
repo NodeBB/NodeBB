@@ -1,8 +1,12 @@
 
 {
 	"post-queue": "Գրառումների հերթ",
-	"description": "Գրառումների հերթում գրառումներ չկան: Այս գործառույթը միացնելու համար անցեք Կարգավորումներ &rarr; Գրառում &rarr; Post Queue և միացրեք Post Queue:",
+	"no-queued-posts": "There are no posts in the post queue.",
+	"no-single-post": "The topic or post you are looking for is no longer in the queue. It has likely been approved or deleted already.",
+	"enabling-help": "To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
+	"back-to-list": "Back to Post Queue",
 	"user": "Օգտատեր",
+	"when": "When",
 	"category": "Կատեգորիա",
 	"title": "Կոչում",
 	"content": "Կոնտենտ",
@@ -19,6 +23,7 @@
 	"notify": "Տեղեկացնել",
 	"notify-user": "Տեղեկացնել օգտատիրոջը",
 	"confirm-reject": "Ցանկանու՞մ եք մերժել այս գրառումը:",
+	"confirm-remove": "Do you want to remove this post?",
 	"bulk-actions": "Զանգվածային գործողություններ",
 	"accept-all": "Ընդունել բոլորը ",
 	"accept-selected": "Ընդունել ընտրվածը",
@@ -26,6 +31,10 @@
 	"reject-all-confirm": "Ցանկանու՞մ եք մերժել բոլոր գրառումները:",
 	"reject-selected": "Մերժել ընտրվածը",
 	"reject-selected-confirm": "Ցանկանու՞մ եք մերժել %1 ընտրված գրառումները:",
+	"remove-all": "Remove all",
+	"remove-all-confirm": "Do you want to remove all posts?",
+	"remove-selected": "Remove Selected",
+	"remove-selected-confirm": "Do you want to remove %1 selected posts?",
 	"bulk-accept-success": "Ընդունված է %1 գրառում",
 	"bulk-reject-success": "%1 գրառում մերժվել է"
 }

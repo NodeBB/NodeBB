@@ -9,6 +9,7 @@ const categories = require('../categories');
 const plugins = require('../plugins');
 const translator = require('../translator');
 const languages = require('../languages');
+const { generateToken } = require('../middleware/csrf');
 
 const apiController = module.exports;
 
@@ -64,10 +65,11 @@ apiController.loadConfig = async function (req) {
 		'cache-buster': meta.config['cache-buster'] || '',
 		topicPostSort: meta.config.topicPostSort || 'oldest_to_newest',
 		categoryTopicSort: meta.config.categoryTopicSort || 'newest_to_oldest',
-		csrf_token: req.uid >= 0 && req.csrfToken && req.csrfToken(),
+		csrf_token: req.uid >= 0 ? generateToken(req) : false,
 		searchEnabled: plugins.hooks.hasListeners('filter:search.query'),
 		searchDefaultInQuick: meta.config.searchDefaultInQuick || 'titles',
 		bootswatchSkin: meta.config.bootswatchSkin || '',
+		'composer:showHelpTab': meta.config['composer:showHelpTab'] === 1,
 		enablePostHistory: meta.config.enablePostHistory === 1,
 		timeagoCutoff: meta.config.timeagoCutoff !== '' ? Math.max(0, parseInt(meta.config.timeagoCutoff, 10)) : meta.config.timeagoCutoff,
 		timeagoCodes: languages.timeagoCodes,
@@ -110,6 +112,7 @@ apiController.loadConfig = async function (req) {
 	config.topicPostSort = settings.topicPostSort || config.topicPostSort;
 	config.categoryTopicSort = settings.categoryTopicSort || config.categoryTopicSort;
 	config.topicSearchEnabled = settings.topicSearchEnabled || false;
+	config.disableCustomUserSkins = meta.config.disableCustomUserSkins === 1;
 	config.bootswatchSkin = (meta.config.disableCustomUserSkins !== 1 && settings.bootswatchSkin && settings.bootswatchSkin !== '') ? settings.bootswatchSkin : '';
 
 	// Overrides based on privilege

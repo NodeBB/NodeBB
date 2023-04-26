@@ -14,18 +14,19 @@ define('forum/chats/messages', [
 		if (!message.trim().length) {
 			return;
 		}
-
-		inputEl.val('');
+		const chatContent = inputEl.parents(`[component="chat/messages"][data-roomid="${roomId}"]`);
+		inputEl.val('').trigger('input');
 		inputEl.removeAttr('data-mid');
 		messages.updateRemainingLength(inputEl.parent());
+		messages.updateTextAreaHeight(chatContent);
 		const payload = { roomId, message, mid };
-		// TODO: move this to success callback of api.post/put call?
-		hooks.fire('action:chat.sent', payload);
 		({ roomId, message, mid } = await hooks.fire('filter:chat.send', payload));
 
 		if (!mid) {
-			api.post(`/chats/${roomId}`, { message }).catch((err) => {
-				inputEl.val(message);
+			api.post(`/chats/${roomId}`, { message }).then(() => {
+				hooks.fire('action:chat.sent', { roomId, message, mid });
+			}).catch((err) => {
+				inputEl.val(message).trigger('input');
 				messages.updateRemainingLength(inputEl.parent());
 				if (err.message === '[[error:email-not-confirmed-chat]]') {
 					return messagesModule.showEmailConfirmWarning(err.message);
@@ -40,8 +41,10 @@ define('forum/chats/messages', [
 				});
 			});
 		} else {
-			api.put(`/chats/${roomId}/messages/${mid}`, { message }).catch((err) => {
-				inputEl.val(message);
+			api.put(`/chats/${roomId}/messages/${mid}`, { message }).then(() => {
+				hooks.fire('action:chat.edited', { roomId, message, mid });
+			}).catch((err) => {
+				inputEl.val(message).trigger('input');
 				inputEl.attr('data-mid', mid);
 				messages.updateRemainingLength(inputEl.parent());
 				return alerts.error(err);
@@ -55,6 +58,21 @@ define('forum/chats/messages', [
 		parent.find('[component="chat/message/remaining"]').text(config.maximumChatMessageLength - element.val().length);
 		hooks.fire('action:chat.updateRemainingLength', {
 			parent: parent,
+		});
+	};
+
+	messages.updateTextAreaHeight = function (chatContentEl) {
+		// https://stackoverflow.com/questions/454202/creating-a-textarea-with-auto-resize
+		const textarea = chatContentEl.find('[component="chat/input"]');
+		const scrollHeight = textarea.prop('scrollHeight');
+		textarea.css({ height: scrollHeight + 'px' });
+		textarea.on('input', function () {
+			const isAtBottom = messages.isAtBottom(chatContentEl.find('.chat-content'));
+			textarea.css({ height: 0 });
+			textarea.css({ height: textarea.prop('scrollHeight') + 'px' });
+			if (isAtBottom) {
+				messages.scrollToBottom(chatContentEl.find('.chat-content'));
+			}
 		});
 	};
 
@@ -76,7 +94,7 @@ define('forum/chats/messages', [
 		const isAtBottom = messages.isAtBottom(chatContentEl);
 		newMessage.appendTo(chatContentEl);
 		newMessage.find('.timeago').timeago();
-		newMessage.find('img:not(.not-responsive)').addClass('img-responsive');
+		newMessage.find('img:not(.not-responsive)').addClass('img-fluid');
 		if (isAtBottom) {
 			messages.scrollToBottom(chatContentEl);
 		}
@@ -91,15 +109,14 @@ define('forum/chats/messages', [
 		function done(html) {
 			translator.translate(html, callback);
 		}
-
+		const tplData = {
+			messages: data,
+			isAdminOrGlobalMod: app.user.isAdmin || app.user.isGlobalMod,
+		};
 		if (Array.isArray(data)) {
-			Benchpress.render('partials/chats/message' + (Array.isArray(data) ? 's' : ''), {
-				messages: data,
-			}).then(done);
+			Benchpress.render('partials/chats/messages', tplData).then(done);
 		} else {
-			Benchpress.render('partials/chats/' + (data.system ? 'system-message' : 'message'), {
-				messages: data,
-			}).then(done);
+			Benchpress.render('partials/chats/' + (data.system ? 'system-message' : 'message'), tplData).then(done);
 		}
 	};
 
@@ -138,7 +155,7 @@ define('forum/chats/messages', [
 				// By setting the `data-mid` attribute, I tell the chat code that I am editing a
 				// message, instead of posting a new one.
 				inputEl.attr('data-mid', messageId).addClass('editing');
-				inputEl.val(raw).focus();
+				inputEl.val(raw).trigger('input').focus();
 
 				hooks.fire('action:chat.prepEdit', {
 					inputEl: inputEl,
@@ -193,7 +210,7 @@ define('forum/chats/messages', [
 					return;
 				}
 
-				api.delete(`/chats/${roomId}/messages/${messageId}`, {}).then(() => {
+				api.del(`/chats/${roomId}/messages/${messageId}`, {}).then(() => {
 					components.get('chat/message', messageId).toggleClass('deleted', true);
 				}).catch(alerts.error);
 			});

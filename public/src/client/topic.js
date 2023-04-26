@@ -9,6 +9,7 @@ define('forum/topic', [
 	'forum/topic/posts',
 	'navigator',
 	'sort',
+	'quickreply',
 	'components',
 	'storage',
 	'hooks',
@@ -16,7 +17,7 @@ define('forum/topic', [
 	'alerts',
 ], function (
 	infinitescroll, threadTools, postTools,
-	events, posts, navigator, sort,
+	events, posts, navigator, sort, quickreply,
 	components, storage, hooks, api, alerts
 ) {
 	const Topic = {};
@@ -33,7 +34,7 @@ define('forum/topic', [
 		}
 	});
 
-	Topic.init = function () {
+	Topic.init = async function () {
 		const tidChanged = !tid || parseInt(tid, 10) !== parseInt(ajaxify.data.tid, 10);
 		tid = ajaxify.data.tid;
 		currentUrl = ajaxify.currentPage;
@@ -44,8 +45,8 @@ define('forum/topic', [
 		if (tidChanged) {
 			posts.signaturesShown = {};
 		}
-		posts.onTopicPageLoad(components.get('post'));
-		navigator.init('[component="post"]', ajaxify.data.postcount, Topic.toTop, Topic.toBottom, utils.debounce(Topic.navigatorCallback, 500));
+		await posts.onTopicPageLoad(components.get('post'));
+		navigator.init('[component="post"]', ajaxify.data.postcount, Topic.toTop, Topic.toBottom, Topic.navigatorCallback);
 
 		postTools.init(tid);
 		threadTools.init(tid, $('.topic'));
@@ -62,7 +63,7 @@ define('forum/topic', [
 		addDropupHandler();
 		addRepliesHandler();
 		addPostsPreviewHandler();
-
+		setupQuickReply();
 		handleBookmark(tid);
 
 		$(window).on('scroll', utils.debounce(updateTopicTitle, 250));
@@ -78,8 +79,9 @@ define('forum/topic', [
 				require(['search'], function (search) {
 					mousetrap.bind(['command+f', 'ctrl+f'], function (e) {
 						e.preventDefault();
-						$('#search-fields input').val('in:topic-' + ajaxify.data.tid + ' ');
-						search.showAndFocusInput();
+						const form = $('[component="navbar"] [component="search/form"]');
+						form.find('[component="search/fields"] input[name="query"]').val('in:topic-' + ajaxify.data.tid + ' ');
+						search.showAndFocusInput(form);
 					});
 
 					hooks.onPage('action:ajaxify.cleanup', () => {
@@ -134,12 +136,13 @@ define('forum/topic', [
 		if (window.location.hash) {
 			const el = $(utils.escapeHTML(window.location.hash));
 			if (el.length) {
-				return navigator.scrollToElement(el, true, 0);
+				const postEl = el.parents('[data-pid]');
+				return navigator.scrollToElement(postEl, true, 0);
 			}
 		}
 		const bookmark = ajaxify.data.bookmark || storage.getItem('topic:' + tid + ':bookmark');
 		const postIndex = ajaxify.data.postIndex;
-
+		updateUserBookmark(postIndex);
 		if (postIndex > 1) {
 			if (components.get('post/anchor', postIndex - 1).length) {
 				return navigator.scrollToPostIndex(postIndex - 1, true, 0);
@@ -204,7 +207,8 @@ define('forum/topic', [
 
 	function addDropupHandler() {
 		// Locate all dropdowns
-		const target = $('#content .dropdown-menu').parent();
+		const topicEl = components.get('topic');
+		const target = topicEl.find('.dropdown-menu').parent();
 		$(target).on('shown.bs.dropdown', function () {
 			const dropdownEl = this.querySelector('.dropdown-menu');
 			if (dropdownEl.innerHTML) {
@@ -233,13 +237,17 @@ define('forum/topic', [
 			return;
 		}
 		let timeoutId = 0;
+		let destroyed = false;
 		const postCache = {};
-		$(window).one('action:ajaxify.start', function () {
+		function destroyTooltip() {
 			clearTimeout(timeoutId);
 			$('#post-tooltip').remove();
-		});
+			destroyed = true;
+		}
+		$(window).one('action:ajaxify.start', destroyTooltip);
 		$('[component="topic"]').on('mouseenter', '[component="post"] a, [component="topic/event"] a', async function () {
 			const link = $(this);
+			destroyed = false;
 
 			async function renderPost(pid) {
 				const postData = postCache[pid] || await socket.emit('posts.getPostSummaryByPid', { pid: pid });
@@ -247,6 +255,9 @@ define('forum/topic', [
 				if (postData && ajaxify.data.template.topic) {
 					postCache[pid] = postData;
 					const tooltip = await app.parseAndTranslate('partials/topic/post-preview', { post: postData });
+					if (destroyed) {
+						return;
+					}
 					tooltip.hide().find('.timeago').timeago();
 					tooltip.appendTo($('body')).fadeIn(300);
 					const postContent = link.parents('[component="topic"]').find('[component="post/content"]').first();
@@ -284,10 +295,13 @@ define('forum/topic', [
 					renderPost(topicData.mainPid);
 				}, 300);
 			}
-		}).on('mouseleave', '[component="post"] a, [component="topic/event"] a', function () {
-			clearTimeout(timeoutId);
-			$('#post-tooltip').remove();
-		});
+		}).on('mouseleave', '[component="post"] a, [component="topic/event"] a', destroyTooltip);
+	}
+
+	function setupQuickReply() {
+		if (config.enableQuickReply || config.theme.enableQuickReply) {
+			quickreply.init();
+		}
 	}
 
 	function updateTopicTitle() {
@@ -317,7 +331,6 @@ define('forum/topic', [
 
 			updateUserBookmark(index);
 
-			Topic.replaceURLTimeout = 0;
 			if (ajaxify.data.updateUrlWithPostIndex && history.replaceState) {
 				let search = window.location.search || '';
 				if (!config.usePagination) {
@@ -347,14 +360,16 @@ define('forum/topic', [
 			)
 		) {
 			if (app.user.uid) {
+				ajaxify.data.bookmark = Math.min(index, ajaxify.data.postcount);
+
 				socket.emit('topics.bookmark', {
 					tid: ajaxify.data.tid,
-					index: index,
+					index: ajaxify.data.bookmark,
 				}, function (err) {
 					if (err) {
+						ajaxify.data.bookmark = currentBookmark;
 						return alerts.error(err);
 					}
-					ajaxify.data.bookmark = index + 1;
 				});
 			} else {
 				storage.setItem(bookmarkKey, index);

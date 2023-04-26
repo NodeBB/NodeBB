@@ -1,8 +1,8 @@
 {
 	"post-cache": "Publicar Cache",
-	"group-cache": "Group Cache",
-	"local-cache": "Local Cache",
-	"object-cache": "Object Cache",
+	"group-cache": "Agrupar cache",
+	"local-cache": "Cache local",
+	"object-cache": "Cache de objetos",
 	"percent-full": "%1% Completo",
 	"post-cache-size": "Tamaño de cache del post",
 	"items-in-cache": "Artículos en cache"

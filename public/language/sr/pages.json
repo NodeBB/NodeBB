@@ -49,6 +49,7 @@
     "account/watched_categories": "Надгледане категорије корисника %1",
     "account/bookmarks": "Омиљене поруке корисника $1",
     "account/settings": "Корисничка подешавања",
+    "account/settings-of": "Промена подешавања од %1",
     "account/watched": "Теме које надгледа %1",
     "account/ignored": "Теме које игнорише %1",
     "account/upvoted": "Поруке које је гласао %1",

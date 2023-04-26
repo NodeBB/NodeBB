@@ -39,7 +39,7 @@ define('forum/infinitescroll', ['hooks', 'alerts'], function (hooks, alerts) {
 	function onScroll() {
 		const bsEnv = utils.findBootstrapEnvironment();
 		const mobileComposerOpen = (bsEnv === 'xs' || bsEnv === 'sm') && $('html').hasClass('composing');
-		if (loadingMore || mobileComposerOpen) {
+		if (loadingMore || mobileComposerOpen || app.flags._glance) {
 			return;
 		}
 		const currentScrollTop = $(window).scrollTop();
