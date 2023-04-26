@@ -231,9 +231,10 @@ define('forum/topic', [
 		});
 
 		function addCopyCodeButton() {
-			const codeBlocks = $('[component="topic"] [component="post/content"] code:not([data-button-added])');
+			let codeBlocks = $('[component="topic"] [component="post/content"] code:not([data-button-added])');
+			codeBlocks = codeBlocks.filter((i, el) => $(el).text().includes('\n'));
 			const container = $('<div class="hover-parent position-relative"></div>');
-			const buttonDiv = $('<button component="copy/code/btn" class="hover-visible position-absolute end-0 top-0 btn btn-sm btn-outline-secondary"><i class="fa fa-fw fa-copy"></i></button>');
+			const buttonDiv = $('<button component="copy/code/btn" class="hover-visible position-absolute end-0 top-0 btn btn-sm btn-outline-secondary me-4"><i class="fa fa-fw fa-copy"></i></button>');
 			codeBlocks.parent().wrap(container).parent().append(buttonDiv);
 			codeBlocks.parent().parent().find('[component="copy/code/btn"]').translateAttr('title', '[[topic:copy-code]]');
 			codeBlocks.attr('data-button-added', 1);
