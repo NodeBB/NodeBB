@@ -207,6 +207,10 @@ async function addTags(topicData, req, res) {
 	}
 	description = description.replace(/\n/g, ' ');
 
+	const mainPost = postIndex === 0 && postAtIndex ?
+		postAtIndex :
+		await topics.getMainPost(topicData.tid, req.uid);
+
 	res.locals.metaTags = [
 		{
 			name: 'title',
@@ -234,7 +238,7 @@ async function addTags(topicData, req, res) {
 		},
 		{
 			property: 'article:modified_time',
-			content: utils.toISOString(topicData.lastposttime),
+			content: utils.toISOString(Math.max(topicData.lastposttime, mainPost && mainPost.edited)),
 		},
 		{
 			property: 'article:section',
