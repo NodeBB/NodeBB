@@ -95,11 +95,9 @@ module.exports = function (Categories) {
 		await privileges.categories.give(result.modPrivileges, category.cid, ['administrators', 'Global Moderators']);
 		await privileges.categories.give(result.guestPrivileges, category.cid, ['guests', 'spiders']);
 
-		cache.del([
-			'categories:cid',
-			`cid:${parentCid}:children`,
-			`cid:${parentCid}:children:all`,
-		]);
+		cache.del('categories:cid');
+		await clearParentCategoryCache(parentCid);
+
 		if (data.cloneFromCid && parseInt(data.cloneFromCid, 10)) {
 			category = await Categories.copySettingsFrom(data.cloneFromCid, category.cid, !data.parentCid);
 		}
@@ -111,6 +109,22 @@ module.exports = function (Categories) {
 		plugins.hooks.fire('action:category.create', { category: category });
 		return category;
 	};
+
+	async function clearParentCategoryCache(parentCid) {
+		while (parseInt(parentCid, 10) >= 0) {
+			cache.del([
+				`cid:${parentCid}:children`,
+				`cid:${parentCid}:children:all`,
+			]);
+
+			if (parseInt(parentCid, 10) === 0) {
+				return;
+			}
+			// clear all the way to root
+			// eslint-disable-next-line no-await-in-loop
+			parentCid = await Categories.getCategoryField(parentCid, 'parentCid');
+		}
+	}
 
 	async function duplicateCategoriesChildren(parentCid, cid, uid) {
 		let children = await Categories.getChildren([cid], uid);
