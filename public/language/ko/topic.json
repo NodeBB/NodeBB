@@ -36,6 +36,7 @@
     "scheduled": "예약됨",
     "moved": "이동된 게시물",
     "moved-from": "%1부터 상단 고정 해제",
+    "copy-code": "Copy Code",
     "copy-ip": "IP 복사",
     "ban-ip": "IP 차단",
     "view-history": "편집 기록",

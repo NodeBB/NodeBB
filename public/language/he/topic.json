@@ -36,6 +36,7 @@
     "scheduled": "מתוזמן",
     "moved": "הועבר",
     "moved-from": "הועבר מ-%1",
+    "copy-code": "Copy Code",
     "copy-ip": "העתקת IP",
     "ban-ip": "הרחקת IP",
     "view-history": "עריכת היסטוריה",

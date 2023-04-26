@@ -36,6 +36,7 @@
     "scheduled": "Planlagt",
     "moved": "Flyttet",
     "moved-from": "Flyttet fra %1",
+    "copy-code": "Copy Code",
     "copy-ip": "Kopier IP",
     "ban-ip": "Forby IP",
     "view-history": "Redigere historie",

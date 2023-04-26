@@ -36,6 +36,7 @@
     "scheduled": "Scheduled",
     "moved": "Pārvietots",
     "moved-from": "Moved from %1",
+    "copy-code": "Copy Code",
     "copy-ip": "Kopēt IP adresi",
     "ban-ip": "Bloķēt IP adresi",
     "view-history": "Rediģēšanas vēsture",

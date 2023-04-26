@@ -36,6 +36,7 @@
     "scheduled": "Agendado",
     "moved": "Movido",
     "moved-from": "Movido de %1",
+    "copy-code": "Copy Code",
     "copy-ip": "Copiar IP",
     "ban-ip": "Banir IP",
     "view-history": "Histórico de Edição",

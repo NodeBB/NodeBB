@@ -36,6 +36,7 @@
     "scheduled": "Scheduled",
     "moved": "Presunuté",
     "moved-from": "Moved from %1",
+    "copy-code": "Copy Code",
     "copy-ip": "Kopírovať IP adresu",
     "ban-ip": "Zablokovať IP adresu",
     "view-history": "Upraviť históriu",

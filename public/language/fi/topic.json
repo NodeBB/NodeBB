@@ -36,6 +36,7 @@
     "scheduled": "Scheduled",
     "moved": "Siirretty",
     "moved-from": "Moved from %1",
+    "copy-code": "Copy Code",
     "copy-ip": "Kopioi IP",
     "ban-ip": "Ban IP",
     "view-history": "Muokkaa historiaa",

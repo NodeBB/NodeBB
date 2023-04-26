@@ -36,6 +36,7 @@
     "scheduled": "Scheduled",
     "moved": "Premaknjeno",
     "moved-from": "Moved from %1",
+    "copy-code": "Copy Code",
     "copy-ip": "Kopiraj IP",
     "ban-ip": "Prepovej IP",
     "view-history": "Uredi zgodovino",

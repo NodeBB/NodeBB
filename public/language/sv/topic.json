@@ -36,6 +36,7 @@
     "scheduled": "Scheduled",
     "moved": "Flyttad",
     "moved-from": "Moved from %1",
+    "copy-code": "Copy Code",
     "copy-ip": "Kopiera IP",
     "ban-ip": "Banna IP",
     "view-history": "Redigera historik",
