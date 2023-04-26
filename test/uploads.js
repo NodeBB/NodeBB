@@ -87,8 +87,7 @@ describe('Upload Controllers', () => {
 			const oldValue = meta.config.allowedFileExtensions;
 			meta.config.allowedFileExtensions = 'png,jpg,bmp,html';
 			require('../src/middleware/uploads').clearCache();
-			// why / 2? see: helpers.uploadFile for a weird quirk where we actually upload 2 files per upload in our tests.
-			const times = (meta.config.uploadRateLimitThreshold / 2) + 1;
+			const times = meta.config.uploadRateLimitThreshold + 1;
 			async.timesSeries(times, (i, next) => {
 				helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/503.html'), {}, jar, csrf_token, (err, res, body) => {
 					if (i + 1 >= times) {
@@ -522,7 +521,7 @@ describe('Upload Controllers', () => {
 			it('should return files with no post associated with them', async () => {
 				const orphans = await posts.uploads.getOrphans();
 
-				assert.strictEqual(orphans.length, 2);
+				assert.strictEqual(orphans.length, 1);
 				orphans.forEach((relPath) => {
 					assert(relPath.startsWith('files/'));
 					assert(relPath.endsWith('test.png'));
@@ -553,7 +552,7 @@ describe('Upload Controllers', () => {
 				await posts.uploads.cleanOrphans();
 				const orphans = await posts.uploads.getOrphans();
 
-				assert.strictEqual(orphans.length, 2);
+				assert.strictEqual(orphans.length, 1);
 			});
 
 			it('should not touch orphans if they are newer than the configured expiry', async () => {
@@ -561,7 +560,7 @@ describe('Upload Controllers', () => {
 				await posts.uploads.cleanOrphans();
 				const orphans = await posts.uploads.getOrphans();
 
-				assert.strictEqual(orphans.length, 2);
+				assert.strictEqual(orphans.length, 1);
 			});
 
 			it('should delete orphans older than the configured number of days', async () => {
