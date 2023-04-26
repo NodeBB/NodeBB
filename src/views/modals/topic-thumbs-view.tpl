@@ -2,6 +2,7 @@
 	<div class="d-flex justify-content-center align-items-center mb-5" style="height: 33vh; max-height: 33vh;">
 		<img component="topic/thumb/current" src="{src}" style="max-height: 33vh;" />
 	</div>
+	{{{ if (thumbs.length != "1") }}}
 	<hr/>
 	<div class="d-flex justify-content-center mb-3 gap-3">
 	{{{ each thumbs }}}
@@ -10,4 +11,5 @@
 		</div>
 	{{{ end }}}
 	</div>
+	{{{ end }}}
 </div>
