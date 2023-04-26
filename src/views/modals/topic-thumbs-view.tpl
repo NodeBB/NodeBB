@@ -6,7 +6,7 @@
 	<div class="d-flex justify-content-center mb-3 gap-3">
 	{{{ each thumbs }}}
 		<div>
-			<img component="topic/thumb/select" class="pointer rounded border border-3 {{{ if ./selected }}}border-primary{{{ end }}}" height="64px" style="width: auto;" src="{./url}"/>
+			<img component="topic/thumb/select" class="pointer rounded p-1 border border-3 {{{ if ./selected }}}border-primary{{{ end }}}" height="64px" style="width: auto;" src="{./url}"/>
 		</div>
 	{{{ end }}}
 	</div>
