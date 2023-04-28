@@ -60,6 +60,7 @@
     "posts": "投稿",
     "x-posts": "<span class=\"formatted-number\">%1</span> posts",
     "x-topics": "<span class=\"formatted-number\">%1</span> topics",
+    "x-reputation": "<span class=\"formatted-number\">%1</span> reputation",
     "best": "ベスト",
     "controversial": "Controversial",
     "votes": "Votes",

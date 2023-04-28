@@ -60,6 +60,7 @@
     "posts": "Поруке",
     "x-posts": "<span class=\"formatted-number\">%1</span> поруке",
     "x-topics": "<span class=\"formatted-number\">%1</span> теме",
+    "x-reputation": "<span class=\"formatted-number\">%1</span> reputation",
     "best": "Најбоље",
     "controversial": "Спорно",
     "votes": "Гласови",

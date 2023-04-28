@@ -60,6 +60,7 @@
     "posts": "Публ.",
     "x-posts": "<span class=\"formatted-number\">%1</span> публикации",
     "x-topics": "<span class=\"formatted-number\">%1</span> теми",
+    "x-reputation": "<span class=\"formatted-number\">%1</span> reputation",
     "best": "Най-добри",
     "controversial": "Противоречиви",
     "votes": "Гласове",
