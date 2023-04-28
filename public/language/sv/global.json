@@ -132,5 +132,6 @@
     "select": "Välj",
     "user-search-prompt": "Skriv något för att hitta användare",
     "hidden": "Hidden",
-    "sort": "Sort"
+    "sort": "Sort",
+    "actions": "Actions"
 }

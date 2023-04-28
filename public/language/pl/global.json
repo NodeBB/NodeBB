@@ -132,5 +132,6 @@
     "select": "Wybierz",
     "user-search-prompt": "Aby znaleźć użytkowników, wpisz tutaj...",
     "hidden": "Ukryty",
-    "sort": "Sortuj"
+    "sort": "Sortuj",
+    "actions": "Actions"
 }

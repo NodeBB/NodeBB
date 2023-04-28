@@ -132,5 +132,6 @@
     "select": "Velg",
     "user-search-prompt": "Skriv her for å finne andre brukere...",
     "hidden": "Hidden",
-    "sort": "Sort"
+    "sort": "Sort",
+    "actions": "Actions"
 }

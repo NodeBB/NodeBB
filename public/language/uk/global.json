@@ -132,5 +132,6 @@
     "select": "Обрати",
     "user-search-prompt": "Введіть щось тут, щоб знайти користувачів...",
     "hidden": "Hidden",
-    "sort": "Sort"
+    "sort": "Sort",
+    "actions": "Actions"
 }

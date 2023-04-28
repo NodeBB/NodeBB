@@ -132,5 +132,6 @@
     "select": "选择",
     "user-search-prompt": "输入以查找用户",
     "hidden": "隐藏",
-    "sort": "排序"
+    "sort": "排序",
+    "actions": "Actions"
 }
