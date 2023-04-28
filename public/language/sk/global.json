@@ -132,5 +132,6 @@
     "select": "Vybrať",
     "user-search-prompt": "Pre hľadanie používateľov, píšte sem...",
     "hidden": "Hidden",
-    "sort": "Sort"
+    "sort": "Sort",
+    "actions": "Actions"
 }

@@ -132,5 +132,6 @@
     "select": "בחר",
     "user-search-prompt": "הקלד כאן משהו על מנת למצוא משתמשים...",
     "hidden": "Hidden",
-    "sort": "Sort"
+    "sort": "Sort",
+    "actions": "Actions"
 }

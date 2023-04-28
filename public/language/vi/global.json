@@ -132,5 +132,6 @@
     "select": "Chọn",
     "user-search-prompt": "Nhập để tìm kiếm thành viên",
     "hidden": "Hidden",
-    "sort": "Sort"
+    "sort": "Sort",
+    "actions": "Actions"
 }
