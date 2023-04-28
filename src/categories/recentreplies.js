@@ -165,7 +165,6 @@ module.exports = function (Categories) {
 
 	// terrible name, should be topics.moveTopicPosts
 	Categories.moveRecentReplies = async function (tid, oldCid, cid) {
-		await updatePostCount(tid, oldCid, cid);
 		const [pids, topicDeleted] = await Promise.all([
 			topics.getPids(tid),
 			topics.getTopicField(tid, 'deleted'),
@@ -195,16 +194,4 @@ module.exports = function (Categories) {
 			]);
 		}, { batch: 500 });
 	};
-
-	async function updatePostCount(tid, oldCid, newCid) {
-		const postCount = await topics.getTopicField(tid, 'postcount');
-		if (!postCount) {
-			return;
-		}
-
-		await Promise.all([
-			db.incrObjectFieldBy(`category:${oldCid}`, 'post_count', -postCount),
-			db.incrObjectFieldBy(`category:${newCid}`, 'post_count', postCount),
-		]);
-	}
 };
