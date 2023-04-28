@@ -139,7 +139,7 @@ define('forum/category', [
 			after: after,
 			direction: direction,
 			query: params,
-			categoryTopicSort: config.categoryTopicSort,
+			categoryTopicSort: params.sort || config.categoryTopicSort,
 		}, function (data, done) {
 			hooks.fire('action:topics.loaded', { topics: data.topics });
 			callback(data, done);
