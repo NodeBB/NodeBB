@@ -131,7 +131,7 @@ module.exports = function (Categories) {
 		categories.forEach((category) => {
 			if (category) {
 				category.posts = topics.filter(t => t.cid && (t.cid === category.cid || t.parentCids.includes(category.cid)))
-					.sort((a, b) => b.pid - a.pid)
+					.sort((a, b) => b.timestamp - a.timestamp)
 					.slice(0, parseInt(category.numRecentReplies, 10));
 			}
 		});
@@ -147,7 +147,7 @@ module.exports = function (Categories) {
 				const posts = [];
 				getPostsRecursive(category, posts);
 
-				posts.sort((a, b) => b.pid - a.pid);
+				posts.sort((a, b) => b.timestamp - a.timestamp);
 				if (posts.length) {
 					category.posts = [posts[0]];
 				}
