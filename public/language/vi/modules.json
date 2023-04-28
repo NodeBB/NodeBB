@@ -69,6 +69,7 @@
     "composer.schedule-date": "Ngày",
     "composer.schedule-time": "Thời gian",
     "composer.cancel-scheduling": "Hủy Lập Lịch",
+    "composer.change-schedule-date": "Change Date",
     "composer.set-schedule-date": "Đặt Ngày",
     "composer.discard-all-drafts": "Hủy tất cả bản nháp",
     "composer.no-drafts": "Bạn không có bản nháp nào",

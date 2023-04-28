@@ -69,6 +69,7 @@
     "composer.schedule-date": "日期",
     "composer.schedule-time": "时间",
     "composer.cancel-scheduling": "取消定时",
+    "composer.change-schedule-date": "Change Date",
     "composer.set-schedule-date": "设置日期",
     "composer.discard-all-drafts": "Discard all drafts",
     "composer.no-drafts": "You have no drafts",

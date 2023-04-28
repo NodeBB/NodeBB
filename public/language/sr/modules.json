@@ -69,6 +69,7 @@
     "composer.schedule-date": "Датум",
     "composer.schedule-time": "Време",
     "composer.cancel-scheduling": "Откажи планирање",
+    "composer.change-schedule-date": "Change Date",
     "composer.set-schedule-date": "Подеси датум",
     "composer.discard-all-drafts": "Одбаци све нацрте",
     "composer.no-drafts": "Немате нацрте",

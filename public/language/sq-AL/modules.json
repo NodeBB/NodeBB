@@ -69,6 +69,7 @@
     "composer.schedule-date": "Data",
     "composer.schedule-time": "Koha",
     "composer.cancel-scheduling": "Anulo planifikimin",
+    "composer.change-schedule-date": "Change Date",
     "composer.set-schedule-date": "Cakto datën",
     "composer.discard-all-drafts": "Discard all drafts",
     "composer.no-drafts": "You have no drafts",

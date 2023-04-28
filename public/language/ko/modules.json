@@ -69,6 +69,7 @@
     "composer.schedule-date": "날짜",
     "composer.schedule-time": "시간",
     "composer.cancel-scheduling": "예약 취소",
+    "composer.change-schedule-date": "Change Date",
     "composer.set-schedule-date": "날짜 설정",
     "composer.discard-all-drafts": "Discard all drafts",
     "composer.no-drafts": "You have no drafts",

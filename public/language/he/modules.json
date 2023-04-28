@@ -69,6 +69,7 @@
     "composer.schedule-date": "תאריך",
     "composer.schedule-time": "שעה",
     "composer.cancel-scheduling": "ביטול תיזמון",
+    "composer.change-schedule-date": "Change Date",
     "composer.set-schedule-date": "הגדרת תאריך",
     "composer.discard-all-drafts": "Discard all drafts",
     "composer.no-drafts": "You have no drafts",
