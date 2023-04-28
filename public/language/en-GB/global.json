@@ -161,5 +161,6 @@
 
 	"user-search-prompt": "Type something here to find users...",
 	"hidden": "Hidden",
-	"sort": "Sort"
+	"sort": "Sort",
+	"actions": "Actions"
 }
