@@ -188,6 +188,20 @@ module.exports = function (Categories) {
 		await Categories.updateRecentTidForCid(cid);
 	};
 
+	Categories.onTopicsMoved = async (cids) => {
+		await Promise.all(cids.map(async (cid) => {
+			await Promise.all([
+				Categories.setCategoryField(
+					cid, 'topic_count', await db.sortedSetCard(`cid:${cid}:tids:lastposttime`)
+				),
+				Categories.setCategoryField(
+					cid, 'post_count', await db.sortedSetCard(`cid:${cid}:pids`)
+				),
+				Categories.updateRecentTidForCid(cid),
+			]);
+		}));
+	};
+
 	async function filterScheduledTids(tids) {
 		const scores = await db.sortedSetScores('topics:scheduled', tids);
 		const now = Date.now();

@@ -274,10 +274,6 @@ module.exports = function (Topics) {
 		await categories.moveRecentReplies(tid, oldCid, cid);
 
 		await Promise.all([
-			categories.incrementCategoryFieldBy(oldCid, 'topic_count', -1),
-			categories.incrementCategoryFieldBy(cid, 'topic_count', 1),
-			categories.updateRecentTidForCid(cid),
-			categories.updateRecentTidForCid(oldCid),
 			Topics.setTopicFields(tid, {
 				cid: cid,
 				oldCid: oldCid,
