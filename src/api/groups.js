@@ -155,11 +155,12 @@ groupsAPI.leave = async function (caller, data) {
 		groups.isMember(data.uid, groupName),
 	]);
 
-	if (!userExists) {
-		throw new Error('[[error:invalid-uid]]');
-	}
 	if (!isMember) {
 		throw new Error('[[error:group-not-member]]');
+	}
+
+	if (!userExists) {
+		throw new Error('[[error:invalid-uid]]');
 	}
 
 	if (groupData.disableLeave && isSelf) {
