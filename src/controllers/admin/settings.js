@@ -112,7 +112,7 @@ settingsController.social = async function (req, res) {
 
 settingsController.api = async (req, res) => {
 	const { tokens } = await meta.settings.get('core.api');
-	const scores = await api.utils.getLastSeen(tokens.map(t => t.token));
+	const scores = await api.utils.tokens.getLastSeen(tokens.map(t => t.token));
 
 	const [lastSeen, lastSeenISO] = tokens.reduce((memo, cur, idx) => {
 		memo[0][cur.token] = scores[idx];

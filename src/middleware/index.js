@@ -128,7 +128,7 @@ middleware.prepareAPI = function prepareAPI(req, res, next) {
 middleware.logApiUsage = async function logApiUsage(req, res, next) {
 	if (req.headers.hasOwnProperty('authorization')) {
 		const [, token] = req.headers.authorization.split(' ');
-		await api.utils.log(token);
+		await api.utils.tokens.log(token);
 	}
 
 	next();
