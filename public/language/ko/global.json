@@ -60,6 +60,7 @@
     "posts": "포스트",
     "x-posts": "<span class=\"formatted-number\">%1</span> posts",
     "x-topics": "<span class=\"formatted-number\">%1</span> topics",
+    "x-reputation": "<span class=\"formatted-number\">%1</span> reputation",
     "best": "베스트",
     "controversial": "Controversial",
     "votes": "투표",

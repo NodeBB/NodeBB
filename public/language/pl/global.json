@@ -60,6 +60,7 @@
     "posts": "Posty",
     "x-posts": "<span class=\"formatted-number\">%1</span> postów",
     "x-topics": "<span class=\"formatted-number\">%1</span> tematów",
+    "x-reputation": "<span class=\"formatted-number\">%1</span> reputation",
     "best": "Najlepsze",
     "controversial": "Kontrowersyjne",
     "votes": "Głosy",

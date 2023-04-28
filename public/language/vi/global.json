@@ -60,6 +60,7 @@
     "posts": "Bài Viết",
     "x-posts": "<span class=\"formatted-number\">%1</span> bài đăng",
     "x-topics": "<span class=\"formatted-number\">%1</span> topics",
+    "x-reputation": "<span class=\"formatted-number\">%1</span> reputation",
     "best": "Tốt",
     "controversial": "Gây tranh cãi",
     "votes": "Bình chọn",
