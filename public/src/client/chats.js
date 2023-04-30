@@ -379,7 +379,7 @@ define('forum/chats', [
 		});
 	};
 
-	Chats.createAutoComplete = function (roomId, element) {
+	Chats.createAutoComplete = function (roomId, element, options = {}) {
 		if (!element.length) {
 			return;
 		}
@@ -395,12 +395,17 @@ define('forum/chats', [
 				},
 				placement: 'top',
 				className: `chat-autocomplete-dropdown-${roomId} dropdown-menu textcomplete-dropdown`,
+				...options,
 			},
 		};
 
 		$(window).trigger('chat:autocomplete:init', data);
 		if (data.strategies.length) {
-			Chats.activeAutocomplete[roomId] = autocomplete.setup(data);
+			const autocompleteEl = autocomplete.setup(data);
+			if (roomId) {
+				Chats.activeAutocomplete[roomId] = autocompleteEl;
+			}
+			return autocompleteEl;
 		}
 	};
 
