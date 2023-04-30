@@ -20,6 +20,7 @@
     "you_have_successfully_logged_in": "Başarıyla giriş yaptınız!",
     "save_changes": "Değişiklikleri Kaydet",
     "save": "Kaydet",
+    "cancel": "Cancel",
     "close": "Kapat",
     "pagination": "Sayfalara numara koyma",
     "pagination.out_of": "%1 - %2",

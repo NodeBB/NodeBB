@@ -20,6 +20,7 @@
     "you_have_successfully_logged_in": "Accesso effettuato con successo",
     "save_changes": "Salva Modifiche",
     "save": "Salva",
+    "cancel": "Cancel",
     "close": "Chiudi",
     "pagination": "Impaginazione",
     "pagination.out_of": "%1 di %2",
@@ -60,7 +61,7 @@
     "posts": "Post",
     "x-posts": "<span class=\"formatted-number\">%1</span> post",
     "x-topics": "<span class=\"formatted-number\">%1</span> discussioni",
-    "x-reputation": "<span class=\"formatted-number\">%1</span> reputation",
+    "x-reputation": "<span class=\"formatted-number\">%1</span> reputazione",
     "best": "Migliore",
     "controversial": "Controverso",
     "votes": "Votazioni",
@@ -134,5 +135,5 @@
     "user-search-prompt": "Scrivi qui per avviare la ricerca utenti",
     "hidden": "Nascosto",
     "sort": "Ordinamento",
-    "actions": "Actions"
+    "actions": "Azioni"
 }
