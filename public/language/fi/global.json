@@ -20,6 +20,7 @@
     "you_have_successfully_logged_in": "Olet onnistuneesti kirjautunut sisään",
     "save_changes": "Tallenna muutokset",
     "save": "Tallenna",
+    "cancel": "Cancel",
     "close": "Sulje",
     "pagination": "Sivutus",
     "pagination.out_of": "%1/%2",

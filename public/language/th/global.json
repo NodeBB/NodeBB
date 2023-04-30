@@ -20,6 +20,7 @@
     "you_have_successfully_logged_in": "คุณได้เข้าสู่ระบบแล้ว",
     "save_changes": "บันทึกการเปลี่ยนแปลง",
     "save": "บันทึก",
+    "cancel": "Cancel",
     "close": "ปิด",
     "pagination": "การแบ่งหน้า",
     "pagination.out_of": "%1 จาก %2",

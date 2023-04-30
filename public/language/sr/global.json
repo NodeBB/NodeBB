@@ -20,6 +20,7 @@
     "you_have_successfully_logged_in": "Успешно сте се пријавили",
     "save_changes": "Сачувај измене",
     "save": "Сачувај",
+    "cancel": "Cancel",
     "close": "Затвори",
     "pagination": "Нумерисање страница",
     "pagination.out_of": "%1 од %2",
@@ -60,7 +61,7 @@
     "posts": "Поруке",
     "x-posts": "<span class=\"formatted-number\">%1</span> поруке",
     "x-topics": "<span class=\"formatted-number\">%1</span> теме",
-    "x-reputation": "<span class=\"formatted-number\">%1</span> reputation",
+    "x-reputation": "<span class=\"formatted-number\">%1</span> угледа",
     "best": "Најбоље",
     "controversial": "Спорно",
     "votes": "Гласови",
@@ -134,5 +135,5 @@
     "user-search-prompt": "Uкуцајте нешто овде како бисте пронашли кориснике...",
     "hidden": "Сакривен",
     "sort": "Сортирај",
-    "actions": "Actions"
+    "actions": "Радње"
 }
