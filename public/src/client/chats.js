@@ -110,7 +110,12 @@ define('forum/chats', [
 				if (err) {
 					return alerts.error(err);
 				}
-				ipEl.html(ip);
+				ipEl.text(ip);
+				ipEl.on('click', () => {
+					navigator.clipboard.writeText(ip);
+					ipEl.translateText('[[global:copied]]');
+					setTimeout(() => ipEl.text(ip), 2000);
+				});
 			});
 		});
 	};
