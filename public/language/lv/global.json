@@ -10,7 +10,7 @@
     "500.title": "Iekšēja kļūda.",
     "500.message": "Hmm... Izskatās, ka kaut kas noticis nepareizi!",
     "400.title": "Nepareizs pieprasījums.",
-    "400.message": "It looks like this link is malformed, please double-check and try again. Otherwise, return to the <a class=\"alert-link\" href='%1/'>home page</a>.",
+    "400.message": "It looks like this link is malformed, please double-check and try again.<br/><div class=\"text-sm text-muted\">Return to the <a href='%1/'>home page</a>.</div>",
     "register": "Reģistrēties",
     "login": "Ielogoties",
     "please_log_in": "Lūdzu, ielogoties",

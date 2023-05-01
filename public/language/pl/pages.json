@@ -60,7 +60,7 @@
     "account/uploads": "Pliki przesłane przez %1",
     "account/sessions": "Sesje logowania",
     "confirm": "E-mail potwierdzony",
-    "maintenance.text": "Obecnie trwają prace konserwacyjne nad %1. Wróć później.",
+    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
     "maintenance.messageIntro": "Dodatkowo administrator zostawił wiadomość:",
     "throttled.text": "%1 jest niedostępny z powodu przeciążenia. Wróć później."
 }

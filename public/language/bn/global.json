@@ -10,7 +10,7 @@
     "500.title": "Internal Error.",
     "500.message": "ওহো! কিছু ভুল হয়েছে মনে হচ্ছে!",
     "400.title": "ভুল ঠিকানা",
-    "400.message": "It looks like this link is malformed, please double-check and try again. Otherwise, return to the <a class=\"alert-link\" href='%1/'>home page</a>.",
+    "400.message": "It looks like this link is malformed, please double-check and try again.<br/><div class=\"text-sm text-muted\">Return to the <a href='%1/'>home page</a>.</div>",
     "register": "নিবন্ধন",
     "login": "প্রবেশ",
     "please_log_in": "অনুগ্রহ করে প্রবেশ করুন",

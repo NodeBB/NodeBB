@@ -10,7 +10,7 @@
     "500.title": "내부 오류",
     "500.message": "이런! 알 수 없는 오류가 발생했습니다!",
     "400.title": "잘못된 요청",
-    "400.message": "It looks like this link is malformed, please double-check and try again. Otherwise, return to the <a class=\"alert-link\" href='%1/'>home page</a>.",
+    "400.message": "It looks like this link is malformed, please double-check and try again.<br/><div class=\"text-sm text-muted\">Return to the <a href='%1/'>home page</a>.</div>",
     "register": "회원가입",
     "login": "로그인",
     "please_log_in": "로그인 해주세요.",

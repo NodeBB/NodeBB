@@ -60,7 +60,7 @@
     "account/uploads": "Uppladdningar av %1",
     "account/sessions": "Inloggningssessioner",
     "confirm": "E-postadress bekräftad",
-    "maintenance.text": "%1 genomgår underhåll just nu. Vänligen kom tillbaka lite senare.",
+    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
     "maintenance.messageIntro": "Utöver det så lämnade administratören följande meddelande:",
     "throttled.text": "%1 ligger tillfälligt nere på grund av överbelastning. Var god återkom senare. "
 }

@@ -10,7 +10,7 @@
     "500.title": "Lỗi Bên Trong.",
     "500.message": "Úi chà! Có vẻ như đã xảy ra sự cố!",
     "400.title": "Yêu Cầu Không Hợp Lệ.",
-    "400.message": "It looks like this link is malformed, please double-check and try again. Otherwise, return to the <a class=\"alert-link\" href='%1/'>home page</a>.",
+    "400.message": "It looks like this link is malformed, please double-check and try again.<br/><div class=\"text-sm text-muted\">Return to the <a href='%1/'>home page</a>.</div>",
     "register": "Đăng ký",
     "login": "Đăng nhập",
     "please_log_in": "Vui Lòng Đăng Nhập",

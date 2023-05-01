@@ -60,7 +60,7 @@
     "account/uploads": "העלאות של %1",
     "account/sessions": "סשני התחברות",
     "confirm": "כתובת המייל אושרה",
-    "maintenance.text": "%1 כרגע תחת עבודות תחזוקה. אנא חזרו במועד מאוחר יותר.",
+    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
     "maintenance.messageIntro": "בנוסף, המנהלים השאירו הודעה זו:",
     "throttled.text": "%1 לא זמין כעת עקב טעינת יתר. אנא חזרו במועד מאוחר יותר."
 }

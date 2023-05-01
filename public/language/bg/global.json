@@ -10,7 +10,7 @@
     "500.title": "Вътрешна грешка.",
     "500.message": "Опа! Изглежда нещо се обърка!",
     "400.title": "Грешна заявка.",
-    "400.message": "Тази връзка изглежда повредена. Моля, проверете я и опитайте отново. В противен случай се върнете на <a class=\"alert-link\" href='%1/'>началната страница</a>.",
+    "400.message": "It looks like this link is malformed, please double-check and try again.<br/><div class=\"text-sm text-muted\">Return to the <a href='%1/'>home page</a>.</div>",
     "register": "Регистрация",
     "login": "Вписване",
     "please_log_in": "Моля, впишете се",

@@ -10,7 +10,7 @@
     "500.title": "Interne fout",
     "500.message": "Oeps! Ziet er naar uit dat iets fout ging!",
     "400.title": "Foutief verzoek",
-    "400.message": "It looks like this link is malformed, please double-check and try again. Otherwise, return to the <a class=\"alert-link\" href='%1/'>home page</a>.",
+    "400.message": "It looks like this link is malformed, please double-check and try again.<br/><div class=\"text-sm text-muted\">Return to the <a href='%1/'>home page</a>.</div>",
     "register": "Registeren",
     "login": "Login",
     "please_log_in": "Aanmelden",

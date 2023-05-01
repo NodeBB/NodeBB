@@ -10,7 +10,7 @@
     "500.title": "Belső hiba.",
     "500.message": "Hoppá! Úgy tűnik, valami hiba történt!",
     "400.title": "Hibás kérelem.",
-    "400.message": "Úgy tűnik, ez a link hibás, kérjük, ellenőrizze még egyszer, és próbálja újra. Ellenkező esetben térjen <a class=\"alert-link\" href='%1/'>vissza a kezdőlapra</a>.",
+    "400.message": "It looks like this link is malformed, please double-check and try again.<br/><div class=\"text-sm text-muted\">Return to the <a href='%1/'>home page</a>.</div>",
     "register": "Regisztrálás",
     "login": "Belépés",
     "please_log_in": "Jelentkezz be",

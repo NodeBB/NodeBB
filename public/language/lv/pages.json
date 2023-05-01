@@ -60,7 +60,7 @@
     "account/uploads": "%1 augšupielādes",
     "account/sessions": "Aktīvās sesijas",
     "confirm": "E-pasta adrese apstiprināta",
-    "maintenance.text": "%1 šobrīd notiek apkope. Lūdzu, atgriezies vēlāk.",
+    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
     "maintenance.messageIntro": "Turklāt administrators ir atstājis šo paziņojumu:",
     "throttled.text": "%1 šobrīd nav pieejams pārmērīgas slodzes dēļ. Lūdzu, atgriezies vēlāk."
 }

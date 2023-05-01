@@ -10,7 +10,7 @@
     "500.title": "Erro interno.",
     "500.message": "Oops! Parece que algo correu mal!",
     "400.title": "O pedido não correu bem.",
-    "400.message": "It looks like this link is malformed, please double-check and try again. Otherwise, return to the <a class=\"alert-link\" href='%1/'>home page</a>.",
+    "400.message": "It looks like this link is malformed, please double-check and try again.<br/><div class=\"text-sm text-muted\">Return to the <a href='%1/'>home page</a>.</div>",
     "register": "Regista-te",
     "login": "Iniciar sessão",
     "please_log_in": "Por favor inicia sessão",

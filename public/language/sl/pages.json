@@ -60,7 +60,7 @@
     "account/uploads": "Uploads by %1",
     "account/sessions": "Login Sessions",
     "confirm": "E-pošta potrjena",
-    "maintenance.text": "%1 je trenutno v vzdrževanju.",
+    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
     "maintenance.messageIntro": "Dodatno vam je skrbnik pustil tole sporočilo:",
     "throttled.text": "Storitev %1 je trenutno zaradi obremenitve nedosegljiva. Prosimo, vrnite se pozneje."
 }

@@ -10,7 +10,7 @@
     "500.title": "Error interno.",
     "500.message": "¡Ooops! ¡Parece que algo salió mal! No te preocupes, ¡nuestros simios hiperinteligentes lo solucionarán!",
     "400.title": "Petición incorrecta.",
-    "400.message": "It looks like this link is malformed, please double-check and try again. Otherwise, return to the <a class=\"alert-link\" href='%1/'>home page</a>.",
+    "400.message": "It looks like this link is malformed, please double-check and try again.<br/><div class=\"text-sm text-muted\">Return to the <a href='%1/'>home page</a>.</div>",
     "register": "Registrarse",
     "login": "Conectarse",
     "please_log_in": "Por favor, identifíquese.",

@@ -60,7 +60,7 @@
     "account/uploads": "Tải lên bởi %1",
     "account/sessions": "Phiên Đăng Nhập",
     "confirm": "Đã xác nhận email",
-    "maintenance.text": "%1 hiện đang được bảo trì. Vui lòng quay lại lúc khác.",
+    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
     "maintenance.messageIntro": "Ngoài ra, quản trị viên đã để lại thông báo này:",
     "throttled.text": "%1 hiện không khả dụng do quá tải. Vui lòng quay lại vào lúc khác."
 }

@@ -10,7 +10,7 @@
     "500.title": "Kesalahan Internal.",
     "500.message": "Oops! Terjadi kesalahan",
     "400.title": "Bad Request.",
-    "400.message": "It looks like this link is malformed, please double-check and try again. Otherwise, return to the <a class=\"alert-link\" href='%1/'>home page</a>.",
+    "400.message": "It looks like this link is malformed, please double-check and try again.<br/><div class=\"text-sm text-muted\">Return to the <a href='%1/'>home page</a>.</div>",
     "register": "Daftar",
     "login": "Login",
     "please_log_in": "Silakan Log In",

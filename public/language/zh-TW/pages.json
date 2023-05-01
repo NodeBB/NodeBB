@@ -60,7 +60,7 @@
     "account/uploads": "%1 上傳的檔案",
     "account/sessions": "已登入的會話",
     "confirm": "電子信箱已確認",
-    "maintenance.text": "%1 正在進行維護。請稍後再來。",
+    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
     "maintenance.messageIntro": "此外，管理員留下的訊息：",
     "throttled.text": "%1 因負荷超載暫不可用。請稍後再來。"
 }
