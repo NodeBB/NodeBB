@@ -6,7 +6,7 @@
     "403.message": "Ao parecer, non tes permisos para acceder a esta páxina.",
     "403.login": "Perhaps you should <a class=\"alert-link\" href='%1/login'>try logging in</a>?",
     "404.title": "Non Atopado",
-    "404.message": "You seem to have stumbled upon a page that does not exist. Return to the <a class=\"alert-link\" href='%1/'>home page</a>.",
+    "404.message": "You seem to have stumbled upon a page that does not exist.<br/><div class=\"text-sm text-muted\">Return to the <a href='%1/'>home page</a>.</div>",
     "500.title": "Erro interno.",
     "500.message": "Ups! Parece que algo saíu mal!",
     "400.title": "Petición incorrecta",

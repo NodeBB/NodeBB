@@ -6,7 +6,7 @@
     "403.message": "您似乎碰到了一个您没有访问权限的页面。",
     "403.login": "请您尝试<a href='%1/login'>登录</a>后再试",
     "404.title": "未找到",
-    "404.message": "您访问的页面不存在, 返回<a href='%1/'>首页</a>",
+    "404.message": "You seem to have stumbled upon a page that does not exist.<br/><div class=\"text-sm text-muted\">Return to the <a href='%1/'>home page</a>.</div>",
     "500.title": "内部错误",
     "500.message": "哎呀！看来是哪里出错了！",
     "400.title": "错误的请求",

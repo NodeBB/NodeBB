@@ -6,7 +6,7 @@
     "403.message": "アクセス権限が無いページを閲覧しようとしています。",
     "403.login": "Perhaps you should <a class=\"alert-link\" href='%1/login'>try logging in</a>?",
     "404.title": "見つかりません",
-    "404.message": "You seem to have stumbled upon a page that does not exist. Return to the <a class=\"alert-link\" href='%1/'>home page</a>.",
+    "404.message": "You seem to have stumbled upon a page that does not exist.<br/><div class=\"text-sm text-muted\">Return to the <a href='%1/'>home page</a>.</div>",
     "500.title": "内部エラー",
     "500.message": "何か問題が発生しているようです。",
     "400.title": "無効なリクエスト",

@@ -6,7 +6,7 @@
     "403.message": "Det ser ud til du er stødt på en side du ikke har adgang til.",
     "403.login": "Perhaps you should <a class=\"alert-link\" href='%1/login'>try logging in</a>?",
     "404.title": "Ikke fundet",
-    "404.message": "You seem to have stumbled upon a page that does not exist. Return to the <a class=\"alert-link\" href='%1/'>home page</a>.",
+    "404.message": "You seem to have stumbled upon a page that does not exist.<br/><div class=\"text-sm text-muted\">Return to the <a href='%1/'>home page</a>.</div>",
     "500.title": "Internal Error.",
     "500.message": "Ups! Ser ud til at noget gik galt!",
     "400.title": "Bad Request.",
