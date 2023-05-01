@@ -102,6 +102,7 @@
     "thread_tools.change_owner": "Change Owner",
     "thread_tools.select_category": "Select Category",
     "thread_tools.fork": "Διαχωρισμός Θέματος",
+    "thread_tools.tag": "Tag Topic",
     "thread_tools.delete": "Διαγραφή Θέματος",
     "thread_tools.delete-posts": "Delete Posts",
     "thread_tools.delete_confirm": "Είσαι σίγουρος/η πως θέλεις να διαγράψεις αυτό το θέμα;",

@@ -102,6 +102,7 @@
     "thread_tools.change_owner": "Change Owner",
     "thread_tools.select_category": "Select Category",
     "thread_tools.fork": "Fraskil tråd",
+    "thread_tools.tag": "Tag Topic",
     "thread_tools.delete": "Slet tråd",
     "thread_tools.delete-posts": "Slet Indlæg",
     "thread_tools.delete_confirm": "Er du sikker på at du vil slette dette emne?",

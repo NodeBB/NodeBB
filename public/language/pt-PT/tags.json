@@ -6,5 +6,6 @@
     "enter_tags_here": "Insere os marcadores aqui, cada um com %1 a %2 caracteres.",
     "enter_tags_here_short": "Insere marcadores...",
     "no_tags": "Ainda não existem marcadores.",
-    "select_tags": "Selecionar Marcadores"
+    "select_tags": "Selecionar Marcadores",
+    "tag-whitelist": "Tag Whitelist"
 }

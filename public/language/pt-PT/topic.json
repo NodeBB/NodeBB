@@ -102,6 +102,7 @@
     "thread_tools.change_owner": "Alterar Proprietário",
     "thread_tools.select_category": "Selecionar Categoria",
     "thread_tools.fork": "Clonar tópico",
+    "thread_tools.tag": "Tag Topic",
     "thread_tools.delete": "Apagar Tópico",
     "thread_tools.delete-posts": "Apagar publicações",
     "thread_tools.delete_confirm": "Tens a certeza que desejas apagar este tópico?",

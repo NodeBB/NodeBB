@@ -102,6 +102,7 @@
     "thread_tools.change_owner": "Trocar proprietário",
     "thread_tools.select_category": "Escolha a Categoria",
     "thread_tools.fork": "Ramificar Tópico",
+    "thread_tools.tag": "Tag Topic",
     "thread_tools.delete": "Deletar Tópico",
     "thread_tools.delete-posts": "Deletar Posts",
     "thread_tools.delete_confirm": "Tem certeza que deseja excluir este tópico?",

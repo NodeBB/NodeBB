@@ -102,6 +102,7 @@
     "thread_tools.change_owner": "Zmień właściciela",
     "thread_tools.select_category": "Wybierz kategorię",
     "thread_tools.fork": "Skopiuj temat",
+    "thread_tools.tag": "Tag Topic",
     "thread_tools.delete": "Usuń temat",
     "thread_tools.delete-posts": "Usuń posty",
     "thread_tools.delete_confirm": "Czy na pewno chcesz usunąć ten temat?",

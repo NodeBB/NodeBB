@@ -92,6 +92,7 @@
     "already-posting": "You are already posting",
     "tag-too-short": "Введіть, будь ласка, довший тег. Мінімальна довжина тегу %1 символ(ів)",
     "tag-too-long": "Введіть, будь ласка, коротший тег. Максимальна довжина тегу %1 символ(ів)",
+    "tag-not-allowed": "Tag not allowed",
     "not-enough-tags": "Замало тегів. Тема повинна мати щонайменше %1 тег(и)",
     "too-many-tags": "Забагато тегів. Тема не може мати більше %1 тег(и)",
     "cant-use-system-tag": "You can not use this system tag.",

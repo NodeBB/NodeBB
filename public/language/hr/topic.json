@@ -102,6 +102,7 @@
     "thread_tools.change_owner": "Change Owner",
     "thread_tools.select_category": "Select Category",
     "thread_tools.fork": "Dupliraj temu",
+    "thread_tools.tag": "Tag Topic",
     "thread_tools.delete": "Obriši temu",
     "thread_tools.delete-posts": "Obriši objavu",
     "thread_tools.delete_confirm": "Sigurni ste da želite obrisati ovu temu?",

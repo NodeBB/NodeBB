@@ -102,6 +102,7 @@
     "thread_tools.change_owner": "Փոխել սեփականատիրոջը",
     "thread_tools.select_category": "Ընտրել կատեգորիա",
     "thread_tools.fork": "Մասնատել թեման",
+    "thread_tools.tag": "Tag Topic",
     "thread_tools.delete": "Ջնջել թեման",
     "thread_tools.delete-posts": "Ջնջել գրառումները",
     "thread_tools.delete_confirm": "Վստա՞հ եք, որ ուզում եք ջնջել այս թեման։",

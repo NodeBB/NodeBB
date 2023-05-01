@@ -6,5 +6,6 @@
     "enter_tags_here": "برچسب‌ها را اینجا وارد کنید، هر کدام بین %1 و %2 کاراکتر.",
     "enter_tags_here_short": "برچسب‌ها را وارد کنید...",
     "no_tags": "هنوز برچسبی وجود ندارد.",
-    "select_tags": "انتخاب برچسب ها"
+    "select_tags": "انتخاب برچسب ها",
+    "tag-whitelist": "Tag Whitelist"
 }

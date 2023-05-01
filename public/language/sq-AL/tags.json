@@ -6,5 +6,6 @@
     "enter_tags_here": "Futni këtu tags, ndërmjet %1 dhe %2 karaktere secila.",
     "enter_tags_here_short": "Vendos tags...",
     "no_tags": "Nuk ka ende tags",
-    "select_tags": "Zgjidhni tags"
+    "select_tags": "Zgjidhni tags",
+    "tag-whitelist": "Tag Whitelist"
 }

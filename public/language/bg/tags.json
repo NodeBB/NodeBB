@@ -6,5 +6,6 @@
     "enter_tags_here": "Тук въведете етикети, всеки между %1 и %2 знака.",
     "enter_tags_here_short": "Въведете етикети...",
     "no_tags": "Все още няма етикети.",
-    "select_tags": "Изберете етикети"
+    "select_tags": "Изберете етикети",
+    "tag-whitelist": "Tag Whitelist"
 }

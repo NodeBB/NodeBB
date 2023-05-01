@@ -102,6 +102,7 @@
     "thread_tools.change_owner": "Sahibini Değiştir",
     "thread_tools.select_category": "Kategori Seç",
     "thread_tools.fork": "Konuyu Ayır",
+    "thread_tools.tag": "Tag Topic",
     "thread_tools.delete": "Konuyu Sil",
     "thread_tools.delete-posts": "İletileri Sil",
     "thread_tools.delete_confirm": "Bu başlığı gerçekten silmek istediğinize emin misiniz?",
