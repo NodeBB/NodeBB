@@ -3,16 +3,16 @@
 		[[topic:thread_tools.tag]]
 	</h5>
 	<div class="card-body d-flex flex-column gap-2">
+		{{{ if tagWhitelist }}}
 		<div class="d-flex flex-column gap-1">
-			{{{ if tagWhitelist }}}
 			<span>[[tags:tag-whitelist]]</span>
 			<div>
 				{{{ each tagWhitelist }}}
 				<span class="badge bg-info">{@value}</span>
 				{{{ end }}}
 			</div>
-			{{{ end }}}
 		</div>
+		{{{ end }}}
 		{{{ each topics }}}
 		<div class="mb-3">
 			<label class="form-label" for="fork-title"><strong>{./title}</strong></label>
