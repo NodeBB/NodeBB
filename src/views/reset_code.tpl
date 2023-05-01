@@ -31,7 +31,7 @@
 	</form>
 </div>
 {{{ else }}}
-<div class="card bg-danger">
+<div class="card text-bg-danger">
 	<h5 class="card-header">
 		[[reset_password:wrong_reset_code.title]]
 	</h5>
