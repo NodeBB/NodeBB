@@ -10,7 +10,7 @@
     "500.title": "Internal Error.",
     "500.message": "Ups! Ser ud til at noget gik galt!",
     "400.title": "Bad Request.",
-    "400.message": "It looks like this link is malformed, please double-check and try again. Otherwise, return to the <a class=\"alert-link\" href='%1/'>home page</a>.",
+    "400.message": "It looks like this link is malformed, please double-check and try again.<br/><div class=\"text-sm text-muted\">Return to the <a href='%1/'>home page</a>.</div>",
     "register": "Tilmeld",
     "login": "Log ind",
     "please_log_in": "Venligst log ind",

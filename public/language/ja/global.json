@@ -10,7 +10,7 @@
     "500.title": "内部エラー",
     "500.message": "何か問題が発生しているようです。",
     "400.title": "無効なリクエスト",
-    "400.message": "It looks like this link is malformed, please double-check and try again. Otherwise, return to the <a class=\"alert-link\" href='%1/'>home page</a>.",
+    "400.message": "It looks like this link is malformed, please double-check and try again.<br/><div class=\"text-sm text-muted\">Return to the <a href='%1/'>home page</a>.</div>",
     "register": "登録",
     "login": "ログイン",
     "please_log_in": "ログインください",

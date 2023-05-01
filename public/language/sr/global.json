@@ -10,7 +10,7 @@
     "500.title": "Унутрашња грешка.",
     "500.message": "Упс! Изгледа да нешто није како треба!",
     "400.title": "Неисправан захтев.",
-    "400.message": "Изгледа да је ова веза деформисана, проверите још једном и покушајте поново. У супротном, вратите се на <a class=\"alert-link\" href='%1/'>почетну страницу</a>.",
+    "400.message": "It looks like this link is malformed, please double-check and try again.<br/><div class=\"text-sm text-muted\">Return to the <a href='%1/'>home page</a>.</div>",
     "register": "Регистрација",
     "login": "Пријави се",
     "please_log_in": "Молимо, пријавите се",

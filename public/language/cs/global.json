@@ -10,7 +10,7 @@
     "500.title": "Interní chyba",
     "500.message": "Jejda, vypadá to, že se něco pokazilo.",
     "400.title": "Špatný požadavek.",
-    "400.message": "It looks like this link is malformed, please double-check and try again. Otherwise, return to the <a class=\"alert-link\" href='%1/'>home page</a>.",
+    "400.message": "It looks like this link is malformed, please double-check and try again.<br/><div class=\"text-sm text-muted\">Return to the <a href='%1/'>home page</a>.</div>",
     "register": "Registrovat",
     "login": "Přihlásit se",
     "please_log_in": "Přihlašte se, prosím",

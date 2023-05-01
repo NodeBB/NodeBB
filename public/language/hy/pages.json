@@ -60,7 +60,7 @@
     "account/uploads": "Վերբեռնումներ % 1-ով",
     "account/sessions": "Մուտք գործելու սեանս",
     "confirm": "Էլ. փոստը հաստատված է",
-    "maintenance.text": "%1-ը ներկայումս սպասարկում է անցնում: Խնդրում եմ վերադարձեք մեկ այլ անգամ:",
+    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
     "maintenance.messageIntro": "Ի հավելումն, ադմինիստրատորը լքել է այս հաղորդագրությունը",
     "throttled.text": "%1-ը ներկայումս անհասանելի է չափազանց ծանրաբեռնվածության պատճառով: Խնդրում ենք վերադարձեք մեկ այլ անգամ:"
 }

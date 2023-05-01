@@ -60,7 +60,7 @@
     "account/uploads": "Отпремио %1",
     "account/sessions": "Сесије пријављивања",
     "confirm": "Е-пошта је потврђена.",
-    "maintenance.text": "%1 је тренутно у фази одржавања. Молимо, навратите касније.",
+    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
     "maintenance.messageIntro": "Додатно, администратор је оставио ову поруку:",
     "throttled.text": "%1 је тренутно недоступан због прекомерног оптерећења. Молимо, навратите касније."
 }

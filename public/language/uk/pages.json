@@ -60,7 +60,7 @@
     "account/uploads": "Завантаження від %1",
     "account/sessions": "Логін-сесії",
     "confirm": "Електронну пошту підтверджено",
-    "maintenance.text": "%1 в данний час на технічному обслуговувані. Завітайте, будь ласка, пізніше.",
+    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
     "maintenance.messageIntro": "Крім того, адміністратор залишив це повідомлення:",
     "throttled.text": "%1 в даний час недоступний через надмірне навантаження. Завітайте, будь ласка, пізніше."
 }

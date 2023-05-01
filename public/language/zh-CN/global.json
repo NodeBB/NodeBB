@@ -10,7 +10,7 @@
     "500.title": "内部错误",
     "500.message": "哎呀！看来是哪里出错了！",
     "400.title": "错误的请求",
-    "400.message": "这个链接的格式可能不正确，请再次检查并重试。或者返回<a href='%1/'>主页</a>。",
+    "400.message": "It looks like this link is malformed, please double-check and try again.<br/><div class=\"text-sm text-muted\">Return to the <a href='%1/'>home page</a>.</div>",
     "register": "注册",
     "login": "登录",
     "please_log_in": "请登录",

@@ -10,7 +10,7 @@
     "500.title": "Internal Error.",
     "500.message": "Oops! Se pare că ceva a mers greșit!",
     "400.title": "Bad Request.",
-    "400.message": "It looks like this link is malformed, please double-check and try again. Otherwise, return to the <a class=\"alert-link\" href='%1/'>home page</a>.",
+    "400.message": "It looks like this link is malformed, please double-check and try again.<br/><div class=\"text-sm text-muted\">Return to the <a href='%1/'>home page</a>.</div>",
     "register": "Înregistrare",
     "login": "Autentificare",
     "please_log_in": "Autentifică-te",

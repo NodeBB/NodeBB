@@ -60,7 +60,7 @@
     "account/uploads": "%1 feltöltései",
     "account/sessions": "Belépési munkamenetek",
     "confirm": "E-mail megerősítve",
-    "maintenance.text": "%1 jelenleg karbantartás alatt van. Kérlek, nézz vissza később!",
+    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
     "maintenance.messageIntro": "Ezenkívúl, az adminisztrátor ezt az üzenetet hagyta:",
     "throttled.text": "A(z) %1 jelenleg nem érhető el túlterheltség miatt. Kérlek, nézz vissza később."
 }

@@ -10,7 +10,7 @@
     "500.title": "Intern feil.",
     "500.message": "Oops! Ser ut som noe gikk galt!",
     "400.title": "Ugyldig forespørsel ",
-    "400.message": "It looks like this link is malformed, please double-check and try again. Otherwise, return to the <a class=\"alert-link\" href='%1/'>home page</a>.",
+    "400.message": "It looks like this link is malformed, please double-check and try again.<br/><div class=\"text-sm text-muted\">Return to the <a href='%1/'>home page</a>.</div>",
     "register": "Registrer",
     "login": "Logg inn",
     "please_log_in": "Vennligst logg inn",

@@ -10,7 +10,7 @@
     "500.title": "שגיאה פנימית.",
     "500.message": "אופס! נראה שמשהו השתבש!",
     "400.title": "בקשה שגויה",
-    "400.message": "It looks like this link is malformed, please double-check and try again. Otherwise, return to the <a class=\"alert-link\" href='%1/'>home page</a>.",
+    "400.message": "It looks like this link is malformed, please double-check and try again.<br/><div class=\"text-sm text-muted\">Return to the <a href='%1/'>home page</a>.</div>",
     "register": "הרשמה",
     "login": "התחברות",
     "please_log_in": "נא להתחבר",

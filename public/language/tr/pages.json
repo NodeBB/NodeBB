@@ -60,7 +60,7 @@
     "account/uploads": "%1 kullanıcısının yüklediği dosyalar",
     "account/sessions": "Giriş Oturumları",
     "confirm": "E-posta Onaylandı",
-    "maintenance.text": "%1 şu anda bakımda. Lütfen bir süre sonra tekrar deneyin.",
+    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
     "maintenance.messageIntro": "Ayrıca, yönetici şu mesaji bıraktı:",
     "throttled.text": "%1 şu anda kullanılamıyor. Lütfen daha sonra tekrar deneyiniz."
 }

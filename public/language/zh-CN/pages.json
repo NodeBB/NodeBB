@@ -60,7 +60,7 @@
     "account/uploads": "%1 上传的文件",
     "account/sessions": "已登录的会话",
     "confirm": "电子邮箱已确认",
-    "maintenance.text": "%1 正在进行维护。请稍后再来。",
+    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
     "maintenance.messageIntro": "此外，管理员留下的消息：",
     "throttled.text": "%1 因负荷超载暂不可用。请稍后再来。"
 }

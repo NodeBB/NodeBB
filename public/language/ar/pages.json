@@ -60,7 +60,7 @@
     "account/uploads": "Uploads by %1",
     "account/sessions": "Login Sessions",
     "confirm": "تم التحقق من عنوان البريد الإلكتروني",
-    "maintenance.text": "جاري صيانة %1. المرجو العودة لاحقًا.",
+    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
     "maintenance.messageIntro": "بالإضافة إلى ذلك، قام مدبر النظام بترك هذه الرسالة:",
     "throttled.text": "%1 is currently unavailable due to excessive load. Please come back another time."
 }

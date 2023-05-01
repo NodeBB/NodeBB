@@ -10,7 +10,7 @@
     "500.title": "ระบบภายในเกิดข้อผิดพลาด",
     "500.message": "อุ่ย! มีสิ่งที่ไม่ถูกต้องเกิดขึ้น!",
     "400.title": "คำร้องขอที่เลวร้าย",
-    "400.message": "It looks like this link is malformed, please double-check and try again. Otherwise, return to the <a class=\"alert-link\" href='%1/'>home page</a>.",
+    "400.message": "It looks like this link is malformed, please double-check and try again.<br/><div class=\"text-sm text-muted\">Return to the <a href='%1/'>home page</a>.</div>",
     "register": "ลงทะเบียน",
     "login": "เข้าสู่ระบบ",
     "please_log_in": "กรุณาเข้าสู่ระบบ",

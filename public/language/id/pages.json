@@ -60,7 +60,7 @@
     "account/uploads": "Uploads by %1",
     "account/sessions": "Login Sessions",
     "confirm": "Email Confirmed",
-    "maintenance.text": "%1 saat ini sedang dalam masa pemeliharaan. Silahkan kembali lain waktu.",
+    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
     "maintenance.messageIntro": "Tambahan, Administrator meninggalkan pesan ini:",
     "throttled.text": "%1 is currently unavailable due to excessive load. Please come back another time."
 }

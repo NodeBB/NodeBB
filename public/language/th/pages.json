@@ -60,7 +60,7 @@
     "account/uploads": "Uploads by %1",
     "account/sessions": "Login Sessions",
     "confirm": "อีเมล์ได้รับการยืนยันแล้ว",
-    "maintenance.text": "%1 กำลังอยู่ระหว่างการปิดปรับปรุงชั่วคราว กรุณาลองใหม่อีกครั้งในภายหลัง",
+    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
     "maintenance.messageIntro": "ผู้ดูแลระบบได้ฝากข้อความต่อไปนี้เอาไว้",
     "throttled.text": "%1 ไม่สามารถเข้าถึงได้ในขณะนี้เนื่องจากมีการโหลดที่หนักมากเกินไป กรุณากลับเข้ามาอีกครั้งในภายหลัง"
 }

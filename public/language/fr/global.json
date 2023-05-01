@@ -10,7 +10,7 @@
     "500.title": "Erreur Interne.",
     "500.message": "Oops ! Il semblerait que quelque chose se soit mal passé !",
     "400.title": "Requête erronée.",
-    "400.message": "Il semble que ce lien soit incorrect, veuillez vérifier et réessayer. Sinon, retournez à la <a class=\"alert-link\" href='%1/'>page d'accueil</a>.",
+    "400.message": "It looks like this link is malformed, please double-check and try again.<br/><div class=\"text-sm text-muted\">Return to the <a href='%1/'>home page</a>.</div>",
     "register": "S'inscrire",
     "login": "Se connecter",
     "please_log_in": "Veuillez vous connecter",

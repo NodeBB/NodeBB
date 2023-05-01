@@ -10,7 +10,7 @@
     "500.title": "Gabim i brendshëm.",
     "500.message": "Ups! Diçka nuk shkoi mirë!",
     "400.title": "Kërkesë e pasaktë.",
-    "400.message": "It looks like this link is malformed, please double-check and try again. Otherwise, return to the <a class=\"alert-link\" href='%1/'>home page</a>.",
+    "400.message": "It looks like this link is malformed, please double-check and try again.<br/><div class=\"text-sm text-muted\">Return to the <a href='%1/'>home page</a>.</div>",
     "register": "Regjistrohu",
     "login": "Hyr",
     "please_log_in": "Ju lutemi Identifikohu",
