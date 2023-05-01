@@ -68,7 +68,7 @@
 
 	"confirm": "Email Confirmed",
 
-	"maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
+	"maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
 	"maintenance.messageIntro": "Additionally, the administrator has left this message:",
 
 	"throttled.text": "%1 is currently unavailable due to excessive load. Please come back another time."
