@@ -1,4 +1,4 @@
-<div class="outgoing d-flex flex-column gap-3 align-items-center">
+<div class="flex-fill outgoing d-flex flex-column gap-3 align-items-center">
 	<h4>
 		[[notifications:outgoing_link_message, {title}]]
 	</h4>
