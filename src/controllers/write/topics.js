@@ -100,13 +100,21 @@ Topics.unfollow = async (req, res) => {
 	helpers.formatApiResponse(200, res);
 };
 
+Topics.updateTags = async (req, res) => {
+	const payload = await api.topics.updateTags(req, {
+		tid: req.params.tid,
+		tags: req.body.tags,
+	});
+	helpers.formatApiResponse(200, res, payload);
+};
+
 Topics.addTags = async (req, res) => {
-	await api.topics.addTags(req, {
+	const payload = await api.topics.addTags(req, {
 		tid: req.params.tid,
 		tags: req.body.tags,
 	});
 
-	helpers.formatApiResponse(200, res);
+	helpers.formatApiResponse(200, res, payload);
 };
 
 Topics.deleteTags = async (req, res) => {

@@ -133,6 +133,12 @@ define('forum/topic/threadTools', [
 			});
 		});
 
+		topicContainer.on('click', '[component="topic/tag"]', function () {
+			require(['forum/topic/tag'], function (tag) {
+				tag.init([ajaxify.data], ajaxify.data.tagWhitelist);
+			});
+		});
+
 		topicContainer.on('click', '[component="topic/move-posts"]', function () {
 			require(['forum/topic/move-post'], function (movePosts) {
 				movePosts.init();
