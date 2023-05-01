@@ -6,7 +6,7 @@
     "403.message": "Du verkar ha ramlat in på en sida du ej har tillgång till.",
     "403.login": "Perhaps you should <a class=\"alert-link\" href='%1/login'>try logging in</a>?",
     "404.title": "Sidan saknas",
-    "404.message": "You seem to have stumbled upon a page that does not exist. Return to the <a class=\"alert-link\" href='%1/'>home page</a>.",
+    "404.message": "You seem to have stumbled upon a page that does not exist.<br/><div class=\"text-sm text-muted\">Return to the <a href='%1/'>home page</a>.</div>",
     "500.title": "Internt fel.",
     "500.message": "Hoppsan! Något verkar ha gått fel!",
     "400.title": "Felaktig förfrågan.",

@@ -6,7 +6,7 @@
     "403.message": "Изглежда сте посетили страница, до която нямате достъп.",
     "403.login": "Може би трябва да <a class=\"alert-link\" href='%1/login'>опитате да се впишете</a>?",
     "404.title": "Не е намерена",
-    "404.message": "Изглежда сте се опитали да посетите страница, която не съществува. Върнете се към <a class=\"alert-link\" href='%1/'>началната страница</a>.",
+    "404.message": "You seem to have stumbled upon a page that does not exist.<br/><div class=\"text-sm text-muted\">Return to the <a href='%1/'>home page</a>.</div>",
     "500.title": "Вътрешна грешка.",
     "500.message": "Опа! Изглежда нещо се обърка!",
     "400.title": "Грешна заявка.",
