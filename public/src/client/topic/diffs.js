@@ -11,7 +11,13 @@ define('forum/topic/diffs', ['api', 'bootbox', 'alerts', 'forum/topic/images'], 
 
 		api.get(`/posts/${pid}/diffs`, {}).then((data) => {
 			parsePostHistory(data).then(($html) => {
-				const $modal = bootbox.dialog({ title: '[[topic:diffs.title]]', message: $html, size: 'large' });
+				const $modal = bootbox.dialog({
+					title: '[[topic:diffs.title]]',
+					message: $html,
+					size: 'large',
+					onEscape: true,
+					backdrop: true,
+				});
 
 				if (!data.timestamps.length) {
 					return;
