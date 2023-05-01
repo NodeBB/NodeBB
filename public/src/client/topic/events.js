@@ -107,8 +107,8 @@ define('forum/topic/events', [
 		const editedPostEl = components.get('post/content', data.post.pid).filter(function (index, el) {
 			return parseInt($(el).closest('[data-pid]').attr('data-pid'), 10) === parseInt(data.post.pid, 10);
 		});
-
-		const editorEl = $('[data-pid="' + data.post.pid + '"] [component="post/editor"]').filter(function (index, el) {
+		const postContainer = $(`[data-pid="${data.post.pid}"]`);
+		const editorEl = postContainer.find('[component="post/editor"]').filter(function (index, el) {
 			return parseInt($(el).closest('[data-pid]').attr('data-pid'), 10) === parseInt(data.post.pid, 10);
 		});
 		const topicTitle = components.get('topic/title');
@@ -150,7 +150,10 @@ define('forum/topic/events', [
 
 				app.parseAndTranslate('partials/topic/post-editor', editData, function (html) {
 					editorEl.replaceWith(html);
-					$('[data-pid="' + data.post.pid + '"] [component="post/editor"] .timeago').timeago();
+					postContainer.find('[component="post/edit-indicator"]')
+						.removeClass('hidden')
+						.translateAttr('title', `[[global:edited-timestamp, ${editData.editedISO}]]`);
+					postContainer.find('[component="post/editor"] .timeago').timeago();
 					hooks.fire('action:posts.edited', data);
 				});
 			});
