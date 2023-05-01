@@ -6,5 +6,6 @@
     "enter_tags_here": "Ievadīt birkas, katrai starp %1 un %2 rakstzīmēm",
     "enter_tags_here_short": "Ievadīt birkas...",
     "no_tags": "Nav birku.",
-    "select_tags": "Select Tags"
+    "select_tags": "Select Tags",
+    "tag-whitelist": "Tag Whitelist"
 }

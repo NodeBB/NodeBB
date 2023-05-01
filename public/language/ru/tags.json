@@ -6,5 +6,6 @@
     "enter_tags_here": "Добавьте метки здесь, от %1 до %2 символов каждая.",
     "enter_tags_here_short": "Введите метки...",
     "no_tags": "Меток пока нет.",
-    "select_tags": "Выберите метки"
+    "select_tags": "Выберите метки",
+    "tag-whitelist": "Tag Whitelist"
 }

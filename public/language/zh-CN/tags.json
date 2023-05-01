@@ -6,5 +6,6 @@
     "enter_tags_here": "在这里输入标签，每个标签 %1 到 %2 个字符。",
     "enter_tags_here_short": "输入标签...",
     "no_tags": "尚无标签。",
-    "select_tags": "选择标签"
+    "select_tags": "选择标签",
+    "tag-whitelist": "Tag Whitelist"
 }

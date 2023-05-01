@@ -102,6 +102,7 @@
     "thread_tools.change_owner": "Ndrysho pronarin",
     "thread_tools.select_category": "Zgjidh një kategori",
     "thread_tools.fork": "Ndrysho temën",
+    "thread_tools.tag": "Tag Topic",
     "thread_tools.delete": "Fshij temën",
     "thread_tools.delete-posts": "Fshij postimin",
     "thread_tools.delete_confirm": "Jeni i sigurt që dëshironi ta fshini këtë temë?",

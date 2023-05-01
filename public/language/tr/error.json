@@ -92,6 +92,7 @@
     "already-posting": "Halihazırda ileti gönderiyorsunuz...",
     "tag-too-short": "Lütfen daha uzun bir etiket girin. Etiketler en az %1 karakter içermelidir.",
     "tag-too-long": "Lütfen daha kısa bir etiket girin. Etiketler %1 karakterden uzun olamaz.",
+    "tag-not-allowed": "Tag not allowed",
     "not-enough-tags": "Yeterince etiket yok. Başlılar en az %1 etikete sahip olmalıdır",
     "too-many-tags": "Etiket sayısı çok fazla. Başlıklar en fazla %1 etikete sahip olabilir",
     "cant-use-system-tag": "Bu sistem etiketini kullanamazsınız.",

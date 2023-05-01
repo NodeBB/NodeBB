@@ -102,6 +102,7 @@
     "thread_tools.change_owner": "Vaihda omistaja",
     "thread_tools.select_category": "Valitse kategoria",
     "thread_tools.fork": "Haaroita aihe",
+    "thread_tools.tag": "Tag Topic",
     "thread_tools.delete": "Poista aihe",
     "thread_tools.delete-posts": "Poista viestit",
     "thread_tools.delete_confirm": "Haluatko varmasti poistaa tämän aiheen?",

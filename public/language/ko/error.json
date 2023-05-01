@@ -92,6 +92,7 @@
     "already-posting": "You are already posting",
     "tag-too-short": "태그가 너무 짧습니다. 태그는 최소 %1자 이상이어야 합니다.",
     "tag-too-long": "태그가 너무 깁니다. 태그는 최대 %1자 이내로 사용 가능합니다.",
+    "tag-not-allowed": "Tag not allowed",
     "not-enough-tags": "태그가 없거나 부족합니다. 게시물은 %1개 이상의 태그를 사용해야 합니다.",
     "too-many-tags": "태그가 너무 많습니다. 게시물은 %1개 이하의 태그를 사용할 수 있습니다.",
     "cant-use-system-tag": "관리자용 태그를 사용하실 수 없습니다.",

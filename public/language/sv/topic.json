@@ -102,6 +102,7 @@
     "thread_tools.change_owner": "Ändra ägare",
     "thread_tools.select_category": "Välj kategori",
     "thread_tools.fork": "Grena ämne",
+    "thread_tools.tag": "Tag Topic",
     "thread_tools.delete": "Ta bort ämne",
     "thread_tools.delete-posts": "Radera inlägg",
     "thread_tools.delete_confirm": "Är du säker på att du vill ta bort det här ämnet?",

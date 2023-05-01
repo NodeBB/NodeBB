@@ -6,5 +6,6 @@
     "enter_tags_here": "הכנס תגים כאן, כאשר כל אחד בין %1 ל%2 תווים.",
     "enter_tags_here_short": "הכנס תגיות",
     "no_tags": "אין עדיין תגיות.",
-    "select_tags": "בחר תגיות"
+    "select_tags": "בחר תגיות",
+    "tag-whitelist": "Tag Whitelist"
 }

@@ -102,6 +102,7 @@
     "thread_tools.change_owner": "Bytt eier",
     "thread_tools.select_category": "Velg kategori",
     "thread_tools.fork": "Forgren tråd",
+    "thread_tools.tag": "Tag Topic",
     "thread_tools.delete": "Slett tråd",
     "thread_tools.delete-posts": "Slett innlegg",
     "thread_tools.delete_confirm": "Er du sikker på at du vil slette denne tråden?",

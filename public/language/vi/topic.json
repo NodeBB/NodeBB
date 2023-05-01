@@ -102,6 +102,7 @@
     "thread_tools.change_owner": "Đổi chủ sở hữu",
     "thread_tools.select_category": "Chọn chuyện mục",
     "thread_tools.fork": "Tạo bản sao chủ đề",
+    "thread_tools.tag": "Tag Topic",
     "thread_tools.delete": "Xóa chủ đề",
     "thread_tools.delete-posts": "Xoá bài viết",
     "thread_tools.delete_confirm": "Bạn có muốn xóa chủ đề này?",

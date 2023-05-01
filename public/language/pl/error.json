@@ -92,6 +92,7 @@
     "already-posting": "You are already posting",
     "tag-too-short": "Wprowadź dłuższy tag. Tagi muszą mieć przynajmniej %1 znak(-ów)",
     "tag-too-long": "Wprowadź krótszy tag. Tagi nie mogą mieć więcej niż %1 znak(-ów)",
+    "tag-not-allowed": "Tag not allowed",
     "not-enough-tags": "Zbyt mało tagów. Tematy muszą posiadać przynajmniej %1 tag(ów)",
     "too-many-tags": "Zbyt wiele tagów. Tematy nie mogą posiadać więcej niż %1 tag(ów)",
     "cant-use-system-tag": "You can not use this system tag.",

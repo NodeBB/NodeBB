@@ -102,6 +102,7 @@
     "thread_tools.change_owner": "Změnit vlastníka",
     "thread_tools.select_category": "Vybrat kategorii",
     "thread_tools.fork": "Větvit téma",
+    "thread_tools.tag": "Tag Topic",
     "thread_tools.delete": "Odstranit téma",
     "thread_tools.delete-posts": "Odstranit přispěvky",
     "thread_tools.delete_confirm": "Jste si jist/a, že chcete toto téma smazat.",

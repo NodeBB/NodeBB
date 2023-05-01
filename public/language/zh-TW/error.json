@@ -92,6 +92,7 @@
     "already-posting": "You are already posting",
     "tag-too-short": "標籤太短，不能少於 %1 個字元",
     "tag-too-long": "標籤太長，不能超過 %1 個字元",
+    "tag-not-allowed": "Tag not allowed",
     "not-enough-tags": "沒有足夠的主題標籤。主題必須至少有 %1 個標籤",
     "too-many-tags": "過多主題標籤。主題不能超過 %1 個標籤",
     "cant-use-system-tag": "You can not use this system tag.",

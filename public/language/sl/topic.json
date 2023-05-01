@@ -102,6 +102,7 @@
     "thread_tools.change_owner": "Spremeni lastnika",
     "thread_tools.select_category": "Izberi kategorijo",
     "thread_tools.fork": "Razcepi temo",
+    "thread_tools.tag": "Tag Topic",
     "thread_tools.delete": "Izbriši temo",
     "thread_tools.delete-posts": "Izbriši objave",
     "thread_tools.delete_confirm": "Ste prepričani, da želite izbrisati to temo?",
