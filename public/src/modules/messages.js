@@ -27,7 +27,7 @@ define('messages', ['bootbox', 'translator', 'storage', 'alerts', 'hooks'], func
 			},
 		};
 
-		if (!app.user.email) {
+		if (!app.user.email && !app.user.isEmailConfirmSent) {
 			msg.message = '[[error:no-email-to-confirm]]';
 			msg.clickfn = function () {
 				alerts.remove('email_confirm');
