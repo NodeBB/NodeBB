@@ -40,6 +40,10 @@ Interstitials.email = async (data) => {
 			issuePasswordChallenge: !!data.userData.uid && hasPassword,
 		},
 		callback: async (userData, formData) => {
+			if (formData.email) {
+				formData.email = String(formData.email).trim();
+			}
+
 			// Validate and send email confirmation
 			if (userData.uid) {
 				const isSelf = parseInt(userData.uid, 10) === parseInt(data.req.uid, 10);
