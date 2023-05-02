@@ -1572,7 +1572,6 @@ describe('Controllers', () => {
 			});
 
 			it('should export users posts', (done) => {
-				console.log(`${nconf.get('url')}/api/v3/users/${fooUid}/exports/posts`);
 				request(`${nconf.get('url')}/api/v3/users/${fooUid}/exports/posts`, { jar: jar }, (err, res, body) => {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
