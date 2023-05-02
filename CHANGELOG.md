@@ -1,3 +1,18 @@
+#### v3.0.1 (2023-05-02)
+
+##### Chores
+
+*  incrementing version number - v3.0.0 (224e08cd)
+*  update changelog for v3.0.0 (56ad381f)
+
+##### Bug Fixes
+
+*  #11554, email requirement bypass by sending in whitespace (2b8dd3d2)
+*  update openapi spec to specify optional `expiry` argument available to be passed in via request body. (b3787bd5)
+*  #11545, wrong message shown to new users re: email confirmation (2b70063e)
+*  black on red coloration on error when a bad reset code is received (604a8f7e)
+*  use query param sort over user setting if it's set (9484ddc3)
+
 #### v3.0.0 (2023-04-26)
 
 ##### Breaking Changes
