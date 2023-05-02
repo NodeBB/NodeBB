@@ -81,10 +81,22 @@ describe('API tokens', () => {
 
 	describe('.update()', () => {
 		it('should update the description of a token', async () => {
-			await api.utils.tokens.update(token, { description: 'foobar' });
+			await api.utils.tokens.update(token, { uid: 0, description: 'foobar' });
 			const tokenObj = await api.utils.tokens.get(token);
 
 			assert(tokenObj);
+			assert.strictEqual(parseInt(tokenObj.uid, 10), 0);
+			assert.strictEqual(tokenObj.description, 'foobar');
+		});
+
+		it('should update the uid of a token', async () => {
+			await api.utils.tokens.update(token, { uid: 1, description: 'foobar' });
+			const tokenObj = await api.utils.tokens.get(token);
+			const uid = await db.sortedSetScore('tokens:uid', token);
+
+			assert(tokenObj);
+			assert.strictEqual(parseInt(tokenObj.uid, 10), 1);
+			assert.strictEqual(parseInt(uid, 10), 1);
 			assert.strictEqual(tokenObj.description, 'foobar');
 		});
 	});

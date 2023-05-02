@@ -34,21 +34,32 @@ utils.tokens.get = async (tokens) => {
 	]);
 
 	tokenObjs.forEach((tokenObj, idx) => {
+		tokenObj.token = tokens[idx];
 		tokenObj.lastSeen = lastSeen[idx];
+		tokenObj.lastSeenISO = new Date(lastSeen[idx]).toISOString();
+		tokenObj.timestampISO = new Date(parseInt(tokenObj.timestamp, 10)).toISOString();
 	});
 
 	return singular ? tokenObjs[0] : tokenObjs;
 };
 
 utils.tokens.generate = async ({ uid, description }) => {
-	const token = srcUtils.generateUUID();
-	const timestamp = Date.now();
-
 	if (parseInt(uid, 10) !== 0) {
 		const uidExists = await user.exists(uid);
 		if (!uidExists) {
 			throw new Error('[[error:no-user]]');
 		}
+	}
+
+	const token = srcUtils.generateUUID();
+	const timestamp = Date.now();
+
+	return utils.tokens.add({ token, uid, description, timestamp });
+};
+
+utils.tokens.add = async ({ token, uid, description = '', timestamp = Date.now() }) => {
+	if (!token || uid === undefined) {
+		throw new Error('[[error:invalid-data]]');
 	}
 
 	await Promise.all([
@@ -60,8 +71,11 @@ utils.tokens.generate = async ({ uid, description }) => {
 	return token;
 };
 
-utils.tokens.update = async (token, { description }) => {
-	await db.setObject(`token:${token}`, { description });
+utils.tokens.update = async (token, { uid, description }) => {
+	await Promise.all([
+		db.setObject(`token:${token}`, { uid, description }),
+		db.sortedSetAdd(`tokens:uid`, uid, token),
+	]);
 
 	return await utils.tokens.get(token);
 };
