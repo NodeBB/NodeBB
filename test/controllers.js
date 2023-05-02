@@ -1568,7 +1568,7 @@ describe('Controllers', () => {
 				await Promise.all(types.map(async (type) => {
 					await api.users.generateExport({ uid: fooUid, ip: '127.0.0.1' }, { uid: fooUid, type });
 				}));
-				await sleep(5000);
+				await sleep(10000);
 			});
 
 			it('should export users posts', (done) => {
