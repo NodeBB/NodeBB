@@ -20,6 +20,8 @@ const translator = require('../translator');
 const sockets = require('../socket.io');
 const utils = require('../utils');
 
+const api = require('.');
+
 const usersAPI = module.exports;
 
 const hasAdminPrivilege = async (uid, privilege) => {
@@ -313,19 +315,7 @@ usersAPI.generateToken = async (caller, { uid, description }) => {
 		throw new Error('[[error:invalid-uid]]');
 	}
 
-	const settings = await meta.settings.get('core.api');
-	settings.tokens = settings.tokens || [];
-
-	const newToken = {
-		token: utils.generateUUID(),
-		uid: caller.uid,
-		description: description || '',
-		timestamp: Date.now(),
-	};
-	settings.tokens.push(newToken);
-	await meta.settings.set('core.api', settings);
-
-	return newToken;
+	return await api.utils.tokens.generate({ uid, description });
 };
 
 usersAPI.deleteToken = async (caller, { uid, token }) => {
@@ -334,15 +324,8 @@ usersAPI.deleteToken = async (caller, { uid, token }) => {
 		throw new Error('[[error:invalid-uid]]');
 	}
 
-	const settings = await meta.settings.get('core.api');
-	const beforeLen = settings.tokens.length;
-	settings.tokens = settings.tokens.filter(tokenObj => tokenObj.token !== token);
-	if (beforeLen !== settings.tokens.length) {
-		await meta.settings.set('core.api', settings);
-		return true;
-	}
-
-	return false;
+	await api.utils.tokens.delete(token);
+	return true;
 };
 
 const getSessionAsync = util.promisify((sid, callback) => {
