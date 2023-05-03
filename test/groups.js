@@ -737,7 +737,7 @@ describe('Groups', () => {
 			const uid1 = await User.create({ username: utils.generateUUID().slice(0, 8) });
 			const uid2 = await User.create({ username: utils.generateUUID().slice(0, 8) });
 
-			await assert.rejects(apiGroups.join({ uid: uid1 }, { slug: 'test', uid: uid2 }, { message: '[[error:not-allowed]]' }));
+			await assert.rejects(apiGroups.join({ uid: uid1 }, { slug: 'test', uid: uid2 }), { message: '[[error:not-allowed]]' });
 		});
 
 		it('should allow admins to join private groups', async () => {
