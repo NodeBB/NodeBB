@@ -113,6 +113,8 @@ define('forum/topic/votes', [
 					message: html,
 					className: 'vote-modal',
 					show: true,
+					onEscape: true,
+					backdrop: true,
 				});
 
 				dialog.on('click', function () {
