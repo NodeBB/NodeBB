@@ -30,3 +30,9 @@
 		max-width: 500px;
 	}
 }
+
+#crop-picture-modal {
+	.cropper-container.cropper-bg {
+		max-width: 100%;
+	}
+}
