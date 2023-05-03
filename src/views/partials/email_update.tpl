@@ -1,4 +1,9 @@
 <div>
+	{{{ if hasPending }}}
+	<div class="alert alert-info">
+		<p>[[user:emailUpdate.pending]]</p>
+	</div>
+	{{{ end }}}
 	<p>[[user:emailUpdate.intro]]</p>
 	{{{ if requireEmailAddress }}}
 	<p>[[user:emailUpdate.required]]</p>

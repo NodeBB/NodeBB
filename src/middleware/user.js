@@ -6,6 +6,7 @@ const nconf = require('nconf');
 const path = require('path');
 const util = require('util');
 
+const meta = require('../meta');
 const user = require('../user');
 const privileges = require('../privileges');
 const plugins = require('../plugins');
@@ -231,12 +232,27 @@ module.exports = function (middleware) {
 	};
 
 	middleware.registrationComplete = async function registrationComplete(req, res, next) {
-		// If the user's session contains registration data, redirect the user to complete registration
+		/**
+		 * Redirect the user to complete registration if:
+		 *   * user's session contains registration data
+		 *   * email is required and they have no confirmed email (pending doesn't count, but admins are OK)
+		 */
+		const path = req.path.startsWith('/api/') ? req.path.replace('/api', '') : req.path;
+
 		if (!req.session.hasOwnProperty('registration')) {
+			if (req.uid && !path.endsWith('/edit/email')) {
+				const [confirmed, isAdmin] = await Promise.all([
+					user.getUserField(req.uid, 'email:confirmed'),
+					user.isAdministrator(req.uid),
+				]);
+				if (meta.config.requireEmailAddress && !confirmed && !isAdmin) {
+					controllers.helpers.redirect(res, '/me/edit/email');
+				}
+			}
+
 			return setImmediate(next);
 		}
 
-		const path = req.path.startsWith('/api/') ? req.path.replace('/api', '') : req.path;
 		const { allowed } = await plugins.hooks.fire('filter:middleware.registrationComplete', {
 			allowed: ['/register/complete'],
 		});

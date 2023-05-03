@@ -28,9 +28,10 @@ Interstitials.email = async (data) => {
 		return data;
 	}
 
-	const [isAdminOrGlobalMod, hasPassword] = await Promise.all([
+	const [isAdminOrGlobalMod, hasPassword, hasPending] = await Promise.all([
 		user.isAdminOrGlobalMod(data.req.uid),
 		user.hasPassword(data.userData.uid),
+		user.email.isValidationPending(data.userData.uid),
 	]);
 
 	let email;
@@ -44,6 +45,7 @@ Interstitials.email = async (data) => {
 			email,
 			requireEmailAddress: meta.config.requireEmailAddress,
 			issuePasswordChallenge: !!data.userData.uid && hasPassword,
+			hasPending,
 		},
 		callback: async (userData, formData) => {
 			// Validate and send email confirmation
