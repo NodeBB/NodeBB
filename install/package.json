@@ -29,7 +29,7 @@
     },
     "dependencies": {
         "@adactive/bootstrap-tagsinput": "0.8.2",
-        "@isaacs/ttlcache": "1.2.2",
+        "@isaacs/ttlcache": "1.4.0",
         "@popperjs/core": "2.11.7",
         "ace-builds": "1.19.0",
         "archiver": "5.3.1",
