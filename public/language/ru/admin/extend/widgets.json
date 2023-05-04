@@ -26,5 +26,7 @@
 	"container.placeholder": "Перетащите контейнер сюда или добавьте HTML вручную.",
 	"show-to-groups": "Показывать группам",
 	"hide-from-groups": "Скрывать от групп",
+	"start-date": "Start date",
+	"end-date": "End date",
 	"hide-on-mobile": "Скрывать на мобильных устройствах"
 }

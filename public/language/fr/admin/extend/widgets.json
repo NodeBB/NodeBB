@@ -8,9 +8,9 @@
 	"containers.none": "Aucun",
 	"container.well": "Well",
 	"container.jumbotron": "Jombotron",
-	"container.card": "Card",
-	"container.card-header": "Card Header",
-	"container.card-body": "Card Body",
+	"container.card": "Carte",
+	"container.card-header": "En-tête",
+	"container.card-body": "Corps",
 	"container.alert": "Alerte",
 
 	"alert.confirm-delete": "Êtes-vous sûr de vouloir supprimer ce widget ?",
@@ -26,5 +26,7 @@
 	"container.placeholder": "Glissez et déposez un bloc ou entrez HTML ici.",
 	"show-to-groups": "Visible pour les groupes",
 	"hide-from-groups": "Masquer pour les groupes",
+	"start-date": "Start date",
+	"end-date": "End date",
 	"hide-on-mobile": "Masquer sur mobile"
 }

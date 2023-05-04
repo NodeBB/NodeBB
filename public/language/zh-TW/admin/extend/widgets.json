@@ -26,5 +26,7 @@
 	"container.placeholder": "將容器拖拽至此處或在此處輸入HTML",
 	"show-to-groups": "對群組顯示",
 	"hide-from-groups": "對群組隱藏",
+	"start-date": "Start date",
+	"end-date": "End date",
 	"hide-on-mobile": "在移動端隱藏"
 }

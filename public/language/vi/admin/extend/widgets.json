@@ -26,5 +26,7 @@
 	"container.placeholder": "Kéo và thả một vùng chứa hoặc nhập HTML vào đây.",
 	"show-to-groups": "Hiển thị lên nhóm",
 	"hide-from-groups": "Ẩn khỏi nhóm",
+	"start-date": "Start date",
+	"end-date": "End date",
 	"hide-on-mobile": "Ẩn trên thiết bị di động"
 }

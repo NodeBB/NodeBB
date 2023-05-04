@@ -26,5 +26,7 @@
 	"container.placeholder": "컨테이너를 드래그&드롭하거나 HTML을 입력하세요.",
 	"show-to-groups": "해당 그룹에 표시",
 	"hide-from-groups": "해당 그룹에 숨김",
+	"start-date": "Start date",
+	"end-date": "End date",
 	"hide-on-mobile": "모바일에서 숨김"
 }

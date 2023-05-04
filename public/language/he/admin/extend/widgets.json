@@ -26,5 +26,7 @@
 	"container.placeholder": "גרור ושחרר גורם מכיל (container) או הזן HTML כאן.",
 	"show-to-groups": "יוצג בקבוצות",
 	"hide-from-groups": "יוסתר מקבוצות",
+	"start-date": "Start date",
+	"end-date": "End date",
 	"hide-on-mobile": "הסתר במובייל"
 }
