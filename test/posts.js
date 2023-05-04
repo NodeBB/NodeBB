@@ -605,11 +605,10 @@ describe('Post\'s', () => {
 
 		it('should not delete first diff of a post', async () => {
 			const timestamps = await posts.diffs.list(replyPid);
-			await assert.rejects(async () => {
-				await posts.diffs.delete(replyPid, timestamps[0], voterUid);
-			}, {
-				message: '[[error:invalid-data]]',
-			});
+			await assert.rejects(
+				posts.diffs.delete(replyPid, timestamps[0], voterUid),
+				{ message: '[[error:invalid-data]]' }
+			);
 		});
 
 		it('should delete a post diff', async () => {

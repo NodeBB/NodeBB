@@ -279,11 +279,17 @@ topicsAPI.markRead = async (caller, { tid }) => {
 };
 
 topicsAPI.markUnread = async (caller, { tid }) => {
+	if (!tid || caller.uid <= 0) {
+		throw new Error('[[error:invalid-data]]');
+	}
 	await topics.markUnread(tid, caller.uid);
 	topics.pushUnreadCount(caller.uid);
 };
 
 topicsAPI.bump = async (caller, { tid }) => {
+	if (!tid) {
+		throw new Error('[[error:invalid-tid]]');
+	}
 	const isAdminOrMod = await privileges.topics.isAdminOrMod(tid, caller.uid);
 	if (!isAdminOrMod) {
 		throw new Error('[[error:no-privileges]]');

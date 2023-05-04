@@ -287,33 +287,36 @@ describe('Topic\'s', () => {
 		});
 
 		it('should error if pid is not a number', async () => {
-			assert.rejects(apiPosts.getReplies({ uid: 0 }, { pid: 'abc' }, '[[error:invalid-data]]'));
+			await assert.rejects(
+				apiPosts.getReplies({ uid: 0 }, { pid: 'abc' }),
+				{ message: '[[error:invalid-data]]' }
+			);
 		});
 
 		it('should fail to create new reply with invalid user id', (done) => {
 			topics.reply({ uid: null, content: 'test post', tid: newTopic.tid }, (err) => {
-				assert.equal(err.message, '[[error:no-privileges]]');
+				assert.strictEqual(err.message, '[[error:no-privileges]]');
 				done();
 			});
 		});
 
 		it('should fail to create new reply with empty content', (done) => {
 			topics.reply({ uid: topic.userId, content: '', tid: newTopic.tid }, (err) => {
-				assert.ok(err);
+				assert.strictEqual(err.message, '[[error:content-too-short, 8]]');
 				done();
 			});
 		});
 
 		it('should fail to create new reply with invalid topic id', (done) => {
 			topics.reply({ uid: null, content: 'test post', tid: 99 }, (err) => {
-				assert.equal(err.message, '[[error:no-topic]]');
+				assert.strictEqual(err.message, '[[error:no-topic]]');
 				done();
 			});
 		});
 
 		it('should fail to create new reply with invalid toPid', (done) => {
 			topics.reply({ uid: topic.userId, content: 'test post', tid: newTopic.tid, toPid: '"onmouseover=alert(1);//' }, (err) => {
-				assert.equal(err.message, '[[error:invalid-pid]]');
+				assert.strictEqual(err.message, '[[error:invalid-pid]]');
 				done();
 			});
 		});
@@ -1471,17 +1474,23 @@ describe('Topic\'s', () => {
 		});
 
 		it('should fail with invalid data', async () => {
-			assert.rejects(apiTopics.markUnread({ uid: adminUid }, null), '[[error:invalid-data]]');
+			await assert.rejects(
+				apiTopics.markUnread({ uid: adminUid }, { tid: null }),
+				{ message: '[[error:invalid-data]]' }
+			);
 		});
 
 		it('should fail if topic does not exist', async () => {
-			assert.rejects(apiTopics.markUnread({ uid: adminUid }, { tid: 1231082 }), '[[error:no-topic]]');
+			await assert.rejects(
+				apiTopics.markUnread({ uid: adminUid }, { tid: 1231082 }),
+				{ message: '[[error:no-topic]]' }
+			);
 		});
 
 		it('should mark topic unread', async () => {
 			await apiTopics.markUnread({ uid: adminUid }, { tid });
 			const hasRead = await topics.hasReadTopic(tid, adminUid);
-			assert.equal(hasRead, false);
+			assert.strictEqual(hasRead, false);
 		});
 
 		it('should fail with invalid data', (done) => {
@@ -1556,15 +1565,24 @@ describe('Topic\'s', () => {
 		});
 
 		it('should fail with invalid data', async () => {
-			assert.rejects(apiTopics.bump({ uid: adminUid }, null, '[[error:invalid-tid]]'));
+			await assert.rejects(
+				apiTopics.bump({ uid: adminUid }, { tid: null }),
+				{ message: '[[error:invalid-tid]]' }
+			);
 		});
 
 		it('should fail with invalid data', async () => {
-			assert.rejects(apiTopics.bump({ uid: 0 }, { tid: [tid] }, '[[error:no-privileges]]'));
+			await assert.rejects(
+				apiTopics.bump({ uid: 0 }, { tid: [tid] }),
+				{ message: '[[error:no-privileges]]' }
+			);
 		});
 
 		it('should fail if user is not admin', async () => {
-			assert.rejects(apiTopics.bump({ uid: uid }, { tid }, '[[error:no-privileges]]'));
+			await assert.rejects(
+				apiTopics.bump({ uid: uid }, { tid }),
+				{ message: '[[error:no-privileges]]' }
+			);
 		});
 
 		it('should mark topic unread for everyone', async () => {

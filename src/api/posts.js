@@ -388,6 +388,9 @@ postsAPI.deleteDiff = async (caller, { pid, timestamp }) => {
 };
 
 postsAPI.getReplies = async (caller, { pid }) => {
+	if (!utils.isNumber(pid)) {
+		throw new Error('[[error:invalid-data]]');
+	}
 	const { uid } = caller;
 	const canRead = await privileges.posts.can('topics:read', pid, caller.uid);
 	if (!canRead) {

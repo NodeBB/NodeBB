@@ -737,7 +737,10 @@ describe('Groups', () => {
 			const uid1 = await User.create({ username: utils.generateUUID().slice(0, 8) });
 			const uid2 = await User.create({ username: utils.generateUUID().slice(0, 8) });
 
-			await assert.rejects(apiGroups.join({ uid: uid1 }, { slug: 'test', uid: uid2 }), { message: '[[error:not-allowed]]' });
+			await assert.rejects(
+				apiGroups.join({ uid: uid1 }, { slug: 'test', uid: uid2 }),
+				{ message: '[[error:not-allowed]]' }
+			);
 		});
 
 		it('should allow admins to join private groups', async () => {
@@ -923,7 +926,10 @@ describe('Groups', () => {
 		});
 
 		it('should error if not owner or admin', async () => {
-			await assert.rejects(apiGroups.accept({ uid: 0 }, { slug: 'privatecanjoin', uid: testUid }), { message: '[[error:no-privileges]]' });
+			await assert.rejects(
+				apiGroups.accept({ uid: 0 }, { slug: 'privatecanjoin', uid: testUid }),
+				{ message: '[[error:no-privileges]]' }
+			);
 		});
 
 		it('should accept membership of user', async () => {
@@ -950,7 +956,10 @@ describe('Groups', () => {
 		});
 
 		it('should error if user is not invited', async () => {
-			await assert.rejects(apiGroups.acceptInvite({ uid: adminUid }, { slug: 'privatecanjoin', uid: adminUid }), { message: '[[error:not-invited]]' });
+			await assert.rejects(
+				apiGroups.acceptInvite({ uid: adminUid }, { slug: 'privatecanjoin', uid: adminUid }),
+				{ message: '[[error:not-invited]]' }
+			);
 		});
 
 		it('should accept invite', async () => {
@@ -982,7 +991,10 @@ describe('Groups', () => {
 		});
 
 		it('should fail to kick user with invalid data', async () => {
-			await assert.rejects(apiGroups.leave({ uid: adminUid }, { slug: 'privatecanjoin', uid: 8721632 }), { message: '[[error:group-not-member]]' });
+			await assert.rejects(
+				apiGroups.leave({ uid: adminUid }, { slug: 'privatecanjoin', uid: 8721632 }),
+				{ message: '[[error:group-not-member]]' }
+			);
 		});
 
 		it('should kick user from group', async () => {
@@ -1194,7 +1206,10 @@ describe('Groups', () => {
 		});
 
 		it('should error if user is not member', async () => {
-			await assert.rejects(apiGroups.leave({ uid: adminUid }, { uid: 3, slug: 'newgroup' }), { message: '[[error:group-not-member]]' });
+			await assert.rejects(
+				apiGroups.leave({ uid: adminUid }, { uid: 3, slug: 'newgroup' }),
+				{ message: '[[error:group-not-member]]' }
+			);
 		});
 
 		it('should fail if trying to remove someone else from group', async () => {
