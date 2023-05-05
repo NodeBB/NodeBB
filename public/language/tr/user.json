@@ -43,7 +43,7 @@
     "followers": "Takipçiler",
     "following": "Takip Edilenler",
     "blocks": "Engellenenler",
-    "blocked-users": "Blocked users",
+    "blocked-users": "Engellenen Kullanıcılar",
     "block_toggle": "Blokta Geçiş Yap",
     "block_user": "Kullanıcıyı Engelle",
     "unblock_user": "Kullanıcı Engelini Kaldır",
@@ -69,7 +69,7 @@
     "upload_new_picture": "Yeni bir fotoğraf yükle",
     "upload_new_picture_from_url": "İnternetten yeni bir fotoğraf yükle",
     "current_password": "Şu anki şifre",
-    "new_password": "New Password",
+    "new_password": "Yeni Şifre",
     "change_password": "Şifre Değiştir",
     "change_password_error": "Geçersiz Şifre",
     "change_password_error_wrong_current": "Şu anki şifre doğru değil!",
@@ -201,5 +201,6 @@
     "emailUpdate.optional": "<strong>Bu bölüm tercihe bağlıdır</strong>. Bir e-posta adresi girmek zorunda değilsiniz, fakat onaylanmış bir e-posta adresi olmadan hesabınızı veya girişinizi e-posta adresiniz ile kurtaramazsınız. ",
     "emailUpdate.required": "<strong>Bu bölüm zorunludur</strong>.",
     "emailUpdate.change-instructions": "Girilen e-posta adresine kişiye özel bir bağlantı içeren bir onay e-postası gönderilecektir. Bu bağlantıya erişmek, e-posta adresinin sahibi olduğunuzu onaylayacak ve hesabınızda etkin hale gelecektir. İstediğiniz zaman, hesap sayfanızdan kayıtlı e-postanızı güncelleyebilirsiniz.",
-    "emailUpdate.password-challenge": "Hesabın size ait olduğunu doğrulamak için lütfen şifrenizi giriniz"
+    "emailUpdate.password-challenge": "Hesabın size ait olduğunu doğrulamak için lütfen şifrenizi giriniz",
+    "emailUpdate.pending": "Your email address has not yet been confirmed, but an email has been sent out requesting confirmation. If you wish to invalidate that request and send a new confirmation request, please fill in the form below."
 }

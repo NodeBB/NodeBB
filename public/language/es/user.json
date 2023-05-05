@@ -201,5 +201,6 @@
     "emailUpdate.optional": "<strong>This field is optional</strong>. You are not obligated to provide your email address, but without a validated email you will not be able to recover your account or login with your email.",
     "emailUpdate.required": "<strong>Este campo es requerido</strong>.",
     "emailUpdate.change-instructions": "Un email de confirmación será enviado a la cuenta de email ingresada con un enlace único. Al acceder a este enlace confirmarás que eres propietario de la dirección de email y será activado en tu cuenta. En cualquier momento, puedes actualizar el email registrado desde la página de tu cuenta.",
-    "emailUpdate.password-challenge": "Please enter your password in order to verify account ownership."
+    "emailUpdate.password-challenge": "Please enter your password in order to verify account ownership.",
+    "emailUpdate.pending": "Your email address has not yet been confirmed, but an email has been sent out requesting confirmation. If you wish to invalidate that request and send a new confirmation request, please fill in the form below."
 }

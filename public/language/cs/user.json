@@ -201,5 +201,6 @@
     "emailUpdate.optional": "<strong>This field is optional</strong>. You are not obligated to provide your email address, but without a validated email you will not be able to recover your account or login with your email.",
     "emailUpdate.required": "<strong>This field is required</strong>.",
     "emailUpdate.change-instructions": "Potvrzovací email s unikátním odkazem bude odeslán na poskytnutou emailovou adresu. Rozkliknutím tohoto odkazu potvrdíte vlastnictví emailové adresy a ta se stane aktivní na Vašem účtě. Kdykoliv můžete emailovou adresu změnit z vašeho profilu.",
-    "emailUpdate.password-challenge": "Please enter your password in order to verify account ownership."
+    "emailUpdate.password-challenge": "Please enter your password in order to verify account ownership.",
+    "emailUpdate.pending": "Your email address has not yet been confirmed, but an email has been sent out requesting confirmation. If you wish to invalidate that request and send a new confirmation request, please fill in the form below."
 }
