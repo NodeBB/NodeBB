@@ -23,7 +23,9 @@
 		display: block;
 	}
 }
-
+.dropdown-left .dropdown-menu {
+	--bs-position: start;
+}
 .dropdown-right .dropdown-menu {
 	--bs-position: end;
 }
