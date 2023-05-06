@@ -12,6 +12,7 @@ const helpers = require('./helpers');
 const Controllers = module.exports;
 
 Controllers.ping = require('./ping');
+Controllers['well-known'] = require('./well-known');
 Controllers.home = require('./home');
 Controllers.topics = require('./topics');
 Controllers.posts = require('./posts');
