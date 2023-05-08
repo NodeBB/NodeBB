@@ -227,7 +227,9 @@ module.exports = function (module) {
 	};
 
 	module.getSortedSetMembersWithScores = async function (key) {
-		return await module.client.zrange(key, 0, -1, 'WITHSCORES');
+		return helpers.zsetToObjectArray(
+			await module.client.zrange(key, 0, -1, 'WITHSCORES')
+		);
 	};
 
 	module.getSortedSetsMembers = async function (keys) {
@@ -245,7 +247,8 @@ module.exports = function (module) {
 		}
 		const batch = module.client.batch();
 		keys.forEach(k => batch.zrange(k, 0, -1, 'WITHSCORES'));
-		return await helpers.execBatch(batch);
+		const res = await helpers.execBatch(batch);
+		return res.map(helpers.zsetToObjectArray);
 	};
 
 	module.sortedSetIncrBy = async function (key, increment, value) {

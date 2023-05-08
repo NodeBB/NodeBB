@@ -962,8 +962,17 @@ describe('Sorted Set methods', () => {
 			});
 		});
 
-		it('should return members of multiple sorted sets with scores', async () => {
+		it('should return members of sorted set with scores', async () => {
 			await db.sortedSetAdd('getSortedSetsMembersWithScores', [1, 2, 3], ['v1', 'v2', 'v3']);
+			const d = await db.getSortedSetMembersWithScores('getSortedSetsMembersWithScores');
+			assert.deepEqual(d, [
+				{ value: 'v1', score: 1 },
+				{ value: 'v2', score: 2 },
+				{ value: 'v3', score: 3 },
+			]);
+		});
+
+		it('should return members of multiple sorted sets with scores', async () => {
 			const d = await db.getSortedSetsMembersWithScores(
 				['doesnotexist', 'getSortedSetsMembersWithScores']
 			);
