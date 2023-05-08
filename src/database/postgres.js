@@ -290,7 +290,7 @@ PARALLEL SAFE`);
 		if (!res.rows[0].d) {
 			await client.query(`
 			CREATE FUNCTION "nodebb_get_sorted_set_members_withscores"(TEXT) RETURNS JSON AS $$
-				SELECT json_agg(json_build_object('value', z."value", 'score', z."score")) as item
+				SELECT json_agg(json_build_object('value', z."value", 'score', z."score") ORDER BY z."score" ASC) as item
 				  FROM "legacy_object_live" o
 				 INNER JOIN "legacy_zset" z
 						 ON o."_key" = z."_key"
