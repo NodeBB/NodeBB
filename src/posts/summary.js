@@ -80,10 +80,19 @@ module.exports = function (Posts) {
 			'uid', 'tid', 'title', 'cid', 'tags', 'slug',
 			'deleted', 'scheduled', 'postcount', 'mainPid', 'teaserPid',
 		]);
+		async function parseTitles() {
+			await Promise.all(topicsData.map(async (t) => {
+				t.title = await plugins.hooks.fire('filter:parse.raw', t.title);
+			}));
+		}
+
 		const cids = _.uniq(topicsData.map(topic => topic && topic.cid));
-		const categoriesData = await categories.getCategoriesFields(cids, [
-			'cid', 'name', 'icon', 'slug', 'parentCid',
-			'bgColor', 'color', 'backgroundImage', 'imageClass',
+		const [categoriesData] = await Promise.all([
+			categories.getCategoriesFields(cids, [
+				'cid', 'name', 'icon', 'slug', 'parentCid',
+				'bgColor', 'color', 'backgroundImage', 'imageClass',
+			]),
+			parseTitles(),
 		]);
 		return { topics: topicsData, categories: categoriesData };
 	}
