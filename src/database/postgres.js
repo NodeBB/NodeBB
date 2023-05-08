@@ -82,8 +82,7 @@ SELECT EXISTS(SELECT *
 		EXISTS(SELECT *
 				FROM "information_schema"."routines"
 			   WHERE "routine_schema" = 'public'
-				 AND "routine_name" = 'nodebb_get_sorted_set_members_withscores') d`
-	);
+				 AND "routine_name" = 'nodebb_get_sorted_set_members_withscores') d`);
 
 	if (res.rows[0].a && res.rows[0].b && res.rows[0].c && res.rows[0].d) {
 		return;
