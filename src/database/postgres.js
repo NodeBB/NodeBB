@@ -78,9 +78,13 @@ SELECT EXISTS(SELECT *
        EXISTS(SELECT *
                 FROM "information_schema"."routines"
                WHERE "routine_schema" = 'public'
-                 AND "routine_name" = 'nodebb_get_sorted_set_members') c`);
+                 AND "routine_name" = 'nodebb_get_sorted_set_members') c,
+		EXISTS(SELECT *
+				FROM "information_schema"."routines"
+			   WHERE "routine_schema" = 'public'
+				 AND "routine_name" = 'nodebb_get_sorted_set_members_withscores') d`);
 
-	if (res.rows[0].a && res.rows[0].b && res.rows[0].c) {
+	if (res.rows[0].a && res.rows[0].b && res.rows[0].c && res.rows[0].d) {
 		return;
 	}
 
@@ -281,6 +285,21 @@ $$ LANGUAGE sql
 STABLE
 STRICT
 PARALLEL SAFE`);
+		}
+
+		if (!res.rows[0].d) {
+			await client.query(`
+			CREATE FUNCTION "nodebb_get_sorted_set_members_withscores"(TEXT) RETURNS JSON AS $$
+				SELECT json_agg(json_build_object('value', z."value", 'score', z."score")) as item
+				  FROM "legacy_object_live" o
+				 INNER JOIN "legacy_zset" z
+						 ON o."_key" = z."_key"
+						AND o."type" = z."type"
+					  WHERE o."_key" = $1
+			$$ LANGUAGE sql
+			STABLE
+			STRICT
+			PARALLEL SAFE`);
 		}
 	} catch (ex) {
 		await client.query(`ROLLBACK`);

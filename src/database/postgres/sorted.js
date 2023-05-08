@@ -457,6 +457,11 @@ SELECT o."_key" k
 		return data && data[0];
 	};
 
+	module.getSortedSetMembersWithScores = async function (key) {
+		const data = await module.getSortedSetsMembersWithScores([key]);
+		return data && data[0];
+	};
+
 	module.getSortedSetsMembers = async function (keys) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return [];
@@ -469,6 +474,29 @@ SELECT "_key" k,
        "nodebb_get_sorted_set_members"("_key") m
   FROM UNNEST($1::TEXT[]) "_key";`,
 			values: [keys],
+		});
+
+		return keys.map(k => (res.rows.find(r => r.k === k) || {}).m || []);
+	};
+
+	module.getSortedSetsMembersWithScores = async function (keys) {
+		if (!Array.isArray(keys) || !keys.length) {
+			return [];
+		}
+
+		const res = await module.pool.query({
+			name: 'getSortedSetsMembersWithScores',
+			text: `
+SELECT "_key" k,
+       "nodebb_get_sorted_set_members_withscores"("_key") m
+  FROM UNNEST($1::TEXT[]) "_key";`,
+			values: [keys],
+		});
+		// TODO: move this sort into nodebb_get_sorted_set_members_withscores?
+		res.rows.forEach((r) => {
+			if (r && r.m) {
+				r.m.sort((a, b) => a.score - b.score);
+			}
 		});
 
 		return keys.map(k => (res.rows.find(r => r.k === k) || {}).m || []);
