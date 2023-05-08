@@ -453,12 +453,12 @@ SELECT o."_key" k
 	};
 
 	module.getSortedSetMembers = async function (key) {
-		const data = await module.getSortedSetsMembers([key], false);
+		const data = await module.getSortedSetsMembers([key]);
 		return data && data[0];
 	};
 
 	module.getSortedSetMembersWithScores = async function (key) {
-		const data = await module.getSortedSetsMembers([key], true);
+		const data = await module.getSortedSetsMembersWithScores([key]);
 		return data && data[0];
 	};
 

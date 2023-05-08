@@ -399,7 +399,10 @@ module.exports = function (module) {
 			.toArray();
 
 		if (!arrayOfKeys) {
-			return [data.map(item => item.value)];
+			return [withScores ?
+				data.map(i => ({ value: i.value, score: i.score })) :
+				data.map(item => item.value),
+			];
 		}
 		const sets = {};
 		data.forEach((item) => {
