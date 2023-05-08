@@ -226,12 +226,25 @@ module.exports = function (module) {
 		return await module.client.zrange(key, 0, -1);
 	};
 
+	module.getSortedSetMembersWithScores = async function (key) {
+		return await module.client.zrange(key, 0, -1, 'WITHSCORES');
+	};
+
 	module.getSortedSetsMembers = async function (keys) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return [];
 		}
 		const batch = module.client.batch();
 		keys.forEach(k => batch.zrange(k, 0, -1));
+		return await helpers.execBatch(batch);
+	};
+
+	module.getSortedSetsMembersWithScores = async function (keys) {
+		if (!Array.isArray(keys) || !keys.length) {
+			return [];
+		}
+		const batch = module.client.batch();
+		keys.forEach(k => batch.zrange(k, 0, -1, 'WITHSCORES'));
 		return await helpers.execBatch(batch);
 	};
 

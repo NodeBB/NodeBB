@@ -961,6 +961,19 @@ describe('Sorted Set methods', () => {
 				done();
 			});
 		});
+
+		it('should return members of multiple sorted sets with scores', async () => {
+			await db.sortedSetAdd('getSortedSetsMembersWithScores', [1, 2, 3], ['v1', 'v2', 'v3']);
+			const d = await db.getSortedSetsMembersWithScores(
+				['doesnotexist', 'getSortedSetsMembersWithScores']
+			);
+			assert.deepEqual(d[0], []);
+			assert.deepEqual(d[1], [
+				{ value: 'v1', score: 1 },
+				{ value: 'v2', score: 2 },
+				{ value: 'v3', score: 3 },
+			]);
+		});
 	});
 
 	describe('sortedSetUnionCard', () => {
