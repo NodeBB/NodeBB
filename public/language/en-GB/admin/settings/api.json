@@ -16,7 +16,11 @@
 	"last-seen": "Last seen",
 	"created": "Created",
 	"create-token": "Create Token",
+	"update-token": "Update Token",
 	"master-token": "Master token",
 	"last-seen-never": "This key has never been used.",
-	"no-description": "No description specified."
+	"no-description": "No description specified.",
+	"actions": "Actions",
+
+	"delete-confirm": "Are you sure you wish to delete this token? It will not be recoverable."
 }

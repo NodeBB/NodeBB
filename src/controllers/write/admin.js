@@ -34,6 +34,10 @@ Admin.generateToken = async (req, res) => {
 	helpers.formatApiResponse(200, res, await api.utils.tokens.generate({ uid, description }));
 };
 
+Admin.getToken = async (req, res) => {
+	helpers.formatApiResponse(200, res, await api.utils.tokens.get(req.params.token));
+};
+
 Admin.updateToken = async (req, res) => {
 	// todo: token rolling via req.body
 	const { uid, description } = req.body;
