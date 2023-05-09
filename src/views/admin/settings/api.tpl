@@ -21,11 +21,12 @@
 				<th>[[admin/settings/api:uid]]</th>
 				<th>[[admin/settings/api:last-seen]]</th>
 				<th>[[admin/settings/api:created]]</th>
+				<th>[[admin/settings/api:actions]]</th>
 			</tr>
 		</thead>
 		<tbody>
 			{{{ each tokens }}}
-			<tr>
+			<tr data-token="{./token}">
 				<td>
 					<button type="button" class="btn btn-link" data-action="copy" data-clipboard-text="{./token}"><i class="fa fa-fw fa-clipboard" aria-hidden="true"></i></button>
 					<div class="vr me-3" aria-hidden="true"></div>
@@ -54,6 +55,14 @@
 				</td>
 				<td class="align-middle">
 					<span class="timeago" title="{./timestampISO}"></span>
+				</td>
+				<td>
+					<button type="button" class="btn btn-link" data-action="edit">
+						<i class="fa fa-edit"></i>
+					</button>
+					<button type="button" class="btn btn-link link-danger" data-action="delete">
+						<i class="fa fa-trash"></i>
+					</button>
 				</td>
 			</tr>
 			{{{ end }}}
