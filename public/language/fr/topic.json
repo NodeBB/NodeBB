@@ -102,7 +102,7 @@
     "thread_tools.change_owner": "Changer de propriétaire",
     "thread_tools.select_category": "Sélectionner une catégorie",
     "thread_tools.fork": "Scinder le sujet",
-    "thread_tools.tag": "Tag Topic",
+    "thread_tools.tag": "Mots-clé de sujet",
     "thread_tools.delete": "Supprimer le sujet",
     "thread_tools.delete-posts": "Supprimer les messages",
     "thread_tools.delete_confirm": "Êtes-vous sûr de bien vouloir supprimer ce sujet ?",

@@ -202,5 +202,5 @@
     "emailUpdate.required": "<strong>Questo campo è obbligatorio</strong>.",
     "emailUpdate.change-instructions": "Un'email di conferma sarà inviata all'indirizzo email inserito con un link unico. Accedendo a quel link confermerai la tua proprietà dell'indirizzo email e questo diventerà attivo sul tuo account. In qualsiasi momento, sei in grado di aggiornare la tua email in archivio dalla pagina del tuo account.",
     "emailUpdate.password-challenge": "Inserisci la tua password per verificare la proprietà dell'account.",
-    "emailUpdate.pending": "Your email address has not yet been confirmed, but an email has been sent out requesting confirmation. If you wish to invalidate that request and send a new confirmation request, please fill in the form below."
+    "emailUpdate.pending": "Il tuo indirizzo email non è stato ancora confermato, ma è stata inviata un'email di richiesta di conferma. Se desideri annullare tale richiesta e inviare una nuova richiesta di conferma, compila il modulo sottostante."
 }

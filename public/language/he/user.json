@@ -202,5 +202,5 @@
     "emailUpdate.required": "זהו שדה חובה",
     "emailUpdate.change-instructions": "מייל אימות יישלח לכתובת דוא\"ל שהכנסת עם קישור ייחודי. לחיצה על הקישור יאמת את בעלותך על הדוא\"ל ותקבל גישה לחשבונך. בכל זמן, תוכל לעדכן את כתובת הדוא\"ל שלך בדף החשבון שלך.",
     "emailUpdate.password-challenge": "אנא הזן את הסיסמה שלך כדי לאמת את הבעלות על החשבון.",
-    "emailUpdate.pending": "Your email address has not yet been confirmed, but an email has been sent out requesting confirmation. If you wish to invalidate that request and send a new confirmation request, please fill in the form below."
+    "emailUpdate.pending": "כתובת הדוא\"ל שלכם עדיין לא אושרה, אך נשלח דוא\"ל המבקש אישור. אם ברצונכם לבטל בקשה זו ולשלוח בקשת אישור חדשה, אנא מלאו את הטופס שלהלן."
 }
