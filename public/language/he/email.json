@@ -49,7 +49,7 @@
     "unsubscribe": "בטל רישום",
     "unsub.success": "אתה לא תקבל יותר מיילים מרשימת התפוצה של <strong>%1</strong>",
     "unsub.failure.title": "לא ניתן לבטל את המנוי",
-    "unsub.failure.message": "Unfortunately, we were not able to unsubscribe you from the mailing list, as there was an issue with the link. However, you can alter your email preferences by going to <a href=\"%2\">your user settings</a>.<br /><br />(error: <code>%1</code>)",
+    "unsub.failure.message": "למרבה הצער, לא הצלחנו לבטל את הרישום שלך מרשימת התפוצה, מכיוון שהייתה בעיה בקישור. עם זאת, אתה יכול לשנות את העדפות הדוא\"ל שלך על ידי מעבר ל<a href=\"%2\">הגדרות המשתמש שלך</a>.<br /><br />(שגיאה: <code>%1</code>)",
     "banned.subject": "הורחקת מ %1",
     "banned.text1": "המשתמש %1 הורחק מ %2.",
     "banned.text2": "הרחקה זו תמשך עד %1",

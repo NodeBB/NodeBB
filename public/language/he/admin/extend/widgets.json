@@ -8,9 +8,9 @@
 	"containers.none": "None",
 	"container.well": "Well",
 	"container.jumbotron": "Jumbotron",
-	"container.card": "Card",
-	"container.card-header": "Card Header",
-	"container.card-body": "Card Body",
+	"container.card": "כרטיס",
+	"container.card-header": "כותרת כרטיס",
+	"container.card-body": "גוף כרטיס",
 	"container.alert": "התראה",
 
 	"alert.confirm-delete": "האם אתה בטוח שאתה רוצה למחוק את הוידג'ט?",
@@ -26,7 +26,7 @@
 	"container.placeholder": "גרור ושחרר גורם מכיל (container) או הזן HTML כאן.",
 	"show-to-groups": "יוצג בקבוצות",
 	"hide-from-groups": "יוסתר מקבוצות",
-	"start-date": "Start date",
-	"end-date": "End date",
+	"start-date": "תאריך התחלה",
+	"end-date": "תאריך סיום",
 	"hide-on-mobile": "הסתר במובייל"
 }

@@ -1,7 +1,7 @@
 {
-	"custom-css": "Custom CSS/SASS",
-	"custom-css.description": "Enter your own CSS/SASS declarations here, which will be applied after all other styles.",
-	"custom-css.enable": "Enable Custom CSS/SASS",
+	"custom-css": "CSS/SASS מותאם אישית",
+	"custom-css.description": "הזן כאן הצהרות CSS/SASS משלך, שיוחלו לאחר כל הסגנונות האחרים.",
+	"custom-css.enable": "הפעל CSS/SASS מותאם אישית",
 
 	"custom-js": "Javascript מותאם אישית",
 	"custom-js.description": "הכניסו כאן JavaScript משלכם, שיבוצע לאחר טעינת הדף לחלוטין.",

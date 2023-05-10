@@ -92,7 +92,7 @@
     "already-posting": "Stai già postando",
     "tag-too-short": "Inserisci un tag più lungo. I tag devono contenere almeno %1 caratteri.",
     "tag-too-long": "Per favore inserisci un tag più corto. I tags non dovrebbero essere più lunghi di %1 caratteri",
-    "tag-not-allowed": "Tag not allowed",
+    "tag-not-allowed": "Tag non consentito",
     "not-enough-tags": "Tag non sufficienti. Le discussioni devono avere almeno %1 Tag",
     "too-many-tags": "Troppi Tag. Le discussioni non possono avere più di %1 Tag",
     "cant-use-system-tag": "Non puoi usare questo tag di sistema.",

@@ -11,9 +11,9 @@
 	"uid": "ID Utilisateur",
 	"uid-help-text": "Spécifiez un ID utilisateur à associer à ce token. Si l'ID utilisateur est 0, il sera considéré comme un token <code>maître<em>, qui peut prendre l'identité d'autres utilisateurs en fonction du paramètre <code>_uid</code>",
 	"description": "Description",
-	"last-seen-ago": "Last used <span class=\"timeago\" title=\"%1\"></span>.",
-	"last-seen-on": "Last used on <span class=\"timeago\" title=\"%1\"></span>.",
-	"last-seen-never": "This key has never been used.",
+	"last-seen-ago": "Dernière utilisation <span class=\"timeago\" title=\"%1\"></span>.",
+	"last-seen-on": "Dernière utilisation sur <span class=\"timeago\" title=\"%1\"></span>.",
+	"last-seen-never": "Cette clé n'a jamais été utilisée.",
 	"no-description": "Aucune description spécifiée.",
 	"token-on-save": "Le token sera généré une fois le formulaire enregistré"
 }

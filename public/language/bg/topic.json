@@ -102,7 +102,7 @@
     "thread_tools.change_owner": "Промяна на собственика",
     "thread_tools.select_category": "Избиране на категория",
     "thread_tools.fork": "Разделяне на темата",
-    "thread_tools.tag": "Tag Topic",
+    "thread_tools.tag": "Поставяне на етикет на темата",
     "thread_tools.delete": "Изтриване на темата",
     "thread_tools.delete-posts": "Изтриване на публикациите",
     "thread_tools.delete_confirm": "Наистина ли искате да изтриете тази тема?",

@@ -60,7 +60,7 @@
     "account/uploads": "Envoyé par %1",
     "account/sessions": "Sessions des connexions",
     "confirm": "Email vérifié",
-    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
+    "maintenance.text": "%1 est actuellement en cours de maintenance. <br/>Veuillez revenir ultérieurement.",
     "maintenance.messageIntro": "De plus, l'administrateur a laissé ce message :",
     "throttled.text": "%1 est actuellement indisponible en raison d'une charge excessive. Merci de réessayer plus tard."
 }
