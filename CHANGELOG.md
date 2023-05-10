@@ -1,9 +1,5 @@
 #### v3.1.0 (2023-05-10)
 
-##### Breaking Changes
-
-*  started work on porting socket methods to write API [breaking] (f2082d7d)
-
 ##### Chores
 
 *  up themes (14a5c1aa)
@@ -92,6 +88,7 @@
 *  move topic thumb to template (84a78c2d)
 *  open topic thumbs on click in a bootbox dialog instead of opening in same page; complements nodebb/nodebb-theme-harmony#12 (04219c4c)
 *  closes #11424, add category selector to fork modal (#11491) (6b51dd5a)
+*  started work on porting socket methods to write API (f2082d7d)
 
 ##### Bug Fixes
 
