@@ -36,7 +36,7 @@ utils.tokens.get = async (tokens) => {
 	tokenObjs.forEach((tokenObj, idx) => {
 		tokenObj.token = tokens[idx];
 		tokenObj.lastSeen = lastSeen[idx];
-		tokenObj.lastSeenISO = new Date(lastSeen[idx]).toISOString();
+		tokenObj.lastSeenISO = lastSeen[idx] ? new Date(lastSeen[idx]).toISOString() : null;
 		tokenObj.timestampISO = new Date(parseInt(tokenObj.timestamp, 10)).toISOString();
 	});
 
@@ -78,6 +78,28 @@ utils.tokens.update = async (token, { uid, description }) => {
 	]);
 
 	return await utils.tokens.get(token);
+};
+
+utils.tokens.roll = async (token) => {
+	const [createTime, uid, lastSeen] = await db.sortedSetsScore([`tokens:createtime`, `tokens:uid`, `tokens:lastSeen`], token);
+	const newToken = srcUtils.generateUUID();
+
+	const updates = [
+		db.rename(`token:${token}`, `token:${newToken}`),
+		db.sortedSetRemove(`tokens:createtime`, token),
+		db.sortedSetRemove(`tokens:uid`, token),
+		db.sortedSetRemove(`tokens:lastSeen`, token),
+		db.sortedSetAdd(`tokens:createtime`, createTime, newToken),
+		db.sortedSetAdd(`tokens:uid`, uid, newToken),
+	];
+
+	if (lastSeen) {
+		updates.push(db.sortedSetAdd(`tokens:lastSeen`, lastSeen, newToken));
+	}
+
+	await Promise.all(updates);
+
+	return newToken;
 };
 
 utils.tokens.delete = async (token) => {

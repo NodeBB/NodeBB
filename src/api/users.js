@@ -18,9 +18,8 @@ const plugins = require('../plugins');
 const events = require('../events');
 const translator = require('../translator');
 const sockets = require('../socket.io');
-const utils = require('../utils');
 
-const api = require('.');
+// const api = require('.');
 
 const usersAPI = module.exports;
 
@@ -310,15 +309,18 @@ usersAPI.unmute = async function (caller, data) {
 };
 
 usersAPI.generateToken = async (caller, { uid, description }) => {
+	const api = require('.');
 	await hasAdminPrivilege(caller.uid, 'settings');
 	if (parseInt(uid, 10) !== parseInt(caller.uid, 10)) {
 		throw new Error('[[error:invalid-uid]]');
 	}
 
-	return await api.utils.tokens.generate({ uid, description });
+	const tokenObj = await api.utils.tokens.generate({ uid, description });
+	return tokenObj.token;
 };
 
 usersAPI.deleteToken = async (caller, { uid, token }) => {
+	const api = require('.');
 	await hasAdminPrivilege(caller.uid, 'settings');
 	if (parseInt(uid, 10) !== parseInt(caller.uid, 10)) {
 		throw new Error('[[error:invalid-uid]]');

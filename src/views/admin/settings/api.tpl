@@ -60,6 +60,9 @@
 					<button type="button" class="btn btn-link" data-action="edit">
 						<i class="fa fa-edit"></i>
 					</button>
+					<button type="button" class="btn btn-link" data-action="roll">
+						<i class="fa fa-refresh"></i>
+					</button>
 					<button type="button" class="btn btn-link link-danger" data-action="delete">
 						<i class="fa fa-trash"></i>
 					</button>

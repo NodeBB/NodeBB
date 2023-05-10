@@ -1,6 +1,6 @@
 'use strict';
 
-define('admin/settings/api', ['settings', 'clipboard', 'bootbox', 'benchpress', 'api'], function (settings, clipboard, bootbox, Benchpress, api) {
+define('admin/settings/api', ['settings', 'clipboard', 'bootbox', 'benchpress', 'api', 'alerts'], function (settings, clipboard, bootbox, Benchpress, api, alerts) {
 	const ACP = {};
 
 	ACP.init = function () {
@@ -39,6 +39,10 @@ define('admin/settings/api', ['settings', 'clipboard', 'bootbox', 'benchpress', 
 					case 'delete':
 						handleTokenDeletion(subselector);
 						break;
+
+					case 'roll':
+						handleTokenRolling(subselector);
+						break;
 				}
 			}
 		});
@@ -57,24 +61,13 @@ define('admin/settings/api', ['settings', 'clipboard', 'bootbox', 'benchpress', 
 				const description = formData.get('description');
 
 				try {
-					const token = await api.post('/admin/tokens', { uid, description });
-
+					const tokenObj = await api.post('/admin/tokens', { uid, description });
 					if (!tokensTableBody) {
 						modal.modal('hide');
 						return ajaxify.refresh();
 					}
 
-					const now = new Date();
-					const tokenObj = {
-						token,
-						uid,
-						description,
-						timestamp: now.getTime(),
-						timestampISO: now.toISOString(),
-						lastSeen: null,
-						lastSeenISO: new Date(0).toISOString(),
-					};
-					ajaxify.data.tokens.append(tokenObj);
+					ajaxify.data.tokens.push(tokenObj);
 					const rowEl = (await app.parseAndTranslate(ajaxify.data.template.name, 'tokens', {
 						tokens: [tokenObj],
 					})).get(0);
@@ -83,7 +76,7 @@ define('admin/settings/api', ['settings', 'clipboard', 'bootbox', 'benchpress', 
 					$(rowEl).find('.timeago').timeago();
 					modal.modal('hide');
 				} catch (e) {
-					app.alertError(e);
+					alerts.error(e);
 				}
 			}
 
@@ -126,7 +119,7 @@ define('admin/settings/api', ['settings', 'clipboard', 'bootbox', 'benchpress', 
 					$(newEl).find('.timeago').timeago();
 					modal.modal('hide');
 				} catch (e) {
-					app.alertError(e);
+					alerts.error(e);
 				}
 			}
 
@@ -156,10 +149,31 @@ define('admin/settings/api', ['settings', 'clipboard', 'bootbox', 'benchpress', 
 				try {
 					await api.del(`/admin/tokens/${token}`);
 				} catch (e) {
-					app.alertError(e);
+					alerts.error(e);
 				}
 
 				rowEl.remove();
+			}
+		});
+	}
+
+	async function handleTokenRolling(el) {
+		const rowEl = el.closest('[data-token]');
+		const token = rowEl.getAttribute('data-token');
+
+		bootbox.confirm('[[admin/settings/api:roll-confirm]]', async (ok) => {
+			if (ok) {
+				try {
+					const tokenObj = await api.post(`/admin/tokens/${token}/roll`);
+					const newEl = (await app.parseAndTranslate(ajaxify.data.template.name, 'tokens', {
+						tokens: [tokenObj],
+					})).get(0);
+
+					rowEl.replaceWith(newEl);
+					$(newEl).find('.timeago').timeago();
+				} catch (e) {
+					alerts.error(e);
+				}
 			}
 		});
 	}
