@@ -32,7 +32,9 @@ module.exports = function (Posts) {
 				}
 			});
 			const uids = postData.map(data => data && data.uid);
-			const userData = await user.getUsersFields(uids, ['username', 'userslug', 'picture']);
+			const userData = await user.getUsersFields(uids, [
+				'username', 'userslug', 'picture', 'joindate', 'postcount', 'reputation',
+			]);
 			postData.forEach((postData, index) => {
 				if (postData) {
 					postData.user = userData[index];
@@ -46,7 +48,7 @@ module.exports = function (Posts) {
 			postData = postData.filter(p => p.id === filter.id);
 		}
 		if (options.metadata) {
-			await Promise.all(postData.map(p => addMetaData(p)));
+			await Promise.all(postData.map(addMetaData));
 		}
 
 		// Filter by tid if present
@@ -71,7 +73,7 @@ module.exports = function (Posts) {
 		if (postData.data.cid) {
 			postData.topic = { cid: parseInt(postData.data.cid, 10) };
 		} else if (postData.data.tid) {
-			postData.topic = await topics.getTopicFields(postData.data.tid, ['title', 'cid']);
+			postData.topic = await topics.getTopicFields(postData.data.tid, ['title', 'cid', 'lastposttime']);
 		}
 		postData.category = await categories.getCategoryData(postData.topic.cid);
 		const result = await plugins.hooks.fire('filter:parse.post', { postData: postData.data });

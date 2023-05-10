@@ -26,5 +26,7 @@
 	"container.placeholder": "Arrasta e solta um container ou insere HTML aqui.",
 	"show-to-groups": "Mostrar para os grupos",
 	"hide-from-groups": "Ocultar dos grupos",
+	"start-date": "Start date",
+	"end-date": "End date",
 	"hide-on-mobile": "Ocultar em telemóvel"
 }

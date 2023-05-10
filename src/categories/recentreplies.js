@@ -131,7 +131,7 @@ module.exports = function (Categories) {
 		categories.forEach((category) => {
 			if (category) {
 				category.posts = topics.filter(t => t.cid && (t.cid === category.cid || t.parentCids.includes(category.cid)))
-					.sort((a, b) => b.pid - a.pid)
+					.sort((a, b) => b.timestamp - a.timestamp)
 					.slice(0, parseInt(category.numRecentReplies, 10));
 			}
 		});
@@ -147,7 +147,7 @@ module.exports = function (Categories) {
 				const posts = [];
 				getPostsRecursive(category, posts);
 
-				posts.sort((a, b) => b.pid - a.pid);
+				posts.sort((a, b) => b.timestamp - a.timestamp);
 				if (posts.length) {
 					category.posts = [posts[0]];
 				}
@@ -165,7 +165,6 @@ module.exports = function (Categories) {
 
 	// terrible name, should be topics.moveTopicPosts
 	Categories.moveRecentReplies = async function (tid, oldCid, cid) {
-		await updatePostCount(tid, oldCid, cid);
 		const [pids, topicDeleted] = await Promise.all([
 			topics.getPids(tid),
 			topics.getTopicField(tid, 'deleted'),
@@ -195,16 +194,4 @@ module.exports = function (Categories) {
 			]);
 		}, { batch: 500 });
 	};
-
-	async function updatePostCount(tid, oldCid, newCid) {
-		const postCount = await topics.getTopicField(tid, 'postcount');
-		if (!postCount) {
-			return;
-		}
-
-		await Promise.all([
-			db.incrObjectFieldBy(`category:${oldCid}`, 'post_count', -postCount),
-			db.incrObjectFieldBy(`category:${newCid}`, 'post_count', postCount),
-		]);
-	}
 };

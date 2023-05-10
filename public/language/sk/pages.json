@@ -60,7 +60,7 @@
     "account/uploads": "Nahraté od %1",
     "account/sessions": "Login Sessions",
     "confirm": "E-mail potvrdený",
-    "maintenance.text": "%1 v súčasnej dobe prebieha údržba. Prosíme, vráťte sa neskôr.",
+    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
     "maintenance.messageIntro": "Správca, dodatočne zanechal túto správu:",
     "throttled.text": "%1 je v súčasnej dobe nedostupný z dôvodu nadmerného zaťaženia. Prosím, vráťte sa neskôr"
 }

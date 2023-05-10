@@ -55,6 +55,8 @@ define('topicThumbs', [
 					modal = bootbox.dialog({
 						title: '[[modules:thumbs.modal.title]]',
 						message: html,
+						onEscape: true,
+						backdrop: true,
 						buttons: {
 							add: {
 								label: '<i class="fa fa-plus"></i> [[modules:thumbs.modal.add]]',

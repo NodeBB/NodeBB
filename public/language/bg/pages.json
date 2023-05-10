@@ -60,7 +60,7 @@
     "account/uploads": "Качвания от %1",
     "account/sessions": "Сесии на вписване",
     "confirm": "Е-пощата е потвърдена",
-    "maintenance.text": "%1 в момента е в профилактика. Моля, върнете се по-късно.",
+    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
     "maintenance.messageIntro": "В допълнение, администраторът е оставил това съобщение:",
     "throttled.text": "%1 в момента е недостъпен, поради прекомерно натоварване. Моля, върнете се отново по-късно."
 }

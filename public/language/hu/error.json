@@ -92,6 +92,7 @@
     "already-posting": "Már írsz egy bejegyzést",
     "tag-too-short": "Kérlek hosszabb címkét adj meg. A címke legalább %1 karaktert kell, hogy tartalmazzon",
     "tag-too-long": "Kérlek rövidebb címkét adj meg. A címkék nem lehetnek hosszabbak %1 karakternél",
+    "tag-not-allowed": "Tag not allowed",
     "not-enough-tags": "Nincs elég címke. A témakörnek legalább %1 címkét kell tartalmaznia",
     "too-many-tags": "Túl sok címke. A témakör nem tartalmazhat több címkét mint %1",
     "cant-use-system-tag": "Nem használhatod ezt a rendszer címkét.",

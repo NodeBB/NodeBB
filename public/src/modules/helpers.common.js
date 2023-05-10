@@ -28,6 +28,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 		generateRepliedTo,
 		generateWrote,
 		register,
+		isoTimeToLocaleString,
 		__escape: identity,
 	};
 
@@ -335,6 +336,10 @@ module.exports = function (utils, Benchpress, relative_path) {
 		const isBeforeCutoff = post.timestamp < (Date.now() - (timeagoCutoff * oneDayInMs));
 		const langSuffix = isBeforeCutoff ? 'on' : 'ago';
 		return `[[topic:wrote-${langSuffix}, ${relative_path}/post/${post.pid}, ${post.timestampISO}]]`;
+	}
+
+	function isoTimeToLocaleString(isoTime) {
+		return new Date(isoTime).toLocaleString().replace(/,/g, '&#44;');
 	}
 
 	function register() {

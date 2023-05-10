@@ -92,6 +92,7 @@
     "already-posting": "You are already posting",
     "tag-too-short": "הכניסו תגית ארוכה יותר. תגיות חייבות להכיל לפחות %1 תווים",
     "tag-too-long": "הכניסו תגית קצרה יותר. תגיות יכולות להיות רק עד %1 תווים",
+    "tag-not-allowed": "Tag not allowed",
     "not-enough-tags": "אין מספיק תגיות. נושא חייב להכיל לפחות %1 תגיות",
     "too-many-tags": "יותר מדי תגיות. נושאים יכולים להכיל רק %1 תגיות",
     "cant-use-system-tag": "אינכם יכול להשתמש בתווית מערכת זו.",

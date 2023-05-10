@@ -6,6 +6,16 @@
 	[component="category-selector-selected"] span {
 		display: inline-flex!important;
 	}
+	.bootstrap-tagsinput {
+		input {
+			width: 100%;
+		}
+		.ui-autocomplete {
+			max-height: 350px;
+			overflow-x: hidden;
+			overflow-y: auto;
+		}
+	}
 }
 
 @include media-breakpoint-down(md) {
@@ -17,6 +27,12 @@
 
 @include media-breakpoint-up(md) {
 	.tool-modal {
-		max-width: 400px;
+		max-width: 500px;
+	}
+}
+
+#crop-picture-modal {
+	.cropper-container.cropper-bg {
+		max-width: 100%;
 	}
 }

@@ -173,6 +173,17 @@ topicsAPI.unfollow = async function (caller, data) {
 	await topics.unfollow(data.tid, caller.uid);
 };
 
+topicsAPI.updateTags = async (caller, { tid, tags }) => {
+	if (!await privileges.topics.canEdit(tid, caller.uid)) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	const cid = await topics.getTopicField(tid, 'cid');
+	await topics.validateTags(tags, cid, caller.uid, tid);
+	await topics.updateTopicTags(tid, tags);
+	return await topics.getTopicTagsObjects(tid);
+};
+
 topicsAPI.addTags = async (caller, { tid, tags }) => {
 	if (!await privileges.topics.canEdit(tid, caller.uid)) {
 		throw new Error('[[error:no-privileges]]');
@@ -180,9 +191,10 @@ topicsAPI.addTags = async (caller, { tid, tags }) => {
 
 	const cid = await topics.getTopicField(tid, 'cid');
 	await topics.validateTags(tags, cid, caller.uid, tid);
-	tags = await topics.filterTags(tags);
+	tags = await topics.filterTags(tags, cid);
 
 	await topics.addTags(tags, [tid]);
+	return await topics.getTopicTagsObjects(tid);
 };
 
 topicsAPI.deleteTags = async (caller, { tid }) => {
@@ -255,4 +267,34 @@ topicsAPI.deleteEvent = async (caller, { tid, eventId }) => {
 	}
 
 	await topics.events.purge(tid, [eventId]);
+};
+
+topicsAPI.markRead = async (caller, { tid }) => {
+	const hasMarked = await topics.markAsRead([tid], caller.uid);
+	const promises = [topics.markTopicNotificationsRead([tid], caller.uid)];
+	if (hasMarked) {
+		promises.push(topics.pushUnreadCount(caller.uid));
+	}
+	await Promise.all(promises);
+};
+
+topicsAPI.markUnread = async (caller, { tid }) => {
+	if (!tid || caller.uid <= 0) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	await topics.markUnread(tid, caller.uid);
+	topics.pushUnreadCount(caller.uid);
+};
+
+topicsAPI.bump = async (caller, { tid }) => {
+	if (!tid) {
+		throw new Error('[[error:invalid-tid]]');
+	}
+	const isAdminOrMod = await privileges.topics.isAdminOrMod(tid, caller.uid);
+	if (!isAdminOrMod) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	await topics.markAsUnreadForAll(tid);
+	topics.pushUnreadCount(caller.uid);
 };

@@ -22,7 +22,6 @@ const upload_url = nconf.get('upload_url');
 
 topicsController.get = async function getTopic(req, res, next) {
 	const tid = req.params.topic_id;
-
 	if (
 		(req.params.post_index && !utils.isNumber(req.params.post_index) && req.params.post_index !== 'unread') ||
 		!utils.isNumber(tid)
@@ -207,6 +206,10 @@ async function addTags(topicData, req, res) {
 	}
 	description = description.replace(/\n/g, ' ');
 
+	const mainPost = postIndex === 0 && postAtIndex ?
+		postAtIndex :
+		await topics.getMainPost(topicData.tid, req.uid);
+
 	res.locals.metaTags = [
 		{
 			name: 'title',
@@ -234,7 +237,7 @@ async function addTags(topicData, req, res) {
 		},
 		{
 			property: 'article:modified_time',
-			content: utils.toISOString(topicData.lastposttime),
+			content: utils.toISOString(Math.max(topicData.lastposttime, mainPost && mainPost.edited)),
 		},
 		{
 			property: 'article:section',

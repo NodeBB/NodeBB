@@ -6,5 +6,6 @@
     "enter_tags_here": "%1에서 %2자 안으로 태그를 입력하세요.",
     "enter_tags_here_short": "태그 입력...",
     "no_tags": "아직 태그가 달리지 않았습니다.",
-    "select_tags": "태그 선택"
+    "select_tags": "태그 선택",
+    "tag-whitelist": "Tag Whitelist"
 }

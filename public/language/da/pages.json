@@ -60,7 +60,7 @@
     "account/uploads": "Uploads by %1",
     "account/sessions": "Login Sessions",
     "confirm": "Email Bekræftet",
-    "maintenance.text": "%1 er under vedligeholdelse. Kom venligst tilbage senere.",
+    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
     "maintenance.messageIntro": "Administratoren har yderligere vedlagt denne besked:",
     "throttled.text": "%1 er ikke tilgængelig på grund af overbelastning. Venligst kom tilbage senere."
 }

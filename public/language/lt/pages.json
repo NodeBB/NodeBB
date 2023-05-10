@@ -60,7 +60,7 @@
     "account/uploads": "%1 Įkėlimai",
     "account/sessions": "Login Sessions",
     "confirm": "El. paštas patvirtintas",
-    "maintenance.text": "%1 dabar atnaujinimo darbuose. Prašome grįžti vėliau",
+    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
     "maintenance.messageIntro": "Be to, administratorius paliko šį pranešimą:",
     "throttled.text": "%1 dabar nepasiekiamas dėl per didelės apkrovos. Prašome sugrįžti vėliau."
 }

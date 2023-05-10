@@ -15,10 +15,13 @@ define('forum/topic', [
 	'hooks',
 	'api',
 	'alerts',
+	'bootbox',
+	'clipboard',
 ], function (
 	infinitescroll, threadTools, postTools,
 	events, posts, navigator, sort, quickreply,
-	components, storage, hooks, api, alerts
+	components, storage, hooks, api, alerts,
+	bootbox, clipboard
 ) {
 	const Topic = {};
 	let tid = 0;
@@ -59,12 +62,14 @@ define('forum/topic', [
 		}
 
 		addBlockQuoteHandler();
+		addCodeBlockHandler();
 		addParentHandler();
 		addDropupHandler();
 		addRepliesHandler();
 		addPostsPreviewHandler();
 		setupQuickReply();
 		handleBookmark(tid);
+		handleThumbs();
 
 		$(window).on('scroll', utils.debounce(updateTopicTitle, 250));
 
@@ -169,6 +174,42 @@ define('forum/topic', [
 		}
 	}
 
+	function handleThumbs() {
+		const listEl = document.querySelector('[component="topic/thumb/list"]');
+		if (!listEl) {
+			return;
+		}
+
+		listEl.addEventListener('click', async (e) => {
+			const clickedThumb = e.target.closest('a');
+			if (clickedThumb) {
+				const clickedThumbIndex = Array.from(clickedThumb.parentNode.children).indexOf(clickedThumb);
+				e.preventDefault();
+				const thumbs = ajaxify.data.thumbs.map(t => ({ ...t }));
+				thumbs.forEach((t, i) => {
+					t.selected = i === clickedThumbIndex;
+				});
+				const html = await app.parseAndTranslate('modals/topic-thumbs-view', {
+					src: clickedThumb.href,
+					thumbs: thumbs,
+				});
+
+				const modal = bootbox.dialog({
+					size: 'lg',
+					onEscape: true,
+					backdrop: true,
+					message: html,
+				});
+				modal.on('click', '[component="topic/thumb/select"]', function () {
+					$('[component="topic/thumb/select"]').removeClass('border-primary');
+					$(this).addClass('border-primary');
+					$('[component="topic/thumb/current"]')
+						.attr('src', $(this).attr('src'));
+				});
+			}
+		});
+	}
+
 	function addBlockQuoteHandler() {
 		components.get('topic').on('click', 'blockquote .toggle', function () {
 			const blockQuote = $(this).parent('blockquote');
@@ -177,6 +218,30 @@ define('forum/topic', [
 			const collapsed = !blockQuote.hasClass('uncollapsed');
 			toggle.toggleClass('fa-angle-down', collapsed).toggleClass('fa-angle-up', !collapsed);
 		});
+	}
+
+	function addCodeBlockHandler() {
+		new clipboard('[component="copy/code/btn"]', {
+			text: function (trigger) {
+				const btn = $(trigger);
+				btn.find('i').removeClass('fa-copy').addClass('fa-check');
+				setTimeout(() => btn.find('i').removeClass('fa-check').addClass('fa-copy'), 2000);
+				return btn.parent().find('code').text();
+			},
+		});
+
+		function addCopyCodeButton() {
+			let codeBlocks = $('[component="topic"] [component="post/content"] code:not([data-button-added])');
+			codeBlocks = codeBlocks.filter((i, el) => $(el).text().includes('\n'));
+			const container = $('<div class="hover-parent position-relative"></div>');
+			const buttonDiv = $('<button component="copy/code/btn" class="hover-visible position-absolute end-0 top-0 btn btn-sm btn-outline-secondary me-4"><i class="fa fa-fw fa-copy"></i></button>');
+			codeBlocks.parent().wrap(container).parent().append(buttonDiv);
+			codeBlocks.parent().parent().find('[component="copy/code/btn"]').translateAttr('title', '[[topic:copy-code]]');
+			codeBlocks.attr('data-button-added', 1);
+		}
+		hooks.registerPage('action:posts.loaded', addCopyCodeButton);
+		hooks.registerPage('action:topic.loaded', addCopyCodeButton);
+		hooks.registerPage('action:posts.edited', addCopyCodeButton);
 	}
 
 	function addParentHandler() {
@@ -250,7 +315,7 @@ define('forum/topic', [
 			destroyed = false;
 
 			async function renderPost(pid) {
-				const postData = postCache[pid] || await socket.emit('posts.getPostSummaryByPid', { pid: pid });
+				const postData = postCache[pid] || await api.get(`/posts/${pid}/summary`);
 				$('#post-tooltip').remove();
 				if (postData && ajaxify.data.template.topic) {
 					postCache[pid] = postData;
@@ -326,7 +391,7 @@ define('forum/topic', [
 			currentUrl = newUrl;
 
 			if (index >= elementCount && app.user.uid) {
-				socket.emit('topics.markAsRead', [ajaxify.data.tid]);
+				api.put(`/topics/${ajaxify.data.tid}/read`);
 			}
 
 			updateUserBookmark(index);

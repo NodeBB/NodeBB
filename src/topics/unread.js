@@ -291,14 +291,16 @@ module.exports = function (Topics) {
 			db.sortedSetScores(`uid:${uid}:tids_read`, tids),
 		]);
 
-		const topics = topicScores.filter((t, i) => t.lastposttime && (!userScores[i] || userScores[i] < t.lastposttime));
+		const now = Date.now();
+		const topics = topicScores.filter(
+			(t, i) => t.lastposttime && (!userScores[i] || userScores[i] < t.lastposttime || userScores[i] > now)
+		);
 		tids = topics.map(t => t.tid);
 
 		if (!tids.length) {
 			return false;
 		}
 
-		const now = Date.now();
 		const scores = topics.map(topic => (topic.scheduled ? topic.lastposttime : now));
 		const [topicData] = await Promise.all([
 			Topics.getTopicsFields(tids, ['cid']),

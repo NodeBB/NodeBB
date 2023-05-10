@@ -161,18 +161,21 @@ actions.buildCSS = async function buildCSS(data) {
 	const scssOutput = await sass.compileStringAsync(data.source, {
 		loadPaths: data.paths,
 	});
+	let css = scssOutput.css.toString();
 
 	async function processScss(direction) {
-		const postcssArgs = [autoprefixer];
 		if (direction === 'rtl') {
-			postcssArgs.unshift(rtlcss());
+			css = await postcss([rtlcss()]).process(css, {
+				from: undefined,
+			});
 		}
+		const postcssArgs = [autoprefixer];
 		if (data.minify) {
 			postcssArgs.push(clean({
 				processImportFrom: ['local'],
 			}));
 		}
-		return await postcss(postcssArgs).process(scssOutput.css.toString(), {
+		return await postcss(postcssArgs).process(css, {
 			from: undefined,
 		});
 	}

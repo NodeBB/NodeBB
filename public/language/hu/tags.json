@@ -6,5 +6,6 @@
     "enter_tags_here": "%1 és %2 karakterek között itt add meg a címkét.",
     "enter_tags_here_short": "Címke megadása...",
     "no_tags": "Még nincsenek címkék.",
-    "select_tags": "Címkék kiválasztása"
+    "select_tags": "Címkék kiválasztása",
+    "tag-whitelist": "Tag Whitelist"
 }

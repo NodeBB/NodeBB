@@ -26,5 +26,7 @@
 	"container.placeholder": "Přesuňte sem kontejner nebo zadejte HTML",
 	"show-to-groups": "Zobrazit ve skupinách",
 	"hide-from-groups": "Skrýt ve skupinách",
+	"start-date": "Start date",
+	"end-date": "End date",
 	"hide-on-mobile": "Skrýt na mobilu"
 }

@@ -117,6 +117,17 @@ define('forum/category/tools', [
 			});
 		});
 
+		components.get('topic/tag').on('click', async function () {
+			const tids = topicSelect.getSelectedTids();
+			if (!tids.length) {
+				return alerts.error('[[error:no-topics-selected]]');
+			}
+			const topics = await Promise.all(tids.map(tid => api.get(`/topics/${tid}`)));
+			require(['forum/topic/tag'], function (tag) {
+				tag.init(topics, ajaxify.data.tagWhitelist, onCommandComplete);
+			});
+		});
+
 		CategoryTools.removeListeners();
 		socket.on('event:topic_deleted', setDeleteState);
 		socket.on('event:topic_restored', setDeleteState);

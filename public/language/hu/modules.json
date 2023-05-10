@@ -69,6 +69,7 @@
     "composer.schedule-date": "Dátum",
     "composer.schedule-time": "Idő",
     "composer.cancel-scheduling": "Időzítés elvetése",
+    "composer.change-schedule-date": "Change Date",
     "composer.set-schedule-date": "Dátum beállítása",
     "composer.discard-all-drafts": "Dobja el az összes piszkozatot",
     "composer.no-drafts": "Nincs piszkozatod",

@@ -234,6 +234,13 @@ Plugins.normalise = async function (apiReturn) {
 		pluginMap[plugin.id].outdated = semver.gt(pluginMap[plugin.id].latest, pluginMap[plugin.id].version);
 	});
 
+	if (nconf.get('plugins:active')) {
+		nconf.get('plugins:active').forEach((id) => {
+			pluginMap[id] = pluginMap[id] || {};
+			pluginMap[id].active = true;
+		});
+	}
+
 	const pluginArray = Object.values(pluginMap);
 
 	pluginArray.sort((a, b) => {

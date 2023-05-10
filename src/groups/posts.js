@@ -6,7 +6,7 @@ const posts = require('../posts');
 
 module.exports = function (Groups) {
 	Groups.onNewPostMade = async function (postData) {
-		if (!parseInt(postData.uid, 10)) {
+		if (!parseInt(postData.uid, 10) || postData.timestamp > Date.now()) {
 			return;
 		}
 
@@ -26,7 +26,7 @@ module.exports = function (Groups) {
 	};
 
 	async function truncateMemberPosts(groupName) {
-		let lastPid = await db.getSortedSetRevRange(`group:${groupName}:member:pids`, 10, 10);
+		let lastPid = await db.getSortedSetRevRangeByScore(`group:${groupName}:member:pids`, 10, 1, Date.now(), '-inf');
 		lastPid = lastPid[0];
 		if (!parseInt(lastPid, 10)) {
 			return;
@@ -37,7 +37,7 @@ module.exports = function (Groups) {
 
 	Groups.getLatestMemberPosts = async function (groupName, max, uid) {
 		const [allPids, groupData] = await Promise.all([
-			db.getSortedSetRevRange(`group:${groupName}:member:pids`, 0, max - 1),
+			db.getSortedSetRevRangeByScore(`group:${groupName}:member:pids`, 0, max, Date.now(), '-inf'),
 			Groups.getGroupFields(groupName, ['memberPostCids']),
 		]);
 		const cids = groupData.memberPostCidsArray;

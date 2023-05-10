@@ -69,6 +69,7 @@
     "composer.schedule-date": "Date",
     "composer.schedule-time": "Time",
     "composer.cancel-scheduling": "Cancel Scheduling",
+    "composer.change-schedule-date": "Change Date",
     "composer.set-schedule-date": "Angitt dato",
     "composer.discard-all-drafts": "Discard all drafts",
     "composer.no-drafts": "You have no drafts",

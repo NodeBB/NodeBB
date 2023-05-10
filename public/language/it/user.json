@@ -201,5 +201,6 @@
     "emailUpdate.optional": "<strong>Questo campo è facoltativo</strong>. Non sei obbligato a fornire il tuo indirizzo email, ma senza un'email convalidata non sarai in grado di recuperare il tuo account o di accedere con la tua email.",
     "emailUpdate.required": "<strong>Questo campo è obbligatorio</strong>.",
     "emailUpdate.change-instructions": "Un'email di conferma sarà inviata all'indirizzo email inserito con un link unico. Accedendo a quel link confermerai la tua proprietà dell'indirizzo email e questo diventerà attivo sul tuo account. In qualsiasi momento, sei in grado di aggiornare la tua email in archivio dalla pagina del tuo account.",
-    "emailUpdate.password-challenge": "Inserisci la tua password per verificare la proprietà dell'account."
+    "emailUpdate.password-challenge": "Inserisci la tua password per verificare la proprietà dell'account.",
+    "emailUpdate.pending": "Your email address has not yet been confirmed, but an email has been sent out requesting confirmation. If you wish to invalidate that request and send a new confirmation request, please fill in the form below."
 }

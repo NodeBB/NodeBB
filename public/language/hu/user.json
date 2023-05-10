@@ -201,5 +201,6 @@
     "emailUpdate.optional": "<strong>Ez a mező nem kötelező.</strong> Nem köteles megadni az e-mail címét, de ellenőrzött e-mail nélkül nem tudja visszaállítani a fiókját, vagy bejelentkezni az e-mail címével.",
     "emailUpdate.required": "<strong>Ez a mező kötelező</strong>.",
     "emailUpdate.change-instructions": "A megadott e-mail címre egy visszaigazoló e-mailt küldünk egy egyedi hivatkozással. A link elérése megerősíti az e-mail cím tulajdonjogát, és az aktív lesz a fiókjában. Bármikor frissítheti e-mailjeit a fiókja oldalán.",
-    "emailUpdate.password-challenge": "Kérjük, adja meg jelszavát a fiók tulajdonjogának igazolásához."
+    "emailUpdate.password-challenge": "Kérjük, adja meg jelszavát a fiók tulajdonjogának igazolásához.",
+    "emailUpdate.pending": "Your email address has not yet been confirmed, but an email has been sent out requesting confirmation. If you wish to invalidate that request and send a new confirmation request, please fill in the form below."
 }

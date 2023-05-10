@@ -6,11 +6,11 @@
 	"403.message": "You seem to have stumbled upon a page that you do not have access to.",
 	"403.login": "Perhaps you should <a class=\"alert-link\" href='%1/login'>try logging in</a>?",
 	"404.title": "Not Found",
-	"404.message": "You seem to have stumbled upon a page that does not exist. Return to the <a class=\"alert-link\" href='%1/'>home page</a>.",
+	"404.message": "You seem to have stumbled upon a page that does not exist.<br/><div class=\"text-sm text-muted\">Return to the <a href='%1/'>home page</a>.</div>",
 	"500.title": "Internal Error.",
 	"500.message": "Oops! Looks like something went wrong!",
 	"400.title": "Bad Request.",
-	"400.message": "It looks like this link is malformed, please double-check and try again. Otherwise, return to the <a class=\"alert-link\" href='%1/'>home page</a>.",
+	"400.message": "It looks like this link is malformed, please double-check and try again.<br/><div class=\"text-sm text-muted\">Return to the <a href='%1/'>home page</a>.</div>",
 
 	"register": "Register",
 	"login": "Login",
@@ -24,6 +24,7 @@
 
 	"save_changes": "Save Changes",
 	"save": "Save",
+	"cancel": "Cancel",
 	"close": "Close",
 
 	"pagination": "Pagination",
@@ -74,6 +75,7 @@
 	"posts": "Posts",
 	"x-posts": "<span class=\"formatted-number\">%1</span> posts",
 	"x-topics": "<span class=\"formatted-number\">%1</span> topics",
+	"x-reputation": "<span class=\"formatted-number\">%1</span> reputation",
 	"best": "Best",
 	"controversial": "Controversial",
 	"votes": "Votes",
@@ -158,8 +160,10 @@
 	"edited": "Edited",
 	"disabled": "Disabled",
 	"select": "Select",
+	"copied": "Copied",
 
 	"user-search-prompt": "Type something here to find users...",
 	"hidden": "Hidden",
-	"sort": "Sort"
+	"sort": "Sort",
+	"actions": "Actions"
 }

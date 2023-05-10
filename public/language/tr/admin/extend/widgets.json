@@ -8,9 +8,9 @@
 	"containers.none": "Kutucuk Yok",
 	"container.well": "Çukur",
 	"container.jumbotron": "Büyük Gösterim",
-	"container.card": "Card",
-	"container.card-header": "Card Header",
-	"container.card-body": "Card Body",
+	"container.card": "Kart",
+	"container.card-header": "Kart Başlığı",
+	"container.card-body": "Kart İçeriği",
 	"container.alert": "Uyarı",
 
 	"alert.confirm-delete": "Bu bileşeni silmek istediğinizden emin misiniz?",
@@ -26,5 +26,7 @@
 	"container.placeholder": "Bir kutucuğu sürükle ve buraya bırak veya HTML gir",
 	"show-to-groups": "Şu gruplara göster",
 	"hide-from-groups": "Şu gruplara gösterme",
+	"start-date": "Start date",
+	"end-date": "End date",
 	"hide-on-mobile": "Mobilde gösterme"
 }

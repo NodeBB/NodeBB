@@ -103,15 +103,18 @@ define('forum/chats', [
 	};
 
 	Chats.addIPHandler = function (container) {
-		container.on('click', '.chat-ip-button', function () {
-			const ipEl = $(this).parent();
+		container.on('click', '.chat-ip-button', async function () {
+			const ipEl = $(this);
+			let ip = ipEl.attr('data-ip');
+			if (ip) {
+				navigator.clipboard.writeText(ip);
+				ipEl.translateText('[[global:copied]]');
+				setTimeout(() => ipEl.text(ip), 2000);
+				return;
+			}
 			const mid = ipEl.parents('[data-mid]').attr('data-mid');
-			socket.emit('modules.chats.getIP', mid, function (err, ip) {
-				if (err) {
-					return alerts.error(err);
-				}
-				ipEl.html(ip);
-			});
+			ip = await socket.emit('modules.chats.getIP', mid);
+			ipEl.text(ip).attr('data-ip', ip);
 		});
 	};
 
@@ -379,7 +382,7 @@ define('forum/chats', [
 		});
 	};
 
-	Chats.createAutoComplete = function (roomId, element) {
+	Chats.createAutoComplete = function (roomId, element, options = {}) {
 		if (!element.length) {
 			return;
 		}
@@ -395,12 +398,17 @@ define('forum/chats', [
 				},
 				placement: 'top',
 				className: `chat-autocomplete-dropdown-${roomId} dropdown-menu textcomplete-dropdown`,
+				...options,
 			},
 		};
 
 		$(window).trigger('chat:autocomplete:init', data);
 		if (data.strategies.length) {
-			Chats.activeAutocomplete[roomId] = autocomplete.setup(data);
+			const autocompleteEl = autocomplete.setup(data);
+			if (roomId) {
+				Chats.activeAutocomplete[roomId] = autocompleteEl;
+			}
+			return autocompleteEl;
 		}
 	};
 

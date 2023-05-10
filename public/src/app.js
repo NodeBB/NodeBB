@@ -289,6 +289,17 @@ if (document.readyState === 'loading') {
 		});
 	};
 
+	app.newReply = async function (tid) {
+		const [hooks, api] = await app.require(['hooks', 'api']);
+		const titleRaw = ajaxify.data.template.topic ?
+			ajaxify.data.titleRaw :
+			(await api.get(`/topics/${tid}`)).titleRaw;
+		hooks.fire('action:composer.post.new', {
+			tid: tid,
+			topicName: titleRaw,
+		});
+	};
+
 	app.loadJQueryUI = function (callback) {
 		if (typeof $().autocomplete === 'function') {
 			return callback();

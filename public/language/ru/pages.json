@@ -60,7 +60,7 @@
     "account/uploads": "Загрузки %1",
     "account/sessions": "Сессии",
     "confirm": "Электронная почта подтверждена",
-    "maintenance.text": "%1 в настоящее время на обслуживании. Пожалуйста, возвращайтесь позже.",
+    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
     "maintenance.messageIntro": "Кроме того, администратор оставил это сообщение:",
     "throttled.text": "%1 в настоящее время недоступен из-за высокой нагрузки. Пожалуйста, приходите в другой раз."
 }

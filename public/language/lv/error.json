@@ -92,6 +92,7 @@
     "already-posting": "You are already posting",
     "tag-too-short": "Lūdzu, ievadi garāku birku. Birkā jāsatur vismaz %1 rakstzīmes.",
     "tag-too-long": "Lūdzu, ievadi īsāku birku. Birkā nevar būt vairāk kā %1 rakstzīmes.",
+    "tag-not-allowed": "Tag not allowed",
     "not-enough-tags": "Nav pietiekami daudz birku. Tematiem jābūt vismaz %1 birkām",
     "too-many-tags": "Pārāk daudz birku. Tematiem nevar būt vairāk kā %1 birkas",
     "cant-use-system-tag": "You can not use this system tag.",

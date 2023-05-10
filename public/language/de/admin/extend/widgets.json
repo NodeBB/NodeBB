@@ -26,5 +26,7 @@
 	"container.placeholder": "Ziehe einen Container per Drag-and-Drop oder gebe hier HTML ein.",
 	"show-to-groups": "Gruppen anzeigen",
 	"hide-from-groups": "Vor Gruppen verstecken",
+	"start-date": "Start date",
+	"end-date": "End date",
 	"hide-on-mobile": "Auf dem Handy verstecken"
 }

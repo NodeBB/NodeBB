@@ -69,6 +69,7 @@
     "composer.schedule-date": "Datum",
     "composer.schedule-time": "Čas",
     "composer.cancel-scheduling": "Cancel Scheduling",
+    "composer.change-schedule-date": "Change Date",
     "composer.set-schedule-date": "Nastavi datum",
     "composer.discard-all-drafts": "Discard all drafts",
     "composer.no-drafts": "You have no drafts",

@@ -60,7 +60,7 @@
     "account/uploads": "Uploads door %1",
     "account/sessions": "Login sessies",
     "confirm": "Email Bevestigd",
-    "maintenance.text": "%1 is momenteel in onderhoud. Excuses voor het ongemak en probeer het later nog eens.",
+    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
     "maintenance.messageIntro": "Daarnaast heeft de beheerder het volgende bericht achtergelaten:",
     "throttled.text": "%1 is momenteel niet beschikbaar door overmatig gebruikt. Excuses voor het ongemak en probeer het later nog eens."
 }

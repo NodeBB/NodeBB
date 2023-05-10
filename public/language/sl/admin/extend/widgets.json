@@ -26,5 +26,7 @@
 	"container.placeholder": "Drag and drop a container or enter HTML here.",
 	"show-to-groups": "Prikaži skupinam",
 	"hide-from-groups": "Skrij skupinam",
+	"start-date": "Start date",
+	"end-date": "End date",
 	"hide-on-mobile": "Hide on mobile"
 }

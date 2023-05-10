@@ -12,7 +12,7 @@
 				</div>
 
 				<div class="cropper">
-					<img id="cropped-image" crossorigin="anonymous" src="{url}" alt="">
+					<img id="cropped-image" class="mw-100" crossorigin="anonymous" src="{url}" alt="">
 				</div>
 
 				<hr />

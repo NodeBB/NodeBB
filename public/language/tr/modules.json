@@ -69,6 +69,7 @@
     "composer.schedule-date": "Tarih",
     "composer.schedule-time": "Zaman",
     "composer.cancel-scheduling": "Zamanlamayı iptal et",
+    "composer.change-schedule-date": "Change Date",
     "composer.set-schedule-date": "Tarihi ayarla",
     "composer.discard-all-drafts": "Discard all drafts",
     "composer.no-drafts": "You have no drafts",

@@ -35,7 +35,7 @@
 						<span class="badge bg-primary">[[admin/manage/groups:private]]</span>
 						{{{ end }}}
 						{{{ if ./hidden }}}
-						<span class="badge bg-default">[[admin/manage/groups:hidden]]</span>
+						<span class="badge bg-secondary">[[admin/manage/groups:hidden]]</span>
 						{{{ end }}}
 					</td>
 

@@ -24,6 +24,7 @@ const helpers = require('./helpers');
 const socketPosts = require('../src/socket.io/posts');
 const socketTopics = require('../src/socket.io/topics');
 const apiTopics = require('../src/api/topics');
+const apiPosts = require('../src/api/posts');
 
 const requestType = util.promisify((type, url, opts, cb) => {
 	request[type](url, opts, (err, res, body) => cb(err, { res: res, body: body }));
@@ -274,55 +275,48 @@ describe('Topic\'s', () => {
 			});
 		});
 
-		it('should handle direct replies', (done) => {
-			topics.reply({ uid: topic.userId, content: 'test reply', tid: newTopic.tid, toPid: newPost.pid }, (err, result) => {
-				assert.equal(err, null, 'was created with error');
-				assert.ok(result);
+		it('should handle direct replies', async () => {
+			const result = await topics.reply({ uid: topic.userId, content: 'test reply', tid: newTopic.tid, toPid: newPost.pid });
+			assert.ok(result);
 
-				socketPosts.getReplies({ uid: 0 }, newPost.pid, (err, postData) => {
-					assert.ifError(err);
+			const postData = await apiPosts.getReplies({ uid: 0 }, { pid: newPost.pid });
+			assert.ok(postData);
 
-					assert.ok(postData);
-
-					assert.equal(postData.length, 1, 'should have 1 result');
-					assert.equal(postData[0].pid, result.pid, 'result should be the reply we added');
-
-					done();
-				});
-			});
+			assert.equal(postData.length, 1, 'should have 1 result');
+			assert.equal(postData[0].pid, result.pid, 'result should be the reply we added');
 		});
 
-		it('should error if pid is not a number', (done) => {
-			socketPosts.getReplies({ uid: 0 }, 'abc', (err) => {
-				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
+		it('should error if pid is not a number', async () => {
+			await assert.rejects(
+				apiPosts.getReplies({ uid: 0 }, { pid: 'abc' }),
+				{ message: '[[error:invalid-data]]' }
+			);
 		});
 
 		it('should fail to create new reply with invalid user id', (done) => {
 			topics.reply({ uid: null, content: 'test post', tid: newTopic.tid }, (err) => {
-				assert.equal(err.message, '[[error:no-privileges]]');
+				assert.strictEqual(err.message, '[[error:no-privileges]]');
 				done();
 			});
 		});
 
 		it('should fail to create new reply with empty content', (done) => {
 			topics.reply({ uid: topic.userId, content: '', tid: newTopic.tid }, (err) => {
-				assert.ok(err);
+				assert.strictEqual(err.message, '[[error:content-too-short, 8]]');
 				done();
 			});
 		});
 
 		it('should fail to create new reply with invalid topic id', (done) => {
 			topics.reply({ uid: null, content: 'test post', tid: 99 }, (err) => {
-				assert.equal(err.message, '[[error:no-topic]]');
+				assert.strictEqual(err.message, '[[error:no-topic]]');
 				done();
 			});
 		});
 
 		it('should fail to create new reply with invalid toPid', (done) => {
 			topics.reply({ uid: topic.userId, content: 'test post', tid: newTopic.tid, toPid: '"onmouseover=alert(1);//' }, (err) => {
-				assert.equal(err.message, '[[error:invalid-pid]]');
+				assert.strictEqual(err.message, '[[error:invalid-pid]]');
 				done();
 			});
 		});
@@ -331,14 +325,14 @@ describe('Topic\'s', () => {
 			const result = await topics.post({ uid: fooUid, title: 'nested test', content: 'main post', cid: topic.categoryId });
 			const reply1 = await topics.reply({ uid: fooUid, content: 'reply post 1', tid: result.topicData.tid });
 			const reply2 = await topics.reply({ uid: fooUid, content: 'reply post 2', tid: result.topicData.tid, toPid: reply1.pid });
-			let replies = await socketPosts.getReplies({ uid: fooUid }, reply1.pid);
+			let replies = await apiPosts.getReplies({ uid: fooUid }, { pid: reply1.pid });
 			assert.strictEqual(replies.length, 1);
 			assert.strictEqual(replies[0].content, 'reply post 2');
 			let toPid = await posts.getPostField(reply2.pid, 'toPid');
 			assert.strictEqual(parseInt(toPid, 10), parseInt(reply1.pid, 10));
 			await posts.purge(reply1.pid, fooUid);
-			replies = await socketPosts.getReplies({ uid: fooUid }, reply1.pid);
-			assert.strictEqual(replies.length, 0);
+			replies = await apiPosts.getReplies({ uid: fooUid }, { pid: reply1.pid });
+			assert.strictEqual(replies, null);
 			toPid = await posts.getPostField(reply2.pid, 'toPid');
 			assert.strictEqual(toPid, null);
 		});
@@ -1479,29 +1473,24 @@ describe('Topic\'s', () => {
 			});
 		});
 
-		it('should fail with invalid data', (done) => {
-			socketTopics.markUnread({ uid: adminUid }, null, (err) => {
-				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
+		it('should fail with invalid data', async () => {
+			await assert.rejects(
+				apiTopics.markUnread({ uid: adminUid }, { tid: null }),
+				{ message: '[[error:invalid-data]]' }
+			);
 		});
 
-		it('should fail if topic does not exist', (done) => {
-			socketTopics.markUnread({ uid: adminUid }, 1231082, (err) => {
-				assert.equal(err.message, '[[error:no-topic]]');
-				done();
-			});
+		it('should fail if topic does not exist', async () => {
+			await assert.rejects(
+				apiTopics.markUnread({ uid: adminUid }, { tid: 1231082 }),
+				{ message: '[[error:no-topic]]' }
+			);
 		});
 
-		it('should mark topic unread', (done) => {
-			socketTopics.markUnread({ uid: adminUid }, tid, (err) => {
-				assert.ifError(err);
-				topics.hasReadTopic(tid, adminUid, (err, hasRead) => {
-					assert.ifError(err);
-					assert.equal(hasRead, false);
-					done();
-				});
-			});
+		it('should mark topic unread', async () => {
+			await apiTopics.markUnread({ uid: adminUid }, { tid });
+			const hasRead = await topics.hasReadTopic(tid, adminUid);
+			assert.strictEqual(hasRead, false);
 		});
 
 		it('should fail with invalid data', (done) => {
@@ -1575,51 +1564,34 @@ describe('Topic\'s', () => {
 			});
 		});
 
-		it('should fail with invalid data', (done) => {
-			socketTopics.markAsUnreadForAll({ uid: adminUid }, null, (err) => {
-				assert.equal(err.message, '[[error:invalid-tid]]');
-				done();
-			});
+		it('should fail with invalid data', async () => {
+			await assert.rejects(
+				apiTopics.bump({ uid: adminUid }, { tid: null }),
+				{ message: '[[error:invalid-tid]]' }
+			);
 		});
 
-		it('should fail with invalid data', (done) => {
-			socketTopics.markAsUnreadForAll({ uid: 0 }, [tid], (err) => {
-				assert.equal(err.message, '[[error:no-privileges]]');
-				done();
-			});
+		it('should fail with invalid data', async () => {
+			await assert.rejects(
+				apiTopics.bump({ uid: 0 }, { tid: [tid] }),
+				{ message: '[[error:no-privileges]]' }
+			);
 		});
 
-		it('should fail if user is not admin', (done) => {
-			socketTopics.markAsUnreadForAll({ uid: uid }, [tid], (err) => {
-				assert.equal(err.message, '[[error:no-privileges]]');
-				done();
-			});
+		it('should fail if user is not admin', async () => {
+			await assert.rejects(
+				apiTopics.bump({ uid: uid }, { tid }),
+				{ message: '[[error:no-privileges]]' }
+			);
 		});
 
-		it('should fail if topic does not exist', (done) => {
-			socketTopics.markAsUnreadForAll({ uid: uid }, [12312313], (err) => {
-				assert.equal(err.message, '[[error:no-topic]]');
-				done();
-			});
-		});
+		it('should mark topic unread for everyone', async () => {
+			await apiTopics.bump({ uid: adminUid }, { tid });
+			const adminRead = await topics.hasReadTopic(tid, adminUid);
+			const regularRead = await topics.hasReadTopic(tid, uid);
 
-		it('should mark topic unread for everyone', (done) => {
-			socketTopics.markAsUnreadForAll({ uid: adminUid }, [tid], (err) => {
-				assert.ifError(err);
-				async.parallel({
-					adminRead: function (next) {
-						topics.hasReadTopic(tid, adminUid, next);
-					},
-					regularRead: function (next) {
-						topics.hasReadTopic(tid, uid, next);
-					},
-				}, (err, results) => {
-					assert.ifError(err);
-					assert.equal(results.adminRead, false);
-					assert.equal(results.regularRead, false);
-					done();
-				});
-			});
+			assert.equal(adminRead, false);
+			assert.equal(regularRead, false);
 		});
 
 		it('should not do anything if tids is empty array', (done) => {

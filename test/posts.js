@@ -605,11 +605,10 @@ describe('Post\'s', () => {
 
 		it('should not delete first diff of a post', async () => {
 			const timestamps = await posts.diffs.list(replyPid);
-			await assert.rejects(async () => {
-				await posts.diffs.delete(replyPid, timestamps[0], voterUid);
-			}, {
-				message: '[[error:invalid-data]]',
-			});
+			await assert.rejects(
+				posts.diffs.delete(replyPid, timestamps[0], voterUid),
+				{ message: '[[error:invalid-data]]' }
+			);
 		});
 
 		it('should delete a post diff', async () => {
@@ -838,37 +837,37 @@ describe('Post\'s', () => {
 			}
 		});
 
-		it('should fail to get raw post because of privilege', (done) => {
-			socketPosts.getRawPost({ uid: 0 }, pid, (err) => {
-				assert.equal(err.message, '[[error:no-privileges]]');
-				done();
-			});
+		it('should fail to get raw post because of privilege', async () => {
+			const content = await apiPosts.getRaw({ uid: 0 }, { pid });
+			assert.strictEqual(content, null);
 		});
 
-		it('should fail to get raw post because post is deleted', (done) => {
-			posts.setPostField(pid, 'deleted', 1, (err) => {
-				assert.ifError(err);
-				socketPosts.getRawPost({ uid: voterUid }, pid, (err) => {
-					assert.equal(err.message, '[[error:no-post]]');
-					done();
-				});
-			});
+		it('should fail to get raw post because post is deleted', async () => {
+			await posts.setPostField(pid, 'deleted', 1);
+			const content = await apiPosts.getRaw({ uid: voterUid }, { pid });
+			assert.strictEqual(content, null);
 		});
 
-		it('should get raw post content', (done) => {
-			posts.setPostField(pid, 'deleted', 0, (err) => {
-				assert.ifError(err);
-				socketPosts.getRawPost({ uid: voterUid }, pid, (err, postContent) => {
-					assert.ifError(err);
-					assert.equal(postContent, 'raw content');
-					done();
-				});
-			});
+		it('should allow privileged users to view the deleted post\'s raw content', async () => {
+			await posts.setPostField(pid, 'deleted', 1);
+			const content = await apiPosts.getRaw({ uid: globalModUid }, { pid });
+			assert.strictEqual(content, 'raw content');
+		});
+
+		it('should get raw post content', async () => {
+			await posts.setPostField(pid, 'deleted', 0);
+			const postContent = await apiPosts.getRaw({ uid: voterUid }, { pid });
+			assert.equal(postContent, 'raw content');
 		});
 
 		it('should get post', async () => {
 			const postData = await apiPosts.get({ uid: voterUid }, { pid });
 			assert(postData);
+		});
+
+		it('shold get post summary', async () => {
+			const summary = await apiPosts.getSummary({ uid: voterUid }, { pid });
+			assert(summary);
 		});
 
 		it('should get post category', (done) => {
@@ -879,35 +878,20 @@ describe('Post\'s', () => {
 			});
 		});
 
-		it('should error with invalid data', (done) => {
-			socketPosts.getPidIndex({ uid: voterUid }, null, (err) => {
-				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
+		it('should get pid index', async () => {
+			const index = await apiPosts.getIndex({ uid: voterUid }, { pid: pid, sort: 'oldest_to_newest' });
+			assert.strictEqual(index, 4);
 		});
 
-		it('should get pid index', (done) => {
-			socketPosts.getPidIndex({ uid: voterUid }, { pid: pid, tid: topicData.tid, topicPostSort: 'oldest_to_newest' }, (err, index) => {
-				assert.ifError(err);
-				assert.equal(index, 4);
-				done();
-			});
-		});
-
-		it('should get pid index in reverse', (done) => {
-			topics.reply({
+		it('should get pid index in reverse', async () => {
+			const postData = await topics.reply({
 				uid: voterUid,
 				tid: topicData.tid,
 				content: 'raw content',
-			}, (err, postData) => {
-				assert.ifError(err);
-
-				socketPosts.getPidIndex({ uid: voterUid }, { pid: postData.pid, tid: topicData.tid, topicPostSort: 'newest_to_oldest' }, (err, index) => {
-					assert.ifError(err);
-					assert.equal(index, 1);
-					done();
-				});
 			});
+
+			const index = await apiPosts.getIndex({ uid: voterUid }, { pid: postData.pid, sort: 'newest_to_oldest' });
+			assert.equal(index, 1);
 		});
 	});
 

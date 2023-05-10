@@ -100,13 +100,21 @@ Topics.unfollow = async (req, res) => {
 	helpers.formatApiResponse(200, res);
 };
 
+Topics.updateTags = async (req, res) => {
+	const payload = await api.topics.updateTags(req, {
+		tid: req.params.tid,
+		tags: req.body.tags,
+	});
+	helpers.formatApiResponse(200, res, payload);
+};
+
 Topics.addTags = async (req, res) => {
-	await api.topics.addTags(req, {
+	const payload = await api.topics.addTags(req, {
 		tid: req.params.tid,
 		tags: req.body.tags,
 	});
 
-	helpers.formatApiResponse(200, res);
+	helpers.formatApiResponse(200, res, payload);
 };
 
 Topics.deleteTags = async (req, res) => {
@@ -178,6 +186,24 @@ Topics.getEvents = async (req, res) => {
 
 Topics.deleteEvent = async (req, res) => {
 	await api.topics.deleteEvent(req, { ...req.params });
+
+	helpers.formatApiResponse(200, res);
+};
+
+Topics.markRead = async (req, res) => {
+	await api.topics.markRead(req, { ...req.params });
+
+	helpers.formatApiResponse(200, res);
+};
+
+Topics.markUnread = async (req, res) => {
+	await api.topics.markUnread(req, { ...req.params });
+
+	helpers.formatApiResponse(200, res);
+};
+
+Topics.bump = async (req, res) => {
+	await api.topics.bump(req, { ...req.params });
 
 	helpers.formatApiResponse(200, res);
 };

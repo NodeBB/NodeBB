@@ -201,5 +201,6 @@
     "emailUpdate.optional": "Այս դաշտը պարտադիր չէ: Դուք պարտավոր չեք տրամադրել ձեր էլ.փոստի հասցեն, սակայն առանց վավերացված էլ.փոստի դուք չեք կարողանա վերականգնել ձեր հաշիվը կամ մուտք գործել ձեր էլ.",
     "emailUpdate.required": "Այս դաշտը պարտադիր է:",
     "emailUpdate.change-instructions": "Մուտքագրված էլ. հասցեին կուղարկվի հաստատման նամակ՝ եզակի հղումով: Այդ հղումը մուտք գործելը կհաստատի էլփոստի հասցեի ձեր սեփականությունը, և այն կակտիվանա ձեր հաշվում: Ցանկացած ժամանակ դուք կարող եք թարմացնել ձեր էլ.փոստը ձեր հաշվի էջից:",
-    "emailUpdate.password-challenge": "Խնդրում ենք մուտքագրել ձեր գաղտնաբառը՝ հաշվի սեփականության իրավունքը հաստատելու համար:"
+    "emailUpdate.password-challenge": "Խնդրում ենք մուտքագրել ձեր գաղտնաբառը՝ հաշվի սեփականության իրավունքը հաստատելու համար:",
+    "emailUpdate.pending": "Your email address has not yet been confirmed, but an email has been sent out requesting confirmation. If you wish to invalidate that request and send a new confirmation request, please fill in the form below."
 }

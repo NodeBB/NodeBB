@@ -26,5 +26,7 @@
 	"container.placeholder": "Húzz ide egy konténert vagy adj meg HTML-t.",
 	"show-to-groups": "Megjelenítés csoportoknak",
 	"hide-from-groups": "Elrejtés csoportoknak",
+	"start-date": "Start date",
+	"end-date": "End date",
 	"hide-on-mobile": "Elrejtés mobilon"
 }

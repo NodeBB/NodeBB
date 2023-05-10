@@ -60,7 +60,7 @@
     "account/uploads": "%1님의 업로드",
     "account/sessions": "로그인 세션",
     "confirm": "이메일 인증 완료",
-    "maintenance.text": "%1은(는) 현재 점검 중입니다. 나중에 다시 방문해주세요.",
+    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
     "maintenance.messageIntro": "관리자 메시지:",
     "throttled.text": "과도한 서버 부하로 %1을(를) 불러올 수 없습니다. 잠시 후에 다시 시도해주세요."
 }

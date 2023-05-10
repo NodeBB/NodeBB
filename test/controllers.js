@@ -415,20 +415,28 @@ describe('Controllers', () => {
 
 			it('should throw error if email is not valid', async () => {
 				const uid = await user.create({ username: 'interstiuser1' });
-				try {
-					const result = await user.interstitials.email({
-						userData: { uid: uid, updateEmail: true },
-						req: { uid: uid },
-						interstitials: [],
-					});
-					assert.strictEqual(result.interstitials[0].template, 'partials/email_update');
-					await result.interstitials[0].callback({ uid }, {
-						email: 'invalidEmail',
-					});
-					assert(false);
-				} catch (err) {
-					assert.strictEqual(err.message, '[[error:invalid-email]]');
-				}
+				const result = await user.interstitials.email({
+					userData: { uid: uid, updateEmail: true },
+					req: { uid: uid },
+					interstitials: [],
+				});
+				assert.strictEqual(result.interstitials[0].template, 'partials/email_update');
+				assert.rejects(result.interstitials[0].callback({ uid }, {
+					email: 'invalidEmail',
+				}), { message: '[[error:invalid-email]]' });
+			});
+
+			it('should reject an email that comprises only whitespace', async () => {
+				const uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+				const result = await user.interstitials.email({
+					userData: { uid: uid, updateEmail: true },
+					req: { uid: uid },
+					interstitials: [],
+				});
+				assert.strictEqual(result.interstitials[0].template, 'partials/email_update');
+				assert.rejects(result.interstitials[0].callback({ uid }, {
+					email: '    ',
+				}), { message: '[[error:invalid-email]]' });
 			});
 
 			it('should set req.session.emailChanged to 1', async () => {
@@ -564,6 +572,56 @@ describe('Controllers', () => {
 				const userData = await user.getUserData(uid);
 				assert.strictEqual(userData.email, `${username}@nodebb.com`);
 				assert.strictEqual(userData['email:confirmed'], 1);
+			});
+
+			describe('blocking access for unconfirmed emails', () => {
+				let jar;
+				let token;
+
+				before(async () => {
+					jar = await helpers.registerUser({
+						username: utils.generateUUID().slice(0, 10),
+						password: utils.generateUUID(),
+					});
+					token = await helpers.getCsrfToken(jar);
+				});
+
+				it('should not apply if requireEmailAddress is not enabled', async () => {
+					meta.config.requireEmailAddress = 0;
+
+					const res = await requestAsync(`${nconf.get('url')}/register/complete`, {
+						method: 'post',
+						jar,
+						json: true,
+						followRedirect: false,
+						simple: false,
+						resolveWithFullResponse: true,
+						headers: {
+							'x-csrf-token': token,
+						},
+						form: {
+							email: `${utils.generateUUID().slice(0, 10)}@example.org`,
+							gdpr_agree_data: 'on',
+							gdpr_agree_email: 'on',
+						},
+					});
+
+					assert.strictEqual(res.headers.location, `${nconf.get('relative_path')}/`);
+					meta.config.requireEmailAddress = 1;
+				});
+
+				it('should continue to redirect back to interstitial after an email is entered, as it is not confirmed', async () => {
+					const res = await requestAsync(`${nconf.get('url')}/recent`, {
+						jar,
+						json: true,
+						resolveWithFullResponse: true,
+						followRedirect: false,
+						simple: false,
+					});
+
+					assert.strictEqual(res.statusCode, 307);
+					assert.strictEqual(res.headers.location, `${nconf.get('relative_path')}/me/edit/email`);
+				});
 			});
 		});
 
@@ -1568,11 +1626,10 @@ describe('Controllers', () => {
 				await Promise.all(types.map(async (type) => {
 					await api.users.generateExport({ uid: fooUid, ip: '127.0.0.1' }, { uid: fooUid, type });
 				}));
-				await sleep(5000);
+				await sleep(10000);
 			});
 
 			it('should export users posts', (done) => {
-				console.log(`${nconf.get('url')}/api/v3/users/${fooUid}/exports/posts`);
 				request(`${nconf.get('url')}/api/v3/users/${fooUid}/exports/posts`, { jar: jar }, (err, res, body) => {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);

@@ -26,5 +26,7 @@
 	"container.placeholder": "Քաշեք և գցեք կոնտեյներ կամ մուտքագրեք HTML այստեղ:",
 	"show-to-groups": "Ցույց տալ խմբերին ",
 	"hide-from-groups": "Թաքցնել խմբերից",
+	"start-date": "Start date",
+	"end-date": "End date",
 	"hide-on-mobile": "Թաքցնել բջջայինի վրա"
 }

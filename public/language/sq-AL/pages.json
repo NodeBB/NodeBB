@@ -60,7 +60,7 @@
     "account/uploads": "Ngarkimet e %1",
     "account/sessions": "Seancat e hyrjes",
     "confirm": "Email-i u konfirmua",
-    "maintenance.text": "%1 po i nënshtrohet mirëmbajtjes. Të lutem kthehu një herë tjetër.",
+    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
     "maintenance.messageIntro": "Për më tepër, administratori ka lënë këtë mesazh:",
     "throttled.text": "%1 është aktualisht i padisponueshëm për shkak të ngarkesës së tepërt. Të lutem kthehu një herë tjetër."
 }

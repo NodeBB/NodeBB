@@ -72,6 +72,7 @@ describe('API', async () => {
 				},
 			],
 		},
+		patch: {},
 		delete: {
 			'/users/{uid}/tokens/{token}': [
 				{

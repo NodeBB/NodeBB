@@ -4,21 +4,21 @@ define('autocomplete', ['api', 'alerts'], function (api, alerts) {
 	const module = {};
 	const _default = {
 		delay: 200,
+		appendTo: null,
 	};
 
 	module.init = (params) => {
-		const { input, source, onSelect, delay } = { ..._default, ...params };
-
+		const acParams = { ..._default, ...params };
+		const { input, onSelect } = acParams;
 		app.loadJQueryUI(function () {
 			input.autocomplete({
-				delay,
+				...acParams,
 				open: function () {
 					$(this).autocomplete('widget').css('z-index', 100005);
 				},
 				select: function (event, ui) {
 					handleOnSelect(input, onSelect, event, ui);
 				},
-				source,
 			});
 		});
 	};

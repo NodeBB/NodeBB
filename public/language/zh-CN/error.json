@@ -92,6 +92,7 @@
     "already-posting": "您已在发布帖子",
     "tag-too-short": "请输入一个更长的标签。标签应当包含不少于 %1 个字符",
     "tag-too-long": "请输入一个更短的标签。标签不能超过 %1 个字符",
+    "tag-not-allowed": "Tag not allowed",
     "not-enough-tags": "没有足够的标签。主题必须至少有 %1 个标签。",
     "too-many-tags": "标签过多。主题不能拥有超过 %1 个标签。",
     "cant-use-system-tag": "您不能使用此系统标签。",

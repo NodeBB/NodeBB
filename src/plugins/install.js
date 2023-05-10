@@ -109,7 +109,7 @@ module.exports = function (Plugins) {
 			Plugins.isActive(id),
 		]);
 		const type = installed ? 'uninstall' : 'install';
-		if (active) {
+		if (active && !nconf.get('plugins:active')) {
 			await Plugins.toggleActive(id);
 		}
 		await runPackageManagerCommandAsync(type, id, version || 'latest');
@@ -121,7 +121,7 @@ module.exports = function (Plugins) {
 	function runPackageManagerCommand(command, pkgName, version, callback) {
 		cproc.execFile(packageManagerExecutable, [
 			packageManagerCommands[packageManager][command],
-			pkgName + (command === 'install' ? `@${version}` : ''),
+			pkgName + (command === 'install' && version ? `@${version}` : ''),
 			'--save',
 		], (err, stdout) => {
 			if (err) {

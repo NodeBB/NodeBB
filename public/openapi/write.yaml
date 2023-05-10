@@ -142,8 +142,18 @@ paths:
     $ref: 'write/topics/tid/events.yaml'
   /topics/{tid}/events/{eventId}:
     $ref: 'write/topics/tid/events/eventId.yaml'
+  /topics/{tid}/read:
+    $ref: 'write/topics/tid/read.yaml'
+  /topics/{tid}/bump:
+    $ref: 'write/topics/tid/bump.yaml'
   /posts/{pid}:
     $ref: 'write/posts/pid.yaml'
+  /posts/{pid}/index:
+    $ref: 'write/posts/pid/index.yaml'
+  /posts/{pid}/raw:
+    $ref: 'write/posts/pid/raw.yaml'
+  /posts/{pid}/summary:
+    $ref: 'write/posts/pid/summary.yaml'
   /posts/{pid}/state:
     $ref: 'write/posts/pid/state.yaml'
   /posts/{pid}/move:
@@ -158,6 +168,8 @@ paths:
     $ref: 'write/posts/pid/diffs/since.yaml'
   /posts/{pid}/diffs/{timestamp}:
     $ref: 'write/posts/pid/diffs/timestamp.yaml'
+  /posts/{pid}/replies:
+    $ref: 'write/posts/pid/replies.yaml'
   /chats/:
     $ref: 'write/chats.yaml'
   /chats/{roomId}:

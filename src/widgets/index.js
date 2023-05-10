@@ -101,7 +101,13 @@ widgets.checkVisibility = async function (data, uid) {
 	if (data.groupsHideFrom.length) {
 		isHidden = await groups.isMemberOfAny(uid, data.groupsHideFrom);
 	}
-	return isVisible && !isHidden;
+
+	const isExpired = (
+		(data.startDate && Date.now() < new Date(data.startDate).getTime()) ||
+		(data.endDate && Date.now() > new Date(data.endDate).getTime())
+	);
+
+	return isVisible && !isHidden && !isExpired;
 };
 
 widgets.getWidgetDataForTemplates = async function (templates) {

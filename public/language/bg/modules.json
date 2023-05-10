@@ -69,6 +69,7 @@
     "composer.schedule-date": "Дата",
     "composer.schedule-time": "Час",
     "composer.cancel-scheduling": "Отмяна на насрочването",
+    "composer.change-schedule-date": "Change Date",
     "composer.set-schedule-date": "Задаване на дата",
     "composer.discard-all-drafts": "Изтриване на всички чернови",
     "composer.no-drafts": "Нямате никакви чернови",

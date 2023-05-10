@@ -1,10 +1,13 @@
-<div class="alert alert-danger">
-	<strong>[[global:500.title]]</strong>
-	<p>[[global:500.message]]</p>
-	<p>{path}</p>
-	{{{ if error }}}<p>{error}</p>{{{ end }}}
+<div class="flex-fill">
+	<h2 class="fw-semibold tracking-tight text-center">[[global:500.title]]</h2>
 
-	{{{ if returnLink }}}
-	<p>[[error:goback]]</p>
-	{{{ end }}}
+	<div class="mx-auto">
+		<div class="d-flex flex-column gap-3 justify-content-center text-center">
+			<div class="mx-auto p-4 bg-light border rounded">
+				<i class="text-secondary fa fa-fw fa-4x fa-triangle-exclamation"></i>
+			</div>
+			[[global:500.message]]
+			{{{ if error }}}<div class="text-sm text-muted">{error}</div>{{{ end }}}
+		</div>
+	</div>
 </div>

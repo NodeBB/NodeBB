@@ -9,7 +9,7 @@ const plugins = require('../plugins');
 const meta = require('../meta');
 
 module.exports = function (Topics) {
-	Topics.createTopicFromPosts = async function (uid, title, pids, fromTid) {
+	Topics.createTopicFromPosts = async function (uid, title, pids, fromTid, cid) {
 		if (title) {
 			title = title.trim();
 		}
@@ -27,7 +27,9 @@ module.exports = function (Topics) {
 		pids.sort((a, b) => a - b);
 
 		const mainPid = pids[0];
-		const cid = await posts.getCidByPid(mainPid);
+		if (!cid) {
+			cid = await posts.getCidByPid(mainPid);
+		}
 
 		const [postData, isAdminOrMod] = await Promise.all([
 			posts.getPostData(mainPid),
