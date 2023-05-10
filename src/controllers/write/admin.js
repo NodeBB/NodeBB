@@ -31,7 +31,8 @@ Admin.getAnalyticsData = async (req, res) => {
 
 Admin.generateToken = async (req, res) => {
 	const { uid, description } = req.body;
-	helpers.formatApiResponse(200, res, await api.utils.tokens.generate({ uid, description }));
+	const token = await api.utils.tokens.generate({ uid, description });
+	helpers.formatApiResponse(200, res, await api.utils.tokens.get(token));
 };
 
 Admin.getToken = async (req, res) => {
@@ -39,11 +40,17 @@ Admin.getToken = async (req, res) => {
 };
 
 Admin.updateToken = async (req, res) => {
-	// todo: token rolling via req.body
 	const { uid, description } = req.body;
 	const { token } = req.params;
 
 	helpers.formatApiResponse(200, res, await api.utils.tokens.update(token, { uid, description }));
+};
+
+Admin.rollToken = async (req, res) => {
+	let { token } = req.params;
+
+	token = await api.utils.tokens.roll(token);
+	helpers.formatApiResponse(200, res, await api.utils.tokens.get(token));
 };
 
 Admin.deleteToken = async (req, res) => {

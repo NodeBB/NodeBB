@@ -1,0 +1,89 @@
+get:
+  tags:
+    - admin
+  summary: get token
+  description: This operation retrieves an API token and its associated metadata
+  parameters:
+    - in: path
+      name: token
+      schema:
+        type: string
+      required: true
+      description: a valid API token
+      example: 4eb506f8-a173-4693-a41b-e23604bc973a
+  responses:
+    '200':
+      description: token successfully retrieved
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../../components/schemas/admin/tokenObject.yaml#/TokenObject
+put:
+  tags:
+    - admin
+  summary: update token
+  description: This operation updates a token's metadata.
+  parameters:
+    - in: path
+      name: token
+      schema:
+        type: string
+      required: true
+      description: a valid API token
+      example: 4eb506f8-a173-4693-a41b-e23604bc973a
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            uid:
+              type: number
+              description: The generated token will make calls against NodeBB as this user.
+              example: 1
+            description:
+              type: string
+              description: Optional descriptor to differentiate tokens.
+              example: 'My new token.'
+  responses:
+    '200':
+      description: Token metadata updated.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../../components/schemas/admin/tokenObject.yaml#/TokenObject
+delete:
+  tags:
+    - admin
+  summary: revoke token
+  description: This operation revokes a token and removes it from the database
+  parameters:
+    - in: path
+      name: token
+      schema:
+        type: string
+      required: true
+      description: a valid API token
+      example: 4eb506f8-a173-4693-a41b-e23604bc973a
+  responses:
+    '200':
+      description: Token metadata updated.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response: {}

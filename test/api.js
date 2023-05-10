@@ -56,8 +56,23 @@ describe('API', async () => {
 					example: '', // to be defined later...
 				},
 			],
+			'/admin/tokens/{token}': [
+				{
+					in: 'path',
+					name: 'token',
+					example: '', // to be defined later...
+				},
+			],
 		},
-		post: {},
+		post: {
+			'/admin/tokens/{token}/roll': [
+				{
+					in: 'path',
+					name: 'token',
+					example: '', // to be defined later...
+				},
+			],
+		},
 		put: {
 			'/groups/{slug}/pending/{uid}': [
 				{
@@ -68,6 +83,13 @@ describe('API', async () => {
 				{
 					in: 'path',
 					name: 'uid',
+					example: '', // to be defined later...
+				},
+			],
+			'/admin/tokens/{token}': [
+				{
+					in: 'path',
+					name: 'token',
 					example: '', // to be defined later...
 				},
 			],
@@ -134,6 +156,13 @@ describe('API', async () => {
 					example: '', // to be defined later...
 				},
 			],
+			'/admin/tokens/{token}': [
+				{
+					in: 'path',
+					name: 'token',
+					example: '', // to be defined later...
+				},
+			],
 		},
 	};
 
@@ -169,6 +198,16 @@ describe('API', async () => {
 			await user.create({ username: 'deleteme', password: '123456' }); // for testing of DELETE /users (uids 5, 6) and DELETE /user/:uid/account (uid 7)
 		}
 		await groups.join('administrators', adminUid);
+
+		// Create api token for testing read/updating/deletion
+		const token = await api.utils.tokens.generate({ uid: adminUid });
+		mocks.get['/admin/tokens/{token}'][0].example = token;
+		mocks.put['/admin/tokens/{token}'][0].example = token;
+		mocks.delete['/admin/tokens/{token}'][0].example = token;
+
+		// Create another token for testing rolling
+		const token2 = await api.utils.tokens.generate({ uid: adminUid });
+		mocks.post['/admin/tokens/{token}/roll'][0].example = token2;
 
 		// Create sample group
 		await groups.create({
