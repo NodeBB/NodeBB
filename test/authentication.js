@@ -15,6 +15,7 @@ const utils = require('../src/utils');
 const meta = require('../src/meta');
 const plugins = require('../src/plugins');
 const privileges = require('../src/privileges');
+const api = require('../src/api');
 const helpers = require('./helpers');
 
 describe('authentication', () => {
@@ -596,24 +597,14 @@ describe('authentication', () => {
 		let masterToken;
 		before(async () => {
 			newUid = await user.create({ username: 'apiUserTarget' });
-			const settings = await meta.settings.get('core.api');
-			settings.tokens = settings.tokens || [];
-			userToken = {
-				token: utils.generateUUID(),
+			userToken = await api.utils.tokens.generate({
 				uid: newUid,
 				description: `api token for uid ${newUid}`,
-				timestamp: Date.now(),
-			};
-			settings.tokens.push(userToken);
-			masterToken = {
-				token: utils.generateUUID(),
+			});
+			masterToken = await api.utils.tokens.generate({
 				uid: 0,
 				description: 'api master token',
-				timestamp: Date.now(),
-			};
-			settings.tokens.push(masterToken);
-
-			await meta.settings.set('core.api', settings);
+			});
 		});
 
 		it('should fail with invalid token', async () => {
@@ -635,7 +626,7 @@ describe('authentication', () => {
 			const { res, body } = await helpers.request('get', `/api/self`, {
 				json: true,
 				headers: {
-					Authorization: `Bearer ${userToken.token}`,
+					Authorization: `Bearer ${userToken}`,
 				},
 			});
 
@@ -648,7 +639,7 @@ describe('authentication', () => {
 				form: {},
 				json: true,
 				headers: {
-					Authorization: `Bearer ${masterToken.token}`,
+					Authorization: `Bearer ${masterToken}`,
 				},
 			});
 
@@ -663,7 +654,7 @@ describe('authentication', () => {
 				},
 				json: true,
 				headers: {
-					Authorization: `Bearer ${masterToken.token}`,
+					Authorization: `Bearer ${masterToken}`,
 				},
 			});
 
