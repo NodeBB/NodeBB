@@ -124,7 +124,6 @@ Plugins.reload = async function () {
 
 	// Core hooks
 	posts.registerHooks();
-	meta.configs.registerHooks();
 
 	// Deprecation notices
 	Plugins.hooks._deprecated.forEach((deprecation, hook) => {
