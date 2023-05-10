@@ -7,8 +7,6 @@ const winston = require('winston');
 
 const db = require('../database');
 const pubsub = require('../pubsub');
-const plugins = require('../plugins');
-const utils = require('../utils');
 const Meta = require('./index');
 const cacheBuster = require('./cacheBuster');
 const defaults = require('../../install/data/defaults.json');
