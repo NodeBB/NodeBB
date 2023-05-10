@@ -448,7 +448,10 @@ describe('API', async () => {
 
 					let body = {};
 					let type = 'json';
-					if (context[method].hasOwnProperty('requestBody') && context[method].requestBody.content['application/json']) {
+					if (
+						context[method].hasOwnProperty('requestBody') &&
+						context[method].requestBody.required !== false &&
+						context[method].requestBody.content['application/json']) {
 						body = buildBody(context[method].requestBody.content['application/json'].schema.properties);
 					} else if (context[method].hasOwnProperty('requestBody') && context[method].requestBody.content['multipart/form-data']) {
 						type = 'form';
