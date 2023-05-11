@@ -1,3 +1,21 @@
+#### v3.1.1 (2023-05-11)
+
+##### Chores
+
+*  incrementing version number - v3.1.0 (0cb386bd)
+*  update changelog for v3.1.0 (2c515dc3)
+*  incrementing version number - v3.0.1 (26f6ea49)
+*  incrementing version number - v3.0.0 (224e08cd)
+
+##### Documentation Changes
+
+*  updating changelog to move line re: breaking change down to new features (b259a000)
+
+##### Bug Fixes
+
+*  failing test case (3251bca2)
+*  #11589, regression where a user could not confirm their email if requireEmailAddress was enabled (686ecea1)
+
 #### v3.1.0 (2023-05-10)
 
 ##### Chores
