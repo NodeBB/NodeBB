@@ -1490,21 +1490,19 @@ describe('User', () => {
 			], done);
 		});
 
-		it('should send digests', (done) => {
+		it('should send digests', async () => {
 			const oldValue = meta.config.includeUnverifiedEmails;
 			meta.config.includeUnverifiedEmails = true;
-			User.digest.execute({ interval: 'day' }, (err) => {
-				assert.ifError(err);
-				meta.config.includeUnverifiedEmails = oldValue;
-				done();
+			const uid = await User.create({ username: 'digest' });
+			await User.digest.execute({
+				interval: 'day',
+				subscribers: [uid],
 			});
+			meta.config.includeUnverifiedEmails = oldValue;
 		});
 
-		it('should not send digests', (done) => {
-			User.digest.execute({ interval: 'month' }, (err) => {
-				assert.ifError(err);
-				done();
-			});
+		it('should not send digests', async () => {
+			await User.digest.execute({ interval: 'month' });
 		});
 
 		it('should get delivery times', async () => {
