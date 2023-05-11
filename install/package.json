@@ -53,7 +53,7 @@
         "connect-mongo": "5.0.0",
         "connect-multiparty": "2.2.0",
         "connect-pg-simple": "8.0.0",
-        "connect-redis": "7.0.1",
+        "connect-redis": "7.1.0",
         "cookie-parser": "1.4.6",
         "cron": "2.3.0",
         "cropperjs": "1.5.13",
@@ -70,7 +70,7 @@
         "helmet": "7.0.0",
         "html-to-text": "9.0.5",
         "ipaddr.js": "2.0.1",
-        "jquery": "3.6.4",
+        "jquery": "3.7.0",
         "jquery-deserialize": "2.0.0",
         "jquery-form": "4.3.0",
         "jquery-serializeobject": "1.0.0",
@@ -105,7 +105,7 @@
         "nodebb-theme-peace": "2.0.22",
         "nodebb-theme-persona": "13.0.65",
         "nodebb-widget-essentials": "7.0.12",
-        "nodemailer": "6.9.1",
+        "nodemailer": "6.9.2",
         "nprogress": "0.2.0",
         "passport": "0.6.0",
         "passport-http-bearer": "1.0.1",
@@ -173,7 +173,7 @@
         "sass-embedded": "1.62.0"
     },
     "resolutions": {
-        "*/jquery": "3.6.4"
+        "*/jquery": "3.7.0"
     },
     "bugs": {
         "url": "https://github.com/NodeBB/NodeBB/issues"

@@ -1,0 +1,25 @@
+post:
+  tags:
+    - admin
+  summary: regenerate token
+  description: This operation regenerates an existing token. The previous token is immediately invalidated.
+  parameters:
+    - in: path
+      name: token
+      schema:
+        type: string
+      required: true
+      description: a valid API token
+      example: 4eb506f8-a173-4693-a41b-e23604bc973a
+  responses:
+    '200':
+      description: Token regenerated.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../../../components/schemas/admin/tokenObject.yaml#/TokenObject
