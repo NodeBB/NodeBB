@@ -70,7 +70,7 @@
         "helmet": "7.0.0",
         "html-to-text": "9.0.5",
         "ipaddr.js": "2.0.1",
-        "jquery": "3.6.4",
+        "jquery": "3.7.0",
         "jquery-deserialize": "2.0.0",
         "jquery-form": "4.3.0",
         "jquery-serializeobject": "1.0.0",
@@ -173,7 +173,7 @@
         "sass-embedded": "1.62.0"
     },
     "resolutions": {
-        "*/jquery": "3.6.4"
+        "*/jquery": "3.7.0"
     },
     "bugs": {
         "url": "https://github.com/NodeBB/NodeBB/issues"
