@@ -29,7 +29,7 @@ define('forum/chats/messages', [
 				return messagesModule.showEmailConfirmWarning(err.message);
 			}
 
-			return alerts.alert({
+			alerts.alert({
 				alert_id: 'chat_spam_error',
 				title: '[[global:alert.error]]',
 				message: err.message,
