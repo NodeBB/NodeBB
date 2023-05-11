@@ -92,7 +92,7 @@
     "already-posting": "Vous pouvez poster",
     "tag-too-short": "Veuillez entrer un mot-clé plus long. Les mots-clés doivent contenir au moins %1 caractère(s).",
     "tag-too-long": "Veuillez entrer un mot-clé plus court. Les mot-clés ne peuvent excéder %1 caractère(s).",
-    "tag-not-allowed": "Tag not allowed",
+    "tag-not-allowed": "Mot-clé non autorisé",
     "not-enough-tags": "Pas assez de mots-clés. Les sujets doivent avoir au moins %1 mots-clé(s).",
     "too-many-tags": "Trop de mots-clés. Les sujets ne peuvent avoir au plus que %1 mots-clé(s).",
     "cant-use-system-tag": "Vous ne pouvez gérer les mots-clés.",

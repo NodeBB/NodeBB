@@ -10,7 +10,7 @@
     "top-week": "הנושאים הנבחרים ביותר השבוע",
     "top-month": "הנושאים הנבחרים ביותר החודש",
     "top-alltime": "הנושאים הנבחרים ביותר",
-    "moderator-tools": "כלי מודרטור",
+    "moderator-tools": "כלי מנחה",
     "flagged-content": "תוכן מדווח",
     "ip-blacklist": "רשימת IP שחורה",
     "post-queue": "פוסטים ממתינים",
@@ -49,7 +49,7 @@
     "account/watched_categories": "הקטגוריות ש-%1 עוקב אחריהם",
     "account/bookmarks": "הפוסטים המועדפים של %1",
     "account/settings": "הגדרות משתמש",
-    "account/settings-of": "Changing settings of %1",
+    "account/settings-of": "שינוי הגדרות של %1",
     "account/watched": "נושאים שנצפו על ידי %1",
     "account/ignored": "נושאים ש%1 התעלמו מהם",
     "account/upvoted": "פוסטים שהוצבעו לטובה על ידי %1",
@@ -60,7 +60,7 @@
     "account/uploads": "העלאות של %1",
     "account/sessions": "סשני התחברות",
     "confirm": "כתובת המייל אושרה",
-    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
+    "maintenance.text": "%1 נמצא כעת בטיפול תחזוקה. <br/>אנא חזור בפעם אחרת.",
     "maintenance.messageIntro": "בנוסף, המנהלים השאירו הודעה זו:",
     "throttled.text": "%1 לא זמין כעת עקב טעינת יתר. אנא חזרו במועד מאוחר יותר."
 }

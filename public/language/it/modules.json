@@ -69,7 +69,7 @@
     "composer.schedule-date": "Data",
     "composer.schedule-time": "Orario",
     "composer.cancel-scheduling": "Annulla pianificazione",
-    "composer.change-schedule-date": "Change Date",
+    "composer.change-schedule-date": "Modifica data",
     "composer.set-schedule-date": "Imposta data",
     "composer.discard-all-drafts": "Scarta tutte le bozze",
     "composer.no-drafts": "Non hai bozze",

@@ -172,7 +172,7 @@
     "info.moderation-note.success": "Moderasyon notu kaydedildi",
     "info.moderation-note.add": "Not ekle",
     "sessions.description": "Bu sayfa, bu forumdaki tüm aktif oturumları görüntülemenizi ve gerektiğinde iptal etmenizi sağlar. Kendi oturumunuzu hesabınızdan çıkış yaparak iptal edebilirsiniz.",
-    "revoke-session": "Revoke Session",
+    "revoke-session": "Oturumu İptal Et",
     "browser-version-on-platform": "%1 %2 on %3",
     "consent.title": "Haklarınız & İzinleriniz",
     "consent.lead": "Bu topluluk forumu kişisel bilgilerinizi toplar ve işler.",

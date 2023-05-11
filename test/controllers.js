@@ -620,7 +620,7 @@ describe('Controllers', () => {
 					});
 
 					assert.strictEqual(res.statusCode, 307);
-					assert.strictEqual(res.headers.location, `${nconf.get('relative_path')}/me/edit/email`);
+					assert.strictEqual(res.headers.location, `${nconf.get('relative_path')}/register/complete`);
 				});
 			});
 		});

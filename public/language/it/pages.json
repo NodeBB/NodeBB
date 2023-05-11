@@ -60,7 +60,7 @@
     "account/uploads": "Inviati da %1",
     "account/sessions": "Sessioni di accesso",
     "confirm": "Email Confermata",
-    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
+    "maintenance.text": "%1è attualmente in fase di manutenzione.<br/>Per favore torna un'altra volta.",
     "maintenance.messageIntro": "Inoltre, l'amministratore ha lasciato questo messaggio:",
     "throttled.text": "%1 non è al momento disponibile a causa di un carico eccessivo. Per favore ritorna più tardi."
 }
