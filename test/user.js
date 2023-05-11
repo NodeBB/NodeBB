@@ -1493,12 +1493,19 @@ describe('User', () => {
 		it('should send digests', async () => {
 			const oldValue = meta.config.includeUnverifiedEmails;
 			meta.config.includeUnverifiedEmails = true;
-			const uid = await User.create({ username: 'digest', email: 'email@test.com' });
+			const uid = await User.create({ username: 'digest' });
+			await User.setUserField(uid, 'email', 'email@test.com');
+			await User.email.confirmByUid(uid);
 			await User.digest.execute({
 				interval: 'day',
 				subscribers: [uid],
 			});
 			meta.config.includeUnverifiedEmails = oldValue;
+		});
+
+		it('should return 0', async () => {
+			const sent = await User.digest.send({ subscribers: [] });
+			assert.strictEqual(sent, 0);
 		});
 
 		it('should not send digests', async () => {

@@ -140,6 +140,7 @@ Digest.send = async function (data) {
 		batch: 100,
 	});
 	winston.info(`[user/jobs] Digest (${data.interval}) sending completed. ${emailsSent} emails sent.`);
+	return emailsSent;
 };
 
 Digest.getDeliveryTimes = async (start, stop) => {
