@@ -1,10 +1,10 @@
 {
-    "settings.title": "Theme settings",
-    "settings.intro": "You can customise your theme settings here. Settings are stored on a per-device basis, so you are able to have different settings on different devices (phone, tablet, desktop, etc.)",
-    "settings.mobile-menu-side": "Switch which side each mobile menu is on",
-    "settings.autoHidingNavbar": "Automatically hide the navbar on scroll",
-    "settings.autoHidingNavbar-xs": "Very small screens (e.g. phones in portrait mode)",
-    "settings.autoHidingNavbar-sm": "Smaller screens (e.g. phones, some tablets)",
-    "settings.autoHidingNavbar-md": "Medium sized screens (e.g. tablets in landscape mode)",
-    "settings.autoHidingNavbar-lg": "Larger screens (e.g. desktop computers)"
+    "settings.title": "הגדרות ערכת נושא",
+    "settings.intro": "אתה יכול להתאים אישית את הגדרות הנושא שלך כאן. ההגדרות מאוחסנות במכשיר שלך, כך שאתה יכול לקבל הגדרות שונות במכשירים שונים (טלפון, טאבלט, שולחן עבודה וכו')",
+    "settings.mobile-menu-side": "החלף את צדדי תפריטי הצד בנייד",
+    "settings.autoHidingNavbar": "הסתר אוטומטית את סרגל הניווט בגלילה",
+    "settings.autoHidingNavbar-xs": "מסכים קטנים מאוד (למשל, טלפונים במצב פורטרט)",
+    "settings.autoHidingNavbar-sm": "מסכים קטנים יותר (למשל טלפונים, טאבלטים מסוימים)",
+    "settings.autoHidingNavbar-md": "מסכים בגודל בינוני (למשל טאבלטים במצב לרוחב)",
+    "settings.autoHidingNavbar-lg": "מסכים גדולים יותר (למשל מחשבים שולחניים)"
 }

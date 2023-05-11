@@ -1,14 +1,14 @@
 {
-	"skins": "Skins",
-	"collapse": "Collapse",
-	"expand": "Expand",
-	"login-register-to-search": "Login or register to search.",
-	"settings.title": "Theme settings",
-	"settings.enableQuickReply": "Enable quick reply",
-	"settings.centerHeaderElements": "Center header elements",
-	"settings.mobileTopicTeasers": "Show topic teasers on mobile",
-	"settings.stickyToolbar": "Sticky toolbar",
-	"settings.stickyToolbar.help": "The toolbar on topic and category pages will stick to the top of the page",
-	"settings.autohideBottombar": "Auto hide bottom bar",
-	"settings.autohideBottombar.help": "The bottom bar on mobile view will be hidden when the page is scrolled down"
+	"skins": "עיצובים",
+	"collapse": "כיווץ",
+	"expand": "הרחבה",
+	"login-register-to-search": "התחבר או הירשם כדי לחפש.",
+	"settings.title": "הגדרות ערכת נושא",
+	"settings.enableQuickReply": "אפשר תשובה מהירה",
+	"settings.centerHeaderElements": "מרכז אלמנטים של כותרת",
+	"settings.mobileTopicTeasers": "הצג טיזרים לנושאים בנייד",
+	"settings.stickyToolbar": "סרגל כלים דביק",
+	"settings.stickyToolbar.help": "סרגל הכלים בדפי נושאים וקטגוריות ייצמד לראש העמוד",
+	"settings.autohideBottombar": "הסתר אוטומטית את הסרגל התחתון",
+	"settings.autohideBottombar.help": "הסרגל התחתון בתצוגת הנייד יוסתר כאשר הדף ייגלל מטה"
 }
