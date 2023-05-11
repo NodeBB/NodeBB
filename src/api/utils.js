@@ -28,16 +28,22 @@ utils.tokens.get = async (tokens) => {
 		singular = true;
 	}
 
-	const [tokenObjs, lastSeen] = await Promise.all([
+	let [tokenObjs, lastSeen] = await Promise.all([
 		db.getObjects(tokens.map(t => `token:${t}`)),
 		utils.tokens.getLastSeen(tokens),
 	]);
 
-	tokenObjs.forEach((tokenObj, idx) => {
+	tokenObjs = tokenObjs.map((tokenObj, idx) => {
+		if (!tokenObj) {
+			return null;
+		}
+
 		tokenObj.token = tokens[idx];
 		tokenObj.lastSeen = lastSeen[idx];
 		tokenObj.lastSeenISO = lastSeen[idx] ? new Date(lastSeen[idx]).toISOString() : null;
 		tokenObj.timestampISO = new Date(parseInt(tokenObj.timestamp, 10)).toISOString();
+
+		return tokenObj;
 	});
 
 	return singular ? tokenObjs[0] : tokenObjs;
