@@ -30,7 +30,7 @@ describe('API tokens', () => {
 
 	describe('.create()', () => {
 		it('should fail to create a token for a user that does not exist', async () => {
-			assert.rejects(api.utils.tokens.generate({ uid: 1 }), '[[error:no-user]]');
+			assert.rejects(api.utils.tokens.generate({ uid: 1 }), { message: '[[error:no-user]]' });
 		});
 
 		it('should create a token for a user that exists', async () => {
@@ -63,7 +63,23 @@ describe('API tokens', () => {
 		});
 
 		it('should fail if you pass in invalid data', async () => {
-			assert.rejects(api.utils.tokens.get(), '[[error:invalid-data]]');
+			assert.rejects(api.utils.tokens.get(token), { message: '[[error:invalid-data]]' });
+		});
+
+		it('should show lastSeen and lastSeenISO as undefined/null if it is a new token', async () => {
+			const { lastSeen, lastSeenISO } = await api.utils.tokens.get(token);
+
+			assert.strictEqual(lastSeen, null);
+			assert.strictEqual(lastSeenISO, null);
+		});
+
+		it('should show lastSeenISO as an ISO formatted datetime string if the token has been used', async () => {
+			const now = new Date();
+			await db.sortedSetAdd('tokens:lastSeen', now.getTime(), token);
+			const { lastSeen, lastSeenISO } = await api.utils.tokens.get(token);
+
+			assert.strictEqual(lastSeen, now.getTime());
+			assert.strictEqual(lastSeenISO, now.toISOString());
 		});
 	});
 
@@ -97,6 +113,26 @@ describe('API tokens', () => {
 			assert(tokenObj);
 			assert.strictEqual(parseInt(tokenObj.uid, 10), 1);
 			assert.strictEqual(parseInt(uid, 10), 1);
+			assert.strictEqual(tokenObj.description, 'foobar');
+		});
+	});
+
+	describe('.roll()', () => {
+		it('should invalidate the old token', async () => {
+			const newToken = await api.utils.tokens.roll(token);
+			assert(newToken);
+
+			const gets = await api.utils.tokens.get([token, newToken]);
+			assert.strictEqual(gets[0], null);
+			assert(gets[1]);
+		});
+
+		it('should change a token but leave all other metadata intact', async () => {
+			await api.utils.tokens.update(token, { uid: 1, description: 'foobar' });
+			const newToken = await api.utils.tokens.roll(token);
+			const tokenObj = await api.utils.tokens.get(newToken);
+
+			assert.strictEqual(parseInt(tokenObj.uid, 10), 1);
 			assert.strictEqual(tokenObj.description, 'foobar');
 		});
 	});
