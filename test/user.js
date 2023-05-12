@@ -1508,6 +1508,19 @@ describe('User', () => {
 			assert.strictEqual(sent, 0);
 		});
 
+		it('should get users with single uid', async () => {
+			const res = await User.digest.getUsersInterval(1);
+			assert.strictEqual(res, false);
+		});
+
+		it('should not send digests', async () => {
+			const oldValue = meta.config.disableEmailSubsriptions;
+			meta.config.disableEmailSubsriptions = 1;
+			const res = await User.digest.execute({});
+			assert.strictEqual(res, false);
+			meta.config.disableEmailSubsriptions = oldValue;
+		});
+
 		it('should not send digests', async () => {
 			await User.digest.execute({ interval: 'month' });
 		});

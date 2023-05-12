@@ -82,12 +82,15 @@ describe('Topic\'s', () => {
 			});
 		});
 
-		it('should get post count', (done) => {
-			socketTopics.postcount({ uid: adminUid }, topic.tid, (err, count) => {
-				assert.ifError(err);
-				assert.equal(count, 1);
-				done();
-			});
+		it('should get post count', async () => {
+			const count = await socketTopics.postcount({ uid: adminUid }, topic.tid);
+			assert.strictEqual(count, 1);
+		});
+
+		it('should get users postcount in topic', async () => {
+			assert.strictEqual(await socketTopics.getPostCountInTopic({ uid: 0 }, 0), 0);
+			assert.strictEqual(await socketTopics.getPostCountInTopic({ uid: adminUid }, 0), 0);
+			assert.strictEqual(await socketTopics.getPostCountInTopic({ uid: adminUid }, topic.tid), 1);
 		});
 
 		it('should load topic', async () => {
@@ -2220,6 +2223,42 @@ describe('Topic\'s', () => {
 			done();
 		});
 	});
+
+	describe('next post index', () => {
+		it('should error with invalid data', async () => {
+			await assert.rejects(socketTopics.getMyNextPostIndex({ uid: 1 }, null), { message: '[[error:invalid-data]]' });
+			await assert.rejects(socketTopics.getMyNextPostIndex({ uid: 1 }, {}), { message: '[[error:invalid-data]]' });
+			await assert.rejects(socketTopics.getMyNextPostIndex({ uid: 1 }, { tid: 1 }), { message: '[[error:invalid-data]]' });
+			await assert.rejects(socketTopics.getMyNextPostIndex({ uid: 1 }, { tid: 1, index: 1 }), { message: '[[error:invalid-data]]' });
+		});
+
+		it('should return 0 if user has no posts in topic', async () => {
+			const uid = await User.create({ username: 'indexposter' });
+			const t = await topics.post({ uid: uid, title: 'topic 1', content: 'content 1', cid: categoryObj.cid });
+			const index = await socketTopics.getMyNextPostIndex({ uid: adminUid }, { tid: t.topicData.tid, index: 1, sort: 'oldest_to_newest' });
+			assert.strictEqual(index, 0);
+		});
+
+		it('should get users next post index in topic', async () => {
+			const t = await topics.post({ uid: adminUid, title: 'topic 1', content: 'content 1', cid: categoryObj.cid });
+			await topics.reply({ uid: adminUid, content: 'reply 1 content', tid: t.topicData.tid });
+			await topics.reply({ uid: adminUid, content: 'reply 2 content', tid: t.topicData.tid });
+			const index = await socketTopics.getMyNextPostIndex({ uid: adminUid }, { tid: t.topicData.tid, index: 1, sort: 'oldest_to_newest' });
+			assert.strictEqual(index, 1);
+		});
+
+		it('should get users next post index in topic by wrapping around', async () => {
+			const cat = await categories.create({ name: 'tag category' });
+			const t = await topics.post({ uid: adminUid, title: 'topic 1', content: 'content 1', cid: cat.cid });
+			await topics.reply({ uid: adminUid, content: 'reply 1 content', tid: t.topicData.tid });
+			await topics.reply({ uid: adminUid, content: 'reply 2 content', tid: t.topicData.tid });
+			let index = await socketTopics.getMyNextPostIndex({ uid: adminUid }, { tid: t.topicData.tid, index: 2, sort: 'oldest_to_newest' });
+			assert.strictEqual(index, 2);
+			index = await socketTopics.getMyNextPostIndex({ uid: adminUid }, { tid: t.topicData.tid, index: 3, sort: 'oldest_to_newest' });
+			assert.strictEqual(index, 1);
+		});
+	});
+
 
 	describe('teasers', () => {
 		let topic1;
