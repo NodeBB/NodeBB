@@ -1,3 +1,17 @@
+#### v3.1.2 (2023-05-12)
+
+##### Chores
+
+*  incrementing version number - v3.1.1 (40250733)
+*  update changelog for v3.1.1 (ccd6f48c)
+*  incrementing version number - v3.1.0 (0cb386bd)
+*  incrementing version number - v3.0.1 (26f6ea49)
+*  incrementing version number - v3.0.0 (224e08cd)
+
+##### Bug Fixes
+
+*  #11595, use default value (28740de7)
+
 #### v3.1.1 (2023-05-11)
 
 ##### Chores
