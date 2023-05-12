@@ -23,6 +23,7 @@ const apiTopics = require('../src/api/topics');
 const meta = require('../src/meta');
 const file = require('../src/file');
 const helpers = require('./helpers');
+const utils = require('../src/utils');
 
 describe('Post\'s', () => {
 	let voterUid;
@@ -865,17 +866,47 @@ describe('Post\'s', () => {
 			assert(postData);
 		});
 
-		it('shold get post summary', async () => {
+		it('should get post summary', async () => {
 			const summary = await apiPosts.getSummary({ uid: voterUid }, { pid });
 			assert(summary);
 		});
 
-		it('should get post category', (done) => {
-			socketPosts.getCategory({ uid: voterUid }, pid, (err, postCid) => {
-				assert.ifError(err);
-				assert.equal(cid, postCid);
-				done();
+		it('should get raw post content', async () => {
+			const postContent = await socketPosts.getRawPost({ uid: voterUid }, pid);
+			assert.equal(postContent, 'raw content');
+		});
+
+		it('should get post summary by index', async () => {
+			const summary = await socketPosts.getPostSummaryByIndex({ uid: voterUid }, {
+				index: 1,
+				tid: topicData.tid,
 			});
+			assert(summary);
+		});
+
+		it('should get post timestamp by index', async () => {
+			const timestamp = await socketPosts.getPostTimestampByIndex({ uid: voterUid }, {
+				index: 1,
+				tid: topicData.tid,
+			});
+			assert(utils.isNumber(timestamp));
+		});
+
+		it('should get post timestamp by index', async () => {
+			const summary = await socketPosts.getPostSummaryByPid({ uid: voterUid }, {
+				pid: pid,
+			});
+			assert(summary);
+		});
+
+		it('should get post category', async () => {
+			const postCid = await socketPosts.getCategory({ uid: voterUid }, pid);
+			assert.equal(cid, postCid);
+		});
+
+		it('should get pid index', async () => {
+			const index = await socketPosts.getPidIndex({ uid: voterUid }, { pid: pid, tid: topicData.tid, topicPostSort: 'oldest_to_newest' });
+			assert.equal(index, 4);
 		});
 
 		it('should get pid index', async () => {
