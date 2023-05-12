@@ -239,30 +239,34 @@ module.exports = function (middleware) {
 		 */
 		const path = req.path.startsWith('/api/') ? req.path.replace('/api', '') : req.path;
 
-		if (!req.session.hasOwnProperty('registration')) {
-			if (req.uid && !path.endsWith('/edit/email')) {
-				const [confirmed, isAdmin] = await Promise.all([
-					user.getUserField(req.uid, 'email:confirmed'),
-					user.isAdministrator(req.uid),
-				]);
-				if (meta.config.requireEmailAddress && !confirmed && !isAdmin) {
-					controllers.helpers.redirect(res, '/me/edit/email');
-				}
+		if (req.uid && !(path.endsWith('/edit/email') || path.startsWith('/confirm/'))) {
+			const [confirmed, isAdmin] = await Promise.all([
+				user.getUserField(req.uid, 'email:confirmed'),
+				user.isAdministrator(req.uid),
+			]);
+			if (meta.config.requireEmailAddress && !confirmed && !isAdmin) {
+				req.session.registration = {
+					...req.session.registration,
+					uid: req.uid,
+					updateEmail: true,
+				};
 			}
+		}
 
+		if (!req.session.hasOwnProperty('registration')) {
 			return setImmediate(next);
 		}
 
 		const { allowed } = await plugins.hooks.fire('filter:middleware.registrationComplete', {
-			allowed: ['/register/complete'],
+			allowed: ['/register/complete', '/confirm/'],
 		});
-		if (!allowed.includes(path)) {
-			// Append user data if present
-			req.session.registration.uid = req.session.registration.uid || req.uid;
-
-			controllers.helpers.redirect(res, '/register/complete');
-		} else {
-			setImmediate(next);
+		if (allowed.includes(path) || allowed.some(p => path.startsWith(p))) {
+			return setImmediate(next);
 		}
+
+		// Append user data if present
+		req.session.registration.uid = req.session.registration.uid || req.uid;
+
+		controllers.helpers.redirect(res, '/register/complete');
 	};
 };

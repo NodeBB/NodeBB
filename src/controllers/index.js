@@ -222,6 +222,14 @@ Controllers.registerInterstitial = async function (req, res, next) {
 Controllers.confirmEmail = async (req, res, next) => {
 	try {
 		await user.email.confirmByCode(req.params.code, req.session.id);
+		if (req.session.registration) {
+			// After confirmation, no need to send user back to email change form
+			delete req.session.registration.updateEmail;
+		}
+
+		res.render('confirm', {
+			title: '[[pages:confirm]]',
+		});
 	} catch (e) {
 		if (e.message === '[[error:invalid-data]]') {
 			return next();
@@ -229,10 +237,6 @@ Controllers.confirmEmail = async (req, res, next) => {
 
 		throw e;
 	}
-
-	res.render('confirm', {
-		title: '[[pages:confirm]]',
-	});
 };
 
 Controllers.robots = function (req, res) {
