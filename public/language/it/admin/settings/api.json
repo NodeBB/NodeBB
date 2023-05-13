@@ -13,15 +13,15 @@
 	"token": "Token",
 	"uid-help-text": "Specificare un ID utente da associare a questo token. Se l'ID utente è <code>0</code>, sarà considerato un token <em>master</em>, che può assumere l'identità di altri utenti in base al parametro <code>_uid</code>",
 	"description": "Descrizione",
-	"last-seen": "Last seen",
-	"created": "Created",
-	"create-token": "Create Token",
-	"update-token": "Update Token",
-	"master-token": "Master token",
+	"last-seen": "Ultimo visto",
+	"created": "Creato",
+	"create-token": "Crea token",
+	"update-token": "Aggiorna token",
+	"master-token": "Token principale",
 	"last-seen-never": "Questa chiave non è mai stata usata.",
 	"no-description": "Nessuna descrizione specificata.",
-	"actions": "Actions",
+	"actions": "Azioni",
 
-	"delete-confirm": "Are you sure you wish to delete this token? It will not be recoverable.",
-	"roll-confirm": "Are you sure you wish to regenerate this token? The old token will be immediately revoked and will not be recoverable."
+	"delete-confirm": "Sei sicuro di voler eliminare questo token? Non sarà recuperabile.",
+	"roll-confirm": "Sei sicuro di voler rigenerare questo token? Il vecchio token sarà immediatamente revocato e non sarà recuperabile."
 }
