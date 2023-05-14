@@ -176,6 +176,11 @@ define('forum/chats/messages', [
 				autoCompleteEl.destroy();
 			}
 		}
+		textarea.on('keyup', (e) => {
+			if (e.key === 'Escape') {
+				finishEdit();
+			}
+		});
 		editEl.find('[data-action="cancel"]').on('click', finishEdit);
 
 		editEl.find('[data-action="save"]').on('click', function () {
