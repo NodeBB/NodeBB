@@ -3,7 +3,7 @@
 	"settings": "Impostazioni",
 	"lead-text": "Da questa pagina è possibile configurare l'accesso alle API di scrittura in NodeBB.",
 	"intro": "Per impostazione predefinita, l'API di scrittura autentica gli utenti in base al cookie di sessione, ma NodeBB supporta anche l'autenticazione Bearer tramite token generati tramite questa pagina.",
-	"warning": "<strong>Be advised</strong> — treat tokens like passwords. If they are leaked, your account should be considered compromised.",
+	"warning": "<strong>Attenzione</strong> — trattare i token come password. Se sono trapelati, il tuo account dovrebbe essere considerato compromesso.",
 	"docs": "Clicca qui per accedere alle specifiche complete dell'API",
 
 	"require-https": "Richiedi utilizzo API solo tramite HTTPS",
