@@ -1490,21 +1490,39 @@ describe('User', () => {
 			], done);
 		});
 
-		it('should send digests', (done) => {
+		it('should send digests', async () => {
 			const oldValue = meta.config.includeUnverifiedEmails;
 			meta.config.includeUnverifiedEmails = true;
-			User.digest.execute({ interval: 'day' }, (err) => {
-				assert.ifError(err);
-				meta.config.includeUnverifiedEmails = oldValue;
-				done();
+			const uid = await User.create({ username: 'digest' });
+			await User.setUserField(uid, 'email', 'email@test.com');
+			await User.email.confirmByUid(uid);
+			await User.digest.execute({
+				interval: 'day',
+				subscribers: [uid],
 			});
+			meta.config.includeUnverifiedEmails = oldValue;
 		});
 
-		it('should not send digests', (done) => {
-			User.digest.execute({ interval: 'month' }, (err) => {
-				assert.ifError(err);
-				done();
-			});
+		it('should return 0', async () => {
+			const sent = await User.digest.send({ subscribers: [] });
+			assert.strictEqual(sent, 0);
+		});
+
+		it('should get users with single uid', async () => {
+			const res = await User.digest.getUsersInterval(1);
+			assert.strictEqual(res, false);
+		});
+
+		it('should not send digests', async () => {
+			const oldValue = meta.config.disableEmailSubsriptions;
+			meta.config.disableEmailSubsriptions = 1;
+			const res = await User.digest.execute({});
+			assert.strictEqual(res, false);
+			meta.config.disableEmailSubsriptions = oldValue;
+		});
+
+		it('should not send digests', async () => {
+			await User.digest.execute({ interval: 'month' });
 		});
 
 		it('should get delivery times', async () => {

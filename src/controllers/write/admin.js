@@ -28,3 +28,32 @@ Admin.getAnalyticsData = async (req, res) => {
 		units: req.query.units,
 	}));
 };
+
+Admin.generateToken = async (req, res) => {
+	const { uid, description } = req.body;
+	const token = await api.utils.tokens.generate({ uid, description });
+	helpers.formatApiResponse(200, res, await api.utils.tokens.get(token));
+};
+
+Admin.getToken = async (req, res) => {
+	helpers.formatApiResponse(200, res, await api.utils.tokens.get(req.params.token));
+};
+
+Admin.updateToken = async (req, res) => {
+	const { uid, description } = req.body;
+	const { token } = req.params;
+
+	helpers.formatApiResponse(200, res, await api.utils.tokens.update(token, { uid, description }));
+};
+
+Admin.rollToken = async (req, res) => {
+	let { token } = req.params;
+
+	token = await api.utils.tokens.roll(token);
+	helpers.formatApiResponse(200, res, await api.utils.tokens.get(token));
+};
+
+Admin.deleteToken = async (req, res) => {
+	const { token } = req.params;
+	helpers.formatApiResponse(200, res, await api.utils.tokens.delete(token));
+};

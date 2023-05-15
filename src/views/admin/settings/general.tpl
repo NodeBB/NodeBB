@@ -144,12 +144,12 @@
 		<div class="mb-3">
 			<label class="form-label" for="searchDefaultIn">[[admin/settings/general:search-default-in]]</label>
 			<select id="searchDefaultIn" class="form-select" data-field="searchDefaultIn">
-				<option value="titlesposts">[[search:titles-posts]]</option>
-				<option value="titles">[[search:titles]]</option>
-				<option value="posts">[[global:posts]]</option>
-				<option value="categories">[[global:header.categories]]</option>
-				<option value="users">[[global:users]]</option>
-				<option value="tags">[[tags:tags]]</option>
+				<option value="titlesposts">[[search:in-titles-posts]]</option>
+				<option value="titles">[[search:in-titles]]</option>
+				<option value="posts">[[search:in-posts]]</option>
+				<option value="categories">[[search:in-categories]]</option>
+				<option value="users">[[search:in-users]]</option>
+				<option value="tags">[[search:in-tags]]</option>
 			</select>
 		</div>
 		<div class="mb-3">
