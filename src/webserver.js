@@ -199,13 +199,17 @@ function setupHelmet(app) {
 	}
 	if (meta.config['hsts-enabled']) {
 		options.hsts = {
-			maxAge: meta.config['hsts-maxage'],
+			maxAge: Math.max(0, meta.config['hsts-maxage']),
 			includeSubDomains: !!meta.config['hsts-subdomains'],
 			preload: !!meta.config['hsts-preload'],
 		};
 	}
 
-	app.use(helmet(options));
+	try {
+		app.use(helmet(options));
+	} catch (err) {
+		winston.error(`[startup] unable to initialize helmet \n${err.stack}`);
+	}
 }
 
 

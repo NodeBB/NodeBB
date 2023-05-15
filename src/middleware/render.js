@@ -162,6 +162,7 @@ module.exports = function (middleware) {
 
 		templateValues.configJSON = jsesc(JSON.stringify(res.locals.config), { isScriptContext: true });
 
+		const title = translator.unescape(utils.stripHTMLTags(options.title));
 		const results = await utils.promiseParallel({
 			isAdmin: user.isAdministrator(req.uid),
 			isGlobalMod: user.isGlobalModerator(req.uid),
@@ -171,7 +172,7 @@ module.exports = function (middleware) {
 			isEmailConfirmSent: req.uid <= 0 ? false : await user.email.isValidationPending(req.uid),
 			languageDirection: translator.translate('[[language:dir]]', res.locals.config.userLang),
 			timeagoCode: languages.userTimeagoCode(res.locals.config.userLang),
-			browserTitle: translator.translate(controllersHelpers.buildTitle(translator.unescape(options.title))),
+			browserTitle: translator.translate(controllersHelpers.buildTitle(title)),
 			navigation: navigation.get(req.uid),
 			roomIds: db.getSortedSetRevRange(`uid:${req.uid}:chat:rooms`, 0, 0),
 		});

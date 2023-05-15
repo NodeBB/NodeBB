@@ -65,7 +65,7 @@ module.exports = function (grunt) {
 
 		const templatesUpdated = pluginList.map(p => `node_modules/${p}/+(public|static|templates)/**/*.tpl`);
 		const langUpdated = pluginList.map(p => `node_modules/${p}/+(public|static|languages)/**/*.json`);
-
+		const interval = 100;
 		grunt.config(['watch'], {
 			styleUpdated: {
 				files: [
@@ -73,7 +73,7 @@ module.exports = function (grunt) {
 					...styleUpdated_Client,
 				],
 				options: {
-					interval: 1000,
+					interval: interval,
 				},
 			},
 			clientUpdated: {
@@ -84,7 +84,7 @@ module.exports = function (grunt) {
 					'node_modules/benchpressjs/build/benchpress.js',
 				],
 				options: {
-					interval: 1000,
+					interval: interval,
 				},
 			},
 			serverUpdated: {
@@ -99,7 +99,7 @@ module.exports = function (grunt) {
 					'!src/upgrades/**',
 				],
 				options: {
-					interval: 1000,
+					interval: interval,
 				},
 			},
 			templatesUpdated: {
@@ -108,7 +108,7 @@ module.exports = function (grunt) {
 					...templatesUpdated,
 				],
 				options: {
-					interval: 1000,
+					interval: interval,
 				},
 			},
 			langUpdated: {
@@ -118,7 +118,7 @@ module.exports = function (grunt) {
 					...langUpdated,
 				],
 				options: {
-					interval: 1000,
+					interval: interval,
 				},
 			},
 		});

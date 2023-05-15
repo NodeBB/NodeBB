@@ -45,7 +45,9 @@ jobs:
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
-            type=raw,value=latest
+            type=semver,pattern={{major}}.x
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=ref,event=branch,enable=${{ github.event.repository.default_branch != github.ref }}
 
       - name: Build and push Docker images
         uses: docker/build-push-action@v4

@@ -103,20 +103,18 @@ define('forum/chats', [
 	};
 
 	Chats.addIPHandler = function (container) {
-		container.on('click', '.chat-ip-button', function () {
-			const ipEl = $(this).parent();
+		container.on('click', '.chat-ip-button', async function () {
+			const ipEl = $(this);
+			let ip = ipEl.attr('data-ip');
+			if (ip) {
+				navigator.clipboard.writeText(ip);
+				ipEl.translateText('[[global:copied]]');
+				setTimeout(() => ipEl.text(ip), 2000);
+				return;
+			}
 			const mid = ipEl.parents('[data-mid]').attr('data-mid');
-			socket.emit('modules.chats.getIP', mid, function (err, ip) {
-				if (err) {
-					return alerts.error(err);
-				}
-				ipEl.text(ip);
-				ipEl.on('click', () => {
-					navigator.clipboard.writeText(ip);
-					ipEl.translateText('[[global:copied]]');
-					setTimeout(() => ipEl.text(ip), 2000);
-				});
-			});
+			ip = await socket.emit('modules.chats.getIP', mid);
+			ipEl.text(ip).attr('data-ip', ip);
 		});
 	};
 
@@ -237,15 +235,14 @@ define('forum/chats', [
 			}
 		});
 		mousetrap.bind('up', function (e) {
-			if (e.target === components.get('chat/input').get(0)) {
+			const inputEl = components.get('chat/input');
+			if (e.target === inputEl.get(0) && !inputEl.val()) {
 				// Retrieve message id from messages list
 				const message = components.get('chat/messages').find('.chat-message[data-self="1"]').last();
 				if (!message.length) {
 					return;
 				}
 				const lastMid = message.attr('data-mid');
-				const inputEl = components.get('chat/input');
-
 				messages.prepEdit(inputEl, lastMid, ajaxify.data.roomId);
 			}
 		});

@@ -80,11 +80,13 @@ module.exports = function (Posts) {
 			'uid', 'tid', 'title', 'cid', 'tags', 'slug',
 			'deleted', 'scheduled', 'postcount', 'mainPid', 'teaserPid',
 		]);
+
 		const cids = _.uniq(topicsData.map(topic => topic && topic.cid));
 		const categoriesData = await categories.getCategoriesFields(cids, [
 			'cid', 'name', 'icon', 'slug', 'parentCid',
 			'bgColor', 'color', 'backgroundImage', 'imageClass',
 		]);
+
 		return { topics: topicsData, categories: categoriesData };
 	}
 

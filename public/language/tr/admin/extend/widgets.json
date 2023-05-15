@@ -26,7 +26,7 @@
 	"container.placeholder": "Bir kutucuğu sürükle ve buraya bırak veya HTML gir",
 	"show-to-groups": "Şu gruplara göster",
 	"hide-from-groups": "Şu gruplara gösterme",
-	"start-date": "Start date",
-	"end-date": "End date",
+	"start-date": "Başlangıç tarihi",
+	"end-date": "Bitiş tarihi",
 	"hide-on-mobile": "Mobilde gösterme"
 }

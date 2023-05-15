@@ -26,7 +26,7 @@
 	"container.placeholder": "Завлачете и пуснете контейнер или въведете HTML тук.",
 	"show-to-groups": "Показване на групите",
 	"hide-from-groups": "Скриване от групите",
-	"start-date": "Start date",
-	"end-date": "End date",
+	"start-date": "Начална дата",
+	"end-date": "Крайна дата",
 	"hide-on-mobile": "Скриване на мобилни устройства"
 }
