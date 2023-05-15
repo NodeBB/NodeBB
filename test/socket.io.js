@@ -73,7 +73,7 @@ describe('socket.io', () => {
 			}, (err, res) => {
 				assert.ifError(err);
 
-				helpers.connectSocketIO(res, (err, _io) => {
+				helpers.connectSocketIO(res, body.csrf_token, (err, _io) => {
 					io = _io;
 					assert.ifError(err);
 
