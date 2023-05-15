@@ -2,11 +2,11 @@
 
 const async = require('async');
 const path = require('path');
-const { csrfSynchronisedProtection } = require('./csrf');
 const validator = require('validator');
 const nconf = require('nconf');
 const toobusy = require('toobusy-js');
 const util = require('util');
+const { csrfSynchronisedProtection } = require('./csrf');
 
 const plugins = require('../plugins');
 const meta = require('../meta');
