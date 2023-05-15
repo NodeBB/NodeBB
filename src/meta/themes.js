@@ -89,9 +89,9 @@ Themes.set = async (data) => {
 	switch (data.type) {
 		case 'local': {
 			const current = await Meta.configs.get('theme:id');
+			const score = await db.sortedSetScore('plugins:active', current);
 			await db.sortedSetRemove('plugins:active', current);
-			const numPlugins = await db.sortedSetCard('plugins:active');
-			await db.sortedSetAdd('plugins:active', numPlugins, data.id);
+			await db.sortedSetAdd('plugins:active', score || 0, data.id);
 
 			if (current !== data.id) {
 				const pathToThemeJson = path.join(nconf.get('themes_path'), data.id, 'theme.json');
@@ -103,9 +103,9 @@ Themes.set = async (data) => {
 				config = JSON.parse(config);
 				const activePluginsConfig = nconf.get('plugins:active');
 				if (!activePluginsConfig) {
+					const score = await db.sortedSetScore('plugins:active', current);
 					await db.sortedSetRemove('plugins:active', current);
-					const numPlugins = await db.sortedSetCard('plugins:active');
-					await db.sortedSetAdd('plugins:active', numPlugins, data.id);
+					await db.sortedSetAdd('plugins:active', score || 0, data.id);
 				} else if (!activePluginsConfig.includes(data.id)) {
 					// This prevents changing theme when configuration doesn't include it, but allows it otherwise
 					winston.error(`When defining active plugins in configuration, changing themes requires adding the theme '${data.id}' to the list of active plugins before updating it in the ACP`);

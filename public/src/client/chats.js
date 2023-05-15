@@ -235,15 +235,14 @@ define('forum/chats', [
 			}
 		});
 		mousetrap.bind('up', function (e) {
-			if (e.target === components.get('chat/input').get(0)) {
+			const inputEl = components.get('chat/input');
+			if (e.target === inputEl.get(0) && !inputEl.val()) {
 				// Retrieve message id from messages list
 				const message = components.get('chat/messages').find('.chat-message[data-self="1"]').last();
 				if (!message.length) {
 					return;
 				}
 				const lastMid = message.attr('data-mid');
-				const inputEl = components.get('chat/input');
-
 				messages.prepEdit(inputEl, lastMid, ajaxify.data.roomId);
 			}
 		});
