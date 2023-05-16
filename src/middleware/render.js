@@ -162,7 +162,7 @@ module.exports = function (middleware) {
 
 		templateValues.configJSON = jsesc(JSON.stringify(res.locals.config), { isScriptContext: true });
 
-		const title = translator.unescape(utils.stripHTMLTags(options.title));
+		const title = translator.unescape(utils.stripHTMLTags(options.title || ''));
 		const results = await utils.promiseParallel({
 			isAdmin: user.isAdministrator(req.uid),
 			isGlobalMod: user.isGlobalModerator(req.uid),
