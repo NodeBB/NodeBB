@@ -389,6 +389,10 @@ define('chat', [
 	};
 
 	module.center = function (chatModal) {
+		const center = chatModal.attr('data-center');
+		if (!center || center === 'false') {
+			return;
+		}
 		let hideAfter = false;
 		if (chatModal.hasClass('hide')) {
 			chatModal.removeClass('hide');
