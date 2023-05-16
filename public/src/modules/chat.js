@@ -266,6 +266,7 @@ define('chat', [
 					chatModal.draggable({
 						start: function () {
 							taskbar.updateActive(uuid);
+							chatModal.css({ bottom: 'auto', right: 'auto' });
 						},
 						stop: function () {
 							module.focusInput(chatModal);
