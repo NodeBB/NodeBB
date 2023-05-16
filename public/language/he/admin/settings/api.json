@@ -13,15 +13,15 @@
 	"token": "Token",
 	"uid-help-text": "ציין מזהה משתמש לשיוך לטוקן זה. אם מזהה המשתמש הוא <code>0</code>, זה ייחשב כטוקן<em>ראשי</em>, שיכול לשער את זהותם של משתמשים אחרים על בסיס פרמטר<code>_uid</code> .",
 	"description": "תיאור",
-	"last-seen": "Last seen",
-	"created": "Created",
-	"create-token": "Create Token",
-	"update-token": "Update Token",
-	"master-token": "Master token",
+	"last-seen": "נראה לאחרונה",
+	"created": "נוצר",
+	"create-token": "יצירת טוקן",
+	"update-token": "עדכון טוקן",
+	"master-token": "טוקן ראשי",
 	"last-seen-never": "מעולם לא נעשה שימוש במפתח זה.",
 	"no-description": "לא צוין תיאור.",
-	"actions": "Actions",
+	"actions": "פעולות",
 
-	"delete-confirm": "Are you sure you wish to delete this token? It will not be recoverable.",
-	"roll-confirm": "Are you sure you wish to regenerate this token? The old token will be immediately revoked and will not be recoverable."
+	"delete-confirm": "האם למחוק את הטוקן הזה? לא יהיה ניתן לשחזר אותו.",
+	"roll-confirm": "האם ליצור מחדש את הטוקן הזה? הטוקן הישן יבוטל מיד ולא יהיה ניתן לשחזרו."
 }

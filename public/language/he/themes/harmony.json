@@ -2,13 +2,13 @@
 	"skins": "עיצובים",
 	"collapse": "כיווץ",
 	"expand": "הרחבה",
-	"login-register-to-search": "התחבר או הירשם כדי לחפש.",
+	"login-register-to-search": "התחברו או הירשמו כדי לחפש.",
 	"settings.title": "הגדרות ערכת נושא",
-	"settings.enableQuickReply": "אפשר תשובה מהירה",
+	"settings.enableQuickReply": "הפעלת תגובה מהירה",
 	"settings.centerHeaderElements": "מרכז אלמנטים של כותרת",
-	"settings.mobileTopicTeasers": "הצג טיזרים לנושאים בנייד",
-	"settings.stickyToolbar": "סרגל כלים דביק",
+	"settings.mobileTopicTeasers": "הצגת טיזרים לנושאים בנייד",
+	"settings.stickyToolbar": "סרגל כלים מוצמד",
 	"settings.stickyToolbar.help": "סרגל הכלים בדפי נושאים וקטגוריות ייצמד לראש העמוד",
-	"settings.autohideBottombar": "הסתר אוטומטית את הסרגל התחתון",
+	"settings.autohideBottombar": "הסתרה אוטומטית של סרגל תחתון",
 	"settings.autohideBottombar.help": "הסרגל התחתון בתצוגת הנייד יוסתר כאשר הדף ייגלל מטה"
 }
