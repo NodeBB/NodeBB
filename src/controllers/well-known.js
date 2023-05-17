@@ -16,7 +16,6 @@ Controller.webfinger = async (req, res) => {
 	}
 
 	const canView = await privileges.global.can('view:users', req.uid);
-	console.log('canView', canView, req.uid);
 	if (!canView) {
 		return res.sendStatus(403);
 	}
@@ -40,6 +39,11 @@ Controller.webfinger = async (req, res) => {
 				rel: 'http://webfinger.net/rel/profile-page',
 				type: 'text/html',
 				href: `${nconf.get('url')}/user/${slug}`,
+			},
+			{
+				rel: 'self',
+				type: 'application/activity+json',
+				href: `${nconf.get('url')}/user/${slug}`, // actor
 			},
 		],
 	};
