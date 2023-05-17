@@ -1,3 +1,29 @@
+#### v3.1.3 (2023-05-15)
+
+##### Chores
+
+*  incrementing version number - v3.1.2 (40fa3489)
+*  update changelog for v3.1.2 (5b398782)
+*  incrementing version number - v3.1.1 (40250733)
+*  incrementing version number - v3.1.0 (0cb386bd)
+*  incrementing version number - v3.0.1 (26f6ea49)
+*  incrementing version number - v3.0.0 (224e08cd)
+
+##### Continuous Integration
+
+*  use GitHub Actions expression instead of handlebars template (#11599) (412a1ecf)
+*  tag with branch name if not default branch (cd7fdfce)
+
+##### Bug Fixes
+
+*  #11601, dont trigger edit if chat input has text (d55cd464)
+*  #11600, prevent helmet crash on startup (8eed5a84)
+*  #11594 (85d104c3)
+
+##### Other Changes
+
+*  use csrf_token in ws handshake (#11573) (51096ad2)
+
 #### v3.1.2 (2023-05-12)
 
 ##### Chores
