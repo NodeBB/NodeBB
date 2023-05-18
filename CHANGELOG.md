@@ -1,3 +1,32 @@
+#### v3.1.4 (2023-05-18)
+
+##### Chores
+
+*  up markdown (51bf5e95)
+*  incrementing version number - v3.1.3 (3b4e9d3f)
+*  update changelog for v3.1.3 (9924fde6)
+*  incrementing version number - v3.1.2 (40fa3489)
+*  incrementing version number - v3.1.1 (40250733)
+*  incrementing version number - v3.1.0 (0cb386bd)
+*  incrementing version number - v3.0.1 (26f6ea49)
+*  incrementing version number - v3.0.0 (224e08cd)
+
+##### Bug Fixes
+
+*  textarea on error (469aa551)
+*  closes #11613, closes #11614 (d8d486a6)
+*  closes #11612 (8f6a68ca)
+*  #11572 (2910cb2b)
+
+##### Other Changes
+
+* //github.com/NodeBB/NodeBB/issues/11612 (24bd9d4e)
+
+##### Refactors
+
+*  remove unused require (05b58c70)
+*  remove log (ca2be0e8)
+
 #### v3.1.3 (2023-05-15)
 
 ##### Chores
