@@ -70,6 +70,9 @@ define('categoryFilter', ['categorySearch', 'api', 'hooks'], function (categoryS
 			const icon = categoryEl.find('[component="category/select/icon"]');
 
 			if (cid !== 'all') {
+				if (selectedCids.includes('all')) {
+					selectedCids.splice(selectedCids.indexOf('all'), 1);
+				}
 				if (selectedCids.includes(cid)) {
 					selectedCids.splice(selectedCids.indexOf(cid), 1);
 				} else {
@@ -78,14 +81,19 @@ define('categoryFilter', ['categorySearch', 'api', 'hooks'], function (categoryS
 				selectedCids.sort(function (a, b) {
 					return a - b;
 				});
+				icon.toggleClass('invisible');
+				listEl.find('[data-cid="all"] i').toggleClass('invisible', !!selectedCids.length);
+				if (!selectedCids.length) {
+					selectedCids.push('all');
+				}
 			} else {
 				el.find('[component="category/select/icon"]').addClass('invisible');
-				selectedCids = [cid];
+				listEl.find('[data-cid="all"] i').removeClass('invisible');
+				selectedCids = ['all'];
 			}
 
 			options.selectedCids = selectedCids;
-			listEl.find('[data-cid="all"] i').toggleClass('invisible', !!selectedCids.length);
-			icon.toggleClass('invisible');
+
 			if (options.onSelect) {
 				options.onSelect({ cid: cid, selectedCids: selectedCids.slice() });
 			}
