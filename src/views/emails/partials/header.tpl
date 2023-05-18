@@ -8,7 +8,7 @@
     <title></title> <!-- The title tag shows in email notifications, like Android 4.4. -->
 
     <!-- Web Font / @font-face : BEGIN -->
-	<!-- NOTE: If web fonts are not required, lines 10 - 27 can be safely removed. -->
+    <!-- NOTE: If web fonts are not required, lines 10 - 27 can be safely removed. -->
 
     <!-- Desktop Outlook chokes on web font references and defaults to Times New Roman, so we force a safe fallback font. -->
     <!--[if mso]>
@@ -26,7 +26,7 @@
 
     <!-- Web Font / @font-face : END -->
 
-	<!-- CSS Reset -->
+    <!-- CSS Reset -->
     <style>
 
         /* What it does: Remove spaces around the email design added by some email clients. */
@@ -90,13 +90,13 @@
 
         /* What it does: Prevents Gmail from displaying an download button on large, non-linked images. */
         .a6S {
-	        display: none !important;
-	        opacity: 0.01 !important;
+            display: none !important;
+            opacity: 0.01 !important;
         }
         /* If the above doesn't work, add a .g-img class to any image in question. */
         img.g-img + div {
-	        display:none !important;
-	   	}
+            display:none !important;
+           }
 
         /* What it does: Prevents underlining the button text in Windows 10 */
         .button-link {
@@ -132,56 +132,61 @@
         @media screen and (max-width: 600px) {
 
             /* What it does: Adjust typography on small screens to improve readability */
-			.email-container p {
-				font-size: 17px !important;
-				line-height: 26px !important;
-			}
-
-		}
+            .email-container p {
+                font-size: 17px !important;
+                line-height: 26px !important;
+            }
+        }
 
         .notification-body img {
             max-width: 100%;
             height: auto;
         }
-	</style>
+        /* https://github.com/NodeBB/NodeBB/issues/11572 */
+        img[src*="nodebb-plugin-emoji"] {
+            width: 23px;
+            height: auto;
+            vertical-align: top;
+        }
+    </style>
 
-	<!-- What it does: Makes background images in 72ppi Outlook render at correct size. -->
-	<!--[if gte mso 9]>
-	<xml>
-		<o:OfficeDocumentSettings>
-			<o:AllowPNG/>
-			<o:PixelsPerInch>96</o:PixelsPerInch>
-		</o:OfficeDocumentSettings>
-	</xml>
-	<![endif]-->
+    <!-- What it does: Makes background images in 72ppi Outlook render at correct size. -->
+    <!--[if gte mso 9]>
+    <xml>
+        <o:OfficeDocumentSettings>
+            <o:AllowPNG/>
+            <o:PixelsPerInch>96</o:PixelsPerInch>
+        </o:OfficeDocumentSettings>
+    </xml>
+    <![endif]-->
 
 </head>
 
 <body width="100%" bgcolor="#f6f6f6" style="margin: 0; mso-line-height-rule: exactly;">
-	<center style="width: 100%; background: #f6f6f6; text-align: left;">
+    <center style="width: 100%; background: #f6f6f6; text-align: left;">
 
-		<!--
-			Set the email width. Defined in two places:
-			1. max-width for all clients except Desktop Windows Outlook, allowing the email to squish on narrow but never go wider than 600px.
-			2. MSO tags for Desktop Windows Outlook enforce a 600px width.
-		-->
-		<div style="max-width: 600px; margin: auto;{{{ if rtl }}} text-align: right; direction: rtl;{{{ end }}}" class="email-container">
-			<!--[if mso]>
-			<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" align="center">
-			<tr>
-			<td>
-			<![endif]-->
+        <!--
+            Set the email width. Defined in two places:
+            1. max-width for all clients except Desktop Windows Outlook, allowing the email to squish on narrow but never go wider than 600px.
+            2. MSO tags for Desktop Windows Outlook enforce a 600px width.
+        -->
+        <div style="max-width: 600px; margin: auto;{{{ if rtl }}} text-align: right; direction: rtl;{{{ end }}}" class="email-container">
+            <!--[if mso]>
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" align="center">
+            <tr>
+            <td>
+            <![endif]-->
 
-			<!-- Email Header : BEGIN -->
-			<table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" width="100%" style="max-width: 600px;">
-				<tr>
-					<td style="padding: 20px 0; text-align: center">
-						{{{ if logo.src }}}
-						<img src="{logo.src}" height="auto" width="{logo.width}" alt="{site_title}" border="0" style="height: auto; width: {logo.width}px; background: #f6f6f6; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 15px; line-height: 20px; color: #333333;">
-						{{{ else }}}
-						&nbsp;
-						{{{ end }}}
-					</td>
-				</tr>
-			</table>
-			<!-- Email Header : END -->
+            <!-- Email Header : BEGIN -->
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" width="100%" style="max-width: 600px;">
+                <tr>
+                    <td style="padding: 20px 0; text-align: center">
+                        {{{ if logo.src }}}
+                        <img src="{logo.src}" height="auto" width="{logo.width}" alt="{site_title}" border="0" style="height: auto; width: {logo.width}px; background: #f6f6f6; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 15px; line-height: 20px; color: #333333;">
+                        {{{ else }}}
+                        &nbsp;
+                        {{{ end }}}
+                    </td>
+                </tr>
+            </table>
+            <!-- Email Header : END -->

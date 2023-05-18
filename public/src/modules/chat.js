@@ -246,6 +246,7 @@ define('chat', [
 				chatModal.css('position', 'fixed');
 				chatModal.appendTo($('body'));
 				chatModal.find('.timeago').timeago();
+				ChatsMessages.wrapImagesInLinks(chatModal.find('[component="chat/messages"] .chat-content'));
 				module.center(chatModal);
 
 				app.loadJQueryUI(function () {
@@ -331,6 +332,7 @@ define('chat', [
 				Chats.addScrollBottomHandler(chatModal.find('.chat-content'));
 
 				Chats.addCharactersLeftHandler(chatModal);
+				Chats.addTextareaResizeHandler(chatModal);
 				Chats.addIPHandler(chatModal);
 
 				Chats.addUploadHandler({

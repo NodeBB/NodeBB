@@ -3,8 +3,11 @@
 
 define('forum/chats/messages', [
 	'components', 'translator', 'benchpress', 'hooks',
-	'bootbox', 'alerts', 'messages', 'api',
-], function (components, translator, Benchpress, hooks, bootbox, alerts, messagesModule, api) {
+	'bootbox', 'alerts', 'messages', 'api', 'forum/topic/images',
+], function (
+	components, translator, Benchpress, hooks,
+	bootbox, alerts, messagesModule, api, images
+) {
 	const messages = {};
 
 	messages.sendMessage = async function (roomId, inputEl) {
@@ -25,6 +28,7 @@ define('forum/chats/messages', [
 		}).catch((err) => {
 			inputEl.val(message).trigger('input');
 			messages.updateRemainingLength(inputEl.parent());
+			messages.updateTextAreaHeight(chatContent);
 			if (err.message === '[[error:email-not-confirmed-chat]]') {
 				return messagesModule.showEmailConfirmWarning(err.message);
 			}
@@ -49,18 +53,9 @@ define('forum/chats/messages', [
 	};
 
 	messages.updateTextAreaHeight = function (chatContentEl) {
-		// https://stackoverflow.com/questions/454202/creating-a-textarea-with-auto-resize
 		const textarea = chatContentEl.find('[component="chat/input"]');
 		const scrollHeight = textarea.prop('scrollHeight');
 		textarea.css({ height: scrollHeight + 'px' });
-		textarea.on('input', function () {
-			const isAtBottom = messages.isAtBottom(chatContentEl.find('.chat-content'));
-			textarea.css({ height: 0 });
-			textarea.css({ height: textarea.prop('scrollHeight') + 'px' });
-			if (isAtBottom) {
-				messages.scrollToBottom(chatContentEl.find('.chat-content'));
-			}
-		});
 	};
 
 	function autoresizeTextArea(textarea) {
@@ -89,8 +84,7 @@ define('forum/chats/messages', [
 		const newMessage = $(html);
 		const isAtBottom = messages.isAtBottom(chatContentEl);
 		newMessage.appendTo(chatContentEl);
-		newMessage.find('.timeago').timeago();
-		newMessage.find('img:not(.not-responsive)').addClass('img-fluid');
+		messages.onMessagesAddedToDom(newMessage);
 		if (isAtBottom) {
 			messages.scrollToBottom(chatContentEl);
 		}
@@ -100,10 +94,15 @@ define('forum/chats/messages', [
 		});
 	}
 
+	messages.onMessagesAddedToDom = function (messageEls) {
+		messageEls.find('.timeago').timeago();
+		messageEls.find('img:not(.not-responsive)').addClass('img-fluid');
+		messages.wrapImagesInLinks(messageEls.first().parent());
+	};
 
 	messages.parseMessage = function (data, callback) {
 		function done(html) {
-			translator.translate(html, callback);
+			translator.translate(html, translated => callback($(translated)));
 		}
 		const tplData = {
 			messages: data,
@@ -132,6 +131,12 @@ define('forum/chats/messages', [
 				.find('[component="chat/messages/scroll-up-alert"]')
 				.addClass('hidden');
 		}
+	};
+
+	messages.wrapImagesInLinks = function (containerEl) {
+		containerEl.find('[component="chat/message/body"] img:not(.emoji)').each(function () {
+			images.wrapImageInLink($(this));
+		});
 	};
 
 	messages.toggleScrollUpAlert = function (containerEl) {
@@ -225,7 +230,7 @@ define('forum/chats/messages', [
 				const body = components.get('chat/message', message.messageId);
 				if (body.length) {
 					body.replaceWith(html);
-					components.get('chat/message', message.messageId).find('.timeago').timeago();
+					messages.onMessagesAddedToDom(html);
 				}
 			});
 		});
@@ -234,13 +239,15 @@ define('forum/chats/messages', [
 	function onChatMessageDeleted(messageId) {
 		components.get('chat/message', messageId)
 			.toggleClass('deleted', true)
-			.find('[component="chat/message/body"]').translateHtml('[[modules:chat.message-deleted]]');
+			.find('[component="chat/message/body"]')
+			.translateHtml('[[modules:chat.message-deleted]]');
 	}
 
 	function onChatMessageRestored(message) {
 		components.get('chat/message', message.messageId)
 			.toggleClass('deleted', false)
-			.find('[component="chat/message/body"]').html(message.content);
+			.find('[component="chat/message/body"]')
+			.html(message.content);
 	}
 
 	messages.delete = function (messageId, roomId) {

@@ -9,9 +9,8 @@ define('forum/topic/events', [
 	'forum/topic/images',
 	'components',
 	'translator',
-	'benchpress',
 	'hooks',
-], function (postTools, threadTools, posts, images, components, translator, Benchpress, hooks) {
+], function (postTools, threadTools, posts, images, components, translator, hooks) {
 	const Events = {};
 
 	const events = {

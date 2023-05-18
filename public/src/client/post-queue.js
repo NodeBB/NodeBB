@@ -113,7 +113,6 @@ define('forum/post-queue', [
 				if (subselector) {
 					const action = subselector.getAttribute('data-action');
 					const uid = subselector.closest('[data-uid]').getAttribute('data-uid');
-
 					switch (action) {
 						case 'editCategory': {
 							const categoryEl = e.target.closest('[data-id]').querySelector('.topic-category');

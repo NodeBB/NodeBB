@@ -45,7 +45,7 @@
 			{{{ end }}}
 
 			{{{ each posts }}}
-			<div class="card mb-3" data-id="{posts.id}">
+			<div class="card mb-3" data-id="{./id}"data-uid="{./user.uid}">
 				<div class="card-header">
 					{{{ if !singlePost }}}
 					<input type="checkbox" class="form-check-input" autocomplete="off" />
@@ -82,7 +82,7 @@
 								{{{ if posts.data.tid }}}
 								<a href="{config.relative_path}/topic/{posts.data.tid}">{posts.topic.title}</a>
 								{{{ end }}}
-								<span class="title-text">{posts.data.title}</span>
+								<span data-action="editTitle" class="title-text">{posts.data.title}</span>
 							</div>
 							{{{if !posts.data.tid}}}
 							<div class="topic-title-editable hidden">
@@ -94,7 +94,7 @@
 					<hr/>
 					<div>
 						<strong>[[post-queue:content]] <i class="fa fa-fw fa-edit" data-bs-toggle="tooltip" title="[[post-queue:content-editable]]"></i></strong>
-						<div class="post-content text-break">{posts.data.content}</div>
+						<div data-action="editContent" class="post-content text-break">{posts.data.content}</div>
 						<div class="post-content-editable hidden">
 							<textarea class="form-control w-100" style="height:300px;">{posts.data.rawContent}</textarea>
 						</div>
