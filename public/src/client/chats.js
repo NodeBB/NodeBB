@@ -55,7 +55,7 @@ define('forum/chats', [
 
 		Chats.initialised = true;
 		messages.scrollToBottom($('.expanded-chat ul.chat-content'));
-
+		messages.wrapImagesInLinks($('.expanded-chat ul.chat-content'));
 		search.init();
 	};
 
@@ -69,6 +69,7 @@ define('forum/chats', [
 		Chats.addScrollHandler(ajaxify.data.roomId, ajaxify.data.uid, $('.chat-content'));
 		Chats.addScrollBottomHandler($('.chat-content'));
 		Chats.addCharactersLeftHandler($('[component="chat/main-wrapper"]'));
+		Chats.addTextareaResizeHandler($('[component="chat/main-wrapper"]'));
 		Chats.addIPHandler($('[component="chat/main-wrapper"]'));
 		Chats.createAutoComplete(ajaxify.data.roomId, $('[component="chat/input"]'));
 		Chats.addUploadHandler({
@@ -169,10 +170,8 @@ define('forum/chats', [
 				messages.parseMessage(data, function (html) {
 					const currentScrollTop = el.scrollTop();
 					const previousHeight = el[0].scrollHeight;
-					html = $(html);
 					el.prepend(html);
-					html.find('.timeago').timeago();
-					html.find('img:not(.not-responsive)').addClass('img-fluid');
+					messages.onMessagesAddedToDom(html);
 					el.scrollTop((el[0].scrollHeight - previousHeight) + currentScrollTop);
 					loading = false;
 				});
@@ -192,6 +191,19 @@ define('forum/chats', [
 		const element = parent.find('[component="chat/input"]');
 		element.on('change keyup paste', function () {
 			messages.updateRemainingLength(parent);
+		});
+	};
+
+	Chats.addTextareaResizeHandler = function (parent) {
+		// https://stackoverflow.com/questions/454202/creating-a-textarea-with-auto-resize
+		const textarea = parent.find('[component="chat/input"]');
+		textarea.on('input', function () {
+			const isAtBottom = messages.isAtBottom(parent.find('.chat-content'));
+			textarea.css({ height: 0 });
+			textarea.css({ height: textarea.prop('scrollHeight') + 'px' });
+			if (isAtBottom) {
+				messages.scrollToBottom(parent.find('.chat-content'));
+			}
 		});
 	};
 
