@@ -7,6 +7,6 @@
     "max-per-topic": "Maximum Tags per Topic",
     "min-length": "Minimum Tag Length",
     "max-length": "Maximum Tag Length",
-    "related-topics": "Related Topics",
+    "related-topics": "تاپیک‌های مرتبط",
     "max-related-topics": "Maximum related topics to display (if supported by theme)"
 }

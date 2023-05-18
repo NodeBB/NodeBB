@@ -5,7 +5,7 @@
 	"logins": "Logins",
 	"new-users": "New Users",
 	"posts": "Posts",
-	"topics": "Topics",
+	"topics": "موضوع‌ها",
 	"page-views-seven": "Last 7 Days",
 	"page-views-thirty": "Last 30 Days",
 	"page-views-last-day": "Last 24 hours",
@@ -21,7 +21,7 @@
 	"stats.this-week": "This Week",
 	"stats.last-month": "Last Month",
 	"stats.this-month": "This Month",
-	"stats.all": "All Time",
+	"stats.all": "همیشه",
 
 	"updates": "Updates",
 	"running-version": "You are running <strong>NodeBB v<span id=\"version\">%1</span></strong>.",
