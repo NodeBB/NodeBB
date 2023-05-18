@@ -28,6 +28,7 @@ define('forum/chats/messages', [
 		}).catch((err) => {
 			inputEl.val(message).trigger('input');
 			messages.updateRemainingLength(inputEl.parent());
+			messages.updateTextAreaHeight(chatContent);
 			if (err.message === '[[error:email-not-confirmed-chat]]') {
 				return messagesModule.showEmailConfirmWarning(err.message);
 			}
