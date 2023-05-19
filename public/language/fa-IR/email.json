@@ -41,7 +41,7 @@
     "notif.post.unsub.one-click": "Alternatively, unsubscribe from future emails like this, by clicking",
     "notif.cta": "To the forum",
     "notif.cta-new-reply": "View Post",
-    "notif.cta-new-chat": "View Chat",
+    "notif.cta-new-chat": "مشاهده چت",
     "notif.test.short": "Testing Notifications",
     "notif.test.long": "This is a test of the notifications email. Send help!",
     "test.text1": "این یک ایمیل امتحانی جهت تایید اینکه فرستنده ایمیل برای انجمن NodeBB شما به درستی تنظیم و نصب شده است",

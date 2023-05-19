@@ -11,5 +11,5 @@
 	"settings.stickyToolbar.help": "نوار ابزار در تاپیک و صفحه دسته بدی ها در بالای صفحه ثابت می‌ماند",
 	"settings.autohideBottombar": "مخفی کردن اتوماتیک منوی پایینی ",
 	"settings.autohideBottombar.help": "وقتی صفحه به پایین اسکرول می شود، منوی پایین در نمایش گوشی مخفی خواهد شد  ",
-	"settings.chatModals": "Enable chat modals"
+	"settings.chatModals": "فعال کردن پنجره کوچک برای چت "
 }
