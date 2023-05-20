@@ -2,7 +2,7 @@
     "chat.chatting_with": "Զրուցել ",
     "chat.placeholder": "Գրեք հաղորդագրություն այստեղ, տեղադրեք նկարներ, սեղմեք \"enter\" ուղարկելու համար",
     "chat.placeholder.mobile": "Type chat message here",
-    "chat.scroll-up-alert": "Դուք նայում եք ավելի հին հաղորդագրություններ, սեղմեք այստեղ՝ վերջին հաղորդագրությանը գնալու/տեսնելու համար:",
+    "chat.scroll-up-alert": "Go to most recent message",
     "chat.usernames-and-x-others": "%1 & %2 others",
     "chat.chat-with-usernames": "Chat with %1",
     "chat.chat-with-usernames-and-x-others": "Chat with %1 & %2 others",

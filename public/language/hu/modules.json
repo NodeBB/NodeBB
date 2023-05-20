@@ -2,7 +2,7 @@
     "chat.chatting_with": "Csevegés vele",
     "chat.placeholder": "Írja be ide a csevegőüzenetet, húzza át a képeket, majd nyomja meg az Enter billentyűt a küldéshez",
     "chat.placeholder.mobile": "Írja be ide a csevegő üzenetet",
-    "chat.scroll-up-alert": "Régebbi üzeneteket nézel, kattints ide a legfrissebbekhez.",
+    "chat.scroll-up-alert": "Go to most recent message",
     "chat.usernames-and-x-others": "%1 & %2 és mások",
     "chat.chat-with-usernames": "Csevegés a következővel: %1",
     "chat.chat-with-usernames-and-x-others": "Csevegés %1 és %2 másik személyekkel",
