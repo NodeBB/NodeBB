@@ -54,16 +54,21 @@ define('forum/chats/messages', [
 
 	messages.updateTextAreaHeight = function (chatContentEl) {
 		const textarea = chatContentEl.find('[component="chat/input"]');
+		textarea.css({ height: messages.calcAutoTextAreaHeight(textarea) + 'px' });
+	};
+
+	messages.calcAutoTextAreaHeight = function (textarea) {
 		const scrollHeight = textarea.prop('scrollHeight');
-		textarea.css({ height: scrollHeight + 'px' });
+		const borderTopWidth = parseFloat(textarea.css('border-top-width'), 10) || 0;
+		const borderBottomWidth = parseFloat(textarea.css('border-bottom-width'), 10) || 0;
+		return scrollHeight + borderTopWidth + borderBottomWidth;
 	};
 
 	function autoresizeTextArea(textarea) {
-		const scrollHeight = textarea.prop('scrollHeight');
-		textarea.css({ height: scrollHeight + 'px' });
+		textarea.css({ height: messages.calcAutoTextAreaHeight(textarea) + 'px' });
 		textarea.on('input', function () {
 			textarea.css({ height: 0 });
-			textarea.css({ height: textarea.prop('scrollHeight') + 'px' });
+			textarea.css({ height: messages.calcAutoTextAreaHeight(textarea) + 'px' });
 		});
 	}
 

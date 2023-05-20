@@ -200,7 +200,7 @@ define('forum/chats', [
 		textarea.on('input', function () {
 			const isAtBottom = messages.isAtBottom(parent.find('.chat-content'));
 			textarea.css({ height: 0 });
-			textarea.css({ height: textarea.prop('scrollHeight') + 'px' });
+			textarea.css({ height: messages.calcAutoTextAreaHeight(textarea) + 'px' });
 			if (isAtBottom) {
 				messages.scrollToBottom(parent.find('.chat-content'));
 			}
