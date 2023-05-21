@@ -17,7 +17,7 @@ module.exports = function (module) {
 		value = helpers.valueToString(value);
 
 		try {
-			await module.client.collection('objects').updateOne({ _key: key, value: value }, { $set: { score: parseFloat(score) } }, { upsert: true });
+			await module.client.collection('objects').updateOne({ _key: key, value: value }, { $set: { score: parseFloat(score).toString() } }, { upsert: true });
 		} catch (err) {
 			if (err && err.message.startsWith('E11000 duplicate key error')) {
 				return await module.sortedSetAdd(key, score, value);
@@ -42,7 +42,8 @@ module.exports = function (module) {
 
 		const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
 		for (let i = 0; i < scores.length; i += 1) {
-			bulk.find({ _key: key, value: values[i] }).upsert().updateOne({ $set: { score: parseFloat(scores[i]) } });
+			bulk.find({ _key: key, value: values[i] }).upsert()
+				.updateOne({ $set: { score: parseFloat(scores[i]).toString() } });
 		}
 		await bulk.execute();
 	}
@@ -68,7 +69,7 @@ module.exports = function (module) {
 			bulk
 				.find({ _key: keys[i], value: value })
 				.upsert()
-				.updateOne({ $set: { score: parseFloat(isArrayOfScores ? scores[i] : scores) } });
+				.updateOne({ $set: { score: parseFloat(isArrayOfScores ? scores[i] : scores).toString() } });
 		}
 		await bulk.execute();
 	};
@@ -82,7 +83,8 @@ module.exports = function (module) {
 			if (!utils.isNumber(item[1])) {
 				throw new Error(`[[error:invalid-score, ${item[1]}]]`);
 			}
-			bulk.find({ _key: item[0], value: String(item[2]) }).upsert().updateOne({ $set: { score: parseFloat(item[1]) } });
+			bulk.find({ _key: item[0], value: String(item[2]) }).upsert()
+				.updateOne({ $set: { score: parseFloat(item[1]).toString() } });
 		});
 		await bulk.execute();
 	};
