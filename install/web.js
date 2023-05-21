@@ -112,7 +112,7 @@ function ping(req, res) {
 }
 
 function welcome(req, res) {
-	const dbs = ['mongo', 'redis', 'postgres'];
+	const dbs = ['mongo', 'redis', 'postgres', 'tigriscomp'];
 	const databases = dbs.map((databaseName) => {
 		const questions = require(`../src/database/${databaseName}`).questions.filter(question => question && !question.hideOnWebInstall);
 

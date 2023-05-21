@@ -7,6 +7,8 @@ const questions = {
 	redis: require('../src/database/redis').questions,
 	mongo: require('../src/database/mongo').questions,
 	postgres: require('../src/database/postgres').questions,
+	// todo: tigris: require('../src/database/tigris').questions,
+	tigris: require('../src/database/tigriscomp').questions,
 };
 
 module.exports = async function (config) {
@@ -35,6 +37,11 @@ async function getDatabaseConfig(config) {
 			return config;
 		}
 		return await prompt.get(questions.postgres);
+	} else if (config.database === 'tigriscomp') {
+		if ((config['tigriscomp:host'] && config['tigriscomp:port']) || config['tigriscomp:uri']) {
+			return config;
+		}
+		return await prompt.get(questions.tigriscomp);
 	}
 	throw new Error(`unknown database : ${config.database}`);
 }
@@ -65,7 +72,7 @@ function saveDatabaseConfig(config, databaseConfig) {
 			database: databaseConfig['mongo:database'],
 			uri: databaseConfig['mongo:uri'],
 		};
-	} else if (config.database === 'postgres') {
+	}else if (config.database === 'postgres') {
 		config.postgres = {
 			host: databaseConfig['postgres:host'],
 			port: databaseConfig['postgres:port'],
@@ -74,11 +81,20 @@ function saveDatabaseConfig(config, databaseConfig) {
 			database: databaseConfig['postgres:database'],
 			ssl: databaseConfig['postgres:ssl'],
 		};
-	} else {
+	}else if(config.database === 'tigriscomp') {
+		config.tigriscomp = {
+			host: databaseConfig['tigriscomp:host'],
+			port: databaseConfig['tigriscomp:port'],
+			clientid: databaseConfig['tigriscomp:clientid'],
+			clientsecret: databaseConfig['tigriscomp:clientsecret'],
+			database: databaseConfig['tigriscomp:database'],
+			uri: databaseConfig['tigriscomp:uri'],
+		};
+	}else {
 		throw new Error(`unknown database : ${config.database}`);
 	}
 
-	const allQuestions = questions.redis.concat(questions.mongo).concat(questions.postgres);
+	const allQuestions = questions.redis.concat(questions.mongo).concat(questions.postgres).concat(questions.tigriscomp);
 	for (let x = 0; x < allQuestions.length; x += 1) {
 		delete config[allQuestions[x].name];
 	}
