@@ -55,7 +55,7 @@
         "cookie-parser": "1.4.6",
         "cron": "2.3.0",
         "cropperjs": "1.5.13",
-        "csrf-sync": "4.0.0",
+        "csrf-sync": "4.0.1",
         "daemon": "1.1.0",
         "diff": "5.1.0",
         "esbuild": "0.16.10",
