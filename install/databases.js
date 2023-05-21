@@ -8,7 +8,7 @@ const questions = {
 	mongo: require('../src/database/mongo').questions,
 	postgres: require('../src/database/postgres').questions,
 	// todo: tigris: require('../src/database/tigris').questions,
-	tigris: require('../src/database/tigriscomp').questions,
+	tigriscomp: require('../src/database/tigriscomp').questions,
 };
 
 module.exports = async function (config) {
