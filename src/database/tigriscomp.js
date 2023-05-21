@@ -46,7 +46,7 @@ tigriscompModule.questions = [
 	{
 		name: 'tigriscomp:clientsecret',
 		description: 'Client Secret of your TigrisDB database',
-		default: nconf.get('tigriscomp:password') || '',
+		default: nconf.get('tigriscomp:clientsecret') || '',
 		hidden: true,
 		ask: isUriNotSpecified,
 		before: function (value) { value = value || nconf.get('tigriscomp:clientsecret') || ''; return value; },

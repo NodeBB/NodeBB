@@ -39,7 +39,7 @@ connection.getConnectionString = function (tigriscomp) {
 	}
 
 	// return uri || `mongodb://${clientCredentials}${servers.join()}/${tigriscomp.database}`;
-	return uri || `mongodb://${clientCredentials}${servers.join()}/${tigriscomp.database}`;
+	return uri || `mongodb://${clientCredentials}${servers.join()}?authMechanism=PLAIN&tls=true`;
 };
 
 connection.getConnectionOptions = function (tigriscomp) {
