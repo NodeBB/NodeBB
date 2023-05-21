@@ -72,7 +72,7 @@ define('forum/chats/recent', ['alerts', 'api'], function (alerts, api) {
 		if (!data.rooms.length) {
 			return callback();
 		}
-
+		data.loadingMore = true;
 		app.parseAndTranslate('chats', 'rooms', data, function (html) {
 			$('[component="chat/recent"]').append(html);
 			html.find('.timeago').timeago();
