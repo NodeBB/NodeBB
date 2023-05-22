@@ -44,13 +44,7 @@ Sockets.init = async function (server) {
 				if (err) {
 					return callback({ message: err.message });
 				}
-				const csrf = require('../middleware/csrf');
-				const isValid = csrf.isRequestValid({
-					session: req.session || {},
-					query: req._query,
-					headers: req.headers,
-				});
-				callback(null, isValid);
+				callback(null, true);
 			});
 		},
 	};
