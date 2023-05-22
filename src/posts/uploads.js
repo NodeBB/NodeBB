@@ -124,10 +124,9 @@ module.exports = function (Posts) {
 		}));
 		orphans = orphans.filter(Boolean);
 
-		// Note: no await. Deletion not guaranteed by method end.
-		orphans.forEach((relPath) => {
-			file.delete(_getFullPath(relPath));
-		});
+		await Promise.all(orphans.map(async (relPath) => {
+			await file.delete(_getFullPath(relPath));
+		}));
 
 		return orphans;
 	};
