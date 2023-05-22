@@ -226,7 +226,14 @@ define('forum/topic', [
 				const btn = $(trigger);
 				btn.find('i').removeClass('fa-copy').addClass('fa-check');
 				setTimeout(() => btn.find('i').removeClass('fa-check').addClass('fa-copy'), 2000);
-				return btn.parent().find('code').text();
+				const codeEl = btn.parent().find('code');
+				if (codeEl.attr('data-lines')) {
+					let codeText = '';
+					codeEl.find('.hljs-ln-code[data-line-number]')
+						.each((index, el) => { codeText += $(el).text() + '\n'; });
+					return codeText;
+				}
+				return codeEl.text();
 			},
 		});
 
