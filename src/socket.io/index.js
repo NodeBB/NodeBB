@@ -42,7 +42,7 @@ Sockets.init = async function (server) {
 		allowRequest: (req, callback) => {
 			authorize(req, (err) => {
 				if (err) {
-					return callback(err);
+					return callback({ message: err.message });
 				}
 				const csrf = require('../middleware/csrf');
 				const isValid = csrf.isRequestValid({
