@@ -18,7 +18,17 @@ const settingsController = module.exports;
 
 settingsController.get = async function (req, res) {
 	const term = req.params.term || 'general';
-	res.render(`admin/settings/${term}`);
+	const payload = {};
+	if (term === 'general') {
+		payload.routes = await helpers.getHomePageRoutes(req.uid);
+		const languageData = await languages.list();
+		languageData.forEach((language) => {
+			language.selected = language.code === meta.config.defaultLang;
+		});
+		payload.languages = languageData;
+		payload.autoDetectLang = meta.config.autoDetectLang;
+	}
+	res.render(`admin/settings/${term}`, payload);
 };
 
 settingsController.email = async (req, res) => {
@@ -96,11 +106,6 @@ settingsController.navigation = async function (req, res) {
 	admin.navigation = admin.enabled.slice();
 
 	res.render('admin/settings/navigation', admin);
-};
-
-settingsController.homepage = async function (req, res) {
-	const routes = await helpers.getHomePageRoutes(req.uid);
-	res.render('admin/settings/homepage', { routes: routes });
 };
 
 settingsController.social = async function (req, res) {

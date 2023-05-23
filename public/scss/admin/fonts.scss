@@ -1,0 +1,21 @@
+@use "@fontsource/inter/scss/mixins" as Inter;
+@use "@fontsource/poppins/scss/mixins" as Poppins;
+
+$weights: $font-weight-light, $font-weight-normal, $font-weight-semibold, $font-weight-bold;
+
+@each $weight in $weights {
+	@include Inter.fontFace(
+		$weight: $weight,
+		$display: fallback,
+		$fontDir: "./plugins/nodebb-theme-harmony/inter"
+	);
+	@include Poppins.fontFace(
+	  $weight: $weight,
+	  $display: fallback,
+	  $fontDir: "./plugins/nodebb-theme-harmony/poppins"
+	);
+}
+
+.ff-base { font-family: $font-family-base !important; }
+.ff-sans { font-family: $font-family-sans-serif !important; }
+.ff-secondary {	font-family: $font-family-secondary; }

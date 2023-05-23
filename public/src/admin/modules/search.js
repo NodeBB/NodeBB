@@ -21,7 +21,7 @@ define('admin/modules/search', ['mousetrap', 'alerts'], function (mousetrap, ale
 				// and wrap the match in a `.search-match` element
 				.replace(
 					new RegExp('^[\\s\\S]*?(.{0,25})(' + escaped + ')(.{0,25})[\\s\\S]*?$', 'gmi'),
-					'...$1<span class="search-match">$2</span>$3...<br>'
+					'...$1<span class="search-match fw-bold">$2</span>$3...<br>'
 				)
 				// collapse whitespace
 				.replace(/(?:\n ?)+/g, '\n')

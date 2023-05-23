@@ -1,4 +1,6 @@
-@import "./mixins";
+@import "fonts";
+@import "mixins";
+@import "common";
 
 @import "./header";
 @import "./mobile";
@@ -27,18 +29,6 @@ body {
 }
 
 .admin {
-	background: #fff;
-	font-size: 14px;
-
-	h1 {
-		font-size: 35px;
-	}
-	.form-label, .form-check-label {
-		font-weight: 700;
-	}
-	.btn {
-		border-radius: 0;
-	}
 	.btn-outline-secondary {
 		color: $gray-700;
 		box-shadow: 0 1px 4px rgba(0, 0, 0, .4) !important;

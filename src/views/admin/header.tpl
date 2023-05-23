@@ -25,5 +25,11 @@
 	</head>
 
 	<body class="admin {bodyClass}">
-		<!-- IMPORT admin/partials/menu.tpl -->
-		<div class="container" id="content">
+		<div class="d-none">
+			<!-- TODO: old menu remove -->
+			<!-- IMPORT admin/partials/menu.tpl -->
+		</div>
+		<div class="d-flex">
+			<!-- IMPORT admin/partials/left-sidebar.tpl -->
+			<div class="container" id="content">
+

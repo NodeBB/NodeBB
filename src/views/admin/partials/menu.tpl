@@ -1,3 +1,5 @@
+<!-- TODO: remove before merging acp-redesign -->
+
 <nav id="menu" class="hidden-md hidden-lg">
 	<section class="menu-section quick-actions">
 		<ul class="menu-section-list">
@@ -136,32 +138,6 @@
 		<ul class="quick-actions hidden-xs hidden-sm hidden-md align-items-center">
 			<!-- IMPORT admin/partials/quick_actions/buttons.tpl -->
 
-			{{{ if user.privileges.admin:settings }}}
-			<form role="search">
-				<div id="acp-search" >
-					<div class="dropdown" data-text="[[admin/menu:search.placeholder]]">
-						<input type="text" data-bs-toggle="dropdown" class="form-control">
-						<ul class="dropdown-menu dropdown-menu-end state-start-typing" role="menu">
-							<li role="presentation" class="no-results">
-								<a class="dropdown-item">[[admin/menu:search.no-results]]</a>
-							</li>
-							<li role="presentation" class="dropdown-divider search-forum"></li>
-							<li role="presentation" class="search-forum">
-								<a class="dropdown-item" role="menuitem" target="_top" href="#">
-									[[admin/menu:search.search-forum]]
-								</a>
-							</li>
-							<li role="presentation" class="keep-typing">
-								<a class="dropdown-item">[[admin/menu:search.keep-typing]]</a>
-							</li>
-							<li role="presentation" class="start-typing">
-								<a class="dropdown-item">[[admin/menu:search.start-typing]]</a>
-							</li>
-						</ul>
-					</div>
-				</div>
-			</form>
-			{{{ end }}}
 
 			{{{ if user.privileges.superadmin }}}
 			<!-- IMPORT admin/partials/quick_actions/alerts.tpl -->
@@ -237,6 +213,7 @@
 					<li><a class="dropdown-item" href="{relative_path}/admin/settings/advanced">[[admin/menu:settings/advanced]]</a></li>
 				</ul>
 			</li>
+
 			<li class="dropdown menu-item">
 				<a id="appearance-menu" href="#" class="dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false">[[admin/menu:section-appearance]]</a>
 				<ul class="dropdown-menu" role="menu">

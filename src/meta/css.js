@@ -31,10 +31,8 @@ const buildImports = {
 	},
 	admin: function (source) {
 		return [
-			'@import "admin/vars";',
-			'@import "bootswatch/dist/materia/variables";',
+			'@import "admin/overrides";',
 			'@import "bootstrap/scss/bootstrap";',
-			'@import "bootswatch/dist/materia/bootswatch";',
 			'@import "mixins";',
 			'@import "fontawesome";',
 			'@import "@adactive/bootstrap-tagsinput/src/bootstrap-tagsinput";',

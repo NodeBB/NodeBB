@@ -66,62 +66,6 @@
 		}
 	}
 
-	#acp-search {
-		input {
-			padding: 10px 20px;
-			width: 250px;
-			height: 44px;
-			background-color: rgba(0,0,0,.2);
-			border-radius: 3px;
-			box-shadow: none;
-			transition: .4s ease background-color;
-
-			&:focus {
-				background-color: #eee;
-				color: #333;
-			}
-		}
-
-		.dropdown:not(.open) {
-			&:before {
-				content: '/';
-				border: 1px solid $gray-500;
-				border-radius: 5px;
-				padding: 0px 6px;
-				font-size: 12px;
-				font-weight: 600;
-				pointer-events: none;
-
-				position: absolute;
-				top: 13px;
-				left: 1em;
-			}
-
-			&:after {
-				content: attr(data-text);
-				position: absolute;
-				top: 13px;
-				left: 3em;
-				font-size: small;
-				font-weight: 600;
-				pointer-events: none;
-			}
-
-			input {
-				color: transparent;
-			}
-		}
-
-		.search-match {
-			font-weight: 700;
-			color: black;
-		}
-	}
-
-	#main-menu > li {
-		padding-bottom: 10px;
-	}
-
 	> ul {
 		list-style-type: none;
 		padding: 0px;
