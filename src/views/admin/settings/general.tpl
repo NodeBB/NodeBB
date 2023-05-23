@@ -1,99 +1,98 @@
-<div class="mx-auto d-flex flex-column gap-4 p-4" style="max-width:800px;">
+<div class="settings-container">
 	<div class="row border-bottom py-2 m-0 sticky-top settings-main-header align-items-center">
 		<div class="col-8 px-0">
 			<h4 class="fw-bold tracking-tight mb-0">[[admin/settings/general:general-settings]]</h4>
 		</div>
 		<div class="col-4 px-3">
-			<button class="btn btn-primary btn-sm btn btn-primary btn-sm fw-semibold ff-secondary w-100 text-center">[[admin/admin:save-changes]]</button>
+			<button id="save" class="btn btn-primary btn-sm btn btn-primary btn-sm fw-semibold ff-secondary w-100 text-center">[[admin/admin:save-changes]]</button>
 		</div>
 	</div>
 	<div class="row settings m-0">
-		<div class="col-12 col-md-8 px-0 mb-4">
+		<div id="spy-container" class="col-12 col-md-8 px-0 mb-4"  tabindex="0">
+			<div class="mb-4">
+				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/general:site-settings]]
+				</h5>
+				<form>
+					<div class="mb-3">
+						<label class="form-label" for="site-title">[[admin/settings/general:title]]</label>
+						<input id="site-title" class="form-control" type="text" placeholder="[[admin/settings/general:title.name]]" data-field="title" />
+					</div>
 
-			<div class="mb-4" id="section-site-settings">
-					<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/general:site-settings]]
-					</h5>
-					<form>
-						<div class="mb-3">
-							<label class="form-label" for="site-title">[[admin/settings/general:title]]</label>
-							<input id="site-title" class="form-control" type="text" placeholder="[[admin/settings/general:title.name]]" data-field="title" />
-						</div>
+					<div class="form-check form-switch mb-3">
+						<input type="checkbox" class="form-check-input" id="showSiteTitle" data-field="showSiteTitle" name="showSiteTitle" />
+						<label for="showSiteTitle" class="form-check-label">[[admin/settings/general:title.show-in-header]]</label>
+					</div>
 
-						<div class="form-check form-switch mb-3">
-							<input type="checkbox" class="form-check-input" id="showSiteTitle" data-field="showSiteTitle" name="showSiteTitle" />
-							<label for="showSiteTitle" class="form-check-label">[[admin/settings/general:title.show-in-header]]</label>
-						</div>
+					<div class="mb-3">
+						<label class="form-label" for="title:short">[[admin/settings/general:title.short]]</label>
+						<input id="title:short" type="text" class="form-control" placeholder="[[admin/settings/general:title.short-placeholder]]" data-field="title:short" />
+					</div>
 
-						<div class="mb-3">
-							<label class="form-label" for="title:short">[[admin/settings/general:title.short]]</label>
-							<input id="title:short" type="text" class="form-control" placeholder="[[admin/settings/general:title.short-placeholder]]" data-field="title:short" />
-						</div>
+					<div class="mb-3">
+						<label class="form-label" for="title:url">[[admin/settings/general:title.url]]</label>
+						<input id ="title:url" type="text" class="form-control" placeholder="[[admin/settings/general:title.url-placeholder]]" data-field="title:url" />
+						<p class="form-text">
+							[[admin/settings/general:title.url-help]]
+						</p>
+					</div>
 
-						<div class="mb-3">
-							<label class="form-label" for="title:url">[[admin/settings/general:title.url]]</label>
-							<input id ="title:url" type="text" class="form-control" placeholder="[[admin/settings/general:title.url-placeholder]]" data-field="title:url" />
-							<p class="form-text">
-								[[admin/settings/general:title.url-help]]
-							</p>
-						</div>
+					<div class="mb-3">
+						<label class="form-label" for="browserTitle">[[admin/settings/general:browser-title]]</label>
+						<input id="browserTitle" class="form-control" type="text" placeholder="[[admin/settings/general:browser-title]]" data-field="browserTitle" />
+						<p class="form-text">
+							[[admin/settings/general:browser-title-help]]
+						</p>
+					</div>
+					<div class="mb-3">
+						<label class="form-label" for="titleLayout">[[admin/settings/general:title-layout]]</label>
+						<input id="titleLayout" class="form-control" type="text" placeholder="[[admin/settings/general:title-layout]]" data-field="titleLayout" />
+						<p class="form-text">
+							[[admin/settings/general:title-layout-help]]
+						</p>
+					</div>
+					<div class="mb-3">
+						<label class="form-label" for="description">[[admin/settings/general:description]]</label>
+						<input id="description" type="text" class="form-control" placeholder="[[admin/settings/general:description.placeholder]]" data-field="description" />
+					</div>
+					<div class="mb-3">
+						<label class="form-label" for="keywords">[[admin/settings/general:keywords]]</label>
+						<input id="keywords" type="text" class="form-control" placeholder="[[admin/settings/general:keywords-placeholder]]" data-field="keywords" data-field-type="tagsinput" />
+					</div>
 
-						<div class="mb-3">
-							<label class="form-label" for="browserTitle">[[admin/settings/general:browser-title]]</label>
-							<input id="browserTitle" class="form-control" type="text" placeholder="[[admin/settings/general:browser-title]]" data-field="browserTitle" />
-							<p class="form-text">
-								[[admin/settings/general:browser-title-help]]
-							</p>
+					<div class="mb-3">
+						<div class="mb-2">
+							<label class="form-label" for="language">[[admin/settings/languages:default-language]]</label>
+							<select id="language" data-field="defaultLang" class="form-select">
+								{{{ each languages }}}
+								<option value="{./code}" {{{ if ./selected }}}selected{{{ end }}}>{./name} ({./code})</option>
+								{{{ end }}}
+							</select>
 						</div>
-						<div class="mb-3">
-							<label class="form-label" for="titleLayout">[[admin/settings/general:title-layout]]</label>
-							<input id="titleLayout" class="form-control" type="text" placeholder="[[admin/settings/general:title-layout]]" data-field="titleLayout" />
-							<p class="form-text">
-								[[admin/settings/general:title-layout-help]]
-							</p>
-						</div>
-						<div class="mb-3">
-							<label class="form-label" for="description">[[admin/settings/general:description]]</label>
-							<input id="description" type="text" class="form-control" placeholder="[[admin/settings/general:description.placeholder]]" data-field="description" />
-						</div>
-						<div class="mb-3">
-							<label class="form-label" for="keywords">[[admin/settings/general:keywords]]</label>
-							<input id="keywords" type="text" class="form-control" placeholder="[[admin/settings/general:keywords-placeholder]]" data-field="keywords" data-field-type="tagsinput" />
-						</div>
+						<p class="form-text">
+							[[admin/settings/languages:description]]
+						</p>
 
-						<div class="mb-3">
-							<div class="mb-2">
-								<label class="form-label" for="language">[[admin/settings/languages:default-language]]</label>
-								<select id="language" data-field="defaultLang" class="form-select">
-									{{{ each languages }}}
-									<option value="{./code}" {{{ if ./selected }}}selected{{{ end }}}>{./name} ({./code})</option>
-									{{{ end }}}
-								</select>
-							</div>
-							<p class="form-text">
-								[[admin/settings/languages:description]]
-							</p>
-
-							<div class="">
-								<div class="formcheck">
-									<input class="form-check-input" type="checkbox" data-field="autoDetectLang" {{{ if autoDetectLang }}}checked{{{ end }}}/>
-									<label class="form-check-label">[[admin/settings/languages:auto-detect]]</label>
-								</div>
+						<div class="">
+							<div class="formcheck">
+								<input class="form-check-input" type="checkbox" data-field="autoDetectLang" {{{ if autoDetectLang }}}checked{{{ end }}}/>
+								<label class="form-check-label">[[admin/settings/languages:auto-detect]]</label>
 							</div>
 						</div>
-					</form>
+					</div>
+				</form>
 			</div>
 
 			<hr/>
 
 			<div class="mb-4" id="section-logo">
-				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/general:logo]]</h5>
+				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/general:logo-and-icons]]</h5>
 				<div class="mb-3">
 					<label class="form-label" for="logoUrl">[[admin/settings/general:logo.image]]</label>
-					<div class="input-group">
+					<div class="d-flex gap-1">
 						<input id="logoUrl" type="text" class="form-control" placeholder="[[admin/settings/general:logo.image-placeholder]]" data-field="brand:logo" />
 
-						<input data-action="upload" data-target="logoUrl" data-route="{config.relative_path}/api/admin/uploadlogo" type="button" class="btn btn-outline-secondary" value="[[admin/settings/general:logo.upload]]" />
-						<button data-action="removeLogo" type="button" class="btn btn-danger"><i class="fa fa-times"></i></button>
+						<input data-action="upload" data-target="logoUrl" data-route="{config.relative_path}/api/admin/uploadlogo" type="button" class="btn btn-light" value="[[admin/settings/general:logo.upload]]" />
+						<button data-action="removeLogo" type="button" class="btn btn-light"><i class="fa fa-trash text-danger"></i></button>
 					</div>
 				</div>
 
@@ -112,40 +111,30 @@
 
 				<div class="mb-3">
 					<label class="form-label" for="og_image">og:image</label>
-					<div class="input-group">
+					<div class="d-flex gap-1">
 						<input id="og_image" type="text" class="form-control" placeholder="" data-field="og:image" />
 
-						<input data-action="upload" data-target="og_image" data-route="{config.relative_path}/api/admin/uploadOgImage" type="button" class="btn btn-outline-secondary" value="[[admin/settings/general:logo.upload]]" />
-						<button data-action="removeOgImage" type="button" class="btn btn-danger"><i class="fa fa-times"></i></button>
+						<input data-action="upload" data-target="og_image" data-route="{config.relative_path}/api/admin/uploadOgImage" type="button" class="btn btn-light" value="[[admin/settings/general:logo.upload]]" />
+						<button data-action="removeOgImage" type="button" class="btn btn-light"><i class="fa fa-trash text-danger"></i></button>
 					</div>
 				</div>
-			</div>
 
-			<hr/>
-
-			<div class="mb-4" id="section-favicon">
-				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/general:favicon]]</h5>
 				<div class="mb-3">
-					<div class="input-group">
+					<label class="form-label" for="og_image">[[admin/settings/general:favicon]]</label>
+					<div class="d-flex gap-1">
 						<input id="faviconUrl" type="text" class="form-control" placeholder="favicon.ico" data-field="brand:favicon" data-action="upload" data-target="faviconUrl" data-route="{config.relative_path}/api/admin/uploadfavicon" readonly />
 
-						<input data-action="upload" data-target="faviconUrl" data-route="{config.relative_path}/api/admin/uploadfavicon" data-help="0" type="button" class="btn btn-outline-secondary" value="[[admin/settings/general:favicon.upload]]" />
-						<button data-action="removeFavicon" type="button" class="btn btn-danger"><i class="fa fa-times"></i></button>
+						<input data-action="upload" data-target="faviconUrl" data-route="{config.relative_path}/api/admin/uploadfavicon" data-help="0" type="button" class="btn btn-light" value="[[admin/settings/general:favicon.upload]]" />
+						<button data-action="removeFavicon" type="button" class="btn btn-light"><i class="fa fa-trash text-danger"></i></button>
 					</div>
 				</div>
-			</div>
-
-			<hr/>
-
-			<div class="mb-4">
-				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/general:pwa]]</h5>
 
 				<div class="mb-3">
 					<label class="form-label" for="touchIconUrl">[[admin/settings/general:touch-icon]]</label>
-					<div class="input-group">
+					<div class="d-flex gap-1">
 						<input id="touchIconUrl" type="text" class="form-control" data-field="brand:touchIcon" data-action="upload" data-target="touchIconUrl" data-route="{config.relative_path}/api/admin/uploadTouchIcon" readonly />
-						<input data-action="upload" data-target="touchIconUrl" data-route="{config.relative_path}/api/admin/uploadTouchIcon" type="button" class="btn btn-outline-secondary" value="[[admin/settings/general:touch-icon.upload]]" />
-						<button data-action="removeTouchIcon" type="button" class="btn btn-danger"><i class="fa fa-times"></i></button>
+						<input data-action="upload" data-target="touchIconUrl" data-route="{config.relative_path}/api/admin/uploadTouchIcon" type="button" class="btn btn-light" value="[[admin/settings/general:touch-icon.upload]]" />
+						<button data-action="removeTouchIcon" type="button" class="btn btn-light"><i class="fa fa-trash text-danger"></i></button>
 					</div>
 					<p class="form-text">
 						[[admin/settings/general:touch-icon.help]]
@@ -154,11 +143,11 @@
 
 				<div class="mb-3">
 					<label class="form-label" for="maskableIconUrl">[[admin/settings/general:maskable-icon]]</label>
-					<div class="input-group">
+					<div class="d-flex gap-1">
 						<input id="maskableIconUrl" type="text" class="form-control" data-field="brand:maskableIcon" data-action="upload" data-target="maskableIconUrl" data-route="{config.relative_path}/api/admin/uploadMaskableIcon" readonly />
 
-						<input data-action="upload" data-target="maskableIconUrl" data-route="{config.relative_path}/api/admin/uploadMaskableIcon" type="button" class="btn btn-outline-secondary" value="[[admin/settings/general:touch-icon.upload]]" />
-						<button data-action="removeMaskableIcon" type="button" class="btn btn-danger"><i class="fa fa-times"></i></button>
+						<input data-action="upload" data-target="maskableIconUrl" data-route="{config.relative_path}/api/admin/uploadMaskableIcon" type="button" class="btn btn-light" value="[[admin/settings/general:touch-icon.upload]]" />
+						<button data-action="removeMaskableIcon" type="button" class="btn btn-light"><i class="fa fa-trash text-danger"></i></button>
 					</div>
 					<p class="form-text">
 						[[admin/settings/general:maskable-icon.help]]
@@ -296,21 +285,27 @@
 					</p>
 				</div>
 			</div>
-		</div>
 
-		<!-- TODO: move this to toc partial and generate dynamically from settings-header elements -->
-		<div class="col-md-4 d-none d-md-block">
-			<div class="sticky-top" style="top: 4.0rem;">
-				<div class="fw-bold text-sm text-muted">[[admin/settings/general:on-this-page]]</div>
-				<nav id="settings-navbar" class="h-100 flex-column align-items-stretch">
-					<nav class="nav nav-pills flex-column">
-						<a class="nav-link" href="#section-site-settings">[[admin/settings/general:site-settings]]</a>
-						<a class="nav-link" href="#section-logo">[[admin/settings/general:logo]]</a>
-						<a class="nav-link" href="#section-favicon">[[admin/settings/general:favicon]]</a>
-						<a class="nav-link" href="#section-favicon">[[admin/settings/general:favicon]]</a>
-					</nav>
-				</nav>
+			<hr/>
+
+			<div class="mb-4">
+				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/social:post-sharing]]</h5>
+				<div class="mb-3">
+					<div class="form-group" id="postSharingNetworks">
+						{{{ each postSharing }}}
+						<div class="form-check form-switch mb-3">
+							<input type="checkbox" class="form-check-input" id="{./id}" data-field="post-sharing-{./id}" name="{./id}" {{{ if ./activated }}}checked{{{ end }}} />
+							<label for="{./id}" class="form-check-label">
+								<i class="fa fa-fw {./class}"></i> {./name}
+							</label>
+						</div>
+						{{{ end }}}
+						<p class="form-text">[[admin/settings/social:info-plugins-additional]]</p>
+					</div>
+				</div>
 			</div>
 		</div>
+
+		<!-- IMPORT admin/partials/settings/toc.tpl -->
 	</div>
 </div>

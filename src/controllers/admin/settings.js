@@ -21,6 +21,7 @@ settingsController.get = async function (req, res) {
 	const payload = {};
 	if (term === 'general') {
 		payload.routes = await helpers.getHomePageRoutes(req.uid);
+		payload.postSharing = await social.getPostSharing();
 		const languageData = await languages.list();
 		languageData.forEach((language) => {
 			language.selected = language.code === meta.config.defaultLang;

@@ -82,8 +82,6 @@ app.onDomReady();
 	$(window).on('action:ajaxify.contentLoaded', function (ev, data) {
 		selectMenuItem(data.url);
 		setupRestartLinks();
-		require('material-design-lite');
-		componentHandler.upgradeDom();
 	});
 
 	function setupNProgress() {

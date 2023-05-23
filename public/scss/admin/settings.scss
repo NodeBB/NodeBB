@@ -1,3 +1,11 @@
+.settings-container {
+	max-width: 800px;
+	margin: 0 auto;
+	display: flex;
+	flex-direction: column;
+	gap: $spacer * 1.5;
+	padding: $spacer * 1.5;
+}
 .settings-main-header {
 	background-color: white;
 }
