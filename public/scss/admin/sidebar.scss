@@ -1,0 +1,13 @@
+#left-sidebar {
+	.btn-ghost, .btn-ghost-sm {
+		i {
+			color: $gray-500;
+		}
+	}
+
+	.accordion-body {
+		.btn-ghost-sm {
+			padding-left: 38px!important;
+		}
+	}
+}

@@ -16,7 +16,7 @@ $btn-ghost-hover-color: mix($light, $dark, 90%);
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	gap: ($spacer * 0.5);
+	gap: ($spacer * 0.75);
 	border-radius: $border-radius-sm;
 	border-width: 1px;
 	border-color: transparent;
@@ -24,11 +24,12 @@ $btn-ghost-hover-color: mix($light, $dark, 90%);
 	padding: ($spacer * 0.25) ($spacer * 0.5);
 	text-align: left;
 	--bs-text-opacity: 1;
-	color: inherit !important;
+	color: rgb(73 80 87 / var(--bs-text-opacity));
 	font-family: $font-family-secondary;
 	cursor: pointer;
 	&:hover, &.active {
 		background-color: $btn-ghost-hover-color;
+		color: rgb(73 80 87 / var(--bs-text-opacity));
 		text-decoration: none;
 	}
 }

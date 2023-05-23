@@ -2,13 +2,13 @@
 
 <div class="accordion overflow-auto d-flex flex-column gap-1" id="accordionACP">
 	<div class="d-flex flex-column">
-		<button class="btn-ghost-sm justify-content-start" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDashboard" aria-expanded="true" aria-controls="collapseDashboard">
-			<i class="fa fa-gauge text-muted"></i>
+		<button class="btn-ghost justify-content-start" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDashboard" aria-expanded="true" aria-controls="collapseDashboard">
+			<i class="fa fa-fw fa-gauge"></i>
 			<div class="flex-1 font-serif text-sm fw-semibold">[[admin/menu:section-dashboard]]</div>
 		</button>
 
 		<div id="collapseDashboard" class="accordion-collapse collapse show" data-bs-parent="#accordionACP">
-			<div class="accordion-body py-1">
+			<div class="accordion-body p-0">
 				<a class="btn-ghost-sm justify-content-start text-decoration-none" href="{relative_path}/admin/dashboard">[[admin/menu:dashboard/overview]]</a>
 				<a class="btn-ghost-sm justify-content-start text-decoration-none" href="{relative_path}/admin/dashboard/logins">[[admin/menu:dashboard/logins]]</a>
 				<a class="btn-ghost-sm justify-content-start text-decoration-none" href="{relative_path}/admin/dashboard/users">[[admin/menu:dashboard/users]]</a>
@@ -20,13 +20,13 @@
 
 	{{{ if showManageMenu }}}
 	<div class="d-flex flex-column">
-		<button class="btn-ghost-sm justify-content-start" type="button" data-bs-toggle="collapse" data-bs-target="#collapseManage" aria-expanded="true" aria-controls="collapseManage">
-			<i class="fa fa-list text-muted"></i>
+		<button class="btn-ghost justify-content-start" type="button" data-bs-toggle="collapse" data-bs-target="#collapseManage" aria-expanded="true" aria-controls="collapseManage">
+			<i class="fa fa-fw fa-list"></i>
 			<div class="flex-1 font-serif text-sm fw-semibold">[[admin/menu:section-manage]]</div>
 		</button>
 
 		<div id="collapseManage" class="accordion-collapse collapse" data-bs-parent="#accordionACP">
-			<div class="accordion-body py-1">
+			<div class="accordion-body p-0">
 				{{{ if user.privileges.admin:categories }}}
 				<a class="btn-ghost-sm justify-content-start text-decoration-none" id="manage-categories" href="{relative_path}/admin/manage/categories">[[admin/menu:manage/categories]]</a>
 				{{{ end }}}
@@ -60,13 +60,13 @@
 
 	{{{ if user.privileges.admin:settings }}}
 	<div class="d-flex flex-column">
-		<button class="btn-ghost-sm justify-content-start" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSettings" aria-expanded="true" aria-controls="collapseSettings">
-			<i class="fa fa-sliders text-muted"></i>
+		<button class="btn-ghost justify-content-start" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSettings" aria-expanded="true" aria-controls="collapseSettings">
+			<i class="fa fa-fw fa-sliders"></i>
 			<div class="flex-1 font-serif text-sm fw-semibold">[[admin/menu:section-settings]]</div>
 		</button>
 
 		<div id="collapseSettings" class="accordion-collapse collapse" data-bs-parent="#accordionACP">
-			<div class="accordion-body py-1">
+			<div class="accordion-body p-0">
 				<a class="btn-ghost-sm justify-content-start text-decoration-none" id="settings-general" href="{relative_path}/admin/settings/general">[[admin/menu:section-general]]</a>
 				<a class="btn-ghost-sm justify-content-start text-decoration-none" href="{relative_path}/admin/settings/navigation">[[admin/menu:settings/navigation]]</a>
 				<a class="btn-ghost-sm justify-content-start text-decoration-none" href="{relative_path}/admin/settings/user">[[admin/menu:settings/user]]</a>
@@ -89,13 +89,13 @@
 	</div>
 
 	<div class="d-flex flex-column">
-		<button class="btn-ghost-sm justify-content-start" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAppearance" aria-expanded="true" aria-controls="collapseAppearance">
-			<i class="fa fa-paintbrush text-muted"></i>
+		<button class="btn-ghost justify-content-start" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAppearance" aria-expanded="true" aria-controls="collapseAppearance">
+			<i class="fa fa-fw fa-paintbrush"></i>
 			<div class="flex-1 font-serif text-sm fw-semibold">[[admin/menu:section-appearance]]</div>
 		</button>
 
 		<div id="collapseAppearance" class="accordion-collapse collapse" data-bs-parent="#accordionACP">
-			<div class="accordion-body py-1">
+			<div class="accordion-body p-0">
 				<a class="btn-ghost-sm justify-content-start text-decoration-none" id="appearance-themes" href="{relative_path}/admin/appearance/themes">[[admin/menu:appearance/themes]]</a>
 				<a class="btn-ghost-sm justify-content-start text-decoration-none" id="appearance-skins" href="{relative_path}/admin/appearance/skins">[[admin/menu:appearance/skins]]</a>
 				<a class="btn-ghost-sm justify-content-start text-decoration-none" id="appearance-customise" href="{relative_path}/admin/appearance/customise">[[admin/menu:appearance/customise]]</a>
@@ -104,13 +104,13 @@
 	</div>
 
 	<div class="d-flex flex-column">
-		<button class="btn-ghost-sm justify-content-start" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExtend" aria-expanded="true" aria-controls="collapseExtend">
-			<i class="fa fa-wrench text-muted"></i>
+		<button class="btn-ghost justify-content-start" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExtend" aria-expanded="true" aria-controls="collapseExtend">
+			<i class="fa fa-fw fa-wrench"></i>
 			<div class="flex-1 font-serif text-sm fw-semibold">[[admin/menu:section-extend]]</div>
 		</button>
 
 		<div id="collapseExtend" class="accordion-collapse collapse" data-bs-parent="#accordionACP">
-			<div class="accordion-body py-1">
+			<div class="accordion-body p-0">
 				<a class="btn-ghost-sm justify-content-start text-decoration-none" href="{relative_path}/admin/extend/plugins">[[admin/menu:extend/plugins]]</a>
 				<a class="btn-ghost-sm justify-content-start text-decoration-none" href="{relative_path}/admin/extend/widgets">[[admin/menu:extend/widgets]]</a>
 				<a class="btn-ghost-sm justify-content-start text-decoration-none" href="{relative_path}/admin/extend/rewards">[[admin/menu:extend/rewards]]</a>
@@ -120,20 +120,20 @@
 
 	{{{ if plugins.length }}}
 	<div class="d-flex flex-column">
-		<button class="btn-ghost-sm justify-content-start" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePlugins" aria-expanded="true" aria-controls="collapsePlugins">
-			<i class="fa fa-plug text-muted"></i>
+		<button class="btn-ghost justify-content-start" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePlugins" aria-expanded="true" aria-controls="collapsePlugins">
+			<i class="fa fa-fw fa-plug"></i>
 			<div class="flex-1 font-serif text-sm fw-semibold">[[admin/menu:section-plugins]]</div>
 		</button>
 
 		<div id="collapsePlugins" class="accordion-collapse collapse" data-bs-parent="#accordionACP">
-			<div class="accordion-body py-1">
+			<div class="accordion-body p-0">
 				{{{ each plugins }}}
 				<a class="btn-ghost-sm justify-content-start text-decoration-none" href="{relative_path}/admin{./route}">{./name}</a>
 				{{{ end }}}
 
 				{{{ if authentication.length }}}
 				<hr/>
-				<div class="text-muted text-sm">[[admin/menu:section-social-auth]]</div>
+				<div class="text-sm">[[admin/menu:section-social-auth]]</div>
 				{{{ each authentication }}}
 				<a class="btn-ghost-sm justify-content-start text-decoration-none" href="{relative_path}/admin{./route}">{./name}</a>
 				{{{ end }}}
@@ -148,13 +148,13 @@
 
 	{{{ if user.privileges.superadmin }}}
 	<div class="d-flex flex-column">
-		<button class="btn-ghost-sm justify-content-start" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAdvanced" aria-expanded="true" aria-controls="collapseAdvanced">
-			<i class="fa fa-superpowers text-muted"></i>
+		<button class="btn-ghost justify-content-start" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAdvanced" aria-expanded="true" aria-controls="collapseAdvanced">
+			<i class="fa fa-fw fa-superpowers"></i>
 			<div class="flex-1 font-serif text-sm fw-semibold">[[admin/menu:section-advanced]]</div>
 		</button>
 
 		<div id="collapseAdvanced" class="accordion-collapse collapse" data-bs-parent="#accordionACP">
-			<div class="accordion-body py-1">
+			<div class="accordion-body p-0">
 				<a class="btn-ghost-sm justify-content-start text-decoration-none" href="{relative_path}/admin/advanced/database">[[admin/menu:advanced/database]]</a>
 				<a class="btn-ghost-sm justify-content-start text-decoration-none" href="{relative_path}/admin/advanced/events">[[admin/menu:advanced/events]]</a>
 				<a class="btn-ghost-sm justify-content-start text-decoration-none" href="{relative_path}/admin/advanced/hooks">[[admin/menu:advanced/hooks]]</a>
