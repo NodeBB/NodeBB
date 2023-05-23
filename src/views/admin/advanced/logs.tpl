@@ -1,4 +1,4 @@
-<div class="row logs">
+<div class="row logs mt-4">
 	<div class="col-lg-9">
 		<div class="card">
 			<div class="card-header"><i class="fa fa-file-text-o"></i> [[admin/advanced/logs:logs]]</div>

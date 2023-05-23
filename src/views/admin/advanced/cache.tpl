@@ -1,5 +1,5 @@
-<!-- IMPORT admin/partials/settings/header.tpl -->
-<div class="row post-cache">
+
+<div class="row post-cache mt-4 settings">
 	<div class="col-lg-12">
 		<div class="row">
 			{{{each caches}}}
@@ -52,4 +52,4 @@
 	</div>
 </div>
 
-<!-- IMPORT admin/partials/settings/footer.tpl -->
+<!-- IMPORT admin/partials/save_button.tpl -->

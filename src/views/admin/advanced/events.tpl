@@ -1,4 +1,4 @@
-<div class="row events">
+<div class="row events mt-4">
 	<div class="col-lg-9">
 		<h5><i class="fa fa-calendar-o"></i> [[admin/advanced/events:events]]</h5>
 		{{{ if !events.length }}}
@@ -6,21 +6,19 @@
 		{{{ end }}}
 		<div class="events-list">
 			{{{ each events }}}
-			<div class="card mb-3">
+			<div class="card mb-3" data-eid="{events.eid}">
 				<div class="card-body">
-					<div data-eid="{events.eid}">
-						<div class="mb-3">
-							<span class="badge bg-primary">#{events.eid}</span>
-							<span class="badge bg-info">{events.type}</span>
-							<span class="badge bg-info">uid {events.uid}</span>
-							{{{ if events.ip }}}<span class="badge bg-info">{events.ip}</span>{{{ end }}}
-							<a href="{config.relative_path}/user/{events.user.userslug}" target="_blank">{buildAvatar(events.user, "24px", true)}</a>
-							<a href="{config.relative_path}/user/{events.user.userslug}" target="_blank">{events.user.username}</a>
-							<span class="float-end delete-event ms-2 pointer"><i class="fa fa-trash-o"></i></span>
-							<span class="float-end">{events.timestampISO}</span>
-						</div>
-						<pre class="text-bg-light p-3">{events.jsonString}</pre>
+					<div class="mb-3">
+						<span class="badge bg-primary">#{events.eid}</span>
+						<span class="badge bg-info">{events.type}</span>
+						<span class="badge bg-info">uid {events.uid}</span>
+						{{{ if events.ip }}}<span class="badge bg-info">{events.ip}</span>{{{ end }}}
+						<a href="{config.relative_path}/user/{events.user.userslug}" target="_blank">{buildAvatar(events.user, "24px", true)}</a>
+						<a href="{config.relative_path}/user/{events.user.userslug}" target="_blank">{events.user.username}</a>
+						<span class="float-end delete-event ms-2 pointer"><i class="fa fa-trash-o"></i></span>
+						<span class="float-end">{events.timestampISO}</span>
 					</div>
+					<pre class="text-bg-light p-3">{events.jsonString}</pre>
 				</div>
 			</div>
 			{{{ end }}}
