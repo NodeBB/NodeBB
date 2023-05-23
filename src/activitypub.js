@@ -21,7 +21,7 @@ ActivityPub.getPublicKey = async (uid) => {
 };
 
 async function generateKeys(uid) {
-	winston.info(`[activitypub] Generating RSA key-pair for uid ${uid}`);
+	winston.verbose(`[activitypub] Generating RSA key-pair for uid ${uid}`);
 	const {
 		publicKey,
 		privateKey,
