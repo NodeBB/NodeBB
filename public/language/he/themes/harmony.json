@@ -5,11 +5,11 @@
 	"login-register-to-search": "התחברו או הירשמו כדי לחפש.",
 	"settings.title": "הגדרות ערכת נושא",
 	"settings.enableQuickReply": "הפעלת תגובה מהירה",
-	"settings.centerHeaderElements": "מרכז אלמנטים של כותרת",
-	"settings.mobileTopicTeasers": "הצגת טיזרים לנושאים בנייד",
-	"settings.stickyToolbar": "סרגל כלים מוצמד",
-	"settings.stickyToolbar.help": "סרגל הכלים בדפי נושאים וקטגוריות ייצמד לראש העמוד",
+	"settings.centerHeaderElements": "מרכוז אלמנטים של כותרת",
+	"settings.mobileTopicTeasers": "הצגת טיזרים של נושאים בסלולרי",
+	"settings.stickyToolbar": "סרגל כלים מוצמד בעת גלילה",
+	"settings.stickyToolbar.help": "סרגל הכלים בדפי נושאים וקטגוריות ייצמד לראש העמוד בעת גלילה",
 	"settings.autohideBottombar": "הסתרה אוטומטית של סרגל תחתון",
 	"settings.autohideBottombar.help": "הסרגל התחתון בתצוגת הנייד יוסתר כאשר הדף ייגלל מטה",
-	"settings.chatModals": "אפשר צ'אט בחלונית מוקטנת"
+	"settings.chatModals": "הפעלת צ'אט בחלונית מוקטנת"
 }
