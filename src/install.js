@@ -206,6 +206,7 @@ async function completeConfigSetup(config) {
 	await db.init();
 	if (db.hasOwnProperty('createIndices')) {
 		await db.createIndices();
+		await db.createSchema();
 	}
 
 	// Sanity-check/fix url/port

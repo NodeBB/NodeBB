@@ -91,6 +91,53 @@ tigriscompModule.createIndices = async function () {
 	winston.info('[database] Checking database indices done!');
 };
 
+tigriscompModule.createSchema = async function () {
+	// TODO: Remove this when using TigrisDB core, this is just a temporary solution.
+	// Schema can be added directly using TigrisDB core.
+	const schema = {
+		schema: require('./tigriscomp/schema'),
+	};
+
+	winston.info('[database] Creating objects schema.');
+
+	const request = require('request-promise-native');
+
+	await request({
+		uri: 'https://api.preview.tigrisdata.cloud/v1/auth/token',
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded',
+		},
+		form: {
+			grant_type: 'client_credentials',
+			client_id: nconf.get('tigriscomp').clientid,
+			client_secret: nconf.get('tigriscomp').clientsecret,
+		},
+		json: true,
+	})
+		.then((response) => {
+			if (response.access_token) {
+				return request({
+					uri: `https://api.preview.tigrisdata.cloud/v1/projects/${nconf.get('tigriscomp').database}/database/collections/objects/createOrUpdate`,
+					method: 'POST',
+					headers: {
+						Authorization: `Bearer ${response.access_token}`,
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify(schema),
+				})
+					.then((response) => {
+						console.log('response: ', response);
+					})
+					.catch((err) => {
+						console.error('Error: ', err);
+					});
+			}
+		}).catch((err) => {
+			console.error('Error: ', err);
+		});
+};
+
 tigriscompModule.checkCompatibility = function (callback) {
 	const mongoPkg = require('mongodb/package.json');
 	tigriscompModule.checkCompatibilityVersion(mongoPkg.version, callback);

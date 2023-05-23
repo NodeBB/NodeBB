@@ -72,7 +72,7 @@ function saveDatabaseConfig(config, databaseConfig) {
 			database: databaseConfig['mongo:database'],
 			uri: databaseConfig['mongo:uri'],
 		};
-	}else if (config.database === 'postgres') {
+	} else if (config.database === 'postgres') {
 		config.postgres = {
 			host: databaseConfig['postgres:host'],
 			port: databaseConfig['postgres:port'],
@@ -81,7 +81,7 @@ function saveDatabaseConfig(config, databaseConfig) {
 			database: databaseConfig['postgres:database'],
 			ssl: databaseConfig['postgres:ssl'],
 		};
-	}else if(config.database === 'tigriscomp') {
+	} else if (config.database === 'tigriscomp') {
 		config.tigriscomp = {
 			host: databaseConfig['tigriscomp:host'],
 			port: databaseConfig['tigriscomp:port'],
@@ -90,7 +90,7 @@ function saveDatabaseConfig(config, databaseConfig) {
 			database: databaseConfig['tigriscomp:database'],
 			uri: databaseConfig['tigriscomp:uri'],
 		};
-	}else {
+	} else {
 		throw new Error(`unknown database : ${config.database}`);
 	}
 
