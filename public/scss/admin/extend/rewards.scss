@@ -35,9 +35,6 @@
 		&.reward-block {
 			border-color: $success;
 			background-color: lighten($success, 15%);
-			color: #fff;
-			a, select, input { color: #fff; }
-			select > option { color: #333; }
 			width: 100%;
 			min-height: 110px;
 		}

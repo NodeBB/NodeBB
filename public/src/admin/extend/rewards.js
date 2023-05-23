@@ -95,7 +95,7 @@ define('admin/extend/rewards', ['alerts'], function (alerts) {
 			html += '<label for="' + input.name + '">' + input.label + '<br />';
 			switch (input.type) {
 				case 'select':
-					html += '<select class="form-control" name="' + input.name + '">';
+					html += '<select class="form-select" name="' + input.name + '">';
 					input.values.forEach(function (value) {
 						html += '<option value="' + value.value + '">' + value.name + '</option>';
 					});

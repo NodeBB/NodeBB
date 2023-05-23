@@ -61,22 +61,6 @@ body {
 		background: $primary !important;
 	}
 
-	.nodebb-logo {
-		img {
-			height: 31px;
-			margin-top: -8px;
-			margin-left: -7px;
-			vertical-align: -43%;
-		}
-
-		@include box-header-font;
-		color: #fff;
-	}
-
-	#breadcrumbs {
-		cursor: default;
-	}
-
 	@mixin acp-panel-heading() {
 		padding: 7px 14px;
 		border: 0;
@@ -129,27 +113,6 @@ body {
 		}
 	}
 
-    .navbar-static-top, .navbar-fixed-top {
-        box-shadow: 0px -3px 12px rgba(0, 0, 0, 0.5);
-    }
-
-    .navbar-header > .navbar-toggle {
-        margin-right: 8px;
-    }
-
-    .navbar-nav {
-	    >li {
-            >#reconnect {
-                color: $gray-700;
-            }
-
-            >#reconnect:focus, >#reconnect:hover {
-                color: $gray-700;
-                background-color: transparent;
-            }
-        }
-    }
-
 	#taskbar {
 		display: none; /* not sure why I have to do this, but it only seems to show up on prod */
 	}
@@ -173,23 +136,6 @@ body {
 			padding-bottom: 5px;
 			padding-left: 0;
 		}
-	}
-}
-
-// Allowing text to the right of an image-type brand
-// See: https://github.com/twbs/bootstrap/commit/8e2348e9eda51296eb680192379ab37f10355ca3
-.navbar-brand > img {
-  display: inline-block;
-}
-
-.category-settings-form {
-	h3 {
-		margin-top: 0;
-		cursor: pointer;
-	}
-
-	h4 {
-		cursor: pointer;
 	}
 }
 
@@ -247,10 +193,6 @@ body {
 	border: 1px dashed $success;
 	background: lighten($success, 10%);
 	opacity: 0.5;
-}
-
-form small {
-	color: $gray-700;
 }
 
 .caret {
