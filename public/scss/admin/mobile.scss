@@ -175,17 +175,3 @@
 		overflow-x: hidden;
 	}
 }
-
-@media (max-width: 768px) {
-	.content-header, .settings-header {
-		font-size: 200%;
-		margin-bottom: 20px;
-		margin-left: -2px;
-	}
-
-
-	.dropdown-menu {
-		margin-top: -35px;
-		margin-right: -2px;
-	}
-}

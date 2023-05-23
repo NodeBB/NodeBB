@@ -3,7 +3,6 @@
 @import "common";
 
 @import "sidebar";
-// @import "./header";
 @import "./mobile";
 
 @import "./general/dashboard";
@@ -18,7 +17,7 @@
 @import "./extend/rewards";
 @import "./extend/widgets";
 @import "./advanced/database";
-@import "./settings";
+@import "settings";
 
 @import "./modules/alerts";
 @import "./modules/selectable";

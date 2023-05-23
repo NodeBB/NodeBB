@@ -31,5 +31,5 @@
 		</div>
 		<div class="d-flex">
 			<!-- IMPORT admin/partials/left-sidebar.tpl -->
-			<div class="container" id="content">
+			<div class="container flex-1" id="content">
 

@@ -10,6 +10,8 @@
 	font-family: $font-family-base;
 }
 
+.tracking-tight { letter-spacing: -0.02em; }
+
 $btn-ghost-hover-color: mix($light, $dark, 90%);
 
 @mixin btn-ghost-base {

@@ -5,5 +5,6 @@
 	"acp-title": "%1 | NodeBB Admin Control Panel",
 	"settings-header-contents": "Contents",
 	"changes-not-saved": "Changes Not Saved",
-	"changes-not-saved-message": "NodeBB encountered a problem saving your changes. (%1)"
+	"changes-not-saved-message": "NodeBB encountered a problem saving your changes. (%1)",
+	"save-changes": "Save changes"
 }
