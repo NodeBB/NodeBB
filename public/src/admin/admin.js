@@ -55,10 +55,16 @@ app.onDomReady();
 	});
 
 	function showCorrectNavTab() {
-		// show correct tab if url has #
-		if (window.location.hash) {
-			$('.nav-pills a[href="' + window.location.hash + '"]').tab('show');
+		const accordionEl = $('#accordionACP');
+		let pathname = window.location.pathname;
+		if (pathname === '/admin') {
+			pathname = '/admin/dashboard';
 		}
+		const selectedButton = accordionEl.find(`a[href="${pathname}"]`);
+		accordionEl.find('a').removeClass('active');
+		accordionEl.find('.accordion-collapse').removeClass('show');
+		selectedButton.addClass('active');
+		selectedButton.parents('.accordion-collapse').addClass('show');
 	}
 
 	$(document).ready(function () {
@@ -75,7 +81,6 @@ app.onDomReady();
 			return false;
 		});
 
-		configureSlidemenu();
 		setupNProgress();
 	});
 
@@ -176,64 +181,6 @@ app.onDomReady();
 							instance.restart();
 						}
 					});
-				});
-			});
-		});
-	}
-
-	function configureSlidemenu() {
-		require(['slideout'], function (Slideout) {
-			let env = utils.findBootstrapEnvironment();
-
-			const slideout = new Slideout({
-				panel: document.getElementById('panel'),
-				menu: document.getElementById('menu'),
-				padding: 256,
-				tolerance: 70,
-			});
-
-			if (env === 'md' || env === 'lg') {
-				slideout.disableTouch();
-			}
-
-			$('#mobile-menu').on('click', function () {
-				slideout.toggle();
-			});
-
-			$('#menu a').on('click', function () {
-				slideout.close();
-			});
-
-			$(window).on('resize', function () {
-				slideout.close();
-
-				env = utils.findBootstrapEnvironment();
-				if (['xxl', 'xl', 'lg'].includes(env)) {
-					slideout.disableTouch();
-					$('#header').css({
-						position: 'relative',
-					});
-				} else {
-					slideout.enableTouch();
-					$('#header').css({
-						position: 'fixed',
-					});
-				}
-			});
-
-			function onOpeningMenu() {
-				$('#header').css({
-					top: ($('#panel').position().top * -1) + 'px',
-					position: 'absolute',
-				});
-			}
-
-			slideout.on('open', onOpeningMenu);
-
-			slideout.on('close', function () {
-				$('#header').css({
-					top: '0px',
-					position: 'fixed',
 				});
 			});
 		});

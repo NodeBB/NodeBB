@@ -7,7 +7,7 @@
 			<div class="flex-1 font-serif text-sm fw-semibold">[[admin/menu:section-dashboard]]</div>
 		</button>
 
-		<div id="collapseDashboard" class="accordion-collapse collapse show" data-bs-parent="#accordionACP">
+		<div id="collapseDashboard" class="accordion-collapse collapse" data-bs-parent="#accordionACP">
 			<div class="accordion-body p-0">
 				<a class="btn-ghost-sm justify-content-start text-decoration-none" href="{relative_path}/admin/dashboard">[[admin/menu:dashboard/overview]]</a>
 				<a class="btn-ghost-sm justify-content-start text-decoration-none" href="{relative_path}/admin/dashboard/logins">[[admin/menu:dashboard/logins]]</a>
