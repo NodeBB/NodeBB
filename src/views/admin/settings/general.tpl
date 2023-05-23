@@ -3,8 +3,8 @@
 		<div class="col-8 px-0">
 			<h4 class="fw-bold tracking-tight mb-0">[[admin/settings/general:general-settings]]</h4>
 		</div>
-		<div class="col-4 px-3">
-			<button id="save" class="btn btn-primary btn-sm btn btn-primary btn-sm fw-semibold ff-secondary w-100 text-center">[[admin/admin:save-changes]]</button>
+		<div class="col-4 px-0 px-md-3">
+			<button id="save" class="btn btn-primary btn-sm btn btn-primary btn-sm fw-semibold ff-secondary w-100 text-center text-nowrap">[[admin/admin:save-changes]]</button>
 		</div>
 	</div>
 	<div class="row settings m-0">

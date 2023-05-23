@@ -38,33 +38,5 @@
 				{{{ end }}}
 			</ul>
 		</div>
-
-		<div class="">
-			<ul id="logged-in-menu" class="list-unstyled d-flex align-items-center w-100 gap-3 mb-0">
-				{{{ if config.searchEnabled }}}
-				<li component="sidebar/search" class="nav-item m-0 search">
-				<!-- IMPORT partials/sidebar/search-mobile.tpl -->
-				</li>
-				{{{ end }}}
-
-				<li component="notifications" class="nav-item m-0 notifications">
-				<!-- IMPORT partials/sidebar/notifications.tpl -->
-				</li>
-
-				{{{ if canChat }}}
-				<li class="nav-item m-0 chats">
-				<!-- IMPORT partials/sidebar/chats.tpl -->
-				</li>
-				{{{ end }}}
-
-				<li component="sidebar/drafts" class="hidden nav-item m-0 drafts">
-				<!-- IMPORT partials/sidebar/drafts.tpl -->
-				</li>
-
-				<li id="user_label" class="nav-item m-0 py-2 usermenu">
-				<!-- IMPORT partials/sidebar/user-menu.tpl -->
-				</li>
-			</ul>
-		</div>
 	</div>
 </div>

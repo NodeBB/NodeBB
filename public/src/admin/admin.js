@@ -42,7 +42,9 @@ app.onDomReady();
 	}
 
 	require(['hooks'], (hooks) => {
-		hooks.on('action:ajaxify.end', () => {
+		hooks.on('action:ajaxify.end', (data) => {
+			updatePageTitle(data.url);
+			setupRestartLinks();
 			showCorrectNavTab();
 			startLogoutTimer();
 			if ($('.settings').length) {
@@ -61,6 +63,7 @@ app.onDomReady();
 			pathname = '/admin/dashboard';
 		}
 		const selectedButton = accordionEl.find(`a[href="${pathname}"]`);
+		console.log('gg', selectedButton.length);
 		accordionEl.find('a').removeClass('active');
 		accordionEl.find('.accordion-collapse').removeClass('show');
 		selectedButton.addClass('active');
@@ -84,11 +87,6 @@ app.onDomReady();
 		setupNProgress();
 	});
 
-	$(window).on('action:ajaxify.contentLoaded', function (ev, data) {
-		selectMenuItem(data.url);
-		setupRestartLinks();
-	});
-
 	function setupNProgress() {
 		require(['nprogress', 'hooks'], function (NProgress, hooks) {
 			$(window).on('action:ajaxify.start', function () {
@@ -101,7 +99,7 @@ app.onDomReady();
 		});
 	}
 
-	function selectMenuItem(url) {
+	function updatePageTitle(url) {
 		require(['translator'], function (translator) {
 			url = url
 				.replace(/\/\d+$/, '')
@@ -116,17 +114,8 @@ app.onDomReady();
 			url = [config.relative_path, url].join('/');
 			let fallback;
 
-			$('#main-menu li').removeClass('active');
-			$('#main-menu a').removeClass('active').filter('[href="' + url + '"]').each(function () {
-				const menu = $(this);
-				if (menu.parent().attr('data-link')) {
-					return;
-				}
-
-				menu
-					.parent().addClass('active')
-					.parents('.menu-item').addClass('active');
-				fallback = menu.text();
+			$(`#accordionACP a[href="${url}]`).each(function () {
+				fallback = $(this).text();
 			});
 
 			let mainTitle;
@@ -154,9 +143,6 @@ app.onDomReady();
 
 			translator.translate(pageTitle, function (title) {
 				document.title = title.replace(/&gt;/g, '>');
-			});
-			translator.translate(mainTitle, function (text) {
-				$('#main-page-title').text(text);
 			});
 		});
 	}
