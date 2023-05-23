@@ -192,7 +192,7 @@
 							</div>
 							<div>
 								<label class="form-label" for="homePageTitle">[[admin/settings/homepage:home-page-title]]</label>
-								<input id="homePageTitle" class="form-control" type="text" data-field="homePageTitle" placeholder="[[pages:home]]">
+								<input id="homePageTitle" class="form-control" type="text" data-field="homePageTitle">
 							</div>
 						</div>
 					</form>
