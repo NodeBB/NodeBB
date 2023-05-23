@@ -1,4 +1,4 @@
-<div class="row database mt-4">
+<div class="row database">
 	{{{ if mongo }}}
 	<div class="{{{ if redis }}}col-lg-6{{{ else }}}col-lg-12{{{ end }}}">
 		{{{ if mongo.serverStatusError }}}

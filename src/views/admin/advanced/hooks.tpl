@@ -1,4 +1,4 @@
-<div class="hooks-list panel-group mt-4" id="accordion" role="tablist" aria-multiselectable="true">
+<div class="hooks-list panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 	{{{ each hooks }}}
 	<div class="card">
 		<div class="card-header" role="tab">

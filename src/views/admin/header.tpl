@@ -27,5 +27,5 @@
 	<body class="admin {bodyClass}">
 		<div class="d-flex">
 			<!-- IMPORT admin/partials/left-sidebar.tpl -->
-			<div class="container flex-1" id="content">
+			<div class="container flex-1 mt-4" id="content">
 

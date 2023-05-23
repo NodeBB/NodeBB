@@ -1,5 +1,5 @@
 
-<div class="row post-cache mt-4 settings">
+<div class="row post-cache settings">
 	<div class="col-lg-12">
 		<div class="row">
 			{{{each caches}}}

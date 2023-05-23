@@ -1,4 +1,4 @@
-<div class="row logger mt-4 settings">
+<div class="row logger settings">
 	<div class="col-lg-12">
 		<div class="card">
 			<div class="card-header">[[admin/development/logger:logger-settings]]</div>

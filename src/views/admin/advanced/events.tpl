@@ -1,4 +1,4 @@
-<div class="row events mt-4">
+<div class="row events">
 	<div class="col-lg-9">
 		<h5><i class="fa fa-calendar-o"></i> [[admin/advanced/events:events]]</h5>
 		{{{ if !events.length }}}
