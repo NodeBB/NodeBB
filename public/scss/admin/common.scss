@@ -1,4 +1,15 @@
 
+.form-label {
+	font-weight: 500;
+	font-size: $font-size-sm;
+	font-family: $font-family-base;
+}
+
+.form-text {
+	font-size: 0.75rem!important;;
+	font-family: $font-family-base;
+}
+
 $btn-ghost-hover-color: mix($light, $dark, 90%);
 
 @mixin btn-ghost-base {

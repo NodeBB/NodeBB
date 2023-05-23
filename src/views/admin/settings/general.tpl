@@ -10,10 +10,17 @@
 				<label class="form-label" for="site-title">[[admin/settings/general:title]]</label>
 				<input id="site-title" class="form-control" type="text" placeholder="[[admin/settings/general:title.name]]" data-field="title" />
 			</div>
+
+			<div class="form-check form-switch mb-3">
+				<input type="checkbox" class="form-check-input" id="showSiteTitle" data-field="showSiteTitle" name="showSiteTitle" />
+				<label for="showSiteTitle" class="form-check-label">[[admin/settings/general:title.show-in-header]]</label>
+			</div>
+
 			<div class="mb-3">
 				<label class="form-label" for="title:short">[[admin/settings/general:title.short]]</label>
 				<input id="title:short" type="text" class="form-control" placeholder="[[admin/settings/general:title.short-placeholder]]" data-field="title:short" />
 			</div>
+
 			<div class="mb-3">
 				<label class="form-label" for="title:url">[[admin/settings/general:title.url]]</label>
 				<input id ="title:url" type="text" class="form-control" placeholder="[[admin/settings/general:title.url-placeholder]]" data-field="title:url" />
@@ -22,10 +29,6 @@
 				</p>
 			</div>
 
-			<div class="form-check form-switch mb-3">
-				<input type="checkbox" class="form-check-input" id="showSiteTitle" data-field="showSiteTitle" name="showSiteTitle" />
-				<label for="showSiteTitle" class="form-check-label">[[admin/settings/general:title.show-in-header]]</label>
-			</div>
 			<div class="mb-3">
 				<label class="form-label" for="browserTitle">[[admin/settings/general:browser-title]]</label>
 				<input id="browserTitle" class="form-control" type="text" placeholder="[[admin/settings/general:browser-title]]" data-field="browserTitle" />
