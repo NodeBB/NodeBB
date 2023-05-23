@@ -25,12 +25,13 @@
 
 					<div class="mb-3">
 						<label class="form-label" for="title:short">[[admin/settings/general:title.short]]</label>
-						<input id="title:short" type="text" class="form-control" placeholder="[[admin/settings/general:title.short-placeholder]]" data-field="title:short" />
+						<input id="title:short" type="text" class="form-control" data-field="title:short" />
+						<p class="form-text">[[admin/settings/general:title.short-placeholder]]</p>
 					</div>
 
 					<div class="mb-3">
 						<label class="form-label" for="title:url">[[admin/settings/general:title.url]]</label>
-						<input id ="title:url" type="text" class="form-control" placeholder="[[admin/settings/general:title.url-placeholder]]" data-field="title:url" />
+						<input id ="title:url" type="text" class="form-control" data-field="title:url" />
 						<p class="form-text">
 							[[admin/settings/general:title.url-help]]
 						</p>
@@ -38,25 +39,29 @@
 
 					<div class="mb-3">
 						<label class="form-label" for="browserTitle">[[admin/settings/general:browser-title]]</label>
-						<input id="browserTitle" class="form-control" type="text" placeholder="[[admin/settings/general:browser-title]]" data-field="browserTitle" />
+						<input id="browserTitle" class="form-control" type="text" data-field="browserTitle" />
 						<p class="form-text">
 							[[admin/settings/general:browser-title-help]]
 						</p>
 					</div>
 					<div class="mb-3">
 						<label class="form-label" for="titleLayout">[[admin/settings/general:title-layout]]</label>
-						<input id="titleLayout" class="form-control" type="text" placeholder="[[admin/settings/general:title-layout]]" data-field="titleLayout" />
+						<input id="titleLayout" class="form-control" type="text" data-field="titleLayout" />
 						<p class="form-text">
 							[[admin/settings/general:title-layout-help]]
 						</p>
 					</div>
 					<div class="mb-3">
 						<label class="form-label" for="description">[[admin/settings/general:description]]</label>
-						<input id="description" type="text" class="form-control" placeholder="[[admin/settings/general:description.placeholder]]" data-field="description" />
+						<input id="description" type="text" class="form-control" data-field="description" />
+						<p class="form-text">
+							[[admin/settings/general:description.placeholder]]
+						</p>
 					</div>
 					<div class="mb-3">
 						<label class="form-label" for="keywords">[[admin/settings/general:keywords]]</label>
-						<input id="keywords" type="text" class="form-control" placeholder="[[admin/settings/general:keywords-placeholder]]" data-field="keywords" data-field-type="tagsinput" />
+						<input id="keywords" type="text" class="form-control" data-field="keywords" data-field-type="tagsinput" />
+						<p class="form-text">[[admin/settings/general:keywords-placeholder]]</p>
 					</div>
 
 					<div class="mb-3">
@@ -98,7 +103,7 @@
 
 				<div class="mb-3">
 					<label class="form-label" for="brand:logo:url">[[admin/settings/general:logo.url]]</label>
-					<input id ="brand:logo:url" type="text" class="form-control" placeholder="[[admin/settings/general:logo.url-placeholder]]" data-field="brand:logo:url" />
+					<input id ="brand:logo:url" type="text" class="form-control" data-field="brand:logo:url" />
 					<p class="form-text">
 						[[admin/settings/general:logo.url-help]]
 					</p>
@@ -106,7 +111,8 @@
 
 				<div class="mb-3">
 					<label class="form-label" for="brand:logo:alt">[[admin/settings/general:logo.alt-text]]</label>
-					<input id ="brand:logo:alt" type="text" class="form-control" placeholder="[[admin/settings/general:log.alt-text-placeholder]]" data-field="brand:logo:alt" />
+					<input id ="brand:logo:alt" type="text" class="form-control" data-field="brand:logo:alt" />
+					<p class="form-text">[[admin/settings/general:log.alt-text-placeholder]]</p>
 				</div>
 
 				<div class="mb-3">
@@ -198,9 +204,9 @@
 			<div class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/general:search]]</h5>
 
-				<div class="mb-3">
+				<div class="mb-3 d-flex justify-content-between align-items-center">
 					<label class="form-label" for="searchDefaultIn">[[admin/settings/general:search-default-in]]</label>
-					<select id="searchDefaultIn" class="form-select" data-field="searchDefaultIn">
+					<select id="searchDefaultIn" class="form-select w-auto" data-field="searchDefaultIn">
 						<option value="titlesposts">[[search:in-titles-posts]]</option>
 						<option value="titles">[[search:in-titles]]</option>
 						<option value="posts">[[search:in-posts]]</option>
@@ -209,17 +215,17 @@
 						<option value="tags">[[search:in-tags]]</option>
 					</select>
 				</div>
-				<div class="mb-3">
+				<div class="mb-3 d-flex justify-content-between align-items-center">
 					<label class="form-label" for="searchDefaultInQuick">[[admin/settings/general:search-default-in-quick]]</label>
-					<select id="searchDefaultInQuick" class="form-select" data-field="searchDefaultInQuick">
-						<option value="titlesposts">[[search:titles-posts]]</option>
-						<option value="titles">[[search:titles]]</option>
-						<option value="posts">[[global:posts]]</option>
+					<select id="searchDefaultInQuick" class="form-select w-auto" data-field="searchDefaultInQuick">
+						<option value="titlesposts">[[search:in-titles-posts]]</option>
+						<option value="titles">[[search:in-titles]]</option>
+						<option value="posts">[[search:in-posts]]</option>
 					</select>
 				</div>
-				<div class="mb-3">
+				<div class="mb-3 d-flex justify-content-between align-items-center">
 					<label class="form-label" for="post-sort-by">[[admin/settings/general:search-default-sort-by]]</label>
-					<select id="post-sort-by" class="form-select" data-field="searchDefaultSortBy">
+					<select id="post-sort-by" class="form-select w-auto" data-field="searchDefaultSortBy">
 						<option value="relevance">[[search:relevance]]</option>
 						<option value="timestamp">[[search:post-time]]</option>
 						<option value="votes">[[search:votes]]</option>
@@ -279,7 +285,7 @@
 
 				<div class="mb-3">
 					<label class="form-label" for="undoTimeout">[[admin/settings/general:undo-timeout]]</label>
-					<input id="undoTimeout" type="text" class="form-control" placeholder="10000" data-field="undoTimeout" />
+					<input id="undoTimeout" type="text" class="form-control" data-field="undoTimeout" />
 					<p class="form-text">
 						[[admin/settings/general:undo-timeout-help]]
 					</p>
