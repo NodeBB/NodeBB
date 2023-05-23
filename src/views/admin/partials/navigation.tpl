@@ -1,7 +1,6 @@
 <!-- main acp navigation menu -->
 
-<div class="accordion overflow-auto" id="accordionACP">
-
+<div class="accordion overflow-auto d-flex flex-column gap-1" id="accordionACP">
 	<div class="d-flex flex-column">
 		<button class="btn-ghost-sm justify-content-start" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDashboard" aria-expanded="true" aria-controls="collapseDashboard">
 			<i class="fa fa-gauge text-muted"></i>
