@@ -36,7 +36,6 @@ module.exports = function (app, name, middleware, controllers) {
 	helpers.setupAdminPageRoute(app, `/${name}/settings/post`, middlewares, controllers.admin.settings.post);
 	helpers.setupAdminPageRoute(app, `/${name}/settings/advanced`, middlewares, controllers.admin.settings.advanced);
 	helpers.setupAdminPageRoute(app, `/${name}/settings/navigation`, middlewares, controllers.admin.settings.navigation);
-	helpers.setupAdminPageRoute(app, `/${name}/settings/social`, middlewares, controllers.admin.settings.social);
 	helpers.setupAdminPageRoute(app, `/${name}/settings/api`, middlewares, controllers.admin.settings.api);
 	helpers.setupAdminPageRoute(app, `/${name}/settings/:term?`, middlewares, controllers.admin.settings.get);
 

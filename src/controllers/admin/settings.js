@@ -67,18 +67,6 @@ settingsController.advanced = async (req, res) => {
 	});
 };
 
-settingsController.languages = async function (req, res) {
-	const languageData = await languages.list();
-	languageData.forEach((language) => {
-		language.selected = language.code === meta.config.defaultLang;
-	});
-
-	res.render('admin/settings/languages', {
-		languages: languageData,
-		autoDetectLang: meta.config.autoDetectLang,
-	});
-};
-
 settingsController.navigation = async function (req, res) {
 	const [admin, allGroups] = await Promise.all([
 		navigationAdmin.getAdmin(),
@@ -107,13 +95,6 @@ settingsController.navigation = async function (req, res) {
 	admin.navigation = admin.enabled.slice();
 
 	res.render('admin/settings/navigation', admin);
-};
-
-settingsController.social = async function (req, res) {
-	const posts = await social.getPostSharing();
-	res.render('admin/settings/social', {
-		posts: posts,
-	});
 };
 
 settingsController.api = async (req, res) => {
