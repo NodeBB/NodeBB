@@ -30,8 +30,11 @@ helpers.fieldToString = function (field) {
 	// tigris doesn't allow ':' in field names, replace ':'s with '__'
 	field = field.replace(/:/g, '__');
 
-	// if there is a '.' in the field name it inserts subdocument in mongo, replace '.'s with \uff0E
-	return field.replace(/\./g, '\uff0E');
+	// tigris doesn't allow '@' in field name, replace '@'s with '____'
+	field = field.replace(/@/g, '____');
+
+	// if there is a '.' in the field name it inserts subdocument in mongo, replace '.'s with '_____'
+	return field.replace(/\./g, '_____');
 };
 
 helpers.stringToField = function (field) {
@@ -43,20 +46,27 @@ helpers.stringToField = function (field) {
 		field = field.toString();
 	}
 
+	// if there is a '.' in the field name it inserts subdocument in mongo, replace '_____'s with '.'
+	field = field.replace(/_____/g, '.');
+
+	// tigris doesn't allow '@' in field name, replace '____'s with '@'
+	field = field.replace(/____/g, '@');
+
 	// tigris doesn't allow '-' in field names, replace '___'s with  '-'
 	field = field.replace(/___/g, '-');
 
 	// tigris doesn't allow ':' in field names, replace '__'s with ':'
-	field = field.replace(/__/g, ':');
-
-	// if there is a '.' in the field name it inserts subdocument in mongo, replace '.'s with \uff0E
-	return field.replace(/\uff0E/g, '.');
+	return field.replace(/__/g, ':');
 };
 
 helpers.serializeData = function (data) {
 	const serialized = {};
-	for (const [field, value] of Object.entries(data)) {
+	for (let [field, value] of Object.entries(data)) {
 		if (field !== '') {
+			if (field === 'lastposttime' || field === 'score') {
+				value = String(value);
+			}
+
 			serialized[helpers.fieldToString(field)] = value;
 		}
 	}
@@ -65,7 +75,12 @@ helpers.serializeData = function (data) {
 
 helpers.deserializeData = function (data) {
 	const deserialized = {};
-	for (const [field, value] of Object.entries(data)) {
+	for (let [field, value] of Object.entries(data)) {
+		// TODO can remove this in Tigris
+		if (field === 'lastposttime' || field === 'score') {
+			value = Number(value);
+		}
+
 		deserialized[helpers.stringToField(field)] = value;
 	}
 	return deserialized;

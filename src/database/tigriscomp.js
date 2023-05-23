@@ -119,7 +119,7 @@ tigriscompModule.info = async function (db) {
 			serverStatusError = err.message;
 			// Override mongo error with more human-readable error
 			if (err.name === 'MongoError' && err.codeName === 'Unauthorized') {
-				//todo: confirm this doesn't have a translation.
+				// todo: confirm this doesn't have a translation.
 				serverStatusError = '[[admin/advanced/database:mongo.unauthorized]]';
 			}
 			winston.error(err.stack);

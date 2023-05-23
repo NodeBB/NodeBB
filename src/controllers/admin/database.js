@@ -18,6 +18,10 @@ databaseController.get = async function (req, res) {
 		const pdb = require('../../database/postgres');
 		results.postgres = await pdb.info(pdb.pool);
 	}
+	if (nconf.get('tigriscomp')) {
+		const pdb = require('../../database/tigriscomp');
+		results.tigriscomp = await pdb.info(pdb.pool);
+	}
 
 	res.render('admin/advanced/database', results);
 };

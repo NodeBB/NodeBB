@@ -141,6 +141,10 @@ module.exports = function (module) {
 		return await getSortedSetRange(key, start, stop, min, max, sort, withScores);
 	}
 
+	module.countDocs = async function (query) {
+		return await module.client.collection('objects').find(query).count();
+	};
+
 	module.sortedSetCount = async function (key, min, max) {
 		if (!key) {
 			return;
@@ -155,7 +159,10 @@ module.exports = function (module) {
 			query.score.$lte = max;
 		}
 
-		const count = await module.client.collection('objects').countDocuments(query);
+		// TODO: Use Tigris Count to get the count in Tigris implementation.
+		// const count = await module.client.collection('objects').countDocuments(query);
+
+		const count = await module.countDocs(query);
 		return count || 0;
 	};
 
@@ -163,7 +170,9 @@ module.exports = function (module) {
 		if (!key) {
 			return 0;
 		}
-		const count = await module.client.collection('objects').countDocuments({ _key: key });
+		// TODO: Use Tigris Count to get the count in Tigris implementation.
+		// const count = await module.client.collection('objects').countDocuments({ _key: key });
+		const count = await module.countDocs({ _key: key });
 		return parseInt(count, 10) || 0;
 	};
 
@@ -179,8 +188,10 @@ module.exports = function (module) {
 		if (!keys || (Array.isArray(keys) && !keys.length)) {
 			return 0;
 		}
-
-		const count = await module.client.collection('objects').countDocuments({ _key: Array.isArray(keys) ? { $in: keys } : keys });
+		// TODO: Use Tigris Count to get the count in Tigris implementation.
+		// const count = await module.client.collection('objects')
+		// .countDocuments({ _key: Array.isArray(keys) ? { $in: keys } : keys });
+		const count = await module.countDocs({ _key: Array.isArray(keys) ? { $in: keys } : keys });
 		return parseInt(count, 10) || 0;
 	};
 
@@ -201,8 +212,22 @@ module.exports = function (module) {
 		if (score === null) {
 			return null;
 		}
+		// TODO: Use Tigris Count to get the count in Tigris implementation.
+		// return await module.client.collection('objects').countDocuments({
+		// $or: [
+		// {
+		// _key: key,
+		// score: reverse ? { $gt: score } : { $lt: score },
+		// },
+		// {
+		// _key: key,
+		// score: score,
+		// value: reverse ? { $gt: value } : { $lt: value },
+		// },
+		// ],
+		// });
 
-		return await module.client.collection('objects').countDocuments({
+		return await module.countDocs({
 			$or: [
 				{
 					_key: key,
@@ -417,13 +442,14 @@ module.exports = function (module) {
 		return keys.map(k => sets[k] || []);
 	}
 
+	// TODO -  score should be int, increases.
 	module.sortedSetIncrBy = async function (key, increment, value) {
 		if (!key) {
 			return;
 		}
 		const data = {};
 		value = helpers.valueToString(value);
-		data.score = parseFloat(increment);
+		data.score = parseFloat(increment).toString();
 
 		try {
 			const result = await module.client.collection('objects').findOneAndUpdate({

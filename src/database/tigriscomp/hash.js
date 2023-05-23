@@ -50,6 +50,9 @@ module.exports = function (module) {
 			let bulk;
 			data.forEach((item) => {
 				const writeData = helpers.serializeData(item[1]);
+				if (writeData.hasOwnProperty('order')) {
+					writeData.order = parseInt(writeData.order, 10);
+				}
 				if (Object.keys(writeData).length) {
 					if (!bulk) {
 						bulk = module.client.collection('objects').initializeUnorderedBulkOp();
@@ -232,7 +235,7 @@ module.exports = function (module) {
 		if (Array.isArray(key)) {
 			const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
 			key.forEach((key) => {
-				bulk.find({ _key: key }).upsert().update({ $inc: increment });
+				bulk.find({ _key: key }).upsert().update({ $inc: increment, $setOnInsert: { _key: key } });
 			});
 			await bulk.execute();
 			cache.del(key);
@@ -244,6 +247,7 @@ module.exports = function (module) {
 				_key: key,
 			}, {
 				$inc: increment,
+				$setOnInsert: { _key: key }, // TODO change this on tigris to use upsert option
 			}, {
 				returnDocument: 'after',
 				upsert: true,
@@ -274,7 +278,7 @@ module.exports = function (module) {
 			for (const [field, value] of Object.entries(item[1])) {
 				increment[helpers.fieldToString(field)] = value;
 			}
-			bulk.find({ _key: item[0] }).upsert().update({ $inc: increment });
+			bulk.find({ _key: item[0] }).upsert().update({ $inc: increment, $setOnInsert: { _key: item[0] } });
 		});
 		await bulk.execute();
 		cache.del(data.map(item => item[0]));

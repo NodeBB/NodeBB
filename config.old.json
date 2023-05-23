@@ -1,0 +1,30 @@
+{
+    "url": "http://localhost:4567",
+    "secret": "ff7a2b20-1318-4b48-971c-b7c40deb5f34",
+    "database": "mongo",
+    "mongo": {
+        "host": "0.0.0.0",
+        "port": "27017",
+        "username": "nodebb",
+        "password": "zaq123",
+        "database": "nodebb",
+        "uri": ""
+    },
+    "tigriscomp": {
+        "host": "0.0.0.0",
+        "port": "27017",
+        "clientid": "tid_NXAtBKdHQZsbwbqGXOerDsSo_bWSbQ",
+        "clientsecret": "tsec_6Bqr_tVeOxhjaFaYIx5+xD2Q36kDz9Vq-jMOiSCgihwMAw9B_q",
+        "database": "nodebb",
+        "uri": "mongodb://tid_PWSKPVVBCSrVNkrPTPdVPkGbeDWRPo:tsec_bnp9ooWr7AHLHwPD_iPGhXycWMXqNjXMlvSui2uON1aA6TlTTP@m1k.preview.tigrisdata.cloud:27018?authMechanism=PLAIN&tls=true"
+    },
+    "mongo2": {
+        "host": "127.0.0.1",
+        "port": 27017,
+        "username": "",
+        "password": "",
+        "database": "nodebb",
+        "uri": "mongodb+srv://iamjcares:iamjcares@nodebb.lqviuwz.mongodb.net/?retryWrites=true&w=majority"
+    },
+    "port": "4567"
+}
