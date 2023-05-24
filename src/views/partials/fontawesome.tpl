@@ -5,7 +5,7 @@
 	</div>
 	<div class="d-flex nbb-fa-icons flex-wrap">
 		{{{ each icons }}}
-			<i class="fa fa-xl fa-{icons.style} fa-{icons.id}"></i>
+			<i class="fa fa-xl fa-{icons.style} fa-{icons.id} rounded-1"></i>
 		{{{ end }}}
 	</div>
 	<p class="form-text text-center">

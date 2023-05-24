@@ -9,7 +9,7 @@ define('admin/settings', [
 	Settings.populateTOC = function () {
 		const headers = $('.settings-header');
 		const tocList = $('[component="settings/toc/list"]');
-		const mainHader = $('.settings-main-header');
+		const mainHader = $('[component="settings/main/header"]');
 
 		if (headers.length > 1 && tocList.length) {
 			headers.each(function () {

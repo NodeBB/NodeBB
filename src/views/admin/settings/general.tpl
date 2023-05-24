@@ -1,5 +1,5 @@
-<div class="settings-container">
-	<div class="row border-bottom py-2 m-0 sticky-top settings-main-header align-items-center">
+<div class="acp-page-container">
+	<div component="settings/main/header" class="row border-bottom py-2 m-0 sticky-top acp-page-main-header align-items-center">
 		<div class="col-8 px-0">
 			<h4 class="fw-bold tracking-tight mb-0">[[admin/settings/general:general-settings]]</h4>
 		</div>

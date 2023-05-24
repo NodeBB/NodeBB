@@ -1,4 +1,7 @@
 {
+	"manage-categories": "Manage Categories",
+	"add-category": "Add category",
+	"jump-to": "Jump to...",
 	"settings": "Category Settings",
 	"privileges": "Privileges",
 
@@ -31,6 +34,7 @@
 	"disable": "Disable",
 	"edit": "Edit",
 	"analytics": "Analytics",
+	"view": "View",
 	"view-category": "View category",
 	"set-order": "Set order",
 	"set-order-help": "Setting the order of the category will move this category to that order and update the order of other categories as necessary. Minimum order is 1 which puts the category at the top.",

@@ -28,10 +28,22 @@ body {
 }
 
 .admin {
-	.btn-outline-secondary {
-		color: $gray-700;
-		&:hover {
-			background-color: $gray-200 !important;
+	.acp-page-container {
+		max-width: 800px;
+		margin: 0 auto;
+		display: flex;
+		flex-direction: column;
+		gap: $spacer * 1.5;
+		padding: $spacer * 1.5;
+		padding-top: 0;
+	}
+	.acp-page-main-header {
+		background-color: white;
+	}
+
+	.settings, .categories {
+		hr {
+			color: $gray-500;
 		}
 	}
 
@@ -84,10 +96,6 @@ body {
 		&.card-danger >.card-header {
 			@include acp-panel-heading;
 		}
-	}
-
-	.nav-header {
-		@include box-header-font;
 	}
 
 	.icon-container {
@@ -156,7 +164,10 @@ body {
 	}
 }
 
-.category-dropdown-container.right .category-dropdown-menu {
+.dropdown-left .dropdown-menu {
+	--bs-position: start;
+}
+.dropdown-right .dropdown-menu {
 	--bs-position: end;
 }
 

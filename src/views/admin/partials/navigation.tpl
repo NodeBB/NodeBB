@@ -1,6 +1,8 @@
 <!-- main acp navigation menu -->
 
-<div class="accordion overflow-auto d-flex flex-column gap-1" id="accordionACP">
+<div class="accordion overflow-auto d-flex flex-column gap-1" component="acp/accordion" id="accordionACP">
+
+	<!-- dashboard menu -->
 	<div class="d-flex flex-column">
 		<button class="btn-ghost justify-content-start" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDashboard" aria-expanded="true" aria-controls="collapseDashboard">
 			<i class="fa fa-fw fa-gauge"></i>
@@ -18,6 +20,7 @@
 		</div>
 	</div>
 
+	<!-- manage menu -->
 	{{{ if showManageMenu }}}
 	<div class="d-flex flex-column">
 		<button class="btn-ghost justify-content-start" type="button" data-bs-toggle="collapse" data-bs-target="#collapseManage" aria-expanded="true" aria-controls="collapseManage">
@@ -58,6 +61,7 @@
 	</div>
 	{{{ end }}}
 
+	<!-- settings menu -->
 	{{{ if user.privileges.admin:settings }}}
 	<div class="d-flex flex-column">
 		<button class="btn-ghost justify-content-start" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSettings" aria-expanded="true" aria-controls="collapseSettings">
@@ -87,6 +91,8 @@
 		</div>
 	</div>
 
+
+	<!-- appearance menu -->
 	<div class="d-flex flex-column">
 		<button class="btn-ghost justify-content-start" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAppearance" aria-expanded="true" aria-controls="collapseAppearance">
 			<i class="fa fa-fw fa-paintbrush"></i>
@@ -102,6 +108,8 @@
 		</div>
 	</div>
 
+
+	<!-- extend menu -->
 	<div class="d-flex flex-column">
 		<button class="btn-ghost justify-content-start" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExtend" aria-expanded="true" aria-controls="collapseExtend">
 			<i class="fa fa-fw fa-wrench"></i>
@@ -117,6 +125,7 @@
 		</div>
 	</div>
 
+	<!-- plugins menu -->
 	{{{ if plugins.length }}}
 	<div class="d-flex flex-column">
 		<button class="btn-ghost justify-content-start" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePlugins" aria-expanded="true" aria-controls="collapsePlugins">
@@ -145,6 +154,7 @@
 	{{{ end }}}
 	{{{ end }}}
 
+	<!-- advanced menu -->
 	{{{ if user.privileges.superadmin }}}
 	<div class="d-flex flex-column">
 		<button class="btn-ghost justify-content-start" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAdvanced" aria-expanded="true" aria-controls="collapseAdvanced">

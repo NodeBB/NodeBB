@@ -65,7 +65,7 @@ app.onDomReady();
 	});
 
 	function showCorrectNavTab() {
-		const accordionEl = $('#accordionACP');
+		const accordionEl = $('[component="acp/accordion"]');
 		let pathname = window.location.pathname;
 		if (pathname === '/admin') {
 			pathname = '/admin/dashboard';
@@ -90,7 +90,24 @@ app.onDomReady();
 		});
 
 		setupNProgress();
+		fixAccordionIds();
 	});
+
+	function fixAccordionIds() {
+		// fix mobile accordion, so it doesn't have same ids as desktop
+		// the same accordion partial is used in both places
+		const offcanvasAccordion = $('#offcanvas #accordionACP');
+		offcanvasAccordion.attr('id', 'accordionACP-offcanvas');
+		offcanvasAccordion.find('[data-bs-target]').each((i, el) => {
+			$(el).attr('data-bs-target', $(el).attr('data-bs-target') + '-offcanvas');
+		});
+		offcanvasAccordion.find('[data-bs-parent]').each((i, el) => {
+			$(el).attr('data-bs-parent', '#accordionACP-offcanvas');
+		});
+		offcanvasAccordion.find('.accordion-collapse').each((i, el) => {
+			$(el).attr('id', $(el).attr('id') + '-offcanvas');
+		});
+	}
 
 	function setupNProgress() {
 		require(['nprogress', 'hooks'], function (NProgress, hooks) {
@@ -119,7 +136,7 @@ app.onDomReady();
 			url = [config.relative_path, url].join('/');
 			let fallback;
 
-			$(`#accordionACP a[href="${url}]`).each(function () {
+			$(`[component="acp/accordion"] a[href="${url}]`).each(function () {
 				fallback = $(this).text();
 			});
 

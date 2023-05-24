@@ -24,6 +24,7 @@ define('admin/manage/category', [
 				ajaxify.go('admin/manage/categories/' + selectedCategory.cid);
 			},
 			showLinks: true,
+			template: 'admin/partials/category/selector-dropdown-right',
 		});
 
 		handleTags();
