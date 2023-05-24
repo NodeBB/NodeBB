@@ -29,8 +29,10 @@ define('admin/settings', [
 				$(href)[0].scrollIntoView();
 				window.location.hash = href;
 				scrollBy(0, -offset);
-				tocList.find('a').removeClass('active');
-				$(this).addClass('active');
+				setTimeout(() => {
+					tocList.find('a').removeClass('active');
+					$(this).addClass('active');
+				}, 10);
 				return false;
 			});
 
