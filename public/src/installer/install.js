@@ -25,16 +25,16 @@ $('document').ready(function () {
 		let successCount = 0;
 		const url = $('#installing').attr('data-url');
 		const progressEl = $('#installing .progress-bar');
-		const intervalId = setInterval(function () {
+		setInterval(function () {
 			let p = parseFloat(progressEl.attr('data-percent'), 10) || 0;
-			p = Math.min(100, p + 1.5);
+			p = Math.min(100, p + 0.5);
 			progressEl.attr('data-percent', p);
 			progressEl.css({ width: p + '%' });
-
+		}, 1000);
+		setInterval(function () {
 			$.get(url + '/admin').done(function () {
 				if (successCount >= 5) {
 					window.location = url + '/admin';
-					clearInterval(intervalId);
 				} else {
 					successCount += 1;
 				}
