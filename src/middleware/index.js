@@ -302,7 +302,7 @@ middleware.proceedOnActivityPub = (req, res, next) => {
 	// For whatever reason, express accepts does not recognize "profile" as a valid differentiator
 	// Therefore, manual header parsing is used here.
 	const { accept } = req.headers;
-	if (!accept) {
+	if (!accept || !meta.config.activityPubEnabled) {
 		return next('route');
 	}
 

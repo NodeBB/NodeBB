@@ -8,10 +8,19 @@ const db = require('./mocks/databasemock');
 const slugify = require('../src/slugify');
 const utils = require('../src/utils');
 
+const meta = require('../src/meta');
 const user = require('../src/user');
 const privileges = require('../src/privileges');
 
 describe('ActivityPub integration', () => {
+	before(() => {
+		meta.config.activityPubEnabled = 1;
+	});
+
+	after(() => {
+		delete meta.config.activityPubEnabled;
+	});
+
 	describe('WebFinger endpoint', () => {
 		let uid;
 		let slug;
@@ -96,6 +105,26 @@ describe('ActivityPub integration', () => {
 		beforeEach(async () => {
 			slug = slugify(utils.generateUUID().slice(0, 8));
 			uid = await user.create({ username: slug });
+		});
+
+		it('should return regular user profile html if federation is disabled', async () => {
+			delete meta.config.activityPubEnabled;
+
+			const response = await request(`${nconf.get('url')}/user/${slug}`, {
+				method: 'get',
+				followRedirect: true,
+				simple: false,
+				resolveWithFullResponse: true,
+				headers: {
+					Accept: 'text/html',
+				},
+			});
+
+			assert(response);
+			assert.strictEqual(response.statusCode, 200);
+			assert(response.body.startsWith('<!DOCTYPE html>'));
+
+			meta.config.activityPubEnabled = 1;
 		});
 
 		it('should return regular user profile html if Accept header is not ActivityPub-related', async () => {
