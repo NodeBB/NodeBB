@@ -60,11 +60,17 @@ define('admin/modules/search', ['mousetrap', 'alerts'], function (mousetrap, ale
 	};
 
 	function setupACPSearch(dict) {
-		const dropdown = $('#acp-search .dropdown');
-		const menu = $('#acp-search .dropdown-menu');
-		const input = $('#acp-search input');
-		const placeholderText = dropdown.attr('data-text');
+		const searchEls = $('[component="acp/search"]');
+		searchEls.each((index, searchEl) => {
+			setupSearch(dict, $(searchEl));
+		});
+	}
 
+	function setupSearch(dict, searchEl) {
+		const dropdown = searchEl.find('.dropdown');
+		const menu = searchEl.find('.dropdown-menu');
+		const input = searchEl.find('input');
+		const placeholderText = dropdown.attr('data-text');
 		if (!config.searchEnabled) {
 			menu.addClass('search-disabled');
 		}
@@ -73,7 +79,7 @@ define('admin/modules/search', ['mousetrap', 'alerts'], function (mousetrap, ale
 			dropdown.addClass('open');
 		});
 
-		$('#acp-search').parents('form').on('submit', function (ev) {
+		searchEl.parents('form').on('submit', function (ev) {
 			const query = input.val();
 			const selected = menu.get(0).querySelector('li.result > a.focus') || menu.get(0).querySelector('li.result > a');
 			const href = selected ? selected.getAttribute('href') : config.relative_path + '/search?in=titlesposts&term=' + escape(query);

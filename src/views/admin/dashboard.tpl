@@ -70,8 +70,8 @@
 			<div class="card-header">[[admin/dashboard:control-panel]]</div>
 			<div class="card-body text-center">
 				<div class="d-grid gap-2 mb-2">
-					<button class="btn btn-block btn-warning restart"{{{ if !canRestart }}} disabled{{{ end }}}>[[admin/dashboard:restart]]</button>
-					<button class="btn btn-block btn-danger rebuild-and-restart"{{{ if !canRestart }}} disabled{{{ end }}}>[[admin/dashboard:rebuild-and-restart]]</button>
+					<button component="restart" class="btn btn-block btn-warning"{{{ if !canRestart }}} disabled{{{ end }}}>[[admin/dashboard:restart]]</button>
+					<button component="rebuild-and-restart" class="btn btn-block btn-danger"{{{ if !canRestart }}} disabled{{{ end }}}>[[admin/dashboard:rebuild-and-restart]]</button>
 				</div>
 				{{{ if lastrestart }}}
 				<p>

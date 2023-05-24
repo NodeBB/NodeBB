@@ -54,6 +54,14 @@ app.onDomReady();
 				});
 			}
 		});
+		hooks.on('action:ajaxify.start', function () {
+			require(['bootstrap'], function (boostrap) {
+				const offcanvas = boostrap.Offcanvas.getInstance('#offcanvas');
+				if (offcanvas) {
+					offcanvas.hide();
+				}
+			});
+		});
 	});
 
 	function showCorrectNavTab() {
@@ -63,7 +71,6 @@ app.onDomReady();
 			pathname = '/admin/dashboard';
 		}
 		const selectedButton = accordionEl.find(`a[href="${pathname}"]`);
-		console.log('gg', selectedButton.length);
 		accordionEl.find('a').removeClass('active');
 		accordionEl.find('.accordion-collapse').removeClass('show');
 		selectedButton.addClass('active');
@@ -71,11 +78,9 @@ app.onDomReady();
 	}
 
 	$(document).ready(function () {
-		if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-			require(['admin/modules/search'], function (search) {
-				search.init();
-			});
-		}
+		require(['admin/modules/search'], function (search) {
+			search.init();
+		});
 
 		$('[component="logout"]').on('click', function () {
 			require(['logout'], function (logout) {

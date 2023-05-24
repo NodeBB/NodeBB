@@ -1,8 +1,8 @@
 {{{ if user.privileges.admin:settings }}}
-<div id="acp-search" class="my-1">
+<div component="acp/search" class="my-1 acp-search">
 	<div class="dropdown">
 		<input type="text" data-bs-toggle="dropdown" class="form-control" placeholder="[[admin/menu:search.placeholder]]">
-		<ul class="dropdown-menu dropdown-menu-end state-start-typing" role="menu">
+		<ul class="dropdown-menu state-start-typing" role="menu">
 			<li role="presentation" class="no-results">
 				<a class="dropdown-item">[[admin/menu:search.no-results]]</a>
 			</li>

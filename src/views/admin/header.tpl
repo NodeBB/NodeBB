@@ -25,7 +25,8 @@
 	</head>
 
 	<body class="admin {bodyClass}">
+		<!-- IMPORT admin/partials/offcanvas.tpl -->
 		<div class="d-flex">
 			<!-- IMPORT admin/partials/left-sidebar.tpl -->
-			<div class="container flex-1 mt-4" id="content">
+			<div class="container flex-1 mt-4 mb-5" id="content">
 
