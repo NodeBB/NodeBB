@@ -21,12 +21,29 @@ $('document').ready(function () {
 		}, 400);
 	}
 
-	$('#launch').on('click', launchForum);
+	function checkIfReady() {
+		let successCount = 0;
+		const url = $('#installing').attr('data-url');
+		const progressEl = $('#installing .progress-bar');
+		setInterval(function () {
+			let p = parseFloat(progressEl.attr('data-percent'), 10) || 0;
+			p = Math.min(100, p + 0.5);
+			progressEl.attr('data-percent', p);
+			progressEl.css({ width: p + '%' });
+		}, 1000);
+		setInterval(function () {
+			$.get(url + '/admin').done(function () {
+				if (successCount >= 5) {
+					window.location = url + '/admin';
+				} else {
+					successCount += 1;
+				}
+			});
+		}, 2500);
+	}
 
 	if ($('#installing').length) {
-		setTimeout(function () {
-			window.location.reload(true);
-		}, 5000);
+		checkIfReady();
 	}
 
 	function setupInputs() {
@@ -124,22 +141,5 @@ $('document').ready(function () {
 			case 'database':
 				return switchDatabase(field);
 		}
-	}
-
-	function launchForum() {
-		$('#launch .working').removeClass('hide');
-		$.post('/launch', function () {
-			let successCount = 0;
-			const url = $('#launch').attr('data-url');
-			setInterval(function () {
-				$.get(url + '/admin').done(function () {
-					if (successCount >= 5) {
-						window.location = 'admin';
-					} else {
-						successCount += 1;
-					}
-				});
-			}, 750);
-		});
 	}
 });

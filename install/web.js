@@ -50,6 +50,9 @@ let installing = false;
 let success = false;
 let error = false;
 let launchUrl;
+let timeStart = 0;
+const totalTime = 1000 * 60 * 3;
+
 
 const viewsDir = path.join(paths.baseDir, 'build/public/templates');
 
@@ -102,7 +105,6 @@ function launchExpress(port) {
 function setupRoutes() {
 	app.get('/', welcome);
 	app.post('/', install);
-	app.post('/launch', launch);
 	app.get('/ping', ping);
 	app.get('/sping', ping);
 }
@@ -123,7 +125,6 @@ function welcome(req, res) {
 	});
 
 	const defaults = require('./data/defaults.json');
-
 	res.render('install/index', {
 		url: nconf.get('url') || (`${req.protocol}://${req.get('host')}`),
 		launchUrl: launchUrl,
@@ -136,6 +137,7 @@ function welcome(req, res) {
 		minimumPasswordLength: defaults.minimumPasswordLength,
 		minimumPasswordStrength: defaults.minimumPasswordStrength,
 		installing: installing,
+		percentInstalled: installing ? ((Date.now() - timeStart) / totalTime * 100).toFixed(2) : 0,
 	});
 }
 
@@ -143,6 +145,7 @@ function install(req, res) {
 	if (installing) {
 		return welcome(req, res);
 	}
+	timeStart = Date.now();
 	req.setTimeout(0);
 	installing = true;
 
@@ -170,21 +173,22 @@ function install(req, res) {
 	const child = require('child_process').fork('app', ['--setup'], {
 		env: setupEnvVars,
 	});
-
+	child.on('error', (err) => {
+		error = true;
+		success = false;
+		winston.error(err.stack);
+	});
 	child.on('close', (data) => {
-		installing = false;
 		success = data === 0;
 		error = data !== 0;
-
-		welcome(req, res);
+		launch();
 	});
+	welcome(req, res);
 }
 
-async function launch(req, res) {
+async function launch() {
 	try {
-		res.json({});
 		server.close();
-		req.setTimeout(0);
 		let child;
 
 		if (!nconf.get('launchCmd')) {
