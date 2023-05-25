@@ -8,6 +8,7 @@ define('admin/settings', [
 
 	Settings.populateTOC = function () {
 		const headers = $('.settings-header');
+		const tocEl = $('[component="settings/toc"]');
 		const tocList = $('[component="settings/toc/list"]');
 		const mainHader = $('[component="settings/main/header"]');
 
@@ -48,6 +49,7 @@ define('admin/settings', [
 					scrollTop: (scrollTo.offset().top - offset) + 'px',
 				}, 400);
 			}
+			tocEl.removeClass('hidden');
 		}
 	};
 

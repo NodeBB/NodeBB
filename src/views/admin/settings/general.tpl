@@ -72,9 +72,9 @@
 						</p>
 
 						<div class="">
-							<div class="formcheck">
-								<input class="form-check-input" type="checkbox" data-field="autoDetectLang" {{{ if autoDetectLang }}}checked{{{ end }}}/>
-								<label class="form-check-label">[[admin/settings/languages:auto-detect]]</label>
+							<div class="form-check form-switch">
+								<input id="autoDetectLang" class="form-check-input" type="checkbox" data-field="autoDetectLang" {{{ if autoDetectLang }}}checked{{{ end }}}/>
+								<label for="autoDetectLang" class="form-check-label">[[admin/settings/languages:auto-detect]]</label>
 							</div>
 						</div>
 					</div>

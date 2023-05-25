@@ -1,46 +1,49 @@
-<!-- IMPORT admin/partials/settings/header.tpl -->
+<div class="acp-page-container">
+	<!-- IMPORT admin/partials/settings/header.tpl -->
 
-<div class="row mb-4">
-	<div class="col-sm-2 col-12 settings-header">[[admin/settings/group:general]]</div>
-	<div class="col-sm-10 col-12">
-		<form role="form">
-			<div class="form-check form-switch mb-3">
-				<input class="form-check-input" type="checkbox" data-field="allowPrivateGroups">
-				<label class="form-check-label">[[admin/settings/group:private-groups]]</label>
-				<p class="form-text">[[admin/settings/group:private-groups.help]]</p>
-				<p class="form-text">[[admin/settings/group:private-groups.warning]]</p>
+	<div class="row settings m-0">
+		<div id="spy-container" class="col-12 col-md-8 px-0 mb-4" tabindex="0">
+			<div class="mb-4">
+				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/group:general]]</h5>
+				<div class="form-check form-switch mb-3">
+					<input class="form-check-input" type="checkbox" data-field="allowPrivateGroups">
+					<label class="form-check-label">[[admin/settings/group:private-groups]]</label>
+					<p class="form-text">[[admin/settings/group:private-groups.help]]</p>
+					<p class="form-text">[[admin/settings/group:private-groups.warning]]</p>
+				</div>
+
+				<div class="form-check form-switch mb-3">
+					<input class="form-check-input" type="checkbox" data-field="allowMultipleBadges">
+					<label class="form-check-label">[[admin/settings/group:allow-multiple-badges]]</label>
+					<p class="form-text">[[admin/settings/group:allow-multiple-badges-help]]</p>
+				</div>
+
+				<div class="mb-3">
+					<label class="form-label" for="maximumGroupNameLength">[[admin/settings/group:max-name-length]]</label>
+					<input id="maximumGroupNameLength" class="form-control" type="text" placeholder="255" data-field="maximumGroupNameLength" />
+				</div>
+
+				<div class="mb=3">
+					<label class="form-label" for="maximumGroupTitleLength">[[admin/settings/group:max-title-length]]</label>
+					<input id="maximumGroupTitleLength" class="form-control" type="text" placeholder="40" data-field="maximumGroupTitleLength" />
+				</div>
+
 			</div>
 
-			<div class="form-check form-switch mb-3">
-				<input class="form-check-input" type="checkbox" data-field="allowMultipleBadges">
-				<label class="form-check-label">[[admin/settings/group:allow-multiple-badges]]</label>
-				<p class="form-text">[[admin/settings/group:allow-multiple-badges-help]]</p>
-			</div>
+			<hr/>
 
-			<div class="mb-3">
-				<label class="form-label" for="maximumGroupNameLength">[[admin/settings/group:max-name-length]]</label>
-				<input id="maximumGroupNameLength" class="form-control" type="text" placeholder="255" data-field="maximumGroupNameLength" />
-			</div>
+			<div class="mb-4">
+				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/group:cover-image]]</h5>
 
-			<div class="mb=3">
-				<label class="form-label" for="maximumGroupTitleLength">[[admin/settings/group:max-title-length]]</label>
-				<input id="maximumGroupTitleLength" class="form-control" type="text" placeholder="40" data-field="maximumGroupTitleLength" />
+				<label class="form-label" for="groups:defaultCovers"><strong>[[admin/settings/group:default-cover]]</strong></label>
+				<p class="form-text">
+					[[admin/settings/group:default-cover-help]]
+				</p>
+				<input type="text" class="form-control input-lg" id="groups:defaultCovers" data-field="groups:defaultCovers" data-field-type="tagsinput" value="/assets/images/cover-default.png" />
+
 			</div>
-		</form>
+		</div>
+
+		<!-- IMPORT admin/partials/settings/toc.tpl -->
 	</div>
 </div>
-
-<div class="row mb-4">
-	<div class="col-sm-2 col-12 settings-header">[[admin/settings/group:cover-image]]</div>
-	<div class="col-sm-10 col-12">
-		<form role="form">
-			<label class="form-label" for="groups:defaultCovers"><strong>[[admin/settings/group:default-cover]]</strong></label>
-			<p class="form-text">
-				[[admin/settings/group:default-cover-help]]
-			</p>
-			<input type="text" class="form-control input-lg" id="groups:defaultCovers" data-field="groups:defaultCovers" data-field-type="tagsinput" value="/assets/images/cover-default.png" placeholder="https://example.com/group1.png, https://example.com/group2.png" />
-		</form>
-	</div>
-</div>
-
-<!-- IMPORT admin/partials/settings/footer.tpl -->

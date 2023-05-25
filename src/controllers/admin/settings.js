@@ -38,6 +38,7 @@ settingsController.email = async (req, res) => {
 	const emails = await emailer.getTemplates(meta.config);
 
 	res.render('admin/settings/email', {
+		title: '[[admin/menu:settings/email]]',
 		emails: emails,
 		sendable: emails.filter(e => !e.path.includes('_plaintext') && !e.path.includes('partials')).map(tpl => tpl.path),
 		services: emailer.listServices(),
