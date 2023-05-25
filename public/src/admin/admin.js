@@ -47,6 +47,12 @@ app.onDomReady();
 			setupRestartLinks();
 			showCorrectNavTab();
 			startLogoutTimer();
+
+			$('[data-bs-toggle="tooltip"]').tooltip({
+				animation: false,
+				container: '#content',
+			});
+
 			if ($('.settings').length) {
 				require(['admin/settings'], function (Settings) {
 					Settings.prepare();
@@ -71,10 +77,12 @@ app.onDomReady();
 			pathname = '/admin/dashboard';
 		}
 		const selectedButton = accordionEl.find(`a[href="${pathname}"]`);
-		accordionEl.find('a').removeClass('active');
-		accordionEl.find('.accordion-collapse').removeClass('show');
-		selectedButton.addClass('active');
-		selectedButton.parents('.accordion-collapse').addClass('show');
+		if (selectedButton.length) {
+			accordionEl.find('a').removeClass('active');
+			accordionEl.find('.accordion-collapse').removeClass('show');
+			selectedButton.addClass('active');
+			selectedButton.parents('.accordion-collapse').addClass('show');
+		}
 	}
 
 	$(document).ready(function () {

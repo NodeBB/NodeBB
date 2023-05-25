@@ -3,6 +3,7 @@
 	"add-category": "Add category",
 	"jump-to": "Jump to...",
 	"settings": "Category Settings",
+	"edit-category": "Edit Category",
 	"privileges": "Privileges",
 
 	"name": "Category Name",
@@ -18,6 +19,8 @@
 	"post-queue": "Post queue",
 	"tag-whitelist": "Tag Whitelist",
 	"upload-image": "Upload Image",
+	"upload": "Upload",
+	"select-icon": "Select Icon",
 	"delete-image": "Remove",
 	"category-image": "Category Image",
 	"parent-category": "Parent Category",

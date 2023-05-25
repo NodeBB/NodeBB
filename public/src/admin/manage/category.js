@@ -14,7 +14,9 @@ define('admin/manage/category', [
 	let updateHash = {};
 
 	Category.init = function () {
-		$('#category-settings select').each(function () {
+		const categorySettings = $('#category-settings');
+		const previewEl = $('[component="category/preview"]');
+		categorySettings.find('select').each(function () {
 			const $this = $(this);
 			$this.val($this.attr('data-value'));
 		});
@@ -29,7 +31,7 @@ define('admin/manage/category', [
 
 		handleTags();
 
-		$('#category-settings input, #category-settings select, #category-settings textarea').on('change', function (ev) {
+		categorySettings.find('input, select, textarea').on('change', function (ev) {
 			modified(ev.target);
 		});
 
@@ -39,7 +41,6 @@ define('admin/manage/category', [
 
 		$('[data-name="bgColor"], [data-name="color"]').on('input', function () {
 			const $inputEl = $(this);
-			const previewEl = $inputEl.parents('[data-cid]').find('.category-preview');
 			if ($inputEl.attr('data-name') === 'bgColor') {
 				previewEl.css('background-color', $inputEl.val());
 			} else if ($inputEl.attr('data-name') === 'color') {
@@ -172,31 +173,26 @@ define('admin/manage/category', [
 				params: { cid: cid },
 			}, function (imageUrlOnServer) {
 				$('#category-image').val(imageUrlOnServer);
-				const previewBox = inputEl.parent().parent().siblings('.category-preview');
-				previewBox.css('background', 'url(' + imageUrlOnServer + '?' + new Date().getTime() + ')');
+				previewEl.css('background-image', 'url(' + imageUrlOnServer + '?' + new Date().getTime() + ')');
 
 				modified($('#category-image'));
 			});
 		});
 
 		$('#category-image').on('change', function () {
-			$('.category-preview').css('background-image', $(this).val() ? ('url("' + $(this).val() + '")') : '');
+			previewEl.css('background-image', $(this).val() ? ('url("' + $(this).val() + '")') : '');
 			modified($('#category-image'));
 		});
 
 		$('.delete-image').on('click', function (e) {
 			e.preventDefault();
-
 			const inputEl = $('#category-image');
-			const previewBox = $('.category-preview');
-
 			inputEl.val('');
-			previewBox.css('background-image', '');
+			previewEl.css('background-image', '');
 			modified(inputEl[0]);
-			$(this).parent().addClass('hide').hide();
 		});
 
-		$('.category-preview').on('click', function () {
+		previewEl.on('click', function () {
 			iconSelect.init($(this).find('i'), modified);
 		});
 
@@ -205,6 +201,7 @@ define('admin/manage/category', [
 		});
 
 		$('button[data-action="setParent"], button[data-action="changeParent"]').on('click', Category.launchParentSelector);
+
 		$('button[data-action="removeParent"]').on('click', function () {
 			api.put('/categories/' + ajaxify.data.category.cid, {
 				parentCid: 0,
@@ -214,6 +211,7 @@ define('admin/manage/category', [
 				$('button[data-action="setParent"]').removeClass('hide');
 			}).catch(alerts.error);
 		});
+
 		$('button[data-action="toggle"]').on('click', function () {
 			const $this = $(this);
 			const disabled = $this.attr('data-disabled') === '1';
