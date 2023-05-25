@@ -11,25 +11,25 @@
 	<li class="nav-item">
 		<button class="nav-link active" data-bs-target="#installed" data-bs-toggle="tab">
 			[[admin/extend/plugins:installed]]
-			<span class="badge bg-light">{installedCount}</span>
+			<span class="badge text-bg-light">{installedCount}</span>
 		</button>
 	</li>
 	<li class="nav-item">
 		<button class="nav-link" data-bs-target="#active" data-bs-toggle="tab">
 			[[admin/extend/plugins:active]]
-			<span class="badge bg-light">{activeCount}</span>
+			<span class="badge text-bg-light">{activeCount}</span>
 		</button>
 	</li>
 	<li class="nav-item">
 		<button class="nav-link" data-bs-target="#deactive" data-bs-toggle="tab">
 			[[admin/extend/plugins:inactive]]
-			<span class="badge bg-light">{inactiveCount}</span>
+			<span class="badge text-bg-light">{inactiveCount}</span>
 		</button>
 	</li>
 	<li class="nav-item">
 		<button class="nav-link" data-bs-target="#upgrade" data-bs-toggle="tab">
 			[[admin/extend/plugins:out-of-date]]
-			<span class="badge bg-light">{upgradeCount}</span>
+			<span class="badge text-bg-light">{upgradeCount}</span>
 		</button>
 	</li>
 	<li class="nav-item">
