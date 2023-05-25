@@ -303,7 +303,7 @@
 					</select>
 				</div>
 
-				<label class="form-label">[[admin/settings/user:default-notification-settings]]</label>
+				<label class="form-label mb-2">[[admin/settings/user:default-notification-settings]]</label>
 
 				{{{ each notificationSettings }}}
 				<div class="row">

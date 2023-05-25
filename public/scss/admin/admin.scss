@@ -47,6 +47,10 @@ body {
 		}
 	}
 
+	.form-control::placeholder, .bootstrap-tagsinput::placeholder {
+		color: $gray-500 !important;
+	}
+
 	// .floating-button can either be a container or the button itself
 	.floating-button {
 		position: fixed;
