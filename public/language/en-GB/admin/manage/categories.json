@@ -5,7 +5,7 @@
 	"settings": "Category Settings",
 	"edit-category": "Edit Category",
 	"privileges": "Privileges",
-
+	"back-to-categories": "Back to categories",
 	"name": "Category Name",
 	"description": "Category Description",
 	"bg-color": "Background Colour",
@@ -23,6 +23,7 @@
 	"select-icon": "Select Icon",
 	"delete-image": "Remove",
 	"category-image": "Category Image",
+	"image-and-icon": "Image & Icon",
 	"parent-category": "Parent Category",
 	"optional-parent-category": "(Optional) Parent Category",
 	"top-level": "Top Level",

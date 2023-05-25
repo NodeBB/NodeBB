@@ -1,16 +1,16 @@
 <div class="category acp-page-container" data-cid="{category.cid}">
 	<div component="settings/main/header" class="row border-bottom py-2 m-0 sticky-top acp-page-main-header align-items-center">
-		<div class="col-8 px-0 justify-content-between d-flex ">
+		<div class="col-12 col-md-8 px-0 mb-1 mb-md-0 d-flex justify-content-between align-items-center">
 			<h4 class="fw-bold tracking-tight mb-0">[[admin/manage/categories:edit-category]]</h4>
 			<!-- IMPORT admin/partials/category/selector-dropdown-right.tpl -->
 		</div>
-		<div class="col-4 px-0 px-md-3">
+		<div class="col-12 col-md-4 px-0 px-md-3 ">
 			<button id="save" class="btn btn-primary btn-sm btn btn-primary btn-sm fw-semibold ff-secondary w-100 text-center text-nowrap">[[admin/admin:save-changes]]</button>
 		</div>
 	</div>
 
 	<div class="row m-0">
-		<div class="col-8 px-0" id="category-settings">
+		<div class="col-12 col-md-8 px-0" id="category-settings">
 			<div class="category-settings-form">
 				<div class="mb-3">
 					<label class="form-label" for="cid-{category.cid}-name">
@@ -28,15 +28,9 @@
 
 				<div class="mb-3 d-flex justify-content-between align-items-center gap-2">
 					<label class="form-label" for="cid-{category.cid}-parentCid">[[admin/manage/categories:parent-category]]</label>
-					<div class="d-grid">
-						<div class="d-flex gap-1 {{{ if !category.parent.name }}}hide{{{ end }}}">
-							<button type="button" class="btn btn-light" data-action="changeParent" data-parentCid="{category.parent.cid}"><i class="fa {category.parent.icon}"></i> {category.parent.name}</button>
-							<button type="button" class="btn btn-light" data-action="removeParent" data-parentCid="{category.parent.cid}"><i class="fa fa-times text-danger"></i></button>
-						</div>
-						<button type="button" class="btn btn-outline-secondary {{{ if category.parent.name }}}hide{{{ end }}}" data-action="setParent">
-							<i class="fa fa-sitemap"></i>
-							[[admin/manage/categories:parent-category-none]]
-						</button>
+					<div id="parent-category-selector">
+						<!-- IMPORT admin/partials/category/selector-dropdown-left.tpl -->
+						<input data-name="parentCid" id="parent-cid" class="hidden" type="text" value="{category.parentCid}"/>
 					</div>
 				</div>
 
@@ -101,7 +95,7 @@
 
 				<div class="mb-3 d-flex flex-column">
 					<label class="form-label" for="category-image">
-						[[admin/manage/categories:category-image]]
+						[[admin/manage/categories:image-and-icon]]
 					</label>
 					<div class="d-flex gap-2 align-items-center">
 						<div component="category/preview" class="category-preview rounded-1 d-flex align-items-center justify-content-center pointer"
@@ -170,37 +164,42 @@
 			</div>
 		</div>
 
-		<div class="col-4 options acp-sidebar">
-			<div class="card">
-				<div class="card-body">
+		<div class="col-12 col-md-4 px-0 px-md-3 options acp-sidebar">
+			<div class="p-2 d-flex flex-column text-bg-light border rounded-1 gap-1">
+				<a href="{config.relative_path}/admin/manage/categories" class="btn-ghost-sm justify-content-start"><i class="fa fa-fw fa-chevron-left text-primary"></i> [[admin/manage/categories:back-to-categories]]</a>
 
+				<hr class="my-1"/>
 
-					<hr/>
-					<div class="d-grid gap-2">
-						<a href="{config.relative_path}/admin/manage/privileges/{category.cid}" class="btn btn-info >
-							<i class="fa fa-gear"></i> [[admin/manage/privileges:edit-privileges]]
-						</a>
-						<a href="{config.relative_path}/category/{category.cid}" class="btn btn-info >
-							<i class="fa fa-eye"></i> [[admin/manage/categories:view-category]]
-						</a>
-						<button class="btn btn-info copy-settings">
-							<i class="fa fa-files-o"></i> [[admin/manage/categories:copy-settings]]
-						</button>
-					</div>
-					<hr />
-					<div class="d-grid gap-2">
-						<button data-action="toggle" data-disabled="{category.disabled}" class="btn btn-sm btn-block {{{ if category.disabled }}}btn-primary{{{ else }}}btn-danger{{{ end }}}">
-							{{{ if category.disabled }}}
-							[[admin/manage/categories:enable]]
-							{{{ else }}}
-							[[admin/manage/categories:disable]]
-							{{{ end }}}
-						</button>
-						<button class="btn btn-sm btn-danger btn-block purge">
-							<i class="fa fa-eraser"></i> [[admin/manage/categories:purge]]
-						</button>
-					</div>
-				</div>
+				<button class="btn-ghost-sm justify-content-start copy-settings">
+					<i class="fa fa-fw fa-files-o text-primary"></i> [[admin/manage/categories:copy-settings]]
+				</button>
+
+				<a class="btn-ghost-sm justify-content-start" href="{config.relative_path}/admin/manage/categories/{category.cid}/analytics"><i class="fa fa-fw fa-chart-simple text-primary"></i> [[admin/manage/categories:analytics]]</a>
+
+				<a href="{config.relative_path}/admin/manage/privileges/{category.cid}" class="btn-ghost-sm justify-content-start">
+					<i class="fa fa-fw fa-lock text-primary"></i> [[admin/manage/categories:privileges]]
+				</a>
+
+				<a href="{config.relative_path}/category/{category.cid}" class="btn-ghost-sm justify-content-start">
+					<i class="fa fa-fw fa-eye text-primary"></i> [[admin/manage/categories:view-category]]
+				</a>
+
+				<hr class="my-1"/>
+
+				<button data-action="toggle" data-disabled="{category.disabled}" class="btn-ghost-sm justify-content-start">
+					{{{ if category.disabled }}}
+					<i class="fa fa-fw fa-check text-success"></i>
+					<span class="label">[[admin/manage/categories:enable]]</span>
+					{{{ else }}}
+					<i class="fa fa-fw fa-ban text-danger"></i>
+					<span class="label">[[admin/manage/categories:disable]]</span>
+					{{{ end }}}
+				</button>
+
+				<button class="btn-ghost-sm purge justify-content-start">
+					<i class="fa fa-fw fa-trash text-danger"></i> [[admin/manage/categories:purge]]
+				</button>
+
 			</div>
 		</div>
 	</div>

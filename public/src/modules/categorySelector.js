@@ -22,6 +22,7 @@ define('categorySelector', [
 			el: el,
 			selectedCategory: null,
 		};
+
 		el.on('click', '[data-cid]', function () {
 			const categoryEl = $(this);
 			if (categoryEl.hasClass('disabled')) {
@@ -30,6 +31,7 @@ define('categorySelector', [
 			selector.selectCategory(categoryEl.attr('data-cid'));
 			onSelect(selector.selectedCategory);
 		});
+
 		const defaultSelectHtml = selector.el.find('[component="category-selector-selected"]').html();
 		selector.selectCategory = function (cid) {
 			const categoryEl = selector.el.find('[data-cid="' + cid + '"]');
@@ -54,6 +56,14 @@ define('categorySelector', [
 		selector.getSelectedCid = function () {
 			return selector.selectedCategory ? selector.selectedCategory.cid : 0;
 		};
+
+		if (options.hasOwnProperty('selectedCategory')) {
+			app.parseAndTranslate(options.template, { selectedCategory: options.selectedCategory }, function (html) {
+				selector.el.find('[component="category-selector-selected"]').html(
+					html.find('[component="category-selector-selected"]').html()
+				);
+			});
+		}
 		return selector;
 	};
 

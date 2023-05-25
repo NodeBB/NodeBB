@@ -20,6 +20,7 @@ define('admin/manage/categories', [
 			onSelect: function (selectedCategory) {
 				ajaxify.go('/admin/manage/categories' + (selectedCategory.cid ? '?cid=' + selectedCategory.cid : ''));
 			},
+			cacheList: false,
 			localCategories: [],
 			template: 'admin/partials/category/selector-dropdown-right',
 		});
@@ -74,6 +75,7 @@ define('admin/manage/categories', [
 				},
 			});
 		});
+
 		$('#toggle-collapse-all').on('click', function () {
 			const $this = $(this);
 			const isCollapsed = parseInt($this.attr('data-collapsed'), 10) === 1;

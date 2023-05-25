@@ -19,7 +19,7 @@ $btn-ghost-hover-color: mix($light, $dark, 90%);
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	gap: ($spacer * 0.75);
+	gap: ($spacer * 0.5);
 	border-radius: $border-radius-sm;
 	border-width: 1px;
 	border-color: transparent;

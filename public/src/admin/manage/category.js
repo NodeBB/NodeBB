@@ -21,10 +21,32 @@ define('admin/manage/category', [
 			$this.val($this.attr('data-value'));
 		});
 
-		categorySelector.init($('[component="category-selector"]'), {
+		// category switcher
+		categorySelector.init($('[component="settings/main/header"] [component="category-selector"]'), {
 			onSelect: function (selectedCategory) {
 				ajaxify.go('admin/manage/categories/' + selectedCategory.cid);
 			},
+			cacheList: false,
+			showLinks: true,
+			template: 'admin/partials/category/selector-dropdown-right',
+		});
+
+		// parent selector
+		categorySelector.init($('#parent-category-selector [component="category-selector"]'), {
+			onSelect: function (selectedCategory) {
+				const parentCidInput = $('#parent-cid');
+				parentCidInput.val(selectedCategory.cid);
+				modified(parentCidInput[0]);
+			},
+			selectedCategory: ajaxify.data.category.parent, // switch selection to parent
+			localCategories: [
+				{
+					cid: 0,
+					name: '[[admin/manage/categories:parent-category-none]]',
+					icon: 'fa-list',
+				},
+			],
+			cacheList: false,
 			showLinks: true,
 			template: 'admin/partials/category/selector-dropdown-right',
 		});
@@ -33,6 +55,9 @@ define('admin/manage/category', [
 
 		categorySettings.find('input, select, textarea').on('change', function (ev) {
 			modified(ev.target);
+		});
+		$('[type="checkbox"]').on('change', function () {
+			modified($(this));
 		});
 
 		$('[data-name="imageClass"]').on('change', function () {
@@ -196,30 +221,18 @@ define('admin/manage/category', [
 			iconSelect.init($(this).find('i'), modified);
 		});
 
-		$('[type="checkbox"]').on('change', function () {
-			modified($(this));
-		});
-
-		$('button[data-action="setParent"], button[data-action="changeParent"]').on('click', Category.launchParentSelector);
-
-		$('button[data-action="removeParent"]').on('click', function () {
-			api.put('/categories/' + ajaxify.data.category.cid, {
-				parentCid: 0,
-			}).then(() => {
-				$('button[data-action="removeParent"]').parent().addClass('hide');
-				$('button[data-action="changeParent"]').parent().addClass('hide');
-				$('button[data-action="setParent"]').removeClass('hide');
-			}).catch(alerts.error);
-		});
-
 		$('button[data-action="toggle"]').on('click', function () {
 			const $this = $(this);
 			const disabled = $this.attr('data-disabled') === '1';
 			api.put('/categories/' + ajaxify.data.category.cid, {
 				disabled: disabled ? 0 : 1,
 			}).then(() => {
-				$this.translateText(!disabled ? '[[admin/manage/categories:enable]]' : '[[admin/manage/categories:disable]]');
-				$this.toggleClass('btn-primary', !disabled).toggleClass('btn-danger', disabled);
+				$this.find('.label').translateText(
+					!disabled ? '[[admin/manage/categories:enable]]' : '[[admin/manage/categories:disable]]'
+				);
+				$this.find('i')
+					.toggleClass(['fa-check', 'text-success'], !disabled)
+					.toggleClass(['fa-ban', 'text-danger'], disabled);
 				$this.attr('data-disabled', disabled ? 0 : 1);
 			}).catch(alerts.error);
 		});
@@ -274,31 +287,6 @@ define('admin/manage/category', [
 			modified(tagEl);
 		});
 	}
-
-	Category.launchParentSelector = function () {
-		categorySelector.modal({
-			onSubmit: function (selectedCategory) {
-				const parentCid = selectedCategory.cid;
-				if (!parentCid) {
-					return;
-				}
-				api.put('/categories/' + ajaxify.data.category.cid, {
-					parentCid: parentCid,
-				}).then(() => {
-					api.get(`/categories/${parentCid}`, {}).then(function (parent) {
-						if (parent && parent.icon && parent.name) {
-							const buttonHtml = '<i class="fa ' + parent.icon + '"></i> ' + parent.name;
-							$('button[data-action="changeParent"]').html(buttonHtml).parent().removeClass('hide');
-						}
-					});
-
-					$('button[data-action="removeParent"]').parent().removeClass('hide');
-					$('button[data-action="setParent"]').addClass('hide');
-				}).catch(alerts.error);
-			},
-			showLinks: true,
-		});
-	};
 
 	return Category;
 });
