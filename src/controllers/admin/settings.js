@@ -18,7 +18,9 @@ const settingsController = module.exports;
 
 settingsController.get = async function (req, res) {
 	const term = req.params.term || 'general';
-	const payload = {};
+	const payload = {
+		title: `[[admin/menu:settings/${term}]]`,
+	};
 	if (term === 'general') {
 		payload.routes = await helpers.getHomePageRoutes(req.uid);
 		payload.postSharing = await social.getPostSharing();
@@ -49,6 +51,7 @@ settingsController.user = async (req, res) => {
 		label: `[[notifications:${type}]]`,
 	}));
 	res.render('admin/settings/user', {
+		title: '[[admin/menu:settings/user]]',
 		notificationSettings: notificationSettings,
 	});
 };
@@ -56,6 +59,7 @@ settingsController.user = async (req, res) => {
 settingsController.post = async (req, res) => {
 	const groupData = await groups.getNonPrivilegeGroups('groups:createtime', 0, -1);
 	res.render('admin/settings/post', {
+		title: '[[admin/menu:settings/post]]',
 		groupsExemptFromPostQueue: groupData,
 	});
 };
@@ -63,6 +67,7 @@ settingsController.post = async (req, res) => {
 settingsController.advanced = async (req, res) => {
 	const groupData = await groups.getNonPrivilegeGroups('groups:createtime', 0, -1);
 	res.render('admin/settings/advanced', {
+		title: '[[admin/menu:settings/advanced]]',
 		groupsExemptFromMaintenanceMode: groupData,
 	});
 };
@@ -93,11 +98,14 @@ settingsController.navigation = async function (req, res) {
 	});
 
 	admin.navigation = admin.enabled.slice();
-
+	admin.title = '[[admin/menu:settings/navigation]]';
 	res.render('admin/settings/navigation', admin);
 };
 
 settingsController.api = async (req, res) => {
 	const tokens = await api.utils.tokens.list();
-	res.render('admin/settings/api', { tokens });
+	res.render('admin/settings/api', {
+		title: '[[admin/menu:settings/api]]',
+		tokens,
+	});
 };

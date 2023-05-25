@@ -1,14 +1,8 @@
 <div class="acp-page-container">
-	<div component="settings/main/header" class="row border-bottom py-2 m-0 sticky-top acp-page-main-header align-items-center">
-		<div class="col-12 col-md-8 px-0 mb-1 mb-md-0">
-			<h4 class="fw-bold tracking-tight mb-0">[[admin/settings/general:general-settings]]</h4>
-		</div>
-		<div class="col-12 col-md-4 px-0 px-md-3">
-			<button id="save" class="btn btn-primary btn-sm btn btn-primary btn-sm fw-semibold ff-secondary w-100 text-center text-nowrap">[[admin/admin:save-changes]]</button>
-		</div>
-	</div>
+	<!-- IMPORT admin/partials/settings/header.tpl -->
+
 	<div class="row settings m-0">
-		<div id="spy-container" class="col-12 col-md-8 px-0 mb-4"  tabindex="0">
+		<div id="spy-container" class="col-12 col-md-8 px-0 mb-4" tabindex="0">
 			<div class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/general:site-settings]]
 				</h5>
@@ -89,7 +83,7 @@
 
 			<hr/>
 
-			<div class="mb-4" id="section-logo">
+			<div class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/general:logo-and-icons]]</h5>
 				<div class="mb-3">
 					<label class="form-label" for="logoUrl">[[admin/settings/general:logo.image]]</label>
@@ -238,6 +232,10 @@
 						<option value="user.username">[[search:username]]</option>
 						<option value="category.name">[[search:category]]</option>
 					</select>
+				</div>
+				<div class="mb-3 d-flex justify-content-between align-items-center">
+					<label class="form-label" for="userSearchResultsPerPage">[[admin/settings/user:user-search-results-per-page]]</label>
+					<input id="userSearchResultsPerPage" type="text" class="form-control" value="24" data-field="userSearchResultsPerPage" style="max-width: 64px;">
 				</div>
 			</div>
 
