@@ -144,7 +144,7 @@ app.onDomReady();
 			url = [config.relative_path, url].join('/');
 			let fallback;
 
-			$(`[component="acp/accordion"] a[href="${url}]`).each(function () {
+			$(`[component="acp/accordion"] a[href="${url}"]`).each(function () {
 				fallback = $(this).text();
 			});
 
