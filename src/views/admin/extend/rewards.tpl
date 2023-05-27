@@ -1,5 +1,5 @@
 
-<div id="rewards">
+<div id="rewards" class="px-lg-4">
 	<ul id="active">
 		{{{ each active }}}
 		<li data-rid="{active.rid}" data-id="{active.id}">

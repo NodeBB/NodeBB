@@ -1,4 +1,4 @@
-<div id="widgets" class="row">
+<div id="widgets" class="row px-lg-4">
 	<div class="col-md-8" id="active-widgets">
 		<div class="dropdown mb-3">
 			<button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">

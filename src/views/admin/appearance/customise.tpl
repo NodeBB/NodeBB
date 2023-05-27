@@ -1,4 +1,4 @@
-<div id="customise" class="customise">
+<div id="customise" class="customise px-lg-4">
 	<ul class="nav nav-pills mb-3">
 		<li class="nav-item"><a class="nav-link active" href="#custom-css" data-bs-toggle="tab">[[admin/appearance/customise:custom-css]]</a></li>
 		<li class="nav-item"><a class="nav-link" href="#custom-js" data-bs-toggle="tab">[[admin/appearance/customise:custom-js]]</a></li>
