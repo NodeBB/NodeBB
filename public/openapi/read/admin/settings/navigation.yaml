@@ -111,4 +111,6 @@ get:
                   navigation:
                     type: array
                     description: A clone of `enabled`
+                  title:
+                    type: string
               - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

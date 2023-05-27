@@ -10,5 +10,5 @@
 	"changes-not-saved-message": "NodeBB encountered a problem saving your changes. (%1)",
 	"save-changes": "Save changes",
 	"min": "Min:",
-    "max": "Max:"
+	"max": "Max:"
 }

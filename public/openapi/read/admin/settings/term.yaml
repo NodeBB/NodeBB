@@ -18,6 +18,8 @@ get:
             allOf:
               - type: object
                 properties:
+                  title:
+                    type: string
                   routes:
                     type: array
                   postSharing:
