@@ -1,4 +1,4 @@
-<div class="row logger settings">
+<div class="row logger settings px-lg-4">
 	<div class="col-lg-12">
 		<div class="card">
 			<div class="card-header">[[admin/development/logger:logger-settings]]</div>

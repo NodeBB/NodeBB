@@ -54,11 +54,11 @@
 					</label>
 					<div class="d-flex gap-3 align-items-center">
 						<div class="d-flex gap-1 align-items-center">
-							<label for="cid-min-tags">[[admin/settings/tags:min]]</label>
+							<label for="cid-min-tags">[[admin/admin:min]]</label>
 							<input id="cid-min-tags" type="text" class="form-control" data-name="minTags" value="{category.minTags}" style="max-width: 64px;"/>
 						</div>
 						<div class="d-flex gap-1 align-items-center">
-							<label for="cid-max-tags">[[admin/settings/tags:max]]</label>
+							<label for="cid-max-tags">[[admin/admin:max]]</label>
 							<input id="cid-max-tags" type="text" class="form-control" data-name="maxTags" value="{category.maxTags}" style="max-width: 64px;"/>
 						</div>
 					</div>

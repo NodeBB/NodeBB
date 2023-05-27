@@ -1,19 +1,22 @@
-<form role="form" class="core-api-settings">
+<form role="form" class="core-api-settings px-lg-4">
 	<p class="lead">[[admin/settings/api:lead-text]]</p>
 	<p>[[admin/settings/api:intro]]</p>
 	<p class="text-danger">[[admin/settings/api:warning]]</p>
-	<p class="d-flex align-items-center">
-		<a class="flex-grow-1" href="https://docs.nodebb.org/api">
+	<div class="d-flex align-items-center justify-content-between mb-2">
+		<a class="" href="https://docs.nodebb.org/api">
 			<i class="fa fa-external-link"></i>
 			[[admin/settings/api:docs]]
 		</a>
-		<button type="button" class="btn btn-primary float-end" data-action="create">
-			<i class="fa fa-plus"></i>
-			[[admin/settings/api:create-token]]
-		</button>
-	</p>
+		<div class="d-flex gap-1">
+			<button type="button" class="btn btn-sm btn-primary text-nowrap" data-action="create">
+				<i class="fa fa-plus"></i>
+				[[admin/settings/api:create-token]]
+			</button>
+			<button id="save" class="btn btn-primary btn-sm fw-semibold ff-secondary text-nowrap">[[admin/admin:save-changes]]</button>
+		</div>
+	</div>
 
-	<table class="table mb-5" data-component="acp/tokens">
+	<table class="table mb-5 text-sm" data-component="acp/tokens">
 		<thead>
 			<tr>
 				<th>[[admin/settings/api:token]]</th>
@@ -83,5 +86,3 @@
 		</div>
 	</div>
 </form>
-
-<!-- IMPORT admin/partials/save_button.tpl -->
