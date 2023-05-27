@@ -1,4 +1,4 @@
-<div class="row dashboard">
+<div class="row dashboard px-lg-4">
 	<div class="col-12">
 		<a class="btn btn-primary mb-3" href="{config.relative_path}/admin/dashboard">
 			<i class="fa fa-chevron-left"></i>

@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row px-lg-4">
 	<div class="col-12">
 		<form role="form" class="category">
 			<div class="">

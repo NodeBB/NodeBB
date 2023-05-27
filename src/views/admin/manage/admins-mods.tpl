@@ -1,4 +1,4 @@
-<div class="admins-mods">
+<div class="admins-mods px-lg-4">
 	<div class="mb-5">
 		<h4>{{{ if admins.icon }}}<i class="fa {admins.icon}"></i> {{{ end }}}[[admin/manage/admins-mods:administrators]]</h4>
 		<div class="administrator-area">
@@ -62,7 +62,7 @@
 
 		{{{ end }}}
 		<div>
-			<!-- IMPORT partials/paginator.tpl -->
+			<!-- IMPORT admin/partials/paginator.tpl -->
 		</div>
 	</div>
 </div>

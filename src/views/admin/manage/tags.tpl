@@ -1,9 +1,9 @@
-<div class="tags row">
+<div class="tags row px-lg-4">
 	<div class="col-lg-9">
 		<div class="card tag-management">
 			<div class="card-body">
 				<div class="alert alert-info">
-					<p>[[admin/manage/tags:description]]</p>
+					[[admin/manage/tags:description]]
 				</div>
 
 				{{{ if !tags.length }}}
@@ -14,7 +14,7 @@
 					{{{ each tags }}}
 					<div class="tag-row" data-tag="{tags.valueEscaped}">
 						<div>
-							<button disabled class="rounded-3 btn btn-light">
+							<button disabled class="rounded-3 btn btn-light position-relative">
 								{tags.valueEscaped}
 								<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-secondary">{tags.score} <span class="visually-hidden">[[tags:tags]]</span>
 							</button>
@@ -29,6 +29,10 @@
 	<div class="col-lg-3 acp-sidebar">
 		<div class="card">
 			<div class="card-body">
+				<div class="input-group mb-3">
+					<input class="form-control" type="text" id="tag-search" placeholder="[[admin/manage/tags:search]]"/>
+					<span class="input-group-text"><i class="fa fa-search"></i></span>
+				</div>
 				<div class="d-grid gap-2">
 					<button class="btn btn-primary btn-block" id="create">[[admin/manage/tags:create]]</button>
 					<button class="btn btn-primary btn-block" id="rename">[[admin/manage/tags:rename]]</button>
@@ -40,15 +44,6 @@
 						<i class="fa fa-external-link"></i>
 						[[admin/manage/tags:settings]]
 					</a>
-				</div>
-			</div>
-		</div>
-
-		<div class="card">
-			<div class="card-body">
-				<div class="input-group">
-					<input class="form-control" type="text" id="tag-search" placeholder="[[admin/manage/tags:search]]"/>
-					<span class="input-group-text"><i class="fa fa-search"></i></span>
 				</div>
 			</div>
 		</div>

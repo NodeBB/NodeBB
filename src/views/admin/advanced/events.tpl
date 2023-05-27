@@ -26,7 +26,7 @@
 				</div>
 			</div>
 			{{{ end }}}
-			<!-- IMPORT partials/paginator.tpl -->
+			<!-- IMPORT admin/partials/paginator.tpl -->
 		</div>
 	</div>
 	<div class="col-lg-3 acp-sidebar">

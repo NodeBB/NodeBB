@@ -1,4 +1,4 @@
-<div class="row dashboard">
+<div class="row dashboard px-lg-4">
 	<div class="col-12">
 		<div class="d-flex gap-2 mb-3">
 			<a class="btn btn-primary me-auto align-items-center" href="{config.relative_path}/admin/dashboard">

@@ -1,4 +1,4 @@
-<div class="row manage-users">
+<div class="row manage-users px-lg-4">
 	<div class="col-lg-12">
 		<div class="d-flex justify-content-between">
 			<div class="row">
@@ -86,7 +86,7 @@
 		</div>
 
 		<div class="table-responsive">
-			<table class="table table-striped users-table">
+			<table class="table table-striped users-table text-sm">
 				<thead>
 					<tr>
 						<th><input component="user/select/all" type="checkbox"/></th>
@@ -94,11 +94,11 @@
 						<th class="text-muted">[[admin/manage/users:users.username]]</th>
 						<th class="text-muted">[[admin/manage/users:users.email]]</th>
 						<th class="text-muted">[[admin/manage/users:users.ip]]</th>
-						<th data-sort="postcount" class="text-end pointer">[[admin/manage/users:users.postcount]] {{{if sort_postcount}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
-						<th data-sort="reputation" class="text-end pointer">[[admin/manage/users:users.reputation]] {{{if sort_reputation}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
-						<th data-sort="flags" class="text-end pointer">[[admin/manage/users:users.flags]] {{{if sort_flags}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
-						<th data-sort="joindate" class="pointer">[[admin/manage/users:users.joined]] {{{if sort_joindate}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
-						<th data-sort="lastonline" class="pointer">[[admin/manage/users:users.last-online]] {{{if sort_lastonline}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
+						<th data-sort="postcount" class="text-end pointer text-nowrap">[[admin/manage/users:users.postcount]] {{{if sort_postcount}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
+						<th data-sort="reputation" class="text-end pointer text-nowrap">[[admin/manage/users:users.reputation]] {{{if sort_reputation}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
+						<th data-sort="flags" class="text-end pointer text-nowrap">[[admin/manage/users:users.flags]] {{{if sort_flags}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
+						<th data-sort="joindate" class="pointer text-nowrap">[[admin/manage/users:users.joined]] {{{if sort_joindate}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
+						<th data-sort="lastonline" class="pointer text-nowrap">[[admin/manage/users:users.last-online]] {{{if sort_lastonline}}}<i class="fa fa-sort-{{{if reverse}}}down{{{else}}}up{{{end}}}">{{{end}}}</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -133,7 +133,7 @@
 			</table>
 		</div>
 
-		<!-- IMPORT partials/paginator.tpl -->
+		<!-- IMPORT admin/partials/paginator.tpl -->
 
 	</div>
 </div>

@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row px-lg-4">
 	<div class="col-12">
 		<div class="registration card mb-3">
 			<div class="card-header text-bg-primary">
@@ -86,7 +86,7 @@
 				</table>
 			</div>
 
-			<!-- IMPORT partials/paginator.tpl -->
+			<!-- IMPORT admin/partials/paginator.tpl -->
 		</div>
 
 		<div class="invitations card">

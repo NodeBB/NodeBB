@@ -18,6 +18,6 @@
 	<div class="categories"></div>
 
 	<div>
-		<!-- IMPORT partials/paginator.tpl -->
+		<!-- IMPORT admin/partials/paginator.tpl -->
 	</div>
 </div>

@@ -1,4 +1,4 @@
-<div class="row dashboard">
+<div class="row dashboard px-lg-4">
 	<div class="col-lg-9">
 		<!-- IMPORT admin/partials/dashboard/graph.tpl -->
 		<!-- IMPORT admin/partials/dashboard/stats.tpl -->
