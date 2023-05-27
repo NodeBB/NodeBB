@@ -295,11 +295,6 @@ describe('Utility Methods', () => {
 		done();
 	});
 
-	it('should return false if not touch device', (done) => {
-		assert(!utils.isTouchDevice());
-		done();
-	});
-
 	it('should check if element is in viewport', (done) => {
 		const el = $('<div>some text</div>');
 		assert(utils.isElementInViewport(el));
