@@ -86,7 +86,7 @@
 		</div>
 
 		<div class="table-responsive">
-			<table class="table table-striped users-table text-sm">
+			<table class="table users-table text-sm">
 				<thead>
 					<tr>
 						<th><input component="user/select/all" type="checkbox"/></th>

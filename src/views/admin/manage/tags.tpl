@@ -12,9 +12,9 @@
 
 				<div class="tag-list">
 					{{{ each tags }}}
-					<div class="tag-row" data-tag="{tags.valueEscaped}">
+					<div class="tag-row p-2 ms-3 mb-1" data-tag="{tags.valueEscaped}">
 						<div>
-							<button disabled class="rounded-3 btn btn-light position-relative">
+							<button disabled class="rounded-3 btn btn-light border position-relative">
 								{tags.valueEscaped}
 								<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-secondary">{tags.score} <span class="visually-hidden">[[tags:tags]]</span>
 							</button>

@@ -45,8 +45,8 @@
 					<td class="col-md-2 text-end">{{{ if files.isFile }}}{files.sizeHumanReadable}{{{ else }}}[[admin/manage/uploads:filecount, {files.fileCount}]]{{{ end }}}</td>
 
 					<td role="button" class="col-md-1 text-end">
-						<button class="btn btn-sm btn-light">
-							<i class="delete fa fa-fw fa-trash-o text-danger {{{ if !files.isFile }}} hidden{{{ end }}}"></i>
+						<button class="delete btn btn-sm btn-light {{{ if !files.isFile }}} hidden{{{ end }}}">
+							<i class="fa fa-fw fa-trash-o text-danger"></i>
 						</button>
 					</td>
 				</tr>
