@@ -7,12 +7,12 @@ $weights: $font-weight-light, $font-weight-normal, $font-weight-semibold, $font-
 	@include Inter.fontFace(
 		$weight: $weight,
 		$display: fallback,
-		$fontDir: "./plugins/nodebb-theme-harmony/inter"
+		$fontDir: "./plugins/core/inter"
 	);
 	@include Poppins.fontFace(
 	  $weight: $weight,
 	  $display: fallback,
-	  $fontDir: "./plugins/nodebb-theme-harmony/poppins"
+	  $fontDir: "./plugins/core/poppins"
 	);
 }
 

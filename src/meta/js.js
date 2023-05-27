@@ -83,6 +83,10 @@ JS.buildModules = async function () {
 
 JS.linkStatics = async function () {
 	await fs.promises.rm(path.join(__dirname, '../../build/public/plugins'), { recursive: true, force: true });
+
+	plugins.staticDirs['core/inter'] = path.join(basePath, 'node_modules//@fontsource/inter/files');
+	plugins.staticDirs['core/poppins'] = path.join(basePath, 'node_modules//@fontsource/poppins/files');
+
 	await Promise.all(Object.keys(plugins.staticDirs).map(async (mappedPath) => {
 		const sourceDir = plugins.staticDirs[mappedPath];
 		const destDir = path.join(__dirname, '../../build/public/plugins', mappedPath);
