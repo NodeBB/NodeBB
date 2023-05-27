@@ -12,7 +12,9 @@ const {
 			return req.headers['x-csrf-token'];
 		} else if (req.body && req.body.csrf_token) {
 			return req.body.csrf_token;
-		} else if (req.query) {
+		} else if (req.body && req.body._csrf) {
+			return req.body._csrf;
+		} else if (req.query && req.query._csrf) {
 			return req.query._csrf;
 		}
 	},
