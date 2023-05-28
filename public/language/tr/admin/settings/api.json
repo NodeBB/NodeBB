@@ -14,13 +14,13 @@
 	"uid-help-text": "Bu jetonla ilişkilendirilecek bir Kullanıcı Kimliği belirtin. Kullanıcı kimliği 0 ise, diğer kullanıcıların kimliğini _uid parametresine göre üstlenebilen bir ana simge olarak kabul edilir.",
 	"description": "Açıklama",
 	"last-seen": "Last seen",
-	"created": "Created",
+	"created": "Oluşturuldu",
 	"create-token": "Create Token",
 	"update-token": "Update Token",
 	"master-token": "Master token",
 	"last-seen-never": "Bu anahtar daha önce hiç kullanılmadı.",
 	"no-description": "Hiçbir açıklama belirtilmemiş.",
-	"actions": "Actions",
+	"actions": "Eylemler",
 
 	"delete-confirm": "Are you sure you wish to delete this token? It will not be recoverable.",
 	"roll-confirm": "Are you sure you wish to regenerate this token? The old token will be immediately revoked and will not be recoverable."
