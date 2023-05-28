@@ -40,6 +40,42 @@ Controller.getActor = async (req, res) => {
 	});
 };
 
+Controller.getFollowing = async (req, res) => {
+	const { followingCount: totalItems } = await user.getUserFields(res.locals.uid, ['followingCount']);
+
+	const page = parseInt(req.query.page, 10) || 1;
+	const resultsPerPage = 50;
+	const start = Math.max(0, page - 1) * resultsPerPage;
+	const stop = start + resultsPerPage - 1;
+
+	let orderedItems = await user.getFollowing(res.locals.uid, start, stop);
+	orderedItems = orderedItems.map(({ userslug }) => `${nconf.get('url')}/user/${userslug}`);
+	res.status(200).json({
+		'@context': 'https://www.w3.org/ns/activitystreams',
+		type: 'OrderedCollection',
+		totalItems,
+		orderedItems,
+	});
+};
+
+Controller.getFollowers = async (req, res) => {
+	const { followerCount: totalItems } = await user.getUserFields(res.locals.uid, ['followerCount']);
+
+	const page = parseInt(req.query.page, 10) || 1;
+	const resultsPerPage = 50;
+	const start = Math.max(0, page - 1) * resultsPerPage;
+	const stop = start + resultsPerPage - 1;
+
+	let orderedItems = await user.getFollowers(res.locals.uid, start, stop);
+	orderedItems = orderedItems.map(({ userslug }) => `${nconf.get('url')}/user/${userslug}`);
+	res.status(200).json({
+		'@context': 'https://www.w3.org/ns/activitystreams',
+		type: 'OrderedCollection',
+		totalItems,
+		orderedItems,
+	});
+};
+
 Controller.getOutbox = async (req, res) => {
 	// stub
 	res.status(200).json({

@@ -5,6 +5,9 @@ module.exports = function (app, middleware, controllers) {
 
 	app.get('/user/:userslug', middlewares, controllers.activitypub.getActor);
 
+	app.get('/user/:userslug/following', middlewares, controllers.activitypub.getFollowing);
+	app.get('/user/:userslug/followers', middlewares, controllers.activitypub.getFollowers);
+
 	app.get('/user/:userslug/outbox', middlewares, controllers.activitypub.getOutbox);
 	app.post('/user/:userslug/outbox', middlewares, controllers.activitypub.postOutbox);
 
