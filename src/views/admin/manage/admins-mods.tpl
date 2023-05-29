@@ -1,7 +1,13 @@
 <div class="admins-mods acp-page-container px-lg-4">
+	<div class="d-flex border-bottom py-2 m-0 sticky-top acp-page-main-header align-items-center justify-content-between flex-wrap gap-2">
+		<div class="">
+			<h4 class="fw-bold tracking-tight mb-0">[[admin/manage/admins-mods:manage-admins-and-mods]]</h4>
+		</div>
+	</div>
+
 	<div>
 		<div class="d-flex gap-2 justify-content-between align-items-center mb-2">
-			<h4 class="mb-0">{{{ if admins.icon }}}<i class="fa {admins.icon}"></i> {{{ end }}}[[admin/manage/admins-mods:administrators]]</h4>
+			<h4 class="mb-0">[[admin/manage/admins-mods:administrators]]</h4>
 			<input id="admin-search" class="form-control form-control-sm w-auto" placeholder="[[admin/manage/admins-mods:add-administrator]]" />
 		</div>
 		<div class="administrator-area">

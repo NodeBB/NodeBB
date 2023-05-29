@@ -163,13 +163,12 @@ define('admin/settings/navigation', [
 
 	function toggle() {
 		const btn = $(this);
-		const disabled = btn.hasClass('btn-success');
+		const disabled = btn.hasClass('enable');
 		const index = btn.parents('[data-index]').attr('data-index');
-		translator.translate(disabled ? '[[admin/settings/navigation:btn.disable]]' : '[[admin/settings/navigation:btn.enable]]', function (html) {
-			btn.toggleClass('btn-warning').toggleClass('btn-success').html(html);
-			btn.parents('li').find('[name="enabled"]').val(disabled ? 'on' : '');
-			$('#active-navigation [data-index="' + index + '"] a').toggleClass('text-muted', !disabled);
-		});
+		btn.siblings('.toggle').removeClass('hidden');
+		btn.addClass('hidden');
+		btn.parents('li').find('[name="enabled"]').val(disabled ? 'on' : '');
+		$('#active-navigation [data-index="' + index + '"] a').toggleClass('text-muted', !disabled);
 		return false;
 	}
 

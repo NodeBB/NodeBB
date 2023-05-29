@@ -1,9 +1,18 @@
-<div class="px-lg-4">
-	<!-- IMPORT partials/breadcrumbs.tpl -->
+<div class="acp-page-container px-lg-4">
+	<div class="d-flex border-bottom py-2 m-0 sticky-top acp-page-main-header align-items-center justify-content-between flex-wrap gap-2">
+		<div class="">
+			<h4 class="fw-bold tracking-tight mb-0">[[admin/manage/uploads:manage-uploads]]</h4>
+		</div>
+		<div class="d-flex gap-1">
 
-	<div class="d-flex justify-content-end gap-1">
-		<button id="new-folder" class="btn btn-primary"><i class="fa fa-folder"></i> [[admin/manage/uploads:new-folder]]</button>
-		<button id="upload" class="btn btn-success"><i class="fa fa-upload"></i> [[global:upload]]</button>
+			<button id="new-folder" class="btn btn-light btn-sm"><i class="fa fa-folder"></i> [[admin/manage/uploads:new-folder]]</button>
+
+			<button id="upload" class="btn btn-primary btn-sm"><i class="fa fa-upload"></i> [[global:upload]]</button>
+		</div>
+	</div>
+
+	<div class="">
+	<!-- IMPORT partials/breadcrumbs.tpl -->
 	</div>
 
 	<div class="table-responsive">
@@ -20,19 +29,19 @@
 				{{{ each files }}}
 				<tr data-path="{files.path}">
 					{{{ if files.isDirectory }}}
-					<td class="col-md-6" role="button">
+					<td class="" role="button">
 						<i class="fa fa-fw fa-folder-o"></i> <a href="{config.relative_path}/admin/manage/uploads?dir={files.path}">{files.name}</a>
 					</td>
 					{{{ end }}}
 
 					{{{ if files.isFile }}}
-					<td class="col-md-6">
+					<td class="">
 						<i class="fa fa-fw fa-file-text-o"></i> <a href="{config.relative_path}{files.url}" target="_blank">{files.name}</a>
 					</td>
 					{{{ end }}}
 
 					{{{ if showPids }}}
-					<td class="col-md-3 text-end">
+					<td class="text-end">
 						{{{ each ./inPids }}}
 						<a target="_blank" href="{config.relative_path}/post/{@value}"><span class="label label-default">{@value}</span></a>
 						{{{ end }}}
@@ -42,9 +51,9 @@
 					</td>
 					{{{ end }}}
 
-					<td class="col-md-2 text-end">{{{ if files.isFile }}}{files.sizeHumanReadable}{{{ else }}}[[admin/manage/uploads:filecount, {files.fileCount}]]{{{ end }}}</td>
+					<td class="text-end">{{{ if files.isFile }}}{files.sizeHumanReadable}{{{ else }}}[[admin/manage/uploads:filecount, {files.fileCount}]]{{{ end }}}</td>
 
-					<td role="button" class="col-md-1 text-end">
+					<td role="button" class=" text-end">
 						<button class="delete btn btn-sm btn-light {{{ if !files.isFile }}} hidden{{{ end }}}">
 							<i class="fa fa-fw fa-trash-o text-danger"></i>
 						</button>
