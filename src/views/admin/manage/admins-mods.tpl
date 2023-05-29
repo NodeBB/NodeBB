@@ -39,7 +39,7 @@
 
 	<div>
 		<div class="d-flex gap-2 align-items-center">
-			<h4 id="moderators-title">[[admin/manage/admins-mods:moderators]]</h4>
+			<h4 class="mb-0" id="moderators-title">[[admin/manage/admins-mods:moderators]]</h4>
 			<div class="">
 				<!-- IMPORT admin/partials/category/selector-dropdown-left.tpl -->
 			</div>
