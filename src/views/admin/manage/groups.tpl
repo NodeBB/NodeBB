@@ -51,7 +51,7 @@
 							<div class="d-flex justify-content-end gap-1">
 								<a href="{config.relative_path}/groups/{groups.slug}" class="btn btn-light btn-sm">[[admin/admin:view]]</a>
 
-								<a href="{config.relative_path}/admin/groups/{groups.slug}" class="btn btn-light btn-sm">[[admin/admin:edit]]</a>
+								<a href="{config.relative_path}/admin/manage/groups/{groups.slug}" class="btn btn-light btn-sm">[[admin/admin:edit]]</a>
 
 
 								<button class="btn btn-light btn-sm {{{ if groups.system }}} disabled {{{ end }}}" data-action="delete"><i class="fa fa-trash text-danger"></i></button>
