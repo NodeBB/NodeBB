@@ -76,7 +76,7 @@
 
 						<div class="btn-group" component="clone">
 							<button type="button" class="btn btn-primary" component="clone/button">[[admin/extend/widgets:clone-from]] ...</button>
-							<button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
+							<button type="button" class="btn btn-primary dropdown-toggle flex-0" data-bs-toggle="dropdown">
 								<span class="caret"></span>
 							</button>
 							<ul class="dropdown-menu dropdown-menu-end">
