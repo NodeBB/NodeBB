@@ -16,7 +16,7 @@
 		<ul id="active" class="list-unstyled p-0 m-0">
 			{{{ each active }}}
 			<li data-rid="{active.rid}" data-id="{active.id}">
-				<div class="d-flex gap-1 mb-3">
+				<div class="d-flex gap-1 mb-3 flex-wrap">
 					<form class="main d-flex gap-1">
 						<div class="card card-body m-0 if-block border-info border border-2">
 							<label class="form-label" for="condition-if-users">[[admin/extend/rewards:condition-if-users]]</label>
