@@ -172,7 +172,15 @@ async function expose(exposedField, method, field, req, res, next) {
 	if (!req.params.hasOwnProperty(field)) {
 		return next();
 	}
-	const value = await method(String(req.params[field]).toLowerCase());
+	const param = String(req.params[field]).toLowerCase();
+
+	// potential hostname — ActivityPub
+	if (param.indexOf('@') !== -1) {
+		res.locals[exposedField] = -2;
+		return next();
+	}
+
+	const value = await method(param);
 	if (!value) {
 		next('route');
 		return;
