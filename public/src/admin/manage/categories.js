@@ -100,7 +100,7 @@ define('admin/manage/categories', [
 				message: html,
 				buttons: {
 					save: {
-						label: '[[global:save]]',
+						label: '[[global:create]]',
 						className: 'btn-primary',
 						callback: submit,
 					},

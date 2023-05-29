@@ -1,4 +1,4 @@
-<div>
+<div class="acp-page-container px-lg-4">
 	<form role="form" class="group row" data-groupname="{group.displayName}">
 		<div class="col-md-9">
 			<div class="group-settings-form">

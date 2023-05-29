@@ -1,8 +1,8 @@
 'use strict';
 
 define('categorySelector', [
-	'categorySearch', 'bootbox', 'hooks',
-], function (categorySearch, bootbox, hooks) {
+	'categorySearch', 'bootbox', 'hooks', 'translator',
+], function (categorySearch, bootbox, hooks, translator) {
 	const categorySelector = {};
 
 	categorySelector.init = function (el, options) {
@@ -32,7 +32,11 @@ define('categorySelector', [
 			onSelect(selector.selectedCategory);
 		});
 
-		const defaultSelectHtml = selector.el.find('[component="category-selector-selected"]').html();
+		let defaultSelectHtml = selector.el.find('[component="category-selector-selected"]').html();
+
+		translator.translate(defaultSelectHtml, (translated) => {
+			defaultSelectHtml = translated;
+		});
 		selector.selectCategory = function (cid) {
 			const categoryEl = selector.el.find('[data-cid="' + cid + '"]');
 			selector.selectedCategory = {
