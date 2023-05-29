@@ -50,7 +50,7 @@
 						<div class="alert alert-info">[[admin/extend/widgets:none-installed, {config.relative_path}/admin/extend/plugins]]</div>
 						{{{ end }}}
 						<p>
-							<select id="widget-selector" class="form-control">
+							<select id="widget-selector" class="form-select">
 								{{{ each availableWidgets }}}
 								<option value="{./widget}">{./name}</option>
 								{{{ end }}}
@@ -112,15 +112,15 @@
 								</div>
 							</div>
 							<div class="card mb-3 pointer" data-container-html='<div class="card"><h5 class="card-header">\{{title}}</h5><div class="card-body">\{{body}}</div></div>'>
-								<div class="card-header">
+								<div class="card-header d-flex justify-content-between">
 									[[admin/extend/widgets:container.card-header]]
-									<div class="float-end color-selector">
-										<button data-class="text-bg-primary" class="btn btn-sm btn-primary">&nbsp;&nbsp;</button>
-										<button data-class="" class="btn btn-sm btn-secondary">&nbsp;&nbsp;</button>
-										<button data-class="text-bg-success" class="btn btn-sm btn-success">&nbsp;&nbsp;</button>
-										<button data-class="text-bg-info" class="btn btn-sm btn-info">&nbsp;&nbsp;</button>
-										<button data-class="text-bg-warning" class="btn btn-sm btn-warning">&nbsp;&nbsp;</button>
-										<button data-class="text-bg-danger" class="btn btn-sm btn-danger">&nbsp;&nbsp;</button>
+									<div class="d-flex gap-1 color-selector">
+										<button data-class="text-bg-primary" class="btn btn-sm btn-primary"</button>
+										<button data-class="" class="btn btn-sm btn-secondary"</button>
+										<button data-class="text-bg-success" class="btn btn-sm btn-success"</button>
+										<button data-class="text-bg-info" class="btn btn-sm btn-info"</button>
+										<button data-class="text-bg-warning" class="btn btn-sm btn-warning"</button>
+										<button data-class="text-bg-danger" class="btn btn-sm btn-danger"</button>
 									</div>
 								</div>
 								<div class="card-body">
@@ -129,12 +129,14 @@
 							</div>
 
 							<div class="alert alert-info pointer" data-container-html='<div class="alert alert-info">\{{body}}</div>'>
-								[[admin/extend/widgets:container.alert]]
-								<div class="float-end color-selector">
-									<button data-class="alert-success" class="btn btn-sm btn-success">&nbsp;&nbsp;</button>
-									<button data-class="alert-info" class="btn btn-sm btn-info">&nbsp;&nbsp;</button>
-									<button data-class="alert-warning" class="btn btn-sm btn-warning">&nbsp;&nbsp;</button>
-									<button data-class="alert-danger" class="btn btn-sm btn-danger">&nbsp;&nbsp;</button>
+								<div class="d-flex justify-content-between">
+									[[admin/extend/widgets:container.alert]]
+									<div class="d-flex gap-1 color-selector">
+										<button data-class="alert-success" class="btn btn-sm btn-success"></button>
+										<button data-class="alert-info" class="btn btn-sm btn-info"></button>
+										<button data-class="alert-warning" class="btn btn-sm btn-warning"></button>
+										<button data-class="alert-danger" class="btn btn-sm btn-danger"></button>
+									</div>
 								</div>
 							</div>
 						</div>
