@@ -150,9 +150,9 @@
 
 				<div class="mb-3">
 					<label>[[admin/settings/uploads:default-avatar]]</label>
-					<div class="input-group">
+					<div class="d-flex gap-1">
 						<input id="defaultAvatar" type="text" class="form-control" placeholder="A custom image to use instead of user icons" data-field="defaultAvatar" />
-						<input data-action="upload" data-target="defaultAvatar" data-route="{config.relative_path}/api/admin/uploadDefaultAvatar" type="button" class="btn btn-outline-secondary" value="[[admin/settings/uploads:upload]]" />
+						<input data-action="upload" data-target="defaultAvatar" data-route="{config.relative_path}/api/admin/uploadDefaultAvatar" type="button" class="btn btn-light" value="[[admin/settings/uploads:upload]]" />
 					</div>
 				</div>
 
