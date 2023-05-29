@@ -1,12 +1,19 @@
 <div class="px-lg-4">
-	<div class="row justify-content-end">
-		<div class="col-lg-3">
+
+	<div class="d-flex border-bottom py-2 m-0 sticky-top acp-page-main-header align-items-center justify-content-between flex-wrap gap-2">
+		<div class="">
+			<h4 class="fw-bold tracking-tight mb-0">[[admin/manage/groups:manage-groups]]</h4>
+		</div>
+		<div class="d-flex gap-1">
 			<div class="input-group">
-				<input type="text" class="form-control" placeholder="[[admin/manage/groups:search-placeholder]]" id="group-search">
+				<input type="text" class="form-control form-control-sm" placeholder="[[admin/manage/groups:search-placeholder]]" id="group-search">
 				<span class="input-group-text search-button"><i class="fa fa-search"></i></span>
 			</div>
+
+			<button id="create" class="btn btn-primary btn-sm btn btn-primary btn-sm fw-semibold ff-secondary text-center text-nowrap">[[admin/manage/groups:add-group]]</button>
 		</div>
 	</div>
+
 	<div class="row groups">
 		<div class="col-12">
 			<table class="table groups-list">
@@ -23,7 +30,7 @@
 					<tr data-groupname="{./displayName}" data-name-encoded="{./nameEncoded}">
 						<td>
 							<a href="{config.relative_path}/admin/manage/groups/{./slug}">{./displayName}</a> ({./memberCount})
-							<p class="description">{./description}</p>
+							<p class="description text-xs text-muted">{./description}</p>
 						</td>
 						<td>
 							<span class="badge" style="color:{./textColor}; background-color: {./labelColor};">{{{ if ./icon }}}<i class="fa {./icon}"></i> {{{ end }}}{./userTitle}</span>
@@ -40,11 +47,12 @@
 							{{{ end }}}
 						</td>
 
-						<td class="text-end">
-							<div class="d-flex gap-1">
-								<a href="{config.relative_path}/api/admin/groups/{groups.nameEncoded}/csv" class="btn btn-light btn-sm">[[admin/manage/groups:download-csv]]</a>
+						<td>
+							<div class="d-flex justify-content-end gap-1">
+								<a href="{config.relative_path}/groups/{groups.slug}" class="btn btn-light btn-sm">[[admin/admin:view]]</a>
 
-								<!-- IMPORT admin/partials/groups/privileges-select-category.tpl -->
+								<a href="{config.relative_path}/admin/groups/{groups.slug}" class="btn btn-light btn-sm">[[admin/admin:edit]]</a>
+
 
 								<button class="btn btn-light btn-sm {{{ if groups.system }}} disabled {{{ end }}}" data-action="delete"><i class="fa fa-trash text-danger"></i></button>
 							</div>
@@ -52,17 +60,10 @@
 					</tr>
 					{{{ end }}}
 				</tbody>
-				<tfoot>
-					<tr>
-						<td colspan="6"><br /><br /></td>
-					</tr>
-				</tfoot>
 			</table>
 
 			<!-- IMPORT admin/partials/paginator.tpl -->
 		</div>
 	</div>
 </div>
-<button id="create" class="btn btn-primary position-fixed bottom-0 end-0 px-3 py-2 mb-4 me-4 rounded-circle fs-4" type="button" style="width: 64px; height: 64px;">
-    <i class="fa fa-fw fa-plus"></i>
-</button>
+

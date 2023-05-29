@@ -29,7 +29,7 @@ define('categorySelector', [
 				return false;
 			}
 			selector.selectCategory(categoryEl.attr('data-cid'));
-			onSelect(selector.selectedCategory);
+			return onSelect(selector.selectedCategory);
 		});
 
 		let defaultSelectHtml = selector.el.find('[component="category-selector-selected"]').html();

@@ -24,7 +24,7 @@
 				</div>
 			</div>
 			<div class="flex-shrink-0 d-flex gap-1 align-items-start">
-				<a href="{{{if ./link}}}{./link}{{{else}}}{config.relative_path}/category/{./cid}{{{end}}}" class="btn btn-light btn-sm" target="_blank">[[admin/manage/categories:view]]</a>
+				<a href="{{{if ./link}}}{./link}{{{else}}}{config.relative_path}/category/{./cid}{{{end}}}" class="btn btn-light btn-sm" target="_blank">[[admin/admin:view]]</a>
 				<a href="./categories/{./cid}" class="btn btn-light btn-sm">[[admin/manage/categories:edit]]</a>
 
 				<div class="category-tools">

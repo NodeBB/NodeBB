@@ -1,6 +1,6 @@
 <div component="category-selector" class="btn-group">
 	<button type="button" class="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown">
-		<span>[[admin/manage/groups:privileges]]</span> <span class="caret"></span>
+		<i class="fa fa-fw fa-lock text-primary"></i> <span>[[admin/manage/groups:privileges]]</span> <span class="caret"></span>
 	</button>
 	<div component="category-selector-search" class="hidden position-absolute">
 		<input type="text" class="form-control form-control-sm" placeholder="[[search:type-to-search]]" autocomplete="off">
