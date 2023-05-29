@@ -1,5 +1,5 @@
 					<label>[[admin/manage/privileges:group-privileges]]</label>
-					<table class="table table-striped privilege-table">
+					<table class="table privilege-table">
 						<thead>
 							{{{ if !isAdminPriv }}}
 							<tr class="privilege-table-header">
