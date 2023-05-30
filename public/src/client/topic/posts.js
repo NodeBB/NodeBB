@@ -440,7 +440,7 @@ define('forum/topic/posts', [
 		blockquotes.each(function () {
 			const $this = $(this);
 			if ($this.find(':hidden:not(br)').length && !$this.find('.toggle').length) {
-				$this.append('<i class="fa fa-angle-down pointer toggle"></i>');
+				$this.append('<i class="d-inline-block fa fa-angle-down pointer toggle py-1 px-3 border text-bg-light"></i>');
 			}
 		});
 	};
