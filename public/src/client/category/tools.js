@@ -22,17 +22,17 @@ define('forum/category/tools', [
 		});
 
 		components.get('topic/delete').on('click', function () {
-			categoryCommand('del', '/state', 'delete', onDeletePurgeComplete);
+			categoryCommand('del', '/state', 'delete', onDeleteRestoreComplete);
 			return false;
 		});
 
 		components.get('topic/restore').on('click', function () {
-			categoryCommand('put', '/state', 'restore', onDeletePurgeComplete);
+			categoryCommand('put', '/state', 'restore', onDeleteRestoreComplete);
 			return false;
 		});
 
 		components.get('topic/purge').on('click', function () {
-			categoryCommand('del', '', 'purge', onDeletePurgeComplete);
+			categoryCommand('del', '', 'purge', onPurgeComplete);
 			return false;
 		});
 
@@ -186,7 +186,7 @@ define('forum/category/tools', [
 	};
 
 	function closeDropDown() {
-		$('.thread-tools.open').find('.dropdown-toggle').trigger('click');
+		$('.thread-tools .show').removeClass('show');
 	}
 
 	function onCommandComplete() {
@@ -194,8 +194,14 @@ define('forum/category/tools', [
 		topicSelect.unselectAll();
 	}
 
-	function onDeletePurgeComplete() {
+	function onDeleteRestoreComplete() {
 		closeDropDown();
+		updateDropdownOptions();
+	}
+
+	function onPurgeComplete() {
+		closeDropDown();
+		topicSelect.unselectAll();
 		updateDropdownOptions();
 	}
 
@@ -210,7 +216,7 @@ define('forum/category/tools', [
 
 		components.get('topic/delete').toggleClass('hidden', isAnyDeleted);
 		components.get('topic/restore').toggleClass('hidden', isAnyScheduled || !isAnyDeleted);
-		components.get('topic/purge').toggleClass('hidden', !areAllDeleted);
+		components.get('topic/purge').toggleClass('hidden', !areAllDeleted || !tids.length);
 
 		components.get('topic/lock').toggleClass('hidden', isAnyLocked);
 		components.get('topic/unlock').toggleClass('hidden', !isAnyLocked);
