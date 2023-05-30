@@ -10,29 +10,31 @@
 	</div>
 </div>
 
-<table component="groups/members" class="table table-hover" data-nextstart="{group.membersNextStart}">
-	<tbody>
-	{{{ each group.members }}}
-	<tr data-uid="{group.members.uid}">
-		<td class="member-name d-flex justify-content-between align-items-center">
-			<div>
-				<a href="{config.relative_path}/user/{group.members.userslug}">{buildAvatar(group.members, "24px", true)}</a>
-				<a href="{config.relative_path}/user/{group.members.userslug}">{group.members.username}</a> <i title="[[groups:owner]]" class="user-owner-icon fa fa-star text-warning {{{ if !group.members.isOwner }}}invisible{{{ end }}}"></i>
-			</div>
+<div class="overflow-auto" style="max-height: 500px;">
+	<table component="groups/members" class="table table-hover" data-nextstart="{group.membersNextStart}">
+		<tbody>
+		{{{ each group.members }}}
+		<tr data-uid="{group.members.uid}">
+			<td class="member-name d-flex justify-content-between align-items-center">
+				<div class="d-flex align-items-center gap-2">
+					<a href="{config.relative_path}/user/{group.members.userslug}">{buildAvatar(group.members, "24px", true)}</a>
+					<a href="{config.relative_path}/user/{group.members.userslug}">{group.members.username}</a> <i title="[[groups:owner]]" class="user-owner-icon fa fa-star text-warning {{{ if !group.members.isOwner }}}invisible{{{ end }}}"></i>
+				</div>
 
-			{{{ if group.isOwner }}}
-			<div class="owner-controls d-flex gap-1">
-				<a class="btn btn-light btn-sm" href="#" data-action="toggleOwnership" title="[[groups:details.grant]]">
-					<i class="fa fa-star"></i>
-				</a>
+				{{{ if group.isOwner }}}
+				<div class="owner-controls d-flex gap-1">
+					<a class="btn btn-light btn-sm" href="#" data-action="toggleOwnership" title="[[groups:details.grant]]">
+						<i class="fa fa-star text-warning"></i>
+					</a>
 
-				<a class="btn btn-light btn-sm" href="#" data-action="kick" title="[[groups:details.kick]]">
-					<i class="fa fa-ban text-danger"></i>
-				</a>
-			</div>
-			{{{ end }}}
-		</td>
-	</tr>
-	{{{ end }}}
-	</tbody>
-</table>
+					<a class="btn btn-light btn-sm" href="#" data-action="kick" title="[[groups:details.kick]]">
+						<i class="fa fa-ban text-danger"></i>
+					</a>
+				</div>
+				{{{ end }}}
+			</td>
+		</tr>
+		{{{ end }}}
+		</tbody>
+	</table>
+</div>

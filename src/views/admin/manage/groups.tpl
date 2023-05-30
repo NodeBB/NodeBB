@@ -30,7 +30,7 @@
 					<tr data-groupname="{./displayName}" data-name-encoded="{./nameEncoded}">
 						<td>
 							<a href="{config.relative_path}/admin/manage/groups/{./slug}">{./displayName}</a> ({./memberCount})
-							<p class="description text-xs text-muted">{./description}</p>
+							<p class="description text-xs text-muted m-0">{./description}</p>
 						</td>
 						<td>
 							<span class="badge" style="color:{./textColor}; background-color: {./labelColor};">{{{ if ./icon }}}<i class="fa {./icon}"></i> {{{ end }}}{./userTitle}</span>
