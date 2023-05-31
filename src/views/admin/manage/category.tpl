@@ -64,16 +64,16 @@
 					</div>
 				</div>
 
+				<div class="mb-3">
+					<label class="form-label" for="tag-whitelist">[[admin/manage/categories:tag-whitelist]]</label>
+					<input id="tag-whitelist" type="text" class="form-control" data-name="tagWhitelist" value="" />
+				</div>
+
 				<div class="mb-3 d-flex flex-column">
 					<label class="form-label" for="cid-{category.cid}-link">
 						[[admin/manage/categories:ext-link]]
 					</label>
 					<input id="cid-{category.cid}-link" type="text" class="form-control" placeholder="http://domain.com" data-name="link" value="{category.link}" />
-				</div>
-
-				<div class="mb-3">
-					<label class="form-label" for="tag-whitelist">[[admin/manage/categories:tag-whitelist]]</label>
-					<input id="tag-whitelist" type="text" class="form-control" data-name="tagWhitelist" value="" />
 				</div>
 
 				<div class="mb-3">
