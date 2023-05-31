@@ -6,12 +6,6 @@
 			<div class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/tags:tag]]</h5>
 				<div class="mb-3">
-					<a class="btn btn-primary" href="{config.relative_path}/admin/manage/tags">
-						<i class="fa fa-external-link"></i>
-						[[admin/settings/tags:link-to-manage]]
-					</a>
-				</div>
-				<div class="mb-3">
 					<label class="form-label" for="systemTags">[[admin/settings/tags:system-tags]]</label>
 					<input id="systemTags" type="text" class="form-control" value="" data-field="systemTags" data-field-type="tagsinput" />
 					<p class="form-text">

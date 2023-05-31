@@ -4,7 +4,7 @@
 		<!-- IMPORT admin/partials/dashboard/stats.tpl -->
 
 		<div class="alert alert-info">[[admin/dashboard:details.logins-static, {loginDays}]]</div>
-		<table class="table table-striped">
+		<table class="table">
 			<thead>
 				<th class="text-muted">[[admin/manage/users:users.username]]</th>
 				<th data-sort="joindate">[[admin/dashboard:details.logins-login-time]]</th>

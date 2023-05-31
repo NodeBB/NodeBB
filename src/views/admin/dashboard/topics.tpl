@@ -3,7 +3,7 @@
 		<!-- IMPORT admin/partials/dashboard/graph.tpl -->
 		<!-- IMPORT admin/partials/dashboard/stats.tpl -->
 
-		<table class="table table-striped topics-list">
+		<table class="table topics-list">
 			<tbody>
 				{{{ if !topics.length}}}
 				<tr>

@@ -50,7 +50,7 @@
 					<i class="fa fa-exclamation-triangle"></i> [[admin/advanced/errors:error.404]]
 				</div>
 				<div class="card-body">
-					<table class="table table-striped">
+					<table class="table">
 						<thead>
 							<th>[[admin/advanced/errors:route]]</th>
 							<th>[[admin/advanced/errors:count]]</th>
