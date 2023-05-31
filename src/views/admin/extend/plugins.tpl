@@ -123,7 +123,7 @@
 							<p>
 								[[admin/extend/plugins:order.explanation]]
 							</p>
-							<ul class="plugin-list"></ul>
+							<ul class="plugin-list list-unstyled d-flex flex-column gap-2"></ul>
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">[[global:buttons.close]]</button>

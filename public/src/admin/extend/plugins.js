@@ -194,7 +194,19 @@ define('admin/extend/plugins', [
 				}
 				let html = '';
 				activePlugins.forEach(function (plugin) {
-					html += '<li class="">' + plugin + '<span class="float-end"><i class="fa fa-chevron-up"></i><i class="fa fa-chevron-down"></i></span></li>';
+					html += `
+						<li class="d-flex justify-content-between gap-1 pointer border-bottom pb-2">
+							${plugin}
+							<div class="d-flex gap-1">
+								<div class="btn-ghost-sm move-up">
+									<i class="fa fa-chevron-up"></i>
+								</div>
+								<div class="btn-ghost-sm move-down">
+									<i class="fa fa-chevron-down"></i>
+								</div>
+							</div>
+						</li>
+					`;
 				});
 				if (!activePlugins.length) {
 					translator.translate('[[admin/extend/plugins:none-active]]', function (text) {
@@ -205,12 +217,12 @@ define('admin/extend/plugins', [
 				const list = $('#order-active-plugins-modal .plugin-list');
 				list.html(html).sortable();
 
-				list.find('.fa-chevron-up').on('click', function () {
+				list.find('.move-up').on('click', function () {
 					const item = $(this).parents('li');
 					item.prev().before(item);
 				});
 
-				list.find('.fa-chevron-down').on('click', function () {
+				list.find('.move-down').on('click', function () {
 					const item = $(this).parents('li');
 					item.next().after(item);
 				});
