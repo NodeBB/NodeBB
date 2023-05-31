@@ -282,7 +282,7 @@ if (document.readyState === 'loading') {
 
 	app.newTopic = function (params) {
 		// backwards compatibilty for old signature (cid, tags)
-		if (typeof params !== 'object' || params) {
+		if (typeof params !== 'object') {
 			if (params) {
 				console.warn('[deprecated] app.newTopic(cid, tags) please pass in an object');
 			}
