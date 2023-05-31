@@ -31,7 +31,8 @@ define('admin/extend/plugins', [
 		pluginsList.on('click', 'button[data-action="toggleActive"]', function () {
 			const pluginEl = $(this).parents('li');
 			pluginID = pluginEl.attr('data-plugin-id');
-			const btn = $('[id="' + pluginID + '"] [data-action="toggleActive"]');
+			// const btn = $('[id="' + pluginID + '"] [data-action="toggleActive"]');
+			const btn = $(this);
 
 			const pluginData = ajaxify.data.installed[pluginEl.attr('data-plugin-index')];
 
@@ -40,30 +41,28 @@ define('admin/extend/plugins', [
 					if (err) {
 						return alerts.error(err);
 					}
-					translator.translate('<i class="fa fa-power-off"></i> [[admin/extend/plugins:plugin-item.' + (status.active ? 'deactivate' : 'activate') + ']]', function (buttonText) {
-						btn.html(buttonText);
-						btn.toggleClass('btn-warning', status.active).toggleClass('btn-success', !status.active);
+					btn.siblings('[data-action="toggleActive"]').removeClass('hidden');
+					btn.addClass('hidden');
 
-						// clone it to active plugins tab
-						if (status.active && !$('#active [id="' + pluginID + '"]').length) {
-							$('#active ul').prepend(pluginEl.clone(true));
-						}
+					// clone it to active plugins tab
+					if (status.active && !$('#active [id="' + pluginID + '"]').length) {
+						$('#active ul').prepend(pluginEl.clone(true));
+					}
 
-						// Toggle active state in template data
-						pluginData.active = !pluginData.active;
+					// Toggle active state in template data
+					pluginData.active = !pluginData.active;
 
-						alerts.alert({
-							alert_id: 'plugin_toggled',
-							title: '[[admin/extend/plugins:alert.' + (status.active ? 'enabled' : 'disabled') + ']]',
-							message: '[[admin/extend/plugins:alert.' + (status.active ? 'activate-success' : 'deactivate-success') + ']]',
-							type: status.active ? 'warning' : 'success',
-							timeout: 5000,
-							clickfn: function () {
-								require(['admin/modules/instance'], function (instance) {
-									instance.rebuildAndRestart();
-								});
-							},
-						});
+					alerts.alert({
+						alert_id: 'plugin_toggled',
+						title: '[[admin/extend/plugins:alert.' + (status.active ? 'enabled' : 'disabled') + ']]',
+						message: '[[admin/extend/plugins:alert.' + (status.active ? 'activate-success' : 'deactivate-success') + ']]',
+						type: status.active ? 'warning' : 'success',
+						timeout: 5000,
+						clickfn: function () {
+							require(['admin/modules/instance'], function (instance) {
+								instance.rebuildAndRestart();
+							});
+						},
 					});
 				});
 			}

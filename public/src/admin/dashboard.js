@@ -43,10 +43,6 @@ define('admin/dashboard', [
 
 		isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-		$('[data-bs-toggle="tooltip"]').tooltip({
-			animation: false,
-		});
-
 		setupRealtimeButton();
 		setupGraphs(function () {
 			socket.emit('admin.rooms.getAll', Admin.updateRoomUsage);
@@ -68,19 +64,19 @@ define('admin/dashboard', [
 
 		const html = '<div class="text-center float-start">' +
 						'<span class="formatted-number">' + data.onlineRegisteredCount + '</span>' +
-						'<div class="stat">[[admin/dashboard:active-users.users]]</div>' +
+						'<div class="stat text-nowrap">[[admin/dashboard:active-users.users]]</div>' +
 					'</div>' +
 					'<div class="text-center float-start">' +
 						'<span class="formatted-number">' + data.onlineGuestCount + '</span>' +
-						'<div class="stat">[[admin/dashboard:active-users.guests]]</div>' +
+						'<div class="stat text-nowrap">[[admin/dashboard:active-users.guests]]</div>' +
 					'</div>' +
 					'<div class="text-center float-start">' +
 						'<span class="formatted-number">' + (data.onlineRegisteredCount + data.onlineGuestCount) + '</span>' +
-						'<div class="stat">[[admin/dashboard:active-users.total]]</div>' +
+						'<div class="stat text-nowrap">[[admin/dashboard:active-users.total]]</div>' +
 					'</div>' +
 					'<div class="text-center float-start">' +
 						'<span class="formatted-number">' + data.socketCount + '</span>' +
-						'<div class="stat">[[admin/dashboard:active-users.connections]]</div>' +
+						'<div class="stat text-nowrap">[[admin/dashboard:active-users.connections]]</div>' +
 					'</div>';
 
 		updateRegisteredGraph(data.onlineRegisteredCount, data.onlineGuestCount);

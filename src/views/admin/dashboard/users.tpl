@@ -1,14 +1,9 @@
-<div class="dashboard">
+<div class="dashboard px-lg-4">
 	<div class="col-12">
-		<a class="btn btn-primary mb-3" href="{config.relative_path}/admin/dashboard">
-			<i class="fa fa-chevron-left"></i>
-			[[admin/dashboard:back-to-dashboard]]
-		</a>
-
 		<!-- IMPORT admin/partials/dashboard/graph.tpl -->
 		<!-- IMPORT admin/partials/dashboard/stats.tpl -->
 
-		<table class="table table-striped users-list">
+		<table class="table users-list">
 			<thead>
 				<th class="text-muted">[[admin/manage/users:users.uid]]</th>
 				<th class="text-muted">[[admin/manage/users:users.username]]</th>

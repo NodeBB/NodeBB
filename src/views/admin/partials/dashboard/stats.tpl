@@ -1,5 +1,5 @@
 <div class="table-responsive mb-3">
-	<table class="table table-striped">
+	<table class="table text-sm">
 		<thead>
 			<tr>
 				<th></th>

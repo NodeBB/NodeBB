@@ -1,5 +1,5 @@
 					<label>[[admin/manage/privileges:group-privileges]]</label>
-					<table class="table table-striped privilege-table">
+					<table class="table privilege-table">
 						<thead>
 							<tr class="privilege-table-header">
 								<th class="privilege-filters" colspan="100">
@@ -86,9 +86,11 @@
 					<div class="form-text">
 						[[admin/manage/categories:privileges.inherit]]
 					</div>
+
 					<hr/>
+
 					<label>[[admin/manage/privileges:user-privileges]]</label>
-					<table class="table table-striped privilege-table">
+					<table class="table privilege-table">
 						<thead>
 							<tr class="privilege-table-header">
 								<th class="privilege-filters" colspan="100">
@@ -114,19 +116,20 @@
 							{{{ each privileges.users }}}
 							<tr data-uid="{privileges.users.uid}"{{{ if privileges.users.banned }}} data-banned{{{ end }}}>
 								<td>
-									{{{ if ./picture }}}
-									<img class="avatar avatar-sm" src="{privileges.users.picture}" title="{privileges.users.username}" alt="" />
-									{{{ else }}}
-									<div class="avatar avatar-sm" style="background-color: {../icon:bgColor};">{../icon:text}</div>
-									{{{ end }}}
-								</td>
-								<td>
+									{buildAvatar(privileges.users, "24px", true)}
 									{{{ if privileges.users.banned }}}
 									<i class="ban fa fa-gavel text-danger" title="[[admin/manage/categories:privileges.banned-user-inheritance]]"></i>
 									{{{ end }}}
 									{privileges.users.username}
 								</td>
-								<td class="text-center"><input autocomplete="off" type="checkbox" class="checkbox-helper"></td>
+								<td>
+									<!-- need this empty -->
+								</td>
+								<td class="">
+									<div class="form-check text-center">
+										<input autocomplete="off" type="checkbox" class="form-check-input float-none checkbox-helper">
+									</div>
+								</td>
 								{function.spawnPrivilegeStates, privileges.users.username, ../privileges}
 							</tr>
 							{{{ end }}}

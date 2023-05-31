@@ -323,7 +323,7 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 					}
 					icons.remove();
 					iconData.forEach((iconData) => {
-						iconContainer.append($(`<i class="fa fa-xl fa-${iconData.style} fa-${iconData.id}" data-label="${iconData.label}"></i>`));
+						iconContainer.append($(`<i class="fa fa-xl fa-${iconData.style} fa-${iconData.id} rounded-1" data-label="${iconData.label}"></i>`));
 					});
 					icons = modalEl.find('.nbb-fa-icons i');
 					changeSelection();

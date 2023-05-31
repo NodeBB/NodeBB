@@ -1,51 +1,20 @@
 div.categories {
 	ul[data-cid] {
-		user-select: none;
-		list-style-type: none;
-		margin: 0;
-		padding: 0;
-
 		> li > ul > li {
-			margin-left: 4.5rem;
-		}
-		> li > a {
-			margin-left: 4.5rem;
-		}
-		.row {
-			margin-left: -15px;
-			margin-right: -15px;
+			padding-left: 3rem;
 		}
 
-		> li li:last-child {
-			.row {
-				border-bottom: 0px;
-			}
-		}
 		> li {
-			margin: 16px 0 24px 0;
-
 			&.placeholder {
 				border: 1px dashed #2196F3;
 				background-color: #E1F5FE;
+				width: 100%;
 			}
 		}
 	}
 
-	.stats {
-		display: inline-block;
-
-		li {
-			min-height: 0;
-			display: inline;
-			margin: 0 16px 0 0;
-			left: 0;
-		}
-	}
-
-
 	.disabled > .category-row {
-
-		.icon, .category-header, .description {
+		.icon, .title, .description {
 			opacity: 0.5;
 		}
 
@@ -57,34 +26,15 @@ div.categories {
 	.toggle {
 		width: 24px;
 		height: 24px;
-		border-radius: 50%;
 		line-height: 24px;
-		text-align: center;
-		vertical-align: bottom;
-		background-size: cover;
-		float: left;
-		margin-right: 0px;
 		cursor: pointer;
-		.fa {
-			font-size: 85%;
-		}
 	}
 
 	.information {
 		cursor: move;
-		padding-left: 3rem;
 	}
 
-	.category-header {
-		margin-top: 0;
-		margin-bottom: 8px;
-	}
-
-	.description {
-		margin: 0;
-	}
-
-	.children-placeholder{
+	.children-placeholder {
 		min-height: 20px;
 		height: 20px;
 	}

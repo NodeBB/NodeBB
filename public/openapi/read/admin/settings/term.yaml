@@ -17,7 +17,17 @@ get:
           schema:
             allOf:
               - type: object
-                properties: {}
+                properties:
+                  title:
+                    type: string
+                  routes:
+                    type: array
+                  postSharing:
+                    type: array
+                  languages:
+                    type: array
+                  autoDetectLang:
+                    type: number
                 additionalProperties:
                   type: object
                   description: Most of the settings pages have their values loaded on the client-side, so the settings are not exposed server-side.

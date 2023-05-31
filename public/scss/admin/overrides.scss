@@ -1,0 +1,62 @@
+$white:    #fff !default;
+$gray-100: #f8f9fa !default;
+$gray-200: #e9ecef !default;
+$gray-300: #dee2e6 !default;
+$gray-400: #ced4da !default;
+$gray-500: #adb5bd !default;
+$gray-600: #6c757d !default;
+$gray-700: #495057 !default;
+$gray-800: #343a40 !default;
+$gray-900: #212529 !default;
+$black:    #000 !default;
+
+$blue:    #0d6efd !default;
+$red:     #dc3545 !default;
+$yellow:  #ffc107 !default;
+$green:   #198754 !default;
+$cyan:    #0dcaf0 !default;
+
+$body-color: $gray-800;
+$text-muted: $gray-600 !default;
+
+// Custom fonts
+$font-family-sans-serif: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+$font-family-secondary: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
+$font-weight-semibold: 500 !default;
+$font-size-base: 1rem !default;
+
+$link-decoration: none;
+$link-hover-decoration: underline;
+
+// options
+$enable-gradients: false;
+
+// no caret on dropdown-toggle
+$enable-caret: false;
+
+// disable smooth scroll, this makes window.scrollTo(0,0) in ajaxify.js take x milliseconds
+$enable-smooth-scroll: false;
+
+$enable-shadows: true;
+
+
+// Buttons
+$input-btn-padding-y:       .4rem !default;
+$input-btn-padding-x:       1rem !default;
+
+// Forms
+
+$input-padding-y:                0.5rem !default;
+$input-padding-x:                0.75rem !default;
+// $input-padding-y-sm:             0 !default;
+// $input-padding-x-sm:             0 !default;
+// $input-padding-y-lg:             ($font-size-base * 1.25) !default;
+// $input-padding-x-lg:             0 !default;
+
+$input-btn-focus-color: #c29ffa80 !default;
+$input-border-radius: 0.25rem !default;
+$input-focus-border-color: #c29ffa80 !default;
+// change inset shadow to outset
+$box-shadow-inset: 0 1px 2px rgba($black, .075) !default;
+

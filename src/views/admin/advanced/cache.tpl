@@ -1,9 +1,9 @@
-<!-- IMPORT admin/partials/settings/header.tpl -->
-<div class="row post-cache">
+
+<div class="row post-cache settings px-lg-4">
 	<div class="col-lg-12">
 		<div class="row">
 			{{{each caches}}}
-			<div class="col-lg-3">
+			<div class="col-xl-3">
 				<div class="card">
 					<div class="card-header">[[admin/advanced/cache:{@key}-cache]]</div>
 					<div class="card-body">
@@ -52,4 +52,4 @@
 	</div>
 </div>
 
-<!-- IMPORT admin/partials/settings/footer.tpl -->
+<!-- IMPORT admin/partials/save_button.tpl -->

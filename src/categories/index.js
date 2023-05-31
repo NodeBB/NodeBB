@@ -364,6 +364,13 @@ Categories.buildForSelectCategories = function (categories, fields, parentCid) {
 
 	const rootCategories = categories.filter(category => category && category.parentCid === parentCid);
 
+	rootCategories.sort((a, b) => {
+		if (a.order !== b.order) {
+			return a.order - b.order;
+		}
+		return a.cid - b.cid;
+	});
+
 	rootCategories.forEach(category => recursive(category, categoriesData, '', 0));
 
 	const pickFields = [

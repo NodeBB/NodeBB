@@ -1,15 +1,10 @@
-<div class="row dashboard">
+<div class="row dashboard px-lg-4">
 	<div class="col-12">
-		<a class="btn btn-primary mb-3" href="{config.relative_path}/admin/dashboard">
-			<i class="fa fa-chevron-left"></i>
-			[[admin/dashboard:back-to-dashboard]]
-		</a>
-
 		<!-- IMPORT admin/partials/dashboard/graph.tpl -->
 		<!-- IMPORT admin/partials/dashboard/stats.tpl -->
 
 		<div class="alert alert-info">[[admin/dashboard:details.logins-static, {loginDays}]]</div>
-		<table class="table table-striped">
+		<table class="table">
 			<thead>
 				<th class="text-muted">[[admin/manage/users:users.username]]</th>
 				<th data-sort="joindate">[[admin/dashboard:details.logins-login-time]]</th>
