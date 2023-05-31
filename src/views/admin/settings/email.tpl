@@ -171,15 +171,17 @@
 			<div class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/email:testing]]</h5>
 
-				<div class="mb-3">
+				<div class="">
 					<label class="form-label" for="test-email">[[admin/settings/email:testing.select]]</label>
-					<select id="test-email" class="form-select">
-						{{{ each sendable }}}
-						<option value="{@value}">{@value}</option>
-						{{{ end }}}
-					</select>
+					<div class="d-flex justify-content-between gap-1">
+						<select id="test-email" class="form-select">
+							{{{ each sendable }}}
+							<option value="{@value}">{@value}</option>
+							{{{ end }}}
+						</select>
+						<button class="btn btn-primary text-nowrap" type="button" data-action="email.test">[[admin/settings/email:testing.send]]</button>
+					</div>
 				</div>
-				<button class="btn btn-primary" type="button" data-action="email.test">[[admin/settings/email:testing.send]]</button>
 				<p class="form-text">
 					[[admin/settings/email:testing.send-help]]
 				</p>
