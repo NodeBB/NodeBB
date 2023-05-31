@@ -29,19 +29,19 @@
 				{{{ each files }}}
 				<tr data-path="{files.path}">
 					{{{ if files.isDirectory }}}
-					<td class="" role="button">
+					<td class="align-middle" role="button">
 						<i class="fa fa-fw fa-folder-o"></i> <a href="{config.relative_path}/admin/manage/uploads?dir={files.path}">{files.name}</a>
 					</td>
 					{{{ end }}}
 
 					{{{ if files.isFile }}}
-					<td class="">
+					<td class="align-middle">
 						<i class="fa fa-fw fa-file-text-o"></i> <a href="{config.relative_path}{files.url}" target="_blank">{files.name}</a>
 					</td>
 					{{{ end }}}
 
 					{{{ if showPids }}}
-					<td class="text-end">
+					<td class="text-end align-middle">
 						{{{ each ./inPids }}}
 						<a target="_blank" href="{config.relative_path}/post/{@value}"><span class="label label-default">{@value}</span></a>
 						{{{ end }}}
@@ -51,7 +51,7 @@
 					</td>
 					{{{ end }}}
 
-					<td class="text-end">{{{ if files.isFile }}}{files.sizeHumanReadable}{{{ else }}}[[admin/manage/uploads:filecount, {files.fileCount}]]{{{ end }}}</td>
+					<td class="text-end align-middle">{{{ if files.isFile }}}{files.sizeHumanReadable}{{{ else }}}[[admin/manage/uploads:filecount, {files.fileCount}]]{{{ end }}}</td>
 
 					<td role="button" class=" text-end">
 						<button class="delete btn btn-sm btn-light {{{ if !files.isFile }}} hidden{{{ end }}}">
