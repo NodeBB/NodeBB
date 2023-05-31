@@ -16,7 +16,7 @@
 		</div>
 	</div>
 
-	<table class="table mb-5 text-sm" data-component="acp/tokens">
+	<table class="table table-sm mb-5 text-sm" data-component="acp/tokens">
 		<thead>
 			<tr>
 				<th>[[admin/settings/api:token]]</th>
