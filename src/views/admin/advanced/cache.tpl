@@ -42,7 +42,7 @@
 							<input id="postCacheSize" type="text" class="form-control" value="" data-field="postCacheSize">
 						</div>
 						{{{end}}}
-						<a href="{config.relative_path}/api/admin/advanced/cache/dump?name={@key}" class="btn btn-sm"><i class="fa fa-download"></i></a>
+						<a href="{config.relative_path}/api/admin/advanced/cache/dump?name={@key}" class="btn btn-light btn-sm"><i class="fa fa-download"></i></a>
 						<a class="btn btn-sm btn-danger clear" data-name="{@key}"><i class="fa fa-trash"></i></a>
 					</div>
 				</div>
