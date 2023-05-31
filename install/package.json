@@ -69,7 +69,7 @@
         "graceful-fs": "4.2.11",
         "helmet": "7.0.0",
         "html-to-text": "9.0.5",
-        "ipaddr.js": "2.0.1",
+        "ipaddr.js": "2.1.0",
         "jquery": "3.7.0",
         "jquery-deserialize": "2.0.0",
         "jquery-form": "4.3.0",
