@@ -108,7 +108,7 @@
 			<div class="card-body">
 				<div class="text-sm alert {{{ if lookupFailed }}}alert-danger{{{ else }}}{{{ if upgradeAvailable }}}alert-warning{{{ else }}}{{{ if currentPrerelease }}}alert-info{{{ else }}}alert-success{{{ end }}}{{{ end }}}{{{ end }}} version-check">
 					<p class="">[[admin/dashboard:running-version, {version}]]</p>
-					<div class="">
+					<p class="mb-0">
 					{{{ if lookupFailed }}}
 					[[admin/dashboard:latest-lookup-failed]]
 					{{{ else }}}
@@ -126,7 +126,7 @@
 							{{{ end }}}
 						{{{ end }}}
 					{{{ end }}}
-					</div>
+					</p>
 				</div>
 				<p class="text-sm">
 					[[admin/dashboard:keep-updated]]
