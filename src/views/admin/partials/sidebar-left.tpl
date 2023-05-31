@@ -1,4 +1,4 @@
-<div id="left-sidebar" style="width:240px;" class="vh-100 sticky-top start-0 d-none d-lg-flex text-bg-light p-2 flex-column justify-content-start text-sm border-end gap-1">
+<div id="sidebar-left" style="width:240px;" class="vh-100 sticky-top start-0 d-none d-lg-flex text-bg-light p-2 flex-column justify-content-start text-sm border-end gap-1">
 	<div class="d-flex flex-column gap-1 ff-secondary">
 
 		<!-- IMPORT admin/partials/quick_actions/alerts.tpl -->

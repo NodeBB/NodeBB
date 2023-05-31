@@ -70,11 +70,11 @@
 			<div class="card-header">[[admin/dashboard:control-panel]]</div>
 			<div class="card-body text-center">
 				<div class="d-grid gap-2 mb-2">
-					<button component="restart" class="btn btn-block btn-warning"{{{ if !canRestart }}} disabled{{{ end }}}>[[admin/dashboard:restart]]</button>
-					<button component="rebuild-and-restart" class="btn btn-block btn-danger"{{{ if !canRestart }}} disabled{{{ end }}}>[[admin/dashboard:rebuild-and-restart]]</button>
+					<button component="restart" class="btn btn-block btn-warning btn-sm"{{{ if !canRestart }}} disabled{{{ end }}}>[[admin/dashboard:restart]]</button>
+					<button component="rebuild-and-restart" class="btn btn-block btn-danger btn-sm"{{{ if !canRestart }}} disabled{{{ end }}}>[[admin/dashboard:rebuild-and-restart]]</button>
 				</div>
 				{{{ if lastrestart }}}
-				<p>
+				<p class="text-sm">
 					[[admin/dashboard:last-restarted-by]]<br />
 					<a href="{config.relative_path}/uid/{lastrestart.uid}"><span class="badge bg-info">{lastrestart.user.username}</span></a> <span class="timeago" title="{lastrestart.timestampISO}"></span>
 				</p>
@@ -87,7 +87,7 @@
 					{{{ end }}}
 				</p>
 				<p>
-					<a href="{config.relative_path}/admin/settings/advanced" class="btn btn-info btn-block" data-bs-placement="bottom" data-bs-toggle="tooltip" title="[[admin/dashboard:maintenance-mode-title]]">[[admin/dashboard:maintenance-mode]]</a>
+					<a href="{config.relative_path}/admin/settings/advanced" class="btn btn-info btn-block btn-sm" data-bs-placement="bottom" data-bs-toggle="tooltip" title="[[admin/dashboard:maintenance-mode-title]]">[[admin/dashboard:maintenance-mode]]</a>
 				</p>
 
 				<hr />
@@ -106,9 +106,9 @@
 		<div class="card mb-3">
 			<div class="card-header">[[admin/dashboard:updates]]</div>
 			<div class="card-body">
-				<div class="alert {{{ if lookupFailed }}}alert-danger{{{ else }}}{{{ if upgradeAvailable }}}alert-warning{{{ else }}}{{{ if currentPrerelease }}}alert-info{{{ else }}}alert-success{{{ end }}}{{{ end }}}{{{ end }}} version-check">
-					<p>[[admin/dashboard:running-version, {version}]]</p>
-					<p>
+				<div class="text-sm alert {{{ if lookupFailed }}}alert-danger{{{ else }}}{{{ if upgradeAvailable }}}alert-warning{{{ else }}}{{{ if currentPrerelease }}}alert-info{{{ else }}}alert-success{{{ end }}}{{{ end }}}{{{ end }}} version-check">
+					<p class="">[[admin/dashboard:running-version, {version}]]</p>
+					<div class="">
 					{{{ if lookupFailed }}}
 					[[admin/dashboard:latest-lookup-failed]]
 					{{{ else }}}
@@ -126,9 +126,9 @@
 							{{{ end }}}
 						{{{ end }}}
 					{{{ end }}}
-					</p>
+					</div>
 				</div>
-				<p>
+				<p class="text-sm">
 					[[admin/dashboard:keep-updated]]
 				</p>
 			</div>

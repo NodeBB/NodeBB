@@ -26,7 +26,7 @@
 	"updates": "Updates",
 	"running-version": "You are running <strong>NodeBB v<span id=\"version\">%1</span></strong>.",
 	"keep-updated": "Always make sure that your NodeBB is up to date for the latest security patches and bug fixes.",
-	"up-to-date": "<p>You are <strong>up-to-date</strong> <i class=\"fa fa-check\"></i></p>",
+	"up-to-date": "<p class=\"mb-0\">You are <strong>up-to-date</strong> <i class=\"fa fa-check\"></i></p>",
 	"upgrade-available": "<p>A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">upgrading your NodeBB</a>.</p>",
 	"prerelease-upgrade-available": "<p>This is an outdated pre-release version of NodeBB. A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">upgrading your NodeBB</a>.</p>",
 	"prerelease-warning": "<p>This is a <strong>pre-release</strong> version of NodeBB. Unintended bugs may occur. <i class=\"fa fa-exclamation-triangle\"></i></p>",
