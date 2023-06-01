@@ -25,31 +25,31 @@
 		{{{ end }}}
 	</div>
 
-	<div class="controls">
+	<div class="controls d-flex flex-column gap-1">
 		{{{ if ./installed }}}
 			{{{ if ./isTheme }}}
-			<a href="{config.relative_path}/admin/appearance/themes" class="btn btn-light btn-sm"><i class="fa fa-arrow-up-right-from-square text-primary"></i> [[admin/extend/plugins:plugin-item.themes]]</a>
+			<a href="{config.relative_path}/admin/appearance/themes" class="btn btn-light btn-sm text-nowrap"><i class="fa fa-arrow-up-right-from-square text-primary"></i> [[admin/extend/plugins:plugin-item.themes]]</a>
 			{{{ else }}}
 
-			<button data-action="toggleActive" class="btn btn-light btn-sm {{{ if !./active }}}hidden{{{ end }}} {{{ if !canChangeState }}}disabled{{{ end }}}">
+			<button data-action="toggleActive" class="btn btn-light btn-sm text-nowrap {{{ if !./active }}}hidden{{{ end }}} {{{ if !canChangeState }}}disabled{{{ end }}}">
 				<i class="fa fa-power-off text-danger"></i> [[admin/extend/plugins:plugin-item.deactivate]]
 			</button>
 
-			<button data-action="toggleActive" class="btn btn-light btn-sm {{{ if ./active }}}hidden{{{ end }}} {{{ if !canChangeState }}}disabled{{{ end }}}">
+			<button data-action="toggleActive" class="btn btn-light btn-sm text-nowrap {{{ if ./active }}}hidden{{{ end }}} {{{ if !canChangeState }}}disabled{{{ end }}}">
 				<i class="fa fa-power-off text-primary"></i> [[admin/extend/plugins:plugin-item.activate]]
 			</button>
 
 			{{{ end }}}
 
-			<button data-action="toggleInstall" data-installed="1" class="btn btn-light btn-sm"><i class="fa fa-trash text-danger"></i> [[admin/extend/plugins:plugin-item.uninstall]]</button>
+			<button data-action="toggleInstall" data-installed="1" class="btn btn-light btn-sm text-nowrap"><i class="fa fa-trash text-danger"></i> [[admin/extend/plugins:plugin-item.uninstall]]</button>
 
 			{{{ if ./active }}}
 			{{{ if ./settingsRoute }}}
-			<a href="{config.relative_path}{./settingsRoute}" class="btn btn-light btn-sm"><i class="fa fa-wrench text-primary"></i> [[admin/extend/plugins:plugin-item.settings]]</a>
+			<a href="{config.relative_path}{./settingsRoute}" class="btn btn-light btn-sm text-nowrap"><i class="fa fa-wrench text-primary"></i> [[admin/extend/plugins:plugin-item.settings]]</a>
 			{{{ end }}}
 			{{{ end }}}
 		{{{ else }}}
-			<button data-action="toggleInstall" data-installed="0" class="btn btn-light btn-sm"><i class="fa fa-download text-primary"></i> [[admin/extend/plugins:plugin-item.install]]</button>
+			<button data-action="toggleInstall" data-installed="0" class="btn btn-light btn-sm text-nowrap"><i class="fa fa-download text-primary"></i> [[admin/extend/plugins:plugin-item.install]]</button>
 		{{{ end }}}
 	</div>
 

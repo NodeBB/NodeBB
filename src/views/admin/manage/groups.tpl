@@ -16,51 +16,53 @@
 
 	<div class="row groups">
 		<div class="col-12">
-			<table class="table groups-list">
-				<thead>
-					<tr>
-						<th>[[admin/manage/groups:name]]</th>
-						<th>[[admin/manage/groups:badge]]</th>
-						<th>[[admin/manage/groups:properties]]</th>
-						<th></th>
-					</tr>
-				</thead>
-				<tbody>
-					{{{ each groups }}}
-					<tr data-groupname="{./displayName}" data-name-encoded="{./nameEncoded}">
-						<td>
-							<a href="{config.relative_path}/admin/manage/groups/{./slug}">{./displayName}</a> ({./memberCount})
-							<p class="description text-xs text-muted m-0">{./description}</p>
-						</td>
-						<td>
-							<span class="badge" style="color:{./textColor}; background-color: {./labelColor};">{{{ if ./icon }}}<i class="fa {./icon}"></i> {{{ end }}}{./userTitle}</span>
-						</td>
-						<td>
-							{{{ if ./system }}}
-							<span class="badge bg-danger">[[admin/manage/groups:system]]</span>
-							{{{ end }}}
-							{{{ if ./private }}}
-							<span class="badge bg-primary">[[admin/manage/groups:private]]</span>
-							{{{ end }}}
-							{{{ if ./hidden }}}
-							<span class="badge bg-secondary">[[admin/manage/groups:hidden]]</span>
-							{{{ end }}}
-						</td>
+			<div class="table-responsive">
+				<table class="table groups-list">
+					<thead>
+						<tr>
+							<th>[[admin/manage/groups:name]]</th>
+							<th>[[admin/manage/groups:badge]]</th>
+							<th>[[admin/manage/groups:properties]]</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						{{{ each groups }}}
+						<tr data-groupname="{./displayName}" data-name-encoded="{./nameEncoded}">
+							<td>
+								<a href="{config.relative_path}/admin/manage/groups/{./slug}">{./displayName}</a> ({./memberCount})
+								<p class="description text-xs text-muted m-0">{./description}</p>
+							</td>
+							<td>
+								<span class="badge" style="color:{./textColor}; background-color: {./labelColor};">{{{ if ./icon }}}<i class="fa {./icon}"></i> {{{ end }}}{./userTitle}</span>
+							</td>
+							<td>
+								{{{ if ./system }}}
+								<span class="badge bg-danger">[[admin/manage/groups:system]]</span>
+								{{{ end }}}
+								{{{ if ./private }}}
+								<span class="badge bg-primary">[[admin/manage/groups:private]]</span>
+								{{{ end }}}
+								{{{ if ./hidden }}}
+								<span class="badge bg-secondary">[[admin/manage/groups:hidden]]</span>
+								{{{ end }}}
+							</td>
 
-						<td>
-							<div class="d-flex justify-content-end gap-1">
-								<a href="{config.relative_path}/groups/{groups.slug}" class="btn btn-light btn-sm">[[admin/admin:view]]</a>
+							<td>
+								<div class="d-flex justify-content-end gap-1">
+									<a href="{config.relative_path}/groups/{groups.slug}" class="btn btn-light btn-sm">[[admin/admin:view]]</a>
 
-								<a href="{config.relative_path}/admin/manage/groups/{groups.slug}" class="btn btn-light btn-sm">[[admin/admin:edit]]</a>
+									<a href="{config.relative_path}/admin/manage/groups/{groups.slug}" class="btn btn-light btn-sm">[[admin/admin:edit]]</a>
 
 
-								<button class="btn btn-light btn-sm {{{ if groups.system }}} disabled {{{ end }}}" data-action="delete"><i class="fa fa-trash text-danger"></i></button>
-							</div>
-						</td>
-					</tr>
-					{{{ end }}}
-				</tbody>
-			</table>
+									<button class="btn btn-light btn-sm {{{ if groups.system }}} disabled {{{ end }}}" data-action="delete"><i class="fa fa-trash text-danger"></i></button>
+								</div>
+							</td>
+						</tr>
+						{{{ end }}}
+					</tbody>
+				</table>
+			</div>
 
 			<!-- IMPORT admin/partials/paginator.tpl -->
 		</div>

@@ -24,12 +24,19 @@
 				</div>
 			</div>
 			<div class="flex-shrink-0 d-flex gap-1 align-items-start">
-				<a href="{{{if ./link}}}{./link}{{{else}}}{config.relative_path}/category/{./cid}{{{end}}}" class="btn btn-light btn-sm" target="_blank">[[admin/admin:view]]</a>
-				<a href="./categories/{./cid}" class="btn btn-light btn-sm">[[admin/manage/categories:edit]]</a>
+				<a href="{{{if ./link}}}{./link}{{{else}}}{config.relative_path}/category/{./cid}{{{end}}}" class="btn btn-light btn-sm d-none d-sm-block" target="_blank">[[admin/admin:view]]</a>
+
+				<a href="./categories/{./cid}" class="btn btn-light btn-sm d-none d-sm-block">[[admin/manage/categories:edit]]</a>
 
 				<div class="category-tools">
 					<button class="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown" type="button"><i class="fa fa-fw fa-gear text-primary"></i></button>
 					<ul class="dropdown-menu dropdown-menu-end p-1">
+						<li><a href="{{{if ./link}}}{./link}{{{else}}}{config.relative_path}/category/{./cid}{{{end}}}" class="dropdown-item rounded-1 d-block d-sm-none" target="_blank">[[admin/admin:view]]</a></li>
+
+						<li><a href="./categories/{./cid}" class="dropdown-item rounded-1 d-block d-sm-none">[[admin/manage/categories:edit]]</a></li>
+
+
+
 						<li><a class="dropdown-item rounded-1" href="./categories/{categories.cid}/analytics">[[admin/manage/categories:analytics]]</a></li>
 						<li><a class="dropdown-item rounded-1" href="{config.relative_path}/admin/manage/privileges/{categories.cid}">[[admin/manage/categories:privileges]]</a></li>
 						<li><a href="#" class="set-order dropdown-item rounded-1" data-cid="{categories.cid}" data-order="{categories.order}">[[admin/manage/categories:set-order]]</a></li>

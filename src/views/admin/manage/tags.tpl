@@ -4,9 +4,9 @@
 		<div class="">
 			<h4 class="fw-bold tracking-tight mb-0">[[admin/manage/tags:manage-tags]]</h4>
 		</div>
-		<div class="d-flex align-items-center gap-1">
-			<div class="input-group">
-				<input class="form-control form-control-sm" type="text" id="tag-search" placeholder="[[admin/manage/tags:search]]"/>
+		<div class="d-flex align-items-center gap-1 flex-wrap">
+			<div class="input-group flex-nowrap w-auto">
+				<input class="form-control form-control-sm w-auto" type="text" id="tag-search" placeholder="[[admin/manage/tags:search]]"/>
 				<span class="input-group-text"><i class="fa fa-search"></i></span>
 			</div>
 

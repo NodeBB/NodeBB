@@ -17,7 +17,7 @@
 			{{{ each active }}}
 			<li data-rid="{active.rid}" data-id="{active.id}">
 				<div class="d-flex gap-1 mb-3 flex-wrap">
-					<form class="main d-flex gap-1">
+					<form class="main d-flex gap-1 flex-wrap">
 						<div class="card card-body m-0 if-block border-info border border-2">
 							<label class="form-label" for="condition-if-users">[[admin/extend/rewards:condition-if-users]]</label>
 							<select id="condition-if-users" class="form-select form-select-sm" name="condition" data-selected="{active.condition}">
@@ -52,7 +52,7 @@
 					</form>
 				</div>
 
-				<div class="d-flex justify-content-between align-items-center">
+				<div class="d-flex justify-content-between align-items-center gap-2">
 					<form class="main d-flex gap-1 align-items-start gap-2">
 						<div class="d-flex flex-column gap-0">
 							<label class="form-label" for="claimable">[[admin/extend/rewards:max-claims]]</label>
@@ -63,13 +63,12 @@
 						<input id="claimable" class="form-control form-control-sm" type="text" name="claimable" value="{active.claimable}" placeholder="1" style="max-width: 64px;"/>
 
 					</form>
-					<div class="">
+					<div class="d-flex gap-1 align-self-start">
+						<button class="btn btn-light btn-sm toggle text-nowrap disable {{{ if active.disabled }}}hidden{{{ end }}}"><i class="fa fa-ban text-danger"></i> [[admin/extend/rewards:disable]]</button>
 
-						<button class="btn btn-light btn-sm toggle disable {{{ if active.disabled }}}hidden{{{ end }}}"><i class="fa fa-ban text-danger"></i> [[admin/extend/rewards:disable]]</button>
+						<button class="btn btn-light btn-sm toggle text-nowrap enable {{{ if !active.disabled }}}hidden{{{ end }}}"><i class="fa fa-check text-success"></i> [[admin/extend/rewards:enable]]</button>
 
-						<button class="btn btn-light btn-sm toggle enable {{{ if !active.disabled }}}hidden{{{ end }}}"><i class="fa fa-check text-success"></i> [[admin/extend/rewards:enable]]</button>
-
-						<button class="btn btn-light btn-sm delete"><i class="fa fa-trash text-danger"></i> [[admin/extend/rewards:delete]]</button>
+						<button class="btn btn-light btn-sm text-nowrap delete"><i class="fa fa-trash text-danger"></i> [[admin/extend/rewards:delete]]</button>
 					</div>
 				</div>
 

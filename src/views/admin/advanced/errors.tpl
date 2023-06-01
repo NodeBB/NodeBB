@@ -50,29 +50,31 @@
 					<i class="fa fa-exclamation-triangle"></i> [[admin/advanced/errors:error.404]]
 				</div>
 				<div class="card-body">
-					<table class="table">
-						<thead>
-							<th>[[admin/advanced/errors:route]]</th>
-							<th>[[admin/advanced/errors:count]]</th>
-						</thead>
-						<tbody>
-							{{{ each not-found }}}
-							<tr>
-								<td>{./value}</td>
-								<td>{./score}</td>
-							</tr>
-							{{{ end }}}
-							{{{ if !not-found.length }}}
-							<tr>
-								<td colspan="2">
-									<div class="alert alert-success">
-										[[admin/advanced/errors:no-routes-not-found]]
-									</div>
-								</td>
-							</tr>
-							{{{ end }}}
-						</tbody>
-					</table>
+					<div class="table-responsive">
+						<table class="table text-sm">
+							<thead>
+								<th>[[admin/advanced/errors:route]]</th>
+								<th>[[admin/advanced/errors:count]]</th>
+							</thead>
+							<tbody>
+								{{{ each not-found }}}
+								<tr>
+									<td>{./value}</td>
+									<td>{./score}</td>
+								</tr>
+								{{{ end }}}
+								{{{ if !not-found.length }}}
+								<tr>
+									<td colspan="2">
+										<div class="alert alert-success">
+											[[admin/advanced/errors:no-routes-not-found]]
+										</div>
+									</td>
+								</tr>
+								{{{ end }}}
+							</tbody>
+						</table>
+					</div>
 				</div>
 			</div>
 		</div>

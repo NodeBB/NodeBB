@@ -4,10 +4,10 @@
 		<div class="">
 			<h4 class="fw-bold tracking-tight mb-0">[[admin/manage/users:manage-users]]</h4>
 		</div>
-		<div class="d-flex align-items-center gap-3">
-			<div class="d-flex gap-1 align-items-stretch">
-				<div class="input-group">
-					<input type="text" class="form-control form-control-sm" placeholder="[[global:search]]" id="user-search" value="{query}">
+		<div class="d-flex align-items-center gap-3 flex-wrap">
+			<div class="d-flex gap-1 align-items-stretch flex-wrap">
+				<div class="input-group flex-nowrap w-auto">
+					<input type="text" class="form-control form-control-sm w-auto" placeholder="[[global:search]]" id="user-search" value="{query}">
 					<span class="input-group-text px-2 search-button"><i class="fa fa-search"></i></span>
 				</div>
 				<select id="user-search-by" class="form-select form-select-sm w-auto">

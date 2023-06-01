@@ -6,7 +6,7 @@
 	</div>
 
 	<div>
-		<div class="d-flex gap-2 justify-content-between align-items-center mb-2">
+		<div class="d-flex gap-2 justify-content-between align-items-center mb-2 flex-wrap">
 			<h4 class="mb-0">[[admin/manage/admins-mods:administrators]]</h4>
 			<input id="admin-search" class="form-control form-control-sm w-auto" placeholder="[[admin/manage/admins-mods:add-administrator]]" />
 		</div>
@@ -24,7 +24,7 @@
 	<hr/>
 
 	<div>
-		<div class="d-flex gap-2 justify-content-between align-items-center mb-2">
+		<div class="d-flex gap-2 justify-content-between align-items-center mb-2 flex-wrap">
 			<h4 class="mb-0">{{{ if globalMods.icon }}}<i class="fa {globalMods.icon}"></i> {{{ end }}}[[admin/manage/admins-mods:global-moderators]]</h4>
 			<input id="global-mod-search" class="form-control form-control-sm w-auto" placeholder="[[admin/manage/admins-mods:add-global-moderator]]" />
 		</div>
@@ -62,8 +62,8 @@
 		<hr>
 		{{{ end }}}
 		<div class="categories category-wrapper mb-4">
-			<div class="d-flex gap-2 justify-content-between align-items-center mb-2">
-				<div class="d-flex gap-2 align-items-center">
+			<div class="d-flex gap-2 justify-content-between flex-column flex-md-row align-items-start align-items-md-center mb-2 flex-wrap">
+				<div class="d-flex flex-column flex-md-row gap-2 align-items-md-center">
 					<div class="d-flex gap-1 align-items-center">
 						{buildCategoryIcon(@value, "28px", "rounded-1")}
 						<h5 class="mb-0">{categoryMods.name}</h5>
