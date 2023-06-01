@@ -1163,6 +1163,28 @@ describe('Post\'s', () => {
 				assert(backlinks);
 				assert.strictEqual(backlinks.length, 0);
 			});
+
+			it('should not detect backlinks if they are in quotes', async () => {
+				const content = `
+					@baris said in [ok testing backlinks](/post/32145):
+					> here is a back link to a topic
+					>
+					>
+					> This is a link to [topic 1](${nconf.get('url')}/topic/1/abcdef
+
+					This should not generate backlink
+				`;
+				const count = await topics.syncBacklinks({
+					pid: 2,
+					content: content,
+				});
+
+				const backlinks = await db.getSortedSetMembers('pid:2:backlinks');
+
+				assert.strictEqual(count, 0);
+				assert(backlinks);
+				assert.strictEqual(backlinks.length, 0);
+			});
 		});
 
 		describe('integration tests', () => {

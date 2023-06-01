@@ -373,8 +373,13 @@ module.exports = function (Topics) {
 			throw new Error('[[error:invalid-data]]');
 		}
 
+
+		let { content } = postData;
+		// ignore lines that start with `>`
+		content = content.split('\n').filter(line => !line.trim().startsWith('>')).join('\n');
 		// Scan post content for topic links
-		const matches = [...postData.content.matchAll(backlinkRegex)];
+		const matches = [...content.matchAll(backlinkRegex)];
+		console.log('match', matches);
 		if (!matches) {
 			return 0;
 		}
