@@ -22,7 +22,7 @@
 							<button class="btn btn-light btn-sm delete-event ms-2 pointer"><i class="fa fa-trash-o text-danger"></i></button>
 						</div>
 					</div>
-					<pre class="text-bg-light p-3">{events.jsonString}</pre>
+					<pre class="text-bg-light p-3" style="white-space:pre-wrap;">{events.jsonString}</pre>
 				</div>
 			</div>
 			{{{ end }}}
