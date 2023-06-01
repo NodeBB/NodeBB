@@ -5,7 +5,7 @@
 	"uptime-seconds": "秒単位の稼働時間",
 	"uptime-days": "日単位の稼働時間",
 
-	"mongo": "Mongo",
+	"mongo": "MongoDB",
 	"mongo.version": "MongoDBのバージョン",
 	"mongo.storage-engine": "ストレージエンジン",
 	"mongo.collections": "コレクション",

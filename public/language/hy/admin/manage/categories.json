@@ -1,7 +1,11 @@
 {
+	"manage-categories": "Manage Categories",
+	"add-category": "Add category",
+	"jump-to": "Jump to...",
 	"settings": "Կատեգորիայի կարգավորումներ",
+	"edit-category": "Edit Category",
 	"privileges": "Արտոնություններ",
-
+	"back-to-categories": "Back to categories",
 	"name": "Կատեգորիայի անվանումը",
 	"description": "Կատեգորիայի նկարագրություն",
 	"bg-color": "Ֆոնի գույնը",
@@ -15,8 +19,11 @@
 	"post-queue": "Գրառման հերթ",
 	"tag-whitelist": "Նշեք Whitelist",
 	"upload-image": "Վերբեռնել նկար",
+	"upload": "Upload",
+	"select-icon": "Select Icon",
 	"delete-image": "Հեռացնել ",
 	"category-image": "Կատեգորիայի նկար ",
+	"image-and-icon": "Image & Icon",
 	"parent-category": "Ծնողի կատեգորիա",
 	"optional-parent-category": "(Ըստ ցանկության) Ծնողի կատեգորիա",
 	"top-level": "Բարձր մակարդակ",
@@ -31,6 +38,7 @@
 	"disable": "Անջատել",
 	"edit": "Խմբագրել ",
 	"analytics": "Վերլուծություն",
+
 	"view-category": "Դիտել կատեգորիա ",
 	"set-order": "Սահմանել կարգը",
 	"set-order-help": "Կատեգորիայի կարգը սահմանելը այս կատեգորիան կտեղափոխի այդ կարգը և անհրաժեշտության դեպքում կթարմացնի այլ կատեգորիաների հերթականությունը: Նվազագույն պատվերը 1-ն է, որը դասակարգում է վերևում:",

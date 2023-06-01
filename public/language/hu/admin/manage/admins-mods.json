@@ -1,10 +1,11 @@
 {
+    "manage-admins-and-mods": "Manage Admins & Mods",
     "administrators": "Adminisztrátorok",
     "global-moderators": "Globális moderátorok",
     "moderators": "Moderátorok",
     "no-global-moderators": "Nincsenek Globális moderátorok",
     "no-sub-categories": "Nincsenek Alkategóriák",
-    "subcategories": "%1 alkategória",
+    "view-children": "View children (%1)",
     "no-moderators": "Nincsenek Moderátorok",
     "add-administrator": "Adminisztrátor hozzáadása",
     "add-global-moderator": "Globális moderátor hozzáadása",

@@ -72,7 +72,9 @@
 	"development/info": "Információ",
 
 	"rebuild-and-restart-forum": "Fórum újraépítése & újraindítása",
+	"rebuild-and-restart": "Rebuild & Restart",
 	"restart-forum": "Fórum újraindítása",
+	"restart": "Restart",
 	"logout": "Kilépés",
 	"view-forum": "Fórum megtekintése",
 

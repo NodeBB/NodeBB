@@ -72,7 +72,9 @@
 	"development/info": "מידע",
 
 	"rebuild-and-restart-forum": "בנה והפעל מחדש את הפורום",
+	"rebuild-and-restart": "Rebuild & Restart",
 	"restart-forum": "הפעל מחדש את הפורום",
+	"restart": "Restart",
 	"logout": "התנתק",
 	"view-forum": "כניסה לפורום",
 

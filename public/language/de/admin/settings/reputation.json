@@ -27,5 +27,5 @@
 	"flags.action-on-resolve": "Führe Folgendes aus, wenn eine Flagge aufgelöst wird",
 	"flags.action-on-reject": "Gehe folgendermaßen vor, wenn eine Flagge abgelehnt wird",
 	"flags.action.nothing": "Nichts tun",
-	"flags.action.rescind": "Aufhebung der Benachrichtigung an Moderatoren/Administratoren"
+	"flags.action.rescind": "Rescind the notification sent to moderators/administrators"
 }

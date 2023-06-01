@@ -59,7 +59,7 @@
 	"max-about-me-length": "자기소개 최대 길이",
 	"terms-of-use": "이용약관<small>(미입력 시 비활성화)</small>",
 	"user-search": "사용자 검색",
-	"user-search-results-per-page": "표시할 결과 수",
+	"user-search-results-per-page": "Number of users to display in search results",
 	"default-user-settings": "사용자 설정 기본값",
 	"show-email": "이메일 공개",
 	"show-fullname": "실명 공개",

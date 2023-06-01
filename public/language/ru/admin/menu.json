@@ -72,7 +72,9 @@
 	"development/info": "Сведения о системе",
 
 	"rebuild-and-restart-forum": "Пересобрать и перезапустить форум",
+	"rebuild-and-restart": "Rebuild & Restart",
 	"restart-forum": "Перезапустить форум",
+	"restart": "Restart",
 	"logout": "Выйти",
 	"view-forum": "Перейти на форум",
 

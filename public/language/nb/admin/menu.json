@@ -72,7 +72,9 @@
 	"development/info": "Info",
 
 	"rebuild-and-restart-forum": "Rebuild & Restart Forum",
+	"rebuild-and-restart": "Rebuild & Restart",
 	"restart-forum": "Restart forum",
+	"restart": "Restart",
 	"logout": "Logg ut",
 	"view-forum": "Vis forum",
 

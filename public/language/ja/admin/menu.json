@@ -72,7 +72,9 @@
 	"development/info": "情報",
 
 	"rebuild-and-restart-forum": "Rebuild & Restart Forum",
+	"rebuild-and-restart": "Rebuild & Restart",
 	"restart-forum": "フォーラムを再開",
+	"restart": "Restart",
 	"logout": "ログアウト",
 	"view-forum": "フォーラムを表示",
 

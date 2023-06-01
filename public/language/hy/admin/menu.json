@@ -72,7 +72,9 @@
 	"development/info": "Տեղեկատվություն",
 
 	"rebuild-and-restart-forum": "Վերակառուցել և վերագործարկել ֆորումը",
+	"rebuild-and-restart": "Rebuild & Restart",
 	"restart-forum": "Վերագործարկել Ֆորումը",
+	"restart": "Restart",
 	"logout": "Դուրս գալ",
 	"view-forum": "Դիտել ֆորումը",
 

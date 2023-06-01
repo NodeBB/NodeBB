@@ -72,7 +72,9 @@
 	"development/info": "Informazioni",
 
 	"rebuild-and-restart-forum": "Rebuild & Riavvia Forum",
+	"rebuild-and-restart": "Rebuild & Restart",
 	"restart-forum": "Riavvia Forum",
+	"restart": "Restart",
 	"logout": "Esci",
 	"view-forum": "Vista Forum",
 

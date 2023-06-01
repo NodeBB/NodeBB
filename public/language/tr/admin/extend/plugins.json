@@ -1,4 +1,5 @@
 {
+	"plugins": "Plugins",
 	"trending": "Popüler",
 	"installed": "Yüklenmiş",
 	"active": "Etkin",

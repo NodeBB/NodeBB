@@ -5,7 +5,7 @@
 	"uptime-seconds": "Время работы в секундах",
 	"uptime-days": "Время работы в днях",
 
-	"mongo": "Mongo",
+	"mongo": "MongoDB",
 	"mongo.version": "Версия MongoDB",
 	"mongo.storage-engine": "Система хранения",
 	"mongo.collections": "Коллекции",

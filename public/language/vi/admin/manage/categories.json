@@ -1,7 +1,11 @@
 {
+	"manage-categories": "Manage Categories",
+	"add-category": "Add category",
+	"jump-to": "Jump to...",
 	"settings": "Cài Đặt Chuyên Mục",
+	"edit-category": "Edit Category",
 	"privileges": "Đặc quyền",
-
+	"back-to-categories": "Back to categories",
 	"name": "Tên Chuyên Mục",
 	"description": "Mô Tả Chuyên Mục",
 	"bg-color": "Màu Nền",
@@ -15,8 +19,11 @@
 	"post-queue": "Hàng đợi bài đăng",
 	"tag-whitelist": "Danh Sách Trắng Gắn Thẻ ",
 	"upload-image": "Tải Lên Ảnh",
+	"upload": "Upload",
+	"select-icon": "Select Icon",
 	"delete-image": "Xóa",
 	"category-image": "Ảnh Chuyên Mục",
+	"image-and-icon": "Image & Icon",
 	"parent-category": "Chuyên Mục Chính",
 	"optional-parent-category": "(Tùy chọn) Danh mục chính",
 	"top-level": "Cấp Độ Hàng Đầu",
@@ -31,6 +38,7 @@
 	"disable": "Tắt",
 	"edit": "Sửa",
 	"analytics": "Phân tích",
+
 	"view-category": "Xem chuyên mục",
 	"set-order": "Đặt thứ tự",
 	"set-order-help": "Đặt thứ tự của danh mục sẽ chuyển danh mục này sang thứ tự đó và cập nhật thứ tự của các danh mục khác khi cần thiết. Thứ tự tối thiểu là 1 đặt danh mục ở trên cùng.",

@@ -1,4 +1,5 @@
 {
+	"widgets": "Widgets",
 	"available": "Verfügbare Widgets",
 	"explanation": "Wähle ein Widget aus dem Dropdown-Menü aus und ziehe es per Drag-and-Drop in den Widget-Bereich einer Vorlage auf der linken Seite.",
 	"none-installed": "Keine Widgets gefunden! Aktiviere das Widget Essentials-Plugin in der <a href=\"%1\">Plugin</a>-Systemsteuerung.",

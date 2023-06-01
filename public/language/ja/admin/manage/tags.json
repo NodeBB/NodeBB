@@ -1,9 +1,11 @@
 {
+	"manage-tags": "Manage Tags",
 	"none": "あなたのフォーラムにはまだタグが付いていません。",
 	"bg-color": "背景カラー",
 	"text-color": "テキストカラー",
 	"description": "Select tags by clicking or dragging, use <code>CTRL</code> to select multiple tags.",
 	"create": "タグを作成",
+	"add-tag": "Add tag",
 	"modify": "タグを変更",
 	"rename": "Rename Tags",
 	"delete": "指定されたタグを削除",

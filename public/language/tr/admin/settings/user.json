@@ -59,7 +59,7 @@
 	"max-about-me-length": "Maksimum Hakkımda Uzunluğu",
 	"terms-of-use": "Forum Kullanım Şartları <small> (Devre dışı bırakmak için boş bırakın) </small>",
 	"user-search": "Kullanıcı Ara",
-	"user-search-results-per-page": "Görüntülenecek sonuç sayısı",
+	"user-search-results-per-page": "Number of users to display in search results",
 	"default-user-settings": "Varsayılan Kullanıcı Ayarları",
 	"show-email": "E-posta Göster",
 	"show-fullname": "Tam adı göster",

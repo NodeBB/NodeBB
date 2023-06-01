@@ -27,5 +27,5 @@
 	"flags.action-on-resolve": "Procédez comme suit lorsqu'un signalement est résolu",
 	"flags.action-on-reject": "Procédez comme suit lorsqu'un signalement est rejeté",
 	"flags.action.nothing": "Ne rien faire",
-	"flags.action.rescind": "Annuler la notification envoyée aux modérateurs/administrateurs"
+	"flags.action.rescind": "Rescind the notification sent to moderators/administrators"
 }

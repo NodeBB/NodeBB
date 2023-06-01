@@ -5,7 +5,7 @@
 	"uptime-seconds": "مدة التشغيل بالثواني",
 	"uptime-days": "مدة التشغيل بالأيام",
 
-	"mongo": "Mongo",
+	"mongo": "MongoDB",
 	"mongo.version": "اصدار MongoDB",
 	"mongo.storage-engine": "محرك التخزين",
 	"mongo.collections": "التجميعات",

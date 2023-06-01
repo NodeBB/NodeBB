@@ -1,9 +1,11 @@
 {
+	"manage-tags": "Manage Tags",
 	"none": "Forumā vēl nav tematu ar birkām.",
 	"bg-color": "Fona krāsa",
 	"text-color": "Teksta krāsa",
 	"description": "Select tags by clicking or dragging, use <code>CTRL</code> to select multiple tags.",
 	"create": "Izveidot birku",
+	"add-tag": "Add tag",
 	"modify": "Rediģēt birkas",
 	"rename": "Pārdēvēt birkas",
 	"delete": "Izdzēst atlasītās birkas",

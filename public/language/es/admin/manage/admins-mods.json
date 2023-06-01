@@ -1,10 +1,11 @@
 {
+    "manage-admins-and-mods": "Manage Admins & Mods",
     "administrators": "Administradores",
     "global-moderators": "Moderadores Globales",
     "moderators": "Moderators",
     "no-global-moderators": "Sin Moderadores Globales",
     "no-sub-categories": "No subcategories",
-    "subcategories": "%1 subcategories",
+    "view-children": "View children (%1)",
     "no-moderators": "Sin Moderadores",
     "add-administrator": "Añadir Administrador",
     "add-global-moderator": "Añadir Moderador Global",

@@ -1,10 +1,12 @@
 {
 	"rewards": "報酬",
+	"add-reward": "Add reward",
 	"condition-if-users": "ユーザーの",
 	"condition-is": ":",
 	"condition-then": "それから:",
 	"max-claims": "報酬が請求可能な金額",
 	"zero-infinite": "無限に0を入力します。",
+	"select-reward": "Select reward",
 	"delete": "削除",
 	"enable": "有効",
 	"disable": "無効",

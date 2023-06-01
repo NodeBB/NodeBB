@@ -59,7 +59,7 @@
 	"max-about-me-length": "自我介紹的最大長度",
 	"terms-of-use": "論壇使用條款 <small>(留空即可禁用)</small>",
 	"user-search": "用戶搜尋",
-	"user-search-results-per-page": "顯示的結果數量",
+	"user-search-results-per-page": "Number of users to display in search results",
 	"default-user-settings": "預設使用者設定",
 	"show-email": "顯示郵箱",
 	"show-fullname": "顯示全名",

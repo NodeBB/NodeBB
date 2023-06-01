@@ -72,7 +72,9 @@
 	"development/info": "정보",
 
 	"rebuild-and-restart-forum": "리빌드 & 포럼 재시작",
+	"rebuild-and-restart": "Rebuild & Restart",
 	"restart-forum": "포럼 재시작",
+	"restart": "Restart",
 	"logout": "로그아웃",
 	"view-forum": "포럼 보기",
 

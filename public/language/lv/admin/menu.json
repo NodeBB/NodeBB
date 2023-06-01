@@ -72,7 +72,9 @@
 	"development/info": "Informācija",
 
 	"rebuild-and-restart-forum": "Pārkompilēt & pārstartēt forumu",
+	"rebuild-and-restart": "Rebuild & Restart",
 	"restart-forum": "Pārstartēt forumu",
+	"restart": "Restart",
 	"logout": "Izlogoties",
 	"view-forum": "Uz forumu",
 

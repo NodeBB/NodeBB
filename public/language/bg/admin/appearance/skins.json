@@ -1,9 +1,9 @@
 {
-	"skins": "Skins",
+	"skins": "Облици",
 	"loading": "Зареждане на облиците…",
 	"homepage": "Начална страница",
 	"select-skin": "Изберете облик",
-	"revert-skin": "Revert Skin",
+	"revert-skin": "Отмяна на облика",
 	"current-skin": "Текущ облик",
 	"skin-updated": "Обликът е променен",
 	"applied-success": "Обликът „%1“ беше успешно приложен",

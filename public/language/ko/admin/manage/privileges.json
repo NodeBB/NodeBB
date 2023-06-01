@@ -1,4 +1,6 @@
 {
+	"manage-privileges": "Manage Privileges",
+	"discard-changes": "Discard changes",
 	"global": "글로벌",
 	"admin": "관리자",
 	"group-privileges": "그룹 권한 설정",

@@ -59,7 +59,7 @@
 	"max-about-me-length": "Maksimum karaktera O Meni",
 	"terms-of-use": "Uslovi upotrebe foruma <small>(Ostavite prazno da onemogućite)</small>",
 	"user-search": "Pretraga Korisnika",
-	"user-search-results-per-page": "Broj rezultata po prikazu",
+	"user-search-results-per-page": "Number of users to display in search results",
 	"default-user-settings": "Uobičajne Postavke Korisnika",
 	"show-email": "Prikaži email",
 	"show-fullname": "Prikaži puno ime",

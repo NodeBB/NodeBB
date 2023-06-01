@@ -59,7 +59,7 @@
 	"max-about-me-length": "Bemutatkozás maximális hossza",
 	"terms-of-use": "Fórum felhasználási feltételek <small>(Hagyd üresen a kikapcsoláshoz)</small>",
 	"user-search": "Felhasználó keresés",
-	"user-search-results-per-page": "Megjelenítendő eredmények száma",
+	"user-search-results-per-page": "Number of users to display in search results",
 	"default-user-settings": "Alapértelmezett felhasználói beállítások",
 	"show-email": "Email cím megjelenítése",
 	"show-fullname": "Teljes név megjelenítése",

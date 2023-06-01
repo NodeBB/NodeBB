@@ -59,7 +59,7 @@
 	"max-about-me-length": "Longueur maximum du À propos de moi",
 	"terms-of-use": "Conditions générales d'utilisation du forum <small>(Laisser vide pour désactiver)</small>",
 	"user-search": "Rechercher un utilisateur",
-	"user-search-results-per-page": "Nombre de résultats à afficher",
+	"user-search-results-per-page": "Number of users to display in search results",
 	"default-user-settings": "Réglages par défaut des utilisateurs",
 	"show-email": "Afficher l'adresse e-mail",
 	"show-fullname": "Afficher le nom complet",

@@ -59,7 +59,7 @@
 	"max-about-me-length": "Maximum About Me Length",
 	"terms-of-use": "Forum Terms of Use <small>(Leave blank to disable)</small>",
 	"user-search": "User Search",
-	"user-search-results-per-page": "Number of results to display",
+	"user-search-results-per-page": "Number of users to display in search results",
 	"default-user-settings": "Default User Settings",
 	"show-email": "Show email",
 	"show-fullname": "Show fullname",

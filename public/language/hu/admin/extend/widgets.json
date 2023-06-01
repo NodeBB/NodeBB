@@ -1,4 +1,5 @@
 {
+	"widgets": "Widgets",
 	"available": "Elérhető modulok",
 	"explanation": "Válassz egy modult a legördülő menüből, majd húzd rá az egyik sablon modul területére a bal oldalon.",
 	"none-installed": "Nincs elérhető modul! Aktiváld a widget essentials beépülőt a <a href=\"%1\">beépülők</a> oldalon.",

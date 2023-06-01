@@ -1,7 +1,11 @@
 {
+	"manage-categories": "Manage Categories",
+	"add-category": "Add category",
+	"jump-to": "Jump to...",
 	"settings": "카테고리 설정",
+	"edit-category": "Edit Category",
 	"privileges": "권한",
-
+	"back-to-categories": "Back to categories",
 	"name": "카테고리 이름",
 	"description": "카테고리 설명",
 	"bg-color": "배경 색상",
@@ -15,8 +19,11 @@
 	"post-queue": "게시 대기열",
 	"tag-whitelist": "태그 화이트리스트",
 	"upload-image": "이미지 업로드",
+	"upload": "Upload",
+	"select-icon": "Select Icon",
 	"delete-image": "제거",
 	"category-image": "카테고리 이미지",
+	"image-and-icon": "Image & Icon",
 	"parent-category": "상위 카테고리",
 	"optional-parent-category": "(선택) 상위 카테고리",
 	"top-level": "최고 레벨",
@@ -31,6 +38,7 @@
 	"disable": "비활성화",
 	"edit": "편집",
 	"analytics": "애널리틱스",
+
 	"view-category": "카테고리 보기",
 	"set-order": "순서 설정",
 	"set-order-help": "카테고리의 순서를 설정하면 해당 위치로 순서가 변경되며 다른 카테고리의 순서도 함께 변경됩니다. 최소 설정값은 1이며 최상단에 위치됩니다.",

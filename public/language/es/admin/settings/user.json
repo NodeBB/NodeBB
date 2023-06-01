@@ -59,7 +59,7 @@
 	"max-about-me-length": "Longitud Mínima de \"Sobre Mí\"",
 	"terms-of-use": "Términos de Uso del Foro <small>(Dejar en blanco para desactivar)</small>",
 	"user-search": "Búsqueda de Usuario\n",
-	"user-search-results-per-page": "Número de resultados para mostrar",
+	"user-search-results-per-page": "Number of users to display in search results",
 	"default-user-settings": "Configuración de Usuario por Defecto",
 	"show-email": "Mostrar email",
 	"show-fullname": "Mostrar nombre completo",

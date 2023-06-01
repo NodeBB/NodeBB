@@ -3,6 +3,7 @@
     "link-to-manage": "태그 관리",
     "system-tags": "시스템 태그",
     "system-tags-help": "관리자와 조정자들만 해당 태그들을 사용할 수 있습니다.",
+    "tags-per-topic": "Tags per topic",
     "min-per-topic": "화제 별 최소 태그",
     "max-per-topic": "화제 별 최대 태그",
     "min-length": "태그 최소 길이",
