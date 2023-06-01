@@ -1,4 +1,5 @@
 {
+	"widgets": "Widgets",
 	"available": "Razpoložljivi pripomočki",
 	"explanation": "V spustnem meniju izberite pripomoček in ga povlecite in spustite v območje gradnikov predloge na levi.",
 	"none-installed": "Pripomočki niso najdeni! Aktivirajte vtičnik za osnove pripomočkov na nadzorni plošči<a href=\"%1\">vtičnikov</a>.",

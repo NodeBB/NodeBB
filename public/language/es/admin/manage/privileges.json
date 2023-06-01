@@ -1,4 +1,6 @@
 {
+	"manage-privileges": "Manage Privileges",
+	"discard-changes": "Discard changes",
 	"global": "Global",
 	"admin": "Admin",
 	"group-privileges": "Group Privileges",

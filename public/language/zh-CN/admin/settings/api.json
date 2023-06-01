@@ -21,6 +21,8 @@
 	"last-seen-never": "从未被使用过的键值",
 	"no-description": "未指定说明。",
 	"actions": "Actions",
+	"edit": "Edit",
+	"roll": "Roll",
 
 	"delete-confirm": "Are you sure you wish to delete this token? It will not be recoverable.",
 	"roll-confirm": "Are you sure you wish to regenerate this token? The old token will be immediately revoked and will not be recoverable."

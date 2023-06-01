@@ -1,10 +1,12 @@
 {
 	"rewards": "Награды",
+	"add-reward": "Add reward",
 	"condition-if-users": "Если у пользователя",
 	"condition-is": "Соответствует",
 	"condition-then": "Тогда",
 	"max-claims": "Сколько раз можно наградить",
 	"zero-infinite": "Введите 0, если не ограничено",
+	"select-reward": "Select reward",
 	"delete": "Удалить",
 	"enable": "Включить",
 	"disable": "Выключить",

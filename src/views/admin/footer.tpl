@@ -1,13 +1,17 @@
+		</div> <!-- #content end-->
+	</div>
+
+	<!-- IMPORT admin/partials/mobile-footer.tpl -->
+	{{{ if !isSpider }}}
+	<div class="">
+		<div component="toaster/tray" class="alert-window fixed-bottom mb-5 mb-md-2 me-2 me-md-5 ms-auto" style="width:300px; z-index: 1090;">
+			<div id="reconnect-alert" class="alert alert-dismissible alert-warning clearfix hide" component="toaster/toast">
+				<button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-hidden="true"></button>
+				<p>[[global:reconnecting-message, {config.siteTitle}]]</p>
 			</div>
 		</div>
 	</div>
-
-
-	<div class="alert-window" component="toaster/tray"></div>
-
-	<div id="footer" class="container" style="padding-top: 50px; display:none;">
-		<footer class="footer">Copyright &copy; 2015 <a target="_blank" href="https://nodebb.org">NodeBB</a> by <a target="_blank" href="https://github.com/psychobunny">psychobunny</a>, <a href="https://github.com/julianlam" target="_blank">julianlam</a>, <a href="https://github.com/barisusakli" target="_blank">barisusakli</a> from <a target="_blank" href="http://www.designcreateplay.com">designcreateplay</a></footer>
-	</div>
+	{{{ end }}}
 	<script>
 		if (document.readyState === 'loading') {
 			document.addEventListener('DOMContentLoaded', prepareFooter);

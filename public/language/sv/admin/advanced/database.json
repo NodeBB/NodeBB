@@ -5,7 +5,7 @@
 	"uptime-seconds": "Driftstid i sekunder",
 	"uptime-days": "Driftstid i dagar",
 
-	"mongo": "Mongo",
+	"mongo": "MongoDB",
 	"mongo.version": "MongoDB-version",
 	"mongo.storage-engine": "Lagringsmotor",
 	"mongo.collections": "Samlingar",

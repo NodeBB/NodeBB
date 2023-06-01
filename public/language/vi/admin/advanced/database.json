@@ -5,7 +5,7 @@
 	"uptime-seconds": "Thời gian hoạt động(giây)",
 	"uptime-days": "Thời gian hoạt động(Ngày)",
 
-	"mongo": "Mongo",
+	"mongo": "MongoDB",
 	"mongo.version": "Phiên bản MongoDB ",
 	"mongo.storage-engine": "Phương Thức Lưu Trữ",
 	"mongo.collections": "Tập dữ liệu",

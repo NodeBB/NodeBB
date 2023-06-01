@@ -4,6 +4,13 @@
 
 	"acp-title": "%1 | Panneau d'administration NodeBB",
 	"settings-header-contents": "Contenus",
+	"changes-saved": "Changes Saved",
+	"changes-saved-message": "Your changes to the NodeBB configuration have been saved.",
 	"changes-not-saved": "Changements non sauvegardés !",
-	"changes-not-saved-message": "NodeBB a rencontré un problème lors de l'enregistrement de vos modifications ! (%1)"
+	"changes-not-saved-message": "NodeBB a rencontré un problème lors de l'enregistrement de vos modifications ! (%1)",
+	"save-changes": "Save changes",
+	"min": "Min:",
+	"max": "Max:",
+	"view": "View",
+	"edit": "Edit"
 }

@@ -5,7 +5,7 @@
 	"uptime-seconds": "Menyala dalam Detik",
 	"uptime-days": "Menyala dalam Hari",
 
-	"mongo": "Mongo",
+	"mongo": "MongoDB",
 	"mongo.version": "Versi MongoDB",
 	"mongo.storage-engine": "Mesin Penyimpanan",
 	"mongo.collections": "Koleksi",

@@ -1,9 +1,9 @@
-<!-- IMPORT admin/partials/settings/header.tpl -->
-<div class="row post-cache">
+
+<div class="row post-cache settings px-lg-4">
 	<div class="col-lg-12">
 		<div class="row">
 			{{{each caches}}}
-			<div class="col-lg-3">
+			<div class="col-xl-3">
 				<div class="card">
 					<div class="card-header">[[admin/advanced/cache:{@key}-cache]]</div>
 					<div class="card-body">
@@ -42,7 +42,7 @@
 							<input id="postCacheSize" type="text" class="form-control" value="" data-field="postCacheSize">
 						</div>
 						{{{end}}}
-						<a href="{config.relative_path}/api/admin/advanced/cache/dump?name={@key}" class="btn btn-sm"><i class="fa fa-download"></i></a>
+						<a href="{config.relative_path}/api/admin/advanced/cache/dump?name={@key}" class="btn btn-light btn-sm"><i class="fa fa-download"></i></a>
 						<a class="btn btn-sm btn-danger clear" data-name="{@key}"><i class="fa fa-trash"></i></a>
 					</div>
 				</div>
@@ -52,4 +52,4 @@
 	</div>
 </div>
 
-<!-- IMPORT admin/partials/settings/footer.tpl -->
+<!-- IMPORT admin/partials/save_button.tpl -->

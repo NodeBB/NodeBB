@@ -1,7 +1,11 @@
 {
+	"manage-categories": "Manage Categories",
+	"add-category": "Add category",
+	"jump-to": "Jump to...",
 	"settings": "Configurações de Categorias",
+	"edit-category": "Edit Category",
 	"privileges": "Privilégios",
-
+	"back-to-categories": "Back to categories",
 	"name": "Nome da Categoria",
 	"description": "Descrição da Categoria",
 	"bg-color": "Cor de Fundo",
@@ -15,8 +19,11 @@
 	"post-queue": "Fila de posts",
 	"tag-whitelist": "Lista Branca de Tags",
 	"upload-image": "Enviar Imagem",
+	"upload": "Upload",
+	"select-icon": "Select Icon",
 	"delete-image": "Remover",
 	"category-image": "Imagem da Categoria",
+	"image-and-icon": "Image & Icon",
 	"parent-category": "Categoria-Mãe",
 	"optional-parent-category": "(Opcional) Categoria-Mãe",
 	"top-level": "Nível Superior",
@@ -31,6 +38,7 @@
 	"disable": "Desativar",
 	"edit": "Editar",
 	"analytics": "Analytics",
+
 	"view-category": "Ver categoria",
 	"set-order": "Definir ordem",
 	"set-order-help": "Definir a ordem da categoria moverá esta categoria para aquela ordem e atualizará a ordem das outras categorias conforme necessário. A ordem mínima é 1, o que coloca a categoria no topo.",

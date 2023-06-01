@@ -27,5 +27,5 @@
 	"flags.action-on-resolve": "Երբ դրոշը լուծվում է, արեք հետևյալը",
 	"flags.action-on-reject": "Երբ դրոշը մերժվում է, արեք հետևյալը",
 	"flags.action.nothing": "Ոչինչ Չանել ",
-	"flags.action.rescind": "Չեղարկել մոդերատորներին/ադմինիստրատորներին ուղարկված ծանուցումը"
+	"flags.action.rescind": "Rescind the notification sent to moderators/administrators"
 }

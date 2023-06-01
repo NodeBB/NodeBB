@@ -1,9 +1,11 @@
 {
+	"manage-tags": "Manage Tags",
 	"none": "Na vašem forumu še ni nobene teme z oznakami.",
 	"bg-color": "Barva ozadja",
 	"text-color": "Barva besedila",
 	"description": "Select tags by clicking or dragging, use <code>CTRL</code> to select multiple tags.",
 	"create": "Ustvari oznako",
+	"add-tag": "Add tag",
 	"modify": "Spremeni oznake",
 	"rename": "Preimenuj oznake",
 	"delete": "Izbriši izbrane oznake",

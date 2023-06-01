@@ -27,5 +27,5 @@
 	"flags.action-on-resolve": "Bir şikayet çözümlendiğinde şunu yap",
 	"flags.action-on-reject": "Bir şikayet reddedildiğinde şunu yap",
 	"flags.action.nothing": "Hiçbir şey yapma",
-	"flags.action.rescind": "Moderatör ve Adminlere gönderilen bildirimleri iptal et"
+	"flags.action.rescind": "Rescind the notification sent to moderators/administrators"
 }

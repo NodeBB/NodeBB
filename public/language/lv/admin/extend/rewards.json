@@ -1,10 +1,12 @@
 {
 	"rewards": "Balvas",
+	"add-reward": "Add reward",
 	"condition-if-users": "Ja lietotāja",
 	"condition-is": "Ir:",
 	"condition-then": "Tad:",
 	"max-claims": "Cik reižu balva ir pieprasāma",
 	"zero-infinite": "Ievadīt 0, lai būtu bez ierobežojuma",
+	"select-reward": "Select reward",
 	"delete": "Izdzēst",
 	"enable": "Iespējot",
 	"disable": "Atspējot",

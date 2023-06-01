@@ -5,7 +5,7 @@
 	"uptime-seconds": "Na mreži u sekundama",
 	"uptime-days": "Na mreži u danima",
 
-	"mongo": "Mongo",
+	"mongo": "MongoDB",
 	"mongo.version": "Verzija MongoDB",
 	"mongo.storage-engine": "Način pohrane",
 	"mongo.collections": "Kolekcije",

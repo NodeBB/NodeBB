@@ -72,7 +72,9 @@
 	"development/info": "Інформація",
 
 	"rebuild-and-restart-forum": "Перебудувати & Перезавантажити Форум",
+	"rebuild-and-restart": "Rebuild & Restart",
 	"restart-forum": "Перезавантажити форум",
+	"restart": "Restart",
 	"logout": "Вийти",
 	"view-forum": "Переглянути форум",
 

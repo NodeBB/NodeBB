@@ -1,7 +1,9 @@
 {
+    "themes": "Themes",
     "checking-for-installed": "Sprawdzanie zainstalowanego stylu...",
     "homepage": "Strona startowa",
     "select-theme": "Wybierz Styl",
+    "revert-theme": "Revert Theme",
     "current-theme": "Aktualny Styl",
     "no-themes": "Brak zainstalowanych stylów",
     "revert-confirm": "Czy na pewno chcesz przywrócić domyślny styl NodeBB?",

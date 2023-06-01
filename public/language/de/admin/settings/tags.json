@@ -3,6 +3,7 @@
     "link-to-manage": "Tags managen",
     "system-tags": "System-Tags",
     "system-tags-help": "Nur berechtige Benutzer können diese Tags verwenden.",
+    "tags-per-topic": "Tags per topic",
     "min-per-topic": "Minimale Tags pro Thema",
     "max-per-topic": "Maximale Tags pro Thema",
     "min-length": "Minimale Tag Länge",

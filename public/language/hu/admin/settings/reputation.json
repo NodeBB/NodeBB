@@ -27,5 +27,5 @@
 	"flags.action-on-resolve": "Tegye a következőket, ha egy megjelölés megoldódott",
 	"flags.action-on-reject": "Tegye a következőket, ha egy megjelölés visszautasított",
 	"flags.action.nothing": "Ne csinálj semmit",
-	"flags.action.rescind": "Rescind the notification send to moderators/administrators"
+	"flags.action.rescind": "Rescind the notification sent to moderators/administrators"
 }

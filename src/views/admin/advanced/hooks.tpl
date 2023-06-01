@@ -1,9 +1,9 @@
-<div class="hooks-list panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+<div class="hooks-list panel-group px-lg-4" id="accordion" role="tablist" aria-multiselectable="true">
 	{{{ each hooks }}}
 	<div class="card">
 		<div class="card-header" role="tab">
 			<h6 class="mb-0">
-				<a style="text-transform: none;" role="button" data-bs-toggle="collapse" data-bs-parent="#accordion" data-bs-target="#{hooks.index}" aria-expanded="true" aria-controls="{hooks.index}">{hooks.hookName}</a>
+				<a style="text-transform: none;" class="text-reset text-decoration-none" role="button" data-bs-toggle="collapse" data-bs-parent="#accordion" data-bs-target="#{hooks.index}" aria-expanded="true" aria-controls="{hooks.index}">{hooks.hookName}</a>
 				<span class="float-end">{hooks.count} hooks</span>
 			</h6>
 		</div>

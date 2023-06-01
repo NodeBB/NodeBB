@@ -72,7 +72,9 @@
 	"development/info": "Informácie",
 
 	"rebuild-and-restart-forum": "Znovu zostaviť a reštartovať fórum",
+	"rebuild-and-restart": "Rebuild & Restart",
 	"restart-forum": "Reštartovať fórum",
+	"restart": "Restart",
 	"logout": "Odhlásiť",
 	"view-forum": "Zobraziť fórum",
 

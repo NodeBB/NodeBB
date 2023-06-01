@@ -59,7 +59,7 @@
 	"max-about-me-length": "Comprimento Máximo do \"Sobre Mim\"",
 	"terms-of-use": "Termos de Uso do Fórum <small>(Deixa em branco para desativar)</small>",
 	"user-search": "Procura de Utilizadores",
-	"user-search-results-per-page": "Número de resultados a mostrar",
+	"user-search-results-per-page": "Number of users to display in search results",
 	"default-user-settings": "Definições Predefinidas do Utilizador",
 	"show-email": "Mostrar e-mail",
 	"show-fullname": "Mostrar nome completo",

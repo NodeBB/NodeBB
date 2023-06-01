@@ -1,7 +1,9 @@
 {
+	"skins": "Skins",
 	"loading": "Načítať vzhľady...",
 	"homepage": "Domovska stránka",
 	"select-skin": "Vybrať vzhľad",
+	"revert-skin": "Revert Skin",
 	"current-skin": "Aktuálny vzhľad",
 	"skin-updated": "Vzhľad aktualizovaný",
 	"applied-success": "%1 vzhľad bol úspešne aplikovaný",

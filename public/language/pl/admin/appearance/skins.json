@@ -1,7 +1,9 @@
 {
+	"skins": "Skins",
 	"loading": "Ładowania skórki...",
 	"homepage": "Strona startowa",
 	"select-skin": "Wybierz Skórkę",
+	"revert-skin": "Revert Skin",
 	"current-skin": "Obecna skórka",
 	"skin-updated": "Skórka zaktualizowana",
 	"applied-success": "%1 skórki jest zachowana z powodzeniem",

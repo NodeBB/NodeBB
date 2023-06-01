@@ -1,5 +1,6 @@
 {
 	"settings": "Innstillinger ",
+	"guest-settings": "Guest settings",
 	"handles.enabled": "Allow guest handles",
 	"handles.enabled-help": "Dette alternativet viser et nytt felt som lar gjestene velge et navn som kan knyttes til hvert innlegg de lager. Hvis de er deaktivert, vil de bare bli kalt \"Gjest\"",
 	"topic-views.enabled": "La gjestene øke antall visninger av emner",

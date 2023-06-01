@@ -5,7 +5,7 @@
 	"uptime-seconds": "Saniyede Bir Çalışma Zamanı",
 	"uptime-days": "Günde Bir Çalışma Zamanı",
 
-	"mongo": "Mongo",
+	"mongo": "MongoDB",
 	"mongo.version": "MongoDB Sürümü",
 	"mongo.storage-engine": "Depolama Motoru",
 	"mongo.collections": "Koleksiyonlar",

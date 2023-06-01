@@ -1,7 +1,11 @@
 {
+	"manage-categories": "Manage Categories",
+	"add-category": "Add category",
+	"jump-to": "Jump to...",
 	"settings": "Nastavitve kategorije",
+	"edit-category": "Edit Category",
 	"privileges": "Privilegiji",
-
+	"back-to-categories": "Back to categories",
 	"name": "Ime kategorije",
 	"description": "Opis kategorije",
 	"bg-color": "Barva ozadja",
@@ -15,8 +19,11 @@
 	"post-queue": "Čakalna vrsta objav",
 	"tag-whitelist": "Bela lista oznak",
 	"upload-image": "Naloži sliko",
+	"upload": "Upload",
+	"select-icon": "Select Icon",
 	"delete-image": "Odstrani",
 	"category-image": "Slika kategorije",
+	"image-and-icon": "Image & Icon",
 	"parent-category": "Nadrejena kategorija",
 	"optional-parent-category": "(Izbirno) Nadrejena kategorija",
 	"top-level": "Vrhnja raven",
@@ -31,6 +38,7 @@
 	"disable": "Onemogoči",
 	"edit": "Uredi",
 	"analytics": "Analitika",
+
 	"view-category": "Poglej kategorijo",
 	"set-order": "Nastavi vrstni red",
 	"set-order-help": "Če nastavite vrstni red kategorije, se bo ta kategorija premaknila in po potrebi posodobila vrstni red drugih kategorij. Najmanjša št. vrstnega reda je 1, kar kategorijo postavlja na vrh.",

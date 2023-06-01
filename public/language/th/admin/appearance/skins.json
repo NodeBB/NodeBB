@@ -1,7 +1,9 @@
 {
+	"skins": "Skins",
 	"loading": "กำลังโหลดหน้ากาก",
 	"homepage": "หน้าแรก",
 	"select-skin": "เลือกหน้ากาก",
+	"revert-skin": "Revert Skin",
 	"current-skin": "หน้ากากปัจจุบัน",
 	"skin-updated": "หน้ากากถูกอัปเดทแล้ว",
 	"applied-success": "%1 หน้ากากถูกใช้เสร็จสิ้นแล้ว",

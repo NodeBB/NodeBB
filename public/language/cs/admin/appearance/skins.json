@@ -1,7 +1,9 @@
 {
+	"skins": "Skins",
 	"loading": "Načítání motivů…",
 	"homepage": "Domovská stránka",
 	"select-skin": "Vyberte motiv",
+	"revert-skin": "Revert Skin",
 	"current-skin": "Současný motiv",
 	"skin-updated": "Motiv aktualizován",
 	"applied-success": "Motiv %1 byl úspěšně použit",

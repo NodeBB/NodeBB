@@ -5,7 +5,7 @@
 	"uptime-seconds": "آپتایم در ثانیه",
 	"uptime-days": "آپتایم در روز",
 
-	"mongo": "پایگاه داده مونگو",
+	"mongo": "MongoDB",
 	"mongo.version": "ورژن پایگاه داده مونگو دیبی",
 	"mongo.storage-engine": "سیستم ذخیره سازی",
 	"mongo.collections": "مجموعه ها",

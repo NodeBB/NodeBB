@@ -1,5 +1,4 @@
-<!-- IMPORT admin/partials/settings/header.tpl -->
-<div class="row logger">
+<div class="row logger settings px-lg-4">
 	<div class="col-lg-12">
 		<div class="card">
 			<div class="card-header">[[admin/development/logger:logger-settings]]</div>
@@ -34,4 +33,4 @@
 	</div>
 </div>
 
-<!-- IMPORT admin/partials/settings/footer.tpl -->
+<!-- IMPORT admin/partials/save_button.tpl -->

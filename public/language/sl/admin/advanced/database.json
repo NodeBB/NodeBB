@@ -5,7 +5,7 @@
 	"uptime-seconds": "Čas delovanja v sekundah",
 	"uptime-days": "Čas delovanja v dneh",
 
-	"mongo": "Mongo",
+	"mongo": "MongoDB",
 	"mongo.version": "MongoDB verzija",
 	"mongo.storage-engine": "Pogon za shranjevanje",
 	"mongo.collections": "Zbirke",

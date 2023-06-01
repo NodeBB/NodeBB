@@ -1,9 +1,11 @@
 {
+	"manage-tags": "Manage Tags",
 	"none": "Жодна тема на вашому форумі ще не має тегів.",
 	"bg-color": "Колір фону",
 	"text-color": "Колір тексту",
 	"description": "Select tags by clicking or dragging, use <code>CTRL</code> to select multiple tags.",
 	"create": "Створити тег",
+	"add-tag": "Add tag",
 	"modify": "Змінити тег",
 	"rename": "Перейменувати теги",
 	"delete": "Видалити вибрані теги",

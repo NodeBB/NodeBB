@@ -1,7 +1,9 @@
 {
+    "themes": "Themes",
     "checking-for-installed": "Telepített témák ellenőrzése...",
     "homepage": "Kezdőoldal",
     "select-theme": "Téma választása",
+    "revert-theme": "Revert Theme",
     "current-theme": "Aktuális téma",
     "no-themes": "Nem található telepített téma",
     "revert-confirm": "Biztos vissza akarod állítani az alapértelmezett NodeBB témát?",

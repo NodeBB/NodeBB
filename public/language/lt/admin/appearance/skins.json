@@ -1,7 +1,9 @@
 {
+	"skins": "Skins",
 	"loading": "Loading Skins...",
 	"homepage": "Homepage",
 	"select-skin": "Select Skin",
+	"revert-skin": "Revert Skin",
 	"current-skin": "Current Skin",
 	"skin-updated": "Skin Updated",
 	"applied-success": "%1 skin was succesfully applied",

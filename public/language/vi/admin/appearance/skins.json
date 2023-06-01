@@ -1,7 +1,9 @@
 {
+	"skins": "Skins",
 	"loading": "Đang tải giao diện ...",
 	"homepage": "Trang chủ",
 	"select-skin": "Chọn giao diện",
+	"revert-skin": "Revert Skin",
 	"current-skin": "Giao diện hiện tại",
 	"skin-updated": "Đã cập nhật giao diện",
 	"applied-success": "%1 giao diện đã được sử dụng thành công",

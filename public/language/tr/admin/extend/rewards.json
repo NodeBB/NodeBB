@@ -1,10 +1,12 @@
 {
 	"rewards": "Ödüller",
+	"add-reward": "Add reward",
 	"condition-if-users": "Eğer bir kullanıcının",
 	"condition-is": "şu ise:",
 	"condition-then": "O halde:",
 	"max-claims": "Ödül kaç kez alınabilir",
 	"zero-infinite": "Sınırsız için 0 girin",
+	"select-reward": "Select reward",
 	"delete": "Sil",
 	"enable": "Etkinleştir",
 	"disable": "Etkinsizleştir",

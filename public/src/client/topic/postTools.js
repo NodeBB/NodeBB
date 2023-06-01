@@ -277,17 +277,17 @@ define('forum/topic/postTools', [
 				hooks.fire('action:composer.addQuote', {
 					tid: tid,
 					pid: toPid,
-					topicName: ajaxify.data.titleRaw,
+					title: ajaxify.data.titleRaw,
 					username: username,
-					text: selectedNode.text,
+					body: selectedNode.text,
 					selectedPid: selectedNode.pid,
 				});
 			} else {
 				hooks.fire('action:composer.post.new', {
 					tid: tid,
 					pid: toPid,
-					topicName: ajaxify.data.titleRaw,
-					text: username ? username + ' ' : ($('[component="topic/quickreply/text"]').val() || ''),
+					title: ajaxify.data.titleRaw,
+					body: username ? username + ' ' : ($('[component="topic/quickreply/text"]').val() || ''),
 				});
 			}
 		});
@@ -305,7 +305,7 @@ define('forum/topic/postTools', [
 					tid: tid,
 					pid: toPid,
 					username: username,
-					topicName: ajaxify.data.titleRaw,
+					title: ajaxify.data.titleRaw,
 					text: text,
 				});
 			}

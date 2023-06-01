@@ -9,18 +9,21 @@
 	</div>
 
 	<div class="mb-3" id="cloneFromCidGroup">
-		<label class="form-label" for="cloneFromCid">[[admin/manage/categories:optional-clone-settings]]</label>
-		<!-- IMPORT admin/partials/category/selector-dropdown-left.tpl -->
-		<label>
-			<input id="cloneChildren" name="cloneChildren" type="checkbox">
-			<strong>[[admin/manage/categories:clone-children]]</strong>
-		</label>
+		<div class="mb-3">
+			<label class="form-label" for="cloneFromCid">[[admin/manage/categories:optional-clone-settings]]</label>
+
+			<!-- IMPORT admin/partials/category/selector-dropdown-left.tpl -->
+		</div>
+		<div class="form-check form-switch">
+			<input class="form-check-input "id="cloneChildren" name="cloneChildren" type="checkbox">
+			<label class="form-check-label">[[admin/manage/categories:clone-children]]</label>
+		</div>
 	</div>
 
 	<div class="mb-3">
-		<label>
-			<input id="disabled" name="disabled" type="checkbox">
-			<strong>[[admin/manage/categories:disable-on-create]]</strong>
-		</label>
+		<div class="form-check form-switch">
+			<input class="form-check-input "id="disabled" name="disabled" type="checkbox">
+			<label class="form-check-label">[[admin/manage/categories:disable-on-create]]</label>
+		</div>
 	</div>
 </form>

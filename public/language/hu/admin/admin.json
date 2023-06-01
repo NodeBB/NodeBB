@@ -4,6 +4,13 @@
 
 	"acp-title": "%1 | NodeBB Adminisztrációs vezérlőpult",
 	"settings-header-contents": "Tartalmak",
+	"changes-saved": "Changes Saved",
+	"changes-saved-message": "Your changes to the NodeBB configuration have been saved.",
 	"changes-not-saved": "A változtatások nincsenek elmentve",
-	"changes-not-saved-message": "NodeBB encountered a problem saving your changes. (%1)"
+	"changes-not-saved-message": "NodeBB encountered a problem saving your changes. (%1)",
+	"save-changes": "Save changes",
+	"min": "Min:",
+	"max": "Max:",
+	"view": "View",
+	"edit": "Edit"
 }

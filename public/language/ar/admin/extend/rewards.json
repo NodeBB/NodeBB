@@ -1,10 +1,12 @@
 {
 	"rewards": "المكافآت",
+	"add-reward": "Add reward",
 	"condition-if-users": "إذا كان للمستخدم",
 	"condition-is": "يكون: ",
 	"condition-then": "عندئذ:",
 	"max-claims": "عدد المرات التي يمكن فيها المطالبة بالمكافأة",
 	"zero-infinite": "أدخل 0 للقيمة اللانهائية",
+	"select-reward": "Select reward",
 	"delete": "احذف",
 	"enable": "مكّن",
 	"disable": "عطّل",

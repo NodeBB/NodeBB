@@ -5,7 +5,7 @@
 	"uptime-seconds": "ระยะเวลาทำงานต่อเนื่องเป็นวินาที",
 	"uptime-days": "ระยะเวลาทำงานต่อเนื่องเป็นวัน",
 
-	"mongo": "Mongo",
+	"mongo": "MongoDB",
 	"mongo.version": "MongoDB เวอร์ชั่น",
 	"mongo.storage-engine": "ระบบการจัดเก็บ",
 	"mongo.collections": "คอลเลคชัน",

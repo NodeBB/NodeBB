@@ -5,7 +5,7 @@
 	"uptime-seconds": "Doba prevádzky v sekundách",
 	"uptime-days": "Doba prevádzky v dňoch",
 
-	"mongo": "Monho",
+	"mongo": "MongoDB",
 	"mongo.version": "Verzia MongoDB",
 	"mongo.storage-engine": "Modul úložiska  ",
 	"mongo.collections": "Fondy",

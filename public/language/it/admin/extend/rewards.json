@@ -1,10 +1,12 @@
 {
 	"rewards": "Premi",
+	"add-reward": "Add reward",
 	"condition-if-users": "Se l'utente",
 	"condition-is": "È:",
 	"condition-then": "Allora:",
 	"max-claims": "Numero di volte che il premio è reclamabile",
 	"zero-infinite": "Inserisci 0 per infinito",
+	"select-reward": "Select reward",
 	"delete": "Elimina",
 	"enable": "Abilita",
 	"disable": "Disabilita",

@@ -59,7 +59,7 @@
 	"max-about-me-length": "الحد الأعلى من الأحرف في حقل \"عني\"",
 	"terms-of-use": "شروط استخدام المنتدى <small>(تترك فارغة لتعطيلها)</small>",
 	"user-search": "بحث الأعضاء",
-	"user-search-results-per-page": "عدد النتائج المراد عرضها",
+	"user-search-results-per-page": "Number of users to display in search results",
 	"default-user-settings": "إعدادات الأعضاء الافتراضية",
 	"show-email": "عرض البريد الإلكتروني",
 	"show-fullname": "عرض الاسم الكامل",

@@ -72,7 +72,9 @@
 	"development/info": "Thông tin",
 
 	"rebuild-and-restart-forum": "Xây dựng lại & Khởi động lại diễn đàn",
+	"rebuild-and-restart": "Rebuild & Restart",
 	"restart-forum": "Khởi Động Lại Diễn Đàn",
+	"restart": "Restart",
 	"logout": "Đăng xuất",
 	"view-forum": "Xem diễn đàn",
 

@@ -1,9 +1,11 @@
 {
+	"manage-tags": "Manage Tags",
 	"none": "O seu fórum ainda não tem tópicos com tags.",
 	"bg-color": "Cor de Fundo",
 	"text-color": "Cor do Text",
 	"description": "Selecione as tags clicando ou arrastando, use <code>CTRL</code> para selecionar várias tags.",
 	"create": "Criar Tag",
+	"add-tag": "Add tag",
 	"modify": "Modificar Tags",
 	"rename": "Renomear Tags",
 	"delete": "Excluir Tags Selecionadas",

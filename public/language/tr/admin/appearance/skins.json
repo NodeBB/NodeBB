@@ -1,7 +1,9 @@
 {
+	"skins": "Skins",
 	"loading": "Görünümler yükleniyor...",
 	"homepage": "Anasayfa",
 	"select-skin": "Görünüm Seç",
+	"revert-skin": "Revert Skin",
 	"current-skin": "Mevcut Görünüm",
 	"skin-updated": "Görünüm Güncellendi",
 	"applied-success": "%1 isimli görünüm başarıyla uygulandı",

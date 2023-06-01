@@ -1,10 +1,11 @@
 {
+    "manage-admins-and-mods": "Manage Admins & Mods",
     "administrators": "מנהלים",
     "global-moderators": "מנחים גלובליים",
     "moderators": "מנחים",
     "no-global-moderators": "אין מנחים גלובליים",
     "no-sub-categories": "אין תתי קטגוריות",
-    "subcategories": "%1 תתי-קטגוריות",
+    "view-children": "View children (%1)",
     "no-moderators": "אין מנחים",
     "add-administrator": "הוסף מנהל",
     "add-global-moderator": "הוסף מנחה גלובלי",

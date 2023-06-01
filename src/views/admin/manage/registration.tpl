@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row px-lg-4">
 	<div class="col-12">
 		<div class="registration card mb-3">
 			<div class="card-header text-bg-primary">
@@ -10,7 +10,7 @@
 			</p>
 			{{{ end }}}
 			<div class="table-responsive">
-				<table class="table table-striped users-list">
+				<table class="table users-list">
 					<thead>
 						<tr>
 							<th>[[admin/manage/registration:list.name]]</th>
@@ -86,7 +86,7 @@
 				</table>
 			</div>
 
-			<!-- IMPORT partials/paginator.tpl -->
+			<!-- IMPORT admin/partials/paginator.tpl -->
 		</div>
 
 		<div class="invitations card">
@@ -97,7 +97,7 @@
 				[[admin/manage/registration:invitations.description]]
 			</p>
 			<div class="table-responsive">
-				<table class="table table-striped invites-list">
+				<table class="table invites-list">
 					<thead>
 						<tr>
 							<th>[[admin/manage/registration:invitations.inviter-username]]</th>

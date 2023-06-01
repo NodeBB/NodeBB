@@ -27,5 +27,5 @@
 	"flags.action-on-resolve": "Do the following when a flag is resolved",
 	"flags.action-on-reject": "Do the following when a flag is rejected",
 	"flags.action.nothing": "Do nothing",
-	"flags.action.rescind": "Rescind the notification send to moderators/administrators"
+	"flags.action.rescind": "Rescind the notification sent to moderators/administrators"
 }

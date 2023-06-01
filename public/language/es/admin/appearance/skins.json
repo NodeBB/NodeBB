@@ -1,7 +1,9 @@
 {
+	"skins": "Skins",
 	"loading": "Cargando Temas...",
 	"homepage": "Pagina Principal",
 	"select-skin": "Selecciona el Tema",
+	"revert-skin": "Revert Skin",
 	"current-skin": "Tema Actual",
 	"skin-updated": "Tema Actualizado",
 	"applied-success": "El tema %1 se aplicó correctamente",

@@ -59,7 +59,7 @@
 	"max-about-me-length": "Maximálna dĺžka informácií „O mne”",
 	"terms-of-use": "Podmienky používania fóra <small>(pre zakázanie nechajte prázdne)</small>",
 	"user-search": "Hľadať používateľa",
-	"user-search-results-per-page": "Počet zobrazených výsledkov",
+	"user-search-results-per-page": "Number of users to display in search results",
 	"default-user-settings": "Predvolené nastavenia používateľa",
 	"show-email": "Zobraziť e-mail",
 	"show-fullname": "Zobraziť celé meno",

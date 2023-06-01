@@ -5,7 +5,7 @@
 	"uptime-seconds": "Czas od restartu w sekundach",
 	"uptime-days": "Czas od restartu w dniach",
 
-	"mongo": "Mongo",
+	"mongo": "MongoDB",
 	"mongo.version": "Wersja MongoDB",
 	"mongo.storage-engine": "Silnik magazynowania",
 	"mongo.collections": "Kolekcje",

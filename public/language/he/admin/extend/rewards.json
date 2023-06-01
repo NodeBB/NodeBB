@@ -1,10 +1,12 @@
 {
 	"rewards": "תגמולים",
+	"add-reward": "Add reward",
 	"condition-if-users": "אם",
 	"condition-is": "הינו:",
 	"condition-then": "תגמל ב:",
 	"max-claims": "מספר פעמים בה ניתן לדרוש תגמול",
 	"zero-infinite": "הזן 0 ללא הגבלה",
+	"select-reward": "Select reward",
 	"delete": "מחק",
 	"enable": "הפעל",
 	"disable": "השבת",

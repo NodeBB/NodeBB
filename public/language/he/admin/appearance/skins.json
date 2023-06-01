@@ -1,7 +1,9 @@
 {
+	"skins": "Skins",
 	"loading": "טוען עיצובים",
 	"homepage": "דף הפרוייקט",
 	"select-skin": "בחר עיצוב זה",
+	"revert-skin": "Revert Skin",
 	"current-skin": "עיצוב נוכחי",
 	"skin-updated": "עיצוב עודכן",
 	"applied-success": "עיצוב %1 הוחל בהצלחה",

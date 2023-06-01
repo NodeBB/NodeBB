@@ -5,7 +5,7 @@
 	"uptime-seconds": "Uptime վայրկյաններով",
 	"uptime-days": "Աշխատանքի ժամանակ օրերով",
 
-	"mongo": "Mongo",
+	"mongo": "MongoDB",
 	"mongo.version": "MongoDB տարբերակ",
 	"mongo.storage-engine": "Պահեստի շարժիչ",
 	"mongo.collections": "Հավաքածուներ",
