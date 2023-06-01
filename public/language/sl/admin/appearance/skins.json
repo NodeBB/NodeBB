@@ -1,7 +1,9 @@
 {
+	"skins": "Skins",
 	"loading": "Nalagam preobleke...",
 	"homepage": "Domača stran",
 	"select-skin": "Izberi preobleko",
+	"revert-skin": "Revert Skin",
 	"current-skin": "Trenutna preobleka",
 	"skin-updated": "Preobleka je posodobljena",
 	"applied-success": "%1 preobleke je bilo uspešno uveljavljene",

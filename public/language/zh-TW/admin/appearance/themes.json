@@ -1,7 +1,9 @@
 {
+    "themes": "Themes",
     "checking-for-installed": "正在檢查已安裝的佈景主題...",
     "homepage": "首頁",
     "select-theme": "選擇佈景主題",
+    "revert-theme": "Revert Theme",
     "current-theme": "當前佈景主題",
     "no-themes": "未發現已安裝的佈景主題",
     "revert-confirm": "確認恢復到 NodeBB 預設佈景主題？",

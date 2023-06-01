@@ -1,7 +1,9 @@
 {
+	"skins": "Skins",
 	"loading": "Felületek betöltése...",
 	"homepage": "Kezdőoldal",
 	"select-skin": "Felület választása",
+	"revert-skin": "Revert Skin",
 	"current-skin": "Jelenlegi felület",
 	"skin-updated": "Felület frissítve",
 	"applied-success": "%1 felület sikeresen alkalmazva",

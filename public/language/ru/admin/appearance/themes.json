@@ -1,7 +1,9 @@
 {
+    "themes": "Themes",
     "checking-for-installed": "Проверка установленных тем...",
     "homepage": "Домашняя страница",
     "select-theme": "Выбрать тему",
+    "revert-theme": "Revert Theme",
     "current-theme": "Текущая тема",
     "no-themes": "Не найдено установленных тем",
     "revert-confirm": "Вы уверены, что хотите восстановить стандартную тему оформления NodeBB?",

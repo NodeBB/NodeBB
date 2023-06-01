@@ -1,7 +1,9 @@
 {
+    "themes": "Themes",
     "checking-for-installed": "Pārbauda instalētās tēmas...",
     "homepage": "Sākumlapa",
     "select-theme": "Atlasīt tēmu",
+    "revert-theme": "Revert Theme",
     "current-theme": "Pašreizējā tēma",
     "no-themes": "Nav instalēto tēmu",
     "revert-confirm": "Vai tiešām vēlies atjaunot noklusējamo NodeBB tēmu?",

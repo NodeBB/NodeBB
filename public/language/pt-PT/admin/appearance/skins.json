@@ -1,7 +1,9 @@
 {
+	"skins": "Skins",
 	"loading": "A Carregar Máscaras...",
 	"homepage": "Página principal",
 	"select-skin": "Escolha uma Máscara",
+	"revert-skin": "Revert Skin",
 	"current-skin": "Máscara Atual",
 	"skin-updated": "Máscara Atualizada",
 	"applied-success": "Máscara %1 aplicada com sucesso",

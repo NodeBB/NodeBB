@@ -1,7 +1,9 @@
 {
+    "themes": "Themes",
     "checking-for-installed": "インストール済みテーマをチェックしています...",
     "homepage": "ホームページ",
     "select-theme": "テーマを選択",
+    "revert-theme": "Revert Theme",
     "current-theme": "現在のテーマ",
     "no-themes": "インストールされたテーマが見つかりませんでした",
     "revert-confirm": "本当にNodeBBのテーマをデフォルトに復元してもよろしいですか？",

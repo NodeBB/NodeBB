@@ -21,6 +21,8 @@
 	"last-seen-never": "Bu anahtar daha önce hiç kullanılmadı.",
 	"no-description": "Hiçbir açıklama belirtilmemiş.",
 	"actions": "Eylemler",
+	"edit": "Edit",
+	"roll": "Roll",
 
 	"delete-confirm": "Are you sure you wish to delete this token? It will not be recoverable.",
 	"roll-confirm": "Are you sure you wish to regenerate this token? The old token will be immediately revoked and will not be recoverable."

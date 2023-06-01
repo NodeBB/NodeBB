@@ -1,7 +1,9 @@
 {
+    "themes": "Themes",
     "checking-for-installed": "Buscando los temas instalados...",
     "homepage": "Pagina Principal",
     "select-theme": "Tema Seleccionado",
+    "revert-theme": "Revert Theme",
     "current-theme": "Tema Actual ",
     "no-themes": "No se encontraron temas instalados",
     "revert-confirm": "¿Estas seguro/a que quieres restaurar el tema de fabrica de NodeBB?",

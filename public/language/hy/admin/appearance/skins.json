@@ -1,7 +1,9 @@
 {
+	"skins": "Skins",
 	"loading": "Բեռնվում է Skins...",
 	"homepage": "Գլխավոր էջ",
 	"select-skin": "Ընտրել շապիկ ",
+	"revert-skin": "Revert Skin",
 	"current-skin": "Ընթացիկ շապիկ ",
 	"skin-updated": "Շապիկը թարմացվել է",
 	"applied-success": "%1 շապիկը հաջողությամբ կիրառվեց",

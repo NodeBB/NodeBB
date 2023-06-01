@@ -1,7 +1,9 @@
 {
+    "themes": "Themes",
     "checking-for-installed": "جاري التحقق من القوالب المثبتة...",
     "homepage": "الصفحة الرئيسية",
     "select-theme": "إختيار القالب",
+    "revert-theme": "Revert Theme",
     "current-theme": "القالب المستخدم حالياً",
     "no-themes": "لم يتم العثور على قوالب مثبتة",
     "revert-confirm": "هل أنت متأكد من أنك ترغب في استعادة قااب NodeBB الافتراضي؟",

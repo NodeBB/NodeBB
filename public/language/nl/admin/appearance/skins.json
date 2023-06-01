@@ -1,7 +1,9 @@
 {
+	"skins": "Skins",
 	"loading": "Style laden...",
 	"homepage": "Startpagina",
 	"select-skin": "Kies stijl",
+	"revert-skin": "Revert Skin",
 	"current-skin": "Huidige stijl",
 	"skin-updated": "Stijl bijgewerkt",
 	"applied-success": "%1 stijl was succesvol toegepast",

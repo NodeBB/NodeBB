@@ -1,7 +1,9 @@
 {
+	"skins": "Skins",
 	"loading": "Učitavam Izgled ...",
 	"homepage": "Naslovnica",
 	"select-skin": "Odaberi izgled",
+	"revert-skin": "Revert Skin",
 	"current-skin": "Trenutni izgled",
 	"skin-updated": "Izgled promijenjen",
 	"applied-success": "%1 izgled je primjenjen",

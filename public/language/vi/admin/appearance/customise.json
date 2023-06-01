@@ -1,4 +1,5 @@
 {
+	"customise": "Customise",
 	"custom-css": "CSS/SASS Tùy Chỉnh",
 	"custom-css.description": "Nhập các khai báo CSS/SASS của riêng bạn tại đây, sẽ được áp dụng sau tất cả các kiểu khác.",
 	"custom-css.enable": "Bật CSS/SASS Tùy Chỉnh",
