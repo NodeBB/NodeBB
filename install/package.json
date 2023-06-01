@@ -29,8 +29,8 @@
     },
     "dependencies": {
         "@adactive/bootstrap-tagsinput": "0.8.2",
-        "@fontsource/inter": "4.5.15",
-        "@fontsource/poppins": "4.5.10",
+        "@fontsource/inter": "5.0.2",
+        "@fontsource/poppins": "5.0.2",
         "@isaacs/ttlcache": "1.4.0",
         "@popperjs/core": "2.11.8",
         "ace-builds": "1.22.0",

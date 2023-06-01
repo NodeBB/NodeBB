@@ -3,18 +3,16 @@
 
 $weights: $font-weight-light, $font-weight-normal, $font-weight-semibold, $font-weight-bold;
 
-@each $weight in $weights {
-	@include Inter.fontFace(
-		$weight: $weight,
-		$display: fallback,
-		$fontDir: "./plugins/core/inter"
-	);
-	@include Poppins.fontFace(
-	  $weight: $weight,
-	  $display: fallback,
-	  $fontDir: "./plugins/core/poppins"
-	);
-}
+@include Inter.faces(
+	$weights: $weights,
+	$display: fallback,
+	$directory: "./plugins/core/inter"
+);
+@include Poppins.faces(
+  $weights: $weights,
+  $display: fallback,
+  $directory: "./plugins/core/poppins"
+);
 
 .ff-base { font-family: $font-family-base !important; }
 .ff-sans { font-family: $font-family-sans-serif !important; }
