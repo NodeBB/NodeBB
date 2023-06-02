@@ -6,12 +6,13 @@ const winston = require('winston');
 const request = require('request-promise-native');
 
 const db = require('../database');
-const helpers = require('./helpers');
 
 const ActivityPub = module.exports;
 
+ActivityPub.helpers = require('./helpers');
+
 ActivityPub.getActor = async (id) => {
-	const { hostname, actorUri: uri } = await helpers.query(id);
+	const { hostname, actorUri: uri } = await ActivityPub.helpers.query(id);
 	if (!uri) {
 		return false;
 	}

@@ -76,7 +76,7 @@ profileController.getFederated = async function (req, res, next) {
 	const payload = {
 		uid,
 		username: `${preferredUsername}@${hostname}`,
-		userslug: slugify(`${preferredUsername}@${hostname}`),
+		userslug: `${preferredUsername}@${hostname}`,
 		fullname: name,
 		joindate: new Date(published).getTime(),
 		picture: typeof icon === 'string' ? icon : icon.url,

@@ -17,6 +17,7 @@ const posts = require('../posts');
 const messaging = require('../messaging');
 const flags = require('../flags');
 const slugify = require('../slugify');
+const activitypub = require('../activitypub');
 
 const helpers = require('./helpers');
 const controllerHelpers = require('../controllers/helpers');
@@ -24,11 +25,14 @@ const controllerHelpers = require('../controllers/helpers');
 const Assert = module.exports;
 
 Assert.user = helpers.try(async (req, res, next) => {
-	if (!await user.exists(req.params.uid)) {
-		return controllerHelpers.formatApiResponse(404, res, new Error('[[error:no-user]]'));
+	if (
+		(isFinite(req.params.uid) && await user.exists(req.params.uid)) ||
+		(req.params.uid.indexOf('@') !== -1 && await activitypub.helpers.query(req.params.uid))
+	) {
+		return next();
 	}
 
-	next();
+	controllerHelpers.formatApiResponse(404, res, new Error('[[error:no-user]]'));
 });
 
 Assert.group = helpers.try(async (req, res, next) => {
