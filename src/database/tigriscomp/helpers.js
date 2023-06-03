@@ -33,6 +33,9 @@ helpers.fieldToString = function (field) {
 	// tigris doesn't allow '@' in field name, replace '@'s with '____'
 	field = field.replace(/@/g, '____');
 
+	// tigris doesn't allow '/' in field name, replace '/'s with '______'
+	field = field.replace(/\//g, '______');
+
 	// if there is a '.' in the field name it inserts subdocument in mongo, replace '.'s with '_____'
 	return field.replace(/\./g, '_____');
 };
@@ -45,6 +48,9 @@ helpers.stringToField = function (field) {
 	if (typeof field !== 'string') {
 		field = field.toString();
 	}
+
+	// if there is a '/' in the field name it inserts subdocument in mongo, replace '______'s with '/'
+	field = field.replace(/______/g, '/');
 
 	// if there is a '.' in the field name it inserts subdocument in mongo, replace '_____'s with '.'
 	field = field.replace(/_____/g, '.');

@@ -2,7 +2,7 @@
 
 module.exports = {
 	title: 'objects',
-	additionalProperties: false,
+	additionalProperties: true,
 	type: 'object',
 	properties: {
 		$k: {
@@ -14,6 +14,7 @@ module.exports = {
 		_key: {
 			type: 'string',
 			searchIndex: true,
+			index: true,
 		},
 		admin: {
 			type: 'integer',
