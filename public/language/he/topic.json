@@ -164,7 +164,7 @@
     "composer.schedule": "תיזמון",
     "composer.replying_to": "תגובה ל%1",
     "composer.new_topic": "נושא חדש",
-    "composer.editing": "עורך",
+    "composer.editing-in": "Editing post in %1",
     "composer.uploading": "מעלה...",
     "composer.thumb_url_label": "הדביקו את כתובת ה-URL לתמונה מוקטנת עבור הנושא",
     "composer.thumb_title": "הוסיפו תמונה מוקטנת לנושא זה",

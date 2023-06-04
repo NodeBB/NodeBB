@@ -164,7 +164,7 @@
     "composer.schedule": "Skedulo",
     "composer.replying_to": "Duke komentuar \"%1\"",
     "composer.new_topic": "Temë e re",
-    "composer.editing": "Duke edituar",
+    "composer.editing-in": "Editing post in %1",
     "composer.uploading": "duke u ngarkuar...",
     "composer.thumb_url_label": "Ngjit një URL të fotos së coverit të temës",
     "composer.thumb_title": "Shtoni një foto coveri në këtë temë",

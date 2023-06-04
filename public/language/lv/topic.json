@@ -164,7 +164,7 @@
     "composer.schedule": "Schedule",
     "composer.replying_to": "Atbild %1",
     "composer.new_topic": "Izveidot jaunu tematu",
-    "composer.editing": "Editing",
+    "composer.editing-in": "Editing post in %1",
     "composer.uploading": "augšupielādē...",
     "composer.thumb_url_label": "Ielīmēt temata sīktēla URL",
     "composer.thumb_title": "Pievienot tematam sīktēlu",

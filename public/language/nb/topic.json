@@ -164,7 +164,7 @@
     "composer.schedule": "Timeplan",
     "composer.replying_to": "Svarer i %1",
     "composer.new_topic": "Ny tråd",
-    "composer.editing": "Redigering",
+    "composer.editing-in": "Editing post in %1",
     "composer.uploading": "laster opp...",
     "composer.thumb_url_label": "Lim inn som tråd-minatyr URL",
     "composer.thumb_title": "Legg til minatyr til denne tråden",

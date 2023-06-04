@@ -164,7 +164,7 @@
     "composer.schedule": "Schedule",
     "composer.replying_to": "Odpovedať na %1",
     "composer.new_topic": "Nová téma",
-    "composer.editing": "Editing",
+    "composer.editing-in": "Editing post in %1",
     "composer.uploading": "nahrávanie...",
     "composer.thumb_url_label": "Prilep URL náhľadu témy",
     "composer.thumb_title": "Pridaj náhľad tejto Témy",

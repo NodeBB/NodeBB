@@ -164,7 +164,7 @@
     "composer.schedule": "Ժամանակացույց",
     "composer.replying_to": "Պատասխանում է %1-ին",
     "composer.new_topic": "Նոր թեմա",
-    "composer.editing": "Խմբագրում",
+    "composer.editing-in": "Editing post in %1",
     "composer.uploading": "վերբեռնում...",
     "composer.thumb_url_label": "Տեղադրեք թեմայի մանրապատկերի URL",
     "composer.thumb_title": "Ավելացրեք մանրապատկեր այս թեմային",

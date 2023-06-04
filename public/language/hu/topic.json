@@ -164,7 +164,7 @@
     "composer.schedule": "Időzítés",
     "composer.replying_to": "Válasz erre: %1",
     "composer.new_topic": "Új témakör",
-    "composer.editing": "Szerkesztés",
+    "composer.editing-in": "Editing post in %1",
     "composer.uploading": "feltöltés...",
     "composer.thumb_url_label": "Bélyegkép URL beszúrása",
     "composer.thumb_title": "Bélyegkép hozzáadása a témakörhöz",

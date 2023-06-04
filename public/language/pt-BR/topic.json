@@ -164,7 +164,7 @@
     "composer.schedule": "Agendar",
     "composer.replying_to": "Respondendo para %1",
     "composer.new_topic": "Novo Tópico",
-    "composer.editing": "Editando",
+    "composer.editing-in": "Editing post in %1",
     "composer.uploading": "enviando...",
     "composer.thumb_url_label": "Cole o endereço de um thumbnail para o tópico",
     "composer.thumb_title": "Adicionar um thumbnail para este tópico",

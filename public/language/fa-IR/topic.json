@@ -164,7 +164,7 @@
     "composer.schedule": "Schedule",
     "composer.replying_to": "پاسخ به %1",
     "composer.new_topic": "موضوع تازه",
-    "composer.editing": "ویرایش کردن",
+    "composer.editing-in": "Editing post in %1",
     "composer.uploading": "بارگذاری...",
     "composer.thumb_url_label": "چسباندن نشانی چهرک یک موضوع",
     "composer.thumb_title": "افزودن یک چهرک به این موضوع",
