@@ -84,7 +84,10 @@ define('forum/topic', [
 				require(['search'], function (search) {
 					mousetrap.bind(['command+f', 'ctrl+f'], function (e) {
 						e.preventDefault();
-						const form = $('[component="navbar"] [component="search/form"]');
+						let form = $('[component="navbar"] [component="search/form"]');
+						if (!form.length) { // harmony
+							form = $('[component="sidebar/right"] [component="search/form"]');
+						}
 						form.find('[component="search/fields"] input[name="query"]').val('in:topic-' + ajaxify.data.tid + ' ');
 						search.showAndFocusInput(form);
 					});
