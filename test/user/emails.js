@@ -130,9 +130,9 @@ describe('email confirmation (library methods)', () => {
 			await user.email.sendValidationEmail(uid, {
 				email,
 			});
-			await db.pexpire(`confirm:byUid:${uid}`, 1000);
+			const code = await db.get(`confirm:byUid:${uid}`);
+			await db.setObjectField(`confirm:${code}`, 'expires', Date.now() + 1000);
 			const ok = await user.email.canSendValidation(uid, email);
-
 			assert(ok);
 		});
 	});
