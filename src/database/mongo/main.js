@@ -79,7 +79,7 @@ module.exports = function (module) {
 
 	module.mget = async function (keys) {
 		if (!keys || !Array.isArray(keys)) {
-			return;
+			return [];
 		}
 
 		const data = await module.client.collection('objects').find(

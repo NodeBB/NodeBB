@@ -40,6 +40,12 @@ describe('Key methods', () => {
 		assert.deepStrictEqual(data, [null, 'testValue']);
 	});
 
+	it('should return empty array if keys is empty array or falsy', async () => {
+		assert.deepStrictEqual(await db.mget([]), []);
+		assert.deepStrictEqual(await db.mget(false), []);
+		assert.deepStrictEqual(await db.mget(null), []);
+	});
+
 	it('should return true if key exist', (done) => {
 		db.exists('testKey', function (err, exists) {
 			assert.ifError(err);
@@ -356,3 +362,4 @@ describe('Key methods', () => {
 		});
 	});
 });
+

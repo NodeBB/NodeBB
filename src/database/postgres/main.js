@@ -120,8 +120,8 @@ SELECT s."data" t
 	};
 
 	module.mget = async function (keys) {
-		if (!keys) {
-			return;
+		if (!keys || !Array.isArray(keys)) {
+			return [];
 		}
 
 		const res = await module.pool.query({
