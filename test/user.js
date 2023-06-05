@@ -912,6 +912,23 @@ describe('User', () => {
 			}
 		});
 
+		it('should properly change username and clean up old sorted sets', async () => {
+			const uid = await User.create({ username: 'DennyO', password: '123456' });
+			let usernames = await db.getSortedSetRevRangeWithScores('username:uid', 0, -1);
+			usernames = usernames.filter(d => d.score === uid);
+			assert.deepStrictEqual(usernames, [{ value: 'DennyO', score: uid }]);
+
+			await apiUser.update({ uid: uid }, { uid: uid, username: 'DennyO\'s', password: '123456' });
+			usernames = await db.getSortedSetRevRangeWithScores('username:uid', 0, -1);
+			usernames = usernames.filter(d => d.score === uid);
+			assert.deepStrictEqual(usernames, [{ value: 'DennyO\'s', score: uid }]);
+
+			await apiUser.update({ uid: uid }, { uid: uid, username: 'Denny O', password: '123456' });
+			usernames = await db.getSortedSetRevRangeWithScores('username:uid', 0, -1);
+			usernames = usernames.filter(d => d.score === uid);
+			assert.deepStrictEqual(usernames, [{ value: 'Denny O', score: uid }]);
+		});
+
 		it('should send validation email', async () => {
 			const uid = await User.create({ username: 'pooremailupdate', email: 'poor@update.me', password: '123456' });
 			await User.email.expireValidation(uid);
