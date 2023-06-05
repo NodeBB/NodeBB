@@ -62,15 +62,15 @@ UserEmail.getEmailForValidation = async (uid) => {
 UserEmail.isValidationPending = async (uid, email) => {
 	const code = await db.get(`confirm:byUid:${uid}`);
 	const confirmObj = await db.getObject(`confirm:${code}`);
-	return confirmObj && (
+	return !!(confirmObj && (
 		(!email || email === confirmObj.email) && Date.now() < parseInt(confirmObj.expires, 10)
-	);
+	));
 };
 
 UserEmail.getValidationExpiry = async (uid) => {
 	const code = await db.get(`confirm:byUid:${uid}`);
 	const confirmObj = await db.getObject(`confirm:${code}`);
-	return confirmObj ? confirmObj.expires : null;
+	return confirmObj ? Math.max(0, confirmObj.expires - Date.now()) : null;
 };
 
 UserEmail.expireValidation = async (uid) => {
