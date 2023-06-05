@@ -21,12 +21,6 @@ UserObject:
       type: number
       description: Whether the user has confirmed their email address or not
       example: 1
-    'email:expired':
-      type: boolean
-      description: True if confirmation email expired
-    'email:pending':
-      type: boolean
-      description: True if confirmation email is still pending
     joindate:
       type: number
       description: A UNIX timestamp representing the moment the user's account was created
