@@ -198,7 +198,7 @@ UserEmail.confirmByCode = async function (code, sessionId) {
 	await user.setUserField(confirmObj.uid, 'email', confirmObj.email);
 	await Promise.all([
 		UserEmail.confirmByUid(confirmObj.uid),
-		db.deleteAll(`confirm:${code}`),
+		db.delete(`confirm:${code}`),
 		events.log({ type: 'email-change', oldEmail, newEmail: confirmObj.email }),
 	]);
 };
