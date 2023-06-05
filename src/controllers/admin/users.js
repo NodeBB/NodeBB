@@ -164,10 +164,18 @@ async function loadUserInfo(callerUid, uids) {
 	async function getIPs() {
 		return await Promise.all(uids.map(uid => db.getSortedSetRevRange(`uid:${uid}:ip`, 0, -1)));
 	}
-	const [isAdmin, userData, lastonline, ips] = await Promise.all([
+	async function getConfirmObjs() {
+		const keys = uids.map(uid => `confirm:byUid:${uid}`);
+		const codes = await db.mget(keys);
+		const confirmObjs = await db.getObjects(codes.map(code => `confirm:${code}`));
+		return uids.map((uid, index) => confirmObjs[index]);
+	}
+
+	const [isAdmin, userData, lastonline, confirmObjs, ips] = await Promise.all([
 		user.isAdministrator(uids),
 		user.getUsersWithFields(uids, userFields, callerUid),
 		db.sortedSetScores('users:online', uids),
+		getConfirmObjs(),
 		getIPs(),
 	]);
 	userData.forEach((user, index) => {
@@ -179,6 +187,13 @@ async function loadUserInfo(callerUid, uids) {
 			user.lastonlineISO = utils.toISOString(timestamp);
 			user.ips = ips[index];
 			user.ip = ips[index] && ips[index][0] ? ips[index][0] : null;
+			if (confirmObjs[index]) {
+				const confirmObj = confirmObjs[index];
+				user['email:expired'] = !confirmObj.expires || Date.now() >= confirmObj.expires;
+				user['email:pending'] = confirmObj.expires && Date.now() < confirmObj.expires;
+			} else if (!user['email:confirmed']) {
+				user['email:expired'] = true;
+			}
 		}
 	});
 	return userData;

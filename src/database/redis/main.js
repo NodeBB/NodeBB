@@ -60,6 +60,10 @@ module.exports = function (module) {
 		return await module.client.get(key);
 	};
 
+	module.mget = async function (keys) {
+		return await module.client.mget(keys);
+	};
+
 	module.set = async function (key, value) {
 		await module.client.set(key, value);
 	};

@@ -109,12 +109,15 @@
 								<a href="{config.relative_path}/user/{users.userslug}"> {users.username}</a>
 							</td>
 							<td>
-								{{{ if ../email }}}
-								<i class="validated fa fa-check text-success{{{ if !users.email:confirmed }}} hidden{{{ end }}}" title="validated"></i>
-								<i class="notvalidated fa fa-check text-muted{{{ if users.email:confirmed }}} hidden{{{ end }}}" title="not validated"></i>
-								{../email}
+								{{{ if ./email }}}
+								<i class="validated fa fa-fw fa-check text-success{{{ if !users.email:confirmed }}} hidden{{{ end }}}" title="[[admin/manage/users:users.validated]]" data-bs-toggle="tooltip"></i>
+
+								<i class="pending fa fa-fw fa-clock-o text-warning{{{ if !users.email:pending }}} hidden{{{ end }}}" title="[[admin/manage/users:users.validation-pending]]" data-bs-toggle="tooltip"></i>
+
+								<i class="notvalidated fa fa-fw fa-times text-danger{{{ if !users.email:expired }}} hidden{{{ end }}}" title="[[admin/manage/users:users.validation-expired]]" data-bs-toggle="tooltip"></i>
+								{./email}
 								{{{ else }}}
-								<i class="notvalidated fa fa-check text-muted" title="not validated"></i>
+								<i class="noemail fa fa-fw fa-ban text-muted""></i>
 								<em class="text-muted">[[admin/manage/users:users.no-email]]</em>
 								{{{ end }}}
 							</td>

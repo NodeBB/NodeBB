@@ -149,6 +149,7 @@ module.exports = function (User) {
 			groups.leaveAllGroups(uid),
 			flags.resolveFlag('user', uid, uid),
 			User.reset.cleanByUid(uid),
+			User.email.expireValidation(uid),
 		]);
 		await db.deleteAll([`followers:${uid}`, `following:${uid}`, `user:${uid}`]);
 		delete deletesInProgress[uid];

@@ -65,6 +65,10 @@ User.validateEmail = async function (socket, uids) {
 	}
 
 	for (const uid of uids) {
+		const email = await user.email.getEmailForValidation(uid);
+		if (email) {
+			await user.setUserField(uid, 'email', email);
+		}
 		await user.email.confirmByUid(uid);
 	}
 };
@@ -77,7 +81,11 @@ User.sendValidationEmail = async function (socket, uids) {
 	const failed = [];
 	let errorLogged = false;
 	await async.eachLimit(uids, 50, async (uid) => {
-		await user.email.sendValidationEmail(uid, { force: true }).catch((err) => {
+		const email = await user.email.getEmailForValidation(uid);
+		await user.email.sendValidationEmail(uid, {
+			force: true,
+			email: email,
+		}).catch((err) => {
 			if (!errorLogged) {
 				winston.error(`[user.create] Validation email failed to send\n[emailer.send] ${err.stack}`);
 				errorLogged = true;
