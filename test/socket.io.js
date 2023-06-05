@@ -451,30 +451,30 @@ describe('socket.io', () => {
 		});
 	});
 
-	// it('should toggle plugin active', (done) => {
-	// 	socketAdmin.plugins.toggleActive({ uid: adminUid }, 'nodebb-plugin-location-to-map', (err, data) => {
-	// 		assert.ifError(err);
-	// 		assert.deepEqual(data, { id: 'nodebb-plugin-location-to-map', active: true });
-	// 		done();
-	// 	});
-	// });
+	it('should toggle plugin active', (done) => {
+		socketAdmin.plugins.toggleActive({ uid: adminUid }, 'nodebb-plugin-location-to-map', (err, data) => {
+			assert.ifError(err);
+			assert.deepEqual(data, { id: 'nodebb-plugin-location-to-map', active: true });
+			done();
+		});
+	});
 
-	// it('should toggle plugin install', function (done) {
-	// 	this.timeout(0);
-	// 	const oldValue = process.env.NODE_ENV;
-	// 	process.env.NODE_ENV = 'development';
-	// 	socketAdmin.plugins.toggleInstall({
-	// 		uid: adminUid,
-	// 	}, {
-	// 		id: 'nodebb-plugin-location-to-map',
-	// 		version: 'latest',
-	// 	}, (err, data) => {
-	// 		assert.ifError(err);
-	// 		assert.equal(data.name, 'nodebb-plugin-location-to-map');
-	// 		process.env.NODE_ENV = oldValue;
-	// 		done();
-	// 	});
-	// });
+	it('should toggle plugin install', function (done) {
+		this.timeout(0);
+		const oldValue = process.env.NODE_ENV;
+		process.env.NODE_ENV = 'development';
+		socketAdmin.plugins.toggleInstall({
+			uid: adminUid,
+		}, {
+			id: 'nodebb-plugin-location-to-map',
+			version: 'latest',
+		}, (err, data) => {
+			assert.ifError(err);
+			assert.equal(data.name, 'nodebb-plugin-location-to-map');
+			process.env.NODE_ENV = oldValue;
+			done();
+		});
+	});
 
 	it('should get list of active plugins', (done) => {
 		socketAdmin.plugins.getActive({ uid: adminUid }, {}, (err, data) => {
@@ -501,21 +501,21 @@ describe('socket.io', () => {
 		});
 	});
 
-	// it('should upgrade plugin', function (done) {
-	// 	this.timeout(0);
-	// 	const oldValue = process.env.NODE_ENV;
-	// 	process.env.NODE_ENV = 'development';
-	// 	socketAdmin.plugins.upgrade({
-	// 		uid: adminUid,
-	// 	}, {
-	// 		id: 'nodebb-plugin-location-to-map',
-	// 		version: 'latest',
-	// 	}, (err) => {
-	// 		assert.ifError(err);
-	// 		process.env.NODE_ENV = oldValue;
-	// 		done();
-	// 	});
-	// });
+	it('should upgrade plugin', function (done) {
+		this.timeout(0);
+		const oldValue = process.env.NODE_ENV;
+		process.env.NODE_ENV = 'development';
+		socketAdmin.plugins.upgrade({
+			uid: adminUid,
+		}, {
+			id: 'nodebb-plugin-location-to-map',
+			version: 'latest',
+		}, (err) => {
+			assert.ifError(err);
+			process.env.NODE_ENV = oldValue;
+			done();
+		});
+	});
 
 	it('should error with invalid data', (done) => {
 		socketAdmin.widgets.set({ uid: adminUid }, null, (err) => {
