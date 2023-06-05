@@ -379,7 +379,6 @@ module.exports = function (Topics) {
 		content = content.split('\n').filter(line => !line.trim().startsWith('>')).join('\n');
 		// Scan post content for topic links
 		const matches = [...content.matchAll(backlinkRegex)];
-		console.log('match', matches);
 		if (!matches) {
 			return 0;
 		}
