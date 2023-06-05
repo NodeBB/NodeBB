@@ -61,7 +61,7 @@ module.exports = function (module) {
 	};
 
 	module.mget = async function (keys) {
-		if (!keys.length) {
+		if (!keys || !Array.isArray(keys) || !keys.length) {
 			return [];
 		}
 		return await module.client.mget(keys);

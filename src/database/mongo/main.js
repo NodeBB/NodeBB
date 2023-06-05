@@ -78,7 +78,7 @@ module.exports = function (module) {
 	};
 
 	module.mget = async function (keys) {
-		if (!keys || !Array.isArray(keys)) {
+		if (!keys || !Array.isArray(keys) || !keys.length) {
 			return [];
 		}
 
