@@ -67,25 +67,8 @@
 	<div class="col-lg-3">
 		{{{ if showSystemControls }}}
 		<div class="card mb-3">
-			<div class="card-header">[[admin/dashboard:control-panel]]</div>
 			<div class="card-body text-center">
-				<div class="d-grid gap-2 mb-2">
-					<button component="restart" class="btn btn-block btn-warning btn-sm"{{{ if !canRestart }}} disabled{{{ end }}}>[[admin/dashboard:restart]]</button>
-					<button component="rebuild-and-restart" class="btn btn-block btn-danger btn-sm"{{{ if !canRestart }}} disabled{{{ end }}}>[[admin/dashboard:rebuild-and-restart]]</button>
-				</div>
-				{{{ if lastrestart }}}
-				<p class="text-sm">
-					[[admin/dashboard:last-restarted-by]]<br />
-					<a href="{config.relative_path}/uid/{lastrestart.uid}"><span class="badge bg-info">{lastrestart.user.username}</span></a> <span class="timeago" title="{lastrestart.timestampISO}"></span>
-				</p>
-				{{{ end }}}
-				<p class="{{{ if canRestart }}}form-text{{{ else }}}alert alert-warning{{{ end }}}">
-					{{{ if canRestart }}}
-					[[admin/dashboard:restart-warning]]
-					{{{ else }}}
-					[[admin/dashboard:restart-disabled]]
-					{{{ end }}}
-				</p>
+
 				<p>
 					<a href="{config.relative_path}/admin/settings/advanced" class="btn btn-info btn-block btn-sm" data-bs-placement="bottom" data-bs-toggle="tooltip" title="[[admin/dashboard:maintenance-mode-title]]">[[admin/dashboard:maintenance-mode]]</a>
 				</p>
@@ -96,15 +79,9 @@
 		</div>
 		{{{ end }}}
 
-		<div class="card mb-3">
-			<div class="card-header">[[admin/dashboard:active-users]]</div>
-			<div class="card-body">
-				<div id="active-users" class="stats"></div>
-			</div>
-		</div>
+
 
 		<div class="card mb-3">
-			<div class="card-header">[[admin/dashboard:updates]]</div>
 			<div class="card-body">
 				<div class="text-sm alert {{{ if lookupFailed }}}alert-danger{{{ else }}}{{{ if upgradeAvailable }}}alert-warning{{{ else }}}{{{ if currentPrerelease }}}alert-info{{{ else }}}alert-success{{{ end }}}{{{ end }}}{{{ end }}} version-check">
 					<p class="">[[admin/dashboard:running-version, {version}]]</p>
@@ -131,14 +108,10 @@
 				<p class="text-sm">
 					[[admin/dashboard:keep-updated]]
 				</p>
-			</div>
-		</div>
-
-		<div class="card">
-			<div class="card-header">[[admin/dashboard:notices]]</div>
-			<div class="card-body">
-			{{{ each notices}}}
-				<div>
+				<hr/>
+				<h6>[[admin/dashboard:notices]]</h6>
+				{{{ each notices}}}
+				<div class="text-sm">
 					{{{ if ./done }}}
 					<i class="fa fa-fw fa-check text-success"></i> {./doneText}
 					{{{ else }}}
@@ -148,6 +121,13 @@
 					{{{ end }}}
 				</div>
 			{{{ end }}}
+			</div>
+		</div>
+
+		<div class="card mb-3">
+			<div class="card-header">[[admin/dashboard:active-users]]</div>
+			<div class="card-body">
+				<div id="active-users" class="stats"></div>
 			</div>
 		</div>
 	</div>
