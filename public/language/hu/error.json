@@ -42,6 +42,7 @@
     "user-doesnt-have-email": "User \"%1\" does not have an email set.",
     "email-confirm-failed": "Nem tudtuk ellenőrizni az e-mail címedet, kérlek próbálkozz később.",
     "confirm-email-already-sent": "A megerősítéshez szükséges email már el lett küldve, kérlek várj %1 percet az újraküldéshez.",
+    "confirm-email-expired": "Confirmation email expired",
     "sendmail-not-found": "A levél küldés végrehajtása nem található, kérlek bizonyosodj meg róla, hogy telepítve van és végrehajtható a felhasználó által NodeBB-t futtatva.",
     "digest-not-enabled": "Ennek a felhasználónak nincs engedélyezve az összefoglaló vagy a rendszer alapértelmezett beállítása nem küld összefoglalókat.",
     "username-too-short": "Túl rövid felhasználónév",

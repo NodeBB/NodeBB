@@ -42,6 +42,7 @@
     "user-doesnt-have-email": "User \"%1\" does not have an email set.",
     "email-confirm-failed": "我們無法確認您的電子信箱，請重試",
     "confirm-email-already-sent": "確認郵件已發出，如需重新發送請等待 %1 分鐘後再試。",
+    "confirm-email-expired": "Confirmation email expired",
     "sendmail-not-found": "無法找到 sendmail 可執行檔，請確保 sendmail 已經安裝並可被運行 NodeBB 的系統帳戶執行",
     "digest-not-enabled": "此使用者未開啟摘要通知，或系統設定預設不發送摘要",
     "username-too-short": "使用者名太短",

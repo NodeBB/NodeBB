@@ -42,6 +42,7 @@
     "user-doesnt-have-email": "User \"%1\" does not have an email set.",
     "email-confirm-failed": "Momentálne nemôžeme overiť Váš e-mail, prosím zopakujte to neskôr.",
     "confirm-email-already-sent": "Overovací e-mail už bol odoslaný. Prosím počkajte %1 minút(y) k odoslaniu ďalšieho.",
+    "confirm-email-expired": "Confirmation email expired",
     "sendmail-not-found": "Odoslaný spúšťač nebol nájdený, prosím uistite sa že je nainštalovaný a spustiteľný užívateľom používajúcim NodeBB.",
     "digest-not-enabled": "This user does not have digests enabled, or the system default is not configured to send digests",
     "username-too-short": "Užívateľské meno je príliš krátke",

@@ -42,6 +42,7 @@
     "user-doesnt-have-email": "\"%1\" kullanıcısı bir e-posta belirlememiş.",
     "email-confirm-failed": "E-posta adresinizi doğrulayamıyoruz. Lütfen daha sonra tekrar deneyin.",
     "confirm-email-already-sent": "E-posta onayı zaten gönderilmiş, yeni bir onay göndermek için lütfen %1 dakika bekleyin.",
+    "confirm-email-expired": "Confirmation email expired",
     "sendmail-not-found": "Sendmail yürütülemedi, lüften indirildiğinden ve NodeBB kullanıcısı tarafından uygulanabilir olduğundan emin olun.",
     "digest-not-enabled": "Bu kullanıcı özet e-postalarını etkinleştirmemiş veya sistem varsayılanı özet e-postası göndermek için ayarlanmamış",
     "username-too-short": "Kullanıcı ismi çok kısa",

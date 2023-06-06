@@ -42,6 +42,7 @@
     "user-doesnt-have-email": "Brukeren «%1» har ikke lagt til e-postadresse. ",
     "email-confirm-failed": "Vi kunne ikke bekrefte e-posten din, vennligst prøv igjen senere.",
     "confirm-email-already-sent": "E-post for bekreftelse er allerede sendt, vennligst vent %1 minutt(er) for å sende en til.",
+    "confirm-email-expired": "Confirmation email expired",
     "sendmail-not-found": "Funksjonaliteten \"sendmail\" ble ikke funnet, vennligst sjekk at den er installert og kjørbar av brukeren som kjører NodeBB.",
     "digest-not-enabled": "Denne brukeren har ikke oppsummeringer aktivert, eller systemstandarden er ikke konfigurert til å sende ut oppsummeringer",
     "username-too-short": "Brukernavnet er for kort",

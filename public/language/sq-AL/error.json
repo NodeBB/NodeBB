@@ -42,6 +42,7 @@
     "user-doesnt-have-email": "Përdoruesi \"%1\" nuk ka një email të regjistruar.",
     "email-confirm-failed": "Nuk mund ta konfirmonim emailin tuaj, ju lutemi provoni sërish më vonë.",
     "confirm-email-already-sent": "Email konfirmimi është dërguar tashmë, ju lutemi prisni %1 minut(a) për të dërguar një tjetër.",
+    "confirm-email-expired": "Confirmation email expired",
     "sendmail-not-found": "Ekzekutuesi sendmail nuk mund të gjendej, ju lutemi sigurohuni që ai të jetë i instaluar dhe i ekzekutueshëm nga përdoruesi që përdor NodeBB.",
     "digest-not-enabled": "Ky përdorues nuk i ka të aktivizuara përmbledhjet ose sistemi nuk është konfiguruar për të dërguar përmbledhje",
     "username-too-short": "Emri i përdoruesit është shumë i shkurtër",

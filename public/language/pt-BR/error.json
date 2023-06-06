@@ -42,6 +42,7 @@
     "user-doesnt-have-email": "User \"%1\" does not have an email set.",
     "email-confirm-failed": "Nós não pudemos confirmar seu email, por gentileza tente novamente mais tarde.",
     "confirm-email-already-sent": "O email de confirmação já foi enviado, por favor aguarde %1 minuto(s) para enviar outro.",
+    "confirm-email-expired": "Confirmation email expired",
     "sendmail-not-found": "O executável do sendmail não pôde ser encontrado. Por favor, certifique-se de que ele está instalado e que está autorizado a ser executado pelo usuário que roda o NodeBB.",
     "digest-not-enabled": "Este usuário não tem resumos habilitados ou o padrão do sistema não está configurado para enviar resumos",
     "username-too-short": "Nome de usuário muito curto",
