@@ -127,7 +127,7 @@
 		<div class="card mb-3">
 			<div class="card-header">[[admin/dashboard:active-users]]</div>
 			<div class="card-body">
-				<div id="active-users" class="stats"></div>
+				<div id="active-users" class="stats row row-cols-2"></div>
 			</div>
 		</div>
 	</div>
