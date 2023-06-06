@@ -162,7 +162,7 @@ usersController.search = async function (req, res) {
 
 async function loadUserInfo(callerUid, uids) {
 	async function getIPs() {
-		return await Promise.all(uids.map(uid => db.getSortedSetRevRange(`uid:${uid}:ip`, 0, -1)));
+		return await Promise.all(uids.map(uid => db.getSortedSetRevRange(`uid:${uid}:ip`, 0, 4)));
 	}
 	async function getConfirmObjs() {
 		const keys = uids.map(uid => `confirm:byUid:${uid}`);

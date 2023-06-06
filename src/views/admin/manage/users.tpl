@@ -108,7 +108,7 @@
 								<i class="administrator fa fa-shield text-success{{{ if !users.administrator }}} hidden{{{ end }}}"></i>
 								<a href="{config.relative_path}/user/{users.userslug}"> {users.username}</a>
 							</td>
-							<td>
+							<td class="text-nowrap">
 								{{{ if ./email }}}
 								<i class="validated fa fa-fw fa-check text-success{{{ if !users.email:confirmed }}} hidden{{{ end }}}" title="[[admin/manage/users:users.validated]]" data-bs-toggle="tooltip"></i>
 
@@ -117,11 +117,25 @@
 								<i class="notvalidated fa fa-fw fa-times text-danger{{{ if !users.email:expired }}} hidden{{{ end }}}" title="[[admin/manage/users:users.validation-expired]]" data-bs-toggle="tooltip"></i>
 								{./email}
 								{{{ else }}}
-								<i class="noemail fa fa-fw fa-ban text-muted""></i>
+								<i class="noemail fa fa-fw fa-nbb-none text-muted""></i>
 								<em class="text-muted">[[admin/manage/users:users.no-email]]</em>
 								{{{ end }}}
 							</td>
-							<td>{users.ip}</td>
+							<td>
+								{{{ if ./ips.length }}}
+								<div class="dropdown">
+									<button class="btn btn-light btn-sm" data-bs-toggle="dropdown"><i class="fa fa-fw fa-list text-muted"></i></button>
+									<ul class="dropdown-menu p-1">
+										{{{ each ./ips }}}
+										<li class="d-flex gap-1 {{{ if !@last }}}mb-1{{{ end }}}">
+											<a class="dropdown-item rounded-1">{@value}</a>
+											<button data-ip="{@value}" onclick="navigator.clipboard.writeText(this.getAttribute('data-ip'))" class="btn btn-light btn-sm"><i class="fa fa-copy"></i></button>
+										</li>
+										{{{ end }}}
+									</ul>
+								</div>
+								{{{ end }}}
+							</td>
 							<td class="text-end">{users.postcount}</td>
 							<td class="text-end">{users.reputation}</td>
 							<td class="text-end">{{{ if users.flags }}}{users.flags}{{{ else }}}0{{{ end }}}</td>

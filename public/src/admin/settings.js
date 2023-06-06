@@ -143,7 +143,7 @@ define('admin/settings', [
 			saveBtnEl.classList.toggle('saved', true);
 			setTimeout(() => {
 				saveBtnEl.classList.toggle('saved', false);
-			}, 2500);
+			}, 1500);
 		}
 	};
 

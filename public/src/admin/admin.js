@@ -41,7 +41,7 @@ app.onDomReady();
 		}, 3600000);
 	}
 
-	require(['hooks'], (hooks) => {
+	require(['hooks', 'admin/settings'], (hooks, Settings) => {
 		hooks.on('action:ajaxify.end', (data) => {
 			updatePageTitle(data.url);
 			setupRestartLinks();
@@ -54,10 +54,10 @@ app.onDomReady();
 			});
 
 			if ($('.settings').length) {
-				require(['admin/settings'], function (Settings) {
-					Settings.prepare();
-					Settings.populateTOC();
-				});
+				Settings.prepare();
+			}
+			if ($('[component="settings/toc"]').length) {
+				Settings.populateTOC();
 			}
 		});
 		hooks.on('action:ajaxify.start', function () {
