@@ -1,10 +1,14 @@
 'use strict';
 
 const nconf = require('nconf');
+const fs = require('fs').promises;
+const path = require('path');
 const url = require('url');
+const dns = require('dns');
 const winston = require('winston');
 const sanitize = require('sanitize-html');
 const _ = require('lodash');
+const { getLinkPreview } = require('link-preview-js');
 
 const meta = require('../meta');
 const plugins = require('../plugins');
@@ -129,13 +133,74 @@ module.exports = function (Posts) {
 		sanitizeConfig = await plugins.hooks.fire('filter:sanitize.config', sanitizeConfig);
 	};
 
+	Posts.processEmbeds = async (content) => {
+		const { app } = require('../webserver');
+		const anchorRegex = /<a\s+(?:[^>]*?\s+)?href=["']([^"']*)["'][^>]*>(.*?)<\/a>/g;
+		const matches = [];
+		let match;
+
+		// eslint-disable-next-line no-cond-assign
+		while ((match = anchorRegex.exec(content)) !== null) {
+			matches.push(match);
+		}
+
+		const previews = await Promise.all(matches.map(async (match) => {
+			const anchor = match[1];
+			try {
+				const preview = await getLinkPreview(anchor, {
+					resolveDNSHost: async url => new Promise((resolve, reject) => {
+						const { hostname } = new URL(url);
+						dns.lookup(hostname, (err, address) => {
+							if (err) {
+								reject(err);
+								return;
+							}
+
+							resolve(address); // if address resolves to localhost or '127.0.0.1' library will throw an error
+						});
+					}),
+				});
+
+				if (preview.contentType === 'text/html') {
+					console.log(preview);
+					return await app.renderAsync('partials/posts/embed', preview);
+				}
+
+				return false;
+			} catch (e) {
+				return false;
+			}
+		}));
+		console.log(previews);
+
+		// Replace match with embed
+		previews.forEach((preview, idx) => {
+			if (preview) {
+				const match = matches[idx];
+				const { index } = match;
+				const { length } = match[0];
+
+				content = `${content.substring(0, index)}${preview}${content.substring(index + length)}`;
+			}
+		});
+
+		return content;
+	};
+
 	Posts.registerHooks = () => {
 		plugins.hooks.register('core', {
 			hook: 'filter:parse.post',
-			method: async (data) => {
-				data.postData.content = Posts.sanitize(data.postData.content);
-				return data;
-			},
+			method: [
+				async (data) => {
+					data.postData.content = Posts.sanitize(data.postData.content);
+					return data;
+				},
+				async (data) => {
+					console.log(data);
+					data.postData.content = await Posts.processEmbeds(data.postData.content);
+					return data;
+				},
+			],
 		});
 
 		plugins.hooks.register('core', {
