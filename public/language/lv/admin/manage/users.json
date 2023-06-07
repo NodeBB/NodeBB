@@ -51,6 +51,7 @@
 	"users.email": "e-pasta adrese",
 	"users.no-email": "(no email)",
 	"users.validated": "Validated",
+	"users.not-validated": "Not Validated",
 	"users.validation-pending": "Validation Pending",
 	"users.validation-expired": "Validation Expired",
 	"users.ip": "IP",
