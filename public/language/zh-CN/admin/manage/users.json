@@ -51,6 +51,7 @@
 	"users.email": "电子邮件",
 	"users.no-email": "（没有邮箱）",
 	"users.validated": "Validated",
+	"users.not-validated": "Not Validated",
 	"users.validation-pending": "Validation Pending",
 	"users.validation-expired": "Validation Expired",
 	"users.ip": "IP",
