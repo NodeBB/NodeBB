@@ -202,5 +202,5 @@
     "emailUpdate.required": "<strong>Trường này là bắt buộc</strong>.",
     "emailUpdate.change-instructions": "Một email xác nhận sẽ được gửi đến địa chỉ email đã nhập với một liên kết duy nhất. Việc truy cập vào liên kết đó sẽ xác nhận quyền sở hữu của bạn đối với địa chỉ email và nó sẽ có hiệu lực trên tài khoản của bạn. Bất cứ lúc nào, bạn có thể cập nhật email của mình trong hồ sơ từ trong trang tài khoản của bạn.",
     "emailUpdate.password-challenge": "Nhập mật khẩu của bạn để xác minh quyền sở hữu tài khoản.",
-    "emailUpdate.pending": "Your email address has not yet been confirmed, but an email has been sent out requesting confirmation. If you wish to invalidate that request and send a new confirmation request, please fill in the form below."
+    "emailUpdate.pending": "Địa chỉ email của bạn chưa được xác nhận, nhưng một email đã được gửi đi yêu cầu xác nhận. Nếu bạn muốn vô hiệu hóa yêu cầu đó và gửi yêu cầu xác nhận mới, vui lòng điền vào mẫu dưới đây."
 }

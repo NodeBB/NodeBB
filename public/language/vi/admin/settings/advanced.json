@@ -21,7 +21,7 @@
 	"headers.coop": "Cross-Origin-Opener-Policy",
 	"headers.corp": "Cross-Origin-Resource-Policy",
 	"headers.permissions-policy": "Quyền-Chính sách",
-	"headers.permissions-policy-help": "Allows setting permissions policy header, for example \"geolocation=*, camera=()\", see <a href=\"https://github.com/w3c/webappsec-permissions-policy/blob/main/permissions-policy-explainer.md\">this</a> for more info.",
+	"headers.permissions-policy-help": "Cho phép đặt tiêu đề chính sách quyền, ví dụ \"geolocation=*, camera=()\", xem<a href=\"https://github.com/w3c/webappsec-permissions-policy/blob/main/permissions-policy-explainer.md\">đây</a> để biết thêm thông tin.",
 	"hsts": "Bảo Vệ Truyền Tải Nghiêm Ngặt",
 	"hsts.enabled": "Đã bật HSTS (đề nghị)",
 	"hsts.maxAge": "HSTS Tuổi Tối Đa",

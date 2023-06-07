@@ -51,7 +51,7 @@
 	"users.email": "е-поща",
 	"users.no-email": "(няма е-поща)",
 	"users.validated": "Потвърдена",
-	"users.not-validated": "Not Validated",
+	"users.not-validated": "Непотвърдена",
 	"users.validation-pending": "Очаква потвърждение",
 	"users.validation-expired": "Изтекла давност на потвърждението",
 	"users.ip": "IP адрес",
