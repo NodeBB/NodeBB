@@ -100,7 +100,7 @@
 					</thead>
 					<tbody>
 						{{{ each users }}}
-						<tr class="user-row">
+						<tr class="user-row align-middle">
 							<th><input component="user/select/single" data-uid="{users.uid}" type="checkbox"/></th>
 							<td class="text-end">{users.uid}</td>
 							<td>
@@ -136,8 +136,8 @@
 								</div>
 								{{{ end }}}
 							</td>
-							<td class="text-end">{users.postcount}</td>
-							<td class="text-end">{users.reputation}</td>
+							<td class="text-end formatted-number">{users.postcount}</td>
+							<td class="text-end formatted-number">{users.reputation}</td>
 							<td class="text-end">{{{ if users.flags }}}{users.flags}{{{ else }}}0{{{ end }}}</td>
 							<td><span class="timeago" title="{users.joindateISO}"></span></td>
 							<td><span class="timeago" title="{users.lastonlineISO}"></span></td>
