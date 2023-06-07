@@ -31,6 +31,7 @@
         "@adactive/bootstrap-tagsinput": "0.8.2",
         "@isaacs/ttlcache": "1.4.0",
         "@popperjs/core": "2.11.7",
+        "@tigrisdata/core": "1.2.4",
         "ace-builds": "1.19.0",
         "archiver": "5.3.1",
         "async": "3.2.4",

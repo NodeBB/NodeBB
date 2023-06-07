@@ -163,7 +163,7 @@ async function setupConfig() {
 		const redisQuestions = require('./database/redis').questions;
 		const mongoQuestions = require('./database/mongo').questions;
 		const postgresQuestions = require('./database/postgres').questions;
-		// todo const tigrisQuestions = require('./database/tigris').questions;
+		const tigrisQuestions = require('./database/tigris').questions;
 		const tigriscompQuestions = require('./database/tigriscomp').questions;
 		const allQuestions = [
 			...questions.main,
@@ -171,7 +171,7 @@ async function setupConfig() {
 			...redisQuestions,
 			...mongoQuestions,
 			...postgresQuestions,
-			// ...tigrisQuestions,
+			...tigrisQuestions,
 			...tigriscompQuestions,
 		];
 
@@ -205,8 +205,8 @@ async function completeConfigSetup(config) {
 	const db = require('./database');
 	await db.init();
 	if (db.hasOwnProperty('createIndices')) {
-		await db.createIndices();
 		await db.createSchema();
+		await db.createIndices();
 	}
 
 	// Sanity-check/fix url/port

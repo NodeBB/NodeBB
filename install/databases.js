@@ -7,7 +7,7 @@ const questions = {
 	redis: require('../src/database/redis').questions,
 	mongo: require('../src/database/mongo').questions,
 	postgres: require('../src/database/postgres').questions,
-	// todo: tigris: require('../src/database/tigris').questions,
+	tigris: require('../src/database/tigris').questions,
 	tigriscomp: require('../src/database/tigriscomp').questions,
 };
 
@@ -37,6 +37,11 @@ async function getDatabaseConfig(config) {
 			return config;
 		}
 		return await prompt.get(questions.postgres);
+	} else if (config.database === 'tigris') {
+		if ((config['tigris:host'] && config['tigris:port'])) {
+			return config;
+		}
+		return await prompt.get(questions.tigris);
 	} else if (config.database === 'tigriscomp') {
 		if ((config['tigriscomp:host'] && config['tigriscomp:port']) || config['tigriscomp:uri']) {
 			return config;
@@ -81,6 +86,15 @@ function saveDatabaseConfig(config, databaseConfig) {
 			database: databaseConfig['postgres:database'],
 			ssl: databaseConfig['postgres:ssl'],
 		};
+	} else if (config.database === 'tigris') {
+		config.tigris = {
+			host: databaseConfig['tigris:host'],
+			port: databaseConfig['tigris:port'],
+			clientid: databaseConfig['tigris:clientid'],
+			clientsecret: databaseConfig['tigris:clientsecret'],
+			database: databaseConfig['tigris:database'],
+			uri: databaseConfig['tigris:uri'],
+		};
 	} else if (config.database === 'tigriscomp') {
 		config.tigriscomp = {
 			host: databaseConfig['tigriscomp:host'],
@@ -94,7 +108,8 @@ function saveDatabaseConfig(config, databaseConfig) {
 		throw new Error(`unknown database : ${config.database}`);
 	}
 
-	const allQuestions = questions.redis.concat(questions.mongo).concat(questions.postgres).concat(questions.tigriscomp);
+	const allQuestions = questions.redis.concat(questions.mongo).concat(questions.postgres)
+		.concat(questions.tigriscomp).concat(questions.tigris);
 	for (let x = 0; x < allQuestions.length; x += 1) {
 		delete config[allQuestions[x].name];
 	}
