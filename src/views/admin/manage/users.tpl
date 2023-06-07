@@ -38,9 +38,6 @@
 						</li>
 					</ul>
 				</div>
-			</div>
-
-			<div class="">
 				<div class="btn-group">
 					<button class="btn btn-primary btn-sm dropdown-toggle" id="action-dropdown" data-bs-toggle="dropdown" type="button" disabled="disabled">[[admin/manage/users:edit]] <span class="caret"></span></button>
 					<ul class="dropdown-menu dropdown-menu-end p-1">
