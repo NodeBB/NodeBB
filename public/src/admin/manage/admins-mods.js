@@ -11,7 +11,7 @@ define('admin/manage/admins-mods', [
 				if (err) {
 					return alerts.error(err);
 				}
-				alerts.success('[[admin/manage/users:alerts.make-admin-success]]');
+
 				$('#admin-search').val('');
 
 				if ($('.administrator-area [data-uid="' + ui.item.user.uid + '"]').length) {
@@ -36,7 +36,6 @@ define('admin/manage/admins-mods', [
 						if (err) {
 							return alerts.error(err.message);
 						}
-						alerts.success('[[admin/manage/users:alerts.remove-admin-success]]');
 						userCard.remove();
 					});
 				}
@@ -45,7 +44,6 @@ define('admin/manage/admins-mods', [
 
 		autocomplete.user($('#global-mod-search'), function (ev, ui) {
 			api.put('/groups/global-moderators/membership/' + ui.item.user.uid).then(() => {
-				alerts.success('[[admin/manage/users:alerts.make-global-mod-success]]');
 				$('#global-mod-search').val('');
 
 				if ($('.global-moderator-area [data-uid="' + ui.item.user.uid + '"]').length) {
@@ -66,7 +64,6 @@ define('admin/manage/admins-mods', [
 			bootbox.confirm('[[admin/manage/users:alerts.confirm-remove-global-mod]]', function (confirm) {
 				if (confirm) {
 					api.del('/groups/global-moderators/membership/' + uid).then(() => {
-						alerts.success('[[admin/manage/users:alerts.remove-global-mod-success]]');
 						userCard.remove();
 						if (!$('.global-moderator-area').children().length) {
 							$('#no-global-mods-warning').removeClass('hidden');
@@ -92,7 +89,7 @@ define('admin/manage/admins-mods', [
 				if (err) {
 					return alerts.error(err);
 				}
-				alerts.success('[[admin/manage/users:alerts.make-moderator-success]]');
+
 				input.val('');
 
 				if ($('.moderator-area[data-cid="' + cid + '"] [data-uid="' + ui.item.user.uid + '"]').length) {
@@ -118,7 +115,7 @@ define('admin/manage/admins-mods', [
 						if (err) {
 							return alerts.error(err);
 						}
-						alerts.success('[[admin/manage/users:alerts.remove-moderator-success]]');
+
 						userCard.remove();
 						if (!moderatorArea.children().length) {
 							$('.no-moderator-warning[data-cid="' + cid + '"]').removeClass('hidden');

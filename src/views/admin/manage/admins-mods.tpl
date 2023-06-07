@@ -10,7 +10,7 @@
 			<h4 class="mb-0">[[admin/manage/admins-mods:administrators]]</h4>
 			<input id="admin-search" class="form-control form-control-sm w-auto" placeholder="[[admin/manage/admins-mods:add-administrator]]" />
 		</div>
-		<div class="administrator-area">
+		<div class="administrator-area d-flex flex-wrap">
 		{{{ each admins.members }}}
 			<div class="badge text-bg-light m-1 p-1 border d-inline-flex gap-1 align-items-center" data-uid="{admins.members.uid}">
 				{buildAvatar(admins.members, "24px", true)}
@@ -30,7 +30,7 @@
 			<h4 class="mb-0">[[admin/manage/admins-mods:global-moderators]]</h4>
 			<input id="global-mod-search" class="form-control form-control-sm w-auto" placeholder="[[admin/manage/admins-mods:add-global-moderator]]" />
 		</div>
-		<div class="global-moderator-area mb-2">
+		<div class="global-moderator-area mb-2 d-flex flex-wrap">
 		{{{ each globalMods.members }}}
 			<div class="badge text-bg-light m-1 p-1 border d-inline-flex gap-1 align-items-center" data-uid="{globalMods.members.uid}">
 				{buildAvatar(globalMods.members, "24px", true)}
@@ -82,15 +82,15 @@
 
 
 
-			<div class="moderator-area" data-cid="{categoryMods.cid}">
+			<div class="moderator-area d-flex flex-wrap" data-cid="{categoryMods.cid}">
 				{{{ each categoryMods.moderators }}}
-					<div class="badge text-bg-light m-1 p-1 border d-inline-flex gap-1 align-items-center" data-uid="{categoryMods.moderators.uid}">
-						{buildAvatar(categoryMods.moderators, "24px", true)}
-						<a href="{config.relative_path}/user/{categoryMods.moderators.userslug}">{categoryMods.moderators.username}</a>
-						<button class="btn-ghost-sm p-0 remove-user-icon">
-							<i class="fa fa-fw fa-times" role="button"></i>
-						</button>
-					</div>
+				<div class="badge text-bg-light m-1 p-1 border d-inline-flex gap-1 align-items-center" data-uid="{categoryMods.moderators.uid}">
+					{buildAvatar(categoryMods.moderators, "24px", true)}
+					<a href="{config.relative_path}/user/{categoryMods.moderators.userslug}">{categoryMods.moderators.username}</a>
+					<button class="btn-ghost-sm p-0 remove-user-icon">
+						<i class="fa fa-fw fa-times" role="button"></i>
+					</button>
+				</div>
 				{{{ end }}}
 			</div>
 
