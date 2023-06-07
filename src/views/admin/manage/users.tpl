@@ -114,7 +114,10 @@
 
 								<i class="pending fa fa-fw fa-clock-o text-warning{{{ if !users.email:pending }}} hidden{{{ end }}}" title="[[admin/manage/users:users.validation-pending]]" data-bs-toggle="tooltip"></i>
 
-								<i class="notvalidated fa fa-fw fa-times text-danger{{{ if !users.email:expired }}} hidden{{{ end }}}" title="[[admin/manage/users:users.validation-expired]]" data-bs-toggle="tooltip"></i>
+								<i class="expired fa fa-fw fa-times text-danger{{{ if !users.email:expired }}} hidden{{{ end }}}" title="[[admin/manage/users:users.validation-expired]]" data-bs-toggle="tooltip"></i>
+
+								<i class="notvalidated fa fa-fw fa-times text-danger{{{ if (users.email:expired || (users.email.pending || users.email:confirmed)) }}} hidden{{{ end }}}" title="[[admin/manage/users:users.not-validated]]" data-bs-toggle="tooltip"></i>
+
 								{./email}
 								{{{ else }}}
 								<i class="noemail fa fa-fw fa-nbb-none text-muted""></i>
