@@ -4,7 +4,7 @@
 		<!-- IMPORT admin/partials/dashboard/stats.tpl -->
 
 		<div class="row">
-			<div class="col-lg-3">
+			<div class="col-lg-4">
 				<div class="card">
 					<div class="card-header">[[admin/dashboard:guest-registered-users]]</div>
 					<div class="card-body">
@@ -19,7 +19,7 @@
 				</div>
 			</div>
 
-			<div class="col-lg-3">
+			<div class="col-lg-4">
 				<div class="card">
 					<div class="card-header">[[admin/dashboard:user-presence]]</div>
 					<div class="card-body">
@@ -36,7 +36,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-lg-3">
+			<div class="col-lg-4">
 				<div class="card">
 					<div class="card-header">[[admin/dashboard:high-presence-topics]]</div>
 					<div class="card-body">
@@ -47,43 +47,13 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-lg-3">
-				<div class="card">
-					<div class="card-header">[[admin/dashboard:popular-searches]]</div>
-					<div class="card-body">
-						<div class="graph-container pie-chart legend-down">
-							<ul class="graph-legend" id="popular-searches-legend">
-								{{{ each popularSearches}}}
-								<li>({popularSearches.score}) {popularSearches.value}</li>
-								{{{ end }}}
-							</ul>
-						</div>
-					</div>
-				</div>
-			</div>
 		</div>
 	</div>
 
 	<div class="col-lg-3">
-		{{{ if showSystemControls }}}
-		<div class="card mb-3">
-			<div class="card-body text-center">
-
-				<p>
-					<a href="{config.relative_path}/admin/settings/advanced" class="btn btn-info btn-block btn-sm" data-bs-placement="bottom" data-bs-toggle="tooltip" title="[[admin/dashboard:maintenance-mode-title]]">[[admin/dashboard:maintenance-mode]]</a>
-				</p>
-
-				<hr />
-				<span id="toggle-realtime">[[admin/dashboard:realtime-chart-updates]] <strong>OFF</strong> <i class="fa fa fa-toggle-off pointer"></i></span>
-			</div>
-		</div>
-		{{{ end }}}
-
-
-
 		<div class="card mb-3">
 			<div class="card-body">
-				<div class="text-sm alert {{{ if lookupFailed }}}alert-danger{{{ else }}}{{{ if upgradeAvailable }}}alert-warning{{{ else }}}{{{ if currentPrerelease }}}alert-info{{{ else }}}alert-success{{{ end }}}{{{ end }}}{{{ end }}} version-check">
+				<div class="text-sm shadow-sm alert {{{ if lookupFailed }}}alert-danger{{{ else }}}{{{ if upgradeAvailable }}}alert-warning{{{ else }}}{{{ if currentPrerelease }}}alert-info{{{ else }}}alert-success{{{ end }}}{{{ end }}}{{{ end }}} version-check">
 					<p class="">[[admin/dashboard:running-version, {version}]]</p>
 					<p class="mb-0">
 					{{{ if lookupFailed }}}
@@ -105,9 +75,16 @@
 					{{{ end }}}
 					</p>
 				</div>
-				<p class="text-sm">
+				<p class="form-text">
 					[[admin/dashboard:keep-updated]]
 				</p>
+				<hr/>
+				{{{ if showSystemControls }}}
+
+				<a href="{config.relative_path}/admin/settings/advanced" class="d-block mb-2 btn btn-info btn-sm" data-bs-placement="bottom" data-bs-toggle="tooltip" title="[[admin/dashboard:maintenance-mode-title]]">[[admin/dashboard:maintenance-mode]]</a>
+
+				<span id="toggle-realtime" class="text-sm">[[admin/dashboard:realtime-chart-updates]] <strong>OFF</strong> <i class="fa fa fa-toggle-off pointer"></i></span>
+				{{{ end }}}
 				<hr/>
 				<h6>[[admin/dashboard:notices]]</h6>
 				{{{ each notices}}}
@@ -128,6 +105,17 @@
 			<div class="card-header">[[admin/dashboard:active-users]]</div>
 			<div class="card-body">
 				<div id="active-users" class="stats row row-cols-2"></div>
+			</div>
+		</div>
+
+		<div class="card">
+			<div class="card-header">[[admin/dashboard:popular-searches]]</div>
+			<div class="card-body">
+				<ul class="list-unstyled text-sm">
+					{{{ each popularSearches}}}
+					<li>({popularSearches.score}) {popularSearches.value}</li>
+					{{{ end }}}
+				</ul>
 			</div>
 		</div>
 	</div>
