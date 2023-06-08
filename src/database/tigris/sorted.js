@@ -141,9 +141,7 @@ module.exports = function (module) {
 	}
 
 	module.countDocs = async function (query) {
-		return (await module.client.getCollection('objects').findMany({
-			filter: query,
-		}).toArray()).length;
+		return await module.client.getCollection('objects').count(query);
 	};
 
 	module.sortedSetCount = async function (key, min, max) {
@@ -159,7 +157,7 @@ module.exports = function (module) {
 			query.score = query.score || {};
 			query.score.$lte = max;
 		}
-		const count = await module.countDocs(query); // TODO
+		const count = await module.countDocs(query);
 		return count || 0;
 	};
 

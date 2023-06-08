@@ -114,7 +114,7 @@ module.exports = function (module) {
 		if (!item) {
 			return null;
 		}
-		return item.hasOwnProperty(field) ? item[field] : null;
+		return item[field] !== undefined ? item[field] : null;
 	};
 
 	module.getObjectFields = async function (key, fields) {
@@ -268,8 +268,8 @@ module.exports = function (module) {
 			field = helpers.fieldToString(field);
 			const item = await module.client.getCollection('objects')
 				.findOne({ filter: { _key: key }, fields: { include: [field] } });
-
-			return item && item.hasOwnProperty(field) ? item[field] : null;
+			console.log('item: ', item);
+			return item && item[field] !== undefined ? item[field] : null;
 		} catch (err) {
 			// if there is duplicate key error retry the upsert
 			// https://github.com/NodeBB/NodeBB/issues/4467

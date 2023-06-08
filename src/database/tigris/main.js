@@ -101,9 +101,9 @@ module.exports = function (module) {
 		// fallback to old field name 'value' for backwards compatibility #6340
 		let value = null;
 		if (objectData) {
-			if (objectData.hasOwnProperty('data')) {
+			if (objectData.data !== undefined) {
 				value = objectData.data;
-			} else if (objectData.hasOwnProperty('value')) {
+			} else if (objectData.value !== undefined) {
 				value = objectData.value;
 			}
 		}
@@ -149,13 +149,13 @@ module.exports = function (module) {
 		}
 		delete data.expireAt;
 		const keys = Object.keys(data);
-		if (keys.length === 4 && data.hasOwnProperty('_key') && data.hasOwnProperty('score') && data.hasOwnProperty('value')) {
+		if (keys.length === 4 && data._key !== undefined && data.score !== undefined && data.value !== undefined) {
 			return 'zset';
-		} else if (keys.length === 3 && data.hasOwnProperty('_key') && data.hasOwnProperty('members')) {
+		} else if (keys.length === 3 && data._key !== undefined && data.members !== undefined) {
 			return 'set';
-		} else if (keys.length === 3 && data.hasOwnProperty('_key') && data.hasOwnProperty('array')) {
+		} else if (keys.length === 3 && data._key !== undefined && data.array !== undefined) {
 			return 'list';
-		} else if (keys.length === 3 && data.hasOwnProperty('_key') && data.hasOwnProperty('data')) {
+		} else if (keys.length === 3 && data._key !== undefined && data.data !== undefined) {
 			return 'string';
 		}
 		return 'hash';
