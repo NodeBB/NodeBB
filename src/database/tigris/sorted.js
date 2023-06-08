@@ -75,7 +75,13 @@ module.exports = function (module) {
 			const isArray = Array.isArray(_key);
 			let filter;
 			if (!isArray || (isArray && _key.length === 1)) {
-				filter = { _key: _key[0] || _key, score: score };
+				if (Object.keys(score).length === 0) {
+					filter = { _key: _key[0] || _key };
+				} else {
+					filter = { _key: _key[0] || _key, score: score };
+				}
+			} else if (Object.keys(score).length === 0) {
+				filter = { $or: _key.map(k => ({ _key: k })) };
 			} else {
 				filter = { $or: _key.map(k => ({ _key: k, score: score })) };
 			}
@@ -433,7 +439,7 @@ module.exports = function (module) {
 		}
 		value = helpers.valueToString(value);
 		try {
-			await module.upsertFilter({ _key: key, value: value });
+			await module.upsertFilter({ _key: key, value: value }, 'score');
 			await module.client.getCollection('objects').updateOne({
 				filter: { _key: key, value: value },
 				fields: { $increment: { score: parseFloat(increment) } },
@@ -459,7 +465,7 @@ module.exports = function (module) {
 	module.sortedSetIncrByBulk = async function (data) {
 		await module.client.transact(async (tx) => {
 			await Promise.all(data.map(async (item) => {
-				await module.upsertFilter({ _key: item[0], value: helpers.valueToString(item[2]) });
+				await module.upsertFilter({ _key: item[0], value: helpers.valueToString(item[2]) }, 'score');
 				return module.client.collection('objects').updateOne({
 					filter: { _key: item[0], value: helpers.valueToString(item[2]) },
 					fields: { $increment: { score: parseFloat(item[1]) } },

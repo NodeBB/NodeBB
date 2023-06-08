@@ -39,7 +39,7 @@ module.exports = function (module) {
 		return item !== undefined && item !== null;
 	};
 
-	module.upsert = async function (key) {
+	module.upsert = async function (key, increment = null) {
 		if (!key) {
 			return;
 		}
@@ -47,10 +47,20 @@ module.exports = function (module) {
 			filter: Array.isArray(key) ? { $or: key.map(k => ({ _key: k })) } : { _key: key },
 		});
 		if (!item) {
-			await module.client.getCollection('objects').insertOne({ _key: key });
+			const data = { _key: key };
+			if (increment) {
+				if (Array.isArray(increment)) {
+					increment.forEach((field) => {
+						data[field] = 0;
+					});
+				} else {
+					data[increment] = 0;
+				}
+			}
+			await module.client.getCollection('objects').insertOne(data);
 		}
 	};
-	module.upsertFilter = async function (filter) {
+	module.upsertFilter = async function (filter, increment = null) {
 		if (!filter) {
 			return;
 		}
@@ -58,6 +68,15 @@ module.exports = function (module) {
 			filter,
 		});
 		if (!item) {
+			if (increment) {
+				if (Array.isArray(increment)) {
+					increment.forEach((field) => {
+						filter[field] = 0;
+					});
+				} else {
+					filter[increment] = 0;
+				}
+			}
 			await module.client.getCollection('objects').insertOne(filter);
 		}
 	};
@@ -122,7 +141,7 @@ module.exports = function (module) {
 			return;
 		}
 
-		await module.upsert(key);
+		await module.upsert(key, 'data');
 		await module.client.getCollection('objects').updateOne({
 			filter: { _key: key },
 			fields: { $increment: { data: 1 } },

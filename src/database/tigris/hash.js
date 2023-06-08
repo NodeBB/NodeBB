@@ -245,7 +245,7 @@ module.exports = function (module) {
 		if (Array.isArray(key)) {
 			await module.client.transact(async (tx) => {
 				await Promise.all(key.map(async (key) => {
-					await module.upsert(key);
+					await module.upsert(key, field);
 					return collection.updateMany({
 						filter: { _key: key },
 						fields: { $increment: increment },
@@ -258,7 +258,7 @@ module.exports = function (module) {
 			return result.map(data => data && data[field]);
 		}
 		try {
-			await module.upsert(key);
+			await module.upsert(key, field);
 			await module.client.getCollection('objects').updateOne({
 				filter: { _key: key },
 				fields: { $increment: increment },
@@ -268,7 +268,6 @@ module.exports = function (module) {
 			field = helpers.fieldToString(field);
 			const item = await module.client.getCollection('objects')
 				.findOne({ filter: { _key: key }, fields: { include: [field] } });
-			console.log('item: ', item);
 			return item && item[field] !== undefined ? item[field] : null;
 		} catch (err) {
 			// if there is duplicate key error retry the upsert
@@ -293,7 +292,7 @@ module.exports = function (module) {
 				for (const [field, value] of Object.entries(item[1])) {
 					increment[helpers.fieldToString(field)] = value;
 				}
-				await module.upsert(item[0]);
+				await module.upsert(item[0], Object.keys(increment));
 				return collection
 					.updateMany({ filter: { _key: item[0] }, fields: { $increment: increment } }, tx);
 			}));

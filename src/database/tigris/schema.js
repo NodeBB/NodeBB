@@ -30,10 +30,15 @@ function getSchemas() {
 				searchIndex: true,
 				index: true,
 			},
+			score: {
+				type: 'number',
+				searchIndex: true,
+				index: true,
+			},
 		},
 	};
 	Object.entries(mapper).forEach(([key, value]) => {
-		if (key === '_key') {
+		if (key === '_key' || key === 'score') {
 			return;
 		}
 		schemaObject.properties[helpers.fieldToString(key)] = getType(value);
