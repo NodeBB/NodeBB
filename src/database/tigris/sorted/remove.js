@@ -77,12 +77,10 @@ module.exports = function (module) {
 		if (!Array.isArray(data) || !data.length) {
 			return;
 		}
-		await module.client.transact(async (tx) => {
-			await Promise.all(
-				data.map(item => module.client.getCollection('objects').deleteMany({
-					filter: { _key: item[0], value: String(item[1]) },
-				}, tx))
-			);
-		});
+		await Promise.all(
+			data.map(item => module.client.getCollection('objects').deleteMany({
+				filter: { _key: item[0], value: String(item[1]) },
+			}))
+		);
 	};
 };

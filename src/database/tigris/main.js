@@ -46,7 +46,14 @@ module.exports = function (module) {
 		const item = await module.client.getCollection('objects').findOne({
 			filter: Array.isArray(key) ? { $or: key.map(k => ({ _key: k })) } : { _key: key },
 		});
-		if (!item) {
+		key = Array.isArray(key) ? key[0] : key;
+		let incrementExist = true;
+		if (increment) {
+			incrementExist = Array.isArray(increment) ?
+				increment.every(field => item && typeof item[field] !== 'undefined') : item && typeof item[increment] !== 'undefined';
+		}
+
+		if (!item || !incrementExist) {
 			const data = { _key: key };
 			if (increment) {
 				if (Array.isArray(increment)) {
@@ -57,7 +64,12 @@ module.exports = function (module) {
 					data[increment] = 0;
 				}
 			}
-			await module.client.getCollection('objects').insertOne(data);
+			const x = item ? await module.client.getCollection('objects').updateOne({
+				filter: { _key: data._key },
+				fields: data,
+			}) :
+				await module.client.getCollection('objects').insertOne(data);
+			return x;
 		}
 	};
 	module.upsertFilter = async function (filter, increment = null) {
@@ -67,17 +79,29 @@ module.exports = function (module) {
 		const item = await module.client.getCollection('objects').findOne({
 			filter,
 		});
+		let incrementExist = true;
+		if (increment || !incrementExist) {
+			incrementExist = Array.isArray(increment) ?
+				increment.every(field => item && typeof item[field] !== 'undefined') : item && typeof item[increment] !== 'undefined';
+		}
+
 		if (!item) {
+			const data = {};
 			if (increment) {
 				if (Array.isArray(increment)) {
 					increment.forEach((field) => {
-						filter[field] = 0;
+						data[field] = 0;
 					});
 				} else {
-					filter[increment] = 0;
+					data[increment] = 0;
 				}
 			}
-			await module.client.getCollection('objects').insertOne(filter);
+			const x = item ? await module.client.getCollection('objects').updateOne({
+				filter: filter,
+				fields: data,
+			}) :
+				await module.client.getCollection('objects').insertOne({ ...filter, ...data });
+			return x;
 		}
 	};
 

@@ -463,15 +463,13 @@ module.exports = function (module) {
 	};
 
 	module.sortedSetIncrByBulk = async function (data) {
-		await module.client.transact(async (tx) => {
-			await Promise.all(data.map(async (item) => {
-				await module.upsertFilter({ _key: item[0], value: helpers.valueToString(item[2]) }, 'score');
-				return module.client.collection('objects').updateOne({
-					filter: { _key: item[0], value: helpers.valueToString(item[2]) },
-					fields: { $increment: { score: parseFloat(item[1]) } },
-				}, tx);
-			}));
-		});
+		await Promise.all(data.map(async (item) => {
+			await module.upsertFilter({ _key: item[0], value: helpers.valueToString(item[2]) }, 'score');
+			return module.client.collection('objects').updateOne({
+				filter: { _key: item[0], value: helpers.valueToString(item[2]) },
+				fields: { $increment: { score: parseFloat(item[1]) } },
+			});
+		}));
 
 		const maps = [];
 		data.forEach((item) => {

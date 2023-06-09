@@ -20,14 +20,12 @@ module.exports = function (module) {
 		try {
 			const objectCollection = module.client.getCollection('objects');
 			if (isArray) {
-				await module.client.transact(async (tx) => {
-					// TODO -  Confirm this is woking as expected.
-					await Promise.all(key.map(async (key) => {
-						await module.upsert(key);
-						return objectCollection
-							.updateOne({ filter: { _key: key }, fields: writeData }, tx);
-					}));
-				});
+				// TODO -  Confirm this is woking as expected.
+				await Promise.all(key.map(async (key) => {
+					await module.upsert(key);
+					return objectCollection
+						.updateOne({ filter: { _key: key }, fields: writeData });
+				}));
 			} else {
 				await module.upsert(key);
 				await objectCollection.updateOne({ filter: { _key: key }, fields: writeData });
@@ -54,20 +52,18 @@ module.exports = function (module) {
 		}
 
 		try {
-			await module.client.transact(async (tx) => {
-				// TODO -  Confirm this is woking as expected.
-				await Promise.all(
-					data.map(async (item) => {
-						const writeData = helpers.serializeData(item[1]);
-						if (Object.keys(writeData).length) {
-							await module.upsert(item[0]);
-							return module.client.getCollection('objects')
-								.updateOne({ filter: { _key: item[0] }, fields: writeData }, tx);
-						}
-						return Promise.resolve();
-					})
-				);
-			});
+			// TODO -  Confirm this is woking as expected.
+			await Promise.all(
+				data.map(async (item) => {
+					const writeData = helpers.serializeData(item[1]);
+					if (Object.keys(writeData).length) {
+						await module.upsert(item[0]);
+						return module.client.getCollection('objects')
+							.updateOne({ filter: { _key: item[0] }, fields: writeData });
+					}
+					return Promise.resolve();
+				})
+			);
 		} catch (err) {
 			if (err && err.message.startsWith('E11000 duplicate key error')) {
 				return await module.setObjectBulk(data);
@@ -243,15 +239,13 @@ module.exports = function (module) {
 		increment[field] = value;
 		const collection = module.client.getCollection('objects');
 		if (Array.isArray(key)) {
-			await module.client.transact(async (tx) => {
-				await Promise.all(key.map(async (key) => {
-					await module.upsert(key, field);
-					return collection.updateMany({
-						filter: { _key: key },
-						fields: { $increment: increment },
-					}, tx);
-				}));
-			});
+			await Promise.all(key.map(async (key) => {
+				await module.upsert(key, field);
+				return collection.updateMany({
+					filter: { _key: key },
+					fields: { $increment: increment },
+				});
+			}));
 
 			cache.del(key);
 			const result = await module.getObjectsFields(key, [field]);
@@ -286,17 +280,16 @@ module.exports = function (module) {
 			return;
 		}
 		const collection = module.client.getCollection('objects');
-		await module.client.transact(async (tx) => {
-			await Promise.all(data.map(async (item) => {
-				const increment = {};
-				for (const [field, value] of Object.entries(item[1])) {
-					increment[helpers.fieldToString(field)] = value;
-				}
-				await module.upsert(item[0], Object.keys(increment));
-				return collection
-					.updateMany({ filter: { _key: item[0] }, fields: { $increment: increment } }, tx);
-			}));
-		});
+		await Promise.all(data.map(async (item) => {
+			const increment = {};
+			for (const [field, value] of Object.entries(item[1])) {
+				increment[helpers.fieldToString(field)] = value;
+			}
+			await module.upsert(item[0], Object.keys(increment));
+			return collection
+				.updateMany({ filter: { _key: item[0] }, fields: { $increment: increment } });
+		}));
+
 
 		cache.del(data.map(item => item[0]));
 	};

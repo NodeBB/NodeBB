@@ -44,17 +44,15 @@ module.exports = function (module) {
 		}
 		values = values.map(helpers.valueToString);
 
-		await module.client.transact(async (tx) => {
-			await Promise.all(
-				scores.map(async (score, i) => {
-					await module.upsertFilter({ _key: key, value: values[i] });
-					return module.client.getCollection('objects').updateOne({
-						filter: { _key: key, value: values[i] },
-						fields: { score: parseFloat(score) },
-					}, tx);
-				}),
-			);
-		});
+		await Promise.all(
+			scores.map(async (score, i) => {
+				await module.upsertFilter({ _key: key, value: values[i] });
+				return module.client.getCollection('objects').updateOne({
+					filter: { _key: key, value: values[i] },
+					fields: { score: parseFloat(score) },
+				});
+			}),
+		);
 	}
 
 	module.sortedSetsAdd = async function (keys, scores, value) {
@@ -73,37 +71,33 @@ module.exports = function (module) {
 
 		value = helpers.valueToString(value);
 
-		await module.client.transact(async (tx) => {
-			await Promise.all(
-				keys.map(async (key, i) => {
-					await module.upsertFilter({ _key: key, value: value });
-					return module.client.getCollection('objects').updateOne({
-						filter: { _key: key, value: value },
-						fields: { score: parseFloat(isArrayOfScores ? scores[i] : scores) },
-					}, tx);
-				}),
-			);
-		});
+		await Promise.all(
+			keys.map(async (key, i) => {
+				await module.upsertFilter({ _key: key, value: value });
+				return module.client.getCollection('objects').updateOne({
+					filter: { _key: key, value: value },
+					fields: { score: parseFloat(isArrayOfScores ? scores[i] : scores) },
+				});
+			}),
+		);
 	};
 
 	module.sortedSetAddBulk = async function (data) {
 		if (!Array.isArray(data) || !data.length) {
 			return;
 		}
-		await module.client.transact(async (tx) => {
-			await Promise.all(
-				data.map(async (item) => {
-					if (!utils.isNumber(item[1])) {
-						throw new Error(`[[error:invalid-score, ${item[1]}]]`);
-					}
-					const filter = { _key: item[0], value: String(item[2]) };
-					await module.upsertFilter(filter);
-					return module.client.getCollection('objects').updateOne({
-						filter: filter,
-						fields: { score: parseFloat(item[1]) },
-					}, tx);
-				}),
-			);
-		});
+		await Promise.all(
+			data.map(async (item) => {
+				if (!utils.isNumber(item[1])) {
+					throw new Error(`[[error:invalid-score, ${item[1]}]]`);
+				}
+				const filter = { _key: item[0], value: String(item[2]) };
+				await module.upsertFilter(filter);
+				return module.client.getCollection('objects').updateOne({
+					filter: filter,
+					fields: { score: parseFloat(item[1]) },
+				});
+			}),
+		);
 	};
 };

@@ -36,19 +36,17 @@ module.exports = function (module) {
 
 		value = value.map(v => helpers.valueToString(v));
 		try {
-			await module.client.transact(async (tx) => {
-				await Promise.all(keys.map(async (key) => {
-					const data = await module.client.getCollection('objects')
-						.findOne({ filter: { _key: key } });
-					if (data) {
-						const newSet = [...new Set([...data.members || [], ...value])];
-						return module.client.getCollection('objects')
-							.updateOne({ filter: { _key: key }, fields: { members: newSet } }, tx);
-					}
+			await Promise.all(keys.map(async (key) => {
+				const data = await module.client.getCollection('objects')
+					.findOne({ filter: { _key: key } });
+				if (data) {
+					const newSet = [...new Set([...data.members || [], ...value])];
 					return module.client.getCollection('objects')
-						.insertOne({ _key: key, members: value }, tx);
-				}));
-			});
+						.updateOne({ filter: { _key: key }, fields: { members: newSet } });
+				}
+				return module.client.getCollection('objects')
+					.insertOne({ _key: key, members: value });
+			}));
 		} catch (err) {
 			if (err && err.message.startsWith('E11000 duplicate key error')) {
 				return await module.setsAdd(keys, value);
@@ -85,17 +83,15 @@ module.exports = function (module) {
 		}
 		value = helpers.valueToString(value);
 
-		await module.client.transact(async (tx) => {
-			await Promise.all(keys.map(async (key) => {
-				const data = await module.client.getCollection('objects')
-					.findOne({ filter: { _key: key } });
-				if (data) {
-					const newSet = [...new Set([...data.members || []].filter(v => v !== value))];
-					return module.client.getCollection('objects')
-						.updateOne({ filter: { _key: key }, fields: { members: newSet } }, tx);
-				}
-			}));
-		});
+		await Promise.all(keys.map(async (key) => {
+			const data = await module.client.getCollection('objects')
+				.findOne({ filter: { _key: key } });
+			if (data) {
+				const newSet = [...new Set([...data.members || []].filter(v => v !== value))];
+				return module.client.getCollection('objects')
+					.updateOne({ filter: { _key: key }, fields: { members: newSet } });
+			}
+		}));
 	};
 
 	module.isSetMember = async function (key, value) {
