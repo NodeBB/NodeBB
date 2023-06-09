@@ -18,6 +18,9 @@ module.exports = function (module) {
 		}
 
 		if (Array.isArray(key)) {
+			if (!key.length) {
+				return;
+			}
 			const data = await module.client.getCollection('objects').findMany({
 				filter: key.length === 1 ? { _key: key[0] } : { $or: key.map(k => ({ _key: k })) },
 				fields: { include: ['_key'] },
