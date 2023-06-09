@@ -19,7 +19,7 @@ module.exports = function (module) {
 
 		if (Array.isArray(key)) {
 			const data = await module.client.getCollection('objects').findMany({
-				filter: { $or: key.map(k => ({ _key: k })) },
+				filter: key.length === 1 ? { _key: key[0] } : { $or: key.map(k => ({ _key: k })) },
 				fields: { include: ['_key'] },
 			}).toArray();
 
@@ -44,32 +44,42 @@ module.exports = function (module) {
 			return;
 		}
 		const item = await module.client.getCollection('objects').findOne({
-			filter: Array.isArray(key) ? { $or: key.map(k => ({ _key: k })) } : { _key: key },
+			filter: Array.isArray(key) && key.length > 1 ? { $or: key.map(k => ({ _key: k })) } :
+				{ _key: Array.isArray(key) ? key[0] : key },
 		});
 		key = Array.isArray(key) ? key[0] : key;
 		let incrementExist = true;
 		if (increment) {
 			incrementExist = Array.isArray(increment) ?
 				increment.every(field => item && typeof item[field] !== 'undefined') : item && typeof item[increment] !== 'undefined';
+
+			// Return the item if it exists and the increment exists
+			if (incrementExist) {
+				return item;
+			}
 		}
 
+		const data = {};
 		if (!item || !incrementExist) {
-			const data = { _key: key };
 			if (increment) {
 				if (Array.isArray(increment)) {
 					increment.forEach((field) => {
-						data[field] = 0;
+						data[field] = (item && item[field]) || 0;
 					});
 				} else {
 					data[increment] = 0;
 				}
 			}
-			const x = item ? await module.client.getCollection('objects').updateOne({
-				filter: { _key: data._key },
-				fields: data,
-			}) :
-				await module.client.getCollection('objects').insertOne(data);
-			return x;
+			if (item) {
+				await module.client.getCollection('objects').updateOne({
+					filter: { _key: key },
+					fields: data,
+				});
+			} else {
+				await module.client.getCollection('objects').insertOne({ ...data, _key: key });
+			}
+
+			return data;
 		}
 	};
 	module.upsertFilter = async function (filter, increment = null) {
@@ -83,10 +93,14 @@ module.exports = function (module) {
 		if (increment || !incrementExist) {
 			incrementExist = Array.isArray(increment) ?
 				increment.every(field => item && typeof item[field] !== 'undefined') : item && typeof item[increment] !== 'undefined';
+			// Return the item if it exists and the increment exists
+			if (incrementExist) {
+				return item;
+			}
 		}
 
-		if (!item) {
-			const data = {};
+		const data = {};
+		if (!item || !incrementExist) {
 			if (increment) {
 				if (Array.isArray(increment)) {
 					increment.forEach((field) => {
@@ -96,12 +110,16 @@ module.exports = function (module) {
 					data[increment] = 0;
 				}
 			}
-			const x = item ? await module.client.getCollection('objects').updateOne({
-				filter: filter,
-				fields: data,
-			}) :
-				await module.client.getCollection('objects').insertOne({ ...filter, ...data });
-			return x;
+			if (item) {
+				await module.client.getCollection('objects').updateOne({
+					filter: filter,
+					fields: data,
+				});
+			} else {
+				await module.client.getCollection('objects').insertOne({ ...data, ...filter });
+			}
+
+			return data;
 		}
 	};
 
@@ -118,7 +136,7 @@ module.exports = function (module) {
 		if (!key) {
 			return;
 		}
-		await module.client.getCollection('objects').deleteMany({ fields: { _key: key } });
+		await module.client.getCollection('objects').deleteMany({ filter: { _key: key } });
 		module.objectCache.del(key);
 	};
 
@@ -127,7 +145,7 @@ module.exports = function (module) {
 			return;
 		}
 		await module.client.getCollection('objects').deleteMany({
-			fields: { $or: keys.map(k => ({ _key: k })) },
+			fields: keys.length === 1 ? { _key: keys[0] } : { $or: keys.map(k => ({ _key: k })) },
 		});
 		module.objectCache.del(keys);
 	};

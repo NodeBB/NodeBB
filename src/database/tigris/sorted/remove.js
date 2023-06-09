@@ -40,7 +40,7 @@ module.exports = function (module) {
 		}
 
 		// Delete documents that match any of the conditions in the filter
-		await module.client.getCollection('objects').deleteMany({ filter: { $or: filter } });
+		await module.client.getCollection('objects').deleteMany({ filter: filter.length === 1 ? filter[0] : { $or: filter } });
 	};
 
 	module.sortedSetsRemove = async function (keys, value) {
@@ -50,7 +50,8 @@ module.exports = function (module) {
 		value = helpers.valueToString(value);
 
 		await module.client.getCollection('objects').deleteMany({
-			filter: { $in: keys.map(key => ({ _key: key, value: value })) },
+			filter: keys.length === 1 ? { _key: keys[0], value } :
+				{ $or: keys.map(key => ({ _key: key, value })) },
 		});
 	};
 

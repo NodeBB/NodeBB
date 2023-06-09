@@ -127,7 +127,8 @@ module.exports = function (module) {
 
 		const result = await module.client.getCollection('objects')
 			.findMany({
-				filter: { $or: sets.map(set => ({ _key: set, members: value })) },
+				filter: sets.length === 1 ? { _key: sets[0], members: value } :
+					{ $or: sets.map(set => ({ _key: set, members: value })) },
 				fields: { exclude: ['_id', 'members'] },
 			}).toArray();
 
@@ -156,7 +157,8 @@ module.exports = function (module) {
 
 		const data = await module.client.getCollection('objects')
 			.findMany({
-				filter: { $or: keys.map(key => ({ _key: key })) },
+				filter: keys.length === 1 ? { _key: keys[0] } :
+					{ $or: keys.map(key => ({ _key: key })) },
 				fields: { exclude: ['_id'] },
 			}).toArray();
 
@@ -180,7 +182,8 @@ module.exports = function (module) {
 	module.setsCount = async function (keys) {
 		const data = await module.client.getCollection('objects')
 			.findMany({
-				filter: { $or: keys.map(key => ({ _key: key })) },
+				filter: keys.length === 1 ? { _key: keys[0] } :
+					{ $or: keys.map(key => ({ _key: key })) },
 				fields: { include: ['_key', 'members'] },
 			}).toArray();
 

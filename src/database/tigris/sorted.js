@@ -187,7 +187,8 @@ module.exports = function (module) {
 		if (!keys || (Array.isArray(keys) && !keys.length)) {
 			return 0;
 		}
-		const filter = Array.isArray(keys) ? { $or: keys.map(k => ({ _key: k })) } : { _key: keys };
+		const filter = Array.isArray(keys) && keys.length > 1 ? { $or: keys.map(k => ({ _key: k })) } :
+			{ _key: Array.isArray(keys) ? keys[0] : keys };
 		const count = await module.countDocs(filter);
 		return parseInt(count, 10) || 0;
 	};
@@ -285,7 +286,8 @@ module.exports = function (module) {
 		}
 		value = helpers.valueToString(value);
 		const result = await module.client.getCollection('objects').findMany({
-			filter: { $or: keys.map(k => ({ _key: k, value: value })) },
+			filter: keys.length === 1 ? { _key: keys[0], value: value } :
+				{ $or: keys.map(k => ({ _key: k, value: value })) },
 			fields: { exclude: ['_id', 'value'] },
 		}).toArray();
 		const map = {};
@@ -307,7 +309,8 @@ module.exports = function (module) {
 		}
 		values = values.map(helpers.valueToString);
 		const result = await module.client.getCollection('objects').findMany({
-			filter: { $or: values.map(v => ({ _key: key, value: v })) },
+			filter: values.length === 1 ? { _key: key, value: values[0] } :
+				{ $or: values.map(v => ({ _key: key, value: v })) },
 			fields: { exclude: ['_id', '_key'] },
 		}).toArray();
 
@@ -344,7 +347,8 @@ module.exports = function (module) {
 		}
 		values = values.map(helpers.valueToString);
 		const results = await module.client.getCollection('objects').findMany({
-			filter: { $or: values.map(v => ({ _key: key, value: v })) },
+			filter: values.length === 1 ? { _key: key, value: values[0] } :
+				{ $or: values.map(v => ({ _key: key, value: v })) },
 			fields: { include: ['value'] },
 		}).toArray();
 
@@ -364,7 +368,8 @@ module.exports = function (module) {
 		value = helpers.valueToString(value);
 
 		const results = await module.client.getCollection('objects').findMany({
-			filter: { $or: keys.map(k => ({ _key: k, value: value })) },
+			filter: keys.length === 1 ? { _key: keys[0], value: value } :
+				{ $or: keys.map(k => ({ _key: k, value: value })) },
 			fields: { include: ['_key', 'value'] },
 		}).toArray();
 
@@ -479,7 +484,8 @@ module.exports = function (module) {
 		});
 
 		const result = await module.client.getCollection('objects').findMany({
-			filter: { $or: maps },
+			filter: maps.length === 1 ? { _key: maps[0]._key, value: maps[0].value } :
+				{ $or: maps },
 			fields: { include: ['_key', 'value', 'score'] },
 		}).toArray();
 

@@ -7,7 +7,7 @@ module.exports = function (module) {
 		}
 
 		const data = await module.client.getCollection('objects').findMany({
-			filter: { $or: keys.map(k => ({ _key: k })) },
+			filter: keys.length === 1 ? { _key: keys[0] } : { $or: keys.map(k => ({ _key: k })) },
 			fields: { include: ['value'] },
 		}).toArray();
 
@@ -44,7 +44,7 @@ module.exports = function (module) {
 
 		// Fetch the documents with matching keys
 		const documents = await module.client.getCollection('objects').findMany({
-			filter: { $or: params.sets.map(k => ({ _key: k })) },
+			filter: params.sets.length === 1 ? { _key: params.sets[0] } : { $or: params.sets.map(k => ({ _key: k })) },
 		}).toArray();
 
 		// Group by value and calculate totalScore based on the aggregate function

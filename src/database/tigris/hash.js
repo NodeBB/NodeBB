@@ -1,5 +1,7 @@
 'use strict';
 
+const { inc } = require('nprogress');
+
 module.exports = function (module) {
 	const helpers = require('./helpers');
 
@@ -212,7 +214,12 @@ module.exports = function (module) {
 			data[field] = null;
 		});
 		if (Array.isArray(key)) {
-			await module.client.getCollection('objects').updateMany({ filter: { $or: key.map(k => ({ _key: k })) }, fields: data });
+			await module.client.getCollection('objects').updateMany({
+				filter: key.length === 1 ?
+					{ _key: key[0] } :
+					{ $or: key.map(k => ({ _key: k })) },
+				fields: data,
+			});
 		} else {
 			await module.client.getCollection('objects').updateOne({ filter: { _key: key }, fields: data });
 		}
@@ -234,16 +241,17 @@ module.exports = function (module) {
 			return null;
 		}
 
-		const increment = {};
 		field = helpers.fieldToString(field);
-		increment[field] = value;
 		const collection = module.client.getCollection('objects');
 		if (Array.isArray(key)) {
 			await Promise.all(key.map(async (key) => {
-				await module.upsert(key, field);
+				const old = await module.upsert(key, field);
+				const current = old && old[field] !== undefined ? old[field] : 0;
+				const fields = {};
+				fields[field] = current + value;
 				return collection.updateMany({
 					filter: { _key: key },
-					fields: { $increment: increment },
+					fields: fields,
 				});
 			}));
 
@@ -252,10 +260,13 @@ module.exports = function (module) {
 			return result.map(data => data && data[field]);
 		}
 		try {
-			await module.upsert(key, field);
+			const old = await module.upsert(key, field);
+			const current = old && old[field] !== undefined ? old[field] : 0;
+			const fields = {};
+			fields[field] = current + value;
 			await module.client.getCollection('objects').updateOne({
 				filter: { _key: key },
-				fields: { $increment: increment },
+				fields: fields,
 			});
 			cache.del(key);
 
@@ -285,9 +296,15 @@ module.exports = function (module) {
 			for (const [field, value] of Object.entries(item[1])) {
 				increment[helpers.fieldToString(field)] = value;
 			}
-			await module.upsert(item[0], Object.keys(increment));
+			const old = await module.upsert(item[0], Object.keys(increment));
+			if (old) {
+				for (const [field, value] of Object.entries(item[1])) {
+					const current = old[field] !== undefined ? old[field] : 0;
+					increment[field] = current + value;
+				}
+			}
 			return collection
-				.updateMany({ filter: { _key: item[0] }, fields: { $increment: increment } });
+				.updateMany({ filter: { _key: item[0] }, fields: increment });
 		}));
 
 
