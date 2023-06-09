@@ -23,7 +23,7 @@
 	"invite": "Invita via email",
 	"new": "Nuovo utente",
 	"filter-by": "Filtra per",
-	"pills.unvalidated": "Non Validato",
+	"pills.unvalidated": "Non convalidato",
 	"pills.validated": "Convalidato",
 	"pills.banned": "Bannato",
 
@@ -51,7 +51,7 @@
 	"users.email": "email",
 	"users.no-email": "(nessuna email)",
 	"users.validated": "Convalidato",
-	"users.not-validated": "Not Validated",
+	"users.not-validated": "Non convalidato",
 	"users.validation-pending": "In attesa di convalida",
 	"users.validation-expired": "Convalida scaduta",
 	"users.ip": "IP",
