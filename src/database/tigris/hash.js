@@ -1,7 +1,5 @@
 'use strict';
 
-const { inc } = require('nprogress');
-
 module.exports = function (module) {
 	const helpers = require('./helpers');
 
