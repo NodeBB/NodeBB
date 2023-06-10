@@ -179,13 +179,13 @@ async function getBundleMetadata(target) {
 
 	let themeData = null;
 	if (target === 'client') {
-		themeData = await db.getObjectFields('config', ['theme:type', 'theme:id', 'bootswatchSkin']);
+		themeData = await db.getObjectFields('config', ['theme:type', 'theme:id']);
 		const themeId = (themeData['theme:id'] || 'nodebb-theme-harmony');
 		const baseThemePath = path.join(nconf.get('themes_path'), (themeData['theme:type'] && themeData['theme:type'] === 'local' ? themeId : 'nodebb-theme-harmony'));
 		paths.unshift(baseThemePath);
 		paths.unshift(`${baseThemePath}/node_modules`);
 
-		themeData.bootswatchSkin = skin || themeData.bootswatchSkin;
+		themeData.bootswatchSkin = skin;
 	}
 
 	const [scssImports, cssImports, acpScssImports] = await Promise.all([

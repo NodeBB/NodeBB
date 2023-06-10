@@ -155,6 +155,8 @@
 	"no-group-title": "No group title",
 
 	"select-skin": "Select a Skin",
+	"default": "Default (%1)",
+	"no-skin": "No Skin",
 
 	"select-homepage": "Select a Homepage",
 	"homepage": "Homepage",

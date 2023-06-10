@@ -56,16 +56,8 @@ settingsController.get = async function (req, res, next) {
 		{ value: 'biweek', name: '[[user:digest_biweekly]]', selected: userData.settings.dailyDigestFreq === 'biweek' },
 		{ value: 'month', name: '[[user:digest_monthly]]', selected: userData.settings.dailyDigestFreq === 'month' },
 	];
-	userData.bootswatchSkinOptions = [
-		{ name: 'Default', value: '' },
-	];
-	userData.bootswatchSkinOptions.push(
-		...meta.css.supportedSkins.map(skin => ({ name: _.capitalize(skin), value: skin }))
-	);
 
-	userData.bootswatchSkinOptions.forEach((skin) => {
-		skin.selected = skin.value === userData.settings.bootswatchSkin;
-	});
+	getSkinOptions(userData);
 
 	userData.languages.forEach((language) => {
 		language.selected = language.code === userData.settings.userLang;
@@ -226,4 +218,19 @@ async function getHomePageRoutes(userData) {
 	}
 
 	return routes;
+}
+
+function getSkinOptions(userData) {
+	const defaultSkin = _.capitalize(meta.config.bootswatchSkin) || '[[user:no-skin]]';
+	userData.bootswatchSkinOptions = [
+		{ name: '[[user:no-skin]]', value: 'noskin' },
+		{ name: `[[user:default, ${defaultSkin}]]`, value: '' },
+	];
+	userData.bootswatchSkinOptions.push(
+		...meta.css.supportedSkins.map(skin => ({ name: _.capitalize(skin), value: skin }))
+	);
+
+	userData.bootswatchSkinOptions.forEach((skin) => {
+		skin.selected = skin.value === userData.settings.bootswatchSkin;
+	});
 }

@@ -197,7 +197,7 @@ module.exports = function (middleware) {
 		results.user['email:confirmed'] = results.user['email:confirmed'] === 1;
 		results.user.isEmailConfirmSent = !!results.isEmailConfirmSent;
 
-		templateValues.bootswatchSkin = (parseInt(meta.config.disableCustomUserSkins, 10) !== 1 ? res.locals.config.bootswatchSkin : '') || meta.config.bootswatchSkin || '';
+		templateValues.bootswatchSkin = res.locals.config.bootswatchSkin || '';
 		templateValues.browserTitle = results.browserTitle;
 		({
 			navigation: templateValues.navigation,
