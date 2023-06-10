@@ -48,9 +48,11 @@ const buildImports = {
 function boostrapImport(themeData) {
 	// see https://getbootstrap.com/docs/5.0/customize/sass/#variable-defaults
 	// for an explanation of this order and https://bootswatch.com/help/
-	const { bootswatchSkin } = themeData;
+	const { bootswatchSkin, bsVariables } = themeData;
 	return [
-		bootswatchSkin ? `@import "bootswatch/dist/${bootswatchSkin}/variables";` : '',
+		bootswatchSkin ?
+			`@import "bootswatch/dist/${bootswatchSkin}/variables";` :
+			bsVariables,
 		'@import "bootstrap/scss/mixins/banner";',
 		'@include bsBanner("");',
 		// functions must be included first
@@ -179,12 +181,16 @@ async function getBundleMetadata(target) {
 
 	let themeData = null;
 	if (target === 'client') {
-		themeData = await db.getObjectFields('config', ['theme:type', 'theme:id']);
+		themeData = await db.getObjectFields('config', ['theme:type', 'theme:id', 'useBSVariables', 'bsVariables']);
 		const themeId = (themeData['theme:id'] || 'nodebb-theme-harmony');
-		const baseThemePath = path.join(nconf.get('themes_path'), (themeData['theme:type'] && themeData['theme:type'] === 'local' ? themeId : 'nodebb-theme-harmony'));
+		const baseThemePath = path.join(
+			nconf.get('themes_path'),
+			(themeData['theme:type'] && themeData['theme:type'] === 'local' ? themeId : 'nodebb-theme-harmony')
+		);
+		console.log(themeData);
 		paths.unshift(baseThemePath);
 		paths.unshift(`${baseThemePath}/node_modules`);
-
+		themeData.bsVariables = parseInt(themeData.useBSVariables, 10) === 1 ? (themeData.bsVariables || '') : '';
 		themeData.bootswatchSkin = skin;
 	}
 
