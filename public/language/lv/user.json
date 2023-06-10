@@ -141,6 +141,8 @@
     "group-order-help": "Select a group and use the arrows to order titles",
     "no-group-title": "Nav",
     "select-skin": "Ādiņa",
+    "default": "Default (%1)",
+    "no-skin": "No Skin",
     "select-homepage": "Sākumlapa",
     "homepage": "Sākumlapa",
     "homepage_description": "Izvēlies lapu, kuru izmantot kā foruma sākumlapu vai \"Nav\", lai izmantotu noklusējuma sākumlapu.",

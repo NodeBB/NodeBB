@@ -141,6 +141,8 @@
     "group-order-help": "Select a group and use the arrows to order titles",
     "no-group-title": "Tiada nama kumpulan",
     "select-skin": "Pilih skin",
+    "default": "Default (%1)",
+    "no-skin": "No Skin",
     "select-homepage": "Pilih Laman Utama",
     "homepage": "Laman Utama",
     "homepage_description": "Pilih satu halaman untuk digunakan sebagai Laman Utama forum atau 'Tiada' untuk guna tetapan lalai",

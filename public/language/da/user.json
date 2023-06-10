@@ -141,6 +141,8 @@
     "group-order-help": "Select a group and use the arrows to order titles",
     "no-group-title": "Ingen gruppe titel",
     "select-skin": "Vælg et skin",
+    "default": "Default (%1)",
+    "no-skin": "No Skin",
     "select-homepage": "Vælg en hjemmeside",
     "homepage": "Hjemmeside",
     "homepage_description": "Vælg en side som forummets hjemmeside, eller 'Ingen' for at bruge standard hjemmesiden.",

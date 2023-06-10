@@ -141,6 +141,8 @@
     "group-order-help": "Select a group and use the arrows to order titles",
     "no-group-title": "Nėra grupės pavadinimo",
     "select-skin": "Pasirinkite išvaizdą",
+    "default": "Default (%1)",
+    "no-skin": "No Skin",
     "select-homepage": "Pasirinkite pagrindinį puslapį",
     "homepage": "Pagrindinis puslapis",
     "homepage_description": "Pasirinkite puslapį kaip savo pagrindinį, arba pasirinkite \"Joks\" norėdami naudoti standartinį pagrindinį puslapį.",
