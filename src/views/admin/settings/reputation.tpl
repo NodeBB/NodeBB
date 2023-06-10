@@ -26,11 +26,11 @@
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/reputation:thresholds]]</h5>
 				<div class="mb-3">
 					<label class="form-label" for="min:rep:chat">[[admin/settings/reputation:min-rep-chat]]</label>
-					<input type="number" min="0" class="form-control" placeholder="0" data-field="min:rep:chat" id="min:rep:chat">
+					<input type="number" class="form-control" placeholder="0" data-field="min:rep:chat" id="min:rep:chat">
 				</div>
 				<div class="mb-3">
 					<label class="form-label" for="min:rep:upvote">[[admin/settings/reputation:min-rep-upvote]]</label>
-					<input type="number" min="0" class="form-control" placeholder="0" data-field="min:rep:upvote" id="min:rep:upvote">
+					<input type="number" class="form-control" placeholder="0" data-field="min:rep:upvote" id="min:rep:upvote">
 				</div>
 				<div class="mb-3">
 					<label class="form-label" for="upvotesPerDay">[[admin/settings/reputation:upvotes-per-day]]</label>
@@ -43,7 +43,7 @@
 
 				<div class="mb-3">
 					<label class="form-label" for="min:rep:downvote">[[admin/settings/reputation:min-rep-downvote]]</label>
-					<input type="number" min="0" class="form-control" placeholder="0" data-field="min:rep:downvote" id="min:rep:downvote">
+					<input type="number" class="form-control" placeholder="0" data-field="min:rep:downvote" id="min:rep:downvote">
 				</div>
 				<div class="mb-3">
 					<label class="form-label" for="downvotesPerDay">[[admin/settings/reputation:downvotes-per-day]]</label>
@@ -55,27 +55,27 @@
 				</div>
 				<div class="mb-3">
 					<label class="form-label" for="min:rep:flag">[[admin/settings/reputation:min-rep-flag]]</label>
-					<input type="number" min="0" class="form-control" placeholder="0" data-field="min:rep:flag" id="min:rep:flag">
+					<input type="number" class="form-control" placeholder="0" data-field="min:rep:flag" id="min:rep:flag">
 				</div>
 				<div class="mb-3">
 					<label class="form-label" for="min:rep:website">[[admin/settings/reputation:min-rep-website]]</label>
-					<input type="number" min="0" class="form-control" placeholder="0" data-field="min:rep:website" id="min:rep:website">
+					<input type="number" class="form-control" placeholder="0" data-field="min:rep:website" id="min:rep:website">
 				</div>
 				<div class="mb-3">
 					<label class="form-label" for="min:rep:aboutme">[[admin/settings/reputation:min-rep-aboutme]]</label>
-					<input type="number" min="0" class="form-control" placeholder="0" data-field="min:rep:aboutme" id="min:rep:aboutme">
+					<input type="number" class="form-control" placeholder="0" data-field="min:rep:aboutme" id="min:rep:aboutme">
 				</div>
 				<div class="mb-3">
 					<label class="form-label" for="min:rep:signature">[[admin/settings/reputation:min-rep-signature]]</label>
-					<input type="number" min="0" class="form-control" placeholder="0" data-field="min:rep:signature" id="min:rep:signature">
+					<input type="number" class="form-control" placeholder="0" data-field="min:rep:signature" id="min:rep:signature">
 				</div>
 				<div class="mb-3">
 					<label class="form-label" for="min:rep:profile-picture">[[admin/settings/reputation:min-rep-profile-picture]]</label>
-					<input type="number" min="0" class="form-control" placeholder="0" data-field="min:rep:profile-picture" id="min:rep:profile-picture">
+					<input type="number" class="form-control" placeholder="0" data-field="min:rep:profile-picture" id="min:rep:profile-picture">
 				</div>
 				<div class="mb-3">
 					<label class="form-label" for="min:rep:cover-picture">[[admin/settings/reputation:min-rep-cover-picture]]</label>
-					<input type="number" min="0" class="form-control" placeholder="0" data-field="min:rep:cover-picture" id="min:rep:cover-picture">
+					<input type="number" class="form-control" placeholder="0" data-field="min:rep:cover-picture" id="min:rep:cover-picture">
 				</div>
 			</div>
 
