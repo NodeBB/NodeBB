@@ -76,15 +76,17 @@ module.exports = function (module) {
 			let filter;
 			if (!isArray || (isArray && _key.length === 1)) {
 				if (Object.keys(score).length === 0) {
-					filter = { _key: _key[0] || _key };
+					filter = { _key: isArray ? _key[0] : _key };
 				} else {
-					filter = { _key: _key[0] || _key, score: score };
+					filter = { _key: isArray ? _key[0] : _key, score: score };
 				}
 			} else if (Object.keys(score).length === 0) {
 				filter = { $or: _key.map(k => ({ _key: k })) };
 			} else {
 				filter = { $or: _key.map(k => ({ _key: k, score: score })) };
 			}
+
+			console.log('doQuery', filter, fields, skip, limit, sort);
 
 			return await module.client.getCollection('objects')
 				.findMany({
@@ -109,7 +111,9 @@ module.exports = function (module) {
 				result = result.slice(start, stop !== -1 ? stop + 1 : undefined);
 			}
 		} else {
+			console.log('doQuery', key, fields, start, limit);
 			result = await doQuery(key, fields, start, limit);
+			console.log('doQuery result', result);
 		}
 
 		if (reverse) {
@@ -600,16 +604,17 @@ module.exports = function (module) {
 		if (processFn && processFn.constructor && processFn.constructor.name !== 'AsyncFunction') {
 			processFn = util.promisify(processFn);
 		}
+		const cursorIterator = cursor[Symbol.asyncIterator]();
 
 		while (!done) {
 			/* eslint-disable no-await-in-loop */
-			const item = await cursor.next();
-			if (item === null) {
-				done = true;
-			} else {
+			const next = await cursorIterator.next();
+			const item = next.value;
+			done = next.done;
+
+			if (item) {
 				ids.push(options.withScores ? item : item.value);
 			}
-
 			if (ids.length >= options.batch || (done && ids.length !== 0)) {
 				await processFn(ids);
 

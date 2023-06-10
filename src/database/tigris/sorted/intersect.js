@@ -147,7 +147,7 @@ module.exports = function (module) {
 				fields: { include: project },
 				sort: { field: 'score', order: params.sort === 1 ? '$asc' : '$desc' },
 			});
-
+		const cursorIterator = cursor[Symbol.asyncIterator]();
 		const otherSets = params.sets.filter(s => s !== sortSet);
 		let inters = [];
 		let done = false;
@@ -155,9 +155,10 @@ module.exports = function (module) {
 			/* eslint-disable no-await-in-loop */
 			const items = [];
 			while (items.length < batchSize) {
-				const nextItem = await cursor.next();
-				if (!nextItem) {
-					done = true;
+				const next = await cursorIterator.next();
+				const nextItem = next.value;
+				done = next.done;
+				if (done) {
 					break;
 				}
 				items.push(nextItem);

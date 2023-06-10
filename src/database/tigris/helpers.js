@@ -99,9 +99,9 @@ helpers.deserializeData = function (data) {
 	for (let [field, value] of Object.entries(data)) {
 		field = helpers.stringToField(field);
 		if (mapper[field]) {
-			if (mapper[field] === 'string' && value.startsWith('{') && value.endsWith('}')) {
+			if (mapper[field] === 'string' && value && value.startsWith('{') && value.endsWith('}')) {
 				value = JSON.parse(value);
-			} else if (mapper[field] === 'string') {
+			} else if (mapper[field] === 'string' && value !== null) {
 				value = String(value);
 			} else if (mapper[field] === 'number' || mapper[field] === 'integer') {
 				value = Number(value);

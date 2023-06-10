@@ -148,7 +148,7 @@ module.exports = function (module) {
 			return;
 		}
 		await module.client.getCollection('objects').deleteMany({
-			fields: keys.length === 1 ? { _key: keys[0] } : { $or: keys.map(k => ({ _key: k })) },
+			filter: keys.length === 1 ? { _key: keys[0] } : { $or: keys.map(k => ({ _key: k })) },
 		});
 		module.objectCache.del(keys);
 	};

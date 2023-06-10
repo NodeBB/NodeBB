@@ -79,6 +79,7 @@ tigrisModule.createSessionStore = async function (options) {
 };
 
 tigrisModule.createIndices = async function () {
+	await tigrisModule.createSchema();
 	if (!tigrisModule.client) {
 		winston.warn('[database/createIndices] database not initialized');
 		return;

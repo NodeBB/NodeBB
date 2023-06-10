@@ -205,7 +205,6 @@ async function completeConfigSetup(config) {
 	const db = require('./database');
 	await db.init();
 	if (db.hasOwnProperty('createIndices')) {
-		await db.createSchema();
 		await db.createIndices();
 	}
 
