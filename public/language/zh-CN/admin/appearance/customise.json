@@ -13,5 +13,8 @@
 	"custom-header.enable": "启用自定义 Header",
 
 	"custom-css.livereload": "启用实时重载",
-	"custom-css.livereload.description": "启用此功能可以在您点击保存时强制您帐户下的每个设备上的所有会话进行刷新"
+	"custom-css.livereload.description": "启用此功能可以在您点击保存时强制您帐户下的每个设备上的所有会话进行刷新",
+	"bsvariables": "_variables.scss",
+	"bsvariables.description": "Override bootstrap variables here. You can also use a tool like <a href=\"https://bootstrap.build/app\">bootstrap.build</a> and paste the output here.<br/>Changes require a rebuild & restart.",
+	"bsvariables.enable": "Enable _variables.scss"
 }

@@ -13,5 +13,8 @@
 	"custom-header.enable": "Activeer aangepaste header",
 
 	"custom-css.livereload": "Activeer Live Reload",
-	"custom-css.livereload.description": "Activeer dit om alle sessies op elk apparaat ingelogd onder jouw account te verversen elke keer wanneer je op opslaan klikt."
+	"custom-css.livereload.description": "Activeer dit om alle sessies op elk apparaat ingelogd onder jouw account te verversen elke keer wanneer je op opslaan klikt.",
+	"bsvariables": "_variables.scss",
+	"bsvariables.description": "Override bootstrap variables here. You can also use a tool like <a href=\"https://bootstrap.build/app\">bootstrap.build</a> and paste the output here.<br/>Changes require a rebuild & restart.",
+	"bsvariables.enable": "Enable _variables.scss"
 }
