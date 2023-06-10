@@ -13,5 +13,8 @@
 	"custom-header.enable": "Включване на персонализирана заглавна част",
 
 	"custom-css.livereload": "Включване на моменталното презареждане",
-	"custom-css.livereload.description": "Ако включите това, всички сесии на всяко устройство, където използвате акаунта си, ще се презареждат, когато натискате „Запазване“."
+	"custom-css.livereload.description": "Ако включите това, всички сесии на всяко устройство, където използвате акаунта си, ще се презареждат, когато натискате „Запазване“.",
+	"bsvariables": "_variables.scss",
+	"bsvariables.description": "Override bootstrap variables here. You can also use a tool like <a href=\"https://bootstrap.build/app\">bootstrap.build</a> and paste the output here.<br/>Changes require a rebuild & restart.",
+	"bsvariables.enable": "Enable _variables.scss"
 }

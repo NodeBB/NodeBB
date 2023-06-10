@@ -8,10 +8,12 @@ define('admin/appearance/customise', ['admin/settings', 'ace/ace'], function (Se
 			$('#customCSS').text($('#customCSS-holder').val());
 			$('#customJS').text($('#customJS-holder').val());
 			$('#customHTML').text($('#customHTML-holder').val());
+			$('#customVariables').text($('#customVariables-holder').val());
 
 			initACE('customCSS', 'scss', '#customCSS-holder');
 			initACE('customJS', 'javascript', '#customJS-holder');
 			initACE('customHTML', 'html', '#customHTML-holder');
+			initACE('customVariables', 'scss', '#customVariables-holder');
 
 			$('#save').on('click', function () {
 				if ($('#enableLiveReload').is(':checked')) {

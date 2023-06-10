@@ -13,5 +13,8 @@
 	"custom-header.enable": "Միացնել հատուկ Վերնագիրը",
 
 	"custom-css.livereload": "Միացնել Live Reload-ը",
-	"custom-css.livereload.description": "Միացրեք սա՝ ձեր հաշվի տակ գտնվող յուրաքանչյուր սարքի բոլոր աշխատաշրջանները ստիպելու համար թարմացնել, երբ սեղմեք «Պահել» կոճակը"
+	"custom-css.livereload.description": "Միացրեք սա՝ ձեր հաշվի տակ գտնվող յուրաքանչյուր սարքի բոլոր աշխատաշրջանները ստիպելու համար թարմացնել, երբ սեղմեք «Պահել» կոճակը",
+	"bsvariables": "_variables.scss",
+	"bsvariables.description": "Override bootstrap variables here. You can also use a tool like <a href=\"https://bootstrap.build/app\">bootstrap.build</a> and paste the output here.<br/>Changes require a rebuild & restart.",
+	"bsvariables.enable": "Enable _variables.scss"
 }

@@ -13,5 +13,8 @@
 	"custom-header.enable": "Egyéni fejléc engedélyezése",
 
 	"custom-css.livereload": "Élő újratöltés engedélyezése",
-	"custom-css.livereload.description": "Engedélyezésével fiókod alá eső minden eszközön az összes munkamenet kényszerűen frissül akárhányszor a mentésre kattintasz"
+	"custom-css.livereload.description": "Engedélyezésével fiókod alá eső minden eszközön az összes munkamenet kényszerűen frissül akárhányszor a mentésre kattintasz",
+	"bsvariables": "_variables.scss",
+	"bsvariables.description": "Override bootstrap variables here. You can also use a tool like <a href=\"https://bootstrap.build/app\">bootstrap.build</a> and paste the output here.<br/>Changes require a rebuild & restart.",
+	"bsvariables.enable": "Enable _variables.scss"
 }
