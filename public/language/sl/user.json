@@ -141,6 +141,8 @@
     "group-order-help": "Izberi skupino in uporabi puščice za razvrstitev naslovov",
     "no-group-title": "Skupina nima imena",
     "select-skin": "Izberi preobleko",
+    "default": "Default (%1)",
+    "no-skin": "No Skin",
     "select-homepage": "Izberi domačo stran",
     "homepage": "Domača stran",
     "homepage_description": "Izberite stran, ki jo želite uporabiti kot domačo stran foruma, ali 'Brez', če želite uporabiti privzeto domačo stran.",

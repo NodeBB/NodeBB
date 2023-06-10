@@ -141,6 +141,8 @@
     "group-order-help": "Wähle eine Gruppe und ordne die Titel mit den Pfeiltasten",
     "no-group-title": "Kein Gruppentitel",
     "select-skin": "Einen Skin auswählen",
+    "default": "Default (%1)",
+    "no-skin": "No Skin",
     "select-homepage": "Startseite",
     "homepage": "Startseite",
     "homepage_description": "Wähle eine Seite, die als Forumstartseite verwendet werden soll, aus oder 'Keine' um die Standardstartseite zu verwenden.",

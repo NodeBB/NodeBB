@@ -141,6 +141,8 @@
     "group-order-help": "Zgjidhni një grup dhe përdorni shigjetat për të renditur titujt",
     "no-group-title": "Pa titull grupi",
     "select-skin": "Zgjidhni nje karakter",
+    "default": "Default (%1)",
+    "no-skin": "No Skin",
     "select-homepage": "Zgjidhni një Faqe kryesore",
     "homepage": "Kryefaqe",
     "homepage_description": "Zgjidhni një faqe për t'u përdorur si faqen kryesore të forumit ose 'Asnjë' për të përdorur faqen kryesore të paracaktuar.",

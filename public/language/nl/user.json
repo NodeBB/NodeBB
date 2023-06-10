@@ -141,6 +141,8 @@
     "group-order-help": "Selecteer een groep en gebruik de pijltjes om titels te sorteren",
     "no-group-title": "Geen groepstitel",
     "select-skin": "Selecteer een skin",
+    "default": "Default (%1)",
+    "no-skin": "No Skin",
     "select-homepage": "Selecteer een startpagina",
     "homepage": "Startpagina",
     "homepage_description": "Selecteer een pagina om te gebruiken als startpagina, of selecteer geen om de standaard pagina te gebruiken.",

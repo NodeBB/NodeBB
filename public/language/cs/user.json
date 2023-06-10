@@ -141,6 +141,8 @@
     "group-order-help": "Vyberte si skupiny a použijte šipky pro seřazení titulů",
     "no-group-title": "Žádný nadpis skupiny",
     "select-skin": "Vybrat vzhled",
+    "default": "Default (%1)",
+    "no-skin": "No Skin",
     "select-homepage": "Vybrat domovskou stránku",
     "homepage": "Domovská stránka",
     "homepage_description": "Vyberte stránku, která má být domovskou stránkou fóra nebo vyberte „Nic” a bude použita výchozí domovská stránka.",

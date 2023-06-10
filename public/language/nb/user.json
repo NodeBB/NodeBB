@@ -141,6 +141,8 @@
     "group-order-help": "Velg en gruppe og bruk pilene for å gi titler ",
     "no-group-title": "Ingen gruppetittel",
     "select-skin": "Velg et skin",
+    "default": "Default (%1)",
+    "no-skin": "No Skin",
     "select-homepage": "Velg en hjemmeside",
     "homepage": "Hjemmeside",
     "homepage_description": "Velg en side du vil bruke som forumets hjemmeside, eller 'Ingen' for å bruke standardhjemmesiden.",

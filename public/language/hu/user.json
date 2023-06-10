@@ -141,6 +141,8 @@
     "group-order-help": "Válassz ki egy csoportot és használd a nyilakat, hogy elrendezd a címeket",
     "no-group-title": "Nincs csoportcím",
     "select-skin": "Válassz egy kinézetet",
+    "default": "Default (%1)",
+    "no-skin": "No Skin",
     "select-homepage": "Válasz egy kezdőlapot",
     "homepage": "Kezdőlap",
     "homepage_description": "Válasz egy oldalt a fórum kezdőlapjához, vagy az alapértelmezett kezdőlaphoz a 'Nincs' lehetőséget.",

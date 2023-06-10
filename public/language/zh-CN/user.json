@@ -141,6 +141,8 @@
     "group-order-help": "选择群组然后使用箭头排列称号",
     "no-group-title": "不展示群组称号",
     "select-skin": "选择皮肤",
+    "default": "Default (%1)",
+    "no-skin": "No Skin",
     "select-homepage": "选择首页",
     "homepage": "首页",
     "homepage_description": "选择一个页面作为论坛的首页，否则设置为 ‘空’ 使用默认首页。",
