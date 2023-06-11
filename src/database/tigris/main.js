@@ -74,12 +74,14 @@ module.exports = function (module) {
 				}
 			}
 			if (item) {
+				const writeData = helpers.serializeData(data);
 				await module.client.getCollection('objects').updateOne({
 					filter: { _key: key },
-					fields: data,
+					fields: writeData,
 				});
 			} else {
-				await module.client.getCollection('objects').insertOne({ ...data, _key: key });
+				const writeData = helpers.serializeData({ ...data, _key: key });
+				await module.client.getCollection('objects').insertOne(writeData);
 			}
 
 			return data;
@@ -114,12 +116,14 @@ module.exports = function (module) {
 				}
 			}
 			if (item) {
+				const writeData = helpers.serializeData(data);
 				await module.client.getCollection('objects').updateOne({
 					filter: filter,
-					fields: data,
+					fields: writeData,
 				});
 			} else {
-				await module.client.getCollection('objects').insertOne({ ...data, ...filter });
+				const writeData = helpers.serializeData({ ...data, ...filter });
+				await module.client.getCollection('objects').insertOne(writeData);
 			}
 
 			return data;
@@ -186,10 +190,12 @@ module.exports = function (module) {
 			return;
 		}
 
-		await module.upsert(key, 'data');
+		const old = await module.upsert(key, 'data');
+		const current = old.data !== undefined ? Number(old.data) + 1 : 1;
+		const writeData = helpers.serializeData({ data: current });
 		await module.client.getCollection('objects').updateOne({
 			filter: { _key: key },
-			fields: { $increment: { data: 1 } },
+			fields: writeData,
 		});
 		const result = await module.client.getCollection('objects')
 			.findOne({ filter: { _key: key }, fields: { include: ['data'] } });

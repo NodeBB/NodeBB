@@ -75,6 +75,10 @@ helpers.serializeData = function (data) {
 	const serialized = {};
 	for (let [field, value] of Object.entries(data)) {
 		if (field !== '') {
+			if (!mapper[field]) {
+				field = helpers.stringToField(field);
+			}
+
 			if (mapper[field]) {
 				if (mapper[field] === 'string' && typeof value === 'object' && value !== null) {
 					value = JSON.stringify(value);
@@ -89,6 +93,9 @@ helpers.serializeData = function (data) {
 			}
 			serialized[helpers.fieldToString(field)] = value;
 		}
+	}
+	if (Object.keys(serialized).length !== Object.keys(data).length) {
+		throw new Error(`Invalid field name founds in data: ${JSON.stringify(data)} - serialised: ${JSON.stringify(serialized)}`);
 	}
 	return serialized;
 };

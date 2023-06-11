@@ -245,8 +245,9 @@ module.exports = function (module) {
 			await Promise.all(key.map(async (key) => {
 				const old = await module.upsert(key, field);
 				const current = old && old[field] !== undefined ? old[field] : 0;
-				const fields = {};
+				let fields = {};
 				fields[field] = current + value;
+				fields = helpers.serializeData(fields);
 				return collection.updateMany({
 					filter: { _key: key },
 					fields: fields,
@@ -259,9 +260,10 @@ module.exports = function (module) {
 		}
 		try {
 			const old = await module.upsert(key, field);
-			const current = old && old[field] !== undefined ? old[field] : 0;
-			const fields = {};
+			const current = old && old[field] !== undefined ? Number(old[field]) : 0;
+			let fields = {};
 			fields[field] = current + value;
+			fields = helpers.serializeData(fields);
 			await module.client.getCollection('objects').updateOne({
 				filter: { _key: key },
 				fields: fields,
@@ -290,17 +292,18 @@ module.exports = function (module) {
 		}
 		const collection = module.client.getCollection('objects');
 		await Promise.all(data.map(async (item) => {
-			const increment = {};
+			let increment = {};
 			for (const [field, value] of Object.entries(item[1])) {
 				increment[helpers.fieldToString(field)] = value;
 			}
 			const old = await module.upsert(item[0], Object.keys(increment));
 			if (old) {
 				for (const [field, value] of Object.entries(item[1])) {
-					const current = old[field] !== undefined ? old[field] : 0;
+					const current = old[field] !== undefined ? Number(old[field]) : 0;
 					increment[field] = current + value;
 				}
 			}
+			increment = helpers.serializeData(increment);
 			return collection
 				.updateMany({ filter: { _key: item[0] }, fields: increment });
 		}));
