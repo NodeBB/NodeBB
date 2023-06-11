@@ -64,18 +64,14 @@ tigrisModule.init = async function () {
 };
 
 tigrisModule.createSessionStore = async function (options) {
-	// TODO -  Find where this is being used.
-	console.log('options: ', options);
-	throw new Error('Not implemented');
-	// const MongoStore = require('connect-mongo');
-	// const meta = require('../meta');
+	const TigrisStore = require('./tigris/TigrisStore').default;
+	const meta = require('../meta');
+	const store = TigrisStore.create({
+		clientPromise: connection.connect(options),
+		ttl: meta.getSessionTTLSeconds(),
+	});
 
-	// const store = MongoStore.create({
-	// clientPromise: connection.connect(options),
-	// ttl: meta.getSessionTTLSeconds(),
-	// });
-
-	// return store;
+	return store;
 };
 
 tigrisModule.createIndices = async function () {
@@ -95,7 +91,6 @@ tigrisModule.createIndices = async function () {
 };
 
 tigrisModule.createSchema = async function () {
-	// TODO: Remove this when using TigrisDB core, this is just a temporary solution.
 	// Schema can be added directly using TigrisDB core.
 	const schema = {
 		schema: require('./tigris/schema').schemaObject,

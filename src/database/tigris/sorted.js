@@ -86,8 +86,6 @@ module.exports = function (module) {
 				filter = { $or: _key.map(k => ({ _key: k, score: score })) };
 			}
 
-			console.log('doQuery', filter, fields, skip, limit, sort);
-
 			return await module.client.getCollection('objects')
 				.findMany({
 					filter: filter,
@@ -111,9 +109,7 @@ module.exports = function (module) {
 				result = result.slice(start, stop !== -1 ? stop + 1 : undefined);
 			}
 		} else {
-			console.log('doQuery', key, fields, start, limit);
 			result = await doQuery(key, fields, start, limit);
-			console.log('doQuery result', result);
 		}
 
 		if (reverse) {
