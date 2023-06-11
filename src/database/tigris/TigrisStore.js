@@ -176,6 +176,18 @@ class TigrisStore extends session.Store {
 		return sessionId;
 	}
 
+	encodeBase64(data) {
+		if (this) {
+			return Buffer.from(data).toString('base64');
+		}
+	}
+
+	decodeBase64(data) {
+		if (this) {
+			return Buffer.from(data, 'base64').toString();
+		}
+	}
+
 	/**
      * promisify and bind the `this.crypto.get` function.
      * Please check !!this.crypto === true before using this getter!
@@ -219,6 +231,10 @@ class TigrisStore extends session.Store {
 
 					},
 				});
+				if (session && session.session) {
+					session.session = this.decodeBase64(session.session);
+				}
+
 				if (this.crypto && session) {
 					await this.decryptSession(session).catch(err => callback(err));
 				}
@@ -278,6 +294,7 @@ class TigrisStore extends session.Store {
 					});
 					s.session = data;
 				}
+				s.session = this.encodeBase64(s.session);
 				const collection = await this.collectionP;
 				const exist = await collection.findOne({ filter: { _id: s._id } });
 				const rawResp = exist ? await collection.updateOne({
@@ -359,6 +376,9 @@ class TigrisStore extends session.Store {
 					if (session && session.expires && session.expires < new Date()) {
 						// eslint-disable-next-line no-continue
 						continue;
+					}
+					if (session && session.session) {
+						session.session = this.decodeBase64(session.session);
 					}
 					if (this.crypto && session) {
 						await this.decryptSession(session);

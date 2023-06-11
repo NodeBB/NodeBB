@@ -128,11 +128,11 @@ tigrisModule.createSchema = async function () {
 						console.log('response: ', response);
 					})
 					.catch((err) => {
-						console.error('Error: ', err);
+						console.error('Error: ', err.message);
 					});
 			}
-		}).catch((err) => {
-			console.error('Error: ', err);
+		}).catch(() => {
+			console.error('Error: unable to create schema: ');
 		});
 };
 

@@ -8,7 +8,7 @@ module.exports = function (module) {
 	};
 
 	module.emptydb = async function () {
-		await module.client.collection('objects').deleteMany({ filter: {} });
+		await module.client.getCollection('objects').deleteMany({ filter: {} });
 		module.objectCache.reset();
 	};
 
@@ -130,7 +130,7 @@ module.exports = function (module) {
 		// TODO - This needs to be implemented for tigris.
 		console.log('scan not implemented for tigriscomp');
 		const match = helpers.buildMatchQuery(params.match);
-		return await module.client.collection('objects').distinct(
+		return await module.client.getCollection('objects').distinct(
 			'_key', { _key: { $regex: new RegExp(match) } }
 		);
 	};

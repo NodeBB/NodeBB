@@ -91,7 +91,7 @@ module.exports = function (module) {
 
 	async function intersectSingle(params) {
 		const { FindQueryOptions } = require('@tigrisdata/core');
-		const objects = module.client.collection('objects');
+		const objects = module.client.getCollection('objects');
 		const sortSet = params.sets[params.weights.indexOf(1)];
 		if (sortSet === params.counts.smallestSet) {
 			return await intersectBatch(params);

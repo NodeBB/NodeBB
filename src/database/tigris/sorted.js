@@ -470,7 +470,7 @@ module.exports = function (module) {
 	module.sortedSetIncrByBulk = async function (data) {
 		await Promise.all(data.map(async (item) => {
 			await module.upsertFilter({ _key: item[0], value: helpers.valueToString(item[2]) }, 'score');
-			return module.client.collection('objects').updateOne({
+			return module.client.getCollection('objects').updateOne({
 				filter: { _key: item[0], value: helpers.valueToString(item[2]) },
 				fields: { $increment: { score: parseFloat(item[1]) } },
 			});
