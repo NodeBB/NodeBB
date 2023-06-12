@@ -19,9 +19,14 @@ module.exports = function (module) {
 		const otherSets = keys.filter(s => s !== counts.smallestSet);
 		for (let i = 0; i < otherSets.length; i++) {
 			/* eslint-disable no-await-in-loop */
-			const query = items.length === 1 ? { _key: otherSets[i], value: items[0].value } : {
-				$or: items.map(i => ({ _key: otherSets[i], value: i.value })),
-			};
+			const query = items.length === 1 ?
+				{ _key: otherSets[i], value: items[0].value } :
+				{
+					$and: [
+						{ _key: otherSets[i] },
+						{ $or: items.map(i => ({ value: i.value })) },
+					],
+				};
 			if (i === otherSets.length - 1) {
 				return (await objects.findMany({
 					filter: query,
@@ -110,8 +115,15 @@ module.exports = function (module) {
 		otherSets.push(otherSets.splice(otherSets.indexOf(sortSet), 1)[0]);
 		for (let i = 0; i < otherSets.length; i++) {
 			/* eslint-disable no-await-in-loop */
-			const query = items.length === 1 ? { _key: otherSets[i], value: items[0].value } :
-				{ $or: items.map(i => ({ _key: otherSets[i], value: i.value })) };
+			const query = items.length === 1 ?
+				{ _key: otherSets[i], value: items[0].value } :
+				{
+					$and: [
+						{ _key: otherSets[i] },
+						{ $or: items.map(i => ({ value: i.value })) },
+					],
+				};
+
 			const { length } = items;
 			// at the last step sort by sortSet
 			if (i === otherSets.length - 1) {
@@ -166,8 +178,14 @@ module.exports = function (module) {
 
 			const members = await Promise.all(otherSets.map(async (s) => {
 				const data = (await module.client.getCollection('objects').findMany({
-					filter: items.length === 1 ? { _key: s, value: items[0].value } :
-						{ $or: items.map(i => ({ _key: s, value: i.value })) },
+					filter: items.length === 1 ?
+						{ _key: s, value: items[0].value } :
+						{
+							$and: [
+								{ _key: s },
+								{ $or: items.map(i => ({ value: i.value })) },
+							],
+						},
 					fields: { include: ['value'] },
 				}).toArray()).slice(0, items.length + 1);
 

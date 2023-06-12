@@ -17,30 +17,21 @@ module.exports = function (module) {
 		} else {
 			value = helpers.valueToString(value);
 		}
-		const filter = [];
 
-		if (Array.isArray(key)) {
-			key.forEach((k) => {
-				if (isValueArray) {
-					value.forEach((v) => {
-						filter.push({ _key: k, value: v });
-					});
-				} else {
-					filter.push({ _key: k, value: value });
-				}
-			});
-		} else if (isValueArray) {
-			value.forEach((v) => {
-				filter.push({ _key: key, value: v });
-			});
+		const conditions = [];
+		if (Array.isArray(key) && key.length > 1) {
+			conditions.push({ $or: key.map(k => ({ _key: k })) });
 		} else {
-			// If neither key nor value are arrays, no need for $or
-			await module.client.getCollection('objects').deleteMany({ filter: { _key: key, value: value } });
-			return;
+			conditions.push({ _key: key });
 		}
 
+		if (isValueArray && value.length > 1) {
+			conditions.push({ $or: value.map(v => ({ value: v })) });
+		} else {
+			conditions.push({ value: value });
+		}
 		// Delete documents that match any of the conditions in the filter
-		await module.client.getCollection('objects').deleteMany({ filter: filter.length === 1 ? filter[0] : { $or: filter } });
+		await module.client.getCollection('objects').deleteMany({ filter: { $and: conditions } });
 	};
 
 	module.sortedSetsRemove = async function (keys, value) {
@@ -51,7 +42,12 @@ module.exports = function (module) {
 
 		await module.client.getCollection('objects').deleteMany({
 			filter: keys.length === 1 ? { _key: keys[0], value } :
-				{ $or: keys.map(key => ({ _key: key, value })) },
+				{
+					$and: [
+						{ $or: keys.map(key => ({ _key: key })) },
+						{ value: value },
+					],
+				},
 		});
 	};
 
@@ -70,7 +66,12 @@ module.exports = function (module) {
 		await module.client.getCollection('objects').deleteMany({
 			filter: keys.length === 1 ?
 				{ _key: keys[0], score } :
-				{ $or: keys.map(key => ({ _key: key, score })) },
+				{
+					$and: [
+						{ $or: keys.map(key => ({ _key: key })) },
+						{ score },
+					],
+				},
 		});
 	};
 

@@ -226,7 +226,12 @@ class TigrisStore extends session.Store {
 					filter: {
 						$or: [
 							{ _id: this.computeStorageId(sid) },
-							{ _id: this.computeStorageId(sid), expires: { $gt: new Date() } },
+							{
+								$and: [
+									{ _id: this.computeStorageId(sid) },
+									{ expires: { $gt: new Date() } },
+								],
+							},
 						],
 
 					},

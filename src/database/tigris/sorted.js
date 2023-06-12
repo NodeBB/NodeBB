@@ -1,5 +1,6 @@
 'use strict';
 
+const _ = require('lodash');
 const utils = require('../../utils');
 
 module.exports = function (module) {
@@ -75,15 +76,20 @@ module.exports = function (module) {
 			const isArray = Array.isArray(_key);
 			let filter;
 			if (!isArray || (isArray && _key.length === 1)) {
-				if (Object.keys(score).length === 0) {
+				if (typeof score === 'object' && Object.keys(score).length === 0) {
 					filter = { _key: isArray ? _key[0] : _key };
 				} else {
 					filter = { _key: isArray ? _key[0] : _key, score: score };
 				}
-			} else if (Object.keys(score).length === 0) {
+			} else if (typeof score === 'object' && Object.keys(score).length === 0) {
 				filter = { $or: _key.map(k => ({ _key: k })) };
 			} else {
-				filter = { $or: _key.map(k => ({ _key: k, score: score })) };
+				filter = {
+					$and: [
+						{ $or: _key.map(k => ({ _key: k })) },
+						{ score: score },
+					],
+				};
 			}
 
 			return await module.client.getCollection('objects')
@@ -214,13 +220,17 @@ module.exports = function (module) {
 		return await module.countDocs({
 			$or: [
 				{
-					_key: key,
-					score: reverse ? { $gt: score } : { $lt: score },
+					$and: [
+						{ _key: key },
+						{ score: reverse ? { $gt: score } : { $lt: score } },
+					],
 				},
 				{
-					_key: key,
-					score: score,
-					value: reverse ? { $gt: value } : { $lt: value },
+					$and: [
+						{ _key: key },
+						{ score: score },
+						{ value: reverse ? { $gt: value } : { $lt: value } },
+					],
 				},
 			],
 		});
@@ -287,7 +297,12 @@ module.exports = function (module) {
 		value = helpers.valueToString(value);
 		const result = await module.client.getCollection('objects').findMany({
 			filter: keys.length === 1 ? { _key: keys[0], value: value } :
-				{ $or: keys.map(k => ({ _key: k, value: value })) },
+				{
+					$and: [
+						{ $or: keys.map(k => ({ _key: k })) },
+						{ value: value },
+					],
+				},
 			fields: { exclude: ['_id', 'value'] },
 		}).toArray();
 		const map = {};
@@ -310,7 +325,12 @@ module.exports = function (module) {
 		values = values.map(helpers.valueToString);
 		const result = await module.client.getCollection('objects').findMany({
 			filter: values.length === 1 ? { _key: key, value: values[0] } :
-				{ $or: values.map(v => ({ _key: key, value: v })) },
+				{
+					$and: [
+						{ $or: values.map(v => ({ value: v })) },
+						{ _key: key },
+					],
+				},
 			fields: { exclude: ['_id', '_key'] },
 		}).toArray();
 
@@ -348,7 +368,12 @@ module.exports = function (module) {
 		values = values.map(helpers.valueToString);
 		const results = await module.client.getCollection('objects').findMany({
 			filter: values.length === 1 ? { _key: key, value: values[0] } :
-				{ $or: values.map(v => ({ _key: key, value: v })) },
+				{
+					$and: [
+						{ _key: key },
+						{ $or: values.map(v => ({ value: v })) },
+					],
+				},
 			fields: { include: ['value'] },
 		}).toArray();
 
@@ -369,7 +394,12 @@ module.exports = function (module) {
 
 		const results = await module.client.getCollection('objects').findMany({
 			filter: keys.length === 1 ? { _key: keys[0], value: value } :
-				{ $or: keys.map(k => ({ _key: k, value: value })) },
+				{
+					$and: [
+						{ $or: keys.map(k => ({ _key: k })) },
+						{ value: value },
+					],
+				},
 			fields: { include: ['_key', 'value'] },
 		}).toArray();
 
@@ -476,16 +506,14 @@ module.exports = function (module) {
 			});
 		}));
 
-		const maps = [];
-		data.forEach((item) => {
-			data.forEach((item2) => {
-				maps.push({ _key: item[0], value: item2[2] });
-			});
-		});
-
 		const result = await module.client.getCollection('objects').findMany({
-			filter: maps.length === 1 ? { _key: maps[0]._key, value: maps[0].value } :
-				{ $or: maps },
+			filter: data.length === 1 ? { _key: data[0][0], value: data[0][2] } :
+				{
+					$and: [
+						{ $or: _.uniq(data.map(d => ({ _key: d[0] }))) },
+						{ $or: _.uniq(data.map(d => ({ value: d[2] }))) },
+					],
+				},
 			fields: { include: ['_key', 'value', 'score'] },
 		}).toArray();
 

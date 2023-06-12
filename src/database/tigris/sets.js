@@ -128,7 +128,12 @@ module.exports = function (module) {
 		const result = await module.client.getCollection('objects')
 			.findMany({
 				filter: sets.length === 1 ? { _key: sets[0], members: value } :
-					{ $or: sets.map(set => ({ _key: set, members: value })) },
+					{
+						$and: [
+							{ $or: sets.map(set => ({ _key: set })) },
+							{ members: value },
+						],
+					},
 				fields: { exclude: ['_id', 'members'] },
 			}).toArray();
 
