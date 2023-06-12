@@ -15,6 +15,6 @@
 	"custom-css.livereload": "Включване на моменталното презареждане",
 	"custom-css.livereload.description": "Ако включите това, всички сесии на всяко устройство, където използвате акаунта си, ще се презареждат, когато натискате „Запазване“.",
 	"bsvariables": "_variables.scss",
-	"bsvariables.description": "Override bootstrap variables here. You can also use a tool like <a href=\"https://bootstrap.build/app\">bootstrap.build</a> and paste the output here.<br/>Changes require a rebuild & restart.",
-	"bsvariables.enable": "Enable _variables.scss"
+	"bsvariables.description": "Тук може да промените променливите на bootstrap. Можете също да използвате и инструмент като <a href=\"https://bootstrap.build/app\">bootstrap.build</a> и да копирате резултата от него тук.<br/>Промените изискват повторно изграждане и рестартиране.",
+	"bsvariables.enable": "Включване на _variables.scss"
 }
