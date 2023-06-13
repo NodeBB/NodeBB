@@ -1,4 +1,5 @@
 {
+	"errors": "Errors",
 	"figure-x": "%1を見つける",
 	"error-events-per-day": "<code>%1</code> 日あたりのイベント",
 	"error.404": "404 Not Found",

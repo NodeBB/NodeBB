@@ -1,4 +1,5 @@
 {
+	"errors": "Errors",
 	"figure-x": "شكل %1",
 	"error-events-per-day": "<code>%1</code> حدث كل يوم ",
 	"error.404": "404 لم يتم العثور",
