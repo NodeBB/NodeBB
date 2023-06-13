@@ -15,6 +15,6 @@
 	"custom-css.livereload": "Abilita Ricarica Istantanea",
 	"custom-css.livereload.description": "Abilitala per forzare tutte le sessioni su ogni dispositivo sotto il tuo account ad aggiornarsi ogni volta che si fa clic su Salva",
 	"bsvariables": "_variables.scss",
-	"bsvariables.description": "Override bootstrap variables here. You can also use a tool like <a href=\"https://bootstrap.build/app\">bootstrap.build</a> and paste the output here.<br/>Changes require a rebuild & restart.",
-	"bsvariables.enable": "Enable _variables.scss"
+	"bsvariables.description": "Sovrascrivi qui le variabili di bootstrap. Puoi anche usare uno strumento come <a href=\"https://bootstrap.build/app\">bootstrap.build</a> e incollare qui il risultato.<br/>Le modifiche richiedono una ricostruzione e un riavvio.",
+	"bsvariables.enable": "Abilita _variables.scss"
 }
