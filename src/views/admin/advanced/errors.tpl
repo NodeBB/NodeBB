@@ -4,12 +4,12 @@
 			<h4 class="fw-bold tracking-tight mb-0">[[admin/advanced/errors:errors]]</h4>
 		</div>
 		<div class="d-flex align-items-center gap-1">
-			<a class="btn btn-sm btn-light text-nowrap" target="_top" href="{config.relative_path}/admin/advanced/errors/export">
-				<i class="fa fa-download text-primary"></i> [[admin/advanced/errors:export-error-log]]
-			</a>
 			<button class="btn btn-sm btn-light text-nowrap" data-action="clear">
 				<i class="fa fa-trash text-danger"></i> [[admin/advanced/errors:clear-error-log]]
 			</button>
+			<a class="btn btn-sm btn-light text-nowrap" target="_top" href="{config.relative_path}/admin/advanced/errors/export">
+				<i class="fa fa-download text-primary"></i> [[admin/advanced/errors:export-error-log]]
+			</a>
 		</div>
 	</div>
 
