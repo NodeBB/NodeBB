@@ -477,7 +477,8 @@ ajaxify.widgets = { render: render };
 		translator.translate(`[[global:reconnecting-message, ${config.siteTitle}]]`);
 		Benchpress.registerLoader(ajaxify.loadTemplate);
 		Benchpress.setGlobal('config', config);
-		Benchpress.render('500', {}); // loads and caches the 500.tpl
+		Benchpress.render('500', {}); // loads and caches 500.tpl
+		Benchpress.render('partials/toast'); // loads and caches partials/toast
 	});
 }());
 
