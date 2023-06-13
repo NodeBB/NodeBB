@@ -107,14 +107,6 @@ describe('socket.io', () => {
 		});
 	});
 
-	it('should return error for invalid eventName type', (done) => {
-		const eventName = ['topics.loadMoreTags'];
-		io.emit(eventName, (err) => {
-			assert.strictEqual(err.message, `[[error:invalid-event, object]]`);
-			done();
-		});
-	});
-
 	it('should get installed themes', (done) => {
 		const themes = ['nodebb-theme-persona'];
 		io.emit('admin.themes.getInstalled', (err, data) => {

@@ -208,9 +208,6 @@ module.exports = function (User) {
 
 	async function deleteImages(uid) {
 		const folder = path.join(nconf.get('upload_path'), 'profile');
-		await Promise.all([
-			rimraf(path.join(folder, `${uid}-profilecover*`), { glob: true }),
-			rimraf(path.join(folder, `${uid}-profileavatar*`), { glob: true }),
-		]);
+		await rimraf(`${uid}-profile{avatar,cover}*`, { glob: { cwd: folder } });
 	}
 };

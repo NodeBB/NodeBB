@@ -22,8 +22,9 @@
 				{{{ end }}}
 				{{{ each sessions }}}
 				<tr>
-					<td>
-						<a href="{config.relative_path}/uid/{./user.uid}">{buildAvatar(./user, "sm", true)} {../username}</a>
+					<td class="d-flex gap-2 align-items-center">
+						<a href="{config.relative_path}/uid/{./user.uid}">{buildAvatar(./user, "18px", true)}</a>
+						<a href="{config.relative_path}/uid/{./user.uid}">{./user.username}</a>
 						{function.userAgentIcons} {../browser} {../version} on {../platform}
 					</td>
 					<td><span class="timeago" title="{./datetimeISO}"></span></td>
