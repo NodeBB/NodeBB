@@ -73,7 +73,13 @@ define('uploader', ['jquery-form'], function () {
 			},
 			error: function (xhr) {
 				xhr = maybeParse(xhr);
-				showAlert(uploadModal, 'error', xhr.responseJSON?.error || `[[error:upload-error-fallback, ${xhr.status} ${xhr.statusText}]]`);
+				showAlert(
+					uploadModal,
+					'error',
+					xhr.responseJSON?.status?.message || // apiv3
+					xhr.responseJSON?.error || // { "error": "[[error:some-error]]]" }
+					`[[error:upload-error-fallback, ${xhr.status} ${xhr.statusText}]]`
+				);
 			},
 			uploadProgress: function (event, position, total, percent) {
 				uploadModal.find('#upload-progress-bar').css('width', percent + '%');
