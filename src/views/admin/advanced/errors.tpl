@@ -10,7 +10,6 @@
 			<button class="btn btn-sm btn-light text-nowrap" data-action="clear">
 				<i class="fa fa-trash text-danger"></i> [[admin/advanced/errors:clear-error-log]]
 			</button>
-
 		</div>
 	</div>
 
@@ -54,7 +53,7 @@
 						<tbody>
 							{{{ each not-found }}}
 							<tr>
-								<td>{./value}</td>
+								<td class="text-break">{./value}</td>
 								<td class="text-end">{./score}</td>
 							</tr>
 							{{{ end }}}
