@@ -1,4 +1,5 @@
 {
+	"logger": "Logger",
 	"logger-settings": "Nastavení protokolování",
 	"description": "Povolením zaškrtávacích polí, budete dostávat protokoly na váš terminál. Nastavíte-li cestu, protokoly budou místo toho uloženy do souboru. Protokolování HTTP je vhodné pro vytvoření statistiky o tom, kdo, kdy a jací lidé přistupují k vašemu fóru. Dodatečně k těmto protokolům můžeme zapisovat i události z socket.io. Protokolování socket.io v kombinaci s monitorem redis-cli je vhodné k porozumění vnitřním strukturám NodeBB.",
 	"explanation": "Jednoduše zaškrtněte/odškrtněte nastavení protokolu, změny se projeví okamžitě bez restartování.",

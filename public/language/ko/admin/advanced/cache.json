@@ -1,4 +1,5 @@
 {
+	"cache": "Cache",
 	"post-cache": "포스트 캐시",
 	"group-cache": "그룹 캐시",
 	"local-cache": "자체 캐시",

@@ -1,4 +1,5 @@
 {
+	"logger": "Logger",
 	"logger-settings": "Ajustes de registro",
 	"description": "Activando las casillas de verificación, recibirás logs/informes en tu terminal. Si especificas una ruta, en su lugar los logs/informes serán salvados a un archivo. los informes/logs HTTP son útiles para recolectar estadísticas sobre quien, cuando y qué accede a tu foro. Además crear informes de accesos mediante peticiones HTTP, podemos también informar sobre eventos socket.io. Los accesos socket.io, en co,binación con un monitor redis-cli, pueden ser muy útiles para aprender el funcionamiento interno de NodeBB.",
 	"explanation": "Simplemente marca/desmarca los ajustes de registro para activar o desactivar registro en el aire. No se necesita reinicio.",

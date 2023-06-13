@@ -1,4 +1,5 @@
 {
+	"cache": "Cache",
 	"post-cache": "投稿キャッシュ",
 	"group-cache": "Group Cache",
 	"local-cache": "Local Cache",

@@ -1,4 +1,5 @@
 {
+	"errors": "Errors",
 	"figure-x": "Vyřešit %1",
 	"error-events-per-day": "<code>%1</code> událostí za den",
 	"error.404": "Chyba 404 – nenalezeno",

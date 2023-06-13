@@ -1,4 +1,5 @@
 {
+	"errors": "Errors",
 	"figure-x": "Figure %1",
 	"error-events-per-day": "<code>%1</code> events per day",
 	"error.404": "ارور 404 یافت نشد",

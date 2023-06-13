@@ -1,4 +1,5 @@
 {
+	"logger": "Logger",
 	"logger-settings": "Nastavitve beleženja",
 	"description": "Če omogočite potrditvena polja, boste prejemali dnevnike na svoj terminal. Če določite pot, se bodo dnevniki namesto tega shranili v datoteko. Zapisovanje HTTP je uporabno za zbiranje statističnih podatkov o tem, kdo, kdaj in do česa ljudje dostopajo na vašem forumu. Poleg beleženja zahtev HTTP lahko beležimo tudi dogodke socket.io. Zapisovanje Socket.io v kombinaciji z monitorjem redis-cli je lahko v veliko pomoč pri učenju notranjosti NodeBB.",
 	"explanation": "Preprosto preverite/počistite nastavitve beleženja, če želite omogočiti ali onemogočiti sprotno beleženje. Ponovni zagon ni potreben.",
