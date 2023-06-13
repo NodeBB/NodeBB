@@ -54,17 +54,13 @@
 						<label class="form-label" for="perPage">[[admin/advanced/events:filter-perPage]]</label>
 						<input type="text" id="perPage" name="perPage" value="{query.perPage}" class="form-control" />
 					</div>
-					<div class="d-grid">
-						<button type="submit" class="btn btn-primary" id="apply">[[admin/advanced/events:filters-apply]]</button>
+					<div class="d-grid gap-1">
+						<button type="submit" class="btn btn-sm btn-light" id="apply"><i class="fa fa-filter text-primary"></i> [[admin/advanced/events:filters-apply]]</button>
+						<button class="btn btn-sm btn-light" data-action="clear">
+							<i class="fa fa-trash text-danger"></i> [[admin/advanced/events:delete-events]]
+						</button>
 					</div>
 				</form>
-			</div>
-		</div>
-		<div class="card">
-			<div class="card-body d-grid">
-				<button class="btn btn-danger" data-action="clear">
-					<i class="fa fa-eraser"></i> [[admin/advanced/events:delete-events]]
-				</button>
 			</div>
 		</div>
 	</div>
