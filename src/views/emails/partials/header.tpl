@@ -142,12 +142,6 @@
             max-width: 100%;
             height: auto;
         }
-        /* https://github.com/NodeBB/NodeBB/issues/11572 */
-        img[src*="nodebb-plugin-emoji"] {
-            width: 23px;
-            height: auto;
-            vertical-align: top;
-        }
     </style>
 
     <!-- What it does: Makes background images in 72ppi Outlook render at correct size. -->
