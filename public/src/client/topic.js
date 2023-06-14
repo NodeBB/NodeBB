@@ -383,7 +383,7 @@ define('forum/topic', [
 	}
 
 	function setupQuickReply() {
-		if (config.enableQuickReply || config.theme.enableQuickReply) {
+		if (config.enableQuickReply || (config.theme && config.theme.enableQuickReply)) {
 			quickreply.init();
 		}
 	}
