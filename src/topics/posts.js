@@ -319,6 +319,9 @@ module.exports = function (Topics) {
 		const arrayOfReplyPids = await db.getSortedSetsMembers(keys);
 
 		const uniquePids = _.uniq(_.flatten(arrayOfReplyPids));
+		const someTid = await posts.getPostField(pids[0], 'tid'); // the particular tid doesn't matter; used in getPostIndices but does not affect output
+		const pidIndices = await posts.getPostIndices(pids.map(pid => ({ pid, tid: someTid })));
+		const replyIndices = await posts.getPostIndices(uniquePids.map(pid => ({ pid, tid: someTid })));
 
 		let replyData = await posts.getPostsFields(uniquePids, ['pid', 'uid', 'timestamp']);
 		const result = await plugins.hooks.fire('filter:topics.getPostReplies', {
@@ -335,12 +338,15 @@ module.exports = function (Topics) {
 
 		const uidMap = _.zipObject(uniqueUids, userData);
 		const pidMap = _.zipObject(replyData.map(r => r.pid), replyData);
+		const indicesMap = _.zipObject(replyData.map(r => r.pid), replyIndices);
 
-		const returnData = arrayOfReplyPids.map((replyPids) => {
+		const returnData = arrayOfReplyPids.map((replyPids, idx) => {
 			replyPids = replyPids.filter(pid => pidMap[pid]);
+			const currentIndex = pidIndices[idx];
 			const uidsUsed = {};
 			const currentData = {
 				hasMore: false,
+				hasSingleImmediateReply: replyPids.length === 1 && Math.abs(currentIndex - indicesMap[replyPids[0]]) === 1,
 				users: [],
 				text: replyPids.length > 1 ? `[[topic:replies_to_this_post, ${replyPids.length}]]` : '[[topic:one_reply_to_this_post]]',
 				count: replyPids.length,
