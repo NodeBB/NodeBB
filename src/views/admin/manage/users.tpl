@@ -1,5 +1,4 @@
-<div class="manage-users d-flex flex-column gap-2 px-lg-4">
-
+<div class="manage-users d-flex flex-column gap-2 px-lg-4 h-100">
 	<div class="d-flex border-bottom py-2 m-0 sticky-top acp-page-main-header align-items-center justify-content-between flex-wrap gap-2">
 		<div class="">
 			<h4 class="fw-bold tracking-tight mb-0">[[admin/manage/users:manage-users]]</h4>
@@ -69,8 +68,8 @@
 		</div>
 	</div>
 
-	<div class="row">
-		<div class="col-lg-12">
+	<div class="row flex-grow-1">
+		<div class="col-lg-12 d-flex flex-column gap-2">
 			<div class="search {search_display}">
 				<i class="fa fa-spinner fa-spin hidden"></i>
 
@@ -79,7 +78,7 @@
 				<div id="user-notfound-notify" class="badge text-bg-warning {{{if !query}}}hidden{{{end}}} {{{if matchCount}}}hidden{{{end}}}">[[admin/manage/users:search.not-found]]</div>
 			</div>
 
-			<div class="table-responsive">
+			<div class="table-responsive flex-grow-1">
 				<table class="table users-table text-sm">
 					<thead>
 						<tr>
