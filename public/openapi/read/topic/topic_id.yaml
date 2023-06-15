@@ -224,6 +224,8 @@ get:
                               type: string
                             count:
                               type: number
+                            hasSingleImmediateReply:
+                              type: boolean
                         selfPost:
                           type: boolean
                         events:
