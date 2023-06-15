@@ -87,12 +87,10 @@
 				</div>
 			</div>
 
-			{{{ if error }}}
-			<a id="database-error"></a>
-			{{{ end }}}
+
 
 			{{{ if !skipDatabaseSetup }}}
-			<div class="database">
+			<div class="database mb-3">
 				<p>
 					<h2><small>Configure your database</small></h2>
 					<hr />
@@ -113,8 +111,22 @@
 				<div id="database-config"></div>
 			</div>
 			{{{ end }}}
-
-			<button id="submit" type="submit" class="btn btn btn-success">Install NodeBB <i class="working hide"></i></button>
+			<div class="row">
+				<div class="col-sm-7 col-12">
+					<div class="d-flex gap-2 mb-3">
+						{{{ if !skipDatabaseSetup }}}
+						<button id="test-database" class="btn btn-light">
+							<div id="test-database-spinner" class="spinner-border spinner-border-sm text-primary hidden" role="status"></div>
+							<span>Test Database</span>
+						</button>
+						{{{ end }}}
+						<button id="submit" type="submit" class="btn btn-primary">Install NodeBB <i class="working hide"></i></button>
+					</div>
+					<div id="database-success" class="alert alert-success hidden" role="alert">Database connection successful!</div>
+					<div id="database-error" class="alert alert-danger hidden" role="alert"></div>
+					<div id="database-full" class="alert alert-warning hidden" role="alert"><pre></pre></div>
+				</div>
+			</div>
 		</form>
 	</div>
 	{{{ end }}}

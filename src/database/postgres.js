@@ -45,9 +45,9 @@ postgresModule.questions = [
 	},
 ];
 
-postgresModule.init = async function () {
+postgresModule.init = async function (opts) {
 	const { Pool } = require('pg');
-	const connOptions = connection.getConnectionOptions();
+	const connOptions = connection.getConnectionOptions(opts);
 	const pool = new Pool(connOptions);
 	postgresModule.pool = pool;
 	postgresModule.client = pool;
