@@ -111,7 +111,7 @@ Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 		teasers: Promise.all(roomIds.map(async roomId => Messaging.getTeaser(uid, roomId))),
 	});
 
-	results.roomData.forEach((room, index) => {
+	await Promise.all(results.roomData.map(async (room, index) => {
 		if (room) {
 			room.users = results.users[index];
 			room.groupChat = room.hasOwnProperty('groupChat') ? room.groupChat : room.users.length > 2;
@@ -125,12 +125,9 @@ Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 			});
 			room.users = room.users.filter(user => user && parseInt(user.uid, 10));
 			room.lastUser = room.users[0];
-
 			room.usernames = Messaging.generateUsernames(room.users, uid);
+			room.chatWithMessage = await Messaging.generateChatWithMessage(room.users, uid);
 		}
-	});
-	await Promise.all(results.roomData.map(async (room) => {
-		room.chatWithMessage = await Messaging.generateChatWithMessage(room.users, uid);
 	}));
 
 	results.roomData = results.roomData.filter(Boolean);
