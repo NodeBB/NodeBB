@@ -1,3 +1,22 @@
+#### v3.1.6 (2023-06-15)
+
+##### Chores
+
+*  incrementing version number - v3.1.5 (ec19343a)
+*  update changelog for v3.1.5 (b0d16861)
+*  incrementing version number - v3.1.4 (2452783c)
+*  incrementing version number - v3.1.3 (3b4e9d3f)
+*  incrementing version number - v3.1.2 (40fa3489)
+*  incrementing version number - v3.1.1 (40250733)
+*  incrementing version number - v3.1.0 (0cb386bd)
+*  incrementing version number - v3.0.1 (26f6ea49)
+*  incrementing version number - v3.0.0 (224e08cd)
+
+##### Bug Fixes
+
+*  #11717 prevent crash in messaging (8620a2cd)
+*  closes #11708, fix quick reply check (a757716d)
+
 #### v3.1.5 (2023-06-13)
 
 ##### Chores
