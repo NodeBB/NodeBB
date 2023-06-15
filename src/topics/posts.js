@@ -125,7 +125,7 @@ module.exports = function (Topics) {
 			posts.getVoteStatusByPostIDs(pids, uid),
 			getPostUserData('uid', async uids => await posts.getUserInfoForPosts(uids, uid)),
 			getPostUserData('editor', async uids => await user.getUsersFields(uids, ['uid', 'username', 'userslug'])),
-			getPostReplies(pids, uid),
+			getPostReplies(postData, uid),
 			Topics.addParentPosts(postData),
 		]);
 
@@ -314,14 +314,15 @@ module.exports = function (Topics) {
 		return await db.getObjectField(`topic:${tid}`, 'postcount');
 	};
 
-	async function getPostReplies(pids, callerUid) {
+	async function getPostReplies(postData, callerUid) {
+		const pids = postData.map(p => p && p.pid);
 		const keys = pids.map(pid => `pid:${pid}:replies`);
-		const arrayOfReplyPids = await db.getSortedSetsMembers(keys);
+		const [arrayOfReplyPids, userSettings] = await Promise.all([
+			db.getSortedSetsMembers(keys),
+			user.getSettings(callerUid),
+		]);
 
 		const uniquePids = _.uniq(_.flatten(arrayOfReplyPids));
-		const someTid = await posts.getPostField(pids[0], 'tid'); // the particular tid doesn't matter; used in getPostIndices but does not affect output
-		const pidIndices = await posts.getPostIndices(pids.map(pid => ({ pid, tid: someTid })));
-		const replyIndices = await posts.getPostIndices(uniquePids.map(pid => ({ pid, tid: someTid })));
 
 		let replyData = await posts.getPostsFields(uniquePids, ['pid', 'uid', 'timestamp']);
 		const result = await plugins.hooks.fire('filter:topics.getPostReplies', {
@@ -338,15 +339,15 @@ module.exports = function (Topics) {
 
 		const uidMap = _.zipObject(uniqueUids, userData);
 		const pidMap = _.zipObject(replyData.map(r => r.pid), replyData);
-		const indicesMap = _.zipObject(replyData.map(r => r.pid), replyIndices);
+		const postDataMap = _.zipObject(pids, postData);
 
-		const returnData = arrayOfReplyPids.map((replyPids, idx) => {
+		const returnData = await Promise.all(arrayOfReplyPids.map(async (replyPids, idx) => {
+			const currentPid = pids[idx];
 			replyPids = replyPids.filter(pid => pidMap[pid]);
-			const currentIndex = pidIndices[idx];
 			const uidsUsed = {};
 			const currentData = {
 				hasMore: false,
-				hasSingleImmediateReply: replyPids.length === 1 && Math.abs(currentIndex - indicesMap[replyPids[0]]) === 1,
+				hasSingleImmediateReply: false,
 				users: [],
 				text: replyPids.length > 1 ? `[[topic:replies_to_this_post, ${replyPids.length}]]` : '[[topic:one_reply_to_this_post]]',
 				count: replyPids.length,
@@ -368,8 +369,22 @@ module.exports = function (Topics) {
 				currentData.hasMore = true;
 			}
 
+			if (replyPids.length === 1) {
+				const currentIndex = postDataMap[currentPid] ? postDataMap[currentPid].index : null;
+				const replyPid = replyPids[0];
+				// only load index of nested reply if we can't find it in the postDataMap
+				let replyPost = postDataMap[replyPid];
+				if (!replyPost) {
+					const tid = await posts.getPostField(replyPid, 'tid');
+					replyPost = {
+						index: await posts.getPidIndex(replyPid, tid, userSettings.topicPostSort),
+					};
+				}
+				currentData.hasSingleImmediateReply = Math.abs(currentIndex - replyPost.index) === 1;
+			}
+
 			return currentData;
-		});
+		}));
 
 		return returnData;
 	}
