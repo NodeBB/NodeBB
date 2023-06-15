@@ -206,9 +206,10 @@ async function addTags(topicData, req, res) {
 	}
 	description = description.replace(/\n/g, ' ');
 
-	const mainPost = postIndex === 0 && postAtIndex ?
-		postAtIndex :
-		await topics.getMainPost(topicData.tid, req.uid);
+	let mainPost = topicData.posts.find(p => parseInt(p.index, 10) === 0);
+	if (!mainPost) {
+		mainPost = await posts.getPostData(topicData.mainPid);
+	}
 
 	res.locals.metaTags = [
 		{
