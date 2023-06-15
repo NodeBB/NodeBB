@@ -393,8 +393,6 @@ define('admin/dashboard', [
 				});
 			});
 
-			socket.emit('admin.rooms.getAll', Admin.updateRoomUsage);
-			initiateDashboard();
 			callback();
 		});
 	}
