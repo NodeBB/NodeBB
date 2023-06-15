@@ -113,7 +113,7 @@
 
 								<i class="expired fa fa-fw fa-times text-danger{{{ if !users.email:expired }}} hidden{{{ end }}}" title="[[admin/manage/users:users.validation-expired]]" data-bs-toggle="tooltip"></i>
 
-								<i class="notvalidated fa fa-fw fa-times text-danger{{{ if (users.email:expired || (users.email.pending || users.email:confirmed)) }}} hidden{{{ end }}}" title="[[admin/manage/users:users.not-validated]]" data-bs-toggle="tooltip"></i>
+								<i class="notvalidated fa fa-fw fa-times text-danger{{{ if (users.email:expired || (users.email:pending || users.email:confirmed)) }}} hidden{{{ end }}}" title="[[admin/manage/users:users.not-validated]]" data-bs-toggle="tooltip"></i>
 
 								{./email}
 								{{{ else }}}
