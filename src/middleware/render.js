@@ -154,6 +154,7 @@ module.exports = function (middleware) {
 			allowRegistration: registrationType === 'normal',
 			searchEnabled: plugins.hooks.hasListeners('filter:search.query'),
 			postQueueEnabled: !!meta.config.postQueue,
+			registrationQueueEnabled: meta.config.registrationApprovalType !== 'normal' || (meta.config.registrationType === 'invite-only' || meta.config.registrationType === 'admin-invite-only'),
 			config: res.locals.config,
 			relative_path,
 			bodyClass: options.bodyClass,
