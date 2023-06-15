@@ -212,6 +212,7 @@ usersController.registrationQueue = async function (req, res) {
 	const pageCount = Math.max(1, Math.ceil(data.registrationQueueCount / itemsPerPage));
 	data.pagination = pagination.create(page, pageCount);
 	data.customHeaders = data.customHeaders.headers;
+	data.title = '[[pages:registration-queue]]';
 	res.render('admin/manage/registration', data);
 };
 
