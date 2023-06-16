@@ -14,11 +14,11 @@ const privileges = require('../src/privileges');
 
 describe('ActivityPub integration', () => {
 	before(() => {
-		meta.config.activityPubEnabled = 1;
+		meta.config.activitypubEnabled = 1;
 	});
 
 	after(() => {
-		delete meta.config.activityPubEnabled;
+		delete meta.config.activitypubEnabled;
 	});
 
 	describe('WebFinger endpoint', () => {
@@ -108,7 +108,7 @@ describe('ActivityPub integration', () => {
 		});
 
 		it('should return regular user profile html if federation is disabled', async () => {
-			delete meta.config.activityPubEnabled;
+			delete meta.config.activitypubEnabled;
 
 			const response = await request(`${nconf.get('url')}/user/${slug}`, {
 				method: 'get',
@@ -124,7 +124,7 @@ describe('ActivityPub integration', () => {
 			assert.strictEqual(response.statusCode, 200);
 			assert(response.body.startsWith('<!DOCTYPE html>'));
 
-			meta.config.activityPubEnabled = 1;
+			meta.config.activitypubEnabled = 1;
 		});
 
 		it('should return regular user profile html if Accept header is not ActivityPub-related', async () => {
