@@ -259,7 +259,7 @@ CSS.getSkinSwitcherOptions = async function (uid) {
 
 	return {
 		default: defaultSkins,
-		custom: customSkins.map(s => ({...s, selected: s.value === userSettings.bootswatchSkin })),
+		custom: customSkins.map(s => ({ ...s, selected: s.value === userSettings.bootswatchSkin })),
 		light: parseSkins(lightSkins),
 		dark: parseSkins(darkSkins),
 	};
