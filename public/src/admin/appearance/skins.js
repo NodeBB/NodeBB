@@ -1,7 +1,9 @@
 'use strict';
 
 
-define('admin/appearance/skins', ['translator', 'alerts'], function (translator, alerts) {
+define('admin/appearance/skins', [
+	'translator', 'alerts', 'settings',
+], function (translator, alerts, settings) {
 	const Skins = {};
 
 	Skins.init = function () {
@@ -10,6 +12,15 @@ define('admin/appearance/skins', ['translator', 'alerts'], function (translator,
 			method: 'get',
 			url: 'https://bootswatch.com/api/5.json',
 		}).done(Skins.render);
+
+		settings.load('custom-skins', $('.custom-skin-settings'));
+		$('#save-custom-skins').on('click', function () {
+			settings.save('custom-skins', $('.custom-skin-settings'), function () {
+				alerts.success('[[admin/appearance/skins:save-custom-skins-success]]');
+			});
+			return false;
+		});
+
 
 		$('#skins').on('click', function (e) {
 			let target = $(e.target);

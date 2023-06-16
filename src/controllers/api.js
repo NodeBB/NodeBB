@@ -117,7 +117,7 @@ apiController.loadConfig = async function (req) {
 	if (!config.disableCustomUserSkins && settings.bootswatchSkin) {
 		if (settings.bootswatchSkin === 'noskin') {
 			config.bootswatchSkin = '';
-		} else if (settings.bootswatchSkin !== '') {
+		} else if (settings.bootswatchSkin !== '' && await meta.css.isSkinValid(settings.bootswatchSkin)) {
 			config.bootswatchSkin = settings.bootswatchSkin;
 		}
 	}

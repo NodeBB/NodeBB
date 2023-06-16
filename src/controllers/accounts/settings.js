@@ -14,6 +14,7 @@ const notifications = require('../../notifications');
 const db = require('../../database');
 const helpers = require('../helpers');
 const accountHelpers = require('./helpers');
+const slugify = require('../../slugify');
 
 const settingsController = module.exports;
 
@@ -39,13 +40,15 @@ settingsController.get = async function (req, res, next) {
 		uid: req.uid,
 	});
 
-	const [notificationSettings, routes] = await Promise.all([
+	const [notificationSettings, routes, bsSkinOptions] = await Promise.all([
 		getNotificationSettings(userData),
 		getHomePageRoutes(userData),
+		getSkinOptions(userData),
 	]);
 
 	userData.customSettings = data.customSettings;
 	userData.homePageRoutes = routes;
+	userData.bootswatchSkinOptions = bsSkinOptions;
 	userData.notificationSettings = notificationSettings;
 	userData.disableEmailSubscriptions = meta.config.disableEmailSubscriptions;
 
@@ -56,8 +59,6 @@ settingsController.get = async function (req, res, next) {
 		{ value: 'biweek', name: '[[user:digest_biweekly]]', selected: userData.settings.dailyDigestFreq === 'biweek' },
 		{ value: 'month', name: '[[user:digest_monthly]]', selected: userData.settings.dailyDigestFreq === 'month' },
 	];
-
-	getSkinOptions(userData);
 
 	userData.languages.forEach((language) => {
 		language.selected = language.code === userData.settings.userLang;
@@ -220,17 +221,28 @@ async function getHomePageRoutes(userData) {
 	return routes;
 }
 
-function getSkinOptions(userData) {
+async function getSkinOptions(userData) {
 	const defaultSkin = _.capitalize(meta.config.bootswatchSkin) || '[[user:no-skin]]';
-	userData.bootswatchSkinOptions = [
+	const bootswatchSkinOptions = [
 		{ name: '[[user:no-skin]]', value: 'noskin' },
 		{ name: `[[user:default, ${defaultSkin}]]`, value: '' },
 	];
-	userData.bootswatchSkinOptions.push(
+	const customSkins = await meta.settings.get('custom-skins');
+	if (customSkins && Array.isArray(customSkins['custom-skin-list'])) {
+		customSkins['custom-skin-list'].forEach((customSkin) => {
+			bootswatchSkinOptions.push({
+				name: customSkin['custom-skin-name'],
+				value: slugify(customSkin['custom-skin-name']),
+			});
+		});
+	}
+
+	bootswatchSkinOptions.push(
 		...meta.css.supportedSkins.map(skin => ({ name: _.capitalize(skin), value: skin }))
 	);
 
-	userData.bootswatchSkinOptions.forEach((skin) => {
+	bootswatchSkinOptions.forEach((skin) => {
 		skin.selected = skin.value === userData.settings.bootswatchSkin;
 	});
+	return bootswatchSkinOptions;
 }
