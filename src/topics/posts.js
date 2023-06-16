@@ -342,7 +342,7 @@ module.exports = function (Topics) {
 		const postDataMap = _.zipObject(pids, postData);
 
 		const returnData = await Promise.all(arrayOfReplyPids.map(async (replyPids, idx) => {
-			const currentPid = pids[idx];
+			const currentPost = postData[idx];
 			replyPids = replyPids.filter(pid => pidMap[pid]);
 			const uidsUsed = {};
 			const currentData = {
@@ -370,7 +370,7 @@ module.exports = function (Topics) {
 			}
 
 			if (replyPids.length === 1) {
-				const currentIndex = postDataMap[currentPid] ? postDataMap[currentPid].index : null;
+				const currentIndex = currentPost ? currentPost.index : null;
 				const replyPid = replyPids[0];
 				// only load index of nested reply if we can't find it in the postDataMap
 				let replyPost = postDataMap[replyPid];
@@ -378,9 +378,12 @@ module.exports = function (Topics) {
 					const tid = await posts.getPostField(replyPid, 'tid');
 					replyPost = {
 						index: await posts.getPidIndex(replyPid, tid, userSettings.topicPostSort),
+						tid: tid,
 					};
 				}
-				currentData.hasSingleImmediateReply = Math.abs(currentIndex - replyPost.index) === 1;
+				currentData.hasSingleImmediateReply =
+					(currentPost && currentPost.tid === replyPost.tid) &&
+					Math.abs(currentIndex - replyPost.index) === 1;
 			}
 
 			return currentData;
