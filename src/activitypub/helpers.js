@@ -2,12 +2,20 @@
 
 const request = require('request-promise-native');
 
+const ttl = require('../cache/ttl');
+
+const webfingerCache = ttl({ ttl: 1000 * 60 * 60 * 24 }); // 24 hours
+
 const Helpers = module.exports;
 
 Helpers.query = async (id) => {
 	const [username, hostname] = id.split('@');
 	if (!username || !hostname) {
 		return false;
+	}
+
+	if (webfingerCache.has(id)) {
+		return webfingerCache.get(id);
 	}
 
 	// Make a webfinger query to retrieve routing information
@@ -28,5 +36,6 @@ Helpers.query = async (id) => {
 		({ href: actorUri } = actorUri);
 	}
 
+	webfingerCache.set(id, { username, hostname, actorUri });
 	return { username, hostname, actorUri };
 };
