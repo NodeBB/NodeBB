@@ -64,10 +64,10 @@ module.exports = function (Posts) {
 		if (isMainPost) {
 			const tid = await Posts.getPostField(pid, 'tid');
 			let thumbs = await topics.thumbs.get(tid);
-			const replacePath = path.posix.join(`${nconf.get('relative_path')}${nconf.get('upload_url')}/`);
-			thumbs = thumbs.map(thumb => thumb.url.replace(replacePath, '')).filter(path => !validator.isURL(path, {
+			thumbs = thumbs.map(thumb => thumb.path).filter(path => !validator.isURL(path, {
 				require_protocol: true,
 			}));
+			thumbs = thumbs.map(t => t.slice(1)); // remove leading `/` or `\\` on windows
 			uploads.push(...thumbs);
 		}
 

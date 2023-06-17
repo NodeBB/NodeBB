@@ -53,7 +53,7 @@ Thumbs.get = async function (tids) {
 			return hasTimestampPrefix.test(name) ? name.slice(14) : name;
 		})(),
 		path: thumb,
-		url: thumb.startsWith('http') ? thumb : path.posix.join(upload_url, thumb),
+		url: thumb.startsWith('http') ? thumb : path.posix.join(upload_url, thumb.replace(/\\/g, '/')),
 	})));
 
 	({ thumbs: response } = await plugins.hooks.fire('filter:topics.getThumbs', { tids, thumbs: response }));
