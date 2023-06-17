@@ -65,12 +65,10 @@ module.exports = function (Posts) {
 			const tid = await Posts.getPostField(pid, 'tid');
 			let thumbs = await topics.thumbs.get(tid);
 			console.log('before', thumbs);
-			const replacePath = path.posix.join(`${nconf.get('relative_path')}${nconf.get('upload_url')}/`);
-			thumbs = thumbs.map(thumb => thumb.url.replace(replacePath, '')).filter(path => !validator.isURL(path, {
+			thumbs = thumbs.map(thumb => thumb.path).filter(path => !validator.isURL(path, {
 				require_protocol: true,
 			}));
-			thumbs = thumbs.map(t => (t.startsWith(path.sep) ? t.slice(1) : t));
-			console.log('replacepath', replacePath);
+			thumbs = thumbs.map(t => t.slice(1)); // remove leading `/` or `\\` on windows
 			console.log('after replace', thumbs);
 			uploads.push(...thumbs);
 		}
