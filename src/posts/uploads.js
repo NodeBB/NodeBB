@@ -64,15 +64,13 @@ module.exports = function (Posts) {
 		if (isMainPost) {
 			const tid = await Posts.getPostField(pid, 'tid');
 			let thumbs = await topics.thumbs.get(tid);
-			console.log('before', thumbs);
 			thumbs = thumbs.map(thumb => thumb.path).filter(path => !validator.isURL(path, {
 				require_protocol: true,
 			}));
 			thumbs = thumbs.map(t => t.slice(1)); // remove leading `/` or `\\` on windows
-			console.log('after replace', thumbs);
 			uploads.push(...thumbs);
 		}
-		console.log('currentUploads', currentUploads);
+
 		// Create add/remove sets
 		const add = uploads.filter(path => !currentUploads.includes(path));
 		const remove = currentUploads.filter(path => !uploads.includes(path));
