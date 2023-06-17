@@ -247,13 +247,13 @@ define('forum/topic', [
 			let codeBlocks = $('[component="topic"] [component="post/content"] code:not([data-button-added])');
 			codeBlocks = codeBlocks.filter((i, el) => $(el).text().includes('\n'));
 			const container = $('<div class="hover-parent position-relative"></div>');
-			const buttonDiv = $('<button component="copy/code/btn" class="hover-visible position-absolute top-0 btn btn-sm btn-outline-secondary" style="right: 0px; margin: 1rem 1rem 0 0;"><i class="fa fa-fw fa-copy"></i></button>');
+			const buttonDiv = $('<button component="copy/code/btn" class="hover-visible position-absolute top-0 btn btn-sm btn-outline-secondary" style="right: 0px; margin: 0.5rem 0.5rem 0 0;"><i class="fa fa-fw fa-copy"></i></button>');
 			const preEls = codeBlocks.parent();
 			preEls.wrap(container).parent().append(buttonDiv);
 			preEls.parent().find('[component="copy/code/btn"]').translateAttr('title', '[[topic:copy-code]]');
 			preEls.each((index, el) => {
 				if (scrollbarVisible(el)) {
-					$(el).parent().find('[component="copy/code/btn"]').css({ margin: '1rem 2rem 0 0' });
+					$(el).parent().find('[component="copy/code/btn"]').css({ margin: '0.5rem 1.5rem 0 0' });
 				}
 			});
 			codeBlocks.attr('data-button-added', 1);
