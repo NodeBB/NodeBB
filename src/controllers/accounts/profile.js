@@ -70,9 +70,8 @@ profileController.getFederated = async function (req, res, next) {
 	if (!actor) {
 		return next();
 	}
-	// console.log(actor);
-	const { preferredUsername, published, icon, image, name, summary, hostname } = actor;
 
+	const { preferredUsername, published, icon, image, name, summary, hostname } = actor;
 	const payload = {
 		uid,
 		username: `${preferredUsername}@${hostname}`,

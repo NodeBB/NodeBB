@@ -1,7 +1,10 @@
 'use strict';
 
 const request = require('request-promise-native');
+const { generateKeyPairSync, sign } = require('crypto');
+const winston = require('winston');
 
+const db = require('../database');
 const ttl = require('../cache/ttl');
 
 const webfingerCache = ttl({ ttl: 1000 * 60 * 60 * 24 }); // 24 hours
@@ -36,6 +39,29 @@ Helpers.query = async (id) => {
 		({ href: actorUri } = actorUri);
 	}
 
-	webfingerCache.set(id, { username, hostname, actorUri });
-	return { username, hostname, actorUri };
+	const { publicKey } = response.body;
+
+	webfingerCache.set(id, { username, hostname, actorUri, publicKey });
+	return { username, hostname, actorUri, publicKey };
+};
+
+Helpers.generateKeys = async (uid) => {
+	winston.verbose(`[activitypub] Generating RSA key-pair for uid ${uid}`);
+	const {
+		publicKey,
+		privateKey,
+	} = generateKeyPairSync('rsa', {
+		modulusLength: 2048,
+		publicKeyEncoding: {
+			type: 'spki',
+			format: 'pem',
+		},
+		privateKeyEncoding: {
+			type: 'pkcs8',
+			format: 'pem',
+		},
+	});
+
+	await db.setObject(`uid:${uid}:keys`, { publicKey, privateKey });
+	return { publicKey, privateKey };
 };

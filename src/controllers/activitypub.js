@@ -33,8 +33,8 @@ Controller.getActor = async (req, res) => {
 		image: cover ? `${nconf.get('url')}${cover}` : null,
 
 		publicKey: {
-			id: `${nconf.get('url')}/user/${userslug}`,
-			owner: `${nconf.get('url')}/user/${userslug}#key`,
+			id: `${nconf.get('url')}/user/${userslug}#key`,
+			owner: `${nconf.get('url')}/user/${userslug}`,
 			publicKeyPem: publicKey,
 		},
 	});
@@ -97,6 +97,7 @@ Controller.getInbox = async (req, res) => {
 };
 
 Controller.postInbox = async (req, res) => {
-	// stub — other activity-pub services will push stuff here.
-	res.sendStatus(405);
+	console.log(req.body);
+
+	res.sendStatus(201);
 };

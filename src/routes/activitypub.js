@@ -12,5 +12,5 @@ module.exports = function (app, middleware, controllers) {
 	app.post('/user/:userslug/outbox', middlewares, controllers.activitypub.postOutbox);
 
 	app.get('/user/:userslug/inbox', middlewares, controllers.activitypub.getInbox);
-	app.post('/user/:userslug/inbox', middlewares, controllers.activitypub.postInbox);
+	app.post('/user/:userslug/inbox', [...middlewares, middleware.validateActivity], controllers.activitypub.postInbox);
 };

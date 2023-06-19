@@ -18,6 +18,7 @@ const privileges = require('../privileges');
 const cacheCreate = require('../cache/lru');
 const helpers = require('./helpers');
 const api = require('../api');
+const activitypub = require('../activitypub');
 
 const controllers = {
 	api: require('../controllers/api'),
@@ -329,3 +330,13 @@ middleware.proceedOnActivityPub = (req, res, next) => {
 
 	next();
 };
+
+middleware.validateActivity = helpers.try(async (req, res, next) => {
+	// Checks the validity of the incoming payload against the sender and rejects on failure
+	const verified = await activitypub.verify(req);
+	if (!verified) {
+		return res.sendStatus(400);
+	}
+
+	next();
+});
