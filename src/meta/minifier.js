@@ -165,7 +165,7 @@ actions.buildCSS = async function buildCSS(data) {
 		});
 		css = scssOutput.css.toString();
 	} catch (err) {
-		winston.error(err.stack);
+		console.error(err.stack);
 	}
 
 
