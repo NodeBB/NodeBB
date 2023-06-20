@@ -427,6 +427,7 @@ describe('Controllers', () => {
 			});
 
 			it('should reject an email that comprises only whitespace', async () => {
+				meta.config.requireEmailAddress = 1;
 				const uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
 				const result = await user.interstitials.email({
 					userData: { uid: uid, updateEmail: true },
@@ -488,6 +489,7 @@ describe('Controllers', () => {
 			});
 
 			it('should remove current email', async () => {
+				meta.config.requireEmailAddress = 0;
 				const uid = await user.create({ username: 'interstiuser5' });
 				await user.setUserField(uid, 'email', 'interstiuser5@nodebb.org');
 				await user.email.confirmByUid(uid);
