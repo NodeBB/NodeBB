@@ -19,6 +19,7 @@ privsTopics.get = async function (tid, uid) {
 	const privs = [
 		'topics:reply', 'topics:read', 'topics:schedule', 'topics:tag',
 		'topics:delete', 'posts:edit', 'posts:history',
+		'posts:upvote', 'posts:downvote',
 		'posts:delete', 'posts:view_deleted', 'read', 'purge',
 	];
 	const topicData = await topics.getTopicFields(tid, ['cid', 'uid', 'locked', 'deleted', 'scheduled']);
@@ -43,6 +44,8 @@ privsTopics.get = async function (tid, uid) {
 		'topics:delete': (privData['topics:delete'] && (isOwner || isModerator)) || isAdministrator,
 		'posts:edit': (privData['posts:edit'] && (!topicData.locked || isModerator)) || isAdministrator,
 		'posts:history': privData['posts:history'] || isAdministrator,
+		'posts:upvote': privData['posts:upvote'] || isAdministrator,
+		'posts:downvote': privData['posts:downvote'] || isAdministrator,
 		'posts:delete': (privData['posts:delete'] && (!topicData.locked || isModerator)) || isAdministrator,
 		'posts:view_deleted': privData['posts:view_deleted'] || isAdministrator,
 		read: privData.read || isAdministrator,
