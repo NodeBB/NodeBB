@@ -2682,6 +2682,42 @@ describe('Controllers', () => {
 				});
 			});
 		});
+
+		it('should create a new topic and reply by composer route as a guest', async () => {
+			const jar = request.jar();
+			const csrf_token = await helpers.getCsrfToken(jar);
+			const data = {
+				cid: cid,
+				title: 'no js is good',
+				content: 'a topic with noscript',
+				handle: 'guest1',
+			};
+
+			await privileges.categories.give(['groups:topics:create', 'groups:topics:reply'], cid, 'guests');
+
+			const result = await helpers.request('post', `/compose`, {
+				form: data,
+				jar,
+				headers: {
+					'x-csrf-token': csrf_token,
+				},
+			});
+			assert.strictEqual(result.res.statusCode, 302);
+
+			const replyResult = await helpers.request('post', `/compose`, {
+				form: {
+					tid: tid,
+					content: 'a new reply',
+					handle: 'guest2',
+				},
+				jar,
+				headers: {
+					'x-csrf-token': csrf_token,
+				},
+			});
+			assert.equal(replyResult.res.statusCode, 302);
+			await privileges.categories.rescind(['groups:topics:post', 'groups:topics:reply'], cid, 'guests');
+		});
 	});
 
 	describe('test routes', () => {
