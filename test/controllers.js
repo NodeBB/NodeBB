@@ -421,7 +421,7 @@ describe('Controllers', () => {
 					interstitials: [],
 				});
 				assert.strictEqual(result.interstitials[0].template, 'partials/email_update');
-				assert.rejects(result.interstitials[0].callback({ uid }, {
+				await assert.rejects(result.interstitials[0].callback({ uid }, {
 					email: 'invalidEmail',
 				}), { message: '[[error:invalid-email]]' });
 			});
@@ -434,7 +434,7 @@ describe('Controllers', () => {
 					interstitials: [],
 				});
 				assert.strictEqual(result.interstitials[0].template, 'partials/email_update');
-				assert.rejects(result.interstitials[0].callback({ uid }, {
+				await assert.rejects(result.interstitials[0].callback({ uid }, {
 					email: '    ',
 				}), { message: '[[error:invalid-email]]' });
 			});

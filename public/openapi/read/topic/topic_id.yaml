@@ -343,6 +343,10 @@ get:
                         type: boolean
                       posts:history:
                         type: boolean
+                      posts:upvote:
+                        type: boolean
+                      posts:downvote:
+                        type: boolean
                       posts:delete:
                         type: boolean
                       posts:view_deleted:

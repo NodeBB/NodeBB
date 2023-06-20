@@ -30,7 +30,7 @@ describe('API tokens', () => {
 
 	describe('.create()', () => {
 		it('should fail to create a token for a user that does not exist', async () => {
-			assert.rejects(api.utils.tokens.generate({ uid: 1 }), { message: '[[error:no-user]]' });
+			await assert.rejects(api.utils.tokens.generate({ uid: 1 }), { message: '[[error:no-user]]' });
 		});
 
 		it('should create a token for a user that exists', async () => {
@@ -63,7 +63,7 @@ describe('API tokens', () => {
 		});
 
 		it('should fail if you pass in invalid data', async () => {
-			assert.rejects(api.utils.tokens.get(token), { message: '[[error:invalid-data]]' });
+			await assert.rejects(api.utils.tokens.get(token), { message: '[[error:invalid-data]]' });
 		});
 
 		it('should show lastSeen and lastSeenISO as undefined/null if it is a new token', async () => {
