@@ -1,5 +1,5 @@
 {
-	"customise": "Customise",
+	"customise": "Personnaliser",
 	"custom-css": "CSS/SASS personnalisé",
 	"custom-css.description": "Entrez vos propres déclarations CSS/SASS ici, qui seront appliquées après tous les autres styles.",
 	"custom-css.enable": "Activer le CSS/SASS personnalisé",

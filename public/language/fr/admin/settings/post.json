@@ -1,5 +1,5 @@
 {
-	"general": "General",
+	"general": "Général",
 	"sorting": "Tri des messages",
 	"sorting.post-default": "Tri des messages par défaut",
 	"sorting.oldest-to-newest": "Du plus ancien au plus récent",
@@ -24,8 +24,8 @@
 	"restrictions.seconds-edit-after": "Nombre de secondes pendant lesquelles une publication reste modifiable (définissez la valeur sur 0 pour la désactiver)",
 	"restrictions.seconds-delete-after": "Nombre de secondes pendant lesquelles un message reste supprimable (définissez la valeur sur 0 pour la désactiver)",
 	"restrictions.replies-no-delete": "Nombre de réponses avant que les utilisateurs soient pas autorisés à supprimer leurs propres sujets (définissez la valeur sur 0 pour la désactiver)",
-	"restrictions.title-length": "Title Length",
-	"restrictions.post-length": "Post Length",
+	"restrictions.title-length": "Longueur du titre",
+	"restrictions.post-length": "Longueur du message",
 	"restrictions.days-until-stale": "Jours jusqu'à ce que le sujet soit considéré comme périmé",
 	"restrictions.stale-help": "Si un sujet est considéré comme \"périmé\", un message sera affiché aux utilisateurs tentant de répondre au sujet",
 	"timestamp": "Horodatage",
