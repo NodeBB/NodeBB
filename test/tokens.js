@@ -63,7 +63,7 @@ describe('API tokens', () => {
 		});
 
 		it('should fail if you pass in invalid data', async () => {
-			await assert.rejects(api.utils.tokens.get(token), { message: '[[error:invalid-data]]' });
+			await assert.rejects(api.utils.tokens.get(null), { message: '[[error:invalid-data]]' });
 		});
 
 		it('should show lastSeen and lastSeenISO as undefined/null if it is a new token', async () => {
