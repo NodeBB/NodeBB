@@ -3,9 +3,11 @@
 const nconf = require('nconf');
 
 const user = require('../user');
-const activitypub = require('../activitypub');
+const activitypub = require('../../activitypub');
 
 const Controller = module.exports;
+
+Controller.profiles = require('./profiles');
 
 Controller.getActor = async (req, res) => {
 	// todo: view:users priv gate

@@ -10,16 +10,16 @@ const categories = require('../../categories');
 const plugins = require('../../plugins');
 const privileges = require('../../privileges');
 const accountHelpers = require('./helpers');
-const { getActor } = require('../../activitypub');
 const helpers = require('../helpers');
-const slugify = require('../../slugify');
 const utils = require('../../utils');
+
+const activitypubController = require('../activitypub');
 
 const profileController = module.exports;
 
 profileController.get = async function (req, res, next) {
 	if (res.locals.uid === -2) {
-		return profileController.getFederated(req, res, next);
+		return activitypubController.profiles.get(req, res, next);
 	}
 
 	const lowercaseSlug = req.params.userslug.toLowerCase();
@@ -62,31 +62,6 @@ profileController.get = async function (req, res, next) {
 	addMetaTags(res, userData);
 
 	res.render('account/profile', userData);
-};
-
-profileController.getFederated = async function (req, res, next) {
-	const { userslug: uid } = req.params;
-	const actor = await getActor(uid);
-	if (!actor) {
-		return next();
-	}
-
-	const { preferredUsername, published, icon, image, name, summary, hostname } = actor;
-	const payload = {
-		uid,
-		username: `${preferredUsername}@${hostname}`,
-		userslug: `${preferredUsername}@${hostname}`,
-		fullname: name,
-		joindate: new Date(published).getTime(),
-		picture: typeof icon === 'string' ? icon : icon.url,
-		uploadedpicture: typeof icon === 'string' ? icon : icon.url,
-		'cover:url': typeof image === 'string' ? image : image.url,
-		'cover:position': '50% 50%',
-		aboutme: summary,
-		aboutmeParsed: summary,
-	};
-
-	res.render('account/profile', payload);
 };
 
 async function incrementProfileViews(req, userData) {
