@@ -239,7 +239,7 @@ module.exports = function (middleware) {
 		 */
 		const path = req.path.startsWith('/api/') ? req.path.replace('/api', '') : req.path;
 
-		if (req.uid && !(path.endsWith('/edit/email') || path.startsWith('/confirm/'))) {
+		if (req.uid > 0 && !(path.endsWith('/edit/email') || path.startsWith('/confirm/'))) {
 			const [confirmed, isAdmin] = await Promise.all([
 				user.getUserField(req.uid, 'email:confirmed'),
 				user.isAdministrator(req.uid),
