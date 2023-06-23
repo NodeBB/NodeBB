@@ -76,7 +76,11 @@ topicsController.get = async function getTopic(req, res, next) {
 		if (!req.query.page) {
 			currentPage = calculatePageFromIndex(postIndex, settings);
 		} else {
-			postIndex = ((currentPage - 1) * settings.postsPerPage) + 1;
+			const top = ((currentPage - 1) * settings.postsPerPage) + 1;
+			const bottom = top + settings.postsPerPage;
+			if (!req.params.post_index || (postIndex < top || postIndex > bottom)) {
+				postIndex = top;
+			}
 		}
 	}
 	const { start, stop } = calculateStartStop(currentPage, postIndex, settings);
