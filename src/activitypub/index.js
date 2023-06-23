@@ -1,7 +1,6 @@
 'use strict';
 
 const request = require('request-promise-native');
-const url = require('url');
 const nconf = require('nconf');
 const { createHash, createSign, createVerify } = require('crypto');
 
