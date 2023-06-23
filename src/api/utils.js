@@ -10,11 +10,13 @@ const utils = module.exports;
 // internal token management utilities only
 utils.tokens = {};
 
-utils.tokens.list = async () => {
+utils.tokens.list = async (start = 0, stop = -1) => {
 	// Validation handled at higher level
-	const tokens = await db.getSortedSetRange(`tokens:createtime`, 0, -1);
+	const tokens = await db.getSortedSetRange(`tokens:createtime`, start, stop);
 	return await utils.tokens.get(tokens);
 };
+
+utils.tokens.count = async () => await db.sortedSetCard('tokens:createtime');
 
 utils.tokens.get = async (tokens) => {
 	// Validation handled at higher level

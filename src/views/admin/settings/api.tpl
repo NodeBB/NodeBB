@@ -32,8 +32,8 @@
 		</div>
 	</div>
 
-	<div class="table-responsive">
-		<table class="table table-sm mb-5 text-sm" data-component="acp/tokens">
+	<div class="table-responsive mb-3">
+		<table class="table table-sm text-sm" data-component="acp/tokens">
 			<thead>
 				<tr>
 					<th>[[admin/settings/api:token]]</th>
@@ -92,4 +92,5 @@
 			</tbody>
 		</table>
 	</div>
+	<!-- IMPORT admin/partials/paginator.tpl -->
 </form>
