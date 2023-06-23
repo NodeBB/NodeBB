@@ -17,4 +17,5 @@ get:
                     type: array
                     items:
                       $ref: ../../../components/schemas/admin/tokenObject.yaml#/TokenObject
+              - $ref: ../../../components/schemas/Pagination.yaml#/Pagination
               - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps
