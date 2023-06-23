@@ -7,12 +7,18 @@ const { createHash, createSign, createVerify } = require('crypto');
 
 const db = require('../database');
 const user = require('../user');
+const ttl = require('../cache/ttl');
 
+const actorCache = ttl({ ttl: 1000 * 60 * 60 * 24 }); // 24 hours
 const ActivityPub = module.exports;
 
 ActivityPub.helpers = require('./helpers');
 
 ActivityPub.getActor = async (id) => {
+	if (actorCache.has(id)) {
+		return actorCache.get(id);
+	}
+
 	const { hostname, actorUri: uri } = await ActivityPub.helpers.query(id);
 	if (!uri) {
 		return false;
@@ -28,8 +34,14 @@ ActivityPub.getActor = async (id) => {
 
 	actor.hostname = hostname;
 
+	actorCache.set(id, actor);
 	return actor;
 };
+
+ActivityPub.resolveInboxes = async ids => await Promise.all(ids.map(async (id) => {
+	const actor = await ActivityPub.getActor(id);
+	return actor.inbox;
+}));
 
 ActivityPub.getPublicKey = async (uid) => {
 	let publicKey;
@@ -84,7 +96,7 @@ ActivityPub.sign = async (uid, url, payload) => {
 	if (payload) {
 		const payloadHash = createHash('sha256');
 		payloadHash.update(JSON.stringify(payload));
-		digest = payloadHash.digest('hex');
+		digest = `sha-256=${payloadHash.digest('base64')}`;
 		headers += ' digest';
 		signed_string += `\ndigest: ${digest}`;
 	}
@@ -146,26 +158,43 @@ ActivityPub.verify = async (req) => {
 	}
 };
 
-/**
- * This is just some code to test signing and verification. This should really be in the test suite.
- */
-// setTimeout(async () => {
-// 	const payload = {
-// 		foo: 'bar',
-// 	};
-// 	const signature = await ActivityPub.sign(1, 'http://127.0.0.1:4567/user/julian/inbox', payload);
+ActivityPub.send = async (uid, targets, payload) => {
+	if (!Array.isArray(targets)) {
+		targets = [targets];
+	}
 
-// 	const res = await request({
-// 		uri: 'http://127.0.0.1:4567/user/julian/inbox',
-// 		method: 'post',
-// 		headers: {
-// 			Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
-// 			...signature,
-// 		},
-// 		json: true,
-// 		body: payload,
-// 		simple: false,
-// 	});
+	const userslug = await user.getUserField(uid, 'userslug');
+	const inboxes = await ActivityPub.resolveInboxes(targets);
 
-// 	console.log(res);
-// }, 1000);
+	payload = {
+		...{
+			'@context': 'https://www.w3.org/ns/activitystreams',
+			actor: {
+				type: 'Person',
+				name: `${userslug}@${nconf.get('url_parsed').host}`,
+			},
+		},
+		...payload,
+	};
+
+	await Promise.all(inboxes.map(async (uri) => {
+		const { date, digest, signature } = await ActivityPub.sign(uid, uri, payload);
+
+		const response = await request(uri, {
+			method: payload ? 'post' : 'get',
+			headers: {
+				date,
+				digest,
+				signature,
+				'content-type': 'application/ld+json; profile="http://www.w3.org/ns/activitystreams',
+				accept: 'application/ld+json; profile="http://www.w3.org/ns/activitystreams',
+			},
+			json: true,
+			body: payload,
+			simple: false,
+			resolveWithFullResponse: true,
+		});
+
+		console.log(response.statusCode, response.body);
+	}));
+};

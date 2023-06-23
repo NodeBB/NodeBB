@@ -251,14 +251,14 @@ describe('ActivityPub integration', () => {
 				const { digest } = await activitypub.sign(uid, endpoint, payload);
 				const hash = createHash('sha256');
 				hash.update(JSON.stringify(payload));
-				const checksum = hash.digest('hex');
+				const checksum = hash.digest('base64');
 
 				assert(digest);
-				assert.strictEqual(digest, checksum);
+				assert.strictEqual(digest, `sha-256=${checksum}`);
 			});
 		});
 
-		describe.only('.verify()', () => {
+		describe('.verify()', () => {
 			let uid;
 			let username;
 			const mockReqBase = {

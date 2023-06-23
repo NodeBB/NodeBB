@@ -1,7 +1,7 @@
 'use strict';
 
 const request = require('request-promise-native');
-const { generateKeyPairSync, sign } = require('crypto');
+const { generateKeyPairSync } = require('crypto');
 const winston = require('winston');
 
 const db = require('../database');

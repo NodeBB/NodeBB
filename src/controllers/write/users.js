@@ -9,6 +9,8 @@ const user = require('../../user');
 
 const helpers = require('../helpers');
 
+const activitypubController = require('../activitypub');
+
 const Users = module.exports;
 
 Users.redirectBySlug = async (req, res) => {
@@ -92,11 +94,19 @@ Users.changePassword = async (req, res) => {
 };
 
 Users.follow = async (req, res) => {
+	if (req.params.uid.indexOf('@') !== -1) {
+		return await activitypubController.follow(req, res);
+	}
+
 	await api.users.follow(req, req.params);
 	helpers.formatApiResponse(200, res);
 };
 
 Users.unfollow = async (req, res) => {
+	if (req.params.uid.indexOf('@') !== -1) {
+		return await activitypubController.unfollow(req, res);
+	}
+
 	await api.users.unfollow(req, req.params);
 	helpers.formatApiResponse(200, res);
 };

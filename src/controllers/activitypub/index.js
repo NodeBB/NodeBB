@@ -2,7 +2,7 @@
 
 const nconf = require('nconf');
 
-const user = require('../user');
+const user = require('../../user');
 const activitypub = require('../../activitypub');
 
 const Controller = module.exports;
@@ -101,5 +101,26 @@ Controller.getInbox = async (req, res) => {
 Controller.postInbox = async (req, res) => {
 	console.log(req.body);
 
+	res.sendStatus(201);
+};
+
+/**
+ * Main ActivityPub verbs
+ */
+
+Controller.follow = async (req, res) => {
+	await activitypub.send(req.uid, req.params.uid, {
+		type: 'Follow',
+		object: {
+			type: 'Person',
+			name: req.params.uid,
+		},
+	});
+
+	res.sendStatus(201);
+};
+
+Controller.unfollow = async (req, res) => {
+	console.log('got here');
 	res.sendStatus(201);
 };
