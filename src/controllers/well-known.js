@@ -9,9 +9,9 @@ const Controller = module.exports;
 
 Controller.webfinger = async (req, res) => {
 	const { resource } = req.query;
-	const { hostname } = nconf.get('url_parsed');
+	const { host } = nconf.get('url_parsed');
 
-	if (!resource || !resource.startsWith('acct:') || !resource.endsWith(hostname)) {
+	if (!resource || !resource.startsWith('acct:') || !resource.endsWith(host)) {
 		return res.sendStatus(400);
 	}
 
@@ -21,7 +21,7 @@ Controller.webfinger = async (req, res) => {
 	}
 
 	// Get the slug
-	const slug = resource.slice(5, resource.length - (hostname.length + 1));
+	const slug = resource.slice(5, resource.length - (host.length + 1));
 
 	const uid = await user.getUidByUserslug(slug);
 	if (!uid) {
@@ -29,7 +29,7 @@ Controller.webfinger = async (req, res) => {
 	}
 
 	const response = {
-		subject: `acct:${slug}@${hostname}`,
+		subject: `acct:${slug}@${host}`,
 		aliases: [
 			`${nconf.get('url')}/uid/${uid}`,
 			`${nconf.get('url')}/user/${slug}`,

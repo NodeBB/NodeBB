@@ -10,7 +10,6 @@ controller.get = async function (req, res, next) {
 	if (!actor) {
 		return next();
 	}
-
 	const { preferredUsername, published, icon, image, name, summary, hostname } = actor;
 	const payload = {
 		uid,
@@ -20,7 +19,7 @@ controller.get = async function (req, res, next) {
 		joindate: new Date(published).getTime(),
 		picture: typeof icon === 'string' ? icon : icon.url,
 		uploadedpicture: typeof icon === 'string' ? icon : icon.url,
-		'cover:url': typeof image === 'string' ? image : image.url,
+		'cover:url': !image || typeof image === 'string' ? image : image.url,
 		'cover:position': '50% 50%',
 		aboutme: summary,
 		aboutmeParsed: summary,
