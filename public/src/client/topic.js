@@ -151,10 +151,8 @@ define('forum/topic', [
 		const bookmark = ajaxify.data.bookmark || storage.getItem('topic:' + tid + ':bookmark');
 		const postIndex = ajaxify.data.postIndex;
 		updateUserBookmark(postIndex);
-		if (postIndex > 1) {
-			if (components.get('post/anchor', postIndex - 1).length) {
-				return navigator.scrollToPostIndex(postIndex - 1, true, 0);
-			}
+		if (navigator.shouldScrollToPost(postIndex)) {
+			return navigator.scrollToPostIndex(postIndex - 1, true, 0);
 		} else if (bookmark && (
 			!config.usePagination ||
 			(config.usePagination && ajaxify.data.pagination.currentPage === 1)

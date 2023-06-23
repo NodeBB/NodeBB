@@ -72,8 +72,12 @@ topicsController.get = async function getTopic(req, res, next) {
 	const sort = req.query.sort || settings.topicPostSort;
 	const set = sort === 'most_votes' ? `tid:${tid}:posts:votes` : `tid:${tid}:posts`;
 	const reverse = sort === 'newest_to_oldest' || sort === 'most_votes';
-	if (settings.usePagination && !req.query.page) {
-		currentPage = calculatePageFromIndex(postIndex, settings);
+	if (settings.usePagination) {
+		if (!req.query.page) {
+			currentPage = calculatePageFromIndex(postIndex, settings);
+		} else {
+			postIndex = ((currentPage - 1) * settings.postsPerPage) + 1;
+		}
 	}
 	const { start, stop } = calculateStartStop(currentPage, postIndex, settings);
 

@@ -303,11 +303,11 @@ ajaxify.widgets = { render: render };
 			window.scrollTo(0, 0);
 			// if on topic page, scroll to the correct post,
 			// this is here to avoid a flash of the wrong posts at the top of the page
-			if (ajaxify.data.template.topic && ajaxify.data.postIndex > 1) {
-				require(['navigator'], function (navigator) {
+			require(['navigator'], function (navigator) {
+				if (navigator.shouldScrollToPost(ajaxify.data.postIndex)) {
 					navigator.scrollToPostIndex(ajaxify.data.postIndex - 1, true, 0);
-				});
-			}
+				}
+			});
 		}
 		ajaxify.loadScript(tpl_url, function done() {
 			hooks.fire('action:ajaxify.end', { url: url, tpl_url: tpl_url, title: ajaxify.data.title });
