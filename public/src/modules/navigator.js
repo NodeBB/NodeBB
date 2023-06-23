@@ -439,6 +439,8 @@ define('navigator', [
 		}
 		count = value;
 		navigator.updateTextAndProgressBar();
+		setThumbToIndex(index);
+		toggle(count > 1);
 	};
 
 	navigator.show = function () {
@@ -521,7 +523,7 @@ define('navigator', [
 			setThumbToIndex(index);
 		}
 
-		toggle(!!count);
+		toggle(count > 1);
 	};
 
 	navigator.getIndex = () => index;
