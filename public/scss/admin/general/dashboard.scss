@@ -5,27 +5,6 @@
 		max-width: 100% !important;
 	}
 
-	#analytics-panel .card-header > div {
-		&.fa-expand {
-			display: none;
-		}
-
-		font-family: $font-family-sans-serif;
-		font-weight: 600;
-		color: $gray-300;
-		padding-left: .5em;
-
-		padding: .75em;
-		background-color: $gray-200;
-		color: $black;
-		cursor: pointer;
-		transition: all .4s;
-
-		&.active {
-			display: inline;
-		}
-	}
-
 	.graph-container {
 		padding-right: 50px;
 		position: relative;
