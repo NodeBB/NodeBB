@@ -26,7 +26,7 @@ describe('ActivityPub integration', () => {
 	describe('WebFinger endpoint', () => {
 		let uid;
 		let slug;
-		const { hostname } = nconf.get('url_parsed');
+		const { host } = nconf.get('url_parsed');
 
 		beforeEach(async () => {
 			slug = slugify(utils.generateUUID().slice(0, 8));
@@ -34,7 +34,7 @@ describe('ActivityPub integration', () => {
 		});
 
 		it('should return a 404 Not Found if no user exists by that username', async () => {
-			const response = await request(`${nconf.get('url')}/.well-known/webfinger?resource=acct:foobar@${hostname}`, {
+			const response = await request(`${nconf.get('url')}/.well-known/webfinger?resource=acct:foobar@${host}`, {
 				method: 'get',
 				json: true,
 				followRedirect: true,
@@ -61,7 +61,7 @@ describe('ActivityPub integration', () => {
 
 		it('should return 403 Forbidden if the calling user is not allowed to view the user list/profiles', async () => {
 			await privileges.global.rescind(['groups:view:users'], 'guests');
-			const response = await request(`${nconf.get('url')}/.well-known/webfinger?resource=acct:${slug}@${hostname}`, {
+			const response = await request(`${nconf.get('url')}/.well-known/webfinger?resource=acct:${slug}@${host}`, {
 				method: 'get',
 				json: true,
 				followRedirect: true,
@@ -75,7 +75,7 @@ describe('ActivityPub integration', () => {
 		});
 
 		it('should return a valid WebFinger response otherwise', async () => {
-			const response = await request(`${nconf.get('url')}/.well-known/webfinger?resource=acct:${slug}@${hostname}`, {
+			const response = await request(`${nconf.get('url')}/.well-known/webfinger?resource=acct:${slug}@${host}`, {
 				method: 'get',
 				json: true,
 				followRedirect: true,
@@ -91,7 +91,7 @@ describe('ActivityPub integration', () => {
 				assert(response.body[prop]);
 			});
 
-			assert.strictEqual(response.body.subject, `acct:${slug}@${hostname}`);
+			assert.strictEqual(response.body.subject, `acct:${slug}@${host}`);
 
 			assert(Array.isArray(response.body.aliases));
 			assert([`${nconf.get('url')}/uid/${uid}`, `${nconf.get('url')}/user/${slug}`].every(url => response.body.aliases.includes(url)));
@@ -216,7 +216,7 @@ describe('ActivityPub integration', () => {
 		});
 	});
 
-	describe.only('http signature signing and verification', () => {
+	describe('http signature signing and verification', () => {
 		describe('.sign()', () => {
 			let uid;
 			let username;
