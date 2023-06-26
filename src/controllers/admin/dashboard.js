@@ -128,12 +128,13 @@ async function getStats() {
 	}
 
 	let results = await Promise.all([
-		getStatsForSet('ip:recent', 'uniqueIPCount'),
+		getStatsFromAnalytics('uniquevisitors', 'uniqueIPCount'),
 		getStatsFromAnalytics('logins', 'loginCount'),
 		getStatsForSet('users:joindate', 'userCount'),
 		getStatsForSet('posts:pid', 'postCount'),
 		getStatsForSet('topics:tid', 'topicCount'),
 	]);
+
 	results[0].name = '[[admin/dashboard:unique-visitors]]';
 
 	results[1].name = '[[admin/dashboard:logins]]';
