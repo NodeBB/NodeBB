@@ -99,7 +99,7 @@ Controller.getInbox = async (req, res) => {
 };
 
 Controller.postInbox = async (req, res) => {
-	console.log(req.body);
+	console.log('received', req.body);
 
 	res.sendStatus(201);
 };

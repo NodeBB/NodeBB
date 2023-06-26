@@ -194,6 +194,9 @@ ActivityPub.send = async (uid, targets, payload) => {
 			resolveWithFullResponse: true,
 		});
 
-		console.log(response.statusCode, response.body);
+		if (response.statusCode !== 201) {
+			// todo: i18n this
+			throw new Error('activity-failed');
+		}
 	}));
 };
