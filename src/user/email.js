@@ -45,16 +45,16 @@ UserEmail.remove = async function (uid, sessionId) {
 };
 
 UserEmail.getEmailForValidation = async (uid) => {
-	// gets email from  user:<uid> email field,
-	// if it isn't set fallbacks to confirm:<code> email field
-	let email = await user.getUserField(uid, 'email');
+	let email = '';
+	// check email from confirmObj
+	const code = await db.get(`confirm:byUid:${uid}`);
+	const confirmObj = await db.getObject(`confirm:${code}`);
+	if (confirmObj && confirmObj.email && parseInt(uid, 10) === parseInt(confirmObj.uid, 10)) {
+		email = confirmObj.email;
+	}
+
 	if (!email) {
-		// check email from confirmObj
-		const code = await db.get(`confirm:byUid:${uid}`);
-		const confirmObj = await db.getObject(`confirm:${code}`);
-		if (confirmObj && confirmObj.email && parseInt(uid, 10) === parseInt(confirmObj.uid, 10)) {
-			email = confirmObj.email;
-		}
+		email = await user.getUserField(uid, 'email');
 	}
 	return email;
 };

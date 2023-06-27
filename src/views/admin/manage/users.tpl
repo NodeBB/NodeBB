@@ -104,21 +104,37 @@
 								<i class="administrator fa fa-shield text-success{{{ if !users.administrator }}} hidden{{{ end }}}"></i>
 								<a href="{config.relative_path}/user/{users.userslug}"> {users.username}</a>
 							</td>
-							<td class="text-nowrap">
-								{{{ if ./email }}}
-								<i class="validated fa fa-fw fa-check text-success{{{ if !users.email:confirmed }}} hidden{{{ end }}}" title="[[admin/manage/users:users.validated]]" data-bs-toggle="tooltip"></i>
+							<td class="text-nowrap ">
+								<div class="d-flex flex-column gap-1">
+									{{{ if (!./email && !./emailToConfirm) }}}
+									<em class="text-muted">[[admin/manage/users:users.no-email]]</em>
+									{{{ else }}}
+									<span class="validated {{{ if !users.email:confirmed }}} hidden{{{ end }}}">
+										<i class="fa fa-fw fa-check text-success" title="[[admin/manage/users:users.validated]]" data-bs-toggle="tooltip"></i>
+										{{{ if ./email }}}{./email}{{{ end }}}
+									</span>
 
-								<i class="pending fa fa-fw fa-clock-o text-warning{{{ if !users.email:pending }}} hidden{{{ end }}}" title="[[admin/manage/users:users.validation-pending]]" data-bs-toggle="tooltip"></i>
+									<span class="validated-by-admin hidden">
+										<i class="fa fa-fw fa-check text-success" title="[[admin/manage/users:users.validated]]" data-bs-toggle="tooltip"></i>
+										{{{ if ./emailToConfirm }}}{./emailToConfirm}{{{ end }}}
+									</span>
 
-								<i class="expired fa fa-fw fa-times text-danger{{{ if !users.email:expired }}} hidden{{{ end }}}" title="[[admin/manage/users:users.validation-expired]]" data-bs-toggle="tooltip"></i>
+									<span class="pending {{{ if !users.email:pending }}} hidden{{{ end }}}">
+										<i class="fa fa-fw fa-clock-o text-warning" title="[[admin/manage/users:users.validation-pending]]" data-bs-toggle="tooltip"></i>
+										{./emailToConfirm}
+									</span>
 
-								<i class="notvalidated fa fa-fw fa-times text-danger{{{ if (users.email:expired || (users.email:pending || users.email:confirmed)) }}} hidden{{{ end }}}" title="[[admin/manage/users:users.not-validated]]" data-bs-toggle="tooltip"></i>
+									<span class="expired {{{ if !users.email:expired }}} hidden{{{ end }}}">
+										<i class="fa fa-fw fa-times text-danger" title="[[admin/manage/users:users.validation-expired]]" data-bs-toggle="tooltip"></i>
+										{./emailToConfirm}
+									</span>
 
-								{./email}
-								{{{ else }}}
-								<i class="noemail fa fa-fw fa-nbb-none text-muted""></i>
-								<em class="text-muted">[[admin/manage/users:users.no-email]]</em>
-								{{{ end }}}
+									<span class="notvalidated {{{ if (users.email:expired || (users.email:pending || users.email:confirmed)) }}} hidden{{{ end }}}">
+										<i class="fa fa-fw fa-times text-danger" title="[[admin/manage/users:users.not-validated]]" data-bs-toggle="tooltip"></i>
+										{./emailToConfirm}
+									</span>
+									{{{ end }}}
+								</div>
 							</td>
 							<td>
 								{{{ if ./ips.length }}}

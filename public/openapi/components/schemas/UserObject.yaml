@@ -646,6 +646,9 @@ UserObjectACP:
       type: string
       description: Email address associated with the user account
       example: dragonfruit@example.org
+    emailToConfirm:
+      type: string
+      description: Email address user used during signup, this email is not associated with the user until it is confirmed by clicking the link in the confirmation email.
     postcount:
       type: number
       example: 1000

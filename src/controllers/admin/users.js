@@ -187,11 +187,12 @@ async function loadUserInfo(callerUid, uids) {
 			user.lastonlineISO = utils.toISOString(timestamp);
 			user.ips = ips[index];
 			user.ip = ips[index] && ips[index][0] ? ips[index][0] : null;
-			if (confirmObjs[index]) {
+			user.emailToConfirm = user.email;
+			if (confirmObjs[index] && confirmObjs[index].email) {
 				const confirmObj = confirmObjs[index];
 				user['email:expired'] = !confirmObj.expires || Date.now() >= confirmObj.expires;
 				user['email:pending'] = confirmObj.expires && Date.now() < confirmObj.expires;
-				user.email = confirmObj.email;
+				user.emailToConfirm = confirmObj.email;
 			}
 		}
 	});
