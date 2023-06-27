@@ -565,7 +565,7 @@ define('admin/dashboard', [
 	function setupFullscreen() {
 		const container = document.getElementById('analytics-panel');
 		const $container = $(container);
-		const btn = $container.find('.fa-expand');
+		const btn = $container.find('#expand-analytics');
 		let fsMethod;
 		let exitMethod;
 
@@ -584,7 +584,6 @@ define('admin/dashboard', [
 		}
 
 		if (fsMethod) {
-			btn.addClass('active');
 			btn.on('click', function () {
 				if ($container.hasClass('fullscreen')) {
 					document[exitMethod]();
