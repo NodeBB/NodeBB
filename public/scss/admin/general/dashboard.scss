@@ -6,24 +6,12 @@
 	}
 
 	.graph-container {
-		padding-right: 50px;
 		position: relative;
 		background: $body-bg;
-
-		&:hover {
-			.fa-expand {
-				color: $gray-800;
-				background-color: $black;
-			}
-		}
 
 		&.fullscreen {
 			width: 100%;
 			padding: 40px;
-
-			.fa-expand {
-				top: 20px;
-			}
 
 			.graph-legend {
 				top: 7rem;
@@ -134,8 +122,6 @@
 				}
 			}
 		}
-
-
 	}
 
 	.version-check {
