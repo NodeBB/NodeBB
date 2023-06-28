@@ -3,9 +3,11 @@
 const request = require('request-promise-native');
 const { generateKeyPairSync } = require('crypto');
 const winston = require('winston');
+const nconf = require('nconf');
 
 const db = require('../database');
 const ttl = require('../cache/ttl');
+const user = require('../user');
 
 const webfingerCache = ttl({ ttl: 1000 * 60 * 60 * 24 }); // 24 hours
 
@@ -64,4 +66,14 @@ Helpers.generateKeys = async (uid) => {
 
 	await db.setObject(`uid:${uid}:keys`, { publicKey, privateKey });
 	return { publicKey, privateKey };
+};
+
+Helpers.resolveLocalUid = async (id) => {
+	const [slug, host] = id.split('@');
+
+	if (id.indexOf('@') === -1 || host !== nconf.get('url_parsed').host) {
+		throw new Error('[[activitypub:invalid-id]]');
+	}
+
+	return await user.getUidByUserslug(slug);
 };

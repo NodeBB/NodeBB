@@ -2,8 +2,10 @@
 
 const nconf = require('nconf');
 
+const db = require('../../database');
 const user = require('../../user');
 const activitypub = require('../../activitypub');
+const helpers = require('../helpers');
 
 const Controller = module.exports;
 
@@ -99,7 +101,17 @@ Controller.getInbox = async (req, res) => {
 };
 
 Controller.postInbox = async (req, res) => {
-	console.log('received', req.body);
+	switch (req.body.type) {
+		case 'Follow': {
+			await activitypub.inbox.follow(req.body.actor.name, req.body.object.name);
+			break;
+		}
+
+		case 'Unfollow': {
+			await activitypub.inbox.unfollow(req.body.actor.name, req.body.object.name);
+			break;
+		}
+	}
 
 	res.sendStatus(201);
 };
@@ -109,18 +121,50 @@ Controller.postInbox = async (req, res) => {
  */
 
 Controller.follow = async (req, res) => {
-	await activitypub.send(req.uid, req.params.uid, {
-		type: 'Follow',
-		object: {
-			type: 'Person',
-			name: req.params.uid,
-		},
-	});
+	try {
+		const { uid: objectId } = req.params;
+		await activitypub.send(req.uid, objectId, {
+			type: 'Follow',
+			object: {
+				type: 'Person',
+				name: objectId,
+			},
+		});
 
-	res.sendStatus(201);
+		const now = Date.now();
+		await db.sortedSetAdd(`followingRemote:${req.uid}`, now, objectId);
+		await recountFollowing(req.uid);
+
+		helpers.formatApiResponse(200, res);
+	} catch (e) {
+		helpers.formatApiResponse(400, res, e);
+	}
 };
 
 Controller.unfollow = async (req, res) => {
-	console.log('got here');
-	res.sendStatus(201);
+	try {
+		const { uid: objectId } = req.params;
+		await activitypub.send(req.uid, objectId, {
+			type: 'Unfollow',
+			object: {
+				type: 'Person',
+				name: objectId,
+			},
+		});
+
+		await db.sortedSetRemove(`followingRemote:${req.uid}`, objectId);
+		await recountFollowing(req.uid);
+
+		helpers.formatApiResponse(200, res);
+	} catch (e) {
+		helpers.formatApiResponse(400, res, e);
+	}
 };
+
+async function recountFollowing(uid) {
+	const [followingCount, followingRemoteCount] = await Promise.all([
+		db.sortedSetCard(`following:${uid}`),
+		db.sortedSetCard(`followingRemote:${uid}`),
+	]);
+	await user.setUserField(uid, 'followingCount', followingCount + followingRemoteCount);
+}

@@ -1,6 +1,6 @@
 'use strict';
 
-const { getActor } = require('../../activitypub');
+const { getActor, outbox } = require('../../activitypub');
 
 const controller = module.exports;
 
@@ -11,6 +11,8 @@ controller.get = async function (req, res, next) {
 		return next();
 	}
 	const { preferredUsername, published, icon, image, name, summary, hostname } = actor;
+	const isFollowing = await outbox.isFollowing(req.uid, uid);
+
 	const payload = {
 		uid,
 		username: `${preferredUsername}@${hostname}`,
@@ -23,6 +25,8 @@ controller.get = async function (req, res, next) {
 		'cover:position': '50% 50%',
 		aboutme: summary,
 		aboutmeParsed: summary,
+
+		isFollowing,
 	};
 
 	res.render('account/profile', payload);

@@ -49,13 +49,15 @@ module.exports = function (User) {
 			]);
 		}
 
-		const [followingCount, followerCount] = await Promise.all([
+		const [followingCount, followingRemoteCount, followerCount, followerRemoteCount] = await Promise.all([
 			db.sortedSetCard(`following:${uid}`),
+			db.sortedSetCard(`followingRemote:${uid}`),
 			db.sortedSetCard(`followers:${theiruid}`),
+			db.sortedSetCard(`followersRemote:${theiruid}`),
 		]);
 		await Promise.all([
-			User.setUserField(uid, 'followingCount', followingCount),
-			User.setUserField(theiruid, 'followerCount', followerCount),
+			User.setUserField(uid, 'followingCount', followingCount + followingRemoteCount),
+			User.setUserField(theiruid, 'followerCount', followerCount + followerRemoteCount),
 		]);
 	}
 

@@ -12,6 +12,8 @@ const actorCache = ttl({ ttl: 1000 * 60 * 60 * 24 }); // 24 hours
 const ActivityPub = module.exports;
 
 ActivityPub.helpers = require('./helpers');
+ActivityPub.inbox = require('./inbox');
+ActivityPub.outbox = require('./outbox');
 
 ActivityPub.getActor = async (id) => {
 	if (actorCache.has(id)) {
