@@ -3,17 +3,27 @@
 	"settings": "Impostazioni",
 	"lead-text": "Da questa pagina è possibile configurare l'accesso alle API di scrittura in NodeBB.",
 	"intro": "Per impostazione predefinita, l'API di scrittura autentica gli utenti in base al cookie di sessione, ma NodeBB supporta anche l'autenticazione Bearer tramite token generati tramite questa pagina.",
+	"warning": "<strong>Attenzione</strong> — trattare i token come password. Se sono trapelati, il tuo account dovrebbe essere considerato compromesso.",
 	"docs": "Clicca qui per accedere alle specifiche complete dell'API",
 
 	"require-https": "Richiedi utilizzo API solo tramite HTTPS",
 	"require-https-caveat": "<strong>Nota</strong>:Alcune installazioni che coinvolgono bilanciatori del carico possono inviare tramite proxy le loro richieste a NodeBB utilizzando HTTP, nel qual caso questa opzione dovrebbe rimanere disabilitata.",
 
 	"uid": "ID utente",
+	"token": "Token",
 	"uid-help-text": "Specificare un ID utente da associare a questo token. Se l'ID utente è <code>0</code>, sarà considerato un token <em>master</em>, che può assumere l'identità di altri utenti in base al parametro <code>_uid</code>",
 	"description": "Descrizione",
-	"last-seen-ago": "Ultimo utilizzo <span class=\"timeago\" title=\"%1\"></span>.",
-	"last-seen-on": "Ultimo utilizzo il <span class=\"timeago\" title=\"%1\"></span>.",
+	"last-seen": "Ultimo visto",
+	"created": "Creato",
+	"create-token": "Crea token",
+	"update-token": "Aggiorna token",
+	"master-token": "Token principale",
 	"last-seen-never": "Questa chiave non è mai stata usata.",
 	"no-description": "Nessuna descrizione specificata.",
-	"token-on-save": "Il token sarà generato una volta salvato il modulo"
+	"actions": "Azioni",
+	"edit": "Modifica",
+	"roll": "Rigenerare",
+
+	"delete-confirm": "Sei sicuro di voler eliminare questo token? Non sarà recuperabile.",
+	"roll-confirm": "Sei sicuro di voler rigenerare questo token? Il vecchio token sarà immediatamente revocato e non sarà recuperabile."
 }

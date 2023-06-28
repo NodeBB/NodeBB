@@ -3,17 +3,27 @@
 	"settings": "Nastavitve",
 	"lead-text": "Na tej strani lahko konfigurirate dostop do API-ja za pisanje v NodeBB.",
 	"intro": "API za pisanje privzeto preverja uporabnike na podlagi njihovega piškotka seje, vendar NodeBB podpira tudi preverjanje pristnosti nosilca prek žetonov, ustvarjenih na tej strani.",
+	"warning": "<strong>Be advised</strong> — treat tokens like passwords. If they are leaked, your account should be considered compromised.",
 	"docs": "Kliknite tukaj za dostop do celotne specifikacije API-ja",
 
 	"require-https": "Zahtevaj uporabo API samo prek protokola HTTPS",
 	"require-https-caveat": "<strong>Opomba</strong>: Nekatere namestitve, ki vključujejo izravnalnike obremenitve, lahko svoje zahteve posredujejo NodeBB prek protokola HTTP, v tem primeru bi morala ta možnost ostati onemogočena.",
 
 	"uid": "ID uporabnika",
+	"token": "Token",
 	"uid-help-text": "Določite ID uporabnika, ki ga želite povezati s tem žetonom. Če je ID uporabnika <code>0</code>, bo veljal za <em>glavni</em> žeton, ki lahko prevzame identiteto drugih uporabnikov na podlagi parametra <code>_uid</code>",
 	"description": "Opis",
-	"last-seen-ago": "Last used <span class=\"timeago\" title=\"%1\"></span>.",
-	"last-seen-on": "Last used on <span class=\"timeago\" title=\"%1\"></span>.",
+	"last-seen": "Last seen",
+	"created": "Created",
+	"create-token": "Create Token",
+	"update-token": "Update Token",
+	"master-token": "Master token",
 	"last-seen-never": "This key has never been used.",
 	"no-description": "Opis ni naveden.",
-	"token-on-save": "Žeton bo ustvarjen, ko bo obrazec shranjen"
+	"actions": "Actions",
+	"edit": "Edit",
+	"roll": "Roll",
+
+	"delete-confirm": "Are you sure you wish to delete this token? It will not be recoverable.",
+	"roll-confirm": "Are you sure you wish to regenerate this token? The old token will be immediately revoked and will not be recoverable."
 }

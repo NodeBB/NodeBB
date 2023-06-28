@@ -1,4 +1,5 @@
 {
+	"widgets": "Widgets",
 	"available": "Widgets Disponíveis",
 	"explanation": "Seleciona um widget no menu suspenso e, em seguida, arrasta-o e solta-o para uma das área de widgets à esquerda.",
 	"none-installed": "No widgets found! Activate the widget essentials plugin in the <a href=\"%1\">plugins</a> control panel.",

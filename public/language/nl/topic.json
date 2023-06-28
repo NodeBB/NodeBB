@@ -164,7 +164,7 @@
     "composer.schedule": "Schedule",
     "composer.replying_to": "Reactie op %1",
     "composer.new_topic": "Nieuw onderwerp",
-    "composer.editing": "Editing",
+    "composer.editing-in": "Editing post in %1",
     "composer.uploading": "uploaden...",
     "composer.thumb_url_label": "Plak een URL naar een miniatuurweergave voor dit onderwerp",
     "composer.thumb_title": "Voeg een miniatuurweergave toe aan dit onderwerp",

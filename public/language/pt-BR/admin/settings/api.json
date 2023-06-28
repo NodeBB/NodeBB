@@ -3,17 +3,27 @@
 	"settings": "Configurações",
 	"lead-text": "Nesta página, você pode configurar o acesso à API de Escrita no NodeBB.",
 	"intro": "Por padrão, a API de Escrita autentica os usuários com base em seu cookie de \nsessão, mas o NodeBB também oferece suporte à autenticação Bearer por\n meio de tokens gerados por meio desta página.",
+	"warning": "<strong>Be advised</strong> — treat tokens like passwords. If they are leaked, your account should be considered compromised.",
 	"docs": "Clique aqui para acessar a especificação completa da API",
 
 	"require-https": "Exigir uso da API apenas via HTTPS",
 	"require-https-caveat": "<strong>Nota</strong>: Algumas instalações que envolvem balanceadores de carga podem fazer proxy de suas solicitações para NodeBB usando HTTP, caso em que esta opção deve permanecer desabilitada.",
 
 	"uid": "ID do Usuário",
+	"token": "Token",
 	"uid-help-text": "Especifique um ID de usuário para associar a este token. Se o ID do usuário for<code>0</code>, ele será considerada uma token <em>master</em>, que pode assumir a identidade de outros usuários com base no parâmetro <code>_uid</code>",
 	"description": "Descrição",
-	"last-seen-ago": "Last used <span class=\"timeago\" title=\"%1\"></span>.",
-	"last-seen-on": "Last used on <span class=\"timeago\" title=\"%1\"></span>.",
+	"last-seen": "Last seen",
+	"created": "Created",
+	"create-token": "Create Token",
+	"update-token": "Update Token",
+	"master-token": "Master token",
 	"last-seen-never": "This key has never been used.",
 	"no-description": "Nenhuma descrição especificada.",
-	"token-on-save": "O token será gerado assim que o formulário for salvo"
+	"actions": "Actions",
+	"edit": "Edit",
+	"roll": "Roll",
+
+	"delete-confirm": "Are you sure you wish to delete this token? It will not be recoverable.",
+	"roll-confirm": "Are you sure you wish to regenerate this token? The old token will be immediately revoked and will not be recoverable."
 }

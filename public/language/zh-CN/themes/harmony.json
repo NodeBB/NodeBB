@@ -1,14 +1,16 @@
 {
-	"skins": "Skins",
-	"collapse": "Collapse",
-	"expand": "Expand",
-	"login-register-to-search": "Login or register to search.",
-	"settings.title": "Theme settings",
-	"settings.enableQuickReply": "Enable quick reply",
-	"settings.centerHeaderElements": "Center header elements",
-	"settings.mobileTopicTeasers": "Show topic teasers on mobile",
-	"settings.stickyToolbar": "Sticky toolbar",
-	"settings.stickyToolbar.help": "The toolbar on topic and category pages will stick to the top of the page",
-	"settings.autohideBottombar": "Auto hide bottom bar",
-	"settings.autohideBottombar.help": "The bottom bar on mobile view will be hidden when the page is scrolled down"
+	"theme-name": "Harmony 主题",
+	"skins": "皮肤",
+	"collapse": "折叠",
+	"expand": "展开",
+	"login-register-to-search": "登录或注册以进行搜索。",
+	"settings.title": "主题设置",
+	"settings.enableQuickReply": "启用快速回复",
+	"settings.centerHeaderElements": "标题元素居中",
+	"settings.mobileTopicTeasers": "在移动设备显示话题预告",
+	"settings.stickyToolbar": "附着工具条",
+	"settings.stickyToolbar.help": "主题和类别页面上的工具条将附着在页面顶部",
+	"settings.autohideBottombar": "自动隐藏底栏",
+	"settings.autohideBottombar.help": "当页面向下滚动时，移动设备视图的底栏将被隐藏",
+	"settings.chatModals": "启用聊天模式"
 }

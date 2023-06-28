@@ -189,6 +189,7 @@ function addTags(categoryData, res) {
 		res.locals.metaTags.push({
 			property: 'og:image',
 			content: categoryData.backgroundImage,
+			noEscape: true,
 		});
 	}
 

@@ -3,17 +3,27 @@
 	"settings": "Настройки",
 	"lead-text": "From this page you can configure access to the Write API in NodeBB.",
 	"intro": "By default, the Write API authenticates users based on their session cookie, but NodeBB also supports Bearer authentication via tokens generated via this page.",
+	"warning": "<strong>Be advised</strong> — treat tokens like passwords. If they are leaked, your account should be considered compromised.",
 	"docs": "Click here to access the full API specification",
 
 	"require-https": "Require API usage via HTTPS only",
 	"require-https-caveat": "<strong>Note</strong>: Some installations involving load balancers may proxy their requests to NodeBB using HTTP, in which case this option should remain disabled.",
 
 	"uid": "ID пользователя",
+	"token": "Token",
 	"uid-help-text": "Укажите идентификатор пользователя, который нужно связать с этим токеном. Если идентификатор пользователя равен <code>0</code>, он будет считаться <em>главным</em> токеном, который может предполагать идентичность других пользователей на основе параметра <code>_uid</code>.",
 	"description": "Описание",
-	"last-seen-ago": "Last used <span class=\"timeago\" title=\"%1\"></span>.",
-	"last-seen-on": "Last used on <span class=\"timeago\" title=\"%1\"></span>.",
+	"last-seen": "Last seen",
+	"created": "Created",
+	"create-token": "Create Token",
+	"update-token": "Update Token",
+	"master-token": "Master token",
 	"last-seen-never": "This key has never been used.",
 	"no-description": "Описания нет.",
-	"token-on-save": "Токен будет сгенерирован после сохранения формы"
+	"actions": "Actions",
+	"edit": "Edit",
+	"roll": "Roll",
+
+	"delete-confirm": "Are you sure you wish to delete this token? It will not be recoverable.",
+	"roll-confirm": "Are you sure you wish to regenerate this token? The old token will be immediately revoked and will not be recoverable."
 }

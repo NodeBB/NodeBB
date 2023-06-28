@@ -10,7 +10,7 @@ const languages = require('../../languages');
 const navigationAdmin = require('../../navigation/admin');
 const social = require('../../social');
 const api = require('../../api');
-
+const pagination = require('../../pagination');
 const helpers = require('../helpers');
 const translator = require('../../translator');
 
@@ -18,13 +18,27 @@ const settingsController = module.exports;
 
 settingsController.get = async function (req, res) {
 	const term = req.params.term || 'general';
-	res.render(`admin/settings/${term}`);
+	const payload = {
+		title: `[[admin/menu:settings/${term}]]`,
+	};
+	if (term === 'general') {
+		payload.routes = await helpers.getHomePageRoutes(req.uid);
+		payload.postSharing = await social.getPostSharing();
+		const languageData = await languages.list();
+		languageData.forEach((language) => {
+			language.selected = language.code === meta.config.defaultLang;
+		});
+		payload.languages = languageData;
+		payload.autoDetectLang = meta.config.autoDetectLang;
+	}
+	res.render(`admin/settings/${term}`, payload);
 };
 
 settingsController.email = async (req, res) => {
 	const emails = await emailer.getTemplates(meta.config);
 
 	res.render('admin/settings/email', {
+		title: '[[admin/menu:settings/email]]',
 		emails: emails,
 		sendable: emails.filter(e => !e.path.includes('_plaintext') && !e.path.includes('partials')).map(tpl => tpl.path),
 		services: emailer.listServices(),
@@ -38,6 +52,7 @@ settingsController.user = async (req, res) => {
 		label: `[[notifications:${type}]]`,
 	}));
 	res.render('admin/settings/user', {
+		title: '[[admin/menu:settings/user]]',
 		notificationSettings: notificationSettings,
 	});
 };
@@ -45,6 +60,7 @@ settingsController.user = async (req, res) => {
 settingsController.post = async (req, res) => {
 	const groupData = await groups.getNonPrivilegeGroups('groups:createtime', 0, -1);
 	res.render('admin/settings/post', {
+		title: '[[admin/menu:settings/post]]',
 		groupsExemptFromPostQueue: groupData,
 	});
 };
@@ -52,19 +68,8 @@ settingsController.post = async (req, res) => {
 settingsController.advanced = async (req, res) => {
 	const groupData = await groups.getNonPrivilegeGroups('groups:createtime', 0, -1);
 	res.render('admin/settings/advanced', {
+		title: '[[admin/menu:settings/advanced]]',
 		groupsExemptFromMaintenanceMode: groupData,
-	});
-};
-
-settingsController.languages = async function (req, res) {
-	const languageData = await languages.list();
-	languageData.forEach((language) => {
-		language.selected = language.code === meta.config.defaultLang;
-	});
-
-	res.render('admin/settings/languages', {
-		languages: languageData,
-		autoDetectLang: meta.config.autoDetectLang,
 	});
 };
 
@@ -94,31 +99,23 @@ settingsController.navigation = async function (req, res) {
 	});
 
 	admin.navigation = admin.enabled.slice();
-
+	admin.title = '[[admin/menu:settings/navigation]]';
 	res.render('admin/settings/navigation', admin);
 };
 
-settingsController.homepage = async function (req, res) {
-	const routes = await helpers.getHomePageRoutes(req.uid);
-	res.render('admin/settings/homepage', { routes: routes });
-};
-
-settingsController.social = async function (req, res) {
-	const posts = await social.getPostSharing();
-	res.render('admin/settings/social', {
-		posts: posts,
-	});
-};
-
 settingsController.api = async (req, res) => {
-	const { tokens = [] } = await meta.settings.get('core.api');
-	const scores = await api.utils.getLastSeen(tokens.map(t => t.token));
-
-	const [lastSeen, lastSeenISO] = tokens.reduce((memo, cur, idx) => {
-		memo[0][cur.token] = scores[idx];
-		memo[1][cur.token] = new Date(scores[idx]).toISOString();
-		return memo;
-	}, [{}, {}]);
-
-	res.render('admin/settings/api', { lastSeen, lastSeenISO });
+	const page = parseInt(req.query.page, 10) || 1;
+	const resultsPerPage = 50;
+	const start = Math.max(0, page - 1) * resultsPerPage;
+	const stop = start + resultsPerPage - 1;
+	const [tokens, count] = await Promise.all([
+		api.utils.tokens.list(start, stop),
+		api.utils.tokens.count(),
+	]);
+	const pageCount = Math.ceil(count / resultsPerPage);
+	res.render('admin/settings/api', {
+		title: '[[admin/menu:settings/api]]',
+		tokens,
+		pagination: pagination.create(page, pageCount, req.query),
+	});
 };

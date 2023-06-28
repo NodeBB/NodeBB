@@ -1,10 +1,12 @@
 {
 	"rewards": "Belohnungen",
+	"add-reward": "Add reward",
 	"condition-if-users": "Wenn Benutzer",
 	"condition-is": "Ist:",
 	"condition-then": "Dann:",
 	"max-claims": "Anzahl der Male von Belohnungen, die beansprucht werden können",
 	"zero-infinite": "0 für unendlich eingeben",
+	"select-reward": "Select reward",
 	"delete": "Löschen",
 	"enable": "Aktivieren",
 	"disable": "Deaktivieren",

@@ -1,4 +1,5 @@
 {
+	"widgets": "Widgets",
 	"available": "Dostupné miniaplikace",
 	"explanation": "Vyberte si miniaplikaci z vysouvací nabídky a přetáhněte ji do oblasti šablony miniaplikace nalevo.",
 	"none-installed": "Nebyly nalezeny žádné miniaplikace! Aktivujte zásuvný modul miniaplikace v ovládacím panelu <a href=\"%1\">zásuvné moduly</a>.",

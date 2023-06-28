@@ -4,6 +4,13 @@
 
 	"acp-title": "لوحة تحكم إدارة NodeBB | %1",
 	"settings-header-contents": "محتويات",
+	"changes-saved": "Changes Saved",
+	"changes-saved-message": "Your changes to the NodeBB configuration have been saved.",
 	"changes-not-saved": "لم يتم حفظ التغييرات",
-	"changes-not-saved-message": "حدثت مشكلة أثناء حفظ التغييرات في NodeBB. (%1)"
+	"changes-not-saved-message": "حدثت مشكلة أثناء حفظ التغييرات في NodeBB. (%1)",
+	"save-changes": "Save changes",
+	"min": "Min:",
+	"max": "Max:",
+	"view": "View",
+	"edit": "Edit"
 }

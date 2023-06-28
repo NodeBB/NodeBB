@@ -131,6 +131,12 @@ blockquote {
 	border-color: $text-muted!important;
 }
 
+.hidden-empty {
+	&:empty {
+		display: none!important;
+	}
+}
+
 // some classes that are used commonly in themes from bs3
 .hidden, .hide {
     display: none!important;

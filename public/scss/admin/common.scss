@@ -1,0 +1,73 @@
+
+.form-label {
+	font-weight: 500;
+	font-size: $font-size-sm;
+	font-family: $font-family-base;
+	margin-bottom: 0;
+}
+
+.form-text {
+	font-size: 0.75rem!important;;
+	font-family: $font-family-base;
+}
+
+.tracking-tight { letter-spacing: -0.02em; }
+
+$btn-ghost-hover-color: mix($light, $dark, 90%);
+
+@mixin btn-ghost-base {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: ($spacer * 0.5);
+	border-radius: $border-radius-sm;
+	border-width: 1px;
+	border-color: transparent;
+	background-color: transparent;
+	padding: ($spacer * 0.25) ($spacer * 0.5);
+	text-align: left;
+	--bs-text-opacity: 1;
+	color: rgb(73 80 87 / var(--bs-text-opacity));
+	font-family: $font-family-secondary;
+	cursor: pointer;
+	&:hover, &.active {
+		background-color: $btn-ghost-hover-color;
+		color: rgb(73 80 87 / var(--bs-text-opacity));
+		text-decoration: none;
+	}
+}
+
+.btn-ghost {
+	@include btn-ghost-base();
+	line-height: 1.5rem;
+	> i {
+		line-height: 1.5rem;
+	}
+}
+
+.btn-ghost-sm {
+	@include btn-ghost-base();
+	font-size: 0.875rem;
+	line-height: 1.25rem;
+	> i {
+		line-height: 1.25rem;
+	}
+}
+
+.btn-outline {
+	@include btn-ghost-base();
+	border-color: $border-color;
+}
+
+.btn-outline-sm {
+	@include btn-ghost-base();
+	border-color: $border-color;
+	font-size: 0.875rem;
+	line-height: 1.25rem;
+}
+
+.flex-basis-md-200 {
+	@include media-breakpoint-up(md) {
+		flex-basis: 200px!important;
+	}
+}

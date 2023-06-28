@@ -27,8 +27,10 @@ module.exports = function (utils, Benchpress, relative_path) {
 		increment,
 		generateRepliedTo,
 		generateWrote,
-		register,
 		isoTimeToLocaleString,
+		shouldHideReplyContainer,
+
+		register,
 		__escape: identity,
 	};
 
@@ -340,6 +342,14 @@ module.exports = function (utils, Benchpress, relative_path) {
 
 	function isoTimeToLocaleString(isoTime) {
 		return new Date(isoTime).toLocaleString().replace(/,/g, '&#44;');
+	}
+
+	function shouldHideReplyContainer(post) {
+		if (post.replies.count <= 0 || post.replies.hasSingleImmediateReply) {
+			return true;
+		}
+
+		return false;
 	}
 
 	function register() {

@@ -98,7 +98,7 @@ apiController.loadConfig = async function (req) {
 	}
 
 	// Handle old skin configs
-	const oldSkins = ['noskin', 'default'];
+	const oldSkins = ['default'];
 	settings.bootswatchSkin = oldSkins.includes(settings.bootswatchSkin) ? '' : settings.bootswatchSkin;
 
 	config.usePagination = settings.usePagination;
@@ -113,7 +113,14 @@ apiController.loadConfig = async function (req) {
 	config.categoryTopicSort = settings.categoryTopicSort || config.categoryTopicSort;
 	config.topicSearchEnabled = settings.topicSearchEnabled || false;
 	config.disableCustomUserSkins = meta.config.disableCustomUserSkins === 1;
-	config.bootswatchSkin = (meta.config.disableCustomUserSkins !== 1 && settings.bootswatchSkin && settings.bootswatchSkin !== '') ? settings.bootswatchSkin : '';
+	config.defaultBootswatchSkin = config.bootswatchSkin;
+	if (!config.disableCustomUserSkins && settings.bootswatchSkin) {
+		if (settings.bootswatchSkin === 'noskin') {
+			config.bootswatchSkin = '';
+		} else if (settings.bootswatchSkin !== '' && await meta.css.isSkinValid(settings.bootswatchSkin)) {
+			config.bootswatchSkin = settings.bootswatchSkin;
+		}
+	}
 
 	// Overrides based on privilege
 	config.disableChatMessageEditing = isAdminOrGlobalMod ? false : config.disableChatMessageEditing;

@@ -1,10 +1,12 @@
 {
 	"rewards": "奖励",
+	"add-reward": "增加奖励",
 	"condition-if-users": "如果用户的",
 	"condition-is": "是：",
 	"condition-then": "则：",
 	"max-claims": "可获取奖励的次数",
 	"zero-infinite": "无限制请输入0",
+	"select-reward": "选择奖励",
 	"delete": "删除",
 	"enable": "启用",
 	"disable": "禁用",

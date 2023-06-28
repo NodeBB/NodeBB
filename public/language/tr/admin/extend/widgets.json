@@ -1,4 +1,5 @@
 {
+	"widgets": "Widgets",
 	"available": "Kullanılabilir Bileşenler",
 	"explanation": "Açılır menüden bir bileşen seçin ve sol taraftaki bir şablonun bileşen alanına sürükleyip bırakın.",
 	"none-installed": "Bileşen bulunamadı!  <a href=\"%1\">Eklentiler</a> kontrol panelinden bileşen eklentisini aktifleştirmelisiniz!",

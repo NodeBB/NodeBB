@@ -59,7 +59,7 @@
 	"max-about-me-length": " Իմ մասին առավելագույն երկարությունը",
 	"terms-of-use": "Ֆորումի Օգտագործման պայմաններ (Անջատելու համար դատարկ թողեք)",
 	"user-search": "Օգտատիրոջ որոնում",
-	"user-search-results-per-page": "Ցուցադրվող արդյունքների քանակը",
+	"user-search-results-per-page": "Number of users to display in search results",
 	"default-user-settings": "Օգտատիրոջ հիմնական կարգավորումներ",
 	"show-email": "Ցույց տալ էլ.նամակը",
 	"show-fullname": "Ցույց տալ լրիվ անունը",

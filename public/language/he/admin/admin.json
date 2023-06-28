@@ -4,6 +4,13 @@
 
 	"acp-title": "%1 | לוח בקרה למנהל פורום NodeBB",
 	"settings-header-contents": "תוכן",
+	"changes-saved": "השינויים נשמרו",
+	"changes-saved-message": "השינויים שלך בתצורת NodeBB נשמרו.",
 	"changes-not-saved": "השינויים לא נשמרו",
-	"changes-not-saved-message": "NodeBB נתקל בבעיה בשמירת השינויים שלך. (%1)"
+	"changes-not-saved-message": "NodeBB נתקל בבעיה בשמירת השינויים שלך. (%1)",
+	"save-changes": "שמור שינויים",
+	"min": "מינימום:",
+	"max": "מקסימום:",
+	"view": "View",
+	"edit": "עריכה"
 }

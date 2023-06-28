@@ -5,15 +5,19 @@ define('forum/account/settings', [
 	'forum/account/header', 'components', 'api', 'alerts', 'hooks',
 ], function (header, components, api, alerts, hooks) {
 	const AccountSettings = {};
-
+	let savedSkin = '';
 	// If page skin is changed but not saved, switch the skin back
 	$(window).on('action:ajaxify.start', function () {
-		if (ajaxify.data.template.name === 'account/settings' && $('#bootswatchSkin').length && $('#bootswatchSkin').val() !== config.bootswatchSkin) {
-			reskin(config.bootswatchSkin);
+		const skinEl = $('#bootswatchSkin');
+		if (
+			ajaxify.data.template.name === 'account/settings' &&
+			skinEl.length && skinEl.val() !== savedSkin) {
+			reskin(savedSkin);
 		}
 	});
 
 	AccountSettings.init = function () {
+		savedSkin = $('#bootswatchSkin').length && $('#bootswatchSkin').val();
 		header.init();
 
 		$('#submitBtn').on('click', function () {
@@ -76,7 +80,10 @@ define('forum/account/settings', [
 					if (key === 'userLang' && config.userLang !== newSettings.userLang) {
 						languageChanged = true;
 					}
-					if (config.hasOwnProperty(key)) {
+					if (key === 'bootswatchSkin') {
+						savedSkin = newSettings.bootswatchSkin;
+						config.bootswatchSkin = savedSkin === 'noskin' ? '' : savedSkin;
+					} else if (config.hasOwnProperty(key)) {
 						config[key] = newSettings[key];
 					}
 				}
@@ -103,6 +110,12 @@ define('forum/account/settings', [
 		})[0] || null;
 		if (!clientEl) {
 			return;
+		}
+
+		if (skinName === '') {
+			skinName = config.defaultBootswatchSkin || '';
+		} else if (skinName === 'noskin') {
+			skinName = '';
 		}
 
 		const currentSkinClassName = $('body').attr('class').split(/\s+/).filter(function (className) {
@@ -143,7 +156,8 @@ define('forum/account/settings', [
 		if (app.user.uid) {
 			await api.put(`/users/${app.user.uid}/settings`, { settings: { bootswatchSkin: skin } });
 		}
-		config.bootswatchSkin = skin;
+		config.bootswatchSkin = skin === 'noskin' ? '' : skin;
+		savedSkin = skin;
 		reskin(skin);
 	};
 

@@ -87,12 +87,10 @@
 				</div>
 			</div>
 
-			{{{ if error }}}
-			<a id="database-error"></a>
-			{{{ end }}}
+
 
 			{{{ if !skipDatabaseSetup }}}
-			<div class="database">
+			<div class="database mb-3">
 				<p>
 					<h2><small>Configure your database</small></h2>
 					<hr />
@@ -113,27 +111,37 @@
 				<div id="database-config"></div>
 			</div>
 			{{{ end }}}
-
-			<button id="submit" type="submit" class="btn btn btn-success">Install NodeBB <i class="working hide"></i></button>
+			<div class="row">
+				<div class="col-sm-7 col-12">
+					<div class="d-flex gap-2 mb-3">
+						{{{ if !skipDatabaseSetup }}}
+						<button id="test-database" class="btn btn-light">
+							<div id="test-database-spinner" class="spinner-border spinner-border-sm text-primary hidden" role="status"></div>
+							<span>Test Database</span>
+						</button>
+						{{{ end }}}
+						<button id="submit" type="submit" class="btn btn-primary">Install NodeBB <i class="working hide"></i></button>
+					</div>
+					<div id="database-success" class="alert alert-success hidden" role="alert">Database connection successful!</div>
+					<div id="database-error" class="alert alert-danger hidden" role="alert"></div>
+					<div id="database-full" class="alert alert-warning hidden" role="alert"><pre></pre></div>
+				</div>
+			</div>
 		</form>
 	</div>
 	{{{ end }}}
 
 	{{{ if installing }}}
-	<div id="installing" class="container">
+	<div id="installing" class="container" data-url="{launchUrl}">
 		<p>
 			<h1>Hang tight! Your NodeBB is being installed.</h1>
 		</p>
+		<p class="lead">This might take a few minutes, you will be redirected once your forum is ready.</p>
+		<div class="progress" style="height: 20px;">
+			<div class="progress-bar" role="progressbar" data-percent="{percentInstalled}" style="width: {percentInstalled}%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+		</div>
 	</div>
 	{{{ end }}}
-
-	<div class="container {{{ if !success }}}hide{{{ end }}}">
-		<p>
-			<h1>Congratulations! Your NodeBB has been set-up.</h1>
-
-			<button id="launch" data-url="{launchUrl}" class="btn btn btn-success">Launch NodeBB <i class="working hide"></i></button>
-		</p>
-	</div>
 
 	<div class="hide">
 		{{{ each databases }}}

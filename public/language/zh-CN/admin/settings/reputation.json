@@ -27,5 +27,5 @@
 	"flags.action-on-resolve": "当举报被解决时做以下事",
 	"flags.action-on-reject": "当举报被拒绝时做以下事",
 	"flags.action.nothing": "不做任何事",
-	"flags.action.rescind": "撤回发送给版主/管理员的通知"
+	"flags.action.rescind": "撤销发给版主/管理员的通知"
 }

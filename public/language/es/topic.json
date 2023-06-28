@@ -164,7 +164,7 @@
     "composer.schedule": "Schedule",
     "composer.replying_to": "En respuesta a %1",
     "composer.new_topic": "Nuevo tema",
-    "composer.editing": "Editing",
+    "composer.editing-in": "Editing post in %1",
     "composer.uploading": "subiendo...",
     "composer.thumb_url_label": "Agrega una URL de miniatura para el hilo",
     "composer.thumb_title": "Agregar miniatura a este tema",

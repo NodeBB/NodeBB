@@ -84,9 +84,14 @@ function onConnection(socket) {
 
 	onConnect(socket);
 	socket.onAny((event, ...args) => {
-		const payload = { data: [event].concat(args) };
+		const payload = { event: event, ...deserializePayload(args) };
 		const als = require('../als');
-		als.run({ uid: socket.uid }, onMessage, socket, payload);
+		const apiHelpers = require('../api/helpers');
+		als.run({
+			uid: socket.uid,
+			req: apiHelpers.buildReqObject(socket, payload),
+			socket: { ...payload },
+		}, onMessage, socket, payload);
 	});
 
 	socket.on('disconnect', () => {
@@ -123,27 +128,29 @@ async function onConnect(socket) {
 	plugins.hooks.fire('action:sockets.connect', { socket: socket });
 }
 
-async function onMessage(socket, payload) {
-	if (!payload.data.length) {
-		return winston.warn('[socket.io] Empty payload');
+function deserializePayload(payload) {
+	if (!Array.isArray(payload) || !payload.length) {
+		winston.warn('[socket.io] Empty payload');
+		return {};
 	}
+	const params = typeof payload[0] === 'function' ? {} : payload[0];
+	const callback = typeof payload[payload.length - 1] === 'function' ? payload[payload.length - 1] : function () {};
+	return { params, callback };
+}
 
-	let eventName = payload.data[0];
-	const params = typeof payload.data[1] === 'function' ? {} : payload.data[1];
-	const callback = typeof payload.data[payload.data.length - 1] === 'function' ? payload.data[payload.data.length - 1] : function () {};
-
+async function onMessage(socket, payload) {
+	const { event, params, callback } = payload;
 	try {
-		if (!eventName) {
+		if (!event) {
 			return winston.warn('[socket.io] Empty method name');
 		}
 
-		if (typeof eventName !== 'string') {
-			eventName = typeof eventName;
-			const escapedName = validator.escape(eventName);
+		if (typeof event !== 'string') {
+			const escapedName = validator.escape(typeof event);
 			return callback({ message: `[[error:invalid-event, ${escapedName}]]` });
 		}
 
-		const parts = eventName.split('.');
+		const parts = event.split('.');
 		const namespace = parts[0];
 		const methodToCall = parts.reduce((prev, cur) => {
 			if (prev !== null && prev[cur] && (!prev.hasOwnProperty || prev.hasOwnProperty(cur))) {
@@ -154,19 +161,19 @@ async function onMessage(socket, payload) {
 
 		if (!methodToCall || typeof methodToCall !== 'function') {
 			if (process.env.NODE_ENV === 'development') {
-				winston.warn(`[socket.io] Unrecognized message: ${eventName}`);
+				winston.warn(`[socket.io] Unrecognized message: ${event}`);
 			}
-			const escapedName = validator.escape(String(eventName));
+			const escapedName = validator.escape(String(event));
 			return callback({ message: `[[error:invalid-event, ${escapedName}]]` });
 		}
 
 		socket.previousEvents = socket.previousEvents || [];
-		socket.previousEvents.push(eventName);
+		socket.previousEvents.push(event);
 		if (socket.previousEvents.length > 20) {
 			socket.previousEvents.shift();
 		}
 
-		if (!eventName.startsWith('admin.') && ratelimit.isFlooding(socket)) {
+		if (!event.startsWith('admin.') && ratelimit.isFlooding(socket)) {
 			winston.warn(`[socket.io] Too many emits! Disconnecting uid : ${socket.uid}. Events : ${socket.previousEvents}`);
 			return socket.disconnect();
 		}
@@ -175,7 +182,7 @@ async function onMessage(socket, payload) {
 		await validateSession(socket, '[[error:revalidate-failure]]');
 
 		if (Namespaces[namespace].before) {
-			await Namespaces[namespace].before(socket, eventName, params);
+			await Namespaces[namespace].before(socket, event, params);
 		}
 
 		if (methodToCall.constructor && methodToCall.constructor.name === 'AsyncFunction') {
@@ -187,7 +194,7 @@ async function onMessage(socket, payload) {
 			});
 		}
 	} catch (err) {
-		winston.error(`${eventName}\n${err.stack ? err.stack : err.message}`);
+		winston.error(`${event}\n${err.stack ? err.stack : err.message}`);
 		callback({ message: err.message });
 	}
 }

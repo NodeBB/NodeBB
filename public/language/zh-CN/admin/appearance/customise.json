@@ -1,4 +1,5 @@
 {
+	"customise": "定制",
 	"custom-css": "自定义 CSS/SASS",
 	"custom-css.description": "在此输入您的 CSS/LESS 声明，这些声明将在所有其他样式之后应用。",
 	"custom-css.enable": "启用自定义 CSS/SASS",
@@ -12,5 +13,8 @@
 	"custom-header.enable": "启用自定义 Header",
 
 	"custom-css.livereload": "启用实时重载",
-	"custom-css.livereload.description": "启用此功能可以在您点击保存时强制您帐户下的每个设备上的所有会话进行刷新"
+	"custom-css.livereload.description": "启用此功能可以在您点击保存时强制您帐户下的每个设备上的所有会话进行刷新",
+	"bsvariables": "_variables.scss",
+	"bsvariables.description": "在这里覆盖bootstrap的变量。你也可以使用像<a href=\"https://bootstrap.build/app\">bootstrap.build</a>这样的工具，并在这里粘贴输出。<br/>更改之后需要重建和重启。",
+	"bsvariables.enable": "开启 _variables.scss"
 }

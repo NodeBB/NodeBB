@@ -84,7 +84,10 @@ define('forum/topic', [
 				require(['search'], function (search) {
 					mousetrap.bind(['command+f', 'ctrl+f'], function (e) {
 						e.preventDefault();
-						const form = $('[component="navbar"] [component="search/form"]');
+						let form = $('[component="navbar"] [component="search/form"]');
+						if (!form.length) { // harmony
+							form = $('[component="sidebar/right"] [component="search/form"]');
+						}
 						form.find('[component="search/fields"] input[name="query"]').val('in:topic-' + ajaxify.data.tid + ' ');
 						search.showAndFocusInput(form);
 					});
@@ -148,10 +151,8 @@ define('forum/topic', [
 		const bookmark = ajaxify.data.bookmark || storage.getItem('topic:' + tid + ':bookmark');
 		const postIndex = ajaxify.data.postIndex;
 		updateUserBookmark(postIndex);
-		if (postIndex > 1) {
-			if (components.get('post/anchor', postIndex - 1).length) {
-				return navigator.scrollToPostIndex(postIndex - 1, true, 0);
-			}
+		if (navigator.shouldScrollToPost(postIndex)) {
+			return navigator.scrollToPostIndex(postIndex - 1, true, 0);
 		} else if (bookmark && (
 			!config.usePagination ||
 			(config.usePagination && ajaxify.data.pagination.currentPage === 1)
@@ -238,12 +239,21 @@ define('forum/topic', [
 		});
 
 		function addCopyCodeButton() {
+			function scrollbarVisible(element) {
+				return element.scrollHeight > element.clientHeight;
+			}
 			let codeBlocks = $('[component="topic"] [component="post/content"] code:not([data-button-added])');
 			codeBlocks = codeBlocks.filter((i, el) => $(el).text().includes('\n'));
 			const container = $('<div class="hover-parent position-relative"></div>');
-			const buttonDiv = $('<button component="copy/code/btn" class="hover-visible position-absolute end-0 top-0 btn btn-sm btn-outline-secondary mt-2 me-4"><i class="fa fa-fw fa-copy"></i></button>');
-			codeBlocks.parent().wrap(container).parent().append(buttonDiv);
-			codeBlocks.parent().parent().find('[component="copy/code/btn"]').translateAttr('title', '[[topic:copy-code]]');
+			const buttonDiv = $('<button component="copy/code/btn" class="hover-visible position-absolute top-0 btn btn-sm btn-outline-secondary" style="right: 0px; margin: 0.5rem 0.5rem 0 0;"><i class="fa fa-fw fa-copy"></i></button>');
+			const preEls = codeBlocks.parent();
+			preEls.wrap(container).parent().append(buttonDiv);
+			preEls.parent().find('[component="copy/code/btn"]').translateAttr('title', '[[topic:copy-code]]');
+			preEls.each((index, el) => {
+				if (scrollbarVisible(el)) {
+					$(el).parent().find('[component="copy/code/btn"]').css({ margin: '0.5rem 1.5rem 0 0' });
+				}
+			});
 			codeBlocks.attr('data-button-added', 1);
 		}
 		hooks.registerPage('action:posts.loaded', addCopyCodeButton);

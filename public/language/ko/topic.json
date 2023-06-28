@@ -164,7 +164,7 @@
     "composer.schedule": "예약",
     "composer.replying_to": "'%1'에 대한 답글",
     "composer.new_topic": "새 화제 생성",
-    "composer.editing": "편집 중",
+    "composer.editing-in": "Editing post in %1",
     "composer.uploading": "업로드 중...",
     "composer.thumb_url_label": "썸네일 URL을 붙여넣으세요",
     "composer.thumb_title": "이 게시물에 썸네일 추가",

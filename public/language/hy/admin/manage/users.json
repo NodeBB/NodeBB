@@ -1,4 +1,5 @@
 {
+	"manage-users": "Manage Users",
 	"users": "Օգտատերեր",
 	"edit": "Գործողություններ",
 	"make-admin": "Դարձնել Ադմին",
@@ -49,6 +50,10 @@
 	"users.username": "օգտատիրոջ անուն ",
 	"users.email": "էլ. փոստ",
 	"users.no-email": "էլ. փոստ չկա",
+	"users.validated": "Validated",
+	"users.not-validated": "Not Validated",
+	"users.validation-pending": "Validation Pending",
+	"users.validation-expired": "Validation Expired",
 	"users.ip": "IP",
 	"users.postcount": "հետհաշվարկ",
 	"users.reputation": "վարկանիշ",

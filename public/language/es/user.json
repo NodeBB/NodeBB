@@ -141,6 +141,8 @@
     "group-order-help": "Select a group and use the arrows to order titles",
     "no-group-title": "Sin título de grupo",
     "select-skin": "Seleccionar una plantilla",
+    "default": "Default (%1)",
+    "no-skin": "No Skin",
     "select-homepage": "Seleccione una página de inicio",
     "homepage": "Página de inicio",
     "homepage_description": "Seleccione una página para su uso habitual como la página principal del foro o 'Ninguno' para utilizar la página de inicio.",

@@ -164,7 +164,7 @@
     "composer.schedule": "Pianifica",
     "composer.replying_to": "Rispondendo a %1",
     "composer.new_topic": "Nuova Discussione",
-    "composer.editing": "Modifica",
+    "composer.editing-in": "Modifica post in %1",
     "composer.uploading": "caricamento...",
     "composer.thumb_url_label": "Incolla l'URL della miniatura per la discussione",
     "composer.thumb_title": "Aggiungi una miniatura a questa discussione",

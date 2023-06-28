@@ -141,6 +141,8 @@
     "group-order-help": "Seleziona un gruppo e usa le frecce per ordinare i titoli",
     "no-group-title": "Nessun titolo al gruppo",
     "select-skin": "Seleziona uno Skin",
+    "default": "Predefinito (%1)",
+    "no-skin": "Nessuna skin",
     "select-homepage": "Seleziona una Pagina Iniziale",
     "homepage": "Pagina Iniziale",
     "homepage_description": "Seleziona una pagina da usare come pagina iniziale o \"Nessuna\" per usare quella di default.",

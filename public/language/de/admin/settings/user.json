@@ -59,7 +59,7 @@
 	"max-about-me-length": "Maximale länge von Über Mich",
 	"terms-of-use": "Forum Nutzungsbedingungen <small>(Leer lassen um es zu deaktivieren)</small>",
 	"user-search": "Benutzersuche",
-	"user-search-results-per-page": "Anzahl anzuzeigener Ergebnisse",
+	"user-search-results-per-page": "Number of users to display in search results",
 	"default-user-settings": "Standard Benutzer Einstellungen",
 	"show-email": "Zeige E-Mail-Adresse",
 	"show-fullname": "Zeige vollen Namen",

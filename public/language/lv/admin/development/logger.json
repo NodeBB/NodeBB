@@ -1,4 +1,5 @@
 {
+	"logger": "Logger",
 	"logger-settings": "Žurnāla iestatījumi",
 	"description": "Iespējojot izvēles rūtiņas, saņemsi žurnālus savā terminālī. Ja norādi ceļu, tad žurnāli tiks saglabāti failā. HTTP notikumu žurnāls ir noderīgs, lai apkopotu statistiku par to, kas, kad un kam kāds piekļūst forumā. Papildus HTTP pieprasījumu reģistrēšanai mēs varam arī reģistrēt socket.io notikumus. Socket.io notikumu žurnāls, kopā ar redis-cli monitoru, var būt ļoti noderīgs NodeBB iekšējo darbību mācību apguvē.",
 	"explanation": "Vienkārši atzīmēt vai noņemt atzīmi no žūrnāla iestatījumiem, lai aktivizētu vai atspējotu žurnālu reālā laikā. Nav nepieciešams forumu restartēt.",

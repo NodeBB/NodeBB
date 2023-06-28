@@ -14,19 +14,62 @@ $('document').ready(function () {
 
 	activate('database', $('[name="database"]'));
 
-	if ($('#database-error').length) {
-		$('[name="database"]').parents('.input-row').addClass('error');
-		$('html, body').animate({
-			scrollTop: ($('#database-error').offset().top + 100) + 'px',
-		}, 400);
+	$('#test-database').on('click', function () {
+		const conf = {};
+		$('#database-config input[name]').each((i, el) => {
+			conf[$(el).attr('name')] = $(el).val();
+		});
+		$('#test-database-spinner').removeClass('hidden');
+		$('#database-success').addClass('hidden');
+		$('#database-error').addClass('hidden');
+		$('#database-full').addClass('hidden');
+		const qs = new URLSearchParams(conf).toString();
+		$.ajax({
+			url: `/testdb?${qs}`,
+			success: function (res) {
+				$('#test-database-spinner').addClass('hidden');
+				if (res.success) {
+					$('#database-success').removeClass('hidden');
+					if (res.dbfull) {
+						$('#database-full').removeClass('hidden')
+							.text('Found existing install in this database!');
+					}
+				} else if (res.error) {
+					$('#database-error').removeClass('hidden').text(res.error);
+				}
+			},
+			error: function (jqXHR, textStatus) {
+				$('#test-database-spinner').addClass('hidden');
+				$('#database-error').removeClass('hidden').text(textStatus);
+			},
+		});
+
+		return false;
+	});
+
+	function checkIfReady() {
+		let successCount = 0;
+		const url = $('#installing').attr('data-url');
+		const progressEl = $('#installing .progress-bar');
+		setInterval(function () {
+			let p = parseFloat(progressEl.attr('data-percent'), 10) || 0;
+			p = Math.min(100, p + 0.5);
+			progressEl.attr('data-percent', p);
+			progressEl.css({ width: p + '%' });
+		}, 1000);
+		setInterval(function () {
+			$.get(url + '/admin').done(function () {
+				if (successCount >= 5) {
+					window.location = url + '/admin';
+				} else {
+					successCount += 1;
+				}
+			});
+		}, 2500);
 	}
 
-	$('#launch').on('click', launchForum);
-
 	if ($('#installing').length) {
-		setTimeout(function () {
-			window.location.reload(true);
-		}, 5000);
+		checkIfReady();
 	}
 
 	function setupInputs() {
@@ -110,6 +153,9 @@ $('document').ready(function () {
 
 		function switchDatabase(field) {
 			$('#database-config').html($('[data-database="' + field + '"]').html());
+			$('#database-success').addClass('hidden');
+			$('#database-error').addClass('hidden');
+			$('#database-full').addClass('hidden');
 		}
 
 		switch (type) {
@@ -124,22 +170,5 @@ $('document').ready(function () {
 			case 'database':
 				return switchDatabase(field);
 		}
-	}
-
-	function launchForum() {
-		$('#launch .working').removeClass('hide');
-		$.post('/launch', function () {
-			let successCount = 0;
-			const url = $('#launch').attr('data-url');
-			setInterval(function () {
-				$.get(url + '/admin').done(function () {
-					if (successCount >= 5) {
-						window.location = 'admin';
-					} else {
-						successCount += 1;
-					}
-				});
-			}, 750);
-		});
 	}
 });

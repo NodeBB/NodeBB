@@ -15,12 +15,14 @@ define('admin/manage/categories', [
 	let sortables;
 
 	Categories.init = function () {
-		categorySelector.init($('.category [component="category-selector"]'), {
+		categorySelector.init($('[component="category-selector"]'), {
 			parentCid: ajaxify.data.selectedCategory ? ajaxify.data.selectedCategory.cid : 0,
 			onSelect: function (selectedCategory) {
 				ajaxify.go('/admin/manage/categories' + (selectedCategory.cid ? '?cid=' + selectedCategory.cid : ''));
 			},
+			cacheList: false,
 			localCategories: [],
+			template: 'admin/partials/category/selector-dropdown-right',
 		});
 		Categories.render(ajaxify.data.categoriesTree);
 
@@ -74,12 +76,14 @@ define('admin/manage/categories', [
 			});
 		});
 
-		$('#collapse-all').on('click', function () {
-			toggleAll(false);
-		});
-
-		$('#expand-all').on('click', function () {
-			toggleAll(true);
+		$('#toggle-collapse-all').on('click', function () {
+			const $this = $(this);
+			const isCollapsed = parseInt($this.attr('data-collapsed'), 10) === 1;
+			toggleAll(isCollapsed);
+			$this.attr('data-collapsed', isCollapsed ? 0 : 1)
+				.translateText(isCollapsed ?
+					'[[admin/manage/categories:collapse-all]]' :
+					'[[admin/manage/categories:expand-all]]');
 		});
 
 		function toggleAll(expand) {
@@ -96,7 +100,7 @@ define('admin/manage/categories', [
 				message: html,
 				buttons: {
 					save: {
-						label: '[[global:save]]',
+						label: '[[global:create]]',
 						className: 'btn-primary',
 						callback: submit,
 					},
@@ -110,6 +114,7 @@ define('admin/manage/categories', [
 						icon: 'fa-none',
 					},
 				],
+				template: 'admin/partials/category/selector-dropdown-left',
 			};
 			const parentSelector = categorySelector.init(modal.find('#parentCidGroup [component="category-selector"]'), options);
 			const cloneFromSelector = categorySelector.init(modal.find('#cloneFromCidGroup [component="category-selector"]'), options);
@@ -177,7 +182,7 @@ define('admin/manage/categories', [
 	};
 
 	Categories.toggle = function (cids, disabled) {
-		const listEl = document.querySelector('.categories ul');
+		const listEl = document.querySelector('.categories [data-cid="0"]');
 		Promise.all(cids.map(cid => api.put('/categories/' + cid, {
 			disabled: disabled ? 1 : 0,
 		}).then(() => {
@@ -214,14 +219,14 @@ define('admin/manage/categories', [
 				if (oldParentCid !== newParentCid) {
 					const toggle = document.querySelector(`.categories li[data-cid="${newParentCid}"] .toggle`);
 					if (toggle) {
-						toggle.classList.toggle('hide', false);
+						toggle.classList.toggle('invisible', false);
 					}
 
 					const children = document.querySelectorAll(`.categories li[data-cid="${oldParentCid}"] ul[data-cid] li[data-cid]`);
 					if (!children.length) {
 						const toggle = document.querySelector(`.categories li[data-cid="${oldParentCid}"] .toggle`);
 						if (toggle) {
-							toggle.classList.toggle('hide', true);
+							toggle.classList.toggle('invisible', true);
 						}
 					}
 
@@ -278,7 +283,7 @@ define('admin/manage/categories', [
 				// Disable expand toggle
 				if (!categories.length) {
 					const toggleEl = container.get(0).querySelector('.toggle');
-					toggleEl.classList.toggle('hide', true);
+					toggleEl.classList.toggle('invisible', true);
 				}
 
 				// Handle and children categories in this level have

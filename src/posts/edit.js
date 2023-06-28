@@ -112,7 +112,7 @@ module.exports = function (Posts) {
 			return {
 				tid: tid,
 				cid: topicData.cid,
-				title: validator.escape(String(topicData.title)),
+				title: topicData.title,
 				isMainPost: false,
 				renamed: false,
 				tagsupdated: false,

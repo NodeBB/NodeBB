@@ -1,7 +1,9 @@
 {
+    "themes": "Themes",
     "checking-for-installed": "Տեղադրված թեմաների ստուգում...",
     "homepage": "Գլխավոր էջ",
     "select-theme": "Ընտրեք թեմա",
+    "revert-theme": "Revert Theme",
     "current-theme": "Ընթացիկ թեմա",
     "no-themes": "Տեղադրված թեմաներ չեն գտնվել",
     "revert-confirm": "Վստա՞հ եք, որ ցանկանում եք վերականգնել կանխադրված NodeBB թեման:",

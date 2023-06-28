@@ -4,6 +4,13 @@
 
 	"acp-title": "%1 | NodeBB Paneli i Kontrollit të Administratorit ",
 	"settings-header-contents": "Përmbatja ",
+	"changes-saved": "Changes Saved",
+	"changes-saved-message": "Your changes to the NodeBB configuration have been saved.",
 	"changes-not-saved": "Ndryshimet nuk u ruajtën!",
-	"changes-not-saved-message": "NodeBB gjeti një problem gjatë ruajtjes së ndryshimeve. (%1)"
+	"changes-not-saved-message": "NodeBB gjeti një problem gjatë ruajtjes së ndryshimeve. (%1)",
+	"save-changes": "Save changes",
+	"min": "Min:",
+	"max": "Max:",
+	"view": "View",
+	"edit": "Edit"
 }

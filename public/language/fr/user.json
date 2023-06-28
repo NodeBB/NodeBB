@@ -141,6 +141,8 @@
     "group-order-help": "Sélectionnez un groupe et utilisez les flèches pour organiser les titres",
     "no-group-title": "Aucun titre de groupe",
     "select-skin": "Sélectionner une apparence",
+    "default": "Défaut (%1)",
+    "no-skin": "Aucun Skin",
     "select-homepage": "Sélectionner une page d'accueil",
     "homepage": "Page d'accueil",
     "homepage_description": "Sélectionnez une page à utiliser comme page d'accueil du forum, ou \"Aucune\" pour utiliser la page d'accueil par défaut.",
@@ -202,5 +204,5 @@
     "emailUpdate.required": "<strong>Ce champ est requis</strong>.",
     "emailUpdate.change-instructions": "Un mail de confirmation sera envoyé à l'adresse mail saisie avec un lien unique. L'accès à ce lien confirmera votre propriété de mail et elle deviendra active sur votre compte. À tout moment, vous pouvez mettre à jour votre mail enregistré depuis la page de votre compte.",
     "emailUpdate.password-challenge": "Veuillez entrer votre mot de passe pour confirmer la propriété du compte.",
-    "emailUpdate.pending": "Your email address has not yet been confirmed, but an email has been sent out requesting confirmation. If you wish to invalidate that request and send a new confirmation request, please fill in the form below."
+    "emailUpdate.pending": "Votre adresse e-mail n'a pas encore été confirmée, mais un e-mail a été envoyé pour demander une confirmation. Si vous souhaitez annuler cette demande et renvoyer une demande de confirmation, veuillez remplir le formulaire ci-dessous."
 }

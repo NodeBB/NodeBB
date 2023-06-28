@@ -1,10 +1,12 @@
 {
 	"rewards": "Պարգևներ",
+	"add-reward": "Add reward",
 	"condition-if-users": "If User's",
 	"condition-is": "Is:",
 	"condition-then": "Then:",
 	"max-claims": "Պահանջվում է պարգևատրման գումարը ",
 	"zero-infinite": "Մուտքագրեք 0 անսահմանության համար",
+	"select-reward": "Select reward",
 	"delete": "Ջնջել",
 	"enable": "Միացնել",
 	"disable": "Անջատել",

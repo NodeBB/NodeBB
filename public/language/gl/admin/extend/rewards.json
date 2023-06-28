@@ -1,10 +1,12 @@
 {
 	"rewards": "Rewards",
+	"add-reward": "Add reward",
 	"condition-if-users": "If User's",
 	"condition-is": "Is:",
 	"condition-then": "Then:",
 	"max-claims": "Amount of times reward is claimable",
 	"zero-infinite": "Enter 0 for infinite",
+	"select-reward": "Select reward",
 	"delete": "Delete",
 	"enable": "Enable",
 	"disable": "Disable",

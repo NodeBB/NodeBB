@@ -59,7 +59,7 @@
 	"max-about-me-length": "Maksimum lengde på om meg",
 	"terms-of-use": "Brukervilkår for nettforumet <small>(La stå tomt for å deaktivere)</small>",
 	"user-search": "Brukersøk",
-	"user-search-results-per-page": "Antall resultater å vise",
+	"user-search-results-per-page": "Number of users to display in search results",
 	"default-user-settings": "Standard brukerinnstillinger ",
 	"show-email": "Vis e-post",
 	"show-fullname": "Vis fullt navn",

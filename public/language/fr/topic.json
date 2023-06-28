@@ -164,7 +164,7 @@
     "composer.schedule": "Planification",
     "composer.replying_to": "En réponse à %1",
     "composer.new_topic": "Nouveau sujet",
-    "composer.editing": "Édition",
+    "composer.editing-in": "Editing post in %1",
     "composer.uploading": "envoi en cours…",
     "composer.thumb_url_label": "Coller une URL de vignette du sujet",
     "composer.thumb_title": "Ajouter une vignette à ce sujet",

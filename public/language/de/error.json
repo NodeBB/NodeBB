@@ -42,6 +42,7 @@
     "user-doesnt-have-email": "Für den Benutzer \"%1\" ist keine E-Mail eingetragen.",
     "email-confirm-failed": "Wir konnten deine E-Mail-Adresse nicht bestätigen, bitte versuch es später noch einmal",
     "confirm-email-already-sent": "Die Bestätigungsmail wurde verschickt. Bitte warte %1 Minute(n), um eine weitere zu verschicken.",
+    "confirm-email-expired": "Confirmation email expired",
     "sendmail-not-found": "Sendmail wurde nicht gefunden. Bitte stelle sicher, dass es installiert ist und durch den Benutzer unter dem NodeBB läuft ausgeführt werden kann.",
     "digest-not-enabled": "Dieser Benutzer hat Email-Zusammenfassungen deaktiviert oder das Aussenden von Email-Zusammenfassungen is in den Defaulteinstellungen des Systems nicht aktiviert.",
     "username-too-short": "Benutzername ist zu kurz",

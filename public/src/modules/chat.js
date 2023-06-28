@@ -267,6 +267,7 @@ define('chat', [
 					chatModal.draggable({
 						start: function () {
 							taskbar.updateActive(uuid);
+							chatModal.css({ bottom: 'auto', right: 'auto' });
 						},
 						stop: function () {
 							module.focusInput(chatModal);
@@ -391,6 +392,10 @@ define('chat', [
 	};
 
 	module.center = function (chatModal) {
+		const center = chatModal.attr('data-center');
+		if (!center || center === 'false') {
+			return;
+		}
 		let hideAfter = false;
 		if (chatModal.hasClass('hide')) {
 			chatModal.removeClass('hide');

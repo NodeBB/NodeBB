@@ -1,4 +1,5 @@
 {
+	"customise": "Customise",
 	"custom-css": "Пользовательский CSS/SASS",
 	"custom-css.description": "Добавьте собственный CSS/SASS. Они будут применены в последнюю очередь, после всех остальных стилей страницы.",
 	"custom-css.enable": "Включить пользовательский CSS/SASS",
@@ -12,5 +13,8 @@
 	"custom-header.enable": "Включить пользовательский заголовок",
 
 	"custom-css.livereload": "Включить автоматическую перезагрузку страниц",
-	"custom-css.livereload.description": "Включите эту опцию, чтобы принудительно обновлять все сеансы на каждом устройстве под этой учетной записью при каждом нажатии кнопки Сохранить"
+	"custom-css.livereload.description": "Включите эту опцию, чтобы принудительно обновлять все сеансы на каждом устройстве под этой учетной записью при каждом нажатии кнопки Сохранить",
+	"bsvariables": "_variables.scss",
+	"bsvariables.description": "Override bootstrap variables here. You can also use a tool like <a href=\"https://bootstrap.build/app\">bootstrap.build</a> and paste the output here.<br/>Changes require a rebuild & restart.",
+	"bsvariables.enable": "Enable _variables.scss"
 }

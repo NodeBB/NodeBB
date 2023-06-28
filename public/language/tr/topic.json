@@ -164,7 +164,7 @@
     "composer.schedule": "Konu Zamanla",
     "composer.replying_to": "Yanıtlanan Başlık: %1",
     "composer.new_topic": "Yeni Başlık",
-    "composer.editing": "Düzenleme",
+    "composer.editing-in": "Editing post in %1",
     "composer.uploading": "yükleniyor...",
     "composer.thumb_url_label": "Başlık fotosu URL adresini yapıştır",
     "composer.thumb_title": "Bu başlığa bir fotoğraf ekle",

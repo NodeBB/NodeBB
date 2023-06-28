@@ -6,3 +6,17 @@
 	==========
 */
 
+// rtl fixes for text-break and code blocks
+/*rtl:begin:ignore*/
+html[data-dir="rtl"] {
+	.text-break {
+		word-wrap: break-word!important;
+		word-break: break-word!important;
+	}
+
+	[component="post/content"] code {
+		direction: ltr;
+		text-align: left;
+	}
+}
+/*rtl:end:ignore*/

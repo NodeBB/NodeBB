@@ -1,4 +1,5 @@
 {
+	"customise": "Customise",
 	"custom-css": "Custom CSS/SASS",
 	"custom-css.description": "Enter your own CSS/SASS declarations here, which will be applied after all other styles.",
 	"custom-css.enable": "Enable Custom CSS/SASS",
@@ -12,5 +13,8 @@
 	"custom-header.enable": "啟用自訂 Header",
 
 	"custom-css.livereload": "啟用動態重載",
-	"custom-css.livereload.description": "啟用此功能可以在您點擊儲存時強制您帳戶下的每個設備上的所有會話進行重載"
+	"custom-css.livereload.description": "啟用此功能可以在您點擊儲存時強制您帳戶下的每個設備上的所有會話進行重載",
+	"bsvariables": "_variables.scss",
+	"bsvariables.description": "Override bootstrap variables here. You can also use a tool like <a href=\"https://bootstrap.build/app\">bootstrap.build</a> and paste the output here.<br/>Changes require a rebuild & restart.",
+	"bsvariables.enable": "Enable _variables.scss"
 }

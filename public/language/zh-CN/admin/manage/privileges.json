@@ -1,4 +1,6 @@
 {
+	"manage-privileges": "管理权限",
+	"discard-changes": "放弃更改",
 	"global": "全局",
 	"admin": "管理员",
 	"group-privileges": "群组权限",

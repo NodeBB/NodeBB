@@ -1,4 +1,5 @@
 {
+	"manage-users": "ניהול משתמשים",
 	"users": "משתמשים",
 	"edit": "פעולות",
 	"make-admin": "הפוך למנהל",
@@ -49,6 +50,10 @@
 	"users.username": "שם משתמש",
 	"users.email": "דוא\"ל",
 	"users.no-email": "(אין כתובת דוא\"ל)",
+	"users.validated": "אימות",
+	"users.not-validated": "לא מאומת",
+	"users.validation-pending": "ממתין לאימות",
+	"users.validation-expired": "תוקף האימות פג",
 	"users.ip": "IP",
 	"users.postcount": "מספר פוסטים",
 	"users.reputation": "מוניטין",

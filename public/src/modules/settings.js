@@ -557,7 +557,7 @@ define('settings', ['hooks', 'alerts'], function (hooks, alerts) {
 						saveBtn.classList.toggle('saved', true);
 						setTimeout(() => {
 							saveBtn.classList.toggle('saved', false);
-						}, 5000);
+						}, 1500);
 					}
 				});
 			}

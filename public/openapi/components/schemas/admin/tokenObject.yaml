@@ -1,0 +1,24 @@
+TokenObject:
+  type: object
+  properties:
+    uid:
+      type: number
+      description: A valid user id
+    description:
+      type: string
+      description: Optional descriptor to differentiate tokens.
+    token:
+      type: string
+      description: An API token that can be called against this API via Bearer Authentication.
+    timestamp:
+      type: number
+    timestampISO:
+      type: string
+      description: An ISO 8601 formatted date string (complementing `timestamp`)
+    lastSeen:
+      type: number
+      nullable: true
+    lastSeenISO:
+      type: string
+      description: An ISO 8601 formatted date string (complementing `lastSeen`)
+      nullable: true

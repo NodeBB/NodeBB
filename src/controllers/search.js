@@ -129,7 +129,8 @@ searchController.search = async function (req, res, next) {
 			),
 		},
 		categories: {
-			active: !!(Array.isArray(data.categories) && data.categories.length),
+			active: !!(Array.isArray(data.categories) && data.categories.length &&
+				(data.categories.length > 1 || data.categories[0] !== 'all')),
 			label: await buildSelectedCategoryLabel(searchData.selectedCids),
 		},
 	};

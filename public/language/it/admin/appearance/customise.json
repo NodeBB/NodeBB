@@ -1,4 +1,5 @@
 {
+	"customise": "Personalizza",
 	"custom-css": "CSS/SASS personalizzato",
 	"custom-css.description": "Inserisci qui le tue dichiarazioni CSS/SASS, che saranno applicate dopo tutti gli altri stili.",
 	"custom-css.enable": "Abilita CSS/SASS personalizzato",
@@ -12,5 +13,8 @@
 	"custom-header.enable": "Abilita Intestazione personalizzata",
 
 	"custom-css.livereload": "Abilita Ricarica Istantanea",
-	"custom-css.livereload.description": "Abilitala per forzare tutte le sessioni su ogni dispositivo sotto il tuo account ad aggiornarsi ogni volta che si fa clic su Salva"
+	"custom-css.livereload.description": "Abilitala per forzare tutte le sessioni su ogni dispositivo sotto il tuo account ad aggiornarsi ogni volta che si fa clic su Salva",
+	"bsvariables": "_variables.scss",
+	"bsvariables.description": "Sovrascrivi qui le variabili di bootstrap. Puoi anche usare uno strumento come <a href=\"https://bootstrap.build/app\">bootstrap.build</a> e incollare qui il risultato.<br/>Le modifiche richiedono una ricostruzione e un riavvio.",
+	"bsvariables.enable": "Abilita _variables.scss"
 }

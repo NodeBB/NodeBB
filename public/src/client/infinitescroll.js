@@ -98,7 +98,7 @@ define('forum/infinitescroll', ['hooks', 'alerts'], function (hooks, alerts) {
 			});
 		}).fail(function (jqXHR) {
 			loadingMore = false;
-			alerts.error(String(jqXHR.responseJSON || jqXHR.statusText));
+			alerts.error(String(jqXHR.responseJSON || '[[error:no-connection]]'));
 		});
 	};
 

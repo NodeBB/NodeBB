@@ -128,7 +128,7 @@ middleware.prepareAPI = function prepareAPI(req, res, next) {
 middleware.logApiUsage = async function logApiUsage(req, res, next) {
 	if (req.headers.hasOwnProperty('authorization')) {
 		const [, token] = req.headers.authorization.split(' ');
-		await api.utils.log(token);
+		await api.utils.tokens.log(token);
 	}
 
 	next();
@@ -229,13 +229,19 @@ middleware.delayLoading = function delayLoading(req, res, next) {
 
 middleware.buildSkinAsset = helpers.try(async (req, res, next) => {
 	// If this middleware is reached, a skin was requested, so it is built on-demand
-	const target = path.basename(req.originalUrl).match(/(client-[a-z]+)/);
-	if (!target) {
+	const targetSkin = path.basename(req.originalUrl).split('.css')[0];
+	if (!targetSkin) {
+		return next();
+	}
+
+	const skins = (await meta.css.getCustomSkins()).map(skin => skin.value);
+	const found = skins.concat(meta.css.supportedSkins).find(skin => `client-${skin}` === targetSkin);
+	if (!found) {
 		return next();
 	}
 
 	await plugins.prepareForBuild(['client side styles']);
-	const [ltr, rtl] = await meta.css.buildBundle(target[0], true);
+	const [ltr, rtl] = await meta.css.buildBundle(targetSkin, true);
 	require('../meta/minifier').killAll();
 	res.status(200).type('text/css').send(req.originalUrl.includes('-rtl') ? rtl : ltr);
 });

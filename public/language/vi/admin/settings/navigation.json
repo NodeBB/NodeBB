@@ -1,4 +1,5 @@
 {
+	"navigation": "Navigation",
 	"icon": "Biểu tượng:",
 	"change-icon": "thay đổi",
 	"route": "Liên kết:",
@@ -12,7 +13,7 @@
 	"groups": "Nhóm:",
 	"open-new-window": "Mở trong một cửa sổ mới",
 	"dropdown": "Thả xuống",
-	"dropdown-placeholder": "Place your dropdown menu items below, ie: <br/>&lt;li&gt;&lt;a class=&quot;dropdown-item&quot; href&#x3D;&quot;https://myforum.com&quot;&gt;Link 1&lt;/a&gt;&lt;/li&gt;",
+	"dropdown-placeholder": "Đặt các mục menu thả xuống của bạn bên dưới, tức là: <br/>&lt;li&gt;&lt;a class=&quot;dropdown-item&quot; href&#x3D;&quot;https://myforum.com&quot;&gt;Link 1&lt;/a&gt;&lt;/li&gt;",
 
 	"btn.delete": "Xóa",
 	"btn.disable": "Tắt",

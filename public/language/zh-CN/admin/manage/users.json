@@ -1,4 +1,5 @@
 {
+	"manage-users": "管理用户",
 	"users": "用户",
 	"edit": "操作",
 	"make-admin": "设为管理",
@@ -49,6 +50,10 @@
 	"users.username": "用户名",
 	"users.email": "电子邮件",
 	"users.no-email": "（没有邮箱）",
+	"users.validated": "已验证",
+	"users.not-validated": "未验证",
+	"users.validation-pending": "等待验证",
+	"users.validation-expired": "验证过期",
 	"users.ip": "IP",
 	"users.postcount": "发帖数",
 	"users.reputation": "声望",

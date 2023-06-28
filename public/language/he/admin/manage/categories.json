@@ -1,7 +1,11 @@
 {
+	"manage-categories": "ניהול קטגוריות",
+	"add-category": "הוסף קטגוריה",
+	"jump-to": "קפוץ אל...",
 	"settings": "הגדרות קטגוריות",
+	"edit-category": "ערוך קטגוריה",
 	"privileges": "הרשאות",
-
+	"back-to-categories": "חזרה לרשימת הקטגוריות",
 	"name": "שם קטגוריה",
 	"description": "תיאור קטגוריה",
 	"bg-color": "צבע רקע",
@@ -15,8 +19,11 @@
 	"post-queue": "תור פוסטים",
 	"tag-whitelist": "רשימה לבנה של תגיות",
 	"upload-image": "העלה תמונה",
+	"upload": "העלאה",
+	"select-icon": "בחר סמל",
 	"delete-image": "הסרה",
 	"category-image": "תמונת קטגוריה",
+	"image-and-icon": "תמונה וסמל",
 	"parent-category": "קטגוריית אב",
 	"optional-parent-category": "קטגוריית הורים (אופציונלי)",
 	"top-level": "רמה עליונה",
@@ -31,6 +38,7 @@
 	"disable": "השבתה",
 	"edit": "עריכה",
 	"analytics": "ניתוח",
+
 	"view-category": "הצגת קטגוריה",
 	"set-order": "קביעת סדר",
 	"set-order-help": "הגדרת סדר הקטגוריה תעביר קטגוריה זו לסדר זה ותעדכן את סדר הקטגוריות האחרות לפי הצורך. מינימום קביעת סדר הוא 1 מה שמציב את הקטגוריה בראש.",

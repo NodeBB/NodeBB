@@ -2,11 +2,10 @@
 
 
 define('forum/chats/messages', [
-	'components', 'translator', 'benchpress', 'hooks',
-	'bootbox', 'alerts', 'messages', 'api', 'forum/topic/images',
+	'components', 'hooks', 'bootbox', 'alerts',
+	'messages', 'api', 'forum/topic/images',
 ], function (
-	components, translator, Benchpress, hooks,
-	bootbox, alerts, messagesModule, api, images
+	components, hooks, bootbox, alerts, messagesModule, api, images
 ) {
 	const messages = {};
 
@@ -33,7 +32,7 @@ define('forum/chats/messages', [
 				return messagesModule.showEmailConfirmWarning(err.message);
 			}
 
-			return alerts.alert({
+			alerts.alert({
 				alert_id: 'chat_spam_error',
 				title: '[[global:alert.error]]',
 				message: err.message,
@@ -54,16 +53,21 @@ define('forum/chats/messages', [
 
 	messages.updateTextAreaHeight = function (chatContentEl) {
 		const textarea = chatContentEl.find('[component="chat/input"]');
+		textarea.css({ height: messages.calcAutoTextAreaHeight(textarea) + 'px' });
+	};
+
+	messages.calcAutoTextAreaHeight = function (textarea) {
 		const scrollHeight = textarea.prop('scrollHeight');
-		textarea.css({ height: scrollHeight + 'px' });
+		const borderTopWidth = parseFloat(textarea.css('border-top-width'), 10) || 0;
+		const borderBottomWidth = parseFloat(textarea.css('border-bottom-width'), 10) || 0;
+		return scrollHeight + borderTopWidth + borderBottomWidth;
 	};
 
 	function autoresizeTextArea(textarea) {
-		const scrollHeight = textarea.prop('scrollHeight');
-		textarea.css({ height: scrollHeight + 'px' });
+		textarea.css({ height: messages.calcAutoTextAreaHeight(textarea) + 'px' });
 		textarea.on('input', function () {
 			textarea.css({ height: 0 });
-			textarea.css({ height: textarea.prop('scrollHeight') + 'px' });
+			textarea.css({ height: messages.calcAutoTextAreaHeight(textarea) + 'px' });
 		});
 	}
 
@@ -101,17 +105,15 @@ define('forum/chats/messages', [
 	};
 
 	messages.parseMessage = function (data, callback) {
-		function done(html) {
-			translator.translate(html, translated => callback($(translated)));
-		}
 		const tplData = {
 			messages: data,
 			isAdminOrGlobalMod: app.user.isAdmin || app.user.isGlobalMod,
+
 		};
 		if (Array.isArray(data)) {
-			Benchpress.render('partials/chats/messages', tplData).then(done);
+			app.parseAndTranslate('partials/chats/messages', tplData).then(callback);
 		} else {
-			Benchpress.render('partials/chats/' + (data.system ? 'system-message' : 'message'), tplData).then(done);
+			app.parseAndTranslate('partials/chats/' + (data.system ? 'system-message' : 'message'), tplData).then(callback);
 		}
 	};
 
@@ -251,16 +253,14 @@ define('forum/chats/messages', [
 	}
 
 	messages.delete = function (messageId, roomId) {
-		translator.translate('[[modules:chat.delete_message_confirm]]', function (translated) {
-			bootbox.confirm(translated, function (ok) {
-				if (!ok) {
-					return;
-				}
+		bootbox.confirm('[[modules:chat.delete_message_confirm]]', function (ok) {
+			if (!ok) {
+				return;
+			}
 
-				api.del(`/chats/${roomId}/messages/${messageId}`, {}).then(() => {
-					components.get('chat/message', messageId).toggleClass('deleted', true);
-				}).catch(alerts.error);
-			});
+			api.del(`/chats/${roomId}/messages/${messageId}`, {}).then(() => {
+				components.get('chat/message', messageId).toggleClass('deleted', true);
+			}).catch(alerts.error);
 		});
 	};
 

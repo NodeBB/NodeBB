@@ -95,16 +95,16 @@ define('admin/extend/rewards', ['alerts'], function (alerts) {
 			html += '<label for="' + input.name + '">' + input.label + '<br />';
 			switch (input.type) {
 				case 'select':
-					html += '<select class="form-control" name="' + input.name + '">';
+					html += '<select class="form-select form-select-sm" name="' + input.name + '">';
 					input.values.forEach(function (value) {
 						html += '<option value="' + value.value + '">' + value.name + '</option>';
 					});
 					break;
 				case 'text':
-					html += '<input type="text" class="form-control" name="' + input.name + '" />';
+					html += '<input type="text" class="form-control form-control-sm" name="' + input.name + '" />';
 					break;
 			}
-			html += '</label><br />';
+			html += '</label>';
 		});
 
 		div.html(html);

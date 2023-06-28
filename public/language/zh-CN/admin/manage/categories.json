@@ -1,7 +1,11 @@
 {
+	"manage-categories": "管理分类",
+	"add-category": "添加分类",
+	"jump-to": "跳转…",
 	"settings": "版块设置",
+	"edit-category": "编辑分类",
 	"privileges": "权限",
-
+	"back-to-categories": "回到分类",
 	"name": "版块名",
 	"description": "版块描述",
 	"bg-color": "背景颜色",
@@ -15,8 +19,11 @@
 	"post-queue": "发布队列",
 	"tag-whitelist": "标签白名单",
 	"upload-image": "上传图片",
+	"upload": "上传",
+	"select-icon": "选择图标",
 	"delete-image": "移除",
 	"category-image": "版块图片",
+	"image-and-icon": "图片和图标",
 	"parent-category": "父版块",
 	"optional-parent-category": "(可选)父版块",
 	"top-level": "顶层",
@@ -31,6 +38,7 @@
 	"disable": "禁用",
 	"edit": "编辑",
 	"analytics": "分析",
+
 	"view-category": "查看版块",
 	"set-order": "设置顺序",
 	"set-order-help": "设置版块的顺序会将此版块移动到对应的顺序，并根据需要更新其他版块的顺序。顺序值最小为 1，即将版块置于顶部。",

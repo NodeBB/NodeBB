@@ -5,7 +5,7 @@
 	"uptime-seconds": "Disponibilité en secondes",
 	"uptime-days": "Disponibilité en jours",
 
-	"mongo": "Mongo",
+	"mongo": "MongoDB",
 	"mongo.version": "Version de MongoDB",
 	"mongo.storage-engine": "Moteur de stockage",
 	"mongo.collections": "Collections",

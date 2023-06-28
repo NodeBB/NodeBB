@@ -30,21 +30,7 @@ define('admin/manage/groups', [
 					break;
 			}
 		});
-
-		enableCategorySelectors();
 	};
-
-	function enableCategorySelectors() {
-		$('.groups-list [component="category-selector"]').each(function () {
-			const nameEncoded = $(this).parents('[data-name-encoded]').attr('data-name-encoded');
-			categorySelector.init($(this), {
-				onSelect: function (selectedCategory) {
-					ajaxify.go('admin/manage/privileges/' + selectedCategory.cid + '?group=' + nameEncoded);
-				},
-				showLinks: true,
-			});
-		});
-	}
 
 	function handleCreate() {
 		$('#create').on('click', function () {
@@ -119,7 +105,6 @@ define('admin/manage/groups', [
 				}, function (html) {
 					groupsEl.find('[data-groupname]').remove();
 					groupsEl.find('tbody').append(html);
-					enableCategorySelectors();
 				});
 			});
 		}

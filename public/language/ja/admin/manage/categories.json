@@ -1,7 +1,11 @@
 {
+	"manage-categories": "Manage Categories",
+	"add-category": "Add category",
+	"jump-to": "Jump to...",
 	"settings": "カテゴリ設定",
+	"edit-category": "Edit Category",
 	"privileges": "特権",
-
+	"back-to-categories": "Back to categories",
 	"name": "カテゴリ名",
 	"description": "カテゴリの説明",
 	"bg-color": "背景色",
@@ -15,8 +19,11 @@
 	"post-queue": "Post queue",
 	"tag-whitelist": "Tag Whitelist",
 	"upload-image": "画像をアップロード",
+	"upload": "Upload",
+	"select-icon": "Select Icon",
 	"delete-image": "削除",
 	"category-image": "カテゴリ画像",
+	"image-and-icon": "Image & Icon",
 	"parent-category": "親カテゴリ",
 	"optional-parent-category": "(任意)親カテゴリ",
 	"top-level": "Top Level",
@@ -31,6 +38,7 @@
 	"disable": "無効",
 	"edit": "編集",
 	"analytics": "Analytics",
+
 	"view-category": "View category",
 	"set-order": "Set order",
 	"set-order-help": "Setting the order of the category will move this category to that order and update the order of other categories as necessary. Minimum order is 1 which puts the category at the top.",

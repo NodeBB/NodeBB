@@ -12,10 +12,10 @@
     "notify_me": "از پاسخ‌های تازه در موضوع آگاه شوید",
     "quote": "نقل قول",
     "reply": "پاسخ",
-    "replies_to_this_post": "%1 پاسخ ",
+    "replies_to_this_post": "1% پاسخ",
     "one_reply_to_this_post": "1 پاسخ",
     "last_reply_time": "آخرین پاسخ",
-    "reply-as-topic": "پاسخ به موضوع",
+    "reply-as-topic": "پاسخ به عنوان موضوع",
     "guest-login-reply": "وارد شوید تا پست بفرستید",
     "login-to-view": "🔒 برای مشاهده وارد شوید ",
     "edit": "ویرایش",
@@ -32,36 +32,36 @@
     "tools": "ابزارها",
     "locked": "قفل شده است",
     "pinned": "سنجاق شده",
-    "pinned-with-expiry": "پین شده تا 1%",
+    "pinned-with-expiry": "سنجاق‌شده تا %1",
     "scheduled": "زمان بندی شده",
     "moved": "منتقل شده",
-    "moved-from": "جابه‌جا شده از 1%",
-    "copy-code": "Copy Code",
+    "moved-from": "جابه‌جا شده از %1",
+    "copy-code": "کپی کردن کد ",
     "copy-ip": "کپی IP",
     "ban-ip": "مسدود کردن IP",
     "view-history": "تاریخچه ویرایش",
-    "wrote-ago": "نوشته شده",
-    "wrote-on": "نوشته شده در  <a href=\"%1\" class=\"timeago text-muted\" title=\"%2\"></a>",
-    "replied-to-user-ago": "پاسخ داده شده به <a component=\"post/parent\" data-topid=\"%1\" href=\"%2\">3%</a> در<a href=\"%4\" class=\"timeago text-muted\" title=\"%5\"></a>",
-    "replied-to-user-on": "پاسخ به <a component=\"post/parent\" data-topid=\"%1\" href=\"%2\">3%</a> در<a hrf=\"%4\" class=\"timeago text-muted\" title=\"%5\"></a>",
-    "user-locked-topic-ago": "%1 locked this topic %2",
-    "user-locked-topic-on": "%1 locked this topic on %2",
-    "user-unlocked-topic-ago": "%1 unlocked this topic %2",
-    "user-unlocked-topic-on": "%1 unlocked this topic on %2",
-    "user-pinned-topic-ago": "%1 pinned this topic %2",
-    "user-pinned-topic-on": "%1 pinned this topic on %2",
-    "user-unpinned-topic-ago": "%1 unpinned this topic %2",
-    "user-unpinned-topic-on": "%1 unpinned this topic on %2",
-    "user-deleted-topic-ago": "%1 deleted this topic %2",
-    "user-deleted-topic-on": "%1 deleted this topic on %2",
-    "user-restored-topic-ago": "%1 restored this topic %2",
-    "user-restored-topic-on": "%1 restored this topic on %2",
-    "user-moved-topic-from-ago": "%1 moved this topic from %2 %3",
-    "user-moved-topic-from-on": "%1 moved this topic from %2 on %3",
-    "user-queued-post-ago": "%1 <a href=\"%2\">queued</a> post for approval %3",
+    "wrote-ago": "نوشته‌شده <a href=\"%1\" class=\"timeago text-muted\" title=\"%2\"></a>",
+    "wrote-on": "نوشته‌شده در <a href=\"%1\" class=\"timeago text-muted\" title=\"%2\"></a>",
+    "replied-to-user-ago": "پاسخ داده شده به <a component=\"post/parent\" data-topid=\"%1\" href=\"%2\">%3</a> در<a href=\"%4\" class=\"timeago text-muted\" title=\"%5\"></a>",
+    "replied-to-user-on": "پاسخ به <a component=\"post/parent\" data-topid=\"%1\" href=\"%2\">%3</a> در<a hrf=\"%4\" class=\"timeago text-muted\" title=\"%5\"></a>",
+    "user-locked-topic-ago": "1% این موضوع را قفل کرد%2",
+    "user-locked-topic-on": "1% این موضوع را در %2 قفل کرد ",
+    "user-unlocked-topic-ago": "1% قفل این موضوع را باز کرد %2",
+    "user-unlocked-topic-on": "1% قفل این موضوع را در %2 باز کرد",
+    "user-pinned-topic-ago": "1% این موضوع را سنجاق کرد %2",
+    "user-pinned-topic-on": "1% این موضوع را در %2 سنجاق کرد",
+    "user-unpinned-topic-ago": "%1 پین این موضوع را برداشت %2",
+    "user-unpinned-topic-on": " 1% سنجاق این موضوع را در 2% برداشت",
+    "user-deleted-topic-ago": "1% این موضوع را حذف کرد %2",
+    "user-deleted-topic-on": "1% این موضوع را در  %2 حذف کرد",
+    "user-restored-topic-ago": "1% این موضوع را بازیابی کرد %2",
+    "user-restored-topic-on": "1% این موضوع را در %2 بازیابی کرد",
+    "user-moved-topic-from-ago": "1% این موضوع را از %2 جابه جا کرد  %3",
+    "user-moved-topic-from-on": "1% این موضوع را از %2 جا‌به‌جا کرد%3",
+    "user-queued-post-ago": "1%  <a href=\"%2\">صف شده </a> پست برای تایید کردن %3",
     "user-queued-post-on": "%1 <a href=\"%2\">queued</a> post for approval on %3",
-    "user-referenced-topic-ago": "%1 <a href=\"%2\">referenced</a> this topic %3",
-    "user-referenced-topic-on": "%1 <a href=\"%2\">referenced</a> this topic on %3",
+    "user-referenced-topic-ago": "1% این تاپیک را <a href=\"%2\">ارجاع داد</a>  %3",
+    "user-referenced-topic-on": "1% این تاپیک را در %3 <a href=\"%2\">ارجاع داد</a>",
     "user-forked-topic-ago": "%1 <a href=\"%2\">forked</a> this topic %3",
     "user-forked-topic-on": "%1 <a href=\"%2\">forked</a> this topic on %3",
     "bookmark_instructions": "برای بازگشت به آخرین پست در این موضوع اینجا را کلیک کنید.",
@@ -70,7 +70,7 @@
     "already-flagged": "قبلا گزارش شده",
     "view-flag-report": "View Flag Report",
     "resolve-flag": "Resolve Flag",
-    "merged_message": "This topic has been merged into <a href=\"%1\">%2</a>",
+    "merged_message": "این تاپیک با <a href=\"%1\">%2</a> ادغام شد ",
     "deleted_message": "این موضوع پاک شده است. تنها کاربرانِ با حق مدیریت موضوع می‌توانند آن را ببینند.",
     "following_topic.message": "از این پس اگر کسی در این موضوع پست بگذارد، شما آگاه خواهید شد.",
     "not_following_topic.message": "شما این موضوع را تو فهرست موضوعات خوانده نشده می‌بینید، اما وقتی پست جدیدی ارسال می‌شود آگاه‌سازی دریافت نمی‌کنید.",
@@ -111,17 +111,17 @@
     "thread_tools.purge": "پاک کردن موضوع",
     "thread_tools.purge_confirm": "آیا مطمئنید که میمید این موضوع را پاکسازی کنید؟",
     "thread_tools.merge_topics": "ادغام موضوع ها",
-    "thread_tools.merge": "Merge Topic",
+    "thread_tools.merge": "ادغام موضوع",
     "topic_move_success": "موضوع به \"%1\" منتقل خواهد شد. برای جلوگیری از انتقال کلیک کنید.",
     "topic_move_multiple_success": "موضوع ها به \"%1\" منتقل خواهد شد. برای جلوگیری از انتقال کلیک کنید.",
     "topic_move_all_success": "تمام موضوع ها به \"%1\" منتقل خواهند شد. برای جلوگیری از انتقال کلیک کنید.",
-    "topic_move_undone": "Topic move undone",
+    "topic_move_undone": "جابه‌جا کردن تاپیک لغو شد ",
     "topic_move_posts_success": "پست ها منتقل خواهند شد. برای جلوگیری از انتقال کلیک کنید.",
-    "topic_move_posts_undone": "Post move undone",
+    "topic_move_posts_undone": "انتقال پست لغو شد ",
     "post_delete_confirm": "آیا از پاک کردن این پست اطمینان دارید؟",
     "post_restore_confirm": "آیا از بازگردانی این پست اطمینان دارید؟",
     "post_purge_confirm": "آیا از پاک کردن این پست اطمینان دارید؟",
-    "pin-modal-expiry": "Expiration Date",
+    "pin-modal-expiry": "تاریخ انقضا",
     "pin-modal-help": "You can optionally set an expiration date for the pinned topic(s) here. Alternatively, you can leave this field blank to have the topic stay pinned until it is manually unpinned.",
     "load_categories": "بارگذاری دسته‌ها",
     "confirm_move": "جابه‌جا کردن",
@@ -129,19 +129,19 @@
     "bookmark": "نشانک",
     "bookmarks": "نشانک‌ها",
     "bookmarks.has_no_bookmarks": "شما هیچ پستی را نشانک نکردید",
-    "copy-permalink": "Copy Permalink",
+    "copy-permalink": "کپی لینک ثابت ",
     "loading_more_posts": "بارگذاری پست‌های بیش‌تر",
     "move_topic": "جابه‌جایی موضوع",
     "move_topics": "انتقال موضوع",
     "move_post": "جابه‌جایی موضوع",
     "post_moved": "پست جابه‌جا شد!",
     "fork_topic": "شاخه ساختن از موضوع",
-    "enter-new-topic-title": "Enter new topic title",
+    "enter-new-topic-title": "عنوان جدید موضوع را وارد کن",
     "fork_topic_instruction": "Click the posts you want to fork, enter a title for the new topic and click fork topic",
     "fork_no_pids": "هیچ پستی انتخاب نشده!",
     "no-posts-selected": "هیچ پستی انتخاب نشده!",
     "x-posts-selected": "%1 پست انتخاب شده",
-    "x-posts-will-be-moved-to-y": "%1 post(s) will be moved to \"%2\"",
+    "x-posts-will-be-moved-to-y": "1% پست به \"%2\" منتقل خواهد شد",
     "fork_pid_count": "%1 پست انتخاب شده",
     "fork_success": "موضوع با موفقیت منشعب شد! برای رفتن به موضوع انشعابی اینجا را کلیک کنید.",
     "delete_posts_instruction": "با کلیک بر روی پست شما می خواهید به حذف/پاکسازی",
@@ -150,13 +150,13 @@
     "merge-options": "تنظیمات ادغام",
     "merge-select-main-topic": "موضوع اصلی را انتخاب کنید",
     "merge-new-title-for-topic": "عنوان جدید برای موضوع",
-    "topic-id": "Topic ID",
+    "topic-id": "شناسه موضوع",
     "move_posts_instruction": "Click the posts you want to move then enter a topic ID or go to the target topic",
-    "move_topic_instruction": "Select the target category and then click move",
+    "move_topic_instruction": "دسته مقصد را انتخاب کنید و سپس روی جابه‌جا کردن کلیک کنید",
     "change_owner_instruction": "Click the posts you want to assign to another user",
     "composer.title_placeholder": "عنوان موضوعتان را اینجا بنویسید...",
-    "composer.handle_placeholder": "Enter your name/handle here",
-    "composer.hide": "Hide",
+    "composer.handle_placeholder": "نام خود را اینجا وارد کنید",
+    "composer.hide": "پیش نویس",
     "composer.discard": "انصراف",
     "composer.submit": "ارسال",
     "composer.additional-options": "Additional Options",
@@ -164,7 +164,7 @@
     "composer.schedule": "Schedule",
     "composer.replying_to": "پاسخ به %1",
     "composer.new_topic": "موضوع تازه",
-    "composer.editing": "Editing",
+    "composer.editing-in": "Editing post in %1",
     "composer.uploading": "بارگذاری...",
     "composer.thumb_url_label": "چسباندن نشانی چهرک یک موضوع",
     "composer.thumb_title": "افزودن یک چهرک به این موضوع",
@@ -181,7 +181,7 @@
     "newest_to_oldest": "جدید‌ترین به قدیمی‌ترین",
     "most_votes": "بیشترین رای ها",
     "most_posts": "بیشترین پست",
-    "most_views": "Most Views",
+    "most_views": "بیشترین بازدید‌ها",
     "stale.title": "آیا مایلید به جای آن یک موضوع جدید ایجاد کنید؟",
     "stale.warning": "موضوعی که شما در حال پاسخگویی به آن هستید قدیمی می باشد. آیا میلید به جای آن یک موضوع جدید ایجاد کنید و در آن به این موضوع ارجاع دهید؟",
     "stale.create": "ایجاد یک موضوع جدید",
@@ -201,9 +201,9 @@
     "timeago_earlier": "%1 قبل",
     "first-post": "اولین پست",
     "last-post": "آخرین پست",
-    "go-to-my-next-post": "Go to my next post",
-    "no-more-next-post": "You don't have more posts in this topic",
+    "go-to-my-next-post": "برو به پست بعدی من ",
+    "no-more-next-post": "شما پست بیشتری در این تاپیک ندارید",
     "post-quick-reply": "پاسخ سریع",
-    "navigator.index": "Post %1 of %2",
+    "navigator.index": "پست %1 از %2",
     "navigator.unread": "%1 unread"
 }

@@ -5,7 +5,7 @@
 	"uptime-seconds": "초 단위의 가동 시간",
 	"uptime-days": "일간 가동시간",
 
-	"mongo": "Mongo",
+	"mongo": "MongoDB",
 	"mongo.version": "MongoDB 버젼",
 	"mongo.storage-engine": "Storage Engine",
 	"mongo.collections": "Collections",

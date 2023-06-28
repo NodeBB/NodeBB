@@ -1,10 +1,12 @@
 {
 	"rewards": "Nagrade",
+	"add-reward": "Add reward",
 	"condition-if-users": "Ako korisnici",
 	"condition-is": "ls:",
 	"condition-then": "Tada:",
 	"max-claims": "Koliko puta nagrada može biti osvojena.",
 	"zero-infinite": "Upišite 0 za beskonačno",
+	"select-reward": "Select reward",
 	"delete": "Obriši",
 	"enable": "Omogući",
 	"disable": "onemogući",

@@ -72,7 +72,9 @@
 	"development/info": "Info",
 
 	"rebuild-and-restart-forum": "Forum regenerieren & neustarten",
+	"rebuild-and-restart": "Rebuild & Restart",
 	"restart-forum": "Forum neu starten",
+	"restart": "Restart",
 	"logout": "Abmelden",
 	"view-forum": "Forum anzeigen",
 

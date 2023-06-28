@@ -1,7 +1,11 @@
 {
+	"manage-categories": "Manage Categories",
+	"add-category": "Add category",
+	"jump-to": "Jump to...",
 	"settings": "Kategori Ayarları",
+	"edit-category": "Edit Category",
 	"privileges": "İzinler",
-
+	"back-to-categories": "Back to categories",
 	"name": "Kategori Adı",
 	"description": "Kategori Açıklaması",
 	"bg-color": "Arkaplan Rengi",
@@ -15,8 +19,11 @@
 	"post-queue": "İleti Kuyruğu",
 	"tag-whitelist": "İzin Verilen Etiketler",
 	"upload-image": "Görsel Yükle",
+	"upload": "Upload",
+	"select-icon": "Select Icon",
 	"delete-image": "Sil",
 	"category-image": "Kategori Görseli",
+	"image-and-icon": "Image & Icon",
 	"parent-category": "Üst Kategori",
 	"optional-parent-category": "(Opsiyonel) Üst Kategori",
 	"top-level": "En üst seviye",
@@ -31,6 +38,7 @@
 	"disable": "Devre dışı",
 	"edit": "Düzenle",
 	"analytics": "Analiz",
+
 	"view-category": "Kategori Görüntüle",
 	"set-order": "Bir sıra ayarla",
 	"set-order-help": "Kategorinin sırasını ayarlamak, bu kategoriyi o sıraya taşıyacak ve  diğer kategorilerin sırasını güncelleyecektir. Kategoriyi en üste taşımak için 1 girin.",

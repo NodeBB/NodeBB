@@ -1,4 +1,5 @@
 {
+	"widgets": "Widgets",
 	"available": "사용 가능한 위젯",
 	"explanation": "드롭다운 메뉴에서 위젯을 선택하고 왼쪽에 있는 템플릿의 위젯 위치로 드래그하여 옮기세요.",
 	"none-installed": "위젯이 없습니다! <a href=\"%1\">플러그인</a> 설정 메뉴에서 widget essentials 플러그인을 설치하세요.",

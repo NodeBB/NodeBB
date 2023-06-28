@@ -41,32 +41,54 @@ app.onDomReady();
 		}, 3600000);
 	}
 
-	require(['hooks'], (hooks) => {
-		hooks.on('action:ajaxify.end', () => {
+	require(['hooks', 'admin/settings'], (hooks, Settings) => {
+		hooks.on('action:ajaxify.end', (data) => {
+			updatePageTitle(data.url);
+			setupRestartLinks();
 			showCorrectNavTab();
 			startLogoutTimer();
+
+			$('[data-bs-toggle="tooltip"]').tooltip({
+				animation: false,
+				container: '#content',
+			});
+
 			if ($('.settings').length) {
-				require(['admin/settings'], function (Settings) {
-					Settings.prepare();
-					Settings.populateTOC();
-				});
+				Settings.prepare();
 			}
+			if ($('[component="settings/toc"]').length) {
+				Settings.populateTOC();
+			}
+		});
+		hooks.on('action:ajaxify.start', function () {
+			require(['bootstrap'], function (boostrap) {
+				const offcanvas = boostrap.Offcanvas.getInstance('#offcanvas');
+				if (offcanvas) {
+					offcanvas.hide();
+				}
+			});
 		});
 	});
 
 	function showCorrectNavTab() {
-		// show correct tab if url has #
-		if (window.location.hash) {
-			$('.nav-pills a[href="' + window.location.hash + '"]').tab('show');
+		const accordionEl = $('[component="acp/accordion"]');
+		let pathname = window.location.pathname;
+		if (pathname === '/admin') {
+			pathname = '/admin/dashboard';
+		}
+		const selectedButton = accordionEl.find(`a[href="${pathname}"]`);
+		if (selectedButton.length) {
+			accordionEl.find('a').removeClass('active');
+			accordionEl.find('.accordion-collapse').removeClass('show');
+			selectedButton.addClass('active');
+			selectedButton.parents('.accordion-collapse').addClass('show');
 		}
 	}
 
 	$(document).ready(function () {
-		if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-			require(['admin/modules/search'], function (search) {
-				search.init();
-			});
-		}
+		require(['admin/modules/search'], function (search) {
+			search.init();
+		});
 
 		$('[component="logout"]').on('click', function () {
 			require(['logout'], function (logout) {
@@ -75,16 +97,25 @@ app.onDomReady();
 			return false;
 		});
 
-		configureSlidemenu();
 		setupNProgress();
+		fixAccordionIds();
 	});
 
-	$(window).on('action:ajaxify.contentLoaded', function (ev, data) {
-		selectMenuItem(data.url);
-		setupRestartLinks();
-		require('material-design-lite');
-		componentHandler.upgradeDom();
-	});
+	function fixAccordionIds() {
+		// fix mobile accordion, so it doesn't have same ids as desktop
+		// the same accordion partial is used in both places
+		const offcanvasAccordion = $('#offcanvas #accordionACP');
+		offcanvasAccordion.attr('id', 'accordionACP-offcanvas');
+		offcanvasAccordion.find('[data-bs-target]').each((i, el) => {
+			$(el).attr('data-bs-target', $(el).attr('data-bs-target') + '-offcanvas');
+		});
+		offcanvasAccordion.find('[data-bs-parent]').each((i, el) => {
+			$(el).attr('data-bs-parent', '#accordionACP-offcanvas');
+		});
+		offcanvasAccordion.find('.accordion-collapse').each((i, el) => {
+			$(el).attr('id', $(el).attr('id') + '-offcanvas');
+		});
+	}
 
 	function setupNProgress() {
 		require(['nprogress', 'hooks'], function (NProgress, hooks) {
@@ -98,7 +129,7 @@ app.onDomReady();
 		});
 	}
 
-	function selectMenuItem(url) {
+	function updatePageTitle(url) {
 		require(['translator'], function (translator) {
 			url = url
 				.replace(/\/\d+$/, '')
@@ -113,17 +144,8 @@ app.onDomReady();
 			url = [config.relative_path, url].join('/');
 			let fallback;
 
-			$('#main-menu li').removeClass('active');
-			$('#main-menu a').removeClass('active').filter('[href="' + url + '"]').each(function () {
-				const menu = $(this);
-				if (menu.parent().attr('data-link')) {
-					return;
-				}
-
-				menu
-					.parent().addClass('active')
-					.parents('.menu-item').addClass('active');
-				fallback = menu.text();
+			$(`[component="acp/accordion"] a[href="${url}"]`).each(function () {
+				fallback = $(this).text();
 			});
 
 			let mainTitle;
@@ -152,9 +174,6 @@ app.onDomReady();
 			translator.translate(pageTitle, function (title) {
 				document.title = title.replace(/&gt;/g, '>');
 			});
-			translator.translate(mainTitle, function (text) {
-				$('#main-page-title').text(text);
-			});
 		});
 	}
 
@@ -164,7 +183,7 @@ app.onDomReady();
 			// otherwise it can be unloaded when rebuild & restart is run
 			// the client can't fetch the template file, resulting in an error
 			benchpress.render('partials/toast', {}).then(function () {
-				$('.rebuild-and-restart').off('click').on('click', function () {
+				$('[component="rebuild-and-restart"]').off('click').on('click', function () {
 					bootbox.confirm('[[admin/admin:alert.confirm-rebuild-and-restart]]', function (confirm) {
 						if (confirm) {
 							instance.rebuildAndRestart();
@@ -172,70 +191,12 @@ app.onDomReady();
 					});
 				});
 
-				$('.restart').off('click').on('click', function () {
+				$('[component="restart"]').off('click').on('click', function () {
 					bootbox.confirm('[[admin/admin:alert.confirm-restart]]', function (confirm) {
 						if (confirm) {
 							instance.restart();
 						}
 					});
-				});
-			});
-		});
-	}
-
-	function configureSlidemenu() {
-		require(['slideout'], function (Slideout) {
-			let env = utils.findBootstrapEnvironment();
-
-			const slideout = new Slideout({
-				panel: document.getElementById('panel'),
-				menu: document.getElementById('menu'),
-				padding: 256,
-				tolerance: 70,
-			});
-
-			if (env === 'md' || env === 'lg') {
-				slideout.disableTouch();
-			}
-
-			$('#mobile-menu').on('click', function () {
-				slideout.toggle();
-			});
-
-			$('#menu a').on('click', function () {
-				slideout.close();
-			});
-
-			$(window).on('resize', function () {
-				slideout.close();
-
-				env = utils.findBootstrapEnvironment();
-				if (['xxl', 'xl', 'lg'].includes(env)) {
-					slideout.disableTouch();
-					$('#header').css({
-						position: 'relative',
-					});
-				} else {
-					slideout.enableTouch();
-					$('#header').css({
-						position: 'fixed',
-					});
-				}
-			});
-
-			function onOpeningMenu() {
-				$('#header').css({
-					top: ($('#panel').position().top * -1) + 'px',
-					position: 'absolute',
-				});
-			}
-
-			slideout.on('open', onOpeningMenu);
-
-			slideout.on('close', function () {
-				$('#header').css({
-					top: '0px',
-					position: 'fixed',
 				});
 			});
 		});

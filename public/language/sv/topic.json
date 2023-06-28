@@ -164,7 +164,7 @@
     "composer.schedule": "Schemalägg",
     "composer.replying_to": "Svarar till %1",
     "composer.new_topic": "Nytt ämne",
-    "composer.editing": "Redigerar",
+    "composer.editing-in": "Editing post in %1",
     "composer.uploading": "laddar upp...",
     "composer.thumb_url_label": "Klistra in URL till tumnagel för ämnet",
     "composer.thumb_title": "Lägg till tumnagel för detta ämne",

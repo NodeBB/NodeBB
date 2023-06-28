@@ -1,10 +1,11 @@
 {
+    "manage-admins-and-mods": "Manage Admins & Mods",
     "administrators": "관리자",
     "global-moderators": "통합 조정자",
     "moderators": "Moderators",
     "no-global-moderators": "통합 조정자 없음",
     "no-sub-categories": "No subcategories",
-    "subcategories": "%1 subcategories",
+    "view-children": "View children (%1)",
     "no-moderators": "조정자 없음",
     "add-administrator": "관리자 추가",
     "add-global-moderator": "통합 조정자 추가",

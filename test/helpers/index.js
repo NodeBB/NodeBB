@@ -111,12 +111,17 @@ helpers.connectSocketIO = function (res, csrf_token, callback) {
 			_csrf: csrf_token,
 		},
 	});
-
+	let error;
 	socket.on('connect', () => {
+		if (error) {
+			return;
+		}
 		callback(null, socket);
 	});
 
 	socket.on('error', (err) => {
+		error = err;
+		console.log('socket.io error', err.stack);
 		callback(err);
 	});
 };

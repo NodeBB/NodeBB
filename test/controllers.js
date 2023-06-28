@@ -402,6 +402,8 @@ describe('Controllers', () => {
 
 				assert(!res.body.errors.includes('[[error:invalid-email]]'));
 				assert(!res.body.errors.includes('[[error:gdpr_consent_denied]]'));
+
+				meta.config.requireEmailAddress = 1;
 			});
 
 			it('should error if userData is falsy', async () => {
@@ -421,7 +423,7 @@ describe('Controllers', () => {
 					interstitials: [],
 				});
 				assert.strictEqual(result.interstitials[0].template, 'partials/email_update');
-				assert.rejects(result.interstitials[0].callback({ uid }, {
+				await assert.rejects(result.interstitials[0].callback({ uid }, {
 					email: 'invalidEmail',
 				}), { message: '[[error:invalid-email]]' });
 			});
@@ -434,7 +436,7 @@ describe('Controllers', () => {
 					interstitials: [],
 				});
 				assert.strictEqual(result.interstitials[0].template, 'partials/email_update');
-				assert.rejects(result.interstitials[0].callback({ uid }, {
+				await assert.rejects(result.interstitials[0].callback({ uid }, {
 					email: '    ',
 				}), { message: '[[error:invalid-email]]' });
 			});
@@ -487,7 +489,9 @@ describe('Controllers', () => {
 				}
 			});
 
-			it('should remove current email', async () => {
+			it('should remove current email (only allowed if email not required)', async () => {
+				meta.config.requireEmailAddress = 0;
+
 				const uid = await user.create({ username: 'interstiuser5' });
 				await user.setUserField(uid, 'email', 'interstiuser5@nodebb.org');
 				await user.email.confirmByUid(uid);
@@ -504,6 +508,8 @@ describe('Controllers', () => {
 				const userData = await user.getUserData(uid);
 				assert.strictEqual(userData.email, '');
 				assert.strictEqual(userData['email:confirmed'], 0);
+
+				meta.config.requireEmailAddress = 1;
 			});
 
 			it('should require a password (if one is set) for email change', async () => {
@@ -528,6 +534,8 @@ describe('Controllers', () => {
 			});
 
 			it('should require a password (if one is set) for email clearing', async () => {
+				meta.config.requireEmailAddress = 0;
+
 				try {
 					const [username, password] = [utils.generateUUID().slice(0, 10), utils.generateUUID()];
 					const uid = await user.create({ username, password });
@@ -546,6 +554,8 @@ describe('Controllers', () => {
 				} catch (err) {
 					assert.strictEqual(err.message, '[[error:invalid-password]]');
 				}
+
+				meta.config.requireEmailAddress = 1;
 			});
 
 			it('should successfully issue validation request if the correct password is passed in', async () => {
@@ -1687,7 +1697,7 @@ describe('Controllers', () => {
 					assert.equal(res.statusCode, 200);
 					assert(body);
 					const notif = body.notifications[0];
-					assert.equal(notif.bodyShort, notifData.bodyShort);
+					assert.equal(notif.bodyShort, '<strong>test1</strong> has posted a reply to: <strong>test2</strong>');
 					assert.equal(notif.bodyLong, notifData.bodyLong);
 					assert.equal(notif.pid, notifData.pid);
 					assert.equal(notif.path, nconf.get('relative_path') + notifData.path);

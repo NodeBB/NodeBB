@@ -1,6 +1,8 @@
 'use strict';
 
-define('search', ['translator', 'storage', 'hooks', 'alerts'], function (translator, storage, hooks, alerts) {
+define('search', [
+	'translator', 'storage', 'hooks', 'alerts', 'bootstrap',
+], function (translator, storage, hooks, alerts, bootstrap) {
 	const Search = {
 		current: {},
 	};
@@ -225,9 +227,18 @@ define('search', ['translator', 'storage', 'hooks', 'alerts'], function (transla
 	};
 
 	Search.showAndFocusInput = function (form) {
-		form.find('[component="search/fields"]').removeClass('hidden');
-		form.find('[component="search/button"]').addClass('hidden');
-		form.find('[component="search/fields"] input[name="query"]').trigger('focus');
+		const parentDropdown = form.parents('.dropdown-menu');
+		if (parentDropdown.length) { // handle if form is inside a dropdown aka harmony
+			const toggle = parentDropdown.siblings('[data-bs-toggle]');
+			const dropdownEl = bootstrap.Dropdown.getOrCreateInstance(toggle[0]);
+			if (dropdownEl) {
+				dropdownEl.show();
+			}
+		} else { // persona and others
+			form.find('[component="search/fields"]').removeClass('hidden');
+			form.find('[component="search/button"]').addClass('hidden');
+			form.find('[component="search/fields"] input[name="query"]').trigger('focus');
+		}
 	};
 
 	Search.query = function (data, callback) {

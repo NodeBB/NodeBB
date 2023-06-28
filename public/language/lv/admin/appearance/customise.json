@@ -1,4 +1,5 @@
 {
+	"customise": "Customise",
 	"custom-css": "Custom CSS/SASS",
 	"custom-css.description": "Enter your own CSS/SASS declarations here, which will be applied after all other styles.",
 	"custom-css.enable": "Enable Custom CSS/SASS",
@@ -12,5 +13,8 @@
 	"custom-header.enable": "Iespējot pielāgotu galveni",
 
 	"custom-css.livereload": "Iespējot dzīvo pārlādēšanu",
-	"custom-css.livereload.description": "Piespiest atsvaidzināt visas aktīvās sesijas ikvienā no Tava konta esošajām ierīcēm katru reizi, kad noklikšķini uz \"Saglabāt\""
+	"custom-css.livereload.description": "Piespiest atsvaidzināt visas aktīvās sesijas ikvienā no Tava konta esošajām ierīcēm katru reizi, kad noklikšķini uz \"Saglabāt\"",
+	"bsvariables": "_variables.scss",
+	"bsvariables.description": "Override bootstrap variables here. You can also use a tool like <a href=\"https://bootstrap.build/app\">bootstrap.build</a> and paste the output here.<br/>Changes require a rebuild & restart.",
+	"bsvariables.enable": "Enable _variables.scss"
 }

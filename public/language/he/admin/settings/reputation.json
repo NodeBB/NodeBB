@@ -27,5 +27,5 @@
 	"flags.action-on-resolve": "בצע את הפעולות הבאות כאשר דיווח נפתר",
 	"flags.action-on-reject": "בצע את הפעולות הבאות כאשר דיווח נדחה",
 	"flags.action.nothing": "אל תעשה כלום",
-	"flags.action.rescind": "בטל את ההודעה שנשלחה למנחים/מנהלי מערכת"
+	"flags.action.rescind": "Rescind the notification sent to moderators/administrators"
 }

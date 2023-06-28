@@ -11,14 +11,11 @@ get:
             allOf:
               - type: object
                 properties:
-                  lastSeen:
-                    type: object
-                    description: A key-value set of API tokens and a UNIX timestamp of when it was last used
-                    properties: {}
-                    additionalProperties: {}
-                  lastSeenISO:
-                    type: object
-                    description: A key-value set of API tokens and an ISO 8601 formatted date string of when it was last used
-                    properties: {}
-                    additionalProperties: {}
+                  title:
+                    type: string
+                  tokens:
+                    type: array
+                    items:
+                      $ref: ../../../components/schemas/admin/tokenObject.yaml#/TokenObject
+              - $ref: ../../../components/schemas/Pagination.yaml#/Pagination
               - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

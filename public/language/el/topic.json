@@ -164,7 +164,7 @@
     "composer.schedule": "Schedule",
     "composer.replying_to": "Απάντηση στο %1",
     "composer.new_topic": "Νέο Θέμα",
-    "composer.editing": "Editing",
+    "composer.editing-in": "Editing post in %1",
     "composer.uploading": "ανέβασμα...",
     "composer.thumb_url_label": "Επικόλληση του URL της εικόνας του θέματος",
     "composer.thumb_title": "Προσθήκη μιας εικόνας στο θέμα",

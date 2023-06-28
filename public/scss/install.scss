@@ -1,5 +1,3 @@
-@import "./admin/vars";
-
 .hidden, .hide {
     display: none!important;
 }
@@ -49,17 +47,9 @@
   }
 }
 
-.btn, .form-control, .navbar {
-	border-radius: 0;
-}
-
 .container {
 	font-size: 18px;
 	margin-bottom: 100px;
-}
-
-body, small, p, div {
-	font-family: $font-family-sans-serif;
 }
 
 .input-row {
@@ -67,14 +57,6 @@ body, small, p, div {
 
 	.form-control {
 		margin-bottom: 5px;
-	}
-
-	.help-text {
-		pointer-events: none;
-		line-height: 20px;
-		color: #888;
-		font-size: 85%;
-		display: none;
 	}
 
 	.input-field {

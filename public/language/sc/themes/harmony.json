@@ -1,4 +1,5 @@
 {
+	"theme-name": "Harmony Theme",
 	"skins": "Skins",
 	"collapse": "Collapse",
 	"expand": "Expand",
@@ -10,5 +11,6 @@
 	"settings.stickyToolbar": "Sticky toolbar",
 	"settings.stickyToolbar.help": "The toolbar on topic and category pages will stick to the top of the page",
 	"settings.autohideBottombar": "Auto hide bottom bar",
-	"settings.autohideBottombar.help": "The bottom bar on mobile view will be hidden when the page is scrolled down"
+	"settings.autohideBottombar.help": "The bottom bar on mobile view will be hidden when the page is scrolled down",
+	"settings.chatModals": "Enable chat modals"
 }

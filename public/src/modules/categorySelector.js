@@ -1,8 +1,8 @@
 'use strict';
 
 define('categorySelector', [
-	'categorySearch', 'bootbox', 'hooks',
-], function (categorySearch, bootbox, hooks) {
+	'categorySearch', 'bootbox', 'hooks', 'translator',
+], function (categorySearch, bootbox, hooks, translator) {
 	const categorySelector = {};
 
 	categorySelector.init = function (el, options) {
@@ -13,7 +13,7 @@ define('categorySelector', [
 		const onSelect = options.onSelect || function () {};
 
 		options.states = options.states || ['watching', 'notwatching', 'ignoring'];
-		options.template = 'partials/category/selector-dropdown-left';
+		options.template = options.template || 'partials/category/selector-dropdown-left';
 		hooks.fire('action:category.selector.options', { el: el, options: options });
 
 		categorySearch.init(el, options);
@@ -22,15 +22,21 @@ define('categorySelector', [
 			el: el,
 			selectedCategory: null,
 		};
+
 		el.on('click', '[data-cid]', function () {
 			const categoryEl = $(this);
 			if (categoryEl.hasClass('disabled')) {
 				return false;
 			}
 			selector.selectCategory(categoryEl.attr('data-cid'));
-			onSelect(selector.selectedCategory);
+			return onSelect(selector.selectedCategory);
 		});
-		const defaultSelectHtml = selector.el.find('[component="category-selector-selected"]').html();
+
+		let defaultSelectHtml = selector.el.find('[component="category-selector-selected"]').html();
+
+		translator.translate(defaultSelectHtml, (translated) => {
+			defaultSelectHtml = translated;
+		});
 		selector.selectCategory = function (cid) {
 			const categoryEl = selector.el.find('[data-cid="' + cid + '"]');
 			selector.selectedCategory = {
@@ -54,6 +60,14 @@ define('categorySelector', [
 		selector.getSelectedCid = function () {
 			return selector.selectedCategory ? selector.selectedCategory.cid : 0;
 		};
+
+		if (options.hasOwnProperty('selectedCategory')) {
+			app.parseAndTranslate(options.template, { selectedCategory: options.selectedCategory }, function (html) {
+				selector.el.find('[component="category-selector-selected"]').html(
+					html.find('[component="category-selector-selected"]').html()
+				);
+			});
+		}
 		return selector;
 	};
 

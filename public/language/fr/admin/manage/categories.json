@@ -1,7 +1,11 @@
 {
+	"manage-categories": "Manage Categories",
+	"add-category": "Add category",
+	"jump-to": "Jump to...",
 	"settings": "Paramètres de la catégorie",
+	"edit-category": "Edit Category",
 	"privileges": "Privilèges",
-
+	"back-to-categories": "Back to categories",
 	"name": "Nom de la catégorie",
 	"description": "Description de la catégorie",
 	"bg-color": "Couleur d'arrière plan",
@@ -15,8 +19,11 @@
 	"post-queue": "File d'attente",
 	"tag-whitelist": "Liste blanche de mots clés",
 	"upload-image": "Envoyer une image",
+	"upload": "Upload",
+	"select-icon": "Select Icon",
 	"delete-image": "Enlever",
 	"category-image": "Image de la catégorie",
+	"image-and-icon": "Image & Icon",
 	"parent-category": "Catégorie parente",
 	"optional-parent-category": "Catégorie parente (optionnel)",
 	"top-level": "Vers le haut",
@@ -31,6 +38,7 @@
 	"disable": "Désactiver",
 	"edit": "Éditer",
 	"analytics": "Statistiques",
+
 	"view-category": "Voir la catégorie",
 	"set-order": "Définir l'ordre",
 	"set-order-help": "Configuration des catégories. Vous pouvez déplacer vos catégories dans l'ordre que vous le souhaitez. La commande minimum est de 1, ce qui place la catégorie au sommet.",

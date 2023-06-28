@@ -164,7 +164,7 @@
     "composer.schedule": "Schedule",
     "composer.replying_to": "Îi raspunde lui %1",
     "composer.new_topic": "Subiect Nou",
-    "composer.editing": "Editing",
+    "composer.editing-in": "Editing post in %1",
     "composer.uploading": "se uploadează ...",
     "composer.thumb_url_label": "Lipește un link pentru pictogramă subiect",
     "composer.thumb_title": "Adaugă o pictogramă la acest subiect",

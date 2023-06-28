@@ -141,6 +141,8 @@
     "group-order-help": "Wybierz grupę i użyj strzałek, aby zamówić tytuł",
     "no-group-title": "Brak nazwy grupy",
     "select-skin": "Wybierz skórkę",
+    "default": "Default (%1)",
+    "no-skin": "No Skin",
     "select-homepage": "Wybierz stronę startową",
     "homepage": "Strona startowa",
     "homepage_description": "Wybierz preferowaną stronę startową lub „None”, jeśli chcesz używać strony domyślnej. ",

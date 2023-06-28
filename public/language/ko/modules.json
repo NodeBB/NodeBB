@@ -2,7 +2,7 @@
     "chat.chatting_with": "채팅",
     "chat.placeholder": "여기에 메시지를 쓰고, 이미지를 드래그 앤 드롭하고, Enter를 눌러 보내세요!",
     "chat.placeholder.mobile": "Type chat message here",
-    "chat.scroll-up-alert": "오래된 메시지를 보고 있습니다. 여기를 눌러 최신 메시지로 이동하세요.",
+    "chat.scroll-up-alert": "Go to most recent message",
     "chat.usernames-and-x-others": "%1 & %2 others",
     "chat.chat-with-usernames": "Chat with %1",
     "chat.chat-with-usernames-and-x-others": "Chat with %1 & %2 others",

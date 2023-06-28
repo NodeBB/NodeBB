@@ -191,11 +191,8 @@ function addCoreRoutes(app, router, middleware, mounts) {
 		res.redirect(`${relativePath}/assets/plugins${req.path}${req._parsedUrl.search || ''}`);
 	});
 
-	// Skins
-	meta.css.supportedSkins.forEach((skin) => {
-		app.use(`${relativePath}/assets/client-${skin}.css`, middleware.buildSkinAsset);
-		app.use(`${relativePath}/assets/client-${skin}-rtl.css`, middleware.buildSkinAsset);
-	});
+	app.use(`${relativePath}/assets/client-*.css`, middleware.buildSkinAsset);
+	app.use(`${relativePath}/assets/client-*-rtl.css`, middleware.buildSkinAsset);
 
 	app.use(controllers['404'].handle404);
 	app.use(controllers.errors.handleURIErrors);

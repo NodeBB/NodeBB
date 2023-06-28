@@ -21,6 +21,7 @@ exports.setDefaultPostData = function (reqOrSocket, data) {
 exports.buildReqObject = (req, payload) => {
 	req = req || {};
 	const headers = req.headers || (req.request && req.request.headers) || {};
+	const session = req.session || (req.request && req.request.session) || {};
 	const encrypted = req.connection ? !!req.connection.encrypted : false;
 	let { host } = headers;
 	const referer = headers.referer || '';
@@ -34,13 +35,15 @@ exports.buildReqObject = (req, payload) => {
 		params: req.params,
 		method: req.method,
 		body: payload || req.body,
-		session: req.session,
+		session: session,
 		ip: req.ip,
 		host: host,
 		protocol: encrypted ? 'https' : 'http',
 		secure: encrypted,
 		url: referer,
 		path: referer.slice(referer.indexOf(host) + host.length),
+		baseUrl: req.baseUrl,
+		originalUrl: req.originalUrl,
 		headers: headers,
 	};
 };

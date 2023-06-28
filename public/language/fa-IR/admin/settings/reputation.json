@@ -10,7 +10,7 @@
 	"min-rep-downvote": "Minimum reputation to downvote posts",
 	"downvotes-per-day": "Downvotes per day (set to 0 for unlimited downvotes)",
 	"downvotes-per-user-per-day": "Downvotes per user per day (set to 0 for unlimited downvotes)",
-	"min-rep-chat": "Minimum reputation to send chat messages",
+	"min-rep-chat": "کمترین اعتبار برای ارسال پیام‌های چت ",
 	"min-rep-flag": "Minimum reputation to flag posts",
 	"min-rep-website": "Minimum reputation to add \"Website\" to user profile",
 	"min-rep-aboutme": "Minimum reputation to add \"About me\" to user profile",
@@ -27,5 +27,5 @@
 	"flags.action-on-resolve": "Do the following when a flag is resolved",
 	"flags.action-on-reject": "Do the following when a flag is rejected",
 	"flags.action.nothing": "Do nothing",
-	"flags.action.rescind": "Rescind the notification send to moderators/administrators"
+	"flags.action.rescind": "Rescind the notification sent to moderators/administrators"
 }

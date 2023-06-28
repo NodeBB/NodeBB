@@ -1,4 +1,5 @@
 {
+	"customise": "Customise",
 	"custom-css": "Custom CSS/SASS",
 	"custom-css.description": "Enter your own CSS/SASS declarations here, which will be applied after all other styles.",
 	"custom-css.enable": "Enable Custom CSS/SASS",
@@ -12,5 +13,8 @@
 	"custom-header.enable": "เปิดการปรับแต่งส่วนหัว",
 
 	"custom-css.livereload": "เปิดการบังคับให้มีผลในทันที",
-	"custom-css.livereload.description": "การเปิดนี้จะบังคับทุกเซสชั่นบนทุกอุปกรณ์ภายใต้บัญชีของคุณให้ถูกรีเฟรชทันทีที่คุณกดบันทึก"
+	"custom-css.livereload.description": "การเปิดนี้จะบังคับทุกเซสชั่นบนทุกอุปกรณ์ภายใต้บัญชีของคุณให้ถูกรีเฟรชทันทีที่คุณกดบันทึก",
+	"bsvariables": "_variables.scss",
+	"bsvariables.description": "Override bootstrap variables here. You can also use a tool like <a href=\"https://bootstrap.build/app\">bootstrap.build</a> and paste the output here.<br/>Changes require a rebuild & restart.",
+	"bsvariables.enable": "Enable _variables.scss"
 }

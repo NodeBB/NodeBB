@@ -5,7 +5,7 @@
 	"uptime-seconds": "運行秒數",
 	"uptime-days": "運行天數",
 
-	"mongo": "Mongo",
+	"mongo": "MongoDB",
 	"mongo.version": "MongoDB 版本",
 	"mongo.storage-engine": "儲存引擎",
 	"mongo.collections": "集合",

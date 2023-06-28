@@ -11,6 +11,8 @@ get:
             allOf:
               - type: object
                 properties:
+                  title:
+                    type: string
                   emails:
                     type: array
                     items:

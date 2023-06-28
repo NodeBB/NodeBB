@@ -1,4 +1,5 @@
 {
+	"widgets": "Widgets",
 	"available": "Widgets Disponíveis",
 	"explanation": "Escolha um widget do menu de dropdown e então arraste e solte numa área de widget do template à esquerda.",
 	"none-installed": "Nenhum widget encontrado! Ative o plug-in de widgets básicos no  <a href=\"%1\"> painel de controle de plugins</a>.",

@@ -4,6 +4,13 @@
 
 	"acp-title": "%1 | NodeBB 管理员控制面板",
 	"settings-header-contents": "内容",
+	"changes-saved": "更改已保存",
+	"changes-saved-message": "你对 NodeBB 配置文件的更改已经保存。",
 	"changes-not-saved": "更改未保存",
-	"changes-not-saved-message": "NodeBB 在保存您的更改时遇到了问题。 (%1)"
+	"changes-not-saved-message": "NodeBB 在保存您的更改时遇到了问题。 (%1)",
+	"save-changes": "保存更改",
+	"min": "最小：",
+	"max": "最大：",
+	"view": "浏览",
+	"edit": "编辑"
 }

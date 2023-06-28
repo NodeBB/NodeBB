@@ -59,7 +59,7 @@
 	"max-about-me-length": "概要の最大文字数",
 	"terms-of-use": "フォーラム利用規約<small>(空白のままにしておくと無効になります)</ small>",
 	"user-search": "ユーザーを検索",
-	"user-search-results-per-page": "結果数を表示",
+	"user-search-results-per-page": "Number of users to display in search results",
 	"default-user-settings": "デフォルトユーザー設定",
 	"show-email": "メールを表示",
 	"show-fullname": "フルネームで表示",

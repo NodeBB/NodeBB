@@ -1,7 +1,11 @@
 {
+	"manage-categories": "Manage Categories",
+	"add-category": "Add category",
+	"jump-to": "Jump to...",
 	"settings": "Настройки категории",
+	"edit-category": "Edit Category",
 	"privileges": "Права доступа",
-
+	"back-to-categories": "Back to categories",
 	"name": "Название категории",
 	"description": "Описание категории",
 	"bg-color": "Цвет фона",
@@ -15,8 +19,11 @@
 	"post-queue": "Очередь на публикацию",
 	"tag-whitelist": "Разрешенный список меток",
 	"upload-image": "Загрузить изображение",
+	"upload": "Upload",
+	"select-icon": "Select Icon",
 	"delete-image": "Удалить",
 	"category-image": "Изображение категории",
+	"image-and-icon": "Image & Icon",
 	"parent-category": "Родительская категория",
 	"optional-parent-category": "(Не обязательно) Родительская категория\n",
 	"top-level": "Верхний уровень",
@@ -31,6 +38,7 @@
 	"disable": "Отключить",
 	"edit": "Редактировать",
 	"analytics": "Аналитика",
+
 	"view-category": "Перейти в категорию",
 	"set-order": "Установить порядковый номер",
 	"set-order-help": "Установка порядка категории переместит эту категорию в этот порядок и при необходимости обновит порядок других категорий. Минимальный порядок - 1, что ставит категорию на первое место.",

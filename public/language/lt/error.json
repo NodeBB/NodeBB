@@ -42,6 +42,7 @@
     "user-doesnt-have-email": "User \"%1\" does not have an email set.",
     "email-confirm-failed": "Negalime patvirtinti jūsų el. adreso, prašom bandyti vėliau.",
     "confirm-email-already-sent": "Patvirtinimo laiškas išsiųstas, prašome palaukti %1 minute(s) kad išsiųstume kita",
+    "confirm-email-expired": "Confirmation email expired",
     "sendmail-not-found": "The sendmail executable could not be found, please ensure it is installed and executable by the user running NodeBB.",
     "digest-not-enabled": "This user does not have digests enabled, or the system default is not configured to send digests",
     "username-too-short": "Slapyvardis per trumpas",

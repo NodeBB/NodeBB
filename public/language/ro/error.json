@@ -42,6 +42,7 @@
     "user-doesnt-have-email": "User \"%1\" does not have an email set.",
     "email-confirm-failed": "Mail-ul tau nu a putut fi confirmat, te rog incearca mai tarziu.",
     "confirm-email-already-sent": "Email-ul de confirmare ti-a fost trimis, asteapta te rog %1 minut(e) ca sa trimiti inca unul.",
+    "confirm-email-expired": "Confirmation email expired",
     "sendmail-not-found": "The sendmail executable could not be found, please ensure it is installed and executable by the user running NodeBB.",
     "digest-not-enabled": "This user does not have digests enabled, or the system default is not configured to send digests",
     "username-too-short": "Numele de utilizator este prea scurt",

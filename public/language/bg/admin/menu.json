@@ -68,11 +68,13 @@
 	"advanced/logs": "Журнали",
 	"advanced/errors": "Грешки",
 	"advanced/cache": "Кеш",
-	"development/logger": "Система на журнала",
+	"development/logger": "Журнал",
 	"development/info": "Информация",
 
 	"rebuild-and-restart-forum": "Повторно изграждане и рестартиране на форума",
+	"rebuild-and-restart": "Повторно изграждане и рестартиране",
 	"restart-forum": "Рестартиране на форума",
+	"restart": "Рестартиране",
 	"logout": "Изход",
 	"view-forum": "Преглед на форума",
 

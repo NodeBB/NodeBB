@@ -1,4 +1,5 @@
 {
+	"plugins": "תוספים",
 	"trending": "פופולארי",
 	"installed": "הותקן",
 	"active": "פעיל",
@@ -12,7 +13,7 @@
 	"plugin-search-placeholder": "חפש תוספים...",
 	"submit-anonymous-usage": "שלח נתוני שימוש אנונימיים בתוסף.",
 	"reorder-plugins": "סדר מחדש תוספים",
-	"order-active": "הזמן תוסף פעיל",
+	"order-active": "סדר תוספים פעילים",
 	"dev-interested": "מתעניין בכתיבת תוספים ל-NodeBB?",
 	"docs-info": "ניתן למצוא תיעוד מלא בנוגע לכתיבת תוסף ב <a target=\"_blank\" href=\"https://docs.nodebb.org/development/plugins/\">פורטל מסמכי NodeBB.</a>.",
 

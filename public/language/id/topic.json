@@ -164,7 +164,7 @@
     "composer.schedule": "Schedule",
     "composer.replying_to": "Membalas ke %1",
     "composer.new_topic": "Topik Baru",
-    "composer.editing": "Editing",
+    "composer.editing-in": "Editing post in %1",
     "composer.uploading": "mengunggah...",
     "composer.thumb_url_label": "Tempelkan URL gambar mini topik",
     "composer.thumb_title": "Tambah gambar mini untuk topik ini",

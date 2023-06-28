@@ -27,5 +27,5 @@
 	"flags.action-on-resolve": "Làm như sau khi một gắn cờ được giải quyết",
 	"flags.action-on-reject": "Làm như sau khi một gắn cờ bị từ chối",
 	"flags.action.nothing": "Không làm gì cả",
-	"flags.action.rescind": "Hủy bỏ gửi thông báo cho người điều hành/quản trị viên"
+	"flags.action.rescind": "Hủy bỏ thông báo đã gửi cho người điều hành/quản trị viên"
 }

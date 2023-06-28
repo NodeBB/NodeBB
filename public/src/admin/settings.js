@@ -1,29 +1,55 @@
 'use strict';
 
 
-define('admin/settings', ['uploader', 'mousetrap', 'hooks', 'alerts', 'settings'], function (uploader, mousetrap, hooks, alerts, settings) {
+define('admin/settings', [
+	'uploader', 'mousetrap', 'hooks', 'alerts', 'settings', 'bootstrap',
+], function (uploader, mousetrap, hooks, alerts, settings, bootstrap) {
 	const Settings = {};
 
 	Settings.populateTOC = function () {
 		const headers = $('.settings-header');
+		const tocEl = $('[component="settings/toc"]');
+		const tocList = $('[component="settings/toc/list"]');
+		const mainHader = $('[component="settings/main/header"]');
 
-		if (headers.length > 1) {
+		if (headers.length > 1 && tocList.length) {
 			headers.each(function () {
 				const header = $(this).text();
-				const anchor = header.toLowerCase().replace(/ /g, '-').trim();
-
-				$(this).prepend('<a name="' + anchor + '"></a>');
-				$('.section-content ul').append('<li><a href="#' + anchor + '">' + header + '</a></li>');
+				const anchor = header.toLowerCase()
+					.replace(/ /g, '-')
+					.replace(/&/g, '-')
+					.trim();
+				$(this).parent().attr('id', anchor);
+				tocList.append(`<a class="btn-ghost-sm text-xs justify-content-start text-decoration-none" href="#${anchor}">${header}</a>`);
+			});
+			const offset = mainHader.outerHeight(true);
+			// https://stackoverflow.com/a/11814275/583363
+			tocList.find('a').on('click', function (event) {
+				event.preventDefault();
+				const href = $(this).attr('href');
+				$(href)[0].scrollIntoView();
+				window.location.hash = href;
+				scrollBy(0, -offset);
+				setTimeout(() => {
+					tocList.find('a').removeClass('active');
+					$(this).addClass('active');
+				}, 10);
+				return false;
 			});
 
-			const scrollTo = $('a[name="' + window.location.hash.replace('#', '') + '"]');
+			new bootstrap.ScrollSpy($('#spy-container')[0], {
+				target: '#settings-navbar',
+				rootMargin: '-10% 0px -70%',
+				smoothScroll: true,
+			});
+
+			const scrollTo = $(`${window.location.hash}`);
 			if (scrollTo.length) {
 				$('html, body').animate({
-					scrollTop: (scrollTo.offset().top) + 'px',
+					scrollTop: (scrollTo.offset().top - offset) + 'px',
 				}, 400);
 			}
-		} else {
-			$('.content-header').parents('.row').remove();
+			tocEl.removeClass('hidden');
 		}
 	};
 
@@ -117,7 +143,7 @@ define('admin/settings', ['uploader', 'mousetrap', 'hooks', 'alerts', 'settings'
 			saveBtnEl.classList.toggle('saved', true);
 			setTimeout(() => {
 				saveBtnEl.classList.toggle('saved', false);
-			}, 5000);
+			}, 1500);
 		}
 	};
 

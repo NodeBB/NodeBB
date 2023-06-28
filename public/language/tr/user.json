@@ -141,6 +141,8 @@
     "group-order-help": "Bir grup seçin ve unvanları sıralamak için yön tuşlarını kullanın",
     "no-group-title": "Grup unvanı yok",
     "select-skin": "Bir tema seçin",
+    "default": "Default (%1)",
+    "no-skin": "No Skin",
     "select-homepage": "Bir \"Anasayfa\" seçin",
     "homepage": "Anasayfa",
     "homepage_description": "Anasayfa olarak kullanacağınız sayfayı seçin veya \"Hiçbiri\" diyerek varsayılan sayfayı kullanın.",

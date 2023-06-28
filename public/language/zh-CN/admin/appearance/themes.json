@@ -1,7 +1,9 @@
 {
+    "themes": "主题",
     "checking-for-installed": "正在检查已安装的主题...",
     "homepage": "首页",
     "select-theme": "选择主题",
+    "revert-theme": "回退主题",
     "current-theme": "当前主题",
     "no-themes": "未发现已安装的主题",
     "revert-confirm": "确认恢复到 NodeBB 默认主题？",

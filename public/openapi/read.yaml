@@ -82,14 +82,8 @@ paths:
     $ref: 'read/admin/dashboard/searches.yaml'
   "/api/admin/settings/{term}":
     $ref: 'read/admin/settings/term.yaml'
-  /api/admin/settings/languages:
-    $ref: 'read/admin/settings/languages.yaml'
   /api/admin/settings/navigation:
     $ref: 'read/admin/settings/navigation.yaml'
-  /api/admin/settings/homepage:
-    $ref: 'read/admin/settings/homepage.yaml'
-  /api/admin/settings/social:
-    $ref: 'read/admin/settings/social.yaml'
   /api/admin/settings/api:
     $ref: 'read/admin/settings/api.yaml'
   /api/admin/settings/email:

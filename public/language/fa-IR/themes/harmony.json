@@ -1,14 +1,16 @@
 {
-	"skins": "Skins",
-	"collapse": "Collapse",
-	"expand": "Expand",
-	"login-register-to-search": "Login or register to search.",
-	"settings.title": "Theme settings",
-	"settings.enableQuickReply": "Enable quick reply",
-	"settings.centerHeaderElements": "Center header elements",
-	"settings.mobileTopicTeasers": "Show topic teasers on mobile",
-	"settings.stickyToolbar": "Sticky toolbar",
-	"settings.stickyToolbar.help": "The toolbar on topic and category pages will stick to the top of the page",
-	"settings.autohideBottombar": "Auto hide bottom bar",
-	"settings.autohideBottombar.help": "The bottom bar on mobile view will be hidden when the page is scrolled down"
+	"theme-name": "Harmony Theme",
+	"skins": "پوسته‌ها",
+	"collapse": "بستن ",
+	"expand": "باز کردن",
+	"login-register-to-search": "برای جستجو وارد شوید و یا ثبت نام کنید ",
+	"settings.title": "تنظیمات تم ",
+	"settings.enableQuickReply": "پاسخ سریع را فعال کنید",
+	"settings.centerHeaderElements": "وسط چین کردن عناصر هدر ",
+	"settings.mobileTopicTeasers": "نمایش تیزرهای تاپیک در گوشی",
+	"settings.stickyToolbar": "نوار ابزار چسبیده ",
+	"settings.stickyToolbar.help": "نوار ابزار در تاپیک و صفحه دسته بدی ها در بالای صفحه ثابت می‌ماند",
+	"settings.autohideBottombar": "مخفی کردن اتوماتیک منوی پایینی ",
+	"settings.autohideBottombar.help": "وقتی صفحه به پایین اسکرول می شود، منوی پایین در نمایش گوشی مخفی خواهد شد  ",
+	"settings.chatModals": "فعال کردن پنجره کوچک برای چت "
 }

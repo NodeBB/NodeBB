@@ -5,46 +5,13 @@
 		max-width: 100% !important;
 	}
 
-	#analytics-panel .card-header > div {
-		&.fa-expand {
-			display: none;
-		}
-
-		font-family: $font-family-sans-serif;
-		font-weight: 600;
-		color: $gray-300;
-		padding-left: .5em;
-
-		padding: .75em;
-		background-color: $gray-200;
-		color: $black;
-		cursor: pointer;
-		transition: all .4s;
-
-		&.active {
-			display: inline;
-		}
-	}
-
 	.graph-container {
-		padding-right: 50px;
 		position: relative;
 		background: $body-bg;
-
-		&:hover {
-			.fa-expand {
-				color: $gray-800;
-				background-color: $black;
-			}
-		}
 
 		&.fullscreen {
 			width: 100%;
 			padding: 40px;
-
-			.fa-expand {
-				top: 20px;
-			}
 
 			.graph-legend {
 				top: 7rem;
@@ -155,8 +122,6 @@
 				}
 			}
 		}
-
-
 	}
 
 	.version-check {
@@ -167,22 +132,10 @@
 		transition: background, color 500ms ease-in;
 	}
 
-	#unique-visitors, #active-users {
-		margin-left: -15px;
-		> div {
-			width: 25%;
-			font-size: 13px;
-		}
-	}
-
 	.pageview-stats {
 		strong {
 			font-size: 22px;
 		}
-	}
-
-	.motd textarea {
-		width: 100%;
 	}
 
 	.stats {

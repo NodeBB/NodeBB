@@ -42,6 +42,7 @@
     "user-doesnt-have-email": "User \"%1\" does not have an email set.",
     "email-confirm-failed": "Vi kunde ej bekräfta din epostadress, var god försök igen senare.",
     "confirm-email-already-sent": "Bekräftningsbrev redan skickat, var god vänta %1 minut(er) innan du skickar ett nytt.",
+    "confirm-email-expired": "Confirmation email expired",
     "sendmail-not-found": "Kunde inte hitta Sendmail, vänligen se till att den är installerad och får köras av den användare som kör NodeBB.",
     "digest-not-enabled": "This user does not have digests enabled, or the system default is not configured to send digests",
     "username-too-short": "Användarnamnet är för kort",

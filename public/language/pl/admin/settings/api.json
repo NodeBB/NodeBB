@@ -3,17 +3,27 @@
 	"settings": "Ustawienia",
 	"lead-text": "Na tej stronie możesz skonfigurować dostęp do Write API w NodeBB.",
 	"intro": "Domyślnie Write API uwierzytelnia użytkowników na podstawie ich sesji cookie, ale NodeBB obsługuje również uwierzytelnianie okaziciela za pomocą tokenów generowanych za pośrednictwem tej strony.",
+	"warning": "<strong>Be advised</strong> — treat tokens like passwords. If they are leaked, your account should be considered compromised.",
 	"docs": "Kliknij tutaj, aby zobaczyć pełną specyfikację API",
 
 	"require-https": "Wymagaj użycia API tylko przez HTTPS",
 	"require-https-caveat": "<strong>Notatka</strong>: Niektóre instalacje z modułami równoważenia obciążenia mogą przekazywać swoje żądania do NodeBB za pomocą protokołu HTTP, w takim przypadku ta opcja powinna pozostać wyłączona.",
 
 	"uid": "ID Użytkownika",
+	"token": "Token",
 	"uid-help-text": "Specify a User ID to associate with this token. If the user ID is <code>0</code>, it will be considered a <em>master</em> token, which can assume the identity of other users based on the <code>_uid</code> parameter",
 	"description": "Opis",
-	"last-seen-ago": "Last used <span class=\"timeago\" title=\"%1\"></span>.",
-	"last-seen-on": "Last used on <span class=\"timeago\" title=\"%1\"></span>.",
+	"last-seen": "Last seen",
+	"created": "Created",
+	"create-token": "Create Token",
+	"update-token": "Update Token",
+	"master-token": "Master token",
 	"last-seen-never": "This key has never been used.",
 	"no-description": "Brak opisu.",
-	"token-on-save": "Token zostanie wygenerowany po zapisaniu formularza"
+	"actions": "Actions",
+	"edit": "Edit",
+	"roll": "Roll",
+
+	"delete-confirm": "Are you sure you wish to delete this token? It will not be recoverable.",
+	"roll-confirm": "Are you sure you wish to regenerate this token? The old token will be immediately revoked and will not be recoverable."
 }

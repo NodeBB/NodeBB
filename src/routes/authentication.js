@@ -6,10 +6,10 @@ const passportLocal = require('passport-local').Strategy;
 const BearerStrategy = require('passport-http-bearer').Strategy;
 const winston = require('winston');
 
-const meta = require('../meta');
 const controllers = require('../controllers');
 const helpers = require('../controllers/helpers');
 const plugins = require('../plugins');
+const api = require('../api');
 const { generateToken } = require('../middleware/csrf');
 
 let loginStrategies = [];
@@ -45,8 +45,8 @@ Auth.getLoginStrategies = function () {
 };
 
 Auth.verifyToken = async function (token, done) {
-	const { tokens = [] } = await meta.settings.get('core.api');
-	const tokenObj = tokens.find(t => t.token === token);
+	const tokens = await api.utils.tokens.list();
+	const tokenObj = tokens.filter((t => t.token === token)).pop();
 	const uid = tokenObj ? tokenObj.uid : undefined;
 
 	if (uid !== undefined) {

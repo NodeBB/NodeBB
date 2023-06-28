@@ -59,6 +59,10 @@ helpers.buildBodyClass = function (req, res, templateData = {}) {
 		});
 	}
 
+	if (templateData && templateData.bodyClasses) {
+		parts.push(...templateData.bodyClasses);
+	}
+
 	parts.push(`page-status-${res.statusCode}`);
 
 	parts.push(`theme-${meta.config['theme:id'].split('-')[2]}`);

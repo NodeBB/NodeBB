@@ -72,8 +72,16 @@ topicsController.get = async function getTopic(req, res, next) {
 	const sort = req.query.sort || settings.topicPostSort;
 	const set = sort === 'most_votes' ? `tid:${tid}:posts:votes` : `tid:${tid}:posts`;
 	const reverse = sort === 'newest_to_oldest' || sort === 'most_votes';
-	if (settings.usePagination && !req.query.page) {
-		currentPage = calculatePageFromIndex(postIndex, settings);
+	if (settings.usePagination) {
+		if (!req.query.page) {
+			currentPage = calculatePageFromIndex(postIndex, settings);
+		} else {
+			const top = ((currentPage - 1) * settings.postsPerPage) + 1;
+			const bottom = top + settings.postsPerPage;
+			if (!req.params.post_index || (postIndex < top || postIndex > bottom)) {
+				postIndex = top;
+			}
+		}
 	}
 	const { start, stop } = calculateStartStop(currentPage, postIndex, settings);
 
@@ -206,9 +214,10 @@ async function addTags(topicData, req, res) {
 	}
 	description = description.replace(/\n/g, ' ');
 
-	const mainPost = postIndex === 0 && postAtIndex ?
-		postAtIndex :
-		await topics.getMainPost(topicData.tid, req.uid);
+	let mainPost = topicData.posts.find(p => parseInt(p.index, 10) === 0);
+	if (!mainPost) {
+		mainPost = await posts.getPostData(topicData.mainPid);
+	}
 
 	res.locals.metaTags = [
 		{

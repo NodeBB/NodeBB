@@ -164,7 +164,7 @@
     "composer.schedule": "Schedule",
     "composer.replying_to": "Replying to %1",
     "composer.new_topic": "New Topic",
-    "composer.editing": "Editing",
+    "composer.editing-in": "Editing post in %1",
     "composer.uploading": "uploading...",
     "composer.thumb_url_label": "Paste a topic thumbnail URL",
     "composer.thumb_title": "Add a thumbnail to this topic",

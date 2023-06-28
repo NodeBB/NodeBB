@@ -1,4 +1,6 @@
 {
+	"manage-privileges": "Manage Privileges",
+	"discard-changes": "Discard changes",
 	"global": "Глобальные",
 	"admin": "Админка",
 	"group-privileges": "Права групп",

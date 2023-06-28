@@ -17,7 +17,7 @@
 	"manage/post-queue": "Coda post",
 	"manage/groups": "Gruppi",
 	"manage/ip-blacklist": "Lista degli IP bloccati",
-	"manage/uploads": "Uploads",
+	"manage/uploads": "Caricamenti",
 	"manage/digest": "Riepilogo",
 
 	"section-settings": "Impostazioni",
@@ -29,7 +29,7 @@
 	"settings/user": "Utenti",
 	"settings/group": "Gruppi",
 	"settings/guest": "Ospiti",
-	"settings/uploads": "Uploads",
+	"settings/uploads": "Caricamenti",
 	"settings/languages": "Lingue",
 	"settings/post": "Post",
 	"settings/chat": "Chat",
@@ -48,7 +48,7 @@
 
 	"section-appearance": "Stile",
 	"appearance/themes": "Themi",
-	"appearance/skins": "Skins",
+	"appearance/skins": "Skin",
 	"appearance/customise": "Contenuto Personalizato (HTML/JS/CSS)",
 
 	"section-extend": "Estendere",
@@ -58,7 +58,7 @@
 
 	"section-social-auth": "Autenticazione Social",
 
-	"section-plugins": "Plugins",
+	"section-plugins": "Plugin",
 	"extend/plugins.install": "Installazione Plugin",
 
 	"section-advanced": "Avanzato",
@@ -72,7 +72,9 @@
 	"development/info": "Informazioni",
 
 	"rebuild-and-restart-forum": "Rebuild & Riavvia Forum",
+	"rebuild-and-restart": "Ricostruisci e riavvia",
 	"restart-forum": "Riavvia Forum",
+	"restart": "Riavvio",
 	"logout": "Esci",
 	"view-forum": "Vista Forum",
 

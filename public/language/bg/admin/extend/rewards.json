@@ -1,10 +1,12 @@
 {
 	"rewards": "Награди",
+	"add-reward": "Добавяне на награда",
 	"condition-if-users": "Ако потребителският(ата/ото)",
 	"condition-is": "Е:",
 	"condition-then": "Тогава:",
 	"max-claims": "Колко пъти може да бъде получавана наградата",
 	"zero-infinite": "0 = безкраен брой пъти",
+	"select-reward": "Изберете награда",
 	"delete": "Изтриване",
 	"enable": "Включване",
 	"disable": "Изключване",

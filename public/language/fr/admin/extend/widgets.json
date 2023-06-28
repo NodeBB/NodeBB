@@ -1,4 +1,5 @@
 {
+	"widgets": "Widgets",
 	"available": "Widgets disponibles",
 	"explanation": "Sélectionnez un widget depuis le menu puis glissez-déposez le dans une zone template du widget à gauche.",
 	"none-installed": "Aucun widget trouvé ! Activez le plugin Widget Essentials dans le panneau de <a href=\"%1\">configuration des plugins</a>.",

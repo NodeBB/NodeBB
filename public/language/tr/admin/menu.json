@@ -72,7 +72,9 @@
 	"development/info": "bilgi",
 
 	"rebuild-and-restart-forum": "Forumu Yeniden oluştur &amp; Yeniden Başlat",
+	"rebuild-and-restart": "Rebuild & Restart",
 	"restart-forum": "Forumu Yeniden Başlat",
+	"restart": "Restart",
 	"logout": "Çıkış",
 	"view-forum": "Forumu Görüntüle",
 

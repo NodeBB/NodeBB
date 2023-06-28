@@ -242,7 +242,10 @@ define('admin/manage/users', [
 					}
 					alerts.success('[[admin/manage/users:alerts.validate-email-success]]');
 					update('.notvalidated', false);
-					update('.validated', true);
+					update('.pending', false);
+					update('.expired', false);
+					update('.validated', false);
+					update('.validated-by-admin', true);
 					unselectAll();
 				});
 			});

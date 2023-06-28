@@ -1,4 +1,5 @@
 {
+	"customise": "Customise",
 	"custom-css": "CSS/SASS Personalizado",
 	"custom-css.description": "Enter your own CSS/SASS declarations here, which will be applied after all other styles.",
 	"custom-css.enable": "Enable Custom CSS/SASS",
@@ -12,5 +13,8 @@
 	"custom-header.enable": "Activar cabecera personalizada",
 
 	"custom-css.livereload": "Activar Recargar en Vivo",
-	"custom-css.livereload.description": "Activar esto para forzar todas las sesiones en todos los dispositivos que recaen de tu cuenta a limpiar cada vez que tú haces clic en guardar"
+	"custom-css.livereload.description": "Activar esto para forzar todas las sesiones en todos los dispositivos que recaen de tu cuenta a limpiar cada vez que tú haces clic en guardar",
+	"bsvariables": "_variables.scss",
+	"bsvariables.description": "Override bootstrap variables here. You can also use a tool like <a href=\"https://bootstrap.build/app\">bootstrap.build</a> and paste the output here.<br/>Changes require a rebuild & restart.",
+	"bsvariables.enable": "Enable _variables.scss"
 }

@@ -1,6 +1,8 @@
-@import "./mixins";
+@import "fonts";
+@import "mixins";
+@import "common";
 
-@import "./header";
+@import "sidebar";
 @import "./mobile";
 
 @import "./general/dashboard";
@@ -9,12 +11,11 @@
 @import "./manage/privileges";
 @import "./manage/tags";
 @import "./manage/groups";
+@import "./settings/api";
 @import "./appearance/customise";
 @import "./extend/plugins";
-@import "./extend/rewards";
 @import "./extend/widgets";
-@import "./advanced/database";
-@import "./settings";
+@import "settings";
 
 @import "./modules/alerts";
 @import "./modules/selectable";
@@ -26,24 +27,27 @@ body {
 }
 
 .admin {
-	background: #fff;
-	font-size: 14px;
+	.acp-page-container {
+		max-width: 800px;
+		margin: 0 auto;
+		display: flex;
+		flex-direction: column;
+		gap: $spacer * 1.5;
+		padding: $spacer * 1.5;
+		padding-top: 0;
+	}
+	.acp-page-main-header {
+		background-color: white;
+	}
 
-	h1 {
-		font-size: 35px;
-	}
-	.form-label, .form-check-label {
-		font-weight: 700;
-	}
-	.btn {
-		border-radius: 0;
-	}
-	.btn-outline-secondary {
-		color: $gray-700;
-		box-shadow: 0 1px 4px rgba(0, 0, 0, .4) !important;
-		&:hover {
-			background-color: $gray-200 !important;
+	.settings, .categories, .category, .admins-mods {
+		hr {
+			color: $gray-500;
 		}
+	}
+
+	.form-control::placeholder, .bootstrap-tagsinput::placeholder {
+		color: $gray-500 !important;
 	}
 
 	// .floating-button can either be a container or the button itself
@@ -72,22 +76,6 @@ body {
 		background: $primary !important;
 	}
 
-	.nodebb-logo {
-		img {
-			height: 31px;
-			margin-top: -8px;
-			margin-left: -7px;
-			vertical-align: -43%;
-		}
-
-		@include box-header-font;
-		color: #fff;
-	}
-
-	#breadcrumbs {
-		cursor: default;
-	}
-
 	@mixin acp-panel-heading() {
 		padding: 7px 14px;
 		border: 0;
@@ -113,10 +101,6 @@ body {
 		}
 	}
 
-	.nav-header {
-		@include box-header-font;
-	}
-
 	.icon-container {
 		.fa-nbb-none {
 			border: 1px dotted black;
@@ -140,27 +124,6 @@ body {
 		}
 	}
 
-    .navbar-static-top, .navbar-fixed-top {
-        box-shadow: 0px -3px 12px rgba(0, 0, 0, 0.5);
-    }
-
-    .navbar-header > .navbar-toggle {
-        margin-right: 8px;
-    }
-
-    .navbar-nav {
-	    >li {
-            >#reconnect {
-                color: $gray-700;
-            }
-
-            >#reconnect:focus, >#reconnect:hover {
-                color: $gray-700;
-                background-color: transparent;
-            }
-        }
-    }
-
 	#taskbar {
 		display: none; /* not sure why I have to do this, but it only seems to show up on prod */
 	}
@@ -171,57 +134,21 @@ body {
 	}
 
 	.bootstrap-tagsinput {
+		box-shadow: $input-box-shadow;
 		width: 100%;
-		border: 0;
-		box-shadow: none;
-		padding-left: 0;
 
 		input {
-			width: 100%;
-			margin-left: 1px;
-			margin-top: 9px;
-			border-bottom: 1px dotted #ccc !important;
-			padding-bottom: 5px;
-			padding-left: 0;
+			font-size: 0.875rem;
+			width: 64px;
+			padding: 0;
 		}
 	}
 }
 
-// Allowing text to the right of an image-type brand
-// See: https://github.com/twbs/bootstrap/commit/8e2348e9eda51296eb680192379ab37f10355ca3
-.navbar-brand > img {
-  display: inline-block;
+.dropdown-left .dropdown-menu {
+	--bs-position: start;
 }
-
-.category-settings-form {
-	h3 {
-		margin-top: 0;
-		cursor: pointer;
-	}
-
-	h4 {
-		cursor: pointer;
-	}
-}
-
-.category-preview {
-	cursor: pointer;
-	width: 100%;
-	height: 100px;
-	text-align: center;
-	color: white;
-	margin-top: 0;
-
-	.icon {
-		width: 30px;
-		height: 30px;
-		line-height: 40px;
-		display: inline-block;
-		margin: 35px 5px 0 5px;
-	}
-}
-
-.category-dropdown-container.right .category-dropdown-menu {
+.dropdown-right .dropdown-menu {
 	--bs-position: end;
 }
 
@@ -258,10 +185,6 @@ body {
 	border: 1px dashed $success;
 	background: lighten($success, 10%);
 	opacity: 0.5;
-}
-
-form small {
-	color: $gray-700;
 }
 
 .caret {

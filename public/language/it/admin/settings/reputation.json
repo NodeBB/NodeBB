@@ -27,5 +27,5 @@
 	"flags.action-on-resolve": "Esegui le seguenti operazioni quando una segnalazione viene risolta",
 	"flags.action-on-reject": "Esegui le seguenti operazioni quando una segnalazione viene rifiutata",
 	"flags.action.nothing": "Non fare nulla",
-	"flags.action.rescind": "Annulla l'invio della notifica ai moderatori/amministratori"
+	"flags.action.rescind": "Annulla la notifica inviata ai moderatori/amministratori"
 }

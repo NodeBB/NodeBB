@@ -1,4 +1,5 @@
 {
+	"widgets": "小工具",
 	"available": "可用的窗口部件",
 	"explanation": "从下拉菜单中选择一个窗口部件并拖放到模板左边的窗口部件区域。",
 	"none-installed": "未发现窗口部件！请在<a href=\"%1\">插件控制面板</a>中启用必要的窗口部件插件。",
@@ -26,7 +27,7 @@
 	"container.placeholder": "将容器拖拽至此处或在此处输入HTML",
 	"show-to-groups": "对群组显示",
 	"hide-from-groups": "对群组隐藏",
-	"start-date": "Start date",
-	"end-date": "End date",
+	"start-date": "开始日期",
+	"end-date": "结束日期",
 	"hide-on-mobile": "在移动端隐藏"
 }

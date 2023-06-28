@@ -14,6 +14,7 @@
     "flagged-content": "举报管理",
     "ip-blacklist": "IP 黑名单",
     "post-queue": "发帖队列",
+    "registration-queue": "注册申请队列",
     "users/online": "在线用户",
     "users/latest": "最新用户",
     "users/sort-posts": "发帖最多的用户",
@@ -49,7 +50,7 @@
     "account/watched_categories": "%1 关注的版块",
     "account/bookmarks": "%1 收藏的帖子",
     "account/settings": "用户设置",
-    "account/settings-of": "Changing settings of %1",
+    "account/settings-of": "改变设置的 %1",
     "account/watched": "%1 关注的主题",
     "account/ignored": "%1 忽略的主题",
     "account/upvoted": "帖子被 %1 顶过",
@@ -60,7 +61,7 @@
     "account/uploads": "%1 上传的文件",
     "account/sessions": "已登录的会话",
     "confirm": "电子邮箱已确认",
-    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
+    "maintenance.text": "％1 目前正在进行维护，请下次再来。",
     "maintenance.messageIntro": "此外，管理员留下的消息：",
     "throttled.text": "%1 因负荷超载暂不可用。请稍后再来。"
 }

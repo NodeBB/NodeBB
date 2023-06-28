@@ -1,31 +1,17 @@
 .tags {
 	.tag-list {
-		h3 {
-			min-width: 225px;
-		}
 
 		.tag-row {
-			padding: 0.5rem;
 			float: left;
-			margin-left: 0.5rem;
-
-			.tag-item {
-				cursor: pointer;
-				display: inline-block;
-				font-size: 11px;
-			}
 
 			&.ui-selected {
 				background: lighten($success, 25%);
+				border-radius: $border-radius-sm;
 			}
 
 			&.ui-selecting {
 				background: lighten($success, 40%);
 			}
 		}
-	}
-
-	.tag-topic-count {
-		font-size: 14px;
 	}
 }

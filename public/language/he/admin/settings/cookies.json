@@ -2,7 +2,7 @@
 	"eu-consent": "הסכמת האיחוד האירופי",
 	"consent.enabled": "מופעל",
 	"consent.message": "התראות",
-	"consent.acceptance": "Acceptance message",
+	"consent.acceptance": "הודעת קבלה",
 	"consent.link-text": "Policy Link Text",
 	"consent.link-url": "Policy Link URL",
 	"consent.blank-localised-default": "השאר ריק כדי להשתמש בברירות המחדל המקומיות של NodeBB",

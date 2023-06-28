@@ -1,4 +1,5 @@
 {
+	"errors": "Errors",
 	"figure-x": "График %1",
 	"error-events-per-day": "событий <code>%1</code> в день",
 	"error.404": "404 Не найдено",

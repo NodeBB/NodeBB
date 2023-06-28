@@ -1,14 +1,16 @@
 {
-	"skins": "Skins",
-	"collapse": "Collapse",
-	"expand": "Expand",
-	"login-register-to-search": "Login or register to search.",
-	"settings.title": "Theme settings",
-	"settings.enableQuickReply": "Enable quick reply",
-	"settings.centerHeaderElements": "Center header elements",
-	"settings.mobileTopicTeasers": "Show topic teasers on mobile",
-	"settings.stickyToolbar": "Sticky toolbar",
-	"settings.stickyToolbar.help": "The toolbar on topic and category pages will stick to the top of the page",
-	"settings.autohideBottombar": "Auto hide bottom bar",
-	"settings.autohideBottombar.help": "The bottom bar on mobile view will be hidden when the page is scrolled down"
+	"theme-name": "ערכת נושא Harmony",
+	"skins": "עיצובים",
+	"collapse": "כיווץ",
+	"expand": "הרחבה",
+	"login-register-to-search": "התחברו או הירשמו כדי לחפש.",
+	"settings.title": "הגדרות ערכת נושא",
+	"settings.enableQuickReply": "הפעלת תגובה מהירה",
+	"settings.centerHeaderElements": "מרכוז אלמנטים של כותרת",
+	"settings.mobileTopicTeasers": "הצגת טיזרים של נושאים בסלולרי",
+	"settings.stickyToolbar": "סרגל כלים מוצמד בעת גלילה",
+	"settings.stickyToolbar.help": "סרגל הכלים בדפי נושאים וקטגוריות ייצמד לראש העמוד בעת גלילה",
+	"settings.autohideBottombar": "הסתרה אוטומטית של סרגל תחתון",
+	"settings.autohideBottombar.help": "הסרגל התחתון בתצוגת הנייד יוסתר כאשר הדף ייגלל מטה",
+	"settings.chatModals": "הפעלת צ'אט בחלונית מוקטנת"
 }

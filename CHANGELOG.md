@@ -1,3 +1,24 @@
+#### v3.1.7 (2023-06-21)
+
+##### Chores
+
+*  incrementing version number - v3.1.6 (b3a3b130)
+*  update changelog for v3.1.6 (f10a2d2e)
+*  incrementing version number - v3.1.5 (ec19343a)
+*  incrementing version number - v3.1.4 (2452783c)
+*  incrementing version number - v3.1.3 (3b4e9d3f)
+*  incrementing version number - v3.1.2 (40fa3489)
+*  incrementing version number - v3.1.1 (40250733)
+*  incrementing version number - v3.1.0 (0cb386bd)
+*  incrementing version number - v3.0.1 (26f6ea49)
+*  incrementing version number - v3.0.0 (224e08cd)
+
+##### Bug Fixes
+
+*  #11735, crash when making guest reply (f2fe7c06)
+*  #11729, only check registered users (090a7921)
+*  #11723, fix pagination on following/follower page (4e146eb5)
+
 #### v3.1.6 (2023-06-15)
 
 ##### Chores

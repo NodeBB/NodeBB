@@ -1,10 +1,12 @@
 {
 	"rewards": "Odmeny",
+	"add-reward": "Add reward",
 	"condition-if-users": "Ak je používateľ",
 	"condition-is": "Je:",
 	"condition-then": "Potom:",
 	"max-claims": "Počet dosiahnuteľnosti odmeny",
 	"zero-infinite": "Pre neobmedzené zadajte 0",
+	"select-reward": "Select reward",
 	"delete": "Odstrániť",
 	"enable": "Povoliť",
 	"disable": "Zakázať",

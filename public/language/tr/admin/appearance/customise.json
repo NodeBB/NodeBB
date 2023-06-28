@@ -1,4 +1,5 @@
 {
+	"customise": "Customise",
 	"custom-css": "Özel CSS/LESS",
 	"custom-css.description": "Diğer tüm stillerden sonra uygulanacak kendi CSS/LESS kodlarınızı buraya girin.",
 	"custom-css.enable": "Özelleştirilmiş CSS/LESS  Aktifleştir",
@@ -12,5 +13,8 @@
 	"custom-header.enable": "Özel Header'ı Etkinleştir",
 
 	"custom-css.livereload": "Canlı Yenilemeyi Etkinleştir",
-	"custom-css.livereload.description": "\"Kayıt Et\"e her bastığınızda size ait tüm cihazlardaki oturumların yenilenmeye zorlanması için bunu etkinleştirin."
+	"custom-css.livereload.description": "\"Kayıt Et\"e her bastığınızda size ait tüm cihazlardaki oturumların yenilenmeye zorlanması için bunu etkinleştirin.",
+	"bsvariables": "_variables.scss",
+	"bsvariables.description": "Override bootstrap variables here. You can also use a tool like <a href=\"https://bootstrap.build/app\">bootstrap.build</a> and paste the output here.<br/>Changes require a rebuild & restart.",
+	"bsvariables.enable": "Enable _variables.scss"
 }

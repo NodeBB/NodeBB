@@ -8,6 +8,7 @@ define('categorySearch', ['alerts', 'bootstrap'], function (alerts, bootstrap) {
 		options = options || {};
 		options.privilege = options.privilege || 'topics:read';
 		options.states = options.states || ['watching', 'notwatching', 'ignoring'];
+		options.cacheList = options.hasOwnProperty('cacheList') ? options.cacheList : true;
 
 		let localCategories = [];
 		if (Array.isArray(options.localCategories)) {
@@ -36,7 +37,7 @@ define('categorySearch', ['alerts', 'bootstrap'], function (alerts, bootstrap) {
 				const val = searchEl.find('input').val();
 				if (val.length > 1 || (!val && !categoriesList)) {
 					loadList(val, function (categories) {
-						categoriesList = categoriesList || categories;
+						categoriesList = options.cacheList && (categoriesList || categories);
 						renderList(categories);
 					});
 				} else if (!val && categoriesList) {

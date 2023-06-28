@@ -14,6 +14,7 @@
     "flagged-content": "Nội Dung Bị Gắn Cờ",
     "ip-blacklist": "Danh sách đen IP",
     "post-queue": "Hàng Đợi Bài Viết",
+    "registration-queue": "Registration Queue",
     "users/online": "Thành viên trực tuyến",
     "users/latest": "Thành viên mới nhất",
     "users/sort-posts": "Thành viên có nhiều bài đăng nhất",
@@ -60,7 +61,7 @@
     "account/uploads": "Tải lên bởi %1",
     "account/sessions": "Phiên Đăng Nhập",
     "confirm": "Đã xác nhận email",
-    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
+    "maintenance.text": "%1 hiện đang bảo trì.<br/>Vui lòng quay lại vào lúc khác.",
     "maintenance.messageIntro": "Ngoài ra, quản trị viên đã để lại thông báo này:",
     "throttled.text": "%1 hiện không khả dụng do quá tải. Vui lòng quay lại vào lúc khác."
 }

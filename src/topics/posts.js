@@ -125,7 +125,7 @@ module.exports = function (Topics) {
 			posts.getVoteStatusByPostIDs(pids, uid),
 			getPostUserData('uid', async uids => await posts.getUserInfoForPosts(uids, uid)),
 			getPostUserData('editor', async uids => await user.getUsersFields(uids, ['uid', 'username', 'userslug'])),
-			getPostReplies(pids, uid),
+			getPostReplies(postData, uid),
 			Topics.addParentPosts(postData),
 		]);
 
@@ -314,9 +314,13 @@ module.exports = function (Topics) {
 		return await db.getObjectField(`topic:${tid}`, 'postcount');
 	};
 
-	async function getPostReplies(pids, callerUid) {
+	async function getPostReplies(postData, callerUid) {
+		const pids = postData.map(p => p && p.pid);
 		const keys = pids.map(pid => `pid:${pid}:replies`);
-		const arrayOfReplyPids = await db.getSortedSetsMembers(keys);
+		const [arrayOfReplyPids, userSettings] = await Promise.all([
+			db.getSortedSetsMembers(keys),
+			user.getSettings(callerUid),
+		]);
 
 		const uniquePids = _.uniq(_.flatten(arrayOfReplyPids));
 
@@ -335,12 +339,15 @@ module.exports = function (Topics) {
 
 		const uidMap = _.zipObject(uniqueUids, userData);
 		const pidMap = _.zipObject(replyData.map(r => r.pid), replyData);
+		const postDataMap = _.zipObject(pids, postData);
 
-		const returnData = arrayOfReplyPids.map((replyPids) => {
+		const returnData = await Promise.all(arrayOfReplyPids.map(async (replyPids, idx) => {
+			const currentPost = postData[idx];
 			replyPids = replyPids.filter(pid => pidMap[pid]);
 			const uidsUsed = {};
 			const currentData = {
 				hasMore: false,
+				hasSingleImmediateReply: false,
 				users: [],
 				text: replyPids.length > 1 ? `[[topic:replies_to_this_post, ${replyPids.length}]]` : '[[topic:one_reply_to_this_post]]',
 				count: replyPids.length,
@@ -362,8 +369,25 @@ module.exports = function (Topics) {
 				currentData.hasMore = true;
 			}
 
+			if (replyPids.length === 1) {
+				const currentIndex = currentPost ? currentPost.index : null;
+				const replyPid = replyPids[0];
+				// only load index of nested reply if we can't find it in the postDataMap
+				let replyPost = postDataMap[replyPid];
+				if (!replyPost) {
+					const tid = await posts.getPostField(replyPid, 'tid');
+					replyPost = {
+						index: await posts.getPidIndex(replyPid, tid, userSettings.topicPostSort),
+						tid: tid,
+					};
+				}
+				currentData.hasSingleImmediateReply =
+					(currentPost && currentPost.tid === replyPost.tid) &&
+					Math.abs(currentIndex - replyPost.index) === 1;
+			}
+
 			return currentData;
-		});
+		}));
 
 		return returnData;
 	}
@@ -373,8 +397,12 @@ module.exports = function (Topics) {
 			throw new Error('[[error:invalid-data]]');
 		}
 
+
+		let { content } = postData;
+		// ignore lines that start with `>`
+		content = content.split('\n').filter(line => !line.trim().startsWith('>')).join('\n');
 		// Scan post content for topic links
-		const matches = [...postData.content.matchAll(backlinkRegex)];
+		const matches = [...content.matchAll(backlinkRegex)];
 		if (!matches) {
 			return 0;
 		}

@@ -154,6 +154,7 @@ module.exports = function (middleware) {
 			allowRegistration: registrationType === 'normal',
 			searchEnabled: plugins.hooks.hasListeners('filter:search.query'),
 			postQueueEnabled: !!meta.config.postQueue,
+			registrationQueueEnabled: meta.config.registrationApprovalType !== 'normal' || (meta.config.registrationType === 'invite-only' || meta.config.registrationType === 'admin-invite-only'),
 			config: res.locals.config,
 			relative_path,
 			bodyClass: options.bodyClass,
@@ -162,7 +163,7 @@ module.exports = function (middleware) {
 
 		templateValues.configJSON = jsesc(JSON.stringify(res.locals.config), { isScriptContext: true });
 
-		const title = translator.unescape(utils.stripHTMLTags(options.title));
+		const title = translator.unescape(utils.stripHTMLTags(options.title || ''));
 		const results = await utils.promiseParallel({
 			isAdmin: user.isAdministrator(req.uid),
 			isGlobalMod: user.isGlobalModerator(req.uid),
@@ -197,7 +198,7 @@ module.exports = function (middleware) {
 		results.user['email:confirmed'] = results.user['email:confirmed'] === 1;
 		results.user.isEmailConfirmSent = !!results.isEmailConfirmSent;
 
-		templateValues.bootswatchSkin = (parseInt(meta.config.disableCustomUserSkins, 10) !== 1 ? res.locals.config.bootswatchSkin : '') || meta.config.bootswatchSkin || '';
+		templateValues.bootswatchSkin = res.locals.config.bootswatchSkin || '';
 		templateValues.browserTitle = results.browserTitle;
 		({
 			navigation: templateValues.navigation,

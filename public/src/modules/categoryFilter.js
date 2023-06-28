@@ -9,7 +9,7 @@ define('categoryFilter', ['categorySearch', 'api', 'hooks'], function (categoryS
 		}
 		options = options || {};
 		options.states = options.states || ['watching', 'notwatching', 'ignoring'];
-		options.template = 'partials/category/filter-dropdown-left';
+		options.template = options.template || 'partials/category/filter-dropdown-left';
 
 		hooks.fire('action:category.filter.options', { el: el, options: options });
 
@@ -52,6 +52,8 @@ define('categoryFilter', ['categorySearch', 'api', 'hooks'], function (categoryS
 				} else {
 					delete currentParams.cid;
 				}
+
+				delete currentParams.page;
 				if (Object.keys(currentParams).length) {
 					url += '?' + decodeURIComponent($.param(currentParams));
 				}
@@ -78,14 +80,16 @@ define('categoryFilter', ['categorySearch', 'api', 'hooks'], function (categoryS
 				selectedCids.sort(function (a, b) {
 					return a - b;
 				});
+				icon.toggleClass('invisible');
+				listEl.find('[data-cid="all"] i').toggleClass('invisible', !!selectedCids.length);
 			} else {
 				el.find('[component="category/select/icon"]').addClass('invisible');
-				selectedCids = [cid];
+				listEl.find('[data-cid="all"] i').removeClass('invisible');
+				selectedCids = [];
 			}
 
 			options.selectedCids = selectedCids;
-			listEl.find('[data-cid="all"] i').toggleClass('invisible', !!selectedCids.length);
-			icon.toggleClass('invisible');
+
 			if (options.onSelect) {
 				options.onSelect({ cid: cid, selectedCids: selectedCids.slice() });
 			}

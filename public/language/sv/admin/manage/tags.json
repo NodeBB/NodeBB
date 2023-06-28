@@ -1,9 +1,11 @@
 {
+	"manage-tags": "Manage Tags",
 	"none": "Ditt forum har inte några ämnen med etiketter ännu.",
 	"bg-color": "Bakgrundsfärg",
 	"text-color": "Textfärg",
 	"description": "Välj etiketter genom att klicka eller dra. Använd <code>CTRL</code> för att välja flera etiketter.",
 	"create": "Skapa Etikett",
+	"add-tag": "Add tag",
 	"modify": "Redigera Etikett",
 	"rename": "Döp om etikett",
 	"delete": "Radera Vald Etikett",

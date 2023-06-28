@@ -1,4 +1,5 @@
 {
+	"customise": "התאמה אישית",
 	"custom-css": "CSS/SASS מותאם אישית",
 	"custom-css.description": "הזן כאן הצהרות CSS/SASS משלך, שיוחלו לאחר כל הסגנונות האחרים.",
 	"custom-css.enable": "הפעל CSS/SASS מותאם אישית",
@@ -12,5 +13,8 @@
 	"custom-header.enable": "הפעלת HTML מותאם אישית",
 
 	"custom-css.livereload": "הפעלת טעינה מחדש אוטומטית.",
-	"custom-css.livereload.description": "הפעלה זו נועדה כדי לרענן את כל החיבורים מכל מכשיר, כאשר תשמרו את הדף המותאם אישית."
+	"custom-css.livereload.description": "הפעלה זו נועדה כדי לרענן את כל החיבורים מכל מכשיר, כאשר תשמרו את הדף המותאם אישית.",
+	"bsvariables": "_variables.scss",
+	"bsvariables.description": "Override bootstrap variables here. You can also use a tool like <a href=\"https://bootstrap.build/app\">bootstrap.build</a> and paste the output here.<br/>Changes require a rebuild & restart.",
+	"bsvariables.enable": "Enable _variables.scss"
 }

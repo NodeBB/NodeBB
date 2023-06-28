@@ -3,17 +3,27 @@
 	"settings": "Ayarlar",
 	"lead-text": "Bu sayfadan NodeBB'deki \"Write API\"e erişimi yapılandırabilirsiniz.",
 	"intro": "Varsayılan olarak, Yazma API'si kullanıcıların kimliklerini oturum tanımlama bilgileri temelinde doğrular, ancak NodeBB ayrıca bu sayfa aracılığıyla oluşturulan belirteçler aracılığıyla Taşıyıcı kimlik doğrulamasını da destekler.",
+	"warning": "<strong>Be advised</strong> — treat tokens like passwords. If they are leaked, your account should be considered compromised.",
 	"docs": "Tüm API özeliklerine erişmek için buraya tıklayın. ",
 
 	"require-https": "API kullanımı için HTTPS kısıtlaması gerektir",
 	"require-https-caveat": "Not: Yük dengeleyicilerini içeren bazı kurulumlar, isteklerini HTTP kullanarak NodeBB'ye proxy uygulayabilir, bu durumda bu seçenek devre dışı kalmalıdır.",
 
 	"uid": "Kullanıcı ID",
+	"token": "Token",
 	"uid-help-text": "Bu jetonla ilişkilendirilecek bir Kullanıcı Kimliği belirtin. Kullanıcı kimliği 0 ise, diğer kullanıcıların kimliğini _uid parametresine göre üstlenebilen bir ana simge olarak kabul edilir.",
 	"description": "Açıklama",
-	"last-seen-ago": "En son <span class=\"timeago\" title=\"%1\"></span> kullanıldı.",
-	"last-seen-on": "En son <span class=\"timeago\" title=\"%1\"></span> tarihinde kullanıldı.",
+	"last-seen": "Last seen",
+	"created": "Oluşturuldu",
+	"create-token": "Create Token",
+	"update-token": "Update Token",
+	"master-token": "Master token",
 	"last-seen-never": "Bu anahtar daha önce hiç kullanılmadı.",
 	"no-description": "Hiçbir açıklama belirtilmemiş.",
-	"token-on-save": "Form kaydedildikten sonra bir jeton oluşturulacak"
+	"actions": "Eylemler",
+	"edit": "Edit",
+	"roll": "Roll",
+
+	"delete-confirm": "Are you sure you wish to delete this token? It will not be recoverable.",
+	"roll-confirm": "Are you sure you wish to regenerate this token? The old token will be immediately revoked and will not be recoverable."
 }

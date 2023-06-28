@@ -31,7 +31,8 @@ define('admin/extend/plugins', [
 		pluginsList.on('click', 'button[data-action="toggleActive"]', function () {
 			const pluginEl = $(this).parents('li');
 			pluginID = pluginEl.attr('data-plugin-id');
-			const btn = $('[id="' + pluginID + '"] [data-action="toggleActive"]');
+			// const btn = $('[id="' + pluginID + '"] [data-action="toggleActive"]');
+			const btn = $(this);
 
 			const pluginData = ajaxify.data.installed[pluginEl.attr('data-plugin-index')];
 
@@ -40,30 +41,28 @@ define('admin/extend/plugins', [
 					if (err) {
 						return alerts.error(err);
 					}
-					translator.translate('<i class="fa fa-power-off"></i> [[admin/extend/plugins:plugin-item.' + (status.active ? 'deactivate' : 'activate') + ']]', function (buttonText) {
-						btn.html(buttonText);
-						btn.toggleClass('btn-warning', status.active).toggleClass('btn-success', !status.active);
+					btn.siblings('[data-action="toggleActive"]').removeClass('hidden');
+					btn.addClass('hidden');
 
-						// clone it to active plugins tab
-						if (status.active && !$('#active [id="' + pluginID + '"]').length) {
-							$('#active ul').prepend(pluginEl.clone(true));
-						}
+					// clone it to active plugins tab
+					if (status.active && !$('#active [id="' + pluginID + '"]').length) {
+						$('#active ul').prepend(pluginEl.clone(true));
+					}
 
-						// Toggle active state in template data
-						pluginData.active = !pluginData.active;
+					// Toggle active state in template data
+					pluginData.active = !pluginData.active;
 
-						alerts.alert({
-							alert_id: 'plugin_toggled',
-							title: '[[admin/extend/plugins:alert.' + (status.active ? 'enabled' : 'disabled') + ']]',
-							message: '[[admin/extend/plugins:alert.' + (status.active ? 'activate-success' : 'deactivate-success') + ']]',
-							type: status.active ? 'warning' : 'success',
-							timeout: 5000,
-							clickfn: function () {
-								require(['admin/modules/instance'], function (instance) {
-									instance.rebuildAndRestart();
-								});
-							},
-						});
+					alerts.alert({
+						alert_id: 'plugin_toggled',
+						title: '[[admin/extend/plugins:alert.' + (status.active ? 'enabled' : 'disabled') + ']]',
+						message: '[[admin/extend/plugins:alert.' + (status.active ? 'activate-success' : 'deactivate-success') + ']]',
+						type: status.active ? 'warning' : 'success',
+						timeout: 5000,
+						clickfn: function () {
+							require(['admin/modules/instance'], function (instance) {
+								instance.rebuildAndRestart();
+							});
+						},
 					});
 				});
 			}
@@ -195,7 +194,19 @@ define('admin/extend/plugins', [
 				}
 				let html = '';
 				activePlugins.forEach(function (plugin) {
-					html += '<li class="">' + plugin + '<span class="float-end"><i class="fa fa-chevron-up"></i><i class="fa fa-chevron-down"></i></span></li>';
+					html += `
+						<li class="d-flex justify-content-between gap-1 pointer border-bottom pb-2">
+							${plugin}
+							<div class="d-flex gap-1">
+								<div class="btn-ghost-sm move-up">
+									<i class="fa fa-chevron-up"></i>
+								</div>
+								<div class="btn-ghost-sm move-down">
+									<i class="fa fa-chevron-down"></i>
+								</div>
+							</div>
+						</li>
+					`;
 				});
 				if (!activePlugins.length) {
 					translator.translate('[[admin/extend/plugins:none-active]]', function (text) {
@@ -206,12 +217,12 @@ define('admin/extend/plugins', [
 				const list = $('#order-active-plugins-modal .plugin-list');
 				list.html(html).sortable();
 
-				list.find('.fa-chevron-up').on('click', function () {
+				list.find('.move-up').on('click', function () {
 					const item = $(this).parents('li');
 					item.prev().before(item);
 				});
 
-				list.find('.fa-chevron-down').on('click', function () {
+				list.find('.move-down').on('click', function () {
 					const item = $(this).parents('li');
 					item.next().after(item);
 				});

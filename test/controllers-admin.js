@@ -218,7 +218,7 @@ describe('Admin Controllers', () => {
 	});
 
 	it('should load /admin/settings/homepage', (done) => {
-		request(`${nconf.get('url')}/api/admin/settings/homepage`, { jar: jar, json: true }, (err, res, body) => {
+		request(`${nconf.get('url')}/api/admin/settings/general`, { jar: jar, json: true }, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body.routes);
@@ -580,17 +580,13 @@ describe('Admin Controllers', () => {
 	});
 
 	it('should load /admin/settings/social', (done) => {
-		const socketAdmin = require('../src/socket.io/admin');
-		socketAdmin.social.savePostSharingNetworks({ uid: adminUid }, ['facebook', 'twitter'], (err) => {
+		request(`${nconf.get('url')}/api/admin/settings/general`, { jar: jar, json: true }, (err, res, body) => {
 			assert.ifError(err);
-			request(`${nconf.get('url')}/api/admin/settings/social`, { jar: jar, json: true }, (err, res, body) => {
-				assert.ifError(err);
-				assert(body);
-				body = body.posts.map(network => network && network.id);
-				assert(body.includes('facebook'));
-				assert(body.includes('twitter'));
-				done();
-			});
+			assert(body);
+			body = body.postSharing.map(network => network && network.id);
+			assert(body.includes('facebook'));
+			assert(body.includes('twitter'));
+			done();
 		});
 	});
 

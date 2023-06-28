@@ -3,17 +3,27 @@
 	"settings": "Beállítások",
 	"lead-text": "Ezen az oldalon beállíthatod a NodeBB Write API-jának hozzáférését.",
 	"intro": "Alapértelmezetten a Write API a felhasználókat a munkamenet sütijükön keresztül authentikálja, azonban a NodeBB támogatja a Bearer authentikációt tokeneken keresztül, amiket ezen az oldalon generálhatsz.",
+	"warning": "<strong>Be advised</strong> — treat tokens like passwords. If they are leaked, your account should be considered compromised.",
 	"docs": "Kattints ide a teljes API specifikáció megtekintéséhez",
 
 	"require-https": "API használat korlátozása HTTPS protokollra",
 	"require-https-caveat": "<strong>Megjegyzés</strong>: Némely telepítések terherléselosztás miatt a kéréseket a NodeBB felé HTTP-n keresztül továbbítják. Ilyen esetekben ezt a beállítást nem szabad bekapcsolni.",
 
 	"uid": "Felhasználó azonosító",
+	"token": "Token",
 	"uid-help-text": "Adj meg egy felhasználó azonosítót, hogy társítsd ehhez a tokenhez. Ha a felhasználó azonosító 0, akkor <em>mester</em> tokenként lesz kezelve, ami bármelyik felhasználó identitását képes felvenni a <code>_uid</code> paraméter alapján",
 	"description": "Leírás",
-	"last-seen-ago": "Utolsó látogatás <span class=\"timeago\" title=\"%1\"></span>.",
-	"last-seen-on": "Utolsó látogatás <span class=\"timeago\" title=\"%1\"></span>.",
+	"last-seen": "Last seen",
+	"created": "Created",
+	"create-token": "Create Token",
+	"update-token": "Update Token",
+	"master-token": "Master token",
 	"last-seen-never": "Ezt a kulcsot soha nem használták.",
 	"no-description": "Nincs leírás megadva.",
-	"token-on-save": "A token az űrlap mentésekor generálódik"
+	"actions": "Actions",
+	"edit": "Edit",
+	"roll": "Roll",
+
+	"delete-confirm": "Are you sure you wish to delete this token? It will not be recoverable.",
+	"roll-confirm": "Are you sure you wish to regenerate this token? The old token will be immediately revoked and will not be recoverable."
 }

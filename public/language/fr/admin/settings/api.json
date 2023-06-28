@@ -3,17 +3,27 @@
 	"settings": "Paramètres",
 	"lead-text": "À partir de cette page, vous pouvez paramétrer l'accès à l'API dans NodeBB.",
 	"intro": "Par défaut, l'API authentifie les utilisateurs en fonction de leur cookie de session, mais NodeBB prend également en charge l'authentification du porteur via des tokens générés via cette page.",
+	"warning": "<strong>Be advised</strong> — treat tokens like passwords. If they are leaked, your account should be considered compromised.",
 	"docs": "Cliquez ici pour accéder à la documentation de l'API",
 
 	"require-https": "Forcer l'utilisation de l'API via HTTPS uniquement",
 	"require-https-caveat": "<strong>Remarque</strong>: certaines installations impliquant des load balancer peuvent transmettre leurs requêtes à NodeBB via HTTP, auquel cas cette option doit rester désactivée.",
 
 	"uid": "ID Utilisateur",
+	"token": "Token",
 	"uid-help-text": "Spécifiez un ID utilisateur à associer à ce token. Si l'ID utilisateur est 0, il sera considéré comme un token <code>maître<em>, qui peut prendre l'identité d'autres utilisateurs en fonction du paramètre <code>_uid</code>",
 	"description": "Description",
-	"last-seen-ago": "Dernière utilisation <span class=\"timeago\" title=\"%1\"></span>.",
-	"last-seen-on": "Dernière utilisation sur <span class=\"timeago\" title=\"%1\"></span>.",
+	"last-seen": "Last seen",
+	"created": "Created",
+	"create-token": "Create Token",
+	"update-token": "Update Token",
+	"master-token": "Master token",
 	"last-seen-never": "Cette clé n'a jamais été utilisée.",
 	"no-description": "Aucune description spécifiée.",
-	"token-on-save": "Le token sera généré une fois le formulaire enregistré"
+	"actions": "Actions",
+	"edit": "Éditer ",
+	"roll": "Roll",
+
+	"delete-confirm": "Are you sure you wish to delete this token? It will not be recoverable.",
+	"roll-confirm": "Are you sure you wish to regenerate this token? The old token will be immediately revoked and will not be recoverable."
 }

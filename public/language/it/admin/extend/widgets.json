@@ -1,4 +1,5 @@
 {
+	"widgets": "Widget",
 	"available": "Widget disponibili",
 	"explanation": "Selezionare un widget dal menu a discesa e poi trascinalo e rilascialo nell'area widget di un modello a sinistra.",
 	"none-installed": "Nessun widget trovato! Attivare il plugin essenziale per i widget nel pannello di controllo dei <a href=\"%1\">plugin</a>.",

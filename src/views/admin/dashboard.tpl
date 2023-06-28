@@ -1,10 +1,10 @@
-<div class="row dashboard">
+<div class="row dashboard px-lg-4">
 	<div class="col-lg-9">
 		<!-- IMPORT admin/partials/dashboard/graph.tpl -->
 		<!-- IMPORT admin/partials/dashboard/stats.tpl -->
 
 		<div class="row">
-			<div class="col-lg-3">
+			<div class="col-lg-4">
 				<div class="card">
 					<div class="card-header">[[admin/dashboard:guest-registered-users]]</div>
 					<div class="card-body">
@@ -19,7 +19,7 @@
 				</div>
 			</div>
 
-			<div class="col-lg-3">
+			<div class="col-lg-4">
 				<div class="card">
 					<div class="card-header">[[admin/dashboard:user-presence]]</div>
 					<div class="card-body">
@@ -36,7 +36,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-lg-3">
+			<div class="col-lg-4">
 				<div class="card">
 					<div class="card-header">[[admin/dashboard:high-presence-topics]]</div>
 					<div class="card-body">
@@ -47,68 +47,15 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-lg-3">
-				<div class="card">
-					<div class="card-header">[[admin/dashboard:popular-searches]]</div>
-					<div class="card-body">
-						<div class="graph-container pie-chart legend-down">
-							<ul class="graph-legend" id="popular-searches-legend">
-								{{{ each popularSearches}}}
-								<li>({popularSearches.score}) {popularSearches.value}</li>
-								{{{ end }}}
-							</ul>
-						</div>
-					</div>
-				</div>
-			</div>
 		</div>
 	</div>
 
 	<div class="col-lg-3">
-		{{{ if showSystemControls }}}
 		<div class="card mb-3">
-			<div class="card-header">[[admin/dashboard:control-panel]]</div>
-			<div class="card-body text-center">
-				<div class="d-grid gap-2 mb-2">
-					<button class="btn btn-block btn-warning restart"{{{ if !canRestart }}} disabled{{{ end }}}>[[admin/dashboard:restart]]</button>
-					<button class="btn btn-block btn-danger rebuild-and-restart"{{{ if !canRestart }}} disabled{{{ end }}}>[[admin/dashboard:rebuild-and-restart]]</button>
-				</div>
-				{{{ if lastrestart }}}
-				<p>
-					[[admin/dashboard:last-restarted-by]]<br />
-					<a href="{config.relative_path}/uid/{lastrestart.uid}"><span class="badge bg-info">{lastrestart.user.username}</span></a> <span class="timeago" title="{lastrestart.timestampISO}"></span>
-				</p>
-				{{{ end }}}
-				<p class="{{{ if canRestart }}}form-text{{{ else }}}alert alert-warning{{{ end }}}">
-					{{{ if canRestart }}}
-					[[admin/dashboard:restart-warning]]
-					{{{ else }}}
-					[[admin/dashboard:restart-disabled]]
-					{{{ end }}}
-				</p>
-				<p>
-					<a href="{config.relative_path}/admin/settings/advanced" class="btn btn-info btn-block" data-bs-placement="bottom" data-bs-toggle="tooltip" title="[[admin/dashboard:maintenance-mode-title]]">[[admin/dashboard:maintenance-mode]]</a>
-				</p>
-
-				<hr />
-				<span id="toggle-realtime">[[admin/dashboard:realtime-chart-updates]] <strong>OFF</strong> <i class="fa fa fa-toggle-off pointer"></i></span>
-			</div>
-		</div>
-		{{{ end }}}
-
-		<div class="card mb-3">
-			<div class="card-header">[[admin/dashboard:active-users]]</div>
 			<div class="card-body">
-				<div id="active-users" class="stats"></div>
-			</div>
-		</div>
-
-		<div class="card mb-3">
-			<div class="card-header">[[admin/dashboard:updates]]</div>
-			<div class="card-body">
-				<div class="alert {{{ if lookupFailed }}}alert-danger{{{ else }}}{{{ if upgradeAvailable }}}alert-warning{{{ else }}}{{{ if currentPrerelease }}}alert-info{{{ else }}}alert-success{{{ end }}}{{{ end }}}{{{ end }}} version-check">
-					<p>[[admin/dashboard:running-version, {version}]]</p>
-					<p>
+				<div class="text-sm shadow-sm alert {{{ if lookupFailed }}}alert-danger{{{ else }}}{{{ if upgradeAvailable }}}alert-warning{{{ else }}}{{{ if currentPrerelease }}}alert-info{{{ else }}}alert-success{{{ end }}}{{{ end }}}{{{ end }}} version-check">
+					<p class="">[[admin/dashboard:running-version, {version}]]</p>
+					<p class="mb-0">
 					{{{ if lookupFailed }}}
 					[[admin/dashboard:latest-lookup-failed]]
 					{{{ else }}}
@@ -128,17 +75,20 @@
 					{{{ end }}}
 					</p>
 				</div>
-				<p>
+				<p class="form-text">
 					[[admin/dashboard:keep-updated]]
 				</p>
-			</div>
-		</div>
+				<hr/>
+				{{{ if showSystemControls }}}
 
-		<div class="card">
-			<div class="card-header">[[admin/dashboard:notices]]</div>
-			<div class="card-body">
-			{{{ each notices}}}
-				<div>
+				<a href="{config.relative_path}/admin/settings/advanced" class="d-block mb-2 btn btn-info btn-sm" data-bs-placement="bottom" data-bs-toggle="tooltip" title="[[admin/dashboard:maintenance-mode-title]]">[[admin/dashboard:maintenance-mode]]</a>
+
+				<span id="toggle-realtime" class="text-sm">[[admin/dashboard:realtime-chart-updates]] <strong>OFF</strong> <i class="fa fa fa-toggle-off pointer"></i></span>
+				{{{ end }}}
+				<hr/>
+				<h6>[[admin/dashboard:notices]]</h6>
+				{{{ each notices}}}
+				<div class="text-sm">
 					{{{ if ./done }}}
 					<i class="fa fa-fw fa-check text-success"></i> {./doneText}
 					{{{ else }}}
@@ -148,6 +98,24 @@
 					{{{ end }}}
 				</div>
 			{{{ end }}}
+			</div>
+		</div>
+
+		<div class="card mb-3">
+			<div class="card-header">[[admin/dashboard:active-users]]</div>
+			<div class="card-body">
+				<div id="active-users" class="stats row row-cols-2"></div>
+			</div>
+		</div>
+
+		<div class="card">
+			<div class="card-header">[[admin/dashboard:popular-searches]]</div>
+			<div class="card-body">
+				<ul class="list-unstyled text-sm">
+					{{{ each popularSearches}}}
+					<li>({popularSearches.score}) {popularSearches.value}</li>
+					{{{ end }}}
+				</ul>
 			</div>
 		</div>
 	</div>

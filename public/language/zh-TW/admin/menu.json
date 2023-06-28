@@ -72,7 +72,9 @@
 	"development/info": "資訊",
 
 	"rebuild-and-restart-forum": "部署並重啟論壇",
+	"rebuild-and-restart": "Rebuild & Restart",
 	"restart-forum": "重啟論壇",
+	"restart": "Restart",
 	"logout": "登出",
 	"view-forum": "檢視論壇",
 

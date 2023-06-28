@@ -164,7 +164,7 @@
     "composer.schedule": "Schedule",
     "composer.replying_to": "Odgovor na %1",
     "composer.new_topic": "Nova tema",
-    "composer.editing": "Urejanje",
+    "composer.editing-in": "Editing post in %1",
     "composer.uploading": "nalagam...",
     "composer.thumb_url_label": "Prilepite URL sličice teme",
     "composer.thumb_title": "Dodajte sličico tej temi",

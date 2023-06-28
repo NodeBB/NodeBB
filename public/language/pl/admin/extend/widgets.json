@@ -1,4 +1,5 @@
 {
+	"widgets": "Widgets",
 	"available": "Dostępne Widgety",
 	"explanation": "Wybierz widget z menu rozwijalnego i przeciągnij go na wybrane pole z lewej strony.",
 	"none-installed": "Nie odnaleziono widgetów! Aktywuj wtyczkę „widget essentials w panelu sterowania <a href=\"%1\">wtyczek</a>.",
