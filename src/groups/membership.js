@@ -25,7 +25,7 @@ module.exports = function (Groups) {
 
 	Groups.isMember = async function (uid, groupName) {
 		if (!uid || parseInt(uid, 10) <= 0 || !groupName) {
-			return false;
+			return isMemberOfEphemeralGroup(uid, groupName);
 		}
 
 		const cacheKey = `${uid}:${groupName}`;
@@ -43,8 +43,8 @@ module.exports = function (Groups) {
 			return uids.map(() => false);
 		}
 
-		if (groupName === 'guests') {
-			return uids.map(uid => parseInt(uid, 10) === 0);
+		if (groupName === 'guests' || groupName === 'spiders') {
+			return uids.map(uid => isMemberOfEphemeralGroup(uid, groupName));
 		}
 
 		const cachedData = {};
@@ -64,7 +64,7 @@ module.exports = function (Groups) {
 
 	Groups.isMemberOfGroups = async function (uid, groups) {
 		if (!uid || parseInt(uid, 10) <= 0 || !groups.length) {
-			return groups.map(groupName => groupName === 'guests');
+			return groups.map(groupName => isMemberOfEphemeralGroup(uid, groupName));
 		}
 		const cachedData = {};
 		const nonCachedGroups = groups.filter(groupName => filterNonCached(cachedData, uid, groupName));
@@ -81,6 +81,11 @@ module.exports = function (Groups) {
 
 		return groups.map(groupName => cachedData[`${uid}:${groupName}`]);
 	};
+
+	function isMemberOfEphemeralGroup(uid, groupName) {
+		return (groupName === 'guests' && parseInt(uid, 10) === 0) ||
+			(groupName === 'spiders' && parseInt(uid, 10) === -1);
+	}
 
 	function filterNonCached(cachedData, uid, groupName) {
 		const isMember = Groups.cache.get(`${uid}:${groupName}`);

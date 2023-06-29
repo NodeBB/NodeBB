@@ -209,36 +209,54 @@ describe('Groups', () => {
 	});
 
 	describe('.isMember()', () => {
-		it('should return boolean true when a user is in a group', (done) => {
-			Groups.isMember(1, 'Test', (err, isMember) => {
-				assert.ifError(err);
-				assert.strictEqual(isMember, true);
-				done();
-			});
+		it('should return boolean true when a user is in a group', async () => {
+			const isMember = await Groups.isMember(1, 'Test');
+			assert.strictEqual(isMember, true);
 		});
 
-		it('should return boolean false when a user is not in a group', (done) => {
-			Groups.isMember(2, 'Test', (err, isMember) => {
-				assert.ifError(err);
-				assert.strictEqual(isMember, false);
-				done();
-			});
+		it('should return boolean false when a user is not in a group', async () => {
+			const isMember = await Groups.isMember(2, 'Test');
+			assert.strictEqual(isMember, false);
 		});
 
-		it('should return true for uid 0 and guests group', (done) => {
-			Groups.isMembers([1, 0], 'guests', (err, isMembers) => {
-				assert.ifError(err);
-				assert.deepStrictEqual(isMembers, [false, true]);
-				done();
-			});
+		it('should return true for uid 0 and guests group', async () => {
+			const isMember = await Groups.isMember(0, 'guests');
+			assert.strictEqual(isMember, true);
 		});
 
-		it('should return true for uid 0 and guests group', (done) => {
-			Groups.isMemberOfGroups(0, ['guests', 'registered-users'], (err, isMembers) => {
-				assert.ifError(err);
-				assert.deepStrictEqual(isMembers, [true, false]);
-				done();
-			});
+		it('should return false for uid 0 and spiders group', async () => {
+			const isMember = await Groups.isMember(0, 'spiders');
+			assert.strictEqual(isMember, false);
+		});
+
+		it('should return true for uid -1 and spiders group', async () => {
+			const isMember = await Groups.isMember(-1, 'spiders');
+			assert.strictEqual(isMember, true);
+		});
+
+		it('should return false for uid -1 and guests group', async () => {
+			const isMember = await Groups.isMember(-1, 'guests');
+			assert.strictEqual(isMember, false);
+		});
+
+		it('should return true for uid 0, false for uid -1 with guests group', async () => {
+			const isMembers = await Groups.isMembers([1, 0, -1], 'guests');
+			assert.deepStrictEqual(isMembers, [false, true, false]);
+		});
+
+		it('should return false for uid 0, true for uid -1 with spiders group', async () => {
+			const isMembers = await Groups.isMembers([1, 0, -1], 'spiders');
+			assert.deepStrictEqual(isMembers, [false, false, true]);
+		});
+
+		it('should return true for uid 0 and guests group', async () => {
+			const isMembers = await Groups.isMemberOfGroups(0, ['guests', 'registered-users', 'spiders']);
+			assert.deepStrictEqual(isMembers, [true, false, false]);
+		});
+
+		it('should return true for uid -1 and spiders group', async () => {
+			const isMembers = await Groups.isMemberOfGroups(-1, ['guests', 'registered-users', 'spiders']);
+			assert.deepStrictEqual(isMembers, [false, false, true]);
 		});
 	});
 
@@ -406,16 +424,12 @@ describe('Groups', () => {
 	});
 
 	describe('.hide()', () => {
-		it('should mark the group as hidden', (done) => {
-			Groups.hide('foo', (err) => {
-				assert.ifError(err);
-
-				Groups.get('foo', {}, (err, groupObj) => {
-					assert.ifError(err);
-					assert.strictEqual(1, groupObj.hidden);
-					done();
-				});
-			});
+		it('should mark the group as hidden', async () => {
+			await Groups.hide('foo');
+			const groupObj = await Groups.get('foo', {});
+			assert.strictEqual(1, groupObj.hidden);
+			const isMember = await db.isSortedSetMember('groups:visible:createtime', 'foo');
+			assert.strictEqual(isMember, false);
 		});
 	});
 
@@ -792,20 +806,6 @@ describe('Groups', () => {
 				db.isSortedSetMember('groups:visible:createtime', 'Test', (err, isMember) => {
 					assert.ifError(err);
 					assert.strictEqual(isMember, true);
-					done();
-				});
-			});
-		});
-	});
-
-	describe('.hide()', () => {
-		it('should make a group hidden', (done) => {
-			Groups.hide('Test', function (err) {
-				assert.ifError(err);
-				assert.equal(arguments.length, 1);
-				db.isSortedSetMember('groups:visible:createtime', 'Test', (err, isMember) => {
-					assert.ifError(err);
-					assert.strictEqual(isMember, false);
 					done();
 				});
 			});
