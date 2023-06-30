@@ -1,7 +1,7 @@
 {
 	"errors": "שגיאות",
 	"figure-x": "דוגמא %1",
-	"error-events-per-day": "<code>%1</code> ארועים ביום",
+	"error-events-per-day": "<code>%1</code> אירועים ביום",
 	"error.404": "לא נמצא 404",
 	"error.503": "השירות אינו זמין 503",
 	"manage-error-log": "נהל רישום שגיאות",

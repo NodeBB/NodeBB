@@ -1,11 +1,11 @@
 {
 	"widgets": "ווידג'טים",
-	"available": "וידג'טים זמינים",
-	"explanation": "בחר וידג'ט מהתפריט הנפתח ואז גרור ושחרר אותו באזור הווידג'ט של התבנית משמאל.",
-	"none-installed": "לא נמצאו וידג'טים! הפעל את תוספי הוידג'טים ב <a href=\"%1\">תוספים</a> בלוח הבקרה.",
-	"clone-from": "וידג'טים משוכפלים מ",
+	"available": "ווידג'טים זמינים",
+	"explanation": "בחר ווידג'ט מהתפריט הנפתח ואז גרור ושחרר אותו באזור הווידג'ט של התבנית משמאל.",
+	"none-installed": "לא נמצאו ווידג'טים! הפעל את תוספי הווידג'טים ב <a href=\"%1\">תוספים</a> בלוח הבקרה.",
+	"clone-from": "שיבוט ווידג'טים מ",
 	"containers.available": "גורמים מכילים זמינים",
-	"containers.explanation": "גרור ושחרר מעל כל וידג'ט פעיל",
+	"containers.explanation": "גרור ושחרר מעל כל ווידג'ט פעיל",
 	"containers.none": "None",
 	"container.well": "Well",
 	"container.jumbotron": "Jumbotron",
@@ -14,10 +14,10 @@
 	"container.card-body": "גוף כרטיס",
 	"container.alert": "התראה",
 
-	"alert.confirm-delete": "האם אתה בטוח שאתה רוצה למחוק את הוידג'ט?",
-	"alert.updated": "העלאת וידג'טים",
-	"alert.update-success": "הוידג'טים הועלו בהצלחה",
-	"alert.clone-success": "הוידג'טים שוכפלו בהצלחה",
+	"alert.confirm-delete": "האם אתה בטוח שאתה רוצה למחוק את הווידג'ט?",
+	"alert.updated": "העלאת ווידג'טים",
+	"alert.update-success": "הווידג'טים הועלו בהצלחה",
+	"alert.clone-success": "הווידג'טים שוכפלו בהצלחה",
 
 	"error.select-clone": "בחר דף לשכפל ממנו",
 

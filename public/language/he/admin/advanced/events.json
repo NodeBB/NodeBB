@@ -1,8 +1,8 @@
 {
-	"events": "ארועים",
-	"no-events": "אין ארועים",
-	"control-panel": "בקרת ארועים\n ",
-	"delete-events": "מחיקת ארועים",
+	"events": "אירועים",
+	"no-events": "אין אירועים",
+	"control-panel": "בקרת אירועים",
+	"delete-events": "מחיקת אירועים",
 	"confirm-delete-all-events": "האם אתה בטוח שאתה רוצה למחוק את כל האירועים שנרשמו?",
 	"filters": "מסננים",
 	"filters-apply": "החל מסננים",
