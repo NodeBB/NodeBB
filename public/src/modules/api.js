@@ -61,8 +61,17 @@ async function xhr(options, cb) {
 
 		await fetch(url, {
 			...options,
-		}).then((res) => {
-			cb(null, res);
+		}).then(async (res) => {
+			const payload = await res.json();
+			if (Math.floor(res.status / 100) === 2) {
+				cb(null, (
+					payload &&
+					payload.hasOwnProperty('status') &&
+					payload.hasOwnProperty('response') ? payload.response : (payload || {})
+				));
+			} else {
+				cb(new Error(payload.status.message));
+			}
 		}).catch(cb);
 	} else {
 		options.data = JSON.stringify(options.payload || {});
