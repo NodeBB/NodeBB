@@ -135,7 +135,7 @@
         "@socket.io/redis-adapter": "8.2.1",
         "sortablejs": "1.15.0",
         "spdx-license-list": "6.6.0",
-        "spider-detector": "2.0.0",
+        "spider-detector": "2.0.1",
         "terser-webpack-plugin": "5.3.9",
         "textcomplete": "0.18.2",
         "textcomplete.contenteditable": "0.1.1",
