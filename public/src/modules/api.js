@@ -37,27 +37,60 @@ function call(options, callback) {
 }
 
 async function xhr(options, cb) {
-	// Allow options to be modified by plugins, etc.
-	({ options } = await fireHook('filter:api.options', { options }));
+	/**
+	 * N.B. fetch api is only used when payload is a FormData object!
+	 *
+	 * This is because the passed-in options are different between fetch/jQuery .ajax()
+	 * If we updated the code to use only fetch, it would be a breaking change.
+	 *
+	 * Prior to v3.3 there was no support for sending in FormData, so the addition of fetch
+	 * handling is not breaking.
+	 *
+	 * Break this for v4 by making everything use fetch api.
+	 */
 
-	$.ajax(options)
-		.done((res) => {
-			cb(null, (
-				res &&
-				res.hasOwnProperty('status') &&
-				res.hasOwnProperty('response') ? res.response : (res || {})
-			));
-		})
-		.fail((ev) => {
-			let errMessage;
-			if (ev.responseJSON) {
-				errMessage = ev.responseJSON.status && ev.responseJSON.status.message ?
-					ev.responseJSON.status.message :
-					ev.responseJSON.error;
-			}
+	// Adjust options based on payload type
+	if (options.payload instanceof FormData) {
+		const url = options.url;
+		options.body = options.payload;
+		delete options.payload;
+		delete options.url;
 
-			cb(new Error(errMessage || ev.statusText));
-		});
+		// Allow options to be modified by plugins, etc.
+		({ options } = await fireHook('filter:api.fetchOptions', { options }));
+
+		await fetch(url, {
+			...options,
+		}).then((res) => {
+			cb(null, res);
+		}).catch(cb);
+	} else {
+		options.data = JSON.stringify(options.payload || {});
+		options.contentType = 'application/json; charset=utf-8';
+		delete options.payload;
+
+		// Allow options to be modified by plugins, etc.
+		({ options } = await fireHook('filter:api.options', { options }));
+
+		$.ajax(options)
+			.done((res) => {
+				cb(null, (
+					res &&
+					res.hasOwnProperty('status') &&
+					res.hasOwnProperty('response') ? res.response : (res || {})
+				));
+			})
+			.fail((ev) => {
+				let errMessage;
+				if (ev.responseJSON) {
+					errMessage = ev.responseJSON.status && ev.responseJSON.status.message ?
+						ev.responseJSON.status.message :
+						ev.responseJSON.error;
+				}
+
+				cb(new Error(errMessage || ev.statusText));
+			});
+	}
 }
 
 export function get(route, payload, onSuccess) {
@@ -77,8 +110,7 @@ export function post(route, payload, onSuccess) {
 	return call({
 		url: route,
 		method: 'post',
-		data: JSON.stringify(payload || {}),
-		contentType: 'application/json; charset=utf-8',
+		payload,
 		headers: {
 			'x-csrf-token': config.csrf_token,
 		},
@@ -89,8 +121,7 @@ export function patch(route, payload, onSuccess) {
 	return call({
 		url: route,
 		method: 'patch',
-		data: JSON.stringify(payload || {}),
-		contentType: 'application/json; charset=utf-8',
+		payload,
 		headers: {
 			'x-csrf-token': config.csrf_token,
 		},
@@ -101,8 +132,7 @@ export function put(route, payload, onSuccess) {
 	return call({
 		url: route,
 		method: 'put',
-		data: JSON.stringify(payload || {}),
-		contentType: 'application/json; charset=utf-8',
+		payload,
 		headers: {
 			'x-csrf-token': config.csrf_token,
 		},
