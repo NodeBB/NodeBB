@@ -91,7 +91,12 @@ recentController.getData = async function (req, url, sort) {
 
 	const pageCount = Math.max(1, Math.ceil(data.topicCount / settings.topicsPerPage));
 	data.pagination = pagination.create(page, pageCount, req.query);
-	helpers.addLinkTags({ url: url, res: req.res, tags: data.pagination.rel });
+	helpers.addLinkTags({
+		url: url,
+		res: req.res,
+		tags: data.pagination.rel,
+		page: page,
+	});
 	return data;
 };
 
