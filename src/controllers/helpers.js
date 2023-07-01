@@ -58,9 +58,10 @@ helpers.buildQueryString = function (query, key, value) {
 
 helpers.addLinkTags = function (params) {
 	params.res.locals.linkTags = params.res.locals.linkTags || [];
+	const page = params.page > 1 ? `?page=${params.page}` : '';
 	params.res.locals.linkTags.push({
 		rel: 'canonical',
-		href: `${url}/${params.url}`,
+		href: `${url}/${params.url}${page}`,
 	});
 
 	params.tags.forEach((rel) => {
