@@ -13,6 +13,8 @@ define('admin/settings/api', ['settings', 'clipboard', 'bootbox', 'benchpress', 
 		const copyEls = document.querySelectorAll('[data-component="acp/tokens"] [data-action="copy"]');
 		new clipboard(copyEls);
 
+		$('[data-action="create"]').on('click', handleTokenCreation);
+
 		handleActions();
 	};
 
@@ -28,10 +30,6 @@ define('admin/settings/api', ['settings', 'clipboard', 'bootbox', 'benchpress', 
 				const action = subselector.getAttribute('data-action');
 
 				switch (action) {
-					case 'create':
-						handleTokenCreation();
-						break;
-
 					case 'edit':
 						handleTokenUpdate(subselector);
 						break;
