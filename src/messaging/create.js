@@ -36,11 +36,12 @@ module.exports = function (Messaging) {
 	Messaging.addMessage = async (data) => {
 		const mid = await db.incrObjectField('global', 'nextMid');
 		const timestamp = data.timestamp || Date.now();
+		const { uid, roomId } = data;
 		let message = {
 			content: String(data.content),
 			timestamp: timestamp,
-			fromuid: data.uid,
-			roomId: data.roomId,
+			fromuid: uid,
+			roomId: roomId,
 			deleted: 0,
 			system: data.system || 0,
 		};
@@ -48,27 +49,35 @@ module.exports = function (Messaging) {
 		if (data.ip) {
 			message.ip = data.ip;
 		}
+		const roomData = await Messaging.getRoomData(roomId);
+		if (!roomData) {
+			throw new Error('[[error:no-room]]');
+		}
 
 		message = await plugins.hooks.fire('filter:messaging.save', message);
 		await db.setObject(`message:${mid}`, message);
-		const isNewSet = await Messaging.isNewSet(data.uid, data.roomId, timestamp);
-		let uids = await db.getSortedSetRange(`chat:room:${data.roomId}:uids`, 0, -1);
-		uids = await user.blocks.filterUids(data.uid, uids);
+		const isNewSet = await Messaging.isNewSet(uid, roomId, timestamp);
+
+		// TODO: dont load all uids in the room if its a public room
+		let uids = await db.getSortedSetRange(`chat:room:${roomId}:uids`, 0, -1);
+		uids = await user.blocks.filterUids(uid, uids);
 
 		await Promise.all([
-			Messaging.addRoomToUsers(data.roomId, uids, timestamp),
-			Messaging.addMessageToRoom(data.roomId, mid, timestamp),
-			Messaging.markUnread(uids.filter(uid => uid !== String(data.uid)), data.roomId),
+			Messaging.addMessageToRoom(roomId, mid, timestamp),
+
+			roomData.public ? Promise.resolve() : Messaging.addRoomToUsers(roomId, uids, timestamp),
+
+			Messaging.markUnread(uids.filter(uid => uid !== String(data.uid)), roomId),
 		]);
 
-		const messages = await Messaging.getMessagesData([mid], data.uid, data.roomId, true);
+		const messages = await Messaging.getMessagesData([mid], uid, roomId, true);
 		if (!messages || !messages[0]) {
 			return null;
 		}
 
 		messages[0].newSet = isNewSet;
 		messages[0].mid = mid;
-		messages[0].roomId = data.roomId;
+		messages[0].roomId = roomId;
 		plugins.hooks.fire('action:messaging.save', { message: messages[0], data: data });
 		return messages[0];
 	};
@@ -93,6 +102,6 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.addMessageToRoom = async (roomId, mid, timestamp) => {
-		await db.sortedSetAdd(`chat:room:${roomId}`, timestamp, mid);
+		await db.sortedSetAdd(`chat:room:${roomId}:mids`, timestamp, mid);
 	};
 };

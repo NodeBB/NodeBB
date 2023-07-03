@@ -98,6 +98,13 @@ Messaging.isNewSet = async (uid, roomId, timestamp) => {
 	return true;
 };
 
+Messaging.getPublicRooms = async (callerUid) => {
+	const roomIds = await db.getSortedSetRange('chat:rooms:public', 0, -1);
+	const roomData = await Messaging.getRoomsData(roomIds);
+	// TODO: filter rooms to only visible to callerUid via groups property
+	return roomData;
+};
+
 Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 	const ok = await canGet('filter:messaging.canGetRecentChats', callerUid, uid);
 	if (!ok) {
@@ -299,8 +306,11 @@ async function checkReputation(uid) {
 	if (meta.config['reputation:disabled']) {
 		return;
 	}
-	const reputation = await user.getUserField(uid, 'reputation');
-	if (meta.config['min:rep:chat'] > reputation) {
+	const [reputation, isAdmin] = await Promise.all([
+		user.getUserField(uid, 'reputation'),
+		user.isAdministrator(uid),
+	]);
+	if (!isAdmin && meta.config['min:rep:chat'] > reputation) {
 		throw new Error(`[[error:not-enough-reputation-to-chat, ${meta.config['min:rep:chat']}]]`);
 	}
 }

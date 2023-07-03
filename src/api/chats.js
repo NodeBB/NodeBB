@@ -39,12 +39,20 @@ chatsAPI.create = async function (caller, data) {
 	if (!data) {
 		throw new Error('[[error:invalid-data]]');
 	}
+	const isPublic = data.type === 'public';
+	const isAdmin = await user.isAdministrator(caller.uid);
+	if (isPublic && !isAdmin) {
+		throw new Error('[[error:no-privileges]]');
+	}
 	if (!data.uids || !Array.isArray(data.uids)) {
 		throw new Error(`[[error:wrong-parameter-type, uids, ${typeof data.uids}, Array]]`);
 	}
 
+	if (!isPublic && !data.uids.length) {
+		throw new Error('[[error:no-users-selected]]');
+	}
 	await Promise.all(data.uids.map(async uid => messaging.canMessageUser(caller.uid, uid)));
-	const roomId = await messaging.newRoom(caller.uid, data.uids);
+	const roomId = await messaging.newRoom(caller.uid, data);
 
 	return await messaging.getRoomData(roomId);
 };
@@ -145,10 +153,13 @@ chatsAPI.invite = async (caller, data) => {
 	if (!data || !data.roomId) {
 		throw new Error('[[error:invalid-data]]');
 	}
-
+	const roomData = await messaging.getRoomData(data.roomId);
+	if (!roomData) {
+		throw new Error('[[error:invalid-data]]');
+	}
 	const userCount = await messaging.getUserCountInRoom(data.roomId);
 	const maxUsers = meta.config.maximumUsersInChatRoom;
-	if (maxUsers && userCount >= maxUsers) {
+	if (!roomData.public && maxUsers && userCount >= maxUsers) {
 		throw new Error('[[error:cant-add-more-users-to-chat-room]]');
 	}
 

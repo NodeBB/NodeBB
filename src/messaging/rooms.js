@@ -1,6 +1,7 @@
 'use strict';
 
 const validator = require('validator');
+const winston = require('winston');
 
 const db = require('../database');
 const user = require('../user');
@@ -28,16 +29,28 @@ module.exports = function (Messaging) {
 	function modifyRoomData(rooms) {
 		rooms.forEach((data) => {
 			if (data) {
-				data.roomName = data.roomName || '';
-				data.roomName = validator.escape(String(data.roomName));
+				data.roomName = validator.escape(String(data.roomName || ''));
+				data.public = parseInt(data.public, 10) === 1;
 				if (data.hasOwnProperty('groupChat')) {
 					data.groupChat = parseInt(data.groupChat, 10) === 1;
+				}
+				if (data.hasOwnProperty('groups')) {
+					try {
+						data.groups = JSON.parse(data.groups);
+					} catch (err) {
+						winston.error(err.stack);
+						data.groups = [];
+					}
 				}
 			}
 		});
 	}
 
-	Messaging.newRoom = async (uid, toUids) => {
+	Messaging.newRoom = async (uid, data) => {
+		// backwards compat. remove in 4.x
+		if (Array.isArray(data)) { // old usage second param used to be toUids
+			data = { uids: data };
+		}
 		const now = Date.now();
 		const roomId = await db.incrObjectField('global', 'nextChatRoomId');
 		const room = {
@@ -45,16 +58,32 @@ module.exports = function (Messaging) {
 			roomId: roomId,
 		};
 
+		if (data.hasOwnProperty('roomName') && data.roomName) {
+			room.roomName = String(data.roomName);
+		}
+		if (Array.isArray(data.groups) && data.groups.length) {
+			room.groups = JSON.stringify(data.groups);
+		}
+		const isPublic = data.type === 'public';
+		if (isPublic) {
+			room.public = 1;
+		}
+
 		await Promise.all([
 			db.setObject(`chat:room:${roomId}`, room),
 			db.sortedSetAdd(`chat:room:${roomId}:uids`, now, uid),
 		]);
 		await Promise.all([
-			Messaging.addUsersToRoom(uid, toUids, roomId),
-			Messaging.addRoomToUsers(roomId, [uid].concat(toUids), now),
+			Messaging.addUsersToRoom(uid, data.uids, roomId),
+			isPublic ?
+				db.sortedSetAdd('chat:rooms:public', now, roomId) :
+				Messaging.addRoomToUsers(roomId, [uid].concat(data.uids), now),
 		]);
-		// chat owner should also get the user-join system message
-		await Messaging.addSystemMessage('user-join', uid, roomId);
+
+		if (!isPublic) {
+			// chat owner should also get the user-join system message
+			await Messaging.addSystemMessage('user-join', uid, roomId);
+		}
 
 		return roomId;
 	};

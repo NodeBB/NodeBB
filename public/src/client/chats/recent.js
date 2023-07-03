@@ -6,8 +6,8 @@ define('forum/chats/recent', ['alerts', 'api'], function (alerts, api) {
 
 	recent.init = function () {
 		require(['forum/chats'], function (Chats) {
-			$('[component="chat/recent"]')
-				.on('click', '[component="chat/recent/room"]', function (e) {
+			$('[component="chat/nav-wrapper"]')
+				.on('click', '[component="chat/recent/room"], [component="chat/public/room"]', function (e) {
 					e.stopPropagation();
 					e.preventDefault();
 					const roomId = this.getAttribute('data-roomid');

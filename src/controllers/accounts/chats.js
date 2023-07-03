@@ -21,7 +21,10 @@ chatsController.get = async function (req, res, next) {
 	if (!canChat) {
 		return next(new Error('[[error:no-privileges]]'));
 	}
-	const recentChats = await messaging.getRecentChats(req.uid, uid, 0, 29);
+	const [recentChats, publicRooms] = await Promise.all([
+		messaging.getRecentChats(req.uid, uid, 0, 29),
+		messaging.getPublicRooms(req.uid),
+	]);
 	if (!recentChats) {
 		return next();
 	}
@@ -29,6 +32,7 @@ chatsController.get = async function (req, res, next) {
 	if (!req.params.roomid) {
 		return res.render('chats', {
 			rooms: recentChats.rooms,
+			publicRooms: publicRooms,
 			uid: uid,
 			userslug: req.params.userslug,
 			nextStart: recentChats.nextStart,
@@ -43,6 +47,7 @@ chatsController.get = async function (req, res, next) {
 
 	room.rooms = recentChats.rooms;
 	room.nextStart = recentChats.nextStart;
+	room.publicRooms = publicRooms;
 	room.title = room.roomName || room.usernames || '[[pages:chats]]';
 	room.uid = uid;
 	room.userslug = req.params.userslug;
