@@ -88,20 +88,21 @@ define('chat', [
 			if (err) {
 				return alerts.error(err);
 			}
-
-			const rooms = data.rooms.filter(function (room) {
-				return room.teaser;
+			const rooms = data.rooms.map((room) => {
+				if (room && room.teaser) {
+					room.teaser.timeagoLong = $.timeago(new Date(parseInt(room.teaser.timestamp, 10)));
+				}
+				return room;
 			});
 
-			for (let i = 0; i < rooms.length; i += 1) {
-				rooms[i].teaser.timeagoLong = $.timeago(new Date(parseInt(rooms[i].teaser.timestamp, 10)));
-			}
-
 			translator.toggleTimeagoShorthand(function () {
-				for (let i = 0; i < rooms.length; i += 1) {
-					rooms[i].teaser.timeago = $.timeago(new Date(parseInt(rooms[i].teaser.timestamp, 10)));
-					rooms[i].teaser.timeagoShort = rooms[i].teaser.timeago;
-				}
+				rooms.forEach((room) => {
+					if (room && room.teaser) {
+						room.teaser.timeago = $.timeago(new Date(parseInt(room.teaser.timestamp, 10)));
+						room.teaser.timeagoShort = room.teaser.timeago;
+					}
+				});
+
 				translator.toggleTimeagoShorthand();
 				app.parseAndTranslate('partials/chats/dropdown', { rooms: rooms }, function (html) {
 					const listEl = chatsListEl.get(0);

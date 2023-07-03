@@ -169,12 +169,7 @@ module.exports = function (User) {
 
 	async function deleteChats(uid) {
 		const roomIds = await db.getSortedSetRange(`uid:${uid}:chat:rooms`, 0, -1);
-		const userKeys = roomIds.map(roomId => `uid:${uid}:chat:room:${roomId}:mids`);
-
-		await Promise.all([
-			messaging.leaveRooms(uid, roomIds),
-			db.deleteAll(userKeys),
-		]);
+		await messaging.leaveRooms(uid, roomIds);
 	}
 
 	async function deleteUserIps(uid) {

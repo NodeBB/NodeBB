@@ -18,13 +18,13 @@ SocketModules.chats.getRaw = async function (socket, data) {
 		throw new Error('[[error:invalid-data]]');
 	}
 	const roomId = await Messaging.getMessageField(data.mid, 'roomId');
-	const [isAdmin, hasMessage, inRoom] = await Promise.all([
+	const [isAdmin, canViewMessage, inRoom] = await Promise.all([
 		user.isAdministrator(socket.uid),
-		db.isSortedSetMember(`uid:${socket.uid}:chat:room:${roomId}:mids`, data.mid),
+		Messaging.canViewMessage(data.mid, roomId, socket.uid),
 		Messaging.isUserInRoom(socket.uid, roomId),
 	]);
 
-	if (!isAdmin && (!inRoom || !hasMessage)) {
+	if (!isAdmin && (!inRoom || !canViewMessage)) {
 		throw new Error('[[error:not-allowed]]');
 	}
 

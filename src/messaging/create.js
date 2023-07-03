@@ -57,7 +57,7 @@ module.exports = function (Messaging) {
 
 		await Promise.all([
 			Messaging.addRoomToUsers(data.roomId, uids, timestamp),
-			Messaging.addMessageToUsers(data.roomId, uids, mid, timestamp),
+			Messaging.addMessageToRoom(data.roomId, mid, timestamp),
 			Messaging.markUnread(uids.filter(uid => uid !== String(data.uid)), data.roomId),
 		]);
 
@@ -92,11 +92,7 @@ module.exports = function (Messaging) {
 		await db.sortedSetsAdd(keys, timestamp, roomId);
 	};
 
-	Messaging.addMessageToUsers = async (roomId, uids, mid, timestamp) => {
-		if (!uids.length) {
-			return;
-		}
-		const keys = uids.map(uid => `uid:${uid}:chat:room:${roomId}:mids`);
-		await db.sortedSetsAdd(keys, timestamp, mid);
+	Messaging.addMessageToRoom = async (roomId, mid, timestamp) => {
+		await db.sortedSetAdd(`chat:room:${roomId}`, timestamp, mid);
 	};
 };

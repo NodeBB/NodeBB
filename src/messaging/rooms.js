@@ -171,7 +171,7 @@ module.exports = function (Messaging) {
 		await db.setObjectField(`chat:room:${roomId}`, 'owner', newOwner);
 	}
 
-	Messaging.getUidsInRoom = async (roomId, start, stop) => db.getSortedSetRevRange(`chat:room:${roomId}:uids`, start, stop);
+	Messaging.getUidsInRoom = async (roomId, start, stop) => db.getSortedSetRange(`chat:room:${roomId}:uids`, start, stop);
 
 	Messaging.getUsersInRoom = async (roomId, start, stop) => {
 		const uids = await Messaging.getUidsInRoom(roomId, start, stop);

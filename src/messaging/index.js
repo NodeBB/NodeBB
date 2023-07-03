@@ -26,17 +26,22 @@ require('./notifications')(Messaging);
 Messaging.messageExists = async mid => db.exists(`message:${mid}`);
 
 Messaging.getMessages = async (params) => {
+	const { callerUid, uid, roomId } = params;
 	const isNew = params.isNew || false;
 	const start = params.hasOwnProperty('start') ? params.start : 0;
 	const stop = parseInt(start, 10) + ((params.count || 50) - 1);
 
 	const indices = {};
-	const ok = await canGet('filter:messaging.canGetMessages', params.callerUid, params.uid);
+	const ok = await canGet('filter:messaging.canGetMessages', callerUid, uid);
 	if (!ok) {
 		return;
 	}
+	// TODO: check if room allows viewing all history or just from time of join
+	const userjoinTimestamp = await db.sortedSetScore(`chat:room:${roomId}:uids`, uid);
 
-	const mids = await db.getSortedSetRevRange(`uid:${params.uid}:chat:room:${params.roomId}:mids`, start, stop);
+	const mids = await db.getSortedSetRevRangeByScore(
+		`chat:room:${roomId}:mids`, start, stop - start + 1, '+inf', userjoinTimestamp
+	);
 	if (!mids.length) {
 		return [];
 	}
@@ -45,10 +50,10 @@ Messaging.getMessages = async (params) => {
 	});
 	mids.reverse();
 
-	const messageData = await Messaging.getMessagesData(mids, params.uid, params.roomId, isNew);
+	const messageData = await Messaging.getMessagesData(mids, uid, roomId, isNew);
 	messageData.forEach((messageData) => {
 		messageData.index = indices[messageData.messageId.toString()];
-		messageData.isOwner = messageData.fromuid === parseInt(params.uid, 10);
+		messageData.isOwner = messageData.fromuid === parseInt(uid, 10);
 		if (messageData.deleted && !messageData.isOwner) {
 			messageData.content = '[[modules:chat.message-deleted]]';
 			messageData.cleanedContent = messageData.content;
@@ -85,7 +90,7 @@ Messaging.parse = async (message, fromuid, uid, roomId, isNew) => {
 };
 
 Messaging.isNewSet = async (uid, roomId, timestamp) => {
-	const setKey = `uid:${uid}:chat:room:${roomId}:mids`;
+	const setKey = `chat:room:${roomId}:mids`;
 	const messages = await db.getSortedSetRevRangeWithScores(setKey, 0, 0);
 	if (messages && messages.length) {
 		return parseInt(timestamp, 10) > parseInt(messages[0].score, 10) + Messaging.newMessageCutoff;
@@ -100,11 +105,12 @@ Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 	}
 
 	const roomIds = await db.getSortedSetRevRange(`uid:${uid}:chat:rooms`, start, stop);
+
 	const results = await utils.promiseParallel({
 		roomData: Messaging.getRoomsData(roomIds),
 		unread: db.isSortedSetMembers(`uid:${uid}:chat:rooms:unread`, roomIds),
 		users: Promise.all(roomIds.map(async (roomId) => {
-			let uids = await db.getSortedSetRevRange(`chat:room:${roomId}:uids`, 0, 9);
+			let uids = await Messaging.getUidsInRoom(roomId, 0, 9);
 			uids = uids.filter(_uid => _uid && parseInt(_uid, 10) !== parseInt(uid, 10));
 			return await user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'lastonline']);
 		})),
@@ -204,10 +210,11 @@ Messaging.getLatestUndeletedMessage = async (uid, roomId) => {
 	let latestMid = null;
 	let index = 0;
 	let mids;
-
+	// TODO: check if room allows viewing all history or just from time of join
+	const userjoinTimestamp = await db.sortedSetScore(`chat:room:${roomId}:uids`, uid);
 	while (!done) {
 		/* eslint-disable no-await-in-loop */
-		mids = await db.getSortedSetRevRange(`uid:${uid}:chat:room:${roomId}:mids`, index, index);
+		mids = await db.getSortedSetRevRangeByScore(`chat:room:${roomId}:mids`, index, 1, '+inf', userjoinTimestamp);
 		if (mids.length) {
 			const states = await Messaging.getMessageFields(mids[0], ['deleted', 'system']);
 			done = !states.deleted && !states.system;
@@ -335,7 +342,15 @@ Messaging.canViewMessage = async (mids, roomId, uid) => {
 		single = true;
 	}
 
-	const canView = await db.isSortedSetMembers(`uid:${uid}:chat:room:${roomId}:mids`, mids);
+	const [midTimestamps, userTimestamp] = await Promise.all([
+		db.sortedSetScores(`chat:room:${roomId}:mids`, mids),
+		db.sortedSetScore(`chat:room:${roomId}:uids`, uid),
+	]);
+	// TODO: check if room allows viewing all history or just from time of join
+	const canView = midTimestamps.map(
+		midTimestamp => !!(midTimestamp && userTimestamp && userTimestamp <= midTimestamp)
+	);
+
 	return single ? canView.pop() : canView;
 };
 
