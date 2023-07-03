@@ -229,7 +229,7 @@ middleware.delayLoading = function delayLoading(req, res, next) {
 
 middleware.buildSkinAsset = helpers.try(async (req, res, next) => {
 	// If this middleware is reached, a skin was requested, so it is built on-demand
-	const targetSkin = path.basename(req.originalUrl).split('.css')[0];
+	const targetSkin = path.basename(req.originalUrl).split('.css')[0].replace(/-rtl$/, '');
 	if (!targetSkin) {
 		return next();
 	}
