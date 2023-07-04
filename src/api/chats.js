@@ -87,22 +87,43 @@ chatsAPI.post = async (caller, data) => {
 	return message;
 };
 
+chatsAPI.update = async (caller, data) => {
+	if (!data || !data.roomId) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
+	if (data.hasOwnProperty('name') && data.name) {
+		await messaging.renameRoom(caller.uid, data.roomId, data.name);
+		const ioRoom = require('../socket.io').in(`chat_room_${data.roomId}`);
+		if (ioRoom) {
+			ioRoom.emit('event:chats.roomRename', {
+				roomId: data.roomId,
+				newName: validator.escape(String(data.name)),
+			});
+		}
+	}
+	if (data.hasOwnProperty('groups')) {
+		const [roomData, isAdmin] = await Promise.all([
+			messaging.getRoomData(data.roomId),
+			user.isAdministrator(caller.uid),
+		]);
+		if (!roomData) {
+			throw new Error('[[error:invalid-data]]');
+		}
+		if (roomData.public && isAdmin) {
+			await db.setObjectField(`chat:room:${data.roomId}`, 'groups', JSON.stringify(data.groups));
+		}
+	}
+	return messaging.loadRoom(caller.uid, {
+		roomId: data.roomId,
+	});
+};
+
 chatsAPI.rename = async (caller, data) => {
 	if (!data || !data.roomId || !data.name) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	await messaging.renameRoom(caller.uid, data.roomId, data.name);
-	const ioRoom = require('../socket.io').in(`chat_room_${data.roomId}`);
-	if (ioRoom) {
-		ioRoom.emit('event:chats.roomRename', {
-			roomId: data.roomId,
-			newName: validator.escape(String(data.name)),
-		});
-	}
-
-	return messaging.loadRoom(caller.uid, {
-		roomId: data.roomId,
-	});
+	return await chatsAPI.update(caller, data);
 };
 
 chatsAPI.mark = async (caller, data) => {

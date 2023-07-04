@@ -3,12 +3,12 @@
 
 define('forum/chats', [
 	'components',
-	'translator',
 	'mousetrap',
 	'forum/chats/recent',
 	'forum/chats/create',
 	'forum/chats/manage',
 	'forum/chats/messages',
+	'forum/chats/user-list',
 	'composer/autocomplete',
 	'hooks',
 	'bootbox',
@@ -17,10 +17,10 @@ define('forum/chats', [
 	'api',
 	'uploadHelpers',
 ], function (
-	components, translator, mousetrap,
+	components, mousetrap,
 	recentChats, create, manage, messages,
-	autocomplete, hooks, bootbox, alerts, chatModule,
-	api, uploadHelpers
+	userList, autocomplete, hooks, bootbox,
+	alerts, chatModule, api, uploadHelpers
 ) {
 	const Chats = {
 		initialised: false,
@@ -89,9 +89,7 @@ define('forum/chats', [
 		$('[data-action="close"]').on('click', function () {
 			Chats.switchChat();
 		});
-		$('[component="chat/user/list/btn"]').on('click', () => {
-			$('[component="chat/users/list"]').toggleClass('hidden');
-		});
+		userList.init(ajaxify.data.roomId, $('[component="chat/main-wrapper"]'));
 	};
 
 	Chats.addUploadHandler = function (options) {
@@ -333,18 +331,16 @@ define('forum/chats', [
 						save: {
 							label: '[[global:save]]',
 							className: 'btn-primary',
-							callback: submit,
+							callback: function () {
+								api.put(`/chats/${roomId}`, {
+									name: modal.find('#roomName').val(),
+								}).catch(alerts.error);
+							},
 						},
 					},
 				});
 			});
 		});
-
-		function submit() {
-			api.put(`/chats/${roomId}`, {
-				name: modal.find('#roomName').val(),
-			}).catch(alerts.error);
-		}
 	};
 
 	Chats.addSendHandlers = function (roomId, inputEl, sendEl) {

@@ -2,41 +2,67 @@
 
 
 define('forum/chats/manage', [
-	'api', 'alerts', 'translator',
-], function (api, alerts, translator) {
+	'api', 'alerts', 'translator', 'autocomplete', 'forum/chats/user-list',
+], function (api, alerts, translator, autocomplete, userList) {
 	const manage = {};
 
 	manage.init = function (roomId, buttonEl) {
 		let modal;
 
-		buttonEl.on('click', function () {
-			app.parseAndTranslate('modals/manage-room', {}, function (html) {
-				modal = bootbox.dialog({
-					title: '[[modules:chat.manage-room]]',
-					message: html,
-				});
+		buttonEl.on('click', async function () {
+			let groups = [];
+			if (app.user.isAdmin) {
+				groups = await socket.emit('groups.getChatGroups', {});
+				if (Array.isArray(ajaxify.data.groups)) {
+					groups.forEach((g) => {
+						g.selected = ajaxify.data.groups.includes(g.name);
+					});
+				}
+			}
 
-				modal.attr('component', 'chat/manage-modal');
+			const html = await app.parseAndTranslate('modals/manage-room', {
+				groups,
+				user: app.user,
+				group: ajaxify.data,
+			});
+			modal = bootbox.dialog({
+				title: '[[modules:chat.manage-room]]',
+				message: html,
+				buttons: {
+					save: {
+						label: '[[global:save]]',
+						className: 'btn-primary',
+						callback: function () {
+							api.put(`/chats/${roomId}`, {
+								groups: modal.find('[component="chat/room/groups"]').val(),
+							}).then((payload) => {
+								ajaxify.data.groups = payload.groups;
+							}).catch(alerts.error);
+						},
+					},
+				},
+			});
 
-				refreshParticipantsList(roomId, modal);
-				addKickHandler(roomId, modal);
-				addInfiniteScrollHandler(roomId, modal);
+			modal.attr('component', 'chat/manage-modal');
 
-				const searchInput = modal.find('input');
-				const errorEl = modal.find('.text-danger');
-				require(['autocomplete', 'translator'], function (autocomplete, translator) {
-					autocomplete.user(searchInput, function (event, selected) {
-						errorEl.text('');
-						api.post(`/chats/${roomId}/users`, {
-							uids: [selected.item.user.uid],
-						}).then((body) => {
-							refreshParticipantsList(roomId, modal, body);
-							searchInput.val('');
-						}).catch((err) => {
-							translator.translate(err.message, function (translated) {
-								errorEl.text(translated);
-							});
-						});
+			refreshParticipantsList(roomId, modal);
+			addKickHandler(roomId, modal);
+			userList.addInfiniteScrollHandler(roomId, modal.find('[component="chat/manage/user/list"]'), async (listEl, data) => {
+				listEl.append(await app.parseAndTranslate('partials/chats/manage-room-users', data));
+			});
+
+			const searchInput = modal.find('input');
+			const errorEl = modal.find('.text-danger');
+			autocomplete.user(searchInput, function (event, selected) {
+				errorEl.text('');
+				api.post(`/chats/${roomId}/users`, {
+					uids: [selected.item.user.uid],
+				}).then((body) => {
+					refreshParticipantsList(roomId, modal, body);
+					searchInput.val('');
+				}).catch((err) => {
+					translator.translate(err.message, function (translated) {
+						errorEl.text(translated);
 					});
 				});
 			});
@@ -51,22 +77,6 @@ define('forum/chats/manage', [
 				refreshParticipantsList(roomId, modal, body);
 			}).catch(alerts.error);
 		});
-	}
-
-	function addInfiniteScrollHandler(roomId, modal) {
-		const listEl = modal.find('[component="chat/manage/user/list"]');
-		listEl.on('scroll', utils.debounce(async () => {
-			const bottom = (listEl[0].scrollHeight - listEl.height()) * 0.85;
-			if (listEl.scrollTop() > bottom) {
-				const lastIndex = listEl.find('[data-index]').last().attr('data-index');
-				const data = await api.get(`/chats/${roomId}/users`, {
-					start: parseInt(lastIndex, 10) + 1,
-				});
-				if (data && data.users.length) {
-					listEl.append(await app.parseAndTranslate('partials/chats/manage-room-users', data));
-				}
-			}
-		}, 200));
 	}
 
 	async function refreshParticipantsList(roomId, modal, data) {
