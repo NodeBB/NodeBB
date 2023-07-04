@@ -52,12 +52,12 @@ Messaging.getMessages = async (params) => {
 	mids.reverse();
 
 	const messageData = await Messaging.getMessagesData(mids, uid, roomId, isNew);
-	messageData.forEach((messageData) => {
-		messageData.index = indices[messageData.messageId.toString()];
-		messageData.isOwner = messageData.fromuid === parseInt(uid, 10);
-		if (messageData.deleted && !messageData.isOwner) {
-			messageData.content = '[[modules:chat.message-deleted]]';
-			messageData.cleanedContent = messageData.content;
+	messageData.forEach((msg) => {
+		msg.index = indices[msg.messageId.toString()];
+		msg.isOwner = msg.fromuid === parseInt(uid, 10);
+		if (msg.deleted && !msg.isOwner) {
+			msg.cleanedContent = '[[modules:chat.message-deleted]]';
+			msg.content = `<p>${msg.cleanedContent}</p>`;
 		}
 	});
 

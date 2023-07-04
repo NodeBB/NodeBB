@@ -2,6 +2,7 @@
 
 const validator = require('validator');
 
+const db = require('../database');
 const user = require('../user');
 const meta = require('../meta');
 const messaging = require('../messaging');
@@ -91,10 +92,14 @@ chatsAPI.rename = async (caller, data) => {
 		throw new Error('[[error:invalid-data]]');
 	}
 	await messaging.renameRoom(caller.uid, data.roomId, data.name);
-	const uids = await messaging.getUidsInRoom(data.roomId, 0, -1);
-	const eventData = { roomId: data.roomId, newName: validator.escape(String(data.name)) };
+	const ioRoom = require('../socket.io').in(`chat_room_${data.roomId}`);
+	if (ioRoom) {
+		ioRoom.emit('event:chats.roomRename', {
+			roomId: data.roomId,
+			newName: validator.escape(String(data.name)),
+		});
+	}
 
-	socketHelpers.emitToUids('event:chats.roomRename', eventData, uids);
 	return messaging.loadRoom(caller.uid, {
 		roomId: data.roomId,
 	});
@@ -111,16 +116,19 @@ chatsAPI.mark = async (caller, data) => {
 		await messaging.markRead(caller.uid, roomId);
 		socketHelpers.emitToUids('event:chats.markedAsRead', { roomId: roomId }, [caller.uid]);
 
-		const uidsInRoom = await messaging.getUidsInRoom(roomId, 0, -1);
-		if (!uidsInRoom.includes(String(caller.uid))) {
+		const isUserInRoom = await messaging.isUserInRoom(caller.uid, roomId);
+		if (!isUserInRoom) {
 			return;
 		}
+		let chatNids = await db.sortedSetScan({
+			key: `uid:${caller.uid}:notifications:unread`,
+			match: `chat_*`,
+		});
+		chatNids = chatNids.filter(
+			nid => nid && !nid.startsWith(`chat_${caller.uid}`) && nid.endsWith(`_${roomId}`)
+		);
 
-		// Mark notification read
-		const nids = uidsInRoom.filter(uid => parseInt(uid, 10) !== caller.uid)
-			.map(uid => `chat_${uid}_${roomId}`);
-
-		await notifications.markReadMultiple(nids, caller.uid);
+		await notifications.markReadMultiple(chatNids, caller.uid);
 		await user.notifications.pushCount(caller.uid);
 	}
 

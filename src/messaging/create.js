@@ -60,17 +60,19 @@ module.exports = function (Messaging) {
 		await db.setObject(`message:${mid}`, message);
 		const isNewSet = await Messaging.isNewSet(uid, roomId, timestamp);
 
-		// TODO: dont load all uids in the room if its a public room
-		let uids = await db.getSortedSetRange(`chat:room:${roomId}:uids`, 0, -1);
-		uids = await user.blocks.filterUids(uid, uids);
-
-		await Promise.all([
-			Messaging.addMessageToRoom(roomId, mid, timestamp),
-
-			roomData.public ? Promise.resolve() : Messaging.addRoomToUsers(roomId, uids, timestamp),
-
-			Messaging.markUnread(uids.filter(uid => uid !== String(data.uid)), roomId),
-		]);
+		if (roomData.public) {
+			await Promise.all([
+				Messaging.addMessageToRoom(roomId, mid, timestamp),
+			]);
+		} else {
+			let uids = await db.getSortedSetRange(`chat:room:${roomId}:uids`, 0, -1);
+			uids = await user.blocks.filterUids(uid, uids);
+			await Promise.all([
+				Messaging.addMessageToRoom(roomId, mid, timestamp),
+				Messaging.addRoomToUsers(roomId, uids, timestamp),
+				Messaging.markUnread(uids.filter(uid => uid !== String(data.uid)), roomId),
+			]);
+		}
 
 		const messages = await Messaging.getMessagesData([mid], uid, roomId, true);
 		if (!messages || !messages[0]) {

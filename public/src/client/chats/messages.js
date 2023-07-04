@@ -242,7 +242,7 @@ define('forum/chats/messages', [
 		components.get('chat/message', messageId)
 			.toggleClass('deleted', true)
 			.find('[component="chat/message/body"]')
-			.translateHtml('[[modules:chat.message-deleted]]');
+			.translateHtml('<p>[[modules:chat.message-deleted]]</p>');
 	}
 
 	function onChatMessageRestored(message) {

@@ -566,7 +566,7 @@ define('forum/chats', [
 
 		socket.on('event:chats.roomRename', function (data) {
 			const roomEl = components.get('chat/recent/room', data.roomId);
-			const titleEl = roomEl.find('[component="chat/title"]');
+			const titleEl = roomEl.find('[component="chat/room/title"]');
 			ajaxify.data.roomName = data.newName;
 
 			titleEl.text(data.newName);
