@@ -16,7 +16,7 @@
 	"hide-email": "החבא כתובת מייל ממשתמשים",
 	"show-fullname-as-displayname": "הצג את השם המלא של המשתמש כשם התצוגה שלו אם הוא זמין",
 	"themes": "ערכות נושא",
-	"disable-user-skins": "אל תאפשר למשתמשים לבחור ערכת נושא",
+	"disable-user-skins": "אל תאפשר למשתמשים לבחור עיצוב",
 	"account-protection": "הגנת חשבון",
 	"admin-relogin-duration": "משך חיבור של מנהל מערכת (דקות)",
 	"admin-relogin-duration-help": "לאחר פרק זמן מוגדר של גישה למקטע הניהול ידרוש כניסה מחדש, הגדר ל- 0 על-מנת להפוך ללא זמין",
