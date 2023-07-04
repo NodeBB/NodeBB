@@ -66,6 +66,7 @@ define('forum/chats', [
 		Chats.addMemberHandler(ajaxify.data.roomId, components.get('chat/controls').find('[data-action="members"]'));
 		Chats.addRenameHandler(ajaxify.data.roomId, components.get('chat/controls').find('[data-action="rename"]'));
 		Chats.addLeaveHandler(ajaxify.data.roomId, components.get('chat/controls').find('[data-action="leave"]'));
+		Chats.addDeleteHandler(ajaxify.data.roomId, components.get('chat/controls').find('[data-action="delete"]'));
 		Chats.addScrollHandler(ajaxify.data.roomId, ajaxify.data.uid, $('.chat-content'));
 		Chats.addScrollBottomHandler($('.chat-content'));
 		Chats.addCharactersLeftHandler($('[component="chat/main-wrapper"]'));
@@ -208,7 +209,7 @@ define('forum/chats', [
 	};
 
 	Chats.addActionHandlers = function (element, roomId) {
-		element.on('click', '[data-action]', function () {
+		element.on('click', '[data-mid] [data-action]', function () {
 			const messageId = $(this).parents('[data-mid]').attr('data-mid');
 			const action = this.getAttribute('data-action');
 
@@ -313,6 +314,30 @@ define('forum/chats', [
 				callback: function (ok) {
 					if (ok) {
 						api.del(`/chats/${roomId}/users/${app.user.uid}`, {}).then(() => {
+							// Return user to chats page. If modal, close modal.
+							const modal = buttonEl.parents('.chat-modal');
+							if (modal.length) {
+								chatModule.close(modal);
+							} else {
+								Chats.destroyAutoComplete(roomId);
+								ajaxify.go('chats');
+							}
+						}).catch(alerts.error);
+					}
+				},
+			});
+		});
+	};
+
+	Chats.addDeleteHandler = function (roomId, buttonEl) {
+		buttonEl.on('click', function () {
+			bootbox.confirm({
+				size: 'small',
+				title: '[[modules:chat.delete]]',
+				message: '<p>[[modules:chat.delete-prompt]]</p>',
+				callback: function (ok) {
+					if (ok) {
+						api.del(`/admin/chats/${roomId}`, {}).then(() => {
 							// Return user to chats page. If modal, close modal.
 							const modal = buttonEl.parents('.chat-modal');
 							if (modal.length) {

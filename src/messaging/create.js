@@ -1,5 +1,7 @@
 'use strict';
 
+const _ = require('lodash');
+
 const meta = require('../meta');
 const plugins = require('../plugins');
 const db = require('../database');
@@ -96,8 +98,7 @@ module.exports = function (Messaging) {
 		if (!uids.length) {
 			return;
 		}
-
-		const keys = uids.map(uid => `uid:${uid}:chat:rooms`);
+		const keys = _.uniq(uids).map(uid => `uid:${uid}:chat:rooms`);
 		await db.sortedSetsAdd(keys, timestamp, roomId);
 	};
 

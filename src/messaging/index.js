@@ -5,6 +5,7 @@ const validator = require('validator');
 const nconf = require('nconf');
 const db = require('../database');
 const user = require('../user');
+const groups = require('../groups');
 const privileges = require('../privileges');
 const plugins = require('../plugins');
 const meta = require('../meta');
@@ -101,8 +102,10 @@ Messaging.isNewSet = async (uid, roomId, timestamp) => {
 Messaging.getPublicRooms = async (callerUid) => {
 	const roomIds = await db.getSortedSetRange('chat:rooms:public', 0, -1);
 	const roomData = await Messaging.getRoomsData(roomIds);
-	// TODO: filter rooms to only visible to callerUid via groups property
-	return roomData;
+	const checks = await Promise.all(
+		roomData.map(room => groups.isMemberOfAny(callerUid, room && room.groups))
+	);
+	return roomData.filter((room, idx) => room && checks[idx]);
 };
 
 Messaging.getRecentChats = async (callerUid, uid, start, stop) => {

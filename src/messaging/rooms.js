@@ -1,10 +1,12 @@
 'use strict';
 
+const _ = require('lodash');
 const validator = require('validator');
 const winston = require('winston');
 
 const db = require('../database');
 const user = require('../user');
+const groups = require('../groups');
 const plugins = require('../plugins');
 const privileges = require('../privileges');
 const meta = require('../meta');
@@ -71,8 +73,10 @@ module.exports = function (Messaging) {
 
 		await Promise.all([
 			db.setObject(`chat:room:${roomId}`, room),
+			db.sortedSetAdd('chat:rooms', now, roomId),
 			db.sortedSetAdd(`chat:room:${roomId}:uids`, now, uid),
 		]);
+
 		await Promise.all([
 			Messaging.addUsersToRoom(uid, data.uids, roomId),
 			isPublic ?
@@ -86,6 +90,33 @@ module.exports = function (Messaging) {
 		}
 
 		return roomId;
+	};
+
+	Messaging.deleteRooms = async (roomIds) => {
+		if (!roomIds) {
+			throw new Error('[[error:invalid-data]]');
+		}
+
+		if (!Array.isArray(roomIds)) {
+			roomIds = [roomIds];
+		}
+
+		await Promise.all(roomIds.map(async (roomId) => {
+			const uids = await db.getSortedSetMembers(`chat:room:${roomId}:uids`);
+			const keys = uids
+				.map(uid => `uid:${uid}:chat:rooms`)
+				.concat(uids.map(uid => `uid:${uid}:chat:rooms:unread`));
+
+			await Promise.all([
+				db.sortedSetRemove(`chat:room:${roomId}:uids`, uids),
+				db.sortedSetsRemove(keys, roomId),
+			]);
+		}));
+		await Promise.all([
+			db.deleteAll(roomIds.map(id => `chat:room:${id}`)),
+			db.sortedSetRemove('chat:rooms', roomIds),
+			db.sortedSetRemove('chat:rooms:public', roomIds),
+		]);
 	};
 
 	Messaging.isUserInRoom = async (uid, roomId) => {
@@ -114,6 +145,7 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.addUsersToRoom = async function (uid, uids, roomId) {
+		uids = _.uniq(uids);
 		const inRoom = await Messaging.isUserInRoom(uid, roomId);
 		const payload = await plugins.hooks.fire('filter:messaging.addUsersToRoom', { uid, uids, roomId, inRoom });
 
@@ -121,12 +153,16 @@ module.exports = function (Messaging) {
 			throw new Error('[[error:cant-add-users-to-chat-room]]');
 		}
 
-		const now = Date.now();
-		const timestamps = payload.uids.map(() => now);
-		await db.sortedSetAdd(`chat:room:${payload.roomId}:uids`, timestamps, payload.uids);
-		await updateGroupChatField([payload.roomId]);
-		await Promise.all(payload.uids.map(uid => Messaging.addSystemMessage('user-join', uid, payload.roomId)));
+		await addUidsToRoom(payload.uids, roomId);
 	};
+
+	async function addUidsToRoom(uids, roomId) {
+		const now = Date.now();
+		const timestamps = uids.map(() => now);
+		await db.sortedSetAdd(`chat:room:${roomId}:uids`, timestamps, uids);
+		await updateGroupChatField([roomId]);
+		await Promise.all(uids.map(uid => Messaging.addSystemMessage('user-join', uid, roomId)));
+	}
 
 	Messaging.removeUsersFromRoom = async (uid, uids, roomId) => {
 		const [isOwner, userCount] = await Promise.all([
@@ -250,26 +286,38 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.loadRoom = async (uid, data) => {
-		const canChat = await privileges.global.can('chat', uid);
+		const [room, inRoom, canChat] = await Promise.all([
+			Messaging.getRoomData(data.roomId),
+			Messaging.isUserInRoom(uid, data.roomId),
+			privileges.global.can('chat', uid),
+		]);
+
 		if (!canChat) {
 			throw new Error('[[error:no-privileges]]');
 		}
-		const inRoom = await Messaging.isUserInRoom(uid, data.roomId);
-		if (!inRoom) {
+		if (!room ||
+			(!room.public && !inRoom) ||
+			(room.public && !(await groups.isMemberOfAny(uid, room.groups)))
+		) {
 			return null;
 		}
 
-		const [room, canReply, users, messages, isAdminOrGlobalMod, isOwner] = await Promise.all([
-			Messaging.getRoomData(data.roomId),
+		// add user to public room onload
+		if (room.public && !inRoom) {
+			await addUidsToRoom([uid], data.roomId);
+		}
+
+		const [canReply, users, messages, isAdmin, isGlobalMod, isOwner] = await Promise.all([
 			Messaging.canReply(data.roomId, uid),
-			Messaging.getUsersInRoom(data.roomId, 0, -1),
+			Messaging.getUsersInRoom(data.roomId, 0, -1), // TODO: don't load every single user in room
 			Messaging.getMessages({
 				callerUid: uid,
 				uid: data.uid || uid,
 				roomId: data.roomId,
 				isNew: false,
 			}),
-			user.isAdminOrGlobalMod(uid),
+			user.isAdministrator(uid),
+			user.isGlobalModerator(uid),
 			Messaging.isRoomOwner(uid, data.roomId),
 		]);
 
@@ -283,7 +331,8 @@ module.exports = function (Messaging) {
 		room.maximumUsersInChatRoom = meta.config.maximumUsersInChatRoom;
 		room.maximumChatMessageLength = meta.config.maximumChatMessageLength;
 		room.showUserInput = !room.maximumUsersInChatRoom || room.maximumUsersInChatRoom > 2;
-		room.isAdminOrGlobalMod = isAdminOrGlobalMod;
+		room.isAdminOrGlobalMod = isAdmin || isGlobalMod;
+		room.isAdmin = isAdmin;
 
 		const payload = await plugins.hooks.fire('filter:messaging.loadRoom', { uid, data, room });
 		return payload.room;

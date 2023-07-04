@@ -28,7 +28,7 @@ define('forum/chats/create', [
 					className: 'btn-primary',
 					callback: async function () {
 						const roomName = modal.find('[component="chat/room/name"]').val();
-						const uids = modal.find('[component="chat/room/users"]').find('[data-uid]').map(
+						const uids = modal.find('[component="chat/room/users"] [component="chat/user"]').find('[data-uid]').map(
 							(i, el) => $(el).attr('data-uid')
 						).get();
 						const type = modal.find('[component="chat/room/type"]').val();
@@ -74,12 +74,10 @@ define('forum/chats/create', [
 	}
 
 	async function createRoom(params) {
-		console.log(params);
 		if (!app.user.uid) {
 			return alerts.error('[[error:not-logged-in]]');
 		}
 		const { roomId } = await api.post(`/chats`, params);
-		console.log('gg', roomId);
 		ajaxify.go('chats/' + roomId);
 	}
 

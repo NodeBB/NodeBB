@@ -2,6 +2,8 @@
 
 const api = require('../../api');
 const helpers = require('../helpers');
+const messaging = require('../../messaging');
+const events = require('../../events');
 
 const Admin = module.exports;
 
@@ -27,6 +29,19 @@ Admin.getAnalyticsData = async (req, res) => {
 		amount: req.query.amount,
 		units: req.query.units,
 	}));
+};
+
+Admin.chats = {};
+
+Admin.chats.deleteRoom = async (req, res) => {
+	await messaging.deleteRooms([req.params.roomId]);
+
+	events.log({
+		type: 'chat-room-deleted',
+		uid: req.uid,
+		ip: req.ip,
+	});
+	helpers.formatApiResponse(200, res);
 };
 
 Admin.generateToken = async (req, res) => {
