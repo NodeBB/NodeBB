@@ -139,17 +139,18 @@ chatsAPI.mark = async (caller, data) => {
 };
 
 chatsAPI.users = async (caller, data) => {
-	// TODO: called when manage room is opened, loads all users :(
+	const start = data.hasOwnProperty('start') ? data.start : 0;
+	const stop = start + 39;
 	const [isOwner, isUserInRoom, users] = await Promise.all([
 		messaging.isRoomOwner(caller.uid, data.roomId),
 		messaging.isUserInRoom(caller.uid, data.roomId),
-		messaging.getUsersInRoom(data.roomId, 0, -1),
+		messaging.getUsersInRoom(data.roomId, start, stop),
 	]);
 	if (!isUserInRoom) {
 		throw new Error('[[error:no-privileges]]');
 	}
 	users.forEach((user) => {
-		user.canKick = (parseInt(user.uid, 10) !== parseInt(caller.uid, 10)) && isOwner;
+		user.canKick = isOwner && (parseInt(user.uid, 10) !== parseInt(caller.uid, 10));
 	});
 	return { users };
 };

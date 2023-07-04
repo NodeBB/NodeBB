@@ -34,6 +34,7 @@
 	"chat.private.option": "Private (Only visible to users added to room)",
 	"chat.public.option": "Public (Visible to every user in selected groups)",
 	"chat.manage-room": "Manage Chat Room",
+	"chat.add-user": "Add User",
 	"chat.add-user-help": "Search for users here. When selected, the user will be added to the chat. The new user will not be able to see chat messages written before they were added to the conversation. Only room owners (<i class=\"fa fa-star text-warning\"></i>) may remove users from chat rooms.",
 	"chat.confirm-chat-with-dnd-user": "This user has set their status to DnD(Do not disturb). Do you still want to chat with them?",
 	"chat.room-name-optional": "Room Name (Optional)",

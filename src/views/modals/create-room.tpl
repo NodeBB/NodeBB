@@ -5,7 +5,7 @@
 	</div>
 	<div class="mb-3">
 		<div class="dropdown mb-3">
-			<label class="form-label">[[global:users]]</label>
+			<label class="form-label">[[modules:chat.add-user]]</label>
 			<input component="chat/search" class="form-control" type="text" placeholder="[[global:user-search-prompt]]" data-bs-toggle="dropdown"/>
 			<ul component="chat/search/list" class="dropdown-menu p-1 overflow-auto" style="max-height: 400px;">
 				<li component="chat/search/start-typing"><a href="#" class="dropdown-item rounded-1">[[admin/menu:search.start-typing]]</a></li>

@@ -7,6 +7,7 @@ define('forum/chats', [
 	'mousetrap',
 	'forum/chats/recent',
 	'forum/chats/create',
+	'forum/chats/manage',
 	'forum/chats/messages',
 	'composer/autocomplete',
 	'hooks',
@@ -17,7 +18,7 @@ define('forum/chats', [
 	'uploadHelpers',
 ], function (
 	components, translator, mousetrap,
-	recentChats, create, messages,
+	recentChats, create, manage, messages,
 	autocomplete, hooks, bootbox, alerts, chatModule,
 	api, uploadHelpers
 ) {
@@ -67,7 +68,7 @@ define('forum/chats', [
 		Chats.addSendHandlers(ajaxify.data.roomId, $('.chat-input'), $('.expanded-chat button[data-action="send"]'));
 		Chats.addPopoutHandler();
 		Chats.addActionHandlers(components.get('chat/messages'), ajaxify.data.roomId);
-		Chats.addMemberHandler(ajaxify.data.roomId, components.get('chat/controls').find('[data-action="members"]'));
+		Chats.addManageHandler(ajaxify.data.roomId, components.get('chat/controls').find('[data-action="members"]'));
 		Chats.addRenameHandler(ajaxify.data.roomId, components.get('chat/controls').find('[data-action="rename"]'));
 		Chats.addLeaveHandler(ajaxify.data.roomId, components.get('chat/controls').find('[data-action="leave"]'));
 		Chats.addDeleteHandler(ajaxify.data.roomId, components.get('chat/controls').find('[data-action="delete"]'));
@@ -266,50 +267,8 @@ define('forum/chats', [
 		});
 	};
 
-	Chats.addMemberHandler = function (roomId, buttonEl) {
-		let modal;
-
-		buttonEl.on('click', function () {
-			app.parseAndTranslate('modals/manage-room', {}, function (html) {
-				modal = bootbox.dialog({
-					title: '[[modules:chat.manage-room]]',
-					message: html,
-				});
-
-				modal.attr('component', 'chat/manage-modal');
-
-				Chats.refreshParticipantsList(roomId, modal);
-				Chats.addKickHandler(roomId, modal);
-
-				const searchInput = modal.find('input');
-				const errorEl = modal.find('.text-danger');
-				require(['autocomplete', 'translator'], function (autocomplete, translator) {
-					autocomplete.user(searchInput, function (event, selected) {
-						errorEl.text('');
-						api.post(`/chats/${roomId}/users`, {
-							uids: [selected.item.user.uid],
-						}).then((body) => {
-							Chats.refreshParticipantsList(roomId, modal, body);
-							searchInput.val('');
-						}).catch((err) => {
-							translator.translate(err.message, function (translated) {
-								errorEl.text(translated);
-							});
-						});
-					});
-				});
-			});
-		});
-	};
-
-	Chats.addKickHandler = function (roomId, modal) {
-		modal.on('click', '[data-action="kick"]', function () {
-			const uid = parseInt(this.getAttribute('data-uid'), 10);
-
-			api.del(`/chats/${roomId}/users/${uid}`, {}).then((body) => {
-				Chats.refreshParticipantsList(roomId, modal, body);
-			}).catch(alerts.error);
-		});
+	Chats.addManageHandler = function (roomId, buttonEl) {
+		manage.init(roomId, buttonEl);
 	};
 
 	Chats.addLeaveHandler = function (roomId, buttonEl) {
@@ -357,24 +316,6 @@ define('forum/chats', [
 					}
 				},
 			});
-		});
-	};
-
-	Chats.refreshParticipantsList = async (roomId, modal, data) => {
-		const listEl = modal.find('.list-group');
-
-		if (!data) {
-			try {
-				data = await api.get(`/chats/${roomId}/users`, {});
-			} catch (err) {
-				translator.translate('[[error:invalid-data]]', function (translated) {
-					listEl.find('li').text(translated);
-				});
-			}
-		}
-
-		app.parseAndTranslate('partials/chats/manage-room-users', data, function (html) {
-			listEl.html(html);
 		});
 	};
 
@@ -492,6 +433,7 @@ define('forum/chats', [
 								components.get('chat/main-wrapper').html(html);
 								html.find('.timeago').timeago();
 								ajaxify.data = payload;
+								$('[component="chat/main-wrapper"] [data-bs-toggle="tooltip"]').tooltip();
 								Chats.setActive();
 								Chats.addEventListeners();
 								hooks.fire('action:chat.loaded', $('.chats-full'));

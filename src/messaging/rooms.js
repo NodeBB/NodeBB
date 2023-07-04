@@ -246,6 +246,7 @@ module.exports = function (Messaging) {
 		]);
 
 		return users.map((user, index) => {
+			user.index = start + index;
 			user.isOwner = isOwners[index];
 			return user;
 		});
@@ -310,7 +311,7 @@ module.exports = function (Messaging) {
 
 		const [canReply, users, messages, isAdmin, isGlobalMod, isOwner, userCount] = await Promise.all([
 			Messaging.canReply(roomId, uid),
-			Messaging.getUsersInRoom(roomId, 0, 29),
+			Messaging.getUsersInRoom(roomId, 0, 39),
 			Messaging.getMessages({
 				callerUid: uid,
 				uid: data.uid || uid,

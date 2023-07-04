@@ -60,7 +60,8 @@ Chats.mark = async (req, res) => {
 
 Chats.users = async (req, res) => {
 	const { roomId } = req.params;
-	const users = await api.chats.users(req, { roomId });
+	const start = parseInt(req.query.start, 10) || 0;
+	const users = await api.chats.users(req, { roomId, start });
 
 	helpers.formatApiResponse(200, res, users);
 };
