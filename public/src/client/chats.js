@@ -33,6 +33,10 @@ define('forum/chats', [
 	});
 
 	Chats.init = function () {
+		if (ajaxify.data.roomId) {
+			app.enterRoom(`chat_room_${ajaxify.data.roomId}`);
+		}
+
 		const env = utils.findBootstrapEnvironment();
 
 		if (!Chats.initialised) {
