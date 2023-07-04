@@ -120,7 +120,7 @@ chatsAPI.mark = async (caller, data) => {
 		if (!isUserInRoom) {
 			return;
 		}
-		let chatNids = await db.sortedSetScan({
+		let chatNids = await db.getSortedSetScan({
 			key: `uid:${caller.uid}:notifications:unread`,
 			match: `chat_*`,
 		});
@@ -139,6 +139,7 @@ chatsAPI.mark = async (caller, data) => {
 };
 
 chatsAPI.users = async (caller, data) => {
+	// TODO: called when manage room is opened, loads all users :(
 	const [isOwner, isUserInRoom, users] = await Promise.all([
 		messaging.isRoomOwner(caller.uid, data.roomId),
 		messaging.isUserInRoom(caller.uid, data.roomId),

@@ -286,9 +286,10 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.loadRoom = async (uid, data) => {
+		const { roomId } = data;
 		const [room, inRoom, canChat] = await Promise.all([
-			Messaging.getRoomData(data.roomId),
-			Messaging.isUserInRoom(uid, data.roomId),
+			Messaging.getRoomData(roomId),
+			Messaging.isUserInRoom(uid, roomId),
 			privileges.global.can('chat', uid),
 		]);
 
@@ -304,21 +305,22 @@ module.exports = function (Messaging) {
 
 		// add user to public room onload
 		if (room.public && !inRoom) {
-			await addUidsToRoom([uid], data.roomId);
+			await addUidsToRoom([uid], roomId);
 		}
 
-		const [canReply, users, messages, isAdmin, isGlobalMod, isOwner] = await Promise.all([
-			Messaging.canReply(data.roomId, uid),
-			Messaging.getUsersInRoom(data.roomId, 0, -1), // TODO: don't load every single user in room
+		const [canReply, users, messages, isAdmin, isGlobalMod, isOwner, userCount] = await Promise.all([
+			Messaging.canReply(roomId, uid),
+			Messaging.getUsersInRoom(roomId, 0, 29),
 			Messaging.getMessages({
 				callerUid: uid,
 				uid: data.uid || uid,
-				roomId: data.roomId,
+				roomId: roomId,
 				isNew: false,
 			}),
 			user.isAdministrator(uid),
 			user.isGlobalModerator(uid),
-			Messaging.isRoomOwner(uid, data.roomId),
+			Messaging.isRoomOwner(uid, roomId),
+			db.sortedSetCard(`chat:room:${roomId}:uids`),
 		]);
 
 		room.messages = messages;
@@ -333,6 +335,7 @@ module.exports = function (Messaging) {
 		room.showUserInput = !room.maximumUsersInChatRoom || room.maximumUsersInChatRoom > 2;
 		room.isAdminOrGlobalMod = isAdmin || isGlobalMod;
 		room.isAdmin = isAdmin;
+		room.userCount = userCount;
 
 		const payload = await plugins.hooks.fire('filter:messaging.loadRoom', { uid, data, room });
 		return payload.room;

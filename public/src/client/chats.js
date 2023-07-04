@@ -37,6 +37,8 @@ define('forum/chats', [
 			app.enterRoom(`chat_room_${ajaxify.data.roomId}`);
 		}
 
+		$('.chats-full [data-bs-toggle="tooltip"]').tooltip();
+
 		const env = utils.findBootstrapEnvironment();
 
 		if (!Chats.initialised) {
@@ -53,14 +55,12 @@ define('forum/chats', [
 			Chats.addHotkeys();
 		}
 
-		$(document).ready(function () {
-			hooks.fire('action:chat.loaded', $('.chats-full'));
-		});
-
 		Chats.initialised = true;
 		messages.scrollToBottom($('.expanded-chat ul.chat-content'));
 		messages.wrapImagesInLinks($('.expanded-chat ul.chat-content'));
 		create.init();
+
+		hooks.fire('action:chat.loaded', $('.chats-full'));
 	};
 
 	Chats.addEventListeners = function () {
@@ -87,6 +87,9 @@ define('forum/chats', [
 
 		$('[data-action="close"]').on('click', function () {
 			Chats.switchChat();
+		});
+		$('[component="chat/user/list/btn"]').on('click', () => {
+			$('[component="chat/users/list"]').toggleClass('hidden');
 		});
 	};
 
