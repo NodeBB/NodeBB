@@ -334,11 +334,11 @@ async function checkReputation(uid) {
 	if (meta.config['reputation:disabled']) {
 		return;
 	}
-	const [reputation, isAdmin] = await Promise.all([
+	const [reputation, isPrivileged] = await Promise.all([
 		user.getUserField(uid, 'reputation'),
-		user.isAdministrator(uid),
+		user.isPrivileged(uid),
 	]);
-	if (!isAdmin && meta.config['min:rep:chat'] > reputation) {
+	if (!isPrivileged && meta.config['min:rep:chat'] > reputation) {
 		throw new Error(`[[error:not-enough-reputation-to-chat, ${meta.config['min:rep:chat']}]]`);
 	}
 }
