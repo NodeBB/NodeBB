@@ -15,6 +15,9 @@ RoomObject:
     public:
       type: boolean
       description: whether the chat room is public or private
+    userCount:
+      type: number
+      description: number of users in this chat room
 MessageObject:
   type: object
   properties:

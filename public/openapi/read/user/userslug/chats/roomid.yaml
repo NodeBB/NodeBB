@@ -176,6 +176,8 @@ get:
                           type: string
                         public:
                           type: boolean
+                        userCount:
+                          type: number
                         users:
                           type: array
                           items:
