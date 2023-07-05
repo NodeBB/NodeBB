@@ -94,8 +94,8 @@ define('forum/chats/messages', [
 			messages.scrollToBottom(chatContentEl);
 			// remove some message elements if there are too many
 			const chatMsgEls = chatContentEl.find('[data-mid]');
-			if (chatMsgEls.length > 50) {
-				const removeCount = chatMsgEls.length - 50;
+			if (chatMsgEls.length > 150) {
+				const removeCount = chatMsgEls.length - 150;
 				chatMsgEls.slice(0, removeCount).remove();
 			}
 		}
