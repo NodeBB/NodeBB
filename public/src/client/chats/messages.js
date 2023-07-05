@@ -72,8 +72,9 @@ define('forum/chats/messages', [
 	}
 
 	messages.appendChatMessage = function (chatContentEl, data) {
-		const lastSpeaker = parseInt(chatContentEl.find('.chat-message').last().attr('data-uid'), 10);
-		const lasttimestamp = parseInt(chatContentEl.find('.chat-message').last().attr('data-timestamp'), 10);
+		const lastMsgEl = chatContentEl.find('.chat-message').last();
+		const lastSpeaker = parseInt(lastMsgEl.attr('data-uid'), 10);
+		const lasttimestamp = parseInt(lastMsgEl.attr('data-timestamp'), 10);
 		if (!Array.isArray(data)) {
 			data.newSet = lastSpeaker !== parseInt(data.fromuid, 10) ||
 				parseInt(data.timestamp, 10) > parseInt(lasttimestamp, 10) + (1000 * 60 * 3);
@@ -91,6 +92,12 @@ define('forum/chats/messages', [
 		messages.onMessagesAddedToDom(newMessage);
 		if (isAtBottom) {
 			messages.scrollToBottom(chatContentEl);
+			// remove some message elements if there are too many
+			const chatMsgEls = chatContentEl.find('[data-mid]');
+			if (chatMsgEls.length > 50) {
+				const removeCount = chatMsgEls.length - 50;
+				chatMsgEls.slice(0, removeCount).remove();
+			}
 		}
 
 		hooks.fire('action:chat.received', {

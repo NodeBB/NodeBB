@@ -36,9 +36,13 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.addMessage = async (data) => {
+		const { uid, roomId } = data;
+		const roomData = await Messaging.getRoomData(roomId);
+		if (!roomData) {
+			throw new Error('[[error:no-room]]');
+		}
 		const mid = await db.incrObjectField('global', 'nextMid');
 		const timestamp = data.timestamp || Date.now();
-		const { uid, roomId } = data;
 		let message = {
 			content: String(data.content),
 			timestamp: timestamp,
@@ -51,28 +55,24 @@ module.exports = function (Messaging) {
 		if (data.ip) {
 			message.ip = data.ip;
 		}
-		const roomData = await Messaging.getRoomData(roomId);
-		if (!roomData) {
-			throw new Error('[[error:no-room]]');
-		}
 
 		message = await plugins.hooks.fire('filter:messaging.save', message);
 		await db.setObject(`message:${mid}`, message);
 		const isNewSet = await Messaging.isNewSet(uid, roomId, timestamp);
 
-		if (roomData.public) {
-			await Promise.all([
-				Messaging.addMessageToRoom(roomId, mid, timestamp),
-			]);
-		} else {
-			let uids = await db.getSortedSetRange(`chat:room:${roomId}:uids`, 0, -1);
+		const tasks = [
+			Messaging.addMessageToRoom(roomId, mid, timestamp),
+		];
+
+		if (!roomData.public) {
+			let uids = await Messaging.getUidsInRoom(roomId, 0, -1);
 			uids = await user.blocks.filterUids(uid, uids);
-			await Promise.all([
-				Messaging.addMessageToRoom(roomId, mid, timestamp),
+			tasks.push(
 				Messaging.addRoomToUsers(roomId, uids, timestamp),
 				Messaging.markUnread(uids.filter(uid => uid !== String(data.uid)), roomId),
-			]);
+			);
 		}
+		await Promise.all(tasks);
 
 		const messages = await Messaging.getMessagesData([mid], uid, roomId, true);
 		if (!messages || !messages[0]) {

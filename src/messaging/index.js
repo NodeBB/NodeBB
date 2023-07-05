@@ -109,11 +109,13 @@ Messaging.isNewSet = async (uid, roomId, timestamp) => {
 
 Messaging.getPublicRooms = async (callerUid) => {
 	const roomIds = await db.getSortedSetRange('chat:rooms:public', 0, -1);
-	const roomData = await Messaging.getRoomsData(roomIds);
+	const allRoomData = await Messaging.getRoomsData(roomIds);
 	const checks = await Promise.all(
-		roomData.map(room => groups.isMemberOfAny(callerUid, room && room.groups))
+		allRoomData.map(room => groups.isMemberOfAny(callerUid, room && room.groups))
 	);
-	return roomData.filter((room, idx) => room && checks[idx]);
+	const roomData = allRoomData.filter((room, idx) => room && checks[idx]);
+
+	return roomData;
 };
 
 Messaging.getRecentChats = async (callerUid, uid, start, stop) => {

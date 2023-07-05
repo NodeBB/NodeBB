@@ -2,6 +2,7 @@
 
 const winston = require('winston');
 
+// const db = require('../database');
 const user = require('../user');
 const notifications = require('../notifications');
 const sockets = require('../socket.io');
@@ -12,6 +13,8 @@ module.exports = function (Messaging) {
 	Messaging.notifyQueue = {}; // Only used to notify a user of a new chat message, see Messaging.notifyUser
 
 	Messaging.notifyUsersInRoom = async (fromUid, roomId, messageObj) => {
+		// const isPublic = parseInt(await db.getObjectField(`chat:room:${roomId}`, 'public'), 10) === 1;
+
 		let uids = await Messaging.getUidsInRoom(roomId, 0, -1);
 		uids = await user.blocks.filterUids(fromUid, uids);
 
@@ -26,10 +29,20 @@ module.exports = function (Messaging) {
 			return;
 		}
 
+		// const gg = await sockets.in('online_users').fetchSockets();
+		// console.log('derp');
+		// gg.forEach(g => console.log(g.rooms));
+
 		uids = data.uids;
 		uids.forEach((uid) => {
 			data.self = parseInt(uid, 10) === parseInt(fromUid, 10) ? 1 : 0;
+
+			// TODO: user is offline :( why push unread
+			// maybe move this to client side, when user receives chat msg update count?
+			// sockets.in(`chat_room_${roomId}`).emit('event:chats.receive', data);
+
 			Messaging.pushUnreadCount(uid);
+
 			sockets.in(`uid_${uid}`).emit('event:chats.receive', data);
 		});
 		if (messageObj.system) {
