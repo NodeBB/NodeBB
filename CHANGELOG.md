@@ -1,3 +1,32 @@
+#### v3.2.1 (2023-07-05)
+
+##### Chores
+
+*  up harmony (9fc5ae08)
+*  up composer (82d37702)
+*  up spider-detector (97d8f858)
+*  incrementing version number - v3.2.0 (9ecac38e)
+*  update changelog for v3.2.0 (080f9e75)
+*  incrementing version number - v3.1.7 (0b4e81ab)
+*  incrementing version number - v3.1.6 (b3a3b130)
+*  incrementing version number - v3.1.5 (ec19343a)
+*  incrementing version number - v3.1.4 (2452783c)
+*  incrementing version number - v3.1.3 (3b4e9d3f)
+*  incrementing version number - v3.1.2 (40fa3489)
+*  incrementing version number - v3.1.1 (40250733)
+*  incrementing version number - v3.1.0 (0cb386bd)
+*  incrementing version number - v3.0.1 (26f6ea49)
+*  incrementing version number - v3.0.0 (224e08cd)
+
+##### Bug Fixes
+
+*  #11766, allow privileged users to vote and chat (1bda9073)
+*  #11775, trim -rtl from targetSkin (0183e5f8)
+*  #11773, fix create token button (64d30182)
+*  add ?page= to canonical urls (4045681a)
+*  group membership methods for guests/spiders (7d5fe20b)
+* **deps:**  update dependency nodebb-plugin-emoji to v5.1.3 (#11777) (a1110f10)
+
 #### v3.2.0 (2023-06-28)
 
 ##### Chores
