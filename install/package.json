@@ -79,7 +79,7 @@
         "jquery-ui": "1.13.2",
         "jsesc": "3.0.2",
         "json2csv": "5.0.7",
-        "jsonwebtoken": "9.0.0",
+        "jsonwebtoken": "9.0.1",
         "less": "4.1.3",
         "lodash": "4.17.21",
         "logrotate-stream": "0.2.9",
