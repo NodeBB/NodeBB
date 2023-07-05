@@ -1,23 +1,31 @@
 'use strict';
 
 const db = require('../database');
-const sockets = require('../socket.io');
+const io = require('../socket.io');
 
 module.exports = function (Messaging) {
 	Messaging.getUnreadCount = async (uid) => {
-		if (parseInt(uid, 10) <= 0) {
+		if (!(parseInt(uid, 10) > 0)) {
 			return 0;
 		}
 
 		return await db.sortedSetCard(`uid:${uid}:chat:rooms:unread`);
 	};
 
-	Messaging.pushUnreadCount = async (uid) => {
-		if (parseInt(uid, 10) <= 0) {
+	Messaging.pushUnreadCount = async (uids, message = null) => {
+		if (!Array.isArray(uids)) {
+			uids = [uids];
+		}
+		uids = uids.filter(uid => parseInt(uid, 10) > 0);
+		if (!uids.length) {
 			return;
 		}
-		const unreadCount = await Messaging.getUnreadCount(uid);
-		sockets.in(`uid_${uid}`).emit('event:unread.updateChatCount', unreadCount);
+
+		uids.forEach((uid) => {
+			io.in(`uid_${uid}`).emit('event:unread.updateChatCount', {
+				message: message,
+			});
+		});
 	};
 
 	Messaging.markRead = async (uid, roomId) => {

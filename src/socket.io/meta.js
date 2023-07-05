@@ -36,16 +36,6 @@ SocketMeta.rooms.enter = async function (socket, data) {
 		throw new Error('[[error:not-allowed]]');
 	}
 
-	if (data.enter && data.enter.startsWith('chat_room_')) {
-		const [isAdmin, inRoom] = await Promise.all([
-			user.isAdministrator(socket.uid),
-			messaging.isUserInRoom(socket.uid, data.enter.split('_').pop()),
-		]);
-		if (!isAdmin && !inRoom) {
-			throw new Error('[[error:not-allowed]]');
-		}
-	}
-
 	leaveCurrentRoom(socket);
 
 	if (data.enter) {

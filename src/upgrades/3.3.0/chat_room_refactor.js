@@ -49,6 +49,7 @@ module.exports = {
 				);
 
 				await db.setObjectBulk(bulkSet);
+				await db.setObjectField(`chat:room:${roomId}`, 'userCount', uids.length);
 				await db.sortedSetAdd(
 					`chat:room:${roomId}:mids`,
 					messageData.map(m => m.timestamp),

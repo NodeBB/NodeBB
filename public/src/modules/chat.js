@@ -166,6 +166,10 @@ define('chat', [
 	};
 
 	module.onChatMessageReceived = function (data) {
+		if (app.user.blocks.includes(parseInt(data.fromUid, 10))) {
+			return;
+		}
+		data.self = parseInt(app.user.uid, 10) === parseInt(data.fromUid, 10) ? 1 : 0;
 		if (!newMessage) {
 			newMessage = data.self === 0;
 		}
@@ -387,10 +391,11 @@ define('chat', [
 		if (chatModal.attr('data-mobile')) {
 			module.disableMobileBehaviour(chatModal);
 		}
+		const roomId = chatModal.attr('data-roomid');
 		require(['forum/chats'], function (chats) {
-			chats.destroyAutoComplete(chatModal.attr('data-roomid'));
+			chats.destroyAutoComplete(roomId);
 		});
-
+		socket.emit('modules.chats.leave', roomId);
 		hooks.fire('action:chat.closed', {
 			uuid: uuid,
 			modal: chatModal,
@@ -423,8 +428,9 @@ define('chat', [
 			taskbar.updateActive(uuid);
 			ChatsMessages.scrollToBottom(chatModal.find('.chat-content'));
 			module.focusInput(chatModal);
-			api.del(`/chats/${chatModal.attr('data-roomid')}/state`, {});
-
+			const roomId = chatModal.attr('data-roomid');
+			api.del(`/chats/${roomId}/state`, {});
+			socket.emit('modules.chats.enter', roomId);
 			const env = utils.findBootstrapEnvironment();
 			if (env === 'xs' || env === 'sm') {
 				module.enableMobileBehaviour(chatModal);

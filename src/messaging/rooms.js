@@ -10,10 +10,17 @@ const groups = require('../groups');
 const plugins = require('../plugins');
 const privileges = require('../privileges');
 const meta = require('../meta');
+const cacheCreate = require('../cacheCreate');
+
+const cache = cacheCreate({
+	name: 'chat:room:uids',
+	max: 500,
+	ttl: 0,
+});
 
 module.exports = function (Messaging) {
-	Messaging.getRoomData = async (roomId) => {
-		const data = await db.getObject(`chat:room:${roomId}`);
+	Messaging.getRoomData = async (roomId, fields = []) => {
+		const data = await db.getObject(`chat:room:${roomId}`, fields);
 		if (!data) {
 			throw new Error('[[error:no-chat-room]]');
 		}
@@ -22,9 +29,10 @@ module.exports = function (Messaging) {
 		return data;
 	};
 
-	Messaging.getRoomsData = async (roomIds) => {
+	Messaging.getRoomsData = async (roomIds, fields = []) => {
 		const roomData = await db.getObjects(
-			roomIds.map(roomId => `chat:room:${roomId}`)
+			roomIds.map(roomId => `chat:room:${roomId}`),
+			fields
 		);
 		modifyRoomData(roomData);
 		return roomData;
@@ -37,6 +45,9 @@ module.exports = function (Messaging) {
 				data.public = parseInt(data.public, 10) === 1;
 				if (data.hasOwnProperty('groupChat')) {
 					data.groupChat = parseInt(data.groupChat, 10) === 1;
+				}
+				if (data.hasOwnProperty('userCount')) {
+					data.userCount = parseInt(data.userCount, 10) || 0;
 				}
 				if (data.hasOwnProperty('groups')) {
 					try {
@@ -162,7 +173,7 @@ module.exports = function (Messaging) {
 		const now = Date.now();
 		const timestamps = uids.map(() => now);
 		await db.sortedSetAdd(`chat:room:${roomId}:uids`, timestamps, uids);
-		await updateGroupChatField([roomId]);
+		await updateUserCount([roomId]);
 		await Promise.all(uids.map(uid => Messaging.addSystemMessage('user-join', uid, roomId)));
 	}
 
@@ -184,14 +195,16 @@ module.exports = function (Messaging) {
 		return (await Messaging.getRoomData(roomId)).groupChat;
 	};
 
-	async function updateGroupChatField(roomIds) {
+	async function updateUserCount(roomIds) {
 		const userCounts = await db.sortedSetsCard(roomIds.map(roomId => `chat:room:${roomId}:uids`));
+		const countMap = _.zipObject(roomIds, userCounts);
 		const groupChats = roomIds.filter((roomId, index) => userCounts[index] > 2);
 		const privateChats = roomIds.filter((roomId, index) => userCounts[index] <= 2);
 		await db.setObjectBulk([
-			...groupChats.map(id => [`chat:room:${id}`, { groupChat: 1 }]),
-			...privateChats.map(id => [`chat:room:${id}`, { groupChat: 0 }]),
+			...groupChats.map(id => [`chat:room:${id}`, { groupChat: 1, userCount: countMap[id] }]),
+			...privateChats.map(id => [`chat:room:${id}`, { groupChat: 0, userCount: countMap[id] }]),
 		]);
+		cache.del(roomIds.map(id => `chat:room:${id}:users`));
 	}
 
 	Messaging.leaveRoom = async (uids, roomId) => {
@@ -209,7 +222,7 @@ module.exports = function (Messaging) {
 
 		await Promise.all(uids.map(uid => Messaging.addSystemMessage('user-leave', uid, roomId)));
 		await updateOwner(roomId);
-		await updateGroupChatField([roomId]);
+		await updateUserCount([roomId]);
 	};
 
 	Messaging.leaveRooms = async (uid, roomIds) => {
@@ -229,7 +242,7 @@ module.exports = function (Messaging) {
 			roomIds.map(roomId => updateOwner(roomId))
 				.concat(roomIds.map(roomId => Messaging.addSystemMessage('user-leave', uid, roomId)))
 		);
-		await updateGroupChatField(roomIds);
+		await updateUserCount(roomIds);
 	};
 
 	async function updateOwner(roomId) {
@@ -237,6 +250,17 @@ module.exports = function (Messaging) {
 		const newOwner = uids[0] || 0;
 		await db.setObjectField(`chat:room:${roomId}`, 'owner', newOwner);
 	}
+
+	Messaging.getAllUidsInRoom = async function (roomId) {
+		const cacheKey = `chat:room:${roomId}:users`;
+		let uids = cache.get(cacheKey);
+		if (uids !== undefined) {
+			return uids;
+		}
+		uids = await Messaging.getUidsInRoom(roomId, 0, -1);
+		cache.set(cacheKey, uids);
+		return uids;
+	};
 
 	Messaging.getUidsInRoom = async (roomId, start, stop) => db.getSortedSetRange(`chat:room:${roomId}:uids`, start, stop);
 
@@ -311,7 +335,7 @@ module.exports = function (Messaging) {
 			await addUidsToRoom([uid], roomId);
 		}
 
-		const [canReply, users, messages, isAdmin, isGlobalMod, isOwner, userCount] = await Promise.all([
+		const [canReply, users, messages, isAdmin, isGlobalMod, isOwner] = await Promise.all([
 			Messaging.canReply(roomId, uid),
 			Messaging.getUsersInRoom(roomId, 0, 39),
 			Messaging.getMessages({
@@ -323,7 +347,6 @@ module.exports = function (Messaging) {
 			user.isAdministrator(uid),
 			user.isGlobalModerator(uid),
 			Messaging.isRoomOwner(uid, roomId),
-			db.sortedSetCard(`chat:room:${roomId}:uids`),
 		]);
 
 		room.messages = messages;
@@ -338,7 +361,6 @@ module.exports = function (Messaging) {
 		room.showUserInput = !room.maximumUsersInChatRoom || room.maximumUsersInChatRoom > 2;
 		room.isAdminOrGlobalMod = isAdmin || isGlobalMod;
 		room.isAdmin = isAdmin;
-		room.userCount = userCount;
 
 		const payload = await plugins.hooks.fire('filter:messaging.loadRoom', { uid, data, room });
 		return payload.room;

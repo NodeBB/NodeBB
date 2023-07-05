@@ -31,13 +31,10 @@ define('forum/chats', [
 
 	$(window).on('action:ajaxify.start', function () {
 		Chats.destroyAutoComplete(ajaxify.data.roomId);
+		socket.emit('modules.chats.leave', ajaxify.data.roomId);
 	});
 
 	Chats.init = function () {
-		if (ajaxify.data.roomId) {
-			app.enterRoom(`chat_room_${ajaxify.data.roomId}`);
-		}
-
 		$('.chats-full [data-bs-toggle="tooltip"]').tooltip();
 
 		const env = utils.findBootstrapEnvironment();
@@ -419,6 +416,7 @@ define('forum/chats', [
 			roomid = '';
 		}
 		Chats.destroyAutoComplete(ajaxify.data.roomId);
+		socket.emit('modules.chats.leave', ajaxify.data.roomId);
 		const url = 'user/' + ajaxify.data.userslug + '/chats/' + roomid + window.location.search;
 		if (self.fetch) {
 			fetch(config.relative_path + '/api/' + url, { credentials: 'include' })
@@ -464,6 +462,10 @@ define('forum/chats', [
 
 	Chats.addSocketListeners = function () {
 		socket.on('event:chats.receive', function (data) {
+			if (app.user.blocks.includes(parseInt(data.fromUid, 10))) {
+				return;
+			}
+			data.self = parseInt(app.user.uid, 10) === parseInt(data.fromUid, 10) ? 1 : 0;
 			if (parseInt(data.roomId, 10) === parseInt(ajaxify.data.roomId, 10)) {
 				if (!newMessage) {
 					newMessage = data.self === 0;
@@ -531,6 +533,7 @@ define('forum/chats', [
 		const chatNavWrapper = $('[component="chat/nav-wrapper"]');
 		chatNavWrapper.find('[data-roomid]').removeClass('active');
 		if (ajaxify.data.roomId) {
+			socket.emit('modules.chats.enter', ajaxify.data.roomId);
 			const chatEl = chatNavWrapper.find(`[data-roomid="${ajaxify.data.roomId}"]`);
 			chatEl.addClass('active');
 			if (chatEl.hasClass('unread')) {

@@ -1,6 +1,8 @@
 'use strict';
 
-define('forum/header/chat', ['components', 'hooks'], function (components, hooks) {
+define('forum/header/chat', [
+	'components', 'hooks', 'alerts',
+], function (components, hooks, alerts) {
 	const chat = {};
 
 	chat.prepareDOM = function () {
@@ -29,7 +31,18 @@ define('forum/header/chat', ['components', 'hooks'], function (components, hooks
 		socket.removeListener('event:chats.roomRename', onRoomRename);
 		socket.on('event:chats.roomRename', onRoomRename);
 
-		socket.on('event:unread.updateChatCount', function (count) {
+		socket.on('event:unread.updateChatCount', async function (data) {
+			const { message } = data;
+			if (message) {
+				if (app.user.blocks.includes(parseInt(message.fromUid, 10))) {
+					return;
+				}
+				if (ajaxify.data.template.chats && parseInt(ajaxify.data.roomId, 10) === parseInt(message.roomId, 10)) {
+					return;
+				}
+			}
+
+			let count = await socket.emit('modules.chats.getUnreadCount', {});
 			const chatIcon = components.get('chat/icon');
 			count = Math.max(0, count);
 			chatIcon.toggleClass('fa-comment', count > 0)

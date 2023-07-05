@@ -70,4 +70,28 @@ SocketModules.chats.getIP = async function (socket, mid) {
 	return await Messaging.getMessageField(mid, 'ip');
 };
 
+SocketModules.chats.getUnreadCount = async function (socket) {
+	return await Messaging.getUnreadCount(socket.uid);
+};
+
+SocketModules.chats.enter = async function (socket, roomId) {
+	await joinLeave(socket, roomId, 'join');
+};
+
+SocketModules.chats.leave = async function (socket, roomId) {
+	await joinLeave(socket, roomId, 'leave');
+};
+
+async function joinLeave(socket, roomId, method) {
+	if (parseInt(roomId, 10) > 0) {
+		const [isAdmin, inRoom] = await Promise.all([
+			user.isAdministrator(socket.uid),
+			Messaging.isUserInRoom(socket.uid, roomId),
+		]);
+		if (!isAdmin && !inRoom) {
+			throw new Error('[[error:not-allowed]]');
+		}
+		socket[method](`chat_room_${roomId}`);
+	}
+}
 require('../promisify')(SocketModules);
