@@ -9,9 +9,9 @@
 	"containers.none": "Nichts",
 	"container.well": "Well",
 	"container.jumbotron": "Jumbotron",
-	"container.card": "Card",
-	"container.card-header": "Card Header",
-	"container.card-body": "Card Body",
+	"container.card": "Karte",
+	"container.card-header": "Karten-Kopfzeile",
+	"container.card-body": "Karten-Körper",
 	"container.alert": "Alarm",
 
 	"alert.confirm-delete": "Möchtest Du dieses Widget wirklich löschen?",
@@ -27,7 +27,7 @@
 	"container.placeholder": "Ziehe einen Container per Drag-and-Drop oder gebe hier HTML ein.",
 	"show-to-groups": "Gruppen anzeigen",
 	"hide-from-groups": "Vor Gruppen verstecken",
-	"start-date": "Start date",
-	"end-date": "End date",
+	"start-date": "Anfangsdatum",
+	"end-date": "Enddatum",
 	"hide-on-mobile": "Auf dem Handy verstecken"
 }

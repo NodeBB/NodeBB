@@ -1,8 +1,8 @@
 {
-	"customise": "Customise",
-	"custom-css": "Custom CSS/SASS",
-	"custom-css.description": "Enter your own CSS/SASS declarations here, which will be applied after all other styles.",
-	"custom-css.enable": "Enable Custom CSS/SASS",
+	"customise": "Personalisieren",
+	"custom-css": "Benutzerdefiniertes CSS/SASS",
+	"custom-css.description": "Füge deine eigenen CSS/SASS Deklarationen hier ein, die nach allen anderen Styles angewandt werden.",
+	"custom-css.enable": "Benutzerdefiniertes CSS/SASS aktivieren",
 
 	"custom-js": "Benutzerdefiniertes Javascript",
 	"custom-js.description": "Füge dein eigenes Javascipt hier ein.\nEs wird ausgeführt nachdem die Seite komplett geladen wurde.",
@@ -15,6 +15,6 @@
 	"custom-css.livereload": "Live-Aktualisierung aktivieren",
 	"custom-css.livereload.description": "Aktiviere diese Einstellung um alle Sitzungen auf allen Geräten mit deinem Konto dazu zu zwingen Neuzuladen sobald du \"Speichern\" drückst",
 	"bsvariables": "_variables.scss",
-	"bsvariables.description": "Override bootstrap variables here. You can also use a tool like <a href=\"https://bootstrap.build/app\">bootstrap.build</a> and paste the output here.<br/>Changes require a rebuild & restart.",
-	"bsvariables.enable": "Enable _variables.scss"
+	"bsvariables.description": "Überschreibe Bootstrap-Variablen hier. Du kannst außerdem ein Tool wie <a href=\"https://bootstrap.build/app\">bootstrap.build</a> benutzen und das Ergebnis hier hereinkopieren.<br/>Änderungen benötigen einen Rebuild & Neustart.",
+	"bsvariables.enable": "_variables.scss aktivieren"
 }

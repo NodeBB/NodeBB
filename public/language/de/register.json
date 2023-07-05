@@ -1,6 +1,6 @@
 {
     "register": "Registrieren",
-    "already-have-account": "Already have an account?",
+    "already-have-account": "Du hast bereits ein Konto?",
     "cancel_registration": "Registrierungsvorgang abbrechen",
     "help.email": "Deine E-Mail Adresse ist standardmäßig nicht öffentlich sichtbar.",
     "help.username_restrictions": "Einen einmaligen Benutzernamen. %1-%2 Zeichen. Andere Benutzer können dich mit @<span id='yourUsername'>Benutzername</span> anschreiben.",
