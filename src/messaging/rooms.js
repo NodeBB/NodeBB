@@ -23,7 +23,9 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.getRoomsData = async (roomIds) => {
-		const roomData = await db.getObjects(roomIds.map(roomId => `chat:room:${roomId}`));
+		const roomData = await db.getObjects(
+			roomIds.map(roomId => `chat:room:${roomId}`)
+		);
 		modifyRoomData(roomData);
 		return roomData;
 	};

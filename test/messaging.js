@@ -455,11 +455,8 @@ describe('Messaging Library', () => {
 		});
 
 		it('should fail to rename room with invalid data', async () => {
-			let { body } = await callv3API('put', `/chats/${roomId}`, { name: null }, 'foo');
+			const { body } = await callv3API('put', `/chats/${roomId}`, { name: null }, 'foo');
 			assert.strictEqual(body.status.message, await translator.translate('[[error:invalid-data]]'));
-
-			({ body } = await callv3API('put', `/chats/${roomId}`, {}, 'foo'));
-			assert.strictEqual(body.status.message, await translator.translate('[[error:required-parameters-missing, name]]'));
 		});
 
 		it('should rename room', async () => {
@@ -639,7 +636,7 @@ describe('Messaging Library', () => {
 			const { body } = await callv3API('get', `/chats/${roomId}`, {}, 'herp');
 			const { messages } = body.response;
 			messages.forEach((msg) => {
-				assert(!msg.deleted || msg.content === '[[modules:chat.message-deleted]]', msg.content);
+				assert(!msg.deleted || msg.content === '<p>[[modules:chat.message-deleted]]</p>', msg.content);
 				assert(!msg.deleted || msg.cleanedContent, '[[modules:chat.message-deleted]]', msg.content);
 			});
 		});

@@ -12,6 +12,9 @@ RoomObject:
     groupChat:
       type: boolean
       description: whether the chat room is a group chat or not
+    public:
+      type: boolean
+      description: whether the chat room is public or private
 MessageObject:
   type: object
   properties:
@@ -132,6 +135,8 @@ RoomUserList:
             type: boolean
           canKick:
             type: boolean
+          index:
+            type: number
 RoomObjectFull:
   # Messaging.loadRoom
   allOf:

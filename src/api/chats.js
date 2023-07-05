@@ -92,7 +92,10 @@ chatsAPI.update = async (caller, data) => {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	if (data.hasOwnProperty('name') && data.name) {
+	if (data.hasOwnProperty('name')) {
+		if (!data.name) {
+			throw new Error('[[error:invalid-data]]');
+		}
 		await messaging.renameRoom(caller.uid, data.roomId, data.name);
 		const ioRoom = require('../socket.io').in(`chat_room_${data.roomId}`);
 		if (ioRoom) {

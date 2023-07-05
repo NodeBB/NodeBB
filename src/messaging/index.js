@@ -32,20 +32,15 @@ Messaging.getMessages = async (params) => {
 	const start = params.hasOwnProperty('start') ? params.start : 0;
 	const stop = parseInt(start, 10) + ((params.count || 50) - 1);
 
-	const indices = {};
 	const ok = await canGet('filter:messaging.canGetMessages', callerUid, uid);
 	if (!ok) {
 		return;
 	}
-	// TODO: check if room allows viewing all history or just from time of join
-	const userjoinTimestamp = await db.sortedSetScore(`chat:room:${roomId}:uids`, uid);
-
-	const mids = await db.getSortedSetRevRangeByScore(
-		`chat:room:${roomId}:mids`, start, stop - start + 1, '+inf', userjoinTimestamp
-	);
+	const mids = await getMessageIds(roomId, uid, start, stop);
 	if (!mids.length) {
 		return [];
 	}
+	const indices = {};
 	mids.forEach((mid, index) => {
 		indices[mid] = start + index;
 	});
@@ -63,6 +58,19 @@ Messaging.getMessages = async (params) => {
 
 	return messageData;
 };
+
+async function getMessageIds(roomId, uid, start, stop) {
+	const isPublic = await db.getObjectField(`chat:room:${roomId}`, 'public');
+	if (parseInt(isPublic, 10) === 1) {
+		return await db.getSortedSetRevRange(
+			`chat:room:${roomId}:mids`, start, stop,
+		);
+	}
+	const userjoinTimestamp = await db.sortedSetScore(`chat:room:${roomId}:uids`, uid);
+	return await db.getSortedSetRevRangeByScore(
+		`chat:room:${roomId}:mids`, start, stop - start + 1, '+inf', userjoinTimestamp
+	);
+}
 
 async function canGet(hook, callerUid, uid) {
 	const data = await plugins.hooks.fire(hook, {
@@ -220,11 +228,10 @@ Messaging.getLatestUndeletedMessage = async (uid, roomId) => {
 	let latestMid = null;
 	let index = 0;
 	let mids;
-	// TODO: check if room allows viewing all history or just from time of join
-	const userjoinTimestamp = await db.sortedSetScore(`chat:room:${roomId}:uids`, uid);
+
 	while (!done) {
 		/* eslint-disable no-await-in-loop */
-		mids = await db.getSortedSetRevRangeByScore(`chat:room:${roomId}:mids`, index, 1, '+inf', userjoinTimestamp);
+		mids = await getMessageIds(roomId, uid, index, index);
 		if (mids.length) {
 			const states = await Messaging.getMessageFields(mids[0], ['deleted', 'system']);
 			done = !states.deleted && !states.system;
@@ -354,14 +361,14 @@ Messaging.canViewMessage = async (mids, roomId, uid) => {
 		mids = [mids];
 		single = true;
 	}
-
+	const isPublic = parseInt(await db.getObjectField(`chat:room:${roomId}`, 'public'), 10) === 1;
 	const [midTimestamps, userTimestamp] = await Promise.all([
 		db.sortedSetScores(`chat:room:${roomId}:mids`, mids),
 		db.sortedSetScore(`chat:room:${roomId}:uids`, uid),
 	]);
-	// TODO: check if room allows viewing all history or just from time of join
+
 	const canView = midTimestamps.map(
-		midTimestamp => !!(midTimestamp && userTimestamp && userTimestamp <= midTimestamp)
+		midTimestamp => !!(midTimestamp && userTimestamp && (isPublic || userTimestamp <= midTimestamp))
 	);
 
 	return single ? canView.pop() : canView;
