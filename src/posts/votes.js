@@ -142,14 +142,17 @@ module.exports = function (Posts) {
 	async function checkVoteLimitation(pid, uid, type) {
 		// type = 'upvote' or 'downvote'
 		const oneDay = 86400000;
-		const [reputation, targetUid, votedPidsToday] = await Promise.all([
+		const [reputation, isPrivileged, targetUid, votedPidsToday] = await Promise.all([
 			user.getUserField(uid, 'reputation'),
+			user.isPrivileged(uid),
 			Posts.getPostField(pid, 'uid'),
 			db.getSortedSetRevRangeByScore(
 				`uid:${uid}:${type}`, 0, -1, '+inf', Date.now() - oneDay
 			),
 		]);
-
+		if (isPrivileged) {
+			return;
+		}
 		if (reputation < meta.config[`min:rep:${type}`]) {
 			throw new Error(`[[error:not-enough-reputation-to-${type}, ${meta.config[`min:rep:${type}`]}]]`);
 		}
