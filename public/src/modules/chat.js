@@ -144,7 +144,11 @@ define('chat', [
 
 		e.stopPropagation();
 		const chatEl = e.target.closest('[data-roomid]');
-		const state = !chatEl.classList.contains('unread');
+		module.toggleReadState(chatEl);
+	}
+
+	module.toggleReadState = function (chatEl) {
+		const state = !chatEl.classList.contains('unread'); // this is the new state
 		const roomId = chatEl.getAttribute('data-roomid');
 		api[state ? 'put' : 'del'](`/chats/${roomId}/state`, {}).catch((err) => {
 			alerts.error(err);
@@ -159,7 +163,7 @@ define('chat', [
 		chatEl.classList[state ? 'add' : 'remove']('unread');
 		chatEl.querySelector('.unread').classList[!state ? 'add' : 'remove']('hidden');
 		chatEl.querySelector('.read').classList[state ? 'add' : 'remove']('hidden');
-	}
+	};
 
 	module.onChatMessageReceived = function (data) {
 		if (!newMessage) {

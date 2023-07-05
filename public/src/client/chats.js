@@ -148,7 +148,7 @@ define('forum/chats', [
 
 	Chats.addScrollHandler = function (roomId, uid, el) {
 		let loading = false;
-		el.off('scroll').on('scroll', function () {
+		el.off('scroll').on('scroll', utils.debounce(function () {
 			messages.toggleScrollUpAlert(el);
 			if (loading) {
 				return;
@@ -183,7 +183,7 @@ define('forum/chats', [
 					loading = false;
 				});
 			}).catch(alerts.error);
-		});
+		}, 100));
 	};
 
 	Chats.addScrollBottomHandler = function (chatContent) {
