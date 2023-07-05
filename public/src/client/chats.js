@@ -474,7 +474,6 @@ define('forum/chats', [
 				messages.appendChatMessage($('.expanded-chat .chat-content'), data.message);
 			} else if (ajaxify.data.template.chats) {
 				const roomEl = $('[data-roomid=' + data.roomId + ']');
-
 				if (roomEl.length > 0) {
 					roomEl.addClass('unread');
 
@@ -483,7 +482,7 @@ define('forum/chats', [
 						markEl.querySelector('.read').classList.add('hidden');
 						markEl.querySelector('.unread').classList.remove('hidden');
 					}
-				} else {
+				} else if (!data.public) {
 					const recentEl = components.get('chat/recent');
 					app.parseAndTranslate('partials/chats/recent_room', {
 						rooms: {

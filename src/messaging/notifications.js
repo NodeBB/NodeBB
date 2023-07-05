@@ -2,7 +2,7 @@
 
 const winston = require('winston');
 
-// const db = require('../database');
+const db = require('../database');
 const user = require('../user');
 const notifications = require('../notifications');
 const sockets = require('../socket.io');
@@ -13,7 +13,7 @@ module.exports = function (Messaging) {
 	Messaging.notifyQueue = {}; // Only used to notify a user of a new chat message, see Messaging.notifyUser
 
 	Messaging.notifyUsersInRoom = async (fromUid, roomId, messageObj) => {
-		// const isPublic = parseInt(await db.getObjectField(`chat:room:${roomId}`, 'public'), 10) === 1;
+		const isPublic = parseInt(await db.getObjectField(`chat:room:${roomId}`, 'public'), 10) === 1;
 
 		let uids = await Messaging.getUidsInRoom(roomId, 0, -1);
 		uids = await user.blocks.filterUids(fromUid, uids);
@@ -23,6 +23,7 @@ module.exports = function (Messaging) {
 			fromUid: fromUid,
 			message: messageObj,
 			uids: uids,
+			public: isPublic,
 		};
 		data = await plugins.hooks.fire('filter:messaging.notify', data);
 		if (!data || !data.uids || !data.uids.length) {

@@ -63,8 +63,11 @@ module.exports = function (Messaging) {
 		const tasks = [
 			Messaging.addMessageToRoom(roomId, mid, timestamp),
 		];
-
-		if (!roomData.public) {
+		if (roomData.public) {
+			tasks.push(
+				db.sortedSetAdd('chat:rooms:public:lastpost', timestamp, roomId)
+			);
+		} else {
 			let uids = await Messaging.getUidsInRoom(roomId, 0, -1);
 			uids = await user.blocks.filterUids(uid, uids);
 			tasks.push(

@@ -21,7 +21,10 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.markRead = async (uid, roomId) => {
-		await db.sortedSetRemove(`uid:${uid}:chat:rooms:unread`, roomId);
+		await Promise.all([
+			db.sortedSetRemove(`uid:${uid}:chat:rooms:unread`, roomId),
+			db.setObjectField(`uid:${uid}:chat:rooms:read`, roomId, Date.now()),
+		]);
 	};
 
 	Messaging.hasRead = async (uids, roomId) => {
@@ -42,6 +45,6 @@ module.exports = function (Messaging) {
 			return;
 		}
 		const keys = uids.map(uid => `uid:${uid}:chat:rooms:unread`);
-		return await db.sortedSetsAdd(keys, Date.now(), roomId);
+		await db.sortedSetsAdd(keys, Date.now(), roomId);
 	};
 };

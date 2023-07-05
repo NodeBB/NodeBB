@@ -1,6 +1,6 @@
 'use strict';
 
-
+const _ = require('lodash');
 const validator = require('validator');
 const nconf = require('nconf');
 const db = require('../database');
@@ -108,12 +108,28 @@ Messaging.isNewSet = async (uid, roomId, timestamp) => {
 };
 
 Messaging.getPublicRooms = async (callerUid) => {
-	const roomIds = await db.getSortedSetRange('chat:rooms:public', 0, -1);
-	const allRoomData = await Messaging.getRoomsData(roomIds);
+	const allRoomIds = await db.getSortedSetRange('chat:rooms:public', 0, -1);
+	const allRoomData = await Messaging.getRoomsData(allRoomIds);
 	const checks = await Promise.all(
 		allRoomData.map(room => groups.isMemberOfAny(callerUid, room && room.groups))
 	);
 	const roomData = allRoomData.filter((room, idx) => room && checks[idx]);
+	const roomIds = roomData.map(r => r.roomId);
+	const userReadTimestamps = await db.getObjectFields(
+		`uid:${callerUid}:chat:rooms:read`,
+		roomIds,
+	);
+
+	const roomLastPostTimestampsMap = _.zipObject(
+		roomIds,
+		await db.sortedSetScores('chat:rooms:public:lastpost', roomIds)
+	);
+	roomData.forEach((r) => {
+		r.unread = (
+			!userReadTimestamps[r.roomId] ||
+			parseInt(userReadTimestamps[r.roomId], 10) < roomLastPostTimestampsMap[r.roomId]
+		);
+	});
 
 	return roomData;
 };
