@@ -142,15 +142,27 @@ Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 
 	const roomIds = await db.getSortedSetRevRange(`uid:${uid}:chat:rooms`, start, stop);
 
+	async function getUsers(roomIds) {
+		const arrayOfUids = await Promise.all(
+			roomIds.map(roomId => Messaging.getUidsInRoom(roomId, 0, 9))
+		);
+		const uniqUids = _.uniq(_.flatten(arrayOfUids)).filter(
+			_uid => _uid && parseInt(_uid, 10) !== parseInt(uid, 10)
+		);
+		const uidToUser = _.zipObject(
+			uniqUids,
+			await user.getUsersFields(uniqUids, [
+				'uid', 'username', 'userslug', 'picture', 'status', 'lastonline',
+			])
+		);
+		return arrayOfUids.map(uids => uids.map(uid => uidToUser[uid]));
+	}
+
 	const results = await utils.promiseParallel({
 		roomData: Messaging.getRoomsData(roomIds),
 		unread: db.isSortedSetMembers(`uid:${uid}:chat:rooms:unread`, roomIds),
-		users: Promise.all(roomIds.map(async (roomId) => {
-			let uids = await Messaging.getUidsInRoom(roomId, 0, 9);
-			uids = uids.filter(_uid => _uid && parseInt(_uid, 10) !== parseInt(uid, 10));
-			return await user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'lastonline']);
-		})),
-		teasers: Promise.all(roomIds.map(async roomId => Messaging.getTeaser(uid, roomId))),
+		users: getUsers(roomIds),
+		teasers: Messaging.getTeasers(uid, roomIds),
 		settings: user.getSettings(uid),
 	});
 
@@ -219,27 +231,44 @@ Messaging.generateChatWithMessage = async function (users, callerUid, userLang) 
 };
 
 Messaging.getTeaser = async (uid, roomId) => {
-	const mid = await Messaging.getLatestUndeletedMessage(uid, roomId);
-	if (!mid) {
-		return null;
-	}
-	const teaser = await Messaging.getMessageFields(mid, ['fromuid', 'content', 'timestamp']);
-	if (!teaser.fromuid) {
-		return null;
-	}
-	const blocked = await user.blocks.is(teaser.fromuid, uid);
-	if (blocked) {
-		return null;
-	}
+	const teasers = await Messaging.getTeasers(uid, [roomId]);
+	return teasers[0];
+};
 
-	teaser.user = await user.getUserFields(teaser.fromuid, ['uid', 'username', 'userslug', 'picture', 'status', 'lastonline']);
-	if (teaser.content) {
-		teaser.content = utils.stripHTMLTags(utils.decodeHTMLEntities(teaser.content));
-		teaser.content = validator.escape(String(teaser.content));
-	}
+Messaging.getTeasers = async (uid, roomIds) => {
+	const mids = await Promise.all(
+		roomIds.map(roomId => Messaging.getLatestUndeletedMessage(uid, roomId))
+	);
+	const [teasers, blockedUids] = await Promise.all([
+		Messaging.getMessagesFields(mids, ['fromuid', 'content', 'timestamp']),
+		user.blocks.list(uid),
+	]);
+	const uids = _.uniq(
+		teasers.map(t => t && t.fromuid).filter(uid => uid && !blockedUids.includes(uid))
+	);
 
-	const payload = await plugins.hooks.fire('filter:messaging.getTeaser', { teaser: teaser });
-	return payload.teaser;
+	const userMap = _.zipObject(
+		uids,
+		await user.getUsersFields(uids, [
+			'uid', 'username', 'userslug', 'picture', 'status', 'lastonline',
+		])
+	);
+
+	return await Promise.all(roomIds.map(async (roomId, idx) => {
+		const teaser = teasers[idx];
+		if (!teaser || !teaser.fromuid) {
+			return null;
+		}
+		if (userMap[teaser.fromuid]) {
+			teaser.user = userMap[teaser.fromuid];
+		}
+		teaser.content = validator.escape(
+			String(utils.stripHTMLTags(utils.decodeHTMLEntities(teaser.content)))
+		);
+		teaser.roomId = roomId;
+		const payload = await plugins.hooks.fire('filter:messaging.getTeaser', { teaser: teaser });
+		return payload.teaser;
+	}));
 };
 
 Messaging.getLatestUndeletedMessage = async (uid, roomId) => {
