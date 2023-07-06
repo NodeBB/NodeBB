@@ -246,17 +246,23 @@ define('forum/chats/messages', [
 	}
 
 	function onChatMessageDeleted(messageId) {
-		components.get('chat/message', messageId)
-			.toggleClass('deleted', true)
-			.find('[component="chat/message/body"]')
-			.translateHtml('<p>[[modules:chat.message-deleted]]</p>');
+		const msgEl = components.get('chat/message', messageId);
+		const isSelf = parseInt(msgEl.attr('data-uid'), 10) === app.user.uid;
+		msgEl.toggleClass('deleted', true);
+		if (!isSelf) {
+			msgEl.find('[component="chat/message/body"]')
+				.translateHtml('<p>[[modules:chat.message-deleted]]</p>');
+		}
 	}
 
 	function onChatMessageRestored(message) {
-		components.get('chat/message', message.messageId)
-			.toggleClass('deleted', false)
-			.find('[component="chat/message/body"]')
-			.html(message.content);
+		const msgEl = components.get('chat/message', message.messageId);
+		const isSelf = parseInt(msgEl.attr('data-uid'), 10) === app.user.uid;
+		msgEl.toggleClass('deleted', false);
+		if (!isSelf) {
+			msgEl.find('[component="chat/message/body"]')
+				.translateHtml(message.content);
+		}
 	}
 
 	messages.delete = function (messageId, roomId) {
