@@ -464,34 +464,9 @@ define('forum/chats', [
 		});
 	};
 
-	Chats.isFromBlockedUser = function (fromUid) {
-		return app.user.blocks.includes(parseInt(fromUid, 10));
-	};
-
-	Chats.isLookingAtRoom = function (roomId) {
-		return ajaxify.data.template.chats && parseInt(ajaxify.data.roomId, 10) === parseInt(roomId, 10);
-	};
-
-	Chats.markChatElUnread = function (data) {
-		if (!ajaxify.data.template.chats) {
-			return;
-		}
-
-		const roomEl = chatNavWrapper.find('[data-roomid=' + data.roomId + ']');
-		if (roomEl.length > 0) {
-			roomEl.addClass('unread');
-
-			const markEl = roomEl.find('.mark-read').get(0);
-			if (markEl) {
-				markEl.querySelector('.read').classList.add('hidden');
-				markEl.querySelector('.unread').classList.remove('hidden');
-			}
-		}
-	};
-
 	Chats.addSocketListeners = function () {
 		socket.on('event:chats.receive', function (data) {
-			if (Chats.isFromBlockedUser(data.fromUid)) {
+			if (chatModule.isFromBlockedUser(data.fromUid)) {
 				return;
 			}
 			data.self = parseInt(app.user.uid, 10) === parseInt(data.fromUid, 10) ? 1 : 0;
@@ -507,10 +482,10 @@ define('forum/chats', [
 		});
 
 		socket.on('event:chats.public.unread', function (data) {
-			if (Chats.isFromBlockedUser(data.fromuid) || Chats.isLookingAtRoom(data.roomId)) {
+			if (chatModule.isFromBlockedUser(data.fromuid) || chatModule.isLookingAtRoom(data.roomId)) {
 				return;
 			}
-			Chats.markChatElUnread(data);
+			Chats.markChatPageElUnread(data);
 			Chats.increasePublicRoomUnreadCount(chatNavWrapper.find('[data-roomid=' + data.roomId + ']'));
 		});
 
@@ -529,21 +504,24 @@ define('forum/chats', [
 		});
 
 		socket.on('event:chats.mark', ({ roomId, state }) => {
-			const roomEls = chatNavWrapper.find(`[component="chat/recent"] [data-roomid="${roomId}"], [component="chat/list"] [data-roomid="${roomId}"], [component="chat/public"] [data-roomid="${roomId}"]`);
+			const roomEls = $(`[component="chat/recent"] [data-roomid="${roomId}"], [component="chat/list"] [data-roomid="${roomId}"], [component="chat/public"] [data-roomid="${roomId}"]`);
 			roomEls.each((idx, el) => {
 				const roomEl = $(el);
-				roomEl.toggleClass('unread', state === 1);
-				const markEl = roomEl.find('.mark-read');
-				if (markEl.length) {
-					markEl.find('.read').toggleClass('hidden', state === 1);
-					markEl.find('.unread').toggleClass('hidden', state === 0);
-				}
-
+				chatModule.markChatElUnread(roomEl, state === 1);
 				if (state === 0) {
 					Chats.updatePublicRoomUnreadCount(roomEl, 0);
 				}
 			});
 		});
+	};
+
+	Chats.markChatPageElUnread = function (data) {
+		if (!ajaxify.data.template.chats) {
+			return;
+		}
+
+		const roomEl = chatNavWrapper.find('[data-roomid=' + data.roomId + ']');
+		chatModule.markChatElUnread(roomEl, true);
 	};
 
 	Chats.increasePublicRoomUnreadCount = function (roomEl) {
