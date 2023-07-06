@@ -94,7 +94,7 @@ define('forum/chats', [
 	};
 
 	Chats.addPublicRoomSortHandler = function () {
-		if (app.user.isAdmin) {
+		if (app.user.isAdmin && !utils.isMobile()) {
 			app.loadJQueryUI(() => {
 				const publicRoomList = $('[component="chat/public"]');
 				publicRoomList.sortable({
