@@ -97,7 +97,10 @@ module.exports = function (Messaging) {
 		await Promise.all([
 			Messaging.addUsersToRoom(uid, data.uids, roomId),
 			isPublic ?
-				db.sortedSetAdd('chat:rooms:public', now, roomId) :
+				db.sortedSetAddBulk([
+					['chat:rooms:public', now, roomId],
+					['chat:rooms:public:order', roomId, roomId],
+				]) :
 				Messaging.addRoomToUsers(roomId, [uid].concat(data.uids), now),
 		]);
 

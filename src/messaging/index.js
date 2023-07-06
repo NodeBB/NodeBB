@@ -11,6 +11,7 @@ const plugins = require('../plugins');
 const meta = require('../meta');
 const utils = require('../utils');
 const translator = require('../translator');
+const cache = require('../cache');
 
 const relative_path = nconf.get('relative_path');
 
@@ -108,7 +109,13 @@ Messaging.isNewSet = async (uid, roomId, timestamp) => {
 };
 
 Messaging.getPublicRooms = async (callerUid) => {
-	const allRoomIds = await db.getSortedSetRange('chat:rooms:public', 0, -1);
+	const key = 'chat:rooms:public:order';
+	let allRoomIds = cache.get(key);
+	if (allRoomIds === undefined) {
+		allRoomIds = await db.getSortedSetRange(key, 0, -1);
+		cache.set('chat:rooms:public:all', allRoomIds.slice());
+	}
+
 	const allRoomData = await Messaging.getRoomsData(allRoomIds);
 	const checks = await Promise.all(
 		allRoomData.map(room => groups.isMemberOfAny(callerUid, room && room.groups))

@@ -90,6 +90,17 @@ SocketModules.chats.leavePublic = async function (socket, roomIds) {
 	await joinLeave(socket, roomIds, 'leave', 'chat_room_public');
 };
 
+SocketModules.chats.sortPublicRooms = async function (socket, data) {
+	if (!data || !Array.isArray(data.scores) || !Array.isArray(data.roomIds)) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	const isAdmin = await user.isAdministrator(socket.uid);
+	if (!isAdmin) {
+		throw new Error('[[error:no-privileges]]');
+	}
+	await db.sortedSetAdd(`chat:rooms:public:order`, data.scores, data.roomIds);
+};
+
 async function joinLeave(socket, roomIds, method, prefix = 'chat_room') {
 	if (!(socket.uid > 0)) {
 		throw new Error('[[error:not-allowed]]');
