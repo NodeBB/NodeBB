@@ -11,13 +11,29 @@ module.exports = {
 		const lastRoomId = await db.getObjectField('global', 'nextChatRoomId');
 		const allKeys = [];
 		for (let x = 1; x <= lastRoomId; x++) {
-			allKeys.push(`chat:room:${x}`);
+			allKeys.push(x);
 		}
-		await batch.processArray(allKeys, async (keys) => {
-			progress.incr(keys.length);
+		const users = await db.getSortedSetRangeWithScores(`users:joindate`, 0, 0);
+		const timestamp = users.length ? users[0].score : Date.now();
+
+		await batch.processArray(allKeys, async (roomIds) => {
+			progress.incr(roomIds.length);
+			const keys = roomIds.map(id => `chat:room:${id}`);
 			const exists = await db.exists(keys);
-			keys = keys.filter((_, idx) => exists[idx]);
-			await db.sortedSetAdd('chat:rooms', keys.map(Date.now), keys.map(key => key.slice(10)));
+			roomIds = roomIds.filter((_, idx) => exists[idx]);
+			// get timestamp from uids, if no users use the timestamp of first user
+			const arrayOfUids = await Promise.all(
+				roomIds.map(roomId => db.getSortedSetRangeWithScores(`chat:room:${roomId}:uids`, 0, 0))
+			);
+
+			const timestamps = roomIds.map(
+				(id, idx) => (arrayOfUids[idx].length ? (arrayOfUids[idx][0].score || timestamp) : timestamp)
+			);
+
+			await db.sortedSetAdd('chat:rooms', timestamps, roomIds);
+			await db.setObjectBulk(
+				roomIds.map((id, idx) => ([`chat:room:${id}`, { timestamp: timestamps[idx] }]))
+			);
 		}, {
 			batch: 500,
 		});

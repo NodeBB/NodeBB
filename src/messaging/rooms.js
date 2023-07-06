@@ -18,6 +18,10 @@ const cache = cacheCreate({
 	ttl: 0,
 });
 
+const intFields = [
+	'roomId', 'timestamp', 'userCount',
+];
+
 module.exports = function (Messaging) {
 	Messaging.getRoomData = async (roomId, fields = []) => {
 		const data = await db.getObject(`chat:room:${roomId}`, fields);
@@ -25,7 +29,7 @@ module.exports = function (Messaging) {
 			throw new Error('[[error:no-chat-room]]');
 		}
 
-		modifyRoomData([data]);
+		modifyRoomData([data], fields);
 		return data;
 	};
 
@@ -34,21 +38,20 @@ module.exports = function (Messaging) {
 			roomIds.map(roomId => `chat:room:${roomId}`),
 			fields
 		);
-		modifyRoomData(roomData);
+		modifyRoomData(roomData, fields);
 		return roomData;
 	};
 
-	function modifyRoomData(rooms) {
+	function modifyRoomData(rooms, fields) {
 		rooms.forEach((data) => {
 			if (data) {
+				db.parseIntFields(data, intFields, fields);
 				data.roomName = validator.escape(String(data.roomName || ''));
 				data.public = parseInt(data.public, 10) === 1;
 				if (data.hasOwnProperty('groupChat')) {
 					data.groupChat = parseInt(data.groupChat, 10) === 1;
 				}
-				if (data.hasOwnProperty('userCount')) {
-					data.userCount = parseInt(data.userCount, 10) || 0;
-				}
+
 				if (data.hasOwnProperty('groups')) {
 					try {
 						data.groups = JSON.parse(data.groups);
@@ -71,6 +74,7 @@ module.exports = function (Messaging) {
 		const room = {
 			owner: uid,
 			roomId: roomId,
+			timestamp: now,
 		};
 
 		if (data.hasOwnProperty('roomName') && data.roomName) {

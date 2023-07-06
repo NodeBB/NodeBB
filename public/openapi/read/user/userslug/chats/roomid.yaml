@@ -34,6 +34,9 @@ get:
                     type: boolean
                   userCount:
                     type: number
+                  timestamp:
+                    type: number
+                    description: Timestamp of when room was created
                   messages:
                     type: array
                     items:
@@ -178,6 +181,9 @@ get:
                           type: boolean
                         userCount:
                           type: number
+                        timestamp:
+                          type: number
+                          description: Timestamp of when room was created
                         users:
                           type: array
                           items:
