@@ -1,8 +1,8 @@
 'use strict';
 
 define('forum/header/chat', [
-	'components', 'hooks', 'alerts',
-], function (components, hooks, alerts) {
+	'components', 'hooks',
+], function (components, hooks) {
 	const chat = {};
 
 	chat.prepareDOM = function () {

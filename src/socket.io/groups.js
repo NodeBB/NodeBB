@@ -71,7 +71,7 @@ SocketGroups.getChatGroups = async (socket) => {
 		throw new Error('[[error:no-privileges]]');
 	}
 	const allGroups = await groups.getNonPrivilegeGroups('groups:createtime', 0, -1);
-	const groupsList = allGroups.filter(g => !groups.ephemeralGroups.includes(g.name))
+	const groupsList = allGroups.filter(g => !groups.ephemeralGroups.includes(g.name));
 	groupsList.sort((a, b) => b.system - a.system);
 	return groupsList.map(g => ({ name: g.name, displayName: g.displayName }));
 };

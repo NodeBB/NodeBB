@@ -3,7 +3,6 @@
 
 const user = require('../user');
 const topics = require('../topics');
-const messaging = require('../messaging');
 
 const SocketMeta = module.exports;
 SocketMeta.rooms = {};
