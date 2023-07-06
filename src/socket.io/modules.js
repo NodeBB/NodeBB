@@ -103,10 +103,9 @@ async function joinLeave(socket, roomIds, method, prefix = 'chat_room') {
 			Messaging.isUserInRoom(socket.uid, roomIds),
 		]);
 		roomIds.forEach((roomId, idx) => {
-			if (!isAdmin && !inRooms[idx]) {
-				throw new Error('[[error:not-allowed]]');
+			if (isAdmin || inRooms[idx]) {
+				socket[method](`${prefix}_${roomId}`);
 			}
-			socket[method](`${prefix}_${roomId}`);
 		});
 	}
 }
