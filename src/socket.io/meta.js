@@ -35,6 +35,10 @@ SocketMeta.rooms.enter = async function (socket, data) {
 		throw new Error('[[error:not-allowed]]');
 	}
 
+	if (data.enter && data.enter.startsWith('chat_')) {
+		throw new Error('[[error:not-allowed]]');
+	}
+
 	leaveCurrentRoom(socket);
 
 	if (data.enter) {
