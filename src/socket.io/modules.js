@@ -83,6 +83,9 @@ SocketModules.chats.leave = async function (socket, roomId) {
 };
 
 async function joinLeave(socket, roomId, method) {
+	if (!(socket.uid > 0)) {
+		throw new Error('[[error:not-allowed]]');
+	}
 	if (parseInt(roomId, 10) > 0) {
 		const [isAdmin, inRoom] = await Promise.all([
 			user.isAdministrator(socket.uid),
