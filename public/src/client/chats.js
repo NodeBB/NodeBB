@@ -469,8 +469,8 @@ define('forum/chats', [
 			if (chatModule.isFromBlockedUser(data.fromUid)) {
 				return;
 			}
-			data.self = parseInt(app.user.uid, 10) === parseInt(data.fromUid, 10) ? 1 : 0;
 			if (parseInt(data.roomId, 10) === parseInt(ajaxify.data.roomId, 10)) {
+				data.self = parseInt(app.user.uid, 10) === parseInt(data.fromUid, 10) ? 1 : 0;
 				if (!newMessage) {
 					newMessage = data.self === 0;
 				}
@@ -482,7 +482,11 @@ define('forum/chats', [
 		});
 
 		socket.on('event:chats.public.unread', function (data) {
-			if (chatModule.isFromBlockedUser(data.fromuid) || chatModule.isLookingAtRoom(data.roomId)) {
+			if (
+				chatModule.isFromBlockedUser(data.fromuid) ||
+				chatModule.isLookingAtRoom(data.roomId) ||
+				app.user.uid === parseInt(data.fromUid, 10)
+			) {
 				return;
 			}
 			Chats.markChatPageElUnread(data);

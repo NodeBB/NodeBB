@@ -34,7 +34,11 @@ define('forum/header/chat', [
 		socket.on('event:unread.updateChatCount', async function (data) {
 			if (data) {
 				const [chatModule, chatPage] = await app.require(['chat', 'forum/chats']);
-				if (chatModule.isFromBlockedUser(data.fromuid) || chatModule.isLookingAtRoom(data.roomId)) {
+				if (
+					chatModule.isFromBlockedUser(data.fromUid) ||
+					chatModule.isLookingAtRoom(data.roomId) ||
+					app.user.uid === parseInt(data.fromUid, 10)
+				) {
 					return;
 				}
 				chatPage.markChatPageElUnread(data);
