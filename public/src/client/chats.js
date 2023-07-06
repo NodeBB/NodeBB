@@ -456,6 +456,7 @@ define('forum/chats', [
 				chatNavWrapper = $('[component="chat/nav-wrapper"]');
 				html.find('.timeago').timeago();
 				ajaxify.data = payload;
+				$('body').attr('class', ajaxify.data.bodyClass);
 				$('[component="chat/main-wrapper"] [data-bs-toggle="tooltip"]').tooltip();
 				Chats.setActive();
 				Chats.addEventListeners();

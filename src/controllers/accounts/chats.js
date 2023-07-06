@@ -51,7 +51,7 @@ chatsController.get = async function (req, res, next) {
 	room.title = room.roomName || room.usernames || '[[pages:chats]]';
 	room.uid = uid;
 	room.userslug = req.params.userslug;
-
+	room.bodyClasses = ['chat-loaded'];
 	room.canViewInfo = await privileges.global.can('view:users:info', uid);
 
 	res.render('chats', room);
