@@ -74,27 +74,40 @@ SocketModules.chats.getUnreadCount = async function (socket) {
 	return await Messaging.getUnreadCount(socket.uid);
 };
 
-SocketModules.chats.enter = async function (socket, roomId) {
-	await joinLeave(socket, roomId, 'join');
+SocketModules.chats.enter = async function (socket, roomIds) {
+	await joinLeave(socket, roomIds, 'join');
 };
 
-SocketModules.chats.leave = async function (socket, roomId) {
-	await joinLeave(socket, roomId, 'leave');
+SocketModules.chats.leave = async function (socket, roomIds) {
+	await joinLeave(socket, roomIds, 'leave');
 };
 
-async function joinLeave(socket, roomId, method) {
+SocketModules.chats.enterPublic = async function (socket, roomIds) {
+	await joinLeave(socket, roomIds, 'join', 'chat_room_public');
+};
+
+SocketModules.chats.leavePublic = async function (socket, roomIds) {
+	await joinLeave(socket, roomIds, 'leave', 'chat_room_public');
+};
+
+async function joinLeave(socket, roomIds, method, prefix = 'chat_room') {
 	if (!(socket.uid > 0)) {
 		throw new Error('[[error:not-allowed]]');
 	}
-	if (parseInt(roomId, 10) > 0) {
-		const [isAdmin, inRoom] = await Promise.all([
+	if (!Array.isArray(roomIds)) {
+		roomIds = [roomIds];
+	}
+	if (roomIds.length) {
+		const [isAdmin, inRooms] = await Promise.all([
 			user.isAdministrator(socket.uid),
-			Messaging.isUserInRoom(socket.uid, roomId),
+			Messaging.isUserInRoom(socket.uid, roomIds),
 		]);
-		if (!isAdmin && !inRoom) {
-			throw new Error('[[error:not-allowed]]');
-		}
-		socket[method](`chat_room_${roomId}`);
+		roomIds.forEach((roomId, idx) => {
+			if (!isAdmin && !inRooms[idx]) {
+				throw new Error('[[error:not-allowed]]');
+			}
+			socket[method](`${prefix}_${roomId}`);
+		});
 	}
 }
 require('../promisify')(SocketModules);

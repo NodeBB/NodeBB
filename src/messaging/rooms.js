@@ -136,10 +136,26 @@ module.exports = function (Messaging) {
 		]);
 	};
 
-	Messaging.isUserInRoom = async (uid, roomId) => {
-		const inRoom = await db.isSortedSetMember(`chat:room:${roomId}:uids`, uid);
-		const data = await plugins.hooks.fire('filter:messaging.isUserInRoom', { uid: uid, roomId: roomId, inRoom: inRoom });
-		return data.inRoom;
+	Messaging.isUserInRoom = async (uid, roomIds) => {
+		let single = false;
+		if (!Array.isArray(roomIds)) {
+			roomIds = [roomIds];
+			single = true;
+		}
+		const inRooms = await db.isMemberOfSortedSets(
+			roomIds.map(id => `chat:room:${id}:uids`, uid),
+			uid
+		);
+
+		const data = await Promise.all(roomIds.map(async (roomId, idx) => {
+			const data = await plugins.hooks.fire('filter:messaging.isUserInRoom', {
+				uid: uid,
+				roomId: roomId,
+				inRoom: inRooms[idx],
+			});
+			return data.inRoom;
+		}));
+		return single ? data.pop() : data;
 	};
 
 	Messaging.roomExists = async roomId => db.exists(`chat:room:${roomId}:uids`);

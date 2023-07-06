@@ -12,7 +12,7 @@ module.exports = function (Messaging) {
 		return await db.sortedSetCard(`uid:${uid}:chat:rooms:unread`);
 	};
 
-	Messaging.pushUnreadCount = async (uids, message = null) => {
+	Messaging.pushUnreadCount = async (uids, data = null) => {
 		if (!Array.isArray(uids)) {
 			uids = [uids];
 		}
@@ -20,11 +20,8 @@ module.exports = function (Messaging) {
 		if (!uids.length) {
 			return;
 		}
-
 		uids.forEach((uid) => {
-			io.in(`uid_${uid}`).emit('event:unread.updateChatCount', {
-				message: message,
-			});
+			io.in(`uid_${uid}`).emit('event:unread.updateChatCount', data);
 		});
 	};
 

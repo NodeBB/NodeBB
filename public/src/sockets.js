@@ -186,8 +186,13 @@ app = window.app || {};
 			app.currentRoom = '';
 			app.enterRoom(current);
 		}
-		if (ajaxify.data.template.chats && ajaxify.data.roomId) {
-			socket.emit('modules.chats.enter', ajaxify.data.roomId);
+		if (ajaxify.data.template.chats) {
+			if (ajaxify.data.roomId) {
+				socket.emit('modules.chats.enter', ajaxify.data.roomId);
+			}
+			if (ajaxify.data.publicRooms) {
+				socket.emit('modules.chats.enterPublic', ajaxify.data.publicRooms.map(r => r.roomId));
+			}
 		}
 	}
 

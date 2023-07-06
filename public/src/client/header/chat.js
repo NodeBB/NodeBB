@@ -32,14 +32,12 @@ define('forum/header/chat', [
 		socket.on('event:chats.roomRename', onRoomRename);
 
 		socket.on('event:unread.updateChatCount', async function (data) {
-			const { message } = data;
-			if (message) {
-				if (app.user.blocks.includes(parseInt(message.fromUid, 10))) {
+			if (data) {
+				const chats = await app.require('forum/chats');
+				if (chats.isFromBlockedUser(data.fromuid) || chats.isLookingAtRoom(data.roomId)) {
 					return;
 				}
-				if (ajaxify.data.template.chats && parseInt(ajaxify.data.roomId, 10) === parseInt(message.roomId, 10)) {
-					return;
-				}
+				chats.markChatElUnread(data);
 			}
 
 			let count = await socket.emit('modules.chats.getUnreadCount', {});
@@ -69,10 +67,9 @@ define('forum/header/chat', [
 		requireAndCall('onRoomRename', data);
 	}
 
-	function requireAndCall(method, param) {
-		require(['chat'], function (chat) {
-			chat[method](param);
-		});
+	async function requireAndCall(method, param) {
+		const chat = await app.require('chat');
+		chat[method](param);
 	}
 
 	return chat;

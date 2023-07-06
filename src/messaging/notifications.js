@@ -26,15 +26,21 @@ module.exports = function (Messaging) {
 			return;
 		}
 
+		// delivers full message to all online users in roomId
 		io.in(`chat_room_${roomId}`).emit('event:chats.receive', data);
 
+		const unreadData = { roomId, fromUid, public: isPublic };
+		if (isPublic && !messageObj.system) {
+			// delivers unread public msg to all online users on the chats page
+			io.in(`chat_room_public_${roomId}`).emit('event:chats.public.unread', unreadData);
+		}
 		if (messageObj.system || isPublic) {
 			return;
 		}
 
 		// push unread count only for private rooms
 		const uids = await Messaging.getAllUidsInRoom(roomId);
-		Messaging.pushUnreadCount(uids, messageObj);
+		Messaging.pushUnreadCount(uids, unreadData);
 
 		// Delayed notifications
 		let queueObj = Messaging.notifyQueue[`${fromUid}:${roomId}`];

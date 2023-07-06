@@ -28,16 +28,19 @@ define('forum/chats', [
 	};
 
 	let newMessage = false;
+	let chatNavWrapper = null;
 
 	$(window).on('action:ajaxify.start', function () {
 		Chats.destroyAutoComplete(ajaxify.data.roomId);
 		socket.emit('modules.chats.leave', ajaxify.data.roomId);
+		socket.emit('modules.chats.leavePublic', ajaxify.data.publicRooms.map(r => r.roomId));
 	});
 
 	Chats.init = function () {
 		$('.chats-full [data-bs-toggle="tooltip"]').tooltip();
-
+		socket.emit('modules.chats.enterPublic', ajaxify.data.publicRooms.map(r => r.roomId));
 		const env = utils.findBootstrapEnvironment();
+		chatNavWrapper = $('[component="chat/nav-wrapper"]');
 
 		if (!Chats.initialised) {
 			Chats.addSocketListeners();
@@ -425,6 +428,7 @@ define('forum/chats', [
 						response.json().then(function (payload) {
 							app.parseAndTranslate('partials/chats/message-window', payload, function (html) {
 								components.get('chat/main-wrapper').html(html);
+								chatNavWrapper = $('[component="chat/nav-wrapper"]');
 								html.find('.timeago').timeago();
 								ajaxify.data = payload;
 								$('[component="chat/main-wrapper"] [data-bs-toggle="tooltip"]').tooltip();
@@ -460,9 +464,34 @@ define('forum/chats', [
 		});
 	};
 
+	Chats.isFromBlockedUser = function (fromUid) {
+		return app.user.blocks.includes(parseInt(fromUid, 10));
+	};
+
+	Chats.isLookingAtRoom = function (roomId) {
+		return ajaxify.data.template.chats && parseInt(ajaxify.data.roomId, 10) === parseInt(roomId, 10);
+	};
+
+	Chats.markChatElUnread = function (data) {
+		if (!ajaxify.data.template.chats) {
+			return;
+		}
+
+		const roomEl = chatNavWrapper.find('[data-roomid=' + data.roomId + ']');
+		if (roomEl.length > 0) {
+			roomEl.addClass('unread');
+
+			const markEl = roomEl.find('.mark-read').get(0);
+			if (markEl) {
+				markEl.querySelector('.read').classList.add('hidden');
+				markEl.querySelector('.unread').classList.remove('hidden');
+			}
+		}
+	};
+
 	Chats.addSocketListeners = function () {
 		socket.on('event:chats.receive', function (data) {
-			if (app.user.blocks.includes(parseInt(data.fromUid, 10))) {
+			if (Chats.isFromBlockedUser(data.fromUid)) {
 				return;
 			}
 			data.self = parseInt(app.user.uid, 10) === parseInt(data.fromUid, 10) ? 1 : 0;
@@ -474,30 +503,14 @@ define('forum/chats', [
 				data.message.timestamp = Math.min(Date.now(), data.message.timestamp);
 				data.message.timestampISO = utils.toISOString(data.message.timestamp);
 				messages.appendChatMessage($('.expanded-chat .chat-content'), data.message);
-			} else if (ajaxify.data.template.chats) {
-				const roomEl = $('[data-roomid=' + data.roomId + ']');
-				if (roomEl.length > 0) {
-					roomEl.addClass('unread');
-
-					const markEl = roomEl.find('.mark-read').get(0);
-					if (markEl) {
-						markEl.querySelector('.read').classList.add('hidden');
-						markEl.querySelector('.unread').classList.remove('hidden');
-					}
-				} else if (!data.public) {
-					const recentEl = components.get('chat/recent');
-					app.parseAndTranslate('partials/chats/recent_room', {
-						rooms: {
-							roomId: data.roomId,
-							lastUser: data.message.fromUser,
-							usernames: data.message.fromUser.username,
-							unread: true,
-						},
-					}, function (html) {
-						recentEl.prepend(html);
-					});
-				}
 			}
+		});
+
+		socket.on('event:chats.public.unread', function (data) {
+			if (Chats.isFromBlockedUser(data.fromuid) || Chats.isLookingAtRoom(data.roomId)) {
+				return;
+			}
+			Chats.markChatElUnread(data);
 		});
 
 		socket.on('event:user_status_change', function (data) {
@@ -530,7 +543,6 @@ define('forum/chats', [
 	};
 
 	Chats.setActive = function () {
-		const chatNavWrapper = $('[component="chat/nav-wrapper"]');
 		chatNavWrapper.find('[data-roomid]').removeClass('active');
 		if (ajaxify.data.roomId) {
 			socket.emit('modules.chats.enter', ajaxify.data.roomId);
