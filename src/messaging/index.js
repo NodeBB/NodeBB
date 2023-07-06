@@ -151,6 +151,7 @@ Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 			return await user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'lastonline']);
 		})),
 		teasers: Promise.all(roomIds.map(async roomId => Messaging.getTeaser(uid, roomId))),
+		settings: user.getSettings(uid),
 	});
 
 	await Promise.all(results.roomData.map(async (room, index) => {
@@ -168,7 +169,7 @@ Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 			room.users = room.users.filter(user => user && parseInt(user.uid, 10));
 			room.lastUser = room.users[0];
 			room.usernames = Messaging.generateUsernames(room.users, uid);
-			room.chatWithMessage = await Messaging.generateChatWithMessage(room.users, uid);
+			room.chatWithMessage = await Messaging.generateChatWithMessage(room.users, uid, results.settings.userLang);
 		}
 	}));
 
@@ -195,8 +196,8 @@ Messaging.generateUsernames = function (users, excludeUid) {
 	return usernames.join(', ');
 };
 
-Messaging.generateChatWithMessage = async function (users, excludeUid) {
-	users = users.filter(u => u && parseInt(u.uid, 10) !== excludeUid);
+Messaging.generateChatWithMessage = async function (users, callerUid, userLang) {
+	users = users.filter(u => u && parseInt(u.uid, 10) !== callerUid);
 	const usernames = users.map(u => `<a href="${relative_path}/uid/${u.uid}">${u.username}</a>`);
 	let compiled = '';
 	if (!users.length) {
@@ -214,7 +215,7 @@ Messaging.generateChatWithMessage = async function (users, excludeUid) {
 			usernames.join(', '),
 		);
 	}
-	return utils.decodeHTMLEntities(await translator.translate(compiled));
+	return utils.decodeHTMLEntities(await translator.translate(compiled, userLang));
 };
 
 Messaging.getTeaser = async (uid, roomId) => {
