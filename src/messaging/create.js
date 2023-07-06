@@ -62,6 +62,7 @@ module.exports = function (Messaging) {
 
 		const tasks = [
 			Messaging.addMessageToRoom(roomId, mid, timestamp),
+			Messaging.markRead(uid, roomId),
 		];
 		if (roomData.public) {
 			tasks.push(
