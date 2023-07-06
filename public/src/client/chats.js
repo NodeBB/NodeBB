@@ -511,6 +511,7 @@ define('forum/chats', [
 				return;
 			}
 			Chats.markChatElUnread(data);
+			Chats.increasePublicRoomUnreadCount(chatNavWrapper.find('[data-roomid=' + data.roomId + ']'));
 		});
 
 		socket.on('event:user_status_change', function (data) {
@@ -528,18 +529,33 @@ define('forum/chats', [
 		});
 
 		socket.on('event:chats.mark', ({ roomId, state }) => {
-			const roomEls = document.querySelectorAll(`[component="chat/recent"] [data-roomid="${roomId}"], [component="chat/list"] [data-roomid="${roomId}"]`);
+			const roomEls = chatNavWrapper.find(`[component="chat/recent"] [data-roomid="${roomId}"], [component="chat/list"] [data-roomid="${roomId}"], [component="chat/public"] [data-roomid="${roomId}"]`);
+			roomEls.each((idx, el) => {
+				const roomEl = $(el);
+				roomEl.toggleClass('unread', state === 1);
+				const markEl = roomEl.find('.mark-read');
+				if (markEl.length) {
+					markEl.find('.read').toggleClass('hidden', state === 1);
+					markEl.find('.unread').toggleClass('hidden', state === 0);
+				}
 
-			roomEls.forEach((roomEl) => {
-				roomEl.classList[state ? 'add' : 'remove']('unread');
-
-				const markEl = roomEl.querySelector('.mark-read');
-				if (markEl) {
-					markEl.querySelector('.read').classList[state ? 'add' : 'remove']('hidden');
-					markEl.querySelector('.unread').classList[state ? 'remove' : 'add']('hidden');
+				if (state === 0) {
+					Chats.updatePublicRoomUnreadCount(roomEl, 0);
 				}
 			});
 		});
+	};
+
+	Chats.increasePublicRoomUnreadCount = function (roomEl) {
+		const unreadCountEl = roomEl.find('[component="chat/public/room/unread/count"]');
+		const newCount = (parseInt(unreadCountEl.attr('data-count'), 10) || 0) + 1;
+		Chats.updatePublicRoomUnreadCount(roomEl, newCount);
+	};
+
+	Chats.updatePublicRoomUnreadCount = function (roomEl, count) {
+		const unreadCountEl = roomEl.find('[component="chat/public/room/unread/count"]');
+		const countText = count > 50 ? '50+' : count;
+		unreadCountEl.toggleClass('hidden', count <= 0).text(countText).attr('data-count', count);
 	};
 
 	Chats.setActive = function () {
