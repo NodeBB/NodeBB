@@ -9,14 +9,15 @@ module.exports = {
 	method: async function () {
 		const { progress } = this;
 		const lastRoomId = await db.getObjectField('global', 'nextChatRoomId');
-		const allKeys = [];
+		const allRoomIds = [];
 		for (let x = 1; x <= lastRoomId; x++) {
-			allKeys.push(x);
+			allRoomIds.push(x);
 		}
 		const users = await db.getSortedSetRangeWithScores(`users:joindate`, 0, 0);
 		const timestamp = users.length ? users[0].score : Date.now();
+		progress.total = allRoomIds.length;
 
-		await batch.processArray(allKeys, async (roomIds) => {
+		await batch.processArray(allRoomIds, async (roomIds) => {
 			progress.incr(roomIds.length);
 			const keys = roomIds.map(id => `chat:room:${id}`);
 			const exists = await db.exists(keys);
