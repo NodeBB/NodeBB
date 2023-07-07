@@ -435,42 +435,7 @@ define('forum/chats', [
 	};
 
 	Chats.switchChat = function (roomid) {
-		// Allow empty arg for return to chat list/close chat
-		if (!roomid) {
-			roomid = '';
-		}
-		Chats.destroyAutoComplete(ajaxify.data.roomId);
-		socket.emit('modules.chats.leave', ajaxify.data.roomId);
-		const url = 'user/' + ajaxify.data.userslug + '/chats/' + roomid + window.location.search;
-		if (!self.fetch) {
-			return ajaxify.go(url);
-		}
-		fetch(config.relative_path + '/api/' + url, { credentials: 'include' })
-			.then(async function (response) {
-				if (!response.ok) {
-					return console.warn('[search] Received ' + response.status);
-				}
-				const payload = await response.json();
-				const html = await app.parseAndTranslate('partials/chats/message-window', payload);
-				components.get('chat/main-wrapper').html(html);
-				chatNavWrapper = $('[component="chat/nav-wrapper"]');
-				html.find('.timeago').timeago();
-				ajaxify.data = payload;
-				$('body').attr('class', ajaxify.data.bodyClass);
-				$('[component="chat/main-wrapper"] [data-bs-toggle="tooltip"]').tooltip();
-				Chats.setActive();
-				Chats.addEventListeners();
-				hooks.fire('action:chat.loaded', $('.chats-full'));
-				messages.scrollToBottom($('.expanded-chat ul.chat-content'));
-				if (history.pushState) {
-					history.pushState({
-						url: url,
-					}, null, window.location.protocol + '//' + window.location.host + config.relative_path + '/' + url);
-				}
-			})
-			.catch(function (error) {
-				console.warn('[search] ' + error.message);
-			});
+		ajaxify.go('user/' + ajaxify.data.userslug + '/chats/' + (roomid || '') + window.location.search);
 	};
 
 	Chats.addGlobalEventListeners = function () {
@@ -519,10 +484,11 @@ define('forum/chats', [
 
 		socket.on('event:chats.roomRename', function (data) {
 			const roomEl = components.get('chat/recent/room', data.roomId);
-			const titleEl = roomEl.find('[component="chat/room/title"]');
-			ajaxify.data.roomName = data.newName;
-
-			titleEl.text(data.newName);
+			if (roomEl.length) {
+				const titleEl = roomEl.find('[component="chat/room/title"]');
+				ajaxify.data.roomName = data.newName;
+				titleEl.text(data.newName);
+			}
 		});
 
 		socket.on('event:chats.mark', ({ roomId, state }) => {
