@@ -69,7 +69,7 @@ define('forum/chats/create', [
 
 		modal.find('[component="chat/room/type"]').on('change', function () {
 			const type = $(this).val();
-			modal.find('[component="chat/room/groups"]').toggleClass('hidden', type === 'private');
+			modal.find('[component="chat/room/public/options"]').toggleClass('hidden', type === 'private');
 		});
 	}
 

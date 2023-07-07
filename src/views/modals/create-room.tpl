@@ -31,10 +31,15 @@
 		<option value="public">[[modules:chat.public.option]]</option>
 	</select>
 
-	<select component="chat/room/groups" class="hidden form-select mb-3" multiple size="10">
-		{{{ each groups }}}
-		<option value="{./displayName}">{./displayName}</option>
-		{{{ end }}}
-	</select>
+	<div component="chat/room/public/options" class="hidden">
+		<select component="chat/room/groups" class="form-select" multiple size="10">
+			{{{ each groups }}}
+			<option value="{./displayName}">{./displayName}</option>
+			{{{ end }}}
+		</select>
+		<p class="form-text">
+			[[modules:chat.public.groups-help]]
+		</p>
+	</div>
 	{{{ end }}}
 </div>

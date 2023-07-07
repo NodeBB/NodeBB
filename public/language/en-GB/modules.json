@@ -33,6 +33,7 @@
 	"chat.create-room": "Create Chat Room",
 	"chat.private.option": "Private (Only visible to users added to room)",
 	"chat.public.option": "Public (Visible to every user in selected groups)",
+	"chat.public.groups-help": "To create a chat room that is visible to all users select registered-users from the group list.",
 	"chat.manage-room": "Manage Chat Room",
 	"chat.add-user": "Add User",
 	"chat.select-groups": "Select Groups",
