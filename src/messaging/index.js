@@ -127,20 +127,18 @@ Messaging.getPublicRooms = async (callerUid) => {
 		roomIds,
 	);
 
-	const oneWeekMs = (7 * 24 * 60 * 60 * 1000);
+	const maxUnread = 50;
 	const unreadCounts = await Promise.all(roomIds.map(async (roomId) => {
-		const cutoff = Math.max(
-			userReadTimestamps[roomId] || 0,
-			(Date.now() - oneWeekMs)
+		const cutoff = userReadTimestamps[roomId] || '-inf';
+		const unreadMids = await db.getSortedSetRangeByScore(
+			`chat:room:${roomId}:mids`, 0, maxUnread + 1, cutoff, '+inf'
 		);
-		return await db.sortedSetCount(
-			`chat:room:${roomId}:mids`, cutoff, '+inf'
-		);
+		return unreadMids.length;
 	}));
 
 	roomData.forEach((r, idx) => {
 		const count = unreadCounts[idx];
-		r.unreadCountText = count > 50 ? '50+' : String(count);
+		r.unreadCountText = count > maxUnread ? `${maxUnread}+` : String(count);
 		r.unreadCount = count;
 		r.unread = count > 0;
 	});
