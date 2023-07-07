@@ -65,19 +65,22 @@ define('forum/chats', [
 	};
 
 	Chats.addEventListeners = function () {
-		Chats.addSendHandlers(ajaxify.data.roomId, $('.chat-input'), $('.expanded-chat button[data-action="send"]'));
+		const { roomId } = ajaxify.data;
+		const mainWrapper = $('[component="chat/main-wrapper"]');
+		const chatControls = components.get('chat/controls');
+		Chats.addSendHandlers(roomId, $('.chat-input'), $('.expanded-chat button[data-action="send"]'));
 		Chats.addPopoutHandler();
-		Chats.addActionHandlers(components.get('chat/messages'), ajaxify.data.roomId);
-		Chats.addManageHandler(ajaxify.data.roomId, components.get('chat/controls').find('[data-action="members"]'));
-		Chats.addRenameHandler(ajaxify.data.roomId, components.get('chat/controls').find('[data-action="rename"]'));
-		Chats.addLeaveHandler(ajaxify.data.roomId, components.get('chat/controls').find('[data-action="leave"]'));
-		Chats.addDeleteHandler(ajaxify.data.roomId, components.get('chat/controls').find('[data-action="delete"]'));
-		Chats.addScrollHandler(ajaxify.data.roomId, ajaxify.data.uid, $('.chat-content'));
+		Chats.addActionHandlers(components.get('chat/messages'), roomId);
+		Chats.addManageHandler(roomId, chatControls.find('[data-action="members"]'));
+		Chats.addRenameHandler(roomId, chatControls.find('[data-action="rename"]'));
+		Chats.addLeaveHandler(roomId, chatControls.find('[data-action="leave"]'));
+		Chats.addDeleteHandler(roomId, chatControls.find('[data-action="delete"]'));
+		Chats.addScrollHandler(roomId, ajaxify.data.uid, $('.chat-content'));
 		Chats.addScrollBottomHandler($('.chat-content'));
-		Chats.addCharactersLeftHandler($('[component="chat/main-wrapper"]'));
-		Chats.addTextareaResizeHandler($('[component="chat/main-wrapper"]'));
-		Chats.addIPHandler($('[component="chat/main-wrapper"]'));
-		Chats.createAutoComplete(ajaxify.data.roomId, $('[component="chat/input"]'));
+		Chats.addCharactersLeftHandler(mainWrapper);
+		Chats.addTextareaResizeHandler(mainWrapper);
+		Chats.addIPHandler(mainWrapper);
+		Chats.createAutoComplete(roomId, $('[component="chat/input"]'));
 		Chats.addUploadHandler({
 			dragDropAreaEl: $('.chats-full'),
 			pasteEl: $('[component="chat/input"]'),
@@ -89,7 +92,7 @@ define('forum/chats', [
 		$('[data-action="close"]').on('click', function () {
 			Chats.switchChat();
 		});
-		userList.init(ajaxify.data.roomId, $('[component="chat/main-wrapper"]'));
+		userList.init(roomId, mainWrapper);
 		Chats.addPublicRoomSortHandler();
 	};
 
