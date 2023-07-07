@@ -482,4 +482,6 @@ get:
                     type: boolean
                   chatWithMessage:
                     type: string
+                  bodyClasses:
+                    type: array
               - $ref: ../../../../components/schemas/CommonProps.yaml#/CommonProps
