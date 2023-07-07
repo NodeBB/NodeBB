@@ -84,6 +84,7 @@ module.exports = function (Messaging) {
 		}
 
 		messages[0].newSet = isNewSet;
+		messages[0].mid = mid; // TODO: messageId is a duplicate
 		messages[0].roomId = roomId;
 		plugins.hooks.fire('action:messaging.save', { message: messages[0], data: data });
 		return messages[0];

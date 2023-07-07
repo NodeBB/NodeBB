@@ -378,7 +378,7 @@ describe('Messaging Library', () => {
 			assert(myRoomId);
 
 			try {
-				await util.promisify(socketModules.chats.getRaw)({ uid: mocks.users.baz.uid }, { mid: 200 });
+				await socketModules.chats.getRaw({ uid: mocks.users.baz.uid }, { mid: 200 });
 			} catch (err) {
 				assert(err);
 				assert.equal(err.message, '[[error:not-allowed]]');
@@ -386,7 +386,7 @@ describe('Messaging Library', () => {
 
 			({ body } = await callv3API('post', `/chats/${myRoomId}`, { roomId: myRoomId, message: 'admin will see this' }, 'baz'));
 			const message = body.response;
-			const raw = await util.promisify(socketModules.chats.getRaw)({ uid: mocks.users.foo.uid }, { mid: message.mid });
+			const raw = await socketModules.chats.getRaw({ uid: mocks.users.foo.uid }, { mid: message.messageId });
 			assert.equal(raw, 'admin will see this');
 		});
 
@@ -560,9 +560,9 @@ describe('Messaging Library', () => {
 		before(async () => {
 			await callv3API('post', `/chats/${roomId}/users`, { uids: [mocks.users.baz.uid] }, 'foo');
 			let { body } = await callv3API('post', `/chats/${roomId}`, { roomId: roomId, message: 'first chat message' }, 'foo');
-			mid = body.response.mid;
+			mid = body.response.messageId;
 			({ body } = await callv3API('post', `/chats/${roomId}`, { roomId: roomId, message: 'second chat message' }, 'baz'));
-			mid2 = body.response.mid;
+			mid2 = body.response.messageId;
 		});
 
 		after(async () => {
