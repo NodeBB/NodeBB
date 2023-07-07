@@ -345,7 +345,7 @@ describe('Messaging Library', () => {
 			assert(messageData.fromUser);
 			assert(messageData.roomId, roomId);
 			const raw =
-				await util.promisify(socketModules.chats.getRaw)({ uid: mocks.users.foo.uid }, { mid: messageData.mid });
+				await util.promisify(socketModules.chats.getRaw)({ uid: mocks.users.foo.uid }, { mid: messageData.messageId });
 			assert.equal(raw, 'first chat message');
 		});
 
@@ -637,7 +637,6 @@ describe('Messaging Library', () => {
 			const { messages } = body.response;
 			messages.forEach((msg) => {
 				assert(!msg.deleted || msg.content === '<p>[[modules:chat.message-deleted]]</p>', msg.content);
-				assert(!msg.deleted || msg.cleanedContent, '[[modules:chat.message-deleted]]', msg.content);
 			});
 		});
 

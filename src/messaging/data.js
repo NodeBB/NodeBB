@@ -78,13 +78,11 @@ module.exports = function (Messaging) {
 		messages = await Promise.all(messages.map(async (message) => {
 			if (message.system) {
 				message.content = validator.escape(String(message.content));
-				message.cleanedContent = utils.stripHTMLTags(utils.decodeHTMLEntities(message.content));
 				return message;
 			}
 
 			const result = await Messaging.parse(message.content, message.fromuid, uid, roomId, isNew);
 			message.content = result;
-			message.cleanedContent = utils.stripHTMLTags(utils.decodeHTMLEntities(result));
 			return message;
 		}));
 

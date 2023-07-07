@@ -184,11 +184,11 @@ define('chat', [
 		if (app.user.blocks.includes(parseInt(data.fromUid, 10))) {
 			return;
 		}
-		data.self = parseInt(app.user.uid, 10) === parseInt(data.fromUid, 10) ? 1 : 0;
-		if (!newMessage) {
-			newMessage = data.self === 0;
-		}
 		if (module.modalExists(data.roomId)) {
+			data.self = parseInt(app.user.uid, 10) === parseInt(data.fromUid, 10) ? 1 : 0;
+			if (!newMessage) {
+				newMessage = data.self === 0;
+			}
 			data.message.self = data.self;
 			data.message.timestamp = Math.min(Date.now(), data.message.timetamp);
 			data.message.timestampISO = utils.toISOString(data.message.timestamp);

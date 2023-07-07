@@ -108,8 +108,6 @@ get:
                           type: boolean
                         index:
                           type: number
-                        cleanedContent:
-                          type: string
                         isOwner:
                           type: boolean
                   isOwner:

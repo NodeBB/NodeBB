@@ -469,7 +469,7 @@ define('forum/chats', [
 
 		socket.on('event:chats.public.unread', function (data) {
 			if (
-				chatModule.isFromBlockedUser(data.fromuid) ||
+				chatModule.isFromBlockedUser(data.fromUid) ||
 				chatModule.isLookingAtRoom(data.roomId) ||
 				app.user.uid === parseInt(data.fromUid, 10)
 			) {

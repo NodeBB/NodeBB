@@ -102,8 +102,6 @@ MessageObject:
       type: number
     newSet:
       type: boolean
-    cleanedContent:
-      type: string
 RoomUserList:
   type: object
   properties:
