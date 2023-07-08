@@ -33,5 +33,16 @@ define('forum/chats/user-list', ['api'], function (api) {
 		}, 200));
 	};
 
+	userList.addSearchHandler = function (roomId, inputEl, callback) {
+		inputEl.on('keyup', utils.debounce(async () => {
+			const username = inputEl.val();
+			const data = await socket.emit('modules.chats.searchMembers', {
+				username: username,
+				roomId: roomId,
+			});
+			callback(data);
+		}, 200));
+	};
+
 	return userList;
 });

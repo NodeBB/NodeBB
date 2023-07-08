@@ -28,30 +28,28 @@ define('forum/chats/manage', [
 			modal = bootbox.dialog({
 				title: '[[modules:chat.manage-room]]',
 				message: html,
-				buttons: {
-					save: {
-						label: '[[global:save]]',
-						className: 'btn-primary',
-						callback: function () {
-							api.put(`/chats/${roomId}`, {
-								groups: modal.find('[component="chat/room/groups"]').val(),
-							}).then((payload) => {
-								ajaxify.data.groups = payload.groups;
-							}).catch(alerts.error);
-						},
-					},
-				},
 			});
 
 			modal.attr('component', 'chat/manage-modal');
 
 			refreshParticipantsList(roomId, modal);
 			addKickHandler(roomId, modal);
-			userList.addInfiniteScrollHandler(roomId, modal.find('[component="chat/manage/user/list"]'), async (listEl, data) => {
+
+			const userListEl = modal.find('[component="chat/manage/user/list"]');
+			const userListElSearch = modal.find('[component="chat/manage/user/list/search"]');
+			userList.addSearchHandler(roomId, userListElSearch, async (data) => {
+				if (userListElSearch.val()) {
+					userListEl.html(await app.parseAndTranslate('partials/chats/manage-room-users', data));
+				} else {
+					refreshParticipantsList(roomId, modal);
+				}
+			});
+
+			userList.addInfiniteScrollHandler(roomId, userListEl, async (listEl, data) => {
 				listEl.append(await app.parseAndTranslate('partials/chats/manage-room-users', data));
 			});
 
-			const searchInput = modal.find('input');
+			const searchInput = modal.find('[component="chat/manage/user/add/search"]');
 			const errorEl = modal.find('.text-danger');
 			autocomplete.user(searchInput, function (event, selected) {
 				errorEl.text('');
@@ -65,6 +63,17 @@ define('forum/chats/manage', [
 						errorEl.text(translated);
 					});
 				});
+			});
+
+			modal.find('[component="chat/manage/save/groups"]').on('click', (ev) => {
+				const btn = $(ev.target);
+				api.put(`/chats/${roomId}`, {
+					groups: modal.find('[component="chat/room/groups"]').val(),
+				}).then((payload) => {
+					ajaxify.data.groups = payload.groups;
+					btn.addClass('btn-success');
+					setTimeout(() => btn.removeClass('btn-success'), 1000);
+				}).catch(alerts.error);
 			});
 		});
 	};
@@ -80,7 +89,7 @@ define('forum/chats/manage', [
 	}
 
 	async function refreshParticipantsList(roomId, modal, data) {
-		const listEl = modal.find('.list-group');
+		const listEl = modal.find('[component="chat/manage/user/list"]');
 
 		if (!data) {
 			try {

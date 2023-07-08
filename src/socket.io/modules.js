@@ -1,5 +1,7 @@
 'use strict';
 
+const _ = require('lodash');
+
 const db = require('../database');
 const Messaging = require('../messaging');
 const utils = require('../utils');
@@ -120,4 +122,53 @@ async function joinLeave(socket, roomIds, method, prefix = 'chat_room') {
 		});
 	}
 }
+
+SocketModules.chats.searchMembers = async function (socket, data) {
+	if (!data || !data.roomId) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	const [isAdmin, inRoom, isRoomOwner] = await Promise.all([
+		user.isAdministrator(socket.uid),
+		Messaging.isUserInRoom(socket.uid, data.roomId),
+		Messaging.isRoomOwner(socket.uid, data.roomId),
+	]);
+
+	if (!isAdmin && !inRoom) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	const results = await user.search({
+		query: data.username,
+		paginate: false,
+		hardCap: -1,
+	});
+
+	const { users } = results;
+	const foundUids = users.map(user => user && user.uid);
+	const isUidInRoom = _.zipObject(
+		foundUids,
+		await Messaging.isUsersInRoom(foundUids, data.roomId)
+	);
+
+	const roomUsers = users.filter(user => isUidInRoom[user.uid]);
+	const isOwners = await Messaging.isRoomOwner(roomUsers.map(u => u.uid), data.roomId);
+
+	roomUsers.forEach((user, index) => {
+		if (user) {
+			user.isOwner = isOwners[index];
+			user.canKick = isRoomOwner && (parseInt(user.uid, 10) !== parseInt(socket.uid, 10));
+		}
+	});
+
+	roomUsers.sort((a, b) => {
+		if (a.isOwner && !b.isOwner) {
+			return -1;
+		} else if (!a.isOwner && b.isOwner) {
+			return 1;
+		}
+		return 0;
+	});
+	return { users: roomUsers };
+};
+
 require('../promisify')(SocketModules);

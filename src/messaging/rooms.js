@@ -146,7 +146,7 @@ module.exports = function (Messaging) {
 			single = true;
 		}
 		const inRooms = await db.isMemberOfSortedSets(
-			roomIds.map(id => `chat:room:${id}:uids`, uid),
+			roomIds.map(id => `chat:room:${id}:uids`),
 			uid
 		);
 
@@ -159,6 +159,27 @@ module.exports = function (Messaging) {
 			return data.inRoom;
 		}));
 		return single ? data.pop() : data;
+	};
+
+	Messaging.isUsersInRoom = async (uids, roomId) => {
+		let single = false;
+		if (!Array.isArray(uids)) {
+			uids = [uids];
+			single = true;
+		}
+
+		const inRooms = await db.isSortedSetMembers(
+			`chat:room:${roomId}:uids`,
+			uids,
+		);
+
+		const data = await plugins.hooks.fire('filter:messaging.isUsersInRoom', {
+			uids: uids,
+			roomId: roomId,
+			inRooms: inRooms,
+		});
+
+		return single ? data.inRooms.pop() : data.inRooms;
 	};
 
 	Messaging.roomExists = async roomId => db.exists(`chat:room:${roomId}:uids`);
@@ -375,7 +396,7 @@ module.exports = function (Messaging) {
 
 		room.messages = messages;
 		room.isOwner = isOwner;
-		room.users = users.filter(user => user && parseInt(user.uid, 10) && parseInt(user.uid, 10) !== parseInt(uid, 10));
+		room.users = users;
 		room.canReply = canReply;
 		room.groupChat = room.hasOwnProperty('groupChat') ? room.groupChat : users.length > 2;
 		room.usernames = Messaging.generateUsernames(users, uid);
