@@ -191,7 +191,6 @@ app = window.app || {};
 	}
 
 	function onReconnecting() {
-		reconnecting = true;
 		const reconnectEl = $('#reconnect');
 		const reconnectAlert = $('#reconnect-alert');
 
@@ -207,8 +206,9 @@ app = window.app || {};
 	}
 
 	function onDisconnect() {
+		reconnecting = true;
 		setTimeout(function () {
-			if (socket.disconnected) {
+			if (!socket.connected) {
 				onReconnecting();
 			}
 		}, 2000);
