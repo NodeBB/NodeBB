@@ -371,7 +371,7 @@ describe('socket.io', () => {
 						assert(data.hasOwnProperty('onlineGuestCount'));
 						assert(data.hasOwnProperty('onlineRegisteredCount'));
 						assert(data.hasOwnProperty('socketCount'));
-						assert(data.hasOwnProperty('topics'));
+						assert(data.hasOwnProperty('topTenTopics'));
 						assert(data.hasOwnProperty('users'));
 						done();
 					});
