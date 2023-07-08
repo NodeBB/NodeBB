@@ -107,18 +107,23 @@ Messaging.isNewSet = async (uid, roomId, timestamp) => {
 	return true;
 };
 
+Messaging.getPublicRoomIdsFromSet = async function (set) {
+	const cacheKey = `${set}:all`;
+	let allRoomIds = cache.get(cacheKey);
+	if (allRoomIds === undefined) {
+		allRoomIds = await db.getSortedSetRange(set, 0, -1);
+		cache.set(cacheKey, allRoomIds);
+	}
+	return allRoomIds.slice();
+};
+
 Messaging.getPublicRooms = async (callerUid, uid) => {
 	const ok = await canGet('filter:messaging.canGetPublicChats', callerUid, uid);
 	if (!ok) {
 		return null;
 	}
-	const key = 'chat:rooms:public:order';
-	let allRoomIds = cache.get(key);
-	if (allRoomIds === undefined) {
-		allRoomIds = await db.getSortedSetRange(key, 0, -1);
-		cache.set('chat:rooms:public:all', allRoomIds.slice());
-	}
 
+	const allRoomIds = await Messaging.getPublicRoomIdsFromSet('chat:rooms:public:order');
 	const allRoomData = await Messaging.getRoomsData(allRoomIds);
 	const checks = await Promise.all(
 		allRoomData.map(room => groups.isMemberOfAny(uid, room && room.groups))

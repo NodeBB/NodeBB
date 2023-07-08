@@ -6,6 +6,7 @@ const db = require('../database');
 const Messaging = require('../messaging');
 const utils = require('../utils');
 const user = require('../user');
+const groups = require('../groups');
 const privileges = require('../privileges');
 
 const SocketModules = module.exports;
@@ -92,6 +93,30 @@ SocketModules.chats.leavePublic = async function (socket, roomIds) {
 	await joinLeave(socket, roomIds, 'leave', 'chat_room_public');
 };
 
+async function joinLeave(socket, roomIds, method, prefix = 'chat_room') {
+	if (!(socket.uid > 0)) {
+		throw new Error('[[error:not-allowed]]');
+	}
+	if (!Array.isArray(roomIds)) {
+		roomIds = [roomIds];
+	}
+	if (roomIds.length) {
+		const [isAdmin, inRooms, roomData] = await Promise.all([
+			user.isAdministrator(socket.uid),
+			Messaging.isUserInRoom(socket.uid, roomIds),
+			Messaging.getRoomsData(roomIds, ['public', 'groups']),
+		]);
+
+		await Promise.all(roomIds.map(async (roomId, idx) => {
+			const isPublic = roomData[idx] && roomData[idx].public;
+			const groups = roomData[idx] && roomData[idx].groups;
+			if (isAdmin || (inRooms[idx] && (!isPublic || await groups.isMemberOfAny(socket.uid, groups)))) {
+				socket[method](`${prefix}_${roomId}`);
+			}
+		}));
+	}
+}
+
 SocketModules.chats.sortPublicRooms = async function (socket, data) {
 	if (!data || !Array.isArray(data.scores) || !Array.isArray(data.roomIds)) {
 		throw new Error('[[error:invalid-data]]');
@@ -102,26 +127,6 @@ SocketModules.chats.sortPublicRooms = async function (socket, data) {
 	}
 	await db.sortedSetAdd(`chat:rooms:public:order`, data.scores, data.roomIds);
 };
-
-async function joinLeave(socket, roomIds, method, prefix = 'chat_room') {
-	if (!(socket.uid > 0)) {
-		throw new Error('[[error:not-allowed]]');
-	}
-	if (!Array.isArray(roomIds)) {
-		roomIds = [roomIds];
-	}
-	if (roomIds.length) {
-		const [isAdmin, inRooms] = await Promise.all([
-			user.isAdministrator(socket.uid),
-			Messaging.isUserInRoom(socket.uid, roomIds),
-		]);
-		roomIds.forEach((roomId, idx) => {
-			if (isAdmin || inRooms[idx]) {
-				socket[method](`${prefix}_${roomId}`);
-			}
-		});
-	}
-}
 
 SocketModules.chats.searchMembers = async function (socket, data) {
 	if (!data || !data.roomId) {
