@@ -10,8 +10,8 @@
 	</div>
 </div>
 
-<div class="overflow-auto" style="max-height: 500px;">
-	<table component="groups/members" class="table table-hover" data-nextstart="{group.membersNextStart}">
+<div component="groups/members" data-nextstart="{group.membersNextStart}" class="overflow-auto" style="max-height: 500px;">
+	<table  class="table table-hover">
 		<tbody>
 		{{{ each group.members }}}
 		<tr data-uid="{group.members.uid}">
