@@ -107,7 +107,11 @@ Messaging.isNewSet = async (uid, roomId, timestamp) => {
 	return true;
 };
 
-Messaging.getPublicRooms = async (callerUid) => {
+Messaging.getPublicRooms = async (callerUid, uid) => {
+	const ok = await canGet('filter:messaging.canGetPublicChats', callerUid, uid);
+	if (!ok) {
+		return null;
+	}
 	const key = 'chat:rooms:public:order';
 	let allRoomIds = cache.get(key);
 	if (allRoomIds === undefined) {
@@ -117,12 +121,12 @@ Messaging.getPublicRooms = async (callerUid) => {
 
 	const allRoomData = await Messaging.getRoomsData(allRoomIds);
 	const checks = await Promise.all(
-		allRoomData.map(room => groups.isMemberOfAny(callerUid, room && room.groups))
+		allRoomData.map(room => groups.isMemberOfAny(uid, room && room.groups))
 	);
 	const roomData = allRoomData.filter((room, idx) => room && checks[idx]);
 	const roomIds = roomData.map(r => r.roomId);
 	const userReadTimestamps = await db.getObjectFields(
-		`uid:${callerUid}:chat:rooms:read`,
+		`uid:${uid}:chat:rooms:read`,
 		roomIds,
 	);
 

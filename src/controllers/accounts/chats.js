@@ -1,5 +1,6 @@
 'use strict';
 
+const db = require('../../database');
 const messaging = require('../../messaging');
 const meta = require('../../meta');
 const user = require('../../user');
@@ -21,9 +22,10 @@ chatsController.get = async function (req, res, next) {
 	if (!canChat) {
 		return next(new Error('[[error:no-privileges]]'));
 	}
-	const [recentChats, publicRooms] = await Promise.all([
+	const [recentChats, publicRooms, privateRoomCount] = await Promise.all([
 		messaging.getRecentChats(req.uid, uid, 0, 29),
-		messaging.getPublicRooms(req.uid),
+		messaging.getPublicRooms(req.uid, uid),
+		db.sortedSetCard(`uid:${uid}:chat:rooms`),
 	]);
 	if (!recentChats) {
 		return next();
@@ -33,6 +35,7 @@ chatsController.get = async function (req, res, next) {
 		return res.render('chats', {
 			rooms: recentChats.rooms,
 			publicRooms: publicRooms,
+			privateRoomCount: privateRoomCount,
 			uid: uid,
 			userslug: req.params.userslug,
 			nextStart: recentChats.nextStart,
@@ -48,6 +51,7 @@ chatsController.get = async function (req, res, next) {
 	room.rooms = recentChats.rooms;
 	room.nextStart = recentChats.nextStart;
 	room.publicRooms = publicRooms;
+	room.privateRoomCount = privateRoomCount;
 	room.title = room.roomName || room.usernames || '[[pages:chats]]';
 	room.uid = uid;
 	room.userslug = req.params.userslug;
