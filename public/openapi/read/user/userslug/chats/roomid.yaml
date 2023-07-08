@@ -465,6 +465,8 @@ get:
                           type: string
                         chatWithMessage:
                           type: string
+                  privateRoomCount:
+                    type: number
                   nextStart:
                     type: number
                   title:

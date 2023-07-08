@@ -438,7 +438,46 @@ define('forum/chats', [
 	};
 
 	Chats.switchChat = function (roomid) {
-		ajaxify.go('user/' + ajaxify.data.userslug + '/chats/' + (roomid || '') + window.location.search);
+		// Allow empty arg for return to chat list/close chat
+		if (!roomid) {
+			roomid = '';
+		}
+		Chats.destroyAutoComplete(ajaxify.data.roomId);
+		socket.emit('modules.chats.leave', ajaxify.data.roomId);
+		const url = 'user/' + ajaxify.data.userslug + '/chats/' + roomid + window.location.search;
+		if (!self.fetch) {
+			return ajaxify.go(url);
+		}
+		const params = new URL(document.location).searchParams;
+		params.set('switch', 1);
+		const dataUrl = `${config.relative_path}/api/user/${ajaxify.data.userslug}/chats/${roomid}?${params.toString()}`;
+		fetch(dataUrl, { credentials: 'include' })
+			.then(async function (response) {
+				if (!response.ok) {
+					return console.warn('[search] Received ' + response.status);
+				}
+				const payload = await response.json();
+				const html = await app.parseAndTranslate('partials/chats/message-window', payload);
+				const mainWrapper = components.get('chat/main-wrapper');
+				mainWrapper.html(html);
+				chatNavWrapper = $('[component="chat/nav-wrapper"]');
+				html.find('.timeago').timeago();
+				ajaxify.data = payload;
+				$('body').addClass(ajaxify.data.bodyClass);
+				mainWrapper.find('[data-bs-toggle="tooltip"]').tooltip();
+				Chats.setActive();
+				Chats.addEventListeners();
+				hooks.fire('action:chat.loaded', $('.chats-full'));
+				messages.scrollToBottom(mainWrapper.find('.expanded-chat ul.chat-content'));
+				if (history.pushState) {
+					history.pushState({
+						url: url,
+					}, null, window.location.protocol + '//' + window.location.host + config.relative_path + '/' + url);
+				}
+			})
+			.catch(function (error) {
+				console.warn('[search] ' + error.message);
+			});
 	};
 
 	Chats.addGlobalEventListeners = function () {
