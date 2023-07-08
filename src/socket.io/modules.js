@@ -6,7 +6,6 @@ const db = require('../database');
 const Messaging = require('../messaging');
 const utils = require('../utils');
 const user = require('../user');
-const groups = require('../groups');
 const privileges = require('../privileges');
 
 const SocketModules = module.exports;
