@@ -213,9 +213,8 @@ app = window.app || {};
 
 	function onDisconnect() {
 		reconnecting = true;
-
 		setTimeout(function () {
-			if (socket.disconnected) {
+			if (!socket.connected) {
 				onReconnecting();
 			}
 		}, 2000);
