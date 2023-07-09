@@ -201,6 +201,10 @@ module.exports = function (Messaging) {
 		return isArray ? result : result[0];
 	};
 
+	Messaging.isRoomPublic = async function (roomId) {
+		return parseInt(await db.getObjectField(`chat:room:${roomId}`, 'public'), 10) === 1;
+	};
+
 	Messaging.addUsersToRoom = async function (uid, uids, roomId) {
 		uids = _.uniq(uids);
 		const inRoom = await Messaging.isUserInRoom(uid, roomId);
