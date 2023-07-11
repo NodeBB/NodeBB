@@ -63,20 +63,26 @@ async function xhr(options, cb) {
 		delete options.data;
 	}
 
-	await fetch(url, {
-		...options,
-	}).then(async (res) => {
-		const response = await res.json();
-		if (Math.floor(res.status / 100) === 2) {
-			cb(null, (
-				response &&
-					response.hasOwnProperty('status') &&
-					response.hasOwnProperty('response') ? response.response : (response || {})
-			));
-		} else {
-			cb(new Error(response.status.message));
-		}
-	}).catch(cb);
+	const res = await fetch(url, options);
+	const { headers } = res;
+	const isJSON = headers.get('content-type').startsWith('application/json');
+
+	let response;
+	if (isJSON) {
+		response = await res.json();
+	} else {
+		response = await res.text();
+	}
+
+	if (!res.ok) {
+		return cb(new Error(isJSON ? response.status.message : response));
+	}
+
+	cb(null, (
+		isJSON && response.hasOwnProperty('status') && response.hasOwnProperty('response') ?
+			response.response :
+			response
+	));
 }
 
 export function get(route, data, onSuccess) {
