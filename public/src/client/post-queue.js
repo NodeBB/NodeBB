@@ -110,7 +110,6 @@ define('forum/post-queue', [
 		if (listEl) {
 			listEl.addEventListener('click', (e) => {
 				const subselector = e.target.closest('[data-action]');
-				console.log(subselector);
 				if (subselector) {
 					const action = subselector.getAttribute('data-action');
 					const uid = subselector.closest('[data-uid]').getAttribute('data-uid');
