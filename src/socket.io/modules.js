@@ -125,6 +125,7 @@ SocketModules.chats.sortPublicRooms = async function (socket, data) {
 		throw new Error('[[error:no-privileges]]');
 	}
 	await db.sortedSetAdd(`chat:rooms:public:order`, data.scores, data.roomIds);
+	require('../cache').del(`chat:rooms:public:order:all`);
 };
 
 SocketModules.chats.searchMembers = async function (socket, data) {
