@@ -9,9 +9,19 @@ RoomObject:
       description: unique identifier for the chat room
     roomName:
       type: string
+      description: the name of the room, if set this is displayed instead of the usernames
     groupChat:
       type: boolean
-      description: whether the chat room is a group chat or not
+      description: whether the chat room is a group chat or not (if more than 2 users it is a group chat)
+    public:
+      type: boolean
+      description: whether the chat room is public or private
+    userCount:
+      type: number
+      description: number of users in this chat room
+    timestamp:
+      type: number
+      description: Timestamp of when room was created
 MessageObject:
   type: object
   properties:
@@ -92,8 +102,6 @@ MessageObject:
       type: number
     newSet:
       type: boolean
-    cleanedContent:
-      type: string
 RoomUserList:
   type: object
   properties:
@@ -132,6 +140,8 @@ RoomUserList:
             type: boolean
           canKick:
             type: boolean
+          index:
+            type: number
 RoomObjectFull:
   # Messaging.loadRoom
   allOf:

@@ -1,68 +1,185 @@
 'use strict';
 
+const _ = require('lodash');
 const validator = require('validator');
+const winston = require('winston');
 
 const db = require('../database');
 const user = require('../user');
+const groups = require('../groups');
 const plugins = require('../plugins');
 const privileges = require('../privileges');
 const meta = require('../meta');
+const cacheCreate = require('../cacheCreate');
+
+const cache = cacheCreate({
+	name: 'chat:room:uids',
+	max: 500,
+	ttl: 0,
+});
+
+const intFields = [
+	'roomId', 'timestamp', 'userCount',
+];
 
 module.exports = function (Messaging) {
-	Messaging.getRoomData = async (roomId) => {
-		const data = await db.getObject(`chat:room:${roomId}`);
+	Messaging.getRoomData = async (roomId, fields = []) => {
+		const data = await db.getObject(`chat:room:${roomId}`, fields);
 		if (!data) {
 			throw new Error('[[error:no-chat-room]]');
 		}
 
-		modifyRoomData([data]);
+		modifyRoomData([data], fields);
 		return data;
 	};
 
-	Messaging.getRoomsData = async (roomIds) => {
-		const roomData = await db.getObjects(roomIds.map(roomId => `chat:room:${roomId}`));
-		modifyRoomData(roomData);
+	Messaging.getRoomsData = async (roomIds, fields = []) => {
+		const roomData = await db.getObjects(
+			roomIds.map(roomId => `chat:room:${roomId}`),
+			fields
+		);
+		modifyRoomData(roomData, fields);
 		return roomData;
 	};
 
-	function modifyRoomData(rooms) {
+	function modifyRoomData(rooms, fields) {
 		rooms.forEach((data) => {
 			if (data) {
-				data.roomName = data.roomName || '';
-				data.roomName = validator.escape(String(data.roomName));
+				db.parseIntFields(data, intFields, fields);
+				data.roomName = validator.escape(String(data.roomName || ''));
+				data.public = parseInt(data.public, 10) === 1;
 				if (data.hasOwnProperty('groupChat')) {
 					data.groupChat = parseInt(data.groupChat, 10) === 1;
+				}
+
+				if (data.hasOwnProperty('groups')) {
+					try {
+						data.groups = JSON.parse(data.groups);
+					} catch (err) {
+						winston.error(err.stack);
+						data.groups = [];
+					}
 				}
 			}
 		});
 	}
 
-	Messaging.newRoom = async (uid, toUids) => {
+	Messaging.newRoom = async (uid, data) => {
+		// backwards compat. remove in 4.x
+		if (Array.isArray(data)) { // old usage second param used to be toUids
+			data = { uids: data };
+		}
 		const now = Date.now();
 		const roomId = await db.incrObjectField('global', 'nextChatRoomId');
 		const room = {
 			owner: uid,
 			roomId: roomId,
+			timestamp: now,
 		};
+
+		if (data.hasOwnProperty('roomName') && data.roomName) {
+			room.roomName = String(data.roomName);
+		}
+		if (Array.isArray(data.groups) && data.groups.length) {
+			room.groups = JSON.stringify(data.groups);
+		}
+		const isPublic = data.type === 'public';
+		if (isPublic) {
+			room.public = 1;
+		}
 
 		await Promise.all([
 			db.setObject(`chat:room:${roomId}`, room),
+			db.sortedSetAdd('chat:rooms', now, roomId),
 			db.sortedSetAdd(`chat:room:${roomId}:uids`, now, uid),
 		]);
+
 		await Promise.all([
-			Messaging.addUsersToRoom(uid, toUids, roomId),
-			Messaging.addRoomToUsers(roomId, [uid].concat(toUids), now),
+			Messaging.addUsersToRoom(uid, data.uids, roomId),
+			isPublic ?
+				db.sortedSetAddBulk([
+					['chat:rooms:public', now, roomId],
+					['chat:rooms:public:order', roomId, roomId],
+				]) :
+				Messaging.addRoomToUsers(roomId, [uid].concat(data.uids), now),
 		]);
-		// chat owner should also get the user-join system message
-		await Messaging.addSystemMessage('user-join', uid, roomId);
+
+		if (!isPublic) {
+			// chat owner should also get the user-join system message
+			await Messaging.addSystemMessage('user-join', uid, roomId);
+		}
 
 		return roomId;
 	};
 
-	Messaging.isUserInRoom = async (uid, roomId) => {
-		const inRoom = await db.isSortedSetMember(`chat:room:${roomId}:uids`, uid);
-		const data = await plugins.hooks.fire('filter:messaging.isUserInRoom', { uid: uid, roomId: roomId, inRoom: inRoom });
-		return data.inRoom;
+	Messaging.deleteRooms = async (roomIds) => {
+		if (!roomIds) {
+			throw new Error('[[error:invalid-data]]');
+		}
+
+		if (!Array.isArray(roomIds)) {
+			roomIds = [roomIds];
+		}
+
+		await Promise.all(roomIds.map(async (roomId) => {
+			const uids = await db.getSortedSetMembers(`chat:room:${roomId}:uids`);
+			const keys = uids
+				.map(uid => `uid:${uid}:chat:rooms`)
+				.concat(uids.map(uid => `uid:${uid}:chat:rooms:unread`));
+
+			await Promise.all([
+				db.sortedSetRemove(`chat:room:${roomId}:uids`, uids),
+				db.sortedSetsRemove(keys, roomId),
+			]);
+		}));
+		await Promise.all([
+			db.deleteAll(roomIds.map(id => `chat:room:${id}`)),
+			db.sortedSetRemove('chat:rooms', roomIds),
+			db.sortedSetRemove('chat:rooms:public', roomIds),
+		]);
+	};
+
+	Messaging.isUserInRoom = async (uid, roomIds) => {
+		let single = false;
+		if (!Array.isArray(roomIds)) {
+			roomIds = [roomIds];
+			single = true;
+		}
+		const inRooms = await db.isMemberOfSortedSets(
+			roomIds.map(id => `chat:room:${id}:uids`),
+			uid
+		);
+
+		const data = await Promise.all(roomIds.map(async (roomId, idx) => {
+			const data = await plugins.hooks.fire('filter:messaging.isUserInRoom', {
+				uid: uid,
+				roomId: roomId,
+				inRoom: inRooms[idx],
+			});
+			return data.inRoom;
+		}));
+		return single ? data.pop() : data;
+	};
+
+	Messaging.isUsersInRoom = async (uids, roomId) => {
+		let single = false;
+		if (!Array.isArray(uids)) {
+			uids = [uids];
+			single = true;
+		}
+
+		const inRooms = await db.isSortedSetMembers(
+			`chat:room:${roomId}:uids`,
+			uids,
+		);
+
+		const data = await plugins.hooks.fire('filter:messaging.isUsersInRoom', {
+			uids: uids,
+			roomId: roomId,
+			inRooms: inRooms,
+		});
+
+		return single ? data.inRooms.pop() : data.inRooms;
 	};
 
 	Messaging.roomExists = async roomId => db.exists(`chat:room:${roomId}:uids`);
@@ -84,7 +201,12 @@ module.exports = function (Messaging) {
 		return isArray ? result : result[0];
 	};
 
+	Messaging.isRoomPublic = async function (roomId) {
+		return parseInt(await db.getObjectField(`chat:room:${roomId}`, 'public'), 10) === 1;
+	};
+
 	Messaging.addUsersToRoom = async function (uid, uids, roomId) {
+		uids = _.uniq(uids);
 		const inRoom = await Messaging.isUserInRoom(uid, roomId);
 		const payload = await plugins.hooks.fire('filter:messaging.addUsersToRoom', { uid, uids, roomId, inRoom });
 
@@ -92,12 +214,16 @@ module.exports = function (Messaging) {
 			throw new Error('[[error:cant-add-users-to-chat-room]]');
 		}
 
-		const now = Date.now();
-		const timestamps = payload.uids.map(() => now);
-		await db.sortedSetAdd(`chat:room:${payload.roomId}:uids`, timestamps, payload.uids);
-		await updateGroupChatField([payload.roomId]);
-		await Promise.all(payload.uids.map(uid => Messaging.addSystemMessage('user-join', uid, payload.roomId)));
+		await addUidsToRoom(payload.uids, roomId);
 	};
+
+	async function addUidsToRoom(uids, roomId) {
+		const now = Date.now();
+		const timestamps = uids.map(() => now);
+		await db.sortedSetAdd(`chat:room:${roomId}:uids`, timestamps, uids);
+		await updateUserCount([roomId]);
+		await Promise.all(uids.map(uid => Messaging.addSystemMessage('user-join', uid, roomId)));
+	}
 
 	Messaging.removeUsersFromRoom = async (uid, uids, roomId) => {
 		const [isOwner, userCount] = await Promise.all([
@@ -117,14 +243,16 @@ module.exports = function (Messaging) {
 		return (await Messaging.getRoomData(roomId)).groupChat;
 	};
 
-	async function updateGroupChatField(roomIds) {
+	async function updateUserCount(roomIds) {
 		const userCounts = await db.sortedSetsCard(roomIds.map(roomId => `chat:room:${roomId}:uids`));
+		const countMap = _.zipObject(roomIds, userCounts);
 		const groupChats = roomIds.filter((roomId, index) => userCounts[index] > 2);
 		const privateChats = roomIds.filter((roomId, index) => userCounts[index] <= 2);
 		await db.setObjectBulk([
-			...groupChats.map(id => [`chat:room:${id}`, { groupChat: 1 }]),
-			...privateChats.map(id => [`chat:room:${id}`, { groupChat: 0 }]),
+			...groupChats.map(id => [`chat:room:${id}`, { groupChat: 1, userCount: countMap[id] }]),
+			...privateChats.map(id => [`chat:room:${id}`, { groupChat: 0, userCount: countMap[id] }]),
 		]);
+		cache.del(roomIds.map(id => `chat:room:${id}:users`));
 	}
 
 	Messaging.leaveRoom = async (uids, roomId) => {
@@ -142,7 +270,7 @@ module.exports = function (Messaging) {
 
 		await Promise.all(uids.map(uid => Messaging.addSystemMessage('user-leave', uid, roomId)));
 		await updateOwner(roomId);
-		await updateGroupChatField([roomId]);
+		await updateUserCount([roomId]);
 	};
 
 	Messaging.leaveRooms = async (uid, roomIds) => {
@@ -162,7 +290,7 @@ module.exports = function (Messaging) {
 			roomIds.map(roomId => updateOwner(roomId))
 				.concat(roomIds.map(roomId => Messaging.addSystemMessage('user-leave', uid, roomId)))
 		);
-		await updateGroupChatField(roomIds);
+		await updateUserCount(roomIds);
 	};
 
 	async function updateOwner(roomId) {
@@ -171,7 +299,18 @@ module.exports = function (Messaging) {
 		await db.setObjectField(`chat:room:${roomId}`, 'owner', newOwner);
 	}
 
-	Messaging.getUidsInRoom = async (roomId, start, stop) => db.getSortedSetRevRange(`chat:room:${roomId}:uids`, start, stop);
+	Messaging.getAllUidsInRoom = async function (roomId) {
+		const cacheKey = `chat:room:${roomId}:users`;
+		let uids = cache.get(cacheKey);
+		if (uids !== undefined) {
+			return uids;
+		}
+		uids = await Messaging.getUidsInRoom(roomId, 0, -1);
+		cache.set(cacheKey, uids);
+		return uids;
+	};
+
+	Messaging.getUidsInRoom = async (roomId, start, stop) => db.getSortedSetRange(`chat:room:${roomId}:uids`, start, stop);
 
 	Messaging.getUsersInRoom = async (roomId, start, stop) => {
 		const uids = await Messaging.getUidsInRoom(roomId, start, stop);
@@ -181,6 +320,7 @@ module.exports = function (Messaging) {
 		]);
 
 		return users.map((user, index) => {
+			user.index = start + index;
 			user.isOwner = isOwners[index];
 			return user;
 		});
@@ -221,40 +361,55 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.loadRoom = async (uid, data) => {
-		const canChat = await privileges.global.can('chat', uid);
+		const { roomId } = data;
+		const [room, inRoom, canChat] = await Promise.all([
+			Messaging.getRoomData(roomId),
+			Messaging.isUserInRoom(uid, roomId),
+			privileges.global.can('chat', uid),
+		]);
+
 		if (!canChat) {
 			throw new Error('[[error:no-privileges]]');
 		}
-		const inRoom = await Messaging.isUserInRoom(uid, data.roomId);
-		if (!inRoom) {
+		if (!room ||
+			(!room.public && !inRoom) ||
+			(room.public && !(await groups.isMemberOfAny(uid, room.groups)))
+		) {
 			return null;
 		}
 
-		const [room, canReply, users, messages, isAdminOrGlobalMod, isOwner] = await Promise.all([
-			Messaging.getRoomData(data.roomId),
-			Messaging.canReply(data.roomId, uid),
-			Messaging.getUsersInRoom(data.roomId, 0, -1),
+		// add user to public room onload
+		if (room.public && !inRoom) {
+			await addUidsToRoom([uid], roomId);
+		}
+
+		const [canReply, users, messages, isAdmin, isGlobalMod, settings, isOwner] = await Promise.all([
+			Messaging.canReply(roomId, uid),
+			Messaging.getUsersInRoom(roomId, 0, 39),
 			Messaging.getMessages({
 				callerUid: uid,
 				uid: data.uid || uid,
-				roomId: data.roomId,
+				roomId: roomId,
 				isNew: false,
 			}),
-			user.isAdminOrGlobalMod(uid),
-			Messaging.isRoomOwner(uid, data.roomId),
+			user.isAdministrator(uid),
+			user.isGlobalModerator(uid),
+			user.getSettings(uid),
+			Messaging.isRoomOwner(uid, roomId),
 		]);
 
 		room.messages = messages;
 		room.isOwner = isOwner;
-		room.users = users.filter(user => user && parseInt(user.uid, 10) && parseInt(user.uid, 10) !== parseInt(uid, 10));
+		room.users = users;
 		room.canReply = canReply;
 		room.groupChat = room.hasOwnProperty('groupChat') ? room.groupChat : users.length > 2;
 		room.usernames = Messaging.generateUsernames(users, uid);
-		room.chatWithMessage = await Messaging.generateChatWithMessage(users, uid);
+		room.chatWithMessage = await Messaging.generateChatWithMessage(users, uid, settings.userLang);
 		room.maximumUsersInChatRoom = meta.config.maximumUsersInChatRoom;
 		room.maximumChatMessageLength = meta.config.maximumChatMessageLength;
 		room.showUserInput = !room.maximumUsersInChatRoom || room.maximumUsersInChatRoom > 2;
-		room.isAdminOrGlobalMod = isAdminOrGlobalMod;
+		room.isAdminOrGlobalMod = isAdmin || isGlobalMod;
+		room.isAdmin = isAdmin;
 
 		const payload = await plugins.hooks.fire('filter:messaging.loadRoom', { uid, data, room });
 		return payload.room;

@@ -65,6 +65,17 @@ SocketGroups.loadMoreMembers = async (socket, data) => {
 	};
 };
 
+SocketGroups.getChatGroups = async (socket) => {
+	const isAdmin = await user.isAdministrator(socket.uid);
+	if (!isAdmin) {
+		throw new Error('[[error:no-privileges]]');
+	}
+	const allGroups = await groups.getNonPrivilegeGroups('groups:createtime', 0, -1);
+	const groupsList = allGroups.filter(g => !groups.ephemeralGroups.includes(g.name));
+	groupsList.sort((a, b) => b.system - a.system);
+	return groupsList.map(g => ({ name: g.name, displayName: g.displayName }));
+};
+
 async function canSearchMembers(uid, groupName) {
 	const [isHidden, isMember, hasAdminPrivilege, isGlobalMod, viewGroups] = await Promise.all([
 		groups.isHidden(groupName),

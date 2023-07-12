@@ -345,7 +345,7 @@ describe('Messaging Library', () => {
 			assert(messageData.fromUser);
 			assert(messageData.roomId, roomId);
 			const raw =
-				await util.promisify(socketModules.chats.getRaw)({ uid: mocks.users.foo.uid }, { mid: messageData.mid });
+				await util.promisify(socketModules.chats.getRaw)({ uid: mocks.users.foo.uid }, { mid: messageData.messageId });
 			assert.equal(raw, 'first chat message');
 		});
 
@@ -378,7 +378,7 @@ describe('Messaging Library', () => {
 			assert(myRoomId);
 
 			try {
-				await util.promisify(socketModules.chats.getRaw)({ uid: mocks.users.baz.uid }, { mid: 200 });
+				await socketModules.chats.getRaw({ uid: mocks.users.baz.uid }, { mid: 200 });
 			} catch (err) {
 				assert(err);
 				assert.equal(err.message, '[[error:not-allowed]]');
@@ -386,7 +386,7 @@ describe('Messaging Library', () => {
 
 			({ body } = await callv3API('post', `/chats/${myRoomId}`, { roomId: myRoomId, message: 'admin will see this' }, 'baz'));
 			const message = body.response;
-			const raw = await util.promisify(socketModules.chats.getRaw)({ uid: mocks.users.foo.uid }, { mid: message.mid });
+			const raw = await socketModules.chats.getRaw({ uid: mocks.users.foo.uid }, { mid: message.messageId });
 			assert.equal(raw, 'admin will see this');
 		});
 
@@ -455,11 +455,8 @@ describe('Messaging Library', () => {
 		});
 
 		it('should fail to rename room with invalid data', async () => {
-			let { body } = await callv3API('put', `/chats/${roomId}`, { name: null }, 'foo');
+			const { body } = await callv3API('put', `/chats/${roomId}`, { name: null }, 'foo');
 			assert.strictEqual(body.status.message, await translator.translate('[[error:invalid-data]]'));
-
-			({ body } = await callv3API('put', `/chats/${roomId}`, {}, 'foo'));
-			assert.strictEqual(body.status.message, await translator.translate('[[error:required-parameters-missing, name]]'));
 		});
 
 		it('should rename room', async () => {
@@ -563,9 +560,9 @@ describe('Messaging Library', () => {
 		before(async () => {
 			await callv3API('post', `/chats/${roomId}/users`, { uids: [mocks.users.baz.uid] }, 'foo');
 			let { body } = await callv3API('post', `/chats/${roomId}`, { roomId: roomId, message: 'first chat message' }, 'foo');
-			mid = body.response.mid;
+			mid = body.response.messageId;
 			({ body } = await callv3API('post', `/chats/${roomId}`, { roomId: roomId, message: 'second chat message' }, 'baz'));
-			mid2 = body.response.mid;
+			mid2 = body.response.messageId;
 		});
 
 		after(async () => {
@@ -639,8 +636,7 @@ describe('Messaging Library', () => {
 			const { body } = await callv3API('get', `/chats/${roomId}`, {}, 'herp');
 			const { messages } = body.response;
 			messages.forEach((msg) => {
-				assert(!msg.deleted || msg.content === '[[modules:chat.message-deleted]]', msg.content);
-				assert(!msg.deleted || msg.cleanedContent, '[[modules:chat.message-deleted]]', msg.content);
+				assert(!msg.deleted || msg.content === '<p>[[modules:chat.message-deleted]]</p>', msg.content);
 			});
 		});
 

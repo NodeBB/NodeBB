@@ -97,7 +97,7 @@ module.exports = function (Groups) {
 	}
 
 	Groups.isMemberOfAny = async function (uid, groups) {
-		if (!groups.length) {
+		if (!Array.isArray(groups) || !groups.length) {
 			return false;
 		}
 		const isMembers = await Groups.isMemberOfGroups(uid, groups);

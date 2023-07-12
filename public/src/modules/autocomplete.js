@@ -1,13 +1,13 @@
 'use strict';
 
 define('autocomplete', ['api', 'alerts'], function (api, alerts) {
-	const module = {};
+	const autocomplete = {};
 	const _default = {
 		delay: 200,
 		appendTo: null,
 	};
 
-	module.init = (params) => {
+	autocomplete.init = (params) => {
 		const acParams = { ..._default, ...params };
 		const { input, onSelect } = acParams;
 		app.loadJQueryUI(function () {
@@ -23,14 +23,14 @@ define('autocomplete', ['api', 'alerts'], function (api, alerts) {
 		});
 	};
 
-	module.user = function (input, params, onSelect) {
+	autocomplete.user = function (input, params, onSelect) {
 		if (typeof params === 'function') {
 			onSelect = params;
 			params = {};
 		}
 		params = params || {};
 
-		module.init({
+		autocomplete.init({
 			input,
 			onSelect,
 			source: (request, response) => {
@@ -69,8 +69,8 @@ define('autocomplete', ['api', 'alerts'], function (api, alerts) {
 		});
 	};
 
-	module.group = function (input, onSelect) {
-		module.init({
+	autocomplete.group = function (input, onSelect) {
+		autocomplete.init({
 			input,
 			onSelect,
 			source: (request, response) => {
@@ -96,8 +96,8 @@ define('autocomplete', ['api', 'alerts'], function (api, alerts) {
 		});
 	};
 
-	module.tag = function (input, onSelect) {
-		module.init({
+	autocomplete.tag = function (input, onSelect) {
+		autocomplete.init({
 			input,
 			onSelect,
 			delay: 100,
@@ -129,5 +129,5 @@ define('autocomplete', ['api', 'alerts'], function (api, alerts) {
 		onselect(event, ui);
 	}
 
-	return module;
+	return autocomplete;
 });

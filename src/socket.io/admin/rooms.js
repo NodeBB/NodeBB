@@ -20,7 +20,6 @@ SocketRooms.getAll = async function () {
 	totals.onlineGuestCount = 0;
 	totals.onlineRegisteredCount = 0;
 	totals.socketCount = sockets.length;
-	totals.topics = {};
 	totals.topTenTopics = [];
 	totals.users = {
 		categories: 0,

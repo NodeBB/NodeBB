@@ -189,6 +189,7 @@ module.exports = function (Groups) {
 		await updateNavigationItems(oldName, newName);
 		await updateWidgets(oldName, newName);
 		await updateConfig(oldName, newName);
+		await updateChatRooms(oldName, newName);
 		await db.setObject(`group:${oldName}`, { name: newName, slug: slugify(newName) });
 		await db.deleteObjectField('groupslug:groupname', group.slug);
 		await db.setObjectField('groupslug:groupname', slugify(newName), newName);
@@ -285,5 +286,19 @@ module.exports = function (Groups) {
 			);
 			await meta.configs.set('groupsExemptFromMaintenanceMode', meta.config.groupsExemptFromMaintenanceMode);
 		}
+	}
+
+	async function updateChatRooms(oldName, newName) {
+		const messaging = require('../messaging');
+		const roomIds = await db.getSortedSetRange('chat:rooms:public', 0, -1);
+		const roomData = await messaging.getRoomsData(roomIds);
+		const bulkSet = [];
+		roomData.forEach((room) => {
+			if (room && room.public && Array.isArray(room.groups) && room.groups.includes(oldName)) {
+				room.groups.splice(room.groups.indexOf(oldName), 1, newName);
+				bulkSet.push([`chat:room:${room.roomId}`, { groups: JSON.stringify(room.groups) }]);
+			}
+		});
+		await db.setObjectBulk(bulkSet);
 	}
 };

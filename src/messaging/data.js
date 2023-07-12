@@ -78,13 +78,11 @@ module.exports = function (Messaging) {
 		messages = await Promise.all(messages.map(async (message) => {
 			if (message.system) {
 				message.content = validator.escape(String(message.content));
-				message.cleanedContent = utils.stripHTMLTags(utils.decodeHTMLEntities(message.content));
 				return message;
 			}
 
 			const result = await Messaging.parse(message.content, message.fromuid, uid, roomId, isNew);
 			message.content = result;
-			message.cleanedContent = utils.stripHTMLTags(utils.decodeHTMLEntities(result));
 			return message;
 		}));
 
@@ -108,7 +106,7 @@ module.exports = function (Messaging) {
 			});
 		} else if (messages.length === 1) {
 			// For single messages, we don't know the context, so look up the previous message and compare
-			const key = `uid:${uid}:chat:room:${roomId}:mids`;
+			const key = `chat:room:${roomId}:mids`;
 			const index = await db.sortedSetRank(key, messages[0].messageId);
 			if (index > 0) {
 				const mid = await db.getSortedSetRange(key, index - 1, index - 1);

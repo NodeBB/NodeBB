@@ -1,6 +1,8 @@
 'use strict';
 
-define('forum/header/chat', ['components', 'hooks'], function (components, hooks) {
+define('forum/header/chat', [
+	'components', 'hooks',
+], function (components, hooks) {
 	const chat = {};
 
 	chat.prepareDOM = function () {
@@ -29,7 +31,20 @@ define('forum/header/chat', ['components', 'hooks'], function (components, hooks
 		socket.removeListener('event:chats.roomRename', onRoomRename);
 		socket.on('event:chats.roomRename', onRoomRename);
 
-		socket.on('event:unread.updateChatCount', function (count) {
+		socket.on('event:unread.updateChatCount', async function (data) {
+			if (data) {
+				const [chatModule, chatPage] = await app.require(['chat', 'forum/chats']);
+				if (
+					chatModule.isFromBlockedUser(data.fromUid) ||
+					chatModule.isLookingAtRoom(data.roomId) ||
+					app.user.uid === parseInt(data.fromUid, 10)
+				) {
+					return;
+				}
+				chatPage.markChatPageElUnread(data);
+			}
+
+			let count = await socket.emit('modules.chats.getUnreadCount', {});
 			const chatIcon = components.get('chat/icon');
 			count = Math.max(0, count);
 			chatIcon.toggleClass('fa-comment', count > 0)
@@ -56,10 +71,9 @@ define('forum/header/chat', ['components', 'hooks'], function (components, hooks
 		requireAndCall('onRoomRename', data);
 	}
 
-	function requireAndCall(method, param) {
-		require(['chat'], function (chat) {
-			chat[method](param);
-		});
+	async function requireAndCall(method, param) {
+		const chat = await app.require('chat');
+		chat[method](param);
 	}
 
 	return chat;

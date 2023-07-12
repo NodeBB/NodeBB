@@ -1,0 +1,26 @@
+delete:
+  tags:
+    - admin
+  summary: delete chat room
+  description: This operation deletes a chat room from the database
+  parameters:
+    - in: path
+      name: roomId
+      schema:
+        type: number
+      description: The roomId to be deleted
+      example: 1
+      required: true
+  responses:
+    '200':
+      description: Chat room deleted
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}
