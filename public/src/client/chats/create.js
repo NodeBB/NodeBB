@@ -26,7 +26,7 @@ define('forum/chats/create', [
 				save: {
 					label: '[[global:create]]',
 					className: 'btn-primary',
-					callback: async function () {
+					callback: function () {
 						const roomName = modal.find('[component="chat/room/name"]').val();
 						const uids = modal.find('[component="chat/room/users"] [component="chat/user"]').find('[data-uid]').map(
 							(i, el) => $(el).attr('data-uid')
@@ -38,16 +38,25 @@ define('forum/chats/create', [
 							alerts.error('[[error:no-users-selected]]');
 							return false;
 						}
-						if (type === 'public' && !groups) {
+						if (type === 'public' && !groups.length) {
 							alerts.error('[[error:no-groups-selected]]');
 							return false;
 						}
-						await createRoom({
+						if (!app.user.uid) {
+							alerts.error('[[error:not-logged-in]]');
+							return false;
+						}
+
+						api.post(`/chats`, {
 							roomName: roomName,
 							uids: uids,
 							type: type,
 							groups: groups,
-						});
+						}).then(({ roomId }) => {
+							ajaxify.go('chats/' + roomId);
+							modal.modal('hide');
+						}).catch(alerts.error);
+						return false;
 					},
 				},
 			},
@@ -71,14 +80,6 @@ define('forum/chats/create', [
 			const type = $(this).val();
 			modal.find('[component="chat/room/public/options"]').toggleClass('hidden', type === 'private');
 		});
-	}
-
-	async function createRoom(params) {
-		if (!app.user.uid) {
-			return alerts.error('[[error:not-logged-in]]');
-		}
-		const { roomId } = await api.post(`/chats`, params);
-		ajaxify.go('chats/' + roomId);
 	}
 
 	return create;

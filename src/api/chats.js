@@ -52,6 +52,9 @@ chatsAPI.create = async function (caller, data) {
 	if (!isPublic && !data.uids.length) {
 		throw new Error('[[error:no-users-selected]]');
 	}
+	if (isPublic && (!Array.isArray(data.groups) || !data.groups.length)) {
+		throw new Error('[[error:no-groups-selected]]');
+	}
 	await Promise.all(data.uids.map(async uid => messaging.canMessageUser(caller.uid, uid)));
 	const roomId = await messaging.newRoom(caller.uid, data);
 

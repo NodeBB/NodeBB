@@ -10,9 +10,10 @@ const groups = require('../groups');
 const plugins = require('../plugins');
 const privileges = require('../privileges');
 const meta = require('../meta');
+const cache = require('../cache');
 const cacheCreate = require('../cacheCreate');
 
-const cache = cacheCreate({
+const roomUidCache = cacheCreate({
 	name: 'chat:room:uids',
 	max: 500,
 	ttl: 0,
@@ -104,6 +105,11 @@ module.exports = function (Messaging) {
 				Messaging.addRoomToUsers(roomId, [uid].concat(data.uids), now),
 		]);
 
+		cache.del([
+			'chat:rooms:public:all',
+			'chat:rooms:public:order:all',
+		]);
+
 		if (!isPublic) {
 			// chat owner should also get the user-join system message
 			await Messaging.addSystemMessage('user-join', uid, roomId);
@@ -136,6 +142,11 @@ module.exports = function (Messaging) {
 			db.deleteAll(roomIds.map(id => `chat:room:${id}`)),
 			db.sortedSetRemove('chat:rooms', roomIds),
 			db.sortedSetRemove('chat:rooms:public', roomIds),
+			db.sortedSetRemove('chat:rooms:public:order', roomIds),
+		]);
+		cache.del([
+			'chat:rooms:public:all',
+			'chat:rooms:public:order:all',
 		]);
 	};
 
@@ -252,7 +263,7 @@ module.exports = function (Messaging) {
 			...groupChats.map(id => [`chat:room:${id}`, { groupChat: 1, userCount: countMap[id] }]),
 			...privateChats.map(id => [`chat:room:${id}`, { groupChat: 0, userCount: countMap[id] }]),
 		]);
-		cache.del(roomIds.map(id => `chat:room:${id}:users`));
+		roomUidCache.del(roomIds.map(id => `chat:room:${id}:users`));
 	}
 
 	Messaging.leaveRoom = async (uids, roomId) => {
@@ -301,12 +312,12 @@ module.exports = function (Messaging) {
 
 	Messaging.getAllUidsInRoom = async function (roomId) {
 		const cacheKey = `chat:room:${roomId}:users`;
-		let uids = cache.get(cacheKey);
+		let uids = roomUidCache.get(cacheKey);
 		if (uids !== undefined) {
 			return uids;
 		}
 		uids = await Messaging.getUidsInRoom(roomId, 0, -1);
-		cache.set(cacheKey, uids);
+		roomUidCache.set(cacheKey, uids);
 		return uids;
 	};
 
@@ -373,7 +384,9 @@ module.exports = function (Messaging) {
 		}
 		if (!room ||
 			(!room.public && !inRoom) ||
-			(room.public && !(await groups.isMemberOfAny(uid, room.groups)))
+			(room.public && (
+				Array.isArray(room.groups) && room.groups.length && !(await groups.isMemberOfAny(uid, room.groups)))
+			)
 		) {
 			return null;
 		}
