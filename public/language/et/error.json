@@ -199,6 +199,7 @@
     "not-in-room": "Kasutaja pole ruumis",
     "cant-kick-self": "Sa ei saa ennast ära visata gruppist",
     "no-users-selected": "Ühtki kasutajat pole valitud",
+    "no-groups-selected": "No group(s) selected",
     "invalid-home-page-route": "Vigane avalehe suunamine",
     "invalid-session": "Invalid Session",
     "invalid-session-text": "It looks like your login session is no longer active. Please refresh this page.",

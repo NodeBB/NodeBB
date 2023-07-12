@@ -199,6 +199,7 @@
     "not-in-room": "Përdoruesi nuk është në dhomën e bisedës",
     "cant-kick-self": "Nuk mund ta largosh veten nga grupi",
     "no-users-selected": "Nuk është zgjedhur asnjë përdorues()",
+    "no-groups-selected": "No group(s) selected",
     "invalid-home-page-route": "Link i pavlefshëm",
     "invalid-session": "Sesion i pavlefshëm",
     "invalid-session-text": "Duket sikur sesioni juaj i hyrjes nuk është më aktiv. Ju lutemi rifreskojeni këtë faqe.",

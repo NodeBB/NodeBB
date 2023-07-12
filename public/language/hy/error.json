@@ -199,6 +199,7 @@
     "not-in-room": "Օգտատերը սենյակում չէ",
     "cant-kick-self": "Դուք չեք կարող ձեզ հեռացնել խմբից",
     "no-users-selected": "Ընտրված օգտատեր(ներ) չկա",
+    "no-groups-selected": "No group(s) selected",
     "invalid-home-page-route": "Գլխավոր էջի անվավեր ուղեգիծ",
     "invalid-session": "Անվավեր սեսիա",
     "invalid-session-text": "Կարծես թե ձեր մուտքի սեսիան այլևս ակտիվ չէ: Խնդրում ենք թարմացնել այս էջը:",

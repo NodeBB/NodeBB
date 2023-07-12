@@ -199,6 +199,7 @@
     "not-in-room": "משתמש זה אינו בחדר הצ'אט",
     "cant-kick-self": "אינכם יכולים להסיר את עצמכם מהקבוצה",
     "no-users-selected": "לא נבחרו משתמשים",
+    "no-groups-selected": "No group(s) selected",
     "invalid-home-page-route": "כתובת דף הבית שגויה",
     "invalid-session": "סשן לא תקין",
     "invalid-session-text": "נראה שסשן ההתחברות שלכם אינה פעילה יותר. אנא רעננו את הדף.",

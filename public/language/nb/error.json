@@ -199,6 +199,7 @@
     "not-in-room": "Bruker ikke i rom",
     "cant-kick-self": "Du kan ikke utestenge deg selv fra gruppen",
     "no-users-selected": "Ingen bruker(e) valgt",
+    "no-groups-selected": "No group(s) selected",
     "invalid-home-page-route": "Ugyldig hjemmesidelenke",
     "invalid-session": "Ugyldig økt",
     "invalid-session-text": "Det ser ut til at din innloggingssesjon ikke lenger er aktiv. Last inn denne siden på nytt.",

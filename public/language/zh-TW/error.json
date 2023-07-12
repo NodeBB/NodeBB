@@ -199,6 +199,7 @@
     "not-in-room": "使用者已不在聊天室中",
     "cant-kick-self": "您不能把自己踢出群組",
     "no-users-selected": "尚未選擇使用者",
+    "no-groups-selected": "No group(s) selected",
     "invalid-home-page-route": "無效的首頁路徑",
     "invalid-session": "Invalid Session",
     "invalid-session-text": "It looks like your login session is no longer active. Please refresh this page.",

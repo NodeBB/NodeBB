@@ -199,6 +199,7 @@
     "not-in-room": "ผู้ใช้ไม่อยู่ในห้อง",
     "cant-kick-self": "คุณไม่สามารถเตะตัวเองออกจากกลุ่มได้",
     "no-users-selected": "ไม่มีผู้ใช้ที่เลือก",
+    "no-groups-selected": "No group(s) selected",
     "invalid-home-page-route": "เส้นทางไปหน้าแรกผิดพลาด",
     "invalid-session": "Invalid Session",
     "invalid-session-text": "It looks like your login session is no longer active. Please refresh this page.",

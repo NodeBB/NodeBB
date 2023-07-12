@@ -199,6 +199,7 @@
     "not-in-room": "Lietotājs nav tērzētavā",
     "cant-kick-self": "Nevar sevi izslēgt no grupas",
     "no-users-selected": "Nav atlasīts neviens lietotājs(-i)",
+    "no-groups-selected": "No group(s) selected",
     "invalid-home-page-route": "Nederīgs sākumlapas ceļš",
     "invalid-session": "Invalid Session",
     "invalid-session-text": "It looks like your login session is no longer active. Please refresh this page.",

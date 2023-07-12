@@ -199,6 +199,7 @@
     "not-in-room": "ユーザーが部屋にいません",
     "cant-kick-self": "あなたは、グループから自分自身をキックすることが出来ません",
     "no-users-selected": "ユーザー(s)が選択されていません",
+    "no-groups-selected": "No group(s) selected",
     "invalid-home-page-route": "ホームページのルートが無効",
     "invalid-session": "Invalid Session",
     "invalid-session-text": "It looks like your login session is no longer active. Please refresh this page.",

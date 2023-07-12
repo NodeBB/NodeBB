@@ -199,6 +199,7 @@
     "not-in-room": "Vartotojas ne svetainėje",
     "cant-kick-self": "Negalite išmesti savęs iš grupės",
     "no-users-selected": "Nepasirinktas joks vartotojas",
+    "no-groups-selected": "No group(s) selected",
     "invalid-home-page-route": "Blogas kelias į pagrindinį puslapį",
     "invalid-session": "Invalid Session",
     "invalid-session-text": "It looks like your login session is no longer active. Please refresh this page.",

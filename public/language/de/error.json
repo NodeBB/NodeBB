@@ -199,6 +199,7 @@
     "not-in-room": "Benutzer nicht im Raum",
     "cant-kick-self": "Du kannst dich nicht selber aus der Gruppe entfernen.",
     "no-users-selected": "Kein(e) Benutzer ausgewählt",
+    "no-groups-selected": "No group(s) selected",
     "invalid-home-page-route": "Ungültiger Startseitenpfad",
     "invalid-session": "Ungültige Session",
     "invalid-session-text": "Es scheint als wäre deine Login-Sitzung nicht mehr aktiv. Bitte aktualisiere diese Seite.",

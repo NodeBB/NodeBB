@@ -199,6 +199,7 @@
     "not-in-room": "Gebruiker niet in de chat",
     "cant-kick-self": "Je kunt jezelf niet uit een groep schoppen",
     "no-users-selected": "Geen gebruiker(s) geselecteerd",
+    "no-groups-selected": "No group(s) selected",
     "invalid-home-page-route": "Onbekende homepage route",
     "invalid-session": "Ongeldige Sessie",
     "invalid-session-text": "It looks like your login session is no longer active. Please refresh this page.",

@@ -199,6 +199,7 @@
     "not-in-room": "Käyttäjä ei ole huoneessa",
     "cant-kick-self": "You can't kick yourself from the group",
     "no-users-selected": "No user(s) selected",
+    "no-groups-selected": "No group(s) selected",
     "invalid-home-page-route": "Invalid home page route",
     "invalid-session": "Invalid Session",
     "invalid-session-text": "It looks like your login session is no longer active. Please refresh this page.",
