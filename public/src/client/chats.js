@@ -462,7 +462,7 @@ define('forum/chats', [
 				mainWrapper.html(html);
 				chatNavWrapper = $('[component="chat/nav-wrapper"]');
 				html.find('.timeago').timeago();
-				ajaxify.data = { ...ajaxify.data, ...payload };
+				ajaxify.data = { ...ajaxify.data, ...payload, roomId: roomid };
 				$('body').addClass(ajaxify.data.bodyClass);
 				mainWrapper.find('[data-bs-toggle="tooltip"]').tooltip();
 				Chats.setActive();
