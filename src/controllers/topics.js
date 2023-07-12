@@ -210,7 +210,7 @@ async function addTags(topicData, req, res, currentPage) {
 	}
 
 	if (description.length > 160) {
-		description = `${description.slice(0, 160)}...`;
+		description = `${description.slice(0, 157)}...`;
 	}
 	description = description.replace(/\n/g, ' ');
 
@@ -261,6 +261,7 @@ async function addTags(topicData, req, res, currentPage) {
 		{
 			rel: 'canonical',
 			href: `${url}/topic/${topicData.slug}${page}`,
+			noEscape: true,
 		},
 	];
 

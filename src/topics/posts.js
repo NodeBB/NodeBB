@@ -186,13 +186,13 @@ module.exports = function (Topics) {
 		const parentUids = _.uniq(parentPosts.map(postObj => postObj && postObj.uid));
 		const userData = await user.getUsersFields(parentUids, ['username']);
 
-		const usersMap = {};
-		userData.forEach((user) => {
-			usersMap[user.uid] = user.username;
-		});
+		const usersMap = _.zipObject(parentUids, userData);
 		const parents = {};
 		parentPosts.forEach((post, i) => {
-			parents[parentPids[i]] = { username: usersMap[post.uid] };
+			parents[parentPids[i]] = {
+				username: usersMap[post.uid].username,
+				displayname: usersMap[post.uid].displayname,
+			};
 		});
 
 		postData.forEach((post) => {
