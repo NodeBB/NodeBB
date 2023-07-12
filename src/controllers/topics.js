@@ -261,6 +261,7 @@ async function addTags(topicData, req, res, currentPage) {
 		{
 			rel: 'canonical',
 			href: `${url}/topic/${topicData.slug}${page}`,
+			noEscape: true,
 		},
 	];
 
