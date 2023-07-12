@@ -199,6 +199,7 @@
     "not-in-room": "Użytkownika nie ma w pokoju",
     "cant-kick-self": "Nie możesz wyrzucić samego siebie z grupy",
     "no-users-selected": "Nie wybrano żadnych użytkowników",
+    "no-groups-selected": "No group(s) selected",
     "invalid-home-page-route": "Niepoprawny odnośnik strony domowej",
     "invalid-session": "Nieprawidłowa sesja",
     "invalid-session-text": "Wygląda na to, że Twoja sesja wygasła. Proszę odśwież stronę.",

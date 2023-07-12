@@ -199,6 +199,7 @@
     "not-in-room": "Потребителят не е в стаята",
     "cant-kick-self": "Не можете да изритате себе си от групата",
     "no-users-selected": "Няма избран(и) потребител(и)",
+    "no-groups-selected": "No group(s) selected",
     "invalid-home-page-route": "Грешен път към началната страница",
     "invalid-session": "Изтекла сесия",
     "invalid-session-text": "Изглежда сесията Ви на вписване вече е изтекла. Моля, опреснете страницата.",

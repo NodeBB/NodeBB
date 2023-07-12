@@ -199,6 +199,7 @@
     "not-in-room": "المستخدم غير موجود في الغرفة.",
     "cant-kick-self": "لا يمكنك طرد نفسك من المجموعة.",
     "no-users-selected": "لا يوجد مستخدم محدد.",
+    "no-groups-selected": "No group(s) selected",
     "invalid-home-page-route": "Invalid home page route",
     "invalid-session": "Invalid Session",
     "invalid-session-text": "It looks like your login session is no longer active. Please refresh this page.",

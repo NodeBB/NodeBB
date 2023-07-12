@@ -199,6 +199,7 @@
     "not-in-room": "O usuario non se atopa nesta sala",
     "cant-kick-self": "Non te podes expulsar  a ti mesmo do grupo",
     "no-users-selected": "Ningún usuario seleccionado",
+    "no-groups-selected": "No group(s) selected",
     "invalid-home-page-route": "Ruta de páxina de inicio inválida",
     "invalid-session": "Invalid Session",
     "invalid-session-text": "It looks like your login session is no longer active. Please refresh this page.",

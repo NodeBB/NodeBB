@@ -199,6 +199,7 @@
     "not-in-room": "用户已不在聊天室中",
     "cant-kick-self": "您不能把自己踢出群组",
     "no-users-selected": "尚未选择用户",
+    "no-groups-selected": "No group(s) selected",
     "invalid-home-page-route": "无效的首页路径",
     "invalid-session": "无效的会话",
     "invalid-session-text": "您的登录会话似乎不再处于活动状态。请刷新此页面。",

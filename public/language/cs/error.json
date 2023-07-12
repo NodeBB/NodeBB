@@ -199,6 +199,7 @@
     "not-in-room": "Uživatel není přítomen v místnosti",
     "cant-kick-self": "Nemůžete vyhodit sami sebe ze skupiny",
     "no-users-selected": "Žádný uživatel/é nebyl/y vybrán/i",
+    "no-groups-selected": "No group(s) selected",
     "invalid-home-page-route": "Neplatná cesta k domovské stránkce",
     "invalid-session": "Invalid Session",
     "invalid-session-text": "It looks like your login session is no longer active. Please refresh this page.",

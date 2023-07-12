@@ -199,6 +199,7 @@
     "not-in-room": "Användaren finns inte i rummet",
     "cant-kick-self": "Du kan inte sparka ut dig själv från gruppen",
     "no-users-selected": "Ingen användare vald(a)",
+    "no-groups-selected": "No group(s) selected",
     "invalid-home-page-route": "Ogiltig sidsökväg",
     "invalid-session": "Invalid Session",
     "invalid-session-text": "It looks like your login session is no longer active. Please refresh this page.",

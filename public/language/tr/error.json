@@ -199,6 +199,7 @@
     "not-in-room": "Odada kullanıcı yok",
     "cant-kick-self": "Kendinizi gruptan atamazsınız.",
     "no-users-selected": "Seçili kullanıcı(lar) bulunamadı",
+    "no-groups-selected": "No group(s) selected",
     "invalid-home-page-route": "Geçersiz anasayfa yolu",
     "invalid-session": "Geçersiz Oturum",
     "invalid-session-text": "Giriş oturumunuz aktif görünmüyor. Lütfen sayfayı yenileyiniz.",

@@ -199,6 +199,7 @@
     "not-in-room": "L'utente non è in questa stanza",
     "cant-kick-self": "Non puoi espellerti dal gruppo",
     "no-users-selected": "Nessun utente selezionato",
+    "no-groups-selected": "No group(s) selected",
     "invalid-home-page-route": "Percorso della pagina iniziale non valido",
     "invalid-session": "Sessione non valida",
     "invalid-session-text": "Sembra che la tua sessione di accesso non sia più attiva. Si prega di aggiornare questa pagina.",

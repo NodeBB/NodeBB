@@ -199,6 +199,7 @@
     "not-in-room": "Користувача немає в кімнаті",
     "cant-kick-self": "Ви не можете вигнати самі себе з групи",
     "no-users-selected": "Не вибрано жодного користувача",
+    "no-groups-selected": "No group(s) selected",
     "invalid-home-page-route": "Невірний шлях на головну",
     "invalid-session": "Invalid Session",
     "invalid-session-text": "It looks like your login session is no longer active. Please refresh this page.",

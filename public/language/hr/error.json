@@ -199,6 +199,7 @@
     "not-in-room": "Korisnik nije u sobi",
     "cant-kick-self": "Ne možete sebe izbaciti iz grupe",
     "no-users-selected": "Korisnici nisu odabrani",
+    "no-groups-selected": "No group(s) selected",
     "invalid-home-page-route": "Netočna putanja naslovnice",
     "invalid-session": "Invalid Session",
     "invalid-session-text": "It looks like your login session is no longer active. Please refresh this page.",
