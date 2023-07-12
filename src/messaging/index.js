@@ -125,7 +125,6 @@ Messaging.getPublicRooms = async (callerUid, uid) => {
 
 	const allRoomIds = await Messaging.getPublicRoomIdsFromSet('chat:rooms:public:order');
 	const allRoomData = await Messaging.getRoomsData(allRoomIds);
-	console.log(allRoomIds, allRoomData);
 	const checks = await Promise.all(
 		allRoomData.map(
 			room => room && (
