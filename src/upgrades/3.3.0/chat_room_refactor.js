@@ -21,12 +21,14 @@ module.exports = {
 		progress.total = allRoomIds.length;
 		await batch.processArray(allRoomIds, async (roomIds) => {
 			progress.incr(roomIds.length);
-			await Promise.all(roomIds.map(async (roomId) => {
-				const [uids, roomData] = await Promise.all([
-					db.getSortedSetRange(`chat:room:${roomId}:uids`, 0, -1),
-					db.getObject(`chat:room:${roomId}`),
-				]);
+			const [arrayOfUids, arrayOfRoomData] = await Promise.all([
+				db.getSortedSetsMembers(roomIds.map(roomId => `chat:room:${roomId}:uids`)),
+				db.getObjects(roomIds.map(roomId => `chat:room:${roomId}`)),
+			]);
 
+			await Promise.all(roomIds.map(async (roomId, index) => {
+				const uids = arrayOfUids[index];
+				const roomData = arrayOfRoomData[index];
 				if (!uids.length && !roomData) {
 					return;
 				}
