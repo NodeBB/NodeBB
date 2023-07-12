@@ -50,7 +50,7 @@ define('forum/chats', [
 		recentChats.init();
 
 		Chats.addEventListeners();
-		Chats.setActive();
+		Chats.setActive(ajaxify.data.roomId);
 
 		if (env === 'md' || env === 'lg' || env === 'xl' || env === 'xxl') {
 			Chats.addHotkeys();
@@ -437,20 +437,20 @@ define('forum/chats', [
 		}).catch(alerts.error);
 	};
 
-	Chats.switchChat = function (roomid) {
+	Chats.switchChat = function (roomId) {
 		// Allow empty arg for return to chat list/close chat
-		if (!roomid) {
-			roomid = '';
+		if (!roomId) {
+			roomId = '';
 		}
 		Chats.destroyAutoComplete(ajaxify.data.roomId);
 		socket.emit('modules.chats.leave', ajaxify.data.roomId);
-		const url = 'user/' + ajaxify.data.userslug + '/chats/' + roomid + window.location.search;
+		const url = 'user/' + ajaxify.data.userslug + '/chats/' + roomId + window.location.search;
 		if (!self.fetch) {
 			return ajaxify.go(url);
 		}
 		const params = new URL(document.location).searchParams;
 		params.set('switch', 1);
-		const dataUrl = `${config.relative_path}/api/user/${ajaxify.data.userslug}/chats/${roomid}?${params.toString()}`;
+		const dataUrl = `${config.relative_path}/api/user/${ajaxify.data.userslug}/chats/${roomId}?${params.toString()}`;
 		fetch(dataUrl, { credentials: 'include' })
 			.then(async function (response) {
 				if (!response.ok) {
@@ -462,10 +462,10 @@ define('forum/chats', [
 				mainWrapper.html(html);
 				chatNavWrapper = $('[component="chat/nav-wrapper"]');
 				html.find('.timeago').timeago();
-				ajaxify.data = { ...ajaxify.data, ...payload, roomId: roomid };
-				$('body').addClass(ajaxify.data.bodyClass);
+				ajaxify.data = { ...ajaxify.data, ...payload, roomId: roomId };
+				$('body').toggleClass('chat-loaded', !!roomId);
 				mainWrapper.find('[data-bs-toggle="tooltip"]').tooltip();
-				Chats.setActive();
+				Chats.setActive(roomId);
 				Chats.addEventListeners();
 				hooks.fire('action:chat.loaded', $('.chats-full'));
 				messages.scrollToBottom(mainWrapper.find('.expanded-chat ul.chat-content'));
@@ -566,24 +566,24 @@ define('forum/chats', [
 		unreadCountEl.toggleClass('hidden', count <= 0).text(countText).attr('data-count', count);
 	};
 
-	Chats.setActive = function () {
+	Chats.setActive = function (roomId) {
 		chatNavWrapper.find('[data-roomid]').removeClass('active');
-		if (ajaxify.data.roomId) {
-			socket.emit('modules.chats.enter', ajaxify.data.roomId);
-			const chatEl = chatNavWrapper.find(`[data-roomid="${ajaxify.data.roomId}"]`);
+		if (roomId) {
+			socket.emit('modules.chats.enter', roomId);
+			const chatEl = chatNavWrapper.find(`[data-roomid="${roomId}"]`);
 			chatEl.addClass('active');
 			if (chatEl.hasClass('unread')) {
-				api.del(`/chats/${ajaxify.data.roomId}/state`, {});
+				api.del(`/chats/${roomId}/state`, {});
 				chatEl.removeClass('unread');
 			}
 
 			if (!utils.isMobile()) {
 				$('.expanded-chat [component="chat/input"]').focus();
 			}
-			messages.updateTextAreaHeight($(`[component="chat/messages"][data-roomid="${ajaxify.data.roomId}"]`));
+			messages.updateTextAreaHeight($(`[component="chat/messages"][data-roomid="${roomId}"]`));
 		}
 
-		chatNavWrapper.attr('data-loaded', ajaxify.data.roomId ? '1' : '0');
+		chatNavWrapper.attr('data-loaded', roomId ? '1' : '0');
 	};
 
 	return Chats;

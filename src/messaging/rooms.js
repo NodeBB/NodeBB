@@ -394,6 +394,7 @@ module.exports = function (Messaging) {
 		// add user to public room onload
 		if (room.public && !inRoom) {
 			await addUidsToRoom([uid], roomId);
+			room.userCount += 1;
 		}
 
 		const [canReply, users, messages, isAdmin, isGlobalMod, settings, isOwner] = await Promise.all([
