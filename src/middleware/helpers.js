@@ -65,7 +65,7 @@ helpers.buildBodyClass = function (req, res, templateData = {}) {
 
 	parts.push(`page-status-${res.statusCode}`);
 
-	parts.push(`theme-${meta.config['theme:id'].split('-')[2]}`);
+	parts.push(`theme-${(meta.config['theme:id'] || '').split('-')[2]}`);
 
 	if (req.loggedIn) {
 		parts.push('user-loggedin');
