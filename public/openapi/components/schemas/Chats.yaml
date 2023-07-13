@@ -19,6 +19,9 @@ RoomObject:
     userCount:
       type: number
       description: number of users in this chat room
+    groups:
+      type: array
+      description: list of groups that can access the room
     timestamp:
       type: number
       description: Timestamp of when room was created

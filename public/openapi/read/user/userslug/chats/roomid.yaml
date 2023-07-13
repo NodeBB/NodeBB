@@ -36,6 +36,8 @@ get:
                     type: number
                   icon:
                     type: string
+                  groups:
+                    type: array
                   timestamp:
                     type: number
                     description: Timestamp of when room was created
@@ -181,6 +183,8 @@ get:
                           type: boolean
                         userCount:
                           type: number
+                        groups:
+                          type: array
                         timestamp:
                           type: number
                           description: Timestamp of when room was created
