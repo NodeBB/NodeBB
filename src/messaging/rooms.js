@@ -417,6 +417,7 @@ module.exports = function (Messaging) {
 		room.users = users;
 		room.canReply = canReply;
 		room.groupChat = room.hasOwnProperty('groupChat') ? room.groupChat : users.length > 2;
+		room.icon = Messaging.getRoomIcon(room);
 		room.usernames = Messaging.generateUsernames(users, uid);
 		room.chatWithMessage = await Messaging.generateChatWithMessage(users, uid, settings.userLang);
 		room.maximumUsersInChatRoom = meta.config.maximumUsersInChatRoom;
@@ -427,5 +428,14 @@ module.exports = function (Messaging) {
 
 		const payload = await plugins.hooks.fire('filter:messaging.loadRoom', { uid, data, room });
 		return payload.room;
+	};
+
+	const globalUserGroups = [
+		'registered-users', 'verified-users', 'unverified-users', 'banned-users',
+	];
+
+	Messaging.getRoomIcon = function (roomData) {
+		const hasGroups = Array.isArray(roomData.groups) && roomData.groups.length;
+		return !hasGroups || roomData.groups.some(group => globalUserGroups.includes(group)) ? 'fa-hashtag' : 'fa-lock';
 	};
 };
