@@ -7,6 +7,7 @@ const Messaging = require('../messaging');
 const utils = require('../utils');
 const user = require('../user');
 const privileges = require('../privileges');
+const groups = require('../groups');
 
 const SocketModules = module.exports;
 
@@ -108,8 +109,8 @@ async function joinLeave(socket, roomIds, method, prefix = 'chat_room') {
 
 		await Promise.all(roomIds.map(async (roomId, idx) => {
 			const isPublic = roomData[idx] && roomData[idx].public;
-			const groups = roomData[idx] && roomData[idx].groups;
-			if (isAdmin || (inRooms[idx] && (!isPublic || await groups.isMemberOfAny(socket.uid, groups)))) {
+			const roomGroups = roomData[idx] && roomData[idx].groups;
+			if (isAdmin || (inRooms[idx] && (!isPublic || await groups.isMemberOfAny(socket.uid, roomGroups)))) {
 				socket[method](`${prefix}_${roomId}`);
 			}
 		}));
