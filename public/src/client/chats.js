@@ -102,6 +102,7 @@ define('forum/chats', [
 				const publicRoomList = $('[component="chat/public"]');
 				publicRoomList.sortable({
 					handle: '[component="chat/public/room/sort/handle"]',
+					items: '[component="chat/public/room"]',
 					axis: 'y',
 					update: async function () {
 						const data = { roomIds: [], scores: [] };
