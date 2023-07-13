@@ -134,6 +134,7 @@ Messaging.getPublicRooms = async (callerUid, uid) => {
 			)
 		)
 	);
+
 	const roomData = allRoomData.filter((room, idx) => room && checks[idx]);
 	const roomIds = roomData.map(r => r.roomId);
 	const userReadTimestamps = await db.getObjectFields(
@@ -149,12 +150,16 @@ Messaging.getPublicRooms = async (callerUid, uid) => {
 		);
 		return unreadMids.length;
 	}));
-
+	const globalUserGroups = [
+		'registered-users', 'verified-users', 'unverified-users', 'banned-users',
+	];
 	roomData.forEach((r, idx) => {
 		const count = unreadCounts[idx];
 		r.unreadCountText = count > maxUnread ? `${maxUnread}+` : String(count);
 		r.unreadCount = count;
 		r.unread = count > 0;
+		const hasGroups = Array.isArray(r.groups) && r.groups.length;
+		r.icon = !hasGroups || r.groups.some(group => globalUserGroups.includes(group)) ? 'fa-hashtag' : 'fa-lock';
 	});
 
 	return roomData;
