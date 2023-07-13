@@ -53,9 +53,9 @@ module.exports = function (Messaging) {
 					data.groupChat = parseInt(data.groupChat, 10) === 1;
 				}
 
-				if (data.hasOwnProperty('groups')) {
+				if (data.hasOwnProperty('groups') || !fields.length || fields.includes('groups')) {
 					try {
-						data.groups = JSON.parse(data.groups);
+						data.groups = JSON.parse(data.groups || '[]');
 					} catch (err) {
 						winston.error(err.stack);
 						data.groups = [];
