@@ -464,6 +464,7 @@ define('forum/chats', [
 				chatNavWrapper = $('[component="chat/nav-wrapper"]');
 				html.find('.timeago').timeago();
 				ajaxify.data = { ...ajaxify.data, ...payload, roomId: roomId };
+				ajaxify.updateTitle(ajaxify.data.title);
 				$('body').toggleClass('chat-loaded', !!roomId);
 				mainWrapper.find('[data-bs-toggle="tooltip"]').tooltip();
 				Chats.setActive(roomId);

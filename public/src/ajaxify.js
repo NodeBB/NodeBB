@@ -229,6 +229,7 @@ ajaxify.widgets = { render: render };
 			});
 		});
 	}
+	ajaxify.updateTitle = updateTitle;
 
 	function updateTags() {
 		const metaWhitelist = ['title', 'description', /og:.+/, /article:.+/, 'robots'].map(function (val) {
