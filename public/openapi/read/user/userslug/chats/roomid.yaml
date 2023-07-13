@@ -34,6 +34,8 @@ get:
                     type: boolean
                   userCount:
                     type: number
+                  icon:
+                    type: string
                   timestamp:
                     type: number
                     description: Timestamp of when room was created
