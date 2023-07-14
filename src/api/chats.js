@@ -171,7 +171,9 @@ chatsAPI.users = async (caller, data) => {
 	const [isOwner, isUserInRoom, users] = await Promise.all([
 		messaging.isRoomOwner(caller.uid, data.roomId),
 		messaging.isUserInRoom(caller.uid, data.roomId),
-		messaging.getUsersInRoom(data.roomId, start, stop),
+		messaging.getUsersInRoomFromSet(
+			`chat:room:${data.roomId}:uids:online`, data.roomId, start, stop, true
+		),
 	]);
 	if (!isUserInRoom) {
 		throw new Error('[[error:no-privileges]]');

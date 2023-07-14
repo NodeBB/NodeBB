@@ -292,6 +292,26 @@ Sockets.getCountInRoom = function (room) {
 	return roomMap ? roomMap.size : 0;
 };
 
+// works across multiple nodes
+Sockets.getUidsInRoom = async function (room) {
+	if (!Sockets.server) {
+		return [];
+	}
+	const ioRoom = Sockets.server.in(room);
+	const uids = {};
+	if (ioRoom) {
+		const sockets = await ioRoom.fetchSockets();
+		for (const s of sockets) {
+			for (const r of s.rooms) {
+				if (r.startsWith('uid_')) {
+					uids[r.split('_').pop()] = 1;
+				}
+			}
+		}
+	}
+	return Object.keys(uids);
+};
+
 Sockets.warnDeprecated = (socket, replacement) => {
 	if (socket.previousEvents && socket.emit) {
 		socket.emit('event:deprecated_call', {

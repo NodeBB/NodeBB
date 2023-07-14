@@ -39,7 +39,7 @@ module.exports = function (Messaging) {
 		}
 
 		// push unread count only for private rooms
-		const uids = await Messaging.getAllUidsInRoom(roomId);
+		const uids = await Messaging.getAllUidsInRoomFromSet(`chat:room:${roomId}:uids:online`);
 		Messaging.pushUnreadCount(uids, unreadData);
 
 		// Delayed notifications
@@ -77,7 +77,7 @@ module.exports = function (Messaging) {
 			path: `/chats/${messageObj.roomId}`,
 		});
 
-		await batch.processSortedSet(`chat:room:${roomId}:uids`, async (uids) => {
+		await batch.processSortedSet(`chat:room:${roomId}:uids:online`, async (uids) => {
 			const hasRead = await Messaging.hasRead(uids, roomId);
 			uids = uids.filter((uid, index) => !hasRead[index] && parseInt(fromUid, 10) !== parseInt(uid, 10));
 

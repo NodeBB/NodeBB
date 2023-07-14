@@ -135,6 +135,8 @@ get:
                           nullable: true
                         status:
                           type: string
+                        online:
+                          type: boolean
                         icon:text:
                           type: string
                           description: A single-letter representation of a username. This is used in the

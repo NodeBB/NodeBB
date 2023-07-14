@@ -10,6 +10,7 @@ const groups = require('../groups');
 const plugins = require('../plugins');
 const privileges = require('../privileges');
 const meta = require('../meta');
+const io = require('../socket.io');
 const cache = require('../cache');
 const cacheCreate = require('../cacheCreate');
 
@@ -92,7 +93,10 @@ module.exports = function (Messaging) {
 		await Promise.all([
 			db.setObject(`chat:room:${roomId}`, room),
 			db.sortedSetAdd('chat:rooms', now, roomId),
-			db.sortedSetAdd(`chat:room:${roomId}:uids`, now, uid),
+			db.sortedSetsAdd([
+				`chat:room:${roomId}:uids`,
+				`chat:room:${roomId}:uids:online`,
+			], now, uid),
 		]);
 
 		await Promise.all([
@@ -133,13 +137,14 @@ module.exports = function (Messaging) {
 				.map(uid => `uid:${uid}:chat:rooms`)
 				.concat(uids.map(uid => `uid:${uid}:chat:rooms:unread`));
 
-			await Promise.all([
-				db.sortedSetRemove(`chat:room:${roomId}:uids`, uids),
-				db.sortedSetsRemove(keys, roomId),
-			]);
+			await db.sortedSetsRemove(keys, roomId);
 		}));
 		await Promise.all([
-			db.deleteAll(roomIds.map(id => `chat:room:${id}`)),
+			db.deleteAll([
+				...roomIds.map(id => `chat:room:${id}`),
+				...roomIds.map(id => `chat:room:${id}:uids`),
+				...roomIds.map(id => `chat:room:${id}:uids:online`),
+			]),
 			db.sortedSetRemove('chat:rooms', roomIds),
 			db.sortedSetRemove('chat:rooms:public', roomIds),
 			db.sortedSetRemove('chat:rooms:public:order', roomIds),
@@ -193,7 +198,7 @@ module.exports = function (Messaging) {
 		return single ? data.inRooms.pop() : data.inRooms;
 	};
 
-	Messaging.roomExists = async roomId => db.exists(`chat:room:${roomId}:uids`);
+	Messaging.roomExists = async roomId => db.exists(`chat:room:${roomId}`);
 
 	Messaging.getUserCountInRoom = async roomId => db.sortedSetCard(`chat:room:${roomId}:uids`);
 
@@ -231,7 +236,10 @@ module.exports = function (Messaging) {
 	async function addUidsToRoom(uids, roomId) {
 		const now = Date.now();
 		const timestamps = uids.map(() => now);
-		await db.sortedSetAdd(`chat:room:${roomId}:uids`, timestamps, uids);
+		await Promise.all([
+			db.sortedSetAdd(`chat:room:${roomId}:uids`, timestamps, uids),
+			db.sortedSetAdd(`chat:room:${roomId}:uids:online`, timestamps, uids),
+		]);
 		await updateUserCount([roomId]);
 		await Promise.all(uids.map(uid => Messaging.addSystemMessage('user-join', uid, roomId)));
 	}
@@ -275,7 +283,10 @@ module.exports = function (Messaging) {
 			.concat(uids.map(uid => `uid:${uid}:chat:rooms:unread`));
 
 		await Promise.all([
-			db.sortedSetRemove(`chat:room:${roomId}:uids`, uids),
+			db.sortedSetRemove([
+				`chat:room:${roomId}:uids`,
+				`chat:room:${roomId}:uids:online`,
+			], uids),
 			db.sortedSetsRemove(keys, roomId),
 		]);
 
@@ -288,7 +299,10 @@ module.exports = function (Messaging) {
 		const isInRoom = await Promise.all(roomIds.map(roomId => Messaging.isUserInRoom(uid, roomId)));
 		roomIds = roomIds.filter((roomId, index) => isInRoom[index]);
 
-		const roomKeys = roomIds.map(roomId => `chat:room:${roomId}:uids`);
+		const roomKeys = [
+			...roomIds.map(roomId => `chat:room:${roomId}:uids`),
+			...roomIds.map(roomId => `chat:room:${roomId}:uids:online`),
+		];
 		await Promise.all([
 			db.sortedSetsRemove(roomKeys, uid),
 			db.sortedSetRemove([
@@ -310,21 +324,34 @@ module.exports = function (Messaging) {
 		await db.setObjectField(`chat:room:${roomId}`, 'owner', newOwner);
 	}
 
-	Messaging.getAllUidsInRoom = async function (roomId) {
-		const cacheKey = `chat:room:${roomId}:users`;
+	Messaging.getAllUidsInRoomFromSet = async function (set) {
+		const cacheKey = `${set}:all`;
 		let uids = roomUidCache.get(cacheKey);
 		if (uids !== undefined) {
 			return uids;
 		}
-		uids = await Messaging.getUidsInRoom(roomId, 0, -1);
+		uids = await Messaging.getUidsInRoomFromSet(set, 0, -1);
 		roomUidCache.set(cacheKey, uids);
 		return uids;
 	};
 
-	Messaging.getUidsInRoom = async (roomId, start, stop) => db.getSortedSetRange(`chat:room:${roomId}:uids`, start, stop);
+	Messaging.getUidsInRoomFromSet = async (set, start, stop, reverse = false) => db[
+		reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'
+	](set, start, stop);
 
-	Messaging.getUsersInRoom = async (roomId, start, stop) => {
-		const uids = await Messaging.getUidsInRoom(roomId, start, stop);
+	Messaging.getUidsInRoom = async (roomId, start, stop, reverse = false) => db[
+		reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'
+	](`chat:room:${roomId}:uids`, start, stop);
+
+	Messaging.getUsersInRoom = async (roomId, start, stop, reverse = false) => {
+		const users = await Messaging.getUsersInRoomFromSet(
+			`chat:room:${roomId}:uids`, roomId, start, stop, reverse
+		);
+		return users;
+	};
+
+	Messaging.getUsersInRoomFromSet = async (set, roomId, start, stop, reverse = false) => {
+		const uids = await Messaging.getUidsInRoomFromSet(set, start, stop, reverse);
 		const [users, isOwners] = await Promise.all([
 			user.getUsersFields(uids, ['uid', 'username', 'picture', 'status']),
 			Messaging.isRoomOwner(uids, roomId),
@@ -373,10 +400,12 @@ module.exports = function (Messaging) {
 
 	Messaging.loadRoom = async (uid, data) => {
 		const { roomId } = data;
-		const [room, inRoom, canChat] = await Promise.all([
+		const [room, inRoom, canChat, isAdmin, isGlobalMod] = await Promise.all([
 			Messaging.getRoomData(roomId),
 			Messaging.isUserInRoom(uid, roomId),
 			privileges.global.can('chat', uid),
+			user.isAdministrator(uid),
+			user.isGlobalModerator(uid),
 		]);
 
 		if (!canChat) {
@@ -395,22 +424,29 @@ module.exports = function (Messaging) {
 		if (room.public && !inRoom) {
 			await addUidsToRoom([uid], roomId);
 			room.userCount += 1;
+		} else if (inRoom) {
+			await db.sortedSetAdd(`chat:room:${roomId}:uids:online`, Date.now(), uid);
 		}
 
-		const [canReply, users, messages, isAdmin, isGlobalMod, settings, isOwner] = await Promise.all([
+		const [canReply, users, messages, settings, isOwner, onlineUids] = await Promise.all([
 			Messaging.canReply(roomId, uid),
-			Messaging.getUsersInRoom(roomId, 0, 39),
+			Messaging.getUsersInRoomFromSet(`chat:room:${roomId}:uids:online`, roomId, 0, 39, true),
 			Messaging.getMessages({
 				callerUid: uid,
 				uid: data.uid || uid,
 				roomId: roomId,
 				isNew: false,
 			}),
-			user.isAdministrator(uid),
-			user.isGlobalModerator(uid),
 			user.getSettings(uid),
 			Messaging.isRoomOwner(uid, roomId),
+			io.getUidsInRoom(`chat_room_${roomId}`),
 		]);
+
+		users.forEach((user) => {
+			if (user) {
+				user.online = parseInt(user.uid, 10) === parseInt(uid, 10) || onlineUids.includes(String(user.uid));
+			}
+		});
 
 		room.messages = messages;
 		room.isOwner = isOwner;
