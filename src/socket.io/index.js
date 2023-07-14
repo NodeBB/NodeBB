@@ -97,11 +97,28 @@ function onConnection(socket) {
 	socket.on('disconnect', () => {
 		onDisconnect(socket);
 	});
+
+	socket.on('disconnecting', () => {
+		onDisconnecting(socket);
+	});
 }
 
 function onDisconnect(socket) {
 	require('./uploads').clear(socket.id);
 	plugins.hooks.fire('action:sockets.disconnect', { socket: socket });
+}
+
+async function onDisconnecting(socket) {
+	if (socket.uid > 0) {
+		for (const roomName of socket.rooms) {
+			if (roomName.startsWith('chat_room') && !roomName.includes('public')) {
+				Sockets.server.in(roomName).emit('event:chats.user-online', {
+					uid: socket.uid,
+					state: 0,
+				});
+			}
+		}
+	}
 }
 
 async function onConnect(socket) {
