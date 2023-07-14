@@ -32,8 +32,14 @@ define('forum/chats', [
 
 	$(window).on('action:ajaxify.start', function () {
 		Chats.destroyAutoComplete(ajaxify.data.roomId);
-		socket.emit('modules.chats.leave', ajaxify.data.roomId);
-		socket.emit('modules.chats.leavePublic', ajaxify.data.publicRooms.map(r => r.roomId));
+		if (ajaxify.data.template.chats) {
+			if (ajaxify.data.roomId) {
+				socket.emit('modules.chats.leave', ajaxify.data.roomId);
+			}
+			if (ajaxify.data.publicRooms) {
+				socket.emit('modules.chats.leavePublic', ajaxify.data.publicRooms.map(r => r.roomId));
+			}
+		}
 	});
 
 	Chats.init = function () {
