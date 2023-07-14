@@ -145,6 +145,8 @@ RoomUserList:
             type: boolean
           index:
             type: number
+          online:
+            type: boolean
 RoomObjectFull:
   # Messaging.loadRoom
   allOf:
