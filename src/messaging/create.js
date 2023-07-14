@@ -48,9 +48,11 @@ module.exports = function (Messaging) {
 			timestamp: timestamp,
 			fromuid: uid,
 			roomId: roomId,
-			deleted: 0,
-			system: data.system || 0,
 		};
+
+		if (data.system) {
+			message.system = data.system;
+		}
 
 		if (data.ip) {
 			message.ip = data.ip;
