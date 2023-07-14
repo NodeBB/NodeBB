@@ -14,12 +14,11 @@ module.exports = function (Messaging) {
 		}
 
 		await Messaging.setMessageField(mid, 'deleted', state);
-
-		const messages = await Messaging.getMessagesData([mid], uid, roomId, true);
 		const ioRoom = sockets.in(`chat_room_${roomId}`);
 		if (state === 1 && ioRoom) {
 			ioRoom.emit('event:chats.delete', mid);
 		} else if (state === 0 && ioRoom) {
+			const messages = await Messaging.getMessagesData([mid], uid, roomId, true);
 			ioRoom.emit('event:chats.restore', messages[0]);
 		}
 	}
