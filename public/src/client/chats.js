@@ -29,7 +29,6 @@ define('forum/chats', [
 
 	let newMessage = false;
 	let chatNavWrapper = null;
-	let userListEl = null;
 
 	$(window).on('action:ajaxify.start', function () {
 		Chats.destroyAutoComplete(ajaxify.data.roomId);
@@ -48,7 +47,6 @@ define('forum/chats', [
 		socket.emit('modules.chats.enterPublic', ajaxify.data.publicRooms.map(r => r.roomId));
 		const env = utils.findBootstrapEnvironment();
 		chatNavWrapper = $('[component="chat/nav-wrapper"]');
-		userListEl = $('[component="chat/user/list"]');
 		if (!Chats.initialised) {
 			Chats.addSocketListeners();
 			Chats.addGlobalEventListeners();
@@ -469,7 +467,6 @@ define('forum/chats', [
 				const mainWrapper = components.get('chat/main-wrapper');
 				mainWrapper.html(html);
 				chatNavWrapper = $('[component="chat/nav-wrapper"]');
-				userListEl = $('[component="chat/user/list"]');
 				html.find('.timeago').timeago();
 				ajaxify.data = { ...ajaxify.data, ...payload, roomId: roomId };
 				ajaxify.updateTitle(ajaxify.data.title);
@@ -526,10 +523,6 @@ define('forum/chats', [
 			}
 			Chats.markChatPageElUnread(data);
 			Chats.increasePublicRoomUnreadCount(chatNavWrapper.find('[data-roomid=' + data.roomId + ']'));
-		});
-
-		socket.on('event:chats.user-online', function (data) {
-			userListEl.find(`[data-uid="${data.uid}"]`).toggleClass('online', !!data.state);
 		});
 
 		socket.on('event:user_status_change', function (data) {

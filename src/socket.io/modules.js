@@ -106,18 +106,12 @@ async function joinLeave(socket, roomIds, method, prefix = 'chat_room') {
 			Messaging.isUserInRoom(socket.uid, roomIds),
 			Messaging.getRoomsData(roomIds, ['public', 'groups']),
 		]);
-		const io = require('./index');
+
 		await Promise.all(roomIds.map(async (roomId, idx) => {
 			const isPublic = roomData[idx] && roomData[idx].public;
 			const roomGroups = roomData[idx] && roomData[idx].groups;
 			if (isAdmin || (inRooms[idx] && (!isPublic || await groups.isMemberOfAny(socket.uid, roomGroups)))) {
 				socket[method](`${prefix}_${roomId}`);
-				if (prefix === 'chat_room') {
-					io.in(`chat_room_${roomId}`).emit('event:chats.user-online', {
-						uid: socket.uid,
-						state: method === 'join' ? 1 : 0,
-					});
-				}
 			}
 		}));
 	}

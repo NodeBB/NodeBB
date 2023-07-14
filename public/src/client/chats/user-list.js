@@ -4,6 +4,8 @@
 define('forum/chats/user-list', ['api'], function (api) {
 	const userList = {};
 
+	let updateInterval = 0;
+
 	userList.init = function (roomId, container) {
 		const userListEl = container.find('[component="chat/user/list"]');
 		if (!userListEl.length) {
@@ -11,12 +13,40 @@ define('forum/chats/user-list', ['api'], function (api) {
 		}
 		container.find('[component="chat/user/list/btn"]').on('click', () => {
 			userListEl.toggleClass('hidden');
+			if (userListEl.hasClass('hidden')) {
+				stopUpdating();
+			} else {
+				startUpdating(roomId, userListEl);
+			}
 		});
+
+		$(window).off('action:ajaxify.start', stopUpdating)
+			.one('action:ajaxify.start', stopUpdating);
 
 		userList.addInfiniteScrollHandler(roomId, userListEl, async (listEl, data) => {
 			listEl.append(await app.parseAndTranslate('partials/chats/user-list', 'users', data));
 		});
 	};
+
+	function startUpdating(roomId, userListEl) {
+		updateInterval = setInterval(() => {
+			updateUserList(roomId, userListEl);
+		}, 5000);
+	}
+
+	function stopUpdating() {
+		if (updateInterval) {
+			clearInterval(updateInterval);
+			updateInterval = 0;
+		}
+	}
+
+	async function updateUserList(roomId, userListEl) {
+		if (ajaxify.data.template.chats && app.isFocused && userListEl.scrollTop() === 0 && !userListEl.hasClass('hidden')) {
+			const data = await api.get(`/chats/${roomId}/users`, { start: 0 });
+			userListEl.html(await app.parseAndTranslate('partials/chats/user-list', 'users', data));
+		}
+	}
 
 	userList.addInfiniteScrollHandler = function (roomId, listEl, callback) {
 		listEl.on('scroll', utils.debounce(async () => {
