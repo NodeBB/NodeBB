@@ -228,10 +228,11 @@ chatsAPI.kick = async (caller, data) => {
 	// Additional checks if kicking vs leaving
 	if (data.uids.length === 1 && parseInt(data.uids[0], 10) === caller.uid) {
 		await messaging.leaveRoom([caller.uid], data.roomId);
+		await socketHelpers.removeSocketsFromRoomByUids([caller.uid], data.roomId);
 		return [];
 	}
 	await messaging.removeUsersFromRoom(caller.uid, data.uids, data.roomId);
-
+	await socketHelpers.removeSocketsFromRoomByUids(data.uids, data.roomId);
 	delete data.uids;
 	return chatsAPI.users(caller, data);
 };
