@@ -1,6 +1,6 @@
 {
 	"settings": "Settings",
-	"guest-settings": "Guest settings",
+	"guest-settings": "Guest Settings",
 	"handles.enabled": "Permitir nomes para visitantes",
 	"handles.enabled-help": "Esta opção expôe um novo campo que permite a visitantes escolher um nome para associar a cada publicação que eles criem. Se desabilitada, eles simplesmente se chamarão \"Visitante\" ",
 	"topic-views.enabled": "Allow guests to increase topic view counts",
