@@ -3,7 +3,7 @@
 
 	<div class="row settings m-0">
 		<div id="spy-container" class="col-12 col-md-8 px-0 mb-4" tabindex="0">
-			<div class="mb-4">
+			<div id="reputation-settings" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/reputation:reputation]]</h5>
 
 				<div class="form-check form-switch mb-3">
@@ -22,7 +22,7 @@
 
 			<hr/>
 
-			<div class="mb-4">
+			<div id="activity-thresholds" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/reputation:thresholds]]</h5>
 				<div class="mb-3">
 					<label class="form-label" for="min:rep:chat">[[admin/settings/reputation:min-rep-chat]]</label>
@@ -81,7 +81,7 @@
 
 			<hr/>
 
-			<div class="mb-4">
+			<div id="flag-settings" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/reputation:flags]]</h5>
 				<div class="mb-3">
 					<label class="form-label" for="flags:limitPerTarget">[[admin/settings/reputation:flags.limit-per-target]]</label>

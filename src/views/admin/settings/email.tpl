@@ -3,7 +3,7 @@
 
 	<div class="row settings m-0">
 		<div id="spy-container" class="col-12 col-md-8 px-0 mb-4" tabindex="0">
-			<div class="mb-4">
+			<div id="email-settings" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/email:email-settings]]</h5>
 
 				<div class="mb-3">
@@ -41,7 +41,7 @@
 
 			<hr/>
 
-			<div class="mb-4">
+			<div id="confirmation" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/email:confirmation-settings]]</h5>
 
 				<div class="row mb-3 align-items-center">
@@ -80,7 +80,7 @@
 				<p class="form-text">[[admin/settings/email:prompt-help]]</p>
 			</div>
 
-			<div class="mb-4">
+			<div id="email-digests" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/email:subscriptions]]</h5>
 				<div class="form-check form-switch mb-3">
 					<input class="form-check-input" type="checkbox" id="disableEmailSubscriptions" data-field="disableEmailSubscriptions" name="disableEmailSubscriptions" />
@@ -100,7 +100,7 @@
 
 			<hr/>
 
-			<div class="mb-4">
+			<div id="smtp-transport" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/email:smtp-transport]]</h5>
 
 				<div class="alert alert-warning">
@@ -168,7 +168,7 @@
 				</div>
 			</div>
 
-			<div class="mb-4">
+			<div id="email-testing" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/email:testing]]</h5>
 
 				<div class="">
@@ -189,7 +189,7 @@
 
 			<hr/>
 
-			<div class="mb-4">
+			<div id="edit-email-template" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/email:template]]</h5>
 
 				<div class="mb-3">

@@ -3,7 +3,7 @@
 
 	<div class="row settings m-0">
 		<div id="spy-container" class="col-12 col-md-8 px-0 mb-4" tabindex="0">
-			<div class="mb-4">
+			<div id="account-settings" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/user:account-settings]]</h5>
 				<div class="mb-3">
 					<label class="form-label" for="allowLoginWith">[[admin/settings/user:allow-login-with]]</label>
@@ -54,7 +54,7 @@
 
 			<hr/>
 
-			<div class="mb-4">
+			<div id="account-protection" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/user:account-protection]]</h5>
 				<div class="mb-3">
 					<label class="form-label" for="adminReloginDuration">[[admin/settings/user:admin-relogin-duration]]</label>
@@ -82,7 +82,7 @@
 
 			<hr/>
 
-			<div class="mb-4">
+			<div id="session-time" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/user:session-time]]</h5>
 				<div class="row">
 					<div class="col-sm-6">
@@ -121,7 +121,7 @@
 
 			<hr/>
 
-			<div class="mb-4">
+			<div id="user-registration" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/user:registration]]</h5>
 				<div class="mb-3">
 					<label class="form-label" for="registrationType">[[admin/settings/user:registration-type]]</label>
@@ -213,7 +213,7 @@
 
 			<hr/>
 
-			<div class="mb-4">
+			<div id="guest-settings" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/guest:guest-settings]]</h5>
 
 				<div class="mb-3">
@@ -241,7 +241,7 @@
 
 			<hr/>
 
-			<div class="mb-4">
+			<div id="default-user-settings" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/user:default-user-settings]]</h5>
 				<div class="form-check form-switch mb-3">
 					<input class="form-check-input" type="checkbox" data-field="showemail">
