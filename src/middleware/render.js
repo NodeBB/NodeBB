@@ -256,6 +256,7 @@ module.exports = function (middleware) {
 			latestVersion: getLatestVersion(),
 			privileges: privileges.admin.get(req.uid),
 			tags: meta.tags.parse(req, {}, [], []),
+			languageDirection: translator.translate('[[language:dir]]', res.locals.config.acpLang),
 		});
 
 		const { userData } = results;
@@ -292,6 +293,9 @@ module.exports = function (middleware) {
 			latestVersion: results.latestVersion,
 			upgradeAvailable: results.latestVersion && semver.gt(results.latestVersion, version),
 			showManageMenu: results.privileges.superadmin || ['categories', 'privileges', 'users', 'admins-mods', 'groups', 'tags', 'settings'].some(priv => results.privileges[`admin:${priv}`]),
+			defaultLang: meta.config.defaultLang || 'en-GB',
+			acpLang: res.locals.config.acpLang,
+			languageDirection: results.languageDirection,
 		};
 
 		templateValues.template = { name: res.locals.template };

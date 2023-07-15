@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="{function.localeToHTML, acpLang, defaultLang}" {{{if languageDirection}}}data-dir="{languageDirection}" style="direction: {languageDirection};"{{{end}}}>
 	<head>
 		<title>{title}</title>
 
