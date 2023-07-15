@@ -77,7 +77,7 @@ jobs:
           - 6379:6379
 
       mongo:
-        image: 'mongo:3.7'
+        image: 'mongo:6.0'
         ports:
           # Maps port 27017 on service container to the host
           - 27017:27017
