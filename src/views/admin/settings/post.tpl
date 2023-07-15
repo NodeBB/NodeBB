@@ -4,7 +4,7 @@
 	<div class="row settings m-0">
 		<div id="spy-container" class="col-12 col-md-8 px-0 mb-4" tabindex="0">
 			<!-- general settings -->
-			<div class="mb-4">
+			<div id="general" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/post:general]]</h5>
 
 				<div class="mb-3">
@@ -57,7 +57,7 @@
 			<hr/>
 
 			<!-- posting restrictions -->
-			<div class="mb-4">
+			<div id="posting-restrictions" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/post:restrictions]]</h5>
 
 				<div class="mb-3 d-flex justify-content-between align-items-center gap-2">
@@ -121,7 +121,7 @@
 			<hr/>
 
 			<!-- new user restrictions -->
-			<div class="mb-4">
+			<div id="new-user-restrictions" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/post:restrictions-new]]</h5>
 
 				<div class="mb-3">
@@ -148,7 +148,7 @@
 			<hr/>
 
 			<!-- post queue settings -->
-			<div class="mb-4">
+			<div id="post-queue" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/post:post-queue]]</h5>
 				<div class="mb-3">
 					<div class="form-check form-switch mb-3">
@@ -178,7 +178,7 @@
 			<hr/>
 
 			<!-- timestamp settings -->
-			<div class="mb-4">
+			<div id="timestamp" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/post:timestamp]]</h5>
 				<div class="mb-3">
 					<label class="form-label" for="timeagoCutoff">[[admin/settings/post:timestamp.cut-off]]</label>
@@ -206,7 +206,7 @@
 			<hr/>
 
 			<!-- unread & recent settings-->
-			<div class="mb-4">
+			<div id="unread-recent-settings" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/post:unread-and-recent]]</h5>
 
 				<div class="mb-3">
@@ -231,7 +231,7 @@
 			<hr/>
 
 			<!-- signature settings -->
-			<div class="mb-4">
+			<div id="signature-settings" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/post:signature]]</h5>
 				<div class="form-check form-switch mb-3">
 					<input class="form-check-input" type="checkbox" data-field="disableSignatures">
@@ -258,7 +258,7 @@
 			<hr/>
 
 			<!-- composer settings -->
-			<div class="mb-4">
+			<div id="composer-settings" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/post:composer]]</h5>
 
 				<p>

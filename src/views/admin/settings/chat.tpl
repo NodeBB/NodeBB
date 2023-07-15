@@ -3,7 +3,7 @@
 
 	<div class="row settings m-0">
 		<div id="spy-container" class="col-12 col-md-8 px-0 mb-4" tabindex="0">
-			<div class="mb-4">
+			<div id="chat-settings" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header hidden">[[admin/settings/chat:chat-settings]]</h5>
 
 				<div class="mb-3">
