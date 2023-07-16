@@ -257,7 +257,6 @@ module.exports = function (module) {
 			// https://github.com/NodeBB/NodeBB/issues/4467
 			// https://jira.mongodb.org/browse/SERVER-14322
 			// https://docs.mongodb.org/manual/reference/command/findAndModify/#upsert-and-unique-index
-			console.log('test', err.message);
 			if (err && err.message.includes('E11000 duplicate key error')) {
 				console.log(new Error('e11000').stack, key, field, value);
 				return await module.incrObjectFieldBy(key, field, value);
