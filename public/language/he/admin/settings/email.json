@@ -1,7 +1,7 @@
 {
 	"email-settings": "הגדרות דוא\"ל",
 	"address": "כתובת דוא\"ל",
-	"address-help": "The following email address refers to the email that the recipient will see in the \"From\" and \"Reply To\" fields.",
+	"address-help": "שדה אימייל זה מתייחס לכתובת שהנמען יראה בשדות \"מאת\" ו\"השב אל\".",
 	"from": "מאת",
 	"from-help": "השם 'מאת' יוצג בדוא\"ל.",
 
