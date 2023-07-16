@@ -357,6 +357,7 @@ define('forum/chats', [
 				modal = bootbox.dialog({
 					title: '[[modules:chat.rename-room]]',
 					message: html,
+					onEscape: true,
 					buttons: {
 						save: {
 							label: '[[global:save]]',

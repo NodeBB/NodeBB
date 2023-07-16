@@ -28,6 +28,7 @@ define('forum/chats/manage', [
 			modal = bootbox.dialog({
 				title: '[[modules:chat.manage-room]]',
 				message: html,
+				onEscape: true,
 			});
 
 			modal.attr('component', 'chat/manage-modal');

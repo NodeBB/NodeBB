@@ -22,6 +22,7 @@ define('forum/chats/create', [
 		const modal = bootbox.dialog({
 			title: '[[modules:chat.create-room]]',
 			message: html,
+			onEscape: true,
 			buttons: {
 				save: {
 					label: '[[global:create]]',
