@@ -275,6 +275,7 @@ module.exports = function (middleware) {
 		const version = nconf.get('version');
 
 		res.locals.config.userLang = res.locals.config.acpLang || res.locals.config.userLang;
+		res.locals.config.isRTL = results.languageDirection === 'rtl';
 		const templateValues = {
 			config: res.locals.config,
 			configJSON: jsesc(JSON.stringify(res.locals.config), { isScriptContext: true }),

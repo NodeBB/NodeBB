@@ -13,7 +13,7 @@
 				<button class="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
 				<span class="selected-template">{templates.0.template}</span> <span class="caret"></span>
 				</button>
-				<ul class="dropdown-menu p-1">
+				<ul class="dropdown-menu {{{ if config.isRTL }}}dropdown-menu-end{{{ end }}} p-1">
 					{{{ each templates }}}
 					<li><a class="dropdown-item rounded-1" href="#" data-template="{./template}" data-toggle="pill">{./template}</a></li>
 					{{{ end }}}
