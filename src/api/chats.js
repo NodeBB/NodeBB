@@ -152,7 +152,7 @@ chatsAPI.mark = async (caller, data) => {
 			match: `chat_*`,
 		});
 		chatNids = chatNids.filter(
-			nid => nid && !nid.startsWith(`chat_${caller.uid}`) && nid.endsWith(`_${roomId}`)
+			nid => nid && !nid.startsWith(`chat_${caller.uid}_`) && nid.endsWith(`_${roomId}`)
 		);
 
 		await notifications.markReadMultiple(chatNids, caller.uid);
