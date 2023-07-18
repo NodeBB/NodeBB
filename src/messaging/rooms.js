@@ -334,14 +334,13 @@ module.exports = function (Messaging) {
 
 	async function updateOwner(roomId) {
 		let nextOwner = await db.getSortedSetRange(`chat:room:${roomId}:owners`, 0, 0);
-		if (!nextOwner[0]) {
+		if (!nextOwner.length) {
 			// no owners left grab next user
 			nextOwner = await db.getSortedSetRange(`chat:room:${roomId}:uids`, 0, 0);
-		}
-
-		const newOwner = nextOwner[0] || 0;
-		if (parseInt(newOwner, 10) > 0) {
-			await db.sortedSetAdd(`chat:room:${roomId}:owners`, Date.now(), newOwner);
+			const newOwner = nextOwner[0] || 0;
+			if (parseInt(newOwner, 10) > 0) {
+				await db.sortedSetAdd(`chat:room:${roomId}:owners`, Date.now(), newOwner);
+			}
 		}
 	}
 
