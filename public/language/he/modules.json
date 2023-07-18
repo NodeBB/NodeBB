@@ -54,6 +54,7 @@
     "chat.kick": "הוצא",
     "chat.show-ip": "הצג IP",
     "chat.owner": "מנהלי החדר",
+    "chat.grant-rescind-ownership": "Grant/Rescind Ownership",
     "chat.system.user-join": "%1 הצטרף לחדר",
     "chat.system.user-leave": "%1 יצא מהחדר",
     "chat.system.room-rename": "%2 שינה את שם החדר: %1",

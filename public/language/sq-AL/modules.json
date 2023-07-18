@@ -54,6 +54,7 @@
     "chat.kick": "Largo",
     "chat.show-ip": "Shfaq IP",
     "chat.owner": "Administratori i hapësirës",
+    "chat.grant-rescind-ownership": "Grant/Rescind Ownership",
     "chat.system.user-join": "%1 i është bashkuar hapësirës",
     "chat.system.user-leave": "%1 ka dalë nga hapësira",
     "chat.system.room-rename": "%2 e ka riemërtuar këtë hapësirë: %1",

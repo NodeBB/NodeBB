@@ -54,6 +54,7 @@
     "chat.kick": "Kick",
     "chat.show-ip": "Ցույց տալ IP",
     "chat.owner": "Սենյակի սեփականատեր",
+    "chat.grant-rescind-ownership": "Grant/Rescind Ownership",
     "chat.system.user-join": "%1-ը միացել է սենյակին",
     "chat.system.user-leave": "%1 դուրս է եկել սենյակից",
     "chat.system.room-rename": "%2-ը վերանվանել է այս սենյակը՝ %1",

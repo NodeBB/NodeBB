@@ -54,6 +54,7 @@
     "chat.kick": "추방",
     "chat.show-ip": "IP 보이기",
     "chat.owner": "채팅 관리자",
+    "chat.grant-rescind-ownership": "Grant/Rescind Ownership",
     "chat.system.user-join": "%1님이 입장하셨습니다.",
     "chat.system.user-leave": "%1님이 퇴장하셨습니다.",
     "chat.system.room-rename": "%2님의 채팅방 이름 변경: %1",

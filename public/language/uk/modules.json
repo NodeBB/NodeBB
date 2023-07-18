@@ -54,6 +54,7 @@
     "chat.kick": "Штурхнути",
     "chat.show-ip": "Показати IP",
     "chat.owner": "Власник кімнати",
+    "chat.grant-rescind-ownership": "Grant/Rescind Ownership",
     "chat.system.user-join": "%1 зайшов в кімнату",
     "chat.system.user-leave": "%1 покинув кімнату",
     "chat.system.room-rename": "%2 перейменував кімнату на: %1",

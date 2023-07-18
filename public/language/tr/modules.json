@@ -54,6 +54,7 @@
     "chat.kick": "Dışarı At",
     "chat.show-ip": "IP Göster",
     "chat.owner": "Oda Sahibi",
+    "chat.grant-rescind-ownership": "Grant/Rescind Ownership",
     "chat.system.user-join": "%1 odaya katıldı",
     "chat.system.user-leave": "%1 odadan çıktı",
     "chat.system.room-rename": "%2 şu grubun ismini değiştirdi: %1",

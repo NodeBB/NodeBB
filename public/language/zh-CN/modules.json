@@ -54,6 +54,7 @@
     "chat.kick": "踢出",
     "chat.show-ip": "显示 IP",
     "chat.owner": "房间所有者",
+    "chat.grant-rescind-ownership": "Grant/Rescind Ownership",
     "chat.system.user-join": "%1 加入了房间",
     "chat.system.user-leave": "%1 离开了房间",
     "chat.system.room-rename": "%2 更改房间名为：%1",

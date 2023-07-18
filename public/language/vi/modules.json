@@ -54,6 +54,7 @@
     "chat.kick": "Loại ra",
     "chat.show-ip": "Hiện IP",
     "chat.owner": "Chủ Phòng",
+    "chat.grant-rescind-ownership": "Grant/Rescind Ownership",
     "chat.system.user-join": "%1 đã vào phòng",
     "chat.system.user-leave": "%1 đã rời phòng",
     "chat.system.room-rename": "%2 đã đổi tên phòng: %1",

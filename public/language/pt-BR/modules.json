@@ -54,6 +54,7 @@
     "chat.kick": "Expulsar",
     "chat.show-ip": "Mostrar IP",
     "chat.owner": "Dono da Sala",
+    "chat.grant-rescind-ownership": "Grant/Rescind Ownership",
     "chat.system.user-join": "%1 entrou na sala",
     "chat.system.user-leave": "%1 saiu da sala",
     "chat.system.room-rename": "%2 renomeou esta sala: %1",

@@ -54,6 +54,7 @@
     "chat.kick": "Kirúgás",
     "chat.show-ip": "IP cím mutatása",
     "chat.owner": "Szoba tulajdonos",
+    "chat.grant-rescind-ownership": "Grant/Rescind Ownership",
     "chat.system.user-join": "%1 csatlakozott a szobához",
     "chat.system.user-leave": "%1 elhagyta a szobát",
     "chat.system.room-rename": "%2 megváltoztatta ennek a szobának a nevét: %1",

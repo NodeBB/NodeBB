@@ -54,6 +54,7 @@
     "chat.kick": "Sparka ut",
     "chat.show-ip": "Visa IP",
     "chat.owner": "Rummets ägare",
+    "chat.grant-rescind-ownership": "Grant/Rescind Ownership",
     "chat.system.user-join": "%1 har anslutit till rummet",
     "chat.system.user-leave": "%1 har lämnat rummet",
     "chat.system.room-rename": "%2 har döpt om rummet: %1",

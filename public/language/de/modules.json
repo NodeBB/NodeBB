@@ -54,6 +54,7 @@
     "chat.kick": "Rauswerfen",
     "chat.show-ip": "IP anzeigen",
     "chat.owner": "Raumbesitzer",
+    "chat.grant-rescind-ownership": "Grant/Rescind Ownership",
     "chat.system.user-join": "%1 ist dem Raum beigetreten",
     "chat.system.user-leave": "%1 hat den Raum verlassen",
     "chat.system.room-rename": "%2 hat den Raum umbenannt: %1",
