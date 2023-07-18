@@ -22,6 +22,8 @@
     "reset.notify.subject": "Heslo bolo úspešne zmenené",
     "reset.notify.text1": "Oznamujeme Vám že %1, bolo Vaše heslo úspešne zmenené.",
     "reset.notify.text2": "Ak ste o to nežiadali, kontaktujte čo najskôr správcu.",
+    "digest.unread-rooms": "Unread rooms",
+    "digest.room-name-unreadcount": "%1 (%2 unread)",
     "digest.latest_topics": "Najnovšie témy od %1",
     "digest.top-topics": "Top topics from %1",
     "digest.popular-topics": "Popular topics from %1",

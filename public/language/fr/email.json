@@ -22,6 +22,8 @@
     "reset.notify.subject": "Mot de passe modifié",
     "reset.notify.text1": "Nous vous informons que le %1, votre mot de passe a été modifié.",
     "reset.notify.text2": "Si vous n'avez pas autorisé ceci, veuillez contacter immédiatement un administrateur.",
+    "digest.unread-rooms": "Unread rooms",
+    "digest.room-name-unreadcount": "%1 (%2 unread)",
     "digest.latest_topics": "Derniers sujets de %1 :",
     "digest.top-topics": "Meilleurs sujets de %1",
     "digest.popular-topics": "Sujets populaires de %1",

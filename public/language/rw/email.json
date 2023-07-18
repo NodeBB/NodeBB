@@ -22,6 +22,8 @@
     "reset.notify.subject": "Ijambobanga ryahinduwe nta ngorane",
     "reset.notify.text1": "Turakumenyesha ko kuri %1, ijambobanga wakoreshaga ryahinduwe nk'uko byari byasabwe.",
     "reset.notify.text2": "Niba atari wowe wari wabisabye ku bushake bwawe, bimenyeshe umuyobozi w'urubuga aka kanya. ",
+    "digest.unread-rooms": "Unread rooms",
+    "digest.room-name-unreadcount": "%1 (%2 unread)",
     "digest.latest_topics": "Ibiganiro biheruka bya %1",
     "digest.top-topics": "Top topics from %1",
     "digest.popular-topics": "Popular topics from %1",

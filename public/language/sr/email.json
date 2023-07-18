@@ -22,6 +22,8 @@
     "reset.notify.subject": "Лозика је успешно змењена",
     "reset.notify.text1": "Обавештавамо вас да вам је лозинка на %1 успешно ресетована.",
     "reset.notify.text2": "Уколико нисте ви ово одобрили, молимо одмах контактирајте администратора.",
+    "digest.unread-rooms": "Unread rooms",
+    "digest.room-name-unreadcount": "%1 (%2 unread)",
     "digest.latest_topics": "Недавне теме од %1",
     "digest.top-topics": "Најбоље теме од %1",
     "digest.popular-topics": "Популарне теме од %1",

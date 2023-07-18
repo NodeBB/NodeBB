@@ -22,6 +22,8 @@
     "reset.notify.subject": "পাসওয়ার্ড পরিবর্তন সফল হয়েছে",
     "reset.notify.text1": "আপনাকে জানাচ্ছি যে %1 এ আপনার পাসওয়ার্ড পরিবর্তন হয়েছে",
     "reset.notify.text2": "এটা আপনার অজান্তে হলে এখনই প্রশাসককে আবহিত করুন",
+    "digest.unread-rooms": "Unread rooms",
+    "digest.room-name-unreadcount": "%1 (%2 unread)",
     "digest.latest_topics": "%1 এর সর্বশেষ টপিকসমূহ",
     "digest.top-topics": "Top topics from %1",
     "digest.popular-topics": "Popular topics from %1",

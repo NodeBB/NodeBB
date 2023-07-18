@@ -22,6 +22,8 @@
     "reset.notify.subject": "パスワードをリセットしました",
     "reset.notify.text1": "%1にてパスワードのリセットが行われたことをお知らせします。",
     "reset.notify.text2": "もしあなたがリセットを行っていない場合は、すぐに管理者に通報してください。",
+    "digest.unread-rooms": "Unread rooms",
+    "digest.room-name-unreadcount": "%1 (%2 unread)",
     "digest.latest_topics": "%1からの新しいスレッド",
     "digest.top-topics": "Top topics from %1",
     "digest.popular-topics": "Popular topics from %1",

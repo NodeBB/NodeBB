@@ -22,6 +22,8 @@
     "reset.notify.subject": "Parole veiksmīgi mainīta",
     "reset.notify.text1": "Mēs Tevi informējam, ka %1 Tava parole tika veiksmīgi mainīta.",
     "reset.notify.text2": "Ja neesi to pilnvarojis, nekavējoties informē administratoru par to.",
+    "digest.unread-rooms": "Unread rooms",
+    "digest.room-name-unreadcount": "%1 (%2 unread)",
     "digest.latest_topics": "Jaunākie temati no %1",
     "digest.top-topics": "Top topics from %1",
     "digest.popular-topics": "Popular topics from %1",

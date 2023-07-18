@@ -22,6 +22,8 @@
     "reset.notify.subject": "Passwort erfolgreich geändert",
     "reset.notify.text1": "Wir benachrichtigen dich, dass dein Passwort am %1 erfolgreich geändert wurde.",
     "reset.notify.text2": "Bitte benachrichtige umgehend einen Administrator, wenn du dies nicht autorisiert hast.",
+    "digest.unread-rooms": "Unread rooms",
+    "digest.room-name-unreadcount": "%1 (%2 unread)",
     "digest.latest_topics": "Neueste Themen auf %1",
     "digest.top-topics": "Top-Themen von %1",
     "digest.popular-topics": "Beliebte Themen von %1",

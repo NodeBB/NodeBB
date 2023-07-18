@@ -22,6 +22,8 @@
     "reset.notify.subject": "Parool edukalt muudetud",
     "reset.notify.text1": "Teatame, et sinu parooli muutmine kuupäeval %1 oli edukas.",
     "reset.notify.text2": "Kui te ei ole lubanud seda, siis teavitage koheselt administraatorit.",
+    "digest.unread-rooms": "Unread rooms",
+    "digest.room-name-unreadcount": "%1 (%2 unread)",
     "digest.latest_topics": "Viimased teemad %1 poolt",
     "digest.top-topics": "Top topics from %1",
     "digest.popular-topics": "Popular topics from %1",
