@@ -21,7 +21,7 @@ module.exports = {
 
 			const bulkAdd = [];
 			roomData.forEach((room) => {
-				if (room && room.roomId && room.owner) {
+				if (room && room.roomId && room.owner && room.timestamp) {
 					bulkAdd.push([`chat:room:${room.roomId}:owners`, room.timestamp, room.owner]);
 				}
 			});
