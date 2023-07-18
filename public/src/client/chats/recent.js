@@ -19,13 +19,13 @@ define('forum/chats/recent', ['alerts', 'api', 'chat'], function (alerts, api, c
 					chat.toggleReadState(chatEl);
 				});
 
-			$('[component="chat/recent"]').on('scroll', function () {
+			$('[component="chat/recent"]').on('scroll', utils.debounce(function () {
 				const $this = $(this);
 				const bottom = ($this[0].scrollHeight - $this.height()) * 0.9;
 				if ($this.scrollTop() > bottom) {
 					loadMoreRecentChats();
 				}
-			});
+			}, 100));
 		});
 	};
 

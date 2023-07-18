@@ -19,7 +19,7 @@
 			{{{ each selectedUsers }}}
 			<li class="list-group-item d-flex gap-2 align-items-center justify-content-between" component="chat/user" data-uid="{./uid}">
 				<a href="#" class="text-reset text-decoration-none">{buildAvatar(@value, "24px", true)} {./username}</a>
-				<button component="chat/room/users/remove" class="btn btn-sm btn-link"><i class="fa fa-times text-danger"></i></button>
+				<button component="chat/room/users/remove" class="btn btn-sm btn-light"><i class="fa fa-times text-danger"></i></button>
 			</li>
 			{{{ end }}}
 		</ul>

@@ -24,8 +24,6 @@ get:
             allOf:
               - type: object
                 properties:
-                  owner:
-                    type: number
                   roomId:
                     type: number
                   roomName:
@@ -173,10 +171,6 @@ get:
                     items:
                       type: object
                       properties:
-                        owner:
-                          oneOf:
-                            - type: number
-                            - type: string
                         roomId:
                           type: number
                         roomName:

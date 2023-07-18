@@ -226,8 +226,7 @@ describe('Messaging Library', () => {
 			await callv3API('delete', `/chats/${roomId}/users/${mocks.users.baz.uid}`, {}, 'baz');
 			const isUserInRoom = await Messaging.isUserInRoom(mocks.users.baz.uid, roomId);
 			assert.equal(isUserInRoom, false);
-			const data = await Messaging.getRoomData(roomId);
-			assert.equal(data.owner, mocks.users.foo.uid);
+			assert(await Messaging.isRoomOwner(mocks.users.foo.uid, roomId));
 		});
 
 		it('should send a user-leave system message when a user leaves the chat room', async () => {
@@ -263,8 +262,7 @@ describe('Messaging Library', () => {
 
 			await callv3API('delete', `/chats/${body.response.roomId}/users/${mocks.users.herp.uid}`, {}, 'herp');
 
-			const data = await Messaging.getRoomData(body.response.roomId);
-			assert.equal(data.owner, mocks.users.foo.uid);
+			assert(await Messaging.isRoomOwner(mocks.users.foo.uid, roomId));
 		});
 
 		it('should change owner if owner is deleted', async () => {
@@ -284,8 +282,7 @@ describe('Messaging Library', () => {
 				},
 			});
 			await User.deleteAccount(sender);
-			const data = await Messaging.getRoomData(response.roomId);
-			assert.equal(data.owner, receiver);
+			assert(await Messaging.isRoomOwner(receiver, response.roomId));
 		});
 
 		it('should fail to remove user from room', async () => {

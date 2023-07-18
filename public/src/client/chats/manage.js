@@ -35,6 +35,7 @@ define('forum/chats/manage', [
 
 			refreshParticipantsList(roomId, modal);
 			addKickHandler(roomId, modal);
+			addToggleOwnerHandler(roomId, modal);
 
 			const userListEl = modal.find('[component="chat/manage/user/list"]');
 			const userListElSearch = modal.find('[component="chat/manage/user/list/search"]');
@@ -89,6 +90,17 @@ define('forum/chats/manage', [
 		});
 	}
 
+	function addToggleOwnerHandler(roomId, modal) {
+		modal.on('click', '[data-action="toggleOwner"]', async function () {
+			const uid = parseInt(this.getAttribute('data-uid'), 10);
+			const $this = $(this);
+			await socket.emit('modules.chats.toggleOwner', { roomId: roomId, uid: uid });
+			$this.parents('[data-uid]')
+				.find('[component="chat/manage/user/owner/icon"]')
+				.toggleClass('hidden');
+		});
+	}
+
 	async function refreshParticipantsList(roomId, modal, data) {
 		const listEl = modal.find('[component="chat/manage/user/list"]');
 
@@ -101,6 +113,7 @@ define('forum/chats/manage', [
 		}
 
 		listEl.html(await app.parseAndTranslate('partials/chats/manage-room-users', data));
+		listEl.find('[data-bs-toggle="tooltip"]').tooltip();
 	}
 
 	return manage;

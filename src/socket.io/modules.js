@@ -110,7 +110,13 @@ async function joinLeave(socket, roomIds, method, prefix = 'chat_room') {
 		await Promise.all(roomIds.map(async (roomId, idx) => {
 			const isPublic = roomData[idx] && roomData[idx].public;
 			const roomGroups = roomData[idx] && roomData[idx].groups;
-			if (isAdmin || (inRooms[idx] && (!isPublic || await groups.isMemberOfAny(socket.uid, roomGroups)))) {
+
+			if (isAdmin ||
+				(
+					inRooms[idx] &&
+					(!isPublic || !roomGroups.length || await groups.isMemberOfAny(socket.uid, roomGroups))
+				)
+			) {
 				socket[method](`${prefix}_${roomId}`);
 			}
 		}));
@@ -175,6 +181,23 @@ SocketModules.chats.searchMembers = async function (socket, data) {
 		return 0;
 	});
 	return { users: roomUsers };
+};
+
+SocketModules.chats.toggleOwner = async (socket, data) => {
+	if (!data || !data.uid || !data.roomId) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
+	const [isAdmin, inRoom, isRoomOwner] = await Promise.all([
+		user.isAdministrator(socket.uid),
+		Messaging.isUserInRoom(socket.uid, data.roomId),
+		Messaging.isRoomOwner(socket.uid, data.roomId),
+	]);
+	if (!isAdmin && (!inRoom || !isRoomOwner)) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	await Messaging.toggleOwner(data.uid, data.roomId);
 };
 
 require('../promisify')(SocketModules);

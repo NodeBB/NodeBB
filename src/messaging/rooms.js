@@ -74,7 +74,6 @@ module.exports = function (Messaging) {
 		const now = Date.now();
 		const roomId = await db.incrObjectField('global', 'nextChatRoomId');
 		const room = {
-			owner: uid,
 			roomId: roomId,
 			timestamp: now,
 		};
@@ -93,6 +92,7 @@ module.exports = function (Messaging) {
 		await Promise.all([
 			db.setObject(`chat:room:${roomId}`, room),
 			db.sortedSetAdd('chat:rooms', now, roomId),
+			db.sortedSetAdd(`chat:room:${roomId}:owners`, now, uid),
 			db.sortedSetsAdd([
 				`chat:room:${roomId}:uids`,
 				`chat:room:${roomId}:uids:online`,
@@ -143,6 +143,7 @@ module.exports = function (Messaging) {
 			db.deleteAll([
 				...roomIds.map(id => `chat:room:${id}`),
 				...roomIds.map(id => `chat:room:${id}:uids`),
+				...roomIds.map(id => `chat:room:${id}:owners`),
 				...roomIds.map(id => `chat:room:${id}:uids:online`),
 			]),
 			db.sortedSetRemove('chat:rooms', roomIds),
@@ -207,14 +208,25 @@ module.exports = function (Messaging) {
 		if (!isArray) {
 			uids = [uids];
 		}
-		const owner = await db.getObjectField(`chat:room:${roomId}`, 'owner');
-		const isOwners = uids.map(uid => parseInt(uid, 10) === parseInt(owner, 10));
 
+		const isOwners = await db.isSortedSetMembers(`chat:room:${roomId}:owners`, uids);
 		const result = await Promise.all(isOwners.map(async (isOwner, index) => {
-			const payload = await plugins.hooks.fire('filter:messaging.isRoomOwner', { uid: uids[index], roomId, owner, isOwner });
+			const payload = await plugins.hooks.fire('filter:messaging.isRoomOwner', { uid: uids[index], roomId, isOwner });
 			return payload.isOwner;
 		}));
 		return isArray ? result : result[0];
+	};
+
+	Messaging.toggleOwner = async (uid, roomId) => {
+		if (!(parseInt(uid, 10) > 0) || !roomId) {
+			return;
+		}
+		const isOwner = await Messaging.isRoomOwner(uid, roomId);
+		if (isOwner) {
+			await db.sortedSetRemove(`chat:room:${roomId}:owners`, uid);
+		} else {
+			await db.sortedSetAdd(`chat:room:${roomId}:owners`, Date.now(), uid);
+		}
 	};
 
 	Messaging.isRoomPublic = async function (roomId) {
@@ -285,6 +297,7 @@ module.exports = function (Messaging) {
 		await Promise.all([
 			db.sortedSetRemove([
 				`chat:room:${roomId}:uids`,
+				`chat:room:${roomId}:owners`,
 				`chat:room:${roomId}:uids:online`,
 			], uids),
 			db.sortedSetsRemove(keys, roomId),
@@ -301,6 +314,7 @@ module.exports = function (Messaging) {
 
 		const roomKeys = [
 			...roomIds.map(roomId => `chat:room:${roomId}:uids`),
+			...roomIds.map(roomId => `chat:room:${roomId}:owners`),
 			...roomIds.map(roomId => `chat:room:${roomId}:uids:online`),
 		];
 		await Promise.all([
@@ -319,9 +333,16 @@ module.exports = function (Messaging) {
 	};
 
 	async function updateOwner(roomId) {
-		const uids = await db.getSortedSetRange(`chat:room:${roomId}:uids`, 0, 0);
-		const newOwner = uids[0] || 0;
-		await db.setObjectField(`chat:room:${roomId}`, 'owner', newOwner);
+		let nextOwner = await db.getSortedSetRange(`chat:room:${roomId}:owners`, 0, 0);
+		if (!nextOwner[0]) {
+			// no owners left grab next user
+			nextOwner = await db.getSortedSetRange(`chat:room:${roomId}:uids`, 0, 0);
+		}
+
+		const newOwner = nextOwner[0] || 0;
+		if (parseInt(newOwner, 10) > 0) {
+			await db.sortedSetAdd(`chat:room:${roomId}:owners`, Date.now(), newOwner);
+		}
 	}
 
 	Messaging.getAllUidsInRoomFromSet = async function (set) {

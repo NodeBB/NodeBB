@@ -169,19 +169,22 @@ chatsAPI.users = async (caller, data) => {
 	const start = data.hasOwnProperty('start') ? data.start : 0;
 	const stop = start + 39;
 	const io = require('../socket.io');
-	const [isOwner, isUserInRoom, users, onlineUids] = await Promise.all([
+	const [isOwner, isUserInRoom, users, isAdmin, onlineUids] = await Promise.all([
 		messaging.isRoomOwner(caller.uid, data.roomId),
 		messaging.isUserInRoom(caller.uid, data.roomId),
 		messaging.getUsersInRoomFromSet(
 			`chat:room:${data.roomId}:uids:online`, data.roomId, start, stop, true
 		),
+		user.isAdministrator(caller.uid),
 		io.getUidsInRoom(`chat_room_${data.roomId}`),
 	]);
 	if (!isUserInRoom) {
 		throw new Error('[[error:no-privileges]]');
 	}
 	users.forEach((user) => {
-		user.canKick = isOwner && (parseInt(user.uid, 10) !== parseInt(caller.uid, 10));
+		const isSelf = parseInt(user.uid, 10) === parseInt(caller.uid, 10);
+		user.canKick = isOwner && !isSelf;
+		user.canToggleOwner = (isAdmin || isOwner) && !isSelf;
 		user.online = parseInt(user.uid, 10) === parseInt(caller.uid, 10) || onlineUids.includes(String(user.uid));
 	});
 	return { users };

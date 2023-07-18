@@ -54,6 +54,7 @@
 	"chat.kick": "Kick",
 	"chat.show-ip": "Show IP",
 	"chat.owner": "Room Owner",
+	"chat.grant-rescind-ownership": "Grant/Rescind Ownership",
 
 	"chat.system.user-join": "%1 has joined the room",
 	"chat.system.user-leave": "%1 has left the room",
