@@ -111,7 +111,7 @@ define('forum/chats/manage', [
 				listEl.find('li').text(await translator.translate('[[error:invalid-data]]'));
 			}
 		}
-
+		listEl.find('[data-bs-toggle="tooltip"]').tooltip('dispose');
 		listEl.html(await app.parseAndTranslate('partials/chats/manage-room-users', data));
 		listEl.find('[data-bs-toggle="tooltip"]').tooltip();
 	}

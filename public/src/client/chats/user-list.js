@@ -44,6 +44,7 @@ define('forum/chats/user-list', ['api'], function (api) {
 	async function updateUserList(roomId, userListEl) {
 		if (ajaxify.data.template.chats && app.isFocused && userListEl.scrollTop() === 0 && !userListEl.hasClass('hidden')) {
 			const data = await api.get(`/chats/${roomId}/users`, { start: 0 });
+			userListEl.find('[data-bs-toggle="tooltip"]').tooltip('dispose');
 			userListEl.html(await app.parseAndTranslate('partials/chats/user-list', 'users', data));
 			userListEl.find('[data-bs-toggle="tooltip"]').tooltip();
 		}
