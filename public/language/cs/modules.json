@@ -54,6 +54,7 @@
     "chat.kick": "Vykopnout",
     "chat.show-ip": "Zobrazit IP",
     "chat.owner": "Majitel místnosti",
+    "chat.grant-rescind-ownership": "Grant/Rescind Ownership",
     "chat.system.user-join": "%1 se připojil k místnosti",
     "chat.system.user-leave": "%1 opustil místnost",
     "chat.system.room-rename": "%2 přejmenoval tuto místnost: %1",

@@ -54,6 +54,7 @@
     "chat.kick": "Wyrzuć",
     "chat.show-ip": "Pokaż IP",
     "chat.owner": "Właściciel pokoju",
+    "chat.grant-rescind-ownership": "Grant/Rescind Ownership",
     "chat.system.user-join": "%1 dołączył(a) do pokoju",
     "chat.system.user-leave": "%1 opuścił(a) pokój",
     "chat.system.room-rename": "%2 zmienił(a) nazwę pokoju: %1",

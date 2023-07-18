@@ -54,6 +54,7 @@
     "chat.kick": "Schop",
     "chat.show-ip": "Geef IP weer",
     "chat.owner": "Chatroom-eigenaar",
+    "chat.grant-rescind-ownership": "Grant/Rescind Ownership",
     "chat.system.user-join": "%1 neemt nu deel aan de chatroom",
     "chat.system.user-leave": "%1 heeft de chatroom verlaten",
     "chat.system.room-rename": "%2 heeft deze chatroom hernoemd: %1",

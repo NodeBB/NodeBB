@@ -54,6 +54,7 @@
     "chat.kick": "Exclure",
     "chat.show-ip": "Voir IP",
     "chat.owner": "Espace Admin",
+    "chat.grant-rescind-ownership": "Grant/Rescind Ownership",
     "chat.system.user-join": "%1 a rejoint la discussion",
     "chat.system.user-leave": "%1 a quitté la discussion",
     "chat.system.room-rename": "%2 a renommé la discussion: %1",
