@@ -43,7 +43,7 @@
     "wrote-ago": "编写<a href=\"%1\" class=\"timeago text-muted\" title=\"%2\"></a>",
     "wrote-on": "写于<a href=\"%1\" class=\"timeago text-muted\" title=\"%2\"></a>",
     "replied-to-user-ago": "回复了<a component=\"post/parent\" data-topid=\"%1\" href=\"%2\">%3</a> <a href=\"%4\" class=\"timeago text-muted\" title=\"%5\"></a>",
-    "replied-to-user-on": "在 <a hrf=\"%4\" class=\"timeago text-muted\" title=\"%5\"></a> 中回复了<a component=\"post/parent\" data-topid=\"%1\" href=\"%2\">%3</a>",
+    "replied-to-user-on": "replied to <a component=\"post/parent\" data-topid=\"%1\" href=\"%2\">%3</a> on <a href=\"%4\" class=\"timeago text-muted\" title=\"%5\"></a>",
     "user-locked-topic-ago": "%1 锁定了该主题 %2",
     "user-locked-topic-on": "%1 在 %2 中锁定了该主题",
     "user-unlocked-topic-ago": "%1 解锁了该主题 %2",

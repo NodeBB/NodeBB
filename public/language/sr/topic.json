@@ -43,7 +43,7 @@
     "wrote-ago": "написао <a href=\"%1\" class=\"timeago text-muted\" title=\"%2\"></a>",
     "wrote-on": "написао <a href=\"%1\" class=\"timeago text-muted\" title=\"%2\"></a>",
     "replied-to-user-ago": "одговорио кориснику <a component=\"post/parent\" data-topid=\"%1\" href=\"%2\">%3</a> <a href=\"%4\" class=\"timeago text-muted\" title=\"%5\"></a>",
-    "replied-to-user-on": "одговорио кориснику <a component=\"post/parent\" data-topid=\"%1\" href=\"%2\">%3</a>  <a hrf=\"%4\" class=\"timeago text-muted\" title=\"%5\"></a>",
+    "replied-to-user-on": "replied to <a component=\"post/parent\" data-topid=\"%1\" href=\"%2\">%3</a> on <a href=\"%4\" class=\"timeago text-muted\" title=\"%5\"></a>",
     "user-locked-topic-ago": "%1 је закључао ову тему %2",
     "user-locked-topic-on": "%1 је закључао ову тему %2",
     "user-unlocked-topic-ago": "%1 је откључао ову тему %2",

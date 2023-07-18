@@ -43,7 +43,7 @@
     "wrote-ago": "écrit <a href=\"%1\" class=\"timeago text-muted\" title=\"%2\"></a>",
     "wrote-on": "a écrit sur <a href=\"%1\" class=\"timeago text-muted\" title=\"%2\"></a>",
     "replied-to-user-ago": "a répondu à <a component=\"post/parent\" data-topid=\"%1\" href=\"%2\">%3</a> <a href=\"%4\" class=\"timeago text-muted\" title=\"%5\"></a>",
-    "replied-to-user-on": "a répondu à <a component=\"post/parent\" data-topid=\"%1\" href=\"%2\">%3</a> sur <a hrf=\"%4\" class=\"timeago text-muted\" title=\"%5\"></a>",
+    "replied-to-user-on": "replied to <a component=\"post/parent\" data-topid=\"%1\" href=\"%2\">%3</a> on <a href=\"%4\" class=\"timeago text-muted\" title=\"%5\"></a>",
     "user-locked-topic-ago": "%1 a verrouillé ce sujet %2",
     "user-locked-topic-on": "%1 a verrouillé ce sujet sur %2",
     "user-unlocked-topic-ago": "%1 a déverrouillé ce sujet %2",
