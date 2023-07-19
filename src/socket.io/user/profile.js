@@ -64,6 +64,10 @@ module.exports = function (SocketUser) {
 	};
 
 	async function doExport(socket, data, type) {
+		const validTypes = ['profile', 'posts', 'uploads'];
+		if (!validTypes.includes(type)) {
+			throw new Error('[[error:invalid-data]]');
+		}
 		if (!socket.uid) {
 			throw new Error('[[error:invalid-uid]]');
 		}
