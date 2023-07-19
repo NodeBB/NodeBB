@@ -95,7 +95,7 @@ helpers.logoutUser = function (jar, callback) {
 	});
 };
 
-helpers.connectSocketIO = function (res, callback) {
+helpers.connectSocketIO = function (res, csrf_token, callback) {
 	const io = require('socket.io-client');
 	let cookies = res.headers['set-cookie'];
 	cookies = cookies.filter(c => /express.sid=[^;]+;/.test(c));
@@ -105,6 +105,9 @@ helpers.connectSocketIO = function (res, callback) {
 		extraHeaders: {
 			Origin: nconf.get('url'),
 			Cookie: cookie,
+		},
+		query: {
+			_csrf: csrf_token,
 		},
 	});
 

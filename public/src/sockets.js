@@ -12,6 +12,9 @@ socket = window.socket;
 		reconnectionDelay: config.reconnectionDelay,
 		transports: config.socketioTransports,
 		path: config.relative_path + '/socket.io',
+		query: {
+			_csrf: config.csrf_token,
+		},
 	};
 
 	socket = io(config.websocketAddress, ioParams);

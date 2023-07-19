@@ -34,13 +34,25 @@ Sockets.init = async function (server) {
 		}
 	}
 
-	io.use(authorize);
-
 	io.on('connection', onConnection);
 
 	const opts = {
 		transports: nconf.get('socket.io:transports') || ['polling', 'websocket'],
 		cookie: false,
+		allowRequest: (req, callback) => {
+			authorize(req, (err) => {
+				if (err) {
+					return callback(err);
+				}
+				const csrf = require('../middleware/csrf');
+				const isValid = csrf.isRequestValid({
+					session: req.session || {},
+					query: req._query,
+					headers: req.headers,
+				});
+				callback(null, isValid);
+			});
+		},
 	};
 	/*
 	 * Restrict socket.io listener to cookie domain. If none is set, infer based on url.
@@ -62,7 +74,11 @@ Sockets.init = async function (server) {
 };
 
 function onConnection(socket) {
-	socket.ip = (socket.request.headers['x-forwarded-for'] || socket.request.connection.remoteAddress || '').split(',')[0];
+	socket.uid = socket.request.uid;
+	socket.ip = (
+		socket.request.headers['x-forwarded-for'] ||
+		socket.request.connection.remoteAddress || ''
+	).split(',')[0];
 	socket.request.ip = socket.ip;
 	logger.io_one(socket, socket.uid);
 
@@ -225,9 +241,7 @@ async function validateSession(socket, errorMsg) {
 
 const cookieParserAsync = util.promisify((req, callback) => cookieParser(req, {}, err => callback(err)));
 
-async function authorize(socket, callback) {
-	const { request } = socket;
-
+async function authorize(request, callback) {
 	if (!request) {
 		return callback(new Error('[[error:not-authorized]]'));
 	}
@@ -240,15 +254,13 @@ async function authorize(socket, callback) {
 	});
 
 	const sessionData = await getSessionAsync(sessionId);
-
+	request.session = sessionData;
+	let uid = 0;
 	if (sessionData && sessionData.passport && sessionData.passport.user) {
-		request.session = sessionData;
-		socket.uid = parseInt(sessionData.passport.user, 10);
-	} else {
-		socket.uid = 0;
+		uid = parseInt(sessionData.passport.user, 10);
 	}
-	request.uid = socket.uid;
-	callback();
+	request.uid = uid;
+	callback(null, uid);
 }
 
 Sockets.in = function (room) {
