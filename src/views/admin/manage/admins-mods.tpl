@@ -55,7 +55,7 @@
 			</div>
 		</div>
 		<div class="mb-2">
-		<!-- IMPORT partials/breadcrumbs.tpl -->
+		<!-- IMPORT admin/partials/breadcrumbs.tpl -->
 		</div>
 		{{{ if !categoryMods.length }}}
 		<p class="alert alert-info">[[admin/manage/admins-mods:no-sub-categories]]</p>

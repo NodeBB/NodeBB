@@ -15,7 +15,7 @@
 
 	<div class="card">
 		<div class="card-body">
-			<pre style="height: 600px;">{data}</pre>
+			<pre class="text-break" style="height: 600px; white-space: break-spaces;">{data}</pre>
 		</div>
 	</div>
 </div>

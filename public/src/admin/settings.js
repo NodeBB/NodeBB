@@ -13,13 +13,14 @@ define('admin/settings', [
 		const mainHader = $('[component="settings/main/header"]');
 
 		if (headers.length > 1 && tocList.length) {
-			headers.each(function () {
-				const header = $(this).text();
-				const anchor = header.toLowerCase()
-					.replace(/ /g, '-')
-					.replace(/&/g, '-')
-					.trim();
-				$(this).parent().attr('id', anchor);
+			headers.each(function (i) {
+				const $this = $(this);
+				const header = $this.text();
+				const anchor = $this.parent().attr('id') || `section${i + 1}`;
+				// for elements that don't have id use section{index}
+				if (anchor.startsWith('section')) {
+					$this.parent().attr('id', anchor);
+				}
 				tocList.append(`<a class="btn-ghost-sm text-xs justify-content-start text-decoration-none" href="#${anchor}">${header}</a>`);
 			});
 			const offset = mainHader.outerHeight(true);

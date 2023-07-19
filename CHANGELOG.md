@@ -1,3 +1,29 @@
+#### v3.2.2 (2023-07-12)
+
+##### Chores
+
+*  up themes (f1170b18)
+*  up spam-be-gone (eed34d04)
+*  remove log (509faa5e)
+*  incrementing version number - v3.2.1 (20145074)
+*  update changelog for v3.2.1 (c7f8cee9)
+*  incrementing version number - v3.2.0 (9ecac38e)
+*  incrementing version number - v3.1.7 (0b4e81ab)
+*  incrementing version number - v3.1.6 (b3a3b130)
+*  incrementing version number - v3.1.5 (ec19343a)
+*  incrementing version number - v3.1.4 (2452783c)
+*  incrementing version number - v3.1.3 (3b4e9d3f)
+*  incrementing version number - v3.1.2 (40fa3489)
+*  incrementing version number - v3.1.1 (40250733)
+*  incrementing version number - v3.1.0 (0cb386bd)
+*  incrementing version number - v3.0.1 (26f6ea49)
+*  incrementing version number - v3.0.0 (224e08cd)
+
+##### Bug Fixes
+
+*  #11787 (6ae0df4f)
+*  #11786 fix selector for upgradable plugins (bf114c11)
+
 #### v3.2.1 (2023-07-05)
 
 ##### Chores
