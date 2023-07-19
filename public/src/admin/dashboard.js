@@ -436,12 +436,9 @@ define('admin/dashboard', [
 			} else {
 				graphs.traffic.data.xLabels = utils.getHoursArray();
 
-				$('#pageViewsThirty').html(data.summary.thirty);
-				$('#pageViewsSeven').html(data.summary.seven);
-				$('#pageViewsPastDay').html(data.pastDay);
-				utils.addCommasToNumbers($('#pageViewsThirty'));
-				utils.addCommasToNumbers($('#pageViewsSeven'));
-				utils.addCommasToNumbers($('#pageViewsPastDay'));
+				$('#pageViewsThirty').html(helpers.formattedNumber(data.summary.thirty));
+				$('#pageViewsSeven').html(helpers.formattedNumber(data.summary.seven));
+				$('#pageViewsPastDay').html(helpers.formattedNumber(data.pastDay));
 			}
 
 			graphs.traffic.data.datasets[0].data = data.pageviews;

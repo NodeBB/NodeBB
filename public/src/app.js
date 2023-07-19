@@ -253,8 +253,6 @@ if (document.readyState === 'loading') {
 		highlightNavigationLink();
 		overrides.overrideTimeagoCutoff();
 		$('.timeago').timeago();
-		utils.makeNumbersHumanReadable($('.human-readable-number'));
-		utils.addCommasToNumbers($('.formatted-number'));
 		app.createUserTooltips($('#content'));
 		app.createStatusTooltips();
 	};
