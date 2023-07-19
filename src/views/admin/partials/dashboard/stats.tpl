@@ -27,19 +27,19 @@
 						{{{ end }}}
 					</strong>
 				</td>
-				<td class="text-end formatted-number">{./yesterday}</td>
-				<td class="text-end formatted-number">{./today}</td>
+				<td class="text-end">{formattedNumber(./yesterday)}</td>
+				<td class="text-end">{formattedNumber(./today)}</td>
 				<td class="{./dayTextClass}"><small>{./dayIncrease}%</small></td>
 
-				<td class="text-end formatted-number">{./lastweek}</td>
-				<td class="text-end formatted-number">{./thisweek}</td>
+				<td class="text-end">{formattedNumber(./lastweek)}</td>
+				<td class="text-end">{formattedNumber(./thisweek)}</td>
 				<td class="{./weekTextClass}"><small>{./weekIncrease}%</small></td>
 
-				<td class="text-end formatted-number">{./lastmonth}</td>
-				<td class="text-end formatted-number">{./thismonth}</td>
+				<td class="text-end">{formattedNumber(./lastmonth)}</td>
+				<td class="text-end">{formattedNumber(./thismonth)}</td>
 				<td class="{./monthTextClass}"><small>{./monthIncrease}%</small></td>
 
-				<td class="text-end formatted-number">{./alltime}</td>
+				<td class="text-end">{formattedNumber(./alltime)}</td>
 			</tr>
 			{{{ end }}}
 		</tbody>

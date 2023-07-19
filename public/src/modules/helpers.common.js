@@ -29,7 +29,8 @@ module.exports = function (utils, Benchpress, relative_path) {
 		generateWrote,
 		isoTimeToLocaleString,
 		shouldHideReplyContainer,
-
+		humanReadableNumber,
+		formattedNumber,
 		register,
 		__escape: identity,
 	};
@@ -350,6 +351,14 @@ module.exports = function (utils, Benchpress, relative_path) {
 		}
 
 		return false;
+	}
+
+	function humanReadableNumber(number, toFixed = 1) {
+		return utils.makeNumberHumanReadable(number, toFixed);
+	}
+
+	function formattedNumber(number) {
+		return utils.addCommas(number);
 	}
 
 	function register() {

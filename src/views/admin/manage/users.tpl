@@ -151,8 +151,8 @@
 								</div>
 								{{{ end }}}
 							</td>
-							<td class="text-end formatted-number">{users.postcount}</td>
-							<td class="text-end formatted-number">{users.reputation}</td>
+							<td class="text-end">{formattedNumber(users.postcount)}</td>
+							<td class="text-end">{formattedNumber(users.reputation)}</td>
 							<td class="text-end">{{{ if users.flags }}}{users.flags}{{{ else }}}0{{{ end }}}</td>
 							<td><span class="timeago" title="{users.joindateISO}"></span></td>
 							<td><span class="timeago" title="{users.lastonlineISO}"></span></td>

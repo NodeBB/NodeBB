@@ -2,8 +2,8 @@
 
 
 define('admin/dashboard', [
-	'Chart', 'translator', 'benchpress', 'bootbox', 'alerts',
-], function (Chart, translator, Benchpress, bootbox, alerts) {
+	'Chart', 'translator', 'benchpress', 'bootbox', 'alerts', 'helpers',
+], function (Chart, translator, Benchpress, bootbox, alerts, helpers) {
 	const Admin = {};
 	const intervals = {
 		rooms: false,
@@ -63,20 +63,20 @@ define('admin/dashboard', [
 		graphData.rooms = data;
 
 		const html = '<div class="text-center float-start">' +
-						'<span class="formatted-number">' + data.onlineRegisteredCount + '</span>' +
-						'<div class="stat text-nowrap">[[admin/dashboard:active-users.users]]</div>' +
+						'<span class="fs-5">' + helpers.formattedNumber(data.onlineRegisteredCount) + '</span>' +
+						'<div class="stat text-nowrap text-uppercase fw-semibold text-xs text-muted">[[admin/dashboard:active-users.users]]</div>' +
 					'</div>' +
 					'<div class="text-center float-start">' +
-						'<span class="formatted-number">' + data.onlineGuestCount + '</span>' +
-						'<div class="stat text-nowrap">[[admin/dashboard:active-users.guests]]</div>' +
+						'<span class="fs-5">' + helpers.formattedNumber(data.onlineGuestCount) + '</span>' +
+						'<div class="stat text-nowrap text-uppercase fw-semibold text-xs text-muted">[[admin/dashboard:active-users.guests]]</div>' +
 					'</div>' +
 					'<div class="text-center float-start">' +
-						'<span class="formatted-number">' + (data.onlineRegisteredCount + data.onlineGuestCount) + '</span>' +
-						'<div class="stat text-nowrap">[[admin/dashboard:active-users.total]]</div>' +
+						'<span class="fs-5">' + helpers.formattedNumber(data.onlineRegisteredCount + data.onlineGuestCount) + '</span>' +
+						'<div class="stat text-nowrap text-uppercase fw-semibold text-xs text-muted">[[admin/dashboard:active-users.total]]</div>' +
 					'</div>' +
 					'<div class="text-center float-start">' +
-						'<span class="formatted-number">' + data.socketCount + '</span>' +
-						'<div class="stat text-nowrap">[[admin/dashboard:active-users.connections]]</div>' +
+						'<span class="fs-5">' + helpers.formattedNumber(data.socketCount) + '</span>' +
+						'<div class="stat text-nowrap text-uppercase fw-semibold text-xs text-muted">[[admin/dashboard:active-users.connections]]</div>' +
 					'</div>';
 
 		updateRegisteredGraph(data.onlineRegisteredCount, data.onlineGuestCount);

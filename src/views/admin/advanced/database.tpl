@@ -13,10 +13,10 @@
 					<div class="database-info">
 						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:mongo.version]]</span> <span class="text-end">{mongo.version}</span></div>
 						<hr/>
-						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:uptime-seconds]]</span> <span class="text-end formatted-number">{mongo.uptime}</span></div>
+						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:uptime-seconds]]</span> <span class="text-end">{formattedNumber(mongo.uptime)}</span></div>
 						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:mongo.storage-engine]]</span> <span class="text-end">{mongo.storageEngine}</span></div>
-						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:mongo.collections]]</span> <span class="text-end formatted-number">{mongo.collections}</span></div>
-						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:mongo.objects]]</span> <span class="text-end formatted-number">{mongo.objects}</span></div>
+						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:mongo.collections]]</span> <span class="text-end">{formattedNumber(mongo.collections)}</span></div>
+						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:mongo.objects]]</span> <span class="text-end">{formattedNumber(mongo.objects)}</span></div>
 						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:mongo.avg-object-size]]</span> <span class="text-end">[[admin/advanced/database:x-b, {mongo.avgObjSize}]]</span></div>
 						<hr/>
 						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:mongo.data-size]]</span> <span class="text-end">[[admin/advanced/database:x-gb, {mongo.dataSize}]]</span></div>
@@ -47,23 +47,23 @@
 					<div class="database-info">
 						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:redis.version]]</span> <span class="text-end">{redis.redis_version}</span></div>
 						<hr/>
-						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:uptime-seconds]]</span> <span class="text-end formatted-number">{redis.uptime_in_seconds}</span></div>
+						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:uptime-seconds]]</span> <span class="text-end">{formattedNumber(redis.uptime_in_seconds)}</span></div>
 						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:uptime-days]]</span> <span class="text-end">{redis.uptime_in_days}</span></div>
 						<hr/>
-						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:redis.keys]]</span> <span class="text-end formatted-number">{redis.keys}</span></div>
-						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:redis.expires]]</span> <span class="text-end formatted-number">{redis.expires}</span></div>
-						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:redis.avg-ttl]]</span> <span class="text-end formatted-number">{redis.avg_ttl}</span></div>
-						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:redis.connected-clients]]</span> <span class="text-end">{redis.connected_clients}</span></div>
-						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:redis.connected-slaves]]</span> <span class="text-end">{redis.connected_slaves}</span></div>
+						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:redis.keys]]</span> <span class="text-end">{formattedNumber(redis.keys)}</span></div>
+						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:redis.expires]]</span> <span class="text-end">{formattedNumber(redis.expires)}</span></div>
+						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:redis.avg-ttl]]</span> <span class="text-end">{formattedNumber(redis.avg_ttl)}</span></div>
+						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:redis.connected-clients]]</span> <span class="text-end">{formattedNumber(redis.connected_clients)}</span></div>
+						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:redis.connected-slaves]]</span> <span class="text-end">{formattedNumber(redis.connected_slaves)}</span></div>
 						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:redis.blocked-clients]]</span> <span class="text-end">{redis.blocked_clients}</span></div>
 						<hr/>
 
 						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:redis.used-memory]]</span> <span class="text-end">[[admin/advanced/database:x-gb, {redis.used_memory_human}]]</span></div>
 						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:redis.memory-frag-ratio]]</span> <span class="text-end">{redis.mem_fragmentation_ratio}</span></div>
 						<hr/>
-						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:redis.total-connections-recieved]]</span> <span class="text-end formatted-number">{redis.total_connections_received}</span></div>
-						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:redis.total-commands-processed]]</span> <span class="text-end formatted-number">{redis.total_commands_processed}</span></div>
-						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:redis.iops]]</span> <span class="text-end formatted-number">{redis.instantaneous_ops_per_sec}</span></div>
+						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:redis.total-connections-recieved]]</span> <span class="text-end">{formattedNumber(redis.total_connections_received)}</span></div>
+						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:redis.total-commands-processed]]</span> <span class="text-end">{formattedNumber(redis.total_commands_processed)}</span></div>
+						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:redis.iops]]</span> <span class="text-end">{formattedNumber(redis.instantaneous_ops_per_sec)}</span></div>
 
 						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:redis.iinput]]</span> <span class="text-end">[[admin/advanced/database:x-mb, {redis.instantaneous_input}]]</span></div>
 						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:redis.ioutput]]</span> <span class="text-end">[[admin/advanced/database:x-mb, {redis.instantaneous_output}]]</span></div>
@@ -71,8 +71,8 @@
 						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:redis.total-output]]</span> <span class="text-end">[[admin/advanced/database:x-gb, {redis.total_net_output}]]</span></div>
 
 						<hr/>
-						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:redis.keyspace-hits]]</span> <span class="text-end formatted-number">{redis.keyspace_hits}</span></div>
-						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:redis.keyspace-misses]]</span> <span class="text-end formatted-number">{redis.keyspace_misses}</span></div>
+						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:redis.keyspace-hits]]</span> <span class="text-end">{formattedNumber(redis.keyspace_hits)}</span></div>
+						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:redis.keyspace-misses]]</span> <span class="text-end">{formattedNumber(redis.keyspace_misses)}</span></div>
 					</div>
 				</div>
 			</div>
@@ -87,7 +87,7 @@
 					<div class="database-info">
 						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:postgres.version]]</span> <span class="text-end">{postgres.version}</span></div>
 						<hr/>
-						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:uptime-seconds]]</span> <span class="text-end formatted-number">{postgres.uptime}</span></div>
+						<div class="d-flex justify-content-between"><span>[[admin/advanced/database:uptime-seconds]]</span> <span class="text-end">{formattedNumber(postgres.uptime)}</span></div>
 					</div>
 				</div>
 			</div>
