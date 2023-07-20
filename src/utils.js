@@ -1,6 +1,8 @@
 'use strict';
 
 const crypto = require('crypto');
+const nconf = require('nconf');
+const path = require('node:path');
 
 process.profile = function (operation, start) {
 	console.log('%s took %d milliseconds', operation, process.elapsedTimeSince(start));
@@ -37,5 +39,16 @@ utils.getSass = function () {
 		return require('sass');
 	}
 };
+
+utils.getFontawesomePath = function () {
+	let packageName = '@fortawesome/fontawesome-free';
+	if (nconf.get('fontawesome:pro') === true) {
+		packageName = '@fortawesome/fontawesome-pro';
+	}
+	const pathToMainFile = require.resolve(packageName);
+	// main file will be in `js/fontawesome.js` - we need to go up two directories to get to the root of the package
+	const fontawesomePath = path.dirname(path.dirname(pathToMainFile));
+	return fontawesomePath;
+}
 
 module.exports = utils;

@@ -1,5 +1,9 @@
-@import "_variables.scss";
+$fa-font-path: "./vendor/fontawesome/webfonts";
+@import "fontawesome";
+@import "v4-shims";
 
+
+// NodeBB backwards compatibility shims
 @font-face {
     font-family: 'FontAwesome';
     font-style: normal;
