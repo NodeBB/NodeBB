@@ -19,6 +19,9 @@ const asset_base_url = nconf.get('asset_base_url');
 const socketioTransports = nconf.get('socket.io:transports') || ['polling', 'websocket'];
 const socketioOrigins = nconf.get('socket.io:origins');
 const websocketAddress = nconf.get('socket.io:address') || '';
+const fontawesome_pro = nconf.get('fontawesome:pro') || false;
+const fontawesome_styles = nconf.get('fontawesome:styles') || ['solid', 'regular', 'brands'];
+const fontawesome_version = require('../utils').getFontawesomeVersion();
 
 apiController.loadConfig = async function (req) {
 	const config = {
@@ -86,6 +89,11 @@ apiController.loadConfig = async function (req) {
 		iconBackgrounds: await user.getIconBackgrounds(req.uid),
 		emailPrompt: meta.config.emailPrompt,
 		useragent: req.useragent,
+		fontawesome: {
+			pro: fontawesome_pro,
+			styles: fontawesome_styles,
+			version: fontawesome_version,
+		},
 	};
 
 	let settings = config;

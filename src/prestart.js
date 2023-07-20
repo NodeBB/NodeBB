@@ -60,8 +60,8 @@ function loadConfig(configFile) {
 		jobsDisabled: false,
 		fontawesome: {
 			pro: false,
-			styles: ["solid", "brands", "regular"]
-		}
+			styles: ['solid', 'brands', 'regular'],
+		},
 	});
 
 	// Explicitly cast as Bool, loader.js passes in isCluster as string 'true'/'false'

@@ -49,6 +49,12 @@ utils.getFontawesomePath = function () {
 	// main file will be in `js/fontawesome.js` - we need to go up two directories to get to the root of the package
 	const fontawesomePath = path.dirname(path.dirname(pathToMainFile));
 	return fontawesomePath;
-}
+};
+
+utils.getFontawesomeVersion = function () {
+	const fontawesomePath = utils.getFontawesomePath();
+	const packageJson = require(path.join(fontawesomePath, 'package.json'));
+	return packageJson.version;
+};
 
 module.exports = utils;
