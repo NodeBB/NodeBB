@@ -94,17 +94,14 @@
 								{{{ each privileges.users }}}
 								<tr data-uid="{privileges.users.uid}"{{{ if privileges.users.banned }}} data-banned{{{ end }}}>
 									<td>
-										{{{ if ./picture }}}
-										<img class="avatar avatar-sm" src="{privileges.users.picture}" title="{privileges.users.username}" alt="" />
-										{{{ else }}}
-										<div class="avatar avatar-sm" style="background-color: {../icon:bgColor};">{../icon:text}</div>
-										{{{ end }}}
-									</td>
-									<td>
+										{buildAvatar(privileges.users, "24px", true)}
 										{{{ if privileges.users.banned }}}
 											<i class="ban fa fa-gavel text-danger" title="[[admin/manage/categories:privileges.banned-user-inheritance]]"></i>
 										{{{ end }}}
 										{privileges.users.username}
+									</td>
+									<td>
+										<!-- need this empty -->
 									</td>
 									<td class="text-center"><input autocomplete="off" type="checkbox" class="checkbox-helper"></td>
 									{function.spawnPrivilegeStates, privileges.users.username, ../privileges}
