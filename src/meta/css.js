@@ -256,13 +256,12 @@ CSS.getSkinSwitcherOptions = async function (uid) {
 		});
 		return skins;
 	}
-
-	return {
+	return await plugins.hooks.fire('filter:meta.css.getSkinSwitcherOptions', {
 		default: defaultSkins,
 		custom: customSkins.map(s => ({ ...s, selected: s.value === userSettings.bootswatchSkin })),
 		light: parseSkins(lightSkins),
 		dark: parseSkins(darkSkins),
-	};
+	});
 };
 
 CSS.getCustomSkins = async function (opts = {}) {
