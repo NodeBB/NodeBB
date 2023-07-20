@@ -134,7 +134,7 @@ function boostrapImport(themeData) {
 
 
 function getFontawesomeStyle() {
-	const styles = nconf.get('fontawesome:styles');
+	const styles = nconf.get('fontawesome:styles') || ['solid', 'brands', 'regular'];
 	if (!Array.isArray(styles)) {
 		return `@import "fontawesome/style-${styles}";`;
 	}
