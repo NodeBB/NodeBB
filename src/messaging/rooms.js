@@ -56,7 +56,11 @@ module.exports = function (Messaging) {
 
 				if (!fields.length || fields.includes('notificationSetting')) {
 					data.notificationSetting = data.notificationSetting ||
-						(data.public ? Messaging.notificationSettings.ATMENTION : Messaging.notificationSettings.ALLMESSAGES);
+						(
+							data.public ?
+								Messaging.notificationSettings.ATMENTION :
+								Messaging.notificationSettings.ALLMESSAGES
+						);
 				}
 
 				if (data.hasOwnProperty('groups') || !fields.length || fields.includes('groups')) {
@@ -455,7 +459,7 @@ module.exports = function (Messaging) {
 		}
 
 		async function getNotificationOptions() {
-			const userSetting = await db.getObjectField(`chat:room:${roomId}:notification:setting`, uid);
+			const userSetting = await db.getObjectField(`chat:room:${roomId}:notification:settings`, uid);
 			const roomDefault = room.notificationSetting;
 			const currentSetting = userSetting || roomDefault;
 			const labels = {
