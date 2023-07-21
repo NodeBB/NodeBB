@@ -23,6 +23,7 @@ exports.processSortedSet = async function (setKey, process, options) {
 	}
 
 	options.batch = options.batch || DEFAULT_BATCH_SIZE;
+	options.reverse = options.reverse || false;
 
 	// use the fast path if possible
 	if (db.processSortedSet && typeof options.doneIf !== 'function' && !utils.isNumber(options.alwaysStartAt)) {
@@ -38,10 +39,10 @@ exports.processSortedSet = async function (setKey, process, options) {
 	if (process && process.constructor && process.constructor.name !== 'AsyncFunction') {
 		process = util.promisify(process);
 	}
-
+	const method = options.reverse ? 'getSortedSetRevRange' : 'getSortedSetRange';
 	while (true) {
 		/* eslint-disable no-await-in-loop */
-		const ids = await db[`getSortedSetRange${options.withScores ? 'WithScores' : ''}`](setKey, start, stop);
+		const ids = await db[`${method}${options.withScores ? 'WithScores' : ''}`](setKey, start, stop);
 		if (!ids.length || options.doneIf(start, stop, ids)) {
 			return;
 		}
