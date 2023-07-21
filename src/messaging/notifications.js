@@ -101,6 +101,7 @@ module.exports = function (Messaging) {
 			const hasRead = await Messaging.hasRead(uids, roomId);
 			uidsToNotify.push(...uids.filter((uid, index) => !hasRead[index]));
 		}, {
+			reverse: true,
 			batch: 500,
 			interval: 100,
 		});
