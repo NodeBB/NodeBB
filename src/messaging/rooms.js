@@ -155,10 +155,14 @@ module.exports = function (Messaging) {
 				...roomIds.map(id => `chat:room:${id}:uids`),
 				...roomIds.map(id => `chat:room:${id}:owners`),
 				...roomIds.map(id => `chat:room:${id}:uids:online`),
+				...roomIds.map(id => `chat:room:${id}:notification:settings`),
 			]),
-			db.sortedSetRemove('chat:rooms', roomIds),
-			db.sortedSetRemove('chat:rooms:public', roomIds),
-			db.sortedSetRemove('chat:rooms:public:order', roomIds),
+			db.sortedSetRemove([
+				'chat:rooms',
+				'chat:rooms:public',
+				'chat:rooms:public:order',
+				'chat:rooms:public:lastpost',
+			], roomIds),
 		]);
 		cache.del([
 			'chat:rooms:public:all',
