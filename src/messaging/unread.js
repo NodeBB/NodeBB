@@ -33,6 +33,25 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.hasRead = async (uids, roomId) => {
+		if (!uids.length) {
+			return [];
+		}
+		const roomData = await Messaging.getRoomData(roomId);
+		if (!roomData) {
+			return uids.map(() => false);
+		}
+		if (roomData.public) {
+			const [userTimestamps, mids] = await Promise.all([
+				db.getObjectsFields(uids.map(uid => `uid:${uid}:chat:rooms:read`), [roomId]),
+				db.getSortedSetRevRangeWithScores(`chat:room:${roomId}:mids`, 0, 0),
+			]);
+			const lastMsgTimestamp = mids[0] ? mids[0].score : 0;
+			return uids.map(
+				(uid, index) => !userTimestamps[index] ||
+					!userTimestamps[index][roomId] ||
+					parseInt(userTimestamps[index][roomId], 10) > lastMsgTimestamp
+			);
+		}
 		const isMembers = await db.isMemberOfSortedSets(
 			uids.map(uid => `uid:${uid}:chat:rooms:unread`),
 			roomId

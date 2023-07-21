@@ -1,10 +1,11 @@
 <div class="mb-3">
 	<div class="mb-3">
-		<label class="form-label">[[modules:chat.room-name-optional]]</label>
-		<input component="chat/room/name" class="form-control"/>
+		<label class="form-label text-nowrap">[[modules:chat.room-name-optional]]</label>
+		<input component="chat/room/name" class="form-control" />
 	</div>
+
 	<div class="mb-3">
-		<div class="dropdown mb-3">
+		<div class="dropdown">
 			<label class="form-label">[[modules:chat.add-user]]</label>
 			<input component="chat/search" class="form-control" type="text" placeholder="[[global:user-search-prompt]]" data-bs-toggle="dropdown"/>
 			<ul component="chat/search/list" class="dropdown-menu p-1 overflow-auto" style="max-height: 400px;">
@@ -15,7 +16,7 @@
 				{{{ end }}}
 			</ul>
 		</div>
-		<ul component="chat/room/users" class="list-group">
+		<ul component="chat/room/users" class="list-group mt-2">
 			{{{ each selectedUsers }}}
 			<li class="list-group-item d-flex gap-2 align-items-center justify-content-between" component="chat/user" data-uid="{./uid}">
 				<a href="#" class="text-reset text-decoration-none">{buildAvatar(@value, "24px", true)} {./username}</a>

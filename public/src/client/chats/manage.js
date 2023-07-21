@@ -23,7 +23,7 @@ define('forum/chats/manage', [
 			const html = await app.parseAndTranslate('modals/manage-room', {
 				groups,
 				user: app.user,
-				group: ajaxify.data,
+				room: ajaxify.data,
 			});
 			modal = bootbox.dialog({
 				title: '[[modules:chat.manage-room]]',
@@ -67,14 +67,28 @@ define('forum/chats/manage', [
 				});
 			});
 
-			modal.find('[component="chat/manage/save/groups"]').on('click', (ev) => {
-				const btn = $(ev.target);
+			modal.find('[component="chat/manage/save"]').on('click', () => {
+				const notifSettingEl = modal.find('[component="chat/room/notification/setting"]');
 				api.put(`/chats/${roomId}`, {
 					groups: modal.find('[component="chat/room/groups"]').val(),
+					notificationSetting: notifSettingEl.val(),
 				}).then((payload) => {
 					ajaxify.data.groups = payload.groups;
-					btn.addClass('btn-success');
-					setTimeout(() => btn.removeClass('btn-success'), 1000);
+					ajaxify.data.notificationSetting = payload.notificationSetting;
+					const roomDefaultOption = payload.notificationOptions[0];
+					$('[component="chat/notification/setting"] [data-icon]').first().attr(
+						'data-icon', roomDefaultOption.icon
+					);
+					$('[component="chat/notification/setting/sub-label"]').translateText(
+						roomDefaultOption.subLabel
+					);
+					if (roomDefaultOption.selected) {
+						$('[component="chat/notification/setting/icon"]').attr(
+							'class', `fa ${roomDefaultOption.icon}`
+						);
+					}
+
+					modal.modal('hide');
 				}).catch(alerts.error);
 			});
 		});
