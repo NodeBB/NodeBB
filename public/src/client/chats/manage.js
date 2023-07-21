@@ -67,7 +67,7 @@ define('forum/chats/manage', [
 				});
 			});
 
-			modal.find('[component="chat/manage/save"]').on('click', (ev) => {
+			modal.find('[component="chat/manage/save"]').on('click', () => {
 				const notifSettingEl = modal.find('[component="chat/room/notification/setting"]');
 				api.put(`/chats/${roomId}`, {
 					groups: modal.find('[component="chat/room/groups"]').val(),

@@ -22,6 +22,8 @@ RoomObject:
     timestamp:
       type: number
       description: Timestamp of when room was created
+    notificationSetting:
+      type: number
 MessageObject:
   type: object
   properties:
