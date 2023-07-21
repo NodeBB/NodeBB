@@ -200,4 +200,17 @@ SocketModules.chats.toggleOwner = async (socket, data) => {
 	await Messaging.toggleOwner(data.uid, data.roomId);
 };
 
+SocketModules.chats.setNotificationSetting = async (socket, data) => {
+	if (!data || !utils.isNumber(data.value) || !data.roomId) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
+	const inRoom = await Messaging.isUserInRoom(socket.uid, data.roomId);
+	if (!inRoom) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	await Messaging.setUserNotificationSetting(socket.uid, data.roomId, data.value);
+};
+
 require('../promisify')(SocketModules);

@@ -1,10 +1,22 @@
 <div class="mb-3">
-	<div class="mb-3">
-		<label class="form-label">[[modules:chat.room-name-optional]]</label>
-		<input component="chat/room/name" class="form-control"/>
+	<div class="mb-3 d-flex gap-2 align-items-center justify-content-between">
+		<label class="form-label text-nowrap mb-0">[[modules:chat.room-name-optional]]</label>
+		<input component="chat/room/name" class="form-control" style="width: 200px;"/>
 	</div>
+
+	{{{ if user.isAdmin }}}
+	<div class="d-flex gap-2 mb-3 align-items-center justify-content-between">
+		<label class="form-label text-nowrap mb-0">[[modules:chat.default-notification-setting]]</label>
+		<select component="chat/room/notification/setting" class="form-select" style="width: 200px;">
+			<option value="0">[[modules:chat.notification-setting-none]]</option>
+			<option value="1">[[modules:chat.notification-setting-at-mention-only]]</option>
+			<option value="2" selected>[[modules:chat.notification-setting-all-messages]]</option>
+		</select>
+	</div>
+	{{{ end }}}
+
 	<div class="mb-3">
-		<div class="dropdown mb-3">
+		<div class="dropdown">
 			<label class="form-label">[[modules:chat.add-user]]</label>
 			<input component="chat/search" class="form-control" type="text" placeholder="[[global:user-search-prompt]]" data-bs-toggle="dropdown"/>
 			<ul component="chat/search/list" class="dropdown-menu p-1 overflow-auto" style="max-height: 400px;">
@@ -15,7 +27,7 @@
 				{{{ end }}}
 			</ul>
 		</div>
-		<ul component="chat/room/users" class="list-group">
+		<ul component="chat/room/users" class="list-group mt-2">
 			{{{ each selectedUsers }}}
 			<li class="list-group-item d-flex gap-2 align-items-center justify-content-between" component="chat/user" data-uid="{./uid}">
 				<a href="#" class="text-reset text-decoration-none">{buildAvatar(@value, "24px", true)} {./username}</a>

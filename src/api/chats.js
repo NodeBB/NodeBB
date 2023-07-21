@@ -40,9 +40,18 @@ chatsAPI.create = async function (caller, data) {
 	if (!data) {
 		throw new Error('[[error:invalid-data]]');
 	}
+
+	data.notificationSetting = data.notificationSetting || messaging.notificationSettings.ALLMESSAGES;
+
+	if (!Object.values(messaging.notificationSettings).includes(data.notificationSetting)) {
+		throw new Error('[[error:invalid-data]]');
+	}
 	const isPublic = data.type === 'public';
 	const isAdmin = await user.isAdministrator(caller.uid);
 	if (isPublic && !isAdmin) {
+		throw new Error('[[error:no-privileges]]');
+	}
+	if (parseInt(data.notificationSetting, 10) !== messaging.notificationSettings.ALLMESSAGES && !isAdmin) {
 		throw new Error('[[error:no-privileges]]');
 	}
 	if (!data.uids || !Array.isArray(data.uids)) {

@@ -34,6 +34,7 @@ define('forum/chats/create', [
 						).get();
 						const type = modal.find('[component="chat/room/type"]').val();
 						const groups = modal.find('[component="chat/room/groups"]').val();
+						const notificationSetting = modal.find('[component="chat/room/notification/setting"]').val();
 
 						if (type === 'private' && !uids.length) {
 							alerts.error('[[error:no-users-selected]]');
@@ -53,6 +54,7 @@ define('forum/chats/create', [
 							uids: uids,
 							type: type,
 							groups: groups,
+							notificationSetting: notificationSetting,
 						}).then(({ roomId }) => {
 							ajaxify.go('chats/' + roomId);
 							modal.modal('hide');
@@ -80,6 +82,9 @@ define('forum/chats/create', [
 		modal.find('[component="chat/room/type"]').on('change', function () {
 			const type = $(this).val();
 			modal.find('[component="chat/room/public/options"]').toggleClass('hidden', type === 'private');
+			modal.find('[component="chat/room/notification/setting"]').val(
+				type === 'private' ? '3' : '2'
+			);
 		});
 	}
 

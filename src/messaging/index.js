@@ -25,6 +25,11 @@ require('./rooms')(Messaging);
 require('./unread')(Messaging);
 require('./notifications')(Messaging);
 
+Messaging.notificationSettings = Object.create(null);
+Messaging.notificationSettings.NONE = 1;
+Messaging.notificationSettings.ATMENTION = 2;
+Messaging.notificationSettings.ALLMESSAGES = 3;
+
 Messaging.messageExists = async mid => db.exists(`message:${mid}`);
 
 Messaging.getMessages = async (params) => {

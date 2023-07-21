@@ -54,6 +54,11 @@ module.exports = function (Messaging) {
 					data.groupChat = parseInt(data.groupChat, 10) === 1;
 				}
 
+				if (!fields.length || fields.includes('notificationSetting')) {
+					data.notificationSetting = data.notificationSetting ||
+						(data.public ? Messaging.notificationSettings.ATMENTION : Messaging.notificationSettings.ALLMESSAGES);
+				}
+
 				if (data.hasOwnProperty('groups') || !fields.length || fields.includes('groups')) {
 					try {
 						data.groups = JSON.parse(data.groups || '[]');
@@ -76,6 +81,7 @@ module.exports = function (Messaging) {
 		const room = {
 			roomId: roomId,
 			timestamp: now,
+			notificationSetting: data.notificationSetting,
 		};
 
 		if (data.hasOwnProperty('roomName') && data.roomName) {
@@ -448,7 +454,36 @@ module.exports = function (Messaging) {
 			await db.sortedSetAdd(`chat:room:${roomId}:uids:online`, Date.now(), uid);
 		}
 
-		const [canReply, users, messages, settings, isOwner, onlineUids] = await Promise.all([
+		async function getNotificationOptions() {
+			const userSetting = await db.getObjectField(`chat:room:${roomId}:notification:setting`, uid);
+			const roomDefault = room.notificationSetting;
+			const currentSetting = userSetting || roomDefault;
+			const labels = {
+				[Messaging.notificationSettings.NONE]: { label: '[[modules:chat.notification-setting-none]]', icon: 'fa-ban' },
+				[Messaging.notificationSettings.ATMENTION]: { label: '[[modules:chat.notification-setting-at-mention-only]]', icon: 'fa-at' },
+				[Messaging.notificationSettings.ALLMESSAGES]: { label: '[[modules:chat.notification-setting-all-messages]]', icon: 'fa-comment-o' },
+			};
+			const options = [
+				{
+					label: '[[modules:chat.notification-setting-room-default]]',
+					subLabel: labels[roomDefault].label || '',
+					icon: labels[roomDefault].icon,
+					value: -1,
+					selected: userSetting === null,
+				},
+			];
+			Object.keys(labels).forEach((key) => {
+				options.push({
+					label: labels[key].label,
+					icon: labels[key].icon,
+					value: key,
+					selected: parseInt(userSetting, 10) === parseInt(key, 10),
+				});
+			});
+			return { options, selectedIcon: labels[currentSetting].icon };
+		}
+
+		const [canReply, users, messages, settings, isOwner, onlineUids, notifOptions] = await Promise.all([
 			Messaging.canReply(roomId, uid),
 			Messaging.getUsersInRoomFromSet(`chat:room:${roomId}:uids:online`, roomId, 0, 39, true),
 			Messaging.getMessages({
@@ -460,6 +495,7 @@ module.exports = function (Messaging) {
 			user.getSettings(uid),
 			Messaging.isRoomOwner(uid, roomId),
 			io.getUidsInRoom(`chat_room_${roomId}`),
+			getNotificationOptions(),
 		]);
 
 		users.forEach((user) => {
@@ -481,6 +517,8 @@ module.exports = function (Messaging) {
 		room.showUserInput = !room.maximumUsersInChatRoom || room.maximumUsersInChatRoom > 2;
 		room.isAdminOrGlobalMod = isAdmin || isGlobalMod;
 		room.isAdmin = isAdmin;
+		room.notificationOptions = notifOptions.options;
+		room.notificationOptionsIcon = notifOptions.selectedIcon;
 
 		const payload = await plugins.hooks.fire('filter:messaging.loadRoom', { uid, data, room });
 		return payload.room;

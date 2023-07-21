@@ -12,6 +12,15 @@ const meta = require('../meta');
 module.exports = function (Messaging) {
 	// Only used to notify a user of a new chat message
 	Messaging.notifyQueue = {};
+
+	Messaging.setUserNotificationSetting = async (uid, roomId, value) => {
+		if (parseInt(value, 10) === -1) {
+			// go back to default
+			return await db.deleteObjectField(`chat:room:${roomId}:notification:setting`, uid);
+		}
+		await db.setObjectField(`chat:room:${roomId}:notification:setting`, uid, parseInt(value, 10));
+	};
+
 	Messaging.notifyUsersInRoom = async (fromUid, roomId, messageObj) => {
 		const isPublic = parseInt(await db.getObjectField(`chat:room:${roomId}`, 'public'), 10) === 1;
 

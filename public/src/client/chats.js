@@ -99,6 +99,8 @@ define('forum/chats', [
 		});
 		userList.init(roomId, mainWrapper);
 		Chats.addPublicRoomSortHandler();
+		Chats.addTooltipHandler();
+		Chats.addNotificationSettingHandler();
 	};
 
 	Chats.addPublicRoomSortHandler = function () {
@@ -120,6 +122,37 @@ define('forum/chats', [
 				});
 			});
 		}
+	};
+
+	Chats.addTooltipHandler = function () {
+		$('[data-manual-tooltip]').tooltip({
+			trigger: 'manual',
+			animation: false,
+			placement: 'bottom',
+		}).on('mouseenter', function (ev) {
+			const target = $(ev.target);
+			const isDropdown = target.hasClass('dropdown-menu') || !!target.parents('.dropdown-menu').length;
+			if (!isDropdown) {
+				$(this).tooltip('show');
+			}
+		}).on('click mouseleave', function () {
+			$(this).tooltip('hide');
+		});
+	};
+
+	Chats.addNotificationSettingHandler = function () {
+		const notifSettingEl = $('[component="chat/notification/setting"]');
+
+		notifSettingEl.find('[data-value]').on('click', async function () {
+			notifSettingEl.find('i.fa-check').addClass('hidden');
+			const $this = $(this);
+			$this.find('i.fa-check').removeClass('hidden');
+			$('[component="chat/notification/setting/icon"]').attr('class', `fa ${$this.attr('data-icon')}`);
+			await socket.emit('modules.chats.setNotificationSetting', {
+				roomId: ajaxify.data.roomId,
+				value: $this.attr('data-value'),
+			});
+		});
 	};
 
 	Chats.addUploadHandler = function (options) {
