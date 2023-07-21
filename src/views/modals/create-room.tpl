@@ -1,19 +1,8 @@
 <div class="mb-3">
-	<div class="mb-3 d-flex gap-2 align-items-center justify-content-between">
-		<label class="form-label text-nowrap mb-0">[[modules:chat.room-name-optional]]</label>
-		<input component="chat/room/name" class="form-control" style="width: 200px;"/>
+	<div class="mb-3">
+		<label class="form-label text-nowrap">[[modules:chat.room-name-optional]]</label>
+		<input component="chat/room/name" class="form-control" />
 	</div>
-
-	{{{ if user.isAdmin }}}
-	<div class="d-flex gap-2 mb-3 align-items-center justify-content-between">
-		<label class="form-label text-nowrap mb-0">[[modules:chat.default-notification-setting]]</label>
-		<select component="chat/room/notification/setting" class="form-select" style="width: 200px;">
-			<option value="0">[[modules:chat.notification-setting-none]]</option>
-			<option value="1">[[modules:chat.notification-setting-at-mention-only]]</option>
-			<option value="2" selected>[[modules:chat.notification-setting-all-messages]]</option>
-		</select>
-	</div>
-	{{{ end }}}
 
 	<div class="mb-3">
 		<div class="dropdown">
