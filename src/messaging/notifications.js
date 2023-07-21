@@ -83,6 +83,7 @@ module.exports = function (Messaging) {
 
 			notifications.push(notification, uids);
 		}, {
+			reverse: true,
 			batch: 500,
 			interval: 1000,
 		});

@@ -563,12 +563,12 @@ module.exports = function (module) {
 		let done = false;
 		const ids = [];
 		const project = { _id: 0, _key: 0 };
-
+		const sort = options.reverse ? -1 : 1;
 		if (!options.withScores) {
 			project.score = 0;
 		}
 		const cursor = await module.client.collection('objects').find({ _key: setKey }, { projection: project })
-			.sort({ score: 1 })
+			.sort({ score: sort })
 			.batchSize(options.batch);
 
 		if (processFn && processFn.constructor && processFn.constructor.name !== 'AsyncFunction') {
