@@ -26,16 +26,14 @@ const intFields = [
 
 module.exports = function (Messaging) {
 	Messaging.getRoomData = async (roomId, fields = []) => {
-		const data = await db.getObject(`chat:room:${roomId}`, fields);
-		if (!data) {
-			throw new Error('[[error:no-chat-room]]');
-		}
-
-		modifyRoomData([data], fields);
-		return data;
+		const roomData = await Messaging.getRoomsData([roomId], fields);
+		return roomData[0];
 	};
 
 	Messaging.getRoomsData = async (roomIds, fields = []) => {
+		if (fields.includes('notificationSetting') && !fields.includes('public')) {
+			fields.push('public');
+		}
 		const roomData = await db.getObjects(
 			roomIds.map(roomId => `chat:room:${roomId}`),
 			fields
@@ -504,6 +502,7 @@ module.exports = function (Messaging) {
 			Messaging.isRoomOwner(uid, roomId),
 			io.getUidsInRoom(`chat_room_${roomId}`),
 			getNotificationOptions(),
+			Messaging.markRoomNotificationsRead(uid, roomId),
 		]);
 
 		users.forEach((user) => {

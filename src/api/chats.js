@@ -6,7 +6,6 @@ const db = require('../database');
 const user = require('../user');
 const meta = require('../meta');
 const messaging = require('../messaging');
-const notifications = require('../notifications');
 const plugins = require('../plugins');
 const privileges = require('../privileges');
 
@@ -152,27 +151,10 @@ chatsAPI.mark = async (caller, data) => {
 	} else {
 		await messaging.markRead(caller.uid, roomId);
 		socketHelpers.emitToUids('event:chats.markedAsRead', { roomId: roomId }, [caller.uid]);
-
-		const isUserInRoom = await messaging.isUserInRoom(caller.uid, roomId);
-		if (!isUserInRoom) {
-			return;
-		}
-		let chatNids = await db.getSortedSetScan({
-			key: `uid:${caller.uid}:notifications:unread`,
-			match: `chat_*`,
-		});
-		chatNids = chatNids.filter(
-			nid => nid && !nid.startsWith(`chat_${caller.uid}_`) && nid.endsWith(`_${roomId}`)
-		);
-
-		await notifications.markReadMultiple(chatNids, caller.uid);
-		await user.notifications.pushCount(caller.uid);
 	}
 
 	socketHelpers.emitToUids('event:chats.mark', { roomId, state }, [caller.uid]);
 	messaging.pushUnreadCount(caller.uid);
-
-	return messaging.loadRoom(caller.uid, { roomId });
 };
 
 chatsAPI.users = async (caller, data) => {

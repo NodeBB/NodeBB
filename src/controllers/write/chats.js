@@ -58,12 +58,12 @@ Chats.rename = async (req, res) => {
 
 Chats.mark = async (req, res) => {
 	const state = req.method === 'PUT' ? 1 : 0;
-	const roomObj = await api.chats.mark(req, {
+	await api.chats.mark(req, {
 		roomId: req.params.roomId,
 		state,
 	});
 
-	helpers.formatApiResponse(200, res, roomObj);
+	helpers.formatApiResponse(200, res);
 };
 
 Chats.users = async (req, res) => {

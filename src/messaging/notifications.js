@@ -5,6 +5,7 @@ const winston = require('winston');
 const batch = require('../batch');
 const db = require('../database');
 const notifications = require('../notifications');
+const user = require('../user');
 const io = require('../socket.io');
 const plugins = require('../plugins');
 const meta = require('../meta');
@@ -27,6 +28,17 @@ module.exports = function (Messaging) {
 			Messaging.getRoomData(roomId, ['notificationSetting']),
 		]);
 		return uids.map(uid => parseInt(settings[uid] || roomData.notificationSetting, 10));
+	};
+
+	Messaging.markRoomNotificationsRead = async (uid, roomId) => {
+		const chatNids = await db.getSortedSetScan({
+			key: `uid:${uid}:notifications:unread`,
+			match: `chat_${roomId}_*`,
+		});
+		if (chatNids.length) {
+			await notifications.markReadMultiple(chatNids, uid);
+			await user.notifications.pushCount(uid);
+		}
 	};
 
 	Messaging.notifyUsersInRoom = async (fromUid, roomId, messageObj) => {
@@ -114,7 +126,7 @@ module.exports = function (Messaging) {
 				subject: `[[email:notif.chat.subject, ${displayname}]]`,
 				bodyShort: `[[notifications:new_message_from, ${displayname}]]`,
 				bodyLong: messageObj.content,
-				nid: `chat_${fromUid}_${roomId}`,
+				nid: `chat_${roomId}_${fromUid}`,
 				from: fromUid,
 				path: `/chats/${messageObj.roomId}`,
 			});
