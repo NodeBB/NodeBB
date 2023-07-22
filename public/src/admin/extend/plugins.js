@@ -342,7 +342,7 @@ define('admin/extend/plugins', [
 
 	function populateUpgradeablePlugins() {
 		$('#installed ul li').each(function () {
-			if ($(this).children('[data-action="upgrade"]').length) {
+			if ($(this).find('[data-action="upgrade"]').length) {
 				$('#upgrade ul').append($(this).clone(true));
 			}
 		});

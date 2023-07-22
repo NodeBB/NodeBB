@@ -3,7 +3,7 @@
 
 	<div class="row settings m-0">
 		<div id="spy-container" class="col-12 col-md-8 px-0 mb-4" tabindex="0">
-			<div class="mb-4">
+			<div id="maintenance-mode" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/advanced:maintenance-mode]]</h5>
 
 				<div class="form-check form-switch mb-3">
@@ -33,7 +33,7 @@
 
 			<hr/>
 
-			<div class="mb-4">
+			<div id="headers" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/advanced:headers]]</h5>
 
 				<div class="mb-3">
@@ -105,7 +105,7 @@
 
 			<hr/>
 
-			<div class="mb-4">
+			<div id="strict-transport-security" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/advanced:hsts]]</h5>
 				<div class="form-check form-switch mb-3">
 					<input class="form-check-input" type="checkbox" data-field="hsts-enabled" checked>
@@ -131,7 +131,7 @@
 
 			<hr/>
 
-			<div class="mb-4">
+			<div id="websocket-settings" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/advanced:sockets.settings]]</h5>
 				<div class="mb-3">
 					<label class="form-label" for="maxReconnectionAttempts">[[admin/settings/advanced:sockets.max-attempts]]</label>
@@ -146,7 +146,7 @@
 
 			<hr/>
 
-			<div class="mb-4">
+			<div id="analytics-settings" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/advanced:analytics.settings]]</h5>
 
 				<div class="mb-3">
@@ -160,7 +160,7 @@
 
 			<hr/>
 
-			<div class="mb-4">
+			<div id="compression-settings" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/advanced:compression.settings]]</h5>
 
 				<div class="mb-3">
@@ -176,7 +176,7 @@
 
 			<hr/>
 
-			<div class="mb-4">
+			<div id="traffic-management" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/advanced:traffic-management]]</h5>
 
 				<p class="form-text">

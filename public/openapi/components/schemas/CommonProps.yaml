@@ -68,6 +68,8 @@ CommonProps:
                     type: string
                   as:
                     type: string
+                  noEscape:
+                    type: boolean
                   crossorigin:
                     type: string
                     enum: ['', 'anonymous', 'use-credentials']

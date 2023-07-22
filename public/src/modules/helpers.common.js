@@ -327,11 +327,11 @@ module.exports = function (utils, Benchpress, relative_path) {
 	}
 
 	function generateRepliedTo(post, timeagoCutoff) {
-		const username = post.parent && post.parent.username ?
-			post.parent.username : '[[global:guest]]';
+		const displayname = post.parent && post.parent.displayname ?
+			post.parent.displayname : '[[global:guest]]';
 		const isBeforeCutoff = post.timestamp < (Date.now() - (timeagoCutoff * oneDayInMs));
 		const langSuffix = isBeforeCutoff ? 'on' : 'ago';
-		return `[[topic:replied-to-user-${langSuffix}, ${post.toPid}, ${relative_path}/post/${post.toPid}, ${username}, ${relative_path}/post/${post.pid}, ${post.timestampISO}]]`;
+		return `[[topic:replied-to-user-${langSuffix}, ${post.toPid}, ${relative_path}/post/${post.toPid}, ${displayname}, ${relative_path}/post/${post.pid}, ${post.timestampISO}]]`;
 	}
 
 	function generateWrote(post, timeagoCutoff) {

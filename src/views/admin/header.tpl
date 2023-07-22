@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="{function.localeToHTML, acpLang, defaultLang}" {{{if languageDirection}}}data-dir="{languageDirection}" style="direction: {languageDirection};"{{{end}}}>
 	<head>
 		<title>{title}</title>
 
 		{{{each metaTags}}}{function.buildMetaTag}{{{end}}}
 		{{{each linkTags}}}{function.buildLinkTag}{{{end}}}
-		<link rel="stylesheet" type="text/css" href="{relative_path}/assets/admin.css?{cache-buster}" />
+		<link rel="stylesheet" type="text/css" href="{relative_path}/assets/admin{{{ if (languageDirection=="rtl") }}}-rtl{{{ end }}}.css?{cache-buster}" />
 
 		<script>
 			var config = JSON.parse('{{configJSON}}');

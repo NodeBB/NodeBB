@@ -68,14 +68,17 @@ function buildBreadcrumbs(currentFolder) {
 	const crumbs = [];
 	const parts = currentFolder.replace(nconf.get('upload_path'), '').split(path.sep);
 	let currentPath = '';
-	parts.forEach((part) => {
+	parts.forEach((part, i) => {
 		const dir = path.join(currentPath, part);
-		crumbs.push({
+		const crumb = {
 			text: part || 'Uploads',
-			url: part ?
+		};
+		if (i < parts.length - 1) {
+			crumb.url = part ?
 				(`${nconf.get('relative_path')}/admin/manage/uploads?dir=${dir}`) :
-				`${nconf.get('relative_path')}/admin/manage/uploads`,
-		});
+				`${nconf.get('relative_path')}/admin/manage/uploads`;
+		}
+		crumbs.push(crumb);
 		currentPath = dir;
 	});
 
