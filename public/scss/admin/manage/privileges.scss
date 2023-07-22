@@ -4,7 +4,7 @@
 		100% {background-color: white;}
 	}
 
-	[data-group-name].selected, [data-uid].selected {
+	tr[data-group-name].selected, tr[data-uid].selected {
 		animation-name: fadeOut;
 		animation-duration: 5s;
 		animation-fill-mode: both;
