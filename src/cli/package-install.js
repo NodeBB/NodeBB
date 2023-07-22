@@ -18,6 +18,20 @@ function sortDependencies(dependencies) {
 		}, {});
 }
 
+function mergeObjects(...objects) {
+	const merged = {};
+  
+	for (const obj of objects) {
+	  for (const key in obj) {
+		if (obj.hasOwnProperty(key)) {
+		  merged[key] = obj[key];
+		}
+	  }
+	}
+  
+	return merged;
+}
+
 pkgInstall.updatePackageFile = () => {
 	let oldPackageContents;
 
@@ -33,7 +47,6 @@ pkgInstall.updatePackageFile = () => {
 		}
 	}
 
-	const _ = require('lodash');
 	const defaultPackageContents = JSON.parse(fs.readFileSync(paths.installPackage, 'utf8'));
 
 	let dependencies = {};
@@ -48,7 +61,7 @@ pkgInstall.updatePackageFile = () => {
 	// Sort dependencies alphabetically
 	dependencies = sortDependencies({ ...dependencies, ...defaultPackageContents.dependencies });
 
-	const packageContents = { ..._.merge(oldPackageContents, defaultPackageContents), dependencies, devDependencies };
+	const packageContents = { ...mergeObjects(oldPackageContents, defaultPackageContents), dependencies, devDependencies };
 	fs.writeFileSync(paths.currentPackage, JSON.stringify(packageContents, null, 4));
 };
 
