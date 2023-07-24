@@ -40,20 +40,20 @@ exports.processSortedSet = async function (setKey, process, options) {
 		process = util.promisify(process);
 	}
 	const method = options.reverse ? 'getSortedSetRevRange' : 'getSortedSetRange';
+	let iteration = 1;
 	while (true) {
 		/* eslint-disable no-await-in-loop */
 		const ids = await db[`${method}${options.withScores ? 'WithScores' : ''}`](setKey, start, stop);
 		if (!ids.length || options.doneIf(start, stop, ids)) {
 			return;
 		}
-		await process(ids);
-
-		start += utils.isNumber(options.alwaysStartAt) ? options.alwaysStartAt : options.batch;
-		stop = start + options.batch - 1;
-
-		if (options.interval) {
+		if (iteration > 1 && options.interval) {
 			await sleep(options.interval);
 		}
+		await process(ids);
+		iteration += 1;
+		start += utils.isNumber(options.alwaysStartAt) ? options.alwaysStartAt : options.batch;
+		stop = start + options.batch - 1;
 	}
 };
 
@@ -72,21 +72,20 @@ exports.processArray = async function (array, process, options) {
 	if (process && process.constructor && process.constructor.name !== 'AsyncFunction') {
 		process = util.promisify(process);
 	}
-
+	let iteration = 1;
 	while (true) {
 		const currentBatch = array.slice(start, start + batch);
 
 		if (!currentBatch.length) {
 			return;
 		}
-
+		if (iteration > 1 && options.interval) {
+			await sleep(options.interval);
+		}
 		await process(currentBatch);
 
 		start += batch;
-
-		if (options.interval) {
-			await sleep(options.interval);
-		}
+		iteration += 1;
 	}
 };
 
