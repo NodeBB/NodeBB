@@ -680,6 +680,11 @@ Flags.update = async function (flagId, uid, changeset) {
 		return allowed;
 	};
 
+	async function rescindNotifications(match) {
+		const nids = await db.getSortedSetScan({ key: 'notifications', match: `${match}*` });
+		return notifications.rescind(nids);
+	}
+
 	// Retrieve existing flag data to compare for history-saving/reference purposes
 	const tasks = [];
 	for (const prop of Object.keys(changeset)) {
@@ -692,10 +697,10 @@ Flags.update = async function (flagId, uid, changeset) {
 				tasks.push(db.sortedSetAdd(`flags:byState:${changeset[prop]}`, now, flagId));
 				tasks.push(db.sortedSetRemove(`flags:byState:${current[prop]}`, flagId));
 				if (changeset[prop] === 'resolved' && meta.config['flags:actionOnResolve'] === 'rescind') {
-					tasks.push(notifications.rescind(`flag:${current.type}:${current.targetId}`));
+					tasks.push(rescindNotifications(`flag:${current.type}:${current.targetId}`));
 				}
 				if (changeset[prop] === 'rejected' && meta.config['flags:actionOnReject'] === 'rescind') {
-					tasks.push(notifications.rescind(`flag:${current.type}:${current.targetId}`));
+					tasks.push(rescindNotifications(`flag:${current.type}:${current.targetId}`));
 				}
 			}
 		} else if (prop === 'assignee') {

@@ -514,40 +514,40 @@ describe('Flags', () => {
 
 			it('should rescind notification if flag is resolved', async () => {
 				let userNotifs = await User.notifications.getAll(adminUid);
-				assert(userNotifs.includes(`flag:post:${result.postData.pid}`));
+				assert(userNotifs.includes(`flag:post:${result.postData.pid}:${uid1}`));
 
 				await Flags.update(flagObj.flagId, adminUid, {
 					state: 'resolved',
 				});
 
 				userNotifs = await User.notifications.getAll(adminUid);
-				assert(!userNotifs.includes(`flag:post:${result.postData.pid}`));
+				assert(!userNotifs.includes(`flag:post:${result.postData.pid}:${uid1}`));
 			});
 
 			it('should rescind notification if flag is rejected', async () => {
 				let userNotifs = await User.notifications.getAll(adminUid);
-				assert(userNotifs.includes(`flag:post:${result.postData.pid}`));
+				assert(userNotifs.includes(`flag:post:${result.postData.pid}:${uid1}`));
 
 				await Flags.update(flagObj.flagId, adminUid, {
 					state: 'rejected',
 				});
 
 				userNotifs = await User.notifications.getAll(adminUid);
-				assert(!userNotifs.includes(`flag:post:${result.postData.pid}`));
+				assert(!userNotifs.includes(`flag:post:${result.postData.pid}:${uid1}`));
 			});
 
 			it('should do nothing if flag is resolved but ACP action is not "rescind"', async () => {
 				Meta.config['flags:actionOnResolve'] = '';
 
 				let userNotifs = await User.notifications.getAll(adminUid);
-				assert(userNotifs.includes(`flag:post:${result.postData.pid}`));
+				assert(userNotifs.includes(`flag:post:${result.postData.pid}:${uid1}`));
 
 				await Flags.update(flagObj.flagId, adminUid, {
 					state: 'resolved',
 				});
 
 				userNotifs = await User.notifications.getAll(adminUid);
-				assert(userNotifs.includes(`flag:post:${result.postData.pid}`));
+				assert(userNotifs.includes(`flag:post:${result.postData.pid}:${uid1}`));
 
 				delete Meta.config['flags:actionOnResolve'];
 			});
@@ -556,14 +556,14 @@ describe('Flags', () => {
 				Meta.config['flags:actionOnReject'] = '';
 
 				let userNotifs = await User.notifications.getAll(adminUid);
-				assert(userNotifs.includes(`flag:post:${result.postData.pid}`));
+				assert(userNotifs.includes(`flag:post:${result.postData.pid}:${uid1}`));
 
 				await Flags.update(flagObj.flagId, adminUid, {
 					state: 'rejected',
 				});
 
 				userNotifs = await User.notifications.getAll(adminUid);
-				assert(userNotifs.includes(`flag:post:${result.postData.pid}`));
+				assert(userNotifs.includes(`flag:post:${result.postData.pid}:${uid1}`));
 
 				delete Meta.config['flags:actionOnReject'];
 			});
