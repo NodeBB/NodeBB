@@ -8,6 +8,7 @@ const groups = require('../../groups');
 const user = require('../../user');
 const events = require('../../events');
 const translator = require('../../translator');
+const utils = require('../../utils');
 const sockets = require('..');
 
 const User = module.exports;
@@ -144,6 +145,21 @@ User.loadGroups = async function (socket, uids) {
 		});
 	});
 	return { users: userData };
+};
+
+User.setReputation = async function (socket, data) {
+	if (!data || !Array.isArray(data.uids) || !utils.isNumber(data.value)) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
+	await Promise.all([
+		db.setObjectBulk(
+			data.uids.map(uid => ([`user:${uid}`, { reputation: parseInt(data.value, 10) }]))
+		),
+		db.sortedSetAddBulk(
+			data.uids.map(uid => (['users:reputation', data.value, uid]))
+		),
+	]);
 };
 
 User.exportUsersCSV = async function (socket) {
