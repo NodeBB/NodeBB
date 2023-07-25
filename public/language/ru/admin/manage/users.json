@@ -18,6 +18,7 @@
 	"purge": "Удалить <strong>пользователя(-ей)</strong> и <strong>данные</strong>",
 	"download-csv": "Скачать CSV",
 	"manage-groups": "Изменить членство в группах",
+	"set-reputation": "Set Reputation",
 	"add-group": "Добавить группу",
 	"create": "Create User",
 	"invite": "Invite by Email",

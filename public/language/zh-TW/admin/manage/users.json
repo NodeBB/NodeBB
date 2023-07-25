@@ -18,6 +18,7 @@
 	"purge": "Delete <strong>User(s)</strong> and <strong>Content</strong>",
 	"download-csv": "下載CSV",
 	"manage-groups": "管理群組",
+	"set-reputation": "Set Reputation",
 	"add-group": "新增至群組",
 	"create": "Create User",
 	"invite": "Invite by Email",
