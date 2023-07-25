@@ -844,7 +844,7 @@ Flags.notify = async function (flagObj, uid, notifySelf = false) {
 			bodyLong: await plugins.hooks.fire('filter:parse.raw', String(flagObj.description || '')),
 			pid: flagObj.targetId,
 			path: `/flags/${flagObj.flagId}`,
-			nid: `flag:post:${flagObj.targetId}`,
+			nid: `flag:post:${flagObj.targetId}:${uid}`,
 			from: uid,
 			mergeId: `notifications:user_flagged_post_in|${flagObj.targetId}`,
 			topicTitle: title,
@@ -857,7 +857,7 @@ Flags.notify = async function (flagObj, uid, notifySelf = false) {
 			bodyShort: `[[notifications:user_flagged_user, ${displayname}, ${targetDisplayname}]]`,
 			bodyLong: await plugins.hooks.fire('filter:parse.raw', String(flagObj.description || '')),
 			path: `/flags/${flagObj.flagId}`,
-			nid: `flag:user:${flagObj.targetId}`,
+			nid: `flag:user:${flagObj.targetId}:${uid}`,
 			from: uid,
 			mergeId: `notifications:user_flagged_user|${flagObj.targetId}`,
 		});
