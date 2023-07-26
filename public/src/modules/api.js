@@ -65,7 +65,8 @@ async function xhr(options, cb) {
 
 	const res = await fetch(url, options);
 	const { headers } = res;
-	const isJSON = headers.get('content-type').startsWith('application/json');
+	const contentType = headers.get('content-type');
+	const isJSON = contentType && contentType.startsWith('application/json');
 
 	let response;
 	if (isJSON) {
