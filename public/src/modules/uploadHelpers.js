@@ -160,7 +160,7 @@ define('uploadHelpers', ['alerts'], function (alerts) {
 			if ((isImage && !app.user.privileges['upload:post:image']) || (!isImage && !app.user.privileges['upload:post:file'])) {
 				return alerts.error('[[error:no-privileges]]');
 			}
-			if (files[i].size > parseInt(config.maximumFileSize, 10) * 1024) {
+			if (!app.user.isAdmin && files[i].size > parseInt(config.maximumFileSize, 10) * 1024) {
 				options.uploadForm[0].reset();
 				return alerts.error('[[error:file-too-big, ' + config.maximumFileSize + ']]');
 			}
