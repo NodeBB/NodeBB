@@ -141,6 +141,8 @@
     "group-order-help": "Select a group and use the arrows to order titles",
     "no-group-title": "Sem título de grupo",
     "select-skin": "Seleciona uma máscara",
+    "default": "Default (%1)",
+    "no-skin": "No Skin",
     "select-homepage": "Seleciona a página inicial",
     "homepage": "Página Inicial",
     "homepage_description": "Seleciona a página que irás usar como página inicial do fórum ou \"Nenhuma\" para usar a página inicial por defeito",

@@ -141,6 +141,8 @@
     "group-order-help": "Välj en grupp och använd piltangenterna för att ordna rubriker",
     "no-group-title": "Ingen titel på gruppen",
     "select-skin": "Välj ett Skin",
+    "default": "Default (%1)",
+    "no-skin": "No Skin",
     "select-homepage": "Välj en startsida",
     "homepage": "Startsida",
     "homepage_description": "Välj en sida som ska användas som forumets startsida eller 'Ingen' för att använda standardstartsidan.",

@@ -159,9 +159,7 @@ app = window.app || {};
 	function onConnect() {
 		if (!reconnecting) {
 			hooks.fire('action:connected');
-		}
-
-		if (reconnecting) {
+		} else {
 			const reconnectEl = $('#reconnect');
 			const reconnectAlert = $('#reconnect-alert');
 
@@ -188,10 +186,17 @@ app = window.app || {};
 			app.currentRoom = '';
 			app.enterRoom(current);
 		}
+		if (ajaxify.data.template.chats) {
+			if (ajaxify.data.roomId) {
+				socket.emit('modules.chats.enter', ajaxify.data.roomId);
+			}
+			if (ajaxify.data.publicRooms) {
+				socket.emit('modules.chats.enterPublic', ajaxify.data.publicRooms.map(r => r.roomId));
+			}
+		}
 	}
 
 	function onReconnecting() {
-		reconnecting = true;
 		const reconnectEl = $('#reconnect');
 		const reconnectAlert = $('#reconnect-alert');
 
@@ -207,8 +212,9 @@ app = window.app || {};
 	}
 
 	function onDisconnect() {
+		reconnecting = true;
 		setTimeout(function () {
-			if (socket.disconnected) {
+			if (!socket.connected) {
 				onReconnecting();
 			}
 		}, 2000);

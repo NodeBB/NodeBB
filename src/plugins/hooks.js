@@ -233,7 +233,7 @@ async function fireStaticHook(hook, hookList, params) {
 
 			try {
 				// eslint-disable-next-line
-				await timeout(hookFn(params), 5000, 'timeout');
+				await timeout(hookFn(params), 10000, 'timeout');
 			} catch (err) {
 				if (err && err.message === 'timeout') {
 					winston.warn(`[plugins] Callback timed out, hook '${hook}' in plugin '${hookObj.id}'`);

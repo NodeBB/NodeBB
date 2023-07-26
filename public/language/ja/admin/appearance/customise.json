@@ -13,5 +13,8 @@
 	"custom-header.enable": "カスタムヘッダーを有効にする",
 
 	"custom-css.livereload": "ライブリロードを有効にする",
-	"custom-css.livereload.description": "これを有効にすると、保存ボタンをクリックするたびにアカウントのすべてのデバイスのすべてのセッションが強制的に更新されます。"
+	"custom-css.livereload.description": "これを有効にすると、保存ボタンをクリックするたびにアカウントのすべてのデバイスのすべてのセッションが強制的に更新されます。",
+	"bsvariables": "_variables.scss",
+	"bsvariables.description": "Override bootstrap variables here. You can also use a tool like <a href=\"https://bootstrap.build/app\">bootstrap.build</a> and paste the output here.<br/>Changes require a rebuild & restart.",
+	"bsvariables.enable": "Enable _variables.scss"
 }

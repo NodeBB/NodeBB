@@ -16,6 +16,7 @@ define('admin/advanced/events', ['bootbox', 'alerts'], function (bootbox, alerts
 					});
 				}
 			});
+			return false;
 		});
 
 		$('.delete-event').on('click', function () {

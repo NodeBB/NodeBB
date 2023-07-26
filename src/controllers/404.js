@@ -60,7 +60,7 @@ exports.send404 = async function (req, res) {
 		'fa-dragon', 'fa-horse', 'fa-dove',
 	];
 	await middleware.buildHeaderAsync(req, res);
-	await res.render('404', {
+	res.render('404', {
 		path: validator.escape(path),
 		title: '[[global:404.title]]',
 		bodyClass: helpers.buildBodyClass(req, res),

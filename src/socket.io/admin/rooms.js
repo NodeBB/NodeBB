@@ -1,61 +1,26 @@
 'use strict';
 
-const os = require('os');
-const nconf = require('nconf');
-
 const topics = require('../../topics');
-const pubsub = require('../../pubsub');
-const utils = require('../../utils');
+const io = require('..');
 
-const stats = {};
 const totals = {};
 
 const SocketRooms = module.exports;
 
-SocketRooms.stats = stats;
 SocketRooms.totals = totals;
 
-pubsub.on('sync:stats:start', () => {
-	const stats = SocketRooms.getLocalStats();
-	pubsub.publish('sync:stats:end', {
-		stats: stats,
-		id: `${os.hostname()}:${nconf.get('port')}`,
-	});
-});
-
-pubsub.on('sync:stats:end', (data) => {
-	stats[data.id] = data.stats;
-});
-
-pubsub.on('sync:stats:guests', (eventId) => {
-	const Sockets = require('../index');
-	const guestCount = Sockets.getCountInRoom('online_guests');
-	pubsub.publish(eventId, guestCount);
-});
-
-SocketRooms.getTotalGuestCount = function (callback) {
-	let count = 0;
-	const eventId = `sync:stats:guests:end:${utils.generateUUID()}`;
-	pubsub.on(eventId, (guestCount) => {
-		count += guestCount;
-	});
-
-	pubsub.publish('sync:stats:guests', eventId);
-
-	setTimeout(() => {
-		pubsub.removeAllListeners(eventId);
-		callback(null, count);
-	}, 100);
+SocketRooms.getTotalGuestCount = async function () {
+	const s = await io.in('online_guests').fetchSockets();
+	return s.length;
 };
 
-
 SocketRooms.getAll = async function () {
-	pubsub.publish('sync:stats:start');
+	const sockets = await io.server.fetchSockets();
 
 	totals.onlineGuestCount = 0;
 	totals.onlineRegisteredCount = 0;
-	totals.socketCount = 0;
-	totals.topics = {};
+	totals.socketCount = sockets.length;
+	totals.topTenTopics = [];
 	totals.users = {
 		categories: 0,
 		recent: 0,
@@ -63,30 +28,39 @@ SocketRooms.getAll = async function () {
 		topics: 0,
 		category: 0,
 	};
-
-	for (const instance of Object.values(stats)) {
-		totals.onlineGuestCount += instance.onlineGuestCount;
-		totals.onlineRegisteredCount += instance.onlineRegisteredCount;
-		totals.socketCount += instance.socketCount;
-		totals.users.categories += instance.users.categories;
-		totals.users.recent += instance.users.recent;
-		totals.users.unread += instance.users.unread;
-		totals.users.topics += instance.users.topics;
-		totals.users.category += instance.users.category;
-
-		instance.topics.forEach((topic) => {
-			totals.topics[topic.tid] = totals.topics[topic.tid] || { count: 0, tid: topic.tid };
-			totals.topics[topic.tid].count += topic.count;
-		});
+	const userRooms = {};
+	const topicData = {};
+	for (const s of sockets) {
+		for (const key of s.rooms) {
+			if (key === 'online_guests') {
+				totals.onlineGuestCount += 1;
+			} else if (key === 'categories') {
+				totals.users.categories += 1;
+			} else if (key === 'recent_topics') {
+				totals.users.recent += 1;
+			} else if (key === 'unread_topics') {
+				totals.users.unread += 1;
+			} else if (key.startsWith('uid_')) {
+				userRooms[key] = 1;
+			} else if (key.startsWith('category_')) {
+				totals.users.category += 1;
+			} else {
+				const tid = key.match(/^topic_(\d+)/);
+				if (tid) {
+					totals.users.topics += 1;
+					topicData[tid[1]] = topicData[tid[1]] || { count: 0 };
+					topicData[tid[1]].count += 1;
+				}
+			}
+		}
 	}
+	totals.onlineRegisteredCount = Object.keys(userRooms).length;
 
 	let topTenTopics = [];
-	Object.keys(totals.topics).forEach((tid) => {
-		topTenTopics.push({ tid: tid, count: totals.topics[tid].count || 0 });
+	Object.keys(topicData).forEach((tid) => {
+		topTenTopics.push({ tid: tid, count: topicData[tid].count });
 	});
-
 	topTenTopics = topTenTopics.sort((a, b) => b.count - a.count).slice(0, 10);
-
 	const topTenTids = topTenTopics.map(topic => topic.tid);
 
 	const titles = await topics.getTopicsFields(topTenTids, ['title']);
@@ -94,6 +68,7 @@ SocketRooms.getAll = async function () {
 		topic.title = titles[index].title;
 		return topic;
 	});
+
 	return totals;
 };
 

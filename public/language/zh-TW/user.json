@@ -141,6 +141,8 @@
     "group-order-help": "選擇群組然後使用箭頭排列稱號",
     "no-group-title": "不顯示群組稱號",
     "select-skin": "選擇配色",
+    "default": "Default (%1)",
+    "no-skin": "No Skin",
     "select-homepage": "選擇首頁",
     "homepage": "首頁",
     "homepage_description": "選擇一個頁面作為論壇的首頁，否則設置為 ‘空’ 使用預設首頁。",

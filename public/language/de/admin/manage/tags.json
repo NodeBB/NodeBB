@@ -1,11 +1,11 @@
 {
-	"manage-tags": "Manage Tags",
+	"manage-tags": "Tags verwalten",
 	"none": "Das Forum hat bisher noch keine Themen mit Tags.",
 	"bg-color": "Hintergrundfarbe",
 	"text-color": "Textfarbe",
 	"description": "Wählen Sie Tags durch Klicken oder Ziehen aus, verwenden Sie <code>STRG</code>, um mehrere Tags auszuwählen.",
 	"create": "Tag erstellen",
-	"add-tag": "Add tag",
+	"add-tag": "Tag hinzufügen",
 	"modify": "Tag bearbeiten",
 	"rename": "Tags umbenennen",
 	"delete": "Ausgewählte Tags entfernen",

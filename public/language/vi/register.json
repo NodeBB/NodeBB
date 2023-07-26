@@ -1,6 +1,6 @@
 {
     "register": "Đăng ký",
-    "already-have-account": "Already have an account?",
+    "already-have-account": "Đã có tài khoản rồi?",
     "cancel_registration": "Hủy đăng ký",
     "help.email": "Mặc định, email của bạn sẽ bị ẩn không công khai.",
     "help.username_restrictions": "Một tên đăng nhập duy nhất giữa %1 và %2 ký tự. Người khác có thể nhắc đến bạn với @<span id='yourUsername'>tên đăng nhập</span>.",

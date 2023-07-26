@@ -105,8 +105,30 @@ function launchExpress(port) {
 function setupRoutes() {
 	app.get('/', welcome);
 	app.post('/', install);
+	app.get('/testdb', testDatabase);
 	app.get('/ping', ping);
 	app.get('/sping', ping);
+}
+
+async function testDatabase(req, res) {
+	let db;
+	try {
+		const keys = Object.keys(req.query);
+		const dbName = keys[0].split(':')[0];
+		db = require(`../src/database/${dbName}`);
+
+		const opts = {};
+		keys.forEach((key) => {
+			opts[key.replace(`${dbName}:`, '')] = req.query[key];
+		});
+
+		await db.init(opts);
+		const global = await db.getObject('global');
+		await db.close();
+		res.json({ success: 1, dbfull: !!global });
+	} catch (err) {
+		res.json({ error: err.stack });
+	}
 }
 
 function ping(req, res) {

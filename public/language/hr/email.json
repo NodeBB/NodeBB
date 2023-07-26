@@ -22,6 +22,8 @@
     "reset.notify.subject": "Lozinka uspješno promijenjena.",
     "reset.notify.text1": "Obavještavamo vas da vam je lozinka na %1 uspješno promijenjena.",
     "reset.notify.text2": "Ako niste ovo odobrili, molimo vas obavijestite administratora.",
+    "digest.unread-rooms": "Unread rooms",
+    "digest.room-name-unreadcount": "%1 (%2 unread)",
     "digest.latest_topics": "Posljednje teme s %1",
     "digest.top-topics": "Top topics from %1",
     "digest.popular-topics": "Popular topics from %1",

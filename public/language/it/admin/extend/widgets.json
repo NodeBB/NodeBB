@@ -1,5 +1,5 @@
 {
-	"widgets": "Widgets",
+	"widgets": "Widget",
 	"available": "Widget disponibili",
 	"explanation": "Selezionare un widget dal menu a discesa e poi trascinalo e rilascialo nell'area widget di un modello a sinistra.",
 	"none-installed": "Nessun widget trovato! Attivare il plugin essenziale per i widget nel pannello di controllo dei <a href=\"%1\">plugin</a>.",
@@ -9,9 +9,9 @@
 	"containers.none": "Nessuno",
 	"container.well": "Bene",
 	"container.jumbotron": "Jumbotron",
-	"container.card": "Card",
-	"container.card-header": "Card Header",
-	"container.card-body": "Card Body",
+	"container.card": "Scheda",
+	"container.card-header": "Intestazione della scheda",
+	"container.card-body": "Corpo della scheda",
 	"container.alert": "Avviso",
 
 	"alert.confirm-delete": "Sei sicuro di voler eliminare questo widget?",

@@ -3,7 +3,7 @@
 
 	<div class="row settings m-0">
 		<div id="spy-container" class="col-12 col-md-8 px-0 mb-4" tabindex="0">
-			<div class="mb-4">
+			<div id="site-settings" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/general:site-settings]]
 				</h5>
 				<form>
@@ -83,7 +83,7 @@
 
 			<hr/>
 
-			<div class="mb-4">
+			<div id="logo-and-icons" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/general:logo-and-icons]]</h5>
 				<div class="mb-3">
 					<label class="form-label" for="logoUrl">[[admin/settings/general:logo.image]]</label>
@@ -157,7 +157,7 @@
 
 			<hr/>
 
-			<div class="mb-4">
+			<div id="home-page" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/homepage:home-page]]</h5>
 
 				<div class="">
@@ -195,7 +195,7 @@
 
 			<hr/>
 
-			<div class="mb-4">
+			<div id="search-settings" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/general:search]]</h5>
 
 				<div class="mb-3 d-flex justify-content-between align-items-center">
@@ -241,7 +241,7 @@
 
 			<hr/>
 
-			<div class="mb-4">
+			<div id="outgoing-links" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/general:outgoing-links]]</h5>
 
 				<form>
@@ -260,7 +260,7 @@
 
 			<hr/>
 
-			<div class="mb-4">
+			<div id="site-colors" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/general:site-colors]]</h5>
 
 				<div class="mb-3">
@@ -278,7 +278,7 @@
 
 			<hr/>
 
-			<div class="mb-4">
+			<div id="topic-tools" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/general:topic-tools]]</h5>
 
 				<div class="mb-3">
@@ -292,7 +292,7 @@
 
 			<hr/>
 
-			<div class="mb-4">
+			<div id="post-sharing" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/social:post-sharing]]</h5>
 				<div class="mb-3">
 					<div class="form-group" id="postSharingNetworks">

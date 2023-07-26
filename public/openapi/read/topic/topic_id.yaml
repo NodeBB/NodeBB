@@ -224,6 +224,8 @@ get:
                               type: string
                             count:
                               type: number
+                            hasSingleImmediateReply:
+                              type: boolean
                         selfPost:
                           type: boolean
                         events:
@@ -340,6 +342,10 @@ get:
                       posts:edit:
                         type: boolean
                       posts:history:
+                        type: boolean
+                      posts:upvote:
+                        type: boolean
+                      posts:downvote:
                         type: boolean
                       posts:delete:
                         type: boolean

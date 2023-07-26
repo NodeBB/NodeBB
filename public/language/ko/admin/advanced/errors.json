@@ -1,4 +1,5 @@
 {
+	"errors": "Errors",
 	"figure-x": "그래프 %1",
 	"error-events-per-day": "일일 <code>%1</code> 이벤트 발생 횟수",
 	"error.404": "404 Not Found",

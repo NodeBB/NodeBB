@@ -141,6 +141,8 @@
     "group-order-help": "Selecione um grupo e use as setas para ordenar os títulos",
     "no-group-title": "Sem título de grupo",
     "select-skin": "Escolha uma Skin",
+    "default": "Default (%1)",
+    "no-skin": "No Skin",
     "select-homepage": "Selecione uma página inicial",
     "homepage": "Página inicial",
     "homepage_description": "Selecione uma página para usar como página inicial do fórum ou 'Nenhum' para usar a página inicial padrão.",

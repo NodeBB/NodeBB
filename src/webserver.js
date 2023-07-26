@@ -176,8 +176,12 @@ function setupExpressApp(app) {
 	app.use(middleware.processRender);
 	auth.initialize(app, middleware);
 	const als = require('./als');
+	const apiHelpers = require('./api/helpers');
 	app.use((req, res, next) => {
-		als.run({ uid: req.uid }, next);
+		als.run({
+			uid: req.uid,
+			req: apiHelpers.buildReqObject(req),
+		}, next);
 	});
 	app.use(middleware.autoLocale); // must be added after auth middlewares are added
 

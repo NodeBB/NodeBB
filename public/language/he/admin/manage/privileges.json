@@ -1,6 +1,6 @@
 {
-	"manage-privileges": "Manage Privileges",
-	"discard-changes": "Discard changes",
+	"manage-privileges": "ניהול הרשאות",
+	"discard-changes": "בטל שינויים",
 	"global": "כללי",
 	"admin": "מנהל",
 	"group-privileges": "הרשאות קבוצות",
@@ -38,7 +38,7 @@
 	"downvote-posts": "הצבעה נגד פוסטים",
 	"delete-topics": "מחיקת נושא",
 	"purge": "מחיקה לצמיתות",
-	"moderate": "Moderate",
+	"moderate": "הרשאות מנחה",
 	"admin-dashboard": "לוח מחוונים",
 	"admin-categories": "קטגוריות",
 	"admin-privileges": "הרשאות",

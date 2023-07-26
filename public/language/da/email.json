@@ -22,6 +22,8 @@
     "reset.notify.subject": "Dit kodeord er nu ændret",
     "reset.notify.text1": "Bemærk:  %1 gang blev dit kodeord ændret.",
     "reset.notify.text2": "Hvis du ikke godkendte dette, kontakt straks en administrator.",
+    "digest.unread-rooms": "Unread rooms",
+    "digest.room-name-unreadcount": "%1 (%2 unread)",
     "digest.latest_topics": "Nyeste emne fra %1",
     "digest.top-topics": "Top topics from %1",
     "digest.popular-topics": "Popular topics from %1",

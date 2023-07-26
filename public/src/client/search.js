@@ -15,7 +15,7 @@ define('forum/search', [
 	let selectedUsers = [];
 	let selectedTags = [];
 	let selectedCids = [];
-
+	let searchFilters = {};
 	Search.init = function () {
 		const searchIn = $('#search-in');
 		searchIn.on('change', function () {
@@ -30,9 +30,7 @@ define('forum/search', [
 
 		$('#advanced-search form').off('submit').on('submit', function (e) {
 			e.preventDefault();
-			searchModule.query(getSearchDataFromDOM(), function () {
-				$('#search-input').val('');
-			});
+			searchModule.query(getSearchDataFromDOM());
 			return false;
 		});
 
@@ -53,12 +51,20 @@ define('forum/search', [
 			if (updateFns[$(this).attr('data-filter-name')]) {
 				updateFns[$(this).attr('data-filter-name')]();
 			}
+
+			const searchFiltersNew = getSearchDataFromDOM();
+			if (JSON.stringify(searchFilters) !== JSON.stringify(searchFiltersNew)) {
+				searchFilters = searchFiltersNew;
+				searchModule.query(searchFilters);
+			}
 		});
 
 		fillOutForm();
 		updateTimeFilter();
 		updateReplyCountFilter();
 		updateSortFilter();
+
+		searchFilters = getSearchDataFromDOM();
 	};
 
 	function updateTagFilter() {

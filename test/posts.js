@@ -114,7 +114,7 @@ describe('Post\'s', () => {
 
 		await posts.changeOwner([pid1, pid2], newUid);
 
-		assert.deepStrictEqual(await db.sortedSetScores(`tid:${postResult.topicData.tid}:posters`, [oldUid, newUid]), [0, 2]);
+		assert.deepStrictEqual(await db.sortedSetScores(`tid:${postResult.topicData.tid}:posters`, [oldUid, newUid]), [null, 2]);
 
 		assert.deepStrictEqual(await posts.isOwner([pid1, pid2], oldUid), [false, false]);
 		assert.deepStrictEqual(await posts.isOwner([pid1, pid2], newUid), [true, true]);
@@ -130,6 +130,8 @@ describe('Post\'s', () => {
 
 		assert.strictEqual(await topics.isOwner(postResult.topicData.tid, oldUid), false);
 		assert.strictEqual(await topics.isOwner(postResult.topicData.tid, newUid), true);
+
+		assert.strictEqual(await topics.getTopicField(postResult.topicData.tid, 'postercount'), 1);
 	});
 
 	it('should fail to change owner if new owner does not exist', async () => {
@@ -1160,6 +1162,28 @@ describe('Post\'s', () => {
 				assert.strictEqual(count, 0);
 				assert(events);
 				assert.strictEqual(events.length, 1);
+				assert(backlinks);
+				assert.strictEqual(backlinks.length, 0);
+			});
+
+			it('should not detect backlinks if they are in quotes', async () => {
+				const content = `
+					@baris said in [ok testing backlinks](/post/32145):
+					> here is a back link to a topic
+					>
+					>
+					> This is a link to [topic 1](${nconf.get('url')}/topic/1/abcdef
+
+					This should not generate backlink
+				`;
+				const count = await topics.syncBacklinks({
+					pid: 2,
+					content: content,
+				});
+
+				const backlinks = await db.getSortedSetMembers('pid:2:backlinks');
+
+				assert.strictEqual(count, 0);
 				assert(backlinks);
 				assert.strictEqual(backlinks.length, 0);
 			});

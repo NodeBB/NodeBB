@@ -13,5 +13,8 @@
 	"custom-header.enable": "Salli ylätunnisteen kustomointi",
 
 	"custom-css.livereload": "Salli sivun päivitys livenä",
-	"custom-css.livereload.description": "Salli tämä, jos haluat mahdollistaa kaikkien tililläsi olevien laitteiden istuntojen päivittymisen, kun tallennat tekemäsi muutokset."
+	"custom-css.livereload.description": "Salli tämä, jos haluat mahdollistaa kaikkien tililläsi olevien laitteiden istuntojen päivittymisen, kun tallennat tekemäsi muutokset.",
+	"bsvariables": "_variables.scss",
+	"bsvariables.description": "Override bootstrap variables here. You can also use a tool like <a href=\"https://bootstrap.build/app\">bootstrap.build</a> and paste the output here.<br/>Changes require a rebuild & restart.",
+	"bsvariables.enable": "Enable _variables.scss"
 }

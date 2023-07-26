@@ -141,6 +141,8 @@
     "group-order-help": "Select a group and use the arrows to order titles",
     "no-group-title": "Ei ryhmän nimeä",
     "select-skin": "Select a Skin",
+    "default": "Default (%1)",
+    "no-skin": "No Skin",
     "select-homepage": "Valitse kotisivu",
     "homepage": "Kotisivu",
     "homepage_description": "Select a page to use as the forum homepage or 'None' to use the default homepage.",

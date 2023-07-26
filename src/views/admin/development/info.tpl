@@ -12,7 +12,6 @@
 					<tr>
 						<td class="fw-bold">[[admin/development/info:host]]</td>
 						<td class="fw-bold text-center">[[admin/development/info:primary]]</td>
-						<td class="fw-bold">[[admin/development/info:pid]]</td>
 						<td class="fw-bold">[[admin/development/info:nodejs]]</td>
 						<td class="fw-bold">[[admin/development/info:online]]</td>
 						<td class="fw-bold">[[admin/development/info:git]]</td>
@@ -31,7 +30,6 @@
 						{{{if info.nodebb.isPrimary}}}<i class="fa fa-check"></i>{{{else}}}<i class="fa fa-times"></i>{{{end}}} /
 						{{{if info.nodebb.runJobs}}}<i class="fa fa-check"></i>{{{else}}}<i class="fa fa-times"></i>{{{end}}}
 					</td>
-					<td>{info.process.pid}</td>
 					<td>{info.process.version}</td>
 					<td>
 						<span title="[[admin/development/info:registered]]">{info.stats.onlineRegisteredCount}</span> /

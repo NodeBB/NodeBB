@@ -13,5 +13,8 @@
 	"custom-header.enable": "Увімкнути користувацький заголовок",
 
 	"custom-css.livereload": "Увімкнути Автоматичне Оновлення",
-	"custom-css.livereload.description": "Увімкніть цю опцію, щоб примусово оновлювати всі сесії вашого акаунту, коли ви натискаєте Зберегти"
+	"custom-css.livereload.description": "Увімкніть цю опцію, щоб примусово оновлювати всі сесії вашого акаунту, коли ви натискаєте Зберегти",
+	"bsvariables": "_variables.scss",
+	"bsvariables.description": "Override bootstrap variables here. You can also use a tool like <a href=\"https://bootstrap.build/app\">bootstrap.build</a> and paste the output here.<br/>Changes require a rebuild & restart.",
+	"bsvariables.enable": "Enable _variables.scss"
 }

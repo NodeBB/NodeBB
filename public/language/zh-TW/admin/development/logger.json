@@ -1,4 +1,5 @@
 {
+	"logger": "Logger",
 	"logger-settings": "日誌記錄器設定",
 	"description": "啟用此選項後，日誌會在您的終端裡顯示。如果您註明了檔案路徑，日誌會被保存到該檔案中。HTTP 日誌可以幫助您收集論壇被誰，何時，以及什麼內容被訪問等統計資訊。在此基礎上，我們還提供 socket.io 事件日誌。結合 socket.io 日誌和 redis-cli 監控器，學習 NodeBB 的內部構造會更加方便。",
 	"explanation": "勾選或反勾選日誌設定項即可啟用或禁用相應設定。無需重啟。",

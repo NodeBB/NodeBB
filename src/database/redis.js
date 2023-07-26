@@ -33,8 +33,8 @@ redisModule.questions = [
 ];
 
 
-redisModule.init = async function () {
-	redisModule.client = await connection.connect(nconf.get('redis'));
+redisModule.init = async function (opts) {
+	redisModule.client = await connection.connect(opts || nconf.get('redis'));
 };
 
 redisModule.createSessionStore = async function (options) {
@@ -62,6 +62,9 @@ redisModule.checkCompatibilityVersion = function (version, callback) {
 
 redisModule.close = async function () {
 	await redisModule.client.quit();
+	if (redisModule.objectCache) {
+		redisModule.objectCache.reset();
+	}
 };
 
 redisModule.info = async function (cxn) {

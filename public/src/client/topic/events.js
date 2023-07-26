@@ -142,19 +142,21 @@ define('forum/topic/events', [
 				posts.addBlockquoteEllipses(editedPostEl.parent());
 				editedPostEl.fadeIn(250);
 
-				const editData = {
-					editor: data.editor,
-					editedISO: utils.toISOString(data.post.edited),
-				};
+				if (data.post.edited) {
+					const editData = {
+						editor: data.editor,
+						editedISO: utils.toISOString(data.post.edited),
+					};
 
-				app.parseAndTranslate('partials/topic/post-editor', editData, function (html) {
-					editorEl.replaceWith(html);
-					postContainer.find('[component="post/edit-indicator"]')
-						.removeClass('hidden')
-						.translateAttr('title', `[[global:edited-timestamp, ${editData.editedISO}]]`);
-					postContainer.find('[component="post/editor"] .timeago').timeago();
-					hooks.fire('action:posts.edited', data);
-				});
+					app.parseAndTranslate('partials/topic/post-editor', editData, function (html) {
+						editorEl.replaceWith(html);
+						postContainer.find('[component="post/edit-indicator"]')
+							.removeClass('hidden')
+							.translateAttr('title', `[[global:edited-timestamp, ${editData.editedISO}]]`);
+						postContainer.find('[component="post/editor"] .timeago').timeago();
+						hooks.fire('action:posts.edited', data);
+					});
+				}
 			});
 		} else {
 			hooks.fire('action:posts.edited', data);

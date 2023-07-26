@@ -1,11 +1,18 @@
 {
-	"skins": "Skins",
+	"skins": "皮肤",
+	"bootswatch-skins": "基于 Bootswatch的皮肤",
+	"custom-skins": "自定义皮肤",
+	"add-skin": "添加皮肤",
+	"save-custom-skins": "保存自定义皮肤",
+	"save-custom-skins-success": "自定义皮肤保存成功",
+	"custom-skin-name": "自定义皮肤名称",
+	"custom-skin-variables": "自定义皮肤变量",
 	"loading": "正在加载皮肤...",
 	"homepage": "主页",
 	"select-skin": "选择皮肤",
-	"revert-skin": "Revert Skin",
+	"revert-skin": "恢复皮肤配置",
 	"current-skin": "当前皮肤",
 	"skin-updated": "皮肤已更新",
 	"applied-success": "%1 皮肤已成功应用",
-	"revert-success": "皮肤已恢复到基础颜色"
+	"revert-success": "皮肤已恢复到原来的颜色"
 }

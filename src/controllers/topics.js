@@ -72,8 +72,16 @@ topicsController.get = async function getTopic(req, res, next) {
 	const sort = req.query.sort || settings.topicPostSort;
 	const set = sort === 'most_votes' ? `tid:${tid}:posts:votes` : `tid:${tid}:posts`;
 	const reverse = sort === 'newest_to_oldest' || sort === 'most_votes';
-	if (settings.usePagination && !req.query.page) {
+
+	if (!req.query.page) {
 		currentPage = calculatePageFromIndex(postIndex, settings);
+	}
+	if (settings.usePagination && req.query.page) {
+		const top = ((currentPage - 1) * settings.postsPerPage) + 1;
+		const bottom = top + settings.postsPerPage;
+		if (!req.params.post_index || (postIndex < top || postIndex > bottom)) {
+			postIndex = top;
+		}
 	}
 	const { start, stop } = calculateStartStop(currentPage, postIndex, settings);
 
@@ -107,7 +115,7 @@ topicsController.get = async function getTopic(req, res, next) {
 	await Promise.all([
 		buildBreadcrumbs(topicData),
 		addOldCategory(topicData, userPrivileges),
-		addTags(topicData, req, res),
+		addTags(topicData, req, res, currentPage),
 		incrementViewCount(req, tid),
 		markAsRead(req, tid),
 		analytics.increment([`pageviews:byCid:${topicData.category.cid}`]),
@@ -193,7 +201,7 @@ async function addOldCategory(topicData, userPrivileges) {
 	}
 }
 
-async function addTags(topicData, req, res) {
+async function addTags(topicData, req, res, currentPage) {
 	const postIndex = parseInt(req.params.post_index, 10) || 0;
 	const postAtIndex = topicData.posts.find(p => parseInt(p.index, 10) === parseInt(Math.max(0, postIndex - 1), 10));
 	let description = '';
@@ -201,14 +209,15 @@ async function addTags(topicData, req, res) {
 		description = utils.stripHTMLTags(utils.decodeHTMLEntities(postAtIndex.content));
 	}
 
-	if (description.length > 255) {
-		description = `${description.slice(0, 255)}...`;
+	if (description.length > 160) {
+		description = `${description.slice(0, 157)}...`;
 	}
 	description = description.replace(/\n/g, ' ');
 
-	const mainPost = postIndex === 0 && postAtIndex ?
-		postAtIndex :
-		await topics.getMainPost(topicData.tid, req.uid);
+	let mainPost = topicData.posts.find(p => parseInt(p.index, 10) === 0);
+	if (!mainPost) {
+		mainPost = await posts.getPostData(topicData.mainPid);
+	}
 
 	res.locals.metaTags = [
 		{
@@ -247,10 +256,12 @@ async function addTags(topicData, req, res) {
 
 	await addOGImageTags(res, topicData, postAtIndex);
 
+	const page = currentPage > 1 ? `?page=${currentPage}` : '';
 	res.locals.linkTags = [
 		{
 			rel: 'canonical',
-			href: `${url}/topic/${topicData.slug}`,
+			href: `${url}/topic/${topicData.slug}${page}`,
+			noEscape: true,
 		},
 	];
 

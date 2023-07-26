@@ -154,6 +154,7 @@ module.exports = function (middleware) {
 			allowRegistration: registrationType === 'normal',
 			searchEnabled: plugins.hooks.hasListeners('filter:search.query'),
 			postQueueEnabled: !!meta.config.postQueue,
+			registrationQueueEnabled: meta.config.registrationApprovalType !== 'normal' || (meta.config.registrationType === 'invite-only' || meta.config.registrationType === 'admin-invite-only'),
 			config: res.locals.config,
 			relative_path,
 			bodyClass: options.bodyClass,
@@ -168,6 +169,7 @@ module.exports = function (middleware) {
 			isGlobalMod: user.isGlobalModerator(req.uid),
 			isModerator: user.isModeratorOfAnyCategory(req.uid),
 			privileges: privileges.global.get(req.uid),
+			blocks: user.blocks.list(req.uid),
 			user: user.getUserData(req.uid),
 			isEmailConfirmSent: req.uid <= 0 ? false : await user.email.isValidationPending(req.uid),
 			languageDirection: translator.translate('[[language:dir]]', res.locals.config.userLang),
@@ -189,6 +191,7 @@ module.exports = function (middleware) {
 		results.user.isGlobalMod = results.isGlobalMod;
 		results.user.isMod = !!results.isModerator;
 		results.user.privileges = results.privileges;
+		results.user.blocks = results.blocks;
 		results.user.timeagoCode = results.timeagoCode;
 		results.user[results.user.status] = true;
 		results.user.lastRoomId = results.roomIds.length ? results.roomIds[0] : null;
@@ -197,7 +200,7 @@ module.exports = function (middleware) {
 		results.user['email:confirmed'] = results.user['email:confirmed'] === 1;
 		results.user.isEmailConfirmSent = !!results.isEmailConfirmSent;
 
-		templateValues.bootswatchSkin = (parseInt(meta.config.disableCustomUserSkins, 10) !== 1 ? res.locals.config.bootswatchSkin : '') || meta.config.bootswatchSkin || '';
+		templateValues.bootswatchSkin = res.locals.config.bootswatchSkin || '';
 		templateValues.browserTitle = results.browserTitle;
 		({
 			navigation: templateValues.navigation,
@@ -255,6 +258,7 @@ module.exports = function (middleware) {
 			latestVersion: getLatestVersion(),
 			privileges: privileges.admin.get(req.uid),
 			tags: meta.tags.parse(req, {}, [], []),
+			languageDirection: translator.translate('[[language:dir]]', res.locals.config.acpLang),
 		});
 
 		const { userData } = results;
@@ -271,6 +275,7 @@ module.exports = function (middleware) {
 		const version = nconf.get('version');
 
 		res.locals.config.userLang = res.locals.config.acpLang || res.locals.config.userLang;
+		res.locals.config.isRTL = results.languageDirection === 'rtl';
 		const templateValues = {
 			config: res.locals.config,
 			configJSON: jsesc(JSON.stringify(res.locals.config), { isScriptContext: true }),
@@ -291,6 +296,9 @@ module.exports = function (middleware) {
 			latestVersion: results.latestVersion,
 			upgradeAvailable: results.latestVersion && semver.gt(results.latestVersion, version),
 			showManageMenu: results.privileges.superadmin || ['categories', 'privileges', 'users', 'admins-mods', 'groups', 'tags', 'settings'].some(priv => results.privileges[`admin:${priv}`]),
+			defaultLang: meta.config.defaultLang || 'en-GB',
+			acpLang: res.locals.config.acpLang,
+			languageDirection: results.languageDirection,
 		};
 
 		templateValues.template = { name: res.locals.template };

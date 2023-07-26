@@ -64,6 +64,7 @@ describe('Sorted Set methods', () => {
 				match: '*b{',
 				limit: 2,
 			});
+			assert.strictEqual(data.length, 2);
 			assert(data.includes('aaab{'));
 			assert(data.includes('bbcb{'));
 		});
@@ -73,8 +74,8 @@ describe('Sorted Set methods', () => {
 			const data = await db.getSortedSetScan({
 				key: 'scanzset4',
 				match: 'b*',
-				limit: 2,
 			});
+			assert.strictEqual(data.length, 2);
 			assert(data.includes('bbbb'));
 			assert(data.includes('bbcb'));
 		});
@@ -85,7 +86,7 @@ describe('Sorted Set methods', () => {
 				key: 'scanzset5',
 				match: '*db',
 			});
-			assert.equal(data.length, 2);
+			assert.strictEqual(data.length, 2);
 			assert(data.includes('ddb'));
 			assert(data.includes('adb'));
 		});

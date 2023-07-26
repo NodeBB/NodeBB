@@ -68,10 +68,12 @@ recentController.getData = async function (req, url, sort) {
 		data.breadcrumbs = helpers.buildBreadcrumbs([{ text: `[[${url}:title]]` }]);
 	}
 
+	const query = { ...req.query };
+	delete query.page;
 	data.canPost = canPost;
 	data.showSelect = isPrivileged;
 	data.showTopicTools = isPrivileged;
-	data.allCategoriesUrl = baseUrl + helpers.buildQueryString(req.query, 'cid', '');
+	data.allCategoriesUrl = baseUrl + helpers.buildQueryString(query, 'cid', '');
 	data.selectedCategory = categoryData.selectedCategory;
 	data.selectedCids = categoryData.selectedCids;
 	data.selectedTag = tagData.selectedTag;
@@ -82,14 +84,19 @@ recentController.getData = async function (req, url, sort) {
 		data.rssFeedUrl += `?uid=${req.uid}&token=${rssToken}`;
 	}
 
-	data.filters = helpers.buildFilters(baseUrl, filter, req.query);
+	data.filters = helpers.buildFilters(baseUrl, filter, query);
 	data.selectedFilter = data.filters.find(filter => filter && filter.selected);
-	data.terms = helpers.buildTerms(baseUrl, term, req.query);
+	data.terms = helpers.buildTerms(baseUrl, term, query);
 	data.selectedTerm = data.terms.find(term => term && term.selected);
 
 	const pageCount = Math.max(1, Math.ceil(data.topicCount / settings.topicsPerPage));
 	data.pagination = pagination.create(page, pageCount, req.query);
-	helpers.addLinkTags({ url: url, res: req.res, tags: data.pagination.rel });
+	helpers.addLinkTags({
+		url: url,
+		res: req.res,
+		tags: data.pagination.rel,
+		page: page,
+	});
 	return data;
 };
 

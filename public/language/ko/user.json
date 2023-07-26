@@ -141,6 +141,8 @@
     "group-order-help": "그룹 선택 후 화살표로 순서 지정",
     "no-group-title": "그룹 이름이 없습니다.",
     "select-skin": "스킨 선택",
+    "default": "Default (%1)",
+    "no-skin": "No Skin",
     "select-homepage": "홈페이지 선택",
     "homepage": "홈페이지",
     "homepage_description": "포럼 홈페이지로 사용할 페이지를 선택하거나 'None'으로 설정하여 기본 홈페이지를 사용합니다.",

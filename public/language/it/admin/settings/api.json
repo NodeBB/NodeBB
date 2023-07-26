@@ -21,8 +21,8 @@
 	"last-seen-never": "Questa chiave non è mai stata usata.",
 	"no-description": "Nessuna descrizione specificata.",
 	"actions": "Azioni",
-	"edit": "Edit",
-	"roll": "Roll",
+	"edit": "Modifica",
+	"roll": "Rigenerare",
 
 	"delete-confirm": "Sei sicuro di voler eliminare questo token? Non sarà recuperabile.",
 	"roll-confirm": "Sei sicuro di voler rigenerare questo token? Il vecchio token sarà immediatamente revocato e non sarà recuperabile."

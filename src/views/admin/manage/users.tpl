@@ -1,5 +1,4 @@
-<div class="manage-users d-flex flex-column gap-2 px-lg-4">
-
+<div class="manage-users d-flex flex-column gap-2 px-lg-4 h-100">
 	<div class="d-flex border-bottom py-2 m-0 sticky-top acp-page-main-header align-items-center justify-content-between flex-wrap gap-2">
 		<div class="">
 			<h4 class="fw-bold tracking-tight mb-0">[[admin/manage/users:manage-users]]</h4>
@@ -38,9 +37,6 @@
 						</li>
 					</ul>
 				</div>
-			</div>
-
-			<div class="">
 				<div class="btn-group">
 					<button class="btn btn-primary btn-sm dropdown-toggle" id="action-dropdown" data-bs-toggle="dropdown" type="button" disabled="disabled">[[admin/manage/users:edit]] <span class="caret"></span></button>
 					<ul class="dropdown-menu dropdown-menu-end p-1">
@@ -49,6 +45,7 @@
 						<li><a href="#" class="dropdown-item rounded-1 password-reset-email"><i class="fa fa-fw fa-key"></i> [[admin/manage/users:password-reset-email]]</a></li>
 						<li><a href="#" class="dropdown-item rounded-1 force-password-reset"><i class="fa fa-fw fa-unlock-alt"></i> [[admin/manage/users:force-password-reset]]</a></li>
 						<li><a href="#" class="dropdown-item rounded-1 manage-groups"><i class="fa fa-fw fa-users"></i> [[admin/manage/users:manage-groups]]</a></li>
+						<li><a href="#" class="dropdown-item rounded-1 set-reputation"><i class="fa fa-fw fa-star"></i> [[admin/manage/users:set-reputation]]</a></li>
 						<li class="dropdown-divider"></li>
 						<li><a href="#" class="dropdown-item rounded-1 ban-user"><i class="fa fa-fw fa-gavel"></i> [[admin/manage/users:ban]]</a></li>
 						<li><a href="#" class="dropdown-item rounded-1 ban-user-temporary"><i class="fa fa-fw fa-clock-o"></i> [[admin/manage/users:temp-ban]]</a></li>
@@ -72,8 +69,8 @@
 		</div>
 	</div>
 
-	<div class="row">
-		<div class="col-lg-12">
+	<div class="row flex-grow-1">
+		<div class="col-lg-12 d-flex flex-column gap-2">
 			<div class="search {search_display}">
 				<i class="fa fa-spinner fa-spin hidden"></i>
 
@@ -82,7 +79,7 @@
 				<div id="user-notfound-notify" class="badge text-bg-warning {{{if !query}}}hidden{{{end}}} {{{if matchCount}}}hidden{{{end}}}">[[admin/manage/users:search.not-found]]</div>
 			</div>
 
-			<div class="table-responsive">
+			<div class="table-responsive flex-grow-1">
 				<table class="table users-table text-sm">
 					<thead>
 						<tr>
@@ -100,7 +97,7 @@
 					</thead>
 					<tbody>
 						{{{ each users }}}
-						<tr class="user-row">
+						<tr class="user-row align-middle">
 							<th><input component="user/select/single" data-uid="{users.uid}" type="checkbox"/></th>
 							<td class="text-end">{users.uid}</td>
 							<td>
@@ -108,19 +105,55 @@
 								<i class="administrator fa fa-shield text-success{{{ if !users.administrator }}} hidden{{{ end }}}"></i>
 								<a href="{config.relative_path}/user/{users.userslug}"> {users.username}</a>
 							</td>
+							<td class="text-nowrap ">
+								<div class="d-flex flex-column gap-1">
+									{{{ if (!./email && !./emailToConfirm) }}}
+									<em class="text-muted">[[admin/manage/users:users.no-email]]</em>
+									{{{ else }}}
+									<span class="validated {{{ if !users.email:confirmed }}} hidden{{{ end }}}">
+										<i class="fa fa-fw fa-check text-success" title="[[admin/manage/users:users.validated]]" data-bs-toggle="tooltip"></i>
+										{{{ if ./email }}}{./email}{{{ end }}}
+									</span>
+
+									<span class="validated-by-admin hidden">
+										<i class="fa fa-fw fa-check text-success" title="[[admin/manage/users:users.validated]]" data-bs-toggle="tooltip"></i>
+										{{{ if ./emailToConfirm }}}{./emailToConfirm}{{{ end }}}
+									</span>
+
+									<span class="pending {{{ if !users.email:pending }}} hidden{{{ end }}}">
+										<i class="fa fa-fw fa-clock-o text-warning" title="[[admin/manage/users:users.validation-pending]]" data-bs-toggle="tooltip"></i>
+										{./emailToConfirm}
+									</span>
+
+									<span class="expired {{{ if !users.email:expired }}} hidden{{{ end }}}">
+										<i class="fa fa-fw fa-times text-danger" title="[[admin/manage/users:users.validation-expired]]" data-bs-toggle="tooltip"></i>
+										{./emailToConfirm}
+									</span>
+
+									<span class="notvalidated {{{ if (users.email:expired || (users.email:pending || users.email:confirmed)) }}} hidden{{{ end }}}">
+										<i class="fa fa-fw fa-times text-danger" title="[[admin/manage/users:users.not-validated]]" data-bs-toggle="tooltip"></i>
+										{./emailToConfirm}
+									</span>
+									{{{ end }}}
+								</div>
+							</td>
 							<td>
-								{{{ if ../email }}}
-								<i class="validated fa fa-check text-success{{{ if !users.email:confirmed }}} hidden{{{ end }}}" title="validated"></i>
-								<i class="notvalidated fa fa-check text-muted{{{ if users.email:confirmed }}} hidden{{{ end }}}" title="not validated"></i>
-								{../email}
-								{{{ else }}}
-								<i class="notvalidated fa fa-check text-muted" title="not validated"></i>
-								<em class="text-muted">[[admin/manage/users:users.no-email]]</em>
+								{{{ if ./ips.length }}}
+								<div class="dropdown">
+									<button class="btn btn-light btn-sm" data-bs-toggle="dropdown"><i class="fa fa-fw fa-list text-muted"></i></button>
+									<ul class="dropdown-menu p-1">
+										{{{ each ./ips }}}
+										<li class="d-flex gap-1 {{{ if !@last }}}mb-1{{{ end }}}">
+											<a class="dropdown-item rounded-1">{@value}</a>
+											<button data-ip="{@value}" onclick="navigator.clipboard.writeText(this.getAttribute('data-ip'))" class="btn btn-light btn-sm"><i class="fa fa-copy"></i></button>
+										</li>
+										{{{ end }}}
+									</ul>
+								</div>
 								{{{ end }}}
 							</td>
-							<td>{users.ip}</td>
-							<td class="text-end">{users.postcount}</td>
-							<td class="text-end">{users.reputation}</td>
+							<td class="text-end">{formattedNumber(users.postcount)}</td>
+							<td class="text-end" component="user/reputation" data-uid="{users.uid}">{formattedNumber(users.reputation)}</td>
 							<td class="text-end">{{{ if users.flags }}}{users.flags}{{{ else }}}0{{{ end }}}</td>
 							<td><span class="timeago" title="{users.joindateISO}"></span></td>
 							<td><span class="timeago" title="{users.lastonlineISO}"></span></td>

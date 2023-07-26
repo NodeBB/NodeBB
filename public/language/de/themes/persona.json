@@ -1,10 +1,10 @@
 {
-    "settings.title": "Theme settings",
-    "settings.intro": "You can customise your theme settings here. Settings are stored on a per-device basis, so you are able to have different settings on different devices (phone, tablet, desktop, etc.)",
+    "settings.title": "Theme-Einstellungen",
+    "settings.intro": "Hier kannst Du Deine Theme-Einstellungen anpassen. Die Einstellungen werden auf dem aktuellen Gerät gespeichert, sodass die Einstellungen sich auf unterschiedlichen Geräten (Handy, Tablet, PC etc.) unterscheiden können.",
     "settings.mobile-menu-side": "Menüposition der mobilen Seiten umschalten",
-    "settings.autoHidingNavbar": "Automatically hide the navbar on scroll",
-    "settings.autoHidingNavbar-xs": "Very small screens (e.g. phones in portrait mode)",
-    "settings.autoHidingNavbar-sm": "Smaller screens (e.g. phones, some tablets)",
-    "settings.autoHidingNavbar-md": "Medium sized screens (e.g. tablets in landscape mode)",
-    "settings.autoHidingNavbar-lg": "Larger screens (e.g. desktop computers)"
+    "settings.autoHidingNavbar": "Navigationsleiste bei Scrollen automatisch verbergen",
+    "settings.autoHidingNavbar-xs": "Sehr kleine Bildschirme (z. B. Handys in aufrechter Anzeige)",
+    "settings.autoHidingNavbar-sm": "Kleinere Bildschirme (z. B. Handys, manche Tablets)",
+    "settings.autoHidingNavbar-md": "Mittelgroße Bildschirme (z. B. Tablets in seitlicher Anzeige)",
+    "settings.autoHidingNavbar-lg": "Größere Bildschirme (z. B. Computer-Bildschirme)"
 }

@@ -101,6 +101,7 @@ define('tagFilter', ['hooks', 'alerts', 'bootstrap'], function (hooks, alerts, b
 				} else {
 					delete currentParams.tag;
 				}
+				delete currentParams.page;
 				if (Object.keys(currentParams).length) {
 					url += '?' + decodeURIComponent($.param(currentParams));
 				}

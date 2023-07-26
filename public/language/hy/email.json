@@ -22,6 +22,8 @@
     "reset.notify.subject": "Գաղտնաբառը հաջողությամբ փոխված է",
     "reset.notify.text1": "Մենք ծանուցում ենք ձեզ, որ %1-ում ձեր գաղտնաբառը հաջողությամբ փոխվել է:",
     "reset.notify.text2": "Եթե դուք չեք թույլատրել սա, խնդրում ենք անմիջապես տեղեկացնել ադմինիստրատորին:",
+    "digest.unread-rooms": "Unread rooms",
+    "digest.room-name-unreadcount": "%1 (%2 unread)",
     "digest.latest_topics": "Վերջին թեմաները %1-ից",
     "digest.top-topics": "Հիմնական թեմաները %1-ից",
     "digest.popular-topics": "Հանրաճանաչ թեմաներ %1-ից",

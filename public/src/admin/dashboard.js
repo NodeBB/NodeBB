@@ -2,8 +2,8 @@
 
 
 define('admin/dashboard', [
-	'Chart', 'translator', 'benchpress', 'bootbox', 'alerts',
-], function (Chart, translator, Benchpress, bootbox, alerts) {
+	'Chart', 'translator', 'benchpress', 'bootbox', 'alerts', 'helpers',
+], function (Chart, translator, Benchpress, bootbox, alerts, helpers) {
 	const Admin = {};
 	const intervals = {
 		rooms: false,
@@ -63,20 +63,20 @@ define('admin/dashboard', [
 		graphData.rooms = data;
 
 		const html = '<div class="text-center float-start">' +
-						'<span class="formatted-number">' + data.onlineRegisteredCount + '</span>' +
-						'<div class="stat text-nowrap">[[admin/dashboard:active-users.users]]</div>' +
+						'<span class="fs-5">' + helpers.formattedNumber(data.onlineRegisteredCount) + '</span>' +
+						'<div class="stat text-nowrap text-uppercase fw-semibold text-xs text-muted">[[admin/dashboard:active-users.users]]</div>' +
 					'</div>' +
 					'<div class="text-center float-start">' +
-						'<span class="formatted-number">' + data.onlineGuestCount + '</span>' +
-						'<div class="stat text-nowrap">[[admin/dashboard:active-users.guests]]</div>' +
+						'<span class="fs-5">' + helpers.formattedNumber(data.onlineGuestCount) + '</span>' +
+						'<div class="stat text-nowrap text-uppercase fw-semibold text-xs text-muted">[[admin/dashboard:active-users.guests]]</div>' +
 					'</div>' +
 					'<div class="text-center float-start">' +
-						'<span class="formatted-number">' + (data.onlineRegisteredCount + data.onlineGuestCount) + '</span>' +
-						'<div class="stat text-nowrap">[[admin/dashboard:active-users.total]]</div>' +
+						'<span class="fs-5">' + helpers.formattedNumber(data.onlineRegisteredCount + data.onlineGuestCount) + '</span>' +
+						'<div class="stat text-nowrap text-uppercase fw-semibold text-xs text-muted">[[admin/dashboard:active-users.total]]</div>' +
 					'</div>' +
 					'<div class="text-center float-start">' +
-						'<span class="formatted-number">' + data.socketCount + '</span>' +
-						'<div class="stat text-nowrap">[[admin/dashboard:active-users.connections]]</div>' +
+						'<span class="fs-5">' + helpers.formattedNumber(data.socketCount) + '</span>' +
+						'<div class="stat text-nowrap text-uppercase fw-semibold text-xs text-muted">[[admin/dashboard:active-users.connections]]</div>' +
 					'</div>';
 
 		updateRegisteredGraph(data.onlineRegisteredCount, data.onlineGuestCount);
@@ -393,8 +393,6 @@ define('admin/dashboard', [
 				});
 			});
 
-			socket.emit('admin.rooms.getAll', Admin.updateRoomUsage);
-			initiateDashboard();
 			callback();
 		});
 	}
@@ -438,12 +436,9 @@ define('admin/dashboard', [
 			} else {
 				graphs.traffic.data.xLabels = utils.getHoursArray();
 
-				$('#pageViewsThirty').html(data.summary.thirty);
-				$('#pageViewsSeven').html(data.summary.seven);
-				$('#pageViewsPastDay').html(data.pastDay);
-				utils.addCommasToNumbers($('#pageViewsThirty'));
-				utils.addCommasToNumbers($('#pageViewsSeven'));
-				utils.addCommasToNumbers($('#pageViewsPastDay'));
+				$('#pageViewsThirty').html(helpers.formattedNumber(data.summary.thirty));
+				$('#pageViewsSeven').html(helpers.formattedNumber(data.summary.seven));
+				$('#pageViewsPastDay').html(helpers.formattedNumber(data.pastDay));
 			}
 
 			graphs.traffic.data.datasets[0].data = data.pageviews;
@@ -567,7 +562,7 @@ define('admin/dashboard', [
 	function setupFullscreen() {
 		const container = document.getElementById('analytics-panel');
 		const $container = $(container);
-		const btn = $container.find('.fa-expand');
+		const btn = $container.find('#expand-analytics');
 		let fsMethod;
 		let exitMethod;
 
@@ -586,7 +581,6 @@ define('admin/dashboard', [
 		}
 
 		if (fsMethod) {
-			btn.addClass('active');
 			btn.on('click', function () {
 				if ($container.hasClass('fullscreen')) {
 					document[exitMethod]();

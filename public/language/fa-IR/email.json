@@ -22,6 +22,8 @@
     "reset.notify.subject": "کلمه عبور با موفقیت تغییر کرد",
     "reset.notify.text1": "به شما اعلام میداریم که در %1، کلمه عبور شما با موفقیت بازنشانی شد.",
     "reset.notify.text2": "اگر این را تایید نمیکنید، لطفا بلافاصله به یک مدیر اطلاع دهید.",
+    "digest.unread-rooms": "Unread rooms",
+    "digest.room-name-unreadcount": "%1 (%2 unread)",
     "digest.latest_topics": "آخرین پست های %1:",
     "digest.top-topics": "Top topics from %1",
     "digest.popular-topics": "Popular topics from %1",

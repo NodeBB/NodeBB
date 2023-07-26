@@ -104,7 +104,6 @@ define('forum/category', [
 				app.parseAndTranslate('category', 'children', { children: data }, function (html) {
 					html.find('.timeago').timeago();
 					$('[component="category/subcategory/container"]').append(html);
-					utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 					ajaxify.data.nextSubCategoryStart += ajaxify.data.subCategoriesPerPage;
 					ajaxify.data.subCategoriesLeft -= data.length;
 					btn.toggleClass('hidden', ajaxify.data.subCategoriesLeft <= 0)

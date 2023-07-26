@@ -3,7 +3,7 @@
 
 	<div class="row settings m-0">
 		<div id="spy-container" class="col-12 col-md-8 px-0 mb-4" tabindex="0">
-			<div class="mb-4">
+			<div id="tag-settings" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/tags:tag]]</h5>
 				<div class="mb-3">
 					<label class="form-label" for="systemTags">[[admin/settings/tags:system-tags]]</label>
@@ -33,7 +33,7 @@
 
 			<hr/>
 
-			<div class="mb-4">
+			<div id="related-topics" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/tags:related-topics]]</h5>
 				<div class="mb-3">
 					<label class="form-label" for="maximumRelatedTopics">[[admin/settings/tags:max-related-topics]]</label>

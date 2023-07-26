@@ -51,7 +51,12 @@ unreadController.get = async function (req, res) {
 
 	data.pageCount = Math.max(1, Math.ceil(data.topicCount / userSettings.topicsPerPage));
 	data.pagination = pagination.create(page, data.pageCount, req.query);
-	helpers.addLinkTags({ url: 'unread', res: req.res, tags: data.pagination.rel });
+	helpers.addLinkTags({
+		url: 'unread',
+		res: req.res,
+		tags: data.pagination.rel,
+		page: page,
+	});
 
 	if (userSettings.usePagination && (page < 1 || page > data.pageCount)) {
 		req.query.page = Math.max(1, Math.min(data.pageCount, page));

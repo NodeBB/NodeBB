@@ -85,14 +85,22 @@ define('forum/topic/replies', ['forum/topic/posts', 'hooks', 'alerts'], function
 	};
 
 	function incrementCount(post, inc) {
+		const postEl = document.querySelector(`[component="post"][data-pid="${post.toPid}"]`);
+		if (!postEl) {
+			return;
+		}
+
 		const replyCount = $('[component="post"][data-pid="' + post.toPid + '"]').find('[component="post/reply-count"]').first();
 		const countEl = replyCount.find('[component="post/reply-count/text"]');
 		const avatars = replyCount.find('[component="post/reply-count/avatars"]');
 		const count = Math.max(0, (parseInt(countEl.attr('data-replies'), 10) || 0) + inc);
 		const timestamp = replyCount.find('.timeago').attr('title', post.timestampISO);
 
+		const index = postEl.getAttribute('data-index');
+		const hasSingleImmediateReply = count === 1 && Math.abs(post.index - index) === 1;
+
 		countEl.attr('data-replies', count);
-		replyCount.toggleClass('hidden', count <= 0);
+		replyCount.toggleClass('hidden', count <= 0 || hasSingleImmediateReply);
 		if (count > 1) {
 			countEl.translateText('[[topic:replies_to_this_post, ' + count + ']]');
 		} else {

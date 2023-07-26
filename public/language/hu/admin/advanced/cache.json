@@ -1,4 +1,5 @@
 {
+	"cache": "Cache",
 	"post-cache": "Hozzászólás gyorsítótár",
 	"group-cache": "Group Cache",
 	"local-cache": "Local Cache",

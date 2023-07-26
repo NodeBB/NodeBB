@@ -238,7 +238,7 @@ describe('Utility Methods', () => {
 	});
 
 	it('should make number human readable', (done) => {
-		assert.equal(utils.makeNumberHumanReadable(null), null);
+		assert.equal(utils.makeNumberHumanReadable(null), 'null');
 		done();
 	});
 

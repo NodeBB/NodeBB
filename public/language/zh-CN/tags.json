@@ -1,11 +1,11 @@
 {
-    "all-tags": "All tags",
+    "all-tags": "所有标签",
     "no_tag_topics": "此标签还没有主题帖。",
-    "no-tags-found": "No tags found",
+    "no-tags-found": "没有找到标签",
     "tags": "标签",
     "enter_tags_here": "在这里输入标签，每个标签 %1 到 %2 个字符。",
     "enter_tags_here_short": "输入标签...",
     "no_tags": "尚无标签。",
     "select_tags": "选择标签",
-    "tag-whitelist": "Tag Whitelist"
+    "tag-whitelist": "标签白名单"
 }

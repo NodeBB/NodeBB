@@ -10,7 +10,8 @@ define('forum/topic/posts', [
 	'components',
 	'translator',
 	'hooks',
-], function (pagination, infinitescroll, postTools, images, navigator, components, translator, hooks) {
+	'helpers',
+], function (pagination, infinitescroll, postTools, images, navigator, components, translator, hooks, helpers) {
 	const Posts = { };
 
 	Posts.signaturesShown = {};
@@ -76,8 +77,7 @@ define('forum/topic/posts', [
 	function updatePostCounts(posts) {
 		for (let i = 0; i < posts.length; i += 1) {
 			const cmp = components.get('user/postcount', posts[i].uid);
-			cmp.html(parseInt(cmp.attr('data-postcount'), 10) + 1);
-			utils.addCommasToNumbers(cmp);
+			cmp.html(helpers.formattedNumber(parseInt(cmp.attr('data-postcount'), 10) + 1));
 		}
 	}
 
@@ -410,8 +410,6 @@ define('forum/topic/posts', [
 
 	Posts.onNewPostsAddedToDom = async function (posts) {
 		await Posts.onTopicPageLoad(posts);
-		utils.addCommasToNumbers(posts.find('.formatted-number'));
-		utils.makeNumbersHumanReadable(posts.find('.human-readable-number'));
 		posts.find('.timeago').timeago();
 	};
 

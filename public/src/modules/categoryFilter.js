@@ -52,6 +52,8 @@ define('categoryFilter', ['categorySearch', 'api', 'hooks'], function (categoryS
 				} else {
 					delete currentParams.cid;
 				}
+
+				delete currentParams.page;
 				if (Object.keys(currentParams).length) {
 					url += '?' + decodeURIComponent($.param(currentParams));
 				}
@@ -70,9 +72,6 @@ define('categoryFilter', ['categorySearch', 'api', 'hooks'], function (categoryS
 			const icon = categoryEl.find('[component="category/select/icon"]');
 
 			if (cid !== 'all') {
-				if (selectedCids.includes('all')) {
-					selectedCids.splice(selectedCids.indexOf('all'), 1);
-				}
 				if (selectedCids.includes(cid)) {
 					selectedCids.splice(selectedCids.indexOf(cid), 1);
 				} else {
@@ -83,13 +82,10 @@ define('categoryFilter', ['categorySearch', 'api', 'hooks'], function (categoryS
 				});
 				icon.toggleClass('invisible');
 				listEl.find('[data-cid="all"] i').toggleClass('invisible', !!selectedCids.length);
-				if (!selectedCids.length) {
-					selectedCids.push('all');
-				}
 			} else {
 				el.find('[component="category/select/icon"]').addClass('invisible');
 				listEl.find('[data-cid="all"] i').removeClass('invisible');
-				selectedCids = ['all'];
+				selectedCids = [];
 			}
 
 			options.selectedCids = selectedCids;

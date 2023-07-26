@@ -22,6 +22,8 @@
     "reset.notify.subject": "Пароль был успешно изменён",
     "reset.notify.text1": "Мы уведомляем вас о том, что %1 ваш пароль был успешно изменён.",
     "reset.notify.text2": "Если вы не совершали этого действия, пожалуйста, незамедлительно свяжитесь с администратором сайта.",
+    "digest.unread-rooms": "Unread rooms",
+    "digest.room-name-unreadcount": "%1 (%2 unread)",
     "digest.latest_topics": "Последние темы на форуме %1",
     "digest.top-topics": "Лучшие темы на форуме %1",
     "digest.popular-topics": "Популярные темы из %1",

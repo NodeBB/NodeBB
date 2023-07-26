@@ -237,23 +237,26 @@ Analytics.getDailyStatsForSet = async function (set, day, numDays) {
 		set = `analytics:${set}`;
 	}
 
-	const daysArr = [];
 	day = new Date(day);
 	// set the date to tomorrow, because getHourlyStatsForSet steps *backwards* 24 hours to sum up the values
 	day.setDate(day.getDate() + 1);
 	day.setHours(0, 0, 0, 0);
 
-	while (numDays > 0) {
-		/* eslint-disable no-await-in-loop */
+	async function getHourlyStats(hour) {
 		const dayData = await Analytics.getHourlyStatsForSet(
 			set,
-			day.getTime() - (1000 * 60 * 60 * 24 * (numDays - 1)),
+			hour,
 			24
 		);
-		daysArr.push(dayData.reduce((cur, next) => cur + next));
+		return dayData.reduce((cur, next) => cur + next);
+	}
+	const hours = [];
+	while (numDays > 0) {
+		hours.push(day.getTime() - (1000 * 60 * 60 * 24 * (numDays - 1)));
 		numDays -= 1;
 	}
-	return daysArr;
+
+	return await Promise.all(hours.map(getHourlyStats));
 };
 
 Analytics.getUnwrittenPageviews = function () {

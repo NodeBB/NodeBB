@@ -21,7 +21,7 @@
     "save_changes": "Lưu thay đổi",
     "save": "Lưu",
     "create": "Create",
-    "cancel": "Cancel",
+    "cancel": "Hủy bỏ",
     "close": "Đóng",
     "pagination": "Phân trang",
     "pagination.out_of": "%1 trong số %2",
@@ -133,9 +133,9 @@
     "edited": "Đã cập nhật",
     "disabled": "Đã tắt",
     "select": "Chọn",
-    "copied": "Copied",
+    "copied": "Đã sao chép",
     "user-search-prompt": "Nhập để tìm kiếm thành viên",
-    "hidden": "Hidden",
+    "hidden": "Ẩn",
     "sort": "Sort",
     "actions": "Actions"
 }

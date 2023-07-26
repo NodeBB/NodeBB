@@ -310,7 +310,7 @@ module.exports = function (module) {
 
 		const returnData = [];
 		let done = false;
-		const seen = {};
+		const seen = Object.create(null);
 		do {
 			/* eslint-disable no-await-in-loop */
 			const res = await module.client.zscan(params.key, cursor, 'MATCH', params.match, 'COUNT', 5000);

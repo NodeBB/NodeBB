@@ -22,6 +22,8 @@
     "reset.notify.subject": "Jelszó sikeresen módosítva",
     "reset.notify.text1": "Értesítünk, hogy a(z) %1 névhez tartozó jelszavad sikeresen megváltozott.",
     "reset.notify.text2": "Ha nem te voltál az, kérlek, azonnal értesíts egy adminisztrátort.",
+    "digest.unread-rooms": "Unread rooms",
+    "digest.room-name-unreadcount": "%1 (%2 unread)",
     "digest.latest_topics": "Legutóbbi témakörök a következőből: %1",
     "digest.top-topics": "Legfontosabb témakörök innen: %1",
     "digest.popular-topics": "Népszerű témakörök innen: %1",

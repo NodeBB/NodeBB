@@ -141,6 +141,8 @@
     "group-order-help": "Select a group and use the arrows to order titles",
     "no-group-title": "グループ名がありません",
     "select-skin": "スキンを選んで下さい",
+    "default": "Default (%1)",
+    "no-skin": "No Skin",
     "select-homepage": "ホームページの設定",
     "homepage": "ホームページ",
     "homepage_description": "フォーラムのホームに指定するページを選んで下さい。デフォルトのホームページを使用する場合は’None’を選んで下さい。",

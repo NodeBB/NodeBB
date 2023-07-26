@@ -14,6 +14,7 @@
     "flagged-content": "신고된 컨텐츠",
     "ip-blacklist": "IP 블랙리스트",
     "post-queue": "게시 대기열",
+    "registration-queue": "Registration Queue",
     "users/online": "온라인 사용자",
     "users/latest": "최근 사용자",
     "users/sort-posts": "최다 작성 사용자",

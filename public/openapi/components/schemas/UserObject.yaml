@@ -622,6 +622,9 @@ UserObjectSlim:
       example: Not Banned
 UserObjectACP:
   type: object
+  required:
+    - uid
+    - username
   properties:
     uid:
       type: number
@@ -643,6 +646,9 @@ UserObjectACP:
       type: string
       description: Email address associated with the user account
       example: dragonfruit@example.org
+    emailToConfirm:
+      type: string
+      description: Email address user used during signup, this email is not associated with the user until it is confirmed by clicking the link in the confirmation email.
     postcount:
       type: number
       example: 1000
@@ -675,6 +681,12 @@ UserObjectACP:
       type: number
       description: Whether the user has confirmed their email address or not
       example: 1
+    'email:expired':
+      type: boolean
+      description: True if confirmation email expired
+    'email:pending':
+      type: boolean
+      description: True if confirmation email is still pending
     'icon:text':
       type: string
       description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar

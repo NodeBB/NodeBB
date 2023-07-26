@@ -1,11 +1,12 @@
 <div class="card mb-3" id="analytics-panel">
 	<div class="card-header">
-		[[admin/dashboard:forum-traffic]]
-		<div class="float-end">
-			<a href="#"><i class="fa fa-fw fa-expand"></i></a>
-		</div>
-		<div class="float-end">
-			<a target="_blank" id="view-as-json" href="{config.relative_path}/api/v3/admin/analytics/{set}?type=hourly"><i class="fa fa-fw fa-terminal"></i></a>
+		<div class="d-flex justify-content-between">
+			[[admin/dashboard:forum-traffic]]
+
+			<div class="d-flex gap-1">
+				<a class="btn btn-sm btn-light lh-sm" target="_blank" id="view-as-json" href="{config.relative_path}/api/v3/admin/analytics/{set}?type=hourly"><i class="fa fa-fw fa-xs fa-terminal text-primary"></i></a>
+				<a class="btn btn-sm btn-light lh-sm" id="expand-analytics" href="#"><i class="fa fa-fw fa-xs fa-expand text-primary"></i></a>
+			</div>
 		</div>
 	</div>
 	<div class="card-body">

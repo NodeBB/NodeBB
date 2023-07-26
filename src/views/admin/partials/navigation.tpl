@@ -141,7 +141,7 @@
 
 				{{{ if authentication.length }}}
 				<hr/>
-				<div class="text-sm">[[admin/menu:section-social-auth]]</div>
+				<div class="text-sm ms-4">[[admin/menu:section-social-auth]]</div>
 				{{{ each authentication }}}
 				<a class="btn-ghost-sm justify-content-start text-decoration-none" href="{relative_path}/admin{./route}">{./name}</a>
 				{{{ end }}}

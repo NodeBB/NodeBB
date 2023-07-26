@@ -15,7 +15,11 @@ followController.getFollowers = async function (req, res, next) {
 };
 
 async function getFollow(tpl, name, req, res) {
-	const { username, userslug, followerCount, followingCount } = await user.getUserFields(res.locals.uid, ['username', 'userslug']);
+	const {
+		username, userslug, followerCount, followingCount,
+	} = await user.getUserFields(res.locals.uid, [
+		'username', 'userslug', 'followerCount', 'followingCount',
+	]);
 
 	const page = parseInt(req.query.page, 10) || 1;
 	const resultsPerPage = 50;

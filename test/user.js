@@ -574,7 +574,7 @@ describe('User', () => {
 			const socketModules = require('../src/socket.io/modules');
 			const uid1 = await User.create({ username: 'chatuserdelete1' });
 			const uid2 = await User.create({ username: 'chatuserdelete2' });
-			const roomId = await messaging.newRoom(uid1, [uid2]);
+			const roomId = await messaging.newRoom(uid1, { uids: [uid2] });
 			await messaging.addMessage({
 				uid: uid1,
 				content: 'hello',
@@ -910,6 +910,23 @@ describe('User', () => {
 			} catch (err) {
 				assert.strictEqual(err.message, '[[error:invalid-password]]');
 			}
+		});
+
+		it('should properly change username and clean up old sorted sets', async () => {
+			const uid = await User.create({ username: 'DennyO', password: '123456' });
+			let usernames = await db.getSortedSetRevRangeWithScores('username:uid', 0, -1);
+			usernames = usernames.filter(d => d.score === uid);
+			assert.deepStrictEqual(usernames, [{ value: 'DennyO', score: uid }]);
+
+			await apiUser.update({ uid: uid }, { uid: uid, username: 'DennyO\'s', password: '123456' });
+			usernames = await db.getSortedSetRevRangeWithScores('username:uid', 0, -1);
+			usernames = usernames.filter(d => d.score === uid);
+			assert.deepStrictEqual(usernames, [{ value: 'DennyO\'s', score: uid }]);
+
+			await apiUser.update({ uid: uid }, { uid: uid, username: 'Denny O', password: '123456' });
+			usernames = await db.getSortedSetRevRangeWithScores('username:uid', 0, -1);
+			usernames = usernames.filter(d => d.score === uid);
+			assert.deepStrictEqual(usernames, [{ value: 'Denny O', score: uid }]);
 		});
 
 		it('should send validation email', async () => {

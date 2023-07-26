@@ -22,6 +22,8 @@
     "reset.notify.subject": "Şifre başarıyla değiştirildi",
     "reset.notify.text1": "Şifrenizin %1 zamanında  başarı ile değiştirildiğini bildirmek isteriz.",
     "reset.notify.text2": "Bunu siz yetkilendirmediyseniz, lütfen hiç vakit kaybetmeden site yöneticisine bu durumu bildiriniz.",
+    "digest.unread-rooms": "Unread rooms",
+    "digest.room-name-unreadcount": "%1 (%2 unread)",
     "digest.latest_topics": "'daki En Güncel Konular",
     "digest.top-topics": "%1 tarafından zirve başlıklar",
     "digest.popular-topics": "%1 tarafından popüler başlıklar",

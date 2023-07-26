@@ -439,6 +439,8 @@ define('navigator', [
 		}
 		count = value;
 		navigator.updateTextAndProgressBar();
+		setThumbToIndex(index);
+		toggle(count > 0);
 	};
 
 	navigator.show = function () {
@@ -462,6 +464,7 @@ define('navigator', [
 		}
 
 		paginationBlockEl.toggleClass('ready', flag);
+		paginationBlockEl.toggleClass('noreplies', count <= 1);
 	}
 
 	navigator.delayedUpdate = function () {
@@ -521,7 +524,7 @@ define('navigator', [
 			setThumbToIndex(index);
 		}
 
-		toggle(!!count);
+		toggle(count > 0);
 	};
 
 	navigator.getIndex = () => index;
@@ -640,6 +643,14 @@ define('navigator', [
 		} else {
 			scrollMethod(index, highlight, duration);
 		}
+	};
+
+	navigator.shouldScrollToPost = function (postIndex) {
+		if (!ajaxify.data.template.topic || postIndex <= 1) {
+			return false;
+		}
+		const firstPostEl = $('[component="topic"] [component="post"]').first();
+		return parseInt(firstPostEl.attr('data-index'), 10) !== postIndex - 1;
 	};
 
 	navigator.scrollToPostIndex = function (postIndex, highlight, duration) {

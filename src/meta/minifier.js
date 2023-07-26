@@ -158,10 +158,16 @@ Minifier.js.bundle = async function (data, fork) {
 };
 
 actions.buildCSS = async function buildCSS(data) {
-	const scssOutput = await sass.compileStringAsync(data.source, {
-		loadPaths: data.paths,
-	});
-	let css = scssOutput.css.toString();
+	let css = '';
+	try {
+		const scssOutput = await sass.compileStringAsync(data.source, {
+			loadPaths: data.paths,
+		});
+		css = scssOutput.css.toString();
+	} catch (err) {
+		console.error(err.stack);
+	}
+
 
 	async function processScss(direction) {
 		if (direction === 'rtl') {

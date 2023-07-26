@@ -39,6 +39,14 @@ Chats.post = async (req, res) => {
 	helpers.formatApiResponse(200, res, messageObj);
 };
 
+Chats.update = async (req, res) => {
+	const payload = { ...req.body };
+	payload.roomId = req.params.roomId;
+	const roomObj = await api.chats.update(req, payload);
+
+	helpers.formatApiResponse(200, res, roomObj);
+};
+
 Chats.rename = async (req, res) => {
 	const roomObj = await api.chats.rename(req, {
 		name: req.body.name,
@@ -50,17 +58,18 @@ Chats.rename = async (req, res) => {
 
 Chats.mark = async (req, res) => {
 	const state = req.method === 'PUT' ? 1 : 0;
-	const roomObj = await api.chats.mark(req, {
+	await api.chats.mark(req, {
 		roomId: req.params.roomId,
 		state,
 	});
 
-	helpers.formatApiResponse(200, res, roomObj);
+	helpers.formatApiResponse(200, res);
 };
 
 Chats.users = async (req, res) => {
 	const { roomId } = req.params;
-	const users = await api.chats.users(req, { roomId });
+	const start = parseInt(req.query.start, 10) || 0;
+	const users = await api.chats.users(req, { roomId, start });
 
 	helpers.formatApiResponse(200, res, users);
 };

@@ -1,6 +1,6 @@
 {
 	"settings": "Einstellungen",
-	"guest-settings": "Guest settings",
+	"guest-settings": "Guest Settings",
 	"handles.enabled": "Gastzugänge erlauben",
 	"handles.enabled-help": "Diese Option zeigt ein neues Feld an, in dem Gäste einen Namen auswählen können, der jedem von ihnen erstellten Beitrag zugeordnet werden soll. Wenn sie deaktiviert sind, werden sie einfach „Gast“ genannt.",
 	"topic-views.enabled": "Gästen erlauben, die gezählte Anzahl der Themenaufrufe zu erhöhen",

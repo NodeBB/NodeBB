@@ -1,6 +1,6 @@
 {
-    "settings.title": "Theme settings",
-    "settings.intro": "You can customise your theme settings here. Settings are stored on a per-device basis, so you are able to have different settings on different devices (phone, tablet, desktop, etc.)",
+    "settings.title": "Cài đặt chủ đề",
+    "settings.intro": "Bạn có thể tùy chỉnh cài đặt chủ đề của mình tại đây. Cài đặt được lưu trữ trên cơ sở từng thiết bị, vì vậy bạn có thể có các cài đặt khác nhau trên các thiết bị khác nhau (điện thoại, máy tính bảng, máy tính để bàn, v.v.)",
     "settings.mobile-menu-side": "Switch which side each mobile menu is on",
     "settings.autoHidingNavbar": "Automatically hide the navbar on scroll",
     "settings.autoHidingNavbar-xs": "Very small screens (e.g. phones in portrait mode)",

@@ -206,6 +206,9 @@ module.exports = function (Posts) {
 			await async.eachOf(postsByUser, async (posts, uid) => {
 				await db.sortedSetIncrBy(`tid:${tid}:posters`, -posts.length, uid);
 			});
+			await db.sortedSetsRemoveRangeByScore([`tid:${tid}:posters`], '-inf', 0);
+			const posterCount = await db.sortedSetCard(`tid:${tid}:posters`);
+			await topics.setTopicField(tid, 'postercount', posterCount);
 		});
 	}
 

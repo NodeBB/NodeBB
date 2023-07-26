@@ -42,7 +42,7 @@
 	"subscriptions.hour-help": "请输入一个代表小时的数字来发送计划的电子邮件摘要 (例如，对于午夜，<code>0</code>，对于下午5:00，<code>17</code>)。 请记住，这是根据服务器本身的时间，可能与您的系统时钟不完全匹配。<br />服务器的大致时间为：<span id =\"serverTime\"></ span><br /> 下一个每日摘要被计划在<span id =\"nextDigestTime\"></span>发送",
 	"notifications.remove-images": "从电子邮件通知中删除图像",
 	"require-email-address": "要求新用户指定电子邮箱地址",
-	"require-email-address-warning": "By default, users can opt-out of entering an email address by leaving the field blank. Enabling this option means new users will have to enter <strong>and confirm</strong> an email address in order to proceed with registration and subsequent access to the forum. <strong>It does not ensure user will enter a real email address, nor even an address they own.</strong>",
+	"require-email-address-warning": "默认情况下，用户可以选择不输入电子邮件地址，将该区域留空。启用这个选项意味着新用户必须输入并确认一个电子邮件地址，以便继续注册和随后访问论坛。这并不确保用户会输入一个真实的电子邮件地址，甚至是他们自己的地址。",
 	"send-validation-email": "添加或更改电子邮件时发送验证电子邮件",
 	"include-unverified-emails": "向尚未明验证其电子邮箱的人发送电子邮件",
 	"include-unverified-warning": "默认情况下，账号有邮件地址关联的用户是已核实的用户，但有些情况下不是这样（例如，单点登录，遗留用户等等）。<strong>您自行承担启用此设置的风险</strong>——发送邮件给未核实的用户可能会违反地区性的反垃圾邮件法律。",

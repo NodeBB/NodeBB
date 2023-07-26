@@ -44,7 +44,7 @@
     "new_register_multiple": "<strong>%1</strong> registracija čeka odobrenje.",
     "flag_assigned_to_you": "<strong>Zastava%1</strong> je dodijeljena vama.",
     "post_awaiting_review": "Objava čeka pregled",
-    "profile-exported": "<strong>%1</strong> profile exported, click to download",
+    "profile-exported": "<strong>%1</strong> profil izvezen, klikni za preuzimanje",
     "posts-exported": "<strong>%1</strong> posts exported, click to download",
     "uploads-exported": "<strong>%1</strong> uploads exported, click to download",
     "users-csv-exported": "Users csv exported, click to download",

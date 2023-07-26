@@ -14,12 +14,38 @@ $('document').ready(function () {
 
 	activate('database', $('[name="database"]'));
 
-	if ($('#database-error').length) {
-		$('[name="database"]').parents('.input-row').addClass('error');
-		$('html, body').animate({
-			scrollTop: ($('#database-error').offset().top + 100) + 'px',
-		}, 400);
-	}
+	$('#test-database').on('click', function () {
+		const conf = {};
+		$('#database-config input[name]').each((i, el) => {
+			conf[$(el).attr('name')] = $(el).val();
+		});
+		$('#test-database-spinner').removeClass('hidden');
+		$('#database-success').addClass('hidden');
+		$('#database-error').addClass('hidden');
+		$('#database-full').addClass('hidden');
+		const qs = new URLSearchParams(conf).toString();
+		$.ajax({
+			url: `/testdb?${qs}`,
+			success: function (res) {
+				$('#test-database-spinner').addClass('hidden');
+				if (res.success) {
+					$('#database-success').removeClass('hidden');
+					if (res.dbfull) {
+						$('#database-full').removeClass('hidden')
+							.text('Found existing install in this database!');
+					}
+				} else if (res.error) {
+					$('#database-error').removeClass('hidden').text(res.error);
+				}
+			},
+			error: function (jqXHR, textStatus) {
+				$('#test-database-spinner').addClass('hidden');
+				$('#database-error').removeClass('hidden').text(textStatus);
+			},
+		});
+
+		return false;
+	});
 
 	function checkIfReady() {
 		let successCount = 0;
@@ -127,6 +153,9 @@ $('document').ready(function () {
 
 		function switchDatabase(field) {
 			$('#database-config').html($('[data-database="' + field + '"]').html());
+			$('#database-success').addClass('hidden');
+			$('#database-error').addClass('hidden');
+			$('#database-full').addClass('hidden');
 		}
 
 		switch (type) {

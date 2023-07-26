@@ -13,5 +13,8 @@
 	"custom-header.enable": "Povoliť používateľskú hlavičku",
 
 	"custom-css.livereload": "Povoliť aktuálne znovu načítanie",
-	"custom-css.livereload.description": "Povolením si vynútite, aby všetky relácie na každom zariadení pod Vaším účtom sa kedykoľvek obnovili pri kliknutí na tlačidlo „Uložiť”."
+	"custom-css.livereload.description": "Povolením si vynútite, aby všetky relácie na každom zariadení pod Vaším účtom sa kedykoľvek obnovili pri kliknutí na tlačidlo „Uložiť”.",
+	"bsvariables": "_variables.scss",
+	"bsvariables.description": "Override bootstrap variables here. You can also use a tool like <a href=\"https://bootstrap.build/app\">bootstrap.build</a> and paste the output here.<br/>Changes require a rebuild & restart.",
+	"bsvariables.enable": "Enable _variables.scss"
 }

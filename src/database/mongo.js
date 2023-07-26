@@ -59,8 +59,8 @@ mongoModule.questions = [
 	},
 ];
 
-mongoModule.init = async function () {
-	client = await connection.connect(nconf.get('mongo'));
+mongoModule.init = async function (opts) {
+	client = await connection.connect(opts || nconf.get('mongo'));
 	mongoModule.client = client.db();
 };
 
@@ -175,6 +175,9 @@ async function getCollectionStats(db) {
 
 mongoModule.close = async function () {
 	await client.close();
+	if (mongoModule.objectCache) {
+		mongoModule.objectCache.reset();
+	}
 };
 
 require('./mongo/main')(mongoModule);

@@ -12,7 +12,7 @@
 	</div>
 
 	<div class="">
-	<!-- IMPORT partials/breadcrumbs.tpl -->
+	<!-- IMPORT admin/partials/breadcrumbs.tpl -->
 	</div>
 
 	<div class="table-responsive">
