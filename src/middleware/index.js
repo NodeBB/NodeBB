@@ -6,6 +6,7 @@ const validator = require('validator');
 const nconf = require('nconf');
 const toobusy = require('toobusy-js');
 const util = require('util');
+const multipart = require('connect-multiparty');
 const { csrfSynchronisedProtection } = require('./csrf');
 
 const plugins = require('../plugins');
@@ -27,6 +28,7 @@ const delayCache = cacheCreate({
 	ttl: 1000 * 60,
 	max: 200,
 });
+const multipartMiddleware = multipart();
 
 const middleware = module.exports;
 
@@ -283,4 +285,15 @@ middleware.checkRequired = function (fields, req, res, next) {
 	}
 
 	controllers.helpers.formatApiResponse(400, res, new Error(`[[error:required-parameters-missing, ${missing.join(' ')}]]`));
+};
+
+middleware.handleMultipart = (req, res, next) => {
+	// Applies multipart handler on applicable content-type
+	const { 'content-type': contentType } = req.headers;
+
+	if (contentType && !contentType.startsWith('multipart/form-data')) {
+		return next();
+	}
+
+	multipartMiddleware(req, res, next);
 };

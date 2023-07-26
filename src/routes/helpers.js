@@ -58,6 +58,7 @@ helpers.setupApiRoute = function (...args) {
 		middleware.registrationComplete,
 		middleware.pluginHooks,
 		middleware.logApiUsage,
+		middleware.handleMultipart,
 		...middlewares,
 	];
 
