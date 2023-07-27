@@ -31,6 +31,7 @@ module.exports = function (Messaging) {
 		sockets.in(`chat_room_${roomId}`).emit('event:chats.edit', {
 			messages: messages,
 		});
+		plugins.hooks.fire('action:messaging.edit', { message: messages[0] });
 	};
 
 	const canEditDelete = async (messageId, uid, type) => {

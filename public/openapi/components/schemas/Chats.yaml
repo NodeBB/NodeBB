@@ -46,6 +46,8 @@ MessageObject:
       type: string
     editedISO:
       type: string
+    mid:
+      type: number
     messageId:
       type: number
     fromUser:

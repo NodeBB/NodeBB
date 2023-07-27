@@ -69,6 +69,8 @@ get:
                           description: An ISO 8601 formatted date string (complementing `timestamp`)
                         editedISO:
                           type: string
+                        mid:
+                          type: number
                         messageId:
                           type: number
                         fromUser:
