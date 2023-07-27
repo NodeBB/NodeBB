@@ -4,7 +4,6 @@
 const db = require('../../database');
 const batch = require('../../batch');
 
-
 module.exports = {
 	name: 'Set mid on message objects and create messages:mid',
 	timestamp: Date.UTC(2023, 6, 27),
@@ -41,5 +40,7 @@ module.exports = {
 		}, {
 			batch: 500,
 		});
+		const count = await db.sortedSetCard(`messages:mid`);
+		await db.setObjectField('global', 'messageCount', count);
 	},
 };

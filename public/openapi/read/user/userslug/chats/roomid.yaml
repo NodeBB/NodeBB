@@ -59,9 +59,9 @@ get:
                         roomId:
                           type: string
                         deleted:
-                          type: boolean
+                          type: number
                         system:
-                          type: boolean
+                          type: number
                         edited:
                           type: number
                         timestampISO:

@@ -67,6 +67,7 @@ module.exports = function (Messaging) {
 			Messaging.addMessageToRoom(roomId, mid, timestamp),
 			Messaging.markRead(uid, roomId),
 			db.sortedSetAdd('messages:mid', timestamp, mid),
+			db.incrObjectField('global', 'messageCount'),
 		];
 		if (roomData.public) {
 			tasks.push(
