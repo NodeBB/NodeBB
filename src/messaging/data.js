@@ -143,6 +143,9 @@ async function modifyMessage(message, fields, mid) {
 		if (message.hasOwnProperty('edited')) {
 			message.editedISO = utils.toISOString(message.edited);
 		}
+		if (!fields.length || fields.includes('mid')) {
+			message.mid = parseInt(mid, 10);
+		}
 	}
 
 	const payload = await plugins.hooks.fire('filter:messaging.getFields', {
