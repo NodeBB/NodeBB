@@ -7,7 +7,7 @@ const user = require('../user');
 const utils = require('../utils');
 const plugins = require('../plugins');
 
-const intFields = ['timestamp', 'edited', 'fromuid', 'roomId', 'deleted', 'system'];
+const intFields = ['mid', 'timestamp', 'edited', 'fromuid', 'roomId', 'deleted', 'system'];
 
 module.exports = function (Messaging) {
 	Messaging.newMessageCutoff = 1000 * 60 * 3;
@@ -71,8 +71,6 @@ module.exports = function (Messaging) {
 
 			message.newSet = false;
 			message.roomId = String(message.roomId || roomId);
-			message.deleted = !!message.deleted;
-			message.system = !!message.system;
 		});
 
 		messages = await Promise.all(messages.map(async (message) => {
@@ -142,9 +140,6 @@ async function modifyMessage(message, fields, mid) {
 		}
 		if (message.hasOwnProperty('edited')) {
 			message.editedISO = utils.toISOString(message.edited);
-		}
-		if (!fields.length || fields.includes('mid')) {
-			message.mid = parseInt(mid, 10);
 		}
 	}
 

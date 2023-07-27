@@ -44,6 +44,7 @@ module.exports = function (Messaging) {
 		const mid = await db.incrObjectField('global', 'nextMid');
 		const timestamp = data.timestamp || Date.now();
 		let message = {
+			mid: mid,
 			content: String(data.content),
 			timestamp: timestamp,
 			fromuid: uid,
@@ -65,6 +66,7 @@ module.exports = function (Messaging) {
 		const tasks = [
 			Messaging.addMessageToRoom(roomId, mid, timestamp),
 			Messaging.markRead(uid, roomId),
+			db.sortedSetAdd('messages:mid', timestamp, mid),
 		];
 		if (roomData.public) {
 			tasks.push(
