@@ -8,7 +8,7 @@ define('forum/notifications', ['components', 'notifications'], function (compone
 		const listEl = $('.notifications-list');
 		listEl.on('click', '[component="notifications/item/link"]', function () {
 			const nid = $(this).parents('[data-nid]').attr('data-nid');
-			Notifications.markNotification(nid, true);
+			notifications.markNotification(nid, true);
 		});
 		notifications.handleUnreadButton(listEl);
 
