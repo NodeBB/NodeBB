@@ -101,10 +101,10 @@ events.log = async function (data) {
 events.getEvents = async function (filter, start, stop, from, to) {
 	// from/to optional
 	if (from === undefined) {
-		from = 0;
+		from = '-inf';
 	}
 	if (to === undefined) {
-		to = Date.now();
+		to = '+inf';
 	}
 
 	const eids = await db.getSortedSetRevRangeByScore(`events:time${filter ? `:${filter}` : ''}`, start, stop - start + 1, to, from);
