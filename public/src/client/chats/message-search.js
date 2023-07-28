@@ -6,43 +6,60 @@ define('forum/chats/message-search', [
 ], function (components, alerts, messages) {
 	const messageSearch = {};
 	let roomId = 0;
+	let searchInputEl;
 	let resultListEl;
 	let chatContent;
 	let clearEl;
-
+	let toggleEl;
+	let containerEl;
 	messageSearch.init = function (_roomId) {
 		roomId = _roomId;
-		const searchInput = $('[component="chat/room/search"]');
-		searchInput.on('keyup', utils.debounce(doSearch, 250))
-			.on('focus', () => {
-				if (searchInput.val()) {
-					doSearch();
-				}
-			});
+
 		resultListEl = $('[component="chat/message/search/results"]');
 		chatContent = $('[component="chat/message/content"]');
 		clearEl = $('[component="chat/room/search/clear"]');
+		containerEl = $('[component="chat/room/search/container"]');
+		toggleEl = $('[component="chat/room/search/toggle"');
+
+		searchInputEl = $('[component="chat/room/search"]');
+		searchInputEl.on('keyup', utils.debounce(doSearch, 250))
+			.on('focus', () => {
+				if (searchInputEl.val()) {
+					doSearch();
+				}
+			});
+
 		$('[component="chat/input"]').on('focus', () => {
 			resultListEl.addClass('hidden');
 			chatContent.removeClass('hidden');
 		});
 		clearEl.on('click', clearInputAndResults);
+
+		toggleEl.on('click', () => {
+			containerEl.removeClass('hidden');
+			toggleEl.addClass('hidden');
+			searchInputEl.trigger('focus');
+		});
+		searchInputEl.on('blur', () => {
+			if (!searchInputEl.val()) {
+				clearInputAndResults();
+			}
+		});
 	};
 
 	function clearInputAndResults() {
-		components.get('chat/room/search').val('');
+		searchInputEl.val('');
 		removeResults();
 		resultListEl.addClass('hidden');
-		chatContent.removeClass('hidden');
 		clearEl.addClass('hidden');
+		containerEl.addClass('hidden');
+		chatContent.removeClass('hidden');
+		toggleEl.removeClass('hidden');
 	}
 
 	async function doSearch() {
-		const query = components.get('chat/room/search').val();
-		if (!query) {
-			return clearInputAndResults();
-		}
-		if (query.length <= 2) {
+		const query = searchInputEl.val();
+		if (!query || query.length <= 2) {
 			return;
 		}
 		clearEl.removeClass('hidden');
