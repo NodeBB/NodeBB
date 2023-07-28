@@ -6,6 +6,7 @@ const db = require('../database');
 const Messaging = require('../messaging');
 const utils = require('../utils');
 const user = require('../user');
+const plugins = require('../plugins');
 const privileges = require('../privileges');
 const groups = require('../groups');
 
@@ -211,6 +212,43 @@ SocketModules.chats.setNotificationSetting = async (socket, data) => {
 	}
 
 	await Messaging.setUserNotificationSetting(socket.uid, data.roomId, data.value);
+};
+
+SocketModules.chats.searchMessages = async (socket, data) => {
+	if (!data || !utils.isNumber(data.roomId) || !data.content) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	const [roomData, inRoom] = await Promise.all([
+		Messaging.getRoomData(data.roomId),
+		Messaging.isUserInRoom(socket.uid, data.roomId),
+	]);
+
+	if (!roomData) {
+		throw new Error('[[error:no-room]]');
+	}
+	if (!inRoom) {
+		throw new Error('[[error:no-privileges]]');
+	}
+	const { ids } = await plugins.hooks.fire('filter:messaging.searchMessages', {
+		content: data.content,
+		roomId: [data.roomId],
+		uid: [data.uid],
+		matchWords: 'any',
+		ids: [],
+	});
+
+	let userjoinTimestamp = 0;
+	if (!roomData.public) {
+		userjoinTimestamp = await db.sortedSetScore(`chat:room:${data.roomId}:uids`, socket.uid);
+	}
+	const messageData = await Messaging.getMessagesData(ids, socket.uid, data.roomId, false);
+	messageData.forEach((msg) => {
+		if (msg) {
+			msg.newSet = true;
+		}
+	});
+
+	return messageData.filter(msg => msg && !msg.deleted && msg.timestamp > userjoinTimestamp);
 };
 
 require('../promisify')(SocketModules);

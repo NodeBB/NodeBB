@@ -9,6 +9,7 @@ define('forum/chats', [
 	'forum/chats/manage',
 	'forum/chats/messages',
 	'forum/chats/user-list',
+	'forum/chats/message-search',
 	'composer/autocomplete',
 	'hooks',
 	'bootbox',
@@ -17,10 +18,9 @@ define('forum/chats', [
 	'api',
 	'uploadHelpers',
 ], function (
-	components, mousetrap,
-	recentChats, create, manage, messages,
-	userList, autocomplete, hooks, bootbox,
-	alerts, chatModule, api, uploadHelpers
+	components, mousetrap, recentChats, create,
+	manage, messages, userList, messageSearch, autocomplete,
+	hooks, bootbox, alerts, chatModule, api, uploadHelpers
 ) {
 	const Chats = {
 		initialised: false,
@@ -62,8 +62,8 @@ define('forum/chats', [
 		}
 
 		Chats.initialised = true;
-		messages.scrollToBottom($('.expanded-chat ul.chat-content'));
-		messages.wrapImagesInLinks($('.expanded-chat ul.chat-content'));
+		messages.scrollToBottom($('[component="chat/message/content"]'));
+		messages.wrapImagesInLinks($('[component="chat/message/content"]'));
 		create.init();
 
 		hooks.fire('action:chat.loaded', $('.chats-full'));
@@ -80,8 +80,8 @@ define('forum/chats', [
 		Chats.addRenameHandler(roomId, chatControls.find('[data-action="rename"]'));
 		Chats.addLeaveHandler(roomId, chatControls.find('[data-action="leave"]'));
 		Chats.addDeleteHandler(roomId, chatControls.find('[data-action="delete"]'));
-		Chats.addScrollHandler(roomId, ajaxify.data.uid, $('.chat-content'));
-		Chats.addScrollBottomHandler($('.chat-content'));
+		Chats.addScrollHandler(roomId, ajaxify.data.uid, $('[component="chat/message/content"]'));
+		Chats.addScrollBottomHandler($('[component="chat/message/content"]'));
 		Chats.addCharactersLeftHandler(mainWrapper);
 		Chats.addTextareaResizeHandler(mainWrapper);
 		Chats.addIPHandler(mainWrapper);
@@ -98,6 +98,7 @@ define('forum/chats', [
 			Chats.switchChat();
 		});
 		userList.init(roomId, mainWrapper);
+		messageSearch.init(roomId);
 		Chats.addPublicRoomSortHandler();
 		Chats.addTooltipHandler();
 		Chats.addNotificationSettingHandler();
@@ -268,24 +269,24 @@ define('forum/chats', [
 		// https://stackoverflow.com/questions/454202/creating-a-textarea-with-auto-resize
 		const textarea = parent.find('[component="chat/input"]');
 		textarea.on('input', function () {
-			const isAtBottom = messages.isAtBottom(parent.find('.chat-content'));
+			const isAtBottom = messages.isAtBottom(parent.find('[component="chat/message/content"]'));
 			textarea.css({ height: 0 });
 			textarea.css({ height: messages.calcAutoTextAreaHeight(textarea) + 'px' });
 			if (isAtBottom) {
-				messages.scrollToBottom(parent.find('.chat-content'));
+				messages.scrollToBottom(parent.find('[component="chat/message/content"]'));
 			}
 		});
 	};
 
 	Chats.addActionHandlers = function (element, roomId) {
 		element.on('click', '[data-mid] [data-action]', function () {
-			const messageId = $(this).parents('[data-mid]').attr('data-mid');
+			const msgEl = $(this).parents('[data-mid]');
+			const messageId = msgEl.attr('data-mid');
 			const action = this.getAttribute('data-action');
 
 			switch (action) {
 				case 'edit': {
-					const inputEl = $('[data-roomid="' + roomId + '"] [component="chat/input"]');
-					messages.prepEdit(inputEl, messageId, roomId);
+					messages.prepEdit(msgEl, messageId, roomId);
 					break;
 				}
 				case 'delete':
@@ -509,7 +510,7 @@ define('forum/chats', [
 				Chats.setActive(roomId);
 				Chats.addEventListeners();
 				hooks.fire('action:chat.loaded', $('.chats-full'));
-				messages.scrollToBottom(mainWrapper.find('.expanded-chat ul.chat-content'));
+				messages.scrollToBottom(mainWrapper.find('[component="chat/message/content"]'));
 				if (history.pushState) {
 					history.pushState({
 						url: url,
@@ -543,7 +544,7 @@ define('forum/chats', [
 				data.message.self = data.self;
 				data.message.timestamp = Math.min(Date.now(), data.message.timestamp);
 				data.message.timestampISO = utils.toISOString(data.message.timestamp);
-				messages.appendChatMessage($('.expanded-chat .chat-content'), data.message);
+				messages.appendChatMessage($('[component="chat/message/content"]'), data.message);
 			}
 		});
 

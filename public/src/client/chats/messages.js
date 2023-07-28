@@ -108,14 +108,15 @@ define('forum/chats/messages', [
 	messages.onMessagesAddedToDom = function (messageEls) {
 		messageEls.find('.timeago').timeago();
 		messageEls.find('img:not(.not-responsive)').addClass('img-fluid');
-		messages.wrapImagesInLinks(messageEls.first().parent());
+		messageEls.find('img:not(.emoji)').each(function () {
+			images.wrapImageInLink($(this));
+		});
 	};
 
 	messages.parseMessage = function (data, callback) {
 		const tplData = {
 			messages: data,
 			isAdminOrGlobalMod: app.user.isAdmin || app.user.isGlobalMod,
-
 		};
 		if (Array.isArray(data)) {
 			app.parseAndTranslate('partials/chats/messages', tplData).then(callback);
@@ -155,14 +156,14 @@ define('forum/chats/messages', [
 			.toggleClass('hidden', isAtBottom);
 	};
 
-	messages.prepEdit = async function (inputEl, mid, roomId) {
+	messages.prepEdit = async function (msgEl, mid, roomId) {
 		const raw = await socket.emit('modules.chats.getRaw', { mid: mid, roomId: roomId });
 		const editEl = await app.parseAndTranslate('partials/chats/edit-message', {
 			rawContent: raw,
 		});
-		const messageBody = $(`[data-roomid="${roomId}"] [data-mid="${mid}"] [component="chat/message/body"]`);
-		const messageControls = $(`[data-roomid="${roomId}"] [data-mid="${mid}"] [component="chat/message/controls"]`);
-		const chatContent = messageBody.parents('.chat-content');
+		const messageBody = msgEl.find(`[component="chat/message/body"]`);
+		const messageControls = msgEl.find(`[component="chat/message/controls"]`);
+		const chatContent = messageBody.parents('[component="chat/message/content"]');
 
 		messageBody.addClass('hidden');
 		messageControls.addClass('hidden');
@@ -173,7 +174,7 @@ define('forum/chats/messages', [
 		textarea.focus().putCursorAtEnd();
 		autoresizeTextArea(textarea);
 
-		if (messages.isAtBottom(chatContent)) {
+		if (chatContent.length && messages.isAtBottom(chatContent)) {
 			messages.scrollToBottom(chatContent);
 		}
 
@@ -212,7 +213,7 @@ define('forum/chats/messages', [
 		});
 
 		hooks.fire('action:chat.prepEdit', {
-			inputEl: inputEl,
+			msgEl: msgEl,
 			messageId: mid,
 			roomId: roomId,
 			editEl: editEl,
@@ -236,10 +237,10 @@ define('forum/chats/messages', [
 			const self = parseInt(message.fromuid, 10) === parseInt(app.user.uid, 10);
 			message.self = self ? 1 : 0;
 			messages.parseMessage(message, function (html) {
-				const body = components.get('chat/message', message.messageId);
-				if (body.length) {
-					body.replaceWith(html);
-					messages.onMessagesAddedToDom(html);
+				const msgEl = components.get('chat/message', message.mid);
+				if (msgEl.length) {
+					msgEl.replaceWith(html);
+					messages.onMessagesAddedToDom(components.get('chat/message', message.mid));
 				}
 			});
 		});

@@ -154,7 +154,7 @@ describe('Messaging Library', () => {
 			const { body } = await callv3API('get', `/chats/${roomId}`, {}, 'foo');
 			const { messages } = body.response;
 			assert.equal(messages.length, 2);
-			assert.strictEqual(messages[0].system, true);
+			assert.strictEqual(messages[0].system, 1);
 			assert.strictEqual(messages[0].content, 'user-join');
 
 			const { statusCode, body: body2 } = await callv3API('put', `/chats/${roomId}/messages/${messages[0].messageId}`, {
@@ -233,7 +233,7 @@ describe('Messaging Library', () => {
 			const { body } = await callv3API('get', `/chats/${roomId}`, {}, 'foo');
 			const { messages } = body.response;
 			const message = messages.pop();
-			assert.strictEqual(message.system, true);
+			assert.strictEqual(message.system, 1);
 			assert.strictEqual(message.content, 'user-leave');
 		});
 
@@ -244,12 +244,12 @@ describe('Messaging Library', () => {
 
 			assert.equal(messages.length, 4);
 			let message = messages.pop();
-			assert.strictEqual(message.system, true);
+			assert.strictEqual(message.system, 1);
 			assert.strictEqual(message.content, 'user-leave');
 
 			// The message before should still be a user-join
 			message = messages.pop();
-			assert.strictEqual(message.system, true);
+			assert.strictEqual(message.system, 1);
 			assert.strictEqual(message.content, 'user-join');
 		});
 
@@ -466,7 +466,7 @@ describe('Messaging Library', () => {
 			const { messages } = body.response;
 
 			const message = messages.pop();
-			assert.strictEqual(message.system, true);
+			assert.strictEqual(message.system, 1);
 			assert.strictEqual(message.content, 'room-rename, new room name');
 		});
 

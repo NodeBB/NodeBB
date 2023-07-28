@@ -2,8 +2,8 @@
 
 
 define('forum/chats/create', [
-	'components', 'api', 'alerts', 'forum/chats/search',
-], function (components, api, alerts, search) {
+	'components', 'api', 'alerts', 'forum/chats/user-search',
+], function (components, api, alerts, userSearch) {
 	const create = {};
 	create.init = function () {
 		components.get('chat/create').on('click', handleCreate);
@@ -65,7 +65,7 @@ define('forum/chats/create', [
 
 		const chatRoomUsersList = modal.find('[component="chat/room/users"]');
 
-		search.init({
+		userSearch.init({
 			onSelect: async function (user) {
 				const html = await app.parseAndTranslate('modals/create-room', 'selectedUsers', { selectedUsers: [user] });
 				chatRoomUsersList.append(html);
