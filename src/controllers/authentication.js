@@ -102,6 +102,8 @@ authenticationController.register = async function (req, res) {
 
 		user.isPasswordValid(userData.password);
 
+		await plugins.hooks.fire('filter:password.check', { password: userData.password, uid: 0, username: userData.username, currentPassword: null });
+
 		res.locals.processLogin = true; // set it to false in plugin if you wish to just register only
 		await plugins.hooks.fire('filter:register.check', { req: req, res: res, userData: userData });
 
