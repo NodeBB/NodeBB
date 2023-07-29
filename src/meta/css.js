@@ -10,7 +10,7 @@ const plugins = require('../plugins');
 const db = require('../database');
 const file = require('../file');
 const minifier = require('./minifier');
-const fontawesomePath = require('../utils').getFontawesomePath();
+const utils = require('../utils');
 
 const CSS = module.exports;
 
@@ -134,10 +134,7 @@ function boostrapImport(themeData) {
 
 
 function getFontawesomeStyle() {
-	const styles = nconf.get('fontawesome:styles') || ['solid', 'brands', 'regular'];
-	if (!Array.isArray(styles)) {
-		return `@import "fontawesome/style-${styles}";`;
-	}
+	const styles = utils.getFontawesomeStyles();
 	return styles.map(style => `@import "fontawesome/style-${style}";`).join('\n');
 }
 
@@ -189,7 +186,7 @@ async function getBundleMetadata(target) {
 		path.join(__dirname, '../../node_modules'),
 		path.join(__dirname, '../../public/scss'),
 		path.join(__dirname, '../../public/vendor/fontawesome/scss'),
-		path.join(fontawesomePath, 'scss'),
+		path.join(utils.getFontawesomePath(), 'scss'),
 	];
 
 	// Skin support

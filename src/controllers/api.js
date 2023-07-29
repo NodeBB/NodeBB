@@ -10,6 +10,7 @@ const plugins = require('../plugins');
 const translator = require('../translator');
 const languages = require('../languages');
 const { generateToken } = require('../middleware/csrf');
+const utils = require('../utils');
 
 const apiController = module.exports;
 
@@ -20,8 +21,8 @@ const socketioTransports = nconf.get('socket.io:transports') || ['polling', 'web
 const socketioOrigins = nconf.get('socket.io:origins');
 const websocketAddress = nconf.get('socket.io:address') || '';
 const fontawesome_pro = nconf.get('fontawesome:pro') || false;
-const fontawesome_styles = nconf.get('fontawesome:styles') || ['solid', 'regular', 'brands'];
-const fontawesome_version = require('../utils').getFontawesomeVersion();
+const fontawesome_styles = utils.getFontawesomeStyles();
+const fontawesome_version = utils.getFontawesomeVersion();
 
 apiController.loadConfig = async function (req) {
 	const config = {

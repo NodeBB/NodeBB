@@ -60,7 +60,7 @@ function loadConfig(configFile) {
 		jobsDisabled: false,
 		fontawesome: {
 			pro: false,
-			styles: ['solid', 'brands', 'regular'],
+			styles: '*',
 		},
 	});
 

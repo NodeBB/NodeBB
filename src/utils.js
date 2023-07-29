@@ -51,6 +51,21 @@ utils.getFontawesomePath = function () {
 	return fontawesomePath;
 };
 
+utils.getFontawesomeStyles = function () {
+	let styles = nconf.get('fontawesome:styles') || '*';
+	// "*" is a special case, it means all styles, spread is used to support both string and array (["*"])
+	if ([...styles][0] === '*') {
+		styles = ['solid', 'brands', 'regular'];
+		if (nconf.get('fontawesome:pro')) {
+			styles.push('light', 'thin', 'sharp', 'duotone');
+		}
+	}
+	if (!Array.isArray(styles)) {
+		styles = [styles];
+	}
+	return styles;
+};
+
 utils.getFontawesomeVersion = function () {
 	const fontawesomePath = utils.getFontawesomePath();
 	const packageJson = require(path.join(fontawesomePath, 'package.json'));
