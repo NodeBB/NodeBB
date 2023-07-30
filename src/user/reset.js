@@ -96,7 +96,7 @@ UserReset.commit = async function (code, password) {
 		['password', 'passwordExpiry', 'password:shaWrapped', 'username']
 	);
 
-	await plugins.hooks.fire('filter:password.check', { password: password, uid, username: userData.username, currentPassword: userData.password });
+	await plugins.hooks.fire('filter:password.check', { password: password, uid });
 
 	const ok = await Password.compare(password, userData.password, !!parseInt(userData['password:shaWrapped'], 10));
 	if (ok) {
