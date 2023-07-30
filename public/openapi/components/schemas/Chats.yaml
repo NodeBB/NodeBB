@@ -37,15 +37,17 @@ MessageObject:
     roomId:
       type: number
     deleted:
-      type: boolean
+      type: number
     system:
-      type: boolean
+      type: number
     edited:
       type: number
     timestampISO:
       type: string
     editedISO:
       type: string
+    mid:
+      type: number
     messageId:
       type: number
     fromUser:

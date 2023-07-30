@@ -44,6 +44,7 @@ module.exports = function (Messaging) {
 		const mid = await db.incrObjectField('global', 'nextMid');
 		const timestamp = data.timestamp || Date.now();
 		let message = {
+			mid: mid,
 			content: String(data.content),
 			timestamp: timestamp,
 			fromuid: uid,
@@ -65,6 +66,8 @@ module.exports = function (Messaging) {
 		const tasks = [
 			Messaging.addMessageToRoom(roomId, mid, timestamp),
 			Messaging.markRead(uid, roomId),
+			db.sortedSetAdd('messages:mid', timestamp, mid),
+			db.incrObjectField('global', 'messageCount'),
 		];
 		if (roomData.public) {
 			tasks.push(
@@ -86,9 +89,7 @@ module.exports = function (Messaging) {
 		}
 
 		messages[0].newSet = isNewSet;
-		messages[0].mid = mid; // TODO: messageId is a duplicate
-		messages[0].roomId = roomId;
-		plugins.hooks.fire('action:messaging.save', { message: messages[0], data: data });
+		plugins.hooks.fire('action:messaging.save', { message: message, data: data });
 		return messages[0];
 	};
 

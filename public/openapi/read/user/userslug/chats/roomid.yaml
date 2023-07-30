@@ -59,9 +59,9 @@ get:
                         roomId:
                           type: string
                         deleted:
-                          type: boolean
+                          type: number
                         system:
-                          type: boolean
+                          type: number
                         edited:
                           type: number
                         timestampISO:
@@ -69,6 +69,8 @@ get:
                           description: An ISO 8601 formatted date string (complementing `timestamp`)
                         editedISO:
                           type: string
+                        mid:
+                          type: number
                         messageId:
                           type: number
                         fromUser:

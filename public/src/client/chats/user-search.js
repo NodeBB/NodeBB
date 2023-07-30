@@ -1,13 +1,13 @@
 'use strict';
 
 
-define('forum/chats/search', [
+define('forum/chats/user-search', [
 	'components', 'api', 'alerts',
 ], function (components, api, alerts) {
-	const search = {};
+	const userSearch = {};
 	let users = [];
 
-	search.init = function (options) {
+	userSearch.init = function (options) {
 		options = options || {};
 		users.length = 0;
 		components.get('chat/search').on('keyup', utils.debounce(doSearch, 250));
@@ -65,5 +65,5 @@ define('forum/chats/search', [
 		chatsListEl.parent().toggleClass('show', true);
 	}
 
-	return search;
+	return userSearch;
 });
