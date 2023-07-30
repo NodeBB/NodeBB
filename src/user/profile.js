@@ -295,10 +295,9 @@ module.exports = function (User) {
 			throw new Error('[[error:invalid-uid]]');
 		}
 		User.isPasswordValid(data.newPassword);
-		const [isAdmin, hasPassword, username] = await Promise.all([
+		const [isAdmin, hasPassword] = await Promise.all([
 			User.isAdministrator(uid),
 			User.hasPassword(uid),
-			User.getUserField(uid, 'username'),
 		]);
 
 		if (meta.config['password:disableEdit'] && !isAdmin) {
@@ -311,7 +310,7 @@ module.exports = function (User) {
 			throw new Error('[[user:change_password_error_privileges]]');
 		}
 
-		await plugins.hooks.fire('filter:password.check', { password: data.newPassword, uid, username, currentPassword: data.currentPassword });
+		await plugins.hooks.fire('filter:password.check', { password: data.newPassword, uid: data.uid });
 
 		if (isSelf && hasPassword) {
 			const correct = await User.isPasswordCorrect(data.uid, data.currentPassword, data.ip);
