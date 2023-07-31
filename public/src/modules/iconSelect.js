@@ -268,7 +268,6 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 						callback: function () {
 							const iconClass = $('.bootbox .selected')[0]?.classList || [`fa-${$('.bootbox #fa-filter').val()}`];
 							const newIcon = cleanFAClass(iconClass);
-							console.log(`Selected ${JSON.stringify(selected)} new ${JSON.stringify(newIcon)}`);
 							if (newIcon.icon) {
 								el.removeClass(selected.icon).addClass(newIcon.icon);
 								// eslint-disable-next-line no-restricted-syntax
