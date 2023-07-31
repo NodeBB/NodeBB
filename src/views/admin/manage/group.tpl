@@ -53,7 +53,7 @@
 					</div>
 
 					<div class="d-flex gap-2 align-items-center">
-						<div class="pointer border rounded-1 p-1 d-flex align-items-center justify-content-center" id="group-icon-container" style="width:40px; height:40px;">
+						<div class="pointer border rounded-1 p-1 d-flex align-items-center justify-content-center" id="group-icon-container" style="width:40px; height:40px;" data-bs-toggle="tooltip" title="[[admin/admin:select-icon]]">
 							<i id="group-icon" class="fa fa-2x {{{ if group.icon }}}{group.icon}{{{ end }}}" value="{group.icon}"></i>
 						</div>
 						<div class="w-100">
