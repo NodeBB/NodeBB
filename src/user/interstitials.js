@@ -28,8 +28,8 @@ Interstitials.email = async (data) => {
 		return data;
 	}
 
-	const [isAdminOrGlobalMod, hasPassword, hasPending] = await Promise.all([
-		user.isAdminOrGlobalMod(data.req.uid),
+	const [canManageUsers, hasPassword, hasPending] = await Promise.all([
+		privileges.admin.can('admin:users', data.req.uid),
 		user.hasPassword(data.userData.uid),
 		user.email.isValidationPending(data.userData.uid),
 	]);
@@ -44,7 +44,12 @@ Interstitials.email = async (data) => {
 		data: {
 			email,
 			requireEmailAddress: meta.config.requireEmailAddress,
-			issuePasswordChallenge: !!data.userData.uid && hasPassword,
+			issuePasswordChallenge:
+				hasPassword &&
+				(
+					(canManageUsers && data.userData.uid === data.req.uid) || // admin changing own email
+					(!canManageUsers && !!data.userData.uid) // non-admins changing own email
+				),
 			hasPending,
 		},
 		callback: async (userData, formData) => {
@@ -68,7 +73,7 @@ Interstitials.email = async (data) => {
 					}),
 				]);
 
-				if (!isAdminOrGlobalMod && !isPasswordCorrect) {
+				if (!canManageUsers && !isPasswordCorrect) {
 					await sleep(2000);
 				}
 
@@ -87,7 +92,7 @@ Interstitials.email = async (data) => {
 					}
 
 					// Admins editing will auto-confirm, unless editing their own email
-					if (isAdminOrGlobalMod && userData.uid !== data.req.uid) {
+					if (canManageUsers && userData.uid !== data.req.uid) {
 						if (!await user.email.available(formData.email)) {
 							throw new Error('[[error:email-taken]]');
 						}
@@ -115,7 +120,7 @@ Interstitials.email = async (data) => {
 						throw new Error('[[error:invalid-email]]');
 					}
 
-					if (current.length && (!hasPassword || (hasPassword && isPasswordCorrect) || isAdminOrGlobalMod)) {
+					if (current.length && (!hasPassword || (hasPassword && isPasswordCorrect) || canManageUsers)) {
 						// User or admin explicitly clearing their email
 						await user.email.remove(userData.uid, isSelf ? data.req.session.id : null);
 					}
