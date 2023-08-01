@@ -216,6 +216,14 @@ describe('Post\'s', () => {
 			});
 		});
 
+		it('should fail to get upvoters if user does not have read privilege', async () => {
+			await privileges.categories.rescind(['groups:topics:read'], cid, 'guests');
+			await assert.rejects(socketPosts.getUpvoters({ uid: 0 }, [postData.pid]), {
+				message: '[[error:no-privileges]]',
+			});
+			await privileges.categories.give(['groups:topics:read'], cid, 'guests');
+		});
+
 		it('should unvote a post', async () => {
 			const result = await apiPosts.unvote({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_1' });
 			assert.equal(result.post.upvotes, 0);
