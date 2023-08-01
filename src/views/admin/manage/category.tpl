@@ -99,7 +99,7 @@
 					</label>
 					<div class="d-flex gap-2 align-items-center">
 						<div component="category/preview" class="category-preview rounded-1 d-flex align-items-center justify-content-center pointer"
-						data-bs-toggle="tooltip" title="[[admin/manage/categories:select-icon]]"
+						data-bs-toggle="tooltip" title="[[admin/admin:select-icon]]"
 						style="
 							{{{ if category.backgroundImage }}}background-image: url({category.backgroundImage});{{{ end }}}
 							{{{ if category.bgColor }}}background-color: {category.bgColor};{{{ end }}}

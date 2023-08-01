@@ -107,7 +107,11 @@ events.getEvents = async function (filter, start, stop, from, to) {
 		to = '+inf';
 	}
 
-	const eids = await db.getSortedSetRevRangeByScore(`events:time${filter ? `:${filter}` : ''}`, start, stop - start + 1, to, from);
+	const eids = await db.getSortedSetRevRangeByScore(`events:time${filter ? `:${filter}` : ''}`, start, stop === -1 ? -1 : stop - start + 1, to, from);
+	return await events.getEventsByEventIds(eids);
+};
+
+events.getEventsByEventIds = async (eids) => {
 	let eventsData = await db.getObjects(eids.map(eid => `event:${eid}`));
 	eventsData = eventsData.filter(Boolean);
 	await addUserData(eventsData, 'uid', 'user');

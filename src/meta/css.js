@@ -10,6 +10,7 @@ const plugins = require('../plugins');
 const db = require('../database');
 const file = require('../file');
 const minifier = require('./minifier');
+const utils = require('../utils');
 
 const CSS = module.exports;
 
@@ -35,7 +36,8 @@ const buildImports = {
 			'@import "admin/overrides";',
 			'@import "bootstrap/scss/bootstrap";',
 			'@import "mixins";',
-			'@import "fontawesome";',
+			'@import "fontawesome/loader";',
+			getFontawesomeStyle(),
 			'@import "@adactive/bootstrap-tagsinput/src/bootstrap-tagsinput";',
 			'@import "generics";',
 			'@import "responsive-utilities";',
@@ -120,13 +122,21 @@ function boostrapImport(themeData) {
 		'@import "bootstrap/scss/utilities/api";',
 		// scss-docs-end import-stack
 
-		'@import "fontawesome";',
+		'@import "fontawesome/loader";',
+		getFontawesomeStyle(),
+
 		'@import "mixins";', // core mixins
 		'@import "generics";',
 		'@import "client";', // core page styles
 		'@import "./theme";', // rest of the theme scss
 		bootswatchSkin && !isCustomSkin ? `@import "bootswatch/dist/${bootswatchSkin}/bootswatch";` : '',
 	].join('\n');
+}
+
+
+function getFontawesomeStyle() {
+	const styles = utils.getFontawesomeStyles();
+	return styles.map(style => `@import "fontawesome/style-${style}";`).join('\n');
 }
 
 async function filterMissingFiles(filepaths) {
@@ -177,6 +187,7 @@ async function getBundleMetadata(target) {
 		path.join(__dirname, '../../node_modules'),
 		path.join(__dirname, '../../public/scss'),
 		path.join(__dirname, '../../public/vendor/fontawesome/scss'),
+		path.join(utils.getFontawesomePath(), 'scss'),
 	];
 
 	// Skin support

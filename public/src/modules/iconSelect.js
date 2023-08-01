@@ -2,6 +2,7 @@
 
 
 define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
+	const fontawesome_license = config.fontawesome.pro ? 'pro' : 'free';
 	const iconSelect = {};
 	const initialIcons = [
 		{ id: 'nbb-none', label: 'None (NodeBB)', style: 'nodebb' },
@@ -222,16 +223,17 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 		{ id: 'address-book', label: 'Address Book (solid)', style: 'solid' },
 	];
 	iconSelect.init = function (el, onModified) {
-		onModified = onModified || function () {};
-		let selected = cleanFAClass(el.attr('class'));
-
+		onModified = onModified || function () { };
+		let selected = cleanFAClass(el[0].classList);
 		$('#icons .selected').removeClass('selected');
-
-		if (selected) {
+		if (selected.icon) {
 			try {
-				$('#icons .nbb-fa-icons .fa.' + selected).addClass('selected');
+				$(`#icons .nbb-fa-icons ${selected.styles.length ? '.' + selected.styles.join('.') : ''}.${selected.icon}`).addClass('selected');
 			} catch (err) {
-				selected = '';
+				selected = {
+					icon: '',
+					style: '',
+				};
 			}
 		}
 
@@ -250,26 +252,39 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 						label: 'No Icon',
 						className: 'btn-default',
 						callback: function () {
-							el.removeClass(selected);
+							el.removeClass(selected.icon);
+							// eslint-disable-next-line no-restricted-syntax
+							for (const style of selected.styles) {
+								el.removeClass(style);
+							}
 							el.val('');
 							el.attr('value', '');
-							onModified(el, '');
+							onModified(el, '', []);
 						},
 					},
 					success: {
 						label: 'Select',
 						className: 'btn-primary',
 						callback: function () {
-							const iconClass = $('.bootbox .selected').attr('class') || `fa fa-${$('.bootbox #fa-filter').val()}`;
-							const newIconClass = cleanFAClass(iconClass);
-
-							if (newIconClass) {
-								el.removeClass(selected).addClass(newIconClass);
-								el.val(newIconClass);
-								el.attr('value', newIconClass);
+							const iconClass = $('.bootbox .selected')[0]?.classList || [`fa-${$('.bootbox #fa-filter').val()}`];
+							const newIcon = cleanFAClass(iconClass);
+							if (newIcon.icon) {
+								el.removeClass(selected.icon).addClass(newIcon.icon);
+								// eslint-disable-next-line no-restricted-syntax
+								for (const style of selected.styles || []) {
+									el.removeClass(style);
+								}
+								// eslint-disable-next-line no-restricted-syntax
+								for (const style of newIcon.styles || []) {
+									el.addClass(style);
+								}
+								// Simple workaround for lack of style information in icons by just adding the style class to the value
+								const newValue = newIcon.icon + (newIcon.styles.length ? ' ' + newIcon.styles.join(' ') : '');
+								el.val(newValue);
+								el.attr('value', newValue);
 							}
 
-							onModified(el, newIconClass);
+							onModified(el, newIcon.icon, newIcon.styles);
 						},
 					},
 				},
@@ -279,9 +294,9 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 				const modalEl = $(this);
 				const searchEl = modalEl.find('input');
 
-				if (selected) {
-					modalEl.find('.' + selected).addClass('selected');
-					searchEl.val(selected.replace('fa-', ''));
+				if (selected.icon) {
+					modalEl.find('.' + selected.icon).addClass('selected');
+					searchEl.val(selected.icon.replace('fa-', ''));
 				}
 			}).modal('show');
 
@@ -298,8 +313,8 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 					if (newSelection) {
 						newSelection.addClass('selected');
 					} else if (searchEl.val().length === 0) {
-						if (selected) {
-							modalEl.find('.' + selected).addClass('selected');
+						if (selected.icon) {
+							modalEl.find('.' + selected.icon).addClass('selected');
 						}
 					} else {
 						modalEl.find('i:visible').first().addClass('selected');
@@ -310,7 +325,7 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 				searchEl.selectRange(0, searchEl.val().length);
 
 				modalEl.find('.icon-container').on('click', 'i', function () {
-					searchEl.val(cleanFAClass($(this).attr('class')).replace('fa-', ''));
+					searchEl.val(cleanFAClass($(this)[0].classList).icon.replace('fa-', ''));
 					changeSelection($(this));
 				});
 				const debouncedSearch = utils.debounce(async () => {
@@ -323,7 +338,7 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 					}
 					icons.remove();
 					iconData.forEach((iconData) => {
-						iconContainer.append($(`<i class="fa fa-xl fa-${iconData.style} fa-${iconData.id} rounded-1" data-label="${iconData.label}"></i>`));
+						iconContainer.append($(`<i class="fa fa-xl fa-${iconData.style}${iconData.family !== 'classic' ? ` fa-${iconData.family}` : ''} fa-${iconData.id} rounded-1" data-label="${iconData.label}"></i>`));
 					});
 					icons = modalEl.find('.nbb-fa-icons i');
 					changeSelection();
@@ -340,13 +355,54 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 		});
 	};
 
-	// turns "fa fa-2x fa-solid fa-heart" into "fa-heart"
-	function cleanFAClass(className) {
-		className = className.replace(/fa-(solid|regular|brands|light|thin|duotone|nodebb) /, '');
-		const filterNames = ['fa-2x', 'fa-xl', 'fa', 'fa-'];
-		return className.split(' ')
-			.filter(c => !filterNames.includes(c))
-			.filter(c => c && c.startsWith('fa-')).join('');
+	const excludedClassList = [
+		'nodebb',
+		'fw',
+		'\\d{1,2}?[xsl][smgl]',
+		'rotate-(\\d+|horizontal|vertical|both|by)',
+		'flip-(\\d+|horizontal|vertical|both)',
+		'beat',
+		'fade',
+		'beat-fade',
+		'bounce',
+		'flip',
+		'shake',
+		'spin',
+		'spin-pulse',
+		'spin-reverse',
+		'border',
+		'pull-(left|right)',
+		'stack(-\\dx)?',
+		'inverse',
+		'layers(-text)?(-counter)?',
+		'ul',
+		'li',
+		'border',
+		'swap-opacity',
+		'sr-only(-focusable)?',
+	];
+
+	const excludedClassRegex = RegExp(`\\bfa-(${excludedClassList.join('|')})\\b`, 'i');
+
+	const styleRegex = /fa-(solid|regular|brands|light|thin|duotone|sharp)/;
+	// turns 'fa fa-2x fa-solid fa-heart' into 'fa-heart'
+	function cleanFAClass(classList) {
+		const styles = [];
+		let icon;
+		// eslint-disable-next-line no-restricted-syntax
+		for (const className of classList) {
+			if (className.startsWith('fa-') && !excludedClassRegex.test(className)) {
+				if (styleRegex.test(className)) {
+					styles.push(className);
+				} else {
+					icon = className;
+				}
+			}
+		}
+		return {
+			icon,
+			styles,
+		};
 	}
 
 	iconSelect.findIcons = async function (searchString) {
@@ -357,26 +413,35 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 			},
 			body: JSON.stringify({
 				query: `query {
-					search(version: "6.2.0", query: "${searchString}", first: 200) {
+					search(version: "${config.fontawesome.version}", query: "${searchString}", first: 200) {
 						id,
 						label,
 						familyStylesByLicense {
-							free {
-								style
+							${fontawesome_license} {
+								style,
+								family
 							}
 						}
 					}
-				}`,
+				}`.replace(/(\n| {2,}|\t{2,})/g, ''), // very simple minification
 			}),
 		});
 		const response = await request.json();
 		const icons = response.data.search.filter(icon => icon.familyStylesByLicense.free.length > 0).flatMap((icon) => {
 			const result = [];
-			icon.familyStylesByLicense.free.forEach((style) => {
+			icon.familyStylesByLicense[fontawesome_license].forEach((style) => {
+				let familyStyle = style.style;
+				if (style.family !== 'classic') {
+					familyStyle = `${style.family}-${familyStyle}`;
+				}
+				if (!config.fontawesome.styles.includes(familyStyle)) {
+					return;
+				}
 				result.push({
 					id: icon.id,
 					label: `${icon.label} (${style.style})`,
 					style: style.style,
+					family: style.family,
 				});
 			});
 			return result;
