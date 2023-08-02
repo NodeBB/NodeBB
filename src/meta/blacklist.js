@@ -49,6 +49,10 @@ Blacklist.test = async function (clientIp) {
 	}
 	clientIp = clientIp.split(':').length === 2 ? clientIp.split(':')[0] : clientIp;
 
+	if (!validator.isIP(clientIp)) {
+		throw new Error('[[error:invalid-ip]]');
+	}
+
 	const rules = Blacklist._rules;
 	function checkCidrRange(clientIP) {
 		if (!rules.cidr.length) {
