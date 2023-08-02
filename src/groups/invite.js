@@ -45,6 +45,7 @@ module.exports = function (Groups) {
 			bodyShort: `[[groups:membership.accept.notification_title, ${groupName}]]`,
 			nid: `group:${groupName}:uid:${uid}:invite-accepted`,
 			path: `/groups/${slugify(groupName)}`,
+			icon: 'fa-users',
 		});
 		await notifications.push(notification, [uid]);
 	};
@@ -68,6 +69,7 @@ module.exports = function (Groups) {
 			bodyLong: '',
 			nid: `group:${groupName}:uid:${uid}:invite`,
 			path: `/groups/${slugify(groupName)}`,
+			icon: 'fa-users',
 		})));
 
 		await Promise.all(uids.map((uid, index) => notifications.push(notificationData[index], uid)));
