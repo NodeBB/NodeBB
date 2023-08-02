@@ -90,5 +90,7 @@
 	"details.logins-login-time": "Tempo di accesso",
 	"start": "Inizio",
 	"end": "Fine",
-	"filter": "Filtro"
+	"filter": "Filtro",
+	"view-as-json": "View as JSON",
+	"expand-analytics": "Expand analytics"
 }

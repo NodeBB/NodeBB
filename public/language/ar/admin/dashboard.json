@@ -90,5 +90,7 @@
 	"details.logins-login-time": "وقت تسجيل الدخول",
 	"start": "بدء",
 	"end": "إنهاء",
-	"filter": "تصفية"
+	"filter": "تصفية",
+	"view-as-json": "View as JSON",
+	"expand-analytics": "Expand analytics"
 }

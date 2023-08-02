@@ -90,5 +90,7 @@
 	"details.logins-login-time": "Bejelentkezés ideje",
 	"start": "Kezdés",
 	"end": "Vége",
-	"filter": "Szűrő"
+	"filter": "Szűrő",
+	"view-as-json": "View as JSON",
+	"expand-analytics": "Expand analytics"
 }

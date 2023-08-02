@@ -90,5 +90,7 @@
 	"details.logins-login-time": "登录时间",
 	"start": "开始",
 	"end": "结束",
-	"filter": "过滤器"
+	"filter": "过滤器",
+	"view-as-json": "View as JSON",
+	"expand-analytics": "Expand analytics"
 }

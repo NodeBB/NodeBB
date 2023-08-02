@@ -90,5 +90,7 @@
 	"details.logins-login-time": "Czas logowania",
 	"start": "Start",
 	"end": "End",
-	"filter": "Filter"
+	"filter": "Filter",
+	"view-as-json": "View as JSON",
+	"expand-analytics": "Expand analytics"
 }

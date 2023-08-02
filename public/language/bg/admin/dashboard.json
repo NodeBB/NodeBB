@@ -90,5 +90,7 @@
 	"details.logins-login-time": "Време на вписване",
 	"start": "Начало",
 	"end": "Край",
-	"filter": "Филтриране"
+	"filter": "Филтриране",
+	"view-as-json": "View as JSON",
+	"expand-analytics": "Expand analytics"
 }

@@ -90,5 +90,7 @@
 	"details.logins-login-time": "Thời gian đăng nhập",
 	"start": "Start",
 	"end": "End",
-	"filter": "Bộ lọc"
+	"filter": "Bộ lọc",
+	"view-as-json": "View as JSON",
+	"expand-analytics": "Expand analytics"
 }

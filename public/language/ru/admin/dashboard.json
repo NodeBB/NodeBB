@@ -90,5 +90,7 @@
 	"details.logins-login-time": "Время входа",
 	"start": "Начало",
 	"end": "Окончание",
-	"filter": "Фильтр"
+	"filter": "Фильтр",
+	"view-as-json": "View as JSON",
+	"expand-analytics": "Expand analytics"
 }

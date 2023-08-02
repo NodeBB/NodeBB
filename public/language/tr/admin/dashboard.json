@@ -90,5 +90,7 @@
 	"details.logins-login-time": "Giriş zamanı",
 	"start": "Başlangıç",
 	"end": "Bitiş",
-	"filter": "Filtre"
+	"filter": "Filtre",
+	"view-as-json": "View as JSON",
+	"expand-analytics": "Expand analytics"
 }
