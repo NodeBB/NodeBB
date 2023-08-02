@@ -43,6 +43,7 @@ define('admin/dashboard', [
 
 		isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
+		setupDarkModeButton();
 		setupRealtimeButton();
 		setupGraphs(function () {
 			socket.emit('admin.rooms.getAll', Admin.updateRoomUsage);
@@ -529,18 +530,20 @@ define('admin/dashboard', [
 		graphs.topics.update();
 	}
 
+	function setupDarkModeButton() {
+		let bsTheme = localStorage.getItem('data-bs-theme') || 'light';
+		$('#toggle-dark-mode').prop('checked', bsTheme === 'dark')
+			.on('click', function () {
+				const isChecked = $(this).is(':checked');
+				bsTheme = isChecked ? 'dark' : 'light';
+				$('html').attr('data-bs-theme', bsTheme);
+				localStorage.setItem('data-bs-theme', bsTheme);
+			});
+	}
+
 	function setupRealtimeButton() {
-		$('#toggle-realtime .fa').on('click', function () {
-			const $this = $(this);
-			if ($this.hasClass('fa-toggle-on')) {
-				$this.removeClass('fa-toggle-on').addClass('fa-toggle-off');
-				$this.parent().find('strong').html('OFF');
-				initiateDashboard(false);
-			} else {
-				$this.removeClass('fa-toggle-off').addClass('fa-toggle-on');
-				$this.parent().find('strong').html('ON');
-				initiateDashboard(true);
-			}
+		$('#toggle-realtime').on('click', function () {
+			initiateDashboard($(this).is(':checked'));
 		});
 	}
 

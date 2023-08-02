@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{function.localeToHTML, acpLang, defaultLang}" {{{if languageDirection}}}data-dir="{languageDirection}" style="direction: {languageDirection};"{{{end}}}>
+<html data-bs-theme="light" lang="{function.localeToHTML, acpLang, defaultLang}" {{{if languageDirection}}}data-dir="{languageDirection}" style="direction: {languageDirection};"{{{end}}}>
 	<head>
 		<title>{title}</title>
 
@@ -15,6 +15,10 @@
 				flags: {},
 				inAdmin: true
 			};
+			const theme = localStorage.getItem('data-bs-theme');
+			if (theme && theme === 'dark') {
+				document.documentElement.setAttribute('data-bs-theme', 'dark');
+			}
 		</script>
 
 		<script type="text/javascript" src="{relative_path}/assets/admin.min.js?{cache-buster}"></script>

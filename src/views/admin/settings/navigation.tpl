@@ -14,7 +14,7 @@
 	<div class="row" id="navigation">
 		<div class="col-lg-9">
 			<div class="clearfix">
-				<ul id="active-navigation" class="nav">
+				<ul id="active-navigation" class="nav border">
 					{{{ each navigation }}}
 					<li data-index="{navigation.index}" class="float-start nav-item {navigation.class} {{{ if navigation.selected }}} active {{{ end }}}">
 						<a href="#" title="{navigation.route}" id="{navigation.id}" class="nav-link p-3 {{{ if !navigation.enabled }}}text-muted{{{ end }}}">

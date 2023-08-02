@@ -11,11 +11,10 @@
 	#active-navigation {
 		float: none;
 		min-height: 50px;
-		border: 1px solid #eee;
 		overflow: auto;
 
 		.active {
-			background-color: #eee;
+			background-color: $gray-700;
 		}
 
 		li a {

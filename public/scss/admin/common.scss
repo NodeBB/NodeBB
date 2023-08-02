@@ -13,8 +13,6 @@
 
 .tracking-tight { letter-spacing: -0.02em; }
 
-$btn-ghost-hover-color: mix($light, $dark, 90%);
-
 @mixin btn-ghost-base {
 	display: flex;
 	align-items: center;
@@ -27,12 +25,11 @@ $btn-ghost-hover-color: mix($light, $dark, 90%);
 	padding: ($spacer * 0.25) ($spacer * 0.5);
 	text-align: left;
 	--bs-text-opacity: 1;
-	color: rgb(73 80 87 / var(--bs-text-opacity));
+	color: $btn-ghost-color;
 	font-family: $font-family-secondary;
 	cursor: pointer;
 	&:hover, &.active {
 		background-color: $btn-ghost-hover-color;
-		color: rgb(73 80 87 / var(--bs-text-opacity));
 		text-decoration: none;
 	}
 }
@@ -64,6 +61,23 @@ $btn-ghost-hover-color: mix($light, $dark, 90%);
 	border-color: $border-color;
 	font-size: 0.875rem;
 	line-height: 1.25rem;
+}
+
+@include color-mode(dark) {
+	#content {
+		.btn-light {
+			@extend .btn-dark;
+		}
+		.text-bg-light {
+			@extend .text-bg-dark;
+		}
+		.btn-ghost, .btn-ghost-sm, .btn-outline, .btn-outline-sm {
+			color: $btn-ghost-color-dark;
+			&:hover, &.active {
+				background-color: $btn-ghost-hover-color-dark;
+			}
+		}
+	}
 }
 
 .flex-basis-md-200 {

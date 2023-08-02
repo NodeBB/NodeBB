@@ -1,4 +1,4 @@
-<div class="offcanvas offcanvas-start gap-1" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel" style="width: 275px;">
+<div data-bs-theme="light" class="offcanvas offcanvas-start gap-1" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel" style="width: 275px;">
 	<div class="offcanvas-body flex-0 pb-0 overflow-visible d-flex flex-column gap-1 ff-secondary">
 		<!-- IMPORT admin/partials/quick_actions/alerts.tpl -->
 

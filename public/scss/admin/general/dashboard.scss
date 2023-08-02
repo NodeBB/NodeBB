@@ -7,7 +7,7 @@
 
 	.graph-container {
 		position: relative;
-		background: $body-bg;
+		background: var(--bg-body-bg);
 
 		&.fullscreen {
 			width: 100%;
@@ -70,8 +70,6 @@
 			list-style-type: none;
 			padding: 0.5rem 1rem;
 			margin: 0;
-			background: rgba(255, 255, 255, 0.66);
-			border: 1px solid #ddd;
 
 			li {
 				div {
