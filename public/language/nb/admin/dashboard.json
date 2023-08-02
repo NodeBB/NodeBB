@@ -48,6 +48,7 @@
 	"restart-disabled": "Rebuilding and Restarting your NodeBB has been disabled as you do not seem to be running it via the appropriate daemon.",
 	"maintenance-mode": "Maintenance Mode",
 	"maintenance-mode-title": "Click here to set up maintenance mode for NodeBB",
+	"dark-mode": "Dark Mode",
 	"realtime-chart-updates": "Realtime Chart Updates",
 
 	"active-users": "Active Users",

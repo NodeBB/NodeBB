@@ -48,6 +48,7 @@
 	"restart-disabled": "Recompilar e Reiniciar o seu NodeBB foi desativado, pois parece que você não está fazendo-o por meios apropriados.",
 	"maintenance-mode": "Modo de Manutenção",
 	"maintenance-mode-title": "Clique aqui para ativar o modo de manutenção do NodeBB",
+	"dark-mode": "Dark Mode",
 	"realtime-chart-updates": "Atualização de Gráfico em Tempo Real",
 
 	"active-users": "Usuários Ativos",

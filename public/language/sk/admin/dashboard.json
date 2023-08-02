@@ -48,6 +48,7 @@
 	"restart-disabled": "Znovu zostavenie a reštartovanie vášho NodeBB bolo zablokované, pretože sa nezdá, že ste bol pripojený cez príslušného „daemona”.",
 	"maintenance-mode": "Režim údržby",
 	"maintenance-mode-title": "Pre nastavenia režimu údržby NodeBB, kliknite sem",
+	"dark-mode": "Dark Mode",
 	"realtime-chart-updates": "Aktualizácie grafov v reálnom čase",
 
 	"active-users": "Aktívny užívatelia",

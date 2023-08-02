@@ -48,6 +48,7 @@
 	"restart-disabled": "Das Regenerieren und Neustarten von NodeBB wurde deaktiviert, da es nicht so aussieht als ob es über einem kompatiblem daemon läuft.",
 	"maintenance-mode": "Wartungsmodus",
 	"maintenance-mode-title": "Hier klicken um NodeBB in den Wartungsmodus zu versetzen",
+	"dark-mode": "Dark Mode",
 	"realtime-chart-updates": "Echtzeit Chartaktualisierung",
 
 	"active-users": "Aktive Benutzer",

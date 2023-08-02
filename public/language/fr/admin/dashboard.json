@@ -48,6 +48,7 @@
 	"restart-disabled": "La régénération et le redémarrage de votre forum ont été désactivés car vous ne semblez pas les exécuter à l'aide du serveur approprié.",
 	"maintenance-mode": "Mode maintenance",
 	"maintenance-mode-title": "Cliquez ici pour passer NodeBB en mode maintenance",
+	"dark-mode": "Dark Mode",
 	"realtime-chart-updates": "Mises à jour des graphiques en temps réel",
 
 	"active-users": "Utilisateurs actifs",

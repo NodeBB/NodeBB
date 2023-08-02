@@ -48,6 +48,7 @@
 	"restart-disabled": "NodeBB:si udelleenrakennus ja -käynnistys on estetty; vaikuttaa siltä, ettet käytä siihen sopivaa daemonia.",
 	"maintenance-mode": "Huoltotila",
 	"maintenance-mode-title": "Valitse tämä pohjustaaksesi huoltotilan NodeBB:llesi.",
+	"dark-mode": "Dark Mode",
 	"realtime-chart-updates": "Reaaliaikaiset kuvaajien päivitykset",
 
 	"active-users": "Aktiiviset käyttäjät",

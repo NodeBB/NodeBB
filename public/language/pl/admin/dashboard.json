@@ -48,6 +48,7 @@
 	"restart-disabled": "Zablokowano przebudowę i restart, ponieważ wygląda na to, że nie uruchamiasz NodeBB poprzez właściwy serwis.",
 	"maintenance-mode": "Tryb serwisowy",
 	"maintenance-mode-title": "Kliknij tutaj, by skonfigurować tryb konserwacji dla NodeBB",
+	"dark-mode": "Dark Mode",
 	"realtime-chart-updates": "Wykresy aktualizowane na żywo",
 
 	"active-users": "Aktywni użytkownicy",

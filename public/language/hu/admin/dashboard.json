@@ -48,6 +48,7 @@
 	"restart-disabled": "A NodeBB újraépítése és újraindítása letiltásra került, mivel úgy néz ki nem a megfelelő daemon-al futtatod.",
 	"maintenance-mode": "Karbantartási mód",
 	"maintenance-mode-title": "Kattints ide a NodeBB karbantartási módjának beállításához",
+	"dark-mode": "Dark Mode",
 	"realtime-chart-updates": "Valós idejű grafikon frissítések ",
 
 	"active-users": "Aktív felhasználók",

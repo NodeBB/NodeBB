@@ -48,6 +48,7 @@
 	"restart-disabled": "適切なデーモンを介してNodeBBを実行しているようには見えないため、NodeBBの再構築および再起動は無効になっています。",
 	"maintenance-mode": "メンテナンスモード",
 	"maintenance-mode-title": "NodeBBのメンテナンスモードを設定するには、ここをクリックしてください",
+	"dark-mode": "Dark Mode",
 	"realtime-chart-updates": "リアルタイムチャートの更新",
 
 	"active-users": "アクティブユーザー",

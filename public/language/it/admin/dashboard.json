@@ -48,6 +48,7 @@
 	"restart-disabled": "La Riorganizzazione e il Riavvio del tuo NodeBB sono stati disabilitati in quanto non sembra che tu lo stia eseguendo tramite il demone appropriato.",
 	"maintenance-mode": "Modalità Manutenzione",
 	"maintenance-mode-title": "Clicca qui per impostare la modalità di manutenzione per NodeBB",
+	"dark-mode": "Dark Mode",
 	"realtime-chart-updates": "Aggiornamento grafici in tempo reale",
 
 	"active-users": "Utenti Attivi",

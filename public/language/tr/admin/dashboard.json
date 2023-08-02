@@ -48,6 +48,7 @@
 	"restart-disabled": "NodeBB'nizi yeniden oluşturma ve yeniden başlatma devre dışı bırakıldı.",
 	"maintenance-mode": "Bakım Modu",
 	"maintenance-mode-title": "NodeBB için bakım modunu ayarlamak için buraya tıklayın",
+	"dark-mode": "Dark Mode",
 	"realtime-chart-updates": "Gerçek Zamanlı Grafik Güncellemeleri",
 
 	"active-users": "Aktif Kullanıcılar",
