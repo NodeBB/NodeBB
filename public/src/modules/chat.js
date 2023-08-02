@@ -154,11 +154,11 @@ define('chat', [
 			alerts.error(err);
 
 			// Revert on failure
-			module.markChatElUnread($(chatEl), !(state === 1));
+			module.markChatElUnread($(chatEl), !state);
 		});
 
 		// Immediate feedback
-		module.markChatElUnread($(chatEl), state === 1);
+		module.markChatElUnread($(chatEl), state);
 	};
 
 	module.isFromBlockedUser = function (fromUid) {
