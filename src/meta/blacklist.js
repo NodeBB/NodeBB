@@ -44,45 +44,46 @@ Blacklist.get = async function () {
 };
 
 Blacklist.test = async function (clientIp) {
-	// Some handy test addresses
-	// clientIp = '2001:db8:85a3:0:0:8a2e:370:7334'; // IPv6
-	// clientIp = '127.0.15.1'; // IPv4
-	// clientIp = '127.0.15.1:3443'; // IPv4 with port strip port to not fail
 	if (!clientIp) {
 		return;
 	}
 	clientIp = clientIp.split(':').length === 2 ? clientIp.split(':')[0] : clientIp;
 
-	let addr;
-	try {
-		addr = ipaddr.parse(clientIp);
-	} catch (err) {
-		winston.error(`[meta/blacklist] Error parsing client IP : ${clientIp}`);
-		throw err;
-	}
-
-	if (
-		!Blacklist._rules.ipv4.includes(clientIp) && // not explicitly specified in ipv4 list
-		!Blacklist._rules.ipv6.includes(clientIp) && // not explicitly specified in ipv6 list
-		!Blacklist._rules.cidr.some((subnet) => {
+	const rules = Blacklist._rules;
+	function checkCidrRange(clientIP) {
+		if (!rules.cidr.length) {
+			return false;
+		}
+		let addr;
+		try {
+			addr = ipaddr.parse(clientIP);
+		} catch (err) {
+			winston.error(`[meta/blacklist] Error parsing client IP : ${clientIp}`);
+			throw err;
+		}
+		return rules.cidr.some((subnet) => {
 			const cidr = ipaddr.parseCIDR(subnet);
 			if (addr.kind() !== cidr[0].kind()) {
 				return false;
 			}
 			return addr.match(cidr);
-		}) // not in a blacklisted IPv4 or IPv6 cidr range
-	) {
-		try {
-			// To return test failure, pass back an error in callback
-			await plugins.hooks.fire('filter:blacklist.test', { ip: clientIp });
-		} catch (err) {
-			analytics.increment('blacklist');
-			throw err;
-		}
-	} else {
+		});
+	}
+
+	if (rules.ipv4.includes(clientIp) ||
+		rules.ipv6.includes(clientIp) ||
+		checkCidrRange(clientIp)) {
 		const err = new Error('[[error:blacklisted-ip]]');
 		err.code = 'blacklisted-ip';
 
+		analytics.increment('blacklist');
+		throw err;
+	}
+
+	try {
+		// To return test failure, throw an error in hook
+		await plugins.hooks.fire('filter:blacklist.test', { ip: clientIp });
+	} catch (err) {
 		analytics.increment('blacklist');
 		throw err;
 	}
