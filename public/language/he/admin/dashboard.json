@@ -48,6 +48,7 @@
 	"restart-disabled": "הפעלה או בניה מחדש של הפורום בוטלה, נראה שאינך מפעיל את הפורום דרך שרת מתאים.",
 	"maintenance-mode": "מצב תחזוקה",
 	"maintenance-mode-title": "לחץ כאן על מנת להכניס את הפורום למצב תחזוקה",
+	"dark-mode": "Dark Mode",
 	"realtime-chart-updates": "עדכן תרשים בזמן אמת",
 
 	"active-users": "משתמשים פעילים",

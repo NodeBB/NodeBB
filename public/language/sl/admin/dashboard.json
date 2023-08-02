@@ -48,6 +48,7 @@
 	"restart-disabled": "Obnova in ponovni zagon vašega NodeBB sta onemogočena, saj se zdi, da ga ne izvajate prek ustreznega prikritega procesa.",
 	"maintenance-mode": "Način vzdrževanja",
 	"maintenance-mode-title": "Za nastavitev načina vzdrževanja za NodeBB kliknite tukaj",
+	"dark-mode": "Dark Mode",
 	"realtime-chart-updates": "Posodobitev grafikona v realnem času",
 
 	"active-users": "Aktivni uporabniki",

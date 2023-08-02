@@ -48,6 +48,7 @@
 	"restart-disabled": "重建和重新启动NodeBB已被禁用，因为您似乎没有通过适当的守护进程运行它。",
 	"maintenance-mode": "维护模式",
 	"maintenance-mode-title": "点击此处设置 NodeBB 的维护模式",
+	"dark-mode": "Dark Mode",
 	"realtime-chart-updates": "实时图表更新",
 
 	"active-users": "活跃用户",

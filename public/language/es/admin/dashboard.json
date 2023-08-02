@@ -48,6 +48,7 @@
 	"restart-disabled": "Reconstruir y Reiniciar tu NodeBB ha sido deshabilitado, ya que parece que no lo estás ejecutando desde el daemon adecuado.",
 	"maintenance-mode": "Modo de Mantenimiento",
 	"maintenance-mode-title": "Haz clic aquí para activar el modo de mantenimiento de NodeBB",
+	"dark-mode": "Dark Mode",
 	"realtime-chart-updates": "Actualizar el Grafo en Tiempo Real",
 
 	"active-users": "Usuarios Activos",

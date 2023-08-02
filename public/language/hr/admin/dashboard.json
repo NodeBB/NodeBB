@@ -48,6 +48,7 @@
 	"restart-disabled": "Rebuilding and Restarting your NodeBB has been disabled as you do not seem to be running it via the appropriate daemon.",
 	"maintenance-mode": "Održavanje",
 	"maintenance-mode-title": "Postavite mod za održavanje foruma",
+	"dark-mode": "Dark Mode",
 	"realtime-chart-updates": "Ažuriranja u stvarnom vremenu",
 
 	"active-users": "Aktivni korisnici",

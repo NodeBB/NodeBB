@@ -48,6 +48,7 @@
 	"restart-disabled": "Việc xây dựng lại và khởi động lại NodeBB của bạn đã bị vô hiệu hóa vì bạn dường như không chạy nó qua daemon thích hợp.",
 	"maintenance-mode": "Chế Độ Bảo Trì",
 	"maintenance-mode-title": "Bấm vào đây để thiết lập chế độ bảo trì cho NodeBB",
+	"dark-mode": "Dark Mode",
 	"realtime-chart-updates": "Cập Nhật Biểu Đồ Thời Gian Thực",
 
 	"active-users": "Người Dùng Hoạt Động",

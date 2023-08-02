@@ -48,6 +48,7 @@
 	"restart-disabled": "تم تعطيل إعادة بناء NodeBB وإعادة تشغيله حيث لا يبدو أنك تقوم بتشغيله عبر البرنامج الخفي المناسب.",
 	"maintenance-mode": "وضع الصيانة",
 	"maintenance-mode-title": "انقر هنا لإعداد وضع الصيانة لـNodeBB",
+	"dark-mode": "Dark Mode",
 	"realtime-chart-updates": "التحديث الفوري للرسم البياني",
 
 	"active-users": "المستخدمين النشطين",
