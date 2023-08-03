@@ -51,6 +51,8 @@
     "nextpage": "Próxima Página",
     "alert.success": "Sucesso",
     "alert.error": "Erro",
+    "alert.warning": "Warning",
+    "alert.info": "Info",
     "alert.banned": "Banido",
     "alert.banned.message": "Você acaba de ser banido, seu acesso agora está restrito.",
     "alert.unbanned": "Des-banido",

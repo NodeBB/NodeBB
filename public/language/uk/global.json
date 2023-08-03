@@ -51,6 +51,8 @@
     "nextpage": "Наступна сторінка",
     "alert.success": "Успіх",
     "alert.error": "Помилка",
+    "alert.warning": "Warning",
+    "alert.info": "Info",
     "alert.banned": "Забанений",
     "alert.banned.message": "You have just been banned, your access is now restricted.",
     "alert.unbanned": "Unbanned",

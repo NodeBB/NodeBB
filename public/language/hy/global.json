@@ -51,6 +51,8 @@
     "nextpage": "հաջորդ էջ",
     "alert.success": "Կատարված է",
     "alert.error": "Սխալ",
+    "alert.warning": "Warning",
+    "alert.info": "Info",
     "alert.banned": "Արգելված",
     "alert.banned.message": "Ձեզ հենց նոր արգելել են, ձեր մուտքն այժմ սահմանափակված է:",
     "alert.unbanned": "Չարգելված",

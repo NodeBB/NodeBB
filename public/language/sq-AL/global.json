@@ -51,6 +51,8 @@
     "nextpage": "Faqja tjetër",
     "alert.success": "Sukses",
     "alert.error": "Gabim",
+    "alert.warning": "Warning",
+    "alert.info": "Info",
     "alert.banned": "I ndaluar",
     "alert.banned.message": "Sapo je ndaluar, aksesi jot tani është i kufizuar.",
     "alert.unbanned": "E pandaluar",

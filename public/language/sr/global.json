@@ -51,6 +51,8 @@
     "nextpage": "Следећа страна",
     "alert.success": "Успешно",
     "alert.error": "Грешка",
+    "alert.warning": "Warning",
+    "alert.info": "Info",
     "alert.banned": "Забрањен",
     "alert.banned.message": "Управо сте добили забрану, ваш приступ је сада ограничен.",
     "alert.unbanned": "Укинута забрана",
