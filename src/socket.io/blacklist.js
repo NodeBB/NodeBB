@@ -24,6 +24,10 @@ async function blacklist(socket, method, rule) {
 	if (!isAdminOrGlobalMod) {
 		throw new Error('[[error:no-privileges]]');
 	}
+	if (socket.ip && rule.includes(socket.ip)) {
+		throw new Error('[[error:cant-blacklist-self-ip]]');
+	}
+
 	await meta.blacklist[method](rule);
 	await events.log({
 		type: `ip-blacklist-${method}`,

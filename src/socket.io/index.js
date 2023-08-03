@@ -12,6 +12,7 @@ const user = require('../user');
 const logger = require('../logger');
 const plugins = require('../plugins');
 const ratelimit = require('../middleware/ratelimit');
+const blacklist = require('../meta/blacklist');
 
 const Namespaces = Object.create(null);
 
@@ -178,6 +179,7 @@ async function onMessage(socket, payload) {
 			return socket.disconnect();
 		}
 
+		await blacklist.test(socket.ip);
 		await checkMaintenance(socket);
 		await validateSession(socket, '[[error:revalidate-failure]]');
 
