@@ -51,6 +51,8 @@
     "nextpage": "Næste side",
     "alert.success": "Succes",
     "alert.error": "Fejl",
+    "alert.warning": "Warning",
+    "alert.info": "Info",
     "alert.banned": "Forment adgang",
     "alert.banned.message": "You have just been banned, your access is now restricted.",
     "alert.unbanned": "Unbanned",

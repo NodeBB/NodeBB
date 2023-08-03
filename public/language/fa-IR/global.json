@@ -51,6 +51,8 @@
     "nextpage": "برگهٔ پسین",
     "alert.success": "موفقیت",
     "alert.error": "خطا",
+    "alert.warning": "Warning",
+    "alert.info": "Info",
     "alert.banned": "بن شده ها",
     "alert.banned.message": "You have just been banned, your access is now restricted.",
     "alert.unbanned": "Unbanned",

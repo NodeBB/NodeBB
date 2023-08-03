@@ -51,6 +51,8 @@
     "nextpage": "Järgmine leht",
     "alert.success": "Õnnestus",
     "alert.error": "Viga",
+    "alert.warning": "Warning",
+    "alert.info": "Info",
     "alert.banned": "Bannitud",
     "alert.banned.message": "You have just been banned, your access is now restricted.",
     "alert.unbanned": "Unbanned",

@@ -51,6 +51,8 @@
     "nextpage": "Następna strona",
     "alert.success": "Udało się",
     "alert.error": "Błąd",
+    "alert.warning": "Warning",
+    "alert.info": "Info",
     "alert.banned": "Ban",
     "alert.banned.message": "Zostałeś zbanowany i Twoje konto jest teraz w trybie ograniczonych możliwości",
     "alert.unbanned": "Odbanowany",

@@ -51,6 +51,8 @@
     "nextpage": "Sonraki Sayfa",
     "alert.success": "Başarılı",
     "alert.error": "Hata",
+    "alert.warning": "Warning",
+    "alert.info": "Info",
     "alert.banned": "Yasaklı",
     "alert.banned.message": "Yasaklandınız, erişiminiz kısıtlanmıştır. ",
     "alert.unbanned": "Yasak kaldırıldı",

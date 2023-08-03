@@ -51,6 +51,8 @@
     "nextpage": "Nästa sida",
     "alert.success": "Lyckat",
     "alert.error": "Fel",
+    "alert.warning": "Warning",
+    "alert.info": "Info",
     "alert.banned": "Bannlyst",
     "alert.banned.message": "Du har precis blivit bannlyst, du har nu begränsad tillgång.",
     "alert.unbanned": "Unbanned",
