@@ -16,6 +16,7 @@ helpers.setupPageRoute = function (...args) {
 	}
 
 	middlewares = [
+		middleware.applyBlacklist,
 		middleware.authenticateRequest,
 		middleware.maintenanceMode,
 		middleware.registrationComplete,
@@ -53,6 +54,7 @@ helpers.setupApiRoute = function (...args) {
 	const controller = args[args.length - 1];
 
 	middlewares = [
+		middleware.applyBlacklist,
 		middleware.authenticateRequest,
 		middleware.maintenanceMode,
 		middleware.registrationComplete,

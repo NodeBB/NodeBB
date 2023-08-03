@@ -38,6 +38,16 @@ Blacklist.save = async function (rules) {
 	pubsub.publish('blacklist:reload');
 };
 
+Blacklist.addRule = async function (rule) {
+	const { valid } = Blacklist.validate(rule);
+	if (!valid.length) {
+		throw new Error('[[error:invalid-rule]]');
+	}
+	let rules = await Blacklist.get();
+	rules = `${rules}\n${valid[0]}`;
+	await Blacklist.save(rules);
+};
+
 Blacklist.get = async function () {
 	const data = await db.getObject('ip-blacklist-rules');
 	return data && data.rules;
@@ -165,12 +175,4 @@ Blacklist.validate = function (rules) {
 	};
 };
 
-Blacklist.addRule = async function (rule) {
-	const { valid } = Blacklist.validate(rule);
-	if (!valid.length) {
-		throw new Error('[[error:invalid-rule]]');
-	}
-	let rules = await Blacklist.get();
-	rules = `${rules}\n${valid[0]}`;
-	await Blacklist.save(rules);
-};
+
