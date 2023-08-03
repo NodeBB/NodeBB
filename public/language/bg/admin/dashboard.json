@@ -48,7 +48,7 @@
 	"restart-disabled": "Възможностите за повторно изграждане и рестартиране на NodeBB са изключени, тъй като изглежда, че NodeBB не се изпълнява чрез подходящия демон.",
 	"maintenance-mode": "Режим на профилактика",
 	"maintenance-mode-title": "Щракнете тук, за да зададете режим на профилактика на NodeBB",
-	"dark-mode": "Dark Mode",
+	"dark-mode": "Тъмен режим",
 	"realtime-chart-updates": "Актуализации на таблиците в реално време",
 
 	"active-users": "Дейни потребители",
@@ -91,6 +91,6 @@
 	"start": "Начало",
 	"end": "Край",
 	"filter": "Филтриране",
-	"view-as-json": "View as JSON",
-	"expand-analytics": "Expand analytics"
+	"view-as-json": "Преглед като JSON",
+	"expand-analytics": "Разгъване на данните за анализ"
 }
