@@ -16,13 +16,13 @@
 			<div id="sitemap-feed-settings" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/web-crawler:sitemap-feed-settings]]</h5>
 				<div class="form-check form-switch mb-3">
-					<input class="form-check-input" type="checkbox" data-field="feeds:disableRSS">
-					<label class="form-check-label">[[admin/settings/web-crawler:disable-rss-feeds]]</label>
+					<input class="form-check-input" type="checkbox" id="feeds:disableRSS" data-field="feeds:disableRSS">
+					<label for="feeds:disableRSS" class="form-check-label">[[admin/settings/web-crawler:disable-rss-feeds]]</label>
 				</div>
 
 				<div class="form-check form-switch mb-3">
-					<input class="form-check-input" type="checkbox" data-field="feeds:disableSitemap">
-					<label class="form-check-label">[[admin/settings/web-crawler:disable-sitemap-xml]]</label>
+					<input class="form-check-input" type="checkbox" id="feeds:disableSitemap" data-field="feeds:disableSitemap">
+					<label for="feeds:disableSitemap" class="form-check-label">[[admin/settings/web-crawler:disable-sitemap-xml]]</label>
 				</div>
 
 				<div class="mb-3">

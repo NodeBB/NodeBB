@@ -9,14 +9,14 @@
 				<div class="mb-3">
 					<div class="form-check form-switch">
 						<input type="checkbox" class="form-check-input" id="disableChat" data-field="disableChat">
-						<label class="form-check-label">[[admin/settings/chat:disable]]</label>
+						<label for="disableChat" class="form-check-label">[[admin/settings/chat:disable]]</label>
 					</div>
 				</div>
 
 				<div class="mb-3">
 					<div class="form-check form-switch">
 						<input type="checkbox" class="form-check-input" id="disableChatMessageEditing" data-field="disableChatMessageEditing">
-						<label class="form-check-label">[[admin/settings/chat:disable-editing]]</label>
+						<label for="disableChatMessageEditing" class="form-check-label">[[admin/settings/chat:disable-editing]]</label>
 					</div>
 					<p class="form-text">[[admin/settings/chat:disable-editing-help]]</p>
 				</div>

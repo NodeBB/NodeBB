@@ -15,12 +15,12 @@
 				<input class="form-control" id="length" name="length" type="number" min="0" value="1" />
 			</div>
 			<div class="form-check form-check-inline">
-				<label class="form-check-label">[[admin/manage/users:temp-ban.hours]]</label>
-				<input class="form-check-input" type="radio" name="unit" value="0" checked />
+				<label class="form-check-label" for="unit-hours">[[admin/manage/users:temp-ban.hours]]</label>
+				<input class="form-check-input" type="radio" id="unit-hours" name="unit" value="0" checked />
 			</div>
 			<div class="form-check form-check-inline">
-				<label class="form-check-label">[[admin/manage/users:temp-ban.days]]</label>
-				<input class="form-check-input" type="radio" name="unit" value="1" />
+				<label class="form-check-label" for="unit-days">[[admin/manage/users:temp-ban.days]]</label>
+				<input class="form-check-input" type="radio" id="unit-days" name="unit" value="1" />
 			</div>
 		</div>
 		<div class="col-7">

@@ -26,8 +26,8 @@
 
 	<div class="mb-3">
 		<div class="form-check form-switch mb-3">
-			<input id="requireHttps" class="form-check-input" type="checkbox" name="requireHttps" />
-			<label class="form-check-label">[[admin/settings/api:require-https]]</label>
+			<input id="requireHttps" class="form-check-input" type="checkbox" id="requireHttps" name="requireHttps" />
+			<label for="requireHttps" class="form-check-label">[[admin/settings/api:require-https]]</label>
 			<p class="form-text">[[admin/settings/api:require-https-caveat]]</p>
 		</div>
 	</div>

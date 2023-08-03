@@ -6,15 +6,15 @@
 			<div id="general" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/group:general]]</h5>
 				<div class="form-check form-switch mb-3">
-					<input class="form-check-input" type="checkbox" data-field="allowPrivateGroups">
-					<label class="form-check-label">[[admin/settings/group:private-groups]]</label>
+					<input class="form-check-input" type="checkbox" id="allowPrivateGroups" data-field="allowPrivateGroups">
+					<label for="allowPrivateGroups" class="form-check-label">[[admin/settings/group:private-groups]]</label>
 					<p class="form-text">[[admin/settings/group:private-groups.help]]</p>
 					<p class="form-text">[[admin/settings/group:private-groups.warning]]</p>
 				</div>
 
 				<div class="form-check form-switch mb-3">
-					<input class="form-check-input" type="checkbox" data-field="allowMultipleBadges">
-					<label class="form-check-label">[[admin/settings/group:allow-multiple-badges]]</label>
+					<input class="form-check-input" type="checkbox" id="allowMultipleBadges" data-field="allowMultipleBadges">
+					<label for="allowMultipleBadges" class="form-check-label">[[admin/settings/group:allow-multiple-badges]]</label>
 					<p class="form-text">[[admin/settings/group:allow-multiple-badges-help]]</p>
 				</div>
 

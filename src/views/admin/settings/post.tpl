@@ -30,14 +30,14 @@
 				</div>
 
 				<div class="form-check form-switch mb-3">
-					<input class="form-check-input" type="checkbox" data-field="topicBacklinks">
-					<label class="form-check-label">[[admin/settings/post:backlinks.enabled]]</label>
+					<input class="form-check-input" type="checkbox" id="topicBacklinks" data-field="topicBacklinks">
+					<label for="topicBacklinks" class="form-check-label">[[admin/settings/post:backlinks.enabled]]</label>
 					<p class="form-text">[[admin/settings/post:backlinks.help]]</p>
 				</div>
 
 				<div class="form-check form-switch mb-3">
-					<input class="form-check-input" type="checkbox" data-field="trackIpPerPost">
-					<label class="form-check-label">[[admin/settings/post:ip-tracking.each-post]]</label>
+					<input id="trackIPPerPost" class="form-check-input" type="checkbox" data-field="trackIpPerPost">
+					<label for="trackIPPerPost" class="form-check-label">[[admin/settings/post:ip-tracking.each-post]]</label>
 				</div>
 
 				<div class="mb-3">
@@ -49,8 +49,8 @@
 					</select>
 				</div>
 				<div class="form-check form-switch mb-3">
-					<input class="form-check-input" type="checkbox" data-field="showPostPreviewsOnHover">
-					<label class="form-check-label">[[admin/settings/post:showPostPreviewsOnHover]]</label>
+					<input class="form-check-input" type="checkbox" id="showPostPreviewsOnHover" data-field="showPostPreviewsOnHover">
+					<label for="showPostPreviewsOnHover" class="form-check-label">[[admin/settings/post:showPostPreviewsOnHover]]</label>
 				</div>
 			</div>
 
@@ -234,20 +234,20 @@
 			<div id="signature-settings" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/post:signature]]</h5>
 				<div class="form-check form-switch mb-3">
-					<input class="form-check-input" type="checkbox" data-field="disableSignatures">
-					<label class="form-check-label">[[admin/settings/post:signature.disable]]</label>
+					<input class="form-check-input" type="checkbox" id="disableSignatures" data-field="disableSignatures">
+					<label for="disableSignatures" class="form-check-label">[[admin/settings/post:signature.disable]]</label>
 				</div>
 				<div class="form-check form-switch mb-3">
-					<input class="form-check-input" type="checkbox" data-field="signatures:disableLinks">
-					<label class="form-check-label">[[admin/settings/post:signature.no-links]]</label>
+					<input class="form-check-input" type="checkbox" id="signatures:disableLinks" data-field="signatures:disableLinks">
+					<label for="signatures:disableLinks" class="form-check-label">[[admin/settings/post:signature.no-links]]</label>
 				</div>
 				<div class="form-check form-switch mb-3">
-					<input class="form-check-input" type="checkbox" data-field="signatures:disableImages">
-					<label class="form-check-label">[[admin/settings/post:signature.no-images]]</label>
+					<input class="form-check-input" type="checkbox" id="signatures:disableImages" data-field="signatures:disableImages">
+					<label for="signatures:disableImages" class="form-check-label">[[admin/settings/post:signature.no-images]]</label>
 				</div>
 				<div class="form-check form-switch mb-3">
-					<input class="form-check-input" type="checkbox" data-field="signatures:hideDuplicates">
-					<label class="form-check-label">[[admin/settings/post:signature.hide-duplicates]]</label>
+					<input class="form-check-input" type="checkbox" id="signatures:hideDuplicates" data-field="signatures:hideDuplicates">
+					<label for="signatures:hideDuplicates" class="form-check-label">[[admin/settings/post:signature.hide-duplicates]]</label>
 				</div>
 				<div>
 					<label class="form-label" for="maximumSignatureLength">[[admin/settings/post:signature.max-length]]</label>
