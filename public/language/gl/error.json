@@ -55,6 +55,7 @@
     "user-banned-reason-until": "Sorry, this account has been banned until %1 (Reason: %2)",
     "user-too-new": "Desculpa, agarda %1 second(s) antes de facer a túa primeira publicación.",
     "blacklisted-ip": "Sentímolo, o teu enderezo IP foi baneado desta comunidade. Se crees que se debe a un erro, por favor, contacte cun administrador.",
+    "cant-blacklist-self-ip": "You can't blacklist your own IP",
     "ban-expiry-missing": "Por favor, engade unha data de fin do ban",
     "no-category": "A categoría non existe",
     "no-topic": "O tema non existe",

@@ -55,6 +55,7 @@
     "user-banned-reason-until": "Sorry, this account has been banned until %1 (Reason: %2)",
     "user-too-new": "Imi pare rau dar trebuie sa astepti %1 secunda(e) pentru a posta prima oara.",
     "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
+    "cant-blacklist-self-ip": "You can't blacklist your own IP",
     "ban-expiry-missing": "Please provide an end date for this ban",
     "no-category": "Categoria nu exista.",
     "no-topic": "Topicul nu exista.",

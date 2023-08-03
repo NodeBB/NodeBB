@@ -55,6 +55,7 @@
     "user-banned-reason-until": "Beklager, denne kontoen har blit utestengt til %1 (Grunn: %2)",
     "user-too-new": "Beklager, du må vente %1 sekund(er) før du oppretter ditt første innlegg",
     "blacklisted-ip": "Beklager, din IP-adresse har blitt utestengt fra dette forumet. Hvis du mener dette er en feil, vennligst kontakt en sideadministrator.",
+    "cant-blacklist-self-ip": "You can't blacklist your own IP",
     "ban-expiry-missing": "Vennligst oppgi et sluttidspunkt for denne utestengingen.",
     "no-category": "Kategorien eksisterer ikke",
     "no-topic": "Emne eksisterer ikke",

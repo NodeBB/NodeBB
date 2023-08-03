@@ -55,6 +55,7 @@
     "user-banned-reason-until": "ขออภัย บัญชีผู้ใช้นี้ได้รับการแบนจนถึง  %1  (เหตุผล : %2)",
     "user-too-new": "ขออภัย คุณจำเป็นต้องรอ  %1 วินาที(s) ก่อนการสร้างกระทู้แรกของคุณ",
     "blacklisted-ip": "ขออภัย IP Address ของคุณถูกแบนจากชุมชนนี้ หากคุณคิดว่านี่เป็นเออเร่อของระบบ กรุณาติดต่อผู้ดูแลระบบ",
+    "cant-blacklist-self-ip": "You can't blacklist your own IP",
     "ban-expiry-missing": "กรุณาระบุวันสิ้นสุดสำหรับการแบนในครั้งนี้",
     "no-category": "ยังไม่มี Category นี้",
     "no-topic": "ยังไม่มี Topic นี้",

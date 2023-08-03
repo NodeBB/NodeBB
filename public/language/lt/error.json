@@ -55,6 +55,7 @@
     "user-banned-reason-until": "Atsiprašome, ši paskyra užblokuota iki %1 (Priežastis: %2)",
     "user-too-new": "Atsiprašome, jūs įpareigoti palaukti %1 sekunde(s) prieš rašant pirmą pranešimą",
     "blacklisted-ip": "Atsiprašome, jūsų IP adresas yra užblokuotas. Jei manote, jog tai klaida, susisiekite su administratoriumi.",
+    "cant-blacklist-self-ip": "You can't blacklist your own IP",
     "ban-expiry-missing": "Užpildykite šio blokavimo pabaigos datą",
     "no-category": "Tokios kategorijos nėra",
     "no-topic": "Tokios temos nėra",

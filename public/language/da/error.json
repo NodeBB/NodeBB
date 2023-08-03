@@ -55,6 +55,7 @@
     "user-banned-reason-until": "Sorry, this account has been banned until %1 (Reason: %2)",
     "user-too-new": "Beklager, du er nødt til at vente %1 sekund(er) før du opretter dit indlæg",
     "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
+    "cant-blacklist-self-ip": "You can't blacklist your own IP",
     "ban-expiry-missing": "Please provide an end date for this ban",
     "no-category": "Kategorien eksisterer ikke",
     "no-topic": "Tråden eksisterer ikke",

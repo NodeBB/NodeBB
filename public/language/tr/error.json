@@ -55,6 +55,7 @@
     "user-banned-reason-until": "Maalesef, bu hesap %1 tarihine kadar yasaklandı (Sebep:  %2)",
     "user-too-new": "Özür dileriz, ilk iletinizi göndermeden önce %1 saniye beklemeniz gerekiyor!",
     "blacklisted-ip": "Üzgünüz, IP adresiniz bu forumda yasaklandı. Bunun bir hata olduğunu düşünüyorsanız bir yönetici ile irtibata geçiniz.",
+    "cant-blacklist-self-ip": "You can't blacklist your own IP",
     "ban-expiry-missing": "Bu yasak için bir bitiş tarihi girin",
     "no-category": "Kategori Yok",
     "no-topic": "Konu Yok",

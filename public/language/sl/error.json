@@ -55,6 +55,7 @@
     "user-banned-reason-until": "Sorry, this account has been banned until %1 (Reason: %2)",
     "user-too-new": " Pred svojo prvo objavo počakajte %1 s.",
     "blacklisted-ip": "Vaš IP-naslov je izločen. Povprašajte skrbnika za več informacij.",
+    "cant-blacklist-self-ip": "You can't blacklist your own IP",
     "ban-expiry-missing": "Vnesite končni datum za to izločitev.",
     "no-category": "Kategorija ne obstaja.",
     "no-topic": "Tema ne obstaja.",

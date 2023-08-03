@@ -55,6 +55,7 @@
     "user-banned-reason-until": "Sorry, this account has been banned until %1 (Reason: %2)",
     "user-too-new": "Wihangena kuko usabwa gutegereza amasegonda (isegonda) %1 mbere yo gushyiraho ikintu cyawe cya mbere",
     "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
+    "cant-blacklist-self-ip": "You can't blacklist your own IP",
     "ban-expiry-missing": "Please provide an end date for this ban",
     "no-category": "Icyiciro kitabaho",
     "no-topic": "Ikiganiro kitabaho",

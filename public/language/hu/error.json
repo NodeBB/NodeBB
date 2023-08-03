@@ -55,6 +55,7 @@
     "user-banned-reason-until": "Ez a fiók ki lett tiltva %1 -ig (Indoklás: %2)",
     "user-too-new": "Várnod kell %1 másodpercet mielőtt létre tudod hozni az első hozzászólásod.",
     "blacklisted-ip": "Az IP címed ki van tiltva ebből a közösségből. Ha úgy érzed, hogy ez valami hiba akkor lépj kapcsolatba egy adminisztrátorral.",
+    "cant-blacklist-self-ip": "You can't blacklist your own IP",
     "ban-expiry-missing": "Kérlek adj meg lejárati dátumot a kitiltáshoz.",
     "no-category": "Nem létező kategória",
     "no-topic": "Nem létező téma",

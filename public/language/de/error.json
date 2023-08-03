@@ -55,6 +55,7 @@
     "user-banned-reason-until": "Entschuldigung, dieses Konto wurde bis %1 (Reason: %2) gesperrt.",
     "user-too-new": "Entschuldigung, du musst %1 Sekunde(n) warten, bevor du deinen ersten Beitrag schreiben kannst.",
     "blacklisted-ip": "Deine IP-Adresse ist für dieses Forum gesperrt. Sollte dies ein Irrtum sein, dann kontaktiere bitte einen Administrator.",
+    "cant-blacklist-self-ip": "You can't blacklist your own IP",
     "ban-expiry-missing": "Bitte gib ein Enddatum für diese Sperrung an",
     "no-category": "Die Kategorie existiert nicht",
     "no-topic": "Das Thema existiert nicht",

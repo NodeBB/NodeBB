@@ -55,6 +55,7 @@
     "user-banned-reason-until": "Na vjen keq, kjo llogari është pezulluar deri më %1  (Arsyeja: %2)",
     "user-too-new": "Na vjen keq, ju duhet të prisni %1 sekond(a) përpara se të bëni postimin tuaj të parë",
     "blacklisted-ip": "Na vjen keq, por adresa juaj IP është bllokuar nga ky komunitet. Nëse mendoni se ka një gabim, ju lutemi kontaktoni një administrator të VIAL.",
+    "cant-blacklist-self-ip": "You can't blacklist your own IP",
     "ban-expiry-missing": "Ju lutemi jepni një datë përfundimi për këtë pezullim",
     "no-category": "Kategoria nuk ekziston",
     "no-topic": "Tema nuk ekziston",

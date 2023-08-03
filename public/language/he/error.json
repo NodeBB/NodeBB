@@ -55,6 +55,7 @@
     "user-banned-reason-until": "מצטערים, חשבון זה הורחק עד %1 (סיבה: %2)",
     "user-too-new": "אנא המתינו  %1 שניות לפני פרסום ההודעה",
     "blacklisted-ip": "מצטערים, אך הורחקתם מקהילה זו. אם הנכם סבורים שמדובר בטעות, אנא צרו קשר עם מנהלי הקהילה.",
+    "cant-blacklist-self-ip": "You can't blacklist your own IP",
     "ban-expiry-missing": "אנא ספקו תאריך סיום להרחקה זו.",
     "no-category": "קטגוריה אינה קיימת",
     "no-topic": "נושא אינו קיים",

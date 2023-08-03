@@ -55,6 +55,7 @@
     "user-banned-reason-until": "Desculpa, esta conta foi banida até %1 (Motivo: %2)",
     "user-too-new": "Desculpe, é necessário que você aguarde %1 segundo(s) antes de fazer o seu primeiro post.",
     "blacklisted-ip": "Desculpa, o seu endereço IP foi banido desta comunidade. Se você acha que isso é um engano, por favor, contate um administrador.",
+    "cant-blacklist-self-ip": "You can't blacklist your own IP",
     "ban-expiry-missing": "Por favor forneça uma data para o fim deste banimento",
     "no-category": "A categoria não existe",
     "no-topic": "O tópico não existe",

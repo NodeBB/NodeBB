@@ -55,6 +55,7 @@
     "user-banned-reason-until": "Sorry, this account has been banned until %1 (Reason: %2)",
     "user-too-new": "عذرا, يجب أن تنتظر 1% ثواني قبل قيامك بأول مشاركة",
     "blacklisted-ip": "نأسف، لقد تم حظرك من استخدام وتصفح المنتدى. إذا كنت تعتقد أن هذا خطأ رجاءًا اتصل بالإدارة. ",
+    "cant-blacklist-self-ip": "You can't blacklist your own IP",
     "ban-expiry-missing": "رجاءًا ضع تاريخ نهاية الحظر. ",
     "no-category": "قائمة غير موجودة",
     "no-topic": "موضوع غير موجود",

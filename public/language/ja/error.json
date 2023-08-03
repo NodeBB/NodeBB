@@ -55,6 +55,7 @@
     "user-banned-reason-until": "申し訳ありませんが、このアカウントは％1(理由：％2)まで禁止されています。",
     "user-too-new": "申し訳ありません。登録後に投稿を行うには%1秒お待ち下さい。",
     "blacklisted-ip": "申し訳ありませんがあなたのIPアドレスは当コミュニティで停止されています。もし誤ったエラーだと思われる場合は管理者にお問い合わせください。",
+    "cant-blacklist-self-ip": "You can't blacklist your own IP",
     "ban-expiry-missing": "この停止の終了日を入力してください。",
     "no-category": "カテゴリは存在しません",
     "no-topic": "スレッドは存在しません",

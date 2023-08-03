@@ -55,6 +55,7 @@
     "user-banned-reason-until": "Przepraszamy, to konto zostało zbanowane do %1 (Powód: %2)",
     "user-too-new": "Przepraszamy, musisz odczekać %1 sekund(y) przed utworzeniem pierwszego posta",
     "blacklisted-ip": "Twój adres IP został zablokowany na tej społeczności. Jeśli uważasz to za błąd, zgłoś to administratorowi",
+    "cant-blacklist-self-ip": "You can't blacklist your own IP",
     "ban-expiry-missing": "Wprowadź datę końca blokady",
     "no-category": "Kategoria nie istnieje",
     "no-topic": "Temat nie istnieje",

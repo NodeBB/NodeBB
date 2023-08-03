@@ -55,6 +55,7 @@
     "user-banned-reason-until": "Sorry, this account has been banned until %1 (Reason: %2)",
     "user-too-new": "Vabandust, te peate ootama %1 sekund(it) enne esimese postituse loomist.",
     "blacklisted-ip": "Vabandust! Sinu IP-aadress on siin kogukonnas keelatud. Kui arvad, et see on eksitus, palun leia kontakti administraatoriga.",
+    "cant-blacklist-self-ip": "You can't blacklist your own IP",
     "ban-expiry-missing": "Palun sisesta keelu lõpukuupäev",
     "no-category": "Kategooriat ei eksisteeri",
     "no-topic": "Teemat ei eksisteeri",

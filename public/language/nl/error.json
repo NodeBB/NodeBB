@@ -55,6 +55,7 @@
     "user-banned-reason-until": "Sorry, dit account is verbannen tot %1 (Reden: %2)",
     "user-too-new": "Helaas, het is een vereiste om %1 seconde(n) te wachten voordat het eerste bericht geplaatst kan worden.",
     "blacklisted-ip": "Sorry, uw IP-adres is verbannen uit deze community. Als u meent dat dit onterecht is, neem dan contact op met een beheerder.",
+    "cant-blacklist-self-ip": "You can't blacklist your own IP",
     "ban-expiry-missing": "Geef een einddatum op voor deze ban.",
     "no-category": "Categorie bestaat niet",
     "no-topic": "Onderwerp bestaat niet",

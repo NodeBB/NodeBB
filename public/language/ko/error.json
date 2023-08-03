@@ -55,6 +55,7 @@
     "user-banned-reason-until": "죄송합니다. 해당 계정은 %1까지 차단되었습니다. (사유: %2)",
     "user-too-new": "죄송합니다. 첫 번째 게시물은 %1초 후에 작성할 수 있습니다.",
     "blacklisted-ip": "죄송합니다. 당신의 IP는 이 커뮤니티로부터 차단되었습니다. 만약 오류라고 생각되시면 관리자에게 연락해주세요.",
+    "cant-blacklist-self-ip": "You can't blacklist your own IP",
     "ban-expiry-missing": "해당 차단의 만료일을 설정해주세요.",
     "no-category": "존재하지 않는 카테고리입니다.",
     "no-topic": "존재하지 않는 화제입니다.",

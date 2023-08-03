@@ -55,6 +55,7 @@
     "user-banned-reason-until": "抱歉，此帳戶已被停權，直到%1（原因：%2）",
     "user-too-new": "抱歉，您需要等待 %1 秒後，才可以發文！",
     "blacklisted-ip": "對不起，您的 IP 地址已被社區封鎖。如果您認為這是一個錯誤，請與管理員聯繫。",
+    "cant-blacklist-self-ip": "You can't blacklist your own IP",
     "ban-expiry-missing": "請提供此次停權結束日期",
     "no-category": "版面不存在",
     "no-topic": "主題不存在",

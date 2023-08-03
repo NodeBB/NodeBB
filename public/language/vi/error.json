@@ -55,6 +55,7 @@
     "user-banned-reason-until": "Xin lỗi, tài khoản này bị cấm cho đến %1 (Lý do: %2)",
     "user-too-new": "Xin lỗi, bắt buộc bạn phải đợi %1 giây trước khi đăng bài viết đầu tiên.",
     "blacklisted-ip": "Xin lỗi, địa chỉ IP bạn bị cấm khỏi cộng đồng. Nếu bạn cảm thấy dây là do lỗi, hãy liên lạc với quản trị viên.",
+    "cant-blacklist-self-ip": "You can't blacklist your own IP",
     "ban-expiry-missing": "Vui lòng cung cấp ngày hết lệnh cấm này",
     "no-category": "Chuyên mục không tồn tại",
     "no-topic": "Chủ đề không tồn tại",

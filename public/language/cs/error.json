@@ -55,6 +55,7 @@
     "user-banned-reason-until": "Omlouváme se, ale tento účet je zablokován do %1 (důvod: %2)",
     "user-too-new": "Omlouváme se, ale před vytvoření vašeho prvního příspěvku musíte vyčkat %1 sekund/u/y",
     "blacklisted-ip": "Omlouváme se, ale vaše adresa IP byla u této komunity zablokována. Máte-li pocit, že je to chyba, kontaktujte správce.",
+    "cant-blacklist-self-ip": "You can't blacklist your own IP",
     "ban-expiry-missing": "Zadejte prosím datum konce této blokace",
     "no-category": "Kategorie neexistuje",
     "no-topic": "Téma neexistuje",
