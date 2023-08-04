@@ -1,6 +1,14 @@
 
 <div class="px-lg-4">
-	<h5>[[admin/manage/categories:analytics.title, {name}]]</h5>
+
+	<div class="row border-bottom py-2 m-0 sticky-top acp-page-main-header align-items-center">
+		<div class="col-12 px-0 mb-1 mb-md-0 d-flex justify-content-between align-items-center">
+			<h4 class="fw-bold tracking-tight mb-0">[[admin/manage/categories:analytics.title, {name}]]</h4>
+			<!-- IMPORT admin/partials/category/selector-dropdown-right.tpl -->
+		</div>
+	</div>
+
+
 	<hr />
 	<div class="row ">
 		<div class="col-sm-6 text-center">
