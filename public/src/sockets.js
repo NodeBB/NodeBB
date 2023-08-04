@@ -166,6 +166,7 @@ app = window.app || {};
 			reconnectEl.tooltip('dispose');
 			reconnectEl.html('<i class="fa fa-check text-success"></i>');
 			reconnectAlert.removeClass('show');
+			setTimeout(() => reconnectAlert.addClass('hide'), 100);
 			reconnecting = false;
 
 			reJoinCurrentRoom();
@@ -202,7 +203,8 @@ app = window.app || {};
 
 		if (!reconnectEl.hasClass('active')) {
 			reconnectEl.html('<i class="fa fa-spinner fa-spin"></i>');
-			reconnectAlert.addClass('show');
+			reconnectAlert.removeClass('hide');
+			setTimeout(() => reconnectAlert.addClass('show'), 100);
 		}
 
 		reconnectEl.addClass('active').removeClass('hide').tooltip({
