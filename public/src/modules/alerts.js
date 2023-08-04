@@ -23,7 +23,7 @@ export function success(message, timeout) {
 		title: '[[global:alert.success]]',
 		message: message,
 		type: 'success',
-		timeout: timeout || 5000,
+		timeout: timeout !== undefined ? timeout : 5000,
 	});
 }
 
@@ -33,7 +33,7 @@ export function info(message, timeout) {
 		title: '[[global:alert.info]]',
 		message: message,
 		type: 'info',
-		timeout: timeout || 5000,
+		timeout: timeout !== undefined ? timeout : 5000,
 	});
 }
 
@@ -43,7 +43,7 @@ export function warning(message, timeout) {
 		title: '[[global:alert.warning]]',
 		message: message,
 		type: 'warning',
-		timeout: timeout || 5000,
+		timeout: timeout !== undefined ? timeout : 5000,
 	});
 }
 
@@ -118,7 +118,7 @@ function createNew(params) {
 			}
 		});
 
-		if (params.timeout) {
+		if (parseInt(params.timeout, 10)) {
 			startTimeout(alert, params);
 		}
 
@@ -142,7 +142,7 @@ function close(alert) {
 }
 
 function startTimeout(alert, params) {
-	const timeout = params.timeout;
+	const timeout = parseInt(params.timeout, 10);
 
 	const timeoutId = setTimeout(function () {
 		alert.removeAttr('timeoutId');

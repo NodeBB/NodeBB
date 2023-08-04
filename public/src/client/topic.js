@@ -160,7 +160,7 @@ define('forum/topic', [
 			alerts.alert({
 				alert_id: 'bookmark',
 				message: '[[topic:bookmark_instructions]]',
-				timeout: 0,
+				timeout: 15000,
 				type: 'info',
 				clickfn: function () {
 					navigator.scrollToIndex(parseInt(bookmark, 10), true);
@@ -169,9 +169,6 @@ define('forum/topic', [
 					storage.removeItem('topic:' + tid + ':bookmark');
 				},
 			});
-			setTimeout(function () {
-				alerts.remove('bookmark');
-			}, 10000);
 		}
 	}
 
