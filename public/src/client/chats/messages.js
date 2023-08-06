@@ -263,16 +263,19 @@ define('forum/chats/messages', [
 			const self = parseInt(message.fromuid, 10) === parseInt(app.user.uid, 10);
 			message.self = self ? 1 : 0;
 			messages.parseMessage(message, function (html) {
+				const msgEl = components.get('chat/message', message.mid);
+				if (msgEl.length) {
+					msgEl.replaceWith(html);
+					messages.onMessagesAddedToDom(components.get('chat/message', message.mid));
+				}
 				const parentEl = $(`[component="chat/message/parent"][data-parent-mid="${message.mid}"]`);
 				if (parentEl.length) {
 					parentEl.find('[component="chat/message/parent/content"]').html(
 						html.find('[component="chat/message/body"]').html()
 					);
-				}
-				const msgEl = components.get('chat/message', message.mid);
-				if (msgEl.length) {
-					msgEl.replaceWith(html);
-					messages.onMessagesAddedToDom(components.get('chat/message', message.mid));
+					messages.onMessagesAddedToDom(
+						$(`[component="chat/message/parent"][data-parent-mid="${message.mid}"]`)
+					);
 				}
 			});
 		});
@@ -302,14 +305,16 @@ define('forum/chats/messages', [
 		const isParentSelf = parseInt(parentEl.attr('data-uid'), 10) === app.user.uid;
 		msgEl.toggleClass('deleted', false);
 		parentEl.toggleClass('deleted', false);
-		if (!isParentSelf) {
-			parentEl.find('[component="chat/message/parent/content"]')
-				.translateHtml(message.content);
-		}
 		if (!isSelf) {
 			msgEl.find('[component="chat/message/body"]')
 				.translateHtml(message.content);
 			messages.onMessagesAddedToDom(components.get('chat/message', message.messageId));
+		}
+
+		if (!isParentSelf && parentEl.length) {
+			parentEl.find('[component="chat/message/parent/content"]')
+				.translateHtml(message.content);
+			messages.onMessagesAddedToDom($(`[component="chat/message/parent"][data-parent-mid="${message.messageId}"]`));
 		}
 	}
 
