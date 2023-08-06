@@ -165,7 +165,7 @@
     "chat-room-does-not-exist": "Sohbet Odası Mevcut Değil",
     "cant-add-users-to-chat-room": "Kullanıcıları sohbet odasına ekleyemezsiniz!",
     "cant-remove-users-from-chat-room": "Kullanıcıları sohbet odasından çıkaramazsınız!",
-    "chat-room-name-too-long": "Sohbet odasının ismi çok uzun!",
+    "chat-room-name-too-long": "Chat room name too long. Names can't be longer than %1 characters.",
     "already-voting-for-this-post": "Bu gönderi için zaten oy verdin.",
     "reputation-system-disabled": "İtibar sistemi devre dışı.",
     "downvoting-disabled": "Eksi oylama devre dışı bırakılmış. ",

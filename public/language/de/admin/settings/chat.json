@@ -4,6 +4,7 @@
 	"disable-editing": "Chatnachrichtenbearbeitung/löschung deaktivieren",
 	"disable-editing-help": "Administratoren und globale Moderatoren sind von dieser Einschränkung ausgenommen",
 	"max-length": "Maximale Länge von Chatnachrichten",
+	"max-chat-room-name-length": "Maximum length of chat room names",
 	"max-room-size": "Maximale Anzahl von Benutzern in Chatrooms",
 	"delay": "Zeit zwischen Chatnachrichten in Millisekunden",
 	"notification-delay": "Benachrichtigungsverzögerung für Chatnachrichten. (0 für keine Verzögerung)",

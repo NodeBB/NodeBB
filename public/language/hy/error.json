@@ -165,7 +165,7 @@
     "chat-room-does-not-exist": "Այս զրուցարանը գոյություն չունի:",
     "cant-add-users-to-chat-room": "Can't add users to chat room.",
     "cant-remove-users-from-chat-room": "Can't remove users from chat room.",
-    "chat-room-name-too-long": "Chat room name too long.",
+    "chat-room-name-too-long": "Chat room name too long. Names can't be longer than %1 characters.",
     "already-voting-for-this-post": "Դուք արդեն քվեարկել եք այս գրառման օգտին:",
     "reputation-system-disabled": "Վարկանիշի համակարգը անջատված է:",
     "downvoting-disabled": "Դեմ քվեարկությունն անջատված է",

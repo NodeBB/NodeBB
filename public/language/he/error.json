@@ -165,7 +165,7 @@
     "chat-room-does-not-exist": "חדר צ'אט אינו קיים.",
     "cant-add-users-to-chat-room": "לא ניתן להוסיף משתמשים לחדר הצ'אט.",
     "cant-remove-users-from-chat-room": "לא ניתן להסיר משתמשים מחדר הצ'אט.",
-    "chat-room-name-too-long": "שם חדר הצ'אט ארוך מדי.",
+    "chat-room-name-too-long": "Chat room name too long. Names can't be longer than %1 characters.",
     "already-voting-for-this-post": "הצבעתם כבר בנושא זה.",
     "reputation-system-disabled": "מערכת המוניטין לא פעילה.",
     "downvoting-disabled": "היכולת להצביע נגד מושבתת",

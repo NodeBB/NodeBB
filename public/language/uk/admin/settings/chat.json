@@ -4,6 +4,7 @@
 	"disable-editing": "Вимкнути редагування/видалення повідомлень чату",
 	"disable-editing-help": "Адміністратори на модератори звільнені від цього обмеження",
 	"max-length": "Максимальна довжина повідомлення",
+	"max-chat-room-name-length": "Maximum length of chat room names",
 	"max-room-size": "Максимальна кількість людей у кімнаті",
 	"delay": "Час між повідомленнями в мілісекундах",
 	"notification-delay": "Notification delay for chat messages. (0 for no delay)",

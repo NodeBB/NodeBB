@@ -165,7 +165,7 @@
     "chat-room-does-not-exist": "Le salon de discussion n'existe pas.",
     "cant-add-users-to-chat-room": "Impossible d'ajouter des utilisateurs au salon.",
     "cant-remove-users-from-chat-room": "Impossible de supprimer des utilisateurs du salon.",
-    "chat-room-name-too-long": "Nom de salon trop long.",
+    "chat-room-name-too-long": "Chat room name too long. Names can't be longer than %1 characters.",
     "already-voting-for-this-post": "Vous avez déjà voté pour ce message.",
     "reputation-system-disabled": "Le système de réputation est désactivé",
     "downvoting-disabled": "Les votes négatifs ne sont pas autorisés",

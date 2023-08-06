@@ -165,7 +165,7 @@
     "chat-room-does-not-exist": "Chat room does not exist.",
     "cant-add-users-to-chat-room": "Can't add users to chat room.",
     "cant-remove-users-from-chat-room": "Can't remove users from chat room.",
-    "chat-room-name-too-long": "Chat room name too long.",
+    "chat-room-name-too-long": "Chat room name too long. Names can't be longer than %1 characters.",
     "already-voting-for-this-post": "您已讚過此貼文回覆了。",
     "reputation-system-disabled": "聲望系統已停用。",
     "downvoting-disabled": "倒讚已被停用",

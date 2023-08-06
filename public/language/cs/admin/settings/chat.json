@@ -4,6 +4,7 @@
 	"disable-editing": "Zakázat upravení/odstranění konverzační zprávy",
 	"disable-editing-help": "Správci a globální moderátoři jsou vyjmuti z tohoto omezení",
 	"max-length": "Maximální délka konverzační zprávy",
+	"max-chat-room-name-length": "Maximum length of chat room names",
 	"max-room-size": "Maximální počet uživatelů v konverzační místnosti",
 	"delay": "Čas mezi konverzačními zprávami v milisekundách",
 	"notification-delay": "Notification delay for chat messages. (0 for no delay)",
