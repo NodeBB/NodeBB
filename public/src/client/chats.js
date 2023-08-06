@@ -396,29 +396,30 @@ define('forum/chats', [
 		});
 	};
 
-	Chats.addRenameHandler = function (roomId, buttonEl, roomName) {
-		let modal;
-
-		buttonEl.on('click', function () {
-			app.parseAndTranslate('modals/rename-room', {
-				name: roomName || ajaxify.data.roomName,
-			}, function (html) {
-				modal = bootbox.dialog({
-					title: '[[modules:chat.rename-room]]',
-					message: html,
-					onEscape: true,
-					buttons: {
-						save: {
-							label: '[[global:save]]',
-							className: 'btn-primary',
-							callback: function () {
-								api.put(`/chats/${roomId}`, {
-									name: modal.find('#roomName').val(),
-								}).catch(alerts.error);
-							},
+	Chats.addRenameHandler = function (roomId, buttonEl) {
+		buttonEl.on('click', async function () {
+			const { roomName } = await api.get(`/chats/${roomId}`);
+			const html = await app.parseAndTranslate('modals/rename-room', {
+				name: roomName,
+			});
+			const modal = bootbox.dialog({
+				title: '[[modules:chat.rename-room]]',
+				message: html,
+				onEscape: true,
+				buttons: {
+					save: {
+						label: '[[global:save]]',
+						className: 'btn-primary',
+						callback: function () {
+							api.put(`/chats/${roomId}`, {
+								name: modal.find('#roomName').val(),
+							}).then(() => {
+								modal.modal('hide');
+							}).catch(alerts.error);
+							return false;
 						},
 					},
-				});
+				},
 			});
 		});
 	};
@@ -586,7 +587,15 @@ define('forum/chats', [
 			if (roomEl.length) {
 				const titleEl = roomEl.find('[component="chat/room/title"]');
 				ajaxify.data.roomName = data.newName;
-				titleEl.text(data.newName);
+				titleEl.translateText(data.newName ? data.newName : ajaxify.data.usernames);
+			}
+			const titleEl = $(`[component="chat/main-wrapper"][data-roomid="${data.roomId}"] [component="chat/header/title"]`);
+			if (titleEl.length) {
+				titleEl.html(
+					data.newName ?
+						`<i class="fa ${ajaxify.data.icon} text-muted"></i> ${data.newName}` :
+						ajaxify.data.chatWithMessage
+				);
 			}
 		});
 

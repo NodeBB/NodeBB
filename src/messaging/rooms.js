@@ -78,6 +78,10 @@ module.exports = function (Messaging) {
 		if (Array.isArray(data)) { // old usage second param used to be toUids
 			data = { uids: data };
 		}
+		if (data.hasOwnProperty('roomName')) {
+			checkRoomName(data.roomName);
+		}
+
 		const now = Date.now();
 		const roomId = await db.incrObjectField('global', 'nextChatRoomId');
 		const room = {
@@ -87,7 +91,7 @@ module.exports = function (Messaging) {
 		};
 
 		if (data.hasOwnProperty('roomName') && data.roomName) {
-			room.roomName = String(data.roomName);
+			room.roomName = String(data.roomName).trim();
 		}
 		if (Array.isArray(data.groups) && data.groups.length) {
 			room.groups = JSON.stringify(data.groups);
@@ -397,13 +401,8 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.renameRoom = async function (uid, roomId, newName) {
-		if (!newName) {
-			throw new Error('[[error:invalid-data]]');
-		}
-		newName = newName.trim();
-		if (newName.length > 75) {
-			throw new Error('[[error:chat-room-name-too-long]]');
-		}
+		newName = String(newName).trim();
+		checkRoomName(newName);
 
 		const payload = await plugins.hooks.fire('filter:chat.renameRoom', {
 			uid: uid,
@@ -423,6 +422,15 @@ module.exports = function (Messaging) {
 			newName: payload.newName,
 		});
 	};
+
+	function checkRoomName(roomName) {
+		if (!roomName && roomName !== '') {
+			throw new Error('[[error:invalid-room-name]]');
+		}
+		if (roomName.length > meta.config.maximumChatRoomNameLength) {
+			throw new Error(`[[error:chat-room-name-too-long, ${meta.config.maximumChatRoomNameLength}]]`);
+		}
+	}
 
 	Messaging.canReply = async (roomId, uid) => {
 		const inRoom = await db.isSortedSetMember(`chat:room:${roomId}:uids`, uid);
@@ -517,8 +525,8 @@ module.exports = function (Messaging) {
 		room.canReply = canReply;
 		room.groupChat = room.hasOwnProperty('groupChat') ? room.groupChat : users.length > 2;
 		room.icon = Messaging.getRoomIcon(room);
-		room.usernames = Messaging.generateUsernames(users, uid);
-		room.chatWithMessage = await Messaging.generateChatWithMessage(users, uid, settings.userLang);
+		room.usernames = Messaging.generateUsernames(room, uid);
+		room.chatWithMessage = await Messaging.generateChatWithMessage(room, uid, settings.userLang);
 		room.maximumUsersInChatRoom = meta.config.maximumUsersInChatRoom;
 		room.maximumChatMessageLength = meta.config.maximumChatMessageLength;
 		room.showUserInput = !room.maximumUsersInChatRoom || room.maximumUsersInChatRoom > 2;

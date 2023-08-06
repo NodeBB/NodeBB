@@ -213,8 +213,8 @@ Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 			});
 			room.users = room.users.filter(user => user && parseInt(user.uid, 10));
 			room.lastUser = room.users[0];
-			room.usernames = Messaging.generateUsernames(room.users, uid);
-			room.chatWithMessage = await Messaging.generateChatWithMessage(room.users, uid, results.settings.userLang);
+			room.usernames = Messaging.generateUsernames(room, uid);
+			room.chatWithMessage = await Messaging.generateChatWithMessage(room, uid, results.settings.userLang);
 		}
 	}));
 
@@ -228,21 +228,21 @@ Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 	});
 };
 
-Messaging.generateUsernames = function (users, excludeUid) {
-	users = users.filter(u => u && parseInt(u.uid, 10) !== excludeUid);
+Messaging.generateUsernames = function (room, excludeUid) {
+	const users = room.users.filter(u => u && parseInt(u.uid, 10) !== excludeUid);
 	const usernames = users.map(u => u.username);
 	if (users.length > 3) {
 		return translator.compile(
 			'modules:chat.usernames-and-x-others',
 			usernames.slice(0, 2).join(', '),
-			usernames.length - 2
+			room.userCount - 2
 		);
 	}
 	return usernames.join(', ');
 };
 
-Messaging.generateChatWithMessage = async function (users, callerUid, userLang) {
-	users = users.filter(u => u && parseInt(u.uid, 10) !== callerUid);
+Messaging.generateChatWithMessage = async function (room, callerUid, userLang) {
+	const users = room.users.filter(u => u && parseInt(u.uid, 10) !== callerUid);
 	const usernames = users.map(u => `<a href="${relative_path}/uid/${u.uid}">${u.username}</a>`);
 	let compiled = '';
 	if (!users.length) {
@@ -252,7 +252,7 @@ Messaging.generateChatWithMessage = async function (users, callerUid, userLang) 
 		compiled = translator.compile(
 			'modules:chat.chat-with-usernames-and-x-others',
 			usernames.slice(0, 2).join(', '),
-			usernames.length - 2
+			room.userCount - 2
 		);
 	} else {
 		compiled = translator.compile(

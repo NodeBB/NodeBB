@@ -32,6 +32,11 @@
 				</div>
 
 				<div class="mb-3">
+					<label class="form-label" for="maximumChatRoomNameLength">[[admin/settings/chat:max-chat-room-name-length]]</label>
+					<input id="maximumChatRoomNameLength" type="text" class="form-control" value="50" data-field="maximumChatRoomNameLength">
+				</div>
+
+				<div class="mb-3">
 					<label class="form-label" for="maximumChatMessageLength">[[admin/settings/chat:max-length]]</label>
 					<input id="maximumChatMessageLength" type="text" class="form-control" value="1000" data-field="maximumChatMessageLength">
 				</div>

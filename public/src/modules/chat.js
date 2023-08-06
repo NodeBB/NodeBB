@@ -232,9 +232,18 @@ define('chat', [
 	};
 
 	module.onRoomRename = function (data) {
-		const newTitle = $('<div></div>').html(data.newName).text();
 		const modal = module.getModal(data.roomId);
-		modal.find('[component="chat/room/name"]').text(newTitle);
+		const titleEl = modal.find('[component="chat/room/name"]');
+		const icon = titleEl.attr('data-icon');
+		if (titleEl.length) {
+			titleEl.html(
+				data.newName ?
+					`<i class="fa ${icon} text-muted"></i> ${data.newName}` :
+					data.chatWithMessage
+			);
+		}
+
+		const newTitle = $('<div></div>').html(data.newName).text();
 		taskbar.update('chat', modal.attr('data-uuid'), {
 			title: newTitle,
 		});
@@ -347,7 +356,7 @@ define('chat', [
 				});
 
 				Chats.addActionHandlers(chatModal.find('[component="chat/messages"]'), roomId);
-				Chats.addRenameHandler(roomId, chatModal.find('[data-action="rename"]'), data.roomName);
+				Chats.addRenameHandler(roomId, chatModal.find('[data-action="rename"]'));
 				Chats.addLeaveHandler(roomId, chatModal.find('[data-action="leave"]'));
 				Chats.addDeleteHandler(roomId, chatModal.find('[data-action="delete"]'));
 				Chats.addSendHandlers(roomId, chatModal.find('.chat-input'), chatModal.find('[data-action="send"]'));
