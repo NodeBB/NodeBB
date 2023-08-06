@@ -10,6 +10,7 @@
     "chat.no_active": "Kamu tidak memiliki percakapan yang aktif.",
     "chat.user_typing": "%1 sedang menulis ...",
     "chat.user_has_messaged_you": "%1 telah mengirimkan pesan untukmu.",
+    "chat.replying-to": "Replying to %1",
     "chat.see_all": "All chats",
     "chat.mark_all_read": "Mark all read",
     "chat.no-messages": "Mohon pilih satu penerima untuk melihat riwayat pesan percakapan",

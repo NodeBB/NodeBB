@@ -10,6 +10,7 @@
     "chat.no_active": "Ju nuk keni biseda aktive.",
     "chat.user_typing": "%1 është duke shkruajtur...",
     "chat.user_has_messaged_you": "%1 ju ka dërguar mesazh.",
+    "chat.replying-to": "Replying to %1",
     "chat.see_all": "All chats",
     "chat.mark_all_read": "Mark all read",
     "chat.no-messages": "Ju lutemi zgjidhni një person për të parë historikun e mesazheve të bisedës",

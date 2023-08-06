@@ -10,6 +10,7 @@
     "chat.no_active": "Nincs aktív csevegésed.",
     "chat.user_typing": "%1 éppen ír ...",
     "chat.user_has_messaged_you": "%1 üzenetet küldött.",
+    "chat.replying-to": "Replying to %1",
     "chat.see_all": "Összes csevegés",
     "chat.mark_all_read": "Összes olvasottként jelölése",
     "chat.no-messages": "Válasszuk ki a címzettet és tekintsük meg a chat előzményeket",

@@ -10,6 +10,7 @@
     "chat.no_active": "Нямате текущи разговори.",
     "chat.user_typing": "%1 пише...",
     "chat.user_has_messaged_you": "%1 Ви написа съобщение.",
+    "chat.replying-to": "Replying to %1",
     "chat.see_all": "Всички разговори",
     "chat.mark_all_read": "Отбелязване на всички като прочетени",
     "chat.no-messages": "Моля, изберете получател, за да видите историята на съобщенията",

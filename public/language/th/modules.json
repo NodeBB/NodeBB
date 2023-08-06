@@ -10,6 +10,7 @@
     "chat.no_active": "คุณไม่มีแชทที่คุยอยู่",
     "chat.user_typing": "%1 กำลังพิมพ์อยู่ ...",
     "chat.user_has_messaged_you": "%1 ได้ส่งข้อความถึงคุณ",
+    "chat.replying-to": "Replying to %1",
     "chat.see_all": "All chats",
     "chat.mark_all_read": "Mark all read",
     "chat.no-messages": "กรุณาเลือกผู้รับเพื่อดูประวัติข้อความ",

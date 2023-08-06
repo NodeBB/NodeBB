@@ -10,6 +10,7 @@
     "chat.no_active": "Нема активних ћаскања.",
     "chat.user_typing": "%1 куца ...",
     "chat.user_has_messaged_you": "%1 вам је послао поруку.",
+    "chat.replying-to": "Replying to %1",
     "chat.see_all": "Сва ћаскања",
     "chat.mark_all_read": "Означи све као прочитано",
     "chat.no-messages": "Изаберите примаоца да бисте видели историју ћаскања",

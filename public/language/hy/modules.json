@@ -10,6 +10,7 @@
     "chat.no_active": "Դուք չունեք որևէ ակտիվ չաթ",
     "chat.user_typing": "%1-ը գրում է...",
     "chat.user_has_messaged_you": "%1-ը ձեզ հաղորդագրություն է ուղարկել:",
+    "chat.replying-to": "Replying to %1",
     "chat.see_all": "Բոլոր չաթերը",
     "chat.mark_all_read": "Նշել բոլորը կարդացված",
     "chat.no-messages": "Խնդրում ենք ընտրել ստացող՝ զրույցի հաղորդագրության պատմությունը դիտելու համար",
