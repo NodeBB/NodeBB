@@ -165,7 +165,7 @@
     "chat-room-does-not-exist": "چت روم وجود ندارد",
     "cant-add-users-to-chat-room": "نمی‌توانید کاربری به چت‌روم اضافه کنید ",
     "cant-remove-users-from-chat-room": "نمی‌توانید کاربران را از چت‌روم حذف کنید ",
-    "chat-room-name-too-long": "نام چت‌روم خیلی طولانی است ",
+    "chat-room-name-too-long": "Chat room name too long. Names can't be longer than %1 characters.",
     "already-voting-for-this-post": "شما قبلا به این پست رای داده اید.",
     "reputation-system-disabled": "سیستم اعتبار غیر فعال شده است",
     "downvoting-disabled": "رأی منفی غیر فعال شده است",

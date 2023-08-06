@@ -165,7 +165,7 @@
     "chat-room-does-not-exist": "Комната чата не существует.",
     "cant-add-users-to-chat-room": "Нельзя добавить пользователей в комнату.",
     "cant-remove-users-from-chat-room": "Нельзя удалять пользователей из комнаты.",
-    "chat-room-name-too-long": "Название чат комнаты слишком длинное, пожалуйста, сократите его.",
+    "chat-room-name-too-long": "Chat room name too long. Names can't be longer than %1 characters.",
     "already-voting-for-this-post": "Вы уже проголосовали за это сообщение.",
     "reputation-system-disabled": "Система репутации отключена.",
     "downvoting-disabled": "Понижение рейтинга отключено",

@@ -165,7 +165,7 @@
     "chat-room-does-not-exist": "Der Chatroom existiert nicht.",
     "cant-add-users-to-chat-room": "Kann Benutzer nicht zu Chatroom hinzufügen",
     "cant-remove-users-from-chat-room": "Kann Benutzer nicht aus Chatroom entfernen.",
-    "chat-room-name-too-long": "Name des Chatrooms zu lang.",
+    "chat-room-name-too-long": "Chat room name too long. Names can't be longer than %1 characters.",
     "already-voting-for-this-post": "Du hast diesen Beitrag bereits bewertet.",
     "reputation-system-disabled": "Das Reputationssystem ist deaktiviert.",
     "downvoting-disabled": "Downvotes sind deaktiviert.",

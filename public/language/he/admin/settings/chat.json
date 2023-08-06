@@ -4,6 +4,7 @@
 	"disable-editing": "השבת עריכה/מחיקה של הודעות צ'אט",
 	"disable-editing-help": "מנהלי מערכת ומנחים גלובליים פטורים מהגבלה זו",
 	"max-length": "אורך מקסימלי של הודעת צ'אט",
+	"max-chat-room-name-length": "Maximum length of chat room names",
 	"max-room-size": "מספר המשתמשים המרבי בחדרי צ'אט",
 	"delay": "זמן המתנה בין הודעות צ'אט - באלפיות שניה",
 	"notification-delay": "עיכוב התראות להודעות צ'אט. (0 ללא עיכוב)",

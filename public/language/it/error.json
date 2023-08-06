@@ -165,7 +165,7 @@
     "chat-room-does-not-exist": "La stanza chat non esiste.",
     "cant-add-users-to-chat-room": "Impossibile aggiungere utenti alla stanza chat.",
     "cant-remove-users-from-chat-room": "Impossibile rimuovere gli utenti dalla stanza chat.",
-    "chat-room-name-too-long": "Nome della stanza chat troppo lungo.",
+    "chat-room-name-too-long": "Chat room name too long. Names can't be longer than %1 characters.",
     "already-voting-for-this-post": "Hai già votato per questo post",
     "reputation-system-disabled": "Il sistema di reputazione è disabilitato.",
     "downvoting-disabled": "Votata negativamente è disabilitato",
