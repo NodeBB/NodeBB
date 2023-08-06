@@ -263,6 +263,12 @@ define('forum/chats/messages', [
 			const self = parseInt(message.fromuid, 10) === parseInt(app.user.uid, 10);
 			message.self = self ? 1 : 0;
 			messages.parseMessage(message, function (html) {
+				const parentEl = $(`[component="chat/message/parent"][data-parent-mid="${message.mid}"]`);
+				if (parentEl.length) {
+					parentEl.find('[component="chat/message/parent/content"]').html(
+						html.find('[component="chat/message/body"]').html()
+					);
+				}
 				const msgEl = components.get('chat/message', message.mid);
 				if (msgEl.length) {
 					msgEl.replaceWith(html);
@@ -274,21 +280,36 @@ define('forum/chats/messages', [
 
 	function onChatMessageDeleted(messageId) {
 		const msgEl = components.get('chat/message', messageId);
+		const parentEl = $(`[component="chat/message/parent"][data-parent-mid="${messageId}"]`);
 		const isSelf = parseInt(msgEl.attr('data-uid'), 10) === app.user.uid;
+		const isParentSelf = parseInt(parentEl.attr('data-uid'), 10) === app.user.uid;
 		msgEl.toggleClass('deleted', true);
+		parentEl.toggleClass('deleted', true);
 		if (!isSelf) {
 			msgEl.find('[component="chat/message/body"]')
+				.translateHtml('<p>[[modules:chat.message-deleted]]</p>');
+		}
+		if (!isParentSelf) {
+			parentEl.find('[component="chat/message/parent/content"]')
 				.translateHtml('<p>[[modules:chat.message-deleted]]</p>');
 		}
 	}
 
 	function onChatMessageRestored(message) {
 		const msgEl = components.get('chat/message', message.messageId);
+		const parentEl = $(`[component="chat/message/parent"][data-parent-mid="${message.messageId}"]`);
 		const isSelf = parseInt(msgEl.attr('data-uid'), 10) === app.user.uid;
+		const isParentSelf = parseInt(parentEl.attr('data-uid'), 10) === app.user.uid;
 		msgEl.toggleClass('deleted', false);
+		parentEl.toggleClass('deleted', false);
+		if (!isParentSelf) {
+			parentEl.find('[component="chat/message/parent/content"]')
+				.translateHtml(message.content);
+		}
 		if (!isSelf) {
 			msgEl.find('[component="chat/message/body"]')
 				.translateHtml(message.content);
+			messages.onMessagesAddedToDom(components.get('chat/message', message.messageId));
 		}
 	}
 

@@ -133,7 +133,7 @@ module.exports = function (Messaging) {
 		}
 		parentMids = _.uniq(parentMids);
 		const parentMessages = await Messaging.getMessagesFields(parentMids, [
-			'fromuid', 'content', 'timestamp',
+			'fromuid', 'content', 'timestamp', 'deleted',
 		]);
 		const parentUids = _.uniq(parentMessages.map(msg => msg && msg.fromuid));
 		const usersMap = _.zipObject(
@@ -142,6 +142,10 @@ module.exports = function (Messaging) {
 		);
 
 		await Promise.all(parentMessages.map(async (parentMsg) => {
+			if (parentMsg.deleted && parentMsg.fromuid !== parseInt(uid, 10)) {
+				parentMsg.content = `<p>[[modules:chat.message-deleted]]</p>`;
+				return;
+			}
 			const foundMsg = messages.find(msg => parseInt(msg.mid, 10) === parseInt(parentMsg.mid, 10));
 			if (foundMsg) {
 				parentMsg.content = foundMsg.content;
