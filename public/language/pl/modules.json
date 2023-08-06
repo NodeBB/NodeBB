@@ -10,6 +10,7 @@
     "chat.no_active": "Brak aktywnych czatów",
     "chat.user_typing": "%1 pisze...",
     "chat.user_has_messaged_you": "%1 napisał do Ciebie",
+    "chat.replying-to": "Replying to %1",
     "chat.see_all": "Wszystkie rozmowy",
     "chat.mark_all_read": "Zaznacz wszystkie jako przeczytane",
     "chat.no-messages": "Wybierz adresata, by wyświetlić historię czatów",

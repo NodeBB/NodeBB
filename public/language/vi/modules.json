@@ -10,6 +10,7 @@
     "chat.no_active": "Bạn không có cuộc trò chuyện đang hoạt động nào.",
     "chat.user_typing": "%1 đang nhập...",
     "chat.user_has_messaged_you": "%1 đã nhắn tin cho bạn.",
+    "chat.replying-to": "Replying to %1",
     "chat.see_all": "Tất cả trò chuyện",
     "chat.mark_all_read": "Đánh dấu tất cả đã đọc",
     "chat.no-messages": "Vui lòng chọn người nhận để xem lịch sử tin nhắn trò chuyện",

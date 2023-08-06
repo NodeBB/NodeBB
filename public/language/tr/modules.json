@@ -10,6 +10,7 @@
     "chat.no_active": "Aktif sohbet mevcut değil",
     "chat.user_typing": "%1 yazıyor ...",
     "chat.user_has_messaged_you": "%1 size bir mesaj gönderdi.",
+    "chat.replying-to": "Replying to %1",
     "chat.see_all": "Bütün Sohbetler",
     "chat.mark_all_read": "Hepsini Okundu Olarak İşaretle",
     "chat.no-messages": "Lütfen sohbet geçmişini görüntülemek için bir alıcı seçin",

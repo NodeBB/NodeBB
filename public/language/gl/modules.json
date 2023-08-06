@@ -10,6 +10,7 @@
     "chat.no_active": "Non tes charlas activas.",
     "chat.user_typing": "%1 está a escribir...",
     "chat.user_has_messaged_you": "%1 enviouche unha mensaxe.",
+    "chat.replying-to": "Replying to %1",
     "chat.see_all": "All chats",
     "chat.mark_all_read": "Mark all read",
     "chat.no-messages": "Por favor, seleccione un destinatario para ver o historial das mensaxes ",

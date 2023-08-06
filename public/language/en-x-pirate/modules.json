@@ -10,6 +10,7 @@
     "chat.no_active": "Ye be a lonely sailor.",
     "chat.user_typing": "%1 is typing ...",
     "chat.user_has_messaged_you": "%1 has messaged you.",
+    "chat.replying-to": "Replying to %1",
     "chat.see_all": "All chats",
     "chat.mark_all_read": "Mark all read",
     "chat.no-messages": "Please select a recipient to view chat message history",

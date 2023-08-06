@@ -10,6 +10,7 @@
     "chat.no_active": "Nemáte žiadne aktívne konverzácie.",
     "chat.user_typing": "%1 práve píše...",
     "chat.user_has_messaged_you": "%1 Vám poslal správu.",
+    "chat.replying-to": "Replying to %1",
     "chat.see_all": "All chats",
     "chat.mark_all_read": "Mark all read",
     "chat.no-messages": "Prosím vyberte príjemcu, pre zobrazenie histórie správ v konverzácií",

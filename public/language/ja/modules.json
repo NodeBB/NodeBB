@@ -10,6 +10,7 @@
     "chat.no_active": "チャットはありません。",
     "chat.user_typing": "%1 が入力中 ...",
     "chat.user_has_messaged_you": "%1さんからメッセージが届いています。",
+    "chat.replying-to": "Replying to %1",
     "chat.see_all": "All chats",
     "chat.mark_all_read": "Mark all read",
     "chat.no-messages": "チャットメッセージの履歴を表示するには、受信者を選択してください",

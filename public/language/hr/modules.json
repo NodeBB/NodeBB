@@ -10,6 +10,7 @@
     "chat.no_active": "Nemate aktivnih razgovora.",
     "chat.user_typing": "%1 piše poruku ...",
     "chat.user_has_messaged_you": "%1 vam je poslao poruku.",
+    "chat.replying-to": "Replying to %1",
     "chat.see_all": "All chats",
     "chat.mark_all_read": "Mark all read",
     "chat.no-messages": "Odaberite primatelja da vidite povijest razgovora",

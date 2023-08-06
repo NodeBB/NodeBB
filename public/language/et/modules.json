@@ -10,6 +10,7 @@
     "chat.no_active": "Sul ei ole hetkel aktiivseid vestlusi.",
     "chat.user_typing": "%1 kirjutab sõnumit...",
     "chat.user_has_messaged_you": "%1 saatis sulle sõnumi.",
+    "chat.replying-to": "Replying to %1",
     "chat.see_all": "All chats",
     "chat.mark_all_read": "Mark all read",
     "chat.no-messages": "Vali sõnumisaaja, et vaadata sõnumite ajalugu.",

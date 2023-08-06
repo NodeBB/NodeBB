@@ -10,6 +10,7 @@
     "chat.no_active": "Ni aktivnih klepetov.",
     "chat.user_typing": "%1 piše sporočilo ...",
     "chat.user_has_messaged_you": "%1 ti je poslal/-a sporočilo.",
+    "chat.replying-to": "Replying to %1",
     "chat.see_all": "All chats",
     "chat.mark_all_read": "Mark all read",
     "chat.no-messages": "Za pregled zgodovine klepeta izberi prejemnika.",

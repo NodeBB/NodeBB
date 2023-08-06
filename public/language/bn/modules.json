@@ -10,6 +10,7 @@
     "chat.no_active": "আপনার কোন সচল কথোপকথন নেই",
     "chat.user_typing": "%1 লিখছেন",
     "chat.user_has_messaged_you": "%1 আপনাকে বার্তা পাঠিয়েছেন",
+    "chat.replying-to": "Replying to %1",
     "chat.see_all": "All chats",
     "chat.mark_all_read": "Mark all read",
     "chat.no-messages": "মেসেজ হিস্টোরী দেখতে প্রাপক নির্বাচন করুন",

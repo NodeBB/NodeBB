@@ -10,6 +10,7 @@
     "chat.no_active": "У вас немає активних чатів.",
     "chat.user_typing": "%1 друкує...",
     "chat.user_has_messaged_you": "%1 написав вам.",
+    "chat.replying-to": "Replying to %1",
     "chat.see_all": "All chats",
     "chat.mark_all_read": "Mark all read",
     "chat.no-messages": "Будь ласка, оберіть отримувача, щоб переглянути історію повідомлень",

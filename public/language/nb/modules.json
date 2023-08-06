@@ -10,6 +10,7 @@
     "chat.no_active": "Du har ingen aktive chatter.",
     "chat.user_typing": "%1 skriver ...",
     "chat.user_has_messaged_you": "%1 har sendt deg en melding",
+    "chat.replying-to": "Replying to %1",
     "chat.see_all": "Alle chatter",
     "chat.mark_all_read": "Marker alle som lest",
     "chat.no-messages": "Vennligst velg en mottaker for å vise chatte-melding historikk",

@@ -10,6 +10,7 @@
     "chat.no_active": "暫無聊天",
     "chat.user_typing": "%1 正在輸入……",
     "chat.user_has_messaged_you": "%1 向您發送了訊息。",
+    "chat.replying-to": "Replying to %1",
     "chat.see_all": "All chats",
     "chat.mark_all_read": "Mark all read",
     "chat.no-messages": "請選擇接收人，以查看聊天訊息紀錄",

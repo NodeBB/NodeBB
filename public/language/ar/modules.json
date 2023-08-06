@@ -10,6 +10,7 @@
     "chat.no_active": "لا يوجد لديك دردشات نشطة.",
     "chat.user_typing": "%1 يكتب رسالة...",
     "chat.user_has_messaged_you": "%1 أرسل لك رسالة.",
+    "chat.replying-to": "Replying to %1",
     "chat.see_all": "All chats",
     "chat.mark_all_read": "Mark all read",
     "chat.no-messages": "المرجو اختيار مرسل إليه لمعاينة تاريخ الدردشات",

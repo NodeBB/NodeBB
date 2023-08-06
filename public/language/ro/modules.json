@@ -10,6 +10,7 @@
     "chat.no_active": "Nu ai nici o conversație activă",
     "chat.user_typing": "%1 scrie ...",
     "chat.user_has_messaged_you": "%1 ți-a trimis un mesaj.",
+    "chat.replying-to": "Replying to %1",
     "chat.see_all": "All chats",
     "chat.mark_all_read": "Mark all read",
     "chat.no-messages": "Selectează un recipient pentru a vedea istoria mesajelor chat",
