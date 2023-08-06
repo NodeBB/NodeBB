@@ -6,6 +6,7 @@ const meta = require('../meta');
 const plugins = require('../plugins');
 const db = require('../database');
 const user = require('../user');
+const utils = require('../utils');
 
 module.exports = function (Messaging) {
 	Messaging.sendMessage = async (data) => {
@@ -41,6 +42,9 @@ module.exports = function (Messaging) {
 		if (!roomData) {
 			throw new Error('[[error:no-room]]');
 		}
+		if (data.toMid && !utils.isNumber(data.toMid)) {
+			throw new Error('[[error:invalid-mid]]');
+		}
 		const mid = await db.incrObjectField('global', 'nextMid');
 		const timestamp = data.timestamp || Date.now();
 		let message = {
@@ -50,7 +54,9 @@ module.exports = function (Messaging) {
 			fromuid: uid,
 			roomId: roomId,
 		};
-
+		if (data.toMid) {
+			message.toMid = data.toMid;
+		}
 		if (data.system) {
 			message.system = data.system;
 		}
@@ -69,6 +75,9 @@ module.exports = function (Messaging) {
 			db.sortedSetAdd('messages:mid', timestamp, mid),
 			db.incrObjectField('global', 'messageCount'),
 		];
+		if (data.toMid) {
+			tasks.push(db.sortedSetAdd(`mid:${data.toMid}:replies`, timestamp, mid));
+		}
 		if (roomData.public) {
 			tasks.push(
 				db.sortedSetAdd('chat:rooms:public:lastpost', timestamp, roomId)

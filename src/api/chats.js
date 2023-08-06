@@ -87,6 +87,7 @@ chatsAPI.post = async (caller, data) => {
 		uid: caller.uid,
 		roomId: data.roomId,
 		content: data.message,
+		toMid: data.toMid,
 		timestamp: Date.now(),
 		ip: caller.ip,
 	});

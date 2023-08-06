@@ -190,7 +190,7 @@ define('chat', [
 				newMessage = data.self === 0;
 			}
 			data.message.self = data.self;
-			data.message.timestamp = Math.min(Date.now(), data.message.timetamp);
+			data.message.timestamp = Math.min(Date.now(), data.message.timestamp);
 			data.message.timestampISO = utils.toISOString(data.message.timestamp);
 			addMessageToModal(data);
 		}
@@ -203,13 +203,13 @@ define('chat', [
 		require(['forum/chats/messages'], function (ChatsMessages) {
 			// don't add if already added
 			if (!modal.find('[data-mid="' + data.message.messageId + '"]').length) {
-				ChatsMessages.appendChatMessage(modal.find('.chat-content'), data.message);
+				ChatsMessages.appendChatMessage(modal.find('[component="chat/message/content"]'), data.message);
 			}
 
 			if (modal.is(':visible')) {
 				taskbar.updateActive(modal.attr('data-uuid'));
-				if (ChatsMessages.isAtBottom(modal.find('.chat-content'))) {
-					ChatsMessages.scrollToBottom(modal.find('.chat-content'));
+				if (ChatsMessages.isAtBottom(modal.find('[component="chat/message/content"]'))) {
+					ChatsMessages.scrollToBottom(modal.find('[component="chat/message/content"]'));
 				}
 			} else if (!ajaxify.data.template.chats) {
 				module.toggleNew(modal.attr('data-uuid'), true, true);
@@ -254,17 +254,18 @@ define('chat', [
 	module.createModal = function (data, callback) {
 		callback = callback || function () {};
 		require([
-			'scrollStop', 'forum/chats', 'forum/chats/messages',
-		], function (scrollStop, Chats, ChatsMessages) {
+			'scrollStop', 'forum/chats', 'forum/chats/messages', 'forum/chats/message-search',
+		], function (scrollStop, Chats, ChatsMessages, messageSearch) {
 			app.parseAndTranslate('chat', data, function (chatModal) {
-				if (module.modalExists(data.roomId)) {
+				const roomId = data.roomId;
+				if (module.modalExists(roomId)) {
 					return callback(module.getModal(data.roomId));
 				}
 				const uuid = utils.generateUUID();
 				let dragged = false;
 
-				chatModal.attr('id', 'chat-modal-' + data.roomId);
-				chatModal.attr('data-roomid', data.roomId);
+				chatModal.attr('id', 'chat-modal-' + roomId);
+				chatModal.attr('data-roomid', roomId);
 				chatModal.attr('intervalId', 0);
 				chatModal.attr('data-uuid', uuid);
 				chatModal.css('position', 'fixed');
@@ -313,7 +314,7 @@ define('chat', [
 						components.get('chat/input').val(text);
 					});
 
-					ajaxify.go('user/' + app.user.userslug + '/chats/' + chatModal.attr('data-roomid'));
+					ajaxify.go(`user/${app.user.userslug}/chats/${roomId}`);
 					module.close(uuid);
 				}
 
@@ -340,23 +341,23 @@ define('chat', [
 
 				chatModal.on('mousemove keypress click', function () {
 					if (newMessage) {
-						api.del(`/chats/${data.roomId}/state`, {});
+						api.del(`/chats/${roomId}/state`, {});
 						newMessage = false;
 					}
 				});
 
-				Chats.addActionHandlers(chatModal.find('[component="chat/messages"]'), data.roomId);
-				Chats.addRenameHandler(chatModal.attr('data-roomid'), chatModal.find('[data-action="rename"]'), data.roomName);
-				Chats.addLeaveHandler(chatModal.attr('data-roomid'), chatModal.find('[data-action="leave"]'));
-				Chats.addDeleteHandler(chatModal.attr('data-roomid'), chatModal.find('[data-action="delete"]'));
-				Chats.addSendHandlers(chatModal.attr('data-roomid'), chatModal.find('.chat-input'), chatModal.find('[data-action="send"]'));
-				Chats.addManageHandler(chatModal.attr('data-roomid'), chatModal.find('[data-action="members"]'));
+				Chats.addActionHandlers(chatModal.find('[component="chat/messages"]'), roomId);
+				Chats.addRenameHandler(roomId, chatModal.find('[data-action="rename"]'), data.roomName);
+				Chats.addLeaveHandler(roomId, chatModal.find('[data-action="leave"]'));
+				Chats.addDeleteHandler(roomId, chatModal.find('[data-action="delete"]'));
+				Chats.addSendHandlers(roomId, chatModal.find('.chat-input'), chatModal.find('[data-action="send"]'));
+				Chats.addManageHandler(roomId, chatModal.find('[data-action="manage"]'));
 
-				Chats.createAutoComplete(chatModal.attr('data-roomid'), chatModal.find('[component="chat/input"]'));
+				Chats.createAutoComplete(roomId, chatModal.find('[component="chat/input"]'));
 
-				Chats.addScrollHandler(chatModal.attr('data-roomid'), data.uid, chatModal.find('.chat-content'));
-				Chats.addScrollBottomHandler(chatModal.find('.chat-content'));
-
+				Chats.addScrollHandler(roomId, data.uid, chatModal.find('[component="chat/message/content"]'));
+				Chats.addScrollBottomHandler(chatModal.find('[component="chat/message/content"]'));
+				Chats.addParentHandler(chatModal.find('[component="chat/message/content"]'));
 				Chats.addCharactersLeftHandler(chatModal);
 				Chats.addTextareaResizeHandler(chatModal);
 				Chats.addIPHandler(chatModal);
@@ -370,6 +371,8 @@ define('chat', [
 				});
 
 				ChatsMessages.addSocketListeners();
+				messageSearch.init(roomId, chatModal);
+				Chats.addNotificationSettingHandler(roomId, chatModal);
 
 				taskbar.push('chat', chatModal.attr('data-uuid'), {
 					title: '[[modules:chat.chatting_with]] ' + (data.roomName || (data.users.length ? data.users[0].username : '')),

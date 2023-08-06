@@ -11,17 +11,17 @@ define('forum/chats/message-search', [
 	let chatContent;
 	let clearEl;
 	let toggleEl;
-	let containerEl;
-	messageSearch.init = function (_roomId) {
+	let searchContainerEl;
+	messageSearch.init = function (_roomId, containerEl) {
 		roomId = _roomId;
 
-		resultListEl = $('[component="chat/message/search/results"]');
-		chatContent = $('[component="chat/message/content"]');
-		clearEl = $('[component="chat/room/search/clear"]');
-		containerEl = $('[component="chat/room/search/container"]');
-		toggleEl = $('[component="chat/room/search/toggle"');
+		resultListEl = containerEl.find('[component="chat/message/search/results"]');
+		chatContent = containerEl.find('[component="chat/message/content"]');
+		clearEl = containerEl.find('[component="chat/room/search/clear"]');
+		searchContainerEl = containerEl.find('[component="chat/room/search/container"]');
+		toggleEl = containerEl.find('[component="chat/room/search/toggle"');
 
-		searchInputEl = $('[component="chat/room/search"]');
+		searchInputEl = containerEl.find('[component="chat/room/search"]');
 		searchInputEl.on('keyup', utils.debounce(doSearch, 250))
 			.on('focus', () => {
 				if (searchInputEl.val()) {
@@ -29,14 +29,14 @@ define('forum/chats/message-search', [
 				}
 			});
 
-		$('[component="chat/input"]').on('focus', () => {
+		containerEl.find('[component="chat/input"]').on('focus', () => {
 			resultListEl.addClass('hidden');
 			chatContent.removeClass('hidden');
 		});
 		clearEl.on('click', clearInputAndResults);
 
 		toggleEl.on('click', () => {
-			containerEl.removeClass('hidden');
+			searchContainerEl.removeClass('hidden');
 			toggleEl.addClass('hidden');
 			searchInputEl.trigger('focus');
 		});
@@ -52,7 +52,7 @@ define('forum/chats/message-search', [
 		removeResults();
 		resultListEl.addClass('hidden');
 		clearEl.addClass('hidden');
-		containerEl.addClass('hidden');
+		searchContainerEl.addClass('hidden');
 		chatContent.removeClass('hidden');
 		toggleEl.removeClass('hidden');
 	}

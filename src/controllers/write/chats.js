@@ -33,6 +33,7 @@ Chats.get = async (req, res) => {
 Chats.post = async (req, res) => {
 	const messageObj = await api.chats.post(req, {
 		message: req.body.message,
+		toMid: req.body.toMid,
 		roomId: req.params.roomId,
 	});
 

@@ -21,9 +21,13 @@ define('forum/chats/messages', [
 		messages.updateTextAreaHeight(chatContent);
 		const payload = { roomId, message };
 		({ roomId, message } = await hooks.fire('filter:chat.send', payload));
-
-		api.post(`/chats/${roomId}`, { message }).then(() => {
+		const replyToEl = inputEl.parents('[component="chat/composer"]')
+			.find('[component="chat/composer/replying-to"]');
+		const toMid = replyToEl.attr('data-tomid');
+		api.post(`/chats/${roomId}`, { message, toMid: toMid }).then(() => {
 			hooks.fire('action:chat.sent', { roomId, message });
+			replyToEl.addClass('hidden');
+			replyToEl.attr('data-tomid', '');
 		}).catch((err) => {
 			inputEl.val(message).trigger('input');
 			messages.updateRemainingLength(inputEl.parent());
@@ -76,7 +80,7 @@ define('forum/chats/messages', [
 		const lastSpeaker = parseInt(lastMsgEl.attr('data-uid'), 10);
 		const lasttimestamp = parseInt(lastMsgEl.attr('data-timestamp'), 10);
 		if (!Array.isArray(data)) {
-			data.newSet = lastSpeaker !== parseInt(data.fromuid, 10) ||
+			data.newSet = data.toMid || lastSpeaker !== parseInt(data.fromuid, 10) ||
 				parseInt(data.timestamp, 10) > parseInt(lasttimestamp, 10) + (1000 * 60 * 3);
 		}
 
@@ -154,6 +158,28 @@ define('forum/chats/messages', [
 		containerEl.parent()
 			.find('[component="chat/messages/scroll-up-alert"]')
 			.toggleClass('hidden', isAtBottom);
+	};
+
+	messages.prepReplyTo = async function (msgEl, roomId) {
+		const chatMessages = msgEl.parents(`[component="chat/messages"][data-roomid="${roomId}"]`);
+		const chatContent = chatMessages.find('[component="chat/message/content"]');
+		const composerEl = chatMessages.find('[component="chat/composer"]');
+		const mid = msgEl.attr('data-mid');
+		const replyToEl = composerEl.find('[component="chat/composer/replying-to"]');
+		replyToEl.attr('data-tomid', mid)
+			.find('[component="chat/composer/replying-to-text"]')
+			.translateText(`[[modules:chat.replying-to, ${msgEl.attr('data-username')}]]`);
+		replyToEl.removeClass('hidden');
+		replyToEl.find('[component="chat/composer/replying-to-cancel"]').off('click')
+			.on('click', () => {
+				replyToEl.attr('data-tomid', '');
+				replyToEl.addClass('hidden');
+			});
+
+		if (chatContent.length && messages.isAtBottom(chatContent)) {
+			messages.scrollToBottom(chatContent);
+		}
+		composerEl.find('[component="chat/input"]').trigger('focus');
 	};
 
 	messages.prepEdit = async function (msgEl, mid, roomId) {

@@ -72,16 +72,18 @@ define('forum/chats', [
 	Chats.addEventListeners = function () {
 		const { roomId } = ajaxify.data;
 		const mainWrapper = $('[component="chat/main-wrapper"]');
+		const chatMessageContent = $('[component="chat/message/content"]');
 		const chatControls = components.get('chat/controls');
 		Chats.addSendHandlers(roomId, $('.chat-input'), $('.expanded-chat button[data-action="send"]'));
 		Chats.addPopoutHandler();
 		Chats.addActionHandlers(components.get('chat/messages'), roomId);
-		Chats.addManageHandler(roomId, chatControls.find('[data-action="members"]'));
+		Chats.addManageHandler(roomId, chatControls.find('[data-action="manage"]'));
 		Chats.addRenameHandler(roomId, chatControls.find('[data-action="rename"]'));
 		Chats.addLeaveHandler(roomId, chatControls.find('[data-action="leave"]'));
 		Chats.addDeleteHandler(roomId, chatControls.find('[data-action="delete"]'));
-		Chats.addScrollHandler(roomId, ajaxify.data.uid, $('[component="chat/message/content"]'));
-		Chats.addScrollBottomHandler($('[component="chat/message/content"]'));
+		Chats.addScrollHandler(roomId, ajaxify.data.uid, chatMessageContent);
+		Chats.addScrollBottomHandler(chatMessageContent);
+		Chats.addParentHandler(chatMessageContent);
 		Chats.addCharactersLeftHandler(mainWrapper);
 		Chats.addTextareaResizeHandler(mainWrapper);
 		Chats.addIPHandler(mainWrapper);
@@ -98,10 +100,10 @@ define('forum/chats', [
 			Chats.switchChat();
 		});
 		userList.init(roomId, mainWrapper);
-		messageSearch.init(roomId);
+		Chats.addNotificationSettingHandler(roomId, mainWrapper);
+		messageSearch.init(roomId, mainWrapper);
 		Chats.addPublicRoomSortHandler();
 		Chats.addTooltipHandler();
-		Chats.addNotificationSettingHandler();
 	};
 
 	Chats.addPublicRoomSortHandler = function () {
@@ -141,20 +143,32 @@ define('forum/chats', [
 		});
 	};
 
-	Chats.addNotificationSettingHandler = function () {
-		const notifSettingEl = $('[component="chat/notification/setting"]');
+	Chats.addNotificationSettingHandler = function (roomId, containerEl) {
+		const notifSettingEl = containerEl.find('[component="chat/notification/setting"]');
 
 		notifSettingEl.find('[data-value]').on('click', async function () {
 			notifSettingEl.find('i.fa-check').addClass('hidden');
 			const $this = $(this);
 			$this.find('i.fa-check').removeClass('hidden');
-			$('[component="chat/notification/setting/icon"]').attr('class', `fa ${$this.attr('data-icon')}`);
+			notifSettingEl.find('[component="chat/notification/setting/icon"]').attr('class', `fa ${$this.attr('data-icon')}`);
 			await socket.emit('modules.chats.setNotificationSetting', {
-				roomId: ajaxify.data.roomId,
+				roomId: roomId,
 				value: $this.attr('data-value'),
 			});
 		});
 	};
+	Chats.addParentHandler = function (chatContent) {
+		chatContent.on('click', '[component="chat/message/parent"]', function () {
+			const parentEl = $(this);
+			parentEl.find('[component="chat/message/parent/content"]').toggleClass('line-clamp-1');
+			parentEl.find('.chat-timestamp').toggleClass('hidden');
+			parentEl.toggleClass('flex-column').toggleClass('flex-row');
+			if (chatContent.length && messages.isAtBottom(chatContent)) {
+				messages.scrollToBottom(chatContent);
+			}
+		});
+	};
+
 
 	Chats.addUploadHandler = function (options) {
 		uploadHelpers.init({
@@ -285,14 +299,15 @@ define('forum/chats', [
 			const action = this.getAttribute('data-action');
 
 			switch (action) {
-				case 'edit': {
+				case 'reply':
+					messages.prepReplyTo(msgEl, roomId);
+					break;
+				case 'edit':
 					messages.prepEdit(msgEl, messageId, roomId);
 					break;
-				}
 				case 'delete':
 					messages.delete(messageId, roomId);
 					break;
-
 				case 'restore':
 					messages.restore(messageId, roomId);
 					break;
