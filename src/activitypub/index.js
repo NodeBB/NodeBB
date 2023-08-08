@@ -136,7 +136,7 @@ ActivityPub.verify = async (req) => {
 	// Re-construct signature string
 	const signed_string = headers.split(' ').reduce((memo, cur) => {
 		if (cur === '(request-target)') {
-			memo.push(`${cur}: ${String(req.method).toLowerCase()} ${req.path}`);
+			memo.push(`${cur}: ${String(req.method).toLowerCase()} ${req.baseUrl}${req.path}`);
 		} else if (req.headers.hasOwnProperty(cur)) {
 			memo.push(`${cur}: ${req.headers[cur]}`);
 		}

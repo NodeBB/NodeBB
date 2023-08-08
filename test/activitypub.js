@@ -261,9 +261,11 @@ describe('ActivityPub integration', () => {
 		describe('.verify()', () => {
 			let uid;
 			let username;
+			const baseUrl = nconf.get('relative_path');
 			const mockReqBase = {
 				method: 'GET',
 				// path: ...
+				baseUrl,
 				headers: {
 					// host: ...
 					// date: ...
