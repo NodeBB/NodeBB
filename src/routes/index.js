@@ -9,7 +9,6 @@ const meta = require('../meta');
 const controllers = require('../controllers');
 const controllerHelpers = require('../controllers/helpers');
 const plugins = require('../plugins');
-const utils = require('../utils');
 
 const authRoutes = require('./authentication');
 const writeRoutes = require('./write');
@@ -173,7 +172,6 @@ function addCoreRoutes(app, router, middleware, mounts) {
 	const statics = [
 		{ route: '/assets', path: path.join(__dirname, '../../build/public') },
 		{ route: '/assets', path: path.join(__dirname, '../../public') },
-		{ route: '/assets/vendor/fontawesome/webfonts', path: path.join(utils.getFontawesomePath(), 'webfonts') },
 	];
 	const staticOptions = {
 		maxAge: app.enabled('cache') ? 5184000000 : 0,

@@ -5,6 +5,7 @@ const winston = require('winston');
 const nconf = require('nconf');
 const fs = require('fs');
 const path = require('path');
+const { mkdirp } = require('mkdirp');
 
 const plugins = require('../plugins');
 const db = require('../database');
@@ -139,6 +140,20 @@ function getFontawesomeStyle() {
 	return styles.map(style => `@import "fontawesome/style-${style}";`).join('\n');
 }
 
+async function copyFontAwesomeFiles() {
+	await mkdirp(path.join(__dirname, '../../build/public/fontawesome/webfonts'));
+	const fonts = await fs.promises.opendir(path.join(utils.getFontawesomePath(), '/webfonts'));
+	const copyOperations = [];
+	for await (const file of fonts) {
+		if (file.isFile() && file.name.match(/\.(woff2|ttf|eot)?$/)) { // there shouldn't be any legacy eot files, but just in case we'll allow it
+			copyOperations.push(
+				fs.promises.copyFile(path.join(fonts.path, file.name), path.join(__dirname, '../../build/public/fontawesome/webfonts/', file.name))
+			);
+		}
+	}
+	await Promise.all(copyOperations);
+}
+
 async function filterMissingFiles(filepaths) {
 	const exists = await Promise.all(
 		filepaths.map(async (filepath) => {
@@ -186,7 +201,7 @@ async function getBundleMetadata(target) {
 	const paths = [
 		path.join(__dirname, '../../node_modules'),
 		path.join(__dirname, '../../public/scss'),
-		path.join(__dirname, '../../public/vendor/fontawesome/scss'),
+		path.join(__dirname, '../../public/fontawesome/scss'),
 		path.join(utils.getFontawesomePath(), 'scss'),
 	];
 
@@ -324,6 +339,7 @@ CSS.buildBundle = async function (target, fork) {
 	await Promise.all([
 		fs.promises.writeFile(path.join(__dirname, '../../build/public', `${target}.css`), ltr.code),
 		fs.promises.writeFile(path.join(__dirname, '../../build/public', `${target}-rtl.css`), rtl.code),
+		copyFontAwesomeFiles(),
 	]);
 	return [ltr.code, rtl.code];
 };
