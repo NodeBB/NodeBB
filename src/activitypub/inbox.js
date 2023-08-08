@@ -53,9 +53,6 @@ async function handleFollow(type, actorId, objectId) {
 		await db.sortedSetRemove(`followersRemote:${localUid}`, actorId);
 	}
 
-	const [followerCount, followerRemoteCount] = await Promise.all([
-		db.sortedSetCard(`followers:${localUid}`),
-		db.sortedSetCard(`followersRemote:${localUid}`),
-	]);
-	await user.setUserField(localUid, 'followerCount', followerCount + followerRemoteCount);
+	const followerRemoteCount = await db.sortedSetCard(`followersRemote:${localUid}`);
+	await user.setUserField(localUid, 'followerRemoteCount', followerRemoteCount);
 }
