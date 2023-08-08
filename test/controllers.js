@@ -2849,7 +2849,7 @@ describe('Controllers', () => {
 			it('should deny access if view:users privilege is not enabled for guests', async () => {
 				await privileges.global.rescind(['groups:view:users'], 'guests');
 
-				const response = await requestAsync(`${nconf.get('url')}/.well-known/webfinger?resource=acct:${username}@${nconf.get('url_parsed').hostname}`, {
+				const response = await requestAsync(`${nconf.get('url')}/.well-known/webfinger?resource=acct:${username}@${nconf.get('url_parsed').host}`, {
 					json: true,
 					simple: false,
 					resolveWithFullResponse: true,
@@ -2861,7 +2861,7 @@ describe('Controllers', () => {
 			});
 
 			it('should respond appropriately if the user requested does not exist locally', async () => {
-				const response = await requestAsync(`${nconf.get('url')}/.well-known/webfinger?resource=acct:foobar@${nconf.get('url_parsed').hostname}`, {
+				const response = await requestAsync(`${nconf.get('url')}/.well-known/webfinger?resource=acct:foobar@${nconf.get('url_parsed').host}`, {
 					json: true,
 					simple: false,
 					resolveWithFullResponse: true,
@@ -2871,7 +2871,7 @@ describe('Controllers', () => {
 			});
 
 			it('should return a valid webfinger response if the user exists', async () => {
-				const response = await requestAsync(`${nconf.get('url')}/.well-known/webfinger?resource=acct:${username}@${nconf.get('url_parsed').hostname}`, {
+				const response = await requestAsync(`${nconf.get('url')}/.well-known/webfinger?resource=acct:${username}@${nconf.get('url_parsed').host}`, {
 					json: true,
 					simple: false,
 					resolveWithFullResponse: true,
@@ -2879,7 +2879,7 @@ describe('Controllers', () => {
 
 				assert.strictEqual(response.statusCode, 200);
 				assert(['subject', 'aliases', 'links'].every(prop => response.body.hasOwnProperty(prop)));
-				assert(response.body.subject, `acct:${username}@${nconf.get('url_parsed').hostname}`);
+				assert(response.body.subject, `acct:${username}@${nconf.get('url_parsed').host}`);
 			});
 		});
 	});
