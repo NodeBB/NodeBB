@@ -85,16 +85,16 @@ define('forum/chats/messages', [
 		}
 
 		messages.parseMessage(data, function (html) {
-			onMessagesParsed(chatContentEl, html);
+			onMessagesParsed(chatContentEl, html, data);
 		});
 	};
 
-	function onMessagesParsed(chatContentEl, html) {
+	function onMessagesParsed(chatContentEl, html, msgData) {
 		const newMessage = $(html);
 		const isAtBottom = messages.isAtBottom(chatContentEl);
 		newMessage.appendTo(chatContentEl);
 		messages.onMessagesAddedToDom(newMessage);
-		if (isAtBottom) {
+		if (isAtBottom || msgData.self) {
 			messages.scrollToBottom(chatContentEl);
 			// remove some message elements if there are too many
 			const chatMsgEls = chatContentEl.find('[data-mid]');
