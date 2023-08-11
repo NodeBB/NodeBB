@@ -1,0 +1,70 @@
+get:
+  tags:
+    - posts
+  summary: get post summary
+  description: |
+    This operation retrieves a post full summary.
+
+    This differs from the "get a post" call in that it will return the following additional information:
+
+      * A minimal user object
+      * A topic object
+      * A category object
+      * Post content is run through the parser
+
+  parameters:
+    - in: path
+      name: pid
+      schema:
+        type: string
+      required: true
+      description: a valid post id
+      example: 2
+  responses:
+    '200':
+      description: Post summary successfully retrieved.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  pid:
+                    type: number
+                  tid:
+                    type: number
+                    description: A topic identifier
+                  content:
+                    type: string
+                  uid:
+                    type: number
+                    description: A user identifier
+                  timestamp:
+                    type: number
+                  deleted:
+                    type: number
+                  upvotes:
+                    type: number
+                  downvotes:
+                    type: number
+                  replies:
+                    type: number
+                  votes:
+                    type: number
+                  timestampISO:
+                    type: string
+                  user:
+                    type: object
+                    additionalProperties: {}
+                  topic:
+                    type: object
+                    additionalProperties: {}
+                  category:
+                    type: object
+                    additionalProperties: {}
+                  isMainPost:
+                    type: boolean

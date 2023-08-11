@@ -13,7 +13,7 @@ const logger = require('../logger');
 const plugins = require('../plugins');
 const ratelimit = require('../middleware/ratelimit');
 
-const Namespaces = {};
+const Namespaces = Object.create(null);
 
 const Sockets = module.exports;
 
@@ -34,13 +34,25 @@ Sockets.init = async function (server) {
 		}
 	}
 
-	io.use(authorize);
-
 	io.on('connection', onConnection);
 
 	const opts = {
 		transports: nconf.get('socket.io:transports') || ['polling', 'websocket'],
 		cookie: false,
+		allowRequest: (req, callback) => {
+			authorize(req, (err) => {
+				if (err) {
+					return callback(err);
+				}
+				const csrf = require('../middleware/csrf');
+				const isValid = csrf.isRequestValid({
+					session: req.session || {},
+					query: req._query,
+					headers: req.headers,
+				});
+				callback(null, isValid);
+			});
+		},
 	};
 	/*
 	 * Restrict socket.io listener to cookie domain. If none is set, infer based on url.
@@ -62,15 +74,24 @@ Sockets.init = async function (server) {
 };
 
 function onConnection(socket) {
-	socket.ip = (socket.request.headers['x-forwarded-for'] || socket.request.connection.remoteAddress || '').split(',')[0];
+	socket.uid = socket.request.uid;
+	socket.ip = (
+		socket.request.headers['x-forwarded-for'] ||
+		socket.request.connection.remoteAddress || ''
+	).split(',')[0];
 	socket.request.ip = socket.ip;
 	logger.io_one(socket, socket.uid);
 
 	onConnect(socket);
 	socket.onAny((event, ...args) => {
-		const payload = { data: [event].concat(args) };
+		const payload = { event: event, ...deserializePayload(args) };
 		const als = require('../als');
-		als.run({ uid: socket.uid }, onMessage, socket, payload);
+		const apiHelpers = require('../api/helpers');
+		als.run({
+			uid: socket.uid,
+			req: apiHelpers.buildReqObject(socket, payload),
+			socket: { ...payload },
+		}, onMessage, socket, payload);
 	});
 
 	socket.on('disconnect', () => {
@@ -107,53 +128,61 @@ async function onConnect(socket) {
 	plugins.hooks.fire('action:sockets.connect', { socket: socket });
 }
 
+function deserializePayload(payload) {
+	if (!Array.isArray(payload) || !payload.length) {
+		winston.warn('[socket.io] Empty payload');
+		return {};
+	}
+	const params = typeof payload[0] === 'function' ? {} : payload[0];
+	const callback = typeof payload[payload.length - 1] === 'function' ? payload[payload.length - 1] : function () {};
+	return { params, callback };
+}
+
 async function onMessage(socket, payload) {
-	if (!payload.data.length) {
-		return winston.warn('[socket.io] Empty payload');
-	}
-
-	const eventName = payload.data[0];
-	const params = typeof payload.data[1] === 'function' ? {} : payload.data[1];
-	const callback = typeof payload.data[payload.data.length - 1] === 'function' ? payload.data[payload.data.length - 1] : function () {};
-
-	if (!eventName) {
-		return winston.warn('[socket.io] Empty method name');
-	}
-
-	const parts = eventName.toString().split('.');
-	const namespace = parts[0];
-	const methodToCall = parts.reduce((prev, cur) => {
-		if (prev !== null && prev[cur]) {
-			return prev[cur];
-		}
-		return null;
-	}, Namespaces);
-
-	if (!methodToCall || typeof methodToCall !== 'function') {
-		if (process.env.NODE_ENV === 'development') {
-			winston.warn(`[socket.io] Unrecognized message: ${eventName}`);
-		}
-		const escapedName = validator.escape(String(eventName));
-		return callback({ message: `[[error:invalid-event, ${escapedName}]]` });
-	}
-
-	socket.previousEvents = socket.previousEvents || [];
-	socket.previousEvents.push(eventName);
-	if (socket.previousEvents.length > 20) {
-		socket.previousEvents.shift();
-	}
-
-	if (!eventName.startsWith('admin.') && ratelimit.isFlooding(socket)) {
-		winston.warn(`[socket.io] Too many emits! Disconnecting uid : ${socket.uid}. Events : ${socket.previousEvents}`);
-		return socket.disconnect();
-	}
-
+	const { event, params, callback } = payload;
 	try {
+		if (!event) {
+			return winston.warn('[socket.io] Empty method name');
+		}
+
+		if (typeof event !== 'string') {
+			const escapedName = validator.escape(typeof event);
+			return callback({ message: `[[error:invalid-event, ${escapedName}]]` });
+		}
+
+		const parts = event.split('.');
+		const namespace = parts[0];
+		const methodToCall = parts.reduce((prev, cur) => {
+			if (prev !== null && prev[cur] && (!prev.hasOwnProperty || prev.hasOwnProperty(cur))) {
+				return prev[cur];
+			}
+			return null;
+		}, Namespaces);
+
+		if (!methodToCall || typeof methodToCall !== 'function') {
+			if (process.env.NODE_ENV === 'development') {
+				winston.warn(`[socket.io] Unrecognized message: ${event}`);
+			}
+			const escapedName = validator.escape(String(event));
+			return callback({ message: `[[error:invalid-event, ${escapedName}]]` });
+		}
+
+		socket.previousEvents = socket.previousEvents || [];
+		socket.previousEvents.push(event);
+		if (socket.previousEvents.length > 20) {
+			socket.previousEvents.shift();
+		}
+
+		if (!event.startsWith('admin.') && ratelimit.isFlooding(socket)) {
+			winston.warn(`[socket.io] Too many emits! Disconnecting uid : ${socket.uid}. Events : ${socket.previousEvents}`);
+			return socket.disconnect();
+		}
+
 		await checkMaintenance(socket);
 		await validateSession(socket, '[[error:revalidate-failure]]');
 
 		if (Namespaces[namespace].before) {
-			await Namespaces[namespace].before(socket, eventName, params);
+			await Namespaces[namespace].before(socket, event, params);
 		}
 
 		if (methodToCall.constructor && methodToCall.constructor.name === 'AsyncFunction') {
@@ -165,7 +194,7 @@ async function onMessage(socket, payload) {
 			});
 		}
 	} catch (err) {
-		winston.error(`${eventName}\n${err.stack ? err.stack : err.message}`);
+		winston.error(`${event}\n${err.stack ? err.stack : err.message}`);
 		callback({ message: err.message });
 	}
 }
@@ -225,9 +254,7 @@ async function validateSession(socket, errorMsg) {
 
 const cookieParserAsync = util.promisify((req, callback) => cookieParser(req, {}, err => callback(err)));
 
-async function authorize(socket, callback) {
-	const { request } = socket;
-
+async function authorize(request, callback) {
 	if (!request) {
 		return callback(new Error('[[error:not-authorized]]'));
 	}
@@ -240,15 +267,13 @@ async function authorize(socket, callback) {
 	});
 
 	const sessionData = await getSessionAsync(sessionId);
-
+	request.session = sessionData;
+	let uid = 0;
 	if (sessionData && sessionData.passport && sessionData.passport.user) {
-		request.session = sessionData;
-		socket.uid = parseInt(sessionData.passport.user, 10);
-	} else {
-		socket.uid = 0;
+		uid = parseInt(sessionData.passport.user, 10);
 	}
-	request.uid = socket.uid;
-	callback();
+	request.uid = uid;
+	callback(null, uid);
 }
 
 Sockets.in = function (room) {

@@ -72,11 +72,13 @@
 	"development/info": "Info",
 
 	"rebuild-and-restart-forum": "Forum regenerieren & neustarten",
+	"rebuild-and-restart": "Rebuild & Restart",
 	"restart-forum": "Forum neu starten",
+	"restart": "Restart",
 	"logout": "Abmelden",
 	"view-forum": "Forum anzeigen",
 
-	"search.placeholder": "Drücke &quot;/&quot; um nach Einstellungen zu suchen",
+	"search.placeholder": "Nach Einstellungen suchen",
 	"search.no-results": "Keine Ergebnisse...",
 	"search.search-forum": "Suche im Forum nach <strong></strong>",
 	"search.keep-typing": "Gib mehr ein, um die Ergebnisse zu sehen...",

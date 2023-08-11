@@ -77,6 +77,24 @@ module.exports = function (module) {
 		return value;
 	};
 
+	module.mget = async function (keys) {
+		if (!keys || !Array.isArray(keys) || !keys.length) {
+			return [];
+		}
+
+		const data = await module.client.collection('objects').find(
+			{ _key: { $in: keys } },
+			{ projection: { _id: 0 } }
+		).toArray();
+
+		const map = {};
+		data.forEach((d) => {
+			map[d._key] = d.data;
+		});
+
+		return keys.map(k => (map.hasOwnProperty(k) ? map[k] : null));
+	};
+
 	module.set = async function (key, value) {
 		if (!key) {
 			return;

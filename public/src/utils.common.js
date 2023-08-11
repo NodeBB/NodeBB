@@ -439,15 +439,15 @@ const utils = {
 		return !utils.isAbsoluteUrl(url);
 	},
 
-	makeNumberHumanReadable: function (num) {
+	makeNumberHumanReadable: function (num, toFixed = 1) {
 		const n = parseInt(num, 10);
 		if (!n) {
 			return num;
 		}
 		if (n > 999999) {
-			return (n / 1000000).toFixed(1) + 'm';
+			return (n / 1000000).toFixed(toFixed) + 'm';
 		} else if (n > 999) {
-			return (n / 1000).toFixed(1) + 'k';
+			return (n / 1000).toFixed(toFixed) + 'k';
 		}
 		return n;
 	},
@@ -515,31 +515,6 @@ const utils = {
 
 	isTouchDevice: function () {
 		return 'ontouchstart' in document.documentElement;
-	},
-
-	findBootstrapEnvironment: function () {
-		// http://stackoverflow.com/questions/14441456/how-to-detect-which-device-view-youre-on-using-twitter-bootstrap-api
-		const envs = ['xs', 'sm', 'md', 'lg'];
-		const $el = $('<div>');
-
-		$el.appendTo($('body'));
-
-		for (let i = envs.length - 1; i >= 0; i -= 1) {
-			const env = envs[i];
-
-			$el.addClass('hidden-' + env);
-			if ($el.is(':hidden')) {
-				$el.remove();
-				return env;
-			}
-		}
-	},
-
-	isMobile: function () {
-		const env = utils.findBootstrapEnvironment();
-		return ['xs', 'sm'].some(function (targetEnv) {
-			return targetEnv === env;
-		});
 	},
 
 	getHoursArray: function () {
@@ -744,6 +719,9 @@ const utils = {
 				func.apply(context, args);
 			}
 		};
+	},
+	generateSaveId: function (uid) {
+		return ['composer', uid, Date.now()].join(':');
 	},
 };
 

@@ -54,20 +54,27 @@ define('admin/manage/tags', [
 
 	function handleSearch() {
 		$('#tag-search').on('input propertychange', utils.debounce(function () {
-			socket.emit('topics.searchAndLoadTags', {
-				query: $('#tag-search').val(),
-			}, function (err, result) {
-				if (err) {
-					return alerts.error(err);
-				}
-
+			function renderTags(tags) {
 				app.parseAndTranslate('admin/manage/tags', 'tags', {
-					tags: result.tags,
+					tags: tags,
 				}, function (html) {
 					$('.tag-list').html(html);
 					utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 					selectable.enable('.tag-management', '.tag-row');
 				});
+			}
+			const query = $('#tag-search').val();
+			if (!query) {
+				return renderTags(ajaxify.data.tags);
+			}
+			socket.emit('topics.searchAndLoadTags', {
+				query: query,
+			}, function (err, result) {
+				if (err) {
+					return alerts.error(err);
+				}
+
+				renderTags(result.tags);
 			});
 		}, 250));
 	}

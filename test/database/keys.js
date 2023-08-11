@@ -35,6 +35,17 @@ describe('Key methods', () => {
 		});
 	});
 
+	it('should return multiple keys and null if key doesn\'t exist', async () => {
+		const data = await db.mget(['doesnotexist', 'testKey']);
+		assert.deepStrictEqual(data, [null, 'testValue']);
+	});
+
+	it('should return empty array if keys is empty array or falsy', async () => {
+		assert.deepStrictEqual(await db.mget([]), []);
+		assert.deepStrictEqual(await db.mget(false), []);
+		assert.deepStrictEqual(await db.mget(null), []);
+	});
+
 	it('should return true if key exist', (done) => {
 		db.exists('testKey', function (err, exists) {
 			assert.ifError(err);
@@ -351,3 +362,4 @@ describe('Key methods', () => {
 		});
 	});
 });
+

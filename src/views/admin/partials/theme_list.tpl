@@ -1,24 +1,24 @@
-<!-- BEGIN themes -->
-<div class="col-lg-4 col-md-6 col-sm-12 col-xs-12" data-type="{themes.type}" data-theme="{themes.id}"<!-- IF themes.css --> data-css="{themes.css}"<!-- ENDIF themes.css -->>
-	<div class="theme-card mdl-card mdl-shadow--2dp">
-		<div class="mdl-card__title mdl-card--expand" style="background-image: url('{themes.screenshot_url}');"></div>
-		<div class="mdl-card__supporting-text">
-			<h2 class="mdl-card__title-text">{themes.name}</h2>
-			<p>
-				{themes.description}
+{{{ each themes }}}
+<div class="col-lg-4 col-md-6 col-12 mb-4" data-type="{./type}" data-theme="{./id}"{{{ if ./css }}} data-css="{./css}" {{{ end }}}>
+	<div class="card h-100">
+		<img src="{./screenshot_url}" class="card-img-top">
+		<div class="card-body">
+			<h5 class="card-title">{./name}</h5>
+			<p class="card-text">
+				{./description}
 			</p>
 
-			<!-- IF themes.url -->
+			{{{ if ./url }}}
 			<p>
-				<a href="{themes.url}" target="_blank">[[admin/appearance/themes:homepage]]</a>
+				<a href="{./url}" target="_blank">[[admin/appearance/themes:homepage]]</a>
 			</p>
-			<!-- ENDIF themes.url -->
+			{{{ end }}}
 		</div>
-		<div class="mdl-card__actions mdl-card--border">
-			<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" data-action="use">
-				<!-- IF themes.skin -->[[admin/appearance/skins:select-skin]]<!-- ELSE -->[[admin/appearance/themes:select-theme]]<!-- ENDIF themes.skin -->
+		<div class="card-footer">
+			<a class="btn btn-primary" data-action="use">
+				{{{ if ./skin }}}[[admin/appearance/skins:select-skin]]{{{ else }}}[[admin/appearance/themes:select-theme]]{{{ end }}}
 			</a>
 		</div>
 	</div>
 </div>
-<!-- END themes -->
+{{{ end }}}

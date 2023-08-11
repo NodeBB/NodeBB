@@ -45,6 +45,7 @@
 	"followers": "Followers",
 	"following": "Following",
 	"blocks": "Blocks",
+	"blocked-users": "Blocked users",
 	"block_toggle": "Toggle Block",
 	"block_user": "Block User",
 	"unblock_user": "Unblock User",
@@ -71,6 +72,7 @@
 	"upload_new_picture": "Upload New Picture",
 	"upload_new_picture_from_url": "Upload New Picture From URL",
 	"current_password": "Current Password",
+	"new_password": "New Password",
 	"change_password": "Change Password",
 	"change_password_error": "Invalid Password!",
 	"change_password_error_wrong_current": "Your current password is not correct!",
@@ -124,6 +126,8 @@
 	"paginate_description" : "Paginate topics and posts instead of using infinite scroll",
 	"topics_per_page": "Topics per Page",
 	"posts_per_page": "Posts per Page",
+	"category-topic-sort": "Category topic sort",
+	"topic-post-sort": "Topic post sort",
 	"max_items_per_page": "Maximum %1",
 	"acp_language": "Admin Page Language",
 	"notifications": "Notifications",
@@ -151,6 +155,8 @@
 	"no-group-title": "No group title",
 
 	"select-skin": "Select a Skin",
+	"default": "Default (%1)",
+	"no-skin": "No Skin",
 
 	"select-homepage": "Select a Homepage",
 	"homepage": "Homepage",
@@ -186,6 +192,8 @@
 	"info.moderation-note.add": "Add note",
 
 	"sessions.description": "This page allows you to view any active sessions on this forum and revoke them if necessary. You can revoke your own session by logging out of your account.",
+	"revoke-session": "Revoke Session",
+	"browser-version-on-platform": "%1 %2 on %3",
 
 	"consent.title": "Your Rights &amp; Consent",
 	"consent.lead": "This community forum collects and processes your personal information.",
@@ -216,5 +224,7 @@
 	"emailUpdate.intro": "Please enter your email address below. This forum uses your email address for scheduled digest and notifications, as well as for account recovery in the event of a lost password.",
 	"emailUpdate.optional": "<strong>This field is optional</strong>. You are not obligated to provide your email address, but without a validated email you will not be able to recover your account or login with your email.",
 	"emailUpdate.required": "<strong>This field is required</strong>.",
-	"emailUpdate.change-instructions": "A confirmation email will be sent to the entered email address with a unique link. Accessing that link will confirm your ownership of the email address and it will become active on your account. At any time, you are able to update your email on file from within your account page."
+	"emailUpdate.change-instructions": "A confirmation email will be sent to the entered email address with a unique link. Accessing that link will confirm your ownership of the email address and it will become active on your account. At any time, you are able to update your email on file from within your account page.",
+	"emailUpdate.password-challenge": "Please enter your password in order to verify account ownership.",
+	"emailUpdate.pending": "Your email address has not yet been confirmed, but an email has been sent out requesting confirmation. If you wish to invalidate that request and send a new confirmation request, please fill in the form below."
 }

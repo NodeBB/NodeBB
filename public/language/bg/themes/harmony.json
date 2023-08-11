@@ -1,0 +1,16 @@
+{
+	"theme-name": "Тема на Harmony",
+	"skins": "Облици",
+	"collapse": "Свиване",
+	"expand": "Разгъване",
+	"login-register-to-search": "Впишете се или се регистрирайте, за да можете да търсите.",
+	"settings.title": "Настройки на темата",
+	"settings.enableQuickReply": "Включване на бързите отговори",
+	"settings.centerHeaderElements": "Центриране на заглавните елементи",
+	"settings.mobileTopicTeasers": "Показване на резюмета на темите на мобилни устройства",
+	"settings.stickyToolbar": "Статична лента с инструменти",
+	"settings.stickyToolbar.help": "Лентата с инструменти в страниците с теми и категории ще стои винаги в горния край на страницата",
+	"settings.autohideBottombar": "Автоматично скриване на долната лента",
+	"settings.autohideBottombar.help": "В изгледа за мобилни устройства долната лента ще се скрива, когато страницата се превърта надолу",
+	"settings.chatModals": "Включване на прозорците за разговори"
+}

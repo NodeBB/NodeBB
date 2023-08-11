@@ -129,7 +129,7 @@ describe('new Translator(language)', () => {
 
 			const key = '[[global:403.login, <strong>test</strong>]]';
 			return translator.translate(key).then((translated) => {
-				assert.strictEqual(translated, 'Perhaps you should <a href=\'&lt;strong&gt;test&lt;/strong&gt;/login\'>try logging in</a>?');
+				assert.strictEqual(translated, 'Perhaps you should <a class="alert-link" href=\'&lt;strong&gt;test&lt;/strong&gt;/login\'>try logging in</a>?');
 			});
 		});
 

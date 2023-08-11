@@ -1,11 +1,12 @@
 {
+    "all-users": "All Users",
     "latest_users": "ผู้ใช้งานล่าสุด",
     "top_posters": "ผู้ที่โพสต์มากที่สุด",
     "most_reputation": "ผู้ที่มีชื่อเสียงมากที่สุด",
     "most_flags": "ผู้ที่ถูกรายงานมากที่สุด",
     "search": "ค้นหา",
     "enter_username": "กรอกชื่อผู้ใช้เพื่อค้นหา",
-    "search-user-for-chat": "Search a user to start chat",
+    "search-user-for-chat": "Search for a user to start chat",
     "load_more": "โหลดเพิ่มเติม",
     "users-found-search-took": "พบ %1 ผู้ใช้(s)! การค้นหาใช้เวลาทั้งหมด %2 วินาที",
     "filter-by": "การกรอง",

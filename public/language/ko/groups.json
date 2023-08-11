@@ -1,5 +1,7 @@
 {
+    "all-groups": "All groups",
     "groups": "그룹",
+    "members": "Members",
     "view_group": "그룹 보기",
     "owner": "그룹 관리자",
     "new_group": "새로운 그룹 생성",

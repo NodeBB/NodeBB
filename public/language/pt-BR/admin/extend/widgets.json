@@ -1,4 +1,5 @@
 {
+	"widgets": "Widgets",
 	"available": "Widgets Disponíveis",
 	"explanation": "Escolha um widget do menu de dropdown e então arraste e solte numa área de widget do template à esquerda.",
 	"none-installed": "Nenhum widget encontrado! Ative o plug-in de widgets básicos no  <a href=\"%1\"> painel de controle de plugins</a>.",
@@ -8,9 +9,9 @@
 	"containers.none": "Nenhum",
 	"container.well": "Bem",
 	"container.jumbotron": "Jumbotron",
-	"container.panel": "Painel",
-	"container.panel-header": "Cabeçalho do Painel",
-	"container.panel-body": "Corpo do Painel",
+	"container.card": "Card",
+	"container.card-header": "Card Header",
+	"container.card-body": "Card Body",
 	"container.alert": "Alerta",
 
 	"alert.confirm-delete": "Tem certeza de que deseja excluir este widget?",
@@ -26,5 +27,7 @@
 	"container.placeholder": "Arraste e solte um contêiner ou insira HTML aqui.",
 	"show-to-groups": "Mostrar para grupos",
 	"hide-from-groups": "Esconder dos grupos",
+	"start-date": "Start date",
+	"end-date": "End date",
 	"hide-on-mobile": "Esconder no móvel"
 }

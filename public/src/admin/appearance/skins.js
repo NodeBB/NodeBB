@@ -1,15 +1,26 @@
 'use strict';
 
 
-define('admin/appearance/skins', ['translator', 'alerts'], function (translator, alerts) {
+define('admin/appearance/skins', [
+	'translator', 'alerts', 'settings',
+], function (translator, alerts, settings) {
 	const Skins = {};
 
 	Skins.init = function () {
 		// Populate skins from Bootswatch API
 		$.ajax({
 			method: 'get',
-			url: 'https://bootswatch.com/api/3.json',
+			url: 'https://bootswatch.com/api/5.json',
 		}).done(Skins.render);
+
+		settings.load('custom-skins', $('.custom-skin-settings'));
+		$('#save-custom-skins').on('click', function () {
+			settings.save('custom-skins', $('.custom-skin-settings'), function () {
+				alerts.success('[[admin/appearance/skins:save-custom-skins-success]]');
+			});
+			return false;
+		});
+
 
 		$('#skins').on('click', function (e) {
 			let target = $(e.target);
@@ -69,12 +80,11 @@ define('admin/appearance/skins', ['translator', 'alerts'], function (translator,
 		}, function (html) {
 			themeContainer.html(html);
 
-			if (config['theme:src']) {
-				const skin = config['theme:src']
-					.match(/latest\/(\S+)\/bootstrap.min.css/)[1]
-					.replace(/(^|\s)([a-z])/g, function (m, p1, p2) { return p1 + p2.toUpperCase(); });
-
-				highlightSelectedTheme(skin);
+			if (app.config.bootswatchSkin) {
+				const skin = app.config.bootswatchSkin;
+				highlightSelectedTheme(
+					skin.charAt(0).toUpperCase() + skin.slice(1)
+				);
 			}
 		});
 	};

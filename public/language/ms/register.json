@@ -1,5 +1,6 @@
 {
     "register": "Mendaftar",
+    "already-have-account": "Already have an account?",
     "cancel_registration": "Cancel Registration",
     "help.email": "E-mel akan disembunyikan daripada orang ramai.",
     "help.username_restrictions": "Cuba satu nama pengguna yang unik di antara %1 dan %2 aksara. Orang lain boleh menyebut anda dengan @<span id='yourUsername'>nama pengguna</ span>.",

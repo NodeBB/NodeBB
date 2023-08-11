@@ -14,6 +14,7 @@
     "flagged-content": "Označene objave",
     "ip-blacklist": "IP crna lista",
     "post-queue": "Post Queue",
+    "registration-queue": "Registration Queue",
     "users/online": "Online korisnici",
     "users/latest": "Posljednji korisnici",
     "users/sort-posts": "Korisnici s najviše objava",
@@ -49,6 +50,7 @@
     "account/watched_categories": "%1's Watched Categories",
     "account/bookmarks": "%1 zabilježene objave",
     "account/settings": "Korisničke postavke",
+    "account/settings-of": "Changing settings of %1",
     "account/watched": "Teme prati %1",
     "account/ignored": "Topics ignored by %1",
     "account/upvoted": "%1 glasao za",
@@ -59,7 +61,7 @@
     "account/uploads": "Uploads by %1",
     "account/sessions": "Login Sessions",
     "confirm": "Email potvrđen!",
-    "maintenance.text": "%1 Održavanje u toku. Posjetite nas uskoro.",
+    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
     "maintenance.messageIntro": "Poruka administratora:",
     "throttled.text": "%1: Preopterećenje sustava. Pričekajte nekoliko trenutaka."
 }

@@ -1,7 +1,11 @@
 {
     "chat.chatting_with": "Trò chuyện với",
     "chat.placeholder": "Nhập tin nhắn trò chuyện tại đây, kéo và thả hình ảnh, nhấn enter để gửi",
-    "chat.scroll-up-alert": "Bạn đang xem các tin nhắn cũ hơn, nhấp vào đây để chuyển đến tin nhắn gần đây nhất.",
+    "chat.placeholder.mobile": "Nhập tin nhắn trò chuyện tại đây",
+    "chat.scroll-up-alert": "Go to most recent message",
+    "chat.usernames-and-x-others": "%1 & %2 others",
+    "chat.chat-with-usernames": "Trò chuyện với %1",
+    "chat.chat-with-usernames-and-x-others": "Chat with %1 & %2 others",
     "chat.send": "Gửi",
     "chat.no_active": "Bạn không có cuộc trò chuyện đang hoạt động nào.",
     "chat.user_typing": "%1 đang nhập...",
@@ -42,6 +46,7 @@
     "composer.compose": "Soạn thảo",
     "composer.show_preview": "Hiện Xem trước",
     "composer.hide_preview": "Ẩn Xem trước",
+    "composer.help": "Trợ giúp",
     "composer.user_said_in": "%1 đã nói trong %2:",
     "composer.user_said": "%1 đã nói:",
     "composer.discard": "Bạn có chắc chắn hủy bỏ bài viết này?",
@@ -64,7 +69,11 @@
     "composer.schedule-date": "Ngày",
     "composer.schedule-time": "Thời gian",
     "composer.cancel-scheduling": "Hủy Lập Lịch",
+    "composer.change-schedule-date": "Change Date",
     "composer.set-schedule-date": "Đặt Ngày",
+    "composer.discard-all-drafts": "Hủy tất cả bản nháp",
+    "composer.no-drafts": "Bạn không có bản nháp nào",
+    "composer.discard-draft-confirm": "Bạn có muốn hủy bản nháp này không?",
     "bootbox.ok": "Đồng ý",
     "bootbox.cancel": "Huỷ bỏ",
     "bootbox.confirm": "Xác nhận",
@@ -77,6 +86,6 @@
     "thumbs.modal.no-thumbs": "Không tìm thấy hình mô tả.",
     "thumbs.modal.resize-note": "<strong>Ghi chú</strong>: Diễn đàn này cấu hình thay đổi kích thước hình mô tả chủ đề xuống chiều rộng tối đa là %1px",
     "thumbs.modal.add": "Thêm ảnh mô tả",
-    "thumbs.modal.remove": "Xóa ảnh mô tả",
-    "thumbs.modal.confirm-remove": "Bạn có chắc chắn muốn xóa hình mô tả này không?"
+    "thumbs.modal.remove": "Xóa hình thu nhỏ",
+    "thumbs.modal.confirm-remove": "Bạn có chắc chắn muốn xóa hình thu nhỏ này không?"
 }

@@ -1,5 +1,7 @@
 {
+    "all-groups": "All groups",
     "groups": "Grupos",
+    "members": "Members",
     "view_group": "Ver o grupo",
     "owner": "Dono do grupo",
     "new_group": "Criar novo grupo",

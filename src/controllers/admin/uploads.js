@@ -68,14 +68,17 @@ function buildBreadcrumbs(currentFolder) {
 	const crumbs = [];
 	const parts = currentFolder.replace(nconf.get('upload_path'), '').split(path.sep);
 	let currentPath = '';
-	parts.forEach((part) => {
+	parts.forEach((part, i) => {
 		const dir = path.join(currentPath, part);
-		crumbs.push({
+		const crumb = {
 			text: part || 'Uploads',
-			url: part ?
+		};
+		if (i < parts.length - 1) {
+			crumb.url = part ?
 				(`${nconf.get('relative_path')}/admin/manage/uploads?dir=${dir}`) :
-				`${nconf.get('relative_path')}/admin/manage/uploads`,
-		});
+				`${nconf.get('relative_path')}/admin/manage/uploads`;
+		}
+		crumbs.push(crumb);
 		currentPath = dir;
 	});
 
@@ -118,25 +121,23 @@ uploadsController.uploadCategoryPicture = async function (req, res, next) {
 		return next(new Error('[[error:invalid-json]]'));
 	}
 
-	if (validateUpload(res, uploadedFile, allowedImageTypes)) {
-		const filename = `category-${params.cid}${path.extname(uploadedFile.name)}`;
-		await uploadImage(filename, 'category', uploadedFile, req, res, next);
-	}
+	await validateUpload(uploadedFile, allowedImageTypes);
+	const filename = `category-${params.cid}${path.extname(uploadedFile.name)}`;
+	await uploadImage(filename, 'category', uploadedFile, req, res, next);
 };
 
 uploadsController.uploadFavicon = async function (req, res, next) {
 	const uploadedFile = req.files.files[0];
 	const allowedTypes = ['image/x-icon', 'image/vnd.microsoft.icon'];
 
-	if (validateUpload(res, uploadedFile, allowedTypes)) {
-		try {
-			const imageObj = await file.saveFileToLocal('favicon.ico', 'system', uploadedFile.path);
-			res.json([{ name: uploadedFile.name, url: imageObj.url }]);
-		} catch (err) {
-			next(err);
-		} finally {
-			file.delete(uploadedFile.path);
-		}
+	await validateUpload(uploadedFile, allowedTypes);
+	try {
+		const imageObj = await file.saveFileToLocal('favicon.ico', 'system', uploadedFile.path);
+		res.json([{ name: uploadedFile.name, url: imageObj.url }]);
+	} catch (err) {
+		next(err);
+	} finally {
+		file.delete(uploadedFile.path);
 	}
 };
 
@@ -145,25 +146,24 @@ uploadsController.uploadTouchIcon = async function (req, res, next) {
 	const allowedTypes = ['image/png'];
 	const sizes = [36, 48, 72, 96, 144, 192, 512];
 
-	if (validateUpload(res, uploadedFile, allowedTypes)) {
-		try {
-			const imageObj = await file.saveFileToLocal('touchicon-orig.png', 'system', uploadedFile.path);
-			// Resize the image into squares for use as touch icons at various DPIs
-			for (const size of sizes) {
-				/* eslint-disable no-await-in-loop */
-				await image.resizeImage({
-					path: uploadedFile.path,
-					target: path.join(nconf.get('upload_path'), 'system', `touchicon-${size}.png`),
-					width: size,
-					height: size,
-				});
-			}
-			res.json([{ name: uploadedFile.name, url: imageObj.url }]);
-		} catch (err) {
-			next(err);
-		} finally {
-			file.delete(uploadedFile.path);
+	await validateUpload(uploadedFile, allowedTypes);
+	try {
+		const imageObj = await file.saveFileToLocal('touchicon-orig.png', 'system', uploadedFile.path);
+		// Resize the image into squares for use as touch icons at various DPIs
+		for (const size of sizes) {
+			/* eslint-disable no-await-in-loop */
+			await image.resizeImage({
+				path: uploadedFile.path,
+				target: path.join(nconf.get('upload_path'), 'system', `touchicon-${size}.png`),
+				width: size,
+				height: size,
+			});
 		}
+		res.json([{ name: uploadedFile.name, url: imageObj.url }]);
+	} catch (err) {
+		next(err);
+	} finally {
+		file.delete(uploadedFile.path);
 	}
 };
 
@@ -172,15 +172,14 @@ uploadsController.uploadMaskableIcon = async function (req, res, next) {
 	const uploadedFile = req.files.files[0];
 	const allowedTypes = ['image/png'];
 
-	if (validateUpload(res, uploadedFile, allowedTypes)) {
-		try {
-			const imageObj = await file.saveFileToLocal('maskableicon-orig.png', 'system', uploadedFile.path);
-			res.json([{ name: uploadedFile.name, url: imageObj.url }]);
-		} catch (err) {
-			next(err);
-		} finally {
-			file.delete(uploadedFile.path);
-		}
+	await validateUpload(uploadedFile, allowedTypes);
+	try {
+		const imageObj = await file.saveFileToLocal('maskableicon-orig.png', 'system', uploadedFile.path);
+		res.json([{ name: uploadedFile.name, url: imageObj.url }]);
+	} catch (err) {
+		next(err);
+	} finally {
+		file.delete(uploadedFile.path);
 	}
 };
 
@@ -219,20 +218,16 @@ uploadsController.uploadOgImage = async function (req, res, next) {
 async function upload(name, req, res, next) {
 	const uploadedFile = req.files.files[0];
 
-	if (validateUpload(res, uploadedFile, allowedImageTypes)) {
-		const filename = name + path.extname(uploadedFile.name);
-		await uploadImage(filename, 'system', uploadedFile, req, res, next);
-	}
+	await validateUpload(uploadedFile, allowedImageTypes);
+	const filename = name + path.extname(uploadedFile.name);
+	await uploadImage(filename, 'system', uploadedFile, req, res, next);
 }
 
-function validateUpload(res, uploadedFile, allowedTypes) {
+async function validateUpload(uploadedFile, allowedTypes) {
 	if (!allowedTypes.includes(uploadedFile.type)) {
 		file.delete(uploadedFile.path);
-		res.json({ error: `[[error:invalid-image-type, ${allowedTypes.join('&#44; ')}]]` });
-		return false;
+		throw new Error(`[[error:invalid-image-type, ${allowedTypes.join('&#44; ')}]]`);
 	}
-
-	return true;
 }
 
 async function uploadImage(filename, folder, uploadedFile, req, res, next) {

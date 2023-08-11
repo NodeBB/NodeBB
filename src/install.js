@@ -9,6 +9,7 @@ const nconf = require('nconf');
 const _ = require('lodash');
 
 const utils = require('./utils');
+const { paths } = require('./constants');
 
 const install = module.exports;
 const questions = {};
@@ -252,7 +253,7 @@ async function enableDefaultTheme() {
 		return;
 	}
 
-	const defaultTheme = nconf.get('defaultTheme') || 'nodebb-theme-persona';
+	const defaultTheme = nconf.get('defaultTheme') || 'nodebb-theme-harmony';
 	console.log(`Enabling default theme: ${defaultTheme}`);
 	await meta.themes.set({
 		type: 'local',
@@ -344,6 +345,14 @@ async function createAdmin() {
 		try {
 			User.isPasswordValid(results.password);
 		} catch (err) {
+			const [namespace, key] = err.message.slice(2, -2).split(':', 2);
+			if (namespace && key && err.message.startsWith('[[') && err.message.endsWith(']]')) {
+				const lang = require(path.join(__dirname, `../public/language/en-GB/${namespace}`));
+				if (lang && lang[key]) {
+					err.message = lang[key];
+				}
+			}
+
 			winston.warn(`Password error, please try again. ${err.message}`);
 			return await retryPassword(results);
 		}
@@ -524,7 +533,7 @@ async function setCopyrightWidget() {
 	]);
 
 	if (!footer && footerJSON) {
-		await db.setObjectField('widgets:global', 'footer', footerJSON);
+		await db.setObjectField('widgets:global', 'sidebar-footer', footerJSON);
 	}
 }
 
@@ -557,6 +566,16 @@ async function checkUpgrade() {
 	}
 }
 
+async function installPlugins() {
+	const pluginInstall = require('./plugins');
+	const nbbVersion = require(paths.currentPackage).version;
+	await Promise.all((await pluginInstall.getActive()).map(async (id) => {
+		if (await pluginInstall.isInstalled(id)) return;
+		const version = await pluginInstall.suggest(id, nbbVersion);
+		await pluginInstall.toggleInstall(id, version.version);
+	}));
+}
+
 install.setup = async function () {
 	try {
 		checkSetupFlagEnv();
@@ -574,6 +593,7 @@ install.setup = async function () {
 		await enableDefaultPlugins();
 		await setCopyrightWidget();
 		await copyFavicon();
+		if (nconf.get('plugins:autoinstall')) await installPlugins();
 		await checkUpgrade();
 
 		const data = {

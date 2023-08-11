@@ -1,4 +1,5 @@
 {
+	"widgets": "Widgets",
 	"available": "Dostupni dodatci",
 	"explanation": "Select a widget from the dropdown menu and then drag and drop it into a template's widget area on the left.",
 	"none-installed": "No widgets found! Activate the widget essentials plugin in the <a href=\"%1\">plugins</a> control panel.",
@@ -8,9 +9,9 @@
 	"containers.none": "Ništa",
 	"container.well": "`",
 	"container.jumbotron": "Jumbotron",
-	"container.panel": "Ploča",
-	"container.panel-header": "Ploča zaglavlja",
-	"container.panel-body": "Tijelo ploče",
+	"container.card": "Card",
+	"container.card-header": "Card Header",
+	"container.card-body": "Card Body",
 	"container.alert": "Upozorenje",
 
 	"alert.confirm-delete": "Sigurni ste da želite obrisati ovaj widget?",
@@ -26,5 +27,7 @@
 	"container.placeholder": "Drag and drop a container or enter HTML here.",
 	"show-to-groups": "Show to groups",
 	"hide-from-groups": "Hide from groups",
+	"start-date": "Start date",
+	"end-date": "End date",
 	"hide-on-mobile": "Hide on mobile"
 }

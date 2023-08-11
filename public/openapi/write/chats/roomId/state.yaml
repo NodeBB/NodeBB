@@ -1,0 +1,50 @@
+put:
+  tags:
+    - chats
+  summary: mark chat room as unread
+  description: This operation marks a chat room as unread.
+  parameters:
+    - in: path
+      name: roomId
+      schema:
+        type: number
+      required: true
+      description: a valid room id
+      example: 1
+  responses:
+    '200':
+      description: Chat room marked
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../../components/schemas/Chats.yaml#/RoomObjectFull
+delete:
+  tags:
+    - chats
+  summary: mark chat room as read
+  description: This operation marks a chat room as read.
+  parameters:
+    - in: path
+      name: roomId
+      schema:
+        type: number
+      required: true
+      description: a valid room id
+      example: 1
+  responses:
+    '200':
+      description: Chat room marked
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../../components/schemas/Chats.yaml#/RoomObjectFull

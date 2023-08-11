@@ -3,52 +3,53 @@
 const db = require('../../database');
 const user = require('../../user');
 const helpers = require('../helpers');
-const accountHelpers = require('./helpers');
 const pagination = require('../../pagination');
 
 const infoController = module.exports;
 
-infoController.get = async function (req, res, next) {
-	const userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, req.query);
-	if (!userData) {
-		return next();
-	}
+infoController.get = async function (req, res) {
 	const page = Math.max(1, req.query.page || 1);
 	const itemsPerPage = 10;
 	const start = (page - 1) * itemsPerPage;
 	const stop = start + itemsPerPage - 1;
 
+	const [{ username, userslug }, isPrivileged] = await Promise.all([
+		user.getUserFields(res.locals.uid, ['username', 'userslug']),
+		user.isPrivileged(req.uid),
+	]);
 	const [history, sessions, usernames, emails, notes] = await Promise.all([
-		user.getModerationHistory(userData.uid),
-		user.auth.getSessions(userData.uid, req.sessionID),
-		user.getHistory(`user:${userData.uid}:usernames`),
-		user.getHistory(`user:${userData.uid}:emails`),
-		getNotes(userData, start, stop),
+		user.getModerationHistory(res.locals.uid),
+		user.auth.getSessions(res.locals.uid, req.sessionID),
+		user.getHistory(`user:${res.locals.uid}:usernames`),
+		user.getHistory(`user:${res.locals.uid}:emails`),
+		getNotes({ uid: res.locals.uid, isPrivileged }, start, stop),
 	]);
 
-	userData.history = history;
-	userData.sessions = sessions;
-	userData.usernames = usernames;
-	userData.emails = emails;
+	const payload = {};
 
-	if (userData.isAdminOrGlobalModeratorOrModerator) {
-		userData.moderationNotes = notes.notes;
+	payload.history = history;
+	payload.sessions = sessions;
+	payload.usernames = usernames;
+	payload.emails = emails;
+
+	if (isPrivileged) {
+		payload.moderationNotes = notes.notes;
 		const pageCount = Math.ceil(notes.count / itemsPerPage);
-		userData.pagination = pagination.create(page, pageCount, req.query);
+		payload.pagination = pagination.create(page, pageCount, req.query);
 	}
-	userData.title = '[[pages:account/info]]';
-	userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: `/user/${userData.userslug}` }, { text: '[[user:account_info]]' }]);
+	payload.title = '[[pages:account/info]]';
+	payload.breadcrumbs = helpers.buildBreadcrumbs([{ text: username, url: `/user/${userslug}` }, { text: '[[user:account_info]]' }]);
 
-	res.render('account/info', userData);
+	res.render('account/info', payload);
 };
 
-async function getNotes(userData, start, stop) {
-	if (!userData.isAdminOrGlobalModeratorOrModerator) {
+async function getNotes({ uid, isPrivileged }, start, stop) {
+	if (!isPrivileged) {
 		return;
 	}
 	const [notes, count] = await Promise.all([
-		user.getModerationNotes(userData.uid, start, stop),
-		db.sortedSetCard(`uid:${userData.uid}:moderation:notes`),
+		user.getModerationNotes(uid, start, stop),
+		db.sortedSetCard(`uid:${uid}:moderation:notes`),
 	]);
 	return { notes: notes, count: count };
 }

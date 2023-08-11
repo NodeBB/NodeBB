@@ -3,7 +3,7 @@
 The files here are read-only and overwritten daily (if there are changes) by the
 helper bot [Misty](https://github.com/nodebb-misty).
 
-Our localisation efforts are handled via [our Transifex Project](https://www.transifex.com/nodebb/nodebb/),
+Our localisation efforts are handled via [our Transifex Project](https://explore.transifex.com/nodebb/nodebb/),
 and any pull requests made to this directory will be automatically closed because
 localisations can go out-of-sync when edited directly.
 

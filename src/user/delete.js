@@ -4,8 +4,7 @@ const async = require('async');
 const _ = require('lodash');
 const path = require('path');
 const nconf = require('nconf');
-const util = require('util');
-const rimrafAsync = util.promisify(require('rimraf'));
+const { rimraf } = require('rimraf');
 
 const db = require('../database');
 const posts = require('../posts');
@@ -150,6 +149,7 @@ module.exports = function (User) {
 			groups.leaveAllGroups(uid),
 			flags.resolveFlag('user', uid, uid),
 			User.reset.cleanByUid(uid),
+			User.email.expireValidation(uid),
 		]);
 		await db.deleteAll([`followers:${uid}`, `following:${uid}`, `user:${uid}`]);
 		delete deletesInProgress[uid];
@@ -209,9 +209,6 @@ module.exports = function (User) {
 
 	async function deleteImages(uid) {
 		const folder = path.join(nconf.get('upload_path'), 'profile');
-		await Promise.all([
-			rimrafAsync(path.join(folder, `${uid}-profilecover*`)),
-			rimrafAsync(path.join(folder, `${uid}-profileavatar*`)),
-		]);
+		await rimraf(`${uid}-profile{avatar,cover}*`, { glob: { cwd: folder } });
 	}
 };

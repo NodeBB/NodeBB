@@ -2,8 +2,8 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 				<h3 id="crop-picture">[[user:crop_picture]]</h3>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
 			</div>
 			<div class="modal-body">
 				<div id="upload-progress-box" class="progress hide">
@@ -12,7 +12,7 @@
 				</div>
 
 				<div class="cropper">
-					<img id="cropped-image" crossorigin="anonymous" src="{url}" alt="">
+					<img id="cropped-image" class="mw-100" crossorigin="anonymous" src="{url}" alt="">
 				</div>
 
 				<hr />
@@ -30,8 +30,8 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
-				<button class="btn btn-primary upload-btn <!-- IF !allowSkippingCrop -->hidden<!-- ENDIF !allowSkippingCrop -->">[[user:upload_picture]]</button>
+				<button class="btn btn-outline-secondary" data-bs-dismiss="modal" aria-hidden="true">Close</button>
+				<button class="btn btn-primary upload-btn {{{ if !allowSkippingCrop }}}hidden{{{ end }}}">[[user:upload_picture]]</button>
 				<button class="btn btn-primary crop-btn">[[user:upload_cropped_picture]]</button>
 			</div>
 		</div>

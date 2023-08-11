@@ -1,4 +1,5 @@
 {
+	"widgets": "Widgets",
 	"available": "Tiện ích có sẵn",
 	"explanation": "Chọn một tiện ích từ menu thả xuống, sau đó kéo và thả nó vào khu vực tiện ích của mẫu ở bên trái.",
 	"none-installed": "Không tìm thấy tiện ích nào! Kích hoạt plugin tiện ích cần thiết trong bảng điều khiển<a href=\"%1\">plugins</a> .",
@@ -8,9 +9,9 @@
 	"containers.none": "Trống",
 	"container.well": "Tốt",
 	"container.jumbotron": "Khung Hiển Thị Lớn",
-	"container.panel": "Bảng",
-	"container.panel-header": "Tiêu Đề Bảng",
-	"container.panel-body": "Thân Bảng",
+	"container.card": "Card",
+	"container.card-header": "Card Header",
+	"container.card-body": "Card Body",
 	"container.alert": "Cảnh báo",
 
 	"alert.confirm-delete": "Bạn có chắc chắn muốn xóa tiện ích này không?",
@@ -26,5 +27,7 @@
 	"container.placeholder": "Kéo và thả một vùng chứa hoặc nhập HTML vào đây.",
 	"show-to-groups": "Hiển thị lên nhóm",
 	"hide-from-groups": "Ẩn khỏi nhóm",
+	"start-date": "Ngày bắt đầu",
+	"end-date": "Ngày kết thúc",
 	"hide-on-mobile": "Ẩn trên thiết bị di động"
 }

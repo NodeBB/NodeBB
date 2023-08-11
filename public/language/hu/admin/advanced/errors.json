@@ -1,4 +1,5 @@
 {
+	"errors": "Errors",
 	"figure-x": "Ábra %1",
 	"error-events-per-day": "<code>%1</code> esemény naponta",
 	"error.404": "404 Nem található",

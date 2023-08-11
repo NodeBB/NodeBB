@@ -1,11 +1,12 @@
 {
+    "all-users": "All Users",
     "latest_users": "Новые пользователи",
     "top_posters": "Самые активные",
     "most_reputation": "Лучшая репутация",
     "most_flags": "Больше всего жалоб",
     "search": "Поиск",
     "enter_username": "Введите имя пользователя для поиска",
-    "search-user-for-chat": "Search a user to start chat",
+    "search-user-for-chat": "Search for a user to start chat",
     "load_more": "Загрузить еще",
     "users-found-search-took": "Найдено пользователей: %1! Поиск занял %2 с.",
     "filter-by": "Сортировать по",

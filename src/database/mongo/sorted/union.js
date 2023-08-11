@@ -26,7 +26,7 @@ module.exports = function (module) {
 
 	async function getSortedSetUnion(params) {
 		if (!Array.isArray(params.sets) || !params.sets.length) {
-			return;
+			return [];
 		}
 		let limit = params.stop - params.start + 1;
 		if (limit <= 0) {
@@ -43,7 +43,7 @@ module.exports = function (module) {
 		const pipeline = [
 			{ $match: { _key: { $in: params.sets } } },
 			{ $group: { _id: { value: '$value' }, totalScore: aggregate } },
-			{ $sort: { totalScore: params.sort } },
+			{ $sort: { totalScore: params.sort, _id: 1 } },
 		];
 
 		if (params.start) {

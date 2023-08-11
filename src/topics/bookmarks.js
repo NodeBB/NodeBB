@@ -22,6 +22,9 @@ module.exports = function (Topics) {
 	};
 
 	Topics.setUserBookmark = async function (tid, uid, index) {
+		if (parseInt(uid, 10) <= 0) {
+			return;
+		}
 		await db.sortedSetAdd(`tid:${tid}:bookmarks`, index, uid);
 	};
 

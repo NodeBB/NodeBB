@@ -1,4 +1,5 @@
 {
+	"widgets": "Widgets",
 	"available": "Widgets disponibles",
 	"explanation": "Sélectionnez un widget depuis le menu puis glissez-déposez le dans une zone template du widget à gauche.",
 	"none-installed": "Aucun widget trouvé ! Activez le plugin Widget Essentials dans le panneau de <a href=\"%1\">configuration des plugins</a>.",
@@ -8,9 +9,9 @@
 	"containers.none": "Aucun",
 	"container.well": "Well",
 	"container.jumbotron": "Jombotron",
-	"container.panel": "Panneau",
-	"container.panel-header": "En-tête de panneau",
-	"container.panel-body": "Corps de panneau",
+	"container.card": "Carte",
+	"container.card-header": "En-tête",
+	"container.card-body": "Corps",
 	"container.alert": "Alerte",
 
 	"alert.confirm-delete": "Êtes-vous sûr de vouloir supprimer ce widget ?",
@@ -26,5 +27,7 @@
 	"container.placeholder": "Glissez et déposez un bloc ou entrez HTML ici.",
 	"show-to-groups": "Visible pour les groupes",
 	"hide-from-groups": "Masquer pour les groupes",
+	"start-date": "Start date",
+	"end-date": "End date",
 	"hide-on-mobile": "Masquer sur mobile"
 }

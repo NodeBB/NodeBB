@@ -20,83 +20,107 @@ get:
             allOf:
               - type: object
                 properties:
-                  postCache:
+                  caches:
                     type: object
                     properties:
-                      length:
-                        type: number
-                      max:
-                        type: number
-                        nullable: true
-                      itemCount:
-                        type: number
-                      percentFull:
-                        type: number
-                      hits:
-                        type: string
-                      misses:
-                        type: string
-                      hitRatio:
-                        type: string
-                      enabled:
-                        type: boolean
-                  groupCache:
-                    type: object
-                    properties:
-                      length:
-                        type: number
-                      max:
-                        type: number
-                      itemCount:
-                        type: number
-                      percentFull:
-                        type: number
-                      hits:
-                        type: string
-                      misses:
-                        type: string
-                      hitRatio:
-                        type: string
-                      enabled:
-                        type: boolean
-                  localCache:
-                    type: object
-                    properties:
-                      length:
-                        type: number
-                      max:
-                        type: number
-                      itemCount:
-                        type: number
-                      percentFull:
-                        type: number
-                      hits:
-                        type: string
-                      misses:
-                        type: string
-                      hitRatio:
-                        type: string
-                      enabled:
-                        type: boolean
-                  objectCache:
-                    type: object
-                    properties:
-                      length:
-                        type: number
-                      max:
-                        type: number
-                      itemCount:
-                        type: number
-                      percentFull:
-                        type: number
-                      hits:
-                        type: string
-                      misses:
-                        type: string
-                      hitRatio:
-                        type: string
-                      enabled:
-                        type: boolean
+                      postCache:
+                        type: object
+                        properties:
+                          length:
+                            type: number
+                          max:
+                            type: number
+                            nullable: true
+                          maxSize:
+                            type: number
+                          itemCount:
+                            type: number
+                          percentFull:
+                            type: number
+                          hits:
+                            type: string
+                          hitsPerSecond:
+                            type: number
+                          misses:
+                            type: string
+                          hitRatio:
+                            type: string
+                          enabled:
+                            type: boolean
+                          ttl:
+                            type: number
+                      groupCache:
+                        type: object
+                        properties:
+                          length:
+                            type: number
+                          max:
+                            type: number
+                            nullable: true
+                          maxSize:
+                            type: number
+                          itemCount:
+                            type: number
+                          percentFull:
+                            type: number
+                          hits:
+                            type: string
+                          misses:
+                            type: string
+                          hitRatio:
+                            type: string
+                          enabled:
+                            type: boolean
+                          ttl:
+                            type: number
+                      localCache:
+                        type: object
+                        properties:
+                          length:
+                            type: number
+                          max:
+                            type: number
+                            nullable: true
+                          maxSize:
+                            type: number
+                          itemCount:
+                            type: number
+                          percentFull:
+                            type: number
+                          hits:
+                            type: string
+                          misses:
+                            type: string
+                          hitRatio:
+                            type: string
+                          enabled:
+                            type: boolean
+                          ttl:
+                            type: number
+                      objectCache:
+                        type: object
+                        properties:
+                          length:
+                            type: number
+                          max:
+                            type: number
+                            nullable: true
+                          maxSize:
+                            type: number
+                          itemCount:
+                            type: number
+                          percentFull:
+                            type: number
+                          hits:
+                            type: string
+                          misses:
+                            type: string
+                          hitRatio:
+                            type: string
+                          enabled:
+                            type: boolean
+                          ttl:
+                            type: number
                 required:
                   - postCache
                   - groupCache

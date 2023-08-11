@@ -1,4 +1,5 @@
 {
+    "manage-uploads": "Manage Uploads",
     "upload-file": "Wyślij plik",
     "filename": "Nazwa pliku",
     "usage": "Wykorzystany w poście",
@@ -6,6 +7,6 @@
     "size/filecount": "Rozmiar / Liczba plików",
     "confirm-delete": "Czy na pewno chcesz usunąć ten plik?",
     "filecount": "%1 plików",
-    "new-folder": "New Folder",
-    "name-new-folder": "Enter a name for new the folder"
+    "new-folder": "Nowy folder",
+    "name-new-folder": "Wpisz nazwę nowego folderu"
 }

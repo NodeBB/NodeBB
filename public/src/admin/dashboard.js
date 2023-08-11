@@ -43,8 +43,6 @@ define('admin/dashboard', [
 
 		isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-		$('[data-toggle="tooltip"]').tooltip();
-
 		setupRealtimeButton();
 		setupGraphs(function () {
 			socket.emit('admin.rooms.getAll', Admin.updateRoomUsage);
@@ -64,21 +62,21 @@ define('admin/dashboard', [
 
 		graphData.rooms = data;
 
-		const html = '<div class="text-center pull-left">' +
+		const html = '<div class="text-center float-start">' +
 						'<span class="formatted-number">' + data.onlineRegisteredCount + '</span>' +
-						'<div class="stat">[[admin/dashboard:active-users.users]]</div>' +
+						'<div class="stat text-nowrap">[[admin/dashboard:active-users.users]]</div>' +
 					'</div>' +
-					'<div class="text-center pull-left">' +
+					'<div class="text-center float-start">' +
 						'<span class="formatted-number">' + data.onlineGuestCount + '</span>' +
-						'<div class="stat">[[admin/dashboard:active-users.guests]]</div>' +
+						'<div class="stat text-nowrap">[[admin/dashboard:active-users.guests]]</div>' +
 					'</div>' +
-					'<div class="text-center pull-left">' +
+					'<div class="text-center float-start">' +
 						'<span class="formatted-number">' + (data.onlineRegisteredCount + data.onlineGuestCount) + '</span>' +
-						'<div class="stat">[[admin/dashboard:active-users.total]]</div>' +
+						'<div class="stat text-nowrap">[[admin/dashboard:active-users.total]]</div>' +
 					'</div>' +
-					'<div class="text-center pull-left">' +
+					'<div class="text-center float-start">' +
 						'<span class="formatted-number">' + data.socketCount + '</span>' +
-						'<div class="stat">[[admin/dashboard:active-users.connections]]</div>' +
+						'<div class="stat text-nowrap">[[admin/dashboard:active-users.connections]]</div>' +
 					'</div>';
 
 		updateRegisteredGraph(data.onlineRegisteredCount, data.onlineGuestCount);
@@ -395,8 +393,6 @@ define('admin/dashboard', [
 				});
 			});
 
-			socket.emit('admin.rooms.getAll', Admin.updateRoomUsage);
-			initiateDashboard();
 			callback();
 		});
 	}
@@ -569,7 +565,7 @@ define('admin/dashboard', [
 	function setupFullscreen() {
 		const container = document.getElementById('analytics-panel');
 		const $container = $(container);
-		const btn = $container.find('.fa-expand');
+		const btn = $container.find('#expand-analytics');
 		let fsMethod;
 		let exitMethod;
 
@@ -588,7 +584,6 @@ define('admin/dashboard', [
 		}
 
 		if (fsMethod) {
-			btn.addClass('active');
 			btn.on('click', function () {
 				if ($container.hasClass('fullscreen')) {
 					document[exitMethod]();

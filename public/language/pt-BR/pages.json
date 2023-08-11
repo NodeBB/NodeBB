@@ -14,6 +14,7 @@
     "flagged-content": "Conteúdo Sinalizado",
     "ip-blacklist": "Lista negra de IPs",
     "post-queue": "Fila de Posts",
+    "registration-queue": "Registration Queue",
     "users/online": "Usuários Online",
     "users/latest": "Últimos Usuários",
     "users/sort-posts": "Usuários com mais posts",
@@ -49,6 +50,7 @@
     "account/watched_categories": "Categorias Acompanhadas por %1",
     "account/bookmarks": "Posts Favoritos de %1's",
     "account/settings": "Configurações de Usuário",
+    "account/settings-of": "Changing settings of %1",
     "account/watched": "Tópicos assistidos por %1",
     "account/ignored": "Tópicos ignorados por %1",
     "account/upvoted": "Posts votados positivamente por %1",
@@ -59,7 +61,7 @@
     "account/uploads": "Uploads feitos por %1",
     "account/sessions": "Sessões de Login",
     "confirm": "E-mail Confirmado",
-    "maintenance.text": "%1 está atualmente sob manutenção. Por favor retorne em outro momento.",
+    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
     "maintenance.messageIntro": "Adicionalmente, o administrador deixou esta mensagem:",
     "throttled.text": "%1 está atualmente indisponível devido a excesso de contingente. Por favor retorne em outro momento."
 }

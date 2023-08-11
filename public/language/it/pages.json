@@ -14,6 +14,7 @@
     "flagged-content": "Contenuti Segnalati",
     "ip-blacklist": "Blacklist degli IP",
     "post-queue": "Coda post",
+    "registration-queue": "Coda di registrazione",
     "users/online": "Utenti Online",
     "users/latest": "Ultimi Utenti",
     "users/sort-posts": "Utenti maggiori contributori",
@@ -49,6 +50,7 @@
     "account/watched_categories": "Categorie seguite da %1'",
     "account/bookmarks": "%1 Post tra i favoriti",
     "account/settings": "Impostazioni Utente",
+    "account/settings-of": "Modifica impostazioni di %1",
     "account/watched": "Discussioni seguite da %1",
     "account/ignored": "Discussioni ignorate da %1",
     "account/upvoted": "Post apprezzati da %1",
@@ -59,7 +61,7 @@
     "account/uploads": "Inviati da %1",
     "account/sessions": "Sessioni di accesso",
     "confirm": "Email Confermata",
-    "maintenance.text": "%1 è attualmente in manutenzione. Per favore ritorna più tardi.",
+    "maintenance.text": "%1è attualmente in fase di manutenzione.<br/>Per favore torna un'altra volta.",
     "maintenance.messageIntro": "Inoltre, l'amministratore ha lasciato questo messaggio:",
     "throttled.text": "%1 non è al momento disponibile a causa di un carico eccessivo. Per favore ritorna più tardi."
 }

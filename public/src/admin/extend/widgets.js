@@ -12,13 +12,13 @@ define('admin/extend/widgets', [
 	const Widgets = {};
 
 	Widgets.init = function () {
-		$('#widgets .nav-pills .dropdown-menu a').on('click', function (ev) {
+		$('#widgets .dropdown .dropdown-menu a').on('click', function (ev) {
 			const $this = $(this);
 			$('#widgets .tab-pane').removeClass('active');
 			const templateName = $this.attr('data-template');
 			$('#widgets .tab-pane[data-template="' + templateName + '"]').addClass('active');
 			$('#widgets .selected-template').text(templateName);
-			$('#widgets .nav-pills .dropdown').trigger('click');
+			$('#widgets .dropdown').trigger('click');
 			ev.preventDefault();
 			return false;
 		});
@@ -73,9 +73,9 @@ define('admin/extend/widgets', [
 					panel.remove();
 				}
 			});
-		}).on('mouseup', '> .panel > .panel-heading', function (evt) {
+		}).on('mouseup', '> .card > .card-header', function (evt) {
 			if (!($(this).parent().is('.ui-sortable-helper') || $(evt.target).closest('.delete-widget').length)) {
-				$(this).parent().children('.panel-body').toggleClass('hidden');
+				$(this).parent().children('.card-body').toggleClass('hidden');
 			}
 		});
 
@@ -127,16 +127,14 @@ define('admin/extend/widgets', [
 
 			socket.emit('admin.widgets.set', saveData, function (err) {
 				if (err) {
-					alerts.error(err);
+					return alerts.error(err);
 				}
 
-				alerts.alert({
-					alert_id: 'admin:widgets',
-					type: 'success',
-					title: '[[admin/extend/widgets:alert.updated]]',
-					message: '[[admin/extend/widgets:alert.update-success]]',
-					timeout: 2500,
-				});
+				const saveBtn = document.getElementById('save');
+				saveBtn.classList.toggle('saved', true);
+				setTimeout(() => {
+					saveBtn.classList.toggle('saved', false);
+				}, 5000);
 			});
 		}
 
@@ -176,13 +174,13 @@ define('admin/extend/widgets', [
 					drop: function (event, ui) {
 						const el = $(this);
 
-						el.find('.panel-body .container-html').val(ui.draggable.attr('data-container-html'));
-						el.find('.panel-body').removeClass('hidden');
+						el.find('.card-body .container-html').val(ui.draggable.attr('data-container-html'));
+						el.find('.card-body').removeClass('hidden');
 					},
-					hoverClass: 'panel-info',
+					hoverClass: 'container-hover',
 				})
-				.children('.panel-heading')
-				.append('<div class="pull-right pointer"><span class="delete-widget"><i class="fa fa-times-circle"></i></span></div><div class="pull-left pointer"><span class="toggle-widget"><i class="fa fa-chevron-circle-down"></i></span>&nbsp;</div>')
+				.children('.card-header')
+				.append('<div class="float-end pointer"><span class="delete-widget"><i class="fa fa-times-circle"></i></span></div><div class="float-start pointer"><span class="toggle-widget"><i class="fa fa-chevron-circle-down"></i></span>&nbsp;</div>')
 				.children('small')
 				.html('');
 		}
@@ -191,7 +189,7 @@ define('admin/extend/widgets', [
 	function loadWidgetData() {
 		function populateWidget(widget, data) {
 			if (data.title) {
-				const title = widget.find('.panel-heading strong');
+				const title = widget.find('.card-header strong');
 				title.text(title.text() + ' - ' + data.title);
 			}
 

@@ -2,18 +2,22 @@
 
 
 define('forum/account/settings', [
-	'forum/account/header', 'components', 'translator', 'api', 'alerts',
-], function (header, components, translator, api, alerts) {
+	'forum/account/header', 'components', 'api', 'alerts', 'hooks',
+], function (header, components, api, alerts, hooks) {
 	const AccountSettings = {};
-
+	let savedSkin = '';
 	// If page skin is changed but not saved, switch the skin back
 	$(window).on('action:ajaxify.start', function () {
-		if (ajaxify.data.template.name === 'account/settings' && $('#bootswatchSkin').length && $('#bootswatchSkin').val() !== config.bootswatchSkin) {
-			reskin(config.bootswatchSkin);
+		const skinEl = $('#bootswatchSkin');
+		if (
+			ajaxify.data.template.name === 'account/settings' &&
+			skinEl.length && skinEl.val() !== savedSkin) {
+			reskin(savedSkin);
 		}
 	});
 
 	AccountSettings.init = function () {
+		savedSkin = $('#bootswatchSkin').length && $('#bootswatchSkin').val();
 		header.init();
 
 		$('#submitBtn').on('click', function () {
@@ -76,23 +80,17 @@ define('forum/account/settings', [
 					if (key === 'userLang' && config.userLang !== newSettings.userLang) {
 						languageChanged = true;
 					}
-					if (config.hasOwnProperty(key)) {
+					if (key === 'bootswatchSkin') {
+						savedSkin = newSettings.bootswatchSkin;
+						config.bootswatchSkin = savedSkin === 'noskin' ? '' : savedSkin;
+					} else if (config.hasOwnProperty(key)) {
 						config[key] = newSettings[key];
 					}
 				}
 			}
 
 			if (languageChanged && parseInt(app.user.uid, 10) === parseInt(ajaxify.data.theirid, 10)) {
-				translator.translate('[[language:dir]]', config.userLang, function (translated) {
-					const htmlEl = $('html');
-					htmlEl.attr('data-dir', translated);
-					htmlEl.css('direction', translated);
-				});
-
-				translator.switchTimeagoLanguage(utils.userLangToTimeagoCode(config.userLang), function () {
-					overrides.overrideTimeago();
-					ajaxify.refresh();
-				});
+				window.location.reload();
 			}
 		});
 	}
@@ -114,6 +112,12 @@ define('forum/account/settings', [
 			return;
 		}
 
+		if (skinName === '') {
+			skinName = config.defaultBootswatchSkin || '';
+		} else if (skinName === 'noskin') {
+			skinName = '';
+		}
+
 		const currentSkinClassName = $('body').attr('class').split(/\s+/).filter(function (className) {
 			return className.startsWith('skin-');
 		});
@@ -125,23 +129,37 @@ define('forum/account/settings', [
 
 		// Stop execution if skin didn't change
 		if (skinName === currentSkin) {
+			hooks.fire('action:skin.change', { skin: skinName, currentSkin });
 			return;
 		}
-
+		const langDir = $('html').attr('data-dir');
 		const linkEl = document.createElement('link');
 		linkEl.rel = 'stylesheet';
 		linkEl.type = 'text/css';
-		linkEl.href = config.relative_path + '/assets/client' + (skinName ? '-' + skinName : '') + '.css';
+		linkEl.href = config.relative_path +
+			'/assets/client' + (skinName ? '-' + skinName : '') +
+			(langDir === 'rtl' ? '-rtl' : '') +
+			'.css?' + config['cache-buster'];
 		linkEl.onload = function () {
 			clientEl.parentNode.removeChild(clientEl);
 
 			// Update body class with proper skin name
 			$('body').removeClass(currentSkinClassName.join(' '));
 			$('body').addClass('skin-' + (skinName || 'noskin'));
+			hooks.fire('action:skin.change', { skin: skinName, currentSkin });
 		};
 
 		document.head.appendChild(linkEl);
 	}
+
+	AccountSettings.changeSkin = async function (skin) {
+		if (app.user.uid) {
+			await api.put(`/users/${app.user.uid}/settings`, { settings: { bootswatchSkin: skin } });
+		}
+		config.bootswatchSkin = skin === 'noskin' ? '' : skin;
+		savedSkin = skin;
+		reskin(skin);
+	};
 
 	return AccountSettings;
 });

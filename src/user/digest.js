@@ -20,14 +20,14 @@ Digest.execute = async function (payload) {
 	const digestsDisabled = meta.config.disableEmailSubscriptions === 1;
 	if (digestsDisabled) {
 		winston.info(`[user/jobs] Did not send digests (${payload.interval}) because subscription system is disabled.`);
-		return;
+		return false;
 	}
 	let { subscribers } = payload;
 	if (!subscribers) {
 		subscribers = await Digest.getSubscribers(payload.interval);
 	}
 	if (!subscribers.length) {
-		return;
+		return false;
 	}
 	try {
 		winston.info(`[user/jobs] Digest (${payload.interval}) scheduling completed (${subscribers.length} subscribers). Sending emails; this may take some time...`);
@@ -36,6 +36,7 @@ Digest.execute = async function (payload) {
 			subscribers: subscribers,
 		});
 		winston.info(`[user/jobs] Digest (${payload.interval}) complete.`);
+		return true;
 	} catch (err) {
 		winston.error(`[user/jobs] Could not send digests (${payload.interval})\n${err.stack}`);
 		throw err;
@@ -140,6 +141,7 @@ Digest.send = async function (data) {
 		batch: 100,
 	});
 	winston.info(`[user/jobs] Digest (${data.interval}) sending completed. ${emailsSent} emails sent.`);
+	return emailsSent;
 };
 
 Digest.getDeliveryTimes = async (start, stop) => {

@@ -1,9 +1,11 @@
 {
+	"manage-tags": "Manage Tags",
 	"none": "Tu foro todavía no tiene ningún tema con etiquetas (tags)",
 	"bg-color": "Color de Fondo",
 	"text-color": "Color del Texto",
 	"description": "Select tags by clicking or dragging, use <code>CTRL</code> to select multiple tags.",
 	"create": "Crear Etiqueta (tag)",
+	"add-tag": "Add tag",
 	"modify": "Modificar Etiquetas (tags)",
 	"rename": "Renombrar Etiquetas (tags)",
 	"delete": "Borrar Etiquetas (tags) Seleccionadas",

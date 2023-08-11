@@ -105,12 +105,14 @@ function addProcessHandlers() {
 		shutdown(1);
 	});
 	process.on('message', (msg) => {
-		if (msg && msg.compiling === 'tpl') {
-			const benchpressjs = require('benchpressjs');
-			benchpressjs.flush();
-		} else if (msg && msg.compiling === 'lang') {
-			const translator = require('./translator');
-			translator.flush();
+		if (msg && Array.isArray(msg.compiling)) {
+			if (msg.compiling.includes('tpl')) {
+				const benchpressjs = require('benchpressjs');
+				benchpressjs.flush();
+			} else if (msg.compiling.includes('lang')) {
+				const translator = require('./translator');
+				translator.flush();
+			}
 		}
 	});
 }

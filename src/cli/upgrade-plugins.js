@@ -100,8 +100,6 @@ async function checkPlugins() {
 	const suggestedModules = await getSuggestedModules(nbbVersion, toCheck);
 	process.stdout.write(chalk.green('  OK'));
 
-	console.log(plugins, suggestedModules);
-
 	let current;
 	let suggested;
 	const upgradable = suggestedModules.map((suggestObj) => {

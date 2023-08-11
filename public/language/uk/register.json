@@ -1,5 +1,6 @@
 {
     "register": "Реєстрація",
+    "already-have-account": "Already have an account?",
     "cancel_registration": "Скасувати реєстрацію",
     "help.email": "За замовчуванням, ваша email-адреса буде прихована від інших. ",
     "help.username_restrictions": "Унікальне ім'я довжиною від %1 до %2 символів. Інші можуть вас згадувати за допомогою @<span id='yourUsername'>ім'я</span>.",

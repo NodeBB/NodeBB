@@ -1,7 +1,9 @@
 {
+    "themes": "Themes",
     "checking-for-installed": "Checking for installed themes...",
     "homepage": "Hjemmeside",
     "select-theme": "Velg tema",
+    "revert-theme": "Revert Theme",
     "current-theme": "Nåværende tema",
     "no-themes": "Ingen installerte temaer funnet",
     "revert-confirm": "Er du sikker på at du vil gjenopprette standard NodeBB-tema?",

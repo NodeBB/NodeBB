@@ -319,6 +319,85 @@ describe('Plugins', () => {
 			});
 		});
 	});
+
+	describe('plugin state set in configuration', () => {
+		const activePlugins = [
+			'nodebb-plugin-markdown',
+			'nodebb-plugin-mentions',
+		];
+		const inactivePlugin = 'nodebb-plugin-emoji';
+		beforeEach((done) => {
+			nconf.set('plugins:active', activePlugins);
+			done();
+		});
+		afterEach((done) => {
+			nconf.set('plugins:active', undefined);
+			done();
+		});
+
+		it('should return active plugin state from configuration', (done) => {
+			plugins.isActive(activePlugins[0], (err, isActive) => {
+				assert.ifError(err);
+				assert(isActive);
+				done();
+			});
+		});
+
+		it('should return inactive plugin state if not in configuration', (done) => {
+			plugins.isActive(inactivePlugin, (err, isActive) => {
+				assert.ifError(err);
+				assert(!isActive);
+				done();
+			});
+		});
+
+		it('should get a list of plugins from configuration', (done) => {
+			plugins.list((err, data) => {
+				assert.ifError(err);
+				const keys = ['id', 'name', 'url', 'description', 'latest', 'installed', 'active', 'latest'];
+				assert(Array.isArray(data));
+				keys.forEach((key) => {
+					assert(data[0].hasOwnProperty(key));
+				});
+				data.forEach((pluginData) => {
+					assert.equal(pluginData.active, activePlugins.includes(pluginData.id));
+				});
+				done();
+			});
+		});
+
+		it('should return a list of only active plugins from configuration', (done) => {
+			plugins.getActive((err, data) => {
+				assert.ifError(err);
+				assert(Array.isArray(data));
+				data.forEach((pluginData) => {
+					console.log(pluginData);
+					assert(activePlugins.includes(pluginData));
+				});
+				done();
+			});
+		});
+
+		it('should not deactivate a plugin if active plugins are set in configuration', (done) => {
+			assert.rejects(plugins.toggleActive(activePlugins[0]), Error).then(() => {
+				plugins.isActive(activePlugins[0], (err, isActive) => {
+					assert.ifError(err);
+					assert(isActive);
+					done();
+				});
+			});
+		});
+
+		it('should not activate a plugin if active plugins are set in configuration', (done) => {
+			assert.rejects(plugins.toggleActive(inactivePlugin), Error).then(() => {
+				plugins.isActive(inactivePlugin, (err, isActive) => {
+					assert.ifError(err);
+					assert(!isActive);
+					done();
+				});
+			});
+		});
+	});
 });
 
 

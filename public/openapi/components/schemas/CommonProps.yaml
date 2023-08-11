@@ -4,6 +4,9 @@ CommonProps:
     loggedIn:
       type: boolean
       description: True if user is logged in, false otherwise
+    loggedInUser:
+      type: object
+      description: The logged in user object
     relative_path:
       type: string
       description: |
@@ -65,6 +68,12 @@ CommonProps:
                     type: string
                   as:
                     type: string
+                  noEscape:
+                    type: boolean
+                  crossorigin:
+                    type: string
+                    enum: ['', 'anonymous', 'use-credentials']
+                    description: https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/crossorigin
                 required:
                   - rel
                   - href

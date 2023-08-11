@@ -1,5 +1,6 @@
 {
     "register": "নিবন্ধন",
+    "already-have-account": "Already have an account?",
     "cancel_registration": "নিবন্ধন বাতিল",
     "help.email": "ডিফল্টভাবে, আপনার ইমেইল সর্বসাধারণ থেকে লুকানো থাকবে।",
     "help.username_restrictions": "%1 এবং %2 অক্ষরের মাঝে একটি অনন্য সদস্য নাম। বাকিরা আপনাকে @<span id='yourUsername'>নাম</span> দিয়ে উল্লেখ করতে পারবেন।",

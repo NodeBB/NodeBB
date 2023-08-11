@@ -1,5 +1,7 @@
 {
+    "all-groups": "All groups",
     "groups": "Csoportok",
+    "members": "Felhasználók",
     "view_group": "Csoport megtekintés",
     "owner": "Csoport tulajdonosa",
     "new_group": "Új csoport létrehozása",

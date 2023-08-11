@@ -19,6 +19,15 @@ post:
             content:
               type: string
               example: This is the test topic's content
+            timestamp:
+              type: number
+              description: |
+                A UNIX timestamp of the topic's creation date (i.e. when it will be posted).
+                Specifically, this value can only be set to a value in the future if the calling user has the `topics:schedule` privilege for the passed-in category.
+                Otherwise, the current date and time are always assumed.
+                In some scenarios (e.g. forum migrations), you may want to backdate topics and posts.
+                Please see [this Developer FAQ topic](https://community.nodebb.org/topic/16983/how-can-i-backdate-topics-and-posts-for-migration-purposes) for more information.
+              example: 556084800000
             tags:
               type: array
               items:

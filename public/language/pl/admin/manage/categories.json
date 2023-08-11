@@ -1,7 +1,11 @@
 {
+	"manage-categories": "Manage Categories",
+	"add-category": "Add category",
+	"jump-to": "Jump to...",
 	"settings": "Ustawienia kategorii",
+	"edit-category": "Edit Category",
 	"privileges": "Uprawnienia",
-
+	"back-to-categories": "Back to categories",
 	"name": "Nazwa kategorii",
 	"description": "Opis kategorii",
 	"bg-color": "Kolor tła",
@@ -15,8 +19,11 @@
 	"post-queue": "Kolejka postów",
 	"tag-whitelist": "Otaguj białą listę",
 	"upload-image": "Prześlij obrazek",
+	"upload": "Upload",
+	"select-icon": "Select Icon",
 	"delete-image": "Usuń",
 	"category-image": "Obrazek kategorii",
+	"image-and-icon": "Image & Icon",
 	"parent-category": "Kategoria nadrzędna",
 	"optional-parent-category": "(Opcjonalne) Kategoria nadrzędna",
 	"top-level": "Najwyższy poziom",
@@ -31,6 +38,7 @@
 	"disable": "Wyłącz",
 	"edit": "Edytuj",
 	"analytics": "Analityka",
+
 	"view-category": "Wyświetl kategorię",
 	"set-order": "Ustaw kolejnośc",
 	"set-order-help": "Ustawienie kolejności kategorii przesunie tę kategorię w żądanej kolejności i zaktualizuje kolejność zgodnie z potrzebą. Minimalna kolejność to 1, co umieści daną kategorię na górze.",

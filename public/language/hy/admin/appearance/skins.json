@@ -1,0 +1,18 @@
+{
+	"skins": "Skins",
+	"bootswatch-skins": "Bootswatch Skins",
+	"custom-skins": "Custom Skins",
+	"add-skin": "Add Skin",
+	"save-custom-skins": "Save Custom Skins",
+	"save-custom-skins-success": "Custom skins saved successfully",
+	"custom-skin-name": "Custom Skin Name",
+	"custom-skin-variables": "Custom Skin Variables",
+	"loading": "Բեռնվում է Skins...",
+	"homepage": "Գլխավոր էջ",
+	"select-skin": "Ընտրել շապիկ ",
+	"revert-skin": "Revert Skin",
+	"current-skin": "Ընթացիկ շապիկ ",
+	"skin-updated": "Շապիկը թարմացվել է",
+	"applied-success": "%1 շապիկը հաջողությամբ կիրառվեց",
+	"revert-success": "Շապիկը վերադարձավ հիմնական գույներին"
+}

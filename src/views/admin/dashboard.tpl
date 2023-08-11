@@ -1,13 +1,13 @@
-<div class="row dashboard">
+<div class="row dashboard px-lg-4">
 	<div class="col-lg-9">
 		<!-- IMPORT admin/partials/dashboard/graph.tpl -->
 		<!-- IMPORT admin/partials/dashboard/stats.tpl -->
 
 		<div class="row">
-			<div class="col-lg-3">
-				<div class="panel panel-default">
-					<div class="panel-heading">[[admin/dashboard:guest-registered-users]]</div>
-					<div class="panel-body">
+			<div class="col-lg-4">
+				<div class="card">
+					<div class="card-header">[[admin/dashboard:guest-registered-users]]</div>
+					<div class="card-body">
 						<div class="graph-container pie-chart legend-down">
 							<canvas id="analytics-registered"></canvas>
 							<ul class="graph-legend" id="analytics-legend">
@@ -19,10 +19,10 @@
 				</div>
 			</div>
 
-			<div class="col-lg-3">
-				<div class="panel panel-default">
-					<div class="panel-heading">[[admin/dashboard:user-presence]]</div>
-					<div class="panel-body">
+			<div class="col-lg-4">
+				<div class="card">
+					<div class="card-header">[[admin/dashboard:user-presence]]</div>
+					<div class="card-body">
 						<div class="graph-container pie-chart legend-down">
 							<canvas id="analytics-presence"></canvas>
 							<ul class="graph-legend" id="analytics-presence-legend">
@@ -36,27 +36,13 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-lg-3">
-				<div class="panel panel-default">
-					<div class="panel-heading">[[admin/dashboard:high-presence-topics]]</div>
-					<div class="panel-body">
+			<div class="col-lg-4">
+				<div class="card">
+					<div class="card-header">[[admin/dashboard:high-presence-topics]]</div>
+					<div class="card-body">
 						<div class="graph-container pie-chart legend-down">
 							<canvas id="analytics-topics"></canvas>
 							<ul class="graph-legend" id="topics-legend"></ul>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-lg-3">
-				<div class="panel panel-default">
-					<div class="panel-heading">[[admin/dashboard:popular-searches]]</div>
-					<div class="panel-body">
-						<div class="graph-container pie-chart legend-down">
-							<ul class="graph-legend" id="popular-searches-legend">
-								{{{ each popularSearches}}}
-								<li>({popularSearches.score}) {popularSearches.value}</li>
-								{{{ end }}}
-							</ul>
 						</div>
 					</div>
 				</div>
@@ -65,89 +51,71 @@
 	</div>
 
 	<div class="col-lg-3">
-		{{{ if showSystemControls }}}
-		<div class="panel panel-default">
-			<div class="panel-heading">[[admin/dashboard:control-panel]]</div>
-			<div class="panel-body text-center">
-				<p>
-					<button class="btn btn-block btn-warning restart"<!-- IF !canRestart --> disabled<!-- END -->>[[admin/dashboard:restart]]</button>
-					<button class="btn btn-block btn-danger rebuild-and-restart"<!-- IF !canRestart --> disabled<!-- END -->>[[admin/dashboard:rebuild-and-restart]]</button>
-				</p>
-				<!-- IF lastrestart -->
-				<p>
-					[[admin/dashboard:last-restarted-by]]<br />
-					<a href="{config.relative_path}/uid/{lastrestart.uid}"><span class="label label-info">{lastrestart.user.username}</span></a> <span class="timeago" title="{lastrestart.timestampISO}"></span>
-				</p>
-				<!-- ENDIF lastrestart -->
-				<p class="<!-- IF canRestart -->help-block<!-- ELSE -->alert alert-warning<!-- END -->">
-					<!-- IF canRestart -->
-					[[admin/dashboard:restart-warning]]
-					<!-- ELSE -->
-					[[admin/dashboard:restart-disabled]]
-					<!-- END -->
-				</p>
-				<p>
-					<a href="{config.relative_path}/admin/settings/advanced" class="btn btn-info btn-block" data-placement="bottom" data-toggle="tooltip" title="[[admin/dashboard:maintenance-mode-title]]">[[admin/dashboard:maintenance-mode]]</a>
-				</p>
-
-				<hr />
-				<span id="toggle-realtime">[[admin/dashboard:realtime-chart-updates]] <strong>OFF</strong> <i class="fa fa fa-toggle-off pointer"></i></span>
-			</div>
-		</div>
-		{{{ end }}}
-
-		<div class="panel panel-default">
-			<div class="panel-heading">[[admin/dashboard:active-users]]</div>
-			<div class="panel-body">
-				<div id="active-users" class="stats"></div>
-			</div>
-		</div>
-
-		<div class="panel panel-default">
-			<div class="panel-heading">[[admin/dashboard:updates]]</div>
-			<div class="panel-body">
-				<div class="alert <!-- IF lookupFailed -->alert-danger<!-- ELSE --><!-- IF upgradeAvailable -->alert-warning<!-- ELSE --><!-- IF currentPrerelease -->alert-info<!-- ELSE -->alert-success<!-- END --><!-- END --><!-- END --> version-check">
-					<p>[[admin/dashboard:running-version, {version}]]</p>
-					<p>
-					<!-- IF lookupFailed -->
+		<div class="card mb-3">
+			<div class="card-body">
+				<div class="text-sm shadow-sm alert {{{ if lookupFailed }}}alert-danger{{{ else }}}{{{ if upgradeAvailable }}}alert-warning{{{ else }}}{{{ if currentPrerelease }}}alert-info{{{ else }}}alert-success{{{ end }}}{{{ end }}}{{{ end }}} version-check">
+					<p class="">[[admin/dashboard:running-version, {version}]]</p>
+					<p class="mb-0">
+					{{{ if lookupFailed }}}
 					[[admin/dashboard:latest-lookup-failed]]
-					<!-- ELSE -->
-						<!-- IF upgradeAvailable -->
-							<!-- IF currentPrerelease -->
+					{{{ else }}}
+						{{{ if upgradeAvailable }}}
+							{{{ if currentPrerelease }}}
 							[[admin/dashboard:prerelease-upgrade-available, {latestVersion}]]
-							<!-- ELSE -->
+							{{{ else }}}
 							[[admin/dashboard:upgrade-available, {latestVersion}]]
-							<!-- END -->
-						<!-- ELSE -->
-							<!-- IF currentPrerelease -->
+							{{{ end }}}
+						{{{ else }}}
+							{{{ if currentPrerelease }}}
 							[[admin/dashboard:prerelease-warning]]
-							<!-- ELSE -->
+							{{{ else }}}
 							[[admin/dashboard:up-to-date]]
-							<!-- END -->
-						<!-- END -->
-					<!-- END -->
+							{{{ end }}}
+						{{{ end }}}
+					{{{ end }}}
 					</p>
 				</div>
-				<p>
+				<p class="form-text">
 					[[admin/dashboard:keep-updated]]
 				</p>
+				<hr/>
+				{{{ if showSystemControls }}}
+
+				<a href="{config.relative_path}/admin/settings/advanced" class="d-block mb-2 btn btn-info btn-sm" data-bs-placement="bottom" data-bs-toggle="tooltip" title="[[admin/dashboard:maintenance-mode-title]]">[[admin/dashboard:maintenance-mode]]</a>
+
+				<span id="toggle-realtime" class="text-sm">[[admin/dashboard:realtime-chart-updates]] <strong>OFF</strong> <i class="fa fa fa-toggle-off pointer"></i></span>
+				{{{ end }}}
+				<hr/>
+				<h6>[[admin/dashboard:notices]]</h6>
+				{{{ each notices}}}
+				<div class="text-sm">
+					{{{ if ./done }}}
+					<i class="fa fa-fw fa-check text-success"></i> {./doneText}
+					{{{ else }}}
+					{{{ if ./link }}}<a href="{config.relative_path}{./link}" data-bs-toggle="tooltip" title="{./tooltip}">{{{ end }}}
+					<i class="fa fa-fw fa-times text-danger"></i> {./notDoneText}
+					{{{ if ./link }}}</a>{{{ end }}}
+					{{{ end }}}
+				</div>
+			{{{ end }}}
 			</div>
 		</div>
 
-		<div class="panel panel-default">
-			<div class="panel-heading">[[admin/dashboard:notices]]</div>
-			<div class="panel-body">
-			<!-- BEGIN notices -->
-				<div>
-					<!-- IF notices.done -->
-					<i class="fa fa-fw fa-check text-success"></i> {notices.doneText}
-					<!-- ELSE -->
-					<!-- IF notices.link --><a href="{config.relative_path}{notices.link}" data-toggle="tooltip" title="{notices.tooltip}"><!-- ENDIF notices.link -->
-					<i class="fa fa-fw fa-times text-danger"></i> {notices.notDoneText}
-					<!-- IF notices.link --></a><!-- ENDIF notices.link -->
-					<!-- ENDIF notices.done -->
-				</div>
-			<!-- END notices -->
+		<div class="card mb-3">
+			<div class="card-header">[[admin/dashboard:active-users]]</div>
+			<div class="card-body">
+				<div id="active-users" class="stats row row-cols-2"></div>
+			</div>
+		</div>
+
+		<div class="card">
+			<div class="card-header">[[admin/dashboard:popular-searches]]</div>
+			<div class="card-body">
+				<ul class="list-unstyled text-sm">
+					{{{ each popularSearches}}}
+					<li>({popularSearches.score}) {popularSearches.value}</li>
+					{{{ end }}}
+				</ul>
 			</div>
 		</div>
 	</div>

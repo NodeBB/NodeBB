@@ -3,25 +3,32 @@
 
 define('forum/search', [
 	'search',
-	'autocomplete',
 	'storage',
 	'hooks',
 	'alerts',
-], function (searchModule, autocomplete, storage, hooks, alerts) {
+	'api',
+	'translator',
+	'categoryFilter',
+	'userFilter',
+], function (searchModule, storage, hooks, alerts, api, translator, categoryFilter, userFilter) {
 	const Search = {};
+	let selectedUsers = [];
+	let selectedTags = [];
+	let selectedCids = [];
 
 	Search.init = function () {
-		const searchQuery = $('#results').attr('data-search-query');
-
 		const searchIn = $('#search-in');
-
 		searchIn.on('change', function () {
 			updateFormItemVisiblity(searchIn.val());
 		});
 
-		searchModule.highlightMatches(searchQuery, $('.search-result-text p, .search-result-text.search-result-title a'));
+		const searchQuery = $('#results').attr('data-search-query');
+		searchModule.highlightMatches(
+			searchQuery,
+			$('.search-results .content p, .search-results .topic-title')
+		);
 
-		$('#advanced-search').off('submit').on('submit', function (e) {
+		$('#advanced-search form').off('submit').on('submit', function (e) {
 			e.preventDefault();
 			searchModule.query(getSearchDataFromDOM(), function () {
 				$('#search-input').val('');
@@ -31,10 +38,74 @@ define('forum/search', [
 
 		handleSavePreferences();
 
-		enableAutoComplete();
+		categoryFilterDropdown(ajaxify.data.selectedCids);
+		userFilterDropdown($('[component="user/filter"]'), ajaxify.data.userFilterSelected);
+		tagFilterDropdown($('[component="tag/filter"]'), ajaxify.data.tagFilterSelected);
+
+		$('[component="search/filters"]').on('hidden.bs.dropdown', '.dropdown', function () {
+			const updateFns = {
+				replies: updateReplyCountFilter,
+				time: updateTimeFilter,
+				sort: updateSortFilter,
+				tag: updateTagFilter,
+			};
+
+			if (updateFns[$(this).attr('data-filter-name')]) {
+				updateFns[$(this).attr('data-filter-name')]();
+			}
+		});
 
 		fillOutForm();
+		updateTimeFilter();
+		updateReplyCountFilter();
+		updateSortFilter();
 	};
+
+	function updateTagFilter() {
+		const isActive = selectedTags.length > 0;
+		let labelText = '[[search:tags]]';
+		if (selectedTags.length) {
+			labelText = translator.compile(
+				'search:tags-x', selectedTags.map(u => u.valueEscaped).join(', ')
+			);
+		}
+		$('[component="tag/filter/button"]').toggleClass(
+			'active-filter', isActive
+		).find('.filter-label').translateText(labelText);
+	}
+
+	function updateTimeFilter() {
+		const isActive = $('#post-time-range').val() > 0;
+		$('#post-time-button').toggleClass(
+			'active-filter', isActive
+		).find('.filter-label').translateText(
+			isActive ?
+				`[[search:time-${$('#post-time-filter').val()}-than-${$('#post-time-range').val()}]]` :
+				`[[search:time]]`
+		);
+	}
+
+	function updateSortFilter() {
+		const isActive = $('#post-sort-by').val() !== 'relevance' || $('#post-sort-direction').val() !== 'desc';
+		$('#sort-by-button').toggleClass(
+			'active-filter', isActive
+		).find('.filter-label').translateText(
+			isActive ?
+				`[[search:sort-by-${$('#post-sort-by').val()}-${$('#post-sort-direction').val()}]]` :
+				`[[search:sort]]`
+		);
+	}
+
+	function updateReplyCountFilter() {
+		const isActive = $('#reply-count').val() > 0;
+		$('#reply-count-button').toggleClass(
+			'active-filter', isActive
+		).find('.filter-label').translateText(
+			isActive ?
+				`[[search:replies-${$('#reply-count-filter').val()}-count, ${$('#reply-count').val()}]]` :
+				`[[search:replies]]`
+		);
+	}
 
 	function getSearchDataFromDOM() {
 		const form = $('#advanced-search');
@@ -44,17 +115,17 @@ define('forum/search', [
 		searchData.term = $('#search-input').val();
 		if (searchData.in === 'posts' || searchData.in === 'titlesposts' || searchData.in === 'titles') {
 			searchData.matchWords = form.find('#match-words-filter').val();
-			searchData.by = form.find('#posted-by-user').tagsinput('items');
-			searchData.categories = form.find('#posted-in-categories').val();
+			searchData.by = selectedUsers.length ? selectedUsers.map(u => u.username) : undefined;
+			searchData.categories = selectedCids.length ? selectedCids : undefined;
 			searchData.searchChildren = form.find('#search-children').is(':checked');
-			searchData.hasTags = form.find('#has-tags').tagsinput('items');
+			searchData.hasTags = selectedTags.length ? selectedTags.map(t => t.value) : undefined;
 			searchData.replies = form.find('#reply-count').val();
 			searchData.repliesFilter = form.find('#reply-count-filter').val();
 			searchData.timeFilter = form.find('#post-time-filter').val();
 			searchData.timeRange = form.find('#post-time-range').val();
 			searchData.sortBy = form.find('#post-sort-by').val();
 			searchData.sortDirection = form.find('#post-sort-direction').val();
-			searchData.showAs = form.find('#show-as-topics').is(':checked') ? 'topics' : 'posts';
+			searchData.showAs = form.find('#show-results-as').val();
 		}
 
 		hooks.fire('action:search.getSearchDataFromDOM', {
@@ -66,8 +137,8 @@ define('forum/search', [
 	}
 
 	function updateFormItemVisiblity(searchIn) {
-		const hide = searchIn.indexOf('posts') === -1 && searchIn.indexOf('titles') === -1;
-		$('.post-search-item').toggleClass('hide', hide);
+		const hideTitlePostFilters = !searchIn.includes('posts') && !searchIn.includes('titles');
+		$('.post-search-item').toggleClass('hidden', hideTitlePostFilters);
 	}
 
 	function fillOutForm() {
@@ -88,6 +159,10 @@ define('forum/search', [
 
 			if (formData.matchWords) {
 				$('#match-words-filter').val(formData.matchWords);
+			}
+
+			if (formData.showAs) {
+				$('#show-results-as').val(formData.showAs);
 			}
 
 			if (formData.by) {
@@ -127,13 +202,6 @@ define('forum/search', [
 			}
 			$('#post-sort-direction').val(formData.sortDirection || 'desc');
 
-			if (formData.showAs) {
-				const isTopic = formData.showAs === 'topics';
-				const isPost = formData.showAs === 'posts';
-				$('#show-as-topics').prop('checked', isTopic).parent().toggleClass('active', isTopic);
-				$('#show-as-posts').prop('checked', isPost).parent().toggleClass('active', isPost);
-			}
-
 			hooks.fire('action:search.fillOutForm', {
 				form: formData,
 			});
@@ -142,39 +210,180 @@ define('forum/search', [
 
 	function handleSavePreferences() {
 		$('#save-preferences').on('click', function () {
-			storage.setItem('search-preferences', JSON.stringify(getSearchDataFromDOM()));
+			const data = getSearchDataFromDOM();
+			const fieldsToSave = [
+				'matchWords', 'in', 'showAs',
+				'replies', 'repliesFilter',
+				'timeFilter', 'timeRange',
+				'sortBy', 'sortDirection',
+			];
+			const saveData = {};
+			fieldsToSave.forEach((key) => {
+				saveData[key] = data[key];
+			});
+			storage.setItem('search-preferences', JSON.stringify(saveData));
 			alerts.success('[[search:search-preferences-saved]]');
 			return false;
 		});
 
-		$('#clear-preferences').on('click', function () {
+		$('#clear-preferences').on('click', async function () {
 			storage.removeItem('search-preferences');
-			const query = $('#search-input').val();
-			$('#advanced-search')[0].reset();
-			$('#search-input').val(query);
+			const html = await app.parseAndTranslate('partials/search-filters', {});
+			$('[component="search/filters"]').replaceWith(html);
+			$('#search-in').val(ajaxify.data.searchDefaultIn);
+			$('#post-sort-by').val(ajaxify.data.searchDefaultSortBy);
+			$('#match-words-filter').val('all');
+			$('#show-results-as').val('posts');
+			// clearing dom removes all event handlers, reinitialize
+			userFilterDropdown($('[component="user/filter"]'), []);
+			tagFilterDropdown($('[component="tag/filter"]'), []);
+			categoryFilterDropdown([]);
 			alerts.success('[[search:search-preferences-cleared]]');
 			return false;
 		});
 	}
 
-	function enableAutoComplete() {
-		const userEl = $('#posted-by-user');
-		userEl.tagsinput({
-			confirmKeys: [13, 44],
-			trimValue: true,
+
+	function categoryFilterDropdown(_selectedCids) {
+		ajaxify.data.allCategoriesUrl = '';
+		const dropdownEl = $('[component="category/filter"]');
+		categoryFilter.init(dropdownEl, {
+			selectedCids: _selectedCids,
+			updateButton: false, // prevent categoryFilter module from updating the button
+			onHidden: async function (data) {
+				const isActive = data.selectedCids.length > 0 && data.selectedCids[0] !== 'all';
+				let labelText = '[[search:categories]]';
+				ajaxify.data.selectedCids = data.selectedCids;
+				selectedCids = data.selectedCids;
+				if (data.selectedCids.length === 1 && data.selectedCids[0] === 'watched') {
+					ajaxify.data.selectedCategory = { cid: 'watched' };
+					labelText = `[[search:categories-watched-categories]]`;
+				} else if (data.selectedCids.length === 1 && data.selectedCids[0] === 'all') {
+					ajaxify.data.selectedCategory = null;
+				} else if (data.selectedCids.length > 0) {
+					const categoryData = await api.get(`/categories/${data.selectedCids[0]}`);
+					ajaxify.data.selectedCategory = categoryData;
+					labelText = `[[search:categories-x, ${categoryData.name}]]`;
+				}
+				if (data.selectedCids.length > 1) {
+					labelText = `[[search:categories-x, ${data.selectedCids.length}]]`;
+				}
+
+				$('[component="category/filter/button"]').toggleClass(
+					'active-filter', isActive
+				).find('.filter-label').translateText(labelText);
+			},
+			localCategories: [
+				{
+					cid: 'watched',
+					name: '[[category:watched-categories]]',
+					icon: '',
+				},
+			],
 		});
-		if (app.user.privileges['search:users']) {
-			autocomplete.user(userEl.siblings('.bootstrap-tagsinput').find('input'));
+	}
+
+	function userFilterDropdown(el, _selectedUsers) {
+		userFilter.init(el, {
+			selectedUsers: _selectedUsers,
+			template: 'partials/search-filters',
+			onSelect: function (_selectedUsers) {
+				selectedUsers = _selectedUsers;
+			},
+			onHidden: function (_selectedUsers) {
+				const isActive = _selectedUsers.length > 0;
+				let labelText = '[[search:posted-by]]';
+				if (isActive) {
+					labelText = translator.compile(
+						'search:posted-by-usernames', selectedUsers.map(u => u.username).join(', ')
+					);
+				}
+				el.find('[component="user/filter/button"]').toggleClass(
+					'active-filter', isActive
+				).find('.filter-label').translateText(labelText);
+			},
+		});
+	}
+
+	function tagFilterDropdown(el, _selectedTags) {
+		selectedTags = _selectedTags;
+		async function renderSelectedTags() {
+			const html = await app.parseAndTranslate('partials/search-filters', 'tagFilterSelected', {
+				tagFilterSelected: selectedTags,
+			});
+			el.find('[component="tag/filter/selected"]').html(html);
+		}
+		function tagValueToObject(value) {
+			const escapedTag = utils.escapeHTML(value);
+			return {
+				value: value,
+				valueEscaped: escapedTag,
+				valueEncoded: encodeURIComponent(escapedTag),
+				class: escapedTag.replace(/\s/g, '-'),
+			};
 		}
 
-		const tagEl = $('#has-tags');
-		tagEl.tagsinput({
-			confirmKeys: [13, 44],
-			trimValue: true,
-		});
-		if (app.user.privileges['search:tags']) {
-			autocomplete.tag(tagEl.siblings('.bootstrap-tagsinput').find('input'));
+		async function doSearch() {
+			let result = { tags: [] };
+			const query = el.find('[component="tag/filter/search"]').val();
+			if (query && query.length > 1) {
+				if (app.user.privileges['search:tags']) {
+					result = await socket.emit('topics.searchAndLoadTags', { query: query });
+				} else {
+					result = {
+						tags: [tagValueToObject(query)],
+					};
+				}
+			}
+
+			if (!result.tags.length) {
+				el.find('[component="tag/filter/results"]').translateHtml(
+					'[[tags:no-tags-found]]'
+				);
+				return;
+			}
+			result.tags = result.tags.slice(0, 20);
+			const tagMap = {};
+			result.tags.forEach((tag) => {
+				tagMap[tag.valueEscaped] = tag;
+			});
+
+			const html = await app.parseAndTranslate('partials/search-filters', 'tagFilterResults', {
+				tagFilterResults: result.tags,
+			});
+			el.find('[component="tag/filter/results"]').html(html);
+			el.find('[component="tag/filter/results"] [data-tag]').on('click', async function () {
+				selectedTags.push(tagMap[$(this).attr('data-tag')]);
+				renderSelectedTags();
+			});
 		}
+
+		el.find('[component="tag/filter/search"]').on('keyup', utils.debounce(function () {
+			if (app.user.privileges['search:tags']) {
+				doSearch();
+			}
+		}, 1000));
+
+		el.on('click', '[component="tag/filter/delete"]', function () {
+			const deleteTag = $(this).attr('data-tag');
+			selectedTags = selectedTags.filter(tag => tag.valueEscaped !== deleteTag);
+			renderSelectedTags();
+		});
+
+		el.find('[component="tag/filter/search"]').on('keyup', (e) => {
+			if (e.key === 'Enter' && !app.user.privileges['search:tags']) {
+				const value = el.find('[component="tag/filter/search"]').val();
+				if (value && selectedTags.every(tag => tag.value !== value)) {
+					selectedTags.push(tagValueToObject(value));
+					renderSelectedTags();
+				}
+				el.find('[component="tag/filter/search"]').val('');
+			}
+		});
+
+		el.on('shown.bs.dropdown', function () {
+			el.find('[component="tag/filter/search"]').trigger('focus');
+		});
 	}
 
 	return Search;

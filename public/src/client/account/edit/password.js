@@ -24,7 +24,7 @@ define('forum/account/edit/password', [
 			passwordvalid = false;
 
 			try {
-				utils.assertPasswordValidity(password.val());
+				utils.assertPasswordValidity(password.val(), zxcvbn);
 
 				if (password.val() === ajaxify.data.username) {
 					throw new Error('[[user:password_same_as_username]]');
@@ -77,6 +77,7 @@ define('forum/account/edit/password', [
 							ajaxify.go('user/' + ajaxify.data.userslug + '/edit');
 						}
 					})
+					.catch(alerts.error)
 					.finally(() => {
 						btn.removeClass('disabled').find('i').addClass('hide');
 						currentPassword.val('');

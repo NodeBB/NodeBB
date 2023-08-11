@@ -1,5 +1,7 @@
 'use strict';
 
+const nconf = require('nconf');
+
 const plugins = require('../../plugins');
 const events = require('../../events');
 const db = require('../../database');
@@ -35,6 +37,9 @@ Plugins.getActive = async function () {
 };
 
 Plugins.orderActivePlugins = async function (socket, data) {
+	if (nconf.get('plugins:active')) {
+		throw new Error('[[error:plugins-set-in-configuration]]');
+	}
 	data = data.filter(plugin => plugin && plugin.name);
 	await Promise.all(data.map(plugin => db.sortedSetAdd('plugins:active', plugin.order || 0, plugin.name)));
 };

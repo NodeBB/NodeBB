@@ -132,7 +132,7 @@ module.exports = function (User) {
 			// need to keep this for getIPMatchedUsers
 			user.ip = user.ip.replace('::ffff:', '');
 			await getIPMatchedUsers(user);
-			user.customActions = [].concat(user.customActions);
+			user.customActions = user.customActions || [];
 			/*
 				// then spam prevention plugins, using the "filter:user.getRegistrationQueue" hook can be like:
 				user.customActions.push({

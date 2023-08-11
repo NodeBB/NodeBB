@@ -1,23 +1,22 @@
-<div class="form-group">
+<div class="mb-3">
 	<p class="lead">[[user:consent.lead]]</p>
 	<p>[[user:consent.intro]]</p>
-	<div class="checkbox">
-		<label>
-			<input type="checkbox" name="gdpr_agree_data" id="gdpr_agree_data"> <strong>[[register:gdpr_agree_data]]</strong>
-		</label>
+	<div class="form-check mb-3">
+		<input class="form-check-input" type="checkbox" name="gdpr_agree_data" id="gdpr_agree_data">
+		<label class="form-check-label" for="gdpr_agree_data">[[register:gdpr_agree_data]]</label>
 	</div>
+
 	<p>
 		[[user:consent.email_intro]]
-		<!-- IF digestEnabled -->
+		{{{ if digestEnabled }}}
 		[[user:consent.digest_frequency, {digestFrequency}]]
-		<!-- ELSE -->
+		{{{ else }}}
 		[[user:consent.digest_off]]
-		<!-- END -->
+		{{{ end }}}
 	</p>
-	
-	<div class="checkbox">
-		<label>
-			<input type="checkbox" name="gdpr_agree_email" id="gdpr_agree_email"> <strong>[[register:gdpr_agree_email]]</strong>
-		</label>
+
+	<div class="form-check">
+		<input class="form-check-input" type="checkbox" name="gdpr_agree_email" id="gdpr_agree_email">
+		<label class="form-check-label" for="gdpr_agree_email">[[register:gdpr_agree_email]]</label>
 	</div>
 </div>

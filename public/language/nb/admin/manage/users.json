@@ -1,4 +1,5 @@
 {
+	"manage-users": "Manage Users",
 	"users": "Users",
 	"edit": "Actions",
 	"make-admin": "Make Admin",
@@ -24,7 +25,7 @@
 	"filter-by": "Filter by",
 	"pills.unvalidated": "Not Validated",
 	"pills.validated": "Validated",
-	"pills.banned": "Banned",
+	"pills.banned": "Utestengt",
 
 	"50-per-page": "50 per page",
 	"100-per-page": "100 per page",
@@ -49,6 +50,10 @@
 	"users.username": "username",
 	"users.email": "email",
 	"users.no-email": "(no email)",
+	"users.validated": "Validated",
+	"users.not-validated": "Not Validated",
+	"users.validation-pending": "Validation Pending",
+	"users.validation-expired": "Validation Expired",
 	"users.ip": "IP",
 	"users.postcount": "postcount",
 	"users.reputation": "omdømme",
@@ -105,7 +110,7 @@
 	"alerts.create-success": "User created!",
 
 	"alerts.prompt-email": "Emails: ",
-	"alerts.email-sent-to": "An invitation email has been sent to %1",
+	"alerts.email-sent-to": "En invitasjonse-post har blitt sendt til %1",
 	"alerts.x-users-found": "%1 user(s) found, (%2 seconds)",
 	"export-users-started": "Exporting users as csv, this might take a while. You will receive a notification when it is complete.",
 	"export-users-completed": "Users exported as csv, click here to download."

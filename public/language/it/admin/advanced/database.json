@@ -5,7 +5,7 @@
 	"uptime-seconds": "Tempo di caricamento in secondi",
 	"uptime-days": "Tempo di caricamento in giorni",
 
-	"mongo": "Mongo",
+	"mongo": "MongoDB",
 	"mongo.version": "Versione MongoDB",
 	"mongo.storage-engine": "Motore di archiviazione",
 	"mongo.collections": "Collezioni",

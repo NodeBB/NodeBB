@@ -1,9 +1,11 @@
 {
+	"manage-tags": "Manage Tags",
 	"none": "Vaše fórum neobsahuje žádné témata se značkami.",
 	"bg-color": "Barva pozadí",
 	"text-color": "Barva textu",
 	"description": "Pro výběr více značek, vyberte značky kliknutím nebo přetažením, za použití klávesy <code>CTRL</code>.",
 	"create": "Vytvořit značku",
+	"add-tag": "Add tag",
 	"modify": "Upravit značky",
 	"rename": "Přejmenovat značky",
 	"delete": "Odstranit vybrané značky",

@@ -1,8 +1,11 @@
 {
+    "all-tags": "All tags",
     "no_tag_topics": "このタグに関連するスレッドはありません。",
+    "no-tags-found": "No tags found",
     "tags": "タグ",
     "enter_tags_here": "ここにタグを入力します。一つのタグが%1から%2までの文字にして下さい。",
     "enter_tags_here_short": "タグを入れます…",
     "no_tags": "タグがありません",
-    "select_tags": "Select Tags"
+    "select_tags": "Select Tags",
+    "tag-whitelist": "Tag Whitelist"
 }

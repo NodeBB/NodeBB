@@ -46,20 +46,20 @@ define('admin/appearance/themes', ['bootbox', 'translator', 'alerts'], function 
 		});
 
 		$('#revert_theme').on('click', function () {
-			if (config['theme:id'] === 'nodebb-theme-persona') {
+			if (config['theme:id'] === 'nodebb-theme-harmony') {
 				return;
 			}
 			bootbox.confirm('[[admin/appearance/themes:revert-confirm]]', function (confirm) {
 				if (confirm) {
 					socket.emit('admin.themes.set', {
 						type: 'local',
-						id: 'nodebb-theme-persona',
+						id: 'nodebb-theme-harmony',
 					}, function (err) {
 						if (err) {
 							return alerts.error(err);
 						}
-						config['theme:id'] = 'nodebb-theme-persona';
-						highlightSelectedTheme('nodebb-theme-persona');
+						config['theme:id'] = 'nodebb-theme-harmony';
+						highlightSelectedTheme('nodebb-theme-harmony');
 						alerts.alert({
 							alert_id: 'admin:theme',
 							type: 'success',

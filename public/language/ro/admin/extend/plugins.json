@@ -1,4 +1,5 @@
 {
+	"plugins": "Plugins",
 	"trending": "Trending",
 	"installed": "Installed",
 	"active": "Active",

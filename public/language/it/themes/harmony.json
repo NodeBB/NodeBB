@@ -1,0 +1,16 @@
+{
+	"theme-name": "Tema Armonia",
+	"skins": "Skin",
+	"collapse": "Collassa",
+	"expand": "Espandi",
+	"login-register-to-search": "Accedi o registrati per effettuare la ricerca.",
+	"settings.title": "Impostazioni tema",
+	"settings.enableQuickReply": "Abilita risposta rapida",
+	"settings.centerHeaderElements": "Centra elementi dell'intestazione",
+	"settings.mobileTopicTeasers": "Mostra le anteprime delle discussioni su mobile",
+	"settings.stickyToolbar": "Barra degli strumenti adesiva",
+	"settings.stickyToolbar.help": "La barra degli strumenti nelle pagine delle discussioni e delle categorie si attacca alla parte superiore della pagina.",
+	"settings.autohideBottombar": "Nascondi automaticamente la barra inferiore",
+	"settings.autohideBottombar.help": "La barra inferiore nella visualizzazione mobile sarà nascosta quando la pagina viene fatta scorrere verso il basso.",
+	"settings.chatModals": "Abilita i modali della chat"
+}

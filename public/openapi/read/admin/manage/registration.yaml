@@ -11,6 +11,8 @@ get:
             allOf:
               - type: object
                 properties:
+                  title:
+                    type: string
                   registrationQueueCount:
                     type: number
                   users:

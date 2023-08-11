@@ -1,0 +1,16 @@
+{
+	"theme-name": "Harmony 主题",
+	"skins": "皮肤",
+	"collapse": "折叠",
+	"expand": "展开",
+	"login-register-to-search": "登录或注册以进行搜索。",
+	"settings.title": "主题设置",
+	"settings.enableQuickReply": "启用快速回复",
+	"settings.centerHeaderElements": "标题元素居中",
+	"settings.mobileTopicTeasers": "在移动设备显示话题预告",
+	"settings.stickyToolbar": "附着工具条",
+	"settings.stickyToolbar.help": "主题和类别页面上的工具条将附着在页面顶部",
+	"settings.autohideBottombar": "自动隐藏底栏",
+	"settings.autohideBottombar.help": "当页面向下滚动时，移动设备视图的底栏将被隐藏",
+	"settings.chatModals": "启用聊天模式"
+}

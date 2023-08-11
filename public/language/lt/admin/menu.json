@@ -8,7 +8,7 @@
 	"section-general": "General",
 
 	"section-manage": "Manage",
-	"manage/categories": "Categories",
+	"manage/categories": "Kategorijos",
 	"manage/privileges": "Privileges",
 	"manage/tags": "Tags",
 	"manage/users": "Users",
@@ -27,7 +27,7 @@
 	"settings/reputation": "Reputation & Flags",
 	"settings/email": "Email",
 	"settings/user": "Users",
-	"settings/group": "Groups",
+	"settings/group": "Grupės",
 	"settings/guest": "Guests",
 	"settings/uploads": "Uploads",
 	"settings/languages": "Languages",
@@ -72,11 +72,13 @@
 	"development/info": "Info",
 
 	"rebuild-and-restart-forum": "Rebuild & Restart Forum",
+	"rebuild-and-restart": "Rebuild & Restart",
 	"restart-forum": "Restart Forum",
+	"restart": "Restart",
 	"logout": "Log out",
 	"view-forum": "View Forum",
 
-	"search.placeholder": "Press &quot;/&quot; to search for settings",
+	"search.placeholder": "Search settings",
 	"search.no-results": "No results...",
 	"search.search-forum": "Search the forum for <strong></strong>",
 	"search.keep-typing": "Type more to see results...",

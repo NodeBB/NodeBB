@@ -1,8 +1,11 @@
 {
+    "all-tags": "All tags",
     "no_tag_topics": "Er zijn geen onderwerpen met deze tag.",
+    "no-tags-found": "No tags found",
     "tags": "Tags",
     "enter_tags_here": "Voeg hier tags toe, tussen de %1 en %2 tekens per stuk.",
     "enter_tags_here_short": "Voer tags in...",
     "no_tags": "Er zijn nog geen tags geplaatst",
-    "select_tags": "Selecteer tags"
+    "select_tags": "Selecteer tags",
+    "tag-whitelist": "Tag Whitelist"
 }

@@ -5,7 +5,7 @@
 	"uptime-seconds": "זמן מאתחול אחרון בשניות",
 	"uptime-days": "זמן מאתחול אחרון בימים",
 
-	"mongo": "Mongo",
+	"mongo": "MongoDB",
 	"mongo.version": "גרסת MongoDB",
 	"mongo.storage-engine": "מנוע אחסון",
 	"mongo.collections": "אוסף",

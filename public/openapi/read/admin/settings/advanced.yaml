@@ -1,0 +1,20 @@
+get:
+  tags:
+    - admin
+  summary: Get advanced settings
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  title:
+                    type: string
+                  groupsExemptFromMaintenanceMode:
+                    type: array
+                    items:
+                      $ref: ../../../components/schemas/GroupObject.yaml#/GroupDataObject
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

@@ -1,6 +1,48 @@
 put:
   tags:
     - topics
+  summary: update the tags of a topic
+  description: This operation updates the tags of the topic to the array of tags sent in the request
+  parameters:
+    - in: path
+      name: tid
+      schema:
+        type: string
+      required: true
+      description: a valid topic id
+      example: 1
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            tags:
+              type: array
+              description: 'An array of tags'
+              items:
+                type: string
+              example: [test, foobar]
+  responses:
+    '200':
+      description: Topic tags successfully updated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: array
+                description: 'The current tags of the topic'
+                items:
+                  type: object
+                example: [{}, {}]
+patch:
+  tags:
+    - topics
   summary: adds tags to a topic
   description: This operation adds tags to a topic
   parameters:
@@ -35,8 +77,11 @@ put:
               status:
                 $ref: ../../../components/schemas/Status.yaml#/Status
               response:
-                type: object
-                properties: {}
+                type: array
+                description: 'The current tags of the topic'
+                items:
+                  type: object
+                example: [{}, {}]
 delete:
   tags:
     - topics

@@ -1,6 +1,7 @@
 
 'use strict';
 
+const winston = require('winston');
 const _ = require('lodash');
 
 const db = require('../database');
@@ -11,11 +12,14 @@ const plugins = require('../plugins');
 const batch = require('../batch');
 
 module.exports = function (Categories) {
-	Categories.getRecentReplies = async function (cid, uid, count) {
-		if (!parseInt(count, 10)) {
-			return [];
+	Categories.getRecentReplies = async function (cid, uid, start, stop) {
+		// backwards compatibility, treat start as count
+		if (stop === undefined && start > 0) {
+			winston.warn('[Categories.getRecentReplies] 3 params deprecated please use Categories.getRecentReplies(cid, uid, start, stop)');
+			stop = start - 1;
+			start = 0;
 		}
-		let pids = await db.getSortedSetRevRange(`cid:${cid}:pids`, 0, count - 1);
+		let pids = await db.getSortedSetRevRange(`cid:${cid}:pids`, start, stop);
 		pids = await privileges.posts.filter('topics:read', pids, uid);
 		return await posts.getPostSummaryByPids(pids, uid, { stripTags: true });
 	};
@@ -127,7 +131,7 @@ module.exports = function (Categories) {
 		categories.forEach((category) => {
 			if (category) {
 				category.posts = topics.filter(t => t.cid && (t.cid === category.cid || t.parentCids.includes(category.cid)))
-					.sort((a, b) => b.pid - a.pid)
+					.sort((a, b) => b.timestamp - a.timestamp)
 					.slice(0, parseInt(category.numRecentReplies, 10));
 			}
 		});
@@ -143,7 +147,7 @@ module.exports = function (Categories) {
 				const posts = [];
 				getPostsRecursive(category, posts);
 
-				posts.sort((a, b) => b.pid - a.pid);
+				posts.sort((a, b) => b.timestamp - a.timestamp);
 				if (posts.length) {
 					category.posts = [posts[0]];
 				}
@@ -161,7 +165,6 @@ module.exports = function (Categories) {
 
 	// terrible name, should be topics.moveTopicPosts
 	Categories.moveRecentReplies = async function (tid, oldCid, cid) {
-		await updatePostCount(tid, oldCid, cid);
 		const [pids, topicDeleted] = await Promise.all([
 			topics.getPids(tid),
 			topics.getTopicField(tid, 'deleted'),
@@ -191,16 +194,4 @@ module.exports = function (Categories) {
 			]);
 		}, { batch: 500 });
 	};
-
-	async function updatePostCount(tid, oldCid, newCid) {
-		const postCount = await topics.getTopicField(tid, 'postcount');
-		if (!postCount) {
-			return;
-		}
-
-		await Promise.all([
-			db.incrObjectFieldBy(`category:${oldCid}`, 'post_count', -postCount),
-			db.incrObjectFieldBy(`category:${newCid}`, 'post_count', postCount),
-		]);
-	}
 };

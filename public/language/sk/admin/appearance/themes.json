@@ -1,7 +1,9 @@
 {
+    "themes": "Themes",
     "checking-for-installed": "Vyhľadávanie nainštalovaných motívov...",
     "homepage": "Domovská stránka",
     "select-theme": "Vybrať motív",
+    "revert-theme": "Revert Theme",
     "current-theme": "Aktuálny motív",
     "no-themes": "Žiadne nainštalované motívy neboli nájdené",
     "revert-confirm": "Ste si istý/a, že chcete obnoviť predvolený NodeBB motív?",

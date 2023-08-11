@@ -4,8 +4,13 @@
 
 	"acp-title": "%1 | Kontrol Panel Admin NodeBB",
 	"settings-header-contents": "Konten",
-	"changes-saved": "Perubahan Disimpan",
-	"changes-saved-message": "Perubahan konfigurasi NodeBB Anda telah disimpan.",
+	"changes-saved": "Changes Saved",
+	"changes-saved-message": "Your changes to the NodeBB configuration have been saved.",
 	"changes-not-saved": "Perubahan Tidak Disimpan",
-	"changes-not-saved-message": "NodeBB mengalami masalah saat menyimpan perubahan Anda. (%1)"
+	"changes-not-saved-message": "NodeBB mengalami masalah saat menyimpan perubahan Anda. (%1)",
+	"save-changes": "Save changes",
+	"min": "Min:",
+	"max": "Max:",
+	"view": "View",
+	"edit": "Edit"
 }

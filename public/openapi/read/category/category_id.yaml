@@ -99,6 +99,16 @@ get:
                     type: number
                   reputation:disabled:
                     type: number
+                  selectedTag:
+                    type: object
+                    properties:
+                      label:
+                        type: string
+                    nullable: true
+                  selectedTags:
+                    type: array
+                    items:
+                      type: string
               - $ref: ../../components/schemas/Pagination.yaml#/Pagination
               - $ref: ../../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
               - $ref: ../../components/schemas/CommonProps.yaml#/CommonProps

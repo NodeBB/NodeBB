@@ -1,0 +1,10 @@
+{
+    "settings.title": "Impostazioni tema",
+    "settings.intro": "Puoi personalizzare le impostazioni del tema qui. Le impostazioni sono memorizzate in base al dispositivo, quindi puoi avere impostazioni diverse su dispositivi diversi (telefono, tablet, desktop, ecc.)",
+    "settings.mobile-menu-side": "Cambia da che parte è attivo ogni menu mobile",
+    "settings.autoHidingNavbar": "Nascondi automaticamente la barra di navigazione durante lo scorrimento",
+    "settings.autoHidingNavbar-xs": "Schermi molto piccoli (ad es. telefoni in modalità verticale)",
+    "settings.autoHidingNavbar-sm": "Schermi più piccoli (ad es. telefoni, alcuni tablet)",
+    "settings.autoHidingNavbar-md": "Schermi di medie dimensioni (ad es. tablet in modalità orizzontale)",
+    "settings.autoHidingNavbar-lg": "Schermi più grandi (ad es. computer desktop)"
+}

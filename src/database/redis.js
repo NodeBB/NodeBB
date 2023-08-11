@@ -2,7 +2,6 @@
 
 const nconf = require('nconf');
 const semver = require('semver');
-const session = require('express-session');
 
 const connection = require('./redis/connection');
 
@@ -34,13 +33,13 @@ redisModule.questions = [
 ];
 
 
-redisModule.init = async function () {
-	redisModule.client = await connection.connect(nconf.get('redis'));
+redisModule.init = async function (opts) {
+	redisModule.client = await connection.connect(opts || nconf.get('redis'));
 };
 
 redisModule.createSessionStore = async function (options) {
 	const meta = require('../meta');
-	const sessionStore = require('connect-redis')(session);
+	const sessionStore = require('connect-redis').default;
 	const client = await connection.connect(options);
 	const store = new sessionStore({
 		client: client,
@@ -63,6 +62,9 @@ redisModule.checkCompatibilityVersion = function (version, callback) {
 
 redisModule.close = async function () {
 	await redisModule.client.quit();
+	if (redisModule.objectCache) {
+		redisModule.objectCache.reset();
+	}
 };
 
 redisModule.info = async function (cxn) {

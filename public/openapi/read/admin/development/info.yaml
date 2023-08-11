@@ -64,12 +64,7 @@ get:
                             uptimeHumanReadable:
                               type: string
                             cpuUsage:
-                              type: object
-                              properties:
-                                user:
-                                  type: string
-                                system:
-                                  type: string
+                              type: number
                         os:
                           type: object
                           properties:
@@ -89,6 +84,8 @@ get:
                             freemem:
                               type: string
                             totalmem:
+                              type: string
+                            usedmem:
                               type: string
                         nodebb:
                           type: object

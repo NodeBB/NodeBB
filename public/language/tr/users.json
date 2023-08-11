@@ -1,11 +1,12 @@
 {
+    "all-users": "Tüm kullanıcılar",
     "latest_users": "En Yeni Kullanıcılar",
     "top_posters": "En Fazla Gönderim Yapanlar",
     "most_reputation": "En Saygınlar",
     "most_flags": "En Fazla Şikayet",
     "search": "Ara",
     "enter_username": "Aramak için bir kullanıcı adı girin",
-    "search-user-for-chat": "Sohbet için bir kullanıcı arayın",
+    "search-user-for-chat": "Sohbet başlatmak için kullanıcıyı arayın:",
     "load_more": "Daha Fazla Yükle",
     "users-found-search-took": "%1 kullanıcı(lar) bulundu! Arama %2 saniye sürdü.",
     "filter-by": "Şu şekilde filtrele",

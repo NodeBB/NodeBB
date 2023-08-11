@@ -1,0 +1,16 @@
+{
+	"theme-name": "Harmony Theme",
+	"skins": "پوسته‌ها",
+	"collapse": "بستن ",
+	"expand": "باز کردن",
+	"login-register-to-search": "برای جستجو وارد شوید و یا ثبت نام کنید ",
+	"settings.title": "تنظیمات تم ",
+	"settings.enableQuickReply": "پاسخ سریع را فعال کنید",
+	"settings.centerHeaderElements": "وسط چین کردن عناصر هدر ",
+	"settings.mobileTopicTeasers": "نمایش تیزرهای تاپیک در گوشی",
+	"settings.stickyToolbar": "نوار ابزار چسبیده ",
+	"settings.stickyToolbar.help": "نوار ابزار در تاپیک و صفحه دسته بدی ها در بالای صفحه ثابت می‌ماند",
+	"settings.autohideBottombar": "مخفی کردن اتوماتیک منوی پایینی ",
+	"settings.autohideBottombar.help": "وقتی صفحه به پایین اسکرول می شود، منوی پایین در نمایش گوشی مخفی خواهد شد  ",
+	"settings.chatModals": "فعال کردن پنجره کوچک برای چت "
+}

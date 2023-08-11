@@ -1,14 +1,18 @@
 'use strict';
 
 
-define('forum/topic/fork', ['components', 'postSelect', 'alerts'], function (components, postSelect, alerts) {
+define('forum/topic/fork', [
+	'components', 'postSelect', 'alerts', 'categorySelector',
+], function (components, postSelect, alerts, categorySelector) {
 	const Fork = {};
 	let forkModal;
 	let forkCommit;
 	let fromTid;
+	let selectedCategory;
 
 	Fork.init = function () {
 		fromTid = ajaxify.data.tid;
+		selectedCategory = ajaxify.data.category;
 
 		$(window).off('action:ajaxify.end', onAjaxifyEnd).on('action:ajaxify.end', onAjaxifyEnd);
 
@@ -16,14 +20,23 @@ define('forum/topic/fork', ['components', 'postSelect', 'alerts'], function (com
 			return;
 		}
 
-		app.parseAndTranslate('partials/fork_thread_modal', {}, function (html) {
+		app.parseAndTranslate('modals/fork-topic', {
+			selectedCategory: selectedCategory,
+		}, function (html) {
 			forkModal = html;
 
 			forkCommit = forkModal.find('#fork_thread_commit');
 
 			$('body').append(forkModal);
 
-			forkModal.find('.close,#fork_thread_cancel').on('click', closeForkModal);
+			categorySelector.init(forkModal.find('[component="category-selector"]'), {
+				onSelect: function (category) {
+					selectedCategory = category;
+				},
+				privilege: 'moderate',
+			});
+
+			forkModal.find('#fork_thread_cancel').on('click', closeForkModal);
 			forkModal.find('#fork-title').on('keyup', checkForkButtonEnable);
 
 			postSelect.init(function () {
@@ -44,11 +57,15 @@ define('forum/topic/fork', ['components', 'postSelect', 'alerts'], function (com
 	}
 
 	function createTopicFromPosts() {
+		if (!selectedCategory) {
+			return;
+		}
 		forkCommit.attr('disabled', true);
 		socket.emit('topics.createTopicFromPosts', {
 			title: forkModal.find('#fork-title').val(),
 			pids: postSelect.pids,
 			fromTid: fromTid,
+			cid: selectedCategory.cid,
 		}, function (err, newTopic) {
 			function fadeOutAndRemove(pid) {
 				components.get('post', 'pid', pid).fadeOut(500, function () {

@@ -1,0 +1,49 @@
+div.categories {
+	ul[data-cid] {
+		> li > ul > li {
+			padding-left: 3rem;
+		}
+
+		> li {
+			&.placeholder {
+				border: 1px dashed #2196F3;
+				background-color: #E1F5FE;
+				width: 100%;
+			}
+		}
+	}
+
+	.disabled > .category-row {
+		.icon, .title, .description {
+			opacity: 0.5;
+		}
+
+		.stats {
+			opacity: 0.3;
+		}
+	}
+
+	.toggle {
+		width: 24px;
+		height: 24px;
+		line-height: 24px;
+		cursor: pointer;
+	}
+
+	.information {
+		cursor: move;
+	}
+
+	.children-placeholder {
+		min-height: 20px;
+		height: 20px;
+	}
+}
+
+.category {
+	.privilege-table {
+		tr > th:first-child {
+			min-width: 150px;
+		}
+	}
+}

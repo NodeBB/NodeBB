@@ -20,7 +20,6 @@ define('forum/account/edit', [
 			$('#groupTitle option[value=""]').attr('selected', true);
 		}
 
-		handleImageChange();
 		handleAccountDelete();
 		handleEmailConfirm();
 		updateSignature();
@@ -51,12 +50,7 @@ define('forum/account/edit', [
 		return false;
 	}
 
-	function handleImageChange() {
-		$('#changePictureBtn').on('click', function () {
-			picture.openChangeModal();
-			return false;
-		});
-	}
+
 
 	function handleAccountDelete() {
 		$('#deleteAccountBtn').on('click', function () {

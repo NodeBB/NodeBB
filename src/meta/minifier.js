@@ -2,13 +2,13 @@
 
 const fs = require('fs');
 const os = require('os');
-const uglify = require('uglify-es');
 const async = require('async');
 const winston = require('winston');
-const less = require('less');
 const postcss = require('postcss');
 const autoprefixer = require('autoprefixer');
 const clean = require('postcss-clean');
+const rtlcss = require('rtlcss');
+const sass = require('../utils').getSass();
 
 const fork = require('./debugFork');
 require('../file'); // for graceful-fs
@@ -34,7 +34,7 @@ Object.defineProperty(Minifier, 'maxThreads', {
 	enumerable: true,
 });
 
-Minifier.maxThreads = os.cpus().length - 1;
+Minifier.maxThreads = Math.max(1, os.cpus().length - 1);
 
 Minifier.killAll = function () {
 	pool.forEach((child) => {
@@ -147,100 +147,54 @@ actions.concat = async function concat(data) {
 	}
 };
 
-actions.minifyJS_batch = async function minifyJS_batch(data) {
-	await async.eachLimit(data.files, 100, async (fileObj) => {
-		const source = await fs.promises.readFile(fileObj.srcPath, 'utf8');
-		const filesToMinify = [
-			{
-				srcPath: fileObj.srcPath,
-				filename: fileObj.filename,
-				source: source,
-			},
-		];
-
-		await minifyAndSave({
-			files: filesToMinify,
-			destPath: fileObj.destPath,
-			filename: fileObj.filename,
-		});
-	});
-};
-
-actions.minifyJS = async function minifyJS(data) {
-	const filesToMinify = await async.mapLimit(data.files, 1000, async (fileObj) => {
-		const source = await fs.promises.readFile(fileObj.srcPath, 'utf8');
-		return {
-			srcPath: fileObj.srcPath,
-			filename: fileObj.filename,
-			source: source,
-		};
-	});
-	await minifyAndSave({
-		files: filesToMinify,
-		destPath: data.destPath,
-		filename: data.filename,
-	});
-};
-
-async function minifyAndSave(data) {
-	const scripts = {};
-	data.files.forEach((ref) => {
-		if (ref && ref.filename && ref.source) {
-			scripts[ref.filename] = ref.source;
-		}
-	});
-
-	const minified = uglify.minify(scripts, {
-		sourceMap: {
-			filename: data.filename,
-			url: `${String(data.filename).split(/[/\\]/).pop()}.map`,
-			includeSources: true,
-		},
-		compress: false,
-	});
-
-	if (minified.error) {
-		throw new Error(`Error minifying ${minified.error.filename}\n${minified.error.stack}`);
-	}
-	await Promise.all([
-		fs.promises.writeFile(data.destPath, minified.code),
-		fs.promises.writeFile(`${data.destPath}.map`, minified.map),
-	]);
-}
-
 Minifier.js = {};
-Minifier.js.bundle = async function (data, minify, fork) {
+Minifier.js.bundle = async function (data, fork) {
 	return await executeAction({
-		act: minify ? 'minifyJS' : 'concat',
+		act: 'concat',
 		files: data.files,
 		filename: data.filename,
 		destPath: data.destPath,
 	}, fork);
 };
 
-Minifier.js.minifyBatch = async function (scripts, fork) {
-	return await executeAction({
-		act: 'minifyJS_batch',
-		files: scripts,
-	}, fork);
-};
-
 actions.buildCSS = async function buildCSS(data) {
-	const lessOutput = await less.render(data.source, {
-		paths: data.paths,
-		javascriptEnabled: false,
-	});
-
-	const postcssArgs = [autoprefixer];
-	if (data.minify) {
-		postcssArgs.push(clean({
-			processImportFrom: ['local'],
-		}));
+	let css = '';
+	try {
+		const scssOutput = await sass.compileStringAsync(data.source, {
+			loadPaths: data.paths,
+		});
+		css = scssOutput.css.toString();
+	} catch (err) {
+		console.error(err.stack);
 	}
-	const result = await postcss(postcssArgs).process(lessOutput.css, {
-		from: undefined,
-	});
-	return { code: result.css };
+
+
+	async function processScss(direction) {
+		if (direction === 'rtl') {
+			css = await postcss([rtlcss()]).process(css, {
+				from: undefined,
+			});
+		}
+		const postcssArgs = [autoprefixer];
+		if (data.minify) {
+			postcssArgs.push(clean({
+				processImportFrom: ['local'],
+			}));
+		}
+		return await postcss(postcssArgs).process(css, {
+			from: undefined,
+		});
+	}
+
+	const [ltrresult, rtlresult] = await Promise.all([
+		processScss('ltr'),
+		processScss('rtl'),
+	]);
+
+	return {
+		ltr: { code: ltrresult.css },
+		rtl: { code: rtlresult.css },
+	};
 };
 
 Minifier.css = {};

@@ -5,7 +5,7 @@ const winston = require('winston');
 const nconf = require('nconf');
 const _ = require('lodash');
 const path = require('path');
-const mkdirp = require('mkdirp');
+const { mkdirp } = require('mkdirp');
 const chalk = require('chalk');
 
 const cacheBuster = require('./cacheBuster');
@@ -70,26 +70,42 @@ async function beforeBuild(targets) {
 		await plugins.prepareForBuild(targets);
 		await mkdirp(path.join(__dirname, '../../build/public'));
 	} catch (err) {
-		winston.error(`[build] Encountered error preparing for build\n${err.stack}`);
+		winston.error(`[build] Encountered error preparing for build`);
 		throw err;
 	}
 }
 
 const allTargets = Object.keys(targetHandlers).filter(name => typeof targetHandlers[name] === 'function');
 
-async function buildTargets(targets, parallel) {
+async function buildTargets(targets, parallel, options) {
 	const length = Math.max(...targets.map(name => name.length));
-
-	if (parallel) {
+	const jsTargets = targets.filter(target => targetHandlers.javascript.includes(target));
+	const otherTargets = targets.filter(target => !targetHandlers.javascript.includes(target));
+	async function buildJSTargets() {
 		await Promise.all(
-			targets.map(
+			jsTargets.map(
 				target => step(target, parallel, `${_.padStart(target, length)} `)
 			)
 		);
+		// run webpack after jstargets are done, no need to wait for css/templates etc.
+		if (options.webpack || options.watch) {
+			await exports.webpack(options);
+		}
+	}
+	if (parallel) {
+		await Promise.all([
+			buildJSTargets(),
+			...otherTargets.map(
+				target => step(target, parallel, `${_.padStart(target, length)} `)
+			),
+		]);
 	} else {
 		for (const target of targets) {
 			// eslint-disable-next-line no-await-in-loop
 			await step(target, parallel, `${_.padStart(target, length)} `);
+		}
+		if (options.webpack || options.watch) {
+			await exports.webpack(options);
 		}
 	}
 }
@@ -175,17 +191,13 @@ exports.build = async function (targets, options) {
 		}
 
 		const startTime = Date.now();
-		await buildTargets(targets, !series);
-
-		if (options.webpack) {
-			await exports.webpack(options);
-		}
+		await buildTargets(targets, !series, options);
 
 		const totalTime = (Date.now() - startTime) / 1000;
 		await cacheBuster.write();
 		winston.info(`[build] Asset compilation successful. Completed in ${totalTime}sec.`);
 	} catch (err) {
-		winston.error(`[build] Encountered error during build step\n${err.stack ? err.stack : err}`);
+		winston.error(`[build] Encountered error during build step`);
 		throw err;
 	}
 };
@@ -199,9 +211,9 @@ exports.webpack = async function (options) {
 	const webpack = require('webpack');
 	const fs = require('fs');
 	const util = require('util');
-	const db = require('../database');
+	const plugins = require('../plugins/data');
 
-	const activePlugins = await db.getSortedSetRange('plugins:active', 0, -1);
+	const activePlugins = (await plugins.getActive()).map(p => p.id);
 	if (!activePlugins.includes('nodebb-plugin-composer-default')) {
 		activePlugins.push('nodebb-plugin-composer-default');
 	}

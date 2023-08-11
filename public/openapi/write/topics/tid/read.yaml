@@ -1,0 +1,52 @@
+delete:
+  tags:
+    - topics
+  summary: mark topic unread
+  description: This operation marks a topic as unread for the calling user.
+  parameters:
+    - in: path
+      name: tid
+      schema:
+        type: string
+      required: true
+      description: a valid topic id
+      example: 1
+  responses:
+    '200':
+      description: Topic successfully marked unread.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}
+put:
+  tags:
+    - topics
+  summary: mark topic read
+  description: This operation marks a topic as read for the calling user.
+  parameters:
+    - in: path
+      name: tid
+      schema:
+        type: string
+      required: true
+      description: a valid topic id
+      example: 1
+  responses:
+    '200':
+      description: Topic successfully marked read
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}

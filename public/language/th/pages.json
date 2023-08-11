@@ -14,6 +14,7 @@
     "flagged-content": "เนื้อหาที่ถูกปักธง",
     "ip-blacklist": "ไอดีที่ถูกขึ้นบัญชีดำ",
     "post-queue": "คิวโพส",
+    "registration-queue": "Registration Queue",
     "users/online": "ผู้ใช้ออนไลน์",
     "users/latest": "ผู้ใช้ล่าสุด",
     "users/sort-posts": "ผู้ใช้ที่โพสต์เยอะที่สุด",
@@ -49,6 +50,7 @@
     "account/watched_categories": "%1's Watched Categories",
     "account/bookmarks": "บุ๊กมาร์คโพสต์ของ  %1",
     "account/settings": "การตั้งค่าผู้ใช้",
+    "account/settings-of": "Changing settings of %1",
     "account/watched": "กระทู้ที่ถูกดูโดย  %1",
     "account/ignored": "กระทู้ที่ถูกละเว้นโดย %1",
     "account/upvoted": "โพสต์ที่ถูกโหวตขึ้นโดย %1",
@@ -59,7 +61,7 @@
     "account/uploads": "Uploads by %1",
     "account/sessions": "Login Sessions",
     "confirm": "อีเมล์ได้รับการยืนยันแล้ว",
-    "maintenance.text": "%1 กำลังอยู่ระหว่างการปิดปรับปรุงชั่วคราว กรุณาลองใหม่อีกครั้งในภายหลัง",
+    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
     "maintenance.messageIntro": "ผู้ดูแลระบบได้ฝากข้อความต่อไปนี้เอาไว้",
     "throttled.text": "%1 ไม่สามารถเข้าถึงได้ในขณะนี้เนื่องจากมีการโหลดที่หนักมากเกินไป กรุณากลับเข้ามาอีกครั้งในภายหลัง"
 }

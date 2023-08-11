@@ -64,10 +64,10 @@ module.exports = function (Posts) {
 		if (isMainPost) {
 			const tid = await Posts.getPostField(pid, 'tid');
 			let thumbs = await topics.thumbs.get(tid);
-			const replacePath = path.posix.join(`${nconf.get('relative_path')}${nconf.get('upload_url')}/`);
-			thumbs = thumbs.map(thumb => thumb.url.replace(replacePath, '')).filter(path => !validator.isURL(path, {
+			thumbs = thumbs.map(thumb => thumb.path).filter(path => !validator.isURL(path, {
 				require_protocol: true,
 			}));
+			thumbs = thumbs.map(t => t.slice(1)); // remove leading `/` or `\\` on windows
 			uploads.push(...thumbs);
 		}
 
@@ -98,6 +98,10 @@ module.exports = function (Posts) {
 		let files = await fs.readdir(_getFullPath('/files'));
 		files = files.filter(filename => filename !== '.gitignore');
 
+		// Exclude non-timestamped files (e.g. group covers; see gh#10783/gh#10705)
+		const tsPrefix = /^\d{13}-/;
+		files = files.filter(filename => tsPrefix.test(filename));
+
 		files = await Promise.all(files.map(async filename => (await Posts.uploads.isOrphan(`files/${filename}`) ? `files/${filename}` : null)));
 		files = files.filter(Boolean);
 
@@ -120,10 +124,9 @@ module.exports = function (Posts) {
 		}));
 		orphans = orphans.filter(Boolean);
 
-		// Note: no await. Deletion not guaranteed by method end.
-		orphans.forEach((relPath) => {
-			file.delete(_getFullPath(relPath));
-		});
+		await Promise.all(orphans.map(async (relPath) => {
+			await file.delete(_getFullPath(relPath));
+		}));
 
 		return orphans;
 	};
@@ -137,6 +140,14 @@ module.exports = function (Posts) {
 		// Given an array of file names, determines which pids they are used in
 		if (!Array.isArray(filePaths)) {
 			filePaths = [filePaths];
+		}
+
+		if (process.platform === 'win32') {
+			// windows path => 'files\\1685368788211-1-profileimg.jpg'
+			// turn it into => 'files/1685368788211-1-profileimg.jpg'
+			filePaths.forEach((file) => {
+				file.path = file.path.split(path.sep).join(path.posix.sep);
+			});
 		}
 
 		const keys = filePaths.map(fileObj => `upload:${md5(fileObj.path.replace('-resized', ''))}:pids`);

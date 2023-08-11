@@ -1,16 +1,16 @@
 'use strict';
 
-const fs = require('fs').promises;
 const helpers = require('../helpers');
+const api = require('../../api');
 
 const Files = module.exports;
 
 Files.delete = async (req, res) => {
-	await fs.unlink(res.locals.cleanedPath);
+	await api.files.delete(req, { path: res.locals.cleanedPath });
 	helpers.formatApiResponse(200, res);
 };
 
 Files.createFolder = async (req, res) => {
-	await fs.mkdir(res.locals.folderPath);
+	await api.files.createFolder(req, { path: res.locals.folderPath });
 	helpers.formatApiResponse(200, res);
 };

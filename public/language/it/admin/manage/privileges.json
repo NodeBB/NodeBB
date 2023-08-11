@@ -1,4 +1,6 @@
 {
+	"manage-privileges": "Gestisci privilegi",
+	"discard-changes": "Annulla le modifiche",
 	"global": "Globale",
 	"admin": "Amministratore",
 	"group-privileges": "Privilegi di gruppo",
@@ -49,7 +51,6 @@
 	"alert.confirm-moderate": "<strong>Sei sicuro di voler concedere il privilegio di moderazione a questo gruppo di utenti?</strong> Questo gruppo è pubblico e tutti gli utenti possono iscriversi a piacimento.",
 	"alert.confirm-admins-mods": "<strong>Sei sicuro di voler concedere i privilegi di &quot;Amministratori &amp; Moderatori&quot; a questo utente/gruppo?</strong> Gli utenti con questo privilegio possono promuovere e retrocedere altri utenti in posizioni privilegiate, <em>compreso il super amministratore</em>",
 	"alert.confirm-save": "Si prega di confermare l'intenzione di salvare questi privilegi",
-	"alert.saved": "Modifiche ai privilegi salvate e applicate",
 	"alert.confirm-discard": "Sei sicuro di voler annullare le modifiche ai privilegi?",
 	"alert.discarded": "Modifiche ai privilegi ignorate",
 	"alert.confirm-copyToAll": "Sei sicuro di voler applicare questa serie di <strong>%1</strong> a <strong>tutte le categorie</strong>?",

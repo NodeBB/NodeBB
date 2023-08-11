@@ -9,11 +9,12 @@ const topics = require('../topics');
 const user = require('../user');
 const categories = require('../categories');
 const meta = require('../meta');
-const helpers = require('../controllers/helpers');
+const controllerHelpers = require('../controllers/helpers');
 const privileges = require('../privileges');
 const db = require('../database');
 const utils = require('../utils');
 const controllers404 = require('../controllers/404');
+const routeHelpers = require('./helpers');
 
 const terms = {
 	daily: 'day',
@@ -23,18 +24,18 @@ const terms = {
 };
 
 module.exports = function (app, middleware) {
-	app.get('/topic/:topic_id.rss', middleware.maintenanceMode, generateForTopic);
-	app.get('/category/:category_id.rss', middleware.maintenanceMode, generateForCategory);
-	app.get('/topics.rss', middleware.maintenanceMode, generateForTopics);
-	app.get('/recent.rss', middleware.maintenanceMode, generateForRecent);
-	app.get('/top.rss', middleware.maintenanceMode, generateForTop);
-	app.get('/top/:term.rss', middleware.maintenanceMode, generateForTop);
-	app.get('/popular.rss', middleware.maintenanceMode, generateForPopular);
-	app.get('/popular/:term.rss', middleware.maintenanceMode, generateForPopular);
-	app.get('/recentposts.rss', middleware.maintenanceMode, generateForRecentPosts);
-	app.get('/category/:category_id/recentposts.rss', middleware.maintenanceMode, generateForCategoryRecentPosts);
-	app.get('/user/:userslug/topics.rss', middleware.maintenanceMode, generateForUserTopics);
-	app.get('/tags/:tag.rss', middleware.maintenanceMode, generateForTag);
+	app.get('/topic/:topic_id.rss', middleware.maintenanceMode, routeHelpers.tryRoute(generateForTopic));
+	app.get('/category/:category_id.rss', middleware.maintenanceMode, routeHelpers.tryRoute(generateForCategory));
+	app.get('/topics.rss', middleware.maintenanceMode, routeHelpers.tryRoute(generateForTopics));
+	app.get('/recent.rss', middleware.maintenanceMode, routeHelpers.tryRoute(generateForRecent));
+	app.get('/top.rss', middleware.maintenanceMode, routeHelpers.tryRoute(generateForTop));
+	app.get('/top/:term.rss', middleware.maintenanceMode, routeHelpers.tryRoute(generateForTop));
+	app.get('/popular.rss', middleware.maintenanceMode, routeHelpers.tryRoute(generateForPopular));
+	app.get('/popular/:term.rss', middleware.maintenanceMode, routeHelpers.tryRoute(generateForPopular));
+	app.get('/recentposts.rss', middleware.maintenanceMode, routeHelpers.tryRoute(generateForRecentPosts));
+	app.get('/category/:category_id/recentposts.rss', middleware.maintenanceMode, routeHelpers.tryRoute(generateForCategoryRecentPosts));
+	app.get('/user/:userslug/topics.rss', middleware.maintenanceMode, routeHelpers.tryRoute(generateForUserTopics));
+	app.get('/tags/:tag.rss', middleware.maintenanceMode, routeHelpers.tryRoute(generateForTag));
 };
 
 async function validateTokenIfRequiresLogin(requiresLogin, cid, req, res) {
@@ -46,16 +47,16 @@ async function validateTokenIfRequiresLogin(requiresLogin, cid, req, res) {
 	}
 
 	if (uid <= 0 || !token) {
-		return helpers.notAllowed(req, res);
+		return controllerHelpers.notAllowed(req, res);
 	}
 	const userToken = await db.getObjectField(`user:${uid}`, 'rss_token');
 	if (userToken !== token) {
 		await user.auth.logAttempt(uid, req.ip);
-		return helpers.notAllowed(req, res);
+		return controllerHelpers.notAllowed(req, res);
 	}
 	const userPrivileges = await privileges.categories.get(cid, uid);
 	if (!userPrivileges.read) {
-		return helpers.notAllowed(req, res);
+		return controllerHelpers.notAllowed(req, res);
 	}
 	return true;
 }
@@ -127,7 +128,7 @@ async function generateForCategory(req, res, next) {
 		db.getSortedSetRevIntersect({
 			sets: ['topics:tid', `cid:${cid}:tids:lastposttime`],
 			start: 0,
-			stop: 25,
+			stop: 24,
 			weights: [1, 0],
 		}),
 	]);
@@ -230,7 +231,7 @@ async function generateSorted(options, req, res, next) {
 	const { cid } = req.query;
 	if (cid) {
 		if (!await privileges.categories.can('topics:read', cid, uid)) {
-			return helpers.notAllowed(req, res);
+			return controllerHelpers.notAllowed(req, res);
 		}
 		params.cids = [cid];
 	}
@@ -307,7 +308,11 @@ async function generateForRecentPosts(req, res, next) {
 	if (meta.config['feeds:disableRSS']) {
 		return next();
 	}
-	const postData = await posts.getRecentPosts(req.uid, 0, 19, 'month');
+	const page = parseInt(req.query.page, 10) || 1;
+	const postsPerPage = 20;
+	const start = Math.max(0, (page - 1) * postsPerPage);
+	const stop = start + postsPerPage - 1;
+	const postData = await posts.getRecentPosts(req.uid, start, stop, 'month');
 	const feed = generateForPostsFeed({
 		title: 'Recent Posts',
 		description: 'A list of recent posts',
@@ -323,11 +328,14 @@ async function generateForCategoryRecentPosts(req, res) {
 		return controllers404.handle404(req, res);
 	}
 	const cid = req.params.category_id;
-
+	const page = parseInt(req.query.page, 10) || 1;
+	const topicsPerPage = 20;
+	const start = Math.max(0, (page - 1) * topicsPerPage);
+	const stop = start + topicsPerPage - 1;
 	const [userPrivileges, category, postData] = await Promise.all([
 		privileges.categories.get(cid, req.uid),
 		categories.getCategoryData(cid),
-		categories.getRecentReplies(cid, req.uid || req.query.uid || 0, 20),
+		categories.getRecentReplies(cid, req.uid || req.query.uid || 0, start, stop),
 	]);
 
 	if (!category) {

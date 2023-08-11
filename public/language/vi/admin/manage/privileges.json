@@ -1,4 +1,6 @@
 {
+	"manage-privileges": "Manage Privileges",
+	"discard-changes": "Discard changes",
 	"global": "Chung",
 	"admin": "Quản Trị Viên",
 	"group-privileges": "Đặc Quyền Nhóm",
@@ -49,7 +51,6 @@
 	"alert.confirm-moderate": "<strong>Bạn có chắc muốn cấp quyền xét duyệt cho nhóm người dùng này không?</strong> Nhóm này công khai và ai cũng có thể tham gia.",
 	"alert.confirm-admins-mods": "<strong>Bạn có chắc muốn cấp quyền &quot;Quản Trị Viên&amp; Người Điều Hành&quot; cho người dùng/nhóm này?</strong> Người dùng này có quyền thăng và hạ cấp người dùng khác ở các vị trí đặc quyền, <em>Bao gồm quản trị viên cấp cao</em>",
 	"alert.confirm-save": "Vui lòng xác nhận ý định của bạn để lưu các đặc quyền này",
-	"alert.saved": "Đã lưu và áp dụng các thay đổi đặc quyền ",
 	"alert.confirm-discard": "Bạn có chắc chắn muốn hủy các thay đổi đặc quyền của mình không?",
 	"alert.discarded": "Thay đổi đặc quyền bị hủy",
 	"alert.confirm-copyToAll": "Bạn có chắc muốn áp dụng cài đặt <strong>%1</strong> cho <strong>tất cả danh mục</strong>?",

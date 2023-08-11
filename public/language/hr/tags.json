@@ -1,8 +1,11 @@
 {
+    "all-tags": "All tags",
     "no_tag_topics": "Nema tema sa ovom oznakom",
+    "no-tags-found": "No tags found",
     "tags": "Oznake",
     "enter_tags_here": "Unesite oznake, između %1 i %2 znaka.",
     "enter_tags_here_short": "Unestie oznake ...",
     "no_tags": "Još nema oznaka.",
-    "select_tags": "Select Tags"
+    "select_tags": "Select Tags",
+    "tag-whitelist": "Tag Whitelist"
 }

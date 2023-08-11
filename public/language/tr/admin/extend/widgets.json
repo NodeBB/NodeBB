@@ -1,4 +1,5 @@
 {
+	"widgets": "Widgets",
 	"available": "Kullanılabilir Bileşenler",
 	"explanation": "Açılır menüden bir bileşen seçin ve sol taraftaki bir şablonun bileşen alanına sürükleyip bırakın.",
 	"none-installed": "Bileşen bulunamadı!  <a href=\"%1\">Eklentiler</a> kontrol panelinden bileşen eklentisini aktifleştirmelisiniz!",
@@ -8,9 +9,9 @@
 	"containers.none": "Kutucuk Yok",
 	"container.well": "Çukur",
 	"container.jumbotron": "Büyük Gösterim",
-	"container.panel": "Panel",
-	"container.panel-header": "Panel Başlığı",
-	"container.panel-body": "Panel Gövdesi",
+	"container.card": "Kart",
+	"container.card-header": "Kart Başlığı",
+	"container.card-body": "Kart İçeriği",
 	"container.alert": "Uyarı",
 
 	"alert.confirm-delete": "Bu bileşeni silmek istediğinizden emin misiniz?",
@@ -26,5 +27,7 @@
 	"container.placeholder": "Bir kutucuğu sürükle ve buraya bırak veya HTML gir",
 	"show-to-groups": "Şu gruplara göster",
 	"hide-from-groups": "Şu gruplara gösterme",
+	"start-date": "Başlangıç tarihi",
+	"end-date": "Bitiş tarihi",
 	"hide-on-mobile": "Mobilde gösterme"
 }

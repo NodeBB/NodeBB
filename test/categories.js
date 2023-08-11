@@ -371,9 +371,11 @@ describe('Categories', () => {
 		});
 
 		it('should error if you try to set parent as self', async () => {
-			const updateData = {};
-			updateData[cid] = {
-				parentCid: cid,
+			const updateData = {
+				cid,
+				values: {
+					parentCid: cid,
+				},
 			};
 			let err;
 			try {
@@ -389,9 +391,11 @@ describe('Categories', () => {
 			const parentCid = parentCategory.cid;
 			const childCategory = await Categories.create({ name: 'child1', description: 'wanna be parent', parentCid: parentCid });
 			const child1Cid = childCategory.cid;
-			const updateData = {};
-			updateData[parentCid] = {
-				parentCid: child1Cid,
+			const updateData = {
+				cid: parentCid,
+				values: {
+					parentCid: child1Cid,
+				},
 			};
 			let err;
 			try {
@@ -403,22 +407,40 @@ describe('Categories', () => {
 		});
 
 		it('should update category data', async () => {
-			const updateData = {};
-			updateData[cid] = {
-				name: 'new name',
-				description: 'new description',
-				parentCid: 0,
-				order: 3,
-				icon: 'fa-hammer',
+			const updateData = {
+				cid,
+				values: {
+					name: 'new name',
+					description: 'new description',
+					parentCid: 0,
+					order: 3,
+					icon: 'fa-hammer',
+				},
 			};
 			await apiCategories.update({ uid: adminUid }, updateData);
 
 			const data = await Categories.getCategoryData(cid);
-			assert.equal(data.name, updateData[cid].name);
-			assert.equal(data.description, updateData[cid].description);
-			assert.equal(data.parentCid, updateData[cid].parentCid);
-			assert.equal(data.order, updateData[cid].order);
-			assert.equal(data.icon, updateData[cid].icon);
+			assert.equal(data.name, updateData.values.name);
+			assert.equal(data.description, updateData.values.description);
+			assert.equal(data.parentCid, updateData.values.parentCid);
+			assert.equal(data.order, updateData.values.order);
+			assert.equal(data.icon, updateData.values.icon);
+		});
+
+		it('should properly order categories', async () => {
+			const p1 = await Categories.create({ name: 'p1', description: 'd', parentCid: 0, order: 1 });
+			const c1 = await Categories.create({ name: 'c1', description: 'd1', parentCid: p1.cid, order: 1 });
+			const c2 = await Categories.create({ name: 'c2', description: 'd2', parentCid: p1.cid, order: 2 });
+			const c3 = await Categories.create({ name: 'c3', description: 'd3', parentCid: p1.cid, order: 3 });
+			// move c1 to second place
+			await apiCategories.update({ uid: adminUid }, { cid: c1.cid, values: { order: 2 } });
+			let cids = await db.getSortedSetRange(`cid:${p1.cid}:children`, 0, -1);
+			assert.deepStrictEqual(cids.map(Number), [c2.cid, c1.cid, c3.cid]);
+
+			// move c3 to front
+			await apiCategories.update({ uid: adminUid }, { cid: c3.cid, values: { order: 1 } });
+			cids = await db.getSortedSetRange(`cid:${p1.cid}:children`, 0, -1);
+			assert.deepStrictEqual(cids.map(Number), [c3.cid, c2.cid, c1.cid]);
 		});
 
 		it('should not remove category from parent if parent is set again to same category', async () => {
@@ -811,16 +833,17 @@ describe('Categories', () => {
 		});
 
 		describe('Categories.getModeratorUids', () => {
-			before((done) => {
-				async.series([
-					async.apply(groups.create, { name: 'testGroup' }),
-					async.apply(groups.join, 'cid:1:privileges:groups:moderate', 'testGroup'),
-					async.apply(groups.join, 'testGroup', 1),
-				], done);
+			let cid;
+
+			before(async () => {
+				({ cid } = await Categories.create({ name: 'foobar' }));
+				await groups.create({ name: 'testGroup' });
+				await groups.join(`cid:${cid}:privileges:groups:moderate`, 'testGroup');
+				await groups.join('testGroup', 1);
 			});
 
 			it('should retrieve all users with moderator bit in category privilege', (done) => {
-				Categories.getModeratorUids([1, 2], (err, uids) => {
+				Categories.getModeratorUids([cid, 2], (err, uids) => {
 					assert.ifError(err);
 					assert.strictEqual(uids.length, 2);
 					assert(uids[0].includes('1'));
@@ -835,7 +858,7 @@ describe('Categories', () => {
 					async.apply(groups.join, 'cid:1:privileges:groups:moderate', 'testGroup2'),
 					async.apply(groups.join, 'testGroup2', 1),
 					function (next) {
-						Categories.getModeratorUids([1, 2], (err, uids) => {
+						Categories.getModeratorUids([cid, 2], (err, uids) => {
 							assert.ifError(err);
 							assert(uids[0].includes('1'));
 							next();
@@ -844,10 +867,18 @@ describe('Categories', () => {
 				], done);
 			});
 
+			it('should not return moderators of disabled categories', async () => {
+				const payload = {};
+				payload[cid] = { disabled: 1 };
+				await Categories.update(payload);
+				const uids = await Categories.getModeratorUids([cid, 2]);
+				assert(!uids[0].includes('1'));
+			});
+
 			after((done) => {
 				async.series([
-					async.apply(groups.leave, 'cid:1:privileges:groups:moderate', 'testGroup'),
-					async.apply(groups.leave, 'cid:1:privileges:groups:moderate', 'testGroup2'),
+					async.apply(groups.leave, `cid:${cid}:privileges:groups:moderate`, 'testGroup'),
+					async.apply(groups.leave, `cid:${cid}:privileges:groups:moderate`, 'testGroup2'),
 					async.apply(groups.destroy, 'testGroup'),
 					async.apply(groups.destroy, 'testGroup2'),
 				], done);

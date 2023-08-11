@@ -22,7 +22,6 @@ const helpers = require('./helpers');
 const file = require('../src/file');
 const image = require('../src/image');
 
-const uploadFile = util.promisify(helpers.uploadFile);
 const emptyUploadsFolder = async () => {
 	const files = await fs.readdir(`${nconf.get('upload_path')}/files`);
 	await Promise.all(files.map(async (filename) => {
@@ -88,8 +87,7 @@ describe('Upload Controllers', () => {
 			const oldValue = meta.config.allowedFileExtensions;
 			meta.config.allowedFileExtensions = 'png,jpg,bmp,html';
 			require('../src/middleware/uploads').clearCache();
-			// why / 2? see: helpers.uploadFile for a weird quirk where we actually upload 2 files per upload in our tests.
-			const times = (meta.config.uploadRateLimitThreshold / 2) + 1;
+			const times = meta.config.uploadRateLimitThreshold + 1;
 			async.timesSeries(times, (i, next) => {
 				helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/503.html'), {}, jar, csrf_token, (err, res, body) => {
 					if (i + 1 >= times) {
@@ -213,7 +211,7 @@ describe('Upload Controllers', () => {
 				assert.ifError(err);
 				assert.strictEqual(res.statusCode, 500);
 				assert(body && body.status && body.status.message);
-				assert(body.status.message.startsWith('Input file has corrupt header: pngload: end of stream'));
+				assert.strictEqual(body.status.message, 'Input file contains unsupported image format');
 				done();
 			});
 		});
@@ -342,7 +340,7 @@ describe('Upload Controllers', () => {
 		it('should upload site logo', (done) => {
 			helpers.uploadFile(`${nconf.get('url')}/api/admin/uploadlogo`, path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token, (err, res, body) => {
 				assert.ifError(err);
-				assert.equal(res.statusCode, 200);
+				assert.strictEqual(res.statusCode, 200);
 				assert(Array.isArray(body));
 				assert.equal(body[0].url, `${nconf.get('relative_path')}/assets/uploads/system/site-logo.png`);
 				done();
@@ -352,7 +350,8 @@ describe('Upload Controllers', () => {
 		it('should fail to upload invalid file type', (done) => {
 			helpers.uploadFile(`${nconf.get('url')}/api/admin/category/uploadpicture`, path.join(__dirname, '../test/files/503.html'), { params: JSON.stringify({ cid: cid }) }, jar, csrf_token, (err, res, body) => {
 				assert.ifError(err);
-				assert.equal(body.error, '[[error:invalid-image-type, image/png&#44; image/jpeg&#44; image/pjpeg&#44; image/jpg&#44; image/gif&#44; image/svg+xml]]');
+				assert.strictEqual(res.statusCode, 500);
+				assert.equal(body.error, '[[error:invalid-image-type, image&#x2F;png&amp;#44; image&#x2F;jpeg&amp;#44; image&#x2F;pjpeg&amp;#44; image&#x2F;jpg&amp;#44; image&#x2F;gif&amp;#44; image&#x2F;svg+xml]]');
 				done();
 			});
 		});
@@ -360,6 +359,7 @@ describe('Upload Controllers', () => {
 		it('should fail to upload category image with invalid json params', (done) => {
 			helpers.uploadFile(`${nconf.get('url')}/api/admin/category/uploadpicture`, path.join(__dirname, '../test/files/test.png'), { params: 'invalid json' }, jar, csrf_token, (err, res, body) => {
 				assert.ifError(err);
+				assert.strictEqual(res.statusCode, 500);
 				assert.equal(body.error, '[[error:invalid-json]]');
 				done();
 			});
@@ -517,13 +517,13 @@ describe('Upload Controllers', () => {
 		describe('.getOrphans()', () => {
 			before(async () => {
 				const { jar, csrf_token } = await helpers.loginUser('regular', 'zugzug');
-				await uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token);
+				await helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token);
 			});
 
 			it('should return files with no post associated with them', async () => {
 				const orphans = await posts.uploads.getOrphans();
 
-				assert.strictEqual(orphans.length, 2);
+				assert.strictEqual(orphans.length, 1);
 				orphans.forEach((relPath) => {
 					assert(relPath.startsWith('files/'));
 					assert(relPath.endsWith('test.png'));
@@ -538,7 +538,7 @@ describe('Upload Controllers', () => {
 
 			before(async () => {
 				const { jar, csrf_token } = await helpers.loginUser('regular', 'zugzug');
-				await uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token);
+				await helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token);
 
 				// modify all files in uploads folder to be 30 days old
 				const files = await fs.readdir(`${nconf.get('upload_path')}/files`);
@@ -554,7 +554,7 @@ describe('Upload Controllers', () => {
 				await posts.uploads.cleanOrphans();
 				const orphans = await posts.uploads.getOrphans();
 
-				assert.strictEqual(orphans.length, 2);
+				assert.strictEqual(orphans.length, 1);
 			});
 
 			it('should not touch orphans if they are newer than the configured expiry', async () => {
@@ -562,7 +562,7 @@ describe('Upload Controllers', () => {
 				await posts.uploads.cleanOrphans();
 				const orphans = await posts.uploads.getOrphans();
 
-				assert.strictEqual(orphans.length, 2);
+				assert.strictEqual(orphans.length, 1);
 			});
 
 			it('should delete orphans older than the configured number of days', async () => {

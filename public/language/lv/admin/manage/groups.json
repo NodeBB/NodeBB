@@ -1,4 +1,10 @@
 {
+	"manage-groups": "Manage Groups",
+	"add-group": "Add group",
+	"edit-group": "Edit Group",
+	"back-to-groups": "Back to groups",
+	"view-group": "View group",
+	"icon-and-title": "Icon & Title",
 	"name": "Grupas nosaukums",
 	"badge": "Badge",
 	"properties": "Properties",
@@ -10,7 +16,7 @@
 	"edit": "Rediģēt",
 	"delete": "Delete",
 	"privileges": "Privileges",
-	"download-csv": "CSV",
+	"members-csv": "Members (CSV)",
 	"search-placeholder": "Meklēt",
 	"create": "Izveidot grupu",
 	"description-placeholder": "Īss grupas apraksts",
@@ -39,6 +45,5 @@
 	"revert": "Atgriezties",
 
 	"edit.no-users-found": "Nav lietotāju",
-	"edit.confirm-remove-user": "Vai tiešām vēlies izdzēst šo lietotāju?",
-	"edit.save-success": "Izmaiņas saglabātas"
+	"edit.confirm-remove-user": "Vai tiešām vēlies izdzēst šo lietotāju?"
 }

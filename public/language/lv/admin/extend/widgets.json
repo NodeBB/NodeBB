@@ -1,4 +1,5 @@
 {
+	"widgets": "Widgets",
 	"available": "Pieejamie logrīki",
 	"explanation": "Atlasīt spraudni no nolaižamās izvēlnes, un to vilkt un nomest uz veidnes spraudņa lauku kreisajā pusē.",
 	"none-installed": "No widgets found! Activate the widget essentials plugin in the <a href=\"%1\">plugins</a> control panel.",
@@ -8,9 +9,9 @@
 	"containers.none": "Nav",
 	"container.well": "Labi",
 	"container.jumbotron": "Jumbotron",
-	"container.panel": "Panelis",
-	"container.panel-header": "Paneļa galvene",
-	"container.panel-body": "Paneļa korpuss",
+	"container.card": "Card",
+	"container.card-header": "Card Header",
+	"container.card-body": "Card Body",
 	"container.alert": "Brīdinājums",
 
 	"alert.confirm-delete": "Vai tiešām vēlies izdzēst šo logrīku?",
@@ -26,5 +27,7 @@
 	"container.placeholder": "Drag and drop a container or enter HTML here.",
 	"show-to-groups": "Show to groups",
 	"hide-from-groups": "Hide from groups",
+	"start-date": "Start date",
+	"end-date": "End date",
 	"hide-on-mobile": "Hide on mobile"
 }

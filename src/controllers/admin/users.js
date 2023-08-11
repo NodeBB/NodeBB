@@ -162,12 +162,20 @@ usersController.search = async function (req, res) {
 
 async function loadUserInfo(callerUid, uids) {
 	async function getIPs() {
-		return await Promise.all(uids.map(uid => db.getSortedSetRevRange(`uid:${uid}:ip`, 0, -1)));
+		return await Promise.all(uids.map(uid => db.getSortedSetRevRange(`uid:${uid}:ip`, 0, 4)));
 	}
-	const [isAdmin, userData, lastonline, ips] = await Promise.all([
+	async function getConfirmObjs() {
+		const keys = uids.map(uid => `confirm:byUid:${uid}`);
+		const codes = await db.mget(keys);
+		const confirmObjs = await db.getObjects(codes.map(code => `confirm:${code}`));
+		return uids.map((uid, index) => confirmObjs[index]);
+	}
+
+	const [isAdmin, userData, lastonline, confirmObjs, ips] = await Promise.all([
 		user.isAdministrator(uids),
 		user.getUsersWithFields(uids, userFields, callerUid),
 		db.sortedSetScores('users:online', uids),
+		getConfirmObjs(),
 		getIPs(),
 	]);
 	userData.forEach((user, index) => {
@@ -179,6 +187,13 @@ async function loadUserInfo(callerUid, uids) {
 			user.lastonlineISO = utils.toISOString(timestamp);
 			user.ips = ips[index];
 			user.ip = ips[index] && ips[index][0] ? ips[index][0] : null;
+			user.emailToConfirm = user.email;
+			if (confirmObjs[index] && confirmObjs[index].email) {
+				const confirmObj = confirmObjs[index];
+				user['email:expired'] = !confirmObj.expires || Date.now() >= confirmObj.expires;
+				user['email:pending'] = confirmObj.expires && Date.now() < confirmObj.expires;
+				user.emailToConfirm = confirmObj.email;
+			}
 		}
 	});
 	return userData;
@@ -199,6 +214,7 @@ usersController.registrationQueue = async function (req, res) {
 	const pageCount = Math.max(1, Math.ceil(data.registrationQueueCount / itemsPerPage));
 	data.pagination = pagination.create(page, pageCount);
 	data.customHeaders = data.customHeaders.headers;
+	data.title = '[[pages:registration-queue]]';
 	res.render('admin/manage/registration', data);
 };
 

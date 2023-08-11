@@ -32,7 +32,8 @@ module.exports = function () {
 	setupApiRoute(router, 'put', '/:tid/ignore', [...middlewares, middleware.assert.topic], controllers.write.topics.ignore);
 	setupApiRoute(router, 'delete', '/:tid/ignore', [...middlewares, middleware.assert.topic], controllers.write.topics.unfollow); // intentional, unignore == unfollow
 
-	setupApiRoute(router, 'put', '/:tid/tags', [...middlewares, middleware.checkRequired.bind(null, ['tags']), middleware.assert.topic], controllers.write.topics.addTags);
+	setupApiRoute(router, 'put', '/:tid/tags', [...middlewares, middleware.checkRequired.bind(null, ['tags']), middleware.assert.topic], controllers.write.topics.updateTags);
+	setupApiRoute(router, 'patch', '/:tid/tags', [...middlewares, middleware.checkRequired.bind(null, ['tags']), middleware.assert.topic], controllers.write.topics.addTags);
 	setupApiRoute(router, 'delete', '/:tid/tags', [...middlewares, middleware.assert.topic], controllers.write.topics.deleteTags);
 
 	setupApiRoute(router, 'get', '/:tid/thumbs', [], controllers.write.topics.getThumbs);
@@ -43,6 +44,10 @@ module.exports = function () {
 
 	setupApiRoute(router, 'get', '/:tid/events', [middleware.assert.topic], controllers.write.topics.getEvents);
 	setupApiRoute(router, 'delete', '/:tid/events/:eventId', [middleware.assert.topic], controllers.write.topics.deleteEvent);
+
+	setupApiRoute(router, 'put', '/:tid/read', [...middlewares, middleware.assert.topic], controllers.write.topics.markRead);
+	setupApiRoute(router, 'delete', '/:tid/read', [...middlewares, middleware.assert.topic], controllers.write.topics.markUnread);
+	setupApiRoute(router, 'put', '/:tid/bump', [...middlewares, middleware.assert.topic], controllers.write.topics.bump);
 
 	return router;
 };

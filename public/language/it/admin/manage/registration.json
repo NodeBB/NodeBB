@@ -5,7 +5,7 @@
 	"list.name": "Nome",
 	"list.email": "Email",
 	"list.ip": "IP",
-	"list.time": "Tempo",
+	"list.time": "Orario",
 	"list.username-spam": "Frequenza: %1 Apparsi: %2 Confidenza: %3",
 	"list.email-spam": "Frequenza: %1 Apparsi: %2",
 	"list.ip-spam": "Frequenza: %1 Apparsi: %2",

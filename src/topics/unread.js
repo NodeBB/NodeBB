@@ -66,8 +66,12 @@ module.exports = function (Topics) {
 			params.cid = [params.cid];
 		}
 
+		if (params.tag && !Array.isArray(params.tag)) {
+			params.tag = [params.tag];
+		}
+
 		const data = await getTids(params);
-		if (uid <= 0 || !data.tids || !data.tids.length) {
+		if (uid <= 0) {
 			return data;
 		}
 
@@ -135,7 +139,7 @@ module.exports = function (Topics) {
 		});
 
 		tids = await privileges.topics.filterTids('topics:read', tids, params.uid);
-		const topicData = (await Topics.getTopicsFields(tids, ['tid', 'cid', 'uid', 'postcount', 'deleted', 'scheduled']))
+		const topicData = (await Topics.getTopicsFields(tids, ['tid', 'cid', 'uid', 'postcount', 'deleted', 'scheduled', 'tags']))
 			.filter(t => t.scheduled || !t.deleted);
 		const topicCids = _.uniq(topicData.map(topic => topic.cid)).filter(Boolean);
 
@@ -143,9 +147,13 @@ module.exports = function (Topics) {
 		const userCidState = _.zipObject(topicCids, categoryWatchState);
 
 		const filterCids = params.cid && params.cid.map(cid => parseInt(cid, 10));
+		const filterTags = params.tag && params.tag.map(tag => String(tag));
 
 		topicData.forEach((topic) => {
-			if (topic && topic.cid && (!filterCids || filterCids.includes(topic.cid)) && !blockedUids.includes(topic.uid)) {
+			if (topic && topic.cid &&
+				(!filterCids || filterCids.includes(topic.cid)) &&
+				(!filterTags || filterTags.every(tag => topic.tags.find(topicTag => topicTag.value === tag))) &&
+				!blockedUids.includes(topic.uid)) {
 				if (isTopicsFollowed[topic.tid] || userCidState[topic.cid] === categories.watchStates.watching) {
 					tidsByFilter[''].push(topic.tid);
 				}
@@ -260,7 +268,12 @@ module.exports = function (Topics) {
 	};
 
 	Topics.markAsUnreadForAll = async function (tid) {
+		const now = Date.now();
+		const cid = await Topics.getTopicField(tid, 'cid');
 		await Topics.markCategoryUnreadForAll(tid);
+		await Topics.updateRecent(tid, now);
+		await db.sortedSetAdd(`cid:${cid}:tids:lastposttime`, now, tid);
+		await Topics.setTopicField(tid, 'lastposttime', now);
 	};
 
 	Topics.markAsRead = async function (tids, uid) {
@@ -278,14 +291,16 @@ module.exports = function (Topics) {
 			db.sortedSetScores(`uid:${uid}:tids_read`, tids),
 		]);
 
-		const topics = topicScores.filter((t, i) => t.lastposttime && (!userScores[i] || userScores[i] < t.lastposttime));
+		const now = Date.now();
+		const topics = topicScores.filter(
+			(t, i) => t.lastposttime && (!userScores[i] || userScores[i] < t.lastposttime || userScores[i] > now)
+		);
 		tids = topics.map(t => t.tid);
 
 		if (!tids.length) {
 			return false;
 		}
 
-		const now = Date.now();
 		const scores = topics.map(topic => (topic.scheduled ? topic.lastposttime : now));
 		const [topicData] = await Promise.all([
 			Topics.getTopicsFields(tids, ['cid']),
@@ -367,8 +382,13 @@ module.exports = function (Topics) {
 		if (!exists) {
 			throw new Error('[[error:no-topic]]');
 		}
-		await db.sortedSetRemove(`uid:${uid}:tids_read`, tid);
-		await db.sortedSetAdd(`uid:${uid}:tids_unread`, Date.now(), tid);
+		await Promise.all([
+			db.sortedSetRemoveBulk([
+				[`uid:${uid}:tids_read`, tid],
+				[`tid:${tid}:bookmarks`, uid],
+			]),
+			db.sortedSetAdd(`uid:${uid}:tids_unread`, Date.now(), tid),
+		]);
 	};
 
 	Topics.filterNewTids = async function (tids, uid) {

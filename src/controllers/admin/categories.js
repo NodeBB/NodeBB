@@ -60,8 +60,9 @@ categoriesController.getAll = async function (req, res) {
 	}
 
 	const fields = [
-		'cid', 'name', 'icon', 'parentCid', 'disabled', 'link', 'order',
-		'color', 'bgColor', 'backgroundImage', 'imageClass', 'subCategoriesPerPage',
+		'cid', 'name', 'icon', 'parentCid', 'disabled', 'link',
+		'order', 'color', 'bgColor', 'backgroundImage', 'imageClass',
+		'subCategoriesPerPage', 'description',
 	];
 	const categoriesData = await categories.getCategoriesFields(cids, fields);
 	const result = await plugins.hooks.fire('filter:admin.categories.get', { categories: categoriesData, fields: fields });
@@ -101,6 +102,7 @@ categoriesController.getAll = async function (req, res) {
 		breadcrumbs: crumbs,
 		pagination: pagination.create(page, pageCount, req.query),
 		categoriesPerPage: meta.config.categoriesPerPage,
+		selectCategoryLabel: '[[admin/manage/categories:jump-to]]',
 	});
 };
 

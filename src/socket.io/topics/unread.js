@@ -1,20 +1,19 @@
 'use strict';
 
-const db = require('../../database');
-const user = require('../../user');
 const topics = require('../../topics');
+
+const api = require('../../api');
+const sockets = require('..');
 
 module.exports = function (SocketTopics) {
 	SocketTopics.markAsRead = async function (socket, tids) {
+		sockets.warnDeprecated(socket, 'PUT /api/v3/topics/:tid/read');
+
 		if (!Array.isArray(tids) || socket.uid <= 0) {
 			throw new Error('[[error:invalid-data]]');
 		}
-		const hasMarked = await topics.markAsRead(tids, socket.uid);
-		const promises = [topics.markTopicNotificationsRead(tids, socket.uid)];
-		if (hasMarked) {
-			promises.push(topics.pushUnreadCount(socket.uid));
-		}
-		await Promise.all(promises);
+
+		await Promise.all(tids.map(async tid => api.topics.markRead(socket, { tid })));
 	};
 
 	SocketTopics.markTopicNotificationsRead = async function (socket, tids) {
@@ -38,14 +37,18 @@ module.exports = function (SocketTopics) {
 	};
 
 	SocketTopics.markUnread = async function (socket, tid) {
+		sockets.warnDeprecated(socket, 'DELETE /api/v3/topics/:tid/read');
+
 		if (!tid || socket.uid <= 0) {
 			throw new Error('[[error:invalid-data]]');
 		}
-		await topics.markUnread(tid, socket.uid);
-		topics.pushUnreadCount(socket.uid);
+
+		await api.topics.markUnread(socket, { tid });
 	};
 
 	SocketTopics.markAsUnreadForAll = async function (socket, tids) {
+		sockets.warnDeprecated(socket, 'PUT /api/v3/topics/:tid/bump');
+
 		if (!Array.isArray(tids)) {
 			throw new Error('[[error:invalid-tid]]');
 		}
@@ -53,22 +56,7 @@ module.exports = function (SocketTopics) {
 		if (socket.uid <= 0) {
 			throw new Error('[[error:no-privileges]]');
 		}
-		const isAdmin = await user.isAdministrator(socket.uid);
-		const now = Date.now();
-		await Promise.all(tids.map(async (tid) => {
-			const topicData = await topics.getTopicFields(tid, ['tid', 'cid']);
-			if (!topicData.tid) {
-				throw new Error('[[error:no-topic]]');
-			}
-			const isMod = await user.isModerator(socket.uid, topicData.cid);
-			if (!isAdmin && !isMod) {
-				throw new Error('[[error:no-privileges]]');
-			}
-			await topics.markAsUnreadForAll(tid);
-			await topics.updateRecent(tid, now);
-			await db.sortedSetAdd(`cid:${topicData.cid}:tids:lastposttime`, now, tid);
-			await topics.setTopicField(tid, 'lastposttime', now);
-		}));
-		topics.pushUnreadCount(socket.uid);
+
+		await Promise.all(tids.map(async tid => api.topics.bump(socket, { tid })));
 	};
 };

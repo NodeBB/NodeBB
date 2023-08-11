@@ -1,0 +1,21 @@
+get:
+  tags:
+    - admin
+  summary: Get API token settings
+  responses:
+    "200":
+      description: "A JSON object containing API tokens and settings"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  title:
+                    type: string
+                  tokens:
+                    type: array
+                    items:
+                      $ref: ../../../components/schemas/admin/tokenObject.yaml#/TokenObject
+              - $ref: ../../../components/schemas/Pagination.yaml#/Pagination
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

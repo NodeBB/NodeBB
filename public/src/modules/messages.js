@@ -27,7 +27,7 @@ define('messages', ['bootbox', 'translator', 'storage', 'alerts', 'hooks'], func
 			},
 		};
 
-		if (!app.user.email) {
+		if (!app.user.email && !app.user.isEmailConfirmSent) {
 			msg.message = '[[error:no-email-to-confirm]]';
 			msg.clickfn = function () {
 				alerts.remove('email_confirm');
@@ -38,12 +38,7 @@ define('messages', ['bootbox', 'translator', 'storage', 'alerts', 'hooks'], func
 			msg.message = message || '[[error:email-not-confirmed]]';
 			msg.clickfn = function () {
 				alerts.remove('email_confirm');
-				socket.emit('user.emailConfirm', {}, function (err) {
-					if (err) {
-						return alerts.error(err);
-					}
-					alerts.success('[[notifications:email-confirm-sent]]');
-				});
+				ajaxify.go('/me/edit/email');
 			};
 			alerts.alert(msg);
 		} else if (!app.user['email:confirmed'] && app.user.isEmailConfirmSent) {
@@ -99,6 +94,11 @@ define('messages', ['bootbox', 'translator', 'storage', 'alerts', 'hooks'], func
 			});
 
 			params.delete('register');
+		}
+
+		if (params.has('lang') && params.get('lang') === config.defaultLang) {
+			console.info(`The "lang" parameter was passed in to set the language to "${params.get('lang')}", but that is already the forum default language.`);
+			params.delete('lang');
 		}
 
 		const qs = params.toString();

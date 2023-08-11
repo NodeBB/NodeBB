@@ -1,10 +1,11 @@
 {
+    "manage-admins-and-mods": "Управление на администраторите и модераторите",
     "administrators": "Администратори",
     "global-moderators": "Глобални модератори",
     "moderators": "Модератори",
     "no-global-moderators": "Няма глобални модератори",
     "no-sub-categories": "Няма подкатегории",
-    "subcategories": "%1 подкатегории",
+    "view-children": "Преглед на подкатегориите (%1)",
     "no-moderators": "Няма модератори",
     "add-administrator": "Добавяне на администратор",
     "add-global-moderator": "Добавяне на глобален модератор",

@@ -119,6 +119,31 @@ SELECT s."data" t
 		return res.rows.length ? res.rows[0].t : null;
 	};
 
+	module.mget = async function (keys) {
+		if (!keys || !Array.isArray(keys) || !keys.length) {
+			return [];
+		}
+
+		const res = await module.pool.query({
+			name: 'mget',
+			text: `
+SELECT s."data", s."_key"
+  FROM "legacy_object_live" o
+ INNER JOIN "legacy_string" s
+         ON o."_key" = s."_key"
+        AND o."type" = s."type"
+ WHERE o."_key" = ANY($1::TEXT[])
+ LIMIT 1`,
+			values: [keys],
+		});
+		const map = {};
+		res.rows.forEach((d) => {
+			map[d._key] = d.data;
+		});
+		return keys.map(k => (map.hasOwnProperty(k) ? map[k] : null));
+	};
+
+
 	module.set = async function (key, value) {
 		if (!key) {
 			return;

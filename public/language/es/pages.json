@@ -14,6 +14,7 @@
     "flagged-content": "Contenido reportado",
     "ip-blacklist": "Lista negra de IPS",
     "post-queue": "Cola de Mensajes",
+    "registration-queue": "Registration Queue",
     "users/online": "Conectados",
     "users/latest": "Últimos usuarios",
     "users/sort-posts": "Top por mensajes",
@@ -49,6 +50,7 @@
     "account/watched_categories": "%1 Categorías seguidas",
     "account/bookmarks": "%1's Mensajes marcados",
     "account/settings": "Preferencias",
+    "account/settings-of": "Changing settings of %1",
     "account/watched": "Temas seguidos por %1",
     "account/ignored": "Temas ignorados por %1",
     "account/upvoted": "Publicaciones votadas positivamente %1",
@@ -59,7 +61,7 @@
     "account/uploads": "Subidas por %1",
     "account/sessions": "Login Sessions",
     "confirm": "Correo electrónico confirmado",
-    "maintenance.text": "%1 está en mantenimiento actualmente. Por favor vuelva en otro momento.",
+    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
     "maintenance.messageIntro": "Además, la administración ha dejado este mensaje:",
     "throttled.text": "%1 no está disponible debido a una carga excesiva. Por favor vuelva en otro momento"
 }

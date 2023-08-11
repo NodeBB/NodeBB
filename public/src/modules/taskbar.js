@@ -1,35 +1,33 @@
 'use strict';
 
 
-define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, translator, hooks) {
+define('taskbar', ['translator', 'hooks'], function (translator, hooks) {
 	const taskbar = {};
-
+	let noTaskbar = false;
 	taskbar.init = function () {
-		const self = this;
+		taskbar.taskbar = $('[component="taskbar"]');
+		taskbar.tasklist = taskbar.taskbar.find('ul');
+		if (!taskbar.taskbar.length || !taskbar.tasklist.length) {
+			noTaskbar = true;
+			return;
+		}
+		taskbar.taskbar.on('click', 'li', async function () {
+			const $btn = $(this);
+			const moduleName = $btn.attr('data-module');
+			const uuid = $btn.attr('data-uuid');
 
-		Benchpress.render('modules/taskbar', {}).then(function (html) {
-			self.taskbar = $(html);
-			self.tasklist = self.taskbar.find('ul');
-			$(document.body).append(self.taskbar);
+			const module = await app.require(moduleName);
+			if (!$btn.hasClass('active')) {
+				minimizeAll();
+				module.load(uuid);
+				taskbar.toggleNew(uuid, false);
 
-			self.taskbar.on('click', 'li', async function () {
-				const $btn = $(this);
-				const moduleName = $btn.attr('data-module');
-				const uuid = $btn.attr('data-uuid');
-
-				const module = await app.require(moduleName);
-				if (!$btn.hasClass('active')) {
-					minimizeAll();
-					module.load(uuid);
-					taskbar.toggleNew(uuid, false);
-
-					taskbar.tasklist.removeClass('active');
-					$btn.addClass('active');
-				} else {
-					module.minimize(uuid);
-				}
-				return false;
-			});
+				taskbar.tasklist.removeClass('active');
+				$btn.addClass('active');
+			} else {
+				module.minimize(uuid);
+			}
+			return false;
 		});
 
 		$(window).on('action:app.loggedOut', function () {
@@ -38,24 +36,24 @@ define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, t
 	};
 
 	taskbar.close = async function (moduleName, uuid) {
+		if (noTaskbar) {
+			return;
+		}
 		// Sends signal to the appropriate module's .close() fn (if present)
 		const btnEl = taskbar.tasklist.find('[data-module="' + module + '"][data-uuid="' + uuid + '"]');
-		let fnName = 'close';
-
-		// TODO: Refactor chat module to not take uuid in close instead of by jQuery element
-		if (moduleName === 'chat') {
-			fnName = 'closeByUUID';
-		}
 
 		if (btnEl.length) {
 			const module = await app.require(moduleName);
-			if (module && typeof module[fnName] === 'function') {
-				module[fnName](uuid);
+			if (module && typeof module.close === 'function') {
+				module.close(uuid);
 			}
 		}
 	};
 
 	taskbar.closeAll = function (module) {
+		if (noTaskbar) {
+			return;
+		}
 		// module is optional
 		let selector = '[data-uuid]';
 
@@ -69,6 +67,9 @@ define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, t
 	};
 
 	taskbar.discard = function (module, uuid) {
+		if (noTaskbar) {
+			return;
+		}
 		const btnEl = taskbar.tasklist.find('[data-module="' + module + '"][data-uuid="' + uuid + '"]');
 		btnEl.remove();
 
@@ -77,6 +78,9 @@ define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, t
 
 	taskbar.push = function (module, uuid, options, callback) {
 		callback = callback || function () {};
+		if (noTaskbar) {
+			return callback();
+		}
 		const element = taskbar.tasklist.find('li[data-uuid="' + uuid + '"]');
 
 		const data = {
@@ -96,6 +100,9 @@ define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, t
 	};
 
 	taskbar.get = function (module) {
+		if (noTaskbar) {
+			return [];
+		}
 		const items = $('[data-module="' + module + '"]').map(function (idx, el) {
 			return $(el).data();
 		});
@@ -104,11 +111,17 @@ define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, t
 	};
 
 	taskbar.minimize = function (module, uuid) {
+		if (noTaskbar) {
+			return;
+		}
 		const btnEl = taskbar.tasklist.find('[data-module="' + module + '"][data-uuid="' + uuid + '"]');
 		btnEl.toggleClass('active', false);
 	};
 
 	taskbar.toggleNew = function (uuid, state, silent) {
+		if (noTaskbar) {
+			return;
+		}
 		const btnEl = taskbar.tasklist.find('[data-uuid="' + uuid + '"]');
 		btnEl.toggleClass('new', state);
 
@@ -118,6 +131,10 @@ define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, t
 	};
 
 	taskbar.updateActive = function (uuid) {
+		if (noTaskbar) {
+			return;
+		}
+
 		const tasks = taskbar.tasklist.find('li');
 		tasks.removeClass('active');
 		tasks.filter('[data-uuid="' + uuid + '"]').addClass('active');
@@ -127,11 +144,17 @@ define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, t
 	};
 
 	taskbar.isActive = function (uuid) {
+		if (noTaskbar) {
+			return false;
+		}
 		const taskBtn = taskbar.tasklist.find('li[data-uuid="' + uuid + '"]');
 		return taskBtn.hasClass('active');
 	};
 
 	function update() {
+		if (noTaskbar) {
+			return;
+		}
 		const tasks = taskbar.tasklist.find('li');
 
 		if (tasks.length > 0) {
@@ -142,16 +165,22 @@ define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, t
 	}
 
 	function minimizeAll() {
+		if (noTaskbar) {
+			return;
+		}
 		taskbar.tasklist.find('.active').removeClass('active');
 	}
 
 	function createTaskbarItem(data, callback) {
+		if (noTaskbar) {
+			return callback();
+		}
 		translator.translate(data.options.title, function (taskTitle) {
 			const title = $('<div></div>').text(taskTitle || 'NodeBB Task').html();
 
 			const taskbarEl = $('<li></li>')
 				.addClass(data.options.className)
-				.html('<a href="#"' + (data.options.image ? ' style="background-image: url(\'' + data.options.image + '\'); background-size: cover;"' : '') + '>' +
+				.html('<a href="#"' + (data.options.image ? ' style="background-image: url(\'' + data.options.image.replace(/&#x2F;/g, '/') + '\'); background-size: cover;"' : '') + '>' +
 					(data.options.icon ? '<i class="fa ' + data.options.icon + '"></i> ' : '') +
 					'<span aria-label="' + title + '" component="taskbar/title">' + title + '</span>' +
 					'</a>')
@@ -186,15 +215,21 @@ define('taskbar', ['benchpress', 'translator', 'hooks'], function (Benchpress, t
 				element.find('i').attr('class', 'fa fa-' + value);
 				break;
 			case 'image':
-				element.find('a').css('background-image', value ? 'url("' + value + '")' : '');
+				element.find('a').css('background-image', value ? 'url("' + value.replace(/&#x2F;/g, '/') + '")' : '');
 				break;
 			case 'background-color':
 				element.find('a').css('background-color', value);
+				break;
+			case 'color':
+				element.find('a').css('color', value);
 				break;
 		}
 	};
 
 	taskbar.update = function (module, uuid, options) {
+		if (noTaskbar) {
+			return;
+		}
 		const element = taskbar.tasklist.find('[data-module="' + module + '"][data-uuid="' + uuid + '"]');
 		if (!element.length) {
 			return;

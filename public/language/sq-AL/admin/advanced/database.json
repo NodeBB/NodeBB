@@ -5,7 +5,7 @@
 	"uptime-seconds": "Uptime in Seconds",
 	"uptime-days": "Uptime in Days",
 
-	"mongo": "Mongo",
+	"mongo": "MongoDB",
 	"mongo.version": "MongoDB Version",
 	"mongo.storage-engine": "Storage Engine",
 	"mongo.collections": "Collections",

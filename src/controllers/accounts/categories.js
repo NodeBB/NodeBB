@@ -2,21 +2,17 @@
 
 const user = require('../../user');
 const categories = require('../../categories');
-const accountHelpers = require('./helpers');
 const helpers = require('../helpers');
 const pagination = require('../../pagination');
 const meta = require('../../meta');
 
 const categoriesController = module.exports;
 
-categoriesController.get = async function (req, res, next) {
-	const userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, req.query);
-	if (!userData) {
-		return next();
-	}
+categoriesController.get = async function (req, res) {
+	const { username, userslug } = await user.getUserFields(res.locals.uid, ['username', 'userslug']);
 	const [states, allCategoriesData] = await Promise.all([
-		user.getCategoryWatchState(userData.uid),
-		categories.buildForSelect(userData.uid, 'find', ['descriptionParsed', 'depth', 'slug']),
+		user.getCategoryWatchState(res.locals.uid),
+		categories.buildForSelect(res.locals.uid, 'find', ['descriptionParsed', 'depth', 'slug']),
 	]);
 
 	const pageCount = Math.max(1, Math.ceil(allCategoriesData.length / meta.config.categoriesPerPage));
@@ -33,12 +29,14 @@ categoriesController.get = async function (req, res, next) {
 			category.isNotWatched = states[category.cid] === categories.watchStates.notwatching;
 		}
 	});
-	userData.categories = categoriesData;
-	userData.title = `[[pages:account/watched_categories, ${userData.username}]]`;
-	userData.breadcrumbs = helpers.buildBreadcrumbs([
-		{ text: userData.username, url: `/user/${userData.userslug}` },
+
+	const payload = {};
+	payload.categories = categoriesData;
+	payload.title = `[[pages:account/watched_categories, ${username}]]`;
+	payload.breadcrumbs = helpers.buildBreadcrumbs([
+		{ text: username, url: `/user/${userslug}` },
 		{ text: '[[pages:categories]]' },
 	]);
-	userData.pagination = pagination.create(page, pageCount, req.query);
-	res.render('account/categories', userData);
+	payload.pagination = pagination.create(page, pageCount, req.query);
+	res.render('account/categories', payload);
 };

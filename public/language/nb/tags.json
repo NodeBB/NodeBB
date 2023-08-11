@@ -1,8 +1,11 @@
 {
+    "all-tags": "All tags",
     "no_tag_topics": "Det er ingen emner med dette emneordet.",
+    "no-tags-found": "No tags found",
     "tags": "Emneord",
     "enter_tags_here": "Skriv emneord her, mellom %1 og %2 tegn hver.",
     "enter_tags_here_short": "Skriv emneord...",
     "no_tags": "Det finnes ingen emneord enda.",
-    "select_tags": "Velg kode"
+    "select_tags": "Velg kode",
+    "tag-whitelist": "Tag Whitelist"
 }

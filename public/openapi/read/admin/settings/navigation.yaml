@@ -87,11 +87,18 @@ get:
                                 type: string
                               displayName:
                                 type: string
-                        properties:
-                          type: object
-                          properties:
-                            targetBlank:
-                              type: boolean
+                        targetBlank:
+                          type: boolean
+                      required:
+                        - id
+                        - route
+                        - title
+                        - enabled
+                        - iconClass
+                        - textClass
+                        - text
+                        - core
+                        - groups
                   groups:
                     type: array
                     items:
@@ -104,4 +111,6 @@ get:
                   navigation:
                     type: array
                     description: A clone of `enabled`
+                  title:
+                    type: string
               - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

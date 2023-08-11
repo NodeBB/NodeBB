@@ -1,0 +1,20 @@
+{
+	"customise": "Customise",
+	"custom-css": "Custom CSS/SASS",
+	"custom-css.description": "Enter your own CSS/SASS declarations here, which will be applied after all other styles.",
+	"custom-css.enable": "Enable Custom CSS/SASS",
+
+	"custom-js": "Custom Javascript",
+	"custom-js.description": "Մուտքագրեք ձեր սեփական javascript-ն այստեղ: Այն կկատարվի էջն ամբողջությամբ բեռնվելուց հետո:",
+	"custom-js.enable": "Միացնել Custom Javascript-ը",
+
+	"custom-header": "Պատվերով վերնագիր",
+	"custom-header.description": "Մուտքագրեք հատուկ HTML-ն այստեղ (օրինակ՝ Meta Tags և այլն), որը կկցվի &lt;head&gt; ձեր ֆորումի նշագրման բաժինը: Սկրիպտի պիտակները թույլատրվում են, բայց չեն խրախուսվում, քանի որ հասանելի է Custom Javascript ներդիրը:",
+	"custom-header.enable": "Միացնել հատուկ Վերնագիրը",
+
+	"custom-css.livereload": "Միացնել Live Reload-ը",
+	"custom-css.livereload.description": "Միացրեք սա՝ ձեր հաշվի տակ գտնվող յուրաքանչյուր սարքի բոլոր աշխատաշրջանները ստիպելու համար թարմացնել, երբ սեղմեք «Պահել» կոճակը",
+	"bsvariables": "_variables.scss",
+	"bsvariables.description": "Override bootstrap variables here. You can also use a tool like <a href=\"https://bootstrap.build/app\">bootstrap.build</a> and paste the output here.<br/>Changes require a rebuild & restart.",
+	"bsvariables.enable": "Enable _variables.scss"
+}

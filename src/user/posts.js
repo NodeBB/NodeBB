@@ -18,7 +18,7 @@ module.exports = function (User) {
 			return;
 		}
 		const [userData, isAdminOrMod] = await Promise.all([
-			User.getUserFields(uid, ['uid', 'banned', 'mutedUntil', 'joindate', 'email', 'reputation'].concat([field])),
+			User.getUserFields(uid, ['uid', 'mutedUntil', 'joindate', 'email', 'reputation'].concat([field])),
 			privileges.categories.isAdminOrMod(cid, uid),
 		]);
 
@@ -28,10 +28,6 @@ module.exports = function (User) {
 
 		if (isAdminOrMod) {
 			return;
-		}
-
-		if (userData.banned) {
-			throw new Error('[[error:user-banned]]');
 		}
 
 		const now = Date.now();

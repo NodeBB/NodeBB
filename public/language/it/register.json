@@ -1,5 +1,6 @@
 {
     "register": "Registrati",
+    "already-have-account": "Hai già un account?",
     "cancel_registration": "Cancella Registrazione",
     "help.email": "Per impostazione predefinita, la tua email sarà nascosta al pubblico.",
     "help.username_restrictions": "Un nome utente univoco tra %1 e %2 caratteri. Altri possono citarti con @<span id='yourUsername'>nome utente</span>.",

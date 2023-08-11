@@ -1,7 +1,9 @@
 {
+    "themes": "Themes",
     "checking-for-installed": "설치된 테마 확인 중...",
     "homepage": "홈페이지",
     "select-theme": "테마 선택",
+    "revert-theme": "Revert Theme",
     "current-theme": "현재 테마",
     "no-themes": "설치된 테마 없음",
     "revert-confirm": "정말 NodeBB 기본 테마로 복원하시겠습니까?",

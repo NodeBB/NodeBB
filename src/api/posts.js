@@ -8,6 +8,7 @@ const user = require('../user');
 const posts = require('../posts');
 const topics = require('../topics');
 const groups = require('../groups');
+const plugins = require('../plugins');
 const meta = require('../meta');
 const events = require('../events');
 const privileges = require('../privileges');
@@ -23,23 +24,61 @@ postsAPI.get = async function (caller, data) {
 		posts.getPostData(data.pid),
 		posts.hasVoted(data.pid, caller.uid),
 	]);
-	if (!post) {
-		return null;
-	}
-	Object.assign(post, voted);
-
 	const userPrivilege = userPrivileges[0];
-	if (!userPrivilege.read || !userPrivilege['topics:read']) {
+
+	if (!post || !userPrivilege.read || !userPrivilege['topics:read']) {
 		return null;
 	}
 
+	Object.assign(post, voted);
 	post.ip = userPrivilege.isAdminOrMod ? post.ip : undefined;
+
 	const selfPost = caller.uid && caller.uid === parseInt(post.uid, 10);
 	if (post.deleted && !(userPrivilege.isAdminOrMod || selfPost)) {
 		post.content = '[[topic:post_is_deleted]]';
 	}
 
 	return post;
+};
+
+postsAPI.getIndex = async (caller, { pid, sort }) => {
+	const tid = await posts.getPostField(pid, 'tid');
+	const topicPrivileges = await privileges.topics.get(tid, caller.uid);
+	if (!topicPrivileges.read || !topicPrivileges['topics:read']) {
+		return null;
+	}
+
+	return await posts.getPidIndex(pid, tid, sort);
+};
+
+postsAPI.getSummary = async (caller, { pid }) => {
+	const tid = await posts.getPostField(pid, 'tid');
+	const topicPrivileges = await privileges.topics.get(tid, caller.uid);
+	if (!topicPrivileges.read || !topicPrivileges['topics:read']) {
+		return null;
+	}
+
+	const postsData = await posts.getPostSummaryByPids([pid], caller.uid, { stripTags: false });
+	posts.modifyPostByPrivilege(postsData[0], topicPrivileges);
+	return postsData[0];
+};
+
+postsAPI.getRaw = async (caller, { pid }) => {
+	const userPrivileges = await privileges.posts.get([pid], caller.uid);
+	const userPrivilege = userPrivileges[0];
+	if (!userPrivilege['topics:read']) {
+		return null;
+	}
+
+	const postData = await posts.getPostFields(pid, ['content', 'deleted']);
+	const selfPost = caller.uid && caller.uid === parseInt(postData.uid, 10);
+
+	if (postData.deleted && !(userPrivilege.isAdminOrMod || selfPost)) {
+		return null;
+	}
+	postData.pid = pid;
+	const result = await plugins.hooks.fire('filter:post.getRawPost', { uid: caller.uid, postData: postData });
+	return result.postData.content;
 };
 
 postsAPI.edit = async function (caller, data) {
@@ -332,4 +371,43 @@ postsAPI.restoreDiff = async (caller, data) => {
 
 	const edit = await posts.diffs.restore(data.pid, data.since, caller.uid, apiHelpers.buildReqObject(caller));
 	websockets.in(`topic_${edit.topic.tid}`).emit('event:post_edited', edit);
+};
+
+postsAPI.deleteDiff = async (caller, { pid, timestamp }) => {
+	const cid = await posts.getCidByPid(pid);
+	const [isAdmin, isModerator] = await Promise.all([
+		privileges.users.isAdministrator(caller.uid),
+		privileges.users.isModerator(caller.uid, cid),
+	]);
+
+	if (!(isAdmin || isModerator)) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	await posts.diffs.delete(pid, timestamp, caller.uid);
+};
+
+postsAPI.getReplies = async (caller, { pid }) => {
+	if (!utils.isNumber(pid)) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	const { uid } = caller;
+	const canRead = await privileges.posts.can('topics:read', pid, caller.uid);
+	if (!canRead) {
+		return null;
+	}
+
+	const { topicPostSort } = await user.getSettings(uid);
+	const pids = await posts.getPidsFromSet(`pid:${pid}:replies`, 0, -1, topicPostSort === 'newest_to_oldest');
+
+	let [postData, postPrivileges] = await Promise.all([
+		posts.getPostsByPids(pids, uid),
+		privileges.posts.get(pids, uid),
+	]);
+	postData = await topics.addPostData(postData, uid);
+	postData.forEach((postData, index) => posts.modifyPostByPrivilege(postData, postPrivileges[index]));
+	postData = postData.filter((postData, index) => postData && postPrivileges[index].read);
+	postData = await user.blocks.filter(uid, postData);
+
+	return postData;
 };

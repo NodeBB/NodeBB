@@ -1,4 +1,5 @@
 {
+	"plugins": "Plugins",
 	"trending": "Trending",
 	"installed": "Installed",
 	"active": "Active",
@@ -19,7 +20,7 @@
 	"order.description": "Certain plugins work ideally when they are initialised before/after other plugins.",
 	"order.explanation": "Plugins load in the order specified here, from top to bottom",
 
-	"plugin-item.themes": "Themes",
+	"plugin-item.themes": "تم‌ها",
 	"plugin-item.deactivate": "Deactivate",
 	"plugin-item.activate": "Activate",
 	"plugin-item.install": "Install",

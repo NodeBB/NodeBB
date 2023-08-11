@@ -1,0 +1,16 @@
+{
+	"theme-name": "Harmony тема",
+	"skins": "Маске",
+	"collapse": "Скупи",
+	"expand": "Рашири",
+	"login-register-to-search": "Пријавите се или региструјте за претрагу.",
+	"settings.title": "Подешавање тема",
+	"settings.enableQuickReply": "Омогући брзи одговор",
+	"settings.centerHeaderElements": "Центрирај елементе заглавља",
+	"settings.mobileTopicTeasers": "Прикажи најавне теме на мобилном телефону",
+	"settings.stickyToolbar": "Лепљива трака алата",
+	"settings.stickyToolbar.help": "Трака алата на страницама са темама и категоријама ће бити на врху странице",
+	"settings.autohideBottombar": "Аутоматско сакривање доње траке",
+	"settings.autohideBottombar.help": "Доња трака у приказу за мобилне уређаје биће скривена када се страница помера надоле",
+	"settings.chatModals": "Омогући модале ћаскања"
+}

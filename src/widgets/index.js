@@ -27,7 +27,7 @@ widgets.render = async function (uid, options) {
 	const returnData = {};
 	locations.forEach((location, i) => {
 		if (Array.isArray(widgetData[i]) && widgetData[i].length) {
-			returnData[location] = widgetData[i].filter(Boolean);
+			returnData[location] = widgetData[i].filter(widget => widget && widget.html);
 		}
 	});
 
@@ -101,7 +101,13 @@ widgets.checkVisibility = async function (data, uid) {
 	if (data.groupsHideFrom.length) {
 		isHidden = await groups.isMemberOfAny(uid, data.groupsHideFrom);
 	}
-	return isVisible && !isHidden;
+
+	const isExpired = (
+		(data.startDate && Date.now() < new Date(data.startDate).getTime()) ||
+		(data.endDate && Date.now() > new Date(data.endDate).getTime())
+	);
+
+	return isVisible && !isHidden && !isExpired;
 };
 
 widgets.getWidgetDataForTemplates = async function (templates) {
@@ -212,11 +218,13 @@ widgets.reset = async function () {
 
 widgets.resetTemplate = async function (template) {
 	const area = await db.getObject(`widgets:${template}.tpl`);
-	const toBeDrafted = _.flatMap(Object.values(area), value => JSON.parse(value));
-	await db.delete(`widgets:${template}.tpl`);
-	let draftWidgets = await db.getObjectField('widgets:global', 'drafts');
-	draftWidgets = JSON.parse(draftWidgets).concat(toBeDrafted);
-	await db.setObjectField('widgets:global', 'drafts', JSON.stringify(draftWidgets));
+	if (area) {
+		const toBeDrafted = _.flatMap(Object.values(area), value => JSON.parse(value));
+		await db.delete(`widgets:${template}.tpl`);
+		let draftWidgets = await db.getObjectField('widgets:global', 'drafts');
+		draftWidgets = JSON.parse(draftWidgets).concat(toBeDrafted);
+		await db.setObjectField('widgets:global', 'drafts', JSON.stringify(draftWidgets));
+	}
 };
 
 widgets.resetTemplates = async function (templates) {

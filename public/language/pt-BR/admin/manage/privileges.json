@@ -1,4 +1,6 @@
 {
+	"manage-privileges": "Manage Privileges",
+	"discard-changes": "Discard changes",
 	"global": "Global",
 	"admin": "Admin",
 	"group-privileges": "Privilégios do Grupo",
@@ -49,7 +51,6 @@
 	"alert.confirm-moderate": "<strong>Tem certeza de que deseja conceder o privilégio de moderação a este grupo de usuários?</strong> Este grupo é público e qualquer usuário pode entrar à vontade.",
 	"alert.confirm-admins-mods": "<strong>Tem certeza de que deseja conceder o privilégio de 'Administradores e Mods' a este usuário/grupo?</strong> Os usuários com este privilégio podem promover e rebaixar outros usuários a posições privilegiadas, <em>incluindo superadministrador</em>",
 	"alert.confirm-save": "Por favor, confirme a sua intenção de salvar estes privilégios",
-	"alert.saved": "Alterações de privilégio salvas e aplicadas",
 	"alert.confirm-discard": "Você tem certeza que quer descartar suas mudanças nos privilégios?",
 	"alert.discarded": "Mudanças de privilégio descartadas",
 	"alert.confirm-copyToAll": "Are you sure you wish to apply this set of <strong>%1</strong> to <strong>all categories</strong>?",

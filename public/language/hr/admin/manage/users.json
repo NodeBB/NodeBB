@@ -1,4 +1,5 @@
 {
+	"manage-users": "Manage Users",
 	"users": "Korisnici",
 	"edit": "Actions",
 	"make-admin": "Dodaj administratora",
@@ -49,6 +50,10 @@
 	"users.username": "korisničko ime",
 	"users.email": "email",
 	"users.no-email": "(no email)",
+	"users.validated": "Validated",
+	"users.not-validated": "Not Validated",
+	"users.validation-pending": "Validation Pending",
+	"users.validation-expired": "Validation Expired",
 	"users.ip": "IP",
 	"users.postcount": "postcount",
 	"users.reputation": "reputacija",

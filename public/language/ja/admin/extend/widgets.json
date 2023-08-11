@@ -1,4 +1,5 @@
 {
+	"widgets": "Widgets",
 	"available": "利用可能なウィジェット",
 	"explanation": "ドロップダウンメニューからウィジェットを選択し、左のテンプレートのウィジェットエリアにドラッグ&ドロップします。",
 	"none-installed": "No widgets found! Activate the widget essentials plugin in the <a href=\"%1\">plugins</a> control panel.",
@@ -8,9 +9,9 @@
 	"containers.none": "なし",
 	"container.well": "十分",
 	"container.jumbotron": "ジャンボトロン",
-	"container.panel": "パネル",
-	"container.panel-header": "パネルヘッダー",
-	"container.panel-body": "パネル本体",
+	"container.card": "Card",
+	"container.card-header": "Card Header",
+	"container.card-body": "Card Body",
 	"container.alert": "警告",
 
 	"alert.confirm-delete": "このウィジェットを削除してもよろしいですか？",
@@ -26,5 +27,7 @@
 	"container.placeholder": "Drag and drop a container or enter HTML here.",
 	"show-to-groups": "Show to groups",
 	"hide-from-groups": "Hide from groups",
+	"start-date": "Start date",
+	"end-date": "End date",
 	"hide-on-mobile": "Hide on mobile"
 }

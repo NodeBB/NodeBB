@@ -1,12 +1,13 @@
 {
-	"logger-settings": "Logger Settings",
-	"description": "By enabling the check boxes, you will receive logs to your terminal. If you specify a path, logs will then be saved to a file instead. HTTP logging is useful for collecting statistics about who, when, and what people access on your forum. In addition to logging HTTP requests, we can also log socket.io events. Socket.io logging, in combination with redis-cli monitor, can be very helpful for learning NodeBB's internals.",
-	"explanation": "Simply check/uncheck the logging settings to enable or disable logging on the fly. No restart needed.",
-	"enable-http": "Enable HTTP logging",
-	"enable-socket": "Enable socket.io event logging",
-	"file-path": "Path to log file",
-	"file-path-placeholder": "/path/to/log/file.log ::: leave blank to log to your terminal",
+	"logger": "Logger",
+	"logger-settings": "إعدادات المسجِّل",
+	"description": "من خلال تمكين مربعات الاختيار ، ستتلقى سجلات إلى جهازك الطرفي. إذا حددت مسارًا ، فسيتم بعد ذلك حفظ السجلات في ملف بدلاً من ذلك. يعد تسجيل HTTP مفيدًا لجمع الإحصائيات حول من ومتى وماذا يصل الأشخاص في المنتدى. بالإضافة إلى تسجيل طلبات HTTP ، يمكننا أيضًا تسجيل أحداث socket.io. يمكن أن يكون تسجيل Socket.io ، جنبًا إلى جنب مع شاشة redis-cli ، مفيدًا جدًا في تعلم العناصر الداخلية لـ NodeBB.",
+	"explanation": "ما عليك سوى تحديدأو/ إلغاء تحديد إعدادات التسجيل لتمكين أو تعطيل التسجيل أثناء التنقل. لا حاجة لإعادة التشغيل.",
+	"enable-http": "تمكين سجلات HTTP",
+	"enable-socket": "تفعيل تسجيل أحداث socket.io",
+	"file-path": "مسار ملف السجل",
+	"file-path-placeholder": "/path/to/log/file.log ::: اتركه فارغا لاظهار السجلات لنافذة الطرفية",
 
-	"control-panel": "Logger Control Panel",
-	"update-settings": "Update Logger Settings"
+	"control-panel": "لوحة تحكم المسجل",
+	"update-settings": "تحديث إعدادات المسجل"
 }

@@ -39,7 +39,7 @@ define('forum/infinitescroll', ['hooks', 'alerts'], function (hooks, alerts) {
 	function onScroll() {
 		const bsEnv = utils.findBootstrapEnvironment();
 		const mobileComposerOpen = (bsEnv === 'xs' || bsEnv === 'sm') && $('html').hasClass('composing');
-		if (loadingMore || mobileComposerOpen) {
+		if (loadingMore || mobileComposerOpen || app.flags._glance) {
 			return;
 		}
 		const currentScrollTop = $(window).scrollTop();
@@ -98,7 +98,7 @@ define('forum/infinitescroll', ['hooks', 'alerts'], function (hooks, alerts) {
 			});
 		}).fail(function (jqXHR) {
 			loadingMore = false;
-			alerts.error(String(jqXHR.responseJSON || jqXHR.statusText));
+			alerts.error(String(jqXHR.responseJSON || '[[error:no-connection]]'));
 		});
 	};
 

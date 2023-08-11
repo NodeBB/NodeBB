@@ -3,6 +3,7 @@
     "link-to-manage": "Etiketleri Düzenle",
     "system-tags": "Sistem etiketleri",
     "system-tags-help": "Sadece ayrıcalıklı üyeler bu etiketleri görebilir.",
+    "tags-per-topic": "Tags per topic",
     "min-per-topic": "Konu Başına Minimum Etiket Sayısı",
     "max-per-topic": "Konu Başına Maksimum Etiket Sayısı",
     "min-length": "Minimum Etiket Uzunluğu",

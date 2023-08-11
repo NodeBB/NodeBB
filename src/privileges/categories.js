@@ -47,6 +47,7 @@ privsCategories.getPrivilegeList = async () => {
 };
 
 privsCategories.init = async () => {
+	privsCategories._coreSize = _privilegeMap.size;
 	await plugins.hooks.fire('static:privileges.categories.init', {
 		privileges: _privilegeMap,
 	});
@@ -72,8 +73,8 @@ privsCategories.list = async function (cid) {
 	});
 	payload.keys = keys;
 
-	payload.columnCountUserOther = payload.labels.users.length - labels.users.length;
-	payload.columnCountGroupOther = payload.labels.groups.length - labels.groups.length;
+	payload.columnCountUserOther = payload.labels.users.length - privsCategories._coreSize;
+	payload.columnCountGroupOther = payload.labels.groups.length - privsCategories._coreSize;
 
 	return payload;
 };
@@ -208,6 +209,12 @@ privsCategories.canMoveAllTopics = async function (currentCid, targetCid, uid) {
 	return isAdmin || !isModerators.includes(false);
 };
 
+privsCategories.canPostTopic = async function (uid) {
+	let cids = await categories.getAllCidsFromSet('categories:cid');
+	cids = await privsCategories.filterCids('topics:create', cids, uid);
+	return cids.length > 0;
+};
+
 privsCategories.userPrivileges = async function (cid, uid) {
 	const userPrivilegeList = await privsCategories.getUserPrivilegeList();
 	return await helpers.userOrGroupPrivileges(cid, uid, userPrivilegeList);
@@ -216,4 +223,8 @@ privsCategories.userPrivileges = async function (cid, uid) {
 privsCategories.groupPrivileges = async function (cid, groupName) {
 	const groupPrivilegeList = await privsCategories.getGroupPrivilegeList();
 	return await helpers.userOrGroupPrivileges(cid, groupName, groupPrivilegeList);
+};
+
+privsCategories.getUidsWithPrivilege = async function (cids, privilege) {
+	return await helpers.getUidsWithPrivilege(cids, privilege);
 };

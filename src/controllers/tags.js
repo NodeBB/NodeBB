@@ -25,10 +25,11 @@ tagsController.getTag = async function (req, res) {
 		breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[tags:tags]]', url: '/tags' }, { text: tag }]),
 		title: `[[pages:tag, ${tag}]]`,
 	};
-	const [settings, cids, categoryData, isPrivileged] = await Promise.all([
+	const [settings, cids, categoryData, canPost, isPrivileged] = await Promise.all([
 		user.getSettings(req.uid),
 		cid || categories.getCidsByPrivilege('categories:cid', req.uid, 'topics:read'),
 		helpers.getSelectedCategory(cid),
+		privileges.categories.canPostTopic(req.uid),
 		user.isPrivileged(req.uid),
 	]);
 	const start = Math.max(0, (page - 1) * settings.topicsPerPage);
@@ -40,6 +41,7 @@ tagsController.getTag = async function (req, res) {
 	]);
 
 	templateData.topics = await topics.getTopics(tids, req.uid);
+	templateData.canPost = canPost;
 	templateData.showSelect = isPrivileged;
 	templateData.showTopicTools = isPrivileged;
 	templateData.allCategoriesUrl = `tags/${tag}${helpers.buildQueryString(req.query, 'cid', '')}`;
@@ -59,7 +61,12 @@ tagsController.getTag = async function (req, res) {
 
 	const pageCount = Math.max(1, Math.ceil(topicCount / settings.topicsPerPage));
 	templateData.pagination = pagination.create(page, pageCount, req.query);
-	helpers.addLinkTags({ url: `tags/${tag}`, res: req.res, tags: templateData.pagination.rel });
+	helpers.addLinkTags({
+		url: `tags/${tag}`,
+		res: req.res,
+		tags: templateData.pagination.rel,
+		page: page,
+	});
 
 	templateData['feeds:disableRSS'] = meta.config['feeds:disableRSS'];
 	templateData.rssFeedUrl = `${nconf.get('relative_path')}/tags/${tag}.rss`;

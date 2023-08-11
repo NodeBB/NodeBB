@@ -1,29 +1,57 @@
 'use strict';
 
 define('forum/flags/list', [
-	'components', 'Chart', 'categoryFilter', 'autocomplete', 'api', 'alerts',
-], function (components, Chart, categoryFilter, autocomplete, api, alerts) {
+	'components', 'Chart', 'categoryFilter',
+	'autocomplete', 'api', 'alerts',
+	'userFilter',
+], function (
+	components, Chart, categoryFilter,
+	autocomplete, api, alerts,
+	userFilter
+) {
 	const Flags = {};
-
-	let selectedCids;
+	const selected = new Map([
+		['cids', []],
+		['assignee', []],
+		['targetUid', []],
+		['reporterId', []],
+	]);
 
 	Flags.init = function () {
 		Flags.enableFilterForm();
 		Flags.enableCheckboxes();
 		Flags.handleBulkActions();
 
-		selectedCids = [];
 		if (ajaxify.data.filters.hasOwnProperty('cid')) {
-			selectedCids = Array.isArray(ajaxify.data.filters.cid) ?
-				ajaxify.data.filters.cid : [ajaxify.data.filters.cid];
+			selected.set('cids', Array.isArray(ajaxify.data.filters.cid) ?
+				ajaxify.data.filters.cid : [ajaxify.data.filters.cid]);
 		}
 
 		categoryFilter.init($('[component="category/dropdown"]'), {
 			privilege: 'moderate',
-			selectedCids: selectedCids,
-			onHidden: function (data) {
-				selectedCids = data.selectedCids;
+			selectedCids: selected.get('cids'),
+			updateButton: function ({ selectedCids: cids }) {
+				selected.set('cids', cids);
+				applyFilters();
 			},
+		});
+
+		['assignee', 'targetUid', 'reporterId'].forEach((filter) => {
+			if (ajaxify.data.filters.hasOwnProperty('filter')) {
+				selected.set(filter, ajaxify.data.selected[filter]);
+			}
+			const filterEl = $(`[component="flags/filter/${filter}"]`);
+			userFilter.init(filterEl, {
+				selectedUsers: selected.get(filter),
+				template: 'partials/flags/filters',
+				selectedBlock: `selected.${filter}`,
+				onSelect: function (_selectedUsers) {
+					selected.set(filter, _selectedUsers);
+				},
+				onHidden: function () {
+					applyFilters();
+				},
+			});
 		});
 
 		components.get('flags/list')
@@ -47,34 +75,76 @@ define('forum/flags/list', [
 
 	Flags.enableFilterForm = function () {
 		const $filtersEl = components.get('flags/filters');
+		if ($filtersEl && $filtersEl.get(0).nodeName !== 'FORM') {
+			// Harmony; update hidden form and submit on change
+			const filtersEl = $filtersEl.get(0);
+			const formEl = filtersEl.querySelector('form');
 
-		// Parse ajaxify data to set form values to reflect current filters
-		for (const filter in ajaxify.data.filters) {
-			if (ajaxify.data.filters.hasOwnProperty(filter)) {
-				$filtersEl.find('[name="' + filter + '"]').val(ajaxify.data.filters[filter]);
+			filtersEl.addEventListener('click', (e) => {
+				const subselector = e.target.closest('[data-value]');
+				if (!subselector) {
+					return;
+				}
+
+				const name = subselector.getAttribute('data-name');
+				const value = subselector.getAttribute('data-value');
+
+				formEl[name].value = value;
+
+				applyFilters();
+			});
+		} else {
+			// Persona; parse ajaxify data to set form values to reflect current filters
+			for (const filter in ajaxify.data.filters) {
+				if (ajaxify.data.filters.hasOwnProperty(filter)) {
+					$filtersEl.find('[name="' + filter + '"]').val(ajaxify.data.filters[filter]);
+				}
 			}
-		}
-		$filtersEl.find('[name="sort"]').val(ajaxify.data.sort);
+			$filtersEl.find('[name="sort"]').val(ajaxify.data.sort);
 
-		document.getElementById('apply-filters').addEventListener('click', function () {
-			const payload = $filtersEl.serializeArray();
-			// cid is special comes from categoryFilter module
-			selectedCids.forEach(function (cid) {
-				payload.push({ name: 'cid', value: cid });
+			document.getElementById('apply-filters').addEventListener('click', function () {
+				applyFilters();
 			});
 
-			ajaxify.go('flags?' + (payload.length ? $.param(payload) : 'reset=1'));
+			$filtersEl.find('button[data-target="#more-filters"]').click((ev) => {
+				const textVariant = ev.target.getAttribute('data-text-variant');
+				if (!textVariant) {
+					return;
+				}
+				ev.target.setAttribute('data-text-variant', ev.target.textContent);
+				ev.target.firstChild.textContent = textVariant;
+			});
+		}
+	};
+
+	function applyFilters() {
+		let formEl = components.get('flags/filters').get(0);
+		if (!formEl) {
+			return;
+		}
+		if (formEl.nodeName !== 'FORM') {
+			formEl = formEl.querySelector('form');
+		}
+
+		const payload = new FormData(formEl);
+
+		// cid is special comes from categoryFilter module
+		selected.get('cids').forEach(function (cid) {
+			payload.append('cid', cid);
 		});
 
-		$filtersEl.find('button[data-target="#more-filters"]').click((ev) => {
-			const textVariant = ev.target.getAttribute('data-text-variant');
-			if (!textVariant) {
-				return;
-			}
-			ev.target.setAttribute('data-text-variant', ev.target.textContent);
-			ev.target.firstChild.textContent = textVariant;
+		// these three fields are special; comes from userFilter module
+		['assignee', 'targetUid', 'reporterId'].forEach((filter) => {
+			selected.get(filter).forEach(({ uid }) => {
+				payload.append(filter, uid);
+			});
 		});
-	};
+
+		const length = Array.from(payload.values()).filter(Boolean);
+		const qs = new URLSearchParams(payload).toString();
+
+		ajaxify.go('flags?' + (length ? qs : 'reset=1'));
+	}
 
 	Flags.enableCheckboxes = function () {
 		const flagsList = document.querySelector('[component="flags/list"]');

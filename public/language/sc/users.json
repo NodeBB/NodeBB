@@ -1,11 +1,12 @@
 {
+    "all-users": "All Users",
     "latest_users": "Ùrtimos Impitadores",
     "top_posters": "Prus Ativos",
     "most_reputation": "Prus Famados",
     "most_flags": "Most Flags",
     "search": "Chirca",
     "enter_username": "Pone unu nùmene de impitadore de chircare",
-    "search-user-for-chat": "Search a user to start chat",
+    "search-user-for-chat": "Search for a user to start chat",
     "load_more": "Càrriga de prus",
     "users-found-search-took": "%1 user(s) found! Search took %2 seconds.",
     "filter-by": "Filter By",

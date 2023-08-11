@@ -14,6 +14,7 @@
     "flagged-content": "フラグ付きコンテンツ",
     "ip-blacklist": "IPブラックリスト",
     "post-queue": "投稿キュー",
+    "registration-queue": "Registration Queue",
     "users/online": "オンラインのユーザー",
     "users/latest": "最近のユーザー",
     "users/sort-posts": "ほとんどの投稿を持つユーザー",
@@ -49,6 +50,7 @@
     "account/watched_categories": "%1's Watched Categories",
     "account/bookmarks": "%1のブックマークされた投稿",
     "account/settings": "ユーザー設定",
+    "account/settings-of": "Changing settings of %1",
     "account/watched": " %1がスレッドをウォッチ済みに設定しました",
     "account/ignored": "%1がスレッドを無視済みに設定しました",
     "account/upvoted": "%1が投稿を高評価しました",
@@ -59,7 +61,7 @@
     "account/uploads": "Uploads by %1",
     "account/sessions": "Login Sessions",
     "confirm": "Eメールが確認されました",
-    "maintenance.text": "%1 は現在メンテナンスを実行中です。お手数ですが、時間をずらしてお越しください。",
+    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
     "maintenance.messageIntro": "さらに、管理者はこちらのメッセージを残しました:",
     "throttled.text": "%1は現在、過負荷のため使用できません。お手数ですが、時間をずらしてお越しください。"
 }

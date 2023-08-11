@@ -49,7 +49,9 @@ module.exports = function (User) {
 		if (!(parseInt(uid, 10) > 0)) {
 			return [];
 		}
-		const cids = await User.getCategoriesByStates(uid, [categories.watchStates.watching]);
+		let cids = await User.getCategoriesByStates(uid, [categories.watchStates.watching]);
+		const categoryData = await categories.getCategoriesFields(cids, ['disabled']);
+		cids = cids.filter((cid, index) => categoryData[index] && !categoryData[index].disabled);
 		const result = await plugins.hooks.fire('filter:user.getWatchedCategories', {
 			uid: uid,
 			cids: cids,

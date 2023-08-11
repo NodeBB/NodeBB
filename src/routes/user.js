@@ -5,11 +5,10 @@ const helpers = require('./helpers');
 const { setupPageRoute } = helpers;
 
 module.exports = function (app, name, middleware, controllers) {
-	const middlewares = [middleware.exposeUid, middleware.canViewUsers];
+	const middlewares = [middleware.exposeUid, middleware.canViewUsers, middleware.buildAccountData];
 	const accountMiddlewares = [
-		middleware.exposeUid,
+		...middlewares,
 		middleware.ensureLoggedIn,
-		middleware.canViewUsers,
 		middleware.checkAccountPermissions,
 	];
 
@@ -48,6 +47,6 @@ module.exports = function (app, name, middleware, controllers) {
 	setupPageRoute(app, `/${name}/:userslug/sessions`, accountMiddlewares, controllers.accounts.sessions.get);
 
 	setupPageRoute(app, '/notifications', [middleware.ensureLoggedIn], controllers.accounts.notifications.get);
-	setupPageRoute(app, `/${name}/:userslug/chats/:roomid?`, middlewares, controllers.accounts.chats.get);
+	setupPageRoute(app, `/${name}/:userslug/chats/:roomid?`, [middleware.exposeUid, middleware.canViewUsers], controllers.accounts.chats.get);
 	setupPageRoute(app, '/chats/:roomid?', [middleware.ensureLoggedIn], controllers.accounts.chats.redirectToChat);
 };

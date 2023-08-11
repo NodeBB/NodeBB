@@ -14,6 +14,7 @@
     "flagged-content": "Pažymėtas turinys",
     "ip-blacklist": "IP Juodasis Sąrašas",
     "post-queue": "Įrašų eilė",
+    "registration-queue": "Registration Queue",
     "users/online": "Prisijungę vartotojai",
     "users/latest": "Naujausi vartotojai",
     "users/sort-posts": "Vartotojai, turintis daugiausiai įrašų",
@@ -49,6 +50,7 @@
     "account/watched_categories": "%1's Watched Categories",
     "account/bookmarks": "%1's Bookmarked Posts",
     "account/settings": "Vartotojo nustatymai",
+    "account/settings-of": "Changing settings of %1",
     "account/watched": "Temos stebimos %1",
     "account/ignored": "Temos ignoruojamos %1",
     "account/upvoted": "Posts upvoted by %1",
@@ -59,7 +61,7 @@
     "account/uploads": "%1 Įkėlimai",
     "account/sessions": "Login Sessions",
     "confirm": "El. paštas patvirtintas",
-    "maintenance.text": "%1 dabar atnaujinimo darbuose. Prašome grįžti vėliau",
+    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
     "maintenance.messageIntro": "Be to, administratorius paliko šį pranešimą:",
     "throttled.text": "%1 dabar nepasiekiamas dėl per didelės apkrovos. Prašome sugrįžti vėliau."
 }

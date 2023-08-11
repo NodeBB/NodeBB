@@ -4,7 +4,7 @@ const fs = require('fs');
 const nconf = require('nconf');
 const path = require('path');
 const winston = require('winston');
-const mkdirp = require('mkdirp');
+const { mkdirp } = require('mkdirp');
 const mime = require('mime');
 const graceful = require('graceful-fs');
 
