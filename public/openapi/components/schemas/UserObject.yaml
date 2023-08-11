@@ -133,6 +133,15 @@ UserObject:
       example:
         - administrators
         - Staff
+    muted:
+      type: boolean
+      description: Whether or not the user has been muted.
+    mutedUntil:
+      type: number
+      description: A UNIX timestamp representing the moment a muted state will be lifted.
+    mutedReason:
+      type: string
+      description: The admin-provided reason for being muted.
     'icon:text':
       type: string
       description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
@@ -322,6 +331,17 @@ UserObjectFull:
       example:
         - administrators
         - Staff
+    muted:
+      type: boolean
+      description: Whether or not the user has been muted.
+    mutedUntil:
+      type: number
+      description: A UNIX timestamp representing the moment a muted state will be lifted.
+      nullable: true
+    mutedReason:
+      type: string
+      description: The admin-provided reason for being muted.
+      nullable: true
     'icon:text':
       type: string
       description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
@@ -348,6 +368,8 @@ UserObjectFull:
       type: string
     age:
       type: number
+    emailHidden:
+      type: boolean
     emailClass:
       type: string
     ips:
@@ -360,6 +382,8 @@ UserObjectFull:
       type: object
       properties:
         best:
+          type: number
+        controversial:
           type: number
         blocks:
           type: number
@@ -413,6 +437,8 @@ UserObjectFull:
       type: boolean
     canBan:
       type: boolean
+    canMute:
+      type: boolean
     canFlag:
       type: boolean
     canChangePassword:
@@ -425,7 +451,19 @@ UserObjectFull:
       type: number
     showHidden:
       type: boolean
+    allowProfilePicture:
+      type: boolean
+    allowCoverPicture:
+      type: boolean
+    allowProfileImageUploads:
+      type: number
+    allowedProfileImageExtensions:
+      type: string
     groups:
+      type: array
+      items:
+        $ref: ./GroupObject.yaml#/GroupFullObject
+    selectedGroup:
       type: array
       items:
         $ref: ./GroupObject.yaml#/GroupFullObject
@@ -444,6 +482,9 @@ UserObjectFull:
             type: string
           route:
             type: string
+          url:
+            type: string
+            description: The relative path to the profile link route from the root of the forum
           name:
             type: string
           visibility:
@@ -581,6 +622,9 @@ UserObjectSlim:
       example: Not Banned
 UserObjectACP:
   type: object
+  required:
+    - uid
+    - username
   properties:
     uid:
       type: number
@@ -602,6 +646,9 @@ UserObjectACP:
       type: string
       description: Email address associated with the user account
       example: dragonfruit@example.org
+    emailToConfirm:
+      type: string
+      description: Email address user used during signup, this email is not associated with the user until it is confirmed by clicking the link in the confirmation email.
     postcount:
       type: number
       example: 1000
@@ -634,6 +681,12 @@ UserObjectACP:
       type: number
       description: Whether the user has confirmed their email address or not
       example: 1
+    'email:expired':
+      type: boolean
+      description: True if confirmation email expired
+    'email:pending':
+      type: boolean
+      description: True if confirmation email is still pending
     'icon:text':
       type: string
       description: A single-letter representation of a username. This is used in the auto-generated icon given to users without an avatar
@@ -659,3 +712,53 @@ UserObjectACP:
       nullable: true
     ips:
       type: array
+BanMuteArray:
+  type: array
+  items:
+    type: object
+    properties:
+      uid:
+        type: number
+      timestamp:
+        type: number
+      expire:
+        type: number
+      fromUid:
+        type: number
+      user:
+        type: object
+        properties:
+          username:
+            type: string
+            description: A friendly name for a given user account
+          userslug:
+            type: string
+            description: An URL-safe variant of the username (i.e. lower-cased, spaces
+              removed, etc.)
+          picture:
+            type: string
+          uid:
+            type: number
+            description: A user identifier
+          icon:text:
+            type: string
+            description: A single-letter representation of a username. This is used in the
+              auto-generated icon given to users without
+              an avatar
+          icon:bgColor:
+            type: string
+            description: A six-character hexadecimal colour code assigned to the user. This
+              value is used in conjunction with
+              `icon:text` for the user's auto-generated
+              icon
+            example: "#f44336"
+      until:
+        type: number
+      untilReadable:
+        type: string
+      timestampReadable:
+        type: string
+      timestampISO:
+        type: string
+      reason:
+        type: string

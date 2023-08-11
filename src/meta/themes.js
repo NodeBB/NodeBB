@@ -89,9 +89,9 @@ Themes.set = async (data) => {
 	switch (data.type) {
 		case 'local': {
 			const current = await Meta.configs.get('theme:id');
+			const score = await db.sortedSetScore('plugins:active', current);
 			await db.sortedSetRemove('plugins:active', current);
-			const numPlugins = await db.sortedSetCard('plugins:active');
-			await db.sortedSetAdd('plugins:active', numPlugins, data.id);
+			await db.sortedSetAdd('plugins:active', score || 0, data.id);
 
 			if (current !== data.id) {
 				const pathToThemeJson = path.join(nconf.get('themes_path'), data.id, 'theme.json');
@@ -101,6 +101,16 @@ Themes.set = async (data) => {
 
 				let config = await fs.promises.readFile(pathToThemeJson, 'utf8');
 				config = JSON.parse(config);
+				const activePluginsConfig = nconf.get('plugins:active');
+				if (!activePluginsConfig) {
+					const score = await db.sortedSetScore('plugins:active', current);
+					await db.sortedSetRemove('plugins:active', current);
+					await db.sortedSetAdd('plugins:active', score || 0, data.id);
+				} else if (!activePluginsConfig.includes(data.id)) {
+					// This prevents changing theme when configuration doesn't include it, but allows it otherwise
+					winston.error(`When defining active plugins in configuration, changing themes requires adding the theme '${data.id}' to the list of active plugins before updating it in the ACP`);
+					throw new Error('[[error:theme-not-set-in-configuration]]');
+				}
 
 				// Re-set the themes path (for when NodeBB is reloaded)
 				Themes.setPath(config);
@@ -140,7 +150,7 @@ Themes.setupPaths = async () => {
 		currentThemeId: Meta.configs.get('theme:id'),
 	});
 
-	const themeId = data.currentThemeId || 'nodebb-theme-persona';
+	const themeId = data.currentThemeId || 'nodebb-theme-harmony';
 
 	if (process.env.NODE_ENV === 'development') {
 		winston.info(`[themes] Using theme ${themeId}`);
@@ -149,7 +159,7 @@ Themes.setupPaths = async () => {
 	const themeObj = data.themesData.find(themeObj => themeObj.id === themeId);
 
 	if (!themeObj) {
-		throw new Error('[[error:theme-not-found]]');
+		throw new Error('theme-not-found');
 	}
 
 	Themes.setPath(themeObj);
@@ -157,13 +167,16 @@ Themes.setupPaths = async () => {
 
 Themes.setPath = function (themeObj) {
 	// Theme's templates path
-	let themePath = nconf.get('base_templates_path');
+	let themePath;
 	const fallback = path.join(nconf.get('themes_path'), themeObj.id, 'templates');
 
 	if (themeObj.templates) {
 		themePath = path.join(nconf.get('themes_path'), themeObj.id, themeObj.templates);
 	} else if (file.existsSync(fallback)) {
 		themePath = fallback;
+	} else {
+		winston.error('[themes] Unable to resolve this theme\'s templates. Expected to be at "templates/" or defined in the "templates" property of "theme.json"');
+		throw new Error('theme-missing-templates');
 	}
 
 	nconf.set('theme_templates_path', themePath);

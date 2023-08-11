@@ -21,7 +21,7 @@ chatsController.get = async function (req, res, next) {
 	if (!canChat) {
 		return next(new Error('[[error:no-privileges]]'));
 	}
-	const recentChats = await messaging.getRecentChats(req.uid, uid, 0, 19);
+	const recentChats = await messaging.getRecentChats(req.uid, uid, 0, 29);
 	if (!recentChats) {
 		return next();
 	}

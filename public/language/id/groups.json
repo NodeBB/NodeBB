@@ -1,5 +1,7 @@
 {
+    "all-groups": "All groups",
     "groups": "Grup",
+    "members": "Members",
     "view_group": "Tampilkan Grup",
     "owner": "Group Owner",
     "new_group": "Create New Group",

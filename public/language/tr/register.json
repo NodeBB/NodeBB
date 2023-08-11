@@ -1,5 +1,6 @@
 {
     "register": "Kayıt Ol",
+    "already-have-account": "Halihazırda hesabınız var mı?",
     "cancel_registration": "Kaydı İptal Et",
     "help.email": "E-posta adresiniz varsayılan olarak topluluktan gizlidir.",
     "help.username_restrictions": "%1 ve %2 karakter arası bir kullanıcı ismi. Başkaları sizden @<span id='yourUsername'>isim</span> kullanarak bahsedebilir.",

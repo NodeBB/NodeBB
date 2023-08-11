@@ -20,13 +20,16 @@ module.exports = function (SocketTopics) {
 		}
 
 		const uids = await user.getUidsFromSet('users:online', 0, -1);
-
+		const cids = [parseInt(data.cid, 10)];
 		await async.eachLimit(data.tids, 10, async (tid) => {
 			const canMove = await privileges.topics.isAdminOrMod(tid, socket.uid);
 			if (!canMove) {
 				throw new Error('[[error:no-privileges]]');
 			}
 			const topicData = await topics.getTopicFields(tid, ['tid', 'cid', 'slug', 'deleted']);
+			if (!cids.includes(topicData.cid)) {
+				cids.push(topicData.cid);
+			}
 			data.uid = socket.uid;
 			await topics.tools.move(tid, data);
 
@@ -45,6 +48,8 @@ module.exports = function (SocketTopics) {
 				toCid: data.cid,
 			});
 		});
+
+		await categories.onTopicsMoved(cids);
 	};
 
 
@@ -62,6 +67,7 @@ module.exports = function (SocketTopics) {
 		await async.eachLimit(tids, 50, async (tid) => {
 			await topics.tools.move(tid, data);
 		});
+		await categories.onTopicsMoved([data.currentCid, data.cid]);
 		await events.log({
 			type: `topic-move-all`,
 			uid: socket.uid,

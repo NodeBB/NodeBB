@@ -1,6 +1,6 @@
 'use strict';
 
-define('categorySearch', ['alerts'], function (alerts) {
+define('categorySearch', ['alerts', 'bootstrap'], function (alerts, bootstrap) {
 	const categorySearch = {};
 
 	categorySearch.init = function (el, options) {
@@ -8,6 +8,7 @@ define('categorySearch', ['alerts'], function (alerts) {
 		options = options || {};
 		options.privilege = options.privilege || 'topics:read';
 		options.states = options.states || ['watching', 'notwatching', 'ignoring'];
+		options.cacheList = options.hasOwnProperty('cacheList') ? options.cacheList : true;
 
 		let localCategories = [];
 		if (Array.isArray(options.localCategories)) {
@@ -25,21 +26,21 @@ define('categorySearch', ['alerts'], function (alerts) {
 
 		el.on('show.bs.dropdown', function () {
 			if (toggleVisibility) {
-				el.find('.dropdown-toggle').addClass('hidden');
+				el.find('.dropdown-toggle').css({ visibility: 'hidden' });
 				searchEl.removeClass('hidden');
+				searchEl.css({
+					'z-index': el.find('.dropdown-toggle').css('z-index') + 1,
+				});
 			}
 
 			function doSearch() {
 				const val = searchEl.find('input').val();
 				if (val.length > 1 || (!val && !categoriesList)) {
 					loadList(val, function (categories) {
-						categoriesList = categoriesList || categories;
+						categoriesList = options.cacheList && (categoriesList || categories);
 						renderList(categories);
 					});
 				} else if (!val && categoriesList) {
-					categoriesList.forEach(function (c) {
-						c.selected = options.selectedCids.includes(c.cid);
-					});
 					renderList(categoriesList);
 				}
 			}
@@ -53,12 +54,14 @@ define('categorySearch', ['alerts'], function (alerts) {
 		});
 
 		el.on('shown.bs.dropdown', function () {
-			searchEl.find('input').focus();
+			if (!['xs', 'sm'].includes(utils.findBootstrapEnvironment())) {
+				searchEl.find('input').focus();
+			}
 		});
 
 		el.on('hide.bs.dropdown', function () {
 			if (toggleVisibility) {
-				el.find('.dropdown-toggle').removeClass('hidden');
+				el.find('.dropdown-toggle').css({ visibility: 'inherit' });
 				searchEl.addClass('hidden');
 			}
 
@@ -84,15 +87,24 @@ define('categorySearch', ['alerts'], function (alerts) {
 		}
 
 		function renderList(categories) {
+			const selectedCids = options.selectedCids.map(String);
+			categories.forEach(function (c) {
+				c.selected = selectedCids.includes(String(c.cid));
+			});
 			app.parseAndTranslate(options.template, {
 				categoryItems: categories.slice(0, 200),
 				selectedCategory: ajaxify.data.selectedCategory,
 				allCategoriesUrl: ajaxify.data.allCategoriesUrl,
 			}, function (html) {
 				el.find('[component="category/list"]')
-					.replaceWith(html.find('[component="category/list"]'));
+					.html(html.find('[component="category/list"]').html());
 				el.find('[component="category/list"] [component="category/no-matches"]')
 					.toggleClass('hidden', !!categories.length);
+
+				const bsDropdown = bootstrap.Dropdown.getInstance(el.find('.dropdown-toggle').get(0));
+				if (bsDropdown) {
+					bsDropdown.update();
+				}
 			});
 		}
 	};

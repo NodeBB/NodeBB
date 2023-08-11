@@ -83,7 +83,7 @@ exports.listen = async function () {
 	helpers.register();
 	logger.init(app);
 	await initializeNodeBB();
-	winston.info('NodeBB Ready');
+	winston.info('🎉 NodeBB Ready');
 
 	require('./socket.io').server.emit('event:nodebb.ready', {
 		'cache-buster': meta.config['cache-buster'],
@@ -176,8 +176,12 @@ function setupExpressApp(app) {
 	app.use(middleware.processRender);
 	auth.initialize(app, middleware);
 	const als = require('./als');
+	const apiHelpers = require('./api/helpers');
 	app.use((req, res, next) => {
-		als.run({ uid: req.uid }, next);
+		als.run({
+			uid: req.uid,
+			req: apiHelpers.buildReqObject(req),
+		}, next);
 	});
 	app.use(middleware.autoLocale); // must be added after auth middlewares are added
 
@@ -187,34 +191,27 @@ function setupExpressApp(app) {
 }
 
 function setupHelmet(app) {
-	/**
-	 * The only reason why these middlewares are all explicitly spelled out is because
-	 * helmet.contentSecurityPolicy() is too restrictive and breaks plugins.
-	 *
-	 * It should be implemented in the future... 🔜
-	 */
-	if (meta.config['cross-origin-embedder-policy']) {
-		app.use(helmet.crossOriginEmbedderPolicy());
-	}
-	app.use(helmet.crossOriginOpenerPolicy());
-	app.use(helmet.crossOriginResourcePolicy({ policy: meta.config['cross-origin-resource-policy'] }));
-	app.use(helmet.dnsPrefetchControl());
-	app.use(helmet.expectCt());
-	app.use(helmet.frameguard());
-	app.use(helmet.hidePoweredBy());
+	const options = {
+		contentSecurityPolicy: false, // defaults are too restrive and break plugins that load external assets... 🔜
+		crossOriginOpenerPolicy: { policy: meta.config['cross-origin-opener-policy'] },
+		crossOriginResourcePolicy: { policy: meta.config['cross-origin-resource-policy'] },
+		referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+		crossOriginEmbedderPolicy: !!meta.config['cross-origin-embedder-policy'],
+	};
+
 	if (meta.config['hsts-enabled']) {
-		app.use(helmet.hsts({
-			maxAge: meta.config['hsts-maxage'],
+		options.hsts = {
+			maxAge: Math.max(0, meta.config['hsts-maxage']),
 			includeSubDomains: !!meta.config['hsts-subdomains'],
 			preload: !!meta.config['hsts-preload'],
-		}));
+		};
 	}
-	app.use(helmet.ieNoOpen());
-	app.use(helmet.noSniff());
-	app.use(helmet.originAgentCluster());
-	app.use(helmet.permittedCrossDomainPolicies());
-	app.use(helmet.referrerPolicy({ policy: 'strict-origin-when-cross-origin' }));
-	app.use(helmet.xssFilter());
+
+	try {
+		app.use(helmet(options));
+	} catch (err) {
+		winston.error(`[startup] unable to initialize helmet \n${err.stack}`);
+	}
 }
 
 
@@ -266,7 +263,7 @@ async function listen() {
 	}
 	port = parseInt(port, 10);
 	if ((port !== 80 && port !== 443) || nconf.get('trust_proxy') === true) {
-		winston.info('Enabling \'trust proxy\'');
+		winston.info('🤝 Enabling \'trust proxy\'');
 		app.enable('trust proxy');
 	}
 
@@ -296,8 +293,8 @@ async function listen() {
 				reject(err);
 			}
 
-			winston.info(`NodeBB is now listening on: ${chalk.yellow(onText)}`);
-			winston.info(`Canonical URL: ${chalk.yellow(nconf.get('url'))}`);
+			winston.info(`📡 NodeBB is now listening on: ${chalk.yellow(onText)}`);
+			winston.info(`🔗 Canonical URL: ${chalk.yellow(nconf.get('url'))}`);
 			if (oldUmask) {
 				process.umask(oldUmask);
 			}

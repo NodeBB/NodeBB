@@ -17,7 +17,7 @@ define('admin/advanced/cache', ['alerts'], function (alerts) {
 			});
 		});
 
-		$('.checkbox').on('change', function () {
+		$('.form-check').on('change', function () {
 			const input = $(this).find('input');
 			const flag = input.is(':checked');
 			const name = $(this).attr('data-name');

@@ -6,10 +6,11 @@ const passportLocal = require('passport-local').Strategy;
 const BearerStrategy = require('passport-http-bearer').Strategy;
 const winston = require('winston');
 
-const meta = require('../meta');
 const controllers = require('../controllers');
 const helpers = require('../controllers/helpers');
 const plugins = require('../plugins');
+const api = require('../api');
+const { generateToken } = require('../middleware/csrf');
 
 let loginStrategies = [];
 
@@ -44,8 +45,8 @@ Auth.getLoginStrategies = function () {
 };
 
 Auth.verifyToken = async function (token, done) {
-	const { tokens = [] } = await meta.settings.get('core.api');
-	const tokenObj = tokens.find(t => t.token === token);
+	const tokens = await api.utils.tokens.list();
+	const tokenObj = tokens.filter((t => t.token === token)).pop();
 	const uid = tokenObj ? tokenObj.uid : undefined;
 
 	if (uid !== undefined) {
@@ -94,7 +95,7 @@ Auth.reloadRoutes = async function (params) {
 				};
 
 				if (strategy.checkState !== false) {
-					req.session.ssoState = req.csrfToken && req.csrfToken();
+					req.session.ssoState = generateToken(req, true);
 					opts.state = req.session.ssoState;
 				}
 
@@ -139,8 +140,8 @@ Auth.reloadRoutes = async function (params) {
 			})(req, res, next);
 		}, Auth.middleware.validateAuth, (req, res, next) => {
 			async.waterfall([
-				async.apply(req.login.bind(req), res.locals.user),
-				async.apply(controllers.authentication.onSuccessfulLogin, req, req.uid),
+				async.apply(req.login.bind(req), res.locals.user, { keepSessionInfo: true }),
+				async.apply(controllers.authentication.onSuccessfulLogin, req, res.locals.user.uid),
 			], (err) => {
 				if (err) {
 					return next(err);
@@ -157,7 +158,7 @@ Auth.reloadRoutes = async function (params) {
 
 	router.post('/register', middlewares, controllers.authentication.register);
 	router.post('/register/complete', middlewares, controllers.authentication.registerComplete);
-	router.post('/register/abort', controllers.authentication.registerAbort);
+	router.post('/register/abort', middlewares, controllers.authentication.registerAbort);
 	router.post('/login', Auth.middleware.applyCSRF, Auth.middleware.applyBlacklist, controllers.authentication.login);
 	router.post('/logout', Auth.middleware.applyCSRF, controllers.authentication.logout);
 };

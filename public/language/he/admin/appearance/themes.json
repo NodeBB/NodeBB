@@ -1,7 +1,9 @@
 {
+    "themes": "ערכות נושא",
     "checking-for-installed": "בודק ערכות נושא מותקנות...",
     "homepage": "דף הבית",
     "select-theme": "בחר ערכת נושא",
+    "revert-theme": "חזור לערכת נושא מקורית",
     "current-theme": "ערכת נושא נוכחית",
     "no-themes": "לא נמצאו ערכות נושא מותקנות",
     "revert-confirm": "האם  אתה בטוח שאתה רוצה לשחזר את ערכת הנושא הרגילה של NodeBB?",

@@ -1,8 +1,11 @@
 {
+    "all-tags": "Tất cả các thẻ",
     "no_tag_topics": "Không có bài viết nào với thẻ này.",
+    "no-tags-found": "Không tìm thấy thẻ nào",
     "tags": "Thẻ",
     "enter_tags_here": "Nhập thẻ ở đây, mỗi thẻ phải có từ %1 tới %2 ký tự.",
     "enter_tags_here_short": "Nhập thẻ...",
     "no_tags": "Chưa có thẻ nào.",
-    "select_tags": "Chọn Thẻ"
+    "select_tags": "Chọn Thẻ",
+    "tag-whitelist": "Tag Whitelist"
 }

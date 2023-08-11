@@ -3,7 +3,7 @@
 
 define('topicSelect', ['components'], function (components) {
 	const TopicSelect = {};
-	let lastSelected;
+	let lastSelectedTopic;
 
 	let topicsContainer;
 
@@ -15,26 +15,36 @@ define('topicSelect', ['components'], function (components) {
 
 		topicsContainer.on('click', '[component="topic/select"]', function (ev) {
 			const select = $(this);
-
+			const topicEl = select.parents('[component="category/topic"]');
 			if (ev.shiftKey) {
-				selectRange($(this).parents('[component="category/topic"]').attr('data-tid'));
-				lastSelected = select;
+				selectRange(topicEl.attr('data-tid'));
+				lastSelectedTopic = topicEl;
 				return false;
 			}
 
-			const isSelected = select.parents('[data-tid]').hasClass('selected');
-			toggleSelect(select, !isSelected);
-			lastSelected = select;
+			const isSelected = topicEl.hasClass('selected');
+			toggleSelected(topicEl, !isSelected);
+			lastSelectedTopic = topicEl;
 			if (typeof onSelect === 'function') {
 				onSelect();
 			}
 		});
 	};
 
-	function toggleSelect(select, isSelected) {
+	function toggleSelected(topicEl, isSelected) {
+		const select = topicEl.find('[component="topic/select"]');
 		select.toggleClass('fa-check-square-o', isSelected);
 		select.toggleClass('fa-square-o', !isSelected);
 		select.parents('[component="category/topic"]').toggleClass('selected', isSelected);
+		updateSelectedBadgeCount();
+	}
+
+	function updateSelectedBadgeCount() {
+		const badge = $('[component="topic/selected/badge"]');
+		if (badge.length) {
+			const count = topicsContainer.find('[component="category/topic"].selected').length;
+			badge.text(count > 0 ? count : '');
+		}
 	}
 
 	TopicSelect.getSelectedTids = function () {
@@ -52,18 +62,19 @@ define('topicSelect', ['components'], function (components) {
 		if (topicsContainer) {
 			topicsContainer.find('[component="category/topic"].selected').removeClass('selected');
 			topicsContainer.find('[component="topic/select"]').toggleClass('fa-check-square-o', false).toggleClass('fa-square-o', true);
+			updateSelectedBadgeCount();
 		}
 	};
 
 	function selectRange(clickedTid) {
-		if (!lastSelected) {
-			lastSelected = $('[component="category/topic"]').first().find('[component="topic/select"]');
+		if (!lastSelectedTopic) {
+			lastSelectedTopic = $('[component="category/topic"]').first();
 		}
 
 		const isClickedSelected = components.get('category/topic', 'tid', clickedTid).hasClass('selected');
 
 		const clickedIndex = getIndex(clickedTid);
-		const lastIndex = getIndex(lastSelected.parents('[component="category/topic"]').attr('data-tid'));
+		const lastIndex = getIndex(lastSelectedTopic.attr('data-tid'));
 		selectIndexRange(clickedIndex, lastIndex, !isClickedSelected);
 	}
 
@@ -76,7 +87,7 @@ define('topicSelect', ['components'], function (components) {
 
 		for (let i = start; i <= end; i += 1) {
 			const topic = $('[component="category/topic"]').eq(i);
-			toggleSelect(topic.find('[component="topic/select"]'), isSelected);
+			toggleSelected(topic, isSelected);
 		}
 	}
 

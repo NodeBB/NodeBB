@@ -1,8 +1,11 @@
 {
+    "all-tags": "All tags",
     "no_tag_topics": "No hay temas con esta etiqueta.",
+    "no-tags-found": "No tags found",
     "tags": "Etiquetas",
     "enter_tags_here": "Introduce aquí las etiquetas, entre %1 y %2 caracteres cada una.",
     "enter_tags_here_short": "Introduzca las etiquetas...",
     "no_tags": "Aún no hay etiquetas.",
-    "select_tags": "Seleccionar Etiquetas"
+    "select_tags": "Seleccionar Etiquetas",
+    "tag-whitelist": "Tag Whitelist"
 }

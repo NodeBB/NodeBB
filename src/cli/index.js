@@ -41,6 +41,7 @@ try {
 	checkVersion('commander');
 	checkVersion('chalk');
 	checkVersion('lodash');
+	checkVersion('lru-cache');
 } catch (e) {
 	if (['ENOENT', 'DEP_WRONG_VERSION', 'MODULE_NOT_FOUND'].includes(e.code)) {
 		console.warn('Dependencies outdated or not yet installed.');
@@ -49,6 +50,16 @@ try {
 		packageInstall.updatePackageFile();
 		packageInstall.preserveExtraneousPlugins();
 		packageInstall.installAll();
+
+		// delete the module from require cache so it doesn't break rest of the upgrade
+		// https://github.com/NodeBB/NodeBB/issues/11173
+		const packages = ['nconf', 'async', 'commander', 'chalk', 'lodash', 'lru-cache'];
+		packages.forEach((packageName) => {
+			const resolvedModule = require.resolve(packageName);
+			if (require.cache[resolvedModule]) {
+				delete require.cache[resolvedModule];
+			}
+		});
 
 		const chalk = require('chalk');
 		console.log(`${chalk.green('OK')}\n`);
@@ -85,6 +96,9 @@ const opts = yargs(process.argv.slice(2)).help(false).exitProcess(false);
 nconf.argv(opts).env({
 	separator: '__',
 });
+
+process.env.NODE_ENV = process.env.NODE_ENV || 'production';
+global.env = process.env.NODE_ENV || 'production';
 
 prestart.setupWinston();
 
@@ -172,11 +186,17 @@ program
 	});
 
 program
-	.command('install')
-	.description('Launch the NodeBB web installer for configuration setup')
-	.action(() => {
-		require('./setup').webInstall();
+	.command('install [plugin]')
+	.description('Launch the NodeBB web installer for configuration setup or install a plugin')
+	.option('-f, --force', 'Force plugin installation even if it may be incompatible with currently installed NodeBB version')
+	.action((plugin, options) => {
+		if (plugin) {
+			require('./manage').install(plugin, options);
+		} else {
+			require('./setup').webInstall();
+		}
 	});
+
 program
 	.command('build [targets...]')
 	.description(`Compile static assets ${chalk.red('(JS, CSS, templates, languages)')}`)
@@ -266,6 +286,10 @@ program
 		].join('\n')}`);
 	})
 	.action((scripts, options) => {
+		if (program.opts().dev) {
+			process.env.NODE_ENV = 'development';
+			global.env = 'development';
+		}
 		require('./upgrade').upgrade(scripts.length ? scripts : true, options);
 	});
 

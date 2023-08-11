@@ -193,11 +193,7 @@ Controllers.registerInterstitial = async function (req, res, next) {
 		return res.redirect(`${nconf.get('relative_path')}/register`);
 	}
 	try {
-		const data = await plugins.hooks.fire('filter:register.interstitial', {
-			req,
-			userData: req.session.registration,
-			interstitials: [],
-		});
+		const data = await user.interstitials.get(req, req.session.registration);
 
 		if (!data.interstitials.length) {
 			// No interstitials, redirect to home
@@ -226,6 +222,14 @@ Controllers.registerInterstitial = async function (req, res, next) {
 Controllers.confirmEmail = async (req, res, next) => {
 	try {
 		await user.email.confirmByCode(req.params.code, req.session.id);
+		if (req.session.registration) {
+			// After confirmation, no need to send user back to email change form
+			delete req.session.registration.updateEmail;
+		}
+
+		res.render('confirm', {
+			title: '[[pages:confirm]]',
+		});
 	} catch (e) {
 		if (e.message === '[[error:invalid-data]]') {
 			return next();
@@ -233,10 +237,6 @@ Controllers.confirmEmail = async (req, res, next) => {
 
 		throw e;
 	}
-
-	res.render('confirm', {
-		title: '[[pages:confirm]]',
-	});
 };
 
 Controllers.robots = function (req, res) {

@@ -1,4 +1,5 @@
 {
+	"widgets": "Widgets",
 	"available": "Widgets Disponíveis",
 	"explanation": "Seleciona um widget no menu suspenso e, em seguida, arrasta-o e solta-o para uma das área de widgets à esquerda.",
 	"none-installed": "No widgets found! Activate the widget essentials plugin in the <a href=\"%1\">plugins</a> control panel.",
@@ -8,9 +9,9 @@
 	"containers.none": "Nada",
 	"container.well": "Well",
 	"container.jumbotron": "Jumbotron",
-	"container.panel": "Panel",
-	"container.panel-header": "Panel Header",
-	"container.panel-body": "Panel Body",
+	"container.card": "Card",
+	"container.card-header": "Card Header",
+	"container.card-body": "Card Body",
 	"container.alert": "Alert",
 
 	"alert.confirm-delete": "Tens a certeza que desejas eliminar este widget?",
@@ -26,5 +27,7 @@
 	"container.placeholder": "Arrasta e solta um container ou insere HTML aqui.",
 	"show-to-groups": "Mostrar para os grupos",
 	"hide-from-groups": "Ocultar dos grupos",
+	"start-date": "Start date",
+	"end-date": "End date",
 	"hide-on-mobile": "Ocultar em telemóvel"
 }

@@ -9,7 +9,11 @@ define('admin/manage/privileges', [
 	'categorySelector',
 	'mousetrap',
 	'admin/modules/checkboxRowSelector',
-], function (api, autocomplete, bootbox, alerts, translator, categorySelector, mousetrap, checkboxRowSelector) {
+	'admin/settings',
+], function (
+	api, autocomplete, bootbox, alerts, translator,
+	categorySelector, mousetrap, checkboxRowSelector, settings
+) {
 	const Privileges = {};
 
 	let cid;
@@ -36,13 +40,14 @@ define('admin/manage/privileges', [
 		Privileges.setupPrivilegeTable();
 
 		highlightRow();
-		$('.privilege-filters button:last-child').click();
+		$('.privilege-filters button:first-child').click();
 	};
 
 	Privileges.setupPrivilegeTable = function () {
 		$('.privilege-table-container').on('change', 'input[type="checkbox"]:not(.checkbox-helper)', function () {
+			const checkboxEl = this;
 			const $checkboxEl = $(this);
-			const $wrapperEl = $checkboxEl.parent();
+			const $wrapperEl = $checkboxEl.parents('[data-privilege]');
 			const columnNo = $wrapperEl.index() + 1;
 			const privilege = $wrapperEl.attr('data-privilege');
 			const state = $checkboxEl.prop('checked');
@@ -59,6 +64,7 @@ define('admin/manage/privileges', [
 					bootbox.confirm('[[admin/manage/privileges:alert.confirm-moderate]]', function (confirm) {
 						if (confirm) {
 							$wrapperEl.attr('data-delta', delta);
+							Privileges.applyDeltaState(checkboxEl, delta);
 							Privileges.exposeSingleAssumedPriv(columnNo, sourceGroupName);
 						} else {
 							$checkboxEl.prop('checked', !$checkboxEl.prop('checked'));
@@ -68,6 +74,7 @@ define('admin/manage/privileges', [
 					bootbox.confirm('[[admin/manage/privileges:alert.confirm-admins-mods]]', function (confirm) {
 						if (confirm) {
 							$wrapperEl.attr('data-delta', delta);
+							Privileges.applyDeltaState(checkboxEl, delta);
 							Privileges.exposeSingleAssumedPriv(columnNo, sourceGroupName);
 						} else {
 							$checkboxEl.prop('checked', !$checkboxEl.prop('checked'));
@@ -75,6 +82,7 @@ define('admin/manage/privileges', [
 					});
 				} else {
 					$wrapperEl.attr('data-delta', delta);
+					Privileges.applyDeltaState(checkboxEl, delta);
 					Privileges.exposeSingleAssumedPriv(columnNo, sourceGroupName);
 				}
 				checkboxRowSelector.updateState($checkboxEl);
@@ -86,6 +94,15 @@ define('admin/manage/privileges', [
 		Privileges.exposeAssumedPrivileges();
 		checkboxRowSelector.updateAll();
 		Privileges.addEvents(); // events with confirmation modals
+	};
+
+	Privileges.applyDeltaState = (checkboxEl, delta) => {
+		['bg-success', 'bg-opacity-75', 'border-success'].forEach((className) => {
+			checkboxEl.classList.toggle(className, delta === true);
+		});
+		['bg-danger', 'bg-opacity-50', 'border-danger'].forEach((className) => {
+			checkboxEl.classList.toggle(className, delta === false);
+		});
 	};
 
 	Privileges.addEvents = function () {
@@ -133,7 +150,7 @@ define('admin/manage/privileges', [
 			throwConfirmModal('copyToAllGroup', Privileges.copyPrivilegesToAllCategories.bind(null, cid, groupName));
 		});
 
-		$privTableCon.on('click', '.privilege-filters > button', filterPrivileges);
+		$privTableCon.on('click', '.privilege-filters button', filterPrivileges);
 
 		mousetrap.bind('ctrl+s', function (ev) {
 			throwConfirmModal('save', Privileges.commit);
@@ -170,7 +187,7 @@ define('admin/manage/privileges', [
 					alerts.error(result.reason);
 				});
 			} else {
-				alerts.success('[[admin/manage/privileges:alert.saved]]');
+				settings.toggleSaveSuccess($('#save'));
 			}
 		});
 	};
@@ -191,9 +208,7 @@ define('admin/manage/privileges', [
 				$('.privilege-table-container').html(html);
 				Privileges.exposeAssumedPrivileges();
 				document.querySelectorAll('.privilege-filters').forEach((con, i) => {
-					// Three buttons, placed in reverse order
-					const lastIdx = $('.privilege-filters').first().find('button').length - 1;
-					const idx = btnIndices[i] === undefined ? lastIdx : btnIndices[i];
+					const idx = btnIndices[i] === undefined ? 0 : btnIndices[i];
 					con.querySelectorAll('button')[idx].click();
 				});
 
@@ -234,7 +249,7 @@ define('admin/manage/privileges', [
 		applyPrivilegesToColumn(inputSelectorFn, sourceChecked);
 	};
 
-	Privileges.setPrivilege = (member, privilege, state) => api[state ? 'put' : 'delete'](`/categories/${isNaN(cid) ? 0 : cid}/privileges/${encodeURIComponent(privilege)}`, { member });
+	Privileges.setPrivilege = (member, privilege, state) => api[state ? 'put' : 'del'](`/categories/${isNaN(cid) ? 0 : cid}/privileges/${encodeURIComponent(privilege)}`, { member });
 
 	Privileges.addUserToPrivilegeTable = function () {
 		const modal = bootbox.dialog({
@@ -330,7 +345,7 @@ define('admin/manage/privileges', [
 	function getPrivilegesFromRow(sourceGroupName) {
 		const privs = [];
 		$(`.privilege-table tr[data-group-name="${sourceGroupName}"] td input[type="checkbox"]:not(.checkbox-helper)`)
-			.parent()
+			.parents('[data-privilege]')
 			.each(function (idx, el) {
 				if ($(el).find('input').prop('checked')) {
 					privs.push(el.getAttribute('data-privilege'));

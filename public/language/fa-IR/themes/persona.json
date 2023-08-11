@@ -1,0 +1,10 @@
+{
+    "settings.title": "تنظیمات تم",
+    "settings.intro": "You can customise your theme settings here. Settings are stored on a per-device basis, so you are able to have different settings on different devices (phone, tablet, desktop, etc.)",
+    "settings.mobile-menu-side": "هماهنگ کردن جهت منو های کناری با زبان دستگاه",
+    "settings.autoHidingNavbar": "به صورت خودکار  منوی پایین را در اسکرول پنهان کنید",
+    "settings.autoHidingNavbar-xs": "صفحه نمایش‌های بسیار کوچک (مثلاً تلفن‌ها در حالت عمودی)",
+    "settings.autoHidingNavbar-sm": "صفحه نمایش های کوچکتر (مانند تلفن ها، برخی تبلت ها)",
+    "settings.autoHidingNavbar-md": "Medium sized screens (e.g. tablets in landscape mode)",
+    "settings.autoHidingNavbar-lg": "Larger screens (e.g. desktop computers)"
+}

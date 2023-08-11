@@ -1,10 +1,6 @@
 'use strict';
 
-const util = require('util');
-let mkdirp = require('mkdirp');
-
-mkdirp = mkdirp.hasOwnProperty('native') ? mkdirp : util.promisify(mkdirp);
-const rimraf = require('rimraf');
+const { mkdirp } = require('mkdirp');
 const winston = require('winston');
 const path = require('path');
 const fs = require('fs');
@@ -15,7 +11,6 @@ const Benchpress = require('benchpressjs');
 
 const plugins = require('../plugins');
 const file = require('../file');
-const db = require('../database');
 const { themeNamePattern, paths } = require('../constants');
 
 const viewsPath = nconf.get('views_dir');
@@ -69,7 +64,6 @@ async function getTemplateDirs(activePlugins) {
 		theme = themeConfig.baseTheme;
 	}
 
-	themeTemplates.push(nconf.get('base_templates_path'));
 	themeTemplates = _.uniq(themeTemplates.reverse());
 
 	const coreTemplatesPath = nconf.get('core_templates_path');
@@ -114,12 +108,10 @@ async function compileTemplate(filename, source) {
 Templates.compileTemplate = compileTemplate;
 
 async function compile() {
-	const _rimraf = util.promisify(rimraf);
-
-	await _rimraf(viewsPath);
+	await fs.promises.rm(viewsPath, { recursive: true, force: true });
 	await mkdirp(viewsPath);
 
-	let files = await db.getSortedSetRange('plugins:active', 0, -1);
+	let files = await plugins.getActive();
 	files = await getTemplateDirs(files);
 	files = await getTemplateFiles(files);
 

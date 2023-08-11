@@ -1,0 +1,10 @@
+{
+    "settings.title": "Cài đặt chủ đề",
+    "settings.intro": "Bạn có thể tùy chỉnh cài đặt chủ đề của mình tại đây. Cài đặt được lưu trữ trên cơ sở từng thiết bị, vì vậy bạn có thể có các cài đặt khác nhau trên các thiết bị khác nhau (điện thoại, máy tính bảng, máy tính để bàn, v.v.)",
+    "settings.mobile-menu-side": "Switch which side each mobile menu is on",
+    "settings.autoHidingNavbar": "Automatically hide the navbar on scroll",
+    "settings.autoHidingNavbar-xs": "Very small screens (e.g. phones in portrait mode)",
+    "settings.autoHidingNavbar-sm": "Smaller screens (e.g. phones, some tablets)",
+    "settings.autoHidingNavbar-md": "Medium sized screens (e.g. tablets in landscape mode)",
+    "settings.autoHidingNavbar-lg": "Larger screens (e.g. desktop computers)"
+}

@@ -1,8 +1,12 @@
 
 {
 	"post-queue": "Hàng Đợi Bài Đăng",
-	"description": "Không có bài viết nào trong hàng đợi bài viết. <br> Để bật tính năng này, hãy truy cập <a href=\"%1\">Cài Đặt &rarr; Bài Đăng &rarr; Hàng Đợi Bài Đăng</a> và bật <strong>Hàng Đợi Bài Đăng</strong>.",
+	"no-queued-posts": "Không có bài viết trong hàng đợi bài viết.",
+	"no-single-post": "Chủ đề hoặc bài đăng bạn đang tìm kiếm không còn trong hàng đợi. Nó có thể đã được phê duyệt hoặc xóa rồi.",
+	"enabling-help": "Để bật tính năng này, hãy đi tới <a href=\"%1\">Cài Đặt &rarr; Bài Đăng &rarr; Hàng Đợi Đăng</a> và bật <strong>Hàng Đợi Đăng</strong>.",
+	"back-to-list": "Quay lại Hàng Đợi Đăng",
 	"user": "Người dùng",
+	"when": "When",
 	"category": "Chuyên mục",
 	"title": "Tiêu đề",
 	"content": "Nội dung",
@@ -19,6 +23,7 @@
 	"notify": "Thông báo",
 	"notify-user": "Thông Báo Người Dùng",
 	"confirm-reject": "Bạn có muốn từ chối bài viết này không?",
+	"confirm-remove": "Bạn có muốn xóa bài đăng này không?",
 	"bulk-actions": "Hành động số lượng lớn",
 	"accept-all": "Chấp nhận tất cả",
 	"accept-selected": "Chấp nhận đã chọn",
@@ -26,6 +31,10 @@
 	"reject-all-confirm": "Bạn có muốn từ chối tất cả các bài viết?",
 	"reject-selected": "Từ chối đã chọn",
 	"reject-selected-confirm": "Bạn có muốn từ chối %1 bài viết đã chọn không?",
+	"remove-all": "Remove all",
+	"remove-all-confirm": "Bạn có muốn xóa tất cả bài đăng không?",
+	"remove-selected": "Remove Selected",
+	"remove-selected-confirm": "Bạn có muốn xóa %1 bài đăng đã chọn không?",
 	"bulk-accept-success": "%1 bài đăng được chấp nhận",
 	"bulk-reject-success": "%1 bài đăng bị từ chối"
 }

@@ -1,5 +1,6 @@
 {
     "register": "Registracija",
+    "already-have-account": "Already have an account?",
     "cancel_registration": "Obustavi registraciju",
     "help.email": "Vaš email će biti skriven od javnosti.",
     "help.username_restrictions": "Unikatno korisničko ime između %1 i %2 znaka. Ostali Vas mogu spomenuti sa @<span id='yourUsername'>username</span>.",

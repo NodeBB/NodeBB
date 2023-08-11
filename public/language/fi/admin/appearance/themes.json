@@ -1,7 +1,9 @@
 {
+    "themes": "Themes",
     "checking-for-installed": "Haetaan asennettuja teemoja...",
     "homepage": "Kotisivu",
     "select-theme": "Valitse teema",
+    "revert-theme": "Revert Theme",
     "current-theme": "Nykyinen teema",
     "no-themes": "Asennettuja teemoja ei löytynyt.",
     "revert-confirm": "Oletko varma, että haluat palauttaa foorumisi teeman NodeBB-oletusteemaan?",

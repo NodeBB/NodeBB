@@ -1,4 +1,5 @@
 {
+	"widgets": "Widgets",
 	"available": "Dostępne Widgety",
 	"explanation": "Wybierz widget z menu rozwijalnego i przeciągnij go na wybrane pole z lewej strony.",
 	"none-installed": "Nie odnaleziono widgetów! Aktywuj wtyczkę „widget essentials w panelu sterowania <a href=\"%1\">wtyczek</a>.",
@@ -8,9 +9,9 @@
 	"containers.none": "Żadna",
 	"container.well": "Well",
 	"container.jumbotron": "Jumbotron",
-	"container.panel": "Panel",
-	"container.panel-header": "Nagłówek panelu",
-	"container.panel-body": "Zawartość panelu",
+	"container.card": "Karta",
+	"container.card-header": "Nagłówek karty",
+	"container.card-body": "Treść karty",
 	"container.alert": "Alarm",
 
 	"alert.confirm-delete": "Czy na pewno chcesz usunąć ten widget?",
@@ -26,5 +27,7 @@
 	"container.placeholder": "Przeciągnij i upuść kontener lub wpisz tutaj HTML.",
 	"show-to-groups": "Pokaż dla grup",
 	"hide-from-groups": "Ukryj dla grup",
+	"start-date": "Start date",
+	"end-date": "End date",
 	"hide-on-mobile": "Ukraj na urządzeniach mobilnych"
 }

@@ -14,6 +14,7 @@
     "flagged-content": "Përmbajtja e shënuar",
     "ip-blacklist": "Lista e zezë IP",
     "post-queue": "Radha e postimit",
+    "registration-queue": "Registration Queue",
     "users/online": "Përdoruesit në internet",
     "users/latest": "Përdoruesit e fundit",
     "users/sort-posts": "Përdoruesit me më shumë postime",
@@ -49,6 +50,7 @@
     "account/watched_categories": "Kategoritë e para nga %1",
     "account/bookmarks": "Postimet e shënuara nga %1",
     "account/settings": "Cilësimet e përdoruesit",
+    "account/settings-of": "Changing settings of %1",
     "account/watched": "Tema e para nga %1",
     "account/ignored": "Temat e shmangura nga %1",
     "account/upvoted": "Postimi u votua lartë nga %1",
@@ -59,7 +61,7 @@
     "account/uploads": "Ngarkimet e %1",
     "account/sessions": "Seancat e hyrjes",
     "confirm": "Email-i u konfirmua",
-    "maintenance.text": "%1 po i nënshtrohet mirëmbajtjes. Të lutem kthehu një herë tjetër.",
+    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
     "maintenance.messageIntro": "Për më tepër, administratori ka lënë këtë mesazh:",
     "throttled.text": "%1 është aktualisht i padisponueshëm për shkak të ngarkesës së tepërt. Të lutem kthehu një herë tjetër."
 }

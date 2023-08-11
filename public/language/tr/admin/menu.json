@@ -72,11 +72,13 @@
 	"development/info": "bilgi",
 
 	"rebuild-and-restart-forum": "Forumu Yeniden oluştur &amp; Yeniden Başlat",
+	"rebuild-and-restart": "Rebuild & Restart",
 	"restart-forum": "Forumu Yeniden Başlat",
+	"restart": "Restart",
 	"logout": "Çıkış",
 	"view-forum": "Forumu Görüntüle",
 
-	"search.placeholder": "Ayarları aramak için &quot;/&quot; işaretine tıklayın",
+	"search.placeholder": "Arama Ayarları",
 	"search.no-results": "Sonuç yok...",
 	"search.search-forum": "Forumda ara: <strong></strong>",
 	"search.keep-typing": "Sonuçları görmek için daha fazla yazın...",

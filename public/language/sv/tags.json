@@ -1,8 +1,11 @@
 {
+    "all-tags": "All tags",
     "no_tag_topics": "Det finns inga ämnen med denna tagg.",
+    "no-tags-found": "No tags found",
     "tags": "Taggar",
     "enter_tags_here": "Fyll i taggar på %1 till %2 tecken här.",
     "enter_tags_here_short": "Ange taggar...",
     "no_tags": "Det finns inga taggar ännu.",
-    "select_tags": "Välj Etiketter"
+    "select_tags": "Välj Etiketter",
+    "tag-whitelist": "Tag Whitelist"
 }

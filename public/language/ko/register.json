@@ -1,5 +1,6 @@
 {
     "register": "회원가입",
+    "already-have-account": "Already have an account?",
     "cancel_registration": "회원가입 취소",
     "help.email": "입력하신 이메일 주소는 공개되지 않으며, 설정을 통해 공개하실 수 있습니다.",
     "help.username_restrictions": "%1자 이상 %2자 이하의 고유한 사용자명을 입력하세요. @<span id='yourUsername'>username</span> 같은 방식으로 다른 사람들을 언급할 수 있습니다.",

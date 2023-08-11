@@ -1,7 +1,11 @@
 {
+	"manage-categories": "Manage Categories",
+	"add-category": "Add category",
+	"jump-to": "Jump to...",
 	"settings": "Kategorieeinstellungen",
+	"edit-category": "Edit Category",
 	"privileges": "Berechtigungen",
-
+	"back-to-categories": "Back to categories",
 	"name": "Kategoriename",
 	"description": "Kategorie-Beschreibung",
 	"bg-color": "Hintergrundfarbe",
@@ -15,8 +19,11 @@
 	"post-queue": "Warteschlange",
 	"tag-whitelist": "Tag Whitelist",
 	"upload-image": "Bild hochladen",
+	"upload": "Upload",
+	"select-icon": "Select Icon",
 	"delete-image": "Entfernen",
 	"category-image": "Kategoriebild",
+	"image-and-icon": "Image & Icon",
 	"parent-category": "Übergeordnete Kategorie",
 	"optional-parent-category": "(Optional) Übergeordnete Kategorie",
 	"top-level": "Top Level",
@@ -31,6 +38,7 @@
 	"disable": "Deaktivieren",
 	"edit": "Bearbeiten",
 	"analytics": "Analytik",
+
 	"view-category": "Kategorie anzeigen",
 	"set-order": "Reihenfolge festlegen",
 	"set-order-help": "Wenn Sie die Reihenfolge der Kategorie festlegen, wird diese Kategorie in diese Reihenfolge verschoben und die Reihenfolge anderer Kategorien nach Bedarf aktualisiert. Die Mindestbestellmenge beträgt 1, was die Kategorie an die Spitze bringt.",

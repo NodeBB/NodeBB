@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const mkdirp = require('mkdirp');
+const { mkdirp } = require('mkdirp');
 const winston = require('winston');
 
 const filePath = path.join(__dirname, '../../build/cache-buster');

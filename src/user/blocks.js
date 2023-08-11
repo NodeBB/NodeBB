@@ -2,15 +2,14 @@
 
 const db = require('../database');
 const plugins = require('../plugins');
-const cacheCreate = require('../cacheCreate');
+const cacheCreate = require('../cache/lru');
 
 module.exports = function (User) {
 	User.blocks = {
 		_cache: cacheCreate({
 			name: 'user:blocks',
 			max: 100,
-			length: function () { return 1; },
-			maxAge: 0,
+			ttl: 0,
 		}),
 	};
 

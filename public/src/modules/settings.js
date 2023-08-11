@@ -490,9 +490,6 @@ define('settings', ['hooks', 'alerts'], function (hooks, alerts) {
 				});
 
 				$(formEl).deserialize(values);
-				$(formEl).find('input[type="checkbox"]').each(function () {
-					$(this).parents('.mdl-switch').toggleClass('is-checked', $(this).is(':checked'));
-				});
 				hooks.fire('action:admin.settingsLoaded');
 
 				// Handle unsaved changes
@@ -516,6 +513,12 @@ define('settings', ['hooks', 'alerts'], function (hooks, alerts) {
 		},
 		save: function (hash, formEl, callback) {
 			formEl = $(formEl);
+
+			const controls = formEl.get(0).elements;
+			const ok = Settings.check(controls);
+			if (!ok) {
+				return;
+			}
 
 			if (formEl.length) {
 				const values = helper.serializeForm(formEl);
@@ -550,14 +553,34 @@ define('settings', ['hooks', 'alerts'], function (hooks, alerts) {
 							timeout: 2500,
 						});
 					} else {
-						alerts.alert({
-							title: '[[admin/admin:changes-saved]]',
-							type: 'success',
-							timeout: 2500,
-						});
+						const saveBtn = document.getElementById('save');
+						saveBtn.classList.toggle('saved', true);
+						setTimeout(() => {
+							saveBtn.classList.toggle('saved', false);
+						}, 1500);
 					}
 				});
 			}
+		},
+		check: function (controls) {
+			const onTrigger = (e) => {
+				const wrapper = e.target.closest('.form-group');
+				if (wrapper) {
+					wrapper.classList.add('has-error');
+				}
+
+				e.target.removeEventListener('invalid', onTrigger);
+			};
+
+			return Array.prototype.map.call(controls, (controlEl) => {
+				const wrapper = controlEl.closest('.form-group');
+				if (wrapper) {
+					wrapper.classList.remove('has-error');
+				}
+
+				controlEl.addEventListener('invalid', onTrigger);
+				return controlEl.reportValidity();
+			}).every(Boolean);
 		},
 	};
 

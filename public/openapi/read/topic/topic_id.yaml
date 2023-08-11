@@ -126,6 +126,13 @@ get:
                               type: array
                               items:
                                 type: string
+                            muted:
+                              type: boolean
+                              description: Whether or not the user has been muted.
+                            mutedUntil:
+                              type: number
+                              description: A UNIX timestamp representing the moment a muted state will be lifted.
+                              nullable: true
                             icon:text:
                               type: string
                               description: A single-letter representation of a username. This is used in the
@@ -217,8 +224,23 @@ get:
                               type: string
                             count:
                               type: number
+                            hasSingleImmediateReply:
+                              type: boolean
                         selfPost:
                           type: boolean
+                        events:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                              id:
+                                type: number
+                              timestamp:
+                                type: number
+                              timestampISO:
+                                type: string
                         topicOwnerPost:
                           type: boolean
                         display_edit_tools:
@@ -311,6 +333,8 @@ get:
                         type: boolean
                       topics:read:
                         type: boolean
+                      topics:schedule:
+                        type: boolean
                       topics:tag:
                         type: boolean
                       topics:delete:
@@ -318,6 +342,10 @@ get:
                       posts:edit:
                         type: boolean
                       posts:history:
+                        type: boolean
+                      posts:upvote:
+                        type: boolean
+                      posts:downvote:
                         type: boolean
                       posts:delete:
                         type: boolean
@@ -354,6 +382,8 @@ get:
                     type: number
                   feeds:disableRSS:
                     type: number
+                  signatures:hideDuplicates:
+                    type: number
                   bookmarkThreshold:
                     type: number
                   necroThreshold:
@@ -370,12 +400,12 @@ get:
                     type: boolean
                   privateUploads:
                     type: boolean
+                  showPostPreviewsOnHover:
+                    type: boolean
                   rssFeedUrl:
                     type: string
                   postIndex:
                     type: number
-                  loggedInUser:
-                    $ref: ../../components/schemas/UserObject.yaml#/UserObject
               - type: object
                 description: Optional properties that may or may not be present (except for `tid`, which is always present, and is only here as a hack to pass validation)
                 properties:
@@ -385,6 +415,8 @@ get:
                   thumb:
                     type: string
                     description: An uploaded topic thumbnail
+                  loggedInUser:
+                    $ref: ../../components/schemas/UserObject.yaml#/UserObject
                 required:
                   - tid
               - $ref: ../../components/schemas/Pagination.yaml#/Pagination

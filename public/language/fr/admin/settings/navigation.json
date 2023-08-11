@@ -1,4 +1,5 @@
 {
+	"navigation": "Navigation",
 	"icon": "Icône :",
 	"change-icon": "changer",
 	"route": "Route :",
@@ -12,7 +13,7 @@
 	"groups": "Groupes:",
 	"open-new-window": "Ouvrir dans une nouvelle fenêtre",
 	"dropdown": "Menu déroulant",
-	"dropdown-placeholder": "Placez vos éléments de menu déroulant ci-dessous, par exemple : <br/>&lt;li&gt;&lt;a href&#x3D;&quot;https://myforum.com&quot;&gt;Link 1&lt;/a&gt;&lt;/li&gt;",
+	"dropdown-placeholder": "Placez vos éléments de menu déroulant ci-dessous, par exemple: <br/>&lt;li&gt;&lt;a class=&quot;dropdown-item&quot; href&#x3D;&quot;https://myforum.com&quot;&gt;Link 1&lt;/a&gt;&lt;/li&gt;",
 
 	"btn.delete": "Supprimer",
 	"btn.disable": "Désactiver",

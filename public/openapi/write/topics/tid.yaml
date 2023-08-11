@@ -46,8 +46,6 @@ post:
             content:
               type: string
               example: This is a test reply
-            timestamp:
-              type: number
             toPid:
               type: number
           required:

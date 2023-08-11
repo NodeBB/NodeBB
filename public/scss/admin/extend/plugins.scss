@@ -1,0 +1,13 @@
+.plugins {
+	.plugin-list.ui-sortable {
+		li {
+			&:first-child .fa-chevron-up, &:last-child .fa-chevron-down {
+				pointer-events: none;
+				color: $gray-300;
+			}
+			&:last-child {
+				border-bottom: none!important;
+			}
+		}
+	}
+}

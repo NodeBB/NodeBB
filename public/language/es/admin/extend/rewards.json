@@ -1,10 +1,12 @@
 {
 	"rewards": "Recompensas",
+	"add-reward": "Add reward",
 	"condition-if-users": "Si el Usuario",
 	"condition-is": "Es:",
 	"condition-then": "Entonces:",
 	"max-claims": "Número de veces que una recompensa puede ser reclamada",
 	"zero-infinite": "Introduzca 0 para infinito",
+	"select-reward": "Select reward",
 	"delete": "Eliminar",
 	"enable": "Habilitar",
 	"disable": "Deshabilitar",

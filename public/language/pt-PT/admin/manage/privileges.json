@@ -1,4 +1,6 @@
 {
+	"manage-privileges": "Manage Privileges",
+	"discard-changes": "Discard changes",
 	"global": "Global",
 	"admin": "Administrador",
 	"group-privileges": "Privilégios de Grupos",
@@ -49,7 +51,6 @@
 	"alert.confirm-moderate": "<strong>Are you sure you wish to grant the moderation privilege to this user group?</strong> This group is public, and any users can join at will.",
 	"alert.confirm-admins-mods": "<strong>Are you sure you wish to grant the &quot;Admins &amp; Mods&quot; privilege to this user/group?</strong> Users with this privilege are able to promote and demote other users into privileged positions, <em>including super administrator</em>",
 	"alert.confirm-save": "Please confirm your intention to save these privileges",
-	"alert.saved": "Privilege changes saved and applied",
 	"alert.confirm-discard": "Are you sure you wish to discard your privilege changes?",
 	"alert.discarded": "Privilege changes discarded",
 	"alert.confirm-copyToAll": "Are you sure you wish to apply this set of <strong>%1</strong> to <strong>all categories</strong>?",

@@ -10,7 +10,6 @@ const request = require('request-promise-native');
 
 const user = require('../user');
 const posts = require('../posts');
-const meta = require('../meta');
 
 const { pluginNamePattern, themeNamePattern, paths } = require('../constants');
 
@@ -33,8 +32,8 @@ Plugins.libraries = {};
 Plugins.loadedHooks = {};
 Plugins.staticDirs = {};
 Plugins.cssFiles = [];
-Plugins.lessFiles = [];
-Plugins.acpLessFiles = [];
+Plugins.scssFiles = [];
+Plugins.acpScssFiles = [];
 Plugins.clientScripts = [];
 Plugins.acpScripts = [];
 Plugins.libraryPaths = [];
@@ -98,8 +97,8 @@ Plugins.reload = async function () {
 	Plugins.staticDirs = {};
 	Plugins.versionWarning = [];
 	Plugins.cssFiles.length = 0;
-	Plugins.lessFiles.length = 0;
-	Plugins.acpLessFiles.length = 0;
+	Plugins.scssFiles.length = 0;
+	Plugins.acpScssFiles.length = 0;
 	Plugins.clientScripts.length = 0;
 	Plugins.acpScripts.length = 0;
 	Plugins.libraryPaths.length = 0;
@@ -125,7 +124,6 @@ Plugins.reload = async function () {
 
 	// Core hooks
 	posts.registerHooks();
-	meta.configs.registerHooks();
 
 	// Deprecation notices
 	Plugins.hooks._deprecated.forEach((deprecation, hook) => {
@@ -233,6 +231,13 @@ Plugins.normalise = async function (apiReturn) {
 		}
 		pluginMap[plugin.id].outdated = semver.gt(pluginMap[plugin.id].latest, pluginMap[plugin.id].version);
 	});
+
+	if (nconf.get('plugins:active')) {
+		nconf.get('plugins:active').forEach((id) => {
+			pluginMap[id] = pluginMap[id] || {};
+			pluginMap[id].active = true;
+		});
+	}
 
 	const pluginArray = Object.values(pluginMap);
 

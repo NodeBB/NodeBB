@@ -1,4 +1,10 @@
 {
+	"manage-groups": "Manage Groups",
+	"add-group": "Add group",
+	"edit-group": "Edit Group",
+	"back-to-groups": "Back to groups",
+	"view-group": "View group",
+	"icon-and-title": "Icon & Title",
 	"name": "グループ名",
 	"badge": "Badge",
 	"properties": "Properties",
@@ -10,7 +16,7 @@
 	"edit": "編集",
 	"delete": "Delete",
 	"privileges": "Privileges",
-	"download-csv": "CSV",
+	"members-csv": "Members (CSV)",
 	"search-placeholder": "検索",
 	"create": "グループを作成",
 	"description-placeholder": "あなたのグループについての簡単な説明",
@@ -39,6 +45,5 @@
 	"revert": "元に戻す",
 
 	"edit.no-users-found": "ユーザーが見つかりません",
-	"edit.confirm-remove-user": "このユーザーを削除してもよろしいですか？",
-	"edit.save-success": "設定を保存しました。"
+	"edit.confirm-remove-user": "このユーザーを削除してもよろしいですか？"
 }

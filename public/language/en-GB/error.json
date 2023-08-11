@@ -47,6 +47,7 @@
 	"user-doesnt-have-email": "User \"%1\" does not have an email set.",
 	"email-confirm-failed": "We could not confirm your email, please try again later.",
 	"confirm-email-already-sent": "Confirmation email already sent, please wait %1 minute(s) to send another one.",
+	"confirm-email-expired": "Confirmation email expired",
 	"sendmail-not-found": "The sendmail executable could not be found, please ensure it is installed and executable by the user running NodeBB.",
 	"digest-not-enabled": "This user does not have digests enabled, or the system default is not configured to send digests",
 
@@ -70,6 +71,7 @@
 	"no-user": "User does not exist",
 	"no-teaser": "Teaser does not exist",
 	"no-flag": "Flag does not exist",
+	"no-chat-room": "Chat room does not exist",
 	"no-privileges": "You do not have enough privileges for this action.",
 
 	"category-disabled": "Category disabled",
@@ -101,8 +103,10 @@
 	"category-not-selected": "Category not selected.",
 	"too-many-posts": "You can only post once every %1 second(s) - please wait before posting again",
 	"too-many-posts-newbie": "As a new user, you can only post once every %1 second(s) until you have earned %2 reputation - please wait before posting again",
+	"already-posting": "You are already posting",
 	"tag-too-short": "Please enter a longer tag. Tags should contain at least %1 character(s)",
 	"tag-too-long": "Please enter a shorter tag. Tags can't be longer than %1 character(s)",
+	"tag-not-allowed": "Tag not allowed",
 	"not-enough-tags": "Not enough tags. Topics must have at least %1 tag(s)",
 	"too-many-tags": "Too many tags. Topics can't have more than %1 tag(s)",
 	"cant-use-system-tag": "You can not use this system tag.",
@@ -113,6 +117,7 @@
 	"guest-upload-disabled": "Guest uploading has been disabled",
 	"cors-error": "Unable to upload image due to misconfigured CORS",
 	"upload-ratelimit-reached": "You have uploaded too many files at one time. Please try again later.",
+	"upload-error-fallback": "Unable to upload image — %1",
 
   	"scheduling-to-past": "Please select a date in the future.",
   	"invalid-schedule-date": "Please enter a valid date and time.",
@@ -152,6 +157,8 @@
 	"group-already-requested": "Your membership request has already been submitted",
 	"group-join-disabled": "You are not able to join this group at this time",
 	"group-leave-disabled": "You are not able to leave this group at this time",
+	"group-user-not-pending": "User does not have a pending request to join this group.",
+	"gorup-user-not-invited": "User has not been invited to join this group.",
 
 	"post-already-deleted": "This post has already been deleted",
 	"post-already-restored": "This post has already been restored",
@@ -181,6 +188,9 @@
 	"chat-deleted-already": "This chat message has already been deleted.",
 	"chat-restored-already": "This chat message has already been restored.",
 	"chat-room-does-not-exist": "Chat room does not exist.",
+	"cant-add-users-to-chat-room": "Can't add users to chat room.",
+	"cant-remove-users-from-chat-room": "Can't remove users from chat room.",
+	"chat-room-name-too-long": "Chat room name too long.",
 
 	"already-voting-for-this-post": "You have already voted for this post.",
 	"reputation-system-disabled": "Reputation system is disabled.",
@@ -241,6 +251,8 @@
 	"socket-reconnect-failed": "Unable to reach the server at this time. Click here to try again, or try again later",
 
 	"plugin-not-whitelisted": "Unable to install plugin &ndash; only plugins whitelisted by the NodeBB Package Manager can be installed via the ACP",
+	"plugins-set-in-configuration": "You are not allowed to change plugin state as they are defined at runtime (config.json, environmental variables or terminal arguments), please modify the configuration instead.",
+	"theme-not-set-in-configuration": "When defining active plugins in configuration, changing themes requires adding the new theme to the list of active plugins before updating it in the ACP",
 
 	"topic-event-unrecognized": "Topic event '%1' unrecognized",
 
@@ -256,5 +268,6 @@
 	"api.429": "You have made too many requests, please try again later",
 	"api.500": "An unexpected error was encountered while attempting to service your request.",
 	"api.501": "The route you are trying to call is not implemented yet, please try again tomorrow",
-	"api.503": "The route you are trying to call is not currently available due to a server configuration"
+	"api.503": "The route you are trying to call is not currently available due to a server configuration",
+	"api.reauth-required": "The resource you are trying to access requires (re-)authentication."
 }

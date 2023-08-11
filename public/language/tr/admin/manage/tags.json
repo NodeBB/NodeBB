@@ -1,9 +1,11 @@
 {
+	"manage-tags": "Manage Tags",
 	"none": "Forumda henüz etiketli herhangi bir başlık yok.",
 	"bg-color": "Arkaplan Rengi",
 	"text-color": "Yazı Rengi",
 	"description": "Etiketleri tıklayarak veya sürükleyerek seçin, birden fazla etiket seçmek için <code>CTRL</code> tuşunu kullanabilirsiniz. ",
 	"create": "Etiket Oluştur",
+	"add-tag": "Add tag",
 	"modify": "Etiketleri Düzenle",
 	"rename": "Etiketleri Yeniden Adlandır",
 	"delete": "Seçili Etiketleri Sil",

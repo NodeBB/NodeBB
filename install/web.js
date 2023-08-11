@@ -6,14 +6,14 @@ const bodyParser = require('body-parser');
 const fs = require('fs');
 const path = require('path');
 const childProcess = require('child_process');
-const less = require('less');
 
 const webpack = require('webpack');
 const nconf = require('nconf');
 
 const Benchpress = require('benchpressjs');
-const mkdirp = require('mkdirp');
+const { mkdirp } = require('mkdirp');
 const { paths } = require('../src/constants');
+const sass = require('../src/utils').getSass();
 
 const app = express();
 let server;
@@ -50,6 +50,9 @@ let installing = false;
 let success = false;
 let error = false;
 let launchUrl;
+let timeStart = 0;
+const totalTime = 1000 * 60 * 3;
+
 
 const viewsDir = path.join(paths.baseDir, 'build/public/templates');
 
@@ -73,7 +76,7 @@ web.install = async function (port) {
 	try {
 		await Promise.all([
 			compileTemplate(),
-			compileLess(),
+			compileSass(),
 			runWebpack(),
 			copyCSS(),
 			loadDefaults(),
@@ -102,9 +105,30 @@ function launchExpress(port) {
 function setupRoutes() {
 	app.get('/', welcome);
 	app.post('/', install);
-	app.post('/launch', launch);
+	app.get('/testdb', testDatabase);
 	app.get('/ping', ping);
 	app.get('/sping', ping);
+}
+
+async function testDatabase(req, res) {
+	let db;
+	try {
+		const keys = Object.keys(req.query);
+		const dbName = keys[0].split(':')[0];
+		db = require(`../src/database/${dbName}`);
+
+		const opts = {};
+		keys.forEach((key) => {
+			opts[key.replace(`${dbName}:`, '')] = req.query[key];
+		});
+
+		await db.init(opts);
+		const global = await db.getObject('global');
+		await db.close();
+		res.json({ success: 1, dbfull: !!global });
+	} catch (err) {
+		res.json({ error: err.stack });
+	}
 }
 
 function ping(req, res) {
@@ -123,7 +147,6 @@ function welcome(req, res) {
 	});
 
 	const defaults = require('./data/defaults.json');
-
 	res.render('install/index', {
 		url: nconf.get('url') || (`${req.protocol}://${req.get('host')}`),
 		launchUrl: launchUrl,
@@ -136,6 +159,7 @@ function welcome(req, res) {
 		minimumPasswordLength: defaults.minimumPasswordLength,
 		minimumPasswordStrength: defaults.minimumPasswordStrength,
 		installing: installing,
+		percentInstalled: installing ? ((Date.now() - timeStart) / totalTime * 100).toFixed(2) : 0,
 	});
 }
 
@@ -143,6 +167,7 @@ function install(req, res) {
 	if (installing) {
 		return welcome(req, res);
 	}
+	timeStart = Date.now();
 	req.setTimeout(0);
 	installing = true;
 
@@ -170,21 +195,22 @@ function install(req, res) {
 	const child = require('child_process').fork('app', ['--setup'], {
 		env: setupEnvVars,
 	});
-
+	child.on('error', (err) => {
+		error = true;
+		success = false;
+		winston.error(err.stack);
+	});
 	child.on('close', (data) => {
-		installing = false;
 		success = data === 0;
 		error = data !== 0;
-
-		welcome(req, res);
+		launch();
 	});
+	welcome(req, res);
 }
 
-async function launch(req, res) {
+async function launch() {
 	try {
-		res.json({});
 		server.close();
-		req.setTimeout(0);
 		let child;
 
 		if (!nconf.get('launchCmd')) {
@@ -247,23 +273,28 @@ async function compileTemplate() {
 	]);
 }
 
-async function compileLess() {
+async function compileSass() {
 	try {
-		const installSrc = path.join(__dirname, '../public/less/install.less');
+		const installSrc = path.join(__dirname, '../public/scss/install.scss');
 		const style = await fs.promises.readFile(installSrc);
-		const css = await less.render(String(style), { filename: path.resolve(installSrc) });
-		await fs.promises.writeFile(path.join(__dirname, '../public/installer.css'), css.css);
+		const scssOutput = sass.compileString(String(style), {
+			loadPaths: [
+				path.join(__dirname, '../public/scss'),
+			],
+		});
+
+		await fs.promises.writeFile(path.join(__dirname, '../public/installer.css'), scssOutput.css.toString());
 	} catch (err) {
-		winston.error(`Unable to compile LESS: \n${err.stack}`);
+		winston.error(`Unable to compile SASS: \n${err.stack}`);
 		throw err;
 	}
 }
 
 async function copyCSS() {
-	const src = await fs.promises.readFile(
-		path.join(__dirname, '../node_modules/bootstrap/dist/css/bootstrap.min.css'), 'utf8'
+	await fs.promises.copyFile(
+		path.join(__dirname, '../node_modules/bootstrap/dist/css/bootstrap.min.css'),
+		path.join(__dirname, '../public/bootstrap.min.css'),
 	);
-	await fs.promises.writeFile(path.join(__dirname, '../public/bootstrap.min.css'), src);
 }
 
 async function loadDefaults() {

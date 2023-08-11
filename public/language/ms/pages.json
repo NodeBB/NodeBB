@@ -14,6 +14,7 @@
     "flagged-content": "Flagged Content",
     "ip-blacklist": "IP Blacklist",
     "post-queue": "Post Queue",
+    "registration-queue": "Registration Queue",
     "users/online": "Pengguna Atas Talian",
     "users/latest": "Pengguna Terkini",
     "users/sort-posts": "Pengguna Mengikut Kiriman Terbanyak",
@@ -49,6 +50,7 @@
     "account/watched_categories": "%1's Watched Categories",
     "account/bookmarks": "%1's Bookmarked Posts",
     "account/settings": "Tetapan Pengguna",
+    "account/settings-of": "Changing settings of %1",
     "account/watched": "Topik Diperhati Oleh %1",
     "account/ignored": "Topics ignored by %1",
     "account/upvoted": "Kiriman diundi naik oleh %1",
@@ -59,7 +61,7 @@
     "account/uploads": "Uploads by %1",
     "account/sessions": "Login Sessions",
     "confirm": "Emel Telah Disahkan",
-    "maintenance.text": "%1 sedang berada dalam mod pembaikpulihan. Sila cuba lagi nanti.",
+    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
     "maintenance.messageIntro": "Tambahan, admin meninggalkan mesej ini :",
     "throttled.text": "%1 tiada buat masa ini kerana permintaan yang berlebihan. Sila datang lagi lain kali."
 }

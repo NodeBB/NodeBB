@@ -1,0 +1,22 @@
+/*
+	This stylesheet is applied to all themes and all pages.
+	They can be overridden by themes, though their presence (or initial settings) may be depended upon by
+	client-side logic in core.
+
+	==========
+*/
+
+// rtl fixes for text-break and code blocks
+/*rtl:begin:ignore*/
+html[data-dir="rtl"] {
+	.text-break {
+		word-wrap: break-word!important;
+		word-break: break-word!important;
+	}
+
+	[component="post/content"] code {
+		direction: ltr;
+		text-align: left;
+	}
+}
+/*rtl:end:ignore*/

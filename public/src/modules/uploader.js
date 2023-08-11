@@ -6,7 +6,7 @@ define('uploader', ['jquery-form'], function () {
 
 	module.show = function (data, callback) {
 		const fileSize = data.hasOwnProperty('fileSize') && data.fileSize !== undefined ? parseInt(data.fileSize, 10) : false;
-		app.parseAndTranslate('partials/modals/upload_file_modal', {
+		app.parseAndTranslate('modals/upload-file', {
 			showHelp: data.hasOwnProperty('showHelp') && data.showHelp !== undefined ? data.showHelp : true,
 			fileSize: fileSize,
 			title: data.title || '[[global:upload_file]]',
@@ -61,6 +61,7 @@ define('uploader', ['jquery-form'], function () {
 		if (type === 'error') {
 			uploadModal.find('#fileUploadSubmitBtn').removeClass('disabled');
 		}
+		message = message.replace(/&amp;#44/g, '&#44');
 		uploadModal.find('#alert-' + type).translateText(message).removeClass('hide');
 	}
 
@@ -72,7 +73,13 @@ define('uploader', ['jquery-form'], function () {
 			},
 			error: function (xhr) {
 				xhr = maybeParse(xhr);
-				showAlert(uploadModal, 'error', xhr.responseJSON ? (xhr.responseJSON.error || xhr.statusText) : 'error uploading, code : ' + xhr.status);
+				showAlert(
+					uploadModal,
+					'error',
+					xhr.responseJSON?.status?.message || // apiv3
+					xhr.responseJSON?.error || // { "error": "[[error:some-error]]]" }
+					`[[error:upload-error-fallback, ${xhr.status} ${xhr.statusText}]]`
+				);
 			},
 			uploadProgress: function (event, position, total, percent) {
 				uploadModal.find('#upload-progress-bar').css('width', percent + '%');
@@ -99,7 +106,7 @@ define('uploader', ['jquery-form'], function () {
 	function maybeParse(response) {
 		if (typeof response === 'string') {
 			try {
-				return $.parseJSON(response);
+				return JSON.parse(response);
 			} catch (e) {
 				return { error: '[[error:parse-error]]' };
 			}

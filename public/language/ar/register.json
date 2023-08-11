@@ -1,5 +1,6 @@
 {
     "register": "تسجيل",
+    "already-have-account": "Already have an account?",
     "cancel_registration": "إلغاء التسجيل",
     "help.email": "افتراضيا، سيتم إخفاء بريدك الإلكتروني من العامة.",
     "help.username_restrictions": "اسم مستخدم فريدة من نوعها بين 1% و 2% حرفا. بإمكان الآخرين مناداتك بـ @<span id='yourUsername'>اسم المستخدم</span>.",

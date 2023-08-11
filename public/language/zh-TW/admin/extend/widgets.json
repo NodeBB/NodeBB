@@ -1,4 +1,5 @@
 {
+	"widgets": "Widgets",
 	"available": "可用的小工具",
 	"explanation": "從下拉選單中選擇一個小工具並拖放到樣板左邊的小工具區域。",
 	"none-installed": "No widgets found! Activate the widget essentials plugin in the <a href=\"%1\">plugins</a> control panel.",
@@ -8,9 +9,9 @@
 	"containers.none": "無",
 	"container.well": "Well",
 	"container.jumbotron": "超大屏幕",
-	"container.panel": "面板",
-	"container.panel-header": "面板標題",
-	"container.panel-body": "面板內容",
+	"container.card": "Card",
+	"container.card-header": "Card Header",
+	"container.card-body": "Card Body",
 	"container.alert": "警示",
 
 	"alert.confirm-delete": "確認刪除此小工具？",
@@ -26,5 +27,7 @@
 	"container.placeholder": "將容器拖拽至此處或在此處輸入HTML",
 	"show-to-groups": "對群組顯示",
 	"hide-from-groups": "對群組隱藏",
+	"start-date": "Start date",
+	"end-date": "End date",
 	"hide-on-mobile": "在移動端隱藏"
 }

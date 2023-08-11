@@ -1,4 +1,6 @@
 {
+	"manage-privileges": "Manage Privileges",
+	"discard-changes": "Discard changes",
 	"global": "Globalny",
 	"admin": "Admin",
 	"group-privileges": "Uprawnienia grup",
@@ -49,7 +51,6 @@
 	"alert.confirm-moderate": "<strong>Czy na pewno chcesz przyznać uprawnienia moderacji dla tej grupy użytkowników?</strong> Ta grupa jest publiczna i każdy użytkownik może do niej dołączyć.",
 	"alert.confirm-admins-mods": "<strong>Are you sure you wish to grant the &quot;Admins &amp; Mods&quot; privilege to this user/group?</strong> Users with this privilege are able to promote and demote other users into privileged positions, <em>including super administrator</em>",
 	"alert.confirm-save": "Potwierdź zamiar zapisania uprawnień",
-	"alert.saved": "Zapisano i zastosowano zmiany w uprawnieniach",
 	"alert.confirm-discard": "Czy na pewno chcesz odrzucić wprowadzone zmiany w uprawnieniach?",
 	"alert.discarded": "Odrzucono zmiany w uprawnieniach",
 	"alert.confirm-copyToAll": "Are you sure you wish to apply this set of <strong>%1</strong> to <strong>all categories</strong>?",

@@ -4,6 +4,7 @@ const async = require('async');
 const assert = require('assert');
 const nconf = require('nconf');
 const request = require('request');
+const requestAsync = require('request-promise-native');
 
 const db = require('./mocks/databasemock');
 const categories = require('../src/categories');
@@ -65,17 +66,16 @@ describe('Admin Controllers', () => {
 		});
 	});
 
-	it('should 403 if user is not admin', (done) => {
-		helpers.loginUser('admin', 'barbar', (err, data) => {
-			assert.ifError(err);
-			jar = data.jar;
-			request(`${nconf.get('url')}/admin`, { jar: jar }, (err, res, body) => {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 403);
-				assert(body);
-				done();
-			});
+	it('should 403 if user is not admin', async () => {
+		({ jar } = await helpers.loginUser('admin', 'barbar'));
+		const { statusCode, body } = await requestAsync(`${nconf.get('url')}/admin`, {
+			jar: jar,
+			simple: false,
+			resolveWithFullResponse: true,
 		});
+
+		assert.equal(statusCode, 403);
+		assert(body);
 	});
 
 	it('should load admin dashboard', (done) => {
@@ -218,7 +218,7 @@ describe('Admin Controllers', () => {
 	});
 
 	it('should load /admin/settings/homepage', (done) => {
-		request(`${nconf.get('url')}/api/admin/settings/homepage`, { jar: jar, json: true }, (err, res, body) => {
+		request(`${nconf.get('url')}/api/admin/settings/general`, { jar: jar, json: true }, (err, res, body) => {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body.routes);
@@ -580,17 +580,13 @@ describe('Admin Controllers', () => {
 	});
 
 	it('should load /admin/settings/social', (done) => {
-		const socketAdmin = require('../src/socket.io/admin');
-		socketAdmin.social.savePostSharingNetworks({ uid: adminUid }, ['facebook', 'twitter'], (err) => {
+		request(`${nconf.get('url')}/api/admin/settings/general`, { jar: jar, json: true }, (err, res, body) => {
 			assert.ifError(err);
-			request(`${nconf.get('url')}/api/admin/settings/social`, { jar: jar, json: true }, (err, res, body) => {
-				assert.ifError(err);
-				assert(body);
-				body = body.posts.map(network => network && network.id);
-				assert(body.includes('facebook'));
-				assert(body.includes('twitter'));
-				done();
-			});
+			assert(body);
+			body = body.postSharing.map(network => network && network.id);
+			assert(body.includes('facebook'));
+			assert(body.includes('twitter'));
+			done();
 		});
 	});
 
@@ -832,7 +828,18 @@ describe('Admin Controllers', () => {
 						});
 					});
 				}
-				for (const route of Object.keys(privileges.admin.routeMap)) {
+				const uploadRoutes = [
+					'category/uploadpicture',
+					'uploadfavicon',
+					'uploadTouchIcon',
+					'uploadMaskableIcon',
+					'uploadlogo',
+					'uploadOgImage',
+					'uploadDefaultAvatar',
+				];
+				const adminRoutes = Object.keys(privileges.admin.routeMap)
+					.filter(route => !uploadRoutes.includes(route));
+				for (const route of adminRoutes) {
 					/* eslint-disable no-await-in-loop */
 					await privileges.admin.rescind([privileges.admin.routeMap[route]], uid);
 					let res = await makeRequest(`${nconf.get('url')}/api/admin/${route}`);
@@ -845,7 +852,7 @@ describe('Admin Controllers', () => {
 					await privileges.admin.rescind([privileges.admin.routeMap[route]], uid);
 				}
 
-				for (const route of Object.keys(privileges.admin.routeMap)) {
+				for (const route of adminRoutes) {
 					/* eslint-disable no-await-in-loop */
 					await privileges.admin.rescind([privileges.admin.routeMap[route]], uid);
 					let res = await makeRequest(`${nconf.get('url')}/api/admin`);

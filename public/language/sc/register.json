@@ -1,5 +1,6 @@
 {
     "register": "Registra·ti",
+    "already-have-account": "Already have an account?",
     "cancel_registration": "Cancel Registration",
     "help.email": "S'email tua est cuada pro su pùblicu in manera predefinida.",
     "help.username_restrictions": "Unu nùmene de impitadore ùnicu intre %1 e %2 caràtere. Is àteros t'ant a pòdere mentovare cun @<span id='yourUsername'>nùmeneimpitadore</span>.",

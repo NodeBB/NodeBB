@@ -1,8 +1,10 @@
+/* eslint-disable import/first */
+
 export * from 'ace-builds';
 
 // only import the modes and theme we use
 import 'ace-builds/src-noconflict/mode-javascript';
-import 'ace-builds/src-noconflict/mode-less';
+import 'ace-builds/src-noconflict/mode-scss';
 import 'ace-builds/src-noconflict/mode-html';
 import 'ace-builds/src-noconflict/ext-searchbox';
 import 'ace-builds/src-noconflict/theme-twilight';

@@ -14,6 +14,7 @@
 	"flagged-content": "Flagged Content",
 	"ip-blacklist": "IP Blacklist",
 	"post-queue": "Post Queue",
+	"registration-queue": "Registration Queue",
 
 	"users/online": "Online Users",
 	"users/latest": "Latest Users",
@@ -55,6 +56,7 @@
 	"account/watched_categories": "%1's Watched Categories",
 	"account/bookmarks": "%1's Bookmarked Posts",
 	"account/settings": "User Settings",
+	"account/settings-of": "Changing settings of %1",
 	"account/watched": "Topics watched by %1",
 	"account/ignored": "Topics ignored by %1",
 	"account/upvoted": "Posts upvoted by %1",
@@ -67,7 +69,7 @@
 
 	"confirm": "Email Confirmed",
 
-	"maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
+	"maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
 	"maintenance.messageIntro": "Additionally, the administrator has left this message:",
 
 	"throttled.text": "%1 is currently unavailable due to excessive load. Please come back another time."

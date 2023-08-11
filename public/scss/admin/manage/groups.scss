@@ -1,0 +1,17 @@
+.groups {
+	.groups-list {
+		td {
+			max-width: 350px;
+		}
+	}
+}
+
+.page-admin-groups {
+	[component="category/list"] li {
+		cursor: pointer;
+	}
+
+	#group-icon-preview.fa-nbb-none {
+		display: none;
+	}
+}

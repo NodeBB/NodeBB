@@ -1,4 +1,5 @@
 {
+	"widgets": "Джаджи",
 	"available": "Налични джаджи",
 	"explanation": "Изберете джаджа от падащото меню, а след това я завлачете и пуснете в областта за джаджи в някой от шаблоните вляво.",
 	"none-installed": "Няма намерени джаджи! Включете добавката с основните джаджи в контролния панел за <a href=\"%1\">добавките</a>.",
@@ -8,9 +9,9 @@
 	"containers.none": "Няма",
 	"container.well": "Кладенец",
 	"container.jumbotron": "Джъмботрон",
-	"container.panel": "Панел",
-	"container.panel-header": "Заглавна част на панел",
-	"container.panel-body": "Основна част на панел",
+	"container.card": "Карта",
+	"container.card-header": "Заглавна част на карта",
+	"container.card-body": "Основна част на карта",
 	"container.alert": "Предупреждение",
 
 	"alert.confirm-delete": "Наистина ли искате да изтриете джаджата?",
@@ -26,5 +27,7 @@
 	"container.placeholder": "Завлачете и пуснете контейнер или въведете HTML тук.",
 	"show-to-groups": "Показване на групите",
 	"hide-from-groups": "Скриване от групите",
+	"start-date": "Начална дата",
+	"end-date": "Крайна дата",
 	"hide-on-mobile": "Скриване на мобилни устройства"
 }

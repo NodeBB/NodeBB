@@ -2,11 +2,7 @@
 
 const path = require('path');
 const fs = require('fs');
-const util = require('util');
-const mkdirp = require('mkdirp');
-const rimraf = require('rimraf');
-
-const rimrafAsync = util.promisify(rimraf);
+const { mkdirp } = require('mkdirp');
 
 const file = require('../file');
 const plugins = require('../plugins');
@@ -27,14 +23,6 @@ JS.scripts = {
 	modules: { },
 };
 
-async function linkIfLinux(srcPath, destPath) {
-	if (process.platform === 'win32') {
-		await fs.promises.copyFile(srcPath, destPath);
-	} else {
-		await file.link(srcPath, destPath, true);
-	}
-}
-
 const basePath = path.resolve(__dirname, '../..');
 
 async function linkModules() {
@@ -48,14 +36,24 @@ async function linkModules() {
 	await Promise.all(Object.keys(modules).map(async (relPath) => {
 		const srcPath = path.join(__dirname, '../../', modules[relPath]);
 		const destPath = path.join(__dirname, '../../build/public/src/modules', relPath);
+		const destDir = path.dirname(destPath);
+
 		const [stats] = await Promise.all([
 			fs.promises.stat(srcPath),
-			mkdirp(path.dirname(destPath)),
+			mkdirp(destDir),
 		]);
+
 		if (stats.isDirectory()) {
 			await file.linkDirs(srcPath, destPath, true);
 		} else {
-			await linkIfLinux(srcPath, destPath);
+			// Get the relative path to the destination directory
+			const relPath = path.relative(destDir, srcPath)
+				// and convert to a posix path
+				.split(path.sep).join(path.posix.sep);
+
+			// Instead of copying file, create a new file re-exporting it
+			// This way, imports in modules are resolved correctly
+			await fs.promises.writeFile(destPath, `module.exports = require('${relPath}');`);
 		}
 	}));
 }
@@ -67,7 +65,7 @@ async function clearModules() {
 		p => path.join(__dirname, '../../build/public/src', p)
 	);
 	await Promise.all(
-		builtPaths.map(builtPath => rimrafAsync(builtPath))
+		builtPaths.map(builtPath => fs.promises.rm(builtPath, { recursive: true, force: true }))
 	);
 }
 
@@ -84,7 +82,10 @@ JS.buildModules = async function () {
 };
 
 JS.linkStatics = async function () {
-	await rimrafAsync(path.join(__dirname, '../../build/public/plugins'));
+	await fs.promises.rm(path.join(__dirname, '../../build/public/plugins'), { recursive: true, force: true });
+
+	plugins.staticDirs['core/inter'] = path.join(basePath, 'node_modules//@fontsource/inter/files');
+	plugins.staticDirs['core/poppins'] = path.join(basePath, 'node_modules//@fontsource/poppins/files');
 
 	await Promise.all(Object.keys(plugins.staticDirs).map(async (mappedPath) => {
 		const sourceDir = plugins.staticDirs[mappedPath];
@@ -129,14 +130,13 @@ async function getBundleScriptList(target) {
 JS.buildBundle = async function (target, fork) {
 	const filename = `scripts-${target}.js`;
 	const files = await getBundleScriptList(target);
-	const minify = false; // webpack will minify in prod
 	const filePath = path.join(__dirname, '../../build/public', filename);
 
 	await minifier.js.bundle({
 		files: files,
 		filename: filename,
 		destPath: filePath,
-	}, minify, fork);
+	}, fork);
 };
 
 JS.killMinifier = function () {

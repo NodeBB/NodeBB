@@ -72,11 +72,13 @@
 	"development/info": "Informação",
 
 	"rebuild-and-restart-forum": "Recompilar & Reiniciar Fórum",
+	"rebuild-and-restart": "Rebuild & Restart",
 	"restart-forum": "Reiniciar Fórum",
+	"restart": "Restart",
 	"logout": "Sair da Conta",
 	"view-forum": "Ver Fórum",
 
-	"search.placeholder": "Pressione \"/\" para pesquisar por configurações",
+	"search.placeholder": "Search settings",
 	"search.no-results": "Sem resultados...",
 	"search.search-forum": "Pesquisar o fórum por <strong></strong>",
 	"search.keep-typing": "Digite para ver mais resultados...",

@@ -10,7 +10,7 @@
 	"min-rep-downvote": "Minimum reputation to downvote posts",
 	"downvotes-per-day": "Downvotes per day (set to 0 for unlimited downvotes)",
 	"downvotes-per-user-per-day": "Downvotes per user per day (set to 0 for unlimited downvotes)",
-	"min-rep-chat": "Minimum reputation to send chat messages",
+	"min-rep-chat": "کمترین اعتبار برای ارسال پیام‌های چت ",
 	"min-rep-flag": "Minimum reputation to flag posts",
 	"min-rep-website": "Minimum reputation to add \"Website\" to user profile",
 	"min-rep-aboutme": "Minimum reputation to add \"About me\" to user profile",
@@ -23,5 +23,9 @@
 	"flags.limit-per-target-placeholder": "Default: 0",
 	"flags.limit-per-target-help": "When a post or user is flagged multiple times, each additional flag is considered a &quot;report&quot; and added to the original flag. Set this option to a number other than zero to limit the number of reports an item can receive.",
   	"flags.auto-flag-on-downvote-threshold": "Number of downvotes to auto flag posts (Set to 0 to disable, default: 0)",
-	"flags.auto-resolve-on-ban": "Automatically resolve all of a user's tickets when they are banned"
+	"flags.auto-resolve-on-ban": "Automatically resolve all of a user's tickets when they are banned",
+	"flags.action-on-resolve": "Do the following when a flag is resolved",
+	"flags.action-on-reject": "Do the following when a flag is rejected",
+	"flags.action.nothing": "Do nothing",
+	"flags.action.rescind": "Rescind the notification sent to moderators/administrators"
 }

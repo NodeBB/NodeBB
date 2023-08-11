@@ -1,4 +1,5 @@
 {
+	"navigation": "Navigazione",
 	"icon": "Icona:",
 	"change-icon": "modifica",
 	"route": "Percorso:",
@@ -12,7 +13,7 @@
 	"groups": "Gruppi:",
 	"open-new-window": "Apri in una nuova finestra",
 	"dropdown": "Menu a tendina",
-	"dropdown-placeholder": "Posiziona le voci del tuo menu a tendina in basso, ad esempio: <br/>&lt;li&gt;&lt;a href&#x3D;&quot;https://myforum.com&quot;&gt;Link 1&lt;/a&gt;&lt;/li&gt;",
+	"dropdown-placeholder": "Posiziona le voci del menu a discesa qui sotto, es.: <br/>&lt;li&gt;&lt;a class=&quot;dropdown-item&quot; href&#x3D;&quot;https://myforum.com&quot;&gt;Link 1&lt;/a&gt;&lt;/li&gt;",
 
 	"btn.delete": "Elimina",
 	"btn.disable": "Disabilita",

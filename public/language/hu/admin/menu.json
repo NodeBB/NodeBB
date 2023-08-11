@@ -4,7 +4,7 @@
 	"dashboard/logins": "Bejelentkezések",
 	"dashboard/users": "Felhasználók",
 	"dashboard/topics": "Témakörök",
-	"dashboard/searches": "Searches",
+	"dashboard/searches": "Keresések",
 	"section-general": "Általános",
 
 	"section-manage": "Kezelés",
@@ -72,11 +72,13 @@
 	"development/info": "Információ",
 
 	"rebuild-and-restart-forum": "Fórum újraépítése & újraindítása",
+	"rebuild-and-restart": "Rebuild & Restart",
 	"restart-forum": "Fórum újraindítása",
+	"restart": "Restart",
 	"logout": "Kilépés",
 	"view-forum": "Fórum megtekintése",
 
-	"search.placeholder": "Nyomd meg a &quot;/&quot;-t beállítások kereséséhez",
+	"search.placeholder": "Keresési beállítások",
 	"search.no-results": "Nincs eredmény...",
 	"search.search-forum": "<strong></strong> keresése a fórumon",
 	"search.keep-typing": "Gépelj többet az eredményekért...",

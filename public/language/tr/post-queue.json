@@ -1,8 +1,12 @@
 
 {
 	"post-queue": "İleti Kuyruğu",
-	"description": "İleti kuyruğunda hiçbir ileti bulunmamaktadır. <br> Bu özelliği aktifleştirmek için, şuraya gidin <a href=\"%1\">Ayarlar &rarr; İleti &rarr; İleti Kuyruğu</a> ve şu özelliği aktifleştirin:  <strong>İleti Kuyruğu</strong>.",
+	"no-queued-posts": "İleti kuyruğunda yeni ileti mevcut değil! ",
+	"no-single-post": "Aradığınız ileti veya başlık artık ileti kuyruğunda değil! Halihazırda onaylanmış veya reddedilmiş olabilir. ",
+	"enabling-help": "To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
+	"back-to-list": "İleti Kuyruğuna Geri Dön",
 	"user": "Kullanıcı",
+	"when": "Süre",
 	"category": "Kategori",
 	"title": "Başlık",
 	"content": "İçerik",
@@ -19,6 +23,7 @@
 	"notify": "Bildirim yap",
 	"notify-user": "Kullanıcıyı uyar",
 	"confirm-reject": "Bu iletiyi reddetmek istediğinize emin misiniz?",
+	"confirm-remove": "Bu iletiyi kaldırmak istiyor musunuz? ",
 	"bulk-actions": "Toplu İşlemler",
 	"accept-all": "Hepsini Onayla",
 	"accept-selected": "Seçili Olanları Onayla",
@@ -26,6 +31,10 @@
 	"reject-all-confirm": "Tüm iletileri reddetmek istediğinize emin misiniz?",
 	"reject-selected": "Seçili Olanları Reddet",
 	"reject-selected-confirm": "Seçili olan %1 iletiyi reddetmek istediğinize emin misiniz?",
+	"remove-all": "Hepsini kaldır",
+	"remove-all-confirm": "Tüm iletileri kaldırmak istiyor musunuz?",
+	"remove-selected": "Seçili olanları kaldır",
+	"remove-selected-confirm": "Seçili %1 iletiyi kaldırmak istiyor musunuz? ",
 	"bulk-accept-success": "%1 ileti onaylandı",
 	"bulk-reject-success": "%1 ileti reddedildi"
 }

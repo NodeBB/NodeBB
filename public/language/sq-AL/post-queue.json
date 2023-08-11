@@ -1,8 +1,12 @@
 
 {
 	"post-queue": "Radha e postimit",
-	"description": "Nuk ka asnjë postim në radhën e postimeve. 1<br>Për të aktivizuar këtë veçori, shkoni te <a href=\"%1\">Cilësimet &rarr; Post &rarr; radha e postimeve</a> dhe aktivizoni <strong>Radha e Postimeve</strong>",
+	"no-queued-posts": "There are no posts in the post queue.",
+	"no-single-post": "The topic or post you are looking for is no longer in the queue. It has likely been approved or deleted already.",
+	"enabling-help": "To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
+	"back-to-list": "Back to Post Queue",
 	"user": "Përdorues",
+	"when": "When",
 	"category": "Kategoria",
 	"title": "Titulli",
 	"content": "Përmbajtja",
@@ -19,6 +23,7 @@
 	"notify": "Njofto",
 	"notify-user": "Njoftoni përdoruesin",
 	"confirm-reject": "Jeni i sigurt që dëshironi ta anulloni këtë postim?",
+	"confirm-remove": "Do you want to remove this post?",
 	"bulk-actions": "Veprime njëkohësisht",
 	"accept-all": "Prano të gjitha",
 	"accept-selected": "Accept Selected",
@@ -26,6 +31,10 @@
 	"reject-all-confirm": "Dëshiron të refuzosh të gjitha postimet?",
 	"reject-selected": "Reject Selected",
 	"reject-selected-confirm": "Dëshiron të refuzosh %1 postimet e selektuara?",
+	"remove-all": "Remove all",
+	"remove-all-confirm": "Do you want to remove all posts?",
+	"remove-selected": "Remove Selected",
+	"remove-selected-confirm": "Do you want to remove %1 selected posts?",
 	"bulk-accept-success": "%1 postime u pranuan",
 	"bulk-reject-success": "%1 postime u refuzuan"
 }

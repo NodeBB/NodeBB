@@ -72,11 +72,13 @@
 	"development/info": "מידע",
 
 	"rebuild-and-restart-forum": "בנה והפעל מחדש את הפורום",
+	"rebuild-and-restart": "בניה מחדש והפעלה מחדש",
 	"restart-forum": "הפעל מחדש את הפורום",
+	"restart": "הפעל מחדש",
 	"logout": "התנתק",
 	"view-forum": "כניסה לפורום",
 
-	"search.placeholder": "הקלד &quot;/&quot; בכדי לחפש הגדרה",
+	"search.placeholder": "הגדרות חיפוש",
 	"search.no-results": "אין תוצאות...",
 	"search.search-forum": "חפש בפורום <strong></strong>",
 	"search.keep-typing": "המשך להקליד על מנת למצוא תוצאות...",

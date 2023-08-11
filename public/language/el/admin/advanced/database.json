@@ -5,7 +5,7 @@
 	"uptime-seconds": "Χρόνος λειτουργίας σε δευτερόλεπτα",
 	"uptime-days": "Χρόνος λειτουργίας σε ημέρες",
 
-	"mongo": "Mongo",
+	"mongo": "MongoDB",
 	"mongo.version": "Έκδοση MongoDB",
 	"mongo.storage-engine": "Μηχανή αποθήκευσης",
 	"mongo.collections": "Συλλογές",

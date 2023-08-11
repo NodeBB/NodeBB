@@ -20,7 +20,19 @@ define('admin/settings/general', ['admin/settings'], function () {
 		$('button[data-action="removeOgImage"]').on('click', function () {
 			$('input[data-field="removeOgImage"]').val('');
 		});
+
+		$('[data-field="homePageRoute"]').on('change', toggleCustomRoute);
+
+		toggleCustomRoute();
 	};
+
+	function toggleCustomRoute() {
+		if ($('[data-field="homePageRoute"]').val() === 'custom') {
+			$('#homePageCustom').show();
+		} else {
+			$('#homePageCustom').hide();
+		}
+	}
 
 	return Module;
 });

@@ -1,0 +1,17 @@
+.tags {
+	.tag-list {
+
+		.tag-row {
+			float: left;
+
+			&.ui-selected {
+				background: lighten($success, 25%);
+				border-radius: $border-radius-sm;
+			}
+
+			&.ui-selecting {
+				background: lighten($success, 40%);
+			}
+		}
+	}
+}

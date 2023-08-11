@@ -5,7 +5,6 @@ const _ = require('lodash');
 
 const db = require('../database');
 const user = require('../user');
-const groups = require('../groups');
 const plugins = require('../plugins');
 const privileges = require('../privileges');
 const cache = require('../cache');
@@ -99,31 +98,7 @@ Categories.getModerators = async function (cid) {
 };
 
 Categories.getModeratorUids = async function (cids) {
-	const groupNames = cids.reduce((memo, cid) => {
-		memo.push(`cid:${cid}:privileges:moderate`);
-		memo.push(`cid:${cid}:privileges:groups:moderate`);
-		return memo;
-	}, []);
-
-	const memberSets = await groups.getMembersOfGroups(groupNames);
-	// Every other set is actually a list of user groups, not uids, so convert those to members
-	const sets = memberSets.reduce((memo, set, idx) => {
-		if (idx % 2) {
-			memo.groupNames.push(set);
-		} else {
-			memo.uids.push(set);
-		}
-
-		return memo;
-	}, { groupNames: [], uids: [] });
-
-	const uniqGroups = _.uniq(_.flatten(sets.groupNames));
-	const groupUids = await groups.getMembersOfGroups(uniqGroups);
-	const map = _.zipObject(uniqGroups, groupUids);
-	const moderatorUids = cids.map(
-		(cid, index) => _.uniq(sets.uids[index].concat(_.flatten(sets.groupNames[index].map(g => map[g]))))
-	);
-	return moderatorUids;
+	return await privileges.categories.getUidsWithPrivilege(cids, 'moderate');
 };
 
 Categories.getCategories = async function (cids, uid) {
@@ -388,6 +363,13 @@ Categories.buildForSelectCategories = function (categories, fields, parentCid) {
 	const categoriesData = [];
 
 	const rootCategories = categories.filter(category => category && category.parentCid === parentCid);
+
+	rootCategories.sort((a, b) => {
+		if (a.order !== b.order) {
+			return a.order - b.order;
+		}
+		return a.cid - b.cid;
+	});
 
 	rootCategories.forEach(category => recursive(category, categoriesData, '', 0));
 

@@ -8,10 +8,10 @@ const readline = require('readline');
 const winston = require('winston');
 const chalk = require('chalk');
 
+const plugins = require('./plugins');
 const db = require('./database');
 const file = require('./file');
 const { paths } = require('./constants');
-
 /*
  * Need to write an upgrade script for NodeBB? Cool.
  *
@@ -61,7 +61,7 @@ Upgrade.getAll = async function () {
 
 Upgrade.appendPluginScripts = async function (files) {
 	// Find all active plugins
-	const plugins = await db.getSortedSetRange('plugins:active', 0, -1);
+	const activePlugins = await plugins.getActive();
 	for (const plugin of plugins) {
 		let configPath = path.join(paths.nodeModules, plugin, 'plugin.json');
 		// eslint-disable-next-line no-await-in-loop

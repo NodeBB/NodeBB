@@ -22,7 +22,6 @@ const upload_url = nconf.get('upload_url');
 
 topicsController.get = async function getTopic(req, res, next) {
 	const tid = req.params.topic_id;
-
 	if (
 		(req.params.post_index && !utils.isNumber(req.params.post_index) && req.params.post_index !== 'unread') ||
 		!utils.isNumber(tid)
@@ -73,8 +72,16 @@ topicsController.get = async function getTopic(req, res, next) {
 	const sort = req.query.sort || settings.topicPostSort;
 	const set = sort === 'most_votes' ? `tid:${tid}:posts:votes` : `tid:${tid}:posts`;
 	const reverse = sort === 'newest_to_oldest' || sort === 'most_votes';
-	if (settings.usePagination && !req.query.page) {
+
+	if (!req.query.page) {
 		currentPage = calculatePageFromIndex(postIndex, settings);
+	}
+	if (settings.usePagination && req.query.page) {
+		const top = ((currentPage - 1) * settings.postsPerPage) + 1;
+		const bottom = top + settings.postsPerPage;
+		if (!req.params.post_index || (postIndex < top || postIndex > bottom)) {
+			postIndex = top;
+		}
 	}
 	const { start, stop } = calculateStartStop(currentPage, postIndex, settings);
 
@@ -88,6 +95,7 @@ topicsController.get = async function getTopic(req, res, next) {
 	topicData['reputation:disabled'] = meta.config['reputation:disabled'];
 	topicData['downvote:disabled'] = meta.config['downvote:disabled'];
 	topicData['feeds:disableRSS'] = meta.config['feeds:disableRSS'] || 0;
+	topicData['signatures:hideDuplicates'] = meta.config['signatures:hideDuplicates'];
 	topicData.bookmarkThreshold = meta.config.bookmarkThreshold;
 	topicData.necroThreshold = meta.config.necroThreshold;
 	topicData.postEditDuration = meta.config.postEditDuration;
@@ -107,7 +115,7 @@ topicsController.get = async function getTopic(req, res, next) {
 	await Promise.all([
 		buildBreadcrumbs(topicData),
 		addOldCategory(topicData, userPrivileges),
-		addTags(topicData, req, res),
+		addTags(topicData, req, res, currentPage),
 		incrementViewCount(req, tid),
 		markAsRead(req, tid),
 		analytics.increment([`pageviews:byCid:${topicData.category.cid}`]),
@@ -193,7 +201,7 @@ async function addOldCategory(topicData, userPrivileges) {
 	}
 }
 
-async function addTags(topicData, req, res) {
+async function addTags(topicData, req, res, currentPage) {
 	const postIndex = parseInt(req.params.post_index, 10) || 0;
 	const postAtIndex = topicData.posts.find(p => parseInt(p.index, 10) === parseInt(Math.max(0, postIndex - 1), 10));
 	let description = '';
@@ -205,6 +213,11 @@ async function addTags(topicData, req, res) {
 		description = `${description.slice(0, 255)}...`;
 	}
 	description = description.replace(/\n/g, ' ');
+
+	let mainPost = topicData.posts.find(p => parseInt(p.index, 10) === 0);
+	if (!mainPost) {
+		mainPost = await posts.getPostData(topicData.mainPid);
+	}
 
 	res.locals.metaTags = [
 		{
@@ -233,7 +246,7 @@ async function addTags(topicData, req, res) {
 		},
 		{
 			property: 'article:modified_time',
-			content: utils.toISOString(topicData.lastposttime),
+			content: utils.toISOString(Math.max(topicData.lastposttime, mainPost && mainPost.edited)),
 		},
 		{
 			property: 'article:section',
@@ -243,10 +256,12 @@ async function addTags(topicData, req, res) {
 
 	await addOGImageTags(res, topicData, postAtIndex);
 
+	const page = currentPage > 1 ? `?page=${currentPage}` : '';
 	res.locals.linkTags = [
 		{
 			rel: 'canonical',
-			href: `${url}/topic/${topicData.slug}`,
+			href: `${url}/topic/${topicData.slug}${page}`,
+			noEscape: true,
 		},
 	];
 
@@ -262,6 +277,13 @@ async function addTags(topicData, req, res) {
 		res.locals.linkTags.push({
 			rel: 'up',
 			href: `${url}/category/${topicData.category.slug}`,
+		});
+	}
+
+	if (postAtIndex) {
+		res.locals.linkTags.push({
+			rel: 'author',
+			href: `${url}/user/${postAtIndex.user.userslug}`,
 		});
 	}
 }

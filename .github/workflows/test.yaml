@@ -5,35 +5,43 @@ on:
     branches:
       - master
       - develop
+      - bootstrap5
   pull_request:
     branches:
       - master
       - develop
+      - bootstrap5
 
 defaults:
   run:
     shell: bash
 
+permissions:
+  contents: read
+
 jobs:
   test:
+    permissions:
+      checks: write  # for coverallsapp/github-action to create new checks
+      contents: read  # for actions/checkout to fetch code
     name: Lint and test
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        node: [14, 16, 18]
+        node: [16, 18]
         database: [mongo-dev, mongo, redis, postgres]
         include:
           # only run coverage once
           - os: ubuntu-latest
-            node: 14
+            node: 16
             coverage: true
           # test under development once
           - database: mongo-dev
             test_env: development
           # only run eslint once
           - os: ubuntu-latest
-            node: 14
+            node: 16
             database: mongo-dev
             lint: true
     runs-on: ${{ matrix.os }}
@@ -42,7 +50,7 @@ jobs:
 
     services:
       postgres:
-        image: 'postgres:10-alpine'
+        image: 'postgres:15-alpine'
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -57,7 +65,7 @@ jobs:
           - 5432:5432
 
       redis:
-        image: 'redis:2.8.9'
+        image: 'redis:7.0.11'
         # Set health checks to wait until redis has started
         options: >-
           --health-cmd "redis-cli ping"
@@ -69,7 +77,7 @@ jobs:
           - 6379:6379
 
       mongo:
-        image: 'mongo:3.6'
+        image: 'mongo:3.7'
         ports:
           # Maps port 27017 on service container to the host
           - 27017:27017
@@ -186,7 +194,7 @@ jobs:
         run: npm run coverage
 
       - name: Test coverage
-        uses: coverallsapp/github-action@1.1.3
+        uses: coverallsapp/github-action@v2.2.0
         if: matrix.coverage
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -194,11 +202,13 @@ jobs:
           parallel: true
 
   finish:
+    permissions:
+      checks: write  # for coverallsapp/github-action to create new checks
     needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Coveralls Finished
-        uses: coverallsapp/github-action@1.1.3
+        uses: coverallsapp/github-action@v2.2.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           parallel-finished: true

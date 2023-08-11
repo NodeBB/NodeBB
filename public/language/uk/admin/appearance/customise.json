@@ -1,7 +1,8 @@
 {
-	"custom-css": "Користувацькі CSS/LESS",
-	"custom-css.description": "Введіть свої власні CSS/LESS тут, які будуть застосовані після всіх інших стилів.",
-	"custom-css.enable": "Увімкнути користувацькі CSS/LESS",
+	"customise": "Customise",
+	"custom-css": "Custom CSS/SASS",
+	"custom-css.description": "Enter your own CSS/SASS declarations here, which will be applied after all other styles.",
+	"custom-css.enable": "Enable Custom CSS/SASS",
 
 	"custom-js": "Користувацький Javascript",
 	"custom-js.description": "Введіть свій власний код javascript тут. Він буде виконаний після повного завантаження сторінки.",
@@ -12,5 +13,8 @@
 	"custom-header.enable": "Увімкнути користувацький заголовок",
 
 	"custom-css.livereload": "Увімкнути Автоматичне Оновлення",
-	"custom-css.livereload.description": "Увімкніть цю опцію, щоб примусово оновлювати всі сесії вашого акаунту, коли ви натискаєте Зберегти"
+	"custom-css.livereload.description": "Увімкніть цю опцію, щоб примусово оновлювати всі сесії вашого акаунту, коли ви натискаєте Зберегти",
+	"bsvariables": "_variables.scss",
+	"bsvariables.description": "Override bootstrap variables here. You can also use a tool like <a href=\"https://bootstrap.build/app\">bootstrap.build</a> and paste the output here.<br/>Changes require a rebuild & restart.",
+	"bsvariables.enable": "Enable _variables.scss"
 }

@@ -1,8 +1,8 @@
 {
     "title": "התראות",
     "no_notifs": "אין התראות",
-    "see_all": "All notifications",
-    "mark_all_read": "Mark all read",
+    "see_all": "כל ההתראות",
+    "mark_all_read": "סמן הכל כנקרא",
     "back_to_home": "חזרה ל%1",
     "outgoing_link": "קישור יוצא",
     "outgoing_link_message": "אתה עוזב עכשיו את %1",
@@ -36,7 +36,7 @@
     "user_posted_to_dual": "<strong>%1</strong> ו<strong>%2</strong> הגיבו ל: <strong>%3</strong>",
     "user_posted_to_multiple": "<strong>%1</strong> ו%2 אחרים הגיבו ל: <strong>%3</strong>",
     "user_posted_topic": "<strong>%1</strong> העלה נושא חדש: <strong>%2</strong>",
-    "user_edited_post": "<strong>%1</strong> ערך פוסט ב<strong>%2</strong>",
+    "user_edited_post": "<strong>%1</strong> ערך פוסט ב: <strong>%2</strong>",
     "user_started_following_you": "<strong>%1</strong> התחיל לעקוב אחריך.",
     "user_started_following_you_dual": "<strong>%1</strong> ו-<strong>%2</strong> התחילו לעקוב אחריך.",
     "user_started_following_you_multiple": "<strong>%1</strong> ו%2 התחילו לעקוב אחריך.",
@@ -70,7 +70,7 @@
     "notificationType_group-leave": "כאשר משתמש עוזב את הקבוצה שלך",
     "notificationType_group-request-membership": "כשמישהו מבקש להירשם לקבוצה שאתה מנהל",
     "notificationType_new-register": "כאשר מישהו מתווסף לתור הרישום",
-    "notificationType_post-queue": "כשהודעה חדשה נכנסת לתור",
+    "notificationType_post-queue": "כאשר פוסט חדש נכנס לתור",
     "notificationType_new-post-flag": "כאשר פוסט מסומן",
     "notificationType_new-user-flag": "כאשר משתמש מסומן"
 }

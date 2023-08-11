@@ -4,6 +4,7 @@ const winston = require('winston');
 const childProcess = require('child_process');
 const CliGraph = require('cli-graph');
 const chalk = require('chalk');
+const nconf = require('nconf');
 
 const build = require('../meta/build');
 const db = require('../database');
@@ -11,7 +12,43 @@ const plugins = require('../plugins');
 const events = require('../events');
 const analytics = require('../analytics');
 const reset = require('./reset');
-const { pluginNamePattern, themeNamePattern } = require('../constants');
+const { pluginNamePattern, themeNamePattern, paths } = require('../constants');
+
+async function install(plugin, options) {
+	if (!options) {
+		options = {};
+	}
+	try {
+		await db.init();
+		if (!pluginNamePattern.test(plugin)) {
+			// Allow omission of `nodebb-plugin-`
+			plugin = `nodebb-plugin-${plugin}`;
+		}
+
+		plugin = await plugins.autocomplete(plugin);
+
+		const isInstalled = await plugins.isInstalled(plugin);
+		if (isInstalled) {
+			throw new Error('plugin already installed');
+		}
+		const nbbVersion = require(paths.currentPackage).version;
+		const suggested = await plugins.suggest(plugin, nbbVersion);
+		if (!suggested.version) {
+			if (!options.force) {
+				throw new Error(suggested.message);
+			}
+			winston.warn(`${suggested.message} Proceeding with installation anyway due to force option being provided`);
+			suggested.version = 'latest';
+		}
+		winston.info('Installing Plugin `%s@%s`', plugin, suggested.version);
+		await plugins.toggleInstall(plugin, suggested.version);
+
+		process.exit(0);
+	} catch (err) {
+		winston.error(`An error occurred during plugin installation\n${err.stack}`);
+		process.exit(1);
+	}
+}
 
 async function activate(plugin) {
 	if (themeNamePattern.test(plugin)) {
@@ -38,6 +75,10 @@ async function activate(plugin) {
 			winston.info('Plugin `%s` already active', plugin);
 			process.exit(0);
 		}
+		if (nconf.get('plugins:active')) {
+			winston.error('Cannot activate plugins while plugin state configuration is set, please change your active configuration (config.json, environmental variables or terminal arguments) instead');
+			process.exit(1);
+		}
 		const numPlugins = await db.sortedSetCard('plugins:active');
 		winston.info('Activating plugin `%s`', plugin);
 		await db.sortedSetAdd('plugins:active', numPlugins, plugin);
@@ -57,8 +98,7 @@ async function listPlugins() {
 	await db.init();
 	const installed = await plugins.showInstalled();
 	const installedList = installed.map(plugin => plugin.name);
-	const active = await db.getSortedSetRange('plugins:active', 0, -1);
-
+	const active = await plugins.getActive();
 	// Merge the two sets, defer to plugins in  `installed` if already present
 	const combined = installed.concat(active.reduce((memo, cur) => {
 		if (!installedList.includes(cur)) {
@@ -108,13 +148,12 @@ async function info() {
 	const hash = childProcess.execSync('git rev-parse HEAD');
 	console.log(`  git hash: ${hash}`);
 
-	const config = require('../../config.json');
-	console.log(`  database: ${config.database}`);
+	console.log(`  database: ${nconf.get('database')}`);
 
 	await db.init();
 	const info = await db.info(db.client);
 
-	switch (config.database) {
+	switch (nconf.get('database')) {
 		case 'redis':
 			console.log(`        version: ${info.redis_version}`);
 			console.log(`        disk sync:  ${info.rdb_last_bgsave_status}`);
@@ -123,6 +162,10 @@ async function info() {
 		case 'mongo':
 			console.log(`        version: ${info.version}`);
 			console.log(`        engine:  ${info.storageEngine}`);
+			break;
+		case 'postgres':
+			console.log(`        version: ${info.version}`);
+			console.log(`        uptime:  ${info.uptime}`);
 			break;
 	}
 
@@ -159,6 +202,7 @@ async function buildWrapper(targets, options) {
 }
 
 exports.build = buildWrapper;
+exports.install = install;
 exports.activate = activate;
 exports.listPlugins = listPlugins;
 exports.listEvents = listEvents;

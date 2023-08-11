@@ -1,4 +1,10 @@
 {
+	"manage-groups": "Manage Groups",
+	"add-group": "Add group",
+	"edit-group": "Edit Group",
+	"back-to-groups": "Back to groups",
+	"view-group": "View group",
+	"icon-and-title": "Icon & Title",
 	"name": "Group Name",
 	"badge": "Badge",
 	"properties": "Properties",
@@ -10,7 +16,7 @@
 	"edit": "Edit",
 	"delete": "Delete",
 	"privileges": "Privileges",
-	"download-csv": "CSV",
+	"members-csv": "Members (CSV)",
 	"search-placeholder": "Search",
 	"create": "Create Group",
 	"description-placeholder": "A short description about your group",
@@ -39,6 +45,5 @@
 	"revert": "Revert",
 
 	"edit.no-users-found": "No Users Found",
-	"edit.confirm-remove-user": "Are you sure you want to remove this user?",
-	"edit.save-success": "Changes saved!"
+	"edit.confirm-remove-user": "Are you sure you want to remove this user?"
 }

@@ -14,15 +14,15 @@ const utils = require('../../utils');
 
 module.exports = function (SocketPosts) {
 	SocketPosts.loadPostTools = async function (socket, data) {
-		if (!data || !data.pid || !data.cid) {
+		if (!data || !data.pid) {
 			throw new Error('[[error:invalid-data]]');
 		}
-
+		const cid = await posts.getCidByPid(data.pid);
 		const results = await utils.promiseParallel({
 			posts: posts.getPostFields(data.pid, ['deleted', 'bookmarks', 'uid', 'ip', 'flagId']),
 			isAdmin: user.isAdministrator(socket.uid),
 			isGlobalMod: user.isGlobalModerator(socket.uid),
-			isModerator: user.isModerator(socket.uid, data.cid),
+			isModerator: user.isModerator(socket.uid, cid),
 			canEdit: privileges.posts.canEdit(data.pid, socket.uid),
 			canDelete: privileges.posts.canDelete(data.pid, socket.uid),
 			canPurge: privileges.posts.canPurge(data.pid, socket.uid),

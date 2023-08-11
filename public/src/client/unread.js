@@ -2,8 +2,8 @@
 
 
 define('forum/unread', [
-	'forum/header/unread', 'topicSelect', 'components', 'topicList', 'categorySelector', 'alerts',
-], function (headerUnread, topicSelect, components, topicList, categorySelector, alerts) {
+	'forum/header/unread', 'topicSelect', 'components', 'topicList', 'categorySelector', 'alerts', 'api',
+], function (headerUnread, topicSelect, components, topicList, categorySelector, alerts, api) {
 	const Unread = {};
 
 	Unread.init = function () {
@@ -37,11 +37,8 @@ define('forum/unread', [
 			if (!tids.length) {
 				return;
 			}
-			socket.emit('topics.markAsRead', tids, function (err) {
-				if (err) {
-					return alerts.error(err);
-				}
 
+			Promise.all(tids.map(async tid => api.put(`/topics/${tid}/read`))).then(() => {
 				doneRemovingTids(tids);
 			});
 		}

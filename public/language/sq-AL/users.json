@@ -1,11 +1,12 @@
 {
+    "all-users": "All Users",
     "latest_users": "Përdoruesit e fundit",
     "top_posters": "Postuesit më të mirë",
     "most_reputation": "Me Reputacion",
     "most_flags": "Më të raportuarit",
     "search": "Kërko",
     "enter_username": "Kërko një përdorues",
-    "search-user-for-chat": "Kërkoni një përdorues për të filluar bisedën",
+    "search-user-for-chat": "Search for a user to start chat",
     "load_more": "Ngarko më shumë",
     "users-found-search-took": "%1 përdorues u gjet (en) ! Kërkimi zgjati %2 sekonda.",
     "filter-by": "Filtro sipas",

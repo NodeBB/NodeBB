@@ -1,9 +1,11 @@
 {
+	"manage-tags": "Manage Tags",
 	"none": "Twoje forum nie ma jeszcze żadnych tematów z tagami.",
 	"bg-color": "Kolor tła",
 	"text-color": "Kolor tekstu",
 	"description": "Wybieraj tagi poprzez klikanie lub przeciąganie; użyj przycisku <code>CTRL</code> do zaznaczenia wielu.",
 	"create": "Utwórz tag",
+	"add-tag": "Add tag",
 	"modify": "Modyfikuj tagi",
 	"rename": "Przemianuj tagi",
 	"delete": "Usuń zaznaczone tagi",
@@ -14,5 +16,5 @@
 	"alerts.editing": "edytowanie tagu/tagów",
 	"alerts.confirm-delete": "Czy na pewno chcesz usunąć zaznaczone tagi?",
 	"alerts.update-success": "Zaktualizowano tag-a!",
-	"reset-colors": "Reset colors"
+	"reset-colors": "Zresetuj kolory"
 }

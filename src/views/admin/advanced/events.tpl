@@ -1,70 +1,66 @@
-<div class="row events">
+<div class="row events px-lg-4">
 	<div class="col-lg-9">
-		<div class="panel panel-default">
-			<div class="panel-heading"><i class="fa fa-calendar-o"></i> [[admin/advanced/events:events]]</div>
-			<div class="panel-body">
-				<!-- IF !events.length -->
-				<div class="alert alert-info">[[admin/advanced/events:no-events]]</div>
-				<!-- ENDIF !events.length -->
-				<div class="events-list">
-				<!-- BEGIN events -->
-				<div data-eid="{events.eid}">
-					<span class="label label-default">#{events.eid}</span>
-					<span class="label label-info">{events.type}</span>
-					<span class="label label-default">uid {events.uid}</span>
-					<!-- IF events.ip --><span class="label label-default">{events.ip}</span><!-- END -->
-					<a href="{config.relative_path}/user/{events.user.userslug}" target="_blank">
-						<!-- IF events.user.picture -->
-						<img class="avatar avatar-xs" src="{events.user.picture}" alt="" />
-						<!-- ELSE -->
-						<div class="avatar avatar-xs" style="background-color: {events.user.icon:bgColor};">{events.user.icon:text}</div>
-						<!-- ENDIF events.user.picture -->
-					</a>
-					<a href="{config.relative_path}/user/{events.user.userslug}" target="_blank">{events.user.username}</a>
-					<span class="pull-right delete-event"><i class="fa fa-trash-o"></i></span>
-					<span class="pull-right">{events.timestampISO}</span>
-					<pre class="well">{events.jsonString}</pre>
-				</div>
-				<!-- END events -->
-				<!-- IMPORT partials/paginator.tpl -->
+		<h5><i class="fa fa-calendar-o"></i> [[admin/advanced/events:events]]</h5>
+		{{{ if !events.length }}}
+		<div class="alert alert-info">[[admin/advanced/events:no-events]]</div>
+		{{{ end }}}
+		<div class="events-list">
+			{{{ each events }}}
+			<div class="card mb-3" data-eid="{events.eid}">
+				<div class="card-body">
+					<div class="mb-3 d-flex flex-wrap justify-content-between align-items-center gap-1">
+						<div>
+							<span class="badge bg-primary">#{events.eid}</span>
+							<span class="badge bg-info">{events.type}</span>
+							<span class="badge bg-info">uid {events.uid}</span>
+							{{{ if events.ip }}}<span class="badge bg-info">{events.ip}</span>{{{ end }}}
+							<a href="{config.relative_path}/user/{events.user.userslug}" target="_blank">{buildAvatar(events.user, "24px", true)}</a>
+							<a href="{config.relative_path}/user/{events.user.userslug}" target="_blank">{events.user.username}</a>
+							<span class="text-xs">{events.timestampISO}</span>
+						</div>
+						<div>
+							<button class="btn btn-light btn-sm delete-event ms-2 pointer"><i class="fa fa-trash-o text-danger"></i></button>
+						</div>
+					</div>
+					<pre class="text-bg-light p-3" style="white-space:pre-wrap;">{events.jsonString}</pre>
 				</div>
 			</div>
+			{{{ end }}}
+			<!-- IMPORT admin/partials/paginator.tpl -->
 		</div>
 	</div>
 	<div class="col-lg-3 acp-sidebar">
-		<div class="panel panel-default">
-			<div class="panel-heading">[[admin/advanced/events:filters]]</div>
-			<div class="panel-body">
+		<div class="card">
+			<h5 class="card-header">[[admin/advanced/events:filters]]</h5>
+			<div class="card-body">
 				<form role="form" id="filters">
-					<div class="form-group">
-						<label for="type">[[admin/advanced/events:filter-type]]</label>
-						<select id="type" name="type" class="form-control">
-							<!-- BEGIN types -->
-							<option value="{types.value}" <!-- IF types.selected -->selected<!-- ENDIF types.selected -->>{types.name} - ({types.count}) </option>
-							<!-- END types -->
+					<div class="mb-3">
+						<label class="form-label" for="type">[[admin/advanced/events:filter-type]]</label>
+						<select id="type" name="type" class="form-select">
+							{{{ each types }}}
+							<option value="{./value}" {{{ if ./selected }}}selected{{{ end }}}>{./name} - ({./count}) </option>
+							{{{ end }}}
 						</select>
 					</div>
-					<div class="form-group">
-						<label for="start">[[admin/advanced/events:filter-start]]</label>
+					<div class="mb-3">
+						<label class="form-label" for="start">[[admin/advanced/events:filter-start]]</label>
 						<input type="date" id="start" name="start" value="{query.start}" class="form-control" />
 					</div>
-					<div class="form-group">
-						<label for="end">[[admin/advanced/events:filter-end]]</label>
+					<div class="mb-3">
+						<label class="form-label" for="end">[[admin/advanced/events:filter-end]]</label>
 						<input type="date" id="end" name="end" value="{query.end}" class="form-control" />
 					</div>
-					<div class="form-group">
-						<label for="perPage">[[admin/advanced/events:filter-perPage]]</label>
+					<div class="mb-3">
+						<label class="form-label" for="perPage">[[admin/advanced/events:filter-perPage]]</label>
 						<input type="text" id="perPage" name="perPage" value="{query.perPage}" class="form-control" />
 					</div>
-					<button type="submit" class="btn btn-primary btn-block" id="apply">[[admin/advanced/events:filters-apply]]</button>
+					<div class="d-grid gap-1">
+						<button type="submit" class="btn btn-sm btn-light" id="apply"><i class="fa fa-filter text-primary"></i> [[admin/advanced/events:filters-apply]]</button>
+						<button class="btn btn-sm btn-light" data-action="clear">
+							<i class="fa fa-trash text-danger"></i> [[admin/advanced/events:delete-events]]
+						</button>
+					</div>
 				</form>
-			</div>
-		</div>
-		<div class="panel panel-default">
-			<div class="panel-body">
-				<button class="btn btn-block btn-danger" data-action="clear">
-					<i class="fa fa-eraser"></i> [[admin/advanced/events:delete-events]]
-				</button>
 			</div>
 		</div>
 	</div>

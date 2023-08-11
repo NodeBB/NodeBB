@@ -15,12 +15,14 @@ define('admin/manage/categories', [
 	let sortables;
 
 	Categories.init = function () {
-		categorySelector.init($('.category [component="category-selector"]'), {
+		categorySelector.init($('[component="category-selector"]'), {
 			parentCid: ajaxify.data.selectedCategory ? ajaxify.data.selectedCategory.cid : 0,
 			onSelect: function (selectedCategory) {
 				ajaxify.go('/admin/manage/categories' + (selectedCategory.cid ? '?cid=' + selectedCategory.cid : ''));
 			},
+			cacheList: false,
 			localCategories: [],
+			template: 'admin/partials/category/selector-dropdown-right',
 		});
 		Categories.render(ajaxify.data.categoriesTree);
 
@@ -42,7 +44,7 @@ define('admin/manage/categories', [
 
 		$('.categories').on('click', '.toggle', function () {
 			const el = $(this);
-			el.find('i').toggleClass('fa-minus').toggleClass('fa-plus');
+			el.find('i').toggleClass('fa-chevron-down').toggleClass('fa-chevron-right');
 			el.closest('[data-cid]').find('> ul[data-cid]').toggleClass('hidden');
 		});
 
@@ -51,7 +53,7 @@ define('admin/manage/categories', [
 			const order = $(this).attr('data-order');
 			const modal = bootbox.dialog({
 				title: '[[admin/manage/categories:set-order]]',
-				message: '<input type="number" min="1" class="form-control input-lg" value=' + order + ' /><p class="help-block">[[admin/manage/categories:set-order-help]]</p>',
+				message: '<input type="number" min="1" class="form-control input-lg" value=' + order + ' /><p class="form-text">[[admin/manage/categories:set-order-help]]</p>',
 				show: true,
 				buttons: {
 					save: {
@@ -74,17 +76,19 @@ define('admin/manage/categories', [
 			});
 		});
 
-		$('#collapse-all').on('click', function () {
-			toggleAll(false);
-		});
-
-		$('#expand-all').on('click', function () {
-			toggleAll(true);
+		$('#toggle-collapse-all').on('click', function () {
+			const $this = $(this);
+			const isCollapsed = parseInt($this.attr('data-collapsed'), 10) === 1;
+			toggleAll(isCollapsed);
+			$this.attr('data-collapsed', isCollapsed ? 0 : 1)
+				.translateText(isCollapsed ?
+					'[[admin/manage/categories:collapse-all]]' :
+					'[[admin/manage/categories:expand-all]]');
 		});
 
 		function toggleAll(expand) {
 			const el = $('.categories .toggle');
-			el.find('i').toggleClass('fa-minus', expand).toggleClass('fa-plus', !expand);
+			el.find('i').toggleClass('fa-chevron-down', expand).toggleClass('fa-chevron-right', !expand);
 			el.closest('[data-cid]').find('> ul[data-cid]').toggleClass('hidden', !expand);
 		}
 	};
@@ -96,7 +100,7 @@ define('admin/manage/categories', [
 				message: html,
 				buttons: {
 					save: {
-						label: '[[global:save]]',
+						label: '[[global:create]]',
 						className: 'btn-primary',
 						callback: submit,
 					},
@@ -110,6 +114,7 @@ define('admin/manage/categories', [
 						icon: 'fa-none',
 					},
 				],
+				template: 'admin/partials/category/selector-dropdown-left',
 			};
 			const parentSelector = categorySelector.init(modal.find('#parentCidGroup [component="category-selector"]'), options);
 			const cloneFromSelector = categorySelector.init(modal.find('#cloneFromCidGroup [component="category-selector"]'), options);
@@ -177,7 +182,7 @@ define('admin/manage/categories', [
 	};
 
 	Categories.toggle = function (cids, disabled) {
-		const listEl = document.querySelector('.categories ul');
+		const listEl = document.querySelector('.categories [data-cid="0"]');
 		Promise.all(cids.map(cid => api.put('/categories/' + cid, {
 			disabled: disabled ? 1 : 0,
 		}).then(() => {
@@ -207,6 +212,26 @@ define('admin/manage/categories', [
 
 			if (isCategoryUpdate) {
 				modified[cid].parentCid = newCategoryId;
+
+				// Show/hide expand buttons after drag completion
+				const oldParentCid = parseInt(e.from.getAttribute('data-cid'), 10);
+				const newParentCid = parseInt(e.to.getAttribute('data-cid'), 10);
+				if (oldParentCid !== newParentCid) {
+					const toggle = document.querySelector(`.categories li[data-cid="${newParentCid}"] .toggle`);
+					if (toggle) {
+						toggle.classList.toggle('invisible', false);
+					}
+
+					const children = document.querySelectorAll(`.categories li[data-cid="${oldParentCid}"] ul[data-cid] li[data-cid]`);
+					if (!children.length) {
+						const toggle = document.querySelector(`.categories li[data-cid="${oldParentCid}"] .toggle`);
+						if (toggle) {
+							toggle.classList.toggle('invisible', true);
+						}
+					}
+
+					e.item.dataset.parentCid = newParentCid;
+				}
 			}
 
 			newCategoryId = -1;
@@ -249,7 +274,17 @@ define('admin/manage/categories', [
 				categories: categories,
 				parentCategory: parentCategory,
 			}, function (html) {
-				container.append(html);
+				if (container.find('.category-row').length) {
+					container.find('.category-row').after(html);
+				} else {
+					container.append(html);
+				}
+
+				// Disable expand toggle
+				if (!categories.length) {
+					const toggleEl = container.get(0).querySelector('.toggle');
+					toggleEl.classList.toggle('invisible', true);
+				}
 
 				// Handle and children categories in this level have
 				for (let x = 0, numCategories = categories.length; x < numCategories; x += 1) {

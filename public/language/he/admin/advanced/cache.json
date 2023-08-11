@@ -1,5 +1,9 @@
 {
+	"cache": "מטמון",
 	"post-cache": "מטמון פוסטים",
+	"group-cache": "Group Cache",
+	"local-cache": "מטמון מקומי",
+	"object-cache": "Object Cache",
 	"percent-full": "%1% Full",
 	"post-cache-size": "גודל מטמון פוסטים",
 	"items-in-cache": "פריטים במטמון"

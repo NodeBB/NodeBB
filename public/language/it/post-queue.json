@@ -1,8 +1,12 @@
 
 {
 	"post-queue": "Coda post",
-	"description": "Non ci sono post nella coda dei post. <br> Per abilitare questa funzione, vai in <a href=\"%1\">Impostazioni &rarr; Post &rarr; Coda post</a> e abilita <strong>Coda post</strong>.",
+	"no-queued-posts": "Non ci sono post nella coda dei post.",
+	"no-single-post": "La discussione o il post che si sta cercando non è più in coda. Probabilmente è già stato approvato o cancellato.",
+	"enabling-help": "Per abilitare questa funzione, vai in <a href=\"%1\">Impostazioni &rarr; Post &rarr; Coda Post</a> e attiva <strong>Coda Post</strong>.",
+	"back-to-list": "Torna alla coda dei post",
 	"user": "Utente",
+	"when": "Quando",
 	"category": "Categoria",
 	"title": "Titolo",
 	"content": "Contenuto",
@@ -19,6 +23,7 @@
 	"notify": "Notifica",
 	"notify-user": "Notifica all'utente",
 	"confirm-reject": "Vuoi rifiutare questo post?",
+	"confirm-remove": "Vuoi rimuovere questo post?",
 	"bulk-actions": "Azioni in blocco",
 	"accept-all": "Accetta tutti",
 	"accept-selected": "Accetta selezionato",
@@ -26,6 +31,10 @@
 	"reject-all-confirm": "Vuoi rifiutare tutti i post?",
 	"reject-selected": "Rifiuta selezionato",
 	"reject-selected-confirm": "Vuoi rifiutare %1 post selezionati?",
+	"remove-all": "Rimuovi tutto",
+	"remove-all-confirm": "Vuoi rimuovere tutti i post?",
+	"remove-selected": "Rimuovi selezionati",
+	"remove-selected-confirm": "Vuoi rimuovere %1 post selezionati?",
 	"bulk-accept-success": "%1 post accettati",
 	"bulk-reject-success": "%1 post rifiutati"
 }

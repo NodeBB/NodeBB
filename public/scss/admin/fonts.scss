@@ -1,0 +1,19 @@
+@use "@fontsource/inter/scss/mixins" as Inter;
+@use "@fontsource/poppins/scss/mixins" as Poppins;
+
+$weights: $font-weight-light, $font-weight-normal, $font-weight-semibold, $font-weight-bold;
+
+@include Inter.faces(
+	$weights: $weights,
+	$display: fallback,
+	$directory: "./plugins/core/inter"
+);
+@include Poppins.faces(
+  $weights: $weights,
+  $display: fallback,
+  $directory: "./plugins/core/poppins"
+);
+
+.ff-base { font-family: $font-family-base !important; }
+.ff-sans { font-family: $font-family-sans-serif !important; }
+.ff-secondary {	font-family: $font-family-secondary; }

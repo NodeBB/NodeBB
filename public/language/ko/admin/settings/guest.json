@@ -1,5 +1,6 @@
 {
 	"settings": "설정",
+	"guest-settings": "Guest settings",
 	"handles.enabled": "비회원 닉네임 설정 허가",
 	"handles.enabled-help": "이 옵션은 비회원들이 포스트를 작성할 때 이름을 적는 공간을 제공합니다. 이 옵션이 비활성화 상태라면 \"Guest\" 라고 표시될 것입니다.",
 	"topic-views.enabled": "비회원의 방문으로 화제 조회수 증가",

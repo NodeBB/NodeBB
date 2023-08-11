@@ -1,7 +1,9 @@
 {
+    "themes": "Themes",
     "checking-for-installed": "Checking for installed themes...",
-    "homepage": "Homepage",
+    "homepage": "Startpagina",
     "select-theme": "Select Theme",
+    "revert-theme": "Revert Theme",
     "current-theme": "Current Theme",
     "no-themes": "No installed themes found",
     "revert-confirm": "Are you sure you wish to restore the default NodeBB theme?",

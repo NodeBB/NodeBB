@@ -54,11 +54,16 @@ exports.send404 = async function (req, res) {
 			bodyClass: helpers.buildBodyClass(req, res),
 		});
 	}
-
+	const icons = [
+		'fa-hippo', 'fa-cat', 'fa-otter',
+		'fa-dog', 'fa-cow', 'fa-fish',
+		'fa-dragon', 'fa-horse', 'fa-dove',
+	];
 	await middleware.buildHeaderAsync(req, res);
-	await res.render('404', {
+	res.render('404', {
 		path: validator.escape(path),
 		title: '[[global:404.title]]',
 		bodyClass: helpers.buildBodyClass(req, res),
+		icon: icons[Math.floor(Math.random() * icons.length)],
 	});
 };

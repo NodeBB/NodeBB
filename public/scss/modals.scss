@@ -1,0 +1,38 @@
+.tool-modal {
+	position: fixed;
+	bottom: 10%;
+	right: 2rem;
+	z-index: $zindex-modal;
+	[component="category-selector-selected"] span {
+		display: inline-flex!important;
+	}
+	.bootstrap-tagsinput {
+		input {
+			width: 100%;
+		}
+		.ui-autocomplete {
+			max-height: 350px;
+			overflow-x: hidden;
+			overflow-y: auto;
+		}
+	}
+}
+
+@include media-breakpoint-down(md) {
+	.tool-modal {
+		margin: 0 $spacer;
+		right: 0;
+	}
+}
+
+@include media-breakpoint-up(md) {
+	.tool-modal {
+		max-width: 500px;
+	}
+}
+
+#crop-picture-modal {
+	.cropper-container.cropper-bg {
+		max-width: 100%;
+	}
+}

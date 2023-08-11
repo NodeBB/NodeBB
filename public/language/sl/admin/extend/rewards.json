@@ -1,10 +1,12 @@
 {
 	"rewards": "Nagrade",
+	"add-reward": "Add reward",
 	"condition-if-users": "If User's",
 	"condition-is": "Je:",
 	"condition-then": "Tedaj:",
 	"max-claims": "Kolikokrat je mogoče zahtevati nagrado",
 	"zero-infinite": "Vnesite 0 za neskončno",
+	"select-reward": "Select reward",
 	"delete": "Izbriši",
 	"enable": "Omogoči",
 	"disable": "Onemogoči",

@@ -1,4 +1,5 @@
 {
+	"widgets": "Widgets",
 	"available": "사용 가능한 위젯",
 	"explanation": "드롭다운 메뉴에서 위젯을 선택하고 왼쪽에 있는 템플릿의 위젯 위치로 드래그하여 옮기세요.",
 	"none-installed": "위젯이 없습니다! <a href=\"%1\">플러그인</a> 설정 메뉴에서 widget essentials 플러그인을 설치하세요.",
@@ -8,9 +9,9 @@
 	"containers.none": "없음",
 	"container.well": "Well",
 	"container.jumbotron": "Jumbotron",
-	"container.panel": "제어판",
-	"container.panel-header": "제어판 헤더",
-	"container.panel-body": "제어판 몸통",
+	"container.card": "Card",
+	"container.card-header": "Card Header",
+	"container.card-body": "Card Body",
 	"container.alert": "경고",
 
 	"alert.confirm-delete": "정말 이 위젯을 삭제하시겠습니까?",
@@ -26,5 +27,7 @@
 	"container.placeholder": "컨테이너를 드래그&드롭하거나 HTML을 입력하세요.",
 	"show-to-groups": "해당 그룹에 표시",
 	"hide-from-groups": "해당 그룹에 숨김",
+	"start-date": "Start date",
+	"end-date": "End date",
 	"hide-on-mobile": "모바일에서 숨김"
 }

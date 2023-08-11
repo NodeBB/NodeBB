@@ -226,6 +226,12 @@ module.exports = function (module) {
 		return await module.client.zrange(key, 0, -1);
 	};
 
+	module.getSortedSetMembersWithScores = async function (key) {
+		return helpers.zsetToObjectArray(
+			await module.client.zrange(key, 0, -1, 'WITHSCORES')
+		);
+	};
+
 	module.getSortedSetsMembers = async function (keys) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return [];
@@ -233,6 +239,16 @@ module.exports = function (module) {
 		const batch = module.client.batch();
 		keys.forEach(k => batch.zrange(k, 0, -1));
 		return await helpers.execBatch(batch);
+	};
+
+	module.getSortedSetsMembersWithScores = async function (keys) {
+		if (!Array.isArray(keys) || !keys.length) {
+			return [];
+		}
+		const batch = module.client.batch();
+		keys.forEach(k => batch.zrange(k, 0, -1, 'WITHSCORES'));
+		const res = await helpers.execBatch(batch);
+		return res.map(helpers.zsetToObjectArray);
 	};
 
 	module.sortedSetIncrBy = async function (key, increment, value) {

@@ -11,6 +11,17 @@ put:
       required: true
       description: a valid topic id
       example: 1
+  requestBody:
+    required: false
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            expiry:
+              type: number
+              description: A UNIX timestamp representing the moment the topic will be unpinned.
+              example: 1585337827953
   responses:
     '200':
       description: Topic successfully pinned

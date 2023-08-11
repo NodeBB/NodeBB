@@ -1,4 +1,5 @@
 {
+	"errors": "错误",
 	"figure-x": "数量 %1",
 	"error-events-per-day": "<code>%1</code> 事件/天",
 	"error.404": "404 页面不存在",

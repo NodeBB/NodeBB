@@ -1,5 +1,6 @@
 {
     "register": "Регистрация",
+    "already-have-account": "Already have an account?",
     "cancel_registration": "Отменить регистрацию",
     "help.email": "Ваш адрес электронной почты будет скрыт от других пользователей.",
     "help.username_restrictions": "Другие пользователи смогут упоминать вас в своих сообщениях таким образом: @<span id='yourUsername'>никнейм</span>. Длина имени пользователя: %1-%2 символов.",

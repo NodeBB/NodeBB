@@ -11,7 +11,13 @@ define('forum/topic/diffs', ['api', 'bootbox', 'alerts', 'forum/topic/images'], 
 
 		api.get(`/posts/${pid}/diffs`, {}).then((data) => {
 			parsePostHistory(data).then(($html) => {
-				const $modal = bootbox.dialog({ title: '[[topic:diffs.title]]', message: $html, size: 'large' });
+				const $modal = bootbox.dialog({
+					title: '[[topic:diffs.title]]',
+					message: $html,
+					size: 'large',
+					onEscape: true,
+					backdrop: true,
+				});
 
 				if (!data.timestamps.length) {
 					return;
@@ -58,6 +64,7 @@ define('forum/topic/diffs', ['api', 'bootbox', 'alerts', 'forum/topic/images'], 
 				posts: [data],
 			}, function ($html) {
 				$postContainer.empty().append($html);
+				$postContainer.find('.timeago').timeago();
 			});
 		}).catch(alerts.error);
 	};
@@ -108,7 +115,7 @@ define('forum/topic/diffs', ['api', 'bootbox', 'alerts', 'forum/topic/images'], 
 				params.unshift(blockName);
 			}
 
-			app.parseAndTranslate('partials/modals/post_history', ...params);
+			app.parseAndTranslate('modals/post-history', ...params);
 		});
 	}
 

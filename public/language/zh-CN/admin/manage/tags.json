@@ -1,9 +1,11 @@
 {
+	"manage-tags": "管理标签",
 	"none": "您的论坛目前没有带标签的主题。",
 	"bg-color": "背景颜色",
 	"text-color": "文字颜色",
 	"description": "通过点击或拖动选择标签，按住 <code>CTRL</code> 进行多选。",
 	"create": "创建标签",
+	"add-tag": "增加标签",
 	"modify": "修改标签",
 	"rename": "重命名标签",
 	"delete": "删除所选标签",

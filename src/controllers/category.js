@@ -30,9 +30,10 @@ categoryController.get = async function (req, res, next) {
 		return next();
 	}
 
-	const [categoryFields, userPrivileges, userSettings, rssToken] = await Promise.all([
+	const [categoryFields, userPrivileges, tagData, userSettings, rssToken] = await Promise.all([
 		categories.getCategoryFields(cid, ['slug', 'disabled', 'link']),
 		privileges.categories.get(cid, req.uid),
+		helpers.getSelectedTag(req.query.tag),
 		user.getSettings(req.uid),
 		user.auth.getFeedToken(req.uid),
 	]);
@@ -121,6 +122,8 @@ categoryController.get = async function (req, res, next) {
 	categoryData.showSelect = userPrivileges.editable;
 	categoryData.showTopicTools = userPrivileges.editable;
 	categoryData.topicIndex = topicIndex;
+	categoryData.selectedTag = tagData.selectedTag;
+	categoryData.selectedTags = tagData.selectedTags;
 	categoryData.rssFeedUrl = `${url}/category/${categoryData.cid}.rss`;
 	if (parseInt(req.uid, 10)) {
 		categories.markAsRead([cid], req.uid);
@@ -186,6 +189,7 @@ function addTags(categoryData, res) {
 		res.locals.metaTags.push({
 			property: 'og:image',
 			content: categoryData.backgroundImage,
+			noEscape: true,
 		});
 	}
 

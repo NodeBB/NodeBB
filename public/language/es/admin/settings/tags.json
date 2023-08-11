@@ -3,6 +3,7 @@
     "link-to-manage": "Manage Tags",
     "system-tags": "System Tags",
     "system-tags-help": "Only privileged users will be able to use these tags.",
+    "tags-per-topic": "Tags per topic",
     "min-per-topic": "Etiquetas (tags) mínimas por tema",
     "max-per-topic": "Etiquetas (tags) Máximas por Tema",
     "min-length": "Longitud Mínima de Etiqueta (tag)",

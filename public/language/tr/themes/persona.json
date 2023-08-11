@@ -1,0 +1,10 @@
+{
+    "settings.title": "Tema Ayarları",
+    "settings.intro": "You can customise your theme settings here. Settings are stored on a per-device basis, so you are able to have different settings on different devices (phone, tablet, desktop, etc.)",
+    "settings.mobile-menu-side": "Mobil menüyü diğer tarafa değiştir",
+    "settings.autoHidingNavbar": "Ekranı kaydırırken navigasyon şeridini otomatik olarak gizle ",
+    "settings.autoHidingNavbar-xs": "Çok küçük ekranlar (örn. portre modundaki telefonlar) ",
+    "settings.autoHidingNavbar-sm": "Küçük ekranlar (örn. telefonlar, bazı tablet bilgisayarlar) ",
+    "settings.autoHidingNavbar-md": "Orta büyüklükte ekranlar (örn. manzara modundaki tablet bilgisayarlar) ",
+    "settings.autoHidingNavbar-lg": "Büyük ekranlar (örn. masaüstü bilgisayarlar) "
+}

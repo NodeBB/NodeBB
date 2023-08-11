@@ -1,4 +1,6 @@
 {
+	"manage-privileges": "Manage Privileges",
+	"discard-changes": "Discard changes",
 	"global": "Глобальные",
 	"admin": "Админка",
 	"group-privileges": "Права групп",
@@ -49,7 +51,6 @@
 	"alert.confirm-moderate": "<strong>Вы уверены, что хотите наделить правами модерации эту группу?</strong> Эта группа является публичной, и к ней может присоединиться любой пользователь.",
 	"alert.confirm-admins-mods": "<strong>Are you sure you wish to grant the &quot;Admins &amp; Mods&quot; privilege to this user/group?</strong> Users with this privilege are able to promote and demote other users into privileged positions, <em>including super administrator</em>",
 	"alert.confirm-save": "Вы действительно хотите сохранить эти права доступа",
-	"alert.saved": "Изменения прав доступа сохранены и применены",
 	"alert.confirm-discard": "Are you sure you wish to discard your privilege changes?",
 	"alert.discarded": "Изменения прав доступа отменены",
 	"alert.confirm-copyToAll": "Are you sure you wish to apply this set of <strong>%1</strong> to <strong>all categories</strong>?",

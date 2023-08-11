@@ -230,7 +230,7 @@ module.exports = function (Messaging) {
 			return null;
 		}
 
-		const [room, canReply, users, messages, isAdminOrGlobalMod] = await Promise.all([
+		const [room, canReply, users, messages, isAdminOrGlobalMod, isOwner] = await Promise.all([
 			Messaging.getRoomData(data.roomId),
 			Messaging.canReply(data.roomId, uid),
 			Messaging.getUsersInRoom(data.roomId, 0, -1),
@@ -241,14 +241,16 @@ module.exports = function (Messaging) {
 				isNew: false,
 			}),
 			user.isAdminOrGlobalMod(uid),
+			Messaging.isRoomOwner(uid, data.roomId),
 		]);
 
 		room.messages = messages;
-		room.isOwner = await Messaging.isRoomOwner(uid, room.roomId);
+		room.isOwner = isOwner;
 		room.users = users.filter(user => user && parseInt(user.uid, 10) && parseInt(user.uid, 10) !== parseInt(uid, 10));
 		room.canReply = canReply;
 		room.groupChat = room.hasOwnProperty('groupChat') ? room.groupChat : users.length > 2;
 		room.usernames = Messaging.generateUsernames(users, uid);
+		room.chatWithMessage = await Messaging.generateChatWithMessage(users, uid);
 		room.maximumUsersInChatRoom = meta.config.maximumUsersInChatRoom;
 		room.maximumChatMessageLength = meta.config.maximumChatMessageLength;
 		room.showUserInput = !room.maximumUsersInChatRoom || room.maximumUsersInChatRoom > 2;

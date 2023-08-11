@@ -56,6 +56,10 @@ module.exports = function (Plugins) {
 	}
 
 	Plugins.toggleActive = async function (id) {
+		if (nconf.get('plugins:active')) {
+			winston.error('Cannot activate plugins while plugin state is set in the configuration (config.json, environmental variables or terminal arguments), please modify the configuration instead');
+			throw new Error('[[error:plugins-set-in-configuration]]');
+		}
 		const isActive = await Plugins.isActive(id);
 		if (isActive) {
 			await db.sortedSetRemove('plugins:active', id);
@@ -83,6 +87,15 @@ module.exports = function (Plugins) {
 		throw new Error('[[error:plugin-not-whitelisted]]');
 	};
 
+	Plugins.suggest = async function (pluginId, nbbVersion) {
+		const body = await request({
+			method: 'GET',
+			url: `https://packages.nodebb.org/api/v1/suggest?package=${encodeURIComponent(pluginId)}&version=${encodeURIComponent(nbbVersion)}`,
+			json: true,
+		});
+		return body;
+	};
+
 	Plugins.toggleInstall = async function (id, version) {
 		pubsub.publish('plugins:toggleInstall', { hostname: os.hostname(), id: id, version: version });
 		return await toggleInstall(id, version);
@@ -96,7 +109,7 @@ module.exports = function (Plugins) {
 			Plugins.isActive(id),
 		]);
 		const type = installed ? 'uninstall' : 'install';
-		if (active) {
+		if (active && !nconf.get('plugins:active')) {
 			await Plugins.toggleActive(id);
 		}
 		await runPackageManagerCommandAsync(type, id, version || 'latest');
@@ -108,7 +121,7 @@ module.exports = function (Plugins) {
 	function runPackageManagerCommand(command, pkgName, version, callback) {
 		cproc.execFile(packageManagerExecutable, [
 			packageManagerCommands[packageManager][command],
-			pkgName + (command === 'install' ? `@${version}` : ''),
+			pkgName + (command === 'install' && version ? `@${version}` : ''),
 			'--save',
 		], (err, stdout) => {
 			if (err) {
@@ -144,10 +157,16 @@ module.exports = function (Plugins) {
 	};
 
 	Plugins.isActive = async function (id) {
+		if (nconf.get('plugins:active')) {
+			return nconf.get('plugins:active').includes(id);
+		}
 		return await db.isSortedSetMember('plugins:active', id);
 	};
 
 	Plugins.getActive = async function () {
+		if (nconf.get('plugins:active')) {
+			return nconf.get('plugins:active');
+		}
 		return await db.getSortedSetRange('plugins:active', 0, -1);
 	};
 

@@ -14,6 +14,7 @@
     "flagged-content": "Şikayet Edilen İçerik",
     "ip-blacklist": "IP Kara Listesi",
     "post-queue": "İleti Kuyruğu",
+    "registration-queue": "Registration Queue",
     "users/online": "Çevrimiçi Kullanıcılar",
     "users/latest": "En yeni kullanıcılar",
     "users/sort-posts": "En çok ileti gönderen kullanıcılar",
@@ -49,6 +50,7 @@
     "account/watched_categories": "%1 kullanıcısının takip ettiği kategoriler",
     "account/bookmarks": "%1 kullanıcısının yer imlerine eklenmiş iletiler",
     "account/settings": "Kullanıcı Ayarları",
+    "account/settings-of": "%1 ayarları değiştiriliyor",
     "account/watched": "%1 tarafından takip edilen başlıklar",
     "account/ignored": "%1 tarafından yok sayılan başlıklar",
     "account/upvoted": "%1 tarafından artılanan iletiler",
@@ -59,7 +61,7 @@
     "account/uploads": "%1 kullanıcısının yüklediği dosyalar",
     "account/sessions": "Giriş Oturumları",
     "confirm": "E-posta Onaylandı",
-    "maintenance.text": "%1 şu anda bakımda. Lütfen bir süre sonra tekrar deneyin.",
+    "maintenance.text": "%1 şu an itibariyle bakımda.<br/>Lütfen daha sonra tekrar giriş yapınız.",
     "maintenance.messageIntro": "Ayrıca, yönetici şu mesaji bıraktı:",
     "throttled.text": "%1 şu anda kullanılamıyor. Lütfen daha sonra tekrar deneyiniz."
 }

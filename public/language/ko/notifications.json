@@ -1,8 +1,8 @@
 {
     "title": "알림",
     "no_notifs": "새로운 알림이 없습니다.",
-    "see_all": "All notifications",
-    "mark_all_read": "Mark all read",
+    "see_all": "모든 알림",
+    "mark_all_read": "모두 읽음으로 표시",
     "back_to_home": "%1(으)로 돌아가기",
     "outgoing_link": "외부 링크",
     "outgoing_link_message": "%1(을)를 떠납니다.",

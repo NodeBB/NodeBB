@@ -49,15 +49,15 @@ module.exports = function (module) {
 		}
 
 		if (min !== '-inf') {
-			query.score = { $gte: min };
+			query.score = { $gte: parseFloat(min) };
 		}
 		if (max !== '+inf') {
 			query.score = query.score || {};
-			query.score.$lte = max;
+			query.score.$lte = parseFloat(max);
 		}
 
 		if (max === min) {
-			query.score = max;
+			query.score = parseFloat(max);
 		}
 
 		const fields = { _id: 0, _key: 0 };
@@ -363,34 +363,59 @@ module.exports = function (module) {
 	};
 
 	module.getSortedSetMembers = async function (key) {
-		const data = await module.getSortedSetsMembers([key]);
+		const data = await getSortedSetsMembersWithScores([key], false);
+		return data && data[0];
+	};
+
+	module.getSortedSetMembersWithScores = async function (key) {
+		const data = await getSortedSetsMembersWithScores([key], true);
 		return data && data[0];
 	};
 
 	module.getSortedSetsMembers = async function (keys) {
+		return await getSortedSetsMembersWithScores(keys, false);
+	};
+
+	module.getSortedSetsMembersWithScores = async function (keys) {
+		return await getSortedSetsMembersWithScores(keys, true);
+	};
+
+	async function getSortedSetsMembersWithScores(keys, withScores) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return [];
 		}
 		const arrayOfKeys = keys.length > 1;
 		const projection = { _id: 0, value: 1 };
+		if (withScores) {
+			projection.score = 1;
+		}
 		if (arrayOfKeys) {
 			projection._key = 1;
 		}
 		const data = await module.client.collection('objects').find({
 			_key: arrayOfKeys ? { $in: keys } : keys[0],
-		}, { projection: projection }).toArray();
+		}, { projection: projection })
+			.sort({ score: 1 })
+			.toArray();
 
 		if (!arrayOfKeys) {
-			return [data.map(item => item.value)];
+			return [withScores ?
+				data.map(i => ({ value: i.value, score: i.score })) :
+				data.map(item => item.value),
+			];
 		}
 		const sets = {};
 		data.forEach((item) => {
 			sets[item._key] = sets[item._key] || [];
-			sets[item._key].push(item.value);
+			if (withScores) {
+				sets[item._key].push({ value: item.value, score: item.score });
+			} else {
+				sets[item._key].push(item.value);
+			}
 		});
 
 		return keys.map(k => sets[k] || []);
-	};
+	}
 
 	module.sortedSetIncrBy = async function (key, increment, value) {
 		if (!key) {

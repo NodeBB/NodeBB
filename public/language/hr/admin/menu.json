@@ -72,11 +72,13 @@
 	"development/info": "Info",
 
 	"rebuild-and-restart-forum": "Rebuild & Restart Forum",
+	"rebuild-and-restart": "Rebuild & Restart",
 	"restart-forum": "ponovno pokreni forum",
+	"restart": "Restart",
 	"logout": "Odjava",
 	"view-forum": "Pogledaj forum",
 
-	"search.placeholder": "Press &quot;/&quot; to search for settings",
+	"search.placeholder": "Search settings",
 	"search.no-results": "Nema rezultata ...",
 	"search.search-forum": "Pretraži forum za <strong></strong>",
 	"search.keep-typing": "Upiši više da vidiš rezultate ...",

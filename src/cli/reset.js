@@ -4,6 +4,7 @@ const path = require('path');
 const winston = require('winston');
 const fs = require('fs');
 const chalk = require('chalk');
+const nconf = require('nconf');
 
 const db = require('../database');
 const events = require('../events');
@@ -66,8 +67,8 @@ exports.reset = async function (options) {
 			'    -a\tall of the above',
 			'',
 			'Plugin and theme reset flags (-p & -t) can take a single argument',
-			'    e.g. ./nodebb reset -p nodebb-plugin-mentions, ./nodebb reset -t nodebb-theme-persona',
-			'         Prefix is optional, e.g. ./nodebb reset -p markdown, ./nodebb reset -t persona',
+			'    e.g. ./nodebb reset -p nodebb-plugin-mentions, ./nodebb reset -t nodebb-theme-harmony',
+			'         Prefix is optional, e.g. ./nodebb reset -p markdown, ./nodebb reset -t harmony',
 		].join('\n'));
 
 		process.exit(0);
@@ -104,7 +105,7 @@ async function resetTheme(themeId) {
 }
 
 async function resetThemes() {
-	await resetThemeTo('nodebb-theme-persona');
+	await resetThemeTo('nodebb-theme-harmony');
 }
 
 async function resetThemeTo(themeId) {
@@ -118,6 +119,10 @@ async function resetThemeTo(themeId) {
 
 async function resetPlugin(pluginId) {
 	try {
+		if (nconf.get('plugins:active')) {
+			winston.error('Cannot reset plugins while plugin state is set in the configuration (config.json, environmental variables or terminal arguments), please modify the configuration instead');
+			process.exit(1);
+		}
 		const isActive = await db.isSortedSetMember('plugins:active', pluginId);
 		if (isActive) {
 			await db.sortedSetRemove('plugins:active', pluginId);
@@ -137,6 +142,10 @@ async function resetPlugin(pluginId) {
 }
 
 async function resetPlugins() {
+	if (nconf.get('plugins:active')) {
+		winston.error('Cannot reset plugins while plugin state is set in the configuration (config.json, environmental variables or terminal arguments), please modify the configuration instead');
+		process.exit(1);
+	}
 	await db.delete('plugins:active');
 	winston.info('[reset] All Plugins De-activated');
 }

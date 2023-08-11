@@ -15,9 +15,9 @@
     "watching.description": "موضوع ها را در بخش نخوانده ها و تازه ها نشان بده",
     "not-watching.description": "موضوع ها را در بخش نخوانده ها نمایش نده و در بخش تازه ها نشان بده",
     "ignoring.description": "موضوع ها را در بخش نخوانده ها و تازه ها نمایش نده",
-    "watching.message": "You are now watching updates from this category and all subcategories",
-    "notwatching.message": "You are not watching updates from this category and all subcategories",
-    "ignoring.message": "You are now ignoring updates from this category and all subcategories",
+    "watching.message": "اکنون شما به‌روزرسانی‌های این دسته و تمام زیر دسته‌هایش را پیگیری می‌کنید",
+    "notwatching.message": "اکنون شما به‌روزرسانی‌های این دسته و همه‌ی زیر دسته‌هایش را پیگیری نمی کنید ",
+    "ignoring.message": "اکنون شما به‌روزرسانی‌های این دسته و همه‌ی زیر دسته‌هایش را نادیده گرفته‌اید ",
     "watched-categories": "دسته بندی های پیگیری شده",
-    "x-more-categories": "%1 more categories"
+    "x-more-categories": "1% دسته‌های بیشتر "
 }

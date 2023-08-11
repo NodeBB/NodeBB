@@ -71,6 +71,34 @@ module.exports = function (SocketTopics) {
 		return await method(data);
 	}
 
+	// used by tag filter search
+	SocketTopics.tagFilterSearch = async function (socket, data) {
+		let cids = [];
+		if (Array.isArray(data.cids)) {
+			cids = await privileges.categories.filterCids('topics:read', data.cids, socket.uid);
+		} else { // if no cids passed in get all cids we can read
+			cids = await categories.getCidsByPrivilege('categories:cid', socket.uid, 'topics:read');
+		}
+
+		let tags = [];
+		if (data.query) {
+			const allowed = await privileges.global.can('search:tags', socket.uid);
+			if (!allowed) {
+				throw new Error('[[error:no-privileges]]');
+			}
+			tags = await topics.searchTags({
+				query: data.query,
+				cid: cids.length === 1 ? cids[0] : null,
+				cids: cids,
+			});
+			topics.getTagData(tags);
+		} else {
+			tags = await topics.getCategoryTagsData(cids, 0, 39);
+		}
+
+		return tags.filter(t => t.score > 0);
+	};
+
 	SocketTopics.loadMoreTags = async function (socket, data) {
 		if (!data || !utils.isNumber(data.after)) {
 			throw new Error('[[error:invalid-data]]');

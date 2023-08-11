@@ -1,4 +1,5 @@
 {
+    "manage-uploads": "Manage Uploads",
     "upload-file": "Fájl feltöltése",
     "filename": "Fájlnév",
     "usage": "Használat hozzászólásban",
@@ -6,6 +7,6 @@
     "size/filecount": "Méret / fájlok száma",
     "confirm-delete": "Biztosan törölni szeretnéd ezt a fájlt?",
     "filecount": "%1 fájl",
-    "new-folder": "New Folder",
-    "name-new-folder": "Enter a name for new the folder"
+    "new-folder": "Új Mappa",
+    "name-new-folder": "Adjon nevet az új mappának"
 }

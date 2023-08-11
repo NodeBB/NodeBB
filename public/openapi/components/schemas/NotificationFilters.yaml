@@ -1,0 +1,23 @@
+FiltersObject:
+  type: object
+  properties:
+    name:
+      type: string
+    filter:
+      type: string
+    selected:
+      type: boolean
+    count:
+      type: number
+  required:
+    - name
+    - filter
+FiltersArray:
+  type: array
+  items:
+    anyOf:
+      - $ref: '#/FiltersObject'
+      - type: object
+        properties:
+          separator:
+            type: boolean

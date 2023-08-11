@@ -10,7 +10,11 @@ define('admin/manage/group', [
 	'api',
 	'bootbox',
 	'alerts',
-], function (memberList, iconSelect, translator, categorySelector, groupSearch, slugify, api, bootbox, alerts) {
+	'admin/settings',
+], function (
+	memberList, iconSelect, translator, categorySelector, groupSearch,
+	slugify, api, bootbox, alerts, settings
+) {
 	const Groups = {};
 
 	Groups.init = function () {
@@ -43,7 +47,7 @@ define('admin/manage/group', [
 
 		setupGroupMembersMenu();
 
-		$('#group-icon, #group-icon-label').on('click', function () {
+		$('#group-icon-container').on('click', function () {
 			const currentIcon = groupIcon.attr('value');
 			iconSelect.init(groupIcon, function () {
 				let newIcon = groupIcon.attr('value');
@@ -73,6 +77,7 @@ define('admin/manage/group', [
 				cids = cids.filter((cid, index, array) => array.indexOf(cid) === index);
 				$('#memberPostCids').val(cids.join(','));
 				cidSelector.selectCategory(0);
+				return false;
 			},
 		});
 
@@ -81,6 +86,16 @@ define('admin/manage/group', [
 		$('form [data-property]').on('change', function () {
 			app.flags = app.flags || {};
 			app.flags._unsaved = true;
+		});
+
+		$('[data-action="delete"]').on('click', function () {
+			bootbox.confirm('[[admin/manage/groups:alerts.confirm-delete]]', function (confirm) {
+				if (confirm) {
+					api.del(`/groups/${slugify(ajaxify.data.group.name)}`, {}).then(() => {
+						ajaxify.go('/admin/managegroups');
+					}).catch(alerts.error);
+				}
+			});
 		});
 
 		$('#save').on('click', function () {
@@ -104,8 +119,7 @@ define('admin/manage/group', [
 				if (groupName !== newName) {
 					ajaxify.go('admin/manage/groups/' + encodeURIComponent(newName), undefined, true);
 				}
-
-				alerts.success('[[admin/manage/groups:edit.save-success]]');
+				settings.toggleSaveSuccess($('#save'));
 			}).catch(alerts.error);
 			return false;
 		});

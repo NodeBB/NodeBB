@@ -72,11 +72,13 @@
 	"development/info": "Informace",
 
 	"rebuild-and-restart-forum": "Znovu sestavit a restartovat fórum",
+	"rebuild-and-restart": "Rebuild & Restart",
 	"restart-forum": "Restartovat fórum",
+	"restart": "Restart",
 	"logout": "Odhlásit",
 	"view-forum": "Zobrazit fórum",
 
-	"search.placeholder": "Press &quot;/&quot; to search for settings",
+	"search.placeholder": "Search settings",
 	"search.no-results": "Žádné výsledky…",
 	"search.search-forum": "Prohledat fórum pro <strong></strong>",
 	"search.keep-typing": "Pište dále pro zobrazení výsledků…",

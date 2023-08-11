@@ -1,0 +1,12 @@
+/*
+	Flags page CSS
+	  - Originally in ACP
+	  - Now available in front-end for global mods as well
+*/
+
+.page-flags {
+	// hide the all categories li element
+	[component="flags/filters"] [component="category/dropdown"] [data-cid="all"] {
+		display: none;
+	}
+}

@@ -1,5 +1,6 @@
 {
     "register": "Reģistrēties",
+    "already-have-account": "Already have an account?",
     "cancel_registration": "Atcelt reģistrācijas pieteikumu",
     "help.email": "Pēc noklusējuma Tava e-pasta adrese nebūs redzama ārpus NodeBB.",
     "help.username_restrictions": "Unikāls lietotājvārds starp %1 un %2 rakstzīmēm. Citi var pieminēt Tevi izmantojot @<span id='yourUsername'>lietotājvārds</span>.",

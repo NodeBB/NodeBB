@@ -12,7 +12,9 @@ const languages = require('../languages');
 module.exports = function (User) {
 	User.getSettings = async function (uid) {
 		if (parseInt(uid, 10) <= 0) {
-			return await onSettingsLoaded(0, {});
+			return await onSettingsLoaded(uid, {
+				usePagination: parseInt(uid, 10) === -1 ? 1 : undefined, // force spiders to use pagination
+			});
 		}
 		let settings = await db.getObject(`user:${uid}:settings`);
 		settings = settings || {};

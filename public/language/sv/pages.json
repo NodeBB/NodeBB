@@ -14,6 +14,7 @@
     "flagged-content": "Flaggat innehåll",
     "ip-blacklist": "IP Svartlista",
     "post-queue": "Inllägskö",
+    "registration-queue": "Registration Queue",
     "users/online": "Användare online",
     "users/latest": "Senaste Användare",
     "users/sort-posts": "Användare med flest inlägg",
@@ -49,6 +50,7 @@
     "account/watched_categories": "%1's följda kategorier",
     "account/bookmarks": "%1'st bokmärkta inlägg",
     "account/settings": "Avnändarinställningar",
+    "account/settings-of": "Changing settings of %1",
     "account/watched": "Ämnen som bevakas av %1",
     "account/ignored": "Ämnen som %1 ignorerar",
     "account/upvoted": "Inlägg som röstats upp av %1",
@@ -59,7 +61,7 @@
     "account/uploads": "Uppladdningar av %1",
     "account/sessions": "Inloggningssessioner",
     "confirm": "E-postadress bekräftad",
-    "maintenance.text": "%1 genomgår underhåll just nu. Vänligen kom tillbaka lite senare.",
+    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
     "maintenance.messageIntro": "Utöver det så lämnade administratören följande meddelande:",
     "throttled.text": "%1 ligger tillfälligt nere på grund av överbelastning. Var god återkom senare. "
 }

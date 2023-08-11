@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/account/consent', ['forum/account/header', 'alerts'], function (header, alerts) {
+define('forum/account/consent', ['forum/account/header', 'alerts', 'api'], function (header, alerts, api) {
 	const Consent = {};
 
 	Consent.init = function () {
@@ -17,18 +17,15 @@ define('forum/account/consent', ['forum/account/header', 'alerts'], function (he
 			});
 		});
 
-		handleExport($('[data-action="export-profile"]'), 'user.exportProfile', '[[user:consent.export-profile-success]]');
-		handleExport($('[data-action="export-posts"]'), 'user.exportPosts', '[[user:consent.export-posts-success]]');
-		handleExport($('[data-action="export-uploads"]'), 'user.exportUploads', '[[user:consent.export-uploads-success]]');
+		handleExport($('[data-action="export-profile"]'), 'profile', '[[user:consent.export-profile-success]]');
+		handleExport($('[data-action="export-posts"]'), 'posts', '[[user:consent.export-posts-success]]');
+		handleExport($('[data-action="export-uploads"]'), 'uploads', '[[user:consent.export-uploads-success]]');
 
-		function handleExport(el, method, success) {
+		function handleExport(el, type, success) {
 			el.on('click', function () {
-				socket.emit(method, { uid: ajaxify.data.uid }, function (err) {
-					if (err) {
-						return alerts.error(err);
-					}
+				api.post(`/users/${ajaxify.data.uid}/exports/${type}`).then(() => {
 					alerts.success(success);
-				});
+				}).catch(alerts.error);
 			});
 		}
 	};

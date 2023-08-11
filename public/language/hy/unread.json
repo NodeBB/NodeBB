@@ -1,0 +1,15 @@
+{
+    "title": "Չկարդացված",
+    "no_unread_topics": "Չկարդացված թեմաներ չկան",
+    "load_more": "Բեռնել ավելին ",
+    "mark_as_read": "Նշել որպես կարդացված",
+    "selected": "Ընտրված",
+    "all": "Բոլորը",
+    "all_categories": "Բոլոր կատեգորիաները",
+    "topics_marked_as_read.success": "Թեմաները նշված են որպես կարդացված:",
+    "all-topics": "Բոլոր թեմաները",
+    "new-topics": "Նոր թեմաներ",
+    "watched-topics": "Դիտված թեմաներ",
+    "unreplied-topics": "Անպատասխան թեմաներ",
+    "multiple-categories-selected": "Բազմակի ընտրված"
+}

@@ -32,24 +32,23 @@ describe('socket.io', () => {
 	let adminUid;
 	let regularUid;
 
-	before((done) => {
-		async.series([
-			async.apply(user.create, { username: 'admin', password: 'adminpwd' }),
-			async.apply(user.create, { username: 'regular', password: 'regularpwd', email: 'regular@test.com' }),
-			async.apply(categories.create, {
+	before(async () => {
+		const data = await Promise.all([
+			user.create({ username: 'admin', password: 'adminpwd' }),
+			user.create({ username: 'regular', password: 'regularpwd' }),
+			categories.create({
 				name: 'Test Category',
 				description: 'Test category created by testing script',
 			}),
-		], (err, data) => {
-			if (err) {
-				return done(err);
-			}
-			adminUid = data[0];
-			regularUid = data[1];
-			cid = data[2].cid;
+		]);
+		adminUid = data[0];
+		await groups.join('administrators', data[0]);
 
-			groups.join('administrators', data[0], done);
-		});
+		regularUid = data[1];
+		await user.setUserField(regularUid, 'email', 'regular@test.com');
+		await user.email.confirmByUid(regularUid);
+
+		cid = data[2].cid;
 	});
 
 
@@ -74,7 +73,7 @@ describe('socket.io', () => {
 			}, (err, res) => {
 				assert.ifError(err);
 
-				helpers.connectSocketIO(res, (err, _io) => {
+				helpers.connectSocketIO(res, body.csrf_token, (err, _io) => {
 					io = _io;
 					assert.ifError(err);
 
@@ -92,14 +91,30 @@ describe('socket.io', () => {
 		});
 	});
 
+	it('should return error for unknown event', (done) => {
+		io.emit('user.gdpr.__proto__.constructor.toString', (err) => {
+			assert(err);
+			assert.equal(err.message, '[[error:invalid-event, user.gdpr.__proto__.constructor.toString]]');
+			done();
+		});
+	});
+
+	it('should return error for unknown event', (done) => {
+		io.emit('constructor.toString', (err) => {
+			assert(err);
+			assert.equal(err.message, '[[error:invalid-event, constructor.toString]]');
+			done();
+		});
+	});
+
 	it('should get installed themes', (done) => {
-		const themes = ['nodebb-theme-lavender', 'nodebb-theme-persona', 'nodebb-theme-vanilla'];
+		const themes = ['nodebb-theme-persona'];
 		io.emit('admin.themes.getInstalled', (err, data) => {
 			assert.ifError(err);
 			assert(data);
 			const installed = data.map(theme => theme.id);
 			themes.forEach((theme) => {
-				assert.notEqual(installed.indexOf(theme), -1);
+				assert(installed.includes(theme));
 			});
 			done();
 		});
@@ -689,6 +704,8 @@ describe('socket.io', () => {
 			const uid = await user.create({ username: 'forceme', password: '123345' });
 			await socketAdmin.user.forcePasswordReset({ uid: adminUid }, [uid]);
 			const pwExpiry = await user.getUserField(uid, 'passwordExpiry');
+			const sleep = util.promisify(setTimeout);
+			await sleep(500);
 			assert(pwExpiry > then && pwExpiry < Date.now());
 		});
 
@@ -716,7 +733,7 @@ describe('socket.io', () => {
 
 		it('should not generate code if rate limited', (done) => {
 			socketUser.reset.send({ uid: 0 }, 'regular@test.com', (err) => {
-				assert.ifError(err);
+				assert(err);
 
 				async.parallel({
 					count: async.apply(db.sortedSetCount.bind(db), 'reset:issueDate', 0, Date.now()),

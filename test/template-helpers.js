@@ -77,7 +77,7 @@ describe('helpers', () => {
 			imageClass: 'auto',
 		};
 		const bg = helpers.generateCategoryBackground(category);
-		assert.equal(bg, 'background-color: #ff0000; color: #00ff00; background-image: url(/assets/uploads/image.png); background-size: auto;');
+		assert.equal(bg, 'background-color: #ff0000; border-color: #ff0000!important; color: #00ff00; background-image: url(/assets/uploads/image.png); background-size: auto;');
 		done();
 	});
 
@@ -102,7 +102,7 @@ describe('helpers', () => {
 			],
 		};
 		const html = helpers.generateChildrenCategories(category);
-		assert.equal(html, `<span class="category-children"><span class="category-children-item pull-left"><div role="presentation" class="icon pull-left" style="background-color: #ff0000; color: #00ff00;"><i class="fa fa-fw undefined"></i></div><a href="${nconf.get('relative_path')}/category/undefined"><small>children</small></a></span></span>`);
+		assert.equal(html, `<span class="category-children"><span class="category-children-item float-start"><div role="presentation" class="icon float-start" style="background-color: #ff0000; border-color: #ff0000!important; color: #00ff00;"><i class="fa fa-fw undefined"></i></div><a href="${nconf.get('relative_path')}/category/undefined"><small>children</small></a></span></span>`);
 		done();
 	});
 
@@ -114,13 +114,13 @@ describe('helpers', () => {
 
 	it('should show leave button if isMember and group is not administrators', (done) => {
 		const btn = helpers.membershipBtn({ displayName: 'some group', name: 'some group', isMember: true });
-		assert.equal(btn, '<button class="btn btn-danger" data-action="leave" data-group="some group"><i class="fa fa-times"></i> [[groups:membership.leave-group]]</button>');
+		assert.equal(btn, '<button class="btn btn-danger " data-action="leave" data-group="some group" ><i class="fa fa-times"></i> [[groups:membership.leave-group]]</button>');
 		done();
 	});
 
 	it('should show pending button if isPending and group is not administrators', (done) => {
 		const btn = helpers.membershipBtn({ displayName: 'some group', name: 'some group', isPending: true });
-		assert.equal(btn, '<button class="btn btn-warning disabled"><i class="fa fa-clock-o"></i> [[groups:membership.invitation-pending]]</button>');
+		assert.equal(btn, '<button class="btn btn-warning disabled "><i class="fa fa-clock-o"></i> [[groups:membership.invitation-pending]]</button>');
 		done();
 	});
 
@@ -148,7 +148,19 @@ describe('helpers', () => {
 			read: true,
 		};
 		const html = helpers.spawnPrivilegeStates('guests', privs);
-		assert.equal(html, '<td class="text-center" data-privilege="find" data-value="true"><input autocomplete="off" type="checkbox" checked /></td><td class="text-center" data-privilege="read" data-value="true"><input autocomplete="off" type="checkbox" checked /></td>');
+		assert.equal(html, `
+				<td data-privilege="find" data-value="true">
+					<div class="form-check text-center">
+						<input class="form-check-input float-none" autocomplete="off" type="checkbox" checked />
+					</div>
+				</td>
+\t\t\t
+				<td data-privilege="read" data-value="true">
+					<div class="form-check text-center">
+						<input class="form-check-input float-none" autocomplete="off" type="checkbox" checked />
+					</div>
+				</td>
+			`);
 		done();
 	});
 

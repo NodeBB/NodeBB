@@ -1,4 +1,5 @@
 {
+	"manage-users": "Управление на потребителите",
 	"users": "Потребители",
 	"edit": "Действия",
 	"make-admin": "Даване на администраторски права",
@@ -49,6 +50,10 @@
 	"users.username": "потребителско име",
 	"users.email": "е-поща",
 	"users.no-email": "(няма е-поща)",
+	"users.validated": "Потвърдена",
+	"users.not-validated": "Непотвърдена",
+	"users.validation-pending": "Очаква потвърждение",
+	"users.validation-expired": "Изтекла давност на потвърждението",
 	"users.ip": "IP адрес",
 	"users.postcount": "брой публикации",
 	"users.reputation": "репутация",

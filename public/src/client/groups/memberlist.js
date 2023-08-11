@@ -2,7 +2,6 @@
 
 define('forum/groups/memberlist', ['api', 'bootbox', 'alerts'], function (api, bootbox, alerts) {
 	const MemberList = {};
-	let searchInterval;
 	let groupName;
 	let templateName;
 
@@ -23,7 +22,8 @@ define('forum/groups/memberlist', ['api', 'bootbox', 'alerts'], function (api, b
 					title: '[[groups:details.add-member]]',
 					message: html,
 					buttons: {
-						ok: {
+						OK: {
+							label: '[[groups:details.add-member]]',
 							callback: function () {
 								const users = [];
 								modal.find('[data-uid][data-selected]').each(function (index, el) {
@@ -89,25 +89,22 @@ define('forum/groups/memberlist', ['api', 'bootbox', 'alerts'], function (api, b
 	}
 
 	function handleMemberSearch() {
-		$('[component="groups/members/search"]').on('keyup', function () {
-			const query = $(this).val();
-			if (searchInterval) {
-				clearInterval(searchInterval);
-				searchInterval = 0;
-			}
-
-			searchInterval = setTimeout(function () {
-				socket.emit('groups.searchMembers', { groupName: groupName, query: query }, function (err, results) {
-					if (err) {
-						return alerts.error(err);
-					}
-					parseAndTranslate(results.users, function (html) {
-						$('[component="groups/members"] tbody').html(html);
-						$('[component="groups/members"]').attr('data-nextstart', 20);
-					});
+		const searchEl = $('[component="groups/members/search"]');
+		searchEl.on('keyup', utils.debounce(function () {
+			const query = searchEl.val();
+			socket.emit('groups.searchMembers', {
+				groupName: groupName,
+				query: query,
+			}, function (err, results) {
+				if (err) {
+					return alerts.error(err);
+				}
+				parseAndTranslate(results.users, function (html) {
+					$('[component="groups/members"] tbody').html(html);
+					$('[component="groups/members"]').attr('data-nextstart', 20);
 				});
-			}, 250);
-		});
+			});
+		}, 250));
 	}
 
 	function handleMemberInfiniteScroll() {

@@ -79,7 +79,11 @@ sitemap.getPages = async function () {
 
 async function getSitemapCategories() {
 	const cids = await categories.getCidsByPrivilege('categories:cid', 0, 'find');
-	return await categories.getCategoriesFields(cids, ['slug']);
+	const categoryData = await categories.getCategoriesFields(cids, ['slug']);
+	const data = await plugins.hooks.fire('filter:sitemap.getCategories', {
+		categories: categoryData,
+	});
+	return data.categories;
 }
 
 sitemap.getCategories = async function () {
@@ -128,7 +132,12 @@ sitemap.getTopicPage = async function (page) {
 	tids = await privileges.topics.filterTids('topics:read', tids, 0);
 	const topicData = await topics.getTopicsFields(tids, ['tid', 'title', 'slug', 'lastposttime']);
 
-	if (!topicData.length) {
+	const data = await plugins.hooks.fire('filter:sitemap.getCategories', {
+		page: page,
+		topics: topicData,
+	});
+
+	if (!data.topics.length) {
 		sitemap.maps.topics[page - 1] = {
 			sm: '',
 			cacheExpireTimestamp: Date.now() + (1000 * 60 * 60 * 24),
@@ -136,7 +145,7 @@ sitemap.getTopicPage = async function (page) {
 		return sitemap.maps.topics[page - 1].sm;
 	}
 
-	topicData.forEach((topic) => {
+	data.topics.forEach((topic) => {
 		if (topic) {
 			topicUrls.push({
 				url: `${nconf.get('relative_path')}/topic/${topic.slug}`,

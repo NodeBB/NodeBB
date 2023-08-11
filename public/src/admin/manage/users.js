@@ -166,7 +166,7 @@ define('admin/manage/users', [
 				return false; // specifically to keep the menu open
 			}
 
-			Benchpress.render('admin/partials/temporary-ban', {}).then(function (html) {
+			Benchpress.render('modals/temporary-ban', {}).then(function (html) {
 				bootbox.dialog({
 					className: 'ban-modal',
 					title: '[[user:ban_account]]',
@@ -242,7 +242,10 @@ define('admin/manage/users', [
 					}
 					alerts.success('[[admin/manage/users:alerts.validate-email-success]]');
 					update('.notvalidated', false);
-					update('.validated', true);
+					update('.pending', false);
+					update('.expired', false);
+					update('.validated', false);
+					update('.validated-by-admin', true);
 					unselectAll();
 				});
 			});

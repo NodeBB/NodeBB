@@ -1,8 +1,12 @@
 
 {
 	"post-queue": "File d’attente des messages",
-	"description": "Aucun messages dans la file d'attente. <br> Pour activer cette fonctionnalité, accédez aux <a href=\"%1\">Paramètres &rarr; Messages &rarr; File d'attente </a> et activez <strong>la file d'attente.",
+	"no-queued-posts": "Il n'y a pas de messages dans la file d'attente des messages.",
+	"no-single-post": "Le sujet ou le message que vous recherchez n'est plus dans la file d'attente. Il a probablement déjà été approuvé ou supprimé.",
+	"enabling-help": "Pour activer cette fonctionnalité, accédez à <a href=\"%1\">Paramètres &rarr; Message &rarr; File d'attente</a> et activez <strong>la file d'attente</strong>.",
+	"back-to-list": "Retour à la file d'attente",
 	"user": "Utilisateur",
+	"when": "Quand",
 	"category": "Catégorie",
 	"title": "Titre",
 	"content": "Contenu",
@@ -19,6 +23,7 @@
 	"notify": "Notifier",
 	"notify-user": "Notifier l'utilisateur",
 	"confirm-reject": "Voulez vous réellement rejeter ce message ?",
+	"confirm-remove": "Voulez-vous supprimer ce message ?",
 	"bulk-actions": "Actions",
 	"accept-all": "Tout accepter",
 	"accept-selected": "Acceptation sélectionné",
@@ -26,6 +31,10 @@
 	"reject-all-confirm": "Voulez vous réellement rejeter tous ces messages ?",
 	"reject-selected": "Rejets sélectionnés",
 	"reject-selected-confirm": "Voulez vous réellement rejeter ces %1 messages ?",
+	"remove-all": "Supprimer tout",
+	"remove-all-confirm": "Voulez-vous supprimer tous les messages ?",
+	"remove-selected": "Supprimer la sélection",
+	"remove-selected-confirm": "Voulez-vous supprimer %1 messages sélectionnés ?",
 	"bulk-accept-success": "%1 messages acceptés",
 	"bulk-reject-success": "%1 messages rejetés"
 }

@@ -8,6 +8,7 @@ const db = require('../database');
 const posts = require('../posts');
 const socketHelpers = require('../socket.io/helpers');
 const topics = require('./index');
+const groups = require('../groups');
 const user = require('../user');
 
 const Scheduled = module.exports;
@@ -40,6 +41,7 @@ Scheduled.handleExpired = async function () {
 	await Promise.all([].concat(
 		sendNotifications(uids, topicsData),
 		updateUserLastposttimes(uids, topicsData),
+		updateGroupPosts(uids, topicsData),
 		...topicsData.map(topicData => unpin(topicData.tid, topicData)),
 		db.sortedSetsRemoveRangeByScore([`topics:scheduled`], '-inf', now)
 	));
@@ -60,6 +62,7 @@ Scheduled.pin = async function (tid, topicData) {
 };
 
 Scheduled.reschedule = async function ({ cid, tid, timestamp, uid }) {
+	const mainPid = await topics.getTopicField(tid, 'mainPid');
 	await Promise.all([
 		db.sortedSetsAdd([
 			'topics:scheduled',
@@ -67,6 +70,12 @@ Scheduled.reschedule = async function ({ cid, tid, timestamp, uid }) {
 			'topics:tid',
 			`cid:${cid}:uid:${uid}:tids`,
 		], timestamp, tid),
+		posts.setPostField(mainPid, 'timestamp', timestamp),
+		db.sortedSetsAdd([
+			'posts:pid',
+			`uid:${uid}:posts`,
+			`cid:${cid}:uid:${uid}:pids`,
+		], timestamp, mainPid),
 		shiftPostTimes(tid, timestamp),
 	]);
 	return topics.updateLastPostTimeFromLastPid(tid);
@@ -87,14 +96,15 @@ function unpin(tid, topicData) {
 }
 
 async function sendNotifications(uids, topicsData) {
-	const usernames = await Promise.all(uids.map(uid => user.getUserField(uid, 'username')));
-	const uidToUsername = Object.fromEntries(uids.map((uid, idx) => [uid, usernames[idx]]));
+	const userData = await user.getUsersData(uids);
+	const uidToUserData = Object.fromEntries(uids.map((uid, idx) => [uid, userData[idx]]));
 
-	const postsData = await posts.getPostsData(topicsData.map(({ mainPid }) => mainPid));
+	const postsData = await posts.getPostsData(topicsData.map(t => t && t.mainPid));
 	postsData.forEach((postData, idx) => {
-		postData.user = {};
-		postData.user.username = uidToUsername[postData.uid];
-		postData.topic = topicsData[idx];
+		if (postData) {
+			postData.user = uidToUserData[topicsData[idx].uid];
+			postData.topic = topicsData[idx];
+		}
 	});
 
 	return Promise.all(topicsData.map(
@@ -119,6 +129,16 @@ async function updateUserLastposttimes(uids, topicsData) {
 
 	const uidsToUpdate = uids.filter((uid, idx) => tstampByUid[uid] > lastposttimes[idx]);
 	return Promise.all(uidsToUpdate.map(uid => user.setUserField(uid, 'lastposttime', tstampByUid[uid])));
+}
+
+async function updateGroupPosts(uids, topicsData) {
+	const postsData = await posts.getPostsData(topicsData.map(t => t && t.mainPid));
+	await Promise.all(postsData.map(async (post, i) => {
+		if (topicsData[i]) {
+			post.cid = topicsData[i].cid;
+			await groups.onNewPostMade(post);
+		}
+	}));
 }
 
 async function shiftPostTimes(tid, timestamp) {

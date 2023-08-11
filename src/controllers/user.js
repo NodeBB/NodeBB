@@ -1,9 +1,6 @@
 'use strict';
 
-const path = require('path');
-
 const user = require('../user');
-const meta = require('../meta');
 const privileges = require('../privileges');
 const accountHelpers = require('./accounts/helpers');
 
@@ -68,52 +65,17 @@ userController.getUserDataByUID = async function (callerUid, uid) {
 	if (!canView) {
 		throw new Error('[[error:no-privileges]]');
 	}
-	const [userData, settings] = await Promise.all([
-		user.getUserData(uid),
-		user.getSettings(uid),
-	]);
 
+	let userData = await user.getUserData(uid);
 	if (!userData) {
 		throw new Error('[[error:no-user]]');
 	}
 
-	userData.email = settings.showemail && !meta.config.hideEmail ? userData.email : undefined;
-	userData.fullname = settings.showfullname && !meta.config.hideFullname ? userData.fullname : undefined;
+	userData = await user.hidePrivateData(userData, callerUid);
 
 	return userData;
 };
 
-userController.exportPosts = async function (req, res, next) {
-	sendExport(`${res.locals.uid}_posts.csv`, 'text/csv', res, next);
-};
-
-userController.exportUploads = function (req, res, next) {
-	sendExport(`${res.locals.uid}_uploads.zip`, 'application/zip', res, next);
-};
-
-userController.exportProfile = async function (req, res, next) {
-	sendExport(`${res.locals.uid}_profile.json`, 'application/json', res, next);
-};
-
-function sendExport(filename, type, res, next) {
-	res.sendFile(filename, {
-		root: path.join(__dirname, '../../build/export'),
-		headers: {
-			'Content-Type': type,
-			'Content-Disposition': `attachment; filename=${filename}`,
-		},
-	}, (err) => {
-		if (err) {
-			if (err.code === 'ENOENT') {
-				res.locals.isAPI = false;
-				return next();
-			}
-			return next(err);
-		}
-	});
-}
-
 require('../promisify')(userController, [
 	'getCurrentUser', 'getUserByUID', 'getUserByUsername', 'getUserByEmail',
-	'exportPosts', 'exportUploads', 'exportProfile',
 ]);

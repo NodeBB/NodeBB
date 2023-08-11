@@ -2,8 +2,8 @@
 
 
 define('forum/register', [
-	'translator', 'slugify', 'api', 'bootbox', 'forum/login', 'jquery-form',
-], function (translator, slugify, api, bootbox, Login) {
+	'translator', 'slugify', 'api', 'bootbox', 'forum/login', 'zxcvbn', 'jquery-form',
+], function (translator, slugify, api, bootbox, Login, zxcvbn) {
 	const Register = {};
 	let validationError = false;
 	const successIcon = '';
@@ -143,7 +143,7 @@ define('forum/register', [
 		const password_confirm_notify = $('#password-confirm-notify');
 
 		try {
-			utils.assertPasswordValidity(password);
+			utils.assertPasswordValidity(password, zxcvbn);
 
 			if (password === $('#username').val()) {
 				throw new Error('[[user:password_same_as_username]]');

@@ -72,11 +72,13 @@
 	"development/info": "Informācija",
 
 	"rebuild-and-restart-forum": "Pārkompilēt & pārstartēt forumu",
+	"rebuild-and-restart": "Rebuild & Restart",
 	"restart-forum": "Pārstartēt forumu",
+	"restart": "Restart",
 	"logout": "Izlogoties",
 	"view-forum": "Uz forumu",
 
-	"search.placeholder": "Press &quot;/&quot; to search for settings",
+	"search.placeholder": "Search settings",
 	"search.no-results": "Nav rezultātu...",
 	"search.search-forum": "Forumā meklēt <strong></strong>",
 	"search.keep-typing": "Rakstīt vairāk, lai redzētu rezultātus...",

@@ -13,14 +13,14 @@ define('forum/topic/merge', ['search', 'alerts', 'api'], function (search, alert
 		if (modal) {
 			return;
 		}
-		app.parseAndTranslate('partials/merge_topics_modal', {}, function (html) {
+		app.parseAndTranslate('modals/merge-topic', {}, function (html) {
 			modal = html;
 
 			$('body').append(modal);
 
 			mergeBtn = modal.find('#merge_topics_confirm');
 
-			modal.find('.close,#merge_topics_cancel').on('click', closeModal);
+			modal.find('#merge_topics_cancel').on('click', closeModal);
 
 			$('#content').on('click', '[component="topic/select"]', onTopicClicked);
 
@@ -111,7 +111,7 @@ define('forum/topic/merge', ['search', 'alerts', 'api'], function (search, alert
 		});
 
 		if (tids.length) {
-			app.parseAndTranslate('partials/merge_topics_modal', {
+			app.parseAndTranslate('modals/merge-topic', {
 				config: config,
 				topics: topics,
 			}, function (html) {

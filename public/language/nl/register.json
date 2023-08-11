@@ -1,5 +1,6 @@
 {
     "register": "Registreren",
+    "already-have-account": "Already have an account?",
     "cancel_registration": "Annuleer registratie",
     "help.email": "E-mailadressen zijn standaard verborgen voor andere gebruikers.",
     "help.username_restrictions": "Een unieke gebruikersnaam tussen %1 en %2 karakters. Anderen kunnen je vermelden met @<span id='yourUsername'>gebruikersnaam</span>.",

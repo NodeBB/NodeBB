@@ -14,6 +14,7 @@
     "flagged-content": "Flagged Content",
     "ip-blacklist": "IP Blacklist",
     "post-queue": "Post Queue",
+    "registration-queue": "Registration Queue",
     "users/online": "Paikalla olevat käyttäjät",
     "users/latest": "Viimeisimmat käyttäjät",
     "users/sort-posts": "Käyttäjät joilla eniten viestejä",
@@ -49,6 +50,7 @@
     "account/watched_categories": "%1's Watched Categories",
     "account/bookmarks": "%1's Bookmarked Posts",
     "account/settings": "Käyttäjän asetukset",
+    "account/settings-of": "Changing settings of %1",
     "account/watched": "%1 seuraamat aiheet",
     "account/ignored": "%1 sivuuttamat aiheet",
     "account/upvoted": "%1 tykkäämät viestit",
@@ -59,7 +61,7 @@
     "account/uploads": "%1 lähetykset",
     "account/sessions": "Login Sessions",
     "confirm": "Sähköposti varmistettu",
-    "maintenance.text": "%1 sivustoa huolletaan parhaillaan. Tarkista sivusto hetken kuluttua uudestaan.",
+    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
     "maintenance.messageIntro": "Lisäksi ylläpitäjä on jättänyt seuraavan viestin:",
     "throttled.text": "%1 sivusto on tällähetkellä alhaalla johtuen liiasta kuormituksesta. Tule takaisin myöhemmin."
 }

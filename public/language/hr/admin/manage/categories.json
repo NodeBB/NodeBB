@@ -1,7 +1,11 @@
 {
+	"manage-categories": "Manage Categories",
+	"add-category": "Add category",
+	"jump-to": "Jump to...",
 	"settings": "Postavke kategorije",
+	"edit-category": "Edit Category",
 	"privileges": "Privilegije",
-
+	"back-to-categories": "Back to categories",
 	"name": "Ime kategorije",
 	"description": "Opis kategorije",
 	"bg-color": "Pozadniska boja",
@@ -15,8 +19,11 @@
 	"post-queue": "Post queue",
 	"tag-whitelist": "Tag Whitelist",
 	"upload-image": "Učitaj sliku",
+	"upload": "Upload",
+	"select-icon": "Select Icon",
 	"delete-image": "Ukloni",
 	"category-image": "Slika kategorije",
+	"image-and-icon": "Image & Icon",
 	"parent-category": "Roditeljska kategorija",
 	"optional-parent-category": "(Opcionalno) Roditeljska kategorija",
 	"top-level": "Top Level",
@@ -31,8 +38,9 @@
 	"disable": "Onemogući",
 	"edit": "Uredi",
 	"analytics": "Analytics",
+
 	"view-category": "View category",
-	"set-order": "Set order",
+	"set-order": "Zadaj poredak",
 	"set-order-help": "Setting the order of the category will move this category to that order and update the order of other categories as necessary. Minimum order is 1 which puts the category at the top.",
 
 	"select-category": "Odabri kategoriju",

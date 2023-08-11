@@ -17,9 +17,9 @@
 	"cpu-usage": "cpu usage",
 	"uptime": "uptime",
 
-	"registered": "Registered",
+	"registered": "Geregistreerd",
 	"sockets": "Sockets",
-	"guests": "Guests",
+	"guests": "Gasten",
 
-	"info": "Info"
+	"info": "Informatie"
 }

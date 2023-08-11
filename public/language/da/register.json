@@ -1,5 +1,6 @@
 {
     "register": "Tilmeld",
+    "already-have-account": "Already have an account?",
     "cancel_registration": "Cancel Registration",
     "help.email": "Den email er skjult som standard.",
     "help.username_restrictions": "Et unikt brugernavn mellem %1 og %2 karakterer. Andre kan nævne dig med @<span id='yourUsername'>brugernavn</span>.",

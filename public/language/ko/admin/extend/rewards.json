@@ -1,10 +1,12 @@
 {
 	"rewards": "보상",
+	"add-reward": "Add reward",
 	"condition-if-users": "만약 사용자의",
 	"condition-is": "다음의 조건을 충족한다면:",
 	"condition-then": "다음과 같은 행동을 취합니다:",
 	"max-claims": "보상을 받을 수 있는 횟수",
 	"zero-infinite": "무제한으로 설정하려면 0으로 설정",
+	"select-reward": "Select reward",
 	"delete": "삭제",
 	"enable": "활성화",
 	"disable": "비활성화",

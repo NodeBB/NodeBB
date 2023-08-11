@@ -1,8 +1,11 @@
 {
+    "all-tags": "All tags",
     "no_tag_topics": "Tiada topik untuk tag ini.",
+    "no-tags-found": "No tags found",
     "tags": "Tag",
     "enter_tags_here": "Masukkan tag sini, masing-masing antara %1 dan %2 aksara.",
     "enter_tags_here_short": "Masukkan tag ...",
     "no_tags": "Belum ada tag.",
-    "select_tags": "Select Tags"
+    "select_tags": "Select Tags",
+    "tag-whitelist": "Tag Whitelist"
 }

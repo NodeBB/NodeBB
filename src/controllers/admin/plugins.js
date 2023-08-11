@@ -15,8 +15,8 @@ pluginsController.get = async function (req, res) {
 	]);
 
 	const compatiblePkgNames = compatible.map(pkgData => pkgData.name);
-	const installedPlugins = compatible.filter(plugin => plugin && plugin.installed);
-	const activePlugins = all.filter(plugin => plugin && plugin.installed && plugin.active);
+	const installedPlugins = compatible.filter(plugin => plugin && (plugin.installed || (nconf.get('plugins:active') && plugin.active)));
+	const activePlugins = all.filter(plugin => plugin && (plugin.installed || nconf.get('plugins:active')) && plugin.active);
 
 	const trendingScores = trending.reduce((memo, cur) => {
 		memo[cur.label] = cur.value;
@@ -35,6 +35,7 @@ pluginsController.get = async function (req, res) {
 		installedCount: installedPlugins.length,
 		activeCount: activePlugins.length,
 		inactiveCount: Math.max(0, installedPlugins.length - activePlugins.length),
+		canChangeState: !nconf.get('plugins:active'),
 		upgradeCount: compatible.reduce((count, current) => {
 			if (current.installed && current.outdated) {
 				count += 1;

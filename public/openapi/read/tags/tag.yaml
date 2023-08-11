@@ -227,6 +227,8 @@ get:
                     type: string
                   title:
                     type: string
+                  canPost:
+                    type: boolean
                   showSelect:
                     type: boolean
                   showTopicTools:

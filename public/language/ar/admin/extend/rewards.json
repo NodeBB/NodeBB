@@ -1,15 +1,17 @@
 {
-	"rewards": "Rewards",
-	"condition-if-users": "If User's",
-	"condition-is": "Is:",
-	"condition-then": "Then:",
-	"max-claims": "Amount of times reward is claimable",
-	"zero-infinite": "Enter 0 for infinite",
-	"delete": "Delete",
-	"enable": "Enable",
-	"disable": "Disable",
+	"rewards": "المكافآت",
+	"add-reward": "Add reward",
+	"condition-if-users": "إذا كان للمستخدم",
+	"condition-is": "يكون: ",
+	"condition-then": "عندئذ:",
+	"max-claims": "عدد المرات التي يمكن فيها المطالبة بالمكافأة",
+	"zero-infinite": "أدخل 0 للقيمة اللانهائية",
+	"select-reward": "Select reward",
+	"delete": "احذف",
+	"enable": "مكّن",
+	"disable": "عطّل",
 
-	"alert.delete-success": "Successfully deleted reward",
-	"alert.no-inputs-found": "Illegal reward - no inputs found!",
-	"alert.save-success": "Successfully saved rewards"
+	"alert.delete-success": "المكافآت المحذوفة بنجاح",
+	"alert.no-inputs-found": "مكافأة غير قانونية - لم يتم العثور على مدخلات!",
+	"alert.save-success": "المكافآت المحفوظة بنجاح"
 }

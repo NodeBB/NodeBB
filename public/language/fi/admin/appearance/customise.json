@@ -1,7 +1,8 @@
 {
-	"custom-css": "Kustomoi CSS/LESS -tiedostoja",
-	"custom-css.description": "Syötä haluamasi CSS/LESS -määritykset tähän. Nämä määritykset menevät kaikkien muiden tyylimäärittelyjen edelle.",
-	"custom-css.enable": "Salli CSS/LESS -kustomoinnit",
+	"customise": "Customise",
+	"custom-css": "Custom CSS/SASS",
+	"custom-css.description": "Enter your own CSS/SASS declarations here, which will be applied after all other styles.",
+	"custom-css.enable": "Enable Custom CSS/SASS",
 
 	"custom-js": "Kustomoi Javascriptiä",
 	"custom-js.description": "Syötä Javascript-sisältö tähän. Se suoritetaan, kun sivu on latautunut valmiiksi.",
@@ -12,5 +13,8 @@
 	"custom-header.enable": "Salli ylätunnisteen kustomointi",
 
 	"custom-css.livereload": "Salli sivun päivitys livenä",
-	"custom-css.livereload.description": "Salli tämä, jos haluat mahdollistaa kaikkien tililläsi olevien laitteiden istuntojen päivittymisen, kun tallennat tekemäsi muutokset."
+	"custom-css.livereload.description": "Salli tämä, jos haluat mahdollistaa kaikkien tililläsi olevien laitteiden istuntojen päivittymisen, kun tallennat tekemäsi muutokset.",
+	"bsvariables": "_variables.scss",
+	"bsvariables.description": "Override bootstrap variables here. You can also use a tool like <a href=\"https://bootstrap.build/app\">bootstrap.build</a> and paste the output here.<br/>Changes require a rebuild & restart.",
+	"bsvariables.enable": "Enable _variables.scss"
 }

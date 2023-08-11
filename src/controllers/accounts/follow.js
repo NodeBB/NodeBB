@@ -2,7 +2,6 @@
 
 const user = require('../../user');
 const helpers = require('../helpers');
-const accountHelpers = require('./helpers');
 const pagination = require('../../pagination');
 
 const followController = module.exports;
@@ -15,27 +14,29 @@ followController.getFollowers = async function (req, res, next) {
 	await getFollow('account/followers', 'followers', req, res, next);
 };
 
-async function getFollow(tpl, name, req, res, next) {
-	const userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, req.query);
-	if (!userData) {
-		return next();
-	}
+async function getFollow(tpl, name, req, res) {
+	const {
+		username, userslug, followerCount, followingCount,
+	} = await user.getUserFields(res.locals.uid, [
+		'username', 'userslug', 'followerCount', 'followingCount',
+	]);
 
 	const page = parseInt(req.query.page, 10) || 1;
 	const resultsPerPage = 50;
 	const start = Math.max(0, page - 1) * resultsPerPage;
 	const stop = start + resultsPerPage - 1;
 
-	userData.title = `[[pages:${tpl}, ${userData.username}]]`;
+	const payload = {};
+	payload.title = `[[pages:${tpl}, ${username}]]`;
 
 	const method = name === 'following' ? 'getFollowing' : 'getFollowers';
-	userData.users = await user[method](userData.uid, start, stop);
+	payload.users = await user[method](res.locals.uid, start, stop);
 
-	const count = name === 'following' ? userData.followingCount : userData.followerCount;
+	const count = name === 'following' ? followingCount : followerCount;
 	const pageCount = Math.ceil(count / resultsPerPage);
-	userData.pagination = pagination.create(page, pageCount);
+	payload.pagination = pagination.create(page, pageCount);
 
-	userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: `/user/${userData.userslug}` }, { text: `[[user:${name}]]` }]);
+	payload.breadcrumbs = helpers.buildBreadcrumbs([{ text: username, url: `/user/${userslug}` }, { text: `[[user:${name}]]` }]);
 
-	res.render(tpl, userData);
+	res.render(tpl, payload);
 }

@@ -1,29 +1,56 @@
 'use strict';
 
 
-define('admin/settings', ['uploader', 'mousetrap', 'hooks', 'alerts'], function (uploader, mousetrap, hooks, alerts) {
+define('admin/settings', [
+	'uploader', 'mousetrap', 'hooks', 'alerts', 'settings', 'bootstrap',
+], function (uploader, mousetrap, hooks, alerts, settings, bootstrap) {
 	const Settings = {};
 
 	Settings.populateTOC = function () {
 		const headers = $('.settings-header');
+		const tocEl = $('[component="settings/toc"]');
+		const tocList = $('[component="settings/toc/list"]');
+		const mainHader = $('[component="settings/main/header"]');
 
-		if (headers.length > 1) {
-			headers.each(function () {
-				const header = $(this).text();
-				const anchor = header.toLowerCase().replace(/ /g, '-').trim();
-
-				$(this).prepend('<a name="' + anchor + '"></a>');
-				$('.section-content ul').append('<li><a href="#' + anchor + '">' + header + '</a></li>');
+		if (headers.length > 1 && tocList.length) {
+			headers.each(function (i) {
+				const $this = $(this);
+				const header = $this.text();
+				const anchor = $this.parent().attr('id') || `section${i + 1}`;
+				// for elements that don't have id use section{index}
+				if (anchor.startsWith('section')) {
+					$this.parent().attr('id', anchor);
+				}
+				tocList.append(`<a class="btn-ghost-sm text-xs justify-content-start text-decoration-none" href="#${anchor}">${header}</a>`);
+			});
+			const offset = mainHader.outerHeight(true);
+			// https://stackoverflow.com/a/11814275/583363
+			tocList.find('a').on('click', function (event) {
+				event.preventDefault();
+				const href = $(this).attr('href');
+				$(href)[0].scrollIntoView();
+				window.location.hash = href;
+				scrollBy(0, -offset);
+				setTimeout(() => {
+					tocList.find('a').removeClass('active');
+					$(this).addClass('active');
+				}, 10);
+				return false;
 			});
 
-			const scrollTo = $('a[name="' + window.location.hash.replace('#', '') + '"]');
+			new bootstrap.ScrollSpy($('#spy-container')[0], {
+				target: '#settings-navbar',
+				rootMargin: '-10% 0px -70%',
+				smoothScroll: true,
+			});
+
+			const scrollTo = $(`${window.location.hash}`);
 			if (scrollTo.length) {
 				$('html, body').animate({
-					scrollTop: (scrollTo.offset().top) + 'px',
+					scrollTop: (scrollTo.offset().top - offset) + 'px',
 				}, 400);
 			}
-		} else {
-			$('.content-header').parents('.row').remove();
+			tocEl.removeClass('hidden');
 		}
 	};
 
@@ -52,7 +79,6 @@ define('admin/settings', ['uploader', 'mousetrap', 'hooks', 'alerts'], function 
 				if (field.is('input') && inputType === 'checkbox') {
 					const checked = parseInt(app.config[key], 10) === 1;
 					field.prop('checked', checked);
-					field.parents('.mdl-switch').toggleClass('is-checked', checked);
 				} else if (field.is('textarea') || field.is('select') || (field.is('input') && defaultInputs.indexOf(inputType) !== -1)) {
 					field.val(app.config[key]);
 				}
@@ -66,6 +92,11 @@ define('admin/settings', ['uploader', 'mousetrap', 'hooks', 'alerts'], function 
 		saveBtn.off('click').on('click', function (e) {
 			e.preventDefault();
 
+			const ok = settings.check(document.querySelectorAll('#content [data-field]'));
+			if (!ok) {
+				return;
+			}
+
 			saveFields(fields, function onFieldsSaved(err) {
 				if (err) {
 					return alerts.alert({
@@ -78,15 +109,7 @@ define('admin/settings', ['uploader', 'mousetrap', 'hooks', 'alerts'], function 
 				}
 
 				app.flags._unsaved = false;
-
-				alerts.alert({
-					alert_id: 'config_status',
-					timeout: 2500,
-					title: '[[admin/admin:changes-saved]]',
-					message: '[[admin/admin:changes-saved-message]]',
-					type: 'success',
-				});
-
+				Settings.toggleSaveSuccess(saveBtn);
 				hooks.fire('action:admin.settingsSaved');
 			});
 		});
@@ -115,6 +138,16 @@ define('admin/settings', ['uploader', 'mousetrap', 'hooks', 'alerts'], function 
 		}, 0);
 	};
 
+	Settings.toggleSaveSuccess = function (saveBtn) {
+		const saveBtnEl = saveBtn.get(0);
+		if (saveBtnEl) {
+			saveBtnEl.classList.toggle('saved', true);
+			setTimeout(() => {
+				saveBtnEl.classList.toggle('saved', false);
+			}, 1500);
+		}
+	};
+
 	function handleUploads() {
 		$('#content input[data-action="upload"]').each(function () {
 			const uploadBtn = $(this);
@@ -135,6 +168,7 @@ define('admin/settings', ['uploader', 'mousetrap', 'hooks', 'alerts'], function 
 
 	function setupTagsInput() {
 		$('[data-field-type="tagsinput"]').tagsinput({
+			tagClass: 'badge bg-info',
 			confirmKeys: [13, 44],
 			trimValue: true,
 		});

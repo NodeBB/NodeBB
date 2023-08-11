@@ -1,4 +1,5 @@
 {
+	"errors": "Errors",
 	"figure-x": "Hình %1",
 	"error-events-per-day": "sự kiện mỗi ngày <code>%1</code>",
 	"error.404": "404 Không Tìm Thấy",

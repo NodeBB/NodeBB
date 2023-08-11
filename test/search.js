@@ -183,7 +183,7 @@ describe('Search', () => {
 	it('should fail if searchIn is wrong', (done) => {
 		search.search({
 			query: 'plug',
-			searchIn: 'invalidfilter',
+			searchIn: '',
 		}, (err) => {
 			assert.equal(err.message, '[[error:unknown-search-filter]]');
 			done();
@@ -216,6 +216,7 @@ describe('Search', () => {
 	it('should not find anything', (done) => {
 		search.search({
 			query: 'xxxxxxxxxxxxxx',
+			searchIn: 'titles',
 		}, (err, data) => {
 			assert.ifError(err);
 			assert(Array.isArray(data.posts));

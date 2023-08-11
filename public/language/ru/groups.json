@@ -1,5 +1,7 @@
 {
+    "all-groups": "All groups",
     "groups": "Группы",
+    "members": "Members",
     "view_group": "Просмотр группы",
     "owner": "Администратор группы",
     "new_group": "Создать группу",

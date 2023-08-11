@@ -25,6 +25,15 @@ flagsApi.create = async (caller, data) => {
 	return flagObj;
 };
 
+flagsApi.get = async (caller, { flagId }) => {
+	const isPrivileged = await user.isPrivileged(caller.uid);
+	if (!isPrivileged) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	return await flags.get(flagId);
+};
+
 flagsApi.update = async (caller, data) => {
 	const allowed = await user.isPrivileged(caller.uid);
 	if (!allowed) {
@@ -37,6 +46,8 @@ flagsApi.update = async (caller, data) => {
 	await flags.update(flagId, caller.uid, data);
 	return await flags.getHistory(flagId);
 };
+
+flagsApi.delete = async (_, { flagId }) => await flags.purge([flagId]);
 
 flagsApi.appendNote = async (caller, data) => {
 	const allowed = await user.isPrivileged(caller.uid);

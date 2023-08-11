@@ -1,5 +1,7 @@
 {
+    "all-groups": "All groups",
     "groups": "Grupper",
+    "members": "Members",
     "view_group": "Vis gruppe",
     "owner": "Gruppeeier",
     "new_group": "Opprett ny gruppe",
@@ -59,6 +61,6 @@
     "new-group.group_name": "Gruppenavn:",
     "upload-group-cover": "Last opp et deksel for gruppen ",
     "bulk-invite-instructions": "Skriv inn en liste over kommaseparerte brukernavn for å invitere til denne gruppen",
-    "bulk-invite": "Bulk Invite",
+    "bulk-invite": "Inviter i bulk",
     "remove_group_cover_confirm": "Er du sikker på at du vil fjerne omslagsbildet? "
 }

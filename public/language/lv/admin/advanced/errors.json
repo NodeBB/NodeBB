@@ -1,4 +1,5 @@
 {
+	"errors": "Errors",
 	"figure-x": "Attēls %1",
 	"error-events-per-day": "<code>%1</code> kļūdas dienā",
 	"error.404": "404 Not Found",

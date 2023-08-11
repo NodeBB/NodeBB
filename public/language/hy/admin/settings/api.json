@@ -1,0 +1,29 @@
+{
+	"tokens": "Նշաններ/ձևաթղթեր",
+	"settings": "Կարգավորումներ ",
+	"lead-text": "Այս էջից դուք կարող եք կարգավորել մուտքը դեպի «Write API» NodeBB-ում:",
+	"intro": " Write API-ն նույնականացնում է օգտատերերին՝ հիմնվելով նրանց նստաշրջանի cookie-ի վրա, սակայն NodeBB-ն աջակցում է նաև կրող նույնականացումը այս էջի միջոցով ստեղծվող նշանների միջոցով:",
+	"warning": "<strong>Be advised</strong> — treat tokens like passwords. If they are leaked, your account should be considered compromised.",
+	"docs": "Սեղմեք այստեղ՝ API-ի ամբողջական ճշգրտմանը մուտք գործելու համար",
+
+	"require-https": "Պահանջել API-ի օգտագործում միայն HTTPS-ի միջոցով",
+	"require-https-caveat": "Նշում․ որոշ տեղադրումներ, որոնք ներառում են բեռի հավասարակշռողներ, կարող են իրենց հարցումները փոխանցել NodeBB-ին՝ օգտագործելով HTTP, որի դեպքում այս տարբերակը պետք է մնա անջատված։",
+
+	"uid": "Օգտատիրոջ ID",
+	"token": "Token",
+	"uid-help-text": "Նշեք Օգտատիրոջ ID՝ այս նշանի հետ կապելու համար: Եթե օգտատիրոջ ID-ն 0 է, ապա այն կհամարվի հիմնական նշան, որը կարող է ենթադրել այլ օգտատերերի ինքնությունը՝ հիմնվելով _uid պարամետրի վրա:",
+	"description": "Նկարագրություն",
+	"last-seen": "Last seen",
+	"created": "Created",
+	"create-token": "Create Token",
+	"update-token": "Update Token",
+	"master-token": "Master token",
+	"last-seen-never": "This key has never been used.",
+	"no-description": "Ոչ մի նկարագրություն նշված չէ:",
+	"actions": "Actions",
+	"edit": "Edit",
+	"roll": "Roll",
+
+	"delete-confirm": "Are you sure you wish to delete this token? It will not be recoverable.",
+	"roll-confirm": "Are you sure you wish to regenerate this token? The old token will be immediately revoked and will not be recoverable."
+}

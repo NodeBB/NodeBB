@@ -72,11 +72,13 @@
 	"development/info": "Thông tin",
 
 	"rebuild-and-restart-forum": "Xây dựng lại & Khởi động lại diễn đàn",
+	"rebuild-and-restart": "Rebuild & Restart",
 	"restart-forum": "Khởi Động Lại Diễn Đàn",
+	"restart": "Restart",
 	"logout": "Đăng xuất",
 	"view-forum": "Xem diễn đàn",
 
-	"search.placeholder": "Nhấn &quot;/&quot; để tìm kiếm cài đặt",
+	"search.placeholder": "Cài đặt tìm kiếm",
 	"search.no-results": "Ko có kết quả...",
 	"search.search-forum": "Tìm kiếm diễn đàn cho <strong></strong>",
 	"search.keep-typing": "Nhập thêm để xem kết quả...",

@@ -1,4 +1,6 @@
 {
+	"manage-privileges": "ניהול הרשאות",
+	"discard-changes": "בטל שינויים",
 	"global": "כללי",
 	"admin": "מנהל",
 	"group-privileges": "הרשאות קבוצות",
@@ -36,7 +38,7 @@
 	"downvote-posts": "הצבעה נגד פוסטים",
 	"delete-topics": "מחיקת נושא",
 	"purge": "מחיקה לצמיתות",
-	"moderate": "הרשאות מודרטור",
+	"moderate": "Moderate",
 	"admin-dashboard": "לוח מחוונים",
 	"admin-categories": "קטגוריות",
 	"admin-privileges": "הרשאות",
@@ -46,10 +48,9 @@
 	"admin-tags": "תגיות",
 	"admin-settings": "הגדרות",
 
-	"alert.confirm-moderate": "<strong>האם אתה בטוח שברצונך להעניק הרשאות מודרטור לקבוצת משתמשים זו?</strong> הקבוצה היא ציבורית, וכל משתמש יכול להצטרף כרצונו.",
+	"alert.confirm-moderate": "<strong>האם אתה בטוח שברצונך להעניק הרשאות מנחה לקבוצת משתמשים זו?</strong> הקבוצה היא ציבורית, וכל משתמש יכול להצטרף כרצונו.",
 	"alert.confirm-admins-mods": "<strong>האם אתה בטוח שברצונך להעניק &quot;הרשאות &amp; ניהול&quot; למשתמש/קבוצה זו?</strong> משתמשים עם הרשאה זו יכולים להוסיף ולהסיר הרשאות של של משתמשים אחרים, <em>כולל מנהל ראשי</em>",
 	"alert.confirm-save": "נא אשר את הגדרת ההרשאות",
-	"alert.saved": "שינויי הרשאות נשמרו והוחלו",
 	"alert.confirm-discard": "האם אתה בטוח שברצונך לבטל את שינויי ההרשאות שלך?",
 	"alert.discarded": "שינויי ההרשאות נמחקו",
 	"alert.confirm-copyToAll": "זהירות!! האם אתה בטוח שברצונך להחיל הגדרת הרשאות זו של <strong>%1</strong> ל <strong>כל הקטגוריות</strong>?",

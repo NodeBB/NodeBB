@@ -42,6 +42,10 @@ helpers.buildBodyClass = function (req, res, templateData = {}) {
 		parts[index] = index ? `${parts[0]}-${p}` : `page-${p || 'home'}`;
 	});
 
+	if (templateData.template) {
+		parts.push(`template-${templateData.template.name.split('/').join('-')}`);
+	}
+
 	if (templateData.template && templateData.template.topic) {
 		parts.push(`page-topic-category-${templateData.category.cid}`);
 		parts.push(`page-topic-category-${slugify(templateData.category.name)}`);
@@ -55,9 +59,13 @@ helpers.buildBodyClass = function (req, res, templateData = {}) {
 		});
 	}
 
+	if (templateData && templateData.bodyClasses) {
+		parts.push(...templateData.bodyClasses);
+	}
+
 	parts.push(`page-status-${res.statusCode}`);
 
-	parts.push(`theme-${meta.config['theme:id'].split('-')[2]}`);
+	parts.push(`theme-${(meta.config['theme:id'] || '').split('-')[2]}`);
 
 	if (req.loggedIn) {
 		parts.push('user-loggedin');

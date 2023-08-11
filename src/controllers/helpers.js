@@ -58,9 +58,10 @@ helpers.buildQueryString = function (query, key, value) {
 
 helpers.addLinkTags = function (params) {
 	params.res.locals.linkTags = params.res.locals.linkTags || [];
+	const page = params.page > 1 ? `?page=${params.page}` : '';
 	params.res.locals.linkTags.push({
 		rel: 'canonical',
-		href: `${url}/${params.url}`,
+		href: `${url}/${params.url}${page}`,
 	});
 
 	params.tags.forEach((rel) => {
@@ -238,10 +239,11 @@ helpers.buildBreadcrumbs = function (crumbs) {
 };
 
 helpers.buildTitle = function (pageTitle) {
-	const titleLayout = meta.config.titleLayout || '{pageTitle} | {browserTitle}';
+	pageTitle = pageTitle || '';
+	const titleLayout = meta.config.titleLayout || `${pageTitle ? '{pageTitle} | ' : ''}{browserTitle}`;
 
 	const browserTitle = validator.escape(String(meta.config.browserTitle || meta.config.title || 'NodeBB'));
-	pageTitle = pageTitle || '';
+
 	const title = titleLayout.replace('{pageTitle}', () => pageTitle).replace('{browserTitle}', () => browserTitle);
 	return title;
 };
@@ -356,22 +358,47 @@ helpers.getSelectedCategory = async function (cids) {
 	};
 };
 
+helpers.getSelectedTag = function (tags) {
+	if (tags && !Array.isArray(tags)) {
+		tags = [tags];
+	}
+	tags = tags || [];
+	const tagData = tags.map(t => validator.escape(String(t)));
+	let selectedTag = null;
+	if (tagData.length) {
+		selectedTag = {
+			label: tagData.join(', '),
+		};
+	}
+	return {
+		selectedTags: tagData,
+		selectedTag: selectedTag,
+	};
+};
+
 helpers.trimChildren = function (category) {
-	if (Array.isArray(category.children)) {
+	if (category && Array.isArray(category.children)) {
 		category.children = category.children.slice(0, category.subCategoriesPerPage);
 		category.children.forEach((child) => {
-			child.children = undefined;
+			if (category.isSection) {
+				helpers.trimChildren(child);
+			} else {
+				child.children = undefined;
+			}
 		});
 	}
 };
 
 helpers.setCategoryTeaser = function (category) {
 	if (Array.isArray(category.posts) && category.posts.length && category.posts[0]) {
+		const post = category.posts[0];
 		category.teaser = {
-			url: `${nconf.get('relative_path')}/post/${category.posts[0].pid}`,
-			timestampISO: category.posts[0].timestampISO,
-			pid: category.posts[0].pid,
-			topic: category.posts[0].topic,
+			url: `${nconf.get('relative_path')}/post/${post.pid}`,
+			timestampISO: post.timestampISO,
+			pid: post.pid,
+			index: post.index,
+			topic: post.topic,
+			user: post.user,
 		};
 	}
 };
@@ -430,11 +457,22 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 			res.set('cache-control', 'private');
 		}
 
+		let code = 'ok';
+		let message = 'OK';
+		switch (statusCode) {
+			case 202:
+				code = 'accepted';
+				message = 'Accepted';
+				break;
+
+			case 204:
+				code = 'no-content';
+				message = 'No Content';
+				break;
+		}
+
 		res.status(statusCode).json({
-			status: {
-				code: 'ok',
-				message: 'OK',
-			},
+			status: { code, message },
 			response: payload || {},
 		});
 	} else if (payload instanceof Error) {
@@ -453,6 +491,10 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 
 			case '[[error:invalid-uid]]':
 				statusCode = 401;
+				break;
+
+			case '[[error:no-topic]]':
+				statusCode = 404;
 				break;
 		}
 

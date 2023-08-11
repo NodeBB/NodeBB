@@ -19,7 +19,6 @@ SocketAdmin.tags = require('./admin/tags');
 SocketAdmin.rewards = require('./admin/rewards');
 SocketAdmin.navigation = require('./admin/navigation');
 SocketAdmin.rooms = require('./admin/rooms');
-SocketAdmin.social = require('./admin/social');
 SocketAdmin.themes = require('./admin/themes');
 SocketAdmin.plugins = require('./admin/plugins');
 SocketAdmin.widgets = require('./admin/widgets');

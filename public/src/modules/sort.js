@@ -1,36 +1,24 @@
 'use strict';
 
 
-define('sort', ['components', 'api'], function (components, api) {
+define('sort', ['components'], function (components) {
 	const module = {};
 
 	module.handleSort = function (field, gotoOnSave) {
 		const threadSort = components.get('thread/sort');
 		threadSort.find('i').removeClass('fa-check');
-		const currentSetting = threadSort.find('a[data-sort="' + config[field] + '"]');
+		const currentSort = utils.params().sort || config[field];
+		const currentSetting = threadSort.find('a[data-sort="' + currentSort + '"]');
 		currentSetting.find('i').addClass('fa-check');
 
 		$('body')
 			.off('click', '[component="thread/sort"] a')
 			.on('click', '[component="thread/sort"] a', function () {
-				function refresh(newSetting, params) {
-					config[field] = newSetting;
-					const qs = decodeURIComponent($.param(params));
-					ajaxify.go(gotoOnSave + (qs ? '?' + qs : ''));
-				}
 				const newSetting = $(this).attr('data-sort');
-				if (app.user.uid) {
-					const payload = { settings: {} };
-					payload.settings[field] = newSetting;
-					api.put(`/users/${app.user.uid}/settings`, payload).then(() => {
-						// Yes, this is normal. If you are logged in, sort is not added to qs since it's saved to user settings
-						refresh(newSetting, utils.params());
-					});
-				} else {
-					const urlParams = utils.params();
-					urlParams.sort = newSetting;
-					refresh(newSetting, urlParams);
-				}
+				const urlParams = utils.params();
+				urlParams.sort = newSetting;
+				const qs = decodeURIComponent($.param(urlParams));
+				ajaxify.go(gotoOnSave + (qs ? '?' + qs : ''));
 			});
 	};
 

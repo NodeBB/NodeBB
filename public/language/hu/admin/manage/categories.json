@@ -1,7 +1,11 @@
 {
+	"manage-categories": "Manage Categories",
+	"add-category": "Add category",
+	"jump-to": "Jump to...",
 	"settings": "Kategória beállítások",
+	"edit-category": "Edit Category",
 	"privileges": "Jogosultságok",
-
+	"back-to-categories": "Back to categories",
 	"name": "Kategória neve",
 	"description": "Kategória leírása",
 	"bg-color": "Háttérszín",
@@ -15,8 +19,11 @@
 	"post-queue": "Bejegyzés várólista",
 	"tag-whitelist": "Engedélyezett címkék",
 	"upload-image": "Kép feltöltése",
+	"upload": "Upload",
+	"select-icon": "Select Icon",
 	"delete-image": "Kép törlése",
 	"category-image": "Kategóriakép",
+	"image-and-icon": "Image & Icon",
 	"parent-category": "Szülő kategória",
 	"optional-parent-category": "(Nem kötelező) Szülő kategória",
 	"top-level": "Legfelső szint",
@@ -31,6 +38,7 @@
 	"disable": "Letiltás",
 	"edit": "Szerkesztés",
 	"analytics": "Analitika",
+
 	"view-category": "Kategória megtekintése",
 	"set-order": "Sorrend beállítása",
 	"set-order-help": "Setting the order of the category will move this category to that order and update the order of other categories as necessary. Minimum order is 1 which puts the category at the top.",

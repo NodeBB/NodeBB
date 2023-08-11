@@ -1,4 +1,10 @@
 {
+	"manage-groups": "Manage Groups",
+	"add-group": "Add group",
+	"edit-group": "Edit Group",
+	"back-to-groups": "Back to groups",
+	"view-group": "View group",
+	"icon-and-title": "Icon & Title",
 	"name": "그룹 이름",
 	"badge": "뱃지",
 	"properties": "속성",
@@ -10,7 +16,7 @@
 	"edit": "수정",
 	"delete": "제거",
 	"privileges": "권한",
-	"download-csv": "CSV",
+	"members-csv": "Members (CSV)",
 	"search-placeholder": "검색",
 	"create": "그룹 생성",
 	"description-placeholder": "그룹에 대한 짧은 설명",
@@ -39,6 +45,5 @@
 	"revert": "되돌리기",
 
 	"edit.no-users-found": "사용자를 찾을 수 없습니다.",
-	"edit.confirm-remove-user": "이 멤버를 추방하시겠습니까?",
-	"edit.save-success": "변경 사항을 저장했습니다!"
+	"edit.confirm-remove-user": "이 멤버를 추방하시겠습니까?"
 }

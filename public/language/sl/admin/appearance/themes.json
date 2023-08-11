@@ -1,7 +1,9 @@
 {
+    "themes": "Themes",
     "checking-for-installed": "Iščem nameščene teme...",
     "homepage": "Domača stran",
     "select-theme": "Izberi temo",
+    "revert-theme": "Revert Theme",
     "current-theme": "Trenutna tema",
     "no-themes": "Ni najdenih nameščenih tem",
     "revert-confirm": "Ste prepričani, da želite obnoviti privzeto NodeBB temo?",

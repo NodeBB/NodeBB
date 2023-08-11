@@ -1,21 +1,28 @@
 <form type="form">
 	<div class="form-group">
 		<div component="category-selector" class="btn-group">
-			<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+			<button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
 				<span component="category-selector-selected">[[topic:thread_tools.select_category]]</span> <span class="caret"></span>
 			</button>
-			<div component="category-selector-search" class="hidden">
-				<input type="text" class="form-control" autocomplete="off">
+			<div component="category-selector-search" class="hidden position-absolute">
+				<input type="text" class="form-control" placeholder="[[search:type-to-search]]" autocomplete="off">
 			</div>
 			<ul component="category/list" class="dropdown-menu category-dropdown-menu" role="menu">
 				<li component="category/no-matches" role="presentation" class="category hidden">
-					<a role="menuitem">[[search:no-matches]]</a>
+					<a class="dropdown-item" role="menuitem">[[search:no-matches]]</a>
 				</li>
-				<!-- BEGIN categories -->
+				{{{ each categories }}}
 				<li role="presentation" class="category {{{if categories.disabledClass}}}disabled{{{end}}}" data-cid="{categories.cid}" data-name="{categories.name}">
-					<a role="menuitem">{categories.level}<span component="category-markup"><!-- IF categories.icon --><span class="fa-stack" style="{function.generateCategoryBackground}"><i style="color: {categories.color};" class="fa fa-stack-1x fa-fw {categories.icon}"></i></span><!-- ENDIF categories.icon --> {categories.name}</span></a>
+					<a class="dropdown-item" role="menuitem">{categories.level}
+						<span component="category-markup">
+							<div class="category-item d-inline-block">
+								{buildCategoryIcon(@value, "24px", "rounded-circle")}
+								{./name}
+							</div>
+						</span>
+					</a>
 				</li>
-				<!-- END categories -->
+				{{{ end }}}
 			</ul>
 		</div>
 	</div>

@@ -1,4 +1,10 @@
 {
+	"manage-groups": "Manage Groups",
+	"add-group": "Add group",
+	"edit-group": "Edit Group",
+	"back-to-groups": "Back to groups",
+	"view-group": "View group",
+	"icon-and-title": "Icon & Title",
 	"name": "Название группы",
 	"badge": "Значок",
 	"properties": "Свойства",
@@ -10,7 +16,7 @@
 	"edit": "Редактировать",
 	"delete": "Удалить",
 	"privileges": "Права доступа",
-	"download-csv": "CSV",
+	"members-csv": "Members (CSV)",
 	"search-placeholder": "Поиск",
 	"create": "Создать группу",
 	"description-placeholder": "Краткое описание вашей группы",
@@ -39,6 +45,5 @@
 	"revert": "Отменить",
 
 	"edit.no-users-found": "Участников не найдено",
-	"edit.confirm-remove-user": "Вы уверены, что хотите удалить этого участника?",
-	"edit.save-success": "Изменения сохранены!"
+	"edit.confirm-remove-user": "Вы уверены, что хотите удалить этого участника?"
 }

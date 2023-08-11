@@ -1,6 +1,6 @@
 'use strict';
 
-define('forum/header/unread', function () {
+define('forum/header/unread', ['hooks'], function (hooks) {
 	const unread = {};
 	const watchStates = {
 		ignoring: 1,
@@ -83,12 +83,30 @@ define('forum/header/unread', function () {
 		if (!utils.isNumber(count)) {
 			return;
 		}
+		count = Math.max(0, count);
+		const countText = count > 99 ? '99+' : count;
 
-		$('a[href="' + config.relative_path + url + '"].navigation-link i')
+		const navLink = $('a[href="' + config.relative_path + url + '"].navigation-link');
+		// persona uses i with :after element
+		navLink.find('i')
 			.toggleClass('unread-count', count > 0)
-			.attr('data-content', count > 99 ? '99+' : count);
+			.attr('data-content', countText);
 
-		$('#mobile-menu [data-unread-url="' + url + '"]').attr('data-content', count > 99 ? '99+' : count);
+		// harmony uses BS5 absolute positioned element
+		navLink.find('[component="navigation/count"]')
+			.toggleClass('hidden', count <= 0)
+			.text(count);
+
+		// persona mobile menu uses data-content
+		$('#mobile-menu [data-unread-url="' + url + '"]')
+			.attr('data-content', countText);
+
+		// harmony mobile unread badge, doesn't use data-content
+		$('[component="unread/count"][data-unread-url="' + url + '"]')
+			.toggleClass('hidden', count <= 0)
+			.text(countText);
+
+		hooks.fire('action:unread.updateCount', { url, count });
 	}
 	unread.updateUnreadTopicCount = updateUnreadTopicCount;
 

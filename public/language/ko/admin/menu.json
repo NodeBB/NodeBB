@@ -72,11 +72,13 @@
 	"development/info": "정보",
 
 	"rebuild-and-restart-forum": "리빌드 & 포럼 재시작",
+	"rebuild-and-restart": "Rebuild & Restart",
 	"restart-forum": "포럼 재시작",
+	"restart": "Restart",
 	"logout": "로그아웃",
 	"view-forum": "포럼 보기",
 
-	"search.placeholder": "&quot;/&quot;를 눌러 설정 검색",
+	"search.placeholder": "Search settings",
 	"search.no-results": "검색 결과 없음...",
 	"search.search-forum": "포럼에서 <strong></strong> 검색",
 	"search.keep-typing": "검색 결과를 보기 위해 더 입력하세요...",

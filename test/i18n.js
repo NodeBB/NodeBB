@@ -14,7 +14,7 @@ describe('i18n', () => {
 	let folders;
 
 	before(async function () {
-		if (process.env.GITHUB_EVENT_NAME === 'pull_request') {
+		if ((process.env.GITHUB_REF && process.env.GITHUB_REF !== 'develop') || process.env.GITHUB_EVENT_NAME === 'pull_request') {
 			this.skip();
 		}
 

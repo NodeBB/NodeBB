@@ -21,7 +21,7 @@ define('admin/modules/search', ['mousetrap', 'alerts'], function (mousetrap, ale
 				// and wrap the match in a `.search-match` element
 				.replace(
 					new RegExp('^[\\s\\S]*?(.{0,25})(' + escaped + ')(.{0,25})[\\s\\S]*?$', 'gmi'),
-					'...$1<span class="search-match">$2</span>$3...<br>'
+					'...$1<span class="search-match fw-bold">$2</span>$3...<br>'
 				)
 				// collapse whitespace
 				.replace(/(?:\n ?)+/g, '\n')
@@ -33,7 +33,7 @@ define('admin/modules/search', ['mousetrap', 'alerts'], function (mousetrap, ale
 			);
 
 			return '<li role="presentation" class="result">' +
-				'<a role= "menuitem" href= "' + config.relative_path + '/' + namespace + '" >' +
+				'<a class="dropdown-item rounded-1" role="menuitem" href= "' + config.relative_path + '/' + namespace + '" >' +
 					title +
 					'<br>' + (!results ? '' :
 				('<small><code>' +
@@ -60,10 +60,17 @@ define('admin/modules/search', ['mousetrap', 'alerts'], function (mousetrap, ale
 	};
 
 	function setupACPSearch(dict) {
-		const dropdown = $('#acp-search .dropdown');
-		const menu = $('#acp-search .dropdown-menu');
-		const input = $('#acp-search input');
+		const searchEls = $('[component="acp/search"]');
+		searchEls.each((index, searchEl) => {
+			setupSearch(dict, $(searchEl));
+		});
+	}
 
+	function setupSearch(dict, searchEl) {
+		const dropdown = searchEl.find('.dropdown');
+		const menu = searchEl.find('.dropdown-menu');
+		const input = searchEl.find('input');
+		const placeholderText = dropdown.attr('data-text');
 		if (!config.searchEnabled) {
 			menu.addClass('search-disabled');
 		}
@@ -72,18 +79,17 @@ define('admin/modules/search', ['mousetrap', 'alerts'], function (mousetrap, ale
 			dropdown.addClass('open');
 		});
 
-		$('#acp-search').parents('form').on('submit', function (ev) {
-			let selected = menu.find('li.result > a.focus').attr('href');
-			if (!selected.length) {
-				selected = menu.find('li.result > a').first().attr('href');
-			}
-			const href = selected || config.relative_path + '/search?in=titlesposts&term=' + escape(input.val());
+		searchEl.parents('form').on('submit', function (ev) {
+			const query = input.val();
+			const selected = menu.get(0).querySelector('li.result > a.focus') || menu.get(0).querySelector('li.result > a');
+			const href = selected ? selected.getAttribute('href') : config.relative_path + '/search?in=titlesposts&term=' + escape(query);
 
 			ajaxify.go(href.replace(/^\//, ''));
 
 			setTimeout(function () {
 				dropdown.removeClass('open');
 				input.blur();
+				dropdown.attr('data-text', query || placeholderText);
 			}, 150);
 
 			ev.preventDefault();

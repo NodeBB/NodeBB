@@ -1,9 +1,9 @@
 'use strict';
 
-const cacheCreate = require('./cacheCreate');
+const cacheCreate = require('./cache/lru');
 
 module.exports = cacheCreate({
 	name: 'local',
 	max: 40000,
-	maxAge: 0,
+	ttl: 0,
 });

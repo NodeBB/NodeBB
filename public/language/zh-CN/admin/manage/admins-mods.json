@@ -1,10 +1,11 @@
 {
+    "manage-admins-and-mods": "管理管理员和版主",
     "administrators": "管理员",
     "global-moderators": "全局版主",
     "moderators": "版主",
     "no-global-moderators": "没有全局版主",
     "no-sub-categories": "没有子版块",
-    "subcategories": "%1 个子版块",
+    "view-children": "查看子 (%1)",
     "no-moderators": "没有版主",
     "add-administrator": "添加管理员",
     "add-global-moderator": "添加全局版主",

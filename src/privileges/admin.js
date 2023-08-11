@@ -56,8 +56,17 @@ privsAdmin.routeMap = {
 	'extend/plugins': 'admin:settings',
 	'extend/widgets': 'admin:settings',
 	'extend/rewards': 'admin:settings',
+	// uploads
+	'category/uploadpicture': 'admin:categories',
+	uploadfavicon: 'admin:settings',
+	uploadTouchIcon: 'admin:settings',
+	uploadMaskableIcon: 'admin:settings',
+	uploadlogo: 'admin:settings',
+	uploadOgImage: 'admin:settings',
+	uploadDefaultAvatar: 'admin:settings',
 };
 privsAdmin.routePrefixMap = {
+	'dashboard/': 'admin:dashboard',
 	'manage/categories/': 'admin:categories',
 	'manage/privileges/': 'admin:privileges',
 	'manage/groups/': 'admin:groups',
@@ -109,8 +118,13 @@ privsAdmin.resolve = (path) => {
 		return privsAdmin.routeMap[path];
 	}
 
-	const found = Object.entries(privsAdmin.routePrefixMap).find(entry => path.startsWith(entry[0]));
-	return found ? found[1] : undefined;
+	const found = Object.entries(privsAdmin.routePrefixMap)
+		.filter(entry => path.startsWith(entry[0]))
+		.sort((entry1, entry2) => entry2[0].length - entry1[0].length);
+	if (!found.length) {
+		return undefined;
+	}
+	return found[0][1]; // [0] is path [1] is privilege
 };
 
 privsAdmin.list = async function (uid) {
@@ -196,4 +210,9 @@ privsAdmin.userPrivileges = async function (uid) {
 privsAdmin.groupPrivileges = async function (groupName) {
 	const groupPrivilegeList = await privsAdmin.getGroupPrivilegeList();
 	return await helpers.userOrGroupPrivileges(0, groupName, groupPrivilegeList);
+};
+
+privsAdmin.getUidsWithPrivilege = async function (privilege) {
+	const uidsByCid = await helpers.getUidsWithPrivilege([0], privilege);
+	return uidsByCid[0];
 };

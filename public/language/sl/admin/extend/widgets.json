@@ -1,4 +1,5 @@
 {
+	"widgets": "Widgets",
 	"available": "Razpoložljivi pripomočki",
 	"explanation": "V spustnem meniju izberite pripomoček in ga povlecite in spustite v območje gradnikov predloge na levi.",
 	"none-installed": "Pripomočki niso najdeni! Aktivirajte vtičnik za osnove pripomočkov na nadzorni plošči<a href=\"%1\">vtičnikov</a>.",
@@ -8,9 +9,9 @@
 	"containers.none": "Brez",
 	"container.well": "Well",
 	"container.jumbotron": "Jumbotron",
-	"container.panel": "plošča",
-	"container.panel-header": "Glava plošče",
-	"container.panel-body": "Panel Body",
+	"container.card": "Card",
+	"container.card-header": "Card Header",
+	"container.card-body": "Card Body",
 	"container.alert": "Opozorilo",
 
 	"alert.confirm-delete": "Ste prepričani, da želite izbrisati ta pripomoček?",
@@ -26,5 +27,7 @@
 	"container.placeholder": "Drag and drop a container or enter HTML here.",
 	"show-to-groups": "Prikaži skupinam",
 	"hide-from-groups": "Skrij skupinam",
+	"start-date": "Start date",
+	"end-date": "End date",
 	"hide-on-mobile": "Hide on mobile"
 }

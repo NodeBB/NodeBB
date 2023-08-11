@@ -14,6 +14,7 @@
     "flagged-content": "Conteúdo denunciado",
     "ip-blacklist": "Lista negra de IPs",
     "post-queue": "Publicações por Aprovar",
+    "registration-queue": "Registration Queue",
     "users/online": "Utilizadores online",
     "users/latest": "Utilizadores Recentes",
     "users/sort-posts": "Utilizadores com mais publicações",
@@ -49,6 +50,7 @@
     "account/watched_categories": "Categorias subscritas por %1",
     "account/bookmarks": "Publicações marcadas de %1",
     "account/settings": "Definições de utilizador",
+    "account/settings-of": "Changing settings of %1",
     "account/watched": "Tópicos subscritos por %1",
     "account/ignored": "Tópicos ignorados por %1",
     "account/upvoted": "Publicações votadas favoravelmente por %1",
@@ -59,7 +61,7 @@
     "account/uploads": "Carregamentos feitos por %1",
     "account/sessions": "Sessões ativas",
     "confirm": "E-mail confirmado",
-    "maintenance.text": "%1 está atualmente sobre manutenção.<br>Por favor, volta noutra altura.",
+    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
     "maintenance.messageIntro": "Adicionalmente, o administrador deixou esta mensagem:",
     "throttled.text": "%1 não está disponível de momento devido a um carregamento excesso. Por favor, volta mais tarde."
 }

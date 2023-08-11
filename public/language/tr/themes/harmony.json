@@ -1,0 +1,16 @@
+{
+	"theme-name": "Harmony Theme",
+	"skins": "Deriler",
+	"collapse": "Daralt",
+	"expand": "Genişlet",
+	"login-register-to-search": "Aramak için giriş yapın veya kaydolun",
+	"settings.title": "Tema Ayarları",
+	"settings.enableQuickReply": "Hızlı Cevabı Etkinleştir",
+	"settings.centerHeaderElements": "Tepedeki Merkezi Öğeler",
+	"settings.mobileTopicTeasers": "Başlık Önizlemelerini mobilde göster",
+	"settings.stickyToolbar": "Yapışkan Araç Çubuğu",
+	"settings.stickyToolbar.help": "Kategori ve konu sayfalarındaki araç çubuğu sayfanın üstünde sabitlenmiş şekilde kalacak",
+	"settings.autohideBottombar": "Alttaki şeridi otomatik olarak gizle",
+	"settings.autohideBottombar.help": "Sayfanın altındaki şerit sayfayı aşağıya doğru kaydırırken mobilde gizlenecek",
+	"settings.chatModals": "Enable chat modals"
+}

@@ -1,4 +1,5 @@
 {
+	"widgets": "ווידג'טים",
 	"available": "וידג'טים זמינים",
 	"explanation": "בחר וידג'ט מהתפריט הנפתח ואז גרור ושחרר אותו באזור הווידג'ט של התבנית משמאל.",
 	"none-installed": "לא נמצאו וידג'טים! הפעל את תוספי הוידג'טים ב <a href=\"%1\">תוספים</a> בלוח הבקרה.",
@@ -8,9 +9,9 @@
 	"containers.none": "None",
 	"container.well": "Well",
 	"container.jumbotron": "Jumbotron",
-	"container.panel": "פאנל",
-	"container.panel-header": "כותרת פאנל",
-	"container.panel-body": "גוף הפאנל",
+	"container.card": "כרטיס",
+	"container.card-header": "כותרת כרטיס",
+	"container.card-body": "גוף כרטיס",
 	"container.alert": "התראה",
 
 	"alert.confirm-delete": "האם אתה בטוח שאתה רוצה למחוק את הוידג'ט?",
@@ -26,5 +27,7 @@
 	"container.placeholder": "גרור ושחרר גורם מכיל (container) או הזן HTML כאן.",
 	"show-to-groups": "יוצג בקבוצות",
 	"hide-from-groups": "יוסתר מקבוצות",
+	"start-date": "תאריך התחלה",
+	"end-date": "תאריך סיום",
 	"hide-on-mobile": "הסתר במובייל"
 }
