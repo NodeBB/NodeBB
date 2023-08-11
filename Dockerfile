@@ -1,5 +1,3 @@
-FROM node:lts-alpine3.16
-
 FROM --platform=$BUILDPLATFORM node:lts as npm
 
 RUN mkdir -p /usr/src/build && \
