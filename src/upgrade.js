@@ -62,7 +62,7 @@ Upgrade.getAll = async function () {
 Upgrade.appendPluginScripts = async function (files) {
 	// Find all active plugins
 	const activePlugins = await plugins.getActive();
-	for (const plugin of plugins) {
+	for (const plugin of activePlugins) {
 		let configPath = path.join(paths.nodeModules, plugin, 'plugin.json');
 		// eslint-disable-next-line no-await-in-loop
 		if (!await file.exists(configPath)) {
