@@ -1,5 +1,5 @@
 {
-	"manage-users": "Manage Users",
+	"manage-users": "Gérer les utilisateurs",
 	"users": "Utilisateurs",
 	"edit": "Actions",
 	"make-admin": "Promouvoir Admin",
@@ -18,7 +18,7 @@
 	"purge": "Supprimer <strong>le(s) compte(s)</strong> et <strong>le contenu</strong>",
 	"download-csv": "Exporter en CSV",
 	"manage-groups": "Gérer les groupes",
-	"set-reputation": "Set Reputation",
+	"set-reputation": "Définir une réputation",
 	"add-group": "Ajouter un groupe",
 	"create": "Créer un utilisateur",
 	"invite": "Inviter par mail",

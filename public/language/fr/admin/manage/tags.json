@@ -1,11 +1,11 @@
 {
-	"manage-tags": "Manage Tags",
+	"manage-tags": "Gérer les mots-clés",
 	"none": "Votre forum n'a pour l'instant aucun sujet avec mots-clés.",
 	"bg-color": "Couleur d'arrière plan",
 	"text-color": "Couleur du texte",
 	"description": "Pour une sélection multiple :\nSélectionnez des mots-clés en cliquant ou en sélectionnant avec votre souris ou utilisez la touche <code>CTRL</code> .",
 	"create": "Créer le mot-clés",
-	"add-tag": "Add tag",
+	"add-tag": "Ajouter un mots-clés",
 	"modify": "Modifier les mots-clés",
 	"rename": "Renommer les mots-clés",
 	"delete": "Supprimer la sélection",
