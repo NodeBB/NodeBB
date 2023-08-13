@@ -17,6 +17,6 @@
 
 	<div class="form-check">
 		<input class="form-check-input" type="checkbox" name="gdpr_agree_email" id="gdpr_agree_email">
-		<label class="form-check-label" for="gdpr_agree_data">[[register:gdpr_agree_email]]</label>
+		<label class="form-check-label" for="gdpr_agree_email">[[register:gdpr_agree_email]]</label>
 	</div>
 </div>

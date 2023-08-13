@@ -210,7 +210,7 @@ authenticationController.registerComplete = async function (req, res) {
 };
 
 authenticationController.registerAbort = async (req, res) => {
-	if (req.uid) {
+	if (req.uid && req.session.registration) {
 		// Email is the only cancelable interstitial
 		delete req.session.registration.updateEmail;
 
