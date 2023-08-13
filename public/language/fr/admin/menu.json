@@ -14,7 +14,7 @@
 	"manage/users": "Utilisateurs",
 	"manage/admins-mods": "Modération",
 	"manage/registration": "File d'inscription",
-	"manage/flagged-content": "Flagged Content",
+	"manage/flagged-content": "Contenu signalé",
 	"manage/post-queue": "File d’attente des messages",
 	"manage/groups": "Groupes",
 	"manage/ip-blacklist": "Liste noire d'IPs",
