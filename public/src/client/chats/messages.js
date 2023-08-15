@@ -3,9 +3,9 @@
 
 define('forum/chats/messages', [
 	'components', 'hooks', 'bootbox', 'alerts',
-	'messages', 'api', 'forum/topic/images',
+	'messages', 'api', 'forum/topic/images', 'imagesloaded',
 ], function (
-	components, hooks, bootbox, alerts, messagesModule, api, images
+	components, hooks, bootbox, alerts, messagesModule, api, images, imagesLoaded
 ) {
 	const messages = {};
 
@@ -95,7 +95,7 @@ define('forum/chats/messages', [
 		newMessage.appendTo(chatContentEl);
 		messages.onMessagesAddedToDom(newMessage);
 		if (isAtBottom || msgData.self) {
-			messages.scrollToBottom(chatContentEl);
+			messages.scrollToBottomAfterImageLoad(chatContentEl);
 			// remove some message elements if there are too many
 			const chatMsgEls = chatContentEl.find('[data-mid]');
 			if (chatMsgEls.length > 150) {
@@ -135,6 +135,14 @@ define('forum/chats/messages', [
 				containerEl.outerHeight() + containerEl.scrollTop()
 			);
 			return distanceToBottom < (threshold || 100);
+		}
+	};
+	messages.scrollToBottomAfterImageLoad = function (containerEl) {
+		if (containerEl && containerEl.length) {
+			const msgBodyEls = containerEl[0].querySelectorAll('[component="chat/message/body"]');
+			imagesLoaded(msgBodyEls, () => {
+				messages.scrollToBottom(containerEl);
+			});
 		}
 	};
 

@@ -62,8 +62,9 @@ define('forum/chats', [
 		}
 
 		Chats.initialised = true;
-		messages.scrollToBottom($('[component="chat/message/content"]'));
-		messages.wrapImagesInLinks($('[component="chat/message/content"]'));
+		const changeContentEl = $('[component="chat/message/content"]');
+		messages.wrapImagesInLinks(changeContentEl);
+		messages.scrollToBottomAfterImageLoad(changeContentEl);
 		create.init();
 
 		hooks.fire('action:chat.loaded', $('.chats-full'));
@@ -283,11 +284,12 @@ define('forum/chats', [
 		// https://stackoverflow.com/questions/454202/creating-a-textarea-with-auto-resize
 		const textarea = parent.find('[component="chat/input"]');
 		textarea.on('input', function () {
-			const isAtBottom = messages.isAtBottom(parent.find('[component="chat/message/content"]'));
+			const chatContentEl = parent.find('[component="chat/message/content"]');
+			const isAtBottom = messages.isAtBottom(chatContentEl);
 			textarea.css({ height: 0 });
 			textarea.css({ height: messages.calcAutoTextAreaHeight(textarea) + 'px' });
 			if (isAtBottom) {
-				messages.scrollToBottom(parent.find('[component="chat/message/content"]'));
+				messages.scrollToBottom(chatContentEl);
 			}
 		});
 	};
@@ -526,7 +528,7 @@ define('forum/chats', [
 				Chats.setActive(roomId);
 				Chats.addEventListeners();
 				hooks.fire('action:chat.loaded', $('.chats-full'));
-				messages.scrollToBottom(mainWrapper.find('[component="chat/message/content"]'));
+				messages.scrollToBottomAfterImageLoad(mainWrapper.find('[component="chat/message/content"]'));
 				if (history.pushState) {
 					history.pushState({
 						url: url,

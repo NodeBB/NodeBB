@@ -209,7 +209,7 @@ define('chat', [
 			if (modal.is(':visible')) {
 				taskbar.updateActive(modal.attr('data-uuid'));
 				if (ChatsMessages.isAtBottom(modal.find('[component="chat/message/content"]'))) {
-					ChatsMessages.scrollToBottom(modal.find('[component="chat/message/content"]'));
+					ChatsMessages.scrollToBottomAfterImageLoad(modal.find('[component="chat/message/content"]'));
 				}
 			} else if (!ajaxify.data.template.chats) {
 				module.toggleNew(modal.attr('data-uuid'), true, true);
@@ -453,7 +453,7 @@ define('chat', [
 			const chatModal = $('.chat-modal[data-uuid="' + uuid + '"]');
 			chatModal.removeClass('hide');
 			taskbar.updateActive(uuid);
-			ChatsMessages.scrollToBottom(chatModal.find('.chat-content'));
+			ChatsMessages.scrollToBottomAfterImageLoad(chatModal.find('.chat-content'));
 			module.focusInput(chatModal);
 			const roomId = chatModal.attr('data-roomid');
 			api.del(`/chats/${roomId}/state`, {});
