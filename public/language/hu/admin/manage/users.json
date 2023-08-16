@@ -18,6 +18,7 @@
 	"purge": "<strong>Felhasználó(k)</strong> és <strong>minden tartalmának</strong> törlése",
 	"download-csv": "CSV letöltése",
 	"manage-groups": "Csoportok kezelése",
+	"set-reputation": "Set Reputation",
 	"add-group": "Csoport létrehozása",
 	"create": "Felhasználó létrehozása",
 	"invite": "Invite by Email",

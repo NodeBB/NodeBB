@@ -7,10 +7,10 @@
 	"settings.title": "Configuration du thème",
 	"settings.enableQuickReply": "Activer les réponses rapide",
 	"settings.centerHeaderElements": "Centrer les éléments d'en-tête",
-	"settings.mobileTopicTeasers": "Show topic teasers on mobile",
-	"settings.stickyToolbar": "Sticky toolbar",
-	"settings.stickyToolbar.help": "The toolbar on topic and category pages will stick to the top of the page",
-	"settings.autohideBottombar": "Auto hide bottom bar",
-	"settings.autohideBottombar.help": "The bottom bar on mobile view will be hidden when the page is scrolled down",
-	"settings.chatModals": "Enable chat modals"
+	"settings.mobileTopicTeasers": "Afficher les teasers de sujet sur mobile",
+	"settings.stickyToolbar": "Barre d'outils",
+	"settings.stickyToolbar.help": "La barre d'outils sur les pages de sujets et de catégories restera en haut de la page",
+	"settings.autohideBottombar": "Masquer automatiquement la barre inférieure",
+	"settings.autohideBottombar.help": "La barre inférieure de la vue mobile sera masquée lorsque la page défilera vers le bas",
+	"settings.chatModals": "Activer les discussions"
 }

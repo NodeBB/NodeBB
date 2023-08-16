@@ -14,6 +14,7 @@
 	"manage/users": "Korisnici",
 	"manage/admins-mods": "Admins & Mods",
 	"manage/registration": "Lista Registracija",
+	"manage/flagged-content": "Flagged Content",
 	"manage/post-queue": "Post Queue",
 	"manage/groups": "Grupe",
 	"manage/ip-blacklist": "Crna Lista IP adresa",

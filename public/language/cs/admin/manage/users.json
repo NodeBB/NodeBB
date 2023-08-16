@@ -18,6 +18,7 @@
 	"purge": "Odstranit <strong>uživatele</strong> a <strong>obsah</strong>",
 	"download-csv": "Stáhnout jako CSV",
 	"manage-groups": "Spravovat skupiny",
+	"set-reputation": "Set Reputation",
 	"add-group": "Přidat skupinu",
 	"create": "Create User",
 	"invite": "Invite by Email",

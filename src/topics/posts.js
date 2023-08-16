@@ -189,14 +189,18 @@ module.exports = function (Topics) {
 		const usersMap = _.zipObject(parentUids, userData);
 		const parents = {};
 		parentPosts.forEach((post, i) => {
-			parents[parentPids[i]] = {
-				username: usersMap[post.uid].username,
-				displayname: usersMap[post.uid].displayname,
-			};
+			if (usersMap[post.uid]) {
+				parents[parentPids[i]] = {
+					username: usersMap[post.uid].username,
+					displayname: usersMap[post.uid].displayname,
+				};
+			}
 		});
 
 		postData.forEach((post) => {
-			post.parent = parents[post.toPid];
+			if (parents[post.toPid]) {
+				post.parent = parents[post.toPid];
+			}
 		});
 	};
 

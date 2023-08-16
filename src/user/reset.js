@@ -12,6 +12,7 @@ const db = require('../database');
 const meta = require('../meta');
 const emailer = require('../emailer');
 const Password = require('../password');
+const plugins = require('../plugins');
 
 const UserReset = module.exports;
 
@@ -92,8 +93,11 @@ UserReset.commit = async function (code, password) {
 	}
 	const userData = await db.getObjectFields(
 		`user:${uid}`,
-		['password', 'passwordExpiry', 'password:shaWrapped']
+		['password', 'passwordExpiry', 'password:shaWrapped', 'username']
 	);
+
+	await plugins.hooks.fire('filter:password.check', { password: password, uid });
+
 	const ok = await Password.compare(password, userData.password, !!parseInt(userData['password:shaWrapped'], 10));
 	if (ok) {
 		throw new Error('[[error:reset-same-password]]');

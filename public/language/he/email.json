@@ -22,6 +22,8 @@
     "reset.notify.subject": "הסיסמה שונתה בהצלחה.",
     "reset.notify.text1": "אנו מודיעים לך שב%1, סיסמתך שונתה בהצלחה.",
     "reset.notify.text2": "אם לא אישרת בקשה זו, אנא הודע למנהל מיד.",
+    "digest.unread-rooms": "חדרים שלא נקראו",
+    "digest.room-name-unreadcount": "%1 (%2 לא נקראו)",
     "digest.latest_topics": "נושאים אחרונים מ%1",
     "digest.top-topics": "נושאים עם הכי הרבה הצבעות מ-%1",
     "digest.popular-topics": "הנושאים הכי פופולריים מ-%1",

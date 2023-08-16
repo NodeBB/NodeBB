@@ -51,6 +51,8 @@
     "nextpage": "下一页",
     "alert.success": "成功",
     "alert.error": "错误",
+    "alert.warning": "Warning",
+    "alert.info": "Info",
     "alert.banned": "已封禁",
     "alert.banned.message": "您已被禁止，您当前的访问受到限制。",
     "alert.unbanned": "已解封",

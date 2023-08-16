@@ -14,6 +14,7 @@
 	"manage/users": "Потребители",
 	"manage/admins-mods": "Администратори и модератори",
 	"manage/registration": "Регистрационна опашка",
+	"manage/flagged-content": "Докладвано съдържание",
 	"manage/post-queue": "Опашка за публикации",
 	"manage/groups": "Групи",
 	"manage/ip-blacklist": "Черен списък за IP адреси",

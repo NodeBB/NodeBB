@@ -30,6 +30,8 @@
 	"reset.notify.text1": "We are notifying you that on %1, your password was changed successfully.",
 	"reset.notify.text2": "If you did not authorise this, please notify an administrator immediately.",
 
+	"digest.unread-rooms": "Unread rooms",
+	"digest.room-name-unreadcount": "%1 (%2 unread)",
 	"digest.latest_topics": "Latest topics from %1",
 	"digest.top-topics": "Top topics from %1",
 	"digest.popular-topics": "Popular topics from %1",

@@ -18,6 +18,7 @@
 	"purge": "删除用户和内容",
 	"download-csv": "下载CSV",
 	"manage-groups": "管理用户组",
+	"set-reputation": "Set Reputation",
 	"add-group": "添加至群组",
 	"create": "创建用户",
 	"invite": "通过邮件邀请",

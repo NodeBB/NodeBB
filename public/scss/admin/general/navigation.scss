@@ -11,11 +11,10 @@
 	#active-navigation {
 		float: none;
 		min-height: 50px;
-		border: 1px solid #eee;
 		overflow: auto;
 
 		.active {
-			background-color: #eee;
+			background-color: var(--bs-secondary-bg);
 		}
 
 		li a {
@@ -25,9 +24,9 @@
 		li {
 			display: inline-block;
 			>a:hover, >a:focus {
-                color: $gray-300;
-                background-color: $gray-700;
-            }
+				color: var(--bs-secondary-color);
+				background-color: var(--bs-secondary-bg);
+			}
 		}
 	}
 

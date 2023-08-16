@@ -4,6 +4,7 @@
 	"disable-editing": "禁止編輯/刪除聊天消息",
 	"disable-editing-help": "管理員和超級版主不受此限制",
 	"max-length": "聊天訊息的最大長度",
+	"max-chat-room-name-length": "Maximum length of chat room names",
 	"max-room-size": "聊天室的最多使用者數",
 	"delay": "聊天訊息間的毫秒數",
 	"notification-delay": "Notification delay for chat messages. (0 for no delay)",

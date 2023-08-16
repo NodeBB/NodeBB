@@ -4,6 +4,7 @@
 	"disable-editing": "Disable chat message editing/deletion",
 	"disable-editing-help": "Administrators and global moderators are exempt from this restriction",
 	"max-length": "بیشترین طول پیام‌های چت ",
+	"max-chat-room-name-length": "Maximum length of chat room names",
 	"max-room-size": "بیشترین تعداد کاربران در چت‌روم ",
 	"delay": "زمان بین پیام های چت به میلی ثانیه",
 	"notification-delay": "Notification delay for chat messages. (0 for no delay)",

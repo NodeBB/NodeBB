@@ -38,6 +38,11 @@ module.exports = function (Posts) {
 			postData.forEach((postData, index) => {
 				if (postData) {
 					postData.user = userData[index];
+					if (postData.user.uid === 0 && postData.data.handle) {
+						postData.user.username = validator.escape(String(postData.data.handle));
+						postData.user.displayname = postData.user.username;
+						postData.user.fullname = postData.user.username;
+					}
 					postData.data.rawContent = validator.escape(String(postData.data.content));
 					postData.data.title = validator.escape(String(postData.data.title || ''));
 				}

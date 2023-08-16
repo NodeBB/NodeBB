@@ -45,6 +45,7 @@
 						<li><a href="#" class="dropdown-item rounded-1 password-reset-email"><i class="fa fa-fw fa-key"></i> [[admin/manage/users:password-reset-email]]</a></li>
 						<li><a href="#" class="dropdown-item rounded-1 force-password-reset"><i class="fa fa-fw fa-unlock-alt"></i> [[admin/manage/users:force-password-reset]]</a></li>
 						<li><a href="#" class="dropdown-item rounded-1 manage-groups"><i class="fa fa-fw fa-users"></i> [[admin/manage/users:manage-groups]]</a></li>
+						<li><a href="#" class="dropdown-item rounded-1 set-reputation"><i class="fa fa-fw fa-star"></i> [[admin/manage/users:set-reputation]]</a></li>
 						<li class="dropdown-divider"></li>
 						<li><a href="#" class="dropdown-item rounded-1 ban-user"><i class="fa fa-fw fa-gavel"></i> [[admin/manage/users:ban]]</a></li>
 						<li><a href="#" class="dropdown-item rounded-1 ban-user-temporary"><i class="fa fa-fw fa-clock-o"></i> [[admin/manage/users:temp-ban]]</a></li>
@@ -151,8 +152,8 @@
 								</div>
 								{{{ end }}}
 							</td>
-							<td class="text-end formatted-number">{users.postcount}</td>
-							<td class="text-end formatted-number">{users.reputation}</td>
+							<td class="text-end">{formattedNumber(users.postcount)}</td>
+							<td class="text-end" component="user/reputation" data-uid="{users.uid}">{formattedNumber(users.reputation)}</td>
 							<td class="text-end">{{{ if users.flags }}}{users.flags}{{{ else }}}0{{{ end }}}</td>
 							<td><span class="timeago" title="{users.joindateISO}"></span></td>
 							<td><span class="timeago" title="{users.lastonlineISO}"></span></td>

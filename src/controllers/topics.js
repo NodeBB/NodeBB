@@ -209,8 +209,8 @@ async function addTags(topicData, req, res, currentPage) {
 		description = utils.stripHTMLTags(utils.decodeHTMLEntities(postAtIndex.content));
 	}
 
-	if (description.length > 255) {
-		description = `${description.slice(0, 255)}...`;
+	if (description.length > 160) {
+		description = `${description.slice(0, 157)}...`;
 	}
 	description = description.replace(/\n/g, ' ');
 

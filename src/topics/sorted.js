@@ -112,7 +112,9 @@ module.exports = function (Topics) {
 		if (params.term === 'alltime' && !params.cids && !params.tags.length && params.filter !== 'watched' && !params.floatPinned) {
 			return tids;
 		}
-		const topicData = await Topics.getTopicsFields(tids, ['tid', 'lastposttime', 'upvotes', 'downvotes', 'postcount', 'pinned']);
+		const topicData = await Topics.getTopicsFields(tids, [
+			'tid', 'lastposttime', 'upvotes', 'downvotes', 'postcount', 'pinned',
+		]);
 		const sortMap = {
 			recent: sortRecent,
 			old: sortOld,

@@ -1,5 +1,6 @@
 'use strict';
 
+const _ = require('lodash');
 const validator = require('validator');
 
 const db = require('../database');
@@ -7,7 +8,7 @@ const user = require('../user');
 const utils = require('../utils');
 const plugins = require('../plugins');
 
-const intFields = ['timestamp', 'edited', 'fromuid', 'roomId', 'deleted', 'system'];
+const intFields = ['mid', 'timestamp', 'edited', 'fromuid', 'roomId', 'deleted', 'system'];
 
 module.exports = function (Messaging) {
 	Messaging.newMessageCutoff = 1000 * 60 * 3;
@@ -71,22 +72,9 @@ module.exports = function (Messaging) {
 
 			message.newSet = false;
 			message.roomId = String(message.roomId || roomId);
-			message.deleted = !!message.deleted;
-			message.system = !!message.system;
 		});
 
-		messages = await Promise.all(messages.map(async (message) => {
-			if (message.system) {
-				message.content = validator.escape(String(message.content));
-				message.cleanedContent = utils.stripHTMLTags(utils.decodeHTMLEntities(message.content));
-				return message;
-			}
-
-			const result = await Messaging.parse(message.content, message.fromuid, uid, roomId, isNew);
-			message.content = result;
-			message.cleanedContent = utils.stripHTMLTags(utils.decodeHTMLEntities(result));
-			return message;
-		}));
+		await parseMessages(messages, uid, roomId, isNew);
 
 		if (messages.length > 1) {
 			// Add a spacer in between messages with time gaps between them
@@ -100,7 +88,7 @@ module.exports = function (Messaging) {
 					message.newSet = true;
 				} else if (index > 0 && messages[index - 1].system) {
 					message.newSet = true;
-				} else if (index === 0) {
+				} else if (index === 0 || message.toMid) {
 					message.newSet = true;
 				}
 
@@ -108,14 +96,14 @@ module.exports = function (Messaging) {
 			});
 		} else if (messages.length === 1) {
 			// For single messages, we don't know the context, so look up the previous message and compare
-			const key = `uid:${uid}:chat:room:${roomId}:mids`;
+			const key = `chat:room:${roomId}:mids`;
 			const index = await db.sortedSetRank(key, messages[0].messageId);
 			if (index > 0) {
 				const mid = await db.getSortedSetRange(key, index - 1, index - 1);
 				const fields = await Messaging.getMessageFields(mid, ['fromuid', 'timestamp']);
 				if ((messages[0].timestamp > fields.timestamp + Messaging.newMessageCutoff) ||
 					(messages[0].fromuid !== fields.fromuid) ||
-					messages[0].system) {
+					messages[0].system || messages[0].toMid) {
 					// If it's been 5 minutes, this is a new set of messages
 					messages[0].newSet = true;
 				}
@@ -123,6 +111,8 @@ module.exports = function (Messaging) {
 				messages[0].newSet = true;
 			}
 		}
+
+		await addParentMessages(messages, uid, roomId);
 
 		const data = await plugins.hooks.fire('filter:messaging.getMessages', {
 			messages: messages,
@@ -134,6 +124,64 @@ module.exports = function (Messaging) {
 
 		return data && data.messages;
 	};
+
+	async function addParentMessages(messages, uid, roomId) {
+		let parentMids = messages.map(msg => (msg && msg.hasOwnProperty('toMid') ? parseInt(msg.toMid, 10) : null)).filter(Boolean);
+
+		if (!parentMids.length) {
+			return;
+		}
+		parentMids = _.uniq(parentMids);
+		const parentMessages = await Messaging.getMessagesFields(parentMids, [
+			'fromuid', 'content', 'timestamp', 'deleted',
+		]);
+		const parentUids = _.uniq(parentMessages.map(msg => msg && msg.fromuid));
+		const usersMap = _.zipObject(
+			parentUids,
+			await user.getUsersFields(parentUids, ['uid', 'username', 'userslug', 'picture'])
+		);
+
+		await Promise.all(parentMessages.map(async (parentMsg) => {
+			if (parentMsg.deleted && parentMsg.fromuid !== parseInt(uid, 10)) {
+				parentMsg.content = `<p>[[modules:chat.message-deleted]]</p>`;
+				return;
+			}
+			const foundMsg = messages.find(msg => parseInt(msg.mid, 10) === parseInt(parentMsg.mid, 10));
+			if (foundMsg) {
+				parentMsg.content = foundMsg.content;
+				return;
+			}
+			parentMsg.content = await parseMessage(parentMsg, uid, roomId, false);
+		}));
+
+		const parents = {};
+		parentMessages.forEach((msg, i) => {
+			if (usersMap[msg.fromuid]) {
+				msg.user = usersMap[msg.fromuid];
+				parents[parentMids[i]] = msg;
+			}
+		});
+
+		messages.forEach((msg) => {
+			if (parents[msg.toMid]) {
+				msg.parent = parents[msg.toMid];
+				msg.parent.mid = msg.toMid;
+			}
+		});
+	}
+
+	async function parseMessages(messages, uid, roomId, isNew) {
+		await Promise.all(messages.map(async (message) => {
+			message.content = await parseMessage(message, uid, roomId, isNew);
+		}));
+	}
+	async function parseMessage(message, uid, roomId, isNew) {
+		if (message.system) {
+			return validator.escape(String(message.content));
+		}
+
+		return await Messaging.parse(message.content, message.fromuid, uid, roomId, isNew);
+	}
 };
 
 async function modifyMessage(message, fields, mid) {

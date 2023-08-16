@@ -80,22 +80,25 @@ module.exports = function (Topics) {
 		data = await plugins.hooks.fire('filter:topic.post', data);
 		const { uid } = data;
 
-		data.title = String(data.title).trim();
-		data.tags = data.tags || [];
-		data.content = String(data.content || '').trimEnd();
-
-		Topics.checkTitle(data.title);
-		await Topics.validateTags(data.tags, data.cid, uid);
-		data.tags = await Topics.filterTags(data.tags, data.cid);
-		if (!data.fromQueue) {
-			Topics.checkContent(data.content);
-		}
-
-		const [categoryExists, canCreate, canTag] = await Promise.all([
+		const [categoryExists, canCreate, canTag, isAdmin] = await Promise.all([
 			categories.exists(data.cid),
 			privileges.categories.can('topics:create', data.cid, uid),
 			privileges.categories.can('topics:tag', data.cid, uid),
+			privileges.users.isAdministrator(uid),
 		]);
+
+		data.title = String(data.title).trim();
+		data.tags = data.tags || [];
+		data.content = String(data.content || '').trimEnd();
+		if (!isAdmin) {
+			Topics.checkTitle(data.title);
+		}
+
+		await Topics.validateTags(data.tags, data.cid, uid);
+		data.tags = await Topics.filterTags(data.tags, data.cid);
+		if (!data.fromQueue && !isAdmin) {
+			Topics.checkContent(data.content);
+		}
 
 		if (!categoryExists) {
 			throw new Error('[[error:no-category]]');
@@ -159,7 +162,10 @@ module.exports = function (Topics) {
 		const { tid } = data;
 		const { uid } = data;
 
-		const topicData = await Topics.getTopicData(tid);
+		const [topicData, isAdmin] = await Promise.all([
+			Topics.getTopicData(tid),
+			privileges.users.isAdministrator(uid),
+		]);
 
 		await canReply(data, topicData);
 
@@ -168,7 +174,7 @@ module.exports = function (Topics) {
 		await guestHandleValid(data);
 		data.content = String(data.content || '').trimEnd();
 
-		if (!data.fromQueue) {
+		if (!data.fromQueue && !isAdmin) {
 			await user.isReadyToPost(uid, data.cid);
 			Topics.checkContent(data.content);
 		}

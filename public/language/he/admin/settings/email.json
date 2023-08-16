@@ -1,7 +1,7 @@
 {
 	"email-settings": "הגדרות דוא\"ל",
 	"address": "כתובת דוא\"ל",
-	"address-help": "The following email address refers to the email that the recipient will see in the \"From\" and \"Reply To\" fields.",
+	"address-help": "שדה אימייל זה מתייחס לכתובת שהנמען יראה בשדות \"מאת\" ו\"השב אל\".",
 	"from": "מאת",
 	"from-help": "השם 'מאת' יוצג בדוא\"ל.",
 
@@ -39,7 +39,7 @@
 	"subscriptions": "תקצירי דואר אלקטרוני",
 	"subscriptions.disable": "הפיכת תקצירי דואר אלקטרוני ללא זמינים",
 	"subscriptions.hour": "שעת תקציר",
-	"subscriptions.hour-help": "Please enter a number representing the hour to send scheduled email digests (e.g. <code>0</code> for midnight, <code>17</code> for 5:00pm). Keep in mind that this is the hour according to the server itself, and may not exactly match your system clock.<br /> The approximate server time is: <span id=\"serverTime\"></span><br /> The next daily digest is scheduled to be sent  <span id=\"nextDigestTime\"></span>",
+	"subscriptions.hour-help": "אנא הזן מספר המייצג את השעה לשליחת תקצירי אימייל מתוזמנים (למשל <code>0</code> לחצות,<code>17</code> לשעה 17:00). זכור שזו השעה בהתאם לשרת עצמו, וייתכן שלא בדיוק תואם את שעון המערכת שלך.<br /> זמן השרת המשוער הוא: <span id=\"serverTime\"></span><br /> התקציר היומי הבא מתוכנן להישלח<span id=\"nextDigestTime\"></span>",
 	"notifications.remove-images": "הסר תמונות מהודעות דוא\"ל",
 	"require-email-address": "דרוש ממשתמשים חדשים כתובת אימייל",
 	"require-email-address-warning": "כברירת מחדל, משתמשים יכולים לבטל את הסכמתם להזנת כתובת דוא\"ל על ידי השארת השדה ריק. הפעלת אפשרות זו פירושה שמשתמשים חדשים יצטרכו להזין <strong>ולאשר</strong> כתובת דואר אלקטרוני על מנת להמשיך ברישום ובגישה לאחר מכן לפורום. <strong>זה לא מבטיח שהמשתמש יזין כתובת אימייל אמיתית, ואפילו לא כתובת שבבעלותו.</strong>",

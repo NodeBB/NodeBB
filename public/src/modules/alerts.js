@@ -23,7 +23,27 @@ export function success(message, timeout) {
 		title: '[[global:alert.success]]',
 		message: message,
 		type: 'success',
-		timeout: timeout || 5000,
+		timeout: timeout !== undefined ? timeout : 5000,
+	});
+}
+
+export function info(message, timeout) {
+	alert({
+		alert_id: utils.generateUUID(),
+		title: '[[global:alert.info]]',
+		message: message,
+		type: 'info',
+		timeout: timeout !== undefined ? timeout : 5000,
+	});
+}
+
+export function warning(message, timeout) {
+	alert({
+		alert_id: utils.generateUUID(),
+		title: '[[global:alert.warning]]',
+		message: message,
+		type: 'warning',
+		timeout: timeout !== undefined ? timeout : 5000,
 	});
 }
 
@@ -52,7 +72,8 @@ export function remove(id) {
 function updateAlert(alert, params) {
 	alert.find('strong').translateHtml(params.title);
 	alert.find('p').translateHtml(params.message);
-	alert.attr('class', 'alert alert-dismissable alert-' + params.type + ' clearfix');
+	alert.removeClass('alert-success alert-danger alert-info alert-warning')
+		.addClass(`alert-${params.type}`);
 
 	clearTimeout(parseInt(alert.attr('timeoutId'), 10));
 	if (params.timeout) {
@@ -67,10 +88,10 @@ function updateAlert(alert, params) {
 		alert
 			.addClass('pointer')
 			.on('click', function (e) {
-				if (!$(e.target).is('.close')) {
+				if (!$(e.target).is('.btn-close')) {
 					params.clickfn();
 				}
-				fadeOut(alert);
+				close(alert);
 			});
 	}
 }
@@ -82,19 +103,22 @@ function createNew(params) {
 			return updateAlert(alert, params);
 		}
 		alert = html;
-		alert.fadeIn(200);
 
-		components.get('toaster/tray').prepend(alert);
+		alert.hide().fadeIn(200).prependTo(components.get('toaster/tray'));
 
-		if (typeof params.closefn === 'function') {
-			alert.find('button').on('click', function () {
+		alert.on('close.bs.alert', function () {
+			if (typeof params.closefn === 'function') {
 				params.closefn();
-				fadeOut(alert);
-				return false;
-			});
-		}
+			}
+			const timeoutId = alert.attr('timeoutId');
 
-		if (params.timeout) {
+			if (timeoutId) {
+				clearTimeout(timeoutId);
+				alert.removeAttr('timeoutId');
+			}
+		});
+
+		if (parseInt(params.timeout, 10)) {
 			startTimeout(alert, params);
 		}
 
@@ -102,10 +126,10 @@ function createNew(params) {
 			alert
 				.addClass('pointer')
 				.on('click', function (e) {
-					if (!$(e.target).is('.close')) {
+					if (!$(e.target).is('.btn-close')) {
 						params.clickfn(alert, params);
 					}
-					fadeOut(alert);
+					close(alert);
 				});
 		}
 
@@ -113,17 +137,16 @@ function createNew(params) {
 	});
 }
 
-function fadeOut(alert) {
-	alert.fadeOut(500, function () {
-		$(this).remove();
-	});
+function close(alert) {
+	alert.alert('close');
 }
 
 function startTimeout(alert, params) {
-	const timeout = params.timeout;
+	const timeout = parseInt(params.timeout, 10);
 
 	const timeoutId = setTimeout(function () {
-		fadeOut(alert);
+		alert.removeAttr('timeoutId');
+		close(alert);
 
 		if (typeof params.timeoutfn === 'function') {
 			params.timeoutfn(alert, params);
@@ -133,20 +156,21 @@ function startTimeout(alert, params) {
 	alert.attr('timeoutId', timeoutId);
 
 	// Reset and start animation
-	alert.css('transition-property', 'none');
-	alert.removeClass('animate');
+	const alertProgress = alert.find('.alert-progress');
+	alertProgress.css('transition-property', 'none');
+	alertProgress.removeClass('animate');
 
 	setTimeout(function () {
-		alert.css('transition-property', '');
-		alert.css('transition', 'width ' + (timeout + 450) + 'ms linear, background-color ' + (timeout + 450) + 'ms ease-in');
-		alert.addClass('animate');
-		hooks.fire('action:alert.animate', { alert, params });
+		alertProgress.css('transition-property', '');
+		alertProgress.css('transition', 'width ' + (timeout + 450) + 'ms linear');
+		alertProgress.addClass('animate');
+		hooks.fire('action:alert.animate', { alert, alertProgress, params });
 	}, 50);
 
 	// Handle mouseenter/mouseleave
 	alert
 		.on('mouseenter', function () {
-			$(this).css('transition-duration', 0);
+			alertProgress.css('transition-duration', 0);
 		});
 }
 

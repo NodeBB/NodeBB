@@ -18,6 +18,7 @@
 	"purge": "Excluir <strong>Usuário(s)</strong> e <strong>Conteúdo</strong>",
 	"download-csv": "Baixar CSV",
 	"manage-groups": "Gerenciar Grupos",
+	"set-reputation": "Set Reputation",
 	"add-group": "Adicionar Grupo",
 	"create": "Create User",
 	"invite": "Invite by Email",

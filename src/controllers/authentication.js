@@ -102,6 +102,8 @@ authenticationController.register = async function (req, res) {
 
 		user.isPasswordValid(userData.password);
 
+		await plugins.hooks.fire('filter:password.check', { password: userData.password, uid: 0, userData: userData });
+
 		res.locals.processLogin = true; // set it to false in plugin if you wish to just register only
 		await plugins.hooks.fire('filter:register.check', { req: req, res: res, userData: userData });
 
@@ -210,7 +212,7 @@ authenticationController.registerComplete = async function (req, res) {
 };
 
 authenticationController.registerAbort = async (req, res) => {
-	if (req.uid) {
+	if (req.uid && req.session.registration) {
 		// Email is the only cancelable interstitial
 		delete req.session.registration.updateEmail;
 

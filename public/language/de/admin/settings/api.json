@@ -3,7 +3,7 @@
 	"settings": "Einstellungen",
 	"lead-text": "Auf dieser Seite kanst Du den Zugriff auf die Write-API in NodeBB konfigurieren.",
 	"intro": "Standardmäßig authentifiziert die Write-API Benutzer basierend auf ihrem Sitzungscookie, aber NodeBB unterstützt auch die Bearer-Authentifizierung über Token, die über diese Seite generiert werden.",
-	"warning": "<strong>Be advised</strong> — treat tokens like passwords. If they are leaked, your account should be considered compromised.",
+	"warning": "<strong>Hinweis</strong> — Behandle Tokens wie Passwörter. Wenn diese geleakt werden, sollte Dein Account als kompromittiert behandelt werden.",
 	"docs": "Klicke hier, um auf die vollständige API-Spezifikation zuzugreifen",
 
 	"require-https": "API-Nutzung nur über HTTPS möglich",
@@ -13,17 +13,17 @@
 	"token": "Token",
 	"uid-help-text": "Gebe eine Benutzer-ID an, die diesem Token zugeordnet werden soll. Wenn die Benutzer-ID <code>0</code> ist, wird sie als <em>Master</em>-Token betrachtet, das basierend auf dem <code>_uid</code>-Parameter die Identität anderer Benutzer annehmen kann",
 	"description": "Beschreibung",
-	"last-seen": "Last seen",
-	"created": "Created",
-	"create-token": "Create Token",
-	"update-token": "Update Token",
-	"master-token": "Master token",
-	"last-seen-never": "This key has never been used.",
+	"last-seen": "Zuletzt gesehen",
+	"created": "Erstellt",
+	"create-token": "Token erstellen",
+	"update-token": "Token aktualisieren",
+	"master-token": "Master-Token",
+	"last-seen-never": "Dieser Schlüssel wurde noch nie benutzt.",
 	"no-description": "Keine Beschreibung angegeben.",
-	"actions": "Actions",
-	"edit": "Edit",
-	"roll": "Roll",
+	"actions": "Aktionen",
+	"edit": "Bearbeiten",
+	"roll": "Würfeln",
 
-	"delete-confirm": "Are you sure you wish to delete this token? It will not be recoverable.",
-	"roll-confirm": "Are you sure you wish to regenerate this token? The old token will be immediately revoked and will not be recoverable."
+	"delete-confirm": "Bist Du Dir sicher, dass Du diesen Token löschen willst? Dieser kann nicht wiederhergestellt werden.",
+	"roll-confirm": "Bist Du Dir sicher, dass Du diesen Token neu generieren willst? Der alte Token verliert sofort seine Gültigkeit und kann nicht wiederhergestellt werden."
 }

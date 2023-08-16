@@ -148,7 +148,7 @@ SocketCategories.isModerator = async function (socket, cid) {
 };
 
 SocketCategories.loadMoreSubCategories = async function (socket, data) {
-	if (!data || !data.cid || !(parseInt(data.start, 10) > 0)) {
+	if (!data || !data.cid || !(parseInt(data.start, 10) >= 0)) {
 		throw new Error('[[error:invalid-data]]');
 	}
 	const allowed = await privileges.categories.can('read', data.cid, socket.uid);

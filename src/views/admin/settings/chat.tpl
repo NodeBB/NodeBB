@@ -9,14 +9,14 @@
 				<div class="mb-3">
 					<div class="form-check form-switch">
 						<input type="checkbox" class="form-check-input" id="disableChat" data-field="disableChat">
-						<label class="form-check-label">[[admin/settings/chat:disable]]</label>
+						<label for="disableChat" class="form-check-label">[[admin/settings/chat:disable]]</label>
 					</div>
 				</div>
 
 				<div class="mb-3">
 					<div class="form-check form-switch">
 						<input type="checkbox" class="form-check-input" id="disableChatMessageEditing" data-field="disableChatMessageEditing">
-						<label class="form-check-label">[[admin/settings/chat:disable-editing]]</label>
+						<label for="disableChatMessageEditing" class="form-check-label">[[admin/settings/chat:disable-editing]]</label>
 					</div>
 					<p class="form-text">[[admin/settings/chat:disable-editing-help]]</p>
 				</div>
@@ -29,6 +29,11 @@
 				<div class="mb-3">
 					<label class="form-label" for="chatDeleteDuration">[[admin/settings/chat:restrictions.seconds-delete-after]]</label>
 					<input id="chatDeleteDuration" type="text" class="form-control" value="0" data-field="chatDeleteDuration">
+				</div>
+
+				<div class="mb-3">
+					<label class="form-label" for="maximumChatRoomNameLength">[[admin/settings/chat:max-chat-room-name-length]]</label>
+					<input id="maximumChatRoomNameLength" type="text" class="form-control" value="50" data-field="maximumChatRoomNameLength">
 				</div>
 
 				<div class="mb-3">

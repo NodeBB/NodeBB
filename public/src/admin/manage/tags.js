@@ -59,7 +59,6 @@ define('admin/manage/tags', [
 					tags: tags,
 				}, function (html) {
 					$('.tag-list').html(html);
-					utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 					selectable.enable('.tag-management', '.tag-row');
 				});
 			}

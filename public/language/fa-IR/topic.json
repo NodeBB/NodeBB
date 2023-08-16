@@ -43,7 +43,7 @@
     "wrote-ago": "نوشته‌شده <a href=\"%1\" class=\"timeago text-muted\" title=\"%2\"></a>",
     "wrote-on": "نوشته‌شده در <a href=\"%1\" class=\"timeago text-muted\" title=\"%2\"></a>",
     "replied-to-user-ago": "پاسخ داده شده به <a component=\"post/parent\" data-topid=\"%1\" href=\"%2\">%3</a> در<a href=\"%4\" class=\"timeago text-muted\" title=\"%5\"></a>",
-    "replied-to-user-on": "پاسخ به <a component=\"post/parent\" data-topid=\"%1\" href=\"%2\">%3</a> در<a hrf=\"%4\" class=\"timeago text-muted\" title=\"%5\"></a>",
+    "replied-to-user-on": "replied to <a component=\"post/parent\" data-topid=\"%1\" href=\"%2\">%3</a> on <a href=\"%4\" class=\"timeago text-muted\" title=\"%5\"></a>",
     "user-locked-topic-ago": "1% این موضوع را قفل کرد%2",
     "user-locked-topic-on": "1% این موضوع را در %2 قفل کرد ",
     "user-unlocked-topic-ago": "1% قفل این موضوع را باز کرد %2",

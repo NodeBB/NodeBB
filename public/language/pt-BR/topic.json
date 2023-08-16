@@ -43,7 +43,7 @@
     "wrote-ago": "wrote <a href=\"%1\" class=\"timeago text-muted\" title=\"%2\"></a>",
     "wrote-on": "wrote on <a href=\"%1\" class=\"timeago text-muted\" title=\"%2\"></a>",
     "replied-to-user-ago": "replied to <a component=\"post/parent\" data-topid=\"%1\" href=\"%2\">%3</a> <a href=\"%4\" class=\"timeago text-muted\" title=\"%5\"></a>",
-    "replied-to-user-on": "replied to <a component=\"post/parent\" data-topid=\"%1\" href=\"%2\">%3</a> on <a hrf=\"%4\" class=\"timeago text-muted\" title=\"%5\"></a>",
+    "replied-to-user-on": "replied to <a component=\"post/parent\" data-topid=\"%1\" href=\"%2\">%3</a> on <a href=\"%4\" class=\"timeago text-muted\" title=\"%5\"></a>",
     "user-locked-topic-ago": "%1 locked this topic %2",
     "user-locked-topic-on": "%1 locked this topic on %2",
     "user-unlocked-topic-ago": "%1 unlocked this topic %2",
@@ -203,7 +203,7 @@
     "last-post": "Último post",
     "go-to-my-next-post": "Go to my next post",
     "no-more-next-post": "You don't have more posts in this topic",
-    "post-quick-reply": "Quick reply",
+    "post-quick-reply": "Resposta rápida",
     "navigator.index": "Post %1 of %2",
     "navigator.unread": "%1 unread"
 }

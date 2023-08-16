@@ -17,7 +17,7 @@
 @import "./extend/widgets";
 @import "settings";
 
-@import "./modules/alerts";
+@import "../modules/alerts";
 @import "./modules/selectable";
 @import "./modules/nprogress";
 @import "./modules/search";
@@ -37,7 +37,7 @@ body {
 		padding-top: 0;
 	}
 	.acp-page-main-header {
-		background-color: white;
+		background-color: var(--bs-body-bg);
 	}
 
 	.settings, .categories, .category, .admins-mods {
@@ -83,17 +83,17 @@ body {
 	}
 
 	.card:not([data-container-html]) {
-		background-color: #FFF;
+		background-color: var(--bs-body-bg);
 		box-sizing: border-box;
 		border-radius: 3px;
 		border-width: 0px;
-		box-shadow: 0px 1px 3px 0px rgba(165, 165, 165, 0.75);
+		box-shadow: 0px 1px 3px 0px rgba(var(--bs-secondary-rgb), 0.5);
 		margin-bottom: 20px;
 
 		>.card-header {
 			@include acp-panel-heading;
-			background: #fefefe;
-			color: #333;
+			background-color: var(--bs-body-bg);
+			color: var(--bs-body-color);
 		}
 
 		&.card-danger >.card-header {
@@ -113,7 +113,7 @@ body {
 				cursor: pointer;
 				line-height: 36px;
 				text-align: center;
-				color: $gray-800;
+				color: $gray-700;
 				margin: 4px;
 
 				&:hover, &.selected {
@@ -136,7 +136,8 @@ body {
 	.bootstrap-tagsinput {
 		box-shadow: $input-box-shadow;
 		width: 100%;
-
+		background-color: var(--bs-body-bg);
+		border: var(--bs-border-width) solid var(--bs-border-color);
 		input {
 			font-size: 0.875rem;
 			width: 64px;

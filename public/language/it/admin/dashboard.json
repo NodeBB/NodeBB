@@ -48,6 +48,7 @@
 	"restart-disabled": "La Riorganizzazione e il Riavvio del tuo NodeBB sono stati disabilitati in quanto non sembra che tu lo stia eseguendo tramite il demone appropriato.",
 	"maintenance-mode": "Modalità Manutenzione",
 	"maintenance-mode-title": "Clicca qui per impostare la modalità di manutenzione per NodeBB",
+	"dark-mode": "Modalità scura",
 	"realtime-chart-updates": "Aggiornamento grafici in tempo reale",
 
 	"active-users": "Utenti Attivi",
@@ -89,5 +90,9 @@
 	"details.logins-login-time": "Tempo di accesso",
 	"start": "Inizio",
 	"end": "Fine",
-	"filter": "Filtro"
+	"filter": "Filtro",
+	"view-as-json": "Visualizza come JSON",
+	"expand-analytics": "Espandi l'analisi",
+	"clear-search-history": "Cancella cronologia delle ricerche",
+	"clear-search-history-confirm": "Sei sicuro di voler cancellare l'intera cronologia delle ricerche?"
 }

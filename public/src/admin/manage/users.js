@@ -1,8 +1,8 @@
 'use strict';
 
 define('admin/manage/users', [
-	'translator', 'benchpress', 'autocomplete', 'api', 'slugify', 'bootbox', 'alerts', 'accounts/invite',
-], function (translator, Benchpress, autocomplete, api, slugify, bootbox, alerts, AccountInvite) {
+	'translator', 'benchpress', 'autocomplete', 'api', 'slugify', 'bootbox', 'alerts', 'accounts/invite', 'helpers',
+], function (translator, Benchpress, autocomplete, api, slugify, bootbox, alerts, AccountInvite, helpers) {
 	const Users = {};
 
 	Users.init = function () {
@@ -138,6 +138,53 @@ define('admin/manage/users', [
 						return false;
 					});
 				});
+			});
+		});
+
+		$('.set-reputation').on('click', function () {
+			const uids = getSelectedUids();
+			if (!uids.length) {
+				alerts.error('[[error:no-users-selected]]');
+				return false;
+			}
+			let currentValue = '';
+			if (uids.length === 1) {
+				const user = ajaxify.data.users.find(u => u && u.uid === parseInt(uids[0], 10));
+				if (user) {
+					currentValue = String(user.reputation);
+				}
+			}
+			const modal = bootbox.dialog({
+				message: `<input id="new-reputation" type="text" class="form-control" value="${currentValue}">`,
+				title: '[[admin/manage/users:set-reputation]]',
+				onEscape: true,
+				buttons: {
+					submit: {
+						label: '[[global:save]]',
+						callback: function () {
+							const newReputation = modal.find('#new-reputation').val();
+							if (!utils.isNumber(newReputation)) {
+								alerts.error('[[error:invalid-data]]');
+								return false;
+							}
+							socket.emit('admin.user.setReputation', {
+								value: newReputation,
+								uids: uids,
+							}).then(() => {
+								uids.forEach((uid) => {
+									$(`[component="user/reputation"][data-uid="${uid}"]`).text(helpers.formattedNumber(newReputation));
+									const user = ajaxify.data.users.find(u => u && u.uid === parseInt(uid, 10));
+									if (user) {
+										user.reputation = newReputation;
+									}
+								});
+							}).catch(alerts.error);
+						},
+					},
+				},
+			});
+			modal.on('shown.bs.modal', () => {
+				modal.find('#new-reputation').selectRange(0, modal.find('#new-reputation').val().length);
 			});
 		});
 

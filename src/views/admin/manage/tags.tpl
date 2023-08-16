@@ -21,7 +21,7 @@
 		<div class="">
 			<div class="tag-management">
 				<div class="">
-					<div class="alert alert-light text-sm px-0">
+					<div class="alert alert-light text-sm">
 						[[admin/manage/tags:description]]
 					</div>
 

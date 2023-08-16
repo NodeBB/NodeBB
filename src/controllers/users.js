@@ -61,7 +61,6 @@ usersController.getOnlineUsers = async function (req, res) {
 	}
 
 	userData.anonymousUserCount = guests + hiddenCount;
-	userData.timeagoCutoff = 1;
 
 	await render(req, res, userData);
 };

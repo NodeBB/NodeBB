@@ -116,7 +116,9 @@ module.exports = function (User) {
 			`user:${uid}:emails`,
 			`uid:${uid}:topics`, `uid:${uid}:posts`,
 			`uid:${uid}:chats`, `uid:${uid}:chats:unread`,
-			`uid:${uid}:chat:rooms`, `uid:${uid}:chat:rooms:unread`,
+			`uid:${uid}:chat:rooms`,
+			`uid:${uid}:chat:rooms:unread`,
+			`uid:${uid}:chat:rooms:read`,
 			`uid:${uid}:upvote`, `uid:${uid}:downvote`,
 			`uid:${uid}:flag:pids`,
 			`uid:${uid}:sessions`, `uid:${uid}:sessionUUID:sessionId`,
@@ -168,13 +170,10 @@ module.exports = function (User) {
 	}
 
 	async function deleteChats(uid) {
-		const roomIds = await db.getSortedSetRange(`uid:${uid}:chat:rooms`, 0, -1);
-		const userKeys = roomIds.map(roomId => `uid:${uid}:chat:room:${roomId}:mids`);
-
-		await Promise.all([
-			messaging.leaveRooms(uid, roomIds),
-			db.deleteAll(userKeys),
-		]);
+		const roomIds = await db.getSortedSetRange([
+			`uid:${uid}:chat:rooms`, `chat:rooms:public`,
+		], 0, -1);
+		await messaging.leaveRooms(uid, roomIds);
 	}
 
 	async function deleteUserIps(uid) {

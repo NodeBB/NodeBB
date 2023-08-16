@@ -14,6 +14,7 @@
 	"manage/users": "사용자",
 	"manage/admins-mods": "관리자 & 조정자",
 	"manage/registration": "가입 승인 대기열",
+	"manage/flagged-content": "Flagged Content",
 	"manage/post-queue": "게시 대기열",
 	"manage/groups": "그룹",
 	"manage/ip-blacklist": "IP 블랙리스트",

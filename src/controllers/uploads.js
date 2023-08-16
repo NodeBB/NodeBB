@@ -163,8 +163,8 @@ uploadsController.uploadFile = async function (uid, uploadedFile) {
 	if (!uploadedFile) {
 		throw new Error('[[error:invalid-file]]');
 	}
-
-	if (uploadedFile.size > meta.config.maximumFileSize * 1024) {
+	const isAdmin = await user.isAdministrator(uid);
+	if (!isAdmin && uploadedFile.size > meta.config.maximumFileSize * 1024) {
 		throw new Error(`[[error:file-too-big, ${meta.config.maximumFileSize}]]`);
 	}
 

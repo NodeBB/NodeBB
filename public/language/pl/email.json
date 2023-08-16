@@ -22,6 +22,8 @@
     "reset.notify.subject": "Hasło zmienione pomyślnie",
     "reset.notify.text1": "Informujemy, że Twoje hasło na %1 zostało zmienione.",
     "reset.notify.text2": "Jeśli nie wyraziłeś na to zgody, niezwłocznie poinformuj administratora.",
+    "digest.unread-rooms": "Unread rooms",
+    "digest.room-name-unreadcount": "%1 (%2 unread)",
     "digest.latest_topics": "Ostatnie tematy z %1",
     "digest.top-topics": "Topowe tematy z %1",
     "digest.popular-topics": "Najpopularniejsze tematy z %1",

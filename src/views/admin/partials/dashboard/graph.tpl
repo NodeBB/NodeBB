@@ -4,8 +4,8 @@
 			[[admin/dashboard:forum-traffic]]
 
 			<div class="d-flex gap-1">
-				<a class="btn btn-sm btn-light lh-sm" target="_blank" id="view-as-json" href="{config.relative_path}/api/v3/admin/analytics/{set}?type=hourly"><i class="fa fa-fw fa-xs fa-terminal text-primary"></i></a>
-				<a class="btn btn-sm btn-light lh-sm" id="expand-analytics" href="#"><i class="fa fa-fw fa-xs fa-expand text-primary"></i></a>
+				<a class="btn btn-sm btn-light lh-sm" target="_blank" id="view-as-json" href="{config.relative_path}/api/v3/admin/analytics/{set}?type=hourly" data-bs-toggle="tooltip" data-bs-placement="bottom" title="[[admin/dashboard:view-as-json]]"><i class="fa fa-fw fa-xs fa-terminal text-primary"></i></a>
+				<a class="btn btn-sm btn-light lh-sm" id="expand-analytics" href="#" data-bs-toggle="tooltip" data-bs-placement="bottom" title="[[admin/dashboard:expand-analytics]]"><i class="fa fa-fw fa-xs fa-expand text-primary"></i></a>
 			</div>
 		</div>
 	</div>

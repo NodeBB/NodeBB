@@ -20,13 +20,13 @@
 
 		<form>
 			<div class="form-check form-switch mb-3">
-				<input class="form-check-input" type="checkbox" data-field="loggerStatus">
-				<label class="form-check-label">[[admin/development/logger:enable-http]]</label>
+				<input class="form-check-input" type="checkbox" id="loggerStatus" data-field="loggerStatus">
+				<label for="loggerStatus" class="form-check-label">[[admin/development/logger:enable-http]]</label>
 			</div>
 
 			<div class="form-check form-switch mb-3">
-				<input class="form-check-input" type="checkbox" data-field="loggerIOStatus">
-				<label class="form-check-label">[[admin/development/logger:enable-socket]]</label>
+				<input class="form-check-input" type="checkbox" id="loggerIOStatus" data-field="loggerIOStatus">
+				<label for="loggerIOStatus" class="form-check-label">[[admin/development/logger:enable-socket]]</label>
 			</div>
 
 			<label class="form-label" for="loggerPath">[[admin/development/logger:file-path]]</label>

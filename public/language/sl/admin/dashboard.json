@@ -48,6 +48,7 @@
 	"restart-disabled": "Obnova in ponovni zagon vašega NodeBB sta onemogočena, saj se zdi, da ga ne izvajate prek ustreznega prikritega procesa.",
 	"maintenance-mode": "Način vzdrževanja",
 	"maintenance-mode-title": "Za nastavitev načina vzdrževanja za NodeBB kliknite tukaj",
+	"dark-mode": "Dark Mode",
 	"realtime-chart-updates": "Posodobitev grafikona v realnem času",
 
 	"active-users": "Aktivni uporabniki",
@@ -89,5 +90,9 @@
 	"details.logins-login-time": "Čas prijave",
 	"start": "Start",
 	"end": "End",
-	"filter": "Filter"
+	"filter": "Filter",
+	"view-as-json": "View as JSON",
+	"expand-analytics": "Expand analytics",
+	"clear-search-history": "Clear Search History",
+	"clear-search-history-confirm": "Are you sure you want to clear entire search history?"
 }

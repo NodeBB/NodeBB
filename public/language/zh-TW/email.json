@@ -22,6 +22,8 @@
     "reset.notify.subject": "更改密碼成功",
     "reset.notify.text1": "您在 %1 上的密碼已經成功修改。",
     "reset.notify.text2": "如果您沒有授權此操作，請立即聯繫管理員。",
+    "digest.unread-rooms": "Unread rooms",
+    "digest.room-name-unreadcount": "%1 (%2 unread)",
     "digest.latest_topics": "來自 %1 的最新主題",
     "digest.top-topics": "來自 %1 的置頂主題",
     "digest.popular-topics": "來自 %1 的熱門主題",

@@ -1,17 +1,29 @@
 RoomObject:
   type: object
   properties:
-    owner:
-      type: number
-      description: the uid of the chat room owner (usually the user who created the room initially)
     roomId:
       type: number
       description: unique identifier for the chat room
     roomName:
       type: string
+      description: the name of the room, if set this is displayed instead of the usernames
     groupChat:
       type: boolean
-      description: whether the chat room is a group chat or not
+      description: whether the chat room is a group chat or not (if more than 2 users it is a group chat)
+    public:
+      type: boolean
+      description: whether the chat room is public or private
+    userCount:
+      type: number
+      description: number of users in this chat room
+    groups:
+      type: array
+      description: list of groups that can access the room
+    timestamp:
+      type: number
+      description: Timestamp of when room was created
+    notificationSetting:
+      type: number
 MessageObject:
   type: object
   properties:
@@ -25,15 +37,17 @@ MessageObject:
     roomId:
       type: number
     deleted:
-      type: boolean
+      type: number
     system:
-      type: boolean
+      type: number
     edited:
       type: number
     timestampISO:
       type: string
     editedISO:
       type: string
+    mid:
+      type: number
     messageId:
       type: number
     fromUser:
@@ -92,8 +106,6 @@ MessageObject:
       type: number
     newSet:
       type: boolean
-    cleanedContent:
-      type: string
 RoomUserList:
   type: object
   properties:
@@ -131,6 +143,12 @@ RoomUserList:
           isOwner:
             type: boolean
           canKick:
+            type: boolean
+          canToggleOwner:
+            type: boolean
+          index:
+            type: number
+          online:
             type: boolean
 RoomObjectFull:
   # Messaging.loadRoom

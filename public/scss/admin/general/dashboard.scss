@@ -7,7 +7,7 @@
 
 	.graph-container {
 		position: relative;
-		background: $body-bg;
+		background: var(--bg-body-bg);
 
 		&.fullscreen {
 			width: 100%;
@@ -70,8 +70,6 @@
 			list-style-type: none;
 			padding: 0.5rem 1rem;
 			margin: 0;
-			background: rgba(255, 255, 255, 0.66);
-			border: 1px solid #ddd;
 
 			li {
 				div {
@@ -135,19 +133,6 @@
 	.pageview-stats {
 		strong {
 			font-size: 22px;
-		}
-	}
-
-	.stats {
-		.formatted-number {
-			font-size: 22px;
-		}
-
-		.stat {
-			text-transform: uppercase;
-			font-weight: 600;
-			font-size: 10px;
-			color: #999;
 		}
 	}
 

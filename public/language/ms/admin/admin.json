@@ -12,5 +12,7 @@
 	"min": "Min:",
 	"max": "Max:",
 	"view": "View",
-	"edit": "Edit"
+	"edit": "Edit",
+	"add": "Add",
+	"select-icon": "Select Icon"
 }

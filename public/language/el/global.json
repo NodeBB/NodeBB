@@ -51,6 +51,8 @@
     "nextpage": "Επόμενη Σελίδα",
     "alert.success": "Επιτυχία",
     "alert.error": "Σφάλμα",
+    "alert.warning": "Warning",
+    "alert.info": "Info",
     "alert.banned": "Αποκλεισμένος/η",
     "alert.banned.message": "You have just been banned, your access is now restricted.",
     "alert.unbanned": "Unbanned",

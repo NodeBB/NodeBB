@@ -11,7 +11,7 @@
 
 	"plugin-search": "חיפוש תוספים",
 	"plugin-search-placeholder": "חפש תוספים...",
-	"submit-anonymous-usage": "שלח נתוני שימוש אנונימיים בתוסף.",
+	"submit-anonymous-usage": "שלח נתוני שימוש אנונימיים בתוספים.",
 	"reorder-plugins": "סדר מחדש תוספים",
 	"order-active": "סדר תוספים פעילים",
 	"dev-interested": "מתעניין בכתיבת תוספים ל-NodeBB?",

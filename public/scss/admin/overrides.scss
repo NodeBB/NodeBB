@@ -16,8 +16,16 @@ $yellow:  #ffc107 !default;
 $green:   #198754 !default;
 $cyan:    #0dcaf0 !default;
 
+$light:         $gray-100 !default;
+$dark:          $gray-900 !default;
+
 $body-color: $gray-800;
 $text-muted: $gray-600 !default;
+
+$btn-ghost-color: rgb(73, 80, 87);
+$btn-ghost-hover-color: mix($light, $dark, 90%);
+$btn-ghost-color-dark: rgb(175, 191, 206);
+$btn-ghost-hover-color-dark: mix($dark, $light, 90%);
 
 // Custom fonts
 $font-family-sans-serif: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";

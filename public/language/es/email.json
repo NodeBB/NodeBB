@@ -22,6 +22,8 @@
     "reset.notify.subject": "Se ha modificado correctamente la contraseña.",
     "reset.notify.text1": "Te estamos notificando que en %1, tu contraseña ha sido cambiada correctamente.",
     "reset.notify.text2": "Si no has sido tú, por favor notifica al administrador inmediatamente.",
+    "digest.unread-rooms": "Unread rooms",
+    "digest.room-name-unreadcount": "%1 (%2 unread)",
     "digest.latest_topics": "Últimos temas de %1",
     "digest.top-topics": "Top topics from %1",
     "digest.popular-topics": "Popular topics from %1",

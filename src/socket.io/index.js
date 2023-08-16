@@ -12,6 +12,7 @@ const user = require('../user');
 const logger = require('../logger');
 const plugins = require('../plugins');
 const ratelimit = require('../middleware/ratelimit');
+const blacklist = require('../meta/blacklist');
 
 const Namespaces = Object.create(null);
 
@@ -178,6 +179,7 @@ async function onMessage(socket, payload) {
 			return socket.disconnect();
 		}
 
+		await blacklist.test(socket.ip);
 		await checkMaintenance(socket);
 		await validateSession(socket, '[[error:revalidate-failure]]');
 
@@ -290,6 +292,26 @@ Sockets.getCountInRoom = function (room) {
 	}
 	const roomMap = Sockets.server.sockets.adapter.rooms.get(room);
 	return roomMap ? roomMap.size : 0;
+};
+
+// works across multiple nodes
+Sockets.getUidsInRoom = async function (room) {
+	if (!Sockets.server) {
+		return [];
+	}
+	const ioRoom = Sockets.server.in(room);
+	const uids = {};
+	if (ioRoom) {
+		const sockets = await ioRoom.fetchSockets();
+		for (const s of sockets) {
+			for (const r of s.rooms) {
+				if (r.startsWith('uid_')) {
+					uids[r.split('_').pop()] = 1;
+				}
+			}
+		}
+	}
+	return Object.keys(uids);
 };
 
 Sockets.warnDeprecated = (socket, replacement) => {

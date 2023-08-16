@@ -574,7 +574,7 @@ describe('User', () => {
 			const socketModules = require('../src/socket.io/modules');
 			const uid1 = await User.create({ username: 'chatuserdelete1' });
 			const uid2 = await User.create({ username: 'chatuserdelete2' });
-			const roomId = await messaging.newRoom(uid1, [uid2]);
+			const roomId = await messaging.newRoom(uid1, { uids: [uid2] });
 			await messaging.addMessage({
 				uid: uid1,
 				content: 'hello',

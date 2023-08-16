@@ -310,6 +310,8 @@ module.exports = function (User) {
 			throw new Error('[[user:change_password_error_privileges]]');
 		}
 
+		await plugins.hooks.fire('filter:password.check', { password: data.newPassword, uid: data.uid });
+
 		if (isSelf && hasPassword) {
 			const correct = await User.isPasswordCorrect(data.uid, data.currentPassword, data.ip);
 			if (!correct) {

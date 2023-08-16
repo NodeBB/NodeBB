@@ -45,8 +45,7 @@ Auth.getLoginStrategies = function () {
 };
 
 Auth.verifyToken = async function (token, done) {
-	const tokens = await api.utils.tokens.list();
-	const tokenObj = tokens.filter((t => t.token === token)).pop();
+	const tokenObj = await api.utils.tokens.get(token);
 	const uid = tokenObj ? tokenObj.uid : undefined;
 
 	if (uid !== undefined) {

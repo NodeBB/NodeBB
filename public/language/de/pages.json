@@ -14,7 +14,7 @@
     "flagged-content": "Gemeldeter Inhalt",
     "ip-blacklist": "IP Blacklist",
     "post-queue": "Beitragswarteschlange",
-    "registration-queue": "Registration Queue",
+    "registration-queue": "Warteliste",
     "users/online": "Benutzer online",
     "users/latest": "Neuste Benutzer",
     "users/sort-posts": "Benutzer mit den meisten Beiträgen",
@@ -50,7 +50,7 @@
     "account/watched_categories": "Beobachtete Kategorien von %1",
     "account/bookmarks": "Lesezeichen von %1",
     "account/settings": "Benutzer-Einstellungen",
-    "account/settings-of": "Changing settings of %1",
+    "account/settings-of": "Einstellungen von %1 ändern",
     "account/watched": "Von %1 beobachtete Themen",
     "account/ignored": "Ignorierte Themen von %1",
     "account/upvoted": "Von %1 positiv bewertete Beiträge",
@@ -61,7 +61,7 @@
     "account/uploads": "Uploads von %1",
     "account/sessions": "Login-Sitzungen",
     "confirm": "E-Mail bestätigt",
-    "maintenance.text": "%1 is currently undergoing maintenance.<br/>Please come back another time.",
+    "maintenance.text": "%1 befindet sich derzeit in der Wartung.<br/>Bitte komme später wieder.",
     "maintenance.messageIntro": "Zusätzlich hat der Administrator diese Nachricht hinterlassen:",
     "throttled.text": "%1 ist momentan aufgrund von Überlastung nicht verfügbar. Bitte komm später wieder."
 }

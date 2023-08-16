@@ -22,6 +22,8 @@
     "reset.notify.subject": "Wachtwoord succesvol gewijzigd",
     "reset.notify.text1": "Op %1 is het wachtwoord van je account succesvol gewijzigd.",
     "reset.notify.text2": "Neem onmiddellijk contact met een beheerder op wanneer je hiervoor geen toestemming hebt gegeven.",
+    "digest.unread-rooms": "Unread rooms",
+    "digest.room-name-unreadcount": "%1 (%2 unread)",
     "digest.latest_topics": "De meest recente onderwerpen van %1",
     "digest.top-topics": "Top onderwerpen van %1",
     "digest.popular-topics": "Populaire onderwerpen van %1",

@@ -14,6 +14,7 @@
 	"manage/users": "Utilizadores",
 	"manage/admins-mods": "Administradores e Moderadores",
 	"manage/registration": "Registos por Aprovar",
+	"manage/flagged-content": "Flagged Content",
 	"manage/post-queue": "Publicações por Aprovar",
 	"manage/groups": "Grupos",
 	"manage/ip-blacklist": "Lista Negra de IPs",

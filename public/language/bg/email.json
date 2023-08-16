@@ -22,6 +22,8 @@
     "reset.notify.subject": "Паролата беше променена успешно",
     "reset.notify.text1": "Известяваме Ви, че на %1, Вашата парола беше променена успешно.",
     "reset.notify.text2": "Ако не сте поискали това, моля, свържете се незабавно с администратор.",
+    "digest.unread-rooms": "Непрочетени стаи",
+    "digest.room-name-unreadcount": "%1 (%2 непрочетени)",
     "digest.latest_topics": "Последни теми от %1",
     "digest.top-topics": "Най-интересните теми от %1",
     "digest.popular-topics": "Популярни теми от %1",

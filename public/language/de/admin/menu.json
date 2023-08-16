@@ -14,6 +14,7 @@
 	"manage/users": "Benutzer",
 	"manage/admins-mods": "Admins & Mods",
 	"manage/registration": "Warteliste",
+	"manage/flagged-content": "Flagged Content",
 	"manage/post-queue": "Beitragswarteschlange",
 	"manage/groups": "Gruppen",
 	"manage/ip-blacklist": "IP Blacklist",
@@ -72,9 +73,9 @@
 	"development/info": "Info",
 
 	"rebuild-and-restart-forum": "Forum regenerieren & neustarten",
-	"rebuild-and-restart": "Rebuild & Restart",
+	"rebuild-and-restart": "Rebuild & Neustart",
 	"restart-forum": "Forum neu starten",
-	"restart": "Restart",
+	"restart": "Neustarten",
 	"logout": "Abmelden",
 	"view-forum": "Forum anzeigen",
 

@@ -94,9 +94,11 @@ utils.tokens.roll = async (token) => {
 
 	const updates = [
 		db.rename(`token:${token}`, `token:${newToken}`),
-		db.sortedSetRemove(`tokens:createtime`, token),
-		db.sortedSetRemove(`tokens:uid`, token),
-		db.sortedSetRemove(`tokens:lastSeen`, token),
+		db.sortedSetsRemove([
+			`tokens:createtime`,
+			`tokens:uid`,
+			`tokens:lastSeen`,
+		], token),
 		db.sortedSetAdd(`tokens:createtime`, createTime, newToken),
 		db.sortedSetAdd(`tokens:uid`, uid, newToken),
 	];
@@ -113,9 +115,11 @@ utils.tokens.roll = async (token) => {
 utils.tokens.delete = async (token) => {
 	await Promise.all([
 		db.delete(`token:${token}`),
-		db.sortedSetRemove(`tokens:createtime`, token),
-		db.sortedSetRemove(`tokens:uid`, token),
-		db.sortedSetRemove(`tokens:lastSeen`, token),
+		db.sortedSetsRemove([
+			`tokens:createtime`,
+			`tokens:uid`,
+			`tokens:lastSeen`,
+		], token),
 	]);
 };
 

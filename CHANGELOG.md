@@ -1,3 +1,32 @@
+#### v3.2.3 (2023-07-19)
+
+##### Chores
+
+*  downgrade harmony to correct version (7c94506b)
+*  incrementing version number - v3.2.2 (758ecfcd)
+*  update changelog for v3.2.2 (91a432ad)
+*  incrementing version number - v3.2.1 (20145074)
+*  incrementing version number - v3.2.0 (9ecac38e)
+*  incrementing version number - v3.1.7 (0b4e81ab)
+*  incrementing version number - v3.1.6 (b3a3b130)
+*  incrementing version number - v3.1.5 (ec19343a)
+*  incrementing version number - v3.1.4 (2452783c)
+*  incrementing version number - v3.1.3 (3b4e9d3f)
+*  incrementing version number - v3.1.2 (40fa3489)
+*  incrementing version number - v3.1.1 (40250733)
+*  incrementing version number - v3.1.0 (0cb386bd)
+*  incrementing version number - v3.0.1 (26f6ea49)
+*  incrementing version number - v3.0.0 (224e08cd)
+
+##### Bug Fixes
+
+*  typo in replied to link (3024dac1)
+*  logs page whitespace (2a3d6d5c)
+*  version alert in acp (05c9cca7)
+*  #11804, fix direction of dropdown on rtl (a4dba8d3)
+*  #11802, fix anchor ids in acp settings (562e4d6e)
+*  #11803, fix rtl in acp (a0478c70)
+
 #### v3.2.2 (2023-07-12)
 
 ##### Chores

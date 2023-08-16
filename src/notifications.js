@@ -159,7 +159,7 @@ Notifications.push = async function (notification, uids) {
 				winston.error(err.stack);
 			}
 		});
-	}, 1000);
+	}, 500);
 };
 
 async function pushToUids(uids, notification) {

@@ -9,9 +9,9 @@
 	"containers.none": "Nessuno",
 	"container.well": "Bene",
 	"container.jumbotron": "Jumbotron",
-	"container.card": "Card",
-	"container.card-header": "Card Header",
-	"container.card-body": "Card Body",
+	"container.card": "Scheda",
+	"container.card-header": "Intestazione della scheda",
+	"container.card-body": "Corpo della scheda",
 	"container.alert": "Avviso",
 
 	"alert.confirm-delete": "Sei sicuro di voler eliminare questo widget?",

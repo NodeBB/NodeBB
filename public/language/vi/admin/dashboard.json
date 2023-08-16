@@ -48,6 +48,7 @@
 	"restart-disabled": "Việc xây dựng lại và khởi động lại NodeBB của bạn đã bị vô hiệu hóa vì bạn dường như không chạy nó qua daemon thích hợp.",
 	"maintenance-mode": "Chế Độ Bảo Trì",
 	"maintenance-mode-title": "Bấm vào đây để thiết lập chế độ bảo trì cho NodeBB",
+	"dark-mode": "Dark Mode",
 	"realtime-chart-updates": "Cập Nhật Biểu Đồ Thời Gian Thực",
 
 	"active-users": "Người Dùng Hoạt Động",
@@ -89,5 +90,9 @@
 	"details.logins-login-time": "Thời gian đăng nhập",
 	"start": "Start",
 	"end": "End",
-	"filter": "Bộ lọc"
+	"filter": "Bộ lọc",
+	"view-as-json": "View as JSON",
+	"expand-analytics": "Expand analytics",
+	"clear-search-history": "Clear Search History",
+	"clear-search-history-confirm": "Are you sure you want to clear entire search history?"
 }

@@ -8,6 +8,7 @@ const events = require('../events');
 const db = require('../database');
 const privileges = require('../privileges');
 const websockets = require('./index');
+const batch = require('../batch');
 const index = require('./index');
 const getAdminSearchDict = require('../admin/search').getDictionary;
 
@@ -114,6 +115,14 @@ SocketAdmin.getServerTime = function (socket, data, callback) {
 	callback(null, {
 		timestamp: now.getTime(),
 		offset: now.getTimezoneOffset(),
+	});
+};
+
+SocketAdmin.clearSearchHistory = async function () {
+	const keys = await db.scan({ match: 'searches:*' });
+	await batch.processArray(keys, db.deleteAll, {
+		batch: 500,
+		interval: 0,
 	});
 };
 

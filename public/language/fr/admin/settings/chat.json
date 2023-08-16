@@ -4,6 +4,7 @@
 	"disable-editing": "Désactiver l'édition/la suppression des messages des discussions",
 	"disable-editing-help": "Les administrateurs et modérateurs globaux sont dispensés de cette restriction",
 	"max-length": "Longueur maximales des messages de discussion",
+	"max-chat-room-name-length": "Longueur maximale des noms de salons",
 	"max-room-size": "Nombre maximum d'utilisateurs dans une même discussion",
 	"delay": "Temps entre chaque message de discussion (en millisecondes)",
 	"notification-delay": "Délai de notification pour les messages de chat. (0 pour aucun délai)",

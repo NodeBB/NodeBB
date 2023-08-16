@@ -124,7 +124,7 @@ define('forum/register', [
 			showError(username_notify, '[[error:invalid-username]]');
 		} else {
 			Promise.allSettled([
-				api.head(`/users/bySlug/${username}`, {}),
+				api.head(`/users/bySlug/${userslug}`, {}),
 				api.head(`/groups/${username}`, {}),
 			]).then((results) => {
 				if (results.every(obj => obj.status === 'rejected')) {

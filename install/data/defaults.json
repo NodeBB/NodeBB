@@ -64,6 +64,7 @@
     "maximumAboutMeLength": 1000,
     "maximumUsersInChatRoom": 0,
     "maximumChatMessageLength": 1000,
+    "maximumChatRoomNameLength": 50,
     "maximumProfileImageSize": 256,
     "maximumCoverImageSize": 2048,
     "profileImageDimension": 200,

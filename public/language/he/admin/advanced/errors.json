@@ -1,15 +1,15 @@
 {
 	"errors": "שגיאות",
 	"figure-x": "דוגמא %1",
-	"error-events-per-day": "<code>%1</code> ארועים ביום",
+	"error-events-per-day": "<code>%1</code> אירועים ביום",
 	"error.404": "לא נמצא 404",
 	"error.503": "השירות אינו זמין 503",
-	"manage-error-log": "נהל רישום שגיאות",
-	"export-error-log": "יצא רישום שגיאות (CSV)",
-	"clear-error-log": "נקה רישום שגיאות",
+	"manage-error-log": "נהל לוג שגיאות",
+	"export-error-log": "יצא לוג שגיאות (CSV)",
+	"clear-error-log": "נקה לוג שגיאות",
 	"route": "נתיב",
 	"count": "ספירה",
 	"no-routes-not-found": "הידד! אין שגיאות 404!",
-	"clear404-confirm": "האם אתה בטוח שאתה רוצה לנקות את רישום שגיאות 404?",
+	"clear404-confirm": "האם אתה בטוח שאתה רוצה לנקות את לוג שגיאות 404?",
 	"clear404-success": "שגיאות \"404 לא נמצא\" נוקו"
 }

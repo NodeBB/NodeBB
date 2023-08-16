@@ -22,6 +22,8 @@
     "reset.notify.subject": "Lösenordet ändrat",
     "reset.notify.text1": "Vi vill uppmärksamma dig på att ditt lösenord ändrades den %1.",
     "reset.notify.text2": "Om du inte godkänt det här så vänligen kontakta en administratör snarast. ",
+    "digest.unread-rooms": "Unread rooms",
+    "digest.room-name-unreadcount": "%1 (%2 unread)",
     "digest.latest_topics": "Senaste ämnen från %1",
     "digest.top-topics": "Top topics from %1",
     "digest.popular-topics": "Popular topics from %1",

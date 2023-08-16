@@ -114,7 +114,7 @@ describe('Post\'s', () => {
 
 		await posts.changeOwner([pid1, pid2], newUid);
 
-		assert.deepStrictEqual(await db.sortedSetScores(`tid:${postResult.topicData.tid}:posters`, [oldUid, newUid]), [0, 2]);
+		assert.deepStrictEqual(await db.sortedSetScores(`tid:${postResult.topicData.tid}:posters`, [oldUid, newUid]), [null, 2]);
 
 		assert.deepStrictEqual(await posts.isOwner([pid1, pid2], oldUid), [false, false]);
 		assert.deepStrictEqual(await posts.isOwner([pid1, pid2], newUid), [true, true]);
@@ -130,6 +130,8 @@ describe('Post\'s', () => {
 
 		assert.strictEqual(await topics.isOwner(postResult.topicData.tid, oldUid), false);
 		assert.strictEqual(await topics.isOwner(postResult.topicData.tid, newUid), true);
+
+		assert.strictEqual(await topics.getTopicField(postResult.topicData.tid, 'postercount'), 1);
 	});
 
 	it('should fail to change owner if new owner does not exist', async () => {
@@ -212,6 +214,14 @@ describe('Post\'s', () => {
 				assert.equal(data[0].usernames, 'upvoter');
 				done();
 			});
+		});
+
+		it('should fail to get upvoters if user does not have read privilege', async () => {
+			await privileges.categories.rescind(['groups:topics:read'], cid, 'guests');
+			await assert.rejects(socketPosts.getUpvoters({ uid: 0 }, [postData.pid]), {
+				message: '[[error:no-privileges]]',
+			});
+			await privileges.categories.give(['groups:topics:read'], cid, 'guests');
 		});
 
 		it('should unvote a post', async () => {

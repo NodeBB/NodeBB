@@ -4,6 +4,7 @@
 	"disable-editing": "Wyłącz edycję/usuwanie wiadomości czat",
 	"disable-editing-help": "Ograniczenie to nie dotyczy administratorów i moderatorów globalnych",
 	"max-length": "Maksymalna długość wiadomości czat",
+	"max-chat-room-name-length": "Maximum length of chat room names",
 	"max-room-size": "Maksymalna liczba użytkowników w pokojach czatu",
 	"delay": "Czas pomiędzy wiadomościami czat (w milisekundach)",
 	"notification-delay": "Opóźnienie powiadomienia o wiadomościach na czacie. (0 bez opóźnienia)",

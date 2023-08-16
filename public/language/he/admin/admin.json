@@ -11,6 +11,8 @@
 	"save-changes": "שמור שינויים",
 	"min": "מינימום:",
 	"max": "מקסימום:",
-	"view": "View",
-	"edit": "עריכה"
+	"view": "צפייה",
+	"edit": "עריכה",
+	"add": "הוספה",
+	"select-icon": "Select Icon"
 }

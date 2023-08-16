@@ -106,14 +106,14 @@ describe('Topic\'s', () => {
 		});
 
 		it('should fail to create new topic with empty title', (done) => {
-			topics.post({ uid: topic.userId, title: '', content: topic.content, cid: topic.categoryId }, (err) => {
+			topics.post({ uid: fooUid, title: '', content: topic.content, cid: topic.categoryId }, (err) => {
 				assert.ok(err);
 				done();
 			});
 		});
 
 		it('should fail to create new topic with empty content', (done) => {
-			topics.post({ uid: topic.userId, title: topic.title, content: '', cid: topic.categoryId }, (err) => {
+			topics.post({ uid: fooUid, title: topic.title, content: '', cid: topic.categoryId }, (err) => {
 				assert.ok(err);
 				done();
 			});
@@ -304,7 +304,7 @@ describe('Topic\'s', () => {
 		});
 
 		it('should fail to create new reply with empty content', (done) => {
-			topics.reply({ uid: topic.userId, content: '', tid: newTopic.tid }, (err) => {
+			topics.reply({ uid: fooUid, content: '', tid: newTopic.tid }, (err) => {
 				assert.strictEqual(err.message, '[[error:content-too-short, 8]]');
 				done();
 			});
