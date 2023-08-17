@@ -4,6 +4,7 @@
 	"disable-editing": "Onemogući uređivanje/brisanje poruka razgovora",
 	"disable-editing-help": "Administratori i moderatori su izuzeti od ovih restrikcija",
 	"max-length": "Maksimalna dužina poruka u razgovoru",
+	"max-chat-room-name-length": "Maximum length of chat room names",
 	"max-room-size": "Maksimalan broj korisnika u sobama za razgovor",
 	"delay": "Vrijeme između poruka razgovora u milisekundama",
 	"notification-delay": "Notification delay for chat messages. (0 for no delay)",

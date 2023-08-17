@@ -11,7 +11,8 @@ define('forum/topic/postTools', [
 	'bootbox',
 	'alerts',
 	'hooks',
-], function (share, navigator, components, translator, votes, api, bootbox, alerts, hooks) {
+	'helpers',
+], function (share, navigator, components, translator, votes, api, bootbox, alerts, hooks, helpers) {
 	const PostTools = {};
 
 	let staleReplyAnyway = false;
@@ -85,8 +86,8 @@ define('forum/topic/postTools', [
 
 	PostTools.updatePostCount = function (postCount) {
 		const postCountEl = components.get('topic/post-count');
-		postCountEl.html(postCount).attr('title', postCount);
-		utils.makeNumbersHumanReadable(postCountEl);
+		postCountEl.attr('title', postCount)
+			.html(helpers.humanReadableNumber(postCount));
 		navigator.setCount(postCount);
 	};
 

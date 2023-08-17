@@ -51,6 +51,8 @@
     "nextpage": "下一頁",
     "alert.success": "成功",
     "alert.error": "錯誤",
+    "alert.warning": "Warning",
+    "alert.info": "Info",
     "alert.banned": "已停權",
     "alert.banned.message": "You have just been banned, your access is now restricted.",
     "alert.unbanned": "Unbanned",

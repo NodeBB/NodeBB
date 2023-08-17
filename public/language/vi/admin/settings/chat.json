@@ -4,6 +4,7 @@
 	"disable-editing": "Tắt chỉnh sửa / xóa tin nhắn trò chuyện",
 	"disable-editing-help": "Quản trị viên và người kiểm duyệt toàn quyền được miễn hạn chế này",
 	"max-length": "Độ dài tối đa của tin nhắn trò chuyện",
+	"max-chat-room-name-length": "Maximum length of chat room names",
 	"max-room-size": "Số lượng người dùng tối đa trong phòng trò chuyện",
 	"delay": "Thời gian giữa các tin nhắn trò chuyện tính bằng mili giây",
 	"notification-delay": "Độ trễ thông báo cho tin nhắn trò chuyện. (0 để không bị chậm trễ)",

@@ -14,6 +14,7 @@
 	"manage/users": "Utilisateurs",
 	"manage/admins-mods": "Modération",
 	"manage/registration": "File d'inscription",
+	"manage/flagged-content": "Contenu signalé",
 	"manage/post-queue": "File d’attente des messages",
 	"manage/groups": "Groupes",
 	"manage/ip-blacklist": "Liste noire d'IPs",
@@ -72,9 +73,9 @@
 	"development/info": "Info",
 
 	"rebuild-and-restart-forum": "Régénérer & Redémarrer votre forum",
-	"rebuild-and-restart": "Rebuild & Restart",
+	"rebuild-and-restart": "Régénérer & Redémarrer",
 	"restart-forum": "Redémarrer le forum",
-	"restart": "Restart",
+	"restart": "Redémarrer",
 	"logout": "Déconnexion ",
 	"view-forum": "Voir le forum",
 

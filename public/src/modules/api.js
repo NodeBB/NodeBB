@@ -37,84 +37,106 @@ function call(options, callback) {
 }
 
 async function xhr(options, cb) {
+	// Normalize body based on type
+	const { url } = options;
+	delete options.url;
+
+	if (options.data && !(options.data instanceof FormData)) {
+		options.data = JSON.stringify(options.data || {});
+		options.headers['content-type'] = 'application/json; charset=utf-8';
+	}
+
 	// Allow options to be modified by plugins, etc.
 	({ options } = await fireHook('filter:api.options', { options }));
 
-	$.ajax(options)
-		.done((res) => {
-			cb(null, (
-				res &&
-				res.hasOwnProperty('status') &&
-				res.hasOwnProperty('response') ? res.response : (res || {})
-			));
-		})
-		.fail((ev) => {
-			let errMessage;
-			if (ev.responseJSON) {
-				errMessage = ev.responseJSON.status && ev.responseJSON.status.message ?
-					ev.responseJSON.status.message :
-					ev.responseJSON.error;
-			}
+	/**
+	 * Note: pre-v4 backwards compatibility
+	 *
+	 * This module now passes in "data" to xhr().
+	 * This is because the "filter:api.options" hook (and plugins using it) expect "data".
+	 * fetch() expects body, so we rename it here.
+	 *
+	 * In v4, replace all instances of "data" with "body" and record as breaking change.
+	 */
+	if (options.data) {
+		options.body = options.data;
+		delete options.data;
+	}
 
-			cb(new Error(errMessage || ev.statusText));
-		});
+	const res = await fetch(url, options);
+	const { headers } = res;
+	const contentType = headers.get('content-type');
+	const isJSON = contentType && contentType.startsWith('application/json');
+
+	let response;
+	if (isJSON) {
+		response = await res.json();
+	} else {
+		response = await res.text();
+	}
+
+	if (!res.ok) {
+		return cb(new Error(isJSON ? response.status.message : response));
+	}
+
+	cb(null, (
+		isJSON && response.hasOwnProperty('status') && response.hasOwnProperty('response') ?
+			response.response :
+			response
+	));
 }
 
-export function get(route, payload, onSuccess) {
+export function get(route, data, onSuccess) {
 	return call({
-		url: route + (payload && Object.keys(payload).length ? ('?' + $.param(payload)) : ''),
+		url: route + (data && Object.keys(data).length ? ('?' + $.param(data)) : ''),
 	}, onSuccess);
 }
 
-export function head(route, payload, onSuccess) {
+export function head(route, data, onSuccess) {
 	return call({
-		url: route + (payload && Object.keys(payload).length ? ('?' + $.param(payload)) : ''),
+		url: route + (data && Object.keys(data).length ? ('?' + $.param(data)) : ''),
 		method: 'head',
 	}, onSuccess);
 }
 
-export function post(route, payload, onSuccess) {
+export function post(route, data, onSuccess) {
 	return call({
 		url: route,
 		method: 'post',
-		data: JSON.stringify(payload || {}),
-		contentType: 'application/json; charset=utf-8',
+		data,
 		headers: {
 			'x-csrf-token': config.csrf_token,
 		},
 	}, onSuccess);
 }
 
-export function patch(route, payload, onSuccess) {
+export function patch(route, data, onSuccess) {
 	return call({
 		url: route,
 		method: 'patch',
-		data: JSON.stringify(payload || {}),
-		contentType: 'application/json; charset=utf-8',
+		data,
 		headers: {
 			'x-csrf-token': config.csrf_token,
 		},
 	}, onSuccess);
 }
 
-export function put(route, payload, onSuccess) {
+export function put(route, data, onSuccess) {
 	return call({
 		url: route,
 		method: 'put',
-		data: JSON.stringify(payload || {}),
-		contentType: 'application/json; charset=utf-8',
+		data,
 		headers: {
 			'x-csrf-token': config.csrf_token,
 		},
 	}, onSuccess);
 }
 
-export function del(route, payload, onSuccess) {
+export function del(route, data, onSuccess) {
 	return call({
 		url: route,
 		method: 'delete',
-		data: JSON.stringify(payload),
-		contentType: 'application/json; charset=utf-8',
+		data,
 		headers: {
 			'x-csrf-token': config.csrf_token,
 		},

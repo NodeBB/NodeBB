@@ -48,6 +48,7 @@
 	"restart-disabled": "Перебудування та перезапуск вашого NodeBB вимкнено, оскільки ви, здається, не запускаєте його через відповідний демон.",
 	"maintenance-mode": "Режим обслуговування",
 	"maintenance-mode-title": "Натисніть тут, щоб налаштувати режим обслуговування NodeBB",
+	"dark-mode": "Dark Mode",
 	"realtime-chart-updates": "Оновлення графіків в реальному часі",
 
 	"active-users": "Активні користувачі",
@@ -89,5 +90,9 @@
 	"details.logins-login-time": "Login Time",
 	"start": "Start",
 	"end": "End",
-	"filter": "Filter"
+	"filter": "Filter",
+	"view-as-json": "View as JSON",
+	"expand-analytics": "Expand analytics",
+	"clear-search-history": "Clear Search History",
+	"clear-search-history-confirm": "Are you sure you want to clear entire search history?"
 }

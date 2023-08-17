@@ -116,7 +116,9 @@ module.exports = function (Posts) {
 		const topicPostCountTasks = [];
 		const topicTasks = [];
 		const zsetIncrBulk = [];
+		const tids = [];
 		for (const [tid, posts] of Object.entries(postsByTopic)) {
+			tids.push(tid);
 			incrObjectBulk.push([`topic:${tid}`, { postcount: -posts.length }]);
 			if (posts.length && posts[0]) {
 				const topicData = posts[0].topic;
@@ -142,6 +144,14 @@ module.exports = function (Posts) {
 			user.updatePostCount(_.uniq(postData.map(p => p.uid))),
 			notifications.rescind(...postData.map(p => `new_post:tid:${p.tid}:pid:${p.pid}:uid:${p.uid}`)),
 		]);
+		const tidPosterZsets = tids.map(tid => `tid:${tid}:posters`);
+		await db.sortedSetsRemoveRangeByScore(tidPosterZsets, '-inf', 0);
+		const posterCounts = await db.sortedSetsCard(tidPosterZsets);
+		await db.setObjectBulk(
+			tids.map((tid, idx) => (
+				[`topic:${tid}`, { postercount: posterCounts[idx] || 0 }]
+			))
+		);
 	}
 
 	async function deleteFromCategoryRecentPosts(postData) {

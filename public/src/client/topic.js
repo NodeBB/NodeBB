@@ -160,7 +160,7 @@ define('forum/topic', [
 			alerts.alert({
 				alert_id: 'bookmark',
 				message: '[[topic:bookmark_instructions]]',
-				timeout: 0,
+				timeout: 15000,
 				type: 'info',
 				clickfn: function () {
 					navigator.scrollToIndex(parseInt(bookmark, 10), true);
@@ -169,9 +169,6 @@ define('forum/topic', [
 					storage.removeItem('topic:' + tid + ':bookmark');
 				},
 			});
-			setTimeout(function () {
-				alerts.remove('bookmark');
-			}, 10000);
 		}
 	}
 
@@ -242,6 +239,15 @@ define('forum/topic', [
 			function scrollbarVisible(element) {
 				return element.scrollHeight > element.clientHeight;
 			}
+			function offsetCodeBtn(codeEl) {
+				if (!codeEl.length) { return; }
+				if (!codeEl[0].scrollHeight) {
+					return setTimeout(offsetCodeBtn, 100, codeEl);
+				}
+				if (scrollbarVisible(codeEl.get(0))) {
+					codeEl.parent().parent().find('[component="copy/code/btn"]').css({ margin: '0.5rem 1.5rem 0 0' });
+				}
+			}
 			let codeBlocks = $('[component="topic"] [component="post/content"] code:not([data-button-added])');
 			codeBlocks = codeBlocks.filter((i, el) => $(el).text().includes('\n'));
 			const container = $('<div class="hover-parent position-relative"></div>');
@@ -250,9 +256,7 @@ define('forum/topic', [
 			preEls.wrap(container).parent().append(buttonDiv);
 			preEls.parent().find('[component="copy/code/btn"]').translateAttr('title', '[[topic:copy-code]]');
 			preEls.each((index, el) => {
-				if (scrollbarVisible(el)) {
-					$(el).parent().find('[component="copy/code/btn"]').css({ margin: '0.5rem 1.5rem 0 0' });
-				}
+				offsetCodeBtn($(el).find('code'));
 			});
 			codeBlocks.attr('data-button-added', 1);
 		}

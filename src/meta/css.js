@@ -5,11 +5,13 @@ const winston = require('winston');
 const nconf = require('nconf');
 const fs = require('fs');
 const path = require('path');
+const { mkdirp } = require('mkdirp');
 
 const plugins = require('../plugins');
 const db = require('../database');
 const file = require('../file');
 const minifier = require('./minifier');
+const utils = require('../utils');
 
 const CSS = module.exports;
 
@@ -35,7 +37,8 @@ const buildImports = {
 			'@import "admin/overrides";',
 			'@import "bootstrap/scss/bootstrap";',
 			'@import "mixins";',
-			'@import "fontawesome";',
+			'@import "fontawesome/loader";',
+			getFontawesomeStyle(),
 			'@import "@adactive/bootstrap-tagsinput/src/bootstrap-tagsinput";',
 			'@import "generics";',
 			'@import "responsive-utilities";',
@@ -73,6 +76,7 @@ function boostrapImport(themeData) {
 
 		// bs files
 		'@import "bootstrap/scss/variables";',
+		'@import "bootstrap/scss/variables-dark";',
 		'@import "bootstrap/scss/maps";',
 		'@import "bootstrap/scss/mixins";',
 		'@import "bootstrap/scss/utilities";',
@@ -119,13 +123,35 @@ function boostrapImport(themeData) {
 		'@import "bootstrap/scss/utilities/api";',
 		// scss-docs-end import-stack
 
-		'@import "fontawesome";',
+		'@import "fontawesome/loader";',
+		getFontawesomeStyle(),
+
 		'@import "mixins";', // core mixins
 		'@import "generics";',
 		'@import "client";', // core page styles
 		'@import "./theme";', // rest of the theme scss
 		bootswatchSkin && !isCustomSkin ? `@import "bootswatch/dist/${bootswatchSkin}/bootswatch";` : '',
 	].join('\n');
+}
+
+
+function getFontawesomeStyle() {
+	const styles = utils.getFontawesomeStyles();
+	return styles.map(style => `@import "fontawesome/style-${style}";`).join('\n');
+}
+
+async function copyFontAwesomeFiles() {
+	await mkdirp(path.join(__dirname, '../../build/public/fontawesome/webfonts'));
+	const fonts = await fs.promises.opendir(path.join(utils.getFontawesomePath(), '/webfonts'));
+	const copyOperations = [];
+	for await (const file of fonts) {
+		if (file.isFile() && file.name.match(/\.(woff2|ttf|eot)?$/)) { // there shouldn't be any legacy eot files, but just in case we'll allow it
+			copyOperations.push(
+				fs.promises.copyFile(path.join(fonts.path, file.name), path.join(__dirname, '../../build/public/fontawesome/webfonts/', file.name))
+			);
+		}
+	}
+	await Promise.all(copyOperations);
 }
 
 async function filterMissingFiles(filepaths) {
@@ -175,7 +201,8 @@ async function getBundleMetadata(target) {
 	const paths = [
 		path.join(__dirname, '../../node_modules'),
 		path.join(__dirname, '../../public/scss'),
-		path.join(__dirname, '../../public/vendor/fontawesome/scss'),
+		path.join(__dirname, '../../public/fontawesome/scss'),
+		path.join(utils.getFontawesomePath(), 'scss'),
 	];
 
 	// Skin support
@@ -256,13 +283,12 @@ CSS.getSkinSwitcherOptions = async function (uid) {
 		});
 		return skins;
 	}
-
-	return {
+	return await plugins.hooks.fire('filter:meta.css.getSkinSwitcherOptions', {
 		default: defaultSkins,
 		custom: customSkins.map(s => ({ ...s, selected: s.value === userSettings.bootswatchSkin })),
 		light: parseSkins(lightSkins),
 		dark: parseSkins(darkSkins),
-	};
+	});
 };
 
 CSS.getCustomSkins = async function (opts = {}) {
@@ -313,6 +339,7 @@ CSS.buildBundle = async function (target, fork) {
 	await Promise.all([
 		fs.promises.writeFile(path.join(__dirname, '../../build/public', `${target}.css`), ltr.code),
 		fs.promises.writeFile(path.join(__dirname, '../../build/public', `${target}-rtl.css`), rtl.code),
+		copyFontAwesomeFiles(),
 	]);
 	return [ltr.code, rtl.code];
 };

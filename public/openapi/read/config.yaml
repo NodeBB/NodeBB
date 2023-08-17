@@ -275,3 +275,14 @@ get:
                     type: boolean
               composer-default:
                 type: object
+              fontawesome:
+                type: object
+                properties:
+                  pro:
+                    type: boolean
+                  styles:
+                    type: array
+                    items:
+                      type: string
+                  version:
+                    type: string

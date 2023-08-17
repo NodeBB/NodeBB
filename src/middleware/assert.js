@@ -113,8 +113,8 @@ Assert.room = helpers.try(async (req, res, next) => {
 	}
 
 	const [exists, inRoom] = await Promise.all([
-		await messaging.roomExists(req.params.roomId),
-		await messaging.isUserInRoom(req.uid, req.params.roomId),
+		messaging.roomExists(req.params.roomId),
+		messaging.isUserInRoom(req.uid, req.params.roomId),
 	]);
 
 	if (!exists) {

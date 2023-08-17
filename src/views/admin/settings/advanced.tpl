@@ -7,8 +7,8 @@
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/advanced:maintenance-mode]]</h5>
 
 				<div class="form-check form-switch mb-3">
-					<input class="form-check-input" type="checkbox" data-field="maintenanceMode">
-					<label class="form-check-label">[[admin/settings/advanced:maintenance-mode]]</label>
+					<input class="form-check-input" type="checkbox" id="maintenanceMode" data-field="maintenanceMode">
+					<label for="maintenanceMode" class="form-check-label">[[admin/settings/advanced:maintenance-mode]]</label>
 				</div>
 				<p class="form-text">
 					[[admin/settings/advanced:maintenance-mode.help]]
@@ -75,7 +75,7 @@
 				</div>
 				<div class="form-check form-switch mb-3">
 					<input class="form-check-input" type="checkbox" data-field="cross-origin-embedder-policy" id="cross-origin-embedder-policy">
-					<label class="form-check-label">[[admin/settings/advanced:headers.coep]]</label>
+					<label for="cross-origin-embedder-policy" class="form-check-label">[[admin/settings/advanced:headers.coep]]</label>
 				</div>
 				<p class="form-text">[[admin/settings/advanced:headers.coep-help]]</p>
 				<div class="mb-3">
@@ -108,20 +108,20 @@
 			<div id="strict-transport-security" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/advanced:hsts]]</h5>
 				<div class="form-check form-switch mb-3">
-					<input class="form-check-input" type="checkbox" data-field="hsts-enabled" checked>
-					<label class="form-check-label">[[admin/settings/advanced:hsts.enabled]]</label>
+					<input class="form-check-input" type="checkbox" id="hsts-enabled" data-field="hsts-enabled" checked>
+					<label for="hsts-enabled" class="form-check-label">[[admin/settings/advanced:hsts.enabled]]</label>
 				</div>
 				<div class="mb-3">
 					<label class="form-label" for="hsts-maxage">[[admin/settings/advanced:hsts.maxAge]]</label>
 					<input class="form-control" id="hsts-maxage" type="number" placeholder="31536000" data-field="hsts-maxage" />
 				</div>
 				<div class="form-check form-switch mb-3">
-					<input class="form-check-input" type="checkbox" data-field="hsts-subdomains" checked>
-					<label class="form-check-label">[[admin/settings/advanced:hsts.subdomains]]</label>
+					<input class="form-check-input" type="checkbox" id="hsts-subdomains" data-field="hsts-subdomains" checked>
+					<label for="hsts-subdomains" class="form-check-label">[[admin/settings/advanced:hsts.subdomains]]</label>
 				</div>
 				<div class="form-check form-switch mb-3">
-					<input class="form-check-input" type="checkbox" data-field="hsts-preload">
-					<label class="form-check-label">[[admin/settings/advanced:hsts.preload]]</label>
+					<input class="form-check-input" type="checkbox" id="hsts-preload" data-field="hsts-preload">
+					<label for="hsts-preload" class="form-check-label">[[admin/settings/advanced:hsts.preload]]</label>
 				</div>
 				<p class="form-text">
 					[[admin/settings/advanced:hsts.help, https:\/\/hstspreload.org\/]]
@@ -168,8 +168,8 @@
 						[[admin/settings/advanced:compression.help]]
 					</p>
 					<div class="form-check form-switch">
-						<input class="form-check-input" type="checkbox" data-field="useCompression">
-						<label class="form-check-label">[[admin/settings/advanced:compression.enable]]</label>
+						<input class="form-check-input" type="checkbox" id="useCompression" data-field="useCompression">
+						<label for="useCompression" class="form-check-label">[[admin/settings/advanced:compression.enable]]</label>
 					</div>
 				</div>
 			</div>

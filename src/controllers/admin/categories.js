@@ -134,12 +134,14 @@ async function buildBreadcrumbs(categoryData, url) {
 categoriesController.buildBreadCrumbs = buildBreadcrumbs;
 
 categoriesController.getAnalytics = async function (req, res) {
-	const [name, analyticsData] = await Promise.all([
+	const [name, analyticsData, selectedData] = await Promise.all([
 		categories.getCategoryField(req.params.category_id, 'name'),
 		analytics.getCategoryAnalytics(req.params.category_id),
+		helpers.getSelectedCategory(req.params.category_id),
 	]);
 	res.render('admin/manage/category-analytics', {
 		name: name,
 		analytics: analyticsData,
+		selectedCategory: selectedData.selectedCategory,
 	});
 };

@@ -14,7 +14,7 @@
 	<div class="row" id="navigation">
 		<div class="col-lg-9">
 			<div class="clearfix">
-				<ul id="active-navigation" class="nav">
+				<ul id="active-navigation" class="nav border">
 					{{{ each navigation }}}
 					<li data-index="{navigation.index}" class="float-start nav-item {navigation.class} {{{ if navigation.selected }}} active {{{ end }}}">
 						<a href="#" title="{navigation.route}" id="{navigation.id}" class="nav-link p-3 {{{ if !navigation.enabled }}}text-muted{{{ end }}}">
@@ -86,13 +86,13 @@
 						</div>
 
 						<div class="form-check form-switch mb-3">
-							<input class="form-check-input" type="checkbox" name="targetBlank" {{{ if enabled.targetBlank }}}checked{{{ end }}}/>
-							<label class="form-check-label">[[admin/settings/navigation:open-new-window]]</label>
+							<input class="form-check-input" type="checkbox" id="targetBlank-{./index}" name="targetBlank" {{{ if enabled.targetBlank }}}checked{{{ end }}}/>
+							<label for="targetBlank-{./index}" class="form-check-label">[[admin/settings/navigation:open-new-window]]</label>
 						</div>
 
 						<div class="form-check form-switch mb-3">
-							<input class="form-check-input" type="checkbox" name="dropdown" {{{ if enabled.dropdown }}}checked{{{ end }}}/>
-							<label class="form-check-label">[[admin/settings/navigation:dropdown]]</label>
+							<input class="form-check-input" type="checkbox" id="dropdown-{./index}" name="dropdown" {{{ if enabled.dropdown }}}checked{{{ end }}}/>
+							<label for="dropdown-{./index}" class="form-check-label">[[admin/settings/navigation:dropdown]]</label>
 						</div>
 						<div class="mb-3">
 							<p class="form-text">

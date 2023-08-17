@@ -51,6 +51,8 @@
     "nextpage": "Next Page",
     "alert.success": "Success",
     "alert.error": "Somethin' broke",
+    "alert.warning": "Warning",
+    "alert.info": "Info",
     "alert.banned": "Exiled",
     "alert.banned.message": "You have just been banned, your access is now restricted.",
     "alert.unbanned": "Unbanned",

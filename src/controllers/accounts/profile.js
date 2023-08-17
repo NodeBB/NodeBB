@@ -93,7 +93,7 @@ async function getPosts(callerUid, userData, setSuffix) {
 		user.isModerator(callerUid, cids),
 		privileges.categories.isUserAllowedTo('topics:schedule', cids, callerUid),
 	]);
-	const cidToIsMod = _.zipObject(cids, isModOfCids);
+	const isModOfCid = _.zipObject(cids, isModOfCids);
 	const cidToCanSchedule = _.zipObject(cids, canSchedule);
 
 	do {
@@ -111,8 +111,12 @@ async function getPosts(callerUid, userData, setSuffix) {
 			}));
 			const p = await posts.getPostSummaryByPids(pids, callerUid, { stripTags: false });
 			postData.push(...p.filter(
-				p => p && p.topic && (isAdmin || cidToIsMod[p.topic.cid] ||
-					(p.topic.scheduled && cidToCanSchedule[p.topic.cid]) || (!p.deleted && !p.topic.deleted))
+				p => p && p.topic && (
+					isAdmin ||
+					isModOfCid[p.topic.cid] ||
+					(p.topic.scheduled && cidToCanSchedule[p.topic.cid]) ||
+					(!p.deleted && !p.topic.deleted)
+				)
 			));
 		}
 		start += count;

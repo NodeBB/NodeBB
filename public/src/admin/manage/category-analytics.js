@@ -1,10 +1,20 @@
 'use strict';
 
 
-define('admin/manage/category-analytics', ['Chart'], function (Chart) {
+define('admin/manage/category-analytics', [
+	'Chart', 'categorySelector',
+], function (Chart, categorySelector) {
 	const CategoryAnalytics = {};
 
 	CategoryAnalytics.init = function () {
+		categorySelector.init($('[component="category-selector"]'), {
+			onSelect: function (selectedCategory) {
+				ajaxify.go('admin/manage/categories/' + selectedCategory.cid + '/analytics');
+			},
+			showLinks: true,
+			template: 'admin/partials/category/selector-dropdown-right',
+		});
+
 		const hourlyCanvas = document.getElementById('pageviews:hourly');
 		const dailyCanvas = document.getElementById('pageviews:daily');
 		const topicsCanvas = document.getElementById('topics:daily');

@@ -18,6 +18,7 @@
 	"purge": "מחק <strong>משתמש(ים)</strong> ו<strong>תוכן</strong>",
 	"download-csv": "ייצא משתמשים כ-CSV",
 	"manage-groups": "נהל קבוצות",
+	"set-reputation": "הגדר מוניטין",
 	"add-group": "הוסף קבוצה",
 	"create": "צור משתמש",
 	"invite": "הזמנה באמצעות דוא\"ל",

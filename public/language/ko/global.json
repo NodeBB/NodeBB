@@ -51,6 +51,8 @@
     "nextpage": "다음 페이지",
     "alert.success": "성공",
     "alert.error": "오류",
+    "alert.warning": "Warning",
+    "alert.info": "Info",
     "alert.banned": "차단됨",
     "alert.banned.message": "당신은 차단되었습니다. 당신의 접근이 제한됩니다.",
     "alert.unbanned": "차단 해제",

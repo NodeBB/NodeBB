@@ -14,6 +14,7 @@
 	"manage/users": "Gebruikers",
 	"manage/admins-mods": "Admins & Mods",
 	"manage/registration": "Registration Queue",
+	"manage/flagged-content": "Flagged Content",
 	"manage/post-queue": "Post Queue",
 	"manage/groups": "Groepen",
 	"manage/ip-blacklist": "IP Blacklist",

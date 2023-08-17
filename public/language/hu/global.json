@@ -51,6 +51,8 @@
     "nextpage": "Következő oldal",
     "alert.success": "Sikeres",
     "alert.error": "Hiba",
+    "alert.warning": "Warning",
+    "alert.info": "Info",
     "alert.banned": "Kitiltva",
     "alert.banned.message": "Kitiltottak, ezért most ki leszel léptetve.",
     "alert.unbanned": "Kitiltás feloldva",

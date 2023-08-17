@@ -50,6 +50,7 @@ define('forum/topic/votes', [
 			el.attr('title', title);
 			(new bootstrap.Tooltip(el, {
 				container: '#content',
+				html: true,
 			})).show();
 		}
 		let usernames = data.usernames
@@ -57,7 +58,7 @@ define('forum/topic/votes', [
 		if (!usernames.length) {
 			return;
 		}
-		if (usernames.length + data.otherCount > 6) {
+		if (usernames.length + data.otherCount > data.cutoff) {
 			usernames = usernames.join(', ').replace(/,/g, '|');
 			translator.translate('[[topic:users_and_others, ' + usernames + ', ' + data.otherCount + ']]', function (translated) {
 				translated = translated.replace(/\|/g, ',');

@@ -14,6 +14,7 @@
 	"manage/users": "Felhasználók",
 	"manage/admins-mods": "Adminok & Moderátorok",
 	"manage/registration": "Regisztrációs várólista",
+	"manage/flagged-content": "Flagged Content",
 	"manage/post-queue": "Hozzászólási várólista",
 	"manage/groups": "Csoportok",
 	"manage/ip-blacklist": "IP tiltólista",

@@ -18,6 +18,7 @@
 	"purge": "선택한 <strong>계정(들)</strong> 과 <strong>컨텐츠</strong> 삭제",
 	"download-csv": "CSV 다운로드",
 	"manage-groups": "그룹 관리",
+	"set-reputation": "Set Reputation",
 	"add-group": "그룹 추가",
 	"create": "Create User",
 	"invite": "Invite by Email",

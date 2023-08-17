@@ -49,8 +49,8 @@ module.exports = function (grunt) {
 			if (!pluginList.includes('nodebb-plugin-composer-default')) {
 				pluginList.push('nodebb-plugin-composer-default');
 			}
-			if (!pluginList.includes('nodebb-theme-persona')) {
-				pluginList.push('nodebb-theme-persona');
+			if (!pluginList.includes('nodebb-theme-harmony')) {
+				pluginList.push('nodebb-theme-harmony');
 			}
 		}
 

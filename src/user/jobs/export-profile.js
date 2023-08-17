@@ -89,7 +89,7 @@ process.on('message', async (msg) => {
 async function getRoomMessages(uid, roomId) {
 	const batch = require('../../batch');
 	let data = [];
-	await batch.processSortedSet(`uid:${uid}:chat:room:${roomId}:mids`, async (mids) => {
+	await batch.processSortedSet(`chat:room:${roomId}:mids`, async (mids) => {
 		const messageData = await db.getObjects(mids.map(mid => `message:${mid}`));
 		data = data.concat(
 			messageData

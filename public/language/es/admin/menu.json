@@ -14,6 +14,7 @@
 	"manage/users": "Usuarios",
 	"manage/admins-mods": "Administradores & Mods",
 	"manage/registration": "Cola de Registro",
+	"manage/flagged-content": "Flagged Content",
 	"manage/post-queue": "Cola de mensajes",
 	"manage/groups": "Grupos",
 	"manage/ip-blacklist": "Lista negra de IP",

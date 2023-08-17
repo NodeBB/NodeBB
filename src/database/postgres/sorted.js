@@ -664,6 +664,7 @@ SELECT z."value",
 	module.processSortedSet = async function (setKey, process, options) {
 		const client = await module.pool.connect();
 		const batchSize = (options || {}).batch || 100;
+		const sort = options.reverse ? 'DESC' : 'ASC';
 		const cursor = client.query(new Cursor(`
 SELECT z."value", z."score"
   FROM "legacy_object_live" o
@@ -671,7 +672,7 @@ SELECT z."value", z."score"
          ON o."_key" = z."_key"
         AND o."type" = z."type"
  WHERE o."_key" = $1::TEXT
- ORDER BY z."score" ASC, z."value" ASC`, [setKey]));
+ ORDER BY z."score" ${sort}, z."value" ${sort}`, [setKey]));
 
 		if (process && process.constructor && process.constructor.name !== 'AsyncFunction') {
 			process = util.promisify(process);

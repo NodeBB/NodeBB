@@ -12,5 +12,7 @@
 	"min": "Min:",
 	"max": "Max:",
 	"view": "Visualizza",
-	"edit": "Modifica"
+	"edit": "Modifica",
+	"add": "Aggiungi",
+	"select-icon": "Seleziona icona"
 }

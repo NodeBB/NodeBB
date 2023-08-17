@@ -22,6 +22,8 @@
     "reset.notify.subject": "비밀번호가 성공적으로 변경되었습니다.",
     "reset.notify.text1": "%1에 관해 통지합니다. 귀하의 비밀번호가 성공적으로 변경되었습니다.",
     "reset.notify.text2": "만약 이 인증을 요청하지 않았다면 즉시 관리자에게 통보하시기 바랍니다.",
+    "digest.unread-rooms": "Unread rooms",
+    "digest.room-name-unreadcount": "%1 (%2 unread)",
     "digest.latest_topics": "%1의 최근 주제",
     "digest.top-topics": "%1의 TOP 주제",
     "digest.popular-topics": "%1의 인기 주제",

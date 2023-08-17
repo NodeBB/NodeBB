@@ -1,15 +1,17 @@
 'use strict';
 
-
+const _ = require('lodash');
 const validator = require('validator');
 const nconf = require('nconf');
 const db = require('../database');
 const user = require('../user');
+const groups = require('../groups');
 const privileges = require('../privileges');
 const plugins = require('../plugins');
 const meta = require('../meta');
 const utils = require('../utils');
 const translator = require('../translator');
+const cache = require('../cache');
 
 const relative_path = nconf.get('relative_path');
 
@@ -23,40 +25,57 @@ require('./rooms')(Messaging);
 require('./unread')(Messaging);
 require('./notifications')(Messaging);
 
+Messaging.notificationSettings = Object.create(null);
+Messaging.notificationSettings.NONE = 1;
+Messaging.notificationSettings.ATMENTION = 2;
+Messaging.notificationSettings.ALLMESSAGES = 3;
+
 Messaging.messageExists = async mid => db.exists(`message:${mid}`);
 
 Messaging.getMessages = async (params) => {
+	const { callerUid, uid, roomId } = params;
 	const isNew = params.isNew || false;
 	const start = params.hasOwnProperty('start') ? params.start : 0;
 	const stop = parseInt(start, 10) + ((params.count || 50) - 1);
 
-	const indices = {};
-	const ok = await canGet('filter:messaging.canGetMessages', params.callerUid, params.uid);
+	const ok = await canGet('filter:messaging.canGetMessages', callerUid, uid);
 	if (!ok) {
 		return;
 	}
-
-	const mids = await db.getSortedSetRevRange(`uid:${params.uid}:chat:room:${params.roomId}:mids`, start, stop);
+	const mids = await getMessageIds(roomId, uid, start, stop);
 	if (!mids.length) {
 		return [];
 	}
+	const indices = {};
 	mids.forEach((mid, index) => {
 		indices[mid] = start + index;
 	});
 	mids.reverse();
 
-	const messageData = await Messaging.getMessagesData(mids, params.uid, params.roomId, isNew);
-	messageData.forEach((messageData) => {
-		messageData.index = indices[messageData.messageId.toString()];
-		messageData.isOwner = messageData.fromuid === parseInt(params.uid, 10);
-		if (messageData.deleted && !messageData.isOwner) {
-			messageData.content = '[[modules:chat.message-deleted]]';
-			messageData.cleanedContent = messageData.content;
+	const messageData = await Messaging.getMessagesData(mids, uid, roomId, isNew);
+	messageData.forEach((msg) => {
+		msg.index = indices[msg.messageId.toString()];
+		msg.isOwner = msg.fromuid === parseInt(uid, 10);
+		if (msg.deleted && !msg.isOwner) {
+			msg.content = `<p>[[modules:chat.message-deleted]]</p>`;
 		}
 	});
 
 	return messageData;
 };
+
+async function getMessageIds(roomId, uid, start, stop) {
+	const isPublic = await db.getObjectField(`chat:room:${roomId}`, 'public');
+	if (parseInt(isPublic, 10) === 1) {
+		return await db.getSortedSetRevRange(
+			`chat:room:${roomId}:mids`, start, stop,
+		);
+	}
+	const userjoinTimestamp = await db.sortedSetScore(`chat:room:${roomId}:uids`, uid);
+	return await db.getSortedSetRevRangeByScore(
+		`chat:room:${roomId}:mids`, start, stop - start + 1, '+inf', userjoinTimestamp
+	);
+}
 
 async function canGet(hook, callerUid, uid) {
 	const data = await plugins.hooks.fire(hook, {
@@ -85,12 +104,67 @@ Messaging.parse = async (message, fromuid, uid, roomId, isNew) => {
 };
 
 Messaging.isNewSet = async (uid, roomId, timestamp) => {
-	const setKey = `uid:${uid}:chat:room:${roomId}:mids`;
+	const setKey = `chat:room:${roomId}:mids`;
 	const messages = await db.getSortedSetRevRangeWithScores(setKey, 0, 0);
 	if (messages && messages.length) {
 		return parseInt(timestamp, 10) > parseInt(messages[0].score, 10) + Messaging.newMessageCutoff;
 	}
 	return true;
+};
+
+Messaging.getPublicRoomIdsFromSet = async function (set) {
+	const cacheKey = `${set}:all`;
+	let allRoomIds = cache.get(cacheKey);
+	if (allRoomIds === undefined) {
+		allRoomIds = await db.getSortedSetRange(set, 0, -1);
+		cache.set(cacheKey, allRoomIds);
+	}
+	return allRoomIds.slice();
+};
+
+Messaging.getPublicRooms = async (callerUid, uid) => {
+	const ok = await canGet('filter:messaging.canGetPublicChats', callerUid, uid);
+	if (!ok) {
+		return null;
+	}
+
+	const allRoomIds = await Messaging.getPublicRoomIdsFromSet('chat:rooms:public:order');
+	const allRoomData = await Messaging.getRoomsData(allRoomIds);
+	const checks = await Promise.all(
+		allRoomData.map(
+			room => room && (
+				!Array.isArray(room.groups) ||
+				!room.groups.length ||
+				groups.isMemberOfAny(uid, room && room.groups)
+			)
+		)
+	);
+
+	const roomData = allRoomData.filter((room, idx) => room && checks[idx]);
+	const roomIds = roomData.map(r => r.roomId);
+	const userReadTimestamps = await db.getObjectFields(
+		`uid:${uid}:chat:rooms:read`,
+		roomIds,
+	);
+
+	const maxUnread = 50;
+	const unreadCounts = await Promise.all(roomIds.map(async (roomId) => {
+		const cutoff = userReadTimestamps[roomId] || '-inf';
+		const unreadMids = await db.getSortedSetRangeByScore(
+			`chat:room:${roomId}:mids`, 0, maxUnread + 1, cutoff, '+inf'
+		);
+		return unreadMids.length;
+	}));
+
+	roomData.forEach((r, idx) => {
+		const count = unreadCounts[idx];
+		r.unreadCountText = count > maxUnread ? `${maxUnread}+` : String(count);
+		r.unreadCount = count;
+		r.unread = count > 0;
+		r.icon = Messaging.getRoomIcon(r);
+	});
+
+	return roomData;
 };
 
 Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
@@ -100,15 +174,29 @@ Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 	}
 
 	const roomIds = await db.getSortedSetRevRange(`uid:${uid}:chat:rooms`, start, stop);
+
+	async function getUsers(roomIds) {
+		const arrayOfUids = await Promise.all(
+			roomIds.map(roomId => Messaging.getUidsInRoom(roomId, 0, 9))
+		);
+		const uniqUids = _.uniq(_.flatten(arrayOfUids)).filter(
+			_uid => _uid && parseInt(_uid, 10) !== parseInt(uid, 10)
+		);
+		const uidToUser = _.zipObject(
+			uniqUids,
+			await user.getUsersFields(uniqUids, [
+				'uid', 'username', 'userslug', 'picture', 'status', 'lastonline',
+			])
+		);
+		return arrayOfUids.map(uids => uids.map(uid => uidToUser[uid]));
+	}
+
 	const results = await utils.promiseParallel({
 		roomData: Messaging.getRoomsData(roomIds),
 		unread: db.isSortedSetMembers(`uid:${uid}:chat:rooms:unread`, roomIds),
-		users: Promise.all(roomIds.map(async (roomId) => {
-			let uids = await db.getSortedSetRevRange(`chat:room:${roomId}:uids`, 0, 9);
-			uids = uids.filter(_uid => _uid && parseInt(_uid, 10) !== parseInt(uid, 10));
-			return await user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'lastonline']);
-		})),
-		teasers: Promise.all(roomIds.map(async roomId => Messaging.getTeaser(uid, roomId))),
+		users: getUsers(roomIds),
+		teasers: Messaging.getTeasers(uid, roomIds),
+		settings: user.getSettings(uid),
 	});
 
 	await Promise.all(results.roomData.map(async (room, index) => {
@@ -125,8 +213,8 @@ Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 			});
 			room.users = room.users.filter(user => user && parseInt(user.uid, 10));
 			room.lastUser = room.users[0];
-			room.usernames = Messaging.generateUsernames(room.users, uid);
-			room.chatWithMessage = await Messaging.generateChatWithMessage(room.users, uid);
+			room.usernames = Messaging.generateUsernames(room, uid);
+			room.chatWithMessage = await Messaging.generateChatWithMessage(room, uid, results.settings.userLang);
 		}
 	}));
 
@@ -140,21 +228,21 @@ Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 	});
 };
 
-Messaging.generateUsernames = function (users, excludeUid) {
-	users = users.filter(u => u && parseInt(u.uid, 10) !== excludeUid);
+Messaging.generateUsernames = function (room, excludeUid) {
+	const users = room.users.filter(u => u && parseInt(u.uid, 10) !== excludeUid);
 	const usernames = users.map(u => u.username);
 	if (users.length > 3) {
 		return translator.compile(
 			'modules:chat.usernames-and-x-others',
 			usernames.slice(0, 2).join(', '),
-			usernames.length - 2
+			room.userCount - 2
 		);
 	}
 	return usernames.join(', ');
 };
 
-Messaging.generateChatWithMessage = async function (users, excludeUid) {
-	users = users.filter(u => u && parseInt(u.uid, 10) !== excludeUid);
+Messaging.generateChatWithMessage = async function (room, callerUid, userLang) {
+	const users = room.users.filter(u => u && parseInt(u.uid, 10) !== callerUid);
 	const usernames = users.map(u => `<a href="${relative_path}/uid/${u.uid}">${u.username}</a>`);
 	let compiled = '';
 	if (!users.length) {
@@ -164,7 +252,7 @@ Messaging.generateChatWithMessage = async function (users, excludeUid) {
 		compiled = translator.compile(
 			'modules:chat.chat-with-usernames-and-x-others',
 			usernames.slice(0, 2).join(', '),
-			usernames.length - 2
+			room.userCount - 2
 		);
 	} else {
 		compiled = translator.compile(
@@ -172,31 +260,48 @@ Messaging.generateChatWithMessage = async function (users, excludeUid) {
 			usernames.join(', '),
 		);
 	}
-	return utils.decodeHTMLEntities(await translator.translate(compiled));
+	return utils.decodeHTMLEntities(await translator.translate(compiled, userLang));
 };
 
 Messaging.getTeaser = async (uid, roomId) => {
-	const mid = await Messaging.getLatestUndeletedMessage(uid, roomId);
-	if (!mid) {
-		return null;
-	}
-	const teaser = await Messaging.getMessageFields(mid, ['fromuid', 'content', 'timestamp']);
-	if (!teaser.fromuid) {
-		return null;
-	}
-	const blocked = await user.blocks.is(teaser.fromuid, uid);
-	if (blocked) {
-		return null;
-	}
+	const teasers = await Messaging.getTeasers(uid, [roomId]);
+	return teasers[0];
+};
 
-	teaser.user = await user.getUserFields(teaser.fromuid, ['uid', 'username', 'userslug', 'picture', 'status', 'lastonline']);
-	if (teaser.content) {
-		teaser.content = utils.stripHTMLTags(utils.decodeHTMLEntities(teaser.content));
-		teaser.content = validator.escape(String(teaser.content));
-	}
+Messaging.getTeasers = async (uid, roomIds) => {
+	const mids = await Promise.all(
+		roomIds.map(roomId => Messaging.getLatestUndeletedMessage(uid, roomId))
+	);
+	const [teasers, blockedUids] = await Promise.all([
+		Messaging.getMessagesFields(mids, ['fromuid', 'content', 'timestamp']),
+		user.blocks.list(uid),
+	]);
+	const uids = _.uniq(
+		teasers.map(t => t && t.fromuid).filter(uid => uid && !blockedUids.includes(uid))
+	);
 
-	const payload = await plugins.hooks.fire('filter:messaging.getTeaser', { teaser: teaser });
-	return payload.teaser;
+	const userMap = _.zipObject(
+		uids,
+		await user.getUsersFields(uids, [
+			'uid', 'username', 'userslug', 'picture', 'status', 'lastonline',
+		])
+	);
+
+	return await Promise.all(roomIds.map(async (roomId, idx) => {
+		const teaser = teasers[idx];
+		if (!teaser || !teaser.fromuid) {
+			return null;
+		}
+		if (userMap[teaser.fromuid]) {
+			teaser.user = userMap[teaser.fromuid];
+		}
+		teaser.content = validator.escape(
+			String(utils.stripHTMLTags(utils.decodeHTMLEntities(teaser.content)))
+		);
+		teaser.roomId = roomId;
+		const payload = await plugins.hooks.fire('filter:messaging.getTeaser', { teaser: teaser });
+		return payload.teaser;
+	}));
 };
 
 Messaging.getLatestUndeletedMessage = async (uid, roomId) => {
@@ -207,7 +312,7 @@ Messaging.getLatestUndeletedMessage = async (uid, roomId) => {
 
 	while (!done) {
 		/* eslint-disable no-await-in-loop */
-		mids = await db.getSortedSetRevRange(`uid:${uid}:chat:room:${roomId}:mids`, index, index);
+		mids = await getMessageIds(roomId, uid, index, index);
 		if (mids.length) {
 			const states = await Messaging.getMessageFields(mids[0], ['deleted', 'system']);
 			done = !states.deleted && !states.system;
@@ -337,8 +442,16 @@ Messaging.canViewMessage = async (mids, roomId, uid) => {
 		mids = [mids];
 		single = true;
 	}
+	const isPublic = parseInt(await db.getObjectField(`chat:room:${roomId}`, 'public'), 10) === 1;
+	const [midTimestamps, userTimestamp] = await Promise.all([
+		db.sortedSetScores(`chat:room:${roomId}:mids`, mids),
+		db.sortedSetScore(`chat:room:${roomId}:uids`, uid),
+	]);
 
-	const canView = await db.isSortedSetMembers(`uid:${uid}:chat:room:${roomId}:mids`, mids);
+	const canView = midTimestamps.map(
+		midTimestamp => !!(midTimestamp && userTimestamp && (isPublic || userTimestamp <= midTimestamp))
+	);
+
 	return single ? canView.pop() : canView;
 };
 

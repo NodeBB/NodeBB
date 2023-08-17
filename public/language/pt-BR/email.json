@@ -22,6 +22,8 @@
     "reset.notify.subject": "Senha alterada com sucesso",
     "reset.notify.text1": "Nós estamos notificando você que em %1, sua senha foi alterada com sucesso.",
     "reset.notify.text2": "Se você não autorizou isso, por favor notifique um administrador imediatamente.",
+    "digest.unread-rooms": "Unread rooms",
+    "digest.room-name-unreadcount": "%1 (%2 unread)",
     "digest.latest_topics": "Últimos tópicos de %1",
     "digest.top-topics": "Tópicos principais de %1",
     "digest.popular-topics": "Tópicos populares de %1",

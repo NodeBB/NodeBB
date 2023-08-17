@@ -39,4 +39,6 @@ get:
                         type: array
                         items:
                           type: number
+                  selectedCategory:
+                    $ref: ../../../../../components/schemas/CategoryObject.yaml#/CategoryObject
               - $ref: ../../../../../components/schemas/CommonProps.yaml#/CommonProps

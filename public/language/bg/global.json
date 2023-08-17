@@ -51,6 +51,8 @@
     "nextpage": "Следваща страница",
     "alert.success": "Готово",
     "alert.error": "Грешка",
+    "alert.warning": "Предупреждение",
+    "alert.info": "Информация",
     "alert.banned": "Блокиран",
     "alert.banned.message": "Вие току-що бяхте блокиран. Достъпът Ви до системата е ограничен.",
     "alert.unbanned": "Деблокиран",

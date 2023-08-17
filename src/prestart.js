@@ -58,6 +58,10 @@ function loadConfig(configFile) {
 		isCluster: false,
 		isPrimary: true,
 		jobsDisabled: false,
+		fontawesome: {
+			pro: false,
+			styles: '*',
+		},
 	});
 
 	// Explicitly cast as Bool, loader.js passes in isCluster as string 'true'/'false'

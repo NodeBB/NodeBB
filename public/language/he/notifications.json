@@ -71,6 +71,6 @@
     "notificationType_group-request-membership": "כשמישהו מבקש להירשם לקבוצה שאתה מנהל",
     "notificationType_new-register": "כאשר מישהו מתווסף לתור הרישום",
     "notificationType_post-queue": "כאשר פוסט חדש נכנס לתור",
-    "notificationType_new-post-flag": "כאשר פוסט מסומן",
-    "notificationType_new-user-flag": "כאשר משתמש מסומן"
+    "notificationType_new-post-flag": "כאשר פוסט מדווח",
+    "notificationType_new-user-flag": "כאשר מדווחים על משתמש"
 }

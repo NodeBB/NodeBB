@@ -1,9 +1,12 @@
 'use strict';
 
+const _ = require('lodash');
+
 const db = require('../database');
 const user = require('../user');
 const plugins = require('../plugins');
 const cache = require('../cache');
+const messaging = require('../messaging');
 
 module.exports = function (Groups) {
 	Groups.leave = async function (groupNames, uid) {
@@ -53,13 +56,30 @@ module.exports = function (Groups) {
 
 		await Promise.all(promises);
 
-		await clearGroupTitleIfSet(groupsToLeave, uid);
+		await Promise.all([
+			clearGroupTitleIfSet(groupsToLeave, uid),
+			leavePublicRooms(groupsToLeave, uid),
+		]);
 
 		plugins.hooks.fire('action:group.leave', {
 			groupNames: groupsToLeave,
 			uid: uid,
 		});
 	};
+
+	async function leavePublicRooms(groupNames, uid) {
+		const allRoomIds = await messaging.getPublicRoomIdsFromSet('chat:rooms:public:order');
+		const allRoomData = await messaging.getRoomsData(allRoomIds);
+		const roomData = allRoomData.filter(
+			room => room && room.groups.some(group => groupNames.includes(group))
+		);
+		const isMemberOfAny = _.zipObject(
+			roomData.map(r => r.roomId),
+			await Promise.all(roomData.map(r => Groups.isMemberOfAny(uid, r.groups)))
+		);
+		const roomIds = roomData.filter(r => isMemberOfAny[r.roomId]).map(r => r.roomId);
+		await messaging.leaveRooms(uid, roomIds);
+	}
 
 	async function clearGroupTitleIfSet(groupNames, uid) {
 		groupNames = groupNames.filter(groupName => groupName !== 'registered-users' && !Groups.isPrivilegeGroup(groupName));

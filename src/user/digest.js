@@ -8,6 +8,7 @@ const batch = require('../batch');
 const meta = require('../meta');
 const user = require('./index');
 const topics = require('../topics');
+const messaging = require('../messaging');
 const plugins = require('../plugins');
 const emailer = require('../emailer');
 const utils = require('../utils');
@@ -94,13 +95,16 @@ Digest.send = async function (data) {
 			return;
 		}
 		await Promise.all(userData.map(async (userObj) => {
-			const [notifications, topics] = await Promise.all([
+			const [publicRooms, notifications, topics] = await Promise.all([
+				getUnreadPublicRooms(userObj.uid),
 				user.notifications.getUnreadInterval(userObj.uid, data.interval),
 				getTermTopics(data.interval, userObj.uid),
 			]);
 			const unreadNotifs = notifications.filter(Boolean);
-			// If there are no notifications and no new topics, don't bother sending a digest
-			if (!unreadNotifs.length && !topics.top.length && !topics.popular.length && !topics.recent.length) {
+			// If there are no notifications and no new topics and no unread chats, don't bother sending a digest
+			if (!unreadNotifs.length &&
+				!topics.top.length && !topics.popular.length && !topics.recent.length &&
+				!publicRooms.length) {
 				return;
 			}
 
@@ -120,6 +124,7 @@ Digest.send = async function (data) {
 				username: userObj.username,
 				userslug: userObj.userslug,
 				notifications: unreadNotifs,
+				publicRooms: publicRooms,
 				recent: topics.recent,
 				topTopics: topics.top,
 				popularTopics: topics.popular,
@@ -211,4 +216,9 @@ async function getTermTopics(term, uid) {
 		}
 	});
 	return { top, popular, recent };
+}
+
+async function getUnreadPublicRooms(uid) {
+	const publicRooms = await messaging.getPublicRooms(uid, uid);
+	return publicRooms.filter(r => r && r.unread);
 }

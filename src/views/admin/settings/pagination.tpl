@@ -6,8 +6,8 @@
 			<div id="pagination" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header hidden">[[admin/settings/pagination:pagination]]</h5>
 				<div class="form-check form-switch mb-3">
-					<input class="form-check-input" type="checkbox" data-field="usePagination">
-					<label class="form-check-label">[[admin/settings/pagination:enable]]</label>
+					<input class="form-check-input" type="checkbox" id="usePagination" data-field="usePagination">
+					<label for="usePagination" class="form-check-label">[[admin/settings/pagination:enable]]</label>
 				</div>
 
 				<div class="mb-3">

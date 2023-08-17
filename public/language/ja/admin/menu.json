@@ -14,6 +14,7 @@
 	"manage/users": "ユーザー",
 	"manage/admins-mods": "Admins & Mods",
 	"manage/registration": "登録キュー",
+	"manage/flagged-content": "Flagged Content",
 	"manage/post-queue": "投稿キュー",
 	"manage/groups": "グループ",
 	"manage/ip-blacklist": "IPブラックリスト",

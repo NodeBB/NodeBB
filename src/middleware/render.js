@@ -169,6 +169,7 @@ module.exports = function (middleware) {
 			isGlobalMod: user.isGlobalModerator(req.uid),
 			isModerator: user.isModeratorOfAnyCategory(req.uid),
 			privileges: privileges.global.get(req.uid),
+			blocks: user.blocks.list(req.uid),
 			user: user.getUserData(req.uid),
 			isEmailConfirmSent: req.uid <= 0 ? false : await user.email.isValidationPending(req.uid),
 			languageDirection: translator.translate('[[language:dir]]', res.locals.config.userLang),
@@ -190,6 +191,7 @@ module.exports = function (middleware) {
 		results.user.isGlobalMod = results.isGlobalMod;
 		results.user.isMod = !!results.isModerator;
 		results.user.privileges = results.privileges;
+		results.user.blocks = results.blocks;
 		results.user.timeagoCode = results.timeagoCode;
 		results.user[results.user.status] = true;
 		results.user.lastRoomId = results.roomIds.length ? results.roomIds[0] : null;

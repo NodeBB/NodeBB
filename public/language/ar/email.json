@@ -22,6 +22,8 @@
     "reset.notify.subject": "تم تغيير كلمة المرور بنجاح",
     "reset.notify.text1": "نحيطك علما أن كلمة مرورك قد تم تغييرها في %1",
     "reset.notify.text2": "إن لم يكن لديك علم بهذا، المرجو إشعار مدبر النظام بأسرع مايمكن.",
+    "digest.unread-rooms": "Unread rooms",
+    "digest.room-name-unreadcount": "%1 (%2 unread)",
     "digest.latest_topics": "آخر المستجدات من %1",
     "digest.top-topics": "Top topics from %1",
     "digest.popular-topics": "Popular topics from %1",

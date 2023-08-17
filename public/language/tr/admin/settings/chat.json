@@ -4,6 +4,7 @@
 	"disable-editing": "Sohbet mesajlarını düzenlemeyi/silmeyi kapat",
 	"disable-editing-help": "Yöneticiler ve global moderatörler bu kısıtlamadan muaftır",
 	"max-length": "Maksimum sohbet mesajı uzunluğu",
+	"max-chat-room-name-length": "Maximum length of chat room names",
 	"max-room-size": "Sohbet odalarındaki maksimum kullanıcı sayısı",
 	"delay": "Sohbet mesajları arasındaki süre (milisaniye)",
 	"notification-delay": "Sohbet mesajları için bildirim gecikme süresi (gecikme olmaması için 0 yazın)",

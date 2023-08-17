@@ -196,4 +196,19 @@ SocketHelpers.emitToUids = async function (event, data, uids) {
 	uids.forEach(toUid => websockets.in(`uid_${toUid}`).emit(event, data));
 };
 
+SocketHelpers.removeSocketsFromRoomByUids = async function (uids, roomId) {
+	const sockets = _.flatten(
+		await Promise.all(uids.map(uid => websockets.in(`uid_${uid}`).fetchSockets()))
+	);
+
+	for (const s of sockets) {
+		if (s.rooms.has(`chat_room_${roomId}`)) {
+			websockets.in(s.id).socketsLeave(`chat_room_${roomId}`);
+		}
+		if (s.rooms.has(`chat_room_public_${roomId}`)) {
+			websockets.in(s.id).socketsLeave(`chat_room_public_${roomId}`);
+		}
+	}
+};
+
 require('../promisify')(SocketHelpers);

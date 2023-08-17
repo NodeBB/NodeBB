@@ -51,6 +51,8 @@
     "nextpage": "Trang kế",
     "alert.success": "Thành công",
     "alert.error": "Lỗi",
+    "alert.warning": "Warning",
+    "alert.info": "Info",
     "alert.banned": "Bị cấm",
     "alert.banned.message": "Bạn vừa bị cấm, quyền truy cập của bạn hiện bị hạn chế.",
     "alert.unbanned": "Bỏ cấm",

@@ -7,13 +7,13 @@
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/uploads:posts]]</h5>
 
 				<div class="form-check form-switch mb-3">
-					<input class="form-check-input" type="checkbox" data-field="stripEXIFData">
-					<label class="form-check-label">[[admin/settings/uploads:strip-exif-data]]</label>
+					<input class="form-check-input" type="checkbox" id="stripEXIFData" data-field="stripEXIFData">
+					<label for="stripEXIFData" class="form-check-label">[[admin/settings/uploads:strip-exif-data]]</label>
 				</div>
 
 				<div class="form-check form-switch mb-3">
-					<input class="form-check-input" type="checkbox" data-field="privateUploads">
-					<label class="form-check-label">[[admin/settings/uploads:private]]</label>
+					<input class="form-check-input" type="checkbox" id="privateUploads" data-field="privateUploads">
+					<label for="privateUploads" class="form-check-label">[[admin/settings/uploads:private]]</label>
 				</div>
 
 				<div class="mb-3">
@@ -79,8 +79,8 @@
 				</div>
 
 				<div class="form-check form-switch mb-3">
-					<input class="form-check-input" type="checkbox" data-field="allowTopicsThumbnail">
-					<label class="form-check-label">[[admin/settings/uploads:allow-topic-thumbnails]]</label>
+					<input class="form-check-input" type="checkbox" id="allowTopicsThumbnail" data-field="allowTopicsThumbnail">
+					<label for="allowTopicsThumbnail" class="form-check-label">[[admin/settings/uploads:allow-topic-thumbnails]]</label>
 				</div>
 
 				<div class="mb-3">
@@ -119,8 +119,8 @@
 			<div id="orphaned-files" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/uploads:orphans]]</h5>
 				<div class="form-check form-switch mb-3">
-					<input class="form-check-input" type="checkbox" data-field="preserveOrphanedUploads">
-					<label class="form-check-label">[[admin/settings/uploads:preserve-orphaned-uploads]]</label>
+					<input class="form-check-input" type="checkbox" id="preserveOrphanedUploads" data-field="preserveOrphanedUploads">
+					<label for="preserveOrphanedUploads" class="form-check-label">[[admin/settings/uploads:preserve-orphaned-uploads]]</label>
 				</div>
 
 				<div class="row">
@@ -139,13 +139,13 @@
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/uploads:profile-avatars]]</h5>
 
 				<div class="form-check form-switch mb-3">
-					<input class="form-check-input" type="checkbox" data-field="allowProfileImageUploads">
-					<label class="form-check-label">[[admin/settings/uploads:allow-profile-image-uploads]]</label>
+					<input class="form-check-input" type="checkbox" id="allowProfileImageUploads" data-field="allowProfileImageUploads">
+					<label for="allowProfileImageUploads" class="form-check-label">[[admin/settings/uploads:allow-profile-image-uploads]]</label>
 				</div>
 
 				<div class="form-check form-switch mb-3">
-					<input class="form-check-input" type="checkbox" data-field="profile:convertProfileImageToPNG">
-					<label class="form-check-label">[[admin/settings/uploads:convert-profile-image-png]]</label>
+					<input class="form-check-input" type="checkbox" id="profile:convertProfileImageToPNG" data-field="profile:convertProfileImageToPNG">
+					<label for="profile:convertProfileImageToPNG" class="form-check-label">[[admin/settings/uploads:convert-profile-image-png]]</label>
 				</div>
 
 				<div class="mb-3">
@@ -181,8 +181,8 @@
 				</div>
 
 				<div class="form-check form-switch mb-3">
-					<input class="form-check-input" type="checkbox" data-field="profile:keepAllUserImages">
-					<label class="form-check-label">[[admin/settings/uploads:keep-all-user-images]]</label>
+					<input class="form-check-input" type="checkbox" id="profile:keepAllUserImages" data-field="profile:keepAllUserImages">
+					<label for="profile:keepAllUserImages" class="form-check-label">[[admin/settings/uploads:keep-all-user-images]]</label>
 				</div>
 
 			</div>

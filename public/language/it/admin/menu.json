@@ -14,6 +14,7 @@
 	"manage/users": "Utenti",
 	"manage/admins-mods": "Amministratori e Moderatori",
 	"manage/registration": "Coda di registrazione",
+	"manage/flagged-content": "Contenuti Segnalati",
 	"manage/post-queue": "Coda post",
 	"manage/groups": "Gruppi",
 	"manage/ip-blacklist": "Lista degli IP bloccati",

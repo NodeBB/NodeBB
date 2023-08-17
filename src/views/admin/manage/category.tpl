@@ -78,16 +78,16 @@
 
 				<div class="mb-3">
 					<div class="form-check form-switch">
-						<input type="checkbox" class="form-check-input" id="cid-{category.cid}-isSection" data-name="isSection" {{{ if category.isSection }}}checked{{{ end }}} />
-						<label class="form-check-label">[[admin/manage/categories:is-section]]</label>
+						<input type="checkbox" class="form-check-input" id="cid-isSection" data-name="isSection" {{{ if category.isSection }}}checked{{{ end }}} />
+						<label for="cid-isSection" class="form-check-label">[[admin/manage/categories:is-section]]</label>
 					</div>
 				</div>
 
 				{{{ if postQueueEnabled }}}
 				<div class="mb-3">
 					<div class="form-check form-switch">
-						<input type="checkbox" class="form-check-input" data-name="postQueue" {{{ if category.postQueue }}}checked{{{ end }}} />
-						<label class="form-check-label">[[admin/manage/categories:post-queue]]</label>
+						<input type="checkbox" class="form-check-input" id="postQueue" data-name="postQueue" {{{ if category.postQueue }}}checked{{{ end }}} />
+						<label for="postQueue" class="form-check-label">[[admin/manage/categories:post-queue]]</label>
 					</div>
 				</div>
 				{{{ end }}}
@@ -99,7 +99,7 @@
 					</label>
 					<div class="d-flex gap-2 align-items-center">
 						<div component="category/preview" class="category-preview rounded-1 d-flex align-items-center justify-content-center pointer"
-						data-bs-toggle="tooltip" title="[[admin/manage/categories:select-icon]]"
+						data-bs-toggle="tooltip" title="[[admin/admin:select-icon]]"
 						style="
 							{{{ if category.backgroundImage }}}background-image: url({category.backgroundImage});{{{ end }}}
 							{{{ if category.bgColor }}}background-color: {category.bgColor};{{{ end }}}

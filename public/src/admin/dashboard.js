@@ -2,8 +2,8 @@
 
 
 define('admin/dashboard', [
-	'Chart', 'translator', 'benchpress', 'bootbox', 'alerts',
-], function (Chart, translator, Benchpress, bootbox, alerts) {
+	'Chart', 'translator', 'benchpress', 'bootbox', 'alerts', 'helpers',
+], function (Chart, translator, Benchpress, bootbox, alerts, helpers) {
 	const Admin = {};
 	const intervals = {
 		rooms: false,
@@ -43,6 +43,7 @@ define('admin/dashboard', [
 
 		isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
+		setupDarkModeButton();
 		setupRealtimeButton();
 		setupGraphs(function () {
 			socket.emit('admin.rooms.getAll', Admin.updateRoomUsage);
@@ -63,20 +64,20 @@ define('admin/dashboard', [
 		graphData.rooms = data;
 
 		const html = '<div class="text-center float-start">' +
-						'<span class="formatted-number">' + data.onlineRegisteredCount + '</span>' +
-						'<div class="stat text-nowrap">[[admin/dashboard:active-users.users]]</div>' +
+						'<span class="fs-5">' + helpers.formattedNumber(data.onlineRegisteredCount) + '</span>' +
+						'<div class="stat text-nowrap text-uppercase fw-semibold text-xs text-muted">[[admin/dashboard:active-users.users]]</div>' +
 					'</div>' +
 					'<div class="text-center float-start">' +
-						'<span class="formatted-number">' + data.onlineGuestCount + '</span>' +
-						'<div class="stat text-nowrap">[[admin/dashboard:active-users.guests]]</div>' +
+						'<span class="fs-5">' + helpers.formattedNumber(data.onlineGuestCount) + '</span>' +
+						'<div class="stat text-nowrap text-uppercase fw-semibold text-xs text-muted">[[admin/dashboard:active-users.guests]]</div>' +
 					'</div>' +
 					'<div class="text-center float-start">' +
-						'<span class="formatted-number">' + (data.onlineRegisteredCount + data.onlineGuestCount) + '</span>' +
-						'<div class="stat text-nowrap">[[admin/dashboard:active-users.total]]</div>' +
+						'<span class="fs-5">' + helpers.formattedNumber(data.onlineRegisteredCount + data.onlineGuestCount) + '</span>' +
+						'<div class="stat text-nowrap text-uppercase fw-semibold text-xs text-muted">[[admin/dashboard:active-users.total]]</div>' +
 					'</div>' +
 					'<div class="text-center float-start">' +
-						'<span class="formatted-number">' + data.socketCount + '</span>' +
-						'<div class="stat text-nowrap">[[admin/dashboard:active-users.connections]]</div>' +
+						'<span class="fs-5">' + helpers.formattedNumber(data.socketCount) + '</span>' +
+						'<div class="stat text-nowrap text-uppercase fw-semibold text-xs text-muted">[[admin/dashboard:active-users.connections]]</div>' +
 					'</div>';
 
 		updateRegisteredGraph(data.onlineRegisteredCount, data.onlineGuestCount);
@@ -436,12 +437,9 @@ define('admin/dashboard', [
 			} else {
 				graphs.traffic.data.xLabels = utils.getHoursArray();
 
-				$('#pageViewsThirty').html(data.summary.thirty);
-				$('#pageViewsSeven').html(data.summary.seven);
-				$('#pageViewsPastDay').html(data.pastDay);
-				utils.addCommasToNumbers($('#pageViewsThirty'));
-				utils.addCommasToNumbers($('#pageViewsSeven'));
-				utils.addCommasToNumbers($('#pageViewsPastDay'));
+				$('#pageViewsThirty').html(helpers.formattedNumber(data.summary.thirty));
+				$('#pageViewsSeven').html(helpers.formattedNumber(data.summary.seven));
+				$('#pageViewsPastDay').html(helpers.formattedNumber(data.pastDay));
 			}
 
 			graphs.traffic.data.datasets[0].data = data.pageviews;
@@ -532,18 +530,20 @@ define('admin/dashboard', [
 		graphs.topics.update();
 	}
 
+	function setupDarkModeButton() {
+		let bsTheme = localStorage.getItem('data-bs-theme') || 'light';
+		$('#toggle-dark-mode').prop('checked', bsTheme === 'dark')
+			.on('click', function () {
+				const isChecked = $(this).is(':checked');
+				bsTheme = isChecked ? 'dark' : 'light';
+				$('html').attr('data-bs-theme', bsTheme);
+				localStorage.setItem('data-bs-theme', bsTheme);
+			});
+	}
+
 	function setupRealtimeButton() {
-		$('#toggle-realtime .fa').on('click', function () {
-			const $this = $(this);
-			if ($this.hasClass('fa-toggle-on')) {
-				$this.removeClass('fa-toggle-on').addClass('fa-toggle-off');
-				$this.parent().find('strong').html('OFF');
-				initiateDashboard(false);
-			} else {
-				$this.removeClass('fa-toggle-off').addClass('fa-toggle-on');
-				$this.parent().find('strong').html('ON');
-				initiateDashboard(true);
-			}
+		$('#toggle-realtime').on('click', function () {
+			initiateDashboard($(this).is(':checked'));
 		});
 	}
 

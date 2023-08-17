@@ -50,7 +50,7 @@ define('forum/topic/move-post', [
 						title: '[[topic:thread_tools.move-posts]]',
 						message: '[[topic:topic_move_posts_success]]',
 						type: 'success',
-						timeout: 10000,
+						timeout: config.undoTimeout,
 						timeoutfn: function () {
 							movePosts(data);
 						},
@@ -78,7 +78,7 @@ define('forum/topic/move-post', [
 		) {
 			targetTid = ajaxify.data.tid;
 		}
-		if (targetTid && !tidInput.val()) {
+		if (targetTid) {
 			tidInput.val(targetTid);
 		}
 		checkMoveButtonEnable();
@@ -149,7 +149,10 @@ define('forum/topic/move-post', [
 					$(this).remove();
 				});
 			});
-
+			if (data.pids.length === 1 && ajaxify.data.template.topic &&
+				parseInt(data.tid, 10) === parseInt(ajaxify.data.tid, 10)) {
+				ajaxify.go(`/post/${data.pids[0]}`);
+			}
 			closeMoveModal();
 		}).catch(alerts.error);
 	}

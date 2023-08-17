@@ -51,6 +51,8 @@
     "nextpage": "Volgende pagina",
     "alert.success": "Succes",
     "alert.error": "Fout",
+    "alert.warning": "Warning",
+    "alert.info": "Info",
     "alert.banned": "Verbannen",
     "alert.banned.message": "Je bent net verbannen en je toegang is nu beperkt.",
     "alert.unbanned": "Verbanning opgeheven",

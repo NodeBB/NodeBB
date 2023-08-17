@@ -4,6 +4,7 @@
 	"disable-editing": "Csevegési üzenetek szerkesztésének/törlésének letiltása",
 	"disable-editing-help": "Az adminisztrátorok és globális moderátorok kivételnek számítanak ezen korlátozás alól",
 	"max-length": "Csevegési üzenetek maximális hossza",
+	"max-chat-room-name-length": "Maximum length of chat room names",
 	"max-room-size": "A csevegési szobákban lévő felhasználók maximális száma",
 	"delay": "Csevegési üzenetek közötti idő ezredmásodpercben",
 	"notification-delay": "Értesítési késleltetés csevegési üzenetekhez. (0: nincs késleltetés)",

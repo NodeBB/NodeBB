@@ -15,6 +15,6 @@
 	"custom-css.livereload": "הפעלת טעינה מחדש אוטומטית.",
 	"custom-css.livereload.description": "הפעלה זו נועדה כדי לרענן את כל החיבורים מכל מכשיר, כאשר תשמרו את הדף המותאם אישית.",
 	"bsvariables": "_variables.scss",
-	"bsvariables.description": "Override bootstrap variables here. You can also use a tool like <a href=\"https://bootstrap.build/app\">bootstrap.build</a> and paste the output here.<br/>Changes require a rebuild & restart.",
+	"bsvariables.description": "ניתן לעקוף משתני Bootstrap כאן. אתה יכול גם להשתמש בכלי כמו <a href=\"https://bootstrap.build/app\">bootstrap.build</a> ולהדביק את הפלט כאן.<br/> שינויים דורשים בנייה מחדש והפעלה מחדש.",
 	"bsvariables.enable": "Enable _variables.scss"
 }

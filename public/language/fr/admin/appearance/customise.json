@@ -15,6 +15,6 @@
 	"custom-css.livereload": "Activer le rechargement en direct",
 	"custom-css.livereload.description": "Activez cette option pour forcer toutes les sessions sur chaque appareil connecté à votre compte à se rafraichir lorsque vous cliquez sur Enregistrer.",
 	"bsvariables": "_variables.scss",
-	"bsvariables.description": "Override bootstrap variables here. You can also use a tool like <a href=\"https://bootstrap.build/app\">bootstrap.build</a> and paste the output here.<br/>Changes require a rebuild & restart.",
-	"bsvariables.enable": "Enable _variables.scss"
+	"bsvariables.description": "Remplacez les variables de lancement ici. Vous pouvez également utiliser un outil comme <a href=\"https://bootstrap.build/app\">bootstrap.build</a> et copier coller le code ici.<br/> Les modifications nécessitent une reconstruction et un redémarrage.",
+	"bsvariables.enable": "Activer _variables.scss"
 }

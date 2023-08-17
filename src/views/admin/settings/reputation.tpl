@@ -7,16 +7,16 @@
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/reputation:reputation]]</h5>
 
 				<div class="form-check form-switch mb-3">
-					<input type="checkbox" class="form-check-input" data-field="reputation:disabled">
-					<label class="form-check-label">[[admin/settings/reputation:disable]]</label>
+					<input type="checkbox" class="form-check-input" id="reputation:disabled" data-field="reputation:disabled">
+					<label for="reputation:disabled" class="form-check-label">[[admin/settings/reputation:disable]]</label>
 				</div>
 				<div class="form-check form-switch mb-3">
-					<input type="checkbox" class="form-check-input" data-field="downvote:disabled">
-					<label class="form-check-label">[[admin/settings/reputation:disable-down-voting]]</label>
+					<input type="checkbox" class="form-check-input" id="downvote:disabled" data-field="downvote:disabled">
+					<label for="downvote:disabled" class="form-check-label">[[admin/settings/reputation:disable-down-voting]]</label>
 				</div>
 				<div class="form-check form-switch mb-3">
-					<input type="checkbox" class="form-check-input" data-field="votesArePublic">
-					<label class="form-check-label">[[admin/settings/reputation:votes-are-public]]</label>
+					<input type="checkbox" class="form-check-input" id="votesArePublic" data-field="votesArePublic">
+					<label for="votesArePublic" class="form-check-label">[[admin/settings/reputation:votes-are-public]]</label>
 				</div>
 			</div>
 
@@ -112,8 +112,8 @@
 				</div>
 
 				<div class="form-check form-switch mb-3">
-					<input type="checkbox" class="form-check-input" data-field="flags:autoResolveOnBan">
-					<label class="form-check-label">[[admin/settings/reputation:flags.auto-resolve-on-ban]]</label>
+					<input type="checkbox" class="form-check-input" id="flags:autoResolveOnBan" data-field="flags:autoResolveOnBan">
+					<label for="flags:autoResolveOnBan" class="form-check-label">[[admin/settings/reputation:flags.auto-resolve-on-ban]]</label>
 				</div>
 			</div>
 		</div>

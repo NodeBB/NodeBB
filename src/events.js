@@ -75,6 +75,7 @@ events.types = [
 	'export:uploads',
 	'account-locked',
 	'getUsersCSV',
+	'chat-room-deleted',
 	// To add new types from plugins, just Array.push() to this array
 ];
 
@@ -100,13 +101,17 @@ events.log = async function (data) {
 events.getEvents = async function (filter, start, stop, from, to) {
 	// from/to optional
 	if (from === undefined) {
-		from = 0;
+		from = '-inf';
 	}
 	if (to === undefined) {
-		to = Date.now();
+		to = '+inf';
 	}
 
-	const eids = await db.getSortedSetRevRangeByScore(`events:time${filter ? `:${filter}` : ''}`, start, stop - start + 1, to, from);
+	const eids = await db.getSortedSetRevRangeByScore(`events:time${filter ? `:${filter}` : ''}`, start, stop === -1 ? -1 : stop - start + 1, to, from);
+	return await events.getEventsByEventIds(eids);
+};
+
+events.getEventsByEventIds = async (eids) => {
 	let eventsData = await db.getObjects(eids.map(eid => `event:${eid}`));
 	eventsData = eventsData.filter(Boolean);
 	await addUserData(eventsData, 'uid', 'user');

@@ -51,6 +51,8 @@
     "nextpage": "Neste side",
     "alert.success": "Suksess",
     "alert.error": "Feil",
+    "alert.warning": "Warning",
+    "alert.info": "Info",
     "alert.banned": "Utestengt",
     "alert.banned.message": "Du har nettop blitt utestengt, din tilgang er nå begrenset.",
     "alert.unbanned": "Utestengelse opphevet",

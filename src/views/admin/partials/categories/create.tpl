@@ -16,14 +16,14 @@
 		</div>
 		<div class="form-check form-switch">
 			<input class="form-check-input "id="cloneChildren" name="cloneChildren" type="checkbox">
-			<label class="form-check-label">[[admin/manage/categories:clone-children]]</label>
+			<label for="cloneChildren" class="form-check-label">[[admin/manage/categories:clone-children]]</label>
 		</div>
 	</div>
 
 	<div class="mb-3">
 		<div class="form-check form-switch">
 			<input class="form-check-input "id="disabled" name="disabled" type="checkbox">
-			<label class="form-check-label">[[admin/manage/categories:disable-on-create]]</label>
+			<label for="disabled" class="form-check-label">[[admin/manage/categories:disable-on-create]]</label>
 		</div>
 	</div>
 </form>

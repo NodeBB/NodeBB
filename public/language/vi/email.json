@@ -22,6 +22,8 @@
     "reset.notify.subject": "Thay đổi mật khẩu thành công",
     "reset.notify.text1": "Xin thông báo với bạn: mật khẩu của bạn trên %1 đã được thay đổi thành công.",
     "reset.notify.text2": "Nếu bạn không cho phép điều này, vui lòng thông báo cho quản trị viên ngay lập tức.",
+    "digest.unread-rooms": "Unread rooms",
+    "digest.room-name-unreadcount": "%1 (%2 unread)",
     "digest.latest_topics": "Chủ đề mới nhất từ %1",
     "digest.top-topics": "Chủ đề hàng đầu từ %1",
     "digest.popular-topics": "Các chủ đề phổ biến từ %1",

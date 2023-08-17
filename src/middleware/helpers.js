@@ -41,14 +41,18 @@ helpers.buildBodyClass = function (req, res, templateData = {}) {
 		p = validator.escape(String(p));
 		parts[index] = index ? `${parts[0]}-${p}` : `page-${p || 'home'}`;
 	});
-
-	if (templateData.template) {
-		parts.push(`template-${templateData.template.name.split('/').join('-')}`);
+	const { template } = templateData;
+	if (template) {
+		parts.push(`template-${template.name.split('/').join('-')}`);
 	}
 
-	if (templateData.template && templateData.template.topic) {
+	if (template && template.topic) {
 		parts.push(`page-topic-category-${templateData.category.cid}`);
 		parts.push(`page-topic-category-${slugify(templateData.category.name)}`);
+	}
+
+	if (template && template.chats && templateData.roomId) {
+		parts.push(`page-user-chats-${templateData.roomId}`);
 	}
 
 	if (Array.isArray(templateData.breadcrumbs)) {

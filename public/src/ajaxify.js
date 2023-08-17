@@ -1,5 +1,8 @@
 'use strict';
 
+const benchpress = require('benchpressjs');
+const translator = require('./modules/translator');
+const alerts = require('./modules/alerts');
 const hooks = require('./modules/hooks');
 const { render } = require('./widgets');
 
@@ -160,9 +163,7 @@ ajaxify.widgets = { render: render };
 				$('#footer, #content').removeClass('hide').addClass('ajaxifying');
 				return renderTemplate(url, status.toString(), data.responseJSON || {}, callback);
 			} else if (status === 401) {
-				require(['alerts'], function (alerts) {
-					alerts.error('[[global:please_log_in]]');
-				});
+				alerts.error('[[global:please_log_in]]');
 				app.previousUrl = url;
 				window.location.href = config.relative_path + '/login';
 			} else if (status === 302 || status === 308) {
@@ -180,55 +181,51 @@ ajaxify.widgets = { render: render };
 				}
 			}
 		} else if (textStatus !== 'abort') {
-			require(['alerts'], function (alerts) {
-				alerts.error(data.responseJSON.error);
-			});
+			alerts.error(data.responseJSON.error);
 		}
 	}
 
 	function renderTemplate(url, tpl_url, data, callback) {
 		hooks.fire('action:ajaxify.loadingTemplates', {});
-		require(['translator', 'benchpress'], function (translator, Benchpress) {
-			Benchpress.render(tpl_url, data)
-				.then(rendered => translator.translate(rendered))
-				.then(function (translated) {
-					translated = translator.unescape(translated);
-					$('body').removeClass(previousBodyClass).addClass(data.bodyClass);
-					$('#content').html(translated);
+		benchpress.render(tpl_url, data)
+			.then(rendered => translator.translate(rendered))
+			.then(function (translated) {
+				translated = translator.unescape(translated);
+				$('body').removeClass(previousBodyClass).addClass(data.bodyClass);
+				$('#content').html(translated);
 
-					ajaxify.end(url, tpl_url);
+				ajaxify.end(url, tpl_url);
 
-					if (typeof callback === 'function') {
-						callback();
-					}
+				if (typeof callback === 'function') {
+					callback();
+				}
 
-					$('#content, #footer').removeClass('ajaxifying');
+				$('#content, #footer').removeClass('ajaxifying');
 
-					// Only executed on ajaxify. Otherwise these'd be in ajaxify.end()
-					updateTitle(data.title);
-					updateTags();
-				});
-		});
+				// Only executed on ajaxify. Otherwise these'd be in ajaxify.end()
+				updateTitle(data.title);
+				updateTags();
+			});
 	}
 
 	function updateTitle(title) {
 		if (!title) {
 			return;
 		}
-		require(['translator'], function (translator) {
-			title = config.titleLayout.replace(/&#123;/g, '{').replace(/&#125;/g, '}')
-				.replace('{pageTitle}', function () { return title; })
-				.replace('{browserTitle}', function () { return config.browserTitle; });
 
-			// Allow translation strings in title on ajaxify (#5927)
-			title = translator.unescape(title);
-			const data = { title: title };
-			hooks.fire('action:ajaxify.updateTitle', data);
-			translator.translate(data.title, function (translated) {
-				window.document.title = $('<div></div>').html(translated).text();
-			});
+		title = config.titleLayout.replace(/&#123;/g, '{').replace(/&#125;/g, '}')
+			.replace('{pageTitle}', function () { return title; })
+			.replace('{browserTitle}', function () { return config.browserTitle; });
+
+		// Allow translation strings in title on ajaxify (#5927)
+		title = translator.unescape(title);
+		const data = { title: title };
+		hooks.fire('action:ajaxify.updateTitle', data);
+		translator.translate(data.title, function (translated) {
+			window.document.title = $('<div></div>').html(translated).text();
 		});
 	}
+	ajaxify.updateTitle = updateTitle;
 
 	function updateTags() {
 		const metaWhitelist = ['title', 'description', /og:.+/, /article:.+/, 'robots'].map(function (val) {
@@ -248,25 +245,25 @@ ajaxify.widgets = { render: render };
 			.forEach(function (el) {
 				document.head.removeChild(el);
 			});
-		require(['translator'], function (translator) {
-			// Add new meta tags
-			ajaxify.data._header.tags.meta
-				.filter(function (tagObj) {
-					const name = tagObj.name || tagObj.property;
-					return metaWhitelist.some(function (exp) {
-						return !!exp.test(name);
-					});
-				}).forEach(async function (tagObj) {
-					if (tagObj.content) {
-						tagObj.content = await translator.translate(tagObj.content);
-					}
-					const metaEl = document.createElement('meta');
-					Object.keys(tagObj).forEach(function (prop) {
-						metaEl.setAttribute(prop, tagObj[prop]);
-					});
-					document.head.appendChild(metaEl);
+
+		// Add new meta tags
+		ajaxify.data._header.tags.meta
+			.filter(function (tagObj) {
+				const name = tagObj.name || tagObj.property;
+				return metaWhitelist.some(function (exp) {
+					return !!exp.test(name);
 				});
-		});
+			}).forEach(async function (tagObj) {
+				if (tagObj.content) {
+					tagObj.content = await translator.translate(tagObj.content);
+				}
+				const metaEl = document.createElement('meta');
+				Object.keys(tagObj).forEach(function (prop) {
+					metaEl.setAttribute(prop, tagObj[prop]);
+				});
+				document.head.appendChild(metaEl);
+			});
+
 
 		// Delete the old link tags
 		Array.prototype.slice
@@ -471,15 +468,13 @@ ajaxify.widgets = { render: render };
 		hooks.fire('action:ajaxify.cleanup', { url, tpl_url });
 	};
 
-	require(['translator', 'benchpress', 'navigator'], function (translator, Benchpress) {
-		translator.translate('[[error:no-connection]]');
-		translator.translate('[[error:socket-reconnect-failed]]');
-		translator.translate(`[[global:reconnecting-message, ${config.siteTitle}]]`);
-		Benchpress.registerLoader(ajaxify.loadTemplate);
-		Benchpress.setGlobal('config', config);
-		Benchpress.render('500', {}); // loads and caches 500.tpl
-		Benchpress.render('partials/toast'); // loads and caches partials/toast
-	});
+	translator.translate('[[error:no-connection]]');
+	translator.translate('[[error:socket-reconnect-failed]]');
+	translator.translate(`[[global:reconnecting-message, ${config.siteTitle}]]`);
+	benchpress.registerLoader(ajaxify.loadTemplate);
+	benchpress.setGlobal('config', config);
+	benchpress.render('500', {}); // loads and caches 500.tpl
+	benchpress.render('partials/toast'); // loads and caches partials/toast
 }());
 
 $(document).ready(function () {

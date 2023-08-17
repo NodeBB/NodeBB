@@ -46,6 +46,7 @@ exports.post = async function (req, res) {
 		req: req,
 		timestamp: Date.now(),
 		content: body.content,
+		handle: body.handle,
 		fromQueue: false,
 	};
 	req.body.noscript = 'true';

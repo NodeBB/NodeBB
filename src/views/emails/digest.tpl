@@ -43,6 +43,26 @@
 					</td>
 				</tr>
 				{{{ end }}}
+				{{{ if publicRooms.length }}}
+				<tr>
+					<td style="padding: 0px 40px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 15px; line-height: 20px; color: #555555;">
+						<h1 style="margin: 16px 0 24px 0; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 18px; line-height: 21px; color: #aaaaaa; font-weight: normal;">[[email:digest.unread-rooms]]</h1>
+						<ul style="margin: 0; padding: 0;">
+							{{{ each publicRooms }}}
+							<li style="text-decoration: none; list-style-type: none; padding-bottom: 0.5em;">
+								<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+									<tr>
+										<td style="padding: 16px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; line-height: 16px; color: #333333;">
+											<p style="margin: 0;"><a style="text-decoration:none !important; text-decoration:none; color: #333333;" href="{url}/chats/{./roomId}"># [[email:digest.room-name-unreadcount, {./roomName}, {./unreadCountText}]]</a></p>
+										</td>
+									</tr>
+								</table>
+							</li>
+							{{{ end }}}
+						</ul>
+					</td>
+				</tr>
+				{{{ end }}}
 				{{{ if topTopics.length }}}
 				<tr>
 					<td style="padding: 0px 40px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 15px; line-height: 20px; color: #555555;">

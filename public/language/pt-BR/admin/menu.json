@@ -14,6 +14,7 @@
 	"manage/users": "Usuários",
 	"manage/admins-mods": "Admins & Mods",
 	"manage/registration": "Fila de Registro",
+	"manage/flagged-content": "Flagged Content",
 	"manage/post-queue": "Fila de Posts",
 	"manage/groups": "Grupos",
 	"manage/ip-blacklist": "Lista Negra de IPs",

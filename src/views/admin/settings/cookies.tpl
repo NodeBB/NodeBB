@@ -8,7 +8,7 @@
 				<div class="mb-3">
 					<div class="form-check form-switch">
 						<input type="checkbox" class="form-check-input" id="cookieConsentEnabled" data-field="cookieConsentEnabled">
-						<label class="form-check-label">[[admin/settings/cookies:consent.enabled]]</label>
+						<label for="cookieConsentEnabled" class="form-check-label">[[admin/settings/cookies:consent.enabled]]</label>
 					</div>
 				</div>
 				<div class="mb-3">

@@ -51,6 +51,8 @@
     "nextpage": "หน้าถัดไป",
     "alert.success": "สำเร็จ",
     "alert.error": "ผิดพลาด",
+    "alert.warning": "Warning",
+    "alert.info": "Info",
     "alert.banned": "เเบน",
     "alert.banned.message": "You have just been banned, your access is now restricted.",
     "alert.unbanned": "Unbanned",

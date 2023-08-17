@@ -48,6 +48,7 @@
 	"restart-disabled": "Rebuilding and Restarting your NodeBB has been disabled as you do not seem to be running it via the appropriate daemon.",
 	"maintenance-mode": "Modo de Manutenção",
 	"maintenance-mode-title": "Clica aqui para configurar o modo de manutenção para o teu NodeBB",
+	"dark-mode": "Dark Mode",
 	"realtime-chart-updates": "Actualizar Gráfico em Tempo Real",
 
 	"active-users": "Utilizadores Ativos",
@@ -89,5 +90,9 @@
 	"details.logins-login-time": "Login Time",
 	"start": "Start",
 	"end": "End",
-	"filter": "Filter"
+	"filter": "Filter",
+	"view-as-json": "View as JSON",
+	"expand-analytics": "Expand analytics",
+	"clear-search-history": "Clear Search History",
+	"clear-search-history-confirm": "Are you sure you want to clear entire search history?"
 }

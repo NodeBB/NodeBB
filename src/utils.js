@@ -1,6 +1,8 @@
 'use strict';
 
 const crypto = require('crypto');
+const nconf = require('nconf');
+const path = require('node:path');
 
 process.profile = function (operation, start) {
 	console.log('%s took %d milliseconds', operation, process.elapsedTimeSince(start));
@@ -36,6 +38,38 @@ utils.getSass = function () {
 	} catch (_err) {
 		return require('sass');
 	}
+};
+
+utils.getFontawesomePath = function () {
+	let packageName = '@fortawesome/fontawesome-free';
+	if (nconf.get('fontawesome:pro') === true) {
+		packageName = '@fortawesome/fontawesome-pro';
+	}
+	const pathToMainFile = require.resolve(packageName);
+	// main file will be in `js/fontawesome.js` - we need to go up two directories to get to the root of the package
+	const fontawesomePath = path.dirname(path.dirname(pathToMainFile));
+	return fontawesomePath;
+};
+
+utils.getFontawesomeStyles = function () {
+	let styles = nconf.get('fontawesome:styles') || '*';
+	// "*" is a special case, it means all styles, spread is used to support both string and array (["*"])
+	if ([...styles][0] === '*') {
+		styles = ['solid', 'brands', 'regular'];
+		if (nconf.get('fontawesome:pro')) {
+			styles.push('light', 'thin', 'sharp', 'duotone');
+		}
+	}
+	if (!Array.isArray(styles)) {
+		styles = [styles];
+	}
+	return styles;
+};
+
+utils.getFontawesomeVersion = function () {
+	const fontawesomePath = utils.getFontawesomePath();
+	const packageJson = require(path.join(fontawesomePath, 'package.json'));
+	return packageJson.version;
 };
 
 module.exports = utils;

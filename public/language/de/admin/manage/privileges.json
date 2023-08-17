@@ -1,6 +1,6 @@
 {
-	"manage-privileges": "Manage Privileges",
-	"discard-changes": "Discard changes",
+	"manage-privileges": "Berechtigungen verwalten",
+	"discard-changes": "Änderungen verwerfen",
 	"global": "Global",
 	"admin": "Administrator",
 	"group-privileges": "Gruppen Rechte",

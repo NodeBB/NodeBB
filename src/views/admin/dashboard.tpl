@@ -10,7 +10,7 @@
 					<div class="card-body">
 						<div class="graph-container pie-chart legend-down">
 							<canvas id="analytics-registered"></canvas>
-							<ul class="graph-legend" id="analytics-legend">
+							<ul class="graph-legend border" id="analytics-legend">
 								<li><div class="registered"></div><span>(<span class="count"></span>) [[admin/dashboard:registered]]</span></li>
 								<li><div class="guest"></div><span>(<span class="count"></span>) [[admin/dashboard:guest]]</span></li>
 							</ul>
@@ -25,7 +25,7 @@
 					<div class="card-body">
 						<div class="graph-container pie-chart legend-down">
 							<canvas id="analytics-presence"></canvas>
-							<ul class="graph-legend" id="analytics-presence-legend">
+							<ul class="graph-legend border" id="analytics-presence-legend">
 								<li><div class="reading-posts"></div><span>(<span class="count"></span>) [[admin/dashboard:reading-posts]]</span></li>
 								<li><div class="on-categories"></div><span>(<span class="count"></span>) [[admin/dashboard:on-categories]]</span></li>
 								<li><div class="browsing-topics"></div><span>(<span class="count"></span>) [[admin/dashboard:browsing-topics]]</span></li>
@@ -42,7 +42,7 @@
 					<div class="card-body">
 						<div class="graph-container pie-chart legend-down">
 							<canvas id="analytics-topics"></canvas>
-							<ul class="graph-legend" id="topics-legend"></ul>
+							<ul class="graph-legend border" id="topics-legend"></ul>
 						</div>
 					</div>
 				</div>
@@ -83,7 +83,15 @@
 
 				<a href="{config.relative_path}/admin/settings/advanced" class="d-block mb-2 btn btn-info btn-sm" data-bs-placement="bottom" data-bs-toggle="tooltip" title="[[admin/dashboard:maintenance-mode-title]]">[[admin/dashboard:maintenance-mode]]</a>
 
-				<span id="toggle-realtime" class="text-sm">[[admin/dashboard:realtime-chart-updates]] <strong>OFF</strong> <i class="fa fa fa-toggle-off pointer"></i></span>
+				<div class="form-check form-switch">
+					<label for="toggle-realtime" class="form-check-label text-sm">[[admin/dashboard:realtime-chart-updates]]</label>
+					<input id="toggle-realtime" class="form-check-input" type="checkbox">
+				</div>
+
+				<div class="form-check form-switch">
+					<label for="toggle-dark-mode" class="form-check-label text-sm">[[admin/dashboard:dark-mode]]</label>
+					<input id="toggle-dark-mode" class="form-check-input" type="checkbox">
+				</div>
 				{{{ end }}}
 				<hr/>
 				<h6>[[admin/dashboard:notices]]</h6>
