@@ -104,7 +104,16 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 		canViewInfo: canViewInfo,
 	});
 
-	userData.sso = results.sso.associations;
+	userData.sso = results.sso.associations.map((association) => {
+		if (!isSelf) {
+			delete association.deauthUrl;
+			if (!association.associated) {
+				delete association.url;
+			}
+		}
+
+		return association;
+	});
 	userData.banned = Boolean(userData.banned);
 	userData.muted = parseInt(userData.mutedUntil, 10) > Date.now();
 	userData.website = escape(userData.website);
