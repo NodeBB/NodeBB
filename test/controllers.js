@@ -2037,8 +2037,8 @@ describe('Controllers', () => {
 			request(`${nconf.get('url')}/api/post/${pid}`, { json: true }, (err, res, body) => {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
-				assert.equal(res.headers['x-redirect'], '/topic/1/test-topic-title/1');
-				assert.equal(body, '/topic/1/test-topic-title/1');
+				assert.equal(res.headers['x-redirect'], '/topic/1/test-topic-title');
+				assert.equal(body, '/topic/1/test-topic-title');
 				done();
 			});
 		});
