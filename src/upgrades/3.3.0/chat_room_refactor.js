@@ -33,7 +33,7 @@ module.exports = {
 			const arrayOfRoomData = await db.getObjects(roomIds.map(roomId => `chat:room:${roomId}`));
 			for (const roomData of arrayOfRoomData) {
 				if (roomData) {
-					const midsSeen = Object.create(null);
+					const midsSeen = {};
 					const { roomId } = roomData;
 					await batch.processSortedSet(`chat:room:${roomId}:uids`, async (uids) => {
 						for (const uid of uids) {
