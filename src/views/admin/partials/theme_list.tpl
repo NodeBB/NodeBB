@@ -1,5 +1,5 @@
 {{{ each themes }}}
-<div class="col-lg-4 col-md-6 col-12 mb-4" data-type="{./type}" data-theme="{./id}"{{{ if ./css }}} data-css="{./css}" {{{ end }}}>
+<div class="col-lg-4 col-md-6 col-12 mb-4" data-type="{./type}" data-theme-name="{./name}" data-theme="{./id}"{{{ if ./css }}} data-css="{./css}" {{{ end }}}>
 	<div class="card h-100">
 		<img src="{./screenshot_url}" class="card-img-top">
 		<div class="card-body">
