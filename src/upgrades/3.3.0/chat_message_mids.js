@@ -1,6 +1,6 @@
 /* eslint-disable no-await-in-loop */
-'use strict';
 
+'use strict';
 
 const db = require('../../database');
 const batch = require('../../batch');
