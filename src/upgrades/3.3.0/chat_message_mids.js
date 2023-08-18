@@ -1,5 +1,6 @@
-'use strict';
+/* eslint-disable no-await-in-loop */
 
+'use strict';
 
 const db = require('../../database');
 const batch = require('../../batch');
@@ -13,7 +14,7 @@ module.exports = {
 		progress.total = await db.sortedSetCard(`chat:rooms`);
 		await batch.processSortedSet(`chat:rooms`, async (roomIds) => {
 			progress.incr(roomIds.length);
-			await Promise.all(roomIds.map(async (roomId) => {
+			for (const roomId of roomIds) {
 				await batch.processSortedSet(`chat:room:${roomId}:mids`, async (mids) => {
 					let messageData = await db.getObjects(mids.map(mid => `message:${mid}`));
 					messageData.forEach((m, idx) => {
@@ -36,7 +37,7 @@ module.exports = {
 				}, {
 					batch: 500,
 				});
-			}));
+			}
 		}, {
 			batch: 500,
 		});

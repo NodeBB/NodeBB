@@ -26,7 +26,7 @@ module.exports = {
 			});
 			await db.sortedSetAddBulk(bulkAdd);
 		}, {
-			batch: 500,
+			batch: 100,
 		});
 	},
 };

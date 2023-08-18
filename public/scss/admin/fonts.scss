@@ -2,16 +2,19 @@
 @use "@fontsource/poppins/scss/mixins" as Poppins;
 
 $weights: $font-weight-light, $font-weight-normal, $font-weight-semibold, $font-weight-bold;
+$subsets: (latin, latin-ext);
 
 @include Inter.faces(
 	$weights: $weights,
+	$subsets: $subsets,
 	$display: fallback,
 	$directory: "./plugins/core/inter"
 );
 @include Poppins.faces(
-  $weights: $weights,
-  $display: fallback,
-  $directory: "./plugins/core/poppins"
+	$weights: $weights,
+	$subsets: $subsets,
+	$display: fallback,
+	$directory: "./plugins/core/poppins"
 );
 
 .ff-base { font-family: $font-family-base !important; }
