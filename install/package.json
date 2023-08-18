@@ -35,7 +35,7 @@
         "@isaacs/ttlcache": "1.4.1",
         "@popperjs/core": "2.11.8",
         "ace-builds": "1.24.1",
-        "archiver": "5.3.1",
+        "archiver": "6.0.0",
         "async": "3.2.4",
         "autoprefixer": "10.4.15",
         "bcryptjs": "2.4.3",
