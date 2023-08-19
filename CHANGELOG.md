@@ -1,3 +1,36 @@
+#### v3.3.3 (2023-08-19)
+
+##### Chores
+
+*  incrementing version number - v3.3.2 (ec9dac97)
+*  update changelog for v3.3.2 (2ecf15c4)
+*  incrementing version number - v3.3.1 (151cc68f)
+*  incrementing version number - v3.3.0 (fc1ad70f)
+*  incrementing version number - v3.2.3 (b06d3e63)
+*  incrementing version number - v3.2.2 (758ecfcd)
+*  incrementing version number - v3.2.1 (20145074)
+*  incrementing version number - v3.2.0 (9ecac38e)
+*  incrementing version number - v3.1.7 (0b4e81ab)
+*  incrementing version number - v3.1.6 (b3a3b130)
+*  incrementing version number - v3.1.5 (ec19343a)
+*  incrementing version number - v3.1.4 (2452783c)
+*  incrementing version number - v3.1.3 (3b4e9d3f)
+*  incrementing version number - v3.1.2 (40fa3489)
+*  incrementing version number - v3.1.1 (40250733)
+*  incrementing version number - v3.1.0 (0cb386bd)
+*  incrementing version number - v3.0.1 (26f6ea49)
+*  incrementing version number - v3.0.0 (224e08cd)
+
+##### Bug Fixes
+
+*  one more fix (51587ca3)
+*  one more upgrade script fix (b5d1e917)
+*  post preview on skins remove clearfix and floats (5a8e6af4)
+
+##### Refactors
+
+*  add connectionTimeout to psql (90f29571)
+
 #### v3.3.2 (2023-08-18)
 
 ##### Chores
