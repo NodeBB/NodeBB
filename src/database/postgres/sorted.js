@@ -677,7 +677,7 @@ SELECT z."value", z."score"
 		if (process && process.constructor && process.constructor.name !== 'AsyncFunction') {
 			process = util.promisify(process);
 		}
-
+		let iteration = 1;
 		while (true) {
 			/* eslint-disable no-await-in-loop */
 			let rows = await cursor.readAsync(batchSize);
@@ -692,13 +692,14 @@ SELECT z."value", z."score"
 				rows = rows.map(r => r.value);
 			}
 			try {
+				if (iteration > 1 && options.interval) {
+					await sleep(options.interval);
+				}
 				await process(rows);
+				iteration += 1;
 			} catch (err) {
 				await client.release();
 				throw err;
-			}
-			if (options.interval) {
-				await sleep(options.interval);
 			}
 		}
 	};
