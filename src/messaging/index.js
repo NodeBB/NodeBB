@@ -130,11 +130,13 @@ Messaging.getPublicRooms = async (callerUid, uid) => {
 
 	const allRoomIds = await Messaging.getPublicRoomIdsFromSet('chat:rooms:public:order');
 	const allRoomData = await Messaging.getRoomsData(allRoomIds);
+	const isAdmin = await privileges.users.isAdministrator(callerUid);
 	const checks = await Promise.all(
 		allRoomData.map(
 			room => room && (
 				!Array.isArray(room.groups) ||
 				!room.groups.length ||
+				isAdmin ||
 				groups.isMemberOfAny(uid, room && room.groups)
 			)
 		)
@@ -369,16 +371,21 @@ Messaging.canMessageUser = async (uid, toUid) => {
 };
 
 Messaging.canMessageRoom = async (uid, roomId) => {
+	console.log('can message room', uid, roomId);
 	if (meta.config.disableChat || uid <= 0) {
 		throw new Error('[[error:chat-disabled]]');
 	}
 
-	const [inRoom, canChat] = await Promise.all([
+	const [roomData, inRoom, canChat] = await Promise.all([
+		Messaging.getRoomData(roomId),
 		Messaging.isUserInRoom(uid, roomId),
 		privileges.global.can('chat', uid),
 		checkReputation(uid),
 	]);
-
+	if (!roomData) {
+		throw new Error('[[error:no-room]]');
+	}
+	console.log('can chat', canChat);
 	if (!inRoom) {
 		throw new Error('[[error:not-in-room]]');
 	}
