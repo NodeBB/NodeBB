@@ -25,7 +25,6 @@ module.exports = {
 				const roomData = arrayOfRoomData[idx];
 				if (roomData) {
 					const userCount = await db.sortedSetCard(`chat:room:${roomId}:uids`);
-					await db.setObjectField(`chat:room:${roomId}`, 'userCount', userCount);
 					progress.total += userCount;
 				}
 			}));
@@ -78,6 +77,8 @@ module.exports = {
 					}, {
 						batch: 500,
 					});
+					const userCount = await db.sortedSetCard(`chat:room:${roomId}:uids`);
+					await db.setObjectField(`chat:room:${roomId}`, 'userCount', userCount);
 				}
 			}
 		}, {
