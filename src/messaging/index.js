@@ -380,6 +380,7 @@ Messaging.canMessageRoom = async (uid, roomId) => {
 		Messaging.isUserInRoom(uid, roomId),
 		privileges.global.can('chat', uid),
 		checkReputation(uid),
+		user.checkMuted(uid),
 	]);
 	if (!roomData) {
 		throw new Error('[[error:no-room]]');

@@ -113,6 +113,28 @@ describe('Messaging Library', () => {
 				});
 			});
 		});
+
+		it('should not allow messaging room if user is muted', async () => {
+			const twoMinutesFromNow = Date.now() + (2 * 60 * 1000);
+			const twoHoursFromNow = Date.now() + (2 * 60 * 60 * 1000);
+			const roomId = 0;
+
+			await User.setUserField(mocks.users.herp.uid, 'mutedUntil', twoMinutesFromNow);
+			await assert.rejects(Messaging.canMessageRoom(mocks.users.herp.uid, roomId), (err) => {
+				assert(err.message.startsWith('[[error:user-muted-for-minutes,'));
+				return true;
+			});
+
+			await User.setUserField(mocks.users.herp.uid, 'mutedUntil', twoHoursFromNow);
+			await assert.rejects(Messaging.canMessageRoom(mocks.users.herp.uid, roomId), (err) => {
+				assert(err.message.startsWith('[[error:user-muted-for-hours,'));
+				return true;
+			});
+			await db.deleteObjectField(`user:${mocks.users.herp.uid}`, 'mutedUntil');
+			await assert.rejects(Messaging.canMessageRoom(mocks.users.herp.uid, roomId), {
+				message: '[[error:no-room]]',
+			});
+		});
 	});
 
 	describe('rooms', () => {
