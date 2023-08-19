@@ -371,7 +371,6 @@ Messaging.canMessageUser = async (uid, toUid) => {
 };
 
 Messaging.canMessageRoom = async (uid, roomId) => {
-	console.log('can message room', uid, roomId);
 	if (meta.config.disableChat || uid <= 0) {
 		throw new Error('[[error:chat-disabled]]');
 	}
@@ -385,7 +384,7 @@ Messaging.canMessageRoom = async (uid, roomId) => {
 	if (!roomData) {
 		throw new Error('[[error:no-room]]');
 	}
-	console.log('can chat', canChat);
+
 	if (!inRoom) {
 		throw new Error('[[error:not-in-room]]');
 	}
