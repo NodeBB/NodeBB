@@ -697,7 +697,7 @@ describe('Messaging Library', () => {
 			assert.equal(response.statusCode, 404);
 		});
 
-		it('should 500 for guest with no privilege error', async () => {
+		it('should 401 for guest with not-authorised status code', async () => {
 			meta.config.disableChat = 0;
 			const response = await request(`${nconf.get('url')}/api/user/baz/chats`, {
 				resolveWithFullResponse: true,
@@ -706,8 +706,8 @@ describe('Messaging Library', () => {
 			});
 			const { body } = response;
 
-			assert.equal(response.statusCode, 500);
-			assert.equal(body.error, '[[error:no-privileges]]');
+			assert.equal(response.statusCode, 401);
+			assert.equal(body.status.code, 'not-authorised');
 		});
 
 		it('should 404 for non-existent user', async () => {
