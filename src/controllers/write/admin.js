@@ -34,10 +34,16 @@ Admin.getAnalyticsData = async (req, res) => {
 Admin.chats = {};
 
 Admin.chats.deleteRoom = async (req, res) => {
+	const roomData = await messaging.getRoomData(req.params.roomId);
+	if (!roomData) {
+		throw new Error('[[error:no-room]]');
+	}
 	await messaging.deleteRooms([req.params.roomId]);
 
 	events.log({
 		type: 'chat-room-deleted',
+		roomId: req.params.roomId,
+		roomName: roomData.roomName ? roomData.roomName : `No room name`,
 		uid: req.uid,
 		ip: req.ip,
 	});
