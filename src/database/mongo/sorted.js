@@ -574,7 +574,7 @@ module.exports = function (module) {
 		if (processFn && processFn.constructor && processFn.constructor.name !== 'AsyncFunction') {
 			processFn = util.promisify(processFn);
 		}
-
+		let iteration = 1;
 		while (!done) {
 			/* eslint-disable no-await-in-loop */
 			const item = await cursor.next();
@@ -585,12 +585,12 @@ module.exports = function (module) {
 			}
 
 			if (ids.length >= options.batch || (done && ids.length !== 0)) {
-				await processFn(ids);
-
-				ids.length = 0;
-				if (options.interval) {
+				if (iteration > 1 && options.interval) {
 					await sleep(options.interval);
 				}
+				await processFn(ids);
+				iteration += 1;
+				ids.length = 0;
 			}
 		}
 	};

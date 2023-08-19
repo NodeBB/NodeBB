@@ -44,7 +44,7 @@ connection.getConnectionString = function (mongo) {
 connection.getConnectionOptions = function (mongo) {
 	mongo = mongo || nconf.get('mongo');
 	const connOptions = {
-		maxPoolSize: 10,
+		maxPoolSize: 20,
 		minPoolSize: 3,
 		connectTimeoutMS: 90000,
 	};

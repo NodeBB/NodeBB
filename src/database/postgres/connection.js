@@ -28,6 +28,8 @@ connection.getConnectionOptions = function (postgres) {
 		password: postgres.password,
 		database: postgres.database,
 		ssl: String(postgres.ssl) === 'true',
+		max: 20,
+		connectionTimeoutMillis: 90000,
 	};
 
 	return _.merge(connOptions, postgres.options || {});

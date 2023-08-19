@@ -1,3 +1,65 @@
+#### v3.3.2 (2023-08-18)
+
+##### Chores
+
+*  incrementing version number - v3.3.1 (151cc68f)
+*  update changelog for v3.3.1 (6f961f9c)
+*  incrementing version number - v3.3.0 (fc1ad70f)
+*  incrementing version number - v3.2.3 (b06d3e63)
+*  incrementing version number - v3.2.2 (758ecfcd)
+*  incrementing version number - v3.2.1 (20145074)
+*  incrementing version number - v3.2.0 (9ecac38e)
+*  incrementing version number - v3.1.7 (0b4e81ab)
+*  incrementing version number - v3.1.6 (b3a3b130)
+*  incrementing version number - v3.1.5 (ec19343a)
+*  incrementing version number - v3.1.4 (2452783c)
+*  incrementing version number - v3.1.3 (3b4e9d3f)
+*  incrementing version number - v3.1.2 (40fa3489)
+*  incrementing version number - v3.1.1 (40250733)
+*  incrementing version number - v3.1.0 (0cb386bd)
+*  incrementing version number - v3.0.1 (26f6ea49)
+*  incrementing version number - v3.0.0 (224e08cd)
+
+##### Bug Fixes
+
+*  upgrade script (c02f1d70)
+
+#### v3.3.1 (2023-08-18)
+
+##### Chores
+
+*  up themes (62231baa)
+*  incrementing version number - v3.3.0 (fc1ad70f)
+*  update changelog for v3.3.0 (46f7405d)
+*  incrementing version number - v3.2.3 (b06d3e63)
+*  incrementing version number - v3.2.2 (758ecfcd)
+*  incrementing version number - v3.2.1 (20145074)
+*  incrementing version number - v3.2.0 (9ecac38e)
+*  incrementing version number - v3.1.7 (0b4e81ab)
+*  incrementing version number - v3.1.6 (b3a3b130)
+*  incrementing version number - v3.1.5 (ec19343a)
+*  incrementing version number - v3.1.4 (2452783c)
+*  incrementing version number - v3.1.3 (3b4e9d3f)
+*  incrementing version number - v3.1.2 (40fa3489)
+*  incrementing version number - v3.1.1 (40250733)
+*  incrementing version number - v3.1.0 (0cb386bd)
+*  incrementing version number - v3.0.1 (26f6ea49)
+*  incrementing version number - v3.0.0 (224e08cd)
+
+##### New Features
+
+*  #11930, ability to set custom skins as default (db07ab15)
+
+##### Bug Fixes
+
+*  some more upgrade script fixes (f23b0b5b)
+*  #11906, userData.sso — don't serve deauthUrl or non-associated url if caller uid is not same as target uid (19e047e2)
+*  include latin-ext subset of fonts in admin styles (#11918) (556a1c48)
+
+##### Other Changes
+
+*  fix lint (d1949cee)
+
 #### v3.3.0 (2023-08-16)
 
 ##### Chores
