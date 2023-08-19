@@ -447,16 +447,16 @@ module.exports = function (Messaging) {
 			user.isAdministrator(uid),
 			user.isGlobalModerator(uid),
 		]);
-		if (!room) {
-			return null;
-		}
 
-		if (!canChat ||
+		if (!room ||
 			(!room.public && !inRoom) ||
 			(room.public && (
 				Array.isArray(room.groups) && room.groups.length && !isAdmin && !(await groups.isMemberOfAny(uid, room.groups)))
 			)
 		) {
+			return null;
+		}
+		if (!canChat) {
 			throw new Error('[[error:no-privileges]]');
 		}
 
