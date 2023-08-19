@@ -20,10 +20,14 @@ module.exports = {
 
 		// calculate user count and set progress.total
 		await batch.processArray(allRoomIds, async (roomIds) => {
-			await Promise.all(roomIds.map(async (roomId) => {
-				const userCount = await db.sortedSetCard(`chat:room:${roomId}:uids`);
-				await db.setObjectField(`chat:room:${roomId}`, 'userCount', userCount);
-				progress.total += userCount;
+			const arrayOfRoomData = await db.getObjects(roomIds.map(roomId => `chat:room:${roomId}`));
+			await Promise.all(roomIds.map(async (roomId, idx) => {
+				const roomData = arrayOfRoomData[idx];
+				if (roomData) {
+					const userCount = await db.sortedSetCard(`chat:room:${roomId}:uids`);
+					await db.setObjectField(`chat:room:${roomId}`, 'userCount', userCount);
+					progress.total += userCount;
+				}
 			}));
 		}, {
 			batch: 500,
