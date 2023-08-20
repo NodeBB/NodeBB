@@ -63,7 +63,7 @@ jobs:
           - 5432:5432
 
       redis:
-        image: 'redis:7.0.12'
+        image: 'redis:7.2.0'
         # Set health checks to wait until redis has started
         options: >-
           --health-cmd "redis-cli ping"
