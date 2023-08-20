@@ -37,6 +37,7 @@
     "digest.title.week": "Uw wekelijkse samenvatting",
     "digest.title.month": "Uw maandelijkse samenvatting",
     "notif.chat.subject": "Nieuw chatbericht van %1",
+    "notif.chat.public-chat-subject": "New message from %1 in room %2",
     "notif.chat.cta": "Klik hier om het gesprek te hervatten",
     "notif.chat.unsub.info": "Deze notificatie is verzonden vanwege de gebruikersinstellingen voor abonnementen.",
     "notif.post.unsub.info": "Deze notificatie is door ons verzonden vanwege gebruikersinstellingen voor abonnementen en berichten.",

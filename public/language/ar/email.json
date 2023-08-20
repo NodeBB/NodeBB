@@ -37,6 +37,7 @@
     "digest.title.week": "Your Weekly Digest",
     "digest.title.month": "Your Monthly Digest",
     "notif.chat.subject": "هناك محادثة جديدة من %1",
+    "notif.chat.public-chat-subject": "New message from %1 in room %2",
     "notif.chat.cta": "انقر هنا لمتابعة المحادثة",
     "notif.chat.unsub.info": "تم إرسال هذا الإشعار بوجودة محادثة جديدة وفقا لخيارات تسجيلك.",
     "notif.post.unsub.info": "تم إشعارك بهذه المشاركة بناءً على الخيارات التي سبق وأن حددتها.",

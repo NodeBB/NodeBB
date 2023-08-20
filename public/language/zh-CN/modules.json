@@ -1,4 +1,5 @@
 {
+    "chat.room-id": "Room %1",
     "chat.chatting_with": "与<span id=\"chat-with-name\"></span>聊天",
     "chat.placeholder": "在此输入聊天消息，或者拖入图片，按下回车键以发送",
     "chat.placeholder.mobile": "在此输入聊天信息",

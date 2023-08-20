@@ -37,6 +37,7 @@
     "digest.title.week": "Your Weekly Digest",
     "digest.title.month": "Your Monthly Digest",
     "notif.chat.subject": "ได้รับข้อความแชทใหม่จาก %1",
+    "notif.chat.public-chat-subject": "New message from %1 in room %2",
     "notif.chat.cta": "กดตรงนี้เพื่อกลับไปยังบทสนทนา",
     "notif.chat.unsub.info": "การแจ้งเตือนแชทนี้ถูกส่งไปหาคุณเนื่องจากการตั้งค่าสมาชิกของคุณ",
     "notif.post.unsub.info": "การแจ้งเตือนกระทู้นี้ถูกส่งไปยังคุณเนื่องการตั้งค่าสมาชิกของคุณ",

@@ -37,6 +37,7 @@
     "digest.title.week": "您的每週摘要",
     "digest.title.month": "您的每月摘要",
     "notif.chat.subject": "收到來自 %1 的新聊天訊息",
+    "notif.chat.public-chat-subject": "New message from %1 in room %2",
     "notif.chat.cta": "點擊這裡繼續聊天",
     "notif.chat.unsub.info": "根據您的訂閱設定，為您發送此聊天提醒。",
     "notif.post.unsub.info": "根據您的訂閱設定，為您發送此回覆提醒。",

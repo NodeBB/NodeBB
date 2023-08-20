@@ -37,6 +37,7 @@
     "digest.title.week": "Heti összefoglalód",
     "digest.title.month": "Havi összefoglalód",
     "notif.chat.subject": "Új chat üzenet érkezett a következőtől: %1",
+    "notif.chat.public-chat-subject": "New message from %1 in room %2",
     "notif.chat.cta": "Kattints ide a beszélgetés folytatásához",
     "notif.chat.unsub.info": "Ez a chat-értesítés a feliratkozási beállításaid miatt lett kiküldve.",
     "notif.post.unsub.info": "Ez a hozzászólás-értesítés a feliratkozási beállításaid miatt lett kiküldve.",

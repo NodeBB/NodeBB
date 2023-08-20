@@ -37,6 +37,7 @@
     "digest.title.week": "Váš týdenní přehled",
     "digest.title.month": "Váš měsíční přehled",
     "notif.chat.subject": "Nová zpráva z chatu od %1",
+    "notif.chat.public-chat-subject": "New message from %1 in room %2",
     "notif.chat.cta": "Chcete-li pokračovat v konverzaci, klikněte zde.",
     "notif.chat.unsub.info": "Toto upozornění na chat vám bylo odesláno na základě vašeho nastavení odběru.",
     "notif.post.unsub.info": "Toto upozornění na příspěvek vám bylo odesláno na základě vašeho nastavení odběru.",

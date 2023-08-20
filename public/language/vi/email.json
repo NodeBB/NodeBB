@@ -37,6 +37,7 @@
     "digest.title.week": "Thông Báo Hàng Tuần Của Bạn",
     "digest.title.month": "Thông Báo Hàng Tháng Của Bạn",
     "notif.chat.subject": "Tin nhắn trò chuyện mới nhận được từ %1",
+    "notif.chat.public-chat-subject": "New message from %1 in room %2",
     "notif.chat.cta": "Nhấn vào đây để tiếp tục cuộc hội thoại",
     "notif.chat.unsub.info": "Thông báo trò chuyện này đã được gửi cho bạn dựa theo cài đặt đăng ký của bạn.",
     "notif.post.unsub.info": "Thông báo bài viết này được gửi cho bạn dựa tên thiết lập nhận thông báo của bạn",
