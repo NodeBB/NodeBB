@@ -38,47 +38,44 @@ module.exports = {
 				if (roomData) {
 					const midsSeen = {};
 					const { roomId } = roomData;
-					await batch.processSortedSet(`chat:room:${roomId}:uids`, async (uids) => {
-						for (const uid of uids) {
-							await batch.processSortedSet(`uid:${uid}:chat:room:${roomId}:mids`, async (mids) => {
-								const uniqMids = mids.filter(mid => !midsSeen.hasOwnProperty(mid));
-								if (!uniqMids.length) {
-									return;
+					const uids = await db.getSortedSetRange(`chat:room:${roomId}:uids`, 0, -1);
+					for (const uid of uids) {
+						await batch.processSortedSet(`uid:${uid}:chat:room:${roomId}:mids`, async (mids) => {
+							const uniqMids = mids.filter(mid => !midsSeen.hasOwnProperty(mid));
+							if (!uniqMids.length) {
+								return;
+							}
+
+							let messageData = await db.getObjects(uniqMids.map(mid => `message:${mid}`));
+							messageData.forEach((m, idx) => {
+								if (m) {
+									m.mid = parseInt(uniqMids[idx], 10);
 								}
-
-								let messageData = await db.getObjects(uniqMids.map(mid => `message:${mid}`));
-								messageData.forEach((m, idx) => {
-									if (m) {
-										m.mid = parseInt(uniqMids[idx], 10);
-									}
-								});
-								messageData = messageData.filter(Boolean);
-
-								const bulkSet = messageData.map(
-									msg => [`message:${msg.mid}`, { roomId: roomId }]
-								);
-
-								await db.setObjectBulk(bulkSet);
-								await db.sortedSetAdd(
-									`chat:room:${roomId}:mids`,
-									messageData.map(m => m.timestamp),
-									messageData.map(m => m.mid),
-								);
-								uniqMids.forEach((mid) => {
-									midsSeen[mid] = 1;
-								});
-							}, {
-								batch: 500,
 							});
-							// eslint-disable-next-line no-await-in-loop
-							await db.deleteAll(`uid:${uid}:chat:room:${roomId}:mids`);
-						}
-						progress.incr(uids.length);
-					}, {
-						batch: 500,
-					});
-					const userCount = await db.sortedSetCard(`chat:room:${roomId}:uids`);
-					await db.setObjectField(`chat:room:${roomId}`, 'userCount', userCount);
+							messageData = messageData.filter(Boolean);
+
+							const bulkSet = messageData.map(
+								msg => [`message:${msg.mid}`, { roomId: roomId }]
+							);
+
+							await db.setObjectBulk(bulkSet);
+							await db.sortedSetAdd(
+								`chat:room:${roomId}:mids`,
+								messageData.map(m => m.timestamp),
+								messageData.map(m => m.mid),
+							);
+							uniqMids.forEach((mid) => {
+								midsSeen[mid] = 1;
+							});
+						}, {
+							batch: 500,
+						});
+						// eslint-disable-next-line no-await-in-loop
+						await db.deleteAll(`uid:${uid}:chat:room:${roomId}:mids`);
+						progress.incr(1);
+					}
+
+					await db.setObjectField(`chat:room:${roomId}`, 'userCount', uids.length);
 				}
 			}
 		}, {
