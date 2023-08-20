@@ -1,4 +1,5 @@
 {
+    "chat.room-id": "Room %1",
     "chat.chatting_with": "Чат с",
     "chat.placeholder": "Введите сообщение, перетащите изображения, нажмите enter для отправки",
     "chat.placeholder.mobile": "Введите сообщение здесь",

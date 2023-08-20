@@ -37,6 +37,7 @@
     "digest.title.week": "Ваша еженедельная рассылка",
     "digest.title.month": "Ваша ежемесячная рассылка",
     "notif.chat.subject": "Новое сообщение от %1",
+    "notif.chat.public-chat-subject": "New message from %1 in room %2",
     "notif.chat.cta": "Нажмите, чтобы ответить",
     "notif.chat.unsub.info": "Вы получили это уведомление согласно вашим настройкам подписки.",
     "notif.post.unsub.info": "Вы получили это уведомление согласно вашим настройкам подписки.",

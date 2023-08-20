@@ -37,6 +37,7 @@
     "digest.title.week": "Ваш седмични сажетак",
     "digest.title.month": "Ваш месечни сажетак",
     "notif.chat.subject": "Примљена је нова порука ћаскања од %1",
+    "notif.chat.public-chat-subject": "New message from %1 in room %2",
     "notif.chat.cta": "Кликните овде да наставите са разговором",
     "notif.chat.unsub.info": "Ова обавештење о ћаскању вам је послато услед вашег подешавања претплате.",
     "notif.post.unsub.info": "Ово обавештење вам је послато услед вашег подешавања претплате.",

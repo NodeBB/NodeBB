@@ -37,6 +37,7 @@
     "digest.title.week": "Përmbledhja juaj e përjavshme",
     "digest.title.month": "Përmbledhja juaj mujore",
     "notif.chat.subject": "Një mesazh i ri nga %1",
+    "notif.chat.public-chat-subject": "New message from %1 in room %2",
     "notif.chat.cta": "Klikoni këtu për të vazhduar bisedën",
     "notif.chat.unsub.info": "Ky njoftim për bisedën ju është dërguar për shkak të abonimit tuaj.",
     "notif.post.unsub.info": "Ky njoftim i postimit ju është dërguar për shkak të abonimit tuaj.",

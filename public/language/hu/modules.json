@@ -1,4 +1,5 @@
 {
+    "chat.room-id": "Room %1",
     "chat.chatting_with": "Csevegés vele",
     "chat.placeholder": "Írja be ide a csevegőüzenetet, húzza át a képeket, majd nyomja meg az Enter billentyűt a küldéshez",
     "chat.placeholder.mobile": "Írja be ide a csevegő üzenetet",

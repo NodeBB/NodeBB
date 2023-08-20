@@ -37,6 +37,7 @@
     "digest.title.week": "Twoje tygodniowe podsumowanie",
     "digest.title.month": "Twoje miesięczne podsumowanie",
     "notif.chat.subject": "Nowa wiadomość na czacie od %1",
+    "notif.chat.public-chat-subject": "New message from %1 in room %2",
     "notif.chat.cta": "Kliknij tutaj, aby kontynuować rozmowę",
     "notif.chat.unsub.info": "To powiadomienie o czacie zostało wysłane zgodnie z Twoimi ustawieniami.",
     "notif.post.unsub.info": "To powiadomienie o poście zostało wysłane zgodnie z Twoimi ustawieniami.",
