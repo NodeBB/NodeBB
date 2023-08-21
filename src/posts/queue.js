@@ -85,6 +85,24 @@ module.exports = function (Posts) {
 		postData.data.content = result.postData.content;
 	}
 
+	Posts.canUserPostContentWithLinks = async function (uid, content) {
+		if (!content) {
+			return false;
+		}
+		const [reputation, isPrivileged] = await Promise.all([
+			user.getUserField(uid, 'reputation'),
+			user.isPrivileged(uid),
+		]);
+
+		if (!isPrivileged && reputation < meta.config['min:rep:post-links']) {
+			const parsed = await plugins.hooks.fire('filter:parse.raw', String(content));
+			if (parsed.match(/<a[^>]*>([^<]+)<\/a>/g)) {
+				return false;
+			}
+		}
+		return true;
+	};
+
 	Posts.shouldQueue = async function (uid, data) {
 		const [userData, isMemberOfExempt, categoryQueueEnabled] = await Promise.all([
 			user.getUserFields(uid, ['uid', 'reputation', 'postcount']),
@@ -94,7 +112,12 @@ module.exports = function (Posts) {
 
 		const shouldQueue = meta.config.postQueue && categoryQueueEnabled &&
 			!isMemberOfExempt &&
-			(!userData.uid || userData.reputation < meta.config.postQueueReputationThreshold || userData.postcount <= 0);
+			(
+				!userData.uid ||
+				userData.reputation < meta.config.postQueueReputationThreshold ||
+				userData.postcount <= 0 ||
+				!await Posts.canUserPostContentWithLinks(uid, data.content)
+			);
 		const result = await plugins.hooks.fire('filter:post.shouldQueue', {
 			shouldQueue: !!shouldQueue,
 			uid: uid,
