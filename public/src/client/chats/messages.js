@@ -149,7 +149,7 @@ define('forum/chats/messages', [
 	messages.scrollToBottom = function (containerEl) {
 		if (containerEl && containerEl.length) {
 			containerEl.scrollTop(containerEl[0].scrollHeight - containerEl.height());
-			containerEl.parent()
+			containerEl.parents('[component="chat/message/window"]')
 				.find('[component="chat/messages/scroll-up-alert"]')
 				.addClass('hidden');
 		}
@@ -163,7 +163,7 @@ define('forum/chats/messages', [
 
 	messages.toggleScrollUpAlert = function (containerEl) {
 		const isAtBottom = messages.isAtBottom(containerEl, 300);
-		containerEl.parent()
+		containerEl.parents('[component="chat/message/window"]')
 			.find('[component="chat/messages/scroll-up-alert"]')
 			.toggleClass('hidden', isAtBottom);
 	};

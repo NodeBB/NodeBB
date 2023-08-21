@@ -266,7 +266,7 @@ define('forum/chats', [
 	};
 
 	Chats.addScrollBottomHandler = function (chatContent) {
-		chatContent.parent()
+		chatContent.parents('[component="chat/message/window"]')
 			.find('[component="chat/messages/scroll-up-alert"]')
 			.off('click').on('click', function () {
 				messages.scrollToBottom(chatContent);
