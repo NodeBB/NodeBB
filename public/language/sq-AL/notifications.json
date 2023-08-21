@@ -42,7 +42,7 @@
     "user_flagged_user_multiple": "<strong>%1</strong>, <strong>%2</strong> and %3 others flagged a user profile (%4)",
     "user_posted_to": "<strong>%1</strong> ka postuar një përgjigje në: <strong>%2</strong>",
     "user_posted_to_dual": "<strong>%1</strong> dhe <strong>%2</strong> kanë postuar përgjigje në: <strong>%3</strong>",
-    "user_posted_to_triple": "<strong>%1</strong>, <strong>%2</strong> and <strong>%3</strong> others have posted replies to: <strong>%4</strong>",
+    "user_posted_to_triple": "<strong>%1</strong>, <strong>%2</strong> and <strong>%3</strong> have posted replies to: <strong>%4</strong>",
     "user_posted_to_multiple": "<strong>%1</strong>, <strong>%2</strong> and %3 others have posted replies to: <strong>%4</strong>",
     "user_posted_topic": "<strong>%1</strong> ka postuar një temë të re: <strong>%2</strong>",
     "user_edited_post": "<strong>%1</strong> ka redaktuar një postim në <strong>%2</strong>",

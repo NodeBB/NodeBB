@@ -42,7 +42,7 @@
     "user_flagged_user_multiple": "<strong>%1</strong>, <strong>%2</strong> and %3 others flagged a user profile (%4)",
     "user_posted_to": "<strong>%1</strong>さんは <strong>%2</strong>に返信しました。",
     "user_posted_to_dual": "<strong>%1</strong> と <strong>%2</strong> は、返信しました: <strong>%3</strong>",
-    "user_posted_to_triple": "<strong>%1</strong>, <strong>%2</strong> and <strong>%3</strong> others have posted replies to: <strong>%4</strong>",
+    "user_posted_to_triple": "<strong>%1</strong>, <strong>%2</strong> and <strong>%3</strong> have posted replies to: <strong>%4</strong>",
     "user_posted_to_multiple": "<strong>%1</strong>, <strong>%2</strong> and %3 others have posted replies to: <strong>%4</strong>",
     "user_posted_topic": "<strong>%1</strong> が新しいスレッドを投稿しました。: <strong>%2</strong>",
     "user_edited_post": "<strong>%1</strong> has edited a post in <strong>%2</strong>",

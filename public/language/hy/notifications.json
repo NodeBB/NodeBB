@@ -42,7 +42,7 @@
     "user_flagged_user_multiple": "<strong>%1</strong>, <strong>%2</strong> and %3 others flagged a user profile (%4)",
     "user_posted_to": "<strong>%1</strong>-ը պատասխանել է <strong>%2</strong>-ին",
     "user_posted_to_dual": "%1-ը և %2-ը հրապարակել են պատասխաններ %3-ին",
-    "user_posted_to_triple": "<strong>%1</strong>, <strong>%2</strong> and <strong>%3</strong> others have posted replies to: <strong>%4</strong>",
+    "user_posted_to_triple": "<strong>%1</strong>, <strong>%2</strong> and <strong>%3</strong> have posted replies to: <strong>%4</strong>",
     "user_posted_to_multiple": "<strong>%1</strong>, <strong>%2</strong> and %3 others have posted replies to: <strong>%4</strong>",
     "user_posted_topic": "%1-ը նոր թեմա է տեղադրել՝ %2",
     "user_edited_post": "%1-ը խմբագրել է գրառում %2-ում",

@@ -42,7 +42,7 @@
     "user_flagged_user_multiple": "<strong>%1</strong>, <strong>%2</strong> and %3 others flagged a user profile (%4)",
     "user_posted_to": "Пользователь <strong>%1</strong> ответил на сообщение в <strong>%2</strong>",
     "user_posted_to_dual": "Пользователи <strong>%1</strong> и <strong>%2</strong> ответили на сообщение в <strong>%3</strong>",
-    "user_posted_to_triple": "<strong>%1</strong>, <strong>%2</strong> and <strong>%3</strong> others have posted replies to: <strong>%4</strong>",
+    "user_posted_to_triple": "<strong>%1</strong>, <strong>%2</strong> and <strong>%3</strong> have posted replies to: <strong>%4</strong>",
     "user_posted_to_multiple": "<strong>%1</strong>, <strong>%2</strong> and %3 others have posted replies to: <strong>%4</strong>",
     "user_posted_topic": "Пользователь <strong>%1</strong> создал новую тему: <strong>%2</strong>",
     "user_edited_post": "<strong> %1 </strong> отредактировал сообщение в <strong> %2 </strong>",
