@@ -41,7 +41,8 @@ editController.get = async function (req, res) {
 	payload.groups = _groups.filter(g => g && g.userTitleEnabled && !groups.isPrivilegeGroup(g.name) && g.name !== 'registered-users');
 
 	if (req.uid === res.locals.uid || canManageUsers) {
-		payload.sso = await plugins.hooks.fire('filter:auth.list', { uid: res.locals.uid, associations: [] });
+		const { associations } = await plugins.hooks.fire('filter:auth.list', { uid: res.locals.uid, associations: [] });
+		payload.sso = associations;
 	}
 
 	if (!allowMultipleBadges) {
