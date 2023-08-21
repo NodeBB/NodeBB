@@ -512,21 +512,6 @@ UserObjectFull:
           - name
           - visibility
           - public
-    sso:
-      type: array
-      items:
-        type: object
-        properties:
-          associated:
-            type: boolean
-          url:
-            type: string
-          name:
-            type: string
-          icon:
-            type: string
-          deauthUrl:
-            type: string
     websiteLink:
       type: string
     websiteName:

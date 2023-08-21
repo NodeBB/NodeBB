@@ -42,7 +42,8 @@ editController.get = async function (req, res) {
 
 	payload.sso = [];
 	if (req.uid === res.locals.uid || canManageUsers) {
-		payload.sso = await plugins.hooks.fire('filter:auth.list', { uid: res.locals.uid, associations: [] });
+		const { associations } = await plugins.hooks.fire('filter:auth.list', { uid: res.locals.uid, associations: [] });
+		payload.sso = associations;
 	}
 
 	if (!allowMultipleBadges) {
