@@ -172,6 +172,7 @@
     "not-enough-reputation-to-chat": "Нужно %1 репутации чтобы писать в чат.",
     "not-enough-reputation-to-upvote": "Нужно %1 репутации чтобы проголосовать положительно.",
     "not-enough-reputation-to-downvote": "Нужно %1 репутации чтобы проголосовать против.",
+    "not-enough-reputation-to-post-links": "You need %1 reputation to post links",
     "not-enough-reputation-to-flag": "Нужно %1 репутации чтобы пожаловаться на пост.",
     "not-enough-reputation-min-rep-website": "Нужно %1 репутации чтобы добавить сайт.",
     "not-enough-reputation-min-rep-aboutme": "Нужно %1 репутации чтобы добавить обо мне.",

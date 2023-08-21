@@ -172,6 +172,7 @@
     "not-enough-reputation-to-chat": "Потребно репутација: %1 за ћаскање",
     "not-enough-reputation-to-upvote": "Потребно репутација: %1 за гласање",
     "not-enough-reputation-to-downvote": "Потребно репутација: %1 за негативно гласање",
+    "not-enough-reputation-to-post-links": "You need %1 reputation to post links",
     "not-enough-reputation-to-flag": "Потребно репутација: %1 да бисте заставицом означили ову поруку",
     "not-enough-reputation-min-rep-website": "Потребно репутација: %1 за додавање веб сајта",
     "not-enough-reputation-min-rep-aboutme": "Потребно репутација: %1 за додавање информација  о себи",

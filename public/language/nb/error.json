@@ -172,6 +172,7 @@
     "not-enough-reputation-to-chat": "You need %1 reputation to chat",
     "not-enough-reputation-to-upvote": "Du trenger %1 omdømme for å stemme opp.  ",
     "not-enough-reputation-to-downvote": "Du trenger %1 omdømme for å stemme ned. ",
+    "not-enough-reputation-to-post-links": "You need %1 reputation to post links",
     "not-enough-reputation-to-flag": "Du trenger %1 omdømme for å flagge dette innlegget.",
     "not-enough-reputation-min-rep-website": "Du trenger %1 omdømme for å legge til et nettsted",
     "not-enough-reputation-min-rep-aboutme": "Du trenger %1 omdømme for å legge til om-meg",

@@ -172,6 +172,7 @@
     "not-enough-reputation-to-chat": "Ju nevojitet %1 reputacion për të biseduar",
     "not-enough-reputation-to-upvote": "Ju nevojitet %1 reputacion për të votuar pro",
     "not-enough-reputation-to-downvote": "Ju nevojitet %1 reputacion për të votuar kundër",
+    "not-enough-reputation-to-post-links": "You need %1 reputation to post links",
     "not-enough-reputation-to-flag": "Ju nevojitet %1 reputacion për të raportuar postimin",
     "not-enough-reputation-min-rep-website": "Ju nevojitet %1 reputacion për të shtuar një faqe interneti",
     "not-enough-reputation-min-rep-aboutme": "Ju nevojitet %1 reputacion për të shtuar një seksion 'Rreth Meje'",

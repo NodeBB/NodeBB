@@ -172,6 +172,7 @@
     "not-enough-reputation-to-chat": "您需要 %1 声望才能进行聊天",
     "not-enough-reputation-to-upvote": "您需要 %1 声望以顶贴",
     "not-enough-reputation-to-downvote": "您需要 %1 声望以进行踩操作",
+    "not-enough-reputation-to-post-links": "You need %1 reputation to post links",
     "not-enough-reputation-to-flag": "您需要 %1 声望才能举报此帖子",
     "not-enough-reputation-min-rep-website": "您需要 %1 声望以添加网站",
     "not-enough-reputation-min-rep-aboutme": "您需要 %1 声望以设置关于我",

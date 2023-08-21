@@ -11,6 +11,7 @@
 	"downvotes-per-day": "Ilość głosów przeciw na dzień (ustaw na 0 by były nielimitowane)",
 	"downvotes-per-user-per-day": "Ilość głosów przeciw na użytkownika na dzień (ustaw na 0 by były nielimitowane)",
 	"min-rep-chat": "Minimum reputation to send chat messages",
+	"min-rep-post-links": "Minimum reputation to post links",
 	"min-rep-flag": "Minimalna reputacja pozwalająca flagować posty",
 	"min-rep-website": "Minimalna reputacja pozwalająca wypełnić sekcję „Strona WWW” w profilu użytkownika",
 	"min-rep-aboutme": "Minimalna reputacja pozwalająca wypełnić sekcję „O mnie” w profilu użytkownika",
