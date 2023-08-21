@@ -98,6 +98,9 @@ module.exports = function (Topics) {
 		data.tags = await Topics.filterTags(data.tags, data.cid);
 		if (!data.fromQueue && !isAdmin) {
 			Topics.checkContent(data.content);
+			if (!await posts.canUserPostContentWithLinks(uid, data.content)) {
+				throw new Error(`[[error:not-enough-reputation-to-post-links, ${meta.config['min:rep:post-links']}]]`);
+			}
 		}
 
 		if (!categoryExists) {
@@ -177,6 +180,9 @@ module.exports = function (Topics) {
 		if (!data.fromQueue && !isAdmin) {
 			await user.isReadyToPost(uid, data.cid);
 			Topics.checkContent(data.content);
+			if (!await posts.canUserPostContentWithLinks(uid, data.content)) {
+				throw new Error(`[[error:not-enough-reputation-to-post-links, ${meta.config['min:rep:post-links']}]]`);
+			}
 		}
 
 		// For replies to scheduled topics, don't have a timestamp older than topic's itself
