@@ -104,16 +104,6 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 		canViewInfo: canViewInfo,
 	});
 
-	userData.sso = results.sso.associations.map((association) => {
-		if (!isSelf) {
-			delete association.deauthUrl;
-			if (!association.associated) {
-				delete association.url;
-			}
-		}
-
-		return association;
-	});
 	userData.banned = Boolean(userData.banned);
 	userData.muted = parseInt(userData.mutedUntil, 10) > Date.now();
 	userData.website = escape(userData.website);
@@ -162,7 +152,6 @@ async function getAllData(uid, callerUID) {
 		ips: user.getIPs(uid, 4),
 		profile_menu: getProfileMenu(uid, callerUID),
 		groups: groups.getUserGroups([uid]),
-		sso: plugins.hooks.fire('filter:auth.list', { uid: uid, associations: [] }),
 		canEdit: privileges.users.canEdit(callerUID, uid),
 		canBanUser: privileges.users.canBanUser(callerUID, uid),
 		canMuteUser: privileges.users.canMuteUser(callerUID, uid),
