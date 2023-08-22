@@ -162,7 +162,7 @@ define('forum/topic', [
 				timeout: 15000,
 				type: 'info',
 				clickfn: function () {
-					navigator.scrollToIndex(parseInt(bookmark, 10), true);
+					navigator.scrollToIndex(Math.max(0, parseInt(bookmark, 10) - 1), true);
 				},
 				closefn: function () {
 					storage.removeItem('topic:' + tid + ':bookmark');
