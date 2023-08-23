@@ -59,7 +59,7 @@ module.exports = {
 							const bulkSet = messageData.map(
 								msg => [`message:${msg.mid}`, {
 									roomId: roomId,
-									timestamp: m.timestamp,
+									timestamp: msg.timestamp,
 								}]
 							);
 
