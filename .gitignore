@@ -70,3 +70,5 @@ package-lock.json
 *.mongodb
 link-plugins.sh
 test.sh
+
+.docker/
