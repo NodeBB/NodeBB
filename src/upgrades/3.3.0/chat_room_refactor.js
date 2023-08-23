@@ -40,22 +40,27 @@ module.exports = {
 					const { roomId } = roomData;
 					const uids = await db.getSortedSetRange(`chat:room:${roomId}:uids`, 0, -1);
 					for (const uid of uids) {
-						await batch.processSortedSet(`uid:${uid}:chat:room:${roomId}:mids`, async (mids) => {
-							const uniqMids = mids.filter(mid => !midsSeen.hasOwnProperty(mid));
+						await batch.processSortedSet(`uid:${uid}:chat:room:${roomId}:mids`, async (userMessageData) => {
+							const uniqMessages = userMessageData.filter(m => !midsSeen.hasOwnProperty(m.value));
+							const uniqMids = uniqMessages.map(m => m.value);
 							if (!uniqMids.length) {
 								return;
 							}
 
 							let messageData = await db.getObjects(uniqMids.map(mid => `message:${mid}`));
 							messageData.forEach((m, idx) => {
-								if (m) {
+								if (m && uniqMessages[idx]) {
 									m.mid = parseInt(uniqMids[idx], 10);
+									m.timestamp = m.timestamp || uniqMessages[idx].score || 0;
 								}
 							});
 							messageData = messageData.filter(Boolean);
 
 							const bulkSet = messageData.map(
-								msg => [`message:${msg.mid}`, { roomId: roomId }]
+								msg => [`message:${msg.mid}`, {
+									roomId: roomId,
+									timestamp: msg.timestamp,
+								}]
 							);
 
 							await db.setObjectBulk(bulkSet);
@@ -69,6 +74,7 @@ module.exports = {
 							});
 						}, {
 							batch: 500,
+							withScores: true,
 						});
 						// eslint-disable-next-line no-await-in-loop
 						await db.deleteAll(`uid:${uid}:chat:room:${roomId}:mids`);
