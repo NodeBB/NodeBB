@@ -11,9 +11,11 @@ export NODEBB_INIT_VERB="${NODEBB_INIT_VERB:-install}"
 export SETUP="${SETUP:-}"
 
 mkdir -p $CONFIG_DIR
-chmod -fR 760 $CONFIG_DIR
 
-if [[ ! -w $CONFIG_DIR/package.json ]]; then
+# if the folder is mounted as a volume this can fail, the check below is to ensure there is still write access
+chmod -fR 760 $CONFIG_DIR 2> /dev/null
+
+if [[ ! -w $CONFIG_DIR ]]; then
   echo "panic: no write permission for $CONFIG_DIR"
   exit 1
 fi
