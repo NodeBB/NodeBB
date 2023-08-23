@@ -18,10 +18,11 @@ define('admin/appearance/skins', [
 					$('.custom-skin-settings [data-type="list"] [data-theme]').each((i, el) => {
 						$(el).attr('data-theme', $(el).attr('data-theme').toLowerCase());
 					});
-					Skins.render(bsData);
+					highlightSelectedTheme(app.config.bootswatchSkin);
 				}
 			});
 			settings.load('custom-skins', $('.custom-skin-settings'));
+			Skins.render(bsData);
 		});
 
 		$('#save-custom-skins').on('click', function () {
@@ -89,10 +90,7 @@ define('admin/appearance/skins', [
 		}, function (html) {
 			themeContainer.html(html);
 
-			if (app.config.bootswatchSkin) {
-				const skin = app.config.bootswatchSkin;
-				highlightSelectedTheme(skin);
-			}
+			highlightSelectedTheme(app.config.bootswatchSkin);
 		});
 	};
 
