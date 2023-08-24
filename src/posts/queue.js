@@ -87,7 +87,7 @@ module.exports = function (Posts) {
 
 	Posts.canUserPostContentWithLinks = async function (uid, content) {
 		if (!content) {
-			return false;
+			return true;
 		}
 		const [reputation, isPrivileged] = await Promise.all([
 			user.getUserField(uid, 'reputation'),
@@ -104,20 +104,25 @@ module.exports = function (Posts) {
 	};
 
 	Posts.shouldQueue = async function (uid, data) {
-		const [userData, isMemberOfExempt, categoryQueueEnabled] = await Promise.all([
-			user.getUserFields(uid, ['uid', 'reputation', 'postcount']),
-			groups.isMemberOfAny(uid, meta.config.groupsExemptFromPostQueue),
-			isCategoryQueueEnabled(data),
-		]);
+		let shouldQueue = meta.config.postQueue;
+		if (shouldQueue) {
+			const [userData, isPrivileged, isMemberOfExempt, categoryQueueEnabled] = await Promise.all([
+				user.getUserFields(uid, ['uid', 'reputation', 'postcount']),
+				user.isPrivileged(uid),
+				groups.isMemberOfAny(uid, meta.config.groupsExemptFromPostQueue),
+				isCategoryQueueEnabled(data),
+			]);
+			shouldQueue = categoryQueueEnabled &&
+				!isPrivileged &&
+				!isMemberOfExempt &&
+				(
+					!userData.uid ||
+					userData.reputation < meta.config.postQueueReputationThreshold ||
+					userData.postcount <= 0 ||
+					!await Posts.canUserPostContentWithLinks(uid, data.content)
+				);
+		}
 
-		const shouldQueue = meta.config.postQueue && categoryQueueEnabled &&
-			!isMemberOfExempt &&
-			(
-				!userData.uid ||
-				userData.reputation < meta.config.postQueueReputationThreshold ||
-				userData.postcount <= 0 ||
-				!await Posts.canUserPostContentWithLinks(uid, data.content)
-			);
 		const result = await plugins.hooks.fire('filter:post.shouldQueue', {
 			shouldQueue: !!shouldQueue,
 			uid: uid,
@@ -130,7 +135,7 @@ module.exports = function (Posts) {
 		const type = getType(data);
 		const cid = await getCid(type, data);
 		if (!cid) {
-			throw new Error('[[error:invalid-cid]]');
+			return true;
 		}
 		return await categories.getCategoryField(cid, 'postQueue');
 	}
