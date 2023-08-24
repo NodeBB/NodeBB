@@ -26,10 +26,10 @@
 
 
 	"new_message_from": "New message from <strong>%1</strong>",
-	"user_posted_in_public_room": "<strong>%1</strong> wrote in <strong><i class=\"fa %2\"></i>%3</strong>",
-	"user_posted_in_public_room_dual": "<strong>%1</strong> and <strong>%2</strong> wrote in <strong><i class=\"fa %3\"></i>%4</strong>",
-	"user_posted_in_public_room_triple": "<strong>%1</strong>, <strong>%2</strong> and <strong>%3</strong> wrote in <strong><i class=\"fa %4\"></i>%5</strong>",
-	"user_posted_in_public_room_multiple": "<strong>%1</strong>, <strong>%2</strong> and %3 others wrote in <strong><i class=\"fa %4\"></i>%5</strong>",
+	"user_posted_in_public_room": "<strong>%1</strong> wrote in <strong class=\"text-nowrap\"><i class=\"fa %2\"></i>%3</strong>",
+	"user_posted_in_public_room_dual": "<strong>%1</strong> and <strong>%2</strong> wrote in <strong class=\"text-nowrap\"><i class=\"fa %3\"></i>%4</strong>",
+	"user_posted_in_public_room_triple": "<strong>%1</strong>, <strong>%2</strong> and <strong>%3</strong> wrote in <strong class=\"text-nowrap\"><i class=\"fa %4\"></i>%5</strong>",
+	"user_posted_in_public_room_multiple": "<strong>%1</strong>, <strong>%2</strong> and %3 others wrote in <strong class=\"text-nowrap\"><i class=\"fa %4\"></i>%5</strong>",
 	"upvoted_your_post_in": "<strong>%1</strong> has upvoted your post in <strong>%2</strong>.",
 	"upvoted_your_post_in_dual": "<strong>%1</strong> and <strong>%2</strong> have upvoted your post in <strong>%3</strong>.",
 	"upvoted_your_post_in_triple": "<strong>%1</strong>, <strong>%2</strong> and <strong>%3</strong> have upvoted your post in <strong>%4</strong>.",
