@@ -280,6 +280,7 @@ define('chat', [
 				chatModal.css('position', 'fixed');
 				chatModal.appendTo($('body'));
 				chatModal.find('.timeago').timeago();
+				chatModal.find('[data-bs-toggle="tooltip"]').tooltip({ trigger: 'hover', container: '#content' });
 				ChatsMessages.wrapImagesInLinks(chatModal.find('[component="chat/messages"] .chat-content'));
 				module.center(chatModal);
 
@@ -370,7 +371,7 @@ define('chat', [
 				Chats.addCharactersLeftHandler(chatModal);
 				Chats.addTextareaResizeHandler(chatModal);
 				Chats.addIPHandler(chatModal);
-
+				Chats.addTooltipHandler(chatModal);
 				Chats.addUploadHandler({
 					dragDropAreaEl: chatModal.find('.modal-content'),
 					pasteEl: chatModal,
