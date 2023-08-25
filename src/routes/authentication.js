@@ -97,6 +97,9 @@ Auth.reloadRoutes = async function (params) {
 					req.session.ssoState = generateToken(req, true);
 					opts.state = req.session.ssoState;
 				}
+				if (req.query.next) {
+					req.session.next = req.query.next;
+				}
 
 				// Allow SSO plugins to override/append options (for use in passport prototype authorizationParams)
 				({ opts } = await plugins.hooks.fire('filter:auth.options', { req, res, opts }));
@@ -116,7 +119,7 @@ Auth.reloadRoutes = async function (params) {
 			req.session.registration = req.session.registration || {};
 			// save returnTo for later usage in /register/complete
 			// passport seems to remove `req.session.returnTo` after it redirects
-			req.session.registration.returnTo = req.session.returnTo;
+			req.session.registration.returnTo = req.session.next || req.session.returnTo;
 
 			passport.authenticate(strategy.name, (err, user) => {
 				if (err) {
