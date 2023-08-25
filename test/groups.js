@@ -1404,4 +1404,20 @@ describe('Groups', () => {
 			assert(!groupData['cover:url']);
 		});
 	});
+
+	describe('isPrivilegeGroup', () => {
+		assert.strictEqual(Groups.isPrivilegeGroup('cid:1:privileges:topics:find'), true);
+		assert.strictEqual(Groups.isPrivilegeGroup('cid:1:privileges:groups:topics:find'), true);
+		assert.strictEqual(Groups.isPrivilegeGroup('cid:0:privileges:groups:search:users'), true);
+		assert.strictEqual(Groups.isPrivilegeGroup('cid:admin:privileges:admin:users'), true);
+		assert.strictEqual(Groups.isPrivilegeGroup('cid::privileges:admin:users'), false);
+		assert.strictEqual(Groups.isPrivilegeGroup('cid:string:privileges:admin:users'), false);
+		assert.strictEqual(Groups.isPrivilegeGroup('admin'), false);
+		assert.strictEqual(Groups.isPrivilegeGroup('registered-users'), false);
+		assert.strictEqual(Groups.isPrivilegeGroup(''), false);
+		assert.strictEqual(Groups.isPrivilegeGroup(null), false);
+		assert.strictEqual(Groups.isPrivilegeGroup(undefined), false);
+		assert.strictEqual(Groups.isPrivilegeGroup(false), false);
+		assert.strictEqual(Groups.isPrivilegeGroup(true), false);
+	});
 });
