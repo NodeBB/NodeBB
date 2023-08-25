@@ -128,6 +128,7 @@ module.exports = function (Messaging) {
 				bodyLong: messageObj.content,
 				nid: `chat_${roomId}_${fromUid}`,
 				from: fromUid,
+				roomId: roomId,
 				path: `/chats/${messageObj.roomId}`,
 			};
 			if (roomData.public) {

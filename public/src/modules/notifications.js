@@ -90,6 +90,9 @@ define('notifications', [
 		if (ajaxify.currentPage === 'notifications') {
 			ajaxify.refresh();
 		}
+		if (ajaxify.data.template.chats && parseInt(ajaxify.data.roomId, 10) === parseInt(notifData.roomId, 10)) {
+			return;
+		}
 
 		socket.emit('notifications.getCount', function (err, count) {
 			if (err) {
