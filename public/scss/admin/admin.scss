@@ -26,6 +26,12 @@ body {
 	overflow-y: scroll;
 }
 
+[data-bs-theme="dark"] {
+	.admin .card:not([data-container-html]) {
+		box-shadow: 0px 1px 3px 0px rgba(var(--bs-black-rgb), 0.5);
+	}
+}
+
 .admin {
 	.acp-page-container {
 		max-width: 800px;
@@ -170,11 +176,6 @@ body {
 .privilege-table {
 	th {
 		font-size: 10px;
-	}
-
-	img {
-		max-width: 24px;
-		max-height: 24px;
 	}
 }
 
