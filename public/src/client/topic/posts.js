@@ -301,7 +301,10 @@ define('forum/topic/posts', [
 		}
 
 		const translated = await Promise.all(
-			events.map(event => app.parseAndTranslate('partials/topic/event', event))
+			events.map(event => app.parseAndTranslate(
+				'partials/topic/event',
+				{ ...event, privileges: ajaxify.data.privileges }
+			))
 		);
 
 		if (config.topicPostSort === 'oldest_to_newest') {
