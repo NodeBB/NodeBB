@@ -32,5 +32,8 @@ module.exports = function () {
 	setupApiRoute(router, 'post', '/:roomId/messages/:mid', [...middlewares, middleware.assert.room, middleware.assert.message], controllers.write.chats.messages.restore);
 	setupApiRoute(router, 'delete', '/:roomId/messages/:mid', [...middlewares, middleware.assert.room, middleware.assert.message], controllers.write.chats.messages.delete);
 
+	setupApiRoute(router, 'put', '/:roomId/messages/:mid/pin', [...middlewares, middleware.assert.room, middleware.assert.message], controllers.write.chats.messages.pin);
+	setupApiRoute(router, 'delete', '/:roomId/messages/:mid/pin', [...middlewares, middleware.assert.room, middleware.assert.message], controllers.write.chats.messages.unpin);
+
 	return router;
 };

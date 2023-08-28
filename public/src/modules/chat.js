@@ -356,7 +356,7 @@ define('chat', [
 					}
 				});
 
-				Chats.addActionHandlers(chatModal.find('[component="chat/messages"]'), roomId);
+				Chats.addActionHandlers(chatModal.find('[component="chat/message/window"]'), roomId);
 				Chats.addRenameHandler(roomId, chatModal.find('[data-action="rename"]'));
 				Chats.addLeaveHandler(roomId, chatModal.find('[data-action="leave"]'));
 				Chats.addDeleteHandler(roomId, chatModal.find('[data-action="delete"]'));

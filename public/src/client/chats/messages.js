@@ -168,10 +168,9 @@ define('forum/chats/messages', [
 			.toggleClass('hidden', isAtBottom);
 	};
 
-	messages.prepReplyTo = async function (msgEl, roomId) {
-		const chatMessages = msgEl.parents(`[component="chat/messages"][data-roomid="${roomId}"]`);
-		const chatContent = chatMessages.find('[component="chat/message/content"]');
-		const composerEl = chatMessages.find('[component="chat/composer"]');
+	messages.prepReplyTo = async function (msgEl, chatMessageWindow) {
+		const chatContent = chatMessageWindow.find('[component="chat/message/content"]');
+		const composerEl = chatMessageWindow.find('[component="chat/composer"]');
 		const mid = msgEl.attr('data-mid');
 		const replyToEl = composerEl.find('[component="chat/composer/replying-to"]');
 		replyToEl.attr('data-tomid', mid)
