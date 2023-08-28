@@ -68,7 +68,6 @@ define('forum/chats', [
 		messages.wrapImagesInLinks(changeContentEl);
 		messages.scrollToBottomAfterImageLoad(changeContentEl);
 		create.init();
-		pinnedMessages.init($('[component="chat/main-wrapper"]'));
 
 		hooks.fire('action:chat.loaded', $('.chats-full'));
 	};
@@ -108,6 +107,7 @@ define('forum/chats', [
 		messageSearch.init(roomId, mainWrapper);
 		Chats.addPublicRoomSortHandler();
 		Chats.addTooltipHandler(mainWrapper);
+		pinnedMessages.init(mainWrapper);
 	};
 
 	Chats.addPublicRoomSortHandler = function () {
