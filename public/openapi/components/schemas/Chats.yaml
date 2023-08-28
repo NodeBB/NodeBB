@@ -50,6 +50,8 @@ MessageObject:
       type: number
     messageId:
       type: number
+    isOwner:
+      type: boolean
     fromUser:
       type: object
       properties:
