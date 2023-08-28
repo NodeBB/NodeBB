@@ -50,7 +50,7 @@ define('forum/chats/pinned-messages', ['api', 'alerts'], function (api, alerts) 
 	};
 
 	async function parseMessages(data) {
-		return await app.parseAndTranslate('partials/chats/pinned-messages', 'messages', {
+		return await app.parseAndTranslate('partials/chats/pinned-messages-list', 'messages', {
 			isOwner: ajaxify.data.isOwner,
 			isAdminOrGlobalMod: ajaxify.data.isAdminOrGlobalMod,
 			messages: data,
