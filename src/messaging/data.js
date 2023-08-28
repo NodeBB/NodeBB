@@ -52,6 +52,10 @@ module.exports = function (Messaging) {
 				if (msg) {
 					msg.messageId = parseInt(mids[idx], 10);
 					msg.ip = undefined;
+					msg.isOwner = msg.fromuid === parseInt(uid, 10);
+					if (msg.deleted && !msg.isOwner) {
+						msg.content = `<p>[[modules:chat.message-deleted]]</p>`;
+					}
 				}
 				return msg;
 			})

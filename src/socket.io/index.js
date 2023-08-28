@@ -1,5 +1,6 @@
 'use strict';
 
+const _ = require('lodash');
 const os = require('os');
 const nconf = require('nconf');
 const winston = require('winston');
@@ -301,18 +302,16 @@ Sockets.getUidsInRoom = async function (room) {
 		return [];
 	}
 	const ioRoom = Sockets.server.in(room);
-	const uids = {};
+	const uids = [];
 	if (ioRoom) {
 		const sockets = await ioRoom.fetchSockets();
 		for (const s of sockets) {
-			for (const r of s.rooms) {
-				if (r.startsWith('uid_')) {
-					uids[r.split('_').pop()] = 1;
-				}
+			if (s && s.data && s.data.uid > 0) {
+				uids.push(s.data.uid);
 			}
 		}
 	}
-	return Object.keys(uids);
+	return _.uniq(uids);
 };
 
 Sockets.warnDeprecated = (socket, replacement) => {

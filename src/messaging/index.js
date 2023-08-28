@@ -55,10 +55,6 @@ Messaging.getMessages = async (params) => {
 	const messageData = await Messaging.getMessagesData(mids, uid, roomId, isNew);
 	messageData.forEach((msg) => {
 		msg.index = indices[msg.messageId.toString()];
-		msg.isOwner = msg.fromuid === parseInt(uid, 10);
-		if (msg.deleted && !msg.isOwner) {
-			msg.content = `<p>[[modules:chat.message-deleted]]</p>`;
-		}
 	});
 
 	return messageData;
