@@ -659,6 +659,13 @@ describe('Messaging Library', () => {
 			});
 		});
 
+		it('should not show deleted message to other users', async () => {
+			const { body } = await callv3API('get', `/chats/${roomId}/messages/${mid}`, {}, 'herp');
+			const message = body.response;
+			assert.strictEqual(message.deleted, 1);
+			assert.strictEqual(message.content, '<p>[[modules:chat.message-deleted]]</p>');
+		});
+
 		it('should error out if a message is deleted again', async () => {
 			const { statusCode, body } = await callv3API('delete', `/chats/${roomId}/messages/${mid}`, {}, 'foo');
 			assert.strictEqual(statusCode, 400);
