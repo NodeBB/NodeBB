@@ -37,6 +37,7 @@
     "digest.title.week": "Il tuo riepilogo settimanale",
     "digest.title.month": "Il tuo riepilogo mensile",
     "notif.chat.subject": "Nuovo messaggio chat ricevuto da %1",
+    "notif.chat.public-chat-subject": "Nuovo messaggio da %1 nella stanza %2",
     "notif.chat.cta": "Clicca qui per continuare la conversazione",
     "notif.chat.unsub.info": "Questa notifica di chat ti è stata inviata perché l'hai sottoscritta nelle impostazioni.",
     "notif.post.unsub.info": "Questa notifica di discussione ti è stata inviata perché l'hai sottoscritta nelle impostazioni.",

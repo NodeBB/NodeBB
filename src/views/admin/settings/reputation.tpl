@@ -54,6 +54,10 @@
 					<input type="number" min="0" class="form-control" placeholder="3" data-field="downvotesPerUserPerDay" id="downvotesPerUserPerDay">
 				</div>
 				<div class="mb-3">
+					<label class="form-label" for="min:rep:post-links">[[admin/settings/reputation:min-rep-post-links]]</label>
+					<input type="number" class="form-control" placeholder="0" data-field="min:rep:post-links" id="min:rep:post-links">
+				</div>
+				<div class="mb-3">
 					<label class="form-label" for="min:rep:flag">[[admin/settings/reputation:min-rep-flag]]</label>
 					<input type="number" class="form-control" placeholder="0" data-field="min:rep:flag" id="min:rep:flag">
 				</div>

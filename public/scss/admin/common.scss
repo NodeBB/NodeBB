@@ -64,18 +64,16 @@
 }
 
 @include color-mode(dark) {
-	#content {
-		.btn-light {
-			@extend .btn-dark;
-		}
-		.text-bg-light {
-			@extend .text-bg-dark;
-		}
-		.btn-ghost, .btn-ghost-sm, .btn-outline, .btn-outline-sm {
-			color: $btn-ghost-color-dark;
-			&:hover, &.active {
-				background-color: $btn-ghost-hover-color-dark;
-			}
+	.btn-light {
+		@extend .btn-dark;
+	}
+	.text-bg-light {
+		@extend .text-bg-dark;
+	}
+	.btn-ghost, .btn-ghost-sm, .btn-outline, .btn-outline-sm {
+		color: $btn-ghost-color-dark;
+		&:hover, &.active {
+			background-color: $btn-ghost-hover-color-dark;
 		}
 	}
 }

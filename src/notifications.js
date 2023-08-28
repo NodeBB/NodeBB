@@ -26,6 +26,7 @@ Notifications.baseTypes = [
 	'notificationType_follow',
 	'notificationType_new-chat',
 	'notificationType_new-group-chat',
+	'notificationType_new-public-chat',
 	'notificationType_group-invite',
 	'notificationType_group-leave',
 	'notificationType_group-request-membership',
@@ -365,6 +366,7 @@ Notifications.merge = async function (notifications) {
 		'notifications:user_posted_to',
 		'notifications:user_flagged_post_in',
 		'notifications:user_flagged_user',
+		'notifications:user_posted_in_public_room',
 		'new_register',
 		'post-queue',
 	];
@@ -386,6 +388,14 @@ Notifications.merge = async function (notifications) {
 		}, []);
 
 		differentiators.forEach((differentiator) => {
+			function typeFromUsernames(usernames) {
+				if (usernames.length === 2) {
+					return 'dual';
+				} else if (usernames.length === 3) {
+					return 'triple';
+				}
+				return 'multiple';
+			}
 			let set;
 			if (differentiator === 0 && differentiators.length === 1) {
 				set = isolated;
@@ -397,8 +407,19 @@ Notifications.merge = async function (notifications) {
 			if (modifyIndex === -1 || set.length === 1) {
 				return notifications;
 			}
-
+			const notifObj = notifications[modifyIndex];
 			switch (mergeId) {
+				case 'notifications:user_posted_in_public_room': {
+					const usernames = _.uniq(set.map(notifObj => notifObj && notifObj.user && notifObj.user.displayname));
+					if (usernames.length === 2 || usernames.length === 3) {
+						notifObj.bodyShort = `[[${mergeId}_${typeFromUsernames(usernames)}, ${usernames.join(', ')}, ${notifObj.roomIcon}, ${notifObj.roomName}]]`;
+					} else if (usernames.length > 3) {
+						notifObj.bodyShort = `[[${mergeId}_${typeFromUsernames(usernames)}, ${usernames.slice(0, 2).join(', ')}, ${usernames.length - 2}, ${notifObj.roomIcon}, ${notifObj.roomName}]]`;
+					}
+
+					notifObj.path = set[set.length - 1].path;
+					break;
+				}
 				case 'notifications:upvoted_your_post_in':
 				case 'notifications:user_started_following_you':
 				case 'notifications:user_posted_to':
@@ -411,10 +432,10 @@ Notifications.merge = async function (notifications) {
 					let titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 					titleEscaped = titleEscaped ? (`, ${titleEscaped}`) : '';
 
-					if (numUsers === 2) {
-						notifications[modifyIndex].bodyShort = `[[${mergeId}_dual, ${usernames.join(', ')}${titleEscaped}]]`;
+					if (numUsers === 2 || numUsers === 3) {
+						notifications[modifyIndex].bodyShort = `[[${mergeId}_${typeFromUsernames(usernames)}, ${usernames.join(', ')}${titleEscaped}]]`;
 					} else if (numUsers > 2) {
-						notifications[modifyIndex].bodyShort = `[[${mergeId}_multiple, ${usernames[0]}, ${numUsers - 1}${titleEscaped}]]`;
+						notifications[modifyIndex].bodyShort = `[[${mergeId}_${typeFromUsernames(usernames)}, ${usernames.slice(0, 2).join(', ')}, ${numUsers - 2}${titleEscaped}]]`;
 					}
 
 					notifications[modifyIndex].path = set[set.length - 1].path;

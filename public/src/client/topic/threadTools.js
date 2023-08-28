@@ -200,31 +200,22 @@ define('forum/topic/threadTools', [
 	};
 
 	function renderMenu(container) {
-		container = container.get(0);
 		if (!container) {
 			return;
 		}
-
-		container.querySelectorAll('.thread-tools').forEach((toolsEl) => {
-			toolsEl.addEventListener('show.bs.dropdown', (e) => {
-				const dropdownMenu = e.target.nextElementSibling;
-				if (!dropdownMenu) {
-					return;
-				}
-
-				socket.emit('topics.loadTopicTools', { tid: ajaxify.data.tid, cid: ajaxify.data.cid }, function (err, data) {
-					if (err) {
-						return alerts.error(err);
-					}
-					app.parseAndTranslate('partials/topic/topic-menu-list', data, function (html) {
-						$(dropdownMenu).html(html);
-						hooks.fire('action:topic.tools.load', {
-							element: $(dropdownMenu),
-						});
-					});
-				});
-			}, {
-				once: true,
+		container.on('show.bs.dropdown', '.thread-tools', async function () {
+			const $this = $(this);
+			const dropdownMenu = $this.find('.dropdown-menu');
+			const { top } = this.getBoundingClientRect();
+			$this.toggleClass('dropup', top > window.innerHeight / 2);
+			if (dropdownMenu.attr('data-loaded')) {
+				return;
+			}
+			const data = await socket.emit('topics.loadTopicTools', { tid: ajaxify.data.tid, cid: ajaxify.data.cid });
+			const html = await app.parseAndTranslate('partials/topic/topic-menu-list', data);
+			$(dropdownMenu).attr('data-loaded', 'true').html(html);
+			hooks.fire('action:topic.tools.load', {
+				element: $(dropdownMenu),
 			});
 		});
 	}

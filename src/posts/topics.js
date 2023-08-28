@@ -44,7 +44,8 @@ module.exports = function (Posts) {
 			const postIndex = utils.isNumber(indices[index]) ? parseInt(indices[index], 10) + 1 : null;
 
 			if (slug && postIndex) {
-				return `/topic/${slug}/${postIndex}`;
+				const index = postIndex === 1 ? '' : `/${postIndex}`;
+				return `/topic/${slug}${index}`;
 			}
 			return null;
 		});

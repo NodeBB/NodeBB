@@ -37,6 +37,7 @@
     "digest.title.week": "Ditt ukentlige sammendrag ",
     "digest.title.month": "Ditt månedlige sammendrag",
     "notif.chat.subject": "Ny samtalemelding mottatt fra %1",
+    "notif.chat.public-chat-subject": "New message from %1 in room %2",
     "notif.chat.cta": "Klikk her for å fortsette samtalen",
     "notif.chat.unsub.info": "Denne samtale-varselen ble sendt til deg basert på dine innstillinger for abonnering.",
     "notif.post.unsub.info": "Dette innleggsvarselet ble sendt til deg basert på dine innstillinger for abonnering.",

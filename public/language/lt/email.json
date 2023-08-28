@@ -37,6 +37,7 @@
     "digest.title.week": "Your Weekly Digest",
     "digest.title.month": "Your Monthly Digest",
     "notif.chat.subject": "Nauja pokalbio žinutė gauta iš %1",
+    "notif.chat.public-chat-subject": "New message from %1 in room %2",
     "notif.chat.cta": "Pokalbio pratęsimui spauskite čia",
     "notif.chat.unsub.info": "Šios žinutės perpėjimas buvo išsiųstas į tavo prenumeratos nustatymus",
     "notif.post.unsub.info": "Šios žinutės perspėjimas buvo išsiųstas į tavo prenumeratos nustatymus",

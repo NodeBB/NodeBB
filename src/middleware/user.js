@@ -206,7 +206,7 @@ module.exports = function (middleware) {
 		}
 		const path = req.url.replace(/^\/api/, '')
 			.replace(`/uid/${uid}`, () => `/user/${userslug}`);
-		controllers.helpers.redirect(res, path);
+		controllers.helpers.redirect(res, path, true);
 	});
 
 	middleware.redirectMeToUserslug = helpers.try(async (req, res) => {

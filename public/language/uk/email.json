@@ -37,6 +37,7 @@
     "digest.title.week": "Ваш тижневий дайджест",
     "digest.title.month": "Ваш місячний дайджест",
     "notif.chat.subject": "Отримане нове повідомлення чату від %1",
+    "notif.chat.public-chat-subject": "New message from %1 in room %2",
     "notif.chat.cta": "Натисніть тут, щоб продовжити розмову",
     "notif.chat.unsub.info": "Це повідомлення чату було вислано вам, згідно ваших налаштувань підписки",
     "notif.post.unsub.info": "Це поштове повідомлення було вислано вам, згідно ваших налаштувань підписки",

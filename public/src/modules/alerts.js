@@ -90,8 +90,8 @@ function updateAlert(alert, params) {
 			.on('click', function (e) {
 				if (!$(e.target).is('.btn-close')) {
 					params.clickfn();
+					close(alert);
 				}
-				close(alert);
 			});
 	}
 }
@@ -128,8 +128,8 @@ function createNew(params) {
 				.on('click', function (e) {
 					if (!$(e.target).is('.btn-close')) {
 						params.clickfn(alert, params);
+						close(alert);
 					}
-					close(alert);
 				});
 		}
 

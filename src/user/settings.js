@@ -10,11 +10,16 @@ const notifications = require('../notifications');
 const languages = require('../languages');
 
 module.exports = function (User) {
+	const spiderDefaultSettings = {
+		usePagination: 1,
+		topicPostSort: 'oldest_to_newest',
+		postsPerPage: 20,
+		topicsPerPage: 20,
+	};
 	User.getSettings = async function (uid) {
 		if (parseInt(uid, 10) <= 0) {
-			return await onSettingsLoaded(uid, {
-				usePagination: parseInt(uid, 10) === -1 ? 1 : undefined, // force spiders to use pagination
-			});
+			const isSpider = parseInt(uid, 10) === -1;
+			return await onSettingsLoaded(uid, isSpider ? spiderDefaultSettings : {});
 		}
 		let settings = await db.getObject(`user:${uid}:settings`);
 		settings = settings || {};

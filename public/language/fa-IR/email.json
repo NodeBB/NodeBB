@@ -37,6 +37,7 @@
     "digest.title.week": "Your Weekly Digest",
     "digest.title.month": "Your Monthly Digest",
     "notif.chat.subject": "پیام چتی جدیدی از %1 دریافت شد",
+    "notif.chat.public-chat-subject": "New message from %1 in room %2",
     "notif.chat.cta": "برای ادامه‌ی چت اینجا کلیک کنید",
     "notif.chat.unsub.info": "این اطلاعیه ی چتیی که برای شما فرستاده شده به علت تنظیمات اشترک شماست.",
     "notif.post.unsub.info": "این اطلاعیه ی پستی که برای شما فرستاده شده به علت تنظیمات اشترک شماست.",

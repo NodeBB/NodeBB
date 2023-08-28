@@ -45,7 +45,7 @@ define('forum/chats', [
 	});
 
 	Chats.init = function () {
-		$('.chats-full [data-bs-toggle="tooltip"]').tooltip();
+		$('.chats-full [data-bs-toggle="tooltip"]').tooltip({ trigger: 'hover', container: '#content' });
 		socket.emit('modules.chats.enterPublic', ajaxify.data.publicRooms.map(r => r.roomId));
 		const env = utils.findBootstrapEnvironment();
 		chatNavWrapper = $('[component="chat/nav-wrapper"]');
@@ -132,7 +132,11 @@ define('forum/chats', [
 	};
 
 	Chats.addTooltipHandler = function (containerEl) {
-		$('[data-manual-tooltip]').tooltip({
+		if (utils.isMobile()) {
+			return;
+		}
+
+		containerEl.find('[data-manual-tooltip]').tooltip({
 			trigger: 'manual',
 			animation: false,
 			placement: 'bottom',
@@ -277,7 +281,7 @@ define('forum/chats', [
 	};
 
 	Chats.addScrollBottomHandler = function (chatContent) {
-		chatContent.parent()
+		chatContent.parents('[component="chat/message/window"]')
 			.find('[component="chat/messages/scroll-up-alert"]')
 			.off('click').on('click', function () {
 				messages.scrollToBottom(chatContent);
@@ -541,7 +545,7 @@ define('forum/chats', [
 				ajaxify.data = { ...ajaxify.data, ...payload, roomId: roomId };
 				ajaxify.updateTitle(ajaxify.data.title);
 				$('body').toggleClass('chat-loaded', !!roomId);
-				mainWrapper.find('[data-bs-toggle="tooltip"]').tooltip();
+				mainWrapper.find('[data-bs-toggle="tooltip"]').tooltip({ trigger: 'hover', container: '#content' });
 				Chats.setActive(roomId);
 				Chats.addEventListeners();
 				hooks.fire('action:chat.loaded', $('.chats-full'));
