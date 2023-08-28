@@ -86,7 +86,7 @@ define('forum/chats', [
 		Chats.addDeleteHandler(roomId, chatControls.find('[data-action="delete"]'));
 		Chats.addScrollHandler(roomId, ajaxify.data.uid, chatMessageContent);
 		Chats.addScrollBottomHandler(chatMessageContent);
-		Chats.addParentHandler(chatMessageContent);
+		Chats.addParentHandler(mainWrapper);
 		Chats.addCharactersLeftHandler(mainWrapper);
 		Chats.addTextareaResizeHandler(mainWrapper);
 		Chats.addIPHandler(mainWrapper);
@@ -173,12 +173,13 @@ define('forum/chats', [
 			});
 		});
 	};
-	Chats.addParentHandler = function (chatContent) {
-		chatContent.on('click', '[component="chat/message/parent"]', function () {
+	Chats.addParentHandler = function (mainWrapper) {
+		mainWrapper.on('click', '[component="chat/message/parent"]', function () {
 			const parentEl = $(this);
 			parentEl.find('[component="chat/message/parent/content"]').toggleClass('line-clamp-1');
 			parentEl.find('.chat-timestamp').toggleClass('hidden');
 			parentEl.toggleClass('flex-column').toggleClass('flex-row');
+			const chatContent = parentEl.parents('[component="chat/message/content"]');
 			if (chatContent.length && messages.isAtBottom(chatContent)) {
 				messages.scrollToBottom(chatContent);
 			}
