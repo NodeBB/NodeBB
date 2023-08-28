@@ -173,17 +173,19 @@ define('forum/chats', [
 			});
 		});
 	};
+
 	Chats.addParentHandler = function (mainWrapper) {
-		mainWrapper.on('click', '[component="chat/message/parent"]', function () {
-			const parentEl = $(this);
-			parentEl.find('[component="chat/message/parent/content"]').toggleClass('line-clamp-1');
-			parentEl.find('.chat-timestamp').toggleClass('hidden');
-			parentEl.toggleClass('flex-column').toggleClass('flex-row');
-			const chatContent = parentEl.parents('[component="chat/message/content"]');
-			if (chatContent.length && messages.isAtBottom(chatContent)) {
-				messages.scrollToBottom(chatContent);
-			}
-		});
+		mainWrapper.off('click', '[component="chat/message/parent"]')
+			.on('click', '[component="chat/message/parent"]', function () {
+				const parentEl = $(this);
+				parentEl.find('[component="chat/message/parent/content"]').toggleClass('line-clamp-1');
+				parentEl.find('.chat-timestamp').toggleClass('hidden');
+				parentEl.toggleClass('flex-column').toggleClass('flex-row');
+				const chatContent = parentEl.parents('[component="chat/message/content"]');
+				if (chatContent.length && messages.isAtBottom(chatContent)) {
+					messages.scrollToBottom(chatContent);
+				}
+			});
 	};
 
 
@@ -206,19 +208,20 @@ define('forum/chats', [
 	};
 
 	Chats.addIPHandler = function (container) {
-		container.on('click', '.chat-ip-button', async function () {
-			const ipEl = $(this);
-			let ip = ipEl.attr('data-ip');
-			if (ip) {
-				navigator.clipboard.writeText(ip);
-				ipEl.translateText('[[global:copied]]');
-				setTimeout(() => ipEl.text(ip), 2000);
-				return;
-			}
-			const mid = ipEl.parents('[data-mid]').attr('data-mid');
-			ip = await socket.emit('modules.chats.getIP', mid);
-			ipEl.text(ip).attr('data-ip', ip);
-		});
+		container.off('click', '.chat-ip-button')
+			.on('click', '.chat-ip-button', async function () {
+				const ipEl = $(this);
+				let ip = ipEl.attr('data-ip');
+				if (ip) {
+					navigator.clipboard.writeText(ip);
+					ipEl.translateText('[[global:copied]]');
+					setTimeout(() => ipEl.text(ip), 2000);
+					return;
+				}
+				const mid = ipEl.parents('[data-mid]').attr('data-mid');
+				ip = await socket.emit('modules.chats.getIP', mid);
+				ipEl.text(ip).attr('data-ip', ip);
+			});
 	};
 
 	Chats.addPopoutHandler = function () {
