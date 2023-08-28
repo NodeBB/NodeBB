@@ -268,3 +268,13 @@ chatsAPI.restoreMessage = async (caller, { mid }) => {
 	await messaging.canDelete(mid, caller.uid);
 	await messaging.restoreMessage(mid, caller.uid);
 };
+
+chatsAPI.pinMessage = async (caller, { roomId, mid }) => {
+	await messaging.canPin(roomId, caller.uid);
+	await messaging.pinMessage(mid, roomId);
+};
+
+chatsAPI.unpinMessage = async (caller, { roomId, mid }) => {
+	await messaging.canPin(roomId, caller.uid);
+	await messaging.unpinMessage(mid, roomId);
+};

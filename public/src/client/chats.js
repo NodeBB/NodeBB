@@ -10,6 +10,7 @@ define('forum/chats', [
 	'forum/chats/messages',
 	'forum/chats/user-list',
 	'forum/chats/message-search',
+	'forum/chats/pinned-messages',
 	'composer/autocomplete',
 	'hooks',
 	'bootbox',
@@ -19,8 +20,9 @@ define('forum/chats', [
 	'uploadHelpers',
 ], function (
 	components, mousetrap, recentChats, create,
-	manage, messages, userList, messageSearch, autocomplete,
-	hooks, bootbox, alerts, chatModule, api, uploadHelpers
+	manage, messages, userList, messageSearch, pinnedMessages,
+	autocomplete, hooks, bootbox, alerts, chatModule, api,
+	uploadHelpers
 ) {
 	const Chats = {
 		initialised: false,
@@ -66,6 +68,7 @@ define('forum/chats', [
 		messages.wrapImagesInLinks(changeContentEl);
 		messages.scrollToBottomAfterImageLoad(changeContentEl);
 		create.init();
+		pinnedMessages.init($('[component="chat/main-wrapper"]'));
 
 		hooks.fire('action:chat.loaded', $('.chats-full'));
 	};
@@ -77,7 +80,7 @@ define('forum/chats', [
 		const chatControls = components.get('chat/controls');
 		Chats.addSendHandlers(roomId, $('.chat-input'), $('.expanded-chat button[data-action="send"]'));
 		Chats.addPopoutHandler();
-		Chats.addActionHandlers(components.get('chat/messages'), roomId);
+		Chats.addActionHandlers(components.get('chat/message/window'), roomId);
 		Chats.addManageHandler(roomId, chatControls.find('[data-action="manage"]'));
 		Chats.addRenameHandler(roomId, chatControls.find('[data-action="rename"]'));
 		Chats.addLeaveHandler(roomId, chatControls.find('[data-action="leave"]'));
@@ -104,7 +107,7 @@ define('forum/chats', [
 		Chats.addNotificationSettingHandler(roomId, mainWrapper);
 		messageSearch.init(roomId, mainWrapper);
 		Chats.addPublicRoomSortHandler();
-		Chats.addTooltipHandler();
+		Chats.addTooltipHandler(mainWrapper);
 	};
 
 	Chats.addPublicRoomSortHandler = function () {
@@ -128,7 +131,7 @@ define('forum/chats', [
 		}
 	};
 
-	Chats.addTooltipHandler = function () {
+	Chats.addTooltipHandler = function (containerEl) {
 		$('[data-manual-tooltip]').tooltip({
 			trigger: 'manual',
 			animation: false,
@@ -141,6 +144,14 @@ define('forum/chats', [
 			}
 		}).on('click mouseleave', function () {
 			$(this).tooltip('hide');
+		});
+
+		containerEl.tooltip({
+			selector: '[component="chat/message/controls"] button',
+			placement: 'top',
+			container: '#content',
+			animation: false,
+			trigger: 'hover',
 		});
 	};
 
@@ -299,10 +310,10 @@ define('forum/chats', [
 			const msgEl = $(this).parents('[data-mid]');
 			const messageId = msgEl.attr('data-mid');
 			const action = this.getAttribute('data-action');
-
+			$(this).tooltip('dispose');
 			switch (action) {
 				case 'reply':
-					messages.prepReplyTo(msgEl, roomId);
+					messages.prepReplyTo(msgEl, element);
 					break;
 				case 'edit':
 					messages.prepEdit(msgEl, messageId, roomId);
@@ -312,6 +323,12 @@ define('forum/chats', [
 					break;
 				case 'restore':
 					messages.restore(messageId, roomId);
+					break;
+				case 'pin':
+					pinnedMessages.pin(messageId, roomId);
+					break;
+				case 'unpin':
+					pinnedMessages.unpin(messageId, roomId);
 					break;
 			}
 		});

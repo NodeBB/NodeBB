@@ -280,6 +280,7 @@ define('chat', [
 				chatModal.css('position', 'fixed');
 				chatModal.appendTo($('body'));
 				chatModal.find('.timeago').timeago();
+				chatModal.find('[data-bs-toggle="tooltip"]').tooltip({ trigger: 'hover', container: '#content' });
 				ChatsMessages.wrapImagesInLinks(chatModal.find('[component="chat/messages"] .chat-content'));
 				module.center(chatModal);
 
@@ -355,7 +356,7 @@ define('chat', [
 					}
 				});
 
-				Chats.addActionHandlers(chatModal.find('[component="chat/messages"]'), roomId);
+				Chats.addActionHandlers(chatModal.find('[component="chat/message/window"]'), roomId);
 				Chats.addRenameHandler(roomId, chatModal.find('[data-action="rename"]'));
 				Chats.addLeaveHandler(roomId, chatModal.find('[data-action="leave"]'));
 				Chats.addDeleteHandler(roomId, chatModal.find('[data-action="delete"]'));
@@ -371,6 +372,7 @@ define('chat', [
 				Chats.addTextareaResizeHandler(chatModal);
 				Chats.addIPHandler(chatModal);
 
+				Chats.addTooltipHandler(chatModal);
 				Chats.addUploadHandler({
 					dragDropAreaEl: chatModal.find('.modal-content'),
 					pasteEl: chatModal,

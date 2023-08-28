@@ -24,6 +24,7 @@ require('./edit')(Messaging);
 require('./rooms')(Messaging);
 require('./unread')(Messaging);
 require('./notifications')(Messaging);
+require('./pins')(Messaging);
 
 Messaging.notificationSettings = Object.create(null);
 Messaging.notificationSettings.NONE = 1;

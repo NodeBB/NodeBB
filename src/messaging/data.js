@@ -46,17 +46,17 @@ module.exports = function (Messaging) {
 
 	Messaging.getMessagesData = async (mids, uid, roomId, isNew) => {
 		let messages = await Messaging.getMessagesFields(mids, []);
-		messages = await user.blocks.filter(uid, 'fromuid', messages);
 		messages = messages
 			.map((msg, idx) => {
 				if (msg) {
 					msg.messageId = parseInt(mids[idx], 10);
 					msg.ip = undefined;
+					msg.isOwner = msg.fromuid === parseInt(uid, 10);
 				}
 				return msg;
 			})
 			.filter(Boolean);
-
+		messages = await user.blocks.filter(uid, 'fromuid', messages);
 		const users = await user.getUsersFields(
 			messages.map(msg => msg && msg.fromuid),
 			['uid', 'username', 'userslug', 'picture', 'status', 'banned']
@@ -171,8 +171,12 @@ module.exports = function (Messaging) {
 	}
 
 	async function parseMessages(messages, uid, roomId, isNew) {
-		await Promise.all(messages.map(async (message) => {
-			message.content = await parseMessage(message, uid, roomId, isNew);
+		await Promise.all(messages.map(async (msg) => {
+			if (msg.deleted && !msg.isOwner) {
+				msg.content = `<p>[[modules:chat.message-deleted]]</p>`;
+				return;
+			}
+			msg.content = await parseMessage(msg, uid, roomId, isNew);
 		}));
 	}
 	async function parseMessage(message, uid, roomId, isNew) {

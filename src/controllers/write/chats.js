@@ -142,3 +142,17 @@ Chats.messages.restore = async (req, res) => {
 
 	helpers.formatApiResponse(200, res);
 };
+
+Chats.messages.pin = async (req, res) => {
+	const { mid, roomId } = req.params;
+	await api.chats.pinMessage(req, { mid, roomId });
+
+	helpers.formatApiResponse(200, res);
+};
+
+Chats.messages.unpin = async (req, res) => {
+	const { mid, roomId } = req.params;
+	await api.chats.unpinMessage(req, { mid, roomId });
+
+	helpers.formatApiResponse(200, res);
+};

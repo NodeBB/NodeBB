@@ -251,4 +251,18 @@ SocketModules.chats.searchMessages = async (socket, data) => {
 	return messageData.filter(msg => msg && !msg.deleted && msg.timestamp > userjoinTimestamp);
 };
 
+SocketModules.chats.loadPinnedMessages = async (socket, data) => {
+	if (!data || !data.roomId || !utils.isNumber(data.start)) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	const isInRoom = await Messaging.isUserInRoom(socket.uid, data.roomId);
+	if (!isInRoom) {
+		throw new Error('[[error:no-privileges]]');
+	}
+	const start = parseInt(data.start, 10) || 0;
+	const pinnedMsgs = await Messaging.getPinnedMessages(data.roomId, socket.uid, start, start + 49);
+	return pinnedMsgs;
+};
+
+
 require('../promisify')(SocketModules);
