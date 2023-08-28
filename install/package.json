@@ -74,7 +74,7 @@
         "html-to-text": "9.0.5",
         "imagesloaded": "5.0.0",
         "ipaddr.js": "2.1.0",
-        "jquery": "3.7.0",
+        "jquery": "3.7.1",
         "jquery-deserialize": "2.0.0",
         "jquery-form": "4.3.0",
         "jquery-serializeobject": "1.0.0",
@@ -174,7 +174,7 @@
         "sass-embedded": "1.66.1"
     },
     "resolutions": {
-        "*/jquery": "3.7.0"
+        "*/jquery": "3.7.1"
     },
     "bugs": {
         "url": "https://github.com/NodeBB/NodeBB/issues"
