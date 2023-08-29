@@ -69,18 +69,23 @@ async function xhr(options, cb) {
 	const isJSON = contentType && contentType.startsWith('application/json');
 
 	let response;
-	if (isJSON) {
-		response = await res.json();
-	} else {
-		response = await res.text();
+	if (options.method !== 'head') {
+		if (isJSON) {
+			response = await res.json();
+		} else {
+			response = await res.text();
+		}
 	}
 
 	if (!res.ok) {
-		return cb(new Error(isJSON ? response.status.message : response));
+		if (response) {
+			return cb(new Error(isJSON ? response.status.message : response));
+		}
+		return cb(new Error(res.statusText));
 	}
 
 	cb(null, (
-		isJSON && response.hasOwnProperty('status') && response.hasOwnProperty('response') ?
+		isJSON && response && response.hasOwnProperty('status') && response.hasOwnProperty('response') ?
 			response.response :
 			response
 	));
