@@ -11,10 +11,11 @@ define('forum/login', ['hooks', 'translator', 'jquery-form'], function (hooks, t
 		const submitEl = $('#login');
 		const formEl = $('#login-form');
 
-		submitEl.on('click', function (e) {
+		submitEl.on('click', async function (e) {
 			e.preventDefault();
-
-			if (!$('#username').val() || !$('#password').val()) {
+			const username = $('#username').val();
+			const password = $('#password').val();
+			if (!username || !password) {
 				errorEl.find('p').translateText('[[error:invalid-username-or-password]]');
 				errorEl.show();
 			} else {
@@ -25,6 +26,23 @@ define('forum/login', ['hooks', 'translator', 'jquery-form'], function (hooks, t
 				}
 
 				submitEl.addClass('disabled');
+
+				try {
+					const hookData = await hooks.fire('filter:app.login', {
+						username,
+						password,
+						cancel: false,
+					});
+					if (hookData.cancel) {
+						submitEl.removeClass('disabled');
+						return;
+					}
+				} catch (err) {
+					errorEl.find('p').translateText(err.message);
+					errorEl.show();
+					submitEl.removeClass('disabled');
+					return;
+				}
 
 				hooks.fire('action:app.login');
 				formEl.ajaxSubmit({
