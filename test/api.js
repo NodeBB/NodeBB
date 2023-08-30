@@ -547,6 +547,11 @@ describe('API', async () => {
 						return;
 					}
 
+					if (response.statusCode === 400 && context[method].responses['400']) {
+						// TODO: check 400 schema to response.body?
+						return;
+					}
+
 					const http200 = context[method].responses['200'];
 					if (!http200) {
 						return;
