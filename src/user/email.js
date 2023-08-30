@@ -40,7 +40,12 @@ UserEmail.remove = async function (uid, sessionId) {
 		db.sortedSetRemove('email:sorted', `${email.toLowerCase()}:${uid}`),
 		user.email.expireValidation(uid),
 		sessionId ? user.auth.revokeAllSessions(uid, sessionId) : Promise.resolve(),
-		events.log({ type: 'email-change', email, newEmail: '' }),
+		events.log({
+			targetUid: uid,
+			type: 'email-change',
+			email,
+			newEmail: '',
+		}),
 	]);
 };
 

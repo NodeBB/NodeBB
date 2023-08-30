@@ -1,8 +1,8 @@
 'use strict';
 
 define('admin/manage/users', [
-	'translator', 'benchpress', 'autocomplete', 'api', 'slugify', 'bootbox', 'alerts', 'accounts/invite', 'helpers',
-], function (translator, Benchpress, autocomplete, api, slugify, bootbox, alerts, AccountInvite, helpers) {
+	'translator', 'benchpress', 'autocomplete', 'api', 'slugify', 'bootbox', 'alerts', 'accounts/invite', 'helpers', 'admin/modules/change-email',
+], function (translator, Benchpress, autocomplete, api, slugify, bootbox, alerts, AccountInvite, helpers, changeEmail) {
 	const Users = {};
 
 	Users.init = function () {
@@ -273,6 +273,26 @@ define('admin/manage/users', [
 			socket.emit('admin.user.resetLockouts', uids, done('[[admin/manage/users:alerts.lockout-reset-success]]'));
 		});
 
+		$('.change-email').on('click', function () {
+			const uids = getSelectedUids();
+			if (uids.length !== 1) {
+				return alerts.error('[[admin/manage/users:alerts.select-a-single-user-to-change-email]]');
+			}
+			changeEmail.init({
+				uid: uids[0],
+				onSuccess: function (newEmail) {
+					update('.notvalidated', false);
+					update('.pending', false);
+					update('.expired', false);
+					update('.validated', false);
+					update('.validated-by-admin', !!newEmail);
+					update('.no-email', !newEmail);
+					$('.users-table [component="user/select/single"]:checked').parents('.user-row').find('.validated-by-admin .email').text(newEmail);
+					// $('.users-table [component="user/select/single"]:checked').parents('.user-row').find('.no-email').
+				},
+			});
+		});
+
 		$('.validate-email').on('click', function () {
 			const uids = getSelectedUids();
 			if (!uids.length) {
@@ -308,6 +328,51 @@ define('admin/manage/users', [
 					return alerts.error(err);
 				}
 				alerts.success('[[notifications:email-confirm-sent]]');
+			});
+		});
+
+		$('.change-password').on('click', async function () {
+			const uids = getSelectedUids();
+			if (!uids.length) {
+				return;
+			}
+			async function changePassword(modal) {
+				const newPassword = modal.find('#newPassword').val();
+				const confirmPassword = modal.find('#confirmPassword').val();
+				if (newPassword !== confirmPassword) {
+					throw new Error('[[[user:change_password_error_match]]');
+				}
+				await Promise.all(uids.map(uid => api.put('/users/' + uid + '/password', {
+					currentPassword: '',
+					newPassword: newPassword,
+				})));
+			}
+
+			const modal = bootbox.dialog({
+				message: `<div class="d-flex flex-column gap-2">
+					<label class="form-label">[[user:new_password]]</label>
+					<input id="newPassword" class="form-control" type="text">
+					<label class="form-label">[[user:confirm_password]]</label>
+					<input id="confirmPassword" class="form-control" type="text">
+				</div>`,
+				title: '[[admin/manage/users:change-password]]',
+				onEscape: true,
+				buttons: {
+					cancel: {
+						label: '[[admin/manage/users:alerts.button-cancel]]',
+						className: 'btn-link',
+					},
+					change: {
+						label: '[[admin/manage/users:alerts.button-change]]',
+						className: 'btn-primary',
+						callback: function () {
+							changePassword(modal).then(() => {
+								modal.modal('hide');
+							}).catch(alerts.error);
+							return false;
+						},
+					},
+				},
 			});
 		});
 

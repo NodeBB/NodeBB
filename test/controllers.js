@@ -455,22 +455,6 @@ describe('Controllers', () => {
 				assert.strictEqual(result.req.session.emailChanged, 1);
 			});
 
-			it('should set email if admin is changing it', async () => {
-				const uid = await user.create({ username: 'interstiuser3' });
-				const result = await user.interstitials.email({
-					userData: { uid: uid, updateEmail: true },
-					req: { uid: adminUid },
-					interstitials: [],
-				});
-
-				await result.interstitials[0].callback({ uid: uid }, {
-					email: 'interstiuser3@nodebb.org',
-				});
-				const userData = await user.getUserData(uid);
-				assert.strictEqual(userData.email, 'interstiuser3@nodebb.org');
-				assert.strictEqual(userData['email:confirmed'], 1);
-			});
-
 			it('should throw error if user tries to edit other users email', async () => {
 				const uid = await user.create({ username: 'interstiuser4' });
 				try {
