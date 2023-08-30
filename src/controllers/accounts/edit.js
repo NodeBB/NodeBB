@@ -90,16 +90,7 @@ editController.username = async function (req, res, next) {
 
 editController.email = async function (req, res, next) {
 	const targetUid = await user.getUidByUserslug(req.params.userslug);
-	if (!targetUid) {
-		return next();
-	}
-
-	const [isAdminOrGlobalMod, canEdit] = await Promise.all([
-		user.isAdminOrGlobalMod(req.uid),
-		privileges.users.canEdit(req.uid, targetUid),
-	]);
-
-	if (!isAdminOrGlobalMod && !canEdit) {
+	if (!targetUid || req.uid !== parseInt(targetUid, 10)) {
 		return next();
 	}
 

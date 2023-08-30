@@ -28,8 +28,7 @@ Interstitials.email = async (data) => {
 		return data;
 	}
 
-	const [canManageUsers, hasPassword, hasPending] = await Promise.all([
-		privileges.admin.can('admin:users', data.req.uid),
+	const [hasPassword, hasPending] = await Promise.all([
 		user.hasPassword(data.userData.uid),
 		user.email.isValidationPending(data.userData.uid),
 	]);
@@ -44,12 +43,7 @@ Interstitials.email = async (data) => {
 		data: {
 			email,
 			requireEmailAddress: meta.config.requireEmailAddress,
-			issuePasswordChallenge:
-				hasPassword &&
-				(
-					(canManageUsers && data.userData.uid === data.req.uid) || // admin changing own email
-					(!canManageUsers && !!data.userData.uid) // non-admins changing own email
-				),
+			issuePasswordChallenge: hasPassword,
 			hasPending,
 		},
 		callback: async (userData, formData) => {
@@ -73,7 +67,7 @@ Interstitials.email = async (data) => {
 					}),
 				]);
 
-				if (!canManageUsers && !isPasswordCorrect) {
+				if (!isPasswordCorrect) {
 					await sleep(2000);
 				}
 
@@ -92,14 +86,7 @@ Interstitials.email = async (data) => {
 					}
 
 					// Admins editing will auto-confirm, unless editing their own email
-					if (canManageUsers && userData.uid !== data.req.uid) {
-						if (!await user.email.available(formData.email)) {
-							throw new Error('[[error:email-taken]]');
-						}
-						await user.email.remove(userData.uid);
-						await user.setUserField(userData.uid, 'email', formData.email);
-						await user.email.confirmByUid(userData.uid);
-					} else if (canEdit) {
+					if (canEdit) {
 						if (hasPassword && !isPasswordCorrect) {
 							throw new Error('[[error:invalid-password]]');
 						}
@@ -120,8 +107,8 @@ Interstitials.email = async (data) => {
 						throw new Error('[[error:invalid-email]]');
 					}
 
-					if (current.length && (!hasPassword || (hasPassword && isPasswordCorrect) || canManageUsers)) {
-						// User or admin explicitly clearing their email
+					if (current.length && (!hasPassword || (hasPassword && isPasswordCorrect))) {
+						// User explicitly clearing their email
 						await user.email.remove(userData.uid, isSelf ? data.req.session.id : null);
 					}
 				}
