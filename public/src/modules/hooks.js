@@ -106,14 +106,10 @@ define('hooks', [], () => {
 
 		const listeners = Array.from(Hooks.loaded[hookName]);
 		return listeners.reduce((promise, listener) => promise.then((data) => {
-			try {
-				const result = listener(data);
-				return utils.isPromise(result) ?
-					result.then(data => Promise.resolve(data)).catch(e => _onHookError(e, listener, data)) :
-					result;
-			} catch (e) {
-				return _onHookError(e, listener, data);
-			}
+			const result = listener(data);
+			return utils.isPromise(result) ?
+				result.then(data => Promise.resolve(data)) :
+				result;
 		}), Promise.resolve(data));
 	};
 
