@@ -115,7 +115,7 @@ define('quickreply', [
 			composer.newReply({
 				tid: ajaxify.data.tid,
 				title: ajaxify.data.title,
-				body: utils.escapeHTML(textEl.val()),
+				body: textEl.val(),
 			});
 			textEl.val('');
 		});
