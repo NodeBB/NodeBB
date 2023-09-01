@@ -127,18 +127,7 @@ uploadsController.uploadCategoryPicture = async function (req, res, next) {
 };
 
 uploadsController.uploadFavicon = async function (req, res, next) {
-	const uploadedFile = req.files.files[0];
-	const allowedTypes = ['image/x-icon', 'image/vnd.microsoft.icon'];
-
-	await validateUpload(uploadedFile, allowedTypes);
-	try {
-		const imageObj = await file.saveFileToLocal('favicon.ico', 'system', uploadedFile.path);
-		res.json([{ name: uploadedFile.name, url: imageObj.url }]);
-	} catch (err) {
-		next(err);
-	} finally {
-		file.delete(uploadedFile.path);
-	}
+	await upload('favicon', req, res, next);
 };
 
 uploadsController.uploadTouchIcon = async function (req, res, next) {
