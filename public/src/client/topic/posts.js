@@ -189,7 +189,7 @@ define('forum/topic/posts', [
 			}
 
 			data.posts = data.posts.filter(function (post) {
-				return post.index === -1 || $('[component="post"][data-pid="' + post.pid + '"]').length === 0;
+				return post.allowDupe || $('[component="post"][data-pid="' + post.pid + '"]').length === 0;
 			});
 		}
 
@@ -214,9 +214,9 @@ define('forum/topic/posts', [
 			html = html.filter(function () {
 				const $this = $(this);
 				const pid = $this.attr('data-pid');
-				const index = parseInt($this.attr('data-index'), 10);
+				const allowDupe = $this.attr('data-allow-dupe');
 				const isPost = $this.is('[component="post"]');
-				return !isPost || index === -1 || (pid && $('[component="post"][data-pid="' + pid + '"]').length === 0);
+				return !isPost || allowDupe || (pid && $('[component="post"][data-pid="' + pid + '"]').length === 0);
 			});
 
 			const removedEls = infinitescroll.removeExtra($('[component="post"]'), direction, Math.max(20, config.postsPerPage * 2));
