@@ -97,6 +97,19 @@ function onConnection(socket) {
 		}, onMessage, socket, payload);
 	});
 
+	socket.on('disconnecting', () => {
+		for (const room of socket.rooms) {
+			if (room && room.match(/^chat_room_\d+$/)) {
+				Sockets.server.in(room).emit('event:chats.typing', {
+					roomId: room.split('_').pop(),
+					uid: socket.uid,
+					username: '',
+					typing: false,
+				});
+			}
+		}
+	});
+
 	socket.on('disconnect', () => {
 		onDisconnect(socket);
 	});

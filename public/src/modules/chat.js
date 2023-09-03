@@ -226,11 +226,6 @@ define('chat', [
 		});
 	}
 
-	module.onUserStatusChange = function (data) {
-		const modal = module.getModal(data.uid);
-		app.updateUserStatus(modal.find('[component="user/status"]'), data.status);
-	};
-
 	module.onRoomRename = function (data) {
 		const modal = module.getModal(data.roomId);
 		const titleEl = modal.find('[component="chat/room/name"]');
@@ -250,6 +245,44 @@ define('chat', [
 		hooks.fire('action:chat.renamed', Object.assign(data, {
 			modal: modal,
 		}));
+	};
+
+	module.onUserTyping = function (data) {
+		if (module.isFromBlockedUser(data.uid)) {
+			return;
+		}
+		const modal = module.getModal(data.roomId);
+		if (modal.length) {
+			module.updateTypingUserList(modal, data);
+		}
+	};
+
+	module.updateTypingUserList = async function (container, { uid, username, typing }) {
+		const typingEl = container.find(`[component="chat/composer/typing"]`);
+		const typingUsersList = typingEl.find('[component="chat/composer/typing/users"]');
+		const userEl = typingUsersList.find(`[data-uid="${uid}"]`);
+
+		if (typing && !userEl.length) {
+			$(`<div/>`).attr('data-uid', uid)
+				.text(username)
+				.appendTo(typingUsersList);
+		} else if (!typing && userEl.length) {
+			userEl.remove();
+		}
+
+		const usernames = [];
+		typingUsersList.children().each((i, el) => {
+			usernames.push($(el).text());
+		});
+
+		const typingTextEl = typingEl.find('[component="chat/composer/typing/text"]');
+		const count = usernames.length > 3 ? 'n' : usernames.length;
+		if (count) {
+			const key = `modules:chat.user_typing_${count}`;
+			const compiled = translator.compile.apply(null, [key, ...usernames]);
+			typingTextEl.html(await translator.translate(compiled));
+		}
+		typingTextEl.toggleClass('hidden', !usernames.length);
 	};
 
 	module.getModal = function (roomId) {
@@ -370,6 +403,7 @@ define('chat', [
 				Chats.addParentHandler(chatModal.find('[component="chat/message/content"]'));
 				Chats.addCharactersLeftHandler(chatModal);
 				Chats.addTextareaResizeHandler(chatModal);
+				Chats.addTypingHandler(chatModal, roomId);
 				Chats.addIPHandler(chatModal);
 				Chats.addTooltipHandler(chatModal);
 				Chats.addUploadHandler({

@@ -18,11 +18,12 @@ define('forum/chats', [
 	'chat',
 	'api',
 	'uploadHelpers',
+	'translator',
 ], function (
 	components, mousetrap, recentChats, create,
 	manage, messages, userList, messageSearch, pinnedMessages,
 	autocomplete, hooks, bootbox, alerts, chatModule, api,
-	uploadHelpers
+	uploadHelpers, translator
 ) {
 	const Chats = {
 		initialised: false,
@@ -89,6 +90,7 @@ define('forum/chats', [
 		Chats.addParentHandler(mainWrapper);
 		Chats.addCharactersLeftHandler(mainWrapper);
 		Chats.addTextareaResizeHandler(mainWrapper);
+		Chats.addTypingHandler(mainWrapper, roomId);
 		Chats.addIPHandler(mainWrapper);
 		Chats.createAutoComplete(roomId, $('[component="chat/input"]'));
 		Chats.addUploadHandler({
@@ -311,6 +313,23 @@ define('forum/chats', [
 				messages.scrollToBottom(chatContentEl);
 			}
 		});
+	};
+
+	Chats.addTypingHandler = function (parent, roomId) {
+		const textarea = parent.find('[component="chat/input"]');
+		function emitTyping(typing) {
+			socket.emit('modules.chats.typing', {
+				roomId: roomId,
+				typing: typing,
+				username: app.user.username,
+			});
+		}
+
+		textarea.on('focus', () => emitTyping(!!textarea.val()));
+		textarea.on('blur', () => emitTyping(false));
+		textarea.on('input', utils.throttle(function () {
+			emitTyping(!!textarea.val());
+		}, 2500, true));
 	};
 
 	Chats.addActionHandlers = function (element, roomId) {
@@ -544,6 +563,7 @@ define('forum/chats', [
 				const html = await app.parseAndTranslate('partials/chats/message-window', payload);
 				const mainWrapper = components.get('chat/main-wrapper');
 				mainWrapper.html(html);
+				mainWrapper.attr('data-roomid', roomId);
 				chatNavWrapper = $('[component="chat/nav-wrapper"]');
 				html.find('.timeago').timeago();
 				ajaxify.data = { ...ajaxify.data, ...payload, roomId: roomId };
@@ -635,6 +655,13 @@ define('forum/chats', [
 					Chats.updatePublicRoomUnreadCount(roomEl, 0);
 				}
 			});
+		});
+
+		socket.on('event:chats.typing', async (data) => {
+			if (chatModule.isFromBlockedUser(data.uid)) {
+				return;
+			}
+			chatModule.updateTypingUserList($(`[component="chat/main-wrapper"][data-roomid="${data.roomId}"]`), data);
 		});
 	};
 
