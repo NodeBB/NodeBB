@@ -325,7 +325,7 @@ define('forum/chats', [
 			});
 		}
 
-		textarea.on('focus', () => emitTyping(!!textarea.val()));
+		textarea.on('focus', () => textarea.val() && emitTyping(true));
 		textarea.on('blur', () => emitTyping(false));
 		textarea.on('input', utils.throttle(function () {
 			emitTyping(!!textarea.val());
