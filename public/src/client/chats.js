@@ -18,12 +18,11 @@ define('forum/chats', [
 	'chat',
 	'api',
 	'uploadHelpers',
-	'translator',
 ], function (
 	components, mousetrap, recentChats, create,
 	manage, messages, userList, messageSearch, pinnedMessages,
 	autocomplete, hooks, bootbox, alerts, chatModule, api,
-	uploadHelpers, translator
+	uploadHelpers
 ) {
 	const Chats = {
 		initialised: false,
