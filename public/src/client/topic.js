@@ -225,10 +225,8 @@ define('forum/topic', [
 				setTimeout(() => btn.find('i').removeClass('fa-check').addClass('fa-copy'), 2000);
 				const codeEl = btn.parent().find('code');
 				if (codeEl.attr('data-lines')) {
-					let codeText = '';
-					codeEl.find('.hljs-ln-code[data-line-number]')
-						.each((index, el) => { codeText += $(el).text() + '\n'; });
-					return codeText;
+					return codeEl.find('.hljs-ln-code[data-line-number]')
+						.map((i, e) => e.textContent).get().join('\n');
 				}
 				return codeEl.text();
 			},
