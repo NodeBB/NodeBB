@@ -45,7 +45,12 @@ define('forum/chats', [
 	});
 
 	Chats.init = function () {
-		$('.chats-full [data-bs-toggle="tooltip"]').tooltip({ trigger: 'hover', container: '#content' });
+		if (!utils.isMobile()) {
+			$('.chats-full [data-bs-toggle="tooltip"]').tooltip({
+				trigger: 'hover',
+				container: '#content',
+			});
+		}
 		socket.emit('modules.chats.enterPublic', ajaxify.data.publicRooms.map(r => r.roomId));
 		const env = utils.findBootstrapEnvironment();
 		chatNavWrapper = $('[component="chat/nav-wrapper"]');
