@@ -20,7 +20,7 @@
     "disableChat": 0,
     "chatEditDuration": 0,
     "chatDeleteDuration": 0,
-    "chatMessageDelay": 200,
+    "chatMessageDelay": 2000,
     "notificationSendDelay": 60,
     "newbiePostDelayThreshold": 3,
     "postQueue": 0,
