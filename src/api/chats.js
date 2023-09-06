@@ -14,11 +14,17 @@ const socketHelpers = require('../socket.io/helpers');
 
 const chatsAPI = module.exports;
 
-function rateLimitExceeded(caller) {
+async function rateLimitExceeded(caller) {
 	const session = caller.request ? caller.request.session : caller.session; // socket vs req
 	const now = Date.now();
+	const [isAdmin, reputation] = await Promise.all([
+		user.isAdministrator(caller.uid),
+		user.getUserField(caller.uid, 'reputation'),
+	]);
+	const newbie = !isAdmin && meta.config.newbiePostDelayThreshold > reputation;
+	const delay = newbie ? meta.config.newbieChatMessageDelay : meta.config.chatMessageDelay;
 	session.lastChatMessageTime = session.lastChatMessageTime || 0;
-	if (now - session.lastChatMessageTime < meta.config.chatMessageDelay) {
+	if (now - session.lastChatMessageTime < delay) {
 		return true;
 	}
 	session.lastChatMessageTime = now;
@@ -34,7 +40,7 @@ chatsAPI.list = async (caller, { page, perPage }) => {
 };
 
 chatsAPI.create = async function (caller, data) {
-	if (rateLimitExceeded(caller)) {
+	if (await rateLimitExceeded(caller)) {
 		throw new Error('[[error:too-many-messages]]');
 	}
 	if (!data) {
@@ -71,7 +77,7 @@ chatsAPI.create = async function (caller, data) {
 chatsAPI.get = async (caller, { uid, roomId }) => await messaging.loadRoom(caller.uid, { uid, roomId });
 
 chatsAPI.post = async (caller, data) => {
-	if (rateLimitExceeded(caller)) {
+	if (await rateLimitExceeded(caller)) {
 		throw new Error('[[error:too-many-messages]]');
 	}
 	if (!data || !data.roomId || !caller.uid) {
