@@ -94,7 +94,7 @@
         "nconf": "0.12.0",
         "nodebb-plugin-2factor": "7.2.1",
         "nodebb-plugin-composer-default": "10.2.18",
-        "nodebb-plugin-dbsearch": "6.2.1",
+        "nodebb-plugin-dbsearch": "6.2.2",
         "nodebb-plugin-emoji": "5.1.5",
         "nodebb-plugin-emoji-android": "4.0.0",
         "nodebb-plugin-markdown": "12.2.3",
