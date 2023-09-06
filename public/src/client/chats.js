@@ -389,7 +389,7 @@ define('forum/chats', [
 					return;
 				}
 				const lastMid = message.attr('data-mid');
-				messages.prepEdit(inputEl, lastMid, ajaxify.data.roomId);
+				messages.prepEdit(message, lastMid, ajaxify.data.roomId);
 			}
 		});
 	};
