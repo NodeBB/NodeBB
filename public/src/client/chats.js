@@ -331,9 +331,22 @@ define('forum/chats', [
 
 		textarea.on('focus', () => textarea.val() && emitTyping(true));
 		textarea.on('blur', () => emitTyping(false));
-		textarea.on('input', utils.throttle(function () {
-			emitTyping(!!textarea.val());
-		}, 2500, true));
+		let timeoutid = 0;
+		let hasText = !!textarea.val();
+		textarea.on('input', function () {
+			const _hasText = !!textarea.val();
+			if (_hasText !== hasText) {
+				clearTimeout(timeoutid);
+				timeoutid = 0;
+				hasText = _hasText;
+				emitTyping(hasText);
+			} else if (!timeoutid) {
+				timeoutid = setTimeout(() => {
+					emitTyping(!!textarea.val());
+					timeoutid = 0;
+				}, 5000);
+			}
+		});
 	};
 
 	Chats.addActionHandlers = function (element, roomId) {
