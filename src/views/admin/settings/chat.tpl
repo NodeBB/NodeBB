@@ -24,16 +24,19 @@
 				<div class="mb-3">
 					<label class="form-label" for="chatEditDuration">[[admin/settings/chat:restrictions.seconds-edit-after]]</label>
 					<input id="chatEditDuration" type="text" class="form-control" value="0" data-field="chatEditDuration">
+					<p class="form-text">[[admin/settings/chat:zero-is-disabled]]</p>
 				</div>
 
 				<div class="mb-3">
 					<label class="form-label" for="chatDeleteDuration">[[admin/settings/chat:restrictions.seconds-delete-after]]</label>
 					<input id="chatDeleteDuration" type="text" class="form-control" value="0" data-field="chatDeleteDuration">
+					<p class="form-text">[[admin/settings/chat:zero-is-disabled]]</p>
 				</div>
 
 				<div class="mb-3">
 					<label class="form-label" for="maximumChatRoomNameLength">[[admin/settings/chat:max-chat-room-name-length]]</label>
 					<input id="maximumChatRoomNameLength" type="text" class="form-control" value="50" data-field="maximumChatRoomNameLength">
+					<p class="form-text">[[admin/settings/chat:zero-is-disabled]]</p>
 				</div>
 
 				<div class="mb-3">
@@ -55,6 +58,7 @@
 				<div class="mb-3">
 					<label class="form-label" for="notificationSendDelay">[[admin/settings/chat:notification-delay]]</label>
 					<input id="notificationSendDelay" type="text" class="form-control" value="60" data-field="notificationSendDelay">
+					<p class="form-text">[[admin/settings/chat:notification-delay-help]]</p>
 				</div>
 			</div>
 		</div>
