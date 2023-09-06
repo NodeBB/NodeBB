@@ -24,6 +24,7 @@ require('./edit')(Messaging);
 require('./rooms')(Messaging);
 require('./unread')(Messaging);
 require('./notifications')(Messaging);
+require('./pins')(Messaging);
 
 Messaging.notificationSettings = Object.create(null);
 Messaging.notificationSettings.NONE = 1;
@@ -55,10 +56,6 @@ Messaging.getMessages = async (params) => {
 	const messageData = await Messaging.getMessagesData(mids, uid, roomId, isNew);
 	messageData.forEach((msg) => {
 		msg.index = indices[msg.messageId.toString()];
-		msg.isOwner = msg.fromuid === parseInt(uid, 10);
-		if (msg.deleted && !msg.isOwner) {
-			msg.content = `<p>[[modules:chat.message-deleted]]</p>`;
-		}
 	});
 
 	return messageData;
@@ -130,11 +127,13 @@ Messaging.getPublicRooms = async (callerUid, uid) => {
 
 	const allRoomIds = await Messaging.getPublicRoomIdsFromSet('chat:rooms:public:order');
 	const allRoomData = await Messaging.getRoomsData(allRoomIds);
+	const isAdmin = await privileges.users.isAdministrator(callerUid);
 	const checks = await Promise.all(
 		allRoomData.map(
 			room => room && (
 				!Array.isArray(room.groups) ||
 				!room.groups.length ||
+				isAdmin ||
 				groups.isMemberOfAny(uid, room && room.groups)
 			)
 		)
@@ -373,11 +372,16 @@ Messaging.canMessageRoom = async (uid, roomId) => {
 		throw new Error('[[error:chat-disabled]]');
 	}
 
-	const [inRoom, canChat] = await Promise.all([
+	const [roomData, inRoom, canChat] = await Promise.all([
+		Messaging.getRoomData(roomId),
 		Messaging.isUserInRoom(uid, roomId),
 		privileges.global.can('chat', uid),
 		checkReputation(uid),
+		user.checkMuted(uid),
 	]);
+	if (!roomData) {
+		throw new Error('[[error:no-room]]');
+	}
 
 	if (!inRoom) {
 		throw new Error('[[error:not-in-room]]');

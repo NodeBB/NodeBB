@@ -39,6 +39,9 @@ define('forum/topic/postTools', [
 		$('[component="topic"]').on('show.bs.dropdown', '.moderator-tools', function () {
 			const $this = $(this);
 			const dropdownMenu = $this.find('.dropdown-menu');
+			const { top } = this.getBoundingClientRect();
+			$this.toggleClass('dropup', top > window.innerHeight / 2);
+
 			if (dropdownMenu.attr('data-loaded')) {
 				return;
 			}

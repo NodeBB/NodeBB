@@ -11,6 +11,7 @@
 	"downvotes-per-day": "Runtervoten pro Tag (auf 0 gesetzt für unbegrenzte Runtervotes)",
 	"downvotes-per-user-per-day": "Runtervoten pro Benutzer pro Tag (auf 0 gesetzt für unbegrenzte Runtervotes)",
 	"min-rep-chat": "Mindestreputation zum Senden von Chatnachrichten",
+	"min-rep-post-links": "Minimum reputation to post links",
 	"min-rep-flag": "Minimales Ansehen und Beiträge zu melden",
 	"min-rep-website": "Erforderliche Reputation um eine \"Website\" zum Benutzerprofil hinzuzufügen",
 	"min-rep-aboutme": "Erforderliche Reputation um eine \"Über mich\"-Sektion zum Benutzerprofil hinzuzufügen",

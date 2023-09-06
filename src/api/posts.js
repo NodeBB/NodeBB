@@ -99,6 +99,8 @@ postsAPI.edit = async function (caller, data) {
 		throw new Error(`[[error:content-too-short, ${meta.config.minimumPostLength}]]`);
 	} else if (contentLen > meta.config.maximumPostLength) {
 		throw new Error(`[[error:content-too-long, ${meta.config.maximumPostLength}]]`);
+	} else if (!await posts.canUserPostContentWithLinks(caller.uid, data.content)) {
+		throw new Error(`[[error:not-enough-reputation-to-post-links, ${meta.config['min:rep:post-links']}]]`);
 	}
 
 	data.uid = caller.uid;

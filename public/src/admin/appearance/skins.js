@@ -2,8 +2,8 @@
 
 
 define('admin/appearance/skins', [
-	'translator', 'alerts', 'settings', 'hooks',
-], function (translator, alerts, settings, hooks) {
+	'translator', 'alerts', 'settings', 'hooks', 'slugify',
+], function (translator, alerts, settings, hooks, slugify) {
 	const Skins = {};
 
 	Skins.init = function () {
@@ -14,9 +14,9 @@ define('admin/appearance/skins', [
 		}).done((bsData) => {
 			hooks.on('action:settings.sorted-list.loaded', (data) => {
 				if (data.hash === 'custom-skins') {
-					// lower case all custom-skin ids after load
+					// slugify all custom-skin ids after load
 					$('.custom-skin-settings [data-type="list"] [data-theme]').each((i, el) => {
-						$(el).attr('data-theme', $(el).attr('data-theme').toLowerCase());
+						$(el).attr('data-theme', slugify($(el).attr('data-theme')));
 					});
 					highlightSelectedTheme(app.config.bootswatchSkin);
 				}

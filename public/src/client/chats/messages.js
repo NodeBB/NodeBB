@@ -149,7 +149,7 @@ define('forum/chats/messages', [
 	messages.scrollToBottom = function (containerEl) {
 		if (containerEl && containerEl.length) {
 			containerEl.scrollTop(containerEl[0].scrollHeight - containerEl.height());
-			containerEl.parent()
+			containerEl.parents('[component="chat/message/window"]')
 				.find('[component="chat/messages/scroll-up-alert"]')
 				.addClass('hidden');
 		}
@@ -163,15 +163,14 @@ define('forum/chats/messages', [
 
 	messages.toggleScrollUpAlert = function (containerEl) {
 		const isAtBottom = messages.isAtBottom(containerEl, 300);
-		containerEl.parent()
+		containerEl.parents('[component="chat/message/window"]')
 			.find('[component="chat/messages/scroll-up-alert"]')
 			.toggleClass('hidden', isAtBottom);
 	};
 
-	messages.prepReplyTo = async function (msgEl, roomId) {
-		const chatMessages = msgEl.parents(`[component="chat/messages"][data-roomid="${roomId}"]`);
-		const chatContent = chatMessages.find('[component="chat/message/content"]');
-		const composerEl = chatMessages.find('[component="chat/composer"]');
+	messages.prepReplyTo = async function (msgEl, chatMessageWindow) {
+		const chatContent = chatMessageWindow.find('[component="chat/message/content"]');
+		const composerEl = chatMessageWindow.find('[component="chat/composer"]');
 		const mid = msgEl.attr('data-mid');
 		const replyToEl = composerEl.find('[component="chat/composer/replying-to"]');
 		replyToEl.attr('data-tomid', mid)

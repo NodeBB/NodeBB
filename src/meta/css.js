@@ -260,7 +260,11 @@ CSS.getSkinSwitcherOptions = async function (uid) {
 		CSS.getCustomSkins(),
 	]);
 
-	const defaultSkin = _.capitalize(meta.config.bootswatchSkin) || '[[user:no-skin]]';
+	const foundCustom = customSkins.find(skin => skin.value === meta.config.bootswatchSkin);
+	const defaultSkin = foundCustom ?
+		foundCustom.name :
+		_.capitalize(meta.config.bootswatchSkin) || '[[user:no-skin]]';
+
 	const defaultSkins = [
 		{ name: `[[user:default, ${defaultSkin}]]`, value: '', selected: userSettings.bootswatchSkin === '' },
 		{ name: '[[user:no-skin]]', value: 'noskin', selected: userSettings.bootswatchSkin === 'noskin' },

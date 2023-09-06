@@ -89,6 +89,7 @@
     "min:rep:chat": 0,
     "min:rep:downvote": 0,
     "min:rep:upvote": 0,
+    "min:rep:post-links": 0,
     "min:rep:flag": 0,
     "min:rep:profile-picture": 0,
     "min:rep:cover-picture": 0,

@@ -39,22 +39,40 @@
 				</div>
 				<div class="btn-group">
 					<button class="btn btn-primary btn-sm dropdown-toggle" id="action-dropdown" data-bs-toggle="dropdown" type="button" disabled="disabled">[[admin/manage/users:edit]] <span class="caret"></span></button>
-					<ul class="dropdown-menu dropdown-menu-end p-1">
-						<li><a href="#" class="dropdown-item rounded-1 validate-email"><i class="fa fa-fw fa-check"></i> [[admin/manage/users:validate-email]]</a></li>
-						<li><a href="#" class="dropdown-item rounded-1 send-validation-email"><i class="fa fa-fw fa-mail-forward"></i> [[admin/manage/users:send-validation-email]]</a></li>
-						<li><a href="#" class="dropdown-item rounded-1 password-reset-email"><i class="fa fa-fw fa-key"></i> [[admin/manage/users:password-reset-email]]</a></li>
-						<li><a href="#" class="dropdown-item rounded-1 force-password-reset"><i class="fa fa-fw fa-unlock-alt"></i> [[admin/manage/users:force-password-reset]]</a></li>
-						<li><a href="#" class="dropdown-item rounded-1 manage-groups"><i class="fa fa-fw fa-users"></i> [[admin/manage/users:manage-groups]]</a></li>
-						<li><a href="#" class="dropdown-item rounded-1 set-reputation"><i class="fa fa-fw fa-star"></i> [[admin/manage/users:set-reputation]]</a></li>
-						<li class="dropdown-divider"></li>
-						<li><a href="#" class="dropdown-item rounded-1 ban-user"><i class="fa fa-fw fa-gavel"></i> [[admin/manage/users:ban]]</a></li>
-						<li><a href="#" class="dropdown-item rounded-1 ban-user-temporary"><i class="fa fa-fw fa-clock-o"></i> [[admin/manage/users:temp-ban]]</a></li>
-						<li><a href="#" class="dropdown-item rounded-1 unban-user"><i class="fa fa-fw fa-comment-o"></i> [[admin/manage/users:unban]]</a></li>
-						<li><a href="#" class="dropdown-item rounded-1 reset-lockout"><i class="fa fa-fw fa-unlock"></i> [[admin/manage/users:reset-lockout]]</a></li>
-						<li class="divider"></li>
-						<li><a href="#" class="dropdown-item rounded-1 delete-user"><i class="fa fa-fw fa-trash-o"></i> [[admin/manage/users:delete]]</a></li>
-						<li><a href="#" class="dropdown-item rounded-1 delete-user-content"><i class="fa fa-fw fa-trash-o"></i> [[admin/manage/users:delete-content]]</a></li>
-						<li><a href="#" class="dropdown-item rounded-1 delete-user-and-content"><i class="fa fa-fw fa-trash-o"></i> [[admin/manage/users:purge]]</a></li>
+					<ul class="dropdown-menu dropdown-menu-end p-1 text-sm">
+
+						<li><h6 class="dropdown-header">[[admin/manage/users:email]]</h6></li>
+						<li><a href="#" class="dropdown-item rounded-1 change-email"><i class="text-secondary fa fa-fw fa-envelope text-start"></i> [[admin/manage/users:change-email]]</a></li>
+						<li><a href="#" class="dropdown-item rounded-1 validate-email"><i class="text-secondary fa fa-fw fa-envelope-circle-check"></i> [[admin/manage/users:validate-email]]</a></li>
+						<li><a href="#" class="dropdown-item rounded-1 send-validation-email"><i class="text-secondary fa fa-fw fa-mail-forward"></i> [[admin/manage/users:send-validation-email]]</a></li>
+
+						<li><hr class="dropdown-divider"></li>
+
+						<li><h6 class="dropdown-header">[[admin/manage/users:password]]</h6></li>
+						<li><a href="#" class="dropdown-item rounded-1 change-password"><i class="text-secondary fa fa-fw fa-key"></i> [[admin/manage/users:change-password]]</a></li>
+						<li><a href="#" class="dropdown-item rounded-1 password-reset-email"><i class="text-secondary fa fa-fw fa-envelope-open-text"></i> [[admin/manage/users:password-reset-email]]</a></li>
+						<li><a href="#" class="dropdown-item rounded-1 force-password-reset"><i class="text-secondary fa fa-fw fa-user-lock"></i> [[admin/manage/users:force-password-reset]]</a></li>
+						<li><a href="#" class="dropdown-item rounded-1 reset-lockout"><i class="text-secondary fa fa-fw fa-lock-open"></i> [[admin/manage/users:reset-lockout]]</a></li>
+
+						<li><hr class="dropdown-divider"></li>
+
+						<li><h6 class="dropdown-header">[[admin/manage/users:manage]]</h6></li>
+						<li><a href="#" class="dropdown-item rounded-1 manage-groups"><i class="text-secondary fa fa-fw fa-users"></i> [[admin/manage/users:manage-groups]]</a></li>
+						<li><a href="#" class="dropdown-item rounded-1 set-reputation"><i class="text-secondary fa fa-fw fa-star"></i> [[admin/manage/users:set-reputation]]</a></li>
+
+						<li><hr class="dropdown-divider"></li>
+
+						<li><h6 class="dropdown-header">[[admin/manage/users:ban]]</h6></li>
+						<li><a href="#" class="dropdown-item rounded-1 ban-user"><i class="text-secondary fa fa-fw fa-gavel"></i> [[admin/manage/users:ban-users]]</a></li>
+						<li><a href="#" class="dropdown-item rounded-1 ban-user-temporary"><i class="text-secondary fa fa-fw fa-clock-o"></i> [[admin/manage/users:temp-ban]]</a></li>
+						<li><a href="#" class="dropdown-item rounded-1 unban-user"><i class="text-secondary fa fa-fw fa-comment-o"></i> [[admin/manage/users:unban]]</a></li>
+
+						<li><hr class="dropdown-divider"></li>
+
+						<li><h6 class="dropdown-header">[[admin/manage/users:delete]]</h6></li>
+						<li><a href="#" class="dropdown-item rounded-1 delete-user"><i class="text-secondary fa fa-fw fa-trash-o"></i> [[admin/manage/users:delete-users]]</a></li>
+						<li><a href="#" class="dropdown-item rounded-1 delete-user-content"><i class="text-secondary fa fa-fw fa-trash-o"></i> [[admin/manage/users:delete-content]]</a></li>
+						<li><a href="#" class="dropdown-item rounded-1 delete-user-and-content"><i class="text-secondary fa fa-fw fa-trash-o"></i> [[admin/manage/users:purge]]</a></li>
 					</ul>
 				</div>
 				<div class="btn-group">
@@ -105,36 +123,34 @@
 								<i class="administrator fa fa-shield text-success{{{ if !users.administrator }}} hidden{{{ end }}}"></i>
 								<a href="{config.relative_path}/user/{users.userslug}"> {users.username}</a>
 							</td>
-							<td class="text-nowrap ">
+							<td class="text-nowrap">
 								<div class="d-flex flex-column gap-1">
-									{{{ if (!./email && !./emailToConfirm) }}}
-									<em class="text-muted">[[admin/manage/users:users.no-email]]</em>
-									{{{ else }}}
+									<em class="text-muted no-email {{{ if (./email || ./emailToConfirm) }}}hidden{{{ end }}} ">[[admin/manage/users:users.no-email]]</em>
+
 									<span class="validated {{{ if !users.email:confirmed }}} hidden{{{ end }}}">
 										<i class="fa fa-fw fa-check text-success" title="[[admin/manage/users:users.validated]]" data-bs-toggle="tooltip"></i>
-										{{{ if ./email }}}{./email}{{{ end }}}
+										<span class="email">{{{ if ./email }}}{./email}{{{ end }}}</span>
 									</span>
 
 									<span class="validated-by-admin hidden">
 										<i class="fa fa-fw fa-check text-success" title="[[admin/manage/users:users.validated]]" data-bs-toggle="tooltip"></i>
-										{{{ if ./emailToConfirm }}}{./emailToConfirm}{{{ end }}}
+										<span class="email">{{{ if ./emailToConfirm }}}{./emailToConfirm}{{{ end }}}</span>
 									</span>
 
-									<span class="pending {{{ if !users.email:pending }}} hidden{{{ end }}}">
+									<span class="pending {{{ if (!./emailToConfirm || !users.email:pending) }}} hidden{{{ end }}}">
 										<i class="fa fa-fw fa-clock-o text-warning" title="[[admin/manage/users:users.validation-pending]]" data-bs-toggle="tooltip"></i>
-										{./emailToConfirm}
+										<span class="email">{./emailToConfirm}</span>
 									</span>
 
-									<span class="expired {{{ if !users.email:expired }}} hidden{{{ end }}}">
+									<span class="expired {{{ if (!./emailToConfirm || !users.email:expired) }}} hidden{{{ end }}}">
 										<i class="fa fa-fw fa-times text-danger" title="[[admin/manage/users:users.validation-expired]]" data-bs-toggle="tooltip"></i>
-										{./emailToConfirm}
+										<span class="email">{./emailToConfirm}</span>
 									</span>
 
-									<span class="notvalidated {{{ if (users.email:expired || (users.email:pending || users.email:confirmed)) }}} hidden{{{ end }}}">
+									<span class="notvalidated {{{ if (!./emailToConfirm || (users.email:expired || (users.email:pending || users.email:confirmed))) }}} hidden{{{ end }}}">
 										<i class="fa fa-fw fa-times text-danger" title="[[admin/manage/users:users.not-validated]]" data-bs-toggle="tooltip"></i>
-										{./emailToConfirm}
+										<span class="email">{./emailToConfirm}</span>
 									</span>
-									{{{ end }}}
 								</div>
 							</td>
 							<td>

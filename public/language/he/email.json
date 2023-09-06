@@ -37,6 +37,7 @@
     "digest.title.week": "התקציר השבועי שלך",
     "digest.title.month": "התקציר החודשי שלך",
     "notif.chat.subject": "הודעת צ'אט חדשה התקבלה מ%1",
+    "notif.chat.public-chat-subject": "הודעה חדשה מאת %1 בחדר %2",
     "notif.chat.cta": "לחץ כאן כדי להמשיך את השיחה",
     "notif.chat.unsub.info": "התראה הצ'אט הזו נשלחה אליך על-פי הגדרות החשבון שלך.",
     "notif.post.unsub.info": "התראת הפוסט הזו נשלחה אליך על-פי הגדרות החשבון שלך.",

@@ -100,7 +100,7 @@ module.exports = function (Messaging) {
 
 		const [settings, roomData] = await Promise.all([
 			db.getObject(`chat:room:${roomId}:notification:settings`),
-			Messaging.getRoomData(roomId, ['notificationSetting']),
+			Messaging.getRoomData(roomId),
 		]);
 		const roomDefault = roomData.notificationSetting;
 		const uidsToNotify = [];
@@ -121,15 +121,27 @@ module.exports = function (Messaging) {
 		if (uidsToNotify.length) {
 			const { displayname } = messageObj.fromUser;
 			const isGroupChat = await Messaging.isGroupChat(roomId);
-			const notification = await notifications.create({
+			const notifData = {
 				type: isGroupChat ? 'new-group-chat' : 'new-chat',
 				subject: `[[email:notif.chat.subject, ${displayname}]]`,
 				bodyShort: `[[notifications:new_message_from, ${displayname}]]`,
 				bodyLong: messageObj.content,
 				nid: `chat_${roomId}_${fromUid}`,
 				from: fromUid,
+				roomId: roomId,
 				path: `/chats/${messageObj.roomId}`,
-			});
+			};
+			if (roomData.public) {
+				const icon = Messaging.getRoomIcon(roomData);
+				const roomName = roomData.roomName || `[[modules:chat.room-id, ${roomId}]]`;
+				notifData.type = 'new-public-chat';
+				notifData.roomName = roomName;
+				notifData.roomIcon = icon;
+				notifData.subject = `[[email:notif.chat.public-chat-subject, ${displayname}, ${roomName}]]`;
+				notifData.bodyShort = `[[notifications:user_posted_in_public_room, ${displayname}, ${icon}, ${roomName}]]`;
+				notifData.mergeId = `notifications:user_posted_in_public_room|${roomId}`;
+			}
+			const notification = await notifications.create(notifData);
 			await notifications.push(notification, uidsToNotify);
 		}
 	}

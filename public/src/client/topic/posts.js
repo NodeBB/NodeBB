@@ -189,7 +189,7 @@ define('forum/topic/posts', [
 			}
 
 			data.posts = data.posts.filter(function (post) {
-				return post.index === -1 || $('[component="post"][data-pid="' + post.pid + '"]').length === 0;
+				return post.allowDupe || $('[component="post"][data-pid="' + post.pid + '"]').length === 0;
 			});
 		}
 
@@ -214,9 +214,9 @@ define('forum/topic/posts', [
 			html = html.filter(function () {
 				const $this = $(this);
 				const pid = $this.attr('data-pid');
-				const index = parseInt($this.attr('data-index'), 10);
+				const allowDupe = $this.attr('data-allow-dupe');
 				const isPost = $this.is('[component="post"]');
-				return !isPost || index === -1 || (pid && $('[component="post"][data-pid="' + pid + '"]').length === 0);
+				return !isPost || allowDupe || (pid && $('[component="post"][data-pid="' + pid + '"]').length === 0);
 			});
 
 			const removedEls = infinitescroll.removeExtra($('[component="post"]'), direction, Math.max(20, config.postsPerPage * 2));
@@ -295,25 +295,30 @@ define('forum/topic/posts', [
 		await addNecroPostMessage();
 	};
 
-	Posts.addTopicEvents = function (events) {
+	Posts.addTopicEvents = async function (events) {
 		if (config.topicPostSort === 'most_votes') {
 			return;
 		}
-		const event = events[0];
-		app.parseAndTranslate('partials/topic/event', event).then(function (translated) {
-			if (config.topicPostSort === 'oldest_to_newest') {
-				$('[component="topic"]').append(translated);
-			} else if (config.topicPostSort === 'newest_to_oldest') {
-				const mainPost = $('[component="topic"] [component="post"][data-index="0"]');
-				if (mainPost.length) {
-					$(translated).insertAfter(mainPost);
-				} else {
-					$('[component="topic"]').prepend(translated);
-				}
-			}
 
-			$('[component="topic/event"] .timeago').timeago();
-		});
+		const translated = await Promise.all(
+			events.map(event => app.parseAndTranslate(
+				'partials/topic/event',
+				{ ...event, privileges: ajaxify.data.privileges }
+			))
+		);
+
+		if (config.topicPostSort === 'oldest_to_newest') {
+			$('[component="topic"]').append(translated);
+		} else if (config.topicPostSort === 'newest_to_oldest') {
+			const mainPost = $('[component="topic"] [component="post"][data-index="0"]');
+			if (mainPost.length) {
+				mainPost.after(translated.reverse());
+			} else {
+				$('[component="topic"]').prepend(translated.reverse());
+			}
+		}
+
+		$('[component="topic/event"] .timeago').timeago();
 	};
 
 	async function addNecroPostMessage() {

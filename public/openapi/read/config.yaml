@@ -29,6 +29,8 @@ get:
                 type: boolean
               maintenanceMode:
                 type: boolean
+              postQueue:
+                type: number
               minimumTitleLength:
                 type: number
               maximumTitleLength:

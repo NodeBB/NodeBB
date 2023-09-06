@@ -417,8 +417,15 @@ usersAPI.addEmail = async (caller, { email, skipConfirmation, uid }) => {
 	skipConfirmation = canManageUsers && skipConfirmation;
 
 	if (skipConfirmation) {
-		await user.setUserField(uid, 'email', email);
-		await user.email.confirmByUid(uid);
+		if (!email.length) {
+			await user.email.remove(uid);
+		} else {
+			if (!await user.email.available(email)) {
+				throw new Error('[[error:email-taken]]');
+			}
+			await user.setUserField(uid, 'email', email);
+			await user.email.confirmByUid(uid);
+		}
 	} else {
 		await usersAPI.update(caller, { uid, email });
 	}

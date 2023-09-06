@@ -37,6 +37,7 @@
     "digest.title.week": "주간 포럼 메일",
     "digest.title.month": "월간 포럼 메일",
     "notif.chat.subject": "%1님이 채팅 메시지를 보냈습니다.",
+    "notif.chat.public-chat-subject": "New message from %1 in room %2",
     "notif.chat.cta": "채팅을 계속하려면 여기를 클릭하세요.",
     "notif.chat.unsub.info": "이 채팅 알림은 사용자의 구독 설정에 따라 전송되었습니다.",
     "notif.post.unsub.info": "이 포스트 알림은 사용자의 구독 설정에 따라 전송되었습니다.",

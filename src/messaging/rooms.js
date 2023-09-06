@@ -448,16 +448,16 @@ module.exports = function (Messaging) {
 			user.isGlobalModerator(uid),
 		]);
 
-		if (!canChat) {
-			throw new Error('[[error:no-privileges]]');
-		}
 		if (!room ||
 			(!room.public && !inRoom) ||
 			(room.public && (
-				Array.isArray(room.groups) && room.groups.length && !(await groups.isMemberOfAny(uid, room.groups)))
+				Array.isArray(room.groups) && room.groups.length && !isAdmin && !(await groups.isMemberOfAny(uid, room.groups)))
 			)
 		) {
 			return null;
+		}
+		if (!canChat) {
+			throw new Error('[[error:no-privileges]]');
 		}
 
 		// add user to public room onload

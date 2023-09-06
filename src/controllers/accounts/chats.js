@@ -20,7 +20,7 @@ chatsController.get = async function (req, res, next) {
 	}
 	const canChat = await privileges.global.can('chat', req.uid);
 	if (!canChat) {
-		return next(new Error('[[error:no-privileges]]'));
+		return helpers.notAllowed(req, res);
 	}
 
 	const payload = {

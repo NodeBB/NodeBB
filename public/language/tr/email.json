@@ -37,6 +37,7 @@
     "digest.title.week": "Haftalık Özet",
     "digest.title.month": "Aylık Özet",
     "notif.chat.subject": "%1 kullanıcısından yeni bir mesaj aldınız!",
+    "notif.chat.public-chat-subject": "New message from %1 in room %2",
     "notif.chat.cta": "Sohbete devam etmek için buraya tıklayın",
     "notif.chat.unsub.info": "Bu bildirim, seçtiğiniz ayarlar nedeniyle gönderilmiştir.",
     "notif.post.unsub.info": "Bu yazı bildirimi size abonelik ayarlarınız nedeniyle gönderilmiştir.",

@@ -11,6 +11,7 @@
 	"downvotes-per-day": "일일 최대 비추천 (0일 경우 무제한)",
 	"downvotes-per-user-per-day": "개인 일일 최대 비추천 (0일 경우 무제한)",
 	"min-rep-chat": "Minimum reputation to send chat messages",
+	"min-rep-post-links": "Minimum reputation to post links",
 	"min-rep-flag": "포스트 신고에 필요한 최소 인지도",
 	"min-rep-website": "\"웹사이트\" 등록에 필요한 최소 인지도",
 	"min-rep-aboutme": "\"설명\" 작성에 필요한 최소 인지도",

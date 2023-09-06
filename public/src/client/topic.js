@@ -49,7 +49,7 @@ define('forum/topic', [
 			posts.signaturesShown = {};
 		}
 		await posts.onTopicPageLoad(components.get('post'));
-		navigator.init('[component="post"]', ajaxify.data.postcount, Topic.toTop, Topic.toBottom, Topic.navigatorCallback);
+		navigator.init('[component="topic"]>[component="post"]', ajaxify.data.postcount, Topic.toTop, Topic.toBottom, Topic.navigatorCallback);
 
 		postTools.init(tid);
 		threadTools.init(tid, $('.topic'));
@@ -64,7 +64,6 @@ define('forum/topic', [
 		addBlockQuoteHandler();
 		addCodeBlockHandler();
 		addParentHandler();
-		addDropupHandler();
 		addRepliesHandler();
 		addPostsPreviewHandler();
 		setupQuickReply();
@@ -163,7 +162,7 @@ define('forum/topic', [
 				timeout: 15000,
 				type: 'info',
 				clickfn: function () {
-					navigator.scrollToIndex(parseInt(bookmark, 10), true);
+					navigator.scrollToIndex(Math.max(0, parseInt(bookmark, 10) - 1), true);
 				},
 				closefn: function () {
 					storage.removeItem('topic:' + tid + ':bookmark');
@@ -226,10 +225,8 @@ define('forum/topic', [
 				setTimeout(() => btn.find('i').removeClass('fa-check').addClass('fa-copy'), 2000);
 				const codeEl = btn.parent().find('code');
 				if (codeEl.attr('data-lines')) {
-					let codeText = '';
-					codeEl.find('.hljs-ln-code[data-line-number]')
-						.each((index, el) => { codeText += $(el).text() + '\n'; });
-					return codeText;
+					return codeEl.find('.hljs-ln-code[data-line-number]')
+						.map((i, e) => e.textContent).get().join('\n');
 				}
 				return codeEl.text();
 			},
@@ -275,37 +272,6 @@ define('forum/topic', [
 				navigator.scrollToIndex(toPost.attr('data-index'), true);
 				return false;
 			}
-		});
-	}
-
-	Topic.applyDropup = function () {
-		const containerRect = this.getBoundingClientRect();
-		const dropdownEl = this.querySelector('.dropdown-menu');
-		const dropdownStyle = window.getComputedStyle(dropdownEl);
-		const dropdownHeight = dropdownStyle.getPropertyValue('height').slice(0, -2);
-		const offset = document.documentElement.style.getPropertyValue('--panel-offset').slice(0, -2);
-
-		// Toggler position (including its height, since the menu spawns above it),
-		// minus the dropdown's height and navbar offset
-		const dropUp = (containerRect.top + containerRect.height - dropdownHeight - offset) > 0;
-		this.classList.toggle('dropup', dropUp);
-	};
-
-	function addDropupHandler() {
-		// Locate all dropdowns
-		const topicEl = components.get('topic');
-		const target = topicEl.find('.dropdown-menu').parent();
-		$(target).on('shown.bs.dropdown', function () {
-			const dropdownEl = this.querySelector('.dropdown-menu');
-			if (dropdownEl.innerHTML) {
-				Topic.applyDropup.call(this);
-			}
-		});
-		hooks.onPage('action:topic.tools.load', ({ element }) => {
-			Topic.applyDropup.call(element.get(0).parentNode);
-		});
-		hooks.onPage('action:post.tools.load', ({ element }) => {
-			Topic.applyDropup.call(element.get(0).parentNode);
 		});
 	}
 

@@ -25,7 +25,7 @@
 
 	"updates": "עדכונים",
 	"running-version": "הפורום מעודכן ל<strong>גרסה <span id=\"version\">%1</span></strong>",
-	"keep-updated": "לעדכוני אבטחה מעודכנים ותיקוני באגים, וודא שהפורום שלך עדכני לגרסה האחרונה.",
+	"keep-updated": "לעדכוני אבטחה ותיקוני באגים, וודא שהפורום שלך עדכני לגרסה האחרונה.",
 	"up-to-date": "אתה <strong>מעודכן</strong> <i class=\"fa fa-check\"></i>",
 	"upgrade-available": "גרסה חדשה (v%1) שוחררה. שקול  <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">לעדכן את הפורום שלך</a>.",
 	"prerelease-upgrade-available": "זוהי גרסת טרום-הפצה מיושנת של NodeBB. גרסה חדשה (v%1) שוחררה. שקול <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">לשדרג את ה-NodeBB שלך</a>.",
@@ -48,7 +48,7 @@
 	"restart-disabled": "הפעלה או בניה מחדש של הפורום בוטלה, נראה שאינך מפעיל את הפורום דרך שרת מתאים.",
 	"maintenance-mode": "מצב תחזוקה",
 	"maintenance-mode-title": "לחץ כאן על מנת להכניס את הפורום למצב תחזוקה",
-	"dark-mode": "Dark Mode",
+	"dark-mode": "מצב כהה",
 	"realtime-chart-updates": "עדכן תרשים בזמן אמת",
 
 	"active-users": "משתמשים פעילים",
@@ -91,8 +91,8 @@
 	"start": "התחלה",
 	"end": "סיום",
 	"filter": "סינון",
-	"view-as-json": "View as JSON",
-	"expand-analytics": "Expand analytics",
-	"clear-search-history": "Clear Search History",
-	"clear-search-history-confirm": "Are you sure you want to clear entire search history?"
+	"view-as-json": "הצג כ-JSON",
+	"expand-analytics": "הרחב ניתוח",
+	"clear-search-history": "מחק היסטוריית חיפושים",
+	"clear-search-history-confirm": "האם אתה בטוח שברצונך למחוק את כל היסטוריית החיפושים?"
 }

@@ -1,4 +1,5 @@
 {
+    "chat.room-id": "Discussion %1",
     "chat.chatting_with": "Discuter avec",
     "chat.placeholder": "Écrivez vos message ici, faites glisser / déposez les images, validez sur entrée pour envoyer",
     "chat.placeholder.mobile": "Tapez le message ici",

@@ -15,7 +15,10 @@ define('forum/account/profile', [
 		processPage();
 
 		if (parseInt(ajaxify.data.emailChanged, 10) === 1) {
-			bootbox.alert('[[user:emailUpdate.change-instructions]]');
+			bootbox.alert({
+				message: '[[user:emailUpdate.change-instructions]]',
+				closeButton: false,
+			});
 		}
 
 		socket.removeListener('event:user_status_change', onUserStatusChange);

@@ -172,6 +172,7 @@
     "not-enough-reputation-to-chat": "Ձեզ անհրաժեշտ է %1 վարկանիշ զրուցելու համար",
     "not-enough-reputation-to-upvote": "Ձեզ անհրաժեշտ է %1 վարկանիշ՝ կողմ քվեարկելու համար",
     "not-enough-reputation-to-downvote": "Դեմ քվեարկելու համար ձեզ պետք է %1 վարկանիշ",
+    "not-enough-reputation-to-post-links": "You need %1 reputation to post links",
     "not-enough-reputation-to-flag": "Այս գրառումը դրոշակելու համար ձեզ պետք է %1 հեղինակություն",
     "not-enough-reputation-min-rep-website": "Ձեզ անհրաժեշտ է %1 վարկանիշ՝ կայք ավելացնելու համար",
     "not-enough-reputation-min-rep-aboutme": "Ինձ պետք է %1 վարկանիշ՝ իմ մասին ավելացնելու համար",

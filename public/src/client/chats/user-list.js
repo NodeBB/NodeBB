@@ -11,11 +11,13 @@ define('forum/chats/user-list', ['api'], function (api) {
 		if (!userListEl.length) {
 			return;
 		}
+		const pinnedMessageListEl = container.find('[component="chat/messages/pinned/container"]');
 		container.find('[component="chat/user/list/btn"]').on('click', () => {
 			userListEl.toggleClass('hidden');
 			if (userListEl.hasClass('hidden')) {
 				stopUpdating();
 			} else {
+				pinnedMessageListEl.addClass('hidden');
 				startUpdating(roomId, userListEl);
 			}
 		});
@@ -29,6 +31,9 @@ define('forum/chats/user-list', ['api'], function (api) {
 	};
 
 	function startUpdating(roomId, userListEl) {
+		if (updateInterval) {
+			clearInterval(updateInterval);
+		}
 		updateInterval = setInterval(() => {
 			updateUserList(roomId, userListEl);
 		}, 5000);

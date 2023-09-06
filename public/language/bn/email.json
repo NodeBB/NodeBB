@@ -37,6 +37,7 @@
     "digest.title.week": "Your Weekly Digest",
     "digest.title.month": "Your Monthly Digest",
     "notif.chat.subject": "%1 এর থেকে নতুন মেসেজ এসেছে।",
+    "notif.chat.public-chat-subject": "New message from %1 in room %2",
     "notif.chat.cta": "কথপোকথন চালিয়ে যেতে এখানে ক্লিক করুন",
     "notif.chat.unsub.info": "আপনার সাবস্ক্রীপশন সেটিংসের কারনে আপনার এই নোটিফিকেশন পাঠানো হয়েছে",
     "notif.post.unsub.info": "আপনার সাবস্ক্রিপশন সেটিংসের কারনে আপনার এই বার্তাটি পাঠানো হয়েছে",

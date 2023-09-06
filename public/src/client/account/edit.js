@@ -8,7 +8,8 @@ define('forum/account/edit', [
 	'hooks',
 	'bootbox',
 	'alerts',
-], function (header, picture, translator, api, hooks, bootbox, alerts) {
+	'admin/modules/change-email',
+], function (header, picture, translator, api, hooks, bootbox, alerts, changeEmail) {
 	const AccountEdit = {};
 
 	AccountEdit.init = function () {
@@ -25,6 +26,19 @@ define('forum/account/edit', [
 		updateSignature();
 		updateAboutMe();
 		handleGroupSort();
+
+		if (!ajaxify.data.isSelf && app.user.isAdmin) {
+			$(`a[href="${config.relative_path}/user/${ajaxify.data.userslug}/edit/email"]`).on('click', () => {
+				changeEmail.init({
+					uid: ajaxify.data.uid,
+					email: ajaxify.data.email,
+					onSuccess: function () {
+						alerts.success('[[user:email-updated]]');
+					},
+				});
+				return false;
+			});
+		}
 	};
 
 	function updateProfile() {

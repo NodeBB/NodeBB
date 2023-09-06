@@ -11,6 +11,7 @@
 	"downvotes-per-day": "Downvotes per day (set to 0 for unlimited downvotes)",
 	"downvotes-per-user-per-day": "Downvotes per user per day (set to 0 for unlimited downvotes)",
 	"min-rep-chat": "Minimum reputation to send chat messages",
+	"min-rep-post-links": "Minimum reputation to post links",
 	"min-rep-flag": "Minimum omdømme for å flagge innlegg",
 	"min-rep-website": "Minimum omdømme som kreves for å legge \"Nettsted\" til brukerprofil",
 	"min-rep-aboutme": "Minimum reputation to add \"About me\" to user profile",

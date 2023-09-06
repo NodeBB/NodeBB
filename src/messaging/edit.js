@@ -28,9 +28,13 @@ module.exports = function (Messaging) {
 
 		// Propagate this change to users in the room
 		const messages = await Messaging.getMessagesData([mid], uid, roomId, true);
-		sockets.in(`chat_room_${roomId}`).emit('event:chats.edit', {
-			messages: messages,
-		});
+		if (messages[0]) {
+			const roomName = messages[0].deleted ? `uid_${uid}` : `chat_room_${roomId}`;
+			sockets.in(roomName).emit('event:chats.edit', {
+				messages: messages,
+			});
+		}
+
 		plugins.hooks.fire('action:messaging.edit', {
 			message: { ...messages[0], content: payload.content },
 		});
@@ -86,4 +90,16 @@ module.exports = function (Messaging) {
 
 	Messaging.canEdit = async (messageId, uid) => await canEditDelete(messageId, uid, 'edit');
 	Messaging.canDelete = async (messageId, uid) => await canEditDelete(messageId, uid, 'delete');
+
+	Messaging.canPin = async (roomId, uid) => {
+		const [isAdmin, isGlobalMod, inRoom, isRoomOwner] = await Promise.all([
+			user.isAdministrator(uid),
+			user.isGlobalModerator(uid),
+			Messaging.isUserInRoom(uid, roomId),
+			Messaging.isRoomOwner(uid, roomId),
+		]);
+		if (!isAdmin && !isGlobalMod && (!inRoom || !isRoomOwner)) {
+			throw new Error('[[error:no-privileges]]');
+		}
+	};
 };

@@ -172,6 +172,7 @@
     "not-enough-reputation-to-chat": "Vous avez besoin de %1 réputation pour signaler",
     "not-enough-reputation-to-upvote": "Vous avez besoin de %1 réputation pour voter",
     "not-enough-reputation-to-downvote": "Vous avez besoin de %1 réputation pour voter",
+    "not-enough-reputation-to-post-links": "Vous avez besoin de %1 réputation pour publier des liens",
     "not-enough-reputation-to-flag": "Vous avez besoin de %1 réputation pour faire un signalement",
     "not-enough-reputation-min-rep-website": "Vous avez besoin de %1 réputation pour ajouter un site Web",
     "not-enough-reputation-min-rep-aboutme": "Vous avez besoin de %1 réputation pour ajouter à propos de moi",

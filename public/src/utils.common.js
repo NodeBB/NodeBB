@@ -707,9 +707,7 @@ const utils = {
 			const args = arguments;
 			const later = function () {
 				timeout = null;
-				if (!immediate) {
-					func.apply(context, args);
-				}
+				func.apply(context, args);
 			};
 			const callNow = immediate && !timeout;
 			if (!timeout) {

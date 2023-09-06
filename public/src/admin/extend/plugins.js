@@ -309,8 +309,16 @@ define('admin/extend/plugins', [
 				btn.removeAttr('disabled');
 				return alerts.error(err);
 			}
-
-			ajaxify.refresh();
+			function removeAndUpdateBadge(section) {
+				$(`${section} [data-plugin-id="${pluginID}"]`).remove();
+				const count = $(`${section} [data-plugin-id]`).length;
+				$(`[data-bs-target="${section}"] .badge`).text(count);
+			}
+			if (!pluginData.installed) {
+				['#installed', '#active', '#deactive', '#upgrade'].forEach(removeAndUpdateBadge);
+			} else {
+				ajaxify.refresh();
+			}
 
 			alerts.alert({
 				alert_id: 'plugin_toggled',

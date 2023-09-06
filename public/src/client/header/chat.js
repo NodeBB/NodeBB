@@ -25,8 +25,8 @@ define('forum/header/chat', [
 		socket.removeListener('event:chats.receive', onChatMessageReceived);
 		socket.on('event:chats.receive', onChatMessageReceived);
 
-		socket.removeListener('event:user_status_change', onUserStatusChange);
-		socket.on('event:user_status_change', onUserStatusChange);
+		socket.removeListener('event:chats.typing', onUserTyping);
+		socket.on('event:chats.typing', onUserTyping);
 
 		socket.removeListener('event:chats.roomRename', onRoomRename);
 		socket.on('event:chats.roomRename', onRoomRename);
@@ -63,8 +63,8 @@ define('forum/header/chat', [
 		requireAndCall('onChatMessageReceived', data);
 	}
 
-	function onUserStatusChange(data) {
-		requireAndCall('onUserStatusChange', data);
+	function onUserTyping(data) {
+		requireAndCall('onUserTyping', data);
 	}
 
 	function onRoomRename(data) {

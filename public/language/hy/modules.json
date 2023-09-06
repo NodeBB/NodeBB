@@ -1,4 +1,5 @@
 {
+    "chat.room-id": "Room %1",
     "chat.chatting_with": "Զրուցել ",
     "chat.placeholder": "Գրեք հաղորդագրություն այստեղ, տեղադրեք նկարներ, սեղմեք \"enter\" ուղարկելու համար",
     "chat.placeholder.mobile": "Type chat message here",

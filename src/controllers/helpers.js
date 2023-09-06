@@ -475,8 +475,8 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 			status: { code, message },
 			response: payload || {},
 		});
-	} else if (payload instanceof Error) {
-		const { message } = payload;
+	} else if (payload instanceof Error || typeof payload === 'string') {
+		const message = payload instanceof Error ? payload.message : payload;
 		const response = {};
 
 		// Update status code based on some common error codes
@@ -512,9 +512,10 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 			process.stdout.write(payload.stack);
 		}
 		res.status(statusCode).json(returnPayload);
-	} else if (!payload) {
+	} else {
 		// Non-2xx statusCode, generate predefined error
-		const returnPayload = await helpers.generateError(statusCode, null, res);
+		const message = payload ? String(payload) : null;
+		const returnPayload = await helpers.generateError(statusCode, message, res);
 		res.status(statusCode).json(returnPayload);
 	}
 };

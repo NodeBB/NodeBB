@@ -37,6 +37,7 @@
     "digest.title.week": "Votre lettre d'activités hebdomadaire",
     "digest.title.month": "Votre lettre d'activités mensuel",
     "notif.chat.subject": "Nouveau message de chat reçu de %1",
+    "notif.chat.public-chat-subject": "Nouveau message de %1 dans la discussion %2",
     "notif.chat.cta": "Cliquez ici pour continuer la conversation",
     "notif.chat.unsub.info": "Cette notification de chat a été envoyé en raison de vos paramètres d'abonnement.",
     "notif.post.unsub.info": "La notification de ce message vous a été envoyé en raison de vos paramètres d'abonnement.",

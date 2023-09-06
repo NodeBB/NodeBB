@@ -1,5 +1,6 @@
 'use strict';
 
+const _ = require('lodash');
 const os = require('os');
 const nconf = require('nconf');
 const winston = require('winston');
@@ -76,6 +77,7 @@ Sockets.init = async function (server) {
 
 function onConnection(socket) {
 	socket.uid = socket.request.uid;
+	socket.data.uid = socket.uid; // socket.data is shared between nodes via fetchSockets
 	socket.ip = (
 		socket.request.headers['x-forwarded-for'] ||
 		socket.request.connection.remoteAddress || ''
@@ -93,6 +95,19 @@ function onConnection(socket) {
 			req: apiHelpers.buildReqObject(socket, payload),
 			socket: { ...payload },
 		}, onMessage, socket, payload);
+	});
+
+	socket.on('disconnecting', () => {
+		for (const room of socket.rooms) {
+			if (room && room.match(/^chat_room_\d+$/)) {
+				Sockets.server.in(room).emit('event:chats.typing', {
+					roomId: room.split('_').pop(),
+					uid: socket.uid,
+					username: '',
+					typing: false,
+				});
+			}
+		}
 	});
 
 	socket.on('disconnect', () => {
@@ -300,18 +315,16 @@ Sockets.getUidsInRoom = async function (room) {
 		return [];
 	}
 	const ioRoom = Sockets.server.in(room);
-	const uids = {};
+	const uids = [];
 	if (ioRoom) {
 		const sockets = await ioRoom.fetchSockets();
 		for (const s of sockets) {
-			for (const r of s.rooms) {
-				if (r.startsWith('uid_')) {
-					uids[r.split('_').pop()] = 1;
-				}
+			if (s && s.data && s.data.uid > 0) {
+				uids.push(s.data.uid);
 			}
 		}
 	}
-	return Object.keys(uids);
+	return _.uniq(uids);
 };
 
 Sockets.warnDeprecated = (socket, replacement) => {

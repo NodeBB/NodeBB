@@ -18,7 +18,7 @@ define('admin/settings/general', ['admin/settings'], function () {
 			$('input[data-field="brand:maskableIcon"]').val('');
 		});
 		$('button[data-action="removeOgImage"]').on('click', function () {
-			$('input[data-field="removeOgImage"]').val('');
+			$('input[data-field="og:image"]').val('');
 		});
 
 		$('[data-field="homePageRoute"]').on('change', toggleCustomRoute);

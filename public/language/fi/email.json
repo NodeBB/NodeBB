@@ -37,6 +37,7 @@
     "digest.title.week": "Viikottainen koosteesi",
     "digest.title.month": "Kuukausittainen koosteesi",
     "notif.chat.subject": "Uusi chatviesti henkilöltä %1",
+    "notif.chat.public-chat-subject": "New message from %1 in room %2",
     "notif.chat.cta": "Klikkaa tästä jatkaaksesi keskustelua",
     "notif.chat.unsub.info": "Tämä keskustelun ilmoitus on lähetettty viestiasetuksiesi johdosta",
     "notif.post.unsub.info": "Tämä ilmoitus viestistä lähetettiin sinulle viestiasetuksistasi johtuen",

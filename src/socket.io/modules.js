@@ -1,6 +1,7 @@
 'use strict';
 
 const _ = require('lodash');
+const validator = require('validator');
 
 const db = require('../database');
 const Messaging = require('../messaging');
@@ -250,5 +251,35 @@ SocketModules.chats.searchMessages = async (socket, data) => {
 
 	return messageData.filter(msg => msg && !msg.deleted && msg.timestamp > userjoinTimestamp);
 };
+
+SocketModules.chats.loadPinnedMessages = async (socket, data) => {
+	if (!data || !data.roomId || !utils.isNumber(data.start)) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	const isInRoom = await Messaging.isUserInRoom(socket.uid, data.roomId);
+	if (!isInRoom) {
+		throw new Error('[[error:no-privileges]]');
+	}
+	const start = parseInt(data.start, 10) || 0;
+	const pinnedMsgs = await Messaging.getPinnedMessages(data.roomId, socket.uid, start, start + 49);
+	return pinnedMsgs;
+};
+
+SocketModules.chats.typing = async (socket, data) => {
+	if (!data || !utils.isNumber(data.roomId) || typeof data.typing !== 'boolean') {
+		throw new Error('[[error:invalid-data]]');
+	}
+	const isInRoom = await Messaging.isUserInRoom(socket.uid, data.roomId);
+	if (!isInRoom) {
+		throw new Error('[[error:no-privileges]]');
+	}
+	socket.to(`chat_room_${data.roomId}`).emit('event:chats.typing', {
+		uid: socket.uid,
+		roomId: data.roomId,
+		typing: data.typing,
+		username: validator.escape(String(data.username)),
+	});
+};
+
 
 require('../promisify')(SocketModules);

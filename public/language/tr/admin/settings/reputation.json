@@ -11,6 +11,7 @@
 	"downvotes-per-day": "Eksi oy günlük limiti (sınırsız eksi oy için 0 giriniz)",
 	"downvotes-per-user-per-day": "Aynı kişiye verilecek eksi oy günlük limiti (sınırsız eksi oy için 0 giriniz)",
 	"min-rep-chat": "Özel sohbet edebilmek için gerekli minimum itibar",
+	"min-rep-post-links": "Minimum reputation to post links",
 	"min-rep-flag": "İletileri şikayet etmek için gerekli minimum itibar",
 	"min-rep-website": "Kullanıcı profiline \"Web Sitesi\" eklemek için gerekli minimum itibar",
 	"min-rep-aboutme": "Kullanıcı profiline \"Hakkımda\" eklemek için gereken minimum itibar",

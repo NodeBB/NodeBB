@@ -11,6 +11,7 @@
 	"downvotes-per-day": "Votes négatif par jour (0 = illimités)",
 	"downvotes-per-user-per-day": "Votes négatif pour un utilisateur par jour (0 = illimités)",
 	"min-rep-chat": "Réputation minimum pour écrire un message",
+	"min-rep-post-links": "Réputation minimale pour publier des liens",
 	"min-rep-flag": "Réputation minimum pour signaler un message",
 	"min-rep-website": "Réputation minimum pour ajouter \"Site internet\" au profil utilisateur",
 	"min-rep-aboutme": "Réputation minimum pour ajouter \"À propos\" au profil utilisateur",

@@ -206,13 +206,13 @@ async function addTags(topicData, req, res, currentPage) {
 	const postAtIndex = topicData.posts.find(p => parseInt(p.index, 10) === parseInt(Math.max(0, postIndex - 1), 10));
 	let description = '';
 	if (postAtIndex && postAtIndex.content) {
-		description = utils.stripHTMLTags(utils.decodeHTMLEntities(postAtIndex.content));
+		description = utils.stripHTMLTags(utils.decodeHTMLEntities(postAtIndex.content)).trim();
 	}
 
 	if (description.length > 160) {
 		description = `${description.slice(0, 157)}...`;
 	}
-	description = description.replace(/\n/g, ' ');
+	description = description.replace(/\n/g, ' ').trim();
 
 	let mainPost = topicData.posts.find(p => parseInt(p.index, 10) === 0);
 	if (!mainPost) {
@@ -225,16 +225,8 @@ async function addTags(topicData, req, res, currentPage) {
 			content: topicData.titleRaw,
 		},
 		{
-			name: 'description',
-			content: description,
-		},
-		{
 			property: 'og:title',
 			content: topicData.titleRaw,
-		},
-		{
-			property: 'og:description',
-			content: description,
 		},
 		{
 			property: 'og:type',
@@ -253,6 +245,19 @@ async function addTags(topicData, req, res, currentPage) {
 			content: topicData.category ? topicData.category.name : '',
 		},
 	];
+
+	if (description && description.length) {
+		res.locals.metaTags.push(
+			{
+				name: 'description',
+				content: description,
+			},
+			{
+				property: 'og:description',
+				content: description,
+			},
+		);
+	}
 
 	await addOGImageTags(res, topicData, postAtIndex);
 

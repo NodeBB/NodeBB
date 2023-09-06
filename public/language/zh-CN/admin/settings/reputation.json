@@ -11,6 +11,7 @@
 	"downvotes-per-day": "每天踩的次数（设置为0则表示无限制）",
 	"downvotes-per-user-per-day": "每位用户每天踩的次数（设置为0则表示无限制）",
 	"min-rep-chat": "发送聊天消息 需要的最低声望",
+	"min-rep-post-links": "发布链接的最低声望",
 	"min-rep-flag": "举报帖子需要的最低声望",
 	"min-rep-website": "添加“网站”到用户资料需要的最低声望",
 	"min-rep-aboutme": "添加“关于我”到用户资料需要的最低声望",

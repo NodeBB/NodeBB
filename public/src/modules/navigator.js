@@ -478,7 +478,7 @@ define('navigator', [
 
 	navigator.update = function () {
 		let newIndex = index;
-		const els = $(navigator.selector);
+		const els = $(navigator.selector).filter((i, el) => !el.getAttribute('data-navigator-ignore'));
 		if (els.length) {
 			newIndex = parseInt(els.first().attr('data-index'), 10) + 1;
 		}
@@ -585,7 +585,7 @@ define('navigator', [
 	};
 
 	navigator.scrollTop = function (index) {
-		if ($(navigator.selector + '[data-index="' + index + '"]').length) {
+		if ($(`${navigator.selector}[data-index="${index}"]:not([data-navigator-ignore])`).length) {
 			navigator.scrollToIndex(index, true);
 		} else {
 			ajaxify.go(generateUrl());
@@ -597,7 +597,7 @@ define('navigator', [
 			return;
 		}
 
-		if ($(navigator.selector + '[data-index="' + index + '"]').length) {
+		if ($(`${navigator.selector}[data-index="${index}"]:not([data-navigator-ignore])`).length) {
 			navigator.scrollToIndex(index, true);
 		} else {
 			index = parseInt(index, 10) + 1;
@@ -654,7 +654,7 @@ define('navigator', [
 	};
 
 	navigator.scrollToPostIndex = function (postIndex, highlight, duration) {
-		const scrollTo = components.get('post', 'index', postIndex);
+		const scrollTo = $(`[component="post"][data-index="${postIndex}"]:not([data-navigator-ignore])`);
 		navigator.scrollToElement(scrollTo, highlight, duration, postIndex);
 	};
 

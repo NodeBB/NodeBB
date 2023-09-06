@@ -82,3 +82,5 @@ post:
                     items:
                       type: string
                       description: An email address
+    '400':
+      description: error occured (aka email taken)
