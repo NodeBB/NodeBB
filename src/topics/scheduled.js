@@ -26,6 +26,11 @@ Scheduled.handleExpired = async function () {
 		return;
 	}
 
+	await postTids(tids);
+	await db.sortedSetsRemoveRangeByScore([`topics:scheduled`], '-inf', now);
+};
+
+async function postTids(tids) {
 	let topicsData = await topics.getTopicsData(tids);
 	// Filter deleted
 	topicsData = topicsData.filter(topicData => Boolean(topicData));
@@ -43,9 +48,8 @@ Scheduled.handleExpired = async function () {
 		updateUserLastposttimes(uids, topicsData),
 		updateGroupPosts(uids, topicsData),
 		...topicsData.map(topicData => unpin(topicData.tid, topicData)),
-		db.sortedSetsRemoveRangeByScore([`topics:scheduled`], '-inf', now)
 	));
-};
+}
 
 // topics/tools.js#pin/unpin would block non-admins/mods, thus the local versions
 Scheduled.pin = async function (tid, topicData) {
@@ -62,23 +66,27 @@ Scheduled.pin = async function (tid, topicData) {
 };
 
 Scheduled.reschedule = async function ({ cid, tid, timestamp, uid }) {
-	const mainPid = await topics.getTopicField(tid, 'mainPid');
-	await Promise.all([
-		db.sortedSetsAdd([
-			'topics:scheduled',
-			`uid:${uid}:topics`,
-			'topics:tid',
-			`cid:${cid}:uid:${uid}:tids`,
-		], timestamp, tid),
-		posts.setPostField(mainPid, 'timestamp', timestamp),
-		db.sortedSetsAdd([
-			'posts:pid',
-			`uid:${uid}:posts`,
-			`cid:${cid}:uid:${uid}:pids`,
-		], timestamp, mainPid),
-		shiftPostTimes(tid, timestamp),
-	]);
-	return topics.updateLastPostTimeFromLastPid(tid);
+	if (timestamp < Date.now()) {
+		await postTids([tid]);
+	} else {
+		const mainPid = await topics.getTopicField(tid, 'mainPid');
+		await Promise.all([
+			db.sortedSetsAdd([
+				'topics:scheduled',
+				`uid:${uid}:topics`,
+				'topics:tid',
+				`cid:${cid}:uid:${uid}:tids`,
+			], timestamp, tid),
+			posts.setPostField(mainPid, 'timestamp', timestamp),
+			db.sortedSetsAdd([
+				'posts:pid',
+				`uid:${uid}:posts`,
+				`cid:${cid}:uid:${uid}:pids`,
+			], timestamp, mainPid),
+			shiftPostTimes(tid, timestamp),
+		]);
+		await topics.updateLastPostTimeFromLastPid(tid);
+	}
 };
 
 function unpin(tid, topicData) {
