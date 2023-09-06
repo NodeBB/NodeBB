@@ -198,6 +198,7 @@ define('forum/chats/messages', [
 		const messageControls = msgEl.find(`[component="chat/message/controls"]`);
 		const chatContent = messageBody.parents('[component="chat/message/content"]');
 
+		const isAtBottom = messages.isAtBottom(chatContent);
 		messageBody.addClass('hidden');
 		messageControls.addClass('hidden');
 		editEl.insertAfter(messageBody);
@@ -207,7 +208,7 @@ define('forum/chats/messages', [
 		textarea.focus().putCursorAtEnd();
 		autoresizeTextArea(textarea);
 
-		if (chatContent.length && messages.isAtBottom(chatContent)) {
+		if (chatContent.length && isAtBottom) {
 			messages.scrollToBottom(chatContent);
 		}
 
