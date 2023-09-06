@@ -186,7 +186,7 @@ module.exports = function (Posts) {
 			throw new Error('[[error:no-privileges]]');
 		}
 		const isMain = parseInt(data.pid, 10) === parseInt(topicData.mainPid, 10);
-		if (isMain && (isNaN(data.timestamp) || data.timestamp < Date.now())) {
+		if (isMain && isNaN(data.timestamp)) {
 			throw new Error('[[error:invalid-data]]');
 		}
 	}
