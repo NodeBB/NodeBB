@@ -138,6 +138,18 @@ describe('Messaging Library', () => {
 	});
 
 	describe('rooms', () => {
+		const _delay1 = meta.config.chatMessageDelay;
+		const _delay2 = meta.config.newbieChatMessageDelay;
+		before(async () => {
+			meta.config.chatMessageDelay = 0;
+			meta.config.newbieChatMessageDelay = 0;
+		});
+
+		after(async () => {
+			meta.config.chatMessageDelay = _delay1;
+			meta.config.newbieChatMessageDelay = _delay2;
+		});
+
 		it('should fail to create a new chat room with invalid data', async () => {
 			const { body } = await callv3API('post', '/chats', {}, 'foo');
 			assert.equal(body.status.message, await translator.translate('[[error:required-parameters-missing, uids]]'));
