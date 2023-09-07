@@ -17,16 +17,18 @@ const chatsAPI = module.exports;
 async function rateLimitExceeded(caller) {
 	const session = caller.request ? caller.request.session : caller.session; // socket vs req
 	const now = Date.now();
-	const [isAdmin, reputation] = await Promise.all([
-		user.isAdministrator(caller.uid),
+	const [isPrivileged, reputation] = await Promise.all([
+		user.isPrivileged(caller.uid),
 		user.getUserField(caller.uid, 'reputation'),
 	]);
-	const newbie = !isAdmin && meta.config.newbiePostDelayThreshold > reputation;
+	const newbie = !isPrivileged && meta.config.newbiePostDelayThreshold > reputation;
 	const delay = newbie ? meta.config.newbieChatMessageDelay : meta.config.chatMessageDelay;
 	session.lastChatMessageTime = session.lastChatMessageTime || 0;
+
 	if (now - session.lastChatMessageTime < delay) {
 		return true;
 	}
+
 	session.lastChatMessageTime = now;
 	return false;
 }
