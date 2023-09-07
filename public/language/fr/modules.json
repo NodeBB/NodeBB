@@ -30,7 +30,7 @@
     "chat.delete_message_confirm": "Êtes-vous sûr de vouloir supprimer ce message ?",
     "chat.retrieving-users": "Ajouter des utilisateurs ...",
     "chat.view-users-list": "Afficher la liste de utilisateurs",
-    "chat.public-rooms": "Salon Publique (ù1)",
+    "chat.public-rooms": "Salon Publique (%1)",
     "chat.private-rooms": "Salon Privé (%1)",
     "chat.create-room": "Créer une salon de discussion",
     "chat.private.option": "Privé (uniquement visible pour les utilisateurs ajoutés au salon)",
