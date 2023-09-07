@@ -180,7 +180,7 @@
         "url": "https://github.com/NodeBB/NodeBB/issues"
     },
     "engines": {
-        "node": ">=12"
+        "node": ">=16"
     },
     "maintainers": [
         {
