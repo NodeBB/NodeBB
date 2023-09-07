@@ -61,6 +61,7 @@
     "change_picture": "Kép módosítása",
     "change_username": "Felhasználónév módosítása",
     "change_email": "E-mail módosítása",
+    "email-updated": "Email Updated",
     "email_same_as_password": "Kérlek add meg a jelenlegi jelszavadat a folytatáshoz &ndash; újra megadtad az új email címed",
     "edit": "Szerkesztés",
     "edit-profile": "Profil szerkesztése",

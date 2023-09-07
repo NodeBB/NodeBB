@@ -61,6 +61,7 @@
     "change_picture": "Cambiar imagen",
     "change_username": "Cambiar nombre de usuario",
     "change_email": "Cambiar email",
+    "email-updated": "Email Updated",
     "email_same_as_password": "Por favor ingrese su contraseña actual para continuar &ndash; tú has introducido tu nuevo correo electrónico de nuevo",
     "edit": "Editar",
     "edit-profile": "Editar Perfil",

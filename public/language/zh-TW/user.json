@@ -61,6 +61,7 @@
     "change_picture": "更改頭像",
     "change_username": "更改帳戶",
     "change_email": "更改電子信箱",
+    "email-updated": "Email Updated",
     "email_same_as_password": "請輸入您當前的密碼以繼續 &ndash;您已經再次輸入了您的新電子信箱",
     "edit": "編輯",
     "edit-profile": "編輯個人檔案",

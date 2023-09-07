@@ -61,6 +61,7 @@
     "change_picture": "画像を変更",
     "change_username": "ユーザー名の変更",
     "change_email": "メール変更",
+    "email-updated": "Email Updated",
     "email_same_as_password": "現在のパスワードを入力して続行してください &ndash; 新しいメールアドレスをもう一度入力しました",
     "edit": "編集",
     "edit-profile": "プロフィールを編集",

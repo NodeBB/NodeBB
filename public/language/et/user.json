@@ -61,6 +61,7 @@
     "change_picture": "Vaheta pilti",
     "change_username": "Vaheta kasutajanime",
     "change_email": "Vaheta emaili",
+    "email-updated": "Email Updated",
     "email_same_as_password": "Please enter your current password to continue &ndash; you've entered your new email again",
     "edit": "Muuda",
     "edit-profile": "Redigeeri profiili",

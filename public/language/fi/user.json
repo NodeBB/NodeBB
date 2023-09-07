@@ -61,6 +61,7 @@
     "change_picture": "Vaihda kuva",
     "change_username": "Vaihda käyttäjänimi",
     "change_email": "Vaihda sähköpostiosoite",
+    "email-updated": "Email Updated",
     "email_same_as_password": "Please enter your current password to continue &ndash; you've entered your new email again",
     "edit": "Muokkaa",
     "edit-profile": "Muokkaa profiiliasi",

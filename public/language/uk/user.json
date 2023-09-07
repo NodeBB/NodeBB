@@ -61,6 +61,7 @@
     "change_picture": "Змінити зображення",
     "change_username": "Змінити ім'я користувача",
     "change_email": "Змінити електронну пошту",
+    "email-updated": "Email Updated",
     "email_same_as_password": "Будь-ласка введіть ваш поточний пароль щоб продовжити &ndash; ви ввели ваш новий емейл знову",
     "edit": "Редагувати",
     "edit-profile": "Редагувати профіль",
