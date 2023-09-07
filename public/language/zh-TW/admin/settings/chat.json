@@ -1,4 +1,5 @@
 {
+	"zero-is-disabled": "Enter 0 to disable this restriction",
 	"chat-settings": "聊天設定",
 	"disable": "禁用聊天",
 	"disable-editing": "禁止編輯/刪除聊天消息",
@@ -6,8 +7,10 @@
 	"max-length": "聊天訊息的最大長度",
 	"max-chat-room-name-length": "Maximum length of chat room names",
 	"max-room-size": "聊天室的最多使用者數",
-	"delay": "聊天訊息間的毫秒數",
-	"notification-delay": "Notification delay for chat messages. (0 for no delay)",
-	"restrictions.seconds-edit-after": "使用者在發佈聊天訊息後允許編輯貼文的秒數（0為禁用）",
-	"restrictions.seconds-delete-after": "使用者在發佈聊天訊息後允許刪除貼文的秒數（0為禁用）"
+	"delay": "Time between chat messages (ms)",
+	"newbieDelay": "... for new users (ms)",
+	"notification-delay": "Notification delay for chat messages",
+	"notification-delay-help": "Additional messages sent between this time are collated, and the user is notified once per delay period. Set this to 0 to disable the delay.",
+	"restrictions.seconds-edit-after": "Number of seconds a chat message will remain editable.",
+	"restrictions.seconds-delete-after": "Number of seconds a chat message will remain deletable."
 }
