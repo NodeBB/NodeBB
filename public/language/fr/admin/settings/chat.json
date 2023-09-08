@@ -1,5 +1,5 @@
 {
-	"zero-is-disabled": "Enter 0 to disable this restriction",
+	"zero-is-disabled": "Entrez 0 pour désactiver cette restriction",
 	"chat-settings": "Paramètres des discussions",
 	"disable": "Désactiver les discussions",
 	"disable-editing": "Désactiver l'édition/la suppression des messages des discussions",
@@ -7,10 +7,10 @@
 	"max-length": "Longueur maximales des messages de discussion",
 	"max-chat-room-name-length": "Longueur maximale des noms de salons",
 	"max-room-size": "Nombre maximum d'utilisateurs dans une même discussion",
-	"delay": "Time between chat messages (ms)",
-	"newbieDelay": "... for new users (ms)",
-	"notification-delay": "Notification delay for chat messages",
+	"delay": "Temps entre les messages de chat (ms)",
+	"newbieDelay": "... pour les nouveaux utilisateurs (ms)",
+	"notification-delay": "Délai de notification pour les messages de chat",
 	"notification-delay-help": "Additional messages sent between this time are collated, and the user is notified once per delay period. Set this to 0 to disable the delay.",
-	"restrictions.seconds-edit-after": "Number of seconds a chat message will remain editable.",
-	"restrictions.seconds-delete-after": "Number of seconds a chat message will remain deletable."
+	"restrictions.seconds-edit-after": "Nombre de secondes pendant lesquelles un message de discussion restera modifiable.",
+	"restrictions.seconds-delete-after": "Nombre de secondes pendant lesquelles un message de discussion reste supprimable."
 }
