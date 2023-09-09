@@ -48,7 +48,7 @@
 	"notes": "Notes de signalement",
 	"add-note": "Ajouter une note",
 	"edit-note": "Editer la Note",
-	"no-notes": "aucune note partagée",
+	"no-notes": "Aucune note partagée",
 	"delete-note-confirm": "Êtes-vous sûr de bien vouloir supprimer cette note de signalement ?",
 	"delete-flag-confirm": "Êtes-vous sûr de bien vouloir supprimer ce signalement ?",
 	"note-added": "Note ajoutée",
@@ -71,8 +71,8 @@
 	"sort-reports": "Rapports",
 	"sort-all": "Tous les signalements...",
 	"sort-posts-only": "Messages seulement...",
-	"sort-downvotes": "Demandes négatives",
-	"sort-upvotes": "Demandes positives",
+	"sort-downvotes": "Votes négatifs maximum",
+	"sort-upvotes": "Votes positifs maximum",
 	"sort-replies": "Réponses",
 
 	"modal-title": "Contenu du rapport",
@@ -86,7 +86,7 @@
 
 	"bulk-actions": "Actions",
 	"bulk-resolve": "Signalement(s) résolu(s)",
-	"bulk-success": "%1 signalement mis à jour",
+	"bulk-success": "%1 signalements mis à jour",
 	"flagged-timeago-readable": "Signalé <span class=\"timeago\" title=\"%1\"></span> (%2)",
   	"auto-flagged": "[Auto Signalement] A reçu %1 votes négatifs."
 }

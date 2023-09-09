@@ -5,7 +5,7 @@
 	"text-color": "Couleur du texte",
 	"description": "Pour une sélection multiple :\nSélectionnez des mots-clés en cliquant ou en sélectionnant avec votre souris ou utilisez la touche <code>CTRL</code> .",
 	"create": "Créer le mot-clés",
-	"add-tag": "Ajouter un mots-clés",
+	"add-tag": "Ajouter un mots-clé",
 	"modify": "Modifier les mots-clés",
 	"rename": "Renommer les mots-clés",
 	"delete": "Supprimer la sélection",

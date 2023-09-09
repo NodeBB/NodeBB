@@ -15,7 +15,7 @@
     "invited.uninvite": "Résilier l'invitation",
     "invited.search": "Chercher un utilisateur a inviter dans ce groupe",
     "invited.notification_title": "Vous avez été invité à rejoindre <strong>%1</strong>",
-    "request.notification_title": "Requête d'Adhésion au Groupe de <strong>%1</strong>",
+    "request.notification_title": "Requête d'adhésion au Groupe de <strong>%1</strong>",
     "request.notification_text": "<strong>%1</strong> a demandé à devenir membre de <strong>%2</strong>",
     "cover-save": "Enregistrer",
     "cover-saving": "Enregistrement",
@@ -60,7 +60,7 @@
     "membership.reject": "Refuser",
     "new-group.group_name": "Nom du groupe :",
     "upload-group-cover": "Envoyer une image de groupe",
-    "bulk-invite-instructions": "Entrez une liste de nom d'utilisateurs séparés par des virgules pour les inviter à rejoindre ce groupe.",
+    "bulk-invite-instructions": "Entrer une liste de nom d'utilisateurs séparés par des virgules pour les inviter à rejoindre ce groupe.",
     "bulk-invite": "Invitation multiple",
     "remove_group_cover_confirm": "Êtes-vous sûr de vouloir supprimer l'image de couverture ?"
 }
