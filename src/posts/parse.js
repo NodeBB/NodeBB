@@ -14,9 +14,8 @@ const utils = require('../utils');
 let sanitizeConfig = {
 	allowedTags: sanitize.defaults.allowedTags.concat([
 		// Some safe-to-use tags to add
-		'sup', 'ins', 'del', 'img', 'button',
-		'video', 'audio', 'iframe', 'embed',
-		// 'sup' still necessary until https://github.com/apostrophecms/sanitize-html/pull/422 merged
+		'ins', 'del', 'img', 'button',
+		'video', 'audio', 'source', 'iframe', 'embed',
 	]),
 	allowedAttributes: {
 		...sanitize.defaults.allowedAttributes,
@@ -25,6 +24,7 @@ let sanitizeConfig = {
 		iframe: ['height', 'name', 'src', 'width'],
 		video: ['autoplay', 'controls', 'height', 'loop', 'muted', 'poster', 'preload', 'src', 'width'],
 		audio: ['autoplay', 'controls', 'loop', 'muted', 'preload', 'src'],
+		source: ['type', 'src', 'srcset', 'sizes', 'media', 'height', 'width'],
 		embed: ['height', 'src', 'type', 'width'],
 	},
 	globalAttributes: ['accesskey', 'class', 'contenteditable', 'dir',
