@@ -132,6 +132,9 @@ module.exports = function (Messaging) {
 			return;
 		}
 		parentMids = _.uniq(parentMids);
+		const canView = await Messaging.canViewMessage(parentMids, roomId, uid);
+		parentMids = parentMids.filter((mid, idx) => canView[idx]);
+
 		const parentMessages = await Messaging.getMessagesFields(parentMids, [
 			'fromuid', 'content', 'timestamp', 'deleted',
 		]);
