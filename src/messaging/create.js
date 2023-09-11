@@ -42,8 +42,13 @@ module.exports = function (Messaging) {
 		if (!roomData) {
 			throw new Error('[[error:no-room]]');
 		}
-		if (data.toMid && !utils.isNumber(data.toMid)) {
-			throw new Error('[[error:invalid-mid]]');
+		if (data.toMid) {
+			if (!utils.isNumber(data.toMid)) {
+				throw new Error('[[error:invalid-mid]]');
+			}
+			if (!await Messaging.canViewMessage(data.toMid, roomId, uid)) {
+				throw new Error('[[error:no-privileges]]');
+			}
 		}
 		const mid = await db.incrObjectField('global', 'nextMid');
 		const timestamp = data.timestamp || Date.now();
