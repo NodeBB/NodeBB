@@ -106,12 +106,15 @@ module.exports = function (User) {
 		await db.sortedSetRemove(`uid:${uid}:sessions`, expiredSids);
 	}
 
-	User.auth.addSession = async function (uid, sessionId) {
+	User.auth.addSession = async function (uid, sessionId, uuid) {
 		if (!(parseInt(uid, 10) > 0)) {
 			return;
 		}
 		await cleanExpiredSessions(uid);
-		await db.sortedSetAdd(`uid:${uid}:sessions`, Date.now(), sessionId);
+		await Promise.all([
+			db.sortedSetAdd(`uid:${uid}:sessions`, Date.now(), sessionId),
+			db.setObjectField(`uid:${uid}:sessionUUID:sessionId`, uuid, sessionId),
+		]);
 		await revokeSessionsAboveThreshold(uid, meta.config.maxUserSessions);
 	};
 

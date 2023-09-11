@@ -112,7 +112,7 @@ describe('Password reset (library methods)', () => {
 	});
 });
 
-describe.only('locks', () => {
+describe('locks', () => {
 	let uid;
 	let email;
 	beforeEach(async () => {

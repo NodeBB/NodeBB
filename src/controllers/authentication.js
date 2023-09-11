@@ -379,15 +379,12 @@ authenticationController.onSuccessfulLogin = async function (req, uid) {
 			new Promise((resolve) => {
 				req.session.save(resolve);
 			}),
-			user.auth.addSession(uid, req.sessionID),
+			user.auth.addSession(uid, req.sessionID, uuid),
 			user.updateLastOnlineTime(uid),
 			user.onUserOnline(uid, Date.now()),
 			analytics.increment('logins'),
 			db.incrObjectFieldBy('global', 'loginCount', 1),
 		]);
-		if (uid > 0) {
-			await db.setObjectField(`uid:${uid}:sessionUUID:sessionId`, uuid, req.sessionID);
-		}
 
 		// Force session check for all connected socket.io clients with the same session id
 		sockets.in(`sess_${req.sessionID}`).emit('checkSession', uid);
