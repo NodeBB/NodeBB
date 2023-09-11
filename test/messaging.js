@@ -813,7 +813,7 @@ describe('Messaging Library', () => {
 
 			assert.equal(response.statusCode, 200);
 			assert(Array.isArray(body.rooms));
-			assert.equal(body.rooms.length, 2);
+			assert.equal(body.rooms.length, 3);
 			assert.equal(body.title, '[[pages:chats]]');
 		});
 
