@@ -273,7 +273,13 @@ define('forum/chats/messages', [
 			messages.parseMessage(message, function (html) {
 				const msgEl = components.get('chat/message', message.mid);
 				if (msgEl.length) {
-					msgEl.replaceWith(html);
+					const componentsToReplace = [
+						'[component="chat/message/body"]',
+						'[component="chat/message/edited"]',
+					];
+					componentsToReplace.forEach((cmp) => {
+						msgEl.find(cmp).replaceWith(html.find(cmp));
+					});
 					messages.onMessagesAddedToDom(components.get('chat/message', message.mid));
 				}
 				const parentEl = $(`[component="chat/message/parent"][data-parent-mid="${message.mid}"]`);
