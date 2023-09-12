@@ -1,7 +1,6 @@
 'use strict';
 
 const assert = require('assert');
-const async = require('async');
 const request = require('request-promise-native');
 const nconf = require('nconf');
 const util = require('util');
@@ -369,7 +368,6 @@ describe('Messaging Library', () => {
 		});
 
 		it('should fail to send second message due to rate limit', async () => {
-			const socketMock = { uid: mocks.users.foo.uid };
 			const oldValue = meta.config.chatMessageDelay;
 			meta.config.chatMessageDelay = 1000;
 
@@ -572,6 +570,55 @@ describe('Messaging Library', () => {
 		});
 	});
 
+	describe('toMid', () => {
+		let roomId;
+		let firstMid;
+		before(async () => {
+			// create room
+			const { body } = await callv3API('post', `/chats`, {
+				uids: [mocks.users.bar.uid],
+			}, 'foo');
+			roomId = body.response.roomId;
+			// send message
+			const result = await callv3API('post', `/chats/${roomId}`, {
+				roomId: roomId,
+				message: 'first chat message',
+			}, 'foo');
+
+			firstMid = result.body.response.mid;
+		});
+
+		it('should fail if toMid is not a number', async () => {
+			const result = await callv3API('post', `/chats/${roomId}`, {
+				roomId: roomId,
+				message: 'invalid',
+				toMid: 'osmaosd',
+			}, 'foo');
+			assert.strictEqual(result.body.status.message, 'Invalid Chat Message ID');
+		});
+
+		it('should reply to firstMid using toMid', async () => {
+			const { body } = await callv3API('post', `/chats/${roomId}`, {
+				roomId: roomId,
+				message: 'invalid',
+				toMid: firstMid,
+			}, 'bar');
+			assert(body.response.mid);
+		});
+
+		it('should fail if user can not view toMid', async () => {
+			// add new user
+			await callv3API('post', `/chats/${roomId}/users`, { uids: [mocks.users.herp.uid] }, 'foo');
+			// try to reply to firstMid that this user cant see
+			const { body } = await callv3API('post', `/chats/${roomId}`, {
+				roomId: roomId,
+				message: 'invalid',
+				toMid: firstMid,
+			}, 'herp');
+			assert.strictEqual(body.status.message, 'You do not have enough privileges for this action.');
+		});
+	});
+
 	describe('edit/delete', () => {
 		const socketModules = require('../src/socket.io/modules');
 		let mid;
@@ -766,7 +813,7 @@ describe('Messaging Library', () => {
 
 			assert.equal(response.statusCode, 200);
 			assert(Array.isArray(body.rooms));
-			assert.equal(body.rooms.length, 2);
+			assert.equal(body.rooms.length, 3);
 			assert.equal(body.title, '[[pages:chats]]');
 		});
 
