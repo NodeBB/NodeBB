@@ -1,5 +1,5 @@
 {
-	"tokens": "Tokens",
+	"tokens": "Jetons",
 	"settings": "Paramètres",
 	"lead-text": "À partir de cette page, vous pouvez paramétrer l'accès à l'API dans NodeBB.",
 	"intro": "Par défaut, l'API authentifie les utilisateurs en fonction de leur cookie de session, mais NodeBB prend également en charge l'authentification du porteur via des tokens générés via cette page.",
@@ -11,7 +11,7 @@
 
 	"uid": "ID Utilisateur",
 	"token": "Jeton",
-	"uid-help-text": "Spécifier un ID utilisateur à associer à ce token. Si l'ID utilisateur est 0, il sera considéré comme un token <code>maître<em>, qui peut prendre l'identité d'autres utilisateurs en fonction du paramètre <code>_uid</code>",
+	"uid-help-text": "Spécifier un ID utilisateur à associer à ce jeton. Si l'ID utilisateur est <code>0</code>, il sera considéré comme un token <em>maître, qui peut prendre l'identité d'autres utilisateurs en fonction du paramètre <code>_uid</code>",
 	"description": "Description",
 	"last-seen": "Vu pour la dernière fois",
 	"created": "Créé",
@@ -21,8 +21,8 @@
 	"last-seen-never": "Cette clé n'a jamais été utilisée.",
 	"no-description": "Aucune description spécifiée.",
 	"actions": "Actions",
-	"edit": "Éditer ",
-	"roll": "Jeter",
+	"edit": "Modifier",
+	"roll": "Lancer",
 
 	"delete-confirm": "Voulez-vous vraiment supprimer ce jeton ? Il ne sera pas récupérable.",
 	"roll-confirm": "Voulez-vous vraiment régénérer ce jeton ? L'ancien jeton sera immédiatement révoqué et ne sera pas récupérable."

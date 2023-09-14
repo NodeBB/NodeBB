@@ -1,5 +1,5 @@
 {
-	"section-dashboard": "Tableau de bord",
+	"section-dashboard": "Tableaux de bord",
 	"dashboard/overview": "Aperçu",
 	"dashboard/logins": "Connexions",
 	"dashboard/users": "Utilisateurs",
@@ -73,7 +73,7 @@
 	"development/info": "Info",
 
 	"rebuild-and-restart-forum": "Régénérer & Redémarrer votre forum",
-	"rebuild-and-restart": "Régénérer & Redémarrer",
+	"rebuild-and-restart": "Reconstruire & Redémarrer",
 	"restart-forum": "Redémarrer le forum",
 	"restart": "Redémarrer",
 	"logout": "Déconnexion ",

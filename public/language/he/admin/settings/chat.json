@@ -1,5 +1,5 @@
 {
-	"zero-is-disabled": "Enter 0 to disable this restriction",
+	"zero-is-disabled": "הזן 0 כדי לבטל את ההגבלה הזו",
 	"chat-settings": "הגדרות צ'אט",
 	"disable": "השבת צ'אט",
 	"disable-editing": "השבת עריכה/מחיקה של הודעות צ'אט",
@@ -8,9 +8,9 @@
 	"max-chat-room-name-length": "אורך מקסימלי של שם חדר צ'אט",
 	"max-room-size": "מספר המשתמשים המרבי בחדרי צ'אט",
 	"delay": "Time between chat messages (ms)",
-	"newbieDelay": "... for new users (ms)",
-	"notification-delay": "Notification delay for chat messages",
-	"notification-delay-help": "Additional messages sent between this time are collated, and the user is notified once per delay period. Set this to 0 to disable the delay.",
+	"newbieDelay": "...עבור משתמשים חדשים (במילישניות)",
+	"notification-delay": "עיכוב התראה עבור הודעות צ'אט",
+	"notification-delay-help": "הודעות נוספות שנשלחות בין הזמן הזה נאספות, והמשתמש מקבל הודעה פעם אחת בכל תקופת עיכוב. הגדר ל-0 כדי לבטל את ההשהיה.",
 	"restrictions.seconds-edit-after": "Number of seconds a chat message will remain editable.",
 	"restrictions.seconds-delete-after": "Number of seconds a chat message will remain deletable."
 }
