@@ -7,7 +7,7 @@
 	"subscription": "Type d'abonnement",
 	"last-delivery": "Dernier envoi réussi",
 	"default": "Valeur par défaut",
-	"default-help": "<em>La valeur par défaut</em> signifie que l'utilisateur n'a pas explicitement modifié les paramètres pour les lettres d'activités, qui sont : &quot;<strong>%1</strong>&quot;",
+	"default-help": "<em>La valeur par défaut</em> signifie que l'utilisateur n'a pas explicitement modifié les paramètres pour les lettres d'activités, qui sont : \"<strong>%1</strong>\"",
 	"resend": "Renvoi",
 	"resend-all-confirm": "Voulez-vous vraiment exécuter manuellement cet envoi ?",
 	"resent-single": "Lettre d'activité envoyée",

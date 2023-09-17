@@ -1,11 +1,11 @@
 {
 	"theme-name": "Thème Harmony",
-	"skins": "Apparence",
+	"skins": "Habillages",
 	"collapse": "Réduire",
 	"expand": "Développer",
 	"login-register-to-search": "Connectez-vous ou inscrivez-vous pour  faire une recherche.",
 	"settings.title": "Configuration du thème",
-	"settings.enableQuickReply": "Activer les réponses rapide",
+	"settings.enableQuickReply": "Activer les réponses rapides",
 	"settings.centerHeaderElements": "Centrer les éléments d'en-tête",
 	"settings.mobileTopicTeasers": "Afficher les teasers de sujet sur mobile",
 	"settings.stickyToolbar": "Barre d'outils",

@@ -9,7 +9,7 @@
 	"updated": "Mis à jour",
 	"resolved": "Résolu",
 	"target-purged": "Le rapport pour ce signalement a été supprimé et n'est plus accessible",
-	"target-aboutme-empty": "Cet utilisateur n'a pas de &quot;À propos de moi&quot;.",
+	"target-aboutme-empty": "Cet utilisateur n'a pas de \"À propos de moi\".",
 
 	"graph-label": "Signalements du jour",
 	"quick-filters": "Filtres rapides",
@@ -48,14 +48,14 @@
 	"notes": "Notes de signalement",
 	"add-note": "Ajouter une note",
 	"edit-note": "Editer la Note",
-	"no-notes": "Aucune note partagée",
+	"no-notes": "Aucune note partagée.",
 	"delete-note-confirm": "Êtes-vous sûr de bien vouloir supprimer cette note de signalement ?",
 	"delete-flag-confirm": "Êtes-vous sûr de bien vouloir supprimer ce signalement ?",
 	"note-added": "Note ajoutée",
 	"note-deleted": "Note supprimée",
 	"flag-deleted": "Signalement supprimé",
 
-	"history": "Compte &amp; Historique des signalements",
+	"history": "Compte & Historique des signalements",
 	"no-history": "Aucun historique de signalements",
 
 	"state-all": "Tous les états",
@@ -84,7 +84,7 @@
 	"modal-submit": "Soumettre",
 	"modal-submit-success": "Le contenu a été soumis pour examen.",
 
-	"bulk-actions": "Actions",
+	"bulk-actions": "Actions en vrac",
 	"bulk-resolve": "Signalement(s) résolu(s)",
 	"bulk-success": "%1 signalements mis à jour",
 	"flagged-timeago-readable": "Signalé <span class=\"timeago\" title=\"%1\"></span> (%2)",
