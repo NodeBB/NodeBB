@@ -17,20 +17,21 @@ define('forum/chats/messages', [
 		const chatContent = inputEl.parents(`[component="chat/messages"][data-roomid="${roomId}"]`);
 		inputEl.val('').trigger('input');
 
-		messages.updateRemainingLength(inputEl.parent());
+		const chatComposer = inputEl.parents('[component="chat/composer"]');
+		messages.updateRemainingLength(chatComposer);
 		messages.updateTextAreaHeight(chatContent);
 		const payload = { roomId, message };
 		({ roomId, message } = await hooks.fire('filter:chat.send', payload));
-		const replyToEl = inputEl.parents('[component="chat/composer"]')
-			.find('[component="chat/composer/replying-to"]');
+		const replyToEl = chatComposer.find('[component="chat/composer/replying-to"]');
 		const toMid = replyToEl.attr('data-tomid');
+
 		api.post(`/chats/${roomId}`, { message, toMid: toMid }).then(() => {
 			hooks.fire('action:chat.sent', { roomId, message });
 			replyToEl.addClass('hidden');
 			replyToEl.attr('data-tomid', '');
 		}).catch((err) => {
 			inputEl.val(message).trigger('input');
-			messages.updateRemainingLength(inputEl.parent());
+			messages.updateRemainingLength(chatComposer);
 			messages.updateTextAreaHeight(chatContent);
 			if (err.message === '[[error:email-not-confirmed-chat]]') {
 				return messagesModule.showEmailConfirmWarning(err.message);
