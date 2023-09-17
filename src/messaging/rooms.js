@@ -534,6 +534,7 @@ module.exports = function (Messaging) {
 		room.isAdmin = isAdmin;
 		room.notificationOptions = notifOptions.options;
 		room.notificationOptionsIcon = notifOptions.selectedIcon;
+		room.composerActions = [];
 
 		const payload = await plugins.hooks.fire('filter:messaging.loadRoom', { uid, data, room });
 		return payload.room;
