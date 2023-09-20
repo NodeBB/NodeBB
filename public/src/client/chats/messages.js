@@ -116,6 +116,7 @@ define('forum/chats/messages', [
 		messageEls.find('img:not(.emoji)').each(function () {
 			images.wrapImageInLink($(this));
 		});
+		hooks.fire('action:chat.onMessagesAddedToDom', { messageEls });
 	};
 
 	messages.parseMessage = function (data, callback) {
