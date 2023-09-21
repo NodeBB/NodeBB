@@ -9,6 +9,7 @@ const user = require('../user');
 const topics = require('../topics');
 const categories = require('../categories');
 const groups = require('../groups');
+const privileges = require('../privileges');
 const utils = require('../utils');
 
 module.exports = function (Posts) {
@@ -24,8 +25,17 @@ module.exports = function (Posts) {
 			throw new Error('[[error:invalid-uid]]');
 		}
 
-		if (data.toPid && !utils.isNumber(data.toPid)) {
-			throw new Error('[[error:invalid-pid]]');
+		if (data.toPid) {
+			const toPidExists = await Posts.exists(data.toPid);
+			const toPidDeleted = await Posts.getPostField(data.toPid, 'deleted');
+			const canViewToPid = await privileges.posts.can('posts:view_deleted', data.toPid, uid);
+
+			if (
+				!utils.isNumber(data.toPid) || !toPidExists ||
+				(toPidDeleted && !canViewToPid)
+			) {
+				throw new Error('[[error:invalid-pid]]');
+			}
 		}
 
 		const pid = await db.incrObjectField('global', 'nextPid');
