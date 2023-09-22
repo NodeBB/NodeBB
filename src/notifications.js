@@ -41,6 +41,8 @@ Notifications.privilegedTypes = [
 
 const notificationPruneCutoff = 2592000000; // one month
 
+const intFields = ['datetime', 'from', 'important', 'tid', 'pid', 'roomId'];
+
 Notifications.getAllNotificationTypes = async function () {
 	const results = await plugins.hooks.fire('filter:user.notificationTypes', {
 		types: Notifications.baseTypes.slice(),
@@ -72,6 +74,11 @@ Notifications.getMultiple = async function (nids) {
 
 	notifications.forEach((notification, index) => {
 		if (notification) {
+			intFields.forEach((field) => {
+				if (notification.hasOwnProperty(field)) {
+					notification[field] = parseInt(notification[field], 10) || 0;
+				}
+			});
 			if (notification.path && !notification.path.startsWith('http')) {
 				notification.path = nconf.get('relative_path') + notification.path;
 			}
